@@ -29,7 +29,7 @@
 class GFXOpenGLPrimitiveBuffer : public GFXPrimitiveBuffer
 {
 public:
-	GFXOpenGLPrimitiveBuffer(GFXDevice *device, U32 indexCount, U32 primitiveCount, GFXBufferType bufferType);
+	GFXOpenGLPrimitiveBuffer(GFXDevice *device, U32 indexCount, U32 primitiveCount, GFXBufferType bufferType, const GLvoid * data = NULL);
 	~GFXOpenGLPrimitiveBuffer();
 
 	virtual void lock(U32 indexStart, U32 indexEnd, void **indexPtr); ///< calls glMapBuffer, offets pointer by indexStart

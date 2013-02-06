@@ -134,12 +134,12 @@ public:
    };
    GFXPrimitiveBufferHandle() {};
 
-   GFXPrimitiveBufferHandle(GFXDevice *theDevice, U32 indexCount, U32 primitiveCount, GFXBufferType bufferType, StringTableEntry desc = StringTable->EmptyString )
+   GFXPrimitiveBufferHandle(GFXDevice *theDevice, U32 indexCount, U32 primitiveCount, GFXBufferType bufferType, StringTableEntry desc = StringTable->EmptyString, void* data = NULL)
    {
-      set(theDevice, indexCount, primitiveCount, bufferType, desc);
+      set(theDevice, indexCount, primitiveCount, bufferType, desc, data);
    }
 
-   void set(GFXDevice *theDevice, U32 indexCount, U32 primitiveCount, GFXBufferType bufferType, StringTableEntry desc = StringTable->EmptyString );
+   void set(GFXDevice *theDevice, U32 indexCount, U32 primitiveCount, GFXBufferType bufferType, StringTableEntry desc = StringTable->EmptyString, void* data = NULL );
 
    void lock(U16 **indexBuffer, GFXPrimitive **primitiveBuffer = NULL, U32 indexStart = 0, U32 indexEnd = 0)
    {

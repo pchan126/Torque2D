@@ -187,7 +187,10 @@ protected:
                                                 U32 vertSize, 
                                                 GFXBufferType bufferType,
                                                 void *data);
-   virtual GFXPrimitiveBuffer *allocPrimitiveBuffer( U32 numIndices, U32 numPrimitives, GFXBufferType bufferType );
+   virtual GFXPrimitiveBuffer *allocPrimitiveBuffer( U32 numIndices,
+                                                    U32 numPrimitives,
+                                                    GFXBufferType bufferType,
+                                                    void *data);
    
    // NOTE: The GL device doesn't need a vertex declaration at
    // this time, but we need to return something to keep the system
@@ -279,7 +282,7 @@ private:
    void postDrawPrimitive(U32 primitiveCount);  
    
    GFXVertexBuffer* findVolatileVBO(U32 numVerts, const GFXVertexFormat *vertexFormat, U32 vertSize, void* data = NULL); ///< Returns an existing volatile VB which has >= numVerts and the same vert flags/size, or creates a new VB if necessary
-   GFXPrimitiveBuffer* findVolatilePBO(U32 numIndices, U32 numPrimitives); ///< Returns an existing volatile PB which has >= numIndices, or creates a new PB if necessary
+   GFXPrimitiveBuffer* findVolatilePBO(U32 numIndices, U32 numPrimitives, void * data = NULL); ///< Returns an existing volatile PB which has >= numIndices, or creates a new PB if necessary
    
    void initGLState(); ///< Guaranteed to be called after all extensions have been loaded, use to init card profiler, shader version, max samplers, etc.
    

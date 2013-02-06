@@ -372,14 +372,14 @@ GFXVertexBuffer* GFXOpenGLDevice::findVolatileVBO(U32 numVerts, const GFXVertexF
     return buf.getPointer();
 }
 
-GFXPrimitiveBuffer* GFXOpenGLDevice::findVolatilePBO(U32 numIndices, U32 numPrimitives)
+GFXPrimitiveBuffer* GFXOpenGLDevice::findVolatilePBO(U32 numIndices, U32 numPrimitives, void* data)
 {
     for(U32 i = 0; i < mVolatilePBs.size(); i++)
         if((mVolatilePBs[i]->mIndexCount >= numIndices) && (mVolatilePBs[i]->getRefCount() == 1))
             return mVolatilePBs[i];
     
     // No existing PB, so create one
-    StrongRefPtr<GFXOpenGLPrimitiveBuffer> buf(new GFXOpenGLPrimitiveBuffer(GFX, numIndices, numPrimitives, GFXBufferTypeVolatile));
+    StrongRefPtr<GFXOpenGLPrimitiveBuffer> buf(new GFXOpenGLPrimitiveBuffer(GFX, numIndices, numPrimitives, GFXBufferTypeVolatile, data));
     buf->registerResourceWithDevice(this);
     mVolatilePBs.push_back(buf);
     return buf.getPointer();
@@ -399,12 +399,12 @@ GFXVertexBuffer *GFXOpenGLDevice::allocVertexBuffer(   U32 numVerts,
     return buf;
 }
 
-GFXPrimitiveBuffer *GFXOpenGLDevice::allocPrimitiveBuffer( U32 numIndices, U32 numPrimitives, GFXBufferType bufferType )
+GFXPrimitiveBuffer *GFXOpenGLDevice::allocPrimitiveBuffer( U32 numIndices, U32 numPrimitives, GFXBufferType bufferType, void *data )
 {
     if(bufferType == GFXBufferTypeVolatile)
-        return findVolatilePBO(numIndices, numPrimitives);
+        return findVolatilePBO(numIndices, numPrimitives, data);
     
-    GFXOpenGLPrimitiveBuffer* buf = new GFXOpenGLPrimitiveBuffer(GFX, numIndices, numPrimitives, bufferType);
+    GFXOpenGLPrimitiveBuffer* buf = new GFXOpenGLPrimitiveBuffer(GFX, numIndices, numPrimitives, bufferType, data);
     buf->registerResourceWithDevice(this);
     return buf;
 }
