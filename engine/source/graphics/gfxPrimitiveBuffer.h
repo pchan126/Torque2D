@@ -59,7 +59,8 @@ public: //protected:
    GFXPrimitiveBuffer(  GFXDevice *device, 
                         U32 indexCount, 
                         U32 primitiveCount, 
-                        GFXBufferType bufferType )
+                        GFXBufferType bufferType,
+                        GFXPrimitive *primitiveBuffer)
    {
       mDevice = device;
       mIndexCount = indexCount;
@@ -67,8 +68,8 @@ public: //protected:
       mBufferType = bufferType;
       if(primitiveCount)
       {
-         mPrimitiveArray = new GFXPrimitive[primitiveCount];
-         dMemset((void *) mPrimitiveArray, 0, primitiveCount * sizeof(GFXPrimitive));
+          mPrimitiveArray = new GFXPrimitive[primitiveCount];
+          dMemcpy( mPrimitiveArray, primitiveBuffer, primitiveCount * sizeof(GFXPrimitive));
       }
       else
          mPrimitiveArray = NULL;
@@ -134,12 +135,12 @@ public:
    };
    GFXPrimitiveBufferHandle() {};
 
-   GFXPrimitiveBufferHandle(GFXDevice *theDevice, U32 indexCount, U32 primitiveCount, GFXBufferType bufferType, StringTableEntry desc = StringTable->EmptyString, void* data = NULL)
+   GFXPrimitiveBufferHandle(GFXDevice *theDevice, U32 indexCount, U32 primitiveCount, GFXBufferType bufferType, U16 *indexBuffer = NULL, GFXPrimitive *primitiveBuffer = NULL, StringTableEntry desc = StringTable->EmptyString)
    {
-      set(theDevice, indexCount, primitiveCount, bufferType, desc, data);
+      set(theDevice, indexCount, primitiveCount, bufferType, indexBuffer, primitiveBuffer, desc);
    }
 
-   void set(GFXDevice *theDevice, U32 indexCount, U32 primitiveCount, GFXBufferType bufferType, StringTableEntry desc = StringTable->EmptyString, void* data = NULL );
+   void set(GFXDevice *theDevice, U32 indexCount, U32 primitiveCount, GFXBufferType bufferType, U16 *indexBuffer = NULL, GFXPrimitive *primitiveBuffer = NULL, StringTableEntry desc = StringTable->EmptyString );
 
    void lock(U16 **indexBuffer, GFXPrimitive **primitiveBuffer = NULL, U32 indexStart = 0, U32 indexEnd = 0)
    {

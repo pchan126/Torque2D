@@ -71,9 +71,9 @@ const String GFXPrimitiveBuffer::describeSelf() const
 //-----------------------------------------------------------------------------
 // Set
 //-----------------------------------------------------------------------------
-void GFXPrimitiveBufferHandle::set(GFXDevice *theDevice, U32 indexCount, U32 primitiveCount, GFXBufferType bufferType, StringTableEntry desc, void * data)
+void GFXPrimitiveBufferHandle::set(GFXDevice *theDevice, U32 indexCount, U32 primitiveCount, GFXBufferType bufferType, U16 *indexBuffer, GFXPrimitive *primitiveBuffer, StringTableEntry desc)
 {
-   StrongRefPtr<GFXPrimitiveBuffer>::operator=( theDevice->allocPrimitiveBuffer(indexCount, primitiveCount, bufferType, data) );
+   StrongRefPtr<GFXPrimitiveBuffer>::operator=( theDevice->allocPrimitiveBuffer(indexCount, primitiveCount, bufferType, indexBuffer,  primitiveBuffer) );
 
 #ifdef TORQUE_DEBUG
    if( desc != StringTable->EmptyString )

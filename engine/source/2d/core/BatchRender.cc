@@ -36,9 +36,7 @@
 BatchRender::BatchRender() :
     mQuadCount( 0 ),
     mVertexCount( 0 ),
-    mTextureResidentCount( 0 ),
     mIndexCount( 0 ),
-    mColorCount( 0 ),
     NoColor( -1.0f, -1.0f, -1.0f ),
     mStrictOrderMode( false ),
     mpDebugStats( NULL ),
@@ -139,29 +137,7 @@ void BatchRender::SubmitQuad(
     // Do we have anything batched?
     if ( mQuadCount > 0 )
     {
-        // Yes, so do we have any existing colors?
-        if ( mColorCount == 0 )
-        {
-            // No, so flush if color is specified.
-            if ( color != NoColor  )
-                flush( mpDebugStats->batchColorStateFlush );
-        }
-        else
-        {
-            // Yes, so flush if color is not specified.
-            if ( color == NoColor  )
-                flush( mpDebugStats->batchColorStateFlush );
-        }
-    }
-
-    // Is a color specified?
-    if ( color != NoColor )
-    {
-        // Yes, so add colors.
-        mColorBuffer[mColorCount++] = color;
-        mColorBuffer[mColorCount++] = color;
-        mColorBuffer[mColorCount++] = color;
-        mColorBuffer[mColorCount++] = color;
+        flush( mpDebugStats->batchColorStateFlush );
     }
 
     // Strict order mode?
@@ -187,14 +163,10 @@ void BatchRender::SubmitQuad(
     }
     else
     {
-        // No, so fetch texture binding.
-        GFXOpenGLTextureObject *tex = dynamic_cast<GFXOpenGLTextureObject*>(texture.getPointer());
-        const U32 textureBinding = tex->getHandle();
-
         indexVectorType* pIndexVector = NULL;
 
         // Find texture binding.
-        textureBatchType::iterator itr = mTextureBatchMap.find( textureBinding );
+        textureBatchType::iterator itr = mTextureBatchMap.find( texture );
 
         // Did we find a texture binding?
         if ( itr == mTextureBatchMap.end() )
@@ -216,7 +188,7 @@ void BatchRender::SubmitQuad(
             }
 
             // Insert into texture batch map.
-            mTextureBatchMap.insert( textureBinding, pIndexVector );
+            mTextureBatchMap.insert( texture, pIndexVector );
         }
         else
         {
@@ -230,15 +202,21 @@ void BatchRender::SubmitQuad(
 
     // Add textured vertices.
     // NOTE: We swap #2/#3 here.
-    mVertexBuffer[mVertexCount++]   = vertexPos0;
-    mVertexBuffer[mVertexCount++]   = vertexPos1;
-    mVertexBuffer[mVertexCount++]   = vertexPos3;
-    mVertexBuffer[mVertexCount++]   = vertexPos2;
-    mTextureBuffer[mTextureResidentCount++] = texturePos0;
-    mTextureBuffer[mTextureResidentCount++] = texturePos1;
-    mTextureBuffer[mTextureResidentCount++] = texturePos3;
-    mTextureBuffer[mTextureResidentCount++] = texturePos2;
 
+    mVertexBuffer[mVertexCount+0].point.set(vertexPos0.x, vertexPos0.y, 0.0f);
+    mVertexBuffer[mVertexCount+1].point.set(vertexPos1.x, vertexPos1.y, 0.0f);
+    mVertexBuffer[mVertexCount+2].point.set(vertexPos3.x, vertexPos3.y, 0.0f);
+    mVertexBuffer[mVertexCount+3].point.set(vertexPos2.x, vertexPos2.y, 0.0f);
+    mVertexBuffer[mVertexCount+0].texCoord.set(texturePos0.x, texturePos0.y);
+    mVertexBuffer[mVertexCount+1].texCoord.set(texturePos1.x, texturePos1.y);
+    mVertexBuffer[mVertexCount+2].texCoord.set(texturePos3.x, texturePos3.y);
+    mVertexBuffer[mVertexCount+3].texCoord.set(texturePos2.x, texturePos2.y);
+    mVertexBuffer[mVertexCount+0].color.set(color);
+    mVertexBuffer[mVertexCount+1].color.set(color);
+    mVertexBuffer[mVertexCount+2].color.set(color);
+    mVertexBuffer[mVertexCount+3].color.set(color);
+    mVertexCount += 4;
+    
     // Stats.
     mpDebugStats->batchTrianglesSubmitted+=2;
 
@@ -308,162 +286,133 @@ void BatchRender::flushInternal( void )
     mpDebugStats->batchFlushes++;
 
     GFX->setStateBlock(mGFXStateRef);
+    GFXVertexBufferHandle<GFXVertexPCT> vHandle( GFX, mVertexCount, GFXBufferTypeVolatile, mVertexBuffer);
+    GFX->setVertexBuffer(vHandle);
 
-//    // Set blend mode.
-//    if ( mBlendMode )
-//    {
-//        glEnable( GL_BLEND );
-//        glBlendFunc( mSrcBlendFactor, mDstBlendFactor );
-//        glColor4f(mBlendColor.red, mBlendColor.green, mBlendColor.blue, mBlendColor.alpha );
-//    }
-//    else
-//    {
-//        glDisable( GL_BLEND );
-//        glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-//    }
-//
-//    // Set alpha-blend mode.
-//    if ( mAlphaTestMode >= 0.0f )
-//    {
-//        glEnable( GL_ALPHA_TEST );
-//        glAlphaFunc( GL_GREATER, mAlphaTestMode );
-//    }
-//    else
-//    {
-//        glDisable( GL_ALPHA_TEST );
-//    }
-//
-//    // Enable vertex and texture arrays.
-//    glEnableClientState( GL_VERTEX_ARRAY );
-//    glVertexPointer( 2, GL_FLOAT, 0, mVertexBuffer );
-//    glTexCoordPointer( 2, GL_FLOAT, 0, mTextureBuffer );
-//
-//    // Use the texture coordinates if not in wireframe mode.
-//    if ( !mWireframeMode )
-//        glEnableClientState( GL_TEXTURE_COORD_ARRAY );
-//
-//    // Do we have any colors?
-//    if ( mColorCount > 0 )
-//    {
-//        // Yes, so enable color array.
-//        glEnableClientState( GL_COLOR_ARRAY );
-//        glColorPointer( 4, GL_FLOAT, 0, mColorBuffer );
-//    }
-//
-//    // Strict order mode?
-//    if ( mStrictOrderMode )
-//    {
-//        // Bind the texture if not in wireframe mode.
-//        if ( !mWireframeMode )
-//            glBindTexture( GL_TEXTURE_2D, mStrictOrderTextureHandle.getGLName() );
-//
-//        // Yes, so do we have a single quad?
-//        if ( mQuadCount == 1 )
-//        {
-//            // Yes, so draw the quad using a triangle-strip with indexes.
-//            glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );    
-//
-//            // Stats.
-//            mpDebugStats->batchDrawCallsStrictSingle++;
-//
-//            // Stats.
-//            if ( mpDebugStats->batchMaxTriangleDrawn < 2 )
-//                mpDebugStats->batchMaxTriangleDrawn = 2;
-//        }
-//        else
-//        {
-//            // Draw the quads using triangles with indexes.
-//            glDrawElements( GL_TRIANGLES, mIndexCount, GL_UNSIGNED_SHORT, mIndexBuffer );
-//
-//            // Stats.
-//            mpDebugStats->batchDrawCallsStrictMultiple++;
-//
-//            // Stats.
-//            const U32 trianglesDrawn = mIndexCount / 3;
-//            if ( trianglesDrawn > mpDebugStats->batchMaxTriangleDrawn )
-//                mpDebugStats->batchMaxTriangleDrawn = trianglesDrawn;
-//        }
-//
-//        // Stats.
-//        if ( mVertexCount > mpDebugStats->batchMaxVertexBuffer )
-//            mpDebugStats->batchMaxVertexBuffer = mVertexCount;
-//    }
-//    else
-//    {
-//        // No, so iterate texture batch map.
-//        for( textureBatchType::iterator batchItr = mTextureBatchMap.begin(); batchItr != mTextureBatchMap.end(); ++batchItr )
-//        {
-//            // Fetch texture binding.
-//            const U32 textureBinding = batchItr->key;
-//
-//            // Fetch index vector.
-//            indexVectorType* pIndexVector = batchItr->value;
-//
-//            // Reset index count.
-//            mIndexCount = 0;
-//
-//            // Iterate indexes.
-//            for( indexVectorType::iterator indexItr = pIndexVector->begin(); indexItr != pIndexVector->end(); ++indexItr )
-//            {
-//                // Fetch quad index.
-//                U32 quadIndex = (*indexItr);
-//
-//                // Add new indices.
-//                mIndexBuffer[mIndexCount++] = (U16)quadIndex++;
-//                mIndexBuffer[mIndexCount++] = (U16)quadIndex++;
-//                mIndexBuffer[mIndexCount++] = (U16)quadIndex++;
-//                mIndexBuffer[mIndexCount++] = (U16)quadIndex--;
-//                mIndexBuffer[mIndexCount++] = (U16)quadIndex--;
-//                mIndexBuffer[mIndexCount++] = (U16)quadIndex;
-//            }
-//
-//            // Sanity!
-//            AssertFatal( mIndexCount > 0, "No batching indexes are present." );
-//
-//            // Bind the texture if not in wireframe mode.
-//            if ( !mWireframeMode )
-//                glBindTexture( GL_TEXTURE_2D, textureBinding );
-//
-//            // Draw the quads using triangles with indexes.
-//            glDrawElements( GL_TRIANGLES, mIndexCount, GL_UNSIGNED_SHORT, mIndexBuffer );
-//
-//            // Stats.
-//            mpDebugStats->batchDrawCallsSorted++;
-//
-//            // Stats.
-//            if ( mVertexCount > mpDebugStats->batchMaxVertexBuffer )
-//                mpDebugStats->batchMaxVertexBuffer = mVertexCount;
-//
-//            // Stats.
-//            const U32 trianglesDrawn = mIndexCount / 3;
-//            if ( trianglesDrawn > mpDebugStats->batchMaxTriangleDrawn )
-//                mpDebugStats->batchMaxTriangleDrawn = trianglesDrawn;
-//
-//            // Return index vector to pool.
-//            pIndexVector->clear();
-//            mIndexVectorPool.push_back( pIndexVector );
-//        }
-//
-//        // Clear texture batch map.
-//        mTextureBatchMap.clear();
-//    }
-//
-//    // Reset common render state.
-//    glDisableClientState( GL_VERTEX_ARRAY );
-//    glDisableClientState( GL_TEXTURE_COORD_ARRAY );
-//    glDisableClientState( GL_COLOR_ARRAY );
-//    glDisable( GL_ALPHA_TEST );
-//    glDisable( GL_BLEND );
-//    glDisable( GL_TEXTURE_2D );
-//    glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-//
-//    // Reset batch state.
-//    mQuadCount = 0;
-//    mVertexCount = 0;
-//    mTextureResidentCount = 0;
-//    mIndexCount = 0;
-//    mColorCount = 0;
-//
+    // Strict order mode?
+    if ( mStrictOrderMode )
+    {
+        GFX->setTexture(0, mStrictOrderTextureHandle);
+
+        // Yes, so do we have a single quad?
+        if ( mQuadCount == 1 )
+        {
+            GFX->setupGenericShaders(GFXDevice::GSTexture);
+            GFX->drawPrimitive(GFXTriangleStrip, 0, 2);
+
+            // Stats.
+            mpDebugStats->batchDrawCallsStrictSingle++;
+
+            // Stats.
+            if ( mpDebugStats->batchMaxTriangleDrawn < 2 )
+                mpDebugStats->batchMaxTriangleDrawn = 2;
+        }
+        else
+        {
+            GFXPrimitive temp;
+            temp.type = GFXTriangleList;
+            temp.startIndex = 0;
+            temp.minIndex = 0;
+            temp.numPrimitives = mQuadCount*2;
+            temp.numVertices = mQuadCount*4;
+
+            GFXPrimitiveBufferHandle pbHandle(GFX, mIndexCount, temp.numPrimitives, GFXBufferTypeVolatile, mIndexBuffer, &temp);
+            GFX->setPrimitiveBuffer(pbHandle);
+            GFX->setupGenericShaders(GFXDevice::GSTexture);
+            GFX->drawPrimitives();
+
+            // Stats.
+            mpDebugStats->batchDrawCallsStrictMultiple++;
+
+            // Stats.
+            const U32 trianglesDrawn = mIndexCount / 3;
+            if ( trianglesDrawn > mpDebugStats->batchMaxTriangleDrawn )
+                mpDebugStats->batchMaxTriangleDrawn = trianglesDrawn;
+        }
+
+        // Stats.
+        if ( mVertexCount > mpDebugStats->batchMaxVertexBuffer )
+            mpDebugStats->batchMaxVertexBuffer = mVertexCount;
+    }
+    else
+    {
+        // No, so iterate texture batch map.
+        for( textureBatchType::iterator batchItr = mTextureBatchMap.begin(); batchItr != mTextureBatchMap.end(); ++batchItr )
+        {
+            // Fetch texture binding.
+            const GFXTexHandle textureHandle = batchItr->key;
+
+            // Fetch index vector.
+            indexVectorType* pIndexVector = batchItr->value;
+
+            // Reset index count.
+            mIndexCount = 0;
+
+            // Iterate indexes.
+            GFXPrimitive temp;
+            temp.type = GFXTriangleList;
+            temp.startIndex = 0;
+            temp.minIndex = 65535;
+            temp.numVertices = 0;
+            temp.numPrimitives = 0;
+
+            for( indexVectorType::iterator indexItr = pIndexVector->begin(); indexItr != pIndexVector->end(); ++indexItr )
+            {
+                // Fetch quad index.
+                U32 quadIndex = (*indexItr);
+
+                if (quadIndex < temp.minIndex)
+                    temp.minIndex = quadIndex;
+                
+                if ((quadIndex+4 - temp.minIndex) > temp.numVertices)
+                    temp.numVertices = quadIndex+4-temp.minIndex;
+
+                // Add new indices.
+                mIndexBuffer[mIndexCount++] = (U16)quadIndex++;
+                mIndexBuffer[mIndexCount++] = (U16)quadIndex++;
+                mIndexBuffer[mIndexCount++] = (U16)quadIndex++;
+                mIndexBuffer[mIndexCount++] = (U16)quadIndex--;
+                mIndexBuffer[mIndexCount++] = (U16)quadIndex--;
+                mIndexBuffer[mIndexCount++] = (U16)quadIndex;
+                temp.numPrimitives = +2;
+            }
+            
+            GFXPrimitiveBufferHandle pbHandle(GFX, mIndexCount, temp.numPrimitives, GFXBufferTypeVolatile, mIndexBuffer, &temp);
+            
+            // Sanity!
+            AssertFatal( mIndexCount > 0, "No batching indexes are present." );
+
+            GFX->setTexture(0, textureHandle);
+            GFX->setPrimitiveBuffer(pbHandle);
+            GFX->setupGenericShaders(GFXDevice::GSTexture);
+            GFX->drawPrimitives();
+
+            // Stats.
+            mpDebugStats->batchDrawCallsSorted++;
+
+            // Stats.
+            if ( mVertexCount > mpDebugStats->batchMaxVertexBuffer )
+                mpDebugStats->batchMaxVertexBuffer = mVertexCount;
+
+            // Stats.
+            const U32 trianglesDrawn = mIndexCount / 3;
+            if ( trianglesDrawn > mpDebugStats->batchMaxTriangleDrawn )
+                mpDebugStats->batchMaxTriangleDrawn = trianglesDrawn;
+
+            // Return index vector to pool.
+            pIndexVector->clear();
+            mIndexVectorPool.push_back( pIndexVector );
+        }
+
+        // Clear texture batch map.
+        mTextureBatchMap.clear();
+    }
+
+    // Reset batch state.
+    mQuadCount = 0;
+    mVertexCount = 0;
+    mIndexCount = 0;
+
     PROFILE_END();   // T2D_BatchRender_flush
 }
 
@@ -479,7 +428,7 @@ void BatchRender::RenderQuad(
         const Vector2& texturePos2,
         const Vector2& texturePos3 )
 {
-    GFXVertexPT verts[4];
+    GFXVertexPCT verts[4];
     
     verts[0].point.set(vertexPos0.x, vertexPos0.y, 0.0f);
     verts[1].point.set(vertexPos1.x, vertexPos1.y, 0.0f);
@@ -489,18 +438,16 @@ void BatchRender::RenderQuad(
     verts[1].texCoord.set(texturePos1.x, texturePos1.y);
     verts[2].texCoord.set(texturePos3.x, texturePos3.y);
     verts[3].texCoord.set(texturePos2.x, texturePos2.y);
+    verts[0].color.set(255, 255, 255);
+    verts[1].color.set(255, 255, 255);
+    verts[2].color.set(255, 255, 255);
+    verts[3].color.set(255, 255, 255);
     
     GFXVertexBufferHandle<GFXVertexPCT> vHandle( GFX, 4, GFXBufferTypeVolatile, verts);
     GFX->setVertexBuffer(vHandle);
     
-//    if (mShaderDataBlock)
-//        GFX->setShader(mShaderDataBlock);
-//    else
-        GFX->setupGenericShaders(GFXDevice::GSTexture);
-    
-//    GFX->setStateBlockByDesc( mGFXStateDesc );
+    GFX->setupGenericShaders(GFXDevice::GSTexture);
     GFX->drawPrimitive(GFXTriangleStrip, 0, 2);
-    
 }
 
 

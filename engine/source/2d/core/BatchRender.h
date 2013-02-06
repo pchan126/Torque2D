@@ -216,23 +216,19 @@ private:
 
 private:
     typedef Vector<U32> indexVectorType;
-    typedef HashMap<U32, indexVectorType*> textureBatchType;
-
+    typedef HashMap<GFXTexHandle, indexVectorType*> textureBatchType;
+    
     VectorPtr< indexVectorType* > mIndexVectorPool;
     textureBatchType    mTextureBatchMap;
 
     const ColorF        NoColor;
 
-    Vector2             mVertexBuffer[ BATCHRENDER_BUFFERSIZE ];
-    Vector2             mTextureBuffer[ BATCHRENDER_BUFFERSIZE ];
+    GFXVertexPCT        mVertexBuffer[BATCHRENDER_BUFFERSIZE];
     U16                 mIndexBuffer[ BATCHRENDER_BUFFERSIZE ];
-    ColorF              mColorBuffer[ BATCHRENDER_BUFFERSIZE ];
    
     U32                 mQuadCount;
     U32                 mVertexCount;
-    U32                 mTextureResidentCount;
     U32                 mIndexCount;
-    U32                 mColorCount;
 
     /// Render Options.
     GFXStateBlockDesc   mGFXStateDesc;
@@ -242,7 +238,7 @@ private:
     F32                 mAlphaTestMode;
 
     bool                mStrictOrderMode;
-    GFXTexHandle       mStrictOrderTextureHandle;
+    GFXTexHandle        mStrictOrderTextureHandle;
     DebugStats*         mpDebugStats;
 
     bool                mBatchEnabled;

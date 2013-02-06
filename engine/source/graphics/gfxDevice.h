@@ -592,7 +592,8 @@ protected:
    virtual GFXPrimitiveBuffer *allocPrimitiveBuffer(  U32 numIndices, 
                                                       U32 numPrimitives, 
                                                       GFXBufferType bufferType,
-                                                      void * data = NULL ) = 0;
+                                                      U16 *indexBuffer = NULL,
+                                                      GFXPrimitive *primitiveBuffer = NULL ) = 0;
 
    /// @}
 

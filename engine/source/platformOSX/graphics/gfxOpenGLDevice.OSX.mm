@@ -372,14 +372,14 @@ GFXVertexBuffer* GFXOpenGLDevice::findVolatileVBO(U32 numVerts, const GFXVertexF
     return buf.getPointer();
 }
 
-GFXPrimitiveBuffer* GFXOpenGLDevice::findVolatilePBO(U32 numIndices, U32 numPrimitives, void* data)
+GFXPrimitiveBuffer* GFXOpenGLDevice::findVolatilePBO(U32 numIndices, U32 numPrimitives, U16* indexBuffer, GFXPrimitive *primitiveBuffer)
 {
     for(U32 i = 0; i < mVolatilePBs.size(); i++)
         if((mVolatilePBs[i]->mIndexCount >= numIndices) && (mVolatilePBs[i]->getRefCount() == 1))
             return mVolatilePBs[i];
     
     // No existing PB, so create one
-    StrongRefPtr<GFXOpenGLPrimitiveBuffer> buf(new GFXOpenGLPrimitiveBuffer(GFX, numIndices, numPrimitives, GFXBufferTypeVolatile, data));
+    StrongRefPtr<GFXOpenGLPrimitiveBuffer> buf(new GFXOpenGLPrimitiveBuffer(GFX, numIndices, numPrimitives, GFXBufferTypeVolatile, indexBuffer, primitiveBuffer));
     buf->registerResourceWithDevice(this);
     mVolatilePBs.push_back(buf);
     return buf.getPointer();
@@ -399,12 +399,12 @@ GFXVertexBuffer *GFXOpenGLDevice::allocVertexBuffer(   U32 numVerts,
     return buf;
 }
 
-GFXPrimitiveBuffer *GFXOpenGLDevice::allocPrimitiveBuffer( U32 numIndices, U32 numPrimitives, GFXBufferType bufferType, void *data )
+GFXPrimitiveBuffer *GFXOpenGLDevice::allocPrimitiveBuffer( U32 numIndices, U32 numPrimitives, GFXBufferType bufferType, U16* indexBuffer, GFXPrimitive *primitiveBuffer )
 {
     if(bufferType == GFXBufferTypeVolatile)
-        return findVolatilePBO(numIndices, numPrimitives, data);
+        return findVolatilePBO(numIndices, numPrimitives, indexBuffer, primitiveBuffer);
     
-    GFXOpenGLPrimitiveBuffer* buf = new GFXOpenGLPrimitiveBuffer(GFX, numIndices, numPrimitives, bufferType, data);
+    GFXOpenGLPrimitiveBuffer* buf = new GFXOpenGLPrimitiveBuffer(GFX, numIndices, numPrimitives, bufferType, indexBuffer, primitiveBuffer);
     buf->registerResourceWithDevice(this);
     return buf;
 }
@@ -504,46 +504,46 @@ GLsizei GFXOpenGLDevice::primCountToIndexCount(GFXPrimitiveType primType, U32 pr
 
 void GFXOpenGLDevice::updateStates(bool forceSetAll /*=false*/)
 {
-//    PROFILE_SCOPE(GFXDevice_updateStates);
-//    
-//    if(forceSetAll)
-//    {
-//        bool rememberToEndScene = false;
-//        if(!canCurrentlyRender())
-//        {
-//            if (!beginScene())
-//            {
-//                AssertFatal(false, "GFXDevice::updateStates:  Unable to beginScene!");
-//            }
-//            rememberToEndScene = true;
-//        }
-//        
-//        setVertexDecl( mCurrVertexDecl );
-//        
-//        for ( U32 i=0; i < VERTEX_STREAM_COUNT; i++ )
-//        {
-//            setVertexStream( i, mCurrentVertexBuffer[i] );
-//            setVertexStreamFrequency( i, mVertexBufferFrequency[i] );
-//        }
-//        
-//        if( mCurrentPrimitiveBuffer.isValid() ) // This could be NULL when the device is initalizing
-//            mCurrentPrimitiveBuffer->prepare();
-//        
-//        /// Stateblocks
-//        if ( mNewStateBlock )
-//            setStateBlockInternal(mNewStateBlock, true);
-//        mCurrentStateBlock = mNewStateBlock;
-//        
-//        for(U32 i = 0; i < getNumSamplers(); i++)
-//        {
-//            switch (mTexType[i])
-//            {
-//                case GFXTDT_Normal :
-//                {
-//                    mCurrentTexture[i] = mNewTexture[i];
-//                    setTextureInternal(i, mCurrentTexture[i]);
-//                }
-//                    break;
+    PROFILE_SCOPE(GFXDevice_updateStates);
+    
+    if(forceSetAll)
+    {
+        bool rememberToEndScene = false;
+        if(!canCurrentlyRender())
+        {
+            if (!beginScene())
+            {
+                AssertFatal(false, "GFXDevice::updateStates:  Unable to beginScene!");
+            }
+            rememberToEndScene = true;
+        }
+        
+        setVertexDecl( mCurrVertexDecl );
+        
+        for ( U32 i=0; i < VERTEX_STREAM_COUNT; i++ )
+        {
+            setVertexStream( i, mCurrentVertexBuffer[i] );
+            setVertexStreamFrequency( i, mVertexBufferFrequency[i] );
+        }
+        
+        if( mCurrentPrimitiveBuffer.isValid() ) // This could be NULL when the device is initalizing
+            mCurrentPrimitiveBuffer->prepare();
+        
+        /// Stateblocks
+        if ( mNewStateBlock )
+            setStateBlockInternal(mNewStateBlock, true);
+        mCurrentStateBlock = mNewStateBlock;
+        
+        for(U32 i = 0; i < getNumSamplers(); i++)
+        {
+            switch (mTexType[i])
+            {
+                case GFXTDT_Normal :
+                {
+                    mCurrentTexture[i] = mNewTexture[i];
+                    setTextureInternal(i, mCurrentTexture[i]);
+                }
+                    break;
 //                case GFXTDT_Cube :
 //                {
 //                    mCurrentCubemap[i] = mNewCubemap[i];
@@ -553,125 +553,127 @@ void GFXOpenGLDevice::updateStates(bool forceSetAll /*=false*/)
 //                        setTextureInternal(i, NULL);
 //                }
 //                    break;
-//                default:
-//                    AssertFatal(false, "Unknown texture type!");
-//                    break;
-//            }
-//        }
-//        
+                default:
+                    AssertFatal(false, "Unknown texture type!");
+                    break;
+            }
+        }
+        
 //        // Set our material
 //        setLightMaterialInternal(mCurrentLightMaterial);
-//        
+        
 //        // Set our lights
 //        for(U32 i = 0; i < LIGHT_STAGE_COUNT; i++)
 //        {
 //            setLightInternal(i, mCurrentLight[i], mCurrentLightEnable[i]);
 //        }
-//        
-//        _updateRenderTargets();
-//        
-//        if(rememberToEndScene)
-//            endScene();
-//        
-//        return;
-//    }
-//    
-//    if (!mStateDirty)
-//        return;
-//    
-//    // Normal update logic begins here.
-//    mStateDirty = false;
-//    
-//   // Update Projection Matrix
-//   if( mProjectionMatrixDirty )
-//   {
+        
+        _updateRenderTargets();
+        
+        if(rememberToEndScene)
+            endScene();
+        
+        return;
+    }
+    
+    if (!mStateDirty)
+        return;
+    
+    // Normal update logic begins here.
+    mStateDirty = false;
+    
+   // Update Projection Matrix
+   if( mProjectionMatrixDirty )
+   {
 //       MatrixF temp(GLKMatrixStackGetMatrix4(m_ProjectionStackRef).m);
+       MatrixF temp = m_ProjectionStack.last();
 //       temp.transpose();
-//        setMatrix( GFXMatrixProjection, temp);
-//        mProjectionMatrixDirty = false;
-//   }
-//    
-//   // Update World Matrix
-//   if( mWorldMatrixDirty)
-//   {
+        setMatrix( GFXMatrixProjection, temp);
+        mProjectionMatrixDirty = false;
+   }
+    
+   // Update World Matrix
+   if( mWorldMatrixDirty)
+   {
 //       MatrixF temp(GLKMatrixStackGetMatrix4(m_WorldStackRef).m);
 //       temp.transpose();
-////       if ( mWorldMatrixDirty) // && !mViewMatrixDirty)
-////           m_mCurrentView = temp.inverse() * m_mCurrentWorld;
-////        else
-//       m_mCurrentWorld = temp;
-//
-//       mWorldMatrixDirty = false;
-//   }
-//    
-//    if ( mViewMatrixDirty )
-//    {
-//        mViewMatrixDirty = false;
-//    }
-//    
-//    // Update the vertex declaration.
-//    if ( mVertexDeclDirty )
-//    {
-//        setVertexDecl( mCurrVertexDecl );
-//        mVertexDeclDirty = false;
-//    }
-//    
-//    // Update the vertex buffers.
-//    for ( U32 i=0; i < VERTEX_STREAM_COUNT; i++ )
-//    {
-//        if ( mVertexBufferDirty[i] )
-//        {
-//            setVertexStream( i, mCurrentVertexBuffer[i] );
-//            mVertexBufferDirty[i] = false;
-//        }
-//        
-//        if ( mVertexBufferFrequencyDirty[i] )
-//        {
-//            setVertexStreamFrequency( i, mVertexBufferFrequency[i] );
-//            mVertexBufferFrequencyDirty[i] = false;
-//        }
-//    }
-//    
-//    // Update primitive buffer
-//    //
-//    // NOTE: It is very important to set the primitive buffer AFTER the vertex buffer
-//    // because in order to draw indexed primitives in DX8, the call to SetIndicies
-//    // needs to include the base vertex offset, and the DX8 GFXDevice relies on
-//    // having mCurrentVB properly assigned before the call to setIndices -patw
-//    if( mPrimitiveBufferDirty )
-//    {
-//        if( mCurrentPrimitiveBuffer.isValid() ) // This could be NULL when the device is initalizing
-//            mCurrentPrimitiveBuffer->prepare();
-//        mPrimitiveBufferDirty = false;
-//    }
-//    
-//    // NOTE: With state blocks, it's now important to update state before setting textures
-//    // some devices (e.g. OpenGL) set states on the texture and we need that information before
-//    // the texture is activated.
-//    if (mStateBlockDirty)
-//    {
-//        setStateBlockInternal(mNewStateBlock, false);
-//        mCurrentStateBlock = mNewStateBlock;
-//        mStateBlockDirty = false;
-//    }
-//    
-//    if( mTexturesDirty )
-//    {
-//        mTexturesDirty = false;
-//        for(U32 i = 0; i < getNumSamplers(); i++)
-//        {
-//            if(!mTextureDirty[i])
-//                continue;
-//            mTextureDirty[i] = false;
-//            
-//            switch (mTexType[i])
-//            {
-//                case GFXTDT_Normal :
-//                {
-//                    mCurrentTexture[i] = mNewTexture[i];
-//                    setTextureInternal(i, mCurrentTexture[i]);
-//                }
-//                    break;
+//       if ( mWorldMatrixDirty) // && !mViewMatrixDirty)
+//           m_mCurrentView = temp.inverse() * m_mCurrentWorld;
+//        else
+       MatrixF temp = m_WorldStack.last();
+       m_mCurrentWorld = temp;
+
+       mWorldMatrixDirty = false;
+   }
+    
+    if ( mViewMatrixDirty )
+    {
+        mViewMatrixDirty = false;
+    }
+    
+    // Update the vertex declaration.
+    if ( mVertexDeclDirty )
+    {
+        setVertexDecl( mCurrVertexDecl );
+        mVertexDeclDirty = false;
+    }
+    
+    // Update the vertex buffers.
+    for ( U32 i=0; i < VERTEX_STREAM_COUNT; i++ )
+    {
+        if ( mVertexBufferDirty[i] )
+        {
+            setVertexStream( i, mCurrentVertexBuffer[i] );
+            mVertexBufferDirty[i] = false;
+        }
+        
+        if ( mVertexBufferFrequencyDirty[i] )
+        {
+            setVertexStreamFrequency( i, mVertexBufferFrequency[i] );
+            mVertexBufferFrequencyDirty[i] = false;
+        }
+    }
+    
+    // Update primitive buffer
+    //
+    // NOTE: It is very important to set the primitive buffer AFTER the vertex buffer
+    // because in order to draw indexed primitives in DX8, the call to SetIndicies
+    // needs to include the base vertex offset, and the DX8 GFXDevice relies on
+    // having mCurrentVB properly assigned before the call to setIndices -patw
+    if( mPrimitiveBufferDirty )
+    {
+        if( mCurrentPrimitiveBuffer.isValid() ) // This could be NULL when the device is initalizing
+            mCurrentPrimitiveBuffer->prepare();
+        mPrimitiveBufferDirty = false;
+    }
+    
+    // NOTE: With state blocks, it's now important to update state before setting textures
+    // some devices (e.g. OpenGL) set states on the texture and we need that information before
+    // the texture is activated.
+    if (mStateBlockDirty)
+    {
+        setStateBlockInternal(mNewStateBlock, false);
+        mCurrentStateBlock = mNewStateBlock;
+        mStateBlockDirty = false;
+    }
+    
+    if( mTexturesDirty )
+    {
+        mTexturesDirty = false;
+        for(U32 i = 0; i < getNumSamplers(); i++)
+        {
+            if(!mTextureDirty[i])
+                continue;
+            mTextureDirty[i] = false;
+            
+            switch (mTexType[i])
+            {
+                case GFXTDT_Normal :
+                {
+                    mCurrentTexture[i] = mNewTexture[i];
+                    setTextureInternal(i, mCurrentTexture[i]);
+                }
+                    break;
 //                case GFXTDT_Cube :
 //                {
 //                    mCurrentCubemap[i] = mNewCubemap[i];
@@ -681,13 +683,13 @@ void GFXOpenGLDevice::updateStates(bool forceSetAll /*=false*/)
 //                        setTextureInternal(i, NULL);
 //                }
 //                    break;
-//                default:
-//                    AssertFatal(false, "Unknown texture type!");
-//                    break;
-//            }
-//        }
-//    }
-//    
+                default:
+                    AssertFatal(false, "Unknown texture type!");
+                    break;
+            }
+        }
+    }
+    
 //    // Set light material
 //    if(mLightMaterialDirty)
 //    {
@@ -708,12 +710,12 @@ void GFXOpenGLDevice::updateStates(bool forceSetAll /*=false*/)
 //            setLightInternal(i, mCurrentLight[i], mCurrentLightEnable[i]);
 //        }
 //    }
-//    
-//    _updateRenderTargets();
-//    
-//#ifdef TORQUE_DEBUG_RENDER
-//    doParanoidStateCheck();
-//#endif
+    
+    _updateRenderTargets();
+    
+#ifdef TORQUE_DEBUG_RENDER
+    doParanoidStateCheck();
+#endif
 }
 
 inline void GFXOpenGLDevice::preDrawPrimitive()
@@ -1073,7 +1075,7 @@ void GFXOpenGLDevice::setupGenericShaders( GenericShaderType type )
     MatrixF xform(GFX->getProjectionMatrix());
     xform *= GFX->getViewMatrix();
     xform *= GFX->getWorldMatrix();
-    xform.transpose();
+//    xform.transpose();
     
     //    Con::printf("setupGenericShaders");
     //    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
@@ -1289,7 +1291,7 @@ void GFXOpenGLDevice::_updateRenderTargets()
 //        
 //        mRTDirty = false;
 //    }
-//    
+    
 //    if ( mViewportDirty )
 //    {
 //        Con::printf("if mViewport Dirty %d %d %d %d", mViewport.point.x, mViewport.point.y, mViewport.extent.x, mViewport.extent.y);

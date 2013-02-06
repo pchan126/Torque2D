@@ -26,14 +26,14 @@
 
 #include "./gfxOpenGLUtils.h"
 
-GFXOpenGLPrimitiveBuffer::GFXOpenGLPrimitiveBuffer(GFXDevice *device, U32 indexCount, U32 primitiveCount, GFXBufferType bufferType, const GLvoid * data) :
-GFXPrimitiveBuffer(device, indexCount, primitiveCount, bufferType), mZombieCache(NULL) 
+GFXOpenGLPrimitiveBuffer::GFXOpenGLPrimitiveBuffer(GFXDevice *device, U32 indexCount, U32 primitiveCount, GFXBufferType bufferType, U16 *indexBuffer, GFXPrimitive *primitiveBuffer) :
+GFXPrimitiveBuffer(device, indexCount, primitiveCount, bufferType, primitiveBuffer), mZombieCache(NULL)
 {
    PRESERVE_INDEX_BUFFER();
 	// Generate a buffer and allocate the needed memory
 	glGenBuffers(1, &mBuffer);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount * sizeof(U16), data, GFXGLBufferType[bufferType]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount * sizeof(U16), indexBuffer, GFXGLBufferType[bufferType]);
 }
 
 GFXOpenGLPrimitiveBuffer::~GFXOpenGLPrimitiveBuffer()
