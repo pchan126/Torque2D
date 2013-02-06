@@ -32,9 +32,8 @@
 #include "console/consoleTypes.h"
 #endif
 
-#ifndef _DGL_H_
-#include "graphics/dgl.h"
-#endif
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxDrawUtil.h"
 
 #ifndef _RENDER_PROXY_H_
 #include "2d/core/RenderProxy.h"
@@ -333,9 +332,9 @@ void GuiSpriteCtrl::onRender( Point2I offset, const RectI &updateRect)
             RectI destinationRegion(offset, mBounds.extent);
 
             // Render image.
-            dglSetBitmapModulation( mProfile->mFillColor );
-            dglDrawBitmapStretchSR( mImageAsset->getImageTexture(), destinationRegion, sourceRegion );
-            dglClearBitmapModulation();
+            GFX->getDrawUtil()->setBitmapModulation( mProfile->mFillColor );
+            GFX->getDrawUtil()->drawBitmapStretchSR( mImageAsset->getImageTexture(), destinationRegion, sourceRegion );
+            GFX->getDrawUtil()->clearBitmapModulation();
         }
         else
         {
@@ -356,9 +355,9 @@ void GuiSpriteCtrl::onRender( Point2I offset, const RectI &updateRect)
             RectI destinationRegion(offset, mBounds.extent);
 
             // Render animation image.
-            dglSetBitmapModulation( mProfile->mFillColor );
-            dglDrawBitmapStretchSR( mpAnimationController->getImageTexture(), destinationRegion, sourceRegion );
-            dglClearBitmapModulation();
+            GFX->getDrawUtil()->setBitmapModulation( mProfile->mFillColor );
+            GFX->getDrawUtil()->drawBitmapStretchSR( mpAnimationController->getImageTexture(), destinationRegion, sourceRegion );
+            GFX->getDrawUtil()->clearBitmapModulation();
 
             // Update control.
             setUpdate();

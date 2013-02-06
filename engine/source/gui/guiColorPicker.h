@@ -82,8 +82,8 @@ class GuiColorPickerCtrl : public GuiControl
    /// @{
    void renderColorBox(RectI &bounds);			///< Function that draws the actual color box
    void drawSelector(RectI &bounds, Point2I &selectorPos, SelectorMode mode);	///< Function that draws the selection indicator
-   Point2I getRangeBoxColorPos(RectI &bounds, bool vertical, ColorF targetColor);
-   Point2I getBlendBoxColorPos(RectI &bounds, ColorF targetColor);
+   void drawBlendBox(RectI &bounds, ColorF &c1, ColorF &c2, ColorF &c3, ColorF &c4);
+   void drawBlendRangeBox(RectI &bounds, bool vertical, U8 numColors, ColorI *colors);
    /// @}
 
    /// @name Core Variables
@@ -101,6 +101,7 @@ class GuiColorPickerCtrl : public GuiControl
    
    S32   mSelectorGap;		///< The half-way "gap" between the selector pos and where the selector is allowed to draw. 
 
+//   GFXStateBlockRef mStateBlock;
    static ColorI mColorRange[9]; ///< Color range for pHorizColorRange and pVertColorRange
    /// @}
 
@@ -110,7 +111,7 @@ class GuiColorPickerCtrl : public GuiControl
 
    static void initPersistFields();
    void onRender(Point2I offset, const RectI &updateRect);
-   
+   bool mShowReticle;       ///< Show reticle on render
    /// @name Color Value Functions
    /// @{
    /// NOTE: setValue only sets baseColor, since setting pickColor wouldn't be useful

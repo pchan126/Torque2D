@@ -22,8 +22,8 @@
 
 #include "console/console.h"
 #include "console/consoleTypes.h"
-#include "graphics/dgl.h"
-
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxDrawUtil.h"
 #include "gui/guiProgressCtrl.h"
 
 IMPLEMENT_CONOBJECT(GuiProgressCtrl);
@@ -77,12 +77,12 @@ void GuiProgressCtrl::onRender(Point2I offset, const RectI &updateRect)
    {
       RectI progressRect = ctrlRect;
       progressRect.extent.x = width;
-      dglDrawRectFill(progressRect, mProfile->mFillColor);
+      GFX->getDrawUtil()->drawRectFill(progressRect, mProfile->mFillColor);
    }
 
    //now draw the border
    if (mProfile->mBorder)
-      dglDrawRect(ctrlRect, mProfile->mBorderColor);
+      GFX->getDrawUtil()->drawRect(ctrlRect, mProfile->mBorderColor);
 
    Parent::onRender( offset, updateRect );
 

@@ -24,9 +24,8 @@
 #include "2d/core/SpriteProxyBase.h"
 #endif
 
-#ifndef _DGL_H_
-#include "graphics/dgl.h"
-#endif
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxDrawUtil.h"
 
 #ifndef _STRINGBUFFER_H_
 #include "string/stringBuffer.h"
@@ -205,8 +204,8 @@ void SpriteProxyBase::renderGui( GuiControl& owner, Point2I offset, const RectI 
             RectI destinationRegion(offset, owner.mBounds.extent);
 
             // Render image.
-            dglClearBitmapModulation();
-            dglDrawBitmapStretchSR( mImageAsset->getImageTexture(), destinationRegion, sourceRegion );
+            GFX->getDrawUtil()->clearBitmapModulation();
+            GFX->getDrawUtil()->drawBitmapStretchSR( mImageAsset->getImageTexture(), destinationRegion, sourceRegion );
         }
     }
     else
@@ -222,8 +221,8 @@ void SpriteProxyBase::renderGui( GuiControl& owner, Point2I offset, const RectI 
             RectI destinationRegion(offset, owner.mBounds.extent);
 
             // Render animation image.
-            dglClearBitmapModulation();
-            dglDrawBitmapStretchSR( mpAnimationController->getImageTexture(), destinationRegion, sourceRegion );
+            GFX->getDrawUtil()->clearBitmapModulation();
+            GFX->getDrawUtil()->drawBitmapStretchSR( mpAnimationController->getImageTexture(), destinationRegion, sourceRegion );
 
             // Update control.
             owner.setUpdate();

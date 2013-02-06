@@ -33,6 +33,7 @@
 
 class GFont;
 
+GFX_DeclareTextureProfile(GFXMLTextureProfile);
 class GuiMLTextCtrl : public GuiControl
 {
    typedef GuiControl Parent;
@@ -57,7 +58,7 @@ class GuiMLTextCtrl : public GuiControl
    struct Bitmap {
       const char *bitmapName;
       U32 bitmapNameLen;
-      TextureHandle bitmapHandle;
+      GFXTexHandle bitmapHandle;
       Bitmap *next;
    };
 

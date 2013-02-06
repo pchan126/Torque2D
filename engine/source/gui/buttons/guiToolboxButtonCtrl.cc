@@ -21,7 +21,8 @@
 //-----------------------------------------------------------------------------
 
 #include "console/console.h"
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxDrawUtil.h"
 #include "console/consoleTypes.h"
 #include "platform/platformAudio.h"
 #include "gui/guiCanvas.h"
@@ -112,9 +113,9 @@ void GuiToolboxButtonCtrl::inspectPostApply()
 
    if ((mBounds.extent.x == 0) && (mBounds.extent.y == 0) && mTextureNormal)
    {
-      TextureObject *texture = (TextureObject *) mTextureNormal;
-      mBounds.extent.x = texture->getBitmapWidth();
-      mBounds.extent.y = texture->getBitmapHeight();
+//      TextureObject *texture = (TextureObject *) mTextureNormal;
+      mBounds.extent.x = mTextureNormal->getBitmapWidth();
+      mBounds.extent.y = mTextureNormal->getBitmapHeight();
    }
 }
 
@@ -128,7 +129,8 @@ void GuiToolboxButtonCtrl::setNormalBitmap( StringTableEntry bitmapName )
       return;
 
    if ( *mNormalBitmapName )
-      mTextureNormal = TextureHandle( mNormalBitmapName, TextureHandle::BitmapTexture, true );
+       mTextureNormal = GFXTexHandle( mNormalBitmapName, &GFXDefaultPersistentProfile, avar(" mTextureNormal" ));
+//      mTextureNormal = TextureHandle( mNormalBitmapName, TextureHandle::BitmapTexture, true );
    else
       mTextureNormal = NULL;
    
@@ -143,7 +145,8 @@ void GuiToolboxButtonCtrl::setLoweredBitmap( StringTableEntry bitmapName )
       return;
 
    if ( *mLoweredBitmapName )
-      mTextureLowered = TextureHandle( mLoweredBitmapName, TextureHandle::BitmapTexture, true );
+       mTextureLowered = GFXTexHandle( mLoweredBitmapName, &GFXDefaultPersistentProfile, avar(" mTextureLowered"));
+//      mTextureLowered = TextureHandle( mLoweredBitmapName, TextureHandle::BitmapTexture, true );
    else
       mTextureLowered = NULL;
    
@@ -158,7 +161,8 @@ void GuiToolboxButtonCtrl::setHoverBitmap( StringTableEntry bitmapName )
       return;
 
    if ( *mHoverBitmapName )
-      mTextureHover = TextureHandle( mHoverBitmapName, TextureHandle::BitmapTexture, true );
+       mTextureHover = GFXTexHandle( mHoverBitmapName, &GFXDefaultPersistentProfile, avar(" mTextureHover"));
+//      mTextureHover = TextureHandle( mHoverBitmapName, TextureHandle::BitmapTexture, true );
    else
       mTextureHover = NULL;
 
@@ -194,23 +198,23 @@ void GuiToolboxButtonCtrl::onRender(Point2I offset, const RectI& updateRect)
    // Make sure we take the profile's textOffset into account.
    textPos += mProfile->mTextOffset;
 
-   dglSetBitmapModulation( mProfile->mFontColor );
+   GFX->getDrawUtil()->setBitmapModulation( mProfile->mFontColor );
    renderJustifiedText(textPos, mBounds.extent, mButtonText);
 
 }
 
-void GuiToolboxButtonCtrl::renderStateRect( TextureHandle &texture, const RectI& rect )
+void GuiToolboxButtonCtrl::renderStateRect( GFXTexHandle &texture, const RectI& rect )
 {
    if (texture)
    {
-      dglClearBitmapModulation();
-      dglDrawBitmapStretch( texture, rect );
+      GFX->getDrawUtil()->clearBitmapModulation();
+      GFX->getDrawUtil()->drawBitmapStretch( texture, rect );
    }
 }
 
 //------------------------------------------------------------------------------
 
-void GuiToolboxButtonCtrl::renderButton(TextureHandle &texture, Point2I &offset, const RectI& updateRect)
+void GuiToolboxButtonCtrl::renderButton(GFXTexHandle &texture, Point2I &offset, const RectI& updateRect)
 {
    if (texture)
    {
@@ -219,8 +223,8 @@ void GuiToolboxButtonCtrl::renderButton(TextureHandle &texture, Point2I &offset,
       finalOffset.x += ( ( mBounds.extent.x / 2 ) - ( texture.getWidth() / 2 ) );
       finalOffset.y += ( ( mBounds.extent.y / 2 ) - ( texture.getHeight() / 2 ) );
 
-      dglClearBitmapModulation();
-      dglDrawBitmap(texture, finalOffset);
+      GFX->getDrawUtil()->clearBitmapModulation();
+      GFX->getDrawUtil()->drawBitmap(texture, finalOffset);
       renderChildControls( offset, updateRect);
    }
 }

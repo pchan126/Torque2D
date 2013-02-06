@@ -20,7 +20,8 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxDrawUtil.h"
 #include "gui/guiDefaultControlRender.h"
 #include "gui/guiTypes.h"
 #include "graphics/color.h"
@@ -37,15 +38,15 @@ void renderRaisedBox(RectI &bounds, GuiControlProfile *profile)
    S32 l = bounds.point.x, r = bounds.point.x + bounds.extent.x - 1;
    S32 t = bounds.point.y, b = bounds.point.y + bounds.extent.y - 1;
 
-   dglDrawRectFill( bounds, profile->mFillColor);
-   dglDrawLine(l, t, l, b - 1, profile->mBevelColorHL);
-   dglDrawLine(l, t, r - 1, t, profile->mBevelColorHL);
+   GFX->getDrawUtil()->drawRectFill( bounds, profile->mFillColor);
+   GFX->getDrawUtil()->drawLine(l, t, l, b - 1, profile->mBevelColorHL);
+   GFX->getDrawUtil()->drawLine(l, t, r - 1, t, profile->mBevelColorHL);
 
-   dglDrawLine(l, b, r, b, profile->mBevelColorLL);
-   dglDrawLine(r, b - 1, r, t, profile->mBevelColorLL);
+   GFX->getDrawUtil()->drawLine(l, b, r, b, profile->mBevelColorLL);
+   GFX->getDrawUtil()->drawLine(r, b - 1, r, t, profile->mBevelColorLL);
 
-   dglDrawLine(l + 1, b - 1, r - 1, b - 1, profile->mBorderColor);
-   dglDrawLine(r - 1, b - 2, r - 1, t + 1, profile->mBorderColor);
+   GFX->getDrawUtil()->drawLine(l + 1, b - 1, r - 1, b - 1, profile->mBorderColor);
+   GFX->getDrawUtil()->drawLine(r - 1, b - 2, r - 1, t + 1, profile->mBorderColor);
 }
 
 void renderSlightlyRaisedBox(RectI &bounds, GuiControlProfile *profile)
@@ -53,11 +54,11 @@ void renderSlightlyRaisedBox(RectI &bounds, GuiControlProfile *profile)
    S32 l = bounds.point.x, r = bounds.point.x + bounds.extent.x - 1;
    S32 t = bounds.point.y, b = bounds.point.y + bounds.extent.y - 1;
 
-   dglDrawRectFill( bounds, profile->mFillColor);
-   dglDrawLine(l, t, l, b, profile->mBevelColorHL);
-   dglDrawLine(l, t, r, t, profile->mBevelColorHL);
-   dglDrawLine(l + 1, b, r, b, profile->mBorderColor);
-   dglDrawLine(r, t + 1, r, b - 1, profile->mBorderColor);
+   GFX->getDrawUtil()->drawRectFill( bounds, profile->mFillColor);
+   GFX->getDrawUtil()->drawLine(l, t, l, b, profile->mBevelColorHL);
+   GFX->getDrawUtil()->drawLine(l, t, r, t, profile->mBevelColorHL);
+   GFX->getDrawUtil()->drawLine(l + 1, b, r, b, profile->mBorderColor);
+   GFX->getDrawUtil()->drawLine(r, t + 1, r, b - 1, profile->mBorderColor);
 }
 
 void renderLoweredBox(RectI &bounds, GuiControlProfile *profile)
@@ -65,16 +66,16 @@ void renderLoweredBox(RectI &bounds, GuiControlProfile *profile)
    S32 l = bounds.point.x, r = bounds.point.x + bounds.extent.x - 1;
    S32 t = bounds.point.y, b = bounds.point.y + bounds.extent.y - 1;
 
-   dglDrawRectFill( bounds, profile->mFillColor);
+   GFX->getDrawUtil()->drawRectFill( bounds, profile->mFillColor);
 
-   dglDrawLine(l, b, r, b, profile->mBevelColorHL);
-   dglDrawLine(r, b - 1, r, t, profile->mBevelColorHL);
+   GFX->getDrawUtil()->drawLine(l, b, r, b, profile->mBevelColorHL);
+   GFX->getDrawUtil()->drawLine(r, b - 1, r, t, profile->mBevelColorHL);
 
-   dglDrawLine(l, t, r - 1, t, profile->mBevelColorLL);
-   dglDrawLine(l, t + 1, l, b - 1, profile->mBevelColorLL);
+   GFX->getDrawUtil()->drawLine(l, t, r - 1, t, profile->mBevelColorLL);
+   GFX->getDrawUtil()->drawLine(l, t + 1, l, b - 1, profile->mBevelColorLL);
 
-   dglDrawLine(l + 1, t + 1, r - 2, t + 1, profile->mBorderColor);
-   dglDrawLine(l + 1, t + 2, l + 1, b - 2, profile->mBorderColor);
+   GFX->getDrawUtil()->drawLine(l + 1, t + 1, r - 2, t + 1, profile->mBorderColor);
+   GFX->getDrawUtil()->drawLine(l + 1, t + 2, l + 1, b - 2, profile->mBorderColor);
 }
 
 //void renderSlightlyLoweredBox(RectI &bounds, GuiControlProfile *profile)
@@ -82,11 +83,11 @@ void renderLoweredBox(RectI &bounds, GuiControlProfile *profile)
 //   S32 l = bounds.point.x, r = bounds.point.x + bounds.extent.x - 1;
 //   S32 t = bounds.point.y, b = bounds.point.y + bounds.extent.y - 1;
 //
-//   dglDrawRectFill( bounds, profile->mFillColor);
-//   dglDrawLine(l, b, r, b, profile->mBevelColorHL);
-//   dglDrawLine(r, t, r, b - 1, profile->mBevelColorHL);
-//   dglDrawLine(l, t, l, b - 1, profile->mBorderColor);
-//   dglDrawLine(l + 1, t, r - 1, t, profile->mBorderColor);
+//   GFX->getDrawUtil()->drawRectFill( bounds, profile->mFillColor);
+//   GFX->getDrawUtil()->drawLine(l, b, r, b, profile->mBevelColorHL);
+//   GFX->getDrawUtil()->drawLine(r, t, r, b - 1, profile->mBevelColorHL);
+//   GFX->getDrawUtil()->drawLine(l, t, l, b - 1, profile->mBorderColor);
+//   GFX->getDrawUtil()->drawLine(l + 1, t, r - 1, t, profile->mBorderColor);
 //}
 
 void renderSlightlyLoweredBox(RectI &bounds, GuiControlProfile *profile, bool active)
@@ -96,19 +97,19 @@ void renderSlightlyLoweredBox(RectI &bounds, GuiControlProfile *profile, bool ac
 
     if (active)
     {
-        dglDrawRectFill( bounds, profile->mFillColor);
-        dglDrawLine(l, b, r, b, profile->mBevelColorHL);
-        dglDrawLine(r, t, r, b - 1, profile->mBevelColorHL);
-        dglDrawLine(l, t, l, b - 1, profile->mBorderColor);
-        dglDrawLine(l + 1, t, r - 1, t, profile->mBorderColor);
+        GFX->getDrawUtil()->drawRectFill( bounds, profile->mFillColor);
+        GFX->getDrawUtil()->drawLine(l, b, r, b, profile->mBevelColorHL);
+        GFX->getDrawUtil()->drawLine(r, t, r, b - 1, profile->mBevelColorHL);
+        GFX->getDrawUtil()->drawLine(l, t, l, b - 1, profile->mBorderColor);
+        GFX->getDrawUtil()->drawLine(l + 1, t, r - 1, t, profile->mBorderColor);
     }
     else
     {
-        dglDrawRectFill( bounds, profile->mFillColorNA);
-        dglDrawLine(l, b, r, b, profile->mBorderColorNA);
-        dglDrawLine(r, t, r, b - 1, profile->mBorderColorNA);
-        dglDrawLine(l, t, l, b - 1, profile->mBorderColorNA);
-        dglDrawLine(l + 1, t, r - 1, t, profile->mBorderColorNA);
+        GFX->getDrawUtil()->drawRectFill( bounds, profile->mFillColorNA);
+        GFX->getDrawUtil()->drawLine(l, b, r, b, profile->mBorderColorNA);
+        GFX->getDrawUtil()->drawLine(r, t, r, b - 1, profile->mBorderColorNA);
+        GFX->getDrawUtil()->drawLine(l, t, l, b - 1, profile->mBorderColorNA);
+        GFX->getDrawUtil()->drawLine(l + 1, t, r - 1, t, profile->mBorderColorNA);
     }
 }
 
@@ -120,47 +121,47 @@ void renderBorder(RectI &bounds, GuiControlProfile *profile)
    switch(profile->mBorder)
    {
    case 1:
-      dglDrawRect(bounds, profile->mBorderColor);
+      GFX->getDrawUtil()->drawRect(bounds, profile->mBorderColor);
       break;
    case 2:
-      dglDrawLine(l + 1, t + 1, l + 1, b - 2, profile->mBevelColorHL);
-      dglDrawLine(l + 2, t + 1, r - 2, t + 1, profile->mBevelColorHL);
-      dglDrawLine(r, t, r, b, profile->mBevelColorHL);
-      dglDrawLine(l, b, r - 1, b, profile->mBevelColorHL);
-      dglDrawLine(l, t, r - 1, t, profile->mBorderColorNA);
-      dglDrawLine(l, t + 1, l, b - 1, profile->mBorderColorNA);
-      dglDrawLine(l + 1, b - 1, r - 1, b - 1, profile->mBorderColorNA);
-      dglDrawLine(r - 1, t + 1, r - 1, b - 2, profile->mBorderColorNA);
+      GFX->getDrawUtil()->drawLine(l + 1, t + 1, l + 1, b - 2, profile->mBevelColorHL);
+      GFX->getDrawUtil()->drawLine(l + 2, t + 1, r - 2, t + 1, profile->mBevelColorHL);
+      GFX->getDrawUtil()->drawLine(r, t, r, b, profile->mBevelColorHL);
+      GFX->getDrawUtil()->drawLine(l, b, r - 1, b, profile->mBevelColorHL);
+      GFX->getDrawUtil()->drawLine(l, t, r - 1, t, profile->mBorderColorNA);
+      GFX->getDrawUtil()->drawLine(l, t + 1, l, b - 1, profile->mBorderColorNA);
+      GFX->getDrawUtil()->drawLine(l + 1, b - 1, r - 1, b - 1, profile->mBorderColorNA);
+      GFX->getDrawUtil()->drawLine(r - 1, t + 1, r - 1, b - 2, profile->mBorderColorNA);
       break;
    case 3:
-      dglDrawLine(l, b, r, b, profile->mBevelColorHL);
-      dglDrawLine(r, t, r, b - 1, profile->mBevelColorHL);
-      dglDrawLine(l + 1, b - 1, r - 1, b - 1, profile->mFillColor);
-      dglDrawLine(r - 1, t + 1, r - 1, b - 2, profile->mFillColor);
-      dglDrawLine(l, t, l, b - 1, profile->mBorderColorNA);
-      dglDrawLine(l + 1, t, r - 1, t, profile->mBorderColorNA);
-      dglDrawLine(l + 1, t + 1, l + 1, b - 2, profile->mBevelColorLL);
-      dglDrawLine(l + 2, t + 1, r - 2, t + 1, profile->mBevelColorLL);
+      GFX->getDrawUtil()->drawLine(l, b, r, b, profile->mBevelColorHL);
+      GFX->getDrawUtil()->drawLine(r, t, r, b - 1, profile->mBevelColorHL);
+      GFX->getDrawUtil()->drawLine(l + 1, b - 1, r - 1, b - 1, profile->mFillColor);
+      GFX->getDrawUtil()->drawLine(r - 1, t + 1, r - 1, b - 2, profile->mFillColor);
+      GFX->getDrawUtil()->drawLine(l, t, l, b - 1, profile->mBorderColorNA);
+      GFX->getDrawUtil()->drawLine(l + 1, t, r - 1, t, profile->mBorderColorNA);
+      GFX->getDrawUtil()->drawLine(l + 1, t + 1, l + 1, b - 2, profile->mBevelColorLL);
+      GFX->getDrawUtil()->drawLine(l + 2, t + 1, r - 2, t + 1, profile->mBevelColorLL);
       break;
    case 4:
-      dglDrawLine(l, t, l, b - 1, profile->mBevelColorHL);
-      dglDrawLine(l + 1, t, r, t, profile->mBevelColorHL);
-      dglDrawLine(l, b, r, b, profile->mBevelColorLL);
-      dglDrawLine(r, t + 1, r, b - 1, profile->mBevelColorLL);
-      dglDrawLine(l + 1, b - 1, r - 1, b - 1, profile->mBorderColor);
-      dglDrawLine(r - 1, t + 1, r - 1, b - 2, profile->mBorderColor);
+      GFX->getDrawUtil()->drawLine(l, t, l, b - 1, profile->mBevelColorHL);
+      GFX->getDrawUtil()->drawLine(l + 1, t, r, t, profile->mBevelColorHL);
+      GFX->getDrawUtil()->drawLine(l, b, r, b, profile->mBevelColorLL);
+      GFX->getDrawUtil()->drawLine(r, t + 1, r, b - 1, profile->mBevelColorLL);
+      GFX->getDrawUtil()->drawLine(l + 1, b - 1, r - 1, b - 1, profile->mBorderColor);
+      GFX->getDrawUtil()->drawLine(r - 1, t + 1, r - 1, b - 2, profile->mBorderColor);
       break;
    case 5:
       renderFilledBorder( bounds, profile );
       break;
     
    case 6:// Draw boarder only on top and left
-       dglDrawLine(l, t, l, b, profile->mBorderColor);
-       dglDrawLine(l, t, r, t, profile->mBorderColor);
+       GFX->getDrawUtil()->drawLine(l, t, l, b, profile->mBorderColor);
+       GFX->getDrawUtil()->drawLine(l, t, r, t, profile->mBorderColor);
        break;
    case 7:// Draw boarder only on bottom and right
-       dglDrawLine(r, t, r, b, profile->mBorderColor);
-       dglDrawLine(l, b, r, b, profile->mBorderColor);
+       GFX->getDrawUtil()->drawLine(r, t, r, b, profile->mBorderColor);
+       GFX->getDrawUtil()->drawLine(l, b, r, b, profile->mBorderColor);
        break;
       // DAW:
    case -1:
@@ -168,7 +169,7 @@ void renderBorder(RectI &bounds, GuiControlProfile *profile)
       // Taken from the 'Skinnable GUI Controls in TGE' resource by Justin DuJardin       
       if(profile->mBitmapArrayRects.size() >= 8)
       {
-         dglClearBitmapModulation();
+         GFX->getDrawUtil()->clearBitmapModulation();
 
          RectI destRect;
          RectI stretchRect;
@@ -192,14 +193,14 @@ void renderBorder(RectI &bounds, GuiControlProfile *profile)
          // Draw all corners first.
 
          //top left border
-         dglDrawBitmapSR(profile->mTextureHandle,Point2I(bounds.point.x,bounds.point.y),mBitmapBounds[BorderTopLeft]);
+         GFX->getDrawUtil()->drawBitmapSR(profile->mTextureHandle,Point2I(bounds.point.x,bounds.point.y),mBitmapBounds[BorderTopLeft]);
          //top right border
-         dglDrawBitmapSR(profile->mTextureHandle,Point2I(bounds.point.x + bounds.extent.x - mBitmapBounds[BorderTopRight].extent.x,bounds.point.y),mBitmapBounds[BorderTopRight]);
+         GFX->getDrawUtil()->drawBitmapSR(profile->mTextureHandle,Point2I(bounds.point.x + bounds.extent.x - mBitmapBounds[BorderTopRight].extent.x,bounds.point.y),mBitmapBounds[BorderTopRight]);
 
          //bottom left border
-         dglDrawBitmapSR(profile->mTextureHandle,Point2I(bounds.point.x,bounds.point.y + bounds.extent.y - mBitmapBounds[BorderBottomLeft].extent.y),mBitmapBounds[BorderBottomLeft]);
+         GFX->getDrawUtil()->drawBitmapSR(profile->mTextureHandle,Point2I(bounds.point.x,bounds.point.y + bounds.extent.y - mBitmapBounds[BorderBottomLeft].extent.y),mBitmapBounds[BorderBottomLeft]);
          //bottom right border
-         dglDrawBitmapSR(profile->mTextureHandle,Point2I(
+         GFX->getDrawUtil()->drawBitmapSR(profile->mTextureHandle,Point2I(
             bounds.point.x + bounds.extent.x - mBitmapBounds[BorderBottomRight].extent.x,
             bounds.point.y + bounds.extent.y - mBitmapBounds[BorderBottomRight].extent.y),
             mBitmapBounds[BorderBottomRight]);
@@ -217,7 +218,7 @@ void renderBorder(RectI &bounds, GuiControlProfile *profile)
          stretchRect = mBitmapBounds[BorderTop];
          stretchRect.inset(1,0);
          //draw it
-         dglDrawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
+         GFX->getDrawUtil()->drawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
          //bottom line stretch
          destRect.point.x = bounds.point.x + mBitmapBounds[BorderBottomRight].extent.x;
          destRect.extent.x = bounds.extent.x - mBitmapBounds[BorderBottomRight].extent.x - mBitmapBounds[BorderBottomLeft].extent.x;
@@ -227,7 +228,7 @@ void renderBorder(RectI &bounds, GuiControlProfile *profile)
          stretchRect = mBitmapBounds[BorderBottom];
          stretchRect.inset(1,0);
          //draw it
-         dglDrawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
+         GFX->getDrawUtil()->drawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
          //left line stretch
          destRect.point.x = bounds.point.x;
          destRect.extent.x = mBitmapBounds[BorderLeft].extent.x;
@@ -237,7 +238,7 @@ void renderBorder(RectI &bounds, GuiControlProfile *profile)
          stretchRect = mBitmapBounds[BorderLeft];
          stretchRect.inset(0,1);
          //draw it
-         dglDrawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
+         GFX->getDrawUtil()->drawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
          //left line stretch
          destRect.point.x = bounds.point.x + bounds.extent.x - mBitmapBounds[BorderRight].extent.x;
          destRect.extent.x = mBitmapBounds[BorderRight].extent.x;
@@ -247,7 +248,7 @@ void renderBorder(RectI &bounds, GuiControlProfile *profile)
          stretchRect = mBitmapBounds[BorderRight];
          stretchRect.inset(0,1);
          //draw it
-         dglDrawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
+         GFX->getDrawUtil()->drawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
 
          // End drawing sides and top stretched borders
          break;
@@ -273,8 +274,8 @@ void renderFilledBorder( RectI &bounds, ColorI &borderColor, ColorI &fillColor )
 {
    RectI fillBounds = bounds;
    fillBounds.inset( 1, 1 );
-   dglDrawRect( bounds, borderColor ); 
-   dglDrawRectFill( fillBounds, fillColor );
+   GFX->getDrawUtil()->drawRect( bounds, borderColor ); 
+   GFX->getDrawUtil()->drawRectFill( fillBounds, fillColor );
 }
 
 // DAW: Render out the sizable bitmap borders based on a multiplier into the bitmap array
@@ -293,7 +294,7 @@ void renderSizableBitmapBordersFilled(RectI &bounds, S32 baseMultiplier, GuiCont
    S32 BorderBottom =      7 + BorderTopLeft;
    S32 BorderBottomRight = 8 + BorderTopLeft;
 
-   dglClearBitmapModulation();
+   GFX->getDrawUtil()->clearBitmapModulation();
    if(profile->mBitmapArrayRects.size() >= (NumBitmaps * baseMultiplier))
    {
       RectI destRect;
@@ -303,14 +304,14 @@ void renderSizableBitmapBordersFilled(RectI &bounds, S32 baseMultiplier, GuiCont
       // Draw all corners first.
 
       //top left border
-      dglDrawBitmapSR(profile->mTextureHandle,Point2I(bounds.point.x,bounds.point.y),mBitmapBounds[BorderTopLeft]);
+      GFX->getDrawUtil()->drawBitmapSR(profile->mTextureHandle,Point2I(bounds.point.x,bounds.point.y),mBitmapBounds[BorderTopLeft]);
       //top right border
-      dglDrawBitmapSR(profile->mTextureHandle,Point2I(bounds.point.x + bounds.extent.x - mBitmapBounds[BorderTopRight].extent.x,bounds.point.y),mBitmapBounds[BorderTopRight]);
+      GFX->getDrawUtil()->drawBitmapSR(profile->mTextureHandle,Point2I(bounds.point.x + bounds.extent.x - mBitmapBounds[BorderTopRight].extent.x,bounds.point.y),mBitmapBounds[BorderTopRight]);
 
       //bottom left border
-      dglDrawBitmapSR(profile->mTextureHandle,Point2I(bounds.point.x,bounds.point.y + bounds.extent.y - mBitmapBounds[BorderBottomLeft].extent.y),mBitmapBounds[BorderBottomLeft]);
+      GFX->getDrawUtil()->drawBitmapSR(profile->mTextureHandle,Point2I(bounds.point.x,bounds.point.y + bounds.extent.y - mBitmapBounds[BorderBottomLeft].extent.y),mBitmapBounds[BorderBottomLeft]);
       //bottom right border
-      dglDrawBitmapSR(profile->mTextureHandle,Point2I(
+      GFX->getDrawUtil()->drawBitmapSR(profile->mTextureHandle,Point2I(
          bounds.point.x + bounds.extent.x - mBitmapBounds[BorderBottomRight].extent.x,
          bounds.point.y + bounds.extent.y - mBitmapBounds[BorderBottomRight].extent.y),
          mBitmapBounds[BorderBottomRight]);
@@ -328,7 +329,7 @@ void renderSizableBitmapBordersFilled(RectI &bounds, S32 baseMultiplier, GuiCont
       stretchRect = mBitmapBounds[BorderTop];
       stretchRect.inset(1,0);
       //draw it
-      dglDrawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
+      GFX->getDrawUtil()->drawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
       //bottom line stretch
       destRect.point.x = bounds.point.x + mBitmapBounds[BorderBottomRight].extent.x;
       destRect.extent.x = bounds.extent.x - mBitmapBounds[BorderBottomRight].extent.x - mBitmapBounds[BorderBottomLeft].extent.x;
@@ -338,7 +339,7 @@ void renderSizableBitmapBordersFilled(RectI &bounds, S32 baseMultiplier, GuiCont
       stretchRect = mBitmapBounds[BorderBottom];
       stretchRect.inset(1,0);
       //draw it
-      dglDrawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
+      GFX->getDrawUtil()->drawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
       //left line stretch
       destRect.point.x = bounds.point.x;
       destRect.extent.x = mBitmapBounds[BorderLeft].extent.x;
@@ -348,7 +349,7 @@ void renderSizableBitmapBordersFilled(RectI &bounds, S32 baseMultiplier, GuiCont
       stretchRect = mBitmapBounds[BorderLeft];
       stretchRect.inset(0,1);
       //draw it
-      dglDrawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
+      GFX->getDrawUtil()->drawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
       //left line stretch
       destRect.point.x = bounds.point.x + bounds.extent.x - mBitmapBounds[BorderRight].extent.x;
       destRect.extent.x = mBitmapBounds[BorderRight].extent.x;
@@ -358,7 +359,7 @@ void renderSizableBitmapBordersFilled(RectI &bounds, S32 baseMultiplier, GuiCont
       stretchRect = mBitmapBounds[BorderRight];
       stretchRect.inset(0,1);
       //draw it
-      dglDrawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
+      GFX->getDrawUtil()->drawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
       //fill stretch
       destRect.point.x = bounds.point.x + mBitmapBounds[BorderLeft].extent.x;
       destRect.extent.x = (bounds.extent.x) - mBitmapBounds[BorderLeft].extent.x - mBitmapBounds[BorderRight].extent.x;
@@ -368,7 +369,7 @@ void renderSizableBitmapBordersFilled(RectI &bounds, S32 baseMultiplier, GuiCont
       stretchRect = mBitmapBounds[Fill];
       stretchRect.inset(1,1);
       //draw it
-      dglDrawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
+      GFX->getDrawUtil()->drawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
 
       // End drawing sides and top stretched borders
    }
@@ -391,7 +392,7 @@ void renderSizableBitmapBordersFilledIndex(RectI &bounds, S32 startIndex, GuiCon
    S32 BorderBottom =      7 + BorderTopLeft;
    S32 BorderBottomRight = 8 + BorderTopLeft;
 
-   dglClearBitmapModulation();
+   GFX->getDrawUtil()->clearBitmapModulation();
    if(profile->mBitmapArrayRects.size() >= (startIndex + NumBitmaps))
    {
       RectI destRect;
@@ -401,14 +402,14 @@ void renderSizableBitmapBordersFilledIndex(RectI &bounds, S32 startIndex, GuiCon
       // Draw all corners first.
 
       //top left border
-      dglDrawBitmapSR(profile->mTextureHandle,Point2I(bounds.point.x,bounds.point.y),mBitmapBounds[BorderTopLeft]);
+      GFX->getDrawUtil()->drawBitmapSR(profile->mTextureHandle,Point2I(bounds.point.x,bounds.point.y),mBitmapBounds[BorderTopLeft]);
       //top right border
-      dglDrawBitmapSR(profile->mTextureHandle,Point2I(bounds.point.x + bounds.extent.x - mBitmapBounds[BorderTopRight].extent.x,bounds.point.y),mBitmapBounds[BorderTopRight]);
+      GFX->getDrawUtil()->drawBitmapSR(profile->mTextureHandle,Point2I(bounds.point.x + bounds.extent.x - mBitmapBounds[BorderTopRight].extent.x,bounds.point.y),mBitmapBounds[BorderTopRight]);
 
       //bottom left border
-      dglDrawBitmapSR(profile->mTextureHandle,Point2I(bounds.point.x,bounds.point.y + bounds.extent.y - mBitmapBounds[BorderBottomLeft].extent.y),mBitmapBounds[BorderBottomLeft]);
+      GFX->getDrawUtil()->drawBitmapSR(profile->mTextureHandle,Point2I(bounds.point.x,bounds.point.y + bounds.extent.y - mBitmapBounds[BorderBottomLeft].extent.y),mBitmapBounds[BorderBottomLeft]);
       //bottom right border
-      dglDrawBitmapSR(profile->mTextureHandle,Point2I(
+      GFX->getDrawUtil()->drawBitmapSR(profile->mTextureHandle,Point2I(
          bounds.point.x + bounds.extent.x - mBitmapBounds[BorderBottomRight].extent.x,
          bounds.point.y + bounds.extent.y - mBitmapBounds[BorderBottomRight].extent.y),
          mBitmapBounds[BorderBottomRight]);
@@ -426,7 +427,7 @@ void renderSizableBitmapBordersFilledIndex(RectI &bounds, S32 startIndex, GuiCon
       stretchRect = mBitmapBounds[BorderTop];
       stretchRect.inset(1,0);
       //draw it
-      dglDrawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
+      GFX->getDrawUtil()->drawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
       //bottom line stretch
       destRect.point.x = bounds.point.x + mBitmapBounds[BorderBottomLeft].extent.x;
       destRect.extent.x = bounds.extent.x - mBitmapBounds[BorderBottomRight].extent.x - mBitmapBounds[BorderBottomLeft].extent.x;
@@ -436,7 +437,7 @@ void renderSizableBitmapBordersFilledIndex(RectI &bounds, S32 startIndex, GuiCon
       stretchRect = mBitmapBounds[BorderBottom];
       stretchRect.inset(1,0);
       //draw it
-      dglDrawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
+      GFX->getDrawUtil()->drawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
       //left line stretch
       destRect.point.x = bounds.point.x;
       destRect.extent.x = mBitmapBounds[BorderLeft].extent.x;
@@ -446,7 +447,7 @@ void renderSizableBitmapBordersFilledIndex(RectI &bounds, S32 startIndex, GuiCon
       stretchRect = mBitmapBounds[BorderLeft];
       stretchRect.inset(0,1);
       //draw it
-      dglDrawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
+      GFX->getDrawUtil()->drawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
       //left line stretch
       destRect.point.x = bounds.point.x + bounds.extent.x - mBitmapBounds[BorderRight].extent.x;
       destRect.extent.x = mBitmapBounds[BorderRight].extent.x;
@@ -456,7 +457,7 @@ void renderSizableBitmapBordersFilledIndex(RectI &bounds, S32 startIndex, GuiCon
       stretchRect = mBitmapBounds[BorderRight];
       stretchRect.inset(0,1);
       //draw it
-      dglDrawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
+      GFX->getDrawUtil()->drawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
       //fill stretch
       destRect.point.x = bounds.point.x + mBitmapBounds[BorderLeft].extent.x;
       destRect.extent.x = (bounds.extent.x) - mBitmapBounds[BorderLeft].extent.x - mBitmapBounds[BorderRight].extent.x;
@@ -466,7 +467,7 @@ void renderSizableBitmapBordersFilledIndex(RectI &bounds, S32 startIndex, GuiCon
       stretchRect = mBitmapBounds[Fill];
       stretchRect.inset(1,1);
       //draw it
-      dglDrawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
+      GFX->getDrawUtil()->drawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
 
       // End drawing sides and top stretched borders
    }
@@ -485,7 +486,7 @@ void renderFixedBitmapBordersFilled(RectI &bounds, S32 baseMultiplier, GuiContro
    S32 Fill =              1 + BorderLeft;
    S32 BorderRight =       2 + BorderLeft;
 
-   dglClearBitmapModulation();
+   GFX->getDrawUtil()->clearBitmapModulation();
    if(profile->mBitmapArrayRects.size() >= (NumBitmaps * baseMultiplier))
    {
       RectI destRect;
@@ -495,9 +496,9 @@ void renderFixedBitmapBordersFilled(RectI &bounds, S32 baseMultiplier, GuiContro
       // Draw all corners first.
 
       //left border
-      dglDrawBitmapSR(profile->mTextureHandle,Point2I(bounds.point.x,bounds.point.y),mBitmapBounds[BorderLeft]);
+      GFX->getDrawUtil()->drawBitmapSR(profile->mTextureHandle,Point2I(bounds.point.x,bounds.point.y),mBitmapBounds[BorderLeft]);
       //right border
-      dglDrawBitmapSR(profile->mTextureHandle,Point2I(bounds.point.x + bounds.extent.x - mBitmapBounds[BorderRight].extent.x,bounds.point.y),mBitmapBounds[BorderRight]);
+      GFX->getDrawUtil()->drawBitmapSR(profile->mTextureHandle,Point2I(bounds.point.x + bounds.extent.x - mBitmapBounds[BorderRight].extent.x,bounds.point.y),mBitmapBounds[BorderRight]);
 
       // End drawing corners
 
@@ -512,7 +513,7 @@ void renderFixedBitmapBordersFilled(RectI &bounds, S32 baseMultiplier, GuiContro
       stretchRect = mBitmapBounds[Fill];
       stretchRect.inset(1,0);
       //draw it
-      dglDrawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
+      GFX->getDrawUtil()->drawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
 
       // End drawing fill
    }
@@ -529,7 +530,7 @@ void renderFixedBitmapBordersFilledIndex(RectI &bounds, S32 startIndex, GuiContr
    S32 Fill =              1 + startIndex;
    S32 BorderRight =       2 + startIndex;
 
-   dglClearBitmapModulation();
+   GFX->getDrawUtil()->clearBitmapModulation();
    if(profile->mBitmapArrayRects.size() >= (startIndex + NumBitmaps))
    {
       RectI destRect;
@@ -539,9 +540,9 @@ void renderFixedBitmapBordersFilledIndex(RectI &bounds, S32 startIndex, GuiContr
       // Draw all corners first.
 
       //left border
-      dglDrawBitmapSR(profile->mTextureHandle,Point2I(bounds.point.x,bounds.point.y),mBitmapBounds[BorderLeft]);
+      GFX->getDrawUtil()->drawBitmapSR(profile->mTextureHandle,Point2I(bounds.point.x,bounds.point.y),mBitmapBounds[BorderLeft]);
       //right border
-      dglDrawBitmapSR(profile->mTextureHandle,Point2I(bounds.point.x + bounds.extent.x - mBitmapBounds[BorderRight].extent.x,bounds.point.y),mBitmapBounds[BorderRight]);
+      GFX->getDrawUtil()->drawBitmapSR(profile->mTextureHandle,Point2I(bounds.point.x + bounds.extent.x - mBitmapBounds[BorderRight].extent.x,bounds.point.y),mBitmapBounds[BorderRight]);
 
       // End drawing corners
 
@@ -556,7 +557,7 @@ void renderFixedBitmapBordersFilledIndex(RectI &bounds, S32 startIndex, GuiContr
       stretchRect = mBitmapBounds[Fill];
       stretchRect.inset(1,0);
       //draw it
-      dglDrawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
+      GFX->getDrawUtil()->drawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
 
       // End drawing fill
    }
@@ -573,7 +574,7 @@ void renderFixedBitmapBordersStretchYFilled(RectI &bounds, S32 baseMultiplier, G
    S32 Fill =              1 + BorderLeft;
    S32 BorderRight =       2 + BorderLeft;
 
-   dglClearBitmapModulation();
+   GFX->getDrawUtil()->clearBitmapModulation();
    if(profile->mBitmapArrayRects.size() >= (NumBitmaps * baseMultiplier))
    {
       RectI destRect;
@@ -583,9 +584,9 @@ void renderFixedBitmapBordersStretchYFilled(RectI &bounds, S32 baseMultiplier, G
       // Draw all corners first.
 
       //left border
-      dglDrawBitmapStretchSR(profile->mTextureHandle, RectI( bounds.point.x, bounds.point.y, mBitmapBounds[BorderLeft].extent.x, bounds.extent.y ), mBitmapBounds[BorderLeft] );
+      GFX->getDrawUtil()->drawBitmapStretchSR(profile->mTextureHandle, RectI( bounds.point.x, bounds.point.y, mBitmapBounds[BorderLeft].extent.x, bounds.extent.y ), mBitmapBounds[BorderLeft] );
       //right border
-      dglDrawBitmapStretchSR(profile->mTextureHandle, RectI(bounds.point.x + bounds.extent.x - mBitmapBounds[BorderRight].extent.x, bounds.point.y, mBitmapBounds[BorderRight].extent.x, bounds.extent.y ), mBitmapBounds[BorderRight] );
+      GFX->getDrawUtil()->drawBitmapStretchSR(profile->mTextureHandle, RectI(bounds.point.x + bounds.extent.x - mBitmapBounds[BorderRight].extent.x, bounds.point.y, mBitmapBounds[BorderRight].extent.x, bounds.extent.y ), mBitmapBounds[BorderRight] );
 
       // End drawing corners
 
@@ -600,7 +601,7 @@ void renderFixedBitmapBordersStretchYFilled(RectI &bounds, S32 baseMultiplier, G
       stretchRect = mBitmapBounds[Fill];
       stretchRect.inset(1,0);
       //draw it
-      dglDrawBitmapStretchSR(profile->mTextureHandle, destRect, stretchRect);
+      GFX->getDrawUtil()->drawBitmapStretchSR(profile->mTextureHandle, destRect, stretchRect);
 
       // End drawing fill
    }

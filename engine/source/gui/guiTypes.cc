@@ -27,10 +27,25 @@
 #include "console/consoleInternal.h"
 #include "console/codeBlock.h"
 #include "graphics/gFont.h"
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxDrawUtil.h"
 #include "gui/guiTypes.h"
 #include "graphics/gBitmap.h"
-#include "graphics/TextureManager.h"
+#include "graphics/gfxTextureManager.h"
+
+
+GFX_ImplementTextureProfile(GFXGuiCursorProfile,
+                            GFXTextureProfile::DiffuseMap,
+                            GFXTextureProfile::PreserveSize |
+                            GFXTextureProfile::Static,
+                            GFXTextureProfile::None);
+GFX_ImplementTextureProfile(GFXDefaultGUIProfile,
+                            GFXTextureProfile::DiffuseMap,
+                            GFXTextureProfile::PreserveSize |
+                            GFXTextureProfile::Static |
+                            GFXTextureProfile::NoPadding,
+                            GFXTextureProfile::None);
+
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- //
 IMPLEMENT_CONOBJECT(GuiCursor);
@@ -73,10 +88,10 @@ void GuiCursor::render(const Point2I &pos)
 {
    if (!mTextureHandle && mBitmapName && mBitmapName[0])
    {
-      mTextureHandle = TextureHandle(mBitmapName, TextureHandle::BitmapTexture);
+      mTextureHandle.set( mBitmapName, &GFXGuiCursorProfile, avar("%s() - mTextureObject (line %d)", __FUNCTION__, __LINE__));
       if(!mTextureHandle)
          return;
-      mExtent.set(mTextureHandle.getWidth(), mTextureHandle.getHeight());
+      mExtent.set(mTextureHandle->getWidth(), mTextureHandle->getHeight());
    }
 
    // Render the cursor centered according to dimensions of texture
@@ -87,8 +102,8 @@ void GuiCursor::render(const Point2I &pos)
    renderPos.x -= (S32)( texWidth  * mRenderOffset.x );
    renderPos.y -= (S32)( texHeight * mRenderOffset.y );
    
-   dglClearBitmapModulation();
-   dglDrawBitmap(mTextureHandle, renderPos);
+   GFX->getDrawUtil()->clearBitmapModulation();
+   GFX->getDrawUtil()->drawBitmap(mTextureHandle, renderPos);
 }
 
 //------------------------------------------------------------------------------
@@ -363,8 +378,15 @@ void GuiControlProfile::incRefCount()
          Con::errorf("Failed to load/create profile font (%s/%d)", mFontType, mFontSize);
        
       //verify the bitmap
-      mTextureHandle = TextureHandle(mBitmapName, TextureHandle::BitmapKeepTexture);
-      if (!(bool)mTextureHandle)
+//      mTextureHandle = TextureHandle(mBitmapName, TextureHandle::BitmapKeepTexture);
+       Con::printf("%s", mBitmapName);
+
+       if( mBorder == -1 || mBorder == -2 )
+           mTextureHandle = GFXTexHandle( mBitmapName, &GFXDefaultPersistentProfile, avar("%s() - mTextureObject (line %d)", __FUNCTION__, __LINE__) );
+       else
+           mTextureHandle = GFXTexHandle( mBitmapName, &GFXDefaultPersistentProfile, avar("%s() - mTextureObject (line %d)", __FUNCTION__, __LINE__) );
+       
+       if (!(bool)mTextureHandle)
          Con::errorf("Failed to load profile bitmap (%s)",mBitmapName);
 
       // If we've got a special border, make sure it's usable.

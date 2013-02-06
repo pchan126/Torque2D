@@ -21,7 +21,8 @@
 //-----------------------------------------------------------------------------
 
 #include "gui/guiControl.h"
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxDrawUtil.h"
 
 /// Renders a skinned border.
 class GuiBitmapBorderCtrl : public GuiControl
@@ -40,7 +41,7 @@ class GuiBitmapBorderCtrl : public GuiControl
       NumBitmaps
    };
 	RectI *mBitmapBounds;  ///< bmp is [3*n], bmpHL is [3*n + 1], bmpNA is [3*n + 2]
-   TextureHandle mTextureHandle;
+   GFXTexHandle mTextureObject;
 public:
    bool onWake();
    void onSleep();
@@ -56,7 +57,7 @@ bool GuiBitmapBorderCtrl::onWake()
       return false;
 
    //get the texture for the close, minimize, and maximize buttons
-   mTextureHandle = mProfile->mTextureHandle;
+   mTextureObject = mProfile->mTextureHandle;
    bool result = mProfile->constructBitmapArray() >= NumBitmaps;
    AssertFatal(result, "Failed to create the bitmap array");
    if(!result)
@@ -68,14 +69,14 @@ bool GuiBitmapBorderCtrl::onWake()
 
 void GuiBitmapBorderCtrl::onSleep()
 {
-   mTextureHandle = NULL;
+   mTextureObject = NULL;
    Parent::onSleep();
 }
 
 void GuiBitmapBorderCtrl::onRender(Point2I offset, const RectI &updateRect)
 {
    renderChildControls( offset, updateRect );
-   dglSetClipRect(updateRect);
+   GFX->setClipRect(updateRect);
 
    //draw the outline
    RectI winRect;
@@ -89,11 +90,11 @@ void GuiBitmapBorderCtrl::onRender(Point2I offset, const RectI &updateRect)
    winRect.extent.y -= mBitmapBounds[BorderTop].extent.y + mBitmapBounds[BorderBottom].extent.y;
 
    if(mProfile->mOpaque)
-      dglDrawRectFill(winRect, mProfile->mFillColor);
+      GFX->getDrawUtil()->drawRectFill(winRect, mProfile->mFillColor);
 
-   dglClearBitmapModulation();
-   dglDrawBitmapSR(mTextureHandle, offset, mBitmapBounds[BorderTopLeft]);
-   dglDrawBitmapSR(mTextureHandle, Point2I(offset.x + mBounds.extent.x - mBitmapBounds[BorderTopRight].extent.x, offset.y),
+   GFX->getDrawUtil()->clearBitmapModulation();
+   GFX->getDrawUtil()->drawBitmapSR(mTextureObject, offset, mBitmapBounds[BorderTopLeft]);
+   GFX->getDrawUtil()->drawBitmapSR(mTextureObject, Point2I(offset.x + mBounds.extent.x - mBitmapBounds[BorderTopRight].extent.x, offset.y),
                    mBitmapBounds[BorderTopRight]);
 
    RectI destRect;
@@ -103,7 +104,7 @@ void GuiBitmapBorderCtrl::onRender(Point2I offset, const RectI &updateRect)
 	destRect.extent.y = mBitmapBounds[BorderTop].extent.y;
    RectI stretchRect = mBitmapBounds[BorderTop];
    stretchRect.inset(1,0);
-   dglDrawBitmapStretchSR(mTextureHandle, destRect, stretchRect);
+   GFX->getDrawUtil()->drawBitmapStretchSR(mTextureObject, destRect, stretchRect);
 
    destRect.point.x = offset.x;
    destRect.point.y = offset.y + mBitmapBounds[BorderTopLeft].extent.y;
@@ -111,7 +112,7 @@ void GuiBitmapBorderCtrl::onRender(Point2I offset, const RectI &updateRect)
    destRect.extent.y = mBounds.extent.y - mBitmapBounds[BorderTopLeft].extent.y - mBitmapBounds[BorderBottomLeft].extent.y;
    stretchRect = mBitmapBounds[BorderLeft];
    stretchRect.inset(0,1);
-   dglDrawBitmapStretchSR(mTextureHandle, destRect, stretchRect);
+   GFX->getDrawUtil()->drawBitmapStretchSR(mTextureObject, destRect, stretchRect);
 
    destRect.point.x = offset.x + mBounds.extent.x - mBitmapBounds[BorderRight].extent.x;
    destRect.extent.x = mBitmapBounds[BorderRight].extent.x;
@@ -120,10 +121,10 @@ void GuiBitmapBorderCtrl::onRender(Point2I offset, const RectI &updateRect)
 
 	stretchRect = mBitmapBounds[BorderRight];
    stretchRect.inset(0,1);
-   dglDrawBitmapStretchSR(mTextureHandle, destRect, stretchRect);
+   GFX->getDrawUtil()->drawBitmapStretchSR(mTextureObject, destRect, stretchRect);
 
-   dglDrawBitmapSR(mTextureHandle, offset + Point2I(0, mBounds.extent.y - mBitmapBounds[BorderBottomLeft].extent.y), mBitmapBounds[BorderBottomLeft]);
-   dglDrawBitmapSR(mTextureHandle, offset + mBounds.extent - mBitmapBounds[BorderBottomRight].extent, mBitmapBounds[BorderBottomRight]);
+   GFX->getDrawUtil()->drawBitmapSR(mTextureObject, offset + Point2I(0, mBounds.extent.y - mBitmapBounds[BorderBottomLeft].extent.y), mBitmapBounds[BorderBottomLeft]);
+   GFX->getDrawUtil()->drawBitmapSR(mTextureObject, offset + mBounds.extent - mBitmapBounds[BorderBottomRight].extent, mBitmapBounds[BorderBottomRight]);
 
    destRect.point.x = offset.x + mBitmapBounds[BorderBottomLeft].extent.x;
    destRect.extent.x = mBounds.extent.x - mBitmapBounds[BorderBottomLeft].extent.x - mBitmapBounds[BorderBottomRight].extent.x;
@@ -133,5 +134,5 @@ void GuiBitmapBorderCtrl::onRender(Point2I offset, const RectI &updateRect)
    stretchRect = mBitmapBounds[BorderBottom];
    stretchRect.inset(1,0);
 
-   dglDrawBitmapStretchSR(mTextureHandle, destRect, stretchRect);
+   GFX->getDrawUtil()->drawBitmapStretchSR(mTextureObject, destRect, stretchRect);
 }

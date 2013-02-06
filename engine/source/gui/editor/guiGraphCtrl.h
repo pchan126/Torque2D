@@ -27,7 +27,7 @@
 #include "gui/guiControl.h"
 #endif
 #ifndef _TEXTURE_MANAGER_H_
-#include "graphics/TextureManager.h"
+#include "graphics/gfxTextureManager.h"
 #endif
 
 

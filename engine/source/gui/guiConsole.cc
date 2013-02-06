@@ -21,11 +21,12 @@
 //-----------------------------------------------------------------------------
 
 #include "console/console.h"
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
 #include "gui/guiTypes.h"
 #include "gui/guiControl.h"
 #include "gui/guiConsole.h"
 #include "gui/containers/guiScrollCtrl.h"
+#include "graphics/gfxDrawUtil.h"
 
 IMPLEMENT_CONOBJECT(GuiConsole);
 
@@ -116,12 +117,12 @@ void GuiConsole::onRenderCell(Point2I offset, Point2I cell, bool /*selected*/, b
    ConsoleLogEntry &entry = log[cell.y];
    switch (entry.mLevel)
    {
-      case ConsoleLogEntry::Normal:   dglSetBitmapModulation(mProfile->mFontColor); break;
-      case ConsoleLogEntry::Warning:  dglSetBitmapModulation(mProfile->mFontColorHL); break;
-      case ConsoleLogEntry::Error:    dglSetBitmapModulation(mProfile->mFontColorNA); break;
+      case ConsoleLogEntry::Normal:   GFX->getDrawUtil()->setBitmapModulation(mProfile->mFontColor); break;
+      case ConsoleLogEntry::Warning:  GFX->getDrawUtil()->setBitmapModulation(mProfile->mFontColorHL); break;
+      case ConsoleLogEntry::Error:    GFX->getDrawUtil()->setBitmapModulation(mProfile->mFontColorNA); break;
       case ConsoleLogEntry::NUM_CLASS: Con::errorf("Unhandled case in GuiConsole::onRenderCell, NUM_CLASS");
    }
-   dglDrawText(mFont, Point2I(offset.x + 3, offset.y), entry.mString, mProfile->mFontColors);
+   GFX->getDrawUtil()->drawText(mFont, Point2I(offset.x + 3, offset.y), entry.mString, mProfile->mFontColors);
    
    Con::unlockLog();
 }

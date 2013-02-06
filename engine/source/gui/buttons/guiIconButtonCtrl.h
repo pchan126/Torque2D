@@ -26,9 +26,8 @@
 #ifndef _GUIBUTTONCTRL_H_
 #include "gui/buttons/guiButtonCtrl.h"
 #endif
-#ifndef _TEXTURE_MANAGER_H_
-#include "graphics/TextureManager.h"
-#endif
+
+#include "graphics/gfxTextureManager.h"
 
 ///-------------------------------------
 /// Icon Button Control
@@ -44,7 +43,7 @@ private:
 
 protected:
    StringTableEntry  mBitmapName;
-   TextureHandle     mTextureNormal;
+   GFXTexHandle      mTextureNormal;
    S32               mIconLocation;
    S32               mTextLocation;
    S32               mTextMargin;
@@ -53,7 +52,7 @@ protected:
 
    // DAW: Optional bitmap to be displayed when the proper bitmap cannot be found
    StringTableEntry mErrorBitmapName;
-   TextureHandle mErrorTextureHandle;
+   GFXTexHandle     mErrorTextureHandle;
 
    void renderButton( Point2I &offset, const RectI& updateRect);
 

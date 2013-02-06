@@ -22,7 +22,7 @@
 
 #include "console/console.h"
 #include "console/consoleTypes.h"
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
 #include "sim/simBase.h"
 #include "gui/guiCanvas.h"
 #include "gui/editor/guiEditCtrl.h"
@@ -369,9 +369,9 @@ void GuiEditCtrl::drawNut(const Point2I &nut, ColorI &outlineColor, ColorI &nutC
 {
    RectI r(nut.x - NUT_SIZE, nut.y - NUT_SIZE, 2 * NUT_SIZE, 2 * NUT_SIZE);
    r.inset(1, 1);
-   dglDrawRectFill(r, nutColor);
+   GFX->getDrawUtil()->drawRectFill(r, nutColor);
    r.inset(-1, -1);
-   dglDrawRect(r, outlineColor);
+   GFX->getDrawUtil()->drawRect(r, outlineColor);
 }
 
 static inline bool inNut(const Point2I &pt, S32 x, S32 y)
@@ -423,26 +423,26 @@ void GuiEditCtrl::drawNuts(RectI &box, ColorI &outlineColor, ColorI &nutColor)
    ColorF lightGreenLine(0.0f, 1.0f, 0.0f, 0.3f);
    if(lx > 0 && ty > 0)
    {
-      dglDrawLine(0, ty, lx, ty, greenLine);
-      dglDrawLine(lx, 0, lx, ty, greenLine);
+      GFX->getDrawUtil()->drawLine(0, ty, lx, ty, greenLine);
+      GFX->getDrawUtil()->drawLine(lx, 0, lx, ty, greenLine);
    }
    if(lx > 0 && by > 0)
-      dglDrawLine(0, by, lx, by, greenLine);
+      GFX->getDrawUtil()->drawLine(0, by, lx, by, greenLine);
 
    if(rx > 0 && ty > 0)
-      dglDrawLine(rx, 0, rx, ty, greenLine);
+      GFX->getDrawUtil()->drawLine(rx, 0, rx, ty, greenLine);
 
    Point2I extent = localToGlobalCoord(mBounds.extent);
 
    if(lx < extent.x && by < extent.y)
-      dglDrawLine(lx, by, lx, extent.y, lightGreenLine);
+      GFX->getDrawUtil()->drawLine(lx, by, lx, extent.y, lightGreenLine);
    if(rx < extent.x && by < extent.y)
    {
-      dglDrawLine(rx, by, rx, extent.y, lightGreenLine);
-      dglDrawLine(rx, by, extent.x, by, lightGreenLine);
+      GFX->getDrawUtil()->drawLine(rx, by, rx, extent.y, lightGreenLine);
+      GFX->getDrawUtil()->drawLine(rx, by, extent.x, by, lightGreenLine);
    }
    if(rx < extent.x && ty < extent.y)
-      dglDrawLine(rx, ty, extent.x, ty, lightGreenLine);
+      GFX->getDrawUtil()->drawLine(rx, ty, extent.x, ty, lightGreenLine);
 
    // adjust nuts, so they dont straddle the controlslx -= NUT_SIZE;
    lx -= NUT_SIZE;
@@ -489,15 +489,15 @@ void GuiEditCtrl::onRender(Point2I offset, const RectI &updateRect)
          RectI box(ctOffset.x, ctOffset.y, cext.x, cext.y);
 
             box.inset(-5, -5);
-         dglDrawRect(box, ColorI(50, 101, 152,160));
+         GFX->getDrawUtil()->drawRect(box, ColorI(50, 101, 152,160));
             box.inset(1,1);
-         dglDrawRect(box, ColorI(50, 101, 152,170));
+         GFX->getDrawUtil()->drawRect(box, ColorI(50, 101, 152,170));
             box.inset(1,1);
-         dglDrawRect(box, ColorI(50, 101, 152,180));
+         GFX->getDrawUtil()->drawRect(box, ColorI(50, 101, 152,180));
             box.inset(1,1);
-         dglDrawRect(box, ColorI(50, 101, 152,190));
+         GFX->getDrawUtil()->drawRect(box, ColorI(50, 101, 152,190));
             box.inset(1,1);
-            dglDrawRect(box, ColorI(50, 101, 152,200));
+            GFX->getDrawUtil()->drawRect(box, ColorI(50, 101, 152,200));
       }
       Vector<GuiControl *>::iterator i;
       bool multisel = mSelectedControls.size() > 1;
@@ -519,49 +519,98 @@ void GuiEditCtrl::onRender(Point2I offset, const RectI &updateRect)
          RectI b;
          getDragRect(b);
          b.point += offset;
-         dglDrawRect(b, ColorI(255, 255, 255));
+         GFX->getDrawUtil()->drawRect(b, ColorI(255, 255, 255));
       }
    }
 
    renderChildControls(offset, updateRect);
 
-   if(mActive && mCurrentAddSet && (mGridSnap.x && mGridSnap.y) && 
-       (mMouseDownMode == MovingSelection || mMouseDownMode == SizingSelection))
-   {
-      Point2I cext = mCurrentAddSet->getExtent();
-      Point2I coff = mCurrentAddSet->localToGlobalCoord(Point2I(0,0));
-      // create point-dots
-      Point2I snap = mGridSnap;
-      if(snap.x < 6)
-         snap *= 2;
-      if(snap.x < 6)
-         snap *= 2;
-      U32 maxdot = (cext.x / snap.x) * (cext.y / snap.y);
-      Point2F* dots = new Point2F[maxdot];
-      U32 ndot = 0;
-      
-      for(U32 ix = (U32)snap.x; ix < (U32)cext.x; ix += snap.x)
-      { 
-         for(U32 iy = snap.y; iy < (U32)cext.y; iy += snap.y)
-         {
-            dots[ndot].x = (F32)(ix + coff.x);
-            dots[ndot++].y = (F32)(iy + coff.y);
-         }
-      }
-      AssertFatal(ndot <= maxdot, "dot overflow");
-      
-      // draw the points.
-      glEnableClientState(GL_VERTEX_ARRAY);
-      glEnable( GL_BLEND );
-      glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+//   if(mActive && mCurrentAddSet && (mGridSnap.x && mGridSnap.y) && 
+//       (mMouseDownMode == MovingSelection || mMouseDownMode == SizingSelection))
+//   {
+//      Point2I cext = mCurrentAddSet->getExtent();
+//      Point2I coff = mCurrentAddSet->localToGlobalCoord(Point2I(0,0));
+//      // create point-dots
+//      Point2I snap = mGridSnap;
+//      if(snap.x < 6)
+//         snap *= 2;
+//      if(snap.x < 6)
+//         snap *= 2;
+//      U32 maxdot = (cext.x / snap.x) * (cext.y / snap.y);
+//      Point2F* dots = new Point2F[maxdot];
+//      U32 ndot = 0;
+//      
+//      for(U32 ix = (U32)snap.x; ix < (U32)cext.x; ix += snap.x)
+//      { 
+//         for(U32 iy = snap.y; iy < (U32)cext.y; iy += snap.y)
+//         {
+//            dots[ndot].x = (F32)(ix + coff.x);
+//            dots[ndot++].y = (F32)(iy + coff.y);
+//         }
+//      }
+//      AssertFatal(ndot <= maxdot, "dot overflow");
+//      
+//      // draw the points.
+//      glEnableClientState(GL_VERTEX_ARRAY);
+//      glEnable( GL_BLEND );
+//      glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+//
+//      glVertexPointer(2, GL_FLOAT, 0, dots);
+//      glColor4ub(50, 50, 254, 200);
+//      glDrawArrays( GL_POINTS, 0, ndot);
+//      glDisableClientState(GL_VERTEX_ARRAY);
+//      glDisable(GL_BLEND);
+//      delete[] dots;
+//   }
 
-      glVertexPointer(2, GL_FLOAT, 0, dots);
-      glColor4ub(50, 50, 254, 200);
-      glDrawArrays( GL_POINTS, 0, ndot);
-      glDisableClientState(GL_VERTEX_ARRAY);
-      glDisable(GL_BLEND);
-      delete[] dots;
-   }
+    if(   mActive &&
+       ( mMouseDownMode == MovingSelection || mMouseDownMode == SizingSelection ) &&
+       ( mGridSnap.x || mGridSnap.y ) )
+    {
+        Point2I cext = getContentControl()->getExtent();
+        Point2I coff = getContentControl()->localToGlobalCoord(Point2I(0,0));
+        
+        // create point-dots
+        const Point2I& snap = mGridSnap;
+        U32 maxdot = (U32)(mCeil(cext.x / (F32)snap.x) - 1) * (U32)(mCeil(cext.y / (F32)snap.y) - 1);
+        
+        if( mDots.IsNull() || maxdot != mDots->mNumVerts)
+        {
+            mDots.set(GFX, maxdot, GFXBufferTypeStatic);
+            
+            U32 ndot = 0;
+            mDots.lock();
+            for(U32 ix = snap.x; ix < cext.x; ix += snap.x)
+            {
+                for(U32 iy = snap.y; ndot < maxdot && iy < cext.y; iy += snap.y)
+                {
+                    mDots[ndot].color.set( 50, 50, 254, 100 );
+                    mDots[ndot].point.x = F32(ix + coff.x);
+                    mDots[ndot].point.y = F32(iy + coff.y);
+                    mDots[ndot].point.z = 0.0f;
+                    ndot++;
+                }
+            }
+            mDots.unlock();
+            AssertFatal(ndot <= maxdot, "dot overflow");
+            AssertFatal(ndot == maxdot, "dot underflow");
+        }
+        
+//        if (!mDotSB)
+//        {
+//            GFXStateBlockDesc dotdesc;
+//            dotdesc.setBlend(true, GFXBlendSrcAlpha, GFXBlendInvSrcAlpha);
+//            dotdesc.setCullMode( GFXCullNone );
+//            mDotSB = GFX->createStateBlock( dotdesc );
+//        }
+//        
+//        GFX->setStateBlock(mDotSB);
+        
+        // draw the points.
+        GFX->setVertexBuffer( mDots );
+        GFX->drawPrimitive( GFXPointList, 0, mDots->mNumVerts );
+    }
+
 }
 
 bool GuiEditCtrl::selectionContains(GuiControl *ctrl)
@@ -1435,7 +1484,7 @@ public:
    }
    void onRender(Point2I offset, const RectI &updateRect)
    {
-      dglDrawRectFill(updateRect, ColorF(1,1,1,1));
+      GFX->getDrawUtil()->drawRectFill(updateRect, ColorF(1,1,1,1));
       GuiScrollCtrl *ref;
       SimObject *o = Sim::findObject(refCtrl);
 
@@ -1458,7 +1507,7 @@ public:
                   start = 4;
                if(!(pos % 100))
                   start = 1;
-               dglDrawLine(x, offset.y + start, x, offset.y + 10, ColorF(0,0,0,1));
+               GFX->getDrawUtil()->drawLine(x, offset.y + start, x, offset.y + 10, ColorF(0,0,0,1));
             }
          }
       }
@@ -1476,7 +1525,7 @@ public:
                   start = 4;
                if(!(pos % 100))
                   start = 1;
-               dglDrawLine(offset.x + start, y, offset.x + 10, y, ColorF(0,0,0,1));
+               GFX->getDrawUtil()->drawLine(offset.x + start, y, offset.x + 10, y, ColorF(0,0,0,1));
             }
          }
       }

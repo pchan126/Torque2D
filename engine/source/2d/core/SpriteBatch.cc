@@ -753,7 +753,7 @@ bool SpriteBatch::getSpriteBlendMode( void ) const
 
 //------------------------------------------------------------------------------
 
-void SpriteBatch::setSpriteSrcBlendFactor( GLenum srcBlendFactor )
+void SpriteBatch::setSpriteSrcBlendFactor( GFXBlend srcBlendFactor )
 {
     // Finish if a sprite is not selected.
     if ( !checkSpriteSelected() )
@@ -765,11 +765,11 @@ void SpriteBatch::setSpriteSrcBlendFactor( GLenum srcBlendFactor )
 
 //------------------------------------------------------------------------------
 
-GLenum SpriteBatch::getSpriteSrcBlendFactor( void ) const
+GFXBlend SpriteBatch::getSpriteSrcBlendFactor( void ) const
 {
     // Finish if a sprite is not selected.
     if ( !checkSpriteSelected() )
-        return GL_SRC_ALPHA;
+        return GFXBlendSrcAlpha;
 
     // Get source blend factor.
     return mSelectedSprite->getSrcBlendFactor();
@@ -777,7 +777,7 @@ GLenum SpriteBatch::getSpriteSrcBlendFactor( void ) const
 
 //------------------------------------------------------------------------------
 
-void SpriteBatch::setSpriteDstBlendFactor( GLenum dstBlendFactor )
+void SpriteBatch::setSpriteDstBlendFactor( GFXBlend dstBlendFactor )
 {
     // Finish if a sprite is not selected.
     if ( !checkSpriteSelected() )
@@ -789,11 +789,11 @@ void SpriteBatch::setSpriteDstBlendFactor( GLenum dstBlendFactor )
 
 //------------------------------------------------------------------------------
 
-GLenum SpriteBatch::getSpriteDstBlendFactor( void ) const
+GFXBlend SpriteBatch::getSpriteDstBlendFactor( void ) const
 {
     // Finish if a sprite is not selected.
     if ( !checkSpriteSelected() )
-        return GL_ONE_MINUS_SRC_ALPHA;
+        return GFXBlendInvSrcAlpha;
 
     // Get destination blend factor.
     return mSelectedSprite->getDstBlendFactor();

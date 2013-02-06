@@ -42,16 +42,16 @@ bool _iOSTorqueFatalError = false;
 @synthesize window = _window;
 
 
-- (void)applicationDidFinishLaunching:(UIApplication *)application {
-    
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{
 	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 	//Also we set the currentRotation up so its not invalid
 	currentOrientation = [UIDevice currentDevice].orientation;
 	//So we make a selector to handle that, called didRotate (lower down in the code)
 	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(didRotate:)
-												 name:UIDeviceOrientationDidChangeNotification
-											   object:nil];
+                                            selector:@selector(didRotate:)
+                                                name:UIDeviceOrientationDidChangeNotification
+                                              object:nil];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
@@ -89,7 +89,7 @@ bool _iOSTorqueFatalError = false;
 
 - (void)didRotate:(NSNotification *)notification
 {
-    //Default to landscape left
+	//Default to landscape left
 	UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
 	if(currentOrientation != orientation)
 	{

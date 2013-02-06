@@ -25,19 +25,7 @@
 
 @interface T2DViewController : GLKViewController {
 	/* The pixel dimensions of the backbuffer */
-	GLint backingWidth;
-	GLint backingHeight;
-	
-    /* OpenGL names for the renderbuffer and framebuffers used to render to this view */
-	GLuint viewRenderbuffer, viewFramebuffer;
-	
-	/* OpenGL name for the depth buffer that is attached to viewFramebuffer, if it exists (0 if it does not exist) */
-	GLuint depthRenderbuffer;
-    
-    GLuint _vertexBuffer;
-    GLuint _indexBuffer;
-    GLuint _vertexArray;
-    
+   
     bool isLayedOut;
     
 @public

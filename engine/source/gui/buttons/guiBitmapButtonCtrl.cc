@@ -20,7 +20,8 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 #include "console/console.h"
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxDrawUtil.h"
 #include "console/consoleTypes.h"
 #include "platform/platformAudio.h"
 #include "gui/guiCanvas.h"
@@ -120,15 +121,16 @@ void GuiBitmapButtonCtrl::inspectPostApply()
 
    if ((mBounds.extent.x == 0) && (mBounds.extent.y == 0) && mTextureNormal)
    {
-      TextureObject *texture = (TextureObject *) mTextureNormal;
-      mBounds.extent.x = texture->getBitmapWidth();
-      mBounds.extent.y = texture->getBitmapHeight();
+//      TextureObject *texture = (TextureObject *) mTextureNormal;
+      mBounds.extent.x = mTextureNormal->getBitmapWidth();
+      mBounds.extent.y = mTextureNormal->getBitmapHeight();
    }
 }
 
-void GuiBitmapButtonCtrl::setBitmap(const char *name)
+void GuiBitmapButtonCtrl::setBitmap(const String& name)
 {
-   mBitmapName = StringTable->insert(name);
+//   mBitmapName = StringTable->insert(name);
+    mBitmapName = name;
 
    if(!isAwake())
        return;
@@ -140,24 +142,50 @@ void GuiBitmapButtonCtrl::setBitmap(const char *name)
       dStrcpy(buffer, name);
       p = buffer + dStrlen(buffer);
 
-      mTextureNormal = TextureHandle(buffer, TextureHandle::BitmapTexture, true);
+       String baseName = mBitmapName;
+       static String s_n = "_n";
+       static String s_d = "_d";
+       static String s_h = "_h";
+       static String s_i = "_i";
+       
+       mTextureNormal = GFXTexHandle( baseName, &GFXDefaultPersistentProfile, avar("mTextureNormal"));
       if (!mTextureNormal)
       {
-         dStrcpy(p, "_n");
-         mTextureNormal = TextureHandle(buffer, TextureHandle::BitmapTexture, true);
+          mTextureNormal = GFXTexHandle( baseName + s_n, &GFXDefaultPersistentProfile, avar("mTextureNormal"));
       }
-      dStrcpy(p, "_h");
-      mTextureHilight = TextureHandle(buffer, TextureHandle::BitmapTexture, true);
-      if (!mTextureHilight)
+       mTextureHilight = GFXTexHandle( baseName + s_d, &GFXDefaultPersistentProfile, avar("mTextureHilight"));
+
+       if (!mTextureHilight)
          mTextureHilight = mTextureNormal;
-      dStrcpy(p, "_d");
-      mTextureDepressed = TextureHandle(buffer, TextureHandle::BitmapTexture, true);
-      if (!mTextureDepressed)
+
+       mTextureDepressed = GFXTexHandle( baseName + s_h, &GFXDefaultPersistentProfile, avar("mTextureDepressed"));
+
+       if (!mTextureDepressed)
          mTextureDepressed = mTextureHilight;
-      dStrcpy(p, "_i");
-      mTextureInactive = TextureHandle(buffer, TextureHandle::BitmapTexture, true);
-      if (!mTextureInactive)
+
+       mTextureInactive = GFXTexHandle( baseName + s_i, &GFXDefaultPersistentProfile, avar("mTextureInactive"));
+
+       if (!mTextureInactive)
          mTextureInactive = mTextureNormal;
+       
+//      mTextureNormal = TextureHandle(buffer, TextureHandle::BitmapTexture, true);
+//      if (!mTextureNormal)
+//      {
+//         dStrcpy(p, "_n");
+//         mTextureNormal = TextureHandle(buffer, TextureHandle::BitmapTexture, true);
+//      }
+//      dStrcpy(p, "_h");
+//      mTextureHilight = TextureHandle(buffer, TextureHandle::BitmapTexture, true);
+//      if (!mTextureHilight)
+//         mTextureHilight = mTextureNormal;
+//      dStrcpy(p, "_d");
+//      mTextureDepressed = TextureHandle(buffer, TextureHandle::BitmapTexture, true);
+//      if (!mTextureDepressed)
+//         mTextureDepressed = mTextureHilight;
+//      dStrcpy(p, "_i");
+//      mTextureInactive = TextureHandle(buffer, TextureHandle::BitmapTexture, true);
+//      if (!mTextureInactive)
+//         mTextureInactive = mTextureNormal;
    }
    else
    {
@@ -169,12 +197,13 @@ void GuiBitmapButtonCtrl::setBitmap(const char *name)
    setUpdate();
 }
 
-void GuiBitmapButtonCtrl::setBitmap(const char *name, ButtonState state)
+void GuiBitmapButtonCtrl::setBitmap(const String& name, ButtonState state)
 {
    if(!isAwake() && *name)
        return;
    
-   StringTableEntry temporaryName = StringTable->insert(name);
+//   StringTableEntry temporaryName = StringTable->insert(name);
+    String temporaryName = name;
    
    if (*temporaryName)
    {
@@ -187,19 +216,23 @@ void GuiBitmapButtonCtrl::setBitmap(const char *name, ButtonState state)
        {
           case NORMAL:
               mBitmapNormal = temporaryName;
-              mTextureNormal = TextureHandle(buffer, TextureHandle::BitmapTexture, true);
+               mTextureNormal = GFXTexHandle( temporaryName, &GFXDefaultPersistentProfile, avar("mTextureNormal"));
+//              mTextureNormal = TextureHandle(buffer, TextureHandle::BitmapTexture, true);
               break;
           case HILIGHT:
               mBitmapHilight = temporaryName;
-              mTextureHilight = TextureHandle(buffer, TextureHandle::BitmapTexture, true);
+               mTextureHilight = GFXTexHandle( temporaryName, &GFXDefaultPersistentProfile, avar("mTextureHilight"));
+//              mTextureHilight = TextureHandle(buffer, TextureHandle::BitmapTexture, true);
               break;
           case DEPRESSED:
               mBitmapDepressed = temporaryName;
-              mTextureDepressed = TextureHandle(buffer, TextureHandle::BitmapTexture, true);
+               mTextureDepressed = GFXTexHandle( temporaryName, &GFXDefaultPersistentProfile, avar("mTextureDepressed"));
+//              mTextureDepressed = TextureHandle(buffer, TextureHandle::BitmapTexture, true);
               break;
           case INACTIVE:
               mBitmapInactive = temporaryName;
-              mTextureInactive = TextureHandle(buffer, TextureHandle::BitmapTexture, true);
+               mTextureInactive = GFXTexHandle( temporaryName, &GFXDefaultPersistentProfile, avar("mTextureInactive"));
+//              mTextureInactive = TextureHandle(buffer, TextureHandle::BitmapTexture, true);
               break;
        }
    }
@@ -260,13 +293,13 @@ void GuiBitmapButtonCtrl::onRender(Point2I offset, const RectI& updateRect)
 
 //------------------------------------------------------------------------------
 
-void GuiBitmapButtonCtrl::renderButton(TextureHandle &texture, Point2I &offset, const RectI& updateRect)
+void GuiBitmapButtonCtrl::renderButton(GFXTexHandle &texture, Point2I &offset, const RectI& updateRect)
 {
    if (texture)
    {
       RectI rect(offset, mBounds.extent);
-      dglClearBitmapModulation();
-      dglDrawBitmapStretch(texture, rect);
+      GFX->getDrawUtil()->clearBitmapModulation();
+      GFX->getDrawUtil()->drawBitmapStretch(texture, rect);
       renderChildControls( offset, updateRect);
    }
    else
@@ -293,7 +326,7 @@ void GuiBitmapButtonTextCtrl::onRender(Point2I offset, const RectI& updateRect)
    else
       state = INACTIVE;
 
-   TextureHandle texture;
+   GFXTexHandle texture;
 
    switch (state)
    {
@@ -315,8 +348,8 @@ void GuiBitmapButtonTextCtrl::onRender(Point2I offset, const RectI& updateRect)
    if (texture)
    {
       RectI rect(offset, mBounds.extent);
-      dglClearBitmapModulation();
-      dglDrawBitmapStretch(texture, rect);
+      GFX->getDrawUtil()->clearBitmapModulation();
+      GFX->getDrawUtil()->drawBitmapStretch(texture, rect);
 
       Point2I textPos = offset;
       if(mDepressed)
@@ -325,7 +358,7 @@ void GuiBitmapButtonTextCtrl::onRender(Point2I offset, const RectI& updateRect)
       // Make sure we take the profile's textOffset into account.
       textPos += mProfile->mTextOffset;
 
-      dglSetBitmapModulation( mProfile->mFontColor );
+      GFX->getDrawUtil()->setBitmapModulation( mProfile->mFontColor );
       renderJustifiedText(textPos, mBounds.extent, mButtonText);
 
       renderChildControls( offset, updateRect);

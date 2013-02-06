@@ -24,18 +24,18 @@
 #include "gui/guiCanvas.h"
 #include "console/console.h"
 #include "game/gameInterface.h"
+#include "graphics/gfxDevice.h"
 
 extern void GameDeactivate( bool noRender );
 extern void GameReactivate();
 
 // Static class data:
-Vector<DisplayDevice*>  Video::smDeviceList;
-DisplayDevice*          Video::smCurrentDevice;
+Vector<GFXDevice*>  Video::smDeviceList;
+GFXDevice*          Video::smCurrentDevice;
 bool					Video::smCritical = false;
 bool					Video::smNeedResurrect = false;
 
-Resolution  DisplayDevice::smCurrentRes;
-bool        DisplayDevice::smIsFullScreen;
+GFXVideoMode  GFXDevice::smCurrentRes;
 
 
 ConsoleFunctionGroupBegin(Video, "Video control functions.");
@@ -51,11 +51,11 @@ ConsoleFunction( setDisplayDevice, bool, 2, 6, "( deviceName [, width [ , height
                                                                 "@return Returns true on success, false otherwise.\n"
                                                                 "@sa getDesktopResolution, getDisplayDeviceList, getResolutionList, nextResolution, prevResolution, setRes, setScreenMode, switchBitDepth")
 {
-    Resolution currentRes = Video::getResolution();
+    GFXVideoMode currentRes = Video::getResolution();
 
-    U32 width = ( argc > 2 ) ? dAtoi( argv[2] ) : currentRes.w;
-    U32 height =  ( argc > 3 ) ? dAtoi( argv[3] ) : currentRes.h;
-    U32 bpp = ( argc > 4 ) ? dAtoi( argv[4] ) : currentRes.bpp;
+    U32 width = ( argc > 2 ) ? dAtoi( argv[2] ) : currentRes.resolution.x;
+    U32 height =  ( argc > 3 ) ? dAtoi( argv[3] ) : currentRes.resolution.y;
+    U32 bpp = ( argc > 4 ) ? dAtoi( argv[4] ) : currentRes.bitDepth;
     bool fullScreen = ( argc > 5 ) ? dAtob( argv[5] ) : Video::isFullScreen();
 
    return( Video::setDevice( argv[1], width, height, bpp, fullScreen ) );
@@ -102,8 +102,8 @@ ConsoleFunction( switchBitDepth, bool, 1, 1, "() Use the switchBitDepth function
       return( false );
    }
 
-   Resolution res = Video::getResolution();
-   return( Video::setResolution( res.w, res.h, ( res.bpp == 16 ? 32 : 16 ) ) );
+   GFXVideoMode res = Video::getResolution();
+   return( Video::setResolution( res.resolution.x, res.resolution.y, ( res.bitDepth == 16 ? 32 : 16 ) ) );
 }
 
 
@@ -130,8 +130,8 @@ ConsoleFunction( getRes, const char*, 1, 1, "Get the width, height, and bitdepth
                 "@return A string formatted as \"<width> <height> <bitdepth>\"")
 {
    static char resBuf[16];
-   Resolution res = Video::getResolution();
-   dSprintf( resBuf, sizeof(resBuf), "%d %d %d", res.w, res.h, res.bpp );
+   GFXVideoMode res = Video::getResolution();
+   dSprintf( resBuf, sizeof(resBuf), "%d %d %d", res.resolution.x, res.resolution.y, res.bitDepth );
    return( resBuf );
 }
 
@@ -163,8 +163,8 @@ ConsoleFunction( getDesktopResolution, const char*, 1, 1, "() Use the getDesktop
                                                                 "@sa getDisplayDeviceList, getResolutionList, nextResolution, prevResolution, setDisplayDevice, setRes, setScreenMode, switchBitDepth")
 {
    static char resBuf[16];
-   Resolution res = Video::getDesktopResolution();
-   dSprintf( resBuf, sizeof(resBuf), "%d %d %d", res.w, res.h, res.bpp );
+   GFXVideoMode res = Video::getDesktopResolution();
+   dSprintf( resBuf, sizeof(resBuf), "%d %d %d", res.resolution.x, res.resolution.y, res.bitDepth );
    return( resBuf );
 }
 
@@ -185,7 +185,7 @@ ConsoleFunction( getResolutionList, const char*, 2, 2, "( devicename ) Use the g
                                                                 "@return Returns a tab separated list of valid display resolutions for devicename.\n"
                                                                 "@sa getDesktopResolution, getDisplayDeviceList, setRes, setScreenMode, switchBitDepth")
 {
-    DisplayDevice* device = Video::getDevice( argv[1] );
+    GFXDevice* device = Video::getDevice( argv[1] );
     if ( !device )
     {
         Con::warnf( ConsoleLogEntry::General, "\"%s\" display device not found!", argv[1] );
@@ -208,7 +208,7 @@ ConsoleFunction( isDeviceFullScreenOnly, bool, 2, 2, "( devicename ) Use the isD
                                                                 "@return Returns true if the device can only display full scree, false otherwise.\n"
                                                                 "@sa getResolutionList")
 {
-    DisplayDevice* device = Video::getDevice( argv[1] );
+    GFXDevice* device = Video::getDevice( argv[1] );
     if ( !device )
     {
         Con::warnf( ConsoleLogEntry::General, "\"%s\" display device not found!", argv[1] );
@@ -267,7 +267,7 @@ void Video::destroy()
 
 
 //------------------------------------------------------------------------------
-bool Video::installDevice( DisplayDevice *dev )
+bool Video::installDevice( GFXDevice *dev )
 {
    if ( dev )
    {
@@ -453,7 +453,7 @@ void Video::deactivate( bool force )
 {
    if ( smCritical ) return;
    
-   bool doDeactivate = force ? true : DisplayDevice::isFullScreen();
+   bool doDeactivate = force ? true : GFXDevice::isFullScreen();
 
    Game->gameDeactivate( doDeactivate );
    if ( smCurrentDevice && doDeactivate )
@@ -473,14 +473,14 @@ void Video::reactivate( bool force )
 {
    if ( smCritical ) return;
    
-   bool doReactivate = force ? true : DisplayDevice::isFullScreen();
+   bool doReactivate = force ? true : GFXDevice::isFullScreen();
 
    if ( smCurrentDevice && doReactivate )
    {
-       Resolution res = DisplayDevice::getResolution();
+       GFXVideoMode res = GFXDevice::getResolution();
 
       smCritical = true;
-      smCurrentDevice->activate(res.w,res.h,res.bpp,DisplayDevice::isFullScreen());
+      smCurrentDevice->activate(res.resolution.x,res.resolution.y,res.bitDepth, GFXDevice::isFullScreen());
        Game->textureResurrect();
 
        smCritical = false;
@@ -497,7 +497,7 @@ bool Video::setResolution( U32 width, U32 height, U32 bpp )
    if ( smCurrentDevice )
    {
       if ( bpp == 0 )
-         bpp = DisplayDevice::getResolution().bpp;
+         bpp = GFXDevice::getResolution().bitDepth;
 
       smCritical = true;
       bool result = smCurrentDevice->setResolution( width, height, bpp );
@@ -525,7 +525,7 @@ bool Video::toggleFullScreen()
 
 
 //------------------------------------------------------------------------------
-DisplayDevice* Video::getDevice( const char* renderName )
+GFXDevice* Video::getDevice( const char* renderName )
 {
    for ( S32 i = 0; i < smDeviceList.size(); i++ )
    {
@@ -568,9 +568,9 @@ bool Video::nextRes()
 
 
 //------------------------------------------------------------------------------
-Resolution Video::getResolution()
+GFXVideoMode Video::getResolution()
 {
-   return DisplayDevice::getResolution();
+   return GFXDevice::getResolution();
 }
 
 
@@ -622,7 +622,7 @@ const char* Video::getDriverInfo()
 //------------------------------------------------------------------------------
 bool Video::isFullScreen()
 {
-   return DisplayDevice::isFullScreen();
+   return GFXDevice::isFullScreen();
 }
 
 
@@ -682,94 +682,3 @@ ConsoleFunction( restoreWindow, void, 1, 1, "restoreWindow() - Restore the game 
 
 ConsoleFunctionGroupEnd(Video);
 
-//------------------------------------------------------------------------------
-DisplayDevice::DisplayDevice()
-{
-   mDeviceName = NULL;
-}
-
-
-//------------------------------------------------------------------------------
-void DisplayDevice::init()
-{
-    smCurrentRes = Resolution( 0, 0, 0 );
-    smIsFullScreen = false;
-}
-
-
-//------------------------------------------------------------------------------
-bool DisplayDevice::prevRes()
-{
-   U32 resIndex;
-   for ( resIndex = mResolutionList.size() - 1; resIndex > 0; resIndex-- )
-   {
-      if ( mResolutionList[resIndex].bpp == smCurrentRes.bpp
-        && mResolutionList[resIndex].w <= smCurrentRes.w
-        && mResolutionList[resIndex].h != smCurrentRes.h )
-         break;
-   }
-
-   if ( mResolutionList[resIndex].bpp == smCurrentRes.bpp )
-      return( Video::setResolution( mResolutionList[resIndex].w, mResolutionList[resIndex].h, mResolutionList[resIndex].bpp ) );
-
-    return( false );	
-}
-
-
-//------------------------------------------------------------------------------
-bool DisplayDevice::nextRes()
-{
-   U32 resIndex;
-   for ( resIndex = 0; resIndex < (U32)mResolutionList.size() - 1; resIndex++ )
-   {
-      if ( mResolutionList[resIndex].bpp == smCurrentRes.bpp
-        && mResolutionList[resIndex].w >= smCurrentRes.w
-        && mResolutionList[resIndex].h != smCurrentRes.h )
-         break;
-   }
-
-   if ( mResolutionList[resIndex].bpp == smCurrentRes.bpp )
-      return( Video::setResolution( mResolutionList[resIndex].w, mResolutionList[resIndex].h, mResolutionList[resIndex].bpp ) );
-
-    return( false );	
-}
-
-
-//------------------------------------------------------------------------------
-// This function returns a string containing all of the available resolutions for this device
-// in the format "<bit depth> <width> <height>", separated by tabs.
-//
-const char* DisplayDevice::getResolutionList()
-{
-   if (Con::getBoolVariable("$pref::Video::clipHigh", false))
-        for (S32 i = mResolutionList.size()-1; i >= 0; --i)
-            if (mResolutionList[i].w > 1152 || mResolutionList[i].h > 864)
-                mResolutionList.erase(i);
-
-    if (Con::getBoolVariable("$pref::Video::only16", false))
-        for (S32 i = mResolutionList.size()-1; i >= 0; --i)
-            if (mResolutionList[i].bpp == 32)
-                mResolutionList.erase(i);
-
-   U32 resCount = mResolutionList.size();
-   if ( resCount > 0 )
-   {
-      char* tempBuffer = new char[resCount * 15];
-      tempBuffer[0] = 0;
-      for ( U32 i = 0; i < resCount; i++ )
-      {
-         char newString[15];
-         dSprintf( newString, sizeof( newString ), "%d %d %d\t", mResolutionList[i].w, mResolutionList[i].h, mResolutionList[i].bpp );
-         dStrcat( tempBuffer, newString );
-      }
-      tempBuffer[dStrlen( tempBuffer ) - 1] = 0;
-
-      char* returnString = Con::getReturnBuffer( dStrlen( tempBuffer ) + 1 );
-      dStrcpy( returnString, tempBuffer );
-      delete [] tempBuffer;
-
-      return returnString;
-   }
-
-   return NULL;
-}

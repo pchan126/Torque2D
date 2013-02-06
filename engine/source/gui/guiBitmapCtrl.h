@@ -27,7 +27,7 @@
 #include "gui/guiControl.h"
 #endif
 #ifndef _TEXTURE_MANAGER_H_
-#include "graphics/TextureManager.h"
+#include "graphics/gfxTextureManager.h"
 #endif
 
 
@@ -41,8 +41,8 @@ protected:
    static bool setBitmapName( void *obj, const char *data );
    static const char *getBitmapName( void *obj, const char *data );
 
-   StringTableEntry mBitmapName;
-   TextureHandle mTextureHandle;
+   String mBitmapName;
+   GFXTexHandle mTextureObject;
    Point2I startPoint;
    bool mWrap;
 
@@ -62,10 +62,10 @@ public:
    void inspectPostApply();
 
    void setBitmap(const char *name,bool resize = false);
-   void setBitmap(const TextureHandle &handle,bool resize = false);
+   void setBitmap(const GFXTexHandle &handle,bool resize = false);
 
-   S32 getWidth() const       { return(mTextureHandle.getWidth()); }
-   S32 getHeight() const      { return(mTextureHandle.getHeight()); }
+   S32 getWidth() const       { return(mTextureObject.getWidth()); }
+   S32 getHeight() const      { return(mTextureObject.getHeight()); }
 
    //Luma:	ability to specify source rect for image UVs
    void setSourceRect(U32 x, U32 y, U32 width, U32 height);
@@ -73,6 +73,8 @@ public:
 
    void onRender(Point2I offset, const RectI &updateRect);
    void setValue(S32 x, S32 y);
+    
+    void updateSizing();
 };
 
 #endif

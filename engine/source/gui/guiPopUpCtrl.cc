@@ -37,7 +37,9 @@
 //										includes the setNoneSelected console method.
 //
 
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxDrawUtil.h"
+#include "graphics/primBuilder.h"
 #include "gui/guiCanvas.h"
 #include "gui/guiPopUpCtrl.h"
 #include "console/consoleTypes.h"
@@ -196,14 +198,14 @@ void GuiPopupTextListCtrl::onRenderCell(Point2I offset, Point2I cell, bool selec
       // DAW: Render a background colour for the cell
       RectI cellR(offset.x, offset.y, size.x, size.y);
       ColorI color(0,0,0);
-      dglDrawRectFill(cellR, color);
+      GFX->getDrawUtil()->drawRectFill(cellR, color);
 
    } else if(selected)
    {
       // DAW: Render a background colour for the cell
       RectI cellR(offset.x, offset.y, size.x, size.y);
       ColorI color(128,128,128);
-      dglDrawRectFill(cellR, color);
+      GFX->getDrawUtil()->drawRectFill(cellR, color);
    }
 
    // DAW: Define the default x offset for the text
@@ -216,8 +218,8 @@ void GuiPopupTextListCtrl::onRenderCell(Point2I offset, Point2I cell, bool selec
    {
       Point2I coloredboxsize(15,10);
       RectI r(offset.x + mProfile->mTextOffset.x, offset.y+2, coloredboxsize.x, coloredboxsize.y);
-      dglDrawRectFill( r, boxColor);
-      dglDrawRect( r, ColorI(0,0,0));
+      GFX->getDrawUtil()->drawRectFill( r, boxColor);
+      GFX->getDrawUtil()->drawRect( r, ColorI(0,0,0));
 
       textXOffset += coloredboxsize.x + mProfile->mTextOffset.x;
    }
@@ -225,8 +227,8 @@ void GuiPopupTextListCtrl::onRenderCell(Point2I offset, Point2I cell, bool selec
    ColorI fontColor;
    mPopUpCtrl->getFontColor( fontColor, mList[cell.y].id, selected, mouseOver );
 
-   dglSetBitmapModulation( fontColor );
-   //dglDrawText( mFont, Point2I( offset.x + 4, offset.y ), mList[cell.y].text );
+   GFX->getDrawUtil()->setBitmapModulation( fontColor );
+   //GFX->getDrawUtil()->drawText( mFont, Point2I( offset.x + 4, offset.y ), mList[cell.y].text );
 
    // DAW: Get the number of columns in the cell
    S32 colcount = getColumnCount(mList[cell.y].text, "\t");
@@ -238,17 +240,17 @@ void GuiPopupTextListCtrl::onRenderCell(Point2I offset, Point2I cell, bool selec
 
       // Draw the first column
       getColumn(mList[cell.y].text, buff, 0, "\t");
-      dglDrawText( mFont, Point2I( textXOffset, offset.y ), buff ); // DAW: Used mTextOffset as a margin for the text list rather than the hard coded value of '4'.
+      GFX->getDrawUtil()->drawText( mFont, Point2I( textXOffset, offset.y ), buff ); // DAW: Used mTextOffset as a margin for the text list rather than the hard coded value of '4'.
 
       // Draw the second column to the right
       getColumn(mList[cell.y].text, buff, 1, "\t");
       S32 txt_w = mFont->getStrWidth(buff);
 
-      dglDrawText( mFont, Point2I( offset.x+size.x-mProfile->mTextOffset.x-txt_w, offset.y ), buff ); // DAW: Used mTextOffset as a margin for the text list rather than the hard coded value of '4'.
+      GFX->getDrawUtil()->drawText( mFont, Point2I( offset.x+size.x-mProfile->mTextOffset.x-txt_w, offset.y ), buff ); // DAW: Used mTextOffset as a margin for the text list rather than the hard coded value of '4'.
 
    } else
    {
-      dglDrawText( mFont, Point2I( textXOffset, offset.y ), mList[cell.y].text ); // DAW: Used mTextOffset as a margin for the text list rather than the hard coded value of '4'.
+      GFX->getDrawUtil()->drawText( mFont, Point2I( textXOffset, offset.y ), mList[cell.y].text ); // DAW: Used mTextOffset as a margin for the text list rather than the hard coded value of '4'.
    }
 }
 
@@ -601,11 +603,12 @@ void GuiPopUpMenuCtrl::setBitmap(const char *name)
       p = buffer + dStrlen(buffer);
 
       dStrcpy(p, "_n");
-      mTextureNormal = TextureHandle(buffer, TextureHandle::BitmapTexture, true);
+//      mTextureNormal = TextureHandle(buffer, TextureHandle::BitmapTexture, true);
+       mTextureNormal = GFXTexHandle( (StringTableEntry)buffer, &GFXDefaultGUIProfile, avar("%s() - mTextureNormal (line %d)", __FUNCTION__, __LINE__) );
 
       dStrcpy(p, "_d");
-      mTextureDepressed = TextureHandle(buffer, TextureHandle::BitmapTexture, true);
-      if (!mTextureDepressed)
+       mTextureDepressed = GFXTexHandle( (StringTableEntry)buffer, &GFXDefaultGUIProfile, avar("%s() - mTextureDepressed (line %d)", __FUNCTION__, __LINE__) );
+       if (!mTextureDepressed)
          mTextureDepressed = mTextureNormal;
    }
    else
@@ -858,29 +861,29 @@ void GuiPopUpMenuCtrl::onRender(Point2I offset, const RectI &updateRect)
       else
       {
          //renderSlightlyLoweredBox(r, mProfile);
-         dglDrawRectFill( r, mProfile->mFillColor);
+         GFX->getDrawUtil()->drawRectFill( r, mProfile->mFillColor);
       }
 
       // DAW: Draw a bitmap over the background?
       if(mTextureDepressed)
       {
          RectI rect(offset, mBitmapBounds);
-         dglClearBitmapModulation();
-         dglDrawBitmapStretch(mTextureDepressed, rect);
+         GFX->getDrawUtil()->clearBitmapModulation();
+         GFX->getDrawUtil()->drawBitmapStretch(mTextureDepressed, rect);
       } else if(mTextureNormal)
       {
          RectI rect(offset, mBitmapBounds);
-         dglClearBitmapModulation();
-         dglDrawBitmapStretch(mTextureNormal, rect);
+         GFX->getDrawUtil()->clearBitmapModulation();
+         GFX->getDrawUtil()->drawBitmapStretch(mTextureNormal, rect);
       }
 
       // Do we render a bitmap border or lines?
       if(!(mProfile->mProfileForChildren && mProfile->mBitmapArrayRects.size()))
       {
-         dglDrawLine(l, t, l, b, colorWhite);
-         dglDrawLine(l, t, r2, t, colorWhite);
-         dglDrawLine(l + 1, b, r2, b, mProfile->mBorderColor);
-         dglDrawLine(r2, t + 1, r2, b - 1, mProfile->mBorderColor);
+         GFX->getDrawUtil()->drawLine(l, t, l, b, colorWhite);
+         GFX->getDrawUtil()->drawLine(l, t, r2, t, colorWhite);
+         GFX->getDrawUtil()->drawLine(l + 1, b, r2, b, mProfile->mBorderColor);
+         GFX->getDrawUtil()->drawLine(r2, t + 1, r2, b - 1, mProfile->mBorderColor);
       }
 
    }
@@ -900,24 +903,24 @@ void GuiPopUpMenuCtrl::onRender(Point2I offset, const RectI &updateRect)
 
          } else
          {
-            dglDrawRectFill( r, mProfile->mFillColorHL);
+            GFX->getDrawUtil()->drawRectFill( r, mProfile->mFillColorHL);
          }
 
          // DAW: Draw a bitmap over the background?
          if(mTextureNormal)
          {
             RectI rect(offset, mBitmapBounds);
-            dglClearBitmapModulation();
-            dglDrawBitmapStretch(mTextureNormal, rect);
+            GFX->getDrawUtil()->clearBitmapModulation();
+            GFX->getDrawUtil()->drawBitmapStretch(mTextureNormal, rect);
          }
 
          // Do we render a bitmap border or lines?
          if(!(mProfile->mProfileForChildren && mProfile->mBitmapArrayRects.size()))
          {
-            dglDrawLine(l, t, l, b, colorWhite);
-            dglDrawLine(l, t, r2, t, colorWhite);
-            dglDrawLine(l + 1, b, r2, b, mProfile->mBorderColor);
-            dglDrawLine(r2, t + 1, r2, b - 1, mProfile->mBorderColor);
+            GFX->getDrawUtil()->drawLine(l, t, l, b, colorWhite);
+            GFX->getDrawUtil()->drawLine(l, t, r2, t, colorWhite);
+            GFX->getDrawUtil()->drawLine(l + 1, b, r2, b, mProfile->mBorderColor);
+            GFX->getDrawUtil()->drawLine(r2, t + 1, r2, b - 1, mProfile->mBorderColor);
          }
       }
       else
@@ -932,21 +935,21 @@ void GuiPopUpMenuCtrl::onRender(Point2I offset, const RectI &updateRect)
 
          } else
          {
-            dglDrawRectFill( r, mProfile->mFillColorNA);
+            GFX->getDrawUtil()->drawRectFill( r, mProfile->mFillColorNA);
          }
 
          // DAW: Draw a bitmap over the background?
          if(mTextureNormal)
          {
             RectI rect(offset, mBitmapBounds);
-            dglClearBitmapModulation();
-            dglDrawBitmapStretch(mTextureNormal, rect);
+            GFX->getDrawUtil()->clearBitmapModulation();
+            GFX->getDrawUtil()->drawBitmapStretch(mTextureNormal, rect);
          }
 
          // Do we render a bitmap border or lines?
          if(!(mProfile->mProfileForChildren && mProfile->mBitmapArrayRects.size()))
          {
-            dglDrawRect(r, mProfile->mBorderColorNA);
+            GFX->getDrawUtil()->drawRect(r, mProfile->mBorderColorNA);
          }
       }
       //      renderSlightlyRaisedBox(r, mProfile); // DAW: Used to be the only 'else' condition to mInAction above.
@@ -1036,8 +1039,8 @@ void GuiPopUpMenuCtrl::onRender(Point2I offset, const RectI &updateRect)
       {
          Point2I coloredboxsize(15,10);
          RectI r(offset.x + mProfile->mTextOffset.x, offset.y + ((mBounds.extent.y - coloredboxsize.y) / 2), coloredboxsize.x, coloredboxsize.y);
-         dglDrawRectFill( r, boxColor);
-         dglDrawRect( r, ColorI(0,0,0));
+         GFX->getDrawUtil()->drawRectFill( r, boxColor);
+         GFX->getDrawUtil()->drawRect( r, ColorI(0,0,0));
 
          localStart.x += coloredboxsize.x + mProfile->mTextOffset.x;
       }
@@ -1046,17 +1049,17 @@ void GuiPopUpMenuCtrl::onRender(Point2I offset, const RectI &updateRect)
       Point2I globalStart = localToGlobalCoord(localStart);
       ColorI fontColor   = mActive ? (mInAction ? mProfile->mFontColorNA : mProfile->mFontColor) : mProfile->mFontColorNA;
 
-      dglSetBitmapModulation(fontColor); // DAW: was: (mProfile->mFontColor);
+      GFX->getDrawUtil()->setBitmapModulation(fontColor); // DAW: was: (mProfile->mFontColor);
 
 
         // Save the clip rectangle.
-        const RectI previousClipRect = dglGetClipRect();
+        const RectI previousClipRect = GFX->getClipRect();
       
         // Set a text rendering clip rectangle when we're using bitmap edges.
         if( mProfile->mProfileForChildren && mProfile->mBitmapArrayRects.size() )
         {
             RectI* mBitmapBounds = mProfile->mBitmapArrayRects.address();
-            dglSetClipRect( RectI( r.point.x + mBitmapBounds[BorderLeft].extent.x, r.point.y, r.extent.x - mBitmapBounds[BorderLeft].extent.x - mBitmapBounds[BorderRight].extent.x, r.extent.y ) );
+            GFX->setClipRect( RectI( r.point.x + mBitmapBounds[BorderLeft].extent.x, r.point.y, r.extent.x - mBitmapBounds[BorderLeft].extent.x - mBitmapBounds[BorderRight].extent.x, r.extent.y ) );
         }
 
       // DAW: Get the number of columns in the text
@@ -1069,7 +1072,7 @@ void GuiPopUpMenuCtrl::onRender(Point2I offset, const RectI &updateRect)
 
          // Draw the first column
          getColumn(mText, buff, 0, "\t");
-         dglDrawText(mFont, globalStart, buff, mProfile->mFontColors);
+         GFX->getDrawUtil()->drawText(mFont, globalStart, buff, mProfile->mFontColors);
 
          // Draw the second column to the right
          getColumn(mText, buff, 1, "\t");
@@ -1080,21 +1083,21 @@ void GuiPopUpMenuCtrl::onRender(Point2I offset, const RectI &updateRect)
             // right cap of the border.
             RectI* mBitmapBounds = mProfile->mBitmapArrayRects.address();
             Point2I textpos = localToGlobalCoord(Point2I(mBounds.extent.x - txt_w - mBitmapBounds[2].extent.x,localStart.y));
-            dglDrawText(mFont, textpos, buff, mProfile->mFontColors);
+            GFX->getDrawUtil()->drawText(mFont, textpos, buff, mProfile->mFontColors);
 
          } else
          {
             Point2I textpos = localToGlobalCoord(Point2I(mBounds.extent.x - txt_w - 12,localStart.y));
-            dglDrawText(mFont, textpos, buff, mProfile->mFontColors);
+            GFX->getDrawUtil()->drawText(mFont, textpos, buff, mProfile->mFontColors);
          }
 
       } else
       {
-         dglDrawText(mFont, globalStart, mText, mProfile->mFontColors);
+         GFX->getDrawUtil()->drawText(mFont, globalStart, mText, mProfile->mFontColors);
       }
 
       // Restore the clip rectangle.
-      dglSetClipRect( previousClipRect );
+      GFX->setClipRect( previousClipRect );
 
       // If we're rendering a bitmap border, then it will take care of the arrow.
       if(!(mProfile->mProfileForChildren && mProfile->mBitmapArrayRects.size()))
@@ -1106,12 +1109,13 @@ void GuiPopUpMenuCtrl::onRender(Point2I offset, const RectI &updateRect)
          F32 top = (F32)(r.extent.y / 2 + r.point.y - 4);
          F32 bottom = (F32)(top + 8);
 
-         glBegin(GL_TRIANGLES);
-         glColor3i(mProfile->mFontColor.red,mProfile->mFontColor.green,mProfile->mFontColor.blue);
-         glVertex2fv( Point3F(left,top,0) );
-         glVertex2fv( Point3F(right,top,0) );
-         glVertex2fv( Point3F(middle,bottom,0) );
-         glEnd();
+          PrimBuild::color( mProfile->mFontColor );
+          
+          PrimBuild::begin( GFXTriangleList, 3 );
+          PrimBuild::vertex2fv( Point3F( (F32)left, (F32)top, 0.0f ) );
+          PrimBuild::vertex2fv( Point3F( (F32)right, (F32)top, 0.0f ) );
+          PrimBuild::vertex2fv( Point3F( (F32)middle, (F32)bottom, 0.0f ) );
+          PrimBuild::end();
       }
 }
 

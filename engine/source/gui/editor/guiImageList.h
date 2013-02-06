@@ -55,8 +55,8 @@ class GuiImageList : public SimObject
    typedef struct tag_TextureEntry
    {
       StringTableEntry TexturePath;
-      TextureHandle Handle;
-      TextureObject* Object;
+      GFXTexHandle Handle;
+      GFXTextureObject* Object;
       U32 id;
    }TextureEntry,*PTextureEntry;
    
@@ -76,16 +76,16 @@ class GuiImageList : public SimObject
    // Image managing functions
    bool Clear();
    inline U32 Count() { return (U32)mTextures.size(); };
-   U32 Insert( const char* texturePath , TextureHandle::TextureHandleType type = TextureHandle::BitmapTexture );
+   U32 Insert( const char* texturePath , GFXTextureProfile *profile = &GFXDefaultGUIProfile, const String &desc = String::EmptyString );
 
    bool FreeTextureEntry( U32 Index );
    bool FreeTextureEntry( PTextureEntry Entry );
 
-   TextureObject *GetTextureObject( U32 Index );
-   TextureObject *GetTextureObject( const char* TexturePath );
+   GFXTextureObject *GetTextureObject( U32 Index );
+   GFXTextureObject *GetTextureObject( const char* TexturePath );
 
-   TextureHandle GetTextureHandle( U32 Index );
-   TextureHandle GetTextureHandle( const char* TexturePath );
+   GFXTexHandle GetTextureHandle( U32 Index );
+   GFXTexHandle GetTextureHandle( const char* TexturePath );
 
    const char * GetTexturePath( U32 Index );
 

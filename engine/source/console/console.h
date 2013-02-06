@@ -591,6 +591,8 @@ namespace Con
    char *getFloatArg(F64 arg);
    char *getIntArg  (S32 arg);
    char* getBoolArg(bool arg);
+   char* getStringArg( const char *arg );
+    char* getStringArg( const String& arg );
    /// @}
 
    /// @name Namespaces

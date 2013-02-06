@@ -43,17 +43,19 @@
 #include "io/resource/resourceManager.h"
 #endif
 
-#include "graphics/TextureManager.h"
+#include "graphics/gfxTextureManager.h"
+#ifndef _GFXTEXTUREHANDLE_H_
+#include "graphics/gfxTextureHandle.h"
+#endif
 
 //-Mat use this to make space characters default to a certain x increment
 #define PUAP_SPACE_CHAR_X_INCREMENT	5
 
-
-
+GFX_DeclareTextureProfile(GFXFontTextureProfile);
 
 extern ResourceInstance* constructNewFont(Stream& stream);
 
-class TextureHandle;
+class GFXTexHandle;
 
 class GFont : public ResourceInstance
 {
@@ -75,7 +77,7 @@ public:
    // Enumerations and structures available to derived classes
 private:
    PlatformFont *mPlatformFont;
-   Vector<TextureHandle>mTextureSheets;
+   Vector<GFXTexHandle>mTextureSheets;
 
    S32 mCurX;
    S32 mCurY;
@@ -111,7 +113,7 @@ protected:
 public:
    static Resource<GFont> create(const char *faceName, U32 size, const char *cacheDirectory, U32 charset = TGE_ANSI_CHARSET);
 
-   TextureHandle getTextureHandle(S32 index)
+   GFXTexHandle getTextureHandle(S32 index)
    {
        return mTextureSheets[index];
    }
@@ -165,7 +167,7 @@ public:
    /// are treated as having 0 for RGB).
    bool isAlphaOnly()
    {
-      return mTextureSheets[0].getBitmap()->getFormat() == GBitmap::Alpha;
+      return mTextureSheets[0]->getBitmap()->getFormat() == GFXFormatA8;
    }
 
    /// Get the filename for a cached font.

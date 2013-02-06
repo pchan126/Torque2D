@@ -177,10 +177,10 @@ public:
 
     void setSpriteBlendMode( const bool blendMode );
     bool getSpriteBlendMode( void ) const;
-    void setSpriteSrcBlendFactor( GLenum srcBlendFactor );
-    GLenum getSpriteSrcBlendFactor( void ) const;
-    void setSpriteDstBlendFactor( GLenum dstBlendFactor );
-    GLenum getSpriteDstBlendFactor( void ) const;
+    void setSpriteSrcBlendFactor( GFXBlend srcBlendFactor );
+    GFXBlend getSpriteSrcBlendFactor( void ) const;
+    void setSpriteDstBlendFactor( GFXBlend dstBlendFactor );
+    GFXBlend getSpriteDstBlendFactor( void ) const;
     void setSpriteBlendColor( const ColorF& blendColor );
     const ColorF& getSpriteBlendColor( void ) const;
     void setSpriteBlendAlpha( const F32 alpha );

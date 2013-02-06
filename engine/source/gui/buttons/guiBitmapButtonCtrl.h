@@ -26,8 +26,11 @@
 #ifndef _GUIBUTTONCTRL_H_
 #include "gui/buttons/guiButtonCtrl.h"
 #endif
-#ifndef _TEXTURE_MANAGER_H_
-#include "graphics/TextureManager.h"
+//#ifndef _TEXTURE_MANAGER_H_
+//#include "graphics/gfxTextureManager.h"
+//#endif
+#ifndef _GFXTEXTUREMANAGER_H_
+#include "graphics/gfxTextureManager.h"
 #endif
 
 enum ButtonState
@@ -51,12 +54,12 @@ protected:
    StringTableEntry mBitmapInactive;
    bool mIsLegacyVersion;
 
-   TextureHandle mTextureNormal;
-   TextureHandle mTextureHilight;
-   TextureHandle mTextureDepressed;
-   TextureHandle mTextureInactive;
+   GFXTexHandle mTextureNormal;
+   GFXTexHandle mTextureHilight;
+   GFXTexHandle mTextureDepressed;
+   GFXTexHandle mTextureInactive;
 
-   void renderButton(TextureHandle &texture, Point2I &offset, const RectI& updateRect);
+   void renderButton(GFXTexHandle &texture, Point2I &offset, const RectI& updateRect);
 
 public:
    DECLARE_CONOBJECT(GuiBitmapButtonCtrl);
@@ -69,8 +72,8 @@ public:
    void onSleep();
    void inspectPostApply();
 
-   void setBitmap(const char *name, ButtonState state);
-   void setBitmap(const char *name);
+   void setBitmap(const String& name, ButtonState state);
+   void setBitmap(const String& name);
 
    void onRender(Point2I offset, const RectI &updateRect);
 };

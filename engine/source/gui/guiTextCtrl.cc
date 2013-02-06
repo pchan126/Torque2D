@@ -24,7 +24,8 @@
 #include "console/console.h"
 #include "graphics/color.h"
 #include "gui/guiTextCtrl.h"
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxDrawUtil.h"
 #include "gui/language/lang.h"
 
 // -----------------------------------------------------------------------------
@@ -214,12 +215,12 @@ void GuiTextCtrl::onRender(Point2I offset, const RectI &updateRect)
         StringBuffer truncatedBuffer = truncate(textBuffer, terminationString, width);
         const UTF8* truncatedBufferPtr = truncatedBuffer.getPtr8();
         
-        dglSetBitmapModulation(fontColor);
+        GFX->getDrawUtil()->setBitmapModulation(fontColor);
 		renderJustifiedText(offset, mBounds.extent, (char*)truncatedBufferPtr);
     }
     else
     {
-		dglSetBitmapModulation(fontColor);
+		GFX->getDrawUtil()->setBitmapModulation(fontColor);
 		renderJustifiedText(offset, mBounds.extent, (char*)mText);
 	}
 

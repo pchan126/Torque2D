@@ -146,6 +146,23 @@ namespace Con
         dSprintf(ret, 32, "%d", arg);
         return ret;
     }
+
+    
+    char *getStringArg( const char *arg )
+    {
+        U32 len = dStrlen( arg ) + 1;
+        char *ret = STR.getArgBuffer( len );
+        dMemcpy( ret, arg, len );
+        return ret;
+    }
+    
+    char* getStringArg( const String& arg )
+    {
+        const U32 size = arg.size();
+        char* ret = STR.getArgBuffer( size );
+        dMemcpy( ret, arg.c_str(), size );
+        return ret;
+    }
 }
 
 //------------------------------------------------------------

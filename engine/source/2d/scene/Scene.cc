@@ -25,7 +25,7 @@
 #endif
 
 #ifndef _DGL_H_
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
 #endif
 
 #ifndef _CONSOLETYPES_H_
@@ -907,14 +907,15 @@ void Scene::sceneRender( const SceneRenderState* pSceneRenderState )
     pDebugStats->batchNoBatchFlush              = 0;
     pDebugStats->batchAnonymousFlush            = 0;
 
+//    SceneCameraState cameraState = SceneCameraState::fromGFX();
+    
     // Set batch renderer wireframe mode.
     mBatchRenderer.setWireframeMode( getDebugMask() & SCENE_DEBUG_WIREFRAME_RENDER );
 
     // Clear the background color if requested.
     if ( mUseBackgroundColor )
     {
-        glClearColor( mBackgroundColor.red, mBackgroundColor.green, mBackgroundColor.blue, mBackgroundColor.alpha );
-        glClear(GL_COLOR_BUFFER_BIT);	
+        GFX->clear( GFXClearZBuffer | GFXClearStencil | GFXClearTarget, mBackgroundColor, 1.0f, 0 );
     }
 
     // Debug Profiling.
@@ -926,9 +927,16 @@ void Scene::sceneRender( const SceneRenderState* pSceneRenderState )
 
     // Rotate the world matrix by the camera angle.
     const Vector2& cameraPosition = pSceneRenderState->mRenderPosition;
-    glTranslatef( cameraPosition.x, cameraPosition.y, 0.0f );
-    glRotatef( mRadToDeg(pSceneRenderState->mRenderAngle), 0.0f, 0.0f, 1.0f );
-    glTranslatef( -cameraPosition.x, -cameraPosition.y, 0.0f );
+    
+    MatrixF wm = GFX->getWorldMatrix();
+    wm.translate(cameraPosition.x, cameraPosition.y, 0.0f);
+    wm.rotateZ(pSceneRenderState->mRenderAngle);
+    wm.translate(-cameraPosition.x, -cameraPosition.y, 0.0f );
+    GFX->setWorldMatrix(wm);
+
+//    glTranslatef( cameraPosition.x, cameraPosition.y, 0.0f );
+//    glRotatef( mRadToDeg(pSceneRenderState->mRenderAngle), 0.0f, 0.0f, 1.0f );
+//    glTranslatef( -cameraPosition.x, -cameraPosition.y, 0.0f );
 
     // Clear world query.
     mpWorldQuery->clearQuery();

@@ -111,11 +111,11 @@ bool GBitmap::readJPEG(Stream &stream)
    // Read file header, set default decompression parameters
    jpeg_read_header(&cinfo, true);
 
-   BitmapFormat format;
+   GFXFormat format;
    switch (cinfo.out_color_space)
    {
-      case JCS_GRAYSCALE:  format = Alpha; break;
-      case JCS_RGB:        format = RGB;   break;
+      case JCS_GRAYSCALE:  format = GFXFormatA8; break;
+      case JCS_RGB:        format = GFXFormatR8G8B8;   break;
       default:
          jpeg_destroy_decompress(&cinfo);
          return false;
@@ -131,7 +131,7 @@ bool GBitmap::readJPEG(Stream &stream)
    U32 rowBytes = cinfo.output_width * cinfo.output_components;
 
    U8* pBase = (U8*)getBits();
-   for (U32 i = 0; i < height; i++)
+   for (U32 i = 0; i < mHeight; i++)
    {
       JSAMPROW rowPointer = pBase + (i * rowBytes);
       jpeg_read_scanlines(&cinfo, &rowPointer, 1);
@@ -155,14 +155,14 @@ bool GBitmap::writeJPEG(Stream& stream) const
    // in Alpha format should be saved as a grayscale which coincides
    // with how the readJPEG function will read-in a JPEG. So the
    // only formats supported are RGB and Alpha, not RGBA.
-   AssertFatal(getFormat() == RGB || getFormat() == Alpha,
+   AssertFatal(getFormat() == GFXFormatR8G8B8 || getFormat() == GFXFormatA8,
                 "GBitmap::writeJPEG: ONLY RGB bitmap writing supported at this time.");
-   if (internalFormat != RGB && internalFormat != Alpha)
+   if (mInternalFormat != GFXFormatR8G8B8 && mInternalFormat != GFXFormatA8)
       return false;
 
    // maximum image size allowed
    #define MAX_HEIGHT 4096
-   if (height >= MAX_HEIGHT)
+   if (mHeight >= MAX_HEIGHT)
       return false;
 
    // Bind our own stream writing, error, and memory flush functions
@@ -185,30 +185,32 @@ bool GBitmap::writeJPEG(Stream& stream) const
    // set the image properties
    cinfo.image_width = getWidth();           // image width
    cinfo.image_height = getHeight();         // image height
-   cinfo.input_components = bytesPerPixel;   // samples per pixel(RGB:3, Alpha:1)
-   switch (internalFormat)
+   cinfo.input_components = mBytesPerPixel;   // samples per pixel(RGB:3, Alpha:1)
+   switch (mInternalFormat)
    {
-      case Alpha:  // no alpha support in JPEG format, so turn it into a grayscale
+      case GFXFormatA8:  // no alpha support in JPEG format, so turn it into a grayscale
          cinfo.in_color_space = JCS_GRAYSCALE;
          break;
-      case RGB:    // otherwise we are writing in RGB format
+      case GFXFormatR8G8B8:    // otherwise we are writing in RGB format
          cinfo.in_color_space = JCS_RGB;
          break;
-      case Palettized:
-      case Intensity:
-      case RGBA:
-      case RGB565:
-      case RGB5551:
-      case Luminance:
-#ifdef TORQUE_OS_IOS
-      case PVR2:
-      case PVR2A:
-      case PVR4:
-      case PVR4A:
-#endif
+//      case Palettized:
+//      case Intensity:
+//      case RGBA:
+//      case RGB565:
+//      case RGB5551:
+//      case Luminance:
+//#ifdef TORQUE_OS_IOS
+//      case PVR2:
+//      case PVR2A:
+//      case PVR4:
+//      case PVR4A:
+//#endif
+       default:
        {
            // error, unhandled case
        }
+           break;
    }
    // use default compression params(75% compression)
    jpeg_set_defaults(&cinfo);
@@ -221,7 +223,7 @@ bool GBitmap::writeJPEG(Stream& stream) const
    U32 rowBytes = cinfo.image_width * cinfo.input_components;
 
    U8* pBase = (U8*)getBits();
-   for (U32 i = 0; i < height; i++)
+   for (U32 i = 0; i < mHeight; i++)
    {
       // write the image data
       JSAMPROW rowPointer = pBase + (i * rowBytes);

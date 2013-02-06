@@ -21,7 +21,13 @@
 //-----------------------------------------------------------------------------
 
 #include "graphics/DynamicTexture.h"
-#include "graphics/TextureManager.h"
+#include "graphics/gfxTextureManager.h"
+
+GFX_ImplementTextureProfile(GFXDynamicTextureProfile,
+                            GFXTextureProfile::DiffuseMap,
+                            GFXTextureProfile::PreserveSize |
+                            GFXTextureProfile::Static,
+                            GFXTextureProfile::None);
 
 //-----------------------------------------------------------------------------
 
@@ -29,7 +35,7 @@ DynamicTexture::DynamicTexture() :
     mpBitmap( NULL )
 {
     // Generate a texture key.
-    mTextureKey = TextureManager::getUniqueTextureKey();
+//    mTextureKey = TextureManager::getUniqueTextureKey();
 }
 
 //-----------------------------------------------------------------------------
@@ -49,8 +55,9 @@ void DynamicTexture::setSize( const U32 texelWidth, const U32 texelHeight )
     // Generate new bitmap.
     // NOTE: Any previous bitmap would be allocated to the texture handle therefore destroyed
     // when the texture handle is modified.
-    mpBitmap = new GBitmap( texelWidth, texelHeight, false, GBitmap::RGBA );
+    mpBitmap = new GBitmap( texelWidth, texelHeight, false, GFXFormatR8G8B8A8 );
 
     // Set texture against bitmap.
-    mTextureHandle.set( mTextureKey, mpBitmap, TextureHandle::BitmapKeepTexture );
+//    mTextureHandle.set( mTextureKey, mpBitmap, TextureHandle::BitmapKeepTexture );
+    
 }

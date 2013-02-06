@@ -21,7 +21,8 @@
 //-----------------------------------------------------------------------------
 
 #include "console/consoleTypes.h"
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxDrawUtil.h"
 #include "gui/guiCanvas.h"
 #include "gui/containers/guiFrameCtrl.h"
 
@@ -490,12 +491,12 @@ void GuiFrameSetCtrl::onRender(Point2I offset, const RectI &updateRect )
 
    // draw the border of the frameset if specified
    if (mProfile->mOpaque)
-      dglDrawRectFill(r, mProfile->mFillColor);
+      GFX->getDrawUtil()->drawRectFill(r, mProfile->mFillColor);
 
    drawDividers(offset);
 
    if (mProfile->mBorder)
-      dglDrawRect(r, mProfile->mBorderColor);
+      GFX->getDrawUtil()->drawRect(r, mProfile->mBorderColor);
 
    // draw the frame contents
    renderChildControls(offset, updateRect);
@@ -1004,13 +1005,13 @@ void GuiFrameSetCtrl::drawDividers(const Point2I &offset)
       {
          r.point = Point2I(*itr - mFramesetDetails.mBorderWidth, mFudgeFactor) + offset;
          r.extent.set(mFramesetDetails.mBorderWidth, mBounds.extent.y - ( 2 * mFudgeFactor ) );
-         dglDrawRectFill(r, mFramesetDetails.mBorderColor);
+         GFX->getDrawUtil()->drawRectFill(r, mFramesetDetails.mBorderColor);
       }
       for (itr = mRowOffsets.begin() + 1; itr < mRowOffsets.end(); itr++)
       {
          r.point = Point2I(mFudgeFactor, *itr - mFramesetDetails.mBorderWidth) + offset;
          r.extent.set(mBounds.extent.x - ( 2 * mFudgeFactor ), mFramesetDetails.mBorderWidth);
-         dglDrawRectFill(r, mFramesetDetails.mBorderColor);
+         GFX->getDrawUtil()->drawRectFill(r, mFramesetDetails.mBorderColor);
       }
    }
 }

@@ -24,6 +24,8 @@
 #include "platform/platformVideo.h"
 #include "game/gameInterface.h"
 
+#include "platformOSX/graphics/gfxOpenGLDevice.h"
+
 #pragma mark ---- OSXPlatState Implementation ----
 
 @interface osxPlatState (PrivateMethods)

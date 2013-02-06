@@ -61,7 +61,7 @@ public:
     AnimationController();
     virtual ~AnimationController();
 
-    TextureHandle&                                  getImageTexture( void )                 { return mAnimationAsset->getImage()->getImageTexture(); };
+    GFXTexHandle&                                  getImageTexture( void )                 { return mAnimationAsset->getImage()->getImageTexture(); };
     const ImageAsset::FrameArea&                    getCurrentImageFrameArea( void ) const;
     const AnimationAsset*                           getCurrentAnimation( void ) const       { return mAnimationAsset.notNull() ? mAnimationAsset : NULL; };
     const StringTableEntry                          getCurrentAnimationAssetId( void ) const { return mAnimationAsset.getAssetId(); };

@@ -563,7 +563,7 @@ void ParticlePlayer::sceneRender( const SceneRenderState* pSceneRenderState, con
         if ( pParticleAssetEmitter->getIntenseParticles() )
         {
             // Yes, so set additive blending.
-            pBatchRenderer->setBlendMode( GL_SRC_ALPHA, GL_ONE );
+            pBatchRenderer->setBlendMode( GFXBlendSrcAlpha, GFXBlendOne );
         }
         else
         {
@@ -582,7 +582,10 @@ void ParticlePlayer::sceneRender( const SceneRenderState* pSceneRenderState, con
         pBatchRenderer->setAlphaTestMode( pParticleAssetEmitter->getAlphaTest() );
 
         // Save the transformation.
-        glPushMatrix();
+        GFX->pushWorldMatrix();
+        MatrixF currentMatrix = GFX->getWorldMatrix();
+        
+//        glPushMatrix();
 
         // Is the Position attached to the emitter?
         if ( pParticleAssetEmitter->getAttachPositionToEmitter() )
@@ -591,19 +594,23 @@ void ParticlePlayer::sceneRender( const SceneRenderState* pSceneRenderState, con
             const Vector2 renderPosition = getRenderPosition();
 
             // Move into emitter-space.
-            glTranslatef( renderPosition.x, renderPosition.y, 0.0f );
+//            glTranslatef( renderPosition.x, renderPosition.y, 0.0f );
+            currentMatrix.translate(renderPosition.x, renderPosition.y, 0.0f );
 
             // Is the rotation attached to the emitter?
             if ( pParticleAssetEmitter->getAttachRotationToEmitter() )
             {
                 // Yes, so rotate into emitter-space.
                 // NOTE:- We need clockwise rotation here.
-                glRotatef( mRadToDeg(getRenderAngle()), 0.0f, 0.0f, 1.0f );
+//                glRotatef( mRadToDeg(getRenderAngle()), 0.0f, 0.0f, 1.0f );
+                currentMatrix.rotateZ(getRenderAngle());
             }
         }
+        
+        GFX->setWorldMatrix(currentMatrix);
 
         // Frame texture.
-        TextureHandle frameTexture;
+        GFXTexHandle frameTexture;
 
         // Frame area.
         ImageAsset::FrameArea::TexelArea texelFrameArea;
@@ -677,7 +684,8 @@ void ParticlePlayer::sceneRender( const SceneRenderState* pSceneRenderState, con
         pBatchRenderer->flush( getScene()->getDebugStats().batchIsolatedFlush );
 
         // Restore the transformation.
-        glPopMatrix();
+//        glPopMatrix();
+        GFX->popWorldMatrix();
     }
 }
 

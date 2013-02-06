@@ -35,13 +35,14 @@
 #include "2d/core/Vector2.h"
 #endif
 
-#ifndef _TEXTURE_MANAGER_H_
-#include "graphics/TextureManager.h"
-#endif
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxTextureHandle.h"
+#include "graphics/gfxTextureManager.h"
 
 //-----------------------------------------------------------------------------
 
 DefineConsoleType( TypeImageAssetPtr )
+GFX_DeclareTextureProfile(GFXImageAssetTextureProfile);
 
 //-----------------------------------------------------------------------------
 
@@ -155,7 +156,7 @@ private:
     /// Imagery.
     typeFrameAreaVector         mFrames;
     typeExplicitFrameAreaVector mExplicitFrames;
-    TextureHandle               mImageTextureHandle;
+    GFXTexHandle               mImageTextureHandle;
 
 public:
     ImageAsset();
@@ -205,13 +206,14 @@ public:
     void                    setCellHeight( const S32 cellheight );
     S32                     getCellHeight( void) const						{ return mCellHeight; }
 
-    inline TextureHandle&   getImageTexture( void )                         { return mImageTextureHandle; }
+    inline GFXTexHandle&   getImageTexture( void )                         { return mImageTextureHandle; }
     inline S32              getImageWidth( void ) const                     { return mImageTextureHandle.getWidth(); }
     inline S32              getImageHeight( void ) const                    { return mImageTextureHandle.getHeight(); }
     inline U32              getFrameCount( void ) const                     { return (U32)mFrames.size(); };
 
     inline const FrameArea& getImageFrameArea( U32 frame ) const            { clampFrame(frame); return mFrames[frame]; };
-    inline const void       bindImageTexture( void)                         { glBindTexture( GL_TEXTURE_2D, getImageTexture().getGLName() ); };
+    inline const void       bindImageTexture( void)                         { GFX->setTexture(0, getImageTexture()); };
+    //glBindTexture( GL_TEXTURE_2D, getImageTexture().getGLName() ); };
     
     virtual bool            isAssetValid( void ) const                      { return !mImageTextureHandle.IsNull(); }
 

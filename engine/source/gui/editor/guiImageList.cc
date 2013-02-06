@@ -23,7 +23,7 @@
 #include "platform/platform.h"
 #include "console/consoleTypes.h"
 #include "console/console.h"
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
 #include "gui/editor/guiImageList.h"
 
 GuiImageList::GuiImageList()
@@ -33,10 +33,10 @@ GuiImageList::GuiImageList()
   mUniqueId = 0;
 }
 
-U32 GuiImageList::Insert( const char* texturePath , TextureHandle::TextureHandleType type )
+U32 GuiImageList::Insert( const char* texturePath , GFXTextureProfile *profile, const String &desc )
 {
     // Sanity!
-    AssertISV( type != TextureHandle::InvalidTexture, "Invalid texture type." );
+//    AssertISV( type != TextureHandle::InvalidTexture, "Invalid texture type." );
 
   TextureEntry *t = new TextureEntry;
 
@@ -45,11 +45,11 @@ U32 GuiImageList::Insert( const char* texturePath , TextureHandle::TextureHandle
   t->TexturePath = StringTable->insert(texturePath);
   if ( *t->TexturePath ) 
   {
-    t->Handle = TextureHandle(t->TexturePath, type);
+    t->Handle = GFXTexHandle(t->TexturePath, profile, "");
 
     if ( t->Handle )
     {
-      t->Object = (TextureObject *) t->Handle;
+      t->Object = (GFXTextureObject *) t->Handle;
 
       if(t->Object == NULL) 
       { 
@@ -189,7 +189,7 @@ ConsoleMethod(GuiImageList, insert, S32, 3, 3, "(image path) Insert an image int
 
 
 
-TextureObject *GuiImageList::GetTextureObject( U32 Index )
+GFXTextureObject *GuiImageList::GetTextureObject( U32 Index )
 {
   U32 ItemIndex = IndexFromId(Index);
   if ( ItemIndex != -1 )
@@ -197,7 +197,8 @@ TextureObject *GuiImageList::GetTextureObject( U32 Index )
   else
     return NULL;
 }
-TextureObject *GuiImageList::GetTextureObject( const char* TexturePath )
+
+GFXTextureObject *GuiImageList::GetTextureObject( const char* TexturePath )
 {
   Vector<PTextureEntry>::iterator i = mTextures.begin();
   for ( ; i != mTextures.end(); i++ )
@@ -209,7 +210,7 @@ TextureObject *GuiImageList::GetTextureObject( const char* TexturePath )
   return NULL;
 }
 
-TextureHandle GuiImageList::GetTextureHandle( U32 Index )
+GFXTexHandle GuiImageList::GetTextureHandle( U32 Index )
 {
   U32 ItemIndex = IndexFromId(Index);
   if ( ItemIndex != -1 )
@@ -218,7 +219,8 @@ TextureHandle GuiImageList::GetTextureHandle( U32 Index )
     return NULL;
 
 }
-TextureHandle GuiImageList::GetTextureHandle( const char* TexturePath )
+
+GFXTexHandle GuiImageList::GetTextureHandle( const char* TexturePath )
 {
   Vector<PTextureEntry>::iterator i = mTextures.begin();
   for ( ; i != mTextures.end(); i++ )
@@ -269,17 +271,17 @@ const char *GuiImageList::GetTexturePath( U32 Index )
 //
 //    ColorI color;
 //
-//    dglGetBitmapModulation(&color);
+//    GFX->getDrawUtil()->getBitmapModulation(&color);
 //
-//    dglClearBitmapModulation();
+//    GFX->getDrawUtil()->clearBitmapModulation();
 //
 //    for ( ; i != mTextures.end(); i++ )
 //    {
-//      dglDrawBitmap((*i)->Object,TexPoint);
+//      GFX->getDrawUtil()->drawBitmap((*i)->Object,TexPoint);
 //      TexPoint.y += (*i)->Object->getBitmapHeight();
 //    }
 //
-//    dglSetBitmapModulation(color);
+//    GFX->getDrawUtil()->setBitmapModulation(color);
 //  }
 //}
 

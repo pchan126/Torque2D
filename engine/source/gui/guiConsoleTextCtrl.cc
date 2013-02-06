@@ -24,7 +24,9 @@
 #include "console/console.h"
 #include "graphics/color.h"
 #include "gui/guiConsoleTextCtrl.h"
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxDrawUtil.h"
+#include "gui/guiDefaultControlRender.h"
 
 IMPLEMENT_CONOBJECT(GuiConsoleTextCtrl);
 
@@ -116,55 +118,87 @@ void GuiConsoleTextCtrl::onPreRender()
 
 void GuiConsoleTextCtrl::onRender(Point2I offset, const RectI &updateRect)
 {
-   // draw the background rectangle
-   RectI r(offset, mBounds.extent);
-   dglDrawRectFill(r, ColorI(255,255,255));
-
-   // draw the border
-   r.extent += r.point;
-   glColor4ub(0, 0, 0, 0);
-
-#ifdef TORQUE_OS_IOS
-   Point2I topleft(r.point.x,  r.point.y);
-   Point2I bottomRight(r.extent.x-1, r.extent.y-1);
-	//this was the same drawing as dglDrawRect
-	dglDrawRect( topleft, bottomRight, ColorI(0, 0, 0, 0) );// PUAP -Mat untested
-#else
-   glBegin(GL_LINE_LOOP);
-   glVertex2i(r.point.x,  r.point.y);
-   glVertex2i(r.extent.x-1, r.point.y);
-   glVertex2i(r.extent.x-1, r.extent.y-1);
-   glVertex2i(r.point.x,  r.extent.y-1);
-   glEnd();
-#endif
-
-   if (mResult)
-   {
-      S32 txt_w = mFont->getStrWidth((const UTF8 *)mResult);
-      Point2I localStart;
-      switch (mProfile->mAlignment)
-      {
-         case GuiControlProfile::RightJustify:
-            localStart.set(mBounds.extent.x - txt_w-2, 0);
-            break;
-         case GuiControlProfile::CenterJustify:
-            localStart.set((mBounds.extent.x - txt_w) / 2, 0);
-            break;
-         default:
-            // GuiControlProfile::LeftJustify
-            localStart.set(2,0);
-            break;
-      }
-
-      Point2I globalStart = localToGlobalCoord(localStart);
-
-      //draw the text
-      dglSetBitmapModulation(mProfile->mFontColor);
-      dglDrawText(mFont, globalStart, mResult, mProfile->mFontColors);
-   }
-
-   //render the child controls
-   renderChildControls(offset, updateRect);
+    RectI ctrlRect( offset, getExtent() );
+    
+    // if opaque, fill the update rect with the fill color
+    if ( mProfile->mOpaque )
+        GFX->getDrawUtil()->drawRectFill( ctrlRect, mProfile->mFillColor );
+    
+    // if there's a border, draw the border
+    if ( mProfile->mBorder )
+        renderBorder( ctrlRect, mProfile );
+    
+    // If we have text to render.
+    if ( mResult != StringTable->EmptyString )
+    {
+        GFont *font = mProfile->mFont;
+        
+        GFX->getDrawUtil()->setBitmapModulation( mProfile->mFontColor );
+        
+        for ( U32 i = 0; i < mLineLen.size(); i++ )
+        {
+            Point2I tempOffset = offset;
+            tempOffset += mProfile->mTextOffset;
+            tempOffset.y += i * font->getHeight();
+            
+            const UTF8 *line = mResult + mStartLineOffset[i];
+            U32 lineLen = mLineLen[i];
+            GFX->getDrawUtil()->drawTextN( font, tempOffset, line, lineLen, mProfile->mFontColors );
+        }
+    }
+    
+    // render the child controlsmResult
+    renderChildControls(offset, updateRect);
+    
+    //   // draw the background rectangle
+//   RectI r(offset, mBounds.extent);
+//   GFX->getDrawUtil()->drawRectFill(r, ColorI(255,255,255));
+//
+//   // draw the border
+//   r.extent += r.point;
+//   glColor4ub(0, 0, 0, 0);
+//
+//#ifdef TORQUE_OS_IOS
+//   Point2I topleft(r.point.x,  r.point.y);
+//   Point2I bottomRight(r.extent.x-1, r.extent.y-1);
+//	//this was the same drawing as GFX->getDrawUtil()->drawRect
+//	GFX->getDrawUtil()->drawRect( topleft, bottomRight, ColorI(0, 0, 0, 0) );// PUAP -Mat untested
+//#else
+//   glBegin(GL_LINE_LOOP);
+//   glVertex2i(r.point.x,  r.point.y);
+//   glVertex2i(r.extent.x-1, r.point.y);
+//   glVertex2i(r.extent.x-1, r.extent.y-1);
+//   glVertex2i(r.point.x,  r.extent.y-1);
+//   glEnd();
+//#endif
+//
+//   if (mResult)
+//   {
+//      S32 txt_w = mFont->getStrWidth((const UTF8 *)mResult);
+//      Point2I localStart;
+//      switch (mProfile->mAlignment)
+//      {
+//         case GuiControlProfile::RightJustify:
+//            localStart.set(mBounds.extent.x - txt_w-2, 0);
+//            break;
+//         case GuiControlProfile::CenterJustify:
+//            localStart.set((mBounds.extent.x - txt_w) / 2, 0);
+//            break;
+//         default:
+//            // GuiControlProfile::LeftJustify
+//            localStart.set(2,0);
+//            break;
+//      }
+//
+//      Point2I globalStart = localToGlobalCoord(localStart);
+//
+//      //draw the text
+//      GFX->getDrawUtil()->setBitmapModulation(mProfile->mFontColor);
+//      GFX->getDrawUtil()->drawText(mFont, globalStart, mResult, mProfile->mFontColors);
+//   }
+//
+//   //render the child controls
+//   renderChildControls(offset, updateRect);
 }
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- //

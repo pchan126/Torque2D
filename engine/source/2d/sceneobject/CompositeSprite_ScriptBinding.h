@@ -657,7 +657,7 @@ ConsoleMethod(CompositeSprite, setSpriteSrcBlendFactor, void, 3, 3, "(srcBlend) 
                                                                     "@return No return Value.")
 {
     // Fetch source blend factor.
-    GLenum blendFactor = SceneObject::getSrcBlendFactorEnum(argv[2]);
+    GFXBlend blendFactor = SceneObject::getSrcBlendFactorEnum(argv[2]);
 
     object->setSpriteSrcBlendFactor( blendFactor );
 }
@@ -677,7 +677,7 @@ ConsoleMethod(CompositeSprite, setSpriteDstBlendFactor, void, 3, 3, "(dstBlend) 
                                                                     "@return No return Value.")
 {
     // Fetch destination blend factor.
-    GLenum blendFactor = SceneObject::getDstBlendFactorEnum(argv[2]);
+    GFXBlend blendFactor = SceneObject::getDstBlendFactorEnum(argv[2]);
 
     object->setSpriteDstBlendFactor( blendFactor );
 }

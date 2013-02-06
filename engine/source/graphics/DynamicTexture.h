@@ -24,17 +24,14 @@
 #define _DYNAMIC_TEXTURE_H_
 
 #ifndef _TEXTURE_HANDLE_H_
-#include "graphics/TextureHandle.h"
-#endif
-
-#ifndef _TEXTURE_HANDLE_H_
-#include "graphics/textureHandle.h"
+#include "graphics/gfxTextureHandle.h"
 #endif
 
 #ifndef _SIM_OBJECT_H_
 #include "sim/simObject.h"
 #endif
 
+//GFXDeclareTextureProfile(GFXDynamicTextureProfile);
 //-----------------------------------------------------------------------------
 
 class DynamicTexture : SimObject
@@ -43,7 +40,7 @@ class DynamicTexture : SimObject
 
 private:
     StringTableEntry    mTextureKey;
-    TextureHandle       mTextureHandle;
+    GFXTexHandle       mTextureHandle;
     GBitmap*            mpBitmap;
 
 public:

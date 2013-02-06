@@ -20,7 +20,8 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxDrawUtil.h"
 #include "gui/guiCanvas.h"
 #include "gui/buttons/guiButtonBaseCtrl.h"
 
@@ -44,14 +45,14 @@ void GuiBorderButtonCtrl::onRender(Point2I offset, const RectI &updateRect)
    if(mActive && mMouseOver)
    {
       bounds.inset(2,2);
-      dglDrawRect(bounds, mProfile->mFontColorHL);
+      GFX->getDrawUtil()->drawRect(bounds, mProfile->mFontColorHL);
       bounds.inset(-2,-2);
    }
    if(mActive && (mStateOn || mDepressed))
    {
-      dglDrawRect(bounds, mProfile->mFontColorHL);
+      GFX->getDrawUtil()->drawRect(bounds, mProfile->mFontColorHL);
       bounds.inset(1,1);
-      dglDrawRect(bounds, mProfile->mFontColorHL);
+      GFX->getDrawUtil()->drawRect(bounds, mProfile->mFontColorHL);
    }
    renderChildControls(offset, updateRect);
 }

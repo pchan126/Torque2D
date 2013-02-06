@@ -28,10 +28,8 @@
 
 DataChunker::DataChunker(S32 size)
 {
-   chunkSize          = size;
-   curBlock           = new DataBlock(size);
-   curBlock->next     = NULL;
-   curBlock->curIndex = 0;
+   mChunkSize          = size;
+   mCurBlock           = NULL;
 }
 
 DataChunker::~DataChunker()
@@ -41,16 +39,32 @@ DataChunker::~DataChunker()
 
 void *DataChunker::alloc(S32 size)
 {
-   AssertFatal(size <= chunkSize, "Data chunk too large.");
-   if(!curBlock || size + curBlock->curIndex > chunkSize)
+   if (size > mChunkSize)
    {
-      DataBlock *temp = new DataBlock(chunkSize);
-      temp->next = curBlock;
-      temp->curIndex = 0;
-      curBlock = temp;
+      DataBlock * temp = new DataBlock(size);
+      if (mCurBlock)
+      {
+         temp->next = mCurBlock->next;
+         mCurBlock->next = temp;
+      }
+      else
+      {
+         mCurBlock = temp;
+         temp->curIndex = mChunkSize;
+      }
+      return temp->data;
    }
-   void *ret = curBlock->data + curBlock->curIndex;
-   curBlock->curIndex += (size + 3) & ~3; // dword align
+
+   if(!mCurBlock || size + mCurBlock->curIndex > mChunkSize)
+   {
+      DataBlock *temp = new DataBlock(mChunkSize);
+      temp->next = mCurBlock;
+      temp->curIndex = 0;
+      mCurBlock = temp;
+   }
+
+   void *ret = mCurBlock->data + mCurBlock->curIndex;
+   mCurBlock->curIndex += (size + 3) & ~3; // dword align
    return ret;
 }
 
@@ -64,13 +78,20 @@ DataChunker::DataBlock::~DataBlock()
    delete[] data;
 }
 
-void DataChunker::freeBlocks()
+void DataChunker::freeBlocks(bool keepOne)
 {
-   while(curBlock)
+   while(mCurBlock && mCurBlock->next)
    {
-      DataBlock *temp = curBlock->next;
-      delete curBlock;
-      curBlock = temp;
+      DataBlock *temp = mCurBlock->next;
+      delete mCurBlock;
+      mCurBlock = temp;
    }
+   if (!keepOne)
+   {
+      delete mCurBlock;
+      mCurBlock = NULL;
+   }
+   else if (mCurBlock)
+      mCurBlock->curIndex = 0;
 }
 

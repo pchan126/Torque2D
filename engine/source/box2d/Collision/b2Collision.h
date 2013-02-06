@@ -161,7 +161,7 @@ struct b2RayCastOutput
 struct b2AABB
 {
 	/// Verify that the bounds are sorted.
-	bool IsValid() const;
+	bool isValid() const;
 
 	/// Get the center of the AABB.
 	b2Vec2 GetCenter() const
@@ -250,11 +250,11 @@ bool b2TestOverlap(	const b2Shape* shapeA, int32 indexA,
 
 // ---------------- Inline Functions ------------------------------------------
 
-inline bool b2AABB::IsValid() const
+inline bool b2AABB::isValid() const
 {
 	b2Vec2 d = upperBound - lowerBound;
 	bool valid = d.x >= 0.0f && d.y >= 0.0f;
-	valid = valid && lowerBound.IsValid() && upperBound.IsValid();
+	valid = valid && lowerBound.isValid() && upperBound.isValid();
 	return valid;
 }
 

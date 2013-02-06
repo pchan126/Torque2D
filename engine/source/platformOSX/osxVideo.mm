@@ -21,8 +21,9 @@
 //-----------------------------------------------------------------------------
 #import "platformOSX/platformOSX.h"
 #include "platform/platformVideo.h"
+#include "graphics/gfxDevice.h"
 
-Resolution Video::getDesktopResolution()
+GFXVideoMode Video::getDesktopResolution()
 {
     // Get the screen the application window resides in and is receiving input
     NSScreen* mainScreen = [NSScreen mainScreen];
@@ -32,19 +33,19 @@ Resolution Video::getDesktopResolution()
 
     // Get the screen depth. You cannot access depth directly. It must be passed
     // into a function that will return the bpp
-    int bpp = NSBitsPerPixelFromDepth([mainScreen depth]);
+    int bitDepth = NSBitsPerPixelFromDepth([mainScreen depth]);
     
     // Build the return resolution
-    Resolution resolution;
-    resolution.w = (U32)screenRect.size.width;
-    resolution.h = (U32)screenRect.size.height;
-    resolution.bpp = (U32)bpp;
+    GFXVideoMode resolution;
+    resolution.resolution.x = (U32)screenRect.size.width;
+    resolution.resolution.y = (U32)screenRect.size.height;
+    resolution.bitDepth = (U32)bitDepth;
     
     osxPlatState * platState = [osxPlatState sharedPlatState];
     
-    [platState setDesktopWidth:resolution.w];
-    [platState setDesktopHeight:resolution.h];
-    [platState setDesktopBitsPixel:resolution.bpp];
+    [platState setDesktopWidth:resolution.resolution.x];
+    [platState setDesktopHeight:resolution.resolution.y];
+    [platState setDesktopBitsPixel:resolution.bitDepth];
     
     // Return the new resolution
     return resolution;

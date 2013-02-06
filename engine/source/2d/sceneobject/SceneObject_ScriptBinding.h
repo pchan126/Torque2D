@@ -3175,7 +3175,7 @@ ConsoleMethod(SceneObject, setSrcBlendFactor, void, 3, 3,   "(srcBlend) - Sets t
                                                             "@return No return Value.")
 {
     // Fetch source blend factor.
-    GLenum blendFactor = SceneObject::getSrcBlendFactorEnum(argv[2]);
+    GFXBlend blendFactor = SceneObject::getSrcBlendFactorEnum(argv[2]);
 
     object->setSrcBlendFactor( blendFactor );
 }
@@ -3195,7 +3195,7 @@ ConsoleMethod(SceneObject, setDstBlendFactor, void, 3, 3,   "(dstBlend) - Sets t
                                                             "@return No return Value.")
 {
     // Fetch destination blend factor.
-    GLenum blendFactor = SceneObject::getDstBlendFactorEnum(argv[2]);
+    GFXBlend blendFactor = SceneObject::getDstBlendFactorEnum(argv[2]);
 
     object->setDstBlendFactor( blendFactor );
 }

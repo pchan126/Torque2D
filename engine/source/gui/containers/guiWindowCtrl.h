@@ -105,7 +105,7 @@ class GuiWindowCtrl : public GuiTextCtrl
          BmpStates
       };
       RectI *mBitmapBounds;  //bmp is [3*n], bmpHL is [3*n + 1], bmpNA is [3*n + 2]
-      TextureHandle mTextureHandle;
+      GFXTexHandle mTextureObject;
 
 
       void drawWinRect(const RectI &myRect);

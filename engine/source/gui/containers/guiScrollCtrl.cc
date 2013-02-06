@@ -23,13 +23,14 @@
 #include "console/consoleTypes.h"
 #include "console/console.h"
 #include "graphics/gBitmap.h"
-#include "graphics/TextureManager.h"
+#include "graphics/gfxTextureManager.h"
 #include "io/resource/resourceManager.h"
 #include "platform/event.h"
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
 #include "gui/guiArrayCtrl.h"
 #include "gui/containers/guiScrollCtrl.h"
 #include "gui/guiDefaultControlRender.h"
+#include "graphics/gfxDrawUtil.h"
 
 IMPLEMENT_CONOBJECT(GuiScrollCtrl);
 
@@ -136,7 +137,7 @@ bool GuiScrollCtrl::onWake()
       return false;
 
    mTextureHandle = mProfile->mTextureHandle;
-   mTextureHandle.setFilter(GL_NEAREST);;
+//   mTextureHandle.setFilter(GL_NEAREST);;
 
    bool result;
    result = mProfile->constructBitmapArray() >= BmpStates * BmpCount;
@@ -797,7 +798,7 @@ void GuiScrollCtrl::onRender(Point2I offset, const RectI &updateRect)
    RectI r(offset.x, offset.y, mBounds.extent.x, mBounds.extent.y);
 
    if (mProfile->mOpaque)
-      dglDrawRectFill(r, mProfile->mFillColor);
+      GFX->getDrawUtil()->drawRectFill(r, mProfile->mFillColor);
 
     if (mProfile->mBorder)
         renderFilledBorder(r, mProfile);
@@ -823,8 +824,8 @@ void GuiScrollCtrl::onRender(Point2I offset, const RectI &updateRect)
    //RectI renderRect = lastVisRect;
    //renderRect.point += mContentPos + offset;
 
-   //dglSetClipRect(r);
-   //dglDrawRect(renderRect, ColorI(0, 255, 0));
+   //GFX->setClipRect(r);
+   //GFX->getDrawUtil()->drawRect(renderRect, ColorI(0, 255, 0));
 }
 
 void GuiScrollCtrl::drawBorder( const Point2I &offset, bool /*isFirstResponder*/ )
@@ -837,8 +838,8 @@ void GuiScrollCtrl::drawVScrollBar(const Point2I &offset)
    S32 bitmap = (mVBarEnabled ? ((curHitRegion == UpArrow && stateDepressed) ?
          BmpStates * BmpUp + BmpHilite : BmpStates * BmpUp) : BmpStates * BmpUp + BmpDisabled);
 
-   dglClearBitmapModulation();
-   dglDrawBitmapSR(mTextureHandle, pos, mBitmapBounds[bitmap]);
+   GFX->getDrawUtil()->clearBitmapModulation();
+   GFX->getDrawUtil()->drawBitmapSR(mTextureHandle, pos, mBitmapBounds[bitmap]);
 
    pos.y += mScrollBarArrowBtnLength;
    S32 end;
@@ -852,8 +853,8 @@ void GuiScrollCtrl::drawVScrollBar(const Point2I &offset)
 
    if (end > pos.y)
    {
-      dglClearBitmapModulation();
-      dglDrawBitmapStretchSR(mTextureHandle, RectI(pos, Point2I(mBitmapBounds[bitmap].extent.x, end - pos.y)), mBitmapBounds[bitmap]);
+      GFX->getDrawUtil()->clearBitmapModulation();
+      GFX->getDrawUtil()->drawBitmapStretchSR(mTextureHandle, RectI(pos, Point2I(mBitmapBounds[bitmap].extent.x, end - pos.y)), mBitmapBounds[bitmap]);
    }
 
    pos.y = end;
@@ -865,28 +866,28 @@ void GuiScrollCtrl::drawVScrollBar(const Point2I &offset)
       S32 tbot = (thumbSelected ? BmpStates * BmpVThumbBottomCap + BmpHilite : BmpStates * BmpVThumbBottomCap);
 
       // draw the thumb
-      dglClearBitmapModulation();
-      dglDrawBitmapSR(mTextureHandle, pos, mBitmapBounds[ttop]);
+      GFX->getDrawUtil()->clearBitmapModulation();
+      GFX->getDrawUtil()->drawBitmapSR(mTextureHandle, pos, mBitmapBounds[ttop]);
       pos.y += mBitmapBounds[ttop].extent.y;
       end = mVThumbPos + mVThumbSize - mBitmapBounds[tbot].extent.y + offset.y;
 
       if (end > pos.y)
       {
-         dglClearBitmapModulation();
-         dglDrawBitmapStretchSR(mTextureHandle, RectI(pos, Point2I(mBitmapBounds[tmid].extent.x, end - pos.y)), mBitmapBounds[tmid]);
+         GFX->getDrawUtil()->clearBitmapModulation();
+         GFX->getDrawUtil()->drawBitmapStretchSR(mTextureHandle, RectI(pos, Point2I(mBitmapBounds[tmid].extent.x, end - pos.y)), mBitmapBounds[tmid]);
       }
 
       pos.y = end;
-      dglClearBitmapModulation();
-      dglDrawBitmapSR(mTextureHandle, pos, mBitmapBounds[tbot]);
+      GFX->getDrawUtil()->clearBitmapModulation();
+      GFX->getDrawUtil()->drawBitmapSR(mTextureHandle, pos, mBitmapBounds[tbot]);
       pos.y += mBitmapBounds[tbot].extent.y;
       end = mVTrackRect.point.y + mVTrackRect.extent.y - 1 + offset.y;
 
       bitmap = (curHitRegion == DownPage && stateDepressed) ? BmpStates * BmpVPage + BmpHilite : BmpStates * BmpVPage;
       if (end > pos.y)
       {
-         dglClearBitmapModulation();
-         dglDrawBitmapStretchSR(mTextureHandle, RectI(pos, Point2I(mBitmapBounds[bitmap].extent.x, end - pos.y)), mBitmapBounds[bitmap]);
+         GFX->getDrawUtil()->clearBitmapModulation();
+         GFX->getDrawUtil()->drawBitmapStretchSR(mTextureHandle, RectI(pos, Point2I(mBitmapBounds[bitmap].extent.x, end - pos.y)), mBitmapBounds[bitmap]);
       }
 
       pos.y = end;
@@ -895,8 +896,8 @@ void GuiScrollCtrl::drawVScrollBar(const Point2I &offset)
    bitmap = (mVBarEnabled ? ((curHitRegion == DownArrow && stateDepressed ) ?
          BmpStates * BmpDown + BmpHilite : BmpStates * BmpDown) : BmpStates * BmpDown + BmpDisabled);
 
-   dglClearBitmapModulation();
-   dglDrawBitmapSR(mTextureHandle, pos, mBitmapBounds[bitmap]);
+   GFX->getDrawUtil()->clearBitmapModulation();
+   GFX->getDrawUtil()->drawBitmapSR(mTextureHandle, pos, mBitmapBounds[bitmap]);
 }
 
 void GuiScrollCtrl::drawHScrollBar(const Point2I &offset)
@@ -910,8 +911,8 @@ void GuiScrollCtrl::drawHScrollBar(const Point2I &offset)
    Point2I pos = offset;
    pos += mLeftArrowRect.point;
 
-   dglClearBitmapModulation();
-   dglDrawBitmapSR(mTextureHandle, pos, mBitmapBounds[bitmap]);
+   GFX->getDrawUtil()->clearBitmapModulation();
+   GFX->getDrawUtil()->drawBitmapSR(mTextureHandle, pos, mBitmapBounds[bitmap]);
 
    pos.x += mLeftArrowRect.extent.x;
 
@@ -927,8 +928,8 @@ void GuiScrollCtrl::drawHScrollBar(const Point2I &offset)
 
    if (end > pos.x)
    {
-      dglClearBitmapModulation();
-      dglDrawBitmapStretchSR(mTextureHandle, RectI(pos, Point2I(end - pos.x, mBitmapBounds[bitmap].extent.y)), mBitmapBounds[bitmap]);
+      GFX->getDrawUtil()->clearBitmapModulation();
+      GFX->getDrawUtil()->drawBitmapStretchSR(mTextureHandle, RectI(pos, Point2I(end - pos.x, mBitmapBounds[bitmap].extent.y)), mBitmapBounds[bitmap]);
    }
    pos.x = end;
 
@@ -941,19 +942,19 @@ void GuiScrollCtrl::drawHScrollBar(const Point2I &offset)
       S32 tbot = (thumbSelected ? BmpStates * BmpHThumbRightCap + BmpHilite : BmpStates * BmpHThumbRightCap);
 
       // draw the thumb
-      dglClearBitmapModulation();
-      dglDrawBitmapSR(mTextureHandle, pos, mBitmapBounds[ttop]);
+      GFX->getDrawUtil()->clearBitmapModulation();
+      GFX->getDrawUtil()->drawBitmapSR(mTextureHandle, pos, mBitmapBounds[ttop]);
       pos.x += mBitmapBounds[ttop].extent.x;
       end = mHThumbPos + mHThumbSize - mBitmapBounds[tbot].extent.x + offset.x;
       if (end > pos.x)
       {
-         dglClearBitmapModulation();
-         dglDrawBitmapStretchSR(mTextureHandle, RectI(pos, Point2I(end - pos.x, mBitmapBounds[tmid].extent.y)), mBitmapBounds[tmid]);
+         GFX->getDrawUtil()->clearBitmapModulation();
+         GFX->getDrawUtil()->drawBitmapStretchSR(mTextureHandle, RectI(pos, Point2I(end - pos.x, mBitmapBounds[tmid].extent.y)), mBitmapBounds[tmid]);
       }
 
       pos.x = end;
-      dglClearBitmapModulation();
-      dglDrawBitmapSR(mTextureHandle, pos, mBitmapBounds[tbot]);
+      GFX->getDrawUtil()->clearBitmapModulation();
+      GFX->getDrawUtil()->drawBitmapSR(mTextureHandle, pos, mBitmapBounds[tbot]);
       pos.x += mBitmapBounds[tbot].extent.x;
       end = mHTrackRect.point.x + mHTrackRect.extent.x - 1 + offset.x;
 
@@ -961,8 +962,8 @@ void GuiScrollCtrl::drawHScrollBar(const Point2I &offset)
 
       if (end > pos.x)
       {
-         dglClearBitmapModulation();
-         dglDrawBitmapStretchSR(mTextureHandle, RectI(pos, Point2I(end - pos.x, mBitmapBounds[bitmap].extent.y)), mBitmapBounds[bitmap]);
+         GFX->getDrawUtil()->clearBitmapModulation();
+         GFX->getDrawUtil()->drawBitmapStretchSR(mTextureHandle, RectI(pos, Point2I(end - pos.x, mBitmapBounds[bitmap].extent.y)), mBitmapBounds[bitmap]);
       }
 
       pos.x = end;
@@ -970,8 +971,8 @@ void GuiScrollCtrl::drawHScrollBar(const Point2I &offset)
    bitmap = (mHBarEnabled ? ((curHitRegion == RightArrow && stateDepressed) ?
             BmpStates * BmpRight + BmpHilite : BmpStates * BmpRight) : BmpStates * BmpRight + BmpDisabled);
 
-   dglClearBitmapModulation();
-   dglDrawBitmapSR(mTextureHandle, pos, mBitmapBounds[bitmap]);
+   GFX->getDrawUtil()->clearBitmapModulation();
+   GFX->getDrawUtil()->drawBitmapSR(mTextureHandle, pos, mBitmapBounds[bitmap]);
 }
 
 void GuiScrollCtrl::drawScrollCorner(const Point2I &offset)
@@ -979,8 +980,8 @@ void GuiScrollCtrl::drawScrollCorner(const Point2I &offset)
    Point2I pos = offset;
    pos.x += mRightArrowRect.point.x + mRightArrowRect.extent.x;
    pos.y += mRightArrowRect.point.y;
-   dglClearBitmapModulation();
-   dglDrawBitmapSR(mTextureHandle, pos, mBitmapBounds[BmpStates * BmpResize]);
+   GFX->getDrawUtil()->clearBitmapModulation();
+   GFX->getDrawUtil()->drawBitmapSR(mTextureHandle, pos, mBitmapBounds[BmpStates * BmpResize]);
 }
 
 void GuiScrollCtrl::autoScroll(Region reg)

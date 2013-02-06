@@ -22,12 +22,13 @@
 
 #include "console/consoleTypes.h"
 #include "console/console.h"
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
 #include "gui/guiCanvas.h"
 #include "gui/guiDefaultControlRender.h"
 #include "gui/guiTextListCtrl.h"
 #include "input/actionMap.h"
 #include "gui/editor/guiMenuBar.h"
+#include "graphics/gfxDrawUtil.h"
 
 // menu bar:
 // basic idea - fixed height control bar at the top of a window, placed and sized in gui editor
@@ -956,7 +957,7 @@ void GuiMenuBar::onRender(Point2I offset, const RectI &updateRect)
 
    //if opaque, fill the update rect with the fill color
    if (mProfile->mOpaque)
-      dglDrawRectFill(RectI(offset, mBounds.extent), mProfile->mFillColor);
+      GFX->getDrawUtil()->drawRectFill(RectI(offset, mBounds.extent), mProfile->mFillColor);
 
    //if there's a border, draw the border
    if (mProfile->mBorder)
@@ -1000,21 +1001,21 @@ void GuiMenuBar::onRender(Point2I offset, const RectI &updateRect)
          Point2I bitmapstart(start);
          bitmapstart.y = walk->bounds.point.y + ( walk->bounds.extent.y - rect.extent.y ) / 2;
 
-         dglClearBitmapModulation();
-         dglDrawBitmapSR(mProfile->mTextureHandle, offset + bitmapstart, rect);
+         GFX->getDrawUtil()->clearBitmapModulation();
+         GFX->getDrawUtil()->drawBitmapSR(mProfile->mTextureHandle, offset + bitmapstart, rect);
 
          // Should we also draw the text?
          if(!walk->drawBitmapOnly)
          {
             start.x += mBitmapMargin;
-            dglSetBitmapModulation( fontColor );
-            dglDrawText( mProfile->mFont, start + offset, walk->text, mProfile->mFontColors );
-         }
-      } else
-      {
-         dglSetBitmapModulation( fontColor );
-         dglDrawText( mProfile->mFont, start + offset, walk->text, mProfile->mFontColors );
-      }
+            GFX->getDrawUtil()->setBitmapModulation( fontColor );
+            GFX->getDrawUtil()->drawText( mProfile->mFont, start + offset, walk->text, mProfile->mFontColors );
+		 }
+	  } else
+	  {
+         GFX->getDrawUtil()->setBitmapModulation( fontColor );
+         GFX->getDrawUtil()->drawText( mProfile->mFont, start + offset, walk->text, mProfile->mFontColors );
+	  }
    }
 
    renderChildControls( offset, updateRect );
@@ -1113,73 +1114,78 @@ GuiMenuTextListCtrl::GuiMenuTextListCtrl(GuiMenuBar *ctrl)
 
 void GuiMenuTextListCtrl::onRenderCell(Point2I offset, Point2I cell, bool selected, bool mouseOver)
 {
-   if(dStrcmp(mList[cell.y].text + 3, "-\t")) // DAW: Was: dStrcmp(mList[cell.y].text + 2, "-\t")) but has been changed to take into account the submenu flag
-      Parent::onRenderCell(offset, cell, selected, mouseOver);
-   else
-   {
-      S32 yp = offset.y + mCellSize.y / 2;
-      dglDrawLine(offset.x, yp, offset.x + mCellSize.x, yp, ColorI(128,128,128));
-      dglDrawLine(offset.x, yp+1, offset.x + mCellSize.x, yp+1, ColorI(255,255,255));
-   }
-   // now see if there's a bitmap...
-   U8 idx = mList[cell.y].text[0];
-   if(idx != 1)
-   {
-      // there's a bitmap...
-      U32 index = U32(idx - 2) * 3;
-      if(!mList[cell.y].active)
-         index += 2;
-      else if(selected || mouseOver)
-         index ++;
-
-      RectI rect = mProfile->mBitmapArrayRects[index];
-      Point2I off = mMenuBarCtrl->maxBitmapSize - rect.extent;
-      off /= 2;
-
-      dglClearBitmapModulation();
-      dglDrawBitmapSR(mProfile->mTextureHandle, offset + off, rect);
-
-   } 
-
-   // DAW: Check if this is a submenu
-   idx = mList[cell.y].text[1];
-   if(idx != 1)
-   {
-#ifdef TORQUE_OS_IOS
-// PUAP -Mat untested	
-//How are these used/made? cannot create in TGB GUI editor
-       if(selected || mouseOver)
-       {
-           glColor4f(mProfile->mFontColorHL.red,mProfile->mFontColorHL.green,mProfile->mFontColorHL.blue, 255 );//full alpha
-       }
-            else
-       {
-           glColor4f(mProfile->mFontColor.red,mProfile->mFontColor.green,mProfile->mFontColor.blue, 255);
-       }
-       glDrawArrays(GL_TRIANGLES, 0, 3 );
-#else
-      // This is a submenu, so draw an arrow
-      F32 left = (F32)(offset.x + mCellSize.x - 12);
-      F32 right = (F32)(left + 8);
-      F32 top = (F32)(mCellSize.y / 2 + offset.y - 4);
-      F32 bottom = (F32)(top + 8);
-      F32 middle = (F32)(top + 4);
-
-      glBegin(GL_TRIANGLES);
-         if(selected || mouseOver)
-         {
-            glColor3ub(mProfile->mFontColorHL.red,mProfile->mFontColorHL.green,mProfile->mFontColorHL.blue);
-
-         } else
-         {
-            glColor3ub(mProfile->mFontColor.red,mProfile->mFontColor.green,mProfile->mFontColor.blue);
-         }
-         glVertex2fv( Point3F(left, top, 0.0f) );
-         glVertex2fv( Point3F(right, middle, 0.0f) );
-         glVertex2fv( Point3F(left, bottom, 0.0f) );
-      glEnd();
-#endif
-   }
+//   if(dStrcmp(mList[cell.y].text + 3, "-\t")) // DAW: Was: dStrcmp(mList[cell.y].text + 2, "-\t")) but has been changed to take into account the submenu flag
+//      Parent::onRenderCell(offset, cell, selected, mouseOver);
+//   else
+//   {
+//      S32 yp = offset.y + mCellSize.y / 2;
+//      GFX->getDrawUtil()->drawLine(offset.x, yp, offset.x + mCellSize.x, yp, ColorI(128,128,128));
+//      GFX->getDrawUtil()->drawLine(offset.x, yp+1, offset.x + mCellSize.x, yp+1, ColorI(255,255,255));
+//   }
+//   // now see if there's a bitmap...
+//   U8 idx = mList[cell.y].text[0];
+//   if(idx != 1)
+//   {
+//      // there's a bitmap...
+//      U32 index = U32(idx - 2) * 3;
+//      if(!mList[cell.y].active)
+//         index += 2;
+//      else if(selected || mouseOver)
+//         index ++;
+//
+//      RectI rect = mProfile->mBitmapArrayRects[index];
+//      Point2I off = mMenuBarCtrl->maxBitmapSize - rect.extent;
+//      off /= 2;
+//
+//      GFX->getDrawUtil()->clearBitmapModulation();
+//      GFX->getDrawUtil()->drawBitmapSR(mProfile->mTextureHandle, offset + off, rect);
+//
+//   } 
+//
+//   // DAW: Check if this is a submenu
+//   idx = mList[cell.y].text[1];
+//   if(idx != 1)
+//   {
+//#ifdef TORQUE_OS_IOS
+//// PUAP -Mat untested	
+////How are these used/made? cannot create in TGB GUI editor
+//	   if(selected || mouseOver)
+//	   {
+//		   glColor4f(mProfile->mFontColorHL.red,mProfile->mFontColorHL.green,mProfile->mFontColorHL.blue, 255 );//full alpha
+//	   }
+//            else
+//	   {
+//		   glColor4f(mProfile->mFontColor.red,mProfile->mFontColor.green,mProfile->mFontColor.blue, 255);
+//	   }
+//	   // UNUSED: JOSEPH THOMAS -> GLfloat vertices[] = {
+//		// UNUSED: JOSEPH THOMAS ->    (GLfloat)left, (GLfloat)top,
+//		// UNUSED: JOSEPH THOMAS ->    (GLfloat)right, (GLfloat)middle,
+//		// UNUSED: JOSEPH THOMAS ->    (GLfloat)left, (GLfloat)bottom,
+//	  // UNUSED: JOSEPH THOMAS -> };
+//	   glDrawArrays(GL_TRIANGLES, 0, 3 );
+//#else
+//      // This is a submenu, so draw an arrow
+//      F32 left = (F32)(offset.x + mCellSize.x - 12);
+//      F32 right = (F32)(left + 8);
+//      F32 top = (F32)(mCellSize.y / 2 + offset.y - 4);
+//      F32 bottom = (F32)(top + 8);
+//      F32 middle = (F32)(top + 4);
+//
+//      glBegin(GL_TRIANGLES);
+//	     if(selected || mouseOver)
+//		 {
+//            glColor3ub(mProfile->mFontColorHL.red,mProfile->mFontColorHL.green,mProfile->mFontColorHL.blue);
+//
+//		 } else
+//		 {
+//            glColor3ub(mProfile->mFontColor.red,mProfile->mFontColor.green,mProfile->mFontColor.blue);
+//         }
+//         glVertex2fv( Point3F(left, top, 0.0f) );
+//         glVertex2fv( Point3F(right, middle, 0.0f) );
+//         glVertex2fv( Point3F(left, bottom, 0.0f) );
+//      glEnd();
+//#endif
+//   }
 }
 
 bool GuiMenuTextListCtrl::onKeyDown(const GuiEvent &event)

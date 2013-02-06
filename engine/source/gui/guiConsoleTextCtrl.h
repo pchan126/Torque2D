@@ -44,6 +44,8 @@ protected:
    const char *mResult;
    Resource<GFont> mFont;
 
+    Vector<U32> mStartLineOffset;
+    Vector<U32> mLineLen;
 public:
 
    //creation methods

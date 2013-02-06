@@ -21,8 +21,9 @@
 //-----------------------------------------------------------------------------
 #import "platformOSX/platformOSX.h"
 
-#include "platformOSX/osxOpenGLDevice.h"
-
+//#include "platformOSX/osxOpenGLDevice.h"
+#include "platformOSX/graphics/gfxOpenGLDevice.h"
+#include "platform/platformVideo.h"
 
 //------------------------------------------------------------------------------
 // Get the video settings from the prefs.
@@ -119,8 +120,9 @@ void Platform::initWindow(const Point2I &initialSize, const char *name)
     [[NSNotificationCenter defaultCenter] addObserver:[platState torqueView] selector:@selector(windowFinishedLiveResize:) name:NSWindowDidEndLiveResizeNotification object:[platState window]];
     
     // Create the DisplayDevice and install it. In this case, our osxOpenGLDevice
-    osxOpenGLDevice* device = new osxOpenGLDevice();
+    GFXOpenGLDevice* device = new GFXOpenGLDevice();
     Video::installDevice(device);
+    device->init();
     
     bool deviceWasSet = Video::setDevice(device->mDeviceName, width, height, bpp, fullScreen);
     

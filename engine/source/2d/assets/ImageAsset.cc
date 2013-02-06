@@ -58,6 +58,12 @@
 // Debug Profiling.
 #include "debug/profiler.h"
 
+GFX_ImplementTextureProfile(GFXImageAssetTextureProfile,
+                            GFXTextureProfile::DiffuseMap,
+                            GFXTextureProfile::PreserveSize |
+                            GFXTextureProfile::Static,
+                            GFXTextureProfile::None);
+
 //------------------------------------------------------------------------------
 
 ConsoleType( imageAssetPtr, TypeImageAssetPtr, sizeof(AssetPtr<ImageAsset>), ASSET_ID_FIELD_PREFIX )
@@ -811,8 +817,8 @@ void ImageAsset::setTextureFilter( const TextureFilterMode filterMode )
             glFilterMode = GL_LINEAR;
     };
 
-    // Set the texture objects filter mode.
-    mImageTextureHandle.setFilter( glFilterMode );
+//    // Set the texture objects filter mode.
+//    mImageTextureHandle.setFilter( glFilterMode );
 }
 
 //------------------------------------------------------------------------------
@@ -1011,7 +1017,8 @@ void ImageAsset::calculateImage( void )
     mFrames.clear();
 
     // Get image texture.
-    mImageTextureHandle.set( mImageFile, TextureHandle::BitmapTexture, true, getForce16Bit() );
+//    mImageTextureHandle.set( mImageFile, TextureHandle::BitmapTexture, true, getForce16Bit() );
+    mImageTextureHandle.set( mImageFile, &GFXImageAssetTextureProfile, "mImageTextureHandle");
 
     // Is the texture valid?
     if ( mImageTextureHandle.IsNull() )
@@ -1070,12 +1077,12 @@ void ImageAsset::calculateImplicitMode( void )
     // Sanity!
     AssertFatal( !mExplicitMode, "Cannot calculate implicit cells when in explicit mode." );
 
-    // Fetch the texture object.
-    TextureObject* pTextureObject = ((TextureObject*)mImageTextureHandle);
+//    // Fetch the texture object.
+//    TextureObject* pTextureObject = ((TextureObject*)mImageTextureHandle);
  
     // Calculate texel scales.
-    const F32 texelWidthScale = 1.0f / (F32)pTextureObject->getTextureWidth();
-    const F32 texelHeightScale = 1.0f / (F32)pTextureObject->getTextureHeight();
+    const F32 texelWidthScale = 1.0f / (F32)mImageTextureHandle->getWidth();
+    const F32 texelHeightScale = 1.0f / (F32)mImageTextureHandle->getHeight();
 
     // Fetch the original image dimensions.
     const S32 imageWidth = getImageWidth();
@@ -1228,12 +1235,12 @@ void ImageAsset::calculateExplicitMode( void )
     // Sanity!
     AssertFatal( mExplicitMode, "Cannot calculate explicit cells when not in explicit mode." );
 
-    // Fetch the texture object.
-    TextureObject* pTextureObject = ((TextureObject*)mImageTextureHandle);
+//    // Fetch the texture object.
+//    TextureObject* pTextureObject = ((TextureObject*)mImageTextureHandle);
  
     // Calculate texel scales.
-    const F32 texelWidthScale = 1.0f / (F32)pTextureObject->getTextureWidth();
-    const F32 texelHeightScale = 1.0f / (F32)pTextureObject->getTextureHeight();
+    const F32 texelWidthScale = 1.0f / (F32)mImageTextureHandle->getWidth();
+    const F32 texelHeightScale = 1.0f / (F32)mImageTextureHandle->getHeight();
 
     // Fetch the original image dimensions.
     const S32 imageWidth = getImageWidth();

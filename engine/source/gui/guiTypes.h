@@ -40,7 +40,7 @@
 #endif
 
 #ifndef _TEXTURE_MANAGER_H_
-#include "graphics/TextureManager.h"
+#include "graphics/gfxTextureManager.h"
 #endif
 
 #ifndef _PLATFORMAUDIO_H_
@@ -77,7 +77,7 @@ private:
    Point2I mHotSpot;
    Point2F mRenderOffset;
    Point2I mExtent;
-   TextureHandle mTextureHandle;
+   GFXTexHandle mTextureHandle;
 
 public:
    Point2I getHotSpot() { return mHotSpot; }
@@ -154,7 +154,9 @@ public:
    {
       LeftJustify,
       RightJustify,
-      CenterJustify
+      CenterJustify,
+      TopJustify,
+      BottomJustify
    };
 
    AlignmentType mAlignment;                       ///< Horizontal text alignment
@@ -169,7 +171,7 @@ public:
 
    // bitmap members
    StringTableEntry mBitmapName;                   ///< Bitmap file name for the bitmap of the control
-   TextureHandle mTextureHandle;                   ///< Texture handle for the control
+   GFXTexHandle mTextureHandle;                   ///< Texture handle for the control
    Vector<RectI> mBitmapArrayRects;                ///< Used for controls which use an array of bitmaps such as checkboxes
 
    // sound members
@@ -195,5 +197,8 @@ public:
    void decRefCount();
 };
 DefineConsoleType( TypeGuiProfile)
+
+GFX_DeclareTextureProfile(GFXGuiCursorProfile);
+GFX_DeclareTextureProfile(GFXDefaultGUIProfile);
 
 #endif //_GUITYPES_H

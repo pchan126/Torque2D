@@ -254,7 +254,7 @@ public:
       BitSet32                mFlags;
 
 protected:
-      TextureHandle mIconTable[MaxIcons];
+      GFXTexHandle mIconTable[MaxIcons];
 
       // for debugging
       bool mDebug;
@@ -276,8 +276,8 @@ protected:
       bool              mMouseDragged;
 
       StringTableEntry  mBitmapBase;
-      TextureHandle	   mTexRollover;
-      TextureHandle	   mTexSelected;
+      GFXTexHandle	   mTexRollover;
+      GFXTexHandle	   mTexSelected;
 
       // Hack to get passed always recursively building tree EVERY TICK!
       S32               mTicksPassed;

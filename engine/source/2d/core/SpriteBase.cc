@@ -24,9 +24,7 @@
 #include "SpriteBase.h"
 #endif
 
-#ifndef _DGL_H_
-#include "graphics/dgl.h"
-#endif
+#include "graphics/gfxDevice.h"
 
 #ifndef _STRINGBUFFER_H_
 #include "string/stringBuffer.h"

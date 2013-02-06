@@ -75,6 +75,8 @@
 #include "platform/platformTimeManager.h"
 #endif
 
+#include "string/str.h"
+
 //------------------------------------------------------------------------------
 
 template <class T> class Vector;

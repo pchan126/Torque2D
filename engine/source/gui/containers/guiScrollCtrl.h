@@ -64,7 +64,7 @@ protected:
       BmpStates
    };
    RectI *mBitmapBounds;  //bmp is [3*n], bmpHL is [3*n + 1], bmpNA is [3*n + 2]
-   TextureHandle mTextureHandle;
+   GFXTexHandle mTextureHandle;
 
    S32     mBorderThickness;           // this gets set per class in the constructor
    Point2I mChildMargin;               // the thickeness of the margin around the child controls

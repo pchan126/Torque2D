@@ -21,10 +21,11 @@
 //-----------------------------------------------------------------------------
 
 #include "console/console.h"
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
 #include "gui/guiCanvas.h"
 #include "gui/editor/guiDebugger.h"
 #include "io/stream.h"
+#include "graphics/gfxDrawUtil.h"
 
 IMPLEMENT_CONOBJECT(DbgFileView);
 
@@ -673,21 +674,21 @@ void DbgFileView::onRenderCell(Point2I offset, Point2I cell, bool selected, bool
    //draw the break point marks
    if (mFileView[cell.y].breakOnLine)
    {
-      dglSetBitmapModulation(mProfile->mFontColorHL);
-      dglDrawText(mFont, cellOffset, "#");
+      GFX->getDrawUtil()->setBitmapModulation(mProfile->mFontColorHL);
+      GFX->getDrawUtil()->drawText(mFont, cellOffset, "#");
    }
    else if (mFileView[cell.y].breakPosition)
    {
-      dglSetBitmapModulation(mProfile->mFontColor);
-      dglDrawText(mFont, cellOffset, "-");
+      GFX->getDrawUtil()->setBitmapModulation(mProfile->mFontColor);
+      GFX->getDrawUtil()->drawText(mFont, cellOffset, "-");
    }
    cellOffset.x += 8;
 
    //draw in the "current line" indicator
    if (mFileName == mPCFileName && (cell.y + 1 == mPCCurrentLine))
    {
-      dglSetBitmapModulation(mProfile->mFontColorHL);
-      dglDrawText(mFont, cellOffset, "=>");
+      GFX->getDrawUtil()->setBitmapModulation(mProfile->mFontColorHL);
+      GFX->getDrawUtil()->drawText(mFont, cellOffset, "=>");
    }
 
 	//by this time, the cellOffset has been incremented by 44 - the value of gFileXOffset
@@ -698,7 +699,7 @@ void DbgFileView::onRenderCell(Point2I offset, Point2I cell, bool selected, bool
    {
       if (mBlockStart == -1)
       {
-         dglDrawRectFill(RectI(cellOffset.x - 2, cellOffset.y - 3,
+         GFX->getDrawUtil()->drawRectFill(RectI(cellOffset.x - 2, cellOffset.y - 3,
                                  mCellSize.x + 4, mCellSize.y + 6), mProfile->mFillColorHL);
       }
       else if (mBlockStart >= 0 && mBlockEnd > mBlockStart && mBlockEnd <= S32(dStrlen(mFileView[cell.y].text) + 1))
@@ -716,11 +717,11 @@ void DbgFileView::onRenderCell(Point2I offset, Point2I cell, bool selected, bool
          startPos = mFont->getStrWidth((const UTF8 *)tempBuf);
 
          //draw the hilite
-         dglDrawRectFill(RectI(cellOffset.x + startPos, cellOffset.y - 3, endPos - startPos + 2, mCellSize.y + 6), mProfile->mFillColorHL);
+         GFX->getDrawUtil()->drawRectFill(RectI(cellOffset.x + startPos, cellOffset.y - 3, endPos - startPos + 2, mCellSize.y + 6), mProfile->mFillColorHL);
       }
    }
 
    //draw the line of text
-   dglSetBitmapModulation(mFileView[cell.y].breakOnLine ? mProfile->mFontColorHL : mProfile->mFontColor);
-   dglDrawText(mFont, cellOffset, mFileView[cell.y].text);
+   GFX->getDrawUtil()->setBitmapModulation(mFileView[cell.y].breakOnLine ? mProfile->mFontColorHL : mProfile->mFontColor);
+   GFX->getDrawUtil()->drawText(mFont, cellOffset, mFileView[cell.y].text);
 }

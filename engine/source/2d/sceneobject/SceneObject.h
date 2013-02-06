@@ -67,6 +67,9 @@
 #include "component/behaviors/behaviorInstance.h"
 #endif
 
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxEnums.h"
+
 //-----------------------------------------------------------------------------
 
 struct tDestroyNotification
@@ -176,8 +179,8 @@ protected:
 
     /// Render blending.
     bool                    mBlendMode;
-    S32                     mSrcBlendFactor;
-    S32                     mDstBlendFactor;
+    GFXBlend                     mSrcBlendFactor;
+    GFXBlend                     mDstBlendFactor;
     ColorF                  mBlendColor;
     F32                     mAlphaTest;
 
@@ -488,10 +491,10 @@ public:
     /// Render blending.
     inline void             setBlendMode( const bool blendMode )        { mBlendMode = blendMode; }
     inline bool             getBlendMode( void ) const                  { return mBlendMode; }
-    inline void             setSrcBlendFactor( const S32 blendFactor )  { mSrcBlendFactor = blendFactor; }
-    inline S32              getSrcBlendFactor( void ) const             { return mSrcBlendFactor; }
-    inline void             setDstBlendFactor( const S32 blendFactor )  { mDstBlendFactor = blendFactor; }
-    inline S32              getDstBlendFactor( void ) const             { return mDstBlendFactor; }
+    inline void             setSrcBlendFactor( const GFXBlend blendFactor )  { mSrcBlendFactor = blendFactor; }
+    inline GFXBlend         getSrcBlendFactor( void ) const             { return mSrcBlendFactor; }
+    inline void             setDstBlendFactor( const GFXBlend blendFactor )  { mDstBlendFactor = blendFactor; }
+    inline GFXBlend         getDstBlendFactor( void ) const             { return mDstBlendFactor; }
     inline void             setBlendColor( const ColorF& blendColor )   { mBlendColor = blendColor; }
     inline const ColorF&    getBlendColor( void ) const                 { return mBlendColor; }
     inline void             setBlendAlpha( const F32 alpha )            { mBlendColor.alpha = alpha; }
@@ -579,8 +582,8 @@ public:
     static const char* getBodyTypeDescription(const b2BodyType bodyType);
     static b2Shape::Type getCollisionShapeTypeEnum(const char* label);
     static const char* getCollisionShapeTypeDescription(const b2Shape::Type collisionShapeType);
-    static S32 getSrcBlendFactorEnum(const char* label);
-    static S32 getDstBlendFactorEnum(const char* label);
+    static GFXBlend getSrcBlendFactorEnum(const char* label);
+    static GFXBlend getDstBlendFactorEnum(const char* label);
     static const char* getSrcBlendFactorDescription(const GLenum factor);
     static const char* getDstBlendFactorDescription(const GLenum factor);
 

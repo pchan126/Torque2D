@@ -22,7 +22,8 @@
 
 #include "console/console.h"
 #include "console/consoleTypes.h"
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxDrawUtil.h"
 
 #include "gui/guiBitmapCtrl.h"
 
@@ -96,7 +97,7 @@ public:
          done = true;
       }
       ColorI color(0,0,0,alpha);
-      dglDrawRectFill(offset, mBounds.extent + offset, color);
+      GFX->getDrawUtil()->drawRectFill(offset, mBounds.extent + offset, color);
    }
    static void initPersistFields()
    {

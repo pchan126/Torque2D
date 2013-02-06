@@ -136,8 +136,10 @@ class ColorI
             const U8 in_g,
             const U8 in_b,
             const U8 in_a = U8(255));
+    
+   void set(const ColorF in_p);
 
-   void set( const char* pStockColorName );
+    void set( const char* pStockColorName );
 
    static const ColorI& StockColor( const char* pStockColorName );
    StringTableEntry StockColor( void );
@@ -450,6 +452,14 @@ inline ColorI::ColorI(const ColorI& in_rCopy)
    green = in_rCopy.green;
    blue  = in_rCopy.blue;
    alpha = in_rCopy.alpha;
+}
+
+inline void ColorI::set(const ColorF in_p)
+{
+    red   = U8(in_p.red   * 255.0f + 0.5);
+    green = U8(in_p.green * 255.0f + 0.5);
+    blue  = U8(in_p.blue  * 255.0f + 0.5);
+    alpha = U8(in_p.alpha * 255.0f + 0.5);
 }
 
 //-----------------------------------------------------------------------------

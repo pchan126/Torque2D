@@ -24,7 +24,8 @@
 #include "gui/containers/guiScrollCtrl.h"
 #include "console/consoleTypes.h"
 #include "console/console.h"
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxDrawUtil.h"
 #include "gui/guiTypes.h"
 #include "platform/event.h"
 
@@ -1158,7 +1159,8 @@ bool GuiTreeViewCtrl::buildIconTable(const char * icons)
    while (token && numIcons < MaxIcons)
    {
       dSprintf( buf, sizeof( char ) * 256, "%s", token );
-      mIconTable[numIcons] = TextureHandle( buf, TextureHandle::BitmapKeepTexture );
+//      mIconTable[numIcons] = TextureHandle( buf, TextureHandle::BitmapKeepTexture );
+      mIconTable[numIcons] = GFXTexHandle( buf, &GFXDefaultGUIProfile, avar("%s() - mIconTable (line %d)", __FUNCTION__, __LINE__) );
       token = dStrtok( NULL, ":" );
       numIcons++;
    }
@@ -2951,7 +2953,7 @@ void GuiTreeViewCtrl::onRender(Point2I offset, const RectI &updateRect)
    Parent::onRender(offset,updateRect);
 
    // Deal with drawing the drag & drop line, if any...
-   dglSetClipRect(updateRect);
+   GFX->setClipRect(updateRect);
 
    // only do it if we have a mDragMidPoint
    if (mDragMidPoint == NomDragMidPoint || !mSupportMouseDragging )
@@ -2967,8 +2969,8 @@ void GuiTreeViewCtrl::onRender(Point2I offset, const RectI &updateRect)
       S32 tempY = mItemHeight*mCurrentDragCell+offset.y ;
       squarePt.y = (F32)tempY;
       squarePt.x = (F32)(125.0f+offset.x);
-      dglDrawLine(0+offset.x, tempY, 250+offset.x, tempY,greyLine);
-      dglDraw2DSquare(squarePt, 6, 90 );
+      GFX->getDrawUtil()->drawLine(0+offset.x, tempY, 250+offset.x, tempY,greyLine);
+      GFX->getDrawUtil()->draw2DSquare(squarePt, 6, 90 );
 
    }
    if (mDragMidPoint == BelowmDragMidPoint)
@@ -2976,8 +2978,8 @@ void GuiTreeViewCtrl::onRender(Point2I offset, const RectI &updateRect)
       S32 tempY2 = mItemHeight*(mCurrentDragCell+1) +offset.y;
       squarePt.y = (F32)tempY2;
       squarePt.x = (F32)(125.0f+offset.x);
-      dglDrawLine(0+offset.x, tempY2, 250+offset.x, tempY2,greyLine);
-      dglDraw2DSquare(squarePt,6, 90 );
+      GFX->getDrawUtil()->drawLine(0+offset.x, tempY2, 250+offset.x, tempY2,greyLine);
+      GFX->getDrawUtil()->draw2DSquare(squarePt,6, 90 );
 
    }
 
@@ -2999,7 +3001,7 @@ void GuiTreeViewCtrl::onRenderCell(Point2I offset, Point2I cell, bool, bool )
          return;
 
    RectI drawRect( offset, mCellSize );
-   dglClearBitmapModulation();
+   GFX->getDrawUtil()->clearBitmapModulation();
 
    FrameAllocatorMarker txtBuff;
 
@@ -3025,7 +3027,7 @@ void GuiTreeViewCtrl::onRenderCell(Point2I offset, Point2I cell, bool, bool )
       {
          drawRect.point.x -= mTabSize;
          if ( parent->mNext )
-            dglDrawBitmapSR( mProfile->mTextureHandle, drawRect.point, mProfile->mBitmapArrayRects[BmpLine] );
+            GFX->getDrawUtil()->drawBitmapSR( mProfile->mTextureHandle, drawRect.point, mProfile->mBitmapArrayRects[BmpLine] );
 
          parent = parent->mParent;
       }
@@ -3036,7 +3038,7 @@ void GuiTreeViewCtrl::onRenderCell(Point2I offset, Point2I cell, bool, bool )
 
    // First, draw the rollover glow, if it's an inner node.
    if ( item->isParent() && item->mState.test( Item::MouseOverBmp ) )
-      dglDrawBitmapSR( mProfile->mTextureHandle, drawRect.point, mProfile->mBitmapArrayRects[BmpGlow] );
+      GFX->getDrawUtil()->drawBitmapSR( mProfile->mTextureHandle, drawRect.point, mProfile->mBitmapArrayRects[BmpGlow] );
 
    // Now, do we draw a treeview-selected item or an item dependent one?
    S32 newOffset = 0; // This is stored so we can render glow, then update render pos.
@@ -3062,7 +3064,7 @@ void GuiTreeViewCtrl::onRenderCell(Point2I offset, Point2I cell, bool, bool )
 
       if ( ( bitmap >= 0 ) && ( bitmap < mProfile->mBitmapArrayRects.size() ) )
       {
-         dglDrawBitmapSR( mProfile->mTextureHandle, drawRect.point, mProfile->mBitmapArrayRects[bitmap] );
+         GFX->getDrawUtil()->drawBitmapSR( mProfile->mTextureHandle, drawRect.point, mProfile->mBitmapArrayRects[bitmap] );
          newOffset = mProfile->mBitmapArrayRects[bitmap].extent.x;
       }
 
@@ -3076,7 +3078,7 @@ void GuiTreeViewCtrl::onRenderCell(Point2I offset, Point2I cell, bool, bool )
          {
             //drawRect.point.x = offset.x + mTabSize * item->mTabLevel + mIconTable[icon].getWidth();
             drawRect.point.x += mIconTable[icon].getWidth();
-            dglDrawBitmap( mIconTable[icon], drawRect.point, 0 );
+            GFX->getDrawUtil()->drawBitmap( mIconTable[icon], drawRect.point );
          }
       }
 
@@ -3086,7 +3088,7 @@ void GuiTreeViewCtrl::onRenderCell(Point2I offset, Point2I cell, bool, bool )
          {
             //drawRect.point.x = offset.x + mTabSize * item->mTabLevel + mIconTable[icon].getWidth();
             drawRect.point.x += mIconTable[icon2].getWidth();
-            dglDrawBitmap( mIconTable[icon2], drawRect.point, 0 );
+            GFX->getDrawUtil()->drawBitmap( mIconTable[icon2], drawRect.point );
          }
       }
 
@@ -3132,7 +3134,7 @@ void GuiTreeViewCtrl::onRenderCell(Point2I offset, Point2I cell, bool, bool )
             if(iconHeight > 0)
                drawRect.point.y += iconHeight;
             drawRect.point.x += mIconTable[item->mIcon].getWidth();
-            dglDrawBitmap( mIconTable[item->mIcon], drawRect.point, 0 );
+            GFX->getDrawUtil()->drawBitmap( mIconTable[item->mIcon], drawRect.point, GFXBitmapFlip_None );
             drawRect.point.y = oldHeight;
          }
       }
@@ -3156,7 +3158,7 @@ void GuiTreeViewCtrl::onRenderCell(Point2I offset, Point2I cell, bool, bool )
 
       if ( ( bitmap >= 0 ) && ( bitmap < mProfile->mBitmapArrayRects.size() ) )
       {
-         dglDrawBitmapSR( mProfile->mTextureHandle, drawRect.point, mProfile->mBitmapArrayRects[bitmap] );
+         GFX->getDrawUtil()->drawBitmapSR( mProfile->mTextureHandle, drawRect.point, mProfile->mBitmapArrayRects[bitmap] );
          newOffset = mProfile->mBitmapArrayRects[bitmap].extent.x;
       }
 
@@ -3170,7 +3172,7 @@ void GuiTreeViewCtrl::onRenderCell(Point2I offset, Point2I cell, bool, bool )
             if(iconHeight > 0)
                drawRect.point.y += iconHeight;
             drawRect.point.x += mIconTable[icon].getWidth();
-            dglDrawBitmap( mIconTable[icon], drawRect.point, 0 );
+            GFX->getDrawUtil()->drawBitmap( mIconTable[icon], drawRect.point, GFXBitmapFlip_None );
             drawRect.point.y = oldHeight;
          }
       }
@@ -3189,9 +3191,9 @@ void GuiTreeViewCtrl::onRenderCell(Point2I offset, Point2I cell, bool, bool )
    // Draw the rollover/selected bitmap, if one was specified.
    drawRect.extent.x = mProfile->mFont->getStrWidth( displayText ) + ( 2 * mTextOffset );
    if ( item->mState.test( Item::Selected ) && mTexSelected )
-      dglDrawBitmapStretch( mTexSelected, drawRect );
+      GFX->getDrawUtil()->drawBitmapStretch( mTexSelected, drawRect );
    else if ( item->mState.test( Item::MouseOverText ) && mTexRollover )
-      dglDrawBitmapStretch( mTexRollover, drawRect );
+      GFX->getDrawUtil()->drawBitmapStretch( mTexRollover, drawRect );
 
    // Offset a bit so as to space text properly.
    drawRect.point.x += mTextOffset;
@@ -3204,11 +3206,11 @@ void GuiTreeViewCtrl::onRenderCell(Point2I offset, Point2I cell, bool, bool )
 
    if (item->mState.test(Item::Selected))
    {
-      dglDrawRectFill(drawRect, mProfile->mFillColorHL);
+      GFX->getDrawUtil()->drawRectFill(drawRect, mProfile->mFillColorHL);
    }
    else if (item->mState.test(Item::MouseOverText))
    {
-      dglDrawRectFill(drawRect, mProfile->mFontColorNA);
+      GFX->getDrawUtil()->drawRectFill(drawRect, mProfile->mFontColorNA);
    }
    
    if( mInstantGroup == item->mId)
@@ -3216,7 +3218,7 @@ void GuiTreeViewCtrl::onRenderCell(Point2I offset, Point2I cell, bool, bool )
         fontColor	=	mProfile->mFontColorHL;
    }
    
-   dglSetBitmapModulation( fontColor );
+   GFX->getDrawUtil()->setBitmapModulation( fontColor );
 
    // Center the text horizontally.
    S32 height = (mItemHeight - mProfile->mFont->getHeight()) / 2;
@@ -3227,7 +3229,7 @@ void GuiTreeViewCtrl::onRenderCell(Point2I offset, Point2I cell, bool, bool )
    // JDD - offset by two pixels or so to keep the text from rendering RIGHT ONTOP of the outline
    drawRect.point.x += 2;
 
-   dglDrawText( mProfile->mFont, drawRect.point, displayText, mProfile->mFontColors );
+   GFX->getDrawUtil()->drawText( mProfile->mFont, drawRect.point, displayText, mProfile->mFontColors );
 
 }
 

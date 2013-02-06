@@ -22,6 +22,7 @@
 #include "gui/editor/guiInspector.h"
 #include "gui/buttons/guiIconButtonCtrl.h"
 #include "memory/frameAllocator.h"
+#include "graphics/gfxDrawUtil.h"
 
 //////////////////////////////////////////////////////////////////////////
 // GuiInspector
@@ -392,27 +393,27 @@ void GuiInspectorField::onRender(Point2I offset, const RectI &updateRect)
       // Calculate Y Offset to center vertically the caption
       U32 captionYOffset = (U32)mFloor( (F32)( captionRect.extent.y - mProfile->mFont->getHeight() ) / 2 );
 
-      RectI clipRect = dglGetClipRect();
+      RectI clipRect = GFX->getClipRect();
 
       if( clipRect.intersect( captionRect ) )
       {
          // Backup Bitmap Modulation
          ColorI currColor;
-         dglGetBitmapModulation( &currColor );
+         GFX->getDrawUtil()->getBitmapModulation( &currColor );
 
-         dglSetBitmapModulation( mProfile->mFontColor );
+         GFX->getDrawUtil()->setBitmapModulation( mProfile->mFontColor );
 
-         dglSetClipRect( RectI( clipRect.point, Point2I( captionRect.extent.x, clipRect.extent.y ) ));
+         GFX->setClipRect( RectI( clipRect.point, Point2I( captionRect.extent.x, clipRect.extent.y ) ));
          // Draw Caption ( Vertically Centered )
          U32 textY = captionRect.point.y + captionYOffset;
          U32 textX = captionRect.point.x + captionRect.extent.x - mProfile->mFont->getStrWidth(mCaption) - 6;
          Point2I textPT(textX, textY);
 
-         dglDrawText( mProfile->mFont, textPT, mCaption, &mProfile->mFontColor );
+         GFX->getDrawUtil()->drawText( mProfile->mFont, textPT, mCaption, &mProfile->mFontColor );
 
-         dglSetBitmapModulation( currColor );
+         GFX->getDrawUtil()->setBitmapModulation( currColor );
 
-         dglSetClipRect( clipRect );
+         GFX->setClipRect( clipRect );
       }
    }
 

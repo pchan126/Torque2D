@@ -173,7 +173,7 @@ struct b2Vec2
 	}
 
 	/// Does this vector contain finite coordinates?
-	bool IsValid() const
+	bool isValid() const
 	{
 		return b2IsValid(x) && b2IsValid(y);
 	}

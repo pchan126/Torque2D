@@ -139,8 +139,8 @@ class GuiPopUpMenuCtrlEx : public GuiTextCtrl
    bool mHotTrackItems;
    StringTableEntry mBitmapName; // DAW: Added
    Point2I mBitmapBounds; // DAW: Added
-   TextureHandle mTextureNormal; // DAW: Added
-   TextureHandle mTextureDepressed; // DAW: Added
+    GFXTexHandle mTextureNormal; //  Added
+    GFXTexHandle mTextureDepressed; //  Added
 
    virtual void addChildren();
    virtual void repositionPopup();

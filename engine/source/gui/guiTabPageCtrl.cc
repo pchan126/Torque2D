@@ -22,7 +22,7 @@
 
 #include "console/consoleTypes.h"
 #include "console/console.h"
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
 #include "gui/guiCanvas.h"
 #include "gui/guiTabPageCtrl.h"
 #include "gui/guiDefaultControlRender.h"

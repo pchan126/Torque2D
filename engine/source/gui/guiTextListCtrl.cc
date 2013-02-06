@@ -23,7 +23,8 @@
 #include "platform/platform.h"
 #include "console/consoleTypes.h"
 #include "console/console.h"
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxDrawUtil.h"
 #include "gui/guiTextListCtrl.h"
 #include "gui/containers/guiScrollCtrl.h"
 #include "gui/guiDefaultControlRender.h"
@@ -336,13 +337,13 @@ void GuiTextListCtrl::onRenderCell(Point2I offset, Point2I cell, bool selected, 
          RectI highlightRect = RectI(offset.x, offset.y, mCellSize.x, mCellSize.y);
          highlightRect.inset( 0, -1 );
          renderFilledBorder( highlightRect, mProfile->mBorderColorHL, mProfile->mFillColorHL);
-         dglSetBitmapModulation(mProfile->mFontColorHL);
+         GFX->getDrawUtil()->setBitmapModulation(mProfile->mFontColorHL);
       }
       else
-         dglSetBitmapModulation(mouseOver ? mProfile->mFontColorHL : mProfile->mFontColor);
+         GFX->getDrawUtil()->setBitmapModulation(mouseOver ? mProfile->mFontColorHL : mProfile->mFontColor);
    }
    else
-      dglSetBitmapModulation( mProfile->mFontColorNA );
+      GFX->getDrawUtil()->setBitmapModulation( mProfile->mFontColorNA );
 
    const char *text = mList[cell.y].text;
    for(U32 index = 0; index < (U32)mColumnOffsets.size(); index++)
@@ -363,20 +364,20 @@ void GuiTextListCtrl::onRenderCell(Point2I offset, Point2I cell, bool selected, 
 
          if(mClipColumnText && (index != (mColumnOffsets.size() - 1)))
          {
-            saveClipRect = dglGetClipRect();
+            saveClipRect = GFX->getClipRect();
 
             RectI clipRect(pos, Point2I(mColumnOffsets[index+1] - mColumnOffsets[index] - 4, mCellSize.y));
             if(clipRect.intersect(saveClipRect))
             {
                clipped = true;
-               dglSetClipRect(clipRect);
+               GFX->setClipRect(clipRect);
             }
          }
 
-         dglDrawTextN(mFont, pos, text, slen, mProfile->mFontColors);
+         GFX->getDrawUtil()->drawTextN(mFont, pos, text, slen, mProfile->mFontColors);
 
          if(clipped)
-            dglSetClipRect(saveClipRect);
+            GFX->setClipRect(saveClipRect);
       }
       if(!nextCol)
          break;

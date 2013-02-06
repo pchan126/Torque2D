@@ -24,9 +24,7 @@
 #include "2d/sceneobject/SceneObject.h"
 #endif
 
-#ifndef _DGL_H_
-#include "graphics/dgl.h"
-#endif
+#include "graphics/gfxDevice.h"
 
 #ifndef _COLOR_H_
 #include "graphics/color.h"
@@ -164,8 +162,8 @@ SceneObject::SceneObject() :
 
     /// Render blending.
     mBlendMode(true),
-    mSrcBlendFactor(GL_SRC_ALPHA),
-    mDstBlendFactor(GL_ONE_MINUS_SRC_ALPHA),
+    mSrcBlendFactor(GFXBlendSrcAlpha),
+    mDstBlendFactor(GFXBlendInvSrcAlpha),
     mBlendColor(ColorF(1.0f,1.0f,1.0f,1.0f)),
     mAlphaTest(-1.0f),
 
@@ -2646,50 +2644,50 @@ Vector2 SceneObject::getEdgeCollisionShapeAdjacentEnd( const U32 shapeIndex ) co
 
 void SceneObject::setBlendOptions( void )
 {
-    // Set Blend Status.
-    if ( mBlendMode )
-    {
-        // Enable Blending.
-        glEnable( GL_BLEND );
-        // Set Blend Function.
-        glBlendFunc( mSrcBlendFactor, mDstBlendFactor );
-
-        // Set Colour.
-        glColor4f(mBlendColor.red,mBlendColor.green,mBlendColor.blue,mBlendColor.alpha );
-    }
-    else
-    {
-        // Disable Blending.
-        glDisable( GL_BLEND );
-        // Reset Colour.
-        glColor4f(1,1,1,1);
-    }
-
-    // Set Alpha Test.
-    if ( mAlphaTest >= 0.0f )
-    {
-        // Enable Test.
-        glEnable( GL_ALPHA_TEST );
-        glAlphaFunc( GL_GREATER, mAlphaTest );
-    }
-    else
-    {
-        // Disable Test.
-        glDisable( GL_ALPHA_TEST );
-    }
+//    // Set Blend Status.
+//    if ( mBlendMode )
+//    {
+//        // Enable Blending.
+//        glEnable( GL_BLEND );
+//        // Set Blend Function.
+//        glBlendFunc( mSrcBlendFactor, mDstBlendFactor );
+//
+//        // Set Colour.
+//        glColor4f(mBlendColor.red,mBlendColor.green,mBlendColor.blue,mBlendColor.alpha );
+//    }
+//    else
+//    {
+//        // Disable Blending.
+//        glDisable( GL_BLEND );
+//        // Reset Colour.
+//        glColor4f(1,1,1,1);
+//    }
+//
+//    // Set Alpha Test.
+//    if ( mAlphaTest >= 0.0f )
+//    {
+//        // Enable Test.
+//        glEnable( GL_ALPHA_TEST );
+//        glAlphaFunc( GL_GREATER, mAlphaTest );
+//    }
+//    else
+//    {
+//        // Disable Test.
+//        glDisable( GL_ALPHA_TEST );
+//    }
 }
 
 //-----------------------------------------------------------------------------
 
 void SceneObject::resetBlendOptions( void )
 {
-    // Disable Blending.
-    glDisable( GL_BLEND );
-
-    glDisable( GL_ALPHA_TEST);
-
-    // Reset Colour.
-    glColor4f(1,1,1,1);
+//    // Disable Blending.
+//    glDisable( GL_BLEND );
+//
+//    glDisable( GL_ALPHA_TEST);
+//
+//    // Reset Colour.
+//    glColor4f(1,1,1,1);
 }
 
 //---------------------------------------------------------------------------------------------
@@ -3886,15 +3884,15 @@ EnumTable collisionShapeTypeTable(sizeof(collisionShapeTypeLookup) / sizeof(Enum
 
 static EnumTable::Enums srcBlendFactorLookup[] =
                 {
-                { GL_ZERO,                  "ZERO"                  },
-                { GL_ONE,                   "ONE"                   },
-                { GL_DST_COLOR,             "DST_COLOR"             },
-                { GL_ONE_MINUS_DST_COLOR,   "ONE_MINUS_DST_COLOR"   },
-                { GL_SRC_ALPHA,             "SRC_ALPHA"             },
-                { GL_ONE_MINUS_SRC_ALPHA,   "ONE_MINUS_SRC_ALPHA"   },
-                { GL_DST_ALPHA,             "DST_ALPHA"             },
-                { GL_ONE_MINUS_DST_ALPHA,   "ONE_MINUS_DST_ALPHA"   },
-                { GL_SRC_ALPHA_SATURATE,    "SRC_ALPHA_SATURATE"    },
+                { GFXBlendZero,                  "ZERO"                  },
+                { GFXBlendOne,                   "ONE"                   },
+                { GFXBlendDestColor,             "DST_COLOR"             },
+                { GFXBlendInvDestAlpha,   "ONE_MINUS_DST_COLOR"   },
+                { GFXBlendSrcAlpha,             "SRC_ALPHA"             },
+                { GFXBlendInvSrcColor,   "ONE_MINUS_SRC_ALPHA"   },
+                { GFXBlendDestAlpha,             "DST_ALPHA"             },
+                { GFXBlendInvDestAlpha,   "ONE_MINUS_DST_ALPHA"   },
+                { GFXBlendSrcAlphaSat,    "SRC_ALPHA_SATURATE"    },
                 };
 
 EnumTable srcBlendFactorTable(sizeof(srcBlendFactorLookup) / sizeof(EnumTable::Enums), &srcBlendFactorLookup[0]);
@@ -3903,14 +3901,14 @@ EnumTable srcBlendFactorTable(sizeof(srcBlendFactorLookup) / sizeof(EnumTable::E
 
 static EnumTable::Enums dstBlendFactorLookup[] =
                 {
-                { GL_ZERO,                  "ZERO" },
-                { GL_ONE,                   "ONE" },
-                { GL_SRC_COLOR,             "SRC_COLOR" },
-                { GL_ONE_MINUS_SRC_COLOR,   "ONE_MINUS_SRC_COLOR" },
-                { GL_SRC_ALPHA,             "SRC_ALPHA" },
-                { GL_ONE_MINUS_SRC_ALPHA,   "ONE_MINUS_SRC_ALPHA" },
-                { GL_DST_ALPHA,             "DST_ALPHA" },
-                { GL_ONE_MINUS_DST_ALPHA,   "ONE_MINUS_DST_ALPHA" },
+                { GFXBlendZero,                  "ZERO" },
+                { GFXBlendOne,                   "ONE" },
+                { GFXBlendSrcColor,             "SRC_COLOR" },
+                { GFXBlendInvSrcColor,   "ONE_MINUS_SRC_COLOR" },
+                { GFXBlendSrcAlpha,             "SRC_ALPHA" },
+                { GFXBlendInvSrcAlpha,   "ONE_MINUS_SRC_ALPHA" },
+                { GFXBlendDestAlpha,             "DST_ALPHA" },
+                { GFXBlendInvDestAlpha,   "ONE_MINUS_DST_ALPHA" },
                 };
 
 EnumTable dstBlendFactorTable(sizeof(dstBlendFactorLookup) / sizeof(EnumTable::Enums), &dstBlendFactorLookup[0]);
@@ -3985,19 +3983,19 @@ const char* SceneObject::getCollisionShapeTypeDescription(const b2Shape::Type co
 
 //-----------------------------------------------------------------------------
 
-S32 SceneObject::getSrcBlendFactorEnum(const char* label)
+GFXBlend SceneObject::getSrcBlendFactorEnum(const char* label)
 {
     // Search for Mnemonic.
     for (U32 i = 0; i < (sizeof(srcBlendFactorLookup) / sizeof(EnumTable::Enums)); i++)
     {
         if( dStricmp(srcBlendFactorLookup[i].label, label) == 0)
-            return(srcBlendFactorLookup[i].index);
+            return(GFXBlend)(srcBlendFactorLookup[i].index);
     }
 
     // Warn.
     Con::warnf("SceneObject::getSrcBlendFactorEnum() - Invalid source blend factor of '%s'", label );
 
-    return GL_INVALID_BLEND_FACTOR;
+    return GFXBlendInvalid;
 }
 
 //-----------------------------------------------------------------------------
@@ -4019,19 +4017,19 @@ const char* SceneObject::getSrcBlendFactorDescription(const GLenum factor)
 
 //-----------------------------------------------------------------------------
 
-S32 SceneObject::getDstBlendFactorEnum(const char* label)
+GFXBlend SceneObject::getDstBlendFactorEnum(const char* label)
 {
     // Search for Mnemonic.
     for (U32 i = 0; i < (sizeof(dstBlendFactorLookup) / sizeof(EnumTable::Enums)); i++)
     {
         if( dStricmp(dstBlendFactorLookup[i].label, label) == 0)
-            return(dstBlendFactorLookup[i].index);
+            return(GFXBlend)(dstBlendFactorLookup[i].index);
     }
 
     // Warn.
     Con::warnf("SceneObject::getSrcBlendFactorEnum() - Invalid destination blend factor of '%s'", label );
 
-    return GL_INVALID_BLEND_FACTOR;
+    return GFXBlendInvalid;
 }
 
 //-----------------------------------------------------------------------------

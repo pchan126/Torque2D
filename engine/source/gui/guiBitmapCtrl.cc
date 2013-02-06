@@ -22,8 +22,8 @@
 
 #include "console/console.h"
 #include "console/consoleTypes.h"
-#include "graphics/dgl.h"
-
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxDrawUtil.h"
 #include "gui/guiBitmapCtrl.h"
 
 IMPLEMENT_CONOBJECT(GuiBitmapCtrl);
@@ -108,7 +108,7 @@ bool GuiBitmapCtrl::onWake()
 
 void GuiBitmapCtrl::onSleep()
 {
-   mTextureHandle = NULL;
+   mTextureObject = NULL;
    Parent::onSleep();
 }
 
@@ -119,74 +119,100 @@ void GuiBitmapCtrl::inspectPostApply()
    // set it's extent to be exactly the size of the bitmap (if present)
    Parent::inspectPostApply();
 
-   if (!mWrap && (mBounds.extent.x == 0) && (mBounds.extent.y == 0) && mTextureHandle)
+   if (!mWrap && (mBounds.extent.x == 0) && (mBounds.extent.y == 0) && mTextureObject)
    {
-      TextureObject *texture = (TextureObject *) mTextureHandle;
-      mBounds.extent.x = texture->getBitmapWidth();
-      mBounds.extent.y = texture->getBitmapHeight();
+//      TextureObject *texture = (TextureObject *) mTextureObject;
+      mBounds.extent.x = mTextureObject->getBitmapWidth();
+      mBounds.extent.y = mTextureObject->getBitmapHeight();
    }
 }
 
 void GuiBitmapCtrl::setBitmap(const char *name, bool resize)
 {
-   mBitmapName = StringTable->insert(name);
-   if (*mBitmapName) {
-      mTextureHandle = TextureHandle(mBitmapName, TextureHandle::BitmapTexture, true);
+//   mBitmapName = StringTable->insert(name);
+    mBitmapName = name;
 
-      // Resize the control to fit the bitmap
-      if (resize) {
-         TextureObject* texture = (TextureObject *) mTextureHandle;
-         mBounds.extent.x = texture->getBitmapWidth();
-         mBounds.extent.y = texture->getBitmapHeight();
-         GuiControl *parent = getParent();
-         if( !parent ) {
-             Con::errorf( "GuiBitmapCtrl::setBitmap( %s ), trying to resize but object has no parent.", name ) ;
-         } else {
-             Point2I extent = parent->getExtent();
-         parentResized(extent,extent);
-      }
-   }
-   }
-   else
-      mTextureHandle = NULL;
-   setUpdate();
+    if ( mBitmapName.isNotEmpty() )
+	{
+        if ( !mBitmapName.equal("texhandle", String::NoCase) )
+            mTextureObject.set( mBitmapName, &GFXDefaultGUIProfile, avar("%s() - mTextureObject (line %d)", __FUNCTION__, __LINE__) );
+        
+        // Resize the control to fit the bitmap
+        if ( mTextureObject && resize )
+        {
+            setExtent( mTextureObject->getWidth(), mTextureObject->getHeight() );
+            updateSizing();
+        }
+    }
+    else
+        mTextureObject = NULL;
+    
+    setUpdate();
+    
+//    if (*mBitmapName) {
+//      mTextureObject = GFXTexHandle(mBitmapName, GFXTexHandle::BitmapTexture, true);
+//
+//      // Resize the control to fit the bitmap
+//      if (resize) {
+////         TextureObject* texture = (TextureObject *) mTextureObject;
+//         mBounds.extent.x = mTextureObject->getBitmapWidth();
+//         mBounds.extent.y = mTextureObject->getBitmapHeight();
+//         GuiControl *parent = getParent();
+//         if( !parent ) {
+//             Con::errorf( "GuiBitmapCtrl::setBitmap( %s ), trying to resize but object has no parent.", name ) ;
+//         } else {
+//             Point2I extent = parent->getExtent();
+//         parentResized(extent,extent);
+//      }
+//   }
+//   }
+//   else
+//      mTextureObject = NULL;
+//   setUpdate();
+}
+
+void GuiBitmapCtrl::updateSizing()
+{
+    if(!getParent())
+        return;
+
+    mBounds.extent.x = mTextureObject->getBitmapWidth();
+    mBounds.extent.y = mTextureObject->getBitmapHeight();
+    Point2I extent = getParent()->getExtent();
+    parentResized(extent,extent);
 }
 
 
-void GuiBitmapCtrl::setBitmap(const TextureHandle &handle, bool resize)
+void GuiBitmapCtrl::setBitmap(const GFXTexHandle &handle, bool resize)
 {
-   mTextureHandle = handle;
+   mTextureObject = handle;
 
    // Resize the control to fit the bitmap
    if (resize) {
-      TextureObject* texture = (TextureObject *) mTextureHandle;
-      mBounds.extent.x = texture->getBitmapWidth();
-      mBounds.extent.y = texture->getBitmapHeight();
-      Point2I extent = getParent()->getExtent();
-      parentResized(extent,extent);
+       updateSizing();
    }
 }
 
 
 void GuiBitmapCtrl::onRender(Point2I offset, const RectI &updateRect)
 {
-   if (mTextureHandle)
+   if (mTextureObject)
    {
-      dglClearBitmapModulation();
+      GFX->getDrawUtil()->clearBitmapModulation();
         if(mWrap)
         {
          // We manually draw each repeat because non power of two textures will 
          // not tile correctly when rendered with dglDrawBitmapTile(). The non POT
          // bitmap will be padded by the hardware, and we'll see lots of slack
          // in the texture. So... lets do what we must: draw each repeat by itself:
-         TextureObject* texture = (TextureObject *) mTextureHandle;
+//         TextureObject* texture = (TextureObject *) mTextureObject;
             RectI srcRegion;
             RectI dstRegion;
-            float xdone = ((float)mBounds.extent.x/(float)texture->getBitmapWidth())+1;
-            float ydone = ((float)mBounds.extent.y/(float)texture->getBitmapHeight())+1;
+            float xdone = ((float)mBounds.extent.x/(float)mTextureObject->getBitmapWidth())+1;
+            float ydone = ((float)mBounds.extent.y/(float)mTextureObject->getBitmapHeight())+1;
 
-            int xshift = startPoint.x%texture->getBitmapWidth();
-            int yshift = startPoint.y%texture->getBitmapHeight();
+            int xshift = startPoint.x%mTextureObject->getBitmapWidth();
+            int yshift = startPoint.y%mTextureObject->getBitmapHeight();
             for(int y = 0; y < ydone; ++y)
                 for(int x = 0; x < xdone; ++x)
                 {
@@ -197,13 +223,14 @@ void GuiBitmapCtrl::onRender(Point2I offset, const RectI &updateRect)
                     }
                     else
                     {
-                        srcRegion.set(0,0,texture->getBitmapWidth(),texture->getBitmapHeight());
+                        srcRegion.set(0,0,mTextureObject->getBitmapWidth(),mTextureObject->getBitmapHeight());
                     }
-                    dstRegion.set( ((texture->getBitmapWidth()*x)+offset.x)-xshift,
-                                      ((texture->getBitmapHeight()*y)+offset.y)-yshift,
-                                      texture->getBitmapWidth(),	
-                                      texture->getBitmapHeight());
-                dglDrawBitmapStretchSR(texture,dstRegion, srcRegion, false);
+                    dstRegion.set( ((mTextureObject->getBitmapWidth()*x)+offset.x)-xshift,
+                                      ((mTextureObject->getBitmapHeight()*y)+offset.y)-yshift,
+                                      mTextureObject->getBitmapWidth(),	
+                                      mTextureObject->getBitmapHeight());
+//                GFX->getDrawUtil()->drawBitmapStretchSR(texture,dstRegion, srcRegion, false);
+                    GFX->getDrawUtil()->drawBitmapStretchSR(mTextureObject, dstRegion, srcRegion, GFXBitmapFlip_None, GFXTextureFilterLinear);
                 }
         }
         else
@@ -215,19 +242,21 @@ void GuiBitmapCtrl::onRender(Point2I offset, const RectI &updateRect)
          {
             RectI srcRegion;
             srcRegion = mSourceRect;
-            dglDrawBitmapStretchSR(mTextureHandle,rect, srcRegion, false);
+//            GFX->getDrawUtil()->drawBitmapStretchSR(mTextureObject,rect, srcRegion, false);
+             GFX->getDrawUtil()->drawBitmapStretchSR(mTextureObject,rect, srcRegion, GFXBitmapFlip_None, GFXTextureFilterLinear);
         }
         else
         {
-            dglDrawBitmapStretch(mTextureHandle, rect);
+//            GFX->getDrawUtil()->drawBitmapStretch(mTextureObject, rect);
+            GFX->getDrawUtil()->drawBitmapStretch(mTextureObject, rect, GFXBitmapFlip_None, GFXTextureFilterLinear, false);
         }
       }
    }
 
-   if (mProfile->mBorder || !mTextureHandle)
+   if (mProfile->mBorder || !mTextureObject)
    {
       RectI rect(offset.x, offset.y, mBounds.extent.x, mBounds.extent.y);
-      dglDrawRect(rect, mProfile->mBorderColor);
+      GFX->getDrawUtil()->drawRect(rect, mProfile->mBorderColor);
    }
 
    renderChildControls(offset, updateRect);
@@ -235,11 +264,11 @@ void GuiBitmapCtrl::onRender(Point2I offset, const RectI &updateRect)
 
 void GuiBitmapCtrl::setValue(S32 x, S32 y)
 {
-   if (mTextureHandle)
+   if (mTextureObject)
    {
-        TextureObject* texture = (TextureObject *) mTextureHandle;
-        x+=texture->getBitmapWidth()/2;
-        y+=texture->getBitmapHeight()/2;
+//        TextureObject* texture = (TextureObject *) mTextureObject;
+        x+=mTextureObject->getBitmapWidth()/2;
+        y+=mTextureObject->getBitmapHeight()/2;
     }
     while (x < 0)
         x += 256;

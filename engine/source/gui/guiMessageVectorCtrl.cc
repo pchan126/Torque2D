@@ -22,7 +22,8 @@
 
 #include "gui/guiMessageVectorCtrl.h"
 #include "gui/messageVector.h"
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxDrawUtil.h"
 #include "console/consoleTypes.h"
 #include "gui/containers/guiScrollCtrl.h"
 
@@ -629,20 +630,20 @@ void GuiMessageVectorCtrl::onRender(Point2I      offset,
 
                U32 strWidth;
                if (walkAcross->specialReference == -1) {
-                  dglSetBitmapModulation(lastColor);
-                  dglSetTextAnchorColor(mProfile->mFontColor);
-                  strWidth = dglDrawTextN(mProfile->mFont, globalStart, &mMessageVector->getLine(i).message[walkAcross->start],
+                  GFX->getDrawUtil()->setBitmapModulation(lastColor);
+                  GFX->getDrawUtil()->setTextAnchorColor(mProfile->mFontColor);
+                  strWidth = GFX->getDrawUtil()->drawTextN(mProfile->mFont, globalStart, &mMessageVector->getLine(i).message[walkAcross->start],
                                           walkAcross->end - walkAcross->start + 1, mProfile->mFontColors, mMaxColorIndex);
-                  dglGetBitmapModulation(&lastColor);
+                  GFX->getDrawUtil()->getBitmapModulation(&lastColor);
                } else {
-                  dglGetBitmapModulation(&lastColor);
-                  dglSetBitmapModulation(mSpecialColor);
-                  dglSetTextAnchorColor(mProfile->mFontColor);
-                  strWidth = dglDrawTextN(mProfile->mFont, globalStart, &mMessageVector->getLine(i).message[walkAcross->start],
+                  GFX->getDrawUtil()->getBitmapModulation(&lastColor);
+                  GFX->getDrawUtil()->setBitmapModulation(mSpecialColor);
+                  GFX->getDrawUtil()->setTextAnchorColor(mProfile->mFontColor);
+                  strWidth = GFX->getDrawUtil()->drawTextN(mProfile->mFont, globalStart, &mMessageVector->getLine(i).message[walkAcross->start],
                                           walkAcross->end - walkAcross->start + 1);
 
                   // in case we have 2 in a row...
-                  dglSetBitmapModulation(lastColor);
+                  GFX->getDrawUtil()->setBitmapModulation(lastColor);
                }
 
                if (walkAcross->specialReference != -1) {
@@ -652,7 +653,7 @@ void GuiMessageVectorCtrl::onRender(Point2I      offset,
                   lineEnd.x += strWidth;
                   lineEnd.y += mProfile->mFont->getBaseline() + 1;
 
-                  dglDrawLine(localToGlobalCoord(lineStart),
+                  GFX->getDrawUtil()->drawLine(localToGlobalCoord(lineStart),
                               localToGlobalCoord(lineEnd),
                               mSpecialColor);
                }
@@ -665,7 +666,7 @@ void GuiMessageVectorCtrl::onRender(Point2I      offset,
             pElement = pElement->nextPhysicalLine;
          }
       }
-      dglClearBitmapModulation();
+      GFX->getDrawUtil()->clearBitmapModulation();
    }
 }
 

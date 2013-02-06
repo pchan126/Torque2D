@@ -35,6 +35,8 @@
 #include "graphics/color.h"
 #endif
 
+#include "graphics/gfxEnums.h"
+
 // Debug Profiling.
 #include "debug/profiler.h"
 
@@ -99,8 +101,8 @@ public:
         mRenderGroup = StringTable->EmptyString;
 
         mBlendMode = true;
-        mSrcBlendFactor = GL_SRC_ALPHA;
-        mDstBlendFactor = GL_ONE_MINUS_SRC_ALPHA;
+        mSrcBlendFactor = GFXBlendSrcAlpha;
+        mDstBlendFactor = GFXBlendInvSrcAlpha;
         mBlendColor = ColorF(1.0f,1.0f,1.0f,1.0f);
         mAlphaTest = -1.0f;
 
@@ -125,8 +127,8 @@ public:
     StringTableEntry    mRenderGroup;
 
     bool                mBlendMode;
-    GLenum              mSrcBlendFactor;
-    GLenum              mDstBlendFactor;
+    GFXBlend              mSrcBlendFactor;
+    GFXBlend              mDstBlendFactor;
     ColorF              mBlendColor;
     F32                 mAlphaTest;
 

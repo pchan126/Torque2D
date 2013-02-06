@@ -21,7 +21,8 @@
 //-----------------------------------------------------------------------------
 
 #include "console/console.h"
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxDrawUtil.h"
 #include "gui/guiCanvas.h"
 #include "gui/buttons/guiCheckBoxCtrl.h"
 #include "console/consoleTypes.h"
@@ -137,7 +138,7 @@ void GuiCheckBoxCtrl::onRender(Point2I offset, const RectI &updateRect)
 
    // just draw the check box and the text:
    S32 xOffset = 0;
-    dglClearBitmapModulation();
+    GFX->getDrawUtil()->clearBitmapModulation();
    if(mProfile->mBitmapArrayRects.size() >= 4)
    {
        // if size >= 4 then the inactive state images should be present
@@ -148,12 +149,12 @@ void GuiCheckBoxCtrl::onRender(Point2I offset, const RectI &updateRect)
          index += 2;
       xOffset = mProfile->mBitmapArrayRects[0].extent.x + 2 + mIndent;
       S32 y = (mBounds.extent.y - mProfile->mBitmapArrayRects[0].extent.y) / 2;
-      dglDrawBitmapSR(mProfile->mTextureHandle, offset + Point2I(mIndent, y), mProfile->mBitmapArrayRects[index]);
+      GFX->getDrawUtil()->drawBitmapSR(mProfile->mTextureHandle, offset + Point2I(mIndent, y), mProfile->mBitmapArrayRects[index]);
    }
    
     if(mButtonText[0] != '\0')
     {
-       dglSetBitmapModulation( fontColor );
+       GFX->getDrawUtil()->setBitmapModulation( fontColor );
       renderJustifiedText(Point2I(offset.x + xOffset, offset.y),
                           Point2I(mBounds.extent.x - mBounds.extent.y, mBounds.extent.y),
                           mButtonText);

@@ -26,6 +26,8 @@
 #include "2d/sceneobject/SceneObject.h"
 #endif
 
+#include "platformOSX/graphics/gfxOpenGLTextureObject.h"
+
 // Debug Profiling.
 #include "debug/profiler.h"
 
@@ -40,14 +42,32 @@ BatchRender::BatchRender() :
     NoColor( -1.0f, -1.0f, -1.0f ),
     mStrictOrderMode( false ),
     mpDebugStats( NULL ),
-    mBlendMode( true ),
-    mSrcBlendFactor( GL_SRC_ALPHA ),
-    mDstBlendFactor( GL_ONE_MINUS_SRC_ALPHA ),
     mBlendColor( ColorF(1.0f,1.0f,1.0f,1.0f) ),
     mAlphaTestMode( -1.0f ),
-    mWireframeMode( false ),
     mBatchEnabled( true )
 {
+    mGFXStateDesc.zDefined = true;
+    mGFXStateDesc.zEnable = false;
+    mGFXStateDesc.zWriteEnable = false;
+    mGFXStateDesc.cullDefined = true;
+    mGFXStateDesc.cullMode = GFXCullNone;
+    mGFXStateDesc.blendDefined = true;
+    mGFXStateDesc.blendEnable = true;
+    mGFXStateDesc.blendSrc = GFXBlendSrcAlpha;
+    mGFXStateDesc.blendDest = GFXBlendInvSrcAlpha;
+    mGFXStateDesc.samplersDefined = true;
+    mGFXStateDesc.samplers[0].alphaOp = GFXTOPModulate;
+    mGFXStateDesc.samplers[0].magFilter = GFXTextureFilterLinear;
+    mGFXStateDesc.samplers[0].minFilter = GFXTextureFilterLinear;
+    
+    mGFXStateDesc.samplers[0].addressModeU = GFXAddressClamp;
+    mGFXStateDesc.samplers[0].addressModeV = GFXAddressClamp;
+    mGFXStateDesc.samplers[0].alphaArg1 = GFXTATexture;
+    mGFXStateDesc.samplers[0].alphaArg2 = GFXTADiffuse;
+    mGFXStateDesc.samplers[0].textureColorOp = GFXTOPAdd;
+    mGFXStateDesc.fillMode = GFXFillSolid;
+    
+    mGFXStateRef = GFX->createStateBlock(mGFXStateDesc);
 }
 
 //-----------------------------------------------------------------------------
@@ -108,7 +128,7 @@ void BatchRender::SubmitQuad(
         const Vector2& texturePos1,
         const Vector2& texturePos2,
         const Vector2& texturePos3,
-        TextureHandle& texture,
+        GFXTexHandle& texture,
         const ColorF& color )
 {
     // Sanity!
@@ -168,7 +188,8 @@ void BatchRender::SubmitQuad(
     else
     {
         // No, so fetch texture binding.
-        const U32 textureBinding = texture.getGLName();
+        GFXOpenGLTextureObject *tex = dynamic_cast<GFXOpenGLTextureObject*>(texture.getPointer());
+        const U32 textureBinding = tex->getHandle();
 
         indexVectorType* pIndexVector = NULL;
 
@@ -286,179 +307,163 @@ void BatchRender::flushInternal( void )
     // Stats.
     mpDebugStats->batchFlushes++;
 
-    if ( mWireframeMode )
-    {
-        // Disable texturing.    
-        glDisable( GL_TEXTURE_2D );
+    GFX->setStateBlock(mGFXStateRef);
 
-        // Set the polygon mode to line.
-        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-    }
-    else
-    {
-        // Enable texturing.    
-        glEnable( GL_TEXTURE_2D );
-        glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-
-        // Set the polygon mode to fill.
-        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-    }
-
-    // Set blend mode.
-    if ( mBlendMode )
-    {
-        glEnable( GL_BLEND );
-        glBlendFunc( mSrcBlendFactor, mDstBlendFactor );
-        glColor4f(mBlendColor.red, mBlendColor.green, mBlendColor.blue, mBlendColor.alpha );
-    }
-    else
-    {
-        glDisable( GL_BLEND );
-        glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
-    }
-
-    // Set alpha-blend mode.
-    if ( mAlphaTestMode >= 0.0f )
-    {
-        glEnable( GL_ALPHA_TEST );
-        glAlphaFunc( GL_GREATER, mAlphaTestMode );
-    }
-    else
-    {
-        glDisable( GL_ALPHA_TEST );
-    }
-
-    // Enable vertex and texture arrays.
-    glEnableClientState( GL_VERTEX_ARRAY );
-    glVertexPointer( 2, GL_FLOAT, 0, mVertexBuffer );
-    glTexCoordPointer( 2, GL_FLOAT, 0, mTextureBuffer );
-
-    // Use the texture coordinates if not in wireframe mode.
-    if ( !mWireframeMode )
-        glEnableClientState( GL_TEXTURE_COORD_ARRAY );
-
-    // Do we have any colors?
-    if ( mColorCount > 0 )
-    {
-        // Yes, so enable color array.
-        glEnableClientState( GL_COLOR_ARRAY );
-        glColorPointer( 4, GL_FLOAT, 0, mColorBuffer );
-    }
-
-    // Strict order mode?
-    if ( mStrictOrderMode )
-    {
-        // Bind the texture if not in wireframe mode.
-        if ( !mWireframeMode )
-            glBindTexture( GL_TEXTURE_2D, mStrictOrderTextureHandle.getGLName() );
-
-        // Yes, so do we have a single quad?
-        if ( mQuadCount == 1 )
-        {
-            // Yes, so draw the quad using a triangle-strip with indexes.
-            glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );    
-
-            // Stats.
-            mpDebugStats->batchDrawCallsStrictSingle++;
-
-            // Stats.
-            if ( mpDebugStats->batchMaxTriangleDrawn < 2 )
-                mpDebugStats->batchMaxTriangleDrawn = 2;
-        }
-        else
-        {
-            // Draw the quads using triangles with indexes.
-            glDrawElements( GL_TRIANGLES, mIndexCount, GL_UNSIGNED_SHORT, mIndexBuffer );
-
-            // Stats.
-            mpDebugStats->batchDrawCallsStrictMultiple++;
-
-            // Stats.
-            const U32 trianglesDrawn = mIndexCount / 3;
-            if ( trianglesDrawn > mpDebugStats->batchMaxTriangleDrawn )
-                mpDebugStats->batchMaxTriangleDrawn = trianglesDrawn;
-        }
-
-        // Stats.
-        if ( mVertexCount > mpDebugStats->batchMaxVertexBuffer )
-            mpDebugStats->batchMaxVertexBuffer = mVertexCount;
-    }
-    else
-    {
-        // No, so iterate texture batch map.
-        for( textureBatchType::iterator batchItr = mTextureBatchMap.begin(); batchItr != mTextureBatchMap.end(); ++batchItr )
-        {
-            // Fetch texture binding.
-            const U32 textureBinding = batchItr->key;
-
-            // Fetch index vector.
-            indexVectorType* pIndexVector = batchItr->value;
-
-            // Reset index count.
-            mIndexCount = 0;
-
-            // Iterate indexes.
-            for( indexVectorType::iterator indexItr = pIndexVector->begin(); indexItr != pIndexVector->end(); ++indexItr )
-            {
-                // Fetch quad index.
-                U32 quadIndex = (*indexItr);
-
-                // Add new indices.
-                mIndexBuffer[mIndexCount++] = (U16)quadIndex++;
-                mIndexBuffer[mIndexCount++] = (U16)quadIndex++;
-                mIndexBuffer[mIndexCount++] = (U16)quadIndex++;
-                mIndexBuffer[mIndexCount++] = (U16)quadIndex--;
-                mIndexBuffer[mIndexCount++] = (U16)quadIndex--;
-                mIndexBuffer[mIndexCount++] = (U16)quadIndex;
-            }
-
-            // Sanity!
-            AssertFatal( mIndexCount > 0, "No batching indexes are present." );
-
-            // Bind the texture if not in wireframe mode.
-            if ( !mWireframeMode )
-                glBindTexture( GL_TEXTURE_2D, textureBinding );
-
-            // Draw the quads using triangles with indexes.
-            glDrawElements( GL_TRIANGLES, mIndexCount, GL_UNSIGNED_SHORT, mIndexBuffer );
-
-            // Stats.
-            mpDebugStats->batchDrawCallsSorted++;
-
-            // Stats.
-            if ( mVertexCount > mpDebugStats->batchMaxVertexBuffer )
-                mpDebugStats->batchMaxVertexBuffer = mVertexCount;
-
-            // Stats.
-            const U32 trianglesDrawn = mIndexCount / 3;
-            if ( trianglesDrawn > mpDebugStats->batchMaxTriangleDrawn )
-                mpDebugStats->batchMaxTriangleDrawn = trianglesDrawn;
-
-            // Return index vector to pool.
-            pIndexVector->clear();
-            mIndexVectorPool.push_back( pIndexVector );
-        }
-
-        // Clear texture batch map.
-        mTextureBatchMap.clear();
-    }
-
-    // Reset common render state.
-    glDisableClientState( GL_VERTEX_ARRAY );
-    glDisableClientState( GL_TEXTURE_COORD_ARRAY );
-    glDisableClientState( GL_COLOR_ARRAY );
-    glDisable( GL_ALPHA_TEST );
-    glDisable( GL_BLEND );
-    glDisable( GL_TEXTURE_2D );
-    glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-
-    // Reset batch state.
-    mQuadCount = 0;
-    mVertexCount = 0;
-    mTextureResidentCount = 0;
-    mIndexCount = 0;
-    mColorCount = 0;
-
+//    // Set blend mode.
+//    if ( mBlendMode )
+//    {
+//        glEnable( GL_BLEND );
+//        glBlendFunc( mSrcBlendFactor, mDstBlendFactor );
+//        glColor4f(mBlendColor.red, mBlendColor.green, mBlendColor.blue, mBlendColor.alpha );
+//    }
+//    else
+//    {
+//        glDisable( GL_BLEND );
+//        glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+//    }
+//
+//    // Set alpha-blend mode.
+//    if ( mAlphaTestMode >= 0.0f )
+//    {
+//        glEnable( GL_ALPHA_TEST );
+//        glAlphaFunc( GL_GREATER, mAlphaTestMode );
+//    }
+//    else
+//    {
+//        glDisable( GL_ALPHA_TEST );
+//    }
+//
+//    // Enable vertex and texture arrays.
+//    glEnableClientState( GL_VERTEX_ARRAY );
+//    glVertexPointer( 2, GL_FLOAT, 0, mVertexBuffer );
+//    glTexCoordPointer( 2, GL_FLOAT, 0, mTextureBuffer );
+//
+//    // Use the texture coordinates if not in wireframe mode.
+//    if ( !mWireframeMode )
+//        glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+//
+//    // Do we have any colors?
+//    if ( mColorCount > 0 )
+//    {
+//        // Yes, so enable color array.
+//        glEnableClientState( GL_COLOR_ARRAY );
+//        glColorPointer( 4, GL_FLOAT, 0, mColorBuffer );
+//    }
+//
+//    // Strict order mode?
+//    if ( mStrictOrderMode )
+//    {
+//        // Bind the texture if not in wireframe mode.
+//        if ( !mWireframeMode )
+//            glBindTexture( GL_TEXTURE_2D, mStrictOrderTextureHandle.getGLName() );
+//
+//        // Yes, so do we have a single quad?
+//        if ( mQuadCount == 1 )
+//        {
+//            // Yes, so draw the quad using a triangle-strip with indexes.
+//            glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );    
+//
+//            // Stats.
+//            mpDebugStats->batchDrawCallsStrictSingle++;
+//
+//            // Stats.
+//            if ( mpDebugStats->batchMaxTriangleDrawn < 2 )
+//                mpDebugStats->batchMaxTriangleDrawn = 2;
+//        }
+//        else
+//        {
+//            // Draw the quads using triangles with indexes.
+//            glDrawElements( GL_TRIANGLES, mIndexCount, GL_UNSIGNED_SHORT, mIndexBuffer );
+//
+//            // Stats.
+//            mpDebugStats->batchDrawCallsStrictMultiple++;
+//
+//            // Stats.
+//            const U32 trianglesDrawn = mIndexCount / 3;
+//            if ( trianglesDrawn > mpDebugStats->batchMaxTriangleDrawn )
+//                mpDebugStats->batchMaxTriangleDrawn = trianglesDrawn;
+//        }
+//
+//        // Stats.
+//        if ( mVertexCount > mpDebugStats->batchMaxVertexBuffer )
+//            mpDebugStats->batchMaxVertexBuffer = mVertexCount;
+//    }
+//    else
+//    {
+//        // No, so iterate texture batch map.
+//        for( textureBatchType::iterator batchItr = mTextureBatchMap.begin(); batchItr != mTextureBatchMap.end(); ++batchItr )
+//        {
+//            // Fetch texture binding.
+//            const U32 textureBinding = batchItr->key;
+//
+//            // Fetch index vector.
+//            indexVectorType* pIndexVector = batchItr->value;
+//
+//            // Reset index count.
+//            mIndexCount = 0;
+//
+//            // Iterate indexes.
+//            for( indexVectorType::iterator indexItr = pIndexVector->begin(); indexItr != pIndexVector->end(); ++indexItr )
+//            {
+//                // Fetch quad index.
+//                U32 quadIndex = (*indexItr);
+//
+//                // Add new indices.
+//                mIndexBuffer[mIndexCount++] = (U16)quadIndex++;
+//                mIndexBuffer[mIndexCount++] = (U16)quadIndex++;
+//                mIndexBuffer[mIndexCount++] = (U16)quadIndex++;
+//                mIndexBuffer[mIndexCount++] = (U16)quadIndex--;
+//                mIndexBuffer[mIndexCount++] = (U16)quadIndex--;
+//                mIndexBuffer[mIndexCount++] = (U16)quadIndex;
+//            }
+//
+//            // Sanity!
+//            AssertFatal( mIndexCount > 0, "No batching indexes are present." );
+//
+//            // Bind the texture if not in wireframe mode.
+//            if ( !mWireframeMode )
+//                glBindTexture( GL_TEXTURE_2D, textureBinding );
+//
+//            // Draw the quads using triangles with indexes.
+//            glDrawElements( GL_TRIANGLES, mIndexCount, GL_UNSIGNED_SHORT, mIndexBuffer );
+//
+//            // Stats.
+//            mpDebugStats->batchDrawCallsSorted++;
+//
+//            // Stats.
+//            if ( mVertexCount > mpDebugStats->batchMaxVertexBuffer )
+//                mpDebugStats->batchMaxVertexBuffer = mVertexCount;
+//
+//            // Stats.
+//            const U32 trianglesDrawn = mIndexCount / 3;
+//            if ( trianglesDrawn > mpDebugStats->batchMaxTriangleDrawn )
+//                mpDebugStats->batchMaxTriangleDrawn = trianglesDrawn;
+//
+//            // Return index vector to pool.
+//            pIndexVector->clear();
+//            mIndexVectorPool.push_back( pIndexVector );
+//        }
+//
+//        // Clear texture batch map.
+//        mTextureBatchMap.clear();
+//    }
+//
+//    // Reset common render state.
+//    glDisableClientState( GL_VERTEX_ARRAY );
+//    glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+//    glDisableClientState( GL_COLOR_ARRAY );
+//    glDisable( GL_ALPHA_TEST );
+//    glDisable( GL_BLEND );
+//    glDisable( GL_TEXTURE_2D );
+//    glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+//
+//    // Reset batch state.
+//    mQuadCount = 0;
+//    mVertexCount = 0;
+//    mTextureResidentCount = 0;
+//    mIndexCount = 0;
+//    mColorCount = 0;
+//
     PROFILE_END();   // T2D_BatchRender_flush
 }
 
@@ -474,16 +479,28 @@ void BatchRender::RenderQuad(
         const Vector2& texturePos2,
         const Vector2& texturePos3 )
 {
-    glBegin( GL_TRIANGLE_STRIP );
-        glTexCoord2f( texturePos0.x, texturePos0.y );
-        glVertex2f( vertexPos0.x, vertexPos0.y );
-        glTexCoord2f( texturePos1.x, texturePos1.y );
-        glVertex2f( vertexPos1.x, vertexPos1.y );
-        glTexCoord2f( texturePos3.x, texturePos3.y );
-        glVertex2f( vertexPos3.x, vertexPos3.y );
-        glTexCoord2f( texturePos2.x, texturePos2.y );
-        glVertex2f( vertexPos2.x, vertexPos2.y );
-    glEnd();
+    GFXVertexPT verts[4];
+    
+    verts[0].point.set(vertexPos0.x, vertexPos0.y, 0.0f);
+    verts[1].point.set(vertexPos1.x, vertexPos1.y, 0.0f);
+    verts[2].point.set(vertexPos3.x, vertexPos3.y, 0.0f);
+    verts[3].point.set(vertexPos2.x, vertexPos2.y, 0.0f);
+    verts[0].texCoord.set(texturePos0.x, texturePos0.y);
+    verts[1].texCoord.set(texturePos1.x, texturePos1.y);
+    verts[2].texCoord.set(texturePos3.x, texturePos3.y);
+    verts[3].texCoord.set(texturePos2.x, texturePos2.y);
+    
+    GFXVertexBufferHandle<GFXVertexPCT> vHandle( GFX, 4, GFXBufferTypeVolatile, verts);
+    GFX->setVertexBuffer(vHandle);
+    
+//    if (mShaderDataBlock)
+//        GFX->setShader(mShaderDataBlock);
+//    else
+        GFX->setupGenericShaders(GFXDevice::GSTexture);
+    
+//    GFX->setStateBlockByDesc( mGFXStateDesc );
+    GFX->drawPrimitive(GFXTriangleStrip, 0, 2);
+    
 }
 
 

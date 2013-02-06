@@ -35,9 +35,8 @@
 #include "2d/scene/DebugStats.h"
 #endif
 
-#ifndef _TEXTURE_MANAGER_H_
-#include "graphics/TextureManager.h"
-#endif
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxTextureHandle.h"
 
 #ifndef _HASHTABLE_H
 #include "collection/hashTable.h"
@@ -82,35 +81,37 @@ public:
     inline bool getStrictOrderMode( void ) const { return mStrictOrderMode; }
 
     /// Turns-on blend mode with the specified blend factors and color.
-    inline void setBlendMode( GLenum srcFactor, GLenum dstFactor, const ColorF& blendColor = ColorF(1.0f, 1.0f, 1.0f, 1.0f))
+    inline void setBlendMode( GFXBlend srcFactor, GFXBlend dstFactor, const ColorF& blendColor = ColorF(1.0f, 1.0f, 1.0f, 1.0f))
     {
         // Ignore no change.
-        if (    mBlendMode &&
-                mSrcBlendFactor == srcFactor &&
-                mDstBlendFactor == dstFactor &&
+        if (    mGFXStateDesc.blendEnable &&
+                mGFXStateDesc.blendSrc == srcFactor &&
+                mGFXStateDesc.blendDest == dstFactor &&
                 mBlendColor == blendColor )
                 return;
 
         // Flush.
         flush( mpDebugStats->batchBlendStateFlush );
 
-        mBlendMode = true;
-        mSrcBlendFactor = srcFactor;
-        mDstBlendFactor = dstFactor;
+        mGFXStateDesc.blendEnable = true;
+        mGFXStateDesc.blendSrc = srcFactor;
+        mGFXStateDesc.blendDest = dstFactor;
         mBlendColor = blendColor;
+        mGFXStateRef = GFX->createStateBlock( mGFXStateDesc );
     }
 
     /// Turns-off blend mode.
     inline void setBlendOff( void )
     {
         // Ignore no change,
-        if ( !mBlendMode )
+        if ( !mGFXStateDesc.blendEnable )
             return;
 
         // Flush.
         flush( mpDebugStats->batchBlendStateFlush );
 
-        mBlendMode = false;
+        mGFXStateDesc.blendEnable = false;
+        mGFXStateRef = GFX->createStateBlock( mGFXStateDesc );
     }
 
     // Set blend mode using a specific scene render request.
@@ -139,14 +140,15 @@ public:
     inline void setWireframeMode( const bool enabled )
     {
         // Ignore no change.
-        if ( mWireframeMode == enabled )
+        if ( mGFXStateDesc.fillMode == enabled ? GFXFillSolid : GFXFillWireframe )
             return;
 
-        mWireframeMode = enabled;
+        mGFXStateDesc.fillMode = enabled ? GFXFillSolid : GFXFillWireframe;
+        mGFXStateRef = GFX->createStateBlock( mGFXStateDesc );
     }
 
     // Gets the wireframe mode.
-    inline bool getWireframeMode( void ) const { return mWireframeMode; }
+    inline bool getWireframeMode( void ) const { return mGFXStateDesc.fillMode == GFXFillSolid; }
 
     /// Sets the batch enabled mode.
     inline void setBatchEnabled( const bool enabled )
@@ -182,7 +184,7 @@ public:
             const Vector2& texturePos1,
             const Vector2& texturePos2,
             const Vector2& texturePos3,
-            TextureHandle& texture,
+            GFXTexHandle& texture,
             const ColorF& color = ColorF(-1.0f, -1.0f, -1.0f) );
 
     /// Render a quad immediately without affecting current batch.
@@ -232,17 +234,17 @@ private:
     U32                 mIndexCount;
     U32                 mColorCount;
 
-    bool                mBlendMode;
-    GLenum              mSrcBlendFactor;
-    GLenum              mDstBlendFactor;
+    /// Render Options.
+    GFXStateBlockDesc   mGFXStateDesc;
+    GFXStateBlockRef    mGFXStateRef;
+
     ColorF              mBlendColor;
     F32                 mAlphaTestMode;
 
     bool                mStrictOrderMode;
-    TextureHandle       mStrictOrderTextureHandle;
+    GFXTexHandle       mStrictOrderTextureHandle;
     DebugStats*         mpDebugStats;
 
-    bool                mWireframeMode;
     bool                mBatchEnabled;
 };
 

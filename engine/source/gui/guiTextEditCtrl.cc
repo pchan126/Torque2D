@@ -22,7 +22,8 @@
 
 #include "console/consoleTypes.h"
 #include "console/console.h"
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxDrawUtil.h"
 #include "gui/guiCanvas.h"
 #include "gui/guiMLTextCtrl.h"
 #include "gui/guiTextEditCtrl.h"
@@ -1124,15 +1125,15 @@ void GuiTextEditCtrl::onRender(Point2I offset, const RectI & updateRect)
    if ( mProfile->mOpaque )
    {
       if(isFirstResponder())
-         dglDrawRectFill( ctrlRect, mActive ? mProfile->mFillColor : mProfile->mFillColorNA );
+         GFX->getDrawUtil()->drawRectFill( ctrlRect, mActive ? mProfile->mFillColor : mProfile->mFillColorNA );
       else
-         dglDrawRectFill( ctrlRect, mActive ? mProfile->mFillColor : mProfile->mFillColorNA );
+         GFX->getDrawUtil()->drawRectFill( ctrlRect, mActive ? mProfile->mFillColor : mProfile->mFillColorNA );
    }
 
    //if there's a border, draw the border
    if ( mProfile->mBorder )
    {
-      dglSetBitmapModulation( mActive ? mProfile->mFillColor : mProfile->mFillColorNA );
+      GFX->getDrawUtil()->setBitmapModulation( mActive ? mProfile->mFillColor : mProfile->mFillColorNA );
       renderBorder( ctrlRect, mProfile );
    }
 
@@ -1314,10 +1315,10 @@ void GuiTextEditCtrl::drawText( const RectI &drawRect, bool isFocused )
    //draw the portion before the highlight
    if ( mBlockStart > 0 )
    {
-      dglSetBitmapModulation( fontColor );
+      GFX->getDrawUtil()->setBitmapModulation( fontColor );
 
       const UTF16* preString2 = textBuffer.getPtr();
-      dglDrawTextN( mFont, tempOffset, preString2, mBlockStart, mProfile->mFontColors);
+      GFX->getDrawUtil()->drawTextN( mFont, tempOffset, preString2, mBlockStart, mProfile->mFontColors);
       tempOffset.x += mFont->getStrNWidth(preString2, mBlockStart);
    }
 
@@ -1329,12 +1330,12 @@ void GuiTextEditCtrl::drawText( const RectI &drawRect, bool isFocused )
 
       S32 highlightWidth = mFont->getStrNWidth(highlightBuff, highlightBuffLen);
 
-      dglDrawRectFill( Point2I( tempOffset.x, drawRect.point.y + 1 ),
+      GFX->getDrawUtil()->drawRectFill( Point2I( tempOffset.x, drawRect.point.y + 1 ),
          Point2I( tempOffset.x + highlightWidth, drawRect.point.y + drawRect.extent.y - 1),
          mProfile->mFillColorHL );
 
-      dglSetBitmapModulation( mProfile->mFontColorHL );
-      dglDrawTextN( mFont, tempOffset, highlightBuff, highlightBuffLen, mProfile->mFontColors );
+      GFX->getDrawUtil()->setBitmapModulation( mProfile->mFontColorHL );
+      GFX->getDrawUtil()->drawTextN( mFont, tempOffset, highlightBuff, highlightBuffLen, mProfile->mFontColors );
       tempOffset.x += highlightWidth;
    }
 
@@ -1350,22 +1351,22 @@ void GuiTextEditCtrl::drawText( const RectI &drawRect, bool isFocused )
           const UTF16* truncatedBufferPtr = truncatedBuffer.getPtr();
           U32 finalBuffLen = truncatedBuffer.length();
 
-          dglSetBitmapModulation( fontColor );
-          dglDrawTextN( mFont, tempOffset, truncatedBufferPtr, finalBuffLen, mProfile->mFontColors );
+          GFX->getDrawUtil()->setBitmapModulation( fontColor );
+          GFX->getDrawUtil()->drawTextN( mFont, tempOffset, truncatedBufferPtr, finalBuffLen, mProfile->mFontColors );
        }
        else
        {
           const UTF16* finalBuff = textBuffer.getPtr() + mBlockEnd;
           U32 finalBuffLen = mTextBuffer.length() - mBlockEnd;
 
-          dglSetBitmapModulation( fontColor );
-          dglDrawTextN( mFont, tempOffset, finalBuff, finalBuffLen, mProfile->mFontColors );
+          GFX->getDrawUtil()->setBitmapModulation( fontColor );
+          GFX->getDrawUtil()->drawTextN( mFont, tempOffset, finalBuff, finalBuffLen, mProfile->mFontColors );
        }
    }
 
    //draw the cursor
    if ( isFocused && mCursorOn )
-      dglDrawLine( cursorStart, cursorEnd, mProfile->mCursorColor );
+      GFX->getDrawUtil()->drawLine( cursorStart, cursorEnd, mProfile->mCursorColor );
 }
 
 bool GuiTextEditCtrl::hasText()

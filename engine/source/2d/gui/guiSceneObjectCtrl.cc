@@ -20,7 +20,8 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxDrawUtil.h"
 #include "console/consoleTypes.h"
 #include "gui/guiDefaultControlRender.h"
 #include "GuiSceneObjectCtrl.h"
@@ -231,27 +232,27 @@ void GuiSceneObjectCtrl::onRender(Point2I offset, const RectI& updateRect)
          if( mHasTexture )
             renderSizableBitmapBordersFilled( ctrlRect, 3, mProfile );
          else
-            dglDrawRectFill( ctrlRect, mProfile->mFillColorHL );
+            GFX->getDrawUtil()->drawRectFill( ctrlRect, mProfile->mFillColorHL );
       }
       else if ( mMouseOver )
       {
          if( mHasTexture )
             renderSizableBitmapBordersFilled( ctrlRect, 2, mProfile );
          else
-            dglDrawRectFill( ctrlRect, mProfile->mFillColorHL );
+            GFX->getDrawUtil()->drawRectFill( ctrlRect, mProfile->mFillColorHL );
       }
       else
       {
          if( mHasTexture )
             renderSizableBitmapBordersFilled( ctrlRect, 1, mProfile );
          else
-            dglDrawRectFill( ctrlRect, mProfile->mFillColor );
+            GFX->getDrawUtil()->drawRectFill( ctrlRect, mProfile->mFillColor );
       }
    }
 
    //// Render Border.
    //if( mProfile->mBorder || mStateOn )    
-   //   dglDrawRect(ctrlRect, mProfile->mBorderColor);
+   //   GFX->getDrawUtil()->drawRect(ctrlRect, mProfile->mBorderColor);
 
 
    // Valid Scene Object?
@@ -268,7 +269,7 @@ void GuiSceneObjectCtrl::onRender(Point2I offset, const RectI& updateRect)
          if( mHasTexture )
             renderSizableBitmapBordersFilled( objRect, 4, mProfile );
          else
-            dglDrawRectFill( objRect, mProfile->mFillColorNA );
+            GFX->getDrawUtil()->drawRectFill( objRect, mProfile->mFillColorNA );
       }
 
       // Yes, so fetch object clip boundary.
@@ -384,11 +385,11 @@ void GuiSceneObjectCtrl::onRender(Point2I offset, const RectI& updateRect)
       y2 *= -1;
 
       // Setup new logical coordinate system.
-      glMatrixMode(GL_PROJECTION);
-      glPushMatrix();
-      glLoadIdentity();
-      RectI viewport;
-      dglGetViewport(&viewport);
+       MatrixF oldProj = GFX->getProjectionMatrix();
+//      glMatrixMode(GL_PROJECTION);
+//      glPushMatrix();
+//      glLoadIdentity();
+      const RectI viewport = GFX->getViewport();
 
       if (x1 > x2)
       {
@@ -404,22 +405,28 @@ void GuiSceneObjectCtrl::onRender(Point2I offset, const RectI& updateRect)
       }
 
       // Setup Orthographic Projection for Object Area.
-#ifdef TORQUE_OS_IOS
-      glOrthof( x1, x2, y1, y2, 0.0f, MAX_LAYERS_SUPPORTED );
-#else
-      glOrtho( x1, x2, y1, y2, 0.0f, MAX_LAYERS_SUPPORTED );
-#endif
+       MatrixF ortho = MatrixF(true);
+       ortho.setOrtho(x1, x2, y1, y2, 0.0f, MAX_LAYERS_SUPPORTED);
+       GFX->setProjectionMatrix(ortho);
+
+//#ifdef TORQUE_OS_IOS
+//      glOrthof( x1, x2, y1, y2, 0.0f, MAX_LAYERS_SUPPORTED );
+//#else
+//      glOrtho( x1, x2, y1, y2, 0.0f, MAX_LAYERS_SUPPORTED );
+//#endif
       // Setup new viewport.
-      dglSetViewport(objRect);
+      GFX->setViewport(objRect);
 
       // Set ModelView.
-      glMatrixMode(GL_MODELVIEW);
-      glPushMatrix();
-      glLoadIdentity();
+//      glMatrixMode(GL_MODELVIEW);
+//      glPushMatrix();
+//      glLoadIdentity();
+       GFX->pushWorldMatrix();
+       GFX->setWorldMatrix(MatrixF(true));
 
       // Enable Alpha Test.
-      glEnable        ( GL_ALPHA_TEST );
-      glAlphaFunc     ( GL_GREATER, 0.0f );
+//      glEnable        ( GL_ALPHA_TEST );
+//      glAlphaFunc     ( GL_GREATER, 0.0f );
 
       // Calculate maximal clip bounds.
       RectF clipBounds( -x1,-y1, x2-x1, y2-y1 );
@@ -445,14 +452,16 @@ void GuiSceneObjectCtrl::onRender(Point2I offset, const RectI& updateRect)
       mSelectedSceneObject->sceneRender( &guiSceneRenderState, &guiSceneRenderRequest, &mBatchRenderer );
 
       // Restore Standard Settings.
-      glDisable       ( GL_DEPTH_TEST );
-      glDisable       ( GL_ALPHA_TEST );
+//      glDisable       ( GL_DEPTH_TEST );
+//      glDisable       ( GL_ALPHA_TEST );
 
       // Restore Matrices.
-      glMatrixMode(GL_MODELVIEW);
-      glPopMatrix();
-      glMatrixMode(GL_PROJECTION);
-      glPopMatrix();
+       GFX->popWorldMatrix();
+       GFX->setProjectionMatrix(oldProj);
+//      glMatrixMode(GL_MODELVIEW);
+//      glPopMatrix();
+//      glMatrixMode(GL_PROJECTION);
+//      glPopMatrix();
    }
    else
    {
@@ -466,10 +475,10 @@ void GuiSceneObjectCtrl::onRender(Point2I offset, const RectI& updateRect)
 
 
    captionRect.inset(1, 1);
-   dglSetBitmapModulation( ColorI(0,0,0,255) );
+   GFX->getDrawUtil()->setBitmapModulation( ColorI(0,0,0,255) );
    renderJustifiedText(captionRect.point, captionRect.extent, mCaption);
    captionRect.inset(1, 1);   
-   dglSetBitmapModulation( mProfile->mFontColor );
+   GFX->getDrawUtil()->setBitmapModulation( mProfile->mFontColor );
    renderJustifiedText(captionRect.point, captionRect.extent, mCaption);
 
    

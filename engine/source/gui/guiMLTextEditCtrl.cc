@@ -22,7 +22,8 @@
 
 #include "gui/guiMLTextEditCtrl.h"
 #include "gui/containers/guiScrollCtrl.h"
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxDrawUtil.h"
 #include "console/consoleTypes.h"
 #include "platform/event.h"
 #include "memory/frameAllocator.h"
@@ -389,7 +390,7 @@ void GuiMLTextEditCtrl::onRender(Point2I offset, const RectI& updateRect)
       Point2I top, bottom;
       ColorI color;
       getCursorPositionAndColor(top, bottom, color);
-      dglDrawLine(top + offset, bottom + offset, mProfile->mCursorColor);
+      GFX->getDrawUtil()->drawLine(top + offset, bottom + offset, mProfile->mCursorColor);
    }
 }
 

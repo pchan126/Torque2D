@@ -20,12 +20,13 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
 #include "console/console.h"
 #include "console/consoleTypes.h"
 #include "gui/guiCanvas.h"
 #include "gui/guiDefaultControlRender.h"
 #include "gui/editor/guiSeparatorCtrl.h"
+#include "graphics/gfxDrawUtil.h"
 
 IMPLEMENT_CONOBJECT(GuiSeparatorCtrl);
 
@@ -82,8 +83,8 @@ void GuiSeparatorCtrl::onRender(Point2I offset, const RectI &updateRect)
          posx += mTextLeftMargin;
       }
 
-      dglSetBitmapModulation( mActive ? mProfile->mFillColor : mProfile->mFillColorNA );
-      posx += dglDrawText(mProfile->mFont, Point2I(posx,offset.y), mText, mProfile->mFontColors);
+      GFX->getDrawUtil()->setBitmapModulation( mActive ? mProfile->mFillColor : mProfile->mFillColorNA );
+      posx += GFX->getDrawUtil()->drawText(mProfile->mFont, Point2I(posx,offset.y), mText, mProfile->mFontColors);
       //posx += mProfile->mFont->getStrWidth(mText);
 
       RectI rect(Point2I(posx,seppos),Point2I(mBounds.extent.x - posx + offset.x,2));

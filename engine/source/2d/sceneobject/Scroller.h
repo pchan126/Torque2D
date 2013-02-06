@@ -28,7 +28,7 @@
 #endif
 
 #ifndef _TEXTURE_MANAGER_H_
-#include "graphics/TextureManager.h"
+#include "graphics/gfxTextureManager.h"
 #endif
 
 //-----------------------------------------------------------------------------
@@ -127,10 +127,10 @@ public:
     DECLARE_CONOBJECT(Scroller);
 
 private:
-    void renderRegionSplitX( BatchRender* pBatchRenderer, TextureHandle& texture, const ScrollSplitRegion& splitRegion );
-    void renderRegionSplitY( BatchRender* pBatchRenderer, TextureHandle& texture, const ScrollSplitRegion& splitRegion );
-    void renderRegionSplitXY( BatchRender* pBatchRenderer, TextureHandle& texture, const ScrollSplitRegion& splitRegion );
-    void renderRegionNoSplit( BatchRender* pBatchRenderer, TextureHandle& texture, const ScrollSplitRegion& splitRegion );
+    void renderRegionSplitX( BatchRender* pBatchRenderer, GFXTexHandle& texture, const ScrollSplitRegion& splitRegion );
+    void renderRegionSplitY( BatchRender* pBatchRenderer, GFXTexHandle& texture, const ScrollSplitRegion& splitRegion );
+    void renderRegionSplitXY( BatchRender* pBatchRenderer, GFXTexHandle& texture, const ScrollSplitRegion& splitRegion );
+    void renderRegionNoSplit( BatchRender* pBatchRenderer, GFXTexHandle& texture, const ScrollSplitRegion& splitRegion );
 
 protected:
     static bool setRepeatX(void* obj, const char* data)                { static_cast<Scroller*>(obj)->setRepeatX( dAtof(data) ); return false; }

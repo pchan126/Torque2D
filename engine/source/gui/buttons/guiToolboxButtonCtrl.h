@@ -26,8 +26,11 @@
 #ifndef _GUIBUTTONCTRL_H_
 #include "gui/buttons/guiButtonCtrl.h"
 #endif
-#ifndef _TEXTURE_MANAGER_H_
-#include "graphics/TextureManager.h"
+//#ifndef _TEXTURE_MANAGER_H_
+//#include "graphics/gfxTextureManager.h"
+//#endif
+#ifndef _GFXTEXTUREMANAGER_H_
+#include "graphics/gfxTextureManager.h"
 #endif
 
 class GuiToolboxButtonCtrl : public GuiButtonCtrl
@@ -40,12 +43,12 @@ protected:
    StringTableEntry mLoweredBitmapName;
    StringTableEntry mHoverBitmapName;
 
-   TextureHandle mTextureNormal;
-   TextureHandle mTextureLowered;
-   TextureHandle mTextureHover;
+   GFXTexHandle mTextureNormal;
+   GFXTexHandle mTextureLowered;
+   GFXTexHandle mTextureHover;
 
-   void renderButton(TextureHandle &texture, Point2I &offset, const RectI& updateRect);
-   void renderStateRect( TextureHandle &texture, const RectI& rect );
+   void renderButton(GFXTexHandle &texture, Point2I &offset, const RectI& updateRect);
+   void renderStateRect( GFXTexHandle &texture, const RectI& rect );
 
 public:   
    DECLARE_CONOBJECT(GuiToolboxButtonCtrl);

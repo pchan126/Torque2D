@@ -31,7 +31,7 @@
 #include "gui/guiCanvas.h"
 #endif
 
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
 #include "console/console.h"
 #include "console/consoleTypes.h"
 

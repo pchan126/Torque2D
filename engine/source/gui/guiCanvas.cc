@@ -23,7 +23,7 @@
 #include "torqueConfig.h"
 #include "console/consoleInternal.h"
 #include "debug/profiler.h"
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
 #include "platform/event.h"
 #include "platform/platform.h"
 #include "platform/platformVideo.h"
@@ -1489,9 +1489,9 @@ void GuiCanvas::paint()
 {
    resetUpdateRegions();
 
-   // inhibit explicit refreshes in the case we're swapped out
-   if (TextureManager::mDGLRender)
-      renderFrame(false);
+//   // inhibit explicit refreshes in the case we're swapped out
+//   if (TextureManager::mDGLRender)
+//      renderFrame(false);
 }
 
 void GuiCanvas::maintainSizing()
@@ -1602,24 +1602,34 @@ void GuiCanvas::renderFrame(bool preRenderOnly, bool bufferSwap /* = true */)
     lastCursor = mouseCursor;
     lastCursorPt = cursorPos;
 
-   RectI updateUnion;
+    bool beginSceneRes = GFX->beginScene();
+    if ( !beginSceneRes )
+    {
+//        GuiCanvas::getGuiCanvasFrameSignal().trigger(false);
+        return;
+    }
+    
+    GFX->setWorldMatrix( MatrixF::Identity );
+    GFX->setViewMatrix( MatrixF::Identity );
+    GFX->setProjectionMatrix( MatrixF::Identity );
+
+    RectI updateUnion;
    buildUpdateUnion(&updateUnion);
    if (updateUnion.intersect(screenRect))
    {
     // Clear the background color if requested.
     if ( mUseBackgroundColor )
     {
-        glClearColor( mBackgroundColor.red, mBackgroundColor.green, mBackgroundColor.blue, mBackgroundColor.alpha );
-        glClear(GL_COLOR_BUFFER_BIT);	
+        GFX->clear( GFXClearZBuffer | GFXClearStencil | GFXClearTarget, mBackgroundColor, 1.0f, 0 );
     }
 
-      //render the dialogs
+       //render the dialogs
       iterator i;
       for(i = begin(); i != end(); i++)
       {
          GuiControl *contentCtrl = static_cast<GuiControl*>(*i);
-         dglSetClipRect(updateUnion);
-         glDisable( GL_CULL_FACE );
+         GFX->setClipRect(updateUnion);
+         GFX->setStateBlock(mDefaultGuiSB);
          contentCtrl->onRender(contentCtrl->getPosition(), updateUnion);
       }
 
@@ -1656,7 +1666,7 @@ void GuiCanvas::renderFrame(bool preRenderOnly, bool bufferSwap /* = true */)
       }
       //end tooltip
 
-      dglSetClipRect(updateUnion);
+      GFX->setClipRect(updateUnion);
 
       //temp draw the mouse
       if (cursorON && mShowCursor && !mouseCursor)
@@ -1673,8 +1683,8 @@ void GuiCanvas::renderFrame(bool preRenderOnly, bool bufferSwap /* = true */)
           glVertexPointer(2, GL_FLOAT, 0, vertices);
           glDrawArrays(GL_LINE_LOOP, 0, 4);
 #else
-         glColor4ub(255, 0, 0, 255);
-         glRecti((S32)cursorPt.x, (S32)cursorPt.y, (S32)(cursorPt.x + 2), (S32)(cursorPt.y + 2));
+//         glColor4ub(255, 0, 0, 255);
+//         glRecti((S32)cursorPt.x, (S32)cursorPt.y, (S32)(cursorPt.x + 2), (S32)(cursorPt.y + 2));
 #endif
       }
        
@@ -1697,6 +1707,7 @@ void GuiCanvas::renderFrame(bool preRenderOnly, bool bufferSwap /* = true */)
 
    PROFILE_END();
 
+    GFX->endScene();
 
    if( bufferSwap )
       swapBuffers();

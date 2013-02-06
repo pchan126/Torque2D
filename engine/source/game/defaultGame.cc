@@ -31,11 +31,11 @@
 #include "game/gameInterface.h"
 #include "collection/vector.h"
 #include "math/mMath.h"
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
 #include "graphics/gBitmap.h"
 #include "io/resource/resourceManager.h"
 #include "io/fileStream.h"
-#include "graphics/TextureManager.h"
+#include "graphics/gfxTextureManager.h"
 #include "console/console.h"
 #include "sim/simBase.h"
 #include "gui/guiCanvas.h"
@@ -46,7 +46,7 @@
 #include "debug/telnetDebugger.h"
 #include "console/consoleTypes.h"
 #include "math/mathTypes.h"
-#include "graphics/TextureManager.h"
+#include "graphics/gfxTextureManager.h"
 #include "io/resource/resourceManager.h"
 #include "platform/platformVideo.h"
 #include "network/netStringTable.h"
@@ -137,7 +137,7 @@ bool initializeLibraries()
     FrameAllocator::init(3 << 20);      // 3 meg frame allocator buffer
 #endif	//TORQUE_OS_IOS
 
-    TextureManager::create();
+//    TextureManager::create();
     ResManager::create();
 
     // Register known file types here
@@ -189,7 +189,7 @@ void shutdownLibraries()
     Con::shutdown();
 
     ResManager::destroy();
-    TextureManager::destroy();
+//    TextureManager::destroy();
 
     // Destroy the stock colors.
     StockColor::destroy();
@@ -492,7 +492,7 @@ void DefaultGame::gameReactivate( void )
    if ( !Input::isActive() )
       Input::reactivate();
 
-   TextureManager::mDGLRender = true;
+//   TextureManager::mDGLRender = true;
    if ( Canvas )
       Canvas->resetUpdateRegions();
 }
@@ -507,22 +507,22 @@ void DefaultGame::gameDeactivate( const bool noRender )
    if ( Input::isEnabled() )
       Input::disable();
 
-   if ( noRender )
-      TextureManager::mDGLRender = false;
+//   if ( noRender )
+//      TextureManager::mDGLRender = false;
 }
 
 //--------------------------------------------------------------------------
 
 void DefaultGame::textureKill()
 {
-    TextureManager::killManager();
+//    TextureManager::killManager();
 }
 
 //--------------------------------------------------------------------------
 
 void DefaultGame::textureResurrect()
 {
-    TextureManager::resurrectManager();
+//    TextureManager::resurrectManager();
 }
 
 //--------------------------------------------------------------------------
@@ -627,7 +627,7 @@ iPhoneProfilerStart("SERVER_PROC");
       GNet->processClient();
    PROFILE_END();
     
-   if(Canvas && TextureManager::mDGLRender)
+   if(Canvas && GFX->allowRender())
    {
 #ifdef TORQUE_OS_IOS_PROFILE	   
 iPhoneProfilerStart("GL_RENDER");

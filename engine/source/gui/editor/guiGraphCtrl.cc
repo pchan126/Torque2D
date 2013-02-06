@@ -21,7 +21,8 @@
 //-----------------------------------------------------------------------------
 #include "console/console.h"
 #include "console/consoleTypes.h"
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxDrawUtil.h"
 
 #include "gui/editor/guiGraphCtrl.h"
 
@@ -71,273 +72,273 @@ bool GuiGraphCtrl::onWake()
 
 void GuiGraphCtrl::onRender(Point2I offset, const RectI &updateRect)
 {
-	if (mProfile->mBorder)
-	{
-		RectI rect(offset.x, offset.y, mBounds.extent.x, mBounds.extent.y);
-		dglDrawRect(rect, mProfile->mBorderColor);
-	}
-
-	glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR);
-	glEnable(GL_BLEND);
-	ColorF color(1.0, 1.0, 1.0, 0.5);
-	dglDrawRectFill(updateRect, color);
-	glDisable(GL_BLEND);
-	glBlendFunc(GL_ONE, GL_ZERO);
-
-	for (int k = 0; k < MaxPlots; k++)
-	{
-		// Check if there is an autoplot and the proper amount of time has passed, if so add datum.
-		if((mPlots[k].mAutoPlot!=NULL) &&
-			(mPlots[k].mAutoPlotDelay < (Sim::getCurrentTime() - mPlots[k].mAutoPlotLastDisplay)))
-		{
-				mPlots[k].mAutoPlotLastDisplay = Sim::getCurrentTime();
-				addDatum(k, Con::getFloatVariable(mPlots[k].mAutoPlot));
-				Con::setIntVariable(mPlots[k].mAutoPlot, 0);
-		}
-
-		// Adjust scale to max value + 5% so we can see high values
-		F32 Scale = (F32(getExtent().y) / (F32(mPlots[k].mGraphMax*1.05)));
-
-		// Nothing to graph
-		if (mPlots[k].mGraphData.size() == 0)
-			continue;
-
-#ifdef TORQUE_OS_IOS
-		// Bar graph
-		if(mPlots[k].mGraphType == Bar)
-		{
-			//PUAP -Mat untested
-			glColor4f( mPlots[k].mGraphColor.red, mPlots[k].mGraphColor.green,mPlots[k].mGraphColor.blue, 255 );//was a color3fv, so use full alpha
-
-			S32 temp1,temp2;
-			temp1 = 0;
-
-			for (S32 sample = 0; sample < getExtent().x; sample++)
-			{
-				if(mPlots[k].mGraphData.size() >= getExtent().x)
-					temp2 = sample;
-				else
-					temp2 = (S32)(((F32)getExtent().x / (F32)mPlots[k].mGraphData.size()) * (F32)sample);
-
-				GLfloat verts[] = {
-					getPosition().x + temp1, (getPosition().y + getExtent().y) - (S32)(getDatum(k, sample) * Scale),
-					getPosition().x + temp2, (getPosition().y + getExtent().y) - (S32)(getDatum(k, sample) * Scale),
-					getPosition().x + temp2, getPosition().y + getExtent().y,//may need to switch these last two
-					getPosition().x + temp1, getPosition().y + getExtent().y,				
-				};
-				glVertexPointer(2, GL_FLOAT, 0, verts);
-				glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-				
-				temp1 = temp2;
-			}
-		}
-
-		// Filled graph
-		else if(mPlots[k].mGraphType == Filled)
-		{
-			//PUAP -Mat untested
-			glColor4f( mPlots[k].mGraphColor.red, mPlots[k].mGraphColor.green,mPlots[k].mGraphColor.blue, 255 );//was a color3fv, so use full alpha
-
-			S32 temp1,temp2;
-			temp1 = 0;
-
-			for (S32 sample = 0; sample < (getExtent().x-1); sample++)
-			{
-				if(mPlots[k].mGraphData.size() >= getExtent().x)
-					temp2 = sample;
-				else
-					temp2 = (S32)(((F32)getExtent().x / (F32)mPlots[k].mGraphData.size()) * (F32)sample);
-
-				GLfloat verts[] = {
-					getPosition().x + temp1, (getPosition().y + getExtent().y) - (S32)(getDatum(k, sample) * Scale),
-					getPosition().x + temp2, (getPosition().y + getExtent().y) - (S32)(getDatum(k, sample+1) * Scale),
-					getPosition().x + temp2, getPosition().y + getExtent().y,//may need to switch these last two
-					getPosition().x + temp1, getPosition().y + getExtent().y,
-				};
-				glVertexPointer(2, GL_FLOAT, 0, verts);
-				glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-				
-				temp1 = temp2;
-			}
-
-			
-			// last point
-			S32 sample = getExtent().x;
-
-			if(mPlots[k].mGraphData.size() >= getExtent().x)
-				temp2 = sample;
-			else
-				temp2 = (S32)(((F32)getExtent().x / (F32)mPlots[k].mGraphData.size()) * (F32)sample);
-
-			GLfloat last[] = {
-				getPosition().x + temp1, (getPosition().y + getExtent().y) - (S32)(getDatum(k, sample) * Scale),
-				getPosition().x + temp2, (getPosition().y + getExtent().y) - (S32)(getDatum(k, sample) * Scale),
-				getPosition().x + temp2, getPosition().y + getExtent().y,
-				getPosition().x + temp1, getPosition().y + getExtent().y,
-			};
-			glVertexPointer(2, GL_FLOAT, 0, last);
-			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-			
-		}
-
-		
-		// Point or Polyline graph
-		else if((mPlots[k].mGraphType == Point) || (mPlots[k].mGraphType == Polyline))
-		{
-			//PUAP -Mat untested
-			glColor4f( mPlots[k].mGraphColor.red, mPlots[k].mGraphColor.green,mPlots[k].mGraphColor.blue, 255 );//was a color3fv, so use full alpha
-
-			S32 temp;
-			if(mPlots[k].mGraphData.size() >= getExtent().x)
-				temp = 0;
-			else
-				temp = (S32)(((F32)getExtent().x / (F32)mPlots[k].mGraphData.size()) * (F32)0);
-			
-			GLfloat verts[] = {
-				getPosition().x + temp, getPosition().y + getExtent().y - (S32)(getDatum(k, 0) * Scale),
-				0, 0
-			};
-			
-			for (S32 sample = 1; sample < getExtent().x; sample++)
-			{
-				if(mPlots[k].mGraphData.size() >= getExtent().x)
-					temp = sample;
-				else
-					temp = (S32)(((F32)getExtent().x / (F32)mPlots[k].mGraphData.size()) * (F32)sample);
-
-				verts[2] = getPosition().x + temp;
-				verts[3] = getPosition().y + getExtent().y - (S32)(getDatum(k, sample) * Scale);
-			}
-
-			glVertexPointer(2, GL_FLOAT, 0, verts);
-			
-			if(mPlots[k].mGraphType == Point)
-				glDrawArrays(GL_POINTS, 0, 4);
-			else
-				glDrawArrays(GL_LINE_STRIP, 0, 4);
-		}
-	}
-#else
-		// Bar graph
-		if(mPlots[k].mGraphType == Bar)
-		{
-
-			glBegin(GL_QUADS);
-
-			glColor3fv(mPlots[k].mGraphColor.address());
-
-			S32 temp1,temp2;
-			temp1 = 0;
-
-			for (S32 sample = 0; sample < getExtent().x; sample++)
-			{
-				if(mPlots[k].mGraphData.size() >= getExtent().x)
-					temp2 = sample;
-				else
-					temp2 = (S32)(((F32)getExtent().x / (F32)mPlots[k].mGraphData.size()) * (F32)sample);
-
-				glVertex2i(getPosition().x + temp1,
-					(getPosition().y + getExtent().y) - (S32)(getDatum(k, sample) * Scale));
-
-				glVertex2i(getPosition().x + temp2,
-					(getPosition().y + getExtent().y) - (S32)(getDatum(k, sample) * Scale));
-
-				glVertex2i(getPosition().x + temp2,
-					getPosition().y + getExtent().y);
-
-				glVertex2i(getPosition().x + temp1,
-					getPosition().y + getExtent().y);
-
-				temp1 = temp2;
-			}
-
-			glEnd();
-		}
-
-		// Filled graph
-		else if(mPlots[k].mGraphType == Filled)
-		{
-			glBegin(GL_QUADS);
-
-			glColor3fv(mPlots[k].mGraphColor.address());
-
-			S32 temp1,temp2;
-			temp1 = 0;
-
-			for (S32 sample = 0; sample < (getExtent().x-1); sample++)
-			{
-				if(mPlots[k].mGraphData.size() >= getExtent().x)
-					temp2 = sample;
-				else
-					temp2 = (S32)(((F32)getExtent().x / (F32)mPlots[k].mGraphData.size()) * (F32)sample);
-
-				glVertex2i(getPosition().x + temp1,
-					(getPosition().y + getExtent().y) - (S32)(getDatum(k, sample) * Scale));
-
-				glVertex2i(getPosition().x + temp2,
-					(getPosition().y + getExtent().y) - (S32)(getDatum(k, sample+1) * Scale));
-
-				glVertex2i(getPosition().x + temp2,
-					getPosition().y + getExtent().y);
-
-				glVertex2i(getPosition().x + temp1,
-					getPosition().y + getExtent().y);
-
-				temp1 = temp2;
-			}
-
-			
-			// last point
-			S32 sample = getExtent().x;
-
-			if(mPlots[k].mGraphData.size() >= getExtent().x)
-				temp2 = sample;
-			else
-				temp2 = (S32)(((F32)getExtent().x / (F32)mPlots[k].mGraphData.size()) * (F32)sample);
-
-			glVertex2i(getPosition().x + temp1,
-				(getPosition().y + getExtent().y) - (S32)(getDatum(k, sample) * Scale));
-
-			glVertex2i(getPosition().x + temp2,
-				(getPosition().y + getExtent().y) - (S32)(getDatum(k, sample) * Scale));
-
-			glVertex2i(getPosition().x + temp2,
-				getPosition().y + getExtent().y);
-
-			glVertex2i(getPosition().x + temp1,
-				getPosition().y + getExtent().y);
-
-			glEnd();
-		}
-
-		
-		// Point or Polyline graph
-		else if((mPlots[k].mGraphType == Point) || (mPlots[k].mGraphType == Polyline))
-		{
-			if(mPlots[k].mGraphType == Point)
-				glBegin(GL_POINTS);
-			else
-				glBegin(GL_LINE_STRIP);
-
-			glColor3fv(mPlots[k].mGraphColor.address());
-
-			for (S32 sample = 0; sample < getExtent().x; sample++)
-			{
-				S32 temp;
-				if(mPlots[k].mGraphData.size() >= getExtent().x)
-					temp = sample;
-				else
-					temp = (S32)(((F32)getExtent().x / (F32)mPlots[k].mGraphData.size()) * (F32)sample);
-
-				glVertex2i(getPosition().x + temp,
-					(getPosition().y + getExtent().y) - (S32)(getDatum(k, sample) * Scale));
-			}
-
-			glEnd();
-		}
-
-	}
-#endif
+//	if (mProfile->mBorder)
+//	{
+//		RectI rect(offset.x, offset.y, mBounds.extent.x, mBounds.extent.y);
+//		GFX->getDrawUtil()->drawRect(rect, mProfile->mBorderColor);
+//	}
+//
+//	glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR);
+//	glEnable(GL_BLEND);
+//	ColorF color(1.0, 1.0, 1.0, 0.5);
+//	GFX->getDrawUtil()->drawRectFill(updateRect, color);
+//	glDisable(GL_BLEND);
+//	glBlendFunc(GL_ONE, GL_ZERO);
+//
+//	for (int k = 0; k < MaxPlots; k++)
+//	{
+//		// Check if there is an autoplot and the proper amount of time has passed, if so add datum.
+//		if((mPlots[k].mAutoPlot!=NULL) &&
+//			(mPlots[k].mAutoPlotDelay < (Sim::getCurrentTime() - mPlots[k].mAutoPlotLastDisplay)))
+//		{
+//				mPlots[k].mAutoPlotLastDisplay = Sim::getCurrentTime();
+//				addDatum(k, Con::getFloatVariable(mPlots[k].mAutoPlot));
+//				Con::setIntVariable(mPlots[k].mAutoPlot, 0);
+//		}
+//
+//		// Adjust scale to max value + 5% so we can see high values
+//		F32 Scale = (F32(getExtent().y) / (F32(mPlots[k].mGraphMax*1.05)));
+//
+//		// Nothing to graph
+//		if (mPlots[k].mGraphData.size() == 0)
+//			continue;
+//
+//#ifdef TORQUE_OS_IOS
+//		// Bar graph
+//		if(mPlots[k].mGraphType == Bar)
+//		{
+//			//PUAP -Mat untested
+//			glColor4f( mPlots[k].mGraphColor.red, mPlots[k].mGraphColor.green,mPlots[k].mGraphColor.blue, 255 );//was a color3fv, so use full alpha
+//
+//			S32 temp1,temp2;
+//			temp1 = 0;
+//
+//			for (S32 sample = 0; sample < getExtent().x; sample++)
+//			{
+//				if(mPlots[k].mGraphData.size() >= getExtent().x)
+//					temp2 = sample;
+//				else
+//					temp2 = (S32)(((F32)getExtent().x / (F32)mPlots[k].mGraphData.size()) * (F32)sample);
+//
+//				GLfloat verts[] = {
+//					getPosition().x + temp1, (getPosition().y + getExtent().y) - (S32)(getDatum(k, sample) * Scale),
+//					getPosition().x + temp2, (getPosition().y + getExtent().y) - (S32)(getDatum(k, sample) * Scale),
+//					getPosition().x + temp2, getPosition().y + getExtent().y,//may need to switch these last two
+//					getPosition().x + temp1, getPosition().y + getExtent().y,				
+//				};
+//				glVertexPointer(2, GL_FLOAT, 0, verts);
+//				glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+//				
+//				temp1 = temp2;
+//			}
+//		}
+//
+//		// Filled graph
+//		else if(mPlots[k].mGraphType == Filled)
+//		{
+//			//PUAP -Mat untested
+//			glColor4f( mPlots[k].mGraphColor.red, mPlots[k].mGraphColor.green,mPlots[k].mGraphColor.blue, 255 );//was a color3fv, so use full alpha
+//
+//			S32 temp1,temp2;
+//			temp1 = 0;
+//
+//			for (S32 sample = 0; sample < (getExtent().x-1); sample++)
+//			{
+//				if(mPlots[k].mGraphData.size() >= getExtent().x)
+//					temp2 = sample;
+//				else
+//					temp2 = (S32)(((F32)getExtent().x / (F32)mPlots[k].mGraphData.size()) * (F32)sample);
+//
+//				GLfloat verts[] = {
+//					getPosition().x + temp1, (getPosition().y + getExtent().y) - (S32)(getDatum(k, sample) * Scale),
+//					getPosition().x + temp2, (getPosition().y + getExtent().y) - (S32)(getDatum(k, sample+1) * Scale),
+//					getPosition().x + temp2, getPosition().y + getExtent().y,//may need to switch these last two
+//					getPosition().x + temp1, getPosition().y + getExtent().y,
+//				};
+//				glVertexPointer(2, GL_FLOAT, 0, verts);
+//				glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+//				
+//				temp1 = temp2;
+//			}
+//
+//			
+//			// last point
+//			S32 sample = getExtent().x;
+//
+//			if(mPlots[k].mGraphData.size() >= getExtent().x)
+//				temp2 = sample;
+//			else
+//				temp2 = (S32)(((F32)getExtent().x / (F32)mPlots[k].mGraphData.size()) * (F32)sample);
+//
+//			GLfloat last[] = {
+//				getPosition().x + temp1, (getPosition().y + getExtent().y) - (S32)(getDatum(k, sample) * Scale),
+//				getPosition().x + temp2, (getPosition().y + getExtent().y) - (S32)(getDatum(k, sample) * Scale),
+//				getPosition().x + temp2, getPosition().y + getExtent().y,
+//				getPosition().x + temp1, getPosition().y + getExtent().y,
+//			};
+//			glVertexPointer(2, GL_FLOAT, 0, last);
+//			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+//			
+//		}
+//
+//		
+//		// Point or Polyline graph
+//		else if((mPlots[k].mGraphType == Point) || (mPlots[k].mGraphType == Polyline))
+//		{
+//			//PUAP -Mat untested
+//			glColor4f( mPlots[k].mGraphColor.red, mPlots[k].mGraphColor.green,mPlots[k].mGraphColor.blue, 255 );//was a color3fv, so use full alpha
+//
+//			S32 temp;
+//			if(mPlots[k].mGraphData.size() >= getExtent().x)
+//				temp = 0;
+//			else
+//				temp = (S32)(((F32)getExtent().x / (F32)mPlots[k].mGraphData.size()) * (F32)0);
+//			
+//			GLfloat verts[] = {
+//				getPosition().x + temp, getPosition().y + getExtent().y - (S32)(getDatum(k, 0) * Scale),
+//				0, 0
+//			};
+//			
+//			for (S32 sample = 1; sample < getExtent().x; sample++)
+//			{
+//				if(mPlots[k].mGraphData.size() >= getExtent().x)
+//					temp = sample;
+//				else
+//					temp = (S32)(((F32)getExtent().x / (F32)mPlots[k].mGraphData.size()) * (F32)sample);
+//
+//				verts[2] = getPosition().x + temp;
+//				verts[3] = getPosition().y + getExtent().y - (S32)(getDatum(k, sample) * Scale);
+//			}
+//
+//			glVertexPointer(2, GL_FLOAT, 0, verts);
+//			
+//			if(mPlots[k].mGraphType == Point)
+//				glDrawArrays(GL_POINTS, 0, 4);
+//			else
+//				glDrawArrays(GL_LINE_STRIP, 0, 4);
+//		}
+//	}
+//#else
+//		// Bar graph
+//		if(mPlots[k].mGraphType == Bar)
+//		{
+//
+//			glBegin(GL_QUADS);
+//
+//			glColor3fv(mPlots[k].mGraphColor.address());
+//
+//			S32 temp1,temp2;
+//			temp1 = 0;
+//
+//			for (S32 sample = 0; sample < getExtent().x; sample++)
+//			{
+//				if(mPlots[k].mGraphData.size() >= getExtent().x)
+//					temp2 = sample;
+//				else
+//					temp2 = (S32)(((F32)getExtent().x / (F32)mPlots[k].mGraphData.size()) * (F32)sample);
+//
+//				glVertex2i(getPosition().x + temp1,
+//					(getPosition().y + getExtent().y) - (S32)(getDatum(k, sample) * Scale));
+//
+//				glVertex2i(getPosition().x + temp2,
+//					(getPosition().y + getExtent().y) - (S32)(getDatum(k, sample) * Scale));
+//
+//				glVertex2i(getPosition().x + temp2,
+//					getPosition().y + getExtent().y);
+//
+//				glVertex2i(getPosition().x + temp1,
+//					getPosition().y + getExtent().y);
+//
+//				temp1 = temp2;
+//			}
+//
+//			glEnd();
+//		}
+//
+//		// Filled graph
+//		else if(mPlots[k].mGraphType == Filled)
+//		{
+//			glBegin(GL_QUADS);
+//
+//			glColor3fv(mPlots[k].mGraphColor.address());
+//
+//			S32 temp1,temp2;
+//			temp1 = 0;
+//
+//			for (S32 sample = 0; sample < (getExtent().x-1); sample++)
+//			{
+//				if(mPlots[k].mGraphData.size() >= getExtent().x)
+//					temp2 = sample;
+//				else
+//					temp2 = (S32)(((F32)getExtent().x / (F32)mPlots[k].mGraphData.size()) * (F32)sample);
+//
+//				glVertex2i(getPosition().x + temp1,
+//					(getPosition().y + getExtent().y) - (S32)(getDatum(k, sample) * Scale));
+//
+//				glVertex2i(getPosition().x + temp2,
+//					(getPosition().y + getExtent().y) - (S32)(getDatum(k, sample+1) * Scale));
+//
+//				glVertex2i(getPosition().x + temp2,
+//					getPosition().y + getExtent().y);
+//
+//				glVertex2i(getPosition().x + temp1,
+//					getPosition().y + getExtent().y);
+//
+//				temp1 = temp2;
+//			}
+//
+//			
+//			// last point
+//			S32 sample = getExtent().x;
+//
+//			if(mPlots[k].mGraphData.size() >= getExtent().x)
+//				temp2 = sample;
+//			else
+//				temp2 = (S32)(((F32)getExtent().x / (F32)mPlots[k].mGraphData.size()) * (F32)sample);
+//
+//			glVertex2i(getPosition().x + temp1,
+//				(getPosition().y + getExtent().y) - (S32)(getDatum(k, sample) * Scale));
+//
+//			glVertex2i(getPosition().x + temp2,
+//				(getPosition().y + getExtent().y) - (S32)(getDatum(k, sample) * Scale));
+//
+//			glVertex2i(getPosition().x + temp2,
+//				getPosition().y + getExtent().y);
+//
+//			glVertex2i(getPosition().x + temp1,
+//				getPosition().y + getExtent().y);
+//
+//			glEnd();
+//		}
+//
+//		
+//		// Point or Polyline graph
+//		else if((mPlots[k].mGraphType == Point) || (mPlots[k].mGraphType == Polyline))
+//		{
+//			if(mPlots[k].mGraphType == Point)
+//				glBegin(GL_POINTS);
+//			else
+//				glBegin(GL_LINE_STRIP);
+//
+//			glColor3fv(mPlots[k].mGraphColor.address());
+//
+//			for (S32 sample = 0; sample < getExtent().x; sample++)
+//			{
+//				S32 temp;
+//				if(mPlots[k].mGraphData.size() >= getExtent().x)
+//					temp = sample;
+//				else
+//					temp = (S32)(((F32)getExtent().x / (F32)mPlots[k].mGraphData.size()) * (F32)sample);
+//
+//				glVertex2i(getPosition().x + temp,
+//					(getPosition().y + getExtent().y) - (S32)(getDatum(k, sample) * Scale));
+//			}
+//
+//			glEnd();
+//		}
+//
+//	}
+//#endif
 }
 
 void GuiGraphCtrl::addDatum(S32 plotID, F32 v)

@@ -22,7 +22,8 @@
 
 #include "console/consoleTypes.h"
 #include "console/console.h"
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxDrawUtil.h"
 #include "gui/guiCanvas.h"
 #include "gui/guiTextEditSliderCtrl.h"
 
@@ -216,100 +217,55 @@ void GuiTextEditSliderCtrl::onRender(Point2I offset, const RectI &updateRect)
    }
 	Parent::onRender(offset, updateRect);
 
-   Point2I start(offset.x + mBounds.extent.x - 14, offset.y);
-   Point2I midPoint(start.x + 7, start.y + (mBounds.extent.y/2));
+   Point2I start(offset.x + getWidth() - 14, offset.y);
+   Point2I midPoint(start.x + 7, start.y + (getHeight()/2));
 
-   dglDrawRectFill(Point2I(start.x+1,start.y+1), Point2I(start.x+13,start.y+mBounds.extent.y-1) , mProfile->mFillColor);
+   GFX->getDrawUtil()->drawRectFill(Point2I(start.x+1,start.y+1), Point2I(start.x+13,start.y+getHeight()-1) , mProfile->mFillColor);
 
-   dglDrawLine(start, Point2I(start.x, start.y+mBounds.extent.y),mProfile->mFontColor);
-   dglDrawLine(Point2I(start.x,midPoint.y),
+   GFX->getDrawUtil()->drawLine(start, Point2I(start.x, start.y+getHeight()),mProfile->mFontColor);
+   GFX->getDrawUtil()->drawLine(Point2I(start.x,midPoint.y),
                Point2I(start.x+14,midPoint.y),
                mProfile->mFontColor);
 
-#ifdef TORQUE_OS_IOS
-
-   glColor4f(0,0,0,255);
-	
-	GLfloat verts[] = {
-		0, 0,
-		0, 0,
-		0, 0,
-		0, 0,
-		0, 0,
-		0, 0,
-	};
-
-      if(mTextAreaHit == ArrowUp)
-      {
-		  verts[0] = (GLfloat)midPoint.x;
-		  verts[1] = (GLfloat)start.y+1;
-		  
-		  verts[2] = (GLfloat)start.x+11;
-		  verts[3] = (GLfloat)midPoint.y-2;
-		  
-		  verts[4] = (GLfloat)start.x+3;
-		  verts[5] = (GLfloat)midPoint.y-2;
-      }
-      else
-      {
-		  verts[0] = (GLfloat)midPoint.x;
-		  verts[1] = (GLfloat)start.y+2;
-		  verts[2] = (GLfloat)start.x+11;
-		  verts[3] = (GLfloat)midPoint.y-1;
-		  verts[4] = (GLfloat)start.x+3;
-		  verts[5] = (GLfloat)midPoint.y-1;
-      }
-      if(mTextAreaHit == ArrowDown)
-      {
-		  verts[6] = (GLfloat)midPoint.x;
-		  verts[7] = (GLfloat)start.y+mBounds.extent.y-1;
-		  verts[8] = (GLfloat)start.x+11;
-		  verts[9] = (GLfloat)midPoint.y+3;
-		  verts[10] = (GLfloat)start.x+3;
-		  verts[11] = (GLfloat)midPoint.y+3;  
-      }
-   	else
-      {
-		  verts[6] = (GLfloat)midPoint.x;
-		  verts[7] = (GLfloat)start.y+mBounds.extent.y-2;
-		  verts[8] = (GLfloat)start.x+11;
-		  verts[9] = (GLfloat)midPoint.y+2;
-		  verts[10] = (GLfloat)start.x+3;
-		  verts[11] = (GLfloat)midPoint.y+2; 
-      }
-	glVertexPointer(2, GL_FLOAT, 0, verts);	
-
-	glDrawArrays(GL_TRIANGLES, 0, 6);	
-#else
-   glColor3i(0,0,0);
-
-   glBegin(GL_TRIANGLES);
-      if(mTextAreaHit == ArrowUp)
-      {
-         glVertex2i(midPoint.x, start.y+1);
-      	glVertex2i(start.x+11,midPoint.y-2);
-      	glVertex2i(start.x+3,midPoint.y-2);
-      }
-      else
-      {
-         glVertex2i(midPoint.x, start.y+2);
-      	glVertex2i(start.x+11,midPoint.y-1);
-      	glVertex2i(start.x+3,midPoint.y-1);
-      }
-      if(mTextAreaHit == ArrowDown)
-      {
-   	   glVertex2i(midPoint.x, start.y+mBounds.extent.y-1);
-   	   glVertex2i(start.x+11,midPoint.y+3);
-   	   glVertex2i(start.x+3,midPoint.y+3);
-      }
-   	else
-      {
-   	   glVertex2i(midPoint.x, start.y+mBounds.extent.y-2);
-   	   glVertex2i(start.x+11,midPoint.y+2);
-   	   glVertex2i(start.x+3,midPoint.y+2);
-      }
-   glEnd();
-#endif
+    GFXVertexPC verts[6];
+    
+    verts[0].color.set( 0, 0, 0 );
+	verts[1].color.set( 0, 0, 0 );
+	verts[2].color.set( 0, 0, 0 );
+	verts[3].color.set( 0, 0, 0 );
+	verts[4].color.set( 0, 0, 0 );
+	verts[5].color.set( 0, 0, 0 );
+    
+    if(mTextAreaHit == ArrowUp)
+    {
+        verts[0].point.set( (F32)midPoint.x, (F32)start.y + 1.0f, 0.0f );
+        verts[1].point.set( (F32)start.x + 11.0f, (F32)midPoint.y - 2.0f, 0.0f );
+        verts[2].point.set( (F32)start.x + 3.0f, (F32)midPoint.y - 2.0f, 0.0f );
+    }
+    else
+    {
+        verts[0].point.set( (F32)midPoint.x, (F32)start.y + 2.0f, 0.0f );
+        verts[1].point.set( (F32)start.x + 11.0f, (F32)midPoint.y - 1.0f, 0.0f );
+        verts[2].point.set( (F32)start.x + 3.0f, (F32)midPoint.y - 1.0f, 0.0f );
+    }
+    
+    if(mTextAreaHit == ArrowDown)
+    {
+        verts[3].point.set( (F32)midPoint.x, (F32)(start.y + getExtent().y - 1), 0.0f );
+        verts[4].point.set( (F32)start.x + 11.0f, (F32)midPoint.y + 3.0f, 0.0f );
+        verts[5].point.set( (F32)start.x + 3.0f, (F32)midPoint.y + 3.0f, 0.0f );
+    }
+    else
+    {
+        verts[3].point.set( (F32)midPoint.x, (F32)(start.y + getExtent().y - 2), 0.0f );
+        verts[4].point.set( (F32)start.x + 11.0f, (F32)midPoint.y + 2.0f, 0.0f );
+        verts[5].point.set( (F32)start.x + 3.0f, (F32)midPoint.y + 2.0f, 0.0f );
+    }
+    
+    GFXVertexBufferHandle<GFXVertexPC> vb(GFX, 6, GFXBufferTypeVolatile, verts);
+    
+    GFX->setVertexBuffer( vb );
+    GFX->drawPrimitive( GFXTriangleList, 0, 2 );
 }
 
 void GuiTextEditSliderCtrl::onPreRender()

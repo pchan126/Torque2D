@@ -114,7 +114,7 @@ struct Vector2 : b2Vec2
     inline F32 getMinorAxis(void) const                                 { return mLessThan(x,y) ? x : y; }
     inline F32 getMajorAxis(void) const                                 { return mGreaterThan(x,y) ? x : y; }
     inline Vector2 getUnitDirection(void) const                         { Vector2 temp(*this); temp.Normalize(); return temp; }
-    inline bool isNAN(void) const                                       { return IsValid(); }
+    inline bool isNAN(void) const                                       { return isValid(); }
     inline bool isEqualRange(const Vector2& v, const F32 epsilon) const { return mIsEqualRange(x,v.x,epsilon) && mIsEqualRange(y,v.y,epsilon); }
     inline bool isEqual(const Vector2& v) const                         { return mIsEqual(x,v.x) && mIsEqual(y,v.y); }
     inline bool notEqual(const Vector2& v) const                        { return !isEqual(v); }

@@ -22,11 +22,13 @@
 
 #include "console/console.h"
 #include "console/consoleTypes.h"
-#include "graphics/dgl.h"
-#include "graphics/TextureManager.h"
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxTextureManager.h"
 #include "gui/guiSliderCtrl.h"
 #include "gui/guiDefaultControlRender.h"
 #include "platform/event.h"
+#include "graphics/primBuilder.h"
+#include "graphics/gfxDrawUtil.h"
 
 IMPLEMENT_CONOBJECT(GuiSliderCtrl);
 
@@ -241,7 +243,7 @@ void GuiSliderCtrl::updateThumb(F32 _value, bool snap, bool onWake)
 void GuiSliderCtrl::onRender(Point2I offset, const RectI &updateRect)
 {
     Point2I pos(offset.x + mShiftPoint, offset.y);
-    Point2I ext(mBounds.extent.x - mShiftExtent, mBounds.extent.y);
+    Point2I ext(getWidth() - mShiftExtent, getHeight());
     RectI thumb = mThumb;
 
     if (mHasTexture)
@@ -252,196 +254,109 @@ void GuiSliderCtrl::onRender(Point2I offset, const RectI &updateRect)
             Point2I mid(ext.x, ext.y / 2);
             Point2I oldpos = pos;
             pos += Point2I(1, 0);
-            glColor4f(0, 0, 0, 1);
-
-#ifdef TORQUE_OS_IOS
+            
+            PrimBuild::color4f( 0.f, 0.f, 0.f, 1.f );
+            PrimBuild::begin( GFXLineList, ( mTicks + 2 ) * 2 );
             // tick marks
             for (U32 t = 0; t <= (mTicks + 1); t++)
             {
                 S32 x = (S32) (F32(mid.x + 1) / F32(mTicks + 1) * F32(t)) + pos.x;
                 S32 y = pos.y + mid.y;
 
-                GLfloat shiftVert[] = {
-                        (GLfloat) (x),
-                        (GLfloat) (y + mShiftPoint),
-                        (GLfloat) (x),
-                        (GLfloat) (y + mShiftPoint * 2.0f + 2.0f),
-                };
-
-                glVertexPointer(2, GL_FLOAT, 0, shiftVert);
-                glDrawArrays(GL_LINES, 0, 2);
+                PrimBuild::vertex2i(x, y + mShiftPoint);
+                PrimBuild::vertex2i(x, y + mShiftPoint*2 + 2);
             }
-
-            glColor4f(0.9f, 0.9f, 0.9f, 1.0f);
+            PrimBuild::end();
+            // TODO: it would be nice, if the primitive builder were a little smarter,
+            // so that we could change colors midstream.
+            PrimBuild::color4f(0.9f, 0.9f, 0.9f, 1.0f);
+            PrimBuild::begin( GFXLineList, ( mTicks + 2 ) * 2 );
             // tick marks
             for (U32 t = 0; t <= (mTicks + 1); t++)
             {
                 S32 x = (S32) (F32(mid.x + 1) / F32(mTicks + 1) * F32(t)) + pos.x + 1;
                 S32 y = pos.y + mid.y + 1;
-
-                GLfloat shiftVert[] = {
-                        (GLfloat) (x),
-                        (GLfloat) (y + mShiftPoint),
-                        (GLfloat) (x),
-                        (GLfloat) (y + mShiftPoint * 2 + 3),
-                };
-
-                glVertexPointer(2, GL_FLOAT, 0, shiftVert);
-                glDrawArrays(GL_LINES, 0, 2);
-
+                PrimBuild::vertex2i(x, y + mShiftPoint );
+                PrimBuild::vertex2i(x, y + mShiftPoint * 2 + 3);
             }
-#else
-         glBegin(GL_LINES);
-         // tick marks
-         for (U32 t = 0; t <= (mTicks+1); t++)
-         {
-            S32 x = (S32)(F32(mid.x+1)/F32(mTicks+1)*F32(t)) + pos.x;
-            S32 y = pos.y + mid.y;
-            glVertex2i(x, y + mShiftPoint);
-            glVertex2i(x, y + mShiftPoint*2 + 2);
-         }
-         glEnd();
-         glColor4f(0.9f, 0.9f, 0.9f, 1.0f);
-         glBegin(GL_LINES);
-         // tick marks
-         for (U32 t = 0; t <= (mTicks+1); t++)
-         {
-            S32 x = (S32)(F32(mid.x+1)/F32(mTicks+1)*F32(t)) + pos.x + 1;
-            S32 y = pos.y + mid.y + 1;
-            glVertex2i(x, y + mShiftPoint );
-            glVertex2i(x, y + mShiftPoint*2 + 3);
-         }
-         glEnd();
-#endif
+            PrimBuild::end();
             pos = oldpos;
         }
 
         S32 index = SliderButtonNormal;
         if (mMouseOver)
             index = SliderButtonHighlight;
-        dglClearBitmapModulation();
-
+        GFX->getDrawUtil()->clearBitmapModulation();
+        
         //left border
-        dglDrawBitmapSR(mProfile->mTextureHandle, Point2I(offset.x, offset.y + (mBounds.extent.y / 4)), mBitmapBounds[SliderLineLeft]);
+        GFX->getDrawUtil()->drawBitmapSR(mProfile->mTextureHandle, Point2I(offset.x,offset.y), mBitmapBounds[SliderLineLeft]);
         //right border
-        dglDrawBitmapSR(mProfile->mTextureHandle, Point2I(offset.x + mBounds.extent.x - mBitmapBounds[SliderLineRight].extent.x, offset.y + (mBounds.extent.y / 4)), mBitmapBounds[SliderLineRight]);
-
-
+        GFX->getDrawUtil()->drawBitmapSR(mProfile->mTextureHandle, Point2I(offset.x + getWidth() - mBitmapBounds[SliderLineRight].extent.x, offset.y), mBitmapBounds[SliderLineRight]);
+        
+        
         //draw our center piece to our slider control's border and stretch it
         RectI destRect;
         destRect.point.x = offset.x + mBitmapBounds[SliderLineLeft].extent.x;
-        destRect.extent.x = mBounds.extent.x - mBitmapBounds[SliderLineLeft].extent.x - mBitmapBounds[SliderLineRight].extent.x;
-        destRect.point.y = offset.y + (mBounds.extent.y / 4);
+        destRect.extent.x = getWidth() - mBitmapBounds[SliderLineLeft].extent.x - mBitmapBounds[SliderLineRight].extent.x;
+        destRect.point.y = offset.y + (getHeight() / 4);
         destRect.extent.y = mBitmapBounds[SliderLineCenter].extent.y;
 
         RectI stretchRect;
         stretchRect = mBitmapBounds[SliderLineCenter];
-        stretchRect.inset(1, 0);
-
-        dglDrawBitmapStretchSR(mProfile->mTextureHandle, destRect, stretchRect);
-
+        stretchRect.inset(1,0);
+        
+        GFX->getDrawUtil()->drawBitmapStretchSR(mProfile->mTextureHandle, destRect, stretchRect);
+        
         //draw our control slider button
         thumb.point += pos;
-        dglDrawBitmapSR(mProfile->mTextureHandle, Point2I(thumb.point.x, offset.y), mBitmapBounds[index]);
+        GFX->getDrawUtil()->drawBitmapSR(mProfile->mTextureHandle,Point2I(thumb.point.x,offset.y ),mBitmapBounds[index]);
+        
     }
-    else
-    {
-        // we're not usina a bitmap, draw procedurally.
-        if (mBounds.extent.x >= mBounds.extent.y)
+    else if (getWidth() >= getHeight())         // we're not usina a bitmap, draw procedurally.
         {
             Point2I mid(ext.x, ext.y / 2);
             if (mDisplayValue)
                 mid.set(ext.x, mThumbSize.y / 2);
 
-            glColor4f(0, 0, 0, 1);
-#ifdef TORQUE_OS_IOS
-            // tick marks
-            for (U32 t = 0; t <= (mTicks + 1); t++)
-            {
-                S32 x = (S32) (F32(mid.x - 1) / F32(mTicks + 1) * F32(t));
-                GLfloat verts[] = {
-                        static_cast<GLfloat>(pos.x + x), static_cast<GLfloat>(pos.y + mid.y - mShiftPoint),
-                        static_cast<GLfloat>(pos.x + x), static_cast<GLfloat>(pos.y + mid.y + mShiftPoint)
-                };
-
-                glVertexPointer(2, GL_FLOAT, 0, verts);
-                glDrawArrays(GL_LINES, 0, 2);
-            }
-
-            GLfloat verts[] = {
-                    static_cast<GLfloat>(pos.x), static_cast<GLfloat>(pos.y + mid.y),
-                    static_cast<GLfloat>(pos.x + mid.x), static_cast<GLfloat>(pos.y + mid.y)
-            };
-
-            glVertexPointer(2, GL_FLOAT, 0, verts);
-            glDrawArrays(GL_LINES, 0, 2);
-
-        }
-        else
+        PrimBuild::color4f( 0.f, 0.f, 0.f, 1.f );
+        PrimBuild::begin( GFXLineList, ( mTicks + 2 ) * 2 + 2);
+        // horz rule
+        PrimBuild::vertex2i( pos.x, pos.y + mid.y );
+        PrimBuild::vertex2i( pos.x + mid.x, pos.y + mid.y );
+        
+        // tick marks
+        for( U32 t = 0; t <= ( mTicks + 1 ); t++ )
         {
-            Point2I mid(ext.x / 2, ext.y);
-            glColor4f(0, 0, 0, 1);
-            // tick marks
-            for (U32 t = 0; t <= (mTicks + 1); t++)
-            {
-                S32 y = (S32) (F32(mid.y - 1) / F32(mTicks + 1) * F32(t));
-                GLfloat verts[] = {
-                        static_cast<GLfloat>(pos.x + mid.x - mShiftPoint), static_cast<GLfloat>(pos.y + y),
-                        static_cast<GLfloat>(pos.x + mid.x + mShiftPoint), static_cast<GLfloat>(pos.y + y)
-                };
-
-                glVertexPointer(2, GL_FLOAT, 0, verts);
-                glDrawArrays(GL_LINES, 0, 2);
-            }
-
-            GLfloat verts[] = {
-                    static_cast<GLfloat>(pos.x + mid.x), static_cast<GLfloat>(pos.y),
-                    static_cast<GLfloat>(pos.x + mid.x), static_cast<GLfloat>(pos.y + mid.y)
-            };
-            //for the horizontal line
-            glVertexPointer(2, GL_FLOAT, 0, verts);
-            glDrawArrays(GL_LINES, 0, 2);
-#else
-         glBegin(GL_LINES);
-            // horz rule
-            glVertex2i(pos.x,       pos.y+mid.y);
-            glVertex2i(pos.x+mid.x, pos.y+mid.y);
-
-            // tick marks
-            for (U32 t = 0; t <= (mTicks+1); t++)
-            {
-               S32 x = (S32)(F32(mid.x-1)/F32(mTicks+1)*F32(t));
-               glVertex2i(pos.x+x, pos.y+mid.y-mShiftPoint);
-               glVertex2i(pos.x+x, pos.y+mid.y+mShiftPoint);
-            }
-         glEnd();
-      }
-      else
-      {
-         Point2I mid(ext.x/2, ext.y);
-
-         glColor4f(0, 0, 0, 1);
-         glBegin(GL_LINES);
-            // horz rule
-            glVertex2i(pos.x+mid.x, pos.y);
-            glVertex2i(pos.x+mid.x, pos.y+mid.y);
-
-            // tick marks
-            for (U32 t = 0; t <= (mTicks+1); t++)
-            {
-               S32 y = (S32)(F32(mid.y-1)/F32(mTicks+1)*F32(t));
-               glVertex2i(pos.x+mid.x-mShiftPoint, pos.y+y);
-               glVertex2i(pos.x+mid.x+mShiftPoint, pos.y+y);
-            }
-         glEnd();
-#endif
+            S32 x = (S32)( F32( mid.x - 1 ) / F32( mTicks + 1 ) * F32( t ) );
+            PrimBuild::vertex2i( pos.x + x, pos.y + mid.y - mShiftPoint );
+            PrimBuild::vertex2i( pos.x + x, pos.y + mid.y + mShiftPoint );
+        }
+        PrimBuild::end();
+    }
+    else
+    {
+        Point2I mid(ext.x/2, ext.y);
+        
+        PrimBuild::color4f( 0.f, 0.f, 0.f, 1.f );
+        PrimBuild::begin( GFXLineList, ( mTicks + 2 ) * 2 + 2);
+        // horz rule
+        PrimBuild::vertex2i( pos.x + mid.x, pos.y );
+        PrimBuild::vertex2i( pos.x + mid.x, pos.y + mid.y );
+        
+        // tick marks
+        for( U32 t = 0; t <= ( mTicks + 1 ); t++ )
+        {
+            S32 y = (S32)( F32( mid.y - 1 ) / F32( mTicks + 1 ) * F32( t ) );
+            PrimBuild::vertex2i( pos.x + mid.x - mShiftPoint, pos.y + y );
+            PrimBuild::vertex2i( pos.x + mid.x + mShiftPoint, pos.y + y );
+        }
+        PrimBuild::end();
             mDisplayValue = false;
         }
 
         // draw the thumb
         thumb.point += pos;
         renderRaisedBox(thumb, mProfile);
-    }
 
     if (mDisplayValue)
     {
@@ -457,11 +372,11 @@ void GuiSliderCtrl::onRender(Point2I offset, const RectI &updateRect)
         textStart.x -= (txt_w / 2);
         if (textStart.x < offset.x)
             textStart.x = offset.x;
-        else if (textStart.x + txt_w > offset.x + mBounds.extent.x)
-            textStart.x -= ((textStart.x + txt_w) - (offset.x + mBounds.extent.x));
+        else if (textStart.x + txt_w > offset.x + getWidth())
+            textStart.x -= ((textStart.x + txt_w) - (offset.x + getWidth()));
 
-        dglSetBitmapModulation(mProfile->mFontColor);
-        dglDrawText(mProfile->mFont, textStart, buf, mProfile->mFontColors);
+    	GFX->getDrawUtil()->setBitmapModulation(mProfile->mFontColor);
+    	GFX->getDrawUtil()->drawText(mProfile->mFont, textStart, buf, mProfile->mFontColors);
     }
     renderChildControls(offset, updateRect);
 }

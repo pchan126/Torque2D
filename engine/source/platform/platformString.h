@@ -52,8 +52,10 @@ extern char* dStrncpy(UTF8 *dst, const UTF8 *src, dsize_t len);
 
 extern char* dStrupr(char *str);
 extern char* dStrlwr(char *str);
-inline char dToupper(const char c) { if (c >= char('a') && c <= char('z')) return char(c + 'A' - 'a'); else return c; }
-inline char dTolower(const char c) { if (c >= char('A') && c <= char('Z')) return char(c - 'A' + 'a'); else return c; }
+extern char dToupper(const char c);
+extern char dTolower(const char c);
+//inline char dToupper(const char c) { if (c >= char('a') && c <= char('z')) return char(c + 'A' - 'a'); else return c; }
+//inline char dTolower(const char c) { if (c >= char('A') && c <= char('Z')) return char(c - 'A' + 'a'); else return c; }
 
 extern char* dStrchr(char *str, int c);
 extern const char* dStrchr(const char *str, int c);

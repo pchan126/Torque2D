@@ -21,7 +21,7 @@
 //-----------------------------------------------------------------------------
 #include "console/console.h"
 #include "console/consoleTypes.h"
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
 #include "sim/simBase.h"
 #include "gui/guiCanvas.h"
 #include "gui/containers/guiTabBookCtrl.h"
@@ -31,6 +31,7 @@
 #include "gui/editor/guiEditCtrl.h"
 #include "gui/guiPopUpCtrl.h"
 #include "gui/guiDefaultControlRender.h"
+#include "graphics/gfxDrawUtil.h"
 
 
 // So we can set tab alignment via gui editor
@@ -297,10 +298,10 @@ void GuiTabBookCtrl::onRender(Point2I offset, const RectI &updateRect)
 
    // We're so nice we'll store the old modulation before we clear it for our rendering! :)
    ColorI oldModulation;
-   dglGetBitmapModulation( &oldModulation );
+   GFX->getDrawUtil()->getBitmapModulation( &oldModulation );
 
    // Wipe it out
-   dglClearBitmapModulation();
+   GFX->getDrawUtil()->clearBitmapModulation();
 
    // Render background
    renderBackground( offset, updateRect );
@@ -312,7 +313,7 @@ void GuiTabBookCtrl::onRender(Point2I offset, const RectI &updateRect)
    renderChildControls( offset, updateRect );
 
    // Restore old modulation
-   dglSetBitmapModulation( oldModulation );
+   GFX->getDrawUtil()->setBitmapModulation( oldModulation );
 }
 
 void GuiTabBookCtrl::renderBackground( Point2I offset, const RectI& updateRect )
@@ -324,7 +325,7 @@ void GuiTabBookCtrl::renderBackground( Point2I offset, const RectI& updateRect )
    if( mHasTexture && mProfile->mBitmapArrayRects.size() >= NumBitmaps)
       renderSizableBitmapBordersFilledIndex( winRect, TabBackground, mProfile );
    else
-      dglDrawRectFill(winRect, mProfile->mFillColor);
+      GFX->getDrawUtil()->drawRectFill(winRect, mProfile->mFillColor);
 
 }
 
@@ -351,7 +352,7 @@ void GuiTabBookCtrl::renderTab( RectI tabRect, GuiTabPageCtrl *tab )
    StringTableEntry text = tab->getText();
    ColorI oldColor;
 
-   dglGetBitmapModulation( &oldColor );
+   GFX->getDrawUtil()->getBitmapModulation( &oldColor );
 
    // Is this a skinned control?
    if( mHasTexture && mProfile->mBitmapArrayRects.size() >= 9 )
@@ -369,7 +370,7 @@ void GuiTabBookCtrl::renderTab( RectI tabRect, GuiTabPageCtrl *tab )
          else
             indexMultiplier += TabNormal;
          
-         //dglDrawBitmapStretchSR(mProfile->mTextureHandle,tabRect,stretchRect, ( mTabPosition == AlignBottom ) ? GFlip_Y : 0 );
+         //GFX->getDrawUtil()->drawBitmapStretchSR(mProfile->mTextureHandle,tabRect,stretchRect, ( mTabPosition == AlignBottom ) ? GFlip_Y : 0 );
          break;
       case AlignLeft:
       case AlignRight:
@@ -380,7 +381,7 @@ void GuiTabBookCtrl::renderTab( RectI tabRect, GuiTabPageCtrl *tab )
          else
             indexMultiplier += TabNormalVertical;
 
-         //dglDrawBitmapStretchSR(mProfile->mTextureHandle,tabRect,stretchRect, ( mTabPosition == AlignRight ) ? GFlip_X : 0 );
+         //GFX->getDrawUtil()->drawBitmapStretchSR(mProfile->mTextureHandle,tabRect,stretchRect, ( mTabPosition == AlignRight ) ? GFlip_X : 0 );
          break;
       } 
 
@@ -390,16 +391,16 @@ void GuiTabBookCtrl::renderTab( RectI tabRect, GuiTabPageCtrl *tab )
    {
       // If this isn't a skinned control or the bitmap is simply missing, handle it WELL
       if ( mActivePage == tab )
-         dglDrawRectFill(tabRect, mProfile->mFillColor);
+         GFX->getDrawUtil()->drawRectFill(tabRect, mProfile->mFillColor);
       else if( mHoverTab == tab )
-         dglDrawRectFill(tabRect, mProfile->mFillColorHL);
+         GFX->getDrawUtil()->drawRectFill(tabRect, mProfile->mFillColorHL);
       else
-         dglDrawRectFill(tabRect, mProfile->mFillColorNA);
+         GFX->getDrawUtil()->drawRectFill(tabRect, mProfile->mFillColorNA);
 
    }
 
 
-   dglSetBitmapModulation(mProfile->mFontColor);
+   GFX->getDrawUtil()->setBitmapModulation(mProfile->mFontColor);
 
    switch( mTabPosition )
    {
@@ -415,7 +416,7 @@ void GuiTabBookCtrl::renderTab( RectI tabRect, GuiTabPageCtrl *tab )
       break;
    }
 
-   dglSetBitmapModulation( oldColor);
+   GFX->getDrawUtil()->setBitmapModulation( oldColor);
 
 }
 
@@ -471,7 +472,7 @@ void GuiTabBookCtrl::renderJustifiedTextRot(Point2I offset, Point2I extent, cons
 
    }
 
-   dglDrawText( font, start + offset, text, mProfile->mFontColors,9,rot );
+   GFX->getDrawUtil()->drawText( font, start + offset, text, mProfile->mFontColors,9,rot );
 }
 
 // This is nothing but a clever hack to allow the tab page children

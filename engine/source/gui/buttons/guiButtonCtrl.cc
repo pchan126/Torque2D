@@ -21,7 +21,8 @@
 //-----------------------------------------------------------------------------
 
 #include "console/console.h"
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxDrawUtil.h"
 #include "console/consoleTypes.h"
 #include "platform/platformAudio.h"
 #include "gui/guiCanvas.h"
@@ -88,7 +89,7 @@ void GuiButtonCtrl::onRender(Point2I      offset,
    if(depressed)
       textPos += Point2I(1,1);
 
-   dglSetBitmapModulation( fontColor );
+   GFX->getDrawUtil()->setBitmapModulation( fontColor );
    renderJustifiedText(textPos, mBounds.extent, mButtonText);
 
    //render the children

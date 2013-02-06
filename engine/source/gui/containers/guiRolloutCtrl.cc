@@ -22,6 +22,7 @@
 
 #include "gui/containers/guiRolloutCtrl.h"
 #include "gui/containers/guiScrollCtrl.h"
+#include "graphics/GFXDrawUtil.h"
 
 //////////////////////////////////////////////////////////////////////////
 // GuiRolloutCtrl
@@ -339,7 +340,7 @@ void GuiRolloutCtrl::onRender(Point2I offset, const RectI &updateRect)
 
    if( mProfile->mBitmapArrayRects.size() >= NumBitmaps )
    {
-      dglClearBitmapModulation();
+      GFX->getDrawUtil()->clearBitmapModulation();
 
       // Draw Rollout From Skin
       if( !mIsExpanded )
@@ -349,11 +350,11 @@ void GuiRolloutCtrl::onRender(Point2I offset, const RectI &updateRect)
 
       // Draw Caption ( Vertically Centered )
       ColorI currColor;
-      dglGetBitmapModulation( &currColor );
+      GFX->getDrawUtil()->getBitmapModulation( &currColor );
       Point2I textPosition = mHeader.point + offset + mProfile->mTextOffset;
-      dglSetBitmapModulation( mProfile->mFontColor );
+      GFX->getDrawUtil()->setBitmapModulation( mProfile->mFontColor );
       renderJustifiedText( textPosition, mHeader.extent, mCaption );
-      dglSetBitmapModulation( currColor );
+      GFX->getDrawUtil()->setBitmapModulation( currColor );
 
       // If we're collapsed we contain the first child as our content
       // thus we don't render it when collapsed.  but to support modified

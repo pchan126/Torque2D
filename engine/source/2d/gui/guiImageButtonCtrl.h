@@ -26,9 +26,9 @@
 #ifndef _GUIBUTTONCTRL_H_
 #include "gui/buttons/guiButtonCtrl.h"
 #endif
-#ifndef _TEXTURE_MANAGER_H_
-#include "graphics/TextureManager.h"
-#endif
+
+#include "graphics/gfxTextureManager.h"
+
 
 #ifndef _IMAGE_ASSET_H_
 #include "2d/assets/ImageAsset.h"

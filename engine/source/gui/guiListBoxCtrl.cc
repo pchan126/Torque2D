@@ -20,6 +20,7 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 #include "gui/guiListBoxCtrl.h"
+#include "graphics/gfxDrawUtil.h"
 
 IMPLEMENT_CONOBJECT(GuiListBoxCtrl);
 
@@ -737,15 +738,15 @@ void GuiListBoxCtrl::onRender( Point2I offset, const RectI &updateRect )
       onRenderItem( itemRect, mItems[i] );
    }
 
-   dglSetClipRect( oldClipRect );
+   GFX->setClipRect( oldClipRect );
 }
 
 void GuiListBoxCtrl::onRenderItem( RectI itemRect, LBItem *item )
 {
    if( item->isSelected )
-      dglDrawRectFill( itemRect, mProfile->mFillColor );
+      GFX->getDrawUtil()->drawRectFill( itemRect, mProfile->mFillColor );
 
-   dglSetBitmapModulation(mProfile->mFontColor);
+   GFX->getDrawUtil()->setBitmapModulation(mProfile->mFontColor);
    renderJustifiedText(itemRect.point + Point2I( 2, 0 ), itemRect.extent, item->itemText);
 }
 
@@ -753,9 +754,9 @@ void GuiListBoxCtrl::drawBox(const Point2I &box, S32 size, ColorI &outlineColor,
 {
    RectI r(box.x - size, box.y - size, 2 * size + 1, 2 * size + 1);
    r.inset(1, 1);
-   dglDrawRectFill(r, boxColor);
+   GFX->getDrawUtil()->drawRectFill(r, boxColor);
    r.inset(-1, -1);
-   dglDrawRect(r, outlineColor);
+   GFX->getDrawUtil()->drawRect(r, outlineColor);
 }
 
 //////////////////////////////////////////////////////////////////////////

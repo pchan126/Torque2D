@@ -28,9 +28,8 @@
 #include "2d/core/RenderProxy.h"
 #endif
 
-#ifndef _DGL_H_
-#include "graphics/dgl.h"
-#endif
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxDrawUtil.h"
 
 #ifndef _CONSOLE_H_
 #include "console/console.h"
@@ -269,9 +268,9 @@ void GuiImageButtonCtrl::renderButton( ImageAsset* pImageAsset, const U32 frame,
         RectI destinationRegion(offset, mBounds.extent);
 
         // Render image.
-        dglSetBitmapModulation( mProfile->mFillColor );
-        dglDrawBitmapStretchSR( pImageAsset->getImageTexture(), destinationRegion, sourceRegion );
-        dglClearBitmapModulation();
+        GFX->getDrawUtil()->setBitmapModulation( mProfile->mFillColor );
+        GFX->getDrawUtil()->drawBitmapStretchSR( pImageAsset->getImageTexture(), destinationRegion, sourceRegion );
+        GFX->getDrawUtil()->clearBitmapModulation();
         renderChildControls( offset, updateRect);
     }
     else

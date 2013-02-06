@@ -44,8 +44,8 @@
 {
     if (self)
     {
-        // Make absolutely sure _openGLContext is nil
-        _openGLContext = nil;
+        // Make absolutely sure self.openGLContext is nil
+        self.openGLContext = nil;
 
         NSTrackingAreaOptions trackingOptions = NSTrackingCursorUpdate |
                 NSTrackingMouseMoved |
@@ -76,10 +76,10 @@
     }
 
     // Custom memory cleanup
-    if (_openGLContext != nil)
+    if (self.openGLContext != nil)
     {
-        [_openGLContext release];
-        _openGLContext = nil;
+        [self.openGLContext release];
+        self.openGLContext = nil;
     }
 
     // "Parent" cleanup
@@ -120,13 +120,13 @@
 // it the current OpenGL context automatically
 - (void)createContextWithPixelFormat:(NSOpenGLPixelFormat *)pixelFormat
 {
-    _openGLContext = [[[NSOpenGLContext alloc] initWithFormat:pixelFormat shareContext:nil] retain];
+    self.openGLContext = [[[NSOpenGLContext alloc] initWithFormat:pixelFormat shareContext:nil] retain];
 
-    AssertFatal(_openGLContext, "We could not create a valid NSOpenGL rendering context.");
+    AssertFatal(self.openGLContext, "We could not create a valid NSOpenGL rendering context.");
 
-    [_openGLContext setView:self];
+    [self.openGLContext setView:self];
 
-    [_openGLContext makeCurrentContext];
+    [self.openGLContext makeCurrentContext];
 
     _contextInitialized = YES;
 }
@@ -136,13 +136,13 @@
 // the NSOpenGLContext
 - (void)clearContext
 {
-    if (_openGLContext != nil)
+    if (self.openGLContext != nil)
     {
         [NSOpenGLContext clearCurrentContext];
-        [_openGLContext clearDrawable];
+        [self.openGLContext clearDrawable];
 
-        [_openGLContext release];
-        _openGLContext = nil;
+        [self.openGLContext release];
+        self.openGLContext = nil;
 
         _contextInitialized = NO;
     }
@@ -153,25 +153,25 @@
 // size to the view's frame
 - (void)updateContext
 {
-    if (_openGLContext != nil)
-        [_openGLContext update];
+    if (self.openGLContext != nil)
+        [self.openGLContext update];
 }
 
 //-----------------------------------------------------------------------------
 // Perform a swap buffer if the NSOpenGLContext is initialized
 - (void)flushBuffer
 {
-    if (_openGLContext != nil)
-        [_openGLContext flushBuffer];
+    if (self.openGLContext != nil)
+        [self.openGLContext flushBuffer];
 }
 
 //-----------------------------------------------------------------------------
 - (void)setVerticalSync:(bool)sync
 {
-    if (_openGLContext != nil)
+    if (self.openGLContext != nil)
     {
         GLint swapInterval = sync ? 1 : 0;
-        [_openGLContext setValues:&swapInterval forParameter:NSOpenGLCPSwapInterval];
+        [self.openGLContext setValues:&swapInterval forParameter:NSOpenGLCPSwapInterval];
     }
 }
 

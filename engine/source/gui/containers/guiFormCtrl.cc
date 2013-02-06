@@ -23,6 +23,7 @@
 #include "gui/editor/guiMenuBar.h"
 #include "gui/containers/guiFormCtrl.h"
 #include "gui/guiDefaultControlRender.h"
+#include "graphics/gfxDrawUtil.h"
 
 IMPLEMENT_CONOBJECT(GuiFormCtrl);
 
@@ -234,7 +235,7 @@ void GuiFormCtrl::onRender(Point2I offset, const RectI &updateRect)
 
    // draw the border of the form if specified
    if (mProfile->mOpaque)
-      dglDrawRectFill(boundsRect, mProfile->mFillColor);
+      GFX->getDrawUtil()->drawRectFill(boundsRect, mProfile->mFillColor);
 
    if (mProfile->mBorder)
       renderBorder(boundsRect, mProfile);
@@ -242,7 +243,7 @@ void GuiFormCtrl::onRender(Point2I offset, const RectI &updateRect)
    // If we don't have a child (other than the menu), put some text in the child area
    if(size() <= 1)
    {
-      dglSetBitmapModulation(ColorI(0,0,0));
+      GFX->getDrawUtil()->setBitmapModulation(ColorI(0,0,0));
       renderJustifiedText(boundsRect.point, boundsRect.extent, "[none]");
    }
 
@@ -251,7 +252,7 @@ void GuiFormCtrl::onRender(Point2I offset, const RectI &updateRect)
    // Draw our little bar, too
    if(mProfile->mBitmapArrayRects.size() >= 5)
    {
-      dglClearBitmapModulation();
+      GFX->getDrawUtil()->clearBitmapModulation();
 
       S32 barStart = (mHasMenu ? mThumbSize.x : 1 + mProfile->mBorderThickness) + offset.x + textWidth;
       S32 barTop   = mThumbSize.y/2 + offset.y - mProfile->mBitmapArrayRects[3].extent.y /2;
@@ -259,7 +260,7 @@ void GuiFormCtrl::onRender(Point2I offset, const RectI &updateRect)
       Point2I barOffset(barStart, barTop);
 
       // Draw the start of the bar...
-      dglDrawBitmapStretchSR(mProfile->mTextureHandle,RectI(barOffset, mProfile->mBitmapArrayRects[2].extent), mProfile->mBitmapArrayRects[2] );
+      GFX->getDrawUtil()->drawBitmapStretchSR(mProfile->mTextureHandle,RectI(barOffset, mProfile->mBitmapArrayRects[2].extent), mProfile->mBitmapArrayRects[2] );
 
       // Now draw the middle...
       barOffset.x += mProfile->mBitmapArrayRects[2].extent.x;
@@ -272,7 +273,7 @@ void GuiFormCtrl::onRender(Point2I offset, const RectI &updateRect)
          RectI foo = mProfile->mBitmapArrayRects[3];
          foo.inset(1,0);
 
-         dglDrawBitmapStretchSR(
+         GFX->getDrawUtil()->drawBitmapStretchSR(
             mProfile->mTextureHandle,
             RectI(barOffset, Point2I(barMiddleSize, mProfile->mBitmapArrayRects[3].extent.y)),
             foo
@@ -282,10 +283,10 @@ void GuiFormCtrl::onRender(Point2I offset, const RectI &updateRect)
       // And the end
       barOffset.x += barMiddleSize;
 
-      dglDrawBitmapStretchSR( mProfile->mTextureHandle, RectI(barOffset, mProfile->mBitmapArrayRects[4].extent),
+      GFX->getDrawUtil()->drawBitmapStretchSR( mProfile->mTextureHandle, RectI(barOffset, mProfile->mBitmapArrayRects[4].extent),
          mProfile->mBitmapArrayRects[4]);
 
-      dglSetBitmapModulation((mMouseOver ? mProfile->mFontColorHL : mProfile->mFontColor));
+      GFX->getDrawUtil()->setBitmapModulation((mMouseOver ? mProfile->mFontColorHL : mProfile->mFontColor));
       renderJustifiedText(Point2I(mThumbSize.x, 0) + offset, Point2I(mBounds.extent.x - mThumbSize.x - mProfile->mBitmapArrayRects[4].extent.x, mThumbSize.y), (mUseSmallCaption ? mSmallCaption : mCaption) );
 
    }

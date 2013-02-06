@@ -29,16 +29,25 @@
 #include "graphics/gBitmap.h"
 #include "io/fileStream.h"
 #include "string/findMatch.h"
-#include "graphics/TextureManager.h"
+#include "graphics/gfxTextureManager.h"
 #include "graphics/gFont.h"
 #include "memory/safeDelete.h"
 #include "memory/frameAllocator.h"
 #include "string/unicode.h"
 #include "zlib.h"
 #include "ctype.h"  // Needed for isupper and tolower
+#include "graphics/gfxDevice.h"
 
 S32 GFont::smSheetIdCount = 0;
 const U32 GFont::csm_fileVersion = 3;
+
+GFX_ImplementTextureProfile(GFXFontTextureProfile,
+                            GFXTextureProfile::DiffuseMap,
+                            GFXTextureProfile::PreserveSize |
+                            GFXTextureProfile::Static |
+                            GFXTextureProfile::KeepBitmap |
+                            GFXTextureProfile::NoMipmap,
+                            GFXTextureProfile::None);
 
 ConsoleFunction(populateFontCacheString, void, 4, 4, "(faceName, size, string) "
                 "Populate the font cache for the specified font with characters from the specified string."
@@ -598,10 +607,10 @@ void GFont::addBitmap(PlatformFont::CharInfo &charInfo)
 
    mCurX = nextCurX;
 
-   GBitmap *bmp = mTextureSheets[mCurSheet].getBitmap();
+   GBitmap *bmp = mTextureSheets[mCurSheet]->getBitmap();
 
    AssertFatal(bmp, "GFont::addBitmap - null texture sheet bitmap!");
-   AssertFatal(bmp->getFormat() == GBitmap::Alpha, "GFont::addBitmap - cannot added characters to non-greyscale textures!");
+   AssertFatal(bmp->getFormat() == GFXFormatA8, "GFont::addBitmap - cannot added characters to non-greyscale textures!");
    
    // [neo, 5/7/2007 - #3050]
    // If we get large font sizes charInfo.height/width will be larger than TextureSheetSize
@@ -625,7 +634,8 @@ void GFont::addBitmap(PlatformFont::CharInfo &charInfo)
       }
    }
    
-   mTextureSheets[mCurSheet].refresh();
+    TEXMGR->reloadTexture(mTextureSheets[mCurSheet]);
+//   mTextureSheets[mCurSheet]->refresh();
 }
 
 void GFont::addSheet()
@@ -633,14 +643,15 @@ void GFont::addSheet()
     char buf[30];
     dSprintf(buf, sizeof(buf), "newfont_%d", smSheetIdCount++);
 
-    GBitmap *bitmap = new GBitmap(TextureSheetSize, TextureSheetSize, false, GBitmap::Alpha);
+    GBitmap *bitmap = new GBitmap(TextureSheetSize, TextureSheetSize, false, GFXFormatA8);
 
     // Set everything to transparent.
     U8 *bits = bitmap->getWritableBits();
     dMemset(bits, 0, sizeof(U8) *TextureSheetSize*TextureSheetSize);
 
-    TextureHandle handle = TextureHandle(buf, bitmap, TextureHandle::BitmapKeepTexture);
-    handle.setFilter(GL_NEAREST);
+    GFXTexHandle handle = GFXTexHandle( bitmap, &GFXFontTextureProfile, true, avar("%s() - (line %d)", __FUNCTION__, __LINE__) );
+//    GFXTexHandle handle = GFXTexHandle(buf, bitmap, GFXTexHandle::BitmapKeepTexture);
+//    handle.setFilter(GL_NEAREST);
 
     mTextureSheets.increment();
     constructInPlace(&mTextureSheets.last());
@@ -961,8 +972,11 @@ bool GFont::read(Stream& io_rStream)
 
        mTextureSheets.increment();
        constructInPlace(&mTextureSheets.last());
-       mTextureSheets.last() = TextureHandle(buf, bmp, TextureHandle::BitmapKeepTexture);
-       mTextureSheets.last().setFilter(GL_NEAREST);;
+//       mTextureSheets.last() = GFXTextureHandle(buf, bmp, GFXTexHandle::BitmapKeepTexture);
+       GFXTexHandle handle = GFXTexHandle(bmp, &GFXFontTextureProfile, true, avar(""));
+       
+//       mTextureSheets.last() = GFXTexHandle(buf, bmp, GFXTexHandle::BitmapKeepTexture);
+//       mTextureSheets.last().setFilter(GL_NEAREST);;
    }
    
    // Read last position info
@@ -1060,7 +1074,7 @@ bool GFont::write(Stream& stream)
 
    stream.write(mTextureSheets.size());
    for(i = 0; i < mTextureSheets.size(); i++) {
-       mTextureSheets[i].getBitmap()->writePNG(stream);
+       mTextureSheets[i]->getBitmap()->writePNG(stream);
    }
 
    stream.write(mCurX);
@@ -1121,7 +1135,7 @@ void GFont::exportStrip(const char *fileName, U32 padding, U32 kerning)
    totalHeight = heightMax - heightMin + 2*padding;
 
    // Make the bitmap.
-   GBitmap gb(totalWidth, totalHeight, false, mTextureSheets[0].getBitmap()->getFormat());
+   GBitmap gb(totalWidth, totalHeight, false, mTextureSheets[0]->getBitmap()->getFormat());
 
    dMemset(gb.getWritableBits(), 0, sizeof(U8) * totalHeight * totalWidth );
 
@@ -1139,7 +1153,7 @@ void GFont::exportStrip(const char *fileName, U32 padding, U32 kerning)
 
       RectI ri(mCharInfoList[i].xOffset, mCharInfoList[i].yOffset, mCharInfoList[i].width, mCharInfoList[i].height );
       Point2I outRi(curWidth, padding + getBaseline() - mCharInfoList[i].yOrigin);
-      gb.copyRect(mTextureSheets[bitmap].getBitmap(), ri, outRi); 
+      gb.copyRect(mTextureSheets[bitmap]->getBitmap(), ri, outRi); 
 
       // Advance.
       curWidth +=  mCharInfoList[i].width + kerning + 2*padding;
@@ -1167,8 +1181,8 @@ struct GlyphMap
 
 static S32 QSORT_CALLBACK GlyphMapCompare(const void *a, const void *b)
 {
-   S32 ha = ((GlyphMap *) a)->bitmap->height;
-   S32 hb = ((GlyphMap *) b)->bitmap->height;
+   S32 ha = ((GlyphMap *) a)->bitmap->mHeight;
+   S32 hb = ((GlyphMap *) b)->bitmap->mHeight;
 
    return hb - ha;
 }
@@ -1214,13 +1228,13 @@ void GFont::importStrip(const char *fileName, U32 padding, U32 kerning)
       glyphList.last().charId = i;
 
       // Copy the rect.
-      RectI ri(curWidth, getBaseline() - mCharInfoList[i].yOrigin, glyphList.last().bitmap->width, glyphList.last().bitmap->height);
+      RectI ri(curWidth, getBaseline() - mCharInfoList[i].yOrigin, glyphList.last().bitmap->mWidth, glyphList.last().bitmap->mHeight);
       Point2I outRi(0,0);
       glyphList.last().bitmap->copyRect(strip, ri, outRi); 
 
       // Update glyph attributes.
-      mCharInfoList[i].width = glyphList.last().bitmap->width;
-      mCharInfoList[i].height = glyphList.last().bitmap->height;
+      mCharInfoList[i].width = glyphList.last().bitmap->mWidth;
+      mCharInfoList[i].height = glyphList.last().bitmap->mHeight;
       mCharInfoList[i].xOffset -= kerning + padding;
       mCharInfoList[i].xIncrement += kerning;
       mCharInfoList[i].yOffset -= padding;
@@ -1294,10 +1308,12 @@ void GFont::importStrip(const char *fileName, U32 padding, U32 kerning)
 
       // Set everything to transparent.
       U8 *bits = bitmap->getWritableBits();
-      dMemset(bits, 0, sizeof(U8) *TextureSheetSize*TextureSheetSize * strip->bytesPerPixel);
+      dMemset(bits, 0, sizeof(U8) *TextureSheetSize*TextureSheetSize * strip->mBytesPerPixel);
 
-      TextureHandle handle = TextureHandle( buf, bitmap, TextureHandle::BitmapKeepTexture );
-      mTextureSheets.increment();
+//      GFXTexHandle handle = GFXTexHandle( buf, bitmap, GFXTexHandle::BitmapKeepTexture );
+       GFXTexHandle handle = GFXTexHandle( bitmap, &GFXFontTextureProfile, true, avar("Font Sheet for" ));
+
+       mTextureSheets.increment();
       constructInPlace(&mTextureSheets.last());
       mTextureSheets.last() = handle;
    }
@@ -1309,10 +1325,11 @@ void GFont::importStrip(const char *fileName, U32 padding, U32 kerning)
       // Copy each glyph into the appropriate place.
       PlatformFont::CharInfo *ci = &mCharInfoList[glyphList[i].charId];
       U32 bi = ci->bitmapIndex;
-      mTextureSheets[bi].getBitmap()->copyRect(glyphList[i].bitmap, RectI(0,0, glyphList[i].bitmap->width,glyphList[i].bitmap->height), Point2I(ci->xOffset, ci->yOffset));
+      mTextureSheets[bi]->getBitmap()->copyRect(glyphList[i].bitmap, RectI(0,0, glyphList[i].bitmap->mWidth,glyphList[i].bitmap->mHeight), Point2I(ci->xOffset, ci->yOffset));
    }
 
    // Ok, all done! Just refresh some textures and we're set.
    for(S32 i=0; i<sheetSizes.size(); i++)
-      mTextureSheets[i].refresh();
+       TEXMGR->reloadTexture(mTextureSheets[i]);
+//      mTextureSheets[i]->refresh();
 }

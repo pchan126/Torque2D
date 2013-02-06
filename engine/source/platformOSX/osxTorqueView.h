@@ -24,10 +24,10 @@
 #import "platformOSX/osxInputManager.h"
 #include "platform/event.h"
 
-@interface OSXTorqueView : NSView
+@interface OSXTorqueView : NSOpenGLView
 {
 @private
-    NSOpenGLContext *_openGLContext;
+//    NSOpenGLContext *_openGLContext;
     osxInputManager *inputManager;
     NSTrackingArea *_trackingArea;
 

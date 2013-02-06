@@ -24,8 +24,8 @@
 
 b2Body::b2Body(const b2BodyDef* bd, b2World* world)
 {
-	b2Assert(bd->position.IsValid());
-	b2Assert(bd->linearVelocity.IsValid());
+	b2Assert(bd->position.isValid());
+	b2Assert(bd->linearVelocity.isValid());
 	b2Assert(b2IsValid(bd->angle));
 	b2Assert(b2IsValid(bd->angularVelocity));
 	b2Assert(b2IsValid(bd->angularDamping) && bd->angularDamping >= 0.0f);

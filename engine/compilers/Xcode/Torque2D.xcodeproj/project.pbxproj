@@ -158,11 +158,9 @@
 		866381DC165556AD00C8C551 /* osxMath.mm in Sources */ = {isa = PBXBuildFile; fileRef = 866381DB165556AD00C8C551 /* osxMath.mm */; };
 		866381E51655615200C8C551 /* osxInput.mm in Sources */ = {isa = PBXBuildFile; fileRef = 866381E41655615200C8C551 /* osxInput.mm */; };
 		866381E91655674B00C8C551 /* osxTime.mm in Sources */ = {isa = PBXBuildFile; fileRef = 866381E81655674B00C8C551 /* osxTime.mm */; };
-		86854E341663AAE6009FAFB2 /* osxOpenGLDevice.mm in Sources */ = {isa = PBXBuildFile; fileRef = 86854E331663AAE6009FAFB2 /* osxOpenGLDevice.mm */; };
 		8694ADC81656B06B0080ABAC /* osxEvents.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8694ADC51656B06B0080ABAC /* osxEvents.mm */; };
 		8694ADC91656B06B0080ABAC /* osxWindow.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8694ADC61656B06B0080ABAC /* osxWindow.mm */; };
 		8694ADD11656B7FC0080ABAC /* osxVideo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8694ADD01656B7FC0080ABAC /* osxVideo.mm */; };
-		8694ADD51656BDE60080ABAC /* osxGL.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8694ADD41656BDE60080ABAC /* osxGL.mm */; };
 		86C281CD16A4307E00F030F4 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 86C281CB16A4307E00F030F4 /* MainMenu.xib */; };
 		86D76F78165683240046D71F /* osxOutlineGL.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86D76F76165683240046D71F /* osxOutlineGL.cc */; };
 		86D76F791656868D0046D71F /* AnimationAsset.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7E7716518D4600D96ADF /* AnimationAsset.cc */; };
@@ -251,17 +249,12 @@
 		86D76FEE165687060046D71F /* bitmapBmp.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7FBA16518D4600D96ADF /* bitmapBmp.cc */; };
 		86D76FEF165687060046D71F /* bitmapJpeg.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7FBB16518D4600D96ADF /* bitmapJpeg.cc */; };
 		86D76FF0165687060046D71F /* bitmapPng.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7FBC16518D4600D96ADF /* bitmapPng.cc */; };
-		86D76FF3165687060046D71F /* dgl.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7FC116518D4600D96ADF /* dgl.cc */; };
-		86D76FF4165687060046D71F /* dglMatrix.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7FC316518D4600D96ADF /* dglMatrix.cc */; };
 		86D76FF5165687060046D71F /* DynamicTexture.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7FC416518D4600D96ADF /* DynamicTexture.cc */; };
 		86D76FF6165687060046D71F /* gBitmap.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7FC616518D4600D96ADF /* gBitmap.cc */; };
 		86D76FF7165687060046D71F /* gFont.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7FC816518D4600D96ADF /* gFont.cc */; };
 		86D76FF8165687060046D71F /* gPalette.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7FCA16518D4600D96ADF /* gPalette.cc */; };
 		86D76FF9165687060046D71F /* PNGImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7FCC16518D4600D96ADF /* PNGImage.cpp */; };
 		86D76FFA165687060046D71F /* splineUtil.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7FCE16518D4600D96ADF /* splineUtil.cc */; };
-		86D76FFB165687060046D71F /* TextureDictionary.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7FD016518D4600D96ADF /* TextureDictionary.cc */; };
-		86D76FFC165687060046D71F /* TextureHandle.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7FD216518D4600D96ADF /* TextureHandle.cc */; };
-		86D76FFD165687060046D71F /* TextureManager.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7FD416518D4600D96ADF /* TextureManager.cc */; };
 		86D76FFE165687060046D71F /* guiBitmapButtonCtrl.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7FD916518D4600D96ADF /* guiBitmapButtonCtrl.cc */; };
 		86D76FFF165687060046D71F /* guiBorderButton.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7FDB16518D4600D96ADF /* guiBorderButton.cc */; };
 		86D77000165687060046D71F /* guiButtonBaseCtrl.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7FDC16518D4600D96ADF /* guiButtonBaseCtrl.cc */; };
@@ -439,6 +432,39 @@
 		86D770C3165687450046D71F /* osxFileDialogs.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8609FE3216556F22004662ED /* osxFileDialogs.mm */; };
 		86EA5B401678C7C700598E68 /* osxCocoaUtilities.mm in Sources */ = {isa = PBXBuildFile; fileRef = 86EA5B3F1678C7C700598E68 /* osxCocoaUtilities.mm */; };
 		86EC5AC7165C1E0100757872 /* osxTorqueView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 86EC5AC6165C1E0100757872 /* osxTorqueView.mm */; };
+		DA91B2F416C2214800EB7B6E /* bitmapUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DA91B2C916C2214700EB7B6E /* bitmapUtils.cpp */; };
+		DA91B2F516C2214800EB7B6E /* gfxCardProfile.cc in Sources */ = {isa = PBXBuildFile; fileRef = DA91B2CB16C2214700EB7B6E /* gfxCardProfile.cc */; };
+		DA91B2F616C2214800EB7B6E /* gfxDevice.cc in Sources */ = {isa = PBXBuildFile; fileRef = DA91B2CD16C2214700EB7B6E /* gfxDevice.cc */; };
+		DA91B2F716C2214800EB7B6E /* gfxDrawUtil.cc in Sources */ = {isa = PBXBuildFile; fileRef = DA91B2CF16C2214700EB7B6E /* gfxDrawUtil.cc */; };
+		DA91B2F816C2214800EB7B6E /* gfxFontRenderBatcher.cc in Sources */ = {isa = PBXBuildFile; fileRef = DA91B2D216C2214700EB7B6E /* gfxFontRenderBatcher.cc */; };
+		DA91B2F916C2214800EB7B6E /* gfxPrimitiveBuffer.cc in Sources */ = {isa = PBXBuildFile; fileRef = DA91B2D416C2214700EB7B6E /* gfxPrimitiveBuffer.cc */; };
+		DA91B2FA16C2214800EB7B6E /* gfxResource.cc in Sources */ = {isa = PBXBuildFile; fileRef = DA91B2D616C2214700EB7B6E /* gfxResource.cc */; };
+		DA91B2FB16C2214800EB7B6E /* gfxShader.cc in Sources */ = {isa = PBXBuildFile; fileRef = DA91B2D816C2214700EB7B6E /* gfxShader.cc */; };
+		DA91B2FC16C2214800EB7B6E /* gfxStateBlock.cc in Sources */ = {isa = PBXBuildFile; fileRef = DA91B2DA16C2214700EB7B6E /* gfxStateBlock.cc */; };
+		DA91B2FD16C2214800EB7B6E /* gfxStringEnumTranslate.cc in Sources */ = {isa = PBXBuildFile; fileRef = DA91B2DC16C2214700EB7B6E /* gfxStringEnumTranslate.cc */; };
+		DA91B2FE16C2214800EB7B6E /* gfxStructs.cc in Sources */ = {isa = PBXBuildFile; fileRef = DA91B2DE16C2214700EB7B6E /* gfxStructs.cc */; };
+		DA91B2FF16C2214800EB7B6E /* gfxTarget.cc in Sources */ = {isa = PBXBuildFile; fileRef = DA91B2E016C2214700EB7B6E /* gfxTarget.cc */; };
+		DA91B30016C2214800EB7B6E /* gfxTextureHandle.cc in Sources */ = {isa = PBXBuildFile; fileRef = DA91B2E216C2214700EB7B6E /* gfxTextureHandle.cc */; };
+		DA91B30116C2214800EB7B6E /* gfxTextureManager.cc in Sources */ = {isa = PBXBuildFile; fileRef = DA91B2E416C2214700EB7B6E /* gfxTextureManager.cc */; };
+		DA91B30216C2214800EB7B6E /* gfxTextureObject.cc in Sources */ = {isa = PBXBuildFile; fileRef = DA91B2E616C2214700EB7B6E /* gfxTextureObject.cc */; };
+		DA91B30316C2214800EB7B6E /* gfxTextureProfile.cc in Sources */ = {isa = PBXBuildFile; fileRef = DA91B2E816C2214700EB7B6E /* gfxTextureProfile.cc */; };
+		DA91B30416C2214800EB7B6E /* gfxVertexBuffer.cc in Sources */ = {isa = PBXBuildFile; fileRef = DA91B2EA16C2214700EB7B6E /* gfxVertexBuffer.cc */; };
+		DA91B30516C2214800EB7B6E /* gfxVertexColor.cc in Sources */ = {isa = PBXBuildFile; fileRef = DA91B2EC16C2214700EB7B6E /* gfxVertexColor.cc */; };
+		DA91B30616C2214800EB7B6E /* gfxVertexFormat.cc in Sources */ = {isa = PBXBuildFile; fileRef = DA91B2EE16C2214800EB7B6E /* gfxVertexFormat.cc */; };
+		DA91B30716C2214800EB7B6E /* gfxVertexTypes.cc in Sources */ = {isa = PBXBuildFile; fileRef = DA91B2F016C2214800EB7B6E /* gfxVertexTypes.cc */; };
+		DA91B30816C2214800EB7B6E /* primBuilder.cc in Sources */ = {isa = PBXBuildFile; fileRef = DA91B2F216C2214800EB7B6E /* primBuilder.cc */; };
+		DA91B31116C2217A00EB7B6E /* str.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DA91B30D16C2217A00EB7B6E /* str.cpp */; };
+		DA91B31216C2217A00EB7B6E /* stringFunctions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DA91B30F16C2217A00EB7B6E /* stringFunctions.cpp */; };
+		DA91B32B16C2280E00EB7B6E /* gfxOpenGLCardProfiler.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B31616C2280E00EB7B6E /* gfxOpenGLCardProfiler.mm */; };
+		DA91B32C16C2280E00EB7B6E /* gfxOpenGLDevice.OSX.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B31816C2280E00EB7B6E /* gfxOpenGLDevice.OSX.mm */; };
+		DA91B32D16C2280E00EB7B6E /* gfxOpenGLEnumTranslate.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B31A16C2280E00EB7B6E /* gfxOpenGLEnumTranslate.mm */; };
+		DA91B32E16C2280E00EB7B6E /* gfxOpenGLPrimitiveBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B31C16C2280E00EB7B6E /* gfxOpenGLPrimitiveBuffer.mm */; };
+		DA91B32F16C2280E00EB7B6E /* gfxOpenGLShader.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B31E16C2280E00EB7B6E /* gfxOpenGLShader.mm */; };
+		DA91B33016C2280E00EB7B6E /* gfxOpenGLStateBlock.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B32016C2280E00EB7B6E /* gfxOpenGLStateBlock.mm */; };
+		DA91B33116C2280E00EB7B6E /* gfxOpenGLTextureManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B32216C2280E00EB7B6E /* gfxOpenGLTextureManager.mm */; };
+		DA91B33216C2280E00EB7B6E /* gfxOpenGLTextureObject.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B32416C2280E00EB7B6E /* gfxOpenGLTextureObject.mm */; };
+		DA91B33316C2280E00EB7B6E /* gfxOpenGLTextureTarget.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B32616C2280E00EB7B6E /* gfxOpenGLTextureTarget.mm */; };
+		DA91B33416C2280E00EB7B6E /* gfxOpenGLVertexBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B32916C2280E00EB7B6E /* gfxOpenGLVertexBuffer.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -666,13 +692,10 @@
 		866381DB165556AD00C8C551 /* osxMath.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxMath.mm; sourceTree = "<group>"; };
 		866381E41655615200C8C551 /* osxInput.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxInput.mm; sourceTree = "<group>"; };
 		866381E81655674B00C8C551 /* osxTime.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxTime.mm; sourceTree = "<group>"; };
-		86854E321663AAE6009FAFB2 /* osxOpenGLDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxOpenGLDevice.h; sourceTree = "<group>"; };
-		86854E331663AAE6009FAFB2 /* osxOpenGLDevice.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxOpenGLDevice.mm; sourceTree = "<group>"; };
 		8694ADC41656B06B0080ABAC /* osxEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxEvents.h; sourceTree = "<group>"; };
 		8694ADC51656B06B0080ABAC /* osxEvents.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxEvents.mm; sourceTree = "<group>"; };
 		8694ADC61656B06B0080ABAC /* osxWindow.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxWindow.mm; sourceTree = "<group>"; };
 		8694ADD01656B7FC0080ABAC /* osxVideo.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxVideo.mm; sourceTree = "<group>"; };
-		8694ADD41656BDE60080ABAC /* osxGL.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxGL.mm; sourceTree = "<group>"; };
 		869FF8B81651518C002FE082 /* Torque2D_DEBUG.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Torque2D_DEBUG.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		869FF8BC1651518C002FE082 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		869FF8BF1651518C002FE082 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -868,9 +891,6 @@
 		86BC7FBC16518D4600D96ADF /* bitmapPng.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bitmapPng.cc; sourceTree = "<group>"; };
 		86BC7FBD16518D4600D96ADF /* bitmapPvr.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bitmapPvr.cc; sourceTree = "<group>"; };
 		86BC7FC016518D4600D96ADF /* color.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = color.h; sourceTree = "<group>"; };
-		86BC7FC116518D4600D96ADF /* dgl.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dgl.cc; sourceTree = "<group>"; };
-		86BC7FC216518D4600D96ADF /* dgl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dgl.h; sourceTree = "<group>"; };
-		86BC7FC316518D4600D96ADF /* dglMatrix.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dglMatrix.cc; sourceTree = "<group>"; };
 		86BC7FC416518D4600D96ADF /* DynamicTexture.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DynamicTexture.cc; sourceTree = "<group>"; };
 		86BC7FC516518D4600D96ADF /* DynamicTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DynamicTexture.h; sourceTree = "<group>"; };
 		86BC7FC616518D4600D96ADF /* gBitmap.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gBitmap.cc; sourceTree = "<group>"; };
@@ -883,13 +903,6 @@
 		86BC7FCD16518D4600D96ADF /* PNGImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PNGImage.h; sourceTree = "<group>"; };
 		86BC7FCE16518D4600D96ADF /* splineUtil.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = splineUtil.cc; sourceTree = "<group>"; };
 		86BC7FCF16518D4600D96ADF /* splineUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = splineUtil.h; sourceTree = "<group>"; };
-		86BC7FD016518D4600D96ADF /* TextureDictionary.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureDictionary.cc; sourceTree = "<group>"; };
-		86BC7FD116518D4600D96ADF /* TextureDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureDictionary.h; sourceTree = "<group>"; };
-		86BC7FD216518D4600D96ADF /* TextureHandle.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureHandle.cc; sourceTree = "<group>"; };
-		86BC7FD316518D4600D96ADF /* TextureHandle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureHandle.h; sourceTree = "<group>"; };
-		86BC7FD416518D4600D96ADF /* TextureManager.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureManager.cc; sourceTree = "<group>"; };
-		86BC7FD516518D4600D96ADF /* TextureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureManager.h; sourceTree = "<group>"; };
-		86BC7FD616518D4600D96ADF /* TextureObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureObject.h; sourceTree = "<group>"; };
 		86BC7FD916518D4600D96ADF /* guiBitmapButtonCtrl.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiBitmapButtonCtrl.cc; sourceTree = "<group>"; };
 		86BC7FDA16518D4600D96ADF /* guiBitmapButtonCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiBitmapButtonCtrl.h; sourceTree = "<group>"; };
 		86BC7FDB16518D4600D96ADF /* guiBorderButton.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiBorderButton.cc; sourceTree = "<group>"; };
@@ -1306,6 +1319,80 @@
 		DA8AEBB316C20BF40002F858 /* mPoint2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mPoint2.h; sourceTree = "<group>"; };
 		DA8AEBB416C20BF40002F858 /* mPoint3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mPoint3.h; sourceTree = "<group>"; };
 		DA8AEBB516C20BF40002F858 /* mPoint4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mPoint4.h; sourceTree = "<group>"; };
+		DA91B2C916C2214700EB7B6E /* bitmapUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bitmapUtils.cpp; sourceTree = "<group>"; };
+		DA91B2CA16C2214700EB7B6E /* bitmapUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bitmapUtils.h; sourceTree = "<group>"; };
+		DA91B2CB16C2214700EB7B6E /* gfxCardProfile.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxCardProfile.cc; sourceTree = "<group>"; };
+		DA91B2CC16C2214700EB7B6E /* gfxCardProfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxCardProfile.h; sourceTree = "<group>"; };
+		DA91B2CD16C2214700EB7B6E /* gfxDevice.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxDevice.cc; sourceTree = "<group>"; };
+		DA91B2CE16C2214700EB7B6E /* gfxDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxDevice.h; sourceTree = "<group>"; };
+		DA91B2CF16C2214700EB7B6E /* gfxDrawUtil.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxDrawUtil.cc; sourceTree = "<group>"; };
+		DA91B2D016C2214700EB7B6E /* gfxDrawUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxDrawUtil.h; sourceTree = "<group>"; };
+		DA91B2D116C2214700EB7B6E /* gfxEnums.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxEnums.h; sourceTree = "<group>"; };
+		DA91B2D216C2214700EB7B6E /* gfxFontRenderBatcher.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxFontRenderBatcher.cc; sourceTree = "<group>"; };
+		DA91B2D316C2214700EB7B6E /* gfxFontRenderBatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxFontRenderBatcher.h; sourceTree = "<group>"; };
+		DA91B2D416C2214700EB7B6E /* gfxPrimitiveBuffer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxPrimitiveBuffer.cc; sourceTree = "<group>"; };
+		DA91B2D516C2214700EB7B6E /* gfxPrimitiveBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxPrimitiveBuffer.h; sourceTree = "<group>"; };
+		DA91B2D616C2214700EB7B6E /* gfxResource.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxResource.cc; sourceTree = "<group>"; };
+		DA91B2D716C2214700EB7B6E /* gfxResource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxResource.h; sourceTree = "<group>"; };
+		DA91B2D816C2214700EB7B6E /* gfxShader.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxShader.cc; sourceTree = "<group>"; };
+		DA91B2D916C2214700EB7B6E /* gfxShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxShader.h; sourceTree = "<group>"; };
+		DA91B2DA16C2214700EB7B6E /* gfxStateBlock.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxStateBlock.cc; sourceTree = "<group>"; };
+		DA91B2DB16C2214700EB7B6E /* gfxStateBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxStateBlock.h; sourceTree = "<group>"; };
+		DA91B2DC16C2214700EB7B6E /* gfxStringEnumTranslate.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxStringEnumTranslate.cc; sourceTree = "<group>"; };
+		DA91B2DD16C2214700EB7B6E /* gfxStringEnumTranslate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxStringEnumTranslate.h; sourceTree = "<group>"; };
+		DA91B2DE16C2214700EB7B6E /* gfxStructs.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxStructs.cc; sourceTree = "<group>"; };
+		DA91B2DF16C2214700EB7B6E /* gfxStructs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxStructs.h; sourceTree = "<group>"; };
+		DA91B2E016C2214700EB7B6E /* gfxTarget.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxTarget.cc; sourceTree = "<group>"; };
+		DA91B2E116C2214700EB7B6E /* gfxTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxTarget.h; sourceTree = "<group>"; };
+		DA91B2E216C2214700EB7B6E /* gfxTextureHandle.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxTextureHandle.cc; sourceTree = "<group>"; };
+		DA91B2E316C2214700EB7B6E /* gfxTextureHandle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxTextureHandle.h; sourceTree = "<group>"; };
+		DA91B2E416C2214700EB7B6E /* gfxTextureManager.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxTextureManager.cc; sourceTree = "<group>"; };
+		DA91B2E516C2214700EB7B6E /* gfxTextureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxTextureManager.h; sourceTree = "<group>"; };
+		DA91B2E616C2214700EB7B6E /* gfxTextureObject.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxTextureObject.cc; sourceTree = "<group>"; };
+		DA91B2E716C2214700EB7B6E /* gfxTextureObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxTextureObject.h; sourceTree = "<group>"; };
+		DA91B2E816C2214700EB7B6E /* gfxTextureProfile.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxTextureProfile.cc; sourceTree = "<group>"; };
+		DA91B2E916C2214700EB7B6E /* gfxTextureProfile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxTextureProfile.h; sourceTree = "<group>"; };
+		DA91B2EA16C2214700EB7B6E /* gfxVertexBuffer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxVertexBuffer.cc; sourceTree = "<group>"; };
+		DA91B2EB16C2214700EB7B6E /* gfxVertexBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxVertexBuffer.h; sourceTree = "<group>"; };
+		DA91B2EC16C2214700EB7B6E /* gfxVertexColor.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxVertexColor.cc; sourceTree = "<group>"; };
+		DA91B2ED16C2214800EB7B6E /* gfxVertexColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxVertexColor.h; sourceTree = "<group>"; };
+		DA91B2EE16C2214800EB7B6E /* gfxVertexFormat.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxVertexFormat.cc; sourceTree = "<group>"; };
+		DA91B2EF16C2214800EB7B6E /* gfxVertexFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxVertexFormat.h; sourceTree = "<group>"; };
+		DA91B2F016C2214800EB7B6E /* gfxVertexTypes.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxVertexTypes.cc; sourceTree = "<group>"; };
+		DA91B2F116C2214800EB7B6E /* gfxVertexTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxVertexTypes.h; sourceTree = "<group>"; };
+		DA91B2F216C2214800EB7B6E /* primBuilder.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = primBuilder.cc; sourceTree = "<group>"; };
+		DA91B2F316C2214800EB7B6E /* primBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = primBuilder.h; sourceTree = "<group>"; };
+		DA91B30916C2215500EB7B6E /* refBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = refBase.h; sourceTree = "<group>"; };
+		DA91B30A16C2216800EB7B6E /* platformIntrinsics.gcc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformIntrinsics.gcc.h; sourceTree = "<group>"; };
+		DA91B30B16C2216800EB7B6E /* platformIntrinsics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformIntrinsics.h; sourceTree = "<group>"; };
+		DA91B30C16C2216800EB7B6E /* typetraits.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = typetraits.h; sourceTree = "<group>"; };
+		DA91B30D16C2217A00EB7B6E /* str.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = str.cpp; sourceTree = "<group>"; };
+		DA91B30E16C2217A00EB7B6E /* str.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = str.h; sourceTree = "<group>"; };
+		DA91B30F16C2217A00EB7B6E /* stringFunctions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stringFunctions.cpp; sourceTree = "<group>"; };
+		DA91B31016C2217A00EB7B6E /* stringFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stringFunctions.h; sourceTree = "<group>"; };
+		DA91B31316C2218800EB7B6E /* autoPtr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = autoPtr.h; sourceTree = "<group>"; };
+		DA91B31516C2280E00EB7B6E /* gfxOpenGLCardProfiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLCardProfiler.h; sourceTree = "<group>"; };
+		DA91B31616C2280E00EB7B6E /* gfxOpenGLCardProfiler.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLCardProfiler.mm; sourceTree = "<group>"; };
+		DA91B31716C2280E00EB7B6E /* gfxOpenGLDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLDevice.h; sourceTree = "<group>"; };
+		DA91B31816C2280E00EB7B6E /* gfxOpenGLDevice.OSX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLDevice.OSX.mm; sourceTree = "<group>"; };
+		DA91B31916C2280E00EB7B6E /* gfxOpenGLEnumTranslate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLEnumTranslate.h; sourceTree = "<group>"; };
+		DA91B31A16C2280E00EB7B6E /* gfxOpenGLEnumTranslate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLEnumTranslate.mm; sourceTree = "<group>"; };
+		DA91B31B16C2280E00EB7B6E /* gfxOpenGLPrimitiveBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLPrimitiveBuffer.h; sourceTree = "<group>"; };
+		DA91B31C16C2280E00EB7B6E /* gfxOpenGLPrimitiveBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLPrimitiveBuffer.mm; sourceTree = "<group>"; };
+		DA91B31D16C2280E00EB7B6E /* gfxOpenGLShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLShader.h; sourceTree = "<group>"; };
+		DA91B31E16C2280E00EB7B6E /* gfxOpenGLShader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLShader.mm; sourceTree = "<group>"; };
+		DA91B31F16C2280E00EB7B6E /* gfxOpenGLStateBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLStateBlock.h; sourceTree = "<group>"; };
+		DA91B32016C2280E00EB7B6E /* gfxOpenGLStateBlock.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLStateBlock.mm; sourceTree = "<group>"; };
+		DA91B32116C2280E00EB7B6E /* gfxOpenGLTextureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLTextureManager.h; sourceTree = "<group>"; };
+		DA91B32216C2280E00EB7B6E /* gfxOpenGLTextureManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLTextureManager.mm; sourceTree = "<group>"; };
+		DA91B32316C2280E00EB7B6E /* gfxOpenGLTextureObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLTextureObject.h; sourceTree = "<group>"; };
+		DA91B32416C2280E00EB7B6E /* gfxOpenGLTextureObject.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLTextureObject.mm; sourceTree = "<group>"; };
+		DA91B32516C2280E00EB7B6E /* gfxOpenGLTextureTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLTextureTarget.h; sourceTree = "<group>"; };
+		DA91B32616C2280E00EB7B6E /* gfxOpenGLTextureTarget.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLTextureTarget.mm; sourceTree = "<group>"; };
+		DA91B32716C2280E00EB7B6E /* gfxOpenGLUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLUtils.h; sourceTree = "<group>"; };
+		DA91B32816C2280E00EB7B6E /* gfxOpenGLVertexBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLVertexBuffer.h; sourceTree = "<group>"; };
+		DA91B32916C2280E00EB7B6E /* gfxOpenGLVertexBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLVertexBuffer.mm; sourceTree = "<group>"; };
+		DA91B32A16C2280E00EB7B6E /* osxGLUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxGLUtils.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1615,6 +1702,7 @@
 		865A2351165188AF00527C44 /* platformOSX */ = {
 			isa = PBXGroup;
 			children = (
+				DA91B31416C2280E00EB7B6E /* graphics */,
 				86EA5B3E1678C7C700598E68 /* osxCocoaUtilities.h */,
 				86EA5B3F1678C7C700598E68 /* osxCocoaUtilities.mm */,
 				865A235716518AD300527C44 /* AppDelegate.h */,
@@ -1628,7 +1716,6 @@
 				866381D7165550FF00C8C551 /* osxFileIO.mm */,
 				8609FE37165572EC004662ED /* osxFont.mm */,
 				2A0A68DF166E268E0093AD41 /* osxFont.h */,
-				8694ADD41656BDE60080ABAC /* osxGL.mm */,
 				865BD2F6166FA6460064F595 /* osxInputManager.h */,
 				865BD2F8166FA7F80064F595 /* osxInputManager.mm */,
 				866381E41655615200C8C551 /* osxInput.mm */,
@@ -1637,8 +1724,6 @@
 				866381D91655562400C8C551 /* osxMemory.mm */,
 				2ABF5C8E16569A0C00BBBF1D /* osxMutex.mm */,
 				8658B172165A7BFB0087ABC1 /* osxNetwork.mm */,
-				86854E321663AAE6009FAFB2 /* osxOpenGLDevice.h */,
-				86854E331663AAE6009FAFB2 /* osxOpenGLDevice.mm */,
 				86D76F76165683240046D71F /* osxOutlineGL.cc */,
 				86D76F77165683240046D71F /* osxOutlineGL.h */,
 				8609FE351655716E004662ED /* osxPopupMenu.mm */,
@@ -2126,15 +2211,55 @@
 		86BC7FB916518D4600D96ADF /* graphics */ = {
 			isa = PBXGroup;
 			children = (
+				DA91B2C916C2214700EB7B6E /* bitmapUtils.cpp */,
+				DA91B2CA16C2214700EB7B6E /* bitmapUtils.h */,
+				DA91B2CB16C2214700EB7B6E /* gfxCardProfile.cc */,
+				DA91B2CC16C2214700EB7B6E /* gfxCardProfile.h */,
+				DA91B2CD16C2214700EB7B6E /* gfxDevice.cc */,
+				DA91B2CE16C2214700EB7B6E /* gfxDevice.h */,
+				DA91B2CF16C2214700EB7B6E /* gfxDrawUtil.cc */,
+				DA91B2D016C2214700EB7B6E /* gfxDrawUtil.h */,
+				DA91B2D116C2214700EB7B6E /* gfxEnums.h */,
+				DA91B2D216C2214700EB7B6E /* gfxFontRenderBatcher.cc */,
+				DA91B2D316C2214700EB7B6E /* gfxFontRenderBatcher.h */,
+				DA91B2D416C2214700EB7B6E /* gfxPrimitiveBuffer.cc */,
+				DA91B2D516C2214700EB7B6E /* gfxPrimitiveBuffer.h */,
+				DA91B2D616C2214700EB7B6E /* gfxResource.cc */,
+				DA91B2D716C2214700EB7B6E /* gfxResource.h */,
+				DA91B2D816C2214700EB7B6E /* gfxShader.cc */,
+				DA91B2D916C2214700EB7B6E /* gfxShader.h */,
+				DA91B2DA16C2214700EB7B6E /* gfxStateBlock.cc */,
+				DA91B2DB16C2214700EB7B6E /* gfxStateBlock.h */,
+				DA91B2DC16C2214700EB7B6E /* gfxStringEnumTranslate.cc */,
+				DA91B2DD16C2214700EB7B6E /* gfxStringEnumTranslate.h */,
+				DA91B2DE16C2214700EB7B6E /* gfxStructs.cc */,
+				DA91B2DF16C2214700EB7B6E /* gfxStructs.h */,
+				DA91B2E016C2214700EB7B6E /* gfxTarget.cc */,
+				DA91B2E116C2214700EB7B6E /* gfxTarget.h */,
+				DA91B2E216C2214700EB7B6E /* gfxTextureHandle.cc */,
+				DA91B2E316C2214700EB7B6E /* gfxTextureHandle.h */,
+				DA91B2E416C2214700EB7B6E /* gfxTextureManager.cc */,
+				DA91B2E516C2214700EB7B6E /* gfxTextureManager.h */,
+				DA91B2E616C2214700EB7B6E /* gfxTextureObject.cc */,
+				DA91B2E716C2214700EB7B6E /* gfxTextureObject.h */,
+				DA91B2E816C2214700EB7B6E /* gfxTextureProfile.cc */,
+				DA91B2E916C2214700EB7B6E /* gfxTextureProfile.h */,
+				DA91B2EA16C2214700EB7B6E /* gfxVertexBuffer.cc */,
+				DA91B2EB16C2214700EB7B6E /* gfxVertexBuffer.h */,
+				DA91B2EC16C2214700EB7B6E /* gfxVertexColor.cc */,
+				DA91B2ED16C2214800EB7B6E /* gfxVertexColor.h */,
+				DA91B2EE16C2214800EB7B6E /* gfxVertexFormat.cc */,
+				DA91B2EF16C2214800EB7B6E /* gfxVertexFormat.h */,
+				DA91B2F016C2214800EB7B6E /* gfxVertexTypes.cc */,
+				DA91B2F116C2214800EB7B6E /* gfxVertexTypes.h */,
+				DA91B2F216C2214800EB7B6E /* primBuilder.cc */,
+				DA91B2F316C2214800EB7B6E /* primBuilder.h */,
 				86BC7FBA16518D4600D96ADF /* bitmapBmp.cc */,
 				86BC7FBB16518D4600D96ADF /* bitmapJpeg.cc */,
 				86BC7FBC16518D4600D96ADF /* bitmapPng.cc */,
 				86BC7FBD16518D4600D96ADF /* bitmapPvr.cc */,
 				2AE851D11681E56E00193F17 /* color.cc */,
 				86BC7FC016518D4600D96ADF /* color.h */,
-				86BC7FC116518D4600D96ADF /* dgl.cc */,
-				86BC7FC216518D4600D96ADF /* dgl.h */,
-				86BC7FC316518D4600D96ADF /* dglMatrix.cc */,
 				86BC7FC416518D4600D96ADF /* DynamicTexture.cc */,
 				86BC7FC516518D4600D96ADF /* DynamicTexture.h */,
 				86BC7FC616518D4600D96ADF /* gBitmap.cc */,
@@ -2147,13 +2272,6 @@
 				86BC7FCD16518D4600D96ADF /* PNGImage.h */,
 				86BC7FCE16518D4600D96ADF /* splineUtil.cc */,
 				86BC7FCF16518D4600D96ADF /* splineUtil.h */,
-				86BC7FD016518D4600D96ADF /* TextureDictionary.cc */,
-				86BC7FD116518D4600D96ADF /* TextureDictionary.h */,
-				86BC7FD216518D4600D96ADF /* TextureHandle.cc */,
-				86BC7FD316518D4600D96ADF /* TextureHandle.h */,
-				86BC7FD416518D4600D96ADF /* TextureManager.cc */,
-				86BC7FD516518D4600D96ADF /* TextureManager.h */,
-				86BC7FD616518D4600D96ADF /* TextureObject.h */,
 			);
 			name = graphics;
 			path = ../../../source/graphics;
@@ -2449,6 +2567,7 @@
 		86BC80B816518D4600D96ADF /* memory */ = {
 			isa = PBXGroup;
 			children = (
+				DA91B31316C2218800EB7B6E /* autoPtr.h */,
 				86BC80B916518D4600D96ADF /* dataChunker.cc */,
 				86BC80BA16518D4600D96ADF /* dataChunker.h */,
 				86BC80BB16518D4600D96ADF /* factoryCache.h */,
@@ -2586,6 +2705,7 @@
 		86BC812C16518D4600D96ADF /* sim */ = {
 			isa = PBXGroup;
 			children = (
+				DA91B30916C2215500EB7B6E /* refBase.h */,
 				86BC812D16518D4600D96ADF /* scriptGroup.cc */,
 				86BC812E16518D4600D96ADF /* scriptGroup.h */,
 				86BC812F16518D4600D96ADF /* scriptObject.cc */,
@@ -2621,6 +2741,10 @@
 		86BC814816518D4600D96ADF /* string */ = {
 			isa = PBXGroup;
 			children = (
+				DA91B30D16C2217A00EB7B6E /* str.cpp */,
+				DA91B30E16C2217A00EB7B6E /* str.h */,
+				DA91B30F16C2217A00EB7B6E /* stringFunctions.cpp */,
+				DA91B31016C2217A00EB7B6E /* stringFunctions.h */,
 				86BC814916518D4600D96ADF /* findMatch.cc */,
 				86BC814A16518D4600D96ADF /* findMatch.h */,
 				86BC814B16518D4600D96ADF /* stringBuffer.cc */,
@@ -2641,6 +2765,9 @@
 		86BC82ED16518F6800D96ADF /* platform */ = {
 			isa = PBXGroup;
 			children = (
+				DA91B30A16C2216800EB7B6E /* platformIntrinsics.gcc.h */,
+				DA91B30B16C2216800EB7B6E /* platformIntrinsics.h */,
+				DA91B30C16C2216800EB7B6E /* typetraits.h */,
 				86BC834C16518FE800D96ADF /* CursorManager.cc */,
 				86BC835516518FE800D96ADF /* event.h */,
 				86CEFC76166FE17500DAF75D /* platformInput_ScriptBinding.h */,
@@ -2717,6 +2844,35 @@
 				86BC834116518FC900D96ADF /* thread.h */,
 			);
 			path = threads;
+			sourceTree = "<group>";
+		};
+		DA91B31416C2280E00EB7B6E /* graphics */ = {
+			isa = PBXGroup;
+			children = (
+				DA91B31516C2280E00EB7B6E /* gfxOpenGLCardProfiler.h */,
+				DA91B31616C2280E00EB7B6E /* gfxOpenGLCardProfiler.mm */,
+				DA91B31716C2280E00EB7B6E /* gfxOpenGLDevice.h */,
+				DA91B31816C2280E00EB7B6E /* gfxOpenGLDevice.OSX.mm */,
+				DA91B31916C2280E00EB7B6E /* gfxOpenGLEnumTranslate.h */,
+				DA91B31A16C2280E00EB7B6E /* gfxOpenGLEnumTranslate.mm */,
+				DA91B31B16C2280E00EB7B6E /* gfxOpenGLPrimitiveBuffer.h */,
+				DA91B31C16C2280E00EB7B6E /* gfxOpenGLPrimitiveBuffer.mm */,
+				DA91B31D16C2280E00EB7B6E /* gfxOpenGLShader.h */,
+				DA91B31E16C2280E00EB7B6E /* gfxOpenGLShader.mm */,
+				DA91B31F16C2280E00EB7B6E /* gfxOpenGLStateBlock.h */,
+				DA91B32016C2280E00EB7B6E /* gfxOpenGLStateBlock.mm */,
+				DA91B32116C2280E00EB7B6E /* gfxOpenGLTextureManager.h */,
+				DA91B32216C2280E00EB7B6E /* gfxOpenGLTextureManager.mm */,
+				DA91B32316C2280E00EB7B6E /* gfxOpenGLTextureObject.h */,
+				DA91B32416C2280E00EB7B6E /* gfxOpenGLTextureObject.mm */,
+				DA91B32516C2280E00EB7B6E /* gfxOpenGLTextureTarget.h */,
+				DA91B32616C2280E00EB7B6E /* gfxOpenGLTextureTarget.mm */,
+				DA91B32716C2280E00EB7B6E /* gfxOpenGLUtils.h */,
+				DA91B32816C2280E00EB7B6E /* gfxOpenGLVertexBuffer.h */,
+				DA91B32916C2280E00EB7B6E /* gfxOpenGLVertexBuffer.mm */,
+				DA91B32A16C2280E00EB7B6E /* osxGLUtils.h */,
+			);
+			path = graphics;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -2933,17 +3089,12 @@
 				86D76FEE165687060046D71F /* bitmapBmp.cc in Sources */,
 				86D76FEF165687060046D71F /* bitmapJpeg.cc in Sources */,
 				86D76FF0165687060046D71F /* bitmapPng.cc in Sources */,
-				86D76FF3165687060046D71F /* dgl.cc in Sources */,
-				86D76FF4165687060046D71F /* dglMatrix.cc in Sources */,
 				86D76FF5165687060046D71F /* DynamicTexture.cc in Sources */,
 				86D76FF6165687060046D71F /* gBitmap.cc in Sources */,
 				86D76FF7165687060046D71F /* gFont.cc in Sources */,
 				86D76FF8165687060046D71F /* gPalette.cc in Sources */,
 				86D76FF9165687060046D71F /* PNGImage.cpp in Sources */,
 				86D76FFA165687060046D71F /* splineUtil.cc in Sources */,
-				86D76FFB165687060046D71F /* TextureDictionary.cc in Sources */,
-				86D76FFC165687060046D71F /* TextureHandle.cc in Sources */,
-				86D76FFD165687060046D71F /* TextureManager.cc in Sources */,
 				86D76FFE165687060046D71F /* guiBitmapButtonCtrl.cc in Sources */,
 				86D76FFF165687060046D71F /* guiBorderButton.cc in Sources */,
 				86D77000165687060046D71F /* guiButtonBaseCtrl.cc in Sources */,
@@ -3180,14 +3331,12 @@
 				8694ADC81656B06B0080ABAC /* osxEvents.mm in Sources */,
 				8694ADC91656B06B0080ABAC /* osxWindow.mm in Sources */,
 				8694ADD11656B7FC0080ABAC /* osxVideo.mm in Sources */,
-				8694ADD51656BDE60080ABAC /* osxGL.mm in Sources */,
 				8658B174165A7BFB0087ABC1 /* osxCPU.mm in Sources */,
 				8658B175165A7BFB0087ABC1 /* osxNetwork.mm in Sources */,
 				8658B176165A7BFB0087ABC1 /* osxString.mm in Sources */,
 				86EC5AC7165C1E0100757872 /* osxTorqueView.mm in Sources */,
 				2A03300D165D1D2100E9CD70 /* unitTesting.cc in Sources */,
 				2A033011165D1D4100E9CD70 /* platformFileIoTests.cc in Sources */,
-				86854E341663AAE6009FAFB2 /* osxOpenGLDevice.mm in Sources */,
 				2AC5C7E81667C85700A0D046 /* platformStringTests.cc in Sources */,
 				2ACFC0A8166CE1AB00FE7370 /* platformMemoryTests.cc in Sources */,
 				865BD2F9166FA7F80064F595 /* osxInputManager.mm in Sources */,
@@ -3204,6 +3353,39 @@
 				2AF1C54016B439BB00C1CF3A /* declaredAssets.cc in Sources */,
 				2AF1C54116B439BB00C1CF3A /* referencedAssets.cc in Sources */,
 				2AB97A1D16B66BC70080F940 /* tamlCustom.cc in Sources */,
+				DA91B2F416C2214800EB7B6E /* bitmapUtils.cpp in Sources */,
+				DA91B2F516C2214800EB7B6E /* gfxCardProfile.cc in Sources */,
+				DA91B2F616C2214800EB7B6E /* gfxDevice.cc in Sources */,
+				DA91B2F716C2214800EB7B6E /* gfxDrawUtil.cc in Sources */,
+				DA91B2F816C2214800EB7B6E /* gfxFontRenderBatcher.cc in Sources */,
+				DA91B2F916C2214800EB7B6E /* gfxPrimitiveBuffer.cc in Sources */,
+				DA91B2FA16C2214800EB7B6E /* gfxResource.cc in Sources */,
+				DA91B2FB16C2214800EB7B6E /* gfxShader.cc in Sources */,
+				DA91B2FC16C2214800EB7B6E /* gfxStateBlock.cc in Sources */,
+				DA91B2FD16C2214800EB7B6E /* gfxStringEnumTranslate.cc in Sources */,
+				DA91B2FE16C2214800EB7B6E /* gfxStructs.cc in Sources */,
+				DA91B2FF16C2214800EB7B6E /* gfxTarget.cc in Sources */,
+				DA91B30016C2214800EB7B6E /* gfxTextureHandle.cc in Sources */,
+				DA91B30116C2214800EB7B6E /* gfxTextureManager.cc in Sources */,
+				DA91B30216C2214800EB7B6E /* gfxTextureObject.cc in Sources */,
+				DA91B30316C2214800EB7B6E /* gfxTextureProfile.cc in Sources */,
+				DA91B30416C2214800EB7B6E /* gfxVertexBuffer.cc in Sources */,
+				DA91B30516C2214800EB7B6E /* gfxVertexColor.cc in Sources */,
+				DA91B30616C2214800EB7B6E /* gfxVertexFormat.cc in Sources */,
+				DA91B30716C2214800EB7B6E /* gfxVertexTypes.cc in Sources */,
+				DA91B30816C2214800EB7B6E /* primBuilder.cc in Sources */,
+				DA91B31116C2217A00EB7B6E /* str.cpp in Sources */,
+				DA91B31216C2217A00EB7B6E /* stringFunctions.cpp in Sources */,
+				DA91B32B16C2280E00EB7B6E /* gfxOpenGLCardProfiler.mm in Sources */,
+				DA91B32C16C2280E00EB7B6E /* gfxOpenGLDevice.OSX.mm in Sources */,
+				DA91B32D16C2280E00EB7B6E /* gfxOpenGLEnumTranslate.mm in Sources */,
+				DA91B32E16C2280E00EB7B6E /* gfxOpenGLPrimitiveBuffer.mm in Sources */,
+				DA91B32F16C2280E00EB7B6E /* gfxOpenGLShader.mm in Sources */,
+				DA91B33016C2280E00EB7B6E /* gfxOpenGLStateBlock.mm in Sources */,
+				DA91B33116C2280E00EB7B6E /* gfxOpenGLTextureManager.mm in Sources */,
+				DA91B33216C2280E00EB7B6E /* gfxOpenGLTextureObject.mm in Sources */,
+				DA91B33316C2280E00EB7B6E /* gfxOpenGLTextureTarget.mm in Sources */,
+				DA91B33416C2280E00EB7B6E /* gfxOpenGLVertexBuffer.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

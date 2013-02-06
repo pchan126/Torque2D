@@ -21,7 +21,8 @@
 //-----------------------------------------------------------------------------
 
 #include "console/console.h"
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxDrawUtil.h"
 #include "platform/event.h"
 #include "gui/containers/guiScrollCtrl.h"
 #include "gui/guiArrayCtrl.h"
@@ -140,7 +141,7 @@ void GuiArrayCtrl::onRenderColumnHeaders(Point2I offset, Point2I parentOffset, P
    if (mProfile->mBorder)
    {
       RectI cellR(offset.x + headerDim.x, parentOffset.y, mBounds.extent.x - headerDim.x, headerDim.y);
-      dglDrawRectFill(cellR, mProfile->mBorderColor);
+      GFX->getDrawUtil()->drawRectFill(cellR, mProfile->mBorderColor);
    }
 }
 
@@ -155,7 +156,7 @@ void GuiArrayCtrl::onRenderRowHeader(Point2I offset, Point2I parentOffset, Point
 
    cellR.point.set(parentOffset.x, offset.y);
    cellR.extent.set(headerDim.x, mCellSize.y);
-   dglDrawRectFill(cellR, color);
+   GFX->getDrawUtil()->drawRectFill(cellR, color);
 }
 
 void GuiArrayCtrl::onRenderCell(Point2I offset, Point2I cell, bool selected, bool mouseOver)
@@ -172,7 +173,7 @@ void GuiArrayCtrl::onRenderCell(Point2I offset, Point2I cell, bool selected, boo
 
    //draw the cell
    RectI cellR(offset.x, offset.y, mCellSize.x, mCellSize.y);
-   dglDrawRectFill(cellR, color);
+   GFX->getDrawUtil()->drawRectFill(cellR, color);
 }
 
 void GuiArrayCtrl::onRender(Point2I offset, const RectI &updateRect)
@@ -198,7 +199,7 @@ void GuiArrayCtrl::onRender(Point2I offset, const RectI &updateRect)
 
       if (headerClip.intersect(clipRect))
       {
-         dglSetClipRect(headerClip);
+         GFX->setClipRect(headerClip);
 
          //now render the header
          onRenderColumnHeaders(offset, parentOffset, mHeaderDim);
@@ -237,7 +238,7 @@ void GuiArrayCtrl::onRender(Point2I offset, const RectI &updateRect)
          headerClip.extent.y = mCellSize.y;
          if (headerClip.intersect(origClipRect))
          {
-            dglSetClipRect(headerClip);
+            GFX->setClipRect(headerClip);
 
             //render the row header
             onRenderRowHeader(Point2I(0, offset.y + j * mCellSize.y),
@@ -266,7 +267,7 @@ void GuiArrayCtrl::onRender(Point2I offset, const RectI &updateRect)
          if (cellClip.intersect(clipRect))
          {
             //set the clip rect
-            dglSetClipRect(cellClip);
+            GFX->setClipRect(cellClip);
 
             //render the cell
             onRenderCell(Point2I(cellx, celly), Point2I(i, j),

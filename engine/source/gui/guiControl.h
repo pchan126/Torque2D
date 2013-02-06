@@ -51,6 +51,9 @@
 #ifndef _LANG_H_
 #include "gui/language/lang.h"
 #endif
+
+#include "graphics/gfxStateBlock.h"
+
 class GuiCanvas;
 class GuiEditCtrl;
 
@@ -192,6 +195,7 @@ protected:
     S32 getIntVariable();      ///< Returns value of control's bound variable as a integer
     F32 getFloatVariable();    ///< Returns value of control's bound variable as a float
 
+    GFXStateBlockRef mDefaultGuiSB;
 public:
     /// Set the name of the console variable which this GuiObject is bound to
     /// @param   variable   Variable name
@@ -335,14 +339,18 @@ public:
     /// Changes the position of this control
     /// @param   newPosition   New position of this control
     virtual void setPosition( const Point2I &newPosition );
+    inline  void setPosition( const S32 x, const S32 y ) { setPosition(Point2I(x,y)); }
 
     /// Changes the size of this control
     /// @param   newExtent   New size of this control
     virtual void setExtent( const Point2I &newExtent );
+    inline  void setExtent( const S32 width, const S32 height) { setExtent(Point2I(width, height)); }
 
     /// Changes the bounds of this control
     /// @param   newBounds   New bounds of this control
     virtual void setBounds( const RectI &newBounds );
+    inline  void setBounds( const S32 left,  const S32 top,
+                           const S32 width, const S32 height) { setBounds(RectI(left, top, width, height)); }
 
     /// Changes the X position of this control
     /// @param   newXPosition   New X Position of this control
@@ -663,6 +671,7 @@ public:
 
     void inspectPostApply();
     void inspectPreApply();
+
 };
 /// @}
 

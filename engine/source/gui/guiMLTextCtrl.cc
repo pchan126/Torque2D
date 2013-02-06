@@ -22,13 +22,20 @@
 
 #include "gui/guiMLTextCtrl.h"
 #include "gui/containers/guiScrollCtrl.h"
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxDrawUtil.h"
 #include "console/consoleTypes.h"
 #include "gui/guiCanvas.h"
 #include "memory/frameAllocator.h"
 #include "string/unicode.h"
 
 IMPLEMENT_CONOBJECT(GuiMLTextCtrl);
+
+GFX_ImplementTextureProfile(GFXMLTextureProfile,
+                            GFXTextureProfile::DiffuseMap,
+                            GFXTextureProfile::PreserveSize |
+                            GFXTextureProfile::Static,
+                            GFXTextureProfile::None);
 
 const U32 GuiMLTextCtrl::csmTextBufferGrowthSize = 1024;
 
@@ -224,21 +231,21 @@ void GuiMLTextCtrl::drawAtomText(bool sel, U32 start, U32 end, Atom *atom, Line 
       {
          ColorI shadowColor = atom->style->shadowColor;
          shadowColor.alpha = (U8)(shadowColor.alpha * mAlpha);
-         dglSetBitmapModulation(shadowColor);
+         GFX->getDrawUtil()->setBitmapModulation(shadowColor);
 
-         dglDrawTextN(font, drawPoint + atom->style->shadowOffset, tmp, tmpLen, mAllowColorChars ? mProfile->mFontColors : NULL);
+         GFX->getDrawUtil()->drawTextN(font, drawPoint + atom->style->shadowOffset, tmp, tmpLen, mAllowColorChars ? mProfile->mFontColors : NULL);
       }
 
       color.alpha = (U8)(color.alpha * mAlpha);
-      dglSetBitmapModulation(color);
-      dglDrawTextN(font, drawPoint, tmp, end-start, mAllowColorChars ? mProfile->mFontColors : NULL);
+      GFX->getDrawUtil()->setBitmapModulation(color);
+      GFX->getDrawUtil()->drawTextN(font, drawPoint, tmp, end-start, mAllowColorChars ? mProfile->mFontColors : NULL);
 
       //if the atom was "clipped", see if we need to draw a "..." at the end
       if (atom->isClipped)
       {
          Point2I p2 = drawPoint;
          p2.x += font->getStrNWidthPrecise(tmp, tmpLen);
-         dglDrawTextN(font, p2, "...", 3, mAllowColorChars ? mProfile->mFontColors : NULL);
+         GFX->getDrawUtil()->drawTextN(font, p2, "...", 3, mAllowColorChars ? mProfile->mFontColors : NULL);
       }
    }
    else
@@ -249,16 +256,16 @@ void GuiMLTextCtrl::drawAtomText(bool sel, U32 start, U32 end, Atom *atom, Line 
       rect.extent.x = font->getStrNWidth(tmp, tmpLen) + 1;
       rect.extent.y = line->height + 1;
       
-      dglDrawRectFill(rect, mProfile->mFillColorHL);
-      dglSetBitmapModulation( mProfile->mFontColorHL );  // over-ride atom color:
-      dglDrawTextN(font, drawPoint, tmp, tmpLen, mAllowColorChars ? mProfile->mFontColors : NULL);
+      GFX->getDrawUtil()->drawRectFill(rect, mProfile->mFillColorHL);
+      GFX->getDrawUtil()->setBitmapModulation( mProfile->mFontColorHL );  // over-ride atom color:
+      GFX->getDrawUtil()->drawTextN(font, drawPoint, tmp, tmpLen, mAllowColorChars ? mProfile->mFontColors : NULL);
 
       //if the atom was "clipped", see if we need to draw a "..." at the end
       if (atom->isClipped)
       {
          Point2I p2 = drawPoint;
          p2.x += font->getStrNWidthPrecise(tmp, end - atom->textStart);
-         dglDrawTextN(font, p2, "...", 3, mAllowColorChars ? mProfile->mFontColors : NULL);
+         GFX->getDrawUtil()->drawTextN(font, p2, "...", 3, mAllowColorChars ? mProfile->mFontColors : NULL);
       }
    }
 
@@ -267,7 +274,7 @@ void GuiMLTextCtrl::drawAtomText(bool sel, U32 start, U32 end, Atom *atom, Line 
       drawPoint.y += atom->baseLine + 2;
       Point2I p2 = drawPoint;
       p2.x += font->getStrNWidthPrecise(tmp, end - atom->textStart);
-      dglDrawLine(drawPoint, p2, color);
+      GFX->getDrawUtil()->drawLine(drawPoint, p2, color);
    }
 }
 
@@ -282,9 +289,9 @@ void GuiMLTextCtrl::onRender(Point2I offset, const RectI& updateRect)
       screenBounds.point += offset;
       if(!screenBounds.overlaps(updateRect))
          continue;
-      dglClearBitmapModulation();
-      dglDrawBitmap(walk->bitmap->bitmapHandle, screenBounds.point);
-      //dglDrawRectFill(screenBounds, mProfile->mFillColor);
+      GFX->getDrawUtil()->clearBitmapModulation();
+      GFX->getDrawUtil()->drawBitmap(walk->bitmap->bitmapHandle, screenBounds.point);
+      //GFX->getDrawUtil()->drawRectFill(screenBounds, mProfile->mFillColor);
    }
 
    // draw all the text and dividerStyles
@@ -296,7 +303,7 @@ void GuiMLTextCtrl::onRender(Point2I offset, const RectI& updateRect)
          continue;
 
       if(lwalk->divStyle)
-         dglDrawRectFill(lineRect, mProfile->mFillColorHL);
+         GFX->getDrawUtil()->drawRectFill(lineRect, mProfile->mFillColorHL);
 
       for(Atom *awalk = lwalk->atomList; awalk; awalk = awalk->next)
       {
@@ -319,7 +326,7 @@ void GuiMLTextCtrl::onRender(Point2I offset, const RectI& updateRect)
          }
       }
    }
-   dglClearBitmapModulation();
+   GFX->getDrawUtil()->clearBitmapModulation();
 }
 
 //--------------------------------------------------------------------------
@@ -962,7 +969,7 @@ GuiMLTextCtrl::Bitmap *GuiMLTextCtrl::allocBitmap(const char *bitmapName, U32 bi
    AssertFatal(sizeof(nameBuffer) >= bitmapNameLen, "GuiMLTextCtrl::allocBitmap() - bitmap name too long");
    dStrncpy(nameBuffer, bitmapName, bitmapNameLen);
    nameBuffer[bitmapNameLen] = 0;
-   ret->bitmapHandle = TextureHandle(nameBuffer, TextureHandle::BitmapTexture);
+   ret->bitmapHandle.set(ret->bitmapName, &GFXMLTextureProfile, avar("%s() - ret->bitmapObject (line %d)", __FUNCTION__, __LINE__));
    if(bool(ret->bitmapHandle))
    {
       ret->next = mBitmapList;

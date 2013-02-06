@@ -22,11 +22,12 @@
 
 #include "console/console.h"
 #include "console/consoleTypes.h"
-#include "graphics/dgl.h"
-#include "graphics/TextureManager.h"
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxTextureManager.h"
 #include "gui/editor/guiFilterCtrl.h"
 #include "platform/event.h"
 #include "math/mMath.h"
+#include "graphics/gfxDrawUtil.h"
 
 IMPLEMENT_CONOBJECT(GuiFilterCtrl);
 
@@ -147,91 +148,55 @@ void GuiFilterCtrl::onPreRender()
       setUpdate();
    }
 }
-
 void GuiFilterCtrl::onRender(Point2I offset, const RectI &updateRect)
 {
-   Point2I pos = offset;
-   Point2I ext = mBounds.extent;
-
-   RectI r(pos, ext);
-   dglDrawRectFill(r, ColorI(255,255,255));
-   dglDrawRect(r, ColorI(0,0,0));
-
-   // shrink by 2 pixels
-   pos.x += 2;
-   pos.y += 2;
-   ext.x -= 4;
-   ext.y -= 4;
-
-#ifdef TORQUE_OS_IOS
-	//this was the same drawing as dglDrawLine		<Mat>
-	dglDrawLine( (pos.x), (pos.y+ext.y), (pos.x+ext.x), (pos.y), ColorI(255 *0.9, 255 *0.9, 255 *0.9, 255 *1) );
-
-   // draw the curv
-   glColor4f(0.4f, 0.4f, 0.4f, 1.0f);
-
-	GLfloat verts[] = {
-		0.0f, 0.0f,
-		0.0f, 0.0f		
-	};
-	glVertexPointer(2, GL_FLOAT, 0, verts );	
-
-	F32 scale = 1.0f/F32(ext.x);
-
-	F32 index = 0;
-	S32 y = (S32)(ext.y*(1.0f-mFilter.getValue(index)));
-	verts[0] = pos.x;
-	verts[1] = pos.y+y;
-	
-	//unreaveled, i = 0 above
-	for (U32 i=1; S32(i) < ext.x; i++)
-      {
-         index = F32(i)*scale;
-         y = (S32)(ext.y*(1.0f-mFilter.getValue(index)));
-         //glVertex2i(pos.x+i, pos.y+y );
-		  verts[2] = pos.x+i;
-		  verts[3] = pos.y+y;
-
-		  // need to draw a line between each point, and the previous point, so save this point for next time (we get the very first point outside this loop)
-		  glDrawArrays(GL_LINES, 0, 2);
-		  verts[0] = verts[2];
-		  verts[1] = verts[3];
-      }
-#else
-   // draw the identity line
-   glColor3f(0.9f, 0.9f, 0.9f);
-   glBegin(GL_LINES);
-      glVertex2i(pos.x, pos.y+ext.y);
-      glVertex2i(pos.x+ext.x, pos.y);
-   glEnd();
-
-   // draw the curve
-   glColor3f(0.4f, 0.4f, 0.4f);
-   glBegin(GL_LINE_STRIP);
-
-      F32 scale = 1.0f/F32(ext.x);
-      for (U32 i=0; S32(i) < ext.x; i++)
-      {
-         F32 index = F32(i)*scale;
-         S32 y = (S32)(ext.y*(1.0f-mFilter.getValue(index)));
-         glVertex2i(pos.x+i, pos.y+y );
-      }
-   glEnd();
-#endif
-
-   // draw the knots
-   for (U32 k=0; k < (U32)mFilter.size(); k++)
-   {
-      RectI r;
-      r.point.x = (S32)(((F32)ext.x/(F32)(mFilter.size()-1)*(F32)k));
-      r.point.y = (S32)(ext.y - ((F32)ext.y * mFilter[k]));
-      r.point += pos + Point2I(-2,-2);
-      r.extent = Point2I(5,5);
-
-      dglDrawRectFill(r, ColorI(255,0,0));
-   }
-
-   renderChildControls(offset, updateRect);
+    Point2I pos = offset;
+    Point2I ext = getExtent();
+    
+    RectI r(pos, ext);
+    GFX->getDrawUtil()->drawRectFill(r, ColorI(255,255,255));
+    GFX->getDrawUtil()->drawRect(r, ColorI(0,0,0));
+    
+    // shrink by 2 pixels
+    pos.x += 2;
+    pos.y += 2;
+    ext.x -= 4;
+    ext.y -= 4;
+    
+	GFX->getDrawUtil()->drawLine( (pos.x), (pos.y+ext.y), (pos.x+ext.x), (pos.y), ColorI(255 *0.9, 255 *0.9, 255 *0.9, 255 *1) );
+    // draw the curv
+    
+    Vector<GFXVertexPC> verts;
+    verts.setSize(ext.x);
+    
+    F32 scale = 1.f / F32( ext.x );
+    for ( U32 i = 0; i < ext.x; i++)
+    {
+        F32 index = F32(i) * scale;
+        S32 y = (S32)(ext.y*(1.0f-mFilter.getValue(index)));
+        
+        verts[i].point.set( (F32)(pos.x + i), (F32)(pos.y + y), 0.0f );
+        verts[i].color = ColorF( 0.4f, 0.4f, 0.4f );
+    }
+    
+    GFXVertexBufferHandle<GFXVertexPC> vb(GFX, ext.x, GFXBufferTypeVolatile, verts.address());
+    
+    GFX->setVertexBuffer( vb );
+    GFX->drawPrimitive( GFXLineStrip, 0, ext.x - 1 );
+    
+    // draw the knots
+    for (U32 k=0; k < mFilter.size(); k++)
+    {
+        RectI r;
+        r.point.x = (S32)(((F32)ext.x/(F32)(mFilter.size()-1)*(F32)k));
+        r.point.y = (S32)(ext.y - ((F32)ext.y * mFilter[k]));
+        r.point += pos + Point2I(-2,-2);
+        r.extent = Point2I(5,5);
+        
+        GFX->getDrawUtil()->drawRectFill(r, ColorI(255,0,0));
+    }
+    
+    renderChildControls(offset, updateRect);
 }
 
 

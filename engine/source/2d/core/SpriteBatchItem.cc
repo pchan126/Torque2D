@@ -141,8 +141,8 @@ void SpriteBatchItem::resetState( void )
     mRenderGroup = StringTable->EmptyString;
 
     mBlendMode = true;
-    mSrcBlendFactor = GL_SRC_ALPHA;
-    mDstBlendFactor = GL_ONE_MINUS_SRC_ALPHA;
+    mSrcBlendFactor = GFXBlendSrcAlpha;
+    mDstBlendFactor = GFXBlendInvSrcAlpha;
     mBlendColor = ColorF(1.0f,1.0f,1.0f,1.0f);
     mAlphaTest = -1.0f;
 
@@ -535,11 +535,11 @@ void SpriteBatchItem::onTamlCustomRead( const TamlPropertyAlias* pSpriteAlias )
         }
         else if ( fieldName == spriteSrcBlendFactorName )
         {
-            setSrcBlendFactor( (GLenum)SceneObject::getSrcBlendFactorEnum( pSpriteField->getFieldValue() ) );
+            setSrcBlendFactor( SceneObject::getSrcBlendFactorEnum( pSpriteField->getFieldValue() ) );
         }
         else if ( fieldName == spriteDstBlendFactorName )
         {
-            setDstBlendFactor( (GLenum)SceneObject::getDstBlendFactorEnum( pSpriteField->getFieldValue() ) );
+            setDstBlendFactor( SceneObject::getDstBlendFactorEnum( pSpriteField->getFieldValue() ) );
         }
         else if ( fieldName == spriteBlendColorName )
         {

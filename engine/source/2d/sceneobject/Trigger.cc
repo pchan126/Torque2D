@@ -20,7 +20,7 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
 #include "console/consoleTypes.h"
 #include "io/bitStream.h"
 #include "Trigger.h"

@@ -25,14 +25,30 @@
 
 #include "gui/guiControl.h"
 #include "collection/undo.h"
+#include "graphics/gfxDrawUtil.h"
 
 class GuiEditCtrl : public GuiControl
 {
-   typedef GuiControl Parent;
+public:
+    typedef GuiControl Parent;
 
-   Vector<GuiControl *> mSelectedControls;
-   GuiControl*          mCurrentAddSet;
-   GuiControl*          mContentControl;
+    enum Justification {
+        JUSTIFY_LEFT,
+        JUSTIFY_CENTER,
+        JUSTIFY_RIGHT,
+        JUSTIFY_TOP,
+        JUSTIFY_BOTTOM,
+        SPACING_VERTICAL,
+        SPACING_HORIZONTAL
+    };
+    
+protected:
+    typedef Vector< GuiControl *> GuiControlVector;
+    typedef SimObjectPtr< GuiControl > GuiControlPtr;
+
+    GuiControlVector mSelectedControls;
+   GuiControlPtr          mCurrentAddSet;
+   GuiControlPtr          mContentControl;
    Point2I              mLastMousePos;
    Point2I              mSelectionAnchor;
    Point2I              mGridSnap;
@@ -58,6 +74,11 @@ class GuiEditCtrl : public GuiControl
    mouseModes             mMouseDownMode;
    sizingModes             mSizingMode;
 
+   // grid drawing
+   GFXVertexBufferHandle<GFXVertexPC> mDots;
+//   GFXStateBlockRef mDotSB;
+
+
    // private methods
    void updateSelectedSet();
 
@@ -70,7 +91,11 @@ class GuiEditCtrl : public GuiControl
 
    void select(GuiControl *ctrl);
    void setRoot(GuiControl *ctrl);
-   void setEditMode(bool value);
+    
+    GuiControl*       getContentControl() const { return mContentControl; }
+    void              setContentControl(GuiControl *ctrl);
+    
+    void setEditMode(bool value);
    S32 getSizingHitKnobs(const Point2I &pt, const RectI &box);
    void getDragRect(RectI &b);
    void drawNut(const Point2I &nut, ColorI &outlineColor, ColorI &nutColor);
@@ -110,16 +135,6 @@ class GuiEditCtrl : public GuiControl
 
    virtual bool onAdd();
    virtual void onRemove();
-
-   enum Justification {
-      JUSTIFY_LEFT,
-      JUSTIFY_CENTER,
-      JUSTIFY_RIGHT,
-      JUSTIFY_TOP,
-      JUSTIFY_BOTTOM,
-      SPACING_VERTICAL,
-      SPACING_HORIZONTAL
-   };
 
    void justifySelection( Justification j);
    void moveSelection(const Point2I &delta);
