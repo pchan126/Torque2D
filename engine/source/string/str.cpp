@@ -35,7 +35,7 @@ namespace KeyCmp
 }
 
 #include "collection/hashTable.h"
-#include "string/stringFunctions.h"
+#include "platform/platformString.h"
 #include "string/unicode.h"
 #include "algorithm/hashFunction.h"
 #include "memory/autoPtr.h"

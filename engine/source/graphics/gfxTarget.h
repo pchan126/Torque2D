@@ -36,7 +36,6 @@
 
 
 class Point2I;
-//class PlatformWindow;
 class GFXCubemap;
 class GFXTextureObject;
 
@@ -118,27 +117,27 @@ public:
 /// This allows platform-neutral code to safely distinguish between various
 /// types of render targets (using dynamic_cast<>), as well as letting it
 /// gain access to useful things like the corresponding PlatformWindow.
-//class GFXWindowTarget : public GFXTarget
-//{
-//protected:
-//   PlatformWindow *mWindow;
-//public:
-//   GFXWindowTarget() : mWindow(NULL){};
-//   GFXWindowTarget( PlatformWindow *windowObject )
-//   {
-//      mWindow = windowObject;
-//   }
-//   virtual ~GFXWindowTarget() {}
-//
-//   /// Returns a pointer to the window this target is bound to.
-//   inline PlatformWindow *getWindow() { return mWindow; };
-//
-//   /// Present latest buffer, if buffer swapping is in effect.
-//   virtual bool present()=0;
-//
-//   /// Notify the target that the video mode on the window has changed.
-//   virtual void resetMode()=0;
-//};
+class GFXWindowTarget : public GFXTarget
+{
+protected:
+   void *mWindow;
+public:
+   GFXWindowTarget() : mWindow(NULL){};
+   GFXWindowTarget( void *windowObject )
+   {
+      mWindow = windowObject;
+   }
+   virtual ~GFXWindowTarget() {}
+
+   /// Returns a pointer to the window this target is bound to.
+   inline void *getWindow() { return mWindow; };
+
+   /// Present latest buffer, if buffer swapping is in effect.
+   virtual bool present()=0;
+
+   /// Notify the target that the video mode on the window has changed.
+   virtual void resetMode()=0;
+};
 
 /// A render target associated with one or more textures.
 ///

@@ -20,7 +20,7 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-//#include "string/stringFunctions.h"
+#include "platform/platformString.h"
 #include "console/console.h"
 
 #include "graphics/gfxDevice.h"

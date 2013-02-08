@@ -60,7 +60,6 @@ GFXOpenGLTextureObject::GFXOpenGLTextureObject(GFXDevice * aDevice, GFXTexturePr
 
 GFXOpenGLTextureObject::~GFXOpenGLTextureObject() 
 {
-//   glDeleteBuffers(1, &mBuffer);
    delete[] mZombieCache;
    kill();
 }
@@ -126,10 +125,7 @@ void GFXOpenGLTextureObject::unlock(U32 mipLevel)
 void GFXOpenGLTextureObject::release()
 {
    glDeleteTextures(1, &mHandle);
-//   glDeleteBuffers(1, &mBuffer);
-   
    mHandle = 0;
-//   mBuffer = 0;
 }
 
 #if (defined TORQUE_OS_IPHONE || defined TORQUE_OS_MAC)
@@ -263,11 +259,11 @@ void GFXOpenGLTextureObject::bind(U32 textureUnit) const
 {
     AssertFatal(mBinding == GL_TEXTURE_2D, "GFXOpenGLTextureObject::bind - only GL_TEXTURE_2D supported");
    glActiveTexture(GL_TEXTURE0 + textureUnit);
-//   if (glIsTexture(mHandle) != GL_TRUE)
-//   {
-//       Con::printf("bad texture bind");
-//   }
-    GLuint han = mHandle;
+   if (glIsTexture(mHandle) != GL_TRUE)
+   {
+       Con::printf("bad texture bind");
+   }
+   GLuint han = mHandle;
    glBindTexture(mBinding, han);
 //    Con::printf("texture bind %i", han);
 //   glEnable(mBinding);
@@ -291,7 +287,7 @@ U8* GFXOpenGLTextureObject::getTextureData()
 {
    U8* data = new U8[mTextureSize.x * mTextureSize.y * mBytesPerTexel];
    glBindTexture(GL_TEXTURE_2D, mHandle);
-//   glGetTexImage(GL_TEXTURE_2D, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, data);
+   glGetTexImage(GL_TEXTURE_2D, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, data);
    return data;
 }
 
@@ -335,23 +331,22 @@ void GFXOpenGLTextureObject::reloadFromCache()
 
 void GFXOpenGLTextureObject::zombify()
 {
-//   if(mIsZombie)
-//      return;
-//      
-//   mIsZombie = true;
-//   if(!mProfile->doStoreBitmap() && !mProfile->isRenderTarget() && !mProfile->isDynamic() && !mProfile->isZTarget())
-//      copyIntoCache();
-//      
-//   release();
+   if(mIsZombie)
+      return;
+      
+   mIsZombie = true;
+   if(!mProfile->doStoreBitmap() && !mProfile->isRenderTarget() && !mProfile->isDynamic() && !mProfile->isZTarget())
+      copyIntoCache();
+      
+   release();
 }
 
 void GFXOpenGLTextureObject::resurrect()
 {
-//   if(!mIsZombie)
-//      return;
-//      
-//   glGenTextures(1, &mHandle);
-//   glGenBuffers(1, &mBuffer);
+   if(!mIsZombie)
+      return;
+      
+   glGenTextures(1, &mHandle);
 }
 
 F32 GFXOpenGLTextureObject::getMaxUCoord() const

@@ -83,44 +83,35 @@ void Platform::initWindow(const Point2I &initialSize, const char *name)
 {
     bool fullScreen;
     U32 width, height, bpp;
-    
+
     osxGetInitialResolution(width, height, bpp, fullScreen);
-    
-    // Create the NSWindow
+
     osxPlatState * platState = [osxPlatState sharedPlatState];
-    
-    
-    NSRect frame = NSMakeRect(0, 0, [platState windowWidth], [platState windowHeight]);
-    
-    NSWindow *tempWindow = [[[NSWindow alloc] initWithContentRect:frame
-                                              styleMask:NSTitledWindowMask | NSClosableWindowMask | NSResizableWindowMask
-                                              backing:NSBackingStoreBuffered
-                                              defer:NO] autorelease];
-    
-    [tempWindow setBackgroundColor:[NSColor blackColor]];
-
-    // The full frame for a window must consider the title bar height as well
-    // Thus, our NSWindow must be larger than the passed width and height
-    frame = [NSWindow frameRectForContentRect:frame styleMask:NSTitledWindowMask];
-    [tempWindow setFrame:frame display:YES];
-
-    [platState setWindow:tempWindow];
+//
+//    
+//    NSRect frame = NSMakeRect(0, 0, [platState windowWidth], [platState windowHeight]);
+//    
+//    NSWindow *tempWindow = [[[NSWindow alloc] initWithContentRect:frame
+//                                              styleMask:NSTitledWindowMask | NSClosableWindowMask | NSResizableWindowMask
+//                                              backing:NSBackingStoreBuffered
+//                                              defer:NO] autorelease];
+//    
+    [platState.window setBackgroundColor:[NSColor blackColor]];
+//
+//    // The full frame for a window must consider the title bar height as well
+//    // Thus, our NSWindow must be larger than the passed width and height
+//    frame = [NSWindow frameRectForContentRect:frame styleMask:NSTitledWindowMask];
+//    [tempWindow setFrame:frame display:YES];
+//
     
     [platState setWindowSize:initialSize.x height:initialSize.y];
-    
+
     [platState updateWindowTitle:name];
-    
-    // Set up TorqueView and add it here:
-    OSXTorqueView* torqueView = [[OSXTorqueView alloc] initWithFrame:frame];
-    [torqueView initialize];
-    
-    [platState setTorqueView:torqueView];
-    [[platState window] setContentView:[platState torqueView]];
 
     [[NSNotificationCenter defaultCenter] addObserver:[platState torqueView] selector:@selector(windowFinishedLiveResize:) name:NSWindowDidEndLiveResizeNotification object:[platState window]];
     
     // Create the DisplayDevice and install it. In this case, our osxOpenGLDevice
-    GFXOpenGLDevice* device = new GFXOpenGLDevice();
+    GFXOpenGLDevice* device = new GFXOpenGLDevice(NULL);
     Video::installDevice(device);
     device->init();
     
@@ -129,10 +120,15 @@ void Platform::initWindow(const Point2I &initialSize, const char *name)
     if (!deviceWasSet)
         AssertFatal(false, "Platform::initWindow could not find a compatible display device!");
 
-    // Show the window and all its contents
-    [[platState window] makeKeyAndOrderFront:NSApp];
-    [[platState window] center];
 }
+
+
+GFXWindowTarget* Platform::createWindowTarget()
+{
+    osxPlatState * platState = [osxPlatState sharedPlatState];
+    return GFX->allocWindowTarget((void*)[platState torqueView]);
+}
+
 
 //-----------------------------------------------------------------------------
 // Changes the text in the NSWindow title

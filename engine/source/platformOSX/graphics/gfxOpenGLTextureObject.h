@@ -42,7 +42,6 @@ public:
     
     inline GLuint getHandle() const { return mHandle; }
    inline GLenum getBinding() const { return mBinding; }
-//   inline GLuint getBuffer() const { return mBuffer; }
    
    inline bool isZombie() const { return mIsZombie; }
 
@@ -85,8 +84,6 @@ private:
    typedef GFXTextureObject Parent;
    /// Internal GL object
    GLuint mHandle;
-//   GLuint mBuffer;
-
    GLenum mBinding;
    
    U32 mBytesPerTexel;

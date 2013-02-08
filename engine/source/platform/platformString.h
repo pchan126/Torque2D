@@ -26,6 +26,7 @@
 #ifndef _TORQUE_TYPES_H_
 #include "platform/types.h"
 #endif
+#include "platform/platformString.h"
 
 //------------------------------------------------------------------------------
 
@@ -45,6 +46,13 @@ extern int dStricmp(const char *str1, const char *str2);
 extern int dStrncmp(const char *str1, const char *str2, dsize_t len);
 extern int dStrnicmp(const char *str1, const char *str2, dsize_t len);
 
+extern int        dStrnatcmp( const char* str1, const char* str2 );
+extern int        dStrnatcasecmp( const char* str1, const char* str2 );
+
+extern bool dStrEqual(const char* str1, const char* str2);
+extern bool dStrStartsWith(const char* str1, const char* str2);
+extern bool dStrEndsWith(const char* str1, const char* str2);
+
 extern char* dStrcpy(char *dst, const char *src);
 extern char* dStrcpyl(char *dst, dsize_t dstSize, ...);
 extern char* dStrncpy(char *dst, const char *src, dsize_t len);
@@ -52,10 +60,8 @@ extern char* dStrncpy(UTF8 *dst, const UTF8 *src, dsize_t len);
 
 extern char* dStrupr(char *str);
 extern char* dStrlwr(char *str);
-extern char dToupper(const char c);
-extern char dTolower(const char c);
-//inline char dToupper(const char c) { if (c >= char('a') && c <= char('z')) return char(c + 'A' - 'a'); else return c; }
-//inline char dTolower(const char c) { if (c >= char('A') && c <= char('Z')) return char(c - 'A' + 'a'); else return c; }
+inline char dToupper(const char c) { if (c >= char('a') && c <= char('z')) return char(c + 'A' - 'a'); else return c; }
+inline char dTolower(const char c) { if (c >= char('A') && c <= char('Z')) return char(c - 'A' + 'a'); else return c; }
 
 extern char* dStrchr(char *str, int c);
 extern const char* dStrchr(const char *str, int c);

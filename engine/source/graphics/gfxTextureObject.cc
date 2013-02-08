@@ -26,7 +26,7 @@
 #include "graphics/gfxDevice.h"
 #include "graphics/gfxTextureManager.h"
 #include "memory/safeDelete.h"
-#include "string/stringFunctions.h"
+#include "platform/platformString.h"
 #include "io/fileStream.h"
 #include "console/console.h"
 //#include "console/engineAPI.h"

@@ -23,7 +23,6 @@
 #include "torqueConfig.h"
 #include "console/consoleInternal.h"
 #include "debug/profiler.h"
-#include "graphics/gfxDevice.h"
 #include "platform/event.h"
 #include "platform/platform.h"
 #include "platform/platformVideo.h"
@@ -350,7 +349,7 @@ ConsoleFunction( createCanvas, bool, 2, 2, "( WindowTitle ) Use the createCanvas
     AssertISV(!Canvas, "CreateCanvas: canvas has already been instantiated");
 
     Platform::initWindow(Point2I(MIN_RESOLUTION_X, MIN_RESOLUTION_Y), argv[1]);
-
+    
 
     if (!Video::getResolutionList())
         return false;
@@ -408,7 +407,7 @@ ConsoleFunction(screenShot, void, 3, 3, "(string file, string format)"
 }
 
 
-GuiCanvas::GuiCanvas()
+GuiCanvas::GuiCanvas():mWindowTarget(NULL)
 {
 #ifdef TORQUE_OS_IOS
    mBounds.set(0, 0, IOS_DEFAULT_RESOLUTION_X, IOS_DEFAULT_RESOLUTION_Y);
@@ -479,6 +478,29 @@ void GuiCanvas::initPersistFields()
     // Physics.
     addField("UseBackgroundColor", TypeBool, Offset(mUseBackgroundColor, GuiCanvas), "" );
     addField("BackgroundColor", TypeColorF, Offset(mBackgroundColor, GuiCanvas), "" );
+}
+
+bool GuiCanvas::onAdd()
+{
+    GFXDevice *newDevice = GFX;
+    newDevice->setAllowRender( false );
+    
+    mWindowTarget = Platform::createWindowTarget();
+    
+    // Make sure we're able to render.
+    newDevice->setAllowRender( true );
+    
+    // Propagate add to parents.
+    // CodeReview - if GuiCanvas fails to add for whatever reason, what happens to
+    // all the event registration above?
+    bool parentRet = Parent::onAdd();
+    
+    return parentRet;
+}
+
+void GuiCanvas::onRemove()
+{
+    Parent::onRemove();
 }
 
 //------------------------------------------------------------------------------
@@ -1535,17 +1557,48 @@ void GuiCanvas::renderFrame(bool preRenderOnly, bool bufferSwap /* = true */)
       glDrawBuffer(GL_BACK);
 #endif
 
-   // Make sure the root control is the size of the canvas.
-   Point2I size = Platform::getWindowSize();
-
-   if(size.x == 0 || size.y == 0)
-   {
-       //Luma: Fixed missing PROFILE_END()
-       PROFILE_END();
-       return;
-   }
-
-   RectI screenRect(0, 0, size.x, size.y);
+    // Set our window as the current render target so we can see outputs.
+    GFX->setActiveRenderTarget(getWindowTarget());
+    
+    if (!GFX->getActiveRenderTarget())
+    {
+        PROFILE_END();
+        return;
+    }
+    
+#ifdef TORQUE_GFX_STATE_DEBUG
+    GFX->getDebugStateManager()->startFrame();
+#endif
+    
+    GFXTarget* renderTarget = GFX->getActiveRenderTarget();
+    if (renderTarget == NULL)
+    {
+        PROFILE_END();
+        return;
+    }
+    
+    // Make sure the root control is the size of the canvas.
+    Point2I size = renderTarget->getSize();
+    
+    if(size.x == 0 || size.y == 0)
+    {
+        PROFILE_END();
+        return;
+    }
+    
+    RectI screenRect(0, 0, size.x, size.y);
+    
+//    // Make sure the root control is the size of the canvas.
+//   Point2I size = Platform::getWindowSize();
+//
+//   if(size.x == 0 || size.y == 0)
+//   {
+//       //Luma: Fixed missing PROFILE_END()
+//       PROFILE_END();
+//       return;
+//   }
+//
+//   RectI screenRect(0, 0, size.x, size.y);
 
    maintainSizing();
 
@@ -1618,7 +1671,7 @@ void GuiCanvas::renderFrame(bool preRenderOnly, bool bufferSwap /* = true */)
    if (updateUnion.intersect(screenRect))
    {
     // Clear the background color if requested.
-    if ( mUseBackgroundColor )
+//    if ( mUseBackgroundColor )
     {
         GFX->clear( GFXClearZBuffer | GFXClearStencil | GFXClearTarget, mBackgroundColor, 1.0f, 0 );
     }

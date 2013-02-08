@@ -119,8 +119,8 @@ GFXOpenGLPreserveInteger TORQUE_CONCAT(preserve_, __LINE__) (GL_TEXTURE_2D, GL_T
 //#define PRESERVE_3D_TEXTURE() \
 //GFXOpenGLPreserveInteger TORQUE_CONCAT(preserve_, __LINE__) (GL_TEXTURE_3D, GL_TEXTURE_BINDING_3D, glBindTexture)
 
-//#define PRESERVE_FRAMEBUFFER() \
-//GFXOpenGLPreserveInteger TORQUE_CONCAT(preserve_, __LINE__) (GL_READ_FRAMEBUFFER_APPLE, GL_READ_FRAMEBUFFER_BINDING_APPLE, glBindFramebuffer);\
-//GFXOpenGLPreserveInteger TORQUE_CONCAT(preserve2_, __LINE__) (GL_DRAW_FRAMEBUFFER_APPLE, GL_DRAW_FRAMEBUFFER_BINDING_APPLE, glBindFramebuffer)
+#define PRESERVE_FRAMEBUFFER() \
+GFXOpenGLPreserveInteger TORQUE_CONCAT(preserve_, __LINE__) (GL_READ_FRAMEBUFFER, GL_READ_FRAMEBUFFER_BINDING, glBindFramebuffer);\
+GFXOpenGLPreserveInteger TORQUE_CONCAT(preserve2_, __LINE__) (GL_DRAW_FRAMEBUFFER, GL_DRAW_FRAMEBUFFER_BINDING, glBindFramebuffer)
 
 #endif

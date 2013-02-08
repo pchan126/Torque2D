@@ -185,7 +185,7 @@ public:
             const Vector2& texturePos2,
             const Vector2& texturePos3,
             GFXTexHandle& texture,
-            const ColorF& color = ColorF(-1.0f, -1.0f, -1.0f) );
+            const ColorF& color = ColorF(1.0f, 1.0f, 1.0f) );
 
     /// Render a quad immediately without affecting current batch.
     /// All render state should be set beforehand directly.

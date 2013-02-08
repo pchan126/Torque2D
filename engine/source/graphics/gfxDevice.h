@@ -676,7 +676,7 @@ public:
    virtual GFXTextureTarget *allocRenderToTextureTarget()=0;
    
    /// Allocate a target for a given window.
-//   virtual GFXWindowTarget *allocWindowTarget(PlatformWindow *window)=0;
+   virtual GFXWindowTarget *allocWindowTarget(void *window)=0;
    
    /// Store the current render target to restore later.
    void pushActiveRenderTarget();
@@ -968,6 +968,7 @@ public:
       GSTexture,
       GSModColorTexture,
       GSAddColorTexture,
+      GSAlphaTexture,
       GSTargetRestore,
       GSPoint,
       GSVideo,

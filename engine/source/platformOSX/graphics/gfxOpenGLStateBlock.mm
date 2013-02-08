@@ -137,7 +137,7 @@ void GFXOpenGLStateBlock::activate(const GFXOpenGLStateBlock* oldState)
 //   CHECK_TOGGLE_STATE(vertexColorEnable, GL_COLOR_MATERIAL);
 
    if(STATE_CHANGE(fillMode))
-      glPolygonMode(GL_FRONT_AND_BACK, GFXGLFillMode[mDesc.fillMode]);
+      GL_CHECK(glPolygonMode(GL_FRONT_AND_BACK, GFXGLFillMode[mDesc.fillMode]));
 
 #undef CHECK_STATE
 #undef TOGGLE_STATE

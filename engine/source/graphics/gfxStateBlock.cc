@@ -22,7 +22,7 @@
 #include "graphics/gfxStateBlock.h"
 #include "algorithm/crc.h"
 #include "graphics/gfxDevice.h"
-#include "string/stringFunctions.h"
+#include "platform/platformString.h"
 #include "graphics/gfxStringEnumTranslate.h"
 
 ///

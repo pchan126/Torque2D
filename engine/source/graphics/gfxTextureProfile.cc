@@ -25,7 +25,7 @@
 
 #include "graphics/GFXTextureObject.h"
 #include "graphics/gBitmap.h"
-#include "string/stringFunctions.h"
+#include "platform/platformString.h"
 #include "console/console.h"
 //#include "console/engineAPI.h"
 

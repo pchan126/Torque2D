@@ -189,7 +189,8 @@ void FontRenderBatcher::render( F32 rot, const Point2F &offset )
       if(!mSheets[i]->numChars )
          continue;
 
-      GFX->setupGenericShaders( GFXDevice::GSAddColorTexture );
+      GFX->setupGenericShaders( GFXDevice::GSAlphaTexture );
+//       GFX->setupGenericShaders( GFXDevice::GSTexture );
 //      GFX->setupGenericShaders( GFXDevice::GSTest );
       GFX->setTexture( 0, mFont->getTextureHandle(0) );
       GFX->drawPrimitive(GFXTriangleList, mSheets[i]->startVertex, mSheets[i]->numChars * 2);

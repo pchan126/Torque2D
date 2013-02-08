@@ -36,7 +36,7 @@
 #include "./gfxOpenGLTextureObject.h"
 //#include "./gfxOpenGLCubemap.h"
 #include "./gfxOpenGLCardProfiler.h"
-//#include "./gfxOpenGLWindowTarget.h"
+#include "./gfxOpenGLWindowTarget.h"
 
 #include "./gfxOpenGLShader.h"
 #include "graphics/primBuilder.h"
@@ -82,12 +82,12 @@ void GFXOpenGLDevice::initGLState()
 
 //-----------------------------------------------------------------------------
 // Matrix interface
-GFXOpenGLDevice::GFXOpenGLDevice() :
+GFXOpenGLDevice::GFXOpenGLDevice( void* context) :
+                        mContext(context),
                         mCurrentVB(NULL),
                         mCurrentPB(NULL),
                         m_mCurrentWorld(true),
                         m_mCurrentView(true),
-                        mContext(NULL),
                         mPixelFormat(NULL),
                         mPixelShaderVersion(0.0f),
                         mMaxShaderTextures(2),
@@ -102,6 +102,10 @@ GFXOpenGLDevice::GFXOpenGLDevice() :
 
 //    m_WorldStackRef = GLKMatrixStackCreate(kCFAllocatorDefault);
 //    m_ProjectionStackRef = GLKMatrixStackCreate(kCFAllocatorDefault);
+    
+    for (int i = 0; i < TEXTURE_STAGE_COUNT; i++)
+        mActiveTextureType[i] = GL_TEXTURE_2D;
+    
     mTextureManager = new GFXOpenGLTextureManager();
     
     m_WorldStack.push_back(MatrixF(true));
@@ -162,59 +166,16 @@ void GFXOpenGLDevice::init( )
     if(mInitialized)
         return;
 
-    NSOpenGLContext* ctx = _createContextForWindow();
-    [ctx makeCurrentContext];
-    mContext = ctx;
+//    NSOpenGLContext* ctx = _createContextForWindow();
+//    [ctx makeCurrentContext];
+//    mContext = ctx;
     
 //    mTextureLoader = [[GLKTextureLoader alloc] initWithShareContext:(NSOpenGLContext *)ctx ];
-
-//    loadGLCore();
-//    loadGLExtensions(ctx);
 
     initGLState();
     
     mInitialized = true;
     deviceInited();
-
-    Vector<GFXShaderMacro> macros;
-    
-    NSBundle *bundle = [NSBundle mainBundle];
-    StringTableEntry bte = StringTable->insert([[bundle executablePath] UTF8String]);
-   
-    char vertBuffer[1024];
-    char fragBuffer[1024];
-    //  #Color Shader
-    Con::expandPath(vertBuffer, sizeof(vertBuffer), "^Sandbox/shaders/CVert.glsl");
-    Con::expandPath(fragBuffer, sizeof(fragBuffer), "^Sandbox/shaders/CFrag.glsl");
-
-    mGenericShader[0] = createShader();
-    mGenericShader[0]->init(String(vertBuffer), String(fragBuffer), 0, macros);
-    mGenericShaderConst[0] = mGenericShader[0]->allocConstBuffer();
-
-    //  #Texture Shader
-    Con::expandPath(vertBuffer, sizeof(vertBuffer), "^Sandbox/shaders/simpleVert.glsl");
-    Con::expandPath(fragBuffer, sizeof(fragBuffer), "^Sandbox/shaders/simpleFrag.glsl");
-    
-    mGenericShader[1] = createShader();
-    mGenericShader[1]->init(String(vertBuffer), String(fragBuffer), 0, macros);
-    mGenericShaderConst[1] = mGenericShader[1]->allocConstBuffer();
-
-    //  #Point Shader
-    Con::expandPath(vertBuffer, sizeof(vertBuffer), "^Sandbox/shaders/pointVert.glsl");
-    Con::expandPath(fragBuffer, sizeof(fragBuffer), "^Sandbox/shaders/pointFrag.glsl");
-    
-    mGenericShader[2] = createShader();
-    mGenericShader[2]->init(String(vertBuffer), String(fragBuffer), 0, macros);
-    mGenericShaderConst[2] = mGenericShader[2]->allocConstBuffer();
-    
-//    GFXShaderConstHandle* hand = mGenericShader[0]->getShaderConstHandle("$mvp_matrix");
-    //  #Point Shader
-    Con::expandPath(vertBuffer, sizeof(vertBuffer), "^Sandbox/shaders/testVert.glsl");
-    Con::expandPath(fragBuffer, sizeof(fragBuffer), "^Sandbox/shaders/testFrag.glsl");
-    
-    mGenericShader[3] = createShader();
-    mGenericShader[3]->init(String(vertBuffer), String(fragBuffer), 0, macros);
-    mGenericShaderConst[3] = mGenericShader[3]->allocConstBuffer();
 }
 
 void GFXOpenGLDevice::addVideoMode(GFXVideoMode toAdd)
@@ -444,6 +405,7 @@ void GFXOpenGLDevice::endSceneInternal()
 
 void GFXOpenGLDevice::clear(U32 flags, ColorI color, F32 z, U32 stencil)
 {
+    GL_CHECK();
     // Make sure we have flushed our render target state.
     _updateRenderTargets();
     
@@ -504,6 +466,7 @@ GLsizei GFXOpenGLDevice::primCountToIndexCount(GFXPrimitiveType primType, U32 pr
 
 void GFXOpenGLDevice::updateStates(bool forceSetAll /*=false*/)
 {
+    GL_CHECK();
     PROFILE_SCOPE(GFXDevice_updateStates);
     
     if(forceSetAll)
@@ -739,9 +702,9 @@ void GFXOpenGLDevice::drawPrimitive( GFXPrimitiveType primType, U32 vertexStart,
 {
     preDrawPrimitive();
     glDisable(GL_CULL_FACE);
-//    glDisable(GL_STENCIL_TEST);
-//    glDisable(GL_SCISSOR_TEST);
-//    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_STENCIL_TEST);
+    glDisable(GL_SCISSOR_TEST);
+    glDisable(GL_DEPTH_TEST);
 
     
     // There are some odd performance issues if a buffer is bound to GL_ELEMENT_ARRAY_BUFFER when glDrawArrays is called.  Unbinding the buffer
@@ -866,13 +829,13 @@ void GFXOpenGLDevice::setTextureInternal(U32 textureUnit, const GFXTextureObject
     {
         // GFXOpenGLTextureObject::bind also handles applying the current sampler state.
         if(mActiveTextureType[textureUnit] != tex->getBinding() && mActiveTextureType[textureUnit] != GL_ZERO)
-            glBindTexture(mActiveTextureType[textureUnit], 0);
+            GL_CHECK(glBindTexture(mActiveTextureType[textureUnit], 0));
         mActiveTextureType[textureUnit] = tex->getBinding();
         tex->bind(textureUnit);
     }
     else if(mActiveTextureType[textureUnit] != GL_ZERO)
     {
-        glBindTexture(mActiveTextureType[textureUnit], 0);
+        GL_CHECK(glBindTexture(mActiveTextureType[textureUnit], 0));
         mActiveTextureType[textureUnit] = GL_ZERO;
     }
     
@@ -967,33 +930,33 @@ const MatrixF GFXOpenGLDevice::getMatrix( GFXMatrixType mtype )
 
 void GFXOpenGLDevice::setClipRect( const RectI &inRect )
 {
-//    AssertFatal(mCurrentRT.isValid(), "GFXOpenGLDevice::setClipRect - must have a render target set to do any rendering operations!");
+    AssertFatal(mCurrentRT.isValid(), "GFXOpenGLDevice::setClipRect - must have a render target set to do any rendering operations!");
     
-//    // Clip the rect against the renderable size.
-//    Point2I size = mCurrentRT->getSize();
-//    RectI maxRect(Point2I(0,0), size);
-//    mClip = inRect;
-//    mClip.intersect(maxRect);
-//    
-//    // Create projection matrix.  See http://www.opengl.org/documentation/specs/man_pages/hardcopy/GL/html/gl/ortho.html
-//    const F32 left = mClip.point.x;
-//    const F32 right = mClip.point.x + mClip.extent.x;
-//    const F32 bottom = mClip.extent.y;
-//    const F32 top = 0.0f;
-//    const F32 near = 0.0f;
-//    const F32 far = 1.0f;
-//    
-//    m_mCurrentProj.setOrtho(left, right, bottom, top, near, far);
-//    m_mCurrentProj.translate(0.0, -mClip.point.y, 0.0f);
-//    setMatrix(GFXMatrixProjection, m_mCurrentProj);
-//    
-//    MatrixF mTempMatrix(true);
-//    setViewMatrix( mTempMatrix );
-//    setWorldMatrix( mTempMatrix );
-//    
-//    // Set the viewport to the clip rect
-//    RectI viewport(mClip.point.x, size.y - (mClip.point.y + mClip.extent.y), mClip.extent.x, mClip.extent.y);
-//    setViewport(viewport);
+    // Clip the rect against the renderable size.
+    Point2I size = mCurrentRT->getSize();
+    RectI maxRect(Point2I(0,0), size);
+    mClip = inRect;
+    mClip.intersect(maxRect);
+    
+    // Create projection matrix.  See http://www.opengl.org/documentation/specs/man_pages/hardcopy/GL/html/gl/ortho.html
+    const F32 left = mClip.point.x;
+    const F32 right = mClip.point.x + mClip.extent.x;
+    const F32 bottom = mClip.extent.y;
+    const F32 top = 0.0f;
+    const F32 near = 0.0f;
+    const F32 far = 1.0f;
+    
+    m_mCurrentProj.setOrtho(left, right, bottom, top, near, far);
+    m_mCurrentProj.translate(0.0, -mClip.point.y, 0.0f);
+    setMatrix(GFXMatrixProjection, m_mCurrentProj);
+    
+    MatrixF mTempMatrix(true);
+    setViewMatrix( mTempMatrix );
+    setWorldMatrix( mTempMatrix );
+    
+    // Set the viewport to the clip rect
+    RectI viewport(mClip.point.x, size.y - (mClip.point.y + mClip.extent.y), mClip.extent.x, mClip.extent.y);
+    setViewport(viewport);
 }
 
 /// Creates a state block object based on the desc passed in.  This object
@@ -1016,26 +979,21 @@ void GFXOpenGLDevice::setStateBlockInternal(GFXStateBlock* block, bool force)
     mCurrentGLStateBlock = glBlock;
 }
 
-//////------------------------------------------------------------------------------
-////
-////-----------------------------------------------------------------------------
-//GFXWindowTarget *GFXOpenGLDevice::allocWindowTarget(PlatformWindow *window)
-//{
-//    void *ctx = NULL;
-//    
-//    // Init if needed, or create a new context
-//    if(!mInitialized)
-//        init(window->getVideoMode(), window);
-//    else
-//        ctx = _createContextForWindow(window, mContext, mPixelFormat);
-//    
-//    // Allocate the wintarget and create a new context.
-//    GFXOpenGLWindowTarget *gwt = new GFXOpenGLWindowTarget(window, this);
-//    gwt->mContext = ctx ? ctx : mContext;
-//    
-//    // And return...
-//    return gwt;
-//}
+////------------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
+GFXWindowTarget *GFXOpenGLDevice::allocWindowTarget(void *window)
+{
+    OSXTorqueView *torqueView = (OSXTorqueView*)(window);
+    
+    // Allocate the wintarget and create a new context.
+    GFXOpenGLWindowTarget *gwt = new GFXOpenGLWindowTarget(window, this);
+    if (gwt->mContext == NULL)
+        gwt->mContext = mContext;
+    
+    // And return...
+    return gwt;
+}
 
 
 GFXTextureTarget * GFXOpenGLDevice::allocRenderToTextureTarget()
@@ -1068,6 +1026,53 @@ GFXTextureTarget * GFXOpenGLDevice::allocRenderToTextureTarget()
 //    return query;
 //}
 
+void GFXOpenGLDevice::initGenericShaders()
+{
+    Vector<GFXShaderMacro> macros;
+    char vertBuffer[1024];
+    char fragBuffer[1024];
+    //  #Color Shader
+    Con::expandPath(vertBuffer, sizeof(vertBuffer), "^Sandbox/shaders/CVert.glsl");
+    Con::expandPath(fragBuffer, sizeof(fragBuffer), "^Sandbox/shaders/CFrag.glsl");
+    
+    mGenericShader[0] = createShader();
+    mGenericShader[0]->init(String(vertBuffer), String(fragBuffer), 0, macros);
+    mGenericShaderConst[0] = mGenericShader[0]->allocConstBuffer();
+    
+    //  #Texture Shader
+    Con::expandPath(vertBuffer, sizeof(vertBuffer), "^Sandbox/shaders/simpleVert.glsl");
+    Con::expandPath(fragBuffer, sizeof(fragBuffer), "^Sandbox/shaders/simpleFrag.glsl");
+    
+    mGenericShader[1] = createShader();
+    mGenericShader[1]->init(String(vertBuffer), String(fragBuffer), 0, macros);
+    mGenericShaderConst[1] = mGenericShader[1]->allocConstBuffer();
+    
+    //  #Point Shader
+    Con::expandPath(vertBuffer, sizeof(vertBuffer), "^Sandbox/shaders/pointVert.glsl");
+    Con::expandPath(fragBuffer, sizeof(fragBuffer), "^Sandbox/shaders/pointFrag.glsl");
+    
+    mGenericShader[2] = createShader();
+    mGenericShader[2]->init(String(vertBuffer), String(fragBuffer), 0, macros);
+    mGenericShaderConst[2] = mGenericShader[2]->allocConstBuffer();
+    
+    //    GFXShaderConstHandle* hand = mGenericShader[0]->getShaderConstHandle("$mvp_matrix");
+    //  #Point Shader
+    Con::expandPath(vertBuffer, sizeof(vertBuffer), "^Sandbox/shaders/testVert.glsl");
+    Con::expandPath(fragBuffer, sizeof(fragBuffer), "^Sandbox/shaders/testFrag.glsl");
+    
+    mGenericShader[3] = createShader();
+    mGenericShader[3]->init(String(vertBuffer), String(fragBuffer), 0, macros);
+    mGenericShaderConst[3] = mGenericShader[3]->allocConstBuffer();
+
+    Con::expandPath(vertBuffer, sizeof(vertBuffer), "^Sandbox/shaders/alphaVert.glsl");
+    Con::expandPath(fragBuffer, sizeof(fragBuffer), "^Sandbox/shaders/alphaFrag.glsl");
+    
+    mGenericShader[4] = createShader();
+    mGenericShader[4]->init(String(vertBuffer), String(fragBuffer), 0, macros);
+    mGenericShaderConst[4] = mGenericShader[4]->allocConstBuffer();
+}
+
+
 void GFXOpenGLDevice::setupGenericShaders( GenericShaderType type )
 {
 //    GLKBaseEffect *GenericEffect = static_cast<GLKBaseEffect*>(baseEffect);
@@ -1075,13 +1080,13 @@ void GFXOpenGLDevice::setupGenericShaders( GenericShaderType type )
     MatrixF xform(GFX->getProjectionMatrix());
     xform *= GFX->getViewMatrix();
     xform *= GFX->getWorldMatrix();
-//    xform.transpose();
+    xform.transpose();
     
-    //    Con::printf("setupGenericShaders");
-    //    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
-    //    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
-    //    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
-    //    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
+//    Con::printf("setupGenericShaders");
+//    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
+//    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
+//    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
+//    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
     
     
     switch (type) {
@@ -1093,7 +1098,7 @@ void GFXOpenGLDevice::setupGenericShaders( GenericShaderType type )
         case GSTexture:
         case GSModColorTexture:
         case GSAddColorTexture:
-            setShader(mGenericShader[1]);
+            GL_CHECK(setShader(mGenericShader[1]));
             setShaderConstBuffer( mGenericShaderConst[1] );
             mGenericShaderConst[1]->setSafe( mGenericShader[1]->getShaderConstHandle("$mvp_matrix"), xform );
             mGenericShaderConst[1]->setSafe( mGenericShader[1]->getShaderConstHandle("$sampler2d_0"), 0);
@@ -1108,6 +1113,12 @@ void GFXOpenGLDevice::setupGenericShaders( GenericShaderType type )
             setShader(mGenericShader[3]);
             setShaderConstBuffer( mGenericShaderConst[3] );
             mGenericShaderConst[3]->setSafe( mGenericShader[3]->getShaderConstHandle("$mvp_matrix"), xform );
+            break;
+        case GSAlphaTexture:
+            setShader(mGenericShader[4]);
+            setShaderConstBuffer( mGenericShaderConst[4] );
+            mGenericShaderConst[4]->setSafe( mGenericShader[4]->getShaderConstHandle("$mvp_matrix"), xform );
+            mGenericShaderConst[4]->setSafe( mGenericShader[4]->getShaderConstHandle("$sampler2d_0"), 0);
             break;
             //        case GSTargetRestore:
             
@@ -1190,114 +1201,55 @@ U32 GFXOpenGLDevice::getNumRenderTargets() const
     return 1;
 }
 
-//void GFXOpenGLWindowTarget::makeActive()
-//{
-////	glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
-////    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, viewRenderbuffer);
-////    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderbuffer);
-//    if( !mFullscreenContext && mWindow->getVideoMode().fullScreen )
-//    {
-//        static_cast< GFXOpenGLDevice* >( mDevice )->zombify();
-//        _setupNewMode();
-//    }
-//    
-//    if (mFullscreenContext)
-//        [(NSOpenGLContext*)mFullscreenContext makeCurrentContext];
-//    else
-//        [(NSOpenGLContext*)mContext makeCurrentContext];
-//}
-
-
-//void GFXOpenGLWindowTarget::_teardownCurrentMode()
-//{
-//    glDeleteFramebuffers(1, &mFramebuffer);
-//    mFramebuffer = 0;
-//    
-//	glDeleteRenderbuffers(1, &viewRenderbuffer);
-//	viewRenderbuffer = 0;
-//	
-//    glDeleteRenderbuffers(1, &depthRenderbuffer);
-//    depthRenderbuffer = 0;
-//}
-
-
-//void GFXOpenGLWindowTarget::_setupNewMode()
-//{
-//    if(mWindow->getVideoMode().fullScreen && !mFullscreenContext)
-//    {
-//        // We have to create a fullscreen context.
-//        Vector<NSOpenGLPixelFormatAttribute> attributes = _beginPixelFormatAttributesForDisplay(static_cast<OSXWindow*>(mWindow)->getDisplay());
-//        _addColorAlphaDepthStencilAttributes(attributes, 24, 8, 24, 8);
-//        _addFullscreenAttributes(attributes);
-//        _endAttributeList(attributes);
-//        
-//        NSOpenGLPixelFormat* fmt = [[NSOpenGLPixelFormat alloc] initWithAttributes:attributes.address()];
-//        mFullscreenContext = [[NSOpenGLContext alloc] initWithFormat:fmt shareContext:nil];
-//        [fmt release];
-//        [(NSOpenGLContext*)mFullscreenContext setFullScreen];
-//        [(NSOpenGLContext*)mFullscreenContext makeCurrentContext];
-//        // Restore resources in new context
-//        static_cast<GFXOpenGLDevice*>(mDevice)->resurrect();
-//        GFX->updateStates(true);
-//    }
-//    else if(!mWindow->getVideoMode().fullScreen && mFullscreenContext)
-//    {
-//        [(NSOpenGLContext*)mFullscreenContext release];
-//        mFullscreenContext = NULL;
-//        [(NSOpenGLContext*)mContext makeCurrentContext];
-//        GFX->clear(GFXClearTarget | GFXClearZBuffer | GFXClearStencil, ColorI(0, 0, 0), 1.0f, 0);
-//        static_cast<GFXOpenGLDevice*>(mDevice)->resurrect();
-//        GFX->updateStates(true);
-//    }
-//}
-
 
 void GFXOpenGLDevice::_updateRenderTargets()
 {
-//    if ( mRTDirty || mCurrentRT->isPendingState() )
-//    {
-//        if ( mRTDeactivate )
-//        {
-//            mRTDeactivate->deactivate();
-//            mRTDeactivate = NULL;
-//        }
-//        
-//        // NOTE: The render target changes is not really accurate
-//        // as the GFXTextureTarget supports MRT internally.  So when
-//        // we activate a GFXTarget it could result in multiple calls
-//        // to SetRenderTarget on the actual device.
-//        //      mDeviceStatistics.mRenderTargetChanges++;
-//        
-//        GFXOpenGLTextureTarget *tex = dynamic_cast<GFXOpenGLTextureTarget*>( mCurrentRT.getPointer() );
-//        if ( tex )
-//        {
-//            tex->applyState();
-//            tex->makeActive();
-//        }
-//        else
-//        {
-//            GFXOpenGLWindowTarget *win = dynamic_cast<GFXOpenGLWindowTarget*>( mCurrentRT.getPointer() );
-//            AssertFatal( win != NULL,
-//                        "GFXOpenGLDevice::_updateRenderTargets() - invalid target subclass passed!" );
-//            
-//            win->makeActive();
-//            
-//            if( win->mContext != static_cast<GFXOpenGLDevice*>(GFX)->mContext )
-//            {
-//                mRTDirty = false;
-//                GFX->updateStates(true);
-//            }
-//        }
-//        
-//        mRTDirty = false;
-//    }
+    GL_CHECK();
+    if ( mRTDirty || mCurrentRT->isPendingState() )
+    {
+        if ( mRTDeactivate )
+        {
+            mRTDeactivate->deactivate();
+            mRTDeactivate = NULL;
+        }
+        
+        // NOTE: The render target changes is not really accurate
+        // as the GFXTextureTarget supports MRT internally.  So when
+        // we activate a GFXTarget it could result in multiple calls
+        // to SetRenderTarget on the actual device.
+        //      mDeviceStatistics.mRenderTargetChanges++;
+        
+        GFXOpenGLTextureTarget *tex = dynamic_cast<GFXOpenGLTextureTarget*>( mCurrentRT.getPointer() );
+        if ( tex )
+        {
+            tex->applyState();
+            tex->makeActive();
+        }
+        else
+        {
+            GFXOpenGLWindowTarget *win = dynamic_cast<GFXOpenGLWindowTarget*>( mCurrentRT.getPointer() );
+            AssertFatal( win != NULL,
+                        "GFXOpenGLDevice::_updateRenderTargets() - invalid target subclass passed!" );
+            
+            GL_CHECK();
+            win->makeActive();
+            
+            if( win->mContext != static_cast<GFXOpenGLDevice*>(GFX)->mContext )
+            {
+                mRTDirty = false;
+                GFX->updateStates(true);
+            }
+        }
+        
+        mRTDirty = false;
+    }
     
-//    if ( mViewportDirty )
-//    {
+    if ( mViewportDirty )
+    {
 //        Con::printf("if mViewport Dirty %d %d %d %d", mViewport.point.x, mViewport.point.y, mViewport.extent.x, mViewport.extent.y);
-//        glViewport( mViewport.point.x, mViewport.point.y, mViewport.extent.x, mViewport.extent.y );
-//        mViewportDirty = false;
-//    }
+        glViewport( mViewport.point.x, mViewport.point.y, mViewport.extent.x, mViewport.extent.y );
+        mViewportDirty = false;
+    }
 }
 
 
@@ -1412,9 +1364,10 @@ bool GFXOpenGLDevice::cleanUpContext()
     {
         if (!Video::smNeedResurrect)
         {
-//            Con::printf( "Killing the texture manager..." );
+            Con::printf( "Killing the texture manager..." );
+            TEXMGR->zombify();
 //            Game->textureKill();
-//            needResurrect = true;
+            needResurrect = true;
         }
         
         [[platState torqueView] clearContext];
@@ -1439,6 +1392,7 @@ bool GFXOpenGLDevice::activate( U32 width, U32 height, U32 bpp, bool fullScreen 
     // Create the window or capture fullscreen
     if(!setScreenMode(width, height, bpp, fullScreen, true, false))
         return false;
+    
     
     // set the displayDevice pref to "OpenGL"
     Con::setVariable( "$pref::Video::displayDevice", mDeviceName );
@@ -1476,6 +1430,8 @@ NSOpenGLPixelFormat* generateValidPixelFormat(bool fullscreen, U32 bpp, U32 samp
     attr[i++] = NSOpenGLPFADoubleBuffer;
     attr[i++] = NSOpenGLPFANoRecovery;
     attr[i++] = NSOpenGLPFAAccelerated;
+    attr[i++] = NSOpenGLPFAOpenGLProfile;
+    attr[i++] = NSOpenGLProfileVersion3_2Core;
     
     if (fullscreen)
         attr[i++] = NSOpenGLPFAFullScreen;
@@ -1575,6 +1531,8 @@ bool GFXOpenGLDevice::setScreenMode( U32 width, U32 height, U32 bpp, bool fullSc
     
     [[platState torqueView] createContextWithPixelFormat:pixelFormat];
     
+    initGenericShaders();
+
     // clear out garbage from the gl window.
     glClearColor(0,0,0,1);
     glClear(GL_COLOR_BUFFER_BIT );
@@ -1609,8 +1567,9 @@ bool GFXOpenGLDevice::setScreenMode( U32 width, U32 height, U32 bpp, bool fullSc
     
     if (needResurrect)
     {
-//        // Reload the textures gl names
-//        Con::printf( "Resurrecting the texture manager..." );
+        // Reload the textures gl names
+        Con::printf( "Resurrecting the texture manager..." );
+        TEXMGR->resurrect();
 //        Game->textureResurrect();
     }
     
@@ -1734,4 +1693,14 @@ CGDirectDisplayID GFXOpenGLDevice::chooseMonitor()
     Con::printf("using display 0x%x", mMonitorList[monNum]);
     
     return mMonitorList[monNum];
+}
+
+void CheckOpenGLError(const char* stmt, const char* fname, int line)
+{
+    GLenum err = glGetError();
+    if (err != GL_NO_ERROR)
+    {
+        printf("OpenGL error %08x, at %s:%i - for %s\n", err, fname, line, stmt);
+        abort();
+    }
 }

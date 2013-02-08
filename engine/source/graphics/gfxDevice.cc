@@ -143,8 +143,8 @@ GFXDevice::GFXDevice()
    mInitialized = false;
 
 //   mRTDirty = false;
-//    mCurrentRT = NULL;
-    mViewport = RectI(0, 0, 0, 0);
+   mCurrentRT = NULL;
+   mViewport = RectI(0, 0, 0, 0);
    mViewportDirty = false;
 //
 //   mCurrentFrontBufferIdx = 0;

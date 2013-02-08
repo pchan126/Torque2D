@@ -32,6 +32,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+typedef char nat_char;
+
 //-----------------------------------------------------------------------------
 
 char *dStrdup_r(const char *src, const char *file, dsize_t line)
@@ -222,6 +224,161 @@ int dStrnicmp(const char *str1, const char *str2, dsize_t len)
     }
     return 0;
 }
+
+
+static inline int
+nat_isdigit( nat_char a )
+{
+    return dIsdigit( a );
+}
+
+
+static inline int
+nat_isspace( nat_char a )
+{
+    return dIsspace( a );
+}
+
+
+static inline nat_char
+nat_toupper( nat_char a )
+{
+    return dToupper( a );
+}
+
+
+static int
+compare_right(const nat_char* a, const nat_char* b)
+{
+    int bias = 0;
+    
+    /* The longest run of digits wins.  That aside, the greatest
+     value wins, but we can't know that it will until we've scanned
+     both numbers to know that they have the same magnitude, so we
+     remember it in BIAS. */
+    for (;; a++, b++) {
+        if (!nat_isdigit(*a)  &&  !nat_isdigit(*b))
+            return bias;
+        else if (!nat_isdigit(*a))
+            return -1;
+        else if (!nat_isdigit(*b))
+            return +1;
+        else if (*a < *b) {
+            if (!bias)
+                bias = -1;
+        } else if (*a > *b) {
+            if (!bias)
+                bias = +1;
+        } else if (!*a  &&  !*b)
+            return bias;
+    }
+    
+    return 0;
+}
+
+
+static int
+compare_left(const nat_char* a, const nat_char* b)
+{
+    /* Compare two left-aligned numbers: the first to have a
+     different value wins. */
+    for (;; a++, b++) {
+        if (!nat_isdigit(*a)  &&  !nat_isdigit(*b))
+            return 0;
+        else if (!nat_isdigit(*a))
+            return -1;
+        else if (!nat_isdigit(*b))
+            return +1;
+        else if (*a < *b)
+            return -1;
+        else if (*a > *b)
+            return +1;
+    }
+    
+    return 0;
+}
+
+
+//-----------------------------------------------------------------------------
+
+static int strnatcmp0(const nat_char* a, const nat_char* b, int fold_case)
+{
+    int ai, bi;
+    nat_char ca, cb;
+    int fractional, result;
+    
+    ai = bi = 0;
+    while (1) {
+        ca = a[ai]; cb = b[bi];
+        
+        /* skip over leading spaces or zeros */
+        while (nat_isspace(ca))
+            ca = a[++ai];
+        
+        while (nat_isspace(cb))
+            cb = b[++bi];
+        
+        /* process run of digits */
+        if (nat_isdigit(ca)  &&  nat_isdigit(cb)) {
+            fractional = (ca == '0' || cb == '0');
+            
+            if (fractional) {
+                if ((result = compare_left(a+ai, b+bi)) != 0)
+                    return result;
+            } else {
+                if ((result = compare_right(a+ai, b+bi)) != 0)
+                    return result;
+            }
+        }
+        
+        if (!ca && !cb) {
+            /* The strings compare the same.  Perhaps the caller
+             will want to call strcmp to break the tie. */
+            return 0;
+        }
+        
+        if (fold_case) {
+            ca = nat_toupper(ca);
+            cb = nat_toupper(cb);
+        }
+        
+        if (ca < cb)
+            return -1;
+        else if (ca > cb)
+            return +1;
+        
+        ++ai; ++bi;
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+int dStrnatcmp(const nat_char* a, const nat_char* b) {
+    return strnatcmp0(a, b, 0);
+}
+
+
+//-----------------------------------------------------------------------------
+
+/* Compare, recognizing numeric string and ignoring case. */
+int dStrnatcasecmp(const nat_char* a, const nat_char* b) {
+    return strnatcmp0(a, b, 1);
+}
+
+
+/// Check if one string starts with another
+bool dStrStartsWith(const char* str1, const char* str2)
+{
+    return !dStrnicmp(str1, str2, dStrlen(str2));
+}
+
+/// Check if one string ends with another
+bool dStrEndsWith(const char* str1, const char* str2)
+{
+    const char *p = str1 + dStrlen(str1) - dStrlen(str2);
+    return ((p >= str1) && !dStricmp(p, str2));
+}
+
 
 //-----------------------------------------------------------------------------
 

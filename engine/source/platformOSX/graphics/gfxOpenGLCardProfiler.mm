@@ -24,33 +24,77 @@
 #include "./GFXOpenGLDevice.h"
 #include "./gfxOpenGLEnumTranslate.h"
 #include "./osxGLUtils.h"
+#include <OpenGL/gl3.h>
 
 BOOL CheckForExtension(NSString *searchName)
 {
+    int num;
+    glGetIntegerv(GL_NUM_EXTENSIONS, &num);
     // For performance, the array can be created once and cached.
-    int count = 0;
-    const char* temp = (const char*)glGetStringi(GL_EXTENSIONS, count++);
-    while (temp != 0)
+    for (int count = 0; count < num; count++)
     {
-        NSString *extensionsString = [[NSString alloc ]initWithUTF8String:temp];
+        NSString *extensionsString = [[NSString alloc ]initWithUTF8String:(const char*)glGetStringi(GL_EXTENSIONS, count)];
         NSComparisonResult result = [extensionsString compare: searchName];
         [extensionsString release];
         if (result == NSOrderedSame)
             return true;
-
-        temp = (const char*)glGetStringi(GL_EXTENSIONS, count++);
     }
     return false;
-    
-//    NSArray *extensionsNames = [extensionsString componentsSeparatedByString:@" "];
-//    return [extensionsNames containsObject: searchName];
 }
+
+
+//-----------------------------------------------------------------------------
+// helper function for getGLCapabilities.
+//  returns a new CGL context for platState.hDisplay
+CGLContextObj getContextForCapsCheck()
+{
+    // silently create an opengl context on the current display, so that
+    // we can get valid renderer and capability info
+    // some of the following code is from:
+    //  http://developer.apple.com/technotes/tn2002/tn2080.html#TAN55
+    
+    osxPlatState * platState = [osxPlatState sharedPlatState];
+    
+    // From the CG display id, we can create a pixel format & context
+    // and with that context we can check opengl capabilities
+    CGOpenGLDisplayMask cglDisplayMask = CGDisplayIDToOpenGLDisplayMask([platState cgDisplay]);
+
+    NSOpenGLPixelFormatAttribute attrs[] =
+	{
+		NSOpenGLPFADoubleBuffer,
+		NSOpenGLPFADepthSize, 24,
+		NSOpenGLPFAOpenGLProfile,
+		NSOpenGLProfileVersion3_2Core,
+		0
+	};
+
+    NSOpenGLPixelFormat *pf = [[[NSOpenGLPixelFormat alloc] initWithAttributes:attrs] autorelease];
+    NSOpenGLContext* context = [[[NSOpenGLContext alloc] initWithFormat:pf shareContext:nil] autorelease];
+    
+    return (CGLContextObj)[context CGLContextObj];
+   
+    // if we can't get a good context, we can't check caps... this won't be good.
+    Con::errorf("getContextForCapsCheck could not create a cgl context on the display for gl capabilities checking!");
+    return NULL;
+}
+
 
 
 void GFXOpenGLCardProfiler::init()
 {
     osxPlatState * platState = [osxPlatState sharedPlatState];
 
+    CGLContextObj curr_ctx = CGLGetCurrentContext ();
+    CGLContextObj temp_ctx =  getContextForCapsCheck();
+    
+    if (!temp_ctx)
+    {
+        Con::errorf("OpenGL may not be set up correctly!");
+        return;
+    }
+    
+    CGLSetCurrentContext(temp_ctx);
+    
     AssertFatal([platState cgDisplay], "GFXOpenGLCardProfiler was called before a monitor was chosen!");
 
     mChipSet = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
@@ -79,6 +123,9 @@ void GFXOpenGLCardProfiler::init()
    Parent::init();
    
 //    if(queryProfile("GL::suppBlendMinMax"))
+    // done. silently restore the old cgl context.
+    CGLSetCurrentContext(curr_ctx);
+    CGLDestroyContext(temp_ctx);
 }
 
 void GFXOpenGLCardProfiler::setupCardCapabilities()
@@ -91,8 +138,6 @@ void GFXOpenGLCardProfiler::setupCardCapabilities()
     
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTexSize);
     glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, (GLint*)&maxShaderTextures);
-
-    
     
 //    glGetIntegerv(GL_DEPTH_BITS, &maxDepthBits);
 //    glGetIntegerv(GL_STENCIL_BITS, &maxStencilBits);

@@ -20,7 +20,7 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-//#include "string/stringFunctions.h"
+#include "platform/platformString.h"
 
 #include "graphics/gfxStringEnumTranslate.h"
 //#include "graphics/gfxAPI.h"

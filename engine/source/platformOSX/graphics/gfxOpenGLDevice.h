@@ -48,7 +48,7 @@ class GFXOpenGLDevice : public GFXDevice
 public:
    void zombify();
    void resurrect();
-   GFXOpenGLDevice();
+   GFXOpenGLDevice( void* context );
    virtual ~GFXOpenGLDevice();
 
 //   static void enumerateAdapters( Vector<GFXAdapter*> &adapterList );
@@ -81,10 +81,10 @@ public:
 
    ///
     
-//   GFXWindowTarget *gwt;   // single window render target;
+   GFXWindowTarget *gwt;   // single window render target;
     
    virtual GFXTextureTarget *allocRenderToTextureTarget();
-//   virtual GFXWindowTarget *allocWindowTarget(PlatformWindow *window);
+   virtual GFXWindowTarget *allocWindowTarget(void *window);
    virtual void _updateRenderTargets();
 
    ///@}
@@ -94,7 +94,7 @@ public:
     void* baseEffect;
     GFXOpenGLShader* mpCurrentShader;
     
-    GFXOpenGLShader* mGenericShader[4];
+    GFXOpenGLShader* mGenericShader[5];
     GFXShaderConstBufferRef mGenericShaderConst[4];
     GFXStateBlockRef mGenericShaderStateblock[4];
     
@@ -287,6 +287,8 @@ private:
    
    void initGLState(); ///< Guaranteed to be called after all extensions have been loaded, use to init card profiler, shader version, max samplers, etc.
    
+    void initGenericShaders();
+    
 //   GFXFence* _createPlatformSpecificFence(); ///< If our platform (e.g. OS X) supports a fence extenstion (e.g. GL_APPLE_fence) this will create one, otherwise returns NULL
    
    void setPB(GFXOpenGLPrimitiveBuffer* pb); ///< Sets mCurrentPB
@@ -341,5 +343,16 @@ public:
     
     bool setVerticalSync( bool sync );
 };
+
+void CheckOpenGLError(const char* stmt, const char* fname, int line);
+
+#ifdef TORQUE_DEBUG
+    #define GL_CHECK(stmt) do { \
+    stmt; \
+    CheckOpenGLError(#stmt, __FILE__, __LINE__); \
+} while (0)
+#else
+    #define GL_CHECK(stmt) stmt
+#endif
 
 #endif

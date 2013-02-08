@@ -40,6 +40,7 @@
 #include "sim/simBase.h"
 //#include "core/util/path.h"
 #include "platform/threads/mutex.h"
+#include "delegates/delegateSignal.h"
 
 class Point2I;
 class GFXDevice;
@@ -217,10 +218,10 @@ public:
     
     // Signal for async loading *ding fries are done*
     /// The texture event signal type.
-//    typedef Signal<void(GFXTexNotifyCode code)> EventSignal;
+    typedef Signal<void(GFXTexNotifyCode code)> EventSignal;
     
     /// The texture event signal.
-//    EventSignal smEventSignal;
+    EventSignal smEventSignal;
 
     //    DECLARE_CONOBJECT(GFXTextureObject);
 protected:

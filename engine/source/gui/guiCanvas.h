@@ -35,6 +35,9 @@
 #ifndef _PLATFORMINPUT_H_
 #include "platform/platformInput.h"
 #endif
+
+#include "graphics/gfxDevice.h"
+
 /// A canvas on which rendering occurs.
 ///
 ///
@@ -164,11 +167,15 @@ protected:
    U32 hoverLeftControlTime;
 
    /// @}
+   GFXWindowTarget *mWindowTarget;
 
 public:
    DECLARE_CONOBJECT(GuiCanvas);
    GuiCanvas();
    virtual ~GuiCanvas();
+
+    virtual bool onAdd();
+    virtual void onRemove();
 
     static void             initPersistFields();
 
@@ -217,6 +224,8 @@ public:
 
    /// @name Canvas Content Management
    /// @{
+    /// This returns the GFXWindowTarget that coresponds to this Canvas
+    virtual GFXWindowTarget *getWindowTarget()  { return mWindowTarget;   }
 
    /// This sets the content control to something different
    /// @param   gui   New content control

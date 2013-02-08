@@ -117,8 +117,8 @@ void GFXOpenGLEnumTranslate::init()
    GFXGLStencilOp[GFXStencilOpDecr] = GL_DECR_WRAP;
    
    // Texture formats
-   GFXGLTextureInternalFormat[GFXFormatA8] = GL_ALPHA;
-   GFXGLTextureInternalFormat[GFXFormatL8] = GL_ALPHA;
+   GFXGLTextureInternalFormat[GFXFormatA8] = GL_RED;
+   GFXGLTextureInternalFormat[GFXFormatL8] = GL_RED;
    GFXGLTextureInternalFormat[GFXFormatR5G6B5] = GL_RGB;
    GFXGLTextureInternalFormat[GFXFormatR5G5B5A1] = GL_RGB5_A1;
    GFXGLTextureInternalFormat[GFXFormatR5G5B5X1] = GL_RGB5_A1;
@@ -204,7 +204,7 @@ void GFXOpenGLEnumTranslate::init()
    GFXGLCullMode[GFXCullCCW] = GL_FRONT;
    
    // Fill
-   GFXGLFillMode[GFXFillPoint] = GL_ZERO;
-   GFXGLFillMode[GFXFillWireframe] = GL_ZERO;
-   GFXGLFillMode[GFXFillSolid] = GL_ZERO;
+   GFXGLFillMode[GFXFillPoint] = GL_POINT;
+   GFXGLFillMode[GFXFillWireframe] = GL_LINE;
+   GFXGLFillMode[GFXFillSolid] = GL_FILL;
 }

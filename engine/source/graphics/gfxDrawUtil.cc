@@ -24,7 +24,7 @@
 #include "graphics/gfxDrawUtil.h"
 
 #include "memory/frameAllocator.h"
-#include "string/stringFunctions.h"
+#include "platform/platformString.h"
 #include "string/unicode.h"
 //#include "math/util/frustum.h"
 //#include "math/util/sphereMesh.h"
@@ -45,7 +45,7 @@ GFXDrawUtil::GFXDrawUtil( GFXDevice * d)
    mTextAnchorColor.set(0xFF, 0xFF, 0xFF, 0xFF);
    mFontRenderBatcher = new FontRenderBatcher();
 
-//   _setupStateBlocks();   
+   _setupStateBlocks();   
 }
 
 GFXDrawUtil::~GFXDrawUtil()
@@ -399,14 +399,14 @@ void GFXDrawUtil::drawBitmapStretchSR( GFXTextureObject *texture, const RectF &d
    switch (filter)
    {
    case GFXTextureFilterPoint :
-//      mDevice->setStateBlock(in_wrap ? mBitmapStretchWrapSB : mBitmapStretchSB);
+      mDevice->setStateBlock(in_wrap ? mBitmapStretchWrapSB : mBitmapStretchSB);
       break;
    case GFXTextureFilterLinear :
-//      mDevice->setStateBlock(in_wrap ? mBitmapStretchWrapLinearSB : mBitmapStretchLinearSB);
+      mDevice->setStateBlock(in_wrap ? mBitmapStretchWrapLinearSB : mBitmapStretchLinearSB);
       break;
    default:
       AssertFatal(false, "No GFXDrawUtil state block defined for this filter type!");
-//      mDevice->setStateBlock(mBitmapStretchSB);
+      mDevice->setStateBlock(mBitmapStretchSB);
       break;
    }   
    mDevice->setTexture( 0, texture );
@@ -536,8 +536,9 @@ void GFXDrawUtil::drawRectFill( const Point2F &upperLeft, const Point2F &lowerRi
 
 
    GFXVertexBufferHandle<GFXVertexPC> verthandle(mDevice, 4, GFXBufferTypeStatic, verts);
-//   mDevice->setStateBlock(mRectFillSB);
+   mDevice->setStateBlock(mRectFillSB);
    mDevice->setVertexBuffer( verthandle );
+    
    mDevice->setupGenericShaders();
    mDevice->drawPrimitive( GFXTriangleStrip, 0, 2 );
 }

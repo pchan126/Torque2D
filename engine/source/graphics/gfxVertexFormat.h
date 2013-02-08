@@ -172,7 +172,7 @@ public:
    /// @param type The element type.
    /// @param index The semantic index which is typically only used for texcoords.
    ///
-   void addElement( const StringTableEntry& semantic, GFXDeclType type, U32 index = 0, U32 stream = 0 );
+   void addElement( const String& semantic, GFXDeclType type, U32 index = 0, U32 stream = 0 );
    
    /// Returns true if there is a NORMAL semantic in this vertex format.
    bool hasNormal() const;

@@ -8,4 +8,5 @@ void main()
 {  
     vec4 texColor_0 = texture(sampler2d_0, TexCoord) * vertColor;
     FragColor = texColor_0;
+    //     FragColor = vec4(1.0, 0.5, 0.0, 1.0);
 }

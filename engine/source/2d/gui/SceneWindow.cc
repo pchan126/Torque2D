@@ -1597,7 +1597,7 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
     GFX->pushWorldMatrix();
     GFX->setWorldMatrix(MatrixF(true));
 
-//    glDisable( GL_DEPTH_TEST );
+    glDisable( GL_DEPTH_TEST );
 
     // Get Debug Stats.
     DebugStats& debugStats = pScene->getDebugStats();
@@ -1619,6 +1619,21 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
     GFX->popWorldMatrix();
     GFX->setProjectionMatrix(oldProj);
 
+//    MatrixF MV = GFX->getWorldMatrix();
+//    MatrixF F = GFX->getProjectionMatrix();
+//    
+//    Con::printf("WorldMatrix");
+//    Con::printf("%f %f %f %f", MV[0], MV[1], MV[2], MV[3]);
+//    Con::printf("%f %f %f %f", MV[4], MV[5], MV[6], MV[7]);
+//    Con::printf("%f %f %f %f", MV[8], MV[9], MV[10], MV[11]);
+//    Con::printf("%f %f %f %f", MV[12], MV[13], MV[14], MV[15]);
+//    
+//    Con::printf("ProjectionMatrix");
+//    Con::printf("%f %f %f %f", F[0], F[1], F[2], F[3]);
+//    Con::printf("%f %f %f %f", F[4], F[5], F[6], F[7]);
+//    Con::printf("%f %f %f %f", F[8], F[9], F[10], F[11]);
+//    Con::printf("%f %f %f %f", F[12], F[13], F[14], F[15]);
+    
     // Render the metrics.
     renderMetricsOverlay( offset, updateRect );
 
@@ -1690,14 +1705,6 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
     Point2I bannerOffset = updateRect.point + Point2I(8,8);
 
     GFX->getDrawUtil()->drawRectFill(updateRect.point, bottomRight, mProfile->mFillColor);
-
-//    // Draw Banner Background.
-//    glBegin(GL_TRIANGLE_STRIP);
-//        glVertex2i( updateRect.point.x, updateRect.point.y );
-//        glVertex2i( updateRect.point.x + updateRect.extent.x, updateRect.point.y );
-//        glVertex2i( updateRect.point.x, updateRect.point.y + bannerHeight + 16);
-//        glVertex2i( updateRect.point.x + updateRect.extent.x, updateRect.point.y + bannerHeight + 16);
-//    glEnd();
 
     // Disable Banner Blending.
     glDisable       ( GL_BLEND );

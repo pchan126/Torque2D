@@ -379,7 +379,7 @@ void GuiControlProfile::incRefCount()
        
       //verify the bitmap
 //      mTextureHandle = TextureHandle(mBitmapName, TextureHandle::BitmapKeepTexture);
-       Con::printf("%s", mBitmapName);
+//       Con::printf("%s", mBitmapName);
 
        if( mBorder == -1 || mBorder == -2 )
            mTextureHandle = GFXTexHandle( mBitmapName, &GFXDefaultPersistentProfile, avar("%s() - mTextureObject (line %d)", __FUNCTION__, __LINE__) );

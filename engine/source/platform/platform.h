@@ -81,6 +81,7 @@
 
 template <class T> class Vector;
 class Point2I;
+class GFXWindowTarget;
 
 //------------------------------------------------------------------------------
 
@@ -153,6 +154,7 @@ struct Platform
     static void minimizeWindow();
     static void restoreWindow();
     static void setMouseLock(bool locked);
+    static GFXWindowTarget *createWindowTarget();
 
     /// GUI.
     static void AlertOK(const char *windowTitle, const char *message);

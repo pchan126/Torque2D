@@ -186,14 +186,14 @@ void _GFXOpenGLTextureTargetFBOImpl::applyState()
       glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
    }
    
-   _GFXGLTargetDesc* depthStecil = mTarget->getTargetDesc(GFXTextureTarget::DepthStencil);
-   if(depthStecil)
+   _GFXGLTargetDesc* depthStencil = mTarget->getTargetDesc(GFXTextureTarget::DepthStencil);
+   if(depthStencil)
    {
       // Certain drivers have issues with depth only FBOs.  That and the next two asserts assume we have a color target.
       AssertFatal(color0, "GFXOpenGLTextureTarget::applyState() - Cannot set DepthStencil target without Color0 target!");
-      AssertFatal(depthStecil->getWidth() == color0->getWidth(), "GFXOpenGLTextureTarget::applyState() - DepthStencil and Color0 targets MUST have the same width!");
-      AssertFatal(depthStecil->getHeight() == color0->getHeight(), "GFXOpenGLTextureTarget::applyState() - DepthStencil and Color0 targets MUST have the same height!");
-      glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthStecil->getBinding(), depthStecil->getHandle(), depthStecil->getMipLevel());
+      AssertFatal(depthStencil->getWidth() == color0->getWidth(), "GFXOpenGLTextureTarget::applyState() - DepthStencil and Color0 targets MUST have the same width!");
+      AssertFatal(depthStencil->getHeight() == color0->getHeight(), "GFXOpenGLTextureTarget::applyState() - DepthStencil and Color0 targets MUST have the same height!");
+      glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthStencil->getBinding(), depthStencil->getHandle(), depthStencil->getMipLevel());
    }
    else
    {
@@ -227,47 +227,6 @@ void _GFXOpenGLTextureTargetFBOImpl::finish()
    glGenerateMipmap(GL_TEXTURE_2D);
 }
 
-// This implementations uses AUX buffers (we should always have at least one) to do render to texture.  It is currently only used when we need access to the windows depth buffer.
-class _GFXOpenGLTextureTargetAUXBufferImpl : public _GFXOpenGLTextureTargetImpl
-{
-public:
-   _GFXOpenGLTextureTargetAUXBufferImpl(GFXOpenGLTextureTarget* target);
-   
-   virtual void applyState();
-   virtual void makeActive();
-   virtual void finish();
-};
-
-_GFXOpenGLTextureTargetAUXBufferImpl::_GFXOpenGLTextureTargetAUXBufferImpl(GFXOpenGLTextureTarget* target)
-{
-   mTarget = target;
-}
-
-void _GFXOpenGLTextureTargetAUXBufferImpl::applyState()
-{
-   
-}
-
-void _GFXOpenGLTextureTargetAUXBufferImpl::makeActive()
-{
-//   glDrawBuffer(GL_AUX0);
-//   glReadBuffer(GL_AUX0);
-}
-
-void _GFXOpenGLTextureTargetAUXBufferImpl::finish()
-{
-   // Bind the Color0 texture
-   _GFXGLTargetDesc* color0 = mTarget->getTargetDesc(GFXTextureTarget::Color0);
-   
-   glActiveTexture(GL_TEXTURE0);
-   // Assume we're a 2D texture for now.
-//   PRESERVE_2D_TEXTURE();
-   glBindTexture(color0->getBinding(), color0->getHandle());
-   glCopyTexSubImage2D(color0->getBinding(), 0, 0, 0, 0, 0, color0->getWidth(), color0->getHeight());
-   
-   glDrawBuffer(GL_BACK);
-   glReadBuffer(GL_BACK);
-}
 
 // Actual GFXOpenGLTextureTarget interface
 GFXOpenGLTextureTarget::GFXOpenGLTextureTarget()
@@ -275,15 +234,14 @@ GFXOpenGLTextureTarget::GFXOpenGLTextureTarget()
    for(U32 i=0; i<MaxRenderSlotId; i++)
       mTargets[i] = NULL;
    
-//   GFXTextureManager::addEventDelegate( this, &GFXOpenGLTextureTarget::_onTextureEvent );
+   GFXTextureManager::addEventDelegate( this, &GFXOpenGLTextureTarget::_onTextureEvent );
 
    _impl = new _GFXOpenGLTextureTargetFBOImpl(this);
-//   _needsAux = false;
 }
 
 GFXOpenGLTextureTarget::~GFXOpenGLTextureTarget()
 {
-//   GFXTextureManager::removeEventDelegate( this, &GFXOpenGLTextureTarget::_onTextureEvent );
+   GFXTextureManager::removeEventDelegate( this, &GFXOpenGLTextureTarget::_onTextureEvent );
 }
 
 const Point2I GFXOpenGLTextureTarget::getSize()
@@ -302,13 +260,6 @@ GFXFormat GFXOpenGLTextureTarget::getFormat()
 
 void GFXOpenGLTextureTarget::attachTexture( RenderSlot slot, GFXTextureObject *tex, U32 mipLevel/*=0*/, U32 zOffset /*= 0*/ )
 {
-   // GFXTextureTarget::sDefaultDepthStencil is a hint that we want the window's depth buffer.
-//   if(tex == GFXTextureTarget::sDefaultDepthStencil)
-//      _needsAux = true;
-   
-//   if(slot == DepthStencil && tex != GFXTextureTarget::sDefaultDepthStencil)
-//      _needsAux = false;
-   
    // Triggers an update when we next render
    invalidateState();
 
@@ -376,12 +327,8 @@ void GFXOpenGLTextureTarget::applyState()
    // So we don't do this over and over again
    stateApplied();
    
-   // Ensure we have the proper implementation (consider changing to an enum?)
-//   if(_needsAux && dynamic_cast<_GFXOpenGLTextureTargetAUXBufferImpl*>(_impl.ptr()) == NULL)
-//      _impl = new _GFXOpenGLTextureTargetAUXBufferImpl(this);
-//   else if(!_needsAux && dynamic_cast<_GFXOpenGLTextureTargetFBOImpl*>(_impl.ptr()) == NULL)
-      _impl = new _GFXOpenGLTextureTargetFBOImpl(this);
-           
+   _impl = new _GFXOpenGLTextureTargetFBOImpl(this);
+    
    _impl->applyState();
 }
 

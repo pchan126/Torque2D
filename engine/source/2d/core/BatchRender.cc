@@ -44,25 +44,11 @@ BatchRender::BatchRender() :
     mAlphaTestMode( -1.0f ),
     mBatchEnabled( true )
 {
-    mGFXStateDesc.zDefined = true;
-    mGFXStateDesc.zEnable = false;
-    mGFXStateDesc.zWriteEnable = false;
-    mGFXStateDesc.cullDefined = true;
-    mGFXStateDesc.cullMode = GFXCullNone;
-    mGFXStateDesc.blendDefined = true;
-    mGFXStateDesc.blendEnable = true;
-    mGFXStateDesc.blendSrc = GFXBlendSrcAlpha;
-    mGFXStateDesc.blendDest = GFXBlendInvSrcAlpha;
+    mGFXStateDesc.setCullMode (GFXCullNone);
+    mGFXStateDesc.setZReadWrite( false );
+    mGFXStateDesc.setBlend( true, GFXBlendSrcAlpha, GFXBlendInvSrcAlpha);
     mGFXStateDesc.samplersDefined = true;
-    mGFXStateDesc.samplers[0].alphaOp = GFXTOPModulate;
-    mGFXStateDesc.samplers[0].magFilter = GFXTextureFilterLinear;
-    mGFXStateDesc.samplers[0].minFilter = GFXTextureFilterLinear;
-    
-    mGFXStateDesc.samplers[0].addressModeU = GFXAddressClamp;
-    mGFXStateDesc.samplers[0].addressModeV = GFXAddressClamp;
-    mGFXStateDesc.samplers[0].alphaArg1 = GFXTATexture;
-    mGFXStateDesc.samplers[0].alphaArg2 = GFXTADiffuse;
-    mGFXStateDesc.samplers[0].textureColorOp = GFXTOPAdd;
+    mGFXStateDesc.samplers[0].GFXSamplerStateDesc::getClampLinear();
     mGFXStateDesc.fillMode = GFXFillSolid;
     
     mGFXStateRef = GFX->createStateBlock(mGFXStateDesc);
@@ -202,7 +188,7 @@ void BatchRender::SubmitQuad(
 
     // Add textured vertices.
     // NOTE: We swap #2/#3 here.
-
+    
     mVertexBuffer[mVertexCount+0].point.set(vertexPos0.x, vertexPos0.y, 0.0f);
     mVertexBuffer[mVertexCount+1].point.set(vertexPos1.x, vertexPos1.y, 0.0f);
     mVertexBuffer[mVertexCount+2].point.set(vertexPos3.x, vertexPos3.y, 0.0f);
@@ -446,7 +432,7 @@ void BatchRender::RenderQuad(
     GFXVertexBufferHandle<GFXVertexPCT> vHandle( GFX, 4, GFXBufferTypeVolatile, verts);
     GFX->setVertexBuffer(vHandle);
     
-    GFX->setupGenericShaders(GFXDevice::GSTexture);
+    GFX->setupGenericShaders(GFXDevice::GSModColorTexture);
     GFX->drawPrimitive(GFXTriangleStrip, 0, 2);
 }
 

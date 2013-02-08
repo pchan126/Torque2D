@@ -59,6 +59,7 @@ bool GFXTexHandle::set( const String &texName, GFXTextureProfile *profile, const
    // its memory is free for the new allocation.
    free();
    
+    Con::printf("GFXTexHandle::set %s", texName.c_str());
    // Create and set the new texture.
    AssertFatal( texName.isNotEmpty(), "Texture name is empty" );
    StrongObjectRef::set( TEXMGR->createTexture( texName, profile ) );

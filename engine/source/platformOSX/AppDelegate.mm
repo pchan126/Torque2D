@@ -25,6 +25,8 @@
 
 @implementation AppDelegate
 
+@synthesize window;
+
 //-----------------------------------------------------------------------------
 
 - (void)dealloc
@@ -48,6 +50,8 @@
     osxPlatState * platState = [osxPlatState sharedPlatState];
     
     platState.argc = [arguments count];
+    [platState setWindow:self.window];
+
     
     for (NSUInteger i = 0; i < platState.argc; i++)
     {

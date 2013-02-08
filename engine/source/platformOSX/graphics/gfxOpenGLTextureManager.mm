@@ -269,7 +269,7 @@ void GFXOpenGLTextureManager::innerCreateTexture( GFXOpenGLTextureObject *retTex
    glActiveTexture(GL_TEXTURE0);
    PRESERVE_2D_TEXTURE();
 //   PRESERVE_3D_TEXTURE();
-   glBindTexture(binding, retTex->getHandle());
+   GL_CHECK(glBindTexture(binding, retTex->getHandle()));
    
 //   // Create it
 //   // TODO: Reenable mipmaps on render targets when Apple fixes their drivers
@@ -303,7 +303,7 @@ void GFXOpenGLTextureManager::innerCreateTexture( GFXOpenGLTextureObject *retTex
    AssertFatal(GFXGLTextureType[format] != GL_ZERO, "GFXOpenGLTextureManager::innerCreateTexture - invalid type");
    
     //   if(binding != GL_TEXTURE_3D)
-      glTexImage2D(binding, 0, GFXGLTextureInternalFormat[format], width, height, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], NULL);
+      GL_CHECK(glTexImage2D(binding, 0, GFXGLTextureInternalFormat[format], width, height, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], NULL));
 
     //   else
 //      glTexImage3D(GL_TEXTURE_3D, 0, GFXGLTextureInternalFormat[format], width, height, depth, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], NULL);

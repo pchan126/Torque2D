@@ -27,7 +27,7 @@
 #include "graphics/gfxCardProfile.h"
 #include "graphics/gfxStringEnumTranslate.h"
 //#include "graphics/bitmap/ddsUtils.h"
-#include "string/stringFunctions.h"
+#include "platform/platformString.h"
 #include "memory/safeDelete.h"
 #include "io/resource/resourceManager.h"
 //#include "core/volume.h"
@@ -42,7 +42,7 @@
 
 S32 GFXTextureManager::smTextureReductionLevel = 0;
 
-//GFXTextureManager::EventSignal GFXTextureManager::smEventSignal;
+GFXTextureManager::EventSignal GFXTextureManager::smEventSignal;
 
 void GFXTextureManager::init()
 {
@@ -132,8 +132,8 @@ void GFXTextureManager::zombify()
 {
    AssertFatal( mTextureManagerState != GFXTextureManager::Dead, "Texture Manager already a zombie!" );
 
-//   // Notify everyone that cares about the zombification!
-//   smEventSignal.trigger( GFXZombify );
+   // Notify everyone that cares about the zombification!
+   smEventSignal.trigger( GFXZombify );
 
    // Release unused pool textures.
    cleanupPool();
@@ -164,8 +164,8 @@ void GFXTextureManager::resurrect()
       temp = temp->mNext;
    }
 
-//   // Notify callback registries.
-//   smEventSignal.trigger( GFXResurrect );
+   // Notify callback registries.
+   smEventSignal.trigger( GFXResurrect );
    
    // Update our state.
    mTextureManagerState = GFXTextureManager::Alive;
@@ -487,6 +487,7 @@ GFXTextureObject *GFXTextureManager::createTexture( const String &path, GFXTextu
     if( bitmap != NULL )
     {
         retTexObj = createTexture( bitmap, path, profile, false );
+        retTexObj->mPath = path;
     }
     
     return retTexObj;
@@ -919,31 +920,31 @@ void GFXTextureManager::_onFileChanged( const String &path )
 
 void GFXTextureManager::reloadTextures()
 {
-//   GFXTextureObject *tex = mListHead;
-//
-//   while ( tex != NULL ) 
-//   {
-//      const String path( tex->mPath );
-//      if ( !path.isEmpty() )
-//      {
-//         const U32 scalePower = getTextureDownscalePower( tex->mProfile );
-//
-////         if ( sDDSExt.equal( path.getExtension(), String::NoCase ) )
-////         {
-////            Resource<DDSFile> dds = DDSFile::load( path, scalePower );
-////            if ( dds )
-////               _createTexture( dds, tex->mProfile, false, tex );
-////         }
-////         else
+   GFXTextureObject *tex = mListHead;
+
+   while ( tex != NULL ) 
+   {
+      const String path( tex->mPath );
+      if ( !path.isEmpty() )
+      {
+         const U32 scalePower = getTextureDownscalePower( tex->mProfile );
+
+//         if ( sDDSExt.equal( path.getExtension(), String::NoCase ) )
 //         {
-//            Resource<GBitmap> bmp = GBitmap::load( path );
-//            if( bmp )
-//               _createTexture( bmp, tex->mTextureLookupName, tex->mProfile, false, tex );
+//            Resource<DDSFile> dds = DDSFile::load( path, scalePower );
+//            if ( dds )
+//               _createTexture( dds, tex->mProfile, false, tex );
 //         }
-//      }
-//
-//      tex = tex->mNext;
-//   }
+//         else
+         {
+            GBitmap *bmp = GBitmap::load( path );
+            if( bmp )
+               _createTexture( bmp, tex->mTextureLookupName, tex->mProfile, false, tex );
+         }
+      }
+
+      tex = tex->mNext;
+   }
 }
 
 //ConsoleFunction( flushTextureCache, void, 2, 2,

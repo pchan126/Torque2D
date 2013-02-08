@@ -113,12 +113,12 @@ void GFXVertexFormat::clear()
    mDecl = NULL;
 }
 
-void GFXVertexFormat::addElement( const StringTableEntry& semantic, GFXDeclType type, U32 index, U32 stream )
+void GFXVertexFormat::addElement( const String& semantic, GFXDeclType type, U32 index, U32 stream )
 { 
    mDirty = true;
    mElements.increment();
    mElements.last().mStreamIndex = stream; 
-   mElements.last().mSemantic = StringTable->insert(semantic);
+   mElements.last().mSemantic = semantic.intern();
    mElements.last().mSemanticIndex = index;
    mElements.last().mType = type;      
 }
@@ -181,42 +181,42 @@ U32 GFXVertexFormat::getSizeInBytes() const
 
 void GFXVertexFormat::_updateDirty()
 {
-//   PROFILE_SCOPE( GFXVertexFormat_updateDirty );
-//
-//   mTexCoordCount = 0;
-//
-//   mHasColor = false;
-//   mHasNormal = false;
-//   mHasTangent = false;
-//   mSizeInBytes = 0;
-//
-//   StringTableEntry desc;
-//
-//   for ( U32 i=0; i < mElements.size(); i++ )
-//   {
-//      const GFXVertexElement &element = mElements[i];
-//
-////      desc += String::ToString( "%d,%s,%d,%d\n",   element.mStreamIndex,
-////                                                   element.mSemantic,
-////                                                   element.mSemanticIndex, 
-////                                                   element.mType );
-//
-////      if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::NORMAL.c_str() ) == 0 )
-////         mHasNormal = true;
-////      else if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::TANGENT.c_str() ) == 0 )
-////         mHasTangent = true;
-////      else if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::COLOR.c_str() ) == 0 )
-////         mHasColor = true;
-////      else if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::TEXCOORD.c_str() ) == 0 )
-////         ++mTexCoordCount;
-//
-//      mSizeInBytes += element.getSizeInBytes();
-//   }
-//
-//   // Intern the string for fast compares later.
-//   mDescription = desc.intern();
-//
-//   mDirty = false;
+   PROFILE_SCOPE( GFXVertexFormat_updateDirty );
+
+   mTexCoordCount = 0;
+
+   mHasColor = false;
+   mHasNormal = false;
+   mHasTangent = false;
+   mSizeInBytes = 0;
+
+   String desc;
+
+   for ( U32 i=0; i < mElements.size(); i++ )
+   {
+      const GFXVertexElement &element = mElements[i];
+
+      desc += String::ToString( "%d,%s,%d,%d\n",   element.mStreamIndex,
+                                                   element.mSemantic.c_str(),
+                                                   element.mSemanticIndex, 
+                                                   element.mType );
+
+      if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::NORMAL.c_str() ) == 0 )
+         mHasNormal = true;
+      else if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::TANGENT.c_str() ) == 0 )
+         mHasTangent = true;
+      else if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::COLOR.c_str() ) == 0 )
+         mHasColor = true;
+      else if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::TEXCOORD.c_str() ) == 0 )
+         ++mTexCoordCount;
+
+      mSizeInBytes += element.getSizeInBytes();
+   }
+
+   // Intern the string for fast compares later.
+   mDescription = desc.intern();
+
+   mDirty = false;
 }
 
 void GFXVertexFormat::_updateDecl()
