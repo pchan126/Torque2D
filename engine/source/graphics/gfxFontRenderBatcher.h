@@ -50,7 +50,7 @@ class FontRenderBatcher
    Vector<SheetMarker *> mSheets;
    GFont *mFont;
    U32 mLength;
-//   GFXStateBlockRef mFontSB;
+   GFXStateBlockRef mFontSB;
 
    SheetMarker &getSheetMarker(U32 sheetID);
 
