@@ -259,10 +259,10 @@ void GFXOpenGLTextureManager::innerCreateTexture( GFXOpenGLTextureObject *retTex
 //   GLenum binding = (depth == 0) ? GL_TEXTURE_2D : GL_TEXTURE_3D;
     GLenum binding = GL_TEXTURE_2D;
 
-   if((profile->testFlag(GFXTextureProfile::RenderTarget) || profile->testFlag(GFXTextureProfile::ZTarget)) && (!isPow2(width) || !isPow2(height)) && !depth)
-   {
-      retTex->mIsNPoT2 = true;
-   }
+//   if((profile->testFlag(GFXTextureProfile::RenderTarget) || profile->testFlag(GFXTextureProfile::ZTarget)) && (!isPow2(width) || !isPow2(height)) && !depth)
+//   {
+//      retTex->mIsNPoT2 = true;
+//   }
    retTex->mBinding = binding;
    
     // Bind it
@@ -288,15 +288,15 @@ void GFXOpenGLTextureManager::innerCreateTexture( GFXOpenGLTextureObject *retTex
 //      retTex->mMipLevels = 0;
 //   }
 
-   if(!retTex->mIsNPoT2)
-   {
-      if(!isPow2(width))
-         width = getNextPow2(width);
-      if(!isPow2(height))
-         height = getNextPow2(height);
-      if(depth && !isPow2(depth))
-         depth = getNextPow2(depth);
-   }
+//   if(!retTex->mIsNPoT2)
+//   {
+//      if(!isPow2(width))
+//         width = getNextPow2(width);
+//      if(!isPow2(height))
+//         height = getNextPow2(height);
+//      if(depth && !isPow2(depth))
+//         depth = getNextPow2(depth);
+//   }
    
    AssertFatal(GFXGLTextureInternalFormat[format] != GL_ZERO, "GFXOpenGLTextureManager::innerCreateTexture - invalid internal format");
    AssertFatal(GFXGLTextureFormat[format] != GL_ZERO, "GFXOpenGLTextureManager::innerCreateTexture - invalid format");
