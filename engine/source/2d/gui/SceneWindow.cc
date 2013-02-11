@@ -1704,7 +1704,7 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
     // Calculate Debug Banner Offset.
     Point2I bannerOffset = updateRect.point + Point2I(8,8);
 
-    GFX->getDrawUtil()->drawRectFill(updateRect.point, bottomRight, mProfile->mFillColor);
+    GFX->getDrawUtil()->drawRectFill(updateRect.point, bottomRight + Point2I(0,16), mProfile->mFillColor);
 
     // Disable Banner Blending.
     glDisable       ( GL_BLEND );

@@ -139,8 +139,13 @@ U32 GFXDrawUtil::drawText( GFont *font, const Point2F &ptDraw, const UTF16 *in_s
    return drawText(font,Point2I((S32)ptDraw.x,(S32)ptDraw.y),in_string,colorTable,maxColorIndex,rot);
 }
 
-U32 GFXDrawUtil::drawTextN( GFont *font, const Point2I &ptDraw, const UTF8 *in_string, U32 n,
-                           const ColorI *colorTable, const U32 maxColorIndex, F32 rot )
+U32 GFXDrawUtil::drawTextN( GFont *font,
+                           const Point2I &ptDraw,
+                           const UTF8 *in_string,
+                           U32 n,
+                           const ColorI *colorTable,
+                           const U32 maxColorIndex,
+                           F32 rot )
 {
    // return on zero length strings
    if( n == 0 )
@@ -154,8 +159,13 @@ U32 GFXDrawUtil::drawTextN( GFont *font, const Point2I &ptDraw, const UTF8 *in_s
    return drawTextN( font, ptDraw, ubuf, n, colorTable, maxColorIndex, rot );
 }
 
-U32 GFXDrawUtil::drawTextN( GFont *font, const Point2I &ptDraw, const UTF16 *in_string, 
-                           U32 n, const ColorI *colorTable, const U32 maxColorIndex, F32 rot )
+U32 GFXDrawUtil::drawTextN( GFont *font,
+                           const Point2I &ptDraw,
+                           const UTF16 *in_string,
+                           U32 n,
+                           const ColorI *colorTable,
+                           const U32 maxColorIndex,
+                           F32 rot )
 {
    // return on zero length strings
    if( n == 0 )
