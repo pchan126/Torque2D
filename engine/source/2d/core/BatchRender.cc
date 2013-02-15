@@ -190,6 +190,7 @@ void BatchRender::SubmitQuad(
             }
             else
             {
+                
                 // No, so generate one.
                 pIndexVector = new indexVectorType( 6 * 6 );
             }

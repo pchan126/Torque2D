@@ -25,6 +25,7 @@
 #include "platformiOS/iOSWindow.h"
 #include "platformiOS/platformiOS.h"
 #include "graphics/dgl.h"
+#include "moduleManager.h"
 
 extern iOSPlatState platState;
 
@@ -47,6 +48,8 @@ extern void _iOSGameInnerLoop();
 @synthesize context = _context;
 @synthesize connectionData = _connectionData;
 @synthesize connection = _connection;
+@synthesize navController;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -254,6 +257,39 @@ ConsoleFunction(supportPortrait, void, 2, 2, "supportPortrait( bool ) "
 {
     [self destroyFramebuffer];
 	[self createFramebuffer];
+}
+
+- (void)openIAPWindow
+{
+    id sth = [[UIApplication sharedApplication] delegate];
+    if ([sth isKindOfClass:[T2DViewController class]]) {
+        T2DViewController *controller = (T2DViewController *)sth;
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"iPadIAPStore" bundle:nil];
+        if (storyboard)
+        {
+            UIViewController *vc = [storyboard instantiateViewControllerWithIdentifier:@"LoginViewController"];
+            if (vc)
+            {
+                [vc setModalPresentationStyle:UIModalPresentationFullScreen];
+                controller.navController = [[UINavigationController alloc] initWithRootViewController:vc];
+                UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStylePlain target:vc action:@selector(closeTapped:)];
+                vc.navigationItem.rightBarButtonItem = rightButton;
+                [self presentViewController:controller.navController animated:YES completion:NULL];
+            }
+        }
+    }
+}
+
+
+ConsoleFunction(openIAPWindow, void, 1, 1, "openIAPWindow( ) "
+                "open the IAP storefront")
+{
+    [platState.viewController openIAPWindow];
+}
+
+
+- (void)unlockContentWithDirString:(NSString *)dirString {
+    ModuleDatabase.scanModules([dirString UTF8String]);
 }
 
 @end

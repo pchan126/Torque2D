@@ -39,6 +39,7 @@
     GLuint _vertexArray;
     
     bool isLayedOut;
+    UINavigationController *navController;
     
 @public
     NSURLConnection *connection;
@@ -53,6 +54,7 @@
 
 @property (nonatomic, strong) NSURLConnection   *connection;
 @property (nonatomic, strong) NSMutableData     *connectionData;
+@property (nonatomic, strong) UINavigationController *navController;
 
 void supportLandscape( bool );
 void supportPortrait( bool );

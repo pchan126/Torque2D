@@ -1,0 +1,197 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		DA83974616CE0C3100580367 /* modules in Resources */ = {isa = PBXBuildFile; fileRef = DA83974516CE0C3100580367 /* modules */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		DA83972C16CE0BA400580367 /* T2DIAPSet1 */ = {isa = PBXFileReference; explicitFileType = folder; includeInIndex = 0; path = T2DIAPSet1; sourceTree = BUILT_PRODUCTS_DIR; };
+		DA83973016CE0BA400580367 /* ContentInfo.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ContentInfo.plist; sourceTree = "<group>"; };
+		DA83974516CE0C3100580367 /* modules */ = {isa = PBXFileReference; lastKnownFileType = folder; name = modules; path = ../../../../../IAPSet1/modules; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		DA83972516CE0BA400580367 = {
+			isa = PBXGroup;
+			children = (
+				DA83972E16CE0BA400580367 /* T2DIAPSet1 */,
+				DA83972D16CE0BA400580367 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		DA83972D16CE0BA400580367 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DA83972C16CE0BA400580367 /* T2DIAPSet1 */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		DA83972E16CE0BA400580367 /* T2DIAPSet1 */ = {
+			isa = PBXGroup;
+			children = (
+				DA83972F16CE0BA400580367 /* Supporting Files */,
+			);
+			path = T2DIAPSet1;
+			sourceTree = "<group>";
+		};
+		DA83972F16CE0BA400580367 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				DA83974516CE0C3100580367 /* modules */,
+				DA83973016CE0BA400580367 /* ContentInfo.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		DA83972B16CE0BA400580367 /* T2DIAPSet1 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DA83973316CE0BA400580367 /* Build configuration list for PBXNativeTarget "T2DIAPSet1" */;
+			buildPhases = (
+				DA83972A16CE0BA400580367 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = T2DIAPSet1;
+			productName = T2DIAPSet1;
+			productReference = DA83972C16CE0BA400580367 /* T2DIAPSet1 */;
+			productType = "com.apple.product-type.in-app-purchase-content";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		DA83972616CE0BA400580367 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0460;
+				ORGANIZATIONNAME = Paul;
+			};
+			buildConfigurationList = DA83972916CE0BA400580367 /* Build configuration list for PBXProject "T2DIAPSet1" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = DA83972516CE0BA400580367;
+			productRefGroup = DA83972D16CE0BA400580367 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				DA83972B16CE0BA400580367 /* T2DIAPSet1 */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		DA83972A16CE0BA400580367 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DA83974616CE0C3100580367 /* modules in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		DA83973116CE0BA400580367 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+			};
+			name = Debug;
+		};
+		DA83973216CE0BA400580367 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+			};
+			name = Release;
+		};
+		DA83973416CE0BA400580367 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = T2DIAPSet1/ContentInfo.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/InAppPurchaseContent";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = "";
+			};
+			name = Debug;
+		};
+		DA83973516CE0BA400580367 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = T2DIAPSet1/ContentInfo.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/InAppPurchaseContent";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = "";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		DA83972916CE0BA400580367 /* Build configuration list for PBXProject "T2DIAPSet1" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DA83973116CE0BA400580367 /* Debug */,
+				DA83973216CE0BA400580367 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DA83973316CE0BA400580367 /* Build configuration list for PBXNativeTarget "T2DIAPSet1" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DA83973416CE0BA400580367 /* Debug */,
+				DA83973516CE0BA400580367 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = DA83972616CE0BA400580367 /* Project object */;
+}
