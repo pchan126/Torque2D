@@ -24,7 +24,6 @@
 
 #include "platform/platformInput.h"
 #include "platformiOS/iOSUtil.h"
-#include "console/console.h"
 
 extern void _iOSGameInnerLoop();
 extern void _iOSGameResignActive();
@@ -104,6 +103,7 @@ bool _iOSTorqueFatalError = false;
 {
 	_iOSGameInnerLoop();
 }
+
 
 
 @end

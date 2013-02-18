@@ -27,7 +27,6 @@
 	IBOutlet UIWindow *window;
 }
 
-- (void)openIAPWindow;
 - (void)unlockContentWithDirString:(NSString *)dirString;
 
 @property (nonatomic, strong) UIWindow *window;

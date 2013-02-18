@@ -470,6 +470,7 @@
 		86A9A3FE16AEC836003F01E6 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86A9A3E416AEC817003F01E6 /* OpenAL.framework */; };
 		86A9A3FF16AEC836003F01E6 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86A9A3E516AEC817003F01E6 /* OpenGLES.framework */; };
 		86A9A40016AEC836003F01E6 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86A9A3E616AEC817003F01E6 /* QuartzCore.framework */; };
+		DA1BF5C216D21AB8002385D2 /* T2DIAPStatic.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA1BF5C116D21AB7002385D2 /* T2DIAPStatic.mm */; };
 		DA65B2E516CDD7C6002A368A /* AFHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = DA65B2CA16CDD7C6002A368A /* AFHTTPClient.m */; };
 		DA65B2E616CDD7C6002A368A /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = DA65B2CC16CDD7C6002A368A /* AFHTTPRequestOperation.m */; };
 		DA65B2E716CDD7C6002A368A /* AFImageRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = DA65B2CE16CDD7C6002A368A /* AFImageRequestOperation.m */; };
@@ -485,7 +486,7 @@
 		DA65B2F216CDD7E5002A368A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA65B2F116CDD7E5002A368A /* StoreKit.framework */; };
 		DA65B2F416CDD81D002A368A /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA65B2F316CDD81D002A368A /* MobileCoreServices.framework */; };
 		DA65B2F616CDD82D002A368A /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA65B2F516CDD82D002A368A /* SystemConfiguration.framework */; };
-		DA65B30D16CDDA1A002A368A /* T2DIAPHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = DA65B2FB16CDDA1A002A368A /* T2DIAPHelper.m */; };
+		DA65B30D16CDDA1A002A368A /* T2DIAPHelper.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA65B2FB16CDDA1A002A368A /* T2DIAPHelper.mm */; };
 		DA65B30E16CDDA1A002A368A /* T2DStoreDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA65B2FD16CDDA1A002A368A /* T2DStoreDetailViewController.m */; };
 		DA65B30F16CDDA1A002A368A /* T2DStoreListViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DA65B2FF16CDDA1A002A368A /* T2DStoreListViewCell.m */; };
 		DA65B31016CDDA1A002A368A /* IAPHelper.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA65B30116CDDA1A002A368A /* IAPHelper.mm */; };
@@ -1417,6 +1418,7 @@
 		86A9A3E416AEC817003F01E6 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		86A9A3E516AEC817003F01E6 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		86A9A3E616AEC817003F01E6 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		DA1BF5C116D21AB7002385D2 /* T2DIAPStatic.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = T2DIAPStatic.mm; sourceTree = "<group>"; };
 		DA65B2C916CDD7C6002A368A /* AFHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPClient.h; sourceTree = "<group>"; };
 		DA65B2CA16CDD7C6002A368A /* AFHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPClient.m; sourceTree = "<group>"; };
 		DA65B2CB16CDD7C6002A368A /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
@@ -1446,7 +1448,7 @@
 		DA65B2F316CDD81D002A368A /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		DA65B2F516CDD82D002A368A /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		DA65B2FA16CDDA1A002A368A /* T2DIAPHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T2DIAPHelper.h; sourceTree = "<group>"; };
-		DA65B2FB16CDDA1A002A368A /* T2DIAPHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = T2DIAPHelper.m; sourceTree = "<group>"; };
+		DA65B2FB16CDDA1A002A368A /* T2DIAPHelper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = T2DIAPHelper.mm; sourceTree = "<group>"; };
 		DA65B2FC16CDDA1A002A368A /* T2DStoreDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T2DStoreDetailViewController.h; sourceTree = "<group>"; };
 		DA65B2FD16CDDA1A002A368A /* T2DStoreDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = T2DStoreDetailViewController.m; sourceTree = "<group>"; };
 		DA65B2FE16CDDA1A002A368A /* T2DStoreListViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T2DStoreListViewCell.h; sourceTree = "<group>"; };
@@ -2982,7 +2984,7 @@
 			isa = PBXGroup;
 			children = (
 				DA65B2FA16CDDA1A002A368A /* T2DIAPHelper.h */,
-				DA65B2FB16CDDA1A002A368A /* T2DIAPHelper.m */,
+				DA65B2FB16CDDA1A002A368A /* T2DIAPHelper.mm */,
 				DA65B2FC16CDDA1A002A368A /* T2DStoreDetailViewController.h */,
 				DA65B2FD16CDDA1A002A368A /* T2DStoreDetailViewController.m */,
 				DA65B2FE16CDDA1A002A368A /* T2DStoreListViewCell.h */,
@@ -2997,6 +2999,7 @@
 				DA65B30716CDDA1A002A368A /* IAPProductPurchase.m */,
 				DA65B30A16CDDA1A002A368A /* TGBStoreViewController.h */,
 				DA65B30B16CDDA1A002A368A /* TGBStoreViewController.m */,
+				DA1BF5C116D21AB7002385D2 /* T2DIAPStatic.mm */,
 			);
 			path = InAppPurchases;
 			sourceTree = "<group>";
@@ -3544,7 +3547,7 @@
 				DA65B2EE16CDD7C6002A368A /* NSData+Base64.m in Sources */,
 				DA65B2EF16CDD7C6002A368A /* JSNotifier.m in Sources */,
 				DA65B2F016CDD7C6002A368A /* PrettyBytes.m in Sources */,
-				DA65B30D16CDDA1A002A368A /* T2DIAPHelper.m in Sources */,
+				DA65B30D16CDDA1A002A368A /* T2DIAPHelper.mm in Sources */,
 				DA65B30E16CDDA1A002A368A /* T2DStoreDetailViewController.m in Sources */,
 				DA65B30F16CDDA1A002A368A /* T2DStoreListViewCell.m in Sources */,
 				DA65B31016CDDA1A002A368A /* IAPHelper.mm in Sources */,
@@ -3552,6 +3555,7 @@
 				DA65B31216CDDA1A002A368A /* IAPProductInfo.m in Sources */,
 				DA65B31316CDDA1A002A368A /* IAPProductPurchase.m in Sources */,
 				DA65B31516CDDA1A002A368A /* TGBStoreViewController.m in Sources */,
+				DA1BF5C216D21AB8002385D2 /* T2DIAPStatic.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

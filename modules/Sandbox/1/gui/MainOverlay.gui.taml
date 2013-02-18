@@ -8,7 +8,28 @@
     MinExtent="220 30"
     Visible="1">	
 	
-	<!-- Manipulation Mode-->
+	<!-- Show Log -->
+    <GuiButtonCtrl
+        Name="Open Store"
+        Profile="BlueButtonProfile"
+		Text="Open Store"
+		ButtonType="PushButton"	
+		command="openIAPWindow();"		
+        canSaveDynamicFields="0"
+        isContainer="0"
+        HorizSizing="left"
+        VertSizing="bottom"
+        Position="50 0"
+        Extent="100 30"
+        MinExtent="8 2"
+        canSave="1"
+        Visible="1"
+        Active="1"
+        hovertime="1000"
+        groupNum="-1"
+        useMouseEvents="1" />	
+        
+    <!-- Manipulation Mode-->
     <GuiButtonCtrl
         Name="ManipulationModeButton"
         Profile="BlueButtonProfile"

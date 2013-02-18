@@ -13,6 +13,7 @@
 #import "IAPProduct.h"
 #import "T2DIAPHelper.h"
 #include "platformiOS/T2DAppDelegate.h"
+#include "moduleManager.h"
 
 
 @implementation T2DIAPHelper
@@ -34,11 +35,7 @@
 }
 
 - (void)provideContentWithString:(NSString *)string {
-    id sth = [[UIApplication sharedApplication] delegate];
-    if ([sth isKindOfClass:[T2DAppDelegate class]]) {
-        T2DAppDelegate *controller = (T2DAppDelegate *)sth;
-        [controller unlockContentWithDirString:string];
-    }
+    ModuleDatabase.scanModules([string UTF8String]);
 }
 
 
