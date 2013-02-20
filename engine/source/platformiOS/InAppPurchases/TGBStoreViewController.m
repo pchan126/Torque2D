@@ -166,25 +166,6 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex {
         [self performSegueWithIdentifier:@"PushDetail"
                                   sender:indexPath];
     }
-    ////    [self performSegueWithIdentifier:@"PushDetail" sender:indexPath];
-////    id sth = [[UIApplication sharedApplication] delegate];
-////    if ([sth isKindOfClass:[AppController class]]) {
-//        //        XBridgeTableViewController *tempTableViewController = [[XBridgeTableViewController alloc] initWithNibName:nil bundle:nil];
-//        //        tempTableViewController.tableView.frame = CGRectMake(100, 100, 200, 100);
-//        //        AppController *controller = (AppController *)sth;
-//        //        [controller.viewController.view addSubview:tempTableViewController.tableView];
-//        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"iPadStoryboard" bundle:nil];
-//        if (storyboard)
-//        {
-//            UIViewController *vc = [storyboard instantiateViewControllerWithIdentifier:@"DetailView"];
-//            if (vc)
-//            {
-//                [vc setModalPresentationStyle:UIModalPresentationFullScreen];
-////                AppController *controller = (AppController *)sth;
-//                [self presentViewController:vc animated:YES completion:NULL];
-//            }
-//        }
-////    }
 }
 
 
