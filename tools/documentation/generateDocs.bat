@@ -2,7 +2,7 @@
 setlocal
 
 REM --- Dump the engine docs ---
-if not exist "../../Torque2D.exe" (
+if not exist "..\..\Torque2D.exe" (
 	echo.
 	echo The Torque 2D executable was not found.
 	echo.
@@ -10,10 +10,9 @@ if not exist "../../Torque2D.exe" (
 	endlocal
 	exit /b 1
 )
-
-if exist "input/docDump.txt" del /Q "input/docDump.txt"
+if exist "input\docDump.txt" del /Q "input\docDump.txt"
 "../../Torque2D.exe" generateDocs.cs
-if not exist "input/docDump.txt" (
+if not exist "input\docDump.txt" (
     echo.
     echo The Torque 2D documentation was not dumped.
     echo.
@@ -22,15 +21,16 @@ if not exist "input/docDump.txt" (
     exit /b 1
 )
 
-"del
-
 REM --- Build the doxygen docs ---
- cd doxygen
- doxygen.exe scriptReference.Windows.cfg
+del /Q "output\html"
+svn checkout "https://github.com/GarageGames/Torque2D.git/branches/gh-pages" "output\html"
+doxygen.exe scriptReference.Windows.cfg
+
+REM --- Add the newly generated docs to the gh-pages branch
+cd "output\html"
+svn add *.*
+svn commit -m "- Updated reference"
 
 REM --- Build the CHM ---
- hhc.exe output\html\index.hhp
-
- REM move /Y "output\Torque 2D - Script Reference.chm" ..\
-
+REM hhc.exe "output\html\index.hhp"
 endlocal
