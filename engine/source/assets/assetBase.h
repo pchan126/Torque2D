@@ -67,6 +67,7 @@ public:
 
     /// Engine.
     static void initPersistFields();
+    virtual void copyTo(SimObject* object);
 
     /// Asset configuration.
     inline void             setAssetName( const char* pAssetName )              { if ( mpOwningAssetManager == NULL ) mpAssetDefinition->mAssetName = StringTable->insert(pAssetName); }
@@ -127,7 +128,7 @@ protected:
     static const char*      getAssetPrivate(void* obj, const char* data)        { return Con::getBoolArg(static_cast<AssetBase*>(obj)->getAssetPrivate()); }
 
 private:
-    inline void             acquireAssetReference( void )                       { mAcquireReferenceCount++; }
+    void                    acquireAssetReference( void );
     bool                    releaseAssetReference( void );
 
     /// Set asset manager ownership.

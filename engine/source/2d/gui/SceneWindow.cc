@@ -77,6 +77,8 @@ SceneWindow::SceneWindow() :    mpScene(NULL),
                                 mWindowDirty(true),
                                 mRenderLayerMask(MASK_ALL),
                                 mRenderGroupMask(MASK_ALL),
+                                mBackgroundColor( "Black" ),
+                                mUseBackgroundColor(false),   
                                 mCameraInterpolationMode(SIGMOID),
                                 mMaxQueueItems(64),
                                 mCameraTransitionTime(2.0f),
@@ -164,12 +166,16 @@ void SceneWindow::onRemove()
 void SceneWindow::initPersistFields()
 {
     // Call Parent.
-   Parent::initPersistFields();
+    Parent::initPersistFields();
 
-   // Add Fields.
-   addField( "lockMouse",               TypeBool, Offset(mLockMouse, SceneWindow) );
-   addField( "UseWindowInputEvents",    TypeBool, Offset(mUseWindowInputEvents, SceneWindow) );
-   addField( "UseObjectInputEvents",    TypeBool, Offset(mUseObjectInputEvents, SceneWindow) );
+    // Add Fields.
+    addField( "lockMouse",               TypeBool, Offset(mLockMouse, SceneWindow) );
+    addField( "UseWindowInputEvents",    TypeBool, Offset(mUseWindowInputEvents, SceneWindow) );
+    addField( "UseObjectInputEvents",    TypeBool, Offset(mUseObjectInputEvents, SceneWindow) );
+
+    // Background color.
+    addField("UseBackgroundColor", TypeBool, Offset(mUseBackgroundColor, SceneWindow), &writeUseBackgroundColor, "" );
+    addField("BackgroundColor", TypeColorF, Offset(mBackgroundColor, SceneWindow), &writeBackgroundColor, "" );
 }
 
 //-----------------------------------------------------------------------------
@@ -1610,7 +1616,24 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
         mRenderLayerMask,
         mRenderGroupMask,
         Vector2( mCameraCurrent.mSceneWindowScale ),
-        &debugStats );
+        &debugStats,
+        this );
+
+    // Clear the background color if requested.
+    if ( mUseBackgroundColor )
+    {
+        // Enable the scissor.
+        const RectI& clipRect = dglGetClipRect();
+        glEnable(GL_SCISSOR_TEST );
+        glScissor( clipRect.point.x, Platform::getWindowSize().y - (clipRect.point.y + clipRect.extent.y), clipRect.len_x(), clipRect.len_y() );
+
+        // Clear the background.
+        glClearColor( mBackgroundColor.red, mBackgroundColor.green, mBackgroundColor.blue, mBackgroundColor.alpha );
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        // Disable the scissor.
+        glDisable( GL_SCISSOR_TEST );
+    }
 
     // Render View.
     pScene->sceneRender( &sceneRenderState );
@@ -1734,13 +1757,14 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
 
         // Scene.
         GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Scene", NULL );
-        dSprintf( mDebugText, sizeof( mDebugText ), "- Count=%d, Index=%d, Time=%0.1fs, Objects=%d<%d>(Global=%d), Enabled=%d<%d>, Visible=%d<%d>, Awake=%d<%d>",
+        dSprintf( mDebugText, sizeof( mDebugText ), "- Count=%d, Index=%d, Time=%0.1fs, Objects=%d<%d>(Global=%d), Enabled=%d<%d>, Visible=%d<%d>, Awake=%d<%d>, Controllers=%d",
             Scene::getGlobalSceneCount(), pScene->getSceneIndex(),
             pScene->getSceneTime(),
             debugStats.objectsCount, debugStats.maxObjectsCount, SceneObject::getGlobalSceneObjectCount(),
             debugStats.objectsEnabled, debugStats.maxObjectsEnabled,
             debugStats.objectsVisible, debugStats.maxObjectsVisible,
-            debugStats.objectsAwake, debugStats.maxObjectsAwake );        
+            debugStats.objectsAwake, debugStats.maxObjectsAwake,        
+            pScene->getControllers() == NULL ? 0 : pScene->getControllers()->size() );        
         GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
         linePositionY += linePositionOffsetY;
 
@@ -1874,7 +1898,8 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
 
         // Asset Manager.
         GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Assets", NULL );
-        dSprintf( mDebugText, sizeof( mDebugText ), "- Declared=%d, Referenced=%d, LoadedInternal=%d<%d>, LoadedExternal=%d<%d>, LoadedPrivate=%d<%d>",
+        dSprintf( mDebugText, sizeof( mDebugText ), "- AcquiredRefs=%d, - Declared=%d, Referenced=%d, LoadedInternal=%d<%d>, LoadedExternal=%d<%d>, LoadedPrivate=%d<%d>",
+            AssetDatabase.getAcquiredReferenceCount(),
             AssetDatabase.getDeclaredAssetCount(),
             AssetDatabase.getReferencedAssetCount(),
             AssetDatabase.getLoadedInternalAssetCount(), AssetDatabase.getMaxLoadedInternalAssetCount(),

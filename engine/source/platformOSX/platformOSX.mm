@@ -133,7 +133,7 @@ static osxPlatState * tempSharedPlatState = nil;
     
     // Get the window's current frame
     NSRect frame = NSMakeRect([_window frame].origin.x, [_window frame].origin.y, width, height);
-
+    
     // Get the starting position of the bar height
     F32 barOffset = frame.size.height;
     
@@ -142,7 +142,7 @@ static osxPlatState * tempSharedPlatState = nil;
     if (!_fullscreen)
     {
         frame = [NSWindow frameRectForContentRect:frame styleMask:NSTitledWindowMask];
-
+        
         // Set the new window frame
         [_window setFrame:frame display:YES];
         
@@ -156,12 +156,16 @@ static osxPlatState * tempSharedPlatState = nil;
     }
     
     // Update the frame of the torqueView to match the window
-    frame = NSMakeRect([_window frame].origin.x, [_window frame].origin.y, width, height); 
+    frame = NSMakeRect([_window frame].origin.x, [_window frame].origin.y, width, height);
     NSRect viewFrame = NSMakeRect(0, 0, frame.size.width, frame.size.height);
-     
+    
     [_torqueView setFrame:viewFrame];
     
     [_torqueView updateContext];
+    
+    [_window makeKeyAndOrderFront:NSApp];
+    [_window makeFirstResponder:_torqueView];
+    
 }
 
 //-----------------------------------------------------------------------------

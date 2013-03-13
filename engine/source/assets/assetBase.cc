@@ -79,6 +79,27 @@ void AssetBase::initPersistFields()
     addProtectedField( ASSET_BASE_ASSETPRIVATE_FIELD, TypeBool, 0, &defaultProtectedNotSetFn, &getAssetPrivate, &defaultProtectedNotWriteFn, "Whether the asset is private or not." );
 }
 
+//------------------------------------------------------------------------------
+
+void AssetBase::copyTo(SimObject* object)
+{
+    // Call to parent.
+    Parent::copyTo(object);
+
+    // Cast to asset.
+    AssetBase* pAsset = static_cast<AssetBase*>(object);
+
+    // Sanity!
+    AssertFatal(pAsset != NULL, "AssetBase::copyTo() - Object is not the correct type.");
+
+    // Copy state.
+    pAsset->setAssetName( getAssetName() );
+    pAsset->setAssetDescription( getAssetDescription() );
+    pAsset->setAssetCategory( getAssetCategory() );
+    pAsset->setAssetAutoUnload( getAssetAutoUnload() );
+    pAsset->setAssetInternal( getAssetInternal() );
+}
+
 //-----------------------------------------------------------------------------
 
 void AssetBase::setAssetDescription( const char* pAssetDescription )
@@ -250,17 +271,29 @@ void AssetBase::refreshAsset( void )
 
 //-----------------------------------------------------------------------------
 
+void AssetBase::acquireAssetReference( void )
+{
+    // Acquired the acquired reference count.
+    if ( mpOwningAssetManager != NULL )
+        mpOwningAssetManager->acquireAcquiredReferenceCount();
+    
+    mAcquireReferenceCount++;
+}
+
+//-----------------------------------------------------------------------------
+
 bool AssetBase::releaseAssetReference( void )
 {
     // Are there any acquisition references?
     if ( mAcquireReferenceCount == 0 )
     {
-        // No, so warn.
-        Con::warnf( "AssetBase: Cannot release asset reference as there are no current acquisitions." );
-
         // Return "unload" unless auto unload is off.
         return mpAssetDefinition->mAssetAutoUnload;
     }
+
+    // Release the acquired reference count.
+    if ( mpOwningAssetManager != NULL )
+        mpOwningAssetManager->releaseAcquiredReferenceCount(); 
 
     // Release reference.
     mAcquireReferenceCount--;

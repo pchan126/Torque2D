@@ -36,6 +36,11 @@ protected:
    virtual bool _queryCardCap(const String& query, U32& foundResult);
 //   virtual bool _queryFormat(const GFXFormat fmt, const GFXTextureProfile *profile, bool &inOutAutogenMips);
 
+    static void insert(TextureObject *object);
+    static TextureObject* find( StringTableEntry textureKey );
+    static TextureObject *find(StringTableEntry textureKey, TextureHandle::TextureHandleType type, bool clamp);
+    static void remove(TextureObject *object);
+
 private:
    String mRendererString;
    typedef GFXCardProfiler Parent;

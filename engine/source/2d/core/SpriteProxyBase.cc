@@ -27,6 +27,10 @@
 #include "graphics/gfxDevice.h"
 #include "graphics/gfxDrawUtil.h"
 
+#ifndef _RENDER_PROXY_H_
+#include "2d/core/RenderProxy.h"
+#endif
+
 #ifndef _STRINGBUFFER_H_
 #include "string/stringBuffer.h"
 #endif
@@ -204,8 +208,14 @@ void SpriteProxyBase::renderGui( GuiControl& owner, Point2I offset, const RectI 
             RectI destinationRegion(offset, owner.mBounds.extent);
 
             // Render image.
-            GFX->getDrawUtil()->clearBitmapModulation();
+            GFX->getDrawUtil()->setBitmapModulation( owner.mProfile->mFillColor );
             GFX->getDrawUtil()->drawBitmapStretchSR( mImageAsset->getImageTexture(), destinationRegion, sourceRegion );
+            GFX->getDrawUtil()->clearBitmapModulation();
+        }
+        else
+        {
+            // No, so render no-image render-proxy.
+            renderNoImage( owner, offset, updateRect );
         }
     }
     else
@@ -221,16 +231,40 @@ void SpriteProxyBase::renderGui( GuiControl& owner, Point2I offset, const RectI 
             RectI destinationRegion(offset, owner.mBounds.extent);
 
             // Render animation image.
-            GFX->getDrawUtil()->clearBitmapModulation();
-            GFX->getDrawUtil()->drawBitmapStretchSR( mpAnimationController->getImageTexture(), destinationRegion, sourceRegion );
+            dglClearBitmapModulation();
+            dglDrawBitmapStretchSR( mpAnimationController->getImageTexture(), destinationRegion, sourceRegion );
 
             // Update control.
             owner.setUpdate();
+        }
+        else
+        {
+            // No, so render no-image render-proxy.
+            renderNoImage( owner, offset, updateRect );
         }
     }
 
     // Render child controls.
     owner.renderChildControls(offset, updateRect);
+}
+
+
+//------------------------------------------------------------------------------
+
+void SpriteProxyBase::renderNoImage( GuiControl& owner, Point2I &offset, const RectI& updateRect ) const
+{
+    // Fetch the 'cannot render' proxy.
+    RenderProxy* pNoImageRenderProxy = Sim::findObject<RenderProxy>( CANNOT_RENDER_PROXY_NAME );
+
+    // Finish if no render proxy available or it can't render.
+    if ( pNoImageRenderProxy == NULL || !pNoImageRenderProxy->validRender() )
+        return;
+
+    // Render using render-proxy.
+    pNoImageRenderProxy->renderGui( owner, offset, updateRect );
+
+    // Update control.
+    owner.setUpdate();
 }
 
 //------------------------------------------------------------------------------
