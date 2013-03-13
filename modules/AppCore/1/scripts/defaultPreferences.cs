@@ -67,3 +67,4 @@ $pref::OpenGL::gammaCorrection = 0.5;
 
 /// Fonts.
 $Gui::fontCacheDirectory = expandPath( "^AppCore/fonts" );
+$Gui::shaderDirectory = expandPath( "^AppCore/shaders" );

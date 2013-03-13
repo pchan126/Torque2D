@@ -1623,7 +1623,7 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
     if ( mUseBackgroundColor )
     {
         // Enable the scissor.
-        const RectI& clipRect = dglGetClipRect();
+        const RectI& clipRect = GFX->getClipRect();
         glEnable(GL_SCISSOR_TEST );
         glScissor( clipRect.point.x, Platform::getWindowSize().y - (clipRect.point.y + clipRect.extent.y), clipRect.len_x(), clipRect.len_y() );
 

@@ -1032,24 +1032,28 @@ void GFXOpenGLDevice::initGenericShaders()
     char vertBuffer[1024];
     char fragBuffer[1024];
     //  #Color Shader
-    Con::expandPath(vertBuffer, sizeof(vertBuffer), "^Sandbox/shaders/CVert.glsl");
-    Con::expandPath(fragBuffer, sizeof(fragBuffer), "^Sandbox/shaders/CFrag.glsl");
     
+    const char* shaderDirectory = Con::getVariable("$GUI::shaderDirectory");
+    Con::printf("loading shaders from %s", shaderDirectory);
+    
+    dSprintf(vertBuffer, sizeof(vertBuffer), "%s/CVert.glsl", shaderDirectory);
+    dSprintf(fragBuffer, sizeof(fragBuffer), "%s/CFrag.glsl", shaderDirectory);
+
     mGenericShader[0] = createShader();
     mGenericShader[0]->init(String(vertBuffer), String(fragBuffer), 0, macros);
     mGenericShaderConst[0] = mGenericShader[0]->allocConstBuffer();
     
     //  #Texture Shader
-    Con::expandPath(vertBuffer, sizeof(vertBuffer), "^Sandbox/shaders/simpleVert.glsl");
-    Con::expandPath(fragBuffer, sizeof(fragBuffer), "^Sandbox/shaders/simpleFrag.glsl");
+    dSprintf(vertBuffer, sizeof(vertBuffer), "%s/simpleVert.glsl", shaderDirectory);
+    dSprintf(fragBuffer, sizeof(fragBuffer), "%s/simpleFrag.glsl", shaderDirectory);
     
     mGenericShader[1] = createShader();
     mGenericShader[1]->init(String(vertBuffer), String(fragBuffer), 0, macros);
     mGenericShaderConst[1] = mGenericShader[1]->allocConstBuffer();
     
     //  #Point Shader
-    Con::expandPath(vertBuffer, sizeof(vertBuffer), "^Sandbox/shaders/pointVert.glsl");
-    Con::expandPath(fragBuffer, sizeof(fragBuffer), "^Sandbox/shaders/pointFrag.glsl");
+    dSprintf(vertBuffer, sizeof(vertBuffer), "%s/pointVert.glsl", shaderDirectory);
+    dSprintf(fragBuffer, sizeof(fragBuffer), "%s/pointFrag.glsl", shaderDirectory);
     
     mGenericShader[2] = createShader();
     mGenericShader[2]->init(String(vertBuffer), String(fragBuffer), 0, macros);
@@ -1057,15 +1061,15 @@ void GFXOpenGLDevice::initGenericShaders()
     
     //    GFXShaderConstHandle* hand = mGenericShader[0]->getShaderConstHandle("$mvp_matrix");
     //  #Point Shader
-    Con::expandPath(vertBuffer, sizeof(vertBuffer), "^Sandbox/shaders/testVert.glsl");
-    Con::expandPath(fragBuffer, sizeof(fragBuffer), "^Sandbox/shaders/testFrag.glsl");
+    dSprintf(vertBuffer, sizeof(vertBuffer), "%s/testVert.glsl", shaderDirectory);
+    dSprintf(fragBuffer, sizeof(fragBuffer), "%s/testFrag.glsl", shaderDirectory);
     
     mGenericShader[3] = createShader();
     mGenericShader[3]->init(String(vertBuffer), String(fragBuffer), 0, macros);
     mGenericShaderConst[3] = mGenericShader[3]->allocConstBuffer();
 
-    Con::expandPath(vertBuffer, sizeof(vertBuffer), "^Sandbox/shaders/alphaVert.glsl");
-    Con::expandPath(fragBuffer, sizeof(fragBuffer), "^Sandbox/shaders/alphaFrag.glsl");
+    dSprintf(vertBuffer, sizeof(vertBuffer), "%s/alphaVert.glsl", shaderDirectory);
+    dSprintf(fragBuffer, sizeof(fragBuffer), "%s/alphaFrag.glsl", shaderDirectory);
     
     mGenericShader[4] = createShader();
     mGenericShader[4]->init(String(vertBuffer), String(fragBuffer), 0, macros);

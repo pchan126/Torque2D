@@ -231,8 +231,8 @@ void SpriteProxyBase::renderGui( GuiControl& owner, Point2I offset, const RectI 
             RectI destinationRegion(offset, owner.mBounds.extent);
 
             // Render animation image.
-            dglClearBitmapModulation();
-            dglDrawBitmapStretchSR( mpAnimationController->getImageTexture(), destinationRegion, sourceRegion );
+            GFX->getDrawUtil()->clearBitmapModulation();
+            GFX->getDrawUtil()->drawBitmapStretchSR( mpAnimationController->getImageTexture(), destinationRegion, sourceRegion );
 
             // Update control.
             owner.setUpdate();
