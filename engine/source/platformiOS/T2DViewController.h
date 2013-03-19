@@ -35,7 +35,21 @@
     bool mOrientationLandscapeLeftSupported;
     bool mOrientationPortraitSupported;
     bool mOrientationPortraitUpsideDownSupported;
+
+    
+@protected
+
+    // The pixel dimensions of the CAEAGLLayer.
+    GLint framebufferWidth;
+    GLint framebufferHeight;
+    
+    // The OpenGL ES names for the framebuffer and renderbuffers used to render
+    // to this view.
+    GLuint defaultFramebuffer;
+    GLuint colorRenderbuffer;
+    GLuint depthRenderbuffer;
 }
+
 
 @property (strong, nonatomic) EAGLContext *context;
 
@@ -44,4 +58,6 @@
 
 void supportLandscape( bool );
 void supportPortrait( bool );
+
+
 @end

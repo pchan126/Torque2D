@@ -29,7 +29,6 @@
 
 void Platform::postQuitMessage(const U32 in_quitVal)
 {
-   platState.quit = true;
    Event quitEvent;
    quitEvent.type = QuitEventType;
 

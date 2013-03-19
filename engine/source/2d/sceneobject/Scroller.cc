@@ -339,11 +339,12 @@ void Scroller::sceneRender( const SceneRenderState* pSceneRenderState, const Sce
     // Flush any existing batches.
     pBatchRenderer->flush();
 
-    // Set-up a set of clip-planes against the OOBB.
-    GLdouble left[4] = {1, 0, 0, -renderOOBB0.x};
-    GLdouble right[4] = {-1, 0, 0, renderOOBB1.x};
-    GLdouble top[4] = {0, -1, 0, renderOOBB3.y};
-    GLdouble bottom[4] = {0, 1, 0, -renderOOBB0.y};
+//    // Set-up a set of clip-planes against the OOBB.
+//    double left[4] = {1, 0, 0, -renderOOBB0.x};
+//    double right[4] = {-1, 0, 0, renderOOBB1.x};
+//    double top[4] = {0, -1, 0, renderOOBB3.y};
+//    double bottom[4] = {0, 1, 0, -renderOOBB0.y};
+
 //    glClipPlane(GL_CLIP_PLANE0, left);
 //    glClipPlane(GL_CLIP_PLANE1, right);
 //    glClipPlane(GL_CLIP_PLANE2, top);

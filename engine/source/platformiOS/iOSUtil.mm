@@ -74,7 +74,7 @@ bool GBitmap::readPNGiPhone(Stream& io_rStream)
     AssertISV(width <= 1024, "Error, cannot load images wider than 1024 pixels!");
     AssertISV(height <= 1024, "Error, cannot load images taller than 1024 pixels!");
 
-    BitmapFormat format = RGBA;
+    GFXFormat format = GFXFormatR8G8B8A8;
     // actually allocate the bitmap space...
     allocateBitmap(width, height,
                    false,            // don't extrude miplevels...

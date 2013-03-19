@@ -273,30 +273,30 @@ bool GBitmap::readPvr(Stream& stream)
 
 	stream.read( sizeof(PVRTextureHeaderV2), &bi );
 
-	byteSize = bi.dwDataSize;
-	pBits = new U8[byteSize];
-	stream.read( byteSize, pBits );
-	
-	width = bi.dwHeight;
-	height = bi.dwWidth;
-	
-	if (bi.dwBitCount == 2) {
-		if ((bi.dwpfFlags & PVRTEX_ALPHA) == 0) {
-			internalFormat = PVR2;
-		} else {
-			internalFormat = PVR2A;
-		}
-	} else { // if (bi.dwBitCount == 4) {
-		if ((bi.dwpfFlags & PVRTEX_ALPHA) == 0) {
-			internalFormat = PVR4;
-		} else {
-			internalFormat = PVR4A;
-		}
-	}
-	bytesPerPixel = 0; // no provision for sub 1 bytesPerPixel, so set it to 0
-	
-	numMipLevels = 1; //bi.dwMipMapCount;
-	mipLevelOffsets[0] = 0;
+//	byteSize = bi.dwDataSize;
+//	pBits = new U8[byteSize];
+//	stream.read( byteSize, pBits );
+//	
+//	width = bi.dwHeight;
+//	height = bi.dwWidth;
+//	
+//	if (bi.dwBitCount == 2) {
+//		if ((bi.dwpfFlags & PVRTEX_ALPHA) == 0) {
+//			internalFormat = PVR2;
+//		} else {
+//			internalFormat = PVR2A;
+//		}
+//	} else { // if (bi.dwBitCount == 4) {
+//		if ((bi.dwpfFlags & PVRTEX_ALPHA) == 0) {
+//			internalFormat = PVR4;
+//		} else {
+//			internalFormat = PVR4A;
+//		}
+//	}
+//	bytesPerPixel = 0; // no provision for sub 1 bytesPerPixel, so set it to 0
+//	
+//	numMipLevels = 1; //bi.dwMipMapCount;
+//	mipLevelOffsets[0] = 0;
 
 	pPalette = NULL;
 

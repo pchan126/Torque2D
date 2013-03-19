@@ -33,6 +33,7 @@
 #include "math/mMath.h"
 #include "graphics/gfxDevice.h"
 #include "graphics/gBitmap.h"
+#include "ts/tsShape.h"
 #include "io/resource/resourceManager.h"
 #include "io/fileStream.h"
 #include "graphics/gfxTextureManager.h"
@@ -148,7 +149,8 @@ bool initializeLibraries()
 
 #ifdef TORQUE_OS_IOS
     ResourceManager->registerExtension(".pvr", constructBitmapPVR);
-#endif	
+#endif
+	ResourceManager->registerExtension(".dts", constructShape);
    
     Platform::initConsole();
     NetStringTable::create();

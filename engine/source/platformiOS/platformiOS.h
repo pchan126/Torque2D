@@ -20,122 +20,129 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#ifndef _PLATFORMIOS_H_
-#define _PLATFORMIOS_H_
+#import <UIKit/UIKit.h>
 
-#import "UIKit/UIKit.h"
+#import "platformiOS/T2DView.h"
+#import "platformiOS/T2DViewController.h"
 
-
-#include "platform/platform.h"
-#include "math/mMath.h"
-#include "platformiOS/iOSEvents.h"
-
-#include "platformiOS/iOSOGLVideo.h"
-
-#include "platformiOS/T2DView.h"
-#include "platformiOS/T2DViewController.h"
+#import "platform/platform.h"
+#import "math/mMath.h"
+#import "platformiOS/iOSEvents.h"
 
 // Mich Note: Do not try to spend too much time analyzing this class.
 // It is planned to refactor the iOS platform layer and replace this
 // with a platform state similar to what OS X uses.
-class iOSPlatState
+@interface iOSPlatState : NSObject
 {
-public:
-    bool              captureDisplay;
-    bool              fadeWindows;
+    UIView*			  _window;
 
-    id				 appID;
-    UIView			 *Window;
-    char              appWindowTitle[256];
-    bool              quit;
-    T2DView           *ctx;
+    // Process ID for this application instance
+    UIApplication*    _application;
+
+    EAGLContext*      _ctx;
+    
     T2DViewController *viewController;
     bool              ctxNeedsUpdate;
 
     bool			portrait;
 
-    S32               desktopBitsPixel;
-    S32               desktopWidth;
-    S32               desktopHeight;
     U32               currentTime;
     bool				 fullscreen;
 
-    U32               osVersion;
+    // Version of operating system
+    U32 osVersion;
 
-    bool              tsmActive;
+    // Number of arguments passed into this application
+    U32 _argc;
 
-    U32               firstThreadId;
-    U32               torqueThreadId;
+    // Arguments passed into this application
+    const char** _argv;
 
-    void*             alertSemaphore;
+    Point2I _windowSize;
+
+    // Bit depth of the screen (desktop)
+    U32 _desktopBitsPixel;
+    
+    // Horizontal resolution of user's desktop
+    U32 _desktopWidth;
+    
+    // Vertical resolution of user's desktop
+    U32 _desktopHeight;
+    
+    U32 _lastTimeTick;
+    
+    U32 _sleepTicks;
+    
+    // Location of the folder containing the main.cs
+    NSString* _mainCSDirectory;
+    
+    // Threaded alert object
+    void* _alertSemaphore;
     S32               alertHit;
-    //   DialogRef         alertDlg;
-    //   EventQueueRef     mainEventQueue;
 
-    RandomLCG        platRandom;
+    // Random generator
+    RandomLCG*        _platformRandom;
 
-    bool              mouseLocked;
-    bool              backgrounded;
-    bool              minimized;
-
-    S32               sleepTicks;
-    S32               lastTimeTick;
-
-    Point2I           windowSize;
+    // Used to report is mouse is locked to the main window or not
+    BOOL _mouseLocked;
+    
+    // Used to report if the window has been pushed to the background or not
+    BOOL _backgrounded;
+    
+    // Use to report if the window has been minimized or not
+    BOOL _minimized;
 
     U32               appReturn;
 
-    U32               argc;
-    const char**      argv;
-
-
-    StringTableEntry  mainDotCsDir;
-
-    NSTimer			 *mainLoopTimer;
     NSTimeInterval	 timerInterval;
     UIApplication	*application;
     //-Mat
     bool		multipleTouchesEnabled;
 
-    iOSPlatState();
+    // Reports the quit state for the applications
+    BOOL _quit;
+
+    // Timer
+    NSTimer* _iOSTimer;
 };
 
+@property (strong) EAGLContext* ctx;
+@property (strong) UIView* window;
+@property (strong) T2DViewController* viewController;
+//@property CGDirectDisplayID cgDisplay;
+@property (strong) UIApplication* application;
+@property void* alertSemaphore;
+@property RandomLCG* platformRandom;
+@property BOOL fullScreen;
+@property U32 argc;
+@property const char** argv;
+@property U32 desktopBitsPixel;
+@property U32 desktopWidth;
+@property U32 desktopHeight;
+@property U32 currentSimTime;
+@property U32 lastTimeTick;
+@property U32 sleepTicks;
+@property (nonatomic,retain) NSString* mainCSDirectory;
+@property (nonatomic,retain) NSString* windowTitle;
+@property BOOL mouseLocked;
+@property BOOL backgrounded;
+@property BOOL minimized;
+@property BOOL quit;
+@property BOOL portrait;
+@property BOOL multipleTouchesEnabled;
+@property (strong)NSTimer* iOSTimer;
+
 /// Global singleton that encapsulates a lot of mac platform state & globals.
-extern iOSPlatState platState;
++ (id)sharedPlatState;
 
-/// @name Misc Mac Plat Functions
-/// Functions that are used by multiple files in the mac plat, but too trivial
-/// to require their own header file.
-/// @{
-/// Fills gGLState with info about this gl renderer's capabilities.
-void getGLCapabilities(void);
+- (BOOL)initializeTorque2D;
+- (void)runTorque2D;
+- (void)shutDownTorque2D;
 
+- (void)updateWindowTitle:(const char*)title;
+- (void)setWindowSize:(int)width height:(int)height;
+- (Point2I&)getWindowSize;
+- (U32)windowWidth;
+- (U32)windowHeight;
 
-/// Display a file dialog.
-/// calls FileDialog::Execute() on \p dialog
-/// @param dialog The FileDialog object to Execute. A void* is used to cut down on header dependencies.
-/// @see platform/nativeDialogs/fileDialog.h
-void iOSShowDialog(void* dialog);
-
-/// Translates a Mac keycode to a Torque keycode
-U8 TranslateOSKeyCode(U8 vcode);
-/// @}
-
-/// @name Misc Mac Plat constants
-/// @{
-
-/// earlier versions of OSX don't have these convinience macros, so manually stick them here.
-#ifndef IntToFixed
-#define IntToFixed(a)    ((Fixed)(a) <<16)
-#define FixedToInt(a)   ((short)(((Fixed)(a) + fixed1/2) >> 16))
-#endif
-
-/// mouse wheel sensitivity factor
-const S32 kTMouseWheelMagnificationFactor = 25;
-
-/// @}
-
-
-
-#endif //_PLATFORMIOS_H_
-
+@end

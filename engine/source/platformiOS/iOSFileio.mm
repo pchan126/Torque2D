@@ -552,9 +552,14 @@ static bool isMainDotCsPresent(char *dir)
 /// experience when you distribute your app.
 StringTableEntry Platform::getExecutablePath()
 {
-   if(platState.mainDotCsDir) 
-      return platState.mainDotCsDir;
+    // Get the shared iOS platform state
+    iOSPlatState * platState = [iOSPlatState sharedPlatState];
+
+    // If we already have a main.cs file, return that
+    if(platState.mainCSDirectory)
+      return [[platState mainCSDirectory] UTF8String];
       
+    // Get the main application bundle
    char cwd_buf[MAX_MAC_PATH_LONG];
    CFBundleRef mainBundle = CFBundleGetMainBundle();
    CFURLRef bundleUrl = CFBundleCopyBundleURL(mainBundle);
@@ -599,18 +604,16 @@ StringTableEntry Platform::getExecutablePath()
       CFRelease(normalizedString);   
    }
    
-   //CFRelease(mainBundle);   // apple docs say to release this, but that causes a sigsegv(11)
    CFRelease(bundleUrl);
-   
-//   chdir(cwd_buf);            // set the current working directory.
-   
-   char* ret = NULL;
-   if(StringTable)
-      platState.mainDotCsDir = StringTable->insert(cwd_buf);
-   else
-      ret = dStrdup(cwd_buf);
-   
-   return ret ? ret : platState.mainDotCsDir;
+
+    char* ret = NULL;
+    
+    if (StringTable)
+        platState.mainCSDirectory = [NSString stringWithUTF8String: StringTable->insert(cwd_buf)];
+    else
+        ret = dStrdup(cwd_buf);
+    
+    return ret ? ret : [platState.mainCSDirectory UTF8String];
 }
 
 //-----------------------------------------------------------------------------

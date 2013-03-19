@@ -26,7 +26,7 @@
 #include "2d/sceneobject/SceneObject.h"
 #endif
 
-#include "platformOSX/graphics/gfxOpenGLTextureObject.h"
+//#include "platformOSX/graphics/gfxOpenGLESTextureObject.h"
 
 // Debug Profiling.
 #include "debug/profiler.h"

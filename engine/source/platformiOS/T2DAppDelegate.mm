@@ -25,15 +25,13 @@
 #include "platform/platformInput.h"
 #include "platformiOS/iOSUtil.h"
 #include "console/console.h"
-
-extern void _iOSGameInnerLoop();
-extern void _iOSGameResignActive();
-extern void _iOSGameBecomeActive();
-extern void _iOSGameWillTerminate();
+#include "game/gameInterface.h"
 
 // Store current orientation for easy access
 extern void _iOSGameChangeOrientation(S32 newOrientation);
 UIDeviceOrientation currentOrientation;
+
+extern void clearPendingMultitouchEvents( void );
 
 bool _iOSTorqueFatalError = false;
 
@@ -56,7 +54,10 @@ bool _iOSTorqueFatalError = false;
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
-    _iOSGameResignActive();
+    if ( Con::isFunction("oniOSResignActive") )
+        Con::executef( 1, "oniOSResignActive" );
+    //
+    //    appIsRunning = false;
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
@@ -77,32 +78,24 @@ bool _iOSTorqueFatalError = false;
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     if(!_iOSTorqueFatalError)
-        _iOSGameBecomeActive();
+    {
+        clearPendingMultitouchEvents( );
+
+        if ( Con::isFunction("oniOSBecomeActive") )
+            Con::executef( 1, "oniOSBecomeActive" );
+    }
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
-    _iOSGameWillTerminate();
-	
+    if ( Con::isFunction("oniOSWillTerminate") )
+        Con::executef( 1, "oniOSWillTerminate" );
+
+	Con::executef( 1, "onExit" );
+
+	Game->mainShutdown();
+    
 	[[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
-}
-
-- (void)didRotate:(NSNotification *)notification
-{
-	//Default to landscape left
-	UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-	if(currentOrientation != orientation)
-	{
-		//Change the orientation
-		currentOrientation = orientation;
-		//Tell the rest of the engine
-		_iOSGameChangeOrientation(currentOrientation);
-	}
-}
-
-- (void) runMainLoop
-{
-	_iOSGameInnerLoop();
 }
 
 @end

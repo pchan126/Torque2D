@@ -1725,16 +1725,18 @@ void GuiCanvas::renderFrame(bool preRenderOnly, bool bufferSwap /* = true */)
       if (cursorON && mShowCursor && !mouseCursor)
       {
 #ifdef TORQUE_OS_IOS
-         glColor4ub(255, 0, 0, 255);
-         GLfloat vertices[] = {
-              (GLfloat)(cursorPt.x),(GLfloat)(cursorPt.y),
-              (GLfloat)(cursorPt.x + 2),(GLfloat)(cursorPt.y),
-              (GLfloat)(cursorPt.x + 2),(GLfloat)(cursorPt.y + 2),
-              (GLfloat)(cursorPt.x),(GLfloat)(cursorPt.y + 2),
-          };
-          glEnableClientState(GL_VERTEX_ARRAY);
-          glVertexPointer(2, GL_FLOAT, 0, vertices);
-          glDrawArrays(GL_LINE_LOOP, 0, 4);
+         
+#pragma message ("removed")
+//         glColor4ub(255, 0, 0, 255);
+//         GLfloat vertices[] = {
+//              (GLfloat)(cursorPt.x),(GLfloat)(cursorPt.y),
+//              (GLfloat)(cursorPt.x + 2),(GLfloat)(cursorPt.y),
+//              (GLfloat)(cursorPt.x + 2),(GLfloat)(cursorPt.y + 2),
+//              (GLfloat)(cursorPt.x),(GLfloat)(cursorPt.y + 2),
+//          };
+//          glEnableClientState(GL_VERTEX_ARRAY);
+//          glVertexPointer(2, GL_FLOAT, 0, vertices);
+//          glDrawArrays(GL_LINE_LOOP, 0, 4);
 #else
 //         glColor4ub(255, 0, 0, 255);
 //         glRecti((S32)cursorPt.x, (S32)cursorPt.y, (S32)(cursorPt.x + 2), (S32)(cursorPt.y + 2));

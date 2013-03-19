@@ -181,12 +181,12 @@ bool GFXOpenGLCardProfiler::_queryCardCap(const String& query, U32& foundResult)
    return 0;
 }
 
-//bool GFXOpenGLCardProfiler::_queryFormat(const GFXFormat fmt, const GFXTextureProfile *profile, bool &inOutAutogenMips)
-//{
-//	// We assume if the format is valid that we can use it for any purpose.
-//   // This may not be the case, but we have no way to check short of in depth 
-//   // testing of every format for every purpose.  And by testing, I mean sitting
-//   // down and doing it by hand, because there is no OpenGL API to check these
-//   // things.
-//   return GFXGLTextureInternalFormat[fmt] != GL_ZERO;
-//}
+bool GFXOpenGLCardProfiler::_queryFormat(const GFXFormat fmt, const GFXTextureProfile *profile, bool &inOutAutogenMips)
+{
+	// We assume if the format is valid that we can use it for any purpose.
+   // This may not be the case, but we have no way to check short of in depth 
+   // testing of every format for every purpose.  And by testing, I mean sitting
+   // down and doing it by hand, because there is no OpenGL API to check these
+   // things.
+   return GFXGLTextureInternalFormat[fmt] != GL_ZERO;
+}

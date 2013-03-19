@@ -25,9 +25,7 @@
 
 
 #include "math/mPoint.h"
-#ifndef _GFXVERTEXCOLOR_H_
-#include "graphics/gfxVertexColor.h"
-#endif
+
 #ifndef _GFXENUMS_H_
 #include "graphics/gfxEnums.h"
 #endif

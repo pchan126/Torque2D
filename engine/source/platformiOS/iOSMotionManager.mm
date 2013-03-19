@@ -27,8 +27,6 @@
 #include "sim/simBase.h"
 #include "game/gameInterface.h"
 
-extern iOSPlatState platState;
-
 static const double kFilterConst = 0.1;
 
 static const double kUpdateInterval = 0.2;
@@ -132,6 +130,7 @@ void (^accelerometerHandler)(CMAccelerometerData*, NSError*) = ^(CMAccelerometer
     if(gMotionManager.accelerometerEnabled)
     {
         U32 accelAxes[6] = { SI_ACCELX, SI_ACCELY, SI_ACCELZ, SI_GRAVX, SI_GRAVY, SI_GRAVZ };
+        iOSPlatState *platState = [iOSPlatState sharedPlatState];
         
         double userAcc[6];
         
@@ -186,6 +185,8 @@ void (^accelerometerHandler)(CMAccelerometerData*, NSError*) = ^(CMAccelerometer
 
 void (^motionHandler)(CMDeviceMotion*, NSError*) = ^(CMDeviceMotion *motionData, NSError *error)
 {
+    iOSPlatState * platState = [iOSPlatState sharedPlatState];
+
     if(gMotionManager.referenceAttitude == NULL)
         [gMotionManager resetDeviceMotionReference];
     

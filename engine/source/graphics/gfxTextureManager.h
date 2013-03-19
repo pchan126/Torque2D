@@ -32,13 +32,7 @@
 //#ifndef _DDSFILE_H_
 //#include "graphics/bitmap/ddsFile.h"
 //#endif
-#ifndef _RESOURCEMANAGER_H_
-//#include "io/resource/resourceManager.h"
 #include "io/resource/resourceManager.h"
-#endif
-//#ifndef _TDICTIONARY_H_
-//#include "core/util/tDictionary.h"
-//#endif
 #include "collection/hashTable.h"
 #include "sim/simBase.h"
 #include "delegates/delegateSignal.h"

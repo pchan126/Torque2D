@@ -20,11 +20,52 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#include "platformiOS/platformiOS.h"
-#include "game/gameInterface.h"
+#import "game/gameInterface.h"
+#import "platformiOS/platformiOS.h"
+#import "platform/event.h"
+#import "game/gameInterface.h"
 
-#include <unistd.h>
+#pragma mark ---- TimeManager Class Methods ----
+
 //--------------------------------------
+
+static void _iOSUpdateSleepTicks()
+{
+    iOSPlatState * platState = [iOSPlatState sharedPlatState];
+
+    if (platState.backgrounded)
+        platState.sleepTicks = Platform::getBackgroundSleepTime();
+    else
+        platState.sleepTicks = sgTimeManagerProcessInterval;
+}
+
+//------------------------------------------------------------------------------
+// Responsible for calculating ticks and posting the TimeEvent
+void TimeManager::process()
+{
+    iOSPlatState * platState = [iOSPlatState sharedPlatState];
+
+    _iOSUpdateSleepTicks();
+    
+    U32 curTime = Platform::getRealMilliseconds(); // GTC returns Milliseconds, FYI.
+    S32 elapsedTime = curTime - platState.lastTimeTick;
+    
+    if(elapsedTime <= platState.sleepTicks)
+    {
+        Platform::sleep(platState.sleepTicks - elapsedTime);
+    }
+    
+    platState.lastTimeTick = Platform::getRealMilliseconds();
+    
+    TimeEvent event;
+    event.elapsedTime = elapsedTime;
+    Game->postEvent(event);
+}
+
+
+#pragma mark ---- Platform Namespace Time Functions  ----
+
+//------------------------------------------------------------------------------
 void Platform::getLocalTime(LocalTime &lt)
 {
    struct tm systime;
@@ -55,54 +96,25 @@ U32 Platform::getTime()
    return epoch_time;
 }   
 
-#import <mach/mach_time.h>
 
-static mach_timebase_info_data_t InitTimebaseInfo();
-static mach_timebase_info_data_t timebase_info = InitTimebaseInfo();
-static double absolute_to_seconds;
-static double seconds_to_absolute;
-static double absolute_to_millis;
-static double millis_to_absolute;
-
-mach_timebase_info_data_t InitTimebaseInfo()
-{
-	mach_timebase_info_data_t timebase_info;
-	mach_timebase_info(&timebase_info);
-	absolute_to_seconds = timebase_info.numer / (1000000000.0 * timebase_info.denom);
-	seconds_to_absolute = 1.0 / absolute_to_seconds;
-	absolute_to_millis = timebase_info.numer / (1000000.0 * timebase_info.denom);
-	millis_to_absolute = 1.0 / absolute_to_millis;
-	
-	return timebase_info;
-}
-
-/// Gets the time in milliseconds since some epoch. In this case, system start time.
-/// Storing milisec in a U32 overflows every 49.71 days
+//------------------------------------------------------------------------------
+// Gets the time in milliseconds since some epoch. In this case, the current system
+// absolute time. Storing milisec in a U32 overflows every 49.71 days.
 U32 Platform::getRealMilliseconds()
 {
-   // Duration is a S32 value.
-   // if negative, it is in microseconds.
-   // if positive, it is in milliseconds.
-	
-	Duration durTime = mach_absolute_time() * absolute_to_millis;
-   U32 ret;
-   if( durTime < 0 )
-      ret = durTime / -1000;
-   else 
-      ret = durTime;
-
-   return ret;
-}   
+    return (U32)([NSDate timeIntervalSinceReferenceDate] * 1000);
+}
 
 U32 Platform::getVirtualMilliseconds()
 {
-   return platState.currentTime;   
-}   
+    return [[iOSPlatState sharedPlatState] currentSimTime];
+}
 
 void Platform::advanceTime(U32 delta)
 {
-   platState.currentTime += delta;
-}   
+    iOSPlatState * platState = [iOSPlatState sharedPlatState];
+    platState.currentSimTime += delta;
+}
 
 /// Asks the operating system to put the process to sleep for at least ms milliseconds
 void Platform::sleep(U32 ms)
@@ -113,32 +125,3 @@ void Platform::sleep(U32 ms)
    usleep( ms * 1000 );
 }
 
-#pragma mark ---- TimeManager ----
-//--------------------------------------
-static void _iOSUpdateSleepTicks()
-{
-   if (platState.backgrounded)
-      platState.sleepTicks = Platform::getBackgroundSleepTime();
-   else
-      platState.sleepTicks = sgTimeManagerProcessInterval;
-}
-
-//--------------------------------------
-void TimeManager::process()
-{
-   _iOSUpdateSleepTicks();
-         
-   U32 curTime = Platform::getRealMilliseconds(); // GTC returns Milliseconds, FYI.
-   S32 elapsedTime = curTime - platState.lastTimeTick;
-
-   if(elapsedTime <= platState.sleepTicks)
-   {
-      Platform::sleep(platState.sleepTicks - elapsedTime);
-   }
-
-   platState.lastTimeTick = Platform::getRealMilliseconds();
-
-   TimeEvent event;
-   event.elapsedTime = elapsedTime;
-   Game->postEvent(event);
-}

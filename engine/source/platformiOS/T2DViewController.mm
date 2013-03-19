@@ -24,10 +24,8 @@
 #import "platformiOS/platformGL.h"
 #include "platformiOS/iOSWindow.h"
 #include "platformiOS/platformiOS.h"
-#include "graphics/dgl.h"
-
-extern iOSPlatState platState;
-
+#include "graphics/gfxDevice.h"
+#include "game/gameInterface.h"
 
 #define USE_DEPTH_BUFFER 0
 
@@ -36,10 +34,10 @@ extern bool retinaEnabled;
 extern void ConvertToRetina (CGPoint *p);
 
 extern bool _iOSTorqueFatalError;
-extern int _iOSRunTorqueMain( id appID,  UIView *Window, T2DViewController *Controller );
+//extern int _iOSRunTorqueMain( id appID,  UIView *Window, T2DViewController *Controller );
 
 //-Mat we should update the accelereometer once per frame
-extern U32  AccelerometerUpdateMS;
+U32  AccelerometerUpdateMS;
 extern void _iOSGameInnerLoop();
 
 @implementation T2DViewController
@@ -73,46 +71,62 @@ extern void _iOSGameInnerLoop();
 	}
 }
 
-- (BOOL)createFramebuffer {
-	
-	glGenFramebuffersOES(1, &viewFramebuffer);
-	glGenRenderbuffersOES(1, &viewRenderbuffer);
-	
-	glBindFramebufferOES(GL_FRAMEBUFFER_OES, viewFramebuffer);
-	glBindRenderbufferOES(GL_RENDERBUFFER_OES, viewRenderbuffer);
-	[self.context renderbufferStorage:GL_RENDERBUFFER_OES fromDrawable:(CAEAGLLayer*)self.view.layer];
-	glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, viewRenderbuffer);
-	
-	glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_WIDTH_OES, &backingWidth);
-	glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_HEIGHT_OES, &backingHeight);
-	
-	if (USE_DEPTH_BUFFER) {
-		glGenRenderbuffersOES(1, &depthRenderbuffer);
-		glBindRenderbufferOES(GL_RENDERBUFFER_OES, depthRenderbuffer);
-		glRenderbufferStorageOES(GL_RENDERBUFFER_OES, GL_DEPTH_COMPONENT16_OES, backingWidth, backingHeight);
-		glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_DEPTH_ATTACHMENT_OES, GL_RENDERBUFFER_OES, depthRenderbuffer);
-	}
-	
-	if(glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES) != GL_FRAMEBUFFER_COMPLETE_OES) {
-		NSLog(@"failed to make complete framebuffer object %x", glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES));
-		return NO;
-	}
-	
-	return YES;
+- (void)createFramebuffer {
+    if (self.context && !defaultFramebuffer) {
+        [EAGLContext setCurrentContext:self.context];
+        
+        // Create default framebuffer object
+        glGenFramebuffers(1, &defaultFramebuffer);
+        glBindFramebuffer(GL_FRAMEBUFFER, defaultFramebuffer);
+        
+        // Create colour render buffer and allocate backing store
+        glGenRenderbuffers(1, &colorRenderbuffer);
+        glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
+        
+        // Allocate the renderbuffer's storage (shared with the drawable object)
+        [self.context renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)[self view].layer];
+        glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &framebufferWidth);
+        glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &framebufferHeight);
+        
+        // Create the depth render buffer and allocate storage
+        glGenRenderbuffers(1, &depthRenderbuffer);
+        glBindRenderbuffer(GL_RENDERBUFFER, depthRenderbuffer);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, framebufferWidth, framebufferHeight);
+        
+        // Attach colour and depth render buffers to the frame buffer
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, colorRenderbuffer);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderbuffer);
+        
+        // Leave the colour render buffer bound so future rendering operations will act on it
+        glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
+        
+        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+            NSLog(@"Failed to make complete framebuffer object %x", glCheckFramebufferStatus(GL_FRAMEBUFFER));
+        }
+    }
 }
 
 
 - (void)destroyFramebuffer {
 	
-	glDeleteFramebuffersOES(1, &viewFramebuffer);
-	viewFramebuffer = 0;
-	glDeleteRenderbuffersOES(1, &viewRenderbuffer);
-	viewRenderbuffer = 0;
-	
-	if(depthRenderbuffer) {
-		glDeleteRenderbuffersOES(1, &depthRenderbuffer);
-		depthRenderbuffer = 0;
-	}
+        if (self.context) {
+            [EAGLContext setCurrentContext:self.context];
+            
+        if (defaultFramebuffer) {
+            glDeleteFramebuffers(1, &defaultFramebuffer);
+            defaultFramebuffer = 0;
+        }
+        
+        if (colorRenderbuffer) {
+            glDeleteRenderbuffers(1, &colorRenderbuffer);
+            colorRenderbuffer = 0;
+        }
+        
+        if (depthRenderbuffer) {
+            glDeleteRenderbuffers(1, &depthRenderbuffer);
+            depthRenderbuffer = 0;
+        }
+    }
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -120,8 +134,10 @@ extern void _iOSGameInnerLoop();
 {
     [super viewDidLoad];
     
+    iOSPlatState *platState = [iOSPlatState sharedPlatState];
+
     self.context = [[EAGLContext alloc]
-                    initWithAPI:kEAGLRenderingAPIOpenGLES1];
+                    initWithAPI:kEAGLRenderingAPIOpenGLES2];
     
     if (!self.context) {
         NSLog(@"Failed to create ES context");
@@ -129,6 +145,8 @@ extern void _iOSGameInnerLoop();
     
     T2DView *view = (T2DView *) self.view;
     view.context = self.context;
+    
+    platState.ctx = self.context;
     
 	if( AccelerometerUpdateMS <= 0 ) {
         //Luma:	This variable needs to be store MS value, not Seconds value
@@ -159,11 +177,11 @@ extern void _iOSGameInnerLoop();
     id appDelegate = [application delegate];
     
 	_iOSTorqueFatalError = false;
-	if(!_iOSRunTorqueMain( appDelegate, self.view, self ))
-	{
-		_iOSTorqueFatalError = true;
-		return;
-	};
+//	if(!_iOSRunTorqueMain( appDelegate, self.view, self ))
+//	{
+//		_iOSTorqueFatalError = true;
+//		return;
+//	};
 }
 
 - (void)viewDidUnload
@@ -179,7 +197,10 @@ extern void _iOSGameInnerLoop();
 
 - (void)update
 {
-    _iOSGameInnerLoop();
+    if(Game->isRunning())
+    {
+        Game->mainLoop();
+    }
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -219,6 +240,7 @@ extern void _iOSGameInnerLoop();
 
 void supportLandscape( bool enable)
 {
+    iOSPlatState *platState = [iOSPlatState sharedPlatState];
     platState.viewController->mOrientationLandscapeLeftSupported = enable;
     platState.viewController->mOrientationLandscapeRightSupported = enable;
 }
@@ -235,6 +257,7 @@ ConsoleFunction(supportLandscape, void, 2, 2, "supportLandscape( bool ) "
 
 void supportPortrait( bool enable )
 {
+    iOSPlatState *platState = [iOSPlatState sharedPlatState];
     platState.viewController->mOrientationPortraitSupported = enable;
     platState.viewController->mOrientationPortraitUpsideDownSupported = enable;
 }

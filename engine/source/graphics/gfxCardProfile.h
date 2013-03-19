@@ -92,9 +92,9 @@ protected:
    /// @param  query       Capability being queried.
    /// @param  foundResult Result to return to the caller. If the function returns true
    ///                     then this value is returned as the result of the query.
-//   virtual bool _queryCardCap(const String &query, U32 &foundResult)=0;
-//
-//   virtual bool _queryFormat( const GFXFormat fmt, const GFXTextureProfile *profile, bool &inOutAutogenMips ) = 0;
+   virtual bool _queryCardCap(const String &query, U32 &foundResult)=0;
+
+   virtual bool _queryFormat( const GFXFormat fmt, const GFXTextureProfile *profile, bool &inOutAutogenMips ) = 0;
    /// @}
 
    /// @name helpergroup Helper Functions
@@ -131,13 +131,13 @@ public:
    /// bool indicating whether or not the capability holds. If you call
    /// this and cap isn't recognized then it returns false and prints
    /// a console error.
-//   U32 queryProfile(const String &cap);
+   U32 queryProfile(const String &cap);
 
    /// Same as queryProfile(), but a default can be specified to indicate
    /// what value should be returned if the profiler doesn't know anything
    /// about it. If cap is not recognized, defaultValue is returned and
    /// no error is reported.
-//   U32 queryProfile(const String &cap, U32 defaultValue);
+   U32 queryProfile(const String &cap, U32 defaultValue);
 
    /// Set the specified capability to the specified value.
    void setCapability(const String &cap, U32 value);

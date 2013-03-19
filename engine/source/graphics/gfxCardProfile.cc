@@ -131,32 +131,32 @@ void GFXCardProfiler::init()
 //   loadProfileScripts(render, chipset, card, version);
 }
 
-//U32 GFXCardProfiler::queryProfile(const String &cap)
-//{
-//   U32 res;
-//   if( _queryCardCap( cap, res ) )
-//      return res;
-//
-//   if(mCapDictionary.contains(cap))
-//      return mCapDictionary[cap];
-//
-//   Con::errorf( "GFXCardProfiler (%s) - Unknown capability '%s'.", getRendererString().c_str(), cap.c_str() );
-//   return 0;
-//}
-//
-//U32 GFXCardProfiler::queryProfile(const String &cap, U32 defaultValue)
-//{
-//   PROFILE_SCOPE( GFXCardProfiler_queryProfile );
-//
-//   U32 res;
-//   if( _queryCardCap( cap, res ) )
-//      return res;
-//
-//   if( mCapDictionary.contains( cap ) )
-//      return mCapDictionary[cap];
-//   else
-//      return defaultValue;
-//}
+U32 GFXCardProfiler::queryProfile(const String &cap)
+{
+   U32 res;
+   if( _queryCardCap( cap, res ) )
+      return res;
+
+   if(mCapDictionary.contains(cap))
+      return mCapDictionary[cap];
+
+   Con::errorf( "GFXCardProfiler (%s) - Unknown capability '%s'.", getRendererString().c_str(), cap.c_str() );
+   return 0;
+}
+
+U32 GFXCardProfiler::queryProfile(const String &cap, U32 defaultValue)
+{
+   PROFILE_SCOPE( GFXCardProfiler_queryProfile );
+
+   U32 res;
+   if( _queryCardCap( cap, res ) )
+      return res;
+
+   if( mCapDictionary.contains( cap ) )
+      return mCapDictionary[cap];
+   else
+      return defaultValue;
+}
 
 void GFXCardProfiler::setCapability(const String &cap, U32 value)
 {

@@ -350,6 +350,8 @@ GFXOpenGLShader::GFXOpenGLShader() :
    mConstBufferSize(0),
    mConstBuffer(NULL)
 {
+    mVertexFile = StringTable->EmptyString;
+    mPixelFile = StringTable->EmptyString;
 }
 
 GFXOpenGLShader::~GFXOpenGLShader()

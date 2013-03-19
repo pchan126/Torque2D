@@ -28,7 +28,7 @@
 #include "platformiOS/iOSUtil.h"
 
 #include "console/console.h"
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
 
 GLState gGLState;
 

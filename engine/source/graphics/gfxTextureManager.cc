@@ -900,7 +900,7 @@ void GFXTextureManager::_onFileChanged( const String &path )
 //   if ( !obj || path != obj->getPath() )
 //      return;
 //
-//   Con::errorf( "[GFXTextureManager::_onFileChanged] : File changed [%s]", path.getFullPath().c_str() );
+//   Con::errorf( "[GFXTextureManager::_onFileChanged] : File changed [%s]", path );
 //
 //   const U32 scalePower = getTextureDownscalePower( obj->mProfile );
 //

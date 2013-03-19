@@ -659,9 +659,11 @@ Net::Error Net::closeSocket(NetSocket socket)
 {
    if(socket != InvalidSocket)
    {
-      // if we're quitting, allow the OS to close the sockets.
-      // this is here to work around a bug in close(). 
-      if(platState.quit)
+       // if we're quitting, allow the OS to close the sockets.
+       // this is here to work around a bug in close().
+       iOSPlatState * platState = [iOSPlatState sharedPlatState];
+
+       if(platState.quit)
          return NoError;
          
       if(!close(socket))

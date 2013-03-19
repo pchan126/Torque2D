@@ -20,23 +20,17 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#import "platformiOS/T2DView.h"
 //#import <QuartzCore/QuartzCore.h>
 //#include "platformiPhone/iPhoneEvents.h"
 
 #import "platformiOS/platformiOS.h"
+#import "platformiOS/T2DView.h"
+
 #import "platformiOS/platformGL.h"
-#import "platformiOS/iOSOGLVideo.h"
-#include "console/console.h"
-#include "math/mPoint.h"
-#include "platform/event.h"
 #include "game/gameInterface.h"
-#include "console/consoleInternal.h"
-#include "console/ast.h"
-#include "io/fileStream.h"
 #include "platformiOS/iOSUtil.h"
 #include "platformiOS/iOSEvents.h"
-#include "graphics/dgl.h"
+#include "platformiOS/graphics/gfxOpenGLESDevice.h"
 #include "debug/profiler.h"
 
 #define USE_DEPTH_BUFFER 0

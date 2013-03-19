@@ -45,18 +45,20 @@ EventHandlerRef gAppMouseEventHandlerRef  = NULL;
 //-----------------------------------------------------------------------------
 static void _OnActivate(bool activating)
 {
-   if(activating)
-   {
-      Input::activate();
-      Game->refreshWindow();
-      platState.backgrounded = false;
-      pthread_kill((pthread_t)platState.torqueThreadId, SIGALRM);
-   }
-   else
-   {
-      Input::deactivate();
-      platState.backgrounded = true;
-   }
+//    iOSPlatState * platState = [iOSPlatState sharedPlatState];
+//
+//    if(activating)
+//   {
+//      Input::activate();
+//      Game->refreshWindow();
+//      platState.backgrounded = false;
+//      pthread_kill((pthread_t)platState.torqueThreadId, SIGALRM);
+//   }
+//   else
+//   {
+//      Input::deactivate();
+//      platState.backgrounded = true;
+//   }
 }
 
 //-----------------------------------------------------------------------------
@@ -69,15 +71,17 @@ static void _iOSPollEvents()
 
 
 //-----------------------------------------------------------------------------
+// Not yet implemented. Will resolve in the next platform update
 void Platform::enableKeyboardTranslation(void)
 {
-	platState.tsmActive=true;
+    
 }
 
 //-----------------------------------------------------------------------------
+// Not yet implemented. Will resolve in the next platform update
 void Platform::disableKeyboardTranslation(void)
 {
-	platState.tsmActive=false;
+    
 }
 
 
@@ -91,20 +95,6 @@ void Platform::setMouseLock(bool locked)
 //-----------------------------------------------------------------------------
 void Platform::process()
 {
-	// TODO: HID input
-	
-	// ProcessMessages() manually polls for events when we are single threaded
-	//   if(ThreadManager::isCurrentThread(platState.firstThreadId))
-	//      _iOSPollEvents();
-	
-	// Some things do not get carbon events, we must always poll for them.
-	// HID ( usb gamepad et al ) input, for instance.
-	Input::process();
-	
-	if(platState.ctxNeedsUpdate)
-	{
-		//aglUpdateContext(platState.ctx);
-		platState.ctxNeedsUpdate=false;
-	}
+
 }
 

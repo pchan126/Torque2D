@@ -21,7 +21,6 @@
 //-----------------------------------------------------------------------------
 #import "platformOSX/platformOSX.h"
 
-//#include "platformOSX/osxOpenGLDevice.h"
 #include "platformOSX/graphics/gfxOpenGLDevice.h"
 #include "platform/platformVideo.h"
 
@@ -125,8 +124,7 @@ void Platform::initWindow(const Point2I &initialSize, const char *name)
 
 GFXWindowTarget* Platform::createWindowTarget()
 {
-    osxPlatState * platState = [osxPlatState sharedPlatState];
-    return GFX->allocWindowTarget((void*)[platState torqueView]);
+    return GFX->allocWindowTarget((void*)[[osxPlatState sharedPlatState] torqueView]);
 }
 
 
@@ -134,27 +132,21 @@ GFXWindowTarget* Platform::createWindowTarget()
 // Changes the text in the NSWindow title
 void Platform::setWindowTitle( const char* title )
 {
-    osxPlatState * platState = [osxPlatState sharedPlatState];
-    
-    [platState updateWindowTitle:title];
+    [[osxPlatState sharedPlatState] updateWindowTitle:title];
 }
 
 //-----------------------------------------------------------------------------
 // Calls osxPlatState::setWindowSize
 void Platform::setWindowSize( U32 newWidth, U32 newHeight )
 {
-    osxPlatState * platState = [osxPlatState sharedPlatState];
-    
-    [platState setWindowSize:newWidth height:newHeight];
+    [[osxPlatState sharedPlatState] setWindowSize:newWidth height:newHeight];
 }
 
 //-----------------------------------------------------------------------------
 // Returns osxPlatState::getWindowSize
 const Point2I& Platform::getWindowSize()
 {
-    osxPlatState * platState = [osxPlatState sharedPlatState];
-    
-    return [platState getWindowSize];
+    return [[osxPlatState sharedPlatState] getWindowSize];
 }
 
 //-----------------------------------------------------------------------------
