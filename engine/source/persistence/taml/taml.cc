@@ -833,3 +833,144 @@ SimObject* Taml::createType( StringTableEntry typeName, const Taml* pTaml, const
 
     return pSimObject;
 }
+
+//-----------------------------------------------------------------------------
+
+bool Taml::generateTamlSchema( const char* pFilename )
+{
+    // Sanity!
+    AssertFatal( pFilename != NULL, "Taml::generateTamlSchema() - Cannot write a NULL filename." );
+
+    // Create document.
+    TiXmlDocument schemaDocument;
+
+    // Add declaration.
+    TiXmlDeclaration schemaDeclaration( "1.0", "iso-8859-1", "no" );
+    schemaDocument.InsertEndChild( schemaDeclaration );
+
+    // Add schema element.
+    TiXmlElement* pSchemaElement = new TiXmlElement( "xs:schema" );
+    pSchemaElement->SetAttribute( "xmlns:xs", "http://www.w3.org/2001/XMLSchema" );
+    schemaDocument.LinkEndChild( pSchemaElement );
+
+    // Fetch class-rep root.
+    AbstractClassRep* pRootType = AbstractClassRep::getClassList();
+
+    // Reset scratch state.
+    char buffer[1024];
+
+    // Generate the type elements.
+    TiXmlComment* pComment = new TiXmlComment( "Type Elements" );
+    pSchemaElement->LinkEndChild( pComment );
+    for ( AbstractClassRep* pType = pRootType; pType != NULL; pType = pType->getNextClass() )
+    {
+        // Add type.
+        TiXmlElement* pTypeElement = new TiXmlElement( "xs:element" );
+        pTypeElement->SetAttribute( "name", pType->getClassName() );
+        dSprintf( buffer, sizeof(buffer), "%s_Type", pType->getClassName() );
+        pTypeElement->SetAttribute( "type", buffer );
+        pSchemaElement->LinkEndChild( pTypeElement );
+    }
+
+    // Generate the complex types.
+    for ( AbstractClassRep* pType = pRootType; pType != NULL; pType = pType->getNextClass() )
+    {
+        // Add complex type comment.
+        dSprintf( buffer, sizeof(buffer), " %s Type ", pType->getClassName() );
+        TiXmlComment* pComment = new TiXmlComment( buffer );
+        pSchemaElement->LinkEndChild( pComment );
+
+        // Add complex type.
+        TiXmlElement* pComplexTypeElement = new TiXmlElement( "xs:complexType" );
+        dSprintf( buffer, sizeof(buffer), "%s_Type", pType->getClassName() );
+        pComplexTypeElement->SetAttribute( "name", buffer );
+        pComplexTypeElement->SetAttribute( "mixed", "true" );
+        pSchemaElement->LinkEndChild( pComplexTypeElement );
+
+        // Fetch container child class.
+        AbstractClassRep* pContainerChildClass = pType->getContainerChildClass( false );
+
+        // Is the type allowed children?
+        if ( pContainerChildClass != NULL )
+        {
+            // Yes, so add group comment.
+            dSprintf( buffer, sizeof(buffer), " %s Children Group ", pType->getClassName() );
+            TiXmlComment* pComment = new TiXmlComment( buffer );
+            pSchemaElement->LinkEndChild( pComment );
+
+            // Format the group name.
+            dSprintf( buffer, sizeof(buffer), "%s_ChildGroup", pType->getClassName() );
+                
+            // Add group.
+            TiXmlElement* pGroupElement = new TiXmlElement( "xs:group" );
+            pGroupElement->SetAttribute( "name", buffer );
+            pSchemaElement->LinkEndChild( pGroupElement );
+            TiXmlElement* pGroupChoiceElement = new TiXmlElement( "xs:choice" );
+            pGroupElement->LinkEndChild( pGroupChoiceElement );
+
+            // Add group reference.
+            TiXmlElement* pGroupReferenceElement = new TiXmlElement( "xs:group" );
+            pGroupReferenceElement->SetAttribute( "ref", buffer );
+            pGroupReferenceElement->SetAttribute( "minOccurs", "0" );
+            pGroupReferenceElement->SetAttribute( "maxOccurs", "unbounded" );
+            pComplexTypeElement->LinkEndChild( pGroupReferenceElement );
+
+            // Add group members.
+            for ( AbstractClassRep* pGroupType = pRootType; pGroupType != NULL; pGroupType = pGroupType->getNextClass() )
+            {
+                // Skip if not derived from the container child class.
+                if ( !pGroupType->isClass( pContainerChildClass ) )
+                    continue;
+
+                // Add group member.
+                TiXmlElement* pGroupMemberElement = new TiXmlElement( "xs:element" );
+                pGroupMemberElement->SetAttribute( "name", pGroupType->getClassName() );
+                dSprintf( buffer, sizeof(buffer), "%s_Type", pGroupType->getClassName() );
+                pGroupMemberElement->SetAttribute( "type", buffer );
+                pGroupChoiceElement->LinkEndChild( pGroupMemberElement );
+            }
+        }
+
+        // Iterate static fields.
+        const AbstractClassRep::FieldList& fields = pType->mFieldList;
+        for( AbstractClassRep::FieldList::const_iterator fieldItr = fields.begin(); fieldItr != fields.end(); ++fieldItr )
+        {
+            // Fetch field.
+            const AbstractClassRep::Field& field = *fieldItr;
+
+            // Skip if not a data field.
+            if( field.type == AbstractClassRep::DepricatedFieldType ||
+                field.type == AbstractClassRep::StartGroupFieldType ||
+                field.type == AbstractClassRep::EndGroupFieldType )
+            continue;
+
+            // Add attribute element.
+            TiXmlElement* pAttributeElement = new TiXmlElement( "xs:attribute" );
+            pAttributeElement->SetAttribute( "name", field.pFieldname );
+            pAttributeElement->SetAttribute( "type", "xs:string" );
+            pAttributeElement->SetAttribute( "use", "optional" );
+            pComplexTypeElement->LinkEndChild( pAttributeElement );
+        }
+    }
+
+    // Expand the file-name into the file-path buffer.
+    char filePathBuffer[1024];
+    Con::expandPath( filePathBuffer, sizeof(filePathBuffer), pFilename );
+
+    FileStream stream;
+
+    // File opened?
+    if ( !stream.open( filePathBuffer, FileStream::Write ) )
+    {
+        // No, so warn.
+        Con::warnf("Taml::GenerateTamlSchema() - Could not open filename '%s' for write.", filePathBuffer );
+        return false;
+    }
+    // Write the schema document.
+    schemaDocument.SaveFile( stream );
+
+    // Close file.
+    stream.close();
+
+    return true;
+}

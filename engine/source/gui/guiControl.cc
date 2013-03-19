@@ -26,7 +26,7 @@
 #include "console/codeBlock.h"
 #include "platform/event.h"
 #include "graphics/gBitmap.h"
-#include "graphics/gfxDevice.h"
+#include "graphics/dgl.h"
 #include "input/actionMap.h"
 #include "gui/guiCanvas.h"
 #include "gui/guiControl.h"
@@ -41,7 +41,7 @@
 
 //------------------------------------------------------------------------------
 
-IMPLEMENT_CONOBJECT(GuiControl);
+IMPLEMENT_CONOBJECT_CHILDREN(GuiControl);
 
 //used to locate the next/prev responder when tab is pressed
 S32 GuiControl::smCursorChanged           = -1;
@@ -80,8 +80,6 @@ GuiControl::GuiControl()
    mTipHoverTime        = 1000;
    mTooltipWidth		= 250;
    mIsContainer         = false;
-
-   mNSLinkMask = LinkSuperClassName | LinkClassName;
 }
 
 GuiControl::~GuiControl()
@@ -109,20 +107,7 @@ bool GuiControl::onAdd()
    // Add to root group.
    Sim::getGuiGroup()->addObject(this);
 
-   // Notify Script.
-   if( isMethod("onAdd") )
-      Con::executef(this, 1, "onAdd");
-
-    GFXStateBlockDesc d;
-    
-    d.cullDefined = true;
-    d.cullMode = GFXCullNone;
-    d.zDefined = true;
-    d.zEnable = false;
-    
-    mDefaultGuiSB = GFX->createStateBlock( d );
-    
-    // Return Success.
+   // Return Success.
    return true;
 }
 
@@ -459,10 +444,10 @@ void GuiControl::onRender(Point2I offset, const RectI &updateRect)
 {
     RectI ctrlRect(offset, mBounds.extent);
 
-    GFX->getDrawUtil()->setBitmapModulation( mProfile->mFontColor );
+    dglSetBitmapModulation( mProfile->mFontColor );
     //if opaque, fill the update rect with the fill color
     if (mProfile->mOpaque)
-        GFX->getDrawUtil()->drawRectFill( ctrlRect, mProfile->mFillColor );
+        dglDrawRectFill( ctrlRect, mProfile->mFillColor );
 
     //if there's a border, draw the border
     if (mProfile->mBorder)
@@ -473,6 +458,7 @@ void GuiControl::onRender(Point2I offset, const RectI &updateRect)
 
 bool GuiControl::renderTooltip(Point2I cursorPos, const char* tipText )
 {
+#ifndef TORQUE_OS_IOS
     // Short Circuit.
     if (!mAwake) 
         return false;
@@ -599,26 +585,27 @@ bool GuiControl::renderTooltip(Point2I cursorPos, const char* tipText )
         offset.y = screensize.y - textBounds.y;
 
     // Fetch the old clip.
-    RectI oldClip = GFX->getClipRect();
+    RectI oldClip = dglGetClipRect();
 
     // Set rectangle for the box, and set the clip rectangle.
     RectI rect(offset, textBounds);
-    GFX->setClipRect(rect);
+    dglSetClipRect(rect);
 
     // Draw Filler bit, then border on top of that
-    GFX->getDrawUtil()->drawRectFill(rect, mTooltipProfile->mFillColor );
-    GFX->getDrawUtil()->drawRect( rect, mTooltipProfile->mBorderColor );
+    dglDrawRectFill(rect, mTooltipProfile->mFillColor );
+    dglDrawRect( rect, mTooltipProfile->mBorderColor );
 
     // Draw the text centered in the tool tip box
-    GFX->getDrawUtil()->setBitmapModulation( mTooltipProfile->mFontColor );
+    dglSetBitmapModulation( mTooltipProfile->mFontColor );
     Point2I start( tooltipGutterSize, tooltipGutterSize );
     for ( S32 lineIndex = 0; lineIndex < tooltipLineCount; lineIndex++ )
     {
-        GFX->getDrawUtil()->drawText( font, start + offset, tooltipLines[lineIndex].getPtr8(), mProfile->mFontColors );
+        dglDrawText( font, start + offset, tooltipLines[lineIndex].getPtr8(), mProfile->mFontColors );
         offset.y += tooltipLineStride;
     }
 
-    GFX->setClipRect( oldClip );
+    dglSetClipRect( oldClip );
+#endif
     return true;
 }
 
@@ -647,7 +634,7 @@ void GuiControl::renderChildControls(Point2I offset, const RectI &updateRect)
 
          if (childClip.intersect(clipRect))
          {
-            GFX->setClipRect(childClip);
+            dglSetClipRect(childClip);
             glDisable(GL_CULL_FACE);
             ctrl->onRender(childPosition, childClip);
          }
@@ -1132,10 +1119,6 @@ ConsoleMethod( GuiControl, getMinExtent, const char*, 2, 2, "() Get the minimum 
 
 void GuiControl::onRemove()
 {
-   // Only invoke script callbacks if they can be received
-   if( isMethod("onRemove") )
-      Con::executef(this, 1, "onRemove");
-
    clearFirstResponder();
 
    Parent::onRemove();
@@ -1776,7 +1759,7 @@ void GuiControl::renderJustifiedText(Point2I offset, Point2I extent, const char 
    else
       start.y = ( extent.y - font->getHeight() ) / 2;
 
-   GFX->getDrawUtil()->drawText( font, start + offset, text, mProfile->mFontColors );
+   dglDrawText( font, start + offset, text, mProfile->mFontColors );
 }
 
 void GuiControl::getCursor(GuiCursor *&cursor, bool &showCursor, const GuiEvent &lastGuiEvent)

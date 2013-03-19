@@ -66,6 +66,10 @@ GFX_ImplementTextureProfile(GFXImageAssetTextureProfile,
 
 //------------------------------------------------------------------------------
 
+ImageAsset::FrameArea BadFrameArea(0, 0, 0, 0, 0.0f, 0.0f);
+
+//------------------------------------------------------------------------------
+
 ConsoleType( imageAssetPtr, TypeImageAssetPtr, sizeof(AssetPtr<ImageAsset>), ASSET_ID_FIELD_PREFIX )
 
 //-----------------------------------------------------------------------------

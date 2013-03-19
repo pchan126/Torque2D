@@ -21,7 +21,7 @@
 //-----------------------------------------------------------------------------
 
 #include "console/console.h"
-#include "graphics/gfxDevice.h"
+#include "graphics/dgl.h"
 #include "console/consoleTypes.h"
 #include "platform/platformAudio.h"
 #include "gui/guiCanvas.h"
@@ -381,4 +381,3 @@ void GuiButtonBaseCtrl::onMessage( GuiControl *sender, S32 msg )
         mStateOn = ( sender == this );
     }
 }
-
