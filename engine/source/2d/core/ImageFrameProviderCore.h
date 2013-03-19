@@ -23,33 +23,13 @@
 #ifndef _IMAGE_FRAME_PROVIDER_CORE_H
 #define _IMAGE_FRAME_PROVIDER_CORE_H
 
-#ifndef _IMAGE_ASSET_H_
 #include "2d/assets/ImageAsset.h"
-#endif
-
-#ifndef _ANIMATION_ASSET_H_
 #include "2d/assets/AnimationAsset.h"
-#endif
-
-#ifndef _TICKABLE_H_
 #include "platform/Tickable.h"
-#endif
-
-#ifndef _ASSET_PTR_H_
 #include "assets/assetPtr.h"
-#endif
-
-#ifndef _BATCH_RENDER_H_
 #include "BatchRender.h"
-#endif
-
-#ifndef _FACTORY_CACHE_H_
 #include "memory/factoryCache.h"
-#endif
-
-#ifndef _GUICONTROL_H_
 #include "gui/guiControl.h"
-#endif
 
 ///-----------------------------------------------------------------------------
 
@@ -132,7 +112,7 @@ public:
 
     /// Frame provision.
     inline bool isStaticFrameProvider( void ) const { return mStaticProvider; }
-    inline TextureHandle& getProviderTexture( void ) const { return !validRender() ? BadTextureHandle : isStaticFrameProvider() ? (*mpImageAsset)->getImageTexture() : (*mpAnimationAsset)->getImage()->getImageTexture(); };
+    inline GFXTexHandle& getProviderTexture( void ) const { return !validRender() ? BadTextureHandle : isStaticFrameProvider() ? (*mpImageAsset)->getImageTexture() : (*mpAnimationAsset)->getImage()->getImageTexture(); };
     inline const ImageAsset::FrameArea& getProviderImageFrameArea( void ) const  { return !validRender() ? BadFrameArea : isStaticFrameProvider() ? (*mpImageAsset)->getImageFrameArea(mImageFrame) : (*mpAnimationAsset)->getImage()->getImageFrameArea(getCurrentAnimationFrame()); };
 
     inline const AnimationAsset* getCurrentAnimation( void ) const { return mpAnimationAsset->notNull() ? *mpAnimationAsset : NULL; };

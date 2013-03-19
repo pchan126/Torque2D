@@ -125,5 +125,8 @@ public:
 
 };
 
+//-----------------------------------------------------------------------------
+
+extern GFXTexHandle BadTextureHandle;
 
 #endif // _GFXTEXTUREHANDLE_H_

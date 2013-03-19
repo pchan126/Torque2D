@@ -32,9 +32,7 @@
 #include "console/consoleTypes.h"
 #endif
 
-#ifndef _DGL_H_
-#include "graphics/dgl.h"
-#endif
+#include "graphics/gfxDevice.h"
 
 #include "guiSpriteCtrl_ScriptBindings.h"
 

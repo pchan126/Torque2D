@@ -24,9 +24,7 @@
 #include "Scroller.h"
 #endif
 
-#ifndef _DGL_H_
-#include "graphics/dgl.h"
-#endif
+#include "graphics/gfxDevice.h"
 
 #ifndef _MMATHFN_H_
 #include "math/mMathFn.h"
@@ -254,7 +252,7 @@ void Scroller::sceneRender( const SceneRenderState* pSceneRenderState, const Sce
 
     // Fetch texture and texture area.
     const ImageAsset::FrameArea::TexelArea& frameTexelArea = getProviderImageFrameArea().mTexelArea;
-    TextureHandle& texture = getProviderTexture();
+    GFXTexHandle& texture = getProviderTexture();
 
     // Calculate render offset.
     F32 renderOffsetX = mFmod( mRenderTickTextureOffset.x, 1.0f );
@@ -316,19 +314,19 @@ void Scroller::sceneRender( const SceneRenderState* pSceneRenderState, const Sce
     // Flush any existing batches.
     pBatchRenderer->flush();
 
-    // Set-up a set of clip-planes against the OOBB.
-    GLdouble left[4] = {1, 0, 0, -renderOOBB0.x};
-    GLdouble right[4] = {-1, 0, 0, renderOOBB1.x};
-    GLdouble top[4] = {0, -1, 0, renderOOBB3.y};
-    GLdouble bottom[4] = {0, 1, 0, -renderOOBB0.y};
-    glClipPlane(GL_CLIP_PLANE0, left);
-    glClipPlane(GL_CLIP_PLANE1, right);
-    glClipPlane(GL_CLIP_PLANE2, top);
-    glClipPlane(GL_CLIP_PLANE3, bottom);
-    glEnable(GL_CLIP_PLANE0);
-    glEnable(GL_CLIP_PLANE1);
-    glEnable(GL_CLIP_PLANE2);
-    glEnable(GL_CLIP_PLANE3);
+//    // Set-up a set of clip-planes against the OOBB.
+//    GLdouble left[4] = {1, 0, 0, -renderOOBB0.x};
+//    GLdouble right[4] = {-1, 0, 0, renderOOBB1.x};
+//    GLdouble top[4] = {0, -1, 0, renderOOBB3.y};
+//    GLdouble bottom[4] = {0, 1, 0, -renderOOBB0.y};
+//    glClipPlane(GL_CLIP_PLANE0, left);
+//    glClipPlane(GL_CLIP_PLANE1, right);
+//    glClipPlane(GL_CLIP_PLANE2, top);
+//    glClipPlane(GL_CLIP_PLANE3, bottom);
+//    glEnable(GL_CLIP_PLANE0);
+//    glEnable(GL_CLIP_PLANE1);
+//    glEnable(GL_CLIP_PLANE2);
+//    glEnable(GL_CLIP_PLANE3);
 
     // Render repeat Y.
     for ( S32 repeatIndexY = 0; repeatIndexY < wholeRegionY; ++repeatIndexY )
@@ -372,16 +370,16 @@ void Scroller::sceneRender( const SceneRenderState* pSceneRenderState, const Sce
     // Flush the scroller batches.
     pBatchRenderer->flush();
 
-    // Disable the OOBB clip-planes.
-    glDisable(GL_CLIP_PLANE0);
-    glDisable(GL_CLIP_PLANE1);
-    glDisable(GL_CLIP_PLANE2);
-    glDisable(GL_CLIP_PLANE3);
+//    // Disable the OOBB clip-planes.
+//    glDisable(GL_CLIP_PLANE0);
+//    glDisable(GL_CLIP_PLANE1);
+//    glDisable(GL_CLIP_PLANE2);
+//    glDisable(GL_CLIP_PLANE3);
 }
 
 //------------------------------------------------------------------------------
 
-void Scroller::renderRegionSplitX( BatchRender* pBatchRenderer, TextureHandle& texture, const ScrollSplitRegion& splitRegion )
+void Scroller::renderRegionSplitX( BatchRender* pBatchRenderer, GFXTexHandle& texture, const ScrollSplitRegion& splitRegion )
 {
     // Submit batched quad.
     pBatchRenderer->SubmitQuad(
@@ -410,7 +408,7 @@ void Scroller::renderRegionSplitX( BatchRender* pBatchRenderer, TextureHandle& t
 
 //------------------------------------------------------------------------------
 
-void Scroller::renderRegionSplitY( BatchRender* pBatchRenderer, TextureHandle& texture, const ScrollSplitRegion& splitRegion )
+void Scroller::renderRegionSplitY( BatchRender* pBatchRenderer, GFXTexHandle& texture, const ScrollSplitRegion& splitRegion )
 {
     // Submit batched quad.
     pBatchRenderer->SubmitQuad(
@@ -440,7 +438,7 @@ void Scroller::renderRegionSplitY( BatchRender* pBatchRenderer, TextureHandle& t
 
 //------------------------------------------------------------------------------
 
-void Scroller::renderRegionSplitXY( BatchRender* pBatchRenderer, TextureHandle& texture, const ScrollSplitRegion& splitRegion )
+void Scroller::renderRegionSplitXY( BatchRender* pBatchRenderer, GFXTexHandle& texture, const ScrollSplitRegion& splitRegion )
 {
     // Submit batched quad.
     pBatchRenderer->SubmitQuad(
@@ -493,7 +491,7 @@ void Scroller::renderRegionSplitXY( BatchRender* pBatchRenderer, TextureHandle& 
 
 //------------------------------------------------------------------------------
 
-void Scroller::renderRegionNoSplit( BatchRender* pBatchRenderer, TextureHandle& texture, const ScrollSplitRegion& splitRegion )
+void Scroller::renderRegionNoSplit( BatchRender* pBatchRenderer, GFXTexHandle& texture, const ScrollSplitRegion& splitRegion )
 {
     // Submit batched quad.
     pBatchRenderer->SubmitQuad(

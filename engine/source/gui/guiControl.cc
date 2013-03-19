@@ -26,7 +26,7 @@
 #include "console/codeBlock.h"
 #include "platform/event.h"
 #include "graphics/gBitmap.h"
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
 #include "input/actionMap.h"
 #include "gui/guiCanvas.h"
 #include "gui/guiControl.h"
@@ -107,6 +107,19 @@ bool GuiControl::onAdd()
    // Add to root group.
    Sim::getGuiGroup()->addObject(this);
 
+    // Notify Script.
+    if( isMethod("onAdd") )
+        Con::executef(this, 1, "onAdd");
+    
+    GFXStateBlockDesc d;
+    
+    d.cullDefined = true;
+    d.cullMode = GFXCullNone;
+    d.zDefined = true;
+    d.zEnable = false;
+    
+    mDefaultGuiSB = GFX->createStateBlock( d );
+    
    // Return Success.
    return true;
 }
@@ -444,10 +457,10 @@ void GuiControl::onRender(Point2I offset, const RectI &updateRect)
 {
     RectI ctrlRect(offset, mBounds.extent);
 
-    dglSetBitmapModulation( mProfile->mFontColor );
+    GFX->getDrawUtil()->setBitmapModulation( mProfile->mFontColor );
     //if opaque, fill the update rect with the fill color
     if (mProfile->mOpaque)
-        dglDrawRectFill( ctrlRect, mProfile->mFillColor );
+        GFX->getDrawUtil()->drawRectFill( ctrlRect, mProfile->mFillColor );
 
     //if there's a border, draw the border
     if (mProfile->mBorder)
@@ -585,26 +598,26 @@ bool GuiControl::renderTooltip(Point2I cursorPos, const char* tipText )
         offset.y = screensize.y - textBounds.y;
 
     // Fetch the old clip.
-    RectI oldClip = dglGetClipRect();
+    RectI oldClip = GFX->getClipRect();
 
     // Set rectangle for the box, and set the clip rectangle.
     RectI rect(offset, textBounds);
-    dglSetClipRect(rect);
+    GFX->setClipRect(rect);
 
     // Draw Filler bit, then border on top of that
-    dglDrawRectFill(rect, mTooltipProfile->mFillColor );
-    dglDrawRect( rect, mTooltipProfile->mBorderColor );
+    GFX->getDrawUtil()->drawRectFill(rect, mTooltipProfile->mFillColor );
+    GFX->getDrawUtil()->drawRect( rect, mTooltipProfile->mBorderColor );
 
     // Draw the text centered in the tool tip box
-    dglSetBitmapModulation( mTooltipProfile->mFontColor );
+    GFX->getDrawUtil()->setBitmapModulation( mTooltipProfile->mFontColor );
     Point2I start( tooltipGutterSize, tooltipGutterSize );
     for ( S32 lineIndex = 0; lineIndex < tooltipLineCount; lineIndex++ )
     {
-        dglDrawText( font, start + offset, tooltipLines[lineIndex].getPtr8(), mProfile->mFontColors );
+        GFX->getDrawUtil()->drawText( font, start + offset, tooltipLines[lineIndex].getPtr8(), mProfile->mFontColors );
         offset.y += tooltipLineStride;
     }
 
-    dglSetClipRect( oldClip );
+    GFX->setClipRect( oldClip );
 #endif
     return true;
 }
@@ -634,7 +647,7 @@ void GuiControl::renderChildControls(Point2I offset, const RectI &updateRect)
 
          if (childClip.intersect(clipRect))
          {
-            dglSetClipRect(childClip);
+            GFX->setClipRect(childClip);
             glDisable(GL_CULL_FACE);
             ctrl->onRender(childPosition, childClip);
          }
@@ -1759,7 +1772,7 @@ void GuiControl::renderJustifiedText(Point2I offset, Point2I extent, const char 
    else
       start.y = ( extent.y - font->getHeight() ) / 2;
 
-   dglDrawText( font, start + offset, text, mProfile->mFontColors );
+   GFX->getDrawUtil()->drawText( font, start + offset, text, mProfile->mFontColors );
 }
 
 void GuiControl::getCursor(GuiCursor *&cursor, bool &showCursor, const GuiEvent &lastGuiEvent)

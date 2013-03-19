@@ -26,9 +26,8 @@
 #include "2d/sceneobject/SceneObject.h"
 #endif
 
-#ifndef _DGL_H_
-#include "graphics/dgl.h"
-#endif
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxDrawUtil.h"
 
 #ifndef _CONSOLETYPES_H_
 #include "console/consoleTypes.h"
@@ -254,9 +253,9 @@ void ImageFrameProviderCore::renderGui( GuiControl& owner, Point2I offset, const
         RectI destinationRegion(offset, owner.mBounds.extent);
 
         // Render image.
-		dglSetBitmapModulation( owner.mProfile->mFillColor );
-        dglDrawBitmapStretchSR( getProviderTexture(), destinationRegion, sourceRegion );
-        dglClearBitmapModulation();
+		GFX->getDrawUtil()->setBitmapModulation( owner.mProfile->mFillColor );
+        GFX->getDrawUtil()->drawBitmapStretchSR( getProviderTexture(), destinationRegion, sourceRegion );
+        GFX->getDrawUtil()->clearBitmapModulation();
     }
 
     // Render child controls.

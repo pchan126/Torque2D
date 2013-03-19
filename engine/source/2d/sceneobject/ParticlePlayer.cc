@@ -577,7 +577,7 @@ void ParticlePlayer::sceneRender( const SceneRenderState* pSceneRenderState, con
         if ( pParticleAssetEmitter->getIntenseParticles() )
         {
             // Yes, so set additive blending.
-            pBatchRenderer->setBlendMode( GL_SRC_ALPHA, GL_ONE );
+//            pBatchRenderer->setBlendMode( GL_SRC_ALPHA, GL_ONE );
         }
         else
         {
@@ -596,23 +596,27 @@ void ParticlePlayer::sceneRender( const SceneRenderState* pSceneRenderState, con
         pBatchRenderer->setAlphaTestMode( pParticleAssetEmitter->getAlphaTest() );
 
         // Save the transformation.
-        glPushMatrix();
+//        glPushMatrix();
+        GFX->pushWorldMatrix();
 
         // Is the Position attached to the emitter?
         if ( pParticleAssetEmitter->getAttachPositionToEmitter() )
         {
             // Yes, so get player position.
             const Vector2 renderPosition = getRenderPosition();
+            MatrixF wMatrix = GFX->getWorldMatrix();
 
             // Move into emitter-space.
-            glTranslatef( renderPosition.x, renderPosition.y, 0.0f );
+            wMatrix.translate(renderPosition.x, renderPosition.y, 0.0f );
+//            glTranslatef( renderPosition.x, renderPosition.y, 0.0f );
 
             // Is the rotation attached to the emitter?
             if ( pParticleAssetEmitter->getAttachRotationToEmitter() )
             {
                 // Yes, so rotate into emitter-space.
                 // NOTE:- We need clockwise rotation here.
-                glRotatef( mRadToDeg(getRenderAngle()), 0.0f, 0.0f, 1.0f );
+                wMatrix.rotateX(getRenderAngle());
+//                glRotatef( mRadToDeg(getRenderAngle()), 0.0f, 0.0f, 1.0f );
             }
         }
 
@@ -635,7 +639,7 @@ void ParticlePlayer::sceneRender( const SceneRenderState* pSceneRenderState, con
             const ImageAsset::FrameArea::TexelArea& texelFrameArea = frameProvider.getProviderImageFrameArea().mTexelArea;
 
             // Frame texture.
-            TextureHandle& frameTexture = frameProvider.getProviderTexture();
+            GFXTexHandle& frameTexture = frameProvider.getProviderTexture();
 
             // Fetch the particle render OOBB.
             Vector2* renderOOBB = pParticleNode->mRenderOOBB;
@@ -665,7 +669,7 @@ void ParticlePlayer::sceneRender( const SceneRenderState* pSceneRenderState, con
         pBatchRenderer->flush( getScene()->getDebugStats().batchIsolatedFlush );
 
         // Restore the transformation.
-        glPopMatrix();
+        GFX->popWorldMatrix();
     }
 }
 

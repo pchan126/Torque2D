@@ -27,10 +27,23 @@
 #include "console/consoleInternal.h"
 #include "console/codeBlock.h"
 #include "graphics/gFont.h"
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxDrawUtil.h"
 #include "gui/guiTypes.h"
 #include "graphics/gBitmap.h"
-#include "graphics/TextureManager.h"
+#include "graphics/gfxTextureManager.h"
+
+GFX_ImplementTextureProfile(GFXGuiCursorProfile,
+                            GFXTextureProfile::DiffuseMap,
+                            GFXTextureProfile::PreserveSize |
+                            GFXTextureProfile::Static,
+                            GFXTextureProfile::None);
+GFX_ImplementTextureProfile(GFXDefaultGUIProfile,
+                            GFXTextureProfile::DiffuseMap,
+                            GFXTextureProfile::PreserveSize |
+                            GFXTextureProfile::Static |
+                            GFXTextureProfile::NoPadding,
+                            GFXTextureProfile::None);
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- //
 IMPLEMENT_CONOBJECT(GuiCursor);
@@ -73,7 +86,8 @@ void GuiCursor::render(const Point2I &pos)
 {
    if (!mTextureHandle && mBitmapName && mBitmapName[0])
    {
-      mTextureHandle = TextureHandle(mBitmapName, TextureHandle::BitmapTexture);
+//      mTextureHandle = GFXTexHandle(mBitmapName, TextureHandle::BitmapTexture);
+       mTextureHandle = GFXTexHandle( mBitmapName, &GFXDefaultPersistentProfile, avar("GuiCursor::mTextureHandle"));
       if(!mTextureHandle)
          return;
       mExtent.set(mTextureHandle.getWidth(), mTextureHandle.getHeight());
@@ -87,8 +101,8 @@ void GuiCursor::render(const Point2I &pos)
    renderPos.x -= (S32)( texWidth  * mRenderOffset.x );
    renderPos.y -= (S32)( texHeight * mRenderOffset.y );
    
-   dglClearBitmapModulation();
-   dglDrawBitmap(mTextureHandle, renderPos);
+   GFX->getDrawUtil()->clearBitmapModulation();
+   GFX->getDrawUtil()->drawBitmap(mTextureHandle, renderPos);
 }
 
 //------------------------------------------------------------------------------
@@ -364,7 +378,8 @@ void GuiControlProfile::incRefCount()
        
       if ( mBitmapName != NULL && mBitmapName != StringTable->EmptyString )
       {
-          mTextureHandle = TextureHandle(mBitmapName, TextureHandle::BitmapKeepTexture);
+//          mTextureHandle = TextureHandle(mBitmapName, TextureHandle::BitmapKeepTexture);
+          mTextureHandle = GFXTexHandle( mBitmapName, &GFXDefaultPersistentProfile, avar("GuiControlProfile::mTextureHandle"));
           if (!(bool)mTextureHandle)
              Con::errorf("Failed to load profile bitmap (%s)",mBitmapName);
 

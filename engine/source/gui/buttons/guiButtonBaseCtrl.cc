@@ -21,7 +21,7 @@
 //-----------------------------------------------------------------------------
 
 #include "console/console.h"
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
 #include "console/consoleTypes.h"
 #include "platform/platformAudio.h"
 #include "gui/guiCanvas.h"
