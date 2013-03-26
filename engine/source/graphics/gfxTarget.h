@@ -23,17 +23,11 @@
 #ifndef _GFXTARGET_H_
 #define _GFXTARGET_H_
 
-#ifndef _REFBASE_H_
 #include "sim/refBase.h"
-#endif
-#ifndef _GFXENUMS_H_
 #include "graphics/gfxEnums.h"
-#endif
-#ifndef _GFXRESOURCE_H_
 #include "graphics/gfxResource.h"
-#endif
 #include "math/mPoint.h"
-
+#include "windowManager/windowInputGenerator.h"
 
 class Point2I;
 class GFXCubemap;

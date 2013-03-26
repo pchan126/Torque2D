@@ -23,7 +23,6 @@
 #import <Cocoa/Cocoa.h>
 #import "platformOSX/osxInputManager.h"
 #include "platform/event.h"
-//#import <QuartzCore/CVDisplayLink.h>
 
 @interface OSXTorqueView : NSOpenGLView
 {

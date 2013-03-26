@@ -79,9 +79,6 @@ public:
 
    virtual void processQuitEvent() = 0;
    virtual void processTimeEvent(TimeEvent *event) = 0;
-   virtual void processInputEvent(InputEvent *event) = 0;
-   virtual void processMouseMoveEvent(MouseMoveEvent *event) = 0;
-   virtual void processScreenTouchEvent(ScreenTouchEvent *event) = 0;
    virtual void processConsoleEvent(ConsoleEvent *event) = 0;
    virtual void processPacketReceiveEvent(PacketReceiveEvent *event) = 0;
    virtual void processConnectedAcceptEvent(ConnectedAcceptEvent *event) = 0;

@@ -38,18 +38,18 @@ void GFXOpenGLWindowTarget::resetMode()
     _setupNewMode();
 }
 
-//void GFXOpenGLWindowTarget::_onAppSignal(WindowId wnd, S32 event)
-//{
+void GFXOpenGLWindowTarget::_onAppSignal(WindowId wnd, S32 event)
+{
 //    if(event != WindowHidden)
 //        return;
-//    
-//    // TODO: Investigate this further.
-//    // Opening and then closing the console results in framerate dropping at an alarming rate down to 3-4 FPS and then
-//    // rebounding to it's usual level.  Clearing all the volatile VBs prevents this behavior, but I can't explain why.
-//    // My fear is there is something fundamentally wrong with how we share objects between contexts and this is simply
-//    // masking the issue for the most common case.
+    
+    // TODO: Investigate this further.
+    // Opening and then closing the console results in framerate dropping at an alarming rate down to 3-4 FPS and then
+    // rebounding to it's usual level.  Clearing all the volatile VBs prevents this behavior, but I can't explain why.
+    // My fear is there is something fundamentally wrong with how we share objects between contexts and this is simply
+    // masking the issue for the most common case.
 //    static_cast<GFXOpenGLDevice*>(mDevice)->mVolatileVBs.clear();
-//}
+}
 
 bool GFXOpenGLWindowTarget::present()
 {

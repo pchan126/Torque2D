@@ -655,44 +655,6 @@ iPhoneProfilerEnd("GL_RENDER");
    PROFILE_END();
 }
 
-//--------------------------------------------------------------------------
-
-void DefaultGame::processInputEvent(InputEvent *event)
-{
-   PROFILE_START(ProcessInputEvent);
-   // [neo, 5/24/2007 - #2986]
-   // Swapped around the order of call for global action map and canvas input 
-   // handling to give canvas first go as GlobalActionMap will eat any input 
-   // events meant for firstResponders only and as a "general" trap should really 
-   // should only be called if any "local" traps did not take it, e.g. left/right 
-   // in a text edit control should not be forwarded if the text edit has focus, etc. 
-   // Any new issues regarding input should most probably start looking here first!
-   if(!(Canvas && Canvas->processInputEvent(event)))
-   {
-      if(!ActionMap::handleEventGlobal(event))
-      {
-         // Other input consumers here...      
-         ActionMap::handleEvent(event);
-      }
-   }
-   PROFILE_END();
-}
-
-//-----------------------------------------------------------------------------
-
-void DefaultGame::processMouseMoveEvent(MouseMoveEvent * mEvent)
-{
-   if (Canvas)
-      Canvas->processMouseMoveEvent(mEvent);
-}
-
-//--------------------------------------------------------------------------
-
-void DefaultGame::processScreenTouchEvent(ScreenTouchEvent * mEvent)  
-{
-    if (Canvas)
-        Canvas->processScreenTouchEvent(mEvent);
-}
 
 //--------------------------------------------------------------------------
 

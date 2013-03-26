@@ -37,6 +37,7 @@
 #endif
 
 #include "graphics/gfxDevice.h"
+#include "component/interfaces/IProcessInput.h"
 
 /// A canvas on which rendering occurs.
 ///
@@ -75,7 +76,7 @@
 /// screen will be painted normally. If you are making an animated GuiControl
 /// you need to add your control to the dirty areas of the canvas.
 ///
-class GuiCanvas : public GuiControl
+class GuiCanvas : public GuiControl, public IProcessInput
 {
 
 protected:
@@ -298,14 +299,14 @@ public:
    /// Processes an input event
    /// @see InputEvent
    /// @param   event   Input event to process
-   virtual bool processInputEvent(const InputEvent *event);
+   virtual bool processInputEvent(const InputEventInfo &event);
 
    /// Processes a mouse movement event
    /// @see MouseMoveEvent
    /// @param   event   Mouse move event to process
-   virtual void processMouseMoveEvent(const MouseMoveEvent *event);
+   virtual void processMouseMoveEvent(const MouseMoveEventInfo &event);
 
-   virtual void processScreenTouchEvent(const ScreenTouchEvent *event);
+   virtual void processScreenTouchEvent(const ScreenTouchEventInfo &event);
 
    /// @}
 

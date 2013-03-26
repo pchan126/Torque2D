@@ -735,7 +735,7 @@ const char* ActionMap::getDeadZone( const char* device, const char* action )
 }
 
 //------------------------------------------------------------------------------
-const char* ActionMap::buildActionString( const InputEvent* event )
+const char* ActionMap::buildActionString( const InputEventInfo* event )
 {
     const char* modifierString = getModifierString( event->modifier );
 
@@ -1154,7 +1154,7 @@ bool ActionMap::processBind(const U32 argc, const char** argv, SimObject* object
 }
 
 //------------------------------------------------------------------------------
-bool ActionMap::processAction(const InputEvent* pEvent)
+bool ActionMap::processAction(const InputEventInfo* pEvent)
 {
    static const char *argv[4];
 
@@ -1412,7 +1412,7 @@ bool ActionMap::processAction(const InputEvent* pEvent)
 }
 
 //------------------------------------------------------------------------------
-void ActionMap::enterBreakEvent(const InputEvent* pEvent, const Node* pNode)
+void ActionMap::enterBreakEvent(const InputEventInfo* pEvent, const Node* pNode)
 {
    // There aren't likely to be many breaks outstanding at any one given time,
    //  so a simple linear search is probably sufficient.  Note that the break table
@@ -1462,7 +1462,7 @@ void ActionMap::enterBreakEvent(const InputEvent* pEvent, const Node* pNode)
 }
 
 //------------------------------------------------------------------------------
-bool ActionMap::checkBreakTable(const InputEvent* pEvent)
+bool ActionMap::checkBreakTable(const InputEventInfo* pEvent)
 {
    for (U32 i = 0; i < (U32)smBreakTable.size(); i++) {
       if (smBreakTable[i].deviceType == U32(pEvent->deviceType) &&
@@ -1524,7 +1524,7 @@ bool ActionMap::checkBreakTable(const InputEvent* pEvent)
 }
 
 //------------------------------------------------------------------------------
-bool ActionMap::handleEvent(const InputEvent* pEvent)
+bool ActionMap::handleEvent(const InputEventInfo* pEvent)
 {
    // Interate through the ActionMapSet until we get a map that
    //  handles the event or we run out of maps...
@@ -1544,7 +1544,7 @@ bool ActionMap::handleEvent(const InputEvent* pEvent)
 }
 
 //------------------------------------------------------------------------------
-bool ActionMap::handleEventGlobal(const InputEvent* pEvent)
+bool ActionMap::handleEventGlobal(const InputEventInfo* pEvent)
 {
    // Interate through the ActionMapSet until we get a map that
    //  handles the event or we run out of maps...

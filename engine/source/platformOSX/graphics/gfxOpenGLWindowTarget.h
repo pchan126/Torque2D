@@ -31,7 +31,7 @@ public:
    
    virtual void resolveTo(GFXTextureObject* obj);
    
-//   void _onAppSignal(WindowId wnd, S32 event);
+   void _onAppSignal(WindowId wnd, S32 event);
    
 private:
     typedef GFXDevice Parent;

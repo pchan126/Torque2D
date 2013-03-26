@@ -591,16 +591,16 @@ bool GuiCanvas::tabPrev(void)
    return false;
 }
 
-void GuiCanvas::processScreenTouchEvent(const ScreenTouchEvent *event)
+void GuiCanvas::processScreenTouchEvent(const ScreenTouchEventInfo &event)
 {
     //copy the cursor point into the event
-    mLastEvent.mousePoint.x = S32(event->xPos);
-    mLastEvent.mousePoint.y = S32(event->yPos);
-    mLastEvent.eventID = event->touchID;
-    mLastEvent.mouseClickCount = event->numTouches;
+    mLastEvent.mousePoint.x = S32(event.xPos);
+    mLastEvent.mousePoint.y = S32(event.yPos);
+    mLastEvent.eventID = event.touchID;
+    mLastEvent.mouseClickCount = event.numTouches;
     
     //see if button was pressed
-    if (event->action == SI_MAKE)
+    if (event.action == SI_MAKE)
     {
         U32 curTime = Platform::getVirtualMilliseconds();
         mNextMouseTime = curTime + mInitialMouseDelay;
@@ -610,27 +610,27 @@ void GuiCanvas::processScreenTouchEvent(const ScreenTouchEvent *event)
         
         rootScreenTouchDown(mLastEvent);
     }
-    else if(event->action == SI_MOVE)
+    else if(event.action == SI_MOVE)
     {
         rootScreenTouchMove(mLastEvent);
     }
     //else button was released
-    else if(event->action == SI_BREAK)
+    else if(event.action == SI_BREAK)
     {
         mNextMouseTime = 0xFFFFFFFF;
         rootScreenTouchUp(mLastEvent);
     }
 }
 
-void GuiCanvas::processMouseMoveEvent(const MouseMoveEvent *event)
+void GuiCanvas::processMouseMoveEvent(const MouseMoveEventInfo &event)
 {
    if( cursorON )
    {
         //copy the modifier into the new event
-        mLastEvent.modifier = event->modifier;
+        mLastEvent.modifier = event.modifier;
 
-      cursorPt.x += ( F32(event->xPos - cursorPt.x) * mPixelsPerMickey);
-      cursorPt.y += ( F32(event->yPos - cursorPt.y) * mPixelsPerMickey);
+      cursorPt.x += ( F32(event.xPos - cursorPt.x) * mPixelsPerMickey);
+      cursorPt.y += ( F32(event.yPos - cursorPt.y) * mPixelsPerMickey);
 
       // clamp the cursor to the window, or not
       if( ! Con::getBoolVariable( "$pref::Gui::noClampTorqueCursorToWindow", true ))
@@ -662,22 +662,22 @@ void GuiCanvas::processMouseMoveEvent(const MouseMoveEvent *event)
     }
 }
 
-bool GuiCanvas::processInputEvent(const InputEvent *event)
+bool GuiCanvas::processInputEvent(const InputEventInfo &event)
 {
     // First call the general input handler (on the extremely off-chance that it will be handled):
     if ( mFirstResponder )
    {
-      if ( mFirstResponder->onInputEvent( *event ) )
+      if ( mFirstResponder->onInputEvent( event ) )
            return( true );
    }
 
-   if(event->deviceType == KeyboardDeviceType)
+   if(event.deviceType == KeyboardDeviceType)
    {
-      mLastEvent.ascii = event->ascii;
-      mLastEvent.modifier = event->modifier;
-      mLastEvent.keyCode = (U8)event->objInst;
+      mLastEvent.ascii = event.ascii;
+      mLastEvent.modifier = event.modifier;
+      mLastEvent.keyCode = (U8)event.objInst;
 
-      U32 eventModifier = event->modifier;
+      U32 eventModifier = event.modifier;
       if(eventModifier & SI_SHIFT)
          eventModifier |= SI_SHIFT;
       if(eventModifier & SI_CTRL)
@@ -685,7 +685,7 @@ bool GuiCanvas::processInputEvent(const InputEvent *event)
       if(eventModifier & SI_ALT)
          eventModifier |= SI_ALT;
 
-      if (event->action == SI_MAKE)
+      if (event.action == SI_MAKE)
       {
          //see if we should tab next/prev
 
@@ -696,16 +696,16 @@ bool GuiCanvas::processInputEvent(const InputEvent *event)
                return true;
          }
 
-         if ( isCursorON() && ( event->objInst == KEY_TAB ) )
+         if ( isCursorON() && ( event.objInst == KEY_TAB ) )
          {
             if (size() > 0)
             {
-               if (event->modifier & SI_SHIFT)
+               if (event.modifier & SI_SHIFT)
                {
                   if(tabPrev())
                      return true;
                }
-               else if (event->modifier == 0)
+               else if (event.modifier == 0)
                {
                   if(tabNext())
                      return true;
@@ -716,14 +716,14 @@ bool GuiCanvas::processInputEvent(const InputEvent *event)
          //if not handled, search for an accelerator
          for (U32 i = 0; i < (U32)mAcceleratorMap.size(); i++)
          {
-            if ((U32)mAcceleratorMap[i].keyCode == (U32)event->objInst && (U32)mAcceleratorMap[i].modifier == eventModifier)
+            if ((U32)mAcceleratorMap[i].keyCode == (U32)event.objInst && (U32)mAcceleratorMap[i].modifier == eventModifier)
             {
                mAcceleratorMap[i].ctrl->acceleratorKeyPress(mAcceleratorMap[i].index);
                return true;
             }
          }
       }
-      else if(event->action == SI_BREAK)
+      else if(event.action == SI_BREAK)
       {
          if(mFirstResponder)
             if(mFirstResponder->onKeyUp(mLastEvent))
@@ -732,20 +732,20 @@ bool GuiCanvas::processInputEvent(const InputEvent *event)
          //see if there's an accelerator
          for (U32 i = 0; i < (U32)mAcceleratorMap.size(); i++)
          {
-            if ((U32)mAcceleratorMap[i].keyCode == (U32)event->objInst && (U32)mAcceleratorMap[i].modifier == eventModifier)
+            if ((U32)mAcceleratorMap[i].keyCode == (U32)event.objInst && (U32)mAcceleratorMap[i].modifier == eventModifier)
             {
                mAcceleratorMap[i].ctrl->acceleratorKeyRelease(mAcceleratorMap[i].index);
                return true;
             }
          }
       }
-      else if(event->action == SI_REPEAT)
+      else if(event.action == SI_REPEAT)
       {
 
          //if not handled, search for an accelerator
          for (U32 i = 0; i < (U32)mAcceleratorMap.size(); i++)
          {
-            if ((U32)mAcceleratorMap[i].keyCode == (U32)event->objInst && (U32)mAcceleratorMap[i].modifier == eventModifier)
+            if ((U32)mAcceleratorMap[i].keyCode == (U32)event.objInst && (U32)mAcceleratorMap[i].modifier == eventModifier)
             {
                mAcceleratorMap[i].ctrl->acceleratorKeyPress(mAcceleratorMap[i].index);
                return true;
@@ -757,27 +757,27 @@ bool GuiCanvas::processInputEvent(const InputEvent *event)
          return true;
       }
    }
-   else if(event->deviceType == MouseDeviceType && cursorON)
+   else if(event.deviceType == MouseDeviceType && cursorON)
    {
       //copy the modifier into the new event
-      mLastEvent.modifier = event->modifier;
+      mLastEvent.modifier = event.modifier;
 
-      if(event->objType == SI_XAXIS || event->objType == SI_YAXIS)
+      if(event.objType == SI_XAXIS || event.objType == SI_YAXIS)
       {
          bool moved = false;
          Point2I oldpt((S32)cursorPt.x, (S32)cursorPt.y);
          Point2F pt(cursorPt.x, cursorPt.y);
 
-         if (event->objType == SI_XAXIS)
+         if (event.objType == SI_XAXIS)
          {
-            pt.x += (event->fValue * mPixelsPerMickey);
+            pt.x += (event.fValue * mPixelsPerMickey);
             cursorPt.x = (F32)getMax(0, getMin((S32)pt.x, mBounds.extent.x - 1));
             if (oldpt.x != S32(cursorPt.x))
                moved = true;
          }
          else
          {
-            pt.y += (event->fValue * mPixelsPerMickey);
+            pt.y += (event.fValue * mPixelsPerMickey);
             cursorPt.y = (F32)getMax(0, getMin((S32)pt.y, mBounds.extent.y - 1));
             if (oldpt.y != S32(cursorPt.y))
                moved = true;
@@ -805,18 +805,18 @@ bool GuiCanvas::processInputEvent(const InputEvent *event)
          }
          return true;
       }
-        else if ( event->objType == SI_ZAXIS )
+        else if ( event.objType == SI_ZAXIS )
         {
          mLastEvent.mousePoint.x = S32( cursorPt.x );
          mLastEvent.mousePoint.y = S32( cursorPt.y );
          mLastEvent.eventID = 0;
 
-            if ( event->fValue < 0.0f )
+            if ( event.fValue < 0.0f )
             rootMouseWheelDown( mLastEvent );
             else
             rootMouseWheelUp( mLastEvent );
       }
-      else if(event->objType == SI_BUTTON)
+      else if(event.objType == SI_BUTTON)
       {
          //copy the cursor point into the event
          mLastEvent.mousePoint.x = S32(cursorPt.x);
@@ -824,10 +824,10 @@ bool GuiCanvas::processInputEvent(const InputEvent *event)
          mLastEvent.eventID = 0;
          mMouseDownPoint = cursorPt;
 
-         if(event->objInst == KEY_BUTTON0) // left button
+         if(event.objInst == KEY_BUTTON0) // left button
          {
             //see if button was pressed
-            if (event->action == SI_MAKE)
+            if (event.action == SI_MAKE)
             {
                U32 curTime = Platform::getVirtualMilliseconds();
                mNextMouseTime = curTime + mInitialMouseDelay;
@@ -860,9 +860,9 @@ bool GuiCanvas::processInputEvent(const InputEvent *event)
             }
             return true;
          }
-         else if(event->objInst == KEY_BUTTON1) // right button
+         else if(event.objInst == KEY_BUTTON1) // right button
          {
-            if(event->action == SI_MAKE)
+            if(event.action == SI_MAKE)
             {
                U32 curTime = Platform::getVirtualMilliseconds();
 
@@ -890,9 +890,9 @@ bool GuiCanvas::processInputEvent(const InputEvent *event)
                rootRightMouseUp(mLastEvent);
             return true;
          }
-         else if(event->objInst == KEY_BUTTON2) // middle button
+         else if(event.objInst == KEY_BUTTON2) // middle button
          {
-            if(event->action == SI_MAKE)
+            if(event.action == SI_MAKE)
             {
                U32 curTime = Platform::getVirtualMilliseconds();
 

@@ -33,7 +33,7 @@
 #include "sim/simBase.h"
 #endif
 
-struct InputEvent;
+struct InputEventInfo;
 
 struct EventDescriptor
 {
@@ -130,7 +130,7 @@ class ActionMap : public SimObject
                  const U32 inModifiers,  const U32 inAction,
                  SimObject* object = NULL);
 
-   void enterBreakEvent(const InputEvent* pEvent, const Node* pNode);
+   void enterBreakEvent(const InputEventInfo* pEvent, const Node* pNode);
 
    static const char* getModifierString(const U32 modifiers);
 
@@ -158,13 +158,13 @@ class ActionMap : public SimObject
 
    static bool        getKeyString(const U32 action, char* buffer);
    static bool        getDeviceName(const U32 deviceType, const U32 deviceInstance, char* buffer);
-   static const char* buildActionString( const InputEvent* event );
+   static const char* buildActionString( const InputEventInfo* event );
 
-   bool processAction(const InputEvent*);
+   bool processAction(const InputEventInfo*);
 
-   static bool checkBreakTable(const InputEvent*);
-   static bool handleEvent(const InputEvent*);
-   static bool handleEventGlobal(const InputEvent*);
+   static bool checkBreakTable(const InputEventInfo*);
+   static bool handleEvent(const InputEventInfo*);
+   static bool handleEventGlobal(const InputEventInfo*);
 
    static bool getDeviceTypeAndInstance(const char *device, U32 &deviceType, U32 &deviceInstance);
 

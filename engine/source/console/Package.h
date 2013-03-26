@@ -29,9 +29,9 @@
 #ifndef _STRINGTABLE_H_
 #include "string/stringTable.h"
 #endif
-#ifndef _TVECTOR_H_
-#include "core/tVector.h"
-#endif
+
+#include "collection/vector.h"
+
 #ifndef _CONSOLETYPES_H_
 #include "console/consoleTypes.h"
 #endif

@@ -150,16 +150,6 @@ const Point2I& Platform::getWindowSize()
 }
 
 //-----------------------------------------------------------------------------
-// Simulates the user clicking the minimize button by momentarily highlighting
-// the button, then minimizing the window.
-void Platform::minimizeWindow()
-{
-    NSApplication *application = [NSApplication sharedApplication];
-    NSWindow *keyWindow = [application keyWindow];
-    [keyWindow miniaturize:keyWindow];
-}
-
-//-----------------------------------------------------------------------------
 // De-minimizes the window.
 void Platform::restoreWindow()
 {

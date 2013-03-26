@@ -57,9 +57,6 @@ public:
 
     void processQuitEvent();
     void processTimeEvent(TimeEvent *event);
-    void processInputEvent(InputEvent *event);
-    void processMouseMoveEvent(MouseMoveEvent *event);
-    void processScreenTouchEvent(ScreenTouchEvent *event);
     void processConsoleEvent(ConsoleEvent *event);
     void processPacketReceiveEvent(PacketReceiveEvent *event);
     void processConnectedAcceptEvent(ConnectedAcceptEvent *event);

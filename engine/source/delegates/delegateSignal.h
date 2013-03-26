@@ -663,4 +663,65 @@ class Signal<void(A,B,C,D,E,F,G,H,I,J)> : public SignalBaseT<void(A,B,C,D,E,F,G,
       }
 };
 
+enum ApplicationMessage {
+    Quit,
+    WindowOpen,          ///< Window opened
+    WindowClose,         ///< Window closed.
+    WindowShown,         ///< Window has been shown on screen
+    WindowHidden,        ///< Window has become hidden
+    WindowDestroy,       ///< Window was destroyed.
+    GainCapture,         ///< Window will capture all input
+    LoseCapture,         ///< Window will no longer capture all input
+    GainFocus,           ///< Application gains focus
+    LoseFocus,           ///< Application loses focus
+    DisplayChange,       ///< Desktop Display mode has changed
+    GainScreen,          ///< Window will acquire lock on the full screen
+    LoseScreen,          ///< Window has released lock on the full screen
+    Timer,
+};
+
+typedef U32 WindowId;
+
+/// void event()
+typedef Signal<void()> IdleEvent;
+
+/// void event(WindowId,U32 modifier,S32 x,S32 y, bool isRelative)
+typedef Signal<void(WindowId,U32,S32,S32,bool)> MouseEvent;
+
+/// void event(WindowId,U32 modifier,S32 wheelDeltaX, S32 wheelDeltaY)
+typedef Signal<void(WindowId,U32,S32,S32)> MouseWheelEvent;
+
+/// void event(WindowId,U32 modifier,U32 action,U16 key)
+typedef Signal<void(WindowId,U32,U32,U16)> KeyEvent;
+
+/// void event(WindowId,U32 modifier,U16 key)
+typedef Signal<void(WindowId,U32,U16)> CharEvent;
+
+/// void event(WindowId,U32 modifier,U32 action,U16 button)
+typedef Signal<void(WindowId,U32,U32,U16)> ButtonEvent;
+
+/// void event(WindowId,U32 modifier,U32 action,U32 axis,F32 value)
+typedef Signal<void(WindowId,U32,U32,U32,F32)> LinearEvent;
+
+/// void event(WindowId,U32 modifier,F32 value)
+typedef Signal<void(WindowId,U32,F32)> PovEvent;
+
+/// void event(WindowId,InputAppMessage)
+typedef Signal<void(WindowId,S32)> AppEvent;
+
+/// void event(WindowId)
+typedef Signal<void(WindowId)> DisplayEvent;
+
+/// void event(WindowId, S32 width, S32 height)
+typedef Signal<void(WindowId, S32, S32)> ResizeEvent;
+
+/// void event(S32 timeDelta)
+typedef Signal<void(S32)> TimeManagerEvent;
+
+// void event(U32 deviceInst,F32 fValue, U16 deviceType, U16 objType, U16 ascii, U16 objInst, U8 action, U8 modifier)
+typedef Signal<void(U32,F32,U16,U16,U16,U16,U8,U8)> InputEvent;
+
+/// void event(U32 popupGUID, U32 commandID, bool& returnValue)
+typedef Signal<void(U32, U32)> PopupMenuEvent;
+
 #endif // _SIGNAL_H_

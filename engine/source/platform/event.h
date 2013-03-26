@@ -27,13 +27,9 @@
 #ifndef _EVENT_H_
 #define _EVENT_H_
 
-#ifndef _TORQUE_TYPES_H_
 #include "platform/types.h"
-#endif
-
-#ifndef _PLATFORM_MEMORY_H_
 #include "platform/platformMemory.h"
-#endif
+#include "delegates/delegateSignal.h"
 
 typedef int NetConnectionId;
 
@@ -157,27 +153,28 @@ const U32 ConsoleEventHeaderSize = Offset(data,ConsoleEvent);
 
 
 /// Mouse input event.
-struct MouseMoveEvent : public Event
+struct MouseMoveEventInfo
 {
    S32 xPos, yPos;
    U8 modifier;
 
-   MouseMoveEvent() { type = MouseMoveEventType; size = sizeof(MouseMoveEvent); }
+//   MouseMoveEvent() { type = MouseMoveEventType; size = sizeof(MouseMoveEvent); }
 };
-struct ScreenTouchEvent : public Event  
+struct ScreenTouchEventInfo //: public Event
 {  
     S32 xPos, yPos;  
     S32 touchID;
     U8    action;
     U32 numTouches;
     
-    ScreenTouchEvent() { type = ScreenTouchEventType; size = sizeof(ScreenTouchEvent); }  
+//    ScreenTouchEvent() { type = ScreenTouchEventType; size = sizeof(ScreenTouchEvent); }  
 };
+
 /// Generic input event.
-struct InputEvent : public Event
+struct InputEventInfo //: public Event
 {
    U32   deviceInst;  ///< Device instance: joystick0, joystick1, etc
-   float fValue;      ///< Value ranges from -1.0 to 1.0
+   F32   fValue;      ///< Value ranges from -1.0 to 1.0
    U16   deviceType;  ///< One of mouse, keyboard, joystick, unknown
    U16   objType;     ///< One of SI_XAXIS, SI_BUTTON, SI_KEY ...
    U16   ascii;       ///< ASCII character code if this is a keyboard event.
@@ -190,9 +187,13 @@ struct InputEvent : public Event
    char touchesY[256];    ///< Collection of y-coordinates for touches
    char touchIDs[256];    ///< Collection of touch IDs
     
-   InputEvent() { type = InputEventType; size = sizeof(InputEvent); dMemset(touchesX, 0, sizeof(touchesX)); 
-                                                                    dMemset(touchesY, 0, sizeof(touchesY));
-                                                                    dMemset(touchIDs, 0, sizeof(touchIDs));}
+//   InputEvent() { type = InputEventType; size = sizeof(InputEvent); dMemset(touchesX, 0, sizeof(touchesX)); 
+//                                                                    dMemset(touchesY, 0, sizeof(touchesY));
+//                                                                    dMemset(touchIDs, 0, sizeof(touchIDs));}
+    inline void postToSignal(InputEvent &ie)
+    {
+        ie.trigger(deviceInst, fValue, deviceType, objType, ascii, objInst, action, modifier);
+    }
 };
 
 /// @defgroup input_constants Input system constants

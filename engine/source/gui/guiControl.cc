@@ -1320,7 +1320,7 @@ void GuiControl::mouseUnlock()
       root->mouseUnlock(this);
 }
 
-bool GuiControl::onInputEvent(const InputEvent &event)
+bool GuiControl::onInputEvent(const InputEventInfo &event)
 {
     // Do nothing by default...
    return( false );

@@ -28,6 +28,7 @@
 InputManager *Input::smManager = 0;
 CursorManager *Input::smCursorManager = 0;
 bool Input::smActive;
+InputEvent     Input::smInputEvent;
 
 #pragma mark ---- Input Namespace Functions ----
 

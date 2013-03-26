@@ -482,7 +482,7 @@ public:
 
 
     /// General input handler.
-    virtual bool onInputEvent(const InputEvent &event);
+    virtual bool onInputEvent(const InputEventInfo &event);
 
     /// @name Mouse Events
     /// These functions are called when the input event which is

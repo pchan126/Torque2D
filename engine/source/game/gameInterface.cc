@@ -79,15 +79,6 @@ void GameInterface::processEvent(Event *event)
       case PacketReceiveEventType:
          processPacketReceiveEvent((PacketReceiveEvent *) event);
          break;
-      case MouseMoveEventType:
-         processMouseMoveEvent((MouseMoveEvent *) event);
-         break;
-      case InputEventType:
-         processInputEvent((InputEvent *) event);
-         break;
-      case ScreenTouchEventType:
-          processScreenTouchEvent((ScreenTouchEvent *) event);
-          break;
       case QuitEventType:
          processQuitEvent();
          break;

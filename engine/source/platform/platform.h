@@ -151,6 +151,9 @@ struct Platform
     static void setWindowTitle( const char* title );
     static void setWindowSize( U32 newWidth, U32 newHeight );
     static const Point2I &getWindowSize();
+    static void setWindowSize( U32 newWidth, U32 newHeight, bool fullScreen );
+    static void closeWindow();
+    static void setWindowLocked(bool locked);
     static void minimizeWindow();
     static void restoreWindow();
     static void setMouseLock(bool locked);

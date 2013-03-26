@@ -26,7 +26,8 @@
 #ifndef _SIMBASE_H_
 #include "sim/simBase.h"
 #endif
-
+//#include "input/actionMap.h"
+#include "platform/event.h"
 
 //------------------------------------------------------------------------------
 
@@ -196,6 +197,10 @@ public:
 
     static U8 getModifierKeys() {return smModifierKeys;}
     static void setModifierKeys(U8 mod) {smModifierKeys = mod;}
+    
+    /// Global input routing JournaledSignal; post input events here for
+    /// processing.
+    static InputEvent smInputEvent;
 };
 
 #endif // _H_PLATFORMINPUT_

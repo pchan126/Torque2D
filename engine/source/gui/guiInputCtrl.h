@@ -41,7 +41,7 @@ class GuiInputCtrl : public GuiControl
       bool onWake();
       void onSleep();
 
-      bool onInputEvent( const InputEvent &event );
+      bool onInputEvent( const InputEventInfo &event );
 };
 
 #endif // _GUI_INPUTCTRL_H
