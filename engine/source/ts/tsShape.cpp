@@ -178,7 +178,7 @@ TSShape::TSShape()
    VECTOR_SET_ASSOCIATION(groundRotations);
    VECTOR_SET_ASSOCIATION(groundTranslations);
    VECTOR_SET_ASSOCIATION(triggers);
-   VECTOR_SET_ASSOCIATION(billboardDetails);
+//   VECTOR_SET_ASSOCIATION(billboardDetails);
    VECTOR_SET_ASSOCIATION(detailCollisionAccelerators);
    VECTOR_SET_ASSOCIATION(names);
 

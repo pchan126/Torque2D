@@ -52,15 +52,15 @@ GuiMLTextEditCtrl::~GuiMLTextEditCtrl()
 
 
 //--------------------------------------------------------------------------
-void GuiMLTextEditCtrl::resize(const Point2I &newPosition, const Point2I &newExtent)
+bool GuiMLTextEditCtrl::resize(const Point2I &newPosition, const Point2I &newExtent)
 {
-   // We don't want to get any smaller than our parent:
-   Point2I newExt = newExtent;
-   GuiControl* parent = getParent();
-   if ( parent )
-      newExt.y = getMax( parent->mBounds.extent.y, newExt.y );
-
-   Parent::resize( newPosition, newExt );
+    // We don't want to get any smaller than our parent:
+    Point2I newExt = newExtent;
+    GuiControl* parent = getParent();
+    if ( parent )
+        newExt.y = getMax( parent->getHeight(), newExt.y );
+    
+    return Parent::resize( newPosition, newExt );
 }
 
 

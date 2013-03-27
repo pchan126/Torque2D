@@ -101,8 +101,9 @@ class GuiColorPickerCtrl : public GuiControl
    
    S32   mSelectorGap;		///< The half-way "gap" between the selector pos and where the selector is allowed to draw. 
 
-//   GFXStateBlockRef mStateBlock;
-   static ColorI mColorRange[9]; ///< Color range for pHorizColorRange and pVertColorRange
+   GFXStateBlockRef mStateBlock;
+
+    static ColorI mColorRange[7]; ///< Color range for pHorizColorRange and pVertColorRange
    /// @}
 
   public:   
@@ -127,7 +128,6 @@ class GuiColorPickerCtrl : public GuiControl
    /// @{
    void setSelectorPos(const Point2I &pos); ///< Set new pos (in local coords)
    Point2I getSelectorPos() {return mSelectorPos;}
-   Point2I getSelectorPositionForColor(RectI &bounds, ColorF color);
    /// @}
    
    /// @name Input Events

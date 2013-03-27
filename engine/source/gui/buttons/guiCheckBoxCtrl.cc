@@ -32,7 +32,7 @@ IMPLEMENT_CONOBJECT(GuiCheckBoxCtrl);
 //---------------------------------------------------------------------------
 GuiCheckBoxCtrl::GuiCheckBoxCtrl()
 {
-   mBounds.extent.set(140, 30);
+   setExtent(140, 30);
     mStateOn = false;
    mIndent = 0;
    mButtonType = ButtonTypeCheck;
@@ -148,7 +148,7 @@ void GuiCheckBoxCtrl::onRender(Point2I offset, const RectI &updateRect)
       else if(mDepressed)
          index += 2;
       xOffset = mProfile->mBitmapArrayRects[0].extent.x + 2 + mIndent;
-      S32 y = (mBounds.extent.y - mProfile->mBitmapArrayRects[0].extent.y) / 2;
+      S32 y = (getHeight() - mProfile->mBitmapArrayRects[0].extent.y) / 2;
       GFX->getDrawUtil()->drawBitmapSR(mProfile->mTextureHandle, offset + Point2I(mIndent, y), mProfile->mBitmapArrayRects[index]);
    }
    
@@ -156,7 +156,7 @@ void GuiCheckBoxCtrl::onRender(Point2I offset, const RectI &updateRect)
     {
        GFX->getDrawUtil()->setBitmapModulation( fontColor );
       renderJustifiedText(Point2I(offset.x + xOffset, offset.y),
-                          Point2I(mBounds.extent.x - mBounds.extent.y, mBounds.extent.y),
+                          Point2I(getWidth() - getHeight(), getHeight()),
                           mButtonText);
     }
    //render the children

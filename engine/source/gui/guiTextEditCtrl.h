@@ -125,7 +125,7 @@ public:
    virtual void setFirstResponder();
    virtual void onLoseFirstResponder();
 
-   void parentResized(const Point2I &oldParentExtent, const Point2I &newParentExtent);
+   void parentResized(const RectI &oldParentRect, const RectI &newParentRect);
    bool hasText();
 
    void onStaticModified(const char* slotName);

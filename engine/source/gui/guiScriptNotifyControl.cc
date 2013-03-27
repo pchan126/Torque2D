@@ -75,14 +75,16 @@ void GuiScriptNotifyCtrl::onChildRemoved( GuiControl *child )
 }
 //----------------------------------------------------------------
 
-void GuiScriptNotifyCtrl::resize(const Point2I &newPosition, const Point2I &newExtent)
+bool GuiScriptNotifyCtrl::resize(const Point2I &newPosition, const Point2I &newExtent)
 {
-   Parent::resize( newPosition, newExtent );
+    if( !Parent::resize( newPosition, newExtent ) )
+        return false;
 
    // Call Script.
    if( mOnResize && isMethod( "onResize" ) )
       Con::executef(this, 2, "onResize" );
 
+    return true;
 }
 
 void GuiScriptNotifyCtrl::childResized(GuiScriptNotifyCtrl *child)
@@ -94,9 +96,9 @@ void GuiScriptNotifyCtrl::childResized(GuiScriptNotifyCtrl *child)
       Con::executef(this, 3, "onChildResized", child->getIdString() );
 }
 
-void GuiScriptNotifyCtrl::parentResized(const Point2I &oldParentExtent, const Point2I &newParentExtent)
+void GuiScriptNotifyCtrl::parentResized(const RectI &oldParentRect, const RectI &newParentRect)
 {
-   Parent::parentResized( oldParentExtent, newParentExtent );
+   Parent::parentResized( oldParentRect, newParentRect );
 
    // Call Script.
    if( mOnParentResized && isMethod( "onParentResized" ) )

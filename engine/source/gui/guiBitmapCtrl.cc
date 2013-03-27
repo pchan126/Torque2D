@@ -119,11 +119,11 @@ void GuiBitmapCtrl::inspectPostApply()
    // set it's extent to be exactly the size of the bitmap (if present)
    Parent::inspectPostApply();
 
-   if (!mWrap && (mBounds.extent.x == 0) && (mBounds.extent.y == 0) && mTextureObject)
+   if (!mWrap && (getWidth() == 0) && (getHeight() == 0) && mTextureObject)
    {
 //      TextureObject *texture = (TextureObject *) mTextureObject;
-      mBounds.extent.x = mTextureObject->getBitmapWidth();
-      mBounds.extent.y = mTextureObject->getBitmapHeight();
+      setWidth( mTextureObject->getBitmapWidth());
+      setHeight( mTextureObject->getBitmapHeight());
    }
 }
 
@@ -155,8 +155,8 @@ void GuiBitmapCtrl::setBitmap(const char *name, bool resize)
 //      // Resize the control to fit the bitmap
 //      if (resize) {
 ////         TextureObject* texture = (TextureObject *) mTextureObject;
-//         mBounds.extent.x = mTextureObject->getBitmapWidth();
-//         mBounds.extent.y = mTextureObject->getBitmapHeight();
+//         getWidth() = mTextureObject->getBitmapWidth();
+//         getHeight() = mTextureObject->getBitmapHeight();
 //         GuiControl *parent = getParent();
 //         if( !parent ) {
 //             Con::errorf( "GuiBitmapCtrl::setBitmap( %s ), trying to resize but object has no parent.", name ) ;
@@ -176,10 +176,8 @@ void GuiBitmapCtrl::updateSizing()
     if(!getParent())
         return;
 
-    mBounds.extent.x = mTextureObject->getBitmapWidth();
-    mBounds.extent.y = mTextureObject->getBitmapHeight();
-    Point2I extent = getParent()->getExtent();
-    parentResized(extent,extent);
+    RectI fakeBounds( getPosition(), getParent()->getExtent());
+    parentResized( fakeBounds, fakeBounds);
 }
 
 
@@ -208,8 +206,8 @@ void GuiBitmapCtrl::onRender(Point2I offset, const RectI &updateRect)
 //         TextureObject* texture = (TextureObject *) mTextureObject;
             RectI srcRegion;
             RectI dstRegion;
-            float xdone = ((float)mBounds.extent.x/(float)mTextureObject->getBitmapWidth())+1;
-            float ydone = ((float)mBounds.extent.y/(float)mTextureObject->getBitmapHeight())+1;
+            float xdone = ((float)getWidth()/(float)mTextureObject->getBitmapWidth())+1;
+            float ydone = ((float)getHeight()/(float)mTextureObject->getBitmapHeight())+1;
 
             int xshift = startPoint.x%mTextureObject->getBitmapWidth();
             int yshift = startPoint.y%mTextureObject->getBitmapHeight();
@@ -235,7 +233,7 @@ void GuiBitmapCtrl::onRender(Point2I offset, const RectI &updateRect)
         }
         else
       {
-         RectI rect(offset, mBounds.extent);
+         RectI rect(offset, getExtent());
         
          //Luma:	ability to specify source rect for image UVs
          if(mUseSourceRect && mSourceRect.isValidRect() )
@@ -255,7 +253,7 @@ void GuiBitmapCtrl::onRender(Point2I offset, const RectI &updateRect)
 
    if (mProfile->mBorder || !mTextureObject)
    {
-      RectI rect(offset.x, offset.y, mBounds.extent.x, mBounds.extent.y);
+      RectI rect(offset.x, offset.y, getWidth(), getHeight());
       GFX->getDrawUtil()->drawRect(rect, mProfile->mBorderColor);
    }
 

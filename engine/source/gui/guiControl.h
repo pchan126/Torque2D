@@ -48,6 +48,9 @@
 #include "string/stringBuffer.h"
 #endif
 
+#include "delegates/delegateSignal.h"
+#include "collection/vector.h"
+
 #ifndef _LANG_H_
 #include "gui/language/lang.h"
 #endif
@@ -56,6 +59,17 @@
 
 class GuiCanvas;
 class GuiEditCtrl;
+class GuiWindowCtrl;
+
+/// A delegate used in tool tip rendering.
+///
+/// @param   hoverPos    position to display the tip near
+/// @param   cursorPos   the actual position of the cursor when the delegate is called
+/// @param   tipText     optional alternate tip to be rendered
+/// @return  Returns true if the tooltip was rendered.
+///
+/// @see GuiControl::mRenderTooltipDelegate
+typedef Delegate<bool( const Point2I &hoverPos, const Point2I &cursorPos, const char *tipText )> RenderTooltipDelegate;
 
 //-----------------------------------------------------------------------------
 
@@ -95,9 +109,43 @@ class GuiEditCtrl;
 /// @{
 class GuiControl : public SimGroup
 {
-private:
+public:
    typedef SimGroup Parent;
-   typedef GuiControl Children;
+
+    friend class GuiWindowCtrl; // mCollapseGroupVec
+    friend class GuiCanvas;
+    friend class GuiEditCtrl;
+    friend class GuiDragAndDropControl; // drag callbacks
+
+    /// Additional write flags for GuiControls.
+    enum
+    {
+        NoCheckParentCanSave = BIT( 31 ),   ///< Don't inherit mCanSave=false from parents.
+    };
+    
+    enum horizSizingOptions
+    {
+        horizResizeRight = 0,   ///< fixed on the left and width
+        horizResizeWidth,       ///< fixed on the left and right
+        horizResizeLeft,        ///< fixed on the right and width
+        horizResizeCenter,
+        horizResizeRelative,     ///< resize relative
+        horizResizeWindowRelative ///< resize window relative
+    };
+    enum vertSizingOptions
+    {
+        vertResizeBottom = 0,   ///< fixed on the top and in height
+        vertResizeHeight,       ///< fixed on the top and bottom
+        vertResizeTop,          ///< fixed in height and on the bottom
+        vertResizeCenter,
+        vertResizeRelative,      ///< resize relative
+        vertResizeWindowRelative ///< resize window relative
+    };
+
+private:
+    
+    SimGroup               *mAddGroup;   ///< The internal name of a SimGroup child of the global GuiGroup in which to organize this gui on creation
+    RectI                   mBounds;     ///< The internal bounds of this control
 
 public:
 
@@ -109,21 +157,33 @@ public:
     GuiControlProfile	*mTooltipProfile; 
     S32					mTipHoverTime;
     S32					mTooltipWidth;
+      /// Delegate called to render a tooltip for this control.
+      /// By default this will be set to defaultTooltipRender.
+      RenderTooltipDelegate mRenderTooltipDelegate;
+      
+      /// The default tooltip rendering function.
+      /// @see RenderTooltipDelegate
+      bool defaultTooltipRender( const Point2I &hoverPos, const Point2I &cursorPos, const char* tipText = NULL );
 
     bool    mVisible;
     bool    mActive;
     bool    mAwake;
     bool    mSetFirstResponder;
-    bool    mCanSave;
     bool    mIsContainer; ///< if true, then the GuiEditor can drag other controls into this one.
+      bool    mCanResize;
+      bool    mCanHit;
 
     S32     mLayer;
-    static S32     smCursorChanged; ///< Has this control modified the cursor? -1 or type
-    RectI   mBounds;
     Point2I mMinExtent;
     StringTableEntry mLangTableName;
     LangTable *mLangTable;
 
+    bool mNotifyChildrenResized;
+    
+    // Contains array of windows located inside GuiControl
+    typedef Vector< Vector< GuiWindowCtrl *> > CollapseGroupVec;
+    CollapseGroupVec mCollapseGroupVec;
+    
     static bool smDesignTime; ///< static GuiControl boolean that specifies if the GUI Editor is active
     /// @}
 
@@ -134,27 +194,10 @@ public:
 
     /// @name Keyboard Input
     /// @{
-    SimObjectPtr<GuiControl> mFirstResponder;
+      GuiControl *mFirstResponder;
     static GuiControl *smPrevResponder;
     static GuiControl *smCurResponder;
     /// @}
-
-    enum horizSizingOptions
-    {
-        horizResizeRight = 0,   ///< fixed on the left and width
-        horizResizeWidth,       ///< fixed on the left and right
-        horizResizeLeft,        ///< fixed on the right and width
-        horizResizeCenter,
-        horizResizeRelative     ///< resize relative
-    };
-    enum vertSizingOptions
-    {
-        vertResizeBottom = 0,   ///< fixed on the top and in height
-        vertResizeHeight,       ///< fixed on the top and bottom
-        vertResizeTop,          ///< fixed in height and on the bottom
-        vertResizeCenter,
-        vertResizeRelative      ///< resize relative
-    };
 
 protected:
     /// @name Control State
@@ -163,12 +206,13 @@ protected:
     S32 mHorizSizing;      ///< Set from horizSizingOptions.
     S32 mVertSizing;       ///< Set from vertSizingOptions.
 
-    StringTableEntry	mConsoleVariable;
-    StringTableEntry	mConsoleCommand;
-    StringTableEntry	mAltConsoleCommand;
     StringTableEntry	mAcceleratorKey;
+    StringTableEntry	mConsoleVariable;
 
-    StringTableEntry	mTooltip;
+      String mConsoleCommand;
+      String mAltConsoleCommand;
+      
+      String mTooltip;
 
     /// @}
 
@@ -205,7 +249,7 @@ public:
     /// Set the name of the console function bound to, such as a script function
     /// a button calls when clicked.
     /// @param   newCmd   Console function to attach to this GuiControl
-    void setConsoleCommand(const char *newCmd);
+    void setConsoleCommand(const String& newCmd);
     const char * getConsoleCommand(); ///< Returns the name of the function bound to this GuiControl
     LangTable *getGUILangTable(void);
     const UTF8 *getGUIString(S32 id);
@@ -239,10 +283,6 @@ public:
   
     ///   Overrides Parent Serialization to allow specific controls to not be saved (Dynamic Controls, etc)
     void write(Stream &stream, U32 tabStop, U32 flags);
-    /// Returns boolean specifying if a control can be serialized
-    bool getCanSave();
-    /// Set serialization flag
-    void setCanSave(bool bCanSave);
     /// Returns boolean as to whether any parent of this control has the 'no serialization' flag set.
     bool getCanSaveParent();
 
@@ -260,14 +300,25 @@ public:
     /// @name Accessors
     /// @{
 
-    const Point2I&   getPosition() { return mBounds.point; } ///< Returns position of the control
-    const Point2I&   getExtent() { return mBounds.extent; } ///< Returns extents of the control
-    const RectI&     getBounds()    { return mBounds; }           ///< Returns the bounds of the control
-    const Point2I&   getMinExtent() { return mMinExtent; } ///< Returns minimum size the control can be
-    const S32        getLeft() { return mBounds.point.x; } ///< Returns the X position of the control
-    const S32        getTop() { return mBounds.point.y; } ///< Returns the Y position of the control
-    const S32        getWidth() { return mBounds.extent.x; } ///< Returns the width of the control
-    const S32        getHeight() { return mBounds.extent.y; } ///< Returns the height of the control
+      inline const Point2I&   getPosition() const { return mBounds.point; } ///< Returns position of the control
+      inline const Point2I&   getExtent() const { return mBounds.extent; } ///< Returns extents of the control
+      inline const RectI     getBounds()const { return mBounds; }           ///< Returns the bounds of the control
+      inline const RectI     getGlobalBounds() ///< Returns the bounds of this object, in global coordinates 
+    {
+        RectI retRect = getBounds();
+        retRect.point = localToGlobalCoord( Point2I(0,0) );
+        
+        return retRect;
+    };
+    virtual Point2I   getMinExtent() { return mMinExtent; } ///< Returns minimum size the control can be
+      virtual void      setMinExtent( const Point2I &newMinExtent ) { mMinExtent = newMinExtent; };
+      inline const S32        getLeft() const { return mBounds.point.x; } ///< Returns the X position of the control
+      inline const S32        getTop() const { return mBounds.point.y; } ///< Returns the Y position of the control
+      inline const S32        getWidth() const { return mBounds.extent.x; } ///< Returns the width of the control
+      inline const S32        getHeight() const { return mBounds.extent.y; } ///< Returns the height of the control
+      
+      inline const S32        getHorizSizing() const { return mHorizSizing; }
+      inline const S32        getVertSizing() const { return mVertSizing; }
 
     /// @}
 
@@ -277,11 +328,15 @@ public:
     /// Sets the visibility of the control
     /// @param   value   True if object should be visible
     virtual void setVisible(bool value);
-    inline bool isVisible() { return mVisible; } ///< Returns true if the object is visible
+    inline bool isVisible() const { return mVisible; } ///< Returns true if the object is visible
+      virtual bool isHidden() const { return !isVisible(); }
+      virtual void setHidden( bool state ) { setVisible( !state ); }
+      
+      void setCanHit( bool value ) { mCanHit = value; }
 
     /// Sets the status of this control as active and responding or inactive
     /// @param   value   True if this is active
-    void setActive(bool value);
+      virtual void setActive(bool value);
     bool isActive() { return mActive; } ///< Returns true if this control is active
 
     bool isAwake() { return mAwake; } ///< Returns true if this control is awake
@@ -313,6 +368,10 @@ public:
 
     GuiControl *getParent();  ///< Returns the control which owns this one.
     GuiCanvas *getRoot();     ///< Returns the root canvas of this control.
+      virtual bool acceptsAsChild( SimObject* object ) const;
+      
+      virtual void onGroupRemove();
+
     /// @}
 
     /// @name Coordinates
@@ -335,21 +394,21 @@ public:
     /// Changes the size and/or position of this control
     /// @param   newPosition   New position of this control
     /// @param   newExtent   New size of this control
-    virtual void resize(const Point2I &newPosition, const Point2I &newExtent);
+    virtual bool resize(const Point2I &newPosition, const Point2I &newExtent);
 
     /// Changes the position of this control
     /// @param   newPosition   New position of this control
-    virtual void setPosition( const Point2I &newPosition );
+    virtual bool setPosition( const Point2I &newPosition );
     inline  void setPosition( const S32 x, const S32 y ) { setPosition(Point2I(x,y)); }
 
     /// Changes the size of this control
     /// @param   newExtent   New size of this control
-    virtual void setExtent( const Point2I &newExtent );
+    virtual bool setExtent( const Point2I &newExtent );
     inline  void setExtent( const S32 width, const S32 height) { setExtent(Point2I(width, height)); }
 
     /// Changes the bounds of this control
     /// @param   newBounds   New bounds of this control
-    virtual void setBounds( const RectI &newBounds );
+    virtual bool setBounds( const RectI &newBounds );
     inline  void setBounds( const S32 left,  const S32 top,
                            const S32 width, const S32 height) { setBounds(RectI(left, top, width, height)); }
 
@@ -374,9 +433,9 @@ public:
     virtual void childResized(GuiControl *child);
 
     /// Called when this objects parent is resized
-    /// @param   oldParentExtent   The old size of the parent object
-    /// @param   newParentExtent   The new size of the parent object
-    virtual void parentResized(const Point2I &oldParentExtent, const Point2I &newParentExtent);
+      /// @param   oldParentRect   The old rectangle of the parent object
+      /// @param   newParentRect   The new rectangle of the parent object
+      virtual void parentResized(const RectI &oldParentRect, const RectI &newParentRect);
     /// @}
 
     /// @name Rendering
@@ -387,11 +446,6 @@ public:
     /// @param   updateRect   The screen area this control has drawing access to
     virtual void onRender(Point2I offset, const RectI &updateRect);
     
-    /// Render a tooltip at the specified cursor position for this control
-    /// @param   cursorPos   position of cursor to display the tip near
-    /// @param   tipText     optional alternate tip to be rendered
-    virtual bool renderTooltip(Point2I cursorPos, const char* tipText = NULL );
-
     /// Called when this control should render its children
     /// @param   offset   The location this control is to begin rendering
     /// @param   updateRect   The screen area this control has drawing access to
@@ -433,7 +487,12 @@ public:
     virtual void onChildRemoved( GuiControl *child );
 
     /// Called when this object is added to the scene
-    bool onAdd();
+
+      /// Called when this object is added to the scene
+      virtual bool onAdd();
+      
+      /// Called when the mProfile or mToolTipProfile is deleted
+      virtual void onDeleteNotify(SimObject *object);
 
     /// Called when this object has a new child
     virtual void onChildAdded( GuiControl *child );
@@ -465,6 +524,17 @@ public:
     /// @param   pt   Point to test
     /// @param   initialLayer  Layer of gui objects to begin the search
     virtual GuiControl* findHitControl(const Point2I &pt, S32 initialLayer = -1);
+
+      enum EHitTestFlags
+      {
+         HIT_FullBoxOnly            = BIT( 0 ),    ///< Hit only counts if all of a control's bounds are within the hit rectangle.
+         HIT_ParentPreventsChildHit = BIT( 1 ),    ///< A positive hit test on a parent control will prevent hit tests on children.
+         HIT_AddParentHits          = BIT( 2 ),    ///< Parent's that get hit should be added regardless of whether any of their children get hit, too.
+         HIT_NoCanHitNoRecurse      = BIT( 3 ),    ///< A hit-disabled control will not recurse into children.
+      };
+      
+      ///
+      virtual bool findHitControls( const RectI& rect, Vector< GuiControl* >& outResult, U32 flags = 0, S32 initialLayer = -1, U32 depth = 0 );
 
     /// Lock the mouse within the provided control
     /// @param   lockingControl   Control to lock the mouse within
@@ -505,6 +575,19 @@ public:
     virtual void onMiddleMouseDown(const GuiEvent &event);
     virtual void onMiddleMouseUp(const GuiEvent &event);
     virtual void onMiddleMouseDragged(const GuiEvent &event);
+      /// @}
+      
+      /// @name Gamepad Events
+      /// These functions are called when the input event which is in the name of
+      /// the function occurs.
+      /// @{
+      virtual bool onGamepadButtonDown(const GuiEvent &event);  ///< Default behavior is call-through to onKeyDown
+      virtual bool onGamepadButtonUp(const GuiEvent &event);    ///< Default behavior is call-through to onKeyUp
+      virtual bool onGamepadAxisUp(const GuiEvent &event);
+      virtual bool onGamepadAxisDown(const GuiEvent &event);
+      virtual bool onGamepadAxisLeft(const GuiEvent &event);
+      virtual bool onGamepadAxisRight(const GuiEvent &event);
+      virtual bool onGamepadTrigger(const GuiEvent &event);
 
     /// @}
     
@@ -599,7 +682,10 @@ public:
     /// Returns the first responder for this chain
     GuiControl *getFirstResponder() { return mFirstResponder; }
 
-    /// Occurs when the first responder for this chain is lost
+      /// Occurs when the control gains first-responder status.
+      virtual void onGainFirstResponder();
+      
+      /// Occurs when the control loses first-responder status.
     virtual void onLoseFirstResponder();
     /// @}
 
@@ -636,6 +722,22 @@ public:
     virtual bool onKeyRepeat(const GuiEvent &event);
     /// @}
 
+      /// Return the delegate used to render tooltips on this control.
+      RenderTooltipDelegate& getRenderTooltipDelegate() { return mRenderTooltipDelegate; }
+      const RenderTooltipDelegate& getRenderTooltipDelegate() const { return mRenderTooltipDelegate; }
+      
+      /// Returns our tooltip profile (and finds the profile if it hasn't been set yet)
+      GuiControlProfile* getTooltipProfile() { return mTooltipProfile; }
+      
+      /// Sets the tooltip profile for this control.
+      ///
+      /// @see GuiControlProfile
+      /// @param   prof   Tooltip profile to apply
+      void setTooltipProfile(GuiControlProfile *prof);
+      
+      /// Returns our profile (and finds the profile if it hasn't been set yet)
+      GuiControlProfile* getControlProfile() { return mProfile; }
+
     /// Sets the control profile for this control.
     ///
     /// @see GuiControlProfile
@@ -670,10 +772,19 @@ public:
     /// @note This should move into the graphics library at some point
     void renderJustifiedText(Point2I offset, Point2I extent, const char *text);
 
+      /// Returns text clipped to fit within a pixel width. The clipping 
+      /// occurs on the right side and "..." is appended.  It returns width
+      /// of the final clipped text in pixels.
+      U32 clipText( String &inOutText, U32 width ) const;
+
     void inspectPostApply();
     void inspectPreApply();
 
 };
+
+typedef GuiControl::horizSizingOptions GuiHorizontalSizing;
+typedef GuiControl::vertSizingOptions GuiVerticalSizing;
+
 /// @}
 
 #endif

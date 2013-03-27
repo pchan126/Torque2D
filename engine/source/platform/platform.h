@@ -146,18 +146,12 @@ struct Platform
     static StringTableEntry getUserHomeDirectory();
     static StringTableEntry getUserDataDirectory();
 
-    /// Window.
-    static void initWindow(const Point2I &initialSize, const char *name);
-    static void setWindowTitle( const char* title );
-    static void setWindowSize( U32 newWidth, U32 newHeight );
-    static const Point2I &getWindowSize();
-    static void setWindowSize( U32 newWidth, U32 newHeight, bool fullScreen );
-    static void closeWindow();
-    static void setWindowLocked(bool locked);
-    static void minimizeWindow();
-    static void restoreWindow();
-    static void setMouseLock(bool locked);
-    static GFXWindowTarget *createWindowTarget();
+    // Window state
+    void setWindowLocked(bool locked);
+    void minimizeWindow();
+    //const Point2I &getWindowSize();
+    void setWindowSize( U32 newWidth, U32 newHeight, bool fullScreen );
+    void closeWindow();
 
     /// GUI.
     static void AlertOK(const char *windowTitle, const char *message);

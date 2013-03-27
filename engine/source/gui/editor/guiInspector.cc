@@ -57,16 +57,16 @@ bool GuiInspector::onAdd()
 //////////////////////////////////////////////////////////////////////////
 // Handle Parent Sizing (We constrain ourself to our parents width)
 //////////////////////////////////////////////////////////////////////////
-void GuiInspector::parentResized(const Point2I &oldParentExtent, const Point2I &newParentExtent)
+void GuiInspector::parentResized(const RectI &oldParentRect, const RectI &newParentRect)
 {
    GuiControl *parent = getParent();
    if( parent && dynamic_cast<GuiScrollCtrl*>(parent) != NULL )
    {
       GuiScrollCtrl *scroll = dynamic_cast<GuiScrollCtrl*>(parent);
-      setWidth( ( newParentExtent.x - ( scroll->scrollBarThickness() + 4  ) ) );
+      setWidth( ( newParentRect.extent.x - ( scroll->scrollBarThickness() + 4  ) ) );
    }
    else
-      Parent::parentResized(oldParentExtent,newParentExtent);
+      Parent::parentResized(oldParentRect,newParentRect);
 }
 
 bool GuiInspector::findExistentGroup( StringTableEntry groupName )
@@ -260,9 +260,8 @@ GuiInspectorField::GuiInspectorField( GuiInspectorGroup* parent, SimObjectPtr<Si
    mParent     = parent;
    mTarget     = target;
    mField      = field;
-   mCanSave    = false;
    mFieldArrayIndex = NULL;
-   mBounds.set(0,0,100,18);
+   setBounds(0,0,100,18);
 
 }
 
@@ -273,8 +272,7 @@ GuiInspectorField::GuiInspectorField()
    mTarget        = NULL;
    mField         = NULL;
    mFieldArrayIndex = NULL;
-   mBounds.set(0,0,100,18);
-   mCanSave       = false;
+   setBounds(0,0,100,18);
 }
 
 GuiInspectorField::~GuiInspectorField()
@@ -389,7 +387,7 @@ void GuiInspectorField::onRender(Point2I offset, const RectI &updateRect)
    if(mCaption && mCaption[0])
    {
       // Calculate Caption Rect
-      RectI captionRect( offset , Point2I((S32) mFloor( mBounds.extent.x * (F32)( (F32)GuiInspectorField::smCaptionWidth / 100.0f ) ), (S32)mBounds.extent.y ) );
+      RectI captionRect( offset , Point2I((S32) mFloor( getWidth() * (F32)( (F32)GuiInspectorField::smCaptionWidth / 100.0f ) ), (S32)getHeight() ) );
       // Calculate Y Offset to center vertically the caption
       U32 captionYOffset = (U32)mFloor( (F32)( captionRect.extent.y - mProfile->mFont->getHeight() ) / 2 );
 
@@ -437,10 +435,10 @@ bool GuiInspectorField::onAdd()
    addObject( mEdit );
 
    // Calculate Caption Rect
-   RectI captionRect( mBounds.point , Point2I( (S32)mFloor( mBounds.extent.x * (F32)( (F32)GuiInspectorField::smCaptionWidth / 100.0 ) ), (S32)mBounds.extent.y ) );
+   RectI captionRect( getPosition() , Point2I( (S32)mFloor( getWidth() * (F32)( (F32)GuiInspectorField::smCaptionWidth / 100.0 ) ), (S32)getHeight() ) );
 
    // Calculate Edit Field Rect
-   RectI editFieldRect( Point2I( captionRect.extent.x + 1, 1 ) , Point2I( mBounds.extent.x - ( captionRect.extent.x + 5 ) , mBounds.extent.y - 1) );
+   RectI editFieldRect( Point2I( captionRect.extent.x + 1, 1 ) , Point2I( getWidth() - ( captionRect.extent.x + 5 ) , getHeight() - 1) );
 
    // Resize to fit properly in allotted space
    mEdit->resize( editFieldRect.point, editFieldRect.extent );
@@ -467,20 +465,22 @@ ConsoleMethod( GuiInspectorField, apply, void, 3,3, "(newValue) Applies the give
    object->setData( argv[2] );
 }
 
-void GuiInspectorField::resize( const Point2I &newPosition, const Point2I &newExtent )
+bool GuiInspectorField::resize( const Point2I &newPosition, const Point2I &newExtent )
 {
-   Parent::resize( newPosition, newExtent );
+   if (!Parent::resize( newPosition, newExtent ))
+       return false;
 
    if( mEdit != NULL )
    {
       // Calculate Caption Rect
-      RectI captionRect( mBounds.point , Point2I( (S32)mFloor( mBounds.extent.x * (F32)( (F32)GuiInspectorField::smCaptionWidth / 100.0f ) ), (S32)mBounds.extent.y ) );
+      RectI captionRect( getPosition() , Point2I( (S32)mFloor( getWidth() * (F32)( (F32)GuiInspectorField::smCaptionWidth / 100.0f ) ), (S32)getHeight() ) );
 
       // Calculate Edit Field Rect
-      RectI editFieldRect( Point2I( captionRect.extent.x + 1, 1 ) , Point2I( mBounds.extent.x - ( captionRect.extent.x + 5 ) , mBounds.extent.y - 1) );
+      RectI editFieldRect( Point2I( captionRect.extent.x + 1, 1 ) , Point2I( getWidth() - ( captionRect.extent.x + 5 ) , getHeight() - 1) );
 
       mEdit->resize( editFieldRect.point, editFieldRect.extent );
    }
+    return true;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -498,28 +498,27 @@ IMPLEMENT_CONOBJECT(GuiInspectorGroup);
 
 GuiInspectorGroup::GuiInspectorGroup()
 {
-   mBounds.set(0,0,200,20);
+   setBounds(0,0,200,20);
 
    mChildren.clear();
 
    mTarget              = NULL;
    mParent              = NULL;
-   mCanSave             = false;
-
+    setCanSave(false);
    // Make sure we receive our ticks.
    setProcessTicks();
 }
 
 GuiInspectorGroup::GuiInspectorGroup( SimObjectPtr<SimObject> target, StringTableEntry groupName, SimObjectPtr<GuiInspector> parent )
 {
-   mBounds.set(0,0,200,20);
+   setBounds(0,0,200,20);
 
    mChildren.clear();
 
    mCaption             = StringTable->insert(groupName);
    mTarget              = target;
    mParent              = parent;
-   mCanSave             = false;
+    setCanSave(false);
 }
 
 GuiInspectorGroup::~GuiInspectorGroup()
@@ -796,7 +795,7 @@ bool GuiInspectorDynamicGroup::createContent()
       addFieldBtn->setField("command", commandBuf);
       addFieldBtn->setSizing(horizResizeLeft,vertResizeCenter);
       //addFieldBtn->setField("buttonMargin", "2 2");
-      addFieldBtn->resize(Point2I(mBounds.extent.x - 20,2), Point2I(16, 16));
+      addFieldBtn->resize(Point2I(getWidth() - 20,2), Point2I(16, 16));
       addFieldBtn->registerObject("zAddButton");
    }
 
@@ -805,7 +804,7 @@ bool GuiInspectorDynamicGroup::createContent()
    shell->setField( "profile", "GuiTransparentProfile" );
    shell->registerObject();
 
-   shell->resize(Point2I(0,0), Point2I(mBounds.extent.x, 28));
+   shell->resize(Point2I(0,0), Point2I(getWidth(), 28));
    shell->addObject(addFieldBtn);
 
    // save off the shell control, so we can push it to the bottom of the stack in inspectGroup()
@@ -946,7 +945,7 @@ GuiInspectorDynamicField::GuiInspectorDynamicField( GuiInspectorGroup* parent, S
    mParent     = parent;
    mTarget     = target;
    mDynField   = field;
-   mBounds.set(0,0,100,20);
+   setBounds(0,0,100,20);
    mRenameCtrl = NULL;
 }
 
@@ -1076,9 +1075,9 @@ GuiControl* GuiInspectorDynamicField::constructRenameControl()
    retCtrl->setField("Validate", szBuffer );
 
    // Calculate Caption Rect (Adjust for 16 pixel wide delete button)
-   RectI captionRect( Point2I(mBounds.point.x,0) , Point2I( (S32)mFloor( mBounds.extent.x * (F32)( (F32)GuiInspectorField::smCaptionWidth / 100.0f ) ), (S32)mBounds.extent.y ) );
-   RectI valueRect(mEdit->mBounds.point, mEdit->mBounds.extent - Point2I(20, 0));
-   RectI deleteRect( Point2I( mBounds.point.x + mBounds.extent.x - 20,2), Point2I( 16, mBounds.extent.y - 4));
+   RectI captionRect( Point2I(getPosition().x,0) , Point2I( (S32)mFloor( getWidth() * (F32)( (F32)GuiInspectorField::smCaptionWidth / 100.0f ) ), (S32)getHeight() ) );
+   RectI valueRect(mEdit->getPosition(), mEdit->getExtent() - Point2I(20, 0));
+   RectI deleteRect( Point2I( getPosition().x + getWidth() - 20,2), Point2I( 16, getHeight() - 4));
    addObject( retCtrl );
 
    // Resize the name control to fit in our caption rect (tricksy!)
@@ -1106,21 +1105,23 @@ GuiControl* GuiInspectorDynamicField::constructRenameControl()
    return retCtrl;
 }
 
-void GuiInspectorDynamicField::resize( const Point2I &newPosition, const Point2I &newExtent )
+bool GuiInspectorDynamicField::resize( const Point2I &newPosition, const Point2I &newExtent )
 {
-   Parent::resize( newPosition, newExtent );
+   if (!Parent::resize( newPosition, newExtent ))
+       return false;
 
    // If we don't have a field rename control, bail!
    if( mRenameCtrl == NULL )
-      return;
+      return true;
 
    // Calculate Caption Rect
-   RectI captionRect( Point2I(mBounds.point.x,0) , Point2I( (S32)mFloor( mBounds.extent.x * (F32)( (F32)GuiInspectorField::smCaptionWidth / 100.0f ) ), (S32)mBounds.extent.y ) );
-   RectI valueRect(mEdit->mBounds.point, mEdit->mBounds.extent - Point2I(20, 0));
+   RectI captionRect( Point2I(getPosition().x,0) , Point2I( (S32)mFloor( getWidth() * (F32)( (F32)GuiInspectorField::smCaptionWidth / 100.0f ) ), (S32)getHeight() ) );
+   RectI valueRect(mEdit->getPosition(), mEdit->getExtent() - Point2I(20, 0));
 
    // Resize the edit control to fit in our caption rect (tricksy!)
    mRenameCtrl->resize( captionRect.point, captionRect.extent );
    mEdit->resize( valueRect.point, valueRect.extent);
+    return true;
 }
 
 //////////////////////////////////////////////////////////////////////////

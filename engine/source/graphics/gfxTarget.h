@@ -192,7 +192,7 @@ public:
 };
 
 typedef StrongRefPtr<GFXTarget> GFXTargetRef;
-//typedef StrongRefPtr<GFXWindowTarget> GFXWindowTargetRef;
+typedef StrongRefPtr<GFXWindowTarget> GFXWindowTargetRef;
 typedef StrongRefPtr<GFXTextureTarget> GFXTextureTargetRef;
 
 #endif // _GFXTARGET_H_

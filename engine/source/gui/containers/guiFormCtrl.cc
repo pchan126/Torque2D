@@ -27,16 +27,6 @@
 
 IMPLEMENT_CONOBJECT(GuiFormCtrl);
 
-ConsoleMethod(GuiFormCtrl, getMenuID, S32, 2, 2, "Returns the ID of the Form Menu")
-{
-   return object->getMenuBarID();
-}
-
-ConsoleMethod(GuiFormCtrl, setCaption, void, 3, 3, "setCaption(caption) - Sets the title of the Form Menu")
-{
-   object->setCaption(argv[2]);
-}
-
 GuiFormCtrl::GuiFormCtrl()
 {
    mMinExtent.set(10, 10);
@@ -184,52 +174,55 @@ U32 GuiFormCtrl::getMenuBarID()
    return 0;
 }
 
-void GuiFormCtrl::resize(const Point2I &newPosition, const Point2I &newExtent)
+bool GuiFormCtrl::resize(const Point2I &newPosition, const Point2I &newExtent)
 {
-   Parent::resize(newPosition, newExtent);
-
-   if( !mAwake || !mProfile->mBitmapArrayRects.size() )
-      return;
-
-   // Should the caption be modified because the title bar is too small?
-   S32 textWidth = mProfile->mFont->getStrWidth(mCaption);
-   S32 newTextArea = mBounds.extent.x - mThumbSize.x - mProfile->mBitmapArrayRects[4].extent.x;
-   if(newTextArea < textWidth)
-   {
-      static char buf[256];
-
-      mUseSmallCaption = true;
-      mSmallCaption = StringTable->EmptyString;
-
-      S32 strlen = dStrlen((const char*)mCaption);
-      for(S32 i=strlen; i>=0; --i)
-      {
-         dStrcpy(buf, "");
-         dStrncat(buf, (const char*)mCaption, i);
-         dStrcat(buf, "...");
-
-         textWidth = mProfile->mFont->getStrWidth(buf);
-
-         if(textWidth < newTextArea)
-         {
-            mSmallCaption = StringTable->insert(buf, true);
-            break;
-         }
-      }
-
-   } else
-   {
-      mUseSmallCaption = false;
-   }
-
-   Con::executef(this, 1, "onResize");
-
+    if( !Parent::resize(newPosition, newExtent) )
+        return false;
+    
+    if( !mAwake || !mProfile->mBitmapArrayRects.size() )
+        return false;
+    
+    // Should the caption be modified because the title bar is too small?
+    S32 textWidth = mProfile->mFont->getStrWidth(mCaption);
+    S32 newTextArea = getWidth() - mThumbSize.x - mProfile->mBitmapArrayRects[4].extent.x;
+    if(newTextArea < textWidth)
+    {
+        static char buf[256];
+        
+        mUseSmallCaption = true;
+        mSmallCaption = StringTable->insert("");
+        
+        S32 strlen = dStrlen((const char*)mCaption);
+        for(S32 i=strlen; i>=0; --i)
+        {
+            dStrcpy(buf, "");
+            dStrncat(buf, (const char*)mCaption, i);
+            dStrcat(buf, "...");
+            
+            textWidth = mProfile->mFont->getStrWidth(buf);
+            
+            if(textWidth < newTextArea)
+            {
+                mSmallCaption = StringTable->insert(buf, true);
+                break;
+            }
+        }
+        
+    } else
+    {
+        mUseSmallCaption = false;
+    }
+    
+    Con::executef(this, 1, "onResize");
+    
+    return true;
 }
+
 
 void GuiFormCtrl::onRender(Point2I offset, const RectI &updateRect)
 {
    // Fill in the control's child area
-   RectI boundsRect(offset, mBounds.extent);
+   RectI boundsRect(offset, getExtent());
    boundsRect.point.y += mThumbSize.y;
    boundsRect.extent.y -= mThumbSize.y;
 
@@ -287,7 +280,7 @@ void GuiFormCtrl::onRender(Point2I offset, const RectI &updateRect)
          mProfile->mBitmapArrayRects[4]);
 
       GFX->getDrawUtil()->setBitmapModulation((mMouseOver ? mProfile->mFontColorHL : mProfile->mFontColor));
-      renderJustifiedText(Point2I(mThumbSize.x, 0) + offset, Point2I(mBounds.extent.x - mThumbSize.x - mProfile->mBitmapArrayRects[4].extent.x, mThumbSize.y), (mUseSmallCaption ? mSmallCaption : mCaption) );
+      renderJustifiedText(Point2I(mThumbSize.x, 0) + offset, Point2I(getWidth() - mThumbSize.x - mProfile->mBitmapArrayRects[4].extent.x, mThumbSize.y), (mUseSmallCaption ? mSmallCaption : mCaption) );
 
    }
 
@@ -303,14 +296,14 @@ void GuiFormCtrl::onMouseDragged(const GuiEvent &event)
 
    Point2I deltaMousePosition = event.mousePoint - mMouseDownPosition;
 
-   Point2I newPosition = mBounds.point;
-   Point2I newExtent = mBounds.extent;
+   Point2I newPosition = getPosition();
+   Point2I newExtent = getExtent();
    if (mMouseMovingWin && parent)
    {
-      newPosition.x = getMax(0, getMin(parent->mBounds.extent.x - mBounds.extent.x, mOrigBounds.point.x + deltaMousePosition.x));
-      newPosition.y = getMax(0, getMin(parent->mBounds.extent.y - mBounds.extent.y, mOrigBounds.point.y + deltaMousePosition.y));
-      Point2I pos = parent->localToGlobalCoord(mBounds.point);
-      root->addUpdateRegion(pos, mBounds.extent);
+      newPosition.x = getMax(0, getMin(parent->getWidth() - getWidth(), mOrigBounds.point.x + deltaMousePosition.x));
+      newPosition.y = getMax(0, getMin(parent->getHeight() - getHeight(), mOrigBounds.point.y + deltaMousePosition.y));
+      Point2I pos = parent->localToGlobalCoord(getPosition());
+      root->addUpdateRegion(pos, getExtent());
       resize(newPosition, newExtent);
 
    }
@@ -353,100 +346,59 @@ void GuiFormCtrl::onMouseLeave(const GuiEvent &event)
 
 void GuiFormCtrl::onMouseDown(const GuiEvent &event)
 {
-   Point2I localClick = globalToLocalCoord(event.mousePoint);
-
-   // If we're clicking in the header then resize
-   if(localClick.y < mThumbSize.y)
-   {
-      mouseLock();
-      mDepressed = true;
-      mMouseMovingWin = mCanMove;
-
-      //update
-      setUpdate();
-   }
-
-   mOrigBounds = mBounds;
-
-   mMouseDownPosition = event.mousePoint;
-
-   ////if we clicked within the title bar
-   //if (localPoint.y < mTitleHeight)
-   //{
-   //   //if we clicked on the close button
-   //   if (mCanClose && mCloseButton.pointInRect(localPoint))
-   //   {
-   //      mPressClose = mCanClose;
-   //   }
-   //   else if (mCanMaximize && mMaximizeButton.pointInRect(localPoint))
-   //   {
-   //      mPressMaximize = mCanMaximize;
-   //   }
-   //   else if (mCanMinimize && mMinimizeButton.pointInRect(localPoint))
-   //   {
-   //      mPressMinimize = mCanMinimize;
-   //   }
-
-   //   //else we clicked within the title
-   //   else
-   //   {
-   //      mMouseMovingWin = mCanMove;
-   //      mMouseResizeWidth = false;
-   //      mMouseResizeHeight = false;
-   //   }
-   //}
-   //else
-   //{
-   //   mMouseMovingWin = false;
-
-   //   //see if we clicked on the right edge
-   //   if (mResizeWidth && (localPoint.x > mBounds.extent.x - mResizeRightWidth))
-   //   {
-   //      mMouseResizeWidth = true;
-   //   }
-
-   //   //see if we clicked on the bottom edge (as well)
-   //   if (mResizeHeight && (localPoint.y > mBounds.extent.y - mResizeBottomHeight))
-   //   {
-   //      mMouseResizeHeight = true;
-   //   }
-   //}
-
-
-   if (mMouseMovingWin )//|| mMouseResizeWidth || mMouseResizeHeight ||
-      //mPressClose || mPressMaximize || mPressMinimize)
-   {
-      mouseLock();
-   }
-   else
-   {
-
-      GuiControl *ctrl = findHitControl(localClick);
-      if (ctrl && ctrl != this)
-         ctrl->onMouseDown(event);
-
-   }
-
+    Point2I localClick = globalToLocalCoord(event.mousePoint);
+    
+    // If we're clicking in the header then resize
+    if(localClick.y < mThumbSize.y)
+    {
+        mouseLock();
+        mDepressed = true;
+        mMouseMovingWin = mCanMove;
+        
+        //update
+        setUpdate();
+    }
+    
+    mOrigBounds = getBounds();
+    
+    mMouseDownPosition = event.mousePoint;
+    
+    if (mMouseMovingWin )
+    {
+        mouseLock();
+    }
+    else
+    {
+        GuiControl *ctrl = findHitControl(localClick);
+        if (ctrl && ctrl != this)
+            ctrl->onMouseDown(event);
+    }
 }
 
 void GuiFormCtrl::onMouseUp(const GuiEvent &event)
 {
-   // Make sure we only get events we ought to be getting...
-   if (! mActive)
-      return; 
-
-   mouseUnlock();
-   setUpdate();
-
-   //mMouseMovingWin = false;
-   //mMouseResizeWidth = false;
-   //mMouseResizeHeight = false;
-
-
-   //Point2I localClick = globalToLocalCoord(event.mousePoint);
-
-   // If we're clicking in the header then resize
-   //if(localClick.y < mThumbSize.y && mDepressed)
-   //   setCollapsed(!mCollapsed);
+    // Make sure we only get events we ought to be getting...
+    if (! mActive)
+        return;
+    
+    mouseUnlock();
+    setUpdate();
+    
+//    Point2I localClick = globalToLocalCoord(event.mousePoint);
+    
+    // If we're clicking in the header then resize
+    //if(localClick.y < mThumbSize.y && mDepressed)
+    //   setCollapsed(!mCollapsed);
 }
+
+ConsoleMethod(GuiFormCtrl, getMenuID, S32, 2, 2, "Returns the ID of the Form Menu")
+{
+    return object->getMenuBarID();
+}
+
+ConsoleMethod(GuiFormCtrl, setCaption, void, 3, 3, "setCaption(caption) - Sets the title of the Form Menu")
+{
+    object->setCaption(argv[2]);
+}
+
 

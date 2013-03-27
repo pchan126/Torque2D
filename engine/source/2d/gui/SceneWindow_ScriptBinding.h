@@ -1355,5 +1355,5 @@ ConsoleMethod(SceneWindow, getIsWindowPoint, bool, 3, 4, "(X / Y) Checks if Worl
     object->sceneToWindowPoint( srcPoint, dstPoint );
 
     // Check if point is in window bounds.
-    return object->mBounds.pointInRect( Point2I( S32(mFloor(dstPoint.x)+object->mBounds.point.x), S32(mFloor(dstPoint.y)+object->mBounds.point.y )) );
+    return object->getBounds().pointInRect( Point2I( S32(mFloor(dstPoint.x)+object->getBounds().point.x), S32(mFloor(dstPoint.y)+object->getBounds().point.y )) );
 }

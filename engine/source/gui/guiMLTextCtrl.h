@@ -276,8 +276,8 @@ class GuiMLTextCtrl : public GuiControl
    void onRender(Point2I offset, const RectI &updateRect);
    void getCursorPositionAndColor(Point2I &cursorTop, Point2I &cursorBottom, ColorI &color);
    void inspectPostApply();
-   void resize(const Point2I &newPosition, const Point2I &newExtent);
-   void parentResized(const Point2I &oldParentExtent, const Point2I &newParentExtent);
+   bool resize(const Point2I &newPosition, const Point2I &newExtent);
+   void parentResized(const RectI &oldParentRect, const RectI &newParentRect);
    bool onKeyDown(const GuiEvent& event);
    void onMouseDown(const GuiEvent&);
    void onMouseDragged(const GuiEvent&);

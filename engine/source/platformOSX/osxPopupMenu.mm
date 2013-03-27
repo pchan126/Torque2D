@@ -171,12 +171,12 @@ bool PopupMenu::handleSelect(U32 command, const char *text /* = NULL */)
 
 //-----------------------------------------------------------------------------
 // Not yet implemented or no longer necessary. Will resolve in the next platform update
-void PopupMenu::showPopup(S32 x /* = -1 */, S32 y /* = -1 */)
+void PopupMenu::showPopup(GuiCanvas* canvas, S32 x /* = -1 */, S32 y /* = -1 */)
 {
     // Get the position of the cursor
     if(x < 0 || y < 0)
     {
-        Point2I p = Canvas->getCursorPos();
+        Point2I p = canvas->getCursorPos();
         x = p.x;
         y = p.y;
     }
@@ -189,7 +189,7 @@ void PopupMenu::showPopup(S32 x /* = -1 */, S32 y /* = -1 */)
 }
 
 //-----------------------------------------------------------------------------
-void PopupMenu::attachToMenuBar(S32 pos, const char *title)
+void PopupMenu::attachToMenuBar(GuiCanvas* canvas, S32 pos, const char *title)
 {
     [[mData->mController menuItem] setTitle:[NSString stringWithUTF8String:title]];
     [[mData->mController menu] setTitle:[NSString stringWithUTF8String:title]];

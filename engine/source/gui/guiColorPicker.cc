@@ -38,16 +38,14 @@ ColorF colorBlack(0.0f,0.0f,0.0f);
 ColorF colorAlpha(0.0f, 0.0f, 0.0f, 0.0f);
 ColorF colorAlphaW(1.0f, 1.0f, 1.0f, 0.0f);
 
-ColorI GuiColorPickerCtrl::mColorRange[9] = {
-   ColorI(255,255,255), // White
-   ColorI(255,0,0),     // Red
-    ColorI(255,0,255),   // Pink
-    ColorI(0,0,255),     // Blue
-    ColorI(0,255,255),   // Light blue
-    ColorI(0,255,0),     // Green
-    ColorI(255,255,0),   // Yellow
+ColorI GuiColorPickerCtrl::mColorRange[7] = {
     ColorI(255,0,0),     // Red
-   ColorI(0,0,0)        // Black
+	ColorI(255,0,255),   // Pink
+	ColorI(0,0,255),     // Blue
+	ColorI(0,255,255),   // Light blue
+	ColorI(0,255,0),     // Green
+	ColorI(255,255,0),   // Yellow
+	ColorI(255,0,0),      // Red
 };
 /// @}
 
@@ -56,7 +54,7 @@ IMPLEMENT_CONOBJECT(GuiColorPickerCtrl);
 //--------------------------------------------------------------------------
 GuiColorPickerCtrl::GuiColorPickerCtrl()
 {
-   mBounds.extent.set(140, 30);
+   setExtent(140, 30);
    mDisplayMode = pPallet;
    mBaseColor = ColorF(1.,.0,1.);
    mPickColor = ColorF(.0,.0,.0);
@@ -324,13 +322,23 @@ void GuiColorPickerCtrl::renderColorBox(RectI &bounds)
 
 void GuiColorPickerCtrl::onRender(Point2I offset, const RectI& updateRect)
 {
-   RectI boundsRect(offset, mBounds.extent); 
+    if (mStateBlock.IsNull())
+    {
+        GFXStateBlockDesc desc;
+        desc.setBlend(true, GFXBlendSrcAlpha, GFXBlendInvSrcAlpha);
+        desc.setZReadWrite(false);
+        desc.zWriteEnable = false;
+        desc.setCullMode(GFXCullNone);
+        mStateBlock = GFX->createStateBlock( desc );
+    }
+    
+    RectI boundsRect(offset, getExtent());
    renderColorBox(boundsRect);
 
    if (mPositionChanged) 
    {
       mPositionChanged = false;
-      Point2I extent = Canvas->getExtent();
+      Point2I extent = getRoot()->getExtent();
       // If we are anything but a pallete, change the pick color
       if (mDisplayMode != pPallet) 
       {
@@ -374,7 +382,7 @@ void GuiColorPickerCtrl::onRender(Point2I offset, const RectI& updateRect)
 //--------------------------------------------------------------------------
 void GuiColorPickerCtrl::setSelectorPos(const Point2I &pos)
 {
-   Point2I extent = mBounds.extent;
+   Point2I extent = getExtent();
    RectI rect;
    if (mDisplayMode != pDropperBackground) 
    {
@@ -526,33 +534,7 @@ F32 colorHue(ColorF color)
 //
 //    return position;
 //}
-
-Point2I GuiColorPickerCtrl::getSelectorPositionForColor(RectI &bounds, ColorF targetColor)
-{
-//    Point2I position(0,0);
-//
-//    switch (mDisplayMode)
-//    {
-//        case pHorizColorRange:
-//            position = getRangeBoxColorPos(bounds, false, targetColor);
-//            break;
-//        case pVertColorRange:
-//            position = getRangeBoxColorPos(bounds, true, targetColor);
-//            break;
-//
-//        case pBlendColorRange:
-//            position = getBlendBoxColorPos(bounds, targetColor);
-//            break;
-//
-//        default:
-//             Con::errorf("Display mode does not support the function: getSelectorPositionForColor().");
-//            break;
-//    }
-//
-//    return position;
-}
-
-
+ 
 //--------------------------------------------------------------------------
 void GuiColorPickerCtrl::onMouseDown(const GuiEvent &event)
 {
@@ -665,83 +647,6 @@ ConsoleMethod(GuiColorPickerCtrl, getSelectorPos, const char*, 2, 2, "() Gets th
    pos = object->getSelectorPos();
    dSprintf(temp,256,"%d %d",pos.x, pos.y); 
    return temp;
-}
-
-ConsoleMethod(GuiColorPickerCtrl, getSelectorPos2, const char*, 2, 2, "() Gets the current position of the selector\n"
-              "@return Returns the position of the selector as space-separted x,y coordinates.")
-{
-   char *temp = Con::getReturnBuffer(256);
-   Point2I pos;
-   pos = object->getSelectorPos();
-   dSprintf(temp,256,"%d %d",pos.x, pos.y); 
-   return temp;
-}
-
-ConsoleMethod(GuiColorPickerCtrl, getSelectorPosForColor, const char*, 3, 6, "(float red, float green, float blue, [float alpha = 1.0]) - Gets the selector position for the specified color."
-                                                          "The display mode must be pHorizColorRange, pVertColorRange, or pBlendColorRange.\n"
-                                                          "@param red The red value.\n"
-                                                          "@param green The green value.\n"
-                                                          "@param blue The blue value.\n"
-                                                          "@param alpha The alpha value.\n"
-              "@return Returns the position of the selector as space-separted x,y coordinates.")
-{
-    // The colors.
-    F32 red;
-    F32 green;
-    F32 blue;
-    F32 alpha = 1.0f;
-
-    // Grab the element count.
-    U32 elementCount = Utility::mGetStringElementCount(argv[2]);
-
-    // Space separated.
-    if (argc < 4)
-    {
-        // ("R G B [A]")
-        if ((elementCount == 3) || (elementCount == 4))
-        {
-            // Extract the color.
-            red   = dAtof(Utility::mGetStringElement(argv[2], 0));
-            green = dAtof(Utility::mGetStringElement(argv[2], 1));
-            blue  = dAtof(Utility::mGetStringElement(argv[2], 2));
-
-            // Grab the alpha if it's there.
-            if (elementCount > 3)
-            alpha = dAtof(Utility::mGetStringElement(argv[2], 3));
-        }
-
-        // Invalid.
-        else
-        {
-            Con::warnf("GuiColorPickerCtrl::getSelectorPosForColor() - Invalid Number of parameters!");
-            return StringTable->EmptyString;
-        }
-    }
-
-    // (R, G, B)
-    else if (argc >= 5)
-    {
-        red   = dAtof(argv[2]);
-        green = dAtof(argv[3]);
-        blue  = dAtof(argv[4]);
-
-        // Grab the alpha if it's there.
-        if (argc > 5)
-            alpha = dAtof(argv[5]);
-    }
-
-    // Invalid.
-    else
-    {
-        Con::warnf("GuiColorPickerCtrl::getSelectorPosForColor() - Invalid Number of parameters!");
-        return StringTable->EmptyString;
-    }
-
-    char *temp = Con::getReturnBuffer(256);
-    Point2I pos;
-    pos = object->getSelectorPositionForColor(object->mBounds, ColorF(red, green, blue, alpha));
-    dSprintf(temp,256,"%d %d",pos.x, pos.y); 
-    return temp;
 }
 
 ConsoleMethod(GuiColorPickerCtrl, setSelectorPos, void, 3, 3, "(\"x y\")Sets the current position of the selector"

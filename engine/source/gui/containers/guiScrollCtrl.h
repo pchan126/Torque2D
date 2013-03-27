@@ -176,7 +176,7 @@ public:
    void loadBitmapArray();
 
    void addObject(SimObject *obj);
-   void resize(const Point2I &newPosition, const Point2I &newExtent);
+   bool resize(const Point2I &newPosition, const Point2I &newExtent);
    void childResized(GuiControl *child);
    Point2I getChildPos() { return mChildPos; }
    Point2I getChildRelPos() { return mChildRelPos; };

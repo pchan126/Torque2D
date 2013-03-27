@@ -25,11 +25,12 @@
 #include "debug/profiler.h"
 #include "platform/event.h"
 #include "platform/platform.h"
-#include "platform/platformVideo.h"
 #include "gui/guiTypes.h"
 #include "gui/guiControl.h"
 #include "gui/guiCanvas.h"
 #include "game/gameInterface.h"
+
+#include "graphics/gfxInit.h"
 
 IMPLEMENT_CONOBJECT(GuiCanvas);
 
@@ -342,29 +343,11 @@ ConsoleMethod(GuiCanvas, getUseBackgroundColor, bool, 2, 2, "Gets whether the ca
 }
 
 
-ConsoleFunction( createCanvas, bool, 2, 2, "( WindowTitle ) Use the createCanvas function to initialize the canvas.\n"
-                                                                "@return Returns true on success, false on failure.\n"
-                                                                "@sa createEffectCanvas")
-{
-    AssertISV(!Canvas, "CreateCanvas: canvas has already been instantiated");
-
-    Platform::initWindow(Point2I(MIN_RESOLUTION_X, MIN_RESOLUTION_Y), argv[1]);
-    
-
-    if (!Video::getResolutionList())
-        return false;
-
-    // create the canvas, and add it to the manager
-    Canvas = new GuiCanvas();
-    Canvas->registerObject("Canvas"); // automatically adds to GuiGroup
-    return true;
-}
-
-ConsoleFunction( setCanvasTitle, void, 2, 2, "(string windowTitle) Sets the title to the provided string\n" 
+ConsoleMethod( GuiCanvas, setWindowTitle, void, 2, 2, "(string windowTitle) Sets the title to the provided string\n"
                 "@param windowTitle The desired title\n"
                 "@return No Return Value")
 {
-   Platform::setWindowTitle( argv[1] );
+   return object->setWindowTitle( argv[1] );
 }
 
 ConsoleFunction(screenShot, void, 3, 3, "(string file, string format)"
@@ -407,12 +390,27 @@ ConsoleFunction(screenShot, void, 3, 3, "(string file, string format)"
 }
 
 
-GuiCanvas::GuiCanvas():mWindowTarget(NULL)
+GuiCanvas::GuiCanvas():GuiControl(),
+                        mShowCursor(true),
+                        mMouseControl(NULL),
+                        mMouseCapturedControl(NULL),
+                        mMouseControlClicked(false),
+                        mMouseButtonDown(false),
+                        mMouseRightButtonDown(false),
+                        mMouseMiddleButtonDown(false),
+                        mLastMouseClickCount(0),
+                        mLastMouseDownTime(0),
+                        mPrevMouseTime(0),
+                        mRenderFront(false),
+                        mLeftMouseLast(false),
+                        mMiddleMouseLast(false),
+                        mRightMouseLast(false),
+                        mPlatformWindow(NULL)
 {
 #ifdef TORQUE_OS_IOS
-   mBounds.set(0, 0, IOS_DEFAULT_RESOLUTION_X, IOS_DEFAULT_RESOLUTION_Y);
+   setBounds(0, 0, IOS_DEFAULT_RESOLUTION_X, IOS_DEFAULT_RESOLUTION_Y);
 #else
-   mBounds.set(0, 0, MIN_RESOLUTION_X, MIN_RESOLUTION_Y);
+   setBounds(0, 0, MIN_RESOLUTION_X, MIN_RESOLUTION_Y);
 #endif
     
    mAwake = true;
@@ -431,14 +429,14 @@ GuiCanvas::GuiCanvas():mWindowTarget(NULL)
    mMouseRightButtonDown = false;
    mMouseMiddleButtonDown = false;
 
-   lastCursor = NULL;
-   lastCursorPt.set(0,0);
-   cursorPt.set(0,0);
+   mLastCursor = NULL;
+   mLastCursorPt.set(0,0);
+   mCursorPt.set(0,0);
 
     mLastMouseClickCount = 0;
     mLastMouseDownTime = 0;
     mPrevMouseTime = 0;
-    defaultCursor = NULL;
+    mDefaultCursor = NULL;
 
    mRenderFront = false;
 
@@ -451,10 +449,6 @@ GuiCanvas::GuiCanvas():mWindowTarget(NULL)
    mLeftMouseLast = false;
    mMiddleMouseLast = false;
    mRightMouseLast = false;
-
-   mDoubleClickWidth = Input::getDoubleClickWidth();
-   mDoubleClickHeight = Input::getDoubleClickHeight();
-   mDoubleClickTime = Input::getDoubleClickTime();
 
     /// Background color.
     mBackgroundColor.set( 0.0f, 0.0f, 0.0f, 0.0f );
@@ -480,12 +474,52 @@ void GuiCanvas::initPersistFields()
     addField("BackgroundColor", TypeColorF, Offset(mBackgroundColor, GuiCanvas), "" );
 }
 
+//------------------------------------------------------------------------------
+
 bool GuiCanvas::onAdd()
 {
+#ifndef TORQUE_OS_IOS
+    // ensure that we have a cursor
+    setCursor(dynamic_cast<GuiCursor*>(Sim::findObject("mDefaultCursor")));
+#endif
+    
+    // Enumerate things for GFX before we have an active device.
+    GFXInit::enumerateAdapters();
+    
+    // Create a device.
+    GFXAdapter *a = GFXInit::getBestAdapterChoice();
+    
+    // Do we have a global device already? (This is the site if you want
+    // to start rendering to multiple devices simultaneously)
     GFXDevice *newDevice = GFX;
+    if(newDevice == NULL)
+        newDevice = GFXInit::createDevice(a);
+    
     newDevice->setAllowRender( false );
     
-    mWindowTarget = Platform::createWindowTarget();
+    // Initialize the window...
+    GFXVideoMode vm = GFXInit::getInitialVideoMode();
+    
+    if (a && a->mType != NullDevice)
+    {
+        mPlatformWindow = WindowManager->createWindow(newDevice, vm);
+        
+		// Set a minimum on the window size so people can't break us by resizing tiny.
+		mPlatformWindow->setMinimumWindowSize(Point2I(640,480));
+        
+        // Now, we have to hook in our event callbacks so we'll get
+        // appropriate events from the window.
+        mPlatformWindow->resizeEvent .notify(this, &GuiCanvas::handleResize);
+        mPlatformWindow->appEvent    .notify(this, &GuiCanvas::handleAppEvent);
+        mPlatformWindow->displayEvent.notify(this, &GuiCanvas::handlePaintEvent);
+        mPlatformWindow->setInputController( dynamic_cast<IProcessInput*>(this) );
+    }
+    
+//    // Need to get painted, too! :)
+//    Process::notify(this, &GuiCanvas::paint, PROCESS_RENDER_ORDER);
+    
+//    // Set up the fences
+//    setupFences();
     
     // Make sure we're able to render.
     newDevice->setAllowRender( true );
@@ -495,23 +529,129 @@ bool GuiCanvas::onAdd()
     // all the event registration above?
     bool parentRet = Parent::onAdd();
     
+//    // Define the menu bar for this canvas (if any)
+//    Con::executef(this, "onCreateMenu");
+    
+#ifdef TORQUE_DEMO_PURCHASE
+    mPurchaseScreen = new PurchaseScreen;
+    mPurchaseScreen->init();
+    
+    mLastPurchaseHideTime = 0;
+#endif
+    
     return parentRet;
 }
 
 void GuiCanvas::onRemove()
 {
+#ifdef TORQUE_DEMO_PURCHASE
+    if (mPurchaseScreen && mPurchaseScreen->isAwake())
+        removeObject(mPurchaseScreen);
+#endif
+    
+//    // And the process list
+//    Process::remove(this, &GuiCanvas::paint);
+    
+//    // Destroy the menu bar for this canvas (if any)
+//    Con::executef(this, "onDestroyMenu");
+    
     Parent::onRemove();
+}
+
+void GuiCanvas::setWindowTitle(const char *newTitle)
+{
+    if (mPlatformWindow)
+        mPlatformWindow->setCaption(newTitle);
+}
+
+void GuiCanvas::handleResize( WindowId did, S32 width, S32 height )
+{
+//	if (Journal::IsPlaying() && mPlatformWindow)
+//	{
+//		mPlatformWindow->lockSize(false);
+//		mPlatformWindow->setSize(Point2I(width, height));
+//		mPlatformWindow->lockSize(true);
+//	}
+    
+    // Notify the scripts
+    if ( isMethod( "onResize" ) )
+        Con::executef( this, 3, "onResize", Con::getIntArg( width ), Con::getIntArg( height ) );
+}
+
+void GuiCanvas::handlePaintEvent(WindowId did)
+{
+    bool canRender = mPlatformWindow->isVisible() && GFX->allowRender() && !GFX->canCurrentlyRender();
+    
+//	// Do the screenshot first.
+//    if ( gScreenShot != NULL && gScreenShot->isPending() && canRender )
+//		gScreenShot->capture( this );
+//    
+//    // If the video capture is waiting for a canvas, start the capture
+//    if ( VIDCAP->isWaitingForCanvas() && canRender )
+//        VIDCAP->begin( this );
+//    
+//    // Now capture the video
+//    if ( VIDCAP->isRecording() && canRender )
+//        VIDCAP->capture();
+    
+    renderFrame(false);
+}
+
+void GuiCanvas::handleAppEvent( WindowId did, S32 event )
+{
+    // Notify script if we gain or lose focus.
+    if(event == LoseFocus)
+    {
+        if(isMethod("onLoseFocus"))
+            Con::executef(this, 1, "onLoseFocus");
+    }
+    
+    if(event == GainFocus)
+    {
+        if(isMethod("onGainFocus"))
+            Con::executef(this, 1, "onGainFocus");
+    }
+    
+    if(event == WindowClose || event == WindowDestroy)
+    {
+        
+        if(isMethod("onWindowClose"))
+        {
+            // First see if there is a method on this window to handle
+            //  it's closure
+            Con::executef(this, 1, "onWindowClose");
+        }
+        else if(Con::isFunction("onWindowClose"))
+        {
+            // otherwise check to see if there is a global function handling it
+            Con::executef(2, "onWindowClose", getIdString());
+        }
+//        else
+//        {
+//            // Else just shutdown
+//            Process::requestShutdown();
+//        }
+    }
+}
+
+Point2I GuiCanvas::getWindowSize()
+{
+    // CodeReview Asserting on this breaks previous logic
+    // and code assumptions.  It seems logical that we would
+    // handle this and return an error value rather than implementing
+    // if(!mPlatformWindow) whenever we need to call getWindowSize.
+    // This should help keep our API error free and easy to use, while
+    // cutting down on code duplication for sanity checking.  [5/5/2007 justind]
+    if( !mPlatformWindow )
+        return Point2I(-1,-1);
+    
+    return mPlatformWindow->getClientExtent();
 }
 
 //------------------------------------------------------------------------------
 void GuiCanvas::setCursor(GuiCursor *curs)
 {
-   defaultCursor = curs;
-
-   if(mShowCursor)
-   {
-       Input::setCursorState(false);
-   }
+   mDefaultCursor = curs;
 }
 
 void GuiCanvas::setCursorON(bool onOff)
@@ -524,10 +664,18 @@ void GuiCanvas::setCursorON(bool onOff)
 
 void GuiCanvas::setCursorPos(const Point2I &pt)   
 { 
-   cursorPt.x = F32(pt.x); 
-   cursorPt.y = F32(pt.y); 
-
-   Input::setCursorPos( pt.x, pt.y );
+    AssertISV(mPlatformWindow, "GuiCanvas::setCursorPos - no window present!");
+    
+    if ( mPlatformWindow->isMouseLocked() )
+    {
+        mCursorPt.x = F32( pt.x );
+        mCursorPt.y = F32( pt.y );
+    }
+    else
+    {
+        Point2I screenPt( mPlatformWindow->clientToScreen( pt ) );
+        mPlatformWindow->setCursorPosition( screenPt.x, screenPt.y );
+    }
 }
 
 void GuiCanvas::addAcceleratorKey(GuiControl *ctrl, U32 index, U32 keyCode, U32 modifier)
@@ -629,21 +777,21 @@ void GuiCanvas::processMouseMoveEvent(const MouseMoveEventInfo &event)
         //copy the modifier into the new event
         mLastEvent.modifier = event.modifier;
 
-      cursorPt.x += ( F32(event.xPos - cursorPt.x) * mPixelsPerMickey);
-      cursorPt.y += ( F32(event.yPos - cursorPt.y) * mPixelsPerMickey);
+      mCursorPt.x += ( F32(event.xPos - mCursorPt.x) * mPixelsPerMickey);
+      mCursorPt.y += ( F32(event.yPos - mCursorPt.y) * mPixelsPerMickey);
 
       // clamp the cursor to the window, or not
       if( ! Con::getBoolVariable( "$pref::Gui::noClampTorqueCursorToWindow", true ))
       {
-         cursorPt.x =(F32) getMax(0, getMin((S32)cursorPt.x, mBounds.extent.x - 1));
-         cursorPt.y = (F32)getMax(0, getMin((S32)cursorPt.y, mBounds.extent.y - 1));
+         mCursorPt.x =(F32) getMax(0, getMin((S32)mCursorPt.x, getWidth() - 1));
+         mCursorPt.y = (F32)getMax(0, getMin((S32)mCursorPt.y, getHeight() - 1));
       }
       
-        mLastEvent.mousePoint.x = S32(cursorPt.x);
-        mLastEvent.mousePoint.y = S32(cursorPt.y);
+        mLastEvent.mousePoint.x = S32(mCursorPt.x);
+        mLastEvent.mousePoint.y = S32(mCursorPt.y);
         mLastEvent.eventID = 0;
 
-      Point2F movement = mMouseDownPoint - cursorPt;
+      Point2F movement = mMouseDownPoint - mCursorPt;
       if ((mAbs((S32)movement.x) > mDoubleClickWidth) || (mAbs((S32)movement.y) > mDoubleClickHeight))
       {
          mLeftMouseLast = false;
@@ -765,33 +913,33 @@ bool GuiCanvas::processInputEvent(const InputEventInfo &event)
       if(event.objType == SI_XAXIS || event.objType == SI_YAXIS)
       {
          bool moved = false;
-         Point2I oldpt((S32)cursorPt.x, (S32)cursorPt.y);
-         Point2F pt(cursorPt.x, cursorPt.y);
+         Point2I oldpt((S32)mCursorPt.x, (S32)mCursorPt.y);
+         Point2F pt(mCursorPt.x, mCursorPt.y);
 
          if (event.objType == SI_XAXIS)
          {
             pt.x += (event.fValue * mPixelsPerMickey);
-            cursorPt.x = (F32)getMax(0, getMin((S32)pt.x, mBounds.extent.x - 1));
-            if (oldpt.x != S32(cursorPt.x))
+            mCursorPt.x = (F32)getMax(0, getMin((S32)pt.x, getWidth() - 1));
+            if (oldpt.x != S32(mCursorPt.x))
                moved = true;
          }
          else
          {
             pt.y += (event.fValue * mPixelsPerMickey);
-            cursorPt.y = (F32)getMax(0, getMin((S32)pt.y, mBounds.extent.y - 1));
-            if (oldpt.y != S32(cursorPt.y))
+            mCursorPt.y = (F32)getMax(0, getMin((S32)pt.y, getHeight() - 1));
+            if (oldpt.y != S32(mCursorPt.y))
                moved = true;
          }
          if (moved)
          {
-            mLastEvent.mousePoint.x = S32(cursorPt.x);
-            mLastEvent.mousePoint.y = S32(cursorPt.y);
+            mLastEvent.mousePoint.x = S32(mCursorPt.x);
+            mLastEvent.mousePoint.y = S32(mCursorPt.y);
             mLastEvent.eventID = 0;
 
 #ifdef	TORQUE_ALLOW_JOURNALING
             // [tom, 9/8/2006] If we're journaling, we need to update the plat cursor
             if(Game->isJournalReading())
-               Input::setCursorPos((S32)cursorPt.x, (S32)cursorPt.y);
+               Input::setCursorPos((S32)mCursorPt.x, (S32)mCursorPt.y);
 #endif	//TORQUE_ALLOW_JOURNALING
 
             if (mMouseButtonDown)
@@ -807,8 +955,8 @@ bool GuiCanvas::processInputEvent(const InputEventInfo &event)
       }
         else if ( event.objType == SI_ZAXIS )
         {
-         mLastEvent.mousePoint.x = S32( cursorPt.x );
-         mLastEvent.mousePoint.y = S32( cursorPt.y );
+         mLastEvent.mousePoint.x = S32( mCursorPt.x );
+         mLastEvent.mousePoint.y = S32( mCursorPt.y );
          mLastEvent.eventID = 0;
 
             if ( event.fValue < 0.0f )
@@ -819,10 +967,10 @@ bool GuiCanvas::processInputEvent(const InputEventInfo &event)
       else if(event.objType == SI_BUTTON)
       {
          //copy the cursor point into the event
-         mLastEvent.mousePoint.x = S32(cursorPt.x);
-         mLastEvent.mousePoint.y = S32(cursorPt.y);
+         mLastEvent.mousePoint.x = S32(mCursorPt.x);
+         mLastEvent.mousePoint.y = S32(mCursorPt.y);
          mLastEvent.eventID = 0;
-         mMouseDownPoint = cursorPt;
+         mMouseDownPoint = mCursorPt;
 
          if(event.objInst == KEY_BUTTON0) // left button
          {
@@ -1063,8 +1211,8 @@ void GuiCanvas::rootScreenTouchMove(const GuiEvent &event)
 void GuiCanvas::refreshMouseControl()
 {
    GuiEvent evt;
-   evt.mousePoint.x = S32(cursorPt.x);
-   evt.mousePoint.y = S32(cursorPt.y);
+   evt.mousePoint.x = S32(mCursorPt.x);
+   evt.mousePoint.y = S32(mCursorPt.y);
    findMouseControl(evt);
 }
 
@@ -1377,11 +1525,12 @@ void GuiCanvas::pushDialogControl(GuiControl *gui, S32 layer)
       ctrl->buildAcceleratorMap();
    }
    refreshMouseControl();
-   if(gui->mProfile && gui->mProfile->mModal)
-   {
-      Input::pushCursor(CursorManager::curArrow);
 
-   }
+    // I don't see the purpose of this, and it's causing issues when showing, for instance the
+    //  metrics dialog while in a 3d scene, causing the cursor to be shown even when the mouse
+    //  is locked [4/25/2007 justind]
+    if(gui->mProfile && gui->mProfile->mModal)
+        mPlatformWindow->getCursorController()->pushCursor(PlatformCursorController::curArrow);
 }
 
 void GuiCanvas::popDialogControl(GuiControl *gui)
@@ -1393,13 +1542,6 @@ void GuiCanvas::popDialogControl(GuiControl *gui)
    GuiControl *ctrl = NULL;
    if (gui)
    {
-      //*** DAW: For modal dialogs, reset the mouse cursor and enable the appropriate platform menus
-      if(gui->mProfile && gui->mProfile->mModal)
-      {
-         Input::popCursor();
-
-      }
-
       //make sure the gui really exists on the stack
       iterator i;
       bool found = false;
@@ -1480,8 +1622,8 @@ void GuiCanvas::mouseLock(GuiControl *lockingControl)
    if(mMouseControl && mMouseControl != mMouseCapturedControl)
    {
       GuiEvent evt;
-      evt.mousePoint.x = S32(cursorPt.x);
-      evt.mousePoint.y = S32(cursorPt.y);
+      evt.mousePoint.x = S32(mCursorPt.x);
+      evt.mousePoint.y = S32(mCursorPt.y);
 
       mMouseControl->onMouseLeave(evt);
    }
@@ -1493,8 +1635,8 @@ void GuiCanvas::mouseUnlock(GuiControl *lockingControl)
       return;
 
    GuiEvent evt;
-   evt.mousePoint.x = S32(cursorPt.x);
-   evt.mousePoint.y = S32(cursorPt.y);
+   evt.mousePoint.x = S32(mCursorPt.x);
+   evt.mousePoint.y = S32(mCursorPt.y);
 
    GuiControl * controlHit = findHitControl(evt.mousePoint);
    if(controlHit != mMouseCapturedControl)
@@ -1518,7 +1660,7 @@ void GuiCanvas::paint()
 
 void GuiCanvas::maintainSizing()
 {
-   Point2I size = Platform::getWindowSize();
+    Point2I size = getWindowSize();
 
    if(size.x == 0 || size.y == 0)
       return;
@@ -1558,7 +1700,7 @@ void GuiCanvas::renderFrame(bool preRenderOnly, bool bufferSwap /* = true */)
 #endif
 
     // Set our window as the current render target so we can see outputs.
-    GFX->setActiveRenderTarget(getWindowTarget());
+    GFX->setActiveRenderTarget(mPlatformWindow->getGFXTarget());
     
     if (!GFX->getActiveRenderTarget())
     {
@@ -1631,15 +1773,15 @@ void GuiCanvas::renderFrame(bool preRenderOnly, bool bufferSwap /* = true */)
    else if(bool(mMouseControl))
       mMouseControl->getCursor(mouseCursor, cursorVisible, mLastEvent);
 
-   Point2I cursorPos((S32)cursorPt.x, (S32)cursorPt.y);
+   Point2I cursorPos((S32)mCursorPt.x, (S32)mCursorPt.y);
    if(!mouseCursor)
-      mouseCursor = defaultCursor;
+      mouseCursor = mDefaultCursor;
 
-   if(lastCursorON && lastCursor)
+   if(lastCursorON && mLastCursor)
    {
-      Point2I spot = lastCursor->getHotSpot();
-      Point2I cext = lastCursor->getExtent();
-      Point2I pos = lastCursorPt - spot;
+      Point2I spot = mLastCursor->getHotSpot();
+      Point2I cext = mLastCursor->getExtent();
+      Point2I pos = mLastCursorPt - spot;
       addUpdateRegion(pos - Point2I(2, 2), Point2I(cext.x + 4, cext.y + 4));
    }
    if(cursorVisible && mouseCursor)
@@ -1652,8 +1794,8 @@ void GuiCanvas::renderFrame(bool preRenderOnly, bool bufferSwap /* = true */)
    }
 
     lastCursorON = cursorVisible;
-    lastCursor = mouseCursor;
-    lastCursorPt = cursorPos;
+    mLastCursor = mouseCursor;
+    mLastCursorPt = cursorPos;
 
     bool beginSceneRes = GFX->beginScene();
     if ( !beginSceneRes )
@@ -1686,39 +1828,6 @@ void GuiCanvas::renderFrame(bool preRenderOnly, bool bufferSwap /* = true */)
          contentCtrl->onRender(contentCtrl->getPosition(), updateUnion);
       }
 
-      // Tooltip resource
-      if(bool(mMouseControl))
-      {
-         U32 curTime = Platform::getRealMilliseconds();
-         if(hoverControl == mMouseControl)
-         {
-            if(hoverPositionSet || (curTime - hoverControlStart) >= (U32)hoverControl->mTipHoverTime || (curTime - hoverLeftControlTime) <= (U32)hoverControl->mTipHoverTime)
-            {
-// MM: Controls whether the tooltip tracks the mouse cursor or not.
-#if 0
-               if(!hoverPositionSet)
-               {
-                  hoverPosition = cursorPos;
-               }
-#else
-               hoverPosition = cursorPos;
-#endif
-               hoverPositionSet = mMouseControl->renderTooltip(hoverPosition);
-            }
-
-         } else
-         {
-            if(hoverPositionSet)
-            {
-               hoverLeftControlTime = curTime;
-               hoverPositionSet = false;
-            }
-            hoverControl = mMouseControl;
-            hoverControlStart = curTime;
-         }
-      }
-      //end tooltip
-
       GFX->setClipRect(updateUnion);
 
       //temp draw the mouse
@@ -1729,17 +1838,17 @@ void GuiCanvas::renderFrame(bool preRenderOnly, bool bufferSwap /* = true */)
 #pragma message ("removed")
 //         glColor4ub(255, 0, 0, 255);
 //         GLfloat vertices[] = {
-//              (GLfloat)(cursorPt.x),(GLfloat)(cursorPt.y),
-//              (GLfloat)(cursorPt.x + 2),(GLfloat)(cursorPt.y),
-//              (GLfloat)(cursorPt.x + 2),(GLfloat)(cursorPt.y + 2),
-//              (GLfloat)(cursorPt.x),(GLfloat)(cursorPt.y + 2),
+//              (GLfloat)(mCursorPt.x),(GLfloat)(mCursorPt.y),
+//              (GLfloat)(mCursorPt.x + 2),(GLfloat)(mCursorPt.y),
+//              (GLfloat)(mCursorPt.x + 2),(GLfloat)(mCursorPt.y + 2),
+//              (GLfloat)(mCursorPt.x),(GLfloat)(mCursorPt.y + 2),
 //          };
 //          glEnableClientState(GL_VERTEX_ARRAY);
 //          glVertexPointer(2, GL_FLOAT, 0, vertices);
 //          glDrawArrays(GL_LINE_LOOP, 0, 4);
 #else
 //         glColor4ub(255, 0, 0, 255);
-//         glRecti((S32)cursorPt.x, (S32)cursorPt.y, (S32)(cursorPt.x + 2), (S32)(cursorPt.y + 2));
+//         glRecti((S32)mCursorPt.x, (S32)mCursorPt.y, (S32)(mCursorPt.x + 2), (S32)(mCursorPt.y + 2));
 #endif
       }
        
@@ -1752,7 +1861,7 @@ void GuiCanvas::renderFrame(bool preRenderOnly, bool bufferSwap /* = true */)
 
       if (cursorON && mouseCursor && mShowCursor)
       {
-         Point2I pos((S32)cursorPt.x, (S32)cursorPt.y);
+         Point2I pos((S32)mCursorPt.x, (S32)mCursorPt.y);
          Point2I spot = mouseCursor->getHotSpot();
 
          pos -= spot;
@@ -1777,11 +1886,19 @@ void GuiCanvas::renderFrame(bool preRenderOnly, bool bufferSwap /* = true */)
 
 void GuiCanvas::swapBuffers()
 {
-   PROFILE_START(SwapBuffers);
-   //flip the surface
-   if(!mRenderFront)
-      Video::swapBuffers();
-   PROFILE_END();
+//   PROFILE_START(SwapBuffers);
+//   //flip the surface
+//   if(!mRenderFront)
+//      Video::swapBuffers();
+//   PROFILE_END();
+
+    AssertISV(mPlatformWindow, "GuiCanvas::swapBuffers - no window present!");
+    if(!mPlatformWindow->isVisible())
+        return;
+    
+    PROFILE_START(SwapBuffers);
+    mPlatformWindow->getGFXTarget()->present();
+    PROFILE_END();
 }
 
 void GuiCanvas::buildUpdateUnion(RectI *updateUnion)
@@ -1838,7 +1955,7 @@ void GuiCanvas::addUpdateRegion(Point2I pos, Point2I ext)
 void GuiCanvas::resetUpdateRegions()
 {
    //DEBUG - get surface width and height
-   mOldUpdateRects[0].set(mBounds.point, mBounds.extent);
+   mOldUpdateRects[0].set(getPosition(), getExtent());
    mOldUpdateRects[1] = mOldUpdateRects[0];
    mCurUpdateRect = mOldUpdateRects[0];
 }

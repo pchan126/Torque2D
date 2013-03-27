@@ -25,7 +25,7 @@
 #import "game/gameInterface.h"
 #import "gui/guiCanvas.h"
 #import "platformOSX/graphics/gfxOpenGLDevice.h"
-#include "platform/platformVideo.h"
+//#include "platform/platformVideo.h"
 
 #pragma mark ---- OSXTorqueView Implementation ----
 

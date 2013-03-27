@@ -525,7 +525,7 @@ void GuiTextListCtrl::setSize(Point2I newSize)
    }
 
    Point2I newExtent( newSize.x * mCellSize.x + mHeaderDim.x, newSize.y * mCellSize.y + mHeaderDim.y );
-   resize( mBounds.point, newExtent );
+   resize( getPosition(), newExtent );
 }
 
 void GuiTextListCtrl::clear()

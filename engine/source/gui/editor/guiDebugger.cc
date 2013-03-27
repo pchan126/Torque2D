@@ -372,11 +372,11 @@ void DbgFileView::scrollToLine(S32 lineNumber)
    S32 yOffset = (lineNumber - 1) * mCellSize.y;
 
    //see if the line is already visible
-   if (! (yOffset + mBounds.point.y >= 0 && yOffset + mBounds.point.y < parent->mBounds.extent.y - mCellSize.y))
+   if (! (yOffset + getPosition().y >= 0 && yOffset + getPosition().y < parent->getHeight() - mCellSize.y))
    {
       //reposition the control
-      S32 newYOffset = getMin(0, getMax(parent->mBounds.extent.y - mBounds.extent.y, (mCellSize.y * 4) - yOffset));
-      resize(Point2I(mBounds.point.x, newYOffset), mBounds.extent);
+      S32 newYOffset = getMin(0, getMax(parent->getHeight() - getHeight(), (mCellSize.y * 4) - yOffset));
+      resize(Point2I(getPosition().x, newYOffset), getExtent());
    }
 
    //hilite the line

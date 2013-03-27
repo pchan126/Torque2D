@@ -297,7 +297,7 @@ void GuiMLTextCtrl::onRender(Point2I offset, const RectI& updateRect)
    // draw all the text and dividerStyles
    for(Line *lwalk = mLineList; lwalk; lwalk = lwalk->next)
    {
-      RectI lineRect(offset.x, offset.y + lwalk->y, mBounds.extent.x, lwalk->height);
+      RectI lineRect(offset.x, offset.y + lwalk->y, getWidth(), lwalk->height);
 
       if(!lineRect.overlaps(updateRect))
          continue;
@@ -379,19 +379,22 @@ void GuiMLTextCtrl::inspectPostApply()
       mLineSpacingPixels = 0;
 }
 
-//--------------------------------------------------------------------------
-void GuiMLTextCtrl::resize( const Point2I& newPosition, const Point2I& newExtent )
+bool GuiMLTextCtrl::resize( const Point2I& newPosition, const Point2I& newExtent )
 {
-   Parent::resize( newPosition, newExtent );
-   //Con::executef( this, 3, "onResize", Con::getIntArg( newExtent.x ), Con::getIntArg( newExtent.y ) );
+    if( Parent::resize( newPosition, newExtent ) )
+    {
+        mDirty = true;
+        return true;
+    }
+    
+    return false;
 }
 
 //--------------------------------------------------------------------------
-void GuiMLTextCtrl::parentResized(const Point2I& oldParentExtent,
-                                  const Point2I& newParentExtent)
+void GuiMLTextCtrl::parentResized(const RectI& oldParentRect, const RectI& newParentRect)
 {
-   Parent::parentResized(oldParentExtent, newParentExtent);
-   mDirty = true;
+    Parent::parentResized(oldParentRect, newParentRect);
+    mDirty = true;
 }
 
 //--------------------------------------------------------------------------
@@ -635,7 +638,7 @@ void GuiMLTextCtrl::onMouseDown(const GuiEvent& event)
 //--------------------------------------------------------------------------
 void GuiMLTextCtrl::onMouseDragged(const GuiEvent& event)
 {
-   if (!mActive || (Canvas->getMouseLockedControl() != this))
+   if (!mActive || (getRoot()->getMouseLockedControl() != this))
       return;
 
    Atom *hitAtom = findHitAtom(globalToLocalCoord(event.mousePoint));
@@ -683,7 +686,7 @@ void GuiMLTextCtrl::onMouseDragged(const GuiEvent& event)
 //--------------------------------------------------------------------------
 void GuiMLTextCtrl::onMouseUp(const GuiEvent& event)
 {
-   if (!mActive || (Canvas->getMouseLockedControl() != this))
+   if (!mActive || (getRoot()->getMouseLockedControl() != this))
       return;
 
    mouseUnlock();
@@ -1443,7 +1446,7 @@ void GuiMLTextCtrl::reflow()
    mCurStyle->linkColor = mProfile->mFontColors[GuiControlProfile::ColorUser0];
    mCurStyle->linkColorHL = mProfile->mFontColors[GuiControlProfile::ColorUser1];
 
-   U32 width = mBounds.extent.x;
+   U32 width = getWidth();
 
    mCurLMargin = 0;
    mCurRMargin = width;
@@ -1808,7 +1811,7 @@ void GuiMLTextCtrl::reflow()
             idx = 10;
             if(!scanforchar(str, idx, '>'))
                goto textemit;
-            margin = (mBounds.extent.x * dAtoi(str + 10)) / 100;
+            margin = (getWidth() * dAtoi(str + 10)) / 100;
             mScanPos += idx + 1;
             goto setleftmargin;
          }
@@ -1839,7 +1842,7 @@ setleftmargin:
             idx = 10;
             if(!scanforchar(str, idx, '>'))
                goto textemit;
-            margin = (mBounds.extent.x * dAtoi(str + 10)) / 100;
+            margin = (getWidth() * dAtoi(str + 10)) / 100;
             mScanPos += idx + 1;
             goto setrightmargin;
          }
@@ -1938,8 +1941,8 @@ textemit:
    }
    processEmitAtoms();
    emitNewLine(mScanPos);
-   resize(mBounds.point, Point2I(mBounds.extent.x, mMaxY));
-   Con::executef( this, 3, "onResize", Con::getIntArg( mBounds.extent.x ), Con::getIntArg( mMaxY ) );
+   resize(getPosition(), Point2I(getWidth(), mMaxY));
+   Con::executef( this, 3, "onResize", Con::getIntArg( getWidth() ), Con::getIntArg( mMaxY ) );
 
    //make sure the cursor is still visible - this handles if we're a child of a scroll ctrl...
    ensureCursorOnScreen();

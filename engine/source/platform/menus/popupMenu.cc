@@ -169,13 +169,15 @@ ConsoleMethod(PopupMenu, isItemChecked, bool, 3, 3, "(pos) Checks (no pun intend
 
 //////////////////////////////////////////////////////////////////////////
 
-ConsoleMethod(PopupMenu, attachToMenuBar, void, 4, 4, "(pos, title) Attaches given menu item to menu bar\n"
+ConsoleMethod(PopupMenu, attachToMenuBar, void, 5, 5, "(GuiCanvas, pos, title) Attaches given menu item to menu bar\n"
+              "@param GuiCanvas The GuiCanvas to attach to\n"
               "@param pos The position of the desired menu item\n"
               "@param title The menu item title\n"
               "@return No return value")
 {
-   object->attachToMenuBar(dAtoi(argv[2]), argv[3]);
+    object->attachToMenuBar(dynamic_cast<GuiCanvas*>(Sim::findObject(argv[2])),dAtoi(argv[3]), argv[4]);
 }
+
 
 ConsoleMethod(PopupMenu, removeFromMenuBar, void, 2, 2, "() Removes current item from menu bar"
               "@return No return value")
@@ -185,11 +187,13 @@ ConsoleMethod(PopupMenu, removeFromMenuBar, void, 2, 2, "() Removes current item
 
 //////////////////////////////////////////////////////////////////////////
 
-ConsoleMethod(PopupMenu, showPopup, void, 2, 4, "([x, y]) Show the menu (optional: specify position)\n"
+ConsoleMethod(PopupMenu, showPopup, void, 3, 5, "(Canvas, [x, y]) Show the menu (optional: specify position)\n"
+              "@param Canvas The GuiCanvas to attach to\n"
               "@param x,y Coodinates to display menu (upper left corner)\n"
               "@return No return value.")
 {
-   S32 x = argc >= 3 ? dAtoi(argv[2]) : -1;
-   S32 y = argc >= 4 ? dAtoi(argv[3]) : -1;
-   object->showPopup(x, y);
+    GuiCanvas *pCanvas = dynamic_cast<GuiCanvas*>(Sim::findObject(argv[2]));
+    S32 x = argc >= 4 ? dAtoi(argv[3]) : -1;
+    S32 y = argc >= 5 ? dAtoi(argv[4]) : -1;
+    object->showPopup(pCanvas, x, y);
 }

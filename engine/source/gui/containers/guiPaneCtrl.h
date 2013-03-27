@@ -62,7 +62,7 @@ private:
 public:
    GuiPaneControl();
 
-   void resize(const Point2I &newPosition, const Point2I &newExtent);
+   bool resize(const Point2I &newPosition, const Point2I &newExtent);
    void onRender(Point2I offset, const RectI &updateRect);
 
    bool getCollapsed() { return mCollapsed; };

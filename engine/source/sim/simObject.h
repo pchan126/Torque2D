@@ -242,13 +242,19 @@ private:
 
     /// Flags for use in mFlags
     enum {
-        Deleted   = BIT(0),   ///< This object is marked for deletion.
-        Removed   = BIT(1),   ///< This object has been unregistered from the object system.
-        Added     = BIT(3),   ///< This object has been registered with the object system.
-        Selected  = BIT(4),   ///< This object has been marked as selected. (in editor)
-        Expanded  = BIT(5),   ///< This object has been marked as expanded. (in editor)
-        ModStaticFields  = BIT(6),    ///< The object allows you to read/modify static fields
-        ModDynamicFields = BIT(7)     ///< The object allows you to read/modify dynamic fields
+        Deleted           = BIT( 0 ),    ///< This object is marked for deletion.
+        Removed           = BIT( 1 ),    ///< This object has been unregistered from the object system.
+        Added             = BIT( 3 ),    ///< This object has been registered with the object system.
+        Selected          = BIT( 4 ),    ///< This object has been marked as selected. (in editor)
+        Expanded          = BIT( 5 ),    ///< This object has been marked as expanded. (in editor)
+        ModStaticFields   = BIT( 6 ),    ///< The object allows you to read/modify static fields
+        ModDynamicFields  = BIT( 7 ),    ///< The object allows you to read/modify dynamic fields
+        AutoDelete        = BIT( 8 ),    ///< Delete this object when the last ObjectRef is gone.
+        CannotSave        = BIT( 9 ),    ///< Object should not be saved.
+        EditorOnly        = BIT( 10 ),   ///< This object is for use by the editor only.
+        NoNameChange      = BIT( 11 ),   ///< Whether changing the name of this object is allowed.
+        Hidden            = BIT( 12 ),   ///< Object is hidden in editors.
+        Locked            = BIT( 13 ),   ///< Object is locked in editors.
     };
 
 public:
@@ -312,6 +318,9 @@ protected:
     static void freeNotify(SimObject::Notify*);  ///< Mark a Notify structure as free.
 
     /// @}
+
+    static bool _setCanSave( void* object, const char* data );
+    static const char* _getCanSave( void* object, const char* data );
 
     private:
     SimFieldDictionary *mFieldDictionary;    ///< Storage for dynamic fields.
@@ -720,6 +729,12 @@ public:
     void setExpanded(bool exp) { if(exp) mFlags.set(Expanded); else mFlags.clear(Expanded); }
     void setModDynamicFields(bool dyn) { if(dyn) mFlags.set(ModDynamicFields); else mFlags.clear(ModDynamicFields); }
     void setModStaticFields(bool sta) { if(sta) mFlags.set(ModStaticFields); else mFlags.clear(ModStaticFields); }
+
+    /// Returns boolean specifying if the object can be serialized.
+    bool getCanSave() const { return !mFlags.test( CannotSave ); }
+    
+    /// Set serialization flag.
+    virtual void setCanSave( bool val ) { if( !val ) mFlags.set( CannotSave ); else mFlags.clear( CannotSave ); }
 
     /// @}
 

@@ -69,10 +69,10 @@ void GuiProgressCtrl::onPreRender()
 
 void GuiProgressCtrl::onRender(Point2I offset, const RectI &updateRect)
 {
-   RectI ctrlRect(offset, mBounds.extent);
+   RectI ctrlRect(offset, getExtent());
 
    //draw the progress
-   S32 width = (S32)((F32)mBounds.extent.x * mProgress);
+   S32 width = (S32)((F32)getWidth() * mProgress);
    if (width > 0)
    {
       RectI progressRect = ctrlRect;

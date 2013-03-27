@@ -58,7 +58,7 @@ public:
    // Control Events
    virtual void onChildAdded(GuiControl* control);
    virtual void onChildRemoved(GuiControl* control);
-   virtual void resize(const Point2I& newPosition, const Point2I& newExtent);
+   virtual bool resize(const Point2I& newPosition, const Point2I& newExtent);
    virtual void childResized(GuiControl *child);
 
    virtual void processTick();

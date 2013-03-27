@@ -70,7 +70,7 @@ class GuiMessageVectorCtrl : public GuiControl
    void onSleep();
    void onRender(Point2I offset, const RectI &updateRect);
    void inspectPostApply();
-   void parentResized(const Point2I &oldParentExtent, const Point2I &newParentExtent);
+   void parentResized(const RectI &oldParentRect, const RectI &newParentRect);
 
    void onMouseUp(const GuiEvent &event);
    void onMouseDown(const GuiEvent &event);

@@ -297,7 +297,7 @@ S32 GuiTextEditCtrl::setCursorPos( const Point2I &offset )
       return -1;
 
    //if the cursor is too far to the right
-   if ( curX >= ctrlOffset.x + mBounds.extent.x )
+   if ( curX >= ctrlOffset.x + getWidth() )
       return -2;
 
    curX = offset.x - mTextOffset.x;
@@ -1110,15 +1110,15 @@ void GuiTextEditCtrl::onLoseFirstResponder()
 }
 
 
-void GuiTextEditCtrl::parentResized(const Point2I &oldParentExtent, const Point2I &newParentExtent)
+void GuiTextEditCtrl::parentResized(const RectI &oldParentRect, const RectI &newParentRect)
 {
-   Parent::parentResized( oldParentExtent, newParentExtent );
+   Parent::parentResized( oldParentRect, newParentRect );
    mTextOffsetReset = true;
 }
 
 void GuiTextEditCtrl::onRender(Point2I offset, const RectI & updateRect)
 {
-   RectI ctrlRect( offset, mBounds.extent );
+   RectI ctrlRect( offset, getExtent() );
 
    //if opaque, fill the update rect with the fill color
    if ( mProfile->mOpaque )
@@ -1345,7 +1345,7 @@ void GuiTextEditCtrl::drawText( const RectI &drawRect, bool isFocused )
        if ( !isFocused && mTruncateWhenUnfocused)
        {
           StringBuffer terminationString = "...";
-          S32 width = mBounds.extent.x;
+          S32 width = getWidth();
           StringBuffer truncatedBuffer = truncate(textBuffer, terminationString, width);
           const UTF16* truncatedBufferPtr = truncatedBuffer.getPtr();
           U32 finalBuffLen = truncatedBuffer.length();

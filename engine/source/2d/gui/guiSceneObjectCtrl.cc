@@ -222,7 +222,7 @@ void GuiSceneObjectCtrl::onRender(Point2I offset, const RectI& updateRect)
 {
     PROFILE_SCOPE(guiT2DObjectCtrl_onRender);
 
-   RectI ctrlRect( offset, mBounds.extent );
+   RectI ctrlRect( offset, getExtent() );
 
    // Draw Background
    if( mProfile->mOpaque )

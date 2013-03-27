@@ -40,49 +40,66 @@
 
 class GuiRolloutCtrl : public GuiTickCtrl
 {
-private:
-   typedef GuiControl Parent;
 public:
-   // Members
-   StringTableEntry       mCaption;
-   RectI                  mHeader;
-   RectI                  mExpanded;
-   RectI                  mChildRect;
-   Point2I                mMargin;
-   bool                   mIsExpanded;
-   bool                   mIsAnimating;
-   bool                   mCollapsing;
-   S32                    mAnimateDestHeight;
-   S32                    mAnimateStep;
-   S32                    mDefaultHeight;
-   bool                   mCanCollapse;
+    
+    typedef GuiControl Parent;
+    
+    // Theme Support
+    enum
+    {
+        CollapsedLeft = 0,
+        CollapsedCenter,
+        CollapsedRight,
+        TopLeftHeader,
+        TopMidHeader,
+        TopRightHeader,
+        MidPageLeft,
+        MidPageCenter,
+        MidPageRight,
+        BottomLeftHeader,
+        BottomMidHeader,
+        BottomRightHeader,
+        NumBitmaps           ///< Number of bitmaps in this array
+    };
+    
+protected:
+    
+    /// Label to display on rollout header.
+    String mCaption;
+    
+    RectI mHeader;
+    RectI mExpanded;
+    RectI mChildRect;
+    RectI mMargin;
+    bool mIsExpanded;
+    bool mIsAnimating;
+    bool mCollapsing;
+    S32 mAnimateDestHeight;
+    S32 mAnimateStep;
+    S32 mDefaultHeight;
+    
+    /// Whether the rollout can be collapsed.
+    bool mCanCollapse;
+    
+    /// Whether to hide the rollout header.
+    bool mHideHeader;
+    
+    /// Whether to automatically collapse sibling rollouts when this one
+    /// is expanded.
+    bool mAutoCollapseSiblings;
+    
+    GuiCursor*  mDefaultCursor;
+    GuiCursor*  mVertSizingCursor;
+    
+    /// Indicates whether we have a texture to render the tabs with.
+    bool mHasTexture;
+    
+    /// Array of rectangles identifying textures for rollout.
+    RectI *mBitmapBounds;
 
-   GuiCursor*  mDefaultCursor;
-   GuiCursor*  mVertSizingCursor;
+public:
 
-
-   // Theme Support
-   enum
-   {
-      CollapsedLeft = 0,
-      CollapsedCenter,
-      CollapsedRight,
-      TopLeftHeader,
-      TopMidHeader,      
-      TopRightHeader,  
-      MidPageLeft,
-      MidPageCenter,
-      MidPageRight,
-      BottomLeftHeader, 
-      BottomMidHeader,   
-      BottomRightHeader,   
-      NumBitmaps           ///< Number of bitmaps in this array
-   };
-   bool  mHasTexture;   ///< Indicates whether we have a texture to render the tabs with
-   RectI *mBitmapBounds;///< Array of rectangles identifying textures for tab book
-
-   // Constructor/Destructor/Conobject Declaration
-   GuiRolloutCtrl();
+    GuiRolloutCtrl();
    ~GuiRolloutCtrl();
    DECLARE_CONOBJECT(GuiRolloutCtrl);
 
@@ -101,7 +118,7 @@ public:
 
    // Sizing Helpers
    virtual void calculateHeights();
-   void resize( const Point2I &newPosition, const Point2I &newExtent );
+   bool resize( const Point2I &newPosition, const Point2I &newExtent );
    virtual void sizeToContents();
    inline bool isExpanded(){ return mIsExpanded; };
 

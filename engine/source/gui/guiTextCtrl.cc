@@ -116,12 +116,12 @@ bool GuiTextCtrl::onWake()
    if ( mProfile->mAutoSizeWidth )
    {
       if ( mProfile->mAutoSizeHeight )
-         resize( mBounds.point, Point2I( mFont->getStrWidth((const UTF8 *) mText ), mFont->getHeight() + 4 ) );
+         resize( getPosition(), Point2I( mFont->getStrWidth((const UTF8 *) mText ), mFont->getHeight() + 4 ) );
       else
-         resize( mBounds.point, Point2I( mFont->getStrWidth((const UTF8 *) mText ), mBounds.extent.y ) );
+         resize( getPosition(), Point2I( mFont->getStrWidth((const UTF8 *) mText ), getHeight() ) );
    }
    else if ( mProfile->mAutoSizeHeight )
-      resize( mBounds.point, Point2I( mBounds.extent.x, mFont->getHeight() + 4 ) );
+      resize( getPosition(), Point2I( getWidth(), mFont->getHeight() + 4 ) );
 
    return true;
 }
@@ -160,13 +160,13 @@ void GuiTextCtrl::setText(const char *txt)
    if (mProfile->mAutoSizeWidth)
    {
       if (mProfile->mAutoSizeHeight)
-         resize(mBounds.point, Point2I(mFont->getStrWidth((const UTF8 *)mText), mFont->getHeight() + 4));
+         resize(getPosition(), Point2I(mFont->getStrWidth((const UTF8 *)mText), mFont->getHeight() + 4));
       else
-         resize(mBounds.point, Point2I(mFont->getStrWidth((const UTF8 *)mText), mBounds.extent.y));
+         resize(getPosition(), Point2I(mFont->getStrWidth((const UTF8 *)mText), getHeight()));
    }
    else if (mProfile->mAutoSizeHeight)
    {
-      resize(mBounds.point, Point2I(mBounds.extent.x, mFont->getHeight() + 4));
+      resize(getPosition(), Point2I(getWidth(), mFont->getHeight() + 4));
    }
       
    setVariable((char*)mText);
@@ -211,17 +211,17 @@ void GuiTextCtrl::onRender(Point2I offset, const RectI &updateRect)
 	if (mTruncateWhenUnfocused)
     {
 		StringBuffer terminationString = "...";
-        S32 width = mBounds.extent.x;
+        S32 width = getWidth();
         StringBuffer truncatedBuffer = truncate(textBuffer, terminationString, width);
         const UTF8* truncatedBufferPtr = truncatedBuffer.getPtr8();
         
         GFX->getDrawUtil()->setBitmapModulation(fontColor);
-		renderJustifiedText(offset, mBounds.extent, (char*)truncatedBufferPtr);
+		renderJustifiedText(offset, getExtent(), (char*)truncatedBufferPtr);
     }
     else
     {
 		GFX->getDrawUtil()->setBitmapModulation(fontColor);
-		renderJustifiedText(offset, mBounds.extent, (char*)mText);
+		renderJustifiedText(offset, getExtent(), (char*)mText);
 	}
 
     //render the child controls

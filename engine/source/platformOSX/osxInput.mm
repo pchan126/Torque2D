@@ -26,8 +26,8 @@
 
 #pragma mark ---- Static Variables ----
 InputManager *Input::smManager = 0;
-CursorManager *Input::smCursorManager = 0;
 bool Input::smActive;
+U8             Input::smModifierKeys;
 InputEvent     Input::smInputEvent;
 
 #pragma mark ---- Input Namespace Functions ----
@@ -48,17 +48,6 @@ void Input::init()
         smManager = new osxInputManager();
 
     Input::enable();
-
-    if (!smCursorManager)
-    {
-        smCursorManager = new CursorManager();
-
-        // Add the arrow cursor to the stack
-        if (smCursorManager)
-            smCursorManager->pushCursor(CursorManager::curArrow);
-        else
-            Con::printf("Cursor Manager not enabled");
-    }
 }
 
 //--------------------------------------------------------------------------
@@ -70,14 +59,6 @@ void Input::destroy()
         delete smManager;
         smManager = NULL;
     }
-
-    if (smCursorManager)
-    {
-        smCursorManager->popCursor();
-        delete smCursorManager;
-        smCursorManager = NULL;
-    }
-
     smActive = false;
 }
 
@@ -291,66 +272,6 @@ U16 Input::getKeyCode(U16 asciiCode)
 U16 Input::getAscii(U16 keyCode, KEY_STATE keyState)
 {
     return 0;
-}
-
-//------------------------------------------------------------------------------
-// Not yet implemented. Will resolve in the next platform update
-void Input::pushCursor(S32 cursorID)
-{
-}
-
-//------------------------------------------------------------------------------
-// Not yet implemented. Will resolve in the next platform update
-void Input::popCursor()
-{
-}
-
-//-----------------------------------------------------------------------------
-// Not yet implemented. Will resolve in the next platform update
-void Input::refreshCursor()
-{
-}
-
-//------------------------------------------------------------------------------
-U32 Input::getDoubleClickTime()
-{
-    // Get system specified double click time
-    NSTimeInterval doubleInterval = [NSEvent doubleClickInterval];
-    
-    return doubleInterval * 1000;
-}
-
-//------------------------------------------------------------------------------
-S32 Input::getDoubleClickWidth()
-{
-    // this is an arbitrary value.
-    return 10;
-}
-
-//------------------------------------------------------------------------------
-S32 Input::getDoubleClickHeight()
-{
-    return getDoubleClickWidth();
-}
-
-//------------------------------------------------------------------------------
-// Not yet implemented. Will resolve in the next platform update
-void Input::setCursorPos(S32 x, S32 y)
-{
-}
-
-//-----------------------------------------------------------------------------
-// Not yet implemented. Will resolve in the next platform update
-void Input::setCursorState(bool on)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Not yet implemented. Will resolve in the next platform update
-void Input::setCursorShape(U32 cursorID)
-{
-
 }
 
 #pragma mark ---- Platform Namespace Functions ----

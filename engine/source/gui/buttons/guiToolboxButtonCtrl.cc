@@ -38,7 +38,7 @@ GuiToolboxButtonCtrl::GuiToolboxButtonCtrl()
    mLoweredBitmapName = StringTable->insert("sceneeditor/client/images/buttondown");
    mHoverBitmapName = StringTable->insert("sceneeditor/client/images/buttonup");
    mMinExtent.set( 16, 16 );
-   mBounds.extent.set(48, 48);
+   setExtent(48, 48);
    mButtonType = ButtonTypeRadio;
    mTipHoverTime = 100;
    
@@ -107,16 +107,14 @@ ConsoleMethod( GuiToolboxButtonCtrl, setHoverBitmap, void, 3, 3, "( filepath nam
 //-------------------------------------
 void GuiToolboxButtonCtrl::inspectPostApply()
 {
-   // if the extent is set to (0,0) in the gui editor and appy hit, this control will
-   // set it's extent to be exactly the size of the normal bitmap (if present)
-   Parent::inspectPostApply();
-
-   if ((mBounds.extent.x == 0) && (mBounds.extent.y == 0) && mTextureNormal)
-   {
-//      TextureObject *texture = (TextureObject *) mTextureNormal;
-      mBounds.extent.x = mTextureNormal->getBitmapWidth();
-      mBounds.extent.y = mTextureNormal->getBitmapHeight();
-   }
+    // if the extent is set to (0,0) in the gui editor and appy hit, this control will
+    // set it's extent to be exactly the size of the normal bitmap (if present)
+    Parent::inspectPostApply();
+    
+    if ((getWidth() == 0) && (getHeight() == 0) && mTextureNormal)
+    {
+        setExtent( mTextureNormal->getWidth(), mTextureNormal->getHeight());
+    }
 }
 
 
@@ -177,7 +175,7 @@ void GuiToolboxButtonCtrl::onRender(Point2I offset, const RectI& updateRect)
    // Only render the state rect (hover/down) if we're active
    if (mActive)
    {
-      RectI r(offset, mBounds.extent);
+      RectI r(offset, getExtent());
       if ( mDepressed  || mStateOn )
          renderStateRect( mTextureLowered , r );
       else if (mMouseOver) 
@@ -199,7 +197,7 @@ void GuiToolboxButtonCtrl::onRender(Point2I offset, const RectI& updateRect)
    textPos += mProfile->mTextOffset;
 
    GFX->getDrawUtil()->setBitmapModulation( mProfile->mFontColor );
-   renderJustifiedText(textPos, mBounds.extent, mButtonText);
+   renderJustifiedText(textPos, getExtent(), mButtonText);
 
 }
 
@@ -220,8 +218,8 @@ void GuiToolboxButtonCtrl::renderButton(GFXTexHandle &texture, Point2I &offset, 
    {
       Point2I finalOffset = offset;
 
-      finalOffset.x += ( ( mBounds.extent.x / 2 ) - ( texture.getWidth() / 2 ) );
-      finalOffset.y += ( ( mBounds.extent.y / 2 ) - ( texture.getHeight() / 2 ) );
+      finalOffset.x += ( ( getWidth() / 2 ) - ( texture.getWidth() / 2 ) );
+      finalOffset.y += ( ( getHeight() / 2 ) - ( texture.getHeight() / 2 ) );
 
       GFX->getDrawUtil()->clearBitmapModulation();
       GFX->getDrawUtil()->drawBitmap(texture, finalOffset);

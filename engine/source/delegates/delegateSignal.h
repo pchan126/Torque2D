@@ -663,6 +663,31 @@ class Signal<void(A,B,C,D,E,F,G,H,I,J)> : public SignalBaseT<void(A,B,C,D,E,F,G,
       }
 };
 
+// Common event callbacks definitions
+enum InputModifier {
+    IM_LALT     = (1 << 1),
+    IM_RALT     = (1 << 2),
+    IM_LSHIFT   = (1 << 3),
+    IM_RSHIFT   = (1 << 4),
+    IM_LCTRL    = (1 << 5),
+    IM_RCTRL    = (1 << 6),
+    IM_LOPT     = (1 << 7),
+    IM_ROPT     = (1 << 8),
+    IM_ALT      = IM_LALT | IM_RALT,
+    IM_SHIFT    = IM_LSHIFT | IM_RSHIFT,
+    IM_CTRL     = IM_LCTRL | IM_RCTRL,
+    IM_OPT      = IM_LOPT | IM_ROPT,
+};
+
+enum InputAction {
+    IA_MAKE     = (1 << 0),
+    IA_BREAK    = (1 << 1),
+    IA_REPEAT   = (1 << 2),
+    IA_MOVE     = (1 << 3),
+    IA_DELTA    = (1 << 4),
+    IA_BUTTON   = (1 << 5),
+};
+
 enum ApplicationMessage {
     Quit,
     WindowOpen,          ///< Window opened

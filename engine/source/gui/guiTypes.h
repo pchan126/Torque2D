@@ -68,6 +68,260 @@ struct GuiEvent
    S32		eventID;		   ///< assigns mouse or touch ID to the event
 };
 
+/// @name Docking Flag
+/// @{
+/// @brief Docking Options available to all GuiControl subclasses.
+namespace Docking
+{
+    enum DockingType
+    {
+        dockNone    = BIT(0), ///< Do not align this control to it's parent, let the control specify it's position/extent (default)
+        dockClient  = BIT(1), ///< Align this control to the client area available in the parent
+        dockTop     = BIT(2), ///< Align this control to the topmost border of it's parent (Width will be parent width)
+        dockBottom  = BIT(3), ///< Align this control to the bottommost border of it's parent (Width will be parent width)
+        dockLeft    = BIT(4), ///< Align this control to the leftmost border of it's parent (Height will be parent height)
+        dockRight   = BIT(5), ///< Align this control to the rightmost border of it's parent (Height will be parent height)
+        dockInvalid = BIT(6),     ///< Default NOT specified docking mode, this allows old sizing to takeover when needed by controls
+        dockAny     = dockClient | dockTop | dockBottom | dockLeft | dockRight
+    };
+};
+
+typedef Docking::DockingType GuiDockingType;
+//DefineEnumType( GuiDockingType );
+
+/// @}
+
+
+/// @name Margin Padding Structure
+/// @{
+struct RectSpacingI
+{
+    S32 left;
+    S32 top;
+    S32 bottom;
+    S32 right;
+    RectSpacingI() { left = right = top = bottom = 0; };
+    RectSpacingI( S32 in_top, S32 in_bottom, S32 in_left, S32 in_right )
+    {
+        top = in_top;
+        bottom = in_bottom;
+        left = in_left;
+        right = in_right;
+    }
+    void setAll( S32 value ) { left = right = top = bottom = value; };
+    void set( S32 in_top, S32 in_bottom, S32 in_left, S32 in_right )
+    {
+        top = in_top;
+        bottom = in_bottom;
+        left = in_left;
+        right = in_right;
+    }
+    void insetRect( RectI &rectRef )
+    {
+        // Inset by padding
+        rectRef.point.x += left;
+        rectRef.point.y += top;
+        rectRef.extent.x -= (left + right );
+        rectRef.extent.y -= (bottom + top );
+    }
+    void expandRect( RectI &rectRef )
+    {
+        // Inset by padding
+        rectRef.point.x -= left;
+        rectRef.point.y -= top;
+        rectRef.extent.x += (left + right );
+        rectRef.extent.y += (bottom + top );
+    }
+    
+    
+};
+
+//DECLARE_STRUCT( RectSpacingI );
+//DefineConsoleType( TypeRectSpacingI, RectSpacingI );
+/// @}
+
+/// @name Axis-Aligned Edge Structure
+/// @{
+///
+struct Edge
+{
+    Point2F normal;  ///< The Normal of this edge
+    Point2I position;///< The Position of the edge
+    Point2I extent;  ///< The X/Y extents of the edge
+    F32     margin;   ///< The Size of the edge
+    
+    Edge(): normal(0.f,0.f),
+    position(0,0),
+    extent(0,0),
+    margin(1.f){};
+    Edge( const Point2I &inPoint, const Point2F &inNormal )
+    {
+        normal = inNormal;
+        margin = 2.f;
+        
+        if( normal.x == 1.f || normal.x == -1.f )
+        {
+            // Vertical Edge
+            position.x = inPoint.x;
+            position.y = 0;
+            
+            extent.x = 1;
+            extent.y = 1;
+        }
+        else if( normal.y == 1.f || normal.y == -1.f )
+        {
+            // Horizontal Edge
+            position.y = inPoint.y;
+            position.x = 0;
+            
+            extent.x = 1;
+            extent.y = 1;
+        }
+        else
+            AssertFatal(false,"Edge point constructor cannot construct an Edge without an axis-aligned normal.");
+    }
+    
+    // Copy Constructor
+    Edge( const Edge &inEdge )
+    {
+        normal   = inEdge.normal;
+        position = inEdge.position;
+        extent   = inEdge.extent;
+        margin   = inEdge.margin;
+    }
+    
+    // RectI cast operator overload
+    operator const RectI() const
+    {
+        if( normal.x == 1.f || normal.x == -1.f )
+        {
+            // Vertical Edge
+            RectI retRect = RectI( position.x, position.y, 1, position.y + extent.y );
+            // Expand Rect by Margin along the X Axis
+            retRect.inset(-margin,0);
+            
+            return retRect;
+        }
+        else if( normal.y == 1.f || normal.y == -1.f )
+        {
+            // Horizontal Edge
+            RectI retRect =  RectI( position.x, position.y , position.x + extent.x,  1 );
+            // Expand Rect by Margin along the Y Axis
+            retRect.inset(0,-margin);
+            return retRect;
+        }
+        
+        // CodeReview this code only deals with axis-aligned edges [6/8/2007 justind]
+        AssertFatal(false,"Edge cast operator cannot construct a Rect from an Edge that is not axis-aligned.");
+        return RectI( 0,0,0,0 );
+    }
+    
+    inline bool hit( const Edge &inEdge ) const
+    {
+        const RectI thisRect = *this;
+        const RectI thatRect = inEdge;
+        
+        return thisRect.overlaps( thatRect );
+    }
+};
+/// @}
+
+
+struct EdgeRectI
+{
+    Edge left;
+    Edge top;
+    Edge bottom;
+    Edge right;
+    
+    EdgeRectI(){ }
+    
+    EdgeRectI( const RectI &inRect, F32 inMargin )
+    {
+        // Left Edge
+        left.normal    = Point2F( -1.f, 0.f );
+        left.position.x= inRect.point.x;
+        left.position.y= 0;
+        left.extent    = Point2I(inRect.point.y, inRect.point.y + inRect.extent.y);
+        left.margin    = inMargin;
+        
+        // Right Edge
+        right.normal     = Point2F( 1.f, 0.f );
+        right.position.x = inRect.point.x + inRect.extent.x;
+        right.position.y = 0;
+        right.extent     = Point2I(inRect.point.y, inRect.point.y + inRect.extent.y);
+        right.margin     = inMargin;
+        
+        // Top Edge
+        top.normal   = Point2F( 0.f, 1.f );
+        top.position.y = inRect.point.y;
+        top.position.x = 0;
+        top.extent   = Point2I(inRect.point.x + inRect.extent.x, inRect.point.x);
+        top.margin   = inMargin;
+        
+        // Bottom Edge
+        bottom.normal   = Point2F( 0.f, -1.f );
+        bottom.position.y= inRect.point.y + inRect.extent.y;
+        bottom.position.x=0;
+        bottom.extent   = Point2I(inRect.point.x + inRect.extent.x, inRect.point.x);
+        bottom.margin   = inMargin;
+    }
+    
+    // Copy constructor
+    EdgeRectI( const EdgeRectI &inEdgeRect )
+    {
+        left     = inEdgeRect.left;
+        right    = inEdgeRect.right;
+        top      = inEdgeRect.top;
+        bottom   = inEdgeRect.bottom;
+    }
+};
+
+
+/// Represents the Sizing Options for a GuiControl
+struct ControlSizing
+{
+    ControlSizing()
+    {
+        mDocking = Docking::dockInvalid;
+        mPadding.setAll( 0 );
+        mInternalPadding.setAll( 0 );
+        
+        // Default anchors to full top/left
+        mAnchorBottom  = false;
+        mAnchorLeft    = true;
+        mAnchorTop     = true;
+        mAnchorRight   = false;
+    };
+    
+    S32   mDocking; ///< Docking Flag
+    
+    RectSpacingI mPadding; ///< Padding for each side of the control to have as spacing between other controls
+    ///  For example 1,1,1,1 would mean one pixel at least of spacing between this control and the
+    ///  one next to it.
+    RectSpacingI mInternalPadding; ///< Interior Spacing of the control
+    
+    
+    /// @name Anchoring
+    /// @{
+    /// @brief Anchors are applied to @b ONLY controls that are children of any derivative of a
+    /// GuiContainer control.  Anchors are applied when a parent is resized and a child
+    /// element should be resized to accommodate the new parent extent
+    ///
+    /// Anchors are specified as true or false and control whether a certain edge of a control
+    /// will be locked to a certain edge of a parent, when the parent resizes.  Anchors are specified
+    /// as a Mask and therefore you may lock any number of edges to a parent container and when the parent
+    /// is resized, any locked edges on a control will remain the same distance from the parent edge it
+    /// is locked to, after the resize happens.
+    ///
+    bool mAnchorTop;     ///< Anchor to the Top edge of the parent when created
+    bool mAnchorBottom;  ///< Anchor to the Bottom edge of the parent when created
+    bool mAnchorLeft;    ///< Anchor to the Left edge of the parent when created
+    bool mAnchorRight;   ///< Anchor to the Right edge of the parent when created
+    /// @}
+    
+};
+
 class GuiCursor : public SimObject
 {
 private:

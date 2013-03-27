@@ -94,47 +94,6 @@ enum KEY_STATE
     STATE_GOOFY
 };
 
-//------------------------------------------------------------------------------
-/// A Singleton LIFO stack of platform cursor shapes
-///
-/// The CursorManager class manages a LIFO stack of platform cursor shapes
-/// with a standard platform cursor at the bottom, usually an Arrow Cursor.
-class CursorManager
-{
-   // todo: paxorr: make cursor manager a singleton, store in cursormanager.cc
-protected:
-    struct cursors
-    {
-        S32 mCursorID; ///< Points to a platform specific cursor ID
-    };
-
-    Vector<cursors> mCursors; ///< A Vector of Platform Cursors
-    void changeCursorShape(S32 cursorID);///< Change the Current Cursor Shape
-public:
-    enum
-    {
-        curArrow = 0,  ///< Default Cursor
-        curWait,       ///< Hourglass Cursor
-        curPlus,       ///< Arrow Plus
-        curResizeVert, ///< Resize Vertical
-        curResizeHorz, ///< Resize Horizontal
-        curResizeAll,  ///< Resize All
-        curIBeam,      ///< IBeam Used for Text Entry
-        curResizeNESW, ///< Resize NESW
-        curResizeNWSE, ///< Resize NWSE
-    };
-
-public:
-    /// Push a Cursor onto the Stack
-    /// @param   cursorID   The Cursor ID to use
-    void pushCursor(S32 cursorID);
-
-    /// Pop a Cursor from the Stack
-    void popCursor();
-
-    /// Refresh the Cursor
-    void refreshCursor();
-};
 
 //------------------------------------------------------------------------------
 
@@ -142,7 +101,6 @@ class Input
 {
 protected:
     static InputManager* smManager; ///< Input Manager Singleton
-    static CursorManager* smCursorManager; ///< Cursor Manager Singleton
     static bool smActive; ///< Is Input Active
     static bool smLastKeyboardActivated;
     static U8 smModifierKeys; ///< Current Modifier Keys Pressed
@@ -179,21 +137,8 @@ public:
     static bool isKeyboardEnabled();
 
     static void process();
-    static void setCursorPos(S32 x, S32 y);
-    static void setCursorState(bool on); ///< If True, turn on the platform's cursor
-
-    static void setCursorShape(U32 cursorID);
-
-    static void pushCursor(S32 cursorID); ///< Push a cursor shape using the Cursor Manager
-    static void popCursor(); ///< Pop the current cursor off of the Cursor Manager stack
-    static void refreshCursor(); ///< Refresh the current cursor's shape.
-
-    static U32 getDoubleClickTime();
-    static S32 getDoubleClickWidth();
-    static S32 getDoubleClickHeight();
 
     static InputManager* getManager(); ///< Return InputManager Singleton
-    static CursorManager* getCursorManager(); ///< Return CursorManager Singleton
 
     static U8 getModifierKeys() {return smModifierKeys;}
     static void setModifierKeys(U8 mod) {smModifierKeys = mod;}

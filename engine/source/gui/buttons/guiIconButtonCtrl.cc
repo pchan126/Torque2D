@@ -68,7 +68,7 @@ GuiIconButtonCtrl::GuiIconButtonCtrl()
    mErrorBitmapName = StringTable->EmptyString;
    mErrorTextureHandle = NULL;
 
-   mBounds.extent.set(140, 30);
+   setExtent(140, 30);
 }
 
 static EnumTable::Enums textLocEnums[] = 
@@ -149,14 +149,51 @@ void GuiIconButtonCtrl::inspectPostApply()
    // set it's extent to be exactly the size of the normal bitmap (if present)
    Parent::inspectPostApply();
 
-   if ((mBounds.extent.x == 0) && (mBounds.extent.y == 0) && mTextureNormal)
+   if ((getWidth() == 0) && (getHeight() == 0) && mTextureNormal)
    {
 //      TextureObject *texture = (TextureObject *) mTextureNormal;
-      mBounds.extent.x = mTextureNormal->getBitmapWidth() + 4;
-      mBounds.extent.y = mTextureNormal->getBitmapHeight() + 4;
+       Parent::inspectPostApply();
    }
 }
 
+
+void GuiIconButtonCtrl::onStaticModified(const char* slotName, const char* newValue)
+{
+    if ( isProperlyAdded() && !dStricmp(slotName, "autoSize") )
+        resize( getPosition(), getExtent() );
+}
+
+bool GuiIconButtonCtrl::resize(const Point2I &newPosition, const Point2I &newExtent)
+{
+    if ( !mAutoSize || !mProfile->mFont )
+        return Parent::resize( newPosition, newExtent );
+    
+    Point2I autoExtent( mMinExtent );
+    
+    if ( mIconLocation != IconLocNone )
+    {
+        autoExtent.y = mTextureNormal.getHeight() + mButtonMargin.y * 2;
+        autoExtent.x = mTextureNormal.getWidth() + mButtonMargin.x * 2;
+    }
+    
+    if ( mTextLocation != TextLocNone && mButtonText && mButtonText[0] )
+    {
+        U32 strWidth = mProfile->mFont->getStrWidthPrecise( mButtonText );
+        
+        if ( mTextLocation == TextLocLeft || mTextLocation == TextLocRight )
+        {
+            autoExtent.x += strWidth + mTextMargin * 2;
+        }
+        else // Top, Bottom, Center
+        {
+            strWidth += mTextMargin * 2;
+            if ( strWidth > autoExtent.x )
+                autoExtent.x = strWidth;
+        }
+    }
+    
+    return Parent::resize( newPosition, autoExtent );
+}
 
 //-------------------------------------
 void GuiIconButtonCtrl::setBitmap(const char *name)
@@ -207,7 +244,7 @@ void GuiIconButtonCtrl::renderButton( Point2I &offset, const RectI& updateRect )
    ColorI backColor   = mActive ? mProfile->mFillColor : mProfile->mFillColorNA; 
    ColorI borderColor = mActive ? mProfile->mBorderColor : mProfile->mBorderColorNA;
 
-   RectI boundsRect(offset, mBounds.extent);
+   RectI boundsRect(offset, getExtent());
 
    if (mDepressed || mStateOn)
    {
@@ -263,7 +300,7 @@ void GuiIconButtonCtrl::renderButton( Point2I &offset, const RectI& updateRect )
          Point2I textureSize( mTextureNormal->getBitmapWidth(), mTextureNormal->getBitmapHeight() );
 
          if( mIconLocation == IconLocRight )         
-            iconRect.set( offset + mBounds.extent - ( mButtonMargin + textureSize ), textureSize  );
+            iconRect.set( offset + getExtent() - ( mButtonMargin + textureSize ), textureSize  );
          else if( mIconLocation == IconLocLeft )
             iconRect.set(offset + mButtonMargin, textureSize );
 
@@ -272,7 +309,7 @@ void GuiIconButtonCtrl::renderButton( Point2I &offset, const RectI& updateRect )
       } 
       else
       {
-         RectI rect(offset + mButtonMargin, mBounds.extent - (mButtonMargin * 2) );        
+         RectI rect(offset + mButtonMargin, getExtent() - (mButtonMargin * 2) );        
          GFX->getDrawUtil()->drawBitmapStretch(mTextureNormal, rect);
       }
 
@@ -287,7 +324,7 @@ void GuiIconButtonCtrl::renderButton( Point2I &offset, const RectI& updateRect )
       if(mTextLocation == TextLocRight)
       {
 
-         Point2I start( mTextMargin, (mBounds.extent.y-mProfile->mFont->getHeight())/2 );
+         Point2I start( mTextMargin, (getHeight()-mProfile->mFont->getHeight())/2 );
          if( mTextureNormal && mIconLocation != GuiIconButtonCtrl::IconLocNone )
          {
 //            TextureObject *texture = (TextureObject *) mTextureNormal;
@@ -304,10 +341,10 @@ void GuiIconButtonCtrl::renderButton( Point2I &offset, const RectI& updateRect )
          if( mTextureNormal && mIconLocation != GuiIconButtonCtrl::IconLocNone )
          {
 //            TextureObject *texObject = (TextureObject *) mTextureNormal;
-            start.set( ( (mBounds.extent.x - textWidth - mTextureNormal->getBitmapWidth())/2) + mTextureNormal->getBitmapWidth(), (mBounds.extent.y-mProfile->mFont->getHeight())/2 );
+            start.set( ( (getWidth() - textWidth - mTextureNormal->getBitmapWidth())/2) + mTextureNormal->getBitmapWidth(), (getHeight()-mProfile->mFont->getHeight())/2 );
          }
          else
-            start.set( (mBounds.extent.x - textWidth)/2, (mBounds.extent.y-mProfile->mFont->getHeight())/2 );
+            start.set( (getWidth() - textWidth)/2, (getHeight()-mProfile->mFont->getHeight())/2 );
          GFX->getDrawUtil()->setBitmapModulation( fontColor );
          GFX->getDrawUtil()->drawText( mProfile->mFont, start + offset, mButtonText, mProfile->mFontColors );
 

@@ -64,7 +64,7 @@ public:
    };
 
 
-   void resize(const Point2I &newPosition, const Point2I &newExtent);
+   bool resize(const Point2I &newPosition, const Point2I &newExtent);
    void childResized(GuiControl *child);
    /// prevent resizing. useful when adding many items.
    void freeze(bool);

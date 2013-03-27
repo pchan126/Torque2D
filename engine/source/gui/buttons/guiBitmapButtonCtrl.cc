@@ -40,7 +40,7 @@ GuiBitmapButtonCtrl::GuiBitmapButtonCtrl()
 
    mIsLegacyVersion = true;
 
-   mBounds.extent.set(140, 30);
+   setExtent(140, 30);
 }
 
 void GuiBitmapButtonCtrl::initPersistFields()
@@ -119,11 +119,9 @@ void GuiBitmapButtonCtrl::inspectPostApply()
    // set it's extent to be exactly the size of the normal bitmap (if present)
    Parent::inspectPostApply();
 
-   if ((mBounds.extent.x == 0) && (mBounds.extent.y == 0) && mTextureNormal)
+   if ((getWidth() == 0) && (getHeight() == 0) && mTextureNormal)
    {
-//      TextureObject *texture = (TextureObject *) mTextureNormal;
-      mBounds.extent.x = mTextureNormal->getBitmapWidth();
-      mBounds.extent.y = mTextureNormal->getBitmapHeight();
+      setExtent( mTextureNormal->getBitmapWidth(), mTextureNormal->getBitmapHeight());
    }
 }
 
@@ -295,10 +293,11 @@ void GuiBitmapButtonCtrl::onRender(Point2I offset, const RectI& updateRect)
 
 void GuiBitmapButtonCtrl::renderButton(GFXTexHandle &texture, Point2I &offset, const RectI& updateRect)
 {
+   GFX->getDrawUtil()->clearBitmapModulation();
+
    if (texture)
    {
-      RectI rect(offset, mBounds.extent);
-      GFX->getDrawUtil()->clearBitmapModulation();
+      RectI rect(offset, getExtent());
       GFX->getDrawUtil()->drawBitmapStretch(texture, rect);
       renderChildControls( offset, updateRect);
    }
@@ -347,7 +346,7 @@ void GuiBitmapButtonTextCtrl::onRender(Point2I offset, const RectI& updateRect)
    }
    if (texture)
    {
-      RectI rect(offset, mBounds.extent);
+      RectI rect(offset, getExtent());
       GFX->getDrawUtil()->clearBitmapModulation();
       GFX->getDrawUtil()->drawBitmapStretch(texture, rect);
 
@@ -359,7 +358,7 @@ void GuiBitmapButtonTextCtrl::onRender(Point2I offset, const RectI& updateRect)
       textPos += mProfile->mTextOffset;
 
       GFX->getDrawUtil()->setBitmapModulation( mProfile->mFontColor );
-      renderJustifiedText(textPos, mBounds.extent, mButtonText);
+      renderJustifiedText(textPos, getExtent(), mButtonText);
 
       renderChildControls( offset, updateRect);
    }

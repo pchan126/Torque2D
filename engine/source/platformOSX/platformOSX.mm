@@ -21,7 +21,6 @@
 //-----------------------------------------------------------------------------
 
 #import "platformOSX/platformOSX.h"
-#include "platform/platformVideo.h"
 #include "game/gameInterface.h"
 
 #include "platformOSX/graphics/gfxOpenGLDevice.h"
@@ -309,7 +308,6 @@ void Platform::init()
     Con::setVariable("$Platform", "macos");
     
     // Initialize standard libraries (namespaces)
-    Video::init();
     Input::init();
     
     // Initialize OS X specific libraries and services
@@ -328,7 +326,6 @@ void Platform::process()
 void Platform::shutdown()
 {
     Input::destroy();
-    Video::destroy();
 }
 
 //-----------------------------------------------------------------------------
@@ -399,3 +396,18 @@ void Platform::outputDebugString(const char *string)
     fprintf(stderr, "\n" );
     fflush(stderr);
 }
+
+//-----------------------------------------------------------------------------
+// Launch the default OS browser. This has nothing to do with the QT browser
+bool Platform::openWebBrowser( const char* webAddress )
+{
+    NSString* convertedAddress = [NSString stringWithUTF8String:webAddress];
+    
+    bool result = [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:convertedAddress]];
+    
+    if (!result)
+        Con::errorf("Platform::openWebBrowser could not open web address:%s", webAddress);
+    
+    return result;
+}
+

@@ -19,7 +19,7 @@
 static bool smApplicationInactive = false;
 
 
-extern InputModifiers convertModifierBits( const U32 in );
+extern U32 convertModifierBits( const U32 in );
 
 
 inline U32 NSModifiersToTorqueModifiers( NSUInteger mods )
@@ -366,8 +366,8 @@ inline U32 NSModifiersToTorqueModifiers( NSUInteger mods )
     
     clickLocation.y = bounds.size.height - clickLocation.y;
     
-    // Move the cursor
-    Canvas->setCursorPos(Point2I((S32) clickLocation.x, (S32) clickLocation.y));
+//    // Move the cursor
+//    Canvas->setCursorPos(Point2I((S32) clickLocation.x, (S32) clickLocation.y));
     
     // Grab any modifiers
     U32 modifiers = 0;
@@ -386,7 +386,7 @@ inline U32 NSModifiersToTorqueModifiers( NSUInteger mods )
     torqueEvent.fValue = 1.0;
     
     // Post the input event
-    mTorqueWindow->mouseEvent.trigger(mTorqueWindow->getWindowId(), mLastMods, action, torqueKeyCode);
+//    mTorqueWindow->mouseEvent.trigger(mTorqueWindow->getWindowId(), mLastMods, action, torqueKeyCode);
 //    Game->postEvent(torqueEvent);
 }
 
@@ -436,7 +436,7 @@ inline U32 NSModifiersToTorqueModifiers( NSUInteger mods )
     torqueEvent.ascii = chars;
     
     // Post the input event
-    mTorqueWindow->keyEvent.trigger(mTorqueWindow->getWindowId(), mLastMods, action, torqueKeyCode);
+//    mTorqueWindow->keyEvent.trigger(mTorqueWindow->getWindowId(), mLastMods, action, torqueKeyCode);
 //    Game->postEvent(torqueEvent);
 }
 
@@ -519,8 +519,8 @@ inline U32 NSModifiersToTorqueModifiers( NSUInteger mods )
     U32 modifiers = 0;
     [self getModifierKey:modifiers event:event];
     
-    // Move the cursor
-    Canvas->setCursorPos(Point2I((S32) location.x, (S32) location.y));
+//    // Move the cursor
+//    Canvas->setCursorPos(Point2I((S32) location.x, (S32) location.y));
     
     // Post the event
     mTorqueWindow->mouseEvent.trigger(mTorqueWindow->getWindowId(), modifiers, (S32)location.x, (S32)location.y, mTorqueWindow->isMouseLocked());
@@ -582,7 +582,7 @@ inline U32 NSModifiersToTorqueModifiers( NSUInteger mods )
     torqueEvent.ascii = 0;
     torqueEvent.action = SI_MOVE;
     torqueEvent.fValue = deltaY;
-    Game->postEvent(torqueEvent);
+//    Game->postEvent(torqueEvent);
 }
 
 //-----------------------------------------------------------------------------

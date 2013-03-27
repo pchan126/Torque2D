@@ -226,7 +226,7 @@ GuiControl* GuiInspectorTypeFileName::constructEditControl()
 
    if( mBrowseButton != NULL )
    {
-      RectI browseRect( Point2I( ( mBounds.point.x + mBounds.extent.x) - 26, mBounds.point.y + 2), Point2I(20, mBounds.extent.y - 4) );
+      RectI browseRect( Point2I( ( getPosition().x + getWidth()) - 26, getPosition().y + 2), Point2I(20, getHeight() - 4) );
       char szBuffer[512];
       dSprintf( szBuffer, 512, "getLoadFilename(\"*.*\", \"%d.apply\", \"%s\");",getId(), getData());
       mBrowseButton->setField( "Command", szBuffer );
@@ -242,26 +242,28 @@ GuiControl* GuiInspectorTypeFileName::constructEditControl()
    return retCtrl;
 }
 
-void GuiInspectorTypeFileName::resize( const Point2I &newPosition, const Point2I &newExtent )
+bool GuiInspectorTypeFileName::resize( const Point2I &newPosition, const Point2I &newExtent )
 {
-   Parent::resize( newPosition, newExtent );
+   if (!Parent::resize( newPosition, newExtent ))
+       return false;
 
    if( mEdit != NULL )
    {
       // Calculate Caption Rect
-      RectI captionRect( mBounds.point , Point2I( (S32)mFloor( mBounds.extent.x * (F32)( (F32)GuiInspectorField::smCaptionWidth / 100.0f ) ) - 2, (S32)mBounds.extent.y ) );
+      RectI captionRect( getPosition() , Point2I( (S32)mFloor( getWidth() * (F32)( (F32)GuiInspectorField::smCaptionWidth / 100.0f ) ) - 2, (S32)getHeight() ) );
 
       // Calculate Edit Field Rect
-      RectI editFieldRect( Point2I( captionRect.extent.x + 1, 0 ) , Point2I( mBounds.extent.x - ( captionRect.extent.x + 25 ) , mBounds.extent.y ) );
+      RectI editFieldRect( Point2I( captionRect.extent.x + 1, 0 ) , Point2I( getWidth() - ( captionRect.extent.x + 25 ) , getHeight() ) );
 
       mEdit->resize( editFieldRect.point, editFieldRect.extent );
 
       if( mBrowseButton != NULL )
       {
-         RectI browseRect( Point2I( ( mBounds.point.x + mBounds.extent.x) - 26, 2), Point2I(20, mBounds.extent.y - 4) );
+         RectI browseRect( Point2I( ( getPosition().x + getWidth()) - 26, 2), Point2I(20, getHeight() - 4) );
          mBrowseButton->resize( browseRect.point, browseRect.extent );
       }
    }
+    return true;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -292,7 +294,7 @@ GuiControl* GuiInspectorTypeColor::constructEditControl()
 
    if( mBrowseButton != NULL )
    {
-      RectI browseRect( Point2I( ( mBounds.point.x + mBounds.extent.x) - 26, mBounds.point.y + 2), Point2I(20, mBounds.extent.y - 4) );
+      RectI browseRect( Point2I( ( getPosition().x + getWidth()) - 26, getPosition().y + 2), Point2I(20, getHeight() - 4) );
       char szBuffer[512];
       dSprintf( szBuffer, 512, "%s(\"%s\", \"%d.apply\");", mColorFunction, getData(), getId());
       mBrowseButton->setField( "Command", szBuffer );
@@ -308,26 +310,28 @@ GuiControl* GuiInspectorTypeColor::constructEditControl()
    return retCtrl;
 }
 
-void GuiInspectorTypeColor::resize( const Point2I &newPosition, const Point2I &newExtent )
+bool GuiInspectorTypeColor::resize( const Point2I &newPosition, const Point2I &newExtent )
 {
-   Parent::resize( newPosition, newExtent );
+   if (!Parent::resize( newPosition, newExtent ))
+       return false;
 
    if( mEdit != NULL )
    {
       // Calculate Caption Rect
-      RectI captionRect( mBounds.point , Point2I( (S32)mFloor( mBounds.extent.x * (F32)( (F32)GuiInspectorField::smCaptionWidth / 100.0f ) ) - 2, (S32)mBounds.extent.y ) );
+      RectI captionRect( getPosition() , Point2I( (S32)mFloor( getWidth() * (F32)( (F32)GuiInspectorField::smCaptionWidth / 100.0f ) ) - 2, (S32)getHeight() ) );
 
       // Calculate Edit Field Rect
-      RectI editFieldRect( Point2I( captionRect.extent.x + 1, 0 ) , Point2I( mBounds.extent.x - ( captionRect.extent.x + 25 ) , mBounds.extent.y ) );
+      RectI editFieldRect( Point2I( captionRect.extent.x + 1, 0 ) , Point2I( getWidth() - ( captionRect.extent.x + 25 ) , getHeight() ) );
 
       mEdit->resize( editFieldRect.point, editFieldRect.extent );
 
       if( mBrowseButton != NULL )
       {
-         RectI browseRect( Point2I( ( mBounds.point.x + mBounds.extent.x) - 26, 2), Point2I(20, mBounds.extent.y - 4) );
+         RectI browseRect( Point2I( ( getPosition().x + getWidth()) - 26, 2), Point2I(20, getHeight() - 4) );
          mBrowseButton->resize( browseRect.point, browseRect.extent );
       }
    }
+    return true;
 }
 
 

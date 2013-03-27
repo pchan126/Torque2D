@@ -34,25 +34,34 @@
 class GuiControlArrayControl : public GuiControl
 {
 private:
-   typedef GuiControl Parent;
-
-   S32 mCols;
-   Vector<S32> mColumnSizes;
-   S32 mRowSize;
-   S32 mRowSpacing;
-   S32 mColSpacing;
-
+    typedef GuiControl Parent;
+    
+    bool mResizing;
+    
+    S32 mCols;
+    Vector<S32> mColumnSizes;
+    S32 mRowSize;
+    S32 mRowSpacing;
+    S32 mColSpacing;
+    
 public:
-   GuiControlArrayControl();
-
-   void resize(const Point2I &newPosition, const Point2I &newExtent);
-
-   bool onWake();
-   void onSleep();
-   void inspectPostApply();
-
-   static void initPersistFields();
-   DECLARE_CONOBJECT(GuiControlArrayControl);
+    GuiControlArrayControl();
+    
+    bool resize(const Point2I &newPosition, const Point2I &newExtent);
+    
+    bool onWake();
+    void onSleep();
+    void inspectPostApply();
+    
+    bool updateArray();
+    
+    void addObject(SimObject *obj);
+    void removeObject(SimObject *obj);
+    
+    bool reOrder(SimObject* obj, SimObject* target = 0);
+    
+    static void initPersistFields();
+    DECLARE_CONOBJECT(GuiControlArrayControl);
 };
 
 #endif

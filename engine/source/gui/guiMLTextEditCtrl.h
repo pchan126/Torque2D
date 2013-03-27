@@ -49,7 +49,7 @@ class GuiMLTextEditCtrl : public GuiMLTextCtrl
    GuiMLTextEditCtrl();
    ~GuiMLTextEditCtrl();
 
-   void resize(const Point2I &newPosition, const Point2I &newExtent);
+   bool resize(const Point2I &newPosition, const Point2I &newExtent);
 
    DECLARE_CONOBJECT(GuiMLTextEditCtrl);
    static void initPersistFields();

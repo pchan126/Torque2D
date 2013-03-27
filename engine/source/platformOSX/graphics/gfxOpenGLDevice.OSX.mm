@@ -115,16 +115,16 @@ GFXOpenGLDevice::GFXOpenGLDevice( void* context) :
     mDeviceName = "OpenGL";
     mFullScreenOnly = false;
     
-    // pick a monitor to run on
-    enumMonitors();
-    
-    platState = [osxPlatState sharedPlatState];
-    
-    CGDirectDisplayID display = chooseMonitor();
-    
-    [platState setCgDisplay:display];
-    
-    enumDisplayModes(display);
+//    // pick a monitor to run on
+//    enumMonitors();
+//    
+//    platState = [osxPlatState sharedPlatState];
+//    
+//    CGDirectDisplayID display = chooseMonitor();
+//    
+//    [platState setCgDisplay:display];
+//    
+//    enumDisplayModes(display);
 }
 
 
@@ -1304,116 +1304,116 @@ GFXFormat GFXOpenGLDevice::selectSupportedFormat(   GFXTextureProfile* profile,
 //    return 0;
 //}
 
-//------------------------------------------------------------------------------
-//  Fill Vector<Resolution> mResoultionList with list of supported modes
-bool GFXOpenGLDevice::enumDisplayModes(CGDirectDisplayID display)
-{
-    mVideoModes.clear();
-    
-    // get the display, and the list of all available modes.
-    CFArrayRef modeArray = CGDisplayCopyAllDisplayModes(display, NULL);
-    
-    int len = CFArrayGetCount(modeArray);
-    
-    for(int i = 0; i < len; i++)
-    {
-        CGDisplayModeRef mode;
-        CFStringRef pixelEncoding;
-        
-        mode = (CGDisplayModeRef)CFArrayGetValueAtIndex(modeArray, i);
-        
-        // get this mode.
-        int width, height, bpp;
-        
-        // get width
-        width = CGDisplayModeGetWidth(mode);
-        
-        // get height
-        height = CGDisplayModeGetHeight(mode);
-        
-        // get bpp
-        pixelEncoding = CGDisplayModeCopyPixelEncoding(mode);
-        
-        bpp = CFStringGetIntValue(pixelEncoding);
-        
-        // add to the list
-        if (bpp != 8)
-        {
-            GFXVideoMode newRes;
-            newRes.bitDepth = bpp;
-            newRes.resolution.x = width;
-            newRes.resolution.y = height;
-            mVideoModes.push_back(newRes);
-        }
-    }
-    
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-// Unused for new OS X platform. The constructor handles initialization now
-void GFXOpenGLDevice::initDevice()
-{
-}
-
-//-----------------------------------------------------------------------------
-// This will fully clear the OpenGL context
-bool GFXOpenGLDevice::cleanUpContext()
-{
-    bool needResurrect = false;
-    
-    platState = [osxPlatState sharedPlatState];
-    
-    if ([[platState torqueView] contextInitialized])
-    {
-        if (!Video::smNeedResurrect)
-        {
-            Con::printf( "Killing the texture manager..." );
-            TEXMGR->zombify();
-//            Game->textureKill();
-            needResurrect = true;
-        }
-        
-        [[platState torqueView] clearContext];
-    }
-    
-    // clear the Resolution state, so setScreenMode() will know not to early-out.
-    smCurrentRes = GFXVideoMode();
-    
-    return needResurrect;
-}
-
-//-----------------------------------------------------------------------------
+////------------------------------------------------------------------------------
+////  Fill Vector<Resolution> mResoultionList with list of supported modes
+//bool GFXOpenGLDevice::enumDisplayModes(CGDirectDisplayID display)
+//{
+//    mVideoModes.clear();
+//    
+//    // get the display, and the list of all available modes.
+//    CFArrayRef modeArray = CGDisplayCopyAllDisplayModes(display, NULL);
+//    
+//    int len = CFArrayGetCount(modeArray);
+//    
+//    for(int i = 0; i < len; i++)
+//    {
+//        CGDisplayModeRef mode;
+//        CFStringRef pixelEncoding;
+//        
+//        mode = (CGDisplayModeRef)CFArrayGetValueAtIndex(modeArray, i);
+//        
+//        // get this mode.
+//        int width, height, bpp;
+//        
+//        // get width
+//        width = CGDisplayModeGetWidth(mode);
+//        
+//        // get height
+//        height = CGDisplayModeGetHeight(mode);
+//        
+//        // get bpp
+//        pixelEncoding = CGDisplayModeCopyPixelEncoding(mode);
+//        
+//        bpp = CFStringGetIntValue(pixelEncoding);
+//        
+//        // add to the list
+//        if (bpp != 8)
+//        {
+//            GFXVideoMode newRes;
+//            newRes.bitDepth = bpp;
+//            newRes.resolution.x = width;
+//            newRes.resolution.y = height;
+//            mVideoModes.push_back(newRes);
+//        }
+//    }
+//    
+//    return true;
+//}
 //
-bool GFXOpenGLDevice::activate( U32 width, U32 height, U32 bpp, bool fullScreen )
-{
-    Con::printf( " OpenGLDevice activating..." );
-    
-    // gets opengl rendering capabilities of the screen pointed to by platState.hDisplay
-    // sets up dgl with the capabilities info, & reports opengl status.
-    //    getGLCapabilities();
-    
-    // Create the window or capture fullscreen
-    if(!setScreenMode(width, height, bpp, fullScreen, true, false))
-        return false;
-    
-    
-    // set the displayDevice pref to "OpenGL"
-    Con::setVariable( "$pref::Video::displayDevice", mDeviceName );
-    
-    // set vertical sync now because it doesnt need setting every time we setScreenMode()
-    setVerticalSync( !Con::getBoolVariable( "$pref::Video::disableVerticalSync" ));
-    
-    return true;
-}
+////-----------------------------------------------------------------------------
+//// Unused for new OS X platform. The constructor handles initialization now
+//void GFXOpenGLDevice::initDevice()
+//{
+//}
 
+////-----------------------------------------------------------------------------
+//// This will fully clear the OpenGL context
+//bool GFXOpenGLDevice::cleanUpContext()
+//{
+//    bool needResurrect = false;
+//    
+//    platState = [osxPlatState sharedPlatState];
+//    
+//    if ([[platState torqueView] contextInitialized])
+//    {
+////        if (!Video::smNeedResurrect)
+////        {
+////            Con::printf( "Killing the texture manager..." );
+////            TEXMGR->zombify();
+//////            Game->textureKill();
+////            needResurrect = true;
+////        }
+//        
+//        [[platState torqueView] clearContext];
+//    }
+//    
+//    // clear the Resolution state, so setScreenMode() will know not to early-out.
+//    smCurrentRes = GFXVideoMode();
+//    
+//    return needResurrect;
+//}
+
+////-----------------------------------------------------------------------------
+////
+//bool GFXOpenGLDevice::activate( U32 width, U32 height, U32 bpp, bool fullScreen )
+//{
+//    Con::printf( " OpenGLDevice activating..." );
+//    
+//    // gets opengl rendering capabilities of the screen pointed to by platState.hDisplay
+//    // sets up dgl with the capabilities info, & reports opengl status.
+//    //    getGLCapabilities();
+//    
+//    // Create the window or capture fullscreen
+//    if(!setScreenMode(width, height, bpp, fullScreen, true, false))
+//        return false;
+//    
+//    
+//    // set the displayDevice pref to "OpenGL"
+//    Con::setVariable( "$pref::Video::displayDevice", mDeviceName );
+//    
+//    // set vertical sync now because it doesnt need setting every time we setScreenMode()
+//    setVerticalSync( !Con::getBoolVariable( "$pref::Video::disableVerticalSync" ));
+//    
+//    return true;
+//}
+//
 //-----------------------------------------------------------------------------
 
-void GFXOpenGLDevice::shutdown()
-{
-    Con::printf( "Shutting down the OpenGL display device..." );
-    cleanUpContext();
-}
+//void GFXOpenGLDevice::shutdown()
+//{
+//    Con::printf( "Shutting down the OpenGL display device..." );
+//    cleanUpContext();
+//}
 
 //-----------------------------------------------------------------------------
 
@@ -1479,225 +1479,225 @@ NSOpenGLPixelFormat* generateValidPixelFormat(bool fullscreen, U32 bpp, U32 samp
 
 //-----------------------------------------------------------------------------
 
-bool GFXOpenGLDevice::setScreenMode( U32 width, U32 height, U32 bpp, bool fullScreen, bool forceIt, bool repaint )
-{
-    // Print to the console that we are setting the screen mode
-    Con::printf(" set screen mode %i x %i x %i, %s, %s, %s",width, height, bpp,
-                fullScreen  ? "fullscreen" : "windowed",
-                forceIt     ? "force it" : "dont force it",
-                repaint     ? "repaint"  : "dont repaint");
-    
-    bool needResurrect = cleanUpContext();
-    
-    // Get the global OSX platform state
-    osxPlatState * platState = [osxPlatState sharedPlatState];
-    
-    // Validation, early outs
-    // Sanity check. Some scripts are liable to pass in bad values.
-    if (!bpp)
-        bpp = [platState desktopBitsPixel];
-    
-    GFXVideoMode newRes;
-    newRes.bitDepth = bpp;
-    newRes.resolution.x = width;
-    newRes.resolution.y = height;
-    
-    // If no values changing and we're not forcing a change, kick out. prevents thrashing.
-    if (!forceIt && smCurrentRes.fullScreen == fullScreen && smCurrentRes == newRes)
-        return true;
-    
-    // Create a pixel format to be used with the context
-    NSOpenGLPixelFormat* pixelFormat = generateValidPixelFormat(fullScreen, bpp, 0);
-    
-    if (!pixelFormat)
-    {
-        Con::printf("GFXOpenGLDevice::setScreenMode error: No OpenGL pixel format");
-        return false;
-    }
-    
-    if (fullScreen)
-    {
-        NSRect mainDisplayRect = [[NSScreen mainScreen] frame];
-        
-        newRes.resolution.x = mainDisplayRect.size.width;
-        newRes.resolution.y = mainDisplayRect.size.height;
-        
-        [[platState window] setFrame:mainDisplayRect display:YES];
-        
-        [[platState window] setLevel:NSMainMenuWindowLevel+1];
-        
-        [[platState torqueView] setFrame:mainDisplayRect];
-    }
-    else
-    {
-        [platState setWindowSize:newRes.resolution.x height:newRes.resolution.y];
-    }
-    
-    [[platState torqueView] createContextWithPixelFormat:pixelFormat];
-    
-    initGenericShaders();
-
-    // clear out garbage from the gl window.
-    glClearColor(0,0,0,1);
-    glClear(GL_COLOR_BUFFER_BIT );
-    
-    // set opengl options & other options ---------------------------------------
-    // ensure data is packed tightly in memory. this defaults to 4.
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    
-    // TODO: set gl arb multisample enable & hint
-    //dglSetFSAASamples(gFSAASamples);
-    
-    // update smIsFullScreen and pref
-    smCurrentRes.fullScreen = fullScreen;
-    
-    Con::setBoolVariable( "$pref::Video::fullScreen", smCurrentRes.fullScreen );
-    
-    // save resolution
-    smCurrentRes = newRes;
-    
-    // save resolution to prefs
-    char buf[32];
-    if (fullScreen)
-    {
-        dSprintf( buf, sizeof(buf), "%d %d %d", newRes.resolution.x, newRes.resolution.y, newRes.bitDepth);
-        Con::setVariable("$pref::Video::resolution", buf);
-    }
-    else
-    {
-        dSprintf( buf, sizeof(buf), "%d %d", newRes.resolution.x, newRes.resolution.y);
-        Con::setVariable("$pref::Video::windowedRes", buf);
-    }
-    
-    if (needResurrect)
-    {
-        // Reload the textures gl names
-        Con::printf( "Resurrecting the texture manager..." );
-        TEXMGR->resurrect();
-//        Game->textureResurrect();
-    }
-    
-    if( repaint )
-        Con::evaluate( "resetCanvas();" );
-    
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-
-void GFXOpenGLDevice::swapBuffers()
-{
-    if ([[platState torqueView] contextInitialized])
-        [[platState torqueView] flushBuffer];
-    
-    //#if defined(TORQUE_DEBUG)
-    //    if (gOutlineEnabled)
-    //        glClear(GL_COLOR_BUFFER_BIT);
-    //#endif
-    
-}
-
-//-----------------------------------------------------------------------------
-
-const char* GFXOpenGLDevice::getDriverInfo()
-{
-    // Prepare some driver info for the console:
-    const char* vendorString   = (const char*) glGetString( GL_VENDOR );
-    const char* rendererString = (const char*) glGetString( GL_RENDERER );
-    const char* versionString  = (const char*) glGetString( GL_VERSION );
-    const char* extensionsString = (const char*) glGetString( GL_EXTENSIONS );
-    
-    U32 bufferLen = ( vendorString ? dStrlen( vendorString ) : 0 )
-    + ( rendererString ? dStrlen( rendererString ) : 0 )
-    + ( versionString  ? dStrlen( versionString ) : 0 )
-    + ( extensionsString ? dStrlen( extensionsString ) : 0 )
-    + 4;
-    
-    char* returnString = Con::getReturnBuffer( bufferLen );
-    dSprintf( returnString, bufferLen, "%s\t%s\t%s\t%s",
-             ( vendorString ? vendorString : "" ),
-             ( rendererString ? rendererString : "" ),
-             ( versionString ? versionString : "" ),
-             ( extensionsString ? extensionsString : "" ) );
-    
-    return( returnString );
-}
-
-//-----------------------------------------------------------------------------
-#pragma message ("GFXOpenGLDevice::getGammaCorrection not yet implemented")
-bool GFXOpenGLDevice::getGammaCorrection(F32 &g)
-{
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-#pragma message ("GFXOpenGLDevice::setGammaCorrection not yet implemented")
-bool GFXOpenGLDevice::setGammaCorrection(F32 g)
-{
-    return false;
-}
+//bool GFXOpenGLDevice::setScreenMode( U32 width, U32 height, U32 bpp, bool fullScreen, bool forceIt, bool repaint )
+//{
+//    // Print to the console that we are setting the screen mode
+//    Con::printf(" set screen mode %i x %i x %i, %s, %s, %s",width, height, bpp,
+//                fullScreen  ? "fullscreen" : "windowed",
+//                forceIt     ? "force it" : "dont force it",
+//                repaint     ? "repaint"  : "dont repaint");
+//    
+//    bool needResurrect = cleanUpContext();
+//    
+//    // Get the global OSX platform state
+//    osxPlatState * platState = [osxPlatState sharedPlatState];
+//    
+//    // Validation, early outs
+//    // Sanity check. Some scripts are liable to pass in bad values.
+//    if (!bpp)
+//        bpp = [platState desktopBitsPixel];
+//    
+//    GFXVideoMode newRes;
+//    newRes.bitDepth = bpp;
+//    newRes.resolution.x = width;
+//    newRes.resolution.y = height;
+//    
+//    // If no values changing and we're not forcing a change, kick out. prevents thrashing.
+//    if (!forceIt && smCurrentRes.fullScreen == fullScreen && smCurrentRes == newRes)
+//        return true;
+//    
+//    // Create a pixel format to be used with the context
+//    NSOpenGLPixelFormat* pixelFormat = generateValidPixelFormat(fullScreen, bpp, 0);
+//    
+//    if (!pixelFormat)
+//    {
+//        Con::printf("GFXOpenGLDevice::setScreenMode error: No OpenGL pixel format");
+//        return false;
+//    }
+//    
+//    if (fullScreen)
+//    {
+//        NSRect mainDisplayRect = [[NSScreen mainScreen] frame];
+//        
+//        newRes.resolution.x = mainDisplayRect.size.width;
+//        newRes.resolution.y = mainDisplayRect.size.height;
+//        
+//        [[platState window] setFrame:mainDisplayRect display:YES];
+//        
+//        [[platState window] setLevel:NSMainMenuWindowLevel+1];
+//        
+//        [[platState torqueView] setFrame:mainDisplayRect];
+//    }
+//    else
+//    {
+//        [platState setWindowSize:newRes.resolution.x height:newRes.resolution.y];
+//    }
+//    
+//    [[platState torqueView] createContextWithPixelFormat:pixelFormat];
+//    
+//    initGenericShaders();
+//
+//    // clear out garbage from the gl window.
+//    glClearColor(0,0,0,1);
+//    glClear(GL_COLOR_BUFFER_BIT );
+//    
+//    // set opengl options & other options ---------------------------------------
+//    // ensure data is packed tightly in memory. this defaults to 4.
+//    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+//    
+//    // TODO: set gl arb multisample enable & hint
+//    //dglSetFSAASamples(gFSAASamples);
+//    
+//    // update smIsFullScreen and pref
+//    smCurrentRes.fullScreen = fullScreen;
+//    
+//    Con::setBoolVariable( "$pref::Video::fullScreen", smCurrentRes.fullScreen );
+//    
+//    // save resolution
+//    smCurrentRes = newRes;
+//    
+//    // save resolution to prefs
+//    char buf[32];
+//    if (fullScreen)
+//    {
+//        dSprintf( buf, sizeof(buf), "%d %d %d", newRes.resolution.x, newRes.resolution.y, newRes.bitDepth);
+//        Con::setVariable("$pref::Video::resolution", buf);
+//    }
+//    else
+//    {
+//        dSprintf( buf, sizeof(buf), "%d %d", newRes.resolution.x, newRes.resolution.y);
+//        Con::setVariable("$pref::Video::windowedRes", buf);
+//    }
+//    
+//    if (needResurrect)
+//    {
+//        // Reload the textures gl names
+//        Con::printf( "Resurrecting the texture manager..." );
+//        TEXMGR->resurrect();
+////        Game->textureResurrect();
+//    }
+//    
+//    if( repaint )
+//        Con::evaluate( "resetCanvas();" );
+//    
+//    return true;
+//}
+//
+////-----------------------------------------------------------------------------
+//
+//void GFXOpenGLDevice::swapBuffers()
+//{
+//    if ([[platState torqueView] contextInitialized])
+//        [[platState torqueView] flushBuffer];
+//    
+//    //#if defined(TORQUE_DEBUG)
+//    //    if (gOutlineEnabled)
+//    //        glClear(GL_COLOR_BUFFER_BIT);
+//    //#endif
+//    
+//}
 
 //-----------------------------------------------------------------------------
 
-bool GFXOpenGLDevice::setVerticalSync( bool sync )
-{
-    if ([[platState torqueView] contextInitialized])
-    {
-        [[platState torqueView] setVerticalSync:sync];
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
+//const char* GFXOpenGLDevice::getDriverInfo()
+//{
+//    // Prepare some driver info for the console:
+//    const char* vendorString   = (const char*) glGetString( GL_VENDOR );
+//    const char* rendererString = (const char*) glGetString( GL_RENDERER );
+//    const char* versionString  = (const char*) glGetString( GL_VERSION );
+//    const char* extensionsString = (const char*) glGetString( GL_EXTENSIONS );
+//    
+//    U32 bufferLen = ( vendorString ? dStrlen( vendorString ) : 0 )
+//    + ( rendererString ? dStrlen( rendererString ) : 0 )
+//    + ( versionString  ? dStrlen( versionString ) : 0 )
+//    + ( extensionsString ? dStrlen( extensionsString ) : 0 )
+//    + 4;
+//    
+//    char* returnString = Con::getReturnBuffer( bufferLen );
+//    dSprintf( returnString, bufferLen, "%s\t%s\t%s\t%s",
+//             ( vendorString ? vendorString : "" ),
+//             ( rendererString ? rendererString : "" ),
+//             ( versionString ? versionString : "" ),
+//             ( extensionsString ? extensionsString : "" ) );
+//    
+//    return( returnString );
+//}
 
-//------------------------------------------------------------------------------
-//  Fill mMonitorList with list of supported modes
-//   Guaranteed to include at least the main device.
-//------------------------------------------------------------------------------
-bool GFXOpenGLDevice::enumMonitors()
-{
-    mMonitorList.clear();
-    nAllDevs = 0;
-    
-    CGDirectDisplayID _displayIDs[32];
-    uint32_t _displayCount;
-    
-    CGGetActiveDisplayList (32, _displayIDs, &_displayCount);
-    
-    for (int ii = 0 ; ii < _displayCount ; ii++)
-    {
-        mMonitorList.push_back(_displayIDs[ii]);
-        allDevs[nAllDevs++] = _displayIDs[ii];
-    }
-    
-    return true;
-}
+////-----------------------------------------------------------------------------
+//#pragma message ("GFXOpenGLDevice::getGammaCorrection not yet implemented")
+//bool GFXOpenGLDevice::getGammaCorrection(F32 &g)
+//{
+//    return false;
+//}
+//
+////-----------------------------------------------------------------------------
+//#pragma message ("GFXOpenGLDevice::setGammaCorrection not yet implemented")
+//bool GFXOpenGLDevice::setGammaCorrection(F32 g)
+//{
+//    return false;
+//}
 
-//------------------------------------------------------------------------------
-// Chooses a monitor based on $pref, on the results of tors(), & on the
-// current window's screen.
-//------------------------------------------------------------------------------
-CGDirectDisplayID GFXOpenGLDevice::chooseMonitor()
-{
-    // TODO: choose monitor based on which one contains most of the window.
-    // NOTE: do not call cleanup before calling choose, or we won't have a window to consider.
-    AssertFatal(!mMonitorList.empty(), "Cannot choose a monitor if the list is empty!");
-    
-    U32 monNum = Con::getIntVariable("$pref::Video::monitorNum", 0);
-    
-    if (monNum >= mMonitorList.size())
-    {
-        Con::errorf("invalid monitor number %i", monNum);
-        monNum = 0;
-        Con::setIntVariable("$pref::Video::monitorNum", 0);
-    }
-    
-    Con::printf("using display 0x%x", mMonitorList[monNum]);
-    
-    return mMonitorList[monNum];
-}
+////-----------------------------------------------------------------------------
+//
+//bool GFXOpenGLDevice::setVerticalSync( bool sync )
+//{
+//    if ([[platState torqueView] contextInitialized])
+//    {
+//        [[platState torqueView] setVerticalSync:sync];
+//        return true;
+//    }
+//    else
+//    {
+//        return false;
+//    }
+//}
+
+////------------------------------------------------------------------------------
+////  Fill mMonitorList with list of supported modes
+////   Guaranteed to include at least the main device.
+////------------------------------------------------------------------------------
+//bool GFXOpenGLDevice::enumMonitors()
+//{
+//    mMonitorList.clear();
+//    nAllDevs = 0;
+//    
+//    CGDirectDisplayID _displayIDs[32];
+//    uint32_t _displayCount;
+//    
+//    CGGetActiveDisplayList (32, _displayIDs, &_displayCount);
+//    
+//    for (int ii = 0 ; ii < _displayCount ; ii++)
+//    {
+//        mMonitorList.push_back(_displayIDs[ii]);
+//        allDevs[nAllDevs++] = _displayIDs[ii];
+//    }
+//    
+//    return true;
+//}
+//
+////------------------------------------------------------------------------------
+//// Chooses a monitor based on $pref, on the results of tors(), & on the
+//// current window's screen.
+////------------------------------------------------------------------------------
+//CGDirectDisplayID GFXOpenGLDevice::chooseMonitor()
+//{
+//    // TODO: choose monitor based on which one contains most of the window.
+//    // NOTE: do not call cleanup before calling choose, or we won't have a window to consider.
+//    AssertFatal(!mMonitorList.empty(), "Cannot choose a monitor if the list is empty!");
+//    
+//    U32 monNum = Con::getIntVariable("$pref::Video::monitorNum", 0);
+//    
+//    if (monNum >= mMonitorList.size())
+//    {
+//        Con::errorf("invalid monitor number %i", monNum);
+//        monNum = 0;
+//        Con::setIntVariable("$pref::Video::monitorNum", 0);
+//    }
+//    
+//    Con::printf("using display 0x%x", mMonitorList[monNum]);
+//    
+//    return mMonitorList[monNum];
+//}
 
 void CheckOpenGLError(const char* stmt, const char* fname, int line)
 {

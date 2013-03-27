@@ -48,8 +48,16 @@ protected:
    S32               mTextLocation;
    S32               mTextMargin;
    Point2I           mButtonMargin;
-   bool              mFitBitmapToButton; // Make the bitmap fill the button extent
+    
+   /// Make the bitmap fill the button extent
+   bool              mFitBitmapToButton;
 
+    /// Keep a square aspect ration on the icon.
+    bool mMakeIconSquare;
+    
+    /// Calculate extent based on icon size, text width, and layout options.
+    bool mAutoSize;
+    
    // DAW: Optional bitmap to be displayed when the proper bitmap cannot be found
    StringTableEntry mErrorBitmapName;
    GFXTexHandle     mErrorTextureHandle;
@@ -80,6 +88,7 @@ public:
       IconLocLeft,
       IconLocRight,
       IconLocNone,
+      IconLocCenter
    };
 
 
@@ -92,6 +101,8 @@ public:
    bool onWake();
    void onSleep();
    void inspectPostApply();
+    void onStaticModified(const char* slotName, const char* newValue = NULL);
+    bool resize(const Point2I &newPosition, const Point2I &newExtent);
 
    void setBitmap(const char *name);
 

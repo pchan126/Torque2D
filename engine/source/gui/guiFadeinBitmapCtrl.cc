@@ -97,7 +97,7 @@ public:
          done = true;
       }
       ColorI color(0,0,0,alpha);
-      GFX->getDrawUtil()->drawRectFill(offset, mBounds.extent + offset, color);
+      GFX->getDrawUtil()->drawRectFill(offset, getExtent() + offset, color);
    }
    static void initPersistFields()
    {

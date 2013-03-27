@@ -32,7 +32,7 @@ IMPLEMENT_CONOBJECT(GuiTabPageCtrl);
 
 GuiTabPageCtrl::GuiTabPageCtrl(void)
 {
-   mBounds.extent.set(100, 200);
+   setExtent(100, 200);
    mMinSize.set(50, 50);
    dStrcpy(mText,(UTF8*)"TabPage");
    mActive = true;

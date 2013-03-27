@@ -102,7 +102,7 @@ public:
 
    // Sizing
    void              updateSize();
-   virtual void      parentResized(const Point2I &oldParentExtent, const Point2I &newParentExtent);
+   virtual void      parentResized(const RectI &oldParentRect, const RectI &newParentRect);
    virtual bool      onWake();
 
    // Rendering

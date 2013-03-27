@@ -33,31 +33,48 @@
 
 class GuiDynamicCtrlArrayControl : public GuiControl
 {
-private:
-   typedef GuiControl Parent;
-
-   S32 mCols;
-   S32 mRowSize;
-   S32 mColSize;
-   S32 mRowSpacing;
-   S32 mColSpacing;
-   bool mResizing;
-
+    typedef GuiControl Parent;
+    
 public:
-   GuiDynamicCtrlArrayControl();
-   virtual ~GuiDynamicCtrlArrayControl();
-
-   void updateChildControls();
-   void resize(const Point2I &newPosition, const Point2I &newExtent);
-
-   void addObject(SimObject *obj);
-
-   void childResized(GuiControl *child);
-
-   void inspectPostApply();
-
-   static void initPersistFields();
-   DECLARE_CONOBJECT(GuiDynamicCtrlArrayControl);
+    
+    GuiDynamicCtrlArrayControl();
+    virtual ~GuiDynamicCtrlArrayControl();
+    
+    DECLARE_CONOBJECT(GuiDynamicCtrlArrayControl);
+    
+    // ConsoleObject
+    static void initPersistFields();
+    
+    // SimObject
+    void inspectPostApply();
+    
+    // SimSet
+    void addObject(SimObject *obj);
+    
+    // GuiControl
+    bool resize(const Point2I &newPosition, const Point2I &newExtent);
+    void childResized(GuiControl *child);
+    
+    // GuiDynamicCtrlArrayCtrl
+    void refresh();
+    
+protected:
+    
+    S32 mCols;
+    S32 mRows;
+    S32 mRowSize;
+    S32 mColSize;
+    S32 mRowSpacing;
+    S32 mColSpacing;
+    bool mResizing;
+    bool mSizeToChildren;
+    bool mAutoCellSize;
+    bool mFrozen;
+    bool mDynamicSize;
+    bool mFillRowFirst;
+    
+    RectSpacingI mPadding;
 };
+
 
 #endif // _GUIDYNAMICCTRLARRAYCTRL_H_

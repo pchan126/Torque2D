@@ -1394,16 +1394,17 @@ void SceneWindow::calculateCameraView( CameraView* pCameraView )
     }
 
     // Calculate Scene Window Scale.
-    pCameraView->mSceneWindowScale.x = (pCameraView->mSceneMax.x - pCameraView->mSceneMin.x) / mBounds.len_x();
-    pCameraView->mSceneWindowScale.y = (pCameraView->mSceneMax.y - pCameraView->mSceneMin.y) / mBounds.len_y();
+    pCameraView->mSceneWindowScale.x = (pCameraView->mSceneMax.x - pCameraView->mSceneMin.x) / getBounds().len_x();
+    pCameraView->mSceneWindowScale.y = (pCameraView->mSceneMax.y - pCameraView->mSceneMin.y) / getBounds().len_y();
 }
 
 //-----------------------------------------------------------------------------
 
-void SceneWindow::resize(const Point2I &newPosition, const Point2I &newExtent)
+bool SceneWindow::resize(const Point2I &newPosition, const Point2I &newExtent)
 {
     // Resize Parent.
-    Parent::resize( newPosition, newExtent);
+    if (!Parent::resize( newPosition, newExtent))
+        return false;
 
     // Argument Buffer.
     char argBuffer[64];
@@ -1413,6 +1414,7 @@ void SceneWindow::resize(const Point2I &newPosition, const Point2I &newExtent)
 
     // Resize Callback.
     Con::executef( this, 2, "onExtentChange", argBuffer );
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -1451,7 +1453,7 @@ void SceneWindow::processTick( void )
             mCurrentShake = getMax(mCurrentShake, 0.0f);
 
             // Calculate the Screen Shake-Ratio.
-            const Point2F shakeRatio( mCameraCurrent.mDestinationArea.len_x() / F32(mBounds.len_x()), mCameraCurrent.mDestinationArea.len_y() / F32(mBounds.len_y()) );
+            const Point2F shakeRatio( mCameraCurrent.mDestinationArea.len_x() / F32(getBounds().len_x()), mCameraCurrent.mDestinationArea.len_y() / F32(getBounds().len_y()) );
 
             // Calculate the Camera Shake Magnitude based upon the Screen Shake-Ratio.
             const F32 shakeMagnitudeX = mCurrentShake * shakeRatio.x * 0.5f;
@@ -1625,7 +1627,7 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
         // Enable the scissor.
         const RectI& clipRect = GFX->getClipRect();
         glEnable(GL_SCISSOR_TEST );
-        glScissor( clipRect.point.x, Platform::getWindowSize().y - (clipRect.point.y + clipRect.extent.y), clipRect.len_x(), clipRect.len_y() );
+        glScissor( clipRect.point.x, getRoot()->getWindowSize().y - (clipRect.point.y + clipRect.extent.y), clipRect.len_x(), clipRect.len_y() );
 
         // Clear the background.
         glClearColor( mBackgroundColor.red, mBackgroundColor.green, mBackgroundColor.blue, mBackgroundColor.alpha );

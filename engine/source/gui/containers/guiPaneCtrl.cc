@@ -103,34 +103,39 @@ void GuiPaneControl::setCaptionID(S32 id)
 		mCaption = StringTable->insert((const char*)str);
 }
 
-void GuiPaneControl::resize(const Point2I &newPosition, const Point2I &newExtent)
+//-----------------------------------------------------------------------------
+
+bool GuiPaneControl::resize(const Point2I &newPosition, const Point2I &newExtent)
 {
-
-   //call set update both before and after
-   setUpdate();
-   Point2I actualNewExtent = Point2I(getMax(mMinExtent.x, newExtent.x),
-                                     getMax(mMinExtent.y, newExtent.y));
-
-   mBounds.set(newPosition, actualNewExtent);
-   mOriginalExtents.x = actualNewExtent.x;
-
-   GuiControl *parent = getParent();
-   if (parent)
-      parent->childResized(this);
-   setUpdate();
-
-   // Resize the child control if we're not collapsed
-   if(size() && !mCollapsed)
-   {
-      GuiControl *gc = dynamic_cast<GuiControl*>(operator[](0));
-
-      if(gc)
-      {
-         Point2I offset(0, mThumbSize.y);
-
-         gc->resize(offset, newExtent - offset);
-      }
-   }
+    // CodeReview WTF is going on here that we need to bypass parent sanity?
+    //  Investigate this [7/1/2007 justind]
+    if( !Parent::resize( newPosition, newExtent ) )
+        return false;
+    
+    mOriginalExtents.x = getWidth();
+    
+    /*
+     GuiControl *parent = getParent();
+     if (parent)
+     parent->childResized(this);
+     setUpdate();
+     */
+    
+    // Resize the child control if we're not collapsed
+    if(size() && !mCollapsed)
+    {
+        GuiControl *gc = dynamic_cast<GuiControl*>(operator[](0));
+        
+        if(gc)
+        {
+            Point2I offset(0, mThumbSize.y);
+            
+            gc->resize(offset, newExtent - offset);
+        }
+    }
+    
+    // For now.
+    return true;
 }
 
 void GuiPaneControl::onRender(Point2I offset, const RectI &updateRect)

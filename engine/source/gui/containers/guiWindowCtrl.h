@@ -23,53 +23,17 @@
 #ifndef _GUIWINDOWCTRL_H_
 #define _GUIWINDOWCTRL_H_
 
-#ifndef _GUITEXTCTRL_H_
-#include "gui/guiTextCtrl.h"
-#endif
+#include "gui/containers/guiContainer.h"
+
 
 /// @addtogroup gui_container_group Containers
 ///
 /// @ingroup gui_group Gui System
 /// @{
-class GuiWindowCtrl : public GuiTextCtrl
+class GuiWindowCtrl : public GuiContainer
 {
    private:
-      typedef GuiTextCtrl Parent;
-
-      bool mResizeWidth;
-      bool mResizeHeight;
-      bool mCanMove;
-      bool mCanClose;
-      bool mCanMinimize;
-      bool mCanMaximize;
-      bool mPressClose;
-      bool mPressMinimize;
-      bool mPressMaximize;
-      Point2I mMinSize;
-
-      StringTableEntry mCloseCommand;
-
-      S32 mTitleHeight;
-      S32 mResizeRightWidth;
-      S32 mResizeBottomHeight;
-
-      bool mMouseMovingWin;
-      bool mMouseResizeWidth;
-      bool mMouseResizeHeight;
-      bool mMinimized;
-      bool mMaximized;
-
-      Point2I mMouseDownPosition;
-      RectI mOrigBounds;
-      RectI mStandardBounds;
-
-      RectI mCloseButton;
-      RectI mMinimizeButton;
-      RectI mMaximizeButton;
-      S32 mMinimizeIndex;
-      S32 mTabIndex;
-
-      void PositionButtons(void);
+      typedef GuiContainer Parent;
 
    protected:
       enum BitmapIndices
@@ -96,18 +60,125 @@ class GuiWindowCtrl : public GuiTextCtrl
          NumBitmaps
       };
 
-      enum BitmapStates
-      {
-         BmpDefault = 0,
-         BmpHilite,
-         BmpDisabled,
+    
+    enum BitmapStates
+    {
+        BmpDefault = 0,
+        BmpHilite,
+        BmpDisabled,
+        
+        BmpStates
+    };
+    
+    /// Window Edge Bit Masks
+    ///
+    /// Edges can be combined to create a mask of multiple edges.
+    /// This is used for hit detection throughout this class.
+    enum Edges
+    {
+        edgeNone   = 0,      ///< No Edge
+        edgeTop    = BIT(1), ///< Top Edge
+        edgeLeft   = BIT(2), ///< Left Edge
+        edgeRight  = BIT(3), ///< Right Edge
+        edgeBottom = BIT(4)  ///< Bottom Edge
+    };
 
-         BmpStates
-      };
+
+    /// @name Flags
+    /// @{
+    /// Allow resizing width of window.
+    bool mResizeWidth;
+    
+    /// Allow resizing height of window.
+    bool mResizeHeight;
+    
+    /// Allow moving window.
+    bool mCanMove;
+    
+    /// Display close button.
+    bool mCanClose;
+    
+    /// Display minimize button.
+    bool mCanMinimize;
+    
+    /// Display maximize button.
+    bool mCanMaximize;
+
+    ///
+    bool mCanCollapse;
+    
+    bool mCanDock; ///< Show a docking button on the title bar?
+    bool mEdgeSnap; ///< Should this window snap to other windows edges?
+    
+    /// @}
+
+    bool mPressClose;
+    bool mPressMinimize;
+    bool mPressMaximize;
+    Point2I mMinSize;
+    
+    StringTableEntry mCloseCommand;
+    
+    /// Window title string.
+    String mText;
+    
+    S32 mResizeEdge; ///< Resizing Edges Mask (See Edges Enumeration)
+    
+    S32 mTitleHeight;
+    
+    F32 mResizeMargin;
+    
+    S32 mResizeRightWidth;
+    S32 mResizeBottomHeight;
+    
+    bool mMouseMovingWin;
+    bool mMouseResizeWidth;
+    bool mMouseResizeHeight;
+    bool mMinimized;
+    bool mMaximized;
+    
+    Point2I mMouseDownPosition;
+    RectI mOrigBounds;
+    RectI mStandardBounds;
+    
+    RectI mCloseButton;
+    RectI mMinimizeButton;
+    RectI mMaximizeButton;
+    S32 mMinimizeIndex;
+    S32 mTabIndex;
+    
+    void positionButtons(void);
+    
+    
+    
       RectI *mBitmapBounds;  //bmp is [3*n], bmpHL is [3*n + 1], bmpNA is [3*n + 2]
       GFXTexHandle mTextureObject;
 
-
+    /// @name Collapsing
+    /// @{
+    
+    typedef Vector< GuiWindowCtrl *>	CollapseGroupNumVec;
+    
+    S32 mCollapseGroup;
+    S32 mCollapseGroupNum;
+    S32 mPreCollapsedYExtent;
+    S32 mPreCollapsedYMinExtent;
+    
+    bool mIsCollapsed;
+    bool mIsMouseResizing;
+    
+    S32 getCollapseGroupNum() { return mCollapseGroupNum; }
+    
+    void moveFromCollapseGroup();
+    void moveWithCollapseGroup(Point2I windowPosition);
+    
+    bool resizeCollapseGroup(bool resizeX, bool resizeY, Point2I resizePos, Point2I resizeWidth);
+    void refreshCollapseGroups();
+    
+    void handleCollapseGroup();
+    
+    /// @}
+    
       void drawWinRect(const RectI &myRect);
 
    public:
@@ -125,7 +196,8 @@ class GuiWindowCtrl : public GuiTextCtrl
       void setFont(S32 fntTag);
 
       GuiControl* findHitControl(const Point2I &pt, S32 initialLayer = -1);
-      void resize(const Point2I &newPosition, const Point2I &newExtent);
+      S32 findHitEdges( const Point2I &globalPoint );
+      bool resize(const Point2I &newPosition, const Point2I &newExtent);
 
       void onMouseDown(const GuiEvent &event);
       void onMouseDragged(const GuiEvent &event);

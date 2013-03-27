@@ -196,7 +196,7 @@ void GuiMessageVectorCtrl::lineInserted(const U32 arg)
    }
 
    U32 newHeight = (mProfile->mFont->getHeight() + mLineSpacingPixels) * getMax(numLines, U32(1));
-   resize(mBounds.point, Point2I(mBounds.extent.x, newHeight));
+   resize(getPosition(), Point2I(getWidth(), newHeight));
    if(fullyScrolled)
       pScroll->scrollTo(0, 0x7FFFFFFF);
 }
@@ -242,7 +242,7 @@ void GuiMessageVectorCtrl::lineDeleted(const U32 arg)
    }
 
    U32 newHeight = (mProfile->mFont->getHeight() + mLineSpacingPixels) * getMax(numLines, U32(1));
-   resize(mBounds.point, Point2I(mBounds.extent.x, newHeight));
+   resize(getPosition(), Point2I(getWidth(), newHeight));
 }
 
 
@@ -253,7 +253,7 @@ void GuiMessageVectorCtrl::vectorDeleted()
 
    mMessageVector = NULL;
    U32 newHeight = mProfile->mFont->getHeight() + mLineSpacingPixels;
-   resize(mBounds.point, Point2I(mBounds.extent.x, newHeight));
+   resize(getPosition(), Point2I(getWidth(), newHeight));
 }
 
 
@@ -376,7 +376,7 @@ void GuiMessageVectorCtrl::createLineWrapping(LineWrapping& rWrapping, const cha
       tempBreaks.last().end   = -1;
    }
 
-   U32 splitWidth = mBounds.extent.x;
+   U32 splitWidth = getWidth();
    U32 currLine = 0;
    while (currLine < (U32)tempBreaks.size()) {
       TempLineBreak& rLine = tempBreaks[currLine];
@@ -679,8 +679,8 @@ void GuiMessageVectorCtrl::inspectPostApply()
 
 
 //--------------------------------------------------------------------------
-void GuiMessageVectorCtrl::parentResized(const Point2I& oldSize,
-                                         const Point2I& newSize)
+void GuiMessageVectorCtrl::parentResized(const RectI& oldSize,
+                                         const RectI& newSize)
 {
    Parent::parentResized(oldSize, newSize);
 
@@ -705,8 +705,8 @@ void GuiMessageVectorCtrl::findSpecialFromCoord(const Point2I& point, S32* speci
 
    U32 linePixels = mProfile->mFont->getHeight() + mLineSpacingPixels;
 
-   if ((point.x < 0 || point.x >= mBounds.extent.x) ||
-       (point.y < 0 || point.y >= mBounds.extent.y)) {
+   if ((point.x < 0 || point.x >= getWidth()) ||
+       (point.y < 0 || point.y >= getHeight())) {
       *specialLine = -1;
       *specialRef  = -1;
       return;

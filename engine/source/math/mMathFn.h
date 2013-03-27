@@ -32,6 +32,7 @@
 #endif
 
 #include <math.h>
+#include <stdlib.h>
 #include <limits>
 
 // Remove a couple of annoying macros, if they are present (In VC 6, they are.)
@@ -333,12 +334,12 @@ inline F32 mFmod(const F32 val, const F32 mod)
 
 inline S32 mAbs(const S32 val)
 {
-   // Kinda lame, and disallows intrinsic inlining by the compiler.  Maybe fix?
-   //  DMM
-   if (val < 0)
-      return -val;
+    return abs(val);
+}
 
-   return val;
+inline F32 mRoundToNearest( const F32 val )
+{
+    return mFloor( val + .5f );
 }
 
 inline S32 mClamp(S32 val, S32 low, S32 high)

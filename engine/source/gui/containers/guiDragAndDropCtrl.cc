@@ -63,12 +63,12 @@ void GuiDragAndDropControl::startDragging(Point2I offset)
 
 void GuiDragAndDropControl::onMouseDown(const GuiEvent& event)
 {
-   startDragging(event.mousePoint - mBounds.point);
+   startDragging(event.mousePoint - getPosition());
 }
 
 void GuiDragAndDropControl::onMouseDragged(const GuiEvent& event)
 {
-   mBounds.point = event.mousePoint - mOffset;
+   setPosition( event.mousePoint - mOffset);
 
    // Allow the control under the drag to react to a potential drop
    GuiControl* enterTarget = findDragTarget(event.mousePoint, "onControlDragEnter");
@@ -100,7 +100,7 @@ void GuiDragAndDropControl::sendDragEvent(GuiControl* target, const char* event)
       return;
 
    char position[32];
-   Point2I dropPoint = mBounds.point + (mBounds.extent / 2);
+   Point2I dropPoint = getPosition() + (getExtent() / 2);
    dSprintf(position, 32, "%d %d", dropPoint.x, dropPoint.y);
    Con::executef(target, 3, event, Con::getIntArg(at(0)->getId()), position);
 }

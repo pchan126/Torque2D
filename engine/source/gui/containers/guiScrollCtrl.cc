@@ -38,7 +38,7 @@ IMPLEMENT_CONOBJECT(GuiScrollCtrl);
 
 GuiScrollCtrl::GuiScrollCtrl()
 {
-   mBounds.extent.set(200,200);
+   setExtent(200,200);
    mChildMargin.set(0,0);
    mBorderThickness = 1;
    mScrollBarThickness = 16;
@@ -119,10 +119,13 @@ void GuiScrollCtrl::initPersistFields()
 
 }
 
-void GuiScrollCtrl::resize(const Point2I &newPos, const Point2I &newExt)
+bool GuiScrollCtrl::resize(const Point2I &newPos, const Point2I &newExt)
 {
-   Parent::resize(newPos, newExt);
-   computeSizes();
+    if( !Parent::resize(newPos, newExt) )
+        return false;
+    
+    computeSizes();
+    return true;
 }
 
 void GuiScrollCtrl::childResized(GuiControl *child)
@@ -172,8 +175,8 @@ bool GuiScrollCtrl::calcChildExtents()
       return false;
 
    GuiControl *ctrl = (GuiControl *) front();
-   mChildExt = ctrl->mBounds.extent;
-   mChildPos = ctrl->mBounds.point;
+   mChildExt = ctrl->getExtent();
+   mChildPos = ctrl->getPosition();
    return true;
 }
 
@@ -229,8 +232,8 @@ GuiControl* GuiScrollCtrl::findHitControl(const Point2I &pt, S32 initialLayer)
 {
    if(pt.x < mProfile->mBorderThickness || pt.y < mProfile->mBorderThickness)
       return this;
-   if(pt.x >= mBounds.extent.x - mProfile->mBorderThickness - (mHasVScrollBar ? mScrollBarThickness : 0) ||
-      pt.y >= mBounds.extent.y - mProfile->mBorderThickness - (mHasHScrollBar ? mScrollBarThickness : 0))
+   if(pt.x >= getWidth() - mProfile->mBorderThickness - (mHasVScrollBar ? mScrollBarThickness : 0) ||
+      pt.y >= getHeight() - mProfile->mBorderThickness - (mHasHScrollBar ? mScrollBarThickness : 0))
       return this;
    return Parent::findHitControl(pt, initialLayer);
 }
@@ -240,7 +243,7 @@ void GuiScrollCtrl::computeSizes()
    S32 thickness = (mProfile ? mProfile->mBorderThickness : 1);
    Point2I borderExtent(thickness, thickness);
    mContentPos = borderExtent + mChildMargin;
-   mContentExt = mBounds.extent - (mChildMargin * 2)
+   mContentExt = getExtent() - (mChildMargin * 2)
                                 - (borderExtent * 2);
 
    Point2I childLowerRight;
@@ -306,7 +309,7 @@ void GuiScrollCtrl::computeSizes()
          for(i = begin(); i != end();i++)
          {
             GuiControl *ctrl = (GuiControl *) (*i);
-            ctrl->mBounds.point += delta;
+            ctrl->setPosition( ctrl->getPosition() + delta);
          }
          mChildPos += delta;
          childLowerRight += delta;
@@ -329,12 +332,12 @@ void GuiScrollCtrl::calcScrollRects(void)
    if (mHasHScrollBar)
    {
       mLeftArrowRect.set(thickness,
-                        mBounds.extent.y - thickness - mScrollBarThickness - 1,
+                        getHeight() - thickness - mScrollBarThickness - 1,
                         mScrollBarArrowBtnLength,
                         mScrollBarThickness);
 
-      mRightArrowRect.set(mBounds.extent.x - thickness - (mHasVScrollBar ? mScrollBarThickness : 0) - mScrollBarArrowBtnLength,
-                        mBounds.extent.y - thickness - mScrollBarThickness - 1,
+      mRightArrowRect.set(getWidth() - thickness - (mHasVScrollBar ? mScrollBarThickness : 0) - mScrollBarArrowBtnLength,
+                        getHeight() - thickness - mScrollBarThickness - 1,
                         mScrollBarArrowBtnLength,
                         mScrollBarThickness);
       mHTrackRect.set(mLeftArrowRect.point.x + mLeftArrowRect.extent.x,
@@ -344,12 +347,12 @@ void GuiScrollCtrl::calcScrollRects(void)
    }
    if (mHasVScrollBar)
    {
-      mUpArrowRect.set(mBounds.extent.x - thickness - mScrollBarThickness,
+      mUpArrowRect.set(getWidth() - thickness - mScrollBarThickness,
                         thickness,
                         mScrollBarThickness,
                         mScrollBarArrowBtnLength);
-      mDownArrowRect.set(mBounds.extent.x - thickness - mScrollBarThickness,
-                        mBounds.extent.y - thickness - mScrollBarArrowBtnLength - (mHasHScrollBar ? ( mScrollBarThickness + 1 ) : 0),
+      mDownArrowRect.set(getWidth() - thickness - mScrollBarThickness,
+                        getHeight() - thickness - mScrollBarArrowBtnLength - (mHasHScrollBar ? ( mScrollBarThickness + 1 ) : 0),
                         mScrollBarThickness,
                         mScrollBarArrowBtnLength);
       mVTrackRect.set(mUpArrowRect.point.x,
@@ -418,7 +421,7 @@ void GuiScrollCtrl::scrollTo(S32 x, S32 y)
    for(SimSet::iterator i = begin(); i != end();i++)
    {
       GuiControl *ctrl = (GuiControl *) (*i);
-      ctrl->mBounds.point -= delta;
+      ctrl->setPosition( getPosition() - delta);
    }
    calcThumbs();
 
@@ -795,7 +798,7 @@ void GuiScrollCtrl::scrollByRegion(Region reg)
 
 void GuiScrollCtrl::onRender(Point2I offset, const RectI &updateRect)
 {
-   RectI r(offset.x, offset.y, mBounds.extent.x, mBounds.extent.y);
+   RectI r(offset.x, offset.y, getWidth(), getHeight());
 
    if (mProfile->mOpaque)
       GFX->getDrawUtil()->drawRectFill(r, mProfile->mFillColor);

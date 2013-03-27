@@ -432,7 +432,7 @@ void GuiEditCtrl::drawNuts(RectI &box, ColorI &outlineColor, ColorI &nutColor)
    if(rx > 0 && ty > 0)
       GFX->getDrawUtil()->drawLine(rx, 0, rx, ty, greenLine);
 
-   Point2I extent = localToGlobalCoord(mBounds.extent);
+   Point2I extent = localToGlobalCoord(getExtent());
 
    if(lx < extent.x && by < extent.y)
       GFX->getDrawUtil()->drawLine(lx, by, lx, extent.y, lightGreenLine);
@@ -800,7 +800,7 @@ void GuiEditCtrl::onMouseDown(const GuiEvent &event)
          // For snapping to origin
          Vector<GuiControl *>::iterator i;
          for(i = mSelectedControls.begin(); i != mSelectedControls.end(); i++)
-            mDragBeginPoints.push_back( (*i)->mBounds.point );
+            mDragBeginPoints.push_back( (*i)->getPosition() );
 
          // Set Mouse Mode
          mMouseDownMode = MovingSelection;
@@ -915,7 +915,7 @@ void GuiEditCtrl::onMouseUp(const GuiEvent &event)
       {
          GuiControl *ctrl = dynamic_cast<GuiControl *>(*i);
          Point2I upperL = globalToLocalCoord(ctrl->localToGlobalCoord(Point2I(0,0)));
-         Point2I lowerR = upperL + ctrl->mBounds.extent - Point2I(1, 1);
+         Point2I lowerR = upperL + ctrl->getExtent() - Point2I(1, 1);
 
          if (b.pointInRect(upperL) && b.pointInRect(lowerR) && !selectionContains(ctrl)) {
             //if (!(ctrl->isLocked())) {
@@ -990,7 +990,7 @@ void GuiEditCtrl::onMouseDragged(const GuiEvent &event)
       if (mSizingMode & sizingLeft)
       {
          newPosition.x = ctrlPoint.x;
-         newExtent.x = ctrl->mBounds.extent.x + ctrl->mBounds.point.x - ctrlPoint.x;
+         newExtent.x = ctrl->getWidth() + ctrl->getPosition().x - ctrlPoint.x;
 
          if(newExtent.x < minExtent.x)
          {
@@ -1000,7 +1000,7 @@ void GuiEditCtrl::onMouseDragged(const GuiEvent &event)
       }
       else if (mSizingMode & sizingRight)
       {
-         newExtent.x = ctrlPoint.x - ctrl->mBounds.point.x;
+         newExtent.x = ctrlPoint.x - ctrl->getPosition().x;
          if(mGridSnap.x)
             newExtent.x -= newExtent.x % mGridSnap.x;
 
@@ -1011,7 +1011,7 @@ void GuiEditCtrl::onMouseDragged(const GuiEvent &event)
       if (mSizingMode & sizingTop)
       {
          newPosition.y = ctrlPoint.y;
-         newExtent.y = ctrl->mBounds.extent.y + ctrl->mBounds.point.y - ctrlPoint.y;
+         newExtent.y = ctrl->getHeight() + ctrl->getPosition().y - ctrlPoint.y;
          if(newExtent.y < minExtent.y)
          {
             newPosition.y -= minExtent.y - newExtent.y;
@@ -1020,7 +1020,7 @@ void GuiEditCtrl::onMouseDragged(const GuiEvent &event)
       }
       else if (mSizingMode & sizingBottom)
       {
-         newExtent.y = ctrlPoint.y - ctrl->mBounds.point.y;
+         newExtent.y = ctrlPoint.y - ctrl->getPosition().y;
          if(newExtent.y < minExtent.y)
             newExtent.y = minExtent.y;
       }
@@ -1043,7 +1043,7 @@ void GuiEditCtrl::onMouseDragged(const GuiEvent &event)
    else if (mMouseDownMode == MovingSelection && mSelectedControls.size())
    {
       Vector<GuiControl *>::iterator i = mSelectedControls.begin();
-      //Point2I minPos = (*i)->mBounds.point;
+      //Point2I minPos = (*i)->getPosition();
       Point2I minPos (S32_MAX, S32_MAX);
 
       for(; i != mSelectedControls.end(); i++)
@@ -1052,10 +1052,10 @@ void GuiEditCtrl::onMouseDragged(const GuiEvent &event)
          if ((*i)->isLocked())
             continue;
 
-         if ((*i)->mBounds.point.x < minPos.x)
-            minPos.x = (*i)->mBounds.point.x;
-         if ((*i)->mBounds.point.y < minPos.y)
-            minPos.y = (*i)->mBounds.point.y;
+         if ((*i)->getPosition().x < minPos.x)
+            minPos.x = (*i)->getPosition().x;
+         if ((*i)->getPosition().y < minPos.y)
+            minPos.y = (*i)->getPosition().y;
       }
       Point2I delta = mousePoint - mLastMousePos;
       delta += minPos; // find new minPos;
@@ -1079,10 +1079,10 @@ void GuiEditCtrl::onMouseDragged(const GuiEvent &event)
                if (mSelectedControls[i]->isLocked())
                   continue;
 
-               Point2I snapBackPoint( mSelectedControls[i]->mBounds.point.x, mDragBeginPoints[i].y);
+               Point2I snapBackPoint( mSelectedControls[i]->getPosition().x, mDragBeginPoints[i].y);
                // This is kind of nasty but we need to snap back if we're not at origin point with selection - JDD
-               if( mSelectedControls[i]->mBounds.point.y != mDragBeginPoints[i].y )
-                  mSelectedControls[i]->resize( snapBackPoint, mSelectedControls[i]->mBounds.extent);
+               if( mSelectedControls[i]->getPosition().y != mDragBeginPoints[i].y )
+                  mSelectedControls[i]->resize( snapBackPoint, mSelectedControls[i]->getExtent());
             }
             delta.y = 0;
          }
@@ -1094,10 +1094,10 @@ void GuiEditCtrl::onMouseDragged(const GuiEvent &event)
                if (mSelectedControls[i]->isLocked())
                   continue;
 
-               Point2I snapBackPoint( mDragBeginPoints[i].x,mSelectedControls[i]->mBounds.point.y);
+               Point2I snapBackPoint( mDragBeginPoints[i].x,mSelectedControls[i]->getPosition().y);
                // This is kind of nasty but we need to snap back if we're not at origin point with selection - JDD
-               if( mSelectedControls[i]->mBounds.point.x != mDragBeginPoints[i].x )
-                  mSelectedControls[i]->resize( snapBackPoint, mSelectedControls[i]->mBounds.extent);
+               if( mSelectedControls[i]->getPosition().x != mDragBeginPoints[i].x )
+                  mSelectedControls[i]->resize( snapBackPoint, mSelectedControls[i]->getExtent());
             }
             delta.x = 0;
          }
@@ -1148,8 +1148,8 @@ void GuiEditCtrl::moveSelectionToCtrl(GuiControl *newParent)
    
       Point2I globalpos = ctrl->localToGlobalCoord(Point2I(0,0));
       newParent->addObject(ctrl);
-      Point2I newpos = ctrl->globalToLocalCoord(globalpos) + ctrl->mBounds.point;
-      ctrl->mBounds.set(newpos, ctrl->mBounds.extent);
+      Point2I newpos = ctrl->globalToLocalCoord(globalpos) + ctrl->getPosition();
+      ctrl->mBounds.set(newpos, ctrl->getExtent());
    }
 
    Con::executef(this, 1, "onSelectionParentChange");
@@ -1186,9 +1186,9 @@ void GuiEditCtrl::moveAndSnapSelection(const Point2I &delta)
    Point2I newPos;
    for(i = mSelectedControls.begin(); i != mSelectedControls.end(); i++)
    {
-      newPos = (*i)->mBounds.point + delta;
+      newPos = (*i)->getPosition() + delta;
       newPos = snapPoint(newPos, delta, mGridSnap);
-      (*i)->resize(newPos, (*i)->mBounds.extent);
+      (*i)->resize(newPos, (*i)->getExtent());
    }
 
    // undo
@@ -1208,7 +1208,7 @@ void GuiEditCtrl::moveSelection(const Point2I &delta)
       if ((*i)->isLocked())
          continue;
 
-      (*i)->resize((*i)->mBounds.point + delta, (*i)->mBounds.extent);
+      (*i)->resize((*i)->getPosition() + delta, (*i)->getExtent());
    }
 
    // allow script to update the inspector
@@ -1226,21 +1226,21 @@ void GuiEditCtrl::justifySelection(Justification j)
       return;
 
    Vector<GuiControl *>::iterator i = mSelectedControls.begin();
-   minX = (*i)->mBounds.point.x;
-   maxX = minX + (*i)->mBounds.extent.x;
-   minY = (*i)->mBounds.point.y;
-   maxY = minY + (*i)->mBounds.extent.y;
-   extentX = (*i)->mBounds.extent.x;
-   extentY = (*i)->mBounds.extent.y;
+   minX = (*i)->getPosition().x;
+   maxX = minX + (*i)->getWidth();
+   minY = (*i)->getPosition().y;
+   maxY = minY + (*i)->getHeight();
+   extentX = (*i)->getWidth();
+   extentY = (*i)->getHeight();
    i++;
    for(;i != mSelectedControls.end(); i++)
    {
-      minX = getMin(minX, (*i)->mBounds.point.x);
-      maxX = getMax(maxX, (*i)->mBounds.point.x + (*i)->mBounds.extent.x);
-      minY = getMin(minY, (*i)->mBounds.point.y);
-      maxY = getMax(maxY, (*i)->mBounds.point.y + (*i)->mBounds.extent.y);
-      extentX += (*i)->mBounds.extent.x;
-      extentY += (*i)->mBounds.extent.y;
+      minX = getMin(minX, (*i)->getPosition().x);
+      maxX = getMax(maxX, (*i)->getPosition().x + (*i)->getWidth());
+      minY = getMin(minY, (*i)->getPosition().y);
+      maxY = getMax(maxY, (*i)->getPosition().y + (*i)->getHeight());
+      extentX += (*i)->getWidth();
+      extentY += (*i)->getHeight();
    }
    S32 deltaX = maxX - minX;
    S32 deltaY = maxY - minY;
@@ -1248,24 +1248,24 @@ void GuiEditCtrl::justifySelection(Justification j)
    {
       case JUSTIFY_LEFT:
          for(i = mSelectedControls.begin(); i != mSelectedControls.end(); i++)
-            (*i)->resize(Point2I(minX, (*i)->mBounds.point.y), (*i)->mBounds.extent);
+            (*i)->resize(Point2I(minX, (*i)->getPosition().y), (*i)->getExtent());
          break;
       case JUSTIFY_TOP:
          for(i = mSelectedControls.begin(); i != mSelectedControls.end(); i++)
-            (*i)->resize(Point2I((*i)->mBounds.point.x, minY), (*i)->mBounds.extent);
+            (*i)->resize(Point2I((*i)->getPosition().x, minY), (*i)->getExtent());
          break;
       case JUSTIFY_RIGHT:
          for(i = mSelectedControls.begin(); i != mSelectedControls.end(); i++)
-            (*i)->resize(Point2I(maxX - (*i)->mBounds.extent.x + 1, (*i)->mBounds.point.y), (*i)->mBounds.extent);
+            (*i)->resize(Point2I(maxX - (*i)->getWidth() + 1, (*i)->getPosition().y), (*i)->getExtent());
          break;
       case JUSTIFY_BOTTOM:
          for(i = mSelectedControls.begin(); i != mSelectedControls.end(); i++)
-            (*i)->resize(Point2I((*i)->mBounds.point.x, maxY - (*i)->mBounds.extent.y + 1), (*i)->mBounds.extent);
+            (*i)->resize(Point2I((*i)->getPosition().x, maxY - (*i)->getHeight() + 1), (*i)->getExtent());
          break;
       case JUSTIFY_CENTER:
          for(i = mSelectedControls.begin(); i != mSelectedControls.end(); i++)
-            (*i)->resize(Point2I(minX + ((deltaX - (*i)->mBounds.extent.x) >> 1), (*i)->mBounds.point.y),
-                                                                                 (*i)->mBounds.extent);
+            (*i)->resize(Point2I(minX + ((deltaX - (*i)->getWidth()) >> 1), (*i)->getPosition().y),
+                                                                                 (*i)->getExtent());
          break;
       case SPACING_VERTICAL:
          {
@@ -1275,7 +1275,7 @@ void GuiEditCtrl::justifySelection(Justification j)
             {
                for(k = sortedList.begin(); k != sortedList.end(); k++)
                {
-                  if ((*i)->mBounds.point.y < (*k)->mBounds.point.y)
+                  if ((*i)->getPosition().y < (*k)->getPosition().y)
                      break;
                }
                sortedList.insert(k, *i);
@@ -1284,8 +1284,8 @@ void GuiEditCtrl::justifySelection(Justification j)
             S32 curY = minY;
             for(k = sortedList.begin(); k != sortedList.end(); k++)
             {
-               (*k)->resize(Point2I((*k)->mBounds.point.x, curY), (*k)->mBounds.extent);
-               curY += (*k)->mBounds.extent.y + space;
+               (*k)->resize(Point2I((*k)->getPosition().x, curY), (*k)->getExtent());
+               curY += (*k)->getHeight() + space;
             }
          }
          break;
@@ -1297,7 +1297,7 @@ void GuiEditCtrl::justifySelection(Justification j)
             {
                for(k = sortedList.begin(); k != sortedList.end(); k++)
                {
-                  if ((*i)->mBounds.point.x < (*k)->mBounds.point.x)
+                  if ((*i)->getPosition().x < (*k)->getPosition().x)
                      break;
                }
                sortedList.insert(k, *i);
@@ -1306,8 +1306,8 @@ void GuiEditCtrl::justifySelection(Justification j)
             S32 curX = minX;
             for(k = sortedList.begin(); k != sortedList.end(); k++)
             {
-               (*k)->resize(Point2I(curX, (*k)->mBounds.point.y), (*k)->mBounds.extent);
-               curX += (*k)->mBounds.extent.x + space;
+               (*k)->resize(Point2I(curX, (*k)->getPosition().y), (*k)->getExtent());
+               curX += (*k)->getWidth() + space;
             }
          }
          break;
@@ -1493,10 +1493,10 @@ public:
       Point2I choffset(0,0);
       if(ref)
          choffset = ref->getChildPos();
-      if(mBounds.extent.x > mBounds.extent.y)
+      if(getWidth() > getHeight())
       {
          // it's horizontal.
-         for(U32 i = 0; i < (U32)mBounds.extent.x; i++)
+         for(U32 i = 0; i < (U32)getWidth(); i++)
          {
             S32 x = offset.x + i;
             S32 pos = i - choffset.x;
@@ -1514,7 +1514,7 @@ public:
       else
       {
          // it's vertical.
-         for(U32 i = 0; i < (U32)mBounds.extent.y; i++)
+         for(U32 i = 0; i < (U32)getHeight(); i++)
          {
             S32 y = offset.y + i;
             S32 pos = i - choffset.y;

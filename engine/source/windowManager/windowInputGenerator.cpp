@@ -9,7 +9,7 @@
 #include "component/interfaces/IProcessInput.h"
 
 
-//extern InputModifiers convertModifierBits(const U32 in);
+extern U32 convertModifierBits(const U32 in);
 
 
 //-----------------------------------------------------------------------------
@@ -98,26 +98,26 @@ void WindowInputGenerator::handleMouseMove( WindowId did, U32 modifier, S32 x, S
     mInputController->processMouseMoveEvent( event );
 }
 
-//void WindowInputGenerator::handleMouseButton( WindowId did, U32 modifiers, U32 action, U16 button )
-//{
-//   if( !mInputController || !mFocused )
-//      return;
-//
-//   InputEventInfo event;
-//   event.deviceType = MouseDeviceType;
-//   event.deviceInst = 0;
-//   event.objType    = SI_BUTTON;
-//   event.objInst    = (InputObjectInstances)(KEY_BUTTON0 + button);
-//   event.modifier   = convertModifierBits(modifiers);
-//   event.ascii      = 0;
-//   event.action     = (action==IA_MAKE) ? SI_MAKE : SI_BREAK;
-//   event.fValue     = (action==IA_MAKE) ? 1.0 : 0.0;
-//
-//   generateInputEvent(event);
-//}
-//
-//void WindowInputGenerator::handleMouseWheel( WindowId did, U32 modifiers, S32 wheelDeltaX, S32 wheelDeltaY )
-//{
+void WindowInputGenerator::handleMouseButton( WindowId did, U32 modifiers, U32 action, U16 button )
+{
+   if( !mInputController || !mFocused )
+      return;
+
+   InputEventInfo event;
+   event.deviceType = MouseDeviceType;
+   event.deviceInst = 0;
+   event.objType    = SI_BUTTON;
+   event.objInst    = (U16)(KEY_BUTTON0 + button);
+   event.modifier   = convertModifierBits(modifiers);
+   event.ascii      = 0;
+   event.action     = (action==IA_MAKE) ? SI_MAKE : SI_BREAK;
+   event.fValue     = (action==IA_MAKE) ? 1.0 : 0.0;
+
+   generateInputEvent(event);
+}
+
+void WindowInputGenerator::handleMouseWheel( WindowId did, U32 modifiers, S32 wheelDeltaX, S32 wheelDeltaY )
+{
 //   if( !mInputController || !mFocused )
 //      return;
 //
@@ -143,94 +143,94 @@ void WindowInputGenerator::handleMouseMove( WindowId did, U32 modifier, S32 x, S
 //
 //      generateInputEvent(event);
 //   }
-//}
+}
 
-////-----------------------------------------------------------------------------
-//// Key/Character Input
-////-----------------------------------------------------------------------------
-//void WindowInputGenerator::handleCharInput( WindowId did, U32 modifier, U16 key )
-//{
-//   if( !mInputController || !mFocused )
-//      return;
-//
-//   InputEventInfo event;
-//   event.deviceType  = KeyboardDeviceType;
-//   event.deviceInst  = 0;
-//   event.objType     = SI_KEY;
-//   event.objInst     = KEY_NULL;
-//   event.modifier    = convertModifierBits(modifier);
-//   event.ascii       = key;
-//   event.action      = SI_MAKE;
-//   event.fValue      = 1.0;
-//   generateInputEvent(event);
-//
-//   event.action = SI_BREAK;
-//   event.fValue = 0.f;
-//   generateInputEvent(event);
-//}
+//-----------------------------------------------------------------------------
+// Key/Character Input
+//-----------------------------------------------------------------------------
+void WindowInputGenerator::handleCharInput( WindowId did, U32 modifier, U16 key )
+{
+   if( !mInputController || !mFocused )
+      return;
+
+   InputEventInfo event;
+   event.deviceType  = KeyboardDeviceType;
+   event.deviceInst  = 0;
+   event.objType     = SI_KEY;
+   event.objInst     = KEY_NULL;
+   event.modifier    = convertModifierBits(modifier);
+   event.ascii       = key;
+   event.action      = SI_MAKE;
+   event.fValue      = 1.0;
+   generateInputEvent(event);
+
+   event.action = SI_BREAK;
+   event.fValue = 0.f;
+   generateInputEvent(event);
+}
 
 //
-//void WindowInputGenerator::handleKeyboard( WindowId did, U32 modifier, U32 action, U16 key )
-//{
-//   if( !mInputController || !mFocused )
-//      return;
-//
-//   InputEventInfo event;
-//   event.deviceType  = KeyboardDeviceType;
-//   event.deviceInst  = 0;
-//   event.objType     = SI_KEY;
-//   event.objInst     = (InputObjectInstances)key;
-//   event.modifier    = convertModifierBits(modifier);
-//   event.ascii       = 0;
-//
-//   switch(action)
-//   {
-//   case IA_MAKE:
-//      event.action = SI_MAKE;
-//      event.fValue = 1.f;
-//      break;
-//
-//   case IA_REPEAT:
-//      event.action = SI_REPEAT;
-//      event.fValue = 1.f;
-//      break;
-//
-//   case IA_BREAK:
-//      event.action = SI_BREAK;
-//      event.fValue = 0.f;
-//      break;
-//
-//      // If we encounter an unknown don't submit the event.
-//   default:
-//      //Con::warnf("GuiCanvas::handleKeyboard - got an unknown action type %d!", action);
-//      return;
-//   }
-//
-//   generateInputEvent(event);
-//}
+void WindowInputGenerator::handleKeyboard( WindowId did, U32 modifier, U32 action, U16 key )
+{
+   if( !mInputController || !mFocused )
+      return;
 
-////-----------------------------------------------------------------------------
-//// Raw input 
-////-----------------------------------------------------------------------------
-//void WindowInputGenerator::handleInputEvent( U32 deviceInst,F32 fValue, U16 deviceType, U16 objType, U16 ascii, U16 objInst, U8 action, U8 modifier )
-//{
-//   // Skip it if we don't have focus.
-//   if(!mInputController || !mFocused)
-//      return;
-//
-//   // Convert to an InputEventInfo and pass it around for processing.
-//   InputEventInfo event;
-//   event.deviceInst  = deviceInst;
-//   event.fValue      = fValue;
-//   event.deviceType  = (InputDeviceTypes)deviceType;
-//   event.objType     = (InputEventType)objType;
-//   event.ascii       = ascii;
-//   event.objInst     = (InputObjectInstances)objInst;
-//   event.action      = (InputActionType)action;
-//   event.modifier    = (InputModifiers)modifier;
-//   
-//   generateInputEvent(event);
-//}
+   InputEventInfo event;
+   event.deviceType  = KeyboardDeviceType;
+   event.deviceInst  = 0;
+   event.objType     = SI_KEY;
+   event.objInst     = key;
+   event.modifier    = convertModifierBits(modifier);
+   event.ascii       = 0;
+
+   switch(action)
+   {
+   case IA_MAKE:
+      event.action = SI_MAKE;
+      event.fValue = 1.f;
+      break;
+
+   case IA_REPEAT:
+      event.action = SI_REPEAT;
+      event.fValue = 1.f;
+      break;
+
+   case IA_BREAK:
+      event.action = SI_BREAK;
+      event.fValue = 0.f;
+      break;
+
+      // If we encounter an unknown don't submit the event.
+   default:
+      //Con::warnf("GuiCanvas::handleKeyboard - got an unknown action type %d!", action);
+      return;
+   }
+
+   generateInputEvent(event);
+}
+
+//-----------------------------------------------------------------------------
+// Raw input 
+//-----------------------------------------------------------------------------
+void WindowInputGenerator::handleInputEvent( U32 deviceInst,F32 fValue, U16 deviceType, U16 objType, U16 ascii, U16 objInst, U8 action, U8 modifier )
+{
+   // Skip it if we don't have focus.
+   if(!mInputController || !mFocused)
+      return;
+
+   // Convert to an InputEventInfo and pass it around for processing.
+   InputEventInfo event;
+   event.deviceInst  = deviceInst;
+   event.fValue      = fValue;
+   event.deviceType  = (InputDeviceTypes)deviceType;
+   event.objType     = (U16)objType;
+   event.ascii       = ascii;
+   event.objInst     = (U16)objInst;
+   event.action      = (U8)action;
+   event.modifier    = (U8)modifier;
+   
+   generateInputEvent(event);
+}
 
 //-----------------------------------------------------------------------------
 // Window Events

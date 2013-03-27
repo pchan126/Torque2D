@@ -31,6 +31,21 @@
 IMPLEMENT_CONOBJECT(GuiWindowCtrl);
 
 GuiWindowCtrl::GuiWindowCtrl(void)
+            :  mResizeEdge(edgeNone),
+            mResizeWidth(true),
+            mResizeHeight(true),
+            mResizeMargin(2.f),
+            mCanMove(true),
+            mCanClose(true),
+            mCanMinimize(true),
+            mCanMaximize(true),
+            mCanDock(false),
+            mCanCollapse(false),
+            mEdgeSnap(true),
+            mCollapseGroup(-1),
+            mCollapseGroupNum(-1),
+            mIsCollapsed(false),
+            mIsMouseResizing(false)
 {
    mResizeWidth = true;
    mResizeHeight = true;
@@ -38,6 +53,7 @@ GuiWindowCtrl::GuiWindowCtrl(void)
    mCanClose = true;
    mCanMinimize = true;
    mCanMaximize = true;
+    mCanCollapse = false;
    mTitleHeight = 20;
    mResizeRightWidth = 10;
    mResizeBottomHeight = 10;
@@ -50,7 +66,7 @@ GuiWindowCtrl::GuiWindowCtrl(void)
    mMouseMovingWin = false;
    mMouseResizeWidth = false;
    mMouseResizeHeight = false;
-   mBounds.extent.set(100, 200);
+   setExtent(100, 200);
    mMinSize.set(50, 50);
    mMinimizeIndex = -1;
    mTabIndex = -1;
@@ -91,7 +107,7 @@ bool GuiWindowCtrl::isMinimized(S32 &index)
 }
 
 // helper fn so button positioning shares code...
-void GuiWindowCtrl::PositionButtons(void)
+void GuiWindowCtrl::positionButtons(void)
 {
    if( !mBitmapBounds || !mAwake )
       return;
@@ -100,7 +116,7 @@ void GuiWindowCtrl::PositionButtons(void)
    S32 buttonHeight = mBitmapBounds[BmpStates * BmpClose].extent.y;
    Point2I mainOff = mProfile->mTextOffset;
 
-   int minLeft = mBounds.extent.x - buttonWidth * 3 - mainOff.x;
+   int minLeft = getWidth() - buttonWidth * 3 - mainOff.x;
    int minTop = mainOff.y;
    int minOff = buttonWidth + 2;
    
@@ -137,7 +153,7 @@ bool GuiWindowCtrl::onWake()
    mResizeBottomHeight = mTitleHeight / 2;
 
    //set the button coords
-   PositionButtons();
+   positionButtons();
 
    //set the tab index
    mTabIndex = -1;
@@ -176,14 +192,64 @@ GuiControl* GuiWindowCtrl::findHitControl(const Point2I &pt, S32 initialLayer)
       return this;
 }
 
-void GuiWindowCtrl::resize(const Point2I &newPosition, const Point2I &newExtent)
+//-----------------------------------------------------------------------------
+// Mouse Methods
+//-----------------------------------------------------------------------------
+S32 GuiWindowCtrl::findHitEdges( const Point2I &globalPoint )
 {
-   Parent::resize(newPosition, newExtent);
-
-   //set the button coords
-   PositionButtons();
+    // No Edges
+    S32 edgeMask = edgeNone;
+    
+    GuiControl *parent = getParent();
+    if( !parent )
+        return edgeMask;
+    
+    RectI bounds( getGlobalBounds() );
+    
+    // Create an EdgeRectI structure that has four edges
+    // Left/Right/Top/Bottom
+    // Each Edge structure has a hit operation that will take
+    // another edge and test for a hit on the edge with a margin
+    // specified by the .margin scalar
+    EdgeRectI edges = EdgeRectI(bounds, mResizeMargin);
+    
+    // Get Cursor Edges
+    Edge cursorVertEdge = Edge( globalPoint, Point2F( 1.f, 0.f ) );
+    Edge cursorHorzEdge = Edge( globalPoint, Point2F( 0.f, 1.f ) );
+    
+    if( edges.left.hit( cursorVertEdge ) )
+        edgeMask |= edgeLeft;
+    else if( edges.right.hit( cursorVertEdge ) )
+        edgeMask |= edgeRight;
+    
+    if( edges.bottom.hit( cursorHorzEdge ) )
+        edgeMask |= edgeBottom;
+    else if( edges.top.hit( cursorHorzEdge ) )
+    {
+        // Only the top window in a collapse group can be extended from the top
+        if( mCanCollapse && mCollapseGroup >= 0 )
+        {
+            if( parent->mCollapseGroupVec[mCollapseGroup].first() !=  this )
+                return edgeMask;
+        }
+        
+        edgeMask |= edgeTop;
+    }
+    
+    // Return the resulting mask
+    return edgeMask;
 }
 
+bool GuiWindowCtrl::resize(const Point2I &newPosition, const Point2I &newExtent)
+{
+    if( !Parent::resize(newPosition, newExtent) )
+        return false;
+    
+    // Set the button coords
+    positionButtons();
+    
+    return true;
+}
 void GuiWindowCtrl::onMouseDown(const GuiEvent &event)
 {
    setUpdate();
@@ -226,13 +292,13 @@ void GuiWindowCtrl::onMouseDown(const GuiEvent &event)
       mMouseMovingWin = false;
 
       //see if we clicked on the right edge
-      if (mResizeWidth && (localPoint.x > mBounds.extent.x - mResizeRightWidth))
+      if (mResizeWidth && (localPoint.x > getWidth() - mResizeRightWidth))
       {
          mMouseResizeWidth = true;
       }
 
       //see if we clicked on the bottom edge (as well)
-      if (mResizeHeight && (localPoint.y > mBounds.extent.y - mResizeBottomHeight))
+      if (mResizeHeight && (localPoint.y > getHeight() - mResizeBottomHeight))
       {
          mMouseResizeHeight = true;
       }
@@ -262,13 +328,13 @@ void GuiWindowCtrl::onMouseDragged(const GuiEvent &event)
 
    Point2I deltaMousePosition = event.mousePoint - mMouseDownPosition;
 
-   Point2I newPosition = mBounds.point;
-   Point2I newExtent = mBounds.extent;
+   Point2I newPosition = getPosition();
+   Point2I newExtent = getExtent();
    bool update = false;
    if (mMouseMovingWin && parent)
    {
-      newPosition.x = getMax(0, getMin(parent->mBounds.extent.x - mBounds.extent.x, mOrigBounds.point.x + deltaMousePosition.x));
-      newPosition.y = getMax(0, getMin(parent->mBounds.extent.y - mBounds.extent.y, mOrigBounds.point.y + deltaMousePosition.y));
+      newPosition.x = getMax(0, getMin(parent->getWidth() - getWidth(), mOrigBounds.point.x + deltaMousePosition.x));
+      newPosition.y = getMax(0, getMin(parent->getHeight() - getHeight(), mOrigBounds.point.y + deltaMousePosition.y));
       update = true;
    }
    else if(mPressClose || mPressMaximize || mPressMinimize)
@@ -329,8 +395,8 @@ void GuiWindowCtrl::onMouseUp(const GuiEvent &event)
       if (mMaximized)
       {
          //resize to the previous position and extent, bounded by the parent
-         resize(Point2I(getMax(0, getMin(parent->mBounds.extent.x - mStandardBounds.extent.x, mStandardBounds.point.x)),
-                        getMax(0, getMin(parent->mBounds.extent.y - mStandardBounds.extent.y, mStandardBounds.point.y))),
+         resize(Point2I(getMax(0, getMin(parent->getWidth() - mStandardBounds.extent.x, mStandardBounds.point.x)),
+                        getMax(0, getMin(parent->getHeight() - mStandardBounds.extent.y, mStandardBounds.point.y))),
                         mStandardBounds.extent);
          //set the flag
          mMaximized = false;
@@ -348,7 +414,7 @@ void GuiWindowCtrl::onMouseUp(const GuiEvent &event)
          }
 
          //resize to fit the parent
-         resize(Point2I(0, 0), parent->mBounds.extent);
+         resize(Point2I(0, 0), parent->getExtent());
 
          //set the flag
          mMaximized = true;
@@ -359,15 +425,15 @@ void GuiWindowCtrl::onMouseUp(const GuiEvent &event)
       if (mMinimized)
       {
          //resize to the previous position and extent, bounded by the parent
-         resize(Point2I(getMax(0, getMin(parent->mBounds.extent.x - mStandardBounds.extent.x, mStandardBounds.point.x)),
-                        getMax(0, getMin(parent->mBounds.extent.y - mStandardBounds.extent.y, mStandardBounds.point.y))),
+         resize(Point2I(getMax(0, getMin(parent->getWidth() - mStandardBounds.extent.x, mStandardBounds.point.x)),
+                        getMax(0, getMin(parent->getHeight() - mStandardBounds.extent.y, mStandardBounds.point.y))),
                         mStandardBounds.extent);
          //set the flag
          mMinimized = false;
       }
       else
       {
-         if (parent->mBounds.extent.x < 100 || parent->mBounds.extent.y < mTitleHeight + 3)
+         if (parent->getWidth() < 100 || parent->getHeight() < mTitleHeight + 3)
             return;
 
          //only save the position if we're not maximized
@@ -408,12 +474,12 @@ void GuiWindowCtrl::onMouseUp(const GuiEvent &event)
          Point2I newExtent(98, mTitleHeight);
 
          //first, how many can fit across
-         S32 numAcross = getMax(1, (parent->mBounds.extent.x / newExtent.x + 2));
+         S32 numAcross = getMax(1, (parent->getWidth() / newExtent.x + 2));
 
          //find the new "mini position"
          Point2I newPosition;
          newPosition.x = (count % numAcross) * (newExtent.x + 2) + 2;
-         newPosition.y = parent->mBounds.extent.y - (((count / numAcross) + 1) * (newExtent.y + 2)) - 2;
+         newPosition.y = parent->getHeight() - (((count / numAcross) + 1) * (newExtent.y + 2)) - 2;
 
          //find the minimized position and extent
          resize(newPosition, newExtent);
@@ -568,7 +634,7 @@ void GuiWindowCtrl::onRender(Point2I offset, const RectI &updateRect)
    //draw the outline
    RectI winRect;
    winRect.point = offset;
-   winRect.extent = mBounds.extent;
+   winRect.extent = getExtent();
    GuiCanvas *root = getRoot();
    GuiControl *firstResponder = root ? root->getFirstResponder() : NULL;
 
@@ -585,13 +651,13 @@ void GuiWindowCtrl::onRender(Point2I offset, const RectI &updateRect)
 
    GFX->getDrawUtil()->clearBitmapModulation();
    GFX->getDrawUtil()->drawBitmapSR(mTextureObject, offset, mBitmapBounds[topBase]);
-   GFX->getDrawUtil()->drawBitmapSR(mTextureObject, Point2I(offset.x + mBounds.extent.x - mBitmapBounds[topBase+1].extent.x, offset.y),
+   GFX->getDrawUtil()->drawBitmapSR(mTextureObject, Point2I(offset.x + getWidth() - mBitmapBounds[topBase+1].extent.x, offset.y),
                    mBitmapBounds[topBase + 1]);
 
    RectI destRect;
    destRect.point.x = offset.x + mBitmapBounds[topBase].extent.x;
    destRect.point.y = offset.y;
-   destRect.extent.x = mBounds.extent.x - mBitmapBounds[topBase].extent.x - mBitmapBounds[topBase + 1].extent.x;
+   destRect.extent.x = getWidth() - mBitmapBounds[topBase].extent.x - mBitmapBounds[topBase + 1].extent.x;
    destRect.extent.y = mBitmapBounds[topBase + 2].extent.y;
    RectI stretchRect = mBitmapBounds[topBase + 2];
    stretchRect.inset(1,0);
@@ -600,55 +666,56 @@ void GuiWindowCtrl::onRender(Point2I offset, const RectI &updateRect)
    destRect.point.x = offset.x;
    destRect.point.y = offset.y + mBitmapBounds[topBase].extent.y;
    destRect.extent.x = mBitmapBounds[BorderLeft].extent.x;
-   destRect.extent.y = mBounds.extent.y - mBitmapBounds[topBase].extent.y - mBitmapBounds[BorderBottomLeft].extent.y;
+   destRect.extent.y = getHeight() - mBitmapBounds[topBase].extent.y - mBitmapBounds[BorderBottomLeft].extent.y;
    stretchRect = mBitmapBounds[BorderLeft];
    stretchRect.inset(0,1);
    GFX->getDrawUtil()->drawBitmapStretchSR(mTextureObject, destRect, stretchRect);
 
-   destRect.point.x = offset.x + mBounds.extent.x - mBitmapBounds[BorderRight].extent.x;
+   destRect.point.x = offset.x + getWidth() - mBitmapBounds[BorderRight].extent.x;
    destRect.extent.x = mBitmapBounds[BorderRight].extent.x;
    destRect.point.y = offset.y + mBitmapBounds[topBase + 1].extent.y;
-   destRect.extent.y = mBounds.extent.y - mBitmapBounds[topBase + 1].extent.y - mBitmapBounds[BorderBottomRight].extent.y;
+   destRect.extent.y = getHeight() - mBitmapBounds[topBase + 1].extent.y - mBitmapBounds[BorderBottomRight].extent.y;
 
    stretchRect = mBitmapBounds[BorderRight];
    stretchRect.inset(0,1);
    GFX->getDrawUtil()->drawBitmapStretchSR(mTextureObject, destRect, stretchRect);
 
-   GFX->getDrawUtil()->drawBitmapSR(mTextureObject, offset + Point2I(0, mBounds.extent.y - mBitmapBounds[BorderBottomLeft].extent.y), mBitmapBounds[BorderBottomLeft]);
-   GFX->getDrawUtil()->drawBitmapSR(mTextureObject, offset + mBounds.extent - mBitmapBounds[BorderBottomRight].extent, mBitmapBounds[BorderBottomRight]);
+   GFX->getDrawUtil()->drawBitmapSR(mTextureObject, offset + Point2I(0, getHeight() - mBitmapBounds[BorderBottomLeft].extent.y), mBitmapBounds[BorderBottomLeft]);
+   GFX->getDrawUtil()->drawBitmapSR(mTextureObject, offset + getExtent() - mBitmapBounds[BorderBottomRight].extent, mBitmapBounds[BorderBottomRight]);
 
    destRect.point.x = offset.x + mBitmapBounds[BorderBottomLeft].extent.x;
-   destRect.extent.x = mBounds.extent.x - mBitmapBounds[BorderBottomLeft].extent.x - mBitmapBounds[BorderBottomRight].extent.x;
+   destRect.extent.x = getWidth() - mBitmapBounds[BorderBottomLeft].extent.x - mBitmapBounds[BorderBottomRight].extent.x;
 
-   destRect.point.y = offset.y + mBounds.extent.y - mBitmapBounds[BorderBottom].extent.y;
+   destRect.point.y = offset.y + getHeight() - mBitmapBounds[BorderBottom].extent.y;
    destRect.extent.y = mBitmapBounds[BorderBottom].extent.y;
    stretchRect = mBitmapBounds[BorderBottom];
    stretchRect.inset(1,0);
 
    GFX->getDrawUtil()->drawBitmapStretchSR(mTextureObject, destRect, stretchRect);
 
-   //draw the title
-   // dhc addition: copied/modded from renderJustifiedText, since we enforce a
-   // different color usage here. NOTE: it currently CAN overdraw the controls
-   // if mis-positioned or 'scrunched' in a small width.
-   GFX->getDrawUtil()->setBitmapModulation(mProfile->mFontColor);
-   S32 textWidth = mProfile->mFont->getStrWidth((const UTF8 *)mText);
-   Point2I start(0,0);
-   // align the horizontal
-   if ( mProfile->mAlignment == GuiControlProfile::RightJustify )
-      start.set( winRect.extent.x - textWidth, 0 );
-   else if ( mProfile->mAlignment == GuiControlProfile::CenterJustify )
-      start.set( ( winRect.extent.x - textWidth) / 2, 0 );
-   else // GuiControlProfile::LeftJustify or garbage... ;)
-      start.set( 0, 0 );
-   // If the text is longer then the box size, (it'll get clipped) so force Left Justify
-   if( textWidth > winRect.extent.x ) start.set( 0, 0 );
-   // center the vertical
-//   start.y = ( winRect.extent.y - ( font->getHeight() - 2 ) ) / 2;
-   GFX->getDrawUtil()->drawText(mFont, start + offset + mProfile->mTextOffset, mText);
+    // Draw the title
+    // dhc addition: copied/modded from renderJustifiedText, since we enforce a
+    // different color usage here. NOTE: it currently CAN overdraw the controls
+    // if mis-positioned or 'scrunched' in a small width.
+    GFX->getDrawUtil()->setBitmapModulation(mProfile->mFontColor);
+    S32 textWidth = mProfile->mFont->getStrWidth((const UTF8 *)mText);
+    Point2I start(0,0);
 
-   // deal with rendering the titlebar controls
-   AssertFatal(root, "Unable to get the root Canvas.");
+    // Align the horizontal
+    if ( mProfile->mAlignment == GuiControlProfile::RightJustify )
+        start.set( winRect.extent.x - textWidth, 0 );
+    else if ( mProfile->mAlignment == GuiControlProfile::CenterJustify )
+        start.set( ( winRect.extent.x - textWidth) / 2, 0 );
+    else // GuiControlProfile::LeftJustify or garbage... ;)
+        start.set( 0, 0 );
+    // If the text is longer then the box size, (it'll get clipped) so force Left Justify
+    if( textWidth > winRect.extent.x ) start.set( 0, 0 );
+    // center the vertical
+    //   start.y = ( winRect.extent.y - ( font->getHeight() - 2 ) ) / 2;
+    GFX->getDrawUtil()->drawText( mProfile->mFont, start + offset + mProfile->mTextOffset, mText );
+    
+    // Deal with rendering the titlebar controls
+    AssertFatal(root, "Unable to get the root GuiCanvas.");
    Point2I localPoint = globalToLocalCoord(root->getCursorPos());
 
    //draw the close button
@@ -703,77 +770,44 @@ void GuiWindowCtrl::onRender(Point2I offset, const RectI &updateRect)
 
 void GuiWindowCtrl::getCursor(GuiCursor *&cursor, bool &showCursor, const GuiEvent &lastGuiEvent)
 {
-   Point2I mousePos  = lastGuiEvent.mousePoint;
-   RectI winRect   = mBounds;
-   RectI rightRect = RectI( ( ( winRect.extent.x + winRect.point.x ) - mResizeRightWidth), winRect.point.y, mResizeRightWidth, winRect.extent.y );
-   RectI bottomRect = RectI( winRect.point.x, ( ( winRect.point.y + winRect.extent.y ) - mResizeBottomHeight), winRect.extent.x , mResizeBottomHeight );
-
-   bool resizeRight = rightRect.pointInRect( mousePos );
-   bool resizeBottom = bottomRect.pointInRect( mousePos );
-
-   if ( resizeRight && resizeBottom && mResizeHeight && mResizeWidth )
-   {
-      if(GuiControl::smCursorChanged != CursorManager::curResizeNWSE)
-      {
-         // We've already changed the cursor, 
-         // so set it back before we change it again.
-         if(GuiControl::smCursorChanged != -1)
-            Input::popCursor();
-
-         // Now change the cursor shape
-         Input::pushCursor(CursorManager::curResizeNWSE);
-         GuiControl::smCursorChanged = CursorManager::curResizeNWSE;
-      }
-
-      //cursor = mNWSECursor;
-   }
-      
-   else if ( resizeBottom && mResizeHeight )
-   {
-      if(GuiControl::smCursorChanged != CursorManager::curResizeHorz)
-      {
-         // We've already changed the cursor, 
-         // so set it back before we change it again.
-         if(GuiControl::smCursorChanged != -1)
-            Input::popCursor();
-
-         // Now change the cursor shape
-         Input::pushCursor(CursorManager::curResizeHorz);
-         GuiControl::smCursorChanged = CursorManager::curResizeHorz;
-      }
-
-      //cursor = mUpDownCursor;
-   }
-   else if ( resizeRight && mResizeWidth )
-   {
-      if(GuiControl::smCursorChanged != CursorManager::curResizeVert)
-      {
-         // We've already changed the cursor, 
-         // so set it back before we change it again.
-         if(GuiControl::smCursorChanged != -1)
-            Input::popCursor();
-
-         // Now change the cursor shape
-         Input::pushCursor(CursorManager::curResizeVert);
-         GuiControl::smCursorChanged = CursorManager::curResizeVert;
-      }
-
-      //cursor = mLeftRightCursor;
-   }
-   else
-   {
-      if(GuiControl::smCursorChanged != -1)
-      {
-         // We've already changed the cursor, 
-         // so set it back before we change it again.
-         Input::popCursor();
-
-         // We haven't changed it
-         GuiControl::smCursorChanged = -1;
-      }
-
-      return;
-   }
+    GuiCanvas *pRoot = getRoot();
+    if( !pRoot )
+        return;
+    PlatformWindow *pWindow = static_cast<GuiCanvas*>(getRoot())->getPlatformWindow();
+    AssertFatal(pWindow != NULL,"GuiControl without owning platform window!  This should not be possible.");
+    PlatformCursorController *pController = pWindow->getCursorController();
+    AssertFatal(pController != NULL,"PlatformWindow without an owned CursorController!");
+    
+    S32 desiredCursor = PlatformCursorController::curArrow;
+    S32 hitEdges = findHitEdges( lastGuiEvent.mousePoint );
+    
+    if( hitEdges & edgeBottom && hitEdges & edgeLeft && mResizeHeight )
+        desiredCursor = PlatformCursorController::curResizeNESW;
+    else if( hitEdges & edgeBottom && hitEdges & edgeRight && mResizeHeight  )
+        desiredCursor = PlatformCursorController::curResizeNWSE;
+    else if( hitEdges & edgeBottom && mResizeHeight )
+        desiredCursor = PlatformCursorController::curResizeHorz;
+    else if( hitEdges & edgeTop && hitEdges & edgeLeft && mResizeHeight )
+        desiredCursor = PlatformCursorController::curResizeNWSE;
+    else if( hitEdges & edgeTop && hitEdges & edgeRight && mResizeHeight )
+        desiredCursor = PlatformCursorController::curResizeNESW;
+    else if( hitEdges & edgeTop && mResizeHeight )
+        desiredCursor = PlatformCursorController::curResizeHorz;
+    else if ( hitEdges & edgeLeft && mResizeWidth )
+        desiredCursor = PlatformCursorController::curResizeVert;
+    else if( hitEdges & edgeRight && mResizeWidth )
+        desiredCursor = PlatformCursorController::curResizeVert;
+    else
+        desiredCursor = PlatformCursorController::curArrow;
+    
+    // Bail if we're already at the desired cursor
+    if(pRoot->mCursorChanged == desiredCursor )
+        return;
+    
+    // Now change the cursor shape
+    pController->popCursor();
+    pController->pushCursor(desiredCursor);
+    pRoot->mCursorChanged = desiredCursor;
 }
 
 

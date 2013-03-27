@@ -38,6 +38,7 @@
 
 #include "graphics/gfxDevice.h"
 #include "component/interfaces/IProcessInput.h"
+#include "windowManager/platformWindowMgr.h"
 
 /// A canvas on which rendering occurs.
 ///
@@ -108,10 +109,10 @@ protected:
    bool        cursorON;
    bool        mShowCursor;
    bool        mRenderFront;
-   Point2F     cursorPt;
-   Point2I     lastCursorPt;
-   GuiCursor   *defaultCursor;
-   GuiCursor   *lastCursor;
+   Point2F     mCursorPt;
+   Point2I     mLastCursorPt;
+   GuiCursor   *mDefaultCursor;
+   GuiCursor   *mLastCursor;
    bool        lastCursorON;
    /// @}
 
@@ -168,7 +169,13 @@ protected:
    U32 hoverLeftControlTime;
 
    /// @}
-   GFXWindowTarget *mWindowTarget;
+
+    // Internal event handling callbacks for use with PlatformWindow.
+    void handleResize     (WindowId did, S32 width,     S32 height);
+    void handleAppEvent   (WindowId did, S32 event);
+    void handlePaintEvent (WindowId did);
+
+    PlatformWindow *mPlatformWindow;
 
 public:
    DECLARE_CONOBJECT(GuiCanvas);
@@ -225,9 +232,12 @@ public:
 
    /// @name Canvas Content Management
    /// @{
-    /// This returns the GFXWindowTarget that coresponds to this Canvas
-    virtual GFXWindowTarget *getWindowTarget()  { return mWindowTarget;   }
-
+    /// This returns the PlatformWindow owned by this Canvas
+    virtual PlatformWindow *getPlatformWindow()
+    {
+        return mPlatformWindow;
+    }
+    
    /// This sets the content control to something different
    /// @param   gui   New content control
    virtual void setContentControl(GuiControl *gui);
@@ -261,6 +271,7 @@ public:
    /// Sets the cursor for the canvas.
    /// @param   cursor   New cursor to use.
    virtual void setCursor(GuiCursor *cursor);
+    S32 mCursorChanged;
 
    /// Returns true if the cursor is on.
    virtual bool isCursorON() {return cursorON; }
@@ -281,17 +292,17 @@ public:
    virtual void setCursorPos(const Point2I &pt);
 
    /// Returns the point, in screenspace, at which the cursor is located.
-   virtual Point2I getCursorPos()                 { return Point2I(S32(cursorPt.x), S32(cursorPt.y)); }
+   virtual Point2I getCursorPos()                 { return Point2I(S32(mCursorPt.x), S32(mCursorPt.y)); }
 
    /// Enable/disable rendering of the cursor.
    /// @param   state    True if we should render cursor
-   virtual void showCursor(bool state)            { mShowCursor = state; Input::setCursorState(state); }
+   virtual void showCursor(bool state)            { mShowCursor = state; mPlatformWindow->setCursorVisible(state); }
 
    /// Returns true if the cursor is being rendered.
    virtual bool isCursorShown()                   { return(mShowCursor); }
    /// @}
    ///used by the tooltip resource
-   Point2I getCursorExtent() { return defaultCursor->getExtent(); }
+   Point2I getCursorExtent() { return mDefaultCursor->getExtent(); }
  
    /// @name Input Processing
    /// @{
@@ -391,8 +402,10 @@ public:
    /// @param   firstResponder    Control to designate as first responder
    virtual void setFirstResponder(GuiControl *firstResponder);
    /// @}
-};
 
-extern GuiCanvas *Canvas;
+    virtual Point2I getWindowSize();
+    virtual void setWindowTitle(const char *newTitle);
+
+};
 
 #endif

@@ -38,9 +38,7 @@
 static EnumTable::Enums tabAlignEnums[] =
 {
    { GuiTabBookCtrl::AlignTop,   "Top"    },
-   { GuiTabBookCtrl::AlignLeft,  "Left"   },
    { GuiTabBookCtrl::AlignBottom,"Bottom" },
-   { GuiTabBookCtrl::AlignRight,	"Right"  }
 };
 static EnumTable gTabAlignEnums(4,&tabAlignEnums[0]);
 
@@ -51,57 +49,53 @@ GuiTabBookCtrl::GuiTabBookCtrl()
 {
    VECTOR_SET_ASSOCIATION(mPages);
    mTabHeight = 24;
-   mLastTabHeight = mTabHeight;
-   mTabPosition = GuiTabBookCtrl::AlignTop;
-   mLastTabPosition = mTabPosition;
+   mTabPosition = AlignTop;
    mActivePage = NULL;
    mHoverTab = NULL;
    mHasTexture = false;
    mBitmapBounds = NULL;
-   mBounds.extent.set( 400, 300 );
+   setExtent( 400, 300 );
    mPageRect = RectI(0,0,0,0);
    mTabRect = RectI(0,0,0,0);
+   mFrontTabPadding = 0;
 
    mPages.reserve(12);
    mTabMargin = 7;
    mMinTabWidth = 64;
    mIsContainer = true;
-
-
-}
+    mSelectedPageNum = -1;
+    mDefaultPageNum = -1;
+    
+    mAllowReorder = false;
+    mDraggingTab  = false;
+    mDraggingTabRect = false;
+    mIsFirstWake = true;}
 
 void GuiTabBookCtrl::initPersistFields()
 {
    Parent::initPersistFields();
-   addField("TabPosition",		TypeEnum,		Offset(mTabPosition,GuiTabBookCtrl), 1, &gTabAlignEnums );
-   addField("TabHeight",		TypeS32,		Offset(mTabHeight,GuiTabBookCtrl) );
-   addField("TabMargin",   TypeS32,    Offset(mTabMargin,GuiTabBookCtrl));
-   addField("MinTabWidth", TypeS32,    Offset(mMinTabWidth,GuiTabBookCtrl));
+//   addField("tabPosition",		TypeEnum,		Offset(mTabPosition,GuiTabBookCtrl), 1, &gTabAlignEnums );
+    addField( "tabPosition",     TypeEnum, Offset( mTabPosition,    GuiTabBookCtrl ), 1, &gTabAlignEnums,
+             "Where to place the tab page headers." );
+    addField( "tabMargin",       TypeS32,  Offset( mTabMargin,      GuiTabBookCtrl ),
+             "Spacing to put between individual tab page headers." );
+    addField( "minTabWidth",     TypeS32,  Offset( mMinTabWidth,    GuiTabBookCtrl ),
+             "Minimum width allocated to a tab page header." );
+    addField( "tabHeight",       TypeS32,  Offset( mTabHeight,      GuiTabBookCtrl ),
+             "Height of tab page headers." );
+    addField( "allowReorder",    TypeBool, Offset( mAllowReorder,   GuiTabBookCtrl ),
+             "Whether reordering tabs with the mouse is allowed." );
+    addField( "defaultPage",     TypeS32,  Offset( mDefaultPageNum, GuiTabBookCtrl ),
+             "Index of page to select on first onWake() call (-1 to disable)." );
+    
+//    addProtectedField( "selectedPage", TypeS32, Offset( mSelectedPageNum, GuiTabBookCtrl ),
+//                      &_setSelectedPage, &defaultProtectedGetFn,
+//                      "Index of currently selected page." );
+    
+    addField( "frontTabPadding", TypeS32, Offset( mFrontTabPadding, GuiTabBookCtrl ),
+             "X offset of first tab page header." );
 }
 
-// Empty for now, will implement for handling design time context menu for manipulating pages
-ConsoleMethod( GuiTabBookCtrl, addPage, void, 2, 2, "() Empty")
-{
-   object->addNewPage();
-}
-
-//ConsoleMethod( GuiTabBookCtrl, removePage, void, 2, 2, "()")
-//{
-//}
-
-
-bool GuiTabBookCtrl::onAdd()
-{
-   Parent::onAdd();
-
-   return true;
-}
-
-
-void GuiTabBookCtrl::onRemove()
-{
-   Parent::onRemove();
-}
 
 void GuiTabBookCtrl::onChildRemoved( GuiControl* child )
 {
@@ -166,6 +160,71 @@ void GuiTabBookCtrl::onChildAdded( GuiControl *child )
 }
 
 
+//-----------------------------------------------------------------------------
+
+bool GuiTabBookCtrl::reOrder(SimObject* obj, SimObject* target)
+{
+    if ( !Parent::reOrder(obj, target) )
+        return false;
+    
+    // Store the Selected Page.
+    GuiTabPageCtrl *selectedPage = NULL;
+    if ( mSelectedPageNum != -1 )
+        selectedPage = mPages[mSelectedPageNum].Page;
+    
+    // Determine the Target Page Index.
+    S32 targetIndex = -1;
+    for( S32 i = 0; i < mPages.size(); i++ )
+    {
+        const TabHeaderInfo &info = mPages[i];
+        if ( info.Page == target )
+        {
+            targetIndex = i;
+            break;
+        }
+    }
+    
+    if ( targetIndex == -1 )
+    {
+        return false;
+    }
+    
+    for( S32 i = 0; i < mPages.size(); i++ )
+    {
+        const TabHeaderInfo &info = mPages[i];
+        if ( info.Page == obj )
+        {
+            // Store Info.
+            TabHeaderInfo objPage = info;
+            
+            // Remove.
+            mPages.erase( i );
+            // Insert.
+            mPages.insert( targetIndex, objPage );
+            
+            break;
+        }
+    }
+    
+    // Update Tabs.
+    calculatePageTabs();
+    
+    // Reselect Page.
+    selectPage( selectedPage );
+    
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+
+bool GuiTabBookCtrl::acceptsAsChild( SimObject* object ) const
+{
+    // Only accept tab pages.
+    return ( dynamic_cast< GuiTabPageCtrl* >( object ) != NULL );
+}
+
+//-----------------------------------------------------------------------------
+
 bool GuiTabBookCtrl::onWake()
 {
    if (! Parent::onWake())
@@ -176,11 +235,6 @@ bool GuiTabBookCtrl::onWake()
       mBitmapBounds = mProfile->mBitmapArrayRects.address();
 
    return true;
-}
-
-void GuiTabBookCtrl::onSleep()
-{
-   Parent::onSleep();
 }
 
 
@@ -198,19 +252,13 @@ void GuiTabBookCtrl::addNewPage()
    this->addObject( page );
 }
 
-void GuiTabBookCtrl::resize(const Point2I &newPosition, const Point2I &newExtent)
+bool GuiTabBookCtrl::resize(const Point2I &newPosition, const Point2I &newExtent)
 {
-   Parent::resize( newPosition, newExtent );
-
-   calculatePageTabs();
-
-   // Resize Children
-   SimSet::iterator i;
-   for(i = begin(); i != end(); i++)
-   {
-      GuiControl *ctrl = static_cast<GuiControl *>(*i);
-      ctrl->resize( mPageRect.point, mPageRect.extent );
-   }
+    bool result = Parent::resize( newPosition, newExtent );
+    
+    calculatePageTabs();
+    
+    return result;
 }
 
 void GuiTabBookCtrl::childResized(GuiControl *child)
@@ -230,6 +278,62 @@ void GuiTabBookCtrl::onMouseDown(const GuiEvent &event)
             selectPage( tab );
     }
 }
+
+//-----------------------------------------------------------------------------
+
+void GuiTabBookCtrl::onMouseUp(const GuiEvent &event)
+{
+    Parent::onMouseUp( event );
+    
+    mDraggingTab = false;
+    mDraggingTabRect = false;
+}
+
+//-----------------------------------------------------------------------------
+
+void GuiTabBookCtrl::onMouseDragged(const GuiEvent &event)
+{
+    Parent::onMouseDragged( event );
+    
+    if ( !mDraggingTab )
+        return;
+    
+    GuiTabPageCtrl *selectedPage = NULL;
+    if ( mSelectedPageNum != -1 )
+        selectedPage = mPages[mSelectedPageNum].Page;
+    
+    if ( !selectedPage )
+        return;
+    
+    Point2I localMouse = globalToLocalCoord( event.mousePoint );
+    if( mTabRect.pointInRect( localMouse ) )
+    {
+        GuiTabPageCtrl *tab = findHitTab( localMouse );
+        if( tab != NULL && tab != selectedPage )
+        {
+            S32 targetIndex = -1;
+            for( S32 i = 0; i < mPages.size(); i++ )
+            {
+                if( mPages[i].Page == tab )
+                {
+                    targetIndex = i;
+                    break;
+                }
+            }
+            
+            if ( targetIndex > mSelectedPageNum )
+            {
+                reOrder( tab, selectedPage );
+            }
+            else
+            {
+                reOrder( selectedPage, tab );
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
 
 void GuiTabBookCtrl::onMouseMove(const GuiEvent &event)
 {
@@ -282,413 +386,285 @@ bool GuiTabBookCtrl::onMouseDownEditor(const GuiEvent &event, Point2I offset)
 
 }
 
-void GuiTabBookCtrl::onPreRender()
+//-----------------------------------------------------------------------------
+
+void GuiTabBookCtrl::onRightMouseUp( const GuiEvent& event )
 {
-   // sometimes we need to resize because of a changed persistent field
-   // that's what this does
-   solveDirty();
+    Point2I localMouse = globalToLocalCoord( event.mousePoint );
+    if( mTabRect.pointInRect( localMouse ) )
+    {
+        GuiTabPageCtrl* tab = findHitTab( localMouse );
+        if( tab )
+            if (isMethod("onTabRightClick"))
+                Con::executef(4, this, "onTabRightClick", tab->getText(), getPageNum( tab ) );
+    }
 }
+
+//-----------------------------------------------------------------------------
 
 void GuiTabBookCtrl::onRender(Point2I offset, const RectI &updateRect)
 {
-   RectI tabRect = mTabRect;
-   tabRect.point += offset;
-   RectI pageRect = mPageRect;
-   pageRect.point += offset;
-
-   // We're so nice we'll store the old modulation before we clear it for our rendering! :)
-   ColorI oldModulation;
-   GFX->getDrawUtil()->getBitmapModulation( &oldModulation );
-
-   // Wipe it out
-   GFX->getDrawUtil()->clearBitmapModulation();
-
-   // Render background
-   renderBackground( offset, updateRect );
-
-   // Render our tabs
-   renderTabs( offset );
-
-   // Render Children
-   renderChildControls( offset, updateRect );
-
-   // Restore old modulation
-   GFX->getDrawUtil()->setBitmapModulation( oldModulation );
+    RectI tabRect = mTabRect;
+    tabRect.point += offset;
+    RectI pageRect = mPageRect;
+    pageRect.point += offset;
+    
+    // We're so nice we'll store the old modulation before we clear it for our rendering! :)
+    ColorI oldModulation;
+    GFX->getDrawUtil()->getBitmapModulation( &oldModulation );
+    
+    // Wipe it out
+    GFX->getDrawUtil()->clearBitmapModulation();
+    
+    Parent::onRender(offset, updateRect);
+    
+    // Clip to tab area
+    RectI savedClipRect = GFX->getClipRect();
+    GFX->setClipRect( tabRect );
+    
+    // Render our tabs
+    renderTabs( offset, tabRect );
+    
+    // Restore Rect.
+    GFX->setClipRect( savedClipRect );
+    
+    // Restore old modulation
+    GFX->getDrawUtil()->setBitmapModulation( oldModulation );
 }
 
-void GuiTabBookCtrl::renderBackground( Point2I offset, const RectI& updateRect )
+
+//-----------------------------------------------------------------------------
+
+void GuiTabBookCtrl::renderTabs( const Point2I &offset, const RectI &tabRect )
 {
-   RectI winRect;
-   winRect.point = offset;
-   winRect.extent = mBounds.extent;
-
-   if( mHasTexture && mProfile->mBitmapArrayRects.size() >= NumBitmaps)
-      renderSizableBitmapBordersFilledIndex( winRect, TabBackground, mProfile );
-   else
-      GFX->getDrawUtil()->drawRectFill(winRect, mProfile->mFillColor);
-
+    // If the tab size is zero, don't render tabs,
+    //  assuming it's a tab-less book
+    if( mPages.empty() || mTabHeight <= 0 )
+        return;
+    
+    for( S32 i = 0; i < mPages.size(); i++ )
+    {
+        const TabHeaderInfo &currentTabInfo = mPages[i];
+        RectI tabBounds = mPages[i].TabRect;
+        tabBounds.point += offset;
+        GuiTabPageCtrl *tab = mPages[i].Page;
+        if( tab != NULL )
+            renderTab( tabBounds, tab );
+        
+        // If we're on the last tab, draw the nice end piece
+        if( i + 1 == mPages.size() )
+        {
+            Point2I tabEndPoint = Point2I(currentTabInfo.TabRect.point.x + currentTabInfo.TabRect.extent.x + offset.x, currentTabInfo.TabRect.point.y + offset.y);
+            Point2I tabEndExtent = Point2I((tabRect.point.x + tabRect.extent.x) - tabEndPoint.x, currentTabInfo.TabRect.extent.y);
+            RectI tabEndRect = RectI(tabEndPoint,tabEndExtent);
+            
+            GFX->setClipRect( tabEndRect );
+            
+            // As it turns out the last tab can be outside the viewport in which
+            // case trying to render causes a DX assert. Could be better if
+            // setClipRect returned a bool.
+            if ( GFX->getViewport().isValidRect() )
+                renderFixedBitmapBordersFilled( tabEndRect, TabEnds + 1, mProfile );
+        }
+    }
 }
 
-
-void GuiTabBookCtrl::renderTabs( const Point2I &offset )
-{
-   // If the tab size is zero, don't render tabs,
-   //  and assume it's a tab-less tab-book - JDD
-   if( mPages.empty() || mTabHeight <= 0 )
-      return;
-
-   for( S32 i = 0; i < mPages.size(); i++ )
-   {
-      RectI tabBounds = mPages[i].TabRect;
-      tabBounds.point += offset;
-      GuiTabPageCtrl *tab = mPages[i].Page;
-      if( tab != NULL )
-         renderTab( tabBounds, tab );
-   }
-}
+//-----------------------------------------------------------------------------
 
 void GuiTabBookCtrl::renderTab( RectI tabRect, GuiTabPageCtrl *tab )
 {
-   StringTableEntry text = tab->getText();
-   ColorI oldColor;
-
-   GFX->getDrawUtil()->getBitmapModulation( &oldColor );
-
-   // Is this a skinned control?
-   if( mHasTexture && mProfile->mBitmapArrayRects.size() >= 9 )
-   {
-      S32 indexMultiplier = 1;
-      switch( mTabPosition )
-      {
-      case AlignTop:
-      case AlignBottom:
-         
-         if ( mActivePage == tab )
-            indexMultiplier += TabSelected;
-         else if( mHoverTab == tab )
-            indexMultiplier += TabHover;
-         else
-            indexMultiplier += TabNormal;
-         
-         //GFX->getDrawUtil()->drawBitmapStretchSR(mProfile->mTextureHandle,tabRect,stretchRect, ( mTabPosition == AlignBottom ) ? GFlip_Y : 0 );
-         break;
-      case AlignLeft:
-      case AlignRight:
-         if ( mActivePage == tab )
-            indexMultiplier += TabSelectedVertical;
-         else if( mHoverTab == tab )
-            indexMultiplier += TabHoverVertical;
-         else
-            indexMultiplier += TabNormalVertical;
-
-         //GFX->getDrawUtil()->drawBitmapStretchSR(mProfile->mTextureHandle,tabRect,stretchRect, ( mTabPosition == AlignRight ) ? GFlip_X : 0 );
-         break;
-      } 
-
-      renderFixedBitmapBordersFilled( tabRect, indexMultiplier, mProfile );
-   }
-   else
-   {
-      // If this isn't a skinned control or the bitmap is simply missing, handle it WELL
-      if ( mActivePage == tab )
-         GFX->getDrawUtil()->drawRectFill(tabRect, mProfile->mFillColor);
-      else if( mHoverTab == tab )
-         GFX->getDrawUtil()->drawRectFill(tabRect, mProfile->mFillColorHL);
-      else
-         GFX->getDrawUtil()->drawRectFill(tabRect, mProfile->mFillColorNA);
-
-   }
-
-
-   GFX->getDrawUtil()->setBitmapModulation(mProfile->mFontColor);
-
-   switch( mTabPosition )
-   {
-   case AlignTop:
-   case AlignBottom:
-      renderJustifiedTextRot( tabRect.point, tabRect.extent, text, 0);
-   break;
-   case AlignLeft:
-      renderJustifiedTextRot( tabRect.point, tabRect.extent, text, -90 );
-      break;
-   case AlignRight:
-      renderJustifiedTextRot( tabRect.point, tabRect.extent, text, -90 );
-      break;
-   }
-
-   GFX->getDrawUtil()->setBitmapModulation( oldColor);
-
+    StringTableEntry text = tab->getText();
+    ColorI oldColor;
+    
+    GFX->getDrawUtil()->getBitmapModulation( &oldColor );
+    
+    // Is this a skinned control?
+    if( mHasTexture && mProfile->mBitmapArrayRects.size() >= 9 )
+    {
+        S32 indexMultiplier = 1;
+        switch( mTabPosition )
+        {
+            case AlignTop:
+            case AlignBottom:
+                
+                if ( mActivePage == tab )
+                    indexMultiplier += TabSelected;
+                else if( mHoverTab == tab )
+                    indexMultiplier += TabHover;
+                else
+                    indexMultiplier += TabNormal;
+                break;
+        }
+        
+        renderFixedBitmapBordersFilled( tabRect, indexMultiplier, mProfile );
+    }
+    else
+    {
+        // If this isn't a skinned control or the bitmap is simply missing, handle it WELL
+        if ( mActivePage == tab )
+            GFX->getDrawUtil()->drawRectFill(tabRect, mProfile->mFillColor);
+        else if( mHoverTab == tab )
+            GFX->getDrawUtil()->drawRectFill(tabRect, mProfile->mFillColorHL);
+        else
+            GFX->getDrawUtil()->drawRectFill(tabRect, mProfile->mFillColorNA);
+        
+    }
+    
+    
+    GFX->getDrawUtil()->setBitmapModulation(mProfile->mFontColor);
+    
+    switch( mTabPosition )
+    {
+        case AlignTop:
+        case AlignBottom:
+            renderJustifiedText( tabRect.point, tabRect.extent, text);
+            break;
+    }
+    
+    GFX->getDrawUtil()->setBitmapModulation( oldColor);
+    
 }
 
-void GuiTabBookCtrl::renderJustifiedTextRot(Point2I offset, Point2I extent, const char *text, F32 rot )
-{
-   GFont *font = mProfile->mFont;
-   S32 textWidth = font->getStrWidth(text);
-   Point2I start;
+//-----------------------------------------------------------------------------
 
-   offset += mProfile->mTextOffset;
-
-   if( mTabPosition == AlignLeft || mTabPosition == AlignRight )
-   {
-      switch( mProfile->mAlignment )
-      {
-      case GuiControlProfile::RightJustify:
-         start.set( 0, extent.y - textWidth);
-         break;
-      case GuiControlProfile::CenterJustify:
-         start.set( 0, ( extent.y - textWidth) / 2);
-         break;
-      default:
-         // GuiControlProfile::LeftJustify
-         start.set( 0, 0 );
-         break;
-      }
-
-      if( textWidth > extent.y )
-         start.set( 0, 0 );
-      start.x = ( ( extent.x - font->getHeight() ) / 2 ) + font->getHeight();
-
-   }
-   else
-   {
-      // align the horizontal
-      switch( mProfile->mAlignment )
-      {
-      case GuiControlProfile::RightJustify:
-         start.set( extent.x - textWidth, 0 );
-         break;
-      case GuiControlProfile::CenterJustify:
-         start.set( ( extent.x - textWidth) / 2, 0 );
-         break;
-      default:
-         // GuiControlProfile::LeftJustify
-         start.set( 0, 0 );
-         break;
-      }
-
-      if( textWidth > extent.x )
-         start.set( 0, 0 );
-      start.y = ( extent.y - font->getHeight() ) / 2;
-
-   }
-
-   GFX->getDrawUtil()->drawText( font, start + offset, text, mProfile->mFontColors,9,rot );
-}
-
-// This is nothing but a clever hack to allow the tab page children
-// to cast this to a GuiControl* so that the file doesn't need to have circular
-// includes.  generic method overriding for the win!
 void GuiTabBookCtrl::setUpdate()
 {
-   Parent::setUpdate();
-
-   setUpdateRegion(Point2I(0,0), mBounds.extent);
-
-   calculatePageTabs();
+    Parent::setUpdate();
+    
+    setUpdateRegion(Point2I(0,0), getExtent());
+    
+    calculatePageTabs();
 }
 
-void GuiTabBookCtrl::solveDirty()
-{
-   bool dirty = false;
-   if( mTabPosition != mLastTabPosition )
-   {
-      mLastTabPosition = mTabPosition;
-      dirty = true;
-   }
-
-   if( mTabHeight != mLastTabHeight )
-   {
-      mLastTabHeight = mTabHeight;
-      dirty = true;
-   }
-
-   if( mTabWidth != mLastTabWidth )
-   {
-      mLastTabWidth = mTabWidth;
-      dirty = true;
-   }
-
-   if( dirty )
-   {
-      calculatePageTabs();
-      resize( mBounds.point, mBounds.extent );
-   }
-
-}
+//-----------------------------------------------------------------------------
 
 S32 GuiTabBookCtrl::calculatePageTabWidth( GuiTabPageCtrl *page )
 {
-   if( !page )
-      return mTabWidth;
-
-   StringTableEntry text = page->getText();
-
-   if( !text || dStrlen(text) == 0 || mProfile->mFont == '\0' )
-      return mTabWidth;
-
-   GFont *font = mProfile->mFont;
-
-   return font->getStrNWidth( text, dStrlen(text) );
+    if( !page )
+        return mMinTabWidth;
+    
+    const char* text = page->getText();
+    
+    if( !text || dStrlen(text) == 0 || mProfile->mFont == NULL )
+        return mMinTabWidth;
+    
+    GFont *font = mProfile->mFont;
+    
+    return font->getStrNWidth( text, dStrlen(text) );
 
 }
 
+//-----------------------------------------------------------------------------
+
+const RectI GuiTabBookCtrl::getClientRect()
+{
+    
+    if( !mProfile || mProfile->mBitmapArrayRects.size() < NumBitmaps )
+        return Parent::getClientRect();
+    
+    return mPageRect;
+}
+
+
 void GuiTabBookCtrl::calculatePageTabs()
 {
-   // Short Circuit.
-   //
-   // If the tab size is zero, don't render tabs,
-   //  and assume it's a tab-less tab-book - JDD
-   if( mPages.empty() || mTabHeight <= 0 )
-      return;
-
-   S32 currRow    = 0;
-   S32 currColumn = 0;
-   S32 currX      = 0;
-   S32 currY      = 0;
-   S32 maxWidth   = 0;
-
-   for( S32 i = 0; i < mPages.size(); i++ )
-   {
-      // Fetch Tab Width
-      S32 tabWidth = calculatePageTabWidth( mPages[i].Page ) + ( mTabMargin * 2 );
-      tabWidth = getMax( tabWidth, mMinTabWidth );
-      TabHeaderInfo &info = mPages[i];
-      switch( mTabPosition )
-      {
-      case AlignTop:
-      case AlignBottom:
-         // If we're going to go outside our bounds
-         // with this tab move it down a row
-         if( currX + tabWidth > mBounds.extent.x )
-         {
-            // Calculate and Advance State.
-            maxWidth = getMax( tabWidth, maxWidth );
-            balanceRow( currRow, currX );
-            info.TabRow = ++currRow;
-            // Reset Necessaries
-            info.TabColumn = currColumn = maxWidth = currX = 0;
-         }
-         else
-         {
-            info.TabRow = currRow;
-            info.TabColumn = currColumn++;
-         }
-
-         // Calculate Tabs Bounding Rect
-         info.TabRect.point.x  = currX;
-         info.TabRect.extent.x = tabWidth;
-         info.TabRect.extent.y = mTabHeight;
-
-         // Adjust Y Point based on alignment
-         if( mTabPosition == AlignTop )
-            info.TabRect.point.y  = ( info.TabRow * mTabHeight );
-         else 
-            info.TabRect.point.y  = mBounds.extent.y - ( ( 1 + info.TabRow ) * mTabHeight );
-
-         currX += tabWidth;
-         break;
-      case AlignLeft:
-      case AlignRight:
-         // If we're going to go outside our bounds
-         // with this tab move it down a row
-         if( currY + tabWidth > mBounds.extent.y )
-         {
-
-            // Balance Tab Column.
-            balanceColumn( currColumn, currY );
-
-            // Calculate and Advance State.
-            info.TabColumn = ++currColumn;
-            info.TabRow = currRow = currY = 0;
-         }
-         else
-         {
-            info.TabColumn = currColumn;
-            info.TabRow = currRow++;
-         }
-
-         // Calculate Tabs Bounding Rect
-         info.TabRect.point.y  = currY;
-         info.TabRect.extent.y = tabWidth;
-         info.TabRect.extent.x = mTabHeight;
-
-         // Adjust Y Point based on alignment
-         if( mTabPosition == AlignLeft )
-            info.TabRect.point.x  = ( info.TabColumn * mTabHeight );
-         else 
-            info.TabRect.point.x  = mBounds.extent.x - ( (1 + info.TabColumn) * mTabHeight );
-
-         currY += tabWidth;
-         break;
-      };
-   }
-
-   currRow++;
-   currColumn++;
-
-   Point2I localPoint = mBounds.extent;
-
-   // Calculate 
-   switch( mTabPosition )
-   {
-   case AlignTop:
-
-      localPoint.y -= mBounds.point.y;
-
-      mTabRect.point.x = 0;
-      mTabRect.extent.x = localPoint.x;
-      mTabRect.point.y = 0;
-      mTabRect.extent.y = currRow * mTabHeight;
-
-      mPageRect.point.x = 0;
-      mPageRect.point.y = mTabRect.extent.y;
-      mPageRect.extent.x = mTabRect.extent.x;
-      mPageRect.extent.y = mBounds.extent.y - mTabRect.extent.y;
-
-      break;
-   case AlignBottom:
-      mTabRect.point.x = 0;
-      mTabRect.extent.x = localPoint.x;
-      mTabRect.extent.y = currRow * mTabHeight;
-      mTabRect.point.y = mBounds.extent.y - mTabRect.extent.y;
-
-      mPageRect.point.x = 0;
-      mPageRect.point.y = 0;
-      mPageRect.extent.x = mTabRect.extent.x;
-      mPageRect.extent.y = localPoint.y - mTabRect.extent.y;
-
-      break;
-   case AlignLeft:
-      
-
-      mTabRect.point.y = 0;
-      mTabRect.extent.y = mBounds.extent.y;
-      mTabRect.point.x = 0;
-      mTabRect.extent.x = currColumn * mTabHeight;
-
-      mPageRect.point.y = 0;
-      mPageRect.point.x = mTabRect.extent.x;
-      mPageRect.extent.y = localPoint.y;
-      mPageRect.extent.x = localPoint.x - mTabRect.extent.x;
-
-      break;
-   case AlignRight:
-
-
-      mTabRect.extent.x = currColumn * mTabHeight;
-      mTabRect.point.y = 0;
-      mTabRect.extent.y = localPoint.y;
-      mTabRect.point.x = localPoint.x - mTabRect.extent.x;
-      
-      mPageRect.point.y = 0;
-      mPageRect.point.x = 0;
-      mPageRect.extent.y = localPoint.y;
-      mPageRect.extent.x = localPoint.x - mTabRect.extent.x;
-
-      break;
-   };
-
-
+    // Short Circuit.
+    //
+    // If the tab size is zero, don't render tabs,
+    //  assuming it's a tab-less book
+    if( mPages.empty() || mTabHeight <= 0 )
+    {
+        mPageRect.point.x = 0;
+        mPageRect.point.y = 0;
+        mPageRect.extent.x = getWidth();
+        mPageRect.extent.y = getHeight();
+        return;
+    }
+    
+    S32 currRow    = 0;
+    S32 currColumn = 0;
+    S32 currX      = mFrontTabPadding;
+    S32 maxWidth   = 0;
+    
+    for( S32 i = 0; i < mPages.size(); i++ )
+    {
+        // Fetch Tab Width
+        S32 tabWidth = calculatePageTabWidth( mPages[i].Page ) + ( mTabMargin * 2 );
+        tabWidth = getMax( tabWidth, mMinTabWidth );
+        TabHeaderInfo &info = mPages[i];
+        switch( mTabPosition )
+        {
+            case AlignTop:
+            case AlignBottom:
+                // If we're going to go outside our bounds
+                // with this tab move it down a row
+                if( currX + tabWidth > getWidth() )
+                {
+                    // Calculate and Advance State.
+                    maxWidth = getMax( tabWidth, maxWidth );
+                    balanceRow( currRow, currX );
+                    info.TabRow = ++currRow;
+                    // Reset Necessaries
+                    info.TabColumn = currColumn = maxWidth = currX = 0;
+                }
+                else
+                {
+                    info.TabRow = currRow;
+                    info.TabColumn = currColumn++;
+                }
+                
+                // Calculate Tabs Bounding Rect
+                info.TabRect.point.x  = currX;
+                info.TabRect.extent.x = tabWidth;
+                info.TabRect.extent.y = mTabHeight;
+                
+                // Adjust Y Point based on alignment
+                if( mTabPosition == AlignTop )
+                    info.TabRect.point.y  = ( info.TabRow * mTabHeight );
+                else
+                    info.TabRect.point.y  = getHeight() - ( ( 1 + info.TabRow ) * mTabHeight );
+                
+                currX += tabWidth;
+                break;
+        };
+    }
+    
+    currRow++;
+    currColumn++;
+    
+    Point2I localPoint = getExtent();
+    
+    // Calculate
+    switch( mTabPosition )
+    {
+        case AlignTop:
+            
+            localPoint.y -= getTop();
+            
+            mTabRect.point.x = 0;
+            mTabRect.extent.x = localPoint.x;
+            mTabRect.point.y = 0;
+            mTabRect.extent.y = currRow * mTabHeight;
+            
+            mPageRect.point.x = 0;
+            mPageRect.point.y = mTabRect.extent.y;
+            mPageRect.extent.x = mTabRect.extent.x;
+            mPageRect.extent.y = getHeight() - mTabRect.extent.y;
+            
+            break;
+        case AlignBottom:
+            mTabRect.point.x = 0;
+            mTabRect.extent.x = localPoint.x;
+            mTabRect.extent.y = currRow * mTabHeight;
+            mTabRect.point.y = getHeight() - mTabRect.extent.y;
+            
+            mPageRect.point.x = 0;
+            mPageRect.point.y = 0;
+            mPageRect.extent.x = mTabRect.extent.x;
+            mPageRect.extent.y = localPoint.y - mTabRect.extent.y;
+            
+            break;
+    }
 }
 
 void GuiTabBookCtrl::balanceColumn( S32 column , S32 totalTabWidth )
@@ -715,7 +691,7 @@ void GuiTabBookCtrl::balanceColumn( S32 column , S32 totalTabWidth )
       return;
 
    // Balance the tabs across the remaining space
-   S32 spaceToDivide = mBounds.extent.y - totalTabWidth;
+   S32 spaceToDivide = getHeight() - totalTabWidth;
    S32 pointDelta    = 0;
    for( S32 i = 0; i < rowTemp.size(); i++ )
    {
@@ -751,7 +727,7 @@ void GuiTabBookCtrl::balanceRow( S32 row, S32 totalTabWidth )
       return;
 
    // Balance the tabs across the remaining space
-   S32 spaceToDivide = mBounds.extent.x - totalTabWidth;
+   S32 spaceToDivide = getWidth() - totalTabWidth;
    S32 pointDelta    = 0;
    for( S32 i = 0; i < rowTemp.size(); i++ )
    {
@@ -923,6 +899,31 @@ void GuiTabBookCtrl::selectPrevPage()
       }
    }
 
+}
+
+//-----------------------------------------------------------------------------
+
+void GuiTabBookCtrl::fitPage( GuiTabPageCtrl* page )
+{
+    page->resize( mPageRect.point, mPageRect.extent );
+}
+
+//-----------------------------------------------------------------------------
+
+S32 GuiTabBookCtrl::getPageNum( GuiTabPageCtrl* page ) const
+{
+    const U32 numPages = mPages.size();
+    for( U32 i = 0; i < numPages; ++ i )
+        if( mPages[ i ].Page == page )
+            return i;
+    
+    return -1;
+}
+
+// Empty for now, will implement for handling design time context menu for manipulating pages
+ConsoleMethod( GuiTabBookCtrl, addPage, void, 2, 2, "() Empty")
+{
+    object->addNewPage();
 }
 
 ConsoleMethod( GuiTabBookCtrl, selectPage, void, 3, 3, "(int pageIndex)")

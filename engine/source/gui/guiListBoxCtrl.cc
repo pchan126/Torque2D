@@ -685,13 +685,13 @@ void GuiListBoxCtrl::updateSize()
    mItemSize.y = font->getHeight() + 2;
 
    Point2I newExtent( mItemSize.x, mItemSize.y * mItems.size() );
-   resize( mBounds.point, newExtent );
+   resize( getPosition(), newExtent );
 
 }
 
-void GuiListBoxCtrl::parentResized(const Point2I &oldParentExtent, const Point2I &newParentExtent)
+void GuiListBoxCtrl::parentResized(const RectI &oldParentRect, const RectI &newParentRect)
 {
-   Parent::parentResized( oldParentExtent, newParentExtent );
+   Parent::parentResized( oldParentRect, newParentRect );
 
    updateSize();
 }

@@ -24,7 +24,6 @@
 #include "platform/types.h"
 #include "platform/Tickable.h"
 #include "platform/platform.h"
-#include "platform/platformVideo.h"
 #include "platform/platformInput.h"
 #include "platform/platformAudio.h"
 #include "platform/event.h"
@@ -36,6 +35,7 @@
 #include "ts/tsShape.h"
 #include "io/resource/resourceManager.h"
 #include "io/fileStream.h"
+#include "graphics/gfxInit.h"
 #include "graphics/gfxTextureManager.h"
 #include "console/console.h"
 #include "sim/simBase.h"
@@ -49,7 +49,6 @@
 #include "math/mathTypes.h"
 #include "graphics/gfxTextureManager.h"
 #include "io/resource/resourceManager.h"
-#include "platform/platformVideo.h"
 #include "network/netStringTable.h"
 #include "memory/frameAllocator.h"
 #include "game/version.h"
@@ -114,6 +113,8 @@ bool initializeLibraries()
     PlatformAssert::create();
     Con::init();
     Sim::init();
+    GFXInit::init();
+    GFXTextureManager::init();
 
     if(!Net::init())
     {
@@ -346,6 +347,10 @@ bool DefaultGame::mainInitialize(int argc, const char **argv)
     if(!initializeLibraries())
         return false;
     
+    // Allow the window manager to process command line inputs; this is
+    // done to let web plugin functionality happen in a fairly transparent way.
+    PlatformWindowManager::get()->processCmdLineArgs(argc, argv);
+
     // Set up the command line args for the console scripts...
     Con::setIntVariable("$GameProject::argc", argc);
     U32 i;
@@ -496,8 +501,8 @@ void DefaultGame::gameReactivate( void )
       Input::reactivate();
 
 //   TextureManager::mDGLRender = true;
-   if ( Canvas )
-      Canvas->resetUpdateRegions();
+//   if ( Canvas )
+//      Canvas->resetUpdateRegions();
 }
 
 //--------------------------------------------------------------------------
@@ -532,8 +537,8 @@ void DefaultGame::textureResurrect()
 
 void DefaultGame::refreshWindow()
 {
-   if(Canvas)
-      Canvas->resetUpdateRegions();
+//   if(Canvas)
+//      Canvas->resetUpdateRegions();
 }
 
 //--------------------------------------------------------------------------
@@ -630,23 +635,24 @@ iPhoneProfilerStart("SERVER_PROC");
       GNet->processClient();
    PROFILE_END();
     
-   if(Canvas && GFX->allowRender())
-   {
-#ifdef TORQUE_OS_IOS_PROFILE	   
-iPhoneProfilerStart("GL_RENDER");
-#endif
-      bool preRenderOnly = false;
-      if(gFrameSkip && gFrameCount % gFrameSkip)
-         preRenderOnly = true;
-
-      PROFILE_START(RenderFrame);
-      Canvas->renderFrame(preRenderOnly);
-      PROFILE_END();
-      gFrameCount++;
-#ifdef TORQUE_OS_IOS_PROFILE
-iPhoneProfilerEnd("GL_RENDER");
-#endif
-   }
+//   if(Canvas && GFX->allowRender())
+//   {
+//#ifdef TORQUE_OS_IOS_PROFILE	   
+//iPhoneProfilerStart("GL_RENDER");
+//#endif
+//      bool preRenderOnly = false;
+//      if(gFrameSkip && gFrameCount % gFrameSkip)
+//         preRenderOnly = true;
+//
+//      PROFILE_START(RenderFrame);
+//      Canvas->renderFrame(preRenderOnly);
+//      PROFILE_END();
+//      gFrameCount++;
+//#ifdef TORQUE_OS_IOS_PROFILE
+//iPhoneProfilerEnd("GL_RENDER");
+//#endif
+//   }
+    
    GNet->checkTimeouts();
     
 #ifdef TORQUE_ALLOW_MUSICPLAYER

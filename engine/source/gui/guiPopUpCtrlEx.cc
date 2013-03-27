@@ -860,7 +860,7 @@ void GuiPopUpMenuCtrlEx::onRender(Point2I offset, const RectI &updateRect)
    if(mScrollDir != GuiScrollCtrl::None)
       autoScroll();
 
-   RectI r(offset, mBounds.extent);
+   RectI r(offset, getExtent());
    if(mInAction)
    {
       S32 l = r.point.x, r2 = r.point.x + r.extent.x - 1;
@@ -968,7 +968,7 @@ void GuiPopUpMenuCtrlEx::onRender(Point2I offset, const RectI &updateRect)
 
    S32 txt_w = mFont->getStrWidth(mText);
    localStart.x = 0;
-   localStart.y = (mBounds.extent.y - (mFont->getHeight())) / 2;
+   localStart.y = (getHeight() - (mFont->getHeight())) / 2;
 
    // align the horizontal
    switch (mProfile->mAlignment)
@@ -979,11 +979,11 @@ void GuiPopUpMenuCtrlEx::onRender(Point2I offset, const RectI &updateRect)
             // We're making use of a bitmap border, so take into account the
             // right cap of the border.
             RectI* mBitmapBounds = mProfile->mBitmapArrayRects.address();
-            localStart.x = mBounds.extent.x - mBitmapBounds[2].extent.x - txt_w;
+            localStart.x = getWidth() - mBitmapBounds[2].extent.x - txt_w;
 
 		 } else
 		 {
-            localStart.x = mBounds.extent.x - txt_w;  
+            localStart.x = getWidth() - txt_w;  
          }
          break;
       case GuiControlProfile::CenterJustify:
@@ -992,16 +992,16 @@ void GuiPopUpMenuCtrlEx::onRender(Point2I offset, const RectI &updateRect)
             // We're making use of a bitmap border, so take into account the
             // right cap of the border.
             RectI* mBitmapBounds = mProfile->mBitmapArrayRects.address();
-            localStart.x = (mBounds.extent.x - mBitmapBounds[2].extent.x - txt_w) / 2;
+            localStart.x = (getWidth() - mBitmapBounds[2].extent.x - txt_w) / 2;
 
 		 } else
 		 {
-            localStart.x = (mBounds.extent.x - txt_w) / 2;
+            localStart.x = (getWidth() - txt_w) / 2;
          }
          break;
       default:
          // GuiControlProfile::LeftJustify
-         if(txt_w > mBounds.extent.x)
+         if(txt_w > getWidth())
 		 {
             // DAW: The width of the text is greater than the width of the control.
 			// In this case we will right justify the text and leave some space
@@ -1011,11 +1011,11 @@ void GuiPopUpMenuCtrlEx::onRender(Point2I offset, const RectI &updateRect)
                // We're making use of a bitmap border, so take into account the
                // right cap of the border.
                RectI* mBitmapBounds = mProfile->mBitmapArrayRects.address();
-               localStart.x = mBounds.extent.x - mBitmapBounds[2].extent.x - txt_w;
+               localStart.x = getWidth() - mBitmapBounds[2].extent.x - txt_w;
 
 		    } else
 		    {
-			   localStart.x = mBounds.extent.x - txt_w - 12;
+			   localStart.x = getWidth() - txt_w - 12;
 			}
 		 } else
 		 {
@@ -1030,7 +1030,7 @@ void GuiPopUpMenuCtrlEx::onRender(Point2I offset, const RectI &updateRect)
    if(drawbox)
    {
 	   Point2I coloredboxsize(15,10);
-	   RectI r(offset.x + mProfile->mTextOffset.x, offset.y + ((mBounds.extent.y - coloredboxsize.y) / 2), coloredboxsize.x, coloredboxsize.y);
+	   RectI r(offset.x + mProfile->mTextOffset.x, offset.y + ((getHeight() - coloredboxsize.y) / 2), coloredboxsize.x, coloredboxsize.y);
 	   GFX->getDrawUtil()->drawRectFill( r, boxColor);
 	   GFX->getDrawUtil()->drawRect( r, ColorI(0,0,0));
 
@@ -1062,12 +1062,12 @@ void GuiPopUpMenuCtrlEx::onRender(Point2I offset, const RectI &updateRect)
          // We're making use of a bitmap border, so take into account the
          // right cap of the border.
          RectI* mBitmapBounds = mProfile->mBitmapArrayRects.address();
-         Point2I textpos = localToGlobalCoord(Point2I(mBounds.extent.x - txt_w - mBitmapBounds[2].extent.x,localStart.y));
+         Point2I textpos = localToGlobalCoord(Point2I(getWidth() - txt_w - mBitmapBounds[2].extent.x,localStart.y));
          GFX->getDrawUtil()->drawText(mFont, textpos, buff, mProfile->mFontColors);
 
       } else
       {
-         Point2I textpos = localToGlobalCoord(Point2I(mBounds.extent.x - txt_w - 12,localStart.y));
+         Point2I textpos = localToGlobalCoord(Point2I(getWidth() - txt_w - 12,localStart.y));
          GFX->getDrawUtil()->drawText(mFont, textpos, buff, mProfile->mFontColors);
 	  }
 
@@ -1191,12 +1191,12 @@ void GuiPopUpMenuCtrlEx::onAction()
    addChildren();
 
    GuiCanvas *root = getRoot();
-   Point2I windowExt = root->mBounds.extent;
+   Point2I windowExt = root->getExtent();
 
-   mBackground->mBounds.point.set(0,0);
-   mBackground->mBounds.extent = root->mBounds.extent;
+   mBackground->setPosition(0,0);
+   mBackground->setExtent(root->getExtent());
 
-   S32 textWidth = 0, width = mBounds.extent.x;
+   S32 textWidth = 0, width = getWidth();
    //const S32 menuSpace = 5; // DAW: Removed as no longer used.
    const S32 textSpace = 2;
    bool setScroll = false;
@@ -1205,9 +1205,9 @@ void GuiPopUpMenuCtrlEx::onAction()
       if(S32(mFont->getStrWidth(mEntries[i].buf)) > textWidth)
          textWidth = mFont->getStrWidth(mEntries[i].buf);
 
-   //if(textWidth > mBounds.extent.x)
+   //if(textWidth > getWidth())
    S32 sbWidth = mSc->mProfile->mBorderThickness * 2 + mSc->scrollBarThickness(); // DAW: Calculate the scroll bar width
-   if(textWidth > (mBounds.extent.x - sbWidth-mProfile->mTextOffset.x - mSc->getChildMargin().x * 2)) // DAW: The text draw area to test against is the width of the drop-down minus the scroll bar width, the text margin and the scroll bar child margins.
+   if(textWidth > (getWidth() - sbWidth-mProfile->mTextOffset.x - mSc->getChildMargin().x * 2)) // DAW: The text draw area to test against is the width of the drop-down minus the scroll bar width, the text margin and the scroll bar child margins.
    {
       //textWidth +=10;
       textWidth +=sbWidth + mProfile->mTextOffset.x + mSc->getChildMargin().x * 2; // DAW: The new width is the width of the text plus the scroll bar width plus the text margin size plus the scroll bar child margins.
@@ -1225,17 +1225,17 @@ void GuiPopUpMenuCtrlEx::onAction()
    for( U32 j=0; j < (U32)mEntries.size(); ++j )
       mTl->addEntry(mEntries[j].id, mEntries[j].buf);
 
-   Point2I pointInGC = canCtrl->localToGlobalCoord(mBounds.point);
-   Point2I scrollPoint(pointInGC.x, pointInGC.y + mBounds.extent.y); 
+   Point2I pointInGC = canCtrl->localToGlobalCoord(getPosition());
+   Point2I scrollPoint(pointInGC.x, pointInGC.y + getHeight()); 
 
    //Calc max Y distance, so Scroll Ctrl will fit on window 
-   //S32 maxYdis = windowExt.y - pointInGC.y - mBounds.extent.y - menuSpace; 
+   //S32 maxYdis = windowExt.y - pointInGC.y - getHeight() - menuSpace; 
    S32 sbBorder = mSc->mProfile->mBorderThickness * 2 + mSc->getChildMargin().y * 2; // DAW: Added to take into account the border thickness and the margin of the child controls of the scroll control when figuring out the size of the contained text list control
-   S32 maxYdis = windowExt.y - pointInGC.y - mBounds.extent.y - sbBorder; // - menuSpace; // DAW: Need to remove the border thickness from the contained control maximum extent and got rid of the 'menuspace' variable
+   S32 maxYdis = windowExt.y - pointInGC.y - getHeight() - sbBorder; // - menuSpace; // DAW: Need to remove the border thickness from the contained control maximum extent and got rid of the 'menuspace' variable
                      
    //If scroll bars need to be added
    mRevNum = 0; // DAW: Added here rather than within the following 'if' statements.
-   if(maxYdis < mTl->mBounds.extent.y + sbBorder) // DAW: Instead of adding sbBorder, it was: 'textSpace'
+   if(maxYdis < mTl->getHeight() + sbBorder) // DAW: Instead of adding sbBorder, it was: 'textSpace'
    {
       //Should we pop menu list above the button
       if(maxYdis < pointInGC.y ) // DAW: removed: '- menuSpace)' from check to see if there is more space above the control than below.
@@ -1245,7 +1245,7 @@ void GuiPopUpMenuCtrlEx::onAction()
 
          maxYdis = pointInGC.y; // DAW: Was at the end: '- menuSpace;'
          //Does the menu need a scroll bar 
-         if(maxYdis < mTl->mBounds.extent.y + sbBorder) // DAW: Instead of adding sbBorder, it was: 'textSpace'
+         if(maxYdis < mTl->getHeight() + sbBorder) // DAW: Instead of adding sbBorder, it was: 'textSpace'
          {
 			 // DAW: Removed width recalculation for scroll bar as the scroll bar is already being taken into account.
             //Calc for the width of the scroll bar 
@@ -1260,7 +1260,7 @@ void GuiPopUpMenuCtrlEx::onAction()
          //No scroll bar needed
          else
          {
-            maxYdis = mTl->mBounds.extent.y + sbBorder; // DAW: Instead of adding sbBorder, it was: 'textSpace'
+            maxYdis = mTl->getHeight() + sbBorder; // DAW: Instead of adding sbBorder, it was: 'textSpace'
 //            scrollPoint.set(pointInGC.x, pointInGC.y - maxYdis -1); // DAW: Removed as calculated outside the 'if' and the '-1' at the end is wrong
          }
 
@@ -1288,19 +1288,19 @@ void GuiPopUpMenuCtrlEx::onAction()
       if ( mSelIndex >= 0 )
          mTl->setSelectedCell( Point2I( 0, mSelIndex ) ); // DAW: Added as we were not setting the selected cell if the list is displayed down.
 
-      //maxYdis = mTl->mBounds.extent.y + textSpace;
-      maxYdis = mTl->mBounds.extent.y + sbBorder; // DAW: Added in the border thickness of the scroll control and removed the addition of textSpace
+      //maxYdis = mTl->getHeight() + textSpace;
+      maxYdis = mTl->getHeight() + sbBorder; // DAW: Added in the border thickness of the scroll control and removed the addition of textSpace
    }
          
    //offset it from the background so it lines up properly
-   mSc->mBounds.point = mBackground->globalToLocalCoord(scrollPoint);
+   mSc->setPosition(mBackground->globalToLocalCoord(scrollPoint));
 
-   if(mSc->mBounds.point.x + width > mBackground->mBounds.extent.x)
-      if(width - mBounds.extent.x > 0)
-         mSc->mBounds.point.x -= width - mBounds.extent.x;
+   if(mSc->getPosition().x + width > mBackground->getWidth())
+      if(width - getWidth() > 0)
+         mSc->setPosition(mSc->getPosition().x - ( width - getWidth()), mSc->getPosition().y);
 
-   //mSc->mBounds.extent.set(width-1, maxYdis);
-   mSc->mBounds.extent.set(width, maxYdis); // DAW: Not sure why the '-1' above.
+   //mSc->setExtent(width-1, maxYdis);
+   mSc->setExtent(width, maxYdis); // DAW: Not sure why the '-1' above.
 
    mSc->registerObject();
    mTl->registerObject();
@@ -1475,14 +1475,14 @@ void GuiPopUpMenuCtrlEx::setupAutoScroll(const GuiEvent &event)
    if(mLastYvalue != mousePt.y)
    {
       mScrollDir = GuiScrollCtrl::None;
-      if(mousePt.y > mSc->mBounds.extent.y || mousePt.y < 0)
+      if(mousePt.y > mSc->getHeight() || mousePt.y < 0)
       {
-         S32 topOrBottom = (mousePt.y > mSc->mBounds.extent.y) ? 1 : 0;
+         S32 topOrBottom = (mousePt.y > mSc->getHeight()) ? 1 : 0;
          mSc->scrollTo(0, topOrBottom);
          return;
       }   
 
-      F32 percent = (F32)mousePt.y / (F32)mSc->mBounds.extent.y;
+      F32 percent = (F32)mousePt.y / (F32)mSc->getHeight();
       if(percent > 0.7f && mousePt.y > mLastYvalue)
       {
          mIncValue = percent - 0.5f;

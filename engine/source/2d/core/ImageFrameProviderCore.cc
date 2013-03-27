@@ -250,7 +250,7 @@ void ImageFrameProviderCore::renderGui( GuiControl& owner, Point2I offset, const
         RectI sourceRegion( frameArea.mPixelArea.mPixelOffset, Point2I(frameArea.mPixelArea.mPixelWidth, frameArea.mPixelArea.mPixelHeight) );
 
         // Calculate destination region.
-        RectI destinationRegion(offset, owner.mBounds.extent);
+        RectI destinationRegion(offset, owner.getExtent());
 
         // Render image.
 		GFX->getDrawUtil()->setBitmapModulation( owner.mProfile->mFillColor );

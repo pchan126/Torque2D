@@ -41,7 +41,7 @@ IMPLEMENT_CONOBJECT(GuiBorderButtonCtrl);
 
 void GuiBorderButtonCtrl::onRender(Point2I offset, const RectI &updateRect)
 {
-   RectI bounds(offset, mBounds.extent);
+   RectI bounds(offset, getExtent());
    if(mActive && mMouseOver)
    {
       bounds.inset(2,2);

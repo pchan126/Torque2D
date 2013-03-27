@@ -22,9 +22,7 @@
 #ifndef _GUI_TABBOOKCTRL_H_
 #define _GUI_TABBOOKCTRL_H_
 
-#ifndef _GUICONTROL_H_
-#include "gui/guiControl.h"
-#endif
+#include "gui/containers/guiContainer.h"
 
 #ifndef _GUITABPAGECTRL_H_
 #include "gui/guiTabPageCtrl.h"
@@ -57,15 +55,15 @@
 /// @ref GUI has an overview of the GUI system.
 ///
 /// @nosubgrouping
-class GuiTabBookCtrl : public GuiControl
+class GuiTabBookCtrl : public GuiContainer
 {
 public:
+    typedef GuiContainer Parent;
+
     enum TabPosition
     {
         AlignTop,   ///< Align the tabs on the top of the tab book control
         AlignBottom,///< Align the tabs on the bottom of the tab book control
-      AlignLeft,  ///< Align the tabs on the left of the tab book control
-      AlignRight  ///< Align the tabs on the right of the tab book control
     };
 
    struct TabHeaderInfo
@@ -78,34 +76,36 @@ public:
    };
 
 private:
-
-   typedef GuiControl Parent;                ///< typedef for parent class access
-
-   RectI                   mPageRect;        ///< Rectangle of the tab page portion of the control
-   RectI                   mTabRect;         ///< Rectangle of the tab portion of the control
-   Vector<TabHeaderInfo>   mPages;           ///< Vector of pages contained by the control
-   GuiTabPageCtrl*         mActivePage;      ///< Pointer to the active (selected) tab page child control
-   GuiTabPageCtrl*         mHoverTab;        ///< Pointer to the tab page that currently has the mouse positioned ontop of its tab
-   S32                     mMinTabWidth;     ///< Minimum Width a tab will display as.
-   TabPosition             mTabPosition;     ///< Current tab position (see alignment)
-   TabPosition             mLastTabPosition; ///< Last known tab position, stored to compare to tabPosition to know when to resize children
-   S32                     mTabHeight;       ///< Current tab height
-   S32                     mLastTabHeight;   ///< Last known tab height, stored to compare to current tabHeight to know when to resize children
-   S32                     mTabWidth;        ///< Current tab width
-   S32                     mLastTabWidth;    ///< Last know tab width, stored to compare to current tabWidth to know when to resize children
-   S32                     mTabMargin;       ///< Margin left/right of tab text in tab
-
-   enum
-   {
-       TabSelected = 0,     ///< Index of selected tab texture
-      TabNormal,           ///< Index of normal tab texture
-      TabHover,            ///< Index of hover tab texture
-      TabSelectedVertical, ///< Index of selected tab texture
-      TabNormalVertical,   ///< Index of normal tab texture
-      TabHoverVertical,    ///< Index of hover tab texture
-      TabBackground = 19,       ///< Index of background texture (tiled)
-       NumBitmaps           ///< Number of bitmaps in this array
-   };
+    
+    static bool _setSelectedPage( void *object, const char *index, const char *data );
+    
+protected:
+    
+    RectI                   mPageRect;        ///< Rectangle of the tab page portion of the control
+    RectI                   mTabRect;         ///< Rectangle of the tab portion of the control
+    Vector<TabHeaderInfo>   mPages;           ///< Vector of pages contained by the control
+    GuiTabPageCtrl*         mActivePage;      ///< Pointer to the active (selected) tab page child control
+    GuiTabPageCtrl*         mHoverTab;        ///< Pointer to the tab page that currently has the mouse positioned ontop of its tab
+    S32                     mMinTabWidth;     ///< Minimum Width a tab will display as.
+    TabPosition             mTabPosition;     ///< Current tab position (see alignment)
+    S32                     mTabHeight;       ///< Current tab height
+    S32                     mTabMargin;       ///< Margin left/right of tab text in tab
+    S32                     mSelectedPageNum; ///< Current selected tab position
+    S32                     mDefaultPageNum;  ///< Page to select on first wake.
+    bool                    mAllowReorder;    ///< Allow the user to reorder tabs by dragging them
+    S32                     mFrontTabPadding; ///< Padding to the Left of the first Tab
+    bool                    mDraggingTab;
+    bool                    mDraggingTabRect;
+    bool                    mIsFirstWake;
+    
+    enum
+    {
+        TabSelected = 0,     ///< Index of selected tab texture
+        TabNormal,           ///< Index of normal tab texture
+        TabHover,            ///< Index of hover tab texture
+        TabEnds,             ///< Index of end lines for horizontal tabs
+        NumBitmaps           ///< Number of bitmaps in this array
+    };
    bool  mHasTexture;   ///< Indicates whether we have a texture to render the tabs with
    RectI *mBitmapBounds;///< Array of rectangles identifying textures for tab book
 
@@ -118,11 +118,7 @@ private:
 
     /// @name Control Events
     /// @{
-   bool onAdd();
-   void onRemove();
    bool onWake();
-   void onSleep();
-   void onPreRender();
    void onRender( Point2I offset, const RectI &updateRect );
    /// @}
 
@@ -130,28 +126,24 @@ private:
    /// @{
    void onChildRemoved( GuiControl* child );
    void onChildAdded( GuiControl *child );
+    bool reOrder(SimObject* obj, SimObject* target);
+    bool acceptsAsChild( SimObject* object ) const;
    /// @}
 
-   /// @name Rendering methods
-   /// @{
-
-   /// Tab rendering routine, iterates through all tabs rendering one at a time
-   /// @param   offset   the render offset to accomodate global coords
-   void renderTabs( const Point2I &offset );
-
-   /// Tab rendering subroutine, renders one tab with specified options
-   /// @param   tabRect   the rectangle to render the tab into
-   /// @param   tab   pointer to the tab page control for which to render the tab
-   void renderTab( RectI tabRect, GuiTabPageCtrl* tab );
-
-   /// Page Rendering Routine
-   void renderBackground( Point2I offset, const RectI &updateRect );
-
-
-   void renderJustifiedTextRot(Point2I offset, Point2I extent, const char *text, F32 rot );
-
-
-   /// @}
+    /// @name Rendering methods
+    /// @{
+    
+    /// Tab rendering routine, iterates through all tabs rendering one at a time
+    /// @param   offset   the render offset to accomodate global coords
+    /// @param   tabRect  the Rectangle in which these tabs are to be rendered
+    void renderTabs( const Point2I &offset, const RectI &tabRect );
+    
+    /// Tab rendering subroutine, renders one tab with specified options
+    /// @param   tabRect   the rectangle to render the tab into
+    /// @param   tab   pointer to the tab page control for which to render the tab
+    void renderTab( RectI tabRect, GuiTabPageCtrl* tab );
+    
+    /// @}
 
    /// @name Page Management
    /// @{
@@ -180,7 +172,12 @@ private:
    /// Select the Previous page in the tab book
    void selectPrevPage();
 
-   /// @}
+    /// Make the page fill the entire page space.
+    void fitPage( GuiTabPageCtrl* page );
+    
+    /// Return the index for the given page.  -1 if not a page in this book.
+    S32 getPageNum( GuiTabPageCtrl* page ) const;
+    /// @}
 
    /// @name Internal Utility Functions
    /// @{
@@ -194,16 +191,16 @@ private:
    /// Balance a left/right tab column
    void balanceColumn( S32 row, S32 totalTabWidth );
 
-   /// Checks to see if a tab option has changed and we need to resize children, resizes if necessary
-   void solveDirty();
-
    /// Calculate the tab width of a page, given it's caption
    S32 calculatePageTabWidth( GuiTabPageCtrl *page );
 
    /// Calculate Page Header Information
    void calculatePageTabs();
 
-   /// Find the tab that was hit by the current event, if any
+    /// Get client area of tab book
+    virtual const RectI getClientRect();
+
+    /// Find the tab that was hit by the current event, if any
    /// @param   event   The GuiEvent that caused this function call
    GuiTabPageCtrl *findHitTab( const GuiEvent &event );
 
@@ -223,7 +220,7 @@ private:
    ///
    /// @param   newPosition   The new position of the control
    /// @param   newExtent   The new extent of the control
-   void resize(const Point2I &newPosition, const Point2I &newExtent);
+   bool resize(const Point2I &newPosition, const Point2I &newExtent);
 
    /// Called when a child page is resized
    /// This method is overridden so that we may handle resizing of our child tab
@@ -239,13 +236,18 @@ private:
    virtual bool onKeyDown(const GuiEvent &event);
 
 
-   /// @name Mouse Events
-   /// @{
-   void onMouseDown(const GuiEvent &event);
-   void onMouseMove(const GuiEvent &event);
-   void onMouseLeave(const GuiEvent &event);
-   virtual bool onMouseDownEditor(const GuiEvent &event, Point2I offset);
-   /// @}
+    /// @name Mouse Events
+    /// @{
+    
+    virtual void onMouseDown( const GuiEvent &event );
+    virtual void onMouseUp( const GuiEvent &event );
+    virtual void onMouseDragged( const GuiEvent &event );
+    virtual void onMouseMove( const GuiEvent &event );
+    virtual void onMouseLeave( const GuiEvent &event );
+    virtual bool onMouseDownEditor( const GuiEvent &event, Point2I offset );
+    virtual void onRightMouseUp( const GuiEvent& event );
+    
+    /// @}
 };
 
 #endif //_GUI_TABBOOKCTRL_H_

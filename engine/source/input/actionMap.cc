@@ -32,7 +32,10 @@
 IMPLEMENT_CONOBJECT(ActionMap);
 
 // This is used for determing keys that have ascii codes for the foreign keyboards. IsAlpha doesn't work on foreign keys.
-#define dIsDecentChar(c) (((char(0xa0) <= (c)) && ((c) <= char(0xff))) || (( char(0x21) <= (c)) && ((c) <= char(0x7e))) || (( char(0x91) <= (c)) && ((c) <= char(0x92))))
+static inline bool dIsDecentChar(U8 c)
+{
+   return ((U8(0xa0) <= c) || (( U8(0x21) <= c) && (c <= U8(0x7e))) || ((U8(0x91) <= c) && (c <= U8(0x92))));
+}
 
 struct CodeMapping
 {
@@ -927,7 +930,13 @@ const char* ActionMap::getModifierString(const U32 modifiers)
 //------------------------------------------------------------------------------
 bool ActionMap::getKeyString(const U32 action, char* buffer)
 {
-   U16 asciiCode = Input::getAscii(action, STATE_LOWER);
+   U16 asciiCode = 0;
+
+   // This is a special case.... numpad keys do have ascii values
+   // but for the purposes of this method we want to return the 
+   // description from the gVirtualMap.
+   if ( !( KEY_NUMPAD0 <= action && action <= KEY_NUMPAD9 ) )
+      asciiCode = Input::getAscii( action, STATE_LOWER );
 
 //   if (action >= KEY_A && action <= KEY_Z) {
 //      buffer[0] = char(action - KEY_A + 'a');
@@ -1409,6 +1418,22 @@ bool ActionMap::processAction(const InputEventInfo* pEvent)
    }
 
    return false;
+}
+
+//------------------------------------------------------------------------------
+bool ActionMap::isAction( U32 deviceType, U32 deviceInst, U32 modifiers, U32 action )
+{
+   return ( findNode( deviceType, deviceInst, modifiers, action ) != NULL );
+}
+
+//------------------------------------------------------------------------------
+ActionMap* ActionMap::getGlobalMap()
+{
+   SimSet* pActionMapSet = Sim::getActiveActionMapSet();
+   AssertFatal( pActionMapSet && pActionMapSet->size() != 0,
+                "error, no ActiveMapSet or no global action map...");
+
+   return ( ( ActionMap* ) pActionMapSet->first() );
 }
 
 //------------------------------------------------------------------------------

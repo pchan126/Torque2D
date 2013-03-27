@@ -32,7 +32,7 @@ IMPLEMENT_CONOBJECT(GuiConsole);
 
 GuiConsole::GuiConsole()
 {
-   mBounds.extent.set(64, 64);
+   setExtent(64, 64);
    mCellSize.set(1, 1);
    mSize.set(1, 0);
 }
@@ -77,7 +77,7 @@ void GuiConsole::onPreRender()
    Con::getLockLog(log, size);
    Con::unlockLog(); // we unlock immediately because we only use size here, not log.
 
-   U32 prevSize = mBounds.extent.y / mCellSize.y;
+   U32 prevSize = getHeight() / mCellSize.y;
    if ( prevSize > size )
        prevSize = 0;
 
@@ -99,7 +99,7 @@ void GuiConsole::onPreRender()
       mSize.set(1, size);
 
       //resize the control
-      resize(mBounds.point, Point2I(mCellSize.x, mCellSize.y * size));
+      resize(getPosition(), Point2I(mCellSize.x, mCellSize.y * size));
 
       //if the console was not scrolled, make the last entry visible
       if (scrolled)

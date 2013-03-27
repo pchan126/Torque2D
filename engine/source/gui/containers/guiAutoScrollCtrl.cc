@@ -88,9 +88,10 @@ void GuiAutoScrollCtrl::resetChild(GuiControl* control)
    mCurrentTime = 0.0f;
 }
 
-void GuiAutoScrollCtrl::resize( const Point2I &newPosition, const Point2I &newExtent )
+bool GuiAutoScrollCtrl::resize( const Point2I &newPosition, const Point2I &newExtent )
 {
-   Parent::resize( newPosition, newExtent );
+   if (Parent::resize( newPosition, newExtent ))
+       return false;
 
    for (iterator i = begin(); i != end(); i++)
    {
@@ -98,6 +99,7 @@ void GuiAutoScrollCtrl::resize( const Point2I &newPosition, const Point2I &newEx
       if (control)
          resetChild(control);
    }
+   return true;
 }
 
 void GuiAutoScrollCtrl::childResized(GuiControl *child)

@@ -18,14 +18,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
-//-----------------------------------------------------------------------------
 
-ConsoleFunction( setMouseLock, void, 2, 2, "( isLocked ) Use the setMouseLock function to un/lock the mouse.\n"
-                                                                "@param isLocked A boolean value.\n"
-                                                                "@return No return value")
-{
-    Platform::setMouseLock(dAtob(argv[1]));
-}
 
 //-----------------------------------------------------------------------------
 

@@ -9,7 +9,7 @@
 #include "platform/platform.h"
 #include "graphics/gfxDevice.h"
 
-//#include "graphics/gfxInit.h"
+#include "graphics/gfxInit.h"
 //#include "graphics/gfxCubemap.h"
 #include "graphics/primBuilder.h"
 #include "graphics/gfxDrawUtil.h"
@@ -19,7 +19,7 @@
 #include "graphics/gfxShader.h"
 #include "graphics/gfxStateBlock.h"
 //#include "graphics/screenshot.h"
-//#include "graphics/gfxStringEnumTranslate.h"
+#include "graphics/gfxStringEnumTranslate.h"
 #include "graphics/gfxTextureManager.h"
 
 #include "memory/frameAllocator.h"
@@ -31,7 +31,6 @@
 #include "console/consoleTypes.h"
 #include "console/console.h"
 #include "game/version.h"
-#include "platform/platformVideo.h"
 
 GFXDevice * GFXDevice::smGFXDevice = NULL;
 bool GFXDevice::smWireframe = false;
@@ -43,7 +42,7 @@ bool gDisassembleAllShaders = false;
 
 void GFXDevice::initConsole()
 {
-//   GFXStringEnumTranslate::init();
+   GFXStringEnumTranslate::init();
 //
 //    Con::addVariable( "$gfx::wireframe", TypeBool, &smWireframe);
 ////      "Used to toggle wireframe rendering at runtime.\n"
@@ -1106,86 +1105,51 @@ void GFXDevice::clearResourceFlags()
 ////}
 
 
-//------------------------------------------------------------------------------
-void GFXDevice::init()
-{
-    smCurrentRes = GFXVideoMode();
-}
-
-
-//------------------------------------------------------------------------------
-bool GFXDevice::prevRes()
-{
-    U32 resIndex;
-    for ( resIndex = mVideoModes.size() - 1; resIndex > 0; resIndex-- )
-    {
-        if ( mVideoModes[resIndex].bitDepth == smCurrentRes.bitDepth
-            && mVideoModes[resIndex].resolution.x <= smCurrentRes.resolution.x
-            && mVideoModes[resIndex].resolution.y != smCurrentRes.resolution.y )
-            break;
-    }
-    
-    if ( mVideoModes[resIndex].bitDepth == smCurrentRes.bitDepth )
-        return( Video::setResolution( mVideoModes[resIndex].resolution.x, mVideoModes[resIndex].resolution.y, mVideoModes[resIndex].bitDepth ) );
-    
-    return( false );
-}
-
-
-//------------------------------------------------------------------------------
-bool GFXDevice::nextRes()
-{
-    U32 resIndex;
-    for ( resIndex = 0; resIndex < (U32)mVideoModes.size() - 1; resIndex++ )
-    {
-        if ( mVideoModes[resIndex].bitDepth == smCurrentRes.bitDepth
-            && mVideoModes[resIndex].resolution.x >= smCurrentRes.resolution.x
-            && mVideoModes[resIndex].resolution.y != smCurrentRes.resolution.y )
-            break;
-    }
-    
-    if ( mVideoModes[resIndex].bitDepth == smCurrentRes.bitDepth )
-        return( Video::setResolution( mVideoModes[resIndex].resolution.x, mVideoModes[resIndex].resolution.y, mVideoModes[resIndex].bitDepth ) );
-    
-    return( false );
-}
-
-
-//------------------------------------------------------------------------------
-// This function returns a string containing all of the available resolutions for this device
-// in the format "<bit depth> <width> <height>", separated by tabs.
+////------------------------------------------------------------------------------
+//void GFXDevice::init()
+//{
+//    smCurrentRes = GFXVideoMode();
+//}
 //
-const char* GFXDevice::getResolutionList()
-{
-    if (Con::getBoolVariable("$pref::Video::clipHigh", false))
-        for (S32 i = mVideoModes.size()-1; i >= 0; --i)
-            if (mVideoModes[i].resolution.x > 1152 || mVideoModes[i].resolution.y > 864)
-                mVideoModes.erase(i);
-    
-    if (Con::getBoolVariable("$pref::Video::only16", false))
-        for (S32 i = mVideoModes.size()-1; i >= 0; --i)
-            if (mVideoModes[i].bitDepth == 32)
-                mVideoModes.erase(i);
-    
-    U32 resCount = mVideoModes.size();
-    if ( resCount > 0 )
-    {
-        char* tempBuffer = new char[resCount * 15];
-        tempBuffer[0] = 0;
-        for ( U32 i = 0; i < resCount; i++ )
-        {
-            char newString[15];
-            dSprintf( newString, sizeof( newString ), "%d %d %d\t", mVideoModes[i].resolution.x, mVideoModes[i].resolution.y, mVideoModes[i].bitDepth );
-            dStrcat( tempBuffer, newString );
-        }
-        tempBuffer[dStrlen( tempBuffer ) - 1] = 0;
-        
-        char* returnString = Con::getReturnBuffer( dStrlen( tempBuffer ) + 1 );
-        dStrcpy( returnString, tempBuffer );
-        delete [] tempBuffer;
-        
-        return returnString;
-    }
-    
-    return NULL;
-}
+//
+////------------------------------------------------------------------------------
+//// This function returns a string containing all of the available resolutions for this device
+//// in the format "<bit depth> <width> <height>", separated by tabs.
+////
+//const char* GFXDevice::getResolutionList()
+//{
+//    if (Con::getBoolVariable("$pref::Video::clipHigh", false))
+//        for (S32 i = mVideoModes.size()-1; i >= 0; --i)
+//            if (mVideoModes[i].resolution.x > 1152 || mVideoModes[i].resolution.y > 864)
+//                mVideoModes.erase(i);
+//    
+//    if (Con::getBoolVariable("$pref::Video::only16", false))
+//        for (S32 i = mVideoModes.size()-1; i >= 0; --i)
+//            if (mVideoModes[i].bitDepth == 32)
+//                mVideoModes.erase(i);
+//    
+//    U32 resCount = mVideoModes.size();
+//    if ( resCount > 0 )
+//    {
+//        char* tempBuffer = new char[resCount * 15];
+//        tempBuffer[0] = 0;
+//        for ( U32 i = 0; i < resCount; i++ )
+//        {
+//            char newString[15];
+//            dSprintf( newString, sizeof( newString ), "%d %d %d\t", mVideoModes[i].resolution.x, mVideoModes[i].resolution.y, mVideoModes[i].bitDepth );
+//            dStrcat( tempBuffer, newString );
+//        }
+//        tempBuffer[dStrlen( tempBuffer ) - 1] = 0;
+//        
+//        char* returnString = Con::getReturnBuffer( dStrlen( tempBuffer ) + 1 );
+//        dStrcpy( returnString, tempBuffer );
+//        delete [] tempBuffer;
+//        
+//        return returnString;
+//    }
+//    
+//    return NULL;
+//}
+
+
+

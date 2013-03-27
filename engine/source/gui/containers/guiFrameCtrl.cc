@@ -320,85 +320,97 @@ void GuiFrameSetCtrl::removeObject(SimObject *object)
 }
 
 //-----------------------------------------------------------------------------
-void GuiFrameSetCtrl::resize(const Point2I &newPos, const Point2I &newExtent)
+bool GuiFrameSetCtrl::resize(const Point2I &newPos, const Point2I &newExtent)
 {
-   // rebalance before losing the old extent (if required)
-   if (mAutoBalance == true)
-      rebalance(newExtent);
-
-   Parent::resize(newPos, newExtent);
-
-   // compute new sizing info for the frames - takes care of resizing the children
-   computeSizes( !mAutoBalance );
+    // rebalance before losing the old extent (if required)
+    if (mAutoBalance == true)
+        rebalance(newExtent);
+    
+    if( !Parent::resize(newPos, newExtent) )
+        return false;
+    
+    // compute new sizing info for the frames - takes care of resizing the children
+    computeSizes( !mAutoBalance );
+    
+    return true;
 }
 
 //-----------------------------------------------------------------------------
 
 void GuiFrameSetCtrl::getCursor(GuiCursor *&cursor, bool &showCursor, const GuiEvent &lastGuiEvent)
 {
-   Region curRegion = NONE;
-         //*** Determine the region by mouse position.
-         Point2I curMousePos = globalToLocalCoord(lastGuiEvent.mousePoint);
-         curRegion = pointInAnyRegion(curMousePos);
-
-   switch (curRegion)
-   {
-   case VERTICAL_DIVIDER:
-      // change to left-right cursor
-      if(GuiControl::smCursorChanged != CursorManager::curResizeVert)
-      {
-         //*** We've already changed the cursor, so set it back before we change it again.
-         if(GuiControl::smCursorChanged != -1)
-            Input::popCursor();
-
-         //*** Now change the cursor shape
-         Input::pushCursor(CursorManager::curResizeVert);
-         GuiControl::smCursorChanged = CursorManager::curResizeVert;
-
-      }
-      break;
-
-   case HORIZONTAL_DIVIDER:
-      // change to up-down cursor
-      if(GuiControl::smCursorChanged != CursorManager::curResizeHorz)
-      {
-         //*** We've already changed the cursor, so set it back before we change it again.
-         if(GuiControl::smCursorChanged != -1)
-            Input::popCursor();
-
-         //*** Now change the cursor shape
-         Input::pushCursor(CursorManager::curResizeHorz);
-         GuiControl::smCursorChanged = CursorManager::curResizeHorz;
-      }
-      break;
-
-   case DIVIDER_INTERSECTION:
-      // change to move cursor
-      if(GuiControl::smCursorChanged != CursorManager::curResizeAll)
-      {
-         //*** We've already changed the cursor, so set it back before we change it again.
-         if(GuiControl::smCursorChanged != -1)
-            Input::popCursor();
-
-         //*** Now change the cursor shape
-         Input::pushCursor(CursorManager::curResizeAll);
-         GuiControl::smCursorChanged = CursorManager::curResizeAll;
-
-      }
-      break;
-
-   case NONE:
-   default:
-      if(GuiControl::smCursorChanged != -1)
-      {
-         //*** We've already changed the cursor, so set it back before we change it again.
-         Input::popCursor();
-
-         GuiControl::smCursorChanged = -1;
-      }
-      break;
-   }
-
+    GuiCanvas *pRoot = getRoot();
+    if( !pRoot )
+        return;
+    
+    Region curRegion = NONE;
+    // Determine the region by mouse position.
+    Point2I curMousePos = globalToLocalCoord(lastGuiEvent.mousePoint);
+    curRegion = pointInAnyRegion(curMousePos);
+    
+    PlatformWindow *pWindow = pRoot->getPlatformWindow();
+    AssertFatal(pWindow != NULL,"GuiControl without owning platform window!  This should not be possible.");
+    PlatformCursorController *pController = pWindow->getCursorController();
+    AssertFatal(pController != NULL,"PlatformWindow without an owned CursorController!");
+    
+    switch (curRegion)
+    {
+        case VERTICAL_DIVIDER:
+            // change to left-right cursor
+            if(pRoot->mCursorChanged != PlatformCursorController::curResizeVert)
+            {
+                //*** We've already changed the cursor, so set it back before we change it again.
+                if(pRoot->mCursorChanged != -1)
+                    pController->popCursor();
+                
+                //*** Now change the cursor shape
+                pController->pushCursor(PlatformCursorController::curResizeVert);
+                pRoot->mCursorChanged = PlatformCursorController::curResizeVert;
+                
+            }
+            break;
+            
+        case HORIZONTAL_DIVIDER:
+            // change to up-down cursor
+            if(pRoot->mCursorChanged != PlatformCursorController::curResizeHorz)
+            {
+                //*** We've already changed the cursor, so set it back before we change it again.
+                if(pRoot->mCursorChanged != -1)
+                    pController->popCursor();
+                
+                //*** Now change the cursor shape
+                pController->pushCursor(PlatformCursorController::curResizeHorz);
+                pRoot->mCursorChanged = PlatformCursorController::curResizeHorz;
+            }
+            break;
+            
+        case DIVIDER_INTERSECTION:
+            // change to move cursor
+            if(pRoot->mCursorChanged != PlatformCursorController::curResizeAll)
+            {
+                //*** We've already changed the cursor, so set it back before we change it again.
+                if(pRoot->mCursorChanged != -1)
+                    pController->popCursor();
+                
+                //*** Now change the cursor shape
+                pController->pushCursor(PlatformCursorController::curResizeAll);
+                pRoot->mCursorChanged = PlatformCursorController::curResizeAll;
+                
+            }
+            break;
+            
+        case NONE:
+        default:
+            if(pRoot->mCursorChanged != -1)
+            {
+                //*** We've already changed the cursor, so set it back before we change it again.
+                pController->popCursor();
+                
+                pRoot->mCursorChanged = -1;
+            }
+            break;
+    }
+    
 }
 
 //-----------------------------------------------------------------------------
@@ -487,7 +499,7 @@ bool GuiFrameSetCtrl::onWake()
 //-----------------------------------------------------------------------------
 void GuiFrameSetCtrl::onRender(Point2I offset, const RectI &updateRect )
 {
-   RectI r(offset.x, offset.y, mBounds.extent.x, mBounds.extent.y);
+   RectI r(offset.x, offset.y, getWidth(), getHeight());
 
    // draw the border of the frameset if specified
    if (mProfile->mOpaque)
@@ -789,7 +801,7 @@ void GuiFrameSetCtrl::computeSizes(bool balanceFrames)
       if ( columns > 1 )
       {
          index = columns - 1;
-         delta = mFrameDetails[index]->mMinExtent.x - ( mBounds.extent.x - mColumnOffsets[index] );
+         delta = mFrameDetails[index]->mMinExtent.x - ( getWidth() - mColumnOffsets[index] );
          while ( delta > 0 )
          {
             mColumnOffsets[index--] -= delta;
@@ -803,7 +815,7 @@ void GuiFrameSetCtrl::computeSizes(bool balanceFrames)
       if ( rows > 1 )
       {
          index = rows - 1;
-         delta = mFrameDetails[columns * index]->mMinExtent.y - ( mBounds.extent.y - mRowOffsets[index] );
+         delta = mFrameDetails[columns * index]->mMinExtent.y - ( getHeight() - mRowOffsets[index] );
          while ( delta > 0 )
          {
             mRowOffsets[index--] -= delta;
@@ -819,8 +831,8 @@ void GuiFrameSetCtrl::computeSizes(bool balanceFrames)
    if (balanceFrames == true && mColumnOffsets.size() > 0 && mRowOffsets.size() > 0)
    {
       Vector<S32>::iterator itr;
-      F32 totWidth = F32(mBounds.extent.x - vDividers * mFramesetDetails.mBorderWidth);
-      F32 totHeight = F32(mBounds.extent.y - hDividers * mFramesetDetails.mBorderWidth);
+      F32 totWidth = F32(getWidth() - vDividers * mFramesetDetails.mBorderWidth);
+      F32 totHeight = F32(getHeight() - hDividers * mFramesetDetails.mBorderWidth);
       F32 frameWidth = totWidth/(F32)columns;
       F32 frameHeight = totHeight/(F32)rows;
       F32 i = 0.;
@@ -854,7 +866,7 @@ void GuiFrameSetCtrl::computeSizes(bool balanceFrames)
          if (row >= rows)
          {
             // no more visible frames
-            newPos = mBounds.extent;
+            newPos = getExtent();
             newExtent.set(DEFAULT_MIN_FRAME_EXTENT, DEFAULT_MIN_FRAME_EXTENT);
             gc->resize(newPos, newExtent);
             continue;
@@ -864,13 +876,13 @@ void GuiFrameSetCtrl::computeSizes(bool balanceFrames)
             // determine x components of new position & extent
             newPos.x = mColumnOffsets[column];
             if (column == vDividers)
-               newExtent.x = mBounds.extent.x - mColumnOffsets[column];             // last column
+               newExtent.x = getWidth() - mColumnOffsets[column];             // last column
             else
                newExtent.x = mColumnOffsets[column + 1] - mColumnOffsets[column] - mFramesetDetails.mBorderWidth;   // any other column
             // determine y components of new position & extent
             newPos.y = mRowOffsets[row];
             if (row == hDividers)
-               newExtent.y = mBounds.extent.y - mRowOffsets[row];                   // last row
+               newExtent.y = getHeight() - mRowOffsets[row];                   // last row
             else
                newExtent.y = mRowOffsets[row + 1] - mRowOffsets[row] - mFramesetDetails.mBorderWidth;            // any other row
             // apply the new position & extent
@@ -887,8 +899,8 @@ void GuiFrameSetCtrl::computeSizes(bool balanceFrames)
 void GuiFrameSetCtrl::rebalance(const Point2I &newExtent)
 {
    // look at old_width and old_height - current extent
-   F32 widthScale = (F32)newExtent.x/(F32)mBounds.extent.x;
-   F32 heightScale = (F32)newExtent.y/(F32)mBounds.extent.y;
+   F32 widthScale = (F32)newExtent.x/(F32)getWidth();
+   F32 heightScale = (F32)newExtent.y/(F32)getHeight();
    Vector<S32>::iterator itr;
    // look at old width offsets
    for (itr = mColumnOffsets.begin() + 1; itr < mColumnOffsets.end(); itr++)
@@ -912,11 +924,11 @@ void GuiFrameSetCtrl::computeMovableRange(Region hitRegion, S32 vertHit, S32 hor
          {
             case VERTICAL_DIVIDER:
                ranges[0] = hardRanges[0] = (vertHit <= 1) ? mFramesetDetails.mBorderWidth : mColumnOffsets[vertHit - 1] + mFramesetDetails.mBorderWidth;
-               ranges[1] = hardRanges[1] = (vertHit >= (mColumnOffsets.size() - 1)) ? mBounds.extent.x : mColumnOffsets[vertHit + 1] - mFramesetDetails.mBorderWidth;
+               ranges[1] = hardRanges[1] = (vertHit >= (mColumnOffsets.size() - 1)) ? getWidth() : mColumnOffsets[vertHit + 1] - mFramesetDetails.mBorderWidth;
                break;
             case HORIZONTAL_DIVIDER:
                ranges[0] = hardRanges[0] = (horzHit <= 1) ? mFramesetDetails.mBorderWidth : mRowOffsets[horzHit - 1] + mFramesetDetails.mBorderWidth;
-               ranges[1] = hardRanges[1] = (horzHit >= (mRowOffsets.size() - 1)) ? mBounds.extent.y : mRowOffsets[horzHit + 1] - mFramesetDetails.mBorderWidth;
+               ranges[1] = hardRanges[1] = (horzHit >= (mRowOffsets.size() - 1)) ? getHeight() : mRowOffsets[horzHit + 1] - mFramesetDetails.mBorderWidth;
                break;
             default:
                return;
@@ -926,9 +938,9 @@ void GuiFrameSetCtrl::computeMovableRange(Region hitRegion, S32 vertHit, S32 hor
          if (hitRegion == DIVIDER_INTERSECTION)
          {
             ranges[0] = hardRanges[0] = (vertHit <= 1) ? mFramesetDetails.mBorderWidth : mColumnOffsets[vertHit - 1] + mFramesetDetails.mBorderWidth;
-            ranges[1] = hardRanges[1] = (vertHit >= (mColumnOffsets.size() - 1)) ? mBounds.extent.x : mColumnOffsets[vertHit + 1] - mFramesetDetails.mBorderWidth;
+            ranges[1] = hardRanges[1] = (vertHit >= (mColumnOffsets.size() - 1)) ? getWidth() : mColumnOffsets[vertHit + 1] - mFramesetDetails.mBorderWidth;
             ranges[2] = hardRanges[2] = (horzHit <= 1) ? mFramesetDetails.mBorderWidth : mRowOffsets[horzHit - 1] + mFramesetDetails.mBorderWidth;
-            ranges[3] = hardRanges[3] = (horzHit >= (mRowOffsets.size() - 1)) ? mBounds.extent.y : mRowOffsets[horzHit + 1] - mFramesetDetails.mBorderWidth;
+            ranges[3] = hardRanges[3] = (horzHit >= (mRowOffsets.size() - 1)) ? getHeight() : mRowOffsets[horzHit + 1] - mFramesetDetails.mBorderWidth;
          }
          else
             return;
@@ -1004,13 +1016,13 @@ void GuiFrameSetCtrl::drawDividers(const Point2I &offset)
       for (itr = mColumnOffsets.begin() + 1; itr < mColumnOffsets.end(); itr++)
       {
          r.point = Point2I(*itr - mFramesetDetails.mBorderWidth, mFudgeFactor) + offset;
-         r.extent.set(mFramesetDetails.mBorderWidth, mBounds.extent.y - ( 2 * mFudgeFactor ) );
+         r.extent.set(mFramesetDetails.mBorderWidth, getHeight() - ( 2 * mFudgeFactor ) );
          GFX->getDrawUtil()->drawRectFill(r, mFramesetDetails.mBorderColor);
       }
       for (itr = mRowOffsets.begin() + 1; itr < mRowOffsets.end(); itr++)
       {
          r.point = Point2I(mFudgeFactor, *itr - mFramesetDetails.mBorderWidth) + offset;
-         r.extent.set(mBounds.extent.x - ( 2 * mFudgeFactor ), mFramesetDetails.mBorderWidth);
+         r.extent.set(getWidth() - ( 2 * mFudgeFactor ), mFramesetDetails.mBorderWidth);
          GFX->getDrawUtil()->drawRectFill(r, mFramesetDetails.mBorderColor);
       }
    }

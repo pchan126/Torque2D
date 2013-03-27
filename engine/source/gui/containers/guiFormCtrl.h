@@ -85,7 +85,7 @@ public:
 
    void setCaption(const char* caption);
 
-   void resize(const Point2I &newPosition, const Point2I &newExtent);
+   bool resize(const Point2I &newPosition, const Point2I &newExtent);
    void onRender(Point2I offset, const RectI &updateRect);
 
    // DAW: Called when the GUI theme changes and a bitmap arrary may need updating

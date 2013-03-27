@@ -124,7 +124,7 @@ public:
    // Override able methods for custom edit fields
    //////////////////////////////////////////////////////////////////////////
    virtual GuiControl*        constructEditControl();
-   virtual void               resize(const Point2I &newPosition, const Point2I &newExtent);
+   virtual bool               resize(const Point2I &newPosition, const Point2I &newExtent);
 };
 
 
@@ -145,7 +145,7 @@ public:
    // Override able methods for custom edit fields
    //////////////////////////////////////////////////////////////////////////
    virtual GuiControl*        constructEditControl();
-   virtual void               resize(const Point2I &newPosition, const Point2I &newExtent);
+   virtual bool               resize(const Point2I &newPosition, const Point2I &newExtent);
 };
 
 //////////////////////////////////////////////////////////////////////////

@@ -95,13 +95,13 @@ void GuiConsoleTextCtrl::calcResize()
    if (mProfile->mAutoSizeWidth)
    {
       if (mProfile->mAutoSizeHeight)
-         resize(mBounds.point, Point2I(mFont->getStrWidth((const UTF8 *)mResult) + 4, mFont->getHeight() + 4));
+         resize(getPosition(), Point2I(mFont->getStrWidth((const UTF8 *)mResult) + 4, mFont->getHeight() + 4));
       else
-         resize(mBounds.point, Point2I(mFont->getStrWidth((const UTF8 *)mResult) + 4, mBounds.extent.y));
+         resize(getPosition(), Point2I(mFont->getStrWidth((const UTF8 *)mResult) + 4, getHeight()));
    }
    else if (mProfile->mAutoSizeHeight)
    {
-      resize(mBounds.point, Point2I(mBounds.extent.x, mFont->getHeight() + 4));
+      resize(getPosition(), Point2I(getWidth(), mFont->getHeight() + 4));
    }
 }
 
@@ -151,7 +151,7 @@ void GuiConsoleTextCtrl::onRender(Point2I offset, const RectI &updateRect)
     renderChildControls(offset, updateRect);
     
     //   // draw the background rectangle
-//   RectI r(offset, mBounds.extent);
+//   RectI r(offset, getExtent());
 //   GFX->getDrawUtil()->drawRectFill(r, ColorI(255,255,255));
 //
 //   // draw the border
@@ -179,10 +179,10 @@ void GuiConsoleTextCtrl::onRender(Point2I offset, const RectI &updateRect)
 //      switch (mProfile->mAlignment)
 //      {
 //         case GuiControlProfile::RightJustify:
-//            localStart.set(mBounds.extent.x - txt_w-2, 0);
+//            localStart.set(getWidth() - txt_w-2, 0);
 //            break;
 //         case GuiControlProfile::CenterJustify:
-//            localStart.set((mBounds.extent.x - txt_w) / 2, 0);
+//            localStart.set((getWidth() - txt_w) / 2, 0);
 //            break;
 //         default:
 //            // GuiControlProfile::LeftJustify

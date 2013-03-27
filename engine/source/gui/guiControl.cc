@@ -39,12 +39,12 @@
 #include "memory/frameAllocator.h"
 #endif
 
+IMPLEMENT_CONOBJECT( GuiControl );
+
 //------------------------------------------------------------------------------
 
-IMPLEMENT_CONOBJECT_CHILDREN(GuiControl);
 
 //used to locate the next/prev responder when tab is pressed
-S32 GuiControl::smCursorChanged           = -1;
 GuiControl *GuiControl::smPrevResponder = NULL;
 GuiControl *GuiControl::smCurResponder = NULL;
 
@@ -52,34 +52,33 @@ GuiEditCtrl *GuiControl::smEditorHandle = NULL;
 
 bool GuiControl::smDesignTime = false;
 
-GuiControl::GuiControl()
+GuiControl::GuiControl() : mAddGroup( NULL ),
+                            mLayer(0),
+                            mBounds(0,0,64,64),
+                            mMinExtent(8,2),
+                            mProfile(NULL),
+                            mLangTable(NULL),
+                            mFirstResponder(NULL),
+                            mVisible(true),
+                            mActive(true),
+                            mAwake(false),
+                            mHorizSizing(horizResizeRight),
+                            mVertSizing(vertResizeBottom),
+                            mTooltipProfile(NULL),
+                            mTipHoverTime(1000),
+                            mIsContainer(false),
+                            mCanResize(true),
+                            mCanHit( true )
 {
-   mLayer = 0;
-   mBounds.set(0, 0, 64, 64);
-   mMinExtent.set(8, 2);			// MM: Reduced to 8x2 so GuiControl can be used as a separator.
-
-   mProfile = NULL;
-
-   mConsoleVariable     = StringTable->EmptyString;
-   mConsoleCommand      = StringTable->EmptyString;
-   mAltConsoleCommand   = StringTable->EmptyString;
-   mAcceleratorKey      = StringTable->EmptyString;
-   mLangTableName       = StringTable->EmptyString;
-
-   mLangTable           = NULL;
-   mFirstResponder      = NULL;
-   mCanSaveFieldDictionary = false;
-   mVisible             = true;
-   mActive              = false;
-   mAwake               = false;
-   mCanSave				= true;
-   mHorizSizing         = horizResizeRight;
-   mVertSizing          = vertResizeBottom;
-   mTooltipProfile      = NULL;
-   mTooltip             = StringTable->EmptyString;
-   mTipHoverTime        = 1000;
-   mTooltipWidth		= 250;
-   mIsContainer         = false;
+    mConsoleVariable     = StringTable->EmptyString;
+    mAcceleratorKey      = StringTable->EmptyString;
+    mLangTableName       = StringTable->EmptyString;
+    
+    mTooltip = StringTable->EmptyString;
+    mRenderTooltipDelegate.bind( this, &GuiControl::defaultTooltipRender );
+    
+    mCanSaveFieldDictionary = false;
+    mNotifyChildrenResized = true;
 }
 
 GuiControl::~GuiControl()
@@ -100,8 +99,8 @@ bool GuiControl::onAdd()
       mIsContainer = true;
 
    // Clamp to minExtent
-   mBounds.extent.x = getMax( mMinExtent.x, mBounds.extent.x );
-   mBounds.extent.y = getMax( mMinExtent.y, mBounds.extent.y );
+   setWidth( getMax( mMinExtent.x, getWidth() ));
+   setHeight( getMax( mMinExtent.y, getHeight() ));
 
 
    // Add to root group.
@@ -166,10 +165,9 @@ void GuiControl::initPersistFields()
    addField("HorizSizing",       TypeEnum,			Offset(mHorizSizing, GuiControl), 1, &gHorizSizingTable);
    addField("VertSizing",        TypeEnum,			Offset(mVertSizing, GuiControl), 1, &gVertSizingTable);
 
-   addField("Position",          TypePoint2I,		Offset(mBounds.point, GuiControl));
-   addField("Extent",            TypePoint2I,		Offset(mBounds.extent, GuiControl));
+   addField("Position",          TypePoint2I,		Offset(getPosition(), GuiControl));
+   addField("Extent",            TypePoint2I,		Offset(getExtent(), GuiControl));
    addField("MinExtent",         TypePoint2I,		Offset(mMinExtent, GuiControl));
-   addField("canSave",           TypeBool,			Offset(mCanSave, GuiControl));
    addField("Visible",           TypeBool,			Offset(mVisible, GuiControl));
    addDepricatedField("Modal");
    addDepricatedField("SetFirstResponder");
@@ -314,7 +312,7 @@ void GuiControl::inspectPostApply()
 Point2I GuiControl::localToGlobalCoord(const Point2I &src)
 {
    Point2I ret = src;
-   ret += mBounds.point;
+   ret += getPosition();
    GuiControl *walk = getParent();
    while(walk)
    {
@@ -327,7 +325,7 @@ Point2I GuiControl::localToGlobalCoord(const Point2I &src)
 Point2I GuiControl::globalToLocalCoord(const Point2I &src)
 {
    Point2I ret = src;
-   ret -= mBounds.point;
+   ret -= getPosition();
    GuiControl *walk = getParent();
    while(walk)
    {
@@ -338,67 +336,92 @@ Point2I GuiControl::globalToLocalCoord(const Point2I &src)
 }
 
 //----------------------------------------------------------------
-void GuiControl::resize(const Point2I &newPosition, const Point2I &newExtent)
+bool GuiControl::resize(const Point2I &newPosition, const Point2I &newExtent)
 {
-   Point2I actualNewExtent = Point2I(getMax(mMinExtent.x, newExtent.x),
-      getMax(mMinExtent.y, newExtent.y));
+    const Point2I minExtent = getMinExtent();
+    Point2I actualNewExtent = Point2I(getMax(minExtent.x, newExtent.x),
+                                      getMax(minExtent.y, newExtent.y));
+    
+    // only do the child control resizing stuff if you really need to.
+    const RectI bounds = getBounds();
+    
+    // If we didn't size anything, return false to indicate such
+    bool extentChanged = (actualNewExtent != bounds.extent);
+    bool positionChanged = (newPosition != bounds.point);
+    if (!extentChanged && !positionChanged )
+        return false;
+    
+    // Update Position
+    if ( positionChanged )
+        mBounds.point = newPosition;
+    
+    // Update Extent
+    if( extentChanged )
+    {
+        //call set update both before and after
+        setUpdate();
+        
+        mBounds.extent = actualNewExtent;
+        
+        // Obey the flag!
+        // Could be set if we are resizing in response to a child resizing!
+        if ( mNotifyChildrenResized )
+        {
+            iterator i;
+            for(i = begin(); i != end(); i++)
+            {
+                GuiControl *ctrl = static_cast<GuiControl *>(*i);
+                ctrl->parentResized(RectI(bounds.point, bounds.extent), RectI(newPosition,actualNewExtent));
+            }
+        }
+        
+        GuiControl *parent = getParent();
+        if (parent)
+            parent->childResized(this);
+        setUpdate();
+    }
 
-   // only do the child control resizing stuff if you really need to.
-   bool extentChanged = (actualNewExtent != mBounds.extent);
-
-   if (extentChanged) {
-      //call set update both before and after
-      setUpdate();
-      iterator i;
-      for(i = begin(); i != end(); i++)
-      {
-         GuiControl *ctrl = static_cast<GuiControl *>(*i);
-         ctrl->parentResized(mBounds.extent, actualNewExtent);
-      }
-      mBounds.set(newPosition, actualNewExtent);
-
-      GuiControl *parent = getParent();
-      if (parent)
-         parent->childResized(this);
-      setUpdate();
-   }
-   else {
-      mBounds.point = newPosition;
-   }
+    return extentChanged;
 }
-void GuiControl::setPosition( const Point2I &newPosition )
+//-----------------------------------------------------------------------------
+
+bool GuiControl::setPosition( const Point2I &newPosition )
 {
-   resize( newPosition, mBounds.extent );
+    return resize( newPosition, mBounds.extent );
 }
 
-void GuiControl::setExtent( const Point2I &newExtent )
+//-----------------------------------------------------------------------------
+
+bool GuiControl::setExtent( const Point2I &newExtent )
 {
-   resize( mBounds.point, newExtent );
+    return resize( mBounds.point, newExtent );
 }
 
-void GuiControl::setBounds( const RectI &newBounds )
+//-----------------------------------------------------------------------------
+
+bool GuiControl::setBounds( const RectI &newBounds )
 {
-   resize( newBounds.point, newBounds.extent );
+    return resize( newBounds.point, newBounds.extent );
 }
 
 void GuiControl::setLeft( S32 newLeft )
 {
-   resize( Point2I( newLeft, mBounds.point.y), mBounds.extent );
+   resize( Point2I( newLeft, getPosition().y), getExtent() );
 }
 
 void GuiControl::setTop( S32 newTop )
 {
-   resize( Point2I( mBounds.point.x, newTop ), mBounds.extent );
+   resize( Point2I( getPosition().x, newTop ), getExtent() );
 }
 
 void GuiControl::setWidth( S32 newWidth )
 {
-   resize( mBounds.point, Point2I( newWidth, mBounds.extent.y ) );
+   resize( getPosition(), Point2I( newWidth, getHeight() ) );
 }
 
 void GuiControl::setHeight( S32 newHeight )
 {
-   resize( mBounds.point, Point2I( mBounds.extent.x, newHeight ) );
+   resize( getPosition(), Point2I( getWidth(), newHeight ) );
 }
 
 void GuiControl::childResized(GuiControl *child)
@@ -406,56 +429,55 @@ void GuiControl::childResized(GuiControl *child)
    // default to do nothing...
 }
 
-void GuiControl::parentResized(const Point2I &oldParentExtent, const Point2I &newParentExtent)
+void GuiControl::parentResized(const RectI &oldParentRect, const RectI &newParentRect)
 {
-   Point2I newPosition = getPosition();
-   Point2I newExtent = getExtent();
-
-    S32 deltaX = newParentExtent.x - oldParentExtent.x;
-    S32 deltaY = newParentExtent.y - oldParentExtent.y;
-
-    if (mHorizSizing == horizResizeCenter)
-       newPosition.x = (newParentExtent.x - mBounds.extent.x) >> 1;
-    else if (mHorizSizing == horizResizeWidth)
-        newExtent.x += deltaX;
-    else if (mHorizSizing == horizResizeLeft)
-      newPosition.x += deltaX;
-   else if (mHorizSizing == horizResizeRelative && oldParentExtent.x != 0)
-   {
-      S32 newLeft = (newPosition.x * newParentExtent.x) / oldParentExtent.x;
-      S32 newRight = ((newPosition.x + newExtent.x) * newParentExtent.x) / oldParentExtent.x;
-
-      newPosition.x = newLeft;
-      newExtent.x = newRight - newLeft;
-   }
-
-    if (mVertSizing == vertResizeCenter)
-       newPosition.y = (newParentExtent.y - mBounds.extent.y) >> 1;
-    else if (mVertSizing == vertResizeHeight)
-        newExtent.y += deltaY;
-    else if (mVertSizing == vertResizeTop)
-      newPosition.y += deltaY;
-   else if(mVertSizing == vertResizeRelative && oldParentExtent.y != 0)
-   {
-
-      S32 newTop = (newPosition.y * newParentExtent.y) / oldParentExtent.y;
-      S32 newBottom = ((newPosition.y + newExtent.y) * newParentExtent.y) / oldParentExtent.y;
-
-      newPosition.y = newTop;
-      newExtent.y = newBottom - newTop;
-   }
-
-   // Resizing Re factor [9/18/2006]
-   // Only resize if our minExtent is satisfied with it.
-   //if( newExtent.x >= mMinExtent.x && newExtent.y >= mMinExtent.y )
-      resize(newPosition, newExtent);
+    Point2I newPosition = getPosition();
+    Point2I newExtent = getExtent();
+    
+	S32 deltaX = newParentRect.extent.x - oldParentRect.extent.x;
+ 	S32 deltaY = newParentRect.extent.y - oldParentRect.extent.y;
+    
+	if (mHorizSizing == horizResizeCenter)
+        newPosition.x = (newParentRect.extent.x - getWidth()) >> 1;
+	else if (mHorizSizing == horizResizeWidth)
+		newExtent.x += deltaX;
+	else if (mHorizSizing == horizResizeLeft)
+        newPosition.x += deltaX;
+    else if (mHorizSizing == horizResizeRelative && oldParentRect.extent.x != 0)
+    {
+        S32 newLeft = mRoundToNearest( ( F32( newPosition.x ) / F32( oldParentRect.extent.x ) ) * F32( newParentRect.extent.x ) );
+        S32 newWidth = mRoundToNearest( ( F32( newExtent.x ) / F32( oldParentRect.extent.x ) ) * F32( newParentRect.extent.x ) );
+        
+        newPosition.x = newLeft;
+        newExtent.x = newWidth;
+    }
+    
+	if (mVertSizing == vertResizeCenter)
+        newPosition.y = (newParentRect.extent.y - getHeight()) >> 1;
+	else if (mVertSizing == vertResizeHeight)
+		newExtent.y += deltaY;
+	else if (mVertSizing == vertResizeTop)
+        newPosition.y += deltaY;
+    else if(mVertSizing == vertResizeRelative && oldParentRect.extent.y != 0)
+    {
+        S32 newTop = mRoundToNearest( ( F32( newPosition.y ) / F32( oldParentRect.extent.y ) ) * F32( newParentRect.extent.y ) );
+        S32 newHeight = mRoundToNearest( ( F32( newExtent.y ) / F32( oldParentRect.extent.y ) ) * F32( newParentRect.extent.y ) );
+        
+        newPosition.y = newTop;
+        newExtent.y = newHeight;
+    }
+    
+    // Resizing Re factor [9/18/2006]
+    // Only resize if our minExtent is satisfied with it.
+    Point2I minExtent = getMinExtent();
+    if( newExtent.x >= minExtent.x && newExtent.y >= minExtent.y )
+        resize(newPosition, newExtent);
 }
-
 //----------------------------------------------------------------
 
 void GuiControl::onRender(Point2I offset, const RectI &updateRect)
 {
-    RectI ctrlRect(offset, mBounds.extent);
+    RectI ctrlRect(offset, getExtent());
 
     GFX->getDrawUtil()->setBitmapModulation( mProfile->mFontColor );
     //if opaque, fill the update rect with the fill color
@@ -469,154 +491,99 @@ void GuiControl::onRender(Point2I offset, const RectI &updateRect)
     renderChildControls(offset, updateRect);
 }
 
-bool GuiControl::renderTooltip(Point2I cursorPos, const char* tipText )
+bool GuiControl::defaultTooltipRender( const Point2I &hoverPos, const Point2I &cursorPos, const char* tipText )
 {
 #ifndef TORQUE_OS_IOS
     // Short Circuit.
-    if (!mAwake) 
+    if (!mAwake)
         return false;
-
+    
     if ( dStrlen( mTooltip ) == 0 && ( tipText == NULL || dStrlen( tipText ) == 0 ) )
         return false;
-
-    const char* renderTip = mTooltip;
-    if( tipText != NULL )
+    
+    String renderTip( mTooltip );
+    if ( tipText != NULL )
         renderTip = tipText;
-
-    // Finish if no root.
+    
+    // Need to have root.
     GuiCanvas *root = getRoot();
     if ( !root )
         return false;
-
-    if (!mTooltipProfile)
-        mTooltipProfile = mProfile;
-
+    
     GFont *font = mTooltipProfile->mFont;
-   
-    // Set text bounds.
-    Point2I textBounds( 0, 0 );
-
-    // Fetch the width of a space.
-    const S32 spaceWidth = (S32)font->getStrWidth(" ");
-
-    // Fetch the maximum allowed tooltip extent.
-    const S32 maxTooltipWidth = mTooltipWidth;
-
-    // Fetch word count.
-    const S32 wordCount = StringUnit::getUnitCount( renderTip, " " );
-
-    // Reset line storage.
-    const S32 tooltipLineStride = (S32)font->getHeight() + 4;
-    const S32 maxTooltipLines = 20;
-    S32 tooltipLineCount = 0;
-    S32 tooltipLineWidth = 0;
-    FrameTemp<StringBuffer> tooltipLines( maxTooltipLines );
-
-    // Reset word indexing.
-    S32 wordStartIndex = 0;
-    S32 wordEndIndex = 0;
-
-    // Search for end word.
-    while( true )
+    
+    // Support for multi-line tooltip text...
+    
+    Vector<U32> startLineOffsets, lineLengths;
+    
+    font->wrapString( renderTip, U32_MAX, startLineOffsets, lineLengths );
+    
+    // The width is the longest line.
+    U32 tipWidth = 0;
+    for ( U32 i = 0; i < lineLengths.size(); i++ )
     {
-        // Do we have any words left?
-        if ( wordEndIndex < wordCount )
-        {
-            // Yes, so fetch the word.
-            const char* pWord = StringUnit::getUnit( renderTip, wordEndIndex, " " );
-
-            // Add word length.
-            const S32 wordLength = (S32)font->getStrWidth( pWord ) + spaceWidth;
-
-            // Do we still have room?
-            if ( (tooltipLineWidth + wordLength) < maxTooltipWidth )
-            {
-                // Yes, so add word length.
-                tooltipLineWidth += wordLength;
-
-                // Next word.
-                wordEndIndex++;
-
-                continue;
-            }
-
-            // Do we have any lines left?
-            if ( tooltipLineCount < maxTooltipLines )
-            {
-                // Yes, so insert line.
-                tooltipLines[tooltipLineCount++] = StringUnit::getUnits( renderTip, wordStartIndex, wordEndIndex-1, " " );
-
-                // Update horizontal text bounds.
-                if ( tooltipLineWidth > textBounds.x )
-                    textBounds.x = tooltipLineWidth;
-            }
-
-            // Set new line length.
-            tooltipLineWidth = wordLength;
-
-            // Set word start.
-            wordStartIndex = wordEndIndex;
-
-            // Next word.
-            wordEndIndex++;
-
-            continue;
-        }
-
-        // Do we have any words left?
-        if ( wordStartIndex < wordCount )
-        {
-            // Yes, so do we have any lines left?
-            if ( tooltipLineCount < maxTooltipLines )
-            {
-                // Yes, so insert line.
-                tooltipLines[tooltipLineCount++] = StringUnit::getUnits( renderTip, wordStartIndex, wordCount-1, " " );
-
-                // Update horizontal text bounds.
-                if ( tooltipLineWidth > textBounds.x )
-                    textBounds.x = tooltipLineWidth;
-            }
-        }
-
-        break;
+        U32 width = font->getStrNWidth( renderTip.c_str() + startLineOffsets[i], lineLengths[i] );
+        
+        if ( width > tipWidth )
+            tipWidth = width;
     }
-
-    // Controls the size of the inside (gutter) tooltip region.
-    const S32 tooltipGutterSize = 5;
-
-    // Adjust text bounds.
-    textBounds.x += tooltipGutterSize * 2;
-    textBounds.y = (((S32)font->getHeight() + 4) * tooltipLineCount - 4) + (tooltipGutterSize * 2);
-
-    // Adjust to tooltip is always on-screen.
-    Point2I screensize = Platform::getWindowSize();
-    Point2I offset = cursorPos; 
-    offset.y += 22;
-    if (screensize.x < (offset.x + textBounds.x))
-        offset.x = screensize.x - textBounds.x;
-    if(screensize.y < (offset.y + textBounds.y) )
-        offset.y = screensize.y - textBounds.y;
-
-    // Fetch the old clip.
+    
+    // The height is the number of lines times the height of the font.
+    U32 tipHeight = lineLengths.size() * font->getHeight();
+    
+    // Vars used:
+    // Screensize (for position check)
+    // Offset to get position of cursor
+    // textBounds for text extent.
+    Point2I screensize = getRoot()->getWindowSize();
+    Point2I offset = hoverPos;
+    Point2I textBounds;
+    
+    // Offset below cursor image
+    offset.y += 20; // TODO: Attempt to fix?: root->getCursorExtent().y;
+    
+    // Create text bounds...
+    
+    // Pixels above/below the text
+    const U32 vMargin = 2;
+    // Pixels left/right of the text
+    const U32 hMargin = 4;
+    
+    textBounds.x = tipWidth + hMargin * 2;
+    textBounds.y = tipHeight + vMargin * 2;
+    
+    // Check position/width to make sure all of the tooltip will be rendered
+    // 5 is given as a buffer against the edge
+    if ( screensize.x < offset.x + textBounds.x + 5 )
+        offset.x = screensize.x - textBounds.x - 5;
+    
+    // And ditto for the height
+    if ( screensize.y < offset.y + textBounds.y + 5 )
+        offset.y = hoverPos.y - textBounds.y - 5;
+    
     RectI oldClip = GFX->getClipRect();
-
+    
     // Set rectangle for the box, and set the clip rectangle.
-    RectI rect(offset, textBounds);
-    GFX->setClipRect(rect);
-
+    RectI rect( offset, textBounds );
+    GFX->setClipRect( rect );
+    
     // Draw Filler bit, then border on top of that
-    GFX->getDrawUtil()->drawRectFill(rect, mTooltipProfile->mFillColor );
+    GFX->getDrawUtil()->drawRectFill( rect, mTooltipProfile->mFillColor );
     GFX->getDrawUtil()->drawRect( rect, mTooltipProfile->mBorderColor );
-
-    // Draw the text centered in the tool tip box
+    
+    // Draw the text centered in the tool tip box...
+    
     GFX->getDrawUtil()->setBitmapModulation( mTooltipProfile->mFontColor );
-    Point2I start( tooltipGutterSize, tooltipGutterSize );
-    for ( S32 lineIndex = 0; lineIndex < tooltipLineCount; lineIndex++ )
+    
+    for ( U32 i = 0; i < lineLengths.size(); i++ )
     {
-        GFX->getDrawUtil()->drawText( font, start + offset, tooltipLines[lineIndex].getPtr8(), mProfile->mFontColors );
-        offset.y += tooltipLineStride;
+        Point2I start( hMargin, vMargin + i * font->getHeight() );
+        const UTF8 *line = renderTip.c_str() + startLineOffsets[i];
+        U32 lineLen = lineLengths[i];
+        
+        GFX->getDrawUtil()->drawTextN( font, start + offset, line, lineLen, mProfile->mFontColors );
     }
-
+    
     GFX->setClipRect( oldClip );
 #endif
     return true;
@@ -673,7 +640,7 @@ void GuiControl::setUpdateRegion(Point2I pos, Point2I ext)
 
 void GuiControl::setUpdate()
 {
-   setUpdateRegion(Point2I(0,0), mBounds.extent);
+   setUpdateRegion(Point2I(0,0), getExtent());
 }
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- //
@@ -740,6 +707,32 @@ void GuiControl::preRender()
       ctrl->preRender();
    }
    onPreRender();
+}
+
+//-----------------------------------------------------------------------------
+
+void GuiControl::onDeleteNotify(SimObject *object)
+{
+    if( object == mProfile )
+    {
+        GuiControlProfile* profile;
+        Sim::findObject( "GuiDefaultProfile", profile );
+        
+        if ( profile == mProfile )
+            mProfile = NULL;
+        else
+            setControlProfile( profile );
+    }
+    if (object == mTooltipProfile)
+    {
+        GuiControlProfile* profile;
+        Sim::findObject( "GuiDefaultProfile", profile );
+        
+        if ( profile == mTooltipProfile )
+            mTooltipProfile = NULL;
+        else
+            setTooltipProfile( profile );
+    }
 }
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- //
@@ -877,29 +870,6 @@ bool	GuiControl::getCanSaveParent()
    return true;
 }
 
-//-----------------------------------------------------------------------------
-//	Can we Save to a TorqueScript file?
-//-----------------------------------------------------------------------------
-bool GuiControl::getCanSave()
-{
-   return mCanSave;
-}
-
-//-----------------------------------------------------------------------------
-//	Sets whether we can save out to a file (TorqueScript)
-//-----------------------------------------------------------------------------
-void GuiControl::setCanSave(bool bCanSave)
-{
-   mCanSave	=	bCanSave;
-}
-
-ConsoleMethod( GuiControl, setCanSave, void, 3,3,"(bool canSave) Sets whether this control can serialize itself to the hard disk\n"
-              "@param Flag setting\n"
-              "@return No Return Value")
-{
-   object->setCanSave( dAtob( argv[2] ) );
-}
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //	checks out mCanSave flag, if true just passes along to our parent, 
@@ -940,6 +910,20 @@ ConsoleMethod( GuiControl, addGuiControl, void, 3, 3, "(int controlId) Adds the 
       object->addObject(ctrl);
    }
 
+}
+
+//-----------------------------------------------------------------------------
+
+ConsoleMethod( GuiControl, getRoot, S32, 2, 2,
+                   "Get the canvas on which the control is placed.")
+{
+    GuiCanvas* pRoot		= object->getRoot();
+    if(pRoot)
+    {
+        return pRoot->getId();
+    }
+    
+    return 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -1090,19 +1074,17 @@ ConsoleMethod( GuiControl, setPositionGlobal, void, 4, 4, "(int x, int y) Sets t
 {
    //see if we can turn the x/y into ints directly, 
    Point2I gPos(dAtoi(argv[2]), dAtoi(argv[3]));
-   Point2I lPosOffset	=	object->globalToLocalCoord(gPos);
-   lPosOffset.x += object->mBounds.point.x;
-   lPosOffset.y += object->mBounds.point.y;
-
-   object->mBounds.set(lPosOffset,object->mBounds.extent);
+    Point2I lPosOffset	=	object->globalToLocalCoord( gPos);
+    
+    lPosOffset += object->getPosition();
+    
+    object->setPosition( lPosOffset );
 }
 
 ConsoleMethod( GuiControl, setPosition, void, 4, 4, "(int x, int y) Sets the current control position in local space\n"
               "@return No Return Value.")
 {
-   //see if we can turn the x/y into ints directly, 
-   Point2I lPos(dAtoi(argv[2]), dAtoi(argv[3]));
-   object->mBounds.set(lPos,object->mBounds.extent);
+    object->setPosition( Point2I(dAtoi(argv[2]), dAtoi(argv[3])) );
 }
 
 ConsoleMethod( GuiControl, getExtent, const char*, 2, 2, "Get the width and height of the control.\n"
@@ -1147,6 +1129,31 @@ void GuiControl::onChildRemoved( GuiControl *child )
    // Base does nothing with this
 }
 
+//-----------------------------------------------------------------------------
+
+void GuiControl::onGroupRemove()
+{
+    // If we have a first responder in our hierarchy,
+    // make sure to kill it off.
+    
+    if( mFirstResponder )
+        mFirstResponder->clearFirstResponder();
+    else
+    {
+        GuiCanvas* root = getRoot();
+        if( root )
+        {
+            GuiControl* firstResponder = root->getFirstResponder();
+            if( firstResponder && firstResponder->isChildOfGroup( this ) )
+                firstResponder->clearFirstResponder();
+        }
+    }
+    
+    // If we are awake, put us to sleep.
+    
+    if( isAwake() )
+        sleep();
+}
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- //
 
 const char *GuiControl::getScriptValue()
@@ -1174,12 +1181,9 @@ void GuiControl::setConsoleVariable(const char *variable)
 //	finds and returns the first immediate child of ours whose
 //	internal name matches the passed String. returns Null if not found.
 //-----------------------------------------------------------------------------
-void GuiControl::setConsoleCommand(const char *newCmd)
+void GuiControl::setConsoleCommand( const String& newCmd )
 {
-   if (newCmd)
-      mConsoleCommand = StringTable->insert(newCmd);
-   else
-      mConsoleCommand = StringTable->EmptyString;
+    mConsoleCommand = newCmd;
 }
 
 const char * GuiControl::getConsoleCommand()
@@ -1243,7 +1247,7 @@ bool GuiControl::cursorInControl()
    Point2I pt = root->getCursorPos();
    Point2I offset = localToGlobalCoord(Point2I(0, 0));
    if (pt.x >= offset.x && pt.y >= offset.y &&
-      pt.x < offset.x + mBounds.extent.x && pt.y < offset.y + mBounds.extent.y)
+      pt.x < offset.x + getWidth() && pt.y < offset.y + getHeight())
    {
       return true;
    }
@@ -1255,12 +1259,61 @@ bool GuiControl::cursorInControl()
 
 bool GuiControl::pointInControl(const Point2I& parentCoordPoint)
 {
-   S32 xt = parentCoordPoint.x - mBounds.point.x;
-   S32 yt = parentCoordPoint.y - mBounds.point.y;
-   return xt >= 0 && yt >= 0 && xt < mBounds.extent.x && yt < mBounds.extent.y;
+   S32 xt = parentCoordPoint.x - getPosition().x;
+   S32 yt = parentCoordPoint.y - getPosition().y;
+   return xt >= 0 && yt >= 0 && xt < getWidth() && yt < getHeight();
 }
 
-ConsoleMethod( GuiControl, findHitControl, S32, 4, 4, "(int x, int y) Searches for the control at the given point\n" 
+//=============================================================================
+//    Properties.
+//=============================================================================
+// MARK: ---- Properties ----
+
+//-----------------------------------------------------------------------------
+
+void GuiControl::setTooltipProfile( GuiControlProfile *prof )
+{
+    AssertFatal( prof, "GuiControl::setTooltipProfile: invalid profile" );
+    
+    if ( prof == mTooltipProfile )
+        return;
+    
+    bool skipAwaken = false;
+    
+    if ( mTooltipProfile == NULL )
+        skipAwaken = true;
+    
+//    if( mTooltipProfile )
+//        mTooltipProfile->decUseCount();
+    
+    if ( mAwake && mTooltipProfile )
+        mTooltipProfile->decRefCount();
+    
+    // Clear the delete notification we previously set up
+    if ( mTooltipProfile )
+        clearNotify( mTooltipProfile );
+    
+    mTooltipProfile = prof;
+//    mTooltipProfile->incUseCount();
+    if ( mAwake )
+        mTooltipProfile->incRefCount();
+    
+    // Make sure that the new profile will notify us when it is deleted
+    if ( mTooltipProfile )
+        deleteNotify( mTooltipProfile );
+    
+//    // force an update when the profile is changed
+//    if ( mAwake && !skipAwaken )
+//    {
+//        sleep();
+//        
+//        if( !Sim::isShuttingDown() )
+//            awaken();
+//    }
+}
+
+
+ConsoleMethod( GuiControl, findHitControl, S32, 4, 4, "(int x, int y) Searches for the control at the given point\n"
               "@return Returns the Id of the control at the point")
 {
    Point2I pos(dAtoi(argv[2]), dAtoi(argv[3]));
@@ -1268,27 +1321,40 @@ ConsoleMethod( GuiControl, findHitControl, S32, 4, 4, "(int x, int y) Searches f
    return hit ? hit->getId() : 0;
 }
 
-GuiControl* GuiControl::findHitControl(const Point2I &pt, S32 initialLayer)
+ConsoleMethod( GuiControl, findHitControls, const char*, 6, 6, "(int x, int y, int width, int height) Find all visible child controls that intersect with the given rectangle\n"
+              "@return Returns the Id of the control at the point")
 {
-   iterator i = end(); // find in z order (last to first)
-   while (i != begin())
-   {
-      i--;
-      GuiControl *ctrl = static_cast<GuiControl *>(*i);
-      if (initialLayer >= 0 && ctrl->mLayer > initialLayer)
-      {
-         continue;
-      }
-      else if (ctrl->mVisible && ctrl->pointInControl(pt))
-      {
-         Point2I ptemp = pt - ctrl->mBounds.point;
-         GuiControl *hitCtrl = ctrl->findHitControl(ptemp);
-
-         if(hitCtrl->mProfile->mModal)
-            return hitCtrl;
-      }
-   }
-   return this;
+    // Find hit controls.
+    
+    RectI bounds(dAtoi(argv[2]), dAtoi(argv[3]), dAtoi(argv[4]), dAtoi(argv[5]) );
+    Vector< GuiControl* > controls;
+    
+    if( !object->findHitControls( bounds, controls ) )
+        return "";
+    
+    // Create vector string.
+    
+    bool isFirst = true;
+    StringBuilder str;
+    for( U32 i = 0, num = controls.size(); i < num; ++ i )
+    {
+        if( !isFirst )
+            str.append( ' ' );
+            
+            str.append( controls[ i ]->getIdString() );
+            isFirst = false;
+            }
+    String s = str.end();
+    
+    // Return result.
+    
+    if ( s.compare( object->getIdString() ) == 0 )
+        return "";
+    
+    char* buffer = Con::getReturnBuffer( s.size() );
+    dStrcpy( buffer, s.c_str() );
+    
+    return buffer;
 }
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- //
@@ -1410,6 +1476,203 @@ void GuiControl::onMiddleMouseDragged(const GuiEvent &)
 {
 }
 
+//-----------------------------------------------------------------------------
+
+bool GuiControl::onGamepadButtonDown(const GuiEvent &event)
+{
+    return onKeyDown(event);
+}
+
+//-----------------------------------------------------------------------------
+
+bool GuiControl::onGamepadButtonUp(const GuiEvent &event)
+{
+    return onKeyUp(event);
+}
+
+//-----------------------------------------------------------------------------
+
+bool GuiControl::onGamepadAxisUp(const GuiEvent &event)
+{
+    //pass the event to the parent
+    GuiControl *parent = getParent();
+    if (parent)
+    {
+        return parent->onGamepadAxisUp(event);
+    }
+    else
+    {
+        return false;
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+bool GuiControl::onGamepadAxisDown(const GuiEvent &event)
+{
+    //pass the event to the parent
+    GuiControl *parent = getParent();
+    if (parent)
+    {
+        return parent->onGamepadAxisDown(event);
+    }
+    else
+    {
+        return false;
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+bool GuiControl::onGamepadAxisLeft(const GuiEvent &event)
+{
+    //pass the event to the parent
+    GuiControl *parent = getParent();
+    if (parent)
+    {
+        return parent->onGamepadAxisLeft(event);
+    }
+    else
+    {
+        return false;
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+bool GuiControl::onGamepadAxisRight(const GuiEvent &event)
+{
+    //pass the event to the parent
+    GuiControl *parent = getParent();
+    if (parent)
+    {
+        return parent->onGamepadAxisRight(event);
+    }
+    else
+    {
+        return false;
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+bool GuiControl::onGamepadTrigger(const GuiEvent &event)
+{
+    //pass the event to the parent
+    GuiControl *parent = getParent();
+    if (parent)
+    {
+        return parent->onGamepadTrigger(event);
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
+//-----------------------------------------------------------------------------
+
+bool GuiControl::acceptsAsChild( SimObject* object ) const
+{
+    return ( dynamic_cast< GuiControl* >( object ) != NULL );
+}
+
+//-----------------------------------------------------------------------------
+
+GuiControl* GuiControl::findHitControl(const Point2I &pt, S32 initialLayer)
+{
+    iterator i = end(); // find in z order (last to first)
+    
+    while (i != begin())
+    {
+        i--;
+        GuiControl *ctrl = static_cast<GuiControl *>(*i);
+        if (initialLayer >= 0 && ctrl->mLayer > initialLayer)
+        {
+            continue;
+        }
+        
+        else if (ctrl->mVisible && ctrl->mCanHit && ctrl->pointInControl(pt))
+        {
+            Point2I ptemp = pt - ctrl->getPosition();
+            GuiControl *hitCtrl = ctrl->findHitControl(ptemp);
+            
+            if ( hitCtrl->mProfile->mModal )
+                return hitCtrl;
+        }
+    }
+    
+    if( mCanHit )
+        return this;
+    return NULL;
+}
+
+//-----------------------------------------------------------------------------
+
+bool GuiControl::findHitControls( const RectI& rect, Vector< GuiControl* >& outResult, U32 flags, S32 initialLayer, U32 depth )
+{
+    if( !mVisible )
+        return false;
+    else if( !mCanHit && flags & HIT_NoCanHitNoRecurse )
+        return false;
+    
+    // Check for hit.  If not full-box, always counts.
+    
+    bool isHit = mVisible;
+    if( flags & HIT_FullBoxOnly )
+    {
+        RectI rectInParentSpace = rect;
+        rectInParentSpace.point += getPosition();
+        
+        isHit &= rectInParentSpace.contains( getBounds() );
+    }
+    else
+        isHit &= mCanHit;
+    
+    // If we have a hit and should not recurse into children,
+    // return us.
+    
+    if( isHit && flags & HIT_ParentPreventsChildHit && depth > 0 )
+    {
+        outResult.push_back( this );
+        return true;
+    }
+    
+    // Check child controls.
+    
+    bool haveFoundChild = false;
+    iterator i = end();
+    
+    while( i != begin() )
+    {
+        i --;
+        
+        GuiControl* ctrl = static_cast< GuiControl* >( *i );
+        if( initialLayer >= 0 && ctrl->mLayer > initialLayer )
+            continue;
+        
+        if( ctrl->getBounds().overlaps( rect ) )
+        {
+            RectI transposedRect = rect;
+            transposedRect.point -= ctrl->getPosition();
+            
+            if( ctrl->findHitControls( transposedRect, outResult, flags, -1, depth + 1 ) )
+                haveFoundChild = true;
+        }
+    }
+    
+    if( ( !haveFoundChild || flags & HIT_AddParentHits ) && isHit )
+    {
+        outResult.push_back( this );
+        return true;
+    }
+    
+    return haveFoundChild;
+}
+
+//-----------------------------------------------------------------------------
+
 
 GuiControl* GuiControl::findFirstTabable()
 {
@@ -1505,11 +1768,31 @@ GuiControl *GuiControl::findPrevTabable(GuiControl *curResponder, bool firstCall
    return tabCtrl;
 }
 
+//-----------------------------------------------------------------------------
+
 void GuiControl::onLoseFirstResponder()
 {
     // Since many controls have visual cues when they are the firstResponder...
     setUpdate();
+
+    // Notify Script.
+    if( isMethod("onLoseFirstResponder") )
+        Con::executef(this, 1, "onLoseFirstResponder");
 }
+
+//-----------------------------------------------------------------------------
+
+void GuiControl::onGainFirstResponder()
+{
+    // Since many controls have visual cues when they are the firstResponder...
+    this->setUpdate();
+
+    // Notify Script.
+    if( isMethod("onGainFirstResponder") )
+        Con::executef(this, 1, "onGainFirstResponder");
+}
+
+//-----------------------------------------------------------------------------
 
 bool GuiControl::ControlIsChild(GuiControl *child)
 {
@@ -1777,15 +2060,24 @@ void GuiControl::renderJustifiedText(Point2I offset, Point2I extent, const char 
 
 void GuiControl::getCursor(GuiCursor *&cursor, bool &showCursor, const GuiEvent &lastGuiEvent)
 {
-   if(GuiControl::smCursorChanged != -1 && !isMouseLocked())
-   {
-      // We've already changed the cursor, 
-      // so set it back before we change it again.
-      Input::popCursor();
-
-      // We haven't changed it
-      GuiControl::smCursorChanged = -1;
-   }
+    if( !getRoot() )
+        return;
+    
+    if(getRoot()->mCursorChanged != -1 && !isMouseLocked())
+    {
+        // We've already changed the cursor,
+        // so set it back before we change it again.
+        
+        PlatformWindow *pWindow = static_cast<GuiCanvas*>(getRoot())->getPlatformWindow();
+        AssertFatal(pWindow != NULL,"GuiControl without owning platform window!  This should not be possible.");
+        PlatformCursorController *pController = pWindow->getCursorController();
+        AssertFatal(pController != NULL,"PlatformWindow without an owned CursorController!");
+        
+        pController->popCursor();
+        
+        // We haven't changed it
+        getRoot()->mCursorChanged = -1;
+    }
 }
 
 const char* GuiControl::execConsoleCallback()

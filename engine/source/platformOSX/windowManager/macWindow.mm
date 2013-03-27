@@ -5,7 +5,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "./macWindow.h"
-#import "windowManager/mac/macView.h"
+#import "./macView.h"
 
 #import "console/console.h"
 
@@ -213,10 +213,7 @@ PlatformWindow* MacWindow::getNextWindow() const
 
 bool MacWindow::setSize(const Point2I &newSize)
 {
-   if (sSafariWindowInfo)
-      return true;
-      
-   NSSize newExtent = {newSize.x, newSize.y};
+   NSSize newExtent = {static_cast<CGFloat>(newSize.x), static_cast<CGFloat>(newSize.y)};
    [mCocoaWindow setContentSize:newExtent];
    [mCocoaWindow center];
    return true;
@@ -227,7 +224,7 @@ void MacWindow::setClientExtent( const Point2I newExtent )
    if(!mFullscreen)
    {
       // Set the Client Area Extent (Resolution) of this window
-      NSSize newSize = {newExtent.x, newExtent.y};
+      NSSize newSize = {static_cast<CGFloat>(newExtent.x), static_cast<CGFloat>(newExtent.y)};
       [mCocoaWindow setContentSize:newSize];
    }
    else
@@ -285,7 +282,7 @@ void MacWindow::setPosition( const Point2I newPosition )
    NSScreen *screen = [mCocoaWindow screen];
    NSRect screenFrame = [screen frame];
 
-   NSPoint pos = {newPosition.x, newPosition.y + screenFrame.size.height};
+   NSPoint pos = {static_cast<CGFloat>(newPosition.x), newPosition.y + screenFrame.size.height};
    [mCocoaWindow setFrameTopLeftPoint: pos];
 }
 
@@ -305,7 +302,7 @@ void MacWindow::centerWindow()
 
 Point2I MacWindow::clientToScreen( const Point2I& pos )
 {
-   NSPoint p = { pos.x, pos.y };
+   NSPoint p = { static_cast<CGFloat>(pos.x), static_cast<CGFloat>(pos.y) };
    
    p = [ mCocoaWindow convertBaseToScreen: p ];
    return Point2I( p.x, p.y );
@@ -313,7 +310,7 @@ Point2I MacWindow::clientToScreen( const Point2I& pos )
 
 Point2I MacWindow::screenToClient( const Point2I& pos )
 {
-   NSPoint p = { pos.x, pos.y };
+   NSPoint p = { static_cast<CGFloat>(pos.x), static_cast<CGFloat>(pos.y) };
    
    p = [ mCocoaWindow convertScreenToBase: p ];
    return Point2I( p.x, p.y );

@@ -33,7 +33,7 @@ IMPLEMENT_CONOBJECT(GuiButtonCtrl);
 
 GuiButtonCtrl::GuiButtonCtrl()
 {
-   mBounds.extent.set(140, 30);
+   setExtent(140, 30);
    mButtonText = StringTable->EmptyString;
 }
 
@@ -63,7 +63,7 @@ void GuiButtonCtrl::onRender(Point2I      offset,
    ColorI backColor   = mActive ? mProfile->mFillColor : mProfile->mFillColorNA;
    ColorI borderColor = mActive ? mProfile->mBorderColor : mProfile->mBorderColorNA;
 
-   RectI boundsRect(offset, mBounds.extent);
+   RectI boundsRect(offset, getExtent());
 
    if( mProfile->mBorder != 0 && !mHasTheme )
    {
@@ -90,7 +90,7 @@ void GuiButtonCtrl::onRender(Point2I      offset,
       textPos += Point2I(1,1);
 
    GFX->getDrawUtil()->setBitmapModulation( fontColor );
-   renderJustifiedText(textPos, mBounds.extent, mButtonText);
+   renderJustifiedText(textPos, getExtent(), mButtonText);
 
    //render the children
    renderChildControls( offset, updateRect);

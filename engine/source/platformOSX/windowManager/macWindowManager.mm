@@ -6,9 +6,10 @@
 #import <Cocoa/Cocoa.h>
 #import "./macWindowManager.h"
 #import "./macWindow.h"
-#import "core/util/journal/process.h"
+//#import "core/util/journal/process.h"
 #import "console/console.h"
 #import "graphics/gfxDevice.h"
+#import "game/version.h"
 
 PlatformWindowManager* CreatePlatformWindowManager()
 {
@@ -23,7 +24,7 @@ static inline RectI convertCGRectToRectI(NSRect r)
 MacWindowManager::MacWindowManager() : mNotifyShutdownDelegate(this, &MacWindowManager::onShutdown), mIsShuttingDown(false)
 {
    mWindowList.clear();
-   Process::notifyShutdown(mNotifyShutdownDelegate);
+//   Process::notifyShutdown(mNotifyShutdownDelegate);
 }
 
 MacWindowManager::~MacWindowManager()
@@ -147,7 +148,7 @@ void MacWindowManager::_processCmdLineArgs(const S32 argc, const char **argv)
 
 PlatformWindow *MacWindowManager::createWindow(GFXDevice *device, const GFXVideoMode &mode)
 {
-   MacWindow* window = new MacWindow(getNextId(), getEngineProductString(), mode.resolution);
+   MacWindow* window = new MacWindow(getNextId(), getVersionString(), mode.resolution);
    _addWindow(window);
    
    // Set the video mode on the window

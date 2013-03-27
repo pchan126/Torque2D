@@ -78,7 +78,7 @@ bool GuiSliderCtrl::onWake()
     if (!Parent::onWake())
         return false;
 
-    if (mThumbSize.y + mProfile->mFont->getHeight() - 4 <= (U32) mBounds.extent.y)
+    if (mThumbSize.y + mProfile->mFont->getHeight() - 4 <= (U32) getHeight())
         mDisplayValue = true;
     else
         mDisplayValue = false;
@@ -104,10 +104,10 @@ void GuiSliderCtrl::onMouseDown(const GuiEvent &event)
 
     Point2I curMousePos = globalToLocalCoord(event.mousePoint);
     F32 value;
-    if (mBounds.extent.x >= mBounds.extent.y)
-        value = F32(curMousePos.x - mShiftPoint) / F32(mBounds.extent.x - mShiftExtent) * (mRange.y - mRange.x) + mRange.x;
+    if (getWidth() >= getHeight())
+        value = F32(curMousePos.x - mShiftPoint) / F32(getWidth() - mShiftExtent) * (mRange.y - mRange.x) + mRange.x;
     else
-        value = F32(curMousePos.y) / F32(mBounds.extent.y) * (mRange.y - mRange.x) + mRange.x;
+        value = F32(curMousePos.y) / F32(getHeight()) * (mRange.y - mRange.x) + mRange.x;
 
     updateThumb(value, !(event.modifier & SI_SHIFT));
 }
@@ -120,10 +120,10 @@ void GuiSliderCtrl::onMouseDragged(const GuiEvent &event)
 
     Point2I curMousePos = globalToLocalCoord(event.mousePoint);
     F32 value;
-    if (mBounds.extent.x >= mBounds.extent.y)
-        value = F32(curMousePos.x - mShiftPoint) / F32(mBounds.extent.x - mShiftExtent) * (mRange.y - mRange.x) + mRange.x;
+    if (getWidth() >= getHeight())
+        value = F32(curMousePos.x - mShiftPoint) / F32(getWidth() - mShiftExtent) * (mRange.y - mRange.x) + mRange.x;
     else
-        value = F32(curMousePos.y) / F32(mBounds.extent.y) * (mRange.y - mRange.x) + mRange.x;
+        value = F32(curMousePos.y) / F32(getHeight()) * (mRange.y - mRange.x) + mRange.x;
 
     if (value > mRange.y)
         value = mRange.y;
@@ -170,7 +170,7 @@ void GuiSliderCtrl::onMouseEnter(const GuiEvent &event)
     {
         if (mActive && mProfile->mSoundButtonOver)
         {
-            //F32 pan = (F32(event.mousePoint.x)/F32(Canvas->mBounds.extent.x)*2.0f-1.0f)*0.8f;
+            //F32 pan = (F32(event.mousePoint.x)/F32(Canvas->getWidth())*2.0f-1.0f)*0.8f;
             AUDIOHANDLE handle = alxCreateSource(mProfile->mSoundButtonOver);
             alxPlay(handle);
         }
@@ -208,10 +208,10 @@ void GuiSliderCtrl::updateThumb(F32 _value, bool snap, bool onWake)
     if (mValue < mRange.x) mValue = mRange.x;
     if (mValue > mRange.y) mValue = mRange.y;
 
-    Point2I ext = mBounds.extent;
+    Point2I ext = getExtent();
     ext.x -= (mShiftExtent + mThumbSize.x) / 2;
     // update the bounding thumb rect
-    if (mBounds.extent.x >= mBounds.extent.y)
+    if (getWidth() >= getHeight())
     {  // HORZ thumb
         S32 mx = (S32) ((F32(ext.x) * (mValue - mRange.x) / (mRange.y - mRange.x)));
         S32 my = ext.y / 2;

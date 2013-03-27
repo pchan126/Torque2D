@@ -170,8 +170,6 @@
 		866381E51655615200C8C551 /* osxInput.mm in Sources */ = {isa = PBXBuildFile; fileRef = 866381E41655615200C8C551 /* osxInput.mm */; };
 		866381E91655674B00C8C551 /* osxTime.mm in Sources */ = {isa = PBXBuildFile; fileRef = 866381E81655674B00C8C551 /* osxTime.mm */; };
 		8694ADC81656B06B0080ABAC /* osxEvents.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8694ADC51656B06B0080ABAC /* osxEvents.mm */; };
-		8694ADC91656B06B0080ABAC /* osxWindow.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8694ADC61656B06B0080ABAC /* osxWindow.mm */; };
-		8694ADD11656B7FC0080ABAC /* osxVideo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8694ADD01656B7FC0080ABAC /* osxVideo.mm */; };
 		86C281CD16A4307E00F030F4 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 86C281CB16A4307E00F030F4 /* MainMenu.xib */; };
 		86D76F78165683240046D71F /* osxOutlineGL.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86D76F76165683240046D71F /* osxOutlineGL.cc */; };
 		86D76F791656868D0046D71F /* AnimationAsset.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7E7716518D4600D96ADF /* AnimationAsset.cc */; };
@@ -405,7 +403,6 @@
 		86D7708A1656873C0046D71F /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 86BC810B16518D4600D96ADF /* tinyxmlerror.cpp */; };
 		86D7708B1656873C0046D71F /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 86BC810C16518D4600D96ADF /* tinyxmlparser.cpp */; };
 		86D7708C1656873C0046D71F /* platformNetwork.cc in Sources */ = {isa = PBXBuildFile; fileRef = 864ECFEB1652795700012416 /* platformNetwork.cc */; };
-		86D7708D1656873C0046D71F /* CursorManager.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC834C16518FE800D96ADF /* CursorManager.cc */; };
 		86D7708E1656873C0046D71F /* platform.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC834D16518FE800D96ADF /* platform.cc */; };
 		86D7708F1656873C0046D71F /* platformAssert.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC834E16518FE800D96ADF /* platformAssert.cc */; };
 		86D770901656873C0046D71F /* platformCPU.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC834F16518FE800D96ADF /* platformCPU.cc */; };
@@ -414,7 +411,6 @@
 		86D770931656873C0046D71F /* platformMemory.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC835116518FE800D96ADF /* platformMemory.cc */; };
 		86D770941656873C0046D71F /* platformNetAsync.unix.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC835216518FE800D96ADF /* platformNetAsync.unix.cc */; };
 		86D770951656873C0046D71F /* platformString.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC835316518FE800D96ADF /* platformString.cc */; };
-		86D770961656873C0046D71F /* platformVideo.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC835416518FE800D96ADF /* platformVideo.cc */; };
 		86D770971656873C0046D71F /* Tickable.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC834A16518FE800D96ADF /* Tickable.cc */; };
 		86D770981656873C0046D71F /* popupMenu.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC833816518FB100D96ADF /* popupMenu.cc */; };
 		86D770991656873C0046D71F /* msgBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 86BC833B16518FBC00D96ADF /* msgBox.cpp */; };
@@ -446,6 +442,8 @@
 		D1049A0C16F6F8C40096749B /* mPoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1049A0B16F6F8C40096749B /* mPoint.cpp */; };
 		D1049A0E16F6FA190096749B /* tsIntegerSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1049A0D16F6FA190096749B /* tsIntegerSet.cpp */; };
 		D1049A1016F6FA540096749B /* tsTransform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1049A0F16F6FA540096749B /* tsTransform.cpp */; };
+		D16580751702942800A21928 /* gfxInit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D16580731702942800A21928 /* gfxInit.cpp */; };
+		D16580791702A5AE00A21928 /* guiContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D16580771702A5AE00A21928 /* guiContainer.cpp */; };
 		D1A6957017016C270060D928 /* platformCursorController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1A6955617016C270060D928 /* platformCursorController.cpp */; };
 		D1A6957117016C270060D928 /* platformInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1A6955817016C270060D928 /* platformInterface.cpp */; };
 		D1A6957217016C270060D928 /* platformWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1A6955917016C270060D928 /* platformWindow.cpp */; };
@@ -747,8 +745,6 @@
 		866381E81655674B00C8C551 /* osxTime.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxTime.mm; sourceTree = "<group>"; };
 		8694ADC41656B06B0080ABAC /* osxEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxEvents.h; sourceTree = "<group>"; };
 		8694ADC51656B06B0080ABAC /* osxEvents.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxEvents.mm; sourceTree = "<group>"; };
-		8694ADC61656B06B0080ABAC /* osxWindow.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxWindow.mm; sourceTree = "<group>"; };
-		8694ADD01656B7FC0080ABAC /* osxVideo.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxVideo.mm; sourceTree = "<group>"; };
 		869FF8B81651518C002FE082 /* Torque2D_DEBUG.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Torque2D_DEBUG.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		869FF8BC1651518C002FE082 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		869FF8BF1651518C002FE082 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -1325,7 +1321,6 @@
 		86BC834916518FE800D96ADF /* platformEndian.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformEndian.h; sourceTree = "<group>"; };
 		86BC834A16518FE800D96ADF /* Tickable.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Tickable.cc; sourceTree = "<group>"; };
 		86BC834B16518FE800D96ADF /* Tickable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tickable.h; sourceTree = "<group>"; };
-		86BC834C16518FE800D96ADF /* CursorManager.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CursorManager.cc; sourceTree = "<group>"; };
 		86BC834D16518FE800D96ADF /* platform.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = platform.cc; sourceTree = "<group>"; };
 		86BC834E16518FE800D96ADF /* platformAssert.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = platformAssert.cc; sourceTree = "<group>"; };
 		86BC834F16518FE800D96ADF /* platformCPU.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = platformCPU.cc; sourceTree = "<group>"; };
@@ -1333,7 +1328,6 @@
 		86BC835116518FE800D96ADF /* platformMemory.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = platformMemory.cc; sourceTree = "<group>"; };
 		86BC835216518FE800D96ADF /* platformNetAsync.unix.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = platformNetAsync.unix.cc; sourceTree = "<group>"; };
 		86BC835316518FE800D96ADF /* platformString.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = platformString.cc; sourceTree = "<group>"; };
-		86BC835416518FE800D96ADF /* platformVideo.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = platformVideo.cc; sourceTree = "<group>"; };
 		86BC835516518FE800D96ADF /* event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = event.h; sourceTree = "<group>"; };
 		86BC835616518FE800D96ADF /* platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platform.h; sourceTree = "<group>"; };
 		86BC835716518FE800D96ADF /* platformAL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformAL.h; sourceTree = "<group>"; };
@@ -1346,7 +1340,6 @@
 		86BC835E16518FE800D96ADF /* platformSemaphore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformSemaphore.h; sourceTree = "<group>"; };
 		86BC835F16518FE800D96ADF /* platformTLS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformTLS.h; sourceTree = "<group>"; };
 		86BC836016518FE800D96ADF /* platformVFS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformVFS.h; sourceTree = "<group>"; };
-		86BC836116518FE800D96ADF /* platformVideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformVideo.h; sourceTree = "<group>"; };
 		86BC836216518FE800D96ADF /* types.gcc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.gcc.h; sourceTree = "<group>"; };
 		86BC836316518FE800D96ADF /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
 		86BC836416518FE800D96ADF /* types.ppc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.ppc.h; sourceTree = "<group>"; };
@@ -1375,6 +1368,11 @@
 		D1049A0B16F6F8C40096749B /* mPoint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mPoint.cpp; sourceTree = "<group>"; };
 		D1049A0D16F6FA190096749B /* tsIntegerSet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsIntegerSet.cpp; sourceTree = "<group>"; };
 		D1049A0F16F6FA540096749B /* tsTransform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsTransform.cpp; sourceTree = "<group>"; };
+		D16580731702942800A21928 /* gfxInit.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxInit.cpp; sourceTree = "<group>"; };
+		D16580741702942800A21928 /* gfxInit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxInit.h; sourceTree = "<group>"; };
+		D1658076170295B500A21928 /* gfxAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxAdapter.h; sourceTree = "<group>"; };
+		D16580771702A5AE00A21928 /* guiContainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiContainer.cpp; sourceTree = "<group>"; };
+		D16580781702A5AE00A21928 /* guiContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiContainer.h; sourceTree = "<group>"; };
 		D1A6955617016C270060D928 /* platformCursorController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = platformCursorController.cpp; sourceTree = "<group>"; };
 		D1A6955717016C270060D928 /* platformCursorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformCursorController.h; sourceTree = "<group>"; };
 		D1A6955817016C270060D928 /* platformInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = platformInterface.cpp; sourceTree = "<group>"; };
@@ -1859,8 +1857,6 @@
 				866381E81655674B00C8C551 /* osxTime.mm */,
 				86EC5AC5165C1E0100757872 /* osxTorqueView.h */,
 				86EC5AC6165C1E0100757872 /* osxTorqueView.mm */,
-				8694ADD01656B7FC0080ABAC /* osxVideo.mm */,
-				8694ADC61656B06B0080ABAC /* osxWindow.mm */,
 				86D76F74165682BF0046D71F /* platformGL.h */,
 				86063A231654180000362D83 /* platformOSX.h */,
 				86063A241654180000362D83 /* platformOSX.mm */,
@@ -1911,9 +1907,6 @@
 		869FF8C21651518C002FE082 /* Torque2D */ = {
 			isa = PBXGroup;
 			children = (
-				D1A6954917016C270060D928 /* windowManager */,
-				D104998216F6DD4E0096749B /* ts */,
-				86BC815516518D4600D96ADF /* torqueConfig.h */,
 				86BC7E7516518D4600D96ADF /* 2d */,
 				86BC7EE016518D4600D96ADF /* algorithm */,
 				86BC7EE716518D4600D96ADF /* assets */,
@@ -1938,6 +1931,9 @@
 				86BC812C16518D4600D96ADF /* sim */,
 				86BC814816518D4600D96ADF /* string */,
 				2A033005165D1CB100E9CD70 /* testing */,
+				86BC815516518D4600D96ADF /* torqueConfig.h */,
+				D104998216F6DD4E0096749B /* ts */,
+				D1A6954917016C270060D928 /* windowManager */,
 			);
 			path = Torque2D;
 			sourceTree = "<group>";
@@ -2347,6 +2343,9 @@
 		86BC7FB916518D4600D96ADF /* graphics */ = {
 			isa = PBXGroup;
 			children = (
+				D1658076170295B500A21928 /* gfxAdapter.h */,
+				D16580731702942800A21928 /* gfxInit.cpp */,
+				D16580741702942800A21928 /* gfxInit.h */,
 				86BC7FBA16518D4600D96ADF /* bitmapBmp.cc */,
 				86BC7FBB16518D4600D96ADF /* bitmapJpeg.cc */,
 				86BC7FBC16518D4600D96ADF /* bitmapPng.cc */,
@@ -2512,6 +2511,8 @@
 		86BC7FE816518D4600D96ADF /* containers */ = {
 			isa = PBXGroup;
 			children = (
+				D16580771702A5AE00A21928 /* guiContainer.cpp */,
+				D16580781702A5AE00A21928 /* guiContainer.h */,
 				86BC7FE916518D4600D96ADF /* guiAutoScrollCtrl.cc */,
 				86BC7FEA16518D4600D96ADF /* guiAutoScrollCtrl.h */,
 				86BC7FEB16518D4600D96ADF /* guiCtrlArrayCtrl.cc */,
@@ -2900,7 +2901,6 @@
 				DA91B30A16C2216800EB7B6E /* platformIntrinsics.gcc.h */,
 				DA91B30B16C2216800EB7B6E /* platformIntrinsics.h */,
 				DA91B30C16C2216800EB7B6E /* typetraits.h */,
-				86BC834C16518FE800D96ADF /* CursorManager.cc */,
 				86BC835516518FE800D96ADF /* event.h */,
 				86CEFC76166FE17500DAF75D /* platformInput_ScriptBinding.h */,
 				86BC82F416518F6800D96ADF /* menus */,
@@ -2934,8 +2934,6 @@
 				86BC834216518FE800D96ADF /* platformTimeManager.h */,
 				86BC835F16518FE800D96ADF /* platformTLS.h */,
 				86BC836016518FE800D96ADF /* platformVFS.h */,
-				86BC835416518FE800D96ADF /* platformVideo.cc */,
-				86BC836116518FE800D96ADF /* platformVideo.h */,
 				86BC831816518F6800D96ADF /* threads */,
 				86BC834A16518FE800D96ADF /* Tickable.cc */,
 				86BC834B16518FE800D96ADF /* Tickable.h */,
@@ -3185,7 +3183,6 @@
 				86D7708A1656873C0046D71F /* tinyxmlerror.cpp in Sources */,
 				86D7708B1656873C0046D71F /* tinyxmlparser.cpp in Sources */,
 				86D7708C1656873C0046D71F /* platformNetwork.cc in Sources */,
-				86D7708D1656873C0046D71F /* CursorManager.cc in Sources */,
 				86D7708E1656873C0046D71F /* platform.cc in Sources */,
 				86D7708F1656873C0046D71F /* platformAssert.cc in Sources */,
 				86D770901656873C0046D71F /* platformCPU.cc in Sources */,
@@ -3194,7 +3191,6 @@
 				86D770931656873C0046D71F /* platformMemory.cc in Sources */,
 				86D770941656873C0046D71F /* platformNetAsync.unix.cc in Sources */,
 				86D770951656873C0046D71F /* platformString.cc in Sources */,
-				86D770961656873C0046D71F /* platformVideo.cc in Sources */,
 				86D770971656873C0046D71F /* Tickable.cc in Sources */,
 				86D770981656873C0046D71F /* popupMenu.cc in Sources */,
 				86D770991656873C0046D71F /* msgBox.cpp in Sources */,
@@ -3519,8 +3515,6 @@
 				86D76F78165683240046D71F /* osxOutlineGL.cc in Sources */,
 				2ABF5C8F16569A0C00BBBF1D /* osxMutex.mm in Sources */,
 				8694ADC81656B06B0080ABAC /* osxEvents.mm in Sources */,
-				8694ADC91656B06B0080ABAC /* osxWindow.mm in Sources */,
-				8694ADD11656B7FC0080ABAC /* osxVideo.mm in Sources */,
 				8658B174165A7BFB0087ABC1 /* osxCPU.mm in Sources */,
 				8658B175165A7BFB0087ABC1 /* osxNetwork.mm in Sources */,
 				8658B176165A7BFB0087ABC1 /* osxString.mm in Sources */,
@@ -3600,6 +3594,8 @@
 				D1A6958517016CA90060D928 /* macView.mm in Sources */,
 				D1A6958617016CA90060D928 /* macWindow.mm in Sources */,
 				D1A6958717016CA90060D928 /* macWindowManager.mm in Sources */,
+				D16580751702942800A21928 /* gfxInit.cpp in Sources */,
+				D16580791702A5AE00A21928 /* guiContainer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

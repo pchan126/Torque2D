@@ -105,7 +105,7 @@ public:
    void addObject(SimObject *obj);
    void removeObject(SimObject *obj);
 
-   virtual void resize(const Point2I &newPosition, const Point2I &newExtent);
+   virtual bool resize(const Point2I &newPosition, const Point2I &newExtent);
 
    virtual void onMouseDown(const GuiEvent &event);
    virtual void onMouseUp(const GuiEvent &event);
@@ -176,14 +176,14 @@ private:
 // precede x.
 inline bool GuiFrameSetCtrl::hitVerticalDivider(S32 x, const Point2I &point)
 {
-   return((point.x >= S32(x - mFramesetDetails.mBorderWidth)) && (point.x < x) && (point.y >= 0) && (point.y < S32(mBounds.extent.y)));
+   return((point.x >= S32(x - mFramesetDetails.mBorderWidth)) && (point.x < x) && (point.y >= 0) && (point.y < S32(getHeight())));
 }
 
 //-----------------------------------------------------------------------------
 // y is the first value inside the next row, so the divider y-coords precede y.
 inline bool GuiFrameSetCtrl::hitHorizontalDivider(S32 y, const Point2I &point)
 {
-   return((point.x >= 0) && (point.x < S32(mBounds.extent.x)) && (point.y >= S32(y - mFramesetDetails.mBorderWidth)) && (point.y < y));
+   return((point.x >= 0) && (point.x < S32(getWidth())) && (point.y >= S32(y - mFramesetDetails.mBorderWidth)) && (point.y < y));
 }
 
 #endif // _GUI_FRAME_CTRL_H

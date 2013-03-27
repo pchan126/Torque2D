@@ -13,7 +13,7 @@ void MacCursorController::setCursorPosition(S32 x, S32 y)
    if(!macWindow || !macWindow->isVisible())
       return;
       
-   CGPoint pt = { x, y };
+   CGPoint pt = { static_cast<CGFloat>(x), static_cast<CGFloat>(y) };
    CGWarpMouseCursorPosition(pt);
    
    macWindow->_skipAnotherMouseEvent();
@@ -85,7 +85,8 @@ void MacCursorController::setCursorShape(U32 cursorID)
          break;
       case PlatformCursorController::curWait:
          // hack: black-sheep carbon call
-         SetThemeCursor(kThemeWatchCursor);
+//         [[NSCursor ]]
+//         SetThemeCursor(kThemeWatchCursor);
          break;
       case PlatformCursorController::curPlus:
          [[NSCursor crosshairCursor] set];
@@ -130,19 +131,63 @@ void MacCursorController::setCursorShape( const UTF8 *fileName, bool reload )
    [ cursor initWithImage: image hotSpot: NSMakePoint( 0.5, 0.5 ) ];
 }
 
+////------------------------------------------------------------------------------
+//// Not yet implemented. Will resolve in the next platform update
+//void MacCursorController::pushCursor(S32 cursorID)
+//{
+//}
+//
+////------------------------------------------------------------------------------
+//// Not yet implemented. Will resolve in the next platform update
+//void MacCursorController::popCursor()
+//{
+//}
+//
+////-----------------------------------------------------------------------------
+//// Not yet implemented. Will resolve in the next platform update
+//void MacCursorController::refreshCursor()
+//{
+//}
+
+//------------------------------------------------------------------------------
 U32 MacCursorController::getDoubleClickTime()
 {
-   return GetDblTime() / 60.0f * 1000.0f;
+    // Get system specified double click time
+    NSTimeInterval doubleInterval = [NSEvent doubleClickInterval];
+    
+    return doubleInterval * 1000;
 }
 
+//------------------------------------------------------------------------------
 S32 MacCursorController::getDoubleClickWidth()
 {
-   // This is an arbitrary value.
-   return 10;
+    // this is an arbitrary value.
+    return 10;
 }
 
+//------------------------------------------------------------------------------
 S32 MacCursorController::getDoubleClickHeight()
 {
-   return getDoubleClickWidth();
+    return getDoubleClickWidth();
 }
+
+////------------------------------------------------------------------------------
+//// Not yet implemented. Will resolve in the next platform update
+//void MacCursorController::setCursorPos(S32 x, S32 y)
+//{
+//}
+//
+////-----------------------------------------------------------------------------
+//// Not yet implemented. Will resolve in the next platform update
+//void MacCursorController::setCursorState(bool on)
+//{
+//    
+//}
+//
+////-----------------------------------------------------------------------------
+//// Not yet implemented. Will resolve in the next platform update
+//void MacCursorController::setCursorShape(U32 cursorID)
+//{
+//    
+//}
 

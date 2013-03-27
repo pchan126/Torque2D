@@ -85,7 +85,7 @@ public:
    ~GuiInspector();
    DECLARE_CONOBJECT(GuiInspector);
 
-   virtual void parentResized(const Point2I &oldParentExtent, const Point2I &newParentExtent);
+   virtual void parentResized(const RectI &oldParentRect, const RectI &newParentRect);
    void inspectObject( SimObject *object );
    inline SimObject *getInspectObject() { return mTarget.isNull() ? NULL : mTarget; };
    void setName( const char* newName );
@@ -130,7 +130,7 @@ public:
    virtual void              setData( const char* data );
    virtual const char*  getData();
 
-   virtual void resize(const Point2I &newPosition, const Point2I &newExtent);
+   virtual bool resize(const Point2I &newPosition, const Point2I &newExtent);
    virtual bool onAdd();
    virtual void onRender(Point2I offset, const RectI &updateRect);
 };
@@ -196,7 +196,7 @@ public:
    // Create an edit control to overlay the field name (for renaming dynamic fields)
    GuiControl* constructRenameControl();
    // Override parentResized so we can resize our renaming control
-   virtual void resize(const Point2I &newPosition, const Point2I &newExtent);
+   virtual bool resize(const Point2I &newPosition, const Point2I &newExtent);
 };
 
 class GuiInspectorDynamicGroup : public GuiInspectorGroup

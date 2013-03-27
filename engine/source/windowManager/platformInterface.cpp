@@ -9,6 +9,7 @@
 //#include "graphics/gfxInit.h"
 #include "graphics/gfxDevice.h"
 //#include "core/util/journal/process.h"
+#include "delegates/delegateSignal.h"
 #include "memory/autoPtr.h"
 
 // This file converts from the windowmanager system to the old platform and
@@ -42,30 +43,30 @@ GFXDevice *gDevice          = NULL;
 PlatformWindow *gWindow     = NULL;
 
 // Conversion from window manager input conventions to Torque standard.
-//static struct ModifierBitMap {
-//   U32 grendelMask,torqueMask;
-//} _ModifierBitMap[] = {
-//   { IM_LSHIFT, SI_LSHIFT   },
-//   { IM_RSHIFT, SI_RSHIFT   },
-//   { IM_LALT,   SI_LALT     },
-//   { IM_RALT,   SI_RALT     },
-//   { IM_LCTRL,  SI_LCTRL    },
-//   { IM_RCTRL,  SI_RCTRL    },
-//   { IM_LOPT,   SI_MAC_LOPT },
-//   { IM_ROPT,   SI_MAC_ROPT },
-//};
-//static int _ModifierBitMapCount = sizeof(_ModifierBitMap) / sizeof(ModifierBitMap);
+static struct ModifierBitMap {
+   U32 grendelMask,torqueMask;
+} _ModifierBitMap[] = {
+   { IM_LSHIFT, SI_LSHIFT   },
+   { IM_RSHIFT, SI_RSHIFT   },
+   { IM_LALT,   SI_LALT     },
+   { IM_RALT,   SI_RALT     },
+   { IM_LCTRL,  SI_LCTRL    },
+   { IM_RCTRL,  SI_RCTRL    },
+   { IM_LOPT,   SI_MAC_LOPT },
+   { IM_ROPT,   SI_MAC_ROPT },
+};
+static int _ModifierBitMapCount = sizeof(_ModifierBitMap) / sizeof(ModifierBitMap);
 
-//InputModifiers convertModifierBits(const U32 in)
-//{
-//   U32 out=0;
-//
-//   for(S32 i=0; i<_ModifierBitMapCount; i++)
-//      if(in & _ModifierBitMap[i].grendelMask)
-//         out |= _ModifierBitMap[i].torqueMask;
-//
-//   return (InputModifiers)out;
-//}
+U32 convertModifierBits(const U32 in)
+{
+   U32 out=0;
+
+   for(S32 i=0; i<_ModifierBitMapCount; i++)
+      if(in & _ModifierBitMap[i].grendelMask)
+         out |= _ModifierBitMap[i].torqueMask;
+
+   return (U32)out;
+}
 
 //------------------------------------------------------------------------------
 

@@ -52,9 +52,9 @@ public:
     virtual ~GuiScriptNotifyCtrl();
     static void initPersistFields();
 
-    virtual void resize(const Point2I &newPosition, const Point2I &newExtent);
+    virtual bool resize(const Point2I &newPosition, const Point2I &newExtent);
     virtual void childResized(GuiScriptNotifyCtrl *child);
-    virtual void parentResized(const Point2I &oldParentExtent, const Point2I &newParentExtent);
+    virtual void parentResized(const RectI &oldParentRect, const RectI &newParentRect);
     virtual void onChildRemoved( GuiControl *child );
     virtual void onChildAdded( GuiControl *child );
     //virtual void onMouseUp(const GuiEvent &event);

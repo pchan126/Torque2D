@@ -22,6 +22,7 @@
 #include "sim/simBase.h"
 #include "collection/vector.h"
 #include "messaging/dispatcher.h"
+#include "gui/guiCanvas.h"
 
 #ifndef _POPUPMENU_H_
 #define _POPUPMENU_H_
@@ -40,6 +41,7 @@ protected:
    PlatformPopupMenuData *mData;
 
    SimSet *mSubmenus;
+    SimObjectPtr<GuiCanvas> mCanvas;
 
    bool mIsPopup;
 
@@ -92,20 +94,27 @@ public:
    void checkRadioItem(S32 firstPos, S32 lastPos, S32 checkPos);
    bool isItemChecked(S32 pos);
 
-   /// Places this menu in the menu bar of the application's main window.
-   /// @param pos The relative position at which to place the menu.
-   /// @param title The name of the menu
-   void attachToMenuBar(S32 pos, const char *title);
+    /// Places this menu in the menu bar of the application's main window.
+    /// @param owner The GuiCanvas that owns the PlatformWindow that this call is associated with
+    /// @param pos The relative position at which to place the menu.
+    /// @param title The name of the menu
+    void attachToMenuBar(GuiCanvas *owner, S32 pos, const char *title);
 
    /// Removes this menu from the menu bar.
    void removeFromMenuBar();
 
-   /// Displays this menu as a popup menu and blocks until the user has selected
+    /// Called when the menu has been attached to the menu bar
+    void onAttachToMenuBar(GuiCanvas *canvas, S32 pos, const char *title);
+    
+    /// Called when the menu has been removed from the menu bar
+    void onRemoveFromMenuBar(GuiCanvas *canvas);
+    
+    /// Displays this menu as a popup menu and blocks until the user has selected
    /// an item.
    /// @param x window local x coordinate at which to display the popup menu
    /// @param y window local y coordinate at which to display the popup menu
    /// implemented on a per-platform basis.
-   void showPopup(S32 x = -1, S32 y = -1);
+    void showPopup(GuiCanvas *owner, S32 x = -1, S32 y = -1);
 
    /// Returns true iff this menu contains an item that matches @p iD.
    /// implemented on a per-platform basis.

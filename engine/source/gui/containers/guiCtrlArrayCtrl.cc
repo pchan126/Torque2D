@@ -46,64 +46,118 @@ void GuiControlArrayControl::initPersistFields()
 
 bool GuiControlArrayControl::onWake()
 {
-   if ( !Parent::onWake() )
-      return false;
-
-   return true;
+    if ( !Parent::onWake() )
+        return false;
+    
+    return true;
 }
 
 void GuiControlArrayControl::onSleep()
 {
-   Parent::onSleep();
+    Parent::onSleep();
 }
 
 void GuiControlArrayControl::inspectPostApply()
 {
-   resize(getPosition(), getExtent());
+    Parent::inspectPostApply();
+    
+    updateArray();
 }
 
-void GuiControlArrayControl::resize(const Point2I &newPosition, const Point2I &newExtent)
+bool GuiControlArrayControl::resize(const Point2I &newPosition, const Point2I &newExtent)
 {
-   Parent::resize(newPosition, newExtent);
+    if( !Parent::resize(newPosition, newExtent) )
+        return false;
+    
+    return updateArray();
+}
 
-   if(mCols < 1 || size() < 1)
-      return;
+void GuiControlArrayControl::addObject(SimObject *obj)
+{
+    Parent::addObject(obj);
+    
+    updateArray();
+}
 
-   S32 *sizes = new S32[mCols];
-   S32 *offsets = new S32[mCols];
-   S32 totalSize = 0;
+void GuiControlArrayControl::removeObject(SimObject *obj)
+{
+    Parent::removeObject(obj);
+    
+    updateArray();
+}
 
-   // Calculate the column sizes
-   for(S32 i=0; i<mCols; i++)
-   {
-      sizes[i] = mColumnSizes[i];
-      offsets[i] = totalSize;
+bool GuiControlArrayControl::reOrder(SimObject* obj, SimObject* target)
+{
+    bool ret = Parent::reOrder(obj, target);
+    if (ret)
+        updateArray();
+    
+    return ret;
+}
 
-      // If it's an auto-size one, then... auto-size...
-      if(sizes[i] == -1)
-      {
-         sizes[i] = newExtent.x - totalSize;
-         break;
-      }
-
-      totalSize += sizes[i] + mColSpacing;
-   }
-
-   // Now iterate through the children and resize them to fit the grid...
-   for(S32 i=0; i<size(); i++)
-   {
-      GuiControl *gc = dynamic_cast<GuiControl*>(operator[](i));
-
-      // Get the current column and row...
-      S32 curCol = i % mCols;
-      S32 curRow = i / mCols;
-
-      if(gc)
-      {
-         Point2I newPos(offsets[curCol], curRow * (mRowSize + mRowSpacing));
-         Point2I newExtents(sizes[curCol], mRowSize);
-
-         gc->resize(newPos, newExtents);
-      }
-   }
+bool GuiControlArrayControl::updateArray()
+{
+    // Prevent recursion
+    if(mResizing)
+        return false;
+    
+    // Set Resizing.
+    mResizing = true;
+    
+    if(mCols < 1 || size() < 1)
+    {
+        mResizing = false;
+        return false;
+    }
+    
+    S32 *sizes = new S32[mCols];
+    S32 *offsets = new S32[mCols];
+    S32 totalSize = 0;
+    Point2I extent = getExtent();
+    
+    // Calculate the column sizes
+    for(S32 i=0; i<mCols; i++)
+    {
+        if( i >= mColumnSizes.size() )
+            sizes[ i ] = 0;
+        else
+            sizes[i] = mColumnSizes[i];
+        
+        offsets[i] = totalSize;
+        
+        // If it's an auto-size one, then... auto-size...
+        if(sizes[i] == -1)
+        {
+            sizes[i] = extent.x - totalSize;
+            break;
+        }
+        
+        totalSize += sizes[i] + mColSpacing;
+    }
+    
+    // Now iterate through the children and resize them to fit the grid...
+    for(S32 i=0; i<size(); i++)
+    {
+        GuiControl *gc = dynamic_cast<GuiControl*>(operator[](i));
+        
+        // Get the current column and row...
+        S32 curCol = i % mCols;
+        S32 curRow = i / mCols;
+        
+        if(gc)
+        {
+            Point2I newPos(offsets[curCol], curRow * (mRowSize + mRowSpacing));
+            Point2I newExtents(sizes[curCol], mRowSize);
+            
+            gc->resize(newPos, newExtents);
+        }
+    }
+    
+    // Clear Sizing Flag.
+    mResizing = false;
+    
+    delete [] sizes;
+    delete [] offsets;
+    
+    return true;
 }

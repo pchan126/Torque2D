@@ -113,11 +113,11 @@ void GuiFilterCtrl::onMouseDown(const GuiEvent &event)
    Point2I p = globalToLocalCoord(event.mousePoint);
 
    // determine which knot (offset same as in onRender)
-   F32 w = F32(mBounds.extent.x-4) / F32(mFilter.size()-1);
+   F32 w = F32(getWidth()-4) / F32(mFilter.size()-1);
    F32 val = (F32(p.x) + (w / 2.f)) / w;
    mCurKnot = S32(val);
 
-   mFilter[mCurKnot] = 1.0f - F32(getMin(getMax(0, p.y), mBounds.extent.y)/(F32)mBounds.extent.y);
+   mFilter[mCurKnot] = 1.0f - F32(getMin(getMax(0, p.y), getHeight())/(F32)getHeight());
    setUpdate();
 }
 
@@ -128,7 +128,7 @@ void GuiFilterCtrl::onMouseDragged(const GuiEvent &event)
    setFirstResponder();
 
    Point2I p = globalToLocalCoord(event.mousePoint);
-   mFilter[mCurKnot] = 1.0f - F32(getMin(getMax(0, p.y), mBounds.extent.y)/(F32)mBounds.extent.y);
+   mFilter[mCurKnot] = 1.0f - F32(getMin(getMax(0, p.y), getHeight())/(F32)getHeight());
    setUpdate();
 }
 

@@ -45,7 +45,7 @@ GuiSeparatorCtrl::GuiSeparatorCtrl() : GuiControl()
    mText = StringTable->EmptyString;
    mTextLeftMargin = 0;
    mMargin = 2;
-   mBounds.extent.set( 12, 35 );
+   setExtent( 12, 35 );
    mSeparatorType = GuiSeparatorCtrl::separatorTypeVertical;
 }
 
@@ -87,21 +87,21 @@ void GuiSeparatorCtrl::onRender(Point2I offset, const RectI &updateRect)
       posx += GFX->getDrawUtil()->drawText(mProfile->mFont, Point2I(posx,offset.y), mText, mProfile->mFontColors);
       //posx += mProfile->mFont->getStrWidth(mText);
 
-      RectI rect(Point2I(posx,seppos),Point2I(mBounds.extent.x - posx + offset.x,2));
+      RectI rect(Point2I(posx,seppos),Point2I(getWidth() - posx + offset.x,2));
       renderSlightlyLoweredBox(rect, mProfile, mActive);
 
    } else
    {
       if( mSeparatorType == separatorTypeHorizontal )
       {
-         S32 seppos = mBounds.extent.y / 2 + offset.y; 
-         RectI rect(Point2I(offset.x + mMargin ,seppos),Point2I(mBounds.extent.x - (mMargin * 2),2));
+         S32 seppos = getHeight() / 2 + offset.y; 
+         RectI rect(Point2I(offset.x + mMargin ,seppos),Point2I(getWidth() - (mMargin * 2),2));
          renderSlightlyLoweredBox(rect, mProfile);
       }
       else
       {
-         S32 seppos = mBounds.extent.x / 2 + offset.x; 
-         RectI rect(Point2I(seppos, offset.y + mMargin),Point2I(2, mBounds.extent.y - (mMargin * 2)));
+         S32 seppos = getWidth() / 2 + offset.x; 
+         RectI rect(Point2I(seppos, offset.y + mMargin),Point2I(2, getHeight() - (mMargin * 2)));
          renderSlightlyLoweredBox(rect, mProfile);
       }
    }

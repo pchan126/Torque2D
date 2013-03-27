@@ -280,20 +280,16 @@ void GuiStackControl::stackFromRight()
 {
 }
 
-void GuiStackControl::resize(const Point2I &newPosition, const Point2I &newExtent)
+bool GuiStackControl::resize(const Point2I &newPosition, const Point2I &newExtent)
 {
-   //call set update both before and after
-   setUpdate();
-   Point2I actualNewExtent = Point2I(  getMax(mMinExtent.x, newExtent.x),
-                                       getMax(mMinExtent.y, newExtent.y));
-   mBounds.set(newPosition, actualNewExtent);
-
-   GuiControl *parent = getParent();
-   if (parent)
-      parent->childResized(this);
-   setUpdate();
-
-   updatePanes();
+    if( !Parent::resize( newPosition, newExtent ) )
+        return false;
+    
+    updatePanes();
+    
+    // CodeReview This logic should be updated to correctly return true/false
+    //  based on whether it sized it's children. [7/1/2007 justind]
+    return true;
 }
 
 void GuiStackControl::addObject(SimObject *obj)

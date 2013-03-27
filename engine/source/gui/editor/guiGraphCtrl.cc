@@ -74,7 +74,7 @@ void GuiGraphCtrl::onRender(Point2I offset, const RectI &updateRect)
 {
 //	if (mProfile->mBorder)
 //	{
-//		RectI rect(offset.x, offset.y, mBounds.extent.x, mBounds.extent.y);
+//		RectI rect(offset.x, offset.y, getWidth(), getHeight());
 //		GFX->getDrawUtil()->drawRect(rect, mProfile->mBorderColor);
 //	}
 //

@@ -62,7 +62,7 @@ GuiImageButtonCtrl::GuiImageButtonCtrl() :
     mDownAssetId( StringTable->EmptyString ),
     mInactiveAssetId( StringTable->EmptyString )
 {
-    mBounds.extent.set(140, 30);
+    setExtent(140, 30);
 }
 
 //-----------------------------------------------------------------------------
@@ -265,7 +265,7 @@ void GuiImageButtonCtrl::renderButton( ImageAsset* pImageAsset, const U32 frame,
         RectI sourceRegion( pixelArea.mPixelOffset, Point2I(pixelArea.mPixelWidth, pixelArea.mPixelHeight) );
 
         // Calculate destination region.
-        RectI destinationRegion(offset, mBounds.extent);
+        RectI destinationRegion(offset, getExtent());
 
         // Render image.
         GFX->getDrawUtil()->setBitmapModulation( mProfile->mFillColor );

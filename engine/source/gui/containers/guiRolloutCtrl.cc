@@ -31,7 +31,7 @@ IMPLEMENT_CONOBJECT(GuiRolloutCtrl);
 
 GuiRolloutCtrl::GuiRolloutCtrl()
 {
-   mBounds.set(0,0,200,20);
+   setBounds(0,0,200,20);
    mExpanded.set(0,0,200,60);
    mCaption             = StringTable->EmptyString;
    mIsExpanded          = true;
@@ -39,9 +39,8 @@ GuiRolloutCtrl::GuiRolloutCtrl()
    mCollapsing          = false;
    mAnimateDestHeight   = 40;
    mAnimateStep         = 1;
-   mCanSave             = false;
    mDefaultHeight       = 40;
-   mMargin.set( 2,2 );
+   mMargin.set( 0, 0, 0, 0 );
    mIsContainer = true;
 
    mCanCollapse = true;
@@ -146,7 +145,7 @@ void GuiRolloutCtrl::calculateHeights()
    if( mHasTexture && mProfile->mBitmapArrayRects.size() >= NumBitmaps )
    {
       // Store Header Rectangle
-      mHeader.set( 0, 0, mBounds.extent.x, mProfile->mBitmapArrayRects[ CollapsedCenter ].extent.y );
+      mHeader.set( 0, 0, getWidth(), mProfile->mBitmapArrayRects[ CollapsedCenter ].extent.y );
 
       // Bottom Bar Max
       barHeight = mProfile->mBitmapArrayRects[ BottomLeftHeader ].extent.y 
@@ -154,32 +153,48 @@ void GuiRolloutCtrl::calculateHeights()
    }
    else
    {
-      mHeader.set( 0, 0, mBounds.extent.x, barHeight );
+      mHeader.set( 0, 0, getWidth(), barHeight );
    }
 
    GuiControl *content = dynamic_cast<GuiControl*>( at(0) );
-   if( content != NULL )
-      mExpanded.set( 0, 0, mBounds.extent.x , barHeight + content->getHeight() + (mMargin.y * 2) );
-   else
-      mExpanded.set( 0, 0, mBounds.extent.x, barHeight + mDefaultHeight );
+    if ( content != NULL )
+        mExpanded.set( 0, 0, getWidth(), barHeight + content->getHeight() + ( mMargin.point.y + mMargin.extent.y ) );
+    else
+        mExpanded.set( 0, 0, getWidth(), barHeight + mDefaultHeight );
 }
 
 
 
-void GuiRolloutCtrl::resize( const Point2I &newPosition, const Point2I &newExtent )
+bool GuiRolloutCtrl::resize( const Point2I &newPosition, const Point2I &newExtent )
 {
-   Parent::resize( newPosition, newExtent );
-
-   // Recalculate Heights and resize ourself appropriately.
-   calculateHeights();
-
-   GuiControl *content = dynamic_cast<GuiControl*>( at(0) );
-   // Size Content Properly?!
-   if( content != NULL )
-   {
-      mChildRect.set( mMargin.x, mHeader.extent.y + mMargin.y , mBounds.extent.x - (mMargin.x * 2), content->mBounds.extent.y - ( mMargin.y * 2 ) );
-      content->resize( mChildRect.point, mChildRect.extent );
-   }
+    if ( !Parent::resize( newPosition, newExtent ) )
+        return false;
+    
+    // Recalculate Heights and resize ourself appropriately.
+    calculateHeights();
+    
+    GuiControl *content = dynamic_cast<GuiControl*>( at(0) );
+    
+    // Size Content Properly?!
+    if ( mNotifyChildrenResized && content != NULL )
+    {
+        S32 barHeight = ( mHideHeader ) ? 0 : 20;
+        if( !mHideHeader && mHasTexture && mProfile && mProfile->mBitmapArrayRects.size() >= NumBitmaps )
+        {
+            barHeight = mProfile->mBitmapArrayRects[ TopLeftHeader ].extent.y;
+        }
+        
+        mChildRect.set( mMargin.point.x,
+                       mHeader.extent.y + mMargin.point.y,
+                       getWidth() - ( mMargin.point.x + mMargin.extent.x ),
+                       getHeight() - ( barHeight + ( mMargin.point.y + mMargin.extent.y ) ) );
+        
+        if ( content->resize( mChildRect.point, mChildRect.extent ) )
+            return true;
+    }
+    
+    // Nothing sized
+    return false;
 }
 
 
@@ -200,7 +215,7 @@ void GuiRolloutCtrl::instantExpand()
    mCollapsing = false;
    mIsExpanded = true;
    mIsAnimating = false;
-   resize( mBounds.point + mExpanded.point, mExpanded.extent );
+   resize( getPosition() + mExpanded.point, mExpanded.extent );
 }
 
 void GuiRolloutCtrl::instantCollapse()
@@ -209,7 +224,7 @@ void GuiRolloutCtrl::instantCollapse()
    mCollapsing = false;
    mIsExpanded = false;
    mIsAnimating = false;
-   resize( mBounds.point + mHeader.point, mHeader.extent );
+   resize( getPosition() + mHeader.point, mHeader.extent );
 }
 
 void GuiRolloutCtrl::childResized(GuiControl *child)
@@ -229,17 +244,17 @@ void GuiRolloutCtrl::animateTo( S32 height )
    if( mIsAnimating )
       return;
 
-   bool collapsing = (bool)( mBounds.extent.y > height );
+   bool collapsing = (bool)( getHeight() > height );
 
    // If we're already at the destination height, bail
-   if( mBounds.extent.y >= height && !collapsing )
+   if( getHeight() >= height && !collapsing )
    {
       mIsExpanded = true;
       return;
    }
 
    // If we're already at the destination height, bail
-   if( mBounds.extent.y <= height && collapsing )
+   if( getHeight() <= height && collapsing )
    {
       mIsExpanded = false;
       return;
@@ -253,9 +268,9 @@ void GuiRolloutCtrl::animateTo( S32 height )
 
    // Set Animation Step (Increment)
    if( collapsing )
-      mAnimateStep = (S32)mFloor( (F32)( mBounds.extent.y - height ) / 2.0f );
+      mAnimateStep = (S32)mFloor( (F32)( getHeight() - height ) / 2.0f );
    else
-      mAnimateStep = (S32)mFloor( (F32)( height - mBounds.extent.y ) / 2.0f );
+      mAnimateStep = (S32)mFloor( (F32)( height - getHeight() ) / 2.0f );
 
    // Start our animation
    mIsAnimating = true;
@@ -275,30 +290,30 @@ void GuiRolloutCtrl::processTick()
    // We're collapsing ourself down (Hiding our contents)
    if( mCollapsing )
    {
-      if( mBounds.extent.y < mAnimateDestHeight )
-         mBounds.extent.y = mAnimateDestHeight;
-      else if( ( mBounds.extent.y - mAnimateStep ) < mAnimateDestHeight )
-         mBounds.extent.y = mAnimateDestHeight;
+      if( getHeight() < mAnimateDestHeight )
+         setHeight (mAnimateDestHeight);
+      else if( ( getHeight() - mAnimateStep ) < mAnimateDestHeight )
+         setHeight( mAnimateDestHeight);
 
-      if( mBounds.extent.y == mAnimateDestHeight )
+      if( getHeight() == mAnimateDestHeight )
          mIsAnimating = false;
       else
-         mBounds.extent.y -= mAnimateStep;
+         setHeight( getHeight() - mAnimateStep);
 
       if( !mIsAnimating )
          mIsExpanded = false;
    }
    else // We're expanding ourself (Showing our contents)
    {
-      if( mBounds.extent.y > mAnimateDestHeight )
-         mBounds.extent.y = mAnimateDestHeight;
-      else if( ( mBounds.extent.y + mAnimateStep ) > mAnimateDestHeight )
-         mBounds.extent.y = mAnimateDestHeight;
+      if( getHeight() > mAnimateDestHeight )
+         setHeight( mAnimateDestHeight );
+      else if( ( getHeight() + mAnimateStep ) > mAnimateDestHeight )
+         setHeight( mAnimateDestHeight );
 
-      if( mBounds.extent.y == mAnimateDestHeight )
+      if( getHeight() == mAnimateDestHeight )
          mIsAnimating = false;
       else
-         mBounds.extent.y += mAnimateStep;
+         setHeight( getHeight() + mAnimateStep );
 
       if( !mIsAnimating )
          mIsExpanded = true;
@@ -322,7 +337,7 @@ void GuiRolloutCtrl::processTick()
       GuiScrollCtrl* scroll = dynamic_cast<GuiScrollCtrl*>(parent->getParent());
       if(scroll)
       {
-         scroll->scrollRectVisible(mBounds);
+         scroll->scrollRectVisible(getBounds());
       }
    }
 }
@@ -336,7 +351,7 @@ void GuiRolloutCtrl::onRender(Point2I offset, const RectI &updateRect)
       return;
   
    // Calculate actual world bounds for rendering
-   RectI worldBounds( offset, mBounds.extent );
+   RectI worldBounds( offset, getExtent() );
 
    if( mProfile->mBitmapArrayRects.size() >= NumBitmaps )
    {

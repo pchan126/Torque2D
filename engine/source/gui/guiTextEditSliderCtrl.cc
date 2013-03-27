@@ -96,11 +96,11 @@ void GuiTextEditSliderCtrl::onMouseDown(const GuiEvent &event)
    if(!parent)
       return;
    Point2I camPos  = event.mousePoint;
-   Point2I point = parent->localToGlobalCoord(mBounds.point);
+   Point2I point = parent->localToGlobalCoord(getPosition());
 
-   if(camPos.x > point.x + mBounds.extent.x - 14)
+   if(camPos.x > point.x + getWidth() - 14)
    {
-      if(camPos.y > point.y + (mBounds.extent.y/2))
+      if(camPos.y > point.y + (getHeight()/2))
       {
          mValue -=mIncAmount;
          mTextAreaHit = ArrowDown;
@@ -130,7 +130,7 @@ void GuiTextEditSliderCtrl::onMouseDragged(const GuiEvent &event)
       if(!parent)
          return;
       Point2I camPos = event.mousePoint;
-      Point2I point = parent->localToGlobalCoord(mBounds.point);
+      Point2I point = parent->localToGlobalCoord(getPosition());
       F32 maxDis = 100;
       F32 val;
       if(camPos.y < point.y)
@@ -145,14 +145,14 @@ void GuiTextEditSliderCtrl::onMouseDragged(const GuiEvent &event)
          checkIncValue();
          return;
       }
-      else if(camPos.y > point.y + mBounds.extent.y)
+      else if(camPos.y > point.y + getHeight())
       {
          GuiCanvas *root = getRoot();
-         val = (F32)(root->mBounds.extent.y - (point.y + mBounds.extent.y));
+         val = (F32)(root->getHeight() - (point.y + getHeight()));
          if(val < maxDis)
             maxDis = val;
          if( val > 0)
-            mMulInc= -(float)(camPos.y - (point.y + mBounds.extent.y))/maxDis;
+            mMulInc= -(float)(camPos.y - (point.y + getHeight()))/maxDis;
          else
             mMulInc = -1.0f;
          checkIncValue();

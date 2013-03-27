@@ -22,9 +22,8 @@
 
 #ifndef _GFXDEVICE_H_
 #define _GFXDEVICE_H_
-//#ifndef _GFXADAPTER_H_
-//#include "graphics/gfxAdapter.h"
-//#endif
+
+#include "graphics/gfxAdapter.h"
 
 #ifndef _VECTOR_H_
 #include "collection/vector.h"
@@ -243,8 +242,8 @@ private:
    //--------------------------------------------------------------------------
 private:
 
-//   /// Adapter for this device.
-//   GFXAdapter mAdapter;
+   /// Adapter for this device.
+   GFXAdapter mAdapter;
 
 protected:
    /// List of valid video modes for this device.
@@ -272,8 +271,8 @@ protected:
    /// method. It allows the device to clean up anything while everything is still valid.
    virtual void preDestroy();
 
-//   /// Set the adapter that this device is using.  For use by GFXInit::createDevice only.
-//   virtual void setAdapter(const GFXAdapter& adapter) { mAdapter = adapter; }
+   /// Set the adapter that this device is using.  For use by GFXInit::createDevice only.
+   virtual void setAdapter(const GFXAdapter& adapter) { mAdapter = adapter; }
 
    /// Notify GFXDevice that we are initialized
    virtual void deviceInited();
@@ -301,8 +300,8 @@ public:
    /// Returns active graphics adapter type.
    virtual GFXAdapterType getAdapterType()=0;
 
-//   /// Returns the Adapter that was used to create this device
-//   virtual const GFXAdapter& getAdapter() { return mAdapter; }
+   /// Returns the Adapter that was used to create this device
+   virtual const GFXAdapter& getAdapter() { return mAdapter; }
 
    /// @}
 
@@ -1013,7 +1012,7 @@ public:
     const char* mDeviceName;
     
 protected:
-    static GFXVideoMode    smCurrentRes;
+//    static GFXVideoMode    smCurrentRes;
     
 //    Vector<Resolution>   mResolutionList;
     bool                 mFullScreenOnly;
@@ -1023,50 +1022,18 @@ public:
     virtual bool activate( U32 width, U32 height, U32 bpp, bool fullScreen ) = 0;
     virtual void shutdown() = 0;
     
-    virtual bool setScreenMode( U32 width, U32 height, U32 bpp, bool fullScreen, bool forceIt = false, bool repaint = true ) = 0;
-    virtual bool setResolution( U32 width, U32 height, U32 bpp );
-    virtual bool toggleFullScreen();
     virtual void swapBuffers() = 0;
     virtual const char* getDriverInfo() = 0;
     virtual bool getGammaCorrection(F32 &g) = 0;
     virtual bool setGammaCorrection(F32 g) = 0;
     virtual bool setVerticalSync( bool on ) = 0;
     
-    bool prevRes();
-    bool nextRes();
-    const char* getResolutionList();
+//    const char* getResolutionList();
     bool isFullScreenOnly()   { return( mFullScreenOnly ); }
     
     static GFXVideoMode getResolution();
     static bool       isFullScreen();
 };
-
-//------------------------------------------------------------------------------
-inline bool GFXDevice::setResolution( U32 width, U32 height, U32 bpp )
-{
-    return setScreenMode( width, height, bpp, smCurrentRes.fullScreen );
-}
-
-
-//------------------------------------------------------------------------------
-inline bool GFXDevice::toggleFullScreen()
-{
-    return setScreenMode( smCurrentRes.resolution.x, smCurrentRes.resolution.y, smCurrentRes.bitDepth, !smCurrentRes.fullScreen );
-}
-
-
-//------------------------------------------------------------------------------
-inline GFXVideoMode GFXDevice::getResolution()
-{
-    return smCurrentRes;
-}
-
-
-//------------------------------------------------------------------------------
-inline bool GFXDevice::isFullScreen()
-{
-    return smCurrentRes.fullScreen;
-}
 
 
 //-----------------------------------------------------------------------------

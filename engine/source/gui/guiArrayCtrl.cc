@@ -67,7 +67,7 @@ void GuiArrayCtrl::setSize(Point2I newSize)
    mSize = newSize;
    Point2I newExtent(newSize.x * mCellSize.x + mHeaderDim.x, newSize.y * mCellSize.y + mHeaderDim.y);
 
-   resize(mBounds.point, newExtent);
+   resize(getPosition(), newExtent);
 }
 
 void GuiArrayCtrl::getScrollDimensions(S32 &cell_size, S32 &num_cells)
@@ -140,7 +140,7 @@ void GuiArrayCtrl::onRenderColumnHeaders(Point2I offset, Point2I parentOffset, P
 {
    if (mProfile->mBorder)
    {
-      RectI cellR(offset.x + headerDim.x, parentOffset.y, mBounds.extent.x - headerDim.x, headerDim.y);
+      RectI cellR(offset.x + headerDim.x, parentOffset.y, getWidth() - headerDim.x, headerDim.y);
       GFX->getDrawUtil()->drawRectFill(cellR, mProfile->mBorderColor);
    }
 }
@@ -375,7 +375,7 @@ bool GuiArrayCtrl::onKeyDown(const GuiEvent &event)
    GuiControl *parent = getParent();
    if (parent && mCellSize.y > 0)
    {
-      pageSize = getMax(1, (parent->mBounds.extent.y / mCellSize.y) - 1);
+      pageSize = getMax(1, (parent->getHeight() / mCellSize.y) - 1);
    }
 
    Point2I delta(0,0);

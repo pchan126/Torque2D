@@ -1418,6 +1418,9 @@ void SimObject::initPersistFields()
    addProtectedField("superclass", TypeString, Offset(mSuperClassName, SimObject), &setSuperClass, &defaultProtectedGetFn, &writeSuperclass, "Script Class of object.");
    addProtectedField("class",      TypeString, Offset(mClassName,      SimObject), &setClass,      &defaultProtectedGetFn, &writeClass, "Script SuperClass of object.");
    endGroup("Namespace Linking");
+
+   addProtectedField("canSave",           TypeBool,			Offset(mFlags, SimObject), &_setCanSave, &_getCanSave, "Whether the object can be saved out. If false, the object is purely transient in nature.");
+
 }
 
 //-----------------------------------------------------------------------------
@@ -1468,6 +1471,26 @@ ConsoleMethod(SimObject, clone, S32, 2, 3,      "([bool copyDynamicFields? = fal
         return 0;
 
     return pClonedObject->getId();
+}
+
+//---------------------------------------------------------------------------
+
+bool SimObject::_setCanSave( void* object, const char* data )
+{
+    SimObject* obj = reinterpret_cast< SimObject* >( object );
+    obj->setCanSave( dAtob( data ) );
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+
+const char* SimObject::_getCanSave( void* object, const char* data )
+{
+    SimObject* obj = reinterpret_cast< SimObject* >( object );
+    if( obj->getCanSave() )
+        return "1";
+    else
+        return "0";
 }
 
 //-----------------------------------------------------------------------------

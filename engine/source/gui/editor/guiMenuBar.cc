@@ -836,7 +836,7 @@ void GuiMenuBar::onPreRender()
          if(walk->bitmapIndex == -1)
          {
             // Text only
-            walk->bounds.set(curX, 0, mProfile->mFont->getStrWidth(walk->text) + (mHorizontalMargin * 2), mBounds.extent.y - (mVerticalMargin * 2));
+            walk->bounds.set(curX, 0, mProfile->mFont->getStrWidth(walk->text) + (mHorizontalMargin * 2), getHeight() - (mVerticalMargin * 2));
 
          } else
          {
@@ -845,13 +845,13 @@ void GuiMenuBar::onPreRender()
             {
                // Draw the bitmap and the text
                RectI *bitmapBounds = mProfile->mBitmapArrayRects.address();
-               walk->bounds.set(curX, 0, bitmapBounds[walk->bitmapIndex].extent.x + mProfile->mFont->getStrWidth(walk->text) + (mHorizontalMargin * 2), mBounds.extent.y + (mVerticalMargin * 2));
+               walk->bounds.set(curX, 0, bitmapBounds[walk->bitmapIndex].extent.x + mProfile->mFont->getStrWidth(walk->text) + (mHorizontalMargin * 2), getHeight() + (mVerticalMargin * 2));
 
             } else
             {
                // Only the bitmap will be drawn
                RectI *bitmapBounds = mProfile->mBitmapArrayRects.address();
-               walk->bounds.set(curX, 0, bitmapBounds[walk->bitmapIndex].extent.x + mBitmapMargin + (mHorizontalMargin * 2), mBounds.extent.y + (mVerticalMargin * 2));
+               walk->bounds.set(curX, 0, bitmapBounds[walk->bitmapIndex].extent.x + mBitmapMargin + (mHorizontalMargin * 2), getHeight() + (mVerticalMargin * 2));
             }
          }
 
@@ -953,11 +953,11 @@ void GuiMenuBar::onMouseUp(const GuiEvent &event)
 void GuiMenuBar::onRender(Point2I offset, const RectI &updateRect)
 {
 
-   RectI ctrlRect(offset, mBounds.extent);
+   RectI ctrlRect(offset, getExtent());
 
    //if opaque, fill the update rect with the fill color
    if (mProfile->mOpaque)
-      GFX->getDrawUtil()->drawRectFill(RectI(offset, mBounds.extent), mProfile->mFillColor);
+      GFX->getDrawUtil()->drawRectFill(RectI(offset, getExtent()), mProfile->mFillColor);
 
    //if there's a border, draw the border
    if (mProfile->mBorder)
@@ -1237,7 +1237,7 @@ void GuiMenuTextListCtrl::onCellHighlighted(Point2I cell)
     // passing this along
     if(!isSubMenu)
     {
-        RectI globalbounds(mBounds);
+        RectI globalbounds(getBounds());
         Point2I globalpoint = localToGlobalCoord(globalbounds.point);
         globalbounds.point = globalpoint;
         mMenuBarCtrl->highlightedMenuItem(cell.y, globalbounds, mCellSize);
@@ -1260,14 +1260,14 @@ void GuiSubmenuBackgroundCtrl::onMouseDown(const GuiEvent &event)
 
 bool GuiSubmenuBackgroundCtrl::pointInControl(const Point2I& parentCoordPoint)
 {
-   S32 xt = parentCoordPoint.x - mBounds.point.x;
-   S32 yt = parentCoordPoint.y - mBounds.point.y;
+   S32 xt = parentCoordPoint.x - getPosition().x;
+   S32 yt = parentCoordPoint.y - getPosition().y;
 
    if(findHitControl(Point2I(xt,yt)) == this)
        return false;
    else
        return true;
-//   return xt >= 0 && yt >= 0 && xt < mBounds.extent.x && yt < mBounds.extent.y;
+//   return xt >= 0 && yt >= 0 && xt < getWidth() && yt < getHeight();
 }
 
 //------------------------------------------------------------------------------
@@ -1391,10 +1391,10 @@ void GuiMenuBar::onAction()
    mBackground = new GuiMenuBackgroundCtrl(this, mTextList);
 
    GuiCanvas *root = getRoot();
-   Point2I windowExt = root->mBounds.extent;
+   Point2I windowExt = root->getExtent();
 
-   mBackground->mBounds.point.set(0,0);
-   mBackground->mBounds.extent = root->mBounds.extent;
+   mBackground->setPosition(0,0);
+   mBackground->setExtent(root->getExtent());
 
    S32 textWidth = 0, width = 0;
    S32 acceleratorWidth = 0;
@@ -1452,20 +1452,20 @@ void GuiMenuBar::onAction()
    menuPoint.y += mouseDownMenu->bounds.extent.y; // DAW: Used to have this at the end: + 2;
 
    GuiControl *ctrl = new GuiControl;
-   ctrl->mBounds.point = menuPoint;
-   ctrl->mBounds.extent = mTextList->mBounds.extent + Point2I(6, 6);
+   ctrl->setPosition( menuPoint );
+   ctrl->setExtent( mTextList->getExtent() + Point2I(6, 6));
    ctrl->mProfile = mProfile;
-   mTextList->mBounds.point += Point2I(3,3);
+   mTextList->setPosition( mTextList->getPosition() + Point2I(3,3));
 
    // DAW: Make sure the menu doesn't go beyond the Canvas' bottom edge.
-   if((ctrl->mBounds.point.y+ctrl->mBounds.extent.y) > windowExt.y)
+   if((ctrl->getPosition().y+ctrl->getHeight()) > windowExt.y)
    {
       // DAW: Pop the menu above the menu bar
       Point2I menuBar = localToGlobalCoord(mouseDownMenu->bounds.point);
-      ctrl->mBounds.point.y = menuBar.y - ctrl->mBounds.extent.y;
+       ctrl->setPosition(ctrl->getPosition().x, menuBar.y - ctrl->getHeight());
    }
 
-   //mTextList->mBounds.point = Point2I(3,3);
+   //mTextList->setPosition(Point2I(3,3);
 
    mTextList->registerObject();
    mBackground->registerObject();
@@ -1509,10 +1509,10 @@ void GuiMenuBar::onSubmenuAction(S32 selectionIndex, RectI bounds, Point2I cellS
    mSubmenuBackground = new GuiSubmenuBackgroundCtrl(this, mSubmenuTextList);
 
    GuiCanvas *root = getRoot();
-   Point2I windowExt = root->mBounds.extent;
+   Point2I windowExt = root->getExtent();
 
-   mSubmenuBackground->mBounds.point.set(0,0);
-   mSubmenuBackground->mBounds.extent = root->mBounds.extent;
+   mSubmenuBackground->setPosition(0,0);
+   mSubmenuBackground->setExtent( root->getExtent());
 
    S32 textWidth = 0, width = 0;
    S32 acceleratorWidth = 0;
@@ -1568,26 +1568,26 @@ void GuiMenuBar::onSubmenuAction(S32 selectionIndex, RectI bounds, Point2I cellS
    menuPoint.y += cellSize.y * selectionIndex - 6;
 
    GuiControl *ctrl = new GuiControl;
-   ctrl->mBounds.point = menuPoint;
-   ctrl->mBounds.extent = mSubmenuTextList->mBounds.extent + Point2I(6, 6);
+   ctrl->setPosition( menuPoint );
+   ctrl->setExtent( mSubmenuTextList->getExtent() + Point2I(6, 6));
    ctrl->mProfile = mProfile;
-   mSubmenuTextList->mBounds.point += Point2I(3,3);
+   mSubmenuTextList->setPosition(mSubmenuTextList->getPosition() + Point2I(3,3));
 
    // DAW: Make sure the menu doesn't go beyond the Canvas' bottom edge.
-   if((ctrl->mBounds.point.y+ctrl->mBounds.extent.y) > windowExt.y)
+   if((ctrl->getPosition().y+ctrl->getHeight()) > windowExt.y)
    {
       // DAW: Pop the menu above the menu bar
-      ctrl->mBounds.point.y -= mSubmenuTextList->mBounds.extent.y - cellSize.y - 6 - 3;
+      ctrl->setPosition(ctrl->getPosition().x, ctrl->getPosition().y - (mSubmenuTextList->getHeight() - cellSize.y - 6 - 3));
    }
 
    // DAW: And the same for the right edge
-   if((ctrl->mBounds.point.x+ctrl->mBounds.extent.x) > windowExt.x)
+   if((ctrl->getPosition().x+ctrl->getWidth()) > windowExt.x)
    {
       // DAW: Pop the submenu to the left of the menu
-      ctrl->mBounds.point.x -= mSubmenuTextList->mBounds.extent.x + cellSize.x + 6;
+      ctrl->setPosition( ctrl->getPosition().x - (mSubmenuTextList->getWidth() + cellSize.x + 6), ctrl->getPosition().y);
    }
 
-   //mSubmenuTextList->mBounds.point = Point2I(3,3);
+   //mSubmenuTextList->setPosition(Point2I(3,3);
 
    mSubmenuTextList->registerObject();
    mSubmenuBackground->registerObject();
