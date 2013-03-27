@@ -7,16 +7,17 @@
 #define _GFXOpenGLESWindowTarget_H_
 
 #include "graphics/gfxTarget.h"
+#include "windowManager/platformWindow.h"
 
 class GFXOpenGLESWindowTarget : public GFXWindowTarget
 {
 public:
 
-   GFXOpenGLESWindowTarget(void *win, GFXDevice *d);
+   GFXOpenGLESWindowTarget(PlatformWindow *win, GFXDevice *d);
    const Point2I getSize() 
    {
        return size;
-//       return mWindow->getClientExtent();
+       return mWindow->getClientExtent();
    }
    virtual GFXFormat getFormat()
    {
@@ -31,7 +32,7 @@ public:
    
    virtual void resolveTo(GFXTextureObject* obj);
    
-//   void _onAppSignal(WindowId wnd, S32 event);
+   void _onAppSignal(WindowId wnd, S32 event);
    
 private:
     typedef GFXDevice Parent;
@@ -43,7 +44,7 @@ private:
     friend class GFXOpenGLESVertexBuffer;
     friend class GFXOpenGLESDevice;
 
-   void *mWindow;
+   PlatformWindow *mWindow;
    friend class GFXOpenGLESDevice;
    Point2I size;
    GFXDevice* mDevice;

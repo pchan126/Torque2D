@@ -11,7 +11,7 @@
 #include "platform/platformGL.h"
 
 
-GFXOpenGLWindowTarget::GFXOpenGLWindowTarget(void *window, GFXDevice *d)
+GFXOpenGLWindowTarget::GFXOpenGLWindowTarget(PlatformWindow *window, GFXDevice *d)
       : GFXWindowTarget(window), mDevice(d), mContext(NULL), mFullscreenContext(NULL)
 {
    mWindow = window;

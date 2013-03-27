@@ -28,7 +28,7 @@
 #include "graphics/gfxDevice.h"
 
 
-//#include "windowManager/platformWindow.h"
+#include "windowManager/platformWindow.h"
 //#include "graphics/gfxFence.h"
 #include "graphics/gfxResource.h"
 #include "./gfxOpenGLStateBlock.h"
@@ -47,14 +47,13 @@ class GFXOpenGLDevice : public GFXDevice
 public:
    void zombify();
    void resurrect();
-   GFXOpenGLDevice( void* context );
+   GFXOpenGLDevice(U32 adapterIndex );
    virtual ~GFXOpenGLDevice();
 
-//   static void enumerateAdapters( Vector<GFXAdapter*> &adapterList );
-//   static GFXDevice *createInstance( U32 adapterIndex );
+   static void enumerateAdapters( Vector<GFXAdapter*> &adapterList );
+   static GFXDevice *createInstance( U32 adapterIndex );
 
-//   virtual void init( const GFXVideoMode &mode, PlatformWindow *window = NULL );
-    virtual void init( );
+   virtual void init( const GFXVideoMode &mode, PlatformWindow *window = NULL );
 
    virtual void activate() { }
    virtual void deactivate() { }
@@ -83,7 +82,7 @@ public:
    GFXWindowTarget *gwt;   // single window render target;
     
    virtual GFXTextureTarget *allocRenderToTextureTarget();
-   virtual GFXWindowTarget *allocWindowTarget(void *window);
+   virtual GFXWindowTarget *allocWindowTarget(PlatformWindow *window);
    virtual void _updateRenderTargets();
 
    ///@}
@@ -215,7 +214,7 @@ private:
    friend class GFXOpenGLPrimitiveBuffer;
    friend class GFXOpenGLVertexBuffer;
 
-//   static GFXAdapter::CreateDeviceInstanceDelegate mCreateDeviceInstance; 
+   static GFXAdapter::CreateDeviceInstanceDelegate mCreateDeviceInstance; 
 
    U32 mAdapterIndex;
    

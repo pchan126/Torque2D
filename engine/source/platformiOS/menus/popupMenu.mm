@@ -489,10 +489,10 @@ bool PopupMenu::canHandleID(U32 iD)
 bool PopupMenu::handleSelect(U32 command, const char *text /* = NULL */)
 { return false; }
 
-void PopupMenu::showPopup(S32 x /* = -1 */, S32 y /* = -1 */)
+void PopupMenu::showPopup(GuiCanvas *canvas, S32 x /* = -1 */, S32 y /* = -1 */)
 {}
 
-void PopupMenu::attachToMenuBar(S32 pos, const char *title)
+void PopupMenu::attachToMenuBar(GuiCanvas *canvas, S32 pos, const char *title)
 {}
 
 void PopupMenu::removeFromMenuBar()

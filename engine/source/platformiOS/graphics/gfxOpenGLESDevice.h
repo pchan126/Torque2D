@@ -8,7 +8,6 @@
 
 #include "platformiOS/platformiOS.h"
 #include "platform/platformGL.h"
-#include "platform/platformVideo.h"
 #include "graphics/gfxDevice.h"
 
 #include "graphics/gfxResource.h"
@@ -61,8 +60,7 @@ public:
    GFXWindowTarget *gwt;   // single window render target;
     
    virtual GFXTextureTarget *allocRenderToTextureTarget();
-    virtual GFXWindowTarget *allocWindowTarget(void *window);
-//   virtual GFXWindowTarget *allocWindowTarget(PlatformWindow *window);
+   virtual GFXWindowTarget *allocWindowTarget(PlatformWindow *window);
    virtual void _updateRenderTargets();
 
    ///@}

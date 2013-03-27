@@ -168,7 +168,7 @@ void (^accelerometerHandler)(CMAccelerometerData*, NSError*) = ^(CMAccelerometer
         
         for( int i = 0; i < 6; i++)
         {
-            InputEvent event;
+            InputEventInfo event;
             
             event.deviceInst = 0;
             event.fValue = userAcc[i];
@@ -178,7 +178,7 @@ void (^accelerometerHandler)(CMAccelerometerData*, NSError*) = ^(CMAccelerometer
             event.action = SI_MOTION;
             event.modifier = 0;
             
-            Game->postEvent(event);
+//            Game->postEvent(event);
         }
     }
 };
@@ -220,7 +220,7 @@ void (^motionHandler)(CMDeviceMotion*, NSError*) = ^(CMDeviceMotion *motionData,
 
         for( int i = 0; i < 6; i++)
         {
-            InputEvent event;
+            InputEventInfo event;
         
             event.deviceInst = 0;
             event.fValue = userAcc[i];
@@ -230,7 +230,7 @@ void (^motionHandler)(CMDeviceMotion*, NSError*) = ^(CMDeviceMotion *motionData,
             event.action = SI_MOTION;
             event.modifier = 0;
         
-            Game->postEvent(event);
+//            Game->postEvent(event);
         }
     }
     
@@ -247,7 +247,7 @@ void (^motionHandler)(CMDeviceMotion*, NSError*) = ^(CMDeviceMotion *motionData,
         
         for( int i = 0; i < 6; i++)
         {
-            InputEvent event;
+            InputEventInfo event;
             
             event.deviceInst = 0;
             event.fValue = gyroData[i];
@@ -257,7 +257,7 @@ void (^motionHandler)(CMDeviceMotion*, NSError*) = ^(CMDeviceMotion *motionData,
             event.action = SI_MOTION;
             event.modifier = 0;
             
-            Game->postEvent(event);
+//            Game->postEvent(event);
         }
     }
     

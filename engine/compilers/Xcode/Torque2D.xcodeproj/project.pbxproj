@@ -1373,6 +1373,8 @@
 		D1658076170295B500A21928 /* gfxAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxAdapter.h; sourceTree = "<group>"; };
 		D16580771702A5AE00A21928 /* guiContainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiContainer.cpp; sourceTree = "<group>"; };
 		D16580781702A5AE00A21928 /* guiContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiContainer.h; sourceTree = "<group>"; };
+		D165807A1702E64A00A21928 /* guiControl_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiControl_ScriptBinding.h; sourceTree = "<group>"; };
+		D16581421702E7AB00A21928 /* guiCanvas_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiCanvas_ScriptBinding.h; sourceTree = "<group>"; };
 		D1A6955617016C270060D928 /* platformCursorController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = platformCursorController.cpp; sourceTree = "<group>"; };
 		D1A6955717016C270060D928 /* platformCursorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformCursorController.h; sourceTree = "<group>"; };
 		D1A6955817016C270060D928 /* platformInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = platformInterface.cpp; sourceTree = "<group>"; };
@@ -2427,6 +2429,7 @@
 				86BC801D16518D4600D96ADF /* guiBubbleTextCtrl.h */,
 				86BC801E16518D4600D96ADF /* guiCanvas.cc */,
 				86BC801F16518D4600D96ADF /* guiCanvas.h */,
+				D16581421702E7AB00A21928 /* guiCanvas_ScriptBinding.h */,
 				86BC802016518D4600D96ADF /* guiColorPicker.cc */,
 				86BC802116518D4600D96ADF /* guiColorPicker.h */,
 				86BC802216518D4600D96ADF /* guiConsole.cc */,
@@ -2437,6 +2440,7 @@
 				86BC802716518D4600D96ADF /* guiConsoleTextCtrl.h */,
 				86BC802816518D4600D96ADF /* guiControl.cc */,
 				86BC802916518D4600D96ADF /* guiControl.h */,
+				D165807A1702E64A00A21928 /* guiControl_ScriptBinding.h */,
 				86BC802A16518D4600D96ADF /* guiDefaultControlRender.cc */,
 				86BC802B16518D4600D96ADF /* guiDefaultControlRender.h */,
 				86BC802C16518D4600D96ADF /* guiFadeinBitmapCtrl.cc */,

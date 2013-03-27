@@ -23,7 +23,6 @@
 
 #include "platformiOS/platformiOS.h"
 #include "platform/platformSemaphore.h"
-#include "platform/platformVideo.h"
 #include "platform/threads/thread.h"
 #include "console/console.h"
 #include "platformiOS/iOSEvents.h"

@@ -34,6 +34,9 @@ function initializeCanvas(%windowName)
         return;
     }
 
+    // Atmosphere
+    %canvas = new GuiCanvas();
+
     videoSetGammaCorrection($pref::OpenGL::gammaCorrection);
 
     if ( !createCanvas(%windowName) )

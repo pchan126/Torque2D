@@ -7,16 +7,17 @@
 #define _GFXOpenGLWindowTarget_H_
 
 #include "graphics/gfxTarget.h"
+#include "windowManager/platformWindow.h"
 
 class GFXOpenGLWindowTarget : public GFXWindowTarget
 {
 public:
 
-   GFXOpenGLWindowTarget(void *win, GFXDevice *d);
+   GFXOpenGLWindowTarget(PlatformWindow *win, GFXDevice *d);
    const Point2I getSize() 
    {
-       return size;//
-//       return mWindow->getClientExtent();
+       return size;
+       return mWindow->getClientExtent();
    }
    virtual GFXFormat getFormat()
    {
@@ -43,7 +44,7 @@ private:
     friend class GFXOpenGLVertexBuffer;
     friend class GFXOpenGLDevice;
 
-   void *mWindow;
+   PlatformWindow *mWindow;
    friend class GFXOpenGLDevice;
    Point2I size;
    GFXDevice* mDevice;

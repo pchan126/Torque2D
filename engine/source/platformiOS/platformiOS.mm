@@ -21,7 +21,6 @@
 //-----------------------------------------------------------------------------
 
 #import "platformiOS/platformiOS.h"
-#include "platform/platformVideo.h"
 #include "game/gameInterface.h"
 
 #include "platformiOS/graphics/gfxOpenGLESDevice.h"

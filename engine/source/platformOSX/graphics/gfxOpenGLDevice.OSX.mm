@@ -26,8 +26,8 @@
 
 //#include "graphics/gfxCubemap.h"
 #include "graphics/gfxDrawUtil.h"
-//#include "graphics/gfxInit.h"
-//
+#include "graphics/gfxInit.h"
+
 #include "./gfxOpenGLEnumTranslate.h"
 #include "./gfxOpenGLVertexBuffer.h"
 #include "./gfxOpenGLPrimitiveBuffer.h"
@@ -43,12 +43,12 @@
 #include "console/console.h"
 //#include "./gfxOpenGLOcclusionQuery.h"
 
-//GFXAdapter::CreateDeviceInstanceDelegate GFXOpenGLDevice::mCreateDeviceInstance(GFXOpenGLDevice::createInstance);
+GFXAdapter::CreateDeviceInstanceDelegate GFXOpenGLDevice::mCreateDeviceInstance(GFXOpenGLDevice::createInstance);
 
-//GFXDevice *GFXOpenGLDevice::createInstance( U32 adapterIndex )
-//{
-//    return new GFXOpenGLDevice(adapterIndex);
-//}
+GFXDevice *GFXOpenGLDevice::createInstance( U32 adapterIndex )
+{
+    return new GFXOpenGLDevice(adapterIndex);
+}
 
 #include "osxGLUtils.h"
 
@@ -82,8 +82,8 @@ void GFXOpenGLDevice::initGLState()
 
 //-----------------------------------------------------------------------------
 // Matrix interface
-GFXOpenGLDevice::GFXOpenGLDevice( void* context) :
-                        mContext(context),
+GFXOpenGLDevice::GFXOpenGLDevice( U32 adapterIndex ) :
+                        mAdapterIndex(adapterIndex),
                         mCurrentVB(NULL),
                         mCurrentPB(NULL),
                         m_mCurrentWorld(true),
@@ -137,37 +137,37 @@ GFXOpenGLDevice::~GFXOpenGLDevice()
 
 static String _getRendererForDisplay(CGDirectDisplayID display)
 {
-//    Vector<NSOpenGLPixelFormatAttribute> attributes = _createStandardPixelFormatAttributesForDisplay(display);
+    Vector<NSOpenGLPixelFormatAttribute> attributes = _createStandardPixelFormatAttributesForDisplay(display);
     
-//    NSOpenGLPixelFormat* fmt = [[NSOpenGLPixelFormat alloc] initWithAttributes:attributes.address()];
-//    AssertFatal(fmt, "_getRendererForDisplay - Unable to create a pixel format object");
-//    attributes.clear();
-//    
-//    NSOpenGLContext* ctx = [[NSOpenGLContext alloc] initWithFormat:fmt shareContext:nil];
-//    [fmt release];
-//    AssertFatal(ctx, "_getRendererForDisplay - Unable to create an OpenGL context");
-//    
-//    // Save the current context, just in case
-//    NSOpenGLContext* currCtx = [NSOpenGLContext currentContext];
-//    [ctx makeCurrentContext];
-//    
-//    // get the renderer string
-//    String ret((const char*)glGetString(GL_RENDERER));
-//    
-//    // Restore our old context, release the context and pixel format.
-//    [currCtx makeCurrentContext];
-//    [ctx release];
-//    return ret;
+    NSOpenGLPixelFormat* fmt = [[NSOpenGLPixelFormat alloc] initWithAttributes:attributes.address()];
+    AssertFatal(fmt, "_getRendererForDisplay - Unable to create a pixel format object");
+    attributes.clear();
+    
+    NSOpenGLContext* ctx = [[NSOpenGLContext alloc] initWithFormat:fmt shareContext:nil];
+    [fmt release];
+    AssertFatal(ctx, "_getRendererForDisplay - Unable to create an OpenGL context");
+    
+    // Save the current context, just in case
+    NSOpenGLContext* currCtx = [NSOpenGLContext currentContext];
+    [ctx makeCurrentContext];
+    
+    // get the renderer string
+    String ret((const char*)glGetString(GL_RENDERER));
+    
+    // Restore our old context, release the context and pixel format.
+    [currCtx makeCurrentContext];
+    [ctx release];
+    return ret;
 }
 
 
-void GFXOpenGLDevice::init( )
+void GFXOpenGLDevice::init( const GFXVideoMode &mode, PlatformWindow *window )
 {
     if(mInitialized)
         return;
 
-//    NSOpenGLContext* ctx = _createContextForWindow();
-//    [ctx makeCurrentContext];
+    NSOpenGLContext* ctx = _createContextForWindow();
+    [ctx makeCurrentContext];
 //    mContext = ctx;
     
 //    mTextureLoader = [[GLKTextureLoader alloc] initWithShareContext:(NSOpenGLContext *)ctx ];
@@ -209,41 +209,41 @@ void addVideoModeCallback( const void *value, void *context )
     }
 }
 
-//void GFXOpenGLDevice::enumerateAdapters( Vector<GFXAdapter*> &adapterList )
-//{
-//    GFXAdapter *toAdd;
-//    
-//    Vector<GFXVideoMode> videoModes;
-//    
-//    CGDirectDisplayID display = CGMainDisplayID();
-//    
-//    // Enumerate all available resolutions: // depreciated use CGDisplayCopyAllDisplayModes
-//    CFArrayRef modeArray = CGDisplayCopyAllDisplayModes( display, NULL );
-//    CFArrayApplyFunction(modeArray, CFRangeMake(0,CFArrayGetCount(modeArray)), addVideoModeCallback, &videoModes);
-//    
-//    // Get number of displays
-//    CGDisplayCount dispCnt;
-//    CGGetActiveDisplayList(0, NULL, &dispCnt);
-//    
-//    // Take advantage of GNU-C
-//    CGDirectDisplayID displays[dispCnt];
-//    
-//    CGGetActiveDisplayList(dispCnt, displays, &dispCnt);
-//    for(U32 i = 0; i < dispCnt; i++)
-//    {
-//        toAdd = new GFXAdapter();
-//        toAdd->mType = OpenGL;
-//        toAdd->mIndex = (U32)displays[i];
-//        toAdd->mCreateDeviceInstanceDelegate = mCreateDeviceInstance;
-//        String renderer = _getRendererForDisplay(displays[i]);
-//        AssertFatal(dStrlen(renderer.c_str()) < GFXAdapter::MaxAdapterNameLen, "GFXGLDevice::enumerateAdapter - renderer name too long, increae the size of GFXAdapter::MaxAdapterNameLen (or use String!)");
-//        dStrncpy(toAdd->mName, renderer.c_str(), GFXAdapter::MaxAdapterNameLen);
-//        adapterList.push_back(toAdd);
-//        
-//        for (S32 j = videoModes.size() - 1 ; j >= 0 ; j--)
-//            toAdd->mAvailableModes.push_back(videoModes[j]);
-//    }
-//}
+void GFXOpenGLDevice::enumerateAdapters( Vector<GFXAdapter*> &adapterList )
+{
+    GFXAdapter *toAdd;
+    
+    Vector<GFXVideoMode> videoModes;
+    
+    CGDirectDisplayID display = CGMainDisplayID();
+    
+    // Enumerate all available resolutions: // depreciated use CGDisplayCopyAllDisplayModes
+    CFArrayRef modeArray = CGDisplayCopyAllDisplayModes( display, NULL );
+    CFArrayApplyFunction(modeArray, CFRangeMake(0,CFArrayGetCount(modeArray)), addVideoModeCallback, &videoModes);
+    
+    // Get number of displays
+    CGDisplayCount dispCnt;
+    CGGetActiveDisplayList(0, NULL, &dispCnt);
+    
+    // Take advantage of GNU-C
+    CGDirectDisplayID displays[dispCnt];
+    
+    CGGetActiveDisplayList(dispCnt, displays, &dispCnt);
+    for(U32 i = 0; i < dispCnt; i++)
+    {
+        toAdd = new GFXAdapter();
+        toAdd->mType = OpenGL;
+        toAdd->mIndex = (U32)displays[i];
+        toAdd->mCreateDeviceInstanceDelegate = mCreateDeviceInstance;
+        String renderer = _getRendererForDisplay(displays[i]);
+        AssertFatal(dStrlen(renderer.c_str()) < GFXAdapter::MaxAdapterNameLen, "GFXGLDevice::enumerateAdapter - renderer name too long, increae the size of GFXAdapter::MaxAdapterNameLen (or use String!)");
+        dStrncpy(toAdd->mName, renderer.c_str(), GFXAdapter::MaxAdapterNameLen);
+        adapterList.push_back(toAdd);
+        
+        for (S32 j = videoModes.size() - 1 ; j >= 0 ; j--)
+            toAdd->mAvailableModes.push_back(videoModes[j]);
+    }
+}
 
 void GFXOpenGLDevice::enumerateVideoModes()
 {
@@ -982,9 +982,9 @@ void GFXOpenGLDevice::setStateBlockInternal(GFXStateBlock* block, bool force)
 ////------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
-GFXWindowTarget *GFXOpenGLDevice::allocWindowTarget(void *window)
+GFXWindowTarget *GFXOpenGLDevice::allocWindowTarget(PlatformWindow *window)
 {
-    OSXTorqueView *torqueView = (OSXTorqueView*)(window);
+//    OSXTorqueView *torqueView = (OSXTorqueView*)(window);
     
     // Allocate the wintarget and create a new context.
     GFXOpenGLWindowTarget *gwt = new GFXOpenGLWindowTarget(window, this);
@@ -1277,20 +1277,20 @@ GFXFormat GFXOpenGLDevice::selectSupportedFormat(   GFXTextureProfile* profile,
 //    return GFXFormatR8G8B8A8;
 }
 
-////
-//// Register this device with GFXInit
-////
-//class GFXOpenGLRegisterDevice
-//{
-//public:
-//    GFXOpenGLRegisterDevice()
-//    {
-////      GFXInit::getRegisterDeviceSignal().notify(&GFXOpenGLDevice::enumerateAdapters);
-//    }
-//};
 //
-//static GFXOpenGLRegisterDevice pGLRegisterDevice;
+// Register this device with GFXInit
 //
+class GFXOpenGLRegisterDevice
+{
+public:
+    GFXOpenGLRegisterDevice()
+    {
+        GFXInit::getRegisterDeviceSignal().notify(&GFXOpenGLDevice::enumerateAdapters);
+    }
+};
+
+static GFXOpenGLRegisterDevice pGLRegisterDevice;
+
 //ConsoleFunction(cycleResources, void, 1, 1, "")
 //{
 //   static_cast<GFXOpenGLDevice*>(GFX)->zombify();

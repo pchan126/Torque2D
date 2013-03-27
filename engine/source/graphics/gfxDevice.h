@@ -282,8 +282,8 @@ public:
 
 //   /// Initialize this GFXDevice, optionally specifying a platform window to
 //   /// bind to.
-//   virtual void init( const GFXVideoMode &mode, PlatformWindow *window = NULL ) = 0;
-   virtual void init( ) = 0;
+   virtual void init( const GFXVideoMode &mode, PlatformWindow *window = NULL ) = 0;
+//   virtual void init( ) = 0;
 
    /// Returns true if the scene has begun and its
    /// safe to make rendering calls.
@@ -675,7 +675,7 @@ public:
    virtual GFXTextureTarget *allocRenderToTextureTarget()=0;
    
    /// Allocate a target for a given window.
-   virtual GFXWindowTarget *allocWindowTarget(void *window)=0;
+   virtual GFXWindowTarget *allocWindowTarget(PlatformWindow *window)=0;
    
    /// Store the current render target to restore later.
    void pushActiveRenderTarget();
@@ -1018,15 +1018,15 @@ protected:
     bool                 mFullScreenOnly;
     
 public:
-    virtual void initDevice() = 0;
-    virtual bool activate( U32 width, U32 height, U32 bpp, bool fullScreen ) = 0;
-    virtual void shutdown() = 0;
-    
-    virtual void swapBuffers() = 0;
-    virtual const char* getDriverInfo() = 0;
-    virtual bool getGammaCorrection(F32 &g) = 0;
-    virtual bool setGammaCorrection(F32 g) = 0;
-    virtual bool setVerticalSync( bool on ) = 0;
+//    virtual void initDevice() = 0;
+//    virtual bool activate( U32 width, U32 height, U32 bpp, bool fullScreen ) = 0;
+//    virtual void shutdown() = 0;
+//    
+//    virtual void swapBuffers() = 0;
+//    virtual const char* getDriverInfo() = 0;
+//    virtual bool getGammaCorrection(F32 &g) = 0;
+//    virtual bool setGammaCorrection(F32 g) = 0;
+//    virtual bool setVerticalSync( bool on ) = 0;
     
 //    const char* getResolutionList();
     bool isFullScreenOnly()   { return( mFullScreenOnly ); }

@@ -30,14 +30,10 @@
 #include "string/Unicode.h"
 #include "gui/guiCanvas.h"
 
-
-// <Mat> just some random number 50, we'll get a proper value later
-#define IOS_DOUBLE_CLICK_TIME	( 50 * 60.0f * 1000.0f)
-
 // Static class variables:
 InputManager* Input::smManager;
 bool           Input::smActive;
-CursorManager* Input::smCursorManager = 0;
+InputEvent     Input::smInputEvent;
 
 
 bool gInputEnabled = false;
@@ -175,30 +171,11 @@ void Input::init()
    // enable main input
    Input::enable();
 
-   // Startup the Cursor Manager
-   if(!smCursorManager)
-   {
-      smCursorManager = new CursorManager();
-      if(smCursorManager)
-      {
-         // Add the arrow cursor to the stack
-         smCursorManager->pushCursor(CursorManager::curArrow);
-      }
-      else
-      {
-         Con::printf("   Cursor Manager not enabled.");
-      }
-   }
-	
-	
 	for(int i = 0 ; i < MAX_TOUCH_EVENTS; i++ )
 	{
 		lastTouches[i].lastX = -1;
 		lastTouches[i].lastY = -1;
 	}
-	
-	
-   
    
    Con::printf( "" );
 }
@@ -691,52 +668,6 @@ bool Platform::setClipboard(const char *text)
 	return NULL;//no clipboard on iOS
 }
 
-#pragma mark ---- Cursor Functions ----
-//------------------------------------------------------------------------------
-void Input::pushCursor(S32 cursorID)
-{
-   CursorManager* cm = getCursorManager();
-   if(cm)
-      cm->pushCursor(cursorID);
-}
-
-//------------------------------------------------------------------------------
-void Input::popCursor()
-{
-   CursorManager* cm = getCursorManager();
-   if(cm)
-      cm->popCursor();
-}
-
-//------------------------------------------------------------------------------
-void Input::refreshCursor()
-{
-   CursorManager* cm = getCursorManager();
-   if(cm)
-      cm->refreshCursor();
-}
-
-#pragma mark ---- DoubleClick Functions ----
-//------------------------------------------------------------------------------
-U32 Input::getDoubleClickTime()
-{
-	return IOS_DOUBLE_CLICK_TIME;
-}
-
-//------------------------------------------------------------------------------
-S32 Input::getDoubleClickWidth()
-{
-   // this is an arbitrary value.
-   return 10;
-}
-
-//------------------------------------------------------------------------------
-S32 Input::getDoubleClickHeight()
-{
-   return getDoubleClickWidth();
-}
-
-#pragma mark -
 
 //------------------------------------------------------------------------------
 bool enableKeyboard()
@@ -914,12 +845,6 @@ ConsoleFunction( activateKeyboard, void, 1, 1, "activateKeyboard();")
 }
 
 
-//------------------------------------------------------------------------------
-void Input::setCursorPos(S32 x, S32 y)
-{
-	//this gets called from GuiCanvas to set the game mouse cursor
-}
-
 int processMultipleTouches()
 {	
 	char posX[256], posY[256], temp[10], touchNums[256];
@@ -953,7 +878,7 @@ int processMultipleTouches()
     
     if( numTouchDownEvents > 0 )
     {
-        InputEvent touchEvent;
+        InputEventInfo touchEvent;
         
         touchEvent.deviceInst = 0;
         touchEvent.objInst = SI_TOUCHDOWN;
@@ -968,7 +893,7 @@ int processMultipleTouches()
         
         touchEvent.modifier = 0;
         
-        Game->postEvent(touchEvent);        
+//        Game->postEvent(touchEvent);        
     }
     
     // Deprecated in 1.5
@@ -998,7 +923,7 @@ int processMultipleTouches()
     
     if( numTouchMoveEvents > 0 )
     {
-        InputEvent touchEvent;
+        InputEventInfo touchEvent;
         
         touchEvent.deviceInst = 0;
         touchEvent.objInst = SI_TOUCHMOVE;
@@ -1013,7 +938,7 @@ int processMultipleTouches()
         
         touchEvent.modifier = 0;
         
-        Game->postEvent(touchEvent);        
+//        Game->postEvent(touchEvent);        
     }
     
     // Deprecated in 1.5 -MP
@@ -1058,7 +983,7 @@ int processMultipleTouches()
 	
     if( numTouchUpEvents > 0 )
     {
-        InputEvent touchEvent;
+        InputEventInfo touchEvent;
         
         touchEvent.deviceInst = 0;
         touchEvent.objInst = SI_TOUCHUP;
@@ -1073,7 +998,7 @@ int processMultipleTouches()
         
         touchEvent.modifier = 0;
         
-        Game->postEvent(touchEvent);        
+//        Game->postEvent(touchEvent);        
     }
     
     // Deprecated in 1.5 -MP
@@ -1124,7 +1049,7 @@ bool createMouseMoveEvent( S32 touchNumber, S32 x, S32 y, S32 lastX, S32 lastY )
 
 	if( currentSlot == -1 ) return false;
 	
-	ScreenTouchEvent event;
+	ScreenTouchEventInfo event;
 	event.xPos = x;
 	event.yPos = y;
 	event.action = SI_MOVE;
@@ -1132,7 +1057,7 @@ bool createMouseMoveEvent( S32 touchNumber, S32 x, S32 y, S32 lastX, S32 lastY )
     event.numTouches = 0;
     
 	//Luma: Mouse not moving (no hover for mouse fingers!)
-	Canvas->setCursorPos( Point2I( x, y ) );  
+//	Canvas->setCursorPos( Point2I( x, y ) );  
 
 	if( currentSlot != -1 )
 	{
@@ -1141,7 +1066,7 @@ bool createMouseMoveEvent( S32 touchNumber, S32 x, S32 y, S32 lastX, S32 lastY )
 	}		
 	
 	TouchMoveEvents.push_back( touchEvent( currentSlot, x, y ) );	
-	Game->postEvent(event);
+//	Game->postEvent(event);
 	
 	return true;//return false if we get bad values or something
 }
@@ -1162,7 +1087,7 @@ bool createMouseDownEvent( S32 touchNumber, S32 x, S32 y, U32 numTouches )
 	if( vacantSlot == -1 ) 
         return false;
 		
-	ScreenTouchEvent event;
+	ScreenTouchEventInfo event;
 	event.xPos = x;
 	event.yPos = y;
     event.touchID = vacantSlot;
@@ -1170,7 +1095,7 @@ bool createMouseDownEvent( S32 touchNumber, S32 x, S32 y, U32 numTouches )
 	event.numTouches = numTouches;
     
 	//Luma: Update position
-	Canvas->setCursorPos( Point2I( x, y ) );  		
+//	Canvas->setCursorPos( Point2I( x, y ) );
 	
 	if( vacantSlot != -1 )
 	{
@@ -1179,7 +1104,7 @@ bool createMouseDownEvent( S32 touchNumber, S32 x, S32 y, U32 numTouches )
 	}	
 
 	TouchDownEvents.push_back( touchEvent( vacantSlot, x, y ) );
-	Game->postEvent(event);
+//	Game->postEvent(event);
 	
 	return true;//return false if we get bad values or something
 }
@@ -1200,7 +1125,7 @@ bool createMouseUpEvent( S32 touchNumber, S32 x, S32 y, S32 lastX, S32 lastY, U3
 	if( currentSlot == -1 ) 
         return false;
 
-	ScreenTouchEvent event;
+	ScreenTouchEventInfo event;
 	event.xPos = x;
 	event.yPos = y;
 	event.action = SI_BREAK;
@@ -1209,7 +1134,7 @@ bool createMouseUpEvent( S32 touchNumber, S32 x, S32 y, S32 lastX, S32 lastY, U3
     
 	TouchUpEvents.push_back( touchEvent( currentSlot, x, y ) );	
 	
-	Game->postEvent(event);
+//	Game->postEvent(event);
 	
 	return true;//return false if we get bad values or something
 }

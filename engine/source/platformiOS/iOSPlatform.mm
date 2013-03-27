@@ -183,14 +183,3 @@ bool Platform::fileRename(const char *source, const char *dest)
    return ret;
 }
 
-
-
-void Input::setCursorShape(U32 cursorID)
-{
-    //no cursors on iOS except Torque cursors
-}
-
-void Input::setCursorState(bool on)
-{
-}
-

@@ -842,7 +842,7 @@ void GFXOpenGLESDevice::setStateBlockInternal(GFXStateBlock* block, bool force)
 ////------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
-GFXWindowTarget *GFXOpenGLESDevice::allocWindowTarget(void *window)
+GFXWindowTarget *GFXOpenGLESDevice::allocWindowTarget(PlatformWindow *window)
 {
     // Get the shared iOS platform state
     iOSPlatState * platState = [iOSPlatState sharedPlatState];
