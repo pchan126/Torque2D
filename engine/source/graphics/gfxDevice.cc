@@ -25,7 +25,7 @@
 #include "memory/frameAllocator.h"
 #include "io/fileStream.h"
 #include "string/unicode.h"
-//#include "core/util/journal/process.h"
+#include "delegates/process.h"
 #include "memory/safeDelete.h"
 //#include "math/util/frustum.h"
 #include "console/consoleTypes.h"

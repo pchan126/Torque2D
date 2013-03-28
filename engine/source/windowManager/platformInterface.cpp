@@ -6,10 +6,9 @@
 #include "platform/platform.h"
 #include "platform/event.h"
 #include "windowManager/platformWindowMgr.h"
-//#include "graphics/gfxInit.h"
+#include "graphics/gfxInit.h"
 #include "graphics/gfxDevice.h"
-//#include "core/util/journal/process.h"
-#include "delegates/delegateSignal.h"
+#include "delegates/process.h"
 #include "memory/autoPtr.h"
 
 // This file converts from the windowmanager system to the old platform and

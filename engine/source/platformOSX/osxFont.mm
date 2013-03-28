@@ -21,9 +21,11 @@
 //-----------------------------------------------------------------------------
 
 #import "platform/platform.h"
+#import "console/consoleTypes.h"
 #import "platformOSX/platformOSX.h"
 #import "platformOSX/osxFont.h"
 #import "string/Unicode.h"
+#import "collection/vector.h"
 
 //------------------------------------------------------------------------------
 

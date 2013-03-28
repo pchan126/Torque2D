@@ -23,6 +23,7 @@
 #import <Cocoa/Cocoa.h>
 #import "platformOSX/osxInputManager.h"
 #include "platform/event.h"
+#import "./macWindow.h"
 
 @interface OSXTorqueView : NSOpenGLView
 {
@@ -34,10 +35,15 @@
 
 @public
     BOOL _contextInitialized;
+    MacWindow* mTorqueWindow;
+    U32 mLastMods;
+    bool mHandledAsCharEvent;
 }
 
 @property BOOL contextInitialized;
 
+- (void)setTorqueWindow:(MacWindow*)theWindow;
+- (MacWindow*)torqueWindow;
 - (BOOL)acceptsFirstResponder;
 - (void)initialize;
 - (void)createContextWithPixelFormat:(NSOpenGLPixelFormat *)pixelFormat;

@@ -48,9 +48,9 @@
     Platform::setCurrentDirectory(cwd);
     
     osxPlatState * platState = [osxPlatState sharedPlatState];
-    
-    platState.argc = [arguments count];
-    [platState setWindow:self.window];
+//
+//    platState.argc = [arguments count];
+//    [platState setWindow:self.window];
 
     
     for (NSUInteger i = 0; i < platState.argc; i++)

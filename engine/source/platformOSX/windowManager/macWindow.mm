@@ -5,7 +5,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "./macWindow.h"
-#import "./macView.h"
+#import "./osxTorqueView.h"
 
 #import "console/console.h"
 
@@ -90,7 +90,7 @@ void MacWindow::_initCocoaWindow(const char* windowText, Point2I clientExtent)
    
    // create the opengl view. we don't care about its pixel format, because we
    // will be replacing its context with another one.
-   GGMacView* view = [[GGMacView alloc] initWithFrame:contentRect pixelFormat:[NSOpenGLView defaultPixelFormat]];
+   OSXTorqueView* view = [[OSXTorqueView alloc] initWithFrame:contentRect pixelFormat:[NSOpenGLView defaultPixelFormat]];
    [view setTorqueWindow:this];
    [mCocoaWindow setContentView:view];
 //   [mCocoaWindow setDelegate:view];

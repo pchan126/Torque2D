@@ -138,7 +138,7 @@ struct GFXVideoMode
    /// "resolution.x resolution.y fullScreen bitDepth refreshRate antialiasLevel"
    ///
    /// \return (string) A string representation of the object.
-   const StringTableEntry toStringTableEntry() const;
+   const StringTableEntry toString() const;
 };
 
 

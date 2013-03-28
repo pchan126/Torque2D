@@ -46,18 +46,16 @@ BOOL CheckForExtension(NSString *searchName)
 //-----------------------------------------------------------------------------
 // helper function for getGLCapabilities.
 //  returns a new CGL context for platState.hDisplay
-CGLContextObj getContextForCapsCheck()
+CGLContextObj getContextForCapsCheck(CGDirectDisplayID display)
 {
     // silently create an opengl context on the current display, so that
     // we can get valid renderer and capability info
     // some of the following code is from:
     //  http://developer.apple.com/technotes/tn2002/tn2080.html#TAN55
     
-    osxPlatState * platState = [osxPlatState sharedPlatState];
-    
     // From the CG display id, we can create a pixel format & context
     // and with that context we can check opengl capabilities
-    CGOpenGLDisplayMask cglDisplayMask = CGDisplayIDToOpenGLDisplayMask([platState cgDisplay]);
+    CGOpenGLDisplayMask cglDisplayMask = CGDisplayIDToOpenGLDisplayMask(display);
 
     NSOpenGLPixelFormatAttribute attrs[] =
 	{
@@ -82,10 +80,8 @@ CGLContextObj getContextForCapsCheck()
 
 void GFXOpenGLCardProfiler::init()
 {
-    osxPlatState * platState = [osxPlatState sharedPlatState];
-
     CGLContextObj curr_ctx = CGLGetCurrentContext ();
-    CGLContextObj temp_ctx =  getContextForCapsCheck();
+    CGLContextObj temp_ctx =  getContextForCapsCheck(CGMainDisplayID());
     
     if (!temp_ctx)
     {
@@ -95,7 +91,7 @@ void GFXOpenGLCardProfiler::init()
     
     CGLSetCurrentContext(temp_ctx);
     
-    AssertFatal([platState cgDisplay], "GFXOpenGLCardProfiler was called before a monitor was chosen!");
+    AssertFatal(CGMainDisplayID(), "GFXOpenGLCardProfiler was called before a monitor was chosen!");
 
     mChipSet = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
 

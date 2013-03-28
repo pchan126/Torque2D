@@ -21,7 +21,7 @@
 //-----------------------------------------------------------------------------
 
 #import "platformOSX/platformOSX.h"
-#import "platformOSX/osxTorqueView.h"
+#import "./osxTorqueView.h"
 #import "game/gameInterface.h"
 #import "gui/guiCanvas.h"
 #import "platformOSX/graphics/gfxOpenGLDevice.h"
@@ -112,8 +112,8 @@
 //
 - (void) awakeFromNib
 {
-    osxPlatState * platState = [osxPlatState sharedPlatState];
-    [platState setTorqueView:self];
+//    osxPlatState * platState = [osxPlatState sharedPlatState];
+//    [platState setTorqueView:self];
 ////    NSOpenGLPixelFormatAttribute attrs[] =
 ////	{
 ////		NSOpenGLPFADoubleBuffer,
@@ -385,6 +385,75 @@
     }
 }
 
+- (void)setTorqueWindow:(MacWindow*)theWindow
+{
+    mTorqueWindow = theWindow;
+    mLastMods = 0;
+}
 
+- (MacWindow*)torqueWindow
+{
+    return mTorqueWindow;
+}
+
+#pragma mark -
+#pragma mark Window Delegate
+- (BOOL)windowShouldClose:(NSWindow *)sender
+{
+    // We close the window ourselves
+    mTorqueWindow->appEvent.trigger(mTorqueWindow->getWindowId(), WindowDestroy);
+    return NO;
+}
+
+- (void)windowWillClose:(NSNotification *) notification
+{
+    mTorqueWindow->_disassociateCocoaWindow();
+}
+
+- (void)windowDidBecomeKey:(NSNotification *)notification
+{
+    // when our window is the key window, we become the app delegate.
+    PlatformWindow* focusWindow = WindowManager->getFocusedWindow();
+    if(focusWindow && focusWindow != mTorqueWindow)
+        focusWindow->appEvent.trigger(mTorqueWindow->getWindowId(), LoseFocus);
+    [NSApp setDelegate:self];
+    [self signalGainFocus];
+}
+
+- (void)windowDidResignKey:(NSNotification*)notification
+{
+    mTorqueWindow->appEvent.trigger(mTorqueWindow->getWindowId(), LoseScreen);
+    mTorqueWindow->_associateMouse();
+    mTorqueWindow->setCursorVisible(true);
+    [NSApp setDelegate:nil];
+}
+
+- (void)windowDidChangeScreen:(NSNotification*)notification
+{
+    NSWindow* wnd = [notification object];
+    // TODO: Add a category to NSScreen to deal with this
+    //   CGDirectDisplayID disp = (CGDirectDisplayID)[[[[wnd screen] deviceDescription] valueForKey:@"NSScreenNumber"] unsignedIntValue];
+    CGDirectDisplayID display = CGMainDisplayID();
+    mTorqueWindow->setDisplay(display);
+}
+
+- (void)windowDidResize:(NSNotification*)notification
+{
+    Point2I clientExtent = mTorqueWindow->getClientExtent();
+    mTorqueWindow->resizeEvent.trigger(mTorqueWindow->getWindowId(), clientExtent.x, clientExtent.y);
+}
+
+#pragma mark -
+#pragma mark responder status
+- (BOOL)acceptsFirstResponder { return YES; }
+- (BOOL)becomeFirstResponder  { return YES; }
+- (BOOL)resignFirstResponder  { return YES; }
+
+// Basic implementation because NSResponder's default implementation can cause infinite loops when our keyDown: method calls interpretKeyEvents:
+- (void)doCommandBySelector:(SEL)aSelector
+{
+    if([self respondsToSelector:aSelector])
+        [self performSelector:aSelector withObject:nil];
+}
 
 @end

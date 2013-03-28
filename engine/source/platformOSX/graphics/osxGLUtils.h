@@ -87,52 +87,5 @@ static NSOpenGLPixelFormat* _createStandardPixelFormat()
    return pf;
 }
 
-static void _createInitialContextAndFormat(NSOpenGLContext* &ctx, NSOpenGLPixelFormat* &fmt)
-{
-    AssertFatal(!fmt && !ctx, "_createInitialContextAndFormat - Already created initial context and format");
-    
-    fmt = _createStandardPixelFormat();
-    AssertFatal(fmt, "_createInitialContextAndFormat - Unable to create an OpenGL pixel format");
-    
-    ctx = [[NSOpenGLContext alloc] initWithFormat: (NSOpenGLPixelFormat*)fmt shareContext: nil];
-    AssertFatal(ctx, "_createInitialContextAndFormat - Unable to create an OpenGL context");
-}
-
-static NSOpenGLContext* _createContextForWindow()
-{
-    osxPlatState * platState = [osxPlatState sharedPlatState];
-
-    NSOpenGLView* view = static_cast< NSOpenGLView* >([platState torqueView]);
-    NSOpenGLContext* ctx = NULL;
-    static NSOpenGLPixelFormat* pixelFormat = NULL;
-    static NSOpenGLContext* context = NULL;
-    
-    if ([view isKindOfClass:[NSOpenGLView class]])
-    {
-        if( context == NULL || pixelFormat == NULL)
-        {
-            // Create the initial opengl context that the device and the first window will hold.
-            _createInitialContextAndFormat(context, pixelFormat);
-            ctx = (NSOpenGLContext*)context;
-        }
-        else
-        {
-            // Create a context which shares its resources with the device's initial context
-            ctx = [[NSOpenGLContext alloc] initWithFormat: (NSOpenGLPixelFormat*)pixelFormat shareContext: (NSOpenGLContext*)context];
-            AssertFatal(ctx, "Unable to create a shared OpenGL context");
-        }
-        
-        [view setPixelFormat: (NSOpenGLPixelFormat*)pixelFormat];
-        [view setOpenGLContext: ctx];
-        
-        return ctx;
-    }
-    else
-    {
-        AssertFatal([view isKindOfClass:[NSOpenGLView class]], avar("_createContextForWindow - Supplied a %s instead of a NSOpenGLView", [[view className] UTF8String]));
-        return ctx;
-    }
-}
-
 
 #endif

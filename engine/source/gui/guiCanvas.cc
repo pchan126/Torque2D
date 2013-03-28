@@ -30,51 +30,11 @@
 #include "gui/guiCanvas.h"
 #include "gui/guiCanvas_ScriptBinding.h"
 #include "game/gameInterface.h"
+#include "delegates/process.h"
 
 #include "graphics/gfxInit.h"
 
 IMPLEMENT_CONOBJECT(GuiCanvas);
-
-
-//ConsoleFunction(screenShot, void, 3, 3, "(string file, string format)"
-//                "Take a screenshot.\n\n"
-//                "@param format One of JPEG or PNG.")
-//{
-//#ifndef TORQUE_OS_IOS
-//// PUAP -Mat no screenshots on iPhone can do it from Xcode
-//    FileStream fStream;
-//   if(!fStream.open(argv[1], FileStream::Write))
-//   {   
-//      Con::printf("Failed to open file '%s'.", argv[1]);
-//      return;
-//   }
-//    
-//   glReadBuffer(GL_FRONT);
-//   
-//   Point2I extent = Canvas->getExtent();
-//   U8 * pixels = new U8[extent.x * extent.y * 4];
-//   glReadPixels(0, 0, extent.x, extent.y, GL_RGB, GL_UNSIGNED_BYTE, pixels);
-//   
-//   GBitmap * bitmap = new GBitmap;
-//   bitmap->allocateBitmap(U32(extent.x), U32(extent.y));
-//   
-//   // flip the rows
-//   for(U32 y = 0; y < (U32)extent.y; y++)
-//      dMemcpy(bitmap->getAddress(0, extent.y - y - 1), pixels + y * extent.x * 3, U32(extent.x * 3));
-//
-//   if ( dStrcmp( argv[2], "JPEG" ) == 0 )
-//      bitmap->writeJPEG(fStream);
-//   else if( dStrcmp( argv[2], "PNG" ) == 0)
-//      bitmap->writePNG(fStream);
-//   else
-//      bitmap->writePNG(fStream);
-//
-//   fStream.close();
-//   delete [] pixels;
-//   delete bitmap;
-//#endif
-//}
-
 
 GuiCanvas::GuiCanvas():GuiControl(),
                         mShowCursor(true),
@@ -168,9 +128,6 @@ bool GuiCanvas::onAdd()
     setCursor(dynamic_cast<GuiCursor*>(Sim::findObject("mDefaultCursor")));
 #endif
     
-    // Enumerate things for GFX before we have an active device.
-    GFXInit::enumerateAdapters();
-    
     // Create a device.
     GFXAdapter *a = GFXInit::getBestAdapterChoice();
     
@@ -200,8 +157,8 @@ bool GuiCanvas::onAdd()
         mPlatformWindow->setInputController( dynamic_cast<IProcessInput*>(this) );
     }
     
-//    // Need to get painted, too! :)
-//    Process::notify(this, &GuiCanvas::paint, PROCESS_RENDER_ORDER);
+    // Need to get painted, too! :)
+    Process::notify(this, &GuiCanvas::paint, PROCESS_RENDER_ORDER);
     
 //    // Set up the fences
 //    setupFences();
@@ -234,8 +191,8 @@ void GuiCanvas::onRemove()
         removeObject(mPurchaseScreen);
 #endif
     
-//    // And the process list
-//    Process::remove(this, &GuiCanvas::paint);
+    // And the process list
+    Process::remove(this, &GuiCanvas::paint);
     
 //    // Destroy the menu bar for this canvas (if any)
 //    Con::executef(this, "onDestroyMenu");
@@ -311,11 +268,11 @@ void GuiCanvas::handleAppEvent( WindowId did, S32 event )
             // otherwise check to see if there is a global function handling it
             Con::executef(2, "onWindowClose", getIdString());
         }
-//        else
-//        {
-//            // Else just shutdown
-//            Process::requestShutdown();
-//        }
+        else
+        {
+            // Else just shutdown
+            Process::requestShutdown();
+        }
     }
 }
 
@@ -1338,9 +1295,29 @@ void GuiCanvas::paint()
 {
    resetUpdateRegions();
 
+    // inhibit explicit refreshes in the case we're swapped out
+    if( mPlatformWindow && mPlatformWindow->isVisible() && GFX->allowRender())
+        mPlatformWindow->displayEvent.trigger(mPlatformWindow->getWindowId());
+
 //   // inhibit explicit refreshes in the case we're swapped out
 //   if (TextureManager::mDGLRender)
 //      renderFrame(false);
+}
+
+void GuiCanvas::repaint(U32 elapsedMS)
+{
+    // Make sure we have a window.
+    if ( !mPlatformWindow )
+        return;
+    
+//    // Has enough time elapsed?
+//    U32 elapsed = Platform::getRealMilliseconds() - mLastRenderMs;
+//    if (elapsed < elapsedMS)
+        return;
+    
+    // Do the render.
+    resetUpdateRegions();
+    handlePaintEvent(mPlatformWindow->getWindowId());
 }
 
 void GuiCanvas::maintainSizing()
@@ -1375,14 +1352,6 @@ void GuiCanvas::maintainSizing()
 void GuiCanvas::renderFrame(bool preRenderOnly, bool bufferSwap /* = true */)
 {
    PROFILE_START(CanvasPreRender);
-
-#ifndef TORQUE_OS_IOS
-    
-   if(mRenderFront)
-      glDrawBuffer(GL_FRONT);
-   else
-      glDrawBuffer(GL_BACK);
-#endif
 
     // Set our window as the current render target so we can see outputs.
     GFX->setActiveRenderTarget(mPlatformWindow->getGFXTarget());
@@ -1483,9 +1452,10 @@ void GuiCanvas::renderFrame(bool preRenderOnly, bool bufferSwap /* = true */)
     mLastCursorPt = cursorPos;
 
     bool beginSceneRes = GFX->beginScene();
+    
     if ( !beginSceneRes )
     {
-//        GuiCanvas::getGuiCanvasFrameSignal().trigger(false);
+        GuiCanvas::getGuiCanvasFrameSignal().trigger(false);
         return;
     }
     
@@ -1561,12 +1531,20 @@ void GuiCanvas::renderFrame(bool preRenderOnly, bool bufferSwap /* = true */)
    if( bufferSwap )
       swapBuffers();
     
+    GuiCanvas::getGuiCanvasFrameSignal().trigger(false);
 //#if defined(TORQUE_OS_WIN32)
 //   PROFILE_START(glFinish);
 //   glFinish(); // This was changed to work with the D3D layer -pw
 //   PROFILE_END();
 //#endif
 
+}
+
+
+GuiCanvas::GuiCanvasFrameSignal& GuiCanvas::getGuiCanvasFrameSignal()
+{
+    static GuiCanvasFrameSignal theSignal;
+    return theSignal;
 }
 
 void GuiCanvas::swapBuffers()

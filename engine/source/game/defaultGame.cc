@@ -58,6 +58,7 @@
 #include "platform/nativeDialogs/msgBox.h"
 #include "platform/nativeDialogs/fileDialog.h"
 #include "memory/safeDelete.h"
+#include "delegates/process.h"
 
 #include <stdio.h>
 
@@ -114,6 +115,7 @@ bool initializeLibraries()
     Con::init();
     Sim::init();
     GFXInit::init();
+    Process::init();
     GFXTextureManager::init();
 
     if(!Net::init())
@@ -204,6 +206,8 @@ void shutdownLibraries()
 
     PlatformAssert::destroy();
     Net::shutdown();
+
+    Process::shutdown();
 
     // Destroy the particle system.
     ParticleSystem::destroy();
@@ -635,23 +639,7 @@ iPhoneProfilerStart("SERVER_PROC");
       GNet->processClient();
    PROFILE_END();
     
-//   if(Canvas && GFX->allowRender())
-//   {
-//#ifdef TORQUE_OS_IOS_PROFILE	   
-//iPhoneProfilerStart("GL_RENDER");
-//#endif
-//      bool preRenderOnly = false;
-//      if(gFrameSkip && gFrameCount % gFrameSkip)
-//         preRenderOnly = true;
-//
-//      PROFILE_START(RenderFrame);
-//      Canvas->renderFrame(preRenderOnly);
-//      PROFILE_END();
-//      gFrameCount++;
-//#ifdef TORQUE_OS_IOS_PROFILE
-//iPhoneProfilerEnd("GL_RENDER");
-//#endif
-//   }
+    Process::processEvents();
     
    GNet->checkTimeouts();
     

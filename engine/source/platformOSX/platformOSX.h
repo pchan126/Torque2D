@@ -22,7 +22,6 @@
 
 #import <Cocoa/Cocoa.h>
 #import <AppKit/AppKit.h>
-#import "platformOSX/osxTorqueView.h"
 #include "platform/platform.h"
 #include "platform/types.h"
 #include "math/mPoint.h"
@@ -30,14 +29,14 @@
 
 @interface osxPlatState : NSObject
 {
-    // Main application Window
-    NSWindow* _window;
+//    // Main application Window
+//    NSWindow* _window;
+//    
+//    // Main view for Torque 2D engine display
+//    OSXTorqueView* _torqueView;
     
-    // Main view for Torque 2D engine display
-    OSXTorqueView* _torqueView;
-    
-    // Core graphics display ID the app will start with
-    CGDirectDisplayID _cgDisplay;
+//    // Core graphics display ID the app will start with
+//    CGDirectDisplayID _cgDisplay;
 
     // Process ID for this application instance
     id _applicationID;
@@ -100,9 +99,9 @@
     NSTimer* _osxTimer;
 }
 
-@property (strong) NSWindow* window;
-@property (strong) OSXTorqueView* torqueView;
-@property CGDirectDisplayID cgDisplay;
+//@property (strong) NSWindow* window;
+//@property (strong) OSXTorqueView* torqueView;
+//@property CGDirectDisplayID cgDisplay;
 @property (strong) id applicationID;
 @property void* alertSemaphore;
 @property RandomLCG* platformRandom;
@@ -129,10 +128,10 @@
 - (void)runTorque2D;
 - (void)shutDownTorque2D;
 
-- (void)updateWindowTitle:(const char*)title;
-- (void)setWindowSize:(int)width height:(int)height;
-- (Point2I&)getWindowSize;
-- (U32)windowWidth;
-- (U32)windowHeight;
+//- (void)updateWindowTitle:(const char*)title;
+//- (void)setWindowSize:(int)width height:(int)height;
+//- (Point2I&)getWindowSize;
+//- (U32)windowWidth;
+//- (U32)windowHeight;
 
 @end

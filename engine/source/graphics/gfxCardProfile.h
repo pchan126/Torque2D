@@ -24,13 +24,9 @@
 #define _GFXCARDPROFILE_H_
 
 #include "collection/hashTable.h"
-
-#ifndef _GFXDEVICE_H_
 #include "graphics/gfxDevice.h"
-#endif
-#ifndef _TORQUE_STRING_H_
-#include "core/util/str.h"
-#endif
+#include "string/str.h"
+
 
 
 /// GFXCardProfiler provides a device independent wrapper around both the 

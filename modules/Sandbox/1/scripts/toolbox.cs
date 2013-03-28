@@ -137,30 +137,33 @@ function initializeToolbox()
         FullscreenOptionButton.Visible = true;
         
         // Fetch the active resolution.
-        %activeResolution = getRes();
+        %activeResolution = Canvas.getVideoMode();
         %activeWidth = getWord(%activeResolution, 0);
         %activeHeight = getWord(%activeResolution, 1);
-        %activeBpp = getWord(%activeResolution, 2);
+        %activeFullScreen = getWord(%activeResolution, 2);
+        %activeBpp = getWord(%activeResolution, 3);
         
         // Fetch the resolutions.
-        %resolutionList = getResolutionList( $pref::Video::displayDevice );
-        %resolutionCount = getWordCount( %resolutionList ) / 3;
+        %resolutionCount = Canvas.getModeCount();
         %inputIndex = 0;
         %outputIndex = 0;
         for( %i = 0; %i < %resolutionCount; %i++ )
         {
             // Fetch the resolution entry.
-            %width = getWord( %resolutionList, %inputIndex );
-            %height = getWord( %resolutionList, %inputIndex+1 );
-            %bpp = getWord( %resolutionList, %inputIndex+2 );
-            %inputIndex += 3;
-            
+            %resolutionList = Canvas.getMode(%i);
+            %width = getWord( %resolutionList, 0 );
+            %height = getWord( %resolutionList, 1 );
+            %fullscreen = getWord( %resolutionList, 2);
+            %bpp = getWord( %resolutionList, 3 );
+
             // Skip the 16-bit ones.
             if ( %bpp == 16 )
                 continue;
+            if ( %fullscreen == true )
+                continue;
                 
             // Store the resolution.
-            $sandboxResolutions[%outputIndex] = %width SPC %height SPC %bpp;
+            $sandboxResolutions[%outputIndex] = %width SPC %height SPC %fullscreen SPC %bpp;
             
             // Add to the list.
             ResolutionSelectList.add( %width @ "x" @ %height SPC "(" @ %bpp @ ")", %outputIndex );
@@ -242,7 +245,7 @@ function ResolutionSelectList::onSelect(%this)
     %resolution = $sandboxResolutions[%index];
     
     // Set the screen mode.    
-    setScreenMode( GetWord( %resolution , 0 ), GetWord( %resolution, 1 ), GetWord( %resolution, 2 ), $pref::Video::fullScreen );
+    Canvas.setVideoMode( GetWord( %resolution , 0 ), GetWord( %resolution, 1 ), $pref::Video::fullScreen, GetWord( %resolution, 2 ) );
 }
 
 //-----------------------------------------------------------------------------
@@ -388,7 +391,7 @@ function updateToolboxOptions()
         FullscreenOptionButton.setStateOn( $pref::Video::fullScreen );
         
         // Set the full-screen mode appropriately.
-        if ( isFullScreen() != $pref::Video::fullScreen )
+        if ( Canvas.isFullScreen() != $pref::Video::fullScreen )
             toggleFullScreen();            
     }  
 }

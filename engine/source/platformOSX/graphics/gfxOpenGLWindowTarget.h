@@ -8,6 +8,9 @@
 
 #include "graphics/gfxTarget.h"
 #include "windowManager/platformWindow.h"
+#include "memory/autoPtr.h"
+
+class _GFXOpenGLWindowTargetImpl;
 
 class GFXOpenGLWindowTarget : public GFXWindowTarget
 {
@@ -44,7 +47,6 @@ private:
     friend class GFXOpenGLVertexBuffer;
     friend class GFXOpenGLDevice;
 
-   PlatformWindow *mWindow;
    friend class GFXOpenGLDevice;
    Point2I size;
    GFXDevice* mDevice;
@@ -53,8 +55,8 @@ private:
    void _teardownCurrentMode();
    void _setupNewMode();
     
-    GLuint mFramebuffer, viewRenderbuffer, depthRenderbuffer;
-
+    /// Pointer to our internal implementation
+    AutoPtr<_GFXOpenGLWindowTargetImpl> _impl;
 };
 
 #endif

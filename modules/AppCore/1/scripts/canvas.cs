@@ -37,14 +37,15 @@ function initializeCanvas(%windowName)
     // Atmosphere
     %canvas = new GuiCanvas();
 
-    videoSetGammaCorrection($pref::OpenGL::gammaCorrection);
+//    videoSetGammaCorrection($pref::OpenGL::gammaCorrection);
 
-    if ( !createCanvas(%windowName) )
+    if ( !%canvas )
     {
         error("Canvas creation failed. Shutting down.");
         quit();
     }
 
+    %canvas.setName("Canvas");
     $pref::iOS::ScreenDepth = 32;
 
     if ( $pref::iOS::DeviceType !$= "" )
@@ -59,13 +60,15 @@ function initializeCanvas(%windowName)
             %resolution = $pref::Video::defaultResolution;
     }
 
+    echo("$pref::Video::fullScreen =" SPC $pref::Video::fullScreen);
+
     if ($platform $= "windows" || $platform $= "macos")
     {
-        setScreenMode( %resolution._0, %resolution._1, %resolution._2, $pref::Video::fullScreen );
+        %canvas.setVideoMode( %resolution._0, %resolution._1, $pref::Video::fullScreen, %resolution._2 );
     }
     else
     {
-        setScreenMode( %resolution._0, %resolution._1, %resolution._2, false );
+        %canvas.setVideoMode( %resolution._0, %resolution._1, false, %resolution._2 );
     }
 
     $canvasCreated = true;

@@ -22,7 +22,7 @@
 
 #import "platformOSX/platformOSX.h"
 #include "game/gameInterface.h"
-
+#import "delegates/process.h"
 #include "platformOSX/graphics/gfxOpenGLDevice.h"
 
 #pragma mark ---- OSXPlatState Implementation ----
@@ -33,9 +33,9 @@
 
 @implementation osxPlatState
 
-@synthesize window = _window;
-@synthesize torqueView = _torqueView;
-@synthesize cgDisplay = _cgDisplay;
+//@synthesize window = _window;
+//@synthesize torqueView = _torqueView;
+//@synthesize cgDisplay = _cgDisplay;
 @synthesize applicationID = _applicationID;
 @synthesize alertSemaphore = _alertSemaphore;
 @synthesize fullScreen = _fullscreen;
@@ -82,8 +82,8 @@ static osxPlatState * tempSharedPlatState = nil;
         
         _windowTitle = [[NSString alloc] initWithString:@"Torque 2D OS X"];
         
-        // Default window
-        _window = nil;
+//        // Default window
+//        _window = nil;
         
         // Default system variables
         _currentSimTime = 0;
@@ -101,8 +101,8 @@ static osxPlatState * tempSharedPlatState = nil;
 
 - (void)dealloc
 {
-    if (_window)
-        [_window release];
+//    if (_window)
+//        [_window release];
     
     if (_windowTitle)
         [_windowTitle release];
@@ -116,77 +116,76 @@ static osxPlatState * tempSharedPlatState = nil;
     [super dealloc];
 }
 
--(void) updateWindowTitle:(const char*)title
-{
-    _windowTitle = [NSString stringWithFormat:@"%s", title];
-    [_window setTitle:_windowTitle];
-}
+//-(void) updateWindowTitle:(const char*)title
+//{
+//    _windowTitle = [NSString stringWithFormat:@"%s", title];
+//    [_window setTitle:_windowTitle];
+//}
 
 //-----------------------------------------------------------------------------
 
-- (void)setWindowSize:(int)width height:(int)height
-{
-    // Store the width and height in the state
-    _windowSize.x = width;
-    _windowSize.y = height;
-    
-    // Get the window's current frame
-    NSRect frame = NSMakeRect([_window frame].origin.x, [_window frame].origin.y, width, height);
-    
-    // Get the starting position of the bar height
-    F32 barOffset = frame.size.height;
-    
-    // If we are not going to full screen mode, get a new frame offset that accounts
-    // for the title bar height
-    if (!_fullscreen)
-    {
-        frame = [NSWindow frameRectForContentRect:frame styleMask:NSTitledWindowMask];
-        
-        // Set the new window frame
-        [_window setFrame:frame display:YES];
-        
-        // Get the new position of the title bar
-        barOffset -= frame.size.height;
-    }
-    else
-    {
-        // Otherwise, just go straight full screen
-        [_window toggleFullScreen:self];
-    }
-    
-    // Update the frame of the torqueView to match the window
-    frame = NSMakeRect([_window frame].origin.x, [_window frame].origin.y, width, height);
-    NSRect viewFrame = NSMakeRect(0, 0, frame.size.width, frame.size.height);
-    
-    [_torqueView setFrame:viewFrame];
-    
-    [_torqueView updateContext];
-    
-    [_window makeKeyAndOrderFront:NSApp];
-    [_window makeFirstResponder:_torqueView];
-    
-}
+//- (void)setWindowSize:(int)width height:(int)height
+//{
+//    // Store the width and height in the state
+//    _windowSize.x = width;
+//    _windowSize.y = height;
+//    
+//    // Get the window's current frame
+//    NSRect frame = NSMakeRect([_window frame].origin.x, [_window frame].origin.y, width, height);
+//    
+//    // Get the starting position of the bar height
+//    F32 barOffset = frame.size.height;
+//    
+//    // If we are not going to full screen mode, get a new frame offset that accounts
+//    // for the title bar height
+//    if (!_fullscreen)
+//    {
+//        frame = [NSWindow frameRectForContentRect:frame styleMask:NSTitledWindowMask];
+//        
+//        // Set the new window frame
+//        [_window setFrame:frame display:YES];
+//        
+//        // Get the new position of the title bar
+//        barOffset -= frame.size.height;
+//    }
+//    else
+//    {
+//        // Otherwise, just go straight full screen
+//        [_window toggleFullScreen:self];
+//    }
+//    
+//    // Update the frame of the torqueView to match the window
+//    frame = NSMakeRect([_window frame].origin.x, [_window frame].origin.y, width, height);
+//    NSRect viewFrame = NSMakeRect(0, 0, frame.size.width, frame.size.height);
+//    
+//    [_torqueView setFrame:viewFrame];
+//    
+//    [_torqueView updateContext];
+//    
+//    [_window makeKeyAndOrderFront:NSApp];
+//    [_window makeFirstResponder:_torqueView];
+//}
 
 //-----------------------------------------------------------------------------
 
--(Point2I&) getWindowSize
-{
-    return _windowSize;
-}
+//-(Point2I&) getWindowSize
+//{
+//    return _windowSize;
+//}
 
 //-----------------------------------------------------------------------------
 
-- (U32)windowWidth
-{
-    return (U32)_windowSize.x;
-}
+//- (U32)windowWidth
+//{
+//    return (U32)_windowSize.x;
+//}
 
 //-----------------------------------------------------------------------------
 
-- (U32)windowHeight
-{
-   return (U32)_windowSize.y;
-}
+//- (U32)windowHeight
+//{
+//   return (U32)_windowSize.y;
+//}
 
 #pragma mark ---- Singleton Functions ----
 
@@ -368,10 +367,7 @@ void Platform::restartInstance()
 // Starts the quit process for the main Game instance
 void Platform::postQuitMessage(const U32 in_quitVal)
 {
-    Event quitEvent;
-    quitEvent.type = QuitEventType;
-    
-    Game->postEvent(quitEvent);
+    Process::requestShutdown();
 }
 
 //-----------------------------------------------------------------------------

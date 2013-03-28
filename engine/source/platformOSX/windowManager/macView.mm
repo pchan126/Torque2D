@@ -644,8 +644,9 @@ inline U32 NSModifiersToTorqueModifiers( NSUInteger mods )
 {
    NSWindow* wnd = [notification object];
    // TODO: Add a category to NSScreen to deal with this
-   CGDirectDisplayID disp = (CGDirectDisplayID)[[[[wnd screen] deviceDescription] valueForKey:@"NSScreenNumber"] unsignedIntValue];
-   mTorqueWindow->setDisplay(disp);
+//   CGDirectDisplayID disp = (CGDirectDisplayID)[[[[wnd screen] deviceDescription] valueForKey:@"NSScreenNumber"] unsignedIntValue];
+    CGDirectDisplayID display = CGMainDisplayID();
+    mTorqueWindow->setDisplay(display);
 }
 
 - (void)windowDidResize:(NSNotification*)notification

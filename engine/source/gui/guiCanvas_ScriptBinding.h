@@ -9,6 +9,236 @@
 #ifndef Torque2D_guiCanvas_ScriptBinding_h
 #define Torque2D_guiCanvas_ScriptBinding_h
 
+ConsoleMethod( GuiCanvas, isFullscreen, bool, 2, 2, "() - Is this canvas currently fullscreen?" )
+{
+//    if (Platform::getWebDeployment())
+//        return false;
+    
+    if (!object->getPlatformWindow())
+        return false;
+    
+    return object->getPlatformWindow()->getVideoMode().fullScreen;
+}
+
+ConsoleMethod( GuiCanvas, minimizeWindow, void, 2, 2, "() - minimize this canvas' window." )
+{
+    PlatformWindow* window = object->getPlatformWindow();
+    if ( window )
+        window->minimize();
+}
+
+ConsoleMethod( GuiCanvas, isMinimized, bool, 2, 2, "()" )
+{
+    PlatformWindow* window = object->getPlatformWindow();
+    if ( window )
+        return window->isMinimized();
+    
+    return false;
+}
+
+ConsoleMethod( GuiCanvas, isMaximized, bool, 2, 2, "()" )
+{
+    PlatformWindow* window = object->getPlatformWindow();
+    if ( window )
+        return window->isMaximized();
+    
+    return false;
+}
+
+ConsoleMethod( GuiCanvas, maximizeWindow, void, 2, 2, "() - maximize this canvas' window." )
+{
+    PlatformWindow* window = object->getPlatformWindow();
+    if ( window )
+        window->maximize();
+}
+
+ConsoleMethod( GuiCanvas, restoreWindow, void, 2, 2, "() - restore this canvas' window." )
+{
+    PlatformWindow* window = object->getPlatformWindow();
+    if( window )
+        window->restore();
+}
+
+ConsoleMethod( GuiCanvas, setFocus, void, 2,2, "() - Claim OS input focus for this canvas' window.")
+{
+    PlatformWindow* window = object->getPlatformWindow();
+    if( window )
+        window->setFocus();
+}
+
+ConsoleMethod( GuiCanvas, setVideoMode, void, 5, 8,
+              "(int width, int height, bool fullscreen, [int bitDepth], [int refreshRate], [int antialiasLevel] )\n"
+              "Change the video mode of this canvas. This method has the side effect of setting the $pref::Video::mode to the new values.\n\n"
+              "\\param width The screen width to set.\n"
+              "\\param height The screen height to set.\n"
+              "\\param fullscreen Specify true to run fullscreen or false to run in a window\n"
+              "\\param bitDepth [optional] The desired bit-depth. Defaults to the current setting. This parameter is ignored if you are running in a window.\n"
+              "\\param refreshRate [optional] The desired refresh rate. Defaults to the current setting. This parameter is ignored if you are running in a window"
+              "\\param antialiasLevel [optional] The level of anti-aliasing to apply 0 = none" )
+{
+    if (!object->getPlatformWindow())
+        return;
+    
+//    if (Journal::IsRecording() || Journal::IsPlaying())
+//        return;
+    
+    // Update the video mode and tell the window to reset.
+    GFXVideoMode vm = object->getPlatformWindow()->getVideoMode();
+    
+    U32 width = dAtoi(argv[2]);
+    U32 height = dAtoi(argv[3]);
+    
+    bool changed = false;
+    if (width == 0 && height > 0)
+    {
+        // Our width is 0 but our height isn't...
+        // Try to find a matching width
+        for(S32 i=0; i<object->getPlatformWindow()->getGFXDevice()->getVideoModeList()->size(); i++)
+        {
+            const GFXVideoMode &newVm = (*(object->getPlatformWindow()->getGFXDevice()->getVideoModeList()))[i];
+            
+            if(newVm.resolution.y == height)
+            {
+                width = newVm.resolution.x;
+                changed = true;
+                break;
+            }
+        }
+    }
+    else if (height == 0 && width > 0)
+    {
+        // Our height is 0 but our width isn't...
+        // Try to find a matching height
+        for(S32 i=0; i<object->getPlatformWindow()->getGFXDevice()->getVideoModeList()->size(); i++)
+        {
+            const GFXVideoMode &newVm = (*(object->getPlatformWindow()->getGFXDevice()->getVideoModeList()))[i];
+            
+            if(newVm.resolution.x == width)
+            {
+                height = newVm.resolution.y;
+                changed = true;
+                break;
+            }
+        }
+    }
+    
+    if (width == 0 || height == 0)
+    {
+        // Got a bad size for both of our dimensions or one of our dimensions and
+        // didn't get a match for the other default back to our current resolution
+        width  = vm.resolution.x;
+        height = vm.resolution.y;
+        
+        changed = true;
+    }
+    
+    if (changed)
+        Con::errorf("GuiCanvas::setVideoMode(): Error - Invalid resolution of (%d, %d) - attempting (%d, %d)", dAtoi(argv[2]), dAtoi(argv[3]), width, height);
+    
+    vm.resolution  = Point2I(width, height);
+    vm.fullScreen  = dAtob(argv[4]);
+    
+//    if (Platform::getWebDeployment())
+//        vm.fullScreen  = false;
+    
+    // These optional params are set to default at construction of vm. If they
+    // aren't specified, just leave them at whatever they were set to.
+    if ((argc > 5) && (dStrlen(argv[5]) > 0))
+    {
+        vm.bitDepth = dAtoi(argv[5]);
+    }
+    if ((argc > 6) && (dStrlen(argv[6]) > 0))
+    {
+        vm.refreshRate = dAtoi(argv[6]);
+    }
+    
+    if ((argc > 7) && (dStrlen(argv[7]) > 0))
+    {
+        vm.antialiasLevel = dAtoi(argv[7]);
+    }
+    
+    object->getPlatformWindow()->setVideoMode(vm);
+    
+    // Store the new mode into a pref.
+    Con::setVariable( "$pref::Video::mode", vm.toString() );
+}
+
+ConsoleMethod( GuiCanvas, getVideoMode, const char*, 2, 2,
+				   "@brief Gets the current screen mode as a string.\n\n"
+                   
+				   "The return string will contain 5 values (width, height, fullscreen, bitdepth, refreshRate). "
+				   "You will need to parse out each one for individual use.\n\n"
+                   
+				   "@tsexample\n"
+				   "%screenWidth = getWord(Canvas.getVideoMode(), 0);\n"
+				   "%screenHeight = getWord(Canvas.getVideoMode(), 1);\n"
+				   "%isFullscreen = getWord(Canvas.getVideoMode(), 2);\n"
+				   "%bitdepth = getWord(Canvas.getVideoMode(), 3);\n"
+				   "%refreshRate = getWord(Canvas.getVideoMode(), 4);\n"
+				   "@endtsexample\n\n"
+                   
+				   "@return String formatted with screen width, screen height, screen mode, bit depth, and refresh rate.")
+{
+	// Grab the video mode.
+    if (!object->getPlatformWindow())
+        return "";
+    
+    GFXVideoMode vm = object->getPlatformWindow()->getVideoMode();
+    char* buf = Con::getReturnBuffer(vm.toString());
+    return buf;
+}
+
+ConsoleMethod( GuiCanvas, getModeCount, S32, 2, 2,
+				   "@brief Gets the number of modes available on this device.\n\n"
+                   
+				   "@param param Description\n\n"
+                   
+				   "@tsexample\n"
+				   "%modeCount = Canvas.getModeCount()\n"
+				   "@endtsexample\n\n"
+                   
+				   "@return The number of video modes supported by the device")
+{
+	if (!object->getPlatformWindow())
+        return 0;
+    
+    // Grab the available mode list from the device.
+    const Vector<GFXVideoMode>* const modeList =
+    object->getPlatformWindow()->getGFXDevice()->getVideoModeList();
+    
+    // Return the number of resolutions.
+    return modeList->size();
+}
+
+ConsoleMethod( GuiCanvas, getMode, const char*, 3, 3,
+				   "@brief Gets information on the specified mode of this device.\n\n"
+				   "@param modeId Index of the mode to get data from.\n"
+				   "@return A video mode string given an adapter and mode index.\n\n"
+				   "@see GuiCanvas::getVideoMode()")
+{
+	if (!object->getPlatformWindow())
+        return 0;
+    
+    // Grab the available mode list from the device.
+    const Vector<GFXVideoMode>* const modeList =
+    object->getPlatformWindow()->getGFXDevice()->getVideoModeList();
+    
+    // Get the desired index and confirm it's valid.
+    S32 idx = dAtoi(argv[2]);
+    if((idx < 0) || (idx >= modeList->size()))
+    {
+        Con::errorf("GuiCanvas::getResolution - You requested an out of range index of %d. Please specify an index in the range [0, %d).", idx, modeList->size());
+        return "";
+    }
+    
+    // Great - we got something valid, so convert the videomode into a
+    // string and return to the user.
+    GFXVideoMode vm = (*modeList)[idx];
+    
+    char *retString = Con::getReturnBuffer(vm.toString());
+    return retString;
+}
+
 ConsoleMethod( GuiCanvas, getContent, S32, 2, 2, "() Use the getContent method to get the ID of the control which is being used as the current canvas content.\n"
               "@return Returns the ID of the current canvas content (a control), or 0 meaning the canvas is empty")
 {

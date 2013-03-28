@@ -114,17 +114,17 @@ public:
 class GFXWindowTarget : public GFXTarget
 {
 protected:
-   void *mWindow;
+   PlatformWindow *mWindow;
 public:
    GFXWindowTarget() : mWindow(NULL){};
-   GFXWindowTarget( void *windowObject )
+   GFXWindowTarget( PlatformWindow *windowObject )
    {
       mWindow = windowObject;
    }
    virtual ~GFXWindowTarget() {}
 
    /// Returns a pointer to the window this target is bound to.
-   inline void *getWindow() { return mWindow; };
+   inline PlatformWindow *getWindow() { return mWindow; };
 
    /// Present latest buffer, if buffer swapping is in effect.
    virtual bool present()=0;

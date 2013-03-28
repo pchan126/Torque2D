@@ -6,7 +6,7 @@
 #import <Cocoa/Cocoa.h>
 #import "./macWindowManager.h"
 #import "./macWindow.h"
-//#import "core/util/journal/process.h"
+#import "delegates/process.h"
 #import "console/console.h"
 #import "graphics/gfxDevice.h"
 #import "game/version.h"

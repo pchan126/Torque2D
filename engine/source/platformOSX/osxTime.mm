@@ -23,6 +23,7 @@
 #import "platformOSX/platformOSX.h"
 #import "platform/event.h"
 #import "game/gameInterface.h"
+#import "delegates/process.h"
 
 #pragma mark ---- TimeManager Class Methods ----
 
@@ -37,6 +38,22 @@ static void _OSXUpdateSleepTicks()
     else
         platState.sleepTicks = (U32)sgTimeManagerProcessInterval;
 }
+
+//TimeManager::TimeManager()
+//{
+//    mBackground = false;
+//    mTimer = PlatformTimer::create();
+//    Process::notify(this, &TimeManager::process, PROCESS_TIME_ORDER);
+//    
+//    mForegroundThreshold = 5;
+//    mBackgroundThreshold = 10;
+//}
+//
+//TimeManager::~TimeManager()
+//{
+//    Process::remove(this, &TimeManager::process);
+//    delete mTimer;
+//}
 
 //------------------------------------------------------------------------------
 // Responsible for calculating ticks and posting the TimeEvent

@@ -205,6 +205,19 @@ public:
 
    /// Repaints the entire canvas by calling resetUpdateRegions() and then renderFrame()
    virtual void paint();
+    
+    /// Repaints the canvas skipping rendering if the target time
+    /// has not yet elapsed.
+    /// @param  elapsedMS The time since the last frame.
+    virtual void repaint(U32 elapsedMS);
+    
+    /// This signal is triggered at the beginning and end of each render frame
+    ///
+    /// @param beginFrame true at the beginning of the frame, false at the end
+    ///
+    typedef Signal <void ( bool beginFrame )> GuiCanvasFrameSignal;
+    
+    static GuiCanvasFrameSignal& getGuiCanvasFrameSignal();
 
    /// Adds a dirty area to the canvas so it will be updated on the next frame
    /// @param   pos   Screen-coordinates of the upper-left hand corner of the dirty area
