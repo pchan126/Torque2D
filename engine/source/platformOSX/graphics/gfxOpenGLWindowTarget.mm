@@ -44,38 +44,67 @@ _GFXOpenGLWindowTargetFBOImpl::_GFXOpenGLWindowTargetFBOImpl(GFXOpenGLWindowTarg
     mTarget = target;
     glGenFramebuffers(1, &mFramebuffer);
     glGenRenderbuffers(1, &mRenderbuffer);
-	glGenTextures(1, &colorTexture);
+//	glGenTextures(1, &colorTexture);
 
     PlatformWindow* window = mTarget->getWindow();
     RectI bounds = window->getBounds();
     
-	glBindTexture(GL_TEXTURE_2D, colorTexture);
+//	glBindTexture(GL_TEXTURE_2D, colorTexture);
 	
 	// Set up filter and wrap modes for this texture object
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
-				 bounds.extent.x, bounds.extent.y, 0,
-				 GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//    
+//	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
+//				 bounds.extent.x, bounds.extent.y, 0,
+//				 GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     
     // Create colour render buffer and allocate backing store
     glBindRenderbuffer(GL_RENDERBUFFER, mRenderbuffer);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, bounds.extent.x, bounds.extent.y);
-    
     glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTexture, 0);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, mRenderbuffer);
+
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8, bounds.extent.x, bounds.extent.y);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, mFramebuffer);
     
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    if (status != GL_FRAMEBUFFER_COMPLETE)
     {
-        Con::printf("framebuffer error");
+        switch (status) {
+            case GL_FRAMEBUFFER_UNDEFINED:
+                Con::printf("default framebuffer does not exist.");
+                break;
+            case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT.");
+                break;
+            case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT.");
+                break;
+            case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
+                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER.");
+                break;
+            case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
+                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER.");
+                break;
+            case GL_FRAMEBUFFER_UNSUPPORTED:
+                Con::printf("combination of internal formats of the attached images violates an implementation-dependent set of restrictions.");
+                break;
+            case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
+                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE.");
+                break;
+            case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
+                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS.");
+                break;
+                
+            default:
+                break;
+        }
     }
 }
 
 _GFXOpenGLWindowTargetFBOImpl::~_GFXOpenGLWindowTargetFBOImpl()
 {
+//    glDeleteTextures(1, &colorTexture);
     glDeleteFramebuffers(1, &mFramebuffer);
     glDeleteRenderbuffers(1, &mRenderbuffer);
 }
@@ -83,9 +112,43 @@ _GFXOpenGLWindowTargetFBOImpl::~_GFXOpenGLWindowTargetFBOImpl()
 
 void _GFXOpenGLWindowTargetFBOImpl::makeActive()
 {
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mFramebuffer);
-    glBindFramebuffer(GL_READ_FRAMEBUFFER, mFramebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, mRenderbuffer);
+
+    GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    if (status != GL_FRAMEBUFFER_COMPLETE)
+    {
+        switch (status) {
+            case GL_FRAMEBUFFER_UNDEFINED:
+                Con::printf("default framebuffer does not exist.");
+                break;
+            case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT.");
+                break;
+            case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT.");
+                break;
+            case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
+                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER.");
+                break;
+            case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
+                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER.");
+                break;
+            case GL_FRAMEBUFFER_UNSUPPORTED:
+                Con::printf("combination of internal formats of the attached images violates an implementation-dependent set of restrictions.");
+                break;
+            case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
+                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE.");
+                break;
+            case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
+                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS.");
+                break;
+                
+            default:
+                break;
+        }
+    }
+
 }
 
 void _GFXOpenGLWindowTargetFBOImpl::finish()
@@ -155,8 +218,6 @@ void GFXOpenGLWindowTarget::resolveTo(GFXTextureObject* obj)
     AssertFatal(dynamic_cast<GFXOpenGLTextureObject*>(obj), "GFXGLTextureTarget::resolveTo - Incorrect type of texture, expected a GFXGLTextureObject");
     GFXOpenGLTextureObject* glTexture = static_cast<GFXOpenGLTextureObject*>(obj);
     
-//    PRESERVE_FRAMEBUFFER();
-    
     GLuint dest;
     
     glGenFramebuffers(1, &dest);
@@ -177,22 +238,6 @@ void GFXOpenGLWindowTarget::resolveTo(GFXTextureObject* obj)
 void GFXOpenGLWindowTarget::makeActive()
 {
     _impl->makeActive();
-//    GL_CHECK();
-//
-//    GL_CHECK(glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer));
-//	glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
-//    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, viewRenderbuffer);
-//    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderbuffer);
-//    if( !mFullscreenContext && mWindow->getVideoMode().fullScreen )
-//    {
-//        static_cast< GFXOpenGLDevice* >( mDevice )->zombify();
-//        _setupNewMode();
-//    }
-
-//    if (mFullscreenContext)
-//        [(NSOpenGLContext*)mFullscreenContext makeCurrentContext];
-//    else
-//        [(NSOpenGLContext*)mContext makeCurrentContext];
 }
 
 

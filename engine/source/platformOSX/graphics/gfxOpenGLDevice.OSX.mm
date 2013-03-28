@@ -204,7 +204,7 @@ void GFXOpenGLDevice::init( const GFXVideoMode &mode, PlatformWindow *window )
 
     NSOpenGLContext* ctx = _createContextForWindow(window, mContext, mPixelFormat);
     [ctx makeCurrentContext];
-//    mContext = ctx;
+    mContext = (void*)ctx;
     
 //    mTextureLoader = [[GLKTextureLoader alloc] initWithShareContext:(NSOpenGLContext *)ctx ];
 
