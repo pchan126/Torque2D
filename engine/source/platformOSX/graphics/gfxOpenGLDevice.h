@@ -29,7 +29,6 @@
 
 
 #include "windowManager/platformWindow.h"
-//#include "graphics/gfxFence.h"
 #include "graphics/gfxResource.h"
 #include "./gfxOpenGLStateBlock.h"
 #include "platformOSX/graphics/gfxOpenGLShader.h"
@@ -40,7 +39,8 @@ class GFXOpenGLTextureTarget;
 class GFXOpenGLCubemap;
 //class GLKMatrixStackRef;
 typedef uint32_t CGDirectDisplayID;
-//class osxPlatState;
+@class NSOpenGLContext;
+@class NSOpenGLPixelFormat;
 
 class GFXOpenGLDevice : public GFXDevice
 {
@@ -135,8 +135,6 @@ public:
    virtual U32 getMaxDynamicVerts() { return MAX_DYNAMIC_VERTS; }
    virtual U32 getMaxDynamicIndices() { return MAX_DYNAMIC_INDICES; }
    
-//   GFXFence *createFence();
-    
    virtual void updateStates(bool forceSetAll = false);
    
 //   GFXOcclusionQuery* createOcclusionQuery();
@@ -256,9 +254,9 @@ private:
     
     virtual void multWorld( const MatrixF &mat );
 
-   void* mContext;       // NSOpenGLContext
-   void* mPixelFormat;   // NSOpenGLPixelFormat
-   void* mTextureLoader; // GLKTextureLoader
+   NSOpenGLContext* mContext;       // NSOpenGLContext
+   NSOpenGLPixelFormat* mPixelFormat;   // NSOpenGLPixelFormat
+   void* mTextureLoader; // GLKTextureLoader - for OSX version 10.8
 
    F32 mPixelShaderVersion;
    
@@ -287,8 +285,6 @@ private:
    
    void initGenericShaders();
     
-//   GFXFence* _createPlatformSpecificFence(); ///< If our platform (e.g. OS X) supports a fence extenstion (e.g. GL_APPLE_fence) this will create one, otherwise returns NULL
-   
    void setPB(GFXOpenGLPrimitiveBuffer* pb); ///< Sets mCurrentPB
 };
 

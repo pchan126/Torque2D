@@ -20,8 +20,8 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-//#include "platform/platform.h"
-//#include "platformOSX/platformOSX.h"
+#import "platform/platform.h"
+#import "platformOSX/platformOSX.h"
 #include "./gfxOpenGLDevice.h"
 
 //#include "graphics/gfxCubemap.h"
@@ -41,6 +41,7 @@
 #include "./gfxOpenGLShader.h"
 #include "graphics/primBuilder.h"
 #include "console/console.h"
+
 //#include "./gfxOpenGLOcclusionQuery.h"
 
 GFXAdapter::CreateDeviceInstanceDelegate GFXOpenGLDevice::mCreateDeviceInstance(GFXOpenGLDevice::createInstance);
@@ -88,7 +89,7 @@ GFXOpenGLDevice::GFXOpenGLDevice( U32 adapterIndex ) :
                         mCurrentPB(NULL),
                         m_mCurrentWorld(true),
                         m_mCurrentView(true),
-                        mContext(NULL),
+                        mContext(nil),
                         mPixelFormat(NULL),
                         mPixelShaderVersion(0.0f),
                         mMaxShaderTextures(2),
@@ -97,13 +98,7 @@ GFXOpenGLDevice::GFXOpenGLDevice( U32 adapterIndex ) :
                         mTextureLoader(NULL)
 {
     GFXOpenGLEnumTranslate::init();
-//    GFXVertexColor::setSwizzle( &Swizzles::rgba );
-//    mDeviceSwizzle32 = &Swizzles::bgra;
-//    mDeviceSwizzle24 = &Swizzles::bgr;
-
-//    m_WorldStackRef = GLKMatrixStackCreate(kCFAllocatorDefault);
-//    m_ProjectionStackRef = GLKMatrixStackCreate(kCFAllocatorDefault);
-    
+   
     for (int i = 0; i < TEXTURE_STAGE_COUNT; i++)
         mActiveTextureType[i] = GL_TEXTURE_2D;
     
@@ -112,27 +107,13 @@ GFXOpenGLDevice::GFXOpenGLDevice( U32 adapterIndex ) :
     m_WorldStack.push_back(MatrixF(true));
     m_ProjectionStack.push_back(MatrixF(true));
     
-//    baseEffect = [[GLKBaseEffect alloc] init];
     mDeviceName = "OpenGL";
     mFullScreenOnly = false;
-    
-//    // pick a monitor to run on
-//    enumMonitors();
-//    
-//    platState = [osxPlatState sharedPlatState];
-//    
-//    CGDirectDisplayID display = chooseMonitor();
-//    
-//    [platState setCgDisplay:display];
-//    
-//    enumDisplayModes(display);
 }
 
 
 GFXOpenGLDevice::~GFXOpenGLDevice()
 {
-//    CFRelease(m_WorldStackRef);
-//    CFRelease(m_ProjectionStackRef);
     [(NSOpenGLContext*)mContext release];
 }
 
@@ -144,7 +125,7 @@ static String _getRendererForDisplay(CGDirectDisplayID display)
     AssertFatal(fmt, "_getRendererForDisplay - Unable to create a pixel format object");
     attributes.clear();
     
-    NSOpenGLContext* ctx = [[NSOpenGLContext alloc] initWithFormat:fmt shareContext:nil];
+    NSOpenGLContext* ctx = [[[NSOpenGLContext alloc] initWithFormat:fmt shareContext:nil] retain];
     [fmt release];
     AssertFatal(ctx, "_getRendererForDisplay - Unable to create an OpenGL context");
     
@@ -161,57 +142,26 @@ static String _getRendererForDisplay(CGDirectDisplayID display)
     return ret;
 }
 
-static void _createInitialContextAndFormat(void* &ctx, void* &fmt)
-{
-    AssertFatal(!fmt && !ctx, "_createInitialContextAndFormat - Already created initial context and format");
-    
-    fmt = _createStandardPixelFormat();
-    AssertFatal(fmt, "_createInitialContextAndFormat - Unable to create an OpenGL pixel format");
-    
-    ctx = [[NSOpenGLContext alloc] initWithFormat: (NSOpenGLPixelFormat*)fmt shareContext: nil];
-    AssertFatal(ctx, "_createInitialContextAndFormat - Unable to create an OpenGL context");
-}
-
-static NSOpenGLContext* _createContextForWindow(PlatformWindow *window, void* &context, void* &pixelFormat)
-{
-    NSOpenGLView* view = (NSOpenGLView*)window->getPlatformDrawable();
-    AssertFatal([view isKindOfClass:[NSOpenGLView class]], avar("_createContextForWindow - Supplied a %s instead of a NSOpenGLView", [[view className] UTF8String]));
-    
-    NSOpenGLContext* ctx = NULL;
-    if(!context || !pixelFormat)
-    {
-        // Create the initial opengl context that the device and the first window will hold.
-        _createInitialContextAndFormat(context, pixelFormat);
-        ctx = (NSOpenGLContext*)context;
-    }
-    else
-    {
-        // Create a context which shares its resources with the device's initial context
-        ctx = [[NSOpenGLContext alloc] initWithFormat: (NSOpenGLPixelFormat*)pixelFormat shareContext: (NSOpenGLContext*)context];
-        AssertFatal(ctx, "Unable to create a shared OpenGL context");
-    }
-    
-    [view setPixelFormat: (NSOpenGLPixelFormat*)pixelFormat];
-    [view setOpenGLContext: ctx];
-    
-    return ctx;
-}
 
 void GFXOpenGLDevice::init( const GFXVideoMode &mode, PlatformWindow *window )
 {
-    if(mInitialized)
-        return;
+    if(!mInitialized)
+    {
+       AssertFatal(!mContext && !mPixelFormat, "_createInitialContextAndFormat - Already created initial context and format");
+       
+       mPixelFormat = generateValidPixelFormat(mode.fullScreen, mode.bitDepth, 0);
+       AssertFatal(mPixelFormat, "_createInitialContextAndFormat - Unable to create an OpenGL pixel format");
+       
+       mContext = [[[NSOpenGLContext alloc] initWithFormat: (NSOpenGLPixelFormat*)mPixelFormat shareContext: nil] retain];
+       AssertFatal(mContext, "_createInitialContextAndFormat - Unable to create an OpenGL context");
 
-    NSOpenGLContext* ctx = _createContextForWindow(window, mContext, mPixelFormat);
-    [ctx makeCurrentContext];
-    mContext = (void*)ctx;
-    
-//    mTextureLoader = [[GLKTextureLoader alloc] initWithShareContext:(NSOpenGLContext *)ctx ];
-
-    initGLState();
-    initGenericShaders();
-    mInitialized = true;
-    deviceInited();
+       [mContext makeCurrentContext];
+       
+       initGLState();
+       initGenericShaders();
+       mInitialized = true;
+       deviceInited();
+    }
 }
 
 void GFXOpenGLDevice::addVideoMode(GFXVideoMode toAdd)
@@ -476,10 +426,6 @@ void GFXOpenGLDevice::clear(U32 flags, ColorI color, F32 z, U32 stencil)
     //   }
     
     glDepthMask(true);
-    ColorF c = color;
-    glClearColor(c.red, c.green, c.blue, c.alpha);
-    glClearDepth(z);
-    glClearStencil(stencil);
     
     GLbitfield clearflags = 0;
     clearflags |= (flags & GFXClearTarget)   ? GL_COLOR_BUFFER_BIT : 0;
@@ -488,6 +434,11 @@ void GFXOpenGLDevice::clear(U32 flags, ColorI color, F32 z, U32 stencil)
     
     glClear(clearflags);
     
+    ColorF c = color;
+    glClearDepth(z);
+    glClearStencil(stencil);
+    glClearColor(c.red, c.green, c.blue, c.alpha);
+
     if(!zwrite)
         glDepthMask(false);
 }
@@ -1044,20 +995,25 @@ void GFXOpenGLDevice::setStateBlockInternal(GFXStateBlock* block, bool force)
 //-----------------------------------------------------------------------------
 GFXWindowTarget *GFXOpenGLDevice::allocWindowTarget(PlatformWindow *window)
 {
-    void *ctx = NULL;
-    
-    // Init if needed, or create a new context
-    if(!mInitialized)
-        init(window->getVideoMode(), window);
-    else
-        ctx = _createContextForWindow(window, mContext, mPixelFormat);
-    
+   if (window == NULL)
+      return NULL;
+   
+   NSOpenGLView* view = (NSOpenGLView*)window->getPlatformDrawable();
+   AssertFatal([view isKindOfClass:[NSOpenGLView class]], avar("_createContextForWindow - Supplied a %s instead of a NSOpenGLView", [[view className] UTF8String]));
+   
+   NSOpenGLContext* ctx = nil;
+   ctx = [[[ NSOpenGLContext alloc] initWithFormat:mPixelFormat shareContext:mContext] autorelease];
+   
+   AssertFatal(ctx, "Unable to create a shared OpenGL context");
+   if (ctx != nil)
+   {
+      [view setPixelFormat: (NSOpenGLPixelFormat*)mPixelFormat];
+      [view setOpenGLContext: ctx];
+   }
+   
     // Allocate the wintarget and create a new context.
     GFXOpenGLWindowTarget *gwt = new GFXOpenGLWindowTarget(window, this);
     gwt->mContext = ctx ? ctx : mContext;
-
-    
-
     return gwt;
 }
 
@@ -1068,22 +1024,6 @@ GFXTextureTarget * GFXOpenGLDevice::allocRenderToTextureTarget()
     targ->registerResourceWithDevice(this);
     return targ;
 }
-
-//GFXFence * GFXOpenGLDevice::createFence()
-//{
-//    GFXFence* fence = _createPlatformSpecificFence();
-//    if(!fence)
-//        fence = new GFXGeneralFence( this );
-//    
-//    fence->registerResourceWithDevice(this);
-//    return fence;
-//}
-
-
-//GFXFence* GFXOpenGLDevice::_createPlatformSpecificFence()
-//{
-//    return NULL;
-//}
 
 //GFXOcclusionQuery* GFXOpenGLDevice::createOcclusionQuery()
 //{
@@ -1316,7 +1256,7 @@ void GFXOpenGLDevice::_updateRenderTargets()
     
     if ( mViewportDirty )
     {
-//        Con::printf("if mViewport Dirty %d %d %d %d", mViewport.point.x, mViewport.point.y, mViewport.extent.x, mViewport.extent.y);
+        Con::printf("if mViewport Dirty %d %d %d %d", mViewport.point.x, mViewport.point.y, mViewport.extent.x, mViewport.extent.y);
         glViewport( mViewport.point.x, mViewport.point.y, mViewport.extent.x, mViewport.extent.y );
         mViewportDirty = false;
     }
@@ -1359,65 +1299,6 @@ static GFXOpenGLRegisterDevice pGLRegisterDevice;
 
 //-----------------------------------------------------------------------------
 
-NSOpenGLPixelFormat* generateValidPixelFormat(bool fullscreen, U32 bpp, U32 samples)
-{
-    AssertWarn(bpp==16 || bpp==32 || bpp==0, "An unusual bit depth was requested in findValidPixelFormat(). clamping to 16|32");
-    
-    if (bpp)
-        bpp = bpp > 16 ? 32 : 16;
-    
-    AssertWarn(samples <= 6, "An unusual multisample depth was requested in findValidPixelFormat(). clamping to 0...6");
-    
-    samples = samples > 6 ? 6 : samples;
-    
-    int i = 0;
-    NSOpenGLPixelFormatAttribute attr[64];
-    
-    attr[i++] = NSOpenGLPFADoubleBuffer;
-    attr[i++] = NSOpenGLPFANoRecovery;
-    attr[i++] = NSOpenGLPFAAccelerated;
-    attr[i++] = NSOpenGLPFAOpenGLProfile;
-    attr[i++] = NSOpenGLProfileVersion3_2Core;
-    
-    if (fullscreen)
-        attr[i++] = NSOpenGLPFAFullScreen;
-    
-    if(bpp != 0)
-    {
-        // native pixel formats are argb 1555 & argb 8888.
-        U32 colorbits = 0;
-        U32 alphabits = 0;
-        
-        if(bpp == 16)
-        {
-            colorbits = 5;             // ARGB 1555
-            alphabits = 1;
-        }
-        else if(bpp == 32)
-            colorbits = alphabits = 8; // ARGB 8888
-        
-        attr[i++] = NSOpenGLPFADepthSize;
-        attr[i++] = (NSOpenGLPixelFormatAttribute)bpp;
-        attr[i++] = NSOpenGLPFAColorSize;
-        attr[i++] = (NSOpenGLPixelFormatAttribute)colorbits;
-        attr[i++] = NSOpenGLPFAAlphaSize;
-        attr[i++] = (NSOpenGLPixelFormatAttribute)alphabits;
-    }
-    
-    if (samples != 0)
-    {
-        attr[i++] = NSOpenGLPFAMultisample;
-        attr[i++] = (NSOpenGLPixelFormatAttribute)1;
-        attr[i++] = NSOpenGLPFASamples;
-        attr[i++] = (NSOpenGLPixelFormatAttribute)samples;
-    }
-    
-    attr[i++] = 0;
-    
-    NSOpenGLPixelFormat* format = [[[NSOpenGLPixelFormat alloc] initWithAttributes:attr] autorelease];
-    
-    return format;
-}
 
 void CheckOpenGLError(const char* stmt, const char* fname, int line)
 {

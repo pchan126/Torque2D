@@ -11,6 +11,7 @@
 #include "memory/autoPtr.h"
 
 class _GFXOpenGLWindowTargetImpl;
+@class NSOpenGLContext;
 
 class GFXOpenGLWindowTarget : public GFXWindowTarget
 {
@@ -38,7 +39,7 @@ public:
    void _onAppSignal(WindowId wnd, S32 event);
    
 private:
-    typedef GFXDevice Parent;
+    typedef GFXWindowTarget Parent;
     
     friend class GFXOpenGLTextureObject;
 //    friend class GFXOpenGLCubemap;
@@ -47,11 +48,10 @@ private:
     friend class GFXOpenGLVertexBuffer;
     friend class GFXOpenGLDevice;
 
-   friend class GFXOpenGLDevice;
    Point2I size;
    GFXDevice* mDevice;
-   void* mContext;
-   void* mFullscreenContext;
+   NSOpenGLContext* mContext;
+   NSOpenGLContext* mFullscreenContext;
    void _teardownCurrentMode();
    void _setupNewMode();
     

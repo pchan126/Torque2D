@@ -29,7 +29,8 @@ public:
 class _GFXOpenGLWindowTargetFBOImpl : public _GFXOpenGLWindowTargetImpl
 {
 public:
-    GLuint mFramebuffer, mRenderbuffer, colorTexture;
+    GLuint FBOname;
+    GLuint colorTexture, depthRenderbuffer;
     
     _GFXOpenGLWindowTargetFBOImpl(GFXOpenGLWindowTarget* target);
     virtual ~_GFXOpenGLWindowTargetFBOImpl();
@@ -41,17 +42,16 @@ public:
 
 _GFXOpenGLWindowTargetFBOImpl::_GFXOpenGLWindowTargetFBOImpl(GFXOpenGLWindowTarget* target)
 {
-    mTarget = target;
-    glGenFramebuffers(1, &mFramebuffer);
-    glGenRenderbuffers(1, &mRenderbuffer);
+   // NSOpenGLView contains its own framebuffer which is active at 0
+   FBOname = 0;
+//   mTarget = target;
+//   PlatformWindow* window = mTarget->getWindow();
+//   RectI bounds = window->getBounds();
+//
 //	glGenTextures(1, &colorTexture);
-
-    PlatformWindow* window = mTarget->getWindow();
-    RectI bounds = window->getBounds();
-    
 //	glBindTexture(GL_TEXTURE_2D, colorTexture);
-	
-	// Set up filter and wrap modes for this texture object
+//	
+//	// Set up filter and wrap modes for this texture object
 //	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 //	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 //	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -59,114 +59,121 @@ _GFXOpenGLWindowTargetFBOImpl::_GFXOpenGLWindowTargetFBOImpl(GFXOpenGLWindowTarg
 //	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
 //				 bounds.extent.x, bounds.extent.y, 0,
 //				 GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-    
-    // Create colour render buffer and allocate backing store
-    glBindRenderbuffer(GL_RENDERBUFFER, mRenderbuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
-
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8, bounds.extent.x, bounds.extent.y);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, mFramebuffer);
-    
-    GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-    if (status != GL_FRAMEBUFFER_COMPLETE)
-    {
-        switch (status) {
-            case GL_FRAMEBUFFER_UNDEFINED:
-                Con::printf("default framebuffer does not exist.");
-                break;
-            case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
-                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT.");
-                break;
-            case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
-                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT.");
-                break;
-            case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
-                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER.");
-                break;
-            case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
-                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER.");
-                break;
-            case GL_FRAMEBUFFER_UNSUPPORTED:
-                Con::printf("combination of internal formats of the attached images violates an implementation-dependent set of restrictions.");
-                break;
-            case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
-                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE.");
-                break;
-            case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
-                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS.");
-                break;
-                
-            default:
-                break;
-        }
-    }
+//   
+//    // Create colour render buffer and allocate backing store
+//   glGenRenderbuffers(1, &depthRenderbuffer);
+//    glBindRenderbuffer(GL_RENDERBUFFER, depthRenderbuffer);
+//	glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA, bounds.extent.x, bounds.extent.y);
+//
+//   glGenFramebuffers(1, &FBOname);
+//   glBindFramebuffer(GL_RENDERBUFFER, depthRenderbuffer);
+//	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTexture, 0);
+//	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderbuffer);
+//
+//    GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+//    if (status != GL_FRAMEBUFFER_COMPLETE)
+//    {
+//        switch (status) {
+//            case GL_FRAMEBUFFER_UNDEFINED:
+//                Con::printf("default framebuffer does not exist.");
+//                break;
+//            case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+//                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT.");
+//                break;
+//            case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+//                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT.");
+//                break;
+//            case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
+//                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER.");
+//                break;
+//            case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
+//                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER.");
+//                break;
+//            case GL_FRAMEBUFFER_UNSUPPORTED:
+//                Con::printf("combination of internal formats of the attached images violates an implementation-dependent set of restrictions.");
+//                break;
+//            case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
+//                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE.");
+//                break;
+//            case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
+//                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS.");
+//                break;
+//                
+//            default:
+//                break;
+//        }
+//    }
 }
 
 _GFXOpenGLWindowTargetFBOImpl::~_GFXOpenGLWindowTargetFBOImpl()
 {
 //    glDeleteTextures(1, &colorTexture);
-    glDeleteFramebuffers(1, &mFramebuffer);
-    glDeleteRenderbuffers(1, &mRenderbuffer);
+//    glDeleteFramebuffers(1, &FBOname);
+//    glDeleteRenderbuffers(1, &depthRenderbuffer);
 }
 
 
 void _GFXOpenGLWindowTargetFBOImpl::makeActive()
 {
-    glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
-    glBindRenderbuffer(GL_RENDERBUFFER, mRenderbuffer);
-
-    GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-    if (status != GL_FRAMEBUFFER_COMPLETE)
-    {
-        switch (status) {
-            case GL_FRAMEBUFFER_UNDEFINED:
-                Con::printf("default framebuffer does not exist.");
-                break;
-            case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
-                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT.");
-                break;
-            case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
-                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT.");
-                break;
-            case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
-                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER.");
-                break;
-            case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
-                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER.");
-                break;
-            case GL_FRAMEBUFFER_UNSUPPORTED:
-                Con::printf("combination of internal formats of the attached images violates an implementation-dependent set of restrictions.");
-                break;
-            case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
-                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE.");
-                break;
-            case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
-                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS.");
-                break;
-                
-            default:
-                break;
-        }
-    }
+    glBindFramebuffer(GL_FRAMEBUFFER, FBOname);
+//    glBindRenderbuffer(GL_RENDERBUFFER, mRenderbuffer);
+//
+//    Con::printf("_GFXOpenGLWindowTargetFBOImpl::makeActive glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer); ");
+//
+//    
+//    GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+//    if (status != GL_FRAMEBUFFER_COMPLETE)
+//    {
+//        switch (status) {
+//            case GL_FRAMEBUFFER_UNDEFINED:
+//                Con::printf("default framebuffer does not exist.");
+//                break;
+//            case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+//                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT.");
+//                break;
+//            case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+//                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT.");
+//                break;
+//            case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
+//                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER.");
+//                break;
+//            case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
+//                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER.");
+//                break;
+//            case GL_FRAMEBUFFER_UNSUPPORTED:
+//                Con::printf("combination of internal formats of the attached images violates an implementation-dependent set of restrictions.");
+//                break;
+//            case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
+//                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE.");
+//                break;
+//            case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
+//                Con::printf("GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS.");
+//                break;
+//                
+//            default:
+//                break;
+//        }
+//    }
 
 }
 
 void _GFXOpenGLWindowTargetFBOImpl::finish()
 {
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
-    glBindRenderbuffer(GL_RENDERBUFFER, 0);
-    
-//    _GFXGLTargetDesc* color0 = mTarget->getTargetDesc(GFXTextureTarget::Color0);
-//    if(!color0 || !(color0->hasMips()))
-//        return;
-    
-    // Generate mips if necessary
-    // Assumes a 2D texture.
-    glActiveTexture(GL_TEXTURE0);
-    //   PRESERVE_2D_TEXTURE();
-//    glBindTexture(GL_TEXTURE_2D, color0->getHandle());
-//    glGenerateMipmap(GL_TEXTURE_2D);
+   glBindFramebuffer(GL_FRAMEBUFFER, 0);
+//    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+//    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+//    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+//    
+////    _GFXGLTargetDesc* color0 = mTarget->getTargetDesc(GFXTextureTarget::Color0);
+////    if(!color0 || !(color0->hasMips()))
+////        return;
+//    
+//    // Generate mips if necessary
+//    // Assumes a 2D texture.
+//    glActiveTexture(GL_TEXTURE0);
+////    //   PRESERVE_2D_TEXTURE();
+////    glBindTexture(GL_TEXTURE_2D, color0->getHandle());
+////    glGenerateMipmap(GL_TEXTURE_2D);
 }
 
 
@@ -206,9 +213,22 @@ bool GFXOpenGLWindowTarget::present()
 {
     GFX->updateStates();
     if (mFullscreenContext)
+    {
         [(NSOpenGLContext*)mFullscreenContext flushBuffer];
+    }
     else
-        [(NSOpenGLContext*)mContext flushBuffer];
+    {
+//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//    glClearColor(1.0, 0.0, 0.0, 1.0);
+//        MacWindow* window = (MacWindow*)mWindow;
+//        OSXTorqueView* tView = window->_torqueView;
+//        [tView flushBuffer];
+//        NSOpenGLContext* ctx = (NSOpenGLContext*)mContext;
+//        NSOpenGLContext* tempctx = [NSOpenGLContext currentContext];
+//        [tempctx flushBuffer];
+//        [tempctx view];
+       [mContext flushBuffer];
+    }
     return true;
 }
 
@@ -267,7 +287,7 @@ void GFXOpenGLWindowTarget::_setupNewMode()
         _endAttributeList(attributes);
 
         NSOpenGLPixelFormat* fmt = [[NSOpenGLPixelFormat alloc] initWithAttributes:attributes.address()];
-        mFullscreenContext = [[NSOpenGLContext alloc] initWithFormat:fmt shareContext:nil];
+        mFullscreenContext = [[[NSOpenGLContext alloc] initWithFormat:fmt shareContext:nil] retain];
         [fmt release];
         [(NSOpenGLContext*)mFullscreenContext setFullScreen];
         [(NSOpenGLContext*)mFullscreenContext makeCurrentContext];

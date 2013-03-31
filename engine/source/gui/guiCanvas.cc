@@ -144,6 +144,7 @@ bool GuiCanvas::onAdd()
     
     if (a && a->mType != NullDevice)
     {
+        newDevice->init(vm);
         mPlatformWindow = WindowManager->createWindow(newDevice, vm);
         
 		// Set a minimum on the window size so people can't break us by resizing tiny.

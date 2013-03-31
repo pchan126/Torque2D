@@ -28,13 +28,15 @@ static Vector<NSOpenGLPixelFormatAttribute> _beginPixelFormatAttributesForDispla
    Vector<NSOpenGLPixelFormatAttribute> attributes;
    attributes.reserve(16); // Most attribute lists won't exceed this
    
-    attributes.push_back(NSOpenGLPFAScreenMask);
-   attributes.push_back((NSOpenGLPixelFormatAttribute)CGDisplayIDToOpenGLDisplayMask(display));
-   attributes.push_back(NSOpenGLPFANoRecovery);
+//    attributes.push_back(NSOpenGLPFAScreenMask);
+//   attributes.push_back((NSOpenGLPixelFormatAttribute)CGDisplayIDToOpenGLDisplayMask(display));
+//   attributes.push_back(NSOpenGLPFANoRecovery);
    attributes.push_back(NSOpenGLPFADoubleBuffer);
    attributes.push_back(NSOpenGLPFAAccelerated);
-   attributes.push_back(NSOpenGLPFAAuxBuffers);
-   attributes.push_back((NSOpenGLPixelFormatAttribute)1);
+//   attributes.push_back(NSOpenGLPFAAuxBuffers);
+   attributes.push_back(NSOpenGLPFAOpenGLProfile);
+   attributes.push_back(NSOpenGLProfileVersion3_2Core);
+//   attributes.push_back((NSOpenGLPixelFormatAttribute)1);
    return attributes;
 }
 
@@ -65,27 +67,65 @@ static Vector<NSOpenGLPixelFormatAttribute> _createStandardPixelFormatAttributes
    return attributes;
 }
 
-/// returns an opengl pixel format suitable for creating shared opengl contexts.
-static NSOpenGLPixelFormat* _createStandardPixelFormat()
+
+static NSOpenGLPixelFormat* generateValidPixelFormat(bool fullscreen, U32 bpp, U32 samples)
 {
-    NSOpenGLPixelFormatAttribute attrs[] =
-	{
-		NSOpenGLPFADoubleBuffer,
-		NSOpenGLPFADepthSize, 24,
-		NSOpenGLPFAOpenGLProfile,
-		NSOpenGLProfileVersion3_2Core,
-		0
-	};
- 
-	NSOpenGLPixelFormat *pf = [[[NSOpenGLPixelFormat alloc] initWithAttributes:attrs] autorelease];
-	
-	if (!pf)
-	{
-		NSLog(@"No OpenGL pixel format");
-	}
-
-   return pf;
+   AssertWarn(bpp==16 || bpp==32 || bpp==0, "An unusual bit depth was requested in findValidPixelFormat(). clamping to 16|32");
+   
+   if (bpp)
+      bpp = bpp > 16 ? 32 : 16;
+   
+   AssertWarn(samples <= 6, "An unusual multisample depth was requested in findValidPixelFormat(). clamping to 0...6");
+   
+   samples = samples > 6 ? 6 : samples;
+   
+   int i = 0;
+   NSOpenGLPixelFormatAttribute attr[64];
+   
+   attr[i++] = NSOpenGLPFADoubleBuffer;
+   attr[i++] = NSOpenGLPFANoRecovery;
+   attr[i++] = NSOpenGLPFAAccelerated;
+   attr[i++] = NSOpenGLPFAOpenGLProfile;
+   attr[i++] = NSOpenGLProfileVersion3_2Core;
+   
+   if (fullscreen)
+      attr[i++] = NSOpenGLPFAFullScreen;
+   
+   if(bpp != 0)
+   {
+      // native pixel formats are argb 1555 & argb 8888.
+      U32 colorbits = 0;
+      U32 alphabits = 0;
+      
+      if(bpp == 16)
+      {
+         colorbits = 5;             // ARGB 1555
+         alphabits = 1;
+      }
+      else if(bpp == 32)
+         colorbits = alphabits = 8; // ARGB 8888
+      
+      attr[i++] = NSOpenGLPFADepthSize;
+      attr[i++] = (NSOpenGLPixelFormatAttribute)bpp;
+      attr[i++] = NSOpenGLPFAColorSize;
+      attr[i++] = (NSOpenGLPixelFormatAttribute)colorbits;
+      attr[i++] = NSOpenGLPFAAlphaSize;
+      attr[i++] = (NSOpenGLPixelFormatAttribute)alphabits;
+   }
+   
+   if (samples != 0)
+   {
+      attr[i++] = NSOpenGLPFAMultisample;
+      attr[i++] = (NSOpenGLPixelFormatAttribute)1;
+      attr[i++] = NSOpenGLPFASamples;
+      attr[i++] = (NSOpenGLPixelFormatAttribute)samples;
+   }
+   
+   attr[i++] = 0;
+   
+   NSOpenGLPixelFormat* format = [[[NSOpenGLPixelFormat alloc] initWithAttributes:attr] autorelease];
+   
+   return format;
 }
-
 
 #endif

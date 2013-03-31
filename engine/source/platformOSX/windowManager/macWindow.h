@@ -9,6 +9,7 @@
 #import "windowManager/platformWindow.h"
 #import "./macWindowManager.h"
 #import "./macCursorController.h"
+#import "./osxTorqueView.h"
 
 #import "graphics/gfxTarget.h"
 #import "graphics/gfxStructs.h"
@@ -109,6 +110,7 @@ public:
 
    // For GGMacView
    void _disassociateCocoaWindow();
+    OSXTorqueView* _torqueView;
    
 protected:
    virtual void _setFullscreen(bool fullScreen);

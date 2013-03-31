@@ -55,7 +55,7 @@ CGLContextObj getContextForCapsCheck(CGDirectDisplayID display)
     
     // From the CG display id, we can create a pixel format & context
     // and with that context we can check opengl capabilities
-    CGOpenGLDisplayMask cglDisplayMask = CGDisplayIDToOpenGLDisplayMask(display);
+//    CGOpenGLDisplayMask cglDisplayMask = CGDisplayIDToOpenGLDisplayMask(display);
 
     NSOpenGLPixelFormatAttribute attrs[] =
 	{
@@ -80,18 +80,18 @@ CGLContextObj getContextForCapsCheck(CGDirectDisplayID display)
 
 void GFXOpenGLCardProfiler::init()
 {
-    CGLContextObj curr_ctx = CGLGetCurrentContext ();
-    CGLContextObj temp_ctx =  getContextForCapsCheck(CGMainDisplayID());
+//    CGLContextObj curr_ctx = CGLGetCurrentContext();
+//    CGLContextObj temp_ctx =  getContextForCapsCheck(CGMainDisplayID());
+//    
+//    if (!temp_ctx)
+//    {
+//        Con::errorf("OpenGL may not be set up correctly!");
+//        return;
+//    }
     
-    if (!temp_ctx)
-    {
-        Con::errorf("OpenGL may not be set up correctly!");
-        return;
-    }
+//    CGLSetCurrentContext(temp_ctx);
     
-    CGLSetCurrentContext(temp_ctx);
-    
-    AssertFatal(CGMainDisplayID(), "GFXOpenGLCardProfiler was called before a monitor was chosen!");
+//    AssertFatal(CGMainDisplayID(), "GFXOpenGLCardProfiler was called before a monitor was chosen!");
 
     mChipSet = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
 
@@ -120,8 +120,8 @@ void GFXOpenGLCardProfiler::init()
    
 //    if(queryProfile("GL::suppBlendMinMax"))
     // done. silently restore the old cgl context.
-    CGLSetCurrentContext(curr_ctx);
-    CGLDestroyContext(temp_ctx);
+//    CGLSetCurrentContext(curr_ctx);
+//    CGLDestroyContext(temp_ctx);
 }
 
 void GFXOpenGLCardProfiler::setupCardCapabilities()

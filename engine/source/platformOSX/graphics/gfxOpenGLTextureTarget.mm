@@ -134,20 +134,20 @@ public:
 #define CHECK_FRAMEBUFFER_STATUS()\
 {\
 GLenum status;\
-status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);\
+status = glCheckFramebufferStatus(GL_FRAMEBUFFER);\
 switch(status) {\
-case GL_FRAMEBUFFER_COMPLETE_EXT:\
+case GL_FRAMEBUFFER_COMPLETE:\
 break;\
-case GL_FRAMEBUFFER_UNSUPPORTED_EXT:\
+case GL_FRAMEBUFFER_UNSUPPORTED:\
 AssertFatal(false, "Unsupported FBO");\
 break;\
-case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT:\
+case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:\
 AssertFatal(false, "Incomplete FBO Attachment");\
 break;\
-case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:\
+case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS:\
 AssertFatal(false, "Incomplete FBO dimensions");\
 break;\
-case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:\
+case GL_FRAMEBUFFER_INCOMPLETE_FORMATS:\
 AssertFatal(false, "Incomplete FBO formats");\
 default:\
 /* programming error; will fail on all hardware */\
@@ -171,6 +171,7 @@ void _GFXOpenGLTextureTargetFBOImpl::applyState()
    // REMINDER: When we implement MRT support, check against GFXGLDevice::getNumRenderTargets()
    
    glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
+    Con::printf("_GFXOpenGLTextureTargetFBOImpl::applyState:: glBindFramebuffer ");
    
    _GFXGLTargetDesc* color0 = mTarget->getTargetDesc(GFXTextureTarget::Color0);
    if(color0)
@@ -202,12 +203,14 @@ void _GFXOpenGLTextureTargetFBOImpl::applyState()
    }
    
    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    Con::printf("_GFXOpenGLTextureTargetFBOImpl::applyState:: glBindFramebuffer(GL_FRAMEBUFFER, 0); ");
 }
 
 void _GFXOpenGLTextureTargetFBOImpl::makeActive()
 {
    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mFramebuffer);
    glBindFramebuffer(GL_READ_FRAMEBUFFER, mFramebuffer);
+    Con::printf("_GFXOpenGLTextureTargetFBOImpl::makeActive glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mFramebuffer); ");
 }
 
 void _GFXOpenGLTextureTargetFBOImpl::finish()
@@ -215,7 +218,9 @@ void _GFXOpenGLTextureTargetFBOImpl::finish()
    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
    
-   _GFXGLTargetDesc* color0 = mTarget->getTargetDesc(GFXTextureTarget::Color0);
+    Con::printf("_GFXOpenGLTextureTargetFBOImpl::finish glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mFramebuffer); ");
+
+    _GFXGLTargetDesc* color0 = mTarget->getTargetDesc(GFXTextureTarget::Color0);
    if(!color0 || !(color0->hasMips()))
       return;
    

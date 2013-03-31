@@ -19,6 +19,7 @@ MacWindow::MacWindow(U32 windowId, const char* windowText, Point2I clientExtent)
    mMouseCaptured    = false;
    
    mCocoaWindow      = NULL;
+    _torqueView       = NULL;
    mCursorController = new MacCursorController( this );
    mOwningWindowManager = NULL;
    
@@ -71,15 +72,25 @@ void MacWindow::_initCocoaWindow(const char* windowText, Point2I clientExtent)
    // TODO: cascade windows on screen?
    
    // create the window
-   NSRect contentRect;
    U32 style;
    
-  contentRect = NSMakeRect(0,0,clientExtent.x, clientExtent.y);
+  NSRect frame = NSMakeRect(0,0,clientExtent.x, clientExtent.y);
   
   style = NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask | NSResizableWindowMask;
 
-  mCocoaWindow = [[NSWindow alloc] initWithContentRect:contentRect styleMask:style backing:NSBackingStoreBuffered defer:YES screen:nil];
-  if(windowText)
+    mCocoaWindow = [[NSWindow alloc] initWithContentRect:frame
+                                                styleMask:NSTitledWindowMask | NSClosableWindowMask | NSResizableWindowMask
+                                                  backing:NSBackingStoreBuffered
+                                                    defer:NO];
+
+    [mCocoaWindow setBackgroundColor:[NSColor blackColor]];
+
+    // The full frame for a window must consider the title bar height as well
+    // Thus, our NSWindow must be larger than the passed width and height
+    frame = [NSWindow frameRectForContentRect:frame styleMask:NSTitledWindowMask];
+    [mCocoaWindow setFrame:frame display:YES];
+
+    if(windowText)
      [mCocoaWindow setTitle: [NSString stringWithUTF8String: windowText]];   
 
   // necessary to accept mouseMoved events
@@ -90,11 +101,15 @@ void MacWindow::_initCocoaWindow(const char* windowText, Point2I clientExtent)
    
    // create the opengl view. we don't care about its pixel format, because we
    // will be replacing its context with another one.
-   OSXTorqueView* view = [[OSXTorqueView alloc] initWithFrame:contentRect pixelFormat:[NSOpenGLView defaultPixelFormat]];
-   [view setTorqueWindow:this];
-   [mCocoaWindow setContentView:view];
-//   [mCocoaWindow setDelegate:view];
-   
+    _torqueView = [[OSXTorqueView alloc] initWithFrame:frame];
+    [_torqueView initialize];    
+    
+   [_torqueView setTorqueWindow:this];
+   [mCocoaWindow setContentView:_torqueView];
+    // Show the window and all its contents
+    [mCocoaWindow makeKeyAndOrderFront:NSApp];
+//    [mCocoaWindow setDelegate:torqueView];
+    [mCocoaWindow center];
 }
 
 void MacWindow::_disassociateCocoaWindow()
@@ -213,7 +228,45 @@ PlatformWindow* MacWindow::getNextWindow() const
 
 bool MacWindow::setSize(const Point2I &newSize)
 {
-   NSSize newExtent = {static_cast<CGFloat>(newSize.x), static_cast<CGFloat>(newSize.y)};
+    // Store the width and height in the state
+//    _windowSize = newSize;
+    
+    // Get the window's current frame
+    NSRect frame = NSMakeRect([mCocoaWindow frame].origin.x, [mCocoaWindow frame].origin.y, newSize.x, newSize.y);
+    
+    // Get the starting position of the bar height
+    F32 barOffset = frame.size.height;
+    
+    // If we are not going to full screen mode, get a new frame offset that accounts
+    // for the title bar height
+    if (!mFullscreen)
+    {
+        frame = [NSWindow frameRectForContentRect:frame styleMask:NSTitledWindowMask];
+        
+        // Set the new window frame
+        [mCocoaWindow setFrame:frame display:YES];
+        
+        // Get the new position of the title bar
+        barOffset -= frame.size.height;
+    }
+    else
+    {
+        // Otherwise, just go straight full screen
+        [mCocoaWindow toggleFullScreen:nil];
+    }
+    
+    // Update the frame of the torqueView to match the window
+    frame = NSMakeRect([mCocoaWindow frame].origin.x, [mCocoaWindow frame].origin.y, newSize.x, newSize.y);
+    NSRect viewFrame = NSMakeRect(0, 0, frame.size.width, frame.size.height);
+    
+    [_torqueView setFrame:viewFrame];
+    
+    [_torqueView updateContext];
+    
+    [mCocoaWindow makeKeyAndOrderFront:NSApp];
+    [mCocoaWindow makeFirstResponder:_torqueView];
+    
+    NSSize newExtent = {static_cast<CGFloat>(newSize.x), static_cast<CGFloat>(newSize.y)};
    [mCocoaWindow setContentSize:newExtent];
    [mCocoaWindow center];
    return true;

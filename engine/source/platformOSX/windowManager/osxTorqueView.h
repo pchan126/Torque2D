@@ -23,13 +23,13 @@
 #import <Cocoa/Cocoa.h>
 #import "platformOSX/osxInputManager.h"
 #include "platform/event.h"
-#import "./macWindow.h"
+
+class MacWindow;
 
 @interface OSXTorqueView : NSOpenGLView
 {
 @private
-//	CVDisplayLinkRef displayLink;
-
+//    NSOpenGLContext *_openGLContext;
     osxInputManager *inputManager;
     NSTrackingArea *_trackingArea;
 
@@ -46,7 +46,7 @@
 - (MacWindow*)torqueWindow;
 - (BOOL)acceptsFirstResponder;
 - (void)initialize;
-- (void)createContextWithPixelFormat:(NSOpenGLPixelFormat *)pixelFormat;
+//- (void)createContextWithPixelFormat:(NSOpenGLPixelFormat *)pixelFormat;
 - (void)clearContext;
 - (void)updateContext;
 - (void)flushBuffer;
