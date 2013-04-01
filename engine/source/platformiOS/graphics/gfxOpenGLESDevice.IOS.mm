@@ -844,12 +844,9 @@ void GFXOpenGLESDevice::setStateBlockInternal(GFXStateBlock* block, bool force)
 //-----------------------------------------------------------------------------
 GFXWindowTarget *GFXOpenGLESDevice::allocWindowTarget(PlatformWindow *window)
 {
-    // Get the shared iOS platform state
-    iOSPlatState * platState = [iOSPlatState sharedPlatState];
-    
     // Allocate the wintarget and create a new context.
     GFXOpenGLESWindowTarget *gwt = new GFXOpenGLESWindowTarget(window, this);
-    gwt->mContext = (__bridge void*)platState.ctx;
+    gwt->mContext = this->mContext;
     
     // And return...
     return gwt;
@@ -1153,20 +1150,11 @@ bool GFXOpenGLESDevice::cleanUpContext()
     
     if ([platState ctx])
     {
-        if (!Video::smNeedResurrect)
-        {
-            Con::printf( "Killing the texture manager..." );
-            TEXMGR->zombify();
-            //            Game->textureKill();
-            needResurrect = true;
-        }
-        
-//        [[platState torqueView] clearContext];
+        Con::printf( "Killing the texture manager..." );
+        TEXMGR->zombify();
+        //            Game->textureKill();
+        needResurrect = true;
     }
-    
-    // clear the Resolution state, so setScreenMode() will know not to early-out.
-    smCurrentRes = GFXVideoMode();
-    
     return needResurrect;
 }
 

@@ -22,8 +22,8 @@
 
 #import <UIKit/UIKit.h>
 
-#import "platformiOS/T2DView.h"
-#import "platformiOS/T2DViewController.h"
+#import "platformiOS/windowManager/T2DView.h"
+#import "platformiOS/windowManager/T2DViewController.h"
 
 #import "platform/platform.h"
 #import "math/mMath.h"

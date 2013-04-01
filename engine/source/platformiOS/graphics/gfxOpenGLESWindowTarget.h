@@ -9,6 +9,8 @@
 #include "graphics/gfxTarget.h"
 #include "windowManager/platformWindow.h"
 
+@class EAGLContext;
+
 class GFXOpenGLESWindowTarget : public GFXWindowTarget
 {
 public:
@@ -48,7 +50,7 @@ private:
    friend class GFXOpenGLESDevice;
    Point2I size;
    GFXDevice* mDevice;
-   void* mContext;
+   EAGLContext* mContext;
    void* mFullscreenContext;
    void _teardownCurrentMode();
    void _setupNewMode();

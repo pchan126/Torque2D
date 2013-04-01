@@ -20,7 +20,6 @@ public:
    GFXOpenGLWindowTarget(PlatformWindow *win, GFXDevice *d);
    const Point2I getSize() 
    {
-       return size;
        return mWindow->getClientExtent();
    }
    virtual GFXFormat getFormat()

@@ -9,6 +9,7 @@
 #import "windowManager/platformWindow.h"
 #import "./iOSWindowManager.h"
 #import "./iOSCursorController.h"
+#import "./T2DViewController.h"
 
 #import "graphics/gfxTarget.h"
 #import "graphics/gfxStructs.h"
@@ -25,10 +26,10 @@ public:
    
    virtual WindowId getWindowId() { return mWindowId; }
    
-   void setDisplay(CGDirectDisplayID display);
-   CGDirectDisplayID getDisplay() { return mDisplay; }
-   CGRect getMainDisplayBounds() { return mMainDisplayBounds; }
-   CGRect getDisplayBounds() { return mDisplayBounds; }
+//   void setDisplay(CGDirectDisplayID display);
+//   CGDirectDisplayID getDisplay() { return mDisplay; }
+//   CGRect getMainDisplayBounds() { return mMainDisplayBounds; }
+//   CGRect getDisplayBounds() { return mDisplayBounds; }
 
    virtual bool clearFullscreen() 
    { 
@@ -125,7 +126,7 @@ private:
 
    static iOSWindow* sInstance;
    
-   NSWindow* mCocoaWindow;
+   T2DViewController* mGLKWindow;
    GFXDevice *mDevice;
    GFXWindowTargetRef mTarget;
    GFXVideoMode mCurrentMode;
@@ -147,7 +148,7 @@ private:
    
    void _onAppEvent(WindowId,S32);
    
-   CGDirectDisplayID mDisplay;
+   UIScreen* mDisplay;
    CGRect mDisplayBounds;
    CGRect mMainDisplayBounds;
 };

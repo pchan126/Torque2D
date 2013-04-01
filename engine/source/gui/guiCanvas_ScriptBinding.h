@@ -158,6 +158,7 @@ ConsoleMethod( GuiCanvas, setVideoMode, void, 5, 8,
     }
     
     object->getPlatformWindow()->setVideoMode(vm);
+    object->paint();
     
     // Store the new mode into a pref.
     Con::setVariable( "$pref::Video::mode", vm.toString() );

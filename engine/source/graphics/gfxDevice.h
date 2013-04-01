@@ -1004,8 +1004,6 @@ public:
 protected:
    GFXDrawUtil *mDrawer;
     
-    
-    
 // t2 DisplayDevice functions
     
 public:

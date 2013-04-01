@@ -29,7 +29,6 @@ class MacWindow;
 @interface OSXTorqueView : NSOpenGLView
 {
 @private
-//    NSOpenGLContext *_openGLContext;
     osxInputManager *inputManager;
     NSTrackingArea *_trackingArea;
 
@@ -46,10 +45,38 @@ class MacWindow;
 - (MacWindow*)torqueWindow;
 - (BOOL)acceptsFirstResponder;
 - (void)initialize;
-//- (void)createContextWithPixelFormat:(NSOpenGLPixelFormat *)pixelFormat;
 - (void)clearContext;
 - (void)updateContext;
 - (void)flushBuffer;
 - (void)setVerticalSync:(bool)sync;
+
+/// @name Inherited Mouse Input methods
+/// @{
+- (void)mouseDown:(NSEvent *)theEvent;
+- (void)rightMouseDown:(NSEvent *)theEvent;
+- (void)mouseDragged:(NSEvent *)theEvent;
+- (void)rightMouseDragged:(NSEvent *)theEvent;
+- (void)mouseUp:(NSEvent *)theEvent;
+- (void)rightMouseUp:(NSEvent *)theEvent;
+- (void)mouseMoved:(NSEvent *)theEvent;
+- (void)scrollWheel:(NSEvent *)theEvent;
+/// @}
+
+/// @name Inherited Keyboard Input methods
+/// @{
+- (void)keyDown:(NSEvent *)theEvent;
+- (void)keyUp:(NSEvent *)theEvent;
+/// @}
+
+/// @name Keyboard Input Common Code
+/// @{
+- (void)rawKeyUpDown:(NSEvent *)theEvent keyDown:(BOOL)isKeyDown;
+/// @}
+
+/// @name Mouse Input Common Code
+/// @{
+- (void)mouseUpDown:(NSEvent *)theEvent mouseDown:(BOOL)isMouseDown;
+- (void)mouseMotion:(NSEvent *)theEvent;
+/// @}
 
 @end

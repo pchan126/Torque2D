@@ -50,8 +50,6 @@
     // Arguments passed into this application
     const char** _argv;
     
-    Point2I _windowSize;
-    
     // Bit depth of the screen (desktop)
     U32 _desktopBitsPixel;
     

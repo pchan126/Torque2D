@@ -145,7 +145,7 @@ private:
    
    bool mFullscreen;
    bool mShouldFullscreen;
-   NSDictionary* mDefaultDisplayMode;
+   CGDisplayModeRef mDefaultDisplayMode;
    
    void _onAppEvent(WindowId,S32);
    

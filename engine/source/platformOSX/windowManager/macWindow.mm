@@ -87,7 +87,7 @@ void MacWindow::_initCocoaWindow(const char* windowText, Point2I clientExtent)
 
     // The full frame for a window must consider the title bar height as well
     // Thus, our NSWindow must be larger than the passed width and height
-    frame = [NSWindow frameRectForContentRect:frame styleMask:NSTitledWindowMask];
+    frame = [NSWindow frameRectForContentRect:frame styleMask:NSTitledWindowMask | NSClosableWindowMask | NSResizableWindowMask];
     [mCocoaWindow setFrame:frame display:YES];
 
     if(windowText)
@@ -170,9 +170,13 @@ void MacWindow::_setFullscreen(bool fullScreen)
    {
       if(mDefaultDisplayMode)
       {
-         Con::printf("Restoring default display mode... width: %i height: %i bpp: %i", [[mDefaultDisplayMode valueForKey:@"Width"] intValue], 
-               [[mDefaultDisplayMode valueForKey:@"Height"] intValue], [[mDefaultDisplayMode valueForKey:@"BitsPerPixel"] intValue]);
-         CGDisplaySwitchToMode(mDisplay, (CFDictionaryRef)mDefaultDisplayMode);
+//         Con::printf("Restoring default display mode... width: %i height: %i bpp: %i", [[mDefaultDisplayMode valueForKey:@"Width"] intValue], 
+//               [[mDefaultDisplayMode valueForKey:@"Height"] intValue], [[mDefaultDisplayMode valueForKey:@"BitsPerPixel"] intValue]);
+//         CGDisplaySwitchToMode(mDisplay, (CFDictionaryRef)mDefaultDisplayMode);
+
+          CGDisplaySetDisplayMode(mDisplay, mDefaultDisplayMode, nil);
+          
+          
          mDisplayBounds = CGDisplayBounds(mDisplay);
          if(mDisplay == kCGDirectMainDisplay)
             mMainDisplayBounds = mDisplayBounds;
@@ -228,9 +232,6 @@ PlatformWindow* MacWindow::getNextWindow() const
 
 bool MacWindow::setSize(const Point2I &newSize)
 {
-    // Store the width and height in the state
-//    _windowSize = newSize;
-    
     // Get the window's current frame
     NSRect frame = NSMakeRect([mCocoaWindow frame].origin.x, [mCocoaWindow frame].origin.y, newSize.x, newSize.y);
     
@@ -266,9 +267,6 @@ bool MacWindow::setSize(const Point2I &newSize)
     [mCocoaWindow makeKeyAndOrderFront:NSApp];
     [mCocoaWindow makeFirstResponder:_torqueView];
     
-    NSSize newExtent = {static_cast<CGFloat>(newSize.x), static_cast<CGFloat>(newSize.y)};
-   [mCocoaWindow setContentSize:newExtent];
-   [mCocoaWindow center];
    return true;
 }
 
@@ -284,12 +282,17 @@ void MacWindow::setClientExtent( const Point2I newExtent )
    {
       // In fullscreen we have to resize the monitor (it'll be good to change it back too...)
       if(!mDefaultDisplayMode)
-         mDefaultDisplayMode = (NSDictionary*)CGDisplayCurrentMode(mDisplay);
+         mDefaultDisplayMode = CGDisplayCopyDisplayMode(mDisplay);
       
-      NSDictionary* newMode = (NSDictionary*)CGDisplayBestModeForParameters(mDisplay, 32, newExtent.x, newExtent.y, NULL);
-      Con::printf("Switching to new display mode... width: %i height: %i bpp: %i", 
-                  [[newMode valueForKey:@"Width"] intValue], [[newMode valueForKey:@"Height"] intValue], [[newMode valueForKey:@"BitsPerPixel"] intValue]); 
-      CGDisplaySwitchToMode(mDisplay, (CFDictionaryRef)newMode);
+       CGDisplayModeRef newMode;
+//       = (NSDictionary*)CGDisplayBestModeForParameters(mDisplay, 32, newExtent.x, newExtent.y, NULL);
+       
+       
+//      Con::printf("Switching to new display mode... width: %i height: %i bpp: %i",
+//                  [[newMode valueForKey:@"Width"] intValue], [[newMode valueForKey:@"Height"] intValue], [[newMode valueForKey:@"BitsPerPixel"] intValue]); 
+
+//       CGDisplaySwitchToMode(mDisplay, (CFDictionaryRef)newMode);
+      CGDisplaySetDisplayMode(mDisplay, newMode, nil);
       mDisplayBounds = CGDisplayBounds(mDisplay);
       if(mDisplay == kCGDirectMainDisplay)
          mMainDisplayBounds = mDisplayBounds;

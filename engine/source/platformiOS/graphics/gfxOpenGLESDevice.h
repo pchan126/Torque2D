@@ -10,6 +10,8 @@
 #include "platform/platformGL.h"
 #include "graphics/gfxDevice.h"
 
+
+#include "windowManager/platformWindow.h"
 #include "graphics/gfxResource.h"
 #include "platformiOS/graphics/gfxOpenGLESStateBlock.h"
 #include "platformiOS/graphics/gfxOpenGLESShader.h"
@@ -19,6 +21,8 @@ class GFXOpenGLESPrimitiveBuffer;
 class GFXOpenGLESTextureTarget;
 class GFXOpenGLESCubemap;
 //class GLKMatrixStackRef;
+
+@class EAGLContext, GLKTextureLoader;
 
 class GFXOpenGLESDevice : public GFXDevice
 {
@@ -125,7 +129,7 @@ public:
    ///
    bool supportsAnisotropic() const { return mSupportsAnisotropic; }
    
-    void* getTextureLoader() const { return mTextureLoader; };
+    GLKTextureLoader* getTextureLoader() const { return mTextureLoader; };
 protected:
    /// Called by GFXDevice to create a device specific stateblock
    virtual GFXStateBlockRef createStateBlockInternal(const GFXStateBlockDesc& desc);
@@ -231,9 +235,9 @@ private:
 
     void _handleTextureLoaded(GFXTexNotifyCode code);
 
-    void* mContext;
-   void* mPixelFormat;
-    void* mTextureLoader; // GLKTextureLoader
+    EAGLContext* mContext;
+    void* mPixelFormat;
+    GLKTextureLoader* mTextureLoader; // GLKTextureLoader
 
    F32 mPixelShaderVersion;
    

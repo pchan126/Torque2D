@@ -32,8 +32,6 @@
 		86555D2F16B2C29200881446 /* iPadStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 86555D2B16B2C29200881446 /* iPadStoryboard.storyboard */; };
 		86555D3016B2C29200881446 /* iPhoneStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 86555D2D16B2C29200881446 /* iPhoneStoryboard.storyboard */; };
 		86555D3716B2C2B400881446 /* T2DAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 86555D3216B2C2B400881446 /* T2DAppDelegate.mm */; };
-		86555D3816B2C2B400881446 /* T2DView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 86555D3416B2C2B400881446 /* T2DView.mm */; };
-		86555D3916B2C2B400881446 /* T2DViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 86555D3616B2C2B400881446 /* T2DViewController.mm */; };
 		86555D3F16B2C75900881446 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86555D3E16B2C75900881446 /* GLKit.framework */; };
 		867BACD216AEC8BB0033868F /* GameCenter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 867BAC9516AEC8BB0033868F /* GameCenter.mm */; };
 		867BACD316AEC8BB0033868F /* iOSAlerts.mm in Sources */ = {isa = PBXBuildFile; fileRef = 867BAC9816AEC8BB0033868F /* iOSAlerts.mm */; };
@@ -304,7 +302,6 @@
 		867BB0EE16AEC9050033868F /* tinyxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 867BAF6E16AEC9050033868F /* tinyxml.cpp */; };
 		867BB0EF16AEC9050033868F /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 867BAF7016AEC9050033868F /* tinyxmlerror.cpp */; };
 		867BB0F016AEC9050033868F /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 867BAF7116AEC9050033868F /* tinyxmlparser.cpp */; };
-		867BB0F116AEC9050033868F /* CursorManager.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAF7316AEC9050033868F /* CursorManager.cc */; };
 		867BB0F216AEC9050033868F /* popupMenu.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAF7A16AEC9050033868F /* popupMenu.cc */; };
 		867BB0F316AEC9050033868F /* fileDialog.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAF7D16AEC9050033868F /* fileDialog.cc */; };
 		867BB0F416AEC9050033868F /* msgBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 867BAF8016AEC9050033868F /* msgBox.cpp */; };
@@ -317,7 +314,6 @@
 		867BB0FC16AEC9050033868F /* platformNetAsync.unix.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAF9716AEC9050033868F /* platformNetAsync.unix.cc */; };
 		867BB0FD16AEC9050033868F /* platformNetwork.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAF9916AEC9050033868F /* platformNetwork.cc */; };
 		867BB0FE16AEC9050033868F /* platformString.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAF9C16AEC9050033868F /* platformString.cc */; };
-		867BB0FF16AEC9050033868F /* platformVideo.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAFA116AEC9050033868F /* platformVideo.cc */; };
 		867BB10016AEC9050033868F /* Tickable.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAFA716AEC9050033868F /* Tickable.cc */; };
 		867BB10116AEC9050033868F /* scriptGroup.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAFB616AEC9050033868F /* scriptGroup.cc */; };
 		867BB10216AEC9050033868F /* scriptObject.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAFB816AEC9050033868F /* scriptObject.cc */; };
@@ -512,7 +508,8 @@
 		D16581641702EE3E00A21928 /* iOSWindow.mm in Sources */ = {isa = PBXBuildFile; fileRef = D165815F1702EE3D00A21928 /* iOSWindow.mm */; };
 		D16581651702EE3E00A21928 /* iOSWindowManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = D16581611702EE3E00A21928 /* iOSWindowManager.mm */; };
 		D1C75BD916F31D6C0019C495 /* str.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1C75BD716F31D6C0019C495 /* str.cpp */; };
-		D1C75BDB16F329B40019C495 /* iOSVideo.mm in Sources */ = {isa = PBXBuildFile; fileRef = D1C75BDA16F329B40019C495 /* iOSVideo.mm */; };
+		D1C7C23317096714004F6661 /* T2DView.mm in Sources */ = {isa = PBXBuildFile; fileRef = D1C7C23017096713004F6661 /* T2DView.mm */; };
+		D1C7C23417096714004F6661 /* T2DViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = D1C7C23217096714004F6661 /* T2DViewController.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -569,10 +566,6 @@
 		86555D2E16B2C29200881446 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/iPhoneStoryboard.storyboard; sourceTree = "<group>"; };
 		86555D3116B2C2B400881446 /* T2DAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T2DAppDelegate.h; sourceTree = "<group>"; };
 		86555D3216B2C2B400881446 /* T2DAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = T2DAppDelegate.mm; sourceTree = "<group>"; };
-		86555D3316B2C2B400881446 /* T2DView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T2DView.h; sourceTree = "<group>"; };
-		86555D3416B2C2B400881446 /* T2DView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = T2DView.mm; sourceTree = "<group>"; };
-		86555D3516B2C2B400881446 /* T2DViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T2DViewController.h; sourceTree = "<group>"; };
-		86555D3616B2C2B400881446 /* T2DViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = T2DViewController.mm; sourceTree = "<group>"; };
 		86555D3E16B2C75900881446 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 		867BAC9416AEC8BB0033868F /* GameCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameCenter.h; sourceTree = "<group>"; };
 		867BAC9516AEC8BB0033868F /* GameCenter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GameCenter.mm; sourceTree = "<group>"; };
@@ -1151,12 +1144,8 @@
 		867BAF6F16AEC9050033868F /* tinyxml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinyxml.h; sourceTree = "<group>"; };
 		867BAF7016AEC9050033868F /* tinyxmlerror.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlerror.cpp; sourceTree = "<group>"; };
 		867BAF7116AEC9050033868F /* tinyxmlparser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlparser.cpp; sourceTree = "<group>"; };
-		867BAF7316AEC9050033868F /* CursorManager.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CursorManager.cc; sourceTree = "<group>"; };
 		867BAF7416AEC9050033868F /* eaxtypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = eaxtypes.h; sourceTree = "<group>"; };
 		867BAF7516AEC9050033868F /* event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = event.h; sourceTree = "<group>"; };
-		867BAF7616AEC9050033868F /* GLCoreFunc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLCoreFunc.h; sourceTree = "<group>"; };
-		867BAF7716AEC9050033868F /* GLExtFunc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLExtFunc.h; sourceTree = "<group>"; };
-		867BAF7816AEC9050033868F /* GLUFunc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLUFunc.h; sourceTree = "<group>"; };
 		867BAF7A16AEC9050033868F /* popupMenu.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = popupMenu.cc; sourceTree = "<group>"; };
 		867BAF7B16AEC9050033868F /* popupMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = popupMenu.h; sourceTree = "<group>"; };
 		867BAF7D16AEC9050033868F /* fileDialog.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fileDialog.cc; sourceTree = "<group>"; };
@@ -1194,8 +1183,6 @@
 		867BAF9E16AEC9050033868F /* platformTimeManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformTimeManager.h; sourceTree = "<group>"; };
 		867BAF9F16AEC9050033868F /* platformTLS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformTLS.h; sourceTree = "<group>"; };
 		867BAFA016AEC9050033868F /* platformVFS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformVFS.h; sourceTree = "<group>"; };
-		867BAFA116AEC9050033868F /* platformVideo.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = platformVideo.cc; sourceTree = "<group>"; };
-		867BAFA216AEC9050033868F /* platformVideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformVideo.h; sourceTree = "<group>"; };
 		867BAFA416AEC9050033868F /* mutex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mutex.h; sourceTree = "<group>"; };
 		867BAFA516AEC9050033868F /* semaphore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = semaphore.h; sourceTree = "<group>"; };
 		867BAFA616AEC9050033868F /* thread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thread.h; sourceTree = "<group>"; };
@@ -1525,7 +1512,10 @@
 		D16581611702EE3E00A21928 /* iOSWindowManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iOSWindowManager.mm; sourceTree = "<group>"; };
 		D1C75BD716F31D6C0019C495 /* str.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = str.cpp; sourceTree = "<group>"; };
 		D1C75BD816F31D6C0019C495 /* str.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = str.h; sourceTree = "<group>"; };
-		D1C75BDA16F329B40019C495 /* iOSVideo.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iOSVideo.mm; sourceTree = "<group>"; };
+		D1C7C22F17096712004F6661 /* T2DView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T2DView.h; sourceTree = "<group>"; };
+		D1C7C23017096713004F6661 /* T2DView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = T2DView.mm; sourceTree = "<group>"; };
+		D1C7C23117096713004F6661 /* T2DViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T2DViewController.h; sourceTree = "<group>"; };
+		D1C7C23217096714004F6661 /* T2DViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = T2DViewController.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1661,11 +1651,6 @@
 				867BACD016AEC8BB0033868F /* SoundEngine.mm */,
 				86555D3116B2C2B400881446 /* T2DAppDelegate.h */,
 				86555D3216B2C2B400881446 /* T2DAppDelegate.mm */,
-				86555D3316B2C2B400881446 /* T2DView.h */,
-				86555D3416B2C2B400881446 /* T2DView.mm */,
-				86555D3516B2C2B400881446 /* T2DViewController.h */,
-				86555D3616B2C2B400881446 /* T2DViewController.mm */,
-				D1C75BDA16F329B40019C495 /* iOSVideo.mm */,
 			);
 			name = platformiOS;
 			path = ../../source/platformiOS;
@@ -2565,12 +2550,8 @@
 		867BAF7216AEC9050033868F /* platform */ = {
 			isa = PBXGroup;
 			children = (
-				867BAF7316AEC9050033868F /* CursorManager.cc */,
 				867BAF7416AEC9050033868F /* eaxtypes.h */,
 				867BAF7516AEC9050033868F /* event.h */,
-				867BAF7616AEC9050033868F /* GLCoreFunc.h */,
-				867BAF7716AEC9050033868F /* GLExtFunc.h */,
-				867BAF7816AEC9050033868F /* GLUFunc.h */,
 				867BAF7916AEC9050033868F /* menus */,
 				867BAF7C16AEC9050033868F /* nativeDialogs */,
 				867BAF8216AEC9050033868F /* platform.cc */,
@@ -2603,8 +2584,6 @@
 				867BAF9E16AEC9050033868F /* platformTimeManager.h */,
 				867BAF9F16AEC9050033868F /* platformTLS.h */,
 				867BAFA016AEC9050033868F /* platformVFS.h */,
-				867BAFA116AEC9050033868F /* platformVideo.cc */,
-				867BAFA216AEC9050033868F /* platformVideo.h */,
 				867BAFA316AEC9050033868F /* threads */,
 				867BAFA716AEC9050033868F /* Tickable.cc */,
 				867BAFA816AEC9050033868F /* Tickable.h */,
@@ -3116,6 +3095,10 @@
 		D16581591702EE3D00A21928 /* windowManager */ = {
 			isa = PBXGroup;
 			children = (
+				D1C7C22F17096712004F6661 /* T2DView.h */,
+				D1C7C23017096713004F6661 /* T2DView.mm */,
+				D1C7C23117096713004F6661 /* T2DViewController.h */,
+				D1C7C23217096714004F6661 /* T2DViewController.mm */,
 				D165815A1702EE3D00A21928 /* iOSCursorController.h */,
 				D165815B1702EE3D00A21928 /* iOSCursorController.mm */,
 				D165815C1702EE3D00A21928 /* iOSView.h */,
@@ -3473,7 +3456,6 @@
 				867BB0EE16AEC9050033868F /* tinyxml.cpp in Sources */,
 				867BB0EF16AEC9050033868F /* tinyxmlerror.cpp in Sources */,
 				867BB0F016AEC9050033868F /* tinyxmlparser.cpp in Sources */,
-				867BB0F116AEC9050033868F /* CursorManager.cc in Sources */,
 				867BB0F216AEC9050033868F /* popupMenu.cc in Sources */,
 				867BB0F316AEC9050033868F /* fileDialog.cc in Sources */,
 				867BB0F416AEC9050033868F /* msgBox.cpp in Sources */,
@@ -3486,7 +3468,6 @@
 				867BB0FC16AEC9050033868F /* platformNetAsync.unix.cc in Sources */,
 				867BB0FD16AEC9050033868F /* platformNetwork.cc in Sources */,
 				867BB0FE16AEC9050033868F /* platformString.cc in Sources */,
-				867BB0FF16AEC9050033868F /* platformVideo.cc in Sources */,
 				867BB10016AEC9050033868F /* Tickable.cc in Sources */,
 				867BB10116AEC9050033868F /* scriptGroup.cc in Sources */,
 				867BB10216AEC9050033868F /* scriptObject.cc in Sources */,
@@ -3616,8 +3597,6 @@
 				867BB28216AECA110033868F /* jutils.c in Sources */,
 				2AC4404E16B0144500FC4091 /* ImageFont.cc in Sources */,
 				86555D3716B2C2B400881446 /* T2DAppDelegate.mm in Sources */,
-				86555D3816B2C2B400881446 /* T2DView.mm in Sources */,
-				86555D3916B2C2B400881446 /* T2DViewController.mm in Sources */,
 				2AF1C54B16B439D900C1CF3A /* declaredAssets.cc in Sources */,
 				2AF1C54C16B439D900C1CF3A /* referencedAssets.cc in Sources */,
 				2AB97A2116B66BE50080F940 /* tamlCustom.cc in Sources */,
@@ -3663,7 +3642,6 @@
 				D15E7EC716F0622D00BB43B1 /* primBuilder.cc in Sources */,
 				D15E7ECA16F0815200BB43B1 /* platformiOS.mm in Sources */,
 				D1C75BD916F31D6C0019C495 /* str.cpp in Sources */,
-				D1C75BDB16F329B40019C495 /* iOSVideo.mm in Sources */,
 				2AE2938B16EF4C480015E200 /* WaveComposite.cc in Sources */,
 				2AA3655F16F3553E00E7A900 /* ImageFrameProvider.cc in Sources */,
 				2AA3656016F3553E00E7A900 /* ImageFrameProviderCore.cc in Sources */,
@@ -3677,6 +3655,8 @@
 				D16581631702EE3E00A21928 /* iOSView.mm in Sources */,
 				D16581641702EE3E00A21928 /* iOSWindow.mm in Sources */,
 				D16581651702EE3E00A21928 /* iOSWindowManager.mm in Sources */,
+				D1C7C23317096714004F6661 /* T2DView.mm in Sources */,
+				D1C7C23417096714004F6661 /* T2DViewController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

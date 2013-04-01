@@ -10,16 +10,10 @@
 
 #include "platform/platformGL.h"
 
-GFXOpenGLESWindowTarget::GFXOpenGLESWindowTarget(void *win, GFXDevice *d)
+GFXOpenGLESWindowTarget::GFXOpenGLESWindowTarget(PlatformWindow *win, GFXDevice *d)
       : GFXWindowTarget(win), mDevice(d), mContext(NULL), mFullscreenContext(NULL)
 {
    mWindow = win;
-//   GFXVideoMode mode = win->getVideoMode();
-//   size = mode.resolution;
-
-//    _teardownCurrentMode();
-//    _setupNewMode();
-//    platState.viewController.windowTarget = this;
 }
 
 void GFXOpenGLESWindowTarget::resetMode()
@@ -31,6 +25,8 @@ void GFXOpenGLESWindowTarget::resetMode()
 bool GFXOpenGLESWindowTarget::present()
 {
     GFX->updateStates();
+    GFXOpenGLESDevice* device = (GFXOpenGLESDevice*)GFX;
+    [device->mContext presentRenderbuffer:GL_RENDERBUFFER];
 //    [[platState window] presentRenderbuffer:GL_RENDERBUFFER];
     return true;
 }

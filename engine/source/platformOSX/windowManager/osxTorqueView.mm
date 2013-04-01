@@ -118,23 +118,6 @@
     [self updateContext];
 }
 
-////#pragma mark ---- OSXTorqueView OpenGL Handling ----
-////
-////-----------------------------------------------------------------------------
-//// Allocates a new NSOpenGLContext with the specified pixel format and makes
-//// it the current OpenGL context automatically
-//- (void)createContextWithPixelFormat:(NSOpenGLPixelFormat *)pixelFormat
-//{
-//    self.openGLContext = [[[NSOpenGLContext alloc] initWithFormat:pixelFormat shareContext:nil] retain];
-//
-//    AssertFatal(self.openGLContext, "We could not create a valid NSOpenGL rendering context.");
-//
-//    [self.openGLContext setView:self];
-//
-//    [self.openGLContext makeCurrentContext];
-//
-//    _contextInitialized = YES;
-//}
 
 //-----------------------------------------------------------------------------
 // Clears the current context, releases control from this view, and deallocates
@@ -161,6 +144,7 @@
     if (self.openGLContext != nil)
         [self.openGLContext update];
 }
+
 
 //-----------------------------------------------------------------------------
 // Perform a swap buffer if the NSOpenGLContext is initialized
@@ -194,17 +178,291 @@
 - (void) reshape
 {
 	[super reshape];
-//	
-//	// We draw on a secondary thread through the display link
-//	// When resizing the view, -reshape is called automatically on the main thread
-//	// Add a mutex around to avoid the threads accessing the context simultaneously when resizing
-//	CGLLockContext([[self openGLContext] CGLContextObj]);
-//	
-//	NSRect rect = [self bounds];
-//	
-//	[m_renderer resizeWithWidth:rect.size.width AndHeight:rect.size.height];
-//	
-//	CGLUnlockContext([[self openGLContext] CGLContextObj]);
+}
+
+#pragma mark ---- OSXTorqueView Input Handling ----
+
+//-----------------------------------------------------------------------------
+// Fills out the modifiers based on key presses such as shift, alt, etc
+- (void)getModifierKey:(U32&)modifiers event:(NSEvent *)event;
+{
+    /*
+     NSAlphaShiftKeyMask = 1 << 16,
+     NSShiftKeyMask      = 1 << 17,
+     NSControlKeyMask    = 1 << 18,
+     NSAlternateKeyMask  = 1 << 19,
+     NSCommandKeyMask    = 1 << 20,
+     NSNumericPadKeyMask = 1 << 21,
+     NSHelpKeyMask       = 1 << 22,
+     NSFunctionKeyMask   = 1 << 23,
+     NSDeviceIndependentModifierFlagsMask = 0xffff0000U
+     */
+    
+    U32 keyMods = [event modifierFlags];
+    
+    if (keyMods & NSShiftKeyMask)
+        modifiers |= SI_SHIFT;
+    
+    if (keyMods & NSCommandKeyMask)
+        modifiers |= SI_ALT;
+    
+    if (keyMods & NSAlternateKeyMask)
+        modifiers |= SI_MAC_OPT;
+    
+    if (keyMods & NSControlKeyMask)
+        modifiers |= SI_CTRL;
+}
+
+//-----------------------------------------------------------------------------
+// Processes mouse up and down events, posts to the event system
+- (void)processMouseButton:(NSEvent *)event button:(KeyCodes)button action:(U8)action
+{
+    // Get the click location
+    NSPoint clickLocation = [self convertPoint:[event locationInWindow] fromView:nil];
+    
+    NSRect bounds = [self bounds];
+    
+    clickLocation.y = bounds.size.height - clickLocation.y;
+    
+    //    // Move the cursor
+    //    Canvas->setCursorPos(Point2I((S32) clickLocation.x, (S32) clickLocation.y));
+    
+    // Grab any modifiers
+    U32 modifiers = 0;
+    [self getModifierKey:modifiers event:event];
+    
+    // Build the input event
+    InputEventInfo torqueEvent;
+    
+    torqueEvent.deviceType = MouseDeviceType;
+    torqueEvent.deviceInst = 0;
+    torqueEvent.objType = SI_BUTTON;
+    torqueEvent.objInst = button;
+    torqueEvent.modifier = modifiers;
+    torqueEvent.ascii = 0;
+    torqueEvent.action = action;
+    torqueEvent.fValue = 1.0;
+    
+    // Post the input event
+    //    mTorqueWindow->mouseEvent.trigger(mTorqueWindow->getWindowId(), mLastMods, action, torqueKeyCode);
+    //    Game->postEvent(torqueEvent);
+}
+
+//-----------------------------------------------------------------------------
+// Processes keyboard up and down events, posts to the event system
+- (void)processKeyEvent:(NSEvent *)event make:(BOOL)make
+{
+    // If input and keyboard are enabled
+    if (!Input::isEnabled() && !Input::isKeyboardEnabled())
+        return;
+    
+    unichar chars = [[event charactersIgnoringModifiers] characterAtIndex:0];
+    
+    // Get the key code for the event
+    U32 keyCode = [event keyCode];
+    
+    U16 objInst = TranslateOSKeyCode(keyCode);
+    
+    // Grab any modifiers
+    U32 modifiers = 0;
+    [self getModifierKey:modifiers event:event];
+    
+    // Build the input event
+    InputEventInfo torqueEvent;
+    
+    F32 fValue = 1.0f;
+    U8 action = SI_MAKE;
+    
+    if (!make)
+    {
+        action = SI_BREAK;
+        fValue = 0.0f;
+    }
+    else if(make && [event isARepeat])
+    {
+        action = SI_REPEAT;
+    }
+    
+    torqueEvent.deviceType = KeyboardDeviceType;
+    torqueEvent.deviceInst = 0;
+    torqueEvent.objType = SI_KEY;
+    torqueEvent.objInst = objInst;
+    torqueEvent.modifier = modifiers;
+    torqueEvent.ascii = 0;
+    torqueEvent.action = action;
+    torqueEvent.fValue = fValue;
+    torqueEvent.ascii = chars;
+    
+    // Post the input event
+    //    mTorqueWindow->keyEvent.trigger(mTorqueWindow->getWindowId(), mLastMods, action, torqueKeyCode);
+    //    Game->postEvent(torqueEvent);
+}
+
+//-----------------------------------------------------------------------------
+// Default mouseDown override
+- (void)mouseDown:(NSEvent *)event
+{
+    if (!Input::isEnabled() && !Input::isMouseEnabled())
+        return;
+    
+    [self processMouseButton:event button:KEY_BUTTON0 action:SI_MAKE];
+}
+
+//-----------------------------------------------------------------------------
+// Default rightMouseDown override
+- (void)rightMouseDown:(NSEvent *)event
+{
+    if (!Input::isEnabled() && !Input::isMouseEnabled())
+        return;
+    
+    [self processMouseButton:event button:KEY_BUTTON1 action:SI_MAKE];
+}
+
+//-----------------------------------------------------------------------------
+// Default otherMouseDown override
+- (void)otherMouseDown:(NSEvent *)event
+{
+    if (!Input::isEnabled() && !Input::isMouseEnabled())
+        return;
+    
+    [self processMouseButton:event button:KEY_BUTTON2 action:SI_MAKE];
+}
+
+//-----------------------------------------------------------------------------
+// Default mouseUp override
+- (void)mouseUp:(NSEvent *)event
+{
+    if (!Input::isEnabled() && !Input::isMouseEnabled())
+        return;
+    
+    [self processMouseButton:event button:KEY_BUTTON0 action:SI_BREAK];
+}
+
+//-----------------------------------------------------------------------------
+// Default rightMouseUp override
+- (void)rightMouseUp:(NSEvent *)event
+{
+    if (!Input::isEnabled() && !Input::isMouseEnabled())
+        return;
+    
+    [self processMouseButton:event button:KEY_BUTTON1 action:SI_BREAK];
+}
+
+//-----------------------------------------------------------------------------
+// Default otherMouseUp override
+- (void)otherMouseUp:(NSEvent *)event
+{
+    if (!Input::isEnabled() && !Input::isMouseEnabled())
+        return;
+    
+    [self processMouseButton:event button:KEY_BUTTON2 action:SI_BREAK];
+}
+
+//-----------------------------------------------------------------------------
+// Default otherMouseDown override
+- (void)mouseMoved:(NSEvent *)event
+{
+    if (!Input::isEnabled() && !Input::isMouseEnabled())
+        return;
+    
+    // Get the mouse location
+    NSPoint location = [self convertPoint:[event locationInWindow] fromView:nil];
+    
+    // NSViews increase the Y the higher the cursor
+    // Torque needs that to be inverted
+    NSRect bounds = [self bounds];
+    location.y = bounds.size.height - location.y;
+    
+    // Grab any modifiers
+    U32 modifiers = 0;
+    [self getModifierKey:modifiers event:event];
+    
+    //    // Move the cursor
+    //    Canvas->setCursorPos(Point2I((S32) location.x, (S32) location.y));
+    
+    // Post the event
+    mTorqueWindow->mouseEvent.trigger(mTorqueWindow->getWindowId(), modifiers, (S32)location.x, (S32)location.y, mTorqueWindow->isMouseLocked());
+}
+
+//-----------------------------------------------------------------------------
+// Default mouseDragged override
+- (void)mouseDragged:(NSEvent *)event
+{
+    if (!Input::isEnabled() && !Input::isMouseEnabled())
+        return;
+    
+    [self mouseMoved:event];
+}
+
+//-----------------------------------------------------------------------------
+// Default rightMouseDragged override
+- (void)rightMouseDragged:(NSEvent *)event
+{
+    if (!Input::isEnabled() && !Input::isMouseEnabled())
+        return;
+    
+    [self mouseMoved:event];
+}
+
+//-----------------------------------------------------------------------------
+// Default otherMouseDragged override
+- (void)otherMouseDragged:(NSEvent *)event
+{
+    if (!Input::isEnabled() && !Input::isMouseEnabled())
+        return;
+    
+    [self mouseMoved:event];
+}
+
+//-----------------------------------------------------------------------------
+// Default scrollWheel override
+- (void)scrollWheel:(NSEvent *)event
+{
+    if (!Input::isEnabled() && !Input::isMouseEnabled())
+        return;
+    
+    F32 deltaY = [event deltaY];
+    
+    if (deltaY == 0)
+        return;
+    
+    // Grab any modifiers
+    U32 modifiers = 0;
+    [self getModifierKey:modifiers event:event];
+    
+    InputEventInfo torqueEvent;
+    
+    torqueEvent.deviceType = MouseDeviceType;
+    torqueEvent.deviceInst = 0;
+    torqueEvent.objType = SI_ZAXIS;
+    torqueEvent.objInst = 0;
+    torqueEvent.modifier = modifiers;
+    torqueEvent.ascii = 0;
+    torqueEvent.action = SI_MOVE;
+    torqueEvent.fValue = deltaY;
+    //    Game->postEvent(torqueEvent);
+}
+
+//-----------------------------------------------------------------------------
+// Default keyDown override
+- (void)keyDown:(NSEvent *)event
+{
+    // If input and keyboard are enabled
+    if (!Input::isEnabled() && !Input::isKeyboardEnabled())
+        return;
+    
+    [self processKeyEvent:event make:YES];
+}
+
+//-----------------------------------------------------------------------------
+// Default keyUp override
+- (void)keyUp:(NSEvent *)event
+{
+    // If input and keyboard are enabled
+    if (!Input::isEnabled() && !Input::isKeyboardEnabled())
+        return;
+    
+    [self processKeyEvent:event make:NO];
 }
 
 //#pragma mark -
@@ -253,7 +511,7 @@
 //    Point2I clientExtent = mTorqueWindow->getClientExtent();
 //    mTorqueWindow->resizeEvent.trigger(mTorqueWindow->getWindowId(), clientExtent.x, clientExtent.y);
 //}
-//
+
 //#pragma mark -
 //#pragma mark responder status
 //- (BOOL)acceptsFirstResponder { return YES; }

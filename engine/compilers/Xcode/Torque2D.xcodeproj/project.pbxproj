@@ -441,7 +441,6 @@
 		D1049A0C16F6F8C40096749B /* mPoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1049A0B16F6F8C40096749B /* mPoint.cpp */; };
 		D1049A0E16F6FA190096749B /* tsIntegerSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1049A0D16F6FA190096749B /* tsIntegerSet.cpp */; };
 		D1049A1016F6FA540096749B /* tsTransform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1049A0F16F6FA540096749B /* tsTransform.cpp */; };
-		D11150F91705670F00EFB486 /* macView.mm in Sources */ = {isa = PBXBuildFile; fileRef = D11150F81705670F00EFB486 /* macView.mm */; };
 		D11F54E81703E48500797E52 /* osxTorqueView.mm in Sources */ = {isa = PBXBuildFile; fileRef = D11F54E71703E48500797E52 /* osxTorqueView.mm */; };
 		D16580751702942800A21928 /* gfxInit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D16580731702942800A21928 /* gfxInit.cpp */; };
 		D16580791702A5AE00A21928 /* guiContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D16580771702A5AE00A21928 /* guiContainer.cpp */; };
@@ -1367,8 +1366,6 @@
 		D1049A0B16F6F8C40096749B /* mPoint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mPoint.cpp; sourceTree = "<group>"; };
 		D1049A0D16F6FA190096749B /* tsIntegerSet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsIntegerSet.cpp; sourceTree = "<group>"; };
 		D1049A0F16F6FA540096749B /* tsTransform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsTransform.cpp; sourceTree = "<group>"; };
-		D11150F71705670F00EFB486 /* macView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = macView.h; sourceTree = "<group>"; };
-		D11150F81705670F00EFB486 /* macView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = macView.mm; sourceTree = "<group>"; };
 		D11F54E61703E48500797E52 /* osxTorqueView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxTorqueView.h; sourceTree = "<group>"; };
 		D11F54E71703E48500797E52 /* osxTorqueView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxTorqueView.mm; sourceTree = "<group>"; };
 		D16580731702942800A21928 /* gfxInit.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxInit.cpp; sourceTree = "<group>"; };
@@ -3022,8 +3019,6 @@
 		D1A6957B17016CA90060D928 /* windowManager */ = {
 			isa = PBXGroup;
 			children = (
-				D11150F71705670F00EFB486 /* macView.h */,
-				D11150F81705670F00EFB486 /* macView.mm */,
 				D11F54E61703E48500797E52 /* osxTorqueView.h */,
 				D11F54E71703E48500797E52 /* osxTorqueView.mm */,
 				D1A6957C17016CA90060D928 /* macCursorController.h */,
@@ -3605,7 +3600,6 @@
 				D16580791702A5AE00A21928 /* guiContainer.cpp in Sources */,
 				D11F54E81703E48500797E52 /* osxTorqueView.mm in Sources */,
 				D1E8DDFC170412D50001367B /* process.cpp in Sources */,
-				D11150F91705670F00EFB486 /* macView.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

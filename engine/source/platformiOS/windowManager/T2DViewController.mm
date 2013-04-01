@@ -20,7 +20,7 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#import "T2DViewController.h"
+#import "./T2DViewController.h"
 #import "platformiOS/platformGL.h"
 #include "platformiOS/iOSWindow.h"
 #include "platformiOS/platformiOS.h"

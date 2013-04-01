@@ -123,7 +123,7 @@ static iOSPlatState * tempSharedPlatState = nil;
 //    _windowSize.y = height;
 //    
 //    // Get the window's current frame
-//    NSRect frame = NSMakeRect([_window frame].origin.x, [_window frame].origin.y, width, height);
+//    CGRect frame = NSMakeRect([_window frame].origin.x, [_window frame].origin.y, width, height);
 //    
 //    // Get the starting position of the bar height
 //    F32 barOffset = frame.size.height;
@@ -148,7 +148,7 @@ static iOSPlatState * tempSharedPlatState = nil;
 //    
 //    // Update the frame of the torqueView to match the window
 //    frame = NSMakeRect([_window frame].origin.x, [_window frame].origin.y, width, height);
-//    NSRect viewFrame = NSMakeRect(0, 0, frame.size.width, frame.size.height);
+//    CGRect viewFrame = NSMakeRect(0, 0, frame.size.width, frame.size.height);
 //    
 //    [_torqueView setFrame:viewFrame];
 //    
@@ -278,7 +278,7 @@ void Platform::init()
     Con::setVariable("$Platform", "macos");
     
     // Initialize standard libraries (namespaces)
-    Video::init();
+//    Video::init();
 //    Input::init();
     
     // Initialize OS X specific libraries and services
@@ -297,7 +297,7 @@ void Platform::process()
 void Platform::shutdown()
 {
 //    Input::destroy();
-    Video::destroy();
+//    Video::destroy();
 }
 
 //-----------------------------------------------------------------------------

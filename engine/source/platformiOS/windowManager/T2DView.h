@@ -19,36 +19,19 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
-#import "platformiOS/platformiOS.h"
-#include "platform/platformVideo.h"
-#include "graphics/gfxDevice.h"
-#include "T2DAppDelegate.h"
 
-GFXVideoMode Video::getDesktopResolution()
-{
-    UIApplication * application = [UIApplication sharedApplication];
-    // Get the screen the application window resides in and is receiving input
-    UIWindow* mainScreen = [application keyWindow];
-    
-    // Get the visible boundaries
-    CGRect screenRect = [mainScreen frame];
-    
-    // Get the screen depth. You cannot access depth directly. It must be passed
-    // into a function that will return the bpp
-//    int bitDepth = NSBitsPerPixelFromDepth([mainScreen depth]);
-    
-    // Build the return resolution
-    GFXVideoMode resolution;
-    resolution.resolution.x = (U32)screenRect.size.width;
-    resolution.resolution.y = (U32)screenRect.size.height;
-//    resolution.bitDepth = (U32)bitDepth;
-    
-    iOSPlatState * platState = [iOSPlatState sharedPlatState];
-    
-    [platState setDesktopWidth:resolution.resolution.x];
-    [platState setDesktopHeight:resolution.resolution.y];
-    [platState setDesktopBitsPixel:resolution.bitDepth];
-    
-    // Return the new resolution
-    return resolution;
+#import <GLKit/GLKit.h>
+
+@interface T2DView : GLKView {
 }
+
+@property (nonatomic) CGFloat currentAngle;//for knowing our current oriantion
+@property (nonatomic) BOOL isLayedOut;
+
+- (void)swapBuffers;
+- (void)rotateByAngle:(CGFloat)angle;//rotate BY a certain degree
+- (void)rotateToAngle:(CGFloat)angle;//rotate TO a certain degree
+- (void)centerOnPoint:(CGPoint)point;//set the center position
+
+
+@end

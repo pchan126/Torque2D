@@ -24,7 +24,7 @@
 //#include "platformiPhone/iPhoneEvents.h"
 
 #import "platformiOS/platformiOS.h"
-#import "platformiOS/T2DView.h"
+#import "./T2DView.h"
 
 #import "platformiOS/platformGL.h"
 #include "game/gameInterface.h"
