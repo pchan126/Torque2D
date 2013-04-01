@@ -116,7 +116,6 @@ bool initializeLibraries()
     Sim::init();
     GFXInit::init();
     Process::init();
-    GFXTextureManager::init();
 
     if(!Net::init())
     {
@@ -141,7 +140,6 @@ bool initializeLibraries()
     FrameAllocator::init(3 << 20);      // 3 meg frame allocator buffer
 #endif	//TORQUE_OS_IOS
 
-//    TextureManager::create();
     ResManager::create();
 
     // Register known file types here
@@ -194,7 +192,6 @@ void shutdownLibraries()
     Con::shutdown();
 
     ResManager::destroy();
-//    TextureManager::destroy();
 
     // Destroy the stock colors.
     StockColor::destroy();

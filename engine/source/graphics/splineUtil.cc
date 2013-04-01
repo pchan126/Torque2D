@@ -80,7 +80,7 @@ void drawSplineBeam( const Point3F& camPos, U32 numSegments,
 
       crossVec *= width * 0.5f;
 
-      F32 u = uvOffset + texRepFactor * t;
+//      F32 u = uvOffset + texRepFactor * t;
 
 //      glTexCoord2f( u, 0.0f );
 //      glVertex3fv( curPoint + crossVec );

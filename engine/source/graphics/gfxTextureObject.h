@@ -221,7 +221,7 @@ public:
     typedef Signal<void(GFXTexNotifyCode code)> EventSignal;
     
     /// The texture event signal.
-    EventSignal smEventSignal;
+    EventSignal *smEventSignal;
 
     //    DECLARE_CONOBJECT(GFXTextureObject);
 protected:

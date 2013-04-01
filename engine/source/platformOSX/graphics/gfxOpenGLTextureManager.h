@@ -27,12 +27,14 @@
 #include "graphics/gfxTextureManager.h"
 #include "./gfxOpenGLTextureObject.h"
 
+@class NSOpenGLContext;
+
 class GFXOpenGLTextureManager : public GFXTextureManager
 {   
 public:
     typedef GFXTextureManager Parent;
     
-   GFXOpenGLTextureManager();
+   GFXOpenGLTextureManager(NSOpenGLContext* mContext);
    ~GFXOpenGLTextureManager();
    
 protected:
@@ -89,6 +91,7 @@ private:
 
    void handleTextureCallback(void *textureInfo);
     
+    NSOpenGLContext* mContext;
     // t2d texture mananger
 public:
     bool mDGLRender;

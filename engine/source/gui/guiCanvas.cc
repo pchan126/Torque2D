@@ -236,8 +236,8 @@ void GuiCanvas::handlePaintEvent(WindowId did)
 //    // Now capture the video
 //    if ( VIDCAP->isRecording() && canRender )
 //        VIDCAP->capture();
-    
-    renderFrame(false);
+    if (canRender)
+        renderFrame(false);
 }
 
 void GuiCanvas::handleAppEvent( WindowId did, S32 event )
@@ -578,12 +578,6 @@ bool GuiCanvas::processInputEvent(const InputEventInfo &event)
             mLastEvent.mousePoint.x = S32(mCursorPt.x);
             mLastEvent.mousePoint.y = S32(mCursorPt.y);
             mLastEvent.eventID = 0;
-
-#ifdef	TORQUE_ALLOW_JOURNALING
-            // [tom, 9/8/2006] If we're journaling, we need to update the plat cursor
-            if(Game->isJournalReading())
-               Input::setCursorPos((S32)mCursorPt.x, (S32)mCursorPt.y);
-#endif	//TORQUE_ALLOW_JOURNALING
 
             if (mMouseButtonDown)
                rootMouseDragged(mLastEvent);

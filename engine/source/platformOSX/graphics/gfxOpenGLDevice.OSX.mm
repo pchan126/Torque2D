@@ -102,8 +102,6 @@ GFXOpenGLDevice::GFXOpenGLDevice( U32 adapterIndex ) :
     for (int i = 0; i < TEXTURE_STAGE_COUNT; i++)
         mActiveTextureType[i] = GL_TEXTURE_2D;
     
-    mTextureManager = new GFXOpenGLTextureManager();
-    
     m_WorldStack.push_back(MatrixF(true));
     m_ProjectionStack.push_back(MatrixF(true));
     
@@ -157,6 +155,8 @@ void GFXOpenGLDevice::init( const GFXVideoMode &mode, PlatformWindow *window )
 
        [mContext makeCurrentContext];
        
+       mTextureManager = new GFXOpenGLTextureManager(mContext);
+
        initGLState();
        initGenericShaders();
        mInitialized = true;

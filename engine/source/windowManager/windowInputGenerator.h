@@ -32,7 +32,7 @@ class WindowInputGenerator
       F32             mPixelsPerMickey;
 
       // Event Handlers
-      void handleMouseButton(WindowId did, U32 modifier,  U32 action, U16 button);
+      void handleMouseButton(WindowId did, U32 modifier,  S32 x, S32 y, U32 action, U16 button);
       void handleMouseWheel (WindowId did, U32 modifier,  S32 wheelDeltaX, S32 wheelDeltaY);
       void handleMouseMove  (WindowId did, U32 modifier,  S32 x,      S32 y, bool isRelative);
       void handleKeyboard   (WindowId did, U32 modifier,  U32 action, U16 key);

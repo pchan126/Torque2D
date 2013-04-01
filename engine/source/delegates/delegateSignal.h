@@ -722,8 +722,8 @@ typedef Signal<void(WindowId,U32,U32,U16)> KeyEvent;
 /// void event(WindowId,U32 modifier,U16 key)
 typedef Signal<void(WindowId,U32,U16)> CharEvent;
 
-/// void event(WindowId,U32 modifier,U32 action,U16 button)
-typedef Signal<void(WindowId,U32,U32,U16)> ButtonEvent;
+/// void event(WindowId,U32 modifier,S32 x,S32 y,U32 action,U16 button)
+typedef Signal<void(WindowId,U32,S32,S32,U32,U16)> ButtonEvent;
 
 /// void event(WindowId,U32 modifier,U32 action,U32 axis,F32 value)
 typedef Signal<void(WindowId,U32,U32,U32,F32)> LinearEvent;

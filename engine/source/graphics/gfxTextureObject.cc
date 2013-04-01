@@ -129,6 +129,9 @@ GFXTextureObject::~GFXTextureObject()
 
    smActiveTOCount--;
 #endif
+
+    if( smEventSignal )
+        SAFE_DELETE( smEventSignal );
 }
 
 void GFXTextureObject::destroySelf()

@@ -127,8 +127,8 @@ void GFXOpenGLCardProfiler::init()
 void GFXOpenGLCardProfiler::setupCardCapabilities()
 {
     GLint maxTexSize;
-    GLint maxDepthBits;
-    GLint maxStencilBits;
+//    GLint maxDepthBits;
+//    GLint maxStencilBits;
     GLint numCompressedTexFormats;
     GLint maxShaderTextures;
     

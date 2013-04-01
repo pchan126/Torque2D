@@ -43,8 +43,9 @@ static const char* extArray[EXT_ARRAY_SIZE] = { "", "jpg", "png"};
 //-----------------------------------------------------------------------------
 // Constructor
 //-----------------------------------------------------------------------------
-GFXOpenGLTextureManager::GFXOpenGLTextureManager()
+GFXOpenGLTextureManager::GFXOpenGLTextureManager(NSOpenGLContext* mContext)
 {
+    mContext = mContext;
     mDGLRender = true;
     mTextureCompressionHint = GL_FASTEST;
 }

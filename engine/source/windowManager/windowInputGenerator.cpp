@@ -98,12 +98,23 @@ void WindowInputGenerator::handleMouseMove( WindowId did, U32 modifier, S32 x, S
     mInputController->processMouseMoveEvent( event );
 }
 
-void WindowInputGenerator::handleMouseButton( WindowId did, U32 modifiers, U32 action, U16 button )
+void WindowInputGenerator::handleMouseButton( WindowId did, U32 modifiers, S32 x, S32 y, U32 action, U16 button )
 {
    if( !mInputController || !mFocused )
       return;
 
-   InputEventInfo event;
+    {
+    // Generate a base Movement along and Axis event
+    MouseMoveEventInfo event;
+    event.modifier   = modifiers;
+    event.xPos = x;
+    event.yPos = y;
+    
+    mInputController->processMouseMoveEvent( event );
+    }
+    
+    {
+    InputEventInfo event;
    event.deviceType = MouseDeviceType;
    event.deviceInst = 0;
    event.objType    = SI_BUTTON;
@@ -114,6 +125,7 @@ void WindowInputGenerator::handleMouseButton( WindowId did, U32 modifiers, U32 a
    event.fValue     = (action==IA_MAKE) ? 1.0 : 0.0;
 
    generateInputEvent(event);
+    }
 }
 
 void WindowInputGenerator::handleMouseWheel( WindowId did, U32 modifiers, S32 wheelDeltaX, S32 wheelDeltaY )

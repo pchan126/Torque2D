@@ -224,28 +224,12 @@
     
     clickLocation.y = bounds.size.height - clickLocation.y;
     
-    //    // Move the cursor
-    //    Canvas->setCursorPos(Point2I((S32) clickLocation.x, (S32) clickLocation.y));
-    
     // Grab any modifiers
     U32 modifiers = 0;
     [self getModifierKey:modifiers event:event];
     
-    // Build the input event
-    InputEventInfo torqueEvent;
-    
-    torqueEvent.deviceType = MouseDeviceType;
-    torqueEvent.deviceInst = 0;
-    torqueEvent.objType = SI_BUTTON;
-    torqueEvent.objInst = button;
-    torqueEvent.modifier = modifiers;
-    torqueEvent.ascii = 0;
-    torqueEvent.action = action;
-    torqueEvent.fValue = 1.0;
-    
     // Post the input event
-    //    mTorqueWindow->mouseEvent.trigger(mTorqueWindow->getWindowId(), mLastMods, action, torqueKeyCode);
-    //    Game->postEvent(torqueEvent);
+    mTorqueWindow->buttonEvent.trigger(mTorqueWindow->getWindowId(), modifiers, (S32)clickLocation.x, (S32)clickLocation.y, action, button);
 }
 
 //-----------------------------------------------------------------------------
@@ -256,19 +240,12 @@
     if (!Input::isEnabled() && !Input::isKeyboardEnabled())
         return;
     
-    unichar chars = [[event charactersIgnoringModifiers] characterAtIndex:0];
-    
     // Get the key code for the event
     U32 keyCode = [event keyCode];
-    
-    U16 objInst = TranslateOSKeyCode(keyCode);
     
     // Grab any modifiers
     U32 modifiers = 0;
     [self getModifierKey:modifiers event:event];
-    
-    // Build the input event
-    InputEventInfo torqueEvent;
     
     F32 fValue = 1.0f;
     U8 action = SI_MAKE;
@@ -283,19 +260,8 @@
         action = SI_REPEAT;
     }
     
-    torqueEvent.deviceType = KeyboardDeviceType;
-    torqueEvent.deviceInst = 0;
-    torqueEvent.objType = SI_KEY;
-    torqueEvent.objInst = objInst;
-    torqueEvent.modifier = modifiers;
-    torqueEvent.ascii = 0;
-    torqueEvent.action = action;
-    torqueEvent.fValue = fValue;
-    torqueEvent.ascii = chars;
-    
     // Post the input event
-    //    mTorqueWindow->keyEvent.trigger(mTorqueWindow->getWindowId(), mLastMods, action, torqueKeyCode);
-    //    Game->postEvent(torqueEvent);
+    mTorqueWindow->keyEvent.trigger(mTorqueWindow->getWindowId(), mLastMods, action, keyCode);
 }
 
 //-----------------------------------------------------------------------------
@@ -377,9 +343,6 @@
     U32 modifiers = 0;
     [self getModifierKey:modifiers event:event];
     
-    //    // Move the cursor
-    //    Canvas->setCursorPos(Point2I((S32) location.x, (S32) location.y));
-    
     // Post the event
     mTorqueWindow->mouseEvent.trigger(mTorqueWindow->getWindowId(), modifiers, (S32)location.x, (S32)location.y, mTorqueWindow->isMouseLocked());
 }
@@ -421,26 +384,11 @@
     if (!Input::isEnabled() && !Input::isMouseEnabled())
         return;
     
-    F32 deltaY = [event deltaY];
-    
-    if (deltaY == 0)
-        return;
-    
     // Grab any modifiers
     U32 modifiers = 0;
     [self getModifierKey:modifiers event:event];
     
-    InputEventInfo torqueEvent;
-    
-    torqueEvent.deviceType = MouseDeviceType;
-    torqueEvent.deviceInst = 0;
-    torqueEvent.objType = SI_ZAXIS;
-    torqueEvent.objInst = 0;
-    torqueEvent.modifier = modifiers;
-    torqueEvent.ascii = 0;
-    torqueEvent.action = SI_MOVE;
-    torqueEvent.fValue = deltaY;
-    //    Game->postEvent(torqueEvent);
+    mTorqueWindow->wheelEvent.trigger(mTorqueWindow->getWindowId(), modifiers, [event deltaX], [event deltaY]);
 }
 
 //-----------------------------------------------------------------------------
