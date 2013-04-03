@@ -47,6 +47,16 @@ void MatrixF::transposeTo(F32 *matrix) const
    matrix[idx(3,3)] = m[idx(3,3)];
 }
 
+MatrixF& MatrixF::set(const QuatF &q)
+{
+#ifdef __GLK_MATRIX_4_H
+    mGM = GLKMatrix4MakeWithQuaternion(q.mGQ);
+#else
+    q.setMatrix(this);
+#endif
+    return (*this);
+}
+
 bool MatrixF::isAffine() const
 {
    // An affine transform is defined by the following structure
@@ -149,7 +159,7 @@ bool MatrixF::fullInverse()
    setRow(2,cc);
    setRow(3,dd);
 
-   mul(1.0f/det);
+   *this *=(1.0f/det);
 
    return true;
 }

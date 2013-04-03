@@ -38,9 +38,9 @@
 #ifndef _MMATRIX_H_
 #include "math/mMatrix.h"
 #endif
-#ifndef _MQUAT_H_
+
 #include "math/mQuat.h"
-#endif
+
 #ifndef _MSPHERE_H_
 #include "math/mSphere.h"
 #endif

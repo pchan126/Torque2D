@@ -35,7 +35,7 @@ void PlaneTransformer::set(const MatrixF& xform, const Point3F& scale)
    m[MatrixF::idx(2, 2)] = scale.z;
 
    mTransposeInverse = xform;
-   mTransposeInverse.mul(scaleMat);
+   mTransposeInverse*=scaleMat;
    mTransposeInverse.transpose();
    mTransposeInverse.inverse();
 }

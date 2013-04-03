@@ -1390,6 +1390,7 @@
 		D1A6958217016CA90060D928 /* macWindowManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = macWindowManager.h; sourceTree = "<group>"; };
 		D1A6958317016CA90060D928 /* macWindowManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = macWindowManager.mm; sourceTree = "<group>"; };
 		D1A6959A170185400060D928 /* IProcessInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IProcessInput.h; sourceTree = "<group>"; };
+		D1C8F141170ABF7C00D554EF /* mDualQuat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mDualQuat.h; sourceTree = "<group>"; };
 		D1E8DDFA170412D50001367B /* process.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = process.cpp; sourceTree = "<group>"; };
 		D1E8DDFB170412D50001367B /* process.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = process.h; sourceTree = "<group>"; };
 		DA1640E316C4AEDA009C2F0F /* gfxOpenGLWindowTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLWindowTarget.h; sourceTree = "<group>"; };
@@ -2690,6 +2691,7 @@
 				86BC80AC16518D4600D96ADF /* mQuadPatch.h */,
 				86BC80AD16518D4600D96ADF /* mQuat.cc */,
 				86BC80AE16518D4600D96ADF /* mQuat.h */,
+				D1C8F141170ABF7C00D554EF /* mDualQuat.h */,
 				86BC80AF16518D4600D96ADF /* mRandom.cc */,
 				86BC80B016518D4600D96ADF /* mRandom.h */,
 				86BC80B116518D4600D96ADF /* mRect.h */,

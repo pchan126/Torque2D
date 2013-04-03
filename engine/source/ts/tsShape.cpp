@@ -443,7 +443,7 @@ void TSShape::getNodeWorldTransform(S32 nodeIndex, MatrixF* mat) const
          MatrixF mat2(*mat);
          defaultRotations[parentIndex].getQuatF().setMatrix(mat);
          mat->setPosition(defaultTranslations[parentIndex]);
-         mat->mul(mat2);
+         *mat*=mat2;
 
          parentIndex = nodes[parentIndex].parentIndex;
       }

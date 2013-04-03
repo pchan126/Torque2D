@@ -102,7 +102,7 @@ void tsForceFaceCamera( MatrixF *mat, const Point3F *objScale )
    {
       MatrixF scale( true );
       scale.scale( *objScale );
-      mat->mul( scale );
+      *mat*= scale ;
    }
 }
 

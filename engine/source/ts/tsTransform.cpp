@@ -151,6 +151,6 @@ void TSTransform::applyScale(const TSScale & scale, MatrixF * mat)
    MatrixF mat3(mat2);
    mat3.inverse();
    mat2.scale(scale.mScale);
-   mat2.mul(mat3);
-   mat->mul(mat2);
+   mat2*=mat3;
+   *mat*=mat2;
 }

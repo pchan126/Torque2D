@@ -50,171 +50,25 @@ QuatF& QuatF::set( const EulerF & e )
    x = cycz*sx + sysz*cx;
    y = sycz*cx - cysz*sx;
    z = cysz*cx - sycz*sx;
-
    return *this;
 }
 
-AngAxisF & AngAxisF::set( const QuatF & q )
+
+QuatF& QuatF::set( const Point3F & _axis, F32 _angle )
 {
 #ifdef __GLK_QUATERNION_H
-    axis.mGV = GLKQuaternionAxis(q.mGQ);
-    angle = GLKQuaternionAngle(q.mGQ);
-#else
-   angle = mAcos( q.w ) * 2;
-   F32 sinHalfAngle = mSqrt(1 - q.w * q.w);
-   if (sinHalfAngle != 0)
-   	axis.set( q.x / sinHalfAngle, q.y / sinHalfAngle, q.z / sinHalfAngle );
-   else
-      axis.set(1,0,0);
-#endif
-   return *this;
-}
-
-AngAxisF & AngAxisF::set( const MatrixF & mat )
-{
-   QuatF q( mat );
-   set( q );
-   return *this;
-}
-
-MatrixF * AngAxisF::setMatrix( MatrixF * mat ) const
-{
-   QuatF q( *this );
-   return q.setMatrix( mat );
-}
-
-QuatF& QuatF::operator *=( const QuatF & b )
-{
-   QuatF prod;
-   prod.w = w * b.w - x * b.x - y * b.y - z * b.z;
-   prod.x = w * b.x + x * b.w + y * b.z - z * b.y;
-   prod.y = w * b.y + y * b.w + z * b.x - x * b.z;
-   prod.z = w * b.z + z * b.w + x * b.y - y * b.x;
-   *this = prod;
-   return (*this);
-}
-
-QuatF& QuatF::operator /=( const QuatF & c )
-{
-   QuatF temp = c;
-   return ( (*this) *= temp.inverse() );
-}
-
-QuatF& QuatF::operator +=( const QuatF & c )
-{
-#ifdef __GLK_QUATERNION_H
-    mGQ = GLKQuaternionAdd(mGQ, c.mGQ);
-#else
-   x += c.x;
-   y += c.y;
-   z += c.z;
-   w += c.w;
-#endif
-   return *this;
-}
-
-QuatF& QuatF::operator -=( const QuatF & c )
-{
-#ifdef __GLK_QUATERNION_H
-    mGQ = GLKQuaternionSubtract(mGQ, c.mGQ);
-#else
-   x -= c.x;
-   y -= c.y;
-   z -= c.z;
-   w -= c.w;
-#endif
-   return *this;
-}
-
-QuatF& QuatF::operator *=( F32 a )
-{
-   x *= a;
-   y *= a;
-   z *= a;
-   w *= a;
-   return *this;
-}
-
-QuatF& QuatF::operator /=( F32 a )
-{
-   x /= a;
-   y /= a;
-   z /= a;
-   w /= a;
-   return *this;
-}
-
-QuatF& QuatF::square()
-{
-   F32 t = w*2.0f;
-   w = (w*w) - (x*x + y*y + z*z);
-   x *= t;
-   y *= t;
-   z *= t;
-   return *this;
-}
-
-QuatF& QuatF::inverse()
-{
-#ifdef __GLK_QUATERNION_H
-    mGQ = GLKQuaternionInvert(mGQ);
-#else
-   F32 magnitude = w*w + x*x + y*y + z*z;
-   F32 invMagnitude;
-   if( magnitude == 1.0f )    // special case unit quaternion
-   {
-      x = -x;
-      y = -y;
-      z = -z;
-   }
-   else                       // else scale
-   {
-      if( magnitude == 0.0f )
-         invMagnitude = 1.0f;
-      else
-         invMagnitude = 1.0f / magnitude;
-      w *= invMagnitude;
-      x *= -invMagnitude;
-      y *= -invMagnitude;
-      z *= -invMagnitude;
-   }
-#endif
-	return *this;
-}
-
-QuatF& QuatF::set( const AngAxisF & a )
-{
-#ifdef __GLK_QUATERNION_H
-    mGQ = GLKQuaternionMakeWithAngleAndVector3Axis(a.angle, a.axis.mGV);
+    mGQ = GLKQuaternionMakeWithAngleAndVector3Axis(_angle, _axis.mGV);
 #else
    F32 sinHalfAngle, cosHalfAngle;
-   mSinCos( a.angle * F32(0.5), sinHalfAngle, cosHalfAngle );
-   x = a.axis.x * sinHalfAngle;
-   y = a.axis.y * sinHalfAngle;
-   z = a.axis.z * sinHalfAngle;
+   mSinCos( _angle * F32(0.5), sinHalfAngle, cosHalfAngle );
+   x = _axis.x * sinHalfAngle;
+   y = _axis.y * sinHalfAngle;
+   z = _axis.z * sinHalfAngle;
    w = cosHalfAngle;
 #endif
    return *this;
 }
 
-QuatF & QuatF::normalize()
-{
-#ifdef __GLK_QUATERNION_H
-    mGQ = GLKQuaternionNormalize(mGQ);
-#else
-   F32 l = mSqrt( x*x + y*y + z*z + w*w );
-   if( l == F32(0.0) )
-      identity();
-   else
-   {
-      x /= l;
-      y /= l;
-      z /= l;
-      w /= l;
-   }
-#endif
-   return *this;
-}
 
 #define idx(r,c) (r*4 + c)
 
@@ -254,11 +108,22 @@ QuatF& QuatF::set( const MatrixF & mat )
 
 MatrixF * QuatF::setMatrix( MatrixF * mat ) const
 {
+#ifdef __GLK_QUATERNION_H
+    mat.mGM = GLKMatrix4MakeWithQuaternion(mGQ);
+#else
    if( x*x + y*y + z*z < 10E-20f) // isIdentity() -- substituted code a little more stringent but a lot faster
       mat->identity();
    else
       m_quatF_set_matF( x, y, z, w, *mat );
+#endif
    return mat;
+}
+
+MatrixF QuatF::getMatrix() const
+{
+    MatrixF temp(true);
+    setMatrix(&temp);
+    return temp;
 }
 
 QuatF & QuatF::slerp( const QuatF & q, F32 t )
@@ -361,34 +226,11 @@ Point3F& QuatF::mulP(const Point3F& p, Point3F* r)
    QuatF qv( p.x, p.y, p.z, 0);
 
    qi.inverse();
-   qq.mul(qi, qv);
-   qv.mul(qq, *this);
+   qq = qi * qv;
+   qv = qq * (*this);
    r->set(qv.x, qv.y, qv.z);
    return *r;
 }
 
-QuatF& QuatF::mul( const QuatF &a, const QuatF &b)
-{
-	AssertFatal( &a != this && &b != this, "QuatF::mul: dest should not be same as source" );
-   w = a.w * b.w - a.x * b.x - a.y * b.y - a.z * b.z;
-   x = a.w * b.x + a.x * b.w + a.y * b.z - a.z * b.y;
-   y = a.w * b.y + a.y * b.w + a.z * b.x - a.x * b.z;
-   z = a.w * b.z + a.z * b.w + a.x * b.y - a.y * b.x;
-   return *this;
-}
 
-Point3F& TQuatF::mulP(const Point3F& pt, Point3F* r)
-{
-   QuatF a;
-   QuatF i = *this;
-   QuatF v( pt.x, pt.y, pt.z, 0.0f);
-   i.inverse();
-   a.mul(i, v);
-   v.mul(a, *this);
-   v.normalize();
-   r->set(v.x, v.y, v.z);
-
-   *r += p;
-   return ( *r );
-}
 

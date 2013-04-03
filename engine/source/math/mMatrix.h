@@ -28,11 +28,12 @@
 #include "math/mMath.h"
 #endif
 
-
 #ifdef TORQUE_OS_IOS
 #import <GLKit/GLKMath.h>
 #endif
 
+
+class QuatF;
 /// 4x4 Matrix Class
 ///
 /// This runs at F32 precision.
@@ -60,6 +61,8 @@ public:
    explicit MatrixF( const EulerF &e);
     
    explicit MatrixF( F32* f);
+    
+   MatrixF( const QuatF &q);
 
    /// Create a matrix to rotate about p by e.
    /// @see set
@@ -75,6 +78,8 @@ public:
 
    /// Initialize matrix to rotate about origin by e.
    MatrixF& set( const EulerF &e);
+    
+   MatrixF& set( const QuatF &q);
 
    /// Initialize matrix to rotate about p by e.
    MatrixF& set( const EulerF &e, const Point3F& p);
@@ -216,15 +221,7 @@ public:
                           float upX, float upY, float upZ);
 
 
-
-   MatrixF&  mul(const MatrixF &a);                    ///< M * a -> M
-   MatrixF&  mulL(const MatrixF &a);                   ///< a * M -> M
-   MatrixF&  mul(const MatrixF &a, const MatrixF &b);  ///< a * b -> M
-
    // Scalar multiplies
-   MatrixF&  mul(const F32 a);                         ///< M * a -> M
-   MatrixF&  mul(const MatrixF &a, const F32 b);       ///< a * b -> M
-
 
    void mul( Point4F& p ) const;                       ///< M * p -> p (full [4x4] * [1x4])
    void mulP( Point2F& p ) const;                      ///< M * p -> p (assume z = 1.0f, w = 1.0f)
@@ -242,12 +239,16 @@ public:
    F32 operator ()(S32 row, S32 col) const { return m[idx(col,row)]; }
 
    void dumpMatrix(const char *caption=NULL) const;
+
    // Math operator overloads
    //------------------------------------
-   friend MatrixF operator * ( const MatrixF &m1, const MatrixF &m2 );
    MatrixF& operator *= ( const MatrixF &m );
+   friend MatrixF operator * ( MatrixF &m1, const MatrixF &m2 );
 
-   // Static identity matrix
+   MatrixF& operator *= ( const F32 a );
+    friend MatrixF operator * ( MatrixF &m2, const F32 a);
+
+    // Static identity matrix
    const static MatrixF Identity;
 }
 #if defined(__VEC__)
@@ -295,6 +296,11 @@ inline MatrixF::MatrixF( const EulerF &e )
    set(e);
 }
 
+inline MatrixF::MatrixF( const QuatF &q )
+{
+    set(q);
+}
+
 inline MatrixF::MatrixF( float values[16])
 {
 #ifdef __GLK_MATRIX_4_H
@@ -310,6 +316,7 @@ inline MatrixF::MatrixF( const EulerF &e, const Point3F& p )
 {
    set(e,p);
 }
+
 
 inline MatrixF& MatrixF::set( const EulerF &e)
 {
@@ -410,31 +417,6 @@ inline MatrixF& MatrixF::scale(const Point3F& p)
 inline void MatrixF::normalize()
 {
     m_matF_normalize(m);
-}
-
-inline MatrixF& MatrixF::mul( const MatrixF &a )
-{  // M * a -> M
-//    MatrixF tempThis(*this);
-//    m_matF_x_matF(tempThis, a, *this);
-#ifdef __GLK_MATRIX_4_H
-    mGM = GLKMatrix4Multiply( mGM, a.mGM);
-#else
-    MatrixF tempThis(*this);
-    m_matF_x_matF(tempThis, a, *this);
-#endif
-    return (*this);
-}
-
-
-inline MatrixF& MatrixF::mul( const MatrixF &a, const MatrixF &b )
-{  // a * b -> M
-//    m_matF_x_matF(a, b, *this);
-#ifdef __GLK_MATRIX_4_H
-    mGM = GLKMatrix4Multiply( a.mGM, b.mGM);
-#else
-    m_matF_x_matF(a, b, *this);
-#endif
-    return (*this);
 }
 
 
@@ -643,7 +625,7 @@ inline void MatrixF::rotateX(float radians)
 #else
     MatrixF rm;
     rm.makeXRotation(radians);
-    mul(rm);
+    *this *= rm;
 #endif
 }
 
@@ -681,7 +663,7 @@ inline void MatrixF::rotateY(float radians)
 #else
     MatrixF rm;
     rm.makeYRotation(radians);
-    mul(rm);
+    *this *= rm;
 #endif
 }
 
@@ -719,38 +701,19 @@ inline void MatrixF::rotateZ(float radians)
 #else
     MatrixF rm;
     rm.makeZRotation(radians);
-    mul(rm);
+    *this *= rm;
 #endif
 }
 
 
-inline MatrixF& MatrixF::mulL( const MatrixF &a )
-{  // a * M -> M
-   AssertFatal(&a != this, "MatrixF::mulL - a.mul(a) is invalid!");
-
-   MatrixF tempThis(*this);
-   m_matF_x_matF(a, tempThis, *this);
-   return (*this);
-}
-
-inline MatrixF& MatrixF::mul(const F32 a)
-{
-   for (U32 i = 0; i < 16; i++)
-      m[i] *= a;
-
-   return *this;
-}
-
-
-inline MatrixF& MatrixF::mul(const MatrixF &a, const F32 b)
-{
-   *this = a;
-   mul(b);
-
-   return *this;
-}
-
-
+//inline MatrixF& MatrixF::mulL( const MatrixF &a )
+//{  // a * M -> M
+//   AssertFatal(&a != this, "MatrixF::mulL - a.mul(a) is invalid!");
+//
+//   MatrixF tempThis(*this);
+//   m_matF_x_matF(a, tempThis, *this);
+//   return (*this);
+//}
 
 inline MatrixF& MatrixF::add( const MatrixF& a )
 {
@@ -763,20 +726,39 @@ inline MatrixF& MatrixF::add( const MatrixF& a )
 //------------------------------------
 // Math operator overloads
 //------------------------------------
-inline MatrixF operator * ( const MatrixF &m1, const MatrixF &m2 )
-{
-   // temp = m1 * m2
-   MatrixF temp;
-   m_matF_x_matF(m1, m2, temp);
-   return temp;
-}
 
 inline MatrixF& MatrixF::operator *= ( const MatrixF &m )
 {
+#ifdef __GLK_MATRIX_4_H
+    mGM = GLKMatrix4Multiply( mGM , m.mGM);
+#else
    MatrixF tempThis(*this);
    m_matF_x_matF(tempThis, m, *this);
+#endif
    return (*this);
 }
+
+inline MatrixF operator * ( MatrixF m1, const MatrixF &m2 )
+{
+    m1 *= m2;
+    return m1;
+}
+
+inline MatrixF& MatrixF::operator *=(const F32 a)
+{
+    for( U32 i = 0; i < 16; ++ i )
+        m[ i ] *= a;
+
+    return *this;
+}
+
+
+inline MatrixF operator * ( MatrixF m1, const F32 b)
+{
+    m1 *= b;
+    return m1;
+}
+
 
 //------------------------------------
 // Non-member methods

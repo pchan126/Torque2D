@@ -71,8 +71,8 @@ Point3F randomDir( Point3F &axis, F32 thetaAngleMin, F32 thetaAngleMax,
 
    // Both phi and theta are in degs.  Create axis angles out of them, and create the
    //  appropriate rotation matrix...
-   AngAxisF thetaRot(axisx, theta * ((F32)M_PI / 180.0f));
-   AngAxisF phiRot(axis,    phi   * ((F32)M_PI / 180.0f));
+   QuatF thetaRot(axisx, theta * ((F32)M_PI / 180.0f));
+   QuatF phiRot(axis,    phi   * ((F32)M_PI / 180.0f));
 
    Point3F ejectionAxis = axis;
 

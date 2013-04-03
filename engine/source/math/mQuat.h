@@ -46,30 +46,6 @@ inline F32 QuatIsZero(F32 a,F32 epsilon = POINT_EPSILON)
 }
 
 //----------------------------------------------------------------------------
-// rotation about an arbitrary axis through the origin:
-
-class AngAxisF
-{
-  public:
-   Point3F axis;
-   F32  angle;
-
-   AngAxisF();
-   AngAxisF( const Point3F & _axis, F32 _angle );
-   explicit AngAxisF( const MatrixF &m );
-   explicit AngAxisF( const QuatF &q );
-
-   AngAxisF& set( const Point3F & _axis, F32 _angle );
-   AngAxisF& set( const MatrixF & m );
-   AngAxisF& set( const QuatF & q );
-
-   int operator ==( const AngAxisF & c ) const;
-   int operator !=( const AngAxisF & c ) const;
-
-   MatrixF * setMatrix( MatrixF * mat ) const;
-};
-
-//----------------------------------------------------------------------------
 // unit quaternion class:
 
 class QuatF
@@ -77,89 +53,173 @@ class QuatF
   public:
     union
     {
+        F32 q[4];
         F32  x,y,z,w;
 #ifdef __GLK_MATH_TYPES_H
         GLKQuaternion mGQ;
 #endif
-    };
+    } ;
 
    QuatF();
    QuatF( F32 _x, F32 _y, F32 _z, F32 w );
    QuatF( const MatrixF & m );
-   QuatF( const AngAxisF & a );
+   QuatF( const Point3F & _axis, F32 _angle ); // axisVector, radian
    QuatF( const EulerF & e );
+#ifdef __GLK_QUATERNION_H
+   QuatF(const GLKQuaternion & q);
+#endif
 
    QuatF& set( F32 _x, F32 _y, F32 _z, F32 _w );
    QuatF& set( const MatrixF & m );
-   QuatF& set( const AngAxisF & m );
+   QuatF& set( const Point3F & _axis, F32 _angle );
    QuatF& set( const EulerF & e );
+#ifdef __GLK_QUATERNION_H
+    QuatF& set(const GLKQuaternion & q);
+#endif
+    
 
    int operator ==( const QuatF & c ) const;
    int operator !=( const QuatF & c ) const;
-   QuatF& operator *=( const QuatF & c );
-   QuatF& operator /=( const QuatF & c );
-   QuatF& operator +=( const QuatF & c );
-   QuatF& operator -=( const QuatF & c );
-   QuatF& operator *=( F32 a );
-   QuatF& operator /=( F32 a );
+    
+   QuatF& operator *=( const QuatF & b )
+   {
+        QuatF prod;
+#ifdef __GLK_QUATERNION_H
+        prod.mGQ = GLKQuaternionMultiply(mGQ, b.mGQ);
+#else
+        prod.w = w * b.w - x * b.x - y * b.y - z * b.z;
+        prod.x = w * b.x + x * b.w + y * b.z - z * b.y;
+        prod.y = w * b.y + y * b.w + z * b.x - x * b.z;
+        prod.z = w * b.z + z * b.w + x * b.y - y * b.x;
+#endif
+        *this = prod;
+        return (*this);
+   }
+    
+    QuatF& operator /=( const QuatF & c )
+    {
+        QuatF temp = c;
+        return ( (*this) *= temp.inverse() );
+    }
+    
+    QuatF& operator +=( const QuatF & c )
+    {
+#ifdef __GLK_QUATERNION_H
+        mGQ = GLKQuaternionAdd(mGQ, c.mGQ);
+#else
+        x += c.x;
+        y += c.y;
+        z += c.z;
+        w += c.w;
+#endif
+        return *this;
+    }
 
-   QuatF& square();
-   QuatF& neg();
-   F32  dot( const QuatF &q ) const;
+    QuatF& operator -=( const QuatF & c )
+    {
+#ifdef __GLK_QUATERNION_H
+        mGQ = GLKQuaternionSubtract(mGQ, c.mGQ);
+#else
+        x -= c.x;
+        y -= c.y;
+        z -= c.z;
+        w -= c.w;
+#endif
+        return *this;
+    }
+    
+    QuatF& operator *=( F32 a )
+    {
+        x *= a;
+        y *= a;
+        z *= a;
+        w *= a;
+        return *this;
+    }
+    
+    QuatF& operator /=( F32 a )
+    {
+        x /= a;
+        y /= a;
+        z /= a;
+        w /= a;
+        return *this;
+    }
+    
+   QuatF& square()
+   {
+        F32 t = w*2.0f;
+        w = (w*w) - (x*x + y*y + z*z);
+        x *= t;
+        y *= t;
+        z *= t;
+        return *this;
+   }
+    
+    QuatF& neg();
+
+   static F32 dot( const QuatF a, const QuatF b)
+    {
+        return (a.w*b.w + a.x*b.x + a.y*b.y + a.z*b.z);
+    };
 
    MatrixF* setMatrix( MatrixF * mat ) const;
-   QuatF& normalize();
-   QuatF& inverse();
-   QuatF& identity();
-   int    isIdentity() const;
-   QuatF& slerp( const QuatF & q, F32 t );
-   QuatF& extrapolate( const QuatF & q1, const QuatF & q2, F32 t );
-   QuatF& interpolate( const QuatF & q1, const QuatF & q2, F32 t );
-   F32  angleBetween( const QuatF & q );
 
-   Point3F& mulP(const Point3F& a, Point3F* b);   // r = p * this
-   QuatF& mul(const QuatF& a, const QuatF& b);    // This = a * b
+    QuatF& normalize()
+    {
+#ifdef __GLK_QUATERNION_H
+        mGQ = GLKQuaternionNormalize(mGQ);
+#else
+        F32 l = mSqrt( x*x + y*y + z*z + w*w );
+        if( l == F32(0.0) )
+            identity();
+        else
+        {
+            x /= l;
+            y /= l;
+            z /= l;
+            w /= l;
+        }
+#endif
+        return *this;
+    }
+    
+   QuatF& inverse()
+   {
+#ifdef __GLK_QUATERNION_H
+        mGQ = GLKQuaternionInvert(mGQ);
+#else
+        F32 invMagnitude = 1.0f/(w*w + x*x + y*y + z*z);
+        w = w * invMagnitude;
+        x = -x * invMagnitude;
+        y = -y * invMagnitude;
+        z = -z * invMagnitude;
+#endif
+        return *this;
+    }
+    
+   QuatF&       identity();
+   int          isIdentity() const;
+   QuatF&       slerp( const QuatF & q, F32 t );
+   QuatF&       extrapolate( const QuatF & q1, const QuatF & q2, F32 t );
+   QuatF&       interpolate( const QuatF & q1, const QuatF & q2, F32 t );
+   F32          getAngle() const;
+   Point3F      getAxis() const;
+   MatrixF      getMatrix() const;
+
+   Point3F&     mulP(const Point3F& a, Point3F* b);   // r = p * this
+    
+    static QuatF conjugate( const QuatF& q )
+    {
+        QuatF ret;
+        ret.x = -q.x;
+        ret.y = -q.y;
+        ret.z = -q.z;
+        ret.w = q.w;
+        return ret;
+    };
 };
 
-
-//----------------------------------------------------------------------------
-// AngAxisF implementation:
-
-inline AngAxisF::AngAxisF()
-{
-}
-
-inline AngAxisF::AngAxisF( const Point3F & _axis, F32 _angle )
-{
-   set(_axis,_angle);
-}
-
-inline AngAxisF::AngAxisF( const MatrixF & mat )
-{
-   set(mat);
-}
-
-inline AngAxisF::AngAxisF( const QuatF & quat )
-{
-   set(quat);
-}
-
-inline AngAxisF& AngAxisF::set( const Point3F & _axis, F32 _angle )
-{
-   axis = _axis;
-   angle = _angle;
-   return *this;
-}
-
-inline int AngAxisF::operator ==( const AngAxisF & c ) const
-{
-   return QuatIsEqual(angle, c.angle) && (axis == c.axis);
-}
-
-inline int AngAxisF::operator !=( const AngAxisF & c ) const
-{
-   return !QuatIsEqual(angle, c.angle) || (axis != c.axis);
-}
 
 //----------------------------------------------------------------------------
 // quaternion implementation:
@@ -173,15 +233,22 @@ inline QuatF::QuatF( F32 _x, F32 _y, F32 _z, F32 _w )
    set( _x, _y, _z, _w );
 }
 
-inline QuatF::QuatF( const AngAxisF & a )
+inline QuatF::QuatF( const Point3F & _axis, F32 _angle )
 {
-   set( a );
+   set( _axis, _angle );
 }
 
 inline QuatF::QuatF( const EulerF & e )
 {
    set(e);
 }
+
+#ifdef __GLK_QUATERNION_H
+inline QuatF::QuatF( const GLKQuaternion & q )
+{
+    set(q);
+}
+#endif
 
 inline QuatF& QuatF::set( F32 _x, F32 _y, F32 _z, F32 _w )
 {
@@ -191,6 +258,14 @@ inline QuatF& QuatF::set( F32 _x, F32 _y, F32 _z, F32 _w )
    w = _w;
    return *this;
 }
+
+#ifdef __GLK_QUATERNION_H
+inline QuatF& QuatF::set( const GLKQuaternion & q )
+{
+    mGQ = q;
+    return *this;
+}
+#endif
 
 inline int QuatF::operator ==( const QuatF & c ) const
 {
@@ -237,121 +312,54 @@ inline QuatF& QuatF::neg()
    return *this;
 }
 
-inline F32 QuatF::dot( const QuatF &q ) const
+inline Point3F QuatF::getAxis() const
 {
-   return (w*q.w + x*q.x + y*q.y + z*q.z);
+    F32 sinHalfAngle = mSqrt(1 - w * w);
+    if (sinHalfAngle != 0)
+        return Point3F( x / sinHalfAngle, y / sinHalfAngle, z / sinHalfAngle );
+    else
+        return Point3F(1,0,0);
 }
 
-
-inline F32 QuatF::angleBetween( const QuatF & q )
+inline F32 QuatF::getAngle() const
 {
-   // angle between to quaternions
-   return mAcos(x * q.x + y * q.y + z * q.z + w * q.w);
+    return mAcos( w ) * 2;
 }
 
-
-//----------------------------------------------------------------------------
-// TQuatF classes:
-
-class TQuatF : public QuatF
+inline QuatF operator+( QuatF a, const QuatF &b)
 {
-  public:
-   enum
-   {
-      Matrix_HasRotation = 1,
-      Matrix_HasTranslation = 2,
-      Matrix_HasScale = 4
-   };
-
-   Point3F p;
-   U32 flags;
-
-   TQuatF();
-   TQuatF( bool ident );
-   TQuatF( const EulerF & e, const Point3F & p );
-   TQuatF( const AngAxisF & aa, const Point3F & p );
-   TQuatF( const QuatF & q, const Point3F & p );
-
-   TQuatF& set( const EulerF & euler, const Point3F & p );
-   TQuatF& set( const AngAxisF & aa, const Point3F & p );
-   TQuatF& set( const QuatF & quat, const Point3F & p );
-
-   TQuatF& inverse( void );
-   TQuatF& identity( void );
-
-   Point3F& mulP(const Point3F& p, Point3F* r);   // r = p * this
-};
-
-//---------------------------------------------------------------------------
-
-inline TQuatF::TQuatF()
-{
-   // Beware: no initialization is done!
+    a += b;
+    return a;
 }
 
-inline TQuatF::TQuatF( bool ident )
+inline QuatF operator-( QuatF a, const QuatF &b)
 {
-   if( ident )
-      identity();
+    a -= b;
+    return a;
 }
 
-inline TQuatF::TQuatF( const EulerF & euler, const Point3F & p )
+inline QuatF operator*(QuatF a, const QuatF &b)
 {
-   set( euler, p );
+    a *= b;
+    return a;
 }
 
-inline TQuatF::TQuatF( const AngAxisF & aa, const Point3F & p )
+inline QuatF operator/(QuatF a, const QuatF &b)
 {
-   set( aa, p );
+    a /= b;
+    return a;
 }
 
-inline TQuatF::TQuatF( const QuatF & quat, const Point3F & p )
+inline QuatF operator*( QuatF a, F32 b)
 {
-   set( quat, p );
+    a *= b;
+    return a;
 }
 
-inline TQuatF& TQuatF::set( const EulerF & e, const Point3F & t )
+inline QuatF operator/( QuatF a, F32 b)
 {
-   p = t;
-   QuatF::set( e );
-   flags |= Matrix_HasTranslation;
-   return *this;
-}
-
-inline TQuatF& TQuatF::set( const AngAxisF & aa, const Point3F & t )
-{
-   p = t;
-   QuatF::set( aa );
-   flags |= Matrix_HasTranslation;
-   return *this;
-}
-
-inline TQuatF& TQuatF::set( const QuatF & q, const Point3F & t )
-{
-   p = t;
-   QuatF::set( q.x, q.y, q.z, q.w );
-   flags |= Matrix_HasTranslation;
-   return *this;
-}
-
-inline TQuatF& TQuatF::inverse( void )
-{
-   QuatF::inverse();
-   if( flags & Matrix_HasTranslation )
-   {
-      Point3F p2 = p;
-      p2.neg();
-      QuatF::mulP(p2,&p);
-   }
-   return *this;
-}
-
-inline TQuatF& TQuatF::identity( void )
-{
-   QuatF::identity();
-   p.set(0,0,0);
-   flags &= ~U32(Matrix_HasTranslation);
-   return *this;
+    a /= b;
+    return a;
 }
 
 #endif

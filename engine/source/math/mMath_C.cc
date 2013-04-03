@@ -651,7 +651,7 @@ static void m_matF_x_scale_x_planeF_C(const F32* m, const F32* s, const F32* p, 
    destMat[MatrixF::idx(0, 3)] = A;
    destMat[MatrixF::idx(1, 3)] = B;
    destMat[MatrixF::idx(2, 3)] = C;
-   invTrMatrix.mul(invScale);
+   invTrMatrix*=invScale;
 
    Point3F norm(p[0], p[1], p[2]);
    Point3F point = norm * -p[3];

@@ -275,7 +275,7 @@ inline void GFXOpenGLDevice::multWorld( const MatrixF &mat )
     mStateDirty = true;
     
     MatrixF newMatrix = m_WorldStack.last();
-    newMatrix.mul(mat);
+    newMatrix*=mat;
     m_WorldStack.last() = newMatrix;
 //    GLKMatrixStackMultiplyMatrix4(m_WorldStackRef, GLKMatrix4MakeWithArray(mat));
 }

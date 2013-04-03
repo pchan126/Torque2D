@@ -28,6 +28,7 @@
 #include "math/mBox.h"
 #include "math/mathTypes.h"
 #include "math/mRandom.h"
+#include "math/mDualQuat.h"
 
 //////////////////////////////////////////////////////////////////////////
 // TypePoint2I
@@ -270,10 +271,13 @@ ConsoleType( MatrixRotation, TypeMatrixRotation, sizeof(MatrixF), "" )
 
 ConsoleGetType( TypeMatrixRotation )
 {
-   AngAxisF aa(*(MatrixF *) dptr);
-   aa.axis.normalize();
+    QuatF aa(*(MatrixF *) dptr);
+    aa.normalize();
+    Point3F axis = aa.getAxis();
+    F32 angle = aa.getAngle();
+
    char* returnBuffer = Con::getReturnBuffer(256);
-   dSprintf(returnBuffer,256,"%g %g %g %g",aa.axis.x,aa.axis.y,aa.axis.z,mRadToDeg(aa.angle));
+   dSprintf(returnBuffer,256,"%g %g %g %g",axis.x,axis.y,axis.z,mRadToDeg(angle));
    return returnBuffer;
 }
 
@@ -281,24 +285,27 @@ ConsoleSetType( TypeMatrixRotation )
 {
    // DMM: Note that this will ONLY SET the ULeft 3x3 submatrix.
    //
-   AngAxisF aa(Point3F(0,0,0),0);
+    Point3F axis = Point3F();
+    F32 angle = 0.0;
+
    if (argc == 1)
    {
-      dSscanf(argv[0], "%g %g %g %g", &aa.axis.x, &aa.axis.y, &aa.axis.z, &aa.angle);
-      aa.angle = mDegToRad(aa.angle);
+      dSscanf(argv[0], "%g %g %g %g", &axis.x, &axis.y, &axis.z, &angle);
+      angle = mDegToRad(angle);
    }
    else if (argc == 4) 
    {
-         for (S32 i = 0; i < argc; i++)
-            ((F32*)&aa)[i] = dAtof(argv[i]);
-         aa.angle = mDegToRad(aa.angle);
+       axis.x = dAtof(argv[0]);
+       axis.y = dAtof(argv[1]);
+       axis.z = dAtof(argv[2]);
+       angle = mDegToRad(dAtof(argv[3]));
    }
    else
       Con::printf("Matrix rotation must be set as { x, y, z, angle } or \"x y z angle\"");
 
    //
-   MatrixF temp;
-   aa.setMatrix(&temp);
+    QuatF qTemp = QuatF(axis, angle);
+   MatrixF temp = qTemp.getMatrix();
 
    F32* pDst = *(MatrixF *)dptr;
    const F32* pSrc = temp;
@@ -466,10 +473,10 @@ ConsoleFunction( VectorOrthoBasis, const char*, 2, 2, "( vec ) Use the VectorOrt
                                                                 "@param vec A four element vector of the form \"AxisX AxisY AxisZ theta\", where theta is the angle of rotation about the vector formed by the prior three values.\n"
                                                                 "@return Returns a 3x3 Row-Major formated matrix")
 {
-   AngAxisF aa;
-   dSscanf(argv[1],"%g %g %g %g", &aa.axis.x,&aa.axis.y,&aa.axis.z,&aa.angle);
-   MatrixF mat;
-   aa.setMatrix(&mat);
+    Point3F axis;
+    F32     angle;
+   dSscanf(argv[1],"%g %g %g %g", &axis.x,&axis.y,&axis.z,&angle);
+   MatrixF mat(QuatF(axis, angle));
    Point3F col0, col1, col2;
    mat.getColumn(0, &col0);
    mat.getColumn(1, &col1);
@@ -491,18 +498,19 @@ ConsoleFunction( MatrixCreate, const char*, 3, 3, "( posVec , rotVec ) Use the m
                                                                 "@return Returns a transform matrix of the form \"PosX PosY PosZ RotX RotY RotZ theta\".\n"
                                                                 "@sa MatrixCreateFromEuler")
 {
-   Point3F pos;
-   dSscanf(argv[1], "%g %g %g", &pos.x, &pos.y, &pos.z);
+    Point3F pos;
+    Point3F axis;
+    F32     angle;
 
-   AngAxisF aa(Point3F(0,0,0),0);
-   dSscanf(argv[2], "%g %g %g %g", &aa.axis.x, &aa.axis.y, &aa.axis.z, &aa.angle);
-   aa.angle = mDegToRad(aa.angle);
+    dSscanf(argv[1], "%g %g %g", &pos.x, &pos.y, &pos.z);
+   dSscanf(argv[2], "%g %g %g %g", &axis.x, &axis.y, &axis.z, &angle);
+   angle = mDegToRad(angle);
 
    char* returnBuffer = Con::getReturnBuffer(256);
    dSprintf(returnBuffer, 255, "%g %g %g %g %g %g %g",
             pos.x, pos.y, pos.z,
-            aa.axis.x, aa.axis.y, aa.axis.z,
-            aa.angle);
+            axis.x, axis.y, axis.z,
+            angle);
    return returnBuffer;
 }
 
@@ -515,11 +523,12 @@ ConsoleFunction( MatrixCreateFromEuler, const char*, 2, 2, " ( rotVec ) Use the 
    dSscanf(argv[1], "%g %g %g", &rot.x, &rot.y, &rot.z);
 
    QuatF rotQ(rot);
-   AngAxisF aa;
-   aa.set(rotQ);
 
+    Point3F axis = rotQ.getAxis();
+    F32     angle = rotQ.getAngle();
+    
    char* ret = Con::getReturnBuffer(256);
-   dSprintf(ret, 255, "0 0 0 %g %g %g %g",aa.axis.x,aa.axis.y,aa.axis.z,aa.angle);
+   dSprintf(ret, 255, "0 0 0 %g %g %g %g",axis.x,axis.y,axis.z,angle);
    return ret;
 }
 
@@ -531,35 +540,30 @@ ConsoleFunction( MatrixMultiply, const char*, 3, 3, "( transformA , transformB )
                                                                 "@sa MatrixMulPoint, MatrixMulVector")
 {
    Point3F pos1;
-   AngAxisF aa1(Point3F(0,0,0),0);
-   dSscanf(argv[1], "%g %g %g %g %g %g %g", &pos1.x, &pos1.y, &pos1.z, &aa1.axis.x, &aa1.axis.y, &aa1.axis.z, &aa1.angle);
+   Point3F axis1;
+   F32 angle1;
+   dSscanf(argv[1], "%g %g %g %g %g %g %g", &pos1.x, &pos1.y, &pos1.z, &axis1.x, &axis1.y, &axis1.z, &angle1);
 
-   MatrixF temp1(true);
-   aa1.setMatrix(&temp1);
-   temp1.setColumn(3, pos1);
+   DualQuatF temp1(QuatF(axis1, angle1), pos1);
 
    Point3F pos2;
-   AngAxisF aa2(Point3F(0,0,0),0);
-   dSscanf(argv[2], "%g %g %g %g %g %g %g", &pos2.x, &pos2.y, &pos2.z, &aa2.axis.x, &aa2.axis.y, &aa2.axis.z, &aa2.angle);
+   Point3F axis2;
+   F32 angle2;
+   dSscanf(argv[1], "%g %g %g %g %g %g %g", &pos2.x, &pos2.y, &pos2.z, &axis2.x, &axis2.y, &axis2.z, &angle2);
 
-   MatrixF temp2(true);
-   aa2.setMatrix(&temp2);
-   temp2.setColumn(3, pos2);
+    DualQuatF temp2(QuatF(axis2, angle2), pos2);
 
-   temp1.mul(temp2);
+   temp1*=temp2;
 
-
-   Point3F pos;
-   AngAxisF aa(temp1);
-
-   aa.axis.normalize();
-   temp1.getColumn(3, &pos);
+   Point3F pos = temp1.getTranslation();
+    Point3F axis = temp1.getRotation().getAxis();
+    F32 angle = temp1.getRotation().getAngle();
 
    char* ret = Con::getReturnBuffer(256);
    dSprintf(ret, 255, "%g %g %g %g %g %g %g",
             pos.x, pos.y, pos.z,
-            aa.axis.x, aa.axis.y, aa.axis.z,
-            aa.angle);
+            axis.x, axis.y, axis.z,
+            angle);
    return ret;
 }
 
@@ -570,19 +574,19 @@ ConsoleFunction( MatrixMulVector, const char*, 3, 3, "( transform , vector ) Use
                                                                 "@return Returns three-element resulting from vector * transform.\n"
                                                                 "@sa MatrixMulPoint, MatrixMultiply")
 {
-   Point3F pos1;
-   AngAxisF aa1(Point3F(0,0,0),0);
-   dSscanf(argv[1], "%g %g %g %g %g %g %g", &pos1.x, &pos1.y, &pos1.z, &aa1.axis.x, &aa1.axis.y, &aa1.axis.z, &aa1.angle);
-
-   MatrixF temp1(true);
-   aa1.setMatrix(&temp1);
-   temp1.setColumn(3, pos1);
+    Point3F pos1;
+    Point3F axis1;
+    F32 angle1;
+    dSscanf(argv[1], "%g %g %g %g %g %g %g", &pos1.x, &pos1.y, &pos1.z, &axis1.x, &axis1.y, &axis1.z, &angle1);
+    
+    DualQuatF temp1(QuatF(axis1, angle1), pos1);
+    MatrixF   mat1 = temp1.toMatrix();
 
    Point3F vec1;
    dSscanf(argv[2], "%g %g %g", &vec1.x, &vec1.y, &vec1.z);
 
    Point3F result;
-   temp1.mulV(vec1, &result);
+   mat1.mulV(vec1, &result);
 
    char* ret = Con::getReturnBuffer(256);
    dSprintf(ret, 255, "%g %g %g", result.x, result.y, result.z);
@@ -595,19 +599,19 @@ ConsoleFunction( MatrixMulPoint, const char*, 3, 3, "( transform , point ) Use t
                                                                 "@return Returns a three-element position vector.\n"
                                                                 "@sa MatrixMultiply, MatrixMulVector")
 {
-   Point3F pos1;
-   AngAxisF aa1(Point3F(0,0,0),0);
-   dSscanf(argv[1], "%g %g %g %g %g %g %g", &pos1.x, &pos1.y, &pos1.z, &aa1.axis.x, &aa1.axis.y, &aa1.axis.z, &aa1.angle);
-
-   MatrixF temp1(true);
-   aa1.setMatrix(&temp1);
-   temp1.setColumn(3, pos1);
+    Point3F pos1;
+    Point3F axis1;
+    F32 angle1;
+    dSscanf(argv[1], "%g %g %g %g %g %g %g", &pos1.x, &pos1.y, &pos1.z, &axis1.x, &axis1.y, &axis1.z, &angle1);
+    
+    DualQuatF temp1(QuatF(axis1, angle1), pos1);
+    MatrixF   mat1 = temp1.toMatrix();
 
    Point3F vec1;
    dSscanf(argv[2], "%g %g %g", &vec1.x, &vec1.y, &vec1.z);
 
    Point3F result;
-   temp1.mulP(vec1, &result);
+   mat1.mulP(vec1, &result);
 
    char* ret = Con::getReturnBuffer(256);
    dSprintf(ret, 255, "%g %g %g", result.x, result.y, result.z);
