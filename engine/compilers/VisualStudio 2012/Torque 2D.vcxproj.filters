@@ -178,6 +178,12 @@
     <Filter Include="2d\experimental\composites">
       <UniqueIdentifier>{30e1ec13-118b-4d50-8e04-76e76fcfdc01}</UniqueIdentifier>
     </Filter>
+    <Filter Include="platformWin32\graphics">
+      <UniqueIdentifier>{9a10f808-47f5-4ad1-80e8-2ce6e65ed9d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="windowManager">
+      <UniqueIdentifier>{6491d16e-04b4-453b-bad5-9181b76f1c9b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\audio\audio.cc">
@@ -732,12 +738,6 @@
     <ClCompile Include="..\..\source\graphics\bitmapPng.cc">
       <Filter>graphics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\graphics\dgl.cc">
-      <Filter>graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\graphics\dglMatrix.cc">
-      <Filter>graphics</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\source\graphics\gBitmap.cc">
       <Filter>graphics</Filter>
     </ClCompile>
@@ -1104,15 +1104,6 @@
     <ClCompile Include="..\..\source\audio\AudioAsset.cc">
       <Filter>audio</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\graphics\TextureManager.cc">
-      <Filter>graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\graphics\TextureHandle.cc">
-      <Filter>graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\graphics\TextureDictionary.cc">
-      <Filter>graphics</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\source\graphics\DynamicTexture.cc">
       <Filter>graphics</Filter>
     </ClCompile>
@@ -1304,6 +1295,81 @@
     </ClCompile>
     <ClCompile Include="..\..\source\2d\core\ImageFrameProviderCore.cc">
       <Filter>2d\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphics\gfxCardProfile.cc">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphics\gfxDevice.cc">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphics\gfxDrawUtil.cc">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphics\gfxFontRenderBatcher.cc">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphics\gfxInit.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphics\gfxPrimitiveBuffer.cc">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphics\gfxResource.cc">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphics\gfxShader.cc">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphics\gfxStateBlock.cc">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphics\gfxStringEnumTranslate.cc">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphics\gfxStructs.cc">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphics\gfxTarget.cc">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphics\gfxTextureHandle.cc">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphics\gfxTextureManager.cc">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphics\gfxTextureObject.cc">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphics\gfxTextureProfile.cc">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphics\gfxVertexBuffer.cc">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphics\gfxVertexFormat.cc">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphics\gfxVertexTypes.cc">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\windowManager\platformCursorController.cpp">
+      <Filter>windowManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\windowManager\platformInterface.cpp">
+      <Filter>windowManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\windowManager\platformWindow.cpp">
+      <Filter>windowManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\windowManager\windowInputGenerator.cpp">
+      <Filter>windowManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphics\primBuilder.cc">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\string\str.cpp">
+      <Filter>string</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1531,9 +1597,6 @@
     </ClInclude>
     <ClInclude Include="..\..\source\platform\threads\thread.h">
       <Filter>platform\threads</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platformWin32\gl_types.h">
-      <Filter>platformWin32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\platformWin32\GLWinExtFunc.h">
       <Filter>platformWin32</Filter>
@@ -1924,9 +1987,6 @@
     </ClInclude>
     <ClInclude Include="..\..\source\gui\language\lang.h">
       <Filter>gui\language</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\dgl.h">
-      <Filter>graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\graphics\gBitmap.h">
       <Filter>graphics</Filter>
@@ -2321,18 +2381,6 @@
     <ClInclude Include="..\..\source\audio\AudioAsset.h">
       <Filter>audio</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\graphics\TextureManager.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\TextureObject.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\TextureHandle.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\TextureDictionary.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\graphics\DynamicTexture.h">
       <Filter>graphics</Filter>
     </ClInclude>
@@ -2676,6 +2724,90 @@
     <ClInclude Include="..\..\source\2d\sceneobject\SceneObjectList.h" />
     <ClInclude Include="..\..\source\2d\sceneobject\SceneObjectSet.h" />
     <ClInclude Include="..\..\source\2d\sceneobject\SceneObjectSet_ScriptBinding.h" />
+    <ClInclude Include="..\..\source\graphics\gfxAdapter.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\gfxCardProfile.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\gfxDevice.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\gfxDrawUtil.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\gfxEnums.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\gfxFontRenderBatcher.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\gfxInit.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\gfxPrimitiveBuffer.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\gfxResource.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\gfxShader.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\gfxStateBlock.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\gfxStringEnumTranslate.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\gfxStructs.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\gfxTarget.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\gfxTextureHandle.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\gfxTextureManager.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\gfxTextureObject.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\gfxTextureProfile.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\gfxVertexBuffer.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\gfxVertexFormat.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\gfxVertexTypes.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\windowManager\platformCursorController.h">
+      <Filter>windowManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\windowManager\platformWindow.h">
+      <Filter>windowManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\windowManager\platformWindowMgr.h">
+      <Filter>windowManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\windowManager\windowInputGenerator.h">
+      <Filter>windowManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platformWin32\glcorearb.h">
+      <Filter>platformWin32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\primBuilder.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\string\str.h">
+      <Filter>string</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\source\math\mMath_ASM.asm">

@@ -33,7 +33,6 @@ ConsoleFunction(enableWinConsole, void, 2, 2, "( enable ) Use the enableWinConso
                                                                 "@param enable A boolean. If this value is set to true, a new console window will be created.\n"
                                                                 "@return No return value.")
 {
-   argc;
    WindowsConsole->enable(dAtob(argv[1]));
 }
 

@@ -445,7 +445,7 @@ void GFXDevice::drawPrimitives()
 
 Point2F GFXDevice::getWorldToScreenScale() const
 {
-//   Point2F scale;
+   Point2F scale;
 //
 //   const RectI &viewport = getViewport();
 //
@@ -456,7 +456,7 @@ Point2F GFXDevice::getWorldToScreenScale() const
 //      scale.set(  ( mFrustum.getNearDist() * viewport.extent.x ) / mFrustum.getWidth(),
 //                  ( mFrustum.getNearDist() * viewport.extent.y ) / mFrustum.getHeight() );
 //
-//   return scale;
+   return scale;
 }
 
 //-----------------------------------------------------------------------------

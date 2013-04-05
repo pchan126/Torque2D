@@ -517,7 +517,7 @@ ConsoleFunction(CaptureScreenArea, bool, 7, 7, "(posX, posY, width, height, file
 //    delete [] pixels;
 //    delete bitmap;
 //
-//    return true;
+    return true;
 }
 
 ConsoleMethod(PNGImage, CreateBaseImage, bool, 5, 5, "(width, height, imageType) Create the base image to merge onto ")

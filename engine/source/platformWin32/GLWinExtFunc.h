@@ -42,11 +42,6 @@ WGLEXT_FUNCTION( BOOL, wglSwapIntervalEXT,(int), return 0; )
 WGLEXT_FUNCTION( int, wglGetSwapIntervalEXT,(void), return 0; )
 WGL_GROUP_END()
 
-WGL_GROUP_BEGIN(WGL_3DFX_gamma_control)
-WGLEXT_FUNCTION( BOOL, wglGetDeviceGammaRamp3DFX, (HDC, LPVOID), return false; )
-WGLEXT_FUNCTION( BOOL, wglSetDeviceGammaRamp3DFX, (HDC, LPVOID), return false; )
-WGL_GROUP_END()
-
 #ifdef UNDEF_BEGIN
 #undef WGL_GROUP_BEGIN
 #undef UNDEF_BEGIN
