@@ -1,3 +1,7 @@
+#ifdef GL_ES
+precision lowp float;
+#endif
+
 uniform sampler2D sampler2d_0;
 
 in vec4 DestinationColor;

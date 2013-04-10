@@ -1,3 +1,7 @@
+#ifdef GL_ES
+precision lowp float;
+#endif
+
 uniform sampler2D sampler2d_0;
 
 in vec4 vertColor;
@@ -10,3 +14,4 @@ void main()
     FragColor.a = texColor_0.r * vertColor.a;
     FragColor.rgb = vertColor.rgb;
 }
+
