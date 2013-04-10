@@ -10,8 +10,8 @@
 
 //#include "graphics/gfxCubemap.h"
 #include "graphics/gfxDrawUtil.h"
-//#include "graphics/gfxInit.h"
-//
+#include "graphics/gfxInit.h"
+
 #include "platformiOS/graphics/gfxOpenGLESEnumTranslate.h"
 #include "platformiOS/graphics/gfxOpenGLESVertexBuffer.h"
 #include "platformiOS/graphics/gfxOpenGLESPrimitiveBuffer.h"
@@ -25,14 +25,33 @@
 #include "platformiOS/graphics/gfxOpenGLESShader.h"
 #include "graphics/primBuilder.h"
 #include "console/console.h"
+#import <UIKit/UIKit.h>
 
 
-//GFXAdapter::CreateDeviceInstanceDelegate GFXOpenGLESDevice::mCreateDeviceInstance(GFXOpenGLESDevice::createInstance);
+GFXAdapter::CreateDeviceInstanceDelegate GFXOpenGLESDevice::mCreateDeviceInstance(GFXOpenGLESDevice::createInstance);
 
-//GFXDevice *GFXOpenGLESDevice::createInstance( U32 adapterIndex )
-//{
-//    return new GFXOpenGLESDevice();
-//}
+GFXDevice *GFXOpenGLESDevice::createInstance( U32 adapterIndex )
+{
+    return new GFXOpenGLESDevice(adapterIndex);
+}
+
+
+static String _getRendererForDisplay(UIScreen* display)
+{
+    EAGLContext* ctx = [[EAGLContext alloc]
+                        initWithAPI:kEAGLRenderingAPIOpenGLES2];
+    
+    // Save the current context, just in case
+    EAGLContext* currCtx = [EAGLContext currentContext];
+    [EAGLContext setCurrentContext: ctx];
+    
+    // get the renderer string
+    String ret((const char*)glGetString(GL_RENDERER));
+    
+    // Restore our old context, release the context and pixel format.
+    [EAGLContext setCurrentContext: currCtx];
+    return ret;
+}
 
 
 void GFXOpenGLESDevice::initGLState()
@@ -61,23 +80,48 @@ void GFXOpenGLESDevice::initGLState()
 }
 
 
+////-----------------------------------------------------------------------------
+//// Matrix interface
+//GFXOpenGLESDevice::GFXOpenGLESDevice( void* context ):
+//    mCurrentVB(NULL),
+//    mCurrentPB(NULL),
+//    mClip(0, 0, 0, 0),
+//    mpCurrentShader(NULL)
+//{
+//    GFXGLESEnumTranslate::init();
+//
+//    m_WorldStackRef = GLKMatrixStackCreate(kCFAllocatorDefault);
+//    m_ProjectionStackRef = GLKMatrixStackCreate(kCFAllocatorDefault);
+//    mTextureManager = new GFXOpenGLESTextureManager();
+//
+//}
+
 //-----------------------------------------------------------------------------
 // Matrix interface
-GFXOpenGLESDevice::GFXOpenGLESDevice( void* context ):
-    mCurrentVB(NULL),
-    mCurrentPB(NULL),
-    mClip(0, 0, 0, 0),
-    mpCurrentShader(NULL)
+GFXOpenGLESDevice::GFXOpenGLESDevice( U32 adapterIndex ) :
+                    mAdapterIndex(adapterIndex),
+                    mCurrentVB(NULL),
+                    mCurrentPB(NULL),
+                    m_mCurrentWorld(true),
+                    m_mCurrentView(true),
+                    mContext(nil),
+                    mPixelFormat(NULL),
+                    mPixelShaderVersion(0.0f),
+                    mMaxShaderTextures(2),
+//                    mMaxFFTextures(2),
+                    mClip(0, 0, 0, 0),
+                    mTextureLoader(NULL)
 {
-    GFXGLEnumTranslate::init();
-//    GFXVertexColor::setSwizzle( &Swizzles::rgba );
-//    mDeviceSwizzle32 = &Swizzles::bgra;
-//    mDeviceSwizzle24 = &Swizzles::bgr;
-
+    GFXGLESEnumTranslate::init();
+    
+    for (int i = 0; i < TEXTURE_STAGE_COUNT; i++)
+        mActiveTextureType[i] = GL_TEXTURE_2D;
+    
     m_WorldStackRef = GLKMatrixStackCreate(kCFAllocatorDefault);
     m_ProjectionStackRef = GLKMatrixStackCreate(kCFAllocatorDefault);
-    mTextureManager = new GFXOpenGLESTextureManager();
-
+    
+    mDeviceName = "OpenGLES";
+    mFullScreenOnly = false;
 }
 
 
@@ -104,6 +148,27 @@ void GFXOpenGLESDevice::init( )
     deviceInited();
 }
 
+void GFXOpenGLESDevice::init( const GFXVideoMode &mode, PlatformWindow *window )
+{
+    if(!mInitialized)
+    {
+        AssertFatal(!mContext && !mPixelFormat, "_createInitialContextAndFormat - Already created initial context and format");
+        
+        mContext = [[EAGLContext alloc]
+                    initWithAPI:kEAGLRenderingAPIOpenGLES2];
+
+        [EAGLContext setCurrentContext:mContext];
+        
+//        mTextureManager = new GFXOpenGLESTextureManager(mContext);
+        mTextureManager = new GFXOpenGLESTextureManager();
+        
+        initGLState();
+        initGenericShaders();
+        mInitialized = true;
+        deviceInited();
+    }
+}
+
 
 void GFXOpenGLESDevice::_handleTextureLoaded(GFXTexNotifyCode code)
 {
@@ -112,24 +177,65 @@ void GFXOpenGLESDevice::_handleTextureLoaded(GFXTexNotifyCode code)
 
 void GFXOpenGLESDevice::enumerateVideoModes()
 {
+    mVideoModes.clear();
+    
 
+    //    CGDirectDisplayID display = CGMainDisplayID();
+//    
+//    // Enumerate all available resolutions:
+//    CFArrayRef modeArray = CGDisplayCopyAllDisplayModes( display, NULL );
+//    CFArrayApplyFunction(modeArray, CFRangeMake(0,CFArrayGetCount(modeArray)), addVideoModeCallback, &mVideoModes);
 }
 
-//void GFXOpenGLESDevice::enumerateAdapters( Vector<GFXAdapter*> &adapterList )
-//{
-//    GFXAdapter *toAdd;
-//    
-//    Vector<GFXVideoMode> videoModes;
-//    
-//    toAdd = new GFXAdapter();
-//    toAdd->mType = OpenGLES;
-////    toAdd->mIndex = (U32)displays[i];
-//    toAdd->mCreateDeviceInstanceDelegate = mCreateDeviceInstance;
-////    String renderer = _getRendererForDisplay(displays[i]);
-////    AssertFatal(dStrlen(renderer.c_str()) < GFXAdapter::MaxAdapterNameLen, "GFXGLDevice::enumerateAdapter - renderer name too long, increae the size of GFXAdapter::MaxAdapterNameLen (or use String!)");
-////    dStrncpy(toAdd->mName, renderer.c_str(), GFXAdapter::MaxAdapterNameLen);
-//    adapterList.push_back(toAdd);
-//}
+void GFXOpenGLESDevice::enumerateAdapters( Vector<GFXAdapter*> &adapterList )
+{
+    GFXAdapter *toAdd;
+    
+    Vector<GFXVideoMode> videoModes;
+    
+	NSArray			*screens;
+	UIScreen		*aScreen;
+	UIScreenMode	*mode;
+    
+	screens = [UIScreen screens];
+	uint32_t screenNum = 1;
+	for (aScreen in screens)
+    {
+		NSArray *displayModes;
+		
+		NSLog(@"\tScreen %d\n", screenNum);
+		
+		displayModes = [aScreen availableModes];
+		for (mode in displayModes)
+        {
+            NSLog(@"\tScreen mode %@\n", mode);
+            GFXVideoMode toAdd;
+            
+            toAdd.resolution.x = mode.size.width;  
+            toAdd.resolution.y = mode.size.height; 
+            toAdd.bitDepth = 32; 
+            toAdd.refreshRate = 30; 
+            toAdd.fullScreen = true;
+            
+            videoModes.push_back_unique(toAdd);
+		}
+		
+        toAdd = new GFXAdapter();
+        toAdd->mType = OpenGLES;
+        toAdd->mIndex = screenNum-1;
+        toAdd->mCreateDeviceInstanceDelegate = mCreateDeviceInstance;
+        String renderer = _getRendererForDisplay(aScreen);
+        AssertFatal(dStrlen(renderer.c_str()) < GFXAdapter::MaxAdapterNameLen, "GFXGLDevice::enumerateAdapter - renderer name too long, increae the size of GFXAdapter::MaxAdapterNameLen (or use String!)");
+        dStrncpy(toAdd->mName, renderer.c_str(), GFXAdapter::MaxAdapterNameLen);
+        
+        adapterList.push_back(toAdd);
+
+        for (S32 j = videoModes.size() - 1 ; j >= 0 ; j--)
+            toAdd->mAvailableModes.push_back(videoModes[j]);
+        
+		screenNum++;
+	}
+}
 
 
 bool GFXOpenGLESDevice::beginSceneInternal()
@@ -283,17 +389,18 @@ void GFXOpenGLESDevice::clear(U32 flags, ColorI color, F32 z, U32 stencil)
     //   }
     
     glDepthMask(true);
-    ColorF c = color;
-    glClearColor(c.red, c.green, c.blue, c.alpha);
-    glClearDepthf(z);
-    glClearStencil(stencil);
-    
+
     GLbitfield clearflags = 0;
     clearflags |= (flags & GFXClearTarget)   ? GL_COLOR_BUFFER_BIT : 0;
     clearflags |= (flags & GFXClearZBuffer)  ? GL_DEPTH_BUFFER_BIT : 0;
     clearflags |= (flags & GFXClearStencil)  ? GL_STENCIL_BUFFER_BIT : 0;
-    
+
     glClear(clearflags);
+
+    ColorF c = color;
+    glClearColor(c.red, c.green, c.blue, c.alpha);
+    glClearDepthf(z);
+    glClearStencil(stencil);
     
     if(!zwrite)
         glDepthMask(false);
@@ -1019,14 +1126,6 @@ U32 GFXOpenGLESDevice::getNumRenderTargets() const
     return 1;
 }
 
-void GFXOpenGLESWindowTarget::makeActive()
-{
-    // Get the shared iOS platform state
-    iOSPlatState * platState = [iOSPlatState sharedPlatState];
-
-    [(GLKView *)[platState.viewController view] bindDrawable];
-}
-
 
 void GFXOpenGLESWindowTarget::_teardownCurrentMode()
 {
@@ -1109,16 +1208,16 @@ GFXFormat GFXOpenGLESDevice::selectSupportedFormat(   GFXTextureProfile* profile
 //
 // Register this device with GFXInit
 //
-//class GFXOpenGLESRegisterDevice
-//{
-//public:
-//    GFXOpenGLESRegisterDevice()
-//    {
-//        GFXInit::getRegisterDeviceSignal().notify(&GFXOpenGLESDevice::enumerateAdapters);
-//    }
-//};
+class GFXOpenGLESRegisterDevice
+{
+public:
+    GFXOpenGLESRegisterDevice()
+    {
+        GFXInit::getRegisterDeviceSignal().notify(&GFXOpenGLESDevice::enumerateAdapters);
+    }
+};
 
-//static GFXOpenGLESRegisterDevice pGLRegisterDevice;
+static GFXOpenGLESRegisterDevice pGLRegisterDevice;
 
 //ConsoleFunction(cycleResources, void, 1, 1, "")
 //{

@@ -29,14 +29,14 @@ class GFXOpenGLESDevice : public GFXDevice
 public:
    void zombify();
    void resurrect();
-   GFXOpenGLESDevice( void* context );
+   GFXOpenGLESDevice(U32 adapterIndex );
    virtual ~GFXOpenGLESDevice();
 
-//   static void enumerateAdapters( Vector<GFXAdapter*> &adapterList );
-//   static GFXDevice *createInstance( U32 adapterIndex );
+   static void enumerateAdapters( Vector<GFXAdapter*> &adapterList );
+   static GFXDevice *createInstance( U32 adapterIndex );
 
-//   virtual void init( const GFXVideoMode &mode, PlatformWindow *window = NULL );
-    virtual void init( );
+   virtual void init( const GFXVideoMode &mode, PlatformWindow *window = NULL );
+   virtual void init( );
 
    virtual void activate() { }
    virtual void deactivate() { }
@@ -129,6 +129,7 @@ public:
    ///
    bool supportsAnisotropic() const { return mSupportsAnisotropic; }
    
+    EAGLContext* getEAGLContext() const { return mContext; };
     GLKTextureLoader* getTextureLoader() const { return mTextureLoader; };
 protected:
    /// Called by GFXDevice to create a device specific stateblock
@@ -196,7 +197,7 @@ private:
    friend class GFXOpenGLESPrimitiveBuffer;
    friend class GFXOpenGLESVertexBuffer;
 
-//   static GFXAdapter::CreateDeviceInstanceDelegate mCreateDeviceInstance; 
+   static GFXAdapter::CreateDeviceInstanceDelegate mCreateDeviceInstance; 
 
    U32 mAdapterIndex;
    
@@ -262,8 +263,7 @@ private:
     GFXPrimitiveBuffer* findVolatilePBO(U32 numIndices, U32 numPrimitives, U16 *indexBuffer = NULL, GFXPrimitive *primitiveBuffer = NULL); ///< Returns an existing volatile PB which has >= numIndices, or creates a new PB if necessary
    
    void initGLState(); ///< Guaranteed to be called after all extensions have been loaded, use to init card profiler, shader version, max samplers, etc.
-   
-    void initGenericShaders();
+   void initGenericShaders();
 
 //   GFXFence* _createPlatformSpecificFence(); ///< If our platform (e.g. OS X) supports a fence extenstion (e.g. GL_APPLE_fence) this will create one, otherwise returns NULL
    

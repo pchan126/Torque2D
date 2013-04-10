@@ -97,7 +97,7 @@ GuiCanvas::GuiCanvas():GuiControl(),
    mRightMouseLast = false;
 
     /// Background color.
-    mBackgroundColor.set( 0.0f, 0.0f, 0.0f, 0.0f );
+    mBackgroundColor.set( 1.0f, 0.0f, 0.0f, 0.0f );
     mUseBackgroundColor = true;
 }
 
@@ -140,7 +140,7 @@ bool GuiCanvas::onAdd()
     newDevice->setAllowRender( false );
     
     // Initialize the window...
-    GFXVideoMode vm = GFXInit::getInitialVideoMode();
+    GFXVideoMode vm = a->mAvailableModes[0];
     
     if (a && a->mType != NullDevice)
     {

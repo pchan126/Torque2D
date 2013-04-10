@@ -3,13 +3,13 @@
 // Copyright GarageGames, LLC 2011
 //-----------------------------------------------------------------------------
 
-#ifndef _GFXGLENUMTRANSLATE_H_
-#define _GFXGLENUMTRANSLATE_H_
+#ifndef _GFXGLESEnumTranslate_H_
+#define _GFXGLESEnumTranslate_H_
 
 #import <OpenGLES/ES2/glext.h>
 #include "graphics/gfxEnums.h"
 
-namespace GFXGLEnumTranslate
+namespace GFXGLESEnumTranslate
 {
    void init();
 };

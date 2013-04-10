@@ -236,17 +236,17 @@ bool gScreenUpsideDown = true;
 // Runs the main Game instance and any other looping calls you need to perform
 - (void) mainTorqueLoop:(NSTimer *)obj
 {
-    if(Game->isRunning())
-    {
-        Game->mainLoop();
-    }
-    else
-    {
-		Game->mainShutdown();
-        
-		// Need to actually exit the application now
-		exit(0);
-    }
+//    if(Game->isRunning())
+//    {
+//        Game->mainLoop();
+//    }
+//    else
+//    {
+//		Game->mainShutdown();
+//        
+//		// Need to actually exit the application now
+//		exit(0);
+//    }
 }
 
 //-----------------------------------------------------------------------------

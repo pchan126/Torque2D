@@ -22,10 +22,12 @@
 
 #import "platformiOS/T2DAppDelegate.h"
 
+#import "platformiOS/platformiOS.h"
 #include "platform/platformInput.h"
 #include "platformiOS/iOSUtil.h"
 #include "console/console.h"
 #include "game/gameInterface.h"
+#include "graphics/gfxInit.h"
 
 // Store current orientation for easy access
 extern void _iOSGameChangeOrientation(S32 newOrientation);
@@ -63,6 +65,10 @@ bool _iOSTorqueFatalError = false;
                                                 name:UIScreenDidDisconnectNotification
                                               object:nil];
 
+    
+    iOSPlatState * platState = [iOSPlatState sharedPlatState];
+    [platState runTorque2D];
+    
    return TRUE;
 }
 
@@ -123,6 +129,9 @@ bool _iOSTorqueFatalError = false;
    if ( Con::isFunction("oniOSScreenDidChange") )
       Con::executef( 1, "oniOSScreenDidChange" );
 
+    
+    GFXInit::enumerateAdapters();
+    
 	if (screenCount > 1)
    {
       //      // 2. If an external screen is available, get the screen object and look at the values in its availableModes

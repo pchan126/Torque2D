@@ -356,7 +356,7 @@ void GFXOpenGLESShader::clearShaders()
 bool GFXOpenGLESShader::_init()
 {
    // Don't initialize empty shaders.
-   if ( mVertexFile != StringTable->EmptyString && mPixelFile != StringTable->EmptyString  )
+   if ( mVertexFile == StringTable->EmptyString || mPixelFile == StringTable->EmptyString )
       return false;
 
    clearShaders();

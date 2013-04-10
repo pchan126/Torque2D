@@ -44,9 +44,6 @@
     
     NSArray* arguments = [[NSProcessInfo processInfo] arguments];
     
-    const char* cwd = Platform::getMainDotCsDir();
-    Platform::setCurrentDirectory(cwd);
-    
     osxPlatState * platState = [osxPlatState sharedPlatState];
     
     for (NSUInteger i = 0; i < platState.argc; i++)

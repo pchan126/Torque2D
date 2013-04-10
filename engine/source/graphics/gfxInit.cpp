@@ -131,11 +131,18 @@ GFXAdapter* GFXInit::chooseAdapter( GFXAdapterType type)
    if(!adapter && type != OpenGL)
    {
       Con::errorf("The requested renderer, %s, doesn't seem to be available."
-                  " Trying the default, OpenGL.", getAdapterNameFromType(type));
+                  " Trying OpenGL.", getAdapterNameFromType(type));
       adapter = GFXInit::getAdapterOfType(OpenGL);         
    }
    
-   if(!adapter)
+    if(!adapter && type != OpenGLES)
+    {
+        Con::errorf("The requested renderer, %s, doesn't seem to be available."
+                    " Trying OpenGLES.", getAdapterNameFromType(type));
+        adapter = GFXInit::getAdapterOfType(OpenGLES);
+    }
+
+    if(!adapter)
    {
       Con::errorf("The OpenGL renderer doesn't seem to be available. Trying the GFXNulDevice.");
       adapter = GFXInit::getAdapterOfType(NullDevice);

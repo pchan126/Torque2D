@@ -5,9 +5,11 @@
 
 
 #import "./iOSWindow.h"
-#import "./iOSView.h"
 
 #import "console/console.h"
+#import "platformiOS/platformiOS.h"
+#import "./T2DViewController.h"
+#import "platformiOS/graphics/GFXOpenGLESDevice.h"
 
 iOSWindow* iOSWindow::sInstance = NULL;
 
@@ -27,12 +29,12 @@ iOSWindow::iOSWindow(U32 windowId, const char* windowText, Point2I clientExtent)
    mDefaultDisplayMode = NULL;
    
    mSkipMouseEvents = 0;
-   
-//   mDisplay = NULL;
-//   mMainDisplayBounds;
-   
+    
+    mDisplay = [UIScreen mainScreen];
+    mMainDisplayBounds = mDisplayBounds = [mDisplay bounds];
+    
    mWindowId = windowId;
-//   _initCocoaWindow(windowText, clientExtent);
+    _initCocoaWindow(windowText, clientExtent);
    
    appEvent.notify(this, &iOSWindow::_onAppEvent);
    
@@ -55,9 +57,19 @@ iOSWindow::~iOSWindow()
 }
 
 
-//void iOSWindow::_initCocoaWindow(const char* windowText, Point2I clientExtent)
-//{
-//   // TODO: cascade windows on screen?
+void iOSWindow::_initCocoaWindow(const char* windowText, Point2I clientExtent)
+{
+    iOSPlatState *platState = [iOSPlatState sharedPlatState];
+    GFXOpenGLESDevice *device = dynamic_cast<GFXOpenGLESDevice*>(GFX);
+    EAGLContext *ctx = device->getEAGLContext();
+    [platState.viewController setContext:ctx];
+	[EAGLContext setCurrentContext:ctx];
+    
+    mGLKWindow = platState.viewController;
+    
+//	[self createFramebuffer];
+
+    //   // TODO: cascade windows on screen?
 //   
 //   // create the window
 //   CGRect contentRect;
@@ -84,7 +96,7 @@ iOSWindow::~iOSWindow()
 //   [mGLKWindow setContentView:view];
 ////   [mGLKWindow setDelegate:view];
 //   
-//}
+}
 
 //void iOSWindow::_disassociateCocoaWindow()
 //{

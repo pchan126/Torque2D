@@ -21,7 +21,7 @@ GLenum GFXGLBufferType[GFXBufferType_COUNT];
 GLenum GFXGLCullMode[GFXCull_COUNT];
 GLenum GFXGLFillMode[GFXFill_COUNT];
 
-void GFXGLEnumTranslate::init()
+void GFXGLESEnumTranslate::init()
 {
    // Buffer types
    GFXGLBufferType[GFXBufferTypeStatic] = GL_STATIC_DRAW;

@@ -251,15 +251,18 @@ bool initializeGame(int argc, const char **argv)
         argc -= 2;
     }
 
+    const char* defaultScriptName = "main.cs";
+    bool useDefaultScript = true;
+
+    // Change to the directory that contains main.cs
+    Platform::setCurrentDirectory(Platform::getMainDotCsDir());
+
     // Scan executable location and all sub-directories.
     ResourceManager->setWriteablePath(Platform::getCurrentDirectory());
     ResourceManager->addPath( Platform::getCurrentDirectory() );
 
     FileStream scriptFileStream; 
     Stream* scriptStream;
-
-    const char* defaultScriptName = "main.cs";
-    bool useDefaultScript = true;
 
     // Check if any command-line parameters were passed (the first is just the app name).
     if (argc > 1)

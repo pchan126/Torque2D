@@ -13,62 +13,10 @@
 #import "osxGLUtils.h"
 
 
-// Internal implementations
-class _GFXOpenGLWindowTargetImpl
-{
-public:
-    GFXOpenGLWindowTarget* mTarget;
-    
-    virtual ~_GFXOpenGLWindowTargetImpl() {}
-    
-    virtual void makeActive() = 0;
-    virtual void finish() = 0;
-};
-
-// Use FBOs to render to texture.  This is the preferred implementation and is almost always used.
-class _GFXOpenGLWindowTargetFBOImpl : public _GFXOpenGLWindowTargetImpl
-{
-public:
-    GLuint FBOname;
-    GLuint colorTexture, depthRenderbuffer;
-    
-    _GFXOpenGLWindowTargetFBOImpl(GFXOpenGLWindowTarget* target);
-    virtual ~_GFXOpenGLWindowTargetFBOImpl();
-    
-    virtual void makeActive();
-    virtual void finish();
-};
-
-
-_GFXOpenGLWindowTargetFBOImpl::_GFXOpenGLWindowTargetFBOImpl(GFXOpenGLWindowTarget* target)
-{
-   // NSOpenGLView contains its own framebuffer which is active at 0
-   FBOname = 0;
-}
-
-_GFXOpenGLWindowTargetFBOImpl::~_GFXOpenGLWindowTargetFBOImpl()
-{
-}
-
-
-void _GFXOpenGLWindowTargetFBOImpl::makeActive()
-{
-    glBindFramebuffer(GL_FRAMEBUFFER, FBOname);
-}
-
-void _GFXOpenGLWindowTargetFBOImpl::finish()
-{
-   glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
-
-
 GFXOpenGLWindowTarget::GFXOpenGLWindowTarget(PlatformWindow *window, GFXDevice *d)
       : GFXWindowTarget(window), mDevice(d), mContext(NULL), mFullscreenContext(NULL)
 {
     window->appEvent.notify(this, &GFXOpenGLWindowTarget::_onAppSignal);
-
-    _impl = new _GFXOpenGLWindowTargetFBOImpl(this);
     size = window->getBounds().extent;
 }
 
@@ -133,7 +81,7 @@ void GFXOpenGLWindowTarget::resolveTo(GFXTextureObject* obj)
 
 void GFXOpenGLWindowTarget::makeActive()
 {
-    _impl->makeActive();
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 
