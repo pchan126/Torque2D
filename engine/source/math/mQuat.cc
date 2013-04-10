@@ -109,7 +109,7 @@ QuatF& QuatF::set( const MatrixF & mat )
 MatrixF * QuatF::setMatrix( MatrixF * mat ) const
 {
 #ifdef __GLK_QUATERNION_H
-    mat.mGM = GLKMatrix4MakeWithQuaternion(mGQ);
+    mat->mGM = GLKMatrix4MakeWithQuaternion(mGQ);
 #else
    if( x*x + y*y + z*z < 10E-20f) // isIdentity() -- substituted code a little more stringent but a lot faster
       mat->identity();

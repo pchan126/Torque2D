@@ -104,8 +104,8 @@ public:
    void _doMouseLockNow();
    
    // Helper methods for doMouseLockNow
-   void _associateMouse();
-   void _dissociateMouse();
+//   void _associateMouse();
+//   void _dissociateMouse();
    void _centerMouse();
 
    // For GGMacView
@@ -120,7 +120,7 @@ private:
    
    iOSWindow(U32 windowId, const char* windowText, Point2I clientExtent);
    
-   void _initCocoaWindow(const char* windowText, Point2I clientExtent);
+//   void _initCocoaWindow(const char* windowText, Point2I clientExtent);
    void setWindowId(U32 newid) { mWindowId = newid;}
    void signalGainFocus();
 

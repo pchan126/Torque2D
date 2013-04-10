@@ -84,9 +84,3 @@ void Platform::disableKeyboardTranslation(void)
 }
 
 
-//-----------------------------------------------------------------------------
-void Platform::process()
-{
-
-}
-

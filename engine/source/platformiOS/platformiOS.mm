@@ -59,6 +59,19 @@
 
 static iOSPlatState * tempSharedPlatState = nil;
 
+//bool setScreenOrientation(bool, bool);
+bool getStatusBarHidden();
+bool setStatusBarHidden(bool);
+void setStatusBarType(S32);
+
+//Hidden by Default. 1 Black Opaque, 2 Black Translucent
+S32 gStatusBarType = 0;
+bool gStatusBarHidden = true;
+
+//Landscape by default. 0 Landscape, 1 Portrait
+S32 gScreenOrientation = 0;
+bool gScreenUpsideDown = true;
+
 //-----------------------------------------------------------------------------
 
 - (id)init
@@ -83,7 +96,7 @@ static iOSPlatState * tempSharedPlatState = nil;
         _windowSize.x = 1024;
         _windowSize.y = 768;
         
-        _windowTitle = [[NSString alloc] initWithString:@"Torque 2D IOS"];
+        _windowTitle = @"Torque 2D IOS";
         
         // Default window
         _window = nil;
@@ -270,21 +283,43 @@ static iOSPlatState * tempSharedPlatState = nil;
 
 #pragma mark ---- Platform Namespace Functions ----
 
-//-----------------------------------------------------------------------------
-// Used for initializing the OS X platform code
+#pragma mark ---- Init funcs  ----
+//------------------------------------------------------------------------------
 void Platform::init()
 {
-    // Set the global script variable $Platform to "macos"
-    Con::setVariable("$Platform", "macos");
-    
-    // Initialize standard libraries (namespaces)
-//    Video::init();
-//    Input::init();
-    
-    // Initialize OS X specific libraries and services
-    
-    Con::printSeparator();
+   Con::setVariable("$platform", "iOS");
+   
+   if ([[UIScreen mainScreen] scale] == 2)
+      Con::setBoolVariable("$pref::iOS::RetinaEnabled", true);
+   else
+      Con::setBoolVariable("$pref::iOS::RetinaEnabled", false);
+   
+   // Set the platform variable for the scripts
+   if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+   {
+      Con::setIntVariable("$pref::iOS::DeviceType", 1);
+   }
+   else
+   {
+      F32 screenHeight = [[UIScreen mainScreen] bounds].size.height;
+      bool iPhone5 = (fabs((double)screenHeight - (double)568 ) < DBL_EPSILON);
+      if (iPhone5)
+      {
+         Con::setIntVariable("$pref::iOS::DeviceType", 2);
+         Con::setBoolVariable("$pref::iOS::RetinaEnabled", false);
+      }
+      else
+      {
+         Con::setIntVariable("$pref::iOS::DeviceType", 0);
+      }
+   }
+   
+   //    iOSConsole::create();
+   Input::init();
+   //    Video::init();
+   Con::printf("");
 }
+
 
 //-----------------------------------------------------------------------------
 // processing
@@ -292,48 +327,21 @@ void Platform::process()
 {
 }
 
-//-----------------------------------------------------------------------------
-// Shuts down the OS X platform layer code
+//------------------------------------------------------------------------------
 void Platform::shutdown()
 {
-//    Input::destroy();
-//    Video::destroy();
+   //    setMouseLock(false);
+   //    Video::destroy();
+   Input::destroy();
+   //    iOSConsole::destroy();
+   
 }
 
 //-----------------------------------------------------------------------------
 // Completely closes and restarts the simulation
 void Platform::restartInstance()
 {
-    // Returns the NSBundle that corresponds to the directory where the current app executable is located.
-    NSBundle* mainAppBundle = [NSBundle mainBundle];
-    
-    // Returns the file URL of the receiver's executable file.
-    // Not currently used, but left here for reference
-    //NSURL* execURL = [mainAppBundle executableURL];
-    
-    // Returns the full pathname of the receiver's executable file.
-    NSString* execString = [mainAppBundle executablePath];
-    
-    // Create a mutable string we can build into an executable command
-    NSMutableString* mut = [[NSMutableString alloc] init];
-    
-    // Base string is the executable path
-    [mut appendString:execString];
-    
-    // append ampersand so that we can launch without blocking.
-    // encase in quotes so that spaces in the path are accepted.
-    [mut insertString:@"\"" atIndex:0];
-    [mut appendString:@"\" & "];
-    [mut appendString:@"\\0"];
-    
-    // Convert to a C string
-    const char* execCString = [mut UTF8String];
-    
-    // Echo the command before we run it
-    Con::printf("---- %s -----", execCString);
-    
-    // Run the restart command and hope for the best
-    system(execCString);
+    // Not allowed in iOS
 }
 
 //-----------------------------------------------------------------------------
@@ -368,3 +376,89 @@ void Platform::outputDebugString(const char *string)
     fprintf(stderr, "\n" );
     fflush(stderr);
 }
+
+bool Platform::openWebBrowser(const char *webAddress)
+{
+   NSString *string = [[NSString alloc] initWithUTF8String:webAddress];
+   NSURL *url = [[NSURL alloc] initWithString:string];
+   bool ret = [[[iOSPlatState sharedPlatState] application] openURL:url];
+   
+   return ret;// this bails on the application, switching to Safari
+}
+
+bool isStatusBarHidden()
+{
+   // Get the shared iOS platform state
+   iOSPlatState * platState = [iOSPlatState sharedPlatState];
+   if ([platState application].statusBarHidden == YES)
+   {
+      return true;
+   }
+   else
+   {
+      return false;
+   }
+}
+
+bool setStatusBarHidden(bool hidden)
+{
+   // Get the shared iOS platform state
+   iOSPlatState * platState = [iOSPlatState sharedPlatState];
+   
+   if (hidden)
+   {
+      [platState application].statusBarHidden = YES;
+      gStatusBarHidden = true;
+      
+      return true;
+   }
+   else
+   {
+      [platState application].statusBarHidden = NO;
+      gStatusBarHidden = false;
+      
+      return false;
+   }
+}
+
+void setStatusBarType(S32 type)
+{
+   // Get the shared iOS platform state
+   iOSPlatState * platState = [iOSPlatState sharedPlatState];
+   
+   switch (type)
+   {
+      case 0: //Hidden
+         setStatusBarHidden(true);
+         break;
+      case 1: //Black Opaque
+         [platState application].statusBarStyle = UIStatusBarStyleBlackOpaque;
+         setStatusBarHidden(false);
+         break;
+      case 2: //Black Transparent
+         [platState application].statusBarStyle = UIStatusBarStyleBlackTranslucent;
+         setStatusBarHidden(false);
+         break;
+      default:
+         [platState application].statusBarStyle = UIStatusBarStyleDefault;
+   }
+   
+   gStatusBarType = type;
+}
+
+
+
+ConsoleFunction(getStatusBarHidden, bool, 1, 1, " Checks whether the status bar is hidden\n"
+                "@return Returns true if hidden and false if not"){
+   return isStatusBarHidden();
+}
+
+ConsoleFunction(setStatusBarHidden, bool, 2, 2, " Hides/unhides the iOS status bar \n"
+                "@return true == status bar is hidden, false == status bar is visible"){
+   return setStatusBarHidden(dAtob(argv[1]));
+}
+
+ConsoleFunction(setStatusBarType, void, 2, 2, " Set the status bar type. 0 hidden, 1 Black Opaque, 2 Black Translucent \n"){
+   return setStatusBarType(dAtoi(argv[1]));
+}
+

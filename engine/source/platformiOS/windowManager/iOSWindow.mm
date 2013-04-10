@@ -18,7 +18,7 @@ iOSWindow::iOSWindow(U32 windowId, const char* windowText, Point2I clientExtent)
    mTitle            = NULL;
    mMouseCaptured    = false;
    
-   miOSWindow      = NULL;
+   mGLKWindow      = NULL;
    mCursorController = new iOSCursorController( this );
    mOwningWindowManager = NULL;
    
@@ -28,11 +28,11 @@ iOSWindow::iOSWindow(U32 windowId, const char* windowText, Point2I clientExtent)
    
    mSkipMouseEvents = 0;
    
-   mDisplay = kCGDirectMainDisplay;
-   mMainDisplayBounds = mDisplayBounds = CGDisplayBounds(mDisplay);
+//   mDisplay = NULL;
+//   mMainDisplayBounds;
    
    mWindowId = windowId;
-   _initCocoaWindow(windowText, clientExtent);
+//   _initCocoaWindow(windowText, clientExtent);
    
    appEvent.notify(this, &iOSWindow::_onAppEvent);
    
@@ -45,17 +45,6 @@ iOSWindow::~iOSWindow()
       _setFullscreen(false);
 
    appEvent.remove(this, &iOSWindow::_onAppEvent);
-
-   //ensure our view isn't the delegate
-   [NSApp setDelegate:nil];
-   
-   if( miOSWindow )
-   {
-      NSWindow* window = miOSWindow;
-      _disassociateCocoaWindow();
-      
-      [ window close ];
-   }
    
    appEvent.trigger(mWindowId, LoseFocus);
    appEvent.trigger(mWindowId, WindowDestroy);
@@ -66,47 +55,47 @@ iOSWindow::~iOSWindow()
 }
 
 
-void iOSWindow::_initCocoaWindow(const char* windowText, Point2I clientExtent)
-{
-   // TODO: cascade windows on screen?
-   
-   // create the window
-   CGRect contentRect;
-   U32 style;
-   
-  contentRect = NSMakeRect(0,0,clientExtent.x, clientExtent.y);
-  
-  style = NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask | NSResizableWindowMask;
+//void iOSWindow::_initCocoaWindow(const char* windowText, Point2I clientExtent)
+//{
+//   // TODO: cascade windows on screen?
+//   
+//   // create the window
+//   CGRect contentRect;
+//   U32 style;
+//   
+//  contentRect = NSMakeRect(0,0,clientExtent.x, clientExtent.y);
+//  
+//  style = NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask | NSResizableWindowMask;
+//
+//  mGLKWindow = [[NSWindow alloc] initWithContentRect:contentRect styleMask:style backing:NSBackingStoreBuffered defer:YES screen:nil];
+//  if(windowText)
+//     [mGLKWindow setTitle: [NSString stringWithUTF8String: windowText]];   
+//
+//  // necessary to accept mouseMoved events
+//  [mGLKWindow setAcceptsMouseMovedEvents:YES];
+//  
+//  // correctly position the window on screen
+//  [mGLKWindow center];
+//   
+//   // create the opengl view. we don't care about its pixel format, because we
+//   // will be replacing its context with another one.
+//   GGMacView* view = [[GGMacView alloc] initWithFrame:contentRect pixelFormat:[NSOpenGLView defaultPixelFormat]];
+//   [view setTorqueWindow:this];
+//   [mGLKWindow setContentView:view];
+////   [mGLKWindow setDelegate:view];
+//   
+//}
 
-  miOSWindow = [[NSWindow alloc] initWithContentRect:contentRect styleMask:style backing:NSBackingStoreBuffered defer:YES screen:nil];
-  if(windowText)
-     [miOSWindow setTitle: [NSString stringWithUTF8String: windowText]];   
-
-  // necessary to accept mouseMoved events
-  [miOSWindow setAcceptsMouseMovedEvents:YES];
-  
-  // correctly position the window on screen
-  [miOSWindow center];
-   
-   // create the opengl view. we don't care about its pixel format, because we
-   // will be replacing its context with another one.
-   GGMacView* view = [[GGMacView alloc] initWithFrame:contentRect pixelFormat:[NSOpenGLView defaultPixelFormat]];
-   [view setTorqueWindow:this];
-   [miOSWindow setContentView:view];
-//   [miOSWindow setDelegate:view];
-   
-}
-
-void iOSWindow::_disassociateCocoaWindow()
-{
-   if( !miOSWindow )
-      return;
-      
-   [miOSWindow setContentView:nil];
-   [miOSWindow setDelegate:nil];   
-
-   miOSWindow = NULL;
-}
+//void iOSWindow::_disassociateCocoaWindow()
+//{
+//   if( !mGLKWindow )
+//      return;
+//      
+//   [mGLKWindow setContentView:nil];
+//   [mGLKWindow setDelegate:nil];   
+//
+//   mGLKWindow = NULL;
+//}
 
 void iOSWindow::setVideoMode(const GFXVideoMode &mode)
 {
@@ -140,52 +129,26 @@ void iOSWindow::_onAppEvent(WindowId, S32 evt)
 
 void iOSWindow::_setFullscreen(bool fullScreen)
 {
-   if(mFullscreen == fullScreen)
-      return;
-   
-   mFullscreen = fullScreen;
-   
-   if(mFullscreen)
-   {
-      Con::printf("Capturing display %x", mDisplay);
-      CGDisplayCapture(mDisplay);
-      [miOSWindow setAlphaValue:0.0f];
-   }
-   else
-   {
-      if(mDefaultDisplayMode)
-      {
-         Con::printf("Restoring default display mode... width: %i height: %i bpp: %i", [[mDefaultDisplayMode valueForKey:@"Width"] intValue], 
-               [[mDefaultDisplayMode valueForKey:@"Height"] intValue], [[mDefaultDisplayMode valueForKey:@"BitsPerPixel"] intValue]);
-         CGDisplaySwitchToMode(mDisplay, (CFDictionaryRef)mDefaultDisplayMode);
-         mDisplayBounds = CGDisplayBounds(mDisplay);
-         if(mDisplay == kCGDirectMainDisplay)
-            mMainDisplayBounds = mDisplayBounds;
-      }
-      
-      Con::printf("Releasing display %x", mDisplay);
-      CGDisplayRelease(mDisplay);
-      [miOSWindow setAlphaValue:1.0f];
-      mDefaultDisplayMode = NULL;
-   }
+   //iOS screen is always fullscreen
 }
 
 void* iOSWindow::getPlatformDrawable() const
 {
-   return [miOSWindow contentView];
+   return NULL;
+//   return [mGLKWindow contentView];
 }
 
 void iOSWindow::show()
 {
-   [miOSWindow makeKeyAndOrderFront:nil];
-   [miOSWindow makeFirstResponder:[miOSWindow contentView]];
+//   [mGLKWindow makeKeyAndOrderFront:nil];
+//   [mGLKWindow makeFirstResponder:[mGLKWindow contentView]];
    appEvent.trigger(getWindowId(), WindowShown);
    appEvent.trigger(getWindowId(), GainFocus);
 }
 
 void iOSWindow::close()
 {
-   [miOSWindow close];
+//   [mGLKWindow close];
    appEvent.trigger(mWindowId, LoseFocus);
    appEvent.trigger(mWindowId, WindowDestroy);
    
@@ -196,15 +159,15 @@ void iOSWindow::close()
 
 void iOSWindow::hide()
 {
-   [miOSWindow orderOut:nil];
+//   [mGLKWindow orderOut:nil];
    appEvent.trigger(getWindowId(), WindowHidden);
 }
 
-void iOSWindow::setDisplay(CGDirectDisplayID display)
-{
-   mDisplay = display;
-   mDisplayBounds = CGDisplayBounds(mDisplay);
-}
+//void iOSWindow::setDisplay(CGDirectDisplayID display)
+//{
+//   mDisplay = display;
+//   mDisplayBounds = CGDisplayBounds(mDisplay);
+//}
 
 PlatformWindow* iOSWindow::getNextWindow() const
 {
@@ -213,65 +176,65 @@ PlatformWindow* iOSWindow::getNextWindow() const
 
 bool iOSWindow::setSize(const Point2I &newSize)
 {
-   NSSize newExtent = {static_cast<CGFloat>(newSize.x), static_cast<CGFloat>(newSize.y)};
-   [miOSWindow setContentSize:newExtent];
-   [miOSWindow center];
+//   NSSize newExtent = {static_cast<CGFloat>(newSize.x), static_cast<CGFloat>(newSize.y)};
+//   [mGLKWindow setContentSize:newExtent];
+//   [mGLKWindow center];
    return true;
 }
 
 void iOSWindow::setClientExtent( const Point2I newExtent )
 {
-   if(!mFullscreen)
-   {
-      // Set the Client Area Extent (Resolution) of this window
-      NSSize newSize = {static_cast<CGFloat>(newExtent.x), static_cast<CGFloat>(newExtent.y)};
-      [miOSWindow setContentSize:newSize];
-   }
-   else
-   {
-      // In fullscreen we have to resize the monitor (it'll be good to change it back too...)
-      if(!mDefaultDisplayMode)
-         mDefaultDisplayMode = (NSDictionary*)CGDisplayCurrentMode(mDisplay);
-      
-      NSDictionary* newMode = (NSDictionary*)CGDisplayBestModeForParameters(mDisplay, 32, newExtent.x, newExtent.y, NULL);
-      Con::printf("Switching to new display mode... width: %i height: %i bpp: %i", 
-                  [[newMode valueForKey:@"Width"] intValue], [[newMode valueForKey:@"Height"] intValue], [[newMode valueForKey:@"BitsPerPixel"] intValue]); 
-      CGDisplaySwitchToMode(mDisplay, (CFDictionaryRef)newMode);
-      mDisplayBounds = CGDisplayBounds(mDisplay);
-      if(mDisplay == kCGDirectMainDisplay)
-         mMainDisplayBounds = mDisplayBounds;
-   }
+//   if(!mFullscreen)
+//   {
+//      // Set the Client Area Extent (Resolution) of this window
+//      NSSize newSize = {static_cast<CGFloat>(newExtent.x), static_cast<CGFloat>(newExtent.y)};
+//      [mGLKWindow setContentSize:newSize];
+//   }
+//   else
+//   {
+//      // In fullscreen we have to resize the monitor (it'll be good to change it back too...)
+//      if(!mDefaultDisplayMode)
+//         mDefaultDisplayMode = (NSDictionary*)CGDisplayCurrentMode(mDisplay);
+//      
+//      NSDictionary* newMode = (NSDictionary*)CGDisplayBestModeForParameters(mDisplay, 32, newExtent.x, newExtent.y, NULL);
+//      Con::printf("Switching to new display mode... width: %i height: %i bpp: %i", 
+//                  [[newMode valueForKey:@"Width"] intValue], [[newMode valueForKey:@"Height"] intValue], [[newMode valueForKey:@"BitsPerPixel"] intValue]); 
+//      CGDisplaySwitchToMode(mDisplay, (CFDictionaryRef)newMode);
+//      mDisplayBounds = CGDisplayBounds(mDisplay);
+//      if(mDisplay == kCGDirectMainDisplay)
+//         mMainDisplayBounds = mDisplayBounds;
+//   }
 }
 
 const Point2I iOSWindow::getClientExtent()
 {
-   if(!mFullscreen)
-   {
-      // Get the Client Area Extent (Resolution) of this window
-      NSSize size = [[miOSWindow contentView] frame].size;
-      return Point2I(size.width, size.height);
-   }
-   else
-   {
-      return Point2I(mDisplayBounds.size.width, mDisplayBounds.size.height);
-   }
+//   if(!mFullscreen)
+//   {
+//      // Get the Client Area Extent (Resolution) of this window
+//      NSSize size = [[mGLKWindow contentView] frame].size;
+//      return Point2I(size.width, size.height);
+//   }
+//   else
+//   {
+//      return Point2I(mDisplayBounds.size.width, mDisplayBounds.size.height);
+//   }
 }
 
 void iOSWindow::setBounds( const RectI &newBounds )
 {
-   CGRect newFrame = NSMakeRect(newBounds.point.x, newBounds.point.y, newBounds.extent.x, newBounds.extent.y);
-   [miOSWindow setFrame:newFrame display:YES];
+//   CGRect newFrame = NSMakeRect(newBounds.point.x, newBounds.point.y, newBounds.extent.x, newBounds.extent.y);
+//   [mGLKWindow setFrame:newFrame display:YES];
 }
 
 const RectI iOSWindow::getBounds() const
 {
-   if(!mFullscreen)
-   {
-      // Get the position and size (fullscreen windows are always at (0,0)).
-      CGRect frame = [miOSWindow frame];
-      return RectI(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height);
-   }
-   else
+//   if(!mFullscreen)
+//   {
+//      // Get the position and size (fullscreen windows are always at (0,0)).
+//      CGRect frame = [mGLKWindow frame];
+//      return RectI(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height);
+//   }
+//   else
    {
       return RectI(0, 0, mDisplayBounds.size.width, mDisplayBounds.size.height);
    }
@@ -279,46 +242,48 @@ const RectI iOSWindow::getBounds() const
 
 void iOSWindow::setPosition( const Point2I newPosition )
 {
-   UIScreen *screen = [miOSWindow screen];
-   CGRect screenFrame = [screen frame];
-
-   NSPoint pos = {static_cast<CGFloat>(newPosition.x), newPosition.y + screenFrame.size.height};
-   [miOSWindow setFrameTopLeftPoint: pos];
+//   UIScreen *screen = [mGLKWindow screen];
+//   CGRect screenFrame = [screen frame];
+//
+//   NSPoint pos = {static_cast<CGFloat>(newPosition.x), newPosition.y + screenFrame.size.height};
+//   [mGLKWindow setFrameTopLeftPoint: pos];
 }
 
 const Point2I iOSWindow::getPosition()
 {
-   UIScreen *screen = [miOSWindow screen];
-   CGRect screenFrame = [screen frame];
-   CGRect frame = [miOSWindow frame];
-
-   return Point2I(frame.origin.x, screenFrame.size.height - (frame.origin.y + frame.size.height));
+   return Point2I(0, 0);
+//   UIScreen *screen = [mGLKWindow screen];
+//   CGRect screenFrame = [screen frame];
+//   CGRect frame = [mGLKWindow frame];
+//
+//   return Point2I(frame.origin.x, screenFrame.size.height - (frame.origin.y + frame.size.height));
 }
 
 void iOSWindow::centerWindow()
 {
-   [miOSWindow center];
+//   [mGLKWindow center];
 }
 
 Point2I iOSWindow::clientToScreen( const Point2I& pos )
 {
-   NSPoint p = { static_cast<CGFloat>(pos.x), static_cast<CGFloat>(pos.y) };
-   
-   p = [ miOSWindow convertBaseToScreen: p ];
-   return Point2I( p.x, p.y );
+//   NSPoint p = { static_cast<CGFloat>(pos.x), static_cast<CGFloat>(pos.y) };
+//   
+//   p = [ mGLKWindow convertBaseToScreen: p ];
+//   return Point2I( p.x, p.y );
 }
 
 Point2I iOSWindow::screenToClient( const Point2I& pos )
 {
-   NSPoint p = { static_cast<CGFloat>(pos.x), static_cast<CGFloat>(pos.y) };
-   
-   p = [ miOSWindow convertScreenToBase: p ];
-   return Point2I( p.x, p.y );
+//   NSPoint p = { static_cast<CGFloat>(pos.x), static_cast<CGFloat>(pos.y) };
+//   
+//   p = [ mGLKWindow convertScreenToBase: p ];
+//   return Point2I( p.x, p.y );
 }
 
 bool iOSWindow::isFocused()
 {
-   return [miOSWindow isKeyWindow];
+   return true;
+//   return [mGLKWindow isKeyWindow];
 }
 
 bool iOSWindow::isOpen()
@@ -329,27 +294,28 @@ bool iOSWindow::isOpen()
 
 bool iOSWindow::isVisible()
 {
-   return !isMinimized() && ([miOSWindow isVisible] == YES);
+   return true;
 }
    
 void iOSWindow::setFocus()
 {
-   [miOSWindow makeKeyAndOrderFront:nil];
+//   [mGLKWindow makeKeyAndOrderFront:nil];
 }
 
 void iOSWindow::signalGainFocus()
 {
    if(isFocused())
-      [[miOSWindow delegate] performSelector:@selector(signalGainFocus)];
+      [[mGLKWindow delegate] performSelector:@selector(signalGainFocus)];
 }
 
 void iOSWindow::minimize()
 {
-   if(!isVisible())
-      return;
-      
-   [miOSWindow miniaturize:nil];
-   appEvent.trigger(getWindowId(), WindowHidden);
+   return;
+//   if(!isVisible())
+//      return;
+//      
+//   [mGLKWindow miniaturize:nil];
+//   appEvent.trigger(getWindowId(), WindowHidden);
 
 //    //-----------------------------------------------------------------------------
 //    // Simulates the user clicking the minimize button by momentarily highlighting
@@ -365,26 +331,29 @@ void iOSWindow::minimize()
 
 void iOSWindow::maximize()
 {
-   if(!isVisible())
-      return;
+   return;
+//   if(!isVisible())
+//      return;
    
    // GFX2_RENDER_MERGE 
-   //[miOSWindow miniaturize:nil];
+   //[mGLKWindow miniaturize:nil];
    //appEvent.trigger(getWindowId(), WindowHidden);
 }
 
 void iOSWindow::restore()
 {
-   if(!isMinimized())
-      return;
-   
-   [miOSWindow deminiaturize:nil];
-   appEvent.trigger(getWindowId(), WindowShown);
+   return;
+//   if(!isMinimized())
+//      return;
+//   
+//   [mGLKWindow deminiaturize:nil];
+//   appEvent.trigger(getWindowId(), WindowShown);
 }
 
 bool iOSWindow::isMinimized()
 {
-   return [miOSWindow isMiniaturized] == YES;
+   return false;
+//   return [mGLKWindow isMiniaturized] == YES;
 }
 
 bool iOSWindow::isMaximized()
@@ -404,48 +373,48 @@ void iOSWindow::clearFocus()
 bool iOSWindow::setCaption(const char* windowText)
 {
    mTitle = windowText;
-   [miOSWindow setTitle:[NSString stringWithUTF8String:mTitle]];
+   [mGLKWindow setTitle:@(mTitle)];
    return true;
 }
 
 void iOSWindow::_doMouseLockNow()
 {
-   if(!isVisible())
-      return;
-      
-   if(mShouldMouseLock == mMouseLocked && mMouseLocked != isCursorVisible())
-      return;
-   
-   if(mShouldMouseLock)
-      _dissociateMouse();
-   else
-      _associateMouse();
-   
-   // hide the cursor if we're locking, show it if we're unlocking
-   setCursorVisible(!shouldLockMouse());
-
-   mMouseLocked = mShouldMouseLock;
+//   if(!isVisible())
+//      return;
+//      
+//   if(mShouldMouseLock == mMouseLocked && mMouseLocked != isCursorVisible())
+//      return;
+//   
+////   if(mShouldMouseLock)
+////      _dissociateMouse();
+////   else
+////      _associateMouse();
+//   
+//   // hide the cursor if we're locking, show it if we're unlocking
+//   setCursorVisible(!shouldLockMouse());
+//
+//   mMouseLocked = mShouldMouseLock;
 
    return;
 }
 
-void iOSWindow::_associateMouse()
-{
-   CGAssociateMouseAndMouseCursorPosition(true);
-}
-
-void iOSWindow::_dissociateMouse()
-{
-   _centerMouse();
-   CGAssociateMouseAndMouseCursorPosition(false);
-}
-
-void iOSWindow::_centerMouse()
-{
-   CGRect frame = [miOSWindow frame];
-   
-   // Deal with the y flip (really fun when more than one monitor is involved)
-   F32 offsetY = mMainDisplayBounds.size.height - mDisplayBounds.size.height;
-   frame.origin.y = (mDisplayBounds.size.height + offsetY) - (S32)frame.origin.y - (S32)frame.size.height;
-   mCursorController->setCursorPosition(frame.origin.x + frame.size.width / 2, frame.origin.y + frame.size.height / 2);
-}
+//void iOSWindow::_associateMouse()
+//{
+//   CGAssociateMouseAndMouseCursorPosition(true);
+//}
+//
+//void iOSWindow::_dissociateMouse()
+//{
+//   _centerMouse();
+//   CGAssociateMouseAndMouseCursorPosition(false);
+//}
+//
+//void iOSWindow::_centerMouse()
+//{
+//   CGRect frame = [mGLKWindow frame];
+//   
+//   // Deal with the y flip (really fun when more than one monitor is involved)
+//   F32 offsetY = mMainDisplayBounds.size.height - mDisplayBounds.size.height;
+//   frame.origin.y = (mDisplayBounds.size.height + offsetY) - (S32)frame.origin.y - (S32)frame.size.height;
+//   mCursorController->setCursorPosition(frame.origin.x + frame.size.width / 2, frame.origin.y + frame.size.height / 2);
+//}

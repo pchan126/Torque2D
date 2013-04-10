@@ -151,7 +151,7 @@ bool initializeLibraries()
 #ifdef TORQUE_OS_IOS
     ResourceManager->registerExtension(".pvr", constructBitmapPVR);
 #endif
-	ResourceManager->registerExtension(".dts", constructShape);
+//	ResourceManager->registerExtension(".dts", constructShape);
    
     Platform::initConsole();
     NetStringTable::create();

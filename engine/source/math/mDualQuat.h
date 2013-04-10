@@ -142,6 +142,7 @@ inline MatrixF DualQuatF::toMatrix()
     m[3] = t.x;
     m[7] = t.y;
     m[12] = t.z;
+   return m;
 }
 
 #endif

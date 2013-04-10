@@ -609,7 +609,7 @@ StringTableEntry Platform::getExecutablePath()
     char* ret = NULL;
     
     if (StringTable)
-        platState.mainCSDirectory = [NSString stringWithUTF8String: StringTable->insert(cwd_buf)];
+        platState.mainCSDirectory = @(StringTable->insert(cwd_buf));
     else
         ret = dStrdup(cwd_buf);
     

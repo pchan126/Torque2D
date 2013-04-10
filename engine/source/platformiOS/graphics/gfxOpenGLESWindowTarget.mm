@@ -27,7 +27,6 @@ bool GFXOpenGLESWindowTarget::present()
     GFX->updateStates();
     GFXOpenGLESDevice* device = (GFXOpenGLESDevice*)GFX;
     [device->mContext presentRenderbuffer:GL_RENDERBUFFER];
-//    [[platState window] presentRenderbuffer:GL_RENDERBUFFER];
     return true;
 }
 

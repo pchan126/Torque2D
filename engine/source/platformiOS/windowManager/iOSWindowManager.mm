@@ -46,7 +46,7 @@ void iOSWindowManager::getMonitorRegions(Vector<RectI> &regions)
    NSArray *screenList = [UIScreen screens];
    for(U32 i = 0; i < [screenList count]; i++)
    {
-      CGRect screenBounds = [[screenList objectAtIndex: i] frame];
+      CGRect screenBounds = [screenList[i] frame];
       regions.push_back(convertCGRectToRectI(screenBounds));
    }
 }

@@ -22,7 +22,6 @@
 
 #import "./T2DViewController.h"
 #import "platformiOS/platformGL.h"
-#include "platformiOS/iOSWindow.h"
 #include "platformiOS/platformiOS.h"
 #include "graphics/gfxDevice.h"
 #include "game/gameInterface.h"
@@ -175,13 +174,25 @@ extern void _iOSGameInnerLoop();
     
     UIApplication * application = [UIApplication sharedApplication];
     id appDelegate = [application delegate];
-    
-	_iOSTorqueFatalError = false;
+   	
+   _iOSTorqueFatalError = false;
 //	if(!_iOSRunTorqueMain( appDelegate, self.view, self ))
 //	{
 //		_iOSTorqueFatalError = true;
 //		return;
 //	};
+}
+
+
+- (void)dealloc
+{
+   [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                   name:UIScreenDidConnectNotification
+                                                 object:nil];
+   
+	[[NSNotificationCenter defaultCenter] removeObserver:self
+                                                   name:UIScreenDidDisconnectNotification
+                                                 object:nil];
 }
 
 - (void)viewDidUnload

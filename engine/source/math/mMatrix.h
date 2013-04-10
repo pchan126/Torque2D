@@ -243,10 +243,10 @@ public:
    // Math operator overloads
    //------------------------------------
    MatrixF& operator *= ( const MatrixF &m );
-   friend MatrixF operator * ( MatrixF &m1, const MatrixF &m2 );
+//   friend MatrixF operator * ( MatrixF &m1, const MatrixF &m2 );
 
    MatrixF& operator *= ( const F32 a );
-    friend MatrixF operator * ( MatrixF &m2, const F32 a);
+//    friend MatrixF operator * ( MatrixF &m2, const F32 a);
 
     // Static identity matrix
    const static MatrixF Identity;
