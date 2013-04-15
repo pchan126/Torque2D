@@ -177,7 +177,7 @@ protected:
    // We have a hash table for fast texture lookups
    GFXTextureObject **mHashTable;
    U32                mHashCount;
-   GFXTextureObject *hashFind( const String &name );
+   GFXTextureObject *find( const String &name );
    void              hashInsert(GFXTextureObject *object);
    void              hashRemove(GFXTextureObject *object);
 

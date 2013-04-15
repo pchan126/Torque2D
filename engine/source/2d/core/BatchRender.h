@@ -35,9 +35,8 @@
 #include "2d/scene/DebugStats.h"
 #endif
 
-#ifndef _TEXTURE_MANAGER_H_
-#include "graphics/TextureManager.h"
-#endif
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxTextureHandle.h"
 
 #ifndef _HASHTABLE_H
 #include "collection/hashTable.h"
@@ -81,7 +80,7 @@ private:
     };
 
     typedef Vector<TriangleRun> indexVectorType;
-    typedef HashMap<U32, indexVectorType*> textureBatchType;
+    typedef HashMap<GFXTexHandle, indexVectorType*> textureBatchType;
 
     VectorPtr< indexVectorType* > mIndexVectorPool;
     textureBatchType    mTextureBatchMap;
@@ -100,13 +99,13 @@ private:
     U32                 mColorCount;
 
     bool                mBlendMode;
-    GLenum              mSrcBlendFactor;
-    GLenum              mDstBlendFactor;
+    GFXBlend              mSrcBlendFactor;
+    GFXBlend              mDstBlendFactor;
     ColorF              mBlendColor;
     F32                 mAlphaTestMode;
 
     bool                mStrictOrderMode;
-    TextureHandle       mStrictOrderTextureHandle;
+    GFXTexHandle       mStrictOrderTextureHandle;
     DebugStats*         mpDebugStats;
 
     bool                mWireframeMode;
@@ -134,7 +133,7 @@ public:
     inline bool getStrictOrderMode( void ) const { return mStrictOrderMode; }
 
     /// Turns-on blend mode with the specified blend factors and color.
-    inline void setBlendMode( GLenum srcFactor, GLenum dstFactor, const ColorF& blendColor = ColorF(1.0f, 1.0f, 1.0f, 1.0f))
+    inline void setBlendMode( GFXBlend srcFactor, GFXBlend dstFactor, const ColorF& blendColor = ColorF(1.0f, 1.0f, 1.0f, 1.0f))
     {
         // Ignore no change.
         if (    mBlendMode &&
@@ -229,7 +228,7 @@ public:
             const U32 vertexCount,
             const Vector2* pVertexArray,
             const Vector2* pTextureArray,
-            TextureHandle& texture,
+            GFXTexHandle& texture,
             const ColorF& color = ColorF(-1.0f, -1.0f, -1.0f) );
 
     /// Submit a quad for batching.
@@ -247,7 +246,7 @@ public:
             const Vector2& texturePos1,
             const Vector2& texturePos2,
             const Vector2& texturePos3,
-            TextureHandle& texture,
+            GFXTexHandle& texture,
             const ColorF& color = ColorF(-1.0f, -1.0f, -1.0f) );
 
     /// Render a quad immediately without affecting current batch.
@@ -267,16 +266,26 @@ public:
             const Vector2& texturePos2,
             const Vector2& texturePos3 )
     {
-        glBegin( GL_TRIANGLE_STRIP );
-            glTexCoord2f( texturePos0.x, texturePos0.y );
-            glVertex2f( vertexPos0.x, vertexPos0.y );
-            glTexCoord2f( texturePos1.x, texturePos1.y );
-            glVertex2f( vertexPos1.x, vertexPos1.y );
-            glTexCoord2f( texturePos3.x, texturePos3.y );
-            glVertex2f( vertexPos3.x, vertexPos3.y );
-            glTexCoord2f( texturePos2.x, texturePos2.y );
-            glVertex2f( vertexPos2.x, vertexPos2.y );
-        glEnd();
+        GFXVertexPCT verts[4];
+        
+        verts[0].point.set(vertexPos0.x, vertexPos0.y, 0.0f);
+        verts[1].point.set(vertexPos1.x, vertexPos1.y, 0.0f);
+        verts[2].point.set(vertexPos3.x, vertexPos3.y, 0.0f);
+        verts[3].point.set(vertexPos2.x, vertexPos2.y, 0.0f);
+        verts[0].texCoord.set(texturePos0.x, texturePos0.y);
+        verts[1].texCoord.set(texturePos1.x, texturePos1.y);
+        verts[2].texCoord.set(texturePos3.x, texturePos3.y);
+        verts[3].texCoord.set(texturePos2.x, texturePos2.y);
+        verts[0].color.set(255, 255, 255);
+        verts[1].color.set(255, 255, 255);
+        verts[2].color.set(255, 255, 255);
+        verts[3].color.set(255, 255, 255);
+        
+        GFXVertexBufferHandle<GFXVertexPCT> vHandle( GFX, 4, GFXBufferTypeVolatile, verts);
+        GFX->setVertexBuffer(vHandle);
+        
+        GFX->setupGenericShaders(GFXDevice::GSModColorTexture);
+        GFX->drawPrimitive(GFXTriangleStrip, 0, 2);
     }
 
     /// Flush (render) any pending batches with a reason metric.
@@ -290,7 +299,8 @@ private:
     void flushInternal( void );
 
     /// Find texture batch.
-    indexVectorType* findTextureBatch( TextureHandle& handle );
+    indexVectorType* findTextureBatch( GFXTexHandle& handle );
+
 };
 
 #endif

@@ -240,7 +240,7 @@ void GFXTextureManager::cleanupCache( U32 secondsToLive )
 
 GFXTextureObject *GFXTextureManager::_lookupTexture( const char *hashName, const GFXTextureProfile *profile  )
 {
-   GFXTextureObject *ret = hashFind( hashName );
+   GFXTextureObject *ret = find( hashName );
 
    // TODO: Profile checking HERE
 
@@ -666,7 +666,7 @@ void GFXTextureManager::hashRemove( GFXTextureObject *object )
    }
 }
 
-GFXTextureObject* GFXTextureManager::hashFind( const String &name )
+GFXTextureObject* GFXTextureManager::find( const String &name )
 {
    if ( name.isEmpty() )
       return NULL;
@@ -896,7 +896,7 @@ void GFXTextureManager::_onFileChanged( const String &path )
 //   pathNoExt = String::Join( pathNoExt, '/', path.getFileName() );
 //
 //   // See if we've got it loaded.
-//   GFXTextureObject *obj = hashFind( pathNoExt );
+//   GFXTextureObject *obj = find( pathNoExt );
 //   if ( !obj || path != obj->getPath() )
 //      return;
 //

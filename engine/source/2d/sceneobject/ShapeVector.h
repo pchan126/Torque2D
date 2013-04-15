@@ -78,9 +78,6 @@ public:
     /// Internal Crunchers.
     void generateLocalPoly( void );
 
-    void renderCircleShape(Vector2 position, F32 radius);
-    void renderPolygonShape(U32 vertexCount);
-
     /// Render flipping.
     inline void setFlip( const bool flipX, const bool flipY )   { mFlipX = flipX; mFlipY = flipY; generateLocalPoly(); }
     inline void setFlipX( const bool flipX )                    { setFlip( flipX, mFlipY ); }

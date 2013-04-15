@@ -582,7 +582,7 @@ void GFXDrawUtil::draw2DSquare( const Point2F &screenPoint, F32 width, F32 spinA
    GFXVertexBufferHandle<GFXVertexPC> verthandle( mDevice, 4, GFXBufferTypeStatic, verts );
    mDevice->setVertexBuffer( verthandle );
 
-//   mDevice->setStateBlock(mRectFillSB);
+   mDevice->setStateBlock(mRectFillSB);
    mDevice->setupGenericShaders();
 
    mDevice->drawPrimitive( GFXTriangleStrip, 0, 2 );
@@ -814,6 +814,62 @@ void GFXDrawUtil::drawPolygon( const GFXStateBlockDesc& desc, const Point3F* poi
       mDevice->drawPrimitive( GFXLineStrip, 0, numPoints );
    else
       mDevice->drawPrimitive( GFXTriangleFan, 0, numPoints - 2 );
+}
+
+
+void GFXDrawUtil::drawCircleShape(const GFXStateBlockDesc& desc, const Point2F position, const F32 radius, const ColorI& color)
+{
+    const bool isWireframe = ( desc.fillMode == GFXFillWireframe );
+    const U32 numVerts = isWireframe ? 32 : 36;
+    Vector<GFXVertexPC> verts;
+    verts.setSize(numVerts);
+
+    if (isWireframe)
+    {
+        mDevice->setStateBlockByDesc( desc );
+
+        const F32 k_segments = 32.0f;
+        const F32 k_increment = 2.0f * Float_Pi / k_segments;
+        F32 theta = 0.0f;
+        
+        
+        for (U32 i = 0; i < numVerts; ++i)
+        {
+            Point2F v = position + radius * Point2F(cosf(theta), sinf(theta));
+            verts[ i ].point = Point3F(v.x, v.y, 0.0);
+            verts[ i ].color = ColorI(255, 255, 255, 255);
+            theta += k_increment;
+        }
+        
+        mDevice->drawPrimitive( GFXTriangleFan, 0, numVerts - 2 );
+
+        theta = 0.0f;
+        
+        for (U32 i = 0; i < k_segments; ++i)
+        {
+            Point2F v = position + radius * Point2F(cosf(theta), sinf(theta));
+            verts[ i ].point = Point3F(v.x, v.y, 0.0);
+            verts[ i ].color = color;
+            theta += k_increment;
+        }
+
+        mDevice->drawPrimitive( GFXLineStrip, 0, numVerts - 1 );
+    }
+    else
+    {
+        const F32 k_segments = 36.0f;
+        const F32 k_increment = 2.0f * Float_Pi / k_segments;
+        F32 theta = 0.0f;
+        
+        for (U32 i = 0; i < k_segments; ++i)
+        {
+            Point2F v = position + radius * Point2F(cosf(theta), sinf(theta));
+            verts[ i ].point = Point3F(v.x, v.y, 0.0);
+            verts[ i ].color = color;
+            theta += k_increment;
+        }
+        mDevice->drawPrimitive( GFXLineStrip, 0, numVerts - 1 );
+    }
 }
 
 //void GFXDrawUtil::drawCube( const GFXStateBlockDesc &desc, const Box3F &box, const ColorI &color, const MatrixF *xfm )

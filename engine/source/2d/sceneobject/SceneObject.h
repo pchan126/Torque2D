@@ -494,8 +494,8 @@ public:
     inline F32              getBlendAlpha( void ) const                 { return mBlendColor.alpha; }
     inline void             setAlphaTest( const F32 alpha )             { mAlphaTest = alpha; }
     inline F32              getAlphaTest( void ) const                  { return mAlphaTest; }
-    void                    setBlendOptions( void );
-    static                  void resetBlendOptions( void );
+//    void                    setBlendOptions( void );
+//    static                  void resetBlendOptions( void );
 
     /// Render sorting.
     inline void             setSortPoint( const Vector2& pt )           { mSortPoint = pt; }

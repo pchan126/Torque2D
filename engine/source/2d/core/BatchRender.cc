@@ -26,8 +26,6 @@
 #include "2d/sceneobject/SceneObject.h"
 #endif
 
-//#include "platformOSX/graphics/gfxOpenGLESTextureObject.h"
-
 // Debug Profiling.
 #include "debug/profiler.h"
 
@@ -38,21 +36,17 @@ BatchRender::BatchRender() :
     mVertexCount( 0 ),
     mTextureCoordCount( 0 ),
     mIndexCount( 0 ),
+    mColorCount( 0 ),
     NoColor( -1.0f, -1.0f, -1.0f ),
     mStrictOrderMode( false ),
     mpDebugStats( NULL ),
+//    mBlendMode( true ),
+//    mSrcBlendFactor( GL_SRC_ALPHA ),
+//    mDstBlendFactor( GL_ONE_MINUS_SRC_ALPHA ),
     mBlendColor( ColorF(1.0f,1.0f,1.0f,1.0f) ),
-    mAlphaTestMode( -1.0f ),
+//    mAlphaTestMode( -1.0f ),
     mBatchEnabled( true )
 {
-    mGFXStateDesc.setCullMode (GFXCullNone);
-    mGFXStateDesc.setZReadWrite( false );
-    mGFXStateDesc.setBlend( true, GFXBlendSrcAlpha, GFXBlendInvSrcAlpha);
-    mGFXStateDesc.samplersDefined = true;
-    mGFXStateDesc.samplers[0].GFXSamplerStateDesc::getClampLinear();
-    mGFXStateDesc.fillMode = GFXFillSolid;
-    
-    mGFXStateRef = GFX->createStateBlock(mGFXStateDesc);
 }
 
 //-----------------------------------------------------------------------------
@@ -108,7 +102,7 @@ void BatchRender::SubmitTriangles(
         const U32 vertexCount,
         const Vector2* pVertexArray,
         const Vector2* pTextureArray,
-        TextureHandle& texture,
+        GFXTexHandle& texture,
         const ColorF& color )
 {
     // Debug Profiling.
@@ -265,16 +259,6 @@ void BatchRender::SubmitQuad(
         }
     }
 
-    // Is a color specified?
-    if ( color != NoColor )
-    {
-        // Yes, so add colors.
-        mColorBuffer[mColorCount++] = color;
-        mColorBuffer[mColorCount++] = color;
-        mColorBuffer[mColorCount++] = color;
-        mColorBuffer[mColorCount++] = color;
-    }
-
     // Strict order mode?
     if ( mStrictOrderMode )
     {
@@ -389,32 +373,57 @@ void BatchRender::flushInternal( void )
     // Stats.
     mpDebugStats->batchFlushes++;
 
-    GFX->setStateBlock(mGFXStateRef);
-    GFXVertexBufferHandle<GFXVertexPCT> vHandle( GFX, mVertexCount, GFXBufferTypeVolatile, mVertexBuffer);
-    GFX->setVertexBuffer(vHandle);
+    GFXStateBlockDesc desc;
+
+    if ( mWireframeMode )
+    {
+        desc.setFillModeWireframe();
+    }
+    else
+    {
+        GFX->setTexture(0, mStrictOrderTextureHandle);
+    }
+
+    // Set blend mode.
+    if ( mBlendMode )
+    {
+        desc.setBlend(true, mSrcBlendFactor, mDstBlendFactor);
+    }
+
+    // Set alpha-blend mode.
+    if ( mAlphaTestMode >= 0.0f )
+    {
+        desc.setAlphaTest(true, GFXCmpGreaterEqual, mAlphaTestMode*255.0);
+    }
+
+    GFX->setStateBlockByDesc( desc );
+
+    // Enable vertex and texture arrays.
+//    glEnableClientState( GL_VERTEX_ARRAY );
+//    glVertexPointer( 2, GL_FLOAT, 0, mVertexBuffer );
+//    glTexCoordPointer( 2, GL_FLOAT, 0, mTextureBuffer );
+
+//    // Use the texture coordinates if not in wireframe mode.
+//    if ( !mWireframeMode )
+//        glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+
+//    // Do we have any colors?
+//    if ( mColorCount > 0 )
+//    {
+//        // Yes, so enable color array.
+//        glEnableClientState( GL_COLOR_ARRAY );
+//        glColorPointer( 4, GL_FLOAT, 0, mColorBuffer );
+//    }
 
     // Strict order mode?
     if ( mStrictOrderMode )
     {
-        GFX->setTexture(0, mStrictOrderTextureHandle);
+        // Bind the texture if not in wireframe mode.
+//        if ( !mWireframeMode )
+//            glBindTexture( GL_TEXTURE_2D, mStrictOrderTextureHandle.getGLName() );
 
-        // Yes, so do we have a single quad?
-        if ( mQuadCount == 1 )
-        {
-            // Yes, so draw the quad using a triangle-strip with indexes.
-            glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );    
-
-            // Stats.
-            mpDebugStats->batchDrawCallsStrictSingle++;
-
-            // Stats.
-            if ( mpDebugStats->batchMaxTriangleDrawn < 2 )
-                mpDebugStats->batchMaxTriangleDrawn = 2;
-        }
-        else
-        {
-            // Draw the quads using triangles with indexes.
-            glDrawElements( GL_TRIANGLES, mIndexCount, GL_UNSIGNED_SHORT, mIndexBuffer );
+        // Draw the triangles
+        glDrawElements( GL_TRIANGLES, mIndexCount, GL_UNSIGNED_SHORT, mIndexBuffer );
 
         // Stats.
         mpDebugStats->batchDrawCallsStrict++;
@@ -433,44 +442,67 @@ void BatchRender::flushInternal( void )
         // No, so iterate texture batch map.
         for( textureBatchType::iterator batchItr = mTextureBatchMap.begin(); batchItr != mTextureBatchMap.end(); ++batchItr )
         {
-            // Fetch texture binding.
-            const U32 textureBinding = batchItr->key;
+            // Reset index count.
+            mIndexCount = 0;
 
             // Fetch index vector.
             indexVectorType* pIndexVector = batchItr->value;
 
             // Iterate indexes.
-            GFXPrimitive temp;
-            temp.type = GFXTriangleList;
-            temp.startIndex = 0;
-            temp.minIndex = 65535;
-            temp.numVertices = 0;
-            temp.numPrimitives = 0;
-
             for( indexVectorType::iterator indexItr = pIndexVector->begin(); indexItr != pIndexVector->end(); ++indexItr )
             {
                 // Fetch triangle run.
                 const TriangleRun& triangleRun = *indexItr;
 
-                // Add new indices.
-                mIndexBuffer[mIndexCount++] = (U16)quadIndex++;
-                mIndexBuffer[mIndexCount++] = (U16)quadIndex++;
-                mIndexBuffer[mIndexCount++] = (U16)quadIndex++;
-                mIndexBuffer[mIndexCount++] = (U16)quadIndex--;
-                mIndexBuffer[mIndexCount++] = (U16)quadIndex--;
-                mIndexBuffer[mIndexCount++] = (U16)quadIndex;
+                // Fetch primitivecount.
+                const U32 primitiveCount = triangleRun.mPrimitiveCount;
+
+                // Fetch triangle index start.
+                U16 triangleIndex = (U16)triangleRun.mStartIndex;
+
+                // Fetch primitive mode.
+                const TriangleRun::PrimitiveMode& primitiveMode = triangleRun.mPrimitiveMode;
+
+                // Handle primitive mode.
+                if ( primitiveMode == TriangleRun::QUAD )
+                {
+                    // Add triangle run for quad.
+                    for( U32 n = 0; n < primitiveCount; ++n )
+                    {
+                        // Add new indices.
+                        mIndexBuffer[mIndexCount++] = triangleIndex++;
+                        mIndexBuffer[mIndexCount++] = triangleIndex++;
+                        mIndexBuffer[mIndexCount++] = triangleIndex++;
+                        mIndexBuffer[mIndexCount++] = triangleIndex--;
+                        mIndexBuffer[mIndexCount++] = triangleIndex--;
+                        mIndexBuffer[mIndexCount++] = triangleIndex--;
+                    }
+                }
+                else if ( primitiveMode == TriangleRun::TRIANGLE )
+                {
+                    // Add triangle run for triangles.
+                    for( U32 n = 0; n < primitiveCount; ++n )
+                    {
+                        // Add new indices.
+                        mIndexBuffer[mIndexCount++] = triangleIndex++;
+                        mIndexBuffer[mIndexCount++] = triangleIndex++;
+                        mIndexBuffer[mIndexCount++] = triangleIndex++;
+                    }
+                }
+                else
+                {
+                    // Sanity!
+                    AssertFatal( false, "BatchRender::flushInternal() - Unrecognized primitive mode encountered for triangle run." );
+                }
             }
-            
-            GFXPrimitiveBufferHandle pbHandle(GFX, mIndexCount, temp.numPrimitives, GFXBufferTypeVolatile, mIndexBuffer, &temp);
-            
+
             // Sanity!
             AssertFatal( mIndexCount > 0, "No batching indexes are present." );
 
             // Bind the texture if not in wireframe mode.
-            if ( !mWireframeMode )
-                glBindTexture( GL_TEXTURE_2D, textureBinding );
+            GFX->setTexture(0, batchItr->key);
 
-            // Draw the quads using triangles with indexes.
+            // Draw the triangles.
             glDrawElements( GL_TRIANGLES, mIndexCount, GL_UNSIGNED_SHORT, mIndexBuffer );
 
             // Stats.
@@ -494,34 +526,56 @@ void BatchRender::flushInternal( void )
         mTextureBatchMap.clear();
     }
 
+    // Reset common render state.
+//    glDisableClientState( GL_VERTEX_ARRAY );
+//    glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+//    glDisableClientState( GL_COLOR_ARRAY );
+//    glDisable( GL_ALPHA_TEST );
+//    glDisable( GL_BLEND );
+//    glDisable( GL_TEXTURE_2D );
+//    glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+
     // Reset batch state.
     mTriangleCount = 0;
     mVertexCount = 0;
-    mTextureResidentCount = 0;
+    mTextureCoordCount = 0;
     mIndexCount = 0;
     mColorCount = 0;
-
-    PROFILE_END();   // T2D_BatchRender_flush
 }
 
 //-----------------------------------------------------------------------------
 
-BatchRender::indexVectorType* BatchRender::findTextureBatch( TextureHandle& handle )
+BatchRender::indexVectorType* BatchRender::findTextureBatch( GFXTexHandle& handle )
 {
-    glBegin( GL_TRIANGLE_STRIP );
-        glTexCoord2f( texturePos0.x, texturePos0.y );
-        glVertex2f( vertexPos0.x, vertexPos0.y );
-        glTexCoord2f( texturePos1.x, texturePos1.y );
-        glVertex2f( vertexPos1.x, vertexPos1.y );
-        glTexCoord2f( texturePos3.x, texturePos3.y );
-        glVertex2f( vertexPos3.x, vertexPos3.y );
-        glTexCoord2f( texturePos2.x, texturePos2.y );
-        glVertex2f( vertexPos2.x, vertexPos2.y );
-    glEnd();
-}
+    // Fetch texture binding.
+//    const U32 textureBinding = handle.getGLName();
+
+    indexVectorType* pIndexVector = NULL;
+
+    // Find texture binding.
+    textureBatchType::iterator itr = mTextureBatchMap.find( handle );
+
+    // Did we find a texture binding?
+    if ( itr == mTextureBatchMap.end() )
+    {
+        // No, so fetch index vector pool count.
+        const U32 indexVectorPoolCount = mIndexVectorPool.size();
+
+        // Do we have any in the index vector pool?
+        if ( indexVectorPoolCount > 0 )
+        {
+            // Yes, so use it.
+            pIndexVector = mIndexVectorPool[indexVectorPoolCount-1];
+            mIndexVectorPool.pop_back();
+        }
+        else
+        {
+            // No, so generate one.
+            pIndexVector = new indexVectorType( 6 * 6 );
+        }
 
         // Insert into texture batch map.
-        mTextureBatchMap.insert( textureBinding, pIndexVector );
+        mTextureBatchMap.insert( handle, pIndexVector );
     }
     else
     {

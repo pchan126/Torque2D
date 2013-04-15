@@ -290,7 +290,7 @@ public:
     static void initPersistFields();
 
     /// GuiControl
-    virtual void resize(const Point2I &newPosition, const Point2I &newExtent);
+    virtual bool resize(const Point2I &newPosition, const Point2I &newExtent);
     virtual void onRender( Point2I offset, const RectI& updateRect );
 
     virtual void onMouseEnter( const GuiEvent& event );
