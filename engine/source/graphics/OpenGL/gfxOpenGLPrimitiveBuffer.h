@@ -20,22 +20,32 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#ifndef _GFXGLESCARDPROFILE_H
-#define _GFXGLESCARDPROFILE_H
+#ifndef _GFXOpenGLPrimitiveBuffer_H_
+#define _GFXOpenGLPrimitiveBuffer_H_
 
-#include "graphics/OpenGL/gfxOpenGLCardProfiler.h"
+#include "graphics/gfxPrimitiveBuffer.h"
 
-class GFXOpenGLESCardProfiler : public GFXOpenGLCardProfiler
+class GFXDevice;
+
+/// This is a primitive buffer (index buffer to GL users) which uses VBOs.
+class GFXOpenGLPrimitiveBuffer : public GFXPrimitiveBuffer
 {
 public:
-   void init();
+    GFXOpenGLPrimitiveBuffer(GFXDevice *device, U32 indexCount, U32 primitiveCount, GFXBufferType bufferType, U16 *indexBuffer, GFXPrimitive *primitiveBuffer) :
+    GFXPrimitiveBuffer(device, indexCount, primitiveCount, bufferType, primitiveBuffer)
+    { };
+	~GFXOpenGLPrimitiveBuffer() {};
 
-protected:
-   virtual void setupCardCapabilities();
+	virtual void lock(U32 indexStart, U32 indexEnd, void **indexPtr) = 0;
+	virtual void unlock() = 0;
+	virtual void prepare() = 0;
+    virtual void finish() = 0;
 
-private:
-    String mRendererString;
-   typedef GFXCardProfiler Parent;
+	virtual void* getBuffer() = 0;
+
+   // GFXResource interface
+   virtual void zombify() = 0;
+   virtual void resurrect() = 0;
 };
 
 #endif

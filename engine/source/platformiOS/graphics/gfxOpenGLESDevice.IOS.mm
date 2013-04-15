@@ -65,8 +65,8 @@ void GFXOpenGLESDevice::initGLState()
     // Deal with the card profiler here when we know we have a valid context.
     mCardProfiler = new GFXOpenGLESCardProfiler();
     mCardProfiler->init();
+
     glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, (GLint*)&mMaxShaderTextures);
-    
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     
     mPixelShaderVersion = 2.0f;
@@ -98,7 +98,7 @@ void GFXOpenGLESDevice::initGLState()
 
 //-----------------------------------------------------------------------------
 // Matrix interface
-GFXOpenGLESDevice::GFXOpenGLESDevice( U32 adapterIndex ) :
+GFXOpenGLESDevice::GFXOpenGLESDevice( U32 adapterIndex ) : GFXOpenGLDevice( adapterIndex ),
                     mAdapterIndex(adapterIndex),
                     mCurrentVB(NULL),
                     mCurrentPB(NULL),
@@ -131,22 +131,6 @@ GFXOpenGLESDevice::~GFXOpenGLESDevice()
     CFRelease(m_ProjectionStackRef);
 }
 
-void GFXOpenGLESDevice::init( )
-{
-    if(mInitialized)
-        return;
-    
-    //    NSOpenGLContext* ctx = _createContextForWindow();
-    //    [ctx makeCurrentContext];
-    //    mContext = ctx;
-    
-    //    mTextureLoader = [[GLKTextureLoader alloc] initWithShareContext:(NSOpenGLContext *)ctx ];
-    
-    initGLState();
-    
-    mInitialized = true;
-    deviceInited();
-}
 
 void GFXOpenGLESDevice::init( const GFXVideoMode &mode, PlatformWindow *window )
 {
@@ -930,7 +914,11 @@ void GFXOpenGLESDevice::setClipRect( const RectI &inRect )
 /// represents an immutable state.
 GFXStateBlockRef GFXOpenGLESDevice::createStateBlockInternal(const GFXStateBlockDesc& desc)
 {
-    return GFXStateBlockRef(new GFXOpenGLESStateBlock(desc));
+    GFXOpenGLESStateBlockRef ret = new GFXOpenGLESStateBlock(desc);
+    ret->setView(getMatrix(GFXMatrixView));
+    ret->setModel(getMatrix(GFXMatrixWorld));
+    ret->setProjection(getMatrix(GFXMatrixProjection));
+    return GFXStateBlockRef(ret);
 }
 
 /// Activates a stateblock
@@ -1074,7 +1062,21 @@ void GFXOpenGLESDevice::setupGenericShaders( GenericShaderType type )
             mGenericShaderConst[2]->setSafe( mGenericShader[2]->getShaderConstHandle("$mvp_matrix"), xform );
             mGenericShaderConst[2]->setSafe( mGenericShader[2]->getShaderConstHandle("$sampler2d_0"), 0);
             break;
-//        case GSTargetRestore:
+        case GSTest:
+            setShader(mGenericShader[3]);
+            setShaderConstBuffer( mGenericShaderConst[3] );
+            mGenericShaderConst[3]->setSafe( mGenericShader[3]->getShaderConstHandle("$mvp_matrix"), xform );
+            break;
+        case GSAlphaTexture:
+            setShader(mGenericShader[4]);
+            setShaderConstBuffer( mGenericShaderConst[4] );
+            mGenericShaderConst[4]->setSafe( mGenericShader[4]->getShaderConstHandle("$mvp_matrix"), xform );
+            mGenericShaderConst[4]->setSafe( mGenericShader[4]->getShaderConstHandle("$sampler2d_0"), 0);
+            break;
+            //        case GSTargetRestore:
+
+            
+            //        case GSTargetRestore:
             
         default:
             break;
@@ -1090,6 +1092,7 @@ GFXOpenGLESShader* GFXOpenGLESDevice::createShader()
 
 void GFXOpenGLESDevice::setShader( GFXOpenGLESShader *shader )
 {
+    
     if ( shader )
     {
         if (shader != mpCurrentShader)
@@ -1126,15 +1129,6 @@ U32 GFXOpenGLESDevice::getNumRenderTargets() const
     return 1;
 }
 
-
-void GFXOpenGLESWindowTarget::_teardownCurrentMode()
-{
-}
-
-
-void GFXOpenGLESWindowTarget::_setupNewMode()
-{
-}
 
 void GFXOpenGLESDevice::_updateRenderTargets()
 {
@@ -1232,125 +1226,4 @@ static GFXOpenGLESRegisterDevice pGLRegisterDevice;
 //    return 0;
 //}
 
-//-----------------------------------------------------------------------------
-// The constructor handles initialization now
-void GFXOpenGLESDevice::initDevice()
-{
-}
 
-
-//-----------------------------------------------------------------------------
-// This will fully clear the OpenGL context
-bool GFXOpenGLESDevice::cleanUpContext()
-{
-    bool needResurrect = false;
-    
-    platState = [iOSPlatState sharedPlatState];
-    
-    if ([platState ctx])
-    {
-        Con::printf( "Killing the texture manager..." );
-        TEXMGR->zombify();
-        //            Game->textureKill();
-        needResurrect = true;
-    }
-    return needResurrect;
-}
-
-//-----------------------------------------------------------------------------
-//
-bool GFXOpenGLESDevice::activate( U32 width, U32 height, U32 bpp, bool fullScreen )
-{
-    Con::printf( " OpenGLDevice activating..." );
-    
-    // gets opengl rendering capabilities of the screen pointed to by platState.hDisplay
-    // sets up dgl with the capabilities info, & reports opengl status.
-    //    getGLCapabilities();
-    
-    // Create the window or capture fullscreen
-    if(!setScreenMode(width, height, bpp, fullScreen, true, false))
-        return false;
-    
-    
-    // set the displayDevice pref to "OpenGL"
-    Con::setVariable( "$pref::Video::displayDevice", mDeviceName );
-    
-    // set vertical sync now because it doesnt need setting every time we setScreenMode()
-    setVerticalSync( !Con::getBoolVariable( "$pref::Video::disableVerticalSync" ));
-    
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-
-void GFXOpenGLESDevice::shutdown()
-{
-    Con::printf( "Shutting down the OpenGL display device..." );
-    cleanUpContext();
-}
-
-bool GFXOpenGLESDevice::setScreenMode( U32 width, U32 height, U32 bpp, bool fullScreen, bool forceIt, bool repaint )
-{
-    return false;
-}
-
-void GFXOpenGLESDevice::swapBuffers()
-{
-//    if ([[platState torqueView] contextInitialized])
-//        [[platState torqueView] flushBuffer];
-    
-    //#if defined(TORQUE_DEBUG)
-    //    if (gOutlineEnabled)
-    //        glClear(GL_COLOR_BUFFER_BIT);
-    //#endif
-    
-}
-
-//-----------------------------------------------------------------------------
-
-const char* GFXOpenGLESDevice::getDriverInfo()
-{
-    // Prepare some driver info for the console:
-    const char* vendorString   = (const char*) glGetString( GL_VENDOR );
-    const char* rendererString = (const char*) glGetString( GL_RENDERER );
-    const char* versionString  = (const char*) glGetString( GL_VERSION );
-    const char* extensionsString = (const char*) glGetString( GL_EXTENSIONS );
-    
-    U32 bufferLen = ( vendorString ? dStrlen( vendorString ) : 0 )
-    + ( rendererString ? dStrlen( rendererString ) : 0 )
-    + ( versionString  ? dStrlen( versionString ) : 0 )
-    + ( extensionsString ? dStrlen( extensionsString ) : 0 )
-    + 4;
-    
-    char* returnString = Con::getReturnBuffer( bufferLen );
-    dSprintf( returnString, bufferLen, "%s\t%s\t%s\t%s",
-             ( vendorString ? vendorString : "" ),
-             ( rendererString ? rendererString : "" ),
-             ( versionString ? versionString : "" ),
-             ( extensionsString ? extensionsString : "" ) );
-    
-    return( returnString );
-}
-
-
-//-----------------------------------------------------------------------------
-#pragma message ("GFXOpenGLDevice::getGammaCorrection not yet implemented")
-bool GFXOpenGLESDevice::getGammaCorrection(F32 &g)
-{
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-#pragma message ("GFXOpenGLDevice::setGammaCorrection not yet implemented")
-bool GFXOpenGLESDevice::setGammaCorrection(F32 g)
-{
-    return false;
-}
-
-
-//-----------------------------------------------------------------------------
-
-bool GFXOpenGLESDevice::setVerticalSync( bool sync )
-{
-    return false;
-}

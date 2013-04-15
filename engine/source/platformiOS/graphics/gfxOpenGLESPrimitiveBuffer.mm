@@ -11,7 +11,8 @@
 #include "platformiOS/graphics/gfxOpenGLESUtils.h"
 
 GFXOpenGLESPrimitiveBuffer::GFXOpenGLESPrimitiveBuffer(GFXDevice *device, U32 indexCount, U32 primitiveCount, GFXBufferType bufferType, U16 *indexBuffer, GFXPrimitive *primitiveBuffer) :
-GFXPrimitiveBuffer(device, indexCount, primitiveCount, bufferType, primitiveBuffer), mZombieCache(NULL) 
+    GFXOpenGLPrimitiveBuffer(device, indexCount, primitiveCount, bufferType, indexBuffer, primitiveBuffer)
+    , mZombieCache(NULL)
 {
 //   PRESERVE_INDEX_BUFFER();
 	// Generate a buffer and allocate the needed memory

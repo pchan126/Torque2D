@@ -68,7 +68,11 @@ public:
    /// @see set
    MatrixF( const EulerF &e, const Point3F& p);
 
-   /// Get the index in m to element in column i, row j
+#ifdef __GLK_MATRIX_4_H
+    MatrixF( const GLKMatrix4 &gm);
+#endif
+
+    /// Get the index in m to element in column i, row j
    ///
    /// This is necessary as we have m as a one dimensional array.
    ///
@@ -84,7 +88,11 @@ public:
    /// Initialize matrix to rotate about p by e.
    MatrixF& set( const EulerF &e, const Point3F& p);
 
-   /// Initialize matrix with a cross product of p.
+#ifdef __GLK_MATRIX_4_H
+    MatrixF& set( const GLKMatrix4 &gm);
+#endif
+
+    /// Initialize matrix with a cross product of p.
    MatrixF& setCrossProduct( const Point3F &p);
 
    /// Initialize matrix with a tensor product of p.
@@ -311,6 +319,12 @@ inline MatrixF::MatrixF( float values[16])
 #endif
 }
 
+#ifdef __GLK_MATRIX_4_H
+inline MatrixF::MatrixF( const GLKMatrix4 &gm )
+{
+    set(gm);
+}
+#endif
 
 inline MatrixF::MatrixF( const EulerF &e, const Point3F& p )
 {
@@ -330,6 +344,14 @@ inline MatrixF& MatrixF::set( const EulerF &e, const Point3F& p)
    m_matF_set_euler_point( e, p, *this );
    return (*this);
 }
+
+#ifdef __GLK_MATRIX_4_H
+inline MatrixF& MatrixF::set( const GLKMatrix4 &gm )
+{
+    mGM = gm;
+    return (*this);
+}
+#endif
 
 inline MatrixF& MatrixF::setCrossProduct( const Point3F &p)
 {

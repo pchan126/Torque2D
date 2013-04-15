@@ -70,63 +70,7 @@ extern void _iOSGameInnerLoop();
 	}
 }
 
-//- (void)createFramebuffer {
-//    if (self.context && !defaultFramebuffer) {
-//        [EAGLContext setCurrentContext:self.context];
-//        
-//        // Create default framebuffer object
-//        glGenFramebuffers(1, &defaultFramebuffer);
-//        glBindFramebuffer(GL_FRAMEBUFFER, defaultFramebuffer);
-//        
-//        // Create colour render buffer and allocate backing store
-//        glGenRenderbuffers(1, &colorRenderbuffer);
-//        glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
-//        
-//        // Allocate the renderbuffer's storage (shared with the drawable object)
-//        [self.context renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)[self view].layer];
-//        glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &framebufferWidth);
-//        glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &framebufferHeight);
-//        
-//        // Create the depth render buffer and allocate storage
-//        glGenRenderbuffers(1, &depthRenderbuffer);
-//        glBindRenderbuffer(GL_RENDERBUFFER, depthRenderbuffer);
-//        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, framebufferWidth, framebufferHeight);
-//        
-//        // Attach colour and depth render buffers to the frame buffer
-//        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, colorRenderbuffer);
-//        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderbuffer);
-//        
-//        // Leave the colour render buffer bound so future rendering operations will act on it
-//        glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
-//        
-//        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-//            NSLog(@"Failed to make complete framebuffer object %x", glCheckFramebufferStatus(GL_FRAMEBUFFER));
-//        }
-//    }
-//}
 
-//
-//- (void)destroyFramebuffer {
-//	
-//        if (self.context) {
-//            [EAGLContext setCurrentContext:self.context];
-//            
-//        if (defaultFramebuffer) {
-//            glDeleteFramebuffers(1, &defaultFramebuffer);
-//            defaultFramebuffer = 0;
-//        }
-//        
-//        if (colorRenderbuffer) {
-//            glDeleteRenderbuffers(1, &colorRenderbuffer);
-//            colorRenderbuffer = 0;
-//        }
-//        
-//        if (depthRenderbuffer) {
-//            glDeleteRenderbuffers(1, &depthRenderbuffer);
-//            depthRenderbuffer = 0;
-//        }
-//    }
-//}
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad
@@ -147,10 +91,12 @@ extern void _iOSGameInnerLoop();
 	//[[UIAccelerometer sharedAccelerometer] setUpdateInterval:(AccelerometerUpdateMS / 1000.0f)];//this value is in seconds
 	//[[UIAccelerometer sharedAccelerometer] setDelegate:self];
     	
+//	[self createFramebuffer];
     view.isLayedOut = true;
     
     //by default, we are in portrait(upright) mode
 	view.currentAngle = (M_PI / 2.0);
+    view.delegate = self;
     
     platState.multipleTouchesEnabled = true;
     [self.view setMultipleTouchEnabled:YES];
@@ -190,11 +136,16 @@ extern void _iOSGameInnerLoop();
 
 - (void)update
 {
+    EAGLContext *ctx1 = self.context;
+    GLKView *view = (T2DView *) self.view;
+    EAGLContext *ctx2 = [view context];
+    
     if(Game->isRunning())
     {
         Game->mainLoop();
     }
 }
+
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {

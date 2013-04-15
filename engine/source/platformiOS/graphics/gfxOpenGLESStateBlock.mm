@@ -10,7 +10,7 @@
 #include "platformiOS/graphics/gfxOpenGLESTextureObject.h"
 
 
-GFXOpenGLESStateBlock::GFXOpenGLESStateBlock(const GFXStateBlockDesc& desc) :
+GFXOpenGLESStateBlock::GFXOpenGLESStateBlock(const GFXStateBlockDesc& desc) : GFXOpenGLStateBlock( desc ),
    mDesc(desc),
    mCachedHashValue(desc.getHashValue())
 {

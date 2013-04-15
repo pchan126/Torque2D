@@ -59,8 +59,8 @@ GFXOpenGLESVertexBuffer::GFXOpenGLESVertexBuffer(  GFXDevice *device,
         }
         else // Everything else is a texture coordinate.
         {
-            glVertexAttribPointer(ATTRIB_TEXCOORD+texCoordIndex, 2, GL_FLOAT, GL_FALSE, mVertexSize, buffer);
-            glEnableVertexAttribArray(ATTRIB_TEXCOORD+texCoordIndex);
+            glVertexAttribPointer(ATTRIB_TEXCOORD0+texCoordIndex, 2, GL_FLOAT, GL_FALSE, mVertexSize, buffer);
+            glEnableVertexAttribArray(ATTRIB_TEXCOORD0+texCoordIndex);
             buffer += element.getSizeInBytes();
             ++texCoordIndex;
         }

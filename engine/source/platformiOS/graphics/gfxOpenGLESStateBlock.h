@@ -6,9 +6,9 @@
 #ifndef _GFXOpenGLESStateBlock_H_
 #define _GFXOpenGLESStateBlock_H_
 
-#include "graphics/gfxStateBlock.h"
+#include "graphics/OpenGL/gfxOpenGLStateBlock.h"
 
-class GFXOpenGLESStateBlock : public GFXStateBlock
+class GFXOpenGLESStateBlock : public GFXOpenGLStateBlock
 {   
 public:
    // 
@@ -19,7 +19,7 @@ public:
 
    /// Called by OpenGL device to active this state block.
    /// @param oldState  The current state, used to make sure we don't set redundant states on the device.  Pass NULL to reset all states.
-   void activate(const GFXOpenGLESStateBlock* oldState);
+   virtual void activate(const GFXOpenGLESStateBlock* oldState);
 
 
    // 

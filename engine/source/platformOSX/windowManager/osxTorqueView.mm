@@ -40,7 +40,6 @@
 @implementation OSXTorqueView
 
 @synthesize contextInitialized = _contextInitialized;
-//@synthesize <#property#>
 
 //-----------------------------------------------------------------------------
 // Custom initialization method for OSXTorqueView

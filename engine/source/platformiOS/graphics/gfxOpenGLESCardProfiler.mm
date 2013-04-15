@@ -202,28 +202,5 @@ void GFXOpenGLESCardProfiler::setupCardCapabilities()
     
     // The OES_vertex_array_object (http://www.khronos.org/registry/gles/extensions/OES/OES_vertex_array_object.txt) API allows caching of vertex array state, to decrease driver overhead. (iOS 4.0)   
     setCapability("GL::GL_OES_vertex_array_object", CheckForExtension(@"GL_OES_vertex_array_object"));
-    
-   
-//    bool suppAppleFence = (CheckForExtension([NSString stringWithUTF8String:"GL_APPLE_fence"]));
-//   setCapability("GL::APPLE::suppFence", suppAppleFence);
-
-    // Certain Intel drivers have a divide by 0 crash if mipmaps are specified with
-   // glTexSubImage2D.
-//   setCapability("GL::Workaround::noManualMips", false);
 }
 
-bool GFXOpenGLESCardProfiler::_queryCardCap(const String& query, U32& foundResult)
-{
-   // Just doing what the D3D9 layer does
-   return 0;
-}
-
-bool GFXOpenGLESCardProfiler::_queryFormat(const GFXFormat fmt, const GFXTextureProfile *profile, bool &inOutAutogenMips)
-{
-	// We assume if the format is valid that we can use it for any purpose.
-   // This may not be the case, but we have no way to check short of in depth 
-   // testing of every format for every purpose.  And by testing, I mean sitting
-   // down and doing it by hand, because there is no OpenGL API to check these
-   // things.
-   return GFXGLTextureInternalFormat[fmt] != GL_ZERO;
-}

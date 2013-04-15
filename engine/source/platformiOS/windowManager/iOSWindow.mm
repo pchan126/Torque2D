@@ -10,6 +10,7 @@
 #import "platformiOS/platformiOS.h"
 #import "./T2DViewController.h"
 #import "platformiOS/graphics/GFXOpenGLESDevice.h"
+#import "platformiOS/T2DAppDelegate.h"
 
 iOSWindow* iOSWindow::sInstance = NULL;
 
@@ -62,40 +63,35 @@ void iOSWindow::_initCocoaWindow(const char* windowText, Point2I clientExtent)
     iOSPlatState *platState = [iOSPlatState sharedPlatState];
     GFXOpenGLESDevice *device = dynamic_cast<GFXOpenGLESDevice*>(GFX);
     EAGLContext *ctx = device->getEAGLContext();
-    [platState.viewController setContext:ctx];
-	[EAGLContext setCurrentContext:ctx];
-    
-    mGLKWindow = platState.viewController;
-    
-//	[self createFramebuffer];
 
-    //   // TODO: cascade windows on screen?
-//   
-//   // create the window
-//   CGRect contentRect;
-//   U32 style;
-//   
-//  contentRect = NSMakeRect(0,0,clientExtent.x, clientExtent.y);
-//  
-//  style = NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask | NSResizableWindowMask;
-//
-//  mGLKWindow = [[NSWindow alloc] initWithContentRect:contentRect styleMask:style backing:NSBackingStoreBuffered defer:YES screen:nil];
-//  if(windowText)
-//     [mGLKWindow setTitle: [NSString stringWithUTF8String: windowText]];   
-//
-//  // necessary to accept mouseMoved events
-//  [mGLKWindow setAcceptsMouseMovedEvents:YES];
-//  
-//  // correctly position the window on screen
-//  [mGLKWindow center];
-//   
-//   // create the opengl view. we don't care about its pixel format, because we
-//   // will be replacing its context with another one.
-//   GGMacView* view = [[GGMacView alloc] initWithFrame:contentRect pixelFormat:[NSOpenGLView defaultPixelFormat]];
-//   [view setTorqueWindow:this];
-//   [mGLKWindow setContentView:view];
-////   [mGLKWindow setDelegate:view];
-//   
+    UIStoryboard *storybord;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+    {
+        storybord = [UIStoryboard storyboardWithName:@"iPadStoryboard" bundle:nil];
+    }
+    else
+    {
+         storybord = [UIStoryboard storyboardWithName:@"iPhoneStoryboard" bundle:nil];
+    }
+
+    T2DViewController *vc =(T2DViewController*)[storybord instantiateInitialViewController];
+    platState.viewController = vc;
+    [platState.viewController setContext:ctx];
+    platState.viewController.context = ctx;
+	[EAGLContext setCurrentContext:ctx];
+    T2DView *view = (T2DView*)platState.viewController.view;
+    view.context = ctx;
+    view.enableSetNeedsDisplay = YES;
+    vc.paused = NO;
+
+    mGLKWindow = platState.viewController;
+    T2DAppDelegate *app = [[UIApplication sharedApplication] delegate];
+    app.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    app.window.rootViewController = mGLKWindow;
+    [app.window makeKeyAndVisible];
+    
+    mGLKWindow.preferredFramesPerSecond = 60;
+    mGLKWindow.paused = NO;
 }
 
 //void iOSWindow::_disassociateCocoaWindow()

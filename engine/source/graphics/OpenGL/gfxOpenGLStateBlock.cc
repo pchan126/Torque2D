@@ -20,48 +20,60 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#ifndef _GFXGLENUMTRANSLATE_H_
-#define _GFXGLENUMTRANSLATE_H_
-
+#include "./gfxOpenGLStateBlock.h"
+#include "./gfxOpenGLDevice.h"
+#include "./gfxOpenGLEnumTranslate.h"
+#include "./gfxOpenGLUtils.h"
+#include "./gfxOpenGLTextureObject.h"
 #include "platform/platformGL.h"
-#include "graphics/gfxEnums.h"
 
-namespace GFXOpenGLEnumTranslate
+
+GFXOpenGLStateBlock::GFXOpenGLStateBlock(const GFXStateBlockDesc& desc) :
+   mDesc(desc),
+   mCachedHashValue(desc.getHashValue()),
+   m_ModelMatrix(true),
+   m_ViewMatrix(true),
+   m_ProjectionMatrix(true),
+   m_MVMatrix(true),
+   m_MVPMatrix(true)
 {
-    void init();
+}
+
+GFXOpenGLStateBlock::~GFXOpenGLStateBlock()
+{
+}
+
+/// Returns the hash value of the desc that created this block
+U32 GFXOpenGLStateBlock::getHashValue() const
+{
+   return mCachedHashValue;
+}
+
+/// Returns a GFXStateBlockDesc that this block represents
+const GFXStateBlockDesc& GFXOpenGLStateBlock::getDesc() const
+{
+   return mDesc;   
+}
+
+void GFXOpenGLStateBlock::setModel( const MatrixF& value)
+{
+    m_ModelMatrix = value;
+    m_MVMatrix = m_ModelMatrix*m_ViewMatrix;
+    m_MVPMatrix = m_MVMatrix*m_ProjectionMatrix;
 };
 
-enum SHADER_ATTRIBUTES{
-    ATTRIB_POSITION,
-    ATTRIB_COLOR,
-    ATTRIB_NORMAL,
-    ATTRIB_TEXCOORD0,
-    ATTRIB_TEXCOORD1,
-    ATTRIB_TEXCOORD2,
-    ATTRIB_TEXCOORD3,
-    ATTRIB_TEXCOORD4,
-    ATTRIB_TEXCOORD5,
-    ATTRIB_TEXCOORD6,
-    ATTRIB_TEXCOORD7,
-    ATTRIB_POINTSIZE,
-    NUM_ATTRIBUTES };
+void GFXOpenGLStateBlock::setView( const MatrixF& value)
+{
+    m_ViewMatrix = value;
+    m_MVMatrix = m_ModelMatrix*m_ViewMatrix;
+    m_MVPMatrix = m_MVMatrix*m_ProjectionMatrix;
+};
 
-extern GLenum GFXGLPrimType[GFXPT_COUNT];
-extern GLenum GFXGLBlend[GFXBlend_COUNT];
-extern GLenum GFXGLBlendOp[GFXBlendOp_COUNT];
-extern GLenum GFXGLSamplerState[GFXSAMP_COUNT];
-extern GLenum GFXGLTextureFilter[GFXTextureFilter_COUNT];
-extern GLenum GFXGLTextureAddress[GFXAddress_COUNT];
-extern GLenum GFXGLCmpFunc[GFXCmp_COUNT];
-extern GLenum GFXGLStencilOp[GFXStencilOp_COUNT];
+void GFXOpenGLStateBlock::setProjection( const MatrixF& value)
+{
+    m_ProjectionMatrix = value;
+    m_MVPMatrix = m_MVMatrix*m_ProjectionMatrix;
+};
 
-extern GLenum GFXGLTextureInternalFormat[GFXFormat_COUNT];
-extern GLenum GFXGLTextureFormat[GFXFormat_COUNT];
-extern GLenum GFXGLTextureType[GFXFormat_COUNT];
 
-extern GLenum GFXGLBufferType[GFXBufferType_COUNT];
-extern GLenum GFXGLCullMode[GFXCull_COUNT];
 
-extern GLenum GFXGLFillMode[GFXFill_COUNT];
-
-#endif

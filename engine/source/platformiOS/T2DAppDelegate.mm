@@ -66,6 +66,7 @@ bool _iOSTorqueFatalError = false;
                                               object:nil];
 
     
+//    application.delegate = self;
     iOSPlatState * platState = [iOSPlatState sharedPlatState];
     [platState runTorque2D];
     

@@ -1,14 +1,16 @@
 #ifdef GL_ES
-precision lowp float;
+
+precision mediump float;
 
 uniform vec4 blend_0;
-in vec4 DestinationColor; 
-out vec4  FragColor;
+varying vec4 DestinationColor;
 
 void main()
 {  
-     gl_FragColor.xyzw = DestinationColor.xyzw;
+     gl_FragColor = DestinationColor;
+    gl_FragColor.rgb = vec3(1.0, 0.0, 0.0);
 }
+
 #else
 
 uniform vec4 blend_0;

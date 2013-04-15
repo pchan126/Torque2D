@@ -6,94 +6,44 @@
 #ifndef _GFXOpenGLESShader_H_
 #define _GFXOpenGLESShader_H_
 
-#include "sim/refBase.h"
-#include "graphics/gfxShader.h"
-#include "collection/hashTable.h"
+#include "graphics/OpenGL/gfxOpenGLShader.h"
 
 class GFXOpenGLESShaderConstHandle;
 class FileStream;
 class GFXOpenGLESShaderConstBuffer;
 
-class GFXOpenGLESShader : public GFXShader
+class GFXOpenGLESShader : public GFXOpenGLShader
 {
    typedef HashMap<String, GFXOpenGLESShaderConstHandle*> HandleMap;
 public:
-   GFXOpenGLESShader();
-   virtual ~GFXOpenGLESShader();
-   
-   /// @name GFXShader interface
-   /// @{
-   virtual GFXShaderConstHandle* getShaderConstHandle(const String& name);
-
-   /// Returns our list of shader constants, the material can get this and just set the constants it knows about
-   virtual const Vector<GFXShaderConstDesc>& getShaderConstDesc() const;
-
-   /// Returns the alignment value for constType
-   virtual U32 getAlignmentValue(const GFXShaderConstType constType) const; 
-
-   virtual GFXShaderConstBufferRef allocConstBuffer();
-
-   /// @}
-   
-   /// @name GFXResource interface
-   /// @{
-   virtual void zombify();
-   virtual void resurrect() { reload(); }
-   virtual const String describeSelf() const;
-   /// @}      
-
-   /// Activates this shader in the GL context.
-   void useProgram();
+   GFXOpenGLESShader() {};
+    virtual ~GFXOpenGLESShader() {};
    
 protected:
 
    friend class GFXOpenGLESShaderConstBuffer;
    friend class GFXOpenGLESShaderConstHandle;
    
-   virtual bool _init();   
-
-    bool initShader(  const StringTableEntry file,
-                    bool isVertex,
-                    const Vector<GFXShaderMacro> &macros );
-
-   void clearShaders();
-   void initConstantDescs();
-   void initHandles();
-   void setConstantsFromBuffer(GFXOpenGLESShaderConstBuffer* buffer);
-   
-    static char* _handleIncludes( const StringTableEntry path, FileStream *s );
-    
-    static bool _loadShaderFromStream(  GLuint shader,
+    bool _loadShaderFromStream(  GLuint shader,
                                       const StringTableEntry path,
                                       FileStream* s,
                                       const Vector<GFXShaderMacro>& macros );
 
-   /// @name Internal GL handles
-   /// @{
-   GLuint mVertexShader;
-   GLuint mPixelShader;
-   GLuint mProgram;
-   /// @}
-    
-   Vector<GFXShaderConstDesc> mConstants;
-   U32 mConstBufferSize;
-   U8* mConstBuffer;
-   HandleMap mHandles;
-   Vector<GFXOpenGLESShaderConstHandle*> mValidHandles;
+    virtual bool _init();
+
+    bool initShader(  const StringTableEntry file,
+                    bool isVertex,
+                    const Vector<GFXShaderMacro> &macros ) ;
+
+    Vector<U32> mAttributes;
 };
 
-class GFXOpenGLESShaderConstBuffer : public GFXShaderConstBuffer
+class GFXOpenGLESShaderConstBuffer : public GFXOpenGLShaderConstBuffer
 {
 public:
    GFXOpenGLESShaderConstBuffer(GFXOpenGLESShader* shader, U32 bufSize, U8* existingConstants);
    ~GFXOpenGLESShaderConstBuffer();
    
-   /// Called by GFXOpenGLESDevice to activate this buffer.
-   void activate();
-
-   /// Called when the shader this buffer references is reloaded.
-   void onShaderReload( GFXOpenGLESShader *shader );
-
    // GFXShaderConstBuffer
    virtual GFXShader* getShader() { return mShader; }
    virtual void set(GFXShaderConstHandle* handle, const F32 fv);
@@ -124,8 +74,8 @@ public:
 private:
 
    friend class GFXOpenGLESShader;
-   U8* mBuffer;
    WeakRefPtr<GFXOpenGLESShader> mShader;
+    
    
    template<typename ConstType>
    void internalSet(GFXShaderConstHandle* handle, const ConstType& param);

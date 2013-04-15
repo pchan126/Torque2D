@@ -20,22 +20,38 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#ifndef _GFXGLESCARDPROFILE_H
-#define _GFXGLESCARDPROFILE_H
+#import "platform/platform.h"
+#include "./gfxOpenGLDevice.h"
 
-#include "graphics/OpenGL/gfxOpenGLCardProfiler.h"
 
-class GFXOpenGLESCardProfiler : public GFXOpenGLCardProfiler
+// Given a primitive type and a number of primitives, return the number of indexes/vertexes used.
+GLsizei GFXOpenGLDevice::primCountToIndexCount(GFXPrimitiveType primType, U32 primitiveCount)
 {
-public:
-   void init();
+    switch (primType)
+    {
+        case GFXPointList :
+            return primitiveCount;
+            break;
+        case GFXLineList :
+            return primitiveCount * 2;
+            break;
+        case GFXLineStrip :
+            return primitiveCount + 1;
+            break;
+        case GFXTriangleList :
+            return primitiveCount * 3;
+            break;
+        case GFXTriangleStrip :
+            return 2 + primitiveCount;
+            break;
+        case GFXTriangleFan :
+            return 2 + primitiveCount;
+            break;
+        default:
+            AssertFatal(false, "GFXOpenGLDevice::primCountToIndexCount - unrecognized prim type");
+            break;
+    }
+    
+    return 0;
+}
 
-protected:
-   virtual void setupCardCapabilities();
-
-private:
-    String mRendererString;
-   typedef GFXCardProfiler Parent;
-};
-
-#endif

@@ -1,6 +1,24 @@
 #ifdef GL_ES
 precision lowp float;
-#endif
+
+uniform mat4 mvp_matrix; 
+
+uniform vec4 Position;
+uniform vec4 SourceColor;
+uniform vec2 inTexCoord;
+
+varying vec4 vertColor;
+varying vec2 TexCoord;
+
+void main()
+{  
+    vertColor = SourceColor;
+    vec4 test = vec4( Position.xyz, 1.0);
+    gl_Position = mvp_matrix * test;
+    TexCoord = inTexCoord;
+}
+
+#else
 
 uniform mat4 mvp_matrix; 
 
@@ -18,3 +36,5 @@ void main()
     gl_Position = mvp_matrix * test;
     TexCoord = inTexCoord;
 }
+
+#endif

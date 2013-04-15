@@ -20,21 +20,25 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#ifndef _GFXGLESCARDPROFILE_H
-#define _GFXGLESCARDPROFILE_H
+#ifndef _GFXGLCARDPROFILE_H
+#define _GFXGLCARDPROFILE_H
 
-#include "graphics/OpenGL/gfxOpenGLCardProfiler.h"
+#include "graphics/gfxCardProfile.h"
+#include "./gfxOpenGLEnumTranslate.h"
 
-class GFXOpenGLESCardProfiler : public GFXOpenGLCardProfiler
+class GFXOpenGLCardProfiler : public GFXCardProfiler
 {
 public:
-   void init();
+   void init() = 0;
 
 protected:
-   virtual void setupCardCapabilities();
+   virtual const String& getRendererString() const { return mRendererString; }
+   virtual void setupCardCapabilities() = 0;
+    virtual bool _queryCardCap(const String& query, U32& foundResult) { return 0;};
+    virtual bool _queryFormat(const GFXFormat fmt, const GFXTextureProfile *profile, bool &inOutAutogenMips) {return GFXGLTextureInternalFormat[fmt] != GL_ZERO;};
 
 private:
-    String mRendererString;
+   String mRendererString;
    typedef GFXCardProfiler Parent;
 };
 

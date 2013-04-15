@@ -20,8 +20,6 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#import <Cocoa/Cocoa.h>
-#import <AppKit/AppKit.h>
 #include "platform/platform.h"
 #include "platform/types.h"
 #include "math/mPoint.h"

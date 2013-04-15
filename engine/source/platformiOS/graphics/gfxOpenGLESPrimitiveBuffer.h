@@ -6,10 +6,10 @@
 #ifndef _GFXOpenGLESPrimitiveBuffer_H_
 #define _GFXOpenGLESPrimitiveBuffer_H_
 
-#include "graphics/gfxPrimitiveBuffer.h"
+#include "graphics/OpenGL/gfxOpenGLPrimitiveBuffer.h"
 
 /// This is a primitive buffer (index buffer to GL users) which uses VBOs.
-class GFXOpenGLESPrimitiveBuffer : public GFXPrimitiveBuffer
+class GFXOpenGLESPrimitiveBuffer : public GFXOpenGLPrimitiveBuffer
 {
 public:
 	GFXOpenGLESPrimitiveBuffer(GFXDevice *device, U32 indexCount, U32 primitiveCount, GFXBufferType bufferType, U16 *indexBuffer, GFXPrimitive *primitiveBuffer = NULL);

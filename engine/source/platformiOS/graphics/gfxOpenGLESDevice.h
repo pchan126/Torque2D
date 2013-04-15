@@ -3,15 +3,13 @@
 // Copyright GarageGames, LLC 2011
 //-----------------------------------------------------------------------------
 
-#ifndef _GFXGLDEVICE_H_
-#define _GFXGLDEVICE_H_
+#ifndef _GFXGLESDEVICE_H_
+#define _GFXGLESDEVICE_H_
 
 #include "platformiOS/platformiOS.h"
 #include "platform/platformGL.h"
-#include "graphics/gfxDevice.h"
+#include "graphics/OpenGL/gfxOpenGLDevice.h"
 
-
-#include "windowManager/platformWindow.h"
 #include "graphics/gfxResource.h"
 #include "platformiOS/graphics/gfxOpenGLESStateBlock.h"
 #include "platformiOS/graphics/gfxOpenGLESShader.h"
@@ -19,12 +17,12 @@
 class GFXOpenGLESVertexBuffer;
 class GFXOpenGLESPrimitiveBuffer;
 class GFXOpenGLESTextureTarget;
-class GFXOpenGLESCubemap;
+//class GFXOpenGLESCubemap;
 //class GLKMatrixStackRef;
 
 @class EAGLContext, GLKTextureLoader;
 
-class GFXOpenGLESDevice : public GFXDevice
+class GFXOpenGLESDevice : public GFXOpenGLDevice
 {
 public:
    void zombify();
@@ -36,7 +34,6 @@ public:
    static GFXDevice *createInstance( U32 adapterIndex );
 
    virtual void init( const GFXVideoMode &mode, PlatformWindow *window = NULL );
-   virtual void init( );
 
    virtual void activate() { }
    virtual void deactivate() { }
@@ -72,8 +69,8 @@ public:
    /// @name Shader functions
    /// @{
     GFXOpenGLESShader* mpCurrentShader;
-    
     GFXOpenGLESShader* mGenericShader[5];
+
     GFXShaderConstBufferRef mGenericShaderConst[4];
     GFXStateBlockRef mGenericShaderStateblock[4];
     
@@ -113,9 +110,6 @@ public:
 
    virtual void preDestroy() { Parent::preDestroy(); }
 
-   virtual U32 getMaxDynamicVerts() { return MAX_DYNAMIC_VERTS; }
-   virtual U32 getMaxDynamicIndices() { return MAX_DYNAMIC_INDICES; }
-   
 //   GFXFence *createFence();
     
    virtual void updateStates(bool forceSetAll = false);
@@ -272,51 +266,6 @@ private:
 private:
     /// Gamma value
     F32 mGamma;
-    
-//    /// Handles to all the devices ( monitors ) attached to the system.
-//    Vector<CGDirectDisplayID> mMonitorList;
-    
-//    CGDirectDisplayID allDevs[32];
-//    U32 nAllDevs;
-//    
-//    /// Fills mResolutionList with a list of valid resolutions for a particular screen
-//    bool enumDisplayModes(CGDirectDisplayID hDevice);
-//    
-//    /// Fills mMonitorList with all available monitors
-//    bool enumMonitors();
-//    
-//    /// Chooses a monitor based on $pref::the results of enumMontors()
-//    CGDirectDisplayID chooseMonitor();
-    
-    iOSPlatState * platState;
-public:
-    //    osxOpenGLDevice();
-    
-    static GFXDevice* create();
-    
-    /// The following are inherited from DisplayDevice
-    void initDevice();
-    
-    bool cleanUpContext();
-    
-    bool activate( U32 width, U32 height, U32 bpp, bool fullScreen );
-    
-    void shutdown();
-    
-    //    NSOpenGLPixelFormat* generateValidPixelFormat(bool fullscreen, U32 bpp, U32 samples);
-    
-    bool setScreenMode( U32 width, U32 height, U32 bpp, bool fullScreen, bool forceIt = false, bool repaint = true );
-    
-    void swapBuffers();
-    
-    const char* getDriverInfo();
-    
-    bool getGammaCorrection(F32 &g);
-    
-    bool setGammaCorrection(F32 g);
-    
-    bool setVerticalSync( bool sync );
-
 };
 
 void CheckOpenGLError(const char* stmt, const char* fname, int line);

@@ -26,11 +26,6 @@ public:
    
    virtual WindowId getWindowId() { return mWindowId; }
    
-//   void setDisplay(CGDirectDisplayID display);
-//   CGDirectDisplayID getDisplay() { return mDisplay; }
-//   CGRect getMainDisplayBounds() { return mMainDisplayBounds; }
-//   CGRect getDisplayBounds() { return mDisplayBounds; }
-
    virtual bool clearFullscreen() 
    { 
       // TODO: properly drop out of full screen

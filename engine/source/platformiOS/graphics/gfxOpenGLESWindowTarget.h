@@ -55,7 +55,15 @@ private:
    void _teardownCurrentMode();
    void _setupNewMode();
 
-    GLuint mFramebuffer, viewRenderbuffer, depthRenderbuffer;
+    // The pixel dimensions of the CAEAGLLayer.
+    GLint framebufferWidth;
+    GLint framebufferHeight;
+
+    // The OpenGL ES names for the framebuffer and renderbuffers used to render
+    // to this view.
+    GLuint defaultFramebuffer;
+    GLuint colorRenderbuffer;
+    GLuint depthRenderbuffer;
 };
 
 #endif

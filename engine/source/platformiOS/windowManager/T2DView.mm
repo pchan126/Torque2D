@@ -54,11 +54,6 @@ void ConvertToRetina(CGPoint *p)
 @synthesize currentAngle;
 @synthesize isLayedOut;
 
--(void)swapBuffers {
-	if( self.isLayedOut == true ) {
-		[self.context presentRenderbuffer:GL_RENDERBUFFER_OES];
-	}
-}
 
 - (void)layoutSubviews {
 }
@@ -190,6 +185,12 @@ extern Vector<Event *> TouchMoveEvents;
 {
     [self touchesEnded:touches withEvent:event];
 }
+
+- (void)drawInRect:(CGRect)rect
+{
+    
+}
+
 
 bool gScreenAutoRotate = false;
 int currentRotate = 0;

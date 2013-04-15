@@ -5,6 +5,7 @@
 
 #include "platform/platform.h"
 #include "platformiOS/graphics/gfxOpenGLESEnumTranslate.h"
+#include "String/StringTable.h"
  
 GLenum GFXGLPrimType[GFXPT_COUNT];
 GLenum GFXGLBlend[GFXBlend_COUNT];
@@ -20,6 +21,7 @@ GLenum GFXGLTextureType[GFXFormat_COUNT];
 GLenum GFXGLBufferType[GFXBufferType_COUNT];
 GLenum GFXGLCullMode[GFXCull_COUNT];
 GLenum GFXGLFillMode[GFXFill_COUNT];
+StringTableEntry GFXGLShaderAttributes[NUM_ATTRIBUTES];
 
 void GFXGLESEnumTranslate::init()
 {
@@ -199,4 +201,16 @@ void GFXGLESEnumTranslate::init()
    GFXGLFillMode[GFXFillPoint] = GL_ZERO;
    GFXGLFillMode[GFXFillWireframe] = GL_ZERO;
    GFXGLFillMode[GFXFillSolid] = GL_ZERO;
+    
+    GFXGLShaderAttributes[ATTRIB_POSITION] = StringTable->insert("Position");
+    GFXGLShaderAttributes[ATTRIB_COLOR] = StringTable->insert("SourceColor");
+    GFXGLShaderAttributes[ATTRIB_NORMAL] = StringTable->insert("Normal");
+    GFXGLShaderAttributes[ATTRIB_TEXCOORD0] = StringTable->insert("inTexCoord");
+    GFXGLShaderAttributes[ATTRIB_TEXCOORD1] = StringTable->insert("inTexCoord2");
+    GFXGLShaderAttributes[ATTRIB_TEXCOORD2] = StringTable->insert("inTexCoord3");
+    GFXGLShaderAttributes[ATTRIB_TEXCOORD3] = StringTable->insert("inTexCoord4");
+    GFXGLShaderAttributes[ATTRIB_TEXCOORD4] = StringTable->insert("inTexCoord5");
+    GFXGLShaderAttributes[ATTRIB_TEXCOORD5] = StringTable->insert("inTexCoord6");
+    GFXGLShaderAttributes[ATTRIB_TEXCOORD6] = StringTable->insert("inTexCoord7");
+    GFXGLShaderAttributes[ATTRIB_TEXCOORD7] = StringTable->insert("inTexCoord8");
 }
