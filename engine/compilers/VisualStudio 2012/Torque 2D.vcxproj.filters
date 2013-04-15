@@ -178,12 +178,26 @@
     <Filter Include="2d\experimental\composites">
       <UniqueIdentifier>{30e1ec13-118b-4d50-8e04-76e76fcfdc01}</UniqueIdentifier>
     </Filter>
+    <Filter Include="persistence\rapidjson">
+      <UniqueIdentifier>{4d0b6ff3-58d2-4952-bd14-915a50a3b568}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="persistence\rapidjson\internal">
+      <UniqueIdentifier>{9cbec746-dd4c-4b4c-b11f-37a126ea2c38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="persistence\taml\binary">
+      <UniqueIdentifier>{427672e0-f4a2-45a9-b44c-92d190e961aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="persistence\taml\json">
+      <UniqueIdentifier>{e1ff3412-7343-4dfb-bc99-bce90655557b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="persistence\taml\xml">
+      <UniqueIdentifier>{cc1c1416-376b-4686-a4ac-21d1a35c9390}</UniqueIdentifier>
+    </Filter>
     <Filter Include="platformWin32\graphics">
       <UniqueIdentifier>{9a10f808-47f5-4ad1-80e8-2ce6e65ed9d4}</UniqueIdentifier>
     </Filter>
     <Filter Include="windowManager">
       <UniqueIdentifier>{6491d16e-04b4-453b-bad5-9181b76f1c9b}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\audio\audio.cc">
@@ -675,12 +689,6 @@
     <ClCompile Include="..\..\source\persistence\taml\taml.cc">
       <Filter>persistence\taml</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\persistence\taml\tamlXmlWriter.cc">
-      <Filter>persistence\taml</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\persistence\taml\tamlXmlReader.cc">
-      <Filter>persistence\taml</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\source\module\moduleDefinition.cc">
       <Filter>module</Filter>
     </ClCompile>
@@ -699,12 +707,6 @@
     <ClCompile Include="..\..\source\persistence\tinyXML\tinyxmlparser.cpp">
       <Filter>persistence\tinyXML</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\persistence\taml\tamlBinaryWriter.cc">
-      <Filter>persistence\taml</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\persistence\taml\tamlBinaryReader.cc">
-      <Filter>persistence\taml</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\source\module\moduleMergeDefinition.cc">
       <Filter>module</Filter>
     </ClCompile>
@@ -713,9 +715,6 @@
     </ClCompile>
     <ClCompile Include="..\..\source\assets\assetFieldTypes.cc">
       <Filter>assets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\persistence\taml\tamlXmlParser.cc">
-      <Filter>persistence\taml</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\assets\assetQuery.cc">
       <Filter>assets</Filter>
@@ -1371,6 +1370,30 @@
     <ClCompile Include="..\..\source\string\str.cpp">
       <Filter>string</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\persistence\taml\binary\tamlBinaryReader.cc">
+      <Filter>persistence\taml\binary</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\persistence\taml\binary\tamlBinaryWriter.cc">
+      <Filter>persistence\taml\binary</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\persistence\taml\json\tamlJSONReader.cc">
+      <Filter>persistence\taml\json</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\persistence\taml\json\tamlJSONWriter.cc">
+      <Filter>persistence\taml\json</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\persistence\taml\xml\tamlXmlParser.cc">
+      <Filter>persistence\taml\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\persistence\taml\xml\tamlXmlReader.cc">
+      <Filter>persistence\taml\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\persistence\taml\xml\tamlXmlWriter.cc">
+      <Filter>persistence\taml\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\persistence\taml\json\tamlJSONParser.cc">
+      <Filter>persistence\taml\json</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\source\audio\audio.h">
@@ -1892,12 +1915,6 @@
     <ClInclude Include="..\..\source\persistence\taml\taml_ScriptBinding.h">
       <Filter>persistence\taml</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\persistence\taml\tamlXmlWriter.h">
-      <Filter>persistence\taml</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\persistence\taml\tamlXmlReader.h">
-      <Filter>persistence\taml</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\module\moduleDefinition.h">
       <Filter>module</Filter>
     </ClInclude>
@@ -1912,12 +1929,6 @@
     </ClInclude>
     <ClInclude Include="..\..\source\persistence\tinyXML\tinyxml.h">
       <Filter>persistence\tinyXML</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\persistence\taml\tamlBinaryWriter.h">
-      <Filter>persistence\taml</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\persistence\taml\tamlBinaryReader.h">
-      <Filter>persistence\taml</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\module\moduleDefinition_ScriptBinding.h">
       <Filter>module</Filter>
@@ -1935,15 +1946,6 @@
       <Filter>assets</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\assets\assetFieldTypes.h">
-      <Filter>assets</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\persistence\taml\tamlXmlParser.h">
-      <Filter>persistence\taml</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\persistence\taml\tamlXmlVisitor.h">
-      <Filter>persistence\taml</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\assets\tamlAssetUpdateVisitor.h">
       <Filter>assets</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\assets\tamlAssetDeclaredVisitor.h">
@@ -2661,6 +2663,15 @@
     <ClInclude Include="..\..\source\sim\simObjectTimerEvent.h">
       <Filter>sim</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\source\2d\sceneobject\SceneObjectSet.h">
+      <Filter>2d\sceneobject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\2d\sceneobject\SceneObjectList.h">
+      <Filter>2d\sceneobject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\2d\sceneobject\SceneObjectSet_ScriptBinding.h">
+      <Filter>2d\sceneobject</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\source\math\mPoint2.h">
       <Filter>math</Filter>
     </ClInclude>
@@ -2721,9 +2732,81 @@
     <ClInclude Include="..\..\source\2d\core\ImageFrameProviderCore.h">
       <Filter>2d\core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\2d\sceneobject\SceneObjectList.h" />
-    <ClInclude Include="..\..\source\2d\sceneobject\SceneObjectSet.h" />
-    <ClInclude Include="..\..\source\2d\sceneobject\SceneObjectSet_ScriptBinding.h" />
+    <ClInclude Include="..\..\source\persistence\rapidjson\include\rapidjson\allocators.h">
+      <Filter>persistence\rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\persistence\rapidjson\include\rapidjson\document.h">
+      <Filter>persistence\rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\persistence\rapidjson\include\rapidjson\encodedstream.h">
+      <Filter>persistence\rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\persistence\rapidjson\include\rapidjson\encodings.h">
+      <Filter>persistence\rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\persistence\rapidjson\include\rapidjson\filereadstream.h">
+      <Filter>persistence\rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\persistence\rapidjson\include\rapidjson\filestream.h">
+      <Filter>persistence\rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\persistence\rapidjson\include\rapidjson\filewritestream.h">
+      <Filter>persistence\rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\persistence\rapidjson\include\rapidjson\prettywriter.h">
+      <Filter>persistence\rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\persistence\rapidjson\include\rapidjson\rapidjson.h">
+      <Filter>persistence\rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\persistence\rapidjson\include\rapidjson\reader.h">
+      <Filter>persistence\rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\persistence\rapidjson\include\rapidjson\stringbuffer.h">
+      <Filter>persistence\rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\persistence\rapidjson\include\rapidjson\writer.h">
+      <Filter>persistence\rapidjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\persistence\rapidjson\include\rapidjson\internal\pow10.h">
+      <Filter>persistence\rapidjson\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\persistence\rapidjson\include\rapidjson\internal\stack.h">
+      <Filter>persistence\rapidjson\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\persistence\rapidjson\include\rapidjson\internal\strfunc.h">
+      <Filter>persistence\rapidjson\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\persistence\taml\binary\tamlBinaryReader.h">
+      <Filter>persistence\taml\binary</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\persistence\taml\binary\tamlBinaryWriter.h">
+      <Filter>persistence\taml\binary</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\persistence\taml\json\tamlJSONReader.h">
+      <Filter>persistence\taml\json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\persistence\taml\json\tamlJSONWriter.h">
+      <Filter>persistence\taml\json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\persistence\taml\xml\tamlXmlParser.h">
+      <Filter>persistence\taml\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\persistence\taml\xml\tamlXmlReader.h">
+      <Filter>persistence\taml\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\persistence\taml\xml\tamlXmlWriter.h">
+      <Filter>persistence\taml\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\persistence\taml\tamlVisitor.h">
+      <Filter>persistence\taml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\persistence\taml\tamlParser.h">
+      <Filter>persistence\taml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\persistence\taml\json\tamlJSONParser.h">
+      <Filter>persistence\taml\json</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\source\graphics\gfxAdapter.h">
       <Filter>graphics</Filter>
     </ClInclude>

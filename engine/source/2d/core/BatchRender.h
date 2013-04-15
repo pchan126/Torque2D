@@ -35,8 +35,9 @@
 #include "2d/scene/DebugStats.h"
 #endif
 
-#include "graphics/gfxDevice.h"
-#include "graphics/gfxTextureHandle.h"
+#ifndef _TEXTURE_MANAGER_H_
+#include "graphics/TextureManager.h"
+#endif
 
 #ifndef _HASHTABLE_H
 #include "collection/hashTable.h"
@@ -49,7 +50,7 @@
 //-----------------------------------------------------------------------------
 
 #define BATCHRENDER_BUFFERSIZE      (65535)
-#define BATCHRENDER_MAXQUADS        (BATCHRENDER_BUFFERSIZE/6)
+#define BATCHRENDER_MAXTRIANGLES    (BATCHRENDER_BUFFERSIZE/3)
 
 //-----------------------------------------------------------------------------
 
@@ -59,6 +60,58 @@ class SceneRenderRequest;
 
 class BatchRender
 {
+private:
+    struct TriangleRun
+    {
+        enum PrimitiveMode
+        {
+            TRIANGLE,
+            QUAD,
+        };
+
+        TriangleRun( const PrimitiveMode primitive, const U32 primitiveCount, const U32 startIndex ) :
+            mPrimitiveMode( primitive ),
+            mPrimitiveCount( primitiveCount ),
+            mStartIndex( startIndex )
+        { }
+
+        PrimitiveMode mPrimitiveMode;
+        U32 mPrimitiveCount;
+        U32 mStartIndex;
+    };
+
+    typedef Vector<TriangleRun> indexVectorType;
+    typedef HashMap<U32, indexVectorType*> textureBatchType;
+
+    VectorPtr< indexVectorType* > mIndexVectorPool;
+    textureBatchType    mTextureBatchMap;
+
+    const ColorF        NoColor;
+
+    Vector2             mVertexBuffer[ BATCHRENDER_BUFFERSIZE ];
+    Vector2             mTextureBuffer[ BATCHRENDER_BUFFERSIZE ];
+    U16                 mIndexBuffer[ BATCHRENDER_BUFFERSIZE ];
+    ColorF              mColorBuffer[ BATCHRENDER_BUFFERSIZE ];
+   
+    U32                 mTriangleCount;
+    U32                 mVertexCount;
+    U32                 mTextureCoordCount;
+    U32                 mIndexCount;
+    U32                 mColorCount;
+
+    bool                mBlendMode;
+    GLenum              mSrcBlendFactor;
+    GLenum              mDstBlendFactor;
+    ColorF              mBlendColor;
+    F32                 mAlphaTestMode;
+
+    bool                mStrictOrderMode;
+    TextureHandle       mStrictOrderTextureHandle;
+    DebugStats*         mpDebugStats;
+
+    bool                mWireframeMode;
+    bool                mBatchEnabled;
+
 public:
     BatchRender();
     virtual ~BatchRender();
@@ -81,44 +134,42 @@ public:
     inline bool getStrictOrderMode( void ) const { return mStrictOrderMode; }
 
     /// Turns-on blend mode with the specified blend factors and color.
-    inline void setBlendMode( GFXBlend srcFactor, GFXBlend dstFactor, const ColorF& blendColor = ColorF(1.0f, 1.0f, 1.0f, 1.0f))
+    inline void setBlendMode( GLenum srcFactor, GLenum dstFactor, const ColorF& blendColor = ColorF(1.0f, 1.0f, 1.0f, 1.0f))
     {
         // Ignore no change.
-        if (    mGFXStateDesc.blendEnable &&
-                mGFXStateDesc.blendSrc == srcFactor &&
-                mGFXStateDesc.blendDest == dstFactor &&
+        if (    mBlendMode &&
+                mSrcBlendFactor == srcFactor &&
+                mDstBlendFactor == dstFactor &&
                 mBlendColor == blendColor )
                 return;
 
         // Flush.
         flush( mpDebugStats->batchBlendStateFlush );
 
-        mGFXStateDesc.blendEnable = true;
-        mGFXStateDesc.blendSrc = srcFactor;
-        mGFXStateDesc.blendDest = dstFactor;
+        mBlendMode = true;
+        mSrcBlendFactor = srcFactor;
+        mDstBlendFactor = dstFactor;
         mBlendColor = blendColor;
-        mGFXStateRef = GFX->createStateBlock( mGFXStateDesc );
     }
 
     /// Turns-off blend mode.
     inline void setBlendOff( void )
     {
         // Ignore no change,
-        if ( !mGFXStateDesc.blendEnable )
+        if ( !mBlendMode )
             return;
 
         // Flush.
         flush( mpDebugStats->batchBlendStateFlush );
 
-        mGFXStateDesc.blendEnable = false;
-        mGFXStateRef = GFX->createStateBlock( mGFXStateDesc );
+        mBlendMode = false;
     }
 
     // Set blend mode using a specific scene render request.
     void setBlendMode( const SceneRenderRequest* pSceneRenderRequest );
 
     /// Set alpha-test mode.
-    inline void setAlphaTestMode( const F32 alphaTestMode )
+    void setAlphaTestMode( const F32 alphaTestMode )
     {
         // Ignore no change.
         if ( mIsEqual( mAlphaTestMode, alphaTestMode ) )
@@ -140,15 +191,14 @@ public:
     inline void setWireframeMode( const bool enabled )
     {
         // Ignore no change.
-        if ( mGFXStateDesc.fillMode == enabled ? GFXFillSolid : GFXFillWireframe )
+        if ( mWireframeMode == enabled )
             return;
 
-        mGFXStateDesc.fillMode = enabled ? GFXFillSolid : GFXFillWireframe;
-        mGFXStateRef = GFX->createStateBlock( mGFXStateDesc );
+        mWireframeMode = enabled;
     }
 
     // Gets the wireframe mode.
-    inline bool getWireframeMode( void ) const { return mGFXStateDesc.fillMode == GFXFillSolid; }
+    inline bool getWireframeMode( void ) const { return mWireframeMode; }
 
     /// Sets the batch enabled mode.
     inline void setBatchEnabled( const bool enabled )
@@ -169,6 +219,19 @@ public:
     /// Sets the debug stats to use.
     inline void setDebugStats( DebugStats* pDebugStats ) { mpDebugStats = pDebugStats; }
 
+    /// Submit triangles for batching.
+    /// Vertex and textures are indexed as:
+    ///  2        5
+    ///   |\      |\
+    ///   | \     | \
+    ///  0| _\1  3| _\4
+    void SubmitTriangles(
+            const U32 vertexCount,
+            const Vector2* pVertexArray,
+            const Vector2* pTextureArray,
+            TextureHandle& texture,
+            const ColorF& color = ColorF(-1.0f, -1.0f, -1.0f) );
+
     /// Submit a quad for batching.
     /// Vertex and textures are indexed as:
     ///  3 ___ 2
@@ -184,8 +247,8 @@ public:
             const Vector2& texturePos1,
             const Vector2& texturePos2,
             const Vector2& texturePos3,
-            GFXTexHandle& texture,
-            const ColorF& color = ColorF(1.0f, 1.0f, 1.0f) );
+            TextureHandle& texture,
+            const ColorF& color = ColorF(-1.0f, -1.0f, -1.0f) );
 
     /// Render a quad immediately without affecting current batch.
     /// All render state should be set beforehand directly.
@@ -202,7 +265,19 @@ public:
             const Vector2& texturePos0,
             const Vector2& texturePos1,
             const Vector2& texturePos2,
-            const Vector2& texturePos3 );
+            const Vector2& texturePos3 )
+    {
+        glBegin( GL_TRIANGLE_STRIP );
+            glTexCoord2f( texturePos0.x, texturePos0.y );
+            glVertex2f( vertexPos0.x, vertexPos0.y );
+            glTexCoord2f( texturePos1.x, texturePos1.y );
+            glVertex2f( vertexPos1.x, vertexPos1.y );
+            glTexCoord2f( texturePos3.x, texturePos3.y );
+            glVertex2f( vertexPos3.x, vertexPos3.y );
+            glTexCoord2f( texturePos2.x, texturePos2.y );
+            glVertex2f( vertexPos2.x, vertexPos2.y );
+        glEnd();
+    }
 
     /// Flush (render) any pending batches with a reason metric.
     void flush( U32& reasonMetric );
@@ -214,34 +289,8 @@ private:
     /// Flush (render) any pending batches.
     void flushInternal( void );
 
-private:
-    typedef Vector<U32> indexVectorType;
-    typedef HashMap<GFXTexHandle, indexVectorType*> textureBatchType;
-    
-    VectorPtr< indexVectorType* > mIndexVectorPool;
-    textureBatchType    mTextureBatchMap;
-
-    const ColorF        NoColor;
-
-    GFXVertexPCT        mVertexBuffer[BATCHRENDER_BUFFERSIZE];
-    U16                 mIndexBuffer[ BATCHRENDER_BUFFERSIZE ];
-   
-    U32                 mQuadCount;
-    U32                 mVertexCount;
-    U32                 mIndexCount;
-
-    /// Render Options.
-    GFXStateBlockDesc   mGFXStateDesc;
-    GFXStateBlockRef    mGFXStateRef;
-
-    ColorF              mBlendColor;
-    F32                 mAlphaTestMode;
-
-    bool                mStrictOrderMode;
-    GFXTexHandle        mStrictOrderTextureHandle;
-    DebugStats*         mpDebugStats;
-
-    bool                mBatchEnabled;
+    /// Find texture batch.
+    indexVectorType* findTextureBatch( TextureHandle& handle );
 };
 
 #endif

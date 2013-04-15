@@ -20,8 +20,7 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#include "graphics/gfxDevice.h"
-#include "graphics/gfxDrawUtil.h"
+#include "graphics/dgl.h"
 #include "gui/guiTypes.h"
 #include "gui/guiCanvas.h"
 #include "console/console.h"
@@ -40,6 +39,28 @@
 
 // Debug Profiling.
 #include "debug/profiler.h"
+
+// Input event names.
+static StringTableEntry inputEventEnterName            = StringTable->insert("onTouchEnter");
+static StringTableEntry inputEventLeaveName            = StringTable->insert("onTouchLeave");
+static StringTableEntry inputEventDownName             = StringTable->insert("onTouchDown");
+static StringTableEntry inputEventUpName               = StringTable->insert("onTouchUp");
+static StringTableEntry inputEventMovedName            = StringTable->insert("onTouchMoved");
+static StringTableEntry inputEventDraggedName          = StringTable->insert("onTouchDragged");
+
+static StringTableEntry mouseEventMiddleMouseDownName   = StringTable->insert("onMiddleMouseDown");
+static StringTableEntry mouseEventMiddleMouseUpName     = StringTable->insert("onMiddleMouseUp");
+static StringTableEntry mouseEventMiddleMouseDraggedName= StringTable->insert("onMiddleMouseDragged");
+
+static StringTableEntry mouseEventRightMouseDownName   = StringTable->insert("onRightMouseDown");
+static StringTableEntry mouseEventRightMouseUpName     = StringTable->insert("onRightMouseUp");
+static StringTableEntry mouseEventRightMouseDraggedName= StringTable->insert("onRightMouseDragged");
+
+static StringTableEntry mouseEventWheelUpName          = StringTable->insert("onMouseWheelUp");
+static StringTableEntry mouseEventWheelDownName        = StringTable->insert("onMouseWheelDown");
+
+static StringTableEntry mouseEventEnterName            = StringTable->insert("onMouseEnter");
+static StringTableEntry mouseEventLeaveName            = StringTable->insert("onMouseLeave");
 
 //-----------------------------------------------------------------------------
 
@@ -100,23 +121,6 @@ SceneWindow::SceneWindow() :    mpScene(NULL),
     VECTOR_SET_ASSOCIATION( mInputEventEntering );
     VECTOR_SET_ASSOCIATION( mInputEventLeaving );    
 
-    // Touch input event names.
-    mInputEventDownName             = StringTable->insert("onTouchDown");
-    mInputEventUpName               = StringTable->insert("onTouchUp");
-    mInputEventMovedName            = StringTable->insert("onTouchMoved");
-    mInputEventDraggedName          = StringTable->insert("onTouchDragged");
-    mInputEventEnterName            = StringTable->insert("onTouchEnter");
-    mInputEventLeaveName            = StringTable->insert("onTouchLeave");
-
-    // Mouse input event names.
-    mMouseEventRightMouseDownName   = StringTable->insert("onRightMouseDown");
-    mMouseEventRightMouseUpName     = StringTable->insert("onRightMouseUp");
-    mMouseEventRightMouseDraggedName= StringTable->insert("onRightMouseDragged");
-    mMouseEventWheelUpName          = StringTable->insert("onMouseWheelUp");
-    mMouseEventWheelDownName        = StringTable->insert("onMouseWheelDown");
-    mMouseEventEnterName            = StringTable->insert("onMouseEnter");
-    mMouseEventLeaveName            = StringTable->insert("onMouseLeave");
-
     // Turn-on Tick Processing.
     setProcessTicks( true );
 }
@@ -131,8 +135,13 @@ SceneWindow::~SceneWindow()
 
 bool SceneWindow::onAdd()
 {
+    // Call parent.
     if(!Parent::onAdd())
         return false;
+
+    // Register input sets.
+    mInputEventWatching.registerObject();
+    mInputListeners.registerObject();
 
     // Reset the camera position.
     setCameraPosition( Vector2::getZero() );
@@ -156,6 +165,10 @@ void SceneWindow::onRemove()
 {
     // Reset Scene.
     resetScene();
+
+    // Unregister input sets.
+    mInputEventWatching.unregisterObject();
+    mInputListeners.unregisterObject();
 
     // Call Parent.
     Parent::onRemove();
@@ -821,6 +834,28 @@ void SceneWindow::setObjectInputEventInvisibleFilter( const bool useInvisible )
 
 //-----------------------------------------------------------------------------
 
+void SceneWindow::addInputListener( SimObject* pSimObject )
+{
+    // Sanity!
+    AssertFatal( pSimObject != NULL, "SceneWindow::addInputEventListener() - Cannot add NULL object as input event listener." );
+
+    // Ignore if the object is already a listener.
+    if ( mInputListeners.find( pSimObject ) != mInputListeners.end() )
+        return;
+
+    // Add as listener.
+    mInputListeners.addObject( pSimObject );
+}
+
+//-----------------------------------------------------------------------------
+
+void SceneWindow::removeInputListener( SimObject* pSimObject )
+{
+    mInputListeners.removeObject( pSimObject );
+}
+
+//-----------------------------------------------------------------------------
+
 void SceneWindow::setMousePosition( const Vector2& mousePosition )
 {
     // Fetch Canvas.
@@ -968,6 +1003,13 @@ void SceneWindow::sendWindowInputEvent( StringTableEntry name, const GuiEvent& e
 
     // Call Scripts.
     Con::executef(this, 4, name, argBuffer[0], argBuffer[1], argBuffer[2]);
+
+    // Iterate listeners.
+    for( SimSet::iterator listenerItr = mInputListeners.begin(); listenerItr != mInputListeners.end(); ++listenerItr )
+    {
+        // Call scripts on listener.
+        Con::executef( *listenerItr, 4, name, argBuffer[0], argBuffer[1], argBuffer[2] );
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -981,10 +1023,10 @@ void SceneWindow::sendObjectInputEvent( StringTableEntry name, const GuiEvent& e
     if ( !getScene() ) return;
 
     // Only process appropriate input events.
-    if ( !( name == mInputEventDownName ||
-            name == mInputEventUpName ||
-            name == mInputEventMovedName ||
-            name == mInputEventDraggedName ) )
+    if ( !( name == inputEventDownName ||
+            name == inputEventUpName ||
+            name == inputEventMovedName ||
+            name == inputEventDraggedName ) )
         return;
 
     // Convert Event-Position into scene coordinates.
@@ -1090,7 +1132,7 @@ void SceneWindow::sendObjectInputEvent( StringTableEntry name, const GuiEvent& e
         SceneObject* pSceneObject = mInputEventLeaving[index];
 
         // Emit event.
-        pSceneObject->onInputEvent( mInputEventLeaveName, event, worldMousePoint );
+        pSceneObject->onInputEvent( inputEventLeaveName, event, worldMousePoint );
 
         // Remove scene object.
         mInputEventWatching.removeObject( pSceneObject );
@@ -1103,10 +1145,10 @@ void SceneWindow::sendObjectInputEvent( StringTableEntry name, const GuiEvent& e
         SceneObject* pSceneObject = mInputEventEntering[index];
 
         // Emit event.
-        pSceneObject->onInputEvent( mInputEventEnterName, event, worldMousePoint );
+        pSceneObject->onInputEvent( inputEventEnterName, event, worldMousePoint );
 
         // Process "moved" or "dragged" events.
-        if ( name == mInputEventMovedName || name == mInputEventDraggedName )
+        if ( name == inputEventMovedName || name == inputEventDraggedName )
             pSceneObject->onInputEvent( name, event, worldMousePoint );
 
         // Add scene object.
@@ -1121,6 +1163,22 @@ void SceneWindow::sendObjectInputEvent( StringTableEntry name, const GuiEvent& e
 
 //-----------------------------------------------------------------------------
 
+void SceneWindow::onMouseEnter( const GuiEvent& event )
+{
+    // Dispatch input event.
+    dispatchInputEvent(mouseEventEnterName, event);
+}
+
+//-----------------------------------------------------------------------------
+
+void SceneWindow::onMouseLeave( const GuiEvent& event )
+{
+    // Dispatch input event.
+    dispatchInputEvent(mouseEventLeaveName, event);
+}
+
+//-----------------------------------------------------------------------------
+
 void SceneWindow::onMouseDown( const GuiEvent& event )
 {
     // Lock Mouse (if necessary).
@@ -1128,7 +1186,7 @@ void SceneWindow::onMouseDown( const GuiEvent& event )
         mouseLock();
 
     // Dispatch input event.
-    dispatchInputEvent( mInputEventDownName, event);
+    dispatchInputEvent( inputEventDownName, event);
 }
 
 //-----------------------------------------------------------------------------
@@ -1140,7 +1198,7 @@ void SceneWindow::onMouseUp( const GuiEvent& event )
         mouseUnlock();
 
     // Dispatch input event.
-    dispatchInputEvent(mInputEventUpName, event);
+    dispatchInputEvent(inputEventUpName, event);
 }
 
 //-----------------------------------------------------------------------------
@@ -1148,7 +1206,7 @@ void SceneWindow::onMouseUp( const GuiEvent& event )
 void SceneWindow::onMouseMove( const GuiEvent& event )
 {
     // Dispatch input event.
-    dispatchInputEvent(mInputEventMovedName, event);
+    dispatchInputEvent(inputEventMovedName, event);
 }
 
 //-----------------------------------------------------------------------------
@@ -1156,23 +1214,39 @@ void SceneWindow::onMouseMove( const GuiEvent& event )
 void SceneWindow::onMouseDragged( const GuiEvent& event )
 {
     // Dispatch input event.
-    dispatchInputEvent(mInputEventDraggedName, event);
+    dispatchInputEvent(inputEventDraggedName, event);
 }
 
 //-----------------------------------------------------------------------------
 
-void SceneWindow::onMouseEnter( const GuiEvent& event )
+void SceneWindow::onMiddleMouseDown( const GuiEvent& event )
 {
+    // Lock Mouse (if necessary).
+    if(mLockMouse)
+        mouseLock();
+
     // Dispatch input event.
-    dispatchInputEvent(mMouseEventEnterName, event);
+    dispatchInputEvent(mouseEventMiddleMouseDownName, event);
 }
 
 //-----------------------------------------------------------------------------
 
-void SceneWindow::onMouseLeave( const GuiEvent& event )
+void SceneWindow::onMiddleMouseUp( const GuiEvent& event )
+{
+    // Lock Mouse (if necessary).
+    if(mLockMouse)
+        mouseUnlock();
+
+    // Dispatch input event.
+    dispatchInputEvent(mouseEventMiddleMouseUpName, event);
+}
+
+//-----------------------------------------------------------------------------
+
+void SceneWindow::onMiddleMouseDragged( const GuiEvent& event )
 {
     // Dispatch input event.
-    dispatchInputEvent(mMouseEventLeaveName, event);
+    dispatchInputEvent(mouseEventMiddleMouseDraggedName, event);
 }
 
 //-----------------------------------------------------------------------------
@@ -1184,7 +1258,7 @@ void SceneWindow::onRightMouseDown( const GuiEvent& event )
         mouseLock();
 
     // Dispatch input event.
-    dispatchInputEvent(mMouseEventRightMouseDownName, event);
+    dispatchInputEvent(mouseEventRightMouseDownName, event);
 }
 
 //-----------------------------------------------------------------------------
@@ -1196,7 +1270,7 @@ void SceneWindow::onRightMouseUp( const GuiEvent& event )
         mouseUnlock();
 
     // Dispatch input event.
-    dispatchInputEvent(mMouseEventRightMouseUpName, event);
+    dispatchInputEvent(mouseEventRightMouseUpName, event);
 }
 
 //-----------------------------------------------------------------------------
@@ -1204,7 +1278,7 @@ void SceneWindow::onRightMouseUp( const GuiEvent& event )
 void SceneWindow::onRightMouseDragged( const GuiEvent& event )
 {
     // Dispatch input event.
-    dispatchInputEvent(mMouseEventRightMouseDraggedName, event);
+    dispatchInputEvent(mouseEventRightMouseDraggedName, event);
 }
 
 //-----------------------------------------------------------------------------
@@ -1215,7 +1289,7 @@ bool SceneWindow::onMouseWheelUp( const GuiEvent& event )
    Parent::onMouseWheelUp( event );
 
    // Dispatch input event.
-   dispatchInputEvent(mMouseEventWheelUpName, event);
+   dispatchInputEvent(mouseEventWheelUpName, event);
 
    // Return Success.
    return true;
@@ -1229,7 +1303,7 @@ bool SceneWindow::onMouseWheelDown( const GuiEvent& event )
    Parent::onMouseWheelDown( event );
 
    // Dispatch input event.
-   dispatchInputEvent(mMouseEventWheelDownName, event);
+   dispatchInputEvent(mouseEventWheelDownName, event);
 
    // Return Success.
    return true;
@@ -1394,17 +1468,16 @@ void SceneWindow::calculateCameraView( CameraView* pCameraView )
     }
 
     // Calculate Scene Window Scale.
-    pCameraView->mSceneWindowScale.x = (pCameraView->mSceneMax.x - pCameraView->mSceneMin.x) / getBounds().len_x();
-    pCameraView->mSceneWindowScale.y = (pCameraView->mSceneMax.y - pCameraView->mSceneMin.y) / getBounds().len_y();
+    pCameraView->mSceneWindowScale.x = (pCameraView->mSceneMax.x - pCameraView->mSceneMin.x) / mBounds.len_x();
+    pCameraView->mSceneWindowScale.y = (pCameraView->mSceneMax.y - pCameraView->mSceneMin.y) / mBounds.len_y();
 }
 
 //-----------------------------------------------------------------------------
 
-bool SceneWindow::resize(const Point2I &newPosition, const Point2I &newExtent)
+void SceneWindow::resize(const Point2I &newPosition, const Point2I &newExtent)
 {
     // Resize Parent.
-    if (!Parent::resize( newPosition, newExtent))
-        return false;
+    Parent::resize( newPosition, newExtent);
 
     // Argument Buffer.
     char argBuffer[64];
@@ -1414,7 +1487,6 @@ bool SceneWindow::resize(const Point2I &newPosition, const Point2I &newExtent)
 
     // Resize Callback.
     Con::executef( this, 2, "onExtentChange", argBuffer );
-    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -1453,7 +1525,7 @@ void SceneWindow::processTick( void )
             mCurrentShake = getMax(mCurrentShake, 0.0f);
 
             // Calculate the Screen Shake-Ratio.
-            const Point2F shakeRatio( mCameraCurrent.mDestinationArea.len_x() / F32(getBounds().len_x()), mCameraCurrent.mDestinationArea.len_y() / F32(getBounds().len_y()) );
+            const Point2F shakeRatio( mCameraCurrent.mDestinationArea.len_x() / F32(mBounds.len_x()), mCameraCurrent.mDestinationArea.len_y() / F32(mBounds.len_y()) );
 
             // Calculate the Camera Shake Magnitude based upon the Screen Shake-Ratio.
             const F32 shakeMagnitudeX = mCurrentShake * shakeRatio.x * 0.5f;
@@ -1594,17 +1666,20 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
     }
 
     // Setup new logical coordinate system.
-    MatrixF oldProj = GFX->getProjectionMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
 
     // Set orthographic projection.
-    MatrixF ortho = MatrixF(true);
-    ortho.setOrtho(sceneMin.x, sceneMax.x, sceneMin.y, sceneMax.y, 0.0f, MAX_LAYERS_SUPPORTED);
-    GFX->setProjectionMatrix(ortho);
+    glOrtho( sceneMin.x, sceneMax.x, sceneMin.y, sceneMax.y, 0.0f, MAX_LAYERS_SUPPORTED );
 
     // Set ModelView.
-    GFX->pushWorldMatrix();
-    GFX->setWorldMatrix(MatrixF(true));
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
 
+    // Disable Alpha Test by default
+    glDisable( GL_ALPHA_TEST );    
     glDisable( GL_DEPTH_TEST );
 
     // Get Debug Stats.
@@ -1625,9 +1700,9 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
     if ( mUseBackgroundColor )
     {
         // Enable the scissor.
-        const RectI& clipRect = GFX->getClipRect();
+        const RectI& clipRect = dglGetClipRect();
         glEnable(GL_SCISSOR_TEST );
-        glScissor( clipRect.point.x, getRoot()->getWindowSize().y - (clipRect.point.y + clipRect.extent.y), clipRect.len_x(), clipRect.len_y() );
+        glScissor( clipRect.point.x, Platform::getWindowSize().y - (clipRect.point.y + clipRect.extent.y), clipRect.len_x(), clipRect.len_y() );
 
         // Clear the background.
         glClearColor( mBackgroundColor.red, mBackgroundColor.green, mBackgroundColor.blue, mBackgroundColor.alpha );
@@ -1641,24 +1716,12 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
     pScene->sceneRender( &sceneRenderState );
 
     // Restore Matrices.
-    GFX->popWorldMatrix();
-    GFX->setProjectionMatrix(oldProj);
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
 
-//    MatrixF MV = GFX->getWorldMatrix();
-//    MatrixF F = GFX->getProjectionMatrix();
-//    
-//    Con::printf("WorldMatrix");
-//    Con::printf("%f %f %f %f", MV[0], MV[1], MV[2], MV[3]);
-//    Con::printf("%f %f %f %f", MV[4], MV[5], MV[6], MV[7]);
-//    Con::printf("%f %f %f %f", MV[8], MV[9], MV[10], MV[11]);
-//    Con::printf("%f %f %f %f", MV[12], MV[13], MV[14], MV[15]);
-//    
-//    Con::printf("ProjectionMatrix");
-//    Con::printf("%f %f %f %f", F[0], F[1], F[2], F[3]);
-//    Con::printf("%f %f %f %f", F[4], F[5], F[6], F[7]);
-//    Con::printf("%f %f %f %f", F[8], F[9], F[10], F[11]);
-//    Con::printf("%f %f %f %f", F[12], F[13], F[14], F[15]);
-    
     // Render the metrics.
     renderMetricsOverlay( offset, updateRect );
 
@@ -1701,10 +1764,10 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
     glEnable        ( GL_BLEND );
     glBlendFunc     ( GL_SRC_ALPHA , GL_ONE_MINUS_SRC_ALPHA );
 
-    // Set banner background colour.
+    // Set banner background color.
     const ColorI& fillColor = mProfile->mFillColor;
-//    const F32 colorScale = 1.0f / 255.0f;
-//    glColor4f( fillColor.red * colorScale, fillColor.green * colorScale, fillColor.blue * colorScale, fillColor.alpha * colorScale );
+    const F32 colorScale = 1.0f / 255.0f;
+    glColor4f( fillColor.red * colorScale, fillColor.green * colorScale, fillColor.blue * colorScale, fillColor.alpha * colorScale );
 
     // Fetch debug scene object.
     SceneObject* pDebugSceneObject = pScene->getDebugSceneObject();
@@ -1723,19 +1786,23 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
         bannerLineHeight += 5.0f;
 
     U32 bannerHeight = (U32)((bannerLineHeight * (F32)font->getHeight()));
-    
-    Point2I bottomRight( updateRect.point.x + updateRect.extent.x, updateRect.point.y + bannerHeight);
 
     // Calculate Debug Banner Offset.
     Point2I bannerOffset = updateRect.point + Point2I(8,8);
 
-    GFX->getDrawUtil()->drawRectFill(updateRect.point, bottomRight + Point2I(0,16), mProfile->mFillColor);
+    // Draw Banner Background.
+    glBegin(GL_TRIANGLE_STRIP);
+        glVertex2i( updateRect.point.x, updateRect.point.y );
+        glVertex2i( updateRect.point.x + updateRect.extent.x, updateRect.point.y );
+        glVertex2i( updateRect.point.x, updateRect.point.y + bannerHeight + 16);
+        glVertex2i( updateRect.point.x + updateRect.extent.x, updateRect.point.y + bannerHeight + 16);
+    glEnd();
 
     // Disable Banner Blending.
     glDisable       ( GL_BLEND );
         
-    // Set Debug Text Colour.
-    GFX->getDrawUtil()->setBitmapModulation( mProfile->mFontColor );
+    // Set Debug Text color.
+    dglSetBitmapModulation( mProfile->mFontColor );
 
     // ****************************************************************
     // Draw Banner Text.
@@ -1747,31 +1814,31 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
     if ( fullMetrics )
     {
         // Rendering.
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Render", NULL );
+        dglDrawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Render", NULL );
         dSprintf( mDebugText, sizeof( mDebugText ), "- FPS=%4.1f<%4.1f/%4.1f>, Frames=%u, Picked=%d<%d>, RenderRequests=%d<%d>, RenderFallbacks=%d<%d>",
             debugStats.fps, debugStats.minFPS, debugStats.maxFPS,
             debugStats.frameCount,
             debugStats.renderPicked, debugStats.maxRenderPicked,
             debugStats.renderRequests, debugStats.maxRenderRequests,
             debugStats.renderFallbacks, debugStats.maxRenderFallbacks );
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+        dglDrawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
         linePositionY += linePositionOffsetY;
 
         // Scene.
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Scene", NULL );
+        dglDrawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Scene", NULL );
         dSprintf( mDebugText, sizeof( mDebugText ), "- Count=%d, Index=%d, Time=%0.1fs, Objects=%d<%d>(Global=%d), Enabled=%d<%d>, Visible=%d<%d>, Awake=%d<%d>, Controllers=%d",
             Scene::getGlobalSceneCount(), pScene->getSceneIndex(),
             pScene->getSceneTime(),
             debugStats.objectsCount, debugStats.maxObjectsCount, SceneObject::getGlobalSceneObjectCount(),
             debugStats.objectsEnabled, debugStats.maxObjectsEnabled,
             debugStats.objectsVisible, debugStats.maxObjectsVisible,
-            debugStats.objectsAwake, debugStats.maxObjectsAwake,        
+            debugStats.objectsAwake, debugStats.maxObjectsAwake,
             pScene->getControllers() == NULL ? 0 : pScene->getControllers()->size() );        
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+        dglDrawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
         linePositionY += linePositionOffsetY;
 
         // Camera Window #1.
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Camera", NULL );
+        dglDrawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Camera", NULL );
         Vector2 cameraPosition = getCameraPosition();
         dSprintf( mDebugText, sizeof( mDebugText ), "- Pos=(%0.1f,%0.1f), Size=(%0.1f,%0.1f), Zoom=%0.1f, Angle=%0.1f, Lower=(%0.1f,%0.1f), Upper=(%0.1f,%0.1f)", 
             cameraPosition.x,
@@ -1784,7 +1851,7 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
             mCameraCurrent.mSourceArea.point.y,
             mCameraCurrent.mSourceArea.point.x + mCameraCurrent.mSourceArea.extent.x,
             mCameraCurrent.mSourceArea.point.y + mCameraCurrent.mSourceArea.extent.y );
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+        dglDrawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
         linePositionY += linePositionOffsetY;
 
         // Camera Window #2.
@@ -1794,21 +1861,20 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
             windowExtent.x, windowExtent.y,
             windowScale.x, windowScale.y,
             1.0f / windowScale.x, 1.0f / windowScale.y);
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+        dglDrawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
         linePositionY += linePositionOffsetY;
 
         // Batching #1.
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Batching", NULL );
-        dSprintf( mDebugText, sizeof( mDebugText ), "- %sTris=%d<%d>, MaxTriDraw=%d, MaxVerts=%d, Single=%d<%d>, Mult=%d<%d>, Sorted=%d<%d>",
+        dglDrawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Batching", NULL );
+        dSprintf( mDebugText, sizeof( mDebugText ), "- %sTris=%d<%d>, MaxTriDraw=%d, MaxVerts=%d, Strict=%d<%d>, Sorted=%d<%d>",
             pScene->getBatchingEnabled() ? "" : "(OFF) ",
             debugStats.batchTrianglesSubmitted, debugStats.maxBatchTrianglesSubmitted,
             debugStats.batchMaxTriangleDrawn,
             debugStats.batchMaxVertexBuffer,
-            debugStats.batchDrawCallsStrictSingle, debugStats.maxBatchDrawCallsStrictSingle,
-            debugStats.batchDrawCallsStrictMultiple, debugStats.maxBatchDrawCallsStrictMultiple,
+            debugStats.batchDrawCallsStrict, debugStats.maxBatchDrawCallsStrict,
             debugStats.batchDrawCallsSorted, debugStats.maxBatchDrawCallsSorted                   
             );
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+        dglDrawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
         linePositionY += linePositionOffsetY;
 
         // Batching #2.
@@ -1819,7 +1885,7 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
             debugStats.batchAlphaStateFlush, debugStats.maxBatchAlphaStateFlush,
             debugStats.batchTextureChangeFlush, debugStats.maxBatchTextureChangeFlushes
             );
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+        dglDrawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
         linePositionY += linePositionOffsetY;
 
         // Batching #3.
@@ -1830,40 +1896,40 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
             debugStats.batchNoBatchFlush, debugStats.maxBatchNoBatchFlush,
             debugStats.batchAnonymousFlush, debugStats.maxBatchAnonymousFlush
             );
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+        dglDrawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
         linePositionY += linePositionOffsetY;
 
         // Textures.
-//        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Textures", NULL );
-//        dSprintf( mDebugText, sizeof( mDebugText ), "- TextureCount=%d, TextureSize=%d, TextureWaste=%d, BitmapSize=%d",
-//            TextureManager::getTextureResidentCount(),
-//            TextureManager::getTextureResidentSize(),
-//            TextureManager::getTextureResidentWasteSize(),
-//            TextureManager::getBitmapResidentSize()
-//            );
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+        dglDrawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Textures", NULL );
+        dSprintf( mDebugText, sizeof( mDebugText ), "- TextureCount=%d, TextureSize=%d, TextureWaste=%d, BitmapSize=%d",
+            TextureManager::getTextureResidentCount(),
+            TextureManager::getTextureResidentSize(),
+            TextureManager::getTextureResidentWasteSize(),
+            TextureManager::getBitmapResidentSize()
+            );
+        dglDrawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
         linePositionY += linePositionOffsetY;
 
         // Physics.
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Physics", NULL );
+        dglDrawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Physics", NULL );
         dSprintf( mDebugText, sizeof( mDebugText ), "- Bodies=%d<%d>, Joints=%d<%d>, Contacts=%d<%d>, Proxies=%d<%d>",
             debugStats.bodyCount, debugStats.maxBodyCount,
             debugStats.jointCount, debugStats.maxJointCount,
             debugStats.contactCount, debugStats.maxContactCount,
             debugStats.proxyCount, debugStats.maxProxyCount );
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+        dglDrawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
         linePositionY += linePositionOffsetY;
 
         const b2Profile& worldProfile = debugStats.worldProfile;
         const b2Profile& maxWorldProfile = debugStats.maxWorldProfile;
 
         // Physics timings #1.
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Timings", NULL );
+        dglDrawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Timings", NULL );
         dSprintf( mDebugText, sizeof( mDebugText ), "- Step=%0.0f<%0.0f>, Collide=%0.0f<%0.0f>, BroadPhase=%0.0f<%0.0f>",
             worldProfile.step, maxWorldProfile.step,
             worldProfile.collide, maxWorldProfile.collide,
             worldProfile.broadphase, maxWorldProfile.broadphase );
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+        dglDrawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
         linePositionY += linePositionOffsetY;
 
         // Physics timings #2.
@@ -1873,11 +1939,11 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
             worldProfile.solveVelocity, maxWorldProfile.solveVelocity,
             worldProfile.solvePosition, maxWorldProfile.solvePosition,
             worldProfile.solveTOI, maxWorldProfile.solveTOI );
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+        dglDrawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
         linePositionY += linePositionOffsetY;
 
         // Physics spatial tree.
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Partition", NULL );
+        dglDrawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Partition", NULL );
         const b2World* pWorld = pScene->getWorld();
         const S32 treeBalance = pWorld->GetTreeBalance();
         const S32 treeHeight = pWorld->GetTreeHeight();
@@ -1886,28 +1952,28 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
             treeBalance,
             treeHeight,
             treeQuality );
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+        dglDrawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
         linePositionY += linePositionOffsetY;
 
         // Particles.
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Particles", NULL );
+        dglDrawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Particles", NULL );
         dSprintf( mDebugText, sizeof( mDebugText ), "- Allocated=%d, Used=%d<%d>, Free=%d",
             debugStats.particlesAlloc,
             debugStats.particlesUsed, debugStats.maxParticlesUsed,
             debugStats.particlesFree );
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+        dglDrawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
         linePositionY += linePositionOffsetY;
 
         // Asset Manager.
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Assets", NULL );
-        dSprintf( mDebugText, sizeof( mDebugText ), "- AcquiredRefs=%d, - Declared=%d, Referenced=%d, LoadedInternal=%d<%d>, LoadedExternal=%d<%d>, LoadedPrivate=%d<%d>",
+        dglDrawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Assets", NULL );
+        dSprintf( mDebugText, sizeof( mDebugText ), "- AcquiredRefs=%d, Declared=%d, Referenced=%d, LoadedInternal=%d<%d>, LoadedExternal=%d<%d>, LoadedPrivate=%d<%d>",
             AssetDatabase.getAcquiredReferenceCount(),
             AssetDatabase.getDeclaredAssetCount(),
             AssetDatabase.getReferencedAssetCount(),
             AssetDatabase.getLoadedInternalAssetCount(), AssetDatabase.getMaxLoadedInternalAssetCount(),
             AssetDatabase.getLoadedExternalAssetCount(), AssetDatabase.getMaxLoadedExternalAssetCount(),
-            AssetDatabase.getLoadedPrivateAssetCount(), AssetDatabase.getMaxLoadedPrivateAssetCount());
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+            AssetDatabase.getLoadedPrivateAssetCount(), AssetDatabase.getMaxLoadedPrivateAssetCount() );
+        dglDrawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
         linePositionY += linePositionOffsetY;
     }
     else if ( fpsMetrics )
@@ -1915,7 +1981,7 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
         // Rendering.
         dSprintf( mDebugText, sizeof( mDebugText ), "FPS=%4.1f<%4.1f/%4.1f>",
             debugStats.fps, debugStats.minFPS, debugStats.maxFPS );
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), mDebugText, NULL );
+        dglDrawText( font, bannerOffset + Point2I(0,(S32)linePositionY), mDebugText, NULL );
         linePositionY += linePositionOffsetY;
     }
 
@@ -1923,7 +1989,7 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
     if ( pDebugSceneObject != NULL )
     {
         // SceneObject #1.
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "SceneObject", NULL );
+        dglDrawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "SceneObject", NULL );
         const b2Vec2 position = pDebugSceneObject->getRenderPosition();
         const F32 angle = mRadToDeg( pDebugSceneObject->getRenderAngle() );
         const Vector2 size = pDebugSceneObject->getSize();
@@ -1941,7 +2007,7 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
             serialId,
             renderGroup
             );
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+        dglDrawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
         linePositionY += linePositionOffsetY;
 
         // SceneObject #2.
@@ -1961,7 +2027,7 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
             awake,
             sleepingAllowed
             );
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+        dglDrawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
         linePositionY += linePositionOffsetY;
 
         // SceneObject #3.
@@ -1977,7 +2043,7 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
             angularDamping,
             localCenter.x, localCenter.y
             );
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+        dglDrawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
         linePositionY += linePositionOffsetY;
             
         // SceneObject #4.
@@ -1991,9 +2057,9 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
             collisionLayerMask,
             collisionGroupMask
             );
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+        dglDrawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
     }
 
     // Clear Bitmap Modulation.
-    GFX->getDrawUtil()->clearBitmapModulation();
+    dglClearBitmapModulation();
 }

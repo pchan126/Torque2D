@@ -68,84 +68,81 @@ SimObjectPtr<Scene> Scene::LoadingScene = NULL;
 
 //------------------------------------------------------------------------------
 
-IMPLEMENT_CONOBJECT_CHILDREN(Scene);
-
-//------------------------------------------------------------------------------
-
 static ContactFilter mContactFilter;
 
 // Scene counter.
 static U32 sSceneCount = 0;
 static U32 sSceneMasterIndex = 0;
 
-static bool tamlPropertiesInitialized = false;
+// Joint custom node names.
+static StringTableEntry jointCustomNodeName               = StringTable->insert( "Joints" );
+static StringTableEntry jointCollideConnectedName         = StringTable->insert( "CollideConnected" );
+static StringTableEntry jointLocalAnchorAName             = StringTable->insert( "LocalAnchorA" );
+static StringTableEntry jointLocalAnchorBName             = StringTable->insert( "LocalAnchorB" );
 
-// Joint property names.
-static StringTableEntry jointCustomNodeName;
-static StringTableEntry jointCollideConnectedName;
-static StringTableEntry jointLocalAnchorAName;
-static StringTableEntry jointLocalAnchorBName;
+static StringTableEntry jointDistanceNodeName             = StringTable->insert( "Distance" );
+static StringTableEntry jointDistanceLengthName           = StringTable->insert( "Length" );
+static StringTableEntry jointDistanceFrequencyName        = StringTable->insert( "Frequency" );
+static StringTableEntry jointDistanceDampingRatioName     = StringTable->insert( "DampingRatio" );
 
-static StringTableEntry jointDistanceNodeName;
-static StringTableEntry jointDistanceLengthName;
-static StringTableEntry jointDistanceFrequencyName;
-static StringTableEntry jointDistanceDampingRatioName;
+static StringTableEntry jointRopeNodeName                 = StringTable->insert( "Rope" );
+static StringTableEntry jointRopeMaxLengthName            = StringTable->insert( "MaxLength" );
 
-static StringTableEntry jointRopeNodeName;
-static StringTableEntry jointRopeMaxLengthName;
+static StringTableEntry jointRevoluteNodeName             = StringTable->insert( "Revolute" );
+static StringTableEntry jointRevoluteLimitLowerAngleName  = StringTable->insert( "LowerAngle" );
+static StringTableEntry jointRevoluteLimitUpperAngleName  = StringTable->insert( "UpperAngle" );
+static StringTableEntry jointRevoluteMotorSpeedName       = StringTable->insert( "MotorSpeed" );
+static StringTableEntry jointRevoluteMotorMaxTorqueName   = StringTable->insert( "MaxTorque" );
 
-static StringTableEntry jointRevoluteNodeName;
-static StringTableEntry jointRevoluteLimitLowerAngleName;
-static StringTableEntry jointRevoluteLimitUpperAngleName;
-static StringTableEntry jointRevoluteMotorSpeedName;
-static StringTableEntry jointRevoluteMotorMaxTorqueName;
+static StringTableEntry jointWeldNodeName                 = StringTable->insert( "Weld" );
+static StringTableEntry jointWeldFrequencyName            = jointDistanceFrequencyName;
+static StringTableEntry jointWeldDampingRatioName         = jointDistanceDampingRatioName;
 
-static StringTableEntry jointWeldNodeName;
-static StringTableEntry jointWeldFrequencyName;
-static StringTableEntry jointWeldDampingRatioName;
+static StringTableEntry jointWheelNodeName                = StringTable->insert( "Wheel" );
+static StringTableEntry jointWheelWorldAxisName           = StringTable->insert( "WorldAxis" );
+static StringTableEntry jointWheelMotorSpeedName          = StringTable->insert( "MotorSpeed" );
+static StringTableEntry jointWheelMotorMaxTorqueName      = jointRevoluteMotorMaxTorqueName;
+static StringTableEntry jointWheelFrequencyName           = jointDistanceFrequencyName;
+static StringTableEntry jointWheelDampingRatioName        = jointDistanceDampingRatioName;
 
-static StringTableEntry jointWheelNodeName;
-static StringTableEntry jointWheelWorldAxisName;
-static StringTableEntry jointWheelMotorSpeedName;
-static StringTableEntry jointWheelMotorMaxTorqueName;
-static StringTableEntry jointWheelFrequencyName;
-static StringTableEntry jointWheelDampingRatioName;
+static StringTableEntry jointFrictionNodeName             = StringTable->insert( "Friction" );
+static StringTableEntry jointFrictionMaxForceName         = StringTable->insert( "MaxForce" );
+static StringTableEntry jointFrictionMaxTorqueName        = jointRevoluteMotorMaxTorqueName;
 
-static StringTableEntry jointFrictionNodeName;
-static StringTableEntry jointFrictionMaxForceName;
-static StringTableEntry jointFrictionMaxTorqueName;
+static StringTableEntry jointPrismaticNodeName            = StringTable->insert( "Prismatic" );
+static StringTableEntry jointPrismaticWorldAxisName       = jointWheelWorldAxisName;
+static StringTableEntry jointPrismaticLimitLowerTransName = StringTable->insert( "LowerTranslation" );
+static StringTableEntry jointPrismaticLimitUpperTransName = StringTable->insert( "UpperTranslation" );
+static StringTableEntry jointPrismaticMotorSpeedName      = jointRevoluteMotorSpeedName;
+static StringTableEntry jointPrismaticMotorMaxForceName   = jointFrictionMaxForceName;
 
-static StringTableEntry jointPrismaticNodeName;
-static StringTableEntry jointPrismaticWorldAxisName;
-static StringTableEntry jointPrismaticLimitLowerTransName;
-static StringTableEntry jointPrismaticLimitUpperTransName;
-static StringTableEntry jointPrismaticMotorSpeedName;
-static StringTableEntry jointPrismaticMotorMaxForceName;
+static StringTableEntry jointPulleyNodeName               = StringTable->insert( "Pulley" );
+static StringTableEntry jointPulleyGroundAnchorAName      = StringTable->insert( "GroundAnchorA" );
+static StringTableEntry jointPulleyGroundAnchorBName      = StringTable->insert( "GroundAnchorB" );
+static StringTableEntry jointPulleyLengthAName            = StringTable->insert( "LengthA" );
+static StringTableEntry jointPulleyLengthBName            = StringTable->insert( "LengthB" );
+static StringTableEntry jointPulleyRatioName              = StringTable->insert( "Ratio" );
 
-static StringTableEntry jointPulleyNodeName;
-static StringTableEntry jointPulleyGroundAnchorAName;
-static StringTableEntry jointPulleyGroundAnchorBName;
-static StringTableEntry jointPulleyLengthAName;
-static StringTableEntry jointPulleyLengthBName;
-static StringTableEntry jointPulleyRatioName;
+static StringTableEntry jointTargetNodeName               = StringTable->insert( "Target" );
+static StringTableEntry jointTargetWorldTargetName        = StringTable->insert( "WorldTarget" );
+static StringTableEntry jointTargetMaxForceName           = StringTable->insert( jointFrictionMaxForceName );
+static StringTableEntry jointTargetFrequencyName          = jointDistanceFrequencyName;
+static StringTableEntry jointTargetDampingRatioName       = jointDistanceDampingRatioName;
 
-static StringTableEntry jointTargetNodeName;
-static StringTableEntry jointTargetWorldTargetName;
-static StringTableEntry jointTargetMaxForceName;
-static StringTableEntry jointTargetFrequencyName;
-static StringTableEntry jointTargetDampingRatioName;
+static StringTableEntry jointMotorNodeName                = StringTable->insert( "Motor" );
+static StringTableEntry jointMotorLinearOffsetName        = StringTable->insert( "LinearOffset" );
+static StringTableEntry jointMotorAngularOffsetName       = StringTable->insert( "AngularOffset" );
 
-static StringTableEntry jointMotorNodeName;
-static StringTableEntry jointMotorLinearOffsetName;
-static StringTableEntry jointMotorAngularOffsetName;
-static StringTableEntry jointMotorMaxForceName;
-static StringTableEntry jointMotorMaxTorqueName;
-static StringTableEntry jointMotorCorrectionFactorName;
+static StringTableEntry jointMotorMaxForceName            = jointFrictionMaxForceName;
+static StringTableEntry jointMotorMaxTorqueName           = jointRevoluteMotorMaxTorqueName;
+static StringTableEntry jointMotorCorrectionFactorName    = StringTable->insert( "CorrectionFactor" );
 
-static StringTableEntry controllerCustomNodeName;
+// Controller custom node names.
+static StringTableEntry controllerCustomNodeName	      = StringTable->insert( "Controllers" );
 
-static StringTableEntry assetPreloadNodeName;
-static StringTableEntry assetNodeName;
+// Asset preload custom node names.
+static StringTableEntry assetPreloadNodeName              = StringTable->insert( "AssetPreloads" );
+static StringTableEntry assetNodeName                     = StringTable->insert( "Asset" );
 
 //-----------------------------------------------------------------------------
 
@@ -176,79 +173,6 @@ Scene::Scene() :
     mRenderCallback(false),
     mSceneIndex(0)
 {
-    // Initialize Taml property names.
-    if ( !tamlPropertiesInitialized )
-    {
-        jointCustomNodeName               = StringTable->insert( "Joints" );
-        jointCollideConnectedName         = StringTable->insert( "CollideConnected" );
-        jointLocalAnchorAName             = StringTable->insert( "LocalAnchorA" );
-        jointLocalAnchorBName             = StringTable->insert( "LocalAnchorB" );
-
-        jointDistanceNodeName             = StringTable->insert( "Distance" );
-        jointDistanceLengthName           = StringTable->insert( "Length" );
-        jointDistanceFrequencyName        = StringTable->insert( "Frequency" );
-        jointDistanceDampingRatioName     = StringTable->insert( "DampingRatio" );
-
-        jointRopeNodeName                 = StringTable->insert( "Rope" );
-        jointRopeMaxLengthName            = StringTable->insert( "MaxLength" );
-
-        jointRevoluteNodeName             = StringTable->insert( "Revolute" );
-        jointRevoluteLimitLowerAngleName  = StringTable->insert( "LowerAngle" );
-        jointRevoluteLimitUpperAngleName  = StringTable->insert( "UpperAngle" );
-        jointRevoluteMotorSpeedName       = StringTable->insert( "MotorSpeed" );
-        jointRevoluteMotorMaxTorqueName   = StringTable->insert( "MaxTorque" );
-
-        jointWeldNodeName                 = StringTable->insert( "Weld" );
-        jointWeldFrequencyName            = jointDistanceFrequencyName;
-        jointWeldDampingRatioName         = jointDistanceDampingRatioName;
-
-        jointWheelNodeName                = StringTable->insert( "Wheel" );
-        jointWheelWorldAxisName           = StringTable->insert( "WorldAxis" );
-        jointWheelMotorSpeedName          = StringTable->insert( "MotorSpeed" );
-        jointWheelMotorMaxTorqueName      = jointRevoluteMotorMaxTorqueName;
-        jointWheelFrequencyName           = jointDistanceFrequencyName;
-        jointWheelDampingRatioName        = jointDistanceDampingRatioName;
-
-        jointFrictionNodeName             = StringTable->insert( "Friction" );
-        jointFrictionMaxForceName         = StringTable->insert( "MaxForce" );
-        jointFrictionMaxTorqueName        = jointRevoluteMotorMaxTorqueName;
-
-        jointPrismaticNodeName            = StringTable->insert( "Prismatic" );
-        jointPrismaticWorldAxisName       = jointWheelWorldAxisName;
-        jointPrismaticLimitLowerTransName = StringTable->insert( "LowerTranslation" );
-        jointPrismaticLimitUpperTransName = StringTable->insert( "UpperTranslation" );
-        jointPrismaticMotorSpeedName      = jointRevoluteMotorSpeedName;
-        jointPrismaticMotorMaxForceName   = jointFrictionMaxForceName;
-
-        jointPulleyNodeName               = StringTable->insert( "Pulley" );
-        jointPulleyGroundAnchorAName      = StringTable->insert( "GroundAnchorA" );
-        jointPulleyGroundAnchorBName      = StringTable->insert( "GroundAnchorB" );
-        jointPulleyLengthAName            = StringTable->insert( "LengthA" );
-        jointPulleyLengthBName            = StringTable->insert( "LengthB" );
-        jointPulleyRatioName              = StringTable->insert( "Ratio" );
-
-        jointTargetNodeName               = StringTable->insert( "Target" );
-        jointTargetWorldTargetName        = StringTable->insert( "WorldTarget" );
-        jointTargetMaxForceName           = StringTable->insert( jointFrictionMaxForceName );
-        jointTargetFrequencyName          = jointDistanceFrequencyName;
-        jointTargetDampingRatioName       = jointDistanceDampingRatioName;
-
-        jointMotorNodeName                = StringTable->insert( "Motor" );
-        jointMotorLinearOffsetName        = StringTable->insert( "LinearOffset" );
-        jointMotorAngularOffsetName       = StringTable->insert( "AngularOffset" );
-        jointMotorMaxForceName            = jointFrictionMaxForceName;
-        jointMotorMaxTorqueName           = jointRevoluteMotorMaxTorqueName;
-        jointMotorCorrectionFactorName    = StringTable->insert( "CorrectionFactor" );
-
-        controllerCustomNodeName	      = StringTable->insert( "Controllers" );
-
-        assetPreloadNodeName              = StringTable->insert( "AssetPreloads" );
-        assetNodeName                     = StringTable->insert( "Asset" );
-
-        // Flag as initialized.
-        tamlPropertiesInitialized = true;
-    }
-
     // Set Vector Associations.
     VECTOR_SET_ASSOCIATION( mSceneObjects );
     VECTOR_SET_ASSOCIATION( mDeleteRequests );
@@ -574,16 +498,16 @@ void Scene::dispatchBeginContactCallbacks( void )
         const F32 tangentImpulse2 = tickContact.mTangentImpulses[1];
 
         // Format objects.
-        char* pSceneObjectABuffer = Con::getArgBuffer( 8 );
-        char* pSceneObjectBBuffer = Con::getArgBuffer( 8 );
-        dSprintf( pSceneObjectABuffer, 8, "%d", pSceneObjectA->getId() );
-        dSprintf( pSceneObjectBBuffer, 8, "%d", pSceneObjectB->getId() );
+        char sceneObjectABuffer[16];
+        char sceneObjectBBuffer[16];
+        dSprintf( sceneObjectABuffer, sizeof(sceneObjectABuffer), "%d", pSceneObjectA->getId() );
+        dSprintf( sceneObjectBBuffer, sizeof(sceneObjectBBuffer), "%d", pSceneObjectB->getId() );
 
         // Format miscellaneous information.
-        char* pMiscInfoBuffer = Con::getArgBuffer(128);
+        char miscInfoBuffer[128];
         if ( pointCount == 2 )
         {
-            dSprintf(pMiscInfoBuffer, 128,
+            dSprintf(miscInfoBuffer, sizeof(miscInfoBuffer),
                 "%d %d %0.4f %0.4f %0.4f %0.4f %0.4f %0.4f %0.4f %0.4f %0.4f %0.4f",
                 shapeIndexA, shapeIndexB,
                 normal.x, normal.y,
@@ -596,7 +520,7 @@ void Scene::dispatchBeginContactCallbacks( void )
         }
         else if ( pointCount == 1 )
         {
-            dSprintf(pMiscInfoBuffer, 128,
+            dSprintf(miscInfoBuffer, sizeof(miscInfoBuffer),
                 "%d %d %0.4f %0.4f %0.4f %0.4f %0.4f %0.4f",
                 shapeIndexA, shapeIndexB,
                 normal.x, normal.y,
@@ -606,7 +530,7 @@ void Scene::dispatchBeginContactCallbacks( void )
         }
         else
         {
-            dSprintf(pMiscInfoBuffer, 64,
+            dSprintf(miscInfoBuffer, sizeof(miscInfoBuffer),
                 "%d %d",
                 shapeIndexA, shapeIndexB );
         }
@@ -617,14 +541,14 @@ void Scene::dispatchBeginContactCallbacks( void )
         {
             // Yes, so perform script callback on the Scene.
             Con::executef( this, 4, "onSceneCollision",
-                pSceneObjectABuffer,
-                pSceneObjectBBuffer,
-                pMiscInfoBuffer );
+                sceneObjectABuffer,
+                sceneObjectBBuffer,
+                miscInfoBuffer );
         }
         else
         {
             // No, so call it on its behaviors.
-            const char* args[5] = { "onSceneCollision", getIdString(), pSceneObjectABuffer, pSceneObjectBBuffer, pMiscInfoBuffer };
+            const char* args[5] = { "onSceneCollision", "", sceneObjectABuffer, sceneObjectBBuffer, miscInfoBuffer };
             callOnBehaviors( 5, args );
         }
 
@@ -637,13 +561,13 @@ void Scene::dispatchBeginContactCallbacks( void )
             {
                 // Yes, so perform the script callback on it.
                 Con::executef( pSceneObjectA, 3, "onCollision",
-                    pSceneObjectBBuffer,
-                    pMiscInfoBuffer );
+                    sceneObjectBBuffer,
+                    miscInfoBuffer );
             }
             else
             {
                 // No, so call it on its behaviors.
-                const char* args[4] = { "onCollision", pSceneObjectABuffer, pSceneObjectBBuffer, pMiscInfoBuffer };
+                const char* args[4] = { "onCollision", "", sceneObjectBBuffer, miscInfoBuffer };
                 pSceneObjectA->callOnBehaviors( 4, args );
             }
         }
@@ -657,13 +581,13 @@ void Scene::dispatchBeginContactCallbacks( void )
             {
                 // Yes, so perform the script callback on it.
                 Con::executef( pSceneObjectB, 3, "onCollision",
-                    pSceneObjectABuffer,
-                    pMiscInfoBuffer );
+                    sceneObjectABuffer,
+                    miscInfoBuffer );
             }
             else
             {
                 // No, so call it on its behaviors.
-                const char* args[4] = { "onCollision", pSceneObjectBBuffer, pSceneObjectABuffer, pMiscInfoBuffer };
+                const char* args[4] = { "onCollision", "", sceneObjectABuffer, miscInfoBuffer };
                 pSceneObjectB->callOnBehaviors( 4, args );
             }
         }
@@ -714,14 +638,14 @@ void Scene::dispatchEndContactCallbacks( void )
         AssertFatal( shapeIndexB >= 0, "Scene::dispatchEndContactCallbacks() - Cannot find shape index reported on physics proxy of a fixture." );
 
         // Format objects.
-        char* pSceneObjectABuffer = Con::getArgBuffer( 8 );
-        char* pSceneObjectBBuffer = Con::getArgBuffer( 8 );
-        dSprintf( pSceneObjectABuffer, 8, "%d", pSceneObjectA->getId() );
-        dSprintf( pSceneObjectBBuffer, 8, "%d", pSceneObjectB->getId() );
+        char sceneObjectABuffer[16];
+        char sceneObjectBBuffer[16];
+        dSprintf( sceneObjectABuffer, sizeof(sceneObjectABuffer), "%d", pSceneObjectA->getId() );
+        dSprintf( sceneObjectBBuffer, sizeof(sceneObjectBBuffer), "%d", pSceneObjectB->getId() );
 
         // Format miscellaneous information.
-        char* pMiscInfoBuffer = Con::getArgBuffer(32);
-        dSprintf(pMiscInfoBuffer, 32, "%d %d", shapeIndexA, shapeIndexB );
+        char miscInfoBuffer[32];
+        dSprintf(miscInfoBuffer, sizeof(miscInfoBuffer), "%d %d", shapeIndexA, shapeIndexB );
 
         // Does the scene handle the collision callback?
         Namespace* pNamespace = getNamespace();
@@ -729,14 +653,14 @@ void Scene::dispatchEndContactCallbacks( void )
         {
             // Yes, so does the scene handle the collision callback?
             Con::executef( this, 4, "onSceneEndCollision",
-                pSceneObjectABuffer,
-                pSceneObjectBBuffer,
-                pMiscInfoBuffer );
+                sceneObjectABuffer,
+                sceneObjectBBuffer,
+                miscInfoBuffer );
         }
         else
         {
             // No, so call it on its behaviors.
-            const char* args[5] = { "onSceneEndCollision", getIdString(), pSceneObjectABuffer, pSceneObjectBBuffer, pMiscInfoBuffer };
+            const char* args[5] = { "onSceneEndCollision", "", sceneObjectABuffer, sceneObjectBBuffer, miscInfoBuffer };
             callOnBehaviors( 5, args );
         }
 
@@ -749,13 +673,13 @@ void Scene::dispatchEndContactCallbacks( void )
             {
                 // Yes, so perform the script callback on it.
                 Con::executef( pSceneObjectA, 3, "onEndCollision",
-                    pSceneObjectBBuffer,
-                    pMiscInfoBuffer );
+                    sceneObjectBBuffer,
+                    miscInfoBuffer );
             }
             else
             {
                 // No, so call it on its behaviors.
-                const char* args[4] = { "onEndCollision", pSceneObjectABuffer, pSceneObjectBBuffer, pMiscInfoBuffer };
+                const char* args[4] = { "onEndCollision", "", sceneObjectBBuffer, miscInfoBuffer };
                 pSceneObjectA->callOnBehaviors( 4, args );
             }
         }
@@ -769,13 +693,13 @@ void Scene::dispatchEndContactCallbacks( void )
             {
                 // Yes, so perform the script callback on it.
                 Con::executef( pSceneObjectB, 3, "onEndCollision",
-                    pSceneObjectABuffer,
-                    pMiscInfoBuffer );
+                    sceneObjectABuffer,
+                    miscInfoBuffer );
             }
             else
             {
                 // No, so call it on its behaviors.
-                const char* args[4] = { "onEndCollision", pSceneObjectBBuffer, pSceneObjectABuffer, pMiscInfoBuffer };
+                const char* args[4] = { "onEndCollision", "", sceneObjectABuffer, miscInfoBuffer };
                 pSceneObjectB->callOnBehaviors( 4, args );
             }
         }
@@ -1030,8 +954,7 @@ void Scene::sceneRender( const SceneRenderState* pSceneRenderState )
     pDebugStats->renderRequests                 = 0;
     pDebugStats->renderFallbacks                = 0;
     pDebugStats->batchTrianglesSubmitted        = 0;
-    pDebugStats->batchDrawCallsStrictSingle     = 0;
-    pDebugStats->batchDrawCallsStrictMultiple   = 0;
+    pDebugStats->batchDrawCallsStrict           = 0;
     pDebugStats->batchDrawCallsSorted           = 0;
     pDebugStats->batchFlushes                   = 0;
     pDebugStats->batchBlendStateFlush           = 0;
@@ -1077,7 +1000,7 @@ void Scene::sceneRender( const SceneRenderState* pSceneRenderState )
     mpWorldQuery->setQueryFilter( queryFilter );
 
     // Query render AABB.
-    mpWorldQuery->renderQueryArea( cameraAABB );
+    mpWorldQuery->aabbQueryAABB( cameraAABB );
 
     // Debug Profiling.
     PROFILE_END();  //Scene_RenderSceneVisibleQuery
@@ -2238,6 +2161,60 @@ bool Scene::getRevoluteJointMotor(
     maxMotorTorque = pRealJoint->GetMaxMotorTorque();
 
     return true;
+}
+
+//-----------------------------------------------------------------------------
+
+F32 Scene::getRevoluteJointAngle( const U32 jointId )
+{
+    // Fetch joint.
+    b2Joint* pJoint = findJoint( jointId );
+
+    // Ignore invalid joint.
+    if ( !pJoint )
+        return 0.0f;
+
+    // Fetch joint type.
+    const b2JointType jointType = pJoint->GetType();
+
+    if ( jointType != e_revoluteJoint )
+    {
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        return 0.0f;
+    }
+
+    // Cast joint.
+    b2RevoluteJoint* pRealJoint = static_cast<b2RevoluteJoint*>( pJoint );
+
+    // Access joint.
+    return pRealJoint->GetJointAngle();
+}
+
+//-----------------------------------------------------------------------------
+
+F32	Scene::getRevoluteJointSpeed( const U32 jointId )
+{
+    // Fetch joint.
+    b2Joint* pJoint = findJoint( jointId );
+
+    // Ignore invalid joint.
+    if ( !pJoint )
+        return 0.0f;
+
+    // Fetch joint type.
+    const b2JointType jointType = pJoint->GetType();
+
+    if ( jointType != e_revoluteJoint )
+    {
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        return 0.0f;
+    }
+
+    // Cast joint.
+    b2RevoluteJoint* pRealJoint = static_cast<b2RevoluteJoint*>( pJoint );
+
+    // Access joint.
+    return pRealJoint->GetJointSpeed();
 }
 
 //-----------------------------------------------------------------------------
@@ -5398,7 +5375,8 @@ b2JointType Scene::getJointTypeEnum(const char* label)
 static EnumTable::Enums pickModeLookup[] =
                 {
                 { Scene::PICK_ANY,          "Any" },
-                { Scene::PICK_SIZE,         "Size" },
+                { Scene::PICK_AABB,         "AABB" },
+                { Scene::PICK_OOBB,         "OOBB" },
                 { Scene::PICK_COLLISION,    "Collision" },
                 };
 
@@ -5434,3 +5412,197 @@ const char* Scene::getPickModeDescription( Scene::PickMode pickMode )
     return StringTable->EmptyString;
 }
 
+//-----------------------------------------------------------------------------
+
+static void WriteJointsCustomTamlScehema( const AbstractClassRep* pClassRep, TiXmlElement* pParentElement )
+{
+    // Sanity!
+    AssertFatal( pClassRep != NULL,  "Taml::WriteJointsCustomTamlScehema() - ClassRep cannot be NULL." );
+    AssertFatal( pParentElement != NULL,  "Taml::WriteJointsCustomTamlScehema() - Parent Element cannot be NULL." );
+
+    char buffer[1024];
+
+    // Create joints node element.
+    TiXmlElement* pJointsNodeElement = new TiXmlElement( "xs:element" );
+    dSprintf( buffer, sizeof(buffer), "%s.%s", pClassRep->getClassName(), jointCustomNodeName );
+    pJointsNodeElement->SetAttribute( "name", buffer );
+    pJointsNodeElement->SetAttribute( "minOccurs", 0 );
+    pJointsNodeElement->SetAttribute( "maxOccurs", 1 );
+    pParentElement->LinkEndChild( pJointsNodeElement );
+    
+    // Create complex type.
+    TiXmlElement* pJointsNodeComplexTypeElement = new TiXmlElement( "xs:complexType" );
+    pJointsNodeElement->LinkEndChild( pJointsNodeComplexTypeElement );
+    
+    // Create choice element.
+    TiXmlElement* pJointsNodeChoiceElement = new TiXmlElement( "xs:choice" );
+    pJointsNodeChoiceElement->SetAttribute( "minOccurs", 0 );
+    pJointsNodeChoiceElement->SetAttribute( "maxOccurs", "unbounded" );
+    pJointsNodeComplexTypeElement->LinkEndChild( pJointsNodeChoiceElement );
+
+    // ********************************************************************************
+    // Create Distance Joint Element.
+    // ********************************************************************************
+    TiXmlElement* pDistanceJointElement = new TiXmlElement( "xs:element" );
+    pDistanceJointElement->SetAttribute( "name", jointDistanceNodeName );
+    pDistanceJointElement->SetAttribute( "minOccurs", 0 );
+    pDistanceJointElement->SetAttribute( "maxOccurs", 1 );
+    pJointsNodeChoiceElement->LinkEndChild( pDistanceJointElement );
+
+    // Create complex type Element.
+    TiXmlElement* pDistanceJointComplexTypeElement = new TiXmlElement( "xs:complexType" );
+    pDistanceJointElement->LinkEndChild( pDistanceJointComplexTypeElement );
+
+    // Create "Length" attribute.
+    TiXmlElement* pDistanceJointElementA = new TiXmlElement( "xs:attribute" );
+    pDistanceJointElementA->SetAttribute( "name", jointDistanceLengthName );
+    pDistanceJointComplexTypeElement->LinkEndChild( pDistanceJointElementA );
+    TiXmlElement* pDistanceJointElementB = new TiXmlElement( "xs:simpleType" );
+    pDistanceJointElementA->LinkEndChild( pDistanceJointElementB );
+    TiXmlElement* pDistanceJointElementC = new TiXmlElement( "xs:restriction" );
+    pDistanceJointElementC->SetAttribute( "base", "xs:float" );
+    pDistanceJointElementB->LinkEndChild( pDistanceJointElementC );
+    TiXmlElement* pDistanceJointElementD = new TiXmlElement( "xs:minInclusive" );
+    pDistanceJointElementD->SetAttribute( "value", "0" );
+    pDistanceJointElementC->LinkEndChild( pDistanceJointElementD );
+
+    // Create "Frequency" attribute.
+    pDistanceJointElementA = new TiXmlElement( "xs:attribute" );
+    pDistanceJointElementA->SetAttribute( "name", jointDistanceFrequencyName );
+    pDistanceJointComplexTypeElement->LinkEndChild( pDistanceJointElementA );
+    pDistanceJointElementB = new TiXmlElement( "xs:simpleType" );
+    pDistanceJointElementA->LinkEndChild( pDistanceJointElementB );
+    pDistanceJointElementC = new TiXmlElement( "xs:restriction" );
+    pDistanceJointElementC->SetAttribute( "base", "xs:float" );
+    pDistanceJointElementB->LinkEndChild( pDistanceJointElementC );
+    pDistanceJointElementD = new TiXmlElement( "xs:minInclusive" );
+    pDistanceJointElementD->SetAttribute( "value", "0" );
+    pDistanceJointElementC->LinkEndChild( pDistanceJointElementD );
+
+    // Create "Damping Ratio" attribute.
+    pDistanceJointElementA = new TiXmlElement( "xs:attribute" );
+    pDistanceJointElementA->SetAttribute( "name", jointDistanceDampingRatioName );
+    pDistanceJointComplexTypeElement->LinkEndChild( pDistanceJointElementA );
+    pDistanceJointElementB = new TiXmlElement( "xs:simpleType" );
+    pDistanceJointElementA->LinkEndChild( pDistanceJointElementB );
+    pDistanceJointElementC = new TiXmlElement( "xs:restriction" );
+    pDistanceJointElementC->SetAttribute( "base", "xs:float" );
+    pDistanceJointElementB->LinkEndChild( pDistanceJointElementC );
+    pDistanceJointElementD = new TiXmlElement( "xs:minInclusive" );
+    pDistanceJointElementD->SetAttribute( "value", "0" );
+    pDistanceJointElementC->LinkEndChild( pDistanceJointElementD );
+}
+
+//-----------------------------------------------------------------------------
+
+static void WriteControllersCustomTamlScehema( const AbstractClassRep* pClassRep, TiXmlElement* pParentElement )
+{
+    // Sanity!
+    AssertFatal( pClassRep != NULL,  "Taml::WriteControllersCustomTamlScehema() - ClassRep cannot be NULL." );
+    AssertFatal( pParentElement != NULL,  "Taml::WriteControllersCustomTamlScehema() - Parent Element cannot be NULL." );
+
+    char buffer[1024];
+
+    // Create controllers node element.
+    TiXmlElement* pControllersNodeElement = new TiXmlElement( "xs:element" );
+    dSprintf( buffer, sizeof(buffer), "%s.%s", pClassRep->getClassName(), controllerCustomNodeName );
+    pControllersNodeElement->SetAttribute( "name", buffer );
+    pControllersNodeElement->SetAttribute( "minOccurs", 0 );
+    pControllersNodeElement->SetAttribute( "maxOccurs", 1 );
+    pParentElement->LinkEndChild( pControllersNodeElement );
+    
+    // Create complex type.
+    TiXmlElement* pControllersNodeComplexTypeElement = new TiXmlElement( "xs:complexType" );
+    pControllersNodeElement->LinkEndChild( pControllersNodeComplexTypeElement );
+    
+    // Create choice element.
+    TiXmlElement* pControllersNodeChoiceElement = new TiXmlElement( "xs:choice" );
+    pControllersNodeChoiceElement->SetAttribute( "minOccurs", 0 );
+    pControllersNodeChoiceElement->SetAttribute( "maxOccurs", "unbounded" );
+    pControllersNodeComplexTypeElement->LinkEndChild( pControllersNodeChoiceElement );
+
+    // Fetch the scene controller type.
+    AbstractClassRep* pPickingSceneControllerType = AbstractClassRep::findClassRep( "PickingSceneController" );
+    AbstractClassRep* pGroupedSceneControllerType = AbstractClassRep::findClassRep( "GroupedSceneController" );
+
+    // Sanity!
+    AssertFatal( pPickingSceneControllerType != NULL, "Scene::WriteControllersCustomTamlScehema() - Cannot find the PickingSceneController type." );
+    AssertFatal( pGroupedSceneControllerType != NULL, "Scene::WriteControllersCustomTamlScehema() - Cannot find the GroupedSceneController type." );
+
+    // Add choice members.
+    for ( AbstractClassRep* pChoiceType = AbstractClassRep::getClassList(); pChoiceType != NULL; pChoiceType = pChoiceType->getNextClass() )
+    {
+        // Skip if not derived from either of the scene controllers.
+        if ( !pChoiceType->isClass( pPickingSceneControllerType ) && !pChoiceType->isClass( pGroupedSceneControllerType ) )
+            continue;
+
+        // Add choice member.
+        TiXmlElement* pChoiceMemberElement = new TiXmlElement( "xs:element" );
+        pChoiceMemberElement->SetAttribute( "name", pChoiceType->getClassName() );
+        dSprintf( buffer, sizeof(buffer), "%s_Type", pChoiceType->getClassName() );
+        pChoiceMemberElement->SetAttribute( "type", buffer );
+        pControllersNodeChoiceElement->LinkEndChild( pChoiceMemberElement );
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+static void WritePreloadsCustomTamlScehema( const AbstractClassRep* pClassRep, TiXmlElement* pParentElement )
+{
+    // Sanity!
+    AssertFatal( pClassRep != NULL,  "Taml::WritePreloadsCustomTamlScehema() - ClassRep cannot be NULL." );
+    AssertFatal( pParentElement != NULL,  "Taml::WritePreloadsCustomTamlScehema() - Parent Element cannot be NULL." );
+
+    char buffer[1024];
+
+    // Create preloads node element.
+    TiXmlElement* pPreloadsNodeElement = new TiXmlElement( "xs:element" );
+    dSprintf( buffer, sizeof(buffer), "%s.%s", pClassRep->getClassName(), assetPreloadNodeName );
+    pPreloadsNodeElement->SetAttribute( "name", buffer );
+    pPreloadsNodeElement->SetAttribute( "minOccurs", 0 );
+    pPreloadsNodeElement->SetAttribute( "maxOccurs", 1 );
+    pParentElement->LinkEndChild( pPreloadsNodeElement );
+    
+    // Create complex type.
+    TiXmlElement* pPreloadsNodeComplexTypeElement = new TiXmlElement( "xs:complexType" );
+    pPreloadsNodeElement->LinkEndChild( pPreloadsNodeComplexTypeElement );
+    
+    // Create choice element.
+    TiXmlElement* pPreloadsNodeChoiceElement = new TiXmlElement( "xs:choice" );
+    pPreloadsNodeChoiceElement->SetAttribute( "minOccurs", 0 );
+    pPreloadsNodeChoiceElement->SetAttribute( "maxOccurs", "unbounded" );
+    pPreloadsNodeComplexTypeElement->LinkEndChild( pPreloadsNodeChoiceElement );
+
+    // Add choice member element.
+    TiXmlElement* pChoiceMemberElement = new TiXmlElement( "xs:element" );
+    pChoiceMemberElement->SetAttribute( "name", assetNodeName );
+    pPreloadsNodeChoiceElement->LinkEndChild( pChoiceMemberElement );
+
+    // Add choice member complex type element.
+    TiXmlElement* pChoiceMemberComplexTypeElement = new TiXmlElement( "xs:complexType" );
+    pChoiceMemberElement->LinkEndChild( pChoiceMemberComplexTypeElement );
+
+    // Add choice member attribute element.
+    TiXmlElement* pChoiceAttributeElement = new TiXmlElement( "xs:attribute" );
+    pChoiceAttributeElement->SetAttribute( "name", "Id" );
+    dSprintf( buffer, sizeof(buffer), "%s", "AssetId_ConsoleType" );
+    pChoiceAttributeElement->SetAttribute( "type", buffer );
+    pChoiceMemberComplexTypeElement->LinkEndChild( pChoiceAttributeElement );
+}
+
+//-----------------------------------------------------------------------------
+
+static void WriteCustomTamlSchema( const AbstractClassRep* pClassRep, TiXmlElement* pParentElement )
+{
+    // Sanity!
+    AssertFatal( pClassRep != NULL,  "Taml::WriteCustomTamlSchema() - ClassRep cannot be NULL." );
+    AssertFatal( pParentElement != NULL,  "Taml::WriteCustomTamlSchema() - Parent Element cannot be NULL." );
+
+    WriteJointsCustomTamlScehema( pClassRep, pParentElement );
+    WriteControllersCustomTamlScehema( pClassRep, pParentElement );
+    WritePreloadsCustomTamlScehema( pClassRep, pParentElement );
+}
+
+//------------------------------------------------------------------------------
+
+IMPLEMENT_CONOBJECT_CHILDREN_SCHEMA(Scene, WriteCustomTamlSchema);

@@ -20,7 +20,7 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#include "graphics/gfxDevice.h"
+#include "graphics/dgl.h"
 #include "console/consoleTypes.h"
 #include "2d/core/Utility.h"
 #include "ShapeVector.h"
@@ -63,11 +63,11 @@ ShapeVector::~ShapeVector()
 void ShapeVector::initPersistFields()
 {
    addProtectedField("PolyList", TypePoint2FVector, Offset(mPolygonBasisList, ShapeVector), &setPolyList, &defaultProtectedGetFn, &writePolyList, "");
-   addProtectedField("LineColor", TypeColorF, Offset(mLineColor, ShapeVector), &setLineColor, &defaultProtectedGetFn, &writeLineColor, "");
-   addProtectedField("FillColor", TypeColorF, Offset(mFillColor, ShapeVector), &setFillColor, &defaultProtectedGetFn, &writeFillColor, "");
-   addProtectedField("FillMode", TypeBool, Offset(mFillMode, ShapeVector), &setFillMode, &defaultProtectedGetFn, &writeFillMode, "");
-   addProtectedField("IsCircle", TypeBool, Offset(mIsCircle, ShapeVector), &setIsCircle, &defaultProtectedGetFn, &writeIsCircle, "");
-   addProtectedField("CircleRadius", TypeF32, Offset(mCircleRadius, ShapeVector), &setCircleRadius, &defaultProtectedGetFn, &writeCircleRadius, "");
+   addField("LineColor", TypeColorF, Offset(mLineColor, ShapeVector), &writeLineColor, "");
+   addField("FillColor", TypeColorF, Offset(mFillColor, ShapeVector), &writeFillColor, "");
+   addField("FillMode", TypeBool, Offset(mFillMode, ShapeVector), &writeFillMode, "");
+   addField("IsCircle", TypeBool, Offset(mIsCircle, ShapeVector), &writeIsCircle, "");
+   addField("CircleRadius", TypeF32, Offset(mCircleRadius, ShapeVector), &writeCircleRadius, "");
 
    Parent::initPersistFields();
 }
@@ -124,186 +124,184 @@ void ShapeVector::sceneRender( const SceneRenderState* pSceneRenderState, const 
     // Finish if not vertices.
     if ( vertexCount == 0  && !mIsCircle)
         return;
-//
-//    // Disable Texturing.
-//    glDisable       ( GL_TEXTURE_2D );
-//
-//    // Save Model-view.
-//    glMatrixMode(GL_MODELVIEW);
-//    glPushMatrix();
-//
-//    // Fetch Position/Rotation.
-//    const Vector2 position = getRenderPosition();
-//
-//    // Set Blend Options.
-//    setBlendOptions();
-//    
-//    if (mIsCircle)
-//    {
-//        glRotatef( mRadToDeg(getRenderAngle()), 0.0f, 0.0f, 1.0f );
-//        renderCircleShape(position, mCircleRadius);
-//    }
-//    else
-//    {
-//        // Move into Vector-Space.
-//        glTranslatef( position.x, position.y, 0.0f );
-//        glRotatef( mRadToDeg(getRenderAngle()), 0.0f, 0.0f, 1.0f );
-//        renderPolygonShape(vertexCount);
-//    }
-//
-//    // Restore Colour.
-//    glColor4f( 1,1,1,1 );
-//
-//    // Restore Matrix.
-//    glPopMatrix();
+
+    // Disable Texturing.
+    glDisable       ( GL_TEXTURE_2D );
+
+    // Save Model-view.
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+
+    // Fetch Position/Rotation.
+    const Vector2 position = getRenderPosition();
+
+    // Set Blend Options.
+    setBlendOptions();
+    
+    if (mIsCircle)
+    {
+        glRotatef( mRadToDeg(getRenderAngle()), 0.0f, 0.0f, 1.0f );
+        renderCircleShape(position, mCircleRadius);
+    }
+    else
+    {
+        // Move into Vector-Space.
+        glTranslatef( position.x, position.y, 0.0f );
+        glRotatef( mRadToDeg(getRenderAngle()), 0.0f, 0.0f, 1.0f );
+        renderPolygonShape(vertexCount);
+    }
+
+    // Restore color.
+    glColor4f( 1,1,1,1 );
+
+    // Restore Matrix.
+    glPopMatrix();
 }
 
 void ShapeVector::renderCircleShape(Vector2 position, F32 radius)
 {
-//    if (mFillMode)
-//    {
-//        const float32 k_segments = 32.0f;
-//        const float32 k_increment = 2.0f * b2_pi / k_segments;
-//        float32 theta = 0.0f;
-//
-//        glEnable(GL_BLEND);
-//        glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//        glColor4f(mFillColor.red, mFillColor.green, mFillColor.blue, mFillColor.alpha);
-//
-//        glBegin(GL_TRIANGLE_FAN);
-//        for (int32 i = 0; i < k_segments; ++i)
-//        {
-//            Vector2 v = position + radius * Vector2(cosf(theta), sinf(theta));
-//            glVertex2f(v.x, v.y);
-//            theta += k_increment;
-//        }
-//        glEnd();
-//
-//        glDisable(GL_BLEND);
-//
-//        theta = 0.0f;
-//        glColor4f(mLineColor.red, mLineColor.green, mLineColor.blue, 1.0f);
-//        glBegin(GL_LINE_LOOP);
-//        for (int32 i = 0; i < k_segments; ++i)
-//        {
-//            Vector2 v = position + radius * Vector2(cosf(theta), sinf(theta));
-//            glVertex2f(v.x, v.y);
-//            theta += k_increment;
-//        }
-//        glEnd();
-//    }
-//    else
-//    {
-//        const float32 k_segments = 36.0f;
-//        const float32 k_increment = 2.0f * b2_pi / k_segments;
-//        float32 theta = 0.0f;
-//
-//        glColor4f(mLineColor.red, mLineColor.green, mLineColor.blue, mLineColor.alpha);
-//        
-//        glBegin(GL_LINE_LOOP);
-//        for (int32 i = 0; i < k_segments; ++i)
-//        {
-//            Vector2 v = position + radius * Vector2(cosf(theta), sinf(theta));
-//            glVertex2f(v.x, v.y);
-//            theta += k_increment;
-//        }
-//        glEnd();
-//    }
+    if (mFillMode)
+    {
+        const float32 k_segments = 32.0f;
+        const float32 k_increment = 2.0f * b2_pi / k_segments;
+        float32 theta = 0.0f;
+
+        glEnable(GL_BLEND);
+        glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glColor4f(mFillColor.red, mFillColor.green, mFillColor.blue, mFillColor.alpha);
+
+        glBegin(GL_TRIANGLE_FAN);
+        for (int32 i = 0; i < k_segments; ++i)
+        {
+            Vector2 v = position + radius * Vector2(cosf(theta), sinf(theta));
+            glVertex2f(v.x, v.y);
+            theta += k_increment;
+        }
+        glEnd();
+
+        glDisable(GL_BLEND);
+
+        theta = 0.0f;
+        glColor4f(mLineColor.red, mLineColor.green, mLineColor.blue, 1.0f);
+        glBegin(GL_LINE_LOOP);
+        for (int32 i = 0; i < k_segments; ++i)
+        {
+            Vector2 v = position + radius * Vector2(cosf(theta), sinf(theta));
+            glVertex2f(v.x, v.y);
+            theta += k_increment;
+        }
+        glEnd();
+    }
+    else
+    {
+        const float32 k_segments = 36.0f;
+        const float32 k_increment = 2.0f * b2_pi / k_segments;
+        float32 theta = 0.0f;
+
+        glColor4f(mLineColor.red, mLineColor.green, mLineColor.blue, mLineColor.alpha);
+        
+        glBegin(GL_LINE_LOOP);
+        for (int32 i = 0; i < k_segments; ++i)
+        {
+            Vector2 v = position + radius * Vector2(cosf(theta), sinf(theta));
+            glVertex2f(v.x, v.y);
+            theta += k_increment;
+        }
+        glEnd();
+    }
 }
 
 void ShapeVector::renderPolygonShape(U32 vertexCount)
 {
-//#ifdef TORQUE_OS_IOS
-//    // Fill Mode?
-//    if ( mFillMode )
-//    {
-//        // Yes, so set polygon mode to FILL.
-//        //glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-//
-//        // Set Fill Colour.
-//        glColor4f( (GLfloat)mFillColor.red, (GLfloat)mFillColor.green, (GLfloat)mFillColor.blue, (GLfloat)mFillColor.alpha );
-//
-//        GLfloat vert1[] = {//get first vert and make triangles based off of this one
-//            (GLfloat)(mPolygonLocalList[0].x),
-//            (GLfloat)(mPolygonLocalList[0].y),
-//        };
-//        GLfloat prevVert[] = {
-//            (GLfloat)(mPolygonLocalList[1].x),
-//            (GLfloat)(mPolygonLocalList[1].y),
-//        };
-//        
-//        
-//        // Draw Object.
-//            for ( U32 n = 2; n < vertexCount; n++ )
-//            {
-//                //glVertex2fv ( (GLfloat*)&(mPolygonLocalList[n]) );
-//                GLfloat vertex[] = {
-//                                    vert1[0], vert1[1],
-//                                    (GLfloat)(mPolygonLocalList[n].x), (GLfloat)(mPolygonLocalList[n].y),
-//                                    prevVert[0], prevVert[1],
-//                };
-//                
-//                glVertexPointer(2, GL_FLOAT, 0, vertex );
-//                glDrawArrays(GL_TRIANGLES, 0, 3 );
-//                prevVert[0] = (GLfloat)(mPolygonLocalList[n].x);//save the current one's for nxt time
-//                prevVert[1] = (GLfloat)(mPolygonLocalList[n].y);
-//            }
-//        //glDrawArrays(GL_TRIANGLES, 0, vertexCount);
-//        //glEnd();
-// 
-//    }
-//
-//    // Set Line Colour.
-//    glColor4f(mLineColor.red, mLineColor.green, mLineColor.blue, mLineColor.alpha );
-//    
-//        for ( U32 n = 1; n <= vertexCount; n++ )
-//        {
-//            GLfloat verts[] = {
-//                (GLfloat)(mPolygonLocalList[n - 1].x),
-//                (GLfloat)(mPolygonLocalList[n - 1].y),
-//                (GLfloat)(mPolygonLocalList[n == vertexCount ? 0 : n].x),
-//                (GLfloat)(mPolygonLocalList[n == vertexCount ? 0 : n].y),
-//            };
-//
-//            glVertexPointer(2, GL_FLOAT, 0, verts );			
-//            glDrawArrays(GL_LINE_LOOP, 0, 2);//draw last two
-//        }
-//
-//#else
-//    // Fill Mode?
-//    if ( mFillMode )
-//    {
-//        // Yes, so set polygon mode to FILL.
-//        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-//
-//        // Set Fill Colour.
-//        glColor4fv( (GLfloat*)&mFillColor );
-//
-//        // Draw Object.
-//        glBegin( GL_POLYGON );
-//            for ( U32 n = 0; n < vertexCount; n++ )
-//            {
-//                glVertex2fv ( (GLfloat*)&(mPolygonLocalList[n]) );
-//            }
-//        glEnd();
-//    }
-//
-//    // Set Line Colour.
-//    glColor4fv( (GLfloat*)&mLineColor );
-//
-//    // Draw Object.
-//    glBegin(GL_LINES);
-//        for ( U32 n = 1; n <= vertexCount; n++ )
-//        {
-//            glVertex2fv ( (GLfloat*)&(mPolygonLocalList[n - 1]) );
-//            glVertex2fv ( (GLfloat*)&(mPolygonLocalList[n == vertexCount ? 0 : n]) );
-//        }
-//    glEnd();
-//
-//#endif
+#ifdef TORQUE_OS_IOS
+    // Fill Mode?
+    if ( mFillMode )
+    {
+        // Yes, so set polygon mode to FILL.
+        //glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+
+        // Set Fill color.
+        glColor4f( (GLfloat)mFillColor.red, (GLfloat)mFillColor.green, (GLfloat)mFillColor.blue, (GLfloat)mFillColor.alpha );
+
+        GLfloat vert1[] = {//get first vert and make triangles based off of this one
+            (GLfloat)(mPolygonLocalList[0].x),
+            (GLfloat)(mPolygonLocalList[0].y),
+        };
+        GLfloat prevVert[] = {
+            (GLfloat)(mPolygonLocalList[1].x),
+            (GLfloat)(mPolygonLocalList[1].y),
+        };
+        
+        
+        // Draw Object.
+            for ( U32 n = 2; n < vertexCount; n++ )
+            {
+                //glVertex2fv ( (GLfloat*)&(mPolygonLocalList[n]) );
+                GLfloat vertex[] = {
+                                    vert1[0], vert1[1],
+                                    (GLfloat)(mPolygonLocalList[n].x), (GLfloat)(mPolygonLocalList[n].y),
+                                    prevVert[0], prevVert[1],
+                };
+                
+                glVertexPointer(2, GL_FLOAT, 0, vertex );
+                glDrawArrays(GL_TRIANGLES, 0, 3 );
+                prevVert[0] = (GLfloat)(mPolygonLocalList[n].x);//save the current one's for nxt time
+                prevVert[1] = (GLfloat)(mPolygonLocalList[n].y);
+            }
+        //glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+        //glEnd();
+ 
+    }
+
+    // Set Line color.
+    glColor4f(mLineColor.red, mLineColor.green, mLineColor.blue, mLineColor.alpha );
+    
+        for ( U32 n = 1; n <= vertexCount; n++ )
+        {
+            GLfloat verts[] = {
+                (GLfloat)(mPolygonLocalList[n - 1].x),
+                (GLfloat)(mPolygonLocalList[n - 1].y),
+                (GLfloat)(mPolygonLocalList[n == vertexCount ? 0 : n].x),
+                (GLfloat)(mPolygonLocalList[n == vertexCount ? 0 : n].y),
+            };
+
+            glVertexPointer(2, GL_FLOAT, 0, verts );			
+            glDrawArrays(GL_LINE_LOOP, 0, 2);//draw last two
+        }
+
+#else
+    // Fill Mode?
+    if ( mFillMode )
+    {
+        // Yes, so set polygon mode to FILL.
+        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+
+        // Set Fill color.
+        glColor4fv( (GLfloat*)&mFillColor );
+
+        // Draw Object.
+        glBegin( GL_POLYGON );
+            for ( U32 n = 0; n < vertexCount; n++ )
+            {
+                glVertex2fv ( (GLfloat*)&(mPolygonLocalList[n]) );
+            }
+        glEnd();
+    }
+
+    // Set Line color.
+    glColor4fv( (GLfloat*)&mLineColor );
+
+    // Draw Object.
+    glBegin(GL_LINES);
+        for ( U32 n = 1; n <= vertexCount; n++ )
+        {
+            glVertex2fv ( (GLfloat*)&(mPolygonLocalList[n - 1]) );
+            glVertex2fv ( (GLfloat*)&(mPolygonLocalList[n == vertexCount ? 0 : n]) );
+        }
+    glEnd();
+
+#endif
 }
-
-
 
 //----------------------------------------------------------------------------
 
@@ -376,10 +374,10 @@ void ShapeVector::setPolyPrimitive( const U32 polyVertexCount )
     else if ( polyVertexCount == 4 )
     {
         // Yes, so set Quad.
-        mPolygonBasisList[0].Set(-1.0f, -1.0f);
-        mPolygonBasisList[1].Set(+1.0f, -1.0f);
-        mPolygonBasisList[2].Set(+1.0f, +1.0f);
-        mPolygonBasisList[3].Set(-1.0f, +1.0f);
+        mPolygonBasisList[0].Set(-0.5f, -0.5f);
+        mPolygonBasisList[1].Set(+0.5f, -0.5f);
+        mPolygonBasisList[2].Set(+0.5f, +0.5f);
+        mPolygonBasisList[3].Set(-0.5f, +0.5f);
     }
     else
     {
@@ -584,163 +582,6 @@ void ShapeVector::generateLocalPoly( void )
             mPolygonLocalList[n] = polyVertex;
         }
     }
-}
-
-//----------------------------------------------------------------------------
-
-void ShapeVector::setLineColorString( const char* lineColour )
-{
-    // Calculate Element Count.
-    const U32 elementCount = Utility::mGetStringElementCount( lineColour );
-
-    // Check we've got enough arguments.
-    if ( elementCount < 3 )
-    {
-        Con::warnf("ShapeVector::setLineColourString() - Invalid Number of Elements! (%s)", lineColour);
-        return;
-    }
-
-    // Calculate Red, Green and Blue.
-    const F32 red   = dAtof(Utility::mGetStringElement( lineColour, 0 ));
-    const F32 green = dAtof(Utility::mGetStringElement( lineColour, 1 ));
-    const F32 blue  = dAtof(Utility::mGetStringElement( lineColour, 2 ));
-
-    // Set Alpha (if specified).
-    F32 alpha;
-    if ( elementCount >= 4 )
-        alpha = dAtof(Utility::mGetStringElement( lineColour, 3 ));
-    else alpha = 1.0f;
-
-    // Set Line Colour.
-    setLineColor( ColorF(red, green, blue, alpha) );
-}
-
-//----------------------------------------------------------------------------
-
-void ShapeVector::setLineColor( const ColorF& lineColour )
-{
-    // Set Line Colour.
-    mLineColor = lineColour;
-}
-
-//----------------------------------------------------------------------------
-
-const char* ShapeVector::getLineColor()
-{
-    // Get Return Buffer.
-    char* pReturnBuffer = Con::getReturnBuffer( 64 );
-    dSprintf( pReturnBuffer, 64, "%0.5f %0.5f %0.5f %0.5f", mLineColor.red, mLineColor.green,
-                                                            mLineColor.blue, mLineColor.alpha);
-    return pReturnBuffer;
-}
-
-//----------------------------------------------------------------------------
-
-void ShapeVector::setLineAlpha( const F32 alpha )
-{
-    // Set Line Alpha.
-    mLineColor.alpha = alpha;
-}
-
-//----------------------------------------------------------------------------
-
-void ShapeVector::setFillColorString( const char* fillColour )
-{
-    // Calculate Element Count.
-    const U32 elementCount = Utility::mGetStringElementCount( fillColour );
-
-    // Check we've got enough arguments.
-    if ( elementCount < 3 )
-    {
-        Con::warnf("ShapeVector::setFillColourString() - Invalid Number of Elements! (%s)", fillColour);
-        return;
-    }
-
-    // Calculate Red, Green and Blue.
-    const F32 red   = dAtof(Utility::mGetStringElement( fillColour, 0 ));
-    const F32 green = dAtof(Utility::mGetStringElement( fillColour, 1 ));
-    const F32 blue  = dAtof(Utility::mGetStringElement( fillColour, 2 ));
-
-    // Set Alpha (if specified).
-    F32 alpha;
-    if ( elementCount >= 4 )
-        alpha = dAtof(Utility::mGetStringElement( fillColour, 3 ));
-    else alpha = 1.0f;
-
-    // Set Fill Colour.
-    setFillColor( ColorF(red, green, blue, alpha) );
-}
-
-//----------------------------------------------------------------------------
-
-void ShapeVector::setFillColor( const ColorF& fillColour )
-{
-    // Set Fill Colour.
-    mFillColor = fillColour;
-}
-
-//----------------------------------------------------------------------------
-
-const char* ShapeVector::getFillColor()
-{
-    // Get Return Buffer.
-    char* pReturnBuffer = Con::getReturnBuffer( 64 );
-    dSprintf( pReturnBuffer, 64, "%0.5f %0.5f %0.5f %0.5f", mFillColor.red, mFillColor.green,
-                                                            mFillColor.blue, mFillColor.alpha);
-    return pReturnBuffer;
-}
-
-//----------------------------------------------------------------------------
-
-void ShapeVector::setFillAlpha( const F32 alpha )
-{
-    // Set Fill Alpha.
-    mFillColor.alpha = alpha;
-}
-
-//----------------------------------------------------------------------------
-
-void ShapeVector::setFillMode( const bool fillMode )
-{
-    // Set Fill Mode.
-    mFillMode = fillMode;
-}
-
-//----------------------------------------------------------------------------
-
-bool ShapeVector::getFillMode()
-{
-    return mFillMode;
-}
-
-//----------------------------------------------------------------------------
-
-void ShapeVector::setIsCircle( const bool isCircle )
-{
-    // Set Fill Mode.
-    mIsCircle = isCircle;
-}
-
-//----------------------------------------------------------------------------
-
-bool ShapeVector::getIsCircle()
-{
-    return mIsCircle;
-}
-
-//----------------------------------------------------------------------------
-
-void ShapeVector::setCircleRadius( const F32 circleRadius )
-{
-    // Set Fill Mode.
-    mCircleRadius = circleRadius;
-}
-
-//----------------------------------------------------------------------------
-
-F32 ShapeVector::getCircleRadius()
-{
-    return mCircleRadius;
 }
 
 //----------------------------------------------------------------------------

@@ -24,7 +24,9 @@
 #include "2d/sceneobject/SceneObject.h"
 #endif
 
-#include "graphics/gfxDevice.h"
+#ifndef _DGL_H_
+#include "graphics/dgl.h"
+#endif
 
 #ifndef _COLOR_H_
 #include "graphics/color.h"
@@ -74,33 +76,26 @@
 
 //-----------------------------------------------------------------------------
 
-IMPLEMENT_CONOBJECT(SceneObject);
-
-//-----------------------------------------------------------------------------
-
 // Scene-Object counter.
 static U32 sGlobalSceneObjectCount = 0;
 static U32 sSceneObjectMasterSerialId = 0;
 
-// Collision shape property names.
-static bool collisionShapePropertiesInitialized = false;
+// Collision shapes custom node names.
+static StringTableEntry shapeCustomNodeName     = StringTable->insert( "CollisionShapes" );
 
-static StringTableEntry shapeCustomNodeName;
-
-static StringTableEntry shapeDensityName;
-static StringTableEntry shapeFrictionName;
-static StringTableEntry shapeRestitutionName;
-static StringTableEntry shapeSensorName;
-static StringTableEntry shapePointName;
-static StringTableEntry shapePrevPointName;
-static StringTableEntry shapeNextPointName;
-
-static StringTableEntry circleTypeName;
-static StringTableEntry circleRadiusName;
-static StringTableEntry circleOffsetName;
-static StringTableEntry polygonTypeName;
-static StringTableEntry chainTypeName;
-static StringTableEntry edgeTypeName;
+static StringTableEntry shapeDensityName        = StringTable->insert( "Density" );
+static StringTableEntry shapeFrictionName       = StringTable->insert( "Friction" );
+static StringTableEntry shapeRestitutionName    = StringTable->insert( "Restitution" );
+static StringTableEntry shapeSensorName         = StringTable->insert( "Sensor" );
+static StringTableEntry shapePointName          = StringTable->insert( "Point" );
+static StringTableEntry shapePrevPointName      = StringTable->insert( "PreviousPoint" );
+static StringTableEntry shapeNextPointName      = StringTable->insert( "NextPoint" );
+static StringTableEntry circleTypeName          = StringTable->insert( "Circle" );
+static StringTableEntry circleRadiusName        = StringTable->insert( "Radius" );
+static StringTableEntry circleOffsetName        = StringTable->insert( "Offset" );
+static StringTableEntry polygonTypeName         = StringTable->insert( "Polygon" );
+static StringTableEntry chainTypeName           = StringTable->insert( "Chain" );
+static StringTableEntry edgeTypeName            = StringTable->insert( "Edge" );
 
 //------------------------------------------------------------------------------
 
@@ -150,8 +145,8 @@ SceneObject::SceneObject() :
 
     /// Render blending.
     mBlendMode(true),
-    mSrcBlendFactor(GFXBlendSrcAlpha),
-    mDstBlendFactor(GFXBlendInvSrcAlpha),
+    mSrcBlendFactor(GL_SRC_ALPHA),
+    mDstBlendFactor(GL_ONE_MINUS_SRC_ALPHA),
     mBlendColor(ColorF(1.0f,1.0f,1.0f,1.0f)),
     mAlphaTest(-1.0f),
 
@@ -192,29 +187,6 @@ SceneObject::SceneObject() :
     mSerialId(0),
     mRenderGroup( StringTable->EmptyString )
 {
-    // Initialize collision shape field names.
-    if ( !collisionShapePropertiesInitialized )
-    {
-        shapeCustomNodeName     = StringTable->insert( "CollisionShapes" );
-
-        shapeDensityName        = StringTable->insert( "Density" );
-        shapeFrictionName       = StringTable->insert( "Friction" );
-        shapeRestitutionName    = StringTable->insert( "Restitution" );
-        shapeSensorName         = StringTable->insert( "Sensor" );
-        shapePointName          = StringTable->insert( "Point" );
-        shapePrevPointName      = StringTable->insert( "PreviousPoint" );
-        shapeNextPointName      = StringTable->insert( "NextPoint" );
-        circleTypeName          = StringTable->insert( "Circle" );
-        circleRadiusName        = StringTable->insert( "Radius" );
-        circleOffsetName        = StringTable->insert( "Offset" );
-        polygonTypeName         = StringTable->insert( "Polygon" );
-        chainTypeName           = StringTable->insert( "Chain" );
-        edgeTypeName            = StringTable->insert( "Edge" );
-
-        // Flag as initialized.
-        collisionShapePropertiesInitialized = true;
-    }
-
     // Set Vector Associations.
     VECTOR_SET_ASSOCIATION( mDestroyNotifyList );
     VECTOR_SET_ASSOCIATION( mCollisionFixtureDefs );
@@ -792,6 +764,7 @@ void SceneObject::sceneRenderOverlay( const SceneRenderState* sceneRenderState )
 
     // Clear blending.
     glDisable( GL_BLEND );
+    glDisable( GL_TEXTURE_2D );
 
     // AABB debug draw.
     if ( debugMask & Scene::SCENE_DEBUG_AABB )
@@ -2622,50 +2595,50 @@ Vector2 SceneObject::getEdgeCollisionShapeAdjacentEnd( const U32 shapeIndex ) co
 
 void SceneObject::setBlendOptions( void )
 {
-//    // Set Blend Status.
-//    if ( mBlendMode )
-//    {
-//        // Enable Blending.
-//        glEnable( GL_BLEND );
-//        // Set Blend Function.
-//        glBlendFunc( mSrcBlendFactor, mDstBlendFactor );
-//
-//        // Set Colour.
-//        glColor4f(mBlendColor.red,mBlendColor.green,mBlendColor.blue,mBlendColor.alpha );
-//    }
-//    else
-//    {
-//        // Disable Blending.
-//        glDisable( GL_BLEND );
-//        // Reset Colour.
-//        glColor4f(1,1,1,1);
-//    }
-//
-//    // Set Alpha Test.
-//    if ( mAlphaTest >= 0.0f )
-//    {
-//        // Enable Test.
-//        glEnable( GL_ALPHA_TEST );
-//        glAlphaFunc( GL_GREATER, mAlphaTest );
-//    }
-//    else
-//    {
-//        // Disable Test.
-//        glDisable( GL_ALPHA_TEST );
-//    }
+    // Set Blend Status.
+    if ( mBlendMode )
+    {
+        // Enable Blending.
+        glEnable( GL_BLEND );
+        // Set Blend Function.
+        glBlendFunc( mSrcBlendFactor, mDstBlendFactor );
+
+        // Set color.
+        glColor4f(mBlendColor.red,mBlendColor.green,mBlendColor.blue,mBlendColor.alpha );
+    }
+    else
+    {
+        // Disable Blending.
+        glDisable( GL_BLEND );
+        // Reset color.
+        glColor4f(1,1,1,1);
+    }
+
+    // Set Alpha Test.
+    if ( mAlphaTest >= 0.0f )
+    {
+        // Enable Test.
+        glEnable( GL_ALPHA_TEST );
+        glAlphaFunc( GL_GREATER, mAlphaTest );
+    }
+    else
+    {
+        // Disable Test.
+        glDisable( GL_ALPHA_TEST );
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void SceneObject::resetBlendOptions( void )
 {
-//    // Disable Blending.
-//    glDisable( GL_BLEND );
-//
-//    glDisable( GL_ALPHA_TEST);
-//
-//    // Reset Colour.
-//    glColor4f(1,1,1,1);
+    // Disable Blending.
+    glDisable( GL_BLEND );
+
+    glDisable( GL_ALPHA_TEST);
+
+    // Reset color.
+    glColor4f(1,1,1,1);
 }
 
 //---------------------------------------------------------------------------------------------
@@ -3959,15 +3932,15 @@ EnumTable collisionShapeTypeTable(sizeof(collisionShapeTypeLookup) / sizeof(Enum
 
 static EnumTable::Enums srcBlendFactorLookup[] =
                 {
-                { GFXBlendZero,                  "ZERO"                  },
-                { GFXBlendOne,                   "ONE"                   },
-                { GFXBlendDestColor,             "DST_COLOR"             },
-                { GFXBlendInvDestAlpha,   "ONE_MINUS_DST_COLOR"   },
-                { GFXBlendSrcAlpha,             "SRC_ALPHA"             },
-                { GFXBlendInvSrcColor,   "ONE_MINUS_SRC_ALPHA"   },
-                { GFXBlendDestAlpha,             "DST_ALPHA"             },
-                { GFXBlendInvDestAlpha,   "ONE_MINUS_DST_ALPHA"   },
-                { GFXBlendSrcAlphaSat,    "SRC_ALPHA_SATURATE"    },
+                { GL_ZERO,                  "ZERO"                  },
+                { GL_ONE,                   "ONE"                   },
+                { GL_DST_COLOR,             "DST_COLOR"             },
+                { GL_ONE_MINUS_DST_COLOR,   "ONE_MINUS_DST_COLOR"   },
+                { GL_SRC_ALPHA,             "SRC_ALPHA"             },
+                { GL_ONE_MINUS_SRC_ALPHA,   "ONE_MINUS_SRC_ALPHA"   },
+                { GL_DST_ALPHA,             "DST_ALPHA"             },
+                { GL_ONE_MINUS_DST_ALPHA,   "ONE_MINUS_DST_ALPHA"   },
+                { GL_SRC_ALPHA_SATURATE,    "SRC_ALPHA_SATURATE"    },
                 };
 
 EnumTable srcBlendFactorTable(sizeof(srcBlendFactorLookup) / sizeof(EnumTable::Enums), &srcBlendFactorLookup[0]);
@@ -3976,14 +3949,14 @@ EnumTable srcBlendFactorTable(sizeof(srcBlendFactorLookup) / sizeof(EnumTable::E
 
 static EnumTable::Enums dstBlendFactorLookup[] =
                 {
-                { GFXBlendZero,                  "ZERO" },
-                { GFXBlendOne,                   "ONE" },
-                { GFXBlendSrcColor,             "SRC_COLOR" },
-                { GFXBlendInvSrcColor,   "ONE_MINUS_SRC_COLOR" },
-                { GFXBlendSrcAlpha,             "SRC_ALPHA" },
-                { GFXBlendInvSrcAlpha,   "ONE_MINUS_SRC_ALPHA" },
-                { GFXBlendDestAlpha,             "DST_ALPHA" },
-                { GFXBlendInvDestAlpha,   "ONE_MINUS_DST_ALPHA" },
+                { GL_ZERO,                  "ZERO" },
+                { GL_ONE,                   "ONE" },
+                { GL_SRC_COLOR,             "SRC_COLOR" },
+                { GL_ONE_MINUS_SRC_COLOR,   "ONE_MINUS_SRC_COLOR" },
+                { GL_SRC_ALPHA,             "SRC_ALPHA" },
+                { GL_ONE_MINUS_SRC_ALPHA,   "ONE_MINUS_SRC_ALPHA" },
+                { GL_DST_ALPHA,             "DST_ALPHA" },
+                { GL_ONE_MINUS_DST_ALPHA,   "ONE_MINUS_DST_ALPHA" },
                 };
 
 EnumTable dstBlendFactorTable(sizeof(dstBlendFactorLookup) / sizeof(EnumTable::Enums), &dstBlendFactorLookup[0]);
@@ -4058,19 +4031,19 @@ const char* SceneObject::getCollisionShapeTypeDescription(const b2Shape::Type co
 
 //-----------------------------------------------------------------------------
 
-GFXBlend SceneObject::getSrcBlendFactorEnum(const char* label)
+S32 SceneObject::getSrcBlendFactorEnum(const char* label)
 {
     // Search for Mnemonic.
     for (U32 i = 0; i < (sizeof(srcBlendFactorLookup) / sizeof(EnumTable::Enums)); i++)
     {
         if( dStricmp(srcBlendFactorLookup[i].label, label) == 0)
-            return(GFXBlend)(srcBlendFactorLookup[i].index);
+            return(srcBlendFactorLookup[i].index);
     }
 
     // Warn.
     Con::warnf("SceneObject::getSrcBlendFactorEnum() - Invalid source blend factor of '%s'", label );
 
-    return GFXBlendInvalid;
+    return GL_INVALID_BLEND_FACTOR;
 }
 
 //-----------------------------------------------------------------------------
@@ -4092,19 +4065,19 @@ const char* SceneObject::getSrcBlendFactorDescription(const GLenum factor)
 
 //-----------------------------------------------------------------------------
 
-GFXBlend SceneObject::getDstBlendFactorEnum(const char* label)
+S32 SceneObject::getDstBlendFactorEnum(const char* label)
 {
     // Search for Mnemonic.
     for (U32 i = 0; i < (sizeof(dstBlendFactorLookup) / sizeof(EnumTable::Enums)); i++)
     {
         if( dStricmp(dstBlendFactorLookup[i].label, label) == 0)
-            return(GFXBlend)(dstBlendFactorLookup[i].index);
+            return(dstBlendFactorLookup[i].index);
     }
 
     // Warn.
     Con::warnf("SceneObject::getSrcBlendFactorEnum() - Invalid destination blend factor of '%s'", label );
 
-    return GFXBlendInvalid;
+    return GL_INVALID_BLEND_FACTOR;
 }
 
 //-----------------------------------------------------------------------------
@@ -4123,3 +4096,377 @@ const char* SceneObject::getDstBlendFactorDescription(const GLenum factor)
 
     return StringTable->EmptyString;
 }
+
+//-----------------------------------------------------------------------------
+
+static void WriteCircleCustomTamlSchema( const AbstractClassRep* pClassRep, TiXmlElement* pParentElement )
+{
+    // Sanity!
+    AssertFatal( pClassRep != NULL,  "SceneObject::WriteCircleCustomTamlSchema() - ClassRep cannot be NULL." );
+    AssertFatal( pParentElement != NULL,  "SceneObject::WriteCircleCustomTamlSchema() - Parent Element cannot be NULL." );
+
+    // Create circle element.
+    TiXmlElement* pCircleElement = new TiXmlElement( "xs:element" );
+    pCircleElement->SetAttribute( "name", circleTypeName );
+    pCircleElement->SetAttribute( "minOccurs", 0 );
+    pCircleElement->SetAttribute( "maxOccurs", 1 );
+    pParentElement->LinkEndChild( pCircleElement );
+
+    // Create complex type Element.
+    TiXmlElement* pCircleComplexTypeElement = new TiXmlElement( "xs:complexType" );
+    pCircleElement->LinkEndChild( pCircleComplexTypeElement );
+
+    // Create "Radius" attribute.
+    TiXmlElement* pCircleElementA = new TiXmlElement( "xs:attribute" );
+    pCircleElementA->SetAttribute( "name", circleRadiusName );
+    pCircleComplexTypeElement->LinkEndChild( pCircleElementA );
+    TiXmlElement* pCircleElementB = new TiXmlElement( "xs:simpleType" );
+    pCircleElementA->LinkEndChild( pCircleElementB );
+    TiXmlElement* pCircleElementC = new TiXmlElement( "xs:restriction" );
+    pCircleElementC->SetAttribute( "base", "xs:float" );
+    pCircleElementB->LinkEndChild( pCircleElementC );
+    TiXmlElement* pCircleElementD = new TiXmlElement( "xs:minExclusive" );
+    pCircleElementD->SetAttribute( "value", "0" );
+    pCircleElementC->LinkEndChild( pCircleElementD );
+
+    // Create "Offset" attribute.
+    pCircleElementA = new TiXmlElement( "xs:attribute" );
+    pCircleElementA->SetAttribute( "name", circleOffsetName );
+    pCircleElementA->SetAttribute( "type", "Vector2_ConsoleType" );
+    pCircleComplexTypeElement->LinkEndChild( pCircleElementA );
+
+    // Create "IsSensor" attribute.
+    pCircleElementA = new TiXmlElement( "xs:attribute" );
+    pCircleElementA->SetAttribute( "name", shapeSensorName );
+    pCircleElementA->SetAttribute( "type", "xs:boolean" );
+    pCircleComplexTypeElement->LinkEndChild( pCircleElementA );
+
+    // Create "Density" attribute.
+    pCircleElementA = new TiXmlElement( "xs:attribute" );
+    pCircleElementA->SetAttribute( "name", shapeDensityName );
+    pCircleComplexTypeElement->LinkEndChild( pCircleElementA );
+    pCircleElementB = new TiXmlElement( "xs:simpleType" );
+    pCircleElementA->LinkEndChild( pCircleElementB );
+    pCircleElementC = new TiXmlElement( "xs:restriction" );
+    pCircleElementC->SetAttribute( "base", "xs:float" );
+    pCircleElementB->LinkEndChild( pCircleElementC );
+    pCircleElementD = new TiXmlElement( "xs:minInclusive" );
+    pCircleElementD->SetAttribute( "value", "0" );
+    pCircleElementC->LinkEndChild( pCircleElementD );
+
+    // Create "Friction" attribute.
+    pCircleElementA = new TiXmlElement( "xs:attribute" );
+    pCircleElementA->SetAttribute( "name", shapeFrictionName );
+    pCircleComplexTypeElement->LinkEndChild( pCircleElementA );
+    pCircleElementB = new TiXmlElement( "xs:simpleType" );
+    pCircleElementA->LinkEndChild( pCircleElementB );
+    pCircleElementC = new TiXmlElement( "xs:restriction" );
+    pCircleElementC->SetAttribute( "base", "xs:float" );
+    pCircleElementB->LinkEndChild( pCircleElementC );
+    pCircleElementD = new TiXmlElement( "xs:minInclusive" );
+    pCircleElementD->SetAttribute( "value", "0" );
+    pCircleElementC->LinkEndChild( pCircleElementD );
+
+    // Create "Restitution" attribute.
+    pCircleElementA = new TiXmlElement( "xs:attribute" );
+    pCircleElementA->SetAttribute( "name", shapeRestitutionName );
+    pCircleComplexTypeElement->LinkEndChild( pCircleElementA );
+    pCircleElementB = new TiXmlElement( "xs:simpleType" );
+    pCircleElementA->LinkEndChild( pCircleElementB );
+    pCircleElementC = new TiXmlElement( "xs:restriction" );
+    pCircleElementC->SetAttribute( "base", "xs:float" );
+    pCircleElementB->LinkEndChild( pCircleElementC );
+    pCircleElementD = new TiXmlElement( "xs:minInclusive" );
+    pCircleElementD->SetAttribute( "value", "0" );
+    pCircleElementC->LinkEndChild( pCircleElementD );
+}
+
+//-----------------------------------------------------------------------------
+
+static void WritePolygonCustomTamlSchema( const AbstractClassRep* pClassRep, TiXmlElement* pParentElement )
+{
+    // Sanity!
+    AssertFatal( pClassRep != NULL,  "SceneObject::WritePolygonCustomTamlSchema() - ClassRep cannot be NULL." );
+    AssertFatal( pParentElement != NULL,  "SceneObject::WritePolygonCustomTamlSchema() - Parent Element cannot be NULL." );
+
+    // Create polygon element.
+    TiXmlElement* pPolygonElement = new TiXmlElement( "xs:element" );
+    pPolygonElement->SetAttribute( "name", polygonTypeName );
+    pPolygonElement->SetAttribute( "minOccurs", 0 );
+    pPolygonElement->SetAttribute( "maxOccurs", 1 );
+    pParentElement->LinkEndChild( pPolygonElement );
+
+    // Create complex type Element.
+    TiXmlElement* pPolygonComplexTypeElement = new TiXmlElement( "xs:complexType" );
+    pPolygonElement->LinkEndChild( pPolygonComplexTypeElement );
+
+    // Create "polygon" child.
+    TiXmlElement* pPolygonElementA = new TiXmlElement( "xs:choice" );
+    pPolygonElementA->SetAttribute( "minOccurs", 0 );
+    pPolygonElementA->SetAttribute( "maxOccurs", "unbounded" );
+    pPolygonComplexTypeElement->LinkEndChild( pPolygonElementA );
+    TiXmlElement* pPolygonElementB = new TiXmlElement( "xs:element" );
+    pPolygonElementB->SetAttribute( "name", shapePointName );
+    pPolygonElementB->SetAttribute( "type", "Vector2_ConsoleType" );
+    pPolygonElementA->LinkEndChild( pPolygonElementB );
+
+    // Create "IsSensor" attribute.
+    pPolygonElementA = new TiXmlElement( "xs:attribute" );
+    pPolygonElementA->SetAttribute( "name", shapeSensorName );
+    pPolygonElementA->SetAttribute( "type", "xs:boolean" );
+    pPolygonComplexTypeElement->LinkEndChild( pPolygonElementA );
+
+    // Create "Density" attribute.
+    pPolygonElementA = new TiXmlElement( "xs:attribute" );
+    pPolygonElementA->SetAttribute( "name", shapeDensityName );
+    pPolygonComplexTypeElement->LinkEndChild( pPolygonElementA );
+    pPolygonElementB = new TiXmlElement( "xs:simpleType" );
+    pPolygonElementA->LinkEndChild( pPolygonElementB );
+    TiXmlElement* pPolygonElementC = new TiXmlElement( "xs:restriction" );
+    pPolygonElementC->SetAttribute( "base", "xs:float" );
+    pPolygonElementB->LinkEndChild( pPolygonElementC );
+    TiXmlElement* pPolygonElementD = new TiXmlElement( "xs:minInclusive" );
+    pPolygonElementD->SetAttribute( "value", "0" );
+    pPolygonElementC->LinkEndChild( pPolygonElementD );
+
+    // Create "Friction" attribute.
+    pPolygonElementA = new TiXmlElement( "xs:attribute" );
+    pPolygonElementA->SetAttribute( "name", shapeFrictionName );
+    pPolygonComplexTypeElement->LinkEndChild( pPolygonElementA );
+    pPolygonElementB = new TiXmlElement( "xs:simpleType" );
+    pPolygonElementA->LinkEndChild( pPolygonElementB );
+    pPolygonElementC = new TiXmlElement( "xs:restriction" );
+    pPolygonElementC->SetAttribute( "base", "xs:float" );
+    pPolygonElementB->LinkEndChild( pPolygonElementC );
+    pPolygonElementD = new TiXmlElement( "xs:minInclusive" );
+    pPolygonElementD->SetAttribute( "value", "0" );
+    pPolygonElementC->LinkEndChild( pPolygonElementD );
+
+    // Create "Restitution" attribute.
+    pPolygonElementA = new TiXmlElement( "xs:attribute" );
+    pPolygonElementA->SetAttribute( "name", shapeRestitutionName );
+    pPolygonComplexTypeElement->LinkEndChild( pPolygonElementA );
+    pPolygonElementB = new TiXmlElement( "xs:simpleType" );
+    pPolygonElementA->LinkEndChild( pPolygonElementB );
+    pPolygonElementC = new TiXmlElement( "xs:restriction" );
+    pPolygonElementC->SetAttribute( "base", "xs:float" );
+    pPolygonElementB->LinkEndChild( pPolygonElementC );
+    pPolygonElementD = new TiXmlElement( "xs:minInclusive" );
+    pPolygonElementD->SetAttribute( "value", "0" );
+    pPolygonElementC->LinkEndChild( pPolygonElementD );
+}
+
+//-----------------------------------------------------------------------------
+
+static void WriteChainCustomTamlSchema( const AbstractClassRep* pClassRep, TiXmlElement* pParentElement )
+{
+    // Sanity!
+    AssertFatal( pClassRep != NULL,  "SceneObject::WriteChainCustomTamlSchema() - ClassRep cannot be NULL." );
+    AssertFatal( pParentElement != NULL,  "SceneObject::WriteChainCustomTamlSchema() - Parent Element cannot be NULL." );
+
+    // Create chain element.
+    TiXmlElement* pChainElement = new TiXmlElement( "xs:element" );
+    pChainElement->SetAttribute( "name", chainTypeName );
+    pChainElement->SetAttribute( "minOccurs", 0 );
+    pChainElement->SetAttribute( "maxOccurs", 1 );
+    pParentElement->LinkEndChild( pChainElement );
+
+    // Create complex type Element.
+    TiXmlElement* pChainComplexTypeElement = new TiXmlElement( "xs:complexType" );
+    pChainElement->LinkEndChild( pChainComplexTypeElement );
+
+    // Create "Chain" child.
+    TiXmlElement* pChainElementA = new TiXmlElement( "xs:sequence" );
+    pChainComplexTypeElement->LinkEndChild( pChainElementA );
+    TiXmlElement* pChainElementB = new TiXmlElement( "xs:choice" );
+    pChainElementB->SetAttribute( "minOccurs", 0 );
+    pChainElementB->SetAttribute( "maxOccurs", "unbounded" );
+    pChainElementA->LinkEndChild( pChainElementB );
+    TiXmlElement* pChainElementC = new TiXmlElement( "xs:element" );
+    pChainElementC->SetAttribute( "name", shapePointName );
+    pChainElementC->SetAttribute( "type", "Vector2_ConsoleType" );
+    pChainElementB->LinkEndChild( pChainElementC );
+    TiXmlElement* pChainElementD = new TiXmlElement( "xs:element" );
+    pChainElementD->SetAttribute( "name", shapePrevPointName );
+    pChainElementD->SetAttribute( "type", "Vector2_ConsoleType" );
+    pChainElementD->SetAttribute( "minOccurs", 0 );
+    pChainElementD->SetAttribute( "maxOccurs", 1 );
+    pChainElementA->LinkEndChild( pChainElementD );
+    TiXmlElement* pChainElementE = new TiXmlElement( "xs:element" );
+    pChainElementE->SetAttribute( "name", shapeNextPointName );
+    pChainElementE->SetAttribute( "type", "Vector2_ConsoleType" );
+    pChainElementE->SetAttribute( "minOccurs", 0 );
+    pChainElementE->SetAttribute( "maxOccurs", 1 );
+    pChainElementA->LinkEndChild( pChainElementE );
+
+    // Create "IsSensor" attribute.
+    pChainElementA = new TiXmlElement( "xs:attribute" );
+    pChainElementA->SetAttribute( "name", shapeSensorName );
+    pChainElementA->SetAttribute( "type", "xs:boolean" );
+    pChainComplexTypeElement->LinkEndChild( pChainElementA );
+
+    // Create "Density" attribute.
+    pChainElementA = new TiXmlElement( "xs:attribute" );
+    pChainElementA->SetAttribute( "name", shapeDensityName );
+    pChainComplexTypeElement->LinkEndChild( pChainElementA );
+    pChainElementB = new TiXmlElement( "xs:simpleType" );
+    pChainElementA->LinkEndChild( pChainElementB );
+    pChainElementC = new TiXmlElement( "xs:restriction" );
+    pChainElementC->SetAttribute( "base", "xs:float" );
+    pChainElementB->LinkEndChild( pChainElementC );
+    pChainElementD = new TiXmlElement( "xs:minInclusive" );
+    pChainElementD->SetAttribute( "value", "0" );
+    pChainElementC->LinkEndChild( pChainElementD );
+
+    // Create "Friction" attribute.
+    pChainElementA = new TiXmlElement( "xs:attribute" );
+    pChainElementA->SetAttribute( "name", shapeFrictionName );
+    pChainComplexTypeElement->LinkEndChild( pChainElementA );
+    pChainElementB = new TiXmlElement( "xs:simpleType" );
+    pChainElementA->LinkEndChild( pChainElementB );
+    pChainElementC = new TiXmlElement( "xs:restriction" );
+    pChainElementC->SetAttribute( "base", "xs:float" );
+    pChainElementB->LinkEndChild( pChainElementC );
+    pChainElementD = new TiXmlElement( "xs:minInclusive" );
+    pChainElementD->SetAttribute( "value", "0" );
+    pChainElementC->LinkEndChild( pChainElementD );
+
+    // Create "Restitution" attribute.
+    pChainElementA = new TiXmlElement( "xs:attribute" );
+    pChainElementA->SetAttribute( "name", shapeRestitutionName );
+    pChainComplexTypeElement->LinkEndChild( pChainElementA );
+    pChainElementB = new TiXmlElement( "xs:simpleType" );
+    pChainElementA->LinkEndChild( pChainElementB );
+    pChainElementC = new TiXmlElement( "xs:restriction" );
+    pChainElementC->SetAttribute( "base", "xs:float" );
+    pChainElementB->LinkEndChild( pChainElementC );
+    pChainElementD = new TiXmlElement( "xs:minInclusive" );
+    pChainElementD->SetAttribute( "value", "0" );
+    pChainElementC->LinkEndChild( pChainElementD );
+}
+
+//-----------------------------------------------------------------------------
+
+static void WriteEdgeCustomTamlSchema( const AbstractClassRep* pClassRep, TiXmlElement* pParentElement )
+{
+    // Sanity!
+    AssertFatal( pClassRep != NULL,  "SceneObject::WriteEdgeCustomTamlSchema() - ClassRep cannot be NULL." );
+    AssertFatal( pParentElement != NULL,  "SceneObject::WriteCustomTamlSchema() - Parent Element cannot be NULL." );
+
+    // Create edge element.
+    TiXmlElement* pEdgeElement = new TiXmlElement( "xs:element" );
+    pEdgeElement->SetAttribute( "name", edgeTypeName );
+    pEdgeElement->SetAttribute( "minOccurs", 0 );
+    pEdgeElement->SetAttribute( "maxOccurs", 1 );
+    pParentElement->LinkEndChild( pEdgeElement );
+
+    // Create complex type Element.
+    TiXmlElement* pEdgeComplexTypeElement = new TiXmlElement( "xs:complexType" );
+    pEdgeElement->LinkEndChild( pEdgeComplexTypeElement );
+
+    // Create "Edge" child.
+    TiXmlElement* pEdgeElementA = new TiXmlElement( "xs:sequence" );
+    pEdgeComplexTypeElement->LinkEndChild( pEdgeElementA );
+    TiXmlElement* pEdgeElementB = new TiXmlElement( "xs:element" );
+    pEdgeElementB->SetAttribute( "name", shapePointName );
+    pEdgeElementB->SetAttribute( "type", "Vector2_ConsoleType" );
+    pEdgeElementB->SetAttribute( "minOccurs", 0 );
+    pEdgeElementB->SetAttribute( "maxOccurs", 2 );
+    pEdgeElementA->LinkEndChild( pEdgeElementB );
+    TiXmlElement* pEdgeElementC = new TiXmlElement( "xs:element" );
+    pEdgeElementC->SetAttribute( "name", shapePrevPointName );
+    pEdgeElementC->SetAttribute( "type", "Vector2_ConsoleType" );
+    pEdgeElementC->SetAttribute( "minOccurs", 0 );
+    pEdgeElementC->SetAttribute( "maxOccurs", 1 );
+    pEdgeElementA->LinkEndChild( pEdgeElementC );
+    TiXmlElement* pEdgeElementD = new TiXmlElement( "xs:element" );
+    pEdgeElementD->SetAttribute( "name", shapeNextPointName );
+    pEdgeElementD->SetAttribute( "type", "Vector2_ConsoleType" );
+    pEdgeElementD->SetAttribute( "minOccurs", 0 );
+    pEdgeElementD->SetAttribute( "maxOccurs", 1 );
+    pEdgeElementA->LinkEndChild( pEdgeElementD );
+
+    // Create "IsSensor" attribute.
+    pEdgeElementA = new TiXmlElement( "xs:attribute" );
+    pEdgeElementA->SetAttribute( "name", shapeSensorName );
+    pEdgeElementA->SetAttribute( "type", "xs:boolean" );
+    pEdgeComplexTypeElement->LinkEndChild( pEdgeElementA );
+
+    // Create "Density" attribute.
+    pEdgeElementA = new TiXmlElement( "xs:attribute" );
+    pEdgeElementA->SetAttribute( "name", shapeDensityName );
+    pEdgeComplexTypeElement->LinkEndChild( pEdgeElementA );
+    pEdgeElementB = new TiXmlElement( "xs:simpleType" );
+    pEdgeElementA->LinkEndChild( pEdgeElementB );
+    pEdgeElementC = new TiXmlElement( "xs:restriction" );
+    pEdgeElementC->SetAttribute( "base", "xs:float" );
+    pEdgeElementB->LinkEndChild( pEdgeElementC );
+    pEdgeElementD = new TiXmlElement( "xs:minInclusive" );
+    pEdgeElementD->SetAttribute( "value", "0" );
+    pEdgeElementC->LinkEndChild( pEdgeElementD );
+
+    // Create "Friction" attribute.
+    pEdgeElementA = new TiXmlElement( "xs:attribute" );
+    pEdgeElementA->SetAttribute( "name", shapeFrictionName );
+    pEdgeComplexTypeElement->LinkEndChild( pEdgeElementA );
+    pEdgeElementB = new TiXmlElement( "xs:simpleType" );
+    pEdgeElementA->LinkEndChild( pEdgeElementB );
+    pEdgeElementC = new TiXmlElement( "xs:restriction" );
+    pEdgeElementC->SetAttribute( "base", "xs:float" );
+    pEdgeElementB->LinkEndChild( pEdgeElementC );
+    pEdgeElementD = new TiXmlElement( "xs:minInclusive" );
+    pEdgeElementD->SetAttribute( "value", "0" );
+    pEdgeElementC->LinkEndChild( pEdgeElementD );
+
+    // Create "Restitution" attribute.
+    pEdgeElementA = new TiXmlElement( "xs:attribute" );
+    pEdgeElementA->SetAttribute( "name", shapeRestitutionName );
+    pEdgeComplexTypeElement->LinkEndChild( pEdgeElementA );
+    pEdgeElementB = new TiXmlElement( "xs:simpleType" );
+    pEdgeElementA->LinkEndChild( pEdgeElementB );
+    pEdgeElementC = new TiXmlElement( "xs:restriction" );
+    pEdgeElementC->SetAttribute( "base", "xs:float" );
+    pEdgeElementB->LinkEndChild( pEdgeElementC );
+    pEdgeElementD = new TiXmlElement( "xs:minInclusive" );
+    pEdgeElementD->SetAttribute( "value", "0" );
+    pEdgeElementC->LinkEndChild( pEdgeElementD );
+}
+
+//-----------------------------------------------------------------------------
+
+static void WriteCustomTamlSchema( const AbstractClassRep* pClassRep, TiXmlElement* pParentElement )
+{
+    // Sanity!
+    AssertFatal( pClassRep != NULL,  "SceneObject::WriteCustomTamlSchema() - ClassRep cannot be NULL." );
+    AssertFatal( pParentElement != NULL,  "SceneObject::WriteCustomTamlSchema() - Parent Element cannot be NULL." );
+
+    char buffer[1024];
+
+    // Create shapes node element.
+    TiXmlElement* pShapesNodeElement = new TiXmlElement( "xs:element" );
+    dSprintf( buffer, sizeof(buffer), "%s.%s", pClassRep->getClassName(), shapeCustomNodeName );
+    pShapesNodeElement->SetAttribute( "name", buffer );
+    pShapesNodeElement->SetAttribute( "minOccurs", 0 );
+    pShapesNodeElement->SetAttribute( "maxOccurs", 1 );
+    pParentElement->LinkEndChild( pShapesNodeElement );
+    
+    // Create complex type.
+    TiXmlElement* pShapesNodeComplexTypeElement = new TiXmlElement( "xs:complexType" );
+    pShapesNodeElement->LinkEndChild( pShapesNodeComplexTypeElement );
+    
+    // Create choice element.
+    TiXmlElement* pShapesNodeChoiceElement = new TiXmlElement( "xs:choice" );
+    pShapesNodeChoiceElement->SetAttribute( "minOccurs", 0 );
+    pShapesNodeChoiceElement->SetAttribute( "maxOccurs", "unbounded" );
+    pShapesNodeComplexTypeElement->LinkEndChild( pShapesNodeChoiceElement );
+
+    // Write collision shapes.
+    WriteCircleCustomTamlSchema( pClassRep, pShapesNodeChoiceElement );
+    WritePolygonCustomTamlSchema( pClassRep, pShapesNodeChoiceElement );
+    WriteChainCustomTamlSchema( pClassRep, pShapesNodeChoiceElement );
+    WriteEdgeCustomTamlSchema( pClassRep, pShapesNodeChoiceElement );
+}
+
+//-----------------------------------------------------------------------------
+
+IMPLEMENT_CONOBJECT_SCHEMA(SceneObject, WriteCustomTamlSchema);

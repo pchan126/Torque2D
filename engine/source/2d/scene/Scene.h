@@ -198,7 +198,8 @@ public:
         PICK_INVALID,
         ///---
         PICK_ANY,
-        PICK_SIZE,
+        PICK_AABB,
+        PICK_OOBB,
         PICK_COLLISION,
     };
 
@@ -441,6 +442,10 @@ public:
                                 bool& enableMotor,
                                 F32& motorSpeed,
                                 F32& maxMotorTorque );
+
+	F32                     getRevoluteJointAngle( const U32 jointId );
+	F32						getRevoluteJointSpeed( const U32 jointId );
+
     /// Weld joint.
     S32                     createWeldJoint(
                                 const SceneObject* pSceneObjectA, const SceneObject* pSceneObjectB,

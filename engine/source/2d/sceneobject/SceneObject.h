@@ -94,8 +94,6 @@ const S32 INVALID_COLLISION_SHAPE_INDEX = -1;
 extern EnumTable bodyTypeTable;
 extern EnumTable srcBlendFactorTable;
 extern EnumTable dstBlendFactorTable;
-extern EnumTable srcBlendFactorTable;
-extern EnumTable dstBlendFactorTable;
 
 //-----------------------------------------------------------------------------
 
@@ -708,7 +706,7 @@ protected:
     static bool             writeUseInputEvents( void* obj, StringTableEntry pFieldName ) { return static_cast<SceneObject*>(obj)->getUseInputEvents() == true; }
 
     /// Picking.
-    static bool             writePickingAllowed( void* obj, StringTableEntry pFieldName ) { return static_cast<SceneObject*>(obj)->getPickingAllowed() == true; }    
+    static bool             writePickingAllowed( void* obj, StringTableEntry pFieldName ) { return static_cast<SceneObject*>(obj)->getPickingAllowed() == false; }    
 
     /// Script callbacks.
     static bool             writeUpdateCallback( void* obj, StringTableEntry pFieldName ) { return static_cast<SceneObject*>(obj)->getUpdateCallback() == true; }
