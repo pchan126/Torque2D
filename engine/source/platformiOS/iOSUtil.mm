@@ -48,14 +48,6 @@ int giOSGameCurrentOrientation = UIDeviceOrientationLandscapeRight;
 TCPObject* gpTCPObject = NULL;
 char gszTCPAddress[256];
 
-//-----------------------------------------------------------------------------
-void Platform::outputDebugString( const char *string )
-{
-    fprintf(stderr, "%s", string);
-    fprintf(stderr, "\n" );
-    fflush(stderr);
-}
-
 //--------------------------------------
 bool GBitmap::readPNGiPhone(Stream& io_rStream)
 {
