@@ -157,20 +157,13 @@ void GFXOpenGLStateBlock::activate(const GFXOpenGLStateBlock* oldState)
       case GFXTOPDisable :
          if(!tex)
             break;
-//         glDisable(GL_TEXTURE_2D);
          updateTexParam = false;
          break;
       case GFXTOPModulate :
-//         glEnable(GL_TEXTURE_2D);
-//         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
          break;
       case GFXTOPAdd :
-//         glEnable(GL_TEXTURE_2D);
-//         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_ADD);
          break;
       default :
-//         glEnable(GL_TEXTURE_2D);
-//         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
          break;
       }
 
@@ -182,16 +175,10 @@ void GFXOpenGLStateBlock::activate(const GFXOpenGLStateBlock* oldState)
       {
          SSF(minFilter, GL_TEXTURE_MIN_FILTER, minificationFilter(ssd.minFilter, ssd.mipFilter, tex->mMipLevels), tex);
          SSF(mipFilter, GL_TEXTURE_MIN_FILTER, minificationFilter(ssd.minFilter, ssd.mipFilter, tex->mMipLevels), tex);
-//         SSF(magFilter, GL_TEXTURE_MAG_FILTER, GFXGLTextureFilter[ssd.magFilter], tex);
-//         SSW(addressModeU, GL_TEXTURE_WRAP_S, GFXGLTextureAddress[ssd.addressModeU], tex);
-//         SSW(addressModeV, GL_TEXTURE_WRAP_T, GFXGLTextureAddress[ssd.addressModeV], tex);
 
          if( ( !oldState || oldState->mDesc.samplers[i].maxAnisotropy != ssd.maxAnisotropy ) &&
              static_cast< GFXOpenGLDevice* >( GFX )->supportsAnisotropic() )
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, ssd.maxAnisotropy);
-
-//         if( ( !oldState || oldState->mDesc.samplers[i].mipLODBias != ssd.mipLODBias ) )
-//            glTexEnvf(GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, ssd.mipLODBias);
       }
    }
 #undef SSF

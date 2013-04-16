@@ -127,19 +127,13 @@ void ShapeVector::sceneRender( const SceneRenderState* pSceneRenderState, const 
         return;
 
     // Disable Texturing.
-    glDisable       ( GL_TEXTURE_2D );
-
     GFX->pushWorldMatrix();
 
     // Fetch Position/Rotation.
     const Vector2 position = getRenderPosition();
 
-//    // Set Blend Options.
-//    setBlendOptions();
-    
     if (mIsCircle)
     {
-//        glRotatef( mRadToDeg(getRenderAngle()), 0.0f, 0.0f, 1.0f );
         GFXStateBlockDesc desc;
         desc.setBlend( mBlendMode, mSrcBlendFactor, mDstBlendFactor );
         GFX->getDrawUtil()->drawCircleShape(desc, position.ToPoint2F(), mCircleRadius, ColorI(mLineColor));
@@ -147,8 +141,6 @@ void ShapeVector::sceneRender( const SceneRenderState* pSceneRenderState, const 
     else
     {
         // Move into Vector-Space.
-//        glTranslatef( position.x, position.y, 0.0f );
-//        glRotatef( mRadToDeg(getRenderAngle()), 0.0f, 0.0f, 1.0f );
         GFXStateBlockDesc desc;
         desc.setBlend( mBlendMode, mSrcBlendFactor, mDstBlendFactor );
         GFX->setStateBlockByDesc( desc );
@@ -160,9 +152,6 @@ void ShapeVector::sceneRender( const SceneRenderState* pSceneRenderState, const 
         }
         GFX->getDrawUtil()->drawPolygon(desc, pts.address(), pts.size(), ColorI(mLineColor));
     }
-
-//    // Restore color.
-//    glColor4f( 1,1,1,1 );
 
     // Restore Matrix.
     GFX->popWorldMatrix();

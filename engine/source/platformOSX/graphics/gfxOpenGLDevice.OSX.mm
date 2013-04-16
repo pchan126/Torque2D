@@ -763,9 +763,8 @@ void GFXOpenGLDevice::drawIndexedPrimitive(   GFXPrimitiveType primType,
     preDrawPrimitive();
     
     U16* buf = (U16*)static_cast<GFXOpenGLPrimitiveBuffer*>(mCurrentPrimitiveBuffer.getPointer())->getBuffer() + startIndex;
-    
+        
     glDrawElements(GFXGLPrimType[primType], primCountToIndexCount(primType, primitiveCount), GL_UNSIGNED_SHORT, buf);
-    
     postDrawPrimitive(primitiveCount);
 }
 
@@ -851,6 +850,7 @@ void GFXOpenGLDevice::setTextureInternal(U32 textureUnit, const GFXTextureObject
     }
     
     glActiveTexture(GL_TEXTURE0);
+    GL_CHECK();
 }
 
 //void GFXOpenGLDevice::setCubemapInternal(U32 textureUnit, const GFXOpenGLCubemap* texture)
@@ -1092,11 +1092,11 @@ void GFXOpenGLDevice::setupGenericShaders( GenericShaderType type )
     xform *= GFX->getWorldMatrix();
     xform.transpose();
     
-//    Con::printf("setupGenericShaders");
-//    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
-//    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
-//    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
-//    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
+    Con::printf("setupGenericShaders");
+    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
+    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
+    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
+    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
     
     
     switch (type) {
@@ -1280,7 +1280,7 @@ GFXFormat GFXOpenGLDevice::selectSupportedFormat(   GFXTextureProfile* profile,
 //        return formats[i];
 //    }
 //    
-//    return GFXFormatR8G8B8A8;
+    return GFXFormatR8G8B8A8;
 }
 
 //

@@ -259,11 +259,16 @@ void GFXOpenGLTextureObject::bind(U32 textureUnit) const
 {
     AssertFatal(mBinding == GL_TEXTURE_2D, "GFXOpenGLTextureObject::bind - only GL_TEXTURE_2D supported");
    glActiveTexture(GL_TEXTURE0 + textureUnit);
-   if (glIsTexture(mHandle) != GL_TRUE)
-   {
-       Con::printf("bad texture bind");
-   }
-   GLuint han = mHandle;
+    
+    GLuint han = mHandle;
+    if (!mHandle)
+        return;
+    
+    
+//   if (glIsTexture(mHandle) != GL_TRUE)
+//   {
+//       Con::printf("bad texture bind");
+//   }
    glBindTexture(mBinding, han);
 //    Con::printf("texture bind %i", han);
 //   glEnable(mBinding);
@@ -281,6 +286,7 @@ void GFXOpenGLTextureObject::bind(U32 textureUnit) const
     
    glTexParameteri(mBinding, GL_TEXTURE_WRAP_S, !mIsNPoT2 ? GFXGLTextureAddress[ssd.addressModeU] : GL_CLAMP_TO_EDGE);
    glTexParameteri(mBinding, GL_TEXTURE_WRAP_T, !mIsNPoT2 ? GFXGLTextureAddress[ssd.addressModeV] : GL_CLAMP_TO_EDGE);
+    GL_CHECK();
 }
 
 U8* GFXOpenGLTextureObject::getTextureData()

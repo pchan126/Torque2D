@@ -29,6 +29,7 @@
 GFXOpenGLPrimitiveBuffer::GFXOpenGLPrimitiveBuffer(GFXDevice *device, U32 indexCount, U32 primitiveCount, GFXBufferType bufferType, U16 *indexBuffer, GFXPrimitive *primitiveBuffer) :
 GFXPrimitiveBuffer(device, indexCount, primitiveCount, bufferType, primitiveBuffer), mZombieCache(NULL)
 {
+    GL_CHECK();
    PRESERVE_INDEX_BUFFER();
 	// Generate a buffer and allocate the needed memory
 	glGenBuffers(1, &mBuffer);

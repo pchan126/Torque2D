@@ -87,16 +87,12 @@ private:
 
     const ColorF        NoColor;
 
-    Vector2             mVertexBuffer[ BATCHRENDER_BUFFERSIZE ];
-    Vector2             mTextureBuffer[ BATCHRENDER_BUFFERSIZE ];
+    GFXVertexPCT        mVertexBuffer[ BATCHRENDER_BUFFERSIZE ];
     U16                 mIndexBuffer[ BATCHRENDER_BUFFERSIZE ];
-    ColorF              mColorBuffer[ BATCHRENDER_BUFFERSIZE ];
    
     U32                 mTriangleCount;
     U32                 mVertexCount;
-    U32                 mTextureCoordCount;
     U32                 mIndexCount;
-    U32                 mColorCount;
 
     bool                mBlendMode;
     GFXBlend              mSrcBlendFactor;
@@ -237,6 +233,10 @@ public:
     ///   |\  |
     ///   | \ |
     ///  0| _\|1
+    void SubmitQuad( const GFXVertexPCT* vertex,
+                     GFXTexHandle& texture,
+                    const ColorF& inColor = ColorF(-1.0f, -1.0f, -1.0f) );
+    
     void SubmitQuad(
             const Vector2& vertexPos0,
             const Vector2& vertexPos1,

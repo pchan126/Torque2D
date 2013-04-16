@@ -763,7 +763,7 @@ void SceneObject::sceneRenderOverlay( const SceneRenderState* sceneRenderState )
 
     // Clear blending.
     glDisable( GL_BLEND );
-    glDisable( GL_TEXTURE_2D );
+//    glDisable( GL_TEXTURE_2D );
 
     // AABB debug draw.
     if ( debugMask & Scene::SCENE_DEBUG_AABB )

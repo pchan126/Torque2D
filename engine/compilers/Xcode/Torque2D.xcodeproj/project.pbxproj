@@ -179,7 +179,6 @@
 		866381E91655674B00C8C551 /* osxTime.mm in Sources */ = {isa = PBXBuildFile; fileRef = 866381E81655674B00C8C551 /* osxTime.mm */; };
 		8694ADC81656B06B0080ABAC /* osxEvents.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8694ADC51656B06B0080ABAC /* osxEvents.mm */; };
 		86C281CD16A4307E00F030F4 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 86C281CB16A4307E00F030F4 /* MainMenu.xib */; };
-		86D76F78165683240046D71F /* osxOutlineGL.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86D76F76165683240046D71F /* osxOutlineGL.cc */; };
 		86D76F791656868D0046D71F /* AnimationAsset.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7E7716518D4600D96ADF /* AnimationAsset.cc */; };
 		86D76F7B1656868D0046D71F /* ImageAsset.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7E7C16518D4600D96ADF /* ImageAsset.cc */; };
 		86D76F7C1656868D0046D71F /* BatchRender.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7E8116518D4600D96ADF /* BatchRender.cc */; };
@@ -1374,8 +1373,6 @@
 		86C281CF16A4309800F030F4 /* Torque2D-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Torque2D-Prefix.pch"; path = "Torque2D/Torque2D-Prefix.pch"; sourceTree = SOURCE_ROOT; };
 		86CEFC76166FE17500DAF75D /* platformInput_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformInput_ScriptBinding.h; sourceTree = "<group>"; };
 		86D76F74165682BF0046D71F /* platformGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformGL.h; sourceTree = "<group>"; };
-		86D76F76165683240046D71F /* osxOutlineGL.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = osxOutlineGL.cc; sourceTree = "<group>"; };
-		86D76F77165683240046D71F /* osxOutlineGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxOutlineGL.h; sourceTree = "<group>"; };
 		86EA5B3E1678C7C700598E68 /* osxCocoaUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxCocoaUtilities.h; sourceTree = "<group>"; };
 		86EA5B3F1678C7C700598E68 /* osxCocoaUtilities.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxCocoaUtilities.mm; sourceTree = "<group>"; };
 		D10499B716F6DD4E0096749B /* tsShape.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsShape.cpp; sourceTree = "<group>"; };
@@ -1943,8 +1940,6 @@
 				866381D91655562400C8C551 /* osxMemory.mm */,
 				2ABF5C8E16569A0C00BBBF1D /* osxMutex.mm */,
 				8658B172165A7BFB0087ABC1 /* osxNetwork.mm */,
-				86D76F76165683240046D71F /* osxOutlineGL.cc */,
-				86D76F77165683240046D71F /* osxOutlineGL.h */,
 				8609FE351655716E004662ED /* osxPopupMenu.mm */,
 				8609FE2E16556DD2004662ED /* osxSemaphore.mm */,
 				8658B173165A7BFB0087ABC1 /* osxString.mm */,
@@ -3600,7 +3595,6 @@
 				8609FE361655716E004662ED /* osxPopupMenu.mm in Sources */,
 				8609FE38165572EC004662ED /* osxFont.mm in Sources */,
 				8652C279165586520052D0CB /* osxAudio.mm in Sources */,
-				86D76F78165683240046D71F /* osxOutlineGL.cc in Sources */,
 				2ABF5C8F16569A0C00BBBF1D /* osxMutex.mm in Sources */,
 				8694ADC81656B06B0080ABAC /* osxEvents.mm in Sources */,
 				8658B174165A7BFB0087ABC1 /* osxCPU.mm in Sources */,

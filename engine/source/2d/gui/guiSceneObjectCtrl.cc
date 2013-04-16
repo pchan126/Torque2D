@@ -407,6 +407,14 @@ void GuiSceneObjectCtrl::onRender(Point2I offset, const RectI& updateRect)
       // Setup Orthographic Projection for Object Area.
        MatrixF ortho = MatrixF(true);
        ortho.setOrtho(x1, x2, y1, y2, 0.0f, MAX_LAYERS_SUPPORTED);
+
+       
+       Con::printf("setupGenericShaders");
+       Con::printf("%f %f %f %f", ortho[0], ortho[1], ortho[2], ortho[3]);
+       Con::printf("%f %f %f %f", ortho[4], ortho[5], ortho[6], ortho[7]);
+       Con::printf("%f %f %f %f", ortho[8], ortho[9], ortho[10], ortho[11]);
+       Con::printf("%f %f %f %f", ortho[12], ortho[13], ortho[14], ortho[15]);
+
        GFX->setProjectionMatrix(ortho);
 
 //#ifdef TORQUE_OS_IOS
