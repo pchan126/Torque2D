@@ -1379,18 +1379,6 @@ void GuiCanvas::renderFrame(bool preRenderOnly, bool bufferSwap /* = true */)
     
     RectI screenRect(0, 0, size.x, size.y);
     
-//    // Make sure the root control is the size of the canvas.
-//   Point2I size = Platform::getWindowSize();
-//
-//   if(size.x == 0 || size.y == 0)
-//   {
-//       //Luma: Fixed missing PROFILE_END()
-//       PROFILE_END();
-//       return;
-//   }
-//
-//   RectI screenRect(0, 0, size.x, size.y);
-
    maintainSizing();
 
    //preRender (recursive) all controls
@@ -1402,14 +1390,6 @@ void GuiCanvas::renderFrame(bool preRenderOnly, bool bufferSwap /* = true */)
    // for now, just always reset the update regions - this is a
    // fix for FSAA on ATI cards
    resetUpdateRegions();
-
-// Moved this below object integration for performance reasons. -JDD
-//   // finish the gl render so we don't get too far ahead of ourselves
-//#if defined(TORQUE_OS_WIN32)
-//   PROFILE_START(glFinish);
-//   glFinish();
-//   PROFILE_END();
-//#endif
 
    //draw the mouse, but not using tags...
    PROFILE_START(CanvasRenderControls);

@@ -149,7 +149,6 @@ struct Platform
     // Window state
     void setWindowLocked(bool locked);
     void minimizeWindow();
-    //const Point2I &getWindowSize();
     void setWindowSize( U32 newWidth, U32 newHeight, bool fullScreen );
     void closeWindow();
 

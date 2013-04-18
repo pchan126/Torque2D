@@ -55,7 +55,7 @@
 @synthesize mouseLocked = _mouseLocked;
 @synthesize windowTitle = _windowTitle;
 @synthesize quit = _quit;
-@synthesize iOSTimer = _iOSTimer;
+
 
 static iOSPlatState * tempSharedPlatState = nil;
 
@@ -171,26 +171,6 @@ bool gScreenUpsideDown = true;
 //    [_window makeFirstResponder:_torqueView];
 }
 
-//-----------------------------------------------------------------------------
-
--(Point2I&) getWindowSize
-{
-    return _windowSize;
-}
-
-//-----------------------------------------------------------------------------
-
-- (U32)windowWidth
-{
-    return (U32)_windowSize.x;
-}
-
-//-----------------------------------------------------------------------------
-
-- (U32)windowHeight
-{
-   return (U32)_windowSize.y;
-}
 
 #pragma mark ---- Singleton Functions ----
 

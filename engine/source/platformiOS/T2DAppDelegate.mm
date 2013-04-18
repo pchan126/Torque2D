@@ -73,6 +73,12 @@ bool _iOSTorqueFatalError = false;
    return TRUE;
 }
 
+- (void)applicationDidReceiveMemoryWarning
+{
+    if ( Con::isFunction("oniOSMemoryWarning") )
+        Con::executef( 1, "oniOSMemoryWarning" );
+}
+
 - (void)applicationWillResignActive:(UIApplication *)application
 {
     if ( Con::isFunction("oniOSResignActive") )

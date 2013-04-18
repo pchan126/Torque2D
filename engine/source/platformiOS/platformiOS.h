@@ -58,17 +58,6 @@
     // Arguments passed into this application
     const char** _argv;
 
-    Point2I _windowSize;
-
-    // Bit depth of the screen (desktop)
-    U32 _desktopBitsPixel;
-    
-    // Horizontal resolution of user's desktop
-    U32 _desktopWidth;
-    
-    // Vertical resolution of user's desktop
-    U32 _desktopHeight;
-    
     U32 _lastTimeTick;
     
     U32 _sleepTicks;
@@ -116,9 +105,6 @@
 @property BOOL fullScreen;
 @property U32 argc;
 @property const char** argv;
-@property U32 desktopBitsPixel;
-@property U32 desktopWidth;
-@property U32 desktopHeight;
 @property U32 currentSimTime;
 @property U32 lastTimeTick;
 @property U32 sleepTicks;
@@ -130,7 +116,6 @@
 @property BOOL quit;
 @property BOOL portrait;
 @property BOOL multipleTouchesEnabled;
-@property (strong)NSTimer* iOSTimer;
 
 /// Global singleton that encapsulates a lot of mac platform state & globals.
 + (id)sharedPlatState;
@@ -140,9 +125,5 @@
 - (void)shutDownTorque2D;
 
 - (void)updateWindowTitle:(const char*)title;
-- (void)setWindowSize:(int)width height:(int)height;
-- (Point2I&)getWindowSize;
-- (U32)windowWidth;
-- (U32)windowHeight;
 
 @end
