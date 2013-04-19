@@ -40,30 +40,30 @@ function Sandbox::create( %this )
     CreateSandboxWindow();
     
     // Load and configure the console.
-    Sandbox.add( TamlRead("./gui/ConsoleDialog.gui.taml") );
-    GlobalActionMap.bind( keyboard, "ctrl tilde", toggleConsole );
-    
-    // Load and configure the toolbox.
-    Sandbox.add( TamlRead("./gui/ToolboxDialog.gui.taml") );
+//     Sandbox.add( TamlRead("./gui/ConsoleDialog.gui.taml") );
+//    GlobalActionMap.bind( keyboard, "ctrl tilde", toggleConsole );
 
-    // Load and configure the main overlay.
-    Sandbox.add( TamlRead("./gui/MainOverlay.gui.taml") );
-    
-    // Scan for toys.
-    scanForToys();
+//     // Load and configure the toolbox.
+//     Sandbox.add( TamlRead("./gui/ToolboxDialog.gui.taml") );
 
-    // Initialize the toolbox.    
-    initializeToolbox();
-    
-    // Initialize the input controller.
-    Sandbox.InputController.initialize();
-    
-    // Initialize the "cannot render" proxy.
-    new RenderProxy(CannotRenderProxy)
-    {
-        Image = "Sandbox:CannotRender";
-    };
-    Sandbox.add( CannotRenderProxy );
+//     // Load and configure the main overlay.
+//     Sandbox.add( TamlRead("./gui/MainOverlay.gui.taml") );
+
+//     // Scan for toys.
+//     scanForToys();
+
+//     // Initialize the toolbox.
+//     initializeToolbox();
+
+//     // Initialize the input controller.
+//     Sandbox.InputController.initialize();
+
+//     // Initialize the "cannot render" proxy.
+//     new RenderProxy(CannotRenderProxy)
+//     {
+//         Image = "Sandbox:CannotRender";
+//     };
+//     Sandbox.add( CannotRenderProxy );
 }
 
 //-----------------------------------------------------------------------------

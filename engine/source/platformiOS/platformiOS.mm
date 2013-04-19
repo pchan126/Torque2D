@@ -87,15 +87,6 @@ bool gScreenUpsideDown = true;
         _fullscreen = false;
         _quit = false;
         
-        _application = [UIApplication sharedApplication];
-        
-        // Default window resolution
-        _desktopBitsPixel = 32;
-        _desktopWidth = 1024;
-        _desktopHeight = 768;
-        _windowSize.x = 1024;
-        _windowSize.y = 768;
-        
         _windowTitle = @"Torque 2D IOS";
         
         // Default window
