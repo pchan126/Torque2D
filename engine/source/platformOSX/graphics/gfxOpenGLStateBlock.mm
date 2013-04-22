@@ -69,8 +69,10 @@ void GFXOpenGLStateBlock::activate(const GFXOpenGLStateBlock* oldState)
 
    // Blending
 //   CHECK_TOGGLE_STATE(blendEnable, GL_BLEND);
-    if ((glIsEnabled(GL_BLEND) == GL_TRUE) && !mDesc.blendEnable) glDisable(GL_BLEND);
-    if ((glIsEnabled(GL_BLEND) == GL_FALSE) && mDesc.blendEnable) glEnable(GL_BLEND);
+    if ((glIsEnabled(GL_BLEND) == GL_TRUE) && !mDesc.blendEnable)
+        glDisable(GL_BLEND);
+    if ((glIsEnabled(GL_BLEND) == GL_FALSE) && mDesc.blendEnable)
+        glEnable(GL_BLEND);
     
    if(STATE_CHANGE(blendSrc) || STATE_CHANGE(blendDest))
       glBlendFunc(GFXGLBlend[mDesc.blendSrc], GFXGLBlend[mDesc.blendDest]);
@@ -145,9 +147,12 @@ void GFXOpenGLStateBlock::activate(const GFXOpenGLStateBlock* oldState)
 
    // TODO: states added for detail blend
 
+    
    // Non per object texture mode states
    for (U32 i = 0; i < getMin(getOwningDevice()->getNumSamplers(), (U32) TEXTURE_STAGE_COUNT); i++)
    {
+       GFXDevice* ownDev = getOwningDevice();
+       GFXTextureObject* to = (getOwningDevice()->getCurrentTexture(i));
       GFXOpenGLTextureObject* tex = static_cast<GFXOpenGLTextureObject*>(getOwningDevice()->getCurrentTexture(i));
       const GFXSamplerStateDesc &ssd = mDesc.samplers[i];
       bool updateTexParam = true;

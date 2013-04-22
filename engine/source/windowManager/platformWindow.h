@@ -451,8 +451,8 @@ public:
 
    ///
    AppEvent          appEvent;
-   MouseEvent        mouseEvent;
-   MouseWheelEvent   wheelEvent;
+//   MouseEvent        mouseEvent;
+//   MouseWheelEvent   wheelEvent;
    ButtonEvent       buttonEvent;
    LinearEvent       linearEvent;
    KeyEvent          keyEvent;

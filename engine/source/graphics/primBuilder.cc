@@ -184,9 +184,6 @@ void end( bool useGenericShaders )
 
    const GFXVertexPCT *srcVerts = mTempVertBuff.address();
    U32 numVerts = mCurVertIndex;
-   
-   // Make sure we don't have a dirty prim buffer left.
-   GFX->setPrimitiveBuffer( NULL );
 
    if ( stripStart > 0 )
    {

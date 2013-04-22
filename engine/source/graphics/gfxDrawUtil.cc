@@ -31,7 +31,6 @@
 //#include "math/mathUtils.h"
 #include "graphics/gfxFontRenderBatcher.h"
 //#include "graphics/gfxTransformSaver.h"
-#include "graphics/gfxPrimitiveBuffer.h"
 #include "graphics/primBuilder.h"
 //#include "graphics/gfxDebugEvent.h"
 

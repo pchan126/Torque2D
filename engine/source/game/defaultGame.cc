@@ -32,7 +32,7 @@
 #include "math/mMath.h"
 #include "graphics/gfxDevice.h"
 #include "graphics/gBitmap.h"
-#include "ts/tsShape.h"
+//#include "ts/tsShape.h"
 #include "io/resource/resourceManager.h"
 #include "io/fileStream.h"
 #include "graphics/gfxInit.h"

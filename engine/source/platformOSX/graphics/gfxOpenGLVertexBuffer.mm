@@ -29,12 +29,14 @@
 #include "platform/platformGL.h"
 
 GFXOpenGLVertexBuffer::GFXOpenGLVertexBuffer(  GFXDevice *device,
-                                       U32 numVerts, 
+                                       U32 vertexCount,
                                        const GFXVertexFormat *vertexFormat, 
                                        U32 vertexSize, 
                                        GFXBufferType bufferType,
-                                       const GLvoid * data )
-   :  GFXVertexBuffer( device, numVerts, vertexFormat, vertexSize, bufferType ), 
+                                       const GLvoid *vertexBuffer,
+                                             U32 indexCount,
+                                             const GLvoid *indexBuffer)
+   :  GFXVertexBuffer( device, vertexCount, vertexFormat, vertexSize, bufferType ),
       mZombieCache(NULL)
 {
     GL_CHECK();
@@ -46,8 +48,9 @@ GFXOpenGLVertexBuffer::GFXOpenGLVertexBuffer(  GFXDevice *device,
     glBindVertexArray(vao);
     mVertexArrayObject = vao;
     glGenBuffers(1, &mBuffer);
+
 	glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
-	glBufferData(GL_ARRAY_BUFFER, numVerts * vertexSize, data, GFXGLBufferType[bufferType]);
+	glBufferData(GL_ARRAY_BUFFER, vertexCount * vertexSize, vertexBuffer, GFXGLBufferType[bufferType]);
     
     U8* buffer = (U8*)getBuffer();
     
@@ -88,8 +91,18 @@ GFXOpenGLVertexBuffer::GFXOpenGLVertexBuffer(  GFXDevice *device,
             ++texCoordIndex;
         }
     }
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
+
+    // Create a VBO to vertex array elements
+    // This also attaches the element array buffer to the VAO
+    glGenBuffers(1, &elementBufferName);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferName);
+
+    // Allocate and load vertex array element data into VBO
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount, indexBuffer, GL_STATIC_DRAW);
+	
+//    glBindBuffer(GL_ARRAY_BUFFER, 0);
+//    glBindVertexArray(0);
+    Con::printf("finish making VBO vertex buffer");
 }
 
 GFXOpenGLVertexBuffer::~GFXOpenGLVertexBuffer()
@@ -139,6 +152,7 @@ void GFXOpenGLVertexBuffer::unlock()
 void GFXOpenGLVertexBuffer::prepare()
 {
     glBindVertexArray(mVertexArrayObject);
+    Con::printf("glBindVertexArray VBO");
 }
 
 void GFXOpenGLVertexBuffer::finish()

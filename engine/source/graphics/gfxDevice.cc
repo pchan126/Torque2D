@@ -15,7 +15,7 @@
 #include "graphics/gfxDrawUtil.h"
 //#include "graphics/gfxFence.h"
 #include "graphics/gfxFontRenderBatcher.h"
-#include "graphics/gfxPrimitiveBuffer.h"
+//#include "graphics/gfxPrimitiveBuffer.h"
 #include "graphics/gfxShader.h"
 #include "graphics/gfxStateBlock.h"
 //#include "graphics/screenshot.h"
@@ -98,8 +98,6 @@ GFXDevice::GFXDevice()
       mVertexBufferFrequencyDirty[i] = false;
    }
 
-   // Primitive buffer cache
-   mPrimitiveBufferDirty = false;
    mTexturesDirty = false;
    
    // Use of TEXTURE_STAGE_COUNT in initialization is okay [7/2/2007 Pat]
@@ -229,11 +227,6 @@ GFXDevice::~GFXDevice()
 { 
    smGFXDevice = NULL;
 
-   // Clean up our current buffers.
-   mCurrentPrimitiveBuffer = NULL;
-   for ( U32 i=0; i < VERTEX_STREAM_COUNT; i++ )
-      mCurrentVertexBuffer[i] = NULL;
-
    // Clear out our current texture references
    for (U32 i = 0; i < TEXTURE_STAGE_COUNT; i++)
    {
@@ -320,23 +313,6 @@ void GFXDevice::setShaderConstBuffer(GFXShaderConstBuffer* buffer)
 }
 
 
-void GFXDevice::setPrimitiveBuffer( GFXPrimitiveBuffer *buffer )
-{
-   if( buffer == mCurrentPrimitiveBuffer )
-      return;
-   
-   mCurrentPrimitiveBuffer = buffer;
-   mPrimitiveBufferDirty = true;
-   mStateDirty = true;
-}
-
-void GFXDevice::drawPrimitive( U32 primitiveIndex )
-{
-   AssertFatal( mCurrentPrimitiveBuffer.isValid(), "Trying to call drawPrimitive with no current primitive buffer, call setPrimitiveBuffer()" );
-   AssertFatal( primitiveIndex < mCurrentPrimitiveBuffer->mPrimitiveCount, "Out of range primitive index.");
-   drawPrimitive( mCurrentPrimitiveBuffer->mPrimitiveArray[primitiveIndex] );
-}
-
 void GFXDevice::drawPrimitive( const GFXPrimitive &prim )
 {
    // Do NOT add index buffer offset to this call, it will be added by drawIndexedPrimitive
@@ -348,24 +324,6 @@ void GFXDevice::drawPrimitive( const GFXPrimitive &prim )
                            prim.numPrimitives );
 }
 
-void GFXDevice::drawPrimitives()
-{
-   AssertFatal( mCurrentPrimitiveBuffer.isValid(), "Trying to call drawPrimitive with no current primitive buffer, call setPrimitiveBuffer()" );
-
-   GFXPrimitive *info = NULL;
-   
-   for( U32 i = 0; i < mCurrentPrimitiveBuffer->mPrimitiveCount; i++ ) {
-      info = &mCurrentPrimitiveBuffer->mPrimitiveArray[i];
-
-      // Do NOT add index buffer offset to this call, it will be added by drawIndexedPrimitive
-      drawIndexedPrimitive(   info->type, 
-                              info->startVertex,
-                              info->minIndex, 
-                              info->numVertices, 
-                              info->startIndex, 
-                              info->numPrimitives );
-   }
-}
 
 //ConsoleMethod( GFXDevice, getDisplayDeviceList, const char *, 2, 2,
 //   "Returns a tab-seperated string of the detected devices across all adapters.\n"

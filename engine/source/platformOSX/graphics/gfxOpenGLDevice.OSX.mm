@@ -30,7 +30,6 @@
 
 #include "./gfxOpenGLEnumTranslate.h"
 #include "./gfxOpenGLVertexBuffer.h"
-#include "./gfxOpenGLPrimitiveBuffer.h"
 #include "./gfxOpenGLTextureTarget.h"
 #include "./gfxOpenGLTextureManager.h"
 #include "./gfxOpenGLTextureObject.h"
@@ -86,7 +85,6 @@ void GFXOpenGLDevice::initGLState()
 GFXOpenGLDevice::GFXOpenGLDevice( U32 adapterIndex ) :
                         mAdapterIndex(adapterIndex),
                         mCurrentVB(NULL),
-                        mCurrentPB(NULL),
                         m_mCurrentWorld(true),
                         m_mCurrentView(true),
                         mContext(nil),
@@ -296,8 +294,6 @@ void GFXOpenGLDevice::zombify()
     mTextureManager->zombify();
     if(mCurrentVB)
         mCurrentVB->finish();
-    if(mCurrentPB)
-        mCurrentPB->finish();
     //mVolatileVBs.clear();
     //mVolatilePBs.clear();
     GFXResource* walk = mResourceListHead;
@@ -318,8 +314,6 @@ void GFXOpenGLDevice::resurrect()
     }
     if(mCurrentVB)
         mCurrentVB->prepare();
-    if(mCurrentPB)
-        mCurrentPB->prepare();
     mTextureManager->resurrect();
 }
 
@@ -343,42 +337,23 @@ GFXVertexBuffer* GFXOpenGLDevice::findVolatileVBO(U32 numVerts, const GFXVertexF
     return buf.getPointer();
 }
 
-GFXPrimitiveBuffer* GFXOpenGLDevice::findVolatilePBO(U32 numIndices, U32 numPrimitives, U16* indexBuffer, GFXPrimitive *primitiveBuffer)
-{
-    for(U32 i = 0; i < mVolatilePBs.size(); i++)
-        if((mVolatilePBs[i]->mIndexCount >= numIndices) && (mVolatilePBs[i]->getRefCount() == 1))
-            return mVolatilePBs[i];
-    
-    // No existing PB, so create one
-    StrongRefPtr<GFXOpenGLPrimitiveBuffer> buf(new GFXOpenGLPrimitiveBuffer(GFX, numIndices, numPrimitives, GFXBufferTypeVolatile, indexBuffer, primitiveBuffer));
-    buf->registerResourceWithDevice(this);
-    mVolatilePBs.push_back(buf);
-    return buf.getPointer();
-}
 
-GFXVertexBuffer *GFXOpenGLDevice::allocVertexBuffer(   U32 numVerts,
+GFXVertexBuffer *GFXOpenGLDevice::allocVertexBuffer(   U32 vertexCount,
                                                   const GFXVertexFormat *vertexFormat,
                                                   U32 vertSize,
                                                   GFXBufferType bufferType,
-                                                  void *data)
+                                                  void *vertexBuffer,
+                                                    U32 indexCount,
+                                                    void *indexBuffer)
 {
     if(bufferType == GFXBufferTypeVolatile)
-        return findVolatileVBO(numVerts, vertexFormat, vertSize, data);
+        return findVolatileVBO(vertexCount, vertexFormat, vertSize, vertexBuffer);
     
-    GFXOpenGLVertexBuffer* buf = new GFXOpenGLVertexBuffer( GFX, numVerts, vertexFormat, vertSize, bufferType, data );
+    GFXOpenGLVertexBuffer* buf = new GFXOpenGLVertexBuffer( GFX, vertexCount, vertexFormat, vertSize, bufferType, vertexBuffer, indexCount, indexBuffer );
     buf->registerResourceWithDevice(this);
     return buf;
 }
 
-GFXPrimitiveBuffer *GFXOpenGLDevice::allocPrimitiveBuffer( U32 numIndices, U32 numPrimitives, GFXBufferType bufferType, U16* indexBuffer, GFXPrimitive *primitiveBuffer )
-{
-    if(bufferType == GFXBufferTypeVolatile)
-        return findVolatilePBO(numIndices, numPrimitives, indexBuffer, primitiveBuffer);
-    
-    GFXOpenGLPrimitiveBuffer* buf = new GFXOpenGLPrimitiveBuffer(GFX, numIndices, numPrimitives, bufferType, indexBuffer, primitiveBuffer);
-    buf->registerResourceWithDevice(this);
-    return buf;
-}
 
 void GFXOpenGLDevice::setVertexStream( U32 stream, GFXVertexBuffer *buffer )
 {
@@ -497,11 +472,7 @@ void GFXOpenGLDevice::updateStates(bool forceSetAll /*=false*/)
         for ( U32 i=0; i < VERTEX_STREAM_COUNT; i++ )
         {
             setVertexStream( i, mCurrentVertexBuffer[i] );
-            setVertexStreamFrequency( i, mVertexBufferFrequency[i] );
         }
-        
-        if( mCurrentPrimitiveBuffer.isValid() ) // This could be NULL when the device is initalizing
-            mCurrentPrimitiveBuffer->prepare();
         
         /// Stateblocks
         if ( mNewStateBlock )
@@ -614,12 +585,12 @@ void GFXOpenGLDevice::updateStates(bool forceSetAll /*=false*/)
     // because in order to draw indexed primitives in DX8, the call to SetIndicies
     // needs to include the base vertex offset, and the DX8 GFXDevice relies on
     // having mCurrentVB properly assigned before the call to setIndices -patw
-    if( mPrimitiveBufferDirty )
-    {
-        if( mCurrentPrimitiveBuffer.isValid() ) // This could be NULL when the device is initalizing
-            mCurrentPrimitiveBuffer->prepare();
-        mPrimitiveBufferDirty = false;
-    }
+//    if( mPrimitiveBufferDirty )
+//    {
+//        if( mCurrentPrimitiveBuffer.isValid() ) // This could be NULL when the device is initalizing
+//            mCurrentPrimitiveBuffer->prepare();
+//        mPrimitiveBufferDirty = false;
+//    }
     
     // NOTE: With state blocks, it's now important to update state before setting textures
     // some devices (e.g. OpenGL) set states on the texture and we need that information before
@@ -717,12 +688,6 @@ void GFXOpenGLDevice::drawPrimitive( GFXPrimitiveType primType, U32 vertexStart,
     glDisable(GL_SCISSOR_TEST);
     glDisable(GL_DEPTH_TEST);
 
-    
-    // There are some odd performance issues if a buffer is bound to GL_ELEMENT_ARRAY_BUFFER when glDrawArrays is called.  Unbinding the buffer
-    // improves performance by 10%.
-    if(mCurrentPB)
-        mCurrentPB->finish();
-    
 //    switch (GFXGLPrimType[primType])
 //    {
 //        case GL_TRIANGLE_STRIP:
@@ -745,9 +710,6 @@ void GFXOpenGLDevice::drawPrimitive( GFXPrimitiveType primType, U32 vertexStart,
 //    Con::printf(GFXGLPrimType[primType])
     glDrawArrays(GFXGLPrimType[primType], vertexStart, primCountToIndexCount(primType, primitiveCount));
     
-    if(mCurrentPB)
-        mCurrentPB->prepare();
-    
     postDrawPrimitive(primitiveCount);
 }
 
@@ -761,19 +723,10 @@ void GFXOpenGLDevice::drawIndexedPrimitive(   GFXPrimitiveType primType,
     AssertFatal( startVertex == 0, "GFXOpenGLDevice::drawIndexedPrimitive() - Non-zero startVertex unsupported!" );
     
     preDrawPrimitive();
-    
-    U16* buf = (U16*)static_cast<GFXOpenGLPrimitiveBuffer*>(mCurrentPrimitiveBuffer.getPointer())->getBuffer() + startIndex;
-        
-    glDrawElements(GFXGLPrimType[primType], primCountToIndexCount(primType, primitiveCount), GL_UNSIGNED_SHORT, buf);
+    glDrawElements(GFXGLPrimType[primType], primCountToIndexCount(primType, primitiveCount), GL_UNSIGNED_SHORT, (GLvoid*)0);
     postDrawPrimitive(primitiveCount);
 }
 
-void GFXOpenGLDevice::setPB(GFXOpenGLPrimitiveBuffer* pb)
-{
-    if(mCurrentPB)
-        mCurrentPB->finish();
-    mCurrentPB = pb;
-}
 
 void GFXOpenGLDevice::setLightInternal(U32 lightStage, const GFXLightInfo light, bool lightEnable)
 {
@@ -1092,11 +1045,11 @@ void GFXOpenGLDevice::setupGenericShaders( GenericShaderType type )
     xform *= GFX->getWorldMatrix();
     xform.transpose();
     
-    Con::printf("setupGenericShaders");
-    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
-    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
-    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
-    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
+//    Con::printf("setupGenericShaders");
+//    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
+//    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
+//    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
+//    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
     
     
     switch (type) {

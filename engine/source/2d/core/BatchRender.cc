@@ -39,7 +39,7 @@ BatchRender::BatchRender() :
     mStrictOrderMode( false ),
     mpDebugStats( NULL ),
     mBlendColor( ColorF(1.0f,1.0f,1.0f,1.0f) ),
-    mBatchEnabled( true )
+    mBatchEnabled( false )
 {
 }
 
@@ -459,12 +459,9 @@ void BatchRender::flushInternal( void )
         else
             Con::printf("!mWireframeMode");
 
-        GFXVertexBufferHandle<GFXVertexPCT> vb(GFX, mVertexCount, GFXBufferTypeVolatile, mVertexBuffer );
+        GFXVertexBufferHandle<GFXVertexPCT> vb(GFX, mVertexCount, GFXBufferTypeVolatile, mVertexBuffer, mIndexCount, mIndexBuffer );
         GFX->setVertexBuffer( vb );
         
-        GFXPrimitiveBufferHandle prims( GFX, mIndexCount, 0, GFXBufferTypeVolatile, mIndexBuffer );
-        GFX->setPrimitiveBuffer(prims);
-
         // Draw the triangles
         GFX->setupGenericShaders(GFXDevice::GSTexture);
         GFX->drawIndexedPrimitive(GFXTriangleList, 0, 0, 0, 0, mIndexCount/3);
@@ -546,11 +543,8 @@ void BatchRender::flushInternal( void )
             // Bind the texture if not in wireframe mode.
             GFX->setTexture(0, batchItr->key);
 
-            GFXVertexBufferHandle<GFXVertexPCT> vb(GFX, mVertexCount, GFXBufferTypeVolatile, mVertexBuffer );
+            GFXVertexBufferHandle<GFXVertexPCT> vb(GFX, mVertexCount, GFXBufferTypeVolatile, mVertexBuffer, mIndexCount, mIndexBuffer );
             GFX->setVertexBuffer( vb );
-
-            GFXPrimitiveBufferHandle prims( GFX, mIndexCount, 0, GFXBufferTypeVolatile, mIndexBuffer );
-            GFX->setPrimitiveBuffer(prims);
 
             // Draw the triangles.
             GFX->setupGenericShaders(GFXDevice::GSTexture);

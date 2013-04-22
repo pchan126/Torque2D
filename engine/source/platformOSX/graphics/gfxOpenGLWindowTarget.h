@@ -10,7 +10,6 @@
 #include "windowManager/platformWindow.h"
 #include "memory/autoPtr.h"
 
-class _GFXOpenGLWindowTargetImpl;
 @class NSOpenGLContext;
 
 class GFXOpenGLWindowTarget : public GFXWindowTarget
@@ -43,7 +42,6 @@ private:
     friend class GFXOpenGLTextureObject;
 //    friend class GFXOpenGLCubemap;
     friend class GFXOpenGLWindowTarget;
-    friend class GFXOpenGLPrimitiveBuffer;
     friend class GFXOpenGLVertexBuffer;
     friend class GFXOpenGLDevice;
 
@@ -53,9 +51,6 @@ private:
    NSOpenGLContext* mFullscreenContext;
    void _teardownCurrentMode();
    void _setupNewMode();
-    
-    /// Pointer to our internal implementation
-    AutoPtr<_GFXOpenGLWindowTargetImpl> _impl;
 };
 
 #endif

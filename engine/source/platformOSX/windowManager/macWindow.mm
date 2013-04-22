@@ -440,7 +440,8 @@ void MacWindow::restore()
 
 bool MacWindow::isMinimized()
 {
-   return [mCocoaWindow isMiniaturized] == YES;
+    return false;
+//   return [mCocoaWindow isMiniaturized] == YES;
 }
 
 bool MacWindow::isMaximized()

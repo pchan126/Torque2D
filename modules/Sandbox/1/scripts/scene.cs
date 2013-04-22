@@ -127,10 +127,10 @@ function setSceneToWindow()
     SandboxWindow.setCameraAngle( 0 );
     
     // Update the toolbox options.
-    updateToolboxOptions();
+//    updateToolboxOptions();
     
     // reset the sandbox manipulation modes.
-    Sandbox.resetManipulationModes();       
+//    Sandbox.resetManipulationModes();       
 }
 
 //-----------------------------------------------------------------------------

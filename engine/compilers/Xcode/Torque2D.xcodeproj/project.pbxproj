@@ -437,12 +437,7 @@
 		86D770BC1656873C0046D71F /* unicode.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC815316518D4600D96ADF /* unicode.cc */; };
 		86D770C3165687450046D71F /* osxFileDialogs.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8609FE3216556F22004662ED /* osxFileDialogs.mm */; };
 		86EA5B401678C7C700598E68 /* osxCocoaUtilities.mm in Sources */ = {isa = PBXBuildFile; fileRef = 86EA5B3F1678C7C700598E68 /* osxCocoaUtilities.mm */; };
-		D10499E116F6DD4E0096749B /* tsShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D10499B716F6DD4E0096749B /* tsShape.cpp */; };
-		D10499E216F6DD4E0096749B /* tsShapeAlloc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D10499B916F6DD4E0096749B /* tsShapeAlloc.cpp */; };
-		D1049A0A16F6F5D50096749B /* tsMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1049A0916F6F5D50096749B /* tsMesh.cpp */; };
 		D1049A0C16F6F8C40096749B /* mPoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1049A0B16F6F8C40096749B /* mPoint.cpp */; };
-		D1049A0E16F6FA190096749B /* tsIntegerSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1049A0D16F6FA190096749B /* tsIntegerSet.cpp */; };
-		D1049A1016F6FA540096749B /* tsTransform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1049A0F16F6FA540096749B /* tsTransform.cpp */; };
 		D11F54E81703E48500797E52 /* osxTorqueView.mm in Sources */ = {isa = PBXBuildFile; fileRef = D11F54E71703E48500797E52 /* osxTorqueView.mm */; };
 		D16580751702942800A21928 /* gfxInit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D16580731702942800A21928 /* gfxInit.cpp */; };
 		D16580791702A5AE00A21928 /* guiContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D16580771702A5AE00A21928 /* guiContainer.cpp */; };
@@ -461,7 +456,6 @@
 		DA91B2F616C2214800EB7B6E /* gfxDevice.cc in Sources */ = {isa = PBXBuildFile; fileRef = DA91B2CD16C2214700EB7B6E /* gfxDevice.cc */; };
 		DA91B2F716C2214800EB7B6E /* gfxDrawUtil.cc in Sources */ = {isa = PBXBuildFile; fileRef = DA91B2CF16C2214700EB7B6E /* gfxDrawUtil.cc */; };
 		DA91B2F816C2214800EB7B6E /* gfxFontRenderBatcher.cc in Sources */ = {isa = PBXBuildFile; fileRef = DA91B2D216C2214700EB7B6E /* gfxFontRenderBatcher.cc */; };
-		DA91B2F916C2214800EB7B6E /* gfxPrimitiveBuffer.cc in Sources */ = {isa = PBXBuildFile; fileRef = DA91B2D416C2214700EB7B6E /* gfxPrimitiveBuffer.cc */; };
 		DA91B2FA16C2214800EB7B6E /* gfxResource.cc in Sources */ = {isa = PBXBuildFile; fileRef = DA91B2D616C2214700EB7B6E /* gfxResource.cc */; };
 		DA91B2FB16C2214800EB7B6E /* gfxShader.cc in Sources */ = {isa = PBXBuildFile; fileRef = DA91B2D816C2214700EB7B6E /* gfxShader.cc */; };
 		DA91B2FC16C2214800EB7B6E /* gfxStateBlock.cc in Sources */ = {isa = PBXBuildFile; fileRef = DA91B2DA16C2214700EB7B6E /* gfxStateBlock.cc */; };
@@ -480,7 +474,6 @@
 		DA91B32B16C2280E00EB7B6E /* gfxOpenGLCardProfiler.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B31616C2280E00EB7B6E /* gfxOpenGLCardProfiler.mm */; };
 		DA91B32C16C2280E00EB7B6E /* gfxOpenGLDevice.OSX.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B31816C2280E00EB7B6E /* gfxOpenGLDevice.OSX.mm */; };
 		DA91B32D16C2280E00EB7B6E /* gfxOpenGLEnumTranslate.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B31A16C2280E00EB7B6E /* gfxOpenGLEnumTranslate.mm */; };
-		DA91B32E16C2280E00EB7B6E /* gfxOpenGLPrimitiveBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B31C16C2280E00EB7B6E /* gfxOpenGLPrimitiveBuffer.mm */; };
 		DA91B32F16C2280E00EB7B6E /* gfxOpenGLShader.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B31E16C2280E00EB7B6E /* gfxOpenGLShader.mm */; };
 		DA91B33016C2280E00EB7B6E /* gfxOpenGLStateBlock.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B32016C2280E00EB7B6E /* gfxOpenGLStateBlock.mm */; };
 		DA91B33116C2280E00EB7B6E /* gfxOpenGLTextureManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B32216C2280E00EB7B6E /* gfxOpenGLTextureManager.mm */; };
@@ -1375,19 +1368,7 @@
 		86D76F74165682BF0046D71F /* platformGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformGL.h; sourceTree = "<group>"; };
 		86EA5B3E1678C7C700598E68 /* osxCocoaUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxCocoaUtilities.h; sourceTree = "<group>"; };
 		86EA5B3F1678C7C700598E68 /* osxCocoaUtilities.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxCocoaUtilities.mm; sourceTree = "<group>"; };
-		D10499B716F6DD4E0096749B /* tsShape.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsShape.cpp; sourceTree = "<group>"; };
-		D10499B816F6DD4E0096749B /* tsShape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsShape.h; sourceTree = "<group>"; };
-		D10499B916F6DD4E0096749B /* tsShapeAlloc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsShapeAlloc.cpp; sourceTree = "<group>"; };
-		D10499BA16F6DD4E0096749B /* tsShapeAlloc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsShapeAlloc.h; sourceTree = "<group>"; };
-		D10499BF16F6DD4E0096749B /* tsShapeInstance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsShapeInstance.h; sourceTree = "<group>"; };
-		D1049A0516F6E9720096749B /* tsMesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsMesh.h; sourceTree = "<group>"; };
-		D1049A0616F6E9B00096749B /* tsIntegerSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsIntegerSet.h; sourceTree = "<group>"; };
-		D1049A0716F6EDB00096749B /* tsTransform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsTransform.h; sourceTree = "<group>"; };
-		D1049A0816F6EF910096749B /* tsRenderState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsRenderState.h; sourceTree = "<group>"; };
-		D1049A0916F6F5D50096749B /* tsMesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsMesh.cpp; sourceTree = "<group>"; };
 		D1049A0B16F6F8C40096749B /* mPoint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mPoint.cpp; sourceTree = "<group>"; };
-		D1049A0D16F6FA190096749B /* tsIntegerSet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsIntegerSet.cpp; sourceTree = "<group>"; };
-		D1049A0F16F6FA540096749B /* tsTransform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsTransform.cpp; sourceTree = "<group>"; };
 		D11F54E61703E48500797E52 /* osxTorqueView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxTorqueView.h; sourceTree = "<group>"; };
 		D11F54E71703E48500797E52 /* osxTorqueView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxTorqueView.mm; sourceTree = "<group>"; };
 		D16580731702942800A21928 /* gfxInit.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxInit.cpp; sourceTree = "<group>"; };
@@ -1432,8 +1413,6 @@
 		DA91B2D116C2214700EB7B6E /* gfxEnums.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxEnums.h; sourceTree = "<group>"; };
 		DA91B2D216C2214700EB7B6E /* gfxFontRenderBatcher.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxFontRenderBatcher.cc; sourceTree = "<group>"; };
 		DA91B2D316C2214700EB7B6E /* gfxFontRenderBatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxFontRenderBatcher.h; sourceTree = "<group>"; };
-		DA91B2D416C2214700EB7B6E /* gfxPrimitiveBuffer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxPrimitiveBuffer.cc; sourceTree = "<group>"; };
-		DA91B2D516C2214700EB7B6E /* gfxPrimitiveBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxPrimitiveBuffer.h; sourceTree = "<group>"; };
 		DA91B2D616C2214700EB7B6E /* gfxResource.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxResource.cc; sourceTree = "<group>"; };
 		DA91B2D716C2214700EB7B6E /* gfxResource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxResource.h; sourceTree = "<group>"; };
 		DA91B2D816C2214700EB7B6E /* gfxShader.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxShader.cc; sourceTree = "<group>"; };
@@ -1474,8 +1453,6 @@
 		DA91B31816C2280E00EB7B6E /* gfxOpenGLDevice.OSX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLDevice.OSX.mm; sourceTree = "<group>"; };
 		DA91B31916C2280E00EB7B6E /* gfxOpenGLEnumTranslate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLEnumTranslate.h; sourceTree = "<group>"; };
 		DA91B31A16C2280E00EB7B6E /* gfxOpenGLEnumTranslate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLEnumTranslate.mm; sourceTree = "<group>"; };
-		DA91B31B16C2280E00EB7B6E /* gfxOpenGLPrimitiveBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLPrimitiveBuffer.h; sourceTree = "<group>"; };
-		DA91B31C16C2280E00EB7B6E /* gfxOpenGLPrimitiveBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLPrimitiveBuffer.mm; sourceTree = "<group>"; };
 		DA91B31D16C2280E00EB7B6E /* gfxOpenGLShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLShader.h; sourceTree = "<group>"; };
 		DA91B31E16C2280E00EB7B6E /* gfxOpenGLShader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLShader.mm; sourceTree = "<group>"; };
 		DA91B31F16C2280E00EB7B6E /* gfxOpenGLStateBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLStateBlock.h; sourceTree = "<group>"; };
@@ -2020,7 +1997,6 @@
 				86BC814816518D4600D96ADF /* string */,
 				2A033005165D1CB100E9CD70 /* testing */,
 				86BC815516518D4600D96ADF /* torqueConfig.h */,
-				D104998216F6DD4E0096749B /* ts */,
 				D1A6954917016C270060D928 /* windowManager */,
 			);
 			path = Torque2D;
@@ -2459,8 +2435,6 @@
 				DA91B2D116C2214700EB7B6E /* gfxEnums.h */,
 				DA91B2D216C2214700EB7B6E /* gfxFontRenderBatcher.cc */,
 				DA91B2D316C2214700EB7B6E /* gfxFontRenderBatcher.h */,
-				DA91B2D416C2214700EB7B6E /* gfxPrimitiveBuffer.cc */,
-				DA91B2D516C2214700EB7B6E /* gfxPrimitiveBuffer.h */,
 				DA91B2D616C2214700EB7B6E /* gfxResource.cc */,
 				DA91B2D716C2214700EB7B6E /* gfxResource.h */,
 				DA91B2D816C2214700EB7B6E /* gfxShader.cc */,
@@ -3064,26 +3038,6 @@
 			path = threads;
 			sourceTree = "<group>";
 		};
-		D104998216F6DD4E0096749B /* ts */ = {
-			isa = PBXGroup;
-			children = (
-				D1049A0D16F6FA190096749B /* tsIntegerSet.cpp */,
-				D1049A0616F6E9B00096749B /* tsIntegerSet.h */,
-				D1049A0916F6F5D50096749B /* tsMesh.cpp */,
-				D1049A0516F6E9720096749B /* tsMesh.h */,
-				D1049A0816F6EF910096749B /* tsRenderState.h */,
-				D10499B716F6DD4E0096749B /* tsShape.cpp */,
-				D10499B816F6DD4E0096749B /* tsShape.h */,
-				D10499B916F6DD4E0096749B /* tsShapeAlloc.cpp */,
-				D10499BA16F6DD4E0096749B /* tsShapeAlloc.h */,
-				D10499BF16F6DD4E0096749B /* tsShapeInstance.h */,
-				D1049A0F16F6FA540096749B /* tsTransform.cpp */,
-				D1049A0716F6EDB00096749B /* tsTransform.h */,
-			);
-			name = ts;
-			path = ../../../source/ts;
-			sourceTree = "<group>";
-		};
 		D1A6954917016C270060D928 /* windowManager */ = {
 			isa = PBXGroup;
 			children = (
@@ -3132,8 +3086,6 @@
 				DA91B31816C2280E00EB7B6E /* gfxOpenGLDevice.OSX.mm */,
 				DA91B31916C2280E00EB7B6E /* gfxOpenGLEnumTranslate.h */,
 				DA91B31A16C2280E00EB7B6E /* gfxOpenGLEnumTranslate.mm */,
-				DA91B31B16C2280E00EB7B6E /* gfxOpenGLPrimitiveBuffer.h */,
-				DA91B31C16C2280E00EB7B6E /* gfxOpenGLPrimitiveBuffer.mm */,
 				DA91B31D16C2280E00EB7B6E /* gfxOpenGLShader.h */,
 				DA91B31E16C2280E00EB7B6E /* gfxOpenGLShader.mm */,
 				DA91B31F16C2280E00EB7B6E /* gfxOpenGLStateBlock.h */,
@@ -3631,7 +3583,6 @@
 				DA91B2F616C2214800EB7B6E /* gfxDevice.cc in Sources */,
 				DA91B2F716C2214800EB7B6E /* gfxDrawUtil.cc in Sources */,
 				DA91B2F816C2214800EB7B6E /* gfxFontRenderBatcher.cc in Sources */,
-				DA91B2F916C2214800EB7B6E /* gfxPrimitiveBuffer.cc in Sources */,
 				DA91B2FA16C2214800EB7B6E /* gfxResource.cc in Sources */,
 				DA91B2FB16C2214800EB7B6E /* gfxShader.cc in Sources */,
 				DA91B2FC16C2214800EB7B6E /* gfxStateBlock.cc in Sources */,
@@ -3650,7 +3601,6 @@
 				DA91B32B16C2280E00EB7B6E /* gfxOpenGLCardProfiler.mm in Sources */,
 				DA91B32C16C2280E00EB7B6E /* gfxOpenGLDevice.OSX.mm in Sources */,
 				DA91B32D16C2280E00EB7B6E /* gfxOpenGLEnumTranslate.mm in Sources */,
-				DA91B32E16C2280E00EB7B6E /* gfxOpenGLPrimitiveBuffer.mm in Sources */,
 				DA91B32F16C2280E00EB7B6E /* gfxOpenGLShader.mm in Sources */,
 				DA91B33016C2280E00EB7B6E /* gfxOpenGLStateBlock.mm in Sources */,
 				DA91B33116C2280E00EB7B6E /* gfxOpenGLTextureManager.mm in Sources */,
@@ -3658,12 +3608,7 @@
 				DA91B33316C2280E00EB7B6E /* gfxOpenGLTextureTarget.mm in Sources */,
 				DA91B33416C2280E00EB7B6E /* gfxOpenGLVertexBuffer.mm in Sources */,
 				DA1640E516C4AEDB009C2F0F /* gfxOpenGLWindowTarget.mm in Sources */,
-				D10499E116F6DD4E0096749B /* tsShape.cpp in Sources */,
-				D10499E216F6DD4E0096749B /* tsShapeAlloc.cpp in Sources */,
-				D1049A0A16F6F5D50096749B /* tsMesh.cpp in Sources */,
 				D1049A0C16F6F8C40096749B /* mPoint.cpp in Sources */,
-				D1049A0E16F6FA190096749B /* tsIntegerSet.cpp in Sources */,
-				D1049A1016F6FA540096749B /* tsTransform.cpp in Sources */,
 				2AE2938516EF4C220015E200 /* WaveComposite.cc in Sources */,
 				2AA3655916F3552200E7A900 /* ImageFrameProvider.cc in Sources */,
 				2AA3655A16F3552200E7A900 /* ImageFrameProviderCore.cc in Sources */,

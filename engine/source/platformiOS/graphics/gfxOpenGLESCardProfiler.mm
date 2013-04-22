@@ -95,7 +95,7 @@ void GFXOpenGLESCardProfiler::init()
         GFXGLTextureType[GFXFormatR8G8] = GL_UNSIGNED_BYTE;
     }
     
-    if(queryProfile("GL_APPLE_texture_format_BGRA8888"))
+    if(queryProfile("GL::GL_APPLE_texture_format_BGRA8888"))
     {
         
     }

@@ -37,9 +37,6 @@
 #ifndef _GFXVERTEXBUFFER_H_
 #include "graphics/gfxVertexBuffer.h"
 #endif
-#ifndef _GFXPRIMITIVEBUFFER_H_
-#include "graphics/gfxPrimitiveBuffer.h"
-#endif
 
 #ifndef _GFXSTATEBLOCK_H_
 #include "graphics/gfxStateBlock.h"
@@ -70,7 +67,7 @@ class GFXCardProfiler;
 class GFXDrawUtil;
 //class GFXFence;
 //class GFXOcclusionQuery;
-class GFXPrimitiveBuffer;
+//class GFXPrimitiveBuffer;
 class GFXShader;
 class GFXStateBlock;
 class GFXShaderConstBuffer;
@@ -185,7 +182,7 @@ class GFXDevice: public SimObject
 {
 private:
    friend class GFXInit;
-   friend class GFXPrimitiveBufferHandle;
+//   friend class GFXPrimitiveBufferHandle;
    friend class GFXVertexBufferHandleBase;
    friend class GFXTextureObject;
    friend class GFXTextureObject;
@@ -553,7 +550,9 @@ protected:
                                                 const GFXVertexFormat *vertexFormat, 
                                                 U32 vertSize, 
                                                 GFXBufferType bufferType,
-                                                void *data = NULL) = 0;
+                                                void *data = NULL,
+                                                U32 indexCount = 0,
+                                                void *indexData = NULL) = 0;
 
    /// Called from GFXVertexFormat to allocate the hardware 
    /// specific vertex declaration for rendering.
@@ -570,7 +569,7 @@ protected:
 
    /// The maximum number of supported vertex streams which
    /// may be more than the device supports.
-   static const U32 VERTEX_STREAM_COUNT = 4;
+   static const U32 VERTEX_STREAM_COUNT = 1;
 
    StrongRefPtr<GFXVertexBuffer> mCurrentVertexBuffer[VERTEX_STREAM_COUNT];
    bool mVertexBufferDirty[VERTEX_STREAM_COUNT];
@@ -579,20 +578,6 @@ protected:
 
    const GFXVertexDecl *mCurrVertexDecl;
    bool mVertexDeclDirty;
-
-   StrongRefPtr<GFXPrimitiveBuffer> mCurrentPrimitiveBuffer;
-   bool mPrimitiveBufferDirty;
-
-   /// This allocates a primitive buffer and returns a pointer to the allocated buffer.
-   /// A primitive buffer's type argument refers to the index data - the primitive data will
-   /// always be preserved from call to call.
-   ///
-   /// @note All index buffers use unsigned 16-bit indices.
-   virtual GFXPrimitiveBuffer *allocPrimitiveBuffer(  U32 numIndices, 
-                                                      U32 numPrimitives, 
-                                                      GFXBufferType bufferType,
-                                                      U16 *indexBuffer = NULL,
-                                                      GFXPrimitive *primitiveBuffer = NULL ) = 0;
 
    /// @}
 
@@ -726,9 +711,7 @@ public:
    virtual void endScene();
    
 //   virtual GFXTextureObject & getFrontBuffer(){ return mFrontBuffer[mCurrentFrontBufferIdx]; }
-   
-   void setPrimitiveBuffer( GFXPrimitiveBuffer *buffer );
-   
+    
    /// Sets the vertex buffer.
    ///
    /// When setting the stream 0 vertex buffer it will automatically
@@ -746,9 +729,7 @@ public:
    /// is used when rendering from multiple vertex streams.
    ///
    void setVertexFormat( const GFXVertexFormat *vertexFormat );
-   
-   virtual void drawPrimitive( GFXPrimitiveType primType, U32 vertexStart, U32 primitiveCount ) = 0;
-   
+      
    /// The parameters to drawIndexedPrimitive are somewhat complicated. From a raw-data stand point
    /// they evaluate to something like the following:
    /// @code
@@ -797,9 +778,7 @@ public:
                                      U32 primitiveCount ) = 0;
    
    void drawPrimitive( const GFXPrimitive &prim );
-   void drawPrimitive( U32 primitiveIndex );
-   void drawPrimitives();
-   void drawPrimitiveBuffer( GFXPrimitiveBuffer *buffer );
+   virtual void drawPrimitive( GFXPrimitiveType primType, U32 vertexStart, U32 primitiveCount ) = 0;
    /// @}
    
    //-----------------------------------------------------------------------------

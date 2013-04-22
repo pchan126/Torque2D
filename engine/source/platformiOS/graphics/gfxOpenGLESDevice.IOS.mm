@@ -363,6 +363,7 @@ void GFXOpenGLESDevice::endSceneInternal()
 
 void GFXOpenGLESDevice::clear(U32 flags, ColorI color, F32 z, U32 stencil)
 {
+    Con::printf("begin GFXOpenGLESDevice::clear");
     // Make sure we have flushed our render target state.
     _updateRenderTargets();
     
@@ -372,7 +373,7 @@ void GFXOpenGLESDevice::clear(U32 flags, ColorI color, F32 z, U32 stencil)
     //      zwrite = mCurrentGLStateBlock->getDesc().zWriteEnable;
     //   }
     
-    glDepthMask(true);
+//    glDepthMask(true);
 
     GLbitfield clearflags = 0;
     clearflags |= (flags & GFXClearTarget)   ? GL_COLOR_BUFFER_BIT : 0;
@@ -383,11 +384,12 @@ void GFXOpenGLESDevice::clear(U32 flags, ColorI color, F32 z, U32 stencil)
 
     ColorF c = color;
     glClearColor(c.red, c.green, c.blue, c.alpha);
-    glClearDepthf(z);
-    glClearStencil(stencil);
+//    glClearDepthf(z);
+//    glClearStencil(stencil);
     
-    if(!zwrite)
-        glDepthMask(false);
+//    if(!zwrite)
+//        glDepthMask(false);
+    Con::printf("end GFXOpenGLESDevice::clear");
 }
 
 // Given a primitive type and a number of primitives, return the number of indexes/vertexes used.
@@ -773,6 +775,7 @@ void GFXOpenGLESDevice::setGlobalAmbientInternal(ColorF color)
 
 void GFXOpenGLESDevice::setTextureInternal(U32 textureUnit, const GFXTextureObject*texture)
 {
+    Con::printf("setTextureInternal");
     const GFXOpenGLESTextureObject *tex = static_cast<const GFXOpenGLESTextureObject*>(texture);
     glActiveTexture(GL_TEXTURE0 + textureUnit);
     if (tex)
@@ -1031,11 +1034,11 @@ void GFXOpenGLESDevice::initGenericShaders()
 void GFXOpenGLESDevice::setupGenericShaders( GenericShaderType type )
 {
     MatrixF xform(GFX->getProjectionMatrix());
-    Con::printf("setupGenericShaders");
-    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
-    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
-    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
-    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
+//    Con::printf("setupGenericShaders");
+//    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
+//    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
+//    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
+//    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
     xform *= GFX->getViewMatrix();
     xform *= GFX->getWorldMatrix();
     xform.transpose();

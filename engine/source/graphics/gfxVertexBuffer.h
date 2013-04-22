@@ -100,11 +100,13 @@ class GFXVertexBufferHandleBase : public StrongRefPtr<GFXVertexBuffer>
 protected:
 
    void set(   GFXDevice *theDevice,
-               U32 numVerts, 
+               U32 vertexCount,
                const GFXVertexFormat *vertexFormat, 
                U32 vertexSize,
                GFXBufferType type,
-               void* data);
+               void* vertexData,
+               U32 indexCount,
+               void* indexData);
 
    void* lock(U32 vertexStart, U32 vertexEnd)
    {
@@ -138,21 +140,23 @@ public:
    GFXVertexBufferHandle() {}
 
    GFXVertexBufferHandle(  GFXDevice *theDevice, 
-                           U32 numVerts, 
+                           U32 vertexCount,
                            GFXBufferType type = GFXBufferTypeVolatile,
-                           void *data = NULL)
+                           void *vertexBuffer = NULL,
+                           U32 indexCount = 0, void *indexBuffer = NULL)
    {
-      set( theDevice, numVerts, type, data );
+      set( theDevice, vertexCount, type, vertexBuffer, indexCount, indexBuffer );
    }
 
    ~GFXVertexBufferHandle() {}
 
-   void set(   GFXDevice *theDevice, 
-               U32 numVerts,
-               GFXBufferType type = GFXBufferTypeVolatile,
-               void *data = NULL)
+    void set(   GFXDevice *theDevice,
+             U32 vertexCount,
+             GFXBufferType type = GFXBufferTypeVolatile,
+             void *vertexBuffer = NULL,
+             U32 indexCount = 0, void *indexBuffer = NULL)
    {
-      Parent::set( theDevice, numVerts, getGFXVertexFormat<T>(), sizeof(T), type, data );
+      Parent::set( theDevice, vertexCount, getGFXVertexFormat<T>(), sizeof(T), type, vertexBuffer, indexCount, indexBuffer );
    }
 
    T *lock(U32 vertexStart = 0, U32 vertexEnd = 0) ///< locks the vertex buffer range, and returns a pointer to the beginning of the vertex array
@@ -229,9 +233,11 @@ public:
                const GFXVertexFormat *vertexFormat, 
                U32 numVerts, 
                GFXBufferType type,
-               void *data = NULL)
+               void *vertexData = NULL,
+               U32 indexCount = 0,
+               void *indexData = NULL)
    {
-      Parent::set( theDevice, numVerts, vertexFormat, vertSize, type, data );
+      Parent::set( theDevice, numVerts, vertexFormat, vertSize, type, vertexData, indexCount, indexData );
    }
 
    U8* lock( U32 vertexStart = 0, U32 vertexEnd = 0 )

@@ -34,8 +34,8 @@ WindowInputGenerator::WindowInputGenerator( PlatformWindow *window ) :
       mFocused = true;
 
    mWindow->appEvent.notify(this, &WindowInputGenerator::handleAppEvent);
-   mWindow->mouseEvent.notify(this, &WindowInputGenerator::handleMouseMove);
-   mWindow->wheelEvent.notify(this, &WindowInputGenerator::handleMouseWheel);
+//   mWindow->mouseEvent.notify(this, &WindowInputGenerator::handleMouseMove);
+//   mWindow->wheelEvent.notify(this, &WindowInputGenerator::handleMouseWheel);
    mWindow->buttonEvent.notify(this, &WindowInputGenerator::handleMouseButton);
    mWindow->keyEvent.notify(this, &WindowInputGenerator::handleKeyboard);
    mWindow->charEvent.notify(this, &WindowInputGenerator::handleCharInput);
@@ -48,9 +48,9 @@ WindowInputGenerator::~WindowInputGenerator()
 {
    if( mWindow )
    {
-      mWindow->mouseEvent.remove(this, &WindowInputGenerator::handleMouseMove);
       mWindow->buttonEvent.remove(this, &WindowInputGenerator::handleMouseButton);
-      mWindow->wheelEvent.remove(this, &WindowInputGenerator::handleMouseWheel);
+//       mWindow->mouseEvent.remove(this, &WindowInputGenerator::handleMouseMove);
+//      mWindow->wheelEvent.remove(this, &WindowInputGenerator::handleMouseWheel);
       mWindow->keyEvent.remove(this, &WindowInputGenerator::handleKeyboard);
       mWindow->charEvent.remove(this, &WindowInputGenerator::handleCharInput);
       mWindow->appEvent.remove(this, &WindowInputGenerator::handleAppEvent);

@@ -917,9 +917,13 @@ void ImageAsset::calculateImage( void )
 
     // If we have an existing texture and we're setting to the same bitmap then force the texture manager
     // to refresh the texture itself.
-    if ( !mImageTextureHandle.IsNull() && dStricmp(mImageTextureHandle->getTextureKey(), mImageFile) == 0 )
-        TEXMGR->reloadTexture(mImageTextureHandle);
-//        TextureManager::refresh( mImageFile );
+    if ( !mImageTextureHandle.IsNull())
+        if (dStricmp(mImageTextureHandle->getTextureKey(), mImageFile) == 0 )
+            TEXMGR->reloadTexture(mImageTextureHandle);
+
+    
+    
+    //        TextureManager::refresh( mImageFile );
 
     // Get image texture.
 //    mImageTextureHandle.set( mImageFile, TextureHandle::BitmapTexture, true, getForce16Bit() );

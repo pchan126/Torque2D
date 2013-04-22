@@ -34,11 +34,13 @@ class GFXOpenGLVertexBuffer : public GFXVertexBuffer
 {
 public:
 	GFXOpenGLVertexBuffer(   GFXDevice *device, 
-                        U32 numVerts, 
+                        U32 vertexCount,
                         const GFXVertexFormat *vertexFormat, 
                         U32 vertexSize, 
                         GFXBufferType bufferType,
-                        const GLvoid * data = NULL);
+                        const GLvoid * vertexData = NULL,
+                        U32 indexCount = 0,
+                        const GLvoid * indexData = NULL);
 
 	~GFXOpenGLVertexBuffer();
 
@@ -57,7 +59,7 @@ public:
 private:
    friend class GFXOpenGLDevice;
 	/// GL buffer handle
-	GLuint mBuffer, mVertexArrayObject;
+	GLuint mBuffer, mVertexArrayObject, elementBufferName;
    
    U8* mZombieCache;
 };

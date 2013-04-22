@@ -34,7 +34,6 @@
 #include "platformOSX/graphics/gfxOpenGLShader.h"
 
 class GFXOpenGLVertexBuffer;
-class GFXOpenGLPrimitiveBuffer;
 class GFXOpenGLTextureTarget;
 class GFXOpenGLCubemap;
 //class GLKMatrixStackRef;
@@ -182,12 +181,9 @@ protected:
                                                 const GFXVertexFormat *vertexFormat,
                                                 U32 vertSize, 
                                                 GFXBufferType bufferType,
-                                                void *data);
-   virtual GFXPrimitiveBuffer *allocPrimitiveBuffer( U32 numIndices,
-                                                    U32 numPrimitives,
-                                                    GFXBufferType bufferType,
-                                                    U16 *indexBuffer,
-                                                    GFXPrimitive *primitiveBuffer);
+                                                void *vertexData,
+                                                U32 indexCount,
+                                                void *indexData);
    
    // NOTE: The GL device doesn't need a vertex declaration at
    // this time, but we need to return something to keep the system
@@ -209,7 +205,6 @@ private:
    friend class GFXOpenGLTextureObject;
    friend class GFXOpenGLCubemap;
    friend class GFXOpenGLWindowTarget;
-   friend class GFXOpenGLPrimitiveBuffer;
    friend class GFXOpenGLVertexBuffer;
 
    static GFXAdapter::CreateDeviceInstanceDelegate mCreateDeviceInstance; 
@@ -217,7 +212,6 @@ private:
    U32 mAdapterIndex;
    
    StrongRefPtr<GFXOpenGLVertexBuffer> mCurrentVB;
-   StrongRefPtr<GFXOpenGLPrimitiveBuffer> mCurrentPB;
    
    /// Since GL does not have separate world and view matrices we need to track them
     MatrixF m_mCurrentWorld;
@@ -272,20 +266,17 @@ private:
    GLenum mActiveTextureType[TEXTURE_STAGE_COUNT];
    
    Vector< StrongRefPtr<GFXOpenGLVertexBuffer> > mVolatileVBs; ///< Pool of existing volatile VBs so we can reuse previously created ones
-   Vector< StrongRefPtr<GFXOpenGLPrimitiveBuffer> > mVolatilePBs; ///< Pool of existing volatile PBs so we can reuse previously created ones
 
    GLsizei primCountToIndexCount(GFXPrimitiveType primType, U32 primitiveCount);
    void preDrawPrimitive();
    void postDrawPrimitive(U32 primitiveCount);  
    
    GFXVertexBuffer* findVolatileVBO(U32 numVerts, const GFXVertexFormat *vertexFormat, U32 vertSize, void* data = NULL); ///< Returns an existing volatile VB which has >= numVerts and the same vert flags/size, or creates a new VB if necessary
-   GFXPrimitiveBuffer* findVolatilePBO(U32 numIndices, U32 numPrimitives, U16 *indexBuffer = NULL, GFXPrimitive *primitiveBuffer = NULL); ///< Returns an existing volatile PB which has >= numIndices, or creates a new PB if necessary
    
    void initGLState(); ///< Guaranteed to be called after all extensions have been loaded, use to init card profiler, shader version, max samplers, etc.
    
    void initGenericShaders();
     
-   void setPB(GFXOpenGLPrimitiveBuffer* pb); ///< Sets mCurrentPB
 };
 
 void CheckOpenGLError(const char* stmt, const char* fname, int line);
