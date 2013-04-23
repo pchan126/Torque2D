@@ -8,9 +8,12 @@ varying vec2 TexCoord;
 
 void main()
 {  
-    vec4 texColor_0 = texture2D(sampler2d_0, TexCoord) * vertColor;
+    vec4 texColor_0 = texture2D(sampler2d_0, TexCoord, 0.0);
     gl_FragColor = texColor_0;
-     gl_FragColor = vec4(1.0, 0.5, 0.0, 1.0);
+//    if (TexCoord.y > 1.0)
+//      gl_FragColor = vec4( 1.0, 0.0, 0.0, 1.0);
+//   else
+//      gl_FragColor = vec4( TexCoord.x, TexCoord.y, 0.0, 1.0);
 }
 
 #else

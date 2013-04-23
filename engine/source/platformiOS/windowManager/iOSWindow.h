@@ -147,6 +147,8 @@ private:
    UIScreen* mDisplay;
    CGRect mDisplayBounds;
    CGRect mMainDisplayBounds;
+   
+   Point2I mSize;
 };
 
 #endif

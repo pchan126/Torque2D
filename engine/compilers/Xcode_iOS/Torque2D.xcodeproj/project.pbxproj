@@ -315,7 +315,6 @@
 		867BB0FB16AEC9050033868F /* platformMemory.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAF9516AEC9050033868F /* platformMemory.cc */; };
 		867BB0FC16AEC9050033868F /* platformNetAsync.unix.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAF9716AEC9050033868F /* platformNetAsync.unix.cc */; };
 		867BB0FD16AEC9050033868F /* platformNetwork.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAF9916AEC9050033868F /* platformNetwork.cc */; };
-		867BB0FE16AEC9050033868F /* platformString.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAF9C16AEC9050033868F /* platformString.cc */; };
 		867BB10016AEC9050033868F /* Tickable.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAFA716AEC9050033868F /* Tickable.cc */; };
 		867BB10116AEC9050033868F /* scriptGroup.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAFB616AEC9050033868F /* scriptGroup.cc */; };
 		867BB10216AEC9050033868F /* scriptObject.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAFB816AEC9050033868F /* scriptObject.cc */; };
@@ -1202,7 +1201,6 @@
 		867BAF9916AEC9050033868F /* platformNetwork.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = platformNetwork.cc; sourceTree = "<group>"; };
 		867BAF9A16AEC9050033868F /* platformNetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformNetwork.h; sourceTree = "<group>"; };
 		867BAF9B16AEC9050033868F /* platformSemaphore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformSemaphore.h; sourceTree = "<group>"; };
-		867BAF9C16AEC9050033868F /* platformString.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = platformString.cc; sourceTree = "<group>"; };
 		867BAF9D16AEC9050033868F /* platformString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformString.h; sourceTree = "<group>"; };
 		867BAF9E16AEC9050033868F /* platformTimeManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformTimeManager.h; sourceTree = "<group>"; };
 		867BAF9F16AEC9050033868F /* platformTLS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformTLS.h; sourceTree = "<group>"; };
@@ -2675,7 +2673,6 @@
 				867BAF9916AEC9050033868F /* platformNetwork.cc */,
 				867BAF9A16AEC9050033868F /* platformNetwork.h */,
 				867BAF9B16AEC9050033868F /* platformSemaphore.h */,
-				867BAF9C16AEC9050033868F /* platformString.cc */,
 				867BAF9D16AEC9050033868F /* platformString.h */,
 				867BAF9E16AEC9050033868F /* platformTimeManager.h */,
 				867BAF9F16AEC9050033868F /* platformTLS.h */,
@@ -3582,7 +3579,6 @@
 				867BB0FB16AEC9050033868F /* platformMemory.cc in Sources */,
 				867BB0FC16AEC9050033868F /* platformNetAsync.unix.cc in Sources */,
 				867BB0FD16AEC9050033868F /* platformNetwork.cc in Sources */,
-				867BB0FE16AEC9050033868F /* platformString.cc in Sources */,
 				867BB10016AEC9050033868F /* Tickable.cc in Sources */,
 				867BB10116AEC9050033868F /* scriptGroup.cc in Sources */,
 				867BB10216AEC9050033868F /* scriptObject.cc in Sources */,

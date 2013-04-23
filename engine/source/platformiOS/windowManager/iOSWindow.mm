@@ -184,54 +184,25 @@ PlatformWindow* iOSWindow::getNextWindow() const
 
 bool iOSWindow::setSize(const Point2I &newSize)
 {
-//   NSSize newExtent = {static_cast<CGFloat>(newSize.x), static_cast<CGFloat>(newSize.y)};
-//   [mGLKWindow setContentSize:newExtent];
-//   [mGLKWindow center];
+   Con::printf("iOS setSize %i %i", newSize.x, newSize.y);
+   mSize = newSize;
+   mDisplayBounds.size = CGSizeMake(newSize.x, newSize.y);
    return true;
 }
 
 void iOSWindow::setClientExtent( const Point2I newExtent )
 {
-//   if(!mFullscreen)
-//   {
-//      // Set the Client Area Extent (Resolution) of this window
-//      NSSize newSize = {static_cast<CGFloat>(newExtent.x), static_cast<CGFloat>(newExtent.y)};
-//      [mGLKWindow setContentSize:newSize];
-//   }
-//   else
-//   {
-//      // In fullscreen we have to resize the monitor (it'll be good to change it back too...)
-//      if(!mDefaultDisplayMode)
-//         mDefaultDisplayMode = (NSDictionary*)CGDisplayCurrentMode(mDisplay);
-//      
-//      NSDictionary* newMode = (NSDictionary*)CGDisplayBestModeForParameters(mDisplay, 32, newExtent.x, newExtent.y, NULL);
-//      Con::printf("Switching to new display mode... width: %i height: %i bpp: %i", 
-//                  [[newMode valueForKey:@"Width"] intValue], [[newMode valueForKey:@"Height"] intValue], [[newMode valueForKey:@"BitsPerPixel"] intValue]); 
-//      CGDisplaySwitchToMode(mDisplay, (CFDictionaryRef)newMode);
-//      mDisplayBounds = CGDisplayBounds(mDisplay);
-//      if(mDisplay == kCGDirectMainDisplay)
-//         mMainDisplayBounds = mDisplayBounds;
-//   }
+   setSize(newExtent);
 }
 
 const Point2I iOSWindow::getClientExtent()
 {
-//   if(!mFullscreen)
-//   {
-//      // Get the Client Area Extent (Resolution) of this window
-//      NSSize size = [[mGLKWindow contentView] frame].size;
-//      return Point2I(size.width, size.height);
-//   }
-//   else
-//   {
-//      return Point2I(mDisplayBounds.size.width, mDisplayBounds.size.height);
-//   }
+   return mSize;
 }
 
 void iOSWindow::setBounds( const RectI &newBounds )
 {
-//   CGRect newFrame = NSMakeRect(newBounds.point.x, newBounds.point.y, newBounds.extent.x, newBounds.extent.y);
-//   [mGLKWindow setFrame:newFrame display:YES];
+
 }
 
 const RectI iOSWindow::getBounds() const
@@ -250,26 +221,19 @@ const RectI iOSWindow::getBounds() const
 
 void iOSWindow::setPosition( const Point2I newPosition )
 {
-//   UIScreen *screen = [mGLKWindow screen];
-//   CGRect screenFrame = [screen frame];
-//
-//   NSPoint pos = {static_cast<CGFloat>(newPosition.x), newPosition.y + screenFrame.size.height};
-//   [mGLKWindow setFrameTopLeftPoint: pos];
+   // always fullscreen
+   return;
 }
 
 const Point2I iOSWindow::getPosition()
 {
+   // always fullscreen
    return Point2I(0, 0);
-//   UIScreen *screen = [mGLKWindow screen];
-//   CGRect screenFrame = [screen frame];
-//   CGRect frame = [mGLKWindow frame];
-//
-//   return Point2I(frame.origin.x, screenFrame.size.height - (frame.origin.y + frame.size.height));
 }
 
 void iOSWindow::centerWindow()
 {
-//   [mGLKWindow center];
+   // always fullscreen
 }
 
 Point2I iOSWindow::clientToScreen( const Point2I& pos )
