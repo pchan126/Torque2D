@@ -20,8 +20,8 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#ifndef _GFXOpenGLVertexBuffer_H_
-#define _GFXOpenGLVertexBuffer_H_
+#ifndef _GFXOpenGL32VertexBuffer_H_
+#define _GFXOpenGL32VertexBuffer_H_
 
 #ifndef _GFXVERTEXBUFFER_H_
 #include "graphics/gfxVertexBuffer.h"
@@ -30,10 +30,10 @@
 #include "platform/platformGL.h"
 
 /// This is a vertex buffer which uses GL_ARB_vertex_buffer_object.
-class GFXOpenGLVertexBuffer : public GFXVertexBuffer 
+class GFXOpenGL32VertexBuffer : public GFXVertexBuffer 
 {
 public:
-	GFXOpenGLVertexBuffer(   GFXDevice *device, 
+	GFXOpenGL32VertexBuffer(   GFXDevice *device, 
                         U32 vertexCount,
                         const GFXVertexFormat *vertexFormat, 
                         U32 vertexSize, 
@@ -42,7 +42,7 @@ public:
                         U32 indexCount = 0,
                         const GLvoid * indexData = NULL);
 
-	~GFXOpenGLVertexBuffer();
+	~GFXOpenGL32VertexBuffer();
 
 	virtual void lock(U32 vertexStart, U32 vertexEnd, void **vertexPtr); ///< calls glMapBuffer and offsets the pointer by vertex start
     virtual void set( void* data, U32 dataSize );
@@ -57,7 +57,7 @@ public:
    virtual void resurrect();
    
 private:
-   friend class GFXOpenGLDevice;
+   friend class GFXOpenGL32Device;
 	/// GL buffer handle
 	GLuint mBuffer, mVertexArrayObject, elementBufferName;
    

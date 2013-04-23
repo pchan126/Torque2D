@@ -342,20 +342,20 @@ void BatchRender::SubmitQuad(
 
     // Add textured vertices.
     // NOTE: We swap #2/#3 here.
-    mVertexBuffer[mVertexCount].point       = Point3F(vertexPos0.x, vertexPos0.y, 0.0f);
-    mVertexBuffer[mVertexCount].texCoord    = Point2F(texturePos0.x, texturePos0.y);
-    mVertexBuffer[mVertexCount].color       = color;
-    mVertexCount++;
-    mVertexBuffer[mVertexCount].point       = Point3F(vertexPos1.x, vertexPos1.y, 0.0f);
-    mVertexBuffer[mVertexCount].texCoord    = Point2F(texturePos1.x, texturePos1.y);
-    mVertexBuffer[mVertexCount].color       = color;
-    mVertexCount++;
     mVertexBuffer[mVertexCount].point       = Point3F(vertexPos3.x, vertexPos3.y, 0.0f);
     mVertexBuffer[mVertexCount].texCoord    = Point2F(texturePos3.x, texturePos3.y);
     mVertexBuffer[mVertexCount].color       = color;
     mVertexCount++;
     mVertexBuffer[mVertexCount].point       = Point3F(vertexPos2.x, vertexPos2.y, 0.0f);
     mVertexBuffer[mVertexCount].texCoord    = Point2F(texturePos2.x, texturePos2.y);
+    mVertexBuffer[mVertexCount].color       = color;
+    mVertexCount++;
+    mVertexBuffer[mVertexCount].point       = Point3F(vertexPos0.x, vertexPos0.y, 0.0f);
+    mVertexBuffer[mVertexCount].texCoord    = Point2F(texturePos0.x, texturePos0.y);
+    mVertexBuffer[mVertexCount].color       = color;
+    mVertexCount++;
+    mVertexBuffer[mVertexCount].point       = Point3F(vertexPos1.x, vertexPos1.y, 0.0f);
+    mVertexBuffer[mVertexCount].texCoord    = Point2F(texturePos1.x, texturePos1.y);
     mVertexBuffer[mVertexCount].color       = color;
     mVertexCount++;
 
@@ -426,6 +426,7 @@ void BatchRender::flushInternal( void )
     mpDebugStats->batchFlushes++;
 
     GFXStateBlockDesc desc;
+    desc.setCullMode(GFXCullNone);
 
     if ( mWireframeMode )
     {
@@ -459,7 +460,8 @@ void BatchRender::flushInternal( void )
         else
             Con::printf("!mWireframeMode");
 
-        GFXVertexBufferHandle<GFXVertexPCT> vb(GFX, mVertexCount, GFXBufferTypeVolatile, mVertexBuffer, mIndexCount, mIndexBuffer );
+//        GFXVertexBufferHandle<GFXVertexPCT> vb(GFX, mVertexCount, GFXBufferTypeVolatile, mVertexBuffer, mIndexCount, mIndexBuffer );
+        GFXVertexBufferHandle<GFXVertexPCT> vb(GFX, mVertexCount, GFXBufferTypeStatic, mVertexBuffer, mIndexCount, mIndexBuffer );
         GFX->setVertexBuffer( vb );
         
         // Draw the triangles

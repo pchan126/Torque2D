@@ -42,7 +42,6 @@ private:
     friend class GFXOpenGLESTextureObject;
 //    friend class GFXOpenGLESCubemap;
     friend class GFXOpenGLESWindowTarget;
-    friend class GFXOpenGLESPrimitiveBuffer;
     friend class GFXOpenGLESVertexBuffer;
     friend class GFXOpenGLESDevice;
 

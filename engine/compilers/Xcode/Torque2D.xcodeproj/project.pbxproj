@@ -439,6 +439,9 @@
 		86EA5B401678C7C700598E68 /* osxCocoaUtilities.mm in Sources */ = {isa = PBXBuildFile; fileRef = 86EA5B3F1678C7C700598E68 /* osxCocoaUtilities.mm */; };
 		D1049A0C16F6F8C40096749B /* mPoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1049A0B16F6F8C40096749B /* mPoint.cpp */; };
 		D11F54E81703E48500797E52 /* osxTorqueView.mm in Sources */ = {isa = PBXBuildFile; fileRef = D11F54E71703E48500797E52 /* osxTorqueView.mm */; };
+		D162450417265AB000E4E1F7 /* gfxOpenGLDevice.cc in Sources */ = {isa = PBXBuildFile; fileRef = D16244F017265AB000E4E1F7 /* gfxOpenGLDevice.cc */; };
+		D162450617265AB000E4E1F7 /* gfxOpenGLShader.cc in Sources */ = {isa = PBXBuildFile; fileRef = D16244F417265AB000E4E1F7 /* gfxOpenGLShader.cc */; };
+		D162450717265AB000E4E1F7 /* gfxOpenGLStateBlock.cc in Sources */ = {isa = PBXBuildFile; fileRef = D16244F617265AB000E4E1F7 /* gfxOpenGLStateBlock.cc */; };
 		D16580751702942800A21928 /* gfxInit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D16580731702942800A21928 /* gfxInit.cpp */; };
 		D16580791702A5AE00A21928 /* guiContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D16580771702A5AE00A21928 /* guiContainer.cpp */; };
 		D1A6957017016C270060D928 /* platformCursorController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1A6955617016C270060D928 /* platformCursorController.cpp */; };
@@ -449,7 +452,7 @@
 		D1A6958617016CA90060D928 /* macWindow.mm in Sources */ = {isa = PBXBuildFile; fileRef = D1A6958117016CA90060D928 /* macWindow.mm */; };
 		D1A6958717016CA90060D928 /* macWindowManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = D1A6958317016CA90060D928 /* macWindowManager.mm */; };
 		D1E8DDFC170412D50001367B /* process.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1E8DDFA170412D50001367B /* process.cpp */; };
-		DA1640E516C4AEDB009C2F0F /* gfxOpenGLWindowTarget.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA1640E416C4AEDB009C2F0F /* gfxOpenGLWindowTarget.mm */; };
+		DA1640E516C4AEDB009C2F0F /* gfxOpenGL32WindowTarget.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA1640E416C4AEDB009C2F0F /* gfxOpenGL32WindowTarget.mm */; };
 		DA4645FF16C3A7C500EF1922 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA4645FE16C3A7C400EF1922 /* QuartzCore.framework */; };
 		DA91B2F416C2214800EB7B6E /* bitmapUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DA91B2C916C2214700EB7B6E /* bitmapUtils.cpp */; };
 		DA91B2F516C2214800EB7B6E /* gfxCardProfile.cc in Sources */ = {isa = PBXBuildFile; fileRef = DA91B2CB16C2214700EB7B6E /* gfxCardProfile.cc */; };
@@ -471,15 +474,15 @@
 		DA91B30716C2214800EB7B6E /* gfxVertexTypes.cc in Sources */ = {isa = PBXBuildFile; fileRef = DA91B2F016C2214800EB7B6E /* gfxVertexTypes.cc */; };
 		DA91B30816C2214800EB7B6E /* primBuilder.cc in Sources */ = {isa = PBXBuildFile; fileRef = DA91B2F216C2214800EB7B6E /* primBuilder.cc */; };
 		DA91B31116C2217A00EB7B6E /* str.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DA91B30D16C2217A00EB7B6E /* str.cpp */; };
-		DA91B32B16C2280E00EB7B6E /* gfxOpenGLCardProfiler.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B31616C2280E00EB7B6E /* gfxOpenGLCardProfiler.mm */; };
-		DA91B32C16C2280E00EB7B6E /* gfxOpenGLDevice.OSX.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B31816C2280E00EB7B6E /* gfxOpenGLDevice.OSX.mm */; };
-		DA91B32D16C2280E00EB7B6E /* gfxOpenGLEnumTranslate.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B31A16C2280E00EB7B6E /* gfxOpenGLEnumTranslate.mm */; };
-		DA91B32F16C2280E00EB7B6E /* gfxOpenGLShader.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B31E16C2280E00EB7B6E /* gfxOpenGLShader.mm */; };
-		DA91B33016C2280E00EB7B6E /* gfxOpenGLStateBlock.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B32016C2280E00EB7B6E /* gfxOpenGLStateBlock.mm */; };
-		DA91B33116C2280E00EB7B6E /* gfxOpenGLTextureManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B32216C2280E00EB7B6E /* gfxOpenGLTextureManager.mm */; };
-		DA91B33216C2280E00EB7B6E /* gfxOpenGLTextureObject.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B32416C2280E00EB7B6E /* gfxOpenGLTextureObject.mm */; };
-		DA91B33316C2280E00EB7B6E /* gfxOpenGLTextureTarget.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B32616C2280E00EB7B6E /* gfxOpenGLTextureTarget.mm */; };
-		DA91B33416C2280E00EB7B6E /* gfxOpenGLVertexBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B32916C2280E00EB7B6E /* gfxOpenGLVertexBuffer.mm */; };
+		DA91B32B16C2280E00EB7B6E /* gfxOpenGL32CardProfiler.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B31616C2280E00EB7B6E /* gfxOpenGL32CardProfiler.mm */; };
+		DA91B32C16C2280E00EB7B6E /* gfxOpenGL32Device.OSX.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B31816C2280E00EB7B6E /* gfxOpenGL32Device.OSX.mm */; };
+		DA91B32D16C2280E00EB7B6E /* gfxOpenGL32EnumTranslate.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B31A16C2280E00EB7B6E /* gfxOpenGL32EnumTranslate.mm */; };
+		DA91B32F16C2280E00EB7B6E /* gfxOpenGL32Shader.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B31E16C2280E00EB7B6E /* gfxOpenGL32Shader.mm */; };
+		DA91B33016C2280E00EB7B6E /* gfxOpenGL32StateBlock.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B32016C2280E00EB7B6E /* gfxOpenGL32StateBlock.mm */; };
+		DA91B33116C2280E00EB7B6E /* gfxOpenGL32TextureManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B32216C2280E00EB7B6E /* gfxOpenGL32TextureManager.mm */; };
+		DA91B33216C2280E00EB7B6E /* gfxOpenGL32TextureObject.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B32416C2280E00EB7B6E /* gfxOpenGL32TextureObject.mm */; };
+		DA91B33316C2280E00EB7B6E /* gfxOpenGL32TextureTarget.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B32616C2280E00EB7B6E /* gfxOpenGL32TextureTarget.mm */; };
+		DA91B33416C2280E00EB7B6E /* gfxOpenGL32VertexBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B32916C2280E00EB7B6E /* gfxOpenGL32VertexBuffer.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -1371,6 +1374,21 @@
 		D1049A0B16F6F8C40096749B /* mPoint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mPoint.cpp; sourceTree = "<group>"; };
 		D11F54E61703E48500797E52 /* osxTorqueView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxTorqueView.h; sourceTree = "<group>"; };
 		D11F54E71703E48500797E52 /* osxTorqueView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxTorqueView.mm; sourceTree = "<group>"; };
+		D16244EF17265AB000E4E1F7 /* gfxOpenGLCardProfiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLCardProfiler.h; sourceTree = "<group>"; };
+		D16244F017265AB000E4E1F7 /* gfxOpenGLDevice.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxOpenGLDevice.cc; sourceTree = "<group>"; };
+		D16244F117265AB000E4E1F7 /* gfxOpenGLDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLDevice.h; sourceTree = "<group>"; };
+		D16244F217265AB000E4E1F7 /* gfxOpenGLEnumTranslate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLEnumTranslate.h; sourceTree = "<group>"; };
+		D16244F417265AB000E4E1F7 /* gfxOpenGLShader.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxOpenGLShader.cc; sourceTree = "<group>"; };
+		D16244F517265AB000E4E1F7 /* gfxOpenGLShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLShader.h; sourceTree = "<group>"; };
+		D16244F617265AB000E4E1F7 /* gfxOpenGLStateBlock.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxOpenGLStateBlock.cc; sourceTree = "<group>"; };
+		D16244F717265AB000E4E1F7 /* gfxOpenGLStateBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLStateBlock.h; sourceTree = "<group>"; };
+		D16244F917265AB000E4E1F7 /* gfxOpenGLTextureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLTextureManager.h; sourceTree = "<group>"; };
+		D16244FB17265AB000E4E1F7 /* gfxOpenGLTextureObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLTextureObject.h; sourceTree = "<group>"; };
+		D16244FD17265AB000E4E1F7 /* gfxOpenGLTextureTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLTextureTarget.h; sourceTree = "<group>"; };
+		D16244FE17265AB000E4E1F7 /* gfxOpenGLUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLUtils.h; sourceTree = "<group>"; };
+		D162450017265AB000E4E1F7 /* gfxOpenGLVertexBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLVertexBuffer.h; sourceTree = "<group>"; };
+		D162450217265AB000E4E1F7 /* gfxOpenGLWindowTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLWindowTarget.h; sourceTree = "<group>"; };
+		D162450317265AB000E4E1F7 /* IUniform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IUniform.h; sourceTree = "<group>"; };
 		D16580731702942800A21928 /* gfxInit.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxInit.cpp; sourceTree = "<group>"; };
 		D16580741702942800A21928 /* gfxInit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxInit.h; sourceTree = "<group>"; };
 		D1658076170295B500A21928 /* gfxAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxAdapter.h; sourceTree = "<group>"; };
@@ -1396,8 +1414,8 @@
 		D1C8F141170ABF7C00D554EF /* mDualQuat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mDualQuat.h; sourceTree = "<group>"; };
 		D1E8DDFA170412D50001367B /* process.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = process.cpp; sourceTree = "<group>"; };
 		D1E8DDFB170412D50001367B /* process.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = process.h; sourceTree = "<group>"; };
-		DA1640E316C4AEDA009C2F0F /* gfxOpenGLWindowTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLWindowTarget.h; sourceTree = "<group>"; };
-		DA1640E416C4AEDB009C2F0F /* gfxOpenGLWindowTarget.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLWindowTarget.mm; sourceTree = "<group>"; };
+		DA1640E316C4AEDA009C2F0F /* gfxOpenGL32WindowTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32WindowTarget.h; sourceTree = "<group>"; };
+		DA1640E416C4AEDB009C2F0F /* gfxOpenGL32WindowTarget.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32WindowTarget.mm; sourceTree = "<group>"; };
 		DA4645FE16C3A7C400EF1922 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		DA8AEBB316C20BF40002F858 /* mPoint2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mPoint2.h; sourceTree = "<group>"; };
 		DA8AEBB416C20BF40002F858 /* mPoint3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mPoint3.h; sourceTree = "<group>"; };
@@ -1447,25 +1465,25 @@
 		DA91B30D16C2217A00EB7B6E /* str.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = str.cpp; sourceTree = "<group>"; };
 		DA91B30E16C2217A00EB7B6E /* str.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = str.h; sourceTree = "<group>"; };
 		DA91B31316C2218800EB7B6E /* autoPtr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = autoPtr.h; sourceTree = "<group>"; };
-		DA91B31516C2280E00EB7B6E /* gfxOpenGLCardProfiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLCardProfiler.h; sourceTree = "<group>"; };
-		DA91B31616C2280E00EB7B6E /* gfxOpenGLCardProfiler.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLCardProfiler.mm; sourceTree = "<group>"; };
-		DA91B31716C2280E00EB7B6E /* gfxOpenGLDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLDevice.h; sourceTree = "<group>"; };
-		DA91B31816C2280E00EB7B6E /* gfxOpenGLDevice.OSX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLDevice.OSX.mm; sourceTree = "<group>"; };
-		DA91B31916C2280E00EB7B6E /* gfxOpenGLEnumTranslate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLEnumTranslate.h; sourceTree = "<group>"; };
-		DA91B31A16C2280E00EB7B6E /* gfxOpenGLEnumTranslate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLEnumTranslate.mm; sourceTree = "<group>"; };
-		DA91B31D16C2280E00EB7B6E /* gfxOpenGLShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLShader.h; sourceTree = "<group>"; };
-		DA91B31E16C2280E00EB7B6E /* gfxOpenGLShader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLShader.mm; sourceTree = "<group>"; };
-		DA91B31F16C2280E00EB7B6E /* gfxOpenGLStateBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLStateBlock.h; sourceTree = "<group>"; };
-		DA91B32016C2280E00EB7B6E /* gfxOpenGLStateBlock.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLStateBlock.mm; sourceTree = "<group>"; };
-		DA91B32116C2280E00EB7B6E /* gfxOpenGLTextureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLTextureManager.h; sourceTree = "<group>"; };
-		DA91B32216C2280E00EB7B6E /* gfxOpenGLTextureManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLTextureManager.mm; sourceTree = "<group>"; };
-		DA91B32316C2280E00EB7B6E /* gfxOpenGLTextureObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLTextureObject.h; sourceTree = "<group>"; };
-		DA91B32416C2280E00EB7B6E /* gfxOpenGLTextureObject.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLTextureObject.mm; sourceTree = "<group>"; };
-		DA91B32516C2280E00EB7B6E /* gfxOpenGLTextureTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLTextureTarget.h; sourceTree = "<group>"; };
-		DA91B32616C2280E00EB7B6E /* gfxOpenGLTextureTarget.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLTextureTarget.mm; sourceTree = "<group>"; };
-		DA91B32716C2280E00EB7B6E /* gfxOpenGLUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLUtils.h; sourceTree = "<group>"; };
-		DA91B32816C2280E00EB7B6E /* gfxOpenGLVertexBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLVertexBuffer.h; sourceTree = "<group>"; };
-		DA91B32916C2280E00EB7B6E /* gfxOpenGLVertexBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLVertexBuffer.mm; sourceTree = "<group>"; };
+		DA91B31516C2280E00EB7B6E /* gfxOpenGL32CardProfiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32CardProfiler.h; sourceTree = "<group>"; };
+		DA91B31616C2280E00EB7B6E /* gfxOpenGL32CardProfiler.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32CardProfiler.mm; sourceTree = "<group>"; };
+		DA91B31716C2280E00EB7B6E /* gfxOpenGL32Device.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32Device.h; sourceTree = "<group>"; };
+		DA91B31816C2280E00EB7B6E /* gfxOpenGL32Device.OSX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32Device.OSX.mm; sourceTree = "<group>"; };
+		DA91B31916C2280E00EB7B6E /* gfxOpenGL32EnumTranslate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32EnumTranslate.h; sourceTree = "<group>"; };
+		DA91B31A16C2280E00EB7B6E /* gfxOpenGL32EnumTranslate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32EnumTranslate.mm; sourceTree = "<group>"; };
+		DA91B31D16C2280E00EB7B6E /* gfxOpenGL32Shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32Shader.h; sourceTree = "<group>"; };
+		DA91B31E16C2280E00EB7B6E /* gfxOpenGL32Shader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32Shader.mm; sourceTree = "<group>"; };
+		DA91B31F16C2280E00EB7B6E /* gfxOpenGL32StateBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32StateBlock.h; sourceTree = "<group>"; };
+		DA91B32016C2280E00EB7B6E /* gfxOpenGL32StateBlock.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32StateBlock.mm; sourceTree = "<group>"; };
+		DA91B32116C2280E00EB7B6E /* gfxOpenGL32TextureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32TextureManager.h; sourceTree = "<group>"; };
+		DA91B32216C2280E00EB7B6E /* gfxOpenGL32TextureManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32TextureManager.mm; sourceTree = "<group>"; };
+		DA91B32316C2280E00EB7B6E /* gfxOpenGL32TextureObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32TextureObject.h; sourceTree = "<group>"; };
+		DA91B32416C2280E00EB7B6E /* gfxOpenGL32TextureObject.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32TextureObject.mm; sourceTree = "<group>"; };
+		DA91B32516C2280E00EB7B6E /* gfxOpenGL32TextureTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32TextureTarget.h; sourceTree = "<group>"; };
+		DA91B32616C2280E00EB7B6E /* gfxOpenGL32TextureTarget.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32TextureTarget.mm; sourceTree = "<group>"; };
+		DA91B32716C2280E00EB7B6E /* gfxOpenGL32Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32Utils.h; sourceTree = "<group>"; };
+		DA91B32816C2280E00EB7B6E /* gfxOpenGL32VertexBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32VertexBuffer.h; sourceTree = "<group>"; };
+		DA91B32916C2280E00EB7B6E /* gfxOpenGL32VertexBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32VertexBuffer.mm; sourceTree = "<group>"; };
 		DA91B32A16C2280E00EB7B6E /* osxGLUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxGLUtils.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -2409,6 +2427,7 @@
 		86BC7FB916518D4600D96ADF /* graphics */ = {
 			isa = PBXGroup;
 			children = (
+				D16244EE17265AAF00E4E1F7 /* OpenGL */,
 				D1658076170295B500A21928 /* gfxAdapter.h */,
 				D16580731702942800A21928 /* gfxInit.cpp */,
 				D16580741702942800A21928 /* gfxInit.h */,
@@ -3038,6 +3057,28 @@
 			path = threads;
 			sourceTree = "<group>";
 		};
+		D16244EE17265AAF00E4E1F7 /* OpenGL */ = {
+			isa = PBXGroup;
+			children = (
+				D16244EF17265AB000E4E1F7 /* gfxOpenGLCardProfiler.h */,
+				D16244F017265AB000E4E1F7 /* gfxOpenGLDevice.cc */,
+				D16244F117265AB000E4E1F7 /* gfxOpenGLDevice.h */,
+				D16244F217265AB000E4E1F7 /* gfxOpenGLEnumTranslate.h */,
+				D16244F417265AB000E4E1F7 /* gfxOpenGLShader.cc */,
+				D16244F517265AB000E4E1F7 /* gfxOpenGLShader.h */,
+				D16244F617265AB000E4E1F7 /* gfxOpenGLStateBlock.cc */,
+				D16244F717265AB000E4E1F7 /* gfxOpenGLStateBlock.h */,
+				D16244F917265AB000E4E1F7 /* gfxOpenGLTextureManager.h */,
+				D16244FB17265AB000E4E1F7 /* gfxOpenGLTextureObject.h */,
+				D16244FD17265AB000E4E1F7 /* gfxOpenGLTextureTarget.h */,
+				D16244FE17265AB000E4E1F7 /* gfxOpenGLUtils.h */,
+				D162450017265AB000E4E1F7 /* gfxOpenGLVertexBuffer.h */,
+				D162450217265AB000E4E1F7 /* gfxOpenGLWindowTarget.h */,
+				D162450317265AB000E4E1F7 /* IUniform.h */,
+			);
+			path = OpenGL;
+			sourceTree = "<group>";
+		};
 		D1A6954917016C270060D928 /* windowManager */ = {
 			isa = PBXGroup;
 			children = (
@@ -3080,27 +3121,27 @@
 		DA91B31416C2280E00EB7B6E /* graphics */ = {
 			isa = PBXGroup;
 			children = (
-				DA91B31516C2280E00EB7B6E /* gfxOpenGLCardProfiler.h */,
-				DA91B31616C2280E00EB7B6E /* gfxOpenGLCardProfiler.mm */,
-				DA91B31716C2280E00EB7B6E /* gfxOpenGLDevice.h */,
-				DA91B31816C2280E00EB7B6E /* gfxOpenGLDevice.OSX.mm */,
-				DA91B31916C2280E00EB7B6E /* gfxOpenGLEnumTranslate.h */,
-				DA91B31A16C2280E00EB7B6E /* gfxOpenGLEnumTranslate.mm */,
-				DA91B31D16C2280E00EB7B6E /* gfxOpenGLShader.h */,
-				DA91B31E16C2280E00EB7B6E /* gfxOpenGLShader.mm */,
-				DA91B31F16C2280E00EB7B6E /* gfxOpenGLStateBlock.h */,
-				DA91B32016C2280E00EB7B6E /* gfxOpenGLStateBlock.mm */,
-				DA91B32116C2280E00EB7B6E /* gfxOpenGLTextureManager.h */,
-				DA91B32216C2280E00EB7B6E /* gfxOpenGLTextureManager.mm */,
-				DA91B32316C2280E00EB7B6E /* gfxOpenGLTextureObject.h */,
-				DA91B32416C2280E00EB7B6E /* gfxOpenGLTextureObject.mm */,
-				DA91B32516C2280E00EB7B6E /* gfxOpenGLTextureTarget.h */,
-				DA91B32616C2280E00EB7B6E /* gfxOpenGLTextureTarget.mm */,
-				DA91B32716C2280E00EB7B6E /* gfxOpenGLUtils.h */,
-				DA91B32816C2280E00EB7B6E /* gfxOpenGLVertexBuffer.h */,
-				DA91B32916C2280E00EB7B6E /* gfxOpenGLVertexBuffer.mm */,
-				DA1640E316C4AEDA009C2F0F /* gfxOpenGLWindowTarget.h */,
-				DA1640E416C4AEDB009C2F0F /* gfxOpenGLWindowTarget.mm */,
+				DA91B31516C2280E00EB7B6E /* gfxOpenGL32CardProfiler.h */,
+				DA91B31616C2280E00EB7B6E /* gfxOpenGL32CardProfiler.mm */,
+				DA91B31716C2280E00EB7B6E /* gfxOpenGL32Device.h */,
+				DA91B31816C2280E00EB7B6E /* gfxOpenGL32Device.OSX.mm */,
+				DA91B31916C2280E00EB7B6E /* gfxOpenGL32EnumTranslate.h */,
+				DA91B31A16C2280E00EB7B6E /* gfxOpenGL32EnumTranslate.mm */,
+				DA91B31D16C2280E00EB7B6E /* gfxOpenGL32Shader.h */,
+				DA91B31E16C2280E00EB7B6E /* gfxOpenGL32Shader.mm */,
+				DA91B31F16C2280E00EB7B6E /* gfxOpenGL32StateBlock.h */,
+				DA91B32016C2280E00EB7B6E /* gfxOpenGL32StateBlock.mm */,
+				DA91B32116C2280E00EB7B6E /* gfxOpenGL32TextureManager.h */,
+				DA91B32216C2280E00EB7B6E /* gfxOpenGL32TextureManager.mm */,
+				DA91B32316C2280E00EB7B6E /* gfxOpenGL32TextureObject.h */,
+				DA91B32416C2280E00EB7B6E /* gfxOpenGL32TextureObject.mm */,
+				DA91B32516C2280E00EB7B6E /* gfxOpenGL32TextureTarget.h */,
+				DA91B32616C2280E00EB7B6E /* gfxOpenGL32TextureTarget.mm */,
+				DA91B32716C2280E00EB7B6E /* gfxOpenGL32Utils.h */,
+				DA91B32816C2280E00EB7B6E /* gfxOpenGL32VertexBuffer.h */,
+				DA91B32916C2280E00EB7B6E /* gfxOpenGL32VertexBuffer.mm */,
+				DA1640E316C4AEDA009C2F0F /* gfxOpenGL32WindowTarget.h */,
+				DA1640E416C4AEDB009C2F0F /* gfxOpenGL32WindowTarget.mm */,
 				DA91B32A16C2280E00EB7B6E /* osxGLUtils.h */,
 			);
 			path = graphics;
@@ -3598,16 +3639,16 @@
 				DA91B30716C2214800EB7B6E /* gfxVertexTypes.cc in Sources */,
 				DA91B30816C2214800EB7B6E /* primBuilder.cc in Sources */,
 				DA91B31116C2217A00EB7B6E /* str.cpp in Sources */,
-				DA91B32B16C2280E00EB7B6E /* gfxOpenGLCardProfiler.mm in Sources */,
-				DA91B32C16C2280E00EB7B6E /* gfxOpenGLDevice.OSX.mm in Sources */,
-				DA91B32D16C2280E00EB7B6E /* gfxOpenGLEnumTranslate.mm in Sources */,
-				DA91B32F16C2280E00EB7B6E /* gfxOpenGLShader.mm in Sources */,
-				DA91B33016C2280E00EB7B6E /* gfxOpenGLStateBlock.mm in Sources */,
-				DA91B33116C2280E00EB7B6E /* gfxOpenGLTextureManager.mm in Sources */,
-				DA91B33216C2280E00EB7B6E /* gfxOpenGLTextureObject.mm in Sources */,
-				DA91B33316C2280E00EB7B6E /* gfxOpenGLTextureTarget.mm in Sources */,
-				DA91B33416C2280E00EB7B6E /* gfxOpenGLVertexBuffer.mm in Sources */,
-				DA1640E516C4AEDB009C2F0F /* gfxOpenGLWindowTarget.mm in Sources */,
+				DA91B32B16C2280E00EB7B6E /* gfxOpenGL32CardProfiler.mm in Sources */,
+				DA91B32C16C2280E00EB7B6E /* gfxOpenGL32Device.OSX.mm in Sources */,
+				DA91B32D16C2280E00EB7B6E /* gfxOpenGL32EnumTranslate.mm in Sources */,
+				DA91B32F16C2280E00EB7B6E /* gfxOpenGL32Shader.mm in Sources */,
+				DA91B33016C2280E00EB7B6E /* gfxOpenGL32StateBlock.mm in Sources */,
+				DA91B33116C2280E00EB7B6E /* gfxOpenGL32TextureManager.mm in Sources */,
+				DA91B33216C2280E00EB7B6E /* gfxOpenGL32TextureObject.mm in Sources */,
+				DA91B33316C2280E00EB7B6E /* gfxOpenGL32TextureTarget.mm in Sources */,
+				DA91B33416C2280E00EB7B6E /* gfxOpenGL32VertexBuffer.mm in Sources */,
+				DA1640E516C4AEDB009C2F0F /* gfxOpenGL32WindowTarget.mm in Sources */,
 				D1049A0C16F6F8C40096749B /* mPoint.cpp in Sources */,
 				2AE2938516EF4C220015E200 /* WaveComposite.cc in Sources */,
 				2AA3655916F3552200E7A900 /* ImageFrameProvider.cc in Sources */,
@@ -3631,6 +3672,9 @@
 				2AD4214D17043413005BB8AD /* tamlBinaryReader.cc in Sources */,
 				2AD4214E17043413005BB8AD /* tamlBinaryWriter.cc in Sources */,
 				2ACAFD4A1705CF4A0022601C /* tamlJSONParser.cc in Sources */,
+				D162450417265AB000E4E1F7 /* gfxOpenGLDevice.cc in Sources */,
+				D162450617265AB000E4E1F7 /* gfxOpenGLShader.cc in Sources */,
+				D162450717265AB000E4E1F7 /* gfxOpenGLStateBlock.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

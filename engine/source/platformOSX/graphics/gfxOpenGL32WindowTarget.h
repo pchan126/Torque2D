@@ -3,8 +3,8 @@
 // Copyright GarageGames, LLC 2011
 //-----------------------------------------------------------------------------
 
-#ifndef _GFXOpenGLWindowTarget_H_
-#define _GFXOpenGLWindowTarget_H_
+#ifndef _GFXOpenGL32WindowTarget_H_
+#define _GFXOpenGL32WindowTarget_H_
 
 #include "graphics/gfxTarget.h"
 #include "windowManager/platformWindow.h"
@@ -12,11 +12,11 @@
 
 @class NSOpenGLContext;
 
-class GFXOpenGLWindowTarget : public GFXWindowTarget
+class GFXOpenGL32WindowTarget : public GFXWindowTarget
 {
 public:
 
-   GFXOpenGLWindowTarget(PlatformWindow *win, GFXDevice *d);
+   GFXOpenGL32WindowTarget(PlatformWindow *win, GFXDevice *d);
    const Point2I getSize() 
    {
        return mWindow->getClientExtent();
@@ -39,11 +39,11 @@ public:
 private:
     typedef GFXWindowTarget Parent;
     
-    friend class GFXOpenGLTextureObject;
+    friend class GFXOpenGL32TextureObject;
 //    friend class GFXOpenGLCubemap;
-    friend class GFXOpenGLWindowTarget;
+    friend class GFXOpenGL32WindowTarget;
     friend class GFXOpenGLVertexBuffer;
-    friend class GFXOpenGLDevice;
+    friend class GFXOpenGL32Device;
 
    Point2I size;
    GFXDevice* mDevice;

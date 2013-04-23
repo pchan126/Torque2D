@@ -20,9 +20,9 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#include "./gfxOpenGLCardProfiler.h"
-#include "./GFXOpenGLDevice.h"
-#include "./gfxOpenGLEnumTranslate.h"
+#include "./gfxOpenGL32CardProfiler.h"
+#include "./GFXOpenGL32Device.h"
+#include "./gfxOpenGL32EnumTranslate.h"
 #include "./osxGLUtils.h"
 #include <OpenGL/gl3.h>
 
@@ -114,7 +114,7 @@ void GFXOpenGLCardProfiler::init()
    mCardDescription = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
    mVersionString = reinterpret_cast<const char*>(glGetString(GL_VERSION));
    
-//   mVideoMemory = static_cast<GFXOpenGLDevice*>(GFX)->getTotalVideoMemory();
+//   mVideoMemory = static_cast<GFXOpenGL32Device*>(GFX)->getTotalVideoMemory();
 
    Parent::init();
    

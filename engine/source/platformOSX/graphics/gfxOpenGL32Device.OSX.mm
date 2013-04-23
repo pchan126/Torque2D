@@ -22,42 +22,42 @@
 
 #import "platform/platform.h"
 #import "platformOSX/platformOSX.h"
-#include "./gfxOpenGLDevice.h"
+#include "./gfxOpenGL32Device.h"
 
 //#include "graphics/gfxCubemap.h"
 #include "graphics/gfxDrawUtil.h"
 #include "graphics/gfxInit.h"
 
-#include "./gfxOpenGLEnumTranslate.h"
-#include "./gfxOpenGLVertexBuffer.h"
-#include "./gfxOpenGLTextureTarget.h"
-#include "./gfxOpenGLTextureManager.h"
-#include "./gfxOpenGLTextureObject.h"
+#include "./gfxOpenGL32EnumTranslate.h"
+#include "./gfxOpenGL32VertexBuffer.h"
+#include "./gfxOpenGL32TextureTarget.h"
+#include "./gfxOpenGL32TextureManager.h"
+#include "./gfxOpenGL32TextureObject.h"
 //#include "./gfxOpenGLCubemap.h"
-#include "./gfxOpenGLCardProfiler.h"
-#include "./gfxOpenGLWindowTarget.h"
+#include "./gfxOpenGL32CardProfiler.h"
+#include "./gfxOpenGL32WindowTarget.h"
 
-#include "./gfxOpenGLShader.h"
+#include "./gfxOpenGL32Shader.h"
 #include "graphics/primBuilder.h"
 #include "console/console.h"
 
 //#include "./gfxOpenGLOcclusionQuery.h"
 
-GFXAdapter::CreateDeviceInstanceDelegate GFXOpenGLDevice::mCreateDeviceInstance(GFXOpenGLDevice::createInstance);
+GFXAdapter::CreateDeviceInstanceDelegate GFXOpenGL32Device::mCreateDeviceInstance(GFXOpenGL32Device::createInstance);
 
-GFXDevice *GFXOpenGLDevice::createInstance( U32 adapterIndex )
+GFXDevice *GFXOpenGL32Device::createInstance( U32 adapterIndex )
 {
-    return new GFXOpenGLDevice(adapterIndex);
+    return new GFXOpenGL32Device(adapterIndex);
 }
 
 #include "osxGLUtils.h"
 
-void GFXOpenGLDevice::initGLState()
+void GFXOpenGL32Device::initGLState()
 {
     // Currently targeting OpenGL 3.2 (Mac)
     
     // We don't currently need to sync device state with a known good place because we are
-    // going to set everything in GFXOpenGLStateBlock, but if we change our GFXOpenGLStateBlock strategy, this may
+    // going to set everything in GFXOpenGL32StateBlock, but if we change our GFXOpenGL32StateBlock strategy, this may
     // need to happen.
     
     // Deal with the card profiler here when we know we have a valid context.
@@ -82,7 +82,7 @@ void GFXOpenGLDevice::initGLState()
 
 //-----------------------------------------------------------------------------
 // Matrix interface
-GFXOpenGLDevice::GFXOpenGLDevice( U32 adapterIndex ) :
+GFXOpenGL32Device::GFXOpenGL32Device( U32 adapterIndex ) :
                         mAdapterIndex(adapterIndex),
                         mCurrentVB(NULL),
                         m_mCurrentWorld(true),
@@ -93,7 +93,8 @@ GFXOpenGLDevice::GFXOpenGLDevice( U32 adapterIndex ) :
                         mMaxShaderTextures(2),
                         mMaxFFTextures(2),
                         mClip(0, 0, 0, 0),
-                        mTextureLoader(NULL)
+                        mTextureLoader(NULL),
+                        currentCullMode(GFXCullNone)
 {
     GFXOpenGLEnumTranslate::init();
    
@@ -108,7 +109,7 @@ GFXOpenGLDevice::GFXOpenGLDevice( U32 adapterIndex ) :
 }
 
 
-GFXOpenGLDevice::~GFXOpenGLDevice()
+GFXOpenGL32Device::~GFXOpenGL32Device()
 {
     [(NSOpenGLContext*)mContext release];
 }
@@ -139,7 +140,7 @@ static String _getRendererForDisplay(CGDirectDisplayID display)
 }
 
 
-void GFXOpenGLDevice::init( const GFXVideoMode &mode, PlatformWindow *window )
+void GFXOpenGL32Device::init( const GFXVideoMode &mode, PlatformWindow *window )
 {
     if(!mInitialized)
     {
@@ -153,7 +154,7 @@ void GFXOpenGLDevice::init( const GFXVideoMode &mode, PlatformWindow *window )
 
        [mContext makeCurrentContext];
        
-       mTextureManager = new GFXOpenGLTextureManager(mContext);
+       mTextureManager = new GFXOpenGL32TextureManager(mContext);
 
        initGLState();
        initGenericShaders();
@@ -162,7 +163,7 @@ void GFXOpenGLDevice::init( const GFXVideoMode &mode, PlatformWindow *window )
     }
 }
 
-void GFXOpenGLDevice::addVideoMode(GFXVideoMode toAdd)
+void GFXOpenGL32Device::addVideoMode(GFXVideoMode toAdd)
 {
     // Only add this resolution if it is not already in the list:
     mVideoModes.push_back_unique( toAdd );
@@ -193,7 +194,7 @@ void addVideoModeCallback( const void *value, void *context )
     }
 }
 
-void GFXOpenGLDevice::enumerateAdapters( Vector<GFXAdapter*> &adapterList )
+void GFXOpenGL32Device::enumerateAdapters( Vector<GFXAdapter*> &adapterList )
 {
     GFXAdapter *toAdd;
     
@@ -229,7 +230,7 @@ void GFXOpenGLDevice::enumerateAdapters( Vector<GFXAdapter*> &adapterList )
     }
 }
 
-void GFXOpenGLDevice::enumerateVideoModes()
+void GFXOpenGL32Device::enumerateVideoModes()
 {
     mVideoModes.clear();
     CGDirectDisplayID display = CGMainDisplayID();
@@ -240,7 +241,7 @@ void GFXOpenGLDevice::enumerateVideoModes()
 }
 
 
-bool GFXOpenGLDevice::beginSceneInternal()
+bool GFXOpenGL32Device::beginSceneInternal()
 {
     // Nothing to do here for GL.
     mCanCurrentlyRender = true;
@@ -248,7 +249,7 @@ bool GFXOpenGLDevice::beginSceneInternal()
 }
 
 
-inline void GFXOpenGLDevice::pushWorldMatrix()
+inline void GFXOpenGL32Device::pushWorldMatrix()
 {
     mWorldMatrixDirty = true;
     mStateDirty = true;
@@ -258,7 +259,7 @@ inline void GFXOpenGLDevice::pushWorldMatrix()
 //    GLKMatrixStackPush(m_WorldStackRef);
 }
 
-inline void GFXOpenGLDevice::popWorldMatrix()
+inline void GFXOpenGL32Device::popWorldMatrix()
 {
     mWorldMatrixDirty = true;
     mStateDirty = true;
@@ -267,7 +268,7 @@ inline void GFXOpenGLDevice::popWorldMatrix()
 //    GLKMatrixStackPop(m_WorldStackRef);
 }
 
-inline void GFXOpenGLDevice::multWorld( const MatrixF &mat )
+inline void GFXOpenGL32Device::multWorld( const MatrixF &mat )
 {
     mWorldMatrixDirty = true;
     mStateDirty = true;
@@ -278,7 +279,7 @@ inline void GFXOpenGLDevice::multWorld( const MatrixF &mat )
 //    GLKMatrixStackMultiplyMatrix4(m_WorldStackRef, GLKMatrix4MakeWithArray(mat));
 }
 
-//inline void GFXOpenGLDevice::setTextureMatrix( const U32 stage, const MatrixF &texMat )
+//inline void GFXOpenGL32Device::setTextureMatrix( const U32 stage, const MatrixF &texMat )
 //{
 //    AssertFatal( stage < TEXTURE_STAGE_COUNT, "Out of range texture sampler" );
 //    mStateDirty = true;
@@ -289,7 +290,7 @@ inline void GFXOpenGLDevice::multWorld( const MatrixF &mat )
 
 
 
-void GFXOpenGLDevice::zombify()
+void GFXOpenGL32Device::zombify()
 {
     mTextureManager->zombify();
     if(mCurrentVB)
@@ -304,7 +305,7 @@ void GFXOpenGLDevice::zombify()
     }
 }
 
-void GFXOpenGLDevice::resurrect()
+void GFXOpenGL32Device::resurrect()
 {
     GFXResource* walk = mResourceListHead;
     while(walk)
@@ -318,7 +319,7 @@ void GFXOpenGLDevice::resurrect()
 }
 
 
-GFXVertexBuffer* GFXOpenGLDevice::findVolatileVBO(U32 numVerts, const GFXVertexFormat *vertexFormat, U32 vertSize, void* data)
+GFXVertexBuffer* GFXOpenGL32Device::findVolatileVBO(U32 numVerts, const GFXVertexFormat *vertexFormat, U32 vertSize, void* data)
 {
     for(U32 i = 0; i < mVolatileVBs.size(); i++)
         if (  mVolatileVBs[i]->mNumVerts >= numVerts &&
@@ -331,14 +332,14 @@ GFXVertexBuffer* GFXOpenGLDevice::findVolatileVBO(U32 numVerts, const GFXVertexF
         }
     
     // No existing VB, so create one
-    StrongRefPtr<GFXOpenGLVertexBuffer> buf(new GFXOpenGLVertexBuffer(GFX, numVerts, vertexFormat, vertSize, GFXBufferTypeVolatile, data));
+    StrongRefPtr<GFXOpenGL32VertexBuffer> buf(new GFXOpenGL32VertexBuffer(GFX, numVerts, vertexFormat, vertSize, GFXBufferTypeVolatile, data));
     buf->registerResourceWithDevice(this);
     mVolatileVBs.push_back(buf);
     return buf.getPointer();
 }
 
 
-GFXVertexBuffer *GFXOpenGLDevice::allocVertexBuffer(   U32 vertexCount,
+GFXVertexBuffer *GFXOpenGL32Device::allocVertexBuffer(   U32 vertexCount,
                                                   const GFXVertexFormat *vertexFormat,
                                                   U32 vertSize,
                                                   GFXBufferType bufferType,
@@ -346,49 +347,49 @@ GFXVertexBuffer *GFXOpenGLDevice::allocVertexBuffer(   U32 vertexCount,
                                                     U32 indexCount,
                                                     void *indexBuffer)
 {
-    if(bufferType == GFXBufferTypeVolatile)
-        return findVolatileVBO(vertexCount, vertexFormat, vertSize, vertexBuffer);
+//    if(bufferType == GFXBufferTypeVolatile)
+//        return findVolatileVBO(vertexCount, vertexFormat, vertSize, vertexBuffer);
     
-    GFXOpenGLVertexBuffer* buf = new GFXOpenGLVertexBuffer( GFX, vertexCount, vertexFormat, vertSize, bufferType, vertexBuffer, indexCount, indexBuffer );
+    GFXOpenGL32VertexBuffer* buf = new GFXOpenGL32VertexBuffer( GFX, vertexCount, vertexFormat, vertSize, bufferType, vertexBuffer, indexCount, indexBuffer );
     buf->registerResourceWithDevice(this);
     return buf;
 }
 
 
-void GFXOpenGLDevice::setVertexStream( U32 stream, GFXVertexBuffer *buffer )
+void GFXOpenGL32Device::setVertexStream( U32 stream, GFXVertexBuffer *buffer )
 {
     if (stream > 0) return;
     
-    AssertFatal( stream == 0, "GFXOpenGLDevice::setVertexStream - We don't support multiple vertex streams!" );
+    AssertFatal( stream == 0, "GFXOpenGL32Device::setVertexStream - We don't support multiple vertex streams!" );
     
     // Reset the state the old VB required, then set the state the new VB requires.
     if ( mCurrentVB )
         mCurrentVB->finish();
     
-    mCurrentVB = static_cast<GFXOpenGLVertexBuffer*>( buffer );
+    mCurrentVB = static_cast<GFXOpenGL32VertexBuffer*>( buffer );
     if ( mCurrentVB )
         mCurrentVB->prepare();
 }
 
-void GFXOpenGLDevice::setVertexStreamFrequency( U32 stream, U32 frequency )
+void GFXOpenGL32Device::setVertexStreamFrequency( U32 stream, U32 frequency )
 {
     // We don't support vertex stream frequency or mesh instancing in OGL yet.
 }
 
-//GFXCubemap* GFXOpenGLDevice::createCubemap()
+//GFXCubemap* GFXOpenGL32Device::createCubemap()
 //{
 ////    GFXOpenGLCubemap* cube = new GFXOpenGLCubemap();
 ////    cube->registerResourceWithDevice(this);
 ////    return cube;
 //};
 
-void GFXOpenGLDevice::endSceneInternal()
+void GFXOpenGL32Device::endSceneInternal()
 {
     // nothing to do for opengl
     mCanCurrentlyRender = false;
 }
 
-void GFXOpenGLDevice::clear(U32 flags, ColorI color, F32 z, U32 stencil)
+void GFXOpenGL32Device::clear(U32 flags, ColorI color, F32 z, U32 stencil)
 {
     GL_CHECK();
     // Make sure we have flushed our render target state.
@@ -420,7 +421,7 @@ void GFXOpenGLDevice::clear(U32 flags, ColorI color, F32 z, U32 stencil)
 
 
 // Given a primitive type and a number of primitives, return the number of indexes/vertexes used.
-GLsizei GFXOpenGLDevice::primCountToIndexCount(GFXPrimitiveType primType, U32 primitiveCount)
+GLsizei GFXOpenGL32Device::primCountToIndexCount(GFXPrimitiveType primType, U32 primitiveCount)
 {
     switch (primType)
     {
@@ -443,14 +444,14 @@ GLsizei GFXOpenGLDevice::primCountToIndexCount(GFXPrimitiveType primType, U32 pr
             return 2 + primitiveCount;
             break;
         default:
-            AssertFatal(false, "GFXOpenGLDevice::primCountToIndexCount - unrecognized prim type");
+            AssertFatal(false, "GFXOpenGL32Device::primCountToIndexCount - unrecognized prim type");
             break;
     }
     
     return 0;
 }
 
-void GFXOpenGLDevice::updateStates(bool forceSetAll /*=false*/)
+void GFXOpenGL32Device::updateStates(bool forceSetAll /*=false*/)
 {
     GL_CHECK();
     PROFILE_SCOPE(GFXDevice_updateStates);
@@ -663,7 +664,7 @@ void GFXOpenGLDevice::updateStates(bool forceSetAll /*=false*/)
 #endif
 }
 
-inline void GFXOpenGLDevice::preDrawPrimitive()
+inline void GFXOpenGL32Device::preDrawPrimitive()
 {
     if( mStateDirty )
     {
@@ -674,13 +675,13 @@ inline void GFXOpenGLDevice::preDrawPrimitive()
         setShaderConstBufferInternal(mCurrentShaderConstBuffer);
 }
 
-inline void GFXOpenGLDevice::postDrawPrimitive(U32 primitiveCount)
+inline void GFXOpenGL32Device::postDrawPrimitive(U32 primitiveCount)
 {
     //   mDeviceStatistics.mDrawCalls++;
     //   mDeviceStatistics.mPolyCount += primitiveCount;
 }
 
-void GFXOpenGLDevice::drawPrimitive( GFXPrimitiveType primType, U32 vertexStart, U32 primitiveCount )
+void GFXOpenGL32Device::drawPrimitive( GFXPrimitiveType primType, U32 vertexStart, U32 primitiveCount )
 {
     preDrawPrimitive();
     glDisable(GL_CULL_FACE);
@@ -713,14 +714,14 @@ void GFXOpenGLDevice::drawPrimitive( GFXPrimitiveType primType, U32 vertexStart,
     postDrawPrimitive(primitiveCount);
 }
 
-void GFXOpenGLDevice::drawIndexedPrimitive(   GFXPrimitiveType primType,
+void GFXOpenGL32Device::drawIndexedPrimitive(   GFXPrimitiveType primType,
                                          U32 startVertex,
                                          U32 minIndex,
                                          U32 numVerts,
                                          U32 startIndex,
                                          U32 primitiveCount )
 {
-    AssertFatal( startVertex == 0, "GFXOpenGLDevice::drawIndexedPrimitive() - Non-zero startVertex unsupported!" );
+    AssertFatal( startVertex == 0, "GFXOpenGL32Device::drawIndexedPrimitive() - Non-zero startVertex unsupported!" );
     
     preDrawPrimitive();
     glDrawElements(GFXGLPrimType[primType], primCountToIndexCount(primType, primitiveCount), GL_UNSIGNED_SHORT, (GLvoid*)0);
@@ -728,7 +729,7 @@ void GFXOpenGLDevice::drawIndexedPrimitive(   GFXPrimitiveType primType,
 }
 
 
-void GFXOpenGLDevice::setLightInternal(U32 lightStage, const GFXLightInfo light, bool lightEnable)
+void GFXOpenGL32Device::setLightInternal(U32 lightStage, const GFXLightInfo light, bool lightEnable)
 {
     //   if(!lightEnable)
     //   {
@@ -768,7 +769,7 @@ void GFXOpenGLDevice::setLightInternal(U32 lightStage, const GFXLightInfo light,
     //   glEnable(lightEnum);
 }
 
-void GFXOpenGLDevice::setLightMaterialInternal(const GFXLightMaterial mat)
+void GFXOpenGL32Device::setLightMaterialInternal(const GFXLightMaterial mat)
 {
     //   // CodeReview - Setting these for front and back is unnecessary.  We should consider
     //   // checking what faces we're culling and setting this only for the unculled faces.
@@ -779,18 +780,18 @@ void GFXOpenGLDevice::setLightMaterialInternal(const GFXLightMaterial mat)
     //   glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, mat.shininess);
 }
 
-void GFXOpenGLDevice::setGlobalAmbientInternal(ColorF color)
+void GFXOpenGL32Device::setGlobalAmbientInternal(ColorF color)
 {
     //   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, (GLfloat*)&color);
 }
 
-void GFXOpenGLDevice::setTextureInternal(U32 textureUnit, const GFXTextureObject *texture)
+void GFXOpenGL32Device::setTextureInternal(U32 textureUnit, const GFXTextureObject *texture)
 {
-    const GFXOpenGLTextureObject *tex = static_cast<const GFXOpenGLTextureObject*>(texture);
+    const GFXOpenGL32TextureObject *tex = static_cast<const GFXOpenGL32TextureObject*>(texture);
     glActiveTexture(GL_TEXTURE0 + textureUnit);
     if (tex)
     {
-        // GFXOpenGLTextureObject::bind also handles applying the current sampler state.
+        // GFXOpenGL32TextureObject::bind also handles applying the current sampler state.
         if(mActiveTextureType[textureUnit] != tex->getBinding() && mActiveTextureType[textureUnit] != GL_ZERO)
             GL_CHECK(glBindTexture(mActiveTextureType[textureUnit], 0));
         mActiveTextureType[textureUnit] = tex->getBinding();
@@ -806,7 +807,7 @@ void GFXOpenGLDevice::setTextureInternal(U32 textureUnit, const GFXTextureObject
     GL_CHECK();
 }
 
-//void GFXOpenGLDevice::setCubemapInternal(U32 textureUnit, const GFXOpenGLCubemap* texture)
+//void GFXOpenGL32Device::setCubemapInternal(U32 textureUnit, const GFXOpenGLCubemap* texture)
 //{
 //    glActiveTexture(GL_TEXTURE0 + textureUnit);
 //    if(texture)
@@ -826,7 +827,7 @@ void GFXOpenGLDevice::setTextureInternal(U32 textureUnit, const GFXTextureObject
 //    glActiveTexture(GL_TEXTURE0);
 //}
 
-void GFXOpenGLDevice::setMatrix( GFXMatrixType mtype, const MatrixF &mat )
+void GFXOpenGL32Device::setMatrix( GFXMatrixType mtype, const MatrixF &mat )
 {
     MatrixF modelview;
     switch (mtype)
@@ -859,13 +860,13 @@ void GFXOpenGLDevice::setMatrix( GFXMatrixType mtype, const MatrixF &mat )
             break;
             // CodeReview - Add support for texture transform matrix types
         default:
-            AssertFatal(false, "GFXOpenGLDevice::setMatrix - Unknown matrix mode!");
+            AssertFatal(false, "GFXOpenGL32Device::setMatrix - Unknown matrix mode!");
             return;
     }
 }
 
 
-const MatrixF GFXOpenGLDevice::getMatrix( GFXMatrixType mtype )
+const MatrixF GFXOpenGL32Device::getMatrix( GFXMatrixType mtype )
 {
     MatrixF ret = MatrixF(true);
     switch (mtype)
@@ -887,14 +888,14 @@ const MatrixF GFXOpenGLDevice::getMatrix( GFXMatrixType mtype )
             break;
             // CodeReview - Add support for texture transform matrix types
         default:
-            AssertFatal(false, "GFXOpenGLDevice::setMatrix - Unknown matrix mode!");
+            AssertFatal(false, "GFXOpenGL32Device::setMatrix - Unknown matrix mode!");
     }
     return ret;
 }
 
-void GFXOpenGLDevice::setClipRect( const RectI &inRect )
+void GFXOpenGL32Device::setClipRect( const RectI &inRect )
 {
-    AssertFatal(mCurrentRT.isValid(), "GFXOpenGLDevice::setClipRect - must have a render target set to do any rendering operations!");
+    AssertFatal(mCurrentRT.isValid(), "GFXOpenGL32Device::setClipRect - must have a render target set to do any rendering operations!");
     
     // Clip the rect against the renderable size.
     Point2I size = mCurrentRT->getSize();
@@ -923,19 +924,36 @@ void GFXOpenGLDevice::setClipRect( const RectI &inRect )
     setViewport(viewport);
 }
 
+void GFXOpenGL32Device::setCullMode(GFXCullMode mode)
+{
+    if (mode == currentCullMode)
+        return;
+    
+    // Culling
+    if (mode == GFXCullNone)
+    {
+        glDisable(GL_CULL_FACE);
+    }
+    else
+    {
+        glEnable(GL_CULL_FACE);
+        glCullFace(GFXGLCullMode[mode]);
+    }
+}
+
 /// Creates a state block object based on the desc passed in.  This object
 /// represents an immutable state.
-GFXStateBlockRef GFXOpenGLDevice::createStateBlockInternal(const GFXStateBlockDesc& desc)
+GFXStateBlockRef GFXOpenGL32Device::createStateBlockInternal(const GFXStateBlockDesc& desc)
 {
-    return GFXStateBlockRef(new GFXOpenGLStateBlock(desc));
+    return GFXStateBlockRef(new GFXOpenGL32StateBlock(desc));
 }
 
 /// Activates a stateblock
-void GFXOpenGLDevice::setStateBlockInternal(GFXStateBlock* block, bool force)
+void GFXOpenGL32Device::setStateBlockInternal(GFXStateBlock* block, bool force)
 {
-    AssertFatal(dynamic_cast<GFXOpenGLStateBlock*>(block), "GFXOpenGLDevice::setStateBlockInternal - Incorrect stateblock type for this device!");
-    GFXOpenGLStateBlock* glBlock = static_cast<GFXOpenGLStateBlock*>(block);
-    GFXOpenGLStateBlock* glCurrent = static_cast<GFXOpenGLStateBlock*>(mCurrentStateBlock.getPointer());
+    AssertFatal(dynamic_cast<GFXOpenGL32StateBlock*>(block), "GFXOpenGL32Device::setStateBlockInternal - Incorrect stateblock type for this device!");
+    GFXOpenGL32StateBlock* glBlock = static_cast<GFXOpenGL32StateBlock*>(block);
+    GFXOpenGL32StateBlock* glCurrent = static_cast<GFXOpenGL32StateBlock*>(mCurrentStateBlock.getPointer());
     if (force)
         glCurrent = NULL;
     
@@ -946,7 +964,7 @@ void GFXOpenGLDevice::setStateBlockInternal(GFXStateBlock* block, bool force)
 ////------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
-GFXWindowTarget *GFXOpenGLDevice::allocWindowTarget(PlatformWindow *window)
+GFXWindowTarget *GFXOpenGL32Device::allocWindowTarget(PlatformWindow *window)
 {
    if (window == NULL)
       return NULL;
@@ -965,27 +983,27 @@ GFXWindowTarget *GFXOpenGLDevice::allocWindowTarget(PlatformWindow *window)
    }
    
     // Allocate the wintarget and create a new context.
-    GFXOpenGLWindowTarget *gwt = new GFXOpenGLWindowTarget(window, this);
+    GFXOpenGL32WindowTarget *gwt = new GFXOpenGL32WindowTarget(window, this);
     gwt->mContext = ctx ? ctx : mContext;
     return gwt;
 }
 
 
-GFXTextureTarget * GFXOpenGLDevice::allocRenderToTextureTarget()
+GFXTextureTarget * GFXOpenGL32Device::allocRenderToTextureTarget()
 {
-    GFXOpenGLTextureTarget *targ = new GFXOpenGLTextureTarget();
+    GFXOpenGL32TextureTarget *targ = new GFXOpenGL32TextureTarget();
     targ->registerResourceWithDevice(this);
     return targ;
 }
 
-//GFXOcclusionQuery* GFXOpenGLDevice::createOcclusionQuery()
+//GFXOcclusionQuery* GFXOpenGL32Device::createOcclusionQuery()
 //{
 //    GFXOcclusionQuery *query = new GFXOpenGLOcclusionQuery( this );
 //    query->registerResourceWithDevice(this);
 //    return query;
 //}
 
-void GFXOpenGLDevice::initGenericShaders()
+void GFXOpenGL32Device::initGenericShaders()
 {
     Vector<GFXShaderMacro> macros;
     char vertBuffer[1024];
@@ -1036,7 +1054,7 @@ void GFXOpenGLDevice::initGenericShaders()
 }
 
 
-void GFXOpenGLDevice::setupGenericShaders( GenericShaderType type )
+void GFXOpenGL32Device::setupGenericShaders( GenericShaderType type )
 {
 //    GLKBaseEffect *GenericEffect = static_cast<GLKBaseEffect*>(baseEffect);
     
@@ -1119,14 +1137,14 @@ void GFXOpenGLDevice::setupGenericShaders( GenericShaderType type )
 //   [ GenericEffect prepareToDraw ];
 }
 
-GFXOpenGLShader* GFXOpenGLDevice::createShader()
+GFXOpenGL32Shader* GFXOpenGL32Device::createShader()
 {
-    GFXOpenGLShader* shader = new GFXOpenGLShader();
+    GFXOpenGL32Shader* shader = new GFXOpenGL32Shader();
     shader->registerResourceWithDevice( this );
     return shader;
 }
 
-void GFXOpenGLDevice::setShader( GFXOpenGLShader *shader )
+void GFXOpenGL32Device::setShader( GFXOpenGL32Shader *shader )
 {
     if ( shader )
     {
@@ -1143,29 +1161,29 @@ void GFXOpenGLDevice::setShader( GFXOpenGLShader *shader )
     }
 }
 
-void GFXOpenGLDevice::disableShaders()
+void GFXOpenGL32Device::disableShaders()
 {
     setShader(NULL);
     setShaderConstBuffer( NULL );
 }
 
-void GFXOpenGLDevice::setShaderConstBufferInternal(GFXShaderConstBuffer* buffer)
+void GFXOpenGL32Device::setShaderConstBufferInternal(GFXShaderConstBuffer* buffer)
 {
-    static_cast<GFXOpenGLShaderConstBuffer*>(buffer)->activate();
+    static_cast<GFXOpenGL32ShaderConstBuffer*>(buffer)->activate();
 }
 
-U32 GFXOpenGLDevice::getNumSamplers() const
+U32 GFXOpenGL32Device::getNumSamplers() const
 {
     return mMaxShaderTextures;
 }
 
-U32 GFXOpenGLDevice::getNumRenderTargets() const
+U32 GFXOpenGL32Device::getNumRenderTargets() const
 {
     return 1;
 }
 
 
-void GFXOpenGLDevice::_updateRenderTargets()
+void GFXOpenGL32Device::_updateRenderTargets()
 {
     GL_CHECK();
     if ( mRTDirty || mCurrentRT->isPendingState() )
@@ -1182,7 +1200,7 @@ void GFXOpenGLDevice::_updateRenderTargets()
         // to SetRenderTarget on the actual device.
         //      mDeviceStatistics.mRenderTargetChanges++;
         
-        GFXOpenGLTextureTarget *tex = dynamic_cast<GFXOpenGLTextureTarget*>( mCurrentRT.getPointer() );
+        GFXOpenGL32TextureTarget *tex = dynamic_cast<GFXOpenGL32TextureTarget*>( mCurrentRT.getPointer() );
         if ( tex )
         {
             tex->applyState();
@@ -1190,14 +1208,14 @@ void GFXOpenGLDevice::_updateRenderTargets()
         }
         else
         {
-            GFXOpenGLWindowTarget *win = dynamic_cast<GFXOpenGLWindowTarget*>( mCurrentRT.getPointer() );
+            GFXOpenGL32WindowTarget *win = dynamic_cast<GFXOpenGL32WindowTarget*>( mCurrentRT.getPointer() );
             AssertFatal( win != NULL,
-                        "GFXOpenGLDevice::_updateRenderTargets() - invalid target subclass passed!" );
+                        "GFXOpenGL32Device::_updateRenderTargets() - invalid target subclass passed!" );
             
             GL_CHECK();
             win->makeActive();
             
-            if( win->mContext != static_cast<GFXOpenGLDevice*>(GFX)->mContext )
+            if( win->mContext != static_cast<GFXOpenGL32Device*>(GFX)->mContext )
             {
                 mRTDirty = false;
                 GFX->updateStates(true);
@@ -1216,7 +1234,7 @@ void GFXOpenGLDevice::_updateRenderTargets()
 }
 
 
-GFXFormat GFXOpenGLDevice::selectSupportedFormat(   GFXTextureProfile* profile, 
+GFXFormat GFXOpenGL32Device::selectSupportedFormat(   GFXTextureProfile* profile, 
                                                const Vector<GFXFormat>& formats, 
                                                bool texture, 
                                                bool mustblend,
@@ -1244,7 +1262,7 @@ class GFXOpenGLRegisterDevice
 public:
     GFXOpenGLRegisterDevice()
     {
-        GFXInit::getRegisterDeviceSignal().notify(&GFXOpenGLDevice::enumerateAdapters);
+        GFXInit::getRegisterDeviceSignal().notify(&GFXOpenGL32Device::enumerateAdapters);
     }
 };
 

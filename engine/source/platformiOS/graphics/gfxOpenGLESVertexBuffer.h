@@ -21,7 +21,9 @@ public:
                         const GFXVertexFormat *vertexFormat, 
                         U32 vertexSize, 
                         GFXBufferType bufferType,
-                        const GLvoid * data = NULL);
+                        const GLvoid * data = NULL,
+                        U32 indexCount = 0,
+                        const GLvoid *indexBuffer = NULL);
 
 	~GFXOpenGLESVertexBuffer();
 
@@ -40,7 +42,7 @@ public:
 private:
    friend class GFXOpenGLESDevice;
 	/// GL buffer handle
-	GLuint mBuffer, mVertexArrayObject;
+	GLuint mBuffer, mVertexArrayObject, elementBufferName;
    
    U8* mZombieCache;
 };

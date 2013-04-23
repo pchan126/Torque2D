@@ -33,14 +33,16 @@
 class GFXOpenGLVertexBuffer : public GFXVertexBuffer 
 {
 public:
-	GFXOpenGLVertexBuffer(   GFXDevice *device, 
-                        U32 numVerts, 
-                        const GFXVertexFormat *vertexFormat, 
-                        U32 vertexSize, 
-                        GFXBufferType bufferType,
-                        const GLvoid * data = NULL);
-
-	~GFXOpenGLVertexBuffer();
+	GFXOpenGLVertexBuffer(   GFXDevice *device,
+                          U32 vertexCount,
+                          const GFXVertexFormat *vertexFormat,
+                          U32 vertexSize,
+                          GFXBufferType bufferType,
+                          const GLvoid * vertexData = NULL,
+                          U32 indexCount = 0,
+                          const GLvoid * indexData = NULL);
+	
+    ~GFXOpenGLVertexBuffer();
 
 	virtual void lock(U32 vertexStart, U32 vertexEnd, void **vertexPtr); ///< calls glMapBuffer and offsets the pointer by vertex start
     virtual void set( void* data, U32 dataSize );

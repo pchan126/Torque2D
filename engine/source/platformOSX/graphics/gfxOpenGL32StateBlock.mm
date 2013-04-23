@@ -20,38 +20,38 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#include "./gfxOpenGLStateBlock.h"
-#include "./gfxOpenGLDevice.h"
-#include "./gfxOpenGLEnumTranslate.h"
-#include "./gfxOpenGLUtils.h"
-#include "./gfxOpenGLTextureObject.h"
+#include "./gfxOpenGL32StateBlock.h"
+#include "./gfxOpenGL32Device.h"
+#include "./gfxOpenGL32EnumTranslate.h"
+#include "./gfxOpenGL32Utils.h"
+#include "./gfxOpenGL32TextureObject.h"
 
 
-GFXOpenGLStateBlock::GFXOpenGLStateBlock(const GFXStateBlockDesc& desc) :
+GFXOpenGL32StateBlock::GFXOpenGL32StateBlock(const GFXStateBlockDesc& desc) :
    mDesc(desc),
    mCachedHashValue(desc.getHashValue())
 {
 }
 
-GFXOpenGLStateBlock::~GFXOpenGLStateBlock()
+GFXOpenGL32StateBlock::~GFXOpenGL32StateBlock()
 {
 }
 
 /// Returns the hash value of the desc that created this block
-U32 GFXOpenGLStateBlock::getHashValue() const
+U32 GFXOpenGL32StateBlock::getHashValue() const
 {
    return mCachedHashValue;
 }
 
 /// Returns a GFXStateBlockDesc that this block represents
-const GFXStateBlockDesc& GFXOpenGLStateBlock::getDesc() const
+const GFXStateBlockDesc& GFXOpenGL32StateBlock::getDesc() const
 {
    return mDesc;   
 }
 
 /// Called by OpenGL device to active this state block.
 /// @param oldState  The current state, used to make sure we don't set redundant states on the device.  Pass NULL to reset all states.
-void GFXOpenGLStateBlock::activate(const GFXOpenGLStateBlock* oldState)
+void GFXOpenGL32StateBlock::activate(const GFXOpenGL32StateBlock* oldState)
 {
    // Big scary warning copied from Apple docs 
    // http://developer.apple.com/documentation/GraphicsImaging/Conceptual/OpenGL-MacProgGuide/opengl_performance/chapter_13_section_2.html#//apple_ref/doc/uid/TP40001987-CH213-SW12
@@ -67,6 +67,10 @@ void GFXOpenGLStateBlock::activate(const GFXOpenGLStateBlock* oldState)
 #define TOGGLE_STATE(state, enum) if(mDesc.state) glEnable(enum); else glDisable(enum)
 #define CHECK_TOGGLE_STATE(state, enum) if(!oldState || oldState->mDesc.state != mDesc.state) { if(mDesc.state) { glEnable(enum); } else { glDisable(enum); } }
 
+    GFXOpenGL32Device* device = dynamic_cast<GFXOpenGL32Device*>(GFX);
+    if (device == NULL)
+        return;
+    
    // Blending
 //   CHECK_TOGGLE_STATE(blendEnable, GL_BLEND);
     if ((glIsEnabled(GL_BLEND) == GL_TRUE) && !mDesc.blendEnable)
@@ -89,10 +93,12 @@ void GFXOpenGLStateBlock::activate(const GFXOpenGLStateBlock* oldState)
       glColorMask(mDesc.colorWriteRed, mDesc.colorWriteBlue, mDesc.colorWriteGreen, mDesc.colorWriteAlpha);
    
    // Culling
-//      TOGGLE_STATE(cullMode, GL_CULL_FACE);
-    if ((!mDesc.cullMode) && (glIsEnabled(GL_CULL_FACE) == GL_TRUE))
+    device->setCullMode(mDesc.cullMode);
+    
+    if (mDesc.cullMode == GFXCullNone)
     {
-        glDisable(GL_CULL_FACE);
+        if (glIsEnabled(GL_CULL_FACE) == GL_TRUE)
+            glDisable(GL_CULL_FACE);
     }
     else
     {
@@ -153,7 +159,7 @@ void GFXOpenGLStateBlock::activate(const GFXOpenGLStateBlock* oldState)
    {
        GFXDevice* ownDev = getOwningDevice();
        GFXTextureObject* to = (getOwningDevice()->getCurrentTexture(i));
-      GFXOpenGLTextureObject* tex = static_cast<GFXOpenGLTextureObject*>(getOwningDevice()->getCurrentTexture(i));
+      GFXOpenGL32TextureObject* tex = static_cast<GFXOpenGL32TextureObject*>(getOwningDevice()->getCurrentTexture(i));
       const GFXSamplerStateDesc &ssd = mDesc.samplers[i];
       bool updateTexParam = true;
       glActiveTexture(GL_TEXTURE0 + i);
@@ -182,7 +188,7 @@ void GFXOpenGLStateBlock::activate(const GFXOpenGLStateBlock* oldState)
          SSF(mipFilter, GL_TEXTURE_MIN_FILTER, minificationFilter(ssd.minFilter, ssd.mipFilter, tex->mMipLevels), tex);
 
          if( ( !oldState || oldState->mDesc.samplers[i].maxAnisotropy != ssd.maxAnisotropy ) &&
-             static_cast< GFXOpenGLDevice* >( GFX )->supportsAnisotropic() )
+             static_cast< GFXOpenGL32Device* >( GFX )->supportsAnisotropic() )
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, ssd.maxAnisotropy);
       }
    }

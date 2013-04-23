@@ -20,32 +20,48 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#ifndef _GFXOpenGLPrimitiveBuffer_H_
-#define _GFXOpenGLPrimitiveBuffer_H_
+#ifndef _GFXGL32ENUMTRANSLATE_H_
+#define _GFXGL32ENUMTRANSLATE_H_
 
-#include "graphics/gfxPrimitiveBuffer.h"
+#include "platform/platformGL.h"
+#include "graphics/gfxEnums.h"
 
-class GFXDevice;
-
-/// This is a primitive buffer (index buffer to GL users) which uses VBOs.
-class GFXOpenGLPrimitiveBuffer : public GFXPrimitiveBuffer
+namespace GFXOpenGLEnumTranslate
 {
-public:
-    GFXOpenGLPrimitiveBuffer(GFXDevice *device, U32 indexCount, U32 primitiveCount, GFXBufferType bufferType, U16 *indexBuffer, GFXPrimitive *primitiveBuffer) :
-    GFXPrimitiveBuffer(device, indexCount, primitiveCount, bufferType, primitiveBuffer)
-    { };
-	~GFXOpenGLPrimitiveBuffer() {};
-
-	virtual void lock(U32 indexStart, U32 indexEnd, void **indexPtr) = 0;
-	virtual void unlock() = 0;
-	virtual void prepare() = 0;
-    virtual void finish() = 0;
-
-	virtual void* getBuffer() = 0;
-
-   // GFXResource interface
-   virtual void zombify() = 0;
-   virtual void resurrect() = 0;
+    void init();
 };
+
+enum SHADER_ATTRIBUTES{
+    ATTRIB_POSITION,
+    ATTRIB_COLOR,
+    ATTRIB_NORMAL,
+    ATTRIB_TEXCOORD0,
+    ATTRIB_TEXCOORD1,
+    ATTRIB_TEXCOORD2,
+    ATTRIB_TEXCOORD3,
+    ATTRIB_TEXCOORD4,
+    ATTRIB_TEXCOORD5,
+    ATTRIB_TEXCOORD6,
+    ATTRIB_TEXCOORD7,
+    ATTRIB_POINTSIZE,
+    NUM_ATTRIBUTES };
+
+extern GLenum GFXGLPrimType[GFXPT_COUNT];
+extern GLenum GFXGLBlend[GFXBlend_COUNT];
+extern GLenum GFXGLBlendOp[GFXBlendOp_COUNT];
+extern GLenum GFXGLSamplerState[GFXSAMP_COUNT];
+extern GLenum GFXGLTextureFilter[GFXTextureFilter_COUNT];
+extern GLenum GFXGLTextureAddress[GFXAddress_COUNT];
+extern GLenum GFXGLCmpFunc[GFXCmp_COUNT];
+extern GLenum GFXGLStencilOp[GFXStencilOp_COUNT];
+
+extern GLenum GFXGLTextureInternalFormat[GFXFormat_COUNT];
+extern GLenum GFXGLTextureFormat[GFXFormat_COUNT];
+extern GLenum GFXGLTextureType[GFXFormat_COUNT];
+
+extern GLenum GFXGLBufferType[GFXBufferType_COUNT];
+extern GLenum GFXGLCullMode[GFXCull_COUNT];
+
+extern GLenum GFXGLFillMode[GFXFill_COUNT];
 
 #endif

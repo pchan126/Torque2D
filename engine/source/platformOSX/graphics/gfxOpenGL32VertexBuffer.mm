@@ -21,14 +21,14 @@
 //-----------------------------------------------------------------------------
 
 #include "platform/platform.h"
-#include "./gfxOpenGLVertexBuffer.h"
+#include "./gfxOpenGL32VertexBuffer.h"
 
-#include "./gfxOpenGLDevice.h"
-#include "./gfxOpenGLEnumTranslate.h"
-#include "./gfxOpenGLUtils.h"
+#include "./gfxOpenGL32Device.h"
+#include "./gfxOpenGL32EnumTranslate.h"
+#include "./gfxOpenGL32Utils.h"
 #include "platform/platformGL.h"
 
-GFXOpenGLVertexBuffer::GFXOpenGLVertexBuffer(  GFXDevice *device,
+GFXOpenGL32VertexBuffer::GFXOpenGL32VertexBuffer(  GFXDevice *device,
                                        U32 vertexCount,
                                        const GFXVertexFormat *vertexFormat, 
                                        U32 vertexSize, 
@@ -39,16 +39,10 @@ GFXOpenGLVertexBuffer::GFXOpenGLVertexBuffer(  GFXDevice *device,
    :  GFXVertexBuffer( device, vertexCount, vertexFormat, vertexSize, bufferType ),
       mZombieCache(NULL)
 {
-    GL_CHECK();
-//    GL_CHECK(PRESERVE_VERTEX_BUFFER());
-	// Generate a buffer and allocate the needed memory.
-    // Create and bind the vertex array object.
-    GLuint vao;
-    GL_CHECK(    glGenVertexArrays(1, &vao) );
-    glBindVertexArray(vao);
-    mVertexArrayObject = vao;
-    glGenBuffers(1, &mBuffer);
+    glGenVertexArrays(1, &mVertexArrayObject);
+    glBindVertexArray(mVertexArrayObject);
 
+    glGenBuffers(1, &mBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
 	glBufferData(GL_ARRAY_BUFFER, vertexCount * vertexSize, vertexBuffer, GFXGLBufferType[bufferType]);
     
@@ -64,21 +58,18 @@ GFXOpenGLVertexBuffer::GFXOpenGLVertexBuffer(  GFXDevice *device,
         {
             glVertexAttribPointer(GLKVertexAttribPosition, element.getSizeInBytes()/4, GL_FLOAT, GL_FALSE, mVertexSize, buffer);
             glEnableVertexAttribArray(GLKVertexAttribPosition);
-//            Con::printf("prepare POSITION: %i %i", element.getSizeInBytes(), mVertexSize);
             buffer += element.getSizeInBytes();
         }
         else if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::NORMAL.c_str() ) == 0 )
         {
             glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, mVertexSize, buffer);
             glEnableVertexAttribArray(GLKVertexAttribNormal);
-//            Con::printf("prepare NORMAL: %i %i", element.getSizeInBytes(), mVertexSize);
             buffer += element.getSizeInBytes();
         }
         else if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::COLOR.c_str() ) == 0 )
         {
             glVertexAttribPointer(GLKVertexAttribColor, 4, GL_UNSIGNED_BYTE, GL_TRUE, mVertexSize, buffer);
             glEnableVertexAttribArray(GLKVertexAttribColor);
-//            Con::printf("prepare COLOR: %i %i", element.getSizeInBytes(), mVertexSize);
             buffer += element.getSizeInBytes();
         }
         else // Everything else is a texture coordinate.
@@ -86,35 +77,29 @@ GFXOpenGLVertexBuffer::GFXOpenGLVertexBuffer(  GFXDevice *device,
             glVertexAttribPointer(GLKVertexAttribTexCoord0+texCoordIndex, 2, GL_FLOAT, GL_FALSE, mVertexSize, buffer);
             glEnableVertexAttribArray(GLKVertexAttribTexCoord0+texCoordIndex);
             buffer += element.getSizeInBytes();
-//            if (texCoordIndex > 0)
-//                Con::printf("prepare TEXCOORD+%i: %i %i", texCoordIndex, element.getSizeInBytes()/4, mVertexSize);
             ++texCoordIndex;
         }
     }
 
-    // Create a VBO to vertex array elements
     // This also attaches the element array buffer to the VAO
     glGenBuffers(1, &elementBufferName);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferName);
 
     // Allocate and load vertex array element data into VBO
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount, indexBuffer, GL_STATIC_DRAW);
-	
-//    glBindBuffer(GL_ARRAY_BUFFER, 0);
-//    glBindVertexArray(0);
-    Con::printf("finish making VBO vertex buffer");
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount*sizeof(U16), indexBuffer, GL_STATIC_DRAW);
 }
 
-GFXOpenGLVertexBuffer::~GFXOpenGLVertexBuffer()
+GFXOpenGL32VertexBuffer::~GFXOpenGL32VertexBuffer()
 {
 	// While heavy handed, this d delete the buffer and frees the associated memory.
    glDeleteBuffers(1, &mBuffer);
-   
+    glDeleteBuffers(1, &elementBufferName);
+    glDeleteVertexArrays(1, &mVertexArrayObject);
    if( mZombieCache )
       delete [] mZombieCache;
 }
 
-void GFXOpenGLVertexBuffer::lock( U32 vertexStart, U32 vertexEnd, void **vertexPtr )
+void GFXOpenGL32VertexBuffer::lock( U32 vertexStart, U32 vertexEnd, void **vertexPtr )
 {
    PRESERVE_VERTEX_BUFFER();
 	// Bind us, get a pointer into the buffer, then
@@ -126,7 +111,7 @@ void GFXOpenGLVertexBuffer::lock( U32 vertexStart, U32 vertexEnd, void **vertexP
 	lockedVertexEnd   = vertexEnd;
 }
 
-void GFXOpenGLVertexBuffer::set( void* data, U32 dataSize)
+void GFXOpenGL32VertexBuffer::set( void* data, U32 dataSize)
 {
     PRESERVE_VERTEX_BUFFER();
 
@@ -136,38 +121,37 @@ void GFXOpenGLVertexBuffer::set( void* data, U32 dataSize)
 }
 
 
-void GFXOpenGLVertexBuffer::unlock()
+void GFXOpenGL32VertexBuffer::unlock()
 {
    PRESERVE_VERTEX_BUFFER();
 	// Unmap the buffer and bind 0 to GL_ARRAY_BUFFER
    glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
 	bool res = glUnmapBuffer(GL_ARRAY_BUFFER);
-   AssertFatal(res, "GFXOpenGLVertexBuffer::unlock - shouldn't fail!");
+   AssertFatal(res, "GFXOpenGL32VertexBuffer::unlock - shouldn't fail!");
 
     lockedVertexStart = 0;
 	lockedVertexEnd   = 0;
 }
 
 
-void GFXOpenGLVertexBuffer::prepare()
+void GFXOpenGL32VertexBuffer::prepare()
 {
     glBindVertexArray(mVertexArrayObject);
-    Con::printf("glBindVertexArray VBO");
 }
 
-void GFXOpenGLVertexBuffer::finish()
+void GFXOpenGL32VertexBuffer::finish()
 {
     glBindVertexArray(0);
 
 }
 
-GLvoid* GFXOpenGLVertexBuffer::getBuffer()
+GLvoid* GFXOpenGL32VertexBuffer::getBuffer()
 {
 	// NULL specifies no offset into the hardware buffer
 	return (GLvoid*)NULL;
 }
 
-void GFXOpenGLVertexBuffer::zombify()
+void GFXOpenGL32VertexBuffer::zombify()
 {
    if(mZombieCache || !mBuffer)
       return;
@@ -180,7 +164,7 @@ void GFXOpenGLVertexBuffer::zombify()
    mBuffer = 0;
 }
 
-void GFXOpenGLVertexBuffer::resurrect()
+void GFXOpenGL32VertexBuffer::resurrect()
 {
    if(!mZombieCache)
       return;

@@ -12,24 +12,22 @@
 
 
 GFXOpenGLESVertexBuffer::GFXOpenGLESVertexBuffer(  GFXDevice *device, 
-                                       U32 numVerts, 
+                                       U32 vertexCount,
                                        const GFXVertexFormat *vertexFormat, 
                                        U32 vertexSize, 
                                        GFXBufferType bufferType,
-                                       const GLvoid * data )
-   :  GFXVertexBuffer( device, numVerts, vertexFormat, vertexSize, bufferType ), 
+                                       const GLvoid * data,
+                                       U32 indexCount,
+                                       const GLvoid *indexBuffer)
+   :  GFXVertexBuffer( device, vertexCount, vertexFormat, vertexSize, bufferType ),
       mZombieCache(NULL)
 {
-   PRESERVE_VERTEX_BUFFER();
-	// Generate a buffer and allocate the needed memory.
-    // Create and bind the vertex array object.
-    
     glGenVertexArraysOES(1,&mVertexArrayObject);
     glBindVertexArrayOES(mVertexArrayObject);
     
     glGenBuffers(1, &mBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
-	glBufferData(GL_ARRAY_BUFFER, numVerts * vertexSize, data, GFXGLBufferType[bufferType]);
+	glBufferData(GL_ARRAY_BUFFER, vertexCount * vertexSize, data, GFXGLBufferType[bufferType]);
     
     U8* buffer = (U8*)getBuffer();
     
@@ -65,14 +63,20 @@ GFXOpenGLESVertexBuffer::GFXOpenGLESVertexBuffer(  GFXDevice *device,
             ++texCoordIndex;
         }
     }
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArrayOES(0);
+    // This also attaches the element array buffer to the VAO
+    glGenBuffers(1, &elementBufferName);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferName);
+    
+    // Allocate and load vertex array element data into VBO
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount*sizeof(U16), indexBuffer, GL_STATIC_DRAW);
 }
 
 GFXOpenGLESVertexBuffer::~GFXOpenGLESVertexBuffer()
 {
 	// While heavy handed, this does delete the buffer and frees the associated memory.
-   glDeleteBuffers(1, &mBuffer);
+    glDeleteBuffers(1, &mBuffer);
+    glDeleteBuffers(1, &elementBufferName);
+    glDeleteVertexArraysOES(1, &mVertexArrayObject);
    
    if( mZombieCache )
       delete [] mZombieCache;
@@ -114,6 +118,31 @@ void GFXOpenGLESVertexBuffer::unlock()
 void GFXOpenGLESVertexBuffer::prepare()
 {
     glBindVertexArrayOES(mVertexArrayObject);
+
+//    U32 texCoordIndex = 0;
+//    for ( U32 i=0; i < mVertexFormat.getElementCount(); i++ )
+//    {
+//        const GFXVertexElement &element = mVertexFormat.getElement( i );
+//        
+//        if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::POSITION.c_str() ) == 0 )
+//        {
+//            glEnableVertexAttribArray(ATTRIB_POSITION);
+//        }
+//        else if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::NORMAL.c_str() ) == 0 )
+//        {
+//            glEnableVertexAttribArray(ATTRIB_NORMAL);
+//        }
+//        else if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::COLOR.c_str() ) == 0 )
+//        {
+//            glEnableVertexAttribArray(ATTRIB_COLOR);
+//        }
+//        else // Everything else is a texture coordinate.
+//        {
+//            glEnableVertexAttribArray(ATTRIB_TEXCOORD0+texCoordIndex);
+//            ++texCoordIndex;
+//        }
+//    }
+    
 }
 
 void GFXOpenGLESVertexBuffer::finish()

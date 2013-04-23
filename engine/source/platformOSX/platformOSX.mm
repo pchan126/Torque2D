@@ -23,7 +23,7 @@
 #import "platformOSX/platformOSX.h"
 #include "game/gameInterface.h"
 #import "delegates/process.h"
-#include "platformOSX/graphics/gfxOpenGLDevice.h"
+#include "platformOSX/graphics/gfxOpenGL32Device.h"
 
 #pragma mark ---- OSXPlatState Implementation ----
 

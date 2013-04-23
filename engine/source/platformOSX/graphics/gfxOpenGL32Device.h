@@ -20,34 +20,34 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#ifndef _GFXGLDEVICE_H_
-#define _GFXGLDEVICE_H_
+#ifndef _GFXGL32DEVICE_H_
+#define _GFXGL32DEVICE_H_
 
 #include "platformOSX/platformOSX.h"
 #include "platform/platformGL.h"
-#include "graphics/gfxDevice.h"
+#include "graphics/OpenGL/gfxOpenGLDevice.h"
 
 
 #include "windowManager/platformWindow.h"
 #include "graphics/gfxResource.h"
-#include "./gfxOpenGLStateBlock.h"
-#include "platformOSX/graphics/gfxOpenGLShader.h"
+#include "./gfxOpenGL32StateBlock.h"
+#include "./gfxOpenGL32Shader.h"
 
-class GFXOpenGLVertexBuffer;
-class GFXOpenGLTextureTarget;
-class GFXOpenGLCubemap;
+class GFXOpenGL32VertexBuffer;
+class GFXOpenGL32TextureTarget;
+class GFXOpenGL32Cubemap;
 //class GLKMatrixStackRef;
 typedef uint32_t CGDirectDisplayID;
 @class NSOpenGLContext;
 @class NSOpenGLPixelFormat;
 
-class GFXOpenGLDevice : public GFXDevice
+class GFXOpenGL32Device : public GFXDevice
 {
 public:
    void zombify();
    void resurrect();
-   GFXOpenGLDevice(U32 adapterIndex );
-   virtual ~GFXOpenGLDevice();
+   GFXOpenGL32Device(U32 adapterIndex );
+   virtual ~GFXOpenGL32Device();
 
    static void enumerateAdapters( Vector<GFXAdapter*> &adapterList );
    static GFXDevice *createInstance( U32 adapterIndex );
@@ -89,16 +89,16 @@ public:
    /// @name Shader functions
    /// @{
     void* baseEffect;
-    GFXOpenGLShader* mpCurrentShader;
+    GFXOpenGL32Shader* mpCurrentShader;
     
-    GFXOpenGLShader* mGenericShader[5];
+    GFXOpenGL32Shader* mGenericShader[5];
     GFXShaderConstBufferRef mGenericShaderConst[4];
     GFXStateBlockRef mGenericShaderStateblock[4];
     
    virtual F32 getPixelShaderVersion() const { return mPixelShaderVersion; }
    virtual void  setPixelShaderVersion( F32 version ) { mPixelShaderVersion = version; }
    
-   virtual void setShader(GFXOpenGLShader* shd);
+   virtual void setShader(GFXOpenGL32Shader* shd);
    virtual void disableShaders(); ///< Equivalent to setShader(NULL)
    
    /// @attention GL cannot check if the given format supports blending or filtering!
@@ -111,7 +111,7 @@ public:
    /// Returns the number of simultaneous render targets supported by the device.
    virtual U32 getNumRenderTargets() const;
 
-   virtual GFXOpenGLShader* createShader();
+   virtual GFXOpenGL32Shader* createShader();
     
    virtual void clear( U32 flags, ColorI color, F32 z, U32 stencil );
    virtual bool beginSceneInternal();
@@ -129,6 +129,8 @@ public:
    virtual void setClipRect( const RectI &rect );
    virtual const RectI &getClipRect() const { return mClip; }
 
+   virtual void setCullMode( GFXCullMode );
+    
    virtual void preDestroy() { Parent::preDestroy(); }
 
    virtual U32 getMaxDynamicVerts() { return MAX_DYNAMIC_VERTS; }
@@ -138,7 +140,7 @@ public:
    
 //   GFXOcclusionQuery* createOcclusionQuery();
 
-   GFXOpenGLStateBlockRef getCurrentStateBlock() { return mCurrentGLStateBlock; }
+   GFXOpenGL32StateBlockRef getCurrentStateBlock() { return mCurrentGLStateBlock; }
    
    virtual void setupGenericShaders( GenericShaderType type = GSColor );
    
@@ -202,16 +204,16 @@ protected:
 private:
    typedef GFXDevice Parent;
    
-   friend class GFXOpenGLTextureObject;
-   friend class GFXOpenGLCubemap;
-   friend class GFXOpenGLWindowTarget;
-   friend class GFXOpenGLVertexBuffer;
+   friend class GFXOpenGL32TextureObject;
+   friend class GFXOpenGL32Cubemap;
+   friend class GFXOpenGL32WindowTarget;
+   friend class GFXOpenGL32VertexBuffer;
 
    static GFXAdapter::CreateDeviceInstanceDelegate mCreateDeviceInstance; 
 
    U32 mAdapterIndex;
    
-   StrongRefPtr<GFXOpenGLVertexBuffer> mCurrentVB;
+   StrongRefPtr<GFXOpenGL32VertexBuffer> mCurrentVB;
    
    /// Since GL does not have separate world and view matrices we need to track them
     MatrixF m_mCurrentWorld;
@@ -261,11 +263,12 @@ private:
 
    RectI mClip;
 
-   GFXOpenGLStateBlockRef mCurrentGLStateBlock;
+   GFXOpenGL32StateBlockRef mCurrentGLStateBlock;
+    GFXCullMode currentCullMode;
    
    GLenum mActiveTextureType[TEXTURE_STAGE_COUNT];
    
-   Vector< StrongRefPtr<GFXOpenGLVertexBuffer> > mVolatileVBs; ///< Pool of existing volatile VBs so we can reuse previously created ones
+   Vector< StrongRefPtr<GFXOpenGL32VertexBuffer> > mVolatileVBs; ///< Pool of existing volatile VBs so we can reuse previously created ones
 
    GLsizei primCountToIndexCount(GFXPrimitiveType primType, U32 primitiveCount);
    void preDrawPrimitive();

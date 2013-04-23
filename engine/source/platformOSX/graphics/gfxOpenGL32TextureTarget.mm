@@ -21,12 +21,12 @@
 //-----------------------------------------------------------------------------
 
 #include "console/console.h"
-#include "./gfxOpenGLDevice.h"
-#include "./GFXOpenGLTextureTarget.h"
-#include "./GFXOpenGLTextureObject.h"
+#include "./gfxOpenGL32Device.h"
+#include "./GFXOpenGL32TextureTarget.h"
+#include "./GFXOpenGL32TextureObject.h"
 //#include "./gfxGLCubemap.h"
 #include "graphics/gfxTextureManager.h"
-#include "platformOSX/graphics/gfxOpenGLUtils.h"
+#include "./gfxOpenGL32Utils.h"
 
 /// Internal struct used to track texture information for FBO attachments
 /// This serves as an abstract base so we can deal with cubemaps and standard 
@@ -57,15 +57,15 @@ private:
 };
 
 /// Internal struct used to track 2D/Rect texture information for FBO attachment
-class _GFXOpenGLTextureTargetDesc : public _GFXGLTargetDesc
+class _GFXOpenGL32TextureTargetDesc : public _GFXGLTargetDesc
 {
 public:
-   _GFXOpenGLTextureTargetDesc(GFXOpenGLTextureObject* tex, U32 _mipLevel, U32 _zOffset) 
+   _GFXOpenGL32TextureTargetDesc(GFXOpenGL32TextureObject* tex, U32 _mipLevel, U32 _zOffset) 
       : _GFXGLTargetDesc(_mipLevel, _zOffset), mTex(tex)
    {
    }
    
-   virtual ~_GFXOpenGLTextureTargetDesc() {}
+   virtual ~_GFXOpenGL32TextureTargetDesc() {}
    
    virtual U32 getHandle() { return mTex->getHandle(); }
    virtual U32 getWidth() { return mTex->getWidth(); }
@@ -75,7 +75,7 @@ public:
    virtual GLenum getBinding() { return mTex->getBinding(); }
    
 private:
-   StrongRefPtr<GFXOpenGLTextureObject> mTex;
+   StrongRefPtr<GFXOpenGL32TextureObject> mTex;
 };
 
 ///// Internal struct used to track Cubemap texture information for FBO attachment
@@ -102,12 +102,12 @@ private:
 //};
 
 // Internal implementations
-class _GFXOpenGLTextureTargetImpl
+class _GFXOpenGL32TextureTargetImpl
 {
 public:
-   GFXOpenGLTextureTarget* mTarget;
+   GFXOpenGL32TextureTarget* mTarget;
    
-   virtual ~_GFXOpenGLTextureTargetImpl() {}
+   virtual ~_GFXOpenGL32TextureTargetImpl() {}
    
    virtual void applyState() = 0;
    virtual void makeActive() = 0;
@@ -115,13 +115,13 @@ public:
 };
 
 // Use FBOs to render to texture.  This is the preferred implementation and is almost always used.
-class _GFXOpenGLTextureTargetFBOImpl : public _GFXOpenGLTextureTargetImpl
+class _GFXOpenGL32TextureTargetFBOImpl : public _GFXOpenGL32TextureTargetImpl
 {
 public:
    GLuint mFramebuffer;
    
-   _GFXOpenGLTextureTargetFBOImpl(GFXOpenGLTextureTarget* target);
-   virtual ~_GFXOpenGLTextureTargetFBOImpl();
+   _GFXOpenGL32TextureTargetFBOImpl(GFXOpenGL32TextureTarget* target);
+   virtual ~_GFXOpenGL32TextureTargetFBOImpl();
    
    virtual void applyState();
    virtual void makeActive();
@@ -155,23 +155,23 @@ AssertFatal(false, "Something really bad happened with an FBO");\
 }\
 }
 
-_GFXOpenGLTextureTargetFBOImpl::_GFXOpenGLTextureTargetFBOImpl(GFXOpenGLTextureTarget* target)
+_GFXOpenGL32TextureTargetFBOImpl::_GFXOpenGL32TextureTargetFBOImpl(GFXOpenGL32TextureTarget* target)
 {
    mTarget = target;
    glGenFramebuffers(1, &mFramebuffer);
 }
 
-_GFXOpenGLTextureTargetFBOImpl::~_GFXOpenGLTextureTargetFBOImpl()
+_GFXOpenGL32TextureTargetFBOImpl::~_GFXOpenGL32TextureTargetFBOImpl()
 {
    glDeleteFramebuffers(1, &mFramebuffer);
 }
 
-void _GFXOpenGLTextureTargetFBOImpl::applyState()
+void _GFXOpenGL32TextureTargetFBOImpl::applyState()
 {   
    // REMINDER: When we implement MRT support, check against GFXGLDevice::getNumRenderTargets()
    
    glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
-    Con::printf("_GFXOpenGLTextureTargetFBOImpl::applyState:: glBindFramebuffer ");
+    Con::printf("_GFXOpenGL32TextureTargetFBOImpl::applyState:: glBindFramebuffer ");
    
    _GFXGLTargetDesc* color0 = mTarget->getTargetDesc(GFXTextureTarget::Color0);
    if(color0)
@@ -191,9 +191,9 @@ void _GFXOpenGLTextureTargetFBOImpl::applyState()
    if(depthStencil)
    {
       // Certain drivers have issues with depth only FBOs.  That and the next two asserts assume we have a color target.
-      AssertFatal(color0, "GFXOpenGLTextureTarget::applyState() - Cannot set DepthStencil target without Color0 target!");
-      AssertFatal(depthStencil->getWidth() == color0->getWidth(), "GFXOpenGLTextureTarget::applyState() - DepthStencil and Color0 targets MUST have the same width!");
-      AssertFatal(depthStencil->getHeight() == color0->getHeight(), "GFXOpenGLTextureTarget::applyState() - DepthStencil and Color0 targets MUST have the same height!");
+      AssertFatal(color0, "GFXOpenGL32TextureTarget::applyState() - Cannot set DepthStencil target without Color0 target!");
+      AssertFatal(depthStencil->getWidth() == color0->getWidth(), "GFXOpenGL32TextureTarget::applyState() - DepthStencil and Color0 targets MUST have the same width!");
+      AssertFatal(depthStencil->getHeight() == color0->getHeight(), "GFXOpenGL32TextureTarget::applyState() - DepthStencil and Color0 targets MUST have the same height!");
       glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthStencil->getBinding(), depthStencil->getHandle(), depthStencil->getMipLevel());
    }
    else
@@ -203,22 +203,22 @@ void _GFXOpenGLTextureTargetFBOImpl::applyState()
    }
    
    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    Con::printf("_GFXOpenGLTextureTargetFBOImpl::applyState:: glBindFramebuffer(GL_FRAMEBUFFER, 0); ");
+    Con::printf("_GFXOpenGL32TextureTargetFBOImpl::applyState:: glBindFramebuffer(GL_FRAMEBUFFER, 0); ");
 }
 
-void _GFXOpenGLTextureTargetFBOImpl::makeActive()
+void _GFXOpenGL32TextureTargetFBOImpl::makeActive()
 {
    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mFramebuffer);
    glBindFramebuffer(GL_READ_FRAMEBUFFER, mFramebuffer);
-    Con::printf("_GFXOpenGLTextureTargetFBOImpl::makeActive glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mFramebuffer); ");
+    Con::printf("_GFXOpenGL32TextureTargetFBOImpl::makeActive glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mFramebuffer); ");
 }
 
-void _GFXOpenGLTextureTargetFBOImpl::finish()
+void _GFXOpenGL32TextureTargetFBOImpl::finish()
 {
    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
    
-    Con::printf("_GFXOpenGLTextureTargetFBOImpl::finish glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mFramebuffer); ");
+    Con::printf("_GFXOpenGL32TextureTargetFBOImpl::finish glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mFramebuffer); ");
 
     _GFXGLTargetDesc* color0 = mTarget->getTargetDesc(GFXTextureTarget::Color0);
    if(!color0 || !(color0->hasMips()))
@@ -233,23 +233,23 @@ void _GFXOpenGLTextureTargetFBOImpl::finish()
 }
 
 
-// Actual GFXOpenGLTextureTarget interface
-GFXOpenGLTextureTarget::GFXOpenGLTextureTarget()
+// Actual GFXOpenGL32TextureTarget interface
+GFXOpenGL32TextureTarget::GFXOpenGL32TextureTarget()
 {
    for(U32 i=0; i<MaxRenderSlotId; i++)
       mTargets[i] = NULL;
    
-   GFXTextureManager::addEventDelegate( this, &GFXOpenGLTextureTarget::_onTextureEvent );
+   GFXTextureManager::addEventDelegate( this, &GFXOpenGL32TextureTarget::_onTextureEvent );
 
-   _impl = new _GFXOpenGLTextureTargetFBOImpl(this);
+   _impl = new _GFXOpenGL32TextureTargetFBOImpl(this);
 }
 
-GFXOpenGLTextureTarget::~GFXOpenGLTextureTarget()
+GFXOpenGL32TextureTarget::~GFXOpenGL32TextureTarget()
 {
-   GFXTextureManager::removeEventDelegate( this, &GFXOpenGLTextureTarget::_onTextureEvent );
+   GFXTextureManager::removeEventDelegate( this, &GFXOpenGL32TextureTarget::_onTextureEvent );
 }
 
-const Point2I GFXOpenGLTextureTarget::getSize()
+const Point2I GFXOpenGL32TextureTarget::getSize()
 {
    if(mTargets[Color0].isValid())
       return Point2I(mTargets[Color0]->getWidth(), mTargets[Color0]->getHeight());
@@ -257,29 +257,29 @@ const Point2I GFXOpenGLTextureTarget::getSize()
    return Point2I(0, 0);
 }
 
-GFXFormat GFXOpenGLTextureTarget::getFormat()
+GFXFormat GFXOpenGL32TextureTarget::getFormat()
 {
    // TODO: Fix me!
    return GFXFormatR8G8B8A8;
 }
 
-void GFXOpenGLTextureTarget::attachTexture( RenderSlot slot, GFXTextureObject *tex, U32 mipLevel/*=0*/, U32 zOffset /*= 0*/ )
+void GFXOpenGL32TextureTarget::attachTexture( RenderSlot slot, GFXTextureObject *tex, U32 mipLevel/*=0*/, U32 zOffset /*= 0*/ )
 {
    // Triggers an update when we next render
    invalidateState();
 
    // We stash the texture and info into an internal struct.
-   GFXOpenGLTextureObject* glTexture = static_cast<GFXOpenGLTextureObject*>(tex);
+   GFXOpenGL32TextureObject* glTexture = static_cast<GFXOpenGL32TextureObject*>(tex);
    if(tex && tex != GFXTextureTarget::sDefaultDepthStencil)
-      mTargets[slot] = new _GFXOpenGLTextureTargetDesc(glTexture, mipLevel, zOffset);
+      mTargets[slot] = new _GFXOpenGL32TextureTargetDesc(glTexture, mipLevel, zOffset);
    else
       mTargets[slot] = NULL;
 }
 
-//void GFXOpenGLTextureTarget::attachTexture( RenderSlot slot, GFXCubemap *tex, U32 face, U32 mipLevel/*=0*/ )
+//void GFXOpenGL32TextureTarget::attachTexture( RenderSlot slot, GFXCubemap *tex, U32 face, U32 mipLevel/*=0*/ )
 //{
 //   // No depth cubemaps, sorry
-//   AssertFatal(slot != DepthStencil, "GFXOpenGLTextureTarget::attachTexture (cube) - Cube depth textures not supported!");
+//   AssertFatal(slot != DepthStencil, "GFXOpenGL32TextureTarget::attachTexture (cube) - Cube depth textures not supported!");
 //   if(slot == DepthStencil)
 //      return;
 //    
@@ -294,14 +294,14 @@ void GFXOpenGLTextureTarget::attachTexture( RenderSlot slot, GFXTextureObject *t
 //      mTargets[slot] = NULL;
 //}
 
-void GFXOpenGLTextureTarget::clearAttachments()
+void GFXOpenGL32TextureTarget::clearAttachments()
 {
    deactivate();
    for(S32 i=1; i<MaxRenderSlotId; i++)
       attachTexture((RenderSlot)i, NULL);
 }
 
-void GFXOpenGLTextureTarget::zombify()
+void GFXOpenGL32TextureTarget::zombify()
 {
    invalidateState();
    
@@ -309,22 +309,22 @@ void GFXOpenGLTextureTarget::zombify()
    _impl = NULL;
 }
 
-void GFXOpenGLTextureTarget::resurrect()
+void GFXOpenGL32TextureTarget::resurrect()
 {
    // Dealt with when the target is next bound
 }
 
-void GFXOpenGLTextureTarget::makeActive()
+void GFXOpenGL32TextureTarget::makeActive()
 {
    _impl->makeActive();
 }
 
-void GFXOpenGLTextureTarget::deactivate()
+void GFXOpenGL32TextureTarget::deactivate()
 {
    _impl->finish();
 }
 
-void GFXOpenGLTextureTarget::applyState()
+void GFXOpenGL32TextureTarget::applyState()
 {
    if(!isPendingState())
       return;
@@ -332,23 +332,23 @@ void GFXOpenGLTextureTarget::applyState()
    // So we don't do this over and over again
    stateApplied();
    
-   _impl = new _GFXOpenGLTextureTargetFBOImpl(this);
+   _impl = new _GFXOpenGL32TextureTargetFBOImpl(this);
     
    _impl->applyState();
 }
 
-_GFXGLTargetDesc* GFXOpenGLTextureTarget::getTargetDesc(RenderSlot slot) const
+_GFXGLTargetDesc* GFXOpenGL32TextureTarget::getTargetDesc(RenderSlot slot) const
 {
    // This can only be called by our implementations, and then will not actually store the pointer so this is (almost) safe
    return mTargets[slot].ptr();
 }
 
-void GFXOpenGLTextureTarget::_onTextureEvent( GFXTexCallbackCode code )
+void GFXOpenGL32TextureTarget::_onTextureEvent( GFXTexCallbackCode code )
 {
    invalidateState();
 }
 
-const String GFXOpenGLTextureTarget::describeSelf() const
+const String GFXOpenGL32TextureTarget::describeSelf() const
 {
    String ret = String::ToString("   Color0 Attachment: %i", mTargets[Color0].isValid() ? mTargets[Color0]->getHandle() : 0);
    ret += String::ToString("   Depth Attachment: %i", mTargets[DepthStencil].isValid() ? mTargets[DepthStencil]->getHandle() : 0);
@@ -356,14 +356,14 @@ const String GFXOpenGLTextureTarget::describeSelf() const
    return ret;
 }
 
-void GFXOpenGLTextureTarget::resolve()
+void GFXOpenGL32TextureTarget::resolve()
 {
 }
 
-void GFXOpenGLTextureTarget::resolveTo(GFXTextureObject* obj)
+void GFXOpenGL32TextureTarget::resolveTo(GFXTextureObject* obj)
 {
-   AssertFatal(dynamic_cast<GFXOpenGLTextureObject*>(obj), "GFXOpenGLTextureTarget::resolveTo - Incorrect type of texture, expected a GFXOpenGLTextureObject");
-   GFXOpenGLTextureObject* glTexture = static_cast<GFXOpenGLTextureObject*>(obj);
+   AssertFatal(dynamic_cast<GFXOpenGL32TextureObject*>(obj), "GFXOpenGL32TextureTarget::resolveTo - Incorrect type of texture, expected a GFXOpenGL32TextureObject");
+   GFXOpenGL32TextureObject* glTexture = static_cast<GFXOpenGL32TextureObject*>(obj);
 
 //   PRESERVE_FRAMEBUFFER();
    

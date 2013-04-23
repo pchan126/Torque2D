@@ -142,12 +142,9 @@ protected:
                                                 const GFXVertexFormat *vertexFormat,
                                                 U32 vertSize, 
                                                 GFXBufferType bufferType,
-                                                void *data) = 0;
-   virtual GFXPrimitiveBuffer *allocPrimitiveBuffer( U32 numIndices,
-                                                    U32 numPrimitives,
-                                                    GFXBufferType bufferType,
-                                                    U16 *indexBuffer,
-                                                    GFXPrimitive *primitiveBuffer) = 0;
+                                                void *data = NULL,
+                                              U32 indexCount = 0,
+                                              void *indexData = NULL) = 0;
    
    // NOTE: The GL device doesn't need a vertex declaration at
    // this time, but we need to return something to keep the system

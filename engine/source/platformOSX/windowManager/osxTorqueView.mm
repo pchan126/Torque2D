@@ -24,7 +24,7 @@
 #import "./osxTorqueView.h"
 #import "game/gameInterface.h"
 #import "gui/guiCanvas.h"
-#import "platformOSX/graphics/gfxOpenGLDevice.h"
+#import "platformOSX/graphics/gfxOpenGL32Device.h"
 #import "./macWindow.h"
 //#include "platform/platformVideo.h"
 

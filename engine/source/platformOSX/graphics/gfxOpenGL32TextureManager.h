@@ -20,22 +20,22 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#ifndef _GFXOpenGLTextureManager_H
-#define _GFXOpenGLTextureManager_H
+#ifndef _GFXOpenGL32TextureManager_H
+#define _GFXOpenGL32TextureManager_H
 
 #include "graphics/gfxDevice.h"
 #include "graphics/gfxTextureManager.h"
-#include "./gfxOpenGLTextureObject.h"
+#include "./gfxOpenGL32TextureObject.h"
 
 @class NSOpenGLContext;
 
-class GFXOpenGLTextureManager : public GFXTextureManager
+class GFXOpenGL32TextureManager : public GFXTextureManager
 {   
 public:
     typedef GFXTextureManager Parent;
     
-   GFXOpenGLTextureManager(NSOpenGLContext* mContext);
-   ~GFXOpenGLTextureManager();
+   GFXOpenGL32TextureManager(NSOpenGLContext* mContext);
+   ~GFXOpenGL32TextureManager();
    
 protected:
 
@@ -87,7 +87,7 @@ private:
    friend class GFXOpenGLTextureObject;
    
    /// Creates internal GL texture
-   void innerCreateTexture(GFXOpenGLTextureObject *obj, U32 height, U32 width, U32 depth, GFXFormat format, GFXTextureProfile *profile, U32 numMipLevels, bool forceMips = false);
+   void innerCreateTexture(GFXOpenGL32TextureObject *obj, U32 height, U32 width, U32 depth, GFXFormat format, GFXTextureProfile *profile, U32 numMipLevels, bool forceMips = false);
 
    void handleTextureCallback(void *textureInfo);
     

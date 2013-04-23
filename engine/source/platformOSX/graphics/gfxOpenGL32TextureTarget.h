@@ -20,15 +20,15 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#ifndef _GFXOpenGLTextureTARGET_H_
-#define _GFXOpenGLTextureTARGET_H_
+#ifndef _GFXOpenGL32TextureTARGET_H_
+#define _GFXOpenGL32TextureTARGET_H_
 
 #include "graphics/gfxTarget.h"
 #include "memory/autoPtr.h"
 
-class GFXOpenGLTextureObject;
+class GFXOpenGL32TextureObject;
 class _GFXGLTargetDesc;
-class _GFXOpenGLTextureTargetImpl;
+class _GFXOpenGL32TextureTargetImpl;
 
 /// Render to texture support for OpenGL.
 /// This class needs to make a number of assumptions due to the requirements
@@ -42,12 +42,12 @@ class _GFXOpenGLTextureTargetImpl;
 /// 4) If the DepthStencil target is GFXTextureTarget::sDefaultStencil, then the
 /// Color0 target should be the same size as the current backbuffer and should also
 /// be the same format (typically R8G8B8A8)
-class GFXOpenGLTextureTarget : public GFXTextureTarget
+class GFXOpenGL32TextureTarget : public GFXTextureTarget
 {
 public:
-    friend GFXOpenGLDevice;
-   GFXOpenGLTextureTarget();
-   virtual ~GFXOpenGLTextureTarget();
+    friend GFXOpenGL32Device;
+   GFXOpenGL32TextureTarget();
+   virtual ~GFXOpenGL32TextureTarget();
 
    virtual const Point2I getSize();
    virtual GFXFormat getFormat();
@@ -84,7 +84,7 @@ protected:
 //   bool _needsAux;
    
    /// Pointer to our internal implementation
-   AutoPtr<_GFXOpenGLTextureTargetImpl> _impl;
+   AutoPtr<_GFXOpenGL32TextureTargetImpl> _impl;
 
    /// Array of _GFXGLTargetDesc's, an internal struct used to keep track of texture data.
    AutoPtr<_GFXGLTargetDesc> mTargets[MaxRenderSlotId];

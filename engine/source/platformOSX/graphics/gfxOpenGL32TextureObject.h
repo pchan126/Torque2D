@@ -20,21 +20,21 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#ifndef _GFXOpenGLTextureObject_H
-#define _GFXOpenGLTextureObject_H
+#ifndef _GFXOpenGL32TextureObject_H
+#define _GFXOpenGL32TextureObject_H
 
 #include "graphics/gfxTextureObject.h"
 #include "platform/platformGL.h"
 
-class GFXOpenGLDevice;
+class GFXOpenGL32Device;
 
-class GFXOpenGLTextureObject : public GFXTextureObject
+class GFXOpenGL32TextureObject : public GFXTextureObject
 {
     friend class GFXOpenGLTextureManager;
 public:
-   GFXOpenGLTextureObject(GFXDevice * aDevice, GFXTextureProfile *profile, void* texInfo);
-   GFXOpenGLTextureObject(GFXDevice * aDevice, GFXTextureProfile *profile);
-   virtual ~GFXOpenGLTextureObject();
+   GFXOpenGL32TextureObject(GFXDevice * aDevice, GFXTextureProfile *profile, void* texInfo);
+   GFXOpenGL32TextureObject(GFXDevice * aDevice, GFXTextureProfile *profile);
+   virtual ~GFXOpenGL32TextureObject();
    
    void release();
    
@@ -80,7 +80,7 @@ public:
    virtual const String describeSelf() const;
    
 private:
-   friend class GFXOpenGLTextureManager;
+   friend class GFXOpenGL32TextureManager;
    typedef GFXTextureObject Parent;
    /// Internal GL object
    GLuint mHandle;
@@ -91,7 +91,7 @@ private:
    RectI mLockedRectRect;
 
    /// Pointer to owner device
-   GFXOpenGLDevice* mGLDevice;
+   GFXOpenGL32Device* mGLDevice;
    
    bool mIsZombie;
    U8* mZombieCache;

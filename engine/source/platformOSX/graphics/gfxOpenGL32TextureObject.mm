@@ -23,22 +23,22 @@
 #include "console/console.h"
 
 #include "math/mRect.h"
-#include "./gfxOpenGLTextureObject.h"
-#include "./gfxOpenGLDevice.h"
-#include "./gfxOpenGLEnumTranslate.h"
-#include "./gfxOpenGLTextureManager.h"
-#include "./gfxOpenGLUtils.h"
+#include "./gfxOpenGL32TextureObject.h"
+#include "./gfxOpenGL32Device.h"
+#include "./gfxOpenGL32EnumTranslate.h"
+#include "./gfxOpenGL32TextureManager.h"
+#include "./gfxOpenGL32Utils.h"
 #include "graphics/gfxCardProfile.h"
 #include "platform/platformGL.h"
 
 //#import <GLKit/GLKit.h>
 //#import <ImageIO/ImageIO.h>
 
-GFXOpenGLTextureObject::GFXOpenGLTextureObject(GFXDevice * aDevice, GFXTextureProfile *profile, void* texInfo) :
+GFXOpenGL32TextureObject::GFXOpenGL32TextureObject(GFXDevice * aDevice, GFXTextureProfile *profile, void* texInfo) :
     GFXTextureObject(aDevice, profile),
     mBytesPerTexel(4),
     mLockedRectRect(0, 0, 0, 0),
-    mGLDevice(static_cast<GFXOpenGLDevice*>(mDevice)),
+    mGLDevice(static_cast<GFXOpenGL32Device*>(mDevice)),
     mZombieCache(NULL)
 {
     mBitmap = NULL;
@@ -46,25 +46,25 @@ GFXOpenGLTextureObject::GFXOpenGLTextureObject(GFXDevice * aDevice, GFXTexturePr
 }
 
 
-GFXOpenGLTextureObject::GFXOpenGLTextureObject(GFXDevice * aDevice, GFXTextureProfile *profile) :
+GFXOpenGL32TextureObject::GFXOpenGL32TextureObject(GFXDevice * aDevice, GFXTextureProfile *profile) :
    GFXTextureObject(aDevice, profile),
    mBinding(GL_TEXTURE_2D),
    mBytesPerTexel(4),
    mLockedRectRect(0, 0, 0, 0),
-   mGLDevice(static_cast<GFXOpenGLDevice*>(mDevice)),
+   mGLDevice(static_cast<GFXOpenGL32Device*>(mDevice)),
    mZombieCache(NULL)
 {
-   AssertFatal(dynamic_cast<GFXOpenGLDevice*>(mDevice), "GFXOpenGLTextureObject::GFXOpenGLTextureObject - Invalid device type, expected GFXOpenGLDevice!");
+   AssertFatal(dynamic_cast<GFXOpenGL32Device*>(mDevice), "GFXOpenGL32TextureObject::GFXOpenGL32TextureObject - Invalid device type, expected GFXOpenGL32Device!");
    glGenTextures(1, &mHandle);
 }
 
-GFXOpenGLTextureObject::~GFXOpenGLTextureObject() 
+GFXOpenGL32TextureObject::~GFXOpenGL32TextureObject() 
 {
    delete[] mZombieCache;
    kill();
 }
 
-//void GFXOpenGLTextureObject::setTexture(void* texInfo)
+//void GFXOpenGL32TextureObject::setTexture(void* texInfo)
 //{
 //    if (texInfo != NULL)
 //    {
@@ -83,16 +83,16 @@ GFXOpenGLTextureObject::~GFXOpenGLTextureObject()
 //}
 
 
-GFXLockedRect* GFXOpenGLTextureObject::lock(U32 mipLevel, RectI *inRect)
+GFXLockedRect* GFXOpenGL32TextureObject::lock(U32 mipLevel, RectI *inRect)
 {
-//   AssertFatal(mBinding != GL_TEXTURE_3D, "GFXOpenGLTextureObject::lock - We don't support locking 3D textures yet");
+//   AssertFatal(mBinding != GL_TEXTURE_3D, "GFXOpenGL32TextureObject::lock - We don't support locking 3D textures yet");
    U32 width = mTextureSize.x >> mipLevel;
    U32 height = mTextureSize.y >> mipLevel;
 
    if(inRect)
    {
       if((inRect->point.x + inRect->extent.x > width) || (inRect->point.y + inRect->extent.y > height))
-         AssertFatal(false, "GFXOpenGLTextureObject::lock - Rectangle too big!");
+         AssertFatal(false, "GFXOpenGL32TextureObject::lock - Rectangle too big!");
 
       mLockedRectRect = *inRect;
    }
@@ -109,7 +109,7 @@ GFXLockedRect* GFXOpenGLTextureObject::lock(U32 mipLevel, RectI *inRect)
    return &mLockedRect;
 }
 
-void GFXOpenGLTextureObject::unlock(U32 mipLevel)
+void GFXOpenGL32TextureObject::unlock(U32 mipLevel)
 {
    if(!mLockedRect.bits)
       return;
@@ -122,7 +122,7 @@ void GFXOpenGLTextureObject::unlock(U32 mipLevel)
    glBindTexture(GL_TEXTURE_2D, boundTexture);
 }
 
-void GFXOpenGLTextureObject::release()
+void GFXOpenGL32TextureObject::release()
 {
    glDeleteTextures(1, &mHandle);
    mHandle = 0;
@@ -137,7 +137,7 @@ static const char* extArray[EXT_ARRAY_SIZE] = { "", ".jpg", ".png"};
 #endif
 
 
-//GBitmap* GFXOpenGLTextureObject::getBitmap()
+//GBitmap* GFXOpenGL32TextureObject::getBitmap()
 //{
 //    if (mPath.isEmpty())
 //        return NULL;
@@ -202,7 +202,7 @@ static const char* extArray[EXT_ARRAY_SIZE] = { "", ".jpg", ".png"};
 //
 //    if (!npath)
 //    {
-//        Con::printf("GFXOpenGLTextureObject::createTexture unable to find: %s.%s", mPath.getFullPath().c_str(), mPath.getExtension().c_str());
+//        Con::printf("GFXOpenGL32TextureObject::createTexture unable to find: %s.%s", mPath.getFullPath().c_str(), mPath.getExtension().c_str());
 //        return NULL;
 //    }
 //
@@ -249,15 +249,15 @@ static const char* extArray[EXT_ARRAY_SIZE] = { "", ".jpg", ".png"};
 //}
 
 
-bool GFXOpenGLTextureObject::copyToBmp(GBitmap * bmp)
+bool GFXOpenGL32TextureObject::copyToBmp(GBitmap * bmp)
 {
     // not supported in opengl es
    return false;
 }
 
-void GFXOpenGLTextureObject::bind(U32 textureUnit) const
+void GFXOpenGL32TextureObject::bind(U32 textureUnit) const
 {
-    AssertFatal(mBinding == GL_TEXTURE_2D, "GFXOpenGLTextureObject::bind - only GL_TEXTURE_2D supported");
+    AssertFatal(mBinding == GL_TEXTURE_2D, "GFXOpenGL32TextureObject::bind - only GL_TEXTURE_2D supported");
    glActiveTexture(GL_TEXTURE0 + textureUnit);
     
     GLuint han = mHandle;
@@ -273,8 +273,8 @@ void GFXOpenGLTextureObject::bind(U32 textureUnit) const
 //    Con::printf("texture bind %i", han);
 //   glEnable(mBinding);
   
-   GFXOpenGLStateBlockRef sb = mGLDevice->getCurrentStateBlock();
-   AssertFatal(sb, "GFXOpenGLTextureObject::bind - No active stateblock!");
+   GFXOpenGL32StateBlockRef sb = mGLDevice->getCurrentStateBlock();
+   AssertFatal(sb, "GFXOpenGL32TextureObject::bind - No active stateblock!");
    if (!sb)
       return;
          
@@ -289,7 +289,7 @@ void GFXOpenGLTextureObject::bind(U32 textureUnit) const
     GL_CHECK();
 }
 
-U8* GFXOpenGLTextureObject::getTextureData()
+U8* GFXOpenGL32TextureObject::getTextureData()
 {
    U8* data = new U8[mTextureSize.x * mTextureSize.y * mBytesPerTexel];
    glBindTexture(GL_TEXTURE_2D, mHandle);
@@ -297,7 +297,7 @@ U8* GFXOpenGLTextureObject::getTextureData()
    return data;
 }
 
-void GFXOpenGLTextureObject::copyIntoCache()
+void GFXOpenGL32TextureObject::copyIntoCache()
 {
    glBindTexture(mBinding, mHandle);
    U32 cacheSize = mTextureSize.x * mTextureSize.y;
@@ -311,7 +311,7 @@ void GFXOpenGLTextureObject::copyIntoCache()
    glBindTexture(mBinding, 0);
 }
 
-void GFXOpenGLTextureObject::reloadFromCache()
+void GFXOpenGL32TextureObject::reloadFromCache()
 {
    if(!mZombieCache)
       return;
@@ -335,7 +335,7 @@ void GFXOpenGLTextureObject::reloadFromCache()
    mIsZombie = false;
 }
 
-void GFXOpenGLTextureObject::zombify()
+void GFXOpenGL32TextureObject::zombify()
 {
    if(mIsZombie)
       return;
@@ -347,7 +347,7 @@ void GFXOpenGLTextureObject::zombify()
    release();
 }
 
-void GFXOpenGLTextureObject::resurrect()
+void GFXOpenGL32TextureObject::resurrect()
 {
    if(!mIsZombie)
       return;
@@ -355,17 +355,17 @@ void GFXOpenGLTextureObject::resurrect()
    glGenTextures(1, &mHandle);
 }
 
-F32 GFXOpenGLTextureObject::getMaxUCoord() const
+F32 GFXOpenGL32TextureObject::getMaxUCoord() const
 {
    return mBinding == GL_TEXTURE_2D ? 1.0f : (F32)getWidth();
 }
 
-F32 GFXOpenGLTextureObject::getMaxVCoord() const
+F32 GFXOpenGL32TextureObject::getMaxVCoord() const
 {
    return mBinding == GL_TEXTURE_2D ? 1.0f : (F32)getHeight();
 }
 
-const String GFXOpenGLTextureObject::describeSelf() const
+const String GFXOpenGL32TextureObject::describeSelf() const
 {
    String ret = Parent::describeSelf();
    ret += String::ToString("   GL Handle: %i", mHandle);

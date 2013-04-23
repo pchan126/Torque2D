@@ -21,7 +21,7 @@
 //-----------------------------------------------------------------------------
 
 #include "platform/platform.h"
-#include "platformOSX/graphics/gfxOpenGLEnumTranslate.h"
+#include "platformOSX/graphics/gfxOpenGL32EnumTranslate.h"
  
 GLenum GFXGLPrimType[GFXPT_COUNT];
 GLenum GFXGLBlend[GFXBlend_COUNT];

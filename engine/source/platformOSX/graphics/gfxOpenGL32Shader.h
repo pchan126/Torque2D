@@ -20,23 +20,23 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#ifndef _GFXOpenGLShader_H_
-#define _GFXOpenGLShader_H_
+#ifndef _GFXOpenGL32Shader_H_
+#define _GFXOpenGL32Shader_H_
 
 #include "sim/refBase.h"
 #include "graphics/gfxShader.h"
 #include "collection/hashTable.h"
 
-class GFXOpenGLShaderConstHandle;
+class GFXOpenGL32ShaderConstHandle;
 class FileStream;
-class GFXOpenGLShaderConstBuffer;
+class GFXOpenGL32ShaderConstBuffer;
 
-class GFXOpenGLShader : public GFXShader
+class GFXOpenGL32Shader : public GFXShader
 {
-   typedef HashMap<String, GFXOpenGLShaderConstHandle*> HandleMap;
+   typedef HashMap<String, GFXOpenGL32ShaderConstHandle*> HandleMap;
 public:
-   GFXOpenGLShader();
-   virtual ~GFXOpenGLShader();
+   GFXOpenGL32Shader();
+   virtual ~GFXOpenGL32Shader();
    
    /// @name GFXShader interface
    /// @{
@@ -64,8 +64,8 @@ public:
    
 protected:
 
-   friend class GFXOpenGLShaderConstBuffer;
-   friend class GFXOpenGLShaderConstHandle;
+   friend class GFXOpenGL32ShaderConstBuffer;
+   friend class GFXOpenGL32ShaderConstHandle;
    
    virtual bool _init();   
 
@@ -76,7 +76,7 @@ protected:
    void clearShaders();
    void initConstantDescs();
    void initHandles();
-   void setConstantsFromBuffer(GFXOpenGLShaderConstBuffer* buffer);
+   void setConstantsFromBuffer(GFXOpenGL32ShaderConstBuffer* buffer);
    
    static char* _handleIncludes( const StringTableEntry path, FileStream *s );
 
@@ -96,20 +96,20 @@ protected:
    U32 mConstBufferSize;
    U8* mConstBuffer;
    HandleMap mHandles;
-   Vector<GFXOpenGLShaderConstHandle*> mValidHandles;
+   Vector<GFXOpenGL32ShaderConstHandle*> mValidHandles;
 };
 
-class GFXOpenGLShaderConstBuffer : public GFXShaderConstBuffer
+class GFXOpenGL32ShaderConstBuffer : public GFXShaderConstBuffer
 {
 public:
-   GFXOpenGLShaderConstBuffer(GFXOpenGLShader* shader, U32 bufSize, U8* existingConstants);
-   ~GFXOpenGLShaderConstBuffer();
+   GFXOpenGL32ShaderConstBuffer(GFXOpenGL32Shader* shader, U32 bufSize, U8* existingConstants);
+   ~GFXOpenGL32ShaderConstBuffer();
    
-   /// Called by GFXOpenGLDevice to activate this buffer.
+   /// Called by GFXOpenGL32Device to activate this buffer.
    void activate();
 
    /// Called when the shader this buffer references is reloaded.
-   void onShaderReload( GFXOpenGLShader *shader );
+   void onShaderReload( GFXOpenGL32Shader *shader );
 
    // GFXShaderConstBuffer
    virtual GFXShader* getShader() { return mShader; }
@@ -140,9 +140,9 @@ public:
 
 private:
 
-   friend class GFXOpenGLShader;
+   friend class GFXOpenGL32Shader;
    U8* mBuffer;
-   WeakRefPtr<GFXOpenGLShader> mShader;
+   WeakRefPtr<GFXOpenGL32Shader> mShader;
    
    template<typename ConstType>
    void internalSet(GFXShaderConstHandle* handle, const ConstType& param);
@@ -151,4 +151,4 @@ private:
 //   void internalSet(GFXShaderConstHandle* handle, const AlignedArray<ConstType>& fv);
 };
 
-#endif // _GFXOpenGLShader_H_
+#endif // _GFXOpenGL32Shader_H_

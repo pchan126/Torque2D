@@ -20,48 +20,46 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#ifndef _GFXGLENUMTRANSLATE_H_
-#define _GFXGLENUMTRANSLATE_H_
+#ifndef _GFXOpenGL32StateBlock_H_
+#define _GFXOpenGL32StateBlock_H_
 
-#include "platform/platformGL.h"
-#include "graphics/gfxEnums.h"
+#include "graphics/gfxStateBlock.h"
 
-namespace GFXOpenGLEnumTranslate
-{
-    void init();
+class GFXOpenGL32StateBlock : public GFXStateBlock
+{   
+public:
+   // 
+   // GFXOpenGL32StateBlock interface
+   //
+   GFXOpenGL32StateBlock(const GFXStateBlockDesc& desc);
+   virtual ~GFXOpenGL32StateBlock();
+
+   /// Called by OpenGL device to active this state block.
+   /// @param oldState  The current state, used to make sure we don't set redundant states on the device.  Pass NULL to reset all states.
+   void activate(const GFXOpenGL32StateBlock* oldState);
+
+
+   // 
+   // GFXStateBlock interface
+   //
+
+   /// Returns the hash value of the desc that created this block
+   virtual U32 getHashValue() const;
+
+   /// Returns a GFXStateBlockDesc that this block represents
+   virtual const GFXStateBlockDesc& getDesc() const;   
+
+   //
+   // GFXResource
+   //
+   virtual void zombify() { }
+   /// When called the resource should restore all device sensitive information destroyed by zombify()
+   virtual void resurrect() { }
+private:
+   GFXStateBlockDesc mDesc;
+   U32 mCachedHashValue;
 };
 
-enum SHADER_ATTRIBUTES{
-    ATTRIB_POSITION,
-    ATTRIB_COLOR,
-    ATTRIB_NORMAL,
-    ATTRIB_TEXCOORD0,
-    ATTRIB_TEXCOORD1,
-    ATTRIB_TEXCOORD2,
-    ATTRIB_TEXCOORD3,
-    ATTRIB_TEXCOORD4,
-    ATTRIB_TEXCOORD5,
-    ATTRIB_TEXCOORD6,
-    ATTRIB_TEXCOORD7,
-    ATTRIB_POINTSIZE,
-    NUM_ATTRIBUTES };
-
-extern GLenum GFXGLPrimType[GFXPT_COUNT];
-extern GLenum GFXGLBlend[GFXBlend_COUNT];
-extern GLenum GFXGLBlendOp[GFXBlendOp_COUNT];
-extern GLenum GFXGLSamplerState[GFXSAMP_COUNT];
-extern GLenum GFXGLTextureFilter[GFXTextureFilter_COUNT];
-extern GLenum GFXGLTextureAddress[GFXAddress_COUNT];
-extern GLenum GFXGLCmpFunc[GFXCmp_COUNT];
-extern GLenum GFXGLStencilOp[GFXStencilOp_COUNT];
-
-extern GLenum GFXGLTextureInternalFormat[GFXFormat_COUNT];
-extern GLenum GFXGLTextureFormat[GFXFormat_COUNT];
-extern GLenum GFXGLTextureType[GFXFormat_COUNT];
-
-extern GLenum GFXGLBufferType[GFXBufferType_COUNT];
-extern GLenum GFXGLCullMode[GFXCull_COUNT];
-
-extern GLenum GFXGLFillMode[GFXFill_COUNT];
+typedef StrongRefPtr<GFXOpenGL32StateBlock> GFXOpenGL32StateBlockRef;
 
 #endif

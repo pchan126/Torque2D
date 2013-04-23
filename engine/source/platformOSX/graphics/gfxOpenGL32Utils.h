@@ -20,10 +20,10 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#ifndef TORQUE_GFX_GLES_GFXGLUTILS_H_
-#define TORQUE_GFX_GLES_GFXGLUTILS_H_
+#ifndef TORQUE_GFX_GL32_GFXGLUTILS_H_
+#define TORQUE_GFX_GL32_GFXGLUTILS_H_
 
-#include "./gfxOpenGLDevice.h"
+#include "./gfxOpenGL32Device.h"
 //#include "core/util/preprocessorHelpers.h"
 /// @defgroup preprocess_helpers Preprocessor Helpers
 /// These are some handy preprocessor macros to simplify certain tasks, like
@@ -38,7 +38,7 @@
 #define TORQUE_CONCAT(x, y) _TORQUE_CONCAT(x, y)
 
 
-#include "./gfxOpenGLEnumTranslate.h"
+#include "./gfxOpenGL32EnumTranslate.h"
 
 static inline GLenum minificationFilter(U32 minFilter, U32 mipFilter, U32 mipLevels)
 {

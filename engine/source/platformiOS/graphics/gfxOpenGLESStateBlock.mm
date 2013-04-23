@@ -69,17 +69,17 @@ void GFXOpenGLESStateBlock::activate(const GFXOpenGLESStateBlock* oldState)
    if(STATE_CHANGE(colorWriteRed) || STATE_CHANGE(colorWriteBlue) || STATE_CHANGE(colorWriteGreen) || STATE_CHANGE(colorWriteAlpha))
       glColorMask(mDesc.colorWriteRed, mDesc.colorWriteBlue, mDesc.colorWriteGreen, mDesc.colorWriteAlpha);
    
-   // Culling
-//      TOGGLE_STATE(cullMode, GL_CULL_FACE);
-    if ((!mDesc.cullMode) && (glIsEnabled(GL_CULL_FACE) == GL_TRUE))
+    // Culling
+    if (mDesc.cullMode == GFXCullNone)
     {
-        glDisable(GL_CULL_FACE);
+        if (glIsEnabled(GL_CULL_FACE) == GL_TRUE)
+            glDisable(GL_CULL_FACE);
     }
     else
     {
         if (glIsEnabled(GL_CULL_FACE) == GL_FALSE)
             glEnable(GL_CULL_FACE);
-
+        
         glCullFace(GFXGLCullMode[mDesc.cullMode]);
     }
 

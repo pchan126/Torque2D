@@ -20,46 +20,25 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#ifndef _GFXOpenGLStateBlock_H_
-#define _GFXOpenGLStateBlock_H_
+#ifndef _GFXGL32CARDPROFILE_H
+#define _GFXGL32CARDPROFILE_H
 
-#include "graphics/gfxStateBlock.h"
+#include "graphics/gfxCardProfile.h"
 
-class GFXOpenGLStateBlock : public GFXStateBlock
-{   
+class GFXOpenGLCardProfiler : public GFXCardProfiler
+{
 public:
-   // 
-   // GFXOpenGLStateBlock interface
-   //
-   GFXOpenGLStateBlock(const GFXStateBlockDesc& desc);
-   virtual ~GFXOpenGLStateBlock();
+   void init();
 
-   /// Called by OpenGL device to active this state block.
-   /// @param oldState  The current state, used to make sure we don't set redundant states on the device.  Pass NULL to reset all states.
-   void activate(const GFXOpenGLStateBlock* oldState);
+protected:
+   virtual const String& getRendererString() const { return mRendererString; }
+   virtual void setupCardCapabilities();
+   virtual bool _queryCardCap(const String& query, U32& foundResult);
+   virtual bool _queryFormat(const GFXFormat fmt, const GFXTextureProfile *profile, bool &inOutAutogenMips);
 
-
-   // 
-   // GFXStateBlock interface
-   //
-
-   /// Returns the hash value of the desc that created this block
-   virtual U32 getHashValue() const;
-
-   /// Returns a GFXStateBlockDesc that this block represents
-   virtual const GFXStateBlockDesc& getDesc() const;   
-
-   //
-   // GFXResource
-   //
-   virtual void zombify() { }
-   /// When called the resource should restore all device sensitive information destroyed by zombify()
-   virtual void resurrect() { }
 private:
-   GFXStateBlockDesc mDesc;
-   U32 mCachedHashValue;
+   String mRendererString;
+   typedef GFXCardProfiler Parent;
 };
-
-typedef StrongRefPtr<GFXOpenGLStateBlock> GFXOpenGLStateBlockRef;
 
 #endif

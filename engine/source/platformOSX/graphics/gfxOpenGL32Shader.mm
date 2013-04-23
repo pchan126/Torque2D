@@ -22,7 +22,7 @@
 
 #include "platform/platform.h"
 #include "platform/platformGL.h"
-#include "./gfxOpenGLShader.h"
+#include "./gfxOpenGL32Shader.h"
 
 #include "memory/frameAllocator.h"
 #include "io/fileStream.h"
@@ -30,21 +30,21 @@
 #include "math/mPoint.h"
 #include "graphics/gfxStructs.h"
 #include "console/console.h"
-#include "./gfxOpenGLEnumTranslate.h"
+#include "./gfxOpenGL32EnumTranslate.h"
 
 //#if (defined TORQUE_OS_IPHONE || defined TORQUE_OS_MAC)
 //#import <GLKit/GLKit.h>
 //#endif
 
-class GFXOpenGLShaderConstHandle : public GFXShaderConstHandle
+class GFXOpenGL32ShaderConstHandle : public GFXShaderConstHandle
 {
-   friend class GFXOpenGLShader;
+   friend class GFXOpenGL32Shader;
 
 public:  
    
-   GFXOpenGLShaderConstHandle( GFXOpenGLShader *shader );
-   GFXOpenGLShaderConstHandle( GFXOpenGLShader *shader, const GFXShaderConstDesc &desc, GLuint loc, S32 samplerNum );
-   virtual ~GFXOpenGLShaderConstHandle();
+   GFXOpenGL32ShaderConstHandle( GFXOpenGL32Shader *shader );
+   GFXOpenGL32ShaderConstHandle( GFXOpenGL32Shader *shader, const GFXShaderConstDesc &desc, GLuint loc, S32 samplerNum );
+   virtual ~GFXOpenGL32ShaderConstHandle();
    
    void reinit( const GFXShaderConstDesc &desc, GLuint loc, S32 samplerNum );
 
@@ -59,14 +59,14 @@ public:
    S32 getSamplerRegister() const { return mSamplerNum; }
 
    GFXShaderConstDesc mDesc;
-   GFXOpenGLShader* mShader;
+   GFXOpenGL32Shader* mShader;
    GLuint mLocation;
    U32 mOffset;
    U32 mSize;  
    S32 mSamplerNum; 
 };
 
-GFXOpenGLShaderConstHandle::GFXOpenGLShaderConstHandle( GFXOpenGLShader *shader )
+GFXOpenGL32ShaderConstHandle::GFXOpenGL32ShaderConstHandle( GFXOpenGL32Shader *shader )
  : mShader( shader ), mSamplerNum(-1)
 {
    mValid = false;
@@ -102,13 +102,13 @@ static U32 shaderConstTypeSize(GFXShaderConstType type)
    }
 }
 
-GFXOpenGLShaderConstHandle::GFXOpenGLShaderConstHandle( GFXOpenGLShader *shader, const GFXShaderConstDesc &desc, GLuint loc, S32 samplerNum ) 
+GFXOpenGL32ShaderConstHandle::GFXOpenGL32ShaderConstHandle( GFXOpenGL32Shader *shader, const GFXShaderConstDesc &desc, GLuint loc, S32 samplerNum ) 
  : mShader(shader)
 {
    reinit(desc, loc, samplerNum);
 }
 
-void GFXOpenGLShaderConstHandle::reinit( const GFXShaderConstDesc& desc, GLuint loc, S32 samplerNum )
+void GFXOpenGL32ShaderConstHandle::reinit( const GFXShaderConstDesc& desc, GLuint loc, S32 samplerNum )
 {
    mDesc = desc;
    mLocation = loc;
@@ -116,22 +116,22 @@ void GFXOpenGLShaderConstHandle::reinit( const GFXShaderConstDesc& desc, GLuint 
    mOffset = 0;
    
    U32 elemSize = shaderConstTypeSize(mDesc.constType);
-   AssertFatal(elemSize, "GFXOpenGLShaderConst::GFXOpenGLShaderConst - elemSize is 0");
+   AssertFatal(elemSize, "GFXOpenGL32ShaderConst::GFXOpenGL32ShaderConst - elemSize is 0");
    mSize = mDesc.arraySize * elemSize;
    mValid = true;
 }
 
 
-U32 GFXOpenGLShaderConstHandle::getSize() const
+U32 GFXOpenGL32ShaderConstHandle::getSize() const
 {
    return mSize;
 }
 
-GFXOpenGLShaderConstHandle::~GFXOpenGLShaderConstHandle()
+GFXOpenGL32ShaderConstHandle::~GFXOpenGL32ShaderConstHandle()
 {
 }
 
-GFXOpenGLShaderConstBuffer::GFXOpenGLShaderConstBuffer(GFXOpenGLShader* shader, U32 bufSize, U8* existingConstants)
+GFXOpenGL32ShaderConstBuffer::GFXOpenGL32ShaderConstBuffer(GFXOpenGL32Shader* shader, U32 bufSize, U8* existingConstants)
 {
    mShader = shader;
    mBuffer = new U8[bufSize];
@@ -144,7 +144,7 @@ GFXOpenGLShaderConstBuffer::GFXOpenGLShaderConstBuffer(GFXOpenGLShader* shader, 
    dMemcpy(mBuffer, existingConstants, bufSize);
 }
 
-GFXOpenGLShaderConstBuffer::~GFXOpenGLShaderConstBuffer()
+GFXOpenGL32ShaderConstBuffer::~GFXOpenGL32ShaderConstBuffer()
 {
    delete[] mBuffer;
 
@@ -153,72 +153,72 @@ GFXOpenGLShaderConstBuffer::~GFXOpenGLShaderConstBuffer()
 }
 
 template<typename ConstType>
-void GFXOpenGLShaderConstBuffer::internalSet(GFXShaderConstHandle* handle, const ConstType& param)
+void GFXOpenGL32ShaderConstBuffer::internalSet(GFXShaderConstHandle* handle, const ConstType& param)
 {
-   AssertFatal(handle, "GFXOpenGLShaderConstBuffer::internalSet - Handle is NULL!" );
-   AssertFatal(handle->isValid(), "GFXOpenGLShaderConstBuffer::internalSet - Handle is not valid!" );
-   AssertFatal(dynamic_cast<GFXOpenGLShaderConstHandle*>(handle), "GFXOpenGLShaderConstBuffer::set - Incorrect const buffer type");
+   AssertFatal(handle, "GFXOpenGL32ShaderConstBuffer::internalSet - Handle is NULL!" );
+   AssertFatal(handle->isValid(), "GFXOpenGL32ShaderConstBuffer::internalSet - Handle is not valid!" );
+   AssertFatal(dynamic_cast<GFXOpenGL32ShaderConstHandle*>(handle), "GFXOpenGL32ShaderConstBuffer::set - Incorrect const buffer type");
 
-   GFXOpenGLShaderConstHandle* _glHandle = static_cast<GFXOpenGLShaderConstHandle*>(handle);
-   AssertFatal(mShader == _glHandle->mShader, "GFXOpenGLShaderConstBuffer::set - Should only set handles which are owned by our shader");
+   GFXOpenGL32ShaderConstHandle* _glHandle = static_cast<GFXOpenGL32ShaderConstHandle*>(handle);
+   AssertFatal(mShader == _glHandle->mShader, "GFXOpenGL32ShaderConstBuffer::set - Should only set handles which are owned by our shader");
    
    dMemcpy(mBuffer + _glHandle->mOffset, &param, sizeof(ConstType));
 }
 
-void GFXOpenGLShaderConstBuffer::set(GFXShaderConstHandle* handle, const F32 fv)
+void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const F32 fv)
 {
    internalSet(handle, fv);
 }
 
-void GFXOpenGLShaderConstBuffer::set(GFXShaderConstHandle* handle, const Point2F& fv)
+void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const Point2F& fv)
 {
    internalSet(handle, fv);
 }
 
-void GFXOpenGLShaderConstBuffer::set(GFXShaderConstHandle* handle, const Point3F& fv)
+void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const Point3F& fv)
 {
    internalSet(handle, fv);
 }
 
-void GFXOpenGLShaderConstBuffer::set(GFXShaderConstHandle* handle, const Point4F& fv)
+void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const Point4F& fv)
 {
    internalSet(handle, fv);
 }
 
-void GFXOpenGLShaderConstBuffer::set(GFXShaderConstHandle* handle, const PlaneF& fv)
+void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const PlaneF& fv)
 {
    internalSet(handle, fv);
 }
 
-void GFXOpenGLShaderConstBuffer::set(GFXShaderConstHandle* handle, const S32 fv)
+void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const S32 fv)
 {
    internalSet(handle, fv);
 }
 
-void GFXOpenGLShaderConstBuffer::set(GFXShaderConstHandle* handle, const Point2I& fv)
+void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const Point2I& fv)
 {
    internalSet(handle, fv);
 }
 
-void GFXOpenGLShaderConstBuffer::set(GFXShaderConstHandle* handle, const Point3I& fv)
+void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const Point3I& fv)
 {
    internalSet(handle, fv);
 }
 
-void GFXOpenGLShaderConstBuffer::set(GFXShaderConstHandle* handle, const Point4I& fv)
+void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const Point4I& fv)
 {
    internalSet(handle, fv);
 }
 
 //template<typename ConstType>
-//void GFXOpenGLShaderConstBuffer::internalSet(GFXShaderConstHandle* handle, const AlignedArray<ConstType>& fv)
+//void GFXOpenGL32ShaderConstBuffer::internalSet(GFXShaderConstHandle* handle, const AlignedArray<ConstType>& fv)
 //{
-//   AssertFatal(handle, "GFXOpenGLShaderConstBuffer::internalSet - Handle is NULL!" );
-//   AssertFatal(handle->isValid(), "GFXOpenGLShaderConstBuffer::internalSet - Handle is not valid!" );
-//   AssertFatal(dynamic_cast<GFXOpenGLShaderConstHandle*>(handle), "GFXOpenGLShaderConstBuffer::set - Incorrect const buffer type");
+//   AssertFatal(handle, "GFXOpenGL32ShaderConstBuffer::internalSet - Handle is NULL!" );
+//   AssertFatal(handle->isValid(), "GFXOpenGL32ShaderConstBuffer::internalSet - Handle is not valid!" );
+//   AssertFatal(dynamic_cast<GFXOpenGL32ShaderConstHandle*>(handle), "GFXOpenGL32ShaderConstBuffer::set - Incorrect const buffer type");
 //
-//   GFXOpenGLShaderConstHandle* _glHandle = static_cast<GFXOpenGLShaderConstHandle*>(handle);
-//   AssertFatal(mShader == _glHandle->mShader, "GFXOpenGLShaderConstBuffer::set - Should only set handles which are owned by our shader");
+//   GFXOpenGL32ShaderConstHandle* _glHandle = static_cast<GFXOpenGL32ShaderConstHandle*>(handle);
+//   AssertFatal(mShader == _glHandle->mShader, "GFXOpenGL32ShaderConstBuffer::set - Should only set handles which are owned by our shader");
 //   const U8* fvBuffer = static_cast<const U8*>(fv.getBuffer());
 //   for(U32 i = 0; i < fv.size(); ++i)
 //   {
@@ -227,54 +227,54 @@ void GFXOpenGLShaderConstBuffer::set(GFXShaderConstHandle* handle, const Point4I
 //   }
 //}
 //
-//void GFXOpenGLShaderConstBuffer::set(GFXShaderConstHandle* handle, const AlignedArray<F32>& fv)
+//void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const AlignedArray<F32>& fv)
 //{
 //   internalSet(handle, fv);
 //}
 //
-//void GFXOpenGLShaderConstBuffer::set(GFXShaderConstHandle* handle, const AlignedArray<Point2F>& fv)
+//void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const AlignedArray<Point2F>& fv)
 //{
 //   internalSet(handle, fv);
 //}
 //
-//void GFXOpenGLShaderConstBuffer::set(GFXShaderConstHandle* handle, const AlignedArray<Point3F>& fv)
+//void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const AlignedArray<Point3F>& fv)
 //{
 //   internalSet(handle, fv);
 //}
 //
-//void GFXOpenGLShaderConstBuffer::set(GFXShaderConstHandle* handle, const AlignedArray<Point4F>& fv)   
+//void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const AlignedArray<Point4F>& fv)   
 //{
 //   internalSet(handle, fv);
 //}
 //
-//void GFXOpenGLShaderConstBuffer::set(GFXShaderConstHandle* handle, const AlignedArray<S32>& fv)
+//void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const AlignedArray<S32>& fv)
 //{
 //   internalSet(handle, fv);
 //}
 //
-//void GFXOpenGLShaderConstBuffer::set(GFXShaderConstHandle* handle, const AlignedArray<Point2I>& fv)
+//void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const AlignedArray<Point2I>& fv)
 //{
 //   internalSet(handle, fv);
 //}
 //
-//void GFXOpenGLShaderConstBuffer::set(GFXShaderConstHandle* handle, const AlignedArray<Point3I>& fv)
+//void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const AlignedArray<Point3I>& fv)
 //{
 //   internalSet(handle, fv);
 //}
 //
-//void GFXOpenGLShaderConstBuffer::set(GFXShaderConstHandle* handle, const AlignedArray<Point4I>& fv)
+//void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const AlignedArray<Point4I>& fv)
 //{
 //   internalSet(handle, fv);
 //}
 
-void GFXOpenGLShaderConstBuffer::set(GFXShaderConstHandle* handle, const MatrixF& mat, const GFXShaderConstType matType)
+void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const MatrixF& mat, const GFXShaderConstType matType)
 {
-   AssertFatal(handle, "GFXOpenGLShaderConstBuffer::set - Handle is NULL!" );
-   AssertFatal(handle->isValid(), "GFXOpenGLShaderConstBuffer::set - Handle is not valid!" );
-   AssertFatal(dynamic_cast<GFXOpenGLShaderConstHandle*>(handle), "GFXOpenGLShaderConstBuffer::set - Incorrect const buffer type");
+   AssertFatal(handle, "GFXOpenGL32ShaderConstBuffer::set - Handle is NULL!" );
+   AssertFatal(handle->isValid(), "GFXOpenGL32ShaderConstBuffer::set - Handle is not valid!" );
+   AssertFatal(dynamic_cast<GFXOpenGL32ShaderConstHandle*>(handle), "GFXOpenGL32ShaderConstBuffer::set - Incorrect const buffer type");
 
-   GFXOpenGLShaderConstHandle* _glHandle = static_cast<GFXOpenGLShaderConstHandle*>(handle);
-   AssertFatal(mShader == _glHandle->mShader, "GFXOpenGLShaderConstBuffer::set - Should only set handles which are owned by our shader");
+   GFXOpenGL32ShaderConstHandle* _glHandle = static_cast<GFXOpenGL32ShaderConstHandle*>(handle);
+   AssertFatal(mShader == _glHandle->mShader, "GFXOpenGL32ShaderConstBuffer::set - Should only set handles which are owned by our shader");
    
    switch(matType)
    {
@@ -299,43 +299,43 @@ void GFXOpenGLShaderConstBuffer::set(GFXShaderConstHandle* handle, const MatrixF
       dMemcpy(mBuffer + _glHandle->mOffset, (const F32*)mat, sizeof(MatrixF));
       break;
    default:
-      AssertFatal(false, "GFXOpenGLShaderConstBuffer::set - Invalid matrix type");
+      AssertFatal(false, "GFXOpenGL32ShaderConstBuffer::set - Invalid matrix type");
       break;
    }
 }
 
-void GFXOpenGLShaderConstBuffer::set(GFXShaderConstHandle* handle, const MatrixF* mat, const U32 arraySize, const GFXShaderConstType matrixType)
+void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const MatrixF* mat, const U32 arraySize, const GFXShaderConstType matrixType)
 {
-   AssertFatal(handle, "GFXOpenGLShaderConstBuffer::set - Handle is NULL!" );
-   AssertFatal(handle->isValid(), "GFXOpenGLShaderConstBuffer::set - Handle is not valid!" );
+   AssertFatal(handle, "GFXOpenGL32ShaderConstBuffer::set - Handle is NULL!" );
+   AssertFatal(handle->isValid(), "GFXOpenGL32ShaderConstBuffer::set - Handle is not valid!" );
 
-   GFXOpenGLShaderConstHandle* _glHandle = static_cast<GFXOpenGLShaderConstHandle*>(handle);
-   AssertFatal(mShader == _glHandle->mShader, "GFXOpenGLShaderConstBuffer::set - Should only set handles which are owned by our shader");
+   GFXOpenGL32ShaderConstHandle* _glHandle = static_cast<GFXOpenGL32ShaderConstHandle*>(handle);
+   AssertFatal(mShader == _glHandle->mShader, "GFXOpenGL32ShaderConstBuffer::set - Should only set handles which are owned by our shader");
    
    switch (matrixType) {
       case GFXSCT_Float4x4:
          dMemcpy(mBuffer + _glHandle->mOffset, (F32*)mat, _glHandle->getSize());
          break;
       default:
-         AssertFatal(false, "GFXOpenGLShaderConstBuffer::set - setting array of non 4x4 matrices!");
+         AssertFatal(false, "GFXOpenGL32ShaderConstBuffer::set - setting array of non 4x4 matrices!");
          break;
    }
 }
 
-void GFXOpenGLShaderConstBuffer::activate()
+void GFXOpenGL32ShaderConstBuffer::activate()
 {
    mShader->setConstantsFromBuffer(this);
    mWasLost = false;
 }
 
-const String GFXOpenGLShaderConstBuffer::describeSelf() const
+const String GFXOpenGL32ShaderConstBuffer::describeSelf() const
 {
    return String();
 }
 
-void GFXOpenGLShaderConstBuffer::onShaderReload( GFXOpenGLShader *shader )
+void GFXOpenGL32ShaderConstBuffer::onShaderReload( GFXOpenGL32Shader *shader )
 {
-   AssertFatal( shader == mShader, "GFXOpenGLShaderConstBuffer::onShaderReload, mismatched shaders!" );
+   AssertFatal( shader == mShader, "GFXOpenGL32ShaderConstBuffer::onShaderReload, mismatched shaders!" );
 
    delete[] mBuffer;
    mBuffer = new U8[mShader->mConstBufferSize];
@@ -343,7 +343,7 @@ void GFXOpenGLShaderConstBuffer::onShaderReload( GFXOpenGLShader *shader )
    mWasLost = true;
 }
 
-GFXOpenGLShader::GFXOpenGLShader() :
+GFXOpenGL32Shader::GFXOpenGL32Shader() :
    mVertexShader(0),
    mPixelShader(0),
    mProgram(0),
@@ -354,7 +354,7 @@ GFXOpenGLShader::GFXOpenGLShader() :
     mPixelFile = StringTable->EmptyString;
 }
 
-GFXOpenGLShader::~GFXOpenGLShader()
+GFXOpenGL32Shader::~GFXOpenGL32Shader()
 {
    clearShaders();
    for(HandleMap::iterator i = mHandles.begin(); i != mHandles.end(); i++)
@@ -363,7 +363,7 @@ GFXOpenGLShader::~GFXOpenGLShader()
    delete[] mConstBuffer;
 }
 
-void GFXOpenGLShader::clearShaders()
+void GFXOpenGL32Shader::clearShaders()
 {
    glDeleteProgram(mProgram);
    glDeleteShader(mVertexShader);
@@ -374,7 +374,7 @@ void GFXOpenGLShader::clearShaders()
    mPixelShader = 0;
 }
 
-bool GFXOpenGLShader::_init()
+bool GFXOpenGL32Shader::_init()
 {
    // Don't initialize empty shaders.
    if ( mVertexFile == StringTable->EmptyString || mPixelFile == StringTable->EmptyString )
@@ -432,7 +432,7 @@ bool GFXOpenGLShader::_init()
       {
          if ( smLogErrors )
          {
-            Con::errorf( "GFXOpenGLShader::init - Error linking shader!" );
+            Con::errorf( "GFXOpenGL32Shader::init - Error linking shader!" );
             Con::errorf( "Program %s: %s",
                 mVertexFile, log);
          }
@@ -456,12 +456,12 @@ bool GFXOpenGLShader::_init()
    // to worry about unnecessarily calling.
    Vector<GFXShaderConstBuffer*>::iterator biter = mActiveBuffers.begin();
    for ( ; biter != mActiveBuffers.end(); biter++ )   
-      ((GFXOpenGLShaderConstBuffer*)(*biter))->onShaderReload( this );
+      ((GFXOpenGL32ShaderConstBuffer*)(*biter))->onShaderReload( this );
    
    return true;
 }
 
-void GFXOpenGLShader::initConstantDescs()
+void GFXOpenGL32Shader::initConstantDescs()
 {
    mConstants.clear();
    GLint numUniforms;
@@ -528,7 +528,7 @@ void GFXOpenGLShader::initConstantDescs()
             desc.constType = GFXSCT_SamplerCube;
             break;
          default:
-            AssertFatal(false, "GFXOpenGLShader::initConstantDescs - unrecognized uniform type");
+            AssertFatal(false, "GFXOpenGL32Shader::initConstantDescs - unrecognized uniform type");
             // If we don't recognize the constant don't add its description.
             continue;
       }
@@ -537,7 +537,7 @@ void GFXOpenGLShader::initConstantDescs()
    }
 }
 
-void GFXOpenGLShader::initHandles()
+void GFXOpenGL32Shader::initHandles()
 {      
    // Mark all existing handles as invalid.
    // Those that are found when parsing the descriptions will then be marked valid again.
@@ -567,7 +567,7 @@ void GFXOpenGLShader::initHandles()
       else 
       {
           Con::printf("initHandles - %i %s", loc, &desc.name.c_str()[1]);
-         mHandles[desc.name] = new GFXOpenGLShaderConstHandle( this, desc, loc, sampler );
+         mHandles[desc.name] = new GFXOpenGL32ShaderConstHandle( this, desc, loc, sampler );
       }
    }
 
@@ -580,7 +580,7 @@ void GFXOpenGLShader::initHandles()
 
    for ( HandleMap::iterator iter = mHandles.begin(); iter != mHandles.end(); ++iter )
    {
-      GFXOpenGLShaderConstHandle* handle = iter->value;
+      GFXOpenGL32ShaderConstHandle* handle = iter->value;
       if ( handle->isValid() )
       {
       	mValidHandles.push_back(handle);
@@ -597,7 +597,7 @@ void GFXOpenGLShader::initHandles()
    // Iterate through uniforms to set sampler numbers.
    for (HandleMap::iterator iter = mHandles.begin(); iter != mHandles.end(); ++iter)
    {
-      GFXOpenGLShaderConstHandle* handle = iter->value;
+      GFXOpenGL32ShaderConstHandle* handle = iter->value;
       if(handle->isValid() && (handle->getType() == GFXSCT_Sampler || handle->getType() == GFXSCT_SamplerCube))
       {
          // Set sampler number on our program.
@@ -609,26 +609,26 @@ void GFXOpenGLShader::initHandles()
    glUseProgram(0);
 }
 
-GFXShaderConstHandle* GFXOpenGLShader::getShaderConstHandle(const String& name)
+GFXShaderConstHandle* GFXOpenGL32Shader::getShaderConstHandle(const String& name)
 {
    HandleMap::iterator i = mHandles.find(name);
    if(i != mHandles.end())
       return i->value;
    else
    {
-      GFXOpenGLShaderConstHandle* handle = new GFXOpenGLShaderConstHandle( this );
+      GFXOpenGL32ShaderConstHandle* handle = new GFXOpenGL32ShaderConstHandle( this );
       mHandles[ name ] = handle;
       
       return handle;
    }
 }
 
-void GFXOpenGLShader::setConstantsFromBuffer(GFXOpenGLShaderConstBuffer* buffer)
+void GFXOpenGL32Shader::setConstantsFromBuffer(GFXOpenGL32ShaderConstBuffer* buffer)
 {
-   for(Vector<GFXOpenGLShaderConstHandle*>::iterator i = mValidHandles.begin(); i != mValidHandles.end(); ++i)
+   for(Vector<GFXOpenGL32ShaderConstHandle*>::iterator i = mValidHandles.begin(); i != mValidHandles.end(); ++i)
    {
-      GFXOpenGLShaderConstHandle* handle = *i;
-      AssertFatal(handle, "GFXOpenGLShader::setConstantsFromBuffer - Null handle");
+      GFXOpenGL32ShaderConstHandle* handle = *i;
+      AssertFatal(handle, "GFXOpenGL32Shader::setConstantsFromBuffer - Null handle");
       if (handle != NULL)
       {
          // Don't set if the value has not be changed.
@@ -679,26 +679,26 @@ void GFXOpenGLShader::setConstantsFromBuffer(GFXOpenGLShaderConstBuffer* buffer)
    }
 }
 
-GFXShaderConstBufferRef GFXOpenGLShader::allocConstBuffer()
+GFXShaderConstBufferRef GFXOpenGL32Shader::allocConstBuffer()
 {
-   GFXOpenGLShaderConstBuffer* buffer = new GFXOpenGLShaderConstBuffer(this, mConstBufferSize, mConstBuffer);
+   GFXOpenGL32ShaderConstBuffer* buffer = new GFXOpenGL32ShaderConstBuffer(this, mConstBufferSize, mConstBuffer);
    buffer->registerResourceWithDevice(getOwningDevice());
    mActiveBuffers.push_back( buffer );
    return buffer;
 }
 
-void GFXOpenGLShader::useProgram()
+void GFXOpenGL32Shader::useProgram()
 {
    glUseProgram(mProgram);
 }
 
-void GFXOpenGLShader::zombify()
+void GFXOpenGL32Shader::zombify()
 {
    clearShaders();
    dMemset(mConstBuffer, 0, mConstBufferSize);
 }
 
-char* GFXOpenGLShader::_handleIncludes( const StringTableEntry path, FileStream *s )
+char* GFXOpenGL32Shader::_handleIncludes( const StringTableEntry path, FileStream *s )
 {
    // TODO:  The #line pragma on GLSL takes something called a
    // "source-string-number" which it then never explains.
@@ -752,7 +752,7 @@ char* GFXOpenGLShader::_handleIncludes( const StringTableEntry path, FileStream 
 //               AssertISV(false, avar("failed to open include '%s'.", includePath.getFullPath().c_str()));
 //
 //               if ( smLogErrors )
-//                  Con::errorf( "GFXOpenGLShader::_handleIncludes - Failed to open include '%s'.", 
+//                  Con::errorf( "GFXOpenGL32Shader::_handleIncludes - Failed to open include '%s'.", 
 //                     includePath.getFullPath().c_str() );
 //
 //               // Fail... don't return the buffer.
@@ -811,7 +811,7 @@ char* GFXOpenGLShader::_handleIncludes( const StringTableEntry path, FileStream 
 }
 
 
-bool GFXOpenGLShader::_loadShaderFromStream(  GLuint shader,
+bool GFXOpenGL32Shader::_loadShaderFromStream(  GLuint shader,
                                   const StringTableEntry path,
                                   FileStream* s,
                                   const Vector<GFXShaderMacro>& macros )
@@ -852,7 +852,7 @@ bool GFXOpenGLShader::_loadShaderFromStream(  GLuint shader,
    return true;
 }
 
-bool GFXOpenGLShader::initShader( const StringTableEntry file,
+bool GFXOpenGL32Shader::initShader( const StringTableEntry file,
                               bool isVertex, 
                               const Vector<GFXShaderMacro> &macros )
 {
@@ -871,10 +871,10 @@ bool GFXOpenGLShader::initShader( const StringTableEntry file,
    FileStream stream;
    if ( !stream.open( file, FileStream::Read ) )
    {
-      AssertISV(false, avar("GFXOpenGLShader::initShader - failed to open shader '%s'.", file));
+      AssertISV(false, avar("GFXOpenGL32Shader::initShader - failed to open shader '%s'.", file));
 
       if ( smLogErrors )
-         Con::errorf( "GFXOpenGLShader::initShader - Failed to open shader file '%s'.", 
+         Con::errorf( "GFXOpenGL32Shader::initShader - Failed to open shader file '%s'.", 
             file );
 
       return false;
@@ -904,7 +904,7 @@ bool GFXOpenGLShader::initShader( const StringTableEntry file,
       {
          if ( smLogErrors )
          {
-            Con::errorf( "GFXOpenGLShader::initShader - Error compiling shader!" );
+            Con::errorf( "GFXOpenGL32Shader::initShader - Error compiling shader!" );
             Con::errorf( "Program %s: %s", file, log );
          }
       }
@@ -916,19 +916,19 @@ bool GFXOpenGLShader::initShader( const StringTableEntry file,
 }
 
 /// Returns our list of shader constants, the material can get this and just set the constants it knows about
-const Vector<GFXShaderConstDesc>& GFXOpenGLShader::getShaderConstDesc() const
+const Vector<GFXShaderConstDesc>& GFXOpenGL32Shader::getShaderConstDesc() const
 {
    return mConstants;
 }
 
 /// Returns the alignment value for constType
-U32 GFXOpenGLShader::getAlignmentValue(const GFXShaderConstType constType) const
+U32 GFXOpenGL32Shader::getAlignmentValue(const GFXShaderConstType constType) const
 {
    // Alignment is the same thing as size for us.
    return shaderConstTypeSize(constType);
 }
 
-const String GFXOpenGLShader::describeSelf() const
+const String GFXOpenGL32Shader::describeSelf() const
 {
    String ret;
    ret = String::ToString("   Program: %i", mProgram);
