@@ -1346,7 +1346,6 @@ void GuiCanvas::maintainSizing()
 
 void GuiCanvas::renderFrame(bool preRenderOnly, bool bufferSwap /* = true */)
 {
-    Con::printf("start GuiCanvas renderframe");
    PROFILE_START(CanvasPreRender);
 
     // Set our window as the current render target so we can see outputs.
@@ -1503,7 +1502,6 @@ void GuiCanvas::renderFrame(bool preRenderOnly, bool bufferSwap /* = true */)
    PROFILE_END();
 
     GFX->endScene();
-    Con::printf("GFX->endScene");
 
    if( bufferSwap )
       swapBuffers();

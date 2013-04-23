@@ -94,19 +94,6 @@ void GFXOpenGL32StateBlock::activate(const GFXOpenGL32StateBlock* oldState)
    
    // Culling
     device->setCullMode(mDesc.cullMode);
-    
-    if (mDesc.cullMode == GFXCullNone)
-    {
-        if (glIsEnabled(GL_CULL_FACE) == GL_TRUE)
-            glDisable(GL_CULL_FACE);
-    }
-    else
-    {
-        if (glIsEnabled(GL_CULL_FACE) == GL_FALSE)
-            glEnable(GL_CULL_FACE);
-
-        glCullFace(GFXGLCullMode[mDesc.cullMode]);
-    }
 
    // Depth
    CHECK_TOGGLE_STATE(zEnable, GL_DEPTH_TEST);

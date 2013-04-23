@@ -82,7 +82,7 @@ void GFXOpenGL32Device::initGLState()
 
 //-----------------------------------------------------------------------------
 // Matrix interface
-GFXOpenGL32Device::GFXOpenGL32Device( U32 adapterIndex ) :
+GFXOpenGL32Device::GFXOpenGL32Device( U32 adapterIndex )  : GFXOpenGLDevice( adapterIndex ),
                         mAdapterIndex(adapterIndex),
                         mCurrentVB(NULL),
                         m_mCurrentWorld(true),
@@ -93,8 +93,7 @@ GFXOpenGL32Device::GFXOpenGL32Device( U32 adapterIndex ) :
                         mMaxShaderTextures(2),
                         mMaxFFTextures(2),
                         mClip(0, 0, 0, 0),
-                        mTextureLoader(NULL),
-                        currentCullMode(GFXCullNone)
+                        mTextureLoader(NULL)
 {
     GFXOpenGLEnumTranslate::init();
    
@@ -104,7 +103,7 @@ GFXOpenGL32Device::GFXOpenGL32Device( U32 adapterIndex ) :
     m_WorldStack.push_back(MatrixF(true));
     m_ProjectionStack.push_back(MatrixF(true));
     
-    mDeviceName = "OpenGL";
+    mDeviceName = "OpenGL32";
     mFullScreenOnly = false;
 }
 
@@ -793,18 +792,18 @@ void GFXOpenGL32Device::setTextureInternal(U32 textureUnit, const GFXTextureObje
     {
         // GFXOpenGL32TextureObject::bind also handles applying the current sampler state.
         if(mActiveTextureType[textureUnit] != tex->getBinding() && mActiveTextureType[textureUnit] != GL_ZERO)
-            GL_CHECK(glBindTexture(mActiveTextureType[textureUnit], 0));
+        {
+            glBindTexture(mActiveTextureType[textureUnit], 0);
+        }
         mActiveTextureType[textureUnit] = tex->getBinding();
         tex->bind(textureUnit);
     }
     else if(mActiveTextureType[textureUnit] != GL_ZERO)
     {
-        GL_CHECK(glBindTexture(mActiveTextureType[textureUnit], 0));
+        glBindTexture(mActiveTextureType[textureUnit], GL_ZERO);
         mActiveTextureType[textureUnit] = GL_ZERO;
     }
-    
     glActiveTexture(GL_TEXTURE0);
-    GL_CHECK();
 }
 
 //void GFXOpenGL32Device::setCubemapInternal(U32 textureUnit, const GFXOpenGLCubemap* texture)
@@ -924,22 +923,6 @@ void GFXOpenGL32Device::setClipRect( const RectI &inRect )
     setViewport(viewport);
 }
 
-void GFXOpenGL32Device::setCullMode(GFXCullMode mode)
-{
-    if (mode == currentCullMode)
-        return;
-    
-    // Culling
-    if (mode == GFXCullNone)
-    {
-        glDisable(GL_CULL_FACE);
-    }
-    else
-    {
-        glEnable(GL_CULL_FACE);
-        glCullFace(GFXGLCullMode[mode]);
-    }
-}
 
 /// Creates a state block object based on the desc passed in.  This object
 /// represents an immutable state.
@@ -1063,11 +1046,11 @@ void GFXOpenGL32Device::setupGenericShaders( GenericShaderType type )
     xform *= GFX->getWorldMatrix();
     xform.transpose();
     
-//    Con::printf("setupGenericShaders");
-//    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
-//    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
-//    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
-//    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
+    Con::printf("setupGenericShaders");
+    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
+    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
+    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
+    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
     
     
     switch (type) {

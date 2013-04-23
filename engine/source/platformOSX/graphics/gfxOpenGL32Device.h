@@ -41,7 +41,7 @@ typedef uint32_t CGDirectDisplayID;
 @class NSOpenGLContext;
 @class NSOpenGLPixelFormat;
 
-class GFXOpenGL32Device : public GFXDevice
+class GFXOpenGL32Device : public GFXOpenGLDevice
 {
 public:
    void zombify();
@@ -89,8 +89,8 @@ public:
    /// @name Shader functions
    /// @{
     void* baseEffect;
+
     GFXOpenGL32Shader* mpCurrentShader;
-    
     GFXOpenGL32Shader* mGenericShader[5];
     GFXShaderConstBufferRef mGenericShaderConst[4];
     GFXStateBlockRef mGenericShaderStateblock[4];
@@ -128,8 +128,6 @@ public:
 
    virtual void setClipRect( const RectI &rect );
    virtual const RectI &getClipRect() const { return mClip; }
-
-   virtual void setCullMode( GFXCullMode );
     
    virtual void preDestroy() { Parent::preDestroy(); }
 
@@ -264,7 +262,6 @@ private:
    RectI mClip;
 
    GFXOpenGL32StateBlockRef mCurrentGLStateBlock;
-    GFXCullMode currentCullMode;
    
    GLenum mActiveTextureType[TEXTURE_STAGE_COUNT];
    

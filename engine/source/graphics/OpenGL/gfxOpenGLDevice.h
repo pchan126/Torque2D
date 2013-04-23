@@ -38,7 +38,7 @@ class GFXOpenGLCubemap;
 class GFXOpenGLDevice : public GFXDevice
 {
 public:
-   GFXOpenGLDevice( U32 adapterIndex ) {};
+   GFXOpenGLDevice( U32 adapterIndex );
    virtual ~GFXOpenGLDevice() {};
 
    virtual void init( const GFXVideoMode &mode, PlatformWindow *window = NULL ) = 0;
@@ -107,6 +107,8 @@ public:
    bool supportsAnisotropic() const { return mSupportsAnisotropic; }
    GLsizei primCountToIndexCount(GFXPrimitiveType primType, U32 primitiveCount);
    
+    virtual void setCullMode( GFXCullMode );
+
 protected:
    /// Called by GFXDevice to create a device specific stateblock
    virtual GFXStateBlockRef createStateBlockInternal(const GFXStateBlockDesc& desc) = 0;
@@ -142,7 +144,7 @@ protected:
                                                 const GFXVertexFormat *vertexFormat,
                                                 U32 vertSize, 
                                                 GFXBufferType bufferType,
-                                                void *data = NULL,
+                                                void *data,
                                               U32 indexCount = 0,
                                               void *indexData = NULL) = 0;
    
@@ -159,6 +161,8 @@ protected:
 
     virtual void setVertexStream( U32 stream, GFXVertexBuffer *buffer ) {};
     virtual void setVertexStreamFrequency( U32 stream, U32 frequency ) {};
+
+    GFXCullMode currentCullMode;
 
 private:
    typedef GFXDevice Parent;

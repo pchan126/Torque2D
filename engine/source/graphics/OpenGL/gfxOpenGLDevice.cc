@@ -20,9 +20,34 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#import "platform/platform.h"
+#include "platform/platform.h"
 #include "./gfxOpenGLDevice.h"
+#include "./gfxOpenGLEnumTranslate.h"
 
+
+GFXOpenGLDevice::GFXOpenGLDevice( U32 adapterIndex ) :
+            currentCullMode(GFXCullNone)
+{
+    
+}
+
+
+void GFXOpenGLDevice::setCullMode(GFXCullMode mode)
+{
+    if (mode == currentCullMode)
+        return;
+    
+    // Culling
+    if (mode == GFXCullNone)
+    {
+        glDisable(GL_CULL_FACE);
+    }
+    else
+    {
+        glEnable(GL_CULL_FACE);
+        glCullFace(GFXGLCullMode[mode]);
+    }
+}
 
 // Given a primitive type and a number of primitives, return the number of indexes/vertexes used.
 GLsizei GFXOpenGLDevice::primCountToIndexCount(GFXPrimitiveType primType, U32 primitiveCount)

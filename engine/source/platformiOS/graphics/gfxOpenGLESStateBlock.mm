@@ -50,7 +50,9 @@ void GFXOpenGLESStateBlock::activate(const GFXOpenGLESStateBlock* oldState)
 #define TOGGLE_STATE(state, enum) if(mDesc.state) glEnable(enum); else glDisable(enum)
 #define CHECK_TOGGLE_STATE(state, enum) if(!oldState || oldState->mDesc.state != mDesc.state) { if(mDesc.state) { glEnable(enum); } else { glDisable(enum); } }
 
-   // Blending
+    GFXOpenGLESDevice* device = dynamic_cast<GFXOpenGLESDevice*>(GFX);
+
+    // Blending
 //   CHECK_TOGGLE_STATE(blendEnable, GL_BLEND);
     if ((glIsEnabled(GL_BLEND) == GL_TRUE) && !mDesc.blendEnable) glDisable(GL_BLEND);
     if ((glIsEnabled(GL_BLEND) == GL_FALSE) && mDesc.blendEnable) glEnable(GL_BLEND);
@@ -70,18 +72,7 @@ void GFXOpenGLESStateBlock::activate(const GFXOpenGLESStateBlock* oldState)
       glColorMask(mDesc.colorWriteRed, mDesc.colorWriteBlue, mDesc.colorWriteGreen, mDesc.colorWriteAlpha);
    
     // Culling
-    if (mDesc.cullMode == GFXCullNone)
-    {
-        if (glIsEnabled(GL_CULL_FACE) == GL_TRUE)
-            glDisable(GL_CULL_FACE);
-    }
-    else
-    {
-        if (glIsEnabled(GL_CULL_FACE) == GL_FALSE)
-            glEnable(GL_CULL_FACE);
-        
-        glCullFace(GFXGLCullMode[mDesc.cullMode]);
-    }
+    device->setCullMode(mDesc.cullMode);
 
    // Depth
    CHECK_TOGGLE_STATE(zEnable, GL_DEPTH_TEST);

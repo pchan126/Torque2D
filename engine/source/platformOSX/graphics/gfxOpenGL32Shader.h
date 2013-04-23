@@ -23,15 +23,13 @@
 #ifndef _GFXOpenGL32Shader_H_
 #define _GFXOpenGL32Shader_H_
 
-#include "sim/refBase.h"
-#include "graphics/gfxShader.h"
-#include "collection/hashTable.h"
+#include "graphics/OpenGL/gfxOpenGLShader.h"
 
 class GFXOpenGL32ShaderConstHandle;
 class FileStream;
 class GFXOpenGL32ShaderConstBuffer;
 
-class GFXOpenGL32Shader : public GFXShader
+class GFXOpenGL32Shader : public GFXOpenGLShader
 {
    typedef HashMap<String, GFXOpenGL32ShaderConstHandle*> HandleMap;
 public:

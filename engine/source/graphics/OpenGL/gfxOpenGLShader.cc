@@ -611,8 +611,6 @@ void GFXOpenGLShader::zombify()
 }
 
 
-
-
 /// Returns our list of shader constants, the material can get this and just set the constants it knows about
 const Vector<GFXShaderConstDesc>& GFXOpenGLShader::getShaderConstDesc() const
 {
