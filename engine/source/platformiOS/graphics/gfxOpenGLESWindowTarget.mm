@@ -31,7 +31,11 @@ bool GFXOpenGLESWindowTarget::present()
     GFX->updateStates();
 
     GFXOpenGLESDevice* device = (GFXOpenGLESDevice*)GFX;
-    glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
+//    glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
+//    if (glIsRenderbuffer(colorRenderbuffer))
+//        Con::printf("is render buffer");
+//    GLint temp;
+//    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &temp);
     [device->mContext presentRenderbuffer:GL_RENDERBUFFER];
     return true;
 }
@@ -55,7 +59,13 @@ void GFXOpenGLESWindowTarget::resolveTo(GFXTextureObject* obj)
 
 void GFXOpenGLESWindowTarget::makeActive()
 {
-    glBindFramebuffer(GL_FRAMEBUFFER, defaultFramebuffer);
+//    GFXOpenGLESDevice* device = (GFXOpenGLESDevice*)GFX;
+//    [EAGLContext setCurrentContext:device->getEAGLContext()];
+//
+//    if (glIsFramebuffer(defaultFramebuffer))
+//        Con::printf("is frame buffer");
+    
+//    glBindFramebuffer(GL_FRAMEBUFFER, defaultFramebuffer);
 }
 
 void GFXOpenGLESWindowTarget::_teardownCurrentMode()

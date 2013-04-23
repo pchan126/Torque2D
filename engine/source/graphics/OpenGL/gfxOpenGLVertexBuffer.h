@@ -29,7 +29,6 @@
 
 #include "platform/platformGL.h"
 
-/// This is a vertex buffer which uses GL_ARB_vertex_buffer_object.
 class GFXOpenGLVertexBuffer : public GFXVertexBuffer 
 {
 public:
@@ -44,13 +43,13 @@ public:
 	
     ~GFXOpenGLVertexBuffer();
 
-	virtual void lock(U32 vertexStart, U32 vertexEnd, void **vertexPtr); ///< calls glMapBuffer and offsets the pointer by vertex start
+	virtual void lock(U32 vertexStart, U32 vertexEnd, void **vertexPtr); 
     virtual void set( void* data, U32 dataSize );
-	virtual void unlock(); ///< calls glUnmapBufferOES, unbinds the buffer
-	virtual void prepare(); ///< Binds the buffer
-   virtual void finish(); ///< We're done here
+	virtual void unlock(); 
+	virtual void prepare(); 
+   virtual void finish(); 
 
-	GLvoid* getBuffer(); ///< returns NULL
+	GLvoid* getBuffer();
 
    // GFXResource interface
    virtual void zombify();

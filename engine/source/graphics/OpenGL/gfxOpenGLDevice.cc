@@ -49,6 +49,24 @@ void GFXOpenGLDevice::setCullMode(GFXCullMode mode)
     }
 }
 
+void GFXOpenGLDevice::preDrawPrimitive()
+{
+    if( mStateDirty )
+    {
+        updateStates();
+    }
+    
+    if(mCurrentShaderConstBuffer)
+        setShaderConstBufferInternal(mCurrentShaderConstBuffer);
+}
+
+void GFXOpenGLDevice::postDrawPrimitive(U32 primitiveCount)
+{
+    //   mDeviceStatistics.mDrawCalls++;
+    //   mDeviceStatistics.mPolyCount += primitiveCount;
+}
+
+
 // Given a primitive type and a number of primitives, return the number of indexes/vertexes used.
 GLsizei GFXOpenGLDevice::primCountToIndexCount(GFXPrimitiveType primType, U32 primitiveCount)
 {
@@ -78,5 +96,102 @@ GLsizei GFXOpenGLDevice::primCountToIndexCount(GFXPrimitiveType primType, U32 pr
     }
     
     return 0;
+}
+
+
+
+bool GFXOpenGLDevice::beginSceneInternal()
+{
+    // Nothing to do here for GL.
+    mCanCurrentlyRender = true;
+    return true;
+}
+
+void GFXOpenGLDevice::endSceneInternal()
+{
+    // nothing to do for opengl
+    mCanCurrentlyRender = false;
+}
+
+void GFXOpenGLDevice::drawPrimitive( GFXPrimitiveType primType, U32 vertexStart, U32 primitiveCount )
+{
+    preDrawPrimitive();
+    glDisable(GL_CULL_FACE);
+    
+    glDrawArrays(GFXGLPrimType[primType], vertexStart, primCountToIndexCount(primType, primitiveCount));
+    
+    postDrawPrimitive(primitiveCount);
+}
+
+void GFXOpenGLDevice::drawIndexedPrimitive(   GFXPrimitiveType primType,
+                                             U32 startVertex,
+                                             U32 minIndex,
+                                             U32 numVerts,
+                                             U32 startIndex,
+                                             U32 primitiveCount )
+{
+    AssertFatal( startVertex == 0, "GFXOpenGLDevice::drawIndexedPrimitive() - Non-zero startVertex unsupported!" );
+    
+    preDrawPrimitive();
+    glDrawElements(GFXGLPrimType[primType], primCountToIndexCount(primType, primitiveCount), GL_UNSIGNED_SHORT, (GLvoid*)0);
+    postDrawPrimitive(primitiveCount);
+}
+
+
+
+void GFXOpenGLDevice::setLightInternal(U32 lightStage, const GFXLightInfo light, bool lightEnable)
+{
+    //   if(!lightEnable)
+    //   {
+    //      glDisable(GL_LIGHT0 + lightStage);
+    //      return;
+    //   }
+    //
+    //   if(light.mType == GFXLightInfo::Ambient)
+    //   {
+    //      AssertFatal(false, "Instead of setting an ambient light you should set the global ambient color.");
+    //      return;
+    //   }
+    //
+    //   GLenum lightEnum = GL_LIGHT0 + lightStage;
+    //   glLightfv(lightEnum, GL_AMBIENT, (GLfloat*)&light.mAmbient);
+    //   glLightfv(lightEnum, GL_DIFFUSE, (GLfloat*)&light.mColor);
+    //   glLightfv(lightEnum, GL_SPECULAR, (GLfloat*)&light.mColor);
+    //
+    //   F32 pos[4];
+    //
+    //   if(light.mType != GFXLightInfo::Vector)
+    //   {
+    //      dMemcpy(pos, &light.mPos, sizeof(light.mPos));
+    //      pos[3] = 1.0;
+    //   }
+    //   else
+    //   {
+    //      dMemcpy(pos, &light.mDirection, sizeof(light.mDirection));
+    //      pos[3] = 0.0;
+    //   }
+    //   // Harcoded attenuation
+    //   glLightf(lightEnum, GL_CONSTANT_ATTENUATION, 1.0f);
+    //   glLightf(lightEnum, GL_LINEAR_ATTENUATION, 0.1f);
+    //   glLightf(lightEnum, GL_QUADRATIC_ATTENUATION, 0.0f);
+    //
+    //   glLightfv(lightEnum, GL_POSITION, (GLfloat*)&pos);
+    //   glEnable(lightEnum);
+}
+
+void GFXOpenGLDevice::setLightMaterialInternal(const GFXLightMaterial mat)
+{
+    //   // CodeReview - Setting these for front and back is unnecessary.  We should consider
+    //   // checking what faces we're culling and setting this only for the unculled faces.
+    //   glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, (GLfloat*)&mat.ambient);
+    //   glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, (GLfloat*)&mat.diffuse);
+    //   glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, (GLfloat*)&mat.specular);
+    //   glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, (GLfloat*)&mat.emissive);
+    //   glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, mat.shininess);
+}
+
+void GFXOpenGLDevice::setGlobalAmbientInternal(ColorF color)
+{
+    //   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, (GLfloat*)&color);
 }
 

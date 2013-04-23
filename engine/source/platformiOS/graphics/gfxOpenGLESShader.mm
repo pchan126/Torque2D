@@ -151,15 +151,15 @@ bool GFXOpenGLESShader::_init()
    
    // Set the macros and add the global ones.
    Vector<GFXShaderMacro> macros;
-   macros.merge( mMacros );
-   macros.merge( smGlobalMacros );
-
-   // Add the shader version to the macros.
-   const U32 mjVer = (U32)mFloor( mPixVersion );
-   const U32 mnVer = (U32)( ( mPixVersion - F32( mjVer ) ) * 10.01f );
-   macros.increment();
-   macros.last().name = "TORQUE_SM";
-   macros.last().value = String::ToString( mjVer * 10 + mnVer );
+//   macros.merge( mMacros );
+//   macros.merge( smGlobalMacros );
+//
+//   // Add the shader version to the macros.
+//   const U32 mjVer = (U32)mFloor( mPixVersion );
+//   const U32 mnVer = (U32)( ( mPixVersion - F32( mjVer ) ) * 10.01f );
+//   macros.increment();
+//   macros.last().name = "TORQUE_SM";
+//   macros.last().value = String::ToString( mjVer * 10 + mnVer );
 
    // Default to true so we're "successful" if a vertex/pixel shader wasn't specified.
    bool compiledVertexShader = true;

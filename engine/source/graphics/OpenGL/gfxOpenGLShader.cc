@@ -478,7 +478,7 @@ void GFXOpenGLShader::initHandles()
       }
       else 
       {
-//          Con::printf("initHandles - %i %s", loc, &desc.name.c_str()[1]);
+          Con::printf("initHandles - %i %s", loc, &desc.name.c_str()[1]);
          mHandles[desc.name] = new GFXOpenGLShaderConstHandle( this, desc, loc, sampler );
       }
    }

@@ -39,26 +39,26 @@ GFXOpenGLESVertexBuffer::GFXOpenGLESVertexBuffer(  GFXDevice *device,
         
         if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::POSITION.c_str() ) == 0 )
         {
-            glVertexAttribPointer(ATTRIB_POSITION, element.getSizeInBytes()/4, GL_FLOAT, GL_FALSE, mVertexSize, buffer);
-            glEnableVertexAttribArray(ATTRIB_POSITION);
+            glVertexAttribPointer(GLKVertexAttribPosition, element.getSizeInBytes()/4, GL_FLOAT, GL_FALSE, mVertexSize, buffer);
+            glEnableVertexAttribArray(GLKVertexAttribPosition);
             buffer += element.getSizeInBytes();
         }
         else if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::NORMAL.c_str() ) == 0 )
         {
-            glVertexAttribPointer(ATTRIB_NORMAL, 3, GL_FLOAT, GL_FALSE, mVertexSize, buffer);
-            glEnableVertexAttribArray(ATTRIB_NORMAL);
+            glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, mVertexSize, buffer);
+            glEnableVertexAttribArray(GLKVertexAttribNormal);
             buffer += element.getSizeInBytes();
         }
         else if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::COLOR.c_str() ) == 0 )
         {
-            glVertexAttribPointer(ATTRIB_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, mVertexSize, buffer);
-            glEnableVertexAttribArray(ATTRIB_COLOR);
+            glVertexAttribPointer(GLKVertexAttribColor, 4, GL_UNSIGNED_BYTE, GL_TRUE, mVertexSize, buffer);
+            glEnableVertexAttribArray(GLKVertexAttribColor);
             buffer += element.getSizeInBytes();
         }
         else // Everything else is a texture coordinate.
         {
-            glVertexAttribPointer(ATTRIB_TEXCOORD0+texCoordIndex, 2, GL_FLOAT, GL_FALSE, mVertexSize, buffer);
-            glEnableVertexAttribArray(ATTRIB_TEXCOORD0+texCoordIndex);
+            glVertexAttribPointer(GLKVertexAttribTexCoord0+texCoordIndex, 2, GL_FLOAT, GL_FALSE, mVertexSize, buffer);
+            glEnableVertexAttribArray(GLKVertexAttribTexCoord0+texCoordIndex);
             buffer += element.getSizeInBytes();
             ++texCoordIndex;
         }

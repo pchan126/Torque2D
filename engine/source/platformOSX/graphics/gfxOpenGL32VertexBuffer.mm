@@ -34,8 +34,8 @@ GFXOpenGL32VertexBuffer::GFXOpenGL32VertexBuffer(  GFXDevice *device,
                                        U32 vertexSize, 
                                        GFXBufferType bufferType,
                                        const GLvoid *vertexBuffer,
-                                             U32 indexCount,
-                                             const GLvoid *indexBuffer)
+                                       U32 indexCount,
+                                       const GLvoid *indexBuffer)
    :  GFXVertexBuffer( device, vertexCount, vertexFormat, vertexSize, bufferType ),
       mZombieCache(NULL)
 {

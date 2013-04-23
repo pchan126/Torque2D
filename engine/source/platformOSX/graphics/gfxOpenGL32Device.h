@@ -114,26 +114,9 @@ public:
    virtual GFXOpenGL32Shader* createShader();
     
    virtual void clear( U32 flags, ColorI color, F32 z, U32 stencil );
-   virtual bool beginSceneInternal();
-   virtual void endSceneInternal();
-
-   virtual void drawPrimitive( GFXPrimitiveType primType, U32 vertexStart, U32 primitiveCount );
-
-   virtual void drawIndexedPrimitive(  GFXPrimitiveType primType, 
-                                       U32 startVertex, 
-                                       U32 minIndex, 
-                                       U32 numVerts, 
-                                       U32 startIndex, 
-                                       U32 primitiveCount );
 
    virtual void setClipRect( const RectI &rect );
-   virtual const RectI &getClipRect() const { return mClip; }
     
-   virtual void preDestroy() { Parent::preDestroy(); }
-
-   virtual U32 getMaxDynamicVerts() { return MAX_DYNAMIC_VERTS; }
-   virtual U32 getMaxDynamicIndices() { return MAX_DYNAMIC_INDICES; }
-   
    virtual void updateStates(bool forceSetAll = false);
    
 //   GFXOcclusionQuery* createOcclusionQuery();
@@ -157,10 +140,6 @@ protected:
 
    virtual void setTextureInternal(U32 textureUnit, const GFXTextureObject* texture);
 //   virtual void setCubemapInternal(U32 cubemap, const GFXOpenGLCubemap* texture);
-
-   virtual void setLightInternal(U32 lightStage, const GFXLightInfo light, bool lightEnable);
-   virtual void setLightMaterialInternal(const GFXLightMaterial mat);
-   virtual void setGlobalAmbientInternal(ColorF color);
 
    /// @name State Initalization.
    /// @{
@@ -266,11 +245,7 @@ private:
    GLenum mActiveTextureType[TEXTURE_STAGE_COUNT];
    
    Vector< StrongRefPtr<GFXOpenGL32VertexBuffer> > mVolatileVBs; ///< Pool of existing volatile VBs so we can reuse previously created ones
-
-   GLsizei primCountToIndexCount(GFXPrimitiveType primType, U32 primitiveCount);
-   void preDrawPrimitive();
-   void postDrawPrimitive(U32 primitiveCount);  
-   
+    
    GFXVertexBuffer* findVolatileVBO(U32 numVerts, const GFXVertexFormat *vertexFormat, U32 vertSize, void* data = NULL); ///< Returns an existing volatile VB which has >= numVerts and the same vert flags/size, or creates a new VB if necessary
    
    void initGLState(); ///< Guaranteed to be called after all extensions have been loaded, use to init card profiler, shader version, max samplers, etc.

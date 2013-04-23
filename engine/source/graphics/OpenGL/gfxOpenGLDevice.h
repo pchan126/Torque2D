@@ -30,7 +30,6 @@
 #include "./gfxOpenGLShader.h"
 
 class GFXOpenGLVertexBuffer;
-class GFXOpenGLPrimitiveBuffer;
 class GFXOpenGLTextureTarget;
 class GFXOpenGLCubemap;
 
@@ -79,17 +78,17 @@ public:
    virtual GFXOpenGLShader* createShader() = 0;
     
    virtual void clear( U32 flags, ColorI color, F32 z, U32 stencil ) = 0;
-   virtual bool beginSceneInternal() = 0;
-   virtual void endSceneInternal() = 0;
+   virtual bool beginSceneInternal();
+   virtual void endSceneInternal();
 
-   virtual void drawPrimitive( GFXPrimitiveType primType, U32 vertexStart, U32 primitiveCount ) = 0;
+   virtual void drawPrimitive( GFXPrimitiveType primType, U32 vertexStart, U32 primitiveCount );
 
    virtual void drawIndexedPrimitive(  GFXPrimitiveType primType, 
                                        U32 startVertex, 
                                        U32 minIndex, 
                                        U32 numVerts, 
                                        U32 startIndex, 
-                                       U32 primitiveCount ) = 0;
+                                       U32 primitiveCount );
 
    virtual void setClipRect( const RectI &rect ) = 0;
    virtual const RectI &getClipRect() const { return mClip; }
@@ -106,11 +105,14 @@ public:
    ///
    bool supportsAnisotropic() const { return mSupportsAnisotropic; }
    GLsizei primCountToIndexCount(GFXPrimitiveType primType, U32 primitiveCount);
-   
-    virtual void setCullMode( GFXCullMode );
 
+    virtual void setCullMode( GFXCullMode );
 protected:
-   /// Called by GFXDevice to create a device specific stateblock
+
+    void preDrawPrimitive();
+    void postDrawPrimitive(U32 primitiveCount);
+
+    /// Called by GFXDevice to create a device specific stateblock
    virtual GFXStateBlockRef createStateBlockInternal(const GFXStateBlockDesc& desc) = 0;
    /// Called by GFXDevice to actually set a stateblock.
    virtual void setStateBlockInternal(GFXStateBlock* block, bool force) = 0;
@@ -121,9 +123,9 @@ protected:
    virtual void setTextureInternal(U32 textureUnit, const GFXTextureObject* texture) = 0;
 //   virtual void setCubemapInternal(U32 cubemap, const GFXOpenGLCubemap* texture);
 
-   virtual void setLightInternal(U32 lightStage, const GFXLightInfo light, bool lightEnable) = 0;
-   virtual void setLightMaterialInternal(const GFXLightMaterial mat) = 0;
-   virtual void setGlobalAmbientInternal(ColorF color) = 0;
+   virtual void setLightInternal(U32 lightStage, const GFXLightInfo light, bool lightEnable);
+   virtual void setLightMaterialInternal(const GFXLightMaterial mat);
+   virtual void setGlobalAmbientInternal(ColorF color);
 
    /// @name State Initalization.
    /// @{
@@ -170,7 +172,6 @@ private:
    friend class GFXOpenGLTextureObject;
    friend class GFXOpenGLCubemap;
    friend class GFXOpenGLWindowTarget;
-   friend class GFXOpenGLPrimitiveBuffer;
    friend class GFXOpenGLVertexBuffer;
 
    static GFXAdapter::CreateDeviceInstanceDelegate mCreateDeviceInstance; 
@@ -178,7 +179,6 @@ private:
    U32 mAdapterIndex;
    
    StrongRefPtr<GFXOpenGLVertexBuffer> mCurrentVB;
-   StrongRefPtr<GFXOpenGLPrimitiveBuffer> mCurrentPB;
     
     /// Pushes the world matrix stack and copies the current top
     /// matrix to the new top of the stack
@@ -203,10 +203,6 @@ private:
    GLenum mActiveTextureType[TEXTURE_STAGE_COUNT];
    
    Vector< StrongRefPtr<GFXOpenGLVertexBuffer> > mVolatileVBs; ///< Pool of existing volatile VBs so we can reuse previously created ones
-   Vector< StrongRefPtr<GFXOpenGLPrimitiveBuffer> > mVolatilePBs; ///< Pool of existing volatile PBs so we can reuse previously created ones
-
-    void preDrawPrimitive() {};
-    void postDrawPrimitive(U32 primitiveCount) {};
    
    virtual void initGLState() = 0; ///< Guaranteed to be called after all extensions have been loaded, use to init card profiler, shader version, max samplers, etc.
    

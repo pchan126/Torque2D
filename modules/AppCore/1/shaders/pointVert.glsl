@@ -2,8 +2,8 @@
 precision lowp float;
 
 uniform mat4 mvp_matrix; 
-uniform vec4 Position;
-uniform vec4 SourceColor;
+attribute vec4 Position;
+attribute vec4 SourceColor;
 varying vec4 DestinationColor;
 
 void main()

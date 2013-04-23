@@ -22,9 +22,8 @@
 
 #import "./T2DViewController.h"
 #import "platformiOS/platformGL.h"
-#include "platformiOS/platformiOS.h"
-#include "graphics/gfxDevice.h"
-#include "game/gameInterface.h"
+#import "platformiOS/graphics/gfxOpenGLESDevice.h"
+#import "game/gameInterface.h"
 
 #define USE_DEPTH_BUFFER 0
 
@@ -77,10 +76,16 @@ extern void _iOSGameInnerLoop();
 {
     [super viewDidLoad];
     
+//    GFXOpenGLESDevice* device = dynamic_cast<GFXOpenGLESDevice*>(GFX);
+//    EAGLContext* mainContext = device->getEAGLContext();
+    
+//    self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2 sharegroup:[mainContext sharegroup]];
+
     iOSPlatState *platState = [iOSPlatState sharedPlatState];
     platState.viewController = self;
     
     T2DView *view = (T2DView *) self.view;
+//    view.context = self.context;
     
 	if( AccelerometerUpdateMS <= 0 ) {
         //Luma:	This variable needs to be store MS value, not Seconds value
@@ -136,9 +141,9 @@ extern void _iOSGameInnerLoop();
 
 - (void)update
 {
-    EAGLContext *ctx1 = self.context;
-    GLKView *view = (T2DView *) self.view;
-    EAGLContext *ctx2 = [view context];
+//    EAGLContext *ctx1 = self.context;
+//    GLKView *view = (T2DView *) self.view;
+//    EAGLContext *ctx2 = [view context];
     
     if(Game->isRunning())
     {

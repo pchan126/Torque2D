@@ -149,47 +149,6 @@ void _GFXOpenGLESTextureTargetFBOImpl::finish()
     glGenerateMipmap(GL_TEXTURE_2D);
 }
 
-// This implementations uses AUX buffers (we should always have at least one) to do render to texture.  It is currently only used when we need access to the windows depth buffer.
-class _GFXOpenGLESTextureTargetAUXBufferImpl : public _GFXOpenGLESTextureTargetImpl
-{
-public:
-   _GFXOpenGLESTextureTargetAUXBufferImpl(GFXOpenGLESTextureTarget* target);
-   
-   virtual void applyState();
-   virtual void makeActive();
-   virtual void finish();
-};
-
-_GFXOpenGLESTextureTargetAUXBufferImpl::_GFXOpenGLESTextureTargetAUXBufferImpl(GFXOpenGLESTextureTarget* target)
-{
-   mTarget = target;
-}
-
-void _GFXOpenGLESTextureTargetAUXBufferImpl::applyState()
-{
-   
-}
-
-void _GFXOpenGLESTextureTargetAUXBufferImpl::makeActive()
-{
-//   glDrawBuffer(GL_AUX0);
-//   glReadBuffer(GL_AUX0);
-}
-
-void _GFXOpenGLESTextureTargetAUXBufferImpl::finish()
-{
-   // Bind the Color0 texture
-   _GFXOpenGLESTargetDesc* color0 = mTarget->getTargetDesc(GFXTextureTarget::Color0);
-   
-   glActiveTexture(GL_TEXTURE0);
-   // Assume we're a 2D texture for now.
-   PRESERVE_2D_TEXTURE();
-   glBindTexture(color0->getBinding(), color0->getHandle());
-   glCopyTexSubImage2D(color0->getBinding(), 0, 0, 0, 0, 0, color0->getWidth(), color0->getHeight());
-   
-//   glDrawBuffer(GL_BACK);
-//   glReadBuffer(GL_BACK);
-}
 
 // Actual GFXOpenGLESTextureTarget interface
 GFXOpenGLESTextureTarget::GFXOpenGLESTextureTarget()
@@ -298,11 +257,7 @@ void GFXOpenGLESTextureTarget::applyState()
    // So we don't do this over and over again
    stateApplied();
    
-   // Ensure we have the proper implementation (consider changing to an enum?)
-   if(_needsAux && dynamic_cast<_GFXOpenGLESTextureTargetAUXBufferImpl*>(_impl.ptr()) == NULL)
-      _impl = new _GFXOpenGLESTextureTargetAUXBufferImpl(this);
-   else if(!_needsAux && dynamic_cast<_GFXOpenGLESTextureTargetFBOImpl*>(_impl.ptr()) == NULL)
-      _impl = new _GFXOpenGLESTextureTargetFBOImpl(this);
+   _impl = new _GFXOpenGLESTextureTargetFBOImpl(this);
            
    _impl->applyState();
 }

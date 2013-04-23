@@ -240,13 +240,6 @@ void GFXOpenGL32Device::enumerateVideoModes()
 }
 
 
-bool GFXOpenGL32Device::beginSceneInternal()
-{
-    // Nothing to do here for GL.
-    mCanCurrentlyRender = true;
-    return true;
-}
-
 
 inline void GFXOpenGL32Device::pushWorldMatrix()
 {
@@ -382,15 +375,8 @@ void GFXOpenGL32Device::setVertexStreamFrequency( U32 stream, U32 frequency )
 ////    return cube;
 //};
 
-void GFXOpenGL32Device::endSceneInternal()
-{
-    // nothing to do for opengl
-    mCanCurrentlyRender = false;
-}
-
 void GFXOpenGL32Device::clear(U32 flags, ColorI color, F32 z, U32 stencil)
 {
-    GL_CHECK();
     // Make sure we have flushed our render target state.
     _updateRenderTargets();
     
@@ -419,36 +405,6 @@ void GFXOpenGL32Device::clear(U32 flags, ColorI color, F32 z, U32 stencil)
 }
 
 
-// Given a primitive type and a number of primitives, return the number of indexes/vertexes used.
-GLsizei GFXOpenGL32Device::primCountToIndexCount(GFXPrimitiveType primType, U32 primitiveCount)
-{
-    switch (primType)
-    {
-        case GFXPointList :
-            return primitiveCount;
-            break;
-        case GFXLineList :
-            return primitiveCount * 2;
-            break;
-        case GFXLineStrip :
-            return primitiveCount + 1;
-            break;
-        case GFXTriangleList :
-            return primitiveCount * 3;
-            break;
-        case GFXTriangleStrip :
-            return 2 + primitiveCount;
-            break;
-        case GFXTriangleFan :
-            return 2 + primitiveCount;
-            break;
-        default:
-            AssertFatal(false, "GFXOpenGL32Device::primCountToIndexCount - unrecognized prim type");
-            break;
-    }
-    
-    return 0;
-}
 
 void GFXOpenGL32Device::updateStates(bool forceSetAll /*=false*/)
 {
@@ -579,19 +535,6 @@ void GFXOpenGL32Device::updateStates(bool forceSetAll /*=false*/)
         }
     }
     
-    // Update primitive buffer
-    //
-    // NOTE: It is very important to set the primitive buffer AFTER the vertex buffer
-    // because in order to draw indexed primitives in DX8, the call to SetIndicies
-    // needs to include the base vertex offset, and the DX8 GFXDevice relies on
-    // having mCurrentVB properly assigned before the call to setIndices -patw
-//    if( mPrimitiveBufferDirty )
-//    {
-//        if( mCurrentPrimitiveBuffer.isValid() ) // This could be NULL when the device is initalizing
-//            mCurrentPrimitiveBuffer->prepare();
-//        mPrimitiveBufferDirty = false;
-//    }
-    
     // NOTE: With state blocks, it's now important to update state before setting textures
     // some devices (e.g. OpenGL) set states on the texture and we need that information before
     // the texture is activated.
@@ -663,126 +606,6 @@ void GFXOpenGL32Device::updateStates(bool forceSetAll /*=false*/)
 #endif
 }
 
-inline void GFXOpenGL32Device::preDrawPrimitive()
-{
-    if( mStateDirty )
-    {
-        updateStates();
-    }
-    
-    if(mCurrentShaderConstBuffer)
-        setShaderConstBufferInternal(mCurrentShaderConstBuffer);
-}
-
-inline void GFXOpenGL32Device::postDrawPrimitive(U32 primitiveCount)
-{
-    //   mDeviceStatistics.mDrawCalls++;
-    //   mDeviceStatistics.mPolyCount += primitiveCount;
-}
-
-void GFXOpenGL32Device::drawPrimitive( GFXPrimitiveType primType, U32 vertexStart, U32 primitiveCount )
-{
-    preDrawPrimitive();
-    glDisable(GL_CULL_FACE);
-    glDisable(GL_STENCIL_TEST);
-    glDisable(GL_SCISSOR_TEST);
-    glDisable(GL_DEPTH_TEST);
-
-//    switch (GFXGLPrimType[primType])
-//    {
-//        case GL_TRIANGLE_STRIP:
-//            Con::printf("GL_TRIANGLE_STRIP, %i %i", vertexStart, primCountToIndexCount(primType, primitiveCount));
-//            break;
-//            
-//        case GL_LINE_STRIP:
-//            Con::printf("GL_LINE_STRIP, %i %i", vertexStart, primCountToIndexCount(primType, primitiveCount));
-//            break;
-//
-//        case GL_POINTS:
-//            Con::printf("GL_POINTS, %i %i", vertexStart, primCountToIndexCount(primType, primitiveCount));
-//            break;
-//
-//        default:
-//            Con::printf("UNKNOWN TYPE");
-//            break;
-//    }
-    
-//    Con::printf(GFXGLPrimType[primType])
-    glDrawArrays(GFXGLPrimType[primType], vertexStart, primCountToIndexCount(primType, primitiveCount));
-    
-    postDrawPrimitive(primitiveCount);
-}
-
-void GFXOpenGL32Device::drawIndexedPrimitive(   GFXPrimitiveType primType,
-                                         U32 startVertex,
-                                         U32 minIndex,
-                                         U32 numVerts,
-                                         U32 startIndex,
-                                         U32 primitiveCount )
-{
-    AssertFatal( startVertex == 0, "GFXOpenGL32Device::drawIndexedPrimitive() - Non-zero startVertex unsupported!" );
-    
-    preDrawPrimitive();
-    glDrawElements(GFXGLPrimType[primType], primCountToIndexCount(primType, primitiveCount), GL_UNSIGNED_SHORT, (GLvoid*)0);
-    postDrawPrimitive(primitiveCount);
-}
-
-
-void GFXOpenGL32Device::setLightInternal(U32 lightStage, const GFXLightInfo light, bool lightEnable)
-{
-    //   if(!lightEnable)
-    //   {
-    //      glDisable(GL_LIGHT0 + lightStage);
-    //      return;
-    //   }
-    //
-    //   if(light.mType == GFXLightInfo::Ambient)
-    //   {
-    //      AssertFatal(false, "Instead of setting an ambient light you should set the global ambient color.");
-    //      return;
-    //   }
-    //
-    //   GLenum lightEnum = GL_LIGHT0 + lightStage;
-    //   glLightfv(lightEnum, GL_AMBIENT, (GLfloat*)&light.mAmbient);
-    //   glLightfv(lightEnum, GL_DIFFUSE, (GLfloat*)&light.mColor);
-    //   glLightfv(lightEnum, GL_SPECULAR, (GLfloat*)&light.mColor);
-    //
-    //   F32 pos[4];
-    //
-    //   if(light.mType != GFXLightInfo::Vector)
-    //   {
-    //      dMemcpy(pos, &light.mPos, sizeof(light.mPos));
-    //      pos[3] = 1.0;
-    //   }
-    //   else
-    //   {
-    //      dMemcpy(pos, &light.mDirection, sizeof(light.mDirection));
-    //      pos[3] = 0.0;
-    //   }
-    //   // Harcoded attenuation
-    //   glLightf(lightEnum, GL_CONSTANT_ATTENUATION, 1.0f);
-    //   glLightf(lightEnum, GL_LINEAR_ATTENUATION, 0.1f);
-    //   glLightf(lightEnum, GL_QUADRATIC_ATTENUATION, 0.0f);
-    //
-    //   glLightfv(lightEnum, GL_POSITION, (GLfloat*)&pos);
-    //   glEnable(lightEnum);
-}
-
-void GFXOpenGL32Device::setLightMaterialInternal(const GFXLightMaterial mat)
-{
-    //   // CodeReview - Setting these for front and back is unnecessary.  We should consider
-    //   // checking what faces we're culling and setting this only for the unculled faces.
-    //   glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, (GLfloat*)&mat.ambient);
-    //   glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, (GLfloat*)&mat.diffuse);
-    //   glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, (GLfloat*)&mat.specular);
-    //   glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, (GLfloat*)&mat.emissive);
-    //   glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, mat.shininess);
-}
-
-void GFXOpenGL32Device::setGlobalAmbientInternal(ColorF color)
-{
-    //   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, (GLfloat*)&color);
-}
 
 void GFXOpenGL32Device::setTextureInternal(U32 textureUnit, const GFXTextureObject *texture)
 {
@@ -1039,18 +862,16 @@ void GFXOpenGL32Device::initGenericShaders()
 
 void GFXOpenGL32Device::setupGenericShaders( GenericShaderType type )
 {
-//    GLKBaseEffect *GenericEffect = static_cast<GLKBaseEffect*>(baseEffect);
-    
     MatrixF xform(GFX->getProjectionMatrix());
     xform *= GFX->getViewMatrix();
     xform *= GFX->getWorldMatrix();
     xform.transpose();
     
-    Con::printf("setupGenericShaders");
-    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
-    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
-    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
-    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
+//    Con::printf("setupGenericShaders");
+//    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
+//    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
+//    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
+//    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
     
     
     switch (type) {
@@ -1062,7 +883,7 @@ void GFXOpenGL32Device::setupGenericShaders( GenericShaderType type )
         case GSTexture:
         case GSModColorTexture:
         case GSAddColorTexture:
-            GL_CHECK(setShader(mGenericShader[1]));
+            setShader(mGenericShader[1]);
             setShaderConstBuffer( mGenericShaderConst[1] );
             mGenericShaderConst[1]->setSafe( mGenericShader[1]->getShaderConstHandle("$mvp_matrix"), xform );
             mGenericShaderConst[1]->setSafe( mGenericShader[1]->getShaderConstHandle("$sampler2d_0"), 0);
@@ -1089,35 +910,6 @@ void GFXOpenGL32Device::setupGenericShaders( GenericShaderType type )
         default:
             break;
     }
-    
-//    GLKBaseEffect *GenericEffect = static_cast<GLKBaseEffect*>(baseEffect);
-//    
-//    MatrixF worldViewMatrix(GFX->getViewMatrix());
-//    worldViewMatrix *= GFX->getWorldMatrix();
-//    worldViewMatrix.transpose();
-//   
-//   switch (type) {
-//      case GSColor:
-//         GenericEffect.texture2d0.enabled = false;
-//         GenericEffect.texture2d1.enabled = false;
-//         GenericEffect.transform.modelviewMatrix = worldViewMatrix.getMatrix();
-//         GenericEffect.transform.projectionMatrix = GFX->getProjectionMatrix().getMatrix();
-//         break;
-//      case GSTexture:
-//      case GSModColorTexture:
-//      case GSAddColorTexture:
-//      case GSPoint:
-//         GenericEffect.transform.modelviewMatrix = worldViewMatrix.getMatrix();
-//         GenericEffect.transform.projectionMatrix = GFX->getProjectionMatrix().getMatrix();
-//         GenericEffect.texture2d0.enabled = true;
-//         GenericEffect.texture2d1.enabled = false;
-//         break;
-//            
-//        default:
-//            break;
-//    }
-//   
-//   [ GenericEffect prepareToDraw ];
 }
 
 GFXOpenGL32Shader* GFXOpenGL32Device::createShader()
@@ -1210,7 +1002,7 @@ void GFXOpenGL32Device::_updateRenderTargets()
     
     if ( mViewportDirty )
     {
-//        Con::printf("if mViewport Dirty %d %d %d %d", mViewport.point.x, mViewport.point.y, mViewport.extent.x, mViewport.extent.y);
+        Con::printf("if mViewport Dirty %d %d %d %d", mViewport.point.x, mViewport.point.y, mViewport.extent.x, mViewport.extent.y);
         glViewport( mViewport.point.x, mViewport.point.y, mViewport.extent.x, mViewport.extent.y );
         mViewportDirty = false;
     }

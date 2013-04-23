@@ -3,8 +3,8 @@ precision lowp float;
 
 uniform sampler2D sampler2d_0;
 
-uniform vec4 vertColor;
-uniform vec2 TexCoord;
+varying vec4 vertColor;
+varying vec2 TexCoord;
 
 void main()
 {  

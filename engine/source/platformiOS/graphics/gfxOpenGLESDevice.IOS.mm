@@ -203,13 +203,6 @@ void GFXOpenGLESDevice::enumerateAdapters( Vector<GFXAdapter*> &adapterList )
 }
 
 
-bool GFXOpenGLESDevice::beginSceneInternal()
-{
-    // Nothing to do here for GL.
-    mCanCurrentlyRender = true;
-    return true;
-}
-
 
 inline void GFXOpenGLESDevice::pushWorldMatrix()
 {
@@ -315,11 +308,6 @@ void GFXOpenGLESDevice::setVertexStreamFrequency( U32 stream, U32 frequency )
 //    return cube;
 //};
 
-void GFXOpenGLESDevice::endSceneInternal()
-{
-    // nothing to do for opengl
-    mCanCurrentlyRender = false;
-}
 
 void GFXOpenGLESDevice::clear(U32 flags, ColorI color, F32 z, U32 stencil)
 {
@@ -332,54 +320,24 @@ void GFXOpenGLESDevice::clear(U32 flags, ColorI color, F32 z, U32 stencil)
     //      zwrite = mCurrentGLStateBlock->getDesc().zWriteEnable;
     //   }
     
-//    glDepthMask(true);
-
+    glDepthMask(true);
+    
     GLbitfield clearflags = 0;
     clearflags |= (flags & GFXClearTarget)   ? GL_COLOR_BUFFER_BIT : 0;
     clearflags |= (flags & GFXClearZBuffer)  ? GL_DEPTH_BUFFER_BIT : 0;
     clearflags |= (flags & GFXClearStencil)  ? GL_STENCIL_BUFFER_BIT : 0;
-
+    
     glClear(clearflags);
-
+    
     ColorF c = color;
+    glClearDepthf(z);
+    glClearStencil(stencil);
     glClearColor(c.red, c.green, c.blue, c.alpha);
-//    glClearDepthf(z);
-//    glClearStencil(stencil);
     
-//    if(!zwrite)
-//        glDepthMask(false);
+    if(!zwrite)
+        glDepthMask(false);
 }
 
-// Given a primitive type and a number of primitives, return the number of indexes/vertexes used.
-GLsizei GFXOpenGLESDevice::primCountToIndexCount(GFXPrimitiveType primType, U32 primitiveCount)
-{
-    switch (primType)
-    {
-        case GFXPointList :
-            return primitiveCount;
-            break;
-        case GFXLineList :
-            return primitiveCount * 2;
-            break;
-        case GFXLineStrip :
-            return primitiveCount + 1;
-            break;
-        case GFXTriangleList :
-            return primitiveCount * 3;
-            break;
-        case GFXTriangleStrip :
-            return 2 + primitiveCount;
-            break;
-        case GFXTriangleFan :
-            return 2 + primitiveCount;
-            break;
-        default:
-            AssertFatal(false, "GFXOpenGLESDevice::primCountToIndexCount - unrecognized prim type");
-            break;
-    }
-    
-    return 0;
-}
 
 void GFXOpenGLESDevice::updateStates(bool forceSetAll /*=false*/)
 {
@@ -435,14 +393,14 @@ void GFXOpenGLESDevice::updateStates(bool forceSetAll /*=false*/)
             }
         }
         
-        // Set our material
-        setLightMaterialInternal(mCurrentLightMaterial);
-        
-        // Set our lights
-        for(U32 i = 0; i < LIGHT_STAGE_COUNT; i++)
-        {
-            setLightInternal(i, mCurrentLight[i], mCurrentLightEnable[i]);
-        }
+//        // Set our material
+//        setLightMaterialInternal(mCurrentLightMaterial);
+//        
+//        // Set our lights
+//        for(U32 i = 0; i < LIGHT_STAGE_COUNT; i++)
+//        {
+//            setLightInternal(i, mCurrentLight[i], mCurrentLightEnable[i]);
+//        }
         
         _updateRenderTargets();
         
@@ -547,26 +505,26 @@ void GFXOpenGLESDevice::updateStates(bool forceSetAll /*=false*/)
         }
     }
     
-    // Set light material
-    if(mLightMaterialDirty)
-    {
-        setLightMaterialInternal(mCurrentLightMaterial);
-        mLightMaterialDirty = false;
-    }
-    
-    // Set our lights
-    if(mLightsDirty)
-    {
-        mLightsDirty = false;
-        for(U32 i = 0; i < LIGHT_STAGE_COUNT; i++)
-        {
-            if(!mLightDirty[i])
-                continue;
-            
-            mLightDirty[i] = false;
-            setLightInternal(i, mCurrentLight[i], mCurrentLightEnable[i]);
-        }
-    }
+//    // Set light material
+//    if(mLightMaterialDirty)
+//    {
+//        setLightMaterialInternal(mCurrentLightMaterial);
+//        mLightMaterialDirty = false;
+//    }
+//    
+//    // Set our lights
+//    if(mLightsDirty)
+//    {
+//        mLightsDirty = false;
+//        for(U32 i = 0; i < LIGHT_STAGE_COUNT; i++)
+//        {
+//            if(!mLightDirty[i])
+//                continue;
+//            
+//            mLightDirty[i] = false;
+//            setLightInternal(i, mCurrentLight[i], mCurrentLightEnable[i]);
+//        }
+//    }
     
     _updateRenderTargets();
     
@@ -575,105 +533,6 @@ void GFXOpenGLESDevice::updateStates(bool forceSetAll /*=false*/)
 #endif
 }
 
-inline void GFXOpenGLESDevice::preDrawPrimitive()
-{
-    if( mStateDirty )
-    {
-        updateStates();
-    }
-    
-    if(mCurrentShaderConstBuffer)
-        setShaderConstBufferInternal(mCurrentShaderConstBuffer);
-}
-
-inline void GFXOpenGLESDevice::postDrawPrimitive(U32 primitiveCount)
-{
-    //   mDeviceStatistics.mDrawCalls++;
-    //   mDeviceStatistics.mPolyCount += primitiveCount;
-}
-
-void GFXOpenGLESDevice::drawPrimitive( GFXPrimitiveType primType, U32 vertexStart, U32 primitiveCount )
-{
-    preDrawPrimitive();
-    glDisable(GL_CULL_FACE);
-
-    glDrawArrays(GFXGLPrimType[primType], vertexStart, primCountToIndexCount(primType, primitiveCount));
-    
-    postDrawPrimitive(primitiveCount);
-}
-
-void GFXOpenGLESDevice::drawIndexedPrimitive(   GFXPrimitiveType primType,
-                                         U32 startVertex,
-                                         U32 minIndex,
-                                         U32 numVerts,
-                                         U32 startIndex,
-                                         U32 primitiveCount )
-{
-    AssertFatal( startVertex == 0, "GFXOpenGLESDevice::drawIndexedPrimitive() - Non-zero startVertex unsupported!" );
-    
-    preDrawPrimitive();
-    
-    glDrawElements(GFXGLPrimType[primType], primCountToIndexCount(primType, primitiveCount), GL_UNSIGNED_SHORT, (GLvoid*)0);
-    
-    postDrawPrimitive(primitiveCount);
-}
-
-
-void GFXOpenGLESDevice::setLightInternal(U32 lightStage, const GFXLightInfo light, bool lightEnable)
-{
-    //   if(!lightEnable)
-    //   {
-    //      glDisable(GL_LIGHT0 + lightStage);
-    //      return;
-    //   }
-    //
-    //   if(light.mType == GFXLightInfo::Ambient)
-    //   {
-    //      AssertFatal(false, "Instead of setting an ambient light you should set the global ambient color.");
-    //      return;
-    //   }
-    //
-    //   GLenum lightEnum = GL_LIGHT0 + lightStage;
-    //   glLightfv(lightEnum, GL_AMBIENT, (GLfloat*)&light.mAmbient);
-    //   glLightfv(lightEnum, GL_DIFFUSE, (GLfloat*)&light.mColor);
-    //   glLightfv(lightEnum, GL_SPECULAR, (GLfloat*)&light.mColor);
-    //
-    //   F32 pos[4];
-    //
-    //   if(light.mType != GFXLightInfo::Vector)
-    //   {
-    //      dMemcpy(pos, &light.mPos, sizeof(light.mPos));
-    //      pos[3] = 1.0;
-    //   }
-    //   else
-    //   {
-    //      dMemcpy(pos, &light.mDirection, sizeof(light.mDirection));
-    //      pos[3] = 0.0;
-    //   }
-    //   // Harcoded attenuation
-    //   glLightf(lightEnum, GL_CONSTANT_ATTENUATION, 1.0f);
-    //   glLightf(lightEnum, GL_LINEAR_ATTENUATION, 0.1f);
-    //   glLightf(lightEnum, GL_QUADRATIC_ATTENUATION, 0.0f);
-    //
-    //   glLightfv(lightEnum, GL_POSITION, (GLfloat*)&pos);
-    //   glEnable(lightEnum);
-}
-
-void GFXOpenGLESDevice::setLightMaterialInternal(const GFXLightMaterial mat)
-{
-    //   // CodeReview - Setting these for front and back is unnecessary.  We should consider
-    //   // checking what faces we're culling and setting this only for the unculled faces.
-    //   glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, (GLfloat*)&mat.ambient);
-    //   glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, (GLfloat*)&mat.diffuse);
-    //   glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, (GLfloat*)&mat.specular);
-    //   glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, (GLfloat*)&mat.emissive);
-    //   glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, mat.shininess);
-}
-
-void GFXOpenGLESDevice::setGlobalAmbientInternal(ColorF color)
-{
-    //   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, (GLfloat*)&color);
-}
 
 void GFXOpenGLESDevice::setTextureInternal(U32 textureUnit, const GFXTextureObject*texture)
 {
@@ -1069,7 +928,7 @@ void GFXOpenGLESDevice::_updateRenderTargets()
     
     if ( mViewportDirty )
     {
-//        Con::printf("updateRT glViewport %i %i %i %i", mViewport.point.x, mViewport.point.y, mViewport.extent.x, mViewport.extent.y );
+        Con::printf("updateRT glViewport %i %i %i %i", mViewport.point.x, mViewport.point.y, mViewport.extent.x, mViewport.extent.y );
         glViewport( mViewport.point.x, mViewport.point.y, mViewport.extent.x, mViewport.extent.y );
         mViewportDirty = false;
     }

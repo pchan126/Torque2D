@@ -41,9 +41,7 @@ private:
     typedef GFXWindowTarget Parent;
     
     friend class GFXOpenGLTextureObject;
-//    friend class GFXOpenGLCubemap;
     friend class GFXOpenGLWindowTarget;
-    friend class GFXOpenGLPrimitiveBuffer;
     friend class GFXOpenGLVertexBuffer;
     friend class GFXOpenGLDevice;
 

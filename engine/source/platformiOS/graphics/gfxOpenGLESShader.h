@@ -67,7 +67,7 @@ public:
 //   virtual void set(GFXShaderConstHandle* handle, const MatrixF* mat, const U32 arraySize, const GFXShaderConstType matrixType = GFXSCT_Float4x4);   
 
    // GFXResource
-//   virtual const String describeSelf() const;
+   virtual const String describeSelf() const;
    virtual void zombify() {}
    virtual void resurrect() {}
 
@@ -77,8 +77,8 @@ private:
    WeakRefPtr<GFXOpenGLESShader> mShader;
     
    
-   template<typename ConstType>
-   void internalSet(GFXShaderConstHandle* handle, const ConstType& param);
+//   template<typename ConstType>
+//   void internalSet(GFXShaderConstHandle* handle, const ConstType& param);
    
 //   template<typename ConstType>
 //   void internalSet(GFXShaderConstHandle* handle, const AlignedArray<ConstType>& fv);
