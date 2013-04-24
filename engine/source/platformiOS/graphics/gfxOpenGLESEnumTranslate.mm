@@ -203,8 +203,8 @@ void GFXGLESEnumTranslate::init()
    GFXGLFillMode[GFXFillSolid] = GL_ZERO;
     
     GFXGLShaderAttributes[ATTRIB_POSITION] = StringTable->insert("Position");
-    GFXGLShaderAttributes[ATTRIB_COLOR] = StringTable->insert("SourceColor");
     GFXGLShaderAttributes[ATTRIB_NORMAL] = StringTable->insert("Normal");
+    GFXGLShaderAttributes[ATTRIB_COLOR] = StringTable->insert("SourceColor");
     GFXGLShaderAttributes[ATTRIB_TEXCOORD0] = StringTable->insert("inTexCoord");
     GFXGLShaderAttributes[ATTRIB_TEXCOORD1] = StringTable->insert("inTexCoord2");
     GFXGLShaderAttributes[ATTRIB_TEXCOORD2] = StringTable->insert("inTexCoord3");

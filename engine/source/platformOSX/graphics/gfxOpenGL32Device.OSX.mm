@@ -314,7 +314,7 @@ void GFXOpenGL32Device::resurrect()
 GFXVertexBuffer* GFXOpenGL32Device::findVolatileVBO(U32 numVerts, const GFXVertexFormat *vertexFormat, U32 vertSize, void* data)
 {
     for(U32 i = 0; i < mVolatileVBs.size(); i++)
-        if (  mVolatileVBs[i]->mNumVerts >= numVerts &&
+        if (  mVolatileVBs[i]->mVertexCount >= numVerts &&
             mVolatileVBs[i]->mVertexFormat.isEqual( *vertexFormat ) &&
             mVolatileVBs[i]->mVertexSize == vertSize &&
             mVolatileVBs[i]->getRefCount() == 1 )

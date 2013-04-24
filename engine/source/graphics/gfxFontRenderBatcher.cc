@@ -177,7 +177,7 @@ void FontRenderBatcher::render( F32 rot, const Point2F &offset )
 
    AssertFatal(currentPt <= mLength * 6, "FontRenderBatcher::render - too many verts for length of string!");
 
-    GFXVertexBufferHandle<GFXVertexPCT> vHandle(GFX, mLength * 6, GFXBufferTypeVolatile, verts.address());
+    GFXVertexBufferHandle<GFXVertexPCT> vHandle(GFX, mLength * 6, GFXBufferTypeStatic, verts.address());
    GFX->setVertexBuffer(vHandle);
 
    // Now do an optimal render!

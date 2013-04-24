@@ -39,35 +39,31 @@ function Sandbox::create( %this )
     // Create the sandbox window.
     CreateSandboxWindow();
     
-    // Create a sandbox scene.
-    createSandboxScene();
-
-    Sandbox.createBackground();
     // Load and configure the console.
-//     Sandbox.add( TamlRead("./gui/ConsoleDialog.gui.taml") );
-//    GlobalActionMap.bind( keyboard, "ctrl tilde", toggleConsole );
+    Sandbox.add( TamlRead("./gui/ConsoleDialog.gui.taml") );
+    GlobalActionMap.bind( keyboard, "ctrl tilde", toggleConsole );
+    
+    // Load and configure the toolbox.
+    Sandbox.add( TamlRead("./gui/ToolboxDialog.gui.taml") );
 
-//     // Load and configure the toolbox.
-//     Sandbox.add( TamlRead("./gui/ToolboxDialog.gui.taml") );
+    // Load and configure the main overlay.
+    Sandbox.add( TamlRead("./gui/MainOverlay.gui.taml") );
+    
+    // Scan for toys.
+    scanForToys();
 
-//     // Load and configure the main overlay.
-//     Sandbox.add( TamlRead("./gui/MainOverlay.gui.taml") );
-
-//     // Scan for toys.
-//     scanForToys();
-
-//     // Initialize the toolbox.
-//     initializeToolbox();
-
-//     // Initialize the input controller.
-//     Sandbox.InputController.initialize();
-
-//     // Initialize the "cannot render" proxy.
-//     new RenderProxy(CannotRenderProxy)
-//     {
-//         Image = "Sandbox:CannotRender";
-//     };
-//     Sandbox.add( CannotRenderProxy );
+    // Initialize the toolbox.    
+    initializeToolbox();
+    
+    // Initialize the input controller.
+    Sandbox.InputController.initialize();
+    
+    // Initialize the "cannot render" proxy.
+    new RenderProxy(CannotRenderProxy)
+    {
+        Image = "Sandbox:CannotRender";
+    };
+    Sandbox.add( CannotRenderProxy );
 }
 
 //-----------------------------------------------------------------------------
@@ -106,33 +102,4 @@ function Sandbox::savePreferences( %this )
     // Export only the sandbox preferences.
     export("$pref::Sandbox::*", "preferences.cs", false );        
     export("$pref::Video::*", "preferences.cs", true );
-}
-
-function Sandbox::createBackground( %this )
-{    
-    // Create the sprite.
-    %object = new Sprite();
-    
-    // Set the sprite as "static" so it is not affected by gravity.
-    %object.setBodyType( static );
-       
-    // Always try to configure a scene-object prior to adding it to a scene for best performance.
-
-    // Set the position.
-    %object.Position = "0 0";
-
-    // Set the size.        
-    %object.Size = "100 75";
-    
-    // Set to the furthest background layer.
-    %object.SceneLayer = 31;
-    
-    // Set the scroller to use an animation!
-    %object.Image = "ToyAssets:highlightBackground";
-    
-    // Set the blend color.
-    %object.BlendColor = SlateGray;
-            
-    // Add the sprite to the scene.
-    SandboxScene.add( %object );    
 }

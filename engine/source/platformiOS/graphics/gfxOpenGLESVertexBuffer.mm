@@ -39,21 +39,25 @@ GFXOpenGLESVertexBuffer::GFXOpenGLESVertexBuffer(  GFXDevice *device,
         
         if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::POSITION.c_str() ) == 0 )
         {
+//            Con::printf("glVertexAttribPointer %i %i %i %i", GLKVertexAttribPosition, element.getSizeInBytes()/4, mVertexSize, buffer);
             glVertexAttribPointer(GLKVertexAttribPosition, element.getSizeInBytes()/4, GL_FLOAT, GL_FALSE, mVertexSize, buffer);
             glEnableVertexAttribArray(GLKVertexAttribPosition);
             buffer += element.getSizeInBytes();
         }
         else if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::NORMAL.c_str() ) == 0 )
         {
+//            Con::printf("glVertexAttribPointer %i %i %i %i", GLKVertexAttribNormal, element.getSizeInBytes()/4, mVertexSize, *buffer);
             glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, mVertexSize, buffer);
             glEnableVertexAttribArray(GLKVertexAttribNormal);
             buffer += element.getSizeInBytes();
         }
         else if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::COLOR.c_str() ) == 0 )
         {
-            glVertexAttribPointer(GLKVertexAttribColor, 4, GL_FLOAT, GL_TRUE, mVertexSize, buffer);
+//            Con::printf("glVertexAttribPointer %i %i %i %i", GLKVertexAttribColor, element.getSizeInBytes(), mVertexSize, buffer);
+            glVertexAttribPointer(GLKVertexAttribColor, 4, GL_UNSIGNED_BYTE, GL_TRUE, mVertexSize, buffer);
             glEnableVertexAttribArray(GLKVertexAttribColor);
             buffer += element.getSizeInBytes();
+            size_t temp = sizeof(Color4I);
         }
         else // Everything else is a texture coordinate.
         {
@@ -63,12 +67,16 @@ GFXOpenGLESVertexBuffer::GFXOpenGLESVertexBuffer(  GFXDevice *device,
             ++texCoordIndex;
         }
     }
-    // This also attaches the element array buffer to the VAO
-    glGenBuffers(1, &elementBufferName);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferName);
     
-    // Allocate and load vertex array element data into VBO
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount*sizeof(U16), indexBuffer, GL_STATIC_DRAW);
+    if (indexCount)
+    {
+        // This also attaches the element array buffer to the VAO
+        glGenBuffers(1, &elementBufferName);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferName);
+        
+        // Allocate and load vertex array element data into VBO
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount*sizeof(U16), indexBuffer, GL_STATIC_DRAW);
+    }
 }
 
 GFXOpenGLESVertexBuffer::~GFXOpenGLESVertexBuffer()
@@ -88,7 +96,7 @@ void GFXOpenGLESVertexBuffer::lock( U32 vertexStart, U32 vertexEnd, void **verte
 	// Bind us, get a pointer into the buffer, then
 	// offset it by vertexStart so we act like the D3D layer.
 	glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
-    glBufferData(GL_ARRAY_BUFFER, mNumVerts * mVertexSize, NULL, GFXGLBufferType[mBufferType]);
+    glBufferData(GL_ARRAY_BUFFER, mVertexCount * mVertexSize, NULL, GFXGLBufferType[mBufferType]);
 	*vertexPtr = (void*)((U8*)glMapBufferOES(GL_ARRAY_BUFFER, GL_WRITE_ONLY_OES) + (vertexStart * mVertexSize));
 	lockedVertexStart = vertexStart;
 	lockedVertexEnd   = vertexEnd;
@@ -117,32 +125,8 @@ void GFXOpenGLESVertexBuffer::unlock()
 
 void GFXOpenGLESVertexBuffer::prepare()
 {
+//    Con::printf("GFXOpenGLESVertexBuffer::prepare %s", describeSelf().c_str());
     glBindVertexArrayOES(mVertexArrayObject);
-
-//    U32 texCoordIndex = 0;
-//    for ( U32 i=0; i < mVertexFormat.getElementCount(); i++ )
-//    {
-//        const GFXVertexElement &element = mVertexFormat.getElement( i );
-//        
-//        if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::POSITION.c_str() ) == 0 )
-//        {
-//            glEnableVertexAttribArray(ATTRIB_POSITION);
-//        }
-//        else if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::NORMAL.c_str() ) == 0 )
-//        {
-//            glEnableVertexAttribArray(ATTRIB_NORMAL);
-//        }
-//        else if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::COLOR.c_str() ) == 0 )
-//        {
-//            glEnableVertexAttribArray(ATTRIB_COLOR);
-//        }
-//        else // Everything else is a texture coordinate.
-//        {
-//            glEnableVertexAttribArray(ATTRIB_TEXCOORD0+texCoordIndex);
-//            ++texCoordIndex;
-//        }
-//    }
-    
 }
 
 void GFXOpenGLESVertexBuffer::finish()
@@ -162,7 +146,7 @@ void GFXOpenGLESVertexBuffer::zombify()
    if(mZombieCache || !mBuffer)
       return;
       
-   mZombieCache = new U8[mNumVerts * mVertexSize];
+   mZombieCache = new U8[mVertexCount * mVertexSize];
    glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
 //   glGetBufferSubData(GL_ARRAY_BUFFER, 0, mNumVerts * mVertexSize, mZombieCache);
    glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -177,7 +161,7 @@ void GFXOpenGLESVertexBuffer::resurrect()
    
    glGenBuffers(1, &mBuffer);
    glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
-   glBufferData(GL_ARRAY_BUFFER, mNumVerts * mVertexSize, mZombieCache, GFXGLBufferType[mBufferType]);
+   glBufferData(GL_ARRAY_BUFFER, mVertexCount * mVertexSize, mZombieCache, GFXGLBufferType[mBufferType]);
    glBindBuffer(GL_ARRAY_BUFFER, 0);
    
    delete[] mZombieCache;

@@ -245,20 +245,20 @@ void GFXOpenGLESDevice::resurrect()
 }
 
 
-GFXVertexBuffer* GFXOpenGLESDevice::findVolatileVBO(U32 numVerts, const GFXVertexFormat *vertexFormat, U32 vertSize, void* data)
+GFXVertexBuffer* GFXOpenGLESDevice::findVolatileVBO(U32 vertexCount, const GFXVertexFormat *vertexFormat, U32 vertSize, void* data)
 {
     for(U32 i = 0; i < mVolatileVBs.size(); i++)
-        if (  mVolatileVBs[i]->mNumVerts >= numVerts &&
+        if (  mVolatileVBs[i]->mVertexCount >= vertexCount &&
             mVolatileVBs[i]->mVertexFormat.isEqual( *vertexFormat ) &&
             mVolatileVBs[i]->mVertexSize == vertSize &&
             mVolatileVBs[i]->getRefCount() == 1 )
         {
-            mVolatileVBs[i].getPointer()->set(data, numVerts*vertSize);
+            mVolatileVBs[i].getPointer()->set(data, vertexCount*vertSize);
             return mVolatileVBs[i];
         }
     
     // No existing VB, so create one
-    StrongRefPtr<GFXOpenGLESVertexBuffer> buf(new GFXOpenGLESVertexBuffer(GFX, numVerts, vertexFormat, vertSize, GFXBufferTypeVolatile, data));
+    StrongRefPtr<GFXOpenGLESVertexBuffer> buf(new GFXOpenGLESVertexBuffer(GFX, vertexCount, vertexFormat, vertSize, GFXBufferTypeVolatile, data));
     buf->registerResourceWithDevice(this);
     mVolatileVBs.push_back(buf);
     return buf.getPointer();
@@ -928,7 +928,6 @@ void GFXOpenGLESDevice::_updateRenderTargets()
     
     if ( mViewportDirty )
     {
-        Con::printf("updateRT glViewport %i %i %i %i", mViewport.point.x, mViewport.point.y, mViewport.extent.x, mViewport.extent.y );
         glViewport( mViewport.point.x, mViewport.point.y, mViewport.extent.x, mViewport.extent.y );
         mViewportDirty = false;
     }

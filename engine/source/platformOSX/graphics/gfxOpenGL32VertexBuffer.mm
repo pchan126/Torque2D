@@ -105,7 +105,7 @@ void GFXOpenGL32VertexBuffer::lock( U32 vertexStart, U32 vertexEnd, void **verte
 	// Bind us, get a pointer into the buffer, then
 	// offset it by vertexStart so we act like the D3D layer.
 	glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
-    glBufferData(GL_ARRAY_BUFFER, mNumVerts * mVertexSize, NULL, GFXGLBufferType[mBufferType]);
+    glBufferData(GL_ARRAY_BUFFER, mVertexCount * mVertexSize, NULL, GFXGLBufferType[mBufferType]);
 	*vertexPtr = (void*)((U8*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY) + (vertexStart * mVertexSize));
 	lockedVertexStart = vertexStart;
 	lockedVertexEnd   = vertexEnd;
@@ -156,9 +156,9 @@ void GFXOpenGL32VertexBuffer::zombify()
    if(mZombieCache || !mBuffer)
       return;
       
-   mZombieCache = new U8[mNumVerts * mVertexSize];
+   mZombieCache = new U8[mVertexCount * mVertexSize];
    glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
-   glGetBufferSubData(GL_ARRAY_BUFFER, 0, mNumVerts * mVertexSize, mZombieCache);
+   glGetBufferSubData(GL_ARRAY_BUFFER, 0, mVertexCount * mVertexSize, mZombieCache);
    glBindBuffer(GL_ARRAY_BUFFER, 0);
    glDeleteBuffers(1, &mBuffer);
    mBuffer = 0;
@@ -171,7 +171,7 @@ void GFXOpenGL32VertexBuffer::resurrect()
    
    glGenBuffers(1, &mBuffer);
    glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
-   glBufferData(GL_ARRAY_BUFFER, mNumVerts * mVertexSize, mZombieCache, GFXGLBufferType[mBufferType]);
+   glBufferData(GL_ARRAY_BUFFER, mVertexCount * mVertexSize, mZombieCache, GFXGLBufferType[mBufferType]);
    glBindBuffer(GL_ARRAY_BUFFER, 0);
    
    delete[] mZombieCache;

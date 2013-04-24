@@ -42,7 +42,7 @@ class GFXVertexBuffer : public StrongRefBase, public GFXResource
 public:
 
    /// Number of vertices in this buffer.
-   U32 mNumVerts;
+   U32 mVertexCount;
 
    /// A copy of the vertex format for this buffer.
    GFXVertexFormat mVertexFormat;
@@ -63,13 +63,13 @@ public:
    U32   mVolatileStart;
 
    GFXVertexBuffer(  GFXDevice *device, 
-                     U32 numVerts, 
+                     U32 vertexCount, 
                      const GFXVertexFormat *vertexFormat, 
                      U32 vertexSize, 
                      GFXBufferType bufferType )
       :  mDevice( device ),
          mVolatileStart( 0 ),         
-         mNumVerts( numVerts ),
+         mVertexCount( vertexCount ),
          mVertexSize( vertexSize ),
          mBufferType( bufferType )      
    {
@@ -111,9 +111,9 @@ protected:
    void* lock(U32 vertexStart, U32 vertexEnd)
    {
       if(vertexEnd == 0)
-         vertexEnd = getPointer()->mNumVerts;
+         vertexEnd = getPointer()->mVertexCount;
       AssertFatal(vertexEnd > vertexStart, "Can't get a lock with the end before the start.");
-      AssertFatal(vertexEnd <= getPointer()->mNumVerts || getPointer()->mBufferType == GFXBufferTypeVolatile, "Tried to get vertices beyond the end of the buffer!");
+      AssertFatal(vertexEnd <= getPointer()->mVertexCount || getPointer()->mBufferType == GFXBufferTypeVolatile, "Tried to get vertices beyond the end of the buffer!");
       getPointer()->lock(vertexStart, vertexEnd, &getPointer()->lockedVertexPtr);
       return getPointer()->lockedVertexPtr;
    }

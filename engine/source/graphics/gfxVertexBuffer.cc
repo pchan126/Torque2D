@@ -59,5 +59,5 @@ const String GFXVertexBuffer::describeSelf() const
       break;
    }
 
-   return String::ToString("numVerts: %i vertSize: %i bufferType: %s", mNumVerts, mVertexSize, bufType);   
+   return String::ToString("numVerts: %i vertSize: %i bufferType: %s", mVertexCount, mVertexSize, bufType);   
 }
