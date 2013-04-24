@@ -10,7 +10,6 @@ void main()
 {  
     vec4 texColor_0 = texture2D(sampler2d_0, TexCoord) * vertColor;
     gl_FragColor = texColor_0;
-     gl_FragColor = vec4(1.0, 0.5, 0.0, 1.0);
 }
 
 #else

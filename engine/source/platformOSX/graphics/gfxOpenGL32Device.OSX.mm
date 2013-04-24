@@ -819,24 +819,24 @@ void GFXOpenGL32Device::initGenericShaders()
     const char* shaderDirectory = Con::getVariable("$GUI::shaderDirectory");
     Con::printf("loading shaders from %s", shaderDirectory);
     
-    dSprintf(vertBuffer, sizeof(vertBuffer), "%s/CVert.glsl", shaderDirectory);
-    dSprintf(fragBuffer, sizeof(fragBuffer), "%s/CFrag.glsl", shaderDirectory);
+    dSprintf(vertBuffer, sizeof(vertBuffer), "%s/C.vsh", shaderDirectory);
+    dSprintf(fragBuffer, sizeof(fragBuffer), "%s/C.fsh", shaderDirectory);
 
     mGenericShader[0] = createShader();
     mGenericShader[0]->init(String(vertBuffer), String(fragBuffer), 0, macros);
     mGenericShaderConst[0] = mGenericShader[0]->allocConstBuffer();
     
     //  #Texture Shader
-    dSprintf(vertBuffer, sizeof(vertBuffer), "%s/simpleVert.glsl", shaderDirectory);
-    dSprintf(fragBuffer, sizeof(fragBuffer), "%s/simpleFrag.glsl", shaderDirectory);
+    dSprintf(vertBuffer, sizeof(vertBuffer), "%s/simple.vsh", shaderDirectory);
+    dSprintf(fragBuffer, sizeof(fragBuffer), "%s/simple.fsh", shaderDirectory);
     
     mGenericShader[1] = createShader();
     mGenericShader[1]->init(String(vertBuffer), String(fragBuffer), 0, macros);
     mGenericShaderConst[1] = mGenericShader[1]->allocConstBuffer();
     
     //  #Point Shader
-    dSprintf(vertBuffer, sizeof(vertBuffer), "%s/pointVert.glsl", shaderDirectory);
-    dSprintf(fragBuffer, sizeof(fragBuffer), "%s/pointFrag.glsl", shaderDirectory);
+    dSprintf(vertBuffer, sizeof(vertBuffer), "%s/point.vsh", shaderDirectory);
+    dSprintf(fragBuffer, sizeof(fragBuffer), "%s/point.fsh", shaderDirectory);
     
     mGenericShader[2] = createShader();
     mGenericShader[2]->init(String(vertBuffer), String(fragBuffer), 0, macros);
@@ -844,15 +844,15 @@ void GFXOpenGL32Device::initGenericShaders()
     
     //    GFXShaderConstHandle* hand = mGenericShader[0]->getShaderConstHandle("$mvp_matrix");
     //  #Point Shader
-    dSprintf(vertBuffer, sizeof(vertBuffer), "%s/testVert.glsl", shaderDirectory);
-    dSprintf(fragBuffer, sizeof(fragBuffer), "%s/testFrag.glsl", shaderDirectory);
+    dSprintf(vertBuffer, sizeof(vertBuffer), "%s/test.vsh", shaderDirectory);
+    dSprintf(fragBuffer, sizeof(fragBuffer), "%s/test.fsh", shaderDirectory);
     
     mGenericShader[3] = createShader();
     mGenericShader[3]->init(String(vertBuffer), String(fragBuffer), 0, macros);
     mGenericShaderConst[3] = mGenericShader[3]->allocConstBuffer();
 
-    dSprintf(vertBuffer, sizeof(vertBuffer), "%s/alphaVert.glsl", shaderDirectory);
-    dSprintf(fragBuffer, sizeof(fragBuffer), "%s/alphaFrag.glsl", shaderDirectory);
+    dSprintf(vertBuffer, sizeof(vertBuffer), "%s/alpha.vsh", shaderDirectory);
+    dSprintf(fragBuffer, sizeof(fragBuffer), "%s/alpha.fsh", shaderDirectory);
     
     mGenericShader[4] = createShader();
     mGenericShader[4]->init(String(vertBuffer), String(fragBuffer), 0, macros);
