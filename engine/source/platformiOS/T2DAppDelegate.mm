@@ -28,6 +28,7 @@
 #include "console/console.h"
 #include "game/gameInterface.h"
 #include "graphics/gfxInit.h"
+#include "graphics/gfxOpenGLESDevice.h"
 
 // Store current orientation for easy access
 extern void _iOSGameChangeOrientation(S32 newOrientation);
@@ -44,33 +45,32 @@ bool _iOSTorqueFatalError = false;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
-	//Also we set the currentRotation up so its not invalid
-	currentOrientation = [UIDevice currentDevice].orientation;
-	//So we make a selector to handle that, called didRotate (lower down in the code)
+//	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+//	//Also we set the currentRotation up so its not invalid
+//	currentOrientation = [UIDevice currentDevice].orientation;
+//	//So we make a selector to handle that, called didRotate (lower down in the code)
+////	[[NSNotificationCenter defaultCenter] addObserver:self
+////                                            selector:@selector(didRotate:)
+////                                                name:UIDeviceOrientationDidChangeNotification
+////                                              object:nil];
+//
+//   
+//	// Register for screen connect and disconnect notifications.
 //	[[NSNotificationCenter defaultCenter] addObserver:self
-//                                            selector:@selector(didRotate:)
-//                                                name:UIDeviceOrientationDidChangeNotification
+//                                            selector:@selector(screenDidChange:)
+//                                                name:UIScreenDidConnectNotification
 //                                              object:nil];
-
-   
-	// Register for screen connect and disconnect notifications.
-	[[NSNotificationCenter defaultCenter] addObserver:self
-                                            selector:@selector(screenDidChange:)
-                                                name:UIScreenDidConnectNotification
-                                              object:nil];
-	
-	[[NSNotificationCenter defaultCenter] addObserver:self
-                                            selector:@selector(screenDidChange:)
-                                                name:UIScreenDidDisconnectNotification
-                                              object:nil];
+//	
+//	[[NSNotificationCenter defaultCenter] addObserver:self
+//                                            selector:@selector(screenDidChange:)
+//                                                name:UIScreenDidDisconnectNotification
+//                                              object:nil];
 
     
 //    application.delegate = self;
     iOSPlatState * platState = [iOSPlatState sharedPlatState];
     [platState runTorque2D];
-    
-   return TRUE;
+    return TRUE;
 }
 
 - (void)applicationDidReceiveMemoryWarning
@@ -222,5 +222,21 @@ bool _iOSTorqueFatalError = false;
       //      [self.view addSubview:self.glController.view];
 	}
 }
+
+#pragma mark - GLKView and GLKViewController delegate methods
+
+- (void)glkViewControllerUpdate:(GLKViewController *)controller
+{
+
+}
+
+- (void)glkView:(GLKView *)view drawInRect:(CGRect)rect
+{
+    if(Game->isRunning())
+    {
+        Game->mainLoop();
+    }
+}
+
 
 @end

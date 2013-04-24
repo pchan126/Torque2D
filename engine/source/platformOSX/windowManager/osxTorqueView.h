@@ -26,7 +26,7 @@
 
 class MacWindow;
 
-@interface OSXTorqueView : NSOpenGLView
+@interface OSXTorqueView : NSOpenGLView <NSWindowDelegate>
 {
 @private
     osxInputManager *inputManager;

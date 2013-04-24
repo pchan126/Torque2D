@@ -18,7 +18,6 @@ public:
    GFXOpenGLESWindowTarget(PlatformWindow *win, GFXDevice *d);
    const Point2I getSize() 
    {
-       return size;
        return mWindow->getClientExtent();
    }
    virtual GFXFormat getFormat()
@@ -47,8 +46,8 @@ private:
 
    PlatformWindow *mWindow;
    friend class GFXOpenGLESDevice;
-   Point2I size;
-   GFXDevice* mDevice;
+
+    GFXDevice* mDevice;
    EAGLContext* mContext;
    void* mFullscreenContext;
    void _teardownCurrentMode();

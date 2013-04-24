@@ -9,10 +9,12 @@
 #import "windowManager/platformWindow.h"
 #import "./iOSWindowManager.h"
 #import "./iOSCursorController.h"
-#import "./T2DViewController.h"
 
 #import "graphics/gfxTarget.h"
 #import "graphics/gfxStructs.h"
+
+@class GLKView;
+@class GLKViewController;
 
 class iOSWindow : public PlatformWindow
 {
@@ -122,7 +124,6 @@ private:
 
    static iOSWindow* sInstance;
    
-   T2DViewController* mGLKWindow;
    GFXDevice *mDevice;
    GFXWindowTargetRef mTarget;
    GFXVideoMode mCurrentMode;
@@ -148,6 +149,8 @@ private:
    CGRect mDisplayBounds;
    CGRect mMainDisplayBounds;
    
+    GLKView *view;
+    GLKViewController *viewController;
    Point2I mSize;
 };
 

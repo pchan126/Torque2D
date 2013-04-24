@@ -210,12 +210,8 @@ void GuiCanvas::setWindowTitle(const char *newTitle)
 
 void GuiCanvas::handleResize( WindowId did, S32 width, S32 height )
 {
-//	if (Journal::IsPlaying() && mPlatformWindow)
-//	{
-//		mPlatformWindow->lockSize(false);
-//		mPlatformWindow->setSize(Point2I(width, height));
-//		mPlatformWindow->lockSize(true);
-//	}
+    setExtent(width, height);
+    GuiCanvas::resetUpdateRegions();
     
     // Notify the scripts
     if ( isMethod( "onResize" ) )

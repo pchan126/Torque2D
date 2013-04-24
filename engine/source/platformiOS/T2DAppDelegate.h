@@ -23,8 +23,7 @@
 #import <UIKit/UIKit.h>
 #import <GLKit/GLKit.h>
 
-@interface T2DAppDelegate : NSObject <UIApplicationDelegate> {
-	IBOutlet UIWindow *window;
+@interface T2DAppDelegate : NSObject <UIApplicationDelegate, GLKViewDelegate, GLKViewControllerDelegate> {
 }
 
 @property (nonatomic, strong) UIWindow *window;

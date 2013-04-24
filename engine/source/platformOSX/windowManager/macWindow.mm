@@ -8,6 +8,7 @@
 #import "./osxTorqueView.h"
 
 #import "console/console.h"
+#import "AppDelegate.h"
 
 MacWindow* MacWindow::sInstance = NULL;
 
@@ -74,6 +75,8 @@ void MacWindow::_initCocoaWindow(const char* windowText, Point2I clientExtent)
    // create the window
    U32 style;
    
+    AppDelegate* appDelegate = [NSApp delegate];
+    
   NSRect frame = NSMakeRect(0,0,clientExtent.x, clientExtent.y);
   
   style = NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask | NSResizableWindowMask;
@@ -83,6 +86,7 @@ void MacWindow::_initCocoaWindow(const char* windowText, Point2I clientExtent)
                                                   backing:NSBackingStoreBuffered
                                                     defer:NO];
 
+    appDelegate.window = mCocoaWindow;
     [mCocoaWindow setBackgroundColor:[NSColor blackColor]];
 
     // The full frame for a window must consider the title bar height as well
@@ -106,6 +110,7 @@ void MacWindow::_initCocoaWindow(const char* windowText, Point2I clientExtent)
     
    [_torqueView setTorqueWindow:this];
    [mCocoaWindow setContentView:_torqueView];
+    mCocoaWindow.delegate = _torqueView;
     // Show the window and all its contents
     [mCocoaWindow makeKeyAndOrderFront:NSApp];
 //    [mCocoaWindow setDelegate:torqueView];

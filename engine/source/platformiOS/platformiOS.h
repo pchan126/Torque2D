@@ -22,9 +22,6 @@
 
 #import <UIKit/UIKit.h>
 
-#import "platformiOS/windowManager/T2DView.h"
-#import "platformiOS/windowManager/T2DViewController.h"
-
 #import "platform/platform.h"
 #import "math/mMath.h"
 #import "platformiOS/iOSEvents.h"
@@ -41,7 +38,6 @@
 
     EAGLContext*      _ctx;
     
-    T2DViewController *viewController;
     bool              ctxNeedsUpdate;
 
     bool			portrait;
@@ -97,8 +93,6 @@
 
 @property (strong) EAGLContext* ctx;
 @property (strong) UIView* window;
-@property (strong) T2DViewController* viewController;
-//@property CGDirectDisplayID cgDisplay;
 @property (strong) UIApplication* application;
 @property void* alertSemaphore;
 @property RandomLCG* platformRandom;

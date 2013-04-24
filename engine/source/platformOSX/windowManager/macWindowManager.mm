@@ -10,6 +10,7 @@
 #import "console/console.h"
 #import "graphics/gfxDevice.h"
 #import "game/version.h"
+#import "platformOSX/platformOSX.h"
 
 PlatformWindowManager* CreatePlatformWindowManager()
 {
@@ -200,6 +201,14 @@ void MacWindowManager::_removeWindow(MacWindow* window)
          return;
       }
    }
+    
+    if (mWindowList.size() == 0)
+    {
+        osxPlatState * platState = [osxPlatState sharedPlatState];
+        [platState shutDownTorque2D];
+    }
+    
+        
    AssertFatal(false, avar("MacWindowManager::_removeWindow - Failed to remove window %x, perhaps it was already removed?", window));
 }
 

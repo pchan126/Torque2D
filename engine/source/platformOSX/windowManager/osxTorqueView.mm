@@ -414,50 +414,50 @@
 
 //#pragma mark -
 //#pragma mark Window Delegate
-//- (BOOL)windowShouldClose:(NSWindow *)sender
-//{
-//    // We close the window ourselves
-//    mTorqueWindow->appEvent.trigger(mTorqueWindow->getWindowId(), WindowDestroy);
-//    return NO;
-//}
-//
-//- (void)windowWillClose:(NSNotification *) notification
-//{
-//    mTorqueWindow->_disassociateCocoaWindow();
-//}
-//
-//- (void)windowDidBecomeKey:(NSNotification *)notification
-//{
-//    // when our window is the key window, we become the app delegate.
-//    PlatformWindow* focusWindow = WindowManager->getFocusedWindow();
-//    if(focusWindow && focusWindow != mTorqueWindow)
-//        focusWindow->appEvent.trigger(mTorqueWindow->getWindowId(), LoseFocus);
-//    [NSApp setDelegate:self];
+- (BOOL)windowShouldClose:(NSWindow *)sender
+{
+    // We close the window ourselves
+    mTorqueWindow->appEvent.trigger(mTorqueWindow->getWindowId(), WindowDestroy);
+    return YES;
+}
+
+- (void)windowWillClose:(NSNotification *) notification
+{
+    mTorqueWindow->_disassociateCocoaWindow();
+}
+
+- (void)windowDidBecomeKey:(NSNotification *)notification
+{
+    // when our window is the key window, we become the app delegate.
+    PlatformWindow* focusWindow = WindowManager->getFocusedWindow();
+    if(focusWindow && focusWindow != mTorqueWindow)
+        focusWindow->appEvent.trigger(mTorqueWindow->getWindowId(), LoseFocus);
+    [NSApp setDelegate:self];
 //    [self signalGainFocus];
-//}
-//
-//- (void)windowDidResignKey:(NSNotification*)notification
-//{
-//    mTorqueWindow->appEvent.trigger(mTorqueWindow->getWindowId(), LoseScreen);
-//    mTorqueWindow->_associateMouse();
-//    mTorqueWindow->setCursorVisible(true);
-//    [NSApp setDelegate:nil];
-//}
-//
-//- (void)windowDidChangeScreen:(NSNotification*)notification
-//{
-//    NSWindow* wnd = [notification object];
-//    // TODO: Add a category to NSScreen to deal with this
-//    //   CGDirectDisplayID disp = (CGDirectDisplayID)[[[[wnd screen] deviceDescription] valueForKey:@"NSScreenNumber"] unsignedIntValue];
-//    CGDirectDisplayID display = CGMainDisplayID();
-//    mTorqueWindow->setDisplay(display);
-//}
-//
-//- (void)windowDidResize:(NSNotification*)notification
-//{
-//    Point2I clientExtent = mTorqueWindow->getClientExtent();
-//    mTorqueWindow->resizeEvent.trigger(mTorqueWindow->getWindowId(), clientExtent.x, clientExtent.y);
-//}
+}
+
+- (void)windowDidResignKey:(NSNotification*)notification
+{
+    mTorqueWindow->appEvent.trigger(mTorqueWindow->getWindowId(), LoseScreen);
+    mTorqueWindow->_associateMouse();
+    mTorqueWindow->setCursorVisible(true);
+    [NSApp setDelegate:nil];
+}
+
+- (void)windowDidChangeScreen:(NSNotification*)notification
+{
+    NSWindow* wnd = [notification object];
+    // TODO: Add a category to NSScreen to deal with this
+    //   CGDirectDisplayID disp = (CGDirectDisplayID)[[[[wnd screen] deviceDescription] valueForKey:@"NSScreenNumber"] unsignedIntValue];
+    CGDirectDisplayID display = CGMainDisplayID();
+    mTorqueWindow->setDisplay(display);
+}
+
+- (void)windowDidResize:(NSNotification*)notification
+{
+    Point2I clientExtent = mTorqueWindow->getClientExtent();
+    mTorqueWindow->resizeEvent.trigger(mTorqueWindow->getWindowId(), clientExtent.x, clientExtent.y);
+}
 
 //#pragma mark -
 //#pragma mark responder status

@@ -38,8 +38,6 @@
 		8652F2A216C1483B00639EFE /* torque2d.png in Resources */ = {isa = PBXBuildFile; fileRef = 8652F2A116C1483B00639EFE /* torque2d.png */; };
 		8652F2A416C148CA00639EFE /* torque2d_retina.png in Resources */ = {isa = PBXBuildFile; fileRef = 8652F2A316C148CA00639EFE /* torque2d_retina.png */; };
 		8652F2A616C1493B00639EFE /* torque2d_ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 8652F2A516C1493B00639EFE /* torque2d_ipad.png */; };
-		86555D2F16B2C29200881446 /* iPadStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 86555D2B16B2C29200881446 /* iPadStoryboard.storyboard */; };
-		86555D3016B2C29200881446 /* iPhoneStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 86555D2D16B2C29200881446 /* iPhoneStoryboard.storyboard */; };
 		86555D3716B2C2B400881446 /* T2DAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 86555D3216B2C2B400881446 /* T2DAppDelegate.mm */; };
 		86555D3F16B2C75900881446 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86555D3E16B2C75900881446 /* GLKit.framework */; };
 		867BACD216AEC8BB0033868F /* GameCenter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 867BAC9516AEC8BB0033868F /* GameCenter.mm */; };
@@ -509,8 +507,6 @@
 		D16581641702EE3E00A21928 /* iOSWindow.mm in Sources */ = {isa = PBXBuildFile; fileRef = D165815F1702EE3D00A21928 /* iOSWindow.mm */; };
 		D16581651702EE3E00A21928 /* iOSWindowManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = D16581611702EE3E00A21928 /* iOSWindowManager.mm */; };
 		D1C75BD916F31D6C0019C495 /* str.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1C75BD716F31D6C0019C495 /* str.cpp */; };
-		D1C7C23317096714004F6661 /* T2DView.mm in Sources */ = {isa = PBXBuildFile; fileRef = D1C7C23017096713004F6661 /* T2DView.mm */; };
-		D1C7C23417096714004F6661 /* T2DViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = D1C7C23217096714004F6661 /* T2DViewController.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -599,8 +595,6 @@
 		8652F2A116C1483B00639EFE /* torque2d.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = torque2d.png; path = ../torque2d.png; sourceTree = "<group>"; };
 		8652F2A316C148CA00639EFE /* torque2d_retina.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = torque2d_retina.png; path = ../torque2d_retina.png; sourceTree = "<group>"; };
 		8652F2A516C1493B00639EFE /* torque2d_ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = torque2d_ipad.png; path = ../torque2d_ipad.png; sourceTree = "<group>"; };
-		86555D2C16B2C29200881446 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/iPadStoryboard.storyboard; sourceTree = "<group>"; };
-		86555D2E16B2C29200881446 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/iPhoneStoryboard.storyboard; sourceTree = "<group>"; };
 		86555D3116B2C2B400881446 /* T2DAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T2DAppDelegate.h; sourceTree = "<group>"; };
 		86555D3216B2C2B400881446 /* T2DAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = T2DAppDelegate.mm; sourceTree = "<group>"; };
 		86555D3E16B2C75900881446 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
@@ -1544,10 +1538,6 @@
 		D16581611702EE3E00A21928 /* iOSWindowManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iOSWindowManager.mm; sourceTree = "<group>"; };
 		D1C75BD716F31D6C0019C495 /* str.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = str.cpp; sourceTree = "<group>"; };
 		D1C75BD816F31D6C0019C495 /* str.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = str.h; sourceTree = "<group>"; };
-		D1C7C22F17096712004F6661 /* T2DView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T2DView.h; sourceTree = "<group>"; };
-		D1C7C23017096713004F6661 /* T2DView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = T2DView.mm; sourceTree = "<group>"; };
-		D1C7C23117096713004F6661 /* T2DViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T2DViewController.h; sourceTree = "<group>"; };
-		D1C7C23217096714004F6661 /* T2DViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = T2DViewController.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -3040,13 +3030,13 @@
 		86A9A3A516AEC786003F01E6 = {
 			isa = PBXGroup;
 			children = (
-				86A9A3B316AEC786003F01E6 /* Frameworks */,
+				86A9A3BA16AEC786003F01E6 /* Torque2D */,
 				867BAC9116AEC8BB0033868F /* platformiOS */,
+				86A9A3B316AEC786003F01E6 /* Frameworks */,
 				86A9A3B116AEC786003F01E6 /* Products */,
 				867BB28316AECA960033868F /* Resources */,
 				867BB11916AEC9E10033868F /* Support_Libraries */,
 				86A9A3BB16AEC786003F01E6 /* Supporting Files */,
-				86A9A3BA16AEC786003F01E6 /* Torque2D */,
 			);
 			sourceTree = "<group>";
 		};
@@ -3126,8 +3116,6 @@
 				8652F2A316C148CA00639EFE /* torque2d_retina.png */,
 				8652F2A116C1483B00639EFE /* torque2d.png */,
 				86A9A3BC16AEC786003F01E6 /* Torque2D-Info.plist */,
-				86555D2B16B2C29200881446 /* iPadStoryboard.storyboard */,
-				86555D2D16B2C29200881446 /* iPhoneStoryboard.storyboard */,
 				86A9A3BD16AEC786003F01E6 /* InfoPlist.strings */,
 				86A9A3C216AEC786003F01E6 /* Torque2D-Prefix.pch */,
 				86A9A3C616AEC786003F01E6 /* Default.png */,
@@ -3216,10 +3204,6 @@
 		D16581591702EE3D00A21928 /* windowManager */ = {
 			isa = PBXGroup;
 			children = (
-				D1C7C22F17096712004F6661 /* T2DView.h */,
-				D1C7C23017096713004F6661 /* T2DView.mm */,
-				D1C7C23117096713004F6661 /* T2DViewController.h */,
-				D1C7C23217096714004F6661 /* T2DViewController.mm */,
 				D165815A1702EE3D00A21928 /* iOSCursorController.h */,
 				D165815B1702EE3D00A21928 /* iOSCursorController.mm */,
 				D165815E1702EE3D00A21928 /* iOSWindow.h */,
@@ -3288,8 +3272,6 @@
 				867BB02916AEC9050033868F /* bison.simple in Resources */,
 				8610F32F16AEEC670015BCEB /* main.cs in Resources */,
 				8610F33016AEEC670015BCEB /* modules in Resources */,
-				86555D2F16B2C29200881446 /* iPadStoryboard.storyboard in Resources */,
-				86555D3016B2C29200881446 /* iPhoneStoryboard.storyboard in Resources */,
 				8652F2A216C1483B00639EFE /* torque2d.png in Resources */,
 				8652F2A416C148CA00639EFE /* torque2d_retina.png in Resources */,
 				8652F2A616C1493B00639EFE /* torque2d_ipad.png in Resources */,
@@ -3763,8 +3745,6 @@
 				D16581621702EE3E00A21928 /* iOSCursorController.mm in Sources */,
 				D16581641702EE3E00A21928 /* iOSWindow.mm in Sources */,
 				D16581651702EE3E00A21928 /* iOSWindowManager.mm in Sources */,
-				D1C7C23317096714004F6661 /* T2DView.mm in Sources */,
-				D1C7C23417096714004F6661 /* T2DViewController.mm in Sources */,
 				303FE31F1711B1E2002124CC /* process.cpp in Sources */,
 				D123F8891716756600F8EFEF /* gfxOpenGLShader.cc in Sources */,
 				D123F88B1716794800F8EFEF /* gfxOpenGLStateBlock.cc in Sources */,
@@ -3783,22 +3763,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		86555D2B16B2C29200881446 /* iPadStoryboard.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				86555D2C16B2C29200881446 /* en */,
-			);
-			name = iPadStoryboard.storyboard;
-			sourceTree = "<group>";
-		};
-		86555D2D16B2C29200881446 /* iPhoneStoryboard.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				86555D2E16B2C29200881446 /* en */,
-			);
-			name = iPhoneStoryboard.storyboard;
-			sourceTree = "<group>";
-		};
 		86A9A3BD16AEC786003F01E6 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (

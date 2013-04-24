@@ -8,7 +8,6 @@
 
 #import "console/console.h"
 #import "platformiOS/platformiOS.h"
-#import "./T2DViewController.h"
 #import "platformiOS/graphics/GFXOpenGLESDevice.h"
 #import "platformiOS/T2DAppDelegate.h"
 
@@ -21,7 +20,6 @@ iOSWindow::iOSWindow(U32 windowId, const char* windowText, Point2I clientExtent)
    mTitle            = NULL;
    mMouseCaptured    = false;
    
-   mGLKWindow      = NULL;
    mCursorController = new iOSCursorController( this );
    mOwningWindowManager = NULL;
    
@@ -40,6 +38,8 @@ iOSWindow::iOSWindow(U32 windowId, const char* windowText, Point2I clientExtent)
    appEvent.notify(this, &iOSWindow::_onAppEvent);
    
    sInstance = this;
+    view = nil;
+    viewController = nil;
 }
 
 iOSWindow::~iOSWindow()
@@ -60,50 +60,35 @@ iOSWindow::~iOSWindow()
 
 void iOSWindow::_initCocoaWindow(const char* windowText, Point2I clientExtent)
 {
-    iOSPlatState *platState = [iOSPlatState sharedPlatState];
     GFXOpenGLESDevice *device = dynamic_cast<GFXOpenGLESDevice*>(GFX);
-    EAGLContext *ctx = device->getEAGLContext();
+    EAGLContext *context = device->getEAGLContext();
 
-    UIStoryboard *storybord;
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-    {
-        storybord = [UIStoryboard storyboardWithName:@"iPadStoryboard" bundle:nil];
-    }
-    else
-    {
-         storybord = [UIStoryboard storyboardWithName:@"iPhoneStoryboard" bundle:nil];
-    }
+    T2DAppDelegate *appDelegate = (T2DAppDelegate*)[[UIApplication sharedApplication] delegate];
+    appDelegate.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
-    T2DViewController *vc =(T2DViewController*)[storybord instantiateInitialViewController];
-    platState.viewController = vc;
-    [platState.viewController setContext:ctx];
-    platState.viewController.context = ctx;
-	[EAGLContext setCurrentContext:ctx];
-    T2DView *view = (T2DView*)platState.viewController.view;
-    view.context = ctx;
-    view.enableSetNeedsDisplay = YES;
-    vc.paused = NO;
+    view = [[GLKView alloc] initWithFrame:[[UIScreen mainScreen] bounds] context:context];
+    view.delegate = appDelegate;
+    view.drawableDepthFormat = GLKViewDrawableDepthFormat16;
 
-    mGLKWindow = platState.viewController;
-    T2DAppDelegate *app = [[UIApplication sharedApplication] delegate];
-    app.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    app.window.rootViewController = mGLKWindow;
-    [app.window makeKeyAndVisible];
+    viewController = [[GLKViewController alloc] initWithNibName:nil bundle:nil];
+    viewController.view = view;
+    viewController.delegate = appDelegate;
+    viewController.preferredFramesPerSecond = 60;
+    viewController.paused = NO;
+    appDelegate.window.rootViewController = viewController;
     
-    mGLKWindow.preferredFramesPerSecond = 60;
-    mGLKWindow.paused = NO;
+    appDelegate.window.backgroundColor = [UIColor whiteColor];
+    [appDelegate.window makeKeyAndVisible];
 }
 
-//void iOSWindow::_disassociateCocoaWindow()
-//{
-//   if( !mGLKWindow )
-//      return;
-//      
-//   [mGLKWindow setContentView:nil];
-//   [mGLKWindow setDelegate:nil];   
-//
-//   mGLKWindow = NULL;
-//}
+void iOSWindow::_disassociateCocoaWindow()
+{
+    T2DAppDelegate *appDelegate = (T2DAppDelegate*)[[UIApplication sharedApplication] delegate];
+
+    view = nil;
+    viewController = nil;
+    appDelegate.window = nil;
+}
 
 void iOSWindow::setVideoMode(const GFXVideoMode &mode)
 {
@@ -184,9 +169,10 @@ PlatformWindow* iOSWindow::getNextWindow() const
 
 bool iOSWindow::setSize(const Point2I &newSize)
 {
-   Con::printf("iOS setSize %i %i", newSize.x, newSize.y);
+   Con::printf("iOSWindow setSize %i %i", newSize.x, newSize.y);
    mSize = newSize;
    mDisplayBounds.size = CGSizeMake(newSize.x, newSize.y);
+   resizeEvent.trigger(getWindowId(), newSize.x, newSize.y);
    return true;
 }
 
@@ -276,8 +262,8 @@ void iOSWindow::setFocus()
 
 void iOSWindow::signalGainFocus()
 {
-   if(isFocused())
-      [[mGLKWindow delegate] performSelector:@selector(signalGainFocus)];
+//   if(isFocused())
+//      [[mGLKWindow delegate] performSelector:@selector(signalGainFocus)];
 }
 
 void iOSWindow::minimize()
@@ -304,28 +290,16 @@ void iOSWindow::minimize()
 void iOSWindow::maximize()
 {
    return;
-//   if(!isVisible())
-//      return;
-   
-   // GFX2_RENDER_MERGE 
-   //[mGLKWindow miniaturize:nil];
-   //appEvent.trigger(getWindowId(), WindowHidden);
 }
 
 void iOSWindow::restore()
 {
    return;
-//   if(!isMinimized())
-//      return;
-//   
-//   [mGLKWindow deminiaturize:nil];
-//   appEvent.trigger(getWindowId(), WindowShown);
 }
 
 bool iOSWindow::isMinimized()
 {
    return false;
-//   return [mGLKWindow isMiniaturized] == YES;
 }
 
 bool iOSWindow::isMaximized()
@@ -344,49 +318,13 @@ void iOSWindow::clearFocus()
 
 bool iOSWindow::setCaption(const char* windowText)
 {
-   mTitle = windowText;
-   [mGLKWindow setTitle:@(mTitle)];
+//   mTitle = windowText;
+//   [mGLKWindow setTitle:@(mTitle)];
    return true;
 }
 
 void iOSWindow::_doMouseLockNow()
 {
-//   if(!isVisible())
-//      return;
-//      
-//   if(mShouldMouseLock == mMouseLocked && mMouseLocked != isCursorVisible())
-//      return;
-//   
-////   if(mShouldMouseLock)
-////      _dissociateMouse();
-////   else
-////      _associateMouse();
-//   
-//   // hide the cursor if we're locking, show it if we're unlocking
-//   setCursorVisible(!shouldLockMouse());
-//
-//   mMouseLocked = mShouldMouseLock;
-
    return;
 }
 
-//void iOSWindow::_associateMouse()
-//{
-//   CGAssociateMouseAndMouseCursorPosition(true);
-//}
-//
-//void iOSWindow::_dissociateMouse()
-//{
-//   _centerMouse();
-//   CGAssociateMouseAndMouseCursorPosition(false);
-//}
-//
-//void iOSWindow::_centerMouse()
-//{
-//   CGRect frame = [mGLKWindow frame];
-//   
-//   // Deal with the y flip (really fun when more than one monitor is involved)
-//   F32 offsetY = mMainDisplayBounds.size.height - mDisplayBounds.size.height;
-//   frame.origin.y = (mDisplayBounds.size.height + offsetY) - (S32)frame.origin.y - (S32)frame.size.height;
-//   mCursorController->setCursorPosition(frame.origin.x + frame.size.width / 2, frame.origin.y + frame.size.height / 2);
-//}

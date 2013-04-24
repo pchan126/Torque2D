@@ -9,7 +9,7 @@
 #include "platformiOS/graphics/gfxOpenGLESDevice.h"
 #include "platformiOS/graphics/gfxOpenGLESEnumTranslate.h"
 #include "platformiOS/graphics/gfxOpenGLESUtils.h"
-
+#import <GLKit/GLKit.h>
 
 GFXOpenGLESVertexBuffer::GFXOpenGLESVertexBuffer(  GFXDevice *device, 
                                        U32 vertexCount,

@@ -8,7 +8,7 @@ varying vec2 TexCoord;
 
 void main()
 {  
-    vec4 texColor_0 = texture2D(sampler2d_0, TexCoord) * vertColor;
+    vec4 texColor_0 = texture2D(sampler2d_0, TexCoord);
     gl_FragColor = texColor_0;
 }
 
