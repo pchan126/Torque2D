@@ -2,7 +2,8 @@
 precision lowp float;
 
 uniform vec4 blend_0;
-//varying vec4 DestinationColor;
+
+varying vec4 DestinationColor;
 
 void main()
 {  

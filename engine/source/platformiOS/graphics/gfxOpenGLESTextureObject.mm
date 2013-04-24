@@ -158,15 +158,10 @@ void GFXOpenGLESTextureObject::bind(U32 textureUnit) const
 {
     AssertFatal(mBinding == GL_TEXTURE_2D, "GFXOpenGLESTextureObject::bind - only GL_TEXTURE_2D supported");
    glActiveTexture(GL_TEXTURE0 + textureUnit);
-//   if (glIsTexture(mHandle) != GL_TRUE)
-//   {
-//       Con::printf("bad texture bind");
-//   }
+
     GLuint han = mHandle;
    glBindTexture(mBinding, han);
-//    Con::printf("texture bind %i", han);
-//   glEnable(mBinding);
-  
+    
    GFXOpenGLESStateBlockRef sb = mGLDevice->getCurrentStateBlock();
    AssertFatal(sb, "GFXOpenGLESTextureObject::bind - No active stateblock!");
    if (!sb)
@@ -175,8 +170,6 @@ void GFXOpenGLESTextureObject::bind(U32 textureUnit) const
    const GFXSamplerStateDesc ssd = sb->getDesc().samplers[textureUnit];
    glTexParameteri(mBinding, GL_TEXTURE_MIN_FILTER, minificationFilter(ssd.minFilter, ssd.mipFilter, mMipLevels));   
    glTexParameteri(mBinding, GL_TEXTURE_MAG_FILTER, GFXGLTextureFilter[ssd.magFilter]);
-//    glTexParameteri(mBinding, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//    glTexParameteri(mBinding, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     
    glTexParameteri(mBinding, GL_TEXTURE_WRAP_S, !mIsNPoT2 ? GFXGLTextureAddress[ssd.addressModeU] : GL_CLAMP_TO_EDGE);
    glTexParameteri(mBinding, GL_TEXTURE_WRAP_T, !mIsNPoT2 ? GFXGLTextureAddress[ssd.addressModeV] : GL_CLAMP_TO_EDGE);
@@ -186,7 +179,6 @@ U8* GFXOpenGLESTextureObject::getTextureData()
 {
    U8* data = new U8[mTextureSize.x * mTextureSize.y * mBytesPerTexel];
    glBindTexture(GL_TEXTURE_2D, mHandle);
-//   glGetTexImage(GL_TEXTURE_2D, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, data);
    return data;
 }
 
@@ -194,13 +186,10 @@ void GFXOpenGLESTextureObject::copyIntoCache()
 {
    glBindTexture(mBinding, mHandle);
    U32 cacheSize = mTextureSize.x * mTextureSize.y;
-//   if(mBinding == GL_TEXTURE_3D)
-//      cacheSize *= mTextureSize.z;
     
    cacheSize *= mBytesPerTexel;
    mZombieCache = new U8[cacheSize];
    
-//   glGetTexImage(mBinding, 0, GFXGLTextureFormat[mFormat], GFXGLTextureType[mFormat], mZombieCache);
    glBindTexture(mBinding, 0);
 }
 
@@ -209,14 +198,6 @@ void GFXOpenGLESTextureObject::reloadFromCache()
    if(!mZombieCache)
       return;
       
-//   if(mBinding == GL_TEXTURE_3D)
-//   {
-//      static_cast<GFXGLTextureManager*>(TEXMGR)->_loadTexture(this, mZombieCache);
-//      delete[] mZombieCache;
-//      mZombieCache = NULL;
-//      return;
-//   }
-   
    glBindTexture(mBinding, mHandle);
    glTexSubImage2D(mBinding, 0, 0, 0, mTextureSize.x, mTextureSize.y, GFXGLTextureFormat[mFormat], GFXGLTextureType[mFormat], mZombieCache);
    
@@ -230,23 +211,22 @@ void GFXOpenGLESTextureObject::reloadFromCache()
 
 void GFXOpenGLESTextureObject::zombify()
 {
-//   if(mIsZombie)
-//      return;
-//      
-//   mIsZombie = true;
-//   if(!mProfile->doStoreBitmap() && !mProfile->isRenderTarget() && !mProfile->isDynamic() && !mProfile->isZTarget())
-//      copyIntoCache();
-//      
-//   release();
+   if(mIsZombie)
+      return;
+      
+   mIsZombie = true;
+   if(!mProfile->doStoreBitmap() && !mProfile->isRenderTarget() && !mProfile->isDynamic() && !mProfile->isZTarget())
+      copyIntoCache();
+      
+   release();
 }
 
 void GFXOpenGLESTextureObject::resurrect()
 {
-//   if(!mIsZombie)
-//      return;
-//      
-//   glGenTextures(1, &mHandle);
-//   glGenBuffers(1, &mBuffer);
+   if(!mIsZombie)
+      return;
+      
+   glGenTextures(1, &mHandle);
 }
 
 F32 GFXOpenGLESTextureObject::getMaxUCoord() const
