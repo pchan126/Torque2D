@@ -24,6 +24,7 @@
 #import "platformiOS/platformGL.h"
 #import "platformiOS/graphics/gfxOpenGLESDevice.h"
 #import "game/gameInterface.h"
+#import "platformiOS/windowManager/iOSWindow.h"
 
 #define USE_DEPTH_BUFFER 0
 
@@ -48,6 +49,10 @@ extern void _iOSGameInnerLoop();
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        mOrientationPortraitUpsideDownSupported = YES;
+        mOrientationPortraitSupported = YES;
+        mOrientationLandscapeRightSupported = YES;
+        mOrientationLandscapeLeftSupported = YES;
     }
     return self;
 }
@@ -224,6 +229,7 @@ ConsoleFunction(supportPortrait, void, 2, 2, "supportPortrait( bool ) "
 
 - (void)viewDidLayoutSubviews
 {
+   
 //    [self destroyFramebuffer];
 //	[self createFramebuffer];
 }

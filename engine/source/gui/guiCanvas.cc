@@ -147,8 +147,9 @@ bool GuiCanvas::onAdd()
         newDevice->init(vm);
         mPlatformWindow = WindowManager->createWindow(newDevice, vm);
         
-		// Set a minimum on the window size so people can't break us by resizing tiny.
-		mPlatformWindow->setMinimumWindowSize(Point2I(640,480));
+        // Set a minimum on the window size so people can't break us by resizing tiny.
+        mPlatformWindow->setMinimumWindowSize(Point2I(640,480));
+       this->setBounds(0, 0, vm.resolution.x, vm.resolution.y);
         
         // Now, we have to hook in our event callbacks so we'll get
         // appropriate events from the window.

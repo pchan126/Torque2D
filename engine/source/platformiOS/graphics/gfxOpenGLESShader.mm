@@ -175,7 +175,7 @@ bool GFXOpenGLESShader::_init()
    if(!compiledVertexShader || !compiledPixelShader)
       return false;
 
-    for (int i; i < mAttributes.size(); i++)
+    for (int i = 0; i < mAttributes.size(); i++)
         glBindAttribLocation(mProgram, mAttributes[i], GFXGLShaderAttributes[mAttributes[i]]);
 
     // Link it!
