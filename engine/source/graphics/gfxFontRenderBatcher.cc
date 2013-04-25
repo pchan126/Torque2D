@@ -73,9 +73,6 @@ void FontRenderBatcher::render( F32 rot, const Point2F &offset )
 
    // Write verts out.
    U32 currentPt = 0;
-    Vector<GFXVertexPCT> verts;
-    verts.setSize(mLength*6);
-
    for( S32 i = 0; i < mSheets.size(); i++ )
    {
       // Do some early outs...
@@ -86,9 +83,10 @@ void FontRenderBatcher::render( F32 rot, const Point2F &offset )
          continue;
 
       mSheets[i]->startVertex = currentPt;
-       const GFXTextureObject *tex = mFont->getTextureHandle(i);
-//      const TextureHandle tex = mFont->getTextureHandle(0);
-
+       const GFXTexHandle tex = mFont->getTextureHandle(i);
+       Vector<GFXVertexPCT> verts;
+       verts.setSize(mSheets[i]->numChars*6-2);
+       
       for( S32 j = 0; j < mSheets[i]->numChars; j++ )
       {
          // Get some general info to proceed with...
@@ -96,8 +94,7 @@ void FontRenderBatcher::render( F32 rot, const Point2F &offset )
          const PlatformFont::CharInfo &ci = mFont->getCharInfo( m.c );
 
          // Where are we drawing it?
-          F32 drawY = offset.y + mFont->getBaseline() - ci.yOrigin * TEXT_MAG;
-//          F32 drawY = offset.y - ci.yOrigin * TEXT_MAG;
+         F32 drawY = offset.y + mFont->getBaseline() - ci.yOrigin * TEXT_MAG;
          F32 drawX = offset.x + m.x + ci.xOrigin;
 
           // Figure some values.
@@ -119,6 +116,12 @@ void FontRenderBatcher::render( F32 rot, const Point2F &offset )
          // ugly as sin.
          Point3F tmp;
 
+         if (j != 0)  // degenerate linking triangle
+         {
+             verts[currentPt] = verts[currentPt-1];
+             currentPt++;
+         }
+          
          tmp.set( screenLeft, screenTop, 0.f );
          if(doRotation)
             rotMatrix.mulP( tmp, &verts[currentPt].point);
@@ -128,22 +131,19 @@ void FontRenderBatcher::render( F32 rot, const Point2F &offset )
          verts[currentPt].texCoord.set( texLeft, texTop );
          currentPt++;
 
-         tmp.set( screenLeft, screenBottom, 0.f );
+          if (j != 0)  // degenerate linking triangle
+          {
+              verts[currentPt] = verts[currentPt-1];
+              currentPt++;
+          }
+
+          tmp.set( screenLeft, screenBottom, 0.f );
          if(doRotation)
             rotMatrix.mulP( tmp, &verts[currentPt].point);
          else
             verts[currentPt].point = tmp;
          verts[currentPt].color = m.color;
          verts[currentPt].texCoord.set( texLeft, texBottom );
-         currentPt++;
-
-         tmp.set( screenRight, screenBottom, 0.f );
-         if(doRotation)
-            rotMatrix.mulP( tmp, &verts[currentPt].point);
-         else
-            verts[currentPt].point = tmp;
-         verts[currentPt].color = m.color;
-         verts[currentPt].texCoord.set( texRight, texBottom );
          currentPt++;
 
          tmp.set( screenRight, screenBottom, 0.f );
@@ -163,37 +163,13 @@ void FontRenderBatcher::render( F32 rot, const Point2F &offset )
          verts[currentPt].color = m.color;
          verts[currentPt].texCoord.set( texRight, texTop );
          currentPt++;
-
-         tmp.set( screenLeft, screenTop, 0.f );
-         if(doRotation)
-            rotMatrix.mulP( tmp, &verts[currentPt].point);
-         else
-            verts[currentPt].point = tmp;
-         verts[currentPt].color = m.color;
-         verts[currentPt].texCoord.set( texLeft, texTop );
-         currentPt++;
       }
-   }
-
-   AssertFatal(currentPt <= mLength * 6, "FontRenderBatcher::render - too many verts for length of string!");
-
-    GFXVertexBufferHandle<GFXVertexPCT> vHandle(GFX, mLength * 6, GFXBufferTypeStatic, verts.address());
-   GFX->setVertexBuffer(vHandle);
-
-   // Now do an optimal render!
-   for( S32 i = 0; i < mSheets.size(); i++ )
-   {
-      if(!mSheets[i])
-         continue;
-
-      if(!mSheets[i]->numChars )
-         continue;
-
-      GFX->setupGenericShaders( GFXDevice::GSAlphaTexture );
-//       GFX->setupGenericShaders( GFXDevice::GSTexture );
-//      GFX->setupGenericShaders( GFXDevice::GSTest );
-      GFX->setTexture( 0, mFont->getTextureHandle(0) );
-      GFX->drawPrimitive(GFXTriangleList, mSheets[i]->startVertex, mSheets[i]->numChars * 2);
+       
+       GFXVertexBufferHandle<GFXVertexPCT> vHandle(GFX, verts.size(), GFXBufferTypeVolatile, verts.address());
+       GFX->setVertexBuffer(vHandle);
+       GFX->setupGenericShaders( GFXDevice::GSTexture );
+       GFX->setTexture( 0, tex );
+       GFX->drawPrimitive(GFXTriangleStrip, 0, verts.size()-2);
    }
 }
 

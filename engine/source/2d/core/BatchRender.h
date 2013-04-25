@@ -60,39 +60,36 @@ class SceneRenderRequest;
 class BatchRender
 {
 private:
-    struct TriangleRun
-    {
-        enum PrimitiveMode
-        {
-            TRIANGLE,
-            QUAD,
-        };
+//    struct TriangleRun
+//    {
+//        enum PrimitiveMode
+//        {
+//            TRIANGLE,
+//            QUAD,
+//        };
+//
+//        TriangleRun( const PrimitiveMode primitive, const U32 primitiveCount, const U32 startIndex ) :
+//            mPrimitiveMode( primitive ),
+//            mPrimitiveCount( primitiveCount ),
+//            mStartIndex( startIndex )
+//        { }
+//
+//        PrimitiveMode mPrimitiveMode;
+//        U32 mPrimitiveCount;
+//        U32 mStartIndex;
+//    };
 
-        TriangleRun( const PrimitiveMode primitive, const U32 primitiveCount, const U32 startIndex ) :
-            mPrimitiveMode( primitive ),
-            mPrimitiveCount( primitiveCount ),
-            mStartIndex( startIndex )
-        { }
+//    typedef Vector<GFXVertexPCT> indexVectorType;
+    typedef HashMap<GFXTexHandle, Vector<GFXVertexPCT> *> textureBatchType;
 
-        PrimitiveMode mPrimitiveMode;
-        U32 mPrimitiveCount;
-        U32 mStartIndex;
-    };
-
-    typedef Vector<TriangleRun> indexVectorType;
-    typedef HashMap<GFXTexHandle, indexVectorType*> textureBatchType;
-
-    VectorPtr< indexVectorType* > mIndexVectorPool;
+    VectorPtr< Vector<GFXVertexPCT>* > mIndexVectorPool;
     textureBatchType    mTextureBatchMap;
 
     const ColorF        NoColor;
 
-    GFXVertexPCT        mVertexBuffer[ BATCHRENDER_BUFFERSIZE ];
-    U16                 mIndexBuffer[ BATCHRENDER_BUFFERSIZE ];
+    Vector<GFXVertexPCT> mVertexBuffer;
    
     U32                 mTriangleCount;
-    U32                 mVertexCount;
-    U32                 mIndexCount;
 
     bool                mBlendMode;
     GFXBlend              mSrcBlendFactor;
@@ -234,8 +231,7 @@ public:
     ///   | \ |
     ///  0| _\|1
     void SubmitQuad( const GFXVertexPCT* vertex,
-                     GFXTexHandle& texture,
-                    const ColorF& inColor = ColorF(-1.0f, -1.0f, -1.0f) );
+                     GFXTexHandle& texture );
     
     void SubmitQuad(
             const Vector2& vertexPos0,
@@ -247,7 +243,7 @@ public:
             const Vector2& texturePos2,
             const Vector2& texturePos3,
             GFXTexHandle& texture,
-            const ColorF& color = ColorF(-1.0f, -1.0f, -1.0f) );
+            const ColorF& color = ColorF(1.0f, 1.0f, 1.0f) );
 
     /// Render a quad immediately without affecting current batch.
     /// All render state should be set beforehand directly.
@@ -284,7 +280,7 @@ public:
         GFXVertexBufferHandle<GFXVertexPCT> vHandle( GFX, 4, GFXBufferTypeVolatile, verts);
         GFX->setVertexBuffer(vHandle);
         
-        GFX->setupGenericShaders(GFXDevice::GSModColorTexture);
+        GFX->setupGenericShaders(GFXDevice::GSTexture);
         GFX->drawPrimitive(GFXTriangleStrip, 0, 2);
     }
 
@@ -299,7 +295,7 @@ private:
     void flushInternal( void );
 
     /// Find texture batch.
-    indexVectorType* findTextureBatch( GFXTexHandle& handle );
+    Vector<GFXVertexPCT>* findTextureBatch( GFXTexHandle& handle );
 
 };
 

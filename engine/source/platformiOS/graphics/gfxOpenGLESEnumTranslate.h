@@ -14,7 +14,7 @@ namespace GFXGLESEnumTranslate
    void init();
 };
 
-enum SHADER_ATTRIBUTES{
+enum SHADER_ATTRIBUTES{   // order is important
     ATTRIB_POSITION,
     ATTRIB_NORMAL,
     ATTRIB_COLOR,

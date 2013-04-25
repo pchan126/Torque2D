@@ -39,25 +39,21 @@ GFXOpenGLESVertexBuffer::GFXOpenGLESVertexBuffer(  GFXDevice *device,
         
         if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::POSITION.c_str() ) == 0 )
         {
-//            Con::printf("glVertexAttribPointer %i %i %i %i", GLKVertexAttribPosition, element.getSizeInBytes()/4, mVertexSize, buffer);
             glVertexAttribPointer(GLKVertexAttribPosition, element.getSizeInBytes()/4, GL_FLOAT, GL_FALSE, mVertexSize, buffer);
             glEnableVertexAttribArray(GLKVertexAttribPosition);
             buffer += element.getSizeInBytes();
         }
         else if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::NORMAL.c_str() ) == 0 )
         {
-//            Con::printf("glVertexAttribPointer %i %i %i %i", GLKVertexAttribNormal, element.getSizeInBytes()/4, mVertexSize, *buffer);
             glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, mVertexSize, buffer);
             glEnableVertexAttribArray(GLKVertexAttribNormal);
             buffer += element.getSizeInBytes();
         }
         else if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::COLOR.c_str() ) == 0 )
         {
-//            Con::printf("glVertexAttribPointer %i %i %i %i", GLKVertexAttribColor, element.getSizeInBytes(), mVertexSize, buffer);
             glVertexAttribPointer(GLKVertexAttribColor, 4, GL_UNSIGNED_BYTE, GL_TRUE, mVertexSize, buffer);
             glEnableVertexAttribArray(GLKVertexAttribColor);
             buffer += element.getSizeInBytes();
-            size_t temp = sizeof(Color4I);
         }
         else // Everything else is a texture coordinate.
         {

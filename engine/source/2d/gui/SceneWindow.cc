@@ -1726,8 +1726,8 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
     GFX->popWorldMatrix();
     GFX->setProjectionMatrix(oldProj);
 
-    // Render the metrics.
-    renderMetricsOverlay( offset, updateRect );
+//    // Render the metrics.
+//    renderMetricsOverlay( offset, updateRect );
 
     // Render Children.
     renderChildControls( offset, updateRect );

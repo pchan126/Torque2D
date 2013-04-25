@@ -544,7 +544,7 @@ void GFXDrawUtil::drawRectFill( const Point2F &upperLeft, const Point2F &lowerRi
     verts[3].color = color;
 
 
-   GFXVertexBufferHandle<GFXVertexPC> verthandle(mDevice, 4, GFXBufferTypeStatic, verts);
+   GFXVertexBufferHandle<GFXVertexPC> verthandle(mDevice, 4, GFXBufferTypeVolatile, verts);
    mDevice->setStateBlock(mRectFillSB);
    mDevice->setVertexBuffer( verthandle );
     
@@ -578,7 +578,7 @@ void GFXDrawUtil::draw2DSquare( const Point2F &screenPoint, F32 width, F32 spinA
       }
    }
 
-   GFXVertexBufferHandle<GFXVertexPC> verthandle( mDevice, 4, GFXBufferTypeStatic, verts );
+   GFXVertexBufferHandle<GFXVertexPC> verthandle( mDevice, 4, GFXBufferTypeVolatile, verts );
    mDevice->setVertexBuffer( verthandle );
 
    mDevice->setStateBlock(mRectFillSB);
