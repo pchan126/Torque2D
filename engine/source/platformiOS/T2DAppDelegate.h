@@ -23,9 +23,12 @@
 #import <UIKit/UIKit.h>
 #import <GLKit/GLKit.h>
 
+class iOSWindow;
+
 @interface T2DAppDelegate : NSObject <UIApplicationDelegate, GLKViewDelegate, GLKViewControllerDelegate> {
 }
 
 @property (nonatomic, strong) UIWindow *window;
+@property (nonatomic) iOSWindow *T2DWindow;
 
 @end

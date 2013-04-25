@@ -158,9 +158,9 @@ bool GuiCanvas::onAdd()
         mPlatformWindow->displayEvent.notify(this, &GuiCanvas::handlePaintEvent);
         mPlatformWindow->setInputController( dynamic_cast<IProcessInput*>(this) );
     }
-    
-    // Need to get painted, too! :)
-    Process::notify(this, &GuiCanvas::paint, PROCESS_RENDER_ORDER);
+
+//    // Need to get painted, too! :)
+//    Process::notify(this, &GuiCanvas::paint, PROCESS_RENDER_ORDER);
     
 //    // Set up the fences
 //    setupFences();
@@ -193,8 +193,8 @@ void GuiCanvas::onRemove()
         removeObject(mPurchaseScreen);
 #endif
     
-    // And the process list
-    Process::remove(this, &GuiCanvas::paint);
+//    // And the process list
+//    Process::remove(this, &GuiCanvas::paint);
     
 //    // Destroy the menu bar for this canvas (if any)
 //    Con::executef(this, "onDestroyMenu");

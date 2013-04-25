@@ -177,7 +177,7 @@ function initializeToolbox()
     }
     
     // Configure the main overlay.
-    SandboxWindow.add(MainOverlay);    
+//    SandboxWindow.add(MainOverlay);    
     %horizPosition = getWord(SandboxWindow.Extent, 0) - getWord(MainOverlay.Extent, 0);
     %verticalPosition = getWord(SandboxWindow.Extent, 1) - getWord(MainOverlay.Extent, 1);    
     MainOverlay.position = %horizPosition SPC %verticalPosition;    

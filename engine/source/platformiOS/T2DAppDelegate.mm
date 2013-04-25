@@ -29,6 +29,7 @@
 #include "game/gameInterface.h"
 #include "graphics/gfxInit.h"
 #include "graphics/gfxOpenGLESDevice.h"
+#include "platformiOS/windowManager/iOSWindow.h"
 
 // Store current orientation for easy access
 extern void _iOSGameChangeOrientation(S32 newOrientation);
@@ -41,7 +42,7 @@ bool _iOSTorqueFatalError = false;
 @implementation T2DAppDelegate
 
 @synthesize window = _window;
-
+@synthesize T2DWindow = _T2DWindow;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -227,15 +228,18 @@ bool _iOSTorqueFatalError = false;
 
 - (void)glkViewControllerUpdate:(GLKViewController *)controller
 {
-
-}
-
-- (void)glkView:(GLKView *)view drawInRect:(CGRect)rect
-{
     if(Game->isRunning())
     {
         Game->mainLoop();
     }
+}
+
+- (void)glkView:(GLKView *)view drawInRect:(CGRect)rect
+{
+    if (self.T2DWindow != nil)
+        self.T2DWindow->displayEvent.trigger(self.T2DWindow->getWindowId());
+    else
+        NSLog(@"%@", @"ack");
 }
 
 
