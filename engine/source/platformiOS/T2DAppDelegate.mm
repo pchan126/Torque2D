@@ -228,9 +228,10 @@ bool _iOSTorqueFatalError = false;
 
 - (void)glkViewControllerUpdate:(GLKViewController *)controller
 {
+   NSTimeInterval timeUp = [controller timeSinceLastUpdate];
     if(Game->isRunning())
     {
-        Game->mainLoop();
+        Game->mainLoop( timeUp );
     }
 }
 

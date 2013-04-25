@@ -50,7 +50,7 @@ public:
    /// @name Game Loop
    /// @{
    virtual bool mainInitialize( int argc, const char **argv ) = 0;
-   virtual void mainLoop( void ) = 0;
+   virtual void mainLoop( double elapsedTime = 0.0 ) = 0;
    virtual void mainShutdown( void ) = 0;
    /// @}
 

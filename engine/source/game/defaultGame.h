@@ -41,7 +41,7 @@ class DefaultGame : public GameInterface, public virtual Tickable
 {
 public:
     virtual bool mainInitialize( int argc, const char **argv );
-    virtual void mainLoop( void );
+    virtual void mainLoop( double elapsedTime = 0.0 );
     virtual void mainShutdown( void );
 
     virtual void gameDeactivate( const bool noRender );

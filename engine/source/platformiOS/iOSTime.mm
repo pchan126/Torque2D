@@ -41,24 +41,26 @@ static void _iOSUpdateSleepTicks()
 
 //------------------------------------------------------------------------------
 // Responsible for calculating ticks and posting the TimeEvent
-void TimeManager::process()
+void TimeManager::process( double elapsedTime )
 {
     iOSPlatState * platState = [iOSPlatState sharedPlatState];
-
-    _iOSUpdateSleepTicks();
+//
+//    _iOSUpdateSleepTicks();
+//    
+//    U32 curTime = Platform::getRealMilliseconds(); // GTC returns Milliseconds, FYI.
+//   
+//   Con::printf("%u", curTime);
+    S32 _elapsedTime = (S32)(elapsedTime * 1000);
     
-    U32 curTime = Platform::getRealMilliseconds(); // GTC returns Milliseconds, FYI.
-    S32 elapsedTime = curTime - platState.lastTimeTick;
-    
-    if(elapsedTime <= platState.sleepTicks)
-    {
-        Platform::sleep(platState.sleepTicks - elapsedTime);
-    }
-    
-    platState.lastTimeTick = Platform::getRealMilliseconds();
+//    if(_elapsedTime <= platState.sleepTicks)
+//    {
+//        Platform::sleep(platState.sleepTicks - _elapsedTime);
+//    }
+   
+    platState.lastTimeTick += _elapsedTime;
     
     TimeEvent event;
-    event.elapsedTime = elapsedTime;
+    event.elapsedTime = _elapsedTime;
     Game->postEvent(event);
 }
 

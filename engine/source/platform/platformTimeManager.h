@@ -29,7 +29,7 @@
 extern S32 sgTimeManagerProcessInterval;
 struct TimeManager
 {
-   static void process();
+   static void process( double elapsedTime = 0.0 );
 };
 
 #endif // _PLATFORM_TIME_MANAGER_H_

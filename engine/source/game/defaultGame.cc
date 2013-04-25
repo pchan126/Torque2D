@@ -440,7 +440,7 @@ void DefaultGame::advanceTime( F32 timeDelta )
 
 //--------------------------------------------------------------------------
 
-void DefaultGame::mainLoop( void )
+void DefaultGame::mainLoop( double elapsedTime )
 {	
 #ifdef TORQUE_OS_IOS_PROFILE
     iPhoneProfilerStart("MAIN_LOOP");
@@ -464,7 +464,7 @@ void DefaultGame::mainLoop( void )
    TelDebugger->process();
          PROFILE_END();
          PROFILE_START(TimeManagerProcessMain);
-   TimeManager::process(); // guaranteed to produce an event
+   TimeManager::process( elapsedTime); // guaranteed to produce an event
          PROFILE_END();
          PROFILE_START(GameProcessEvents);
     Game->processEvents(); // process all non-sim posted events.

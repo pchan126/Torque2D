@@ -73,7 +73,7 @@ void iOSWindow::_initCocoaWindow(const char* windowText, Point2I clientExtent)
     viewController = [[GLKViewController alloc] initWithNibName:nil bundle:nil];
     viewController.view = view;
     viewController.delegate = appDelegate;
-    viewController.preferredFramesPerSecond = 30;
+    viewController.preferredFramesPerSecond = 60;
     viewController.paused = NO;
     
     appDelegate.T2DWindow = this;
