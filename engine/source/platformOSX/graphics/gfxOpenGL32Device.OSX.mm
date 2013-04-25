@@ -339,9 +339,9 @@ GFXVertexBuffer *GFXOpenGL32Device::allocVertexBuffer(   U32 vertexCount,
                                                     U32 indexCount,
                                                     void *indexBuffer)
 {
-//    if(bufferType == GFXBufferTypeVolatile)
-//        return findVolatileVBO(vertexCount, vertexFormat, vertSize, vertexBuffer);
-    
+    if(bufferType == GFXBufferTypeVolatile)
+        return findVolatileVBO(vertexCount, vertexFormat, vertSize, vertexBuffer);
+   
     GFXOpenGL32VertexBuffer* buf = new GFXOpenGL32VertexBuffer( GFX, vertexCount, vertexFormat, vertSize, bufferType, vertexBuffer, indexCount, indexBuffer );
     buf->registerResourceWithDevice(this);
     return buf;
@@ -408,7 +408,6 @@ void GFXOpenGL32Device::clear(U32 flags, ColorI color, F32 z, U32 stencil)
 
 void GFXOpenGL32Device::updateStates(bool forceSetAll /*=false*/)
 {
-    GL_CHECK();
     PROFILE_SCOPE(GFXDevice_updateStates);
     
     if(forceSetAll)
@@ -960,7 +959,6 @@ U32 GFXOpenGL32Device::getNumRenderTargets() const
 
 void GFXOpenGL32Device::_updateRenderTargets()
 {
-    GL_CHECK();
     if ( mRTDirty || mCurrentRT->isPendingState() )
     {
         if ( mRTDeactivate )

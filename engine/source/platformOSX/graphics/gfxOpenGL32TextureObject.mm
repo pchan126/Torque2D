@@ -286,7 +286,6 @@ void GFXOpenGL32TextureObject::bind(U32 textureUnit) const
     
    glTexParameteri(mBinding, GL_TEXTURE_WRAP_S, !mIsNPoT2 ? GFXGLTextureAddress[ssd.addressModeU] : GL_CLAMP_TO_EDGE);
    glTexParameteri(mBinding, GL_TEXTURE_WRAP_T, !mIsNPoT2 ? GFXGLTextureAddress[ssd.addressModeV] : GL_CLAMP_TO_EDGE);
-    GL_CHECK();
 }
 
 U8* GFXOpenGL32TextureObject::getTextureData()

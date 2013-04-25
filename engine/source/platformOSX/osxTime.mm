@@ -57,7 +57,7 @@ static void _OSXUpdateSleepTicks()
 
 //------------------------------------------------------------------------------
 // Responsible for calculating ticks and posting the TimeEvent
-void TimeManager::process()
+void TimeManager::process(double timeSinceLastUpdate)
 {
     osxPlatState * platState = [osxPlatState sharedPlatState];
     
