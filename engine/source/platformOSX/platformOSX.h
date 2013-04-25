@@ -24,14 +24,12 @@
 #include "platform/types.h"
 #include "math/mPoint.h"
 #include "math/mRandom.h"
+#include "platformOSX/windowManager/macWindow.h"
 
 @interface osxPlatState : NSObject
 {
-//    // Main application Window
-//    NSWindow* _window;
-//    
-//    // Main view for Torque 2D engine display
-//    OSXTorqueView* _torqueView;
+    // Main view for Torque 2D engine display
+    MacWindow* _torqueView;
     
 //    // Core graphics display ID the app will start with
 //    CGDirectDisplayID _cgDisplay;
@@ -96,7 +94,7 @@
 }
 
 //@property (strong) NSWindow* window;
-//@property (strong) OSXTorqueView* torqueView;
+@property MacWindow* torqueView;
 //@property CGDirectDisplayID cgDisplay;
 @property (strong) id applicationID;
 @property void* alertSemaphore;

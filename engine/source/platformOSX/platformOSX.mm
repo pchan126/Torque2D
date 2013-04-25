@@ -33,6 +33,7 @@
 
 @implementation osxPlatState
 
+@synthesize torqueView = _torqueView;
 @synthesize applicationID = _applicationID;
 @synthesize alertSemaphore = _alertSemaphore;
 @synthesize fullScreen = _fullscreen;
@@ -186,6 +187,8 @@ static osxPlatState * tempSharedPlatState = nil;
     if(Game->isRunning())
     {
         Game->mainLoop();
+        if (_torqueView)
+            _torqueView->displayEvent.trigger(_torqueView->getWindowId());
     }
     else
     {

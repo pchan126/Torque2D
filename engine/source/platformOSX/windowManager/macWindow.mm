@@ -6,6 +6,7 @@
 #import <Cocoa/Cocoa.h>
 #import "./macWindow.h"
 #import "./osxTorqueView.h"
+#import "platformOSX/platformOSX.h"
 
 #import "console/console.h"
 #import "AppDelegate.h"
@@ -76,6 +77,8 @@ void MacWindow::_initCocoaWindow(const char* windowText, Point2I clientExtent)
    U32 style;
    
     AppDelegate* appDelegate = [NSApp delegate];
+    osxPlatState * platState = [osxPlatState sharedPlatState];
+    platState.torqueView = this;
     
   NSRect frame = NSMakeRect(0,0,clientExtent.x, clientExtent.y);
   
