@@ -179,7 +179,7 @@ void GuiFilterCtrl::onRender(Point2I offset, const RectI &updateRect)
         verts[i].color = ColorF( 0.4f, 0.4f, 0.4f );
     }
     
-    GFXVertexBufferHandle<GFXVertexPC> vb(GFX, ext.x, GFXBufferTypeVolatile, verts.address());
+    GFXVertexBufferHandle<GFXVertexPC> vb(GFX, verts.size(), GFXBufferTypeVolatile, verts.address());
     
     GFX->setVertexBuffer( vb );
     GFX->drawPrimitive( GFXLineStrip, 0, ext.x - 1 );

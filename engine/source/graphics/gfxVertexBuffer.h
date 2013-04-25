@@ -81,7 +81,7 @@ public:
    }
    
    virtual void lock(U32 vertexStart, U32 vertexEnd, void **vertexPtr) = 0;
-    virtual void set( void* data, U32 dataSize ) = 0;
+    virtual void set( void* data, U32 dataSize, U32 indexSize = 0, void* indexBuffer = NULL ) = 0;
    virtual void unlock() = 0;
    virtual void prepare() = 0;
 
@@ -150,7 +150,7 @@ public:
 
    ~GFXVertexBufferHandle() {}
 
-    void set(   GFXDevice *theDevice,
+   virtual void set(   GFXDevice *theDevice,
              U32 vertexCount,
              GFXBufferType type = GFXBufferTypeVolatile,
              void *vertexBuffer = NULL,

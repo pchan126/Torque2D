@@ -245,7 +245,7 @@ void GFXOpenGLESDevice::resurrect()
 }
 
 
-GFXVertexBuffer* GFXOpenGLESDevice::findVolatileVBO(U32 vertexCount, const GFXVertexFormat *vertexFormat, U32 vertSize, void* data)
+GFXVertexBuffer* GFXOpenGLESDevice::findVolatileVBO(U32 vertexCount, const GFXVertexFormat *vertexFormat, U32 vertSize, void* vertexData, U32 indexSize, void* indexData)
 {
     for(U32 i = 0; i < mVolatileVBs.size(); i++)
         if (  mVolatileVBs[i]->mVertexCount >= vertexCount &&
@@ -253,12 +253,12 @@ GFXVertexBuffer* GFXOpenGLESDevice::findVolatileVBO(U32 vertexCount, const GFXVe
             mVolatileVBs[i]->mVertexSize == vertSize &&
             mVolatileVBs[i]->getRefCount() == 1 )
         {
-            mVolatileVBs[i].getPointer()->set(data, vertexCount*vertSize);
+            mVolatileVBs[i].getPointer()->set(vertexData, vertexCount*vertSize, indexSize, indexData);
             return mVolatileVBs[i];
         }
     
     // No existing VB, so create one
-    StrongRefPtr<GFXOpenGLESVertexBuffer> buf(new GFXOpenGLESVertexBuffer(GFX, vertexCount, vertexFormat, vertSize, GFXBufferTypeVolatile, data));
+    StrongRefPtr<GFXOpenGLESVertexBuffer> buf(new GFXOpenGLESVertexBuffer(GFX, vertexCount, vertexFormat, vertSize, GFXBufferTypeVolatile, vertexData, indexSize, indexData));
     buf->registerResourceWithDevice(this);
     mVolatileVBs.push_back(buf);
     return buf.getPointer();
@@ -272,8 +272,8 @@ GFXVertexBuffer *GFXOpenGLESDevice::allocVertexBuffer(   U32 numVerts,
                                                   U32 indexCount,
                                                   void *indexBuffer)
 {
-//    if(bufferType == GFXBufferTypeVolatile)
-//        return findVolatileVBO(numVerts, vertexFormat, vertSize, data);
+    if(bufferType == GFXBufferTypeVolatile)
+        return findVolatileVBO(numVerts, vertexFormat, vertSize, vertexBuffer, indexCount, indexBuffer);
     
     GFXOpenGLESVertexBuffer* buf = new GFXOpenGLESVertexBuffer( GFX, numVerts, vertexFormat, vertSize, bufferType, vertexBuffer, indexCount, indexBuffer );
     buf->registerResourceWithDevice(this);

@@ -76,7 +76,7 @@ protected:
 
    // grid drawing
    GFXVertexBufferHandle<GFXVertexPC> mDots;
-//   GFXStateBlockRef mDotSB;
+   GFXStateBlockRef mDotSB;
 
 
    // private methods

@@ -165,7 +165,7 @@ void FontRenderBatcher::render( F32 rot, const Point2F &offset )
          currentPt++;
       }
        
-       GFXVertexBufferHandle<GFXVertexPCT> vHandle(GFX, verts.size(), GFXBufferTypeVolatile, verts.address());
+       vHandle.set(GFX, verts.size(), GFXBufferTypeVolatile, verts.address());
        GFX->setVertexBuffer(vHandle);
        GFX->setupGenericShaders( GFXDevice::GSTexture );
        GFX->setTexture( 0, tex );

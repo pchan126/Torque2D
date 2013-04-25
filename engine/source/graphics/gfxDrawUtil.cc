@@ -43,7 +43,7 @@ GFXDrawUtil::GFXDrawUtil( GFXDevice * d)
    mBitmapModulation.set(0xFF, 0xFF, 0xFF, 0xFF);
    mTextAnchorColor.set(0xFF, 0xFF, 0xFF, 0xFF);
    mFontRenderBatcher = new FontRenderBatcher();
-
+    
    _setupStateBlocks();   
 }
 
@@ -402,8 +402,8 @@ void GFXDrawUtil::drawBitmapStretchSR( GFXTextureObject *texture, const RectF &d
    verts[2].texCoord.set( texLeft,  texBottom );
    verts[3].texCoord.set( texRight, texBottom );
 
-   GFXVertexBufferHandle<GFXVertexPCT> vb(mDevice, 4, GFXBufferTypeVolatile, verts );
-   mDevice->setVertexBuffer( vb );
+    mTextureVertex.set(mDevice, 4, GFXBufferTypeVolatile, verts);
+   mDevice->setVertexBuffer( mTextureVertex );
 
    switch (filter)
    {
@@ -485,10 +485,10 @@ void GFXDrawUtil::drawRect( const Point2F &upperLeft, const Point2F &lowerRight,
     for (int i=0; i<10; i++)
       verts[i].color = color;
 
-   GFXVertexBufferHandle<GFXVertexPC> vHandle (mDevice, 10, GFXBufferTypeVolatile, verts );
-   mDevice->setVertexBuffer( vHandle );
+    mLineVertex.set(mDevice, 10, GFXBufferTypeVolatile, verts );
+   mDevice->setVertexBuffer( mLineVertex );
 
-//   mDevice->setStateBlock(mRectFillSB);
+   mDevice->setStateBlock(mRectFillSB);
    mDevice->setupGenericShaders();
    mDevice->drawPrimitive( GFXTriangleStrip, 0, 8 );
 }
@@ -543,10 +543,9 @@ void GFXDrawUtil::drawRectFill( const Point2F &upperLeft, const Point2F &lowerRi
     verts[2].color = color;
     verts[3].color = color;
 
-
-   GFXVertexBufferHandle<GFXVertexPC> verthandle(mDevice, 4, GFXBufferTypeVolatile, verts);
+    mLineVertex.set(mDevice, 4, GFXBufferTypeVolatile, verts);
    mDevice->setStateBlock(mRectFillSB);
-   mDevice->setVertexBuffer( verthandle );
+   mDevice->setVertexBuffer( mLineVertex );
     
    mDevice->setupGenericShaders();
    mDevice->drawPrimitive( GFXTriangleStrip, 0, 2 );
@@ -578,8 +577,8 @@ void GFXDrawUtil::draw2DSquare( const Point2F &screenPoint, F32 width, F32 spinA
       }
    }
 
-   GFXVertexBufferHandle<GFXVertexPC> verthandle( mDevice, 4, GFXBufferTypeVolatile, verts );
-   mDevice->setVertexBuffer( verthandle );
+    mLineVertex.set(mDevice, 4, GFXBufferTypeVolatile, verts);
+   mDevice->setVertexBuffer( mLineVertex );
 
    mDevice->setStateBlock(mRectFillSB);
    mDevice->setupGenericShaders();
@@ -614,16 +613,14 @@ void GFXDrawUtil::drawLine( F32 x1, F32 y1, F32 z1, F32 x2, F32 y2, F32 z2, cons
 {
     GFXVertexPC verts[2];
 
-    verts[0].point.set( x1, y1, z1 );
+   verts[0].point.set( x1, y1, z1 );
    verts[1].point.set( x2, y2, z2 );
 
    verts[0].color = color;
    verts[1].color = color;
 
-    GFXVertexBufferHandle<GFXVertexPC> vb( mDevice, 2, GFXBufferTypeVolatile, verts );
-
-   mDevice->setVertexBuffer( vb );
-//   mDevice->setStateBlock( mRectFillSB );
+   mLineVertex.set(mDevice, 2, GFXBufferTypeVolatile, verts);
+   mDevice->setVertexBuffer( mLineVertex );
    mDevice->drawPrimitive( GFXLineList, 0, 1 );
 }
 
@@ -681,10 +678,10 @@ void GFXDrawUtil::drawLine( F32 x1, F32 y1, F32 z1, F32 x2, F32 y2, F32 z2, cons
 //      vertexIndex++;
 //   }
 //
-//    GFXVertexBufferHandle<GFXVertexPC> vHandle(mDevice, numPoly*3, GFXBufferTypeVolatile, verts.address());
+//        mLineVertex.set( mDevice, numPoly*3, GFXBufferTypeVolatile, verts.address() );
 //   mDevice->setStateBlockByDesc( desc );
 //
-//   mDevice->setVertexBuffer( vHandle );
+//   mDevice->setVertexBuffer( mLineVertex );
 //   mDevice->setupGenericShaders();
 //
 //   mDevice->drawPrimitive( GFXTriangleList, 0, totalPoly );
@@ -735,12 +732,11 @@ void GFXDrawUtil::_drawWireTriangle( const GFXStateBlockDesc &desc, const Point3
          xfm->mulP( verts[i].point );
    }
 
-    GFXVertexBufferHandle<GFXVertexPC> vb(mDevice, 4, GFXBufferTypeVolatile, verts);
-
+    mLineVertex.set(mDevice, 4, GFXBufferTypeVolatile, verts);
    GFXStateBlockRef sb = mDevice->createStateBlock( desc );
    mDevice->setStateBlock( sb );
 
-   mDevice->setVertexBuffer( vb );
+   mDevice->setVertexBuffer( mLineVertex );
    mDevice->setupGenericShaders();
 
    mDevice->drawPrimitive( GFXLineStrip, 0, 3 );
@@ -765,12 +761,11 @@ void GFXDrawUtil::_drawSolidTriangle( const GFXStateBlockDesc &desc, const Point
          xfm->mulP( verts[i].point );
    }
 
-    GFXVertexBufferHandle<GFXVertexPC> vb(mDevice, 3, GFXBufferTypeVolatile, verts);
-
-   GFXStateBlockRef sb = mDevice->createStateBlock( desc );
+    mLineVertex.set(mDevice, 3, GFXBufferTypeVolatile, verts);
+    GFXStateBlockRef sb = mDevice->createStateBlock( desc );
    mDevice->setStateBlock( sb );
 
-   mDevice->setVertexBuffer( vb );
+   mDevice->setVertexBuffer( mLineVertex );
    mDevice->setupGenericShaders();
 
    mDevice->drawPrimitive( GFXTriangleList, 0, 1 );
@@ -802,11 +797,10 @@ void GFXDrawUtil::drawPolygon( const GFXStateBlockDesc& desc, const Point3F* poi
       verts[ numVerts - 1 ].color = color;
    }
 
-    GFXVertexBufferHandle< GFXVertexPC > vb( mDevice, numVerts, GFXBufferTypeVolatile, verts.address() );
-
+   mLineVertex->set(verts.address(), verts.size());
    mDevice->setStateBlockByDesc( desc );
 
-   mDevice->setVertexBuffer( vb );
+   mDevice->setVertexBuffer( mLineVertex );
    mDevice->setupGenericShaders();
 
    if( desc.fillMode == GFXFillWireframe )
@@ -915,11 +909,10 @@ void GFXDrawUtil::drawCircleShape(const GFXStateBlockDesc& desc, const Point2F p
 //   for ( U32 i = 0; i < 30; i++ )
 //      verts[i].point += pos;
 //
-//    GFXVertexBufferHandle<GFXVertexPC> vb(mDevice, 30, GFXBufferTypeVolatile,verts);
-//
+//    mLineVertex.set(mDevice, 30, GFXBufferTypeVolatile,verts);
 //   mDevice->setStateBlockByDesc( desc );
 //
-//   mDevice->setVertexBuffer( vb );
+//   mDevice->setVertexBuffer( mLineVertex );
 //   mDevice->setupGenericShaders();
 //
 //   for( U32 i=0; i<6; i++ )
@@ -979,8 +972,8 @@ void GFXDrawUtil::drawCircleShape(const GFXStateBlockDesc& desc, const Point2F p
 //   for ( U32 i = 0; i < 36; i++ )
 //      verts[i].point += pos;
 //
-//    GFXVertexBufferHandle<GFXVertexPC> vb(mDevice, 36, GFXBufferTypeVolatile, verts);
 //
+//    mLineVertex.set(mDevice, 36, GFXBufferTypeVolatile, verts);
 //   mDevice->setStateBlockByDesc( desc );
 //
 //   mDevice->setVertexBuffer( vb );
@@ -1031,7 +1024,7 @@ void GFXDrawUtil::drawCircleShape(const GFXStateBlockDesc& desc, const Point2F p
 //      }
 //   }
 //    
-//    GFXVertexBufferHandle< GFXVertexPC > vb( mDevice, numEdges * 2, GFXBufferTypeVolatile, verts.address());
+//    mLineVertex.set(mDevice, numEdges * 2, GFXBufferTypeVolatile, verts.address());
 //
 //   // Render the line list.
 //
@@ -1069,7 +1062,8 @@ void GFXDrawUtil::drawCircleShape(const GFXStateBlockDesc& desc, const Point2F p
 //      for( U32 i = 0; i < numPoints; ++ i )
 //         xfm->mulP( verts[ i ].point );
 //   }
-//    GFXVertexBufferHandle< GFXVertexPC > vb( mDevice, numPoints, GFXBufferTypeVolatile, verts.address());
+
+//    mLineVertex.set(mDevice, numPoints, GFXBufferTypeVolatile, verts.address());
 //
 //   // Allocate a temp buffer for the face indices.
 //
@@ -1237,8 +1231,8 @@ static const Point2F circlePoints[] =
 //   for ( U32 i = 0; i < totalNumPnts; i++ )
 //      verts[i].point += center;
 //
-//    GFXVertexBufferHandle<GFXVertexPC> vb(mDevice, numPoints * 2 + 2, GFXBufferTypeVolatile, verts.address());
 //
+//    mLineVertex.set(mDevice, verts.size(), GFXBufferTypeVolatile, verts.address());
 //   mDevice->setStateBlockByDesc( desc );
 //
 //   mDevice->setVertexBuffer( vb );
@@ -1292,7 +1286,8 @@ static const Point2F circlePoints[] =
 //      verts[i].point = Point3F(circlePoints[idx].x,circlePoints[idx].y, z);
 //      verts[i].color = color;
 //   }
-//    GFXVertexBufferHandle<GFXVertexPC> vb(mDevice, numPoints, GFXBufferTypeVolatile, verts.address());
+
+//    mLineVertex.set(mDevice, verts.size(), GFXBufferTypeVolatile, verts.address());
 //
 //   mDevice->setStateBlockByDesc( desc );
 //
@@ -1341,7 +1336,8 @@ static const Point2F circlePoints[] =
 //      verts[i + 1].point = Point3F(circlePoints[imod].x,circlePoints[imod].y, 0.0f);
 //      verts[i + 1].color = color;
 //   }
-//    GFXVertexBufferHandle<GFXVertexPC> vb(mDevice, numPoints + 2, GFXBufferTypeVolatile, verts.address());
+
+//    mLineVertex.set(mDevice, verts.size(), GFXBufferTypeVolatile, verts.address());
 //
 //   mDevice->setStateBlockByDesc( desc );
 //
@@ -1387,7 +1383,8 @@ static const Point2F circlePoints[] =
 //      verts[2*numPoints + 2 + 2 * i + 1].point = Point3F(circlePoints[imod].x,circlePoints[imod].y, 0);
 //      verts[2*numPoints + 2 + 2 * i + 1].color = color;
 //   }
-//    GFXVertexBufferHandle<GFXVertexPC> vb(mDevice, numPoints * 4 + 4, GFXBufferTypeVolatile, verts.address());
+
+//    mLineVertex.set(mDevice, verts.size(), GFXBufferTypeVolatile, verts.address());
 //
 //   mDevice->setStateBlockByDesc( desc );
 //
@@ -1469,7 +1466,8 @@ static const Point2F circlePoints[] =
 //   verts[3].point = pos + Point3F( size.x / 2.0f, -size.y / 2.0f, 0 );
 //   verts[3].color = color;
 //
-//    GFXVertexBufferHandle<GFXVertexPC> vb(mDevice, 4, GFXBufferTypeVolatile,verts);
+
+//    mLineVertex.set(mDevice, 4, GFXBufferTypeVolatile, verts);
 //
 //   mDevice->setStateBlockByDesc( desc );
 //
@@ -1589,7 +1587,8 @@ static const Point2F circlePoints[] =
 //      }
 //   }
 //
-//    GFXVertexBufferHandle<GFXVertexPC> vb( mDevice, numVertices, GFXBufferTypeVolatile, verts.address() );
+
+//    mLineVertex.set(mDevice, verts.size(), GFXBufferTypeVolatile, verts.address());
 //
 //   mDevice->setStateBlockByDesc( desc );
 //
@@ -1636,7 +1635,8 @@ static const Point2F circlePoints[] =
 //      verts[5].point *= *scale;      
 //   }
 //
-//    GFXVertexBufferHandle<GFXVertexPC> vb( mDevice, 6, GFXBufferTypeVolatile, verts );
+
+//    mLineVertex.set(mDevice, 6, GFXBufferTypeVolatile, verts);
 //
 //   mDevice->setStateBlockByDesc( desc );
 //

@@ -88,6 +88,7 @@ private:
     const ColorF        NoColor;
 
     Vector<GFXVertexPCT> mVertexBuffer;
+    GFXVertexBufferHandle<GFXVertexPCT> mTempVertBuffHandle;
    
     U32                 mTriangleCount;
 

@@ -54,6 +54,7 @@ class FontRenderBatcher
 
    SheetMarker &getSheetMarker(U32 sheetID);
 
+    GFXVertexBufferHandle<GFXVertexPCT> vHandle;
 public:
    FontRenderBatcher();
 

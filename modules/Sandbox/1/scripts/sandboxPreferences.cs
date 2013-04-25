@@ -21,7 +21,7 @@
 //-----------------------------------------------------------------------------
 
 // Sandbox.
-$pref::Sandbox::defaultToyId           = "SpriteToy";
+$pref::Sandbox::defaultToyId           = "TruckToy";
 $pref::Sandbox::defaultToyVersionId    = 1;
 $pref::Sandbox::defaultBackgroundColor = "Black";
 $pref::Sandbox::metricsOption   = false;

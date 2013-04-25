@@ -393,8 +393,8 @@ void BatchRender::flushInternal( void )
         else
             Con::printf("!mWireframeMode");
 
-        GFXVertexBufferHandle<GFXVertexPCT> vb(GFX, mVertexBuffer.size(), GFXBufferTypeVolatile, mVertexBuffer.address() );
-        GFX->setVertexBuffer( vb );
+        mTempVertBuffHandle.set(GFX, mVertexBuffer.size(), GFXBufferTypeVolatile, mVertexBuffer.address() );
+        GFX->setVertexBuffer( mTempVertBuffHandle );
         
         // Draw the triangles
         GFX->setupGenericShaders(GFXDevice::GSTexture);
@@ -421,8 +421,8 @@ void BatchRender::flushInternal( void )
             GFX->setTexture(0, batchItr->key);
             Vector<GFXVertexPCT>* pVertexVector = batchItr->value;
 
-            GFXVertexBufferHandle<GFXVertexPCT> vb(GFX, pVertexVector->size(), GFXBufferTypeVolatile, pVertexVector->address() );
-            GFX->setVertexBuffer( vb );
+            mTempVertBuffHandle.set(GFX, pVertexVector->size(), GFXBufferTypeVolatile, pVertexVector->address() );
+            GFX->setVertexBuffer( mTempVertBuffHandle );
 
             // Draw the triangles.
             GFX->setupGenericShaders(GFXDevice::GSTexture);

@@ -170,6 +170,9 @@ protected:
    GFXStateBlockRef mBitmapStretchWrapLinearSB;
    GFXStateBlockRef mRectFillSB;
    
+    GFXVertexBufferHandle<GFXVertexPCT> mTextureVertex;
+    GFXVertexBufferHandle<GFXVertexPC> mLineVertex;
+    
    FontRenderBatcher* mFontRenderBatcher;
 };
 

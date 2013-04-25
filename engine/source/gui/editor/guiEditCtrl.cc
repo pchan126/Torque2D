@@ -596,15 +596,15 @@ void GuiEditCtrl::onRender(Point2I offset, const RectI &updateRect)
             AssertFatal(ndot == maxdot, "dot underflow");
         }
         
-//        if (!mDotSB)
-//        {
-//            GFXStateBlockDesc dotdesc;
-//            dotdesc.setBlend(true, GFXBlendSrcAlpha, GFXBlendInvSrcAlpha);
-//            dotdesc.setCullMode( GFXCullNone );
-//            mDotSB = GFX->createStateBlock( dotdesc );
-//        }
-//        
-//        GFX->setStateBlock(mDotSB);
+        if (!mDotSB)
+        {
+            GFXStateBlockDesc dotdesc;
+            dotdesc.setBlend(true, GFXBlendSrcAlpha, GFXBlendInvSrcAlpha);
+            dotdesc.setCullMode( GFXCullNone );
+            mDotSB = GFX->createStateBlock( dotdesc );
+        }
+        
+        GFX->setStateBlock(mDotSB);
         
         // draw the points.
         GFX->setVertexBuffer( mDots );

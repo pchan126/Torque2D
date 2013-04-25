@@ -28,7 +28,7 @@ public:
 	~GFXOpenGLESVertexBuffer();
 
 	virtual void lock(U32 vertexStart, U32 vertexEnd, void **vertexPtr); ///< calls glMapBuffer and offsets the pointer by vertex start
-    virtual void set( void* data, U32 dataSize );
+    virtual void set( void* data, U32 dataSize, U32 indexCount, void* indexData );
 	virtual void unlock(); ///< calls glUnmapBufferOES, unbinds the buffer
 	virtual void prepare(); ///< Binds the buffer
    virtual void finish(); ///< We're done here
