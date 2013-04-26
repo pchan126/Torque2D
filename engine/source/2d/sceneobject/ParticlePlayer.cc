@@ -577,7 +577,7 @@ void ParticlePlayer::sceneRender( const SceneRenderState* pSceneRenderState, con
         if ( pParticleAssetEmitter->getIntenseParticles() )
         {
             // Yes, so set additive blending.
-//            pBatchRenderer->setBlendMode( GL_SRC_ALPHA, GL_ONE );
+            pBatchRenderer->setBlendMode( GFXBlendSrcAlpha, GFXBlendOne );
         }
         else
         {

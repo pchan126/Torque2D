@@ -12,7 +12,7 @@ varying vec2 TexCoord;
 
 void main()
 {  
-    vertColor = vec4( 1.0, 1.0, 1.0, 1.0);
+    vertColor = SourceColor;
     vec4 test = vec4( Position.xyz, 1.0);
     gl_Position = mvp_matrix * test;
     TexCoord = inTexCoord;

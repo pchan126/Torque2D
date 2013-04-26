@@ -78,7 +78,7 @@ void iOSWindow::_initCocoaWindow(const char* windowText, Point2I clientExtent)
     
     appDelegate.T2DWindow = this;
     appDelegate.window.rootViewController = viewController;
-    appDelegate.window.backgroundColor = [UIColor whiteColor];
+    appDelegate.window.backgroundColor = [UIColor blackColor];
     [appDelegate.window makeKeyAndVisible];
 }
 

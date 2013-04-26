@@ -114,13 +114,19 @@ GFXTextureObject *GFXOpenGLESTextureManager::_createTexture(  GBitmap *bmp,
     }
     else
         ret = _createTextureObject(realHeight, realWidth, 0, realFmt, profile, numMips );
-    
+   
     if(!ret)
     {
         Con::errorf("GFXTextureManager - failed to create texture (1) for '%s'", (resourceName.isNotEmpty() ? resourceName.c_str() : "unknown"));
         return NULL;
     }
-    
+
+   GFXOpenGLESTextureObject* retTex = dynamic_cast<GFXOpenGLESTextureObject*>(ret);
+
+   if (realBmp != bmp && retTex)
+      retTex->mIsNPoT2 = true;
+
+   
     // Extrude mip levels
     // Don't do this for fonts!
     if( ret->mMipLevels > 1 && ( realBmp->getNumMipLevels() == 1 ) && ( realBmp->getFormat() != GFXFormatA8 ) &&

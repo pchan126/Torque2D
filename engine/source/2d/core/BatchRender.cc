@@ -35,8 +35,11 @@ BatchRender::BatchRender() :
     mTriangleCount( 0 ),
     mStrictOrderMode( false ),
     mpDebugStats( NULL ),
+    mBlendMode(true),
+    mSrcBlendFactor( GFXBlendSrcAlpha),
+    mDstBlendFactor( GFXBlendInvSrcAlpha),
     mBlendColor( ColorF(1.0f,1.0f,1.0f,1.0f) ),
-    mBatchEnabled( false )
+    mBatchEnabled( true )
 {
 }
 
@@ -119,12 +122,12 @@ void BatchRender::SubmitTriangles(
         // Yes, so flush.
         flush( mpDebugStats->batchBufferFullFlush );
     }
-    // Do we have anything batched?
-    else if ( mTriangleCount > 0 )
-    {
-        flush( mpDebugStats->batchColorStateFlush );
-    }
-    
+//    // Do we have anything batched?
+//    else if ( mTriangleCount > 0 )
+//    {
+//        flush( mpDebugStats->batchColorStateFlush );
+//    }
+   
     Vector<GFXVertexPCT>* vertBuffer = &mVertexBuffer;
 
     // Strict order mode?
@@ -212,12 +215,12 @@ void BatchRender::SubmitQuad(const GFXVertexPCT* vertex,
         // Yes, so flush.
         flush( mpDebugStats->batchBufferFullFlush );
     }
-    // Do we have anything batched?
-    else if ( mTriangleCount > 0 )
-    {
-        flush( mpDebugStats->batchColorStateFlush );
-    }
-    
+//    // Do we have anything batched?
+//    else if ( mTriangleCount > 0 )
+//    {
+//        flush( mpDebugStats->batchColorStateFlush );
+//    }
+   
     Vector<GFXVertexPCT>* vertBuffer = &mVertexBuffer;
 
     // Strict order mode?
@@ -360,6 +363,7 @@ void BatchRender::flushInternal( void )
 
     GFXStateBlockDesc desc;
     desc.setCullMode(GFXCullNone);
+    desc.zEnable = false;
 
     if ( mWireframeMode )
     {
@@ -373,7 +377,7 @@ void BatchRender::flushInternal( void )
     // Set blend mode.
     if ( mBlendMode )
     {
-        desc.setBlend(true, mSrcBlendFactor, mDstBlendFactor);
+        desc.setBlend(true, mSrcBlendFactor, mDstBlendFactor, GFXBlendOpAdd);
     }
 
     // Set alpha-blend mode.
