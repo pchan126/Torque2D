@@ -2146,12 +2146,6 @@
 		867BAE1B16AEC9050033868F /* graphics */ = {
 			isa = PBXGroup;
 			children = (
-				D123F8651716652400F8EFEF /* OpenGL */,
-				D16581431702ED3600A21928 /* gfxAdapter.h */,
-				D16581441702ED3600A21928 /* gfxInit.cpp */,
-				D16581451702ED3600A21928 /* gfxInit.h */,
-				D15E7EC516F0622D00BB43B1 /* primBuilder.cc */,
-				D15E7EC616F0622D00BB43B1 /* primBuilder.h */,
 				867BAE1C16AEC9050033868F /* bitmapBmp.cc */,
 				867BAE1D16AEC9050033868F /* bitmapJpeg.cc */,
 				867BAE1E16AEC9050033868F /* bitmapPng.cc */,
@@ -2166,6 +2160,7 @@
 				867BAE2A16AEC9050033868F /* gBitmap.h */,
 				867BAE2B16AEC9050033868F /* gFont.cc */,
 				867BAE2C16AEC9050033868F /* gFont.h */,
+				D16581431702ED3600A21928 /* gfxAdapter.h */,
 				D15E7E8B16F061E200BB43B1 /* gfxCardProfile.cc */,
 				D15E7E8C16F061E200BB43B1 /* gfxCardProfile.h */,
 				D15E7E8D16F061E200BB43B1 /* gfxDevice.cc */,
@@ -2175,6 +2170,8 @@
 				D15E7E9116F061E200BB43B1 /* gfxEnums.h */,
 				D15E7E9216F061E200BB43B1 /* gfxFontRenderBatcher.cc */,
 				D15E7E9316F061E200BB43B1 /* gfxFontRenderBatcher.h */,
+				D16581441702ED3600A21928 /* gfxInit.cpp */,
+				D16581451702ED3600A21928 /* gfxInit.h */,
 				D15E7E9616F061E200BB43B1 /* gfxResource.cc */,
 				D15E7E9716F061E200BB43B1 /* gfxResource.h */,
 				D15E7E9816F061E200BB43B1 /* gfxShader.cc */,
@@ -2203,8 +2200,11 @@
 				D15E7EB116F061E200BB43B1 /* gfxVertexTypes.h */,
 				867BAE2D16AEC9050033868F /* gPalette.cc */,
 				867BAE2E16AEC9050033868F /* gPalette.h */,
+				D123F8651716652400F8EFEF /* OpenGL */,
 				867BAE2F16AEC9050033868F /* PNGImage.cpp */,
 				867BAE3016AEC9050033868F /* PNGImage.h */,
+				D15E7EC516F0622D00BB43B1 /* primBuilder.cc */,
+				D15E7EC616F0622D00BB43B1 /* primBuilder.h */,
 				867BAE3116AEC9050033868F /* splineUtil.cc */,
 				867BAE3216AEC9050033868F /* splineUtil.h */,
 			);

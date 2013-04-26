@@ -38,7 +38,6 @@
 #include "graphics/gfxResource.h"
 #endif
 #include "sim/simBase.h"
-//#include "core/util/path.h"
 #include "platform/threads/mutex.h"
 #include "delegates/delegateSignal.h"
 
@@ -46,7 +45,6 @@ class Point2I;
 class GFXDevice;
 class GFXTextureProfile;
 class GBitmap;
-//struct DDSFile;
 class RectI;
 
 /// Contains information on a locked region of a texture.
@@ -137,7 +135,6 @@ public:
    // These two should be removed, and replaced by a reference to a resource
    // object, or data buffer. Something more generic. -patw
    GBitmap           *mBitmap;   ///< GBitmap we are backed by.
-//   DDSFile           *mDDS;      ///< DDSFile we're backed by.
     
    U32 getFormatByteSize() const { return GFXFormat_getByteSize( mFormat ); }
 

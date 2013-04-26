@@ -179,39 +179,19 @@ void GBitmap::allocateBitmap(const U32 in_width, const U32 in_height, const bool
         case GFXFormatR5G6B5:
         case GFXFormatR5G5B5A1:     mBytesPerPixel = 2;
             break;
+        case GFXFormat_PVR2:
+        case GFXFormat_PVR2A:
+        case GFXFormat_PVR4:
+        case GFXFormat_PVR4A:
+            // compressed textures can't be allocated
+            return;
         default:
             AssertFatal(false, "GBitmap::GBitmap: misunderstood format specifier");
             break;
     }
     
-    //   switch (mInternalFormat) {
-//     case Alpha:
-//     case Palettized:
-//     case Luminance:
-//     case Intensity:  mBytesPerPixel = 1;
-//      break;
-//     case GFXFormatR8G8B8:        mBytesPerPixel = 3;
-//      break;
-//     case RGBA:       mBytesPerPixel = 4;
-//      break;
-//     case RGB565:
-//     case RGB5551:    mBytesPerPixel = 2;
-//      break;
-//#ifdef TORQUE_OS_IOS
-//        case PVR2:
-//        case PVR2A:
-//        case PVR4:
-//        case PVR4A:
-//            // compressed textures can't be allocated!
-//            return;
-//
-//#endif //-Mat
-//     default:
-//      AssertFatal(false, "GBitmap::GBitmap: misunderstood format specifier");
-//      break;
-//   }
 
-   // Set up the mip levels, if necessary...
+    // Set up the mip levels, if necessary...
    mNumMipLevels       = 1;
    U32 allocPixels = in_width * in_height * mBytesPerPixel;
    mMipLevelOffsets[0] = 0;
@@ -369,11 +349,7 @@ bool GBitmap::setFormat(GFXFormat fmt)
             switch ( fmt )
         {
             case GFXFormatR5G5B5A1:
-#ifdef _XBOX
-                bitmapConvertRGB_to_1555(mBits, pixels);
-#else
                 bitmapConvertRGB_to_5551(mBits, pixels);
-#endif
                 mInternalFormat = GFXFormatR5G5B5A1;
                 mBytesPerPixel  = 2;
                 break;
@@ -592,7 +568,7 @@ bool GBitmap::setColor(const U32 x, const U32 y, ColorI& rColor)
 GBitmap* GBitmap::createPowerOfTwoBitmap()
 {
    if (isPow2(getWidth()) && isPow2(getHeight()))
-      return NULL;
+      return this;
 
    AssertFatal(getNumMipLevels() == 1,
       "Cannot have non-pow2 bitmap with miplevels");
@@ -629,6 +605,53 @@ GBitmap* GBitmap::createPowerOfTwoBitmap()
    }
 
    return pReturn;
+}
+
+U16* GBitmap::create16BitBitmap( GFXFormat *GLformat )
+{
+    //PUAP -Mat make 16 bit
+    U16 *texture_data = new U16[mWidth * mHeight];
+    U16 *dest = texture_data;
+    U32 *source = (U32*)getWritableBits();
+    //since the pointer is 4 bytes, multiply by the number of bytes per pixel over 4
+    U32 spanInBytes = (U32)((mWidth * mHeight) * (mBytesPerPixel / 4.0f));
+    U32 *source_end = source + spanInBytes;
+    
+    switch (getFormat()) {
+        case GFXFormatR32F: //ALPHA_TRANSPARENT:
+            while (source != source_end) {
+                U32 color = *source++;
+                *dest++ = ((color & 0xF8) << 8) | ((color & 0xF800) >> 5) | ((color & 0xF80000) >> 18) | (color >> 31);
+            }
+            *GLformat = GFXFormatR5G5B5A1;
+            break;
+        case GFXFormatR8G8B8A8://ALPHA_BLEND
+            while (source != source_end) {
+                U32 color = *source++;
+                *dest++ = ((color & 0xF0) << 8) | ((color & 0xF000) >> 4) | ((color & 0xF00000) >> 16) | ((color & 0xF0000000) >> 28);
+            }
+            *GLformat = GFXFormatR4G4B4A4;
+            break;
+            
+        default://ALPHA_NONE
+            U8 *source8 = (U8*)source;
+            //32 bytes per address, snce we are casting to U8 we need 4 times as many
+            U8 *end8 = source8 + (U32)(spanInBytes*4);
+            while (source8 < end8) {
+                U16 red = (U16)*source8;
+                source8++;
+                U16 green = (U16)*source8;
+                source8++;
+                U16 blue = (U16)*source8;
+                source8++;
+                //now color should be == RR GG BB 00
+                *dest = ((red & 0xF8) << 8) | ((green & 0xFC) << 3) | ((blue & 0xF8) >> 3);
+                dest++;
+            }
+            *GLformat = GFXFormatR5G6B5;
+            break;
+    }
+    return texture_data;
 }
 
 //------------------------------------------------------------------------------

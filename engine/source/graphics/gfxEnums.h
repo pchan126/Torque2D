@@ -176,6 +176,7 @@ enum GFXFormat
    GFXFormatR5G6B5,// first in group...
    GFXFormatR5G5B5A1,
    GFXFormatR5G5B5X1,
+   GFXFormatR4G4B4A4,
    GFXFormatA8L8,
    GFXFormatL8A8,
    GFXFormatL16,
@@ -228,6 +229,11 @@ enum GFXFormat
    GFXFormat_64BIT = GFXFormatR16G16B16A16,
    GFXFormat_128BIT = GFXFormatR32G32B32A32F,
    GFXFormat_UNKNOWNSIZE = GFXFormatDXT1,
+    
+   GFXFormat_PVR2,
+   GFXFormat_PVR2A,
+   GFXFormat_PVR4,
+   GFXFormat_PVR4A,
 };
 
 /// Returns the byte size of the pixel for non-compressed formats.

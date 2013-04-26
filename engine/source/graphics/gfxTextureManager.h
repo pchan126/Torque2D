@@ -369,15 +369,10 @@ protected:
         
     private:
         void postTextureEvent(const TextureEventCode eventCode);
-        
-//        static void createGLName( TextureObject* pTextureObject );
-//        static TextureObject* registerTexture(const char *textureName, GBitmap* pNewBitmap, TextureHandle::TextureHandleType type, bool clampToEdge);
-//        static TextureObject* loadTexture(const char *textureName, TextureHandle::TextureHandleType type, bool clampToEdge, bool checkOnly = false, bool force16Bit = false );
         void freeTexture( GFXTextureObject* pTextureObject );
         void refresh(GFXTextureObject* pTextureObject);
         
 //        static GBitmap* loadBitmap(const char *textureName, bool recurse = true, bool nocompression = false);
-//        static GBitmap* createPowerOfTwoBitmap( GBitmap* pBitmap );
 //        static U16* create16BitBitmap( GBitmap *pDL, U8 *in_source8, GBitmap::BitmapFormat alpha_info, GLint *GLformat, GLint *GLdata_type, U32 width, U32 height );
 //        static void getSourceDestByteFormat(GBitmap *pBitmap, U32 *sourceFormat, U32 *destFormat, U32 *byteFormat, U32* texelSize);
         static F32 getResidentFraction( void );

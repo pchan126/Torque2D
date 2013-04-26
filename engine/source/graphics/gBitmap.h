@@ -103,6 +103,7 @@ class GBitmap: public ResourceInstance
    void extrudeMipLevelsDetail();
 
    GBitmap *createPowerOfTwoBitmap();
+   U16* create16BitBitmap( GFXFormat *GLformat );
 
    void copyRect(const GBitmap *src, const RectI &srcRect, const Point2I &dstPoint);
 
@@ -123,6 +124,8 @@ class GBitmap: public ResourceInstance
    bool        getColor(const U32 x, const U32 y, ColorI& rColor) const;
    bool        setColor(const U32 x, const U32 y, ColorI& rColor);
 
+    
+    
    /// Note that on set palette, the bitmap deletes its palette.
 //   GPalette const* getPalette() const;
 //   void            setPalette(GPalette* in_pPalette);

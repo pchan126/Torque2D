@@ -117,7 +117,7 @@ void GFXOpenGLDevice::drawPrimitive( GFXPrimitiveType primType, U32 vertexStart,
 {
     preDrawPrimitive();
 
-    GL_CHECK(glDrawArrays(GFXGLPrimType[primType], vertexStart, primCountToIndexCount(primType, primitiveCount)));
+    glDrawArrays(GFXGLPrimType[primType], vertexStart, primCountToIndexCount(primType, primitiveCount));
 
     postDrawPrimitive(primitiveCount);
 }

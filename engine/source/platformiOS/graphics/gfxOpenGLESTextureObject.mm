@@ -92,10 +92,7 @@ void GFXOpenGLESTextureObject::unlock(U32 mipLevel)
 void GFXOpenGLESTextureObject::release()
 {
    glDeleteTextures(1, &mHandle);
-//   glDeleteBuffers(1, &mBuffer);
-   
    mHandle = 0;
-//   mBuffer = 0;
 }
 
 GBitmap* GFXOpenGLESTextureObject::getBitmap()

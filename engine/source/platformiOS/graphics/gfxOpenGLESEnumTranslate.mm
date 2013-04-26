@@ -109,6 +109,7 @@ void GFXGLESEnumTranslate::init()
    GFXGLTextureInternalFormat[GFXFormatR5G6B5] = GL_RGB;
    GFXGLTextureInternalFormat[GFXFormatR5G5B5A1] = GL_RGBA;
    GFXGLTextureInternalFormat[GFXFormatR5G5B5X1] = GL_RGBA;
+   GFXGLTextureInternalFormat[GFXFormatR4G4B4A4] = GL_RGBA;
    GFXGLTextureInternalFormat[GFXFormatL16] = GL_ZERO;
    GFXGLTextureInternalFormat[GFXFormatR16F] = GL_ZERO;
    GFXGLTextureInternalFormat[GFXFormatD16] = GL_DEPTH_COMPONENT;
@@ -133,20 +134,25 @@ void GFXGLESEnumTranslate::init()
    GFXGLTextureInternalFormat[GFXFormatDXT3] = GL_ZERO;
    GFXGLTextureInternalFormat[GFXFormatDXT4] = GL_ZERO;
    GFXGLTextureInternalFormat[GFXFormatDXT5] = GL_ZERO;
+    GFXGLTextureInternalFormat[GFXFormat_PVR2] = GL_RGB;
+    GFXGLTextureInternalFormat[GFXFormat_PVR2A] = GL_RGBA;
+    GFXGLTextureInternalFormat[GFXFormat_PVR4] = GL_RGB;
+    GFXGLTextureInternalFormat[GFXFormat_PVR4A] = GL_RGBA;
    
    GFXGLTextureFormat[GFXFormatA8] = GL_ALPHA;
    GFXGLTextureFormat[GFXFormatL8] = GL_LUMINANCE;
     GFXGLTextureFormat[GFXFormatR8] = GL_ZERO;
-   GFXGLTextureFormat[GFXFormatR5G6B5] = GL_RGBA;
+   GFXGLTextureFormat[GFXFormatR5G6B5] = GL_RGB;
    GFXGLTextureFormat[GFXFormatR5G5B5A1] = GL_RGBA;
    GFXGLTextureFormat[GFXFormatR5G5B5X1] = GL_RGBA;
+    GFXGLTextureType[GFXFormatR4G4B4A4] = GL_RGBA;
    GFXGLTextureFormat[GFXFormatL16] = GL_LUMINANCE;
    GFXGLTextureFormat[GFXFormatR16F] = GL_ZERO;
    GFXGLTextureFormat[GFXFormatD16] = GL_DEPTH_COMPONENT;
     GFXGLTextureFormat[GFXFormatR8G8] = GL_ZERO;
    GFXGLTextureFormat[GFXFormatR8G8B8] = GL_RGB;
-   GFXGLTextureFormat[GFXFormatR8G8B8A8] = GL_BGRA;
-   GFXGLTextureFormat[GFXFormatR8G8B8X8] = GL_BGRA;
+   GFXGLTextureFormat[GFXFormatR8G8B8A8] = GL_RGBA;
+   GFXGLTextureFormat[GFXFormatR8G8B8X8] = GL_RGBA;
    GFXGLTextureFormat[GFXFormatR32F] = GL_RGBA;
    GFXGLTextureFormat[GFXFormatR16G16] = GL_RGBA;
    GFXGLTextureFormat[GFXFormatR16G16F] = GL_ZERO;
@@ -162,13 +168,18 @@ void GFXGLESEnumTranslate::init()
    GFXGLTextureFormat[GFXFormatDXT3] = GL_RGBA;
    GFXGLTextureFormat[GFXFormatDXT4] = GL_ZERO;
    GFXGLTextureFormat[GFXFormatDXT5] = GL_RGBA;
+    GFXGLTextureFormat[GFXFormat_PVR2] = GL_RGB;
+    GFXGLTextureFormat[GFXFormat_PVR2A] = GL_RGBA;
+    GFXGLTextureFormat[GFXFormat_PVR4] = GL_RGB;
+    GFXGLTextureFormat[GFXFormat_PVR4A] = GL_RGBA;
    
    GFXGLTextureType[GFXFormatA8] = GL_UNSIGNED_BYTE;
    GFXGLTextureType[GFXFormatL8] = GL_UNSIGNED_BYTE;
     GFXGLTextureType[GFXFormatR8] = GL_UNSIGNED_BYTE;
-   GFXGLTextureType[GFXFormatR5G6B5] = GL_UNSIGNED_BYTE;
-   GFXGLTextureType[GFXFormatR5G5B5A1] = GL_UNSIGNED_BYTE;
+   GFXGLTextureType[GFXFormatR5G6B5] = GL_UNSIGNED_SHORT_5_6_5;
+   GFXGLTextureType[GFXFormatR5G5B5A1] = GL_UNSIGNED_SHORT_5_5_5_1;
    GFXGLTextureType[GFXFormatR5G5B5X1] = GL_UNSIGNED_BYTE;
+    GFXGLTextureType[GFXFormatR4G4B4A4] = GL_UNSIGNED_SHORT_4_4_4_4;
    GFXGLTextureType[GFXFormatL16] = GL_UNSIGNED_SHORT;
    GFXGLTextureType[GFXFormatR16F] = GL_ZERO;
    GFXGLTextureType[GFXFormatD16] = GL_UNSIGNED_SHORT;
@@ -191,6 +202,10 @@ void GFXGLESEnumTranslate::init()
    GFXGLTextureType[GFXFormatDXT3] = GL_UNSIGNED_BYTE;
    GFXGLTextureType[GFXFormatDXT4] = GL_ZERO;
    GFXGLTextureType[GFXFormatDXT5] = GL_UNSIGNED_BYTE;
+    GFXGLTextureType[GFXFormat_PVR2] = GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG;
+    GFXGLTextureType[GFXFormat_PVR2A] = GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG;
+    GFXGLTextureType[GFXFormat_PVR4] = GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG;
+    GFXGLTextureType[GFXFormat_PVR4A] = GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG;
 
    // Cull
    GFXGLCullMode[GFXCullNone] = GL_BACK;

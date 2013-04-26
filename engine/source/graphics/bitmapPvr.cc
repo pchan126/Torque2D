@@ -30,8 +30,8 @@
 struct PVRTextureHeaderV2
 {
 	unsigned int  dwHeaderSize;		/* size of the structure */
-	unsigned int  dwHeight;			/* height of surface to be created */
-	unsigned int  dwWidth;			/* width of input surface */
+	unsigned int  dwHeight;			/* mHeight of surface to be created */
+	unsigned int  dwWidth;			/* mWidth of input surface */
 	unsigned int  dwMipMapCount;	/* number of mip-map levels requested */
 	unsigned int  dwpfFlags;		/* pixel format flags */
 	unsigned int  dwDataSize;		/* Size of the compress data */
@@ -273,30 +273,30 @@ bool GBitmap::readPvr(Stream& stream)
 
 	stream.read( sizeof(PVRTextureHeaderV2), &bi );
 
-//	byteSize = bi.dwDataSize;
-//	pBits = new U8[byteSize];
-//	stream.read( byteSize, pBits );
-//	
-//	width = bi.dwHeight;
-//	height = bi.dwWidth;
-//	
-//	if (bi.dwBitCount == 2) {
-//		if ((bi.dwpfFlags & PVRTEX_ALPHA) == 0) {
-//			internalFormat = PVR2;
-//		} else {
-//			internalFormat = PVR2A;
-//		}
-//	} else { // if (bi.dwBitCount == 4) {
-//		if ((bi.dwpfFlags & PVRTEX_ALPHA) == 0) {
-//			internalFormat = PVR4;
-//		} else {
-//			internalFormat = PVR4A;
-//		}
-//	}
-//	bytesPerPixel = 0; // no provision for sub 1 bytesPerPixel, so set it to 0
-//	
-//	numMipLevels = 1; //bi.dwMipMapCount;
-//	mipLevelOffsets[0] = 0;
+	mByteSize = bi.dwDataSize;
+	mBits = new U8[mByteSize];
+	stream.read( mByteSize, mBits );
+	
+	mWidth = bi.dwHeight;
+	mHeight = bi.dwWidth;
+	
+	if (bi.dwBitCount == 2) {
+		if ((bi.dwpfFlags & PVRTEX_ALPHA) == 0) {
+			mInternalFormat = GFXFormat_PVR2;
+		} else {
+			mInternalFormat = GFXFormat_PVR2A;
+		}
+	} else { // if (bi.dwBitCount == 4) {
+		if ((bi.dwpfFlags & PVRTEX_ALPHA) == 0) {
+			mInternalFormat = GFXFormat_PVR4;
+		} else {
+			mInternalFormat = GFXFormat_PVR4A;
+		}
+	}
+	mBytesPerPixel = 0; // no provision for sub 1 mBytesPerPixel, so set it to 0
+	
+	mNumMipLevels = 1; //bi.dwMipMapCount;
+	mMipLevelOffsets[0] = 0;
 
 	pPalette = NULL;
 
