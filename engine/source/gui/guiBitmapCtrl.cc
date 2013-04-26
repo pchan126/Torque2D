@@ -140,7 +140,7 @@ void GuiBitmapCtrl::setBitmap(const char *name, bool resize)
         // Resize the control to fit the bitmap
         if ( mTextureObject && resize )
         {
-            setExtent( mTextureObject->getWidth(), mTextureObject->getHeight() );
+            setExtent( mTextureObject->getBitmapWidth(), mTextureObject->getBitmapHeight() );
             updateSizing();
         }
     }

@@ -208,8 +208,8 @@ public:
     S32                     getCellHeight( void) const						{ return mCellHeight; }
 
     inline GFXTexHandle&   getImageTexture( void )                         { return mImageTextureHandle; }
-    inline S32              getImageWidth( void ) const                     { return mImageTextureHandle.getWidth(); }
-    inline S32              getImageHeight( void ) const                    { return mImageTextureHandle.getHeight(); }
+    inline S32              getImageWidth( void ) const                     { return mImageTextureHandle.getBitmapWidth(); }
+    inline S32              getImageHeight( void ) const                    { return mImageTextureHandle.getBitmapHeight(); }
     inline U32              getFrameCount( void ) const                     { return (U32)mFrames.size(); };
 
     inline const FrameArea& getImageFrameArea( U32 frame ) const            { clampFrame(frame); return mFrames[frame]; };
