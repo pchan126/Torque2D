@@ -805,9 +805,9 @@ ConsoleMethod(Scene, createRevoluteJoint, S32, 4, 9,    "(sceneObjectA, sceneObj
             Con::warnf("Scene::createRevoluteJoint() - Could not find scene object %s.", sceneObjectB);
     }
 
-    if ( *sceneObjectA == *sceneObjectB )
+    if ( sceneObjectA == sceneObjectB )
     {
-       Con::warnf("Scene::createRevoluteJoint() - Cannot join scene object %s to itself!", sceneObjectA);
+       Con::warnf("Scene::createRevoluteJoint() - Cannot join scene object %s %s to itself!", sceneObjectA, sceneObjectB);
        return -1;
     }
    

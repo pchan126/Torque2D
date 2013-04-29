@@ -69,6 +69,7 @@ IMPLEMENT_CONOBJECT(SceneWindow);
 
 //-----------------------------------------------------------------------------
 
+
 static EnumTable::Enums interpolationModeLookup[] =
                 {
                 { SceneWindow::LINEAR,   "LINEAR" },
@@ -1398,8 +1399,8 @@ void SceneWindow::calculateCameraView( CameraView* pCameraView )
     // Calculate Scene Min/Max.
     pCameraView->mSceneMin.x = pCameraView->mDestinationArea.point.x;
     pCameraView->mSceneMin.y = pCameraView->mDestinationArea.point.y;
-    pCameraView->mSceneMax.x = pCameraView->mDestinationArea.point.x + pCameraView->mDestinationArea.len_x();
-    pCameraView->mSceneMax.y = pCameraView->mDestinationArea.point.y + pCameraView->mDestinationArea.len_y();
+    pCameraView->mSceneMax.x = pCameraView->mDestinationArea.point.x + pCameraView->mDestinationArea.extent.x;
+    pCameraView->mSceneMax.y = pCameraView->mDestinationArea.point.y + pCameraView->mDestinationArea.extent.y;
 
     // Is View Limit Active?
     if ( mViewLimitActive )
@@ -1513,37 +1514,37 @@ void SceneWindow::processTick( void )
         updateCamera();
     } 
 
-    // Is the Camera Shaking?
-    if ( mCameraShaking )
-    {
-        // Reduce Shake Life.
-        mShakeLife -= Tickable::smTickSec;
-
-        // Is the Shake still active?
-        if ( mShakeLife > 0.0f )
-        {
-            // Calculate Current Shake.
-            mCurrentShake -= mShakeRamp * Tickable::smTickSec;
-
-            // Clamp Shake.
-            mCurrentShake = getMax(mCurrentShake, 0.0f);
-
-            // Calculate the Screen Shake-Ratio.
-            const Point2F shakeRatio( mCameraCurrent.mDestinationArea.len_x() / F32(getBounds().len_x()), mCameraCurrent.mDestinationArea.len_y() / F32(getBounds().len_y()) );
-
-            // Calculate the Camera Shake Magnitude based upon the Screen Shake-Ratio.
-            const F32 shakeMagnitudeX = mCurrentShake * shakeRatio.x * 0.5f;
-            const F32 shakeMagnitudeY = mCurrentShake * shakeRatio.y * 0.5f;
-
-            // Choose a random Shake.
-            mCameraShakeOffset.Set( CoreMath::mGetRandomF( -shakeMagnitudeX, shakeMagnitudeX ), CoreMath::mGetRandomF( -shakeMagnitudeY, shakeMagnitudeY ) );
-        }
-        else
-        {
-            // No, so stop shake.
-            stopCameraShake();
-        }
-    }    
+//    // Is the Camera Shaking?
+//    if ( mCameraShaking )
+//    {
+//        // Reduce Shake Life.
+//        mShakeLife -= Tickable::smTickSec;
+//
+//        // Is the Shake still active?
+//        if ( mShakeLife > 0.0f )
+//        {
+//            // Calculate Current Shake.
+//            mCurrentShake -= mShakeRamp * Tickable::smTickSec;
+//
+//            // Clamp Shake.
+//            mCurrentShake = getMax(mCurrentShake, 0.0f);
+//
+//            // Calculate the Screen Shake-Ratio.
+//            const Point2F shakeRatio( mCameraCurrent.mDestinationArea.len_x() / F32(getBounds().len_x()), mCameraCurrent.mDestinationArea.len_y() / F32(getBounds().len_y()) );
+//
+//            // Calculate the Camera Shake Magnitude based upon the Screen Shake-Ratio.
+//            const F32 shakeMagnitudeX = mCurrentShake * shakeRatio.x * 0.5f;
+//            const F32 shakeMagnitudeY = mCurrentShake * shakeRatio.y * 0.5f;
+//
+//            // Choose a random Shake.
+//            mCameraShakeOffset.Set( CoreMath::mGetRandomF( -shakeMagnitudeX, shakeMagnitudeX ), CoreMath::mGetRandomF( -shakeMagnitudeY, shakeMagnitudeY ) );
+//        }
+//        else
+//        {
+//            // No, so stop shake.
+//            stopCameraShake();
+//        }
+//    }    
 }
 
 //-----------------------------------------------------------------------------
@@ -1626,6 +1627,8 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
     // Calculate current camera View ( if needed ).
     calculateCameraView( &mCameraCurrent );
 
+    Point2F sceneSize = mCameraCurrent.mSourceArea.extent;
+    
     // Fetch current camera.
     const Point2F& sceneWindowScale = mCameraCurrent.mSceneWindowScale;
     Point2F sceneMin = mCameraCurrent.mSceneMin;
@@ -1633,57 +1636,41 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
 
     // Fetch bounds.
     const RectI& bounds = getBounds();  
-    const Point2I globalTopLeft( updateRect.point.x, updateRect.point.y );
-    const Point2I globalBottomRight( updateRect.point.x + updateRect.extent.x, updateRect.point.y + updateRect.extent.y );
-    const Point2I localTopLeft = globalToLocalCoord( globalTopLeft );
-    const Point2I localBottomRight = globalToLocalCoord( globalBottomRight );
-
-    // Clip top?
-    if ( localTopLeft.y > 0 )
-    {
-        sceneMax.y -= localTopLeft.y * sceneWindowScale.y;
-    }
-
-    // Clip left?
-    if ( localTopLeft.x > 0 )
-    {
-        sceneMin.x += localTopLeft.x * sceneWindowScale.x;
-    }
-
-    // Clip bottom?
-    if ( localBottomRight.y < bounds.extent.y )
-    {
-        sceneMin.y += (bounds.extent.y - localBottomRight.y ) * sceneWindowScale.y;
-    }
-
-    // Clip right?
-    if ( localBottomRight.x < bounds.extent.x )
-    {
-        sceneMax.x -= (bounds.extent.x - localBottomRight.x ) * sceneWindowScale.x;
-    }
-
-    // Add camera shake offset if active.
-    if ( mCameraShaking )
-    {
-        sceneMin += mCameraShakeOffset;
-        sceneMax += mCameraShakeOffset;
-    }
-
-    MatrixF oldProj = GFX->getProjectionMatrix();
-
-    // Set orthographic projection.
-    MatrixF ortho = MatrixF(true);
-    ortho.setOrtho(sceneMin.x, sceneMax.x, sceneMin.y, sceneMax.y, 0.0f, MAX_LAYERS_SUPPORTED);
-
-    
-//    Con::printf("setupGenericShaders");
-//    Con::printf("%f %f %f %f", sceneMin.x, sceneMax.x, sceneMin.y, sceneMax.y);
-//    Con::printf("%f %f %f %f", ortho[0], ortho[1], ortho[2], ortho[3]);
-//    Con::printf("%f %f %f %f", ortho[4], ortho[5], ortho[6], ortho[7]);
-//    Con::printf("%f %f %f %f", ortho[8], ortho[9], ortho[10], ortho[11]);
-//    Con::printf("%f %f %f %f", ortho[12], ortho[13], ortho[14], ortho[15]);
-    
-    GFX->setProjectionMatrix(ortho);
+//    const Point2I globalTopLeft( updateRect.point.x, updateRect.point.y );
+//    const Point2I globalBottomRight( updateRect.point.x + updateRect.extent.x, updateRect.point.y + updateRect.extent.y );
+//    const Point2I localTopLeft = globalToLocalCoord( globalTopLeft );
+//    const Point2I localBottomRight = globalToLocalCoord( globalBottomRight );
+//
+//    // Clip top?
+//    if ( localTopLeft.y > 0 )
+//    {
+//        sceneMax.y -= localTopLeft.y * sceneWindowScale.y;
+//    }
+//
+//    // Clip left?
+//    if ( localTopLeft.x > 0 )
+//    {
+//        sceneMin.x += localTopLeft.x * sceneWindowScale.x;
+//    }
+//
+//    // Clip bottom?
+//    if ( localBottomRight.y < bounds.extent.y )
+//    {
+//        sceneMin.y += (bounds.extent.y - localBottomRight.y ) * sceneWindowScale.y;
+//    }
+//
+//    // Clip right?
+//    if ( localBottomRight.x < bounds.extent.x )
+//    {
+//        sceneMax.x -= (bounds.extent.x - localBottomRight.x ) * sceneWindowScale.x;
+//    }
+//
+//    // Add camera shake offset if active.
+//    if ( mCameraShaking )
+//    {
+//        sceneMin += mCameraShakeOffset;
+//        sceneMax += mCameraShakeOffset;
+//    }
 
     // Set ModelView.
     GFX->pushWorldMatrix();
@@ -1694,9 +1681,7 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
 
     // Create a scene render state.
     SceneRenderState sceneRenderState(
-        mCameraCurrent.mDestinationArea,
-        mCameraCurrent.mDestinationArea.centre(),
-        mCameraCurrent.mCameraAngle,
+        mCameraCurrent,
         mRenderLayerMask,
         mRenderGroupMask,
         Vector2( mCameraCurrent.mSceneWindowScale ),
@@ -1724,7 +1709,6 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
 
     // Restore Matrices.
     GFX->popWorldMatrix();
-    GFX->setProjectionMatrix(oldProj);
 
 //    // Render the metrics.
 //    renderMetricsOverlay( offset, updateRect );

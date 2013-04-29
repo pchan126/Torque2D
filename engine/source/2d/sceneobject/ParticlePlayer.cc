@@ -597,17 +597,14 @@ void ParticlePlayer::sceneRender( const SceneRenderState* pSceneRenderState, con
 
         // Save the transformation.
         GFX->pushWorldMatrix();
-
+        
         // Is the Position attached to the emitter?
         if ( pParticleAssetEmitter->getAttachPositionToEmitter() )
         {
             // Yes, so get player position.
             const Vector2 renderPosition = getRenderPosition();
-           MatrixF wMatrix = GFX->getWorldMatrix();
-
-           // Move into emitter-space.
-            wMatrix.translate(renderPosition.x/20.0, renderPosition.y/15.0, 0.0f );
-
+            MatrixF wMatrix = GFX->getWorldMatrix();
+            
             // Is the rotation attached to the emitter?
             if ( pParticleAssetEmitter->getAttachRotationToEmitter() )
             {
@@ -615,9 +612,15 @@ void ParticlePlayer::sceneRender( const SceneRenderState* pSceneRenderState, con
                 // NOTE:- We need clockwise rotation here.
                 wMatrix.rotateX(getRenderAngle());
             }
-           GFX->setWorldMatrix(wMatrix);
+            
+            // Move into emitter-space.
+            //            wMatrix.translate(renderPosition.x/20.0, renderPosition.y/15.0, 0.0f );
+            wMatrix.translate(renderPosition.x, renderPosition.y, 0.0f );
+            
+            GFX->setWorldMatrix(wMatrix);
         }
 
+        
         // Fetch the oldest-in-front flag.
         const bool oldestInFront = pParticleAssetEmitter->getOldestInFront();
 
@@ -662,7 +665,7 @@ void ParticlePlayer::sceneRender( const SceneRenderState* pSceneRenderState, con
             // Move to next Particle ( using appropriate sort-order ).
             pParticleNode = oldestInFront ? pParticleNode->mNextNode : pParticleNode->mPreviousNode;
         };
-
+        
         // Flush.
         pBatchRenderer->flush( getScene()->getDebugStats().batchIsolatedFlush );
 

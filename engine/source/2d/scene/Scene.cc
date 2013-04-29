@@ -967,8 +967,16 @@ void Scene::sceneRender( const SceneRenderState* pSceneRenderState )
     pDebugStats->batchNoBatchFlush              = 0;
     pDebugStats->batchAnonymousFlush            = 0;
 
-//    SceneCameraState cameraState = SceneCameraState::fromGFX();
+    MatrixF oldProj = GFX->getProjectionMatrix();
+
+    Point2F sceneSize = pSceneRenderState->mRenderCamera.mDestinationArea.extent;
+    // Calculate Zoom Reciprocal.
     
+    // Set orthographic projection.
+    MatrixF ortho = MatrixF(true);
+    ortho.setOrtho(-sceneSize.x/2, sceneSize.x/2, -sceneSize.y/2, sceneSize.y/2, 0.0f, MAX_LAYERS_SUPPORTED);
+    GFX->setProjectionMatrix(ortho);
+
     // Set batch renderer wireframe mode.
     mBatchRenderer.setWireframeMode( getDebugMask() & SCENE_DEBUG_WIREFRAME_RENDER );
 
@@ -977,20 +985,16 @@ void Scene::sceneRender( const SceneRenderState* pSceneRenderState )
 
     // Rotate the render AABB by the camera angle.
     b2AABB cameraAABB;
-    CoreMath::mRotateAABB( pSceneRenderState->mRenderAABB, pSceneRenderState->mRenderAngle, cameraAABB );
+    CoreMath::mRotateAABB( pSceneRenderState->mRenderAABB, pSceneRenderState->mRenderCamera.mCameraAngle, cameraAABB );
 
     // Rotate the world matrix by the camera angle.
-    const Vector2& cameraPosition = pSceneRenderState->mRenderPosition;
+    const Vector2& cameraPosition = pSceneRenderState->mRenderCamera.mDestinationArea.centre();
     
-    MatrixF wm = GFX->getWorldMatrix();
-    wm.translate(cameraPosition.x, cameraPosition.y, 0.0f);
-    wm.rotateZ(pSceneRenderState->mRenderAngle);
-    wm.translate(-cameraPosition.x, -cameraPosition.y, 0.0f );
-    GFX->setWorldMatrix(wm);
-
-//    glTranslatef( cameraPosition.x, cameraPosition.y, 0.0f );
-//    glRotatef( mRadToDeg(pSceneRenderState->mRenderAngle), 0.0f, 0.0f, 1.0f );
-//    glTranslatef( -cameraPosition.x, -cameraPosition.y, 0.0f );
+    MatrixF vm = GFX->getViewMatrix();
+    vm.translate(cameraPosition.x, cameraPosition.y, 0.0f);
+    vm = vm.inverse();
+    vm.rotateZ(pSceneRenderState->mRenderCamera.mCameraAngle);
+    GFX->setViewMatrix(vm);
 
     // Clear world query.
     mpWorldQuery->clearQuery();
@@ -1278,6 +1282,8 @@ void Scene::sceneRender( const SceneRenderState* pSceneRenderState )
         // Yes, so perform callback.
         Con::executef( this, 1, "onSceneRender" );
     }
+    
+    GFX->setProjectionMatrix(oldProj);
 }
 
 //-----------------------------------------------------------------------------

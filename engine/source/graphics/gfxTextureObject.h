@@ -242,20 +242,4 @@ public:
     inline S32 getBitmapResidentSize( void ) const { return mBitmapResidentSize; }
 };
 
-//-----------------------------------------------------------------------------
-
-//inline GBitmap *GFXTextureObject::getBitmap()
-//{
-//   AssertFatal( mProfile->doStoreBitmap(), avar("GFXTextureObject::getBitmap - Cannot access bitmap for a '%s' texture.", mProfile->getName().c_str()) );
-//
-//   return mBitmap;
-//}
-//
-//inline DDSFile *GFXTextureObject::getDDS()
-//{
-//   AssertFatal( mProfile->doStoreBitmap(), avar("GFXTextureObject::getDDS - Cannot access bitmap for a '%s' texture.", mProfile->getName().c_str()) );
-//
-//   return mDDS;
-//}
-
 #endif // _GFXTEXTUREOBJECT_H_

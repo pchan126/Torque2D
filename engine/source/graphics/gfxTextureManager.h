@@ -29,9 +29,6 @@
 #ifndef _GBITMAP_H_
 #include "graphics/gBitmap.h"
 #endif 
-//#ifndef _DDSFILE_H_
-//#include "graphics/bitmap/ddsFile.h"
-//#endif
 #include "io/resource/resourceManager.h"
 #include "collection/hashTable.h"
 #include "sim/simBase.h"
@@ -226,11 +223,6 @@ protected:
                                        bool deleteBmp,
                                        GFXTextureObject *inObj );
 
-//   GFXTextureObject *_createTexture(   DDSFile *dds,
-//                                       GFXTextureProfile *profile,
-//                                       bool deleteDDS,
-//                                       GFXTextureObject *inObj );
-
    /// Frees the API handles to the texture, for D3D this is a release call
    ///
    /// @note freeTexture MUST NOT DELETE THE TEXTURE OBJECT
@@ -278,9 +270,6 @@ protected:
                                                    S32 antialiasLevel = 0, 
                                                    GFXTextureObject *inTex = NULL ) = 0;
 
-//   /// Load a texture from a proper DDSFile instance.
-//   virtual bool _loadTexture(GFXTextureObject *texture, DDSFile *dds)=0;
-
    /// Load data into a texture from a GBitmap using the internal API.
    virtual bool _loadTexture(GFXTextureObject *texture, GBitmap *bmp)=0;
 
@@ -311,7 +300,6 @@ protected:
 
    // New texture manager methods for the cleanup work:
    GFXTextureObject *_lookupTexture( const char *filename, const GFXTextureProfile *profile  );
-//   GFXTextureObject *_lookupTexture( const DDSFile *ddsFile, const GFXTextureProfile *profile  );
 
    void _onFileChanged( const String &path );
 

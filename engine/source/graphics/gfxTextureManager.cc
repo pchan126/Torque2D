@@ -345,63 +345,17 @@ GFXTextureObject *GFXTextureManager::_createTexture(  GBitmap *bmp,
    if( ret->mMipLevels > 1 && ( realBmp->getNumMipLevels() == 1 ) && ( realBmp->getFormat() != GFXFormatA8 ) &&
       isPow2( realBmp->getHeight() ) && isPow2( realBmp->getWidth() ) && !profile->noMip() )
    {
-      // NOTE: This should really be done by extruding mips INTO a DDS file instead
-      // of modifying the gbitmap
-      realBmp->extrudeMipLevels(false); 
+      realBmp->extrudeMipLevels(false);
    }
 
    // If _validateTexParams kicked back a different format, than there needs to be
    // a conversion
-//   DDSFile *bmpDDS = NULL;
    if( realBmp->getFormat() != realFmt )
    {
       const GFXFormat oldFmt = realBmp->getFormat();
 
-      // TODO: Set it up so that ALL format conversions use DDSFile. Rip format
-      // switching out of GBitmap entirely.
       if( !realBmp->setFormat( realFmt ) )
       {
-//         // This is not the ideal implementation...
-//         bmpDDS = DDSFile::createDDSFileFromGBitmap( realBmp );
-//
-//         bool convSuccess = false;
-//
-//         if( bmpDDS != NULL )
-//         {       
-//            // This shouldn't live here, I don't think
-//            switch( realFmt )
-//            {
-//               case GFXFormatDXT1:
-//               case GFXFormatDXT2:
-//               case GFXFormatDXT3:
-//               case GFXFormatDXT4:
-//               case GFXFormatDXT5:
-//                  // If this is a Normal Map profile, than the data needs to be conditioned
-//                  // to use the swizzle trick
-//                  if( ret->mProfile->getType() == GFXTextureProfile::NormalMap )
-//                  {
-//                     PROFILE_START(DXT_DXTNMSwizzle);
-//                     static DXT5nmSwizzle sDXT5nmSwizzle;
-//                     DDSUtil::swizzleDDS( bmpDDS, sDXT5nmSwizzle );
-//                     PROFILE_END();
-//                  }
-//
-//                  convSuccess = DDSUtil::squishDDS( bmpDDS, realFmt );
-//                  break;
-//               default:
-//                  AssertFatal(false, "Attempting to convert to a non-DXT format");
-//                  break;
-//            }
-//         }
-//
-//         if( !convSuccess )
-//         {
-//            Con::errorf( "[GFXTextureManager]: Failed to change source format from %s to %s. Cannot create texture.", 
-//               GFXStringTextureFormat[oldFmt], GFXStringTextureFormat[realFmt] );
-//            delete bmpDDS;
-//
-//            return NULL;
-//         }
       }
 #ifdef TORQUE_DEBUG
       else
@@ -412,10 +366,6 @@ GFXTextureObject *GFXTextureManager::_createTexture(  GBitmap *bmp,
 #endif
    }
 
-//   // Call the internal load...
-//   if( ( bmpDDS == NULL && !_loadTexture( ret, realBmp ) ) || // If we aren't doing a DDS format change, use bitmap load
-//       ( bmpDDS != NULL && !_loadTexture( ret, bmpDDS ) ) )   // If there is a DDS, than load that instead. A format change took place.
-    
     if (!_loadTexture( ret, realBmp ))
    {
       Con::errorf("GFXTextureManager - failed to load GBitmap for '%s'", (resourceName.isNotEmpty() ? resourceName.c_str() : "unknown"));
@@ -440,17 +390,7 @@ GFXTextureObject *GFXTextureManager::_createTexture(  GBitmap *bmp,
    {
       // NOTE: may store a downscaled copy!
       SAFE_DELETE( ret->mBitmap );
-//      SAFE_DELETE( ret->mDDS );
-
-//      if( bmpDDS == NULL )
-         ret->mBitmap = new GBitmap( *realBmp );
-//      else
-//         ret->mDDS = bmpDDS;
-   }
-   else
-   {
-      // Delete the DDS if we made one
-//      SAFE_DELETE( bmpDDS );
+     ret->mBitmap = new GBitmap( *realBmp );
    }
 
    if ( !inObj )
@@ -845,24 +785,8 @@ void GFXTextureManager::_validateTexParams( const U32 width, const U32 height,
 //
 //   // Not in the cache... we have to load it ourselves.
 //
-//   // First check for a DDS file.
-//   if ( !sDDSExt.equal( path.getExtension(), String::NoCase ) )
-//   {
-//      // At the moment we only support DDS cubemaps.
-//      return NULL;
-//   }
-//
 //   const U32 scalePower = getTextureDownscalePower( NULL );
 //
-//   // Ok... load the DDS file then.
-//   Resource<DDSFile> dds = DDSFile::load( path, scalePower );
-//   if ( !dds || !dds->isCubemap() )
-//   {
-//      // This wasn't a cubemap... give up too.
-//      return NULL;
-//   }
-//
-//   // We loaded the cubemap dds, so now we create the GFXCubemap from it.
 //   GFXCubemap *cubemap = GFX->createCubemap();
 //   cubemap->initStatic( dds );
 //   cubemap->_setPath( path.getFullPath() );
@@ -905,18 +829,9 @@ void GFXTextureManager::_onFileChanged( const String &path )
 //
 //   const U32 scalePower = getTextureDownscalePower( obj->mProfile );
 //
-////   if ( sDDSExt.equal( path.getExtension(), String::NoCase) )
-////   {
-////      Resource<DDSFile> dds = DDSFile::load( path, scalePower );
-////      if ( dds )
-////         _createTexture( dds, obj->mProfile, false, obj );
-////   }
-////   else
-//   {
 //      Resource<GBitmap> bmp = GBitmap::load( path );
 //      if( bmp )
 //         _createTexture( bmp, obj->mTextureLookupName, obj->mProfile, false, obj );
-//   }
 }
 
 void GFXTextureManager::reloadTextures()
@@ -930,18 +845,9 @@ void GFXTextureManager::reloadTextures()
       {
          const U32 scalePower = getTextureDownscalePower( tex->mProfile );
 
-//         if ( sDDSExt.equal( path.getExtension(), String::NoCase ) )
-//         {
-//            Resource<DDSFile> dds = DDSFile::load( path, scalePower );
-//            if ( dds )
-//               _createTexture( dds, tex->mProfile, false, tex );
-//         }
-//         else
-         {
-            GBitmap *bmp = GBitmap::load( path );
-            if( bmp )
-               _createTexture( bmp, tex->mTextureLookupName, tex->mProfile, false, tex );
-         }
+        GBitmap *bmp = GBitmap::load( path );
+        if( bmp )
+           _createTexture( bmp, tex->mTextureLookupName, tex->mProfile, false, tex );
       }
 
       tex = tex->mNext;

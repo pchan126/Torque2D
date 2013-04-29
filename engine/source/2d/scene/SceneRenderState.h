@@ -27,11 +27,14 @@
 #include "2d/core/vector2.h"
 #endif
 
+#include "SceneWindow.h"
+
 //-----------------------------------------------------------------------------
 
 class GuiControl;
 class RectF;
 class DebugStats;
+
 struct b2AABB;
 
 //-----------------------------------------------------------------------------
@@ -39,19 +42,15 @@ struct b2AABB;
 struct SceneRenderState
 {
     SceneRenderState(
-        const RectF& renderArea,
-        const Vector2& renderPosition,
-        const F32 renderAngle,
+        const CameraView renderCamera,
         U32 renderLayerMask,
         U32 renderGroupMask,
         const Vector2& renderScale,
         DebugStats* pDebugStats,
         SimObject* pRenderHost )
     {
-        mRenderArea       = renderArea;
-        mRenderAABB       = CoreMath::mRectFtoAABB( renderArea );
-        mRenderPosition   = renderPosition;
-        mRenderAngle      = renderAngle;
+        mRenderCamera       = renderCamera;
+        mRenderAABB       = CoreMath::mRectFtoAABB( renderCamera.mSourceArea );
         mRenderScale      = renderScale;
         mRenderLayerMask  = renderLayerMask;
         mRenderGroupMask  = renderGroupMask;
@@ -59,9 +58,7 @@ struct SceneRenderState
         mpRenderHost      = pRenderHost;
     }
 
-    RectF           mRenderArea;
-    Vector2         mRenderPosition;
-    F32             mRenderAngle;
+    CameraView      mRenderCamera;
     b2AABB          mRenderAABB;
     U32             mRenderLayerMask;
     U32             mRenderGroupMask;

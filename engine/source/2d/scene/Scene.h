@@ -83,6 +83,7 @@ extern EnumTable jointTypeTable;
 
 class SceneObject;
 class SceneWindow;
+class SceneRenderState;
 
 ///-----------------------------------------------------------------------------
 

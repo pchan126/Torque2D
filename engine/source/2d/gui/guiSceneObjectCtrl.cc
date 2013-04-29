@@ -405,26 +405,14 @@ void GuiSceneObjectCtrl::onRender(Point2I offset, const RectI& updateRect)
        MatrixF ortho = MatrixF(true);
        ortho.setOrtho(x1, x2, y1, y2, 0.0f, MAX_LAYERS_SUPPORTED);
 
-       GFX->setProjectionMatrix(ortho);
+      GFX->setProjectionMatrix(ortho);
 
-//#ifdef TORQUE_OS_IOS
-//      glOrthof( x1, x2, y1, y2, 0.0f, MAX_LAYERS_SUPPORTED );
-//#else
-//      glOrtho( x1, x2, y1, y2, 0.0f, MAX_LAYERS_SUPPORTED );
-//#endif
       // Setup new viewport.
       GFX->setViewport(objRect);
 
       // Set ModelView.
-//      glMatrixMode(GL_MODELVIEW);
-//      glPushMatrix();
-//      glLoadIdentity();
        GFX->pushWorldMatrix();
        GFX->setWorldMatrix(MatrixF(true));
-
-      // Enable Alpha Test.
-//      glEnable        ( GL_ALPHA_TEST );
-//      glAlphaFunc     ( GL_GREATER, 0.0f );
 
       // Calculate maximal clip bounds.
       RectF clipBounds( -x1,-y1, x2-x1, y2-y1 );
@@ -433,9 +421,7 @@ void GuiSceneObjectCtrl::onRender(Point2I offset, const RectI& updateRect)
 
       // Render Object in GUI-space.
       SceneRenderState guiSceneRenderState(
-          clipBounds,
-          clipBounds.centre(),
-          0.0f,
+          CameraView(clipBounds),
           MASK_ALL,
           MASK_ALL,
           Vector2::getOne(),
@@ -450,17 +436,9 @@ void GuiSceneObjectCtrl::onRender(Point2I offset, const RectI& updateRect)
 
       mSelectedSceneObject->sceneRender( &guiSceneRenderState, &guiSceneRenderRequest, &mBatchRenderer );
 
-      // Restore Standard Settings.
-//      glDisable       ( GL_DEPTH_TEST );
-//      glDisable       ( GL_ALPHA_TEST );
-
       // Restore Matrices.
        GFX->popWorldMatrix();
        GFX->setProjectionMatrix(oldProj);
-//      glMatrixMode(GL_MODELVIEW);
-//      glPopMatrix();
-//      glMatrixMode(GL_PROJECTION);
-//      glPopMatrix();
    }
    else
    {

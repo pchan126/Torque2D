@@ -174,21 +174,16 @@ private:
    StrongRefPtr<GFXOpenGLESVertexBuffer> mCurrentVB;
    
    /// Since GL does not have separate world and view matrices we need to track them
-    MatrixF m_mCurrentWorld;
+//    MatrixF m_mCurrentWorld;
     MatrixF m_mCurrentView;
-    MatrixF m_mCurrentProj;
+//    MatrixF m_mCurrentProj;
     GLKMatrixStackRef m_WorldStackRef;
     GLKMatrixStackRef m_ProjectionStackRef;
 
-//    MatrixF mWorldMatrix[WORLD_STACK_MAX];
-    bool    mWorldMatrixDirty;
-//    S32     mWorldStackSize;
-    
-//    MatrixF mProjectionMatrix;
-    bool    mProjectionMatrixDirty;
-    
+//    bool    mWorldMatrixDirty;
+//    bool    mProjectionMatrixDirty;
 //    MatrixF mViewMatrix;
-    bool    mViewMatrixDirty;
+//    bool    mViewMatrixDirty;
     
 //    MatrixF mTextureMatrix[TEXTURE_STAGE_COUNT];
 //    bool    mTextureMatrixDirty;

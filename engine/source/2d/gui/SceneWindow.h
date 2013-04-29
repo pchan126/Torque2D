@@ -45,36 +45,47 @@
 
 //-----------------------------------------------------------------------------
 
+/// Camera View.
+class CameraView
+{
+    public:
+    // Source.
+    RectF           mSourceArea;
+    F32             mCameraZoom;
+    F32             mCameraAngle;
+    
+    // Destination.
+    RectF           mDestinationArea;
+    Point2F         mSceneMin;
+    Point2F         mSceneMax;
+    Point2F         mSceneWindowScale;
+    
+    CameraView( RectF area )
+    {
+        mSourceArea = area;
+        mCameraZoom = 1.0f;
+        mCameraAngle = 0.0f;
+        mDestinationArea = area;
+        mSceneMin = Point2F(0.0f, 0.0f);
+        mSceneMax = Point2F(area.extent.x, area.extent.y);
+        mSceneWindowScale = Point2F(1.0f, 1.0f);
+    }
+    
+    CameraView()
+    {
+        mSourceArea = RectF(0.0f, 0.0f, 10.0f, 10.0f);
+        mCameraZoom = 1.0f;
+        mCameraAngle = 0.0f;
+        mDestinationArea = RectF(0.0f, 0.0f, 10.0f, 10.0f);
+        mSceneMin = Point2F(0.0f, 0.0f);
+        mSceneMax = Point2F(10.0f, 10.0f);
+        mSceneWindowScale = Point2F(1.0f, 1.0f);
+    }
+};
+
 class SceneWindow : public GuiControl, public virtual Tickable
 {
     typedef GuiControl Parent;
-
-public:
-    /// Camera View.
-    struct CameraView
-    {
-        // Source.
-        RectF           mSourceArea;
-        F32             mCameraZoom;
-        F32             mCameraAngle;
-
-        // Destination.
-        RectF           mDestinationArea;
-        Point2F         mSceneMin;
-        Point2F         mSceneMax;
-        Point2F         mSceneWindowScale;
-        
-        CameraView()
-        {
-           mSourceArea = RectF(0.0f, 0.0f, 10.0f, 10.0f);
-           mCameraZoom = 1.0f;
-           mCameraAngle = 0.0f;
-           mDestinationArea = RectF(0.0f, 0.0f, 10.0f, 10.0f);
-           mSceneMin = Point2F(0.0f, 0.0f);
-           mSceneMax = Point2F(10.0f, 10.0f);
-           mSceneWindowScale = Point2F(1.0f, 1.0f);
-        }
-    };
 
 private:
     /// Cameras.

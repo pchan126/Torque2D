@@ -84,7 +84,7 @@ void GFXOpenGLESDevice::initGLState()
 GFXOpenGLESDevice::GFXOpenGLESDevice( U32 adapterIndex ) : GFXOpenGLDevice( adapterIndex ),
                     mAdapterIndex(adapterIndex),
                     mCurrentVB(NULL),
-                    m_mCurrentWorld(true),
+//                    m_mCurrentWorld(true),
                     m_mCurrentView(true),
                     mContext(nil),
                     mPixelFormat(NULL),
@@ -206,22 +206,22 @@ void GFXOpenGLESDevice::enumerateAdapters( Vector<GFXAdapter*> &adapterList )
 
 inline void GFXOpenGLESDevice::pushWorldMatrix()
 {
-    mWorldMatrixDirty = true;
-    mStateDirty = true;
+//    mWorldMatrixDirty = true;
+//    mStateDirty = true;
     GLKMatrixStackPush(m_WorldStackRef);
 }
 
 inline void GFXOpenGLESDevice::popWorldMatrix()
 {
-    mWorldMatrixDirty = true;
-    mStateDirty = true;
+//    mWorldMatrixDirty = true;
+//    mStateDirty = true;
     GLKMatrixStackPop(m_WorldStackRef);
 }
 
 inline void GFXOpenGLESDevice::multWorld( const MatrixF &mat )
 {
-    mWorldMatrixDirty = true;
-    mStateDirty = true;
+//    mWorldMatrixDirty = true;
+//    mStateDirty = true;
     GLKMatrixStackMultiplyMatrix4(m_WorldStackRef, GLKMatrix4MakeWithArray(mat));
 }
 
@@ -358,12 +358,12 @@ void GFXOpenGLESDevice::updateStates(bool forceSetAll /*=false*/)
        MatrixF temp(GLKMatrixStackGetMatrix4(m_ProjectionStackRef).m);
        temp.transpose();
        setMatrix( GFXMatrixProjection, temp);
-       mProjectionMatrixDirty = false;
+//       mProjectionMatrixDirty = false;
 
        MatrixF temp2(GLKMatrixStackGetMatrix4(m_WorldStackRef).m);
        temp2.transpose();
        setMatrix( GFXMatrixWorld, temp2);
-       mWorldMatrixDirty = false;
+//       mWorldMatrixDirty = false;
 
 //       MatrixF temp3(GLKMatrixStackGetMatrix4(m_ProjectionStackRef).m);
 //       temp3.transpose();
@@ -431,29 +431,30 @@ void GFXOpenGLESDevice::updateStates(bool forceSetAll /*=false*/)
     // Normal update logic begins here.
     mStateDirty = false;
     
-   // Update Projection Matrix
-   if( mProjectionMatrixDirty )
-   {
-       MatrixF temp(GLKMatrixStackGetMatrix4(m_ProjectionStackRef).m);
-       temp.transpose();
-        setMatrix( GFXMatrixProjection, temp);
-        mProjectionMatrixDirty = false;
-   }
+//   // Update Projection Matrix
+//   if( mProjectionMatrixDirty )
+//   {
+//       MatrixF temp(GLKMatrixStackGetMatrix4(m_ProjectionStackRef).m);
+//       temp.transpose();
+//        setMatrix( GFXMatrixProjection, temp);
+//        mProjectionMatrixDirty = false;
+//   }
+//    
+//   // Update World Matrix
+//   if( mWorldMatrixDirty)
+//   {
+//       MatrixF temp(GLKMatrixStackGetMatrix4(m_WorldStackRef).m);
+//       temp.transpose();
+//       setMatrix( GFXMatrixWorld, temp);
+//
+//       mWorldMatrixDirty = false;
+//   }
     
-   // Update World Matrix
-   if( mWorldMatrixDirty || mViewMatrixDirty)
-   {
-       MatrixF temp(GLKMatrixStackGetMatrix4(m_WorldStackRef).m);
-       temp.transpose();
-      setMatrix( GFXMatrixWorld, temp);
-//       if ( mWorldMatrixDirty && !mViewMatrixDirty)
-//           m_mCurrentView = temp.inverse() * m_mCurrentWorld;
-//        else
-//           m_mCurrentWorld = temp.inverse() * m_mCurrentView;
-
-       mWorldMatrixDirty = false;
-       mViewMatrixDirty = false;
-   }
+//    if ( mViewMatrixDirty )
+//    {
+//        setMatrix( GFXMatrixView, m_mCurrentView)
+//        mViewMatrixDirty = false;
+//    }
     
     // Update the vertex declaration.
     if ( mVertexDeclDirty )
@@ -603,23 +604,16 @@ void GFXOpenGLESDevice::setMatrix( GFXMatrixType mtype, const MatrixF &mat )
     {
         case GFXMatrixWorld :
         {
-            m_mCurrentWorld = mat;
-            modelview = m_mCurrentWorld;
-//            modelview *= m_mCurrentView;
-            GLKMatrixStackLoadMatrix4(m_WorldStackRef, GLKMatrix4MakeWithArrayAndTranspose(modelview));
+            GLKMatrixStackLoadMatrix4(m_WorldStackRef, GLKMatrix4MakeWithArrayAndTranspose(mat));
         }
             break;
         case GFXMatrixView :
         {
             m_mCurrentView = mat;
-//            modelview = m_mCurrentView;
-//            modelview *= m_mCurrentWorld;
-//            GLKMatrixStackLoadMatrix4(m_WorldStackRef, GLKMatrix4MakeWithArrayAndTranspose(modelview));
         }
             break;
         case GFXMatrixProjection :
         {
-            m_mCurrentProj = mat;
             GLKMatrixStackLoadMatrix4(m_ProjectionStackRef, GLKMatrix4MakeWithArrayAndTranspose(mat));
         }
             break;
@@ -638,7 +632,8 @@ const MatrixF GFXOpenGLESDevice::getMatrix( GFXMatrixType mtype )
     {
         case GFXMatrixWorld :
         {
-            return m_mCurrentWorld;
+            MatrixF ret = GLKMatrixStackGetMatrix4(m_WorldStackRef);
+            return ret.transpose();
         }
             break;
         case GFXMatrixView :
@@ -648,7 +643,8 @@ const MatrixF GFXOpenGLESDevice::getMatrix( GFXMatrixType mtype )
             break;
         case GFXMatrixProjection :
         {
-            return m_mCurrentProj;
+            MatrixF ret = GLKMatrixStackGetMatrix4(m_ProjectionStackRef);
+            return ret.transpose();
         }
             break;
             // CodeReview - Add support for texture transform matrix types
@@ -669,16 +665,16 @@ void GFXOpenGLESDevice::setClipRect( const RectI &inRect )
     mClip.intersect(maxRect);
     
     // Create projection matrix.  See http://www.opengl.org/documentation/specs/man_pages/hardcopy/GL/html/gl/ortho.html
-    const F32 left = mClip.point.x;
-    const F32 right = mClip.point.x + mClip.extent.x;
-    const F32 bottom = mClip.extent.y;
-    const F32 top = 0.0f;
+    const F32 left = mClip.centre().x - (mClip.extent.x)/2;
+    const F32 right = mClip.centre().x + (mClip.extent.x)/2;
+    const F32 bottom = mClip.centre().y + mClip.extent.y / 2;
+    const F32 top = mClip.centre().y - mClip.extent.y / 2;
     const F32 near = 0.0f;
     const F32 far = 1.0f;
     
-    m_mCurrentProj.setOrtho(left, right, bottom, top, near, far);
-    m_mCurrentProj.translate(0.0, -mClip.point.y, 0.0f);
-    setMatrix(GFXMatrixProjection, m_mCurrentProj);
+    MatrixF projection(true);
+    projection.setOrtho(left, right, bottom, top, near, far);
+    setMatrix(GFXMatrixProjection, projection);
     
     MatrixF mTempMatrix(true);
     setViewMatrix( mTempMatrix );
@@ -809,9 +805,10 @@ void GFXOpenGLESDevice::initGenericShaders()
 
 void GFXOpenGLESDevice::setupGenericShaders( GenericShaderType type )
 {
-    MatrixF xform(GFX->getProjectionMatrix());
+//    MatrixF xform(GFX->getProjectionMatrix());
+    MatrixF xform(GFX->getWorldMatrix());
     xform *= GFX->getViewMatrix();
-    xform *= GFX->getWorldMatrix();
+    xform *= GFX->getProjectionMatrix();
     xform.transpose();
     
     switch (type) {
