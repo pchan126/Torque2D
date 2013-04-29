@@ -173,10 +173,10 @@ void GFXCardProfiler::setCapability(const String &cap, U32 value)
    mCapDictionary.insert( cap, value );
 }
 
-//bool GFXCardProfiler::checkFormat( const GFXFormat fmt, const GFXTextureProfile *profile, bool &inOutAutogenMips )
-//{
-//   return _queryFormat( fmt, profile, inOutAutogenMips );
-//}
+bool GFXCardProfiler::checkFormat( const GFXFormat fmt, const GFXTextureProfile *profile, bool &inOutAutogenMips )
+{
+   return _queryFormat( fmt, profile, inOutAutogenMips );
+}
 
 //DECLARE_SCOPE( GFXCardProfilerAPI );
 //IMPLEMENT_SCOPE( GFXCardProfilerAPI, GFXCardProfiler,, "");

@@ -355,6 +355,21 @@ void GFXOpenGLESDevice::updateStates(bool forceSetAll /*=false*/)
             rememberToEndScene = true;
         }
         
+       MatrixF temp(GLKMatrixStackGetMatrix4(m_ProjectionStackRef).m);
+       temp.transpose();
+       setMatrix( GFXMatrixProjection, temp);
+       mProjectionMatrixDirty = false;
+
+       MatrixF temp2(GLKMatrixStackGetMatrix4(m_WorldStackRef).m);
+       temp2.transpose();
+       setMatrix( GFXMatrixWorld, temp2);
+       mWorldMatrixDirty = false;
+
+//       MatrixF temp3(GLKMatrixStackGetMatrix4(m_ProjectionStackRef).m);
+//       temp3.transpose();
+//       setMatrix( GFXMatrixProjection, temp3);
+//       mProjectionMatrixDirty = false;
+
         setVertexDecl( mCurrVertexDecl );
         
         for ( U32 i=0; i < VERTEX_STREAM_COUNT; i++ )
@@ -430,10 +445,11 @@ void GFXOpenGLESDevice::updateStates(bool forceSetAll /*=false*/)
    {
        MatrixF temp(GLKMatrixStackGetMatrix4(m_WorldStackRef).m);
        temp.transpose();
-       if ( mWorldMatrixDirty && !mViewMatrixDirty)
-           m_mCurrentView = temp.inverse() * m_mCurrentWorld;
-        else
-           m_mCurrentWorld = temp.inverse() * m_mCurrentView;
+      setMatrix( GFXMatrixWorld, temp);
+//       if ( mWorldMatrixDirty && !mViewMatrixDirty)
+//           m_mCurrentView = temp.inverse() * m_mCurrentWorld;
+//        else
+//           m_mCurrentWorld = temp.inverse() * m_mCurrentView;
 
        mWorldMatrixDirty = false;
        mViewMatrixDirty = false;
@@ -589,16 +605,16 @@ void GFXOpenGLESDevice::setMatrix( GFXMatrixType mtype, const MatrixF &mat )
         {
             m_mCurrentWorld = mat;
             modelview = m_mCurrentWorld;
-            modelview *= m_mCurrentView;
+//            modelview *= m_mCurrentView;
             GLKMatrixStackLoadMatrix4(m_WorldStackRef, GLKMatrix4MakeWithArrayAndTranspose(modelview));
         }
             break;
         case GFXMatrixView :
         {
             m_mCurrentView = mat;
-            modelview = m_mCurrentView;
-            modelview *= m_mCurrentWorld;
-            GLKMatrixStackLoadMatrix4(m_WorldStackRef, GLKMatrix4MakeWithArrayAndTranspose(modelview));
+//            modelview = m_mCurrentView;
+//            modelview *= m_mCurrentWorld;
+//            GLKMatrixStackLoadMatrix4(m_WorldStackRef, GLKMatrix4MakeWithArrayAndTranspose(modelview));
         }
             break;
         case GFXMatrixProjection :

@@ -521,6 +521,9 @@ bool GFXOpenGLESTextureManager::_refreshTexture(GFXTextureObject *texture)
     }
     else
     {
+       GLenum dstFormat = GFXGLTextureFormat[pNewBitmap->getFormat()];
+       GLenum byteFormat = GFXGLTextureType[pNewBitmap->getFormat()];
+       const U8* bits = pNewBitmap->getBits();
         // No, so upload as-is.
         glTexImage2D(GL_TEXTURE_2D,
                      0,
@@ -533,9 +536,11 @@ bool GFXOpenGLESTextureManager::_refreshTexture(GFXTextureObject *texture)
     }
     
 //    const GLuint filter = pTextureObject->getFilter();
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GFXGLTextureFilter[pTextureObject->mProfile->getFilter()]);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GFXGLTextureFilter[pTextureObject->mProfile->getFilter()]);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+   
     GLenum glClamp;
     if ( pTextureObject->getClamp() )
         glClamp = GL_CLAMP_TO_EDGE;

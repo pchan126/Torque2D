@@ -60,7 +60,6 @@ bool GFXTexHandle::set( const String &texName, GFXTextureProfile *profile, const
    // its memory is free for the new allocation.
    free();
    
-    Con::printf("GFXTexHandle::set %s", texName.c_str());
    // Create and set the new texture.
    AssertFatal( texName.isNotEmpty(), "Texture name is empty" );
    StrongObjectRef::set( TEXMGR->createTexture( texName, profile ) );
@@ -95,29 +94,6 @@ bool GFXTexHandle::set( GBitmap *bmp, GFXTextureProfile *profile, bool deleteBmp
 
    return isValid();
 }
-
-//GFXTexHandle::GFXTexHandle( DDSFile *dds, GFXTextureProfile *profile, bool deleteDDS, const String &desc )
-//{
-//   set( dds, profile, deleteDDS, desc );
-//}
-//
-//bool GFXTexHandle::set( DDSFile *dds, GFXTextureProfile *profile, bool deleteDDS, const String &desc )
-//{
-//   // Clear the existing texture first, so that
-//   // its memory is free for the new allocation.
-//   free();
-//
-//   // Create and set the new texture.
-//   AssertFatal( dds, "Bitmap is NULL" );
-//   StrongObjectRef::set( TEXMGR->createTexture( dds, profile, deleteDDS ) );
-//
-//   #ifdef TORQUE_DEBUG
-//      if ( getPointer() )
-//         getPointer()->mDebugDescription = desc;
-//   #endif
-//
-//   return isValid();
-//}
 
 GFXTexHandle::GFXTexHandle( U32 width, U32 height, GFXFormat format, GFXTextureProfile *profile, const String &desc, U32 numMipLevels, S32 antialiasLevel)
 {

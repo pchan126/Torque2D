@@ -596,7 +596,6 @@ void ParticlePlayer::sceneRender( const SceneRenderState* pSceneRenderState, con
         pBatchRenderer->setAlphaTestMode( pParticleAssetEmitter->getAlphaTest() );
 
         // Save the transformation.
-//        glPushMatrix();
         GFX->pushWorldMatrix();
 
         // Is the Position attached to the emitter?
@@ -604,11 +603,10 @@ void ParticlePlayer::sceneRender( const SceneRenderState* pSceneRenderState, con
         {
             // Yes, so get player position.
             const Vector2 renderPosition = getRenderPosition();
-            MatrixF wMatrix = GFX->getWorldMatrix();
+           MatrixF wMatrix = GFX->getWorldMatrix();
 
-            // Move into emitter-space.
-            wMatrix.translate(renderPosition.x, renderPosition.y, 0.0f );
-//            glTranslatef( renderPosition.x, renderPosition.y, 0.0f );
+           // Move into emitter-space.
+            wMatrix.translate(renderPosition.x/20.0, renderPosition.y/15.0, 0.0f );
 
             // Is the rotation attached to the emitter?
             if ( pParticleAssetEmitter->getAttachRotationToEmitter() )
@@ -616,8 +614,8 @@ void ParticlePlayer::sceneRender( const SceneRenderState* pSceneRenderState, con
                 // Yes, so rotate into emitter-space.
                 // NOTE:- We need clockwise rotation here.
                 wMatrix.rotateX(getRenderAngle());
-//                glRotatef( mRadToDeg(getRenderAngle()), 0.0f, 0.0f, 1.0f );
             }
+           GFX->setWorldMatrix(wMatrix);
         }
 
         // Fetch the oldest-in-front flag.

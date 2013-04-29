@@ -385,10 +385,7 @@ void GuiSceneObjectCtrl::onRender(Point2I offset, const RectI& updateRect)
       y2 *= -1;
 
       // Setup new logical coordinate system.
-       MatrixF oldProj = GFX->getProjectionMatrix();
-//      glMatrixMode(GL_PROJECTION);
-//      glPushMatrix();
-//      glLoadIdentity();
+      MatrixF oldProj = GFX->getProjectionMatrix();
       const RectI viewport = GFX->getViewport();
 
       if (x1 > x2)

@@ -48,7 +48,7 @@
 
 //-----------------------------------------------------------------------------
 
-#define BATCHRENDER_BUFFERSIZE      (256)
+#define BATCHRENDER_BUFFERSIZE      (65565)
 #define BATCHRENDER_MAXTRIANGLES    (BATCHRENDER_BUFFERSIZE/3)
 
 //-----------------------------------------------------------------------------

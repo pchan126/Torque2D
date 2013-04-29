@@ -793,7 +793,7 @@ ConsoleMethod(Scene, createRevoluteJoint, S32, 4, 9,    "(sceneObjectA, sceneObj
         pSceneObjectA = Sim::findObject<SceneObject>(sceneObjectA);
 
         if ( !pSceneObjectA )
-            Con::warnf("Scene::createRevoluteJoint() - Could not find scene object %d.", sceneObjectA);
+            Con::warnf("Scene::createRevoluteJoint() - Could not find scene object %s.", sceneObjectA);
     }
 
     // Fetch scene object.
@@ -802,9 +802,16 @@ ConsoleMethod(Scene, createRevoluteJoint, S32, 4, 9,    "(sceneObjectA, sceneObj
         pSceneObjectB = Sim::findObject<SceneObject>(sceneObjectB);
 
         if ( !pSceneObjectB )
-            Con::warnf("Scene::createRevoluteJoint() - Could not find scene object %d.", sceneObjectB);
+            Con::warnf("Scene::createRevoluteJoint() - Could not find scene object %s.", sceneObjectB);
     }
 
+    if ( *sceneObjectA == *sceneObjectB )
+    {
+       Con::warnf("Scene::createRevoluteJoint() - Cannot join scene object %s to itself!", sceneObjectA);
+       return -1;
+    }
+   
+   
     if ( argc == 4 )
     {
         return object->createRevoluteJoint( pSceneObjectA, pSceneObjectB );

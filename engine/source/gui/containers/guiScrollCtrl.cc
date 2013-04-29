@@ -140,7 +140,6 @@ bool GuiScrollCtrl::onWake()
       return false;
 
    mTextureHandle = mProfile->mTextureHandle;
-//   mTextureHandle.setFilter(GL_NEAREST);;
 
    bool result;
    result = mProfile->constructBitmapArray() >= BmpStates * BmpCount;

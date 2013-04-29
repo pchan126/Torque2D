@@ -138,8 +138,8 @@ public:
    /// Set the specified capability to the specified value.
    void setCapability(const String &cap, U32 value);
 
-//   /// Queries support for the specified texture format, and texture profile
-//   bool checkFormat( const GFXFormat fmt, const GFXTextureProfile *profile, bool &inOutAutogenMips );
+   /// Queries support for the specified texture format, and texture profile
+   bool checkFormat( const GFXFormat fmt, const GFXTextureProfile *profile, bool &inOutAutogenMips );
 
    /// @}
 };

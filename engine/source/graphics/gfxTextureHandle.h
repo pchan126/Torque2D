@@ -50,9 +50,6 @@ public:
    GFXTexHandle( GBitmap *bmp, GFXTextureProfile *profile, bool deleteBmp, const String &desc );
    bool set( GBitmap *bmp, GFXTextureProfile *profile, bool deleteBmp, const String &desc );
 
-//   GFXTexHandle( DDSFile *bmp, GFXTextureProfile *profile, bool deleteDDS, const String &desc );
-//   bool set( DDSFile *bmp, GFXTextureProfile *profile, bool deleteDDS, const String &desc );
-
    // Sized bitmap
    GFXTexHandle( U32 width, U32 height, GFXFormat format, GFXTextureProfile *profile, const String &desc, U32 numMipLevels = 1, S32 antialiasLevel = 0);
    bool set( U32 width, U32 height, GFXFormat format, GFXTextureProfile *profile, const String &desc, U32 numMipLevels = 1, S32 antialiasLevel = 0);

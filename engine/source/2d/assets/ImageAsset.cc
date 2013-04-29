@@ -919,11 +919,7 @@ void ImageAsset::calculateImage( void )
     // to refresh the texture itself.
     if ( !mImageTextureHandle.IsNull())
         if (dStricmp(mImageTextureHandle->getTextureKey(), mImageFile) == 0 )
-            TEXMGR->reloadTexture(mImageTextureHandle);
-
-    
-    
-    //        TextureManager::refresh( mImageFile );
+            mImageTextureHandle.refresh();
 
     // Get image texture.
 //    mImageTextureHandle.set( mImageFile, TextureHandle::BitmapTexture, true, getForce16Bit() );
