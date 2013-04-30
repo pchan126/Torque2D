@@ -89,12 +89,6 @@
     [super dealloc];
 }
 
-//-----------------------------------------------------------------------------
-// This view an always be a first responder
-- (BOOL)acceptsFirstResponder
-{
-    return YES;
-}
 
 //-----------------------------------------------------------------------------
 // Called whent the parent finishes its live resizing
@@ -461,7 +455,7 @@
 
 //#pragma mark -
 //#pragma mark responder status
-//- (BOOL)acceptsFirstResponder { return YES; }
+- (BOOL)acceptsFirstResponder { return YES; }
 - (BOOL)becomeFirstResponder  { return YES; }
 - (BOOL)resignFirstResponder  { return YES; }
 

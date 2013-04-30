@@ -103,29 +103,17 @@ void WindowInputGenerator::handleMouseButton( WindowId did, U32 modifiers, S32 x
    if( !mInputController || !mFocused )
       return;
 
-    {
-    // Generate a base Movement along and Axis event
-    MouseMoveEventInfo event;
-    event.modifier   = modifiers;
-    event.xPos = x;
-    event.yPos = y;
-    
-    mInputController->processMouseMoveEvent( event );
-    }
-    
-    {
     InputEventInfo event;
    event.deviceType = MouseDeviceType;
    event.deviceInst = 0;
    event.objType    = SI_BUTTON;
-   event.objInst    = (U16)(KEY_BUTTON0 + button);
+   event.objInst    = button;
    event.modifier   = convertModifierBits(modifiers);
    event.ascii      = 0;
    event.action     = (action==IA_MAKE) ? SI_MAKE : SI_BREAK;
    event.fValue     = (action==IA_MAKE) ? 1.0 : 0.0;
 
-   generateInputEvent(event);
-    }
+    mInputController->processMouseEvent( event );
 }
 
 void WindowInputGenerator::handleMouseWheel( WindowId did, U32 modifiers, S32 wheelDeltaX, S32 wheelDeltaY )

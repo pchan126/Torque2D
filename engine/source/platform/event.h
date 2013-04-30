@@ -184,14 +184,6 @@ struct InputEventInfo //: public Event
    U8    action;      ///< What was the action? (MAKE/BREAK/MOVE)
    U8    modifier;    ///< Modifier to action: SI_LSHIFT, SI_LCTRL, etc.
 
-   // iOS specific
-   char touchesX[256];    ///< Collection of x-coordinates for touches
-   char touchesY[256];    ///< Collection of y-coordinates for touches
-   char touchIDs[256];    ///< Collection of touch IDs
-    
-//   InputEvent() { type = InputEventType; size = sizeof(InputEvent); dMemset(touchesX, 0, sizeof(touchesX)); 
-//                                                                    dMemset(touchesY, 0, sizeof(touchesY));
-//                                                                    dMemset(touchIDs, 0, sizeof(touchIDs));}
     inline void postToSignal(InputEvent &ie)
     {
         ie.trigger(deviceInst, fValue, deviceType, objType, ascii, objInst, action, modifier);
@@ -414,15 +406,6 @@ enum GyroCodes
    SI_ROLL        = 0x30B
 };
 
-enum TouchCodes
-{
-   SI_TOUCHDOWN   = 0x30C,
-   SI_TOUCHUP     = 0x30D,
-   SI_TOUCHMOVE   = 0x30E,
-   SI_PINCH       = 0x30F,
-   SI_SCALE       = 0x401,
-   SI_TAP         = 0x402
-};
 
 /// Input device types
 enum InputDeviceTypes
@@ -431,7 +414,6 @@ enum InputDeviceTypes
    MouseDeviceType,
    KeyboardDeviceType,
    JoystickDeviceType,
-   ScreenTouchDeviceType,
    AccelerometerDeviceType,
    GyroscopeDeviceType
 };

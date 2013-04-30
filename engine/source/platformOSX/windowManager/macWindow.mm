@@ -22,6 +22,7 @@ MacWindow::MacWindow(U32 windowId, const char* windowText, Point2I clientExtent)
    
    mCocoaWindow      = NULL;
     _torqueView       = NULL;
+   mWindowInputGenerator = new WindowInputGenerator( this);
    mCursorController = new MacCursorController( this );
    mOwningWindowManager = NULL;
    

@@ -935,8 +935,8 @@ Vector2 SceneWindow::getMousePosition( void )
 
 void SceneWindow::windowToScenePoint( const Vector2& srcPoint, Vector2& dstPoint ) const
 {
-//    Con::printf("%f %f", srcPoint.x, srcPoint.y);
-//    RectI bounds = getBounds();
+    Con::printf("%f %f", srcPoint.x, srcPoint.y);
+    RectI bounds = getBounds();
     F32 x = srcPoint.x/getBounds().extent.x;
     F32 y = srcPoint.y/getBounds().extent.y;
     
