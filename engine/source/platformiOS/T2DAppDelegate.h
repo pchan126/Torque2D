@@ -25,7 +25,7 @@
 
 class iOSWindow;
 
-@interface T2DAppDelegate : NSObject <UIApplicationDelegate, GLKViewDelegate, GLKViewControllerDelegate> {
+@interface T2DAppDelegate : UIResponder <UIApplicationDelegate, GLKViewDelegate, GLKViewControllerDelegate> {
 }
 
 @property (nonatomic, strong) UIWindow *window;

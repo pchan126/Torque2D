@@ -44,19 +44,17 @@ bool _iOSTorqueFatalError = false;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-//	// Register for screen connect and disconnect notifications.
-//	[[NSNotificationCenter defaultCenter] addObserver:self
-//                                            selector:@selector(screenDidChange:)
-//                                                name:UIScreenDidConnectNotification
-//                                              object:nil];
-//	
-//	[[NSNotificationCenter defaultCenter] addObserver:self
-//                                            selector:@selector(screenDidChange:)
-//                                                name:UIScreenDidDisconnectNotification
-//                                              object:nil];
-
+	// Register for screen connect and disconnect notifications.
+	[[NSNotificationCenter defaultCenter] addObserver:self
+                                            selector:@selector(screenDidChange:)
+                                                name:UIScreenDidConnectNotification
+                                              object:nil];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self
+                                            selector:@selector(screenDidChange:)
+                                                name:UIScreenDidDisconnectNotification
+                                              object:nil];
     
-//    application.delegate = self;
     iOSPlatState * platState = [iOSPlatState sharedPlatState];
     [platState runTorque2D];
     return TRUE;
@@ -112,8 +110,19 @@ bool _iOSTorqueFatalError = false;
 	[[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
 }
 
+- (BOOL) canBecomeFirstResponder {return YES;}
+
+
 - (void)screenDidChange:(NSNotification *)notification
 {
+   iOSWindowManager *winManager = dynamic_cast<iOSWindowManager*>(WindowManager);
+    
+    if (!winManager)
+    {
+        Con::warnf("missing iOSWindowManager!");
+        return;
+    }
+    
    // To display content on an external display, do the following:
    // 1. Use the screens class method of the UIScreen class to determine if an external display is available.
    NSArray	*screens = [UIScreen screens];
@@ -123,17 +132,17 @@ bool _iOSTorqueFatalError = false;
    if ( Con::isFunction("oniOSScreenDidChange") )
       Con::executef( 1, "oniOSScreenDidChange" );
 
-    
     GFXInit::enumerateAdapters();
     
 	if (screenCount > 1)
    {
+//       winManager
       //      // 2. If an external screen is available, get the screen object and look at the values in its availableModes
       //      // property. This property contains the configurations supported by the screen.
       //
       //      // Select first external screen
-      //		self.extScreen = [screens objectAtIndex:1]; //index 0 is your iPhone/iPad
-      //		NSArray	*availableModes = [self.extScreen availableModes];
+//		self.extScreen = [screens objectAtIndex:1]; //index 0 is your iPhone/iPad
+//		NSArray	*availableModes = [self.extScreen availableModes];
       //
       //      // 3. Select the UIScreenMode object corresponding to the desired resolution and assign it to the currentMode
       //      // property of the screen object.
