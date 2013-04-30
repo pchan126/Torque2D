@@ -11,7 +11,6 @@ void main()
     vec4 texColor_0 = texture2D(sampler2d_0, TexCoord);
     gl_FragColor.a = texColor_0.r * vertColor.a;
     gl_FragColor.rgb = vertColor.rgb;
-    gl_FragColor.rgb = vec3(1.0, 0.0, 0.0);
 }
 
 #else
@@ -25,7 +24,7 @@ out vec4 FragColor;
 void main()
 {  
     vec4 texColor_0 = texture(sampler2d_0, TexCoord);
-    FragColor.a = texColor_0.r * vertColor.a;
+    FragColor.a = texColor_0.r;
     FragColor.rgb = vertColor.rgb;
 }
 

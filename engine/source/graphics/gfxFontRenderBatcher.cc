@@ -167,7 +167,10 @@ void FontRenderBatcher::render( F32 rot, const Point2F &offset )
        
        vHandle.set(GFX, verts.size(), GFXBufferTypeVolatile, verts.address());
        GFX->setVertexBuffer(vHandle);
-       GFX->setupGenericShaders( GFXDevice::GSTexture );
+       if (tex->getFormat() == GFXFormatA8)
+           GFX->setupGenericShaders( GFXDevice::GSAlphaTexture );
+       else
+           GFX->setupGenericShaders( GFXDevice::GSTexture );
        GFX->setTexture( 0, tex );
        GFX->drawPrimitive(GFXTriangleStrip, 0, verts.size()-2);
    }
