@@ -7,7 +7,7 @@
 #import "./macWindow.h"
 #import "./osxTorqueView.h"
 #import "platformOSX/platformOSX.h"
-
+#import "platformOSX/windowManager/osxWindowInputGenerator.h"
 #import "console/console.h"
 #import "AppDelegate.h"
 
@@ -22,7 +22,7 @@ MacWindow::MacWindow(U32 windowId, const char* windowText, Point2I clientExtent)
    
    mCocoaWindow      = NULL;
     _torqueView       = NULL;
-   mWindowInputGenerator = new WindowInputGenerator( this);
+   mWindowInputGenerator = new osxWindowInputGenerator( this);
    mCursorController = new MacCursorController( this );
    mOwningWindowManager = NULL;
    

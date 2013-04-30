@@ -222,7 +222,7 @@
     [self getModifierKey:modifiers event:event];
     
     // Post the input event
-    mTorqueWindow->buttonEvent.trigger(mTorqueWindow->getWindowId(), modifiers, (S32)clickLocation.x, (S32)clickLocation.y, action, button);
+    mTorqueWindow->mouseButtonEvent.trigger(mTorqueWindow->getWindowId(), modifiers, (S32)clickLocation.x, (S32)clickLocation.y, action, button);
 }
 
 //-----------------------------------------------------------------------------
@@ -268,6 +268,16 @@
 }
 
 //-----------------------------------------------------------------------------
+// Default mouseDragged override
+- (void)mouseDragged:(NSEvent *)event
+{
+    if (!Input::isEnabled() && !Input::isMouseEnabled())
+        return;
+    
+    [self processMouseButton:event button:KEY_BUTTON0 action:SI_MOVE];
+}
+
+//-----------------------------------------------------------------------------
 // Default rightMouseDown override
 - (void)rightMouseDown:(NSEvent *)event
 {
@@ -278,6 +288,17 @@
 }
 
 //-----------------------------------------------------------------------------
+// Default rightMouseDragged override
+- (void)rightMouseDragged:(NSEvent *)event
+{
+    if (!Input::isEnabled() && !Input::isMouseEnabled())
+        return;
+    
+    [self processMouseButton:event button:KEY_BUTTON1 action:SI_MOVE];
+}
+
+
+//-----------------------------------------------------------------------------
 // Default otherMouseDown override
 - (void)otherMouseDown:(NSEvent *)event
 {
@@ -286,6 +307,18 @@
     
     [self processMouseButton:event button:KEY_BUTTON2 action:SI_MAKE];
 }
+
+
+//-----------------------------------------------------------------------------
+// Default rightMouseDragged override
+- (void)otherMouseDragged:(NSEvent *)event
+{
+    if (!Input::isEnabled() && !Input::isMouseEnabled())
+        return;
+    
+    [self processMouseButton:event button:KEY_BUTTON2 action:SI_MOVE];
+}
+
 
 //-----------------------------------------------------------------------------
 // Default mouseUp override
@@ -340,35 +373,6 @@
 //    mTorqueWindow->mouseEvent.trigger(mTorqueWindow->getWindowId(), modifiers, (S32)location.x, (S32)location.y, mTorqueWindow->isMouseLocked());
 }
 
-//-----------------------------------------------------------------------------
-// Default mouseDragged override
-- (void)mouseDragged:(NSEvent *)event
-{
-    if (!Input::isEnabled() && !Input::isMouseEnabled())
-        return;
-    
-    [self mouseMoved:event];
-}
-
-//-----------------------------------------------------------------------------
-// Default rightMouseDragged override
-- (void)rightMouseDragged:(NSEvent *)event
-{
-    if (!Input::isEnabled() && !Input::isMouseEnabled())
-        return;
-    
-    [self mouseMoved:event];
-}
-
-//-----------------------------------------------------------------------------
-// Default otherMouseDragged override
-- (void)otherMouseDragged:(NSEvent *)event
-{
-    if (!Input::isEnabled() && !Input::isMouseEnabled())
-        return;
-    
-    [self mouseMoved:event];
-}
 
 //-----------------------------------------------------------------------------
 // Default scrollWheel override

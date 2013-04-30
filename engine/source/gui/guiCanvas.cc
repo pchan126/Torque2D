@@ -540,166 +540,138 @@ bool GuiCanvas::processInputEvent(const InputEventInfo &event)
          return true;
       }
    }
-   else if(event.deviceType == MouseDeviceType && cursorON)
-   {
-      //copy the modifier into the new event
-      mLastEvent.modifier = event.modifier;
-
-      if(event.objType == SI_XAXIS || event.objType == SI_YAXIS)
-      {
-         bool moved = false;
-         Point2I oldpt((S32)mCursorPt.x, (S32)mCursorPt.y);
-         Point2F pt(mCursorPt.x, mCursorPt.y);
-
-         if (event.objType == SI_XAXIS)
-         {
-            pt.x += (event.fValue * mPixelsPerMickey);
-            mCursorPt.x = (F32)getMax(0, getMin((S32)pt.x, getWidth() - 1));
-            if (oldpt.x != S32(mCursorPt.x))
-               moved = true;
-         }
-         else
-         {
-            pt.y += (event.fValue * mPixelsPerMickey);
-            mCursorPt.y = (F32)getMax(0, getMin((S32)pt.y, getHeight() - 1));
-            if (oldpt.y != S32(mCursorPt.y))
-               moved = true;
-         }
-         if (moved)
-         {
-            mLastEvent.mousePoint.x = S32(mCursorPt.x);
-            mLastEvent.mousePoint.y = S32(mCursorPt.y);
-            mLastEvent.eventID = 0;
-
-            if (mMouseButtonDown)
-               rootMouseDragged(mLastEvent);
-            else if (mMouseRightButtonDown)
-               rootRightMouseDragged(mLastEvent);
-            else if(mMouseMiddleButtonDown)
-               rootMiddleMouseDragged(mLastEvent);
-            else
-               rootMouseMove(mLastEvent);
-         }
-         return true;
-      }
-        else if ( event.objType == SI_ZAXIS )
-        {
-         mLastEvent.mousePoint.x = S32( mCursorPt.x );
-         mLastEvent.mousePoint.y = S32( mCursorPt.y );
-         mLastEvent.eventID = 0;
-
-            if ( event.fValue < 0.0f )
-            rootMouseWheelDown( mLastEvent );
-            else
-            rootMouseWheelUp( mLastEvent );
-      }
-      else if(event.objType == SI_BUTTON)
-      {
-         //copy the cursor point into the event
-         mLastEvent.mousePoint.x = S32(mCursorPt.x);
-         mLastEvent.mousePoint.y = S32(mCursorPt.y);
-         mLastEvent.eventID = 0;
-         mMouseDownPoint = mCursorPt;
-
-         if(event.objInst == KEY_BUTTON0) // left button
-         {
-            //see if button was pressed
-            if (event.action == SI_MAKE)
-            {
-               U32 curTime = Platform::getVirtualMilliseconds();
-               mNextMouseTime = curTime + mInitialMouseDelay;
-
-               //if the last button pressed was the left...
-               if (mLeftMouseLast)
-               {
-                  //if it was within the double click time count the clicks
-                  if ((S32)curTime - mLastMouseDownTime <= mDoubleClickTime)
-                     mLastMouseClickCount++;
-                  else
-                     mLastMouseClickCount = 1;
-               }
-               else
-               {
-                  mLeftMouseLast = true;
-                  mLastMouseClickCount = 1;
-               }
-
-               mLastMouseDownTime = curTime;
-               mLastEvent.mouseClickCount = mLastMouseClickCount;
-
-               rootMouseDown(mLastEvent);
-            }
-            //else button was released
-            else
-            {
-               mNextMouseTime = 0xFFFFFFFF;
-               rootMouseUp(mLastEvent);
-            }
-            return true;
-         }
-         else if(event.objInst == KEY_BUTTON1) // right button
-         {
-            if(event.action == SI_MAKE)
-            {
-               U32 curTime = Platform::getVirtualMilliseconds();
-
-               //if the last button pressed was the right...
-               if (mRightMouseLast)
-               {
-                  //if it was within the double click time count the clicks
-                  if ((S32)curTime - mLastMouseDownTime <= mDoubleClickTime)
-                     mLastMouseClickCount++;
-                  else
-                     mLastMouseClickCount = 1;
-               }
-               else
-               {
-                  mRightMouseLast = true;
-                  mLastMouseClickCount = 1;
-               }
-
-               mLastMouseDownTime = curTime;
-               mLastEvent.mouseClickCount = mLastMouseClickCount;
-
-               rootRightMouseDown(mLastEvent);
-            }
-            else // it was a mouse up
-               rootRightMouseUp(mLastEvent);
-            return true;
-         }
-         else if(event.objInst == KEY_BUTTON2) // middle button
-         {
-            if(event.action == SI_MAKE)
-            {
-               U32 curTime = Platform::getVirtualMilliseconds();
-
-               //if the last button pressed was the right...
-               if (mMiddleMouseLast)
-               {
-                  //if it was within the double click time count the clicks
-                  if ((S32)curTime - mLastMouseDownTime <= mDoubleClickTime)
-                     mLastMouseClickCount++;
-                  else
-                     mLastMouseClickCount = 1;
-               }
-               else
-               {
-                  mMiddleMouseLast = true;
-                  mLastMouseClickCount = 1;
-               }
-
-               mLastMouseDownTime = curTime;
-               mLastEvent.mouseClickCount = mLastMouseClickCount;
-
-               rootMiddleMouseDown(mLastEvent);
-            }
-            else // it was a mouse up
-               rootMiddleMouseUp(mLastEvent);
-            return true;
-         }
-      }
-   }
    return false;
+}
+
+
+// surely theres a better way to do this....
+bool GuiCanvas::processMouseButtonEvent( const ButtonEventInfo &event )
+{
+    //copy the cursor point into the event
+    mLastEvent.mousePoint.x = S32(event.xPos);
+    mLastEvent.mousePoint.y = S32(event.yPos);
+    mLastEvent.eventID = event.buttonID;
+    
+    if( isCursorON() )
+    {
+        switch (event.buttonID) {
+            case KEY_BUTTON0: // left button
+            {
+                //see if button was pressed
+                if (event.action == SI_MAKE)
+                {
+                    U32 curTime = Platform::getVirtualMilliseconds();
+                    mNextMouseTime = curTime + mInitialMouseDelay;
+                    
+                    //if the last button pressed was the left...
+                    if (mLeftMouseLast)
+                    {
+                        //if it was within the double click time count the clicks
+                        if ((S32)curTime - mLastMouseDownTime <= mDoubleClickTime)
+                            mLastMouseClickCount++;
+                        else
+                            mLastMouseClickCount = 1;
+                    }
+                    else
+                    {
+                        mLeftMouseLast = true;
+                        mLastMouseClickCount = 1;
+                    }
+                    
+                    mLastMouseDownTime = curTime;
+                    mLastEvent.mouseClickCount = mLastMouseClickCount;
+                    
+                    rootMouseDown(mLastEvent);
+                }
+                else if (event.action == SI_MOVE)
+                {
+                    rootMouseDragged(mLastEvent);
+                }
+                //else button was released
+                else
+                {
+                    mNextMouseTime = 0xFFFFFFFF;
+                    rootMouseUp(mLastEvent);
+                }
+                return true;
+            }
+                
+                break;
+                
+            case KEY_BUTTON1: // right button
+            {
+                if(event.action == SI_MAKE)
+                {
+                    U32 curTime = Platform::getVirtualMilliseconds();
+                    
+                    //if the last button pressed was the right...
+                    if (mRightMouseLast)
+                    {
+                        //if it was within the double click time count the clicks
+                        if ((S32)curTime - mLastMouseDownTime <= mDoubleClickTime)
+                            mLastMouseClickCount++;
+                        else
+                            mLastMouseClickCount = 1;
+                    }
+                    else
+                    {
+                        mRightMouseLast = true;
+                        mLastMouseClickCount = 1;
+                    }
+                    
+                    mLastMouseDownTime = curTime;
+                    mLastEvent.mouseClickCount = mLastMouseClickCount;
+                    
+                    rootRightMouseDown(mLastEvent);
+                }
+                else if (event.action == SI_MOVE)
+                {
+                    rootRightMouseDragged(mLastEvent);
+                }
+                else // it was a mouse up
+                    rootRightMouseUp(mLastEvent);
+                return true;
+            }
+                
+            case KEY_BUTTON2: // middle button
+            {
+                if(event.action == SI_MAKE)
+                {
+                    U32 curTime = Platform::getVirtualMilliseconds();
+                    
+                    //if the last button pressed was the right...
+                    if (mMiddleMouseLast)
+                    {
+                        //if it was within the double click time count the clicks
+                        if ((S32)curTime - mLastMouseDownTime <= mDoubleClickTime)
+                            mLastMouseClickCount++;
+                        else
+                            mLastMouseClickCount = 1;
+                    }
+                    else
+                    {
+                        mMiddleMouseLast = true;
+                        mLastMouseClickCount = 1;
+                    }
+                    
+                    mLastMouseDownTime = curTime;
+                    mLastEvent.mouseClickCount = mLastMouseClickCount;
+                    
+                    rootMiddleMouseDown(mLastEvent);
+                }
+                else if (event.action == SI_MOVE)
+                {
+                    rootMiddleMouseDragged(mLastEvent);
+                }
+                else // it was a mouse up
+                    rootMiddleMouseUp(mLastEvent);
+                return true;
+            }
+            default:
+                break;
+        }
+    }
+    return false;
 }
 
 void GuiCanvas::rootMouseDown(const GuiEvent &event)

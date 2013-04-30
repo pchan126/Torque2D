@@ -34,7 +34,6 @@ WindowInputGenerator::WindowInputGenerator( PlatformWindow *window ) :
       mFocused = true;
 
    mWindow->appEvent.notify(this, &WindowInputGenerator::handleAppEvent);
-//   mWindow->mouseEvent.notify(this, &WindowInputGenerator::handleMouseMove);
 //   mWindow->wheelEvent.notify(this, &WindowInputGenerator::handleMouseWheel);
    mWindow->buttonEvent.notify(this, &WindowInputGenerator::handleMouseButton);
    mWindow->keyEvent.notify(this, &WindowInputGenerator::handleKeyboard);
@@ -48,8 +47,6 @@ WindowInputGenerator::~WindowInputGenerator()
 {
    if( mWindow )
    {
-      mWindow->buttonEvent.remove(this, &WindowInputGenerator::handleMouseButton);
-//       mWindow->mouseEvent.remove(this, &WindowInputGenerator::handleMouseMove);
 //      mWindow->wheelEvent.remove(this, &WindowInputGenerator::handleMouseWheel);
       mWindow->keyEvent.remove(this, &WindowInputGenerator::handleKeyboard);
       mWindow->charEvent.remove(this, &WindowInputGenerator::handleCharInput);
@@ -103,17 +100,23 @@ void WindowInputGenerator::handleMouseButton( WindowId did, U32 modifiers, S32 x
    if( !mInputController || !mFocused )
       return;
 
-    InputEventInfo event;
-   event.deviceType = MouseDeviceType;
-   event.deviceInst = 0;
-   event.objType    = SI_BUTTON;
-   event.objInst    = button;
-   event.modifier   = convertModifierBits(modifiers);
-   event.ascii      = 0;
-   event.action     = (action==IA_MAKE) ? SI_MAKE : SI_BREAK;
-   event.fValue     = (action==IA_MAKE) ? 1.0 : 0.0;
+//    InputEventInfo event;
+//   event.deviceType = MouseDeviceType;
+//   event.deviceInst = 0;
+//   event.objType    = SI_BUTTON;
+//   event.objInst    = button;
+//   event.ascii      = 0;
+//   event.action     = (action==IA_MAKE) ? SI_MAKE : SI_BREAK;
+//   event.fValue     = (action==IA_MAKE) ? 1.0 : 0.0;
+    
+    ButtonEventInfo event;
+    event.modifier   = convertModifierBits(modifiers);
+    event.xPos  = x;
+    event.yPos  = y;
+    event.buttonID = button;
+    event.action = action;
 
-    mInputController->processMouseEvent( event );
+    mInputController->processMouseButtonEvent( event );
 }
 
 void WindowInputGenerator::handleMouseWheel( WindowId did, U32 modifiers, S32 wheelDeltaX, S32 wheelDeltaY )

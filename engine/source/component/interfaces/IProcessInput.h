@@ -27,10 +27,9 @@ public:
     /// @see InputEvent
     /// @param   event   Input event to process
     virtual bool processInputEvent(const InputEventInfo &event) = 0;
+
+    virtual bool processMouseButtonEvent( const ButtonEventInfo &event ) = 0;
     
-    /// Processes a mouse movement event
-    /// @see MouseMoveEvent
-    /// @param   event   Mouse move event to process
     virtual void processMouseMoveEvent(const MouseMoveEventInfo &event) = 0;
     
     virtual void processScreenTouchEvent(const ScreenTouchEventInfo &event) = 0;

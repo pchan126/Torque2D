@@ -325,6 +325,8 @@ public:
    /// @param   event   Input event to process
    virtual bool processInputEvent(const InputEventInfo &event);
 
+   virtual bool processMouseButtonEvent( const ButtonEventInfo &event );
+    
    /// Processes a mouse movement event
    /// @see MouseMoveEvent
    /// @param   event   Mouse move event to process

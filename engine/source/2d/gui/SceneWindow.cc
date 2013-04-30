@@ -935,17 +935,17 @@ Vector2 SceneWindow::getMousePosition( void )
 
 void SceneWindow::windowToScenePoint( const Vector2& srcPoint, Vector2& dstPoint ) const
 {
-    Con::printf("%f %f", srcPoint.x, srcPoint.y);
-    RectI bounds = getBounds();
+//    Con::printf("%f %f", srcPoint.x, srcPoint.y);
+//    RectI bounds = getBounds();
     F32 x = srcPoint.x/getBounds().extent.x;
-    F32 y = srcPoint.y/getBounds().extent.y;
+    F32 y = 1-srcPoint.y/getBounds().extent.y; // flip y
     
     RectF a = mCameraCurrent.mSourceArea;
     // Return Conversion.
     Vector2 temp;
     temp.Set(x * mCameraCurrent.mSourceArea.extent.x + mCameraCurrent.mSourceArea.point.x, y * mCameraCurrent.mSourceArea.extent.y + mCameraCurrent.mSourceArea.point.y);
     dstPoint.Set( temp.x, temp.y );
-//    Con::printf("%f", temp.x);
+//    Con::printf("%f", temp.x, temp.y);
 }
 
 //-----------------------------------------------------------------------------

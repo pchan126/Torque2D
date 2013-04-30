@@ -157,23 +157,28 @@ struct MouseMoveEventInfo
 {
    S32 xPos, yPos;
    U8 modifier;
-
-//   MouseMoveEvent() { type = MouseMoveEventType; size = sizeof(MouseMoveEvent); }
 };
 
-struct ScreenTouchEventInfo //: public Event
+struct ButtonEventInfo
+{
+    U8 modifier;
+    S32 xPos, yPos;
+    U32 buttonID;
+    U8  action;
+};
+
+
+struct ScreenTouchEventInfo 
 {  
     U8 modifier;
     S32 xPos, yPos;
     S32 touchID;
     U8  action;
     U32 numTouches;
-    
-//    ScreenTouchEvent() { type = ScreenTouchEventType; size = sizeof(ScreenTouchEvent); }  
 };
 
 /// Generic input event.
-struct InputEventInfo //: public Event
+struct InputEventInfo 
 {
    U32   deviceInst;  ///< Device instance: joystick0, joystick1, etc
    F32   fValue;      ///< Value ranges from -1.0 to 1.0

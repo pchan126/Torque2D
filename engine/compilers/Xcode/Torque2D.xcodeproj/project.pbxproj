@@ -443,6 +443,7 @@
 		D162450717265AB000E4E1F7 /* gfxOpenGLStateBlock.cc in Sources */ = {isa = PBXBuildFile; fileRef = D16244F617265AB000E4E1F7 /* gfxOpenGLStateBlock.cc */; };
 		D16580751702942800A21928 /* gfxInit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D16580731702942800A21928 /* gfxInit.cpp */; };
 		D16580791702A5AE00A21928 /* guiContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D16580771702A5AE00A21928 /* guiContainer.cpp */; };
+		D176A012172FC1E4000785CB /* osxWindowInputGenerator.mm in Sources */ = {isa = PBXBuildFile; fileRef = D176A011172FC1E4000785CB /* osxWindowInputGenerator.mm */; };
 		D1A6957017016C270060D928 /* platformCursorController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1A6955617016C270060D928 /* platformCursorController.cpp */; };
 		D1A6957117016C270060D928 /* platformInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1A6955817016C270060D928 /* platformInterface.cpp */; };
 		D1A6957217016C270060D928 /* platformWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1A6955917016C270060D928 /* platformWindow.cpp */; };
@@ -1394,6 +1395,8 @@
 		D16580781702A5AE00A21928 /* guiContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiContainer.h; sourceTree = "<group>"; };
 		D165807A1702E64A00A21928 /* guiControl_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiControl_ScriptBinding.h; sourceTree = "<group>"; };
 		D16581421702E7AB00A21928 /* guiCanvas_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiCanvas_ScriptBinding.h; sourceTree = "<group>"; };
+		D176A010172FC1E4000785CB /* osxWindowInputGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxWindowInputGenerator.h; sourceTree = "<group>"; };
+		D176A011172FC1E4000785CB /* osxWindowInputGenerator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxWindowInputGenerator.mm; sourceTree = "<group>"; };
 		D1A6955617016C270060D928 /* platformCursorController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = platformCursorController.cpp; sourceTree = "<group>"; };
 		D1A6955717016C270060D928 /* platformCursorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformCursorController.h; sourceTree = "<group>"; };
 		D1A6955817016C270060D928 /* platformInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = platformInterface.cpp; sourceTree = "<group>"; };
@@ -3095,6 +3098,8 @@
 		D1A6957B17016CA90060D928 /* windowManager */ = {
 			isa = PBXGroup;
 			children = (
+				D176A010172FC1E4000785CB /* osxWindowInputGenerator.h */,
+				D176A011172FC1E4000785CB /* osxWindowInputGenerator.mm */,
 				D11F54E61703E48500797E52 /* osxTorqueView.h */,
 				D11F54E71703E48500797E52 /* osxTorqueView.mm */,
 				D1A6957C17016CA90060D928 /* macCursorController.h */,
@@ -3671,6 +3676,7 @@
 				D162450417265AB000E4E1F7 /* gfxOpenGLDevice.cc in Sources */,
 				D162450617265AB000E4E1F7 /* gfxOpenGLShader.cc in Sources */,
 				D162450717265AB000E4E1F7 /* gfxOpenGLStateBlock.cc in Sources */,
+				D176A012172FC1E4000785CB /* osxWindowInputGenerator.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

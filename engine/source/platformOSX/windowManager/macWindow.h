@@ -152,6 +152,9 @@ private:
    CGDirectDisplayID mDisplay;
    CGRect mDisplayBounds;
    CGRect mMainDisplayBounds;
+
+public:
+    ButtonEvent       mouseButtonEvent;
 };
 
 #endif
