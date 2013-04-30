@@ -935,8 +935,17 @@ Vector2 SceneWindow::getMousePosition( void )
 
 void SceneWindow::windowToScenePoint( const Vector2& srcPoint, Vector2& dstPoint ) const
 {
+//    Con::printf("%f %f", srcPoint.x, srcPoint.y);
+//    RectI bounds = getBounds();
+    F32 x = srcPoint.x/getBounds().extent.x;
+    F32 y = srcPoint.y/getBounds().extent.y;
+    
+    RectF a = mCameraCurrent.mSourceArea;
     // Return Conversion.
-    dstPoint.Set( (srcPoint.x * mCameraCurrent.mSceneWindowScale.x) + mCameraCurrent.mSceneMin.x, mCameraCurrent.mSceneMax.y - (srcPoint.y * mCameraCurrent.mSceneWindowScale.y) );
+    Vector2 temp;
+    temp.Set(x * mCameraCurrent.mSourceArea.extent.x + mCameraCurrent.mSourceArea.point.x, y * mCameraCurrent.mSourceArea.extent.y + mCameraCurrent.mSourceArea.point.y);
+    dstPoint.Set( temp.x, temp.y );
+//    Con::printf("%f", temp.x);
 }
 
 //-----------------------------------------------------------------------------

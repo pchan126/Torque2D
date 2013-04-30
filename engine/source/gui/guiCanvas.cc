@@ -394,13 +394,8 @@ void GuiCanvas::processScreenTouchEvent(const ScreenTouchEventInfo &event)
         mNextMouseTime = curTime + mInitialMouseDelay;
         
         mLastMouseDownTime = curTime;
-//		mLastEvent.mouseClickCount = mLastMouseClickCount;
         
         rootScreenTouchDown(mLastEvent);
-    }
-    else if(event.action == SI_MOVE)
-    {
-        rootScreenTouchMove(mLastEvent);
     }
     //else button was released
     else if(event.action == SI_BREAK)

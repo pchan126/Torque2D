@@ -35,8 +35,6 @@
 extern void _iOSGameChangeOrientation(S32 newOrientation);
 UIDeviceOrientation currentOrientation;
 
-extern void clearPendingMultitouchEvents( void );
-
 bool _iOSTorqueFatalError = false;
 
 @implementation T2DAppDelegate
@@ -46,16 +44,6 @@ bool _iOSTorqueFatalError = false;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-//	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
-//	//Also we set the currentRotation up so its not invalid
-//	currentOrientation = [UIDevice currentDevice].orientation;
-//	//So we make a selector to handle that, called didRotate (lower down in the code)
-////	[[NSNotificationCenter defaultCenter] addObserver:self
-////                                            selector:@selector(didRotate:)
-////                                                name:UIDeviceOrientationDidChangeNotification
-////                                              object:nil];
-//
-//   
 //	// Register for screen connect and disconnect notifications.
 //	[[NSNotificationCenter defaultCenter] addObserver:self
 //                                            selector:@selector(screenDidChange:)
@@ -107,8 +95,6 @@ bool _iOSTorqueFatalError = false;
 {
     if(!_iOSTorqueFatalError)
     {
-        clearPendingMultitouchEvents( );
-
         if ( Con::isFunction("oniOSBecomeActive") )
             Con::executef( 1, "oniOSBecomeActive" );
     }

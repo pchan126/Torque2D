@@ -32,13 +32,6 @@
 /// and tracks the hidden state.
 //void iOSSetHideCursor(bool shouldHide);
 
-/// Install event loop timer, replacing any existing event loop timer.
-/// This is useful for updating the sleep time
-void iOSRunEventLoopTimer(S32 intervalMs);
-
-/// Install event handlers on the current window & on the app.
-void iOSInstallCarbonEventHandlers(void);
-
 /// Remove all event handlers, except the alert event handlers.
 void iOSRemoveCarbonEventHandlers(void);
 

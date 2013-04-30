@@ -10,6 +10,8 @@
 #import "platformiOS/platformiOS.h"
 #import "platformiOS/graphics/GFXOpenGLESDevice.h"
 #import "platformiOS/T2DAppDelegate.h"
+#import "platformiOS/windowManager/iOSGestureRecognizer.h"
+#import "platformiOS/windowManager/iOSWindowInputGenerator.h"
 
 iOSWindow* iOSWindow::sInstance = NULL;
 
@@ -20,6 +22,9 @@ iOSWindow::iOSWindow(U32 windowId, const char* windowText, Point2I clientExtent)
    mTitle            = NULL;
    mMouseCaptured    = false;
    
+   // This controller maps window input (Mouse/Keyboard) to a generic input consumer
+   mWindowInputGenerator = new iOSWindowInputGenerator( this );
+
    mCursorController = new iOSCursorController( this );
    mOwningWindowManager = NULL;
    
@@ -30,16 +35,18 @@ iOSWindow::iOSWindow(U32 windowId, const char* windowText, Point2I clientExtent)
    mSkipMouseEvents = 0;
     
     mDisplay = [UIScreen mainScreen];
+    mDisplayScale = [mDisplay scale];
+    
     mMainDisplayBounds = mDisplayBounds = [mDisplay bounds];
     
    mWindowId = windowId;
     _initCocoaWindow(windowText, clientExtent);
+    
+   gestureRecognizer = [[iOSGestureRecognizer alloc]initWithT2DWindow:this];
    
    appEvent.notify(this, &iOSWindow::_onAppEvent);
    
    sInstance = this;
-    view = nil;
-    viewController = nil;
 }
 
 iOSWindow::~iOSWindow()
@@ -80,6 +87,7 @@ void iOSWindow::_initCocoaWindow(const char* windowText, Point2I clientExtent)
     appDelegate.window.rootViewController = viewController;
     appDelegate.window.backgroundColor = [UIColor blackColor];
     [appDelegate.window makeKeyAndVisible];
+    
 }
 
 void iOSWindow::_disassociateCocoaWindow()
@@ -225,18 +233,12 @@ void iOSWindow::centerWindow()
 
 Point2I iOSWindow::clientToScreen( const Point2I& pos )
 {
-//   NSPoint p = { static_cast<CGFloat>(pos.x), static_cast<CGFloat>(pos.y) };
-//   
-//   p = [ mGLKWindow convertBaseToScreen: p ];
-//   return Point2I( p.x, p.y );
+     
 }
 
 Point2I iOSWindow::screenToClient( const Point2I& pos )
 {
-//   NSPoint p = { static_cast<CGFloat>(pos.x), static_cast<CGFloat>(pos.y) };
-//   
-//   p = [ mGLKWindow convertScreenToBase: p ];
-//   return Point2I( p.x, p.y );
+
 }
 
 bool iOSWindow::isFocused()
@@ -327,5 +329,17 @@ bool iOSWindow::setCaption(const char* windowText)
 void iOSWindow::_doMouseLockNow()
 {
    return;
+}
+
+void iOSWindow::addGestureRecognizer( UIGestureRecognizer* gestureRecognizer)
+{
+    [view addGestureRecognizer:gestureRecognizer];
+    return;
+}
+
+void iOSWindow::removeGestureRecognizer( UIGestureRecognizer* gestureRecognizer)
+{
+    [view removeGestureRecognizer:gestureRecognizer];
+    return;
 }
 

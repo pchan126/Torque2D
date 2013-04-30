@@ -82,8 +82,6 @@ protected:
       mEnableKeyboardTranslation = false;
       mEnableAccelerators = true;
       mCursorController = NULL;
-      // This controller maps window input (Mouse/Keyboard) to a generic input consumer
-      mWindowInputGenerator = new WindowInputGenerator( this );
       mSuppressReset = false;
 
       mOffscreenRender = false;

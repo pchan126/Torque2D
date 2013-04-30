@@ -160,11 +160,13 @@ struct MouseMoveEventInfo
 
 //   MouseMoveEvent() { type = MouseMoveEventType; size = sizeof(MouseMoveEvent); }
 };
+
 struct ScreenTouchEventInfo //: public Event
 {  
-    S32 xPos, yPos;  
+    U8 modifier;
+    S32 xPos, yPos;
     S32 touchID;
-    U8    action;
+    U8  action;
     U32 numTouches;
     
 //    ScreenTouchEvent() { type = ScreenTouchEventType; size = sizeof(ScreenTouchEvent); }  

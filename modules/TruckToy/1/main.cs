@@ -171,7 +171,7 @@ function TruckToy::reset( %this )
     %this.createBonfire( 85, TruckToy.FloorLevel, 1.5, TruckToy.BackgroundDomain-1 );
 
     // Truck.
-    %truckStartX = TruckToy.WorldLeft + (TruckToy.CameraWidth/6);
+    %truckStartX = TruckToy.WorldLeft + (TruckToy.CameraWidth/6) + 15;
     %truckStartY = 3;   
     %this.createTruck( %truckStartX, %truckStartY );    
     
@@ -950,7 +950,22 @@ function TruckToy::onTouchDown(%this, %touchID, %worldPosition)
 
 function TruckToy::onTouchUp(%this, %touchID, %worldPosition)
 {
-    // Stop the truck.
-    TruckToy.truckStop();
+    // Finish if truck is already moving.
+
+    if ( TruckToy.TruckMoving )
+    {
+        TruckToy.truckStop();
+        return;
+    }
+
+    // If we touch in-front of the truck then move forward else reverse.
+    if ( %worldPosition.x >= TruckToy.TruckBody.Position.x )
+    {
+        truckForward( true );
+    }
+    else
+    {
+        truckReverse( true );
+    }
 }
     

@@ -9,12 +9,14 @@
 #import "windowManager/platformWindow.h"
 #import "./iOSWindowManager.h"
 #import "./iOSCursorController.h"
+#import "platformiOS/windowManager/iOSWindowEvents.h"
 
 #import "graphics/gfxTarget.h"
 #import "graphics/gfxStructs.h"
 
 @class GLKView;
 @class GLKViewController;
+@class iOSGestureRecognizer;
 
 class iOSWindow : public PlatformWindow
 {
@@ -152,6 +154,22 @@ private:
     GLKView *view;
     GLKViewController *viewController;
    Point2I mSize;
+    
+public:
+    CGFloat mDisplayScale;
+
+    const GLKViewController* getViewController() { return viewController; };
+    iOSGestureRecognizer *gestureRecognizer;
+    
+    void addGestureRecognizer( UIGestureRecognizer* );
+    void removeGestureRecognizer( UIGestureRecognizer* );
+    
+    TapEvent tapEvent;
+    SwipeEvent swipeEvent;
+    RotationEvent rotationEvent;
+    PanEvent panEvent;
+    LongPressEvent longPressEvent;
+    PinchEvent pinchEvent;
 };
 
 #endif

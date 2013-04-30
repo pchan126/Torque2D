@@ -21,7 +21,8 @@ static inline RectI convertCGRectToRectI(CGRect r)
    return RectI(r.origin.x, r.origin.y, r.size.width, r.size.height);
 }
 
-iOSWindowManager::iOSWindowManager() : mNotifyShutdownDelegate(this, &iOSWindowManager::onShutdown), mIsShuttingDown(false)
+iOSWindowManager::iOSWindowManager() : mNotifyShutdownDelegate(this, &iOSWindowManager::onShutdown),
+                                        mIsShuttingDown(false)
 {
    mWindowList.clear();
 //   Process::notifyShutdown(mNotifyShutdownDelegate);
