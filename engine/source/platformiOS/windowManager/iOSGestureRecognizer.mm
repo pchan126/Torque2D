@@ -10,6 +10,8 @@
 #include "gui/guiCanvas.h"
 #include "gui/guiCanvas_ScriptBinding.h"
 
+#define MAX_TOUCH_EVENTS 5
+
 @implementation iOSGestureRecognizer
 @synthesize tapGestureRecognizer;
 @synthesize panGestureRecognizer;
@@ -25,10 +27,10 @@
 
     iOSGestureRecognizer* gestureRecognizer = self;
     
-    UITapGestureRecognizer* newTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTaps:)];
+    T2DUITouchGestureRecognizer* newTouchGestureRecognizer = [[T2DUITouchGestureRecognizer alloc] initWithTarget:self action:@selector(handleTouch:)];
     
-    gestureRecognizer.tapGestureRecognizer = newTapGestureRecognizer;
-    in_window->addGestureRecognizer( gestureRecognizer.tapGestureRecognizer );
+    gestureRecognizer.touchGestureRecognizer = newTouchGestureRecognizer;
+    in_window->addGestureRecognizer( gestureRecognizer.touchGestureRecognizer );
     
     return self;
 }
@@ -153,6 +155,38 @@
             break;
         }
     }
+}
+
+- (void) handleTouch:(T2DUITouchGestureRecognizer*)paramSender {
+
+   for (int i = 0; i < 5; i++)
+   {
+       UITouch* touch = [paramSender touchAtLocation:i];
+       if (touch != nil)
+       {
+            U32 touchType = 0;
+            switch ( touch.phase )
+            {
+                case UITouchPhaseBegan:
+                    touchType = SI_MAKE;
+                    break;
+                case UITouchPhaseMoved:
+                    touchType = SI_MOVE;
+                    break;
+                case UITouchPhaseEnded:
+                case UITouchPhaseCancelled:
+                    touchType = SI_BREAK;
+                    break;
+                default:
+                    break;
+            }
+            CGPoint point = [touch locationInView:touch.view];
+            if (touchType != 0) {
+                window->touchEvent.trigger(window->getWindowId(), 0, point.x, point.y, i, touchType, 1);
+            }
+        }
+   }
+    [paramSender clearEndedTouches];
 }
 
 ConsoleMethod(GuiCanvas, startTapRecognizer, void, 2, 2, "() Use the startTapRecognizer.\n"

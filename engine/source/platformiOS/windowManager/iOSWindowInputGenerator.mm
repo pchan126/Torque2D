@@ -19,12 +19,13 @@ iOSWindowInputGenerator::iOSWindowInputGenerator( iOSWindow *window ):
     WindowInputGenerator((PlatformWindow*)window)
 {
     mWindow = window;
-   window->tapEvent.notify(this, &iOSWindowInputGenerator::handleTapEvent);
-    window->panEvent.notify(this, &iOSWindowInputGenerator::handlePanEvent);
-    window->pinchEvent.notify(this, &iOSWindowInputGenerator::handlePinchEvent);
-    window->swipeEvent.notify(this, &iOSWindowInputGenerator::handleSwipeEvent);
-    window->rotationEvent.notify(this, &iOSWindowInputGenerator::handleRotationEvent);
-    window->longPressEvent.notify(this, &iOSWindowInputGenerator::handleLongPressEvent);
+   mWindow->tapEvent.notify(this, &iOSWindowInputGenerator::handleTapEvent);
+    mWindow->panEvent.notify(this, &iOSWindowInputGenerator::handlePanEvent);
+    mWindow->pinchEvent.notify(this, &iOSWindowInputGenerator::handlePinchEvent);
+    mWindow->swipeEvent.notify(this, &iOSWindowInputGenerator::handleSwipeEvent);
+    mWindow->rotationEvent.notify(this, &iOSWindowInputGenerator::handleRotationEvent);
+    mWindow->longPressEvent.notify(this, &iOSWindowInputGenerator::handleLongPressEvent);
+    mWindow->touchEvent.notify(this, &iOSWindowInputGenerator::handleTouchEvent);
 }
 
 iOSWindowInputGenerator::~iOSWindowInputGenerator()
@@ -37,6 +38,7 @@ iOSWindowInputGenerator::~iOSWindowInputGenerator()
        mWindow->swipeEvent.remove(this, &iOSWindowInputGenerator::handleSwipeEvent);
        mWindow->rotationEvent.remove(this, &iOSWindowInputGenerator::handleRotationEvent);
        mWindow->longPressEvent.remove(this, &iOSWindowInputGenerator::handleLongPressEvent);
+       mWindow->touchEvent.remove(this, &iOSWindowInputGenerator::handleTouchEvent);
    }
 }
 
@@ -84,5 +86,16 @@ void iOSWindowInputGenerator::handlePinchEvent( WindowId did, U32 modifier, S32 
     
 }
 
+void iOSWindowInputGenerator::handleTouchEvent( WindowId did, U32 modifier,S32 x,S32 y, U32 touchid, U32 action, U32 numTouches )
+{
+    // Generate a base Movement along and Axis event
+    ScreenTouchEventInfo event;
+    event.modifier   = modifier;
+    event.xPos = x * mWindow->mDisplayScale;
+    event.yPos = y * mWindow->mDisplayScale;
+    event.action = action;
+    event.numTouches = numTouches;
+    mInputController->processScreenTouchEvent( event );
+}
 
 

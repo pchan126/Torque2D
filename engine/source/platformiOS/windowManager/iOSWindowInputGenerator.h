@@ -22,6 +22,7 @@ class iOSWindowInputGenerator : public WindowInputGenerator
     void handleRotationEvent( WindowId did,U32 modifier,S32 x, S32 y, F32 rotation , F32 velocity );
     void handleLongPressEvent( WindowId did, U32 modifier,S32 x,S32 y, U32 action, U32 touchid );
     void handlePinchEvent( WindowId did, U32 modifier, S32 x,S32 y, F32 scale, F32 velocity, U32 action );
+    void handleTouchEvent( WindowId did, U32 modifier,S32 x,S32 y, U32 touchid, U32 action, U32 numTouches );
     
    public:
    

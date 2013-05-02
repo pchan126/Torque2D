@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "platformiOS/windowManager/iOSWindow.h"
+#import "platformiOS/windowManager/T2DUITouchGestureRecognizer.h"
 
 @interface iOSGestureRecognizer : NSObject {
     @public
@@ -18,7 +19,9 @@
     UIPanGestureRecognizer *panGestureRecognizer;
     UILongPressGestureRecognizer *longPressGestureRecognizer;
     UIPinchGestureRecognizer *pinchGestureRecognizer;
+    T2DUITouchGestureRecognizer *touchGestureRecognizer;
     iOSWindow *window;
+    
 }
 
 @property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
@@ -27,6 +30,7 @@
 @property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizer;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, strong) UIPinchGestureRecognizer *pinchGestureRecognizer;
+@property (nonatomic, strong) T2DUITouchGestureRecognizer *touchGestureRecognizer;
 @property (nonatomic) iOSWindow *window;
 
 - (id)initWithT2DWindow:(iOSWindow *)window;
@@ -36,6 +40,6 @@
 - (void) handlePan:(UIPanGestureRecognizer*)paramSender;
 - (void) handleLongPress:(UILongPressGestureRecognizer*)paramSender;
 - (void) handlePinch:(UIPinchGestureRecognizer*)paramSender;
-
+- (void) handleTouch:(T2DUITouchGestureRecognizer*)paramSender;
 
 @end

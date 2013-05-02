@@ -394,7 +394,7 @@ void GFXOpenGLESTextureManager::innerCreateTexture( GFXOpenGLESTextureObject *re
 //      glTexParameteri(binding, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
    
    // Get the size from GL (you never know...)
-   GLint texHeight, texWidth, texDepth = 0;
+//   GLint texHeight, texWidth, texDepth = 0;
    
 //   glGetTexLevelParameteriv(binding, 0, GL_TEXTURE_WIDTH, &texWidth);
 //   glGetTexLevelParameteriv(binding, 0, GL_TEXTURE_HEIGHT, &texHeight);

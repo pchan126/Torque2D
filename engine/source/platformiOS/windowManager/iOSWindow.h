@@ -170,6 +170,7 @@ public:
     PanEvent panEvent;
     LongPressEvent longPressEvent;
     PinchEvent pinchEvent;
+    TouchEvent touchEvent;
 };
 
 #endif
