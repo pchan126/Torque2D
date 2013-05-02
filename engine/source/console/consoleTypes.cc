@@ -51,6 +51,30 @@ ConsoleSetType( TypeString )
       Con::printf("(TypeString) Cannot set multiple args to a single string.");
 }
 
+
+//-----------------------------------------------------------------------------
+// TypeRealString
+//-----------------------------------------------------------------------------
+ConsoleType( string, TypeRealString, sizeof(String), "" )
+
+ConsoleGetType( TypeRealString )
+{
+    const String *theString = static_cast<const String*>(dptr);
+    
+    return theString->c_str();
+}
+
+ConsoleSetType( TypeRealString )
+{
+    String *theString = static_cast<String*>(dptr);
+    
+    if(argc == 1)
+        *theString = argv[0];
+    else
+        Con::printf("(TypeRealString) Cannot set multiple args to a single string.");
+}
+
+
 /////////////////////////////////////////////////////////////////////////
 // TypeStringEntryVector
 //////////////////////////////////////////////////////////////////////////

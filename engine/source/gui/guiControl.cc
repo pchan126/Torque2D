@@ -166,23 +166,23 @@ void GuiControl::initPersistFields()
    addField("HorizSizing",       TypeEnum,			Offset(mHorizSizing, GuiControl), 1, &gHorizSizingTable);
    addField("VertSizing",        TypeEnum,			Offset(mVertSizing, GuiControl), 1, &gVertSizingTable);
 
-   addField("Position",          TypePoint2I,		Offset(getPosition(), GuiControl));
-   addField("Extent",            TypePoint2I,		Offset(getExtent(), GuiControl));
+   addField("Position",          TypePoint2I,		Offset(mBounds.point, GuiControl));
+   addField("Extent",            TypePoint2I,		Offset(mBounds.extent, GuiControl));
    addField("MinExtent",         TypePoint2I,		Offset(mMinExtent, GuiControl));
    addField("Visible",           TypeBool,			Offset(mVisible, GuiControl));
    addDepricatedField("Modal");
    addDepricatedField("SetFirstResponder");
 
    addField("Variable",          TypeString,		Offset(mConsoleVariable, GuiControl));
-   addField("Command",           TypeString,		Offset(mConsoleCommand, GuiControl));
-   addField("AltCommand",        TypeString,		Offset(mAltConsoleCommand, GuiControl));
+   addField("Command",           TypeRealString,		Offset(mConsoleCommand, GuiControl));
+   addField("AltCommand",        TypeRealString,		Offset(mAltConsoleCommand, GuiControl));
    addField("Accelerator",       TypeString,		Offset(mAcceleratorKey, GuiControl));
    addField("Active",			 TypeBool,			Offset(mActive, GuiControl));
    endGroup("GuiControl");	
 
    addGroup("ToolTip");
    addField("tooltipprofile",    TypeGuiProfile,	Offset(mTooltipProfile, GuiControl));
-   addField("tooltip",           TypeString,		Offset(mTooltip, GuiControl));
+   addField("tooltip",           TypeRealString,		Offset(mTooltip, GuiControl));
    addField("tooltipWidth",      TypeS32,			Offset(mTooltipWidth, GuiControl));
    addField("hovertime",         TypeS32,			Offset(mTipHoverTime, GuiControl));
    endGroup("ToolTip");
@@ -959,6 +959,7 @@ void GuiControl::setConsoleVariable(const char *variable)
 //-----------------------------------------------------------------------------
 void GuiControl::setConsoleCommand( const String& newCmd )
 {
+    Con::printf("GuiControl::setConsoleCommand %s", newCmd.c_str());
     mConsoleCommand = newCmd;
 }
 
@@ -1664,6 +1665,7 @@ void GuiControl::onAction()
    if (! mActive)
       return;
 
+    Con::printf("GuiControl onAction %s", mConsoleCommand.c_str());
    //execute the console command
    if (mConsoleCommand && mConsoleCommand[0])
    {
