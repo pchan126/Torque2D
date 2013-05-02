@@ -755,7 +755,7 @@ inline MatrixF& MatrixF::operator *= ( const MatrixF &m )
     mGM = GLKMatrix4Multiply( mGM , m.mGM);
 #else
    MatrixF tempThis(*this);
-   m_matF_x_matF(tempThis, m, *this);
+   m_matF_x_matF(m, tempThis, *this);
 #endif
    return (*this);
 }
@@ -907,6 +907,7 @@ inline void MatrixF::setOrtho(float left, float right,
     m[13] = 0.0f;
     m[14] = 0.0f;
     m[15] = 1.0f;
+    this->transpose();
 #endif
 }
 

@@ -24,7 +24,6 @@
 #import "platformOSX/platformOSX.h"
 #include "./gfxOpenGL32Device.h"
 
-//#include "graphics/gfxCubemap.h"
 #include "graphics/gfxDrawUtil.h"
 #include "graphics/gfxInit.h"
 
@@ -33,15 +32,12 @@
 #include "./gfxOpenGL32TextureTarget.h"
 #include "./gfxOpenGL32TextureManager.h"
 #include "./gfxOpenGL32TextureObject.h"
-//#include "./gfxOpenGLCubemap.h"
 #include "./gfxOpenGL32CardProfiler.h"
 #include "./gfxOpenGL32WindowTarget.h"
 
 #include "./gfxOpenGL32Shader.h"
 #include "graphics/primBuilder.h"
 #include "console/console.h"
-
-//#include "./gfxOpenGLOcclusionQuery.h"
 
 GFXAdapter::CreateDeviceInstanceDelegate GFXOpenGL32Device::mCreateDeviceInstance(GFXOpenGL32Device::createInstance);
 
@@ -65,18 +61,7 @@ void GFXOpenGL32Device::initGLState()
     mCardProfiler->init();
 
     glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, (GLint*)&mMaxShaderTextures);
-//    glGetIntegerv(GL_MAX_TEXTURE_UNITS, (GLint*)&mMaxFFTextures);
-    
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    
-    mPixelShaderVersion = 2.0f;
-    
-    // MACHAX - Setting mPixelShaderVersion to 3.0 will allow Advanced Lighting
-    // to run.  At the time of writing (6/18) it doesn't quite work yet.
-    if(Con::getBoolVariable("$pref::machax::enableAdvancedLighting", false))
-        mPixelShaderVersion = 3.0f;
-    
-//    mSupportsAnisotropic = mCardProfiler->queryProfile( "GL::EXT_texture_filter_anisotropic" );
 }
 
 
@@ -85,11 +70,11 @@ void GFXOpenGL32Device::initGLState()
 GFXOpenGL32Device::GFXOpenGL32Device( U32 adapterIndex )  : GFXOpenGLDevice( adapterIndex ),
                         mAdapterIndex(adapterIndex),
                         mCurrentVB(NULL),
+                        m_mCurrentView(true),
                         mContext(nil),
                         mPixelFormat(NULL),
                         mPixelShaderVersion(0.0f),
                         mMaxShaderTextures(2),
-                        mMaxFFTextures(2),
                         mClip(0, 0, 0, 0),
                         mTextureLoader(NULL)
 {
@@ -241,43 +226,21 @@ void GFXOpenGL32Device::enumerateVideoModes()
 
 inline void GFXOpenGL32Device::pushWorldMatrix()
 {
-    mWorldMatrixDirty = true;
-    mStateDirty = true;
-    
     MatrixF newMatrix = m_WorldStack.last();
     m_WorldStack.push_back(newMatrix);
-//    GLKMatrixStackPush(m_WorldStackRef);
 }
 
 inline void GFXOpenGL32Device::popWorldMatrix()
 {
-    mWorldMatrixDirty = true;
-    mStateDirty = true;
-    
     m_WorldStack.pop_back();
-//    GLKMatrixStackPop(m_WorldStackRef);
 }
 
 inline void GFXOpenGL32Device::multWorld( const MatrixF &mat )
 {
-    mWorldMatrixDirty = true;
-    mStateDirty = true;
-    
     MatrixF newMatrix = m_WorldStack.last();
     newMatrix*=mat;
     m_WorldStack.last() = newMatrix;
-//    GLKMatrixStackMultiplyMatrix4(m_WorldStackRef, GLKMatrix4MakeWithArray(mat));
 }
-
-//inline void GFXOpenGL32Device::setTextureMatrix( const U32 stage, const MatrixF &texMat )
-//{
-//    AssertFatal( stage < TEXTURE_STAGE_COUNT, "Out of range texture sampler" );
-//    mStateDirty = true;
-//    mTextureMatrixDirty[stage] = true;
-//    mTextureMatrix[stage] = texMat;
-//    mTextureMatrixCheckDirty = true;
-//}
-
 
 
 void GFXOpenGL32Device::zombify()
@@ -359,11 +322,6 @@ void GFXOpenGL32Device::setVertexStream( U32 stream, GFXVertexBuffer *buffer )
     mCurrentVB = static_cast<GFXOpenGL32VertexBuffer*>( buffer );
     if ( mCurrentVB )
         mCurrentVB->prepare();
-}
-
-void GFXOpenGL32Device::setVertexStreamFrequency( U32 stream, U32 frequency )
-{
-    // We don't support vertex stream frequency or mesh instancing in OGL yet.
 }
 
 //GFXCubemap* GFXOpenGL32Device::createCubemap()
@@ -480,35 +438,6 @@ void GFXOpenGL32Device::updateStates(bool forceSetAll /*=false*/)
     // Normal update logic begins here.
     mStateDirty = false;
     
-   // Update Projection Matrix
-   if( mProjectionMatrixDirty )
-   {
-//       MatrixF temp(GLKMatrixStackGetMatrix4(m_ProjectionStackRef).m);
-       MatrixF temp = m_ProjectionStack.last();
-//       temp.transpose();
-        setMatrix( GFXMatrixProjection, temp);
-        mProjectionMatrixDirty = false;
-   }
-    
-   // Update World Matrix
-   if( mWorldMatrixDirty)
-   {
-//       MatrixF temp(GLKMatrixStackGetMatrix4(m_WorldStackRef).m);
-//       temp.transpose();
-//       if ( mWorldMatrixDirty) // && !mViewMatrixDirty)
-//           m_mCurrentView = temp.inverse() * m_mCurrentWorld;
-//        else
-//       MatrixF temp = m_WorldStack.last();
-//       m_mCurrentWorld = temp;
-
-       mWorldMatrixDirty = false;
-   }
-    
-    if ( mViewMatrixDirty )
-    {
-        mViewMatrixDirty = false;
-    }
-    
     // Update the vertex declaration.
     if ( mVertexDeclDirty )
     {
@@ -527,7 +456,6 @@ void GFXOpenGL32Device::updateStates(bool forceSetAll /*=false*/)
         
         if ( mVertexBufferFrequencyDirty[i] )
         {
-            setVertexStreamFrequency( i, mVertexBufferFrequency[i] );
             mVertexBufferFrequencyDirty[i] = false;
         }
     }
@@ -626,29 +554,9 @@ void GFXOpenGL32Device::setTextureInternal(U32 textureUnit, const GFXTextureObje
     glActiveTexture(GL_TEXTURE0);
 }
 
-//void GFXOpenGL32Device::setCubemapInternal(U32 textureUnit, const GFXOpenGLCubemap* texture)
-//{
-//    glActiveTexture(GL_TEXTURE0 + textureUnit);
-//    if(texture)
-//    {
-//        if(mActiveTextureType[textureUnit] != GL_TEXTURE_CUBE_MAP && mActiveTextureType[textureUnit] != GL_ZERO)
-//            glBindTexture(mActiveTextureType[textureUnit], 0);
-//
-//        mActiveTextureType[textureUnit] = GL_TEXTURE_CUBE_MAP;
-//        texture->bind(textureUnit);
-//    }
-//    else if(mActiveTextureType[textureUnit] != GL_ZERO)
-//    {
-//        glBindTexture(mActiveTextureType[textureUnit], 0);
-//        mActiveTextureType[textureUnit] = GL_ZERO;
-//    }
-//    
-//    glActiveTexture(GL_TEXTURE0);
-//}
 
 void GFXOpenGL32Device::setMatrix( GFXMatrixType mtype, const MatrixF &mat )
 {
-    MatrixF modelview;
     switch (mtype)
     {
         case GFXMatrixWorld :
@@ -681,7 +589,7 @@ const MatrixF GFXOpenGL32Device::getMatrix( GFXMatrixType mtype )
     {
         case GFXMatrixWorld :
         {
-            return m_WorldStack.last();
+            return m_WorldStack.last().transpose();
         }
             break;
         case GFXMatrixView :
@@ -691,7 +599,7 @@ const MatrixF GFXOpenGL32Device::getMatrix( GFXMatrixType mtype )
             break;
         case GFXMatrixProjection :
         {
-            return m_ProjectionStack.last();
+            return m_ProjectionStack.last().transpose();
         }
             break;
             // CodeReview - Add support for texture transform matrix types
@@ -700,39 +608,6 @@ const MatrixF GFXOpenGL32Device::getMatrix( GFXMatrixType mtype )
     }
     return ret;
 }
-
-void GFXOpenGL32Device::setClipRect( const RectI &inRect )
-{
-    AssertFatal(mCurrentRT.isValid(), "GFXOpenGL32Device::setClipRect - must have a render target set to do any rendering operations!");
-    
-    // Clip the rect against the renderable size.
-    Point2I size = mCurrentRT->getSize();
-    RectI maxRect(Point2I(0,0), size);
-    mClip = inRect;
-    mClip.intersect(maxRect);
-    
-    // Create projection matrix.  See http://www.opengl.org/documentation/specs/man_pages/hardcopy/GL/html/gl/ortho.html
-    const F32 left = mClip.point.x;
-    const F32 right = mClip.point.x + mClip.extent.x;
-    const F32 bottom = mClip.extent.y;
-    const F32 top = 0.0f;
-    const F32 near = 0.0f;
-    const F32 far = 1.0f;
-   
-    MatrixF proj(true);
-    proj.setOrtho(left, right, bottom, top, near, far);
-    proj.translate(0.0, -mClip.point.y, 0.0f);
-    setMatrix(GFXMatrixProjection, proj);
-    
-    MatrixF mTempMatrix(true);
-    setViewMatrix( mTempMatrix );
-    setWorldMatrix( mTempMatrix );
-    
-    // Set the viewport to the clip rect
-    RectI viewport(mClip.point.x, size.y - (mClip.point.y + mClip.extent.y), mClip.extent.x, mClip.extent.y);
-    setViewport(viewport);
-}
-
 
 /// Creates a state block object based on the desc passed in.  This object
 /// represents an immutable state.
@@ -789,13 +664,6 @@ GFXTextureTarget * GFXOpenGL32Device::allocRenderToTextureTarget()
     return targ;
 }
 
-//GFXOcclusionQuery* GFXOpenGL32Device::createOcclusionQuery()
-//{
-//    GFXOcclusionQuery *query = new GFXOpenGLOcclusionQuery( this );
-//    query->registerResourceWithDevice(this);
-//    return query;
-//}
-
 void GFXOpenGL32Device::initGenericShaders()
 {
     Vector<GFXShaderMacro> macros;
@@ -849,16 +717,28 @@ void GFXOpenGL32Device::initGenericShaders()
 
 void GFXOpenGL32Device::setupGenericShaders( GenericShaderType type )
 {
-    MatrixF xform(GFX->getProjectionMatrix());
+//    Con::printf("setupGenericShaders");
+
+    MatrixF xform(GFX->getWorldMatrix());
+    Con::printf("worldMatrix");
+    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
+    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
+    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
+    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
     xform *= GFX->getViewMatrix();
-    xform *= GFX->getWorldMatrix();
+    Con::printf("viewMatrix");
+    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
+    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
+    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
+    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
+    xform *= GFX->getProjectionMatrix();
+    Con::printf("projectionMatrix");
+    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
+    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
+    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
+    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
     xform.transpose();
     
-//    Con::printf("setupGenericShaders");
-//    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
-//    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
-//    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
-//    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
     
     
     switch (type) {
@@ -973,7 +853,6 @@ void GFXOpenGL32Device::_updateRenderTargets()
             AssertFatal( win != NULL,
                         "GFXOpenGL32Device::_updateRenderTargets() - invalid target subclass passed!" );
             
-            GL_CHECK();
             win->makeActive();
             
             if( win->mContext != static_cast<GFXOpenGL32Device*>(GFX)->mContext )
@@ -1000,17 +879,17 @@ GFXFormat GFXOpenGL32Device::selectSupportedFormat(   GFXTextureProfile* profile
                                                bool mustblend,
                                                bool mustfilter )
 {
-//    for(U32 i = 0; i < formats.size(); i++)
-//    {
-//        // Single channel textures are not supported by FBOs.
-//        if(profile->testFlag(GFXTextureProfile::RenderTarget) && (formats[i] == GFXFormatA8 || formats[i] == GFXFormatL8 || formats[i] == GFXFormatL16))
-//            continue;
-//        if(GFXGLTextureInternalFormat[formats[i]] == GL_ZERO)
-//            continue;
-//        
-//        return formats[i];
-//    }
-//    
+    for(U32 i = 0; i < formats.size(); i++)
+    {
+        // Single channel textures are not supported by FBOs.
+        if(profile->testFlag(GFXTextureProfile::RenderTarget) && (formats[i] == GFXFormatA8 || formats[i] == GFXFormatL8 || formats[i] == GFXFormatL16))
+            continue;
+        if(GFXGLTextureInternalFormat[formats[i]] == GL_ZERO)
+            continue;
+        
+        return formats[i];
+    }
+    
     return GFXFormatR8G8B8A8;
 }
 
@@ -1028,15 +907,3 @@ public:
 
 static GFXOpenGLRegisterDevice pGLRegisterDevice;
 
-//-----------------------------------------------------------------------------
-
-
-void CheckOpenGLError(const char* stmt, const char* fname, int line)
-{
-    GLenum err = glGetError();
-    if (err != GL_NO_ERROR)
-    {
-        printf("OpenGL error %08x, at %s:%i - for %s\n", err, fname, line, stmt);
-        abort();
-    }
-}

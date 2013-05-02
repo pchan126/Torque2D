@@ -93,14 +93,8 @@ public:
     
    virtual void clear( U32 flags, ColorI color, F32 z, U32 stencil );
 
-   virtual void setClipRect( const RectI &rect );
-
-//   GFXFence *createFence();
-    
    virtual void updateStates(bool forceSetAll = false);
    
-//   GFXOcclusionQuery* createOcclusionQuery();
-
    GFXOpenGLESStateBlockRef getCurrentStateBlock() { return mCurrentGLStateBlock; }
    
    virtual void setupGenericShaders( GenericShaderType type = GSColor );
@@ -157,13 +151,12 @@ protected:
    virtual void setVertexDecl( const GFXVertexDecl *decl ) { }
 
    virtual void setVertexStream( U32 stream, GFXVertexBuffer *buffer );
-   virtual void setVertexStreamFrequency( U32 stream, U32 frequency );
 
 private:
    typedef GFXDevice Parent;
    
    friend class GFXOpenGLESTextureObject;
-   friend class GFXOpenGLESCubemap;
+//   friend class GFXOpenGLESCubemap;
    friend class GFXOpenGLESWindowTarget;
    friend class GFXOpenGLESVertexBuffer;
 
@@ -174,9 +167,7 @@ private:
    StrongRefPtr<GFXOpenGLESVertexBuffer> mCurrentVB;
    
    /// Since GL does not have separate world and view matrices we need to track them
-//    MatrixF m_mCurrentWorld;
     MatrixF m_mCurrentView;
-//    MatrixF m_mCurrentProj;
     GLKMatrixStackRef m_WorldStackRef;
     GLKMatrixStackRef m_ProjectionStackRef;
 
@@ -230,21 +221,7 @@ private:
    
    void initGLState(); ///< Guaranteed to be called after all extensions have been loaded, use to init card profiler, shader version, max samplers, etc.
    void initGenericShaders();
-
-private:
-    /// Gamma value
-    F32 mGamma;
 };
 
-void CheckOpenGLError(const char* stmt, const char* fname, int line);
-
-#ifdef TORQUE_DEBUG
-#define GL_CHECK(stmt) do { \
-stmt; \
-CheckOpenGLError(#stmt, __FILE__, __LINE__); \
-} while (0)
-#else
-#define GL_CHECK(stmt) stmt
-#endif
 
 #endif

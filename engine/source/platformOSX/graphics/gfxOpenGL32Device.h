@@ -35,8 +35,9 @@
 
 class GFXOpenGL32VertexBuffer;
 class GFXOpenGL32TextureTarget;
-class GFXOpenGL32Cubemap;
+//class GFXOpenGL32Cubemap;
 //class GLKMatrixStackRef;
+
 typedef uint32_t CGDirectDisplayID;
 @class NSOpenGLContext;
 @class NSOpenGLPixelFormat;
@@ -88,10 +89,9 @@ public:
 
    /// @name Shader functions
    /// @{
-    void* baseEffect;
-
     GFXOpenGL32Shader* mpCurrentShader;
     GFXOpenGL32Shader* mGenericShader[5];
+    
     GFXShaderConstBufferRef mGenericShaderConst[4];
     GFXStateBlockRef mGenericShaderStateblock[4];
     
@@ -114,13 +114,9 @@ public:
    virtual GFXOpenGL32Shader* createShader();
     
    virtual void clear( U32 flags, ColorI color, F32 z, U32 stencil );
-
-   virtual void setClipRect( const RectI &rect );
     
    virtual void updateStates(bool forceSetAll = false);
    
-//   GFXOcclusionQuery* createOcclusionQuery();
-
    GFXOpenGL32StateBlockRef getCurrentStateBlock() { return mCurrentGLStateBlock; }
    
    virtual void setupGenericShaders( GenericShaderType type = GSColor );
@@ -176,13 +172,12 @@ protected:
    virtual void setVertexDecl( const GFXVertexDecl *decl ) { }
 
    virtual void setVertexStream( U32 stream, GFXVertexBuffer *buffer );
-   virtual void setVertexStreamFrequency( U32 stream, U32 frequency );
 
 private:
    typedef GFXDevice Parent;
    
    friend class GFXOpenGL32TextureObject;
-   friend class GFXOpenGL32Cubemap;
+//   friend class GFXOpenGL32Cubemap;
    friend class GFXOpenGL32WindowTarget;
    friend class GFXOpenGL32VertexBuffer;
 
@@ -198,10 +193,6 @@ private:
     MatrixF m_mCurrentView;
     MatrixStack m_WorldStack;
     MatrixStack m_ProjectionStack;
-    
-    bool    mWorldMatrixDirty;
-    bool    mProjectionMatrixDirty;
-    bool    mViewMatrixDirty;
     
     /// Pushes the world matrix stack and copies the current top
     /// matrix to the new top of the stack
@@ -221,7 +212,6 @@ private:
    bool mSupportsAnisotropic;
    
     U32 mMaxShaderTextures;
-    U32 mMaxFFTextures;
 
    RectI mClip;
 
@@ -231,7 +221,10 @@ private:
    
    Vector< StrongRefPtr<GFXOpenGL32VertexBuffer> > mVolatileVBs; ///< Pool of existing volatile VBs so we can reuse previously created ones
     
-   GFXVertexBuffer* findVolatileVBO(U32 numVerts, const GFXVertexFormat *vertexFormat, U32 vertSize, void* data = NULL); ///< Returns an existing volatile VB which has >= numVerts and the same vert flags/size, or creates a new VB if necessary
+   GFXVertexBuffer* findVolatileVBO(U32 numVerts,
+                                    const GFXVertexFormat *vertexFormat,
+                                    U32 vertSize,
+                                    void* data = NULL); ///< Returns an existing volatile VB which has >= numVerts and the same vert flags/size, or creates a new VB if necessary
    
    void initGLState(); ///< Guaranteed to be called after all extensions have been loaded, use to init card profiler, shader version, max samplers, etc.
    
@@ -239,15 +232,5 @@ private:
     
 };
 
-void CheckOpenGLError(const char* stmt, const char* fname, int line);
-
-#ifdef TORQUE_DEBUG
-    #define GL_CHECK(stmt) do { \
-    stmt; \
-    CheckOpenGLError(#stmt, __FILE__, __LINE__); \
-} while (0)
-#else
-    #define GL_CHECK(stmt) stmt
-#endif
 
 #endif

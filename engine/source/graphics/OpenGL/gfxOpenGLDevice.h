@@ -90,7 +90,7 @@ public:
                                        U32 startIndex, 
                                        U32 primitiveCount );
 
-   virtual void setClipRect( const RectI &rect ) = 0;
+   virtual void setClipRect( const RectI &rect );
    virtual const RectI &getClipRect() const { return mClip; }
 
    virtual void preDestroy() { Parent::preDestroy(); }
@@ -162,7 +162,6 @@ protected:
    virtual void setVertexDecl( const GFXVertexDecl *decl ) { }
 
     virtual void setVertexStream( U32 stream, GFXVertexBuffer *buffer ) {};
-    virtual void setVertexStreamFrequency( U32 stream, U32 frequency ) {};
 
     GFXCullMode currentCullMode;
 

@@ -72,7 +72,6 @@ void GFXOpenGL32StateBlock::activate(const GFXOpenGL32StateBlock* oldState)
         return;
     
    // Blending
-//   CHECK_TOGGLE_STATE(blendEnable, GL_BLEND);
     if ((glIsEnabled(GL_BLEND) == GL_TRUE) && !mDesc.blendEnable)
         glDisable(GL_BLEND);
     if ((glIsEnabled(GL_BLEND) == GL_FALSE) && mDesc.blendEnable)
@@ -82,11 +81,6 @@ void GFXOpenGL32StateBlock::activate(const GFXOpenGL32StateBlock* oldState)
       glBlendFunc(GFXGLBlend[mDesc.blendSrc], GFXGLBlend[mDesc.blendDest]);
    if(STATE_CHANGE(blendOp))
       glBlendEquation(GFXGLBlendOp[mDesc.blendOp]);
-
-   // Alpha testing
-//   CHECK_TOGGLE_STATE(alphaTestEnable, GL_ALPHA_TEST);      
-//   if(STATE_CHANGE(alphaTestFunc) || STATE_CHANGE(alphaTestRef))
-//      glAlphaFunc(GFXGLCmpFunc[mDesc.alphaTestFunc], (F32) mDesc.alphaTestRef * 1.0f/255.0f);
 
    // Color write masks
    if(STATE_CHANGE(colorWriteRed) || STATE_CHANGE(colorWriteBlue) || STATE_CHANGE(colorWriteGreen) || STATE_CHANGE(colorWriteAlpha))

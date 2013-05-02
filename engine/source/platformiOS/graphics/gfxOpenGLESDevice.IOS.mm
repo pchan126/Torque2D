@@ -5,23 +5,21 @@
 
 #include "platform/platform.h"
 #import "platformiOS/platformiOS.h"
-#include "platformiOS/graphics/gfxOpenGLESDevice.h"
+#include "./gfxOpenGLESDevice.h"
 #import <GLKit/GLKit.h>
 
-//#include "graphics/gfxCubemap.h"
 #include "graphics/gfxDrawUtil.h"
 #include "graphics/gfxInit.h"
 
-#include "platformiOS/graphics/gfxOpenGLESEnumTranslate.h"
-#include "platformiOS/graphics/gfxOpenGLESVertexBuffer.h"
-#include "platformiOS/graphics/gfxOpenGLESTextureTarget.h"
-#include "platformiOS/graphics/gfxOpenGLESTextureManager.h"
-#include "platformiOS/graphics/gfxOpenGLESTextureObject.h"
-//#include "platformiOS/graphics/gfxOpenGLESCubemap.h"
-#include "platformiOS/graphics/gfxOpenGLESCardProfiler.h"
-#include "platformiOS/graphics/gfxOpenGLESWindowTarget.h"
+#include "./gfxOpenGLESEnumTranslate.h"
+#include "./gfxOpenGLESVertexBuffer.h"
+#include "./gfxOpenGLESTextureTarget.h"
+#include "./gfxOpenGLESTextureManager.h"
+#include "./gfxOpenGLESTextureObject.h"
+#include "./gfxOpenGLESCardProfiler.h"
+#include "./gfxOpenGLESWindowTarget.h"
 
-#include "platformiOS/graphics/gfxOpenGLESShader.h"
+#include "./gfxOpenGLESShader.h"
 #include "graphics/primBuilder.h"
 #include "console/console.h"
 #import <UIKit/UIKit.h>
@@ -67,15 +65,6 @@ void GFXOpenGLESDevice::initGLState()
 
     glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, (GLint*)&mMaxShaderTextures);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    
-    mPixelShaderVersion = 2.0f;
-    
-    // MACHAX - Setting mPixelShaderVersion to 3.0 will allow Advanced Lighting
-    // to run.  At the time of writing (6/18) it doesn't quite work yet.
-    if(Con::getBoolVariable("$pref::machax::enableAdvancedLighting", false))
-        mPixelShaderVersion = 3.0f;
-    
-    mSupportsAnisotropic = mCardProfiler->queryProfile( "GL::suppAnisotropic" );
 }
 
 
@@ -84,13 +73,11 @@ void GFXOpenGLESDevice::initGLState()
 GFXOpenGLESDevice::GFXOpenGLESDevice( U32 adapterIndex ) : GFXOpenGLDevice( adapterIndex ),
                     mAdapterIndex(adapterIndex),
                     mCurrentVB(NULL),
-//                    m_mCurrentWorld(true),
                     m_mCurrentView(true),
                     mContext(nil),
                     mPixelFormat(NULL),
                     mPixelShaderVersion(0.0f),
                     mMaxShaderTextures(2),
-//                    mMaxFFTextures(2),
                     mClip(0, 0, 0, 0),
                     mTextureLoader(NULL)
 {
@@ -225,16 +212,6 @@ inline void GFXOpenGLESDevice::multWorld( const MatrixF &mat )
     GLKMatrixStackMultiplyMatrix4(m_WorldStackRef, GLKMatrix4MakeWithArray(mat));
 }
 
-//inline void GFXOpenGLESDevice::setTextureMatrix( const U32 stage, const MatrixF &texMat )
-//{
-//    AssertFatal( stage < TEXTURE_STAGE_COUNT, "Out of range texture sampler" );
-//    mStateDirty = true;
-//    mTextureMatrixDirty[stage] = true;
-//    mTextureMatrix[stage] = texMat;
-//    mTextureMatrixCheckDirty = true;
-//}
-
-
 
 void GFXOpenGLESDevice::zombify()
 {
@@ -296,10 +273,6 @@ void GFXOpenGLESDevice::setVertexStream( U32 stream, GFXVertexBuffer *buffer )
         mCurrentVB->prepare();
 }
 
-void GFXOpenGLESDevice::setVertexStreamFrequency( U32 stream, U32 frequency )
-{
-    // We don't support vertex stream frequency or mesh instancing in OGL yet.
-}
 
 //GFXCubemap* GFXOpenGLESDevice::createCubemap()
 //{
@@ -355,27 +328,11 @@ void GFXOpenGLESDevice::updateStates(bool forceSetAll /*=false*/)
             rememberToEndScene = true;
         }
         
-       MatrixF temp(GLKMatrixStackGetMatrix4(m_ProjectionStackRef).m);
-       temp.transpose();
-       setMatrix( GFXMatrixProjection, temp);
-//       mProjectionMatrixDirty = false;
-
-       MatrixF temp2(GLKMatrixStackGetMatrix4(m_WorldStackRef).m);
-       temp2.transpose();
-       setMatrix( GFXMatrixWorld, temp2);
-//       mWorldMatrixDirty = false;
-
-//       MatrixF temp3(GLKMatrixStackGetMatrix4(m_ProjectionStackRef).m);
-//       temp3.transpose();
-//       setMatrix( GFXMatrixProjection, temp3);
-//       mProjectionMatrixDirty = false;
-
         setVertexDecl( mCurrVertexDecl );
         
         for ( U32 i=0; i < VERTEX_STREAM_COUNT; i++ )
         {
             setVertexStream( i, mCurrentVertexBuffer[i] );
-            setVertexStreamFrequency( i, mVertexBufferFrequency[i] );
         }
         
         /// Stateblocks
@@ -431,31 +388,6 @@ void GFXOpenGLESDevice::updateStates(bool forceSetAll /*=false*/)
     // Normal update logic begins here.
     mStateDirty = false;
     
-//   // Update Projection Matrix
-//   if( mProjectionMatrixDirty )
-//   {
-//       MatrixF temp(GLKMatrixStackGetMatrix4(m_ProjectionStackRef).m);
-//       temp.transpose();
-//        setMatrix( GFXMatrixProjection, temp);
-//        mProjectionMatrixDirty = false;
-//   }
-//    
-//   // Update World Matrix
-//   if( mWorldMatrixDirty)
-//   {
-//       MatrixF temp(GLKMatrixStackGetMatrix4(m_WorldStackRef).m);
-//       temp.transpose();
-//       setMatrix( GFXMatrixWorld, temp);
-//
-//       mWorldMatrixDirty = false;
-//   }
-    
-//    if ( mViewMatrixDirty )
-//    {
-//        setMatrix( GFXMatrixView, m_mCurrentView)
-//        mViewMatrixDirty = false;
-//    }
-    
     // Update the vertex declaration.
     if ( mVertexDeclDirty )
     {
@@ -474,7 +406,6 @@ void GFXOpenGLESDevice::updateStates(bool forceSetAll /*=false*/)
         
         if ( mVertexBufferFrequencyDirty[i] )
         {
-            setVertexStreamFrequency( i, mVertexBufferFrequency[i] );
             mVertexBufferFrequencyDirty[i] = false;
         }
     }
@@ -574,32 +505,9 @@ void GFXOpenGLESDevice::setTextureInternal(U32 textureUnit, const GFXTextureObje
     glActiveTexture(GL_TEXTURE0);
 }
 
-//void GFXOpenGLESDevice::setCubemapInternal(U32 textureUnit, const GFXOpenGLESCubemap* texture)
-//{
-//    glActiveTexture(GL_TEXTURE0 + textureUnit);
-//    if(texture)
-//    {
-//        if(mActiveTextureType[textureUnit] != GL_TEXTURE_CUBE_MAP && mActiveTextureType[textureUnit] != GL_ZERO)
-//        {
-//            glBindTexture(mActiveTextureType[textureUnit], 0);
-////            glDisable(mActiveTextureType[textureUnit]);
-//        }
-//        mActiveTextureType[textureUnit] = GL_TEXTURE_CUBE_MAP;
-//        texture->bind(textureUnit);
-//    }
-//    else if(mActiveTextureType[textureUnit] != GL_ZERO)
-//    {
-//        glBindTexture(mActiveTextureType[textureUnit], 0);
-////        glDisable(mActiveTextureType[textureUnit]);
-//        mActiveTextureType[textureUnit] = GL_ZERO;
-//    }
-//    
-//    glActiveTexture(GL_TEXTURE0);
-//}
 
 void GFXOpenGLESDevice::setMatrix( GFXMatrixType mtype, const MatrixF &mat )
 {
-    MatrixF modelview;
     switch (mtype)
     {
         case GFXMatrixWorld :
@@ -654,36 +562,6 @@ const MatrixF GFXOpenGLESDevice::getMatrix( GFXMatrixType mtype )
     return ret;
 }
 
-void GFXOpenGLESDevice::setClipRect( const RectI &inRect )
-{
-    AssertFatal(mCurrentRT.isValid(), "GFXOpenGLESDevice::setClipRect - must have a render target set to do any rendering operations!");
-    
-    // Clip the rect against the renderable size.
-    Point2I size = mCurrentRT->getSize();
-    RectI maxRect(Point2I(0,0), size);
-    mClip = inRect;
-    mClip.intersect(maxRect);
-    
-    // Create projection matrix.  See http://www.opengl.org/documentation/specs/man_pages/hardcopy/GL/html/gl/ortho.html
-    const F32 left = mClip.centre().x - (mClip.extent.x)/2;
-    const F32 right = mClip.centre().x + (mClip.extent.x)/2;
-    const F32 bottom = mClip.centre().y + mClip.extent.y / 2;
-    const F32 top = mClip.centre().y - mClip.extent.y / 2;
-    const F32 near = 0.0f;
-    const F32 far = 1.0f;
-    
-    MatrixF projection(true);
-    projection.setOrtho(left, right, bottom, top, near, far);
-    setMatrix(GFXMatrixProjection, projection);
-    
-    MatrixF mTempMatrix(true);
-    setViewMatrix( mTempMatrix );
-    setWorldMatrix( mTempMatrix );
-    
-    // Set the viewport to the clip rect (with y flip)
-    RectI viewport(mClip.point.x, size.y - (mClip.point.y + mClip.extent.y), mClip.extent.x, mClip.extent.y);
-    setViewport(viewport);
-}
 
 /// Creates a state block object based on the desc passed in.  This object
 /// represents an immutable state.
@@ -730,28 +608,6 @@ GFXTextureTarget * GFXOpenGLESDevice::allocRenderToTextureTarget()
     return targ;
 }
 
-//GFXFence * GFXOpenGLESDevice::createFence()
-//{
-//    GFXFence* fence = _createPlatformSpecificFence();
-//    if(!fence)
-//        fence = new GFXGeneralFence( this );
-//    
-//    fence->registerResourceWithDevice(this);
-//    return fence;
-//}
-//
-//
-//GFXFence* GFXOpenGLESDevice::_createPlatformSpecificFence()
-//{
-//    return NULL;
-//}
-//
-//GFXOcclusionQuery* GFXOpenGLESDevice::createOcclusionQuery()
-//{
-//    GFXOcclusionQuery *query = new GFXOpenGLESOcclusionQuery( this );
-//    query->registerResourceWithDevice(this);
-//    return query;
-//}
 
 void GFXOpenGLESDevice::initGenericShaders()
 {
@@ -805,10 +661,25 @@ void GFXOpenGLESDevice::initGenericShaders()
 
 void GFXOpenGLESDevice::setupGenericShaders( GenericShaderType type )
 {
-//    MatrixF xform(GFX->getProjectionMatrix());
     MatrixF xform(GFX->getWorldMatrix());
+    Con::printf("worldMatrix");
+    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
+    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
+    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
+    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
     xform *= GFX->getViewMatrix();
-    xform *= GFX->getProjectionMatrix();
+    Con::printf("viewMatrix");
+    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
+    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
+    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
+    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
+    xform = GFX->getProjectionMatrix();
+    Con::printf("projectionMatrix");
+    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
+    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
+    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
+    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
+    
     xform.transpose();
     
     switch (type) {
@@ -980,18 +851,4 @@ public:
 };
 
 static GFXOpenGLESRegisterDevice pGLRegisterDevice;
-
-//ConsoleFunction(cycleResources, void, 1, 1, "")
-//{
-//   static_cast<GFXOpenGLESDevice*>(GFX)->zombify();
-//   static_cast<GFXOpenGLESDevice*>(GFX)->resurrect();
-//}
-
-
-//U32 GFXOpenGLESDevice::getTotalVideoMemory()
-//{
-//    // CodeReview [ags 12/21/07] Figure out how to do this.
-//    return 0;
-//}
-
 

@@ -137,6 +137,37 @@ void GFXOpenGLDevice::drawIndexedPrimitive(   GFXPrimitiveType primType,
 }
 
 
+void GFXOpenGLDevice::setClipRect( const RectI &inRect )
+{
+    AssertFatal(mCurrentRT.isValid(), "GFXOpenGLESDevice::setClipRect - must have a render target set to do any rendering operations!");
+    
+    // Clip the rect against the renderable size.
+    Point2I size = mCurrentRT->getSize();
+    RectI maxRect(Point2I(0,0), size);
+    mClip = inRect;
+    mClip.intersect(maxRect);
+    
+    // Create projection matrix.  See http://www.opengl.org/documentation/specs/man_pages/hardcopy/GL/html/gl/ortho.html
+    const F32 left = mClip.centre().x - (mClip.extent.x)/2;
+    const F32 right = mClip.centre().x + (mClip.extent.x)/2;
+    const F32 bottom = mClip.centre().y + mClip.extent.y / 2;
+    const F32 top = mClip.centre().y - mClip.extent.y / 2;
+    const F32 near = 0.0f;
+    const F32 far = 1.0f;
+    
+    MatrixF projection(true);
+    projection.setOrtho(left, right, bottom, top, near, far);
+    setMatrix(GFXMatrixProjection, projection);
+    
+    MatrixF mTempMatrix(true);
+    setViewMatrix( mTempMatrix );
+    setWorldMatrix( mTempMatrix );
+    
+    // Set the viewport to the clip rect (with y flip)
+    RectI viewport(mClip.point.x, size.y - (mClip.point.y + mClip.extent.y), mClip.extent.x, mClip.extent.y);
+    setViewport(viewport);
+}
+
 
 void GFXOpenGLDevice::setLightInternal(U32 lightStage, const GFXLightInfo light, bool lightEnable)
 {
@@ -192,5 +223,18 @@ void GFXOpenGLDevice::setLightMaterialInternal(const GFXLightMaterial mat)
 void GFXOpenGLDevice::setGlobalAmbientInternal(ColorF color)
 {
     //   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, (GLfloat*)&color);
+}
+
+//-----------------------------------------------------------------------------
+
+
+void CheckOpenGLError(const char* stmt, const char* fname, int line)
+{
+    GLenum err = glGetError();
+    if (err != GL_NO_ERROR)
+    {
+        printf("OpenGL error %08x, at %s:%i - for %s\n", err, fname, line, stmt);
+        abort();
+    }
 }
 
