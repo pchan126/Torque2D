@@ -99,7 +99,6 @@ StringTableEntry gMasterAddress;
 static F32 gTimeScale = 1.0;
 static U32 gTimeAdvance = 0;
 static U32 gFrameSkip = 0;
-static U32 gFrameCount = 0;
 
 // Reset frames stats.
 static F32 framePeriod = 0.0f;

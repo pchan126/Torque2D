@@ -65,7 +65,7 @@ public:
 protected:
     
     /// Label to display on rollout header.
-    String mCaption;
+    StringTableEntry mCaption;
     
     RectI mHeader;
     RectI mExpanded;

@@ -56,7 +56,7 @@ void GuiBitmapCtrl::initPersistFields()
    Parent::initPersistFields();
    addGroup("GuiBitmapCtrl");		
    addProtectedField( "bitmap", TypeFilename, Offset( mBitmapName, GuiBitmapCtrl ), &setBitmapName, &defaultProtectedGetFn, "" );
-   //addField("bitmap", TypeFilename, Offset(mBitmapName, GuiBitmapCtrl));
+   addField("bitmap", TypeRealString, Offset(mBitmapName, GuiBitmapCtrl));
    addField("wrap",   TypeBool,     Offset(mWrap,       GuiBitmapCtrl));
    endGroup("GuiBitmapCtrl");		
 
