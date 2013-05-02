@@ -88,34 +88,6 @@ bool GBitmap::readPNGiPhone(Stream& io_rStream)
 }
 
 
-//Luma:	Orientation support
-int _iOSGameGetOrientation()
-{
-    return giOSGameCurrentOrientation;
-}
-void _iOSGameSetCurrentOrientation(int iOrientation)
-{
-    giOSGameCurrentOrientation = iOrientation;
-}
-
-S32 _iOSGetPortraitTouchoffset()
-{
-    S32 offset = 0;
-    
-    S32 deviceType = Con::getIntVariable("$pref::iOS::DeviceType");
-    
-    bool retinaEnabled = Con::getBoolVariable("$pref::iOS::RetinaEnabled");
-    
-    if (deviceType == 2)
-        offset = 500;
-    else if (deviceType == 1)
-        offset = retinaEnabled ? 500 : 250;
-    else
-        offset = retinaEnabled ? 320 : 160;
-    
-    return offset;
-}
-
 //Luma: Ability to get the Local IP (Internal IP) for an iOS as opposed to it's External one
 void _iOSGetLocalIP(unsigned char *pcIPString)
 {

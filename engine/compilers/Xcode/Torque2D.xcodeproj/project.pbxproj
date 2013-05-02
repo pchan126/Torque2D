@@ -177,7 +177,6 @@
 		866381DC165556AD00C8C551 /* osxMath.mm in Sources */ = {isa = PBXBuildFile; fileRef = 866381DB165556AD00C8C551 /* osxMath.mm */; };
 		866381E51655615200C8C551 /* osxInput.mm in Sources */ = {isa = PBXBuildFile; fileRef = 866381E41655615200C8C551 /* osxInput.mm */; };
 		866381E91655674B00C8C551 /* osxTime.mm in Sources */ = {isa = PBXBuildFile; fileRef = 866381E81655674B00C8C551 /* osxTime.mm */; };
-		8694ADC81656B06B0080ABAC /* osxEvents.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8694ADC51656B06B0080ABAC /* osxEvents.mm */; };
 		86C281CD16A4307E00F030F4 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 86C281CB16A4307E00F030F4 /* MainMenu.xib */; };
 		86D76F791656868D0046D71F /* AnimationAsset.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7E7716518D4600D96ADF /* AnimationAsset.cc */; };
 		86D76F7B1656868D0046D71F /* ImageAsset.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7E7C16518D4600D96ADF /* ImageAsset.cc */; };
@@ -774,8 +773,6 @@
 		866381DB165556AD00C8C551 /* osxMath.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxMath.mm; sourceTree = "<group>"; };
 		866381E41655615200C8C551 /* osxInput.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxInput.mm; sourceTree = "<group>"; };
 		866381E81655674B00C8C551 /* osxTime.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxTime.mm; sourceTree = "<group>"; };
-		8694ADC41656B06B0080ABAC /* osxEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxEvents.h; sourceTree = "<group>"; };
-		8694ADC51656B06B0080ABAC /* osxEvents.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxEvents.mm; sourceTree = "<group>"; };
 		869FF8B81651518C002FE082 /* Torque2D_DEBUG.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Torque2D_DEBUG.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		869FF8BC1651518C002FE082 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		869FF8BF1651518C002FE082 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -1922,8 +1919,6 @@
 				865A235916518AD300527C44 /* main.mm */,
 				8652C278165586520052D0CB /* osxAudio.mm */,
 				8658B171165A7BFB0087ABC1 /* osxCPU.mm */,
-				8694ADC41656B06B0080ABAC /* osxEvents.h */,
-				8694ADC51656B06B0080ABAC /* osxEvents.mm */,
 				8609FE3216556F22004662ED /* osxFileDialogs.mm */,
 				866381D7165550FF00C8C551 /* osxFileIO.mm */,
 				8609FE37165572EC004662ED /* osxFont.mm */,
@@ -3590,7 +3585,6 @@
 				8609FE38165572EC004662ED /* osxFont.mm in Sources */,
 				8652C279165586520052D0CB /* osxAudio.mm in Sources */,
 				2ABF5C8F16569A0C00BBBF1D /* osxMutex.mm in Sources */,
-				8694ADC81656B06B0080ABAC /* osxEvents.mm in Sources */,
 				8658B174165A7BFB0087ABC1 /* osxCPU.mm in Sources */,
 				8658B175165A7BFB0087ABC1 /* osxNetwork.mm in Sources */,
 				8658B176165A7BFB0087ABC1 /* osxString.mm in Sources */,

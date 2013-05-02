@@ -56,7 +56,12 @@ bool _iOSTorqueFatalError = false;
                                               object:nil];
     
     iOSPlatState * platState = [iOSPlatState sharedPlatState];
-    [platState runTorque2D];
+   BOOL initialResult = [platState initializeTorque2D];
+   if (!initialResult)
+   {
+		Game->mainShutdown();
+		exit(0);
+   }
     return TRUE;
 }
 

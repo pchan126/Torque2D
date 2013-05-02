@@ -27,21 +27,6 @@
 #include "network/tcpObject.h"
 
 
-
-//Luma:	Orientation support
-/*enum iOSOrientation
-{
-	iOSOrientationUnkown,				//All applications start in this state
-	iOSOrientationLandscapeLeft,			//The home button is on the RIGHT
-	iOSOrientationLandscapeRight,		//The home button is on the LEFT
-	iOSOrientationPortrait,				//The home button is on the bottom
-	iOSOrientationPortraitUpsideDown		//The home button is on the top
-};*/
-
-int _iOSGameGetOrientation();	
-void _iOSGameSetCurrentOrientation(int iOrientation);	
-S32 _iOSGetPortraitTouchoffset();
-
 //Luma: Ability to get the Local IP (Internal IP) for an iOS as opposed to it's External one
 void _iOSGetLocalIP(unsigned char *pcIPString);
 

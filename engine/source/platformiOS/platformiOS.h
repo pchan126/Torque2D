@@ -115,7 +115,6 @@
 + (id)sharedPlatState;
 
 - (BOOL)initializeTorque2D;
-- (void)runTorque2D;
 - (void)shutDownTorque2D;
 
 - (void)updateWindowTitle:(const char*)title;

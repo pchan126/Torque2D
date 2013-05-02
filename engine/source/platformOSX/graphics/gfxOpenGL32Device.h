@@ -192,31 +192,16 @@ private:
    
    StrongRefPtr<GFXOpenGL32VertexBuffer> mCurrentVB;
    
+   typedef Vector<MatrixF> MatrixStack;
+
    /// Since GL does not have separate world and view matrices we need to track them
-    MatrixF m_mCurrentWorld;
     MatrixF m_mCurrentView;
-    MatrixF m_mCurrentProj;
-    typedef Vector<MatrixF> MatrixStack;
     MatrixStack m_WorldStack;
     MatrixStack m_ProjectionStack;
     
-    
-//    GLKMatrixStackRef m_WorldStackRef;
-//    GLKMatrixStackRef m_ProjectionStackRef;
-
-//    MatrixF mWorldMatrix[WORLD_STACK_MAX];
     bool    mWorldMatrixDirty;
-//    S32     mWorldStackSize;
-    
-//    MatrixF mProjectionMatrix;
     bool    mProjectionMatrixDirty;
-    
-//    MatrixF mViewMatrix;
     bool    mViewMatrixDirty;
-    
-//    MatrixF mTextureMatrix[TEXTURE_STAGE_COUNT];
-//    bool    mTextureMatrixDirty;
-//    bool    mTextureMatrixCheckDirty;
     
     /// Pushes the world matrix stack and copies the current top
     /// matrix to the new top of the stack

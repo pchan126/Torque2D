@@ -28,7 +28,6 @@
 #pragma mark ---- IOSPlatState Implementation ----
 
 @interface iOSPlatState (PrivateMethods)
-- (void)mainTorqueLoop:(NSTimer *)obj;
 @end
 
 @implementation iOSPlatState
@@ -200,42 +199,6 @@ bool gScreenUpsideDown = true;
     return Game->mainInitialize(_argc, _argv);
 }
 
-//-----------------------------------------------------------------------------
-// Runs the main Game instance and any other looping calls you need to perform
-- (void) mainTorqueLoop:(NSTimer *)obj
-{
-//    if(Game->isRunning())
-//    {
-//        Game->mainLoop();
-//    }
-//    else
-//    {
-//		Game->mainShutdown();
-//        
-//		// Need to actually exit the application now
-//		exit(0);
-//    }
-}
-
-//-----------------------------------------------------------------------------
-// Entry function for running Torque 2D
-- (void) runTorque2D
-{
-    BOOL initialResult = [self initializeTorque2D];
-    
-    if (initialResult)
-    {
-        // Setting the interval to 1ms to handle Box2D and rendering        
-        _iOSTimer = [NSTimer scheduledTimerWithTimeInterval:0.001 target:self selector:@selector(mainTorqueLoop:) userInfo:self repeats:YES];
-    }
-    else
-    {
-		Game->mainShutdown();
-        
-		// Need to actually exit the application now
-		exit(0);
-    }
-}
 
 //-----------------------------------------------------------------------------
 // Shut down the main Game instancea nd perform any additional cleanup

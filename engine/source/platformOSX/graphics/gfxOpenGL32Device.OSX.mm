@@ -85,8 +85,6 @@ void GFXOpenGL32Device::initGLState()
 GFXOpenGL32Device::GFXOpenGL32Device( U32 adapterIndex )  : GFXOpenGLDevice( adapterIndex ),
                         mAdapterIndex(adapterIndex),
                         mCurrentVB(NULL),
-                        m_mCurrentWorld(true),
-                        m_mCurrentView(true),
                         mContext(nil),
                         mPixelFormat(NULL),
                         mPixelShaderVersion(0.0f),
@@ -500,8 +498,8 @@ void GFXOpenGL32Device::updateStates(bool forceSetAll /*=false*/)
 //       if ( mWorldMatrixDirty) // && !mViewMatrixDirty)
 //           m_mCurrentView = temp.inverse() * m_mCurrentWorld;
 //        else
-       MatrixF temp = m_WorldStack.last();
-       m_mCurrentWorld = temp;
+//       MatrixF temp = m_WorldStack.last();
+//       m_mCurrentWorld = temp;
 
        mWorldMatrixDirty = false;
    }
@@ -655,28 +653,17 @@ void GFXOpenGL32Device::setMatrix( GFXMatrixType mtype, const MatrixF &mat )
     {
         case GFXMatrixWorld :
         {
-            m_mCurrentWorld = mat;
-            modelview = m_mCurrentWorld;
             m_WorldStack.last() = mat;
-//            modelview *= m_mCurrentView;
-//            GLKMatrixStackLoadMatrix4(m_WorldStackRef, GLKMatrix4MakeWithArrayAndTranspose(modelview));
         }
             break;
         case GFXMatrixView :
         {
             m_mCurrentView = mat;
-//            m_ProjectionStack.last() = mat;
-//            modelview = m_mCurrentView;
-//            modelview *= m_mCurrentWorld;
-//            GLKMatrixStackLoadMatrix4(m_WorldStackRef, GLKMatrix4MakeWithArrayAndTranspose(modelview));
-//            m_m
         }
             break;
         case GFXMatrixProjection :
         {
-            m_mCurrentProj = mat;
             m_ProjectionStack.last() = mat;
-//            GLKMatrixStackLoadMatrix4(m_ProjectionStackRef, GLKMatrix4MakeWithArrayAndTranspose(mat));
         }
             break;
             // CodeReview - Add support for texture transform matrix types
@@ -694,7 +681,7 @@ const MatrixF GFXOpenGL32Device::getMatrix( GFXMatrixType mtype )
     {
         case GFXMatrixWorld :
         {
-            return m_mCurrentWorld;
+            return m_WorldStack.last();
         }
             break;
         case GFXMatrixView :
@@ -704,7 +691,7 @@ const MatrixF GFXOpenGL32Device::getMatrix( GFXMatrixType mtype )
             break;
         case GFXMatrixProjection :
         {
-            return m_mCurrentProj;
+            return m_ProjectionStack.last();
         }
             break;
             // CodeReview - Add support for texture transform matrix types
@@ -731,10 +718,11 @@ void GFXOpenGL32Device::setClipRect( const RectI &inRect )
     const F32 top = 0.0f;
     const F32 near = 0.0f;
     const F32 far = 1.0f;
-    
-    m_mCurrentProj.setOrtho(left, right, bottom, top, near, far);
-    m_mCurrentProj.translate(0.0, -mClip.point.y, 0.0f);
-    setMatrix(GFXMatrixProjection, m_mCurrentProj);
+   
+    MatrixF proj(true);
+    proj.setOrtho(left, right, bottom, top, near, far);
+    proj.translate(0.0, -mClip.point.y, 0.0f);
+    setMatrix(GFXMatrixProjection, proj);
     
     MatrixF mTempMatrix(true);
     setViewMatrix( mTempMatrix );
