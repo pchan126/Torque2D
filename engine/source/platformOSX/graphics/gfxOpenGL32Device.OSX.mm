@@ -720,23 +720,23 @@ void GFXOpenGL32Device::setupGenericShaders( GenericShaderType type )
 //    Con::printf("setupGenericShaders");
 
     MatrixF xform(GFX->getWorldMatrix());
-    Con::printf("worldMatrix");
-    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
-    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
-    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
-    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
+//    Con::printf("worldMatrix");
+//    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
+//    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
+//    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
+//    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
     xform *= GFX->getViewMatrix();
-    Con::printf("viewMatrix");
-    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
-    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
-    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
-    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
+//    Con::printf("viewMatrix");
+//    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
+//    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
+//    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
+//    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
     xform *= GFX->getProjectionMatrix();
-    Con::printf("projectionMatrix");
-    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
-    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
-    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
-    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
+//    Con::printf("projectionMatrix");
+//    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
+//    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
+//    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
+//    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
     xform.transpose();
     
     

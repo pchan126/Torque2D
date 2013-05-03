@@ -1345,7 +1345,10 @@ void SceneWindow::calculateCameraMount( const F32 elapsedTime )
 
     // Mount the angle?
     if ( mMountAngle )
+    {
         mCameraCurrent.mCameraAngle = -mpMountedTo->getAngle();
+//getRenderAngle
+    }
 
     // Rigid Mount?
     if ( mIsZero( mMountForce ) )

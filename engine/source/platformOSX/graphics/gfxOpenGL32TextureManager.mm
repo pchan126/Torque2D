@@ -59,24 +59,24 @@ GFXOpenGL32TextureManager::~GFXOpenGL32TextureManager()
 }
 
 // build texture from GBitmap
-//GFXTextureObject *GFXOpenGL32TextureManager::createTexture(  GBitmap *bmp,
-//                                        const String &resourceName,
-//                                        GFXTextureProfile *profile,
-//                                        bool deleteBmp)
-//{
-//    AssertFatal(bmp, "GFXTextureManager::createTexture() - Got NULL bitmap!");
-//    
-//    GFXTextureObject *cacheHit = _lookupTexture( resourceName, profile );
-//    if( cacheHit != NULL)
-//    {
-//        // Con::errorf("Cached texture '%s'", (resourceName.isNotEmpty() ? resourceName.c_str() : "unknown"));
-//        if (deleteBmp)
-//            delete bmp;
-//        return cacheHit;
-//    }
-//    
-//    return _createTexture( bmp, resourceName, profile, deleteBmp, NULL );
-//}
+GFXTextureObject *GFXOpenGL32TextureManager::createTexture(  GBitmap *bmp,
+                                        const String &resourceName,
+                                        GFXTextureProfile *profile,
+                                        bool deleteBmp)
+{
+    AssertFatal(bmp, "GFXTextureManager::createTexture() - Got NULL bitmap!");
+    
+    GFXTextureObject *cacheHit = _lookupTexture( resourceName, profile );
+    if( cacheHit != NULL)
+    {
+        // Con::errorf("Cached texture '%s'", (resourceName.isNotEmpty() ? resourceName.c_str() : "unknown"));
+        if (deleteBmp)
+            delete bmp;
+        return cacheHit;
+    }
+    
+    return _createTexture( bmp, resourceName, profile, deleteBmp, NULL );
+}
 
 //GFXTextureObject *GFXOpenGL32TextureManager::createTexture(  U32 width,
 //                                        U32 height,
@@ -106,6 +106,148 @@ GFXOpenGL32TextureManager::~GFXOpenGL32TextureManager()
 //{
 //    
 //}
+
+GFXTextureObject *GFXOpenGL32TextureManager::_createTexture(  GBitmap *bmp,
+                                                            const String &resourceName,
+                                                            GFXTextureProfile *profile,
+                                                            bool deleteBmp,
+                                                            GFXTextureObject *inObj )
+{
+   PROFILE_SCOPE( GFXOpenGLESTextureManager_CreateTexture_Bitmap );
+   
+#ifdef DEBUG_SPEW
+   Platform::outputDebugString( "[GFXTextureManager] _createTexture (GBitmap) '%s'",
+                               resourceName.c_str()
+                               );
+#endif
+   
+   // Massage the bitmap based on any resize rules.
+   U32 scalePower = getTextureDownscalePower( profile );
+   
+   GBitmap *realBmp = bmp->createPowerOfTwoBitmap();
+   U32 realWidth = bmp->getWidth();
+   U32 realHeight = bmp->getHeight();
+   
+   if (  scalePower &&
+       isPow2(bmp->getWidth()) &&
+       isPow2(bmp->getHeight()) &&
+       profile->canDownscale() )
+   {
+      // We only work with power of 2 textures for now, so we
+      // don't have to worry about padding.
+      
+      GBitmap *padBmp = bmp;
+      padBmp->extrudeMipLevels();
+      scalePower = getMin( scalePower, padBmp->getNumMipLevels() - 1 );
+      
+      realWidth  = getMax( (U32)1, padBmp->getWidth() >> scalePower );
+      realHeight = getMax( (U32)1, padBmp->getHeight() >> scalePower );
+      realBmp = new GBitmap( realWidth, realHeight, false, bmp->getFormat() );
+      
+      // Copy to the new bitmap...
+      dMemcpy( realBmp->getWritableBits(),
+              padBmp->getBits(scalePower),
+              padBmp->mBytesPerPixel * realWidth * realHeight );
+      
+      // This line is commented out because createPaddedBitmap is commented out.
+      // If that line is added back in, this line should be added back in.
+      // delete padBmp;
+   }
+   
+   // Call the internal create... (use the real* variables now, as they
+   // reflect the reality of the texture we are creating.)
+   U32 numMips = 0;
+   GFXFormat realFmt = realBmp->getFormat();
+   _validateTexParams( realWidth, realHeight, profile, numMips, realFmt );
+   
+   GFXTextureObject *ret;
+   if ( inObj )
+   {
+      // If the texture has changed in dimensions
+      // then we need to recreate it.
+      if (  inObj->getWidth() != realWidth ||
+          inObj->getHeight() != realHeight ||
+          inObj->getFormat() != realFmt )
+         ret = _createTextureObject( realHeight, realWidth, 0, realFmt, profile, numMips, false, 0, inObj );
+      else
+         ret = inObj;
+   }
+   else
+      ret = _createTextureObject(realHeight, realWidth, 0, realFmt, profile, numMips );
+   
+   if(!ret)
+   {
+      Con::errorf("GFXTextureManager - failed to create texture (1) for '%s'", (resourceName.isNotEmpty() ? resourceName.c_str() : "unknown"));
+      return NULL;
+   }
+   
+   GFXOpenGL32TextureObject* retTex = dynamic_cast<GFXOpenGL32TextureObject*>(ret);
+   
+   if (realBmp != bmp && retTex)
+      retTex->mIsNPoT2 = true;
+   
+   
+   // Extrude mip levels
+   // Don't do this for fonts!
+   if( ret->mMipLevels > 1 && ( realBmp->getNumMipLevels() == 1 ) && ( realBmp->getFormat() != GFXFormatA8 ) &&
+      isPow2( realBmp->getHeight() ) && isPow2( realBmp->getWidth() ) && !profile->noMip() )
+   {
+      // NOTE: This should really be done by extruding mips INTO a DDS file instead
+      // of modifying the gbitmap
+      realBmp->extrudeMipLevels(false);
+   }
+   
+   
+   if (!_loadTexture( ret, realBmp ))
+   {
+      Con::errorf("GFXTextureManager - failed to load GBitmap for '%s'", (resourceName.isNotEmpty() ? resourceName.c_str() : "unknown"));
+      return NULL;
+   }
+   
+   // Do statistics and book-keeping...
+   
+   //    - info for the texture...
+   ret->mTextureLookupName = resourceName;
+   ret->mBitmapSize.set(realWidth, realHeight,0);
+   
+#ifdef TORQUE_DEBUG
+   if (resourceName.isNotEmpty())
+      ret->mDebugDescription = resourceName;
+   else
+      ret->mDebugDescription = "Anonymous Texture Object";
+   
+#endif
+   
+   if(profile->doStoreBitmap())
+   {
+      // NOTE: may store a downscaled copy!
+      SAFE_DELETE( ret->mBitmap );
+      ret->mBitmap = new GBitmap( *realBmp );
+   }
+   
+   if ( !inObj )
+      _linkTexture( ret );
+   
+   //    - output debug info?
+   // Save texture for debug purpose
+   //   static int texId = 0;
+   //   char buff[256];
+   //   dSprintf(buff, sizeof(buff), "tex_%d", texId++);
+   //   bmp->writePNGDebug(buff);
+   //   texId++;
+   
+   // Before we delete the bitmap save our transparency flag
+   //   ret->mHasTransparency = realBmp->getHasTransparency();
+   
+   // Some final cleanup...
+   if(realBmp != bmp)
+      SAFE_DELETE(realBmp);
+   if (deleteBmp)
+      SAFE_DELETE(bmp);
+   
+   // Return the new texture!
+   return ret;
+}
 
 //-----------------------------------------------------------------------------
 // createTexture
@@ -268,9 +410,9 @@ void GFXOpenGL32TextureManager::innerCreateTexture( GFXOpenGL32TextureObject *re
    
     // Bind it
    glActiveTexture(GL_TEXTURE0);
-   PRESERVE_2D_TEXTURE();
+//   PRESERVE_2D_TEXTURE();
 //   PRESERVE_3D_TEXTURE();
-   GL_CHECK(glBindTexture(binding, retTex->getHandle()));
+   glBindTexture(binding, retTex->getHandle());
    
 //   // Create it
 //   // TODO: Reenable mipmaps on render targets when Apple fixes their drivers
@@ -289,15 +431,15 @@ void GFXOpenGL32TextureManager::innerCreateTexture( GFXOpenGL32TextureObject *re
 //      retTex->mMipLevels = 0;
 //   }
 
-//   if(!retTex->mIsNPoT2)
-//   {
-//      if(!isPow2(width))
-//         width = getNextPow2(width);
-//      if(!isPow2(height))
-//         height = getNextPow2(height);
-//      if(depth && !isPow2(depth))
-//         depth = getNextPow2(depth);
-//   }
+   if(!retTex->mIsNPoT2)
+   {
+      if(!isPow2(width))
+         width = getNextPow2(width);
+      if(!isPow2(height))
+         height = getNextPow2(height);
+      if(depth && !isPow2(depth))
+         depth = getNextPow2(depth);
+   }
    
    AssertFatal(GFXGLTextureInternalFormat[format] != GL_ZERO, "GFXOpenGL32TextureManager::innerCreateTexture - invalid internal format");
    AssertFatal(GFXGLTextureFormat[format] != GL_ZERO, "GFXOpenGL32TextureManager::innerCreateTexture - invalid format");
@@ -317,16 +459,15 @@ void GFXOpenGL32TextureManager::innerCreateTexture( GFXOpenGL32TextureObject *re
 //   if(binding == GL_TEXTURE_3D)
 //      glTexParameteri(binding, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
    
-    
-    // Get the size from GL (you never know...)
-   GLint texHeight, texWidth, texDepth = 0;
+   // Get the size from GL (you never know...)
+//   GLint texHeight, texWidth, texDepth = 0;
    
-   glGetTexLevelParameteriv(binding, 0, GL_TEXTURE_WIDTH, &texWidth);
-   glGetTexLevelParameteriv(binding, 0, GL_TEXTURE_HEIGHT, &texHeight);
+//   glGetTexLevelParameteriv(binding, 0, GL_TEXTURE_WIDTH, &texWidth);
+//   glGetTexLevelParameteriv(binding, 0, GL_TEXTURE_HEIGHT, &texHeight);
 //   if(binding == GL_TEXTURE_3D)
 //      glGetTexLevelParameteriv(binding, 0, GL_TEXTURE_DEPTH, &texDepth);
    
-    retTex->mTextureSize.set(texWidth, texHeight, texDepth);
+    retTex->mTextureSize.set(width, height, 0);
 }
 
 

@@ -989,7 +989,7 @@ void Scene::sceneRender( const SceneRenderState* pSceneRenderState )
 
     // Rotate the world matrix by the camera angle.
     const Vector2& cameraPosition = pSceneRenderState->mRenderCamera.mDestinationArea.centre();
-    
+   
     MatrixF vm = GFX->getViewMatrix();
     vm.translate(cameraPosition.x, cameraPosition.y, 0.0f);
     vm = vm.inverse();

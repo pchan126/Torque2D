@@ -40,11 +40,11 @@ public:
 protected:
 
    // GFXTextureManager
-//    virtual GFXTextureObject *createTexture(  GBitmap *bmp,
-//                                            const String &resourceName,
-//                                            GFXTextureProfile *profile,
-//                                            bool deleteBmp);
-    
+    virtual GFXTextureObject *createTexture(  GBitmap *bmp,
+                                            const String &resourceName,
+                                            GFXTextureProfile *profile,
+                                            bool deleteBmp);
+   
 //    virtual GFXTextureObject *createTexture(  const String &path,
 //                                            GFXTextureProfile *profile );
     
@@ -78,6 +78,12 @@ protected:
                                              S32 antialiasLevel = 0,
                                              GFXTextureObject *inTex = NULL );
     
+   GFXTextureObject *_createTexture(  GBitmap *bmp,
+                                             const String &resourceName,
+                                             GFXTextureProfile *profile,
+                                             bool deleteBmp,
+                                    GFXTextureObject *inObj );
+
    bool _loadTexture(GFXTextureObject *texture, GBitmap *bmp);
    bool _loadTexture(GFXTextureObject *texture, void *raw);
    bool _refreshTexture(GFXTextureObject *texture);

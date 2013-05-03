@@ -617,7 +617,9 @@ inline Point3F MatrixF::getPosition() const
 inline void MatrixF::makeXRotation(float radians)
 {
 #ifdef __GLK_MATRIX_4_H
+   transpose();
     mGM = GLKMatrix4MakeXRotation( radians);
+   transpose();
 #else
     float cos = cosf(radians);
     float sin = sinf(radians);
@@ -643,7 +645,9 @@ inline void MatrixF::makeXRotation(float radians)
 inline void MatrixF::rotateX(float radians)
 {
 #ifdef __GLK_MATRIX_4_H
+    transpose();
     mGM = GLKMatrix4RotateX( mGM , radians);
+    transpose();
 #else
     MatrixF rm;
     rm.makeXRotation(radians);
@@ -654,7 +658,9 @@ inline void MatrixF::rotateX(float radians)
 inline void MatrixF::makeYRotation(float radians)
 {
 #ifdef __GLK_MATRIX_4_H
+   transpose();
     mGM = GLKMatrix4MakeYRotation( radians);
+   transpose();
 #else
     float cos = cosf(radians);
     float sin = sinf(radians);
@@ -681,7 +687,9 @@ inline void MatrixF::makeYRotation(float radians)
 inline void MatrixF::rotateY(float radians)
 {
 #ifdef __GLK_MATRIX_4_H
+   transpose();
     mGM = GLKMatrix4RotateY( mGM , radians);
+   transpose();
 #else
     MatrixF rm;
     rm.makeYRotation(radians);
@@ -692,7 +700,9 @@ inline void MatrixF::rotateY(float radians)
 inline void MatrixF::makeZRotation(float radians)
 {
 #ifdef __GLK_MATRIX_4_H
+   transpose();
     mGM = GLKMatrix4MakeZRotation( radians);
+   transpose();
 #else
     float cos = cosf(radians);
     float sin = sinf(radians);
@@ -718,13 +728,15 @@ inline void MatrixF::makeZRotation(float radians)
 
 inline void MatrixF::rotateZ(float radians)
 {
-#ifdef __GLK_MATRIX_4_H
-    mGM = GLKMatrix4RotateZ( mGM , radians);
-#else
+//#ifdef __GLK_MATRIX_4_H
+//   transpose();
+//    mGM = GLKMatrix4RotateZ( mGM , radians);
+//   transpose();
+//#else
     MatrixF rm;
     rm.makeZRotation(radians);
     *this *= rm;
-#endif
+//#endif
 }
 
 
@@ -751,12 +763,16 @@ inline MatrixF& MatrixF::add( const MatrixF& a )
 
 inline MatrixF& MatrixF::operator *= ( const MatrixF &m )
 {
-#ifdef __GLK_MATRIX_4_H
-    mGM = GLKMatrix4Multiply( mGM , m.mGM);
-#else
+//#ifdef __GLK_MATRIX_4_H
+//   transpose();
+//   MatrixF tempThat(m);
+//   tempThat.transpose();
+//    mGM = GLKMatrix4Multiply( mGM , tempThat.mGM);
+//   transpose();
+//#else
    MatrixF tempThis(*this);
    m_matF_x_matF(m, tempThis, *this);
-#endif
+//#endif
    return (*this);
 }
 
@@ -882,7 +898,7 @@ inline void MatrixF::setOrtho(float left, float right,
 {
 #ifdef __GLK_MATRIX_4_H
     mGM = GLKMatrix4MakeOrtho(left, right, bottom, top, nearZ, farZ);
-    this->transpose();
+    transpose();
 #else
     float ral = right + left;
     float rsl = right - left;
@@ -917,7 +933,7 @@ inline void MatrixF::setLookAt(float eyeX, float eyeY, float eyeZ,
 {
 #ifdef __GLK_MATRIX_4_H
     mGM = GLKMatrix4MakeLookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
-    this->transpose();
+    transpose();
 #else
     Point3F ev = Point3F( eyeX, eyeY, eyeZ);
     Point3F cv = Point3F( centerX, centerY, centerZ);

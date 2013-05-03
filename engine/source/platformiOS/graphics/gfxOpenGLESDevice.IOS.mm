@@ -541,7 +541,7 @@ const MatrixF GFXOpenGLESDevice::getMatrix( GFXMatrixType mtype )
         case GFXMatrixWorld :
         {
             MatrixF ret = GLKMatrixStackGetMatrix4(m_WorldStackRef);
-            return ret.transpose();
+            return ret;
         }
             break;
         case GFXMatrixView :
@@ -552,7 +552,7 @@ const MatrixF GFXOpenGLESDevice::getMatrix( GFXMatrixType mtype )
         case GFXMatrixProjection :
         {
             MatrixF ret = GLKMatrixStackGetMatrix4(m_ProjectionStackRef);
-            return ret.transpose();
+            return ret;
         }
             break;
             // CodeReview - Add support for texture transform matrix types
@@ -662,26 +662,26 @@ void GFXOpenGLESDevice::initGenericShaders()
 void GFXOpenGLESDevice::setupGenericShaders( GenericShaderType type )
 {
     MatrixF xform(GFX->getWorldMatrix());
-    Con::printf("worldMatrix");
-    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
-    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
-    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
-    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
+//    Con::printf("worldMatrix");
+//    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
+//    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
+//    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
+//    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
     xform *= GFX->getViewMatrix();
-    Con::printf("viewMatrix");
-    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
-    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
-    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
-    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
-    xform = GFX->getProjectionMatrix();
-    Con::printf("projectionMatrix");
-    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
-    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
-    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
-    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
-    
+//    Con::printf("viewMatrix");
+//    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
+//    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
+//    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
+//    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
+    xform *= GFX->getProjectionMatrix();
+//    Con::printf("projectionMatrix");
+//    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
+//    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
+//    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
+//    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
+   
     xform.transpose();
-    
+   
     switch (type) {
         case GSColor:
             setShader(mGenericShader[0]);
