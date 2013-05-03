@@ -193,7 +193,8 @@ void ImageFrameProviderCore::render(
     const Vector2& vertexPos1,
     const Vector2& vertexPos2,
     const Vector2& vertexPos3,
-    BatchRender* pBatchRenderer ) const
+    BatchRender* pBatchRenderer,
+    const ColorF& color ) const
 {
     // Finish if we can't render.
     if ( !validRender() )
@@ -219,7 +220,8 @@ void ImageFrameProviderCore::render(
         Vector2( texUpper.x, texUpper.y ),
         Vector2( texUpper.x, texLower.y ),
         Vector2( texLower.x, texLower.y ),
-        getProviderTexture() );
+        getProviderTexture(),
+        color);
 }
 
 //-----------------------------------------------------------------------------

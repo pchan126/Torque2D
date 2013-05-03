@@ -85,7 +85,8 @@ public:
         const Vector2& vertexPos1,
         const Vector2& vertexPos2,
         const Vector2& vertexPos3,
-        BatchRender* pBatchRenderer ) const;
+        BatchRender* pBatchRenderer,
+        const ColorF& color = ColorF(1.0f, 1.0f, 1.0f)) const;
 
     void renderGui( GuiControl& owner, Point2I offset, const RectI &updateRect ) const;
 
