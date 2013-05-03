@@ -129,25 +129,11 @@
 
     switch (paramSender.state)
     {
-        case UIGestureRecognizerStateBegan:
-        {
-            center.x = 0;
-            center.y = 0;
-            for (touchCounter = 0; touchCounter < 2; touchCounter++)
-            {
-                CGPoint touchPoint = [paramSender locationOfTouch:touchCounter inView:paramSender.view];
-                center.x += touchPoint.x;
-                center.y += touchPoint.y;
-            }
-            center.x /= 2;
-            center.y /= 2;
-            break;
-        }
         case UIGestureRecognizerStateChanged:
         {
             CGFloat scale = [paramSender scale];
             CGFloat velocity = [paramSender velocity];
-            window->pinchEvent.trigger(window->getWindowId(), 0, center.x, center.y, scale, velocity, SI_MOVE);
+            window->pinchEvent.trigger(window->getWindowId(), 0, scale, velocity, SI_MOVE);
             break;
         }
         default:
@@ -159,11 +145,13 @@
 
 - (void) handleTouch:(T2DUITouchGestureRecognizer*)paramSender {
 
+   UIViewController *vc = (UIViewController*)self.window->getViewController();
    for (int i = 0; i < 5; i++)
    {
        UITouch* touch = [paramSender touchAtLocation:i];
        if (touch != nil)
        {
+           CGPoint point = [touch locationInView:vc.view];
             U32 touchType = 0;
             switch ( touch.phase )
             {
@@ -174,13 +162,15 @@
                     touchType = SI_MOVE;
                     break;
                 case UITouchPhaseEnded:
+                    touchType = SI_BREAK;
+                    point = [touch previousLocationInView:vc.view];
+                    break;
                 case UITouchPhaseCancelled:
                     touchType = SI_BREAK;
                     break;
                 default:
                     break;
             }
-            CGPoint point = [touch locationInView:touch.view];
             if (touchType != 0) {
                 window->touchEvent.trigger(window->getWindowId(), 0, point.x, point.y, i, touchType, 1);
             }

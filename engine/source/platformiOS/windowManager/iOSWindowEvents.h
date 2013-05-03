@@ -25,8 +25,8 @@ typedef Signal<void(WindowId,U32,S32, S32, F32,F32)> RotationEvent;
 /// void event(WindowId,U32 modifier,S32 x,S32 y, U32 action, U32 touchid)
 typedef Signal<void(WindowId,U32,S32,S32,U32,U32)> LongPressEvent;
 
-/// void event(WindowId,U32 modifier,S32 x,S32 y, F32 scale, F32 velocity, U32 action)
-typedef Signal<void(WindowId,U32,S32,S32,F32,F32,U32)> PinchEvent;
+/// void event(WindowId,U32 modifier,F32 scale, F32 velocity, U32 action)
+typedef Signal<void(WindowId,U32, F32,F32,U32)> PinchEvent;
 
 /// void event(WindowId,U32 modifier,S32 x,S32 y, U32 touchID, U8 action, U32 numTouches)
 typedef Signal<void(WindowId,U32,S32,S32,U32,U32,U32)> TouchEvent;

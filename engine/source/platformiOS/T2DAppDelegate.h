@@ -26,9 +26,17 @@
 class iOSWindow;
 
 @interface T2DAppDelegate : UIResponder <UIApplicationDelegate, GLKViewDelegate, GLKViewControllerDelegate> {
+    //Hidden by Default. 1 Black Opaque, 2 Black Translucent
+    int statusBarType;
+    bool statusBarHidden;
 }
 
 @property (nonatomic, strong) UIWindow *window;
 @property (nonatomic) iOSWindow *T2DWindow;
+
+//-(bool) getStatusBarHidden;
+//-(bool) setStatusBarHidden:(bool) hidden;
+//-(void) setStatusBarType:(int) type;
+
 
 @end

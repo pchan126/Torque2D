@@ -254,7 +254,7 @@ void GuiControl::addObject(SimObject *object)
 void GuiControl::removeObject(SimObject *object)
 {
    AssertFatal(mAwake == static_cast<GuiControl*>(object)->isAwake(), "GuiControl::removeObject: child control wake state is bad");
-   if (mAwake)
+   if (static_cast<GuiControl*>(object)->isAwake())
       static_cast<GuiControl*>(object)->sleep();
     Parent::removeObject(object);
 }

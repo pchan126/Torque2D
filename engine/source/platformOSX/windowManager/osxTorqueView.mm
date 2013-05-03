@@ -422,6 +422,7 @@
 - (void)windowWillClose:(NSNotification *) notification
 {
     mTorqueWindow->_disassociateCocoaWindow();
+    Game->mainShutdown();
 }
 
 - (void)windowDidBecomeKey:(NSNotification *)notification

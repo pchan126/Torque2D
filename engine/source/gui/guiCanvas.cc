@@ -789,6 +789,18 @@ void GuiCanvas::rootScreenTouchUp(const GuiEvent &event)
             break;
         }
     }
+//    mPrevMouseTime = Platform::getVirtualMilliseconds();
+//    mMouseButtonDown = false;
+//    
+//    //pass the event to the mouse locked control
+//    if (bool(mMouseCapturedControl))
+//        mMouseCapturedControl->onMouseUp(event);
+//    else
+//    {
+//        findMouseControl(event);
+//        if(bool(mMouseControl))
+//            mMouseControl->onMouseUp(event);
+//    }
 }
 
 void GuiCanvas::rootScreenTouchMove(const GuiEvent &event)

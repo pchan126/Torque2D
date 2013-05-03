@@ -158,7 +158,7 @@ private:
 public:
     CGFloat mDisplayScale;
 
-    const GLKViewController* getViewController() { return viewController; };
+    GLKViewController* getViewController() { return viewController; };
     iOSGestureRecognizer *gestureRecognizer;
     
     void addGestureRecognizer( UIGestureRecognizer* );

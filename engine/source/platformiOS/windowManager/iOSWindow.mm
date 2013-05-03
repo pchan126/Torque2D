@@ -88,6 +88,10 @@ void iOSWindow::_initCocoaWindow(const char* windowText, Point2I clientExtent)
     appDelegate.window.backgroundColor = [UIColor blackColor];
     [appDelegate.window makeKeyAndVisible];
     
+    S32 tempType = Con::getIntVariable("$pref::iOS::StatusBarType");
+    if (tempType == 0)
+        [UIApplication sharedApplication].statusBarHidden = YES;
+    
 }
 
 void iOSWindow::_disassociateCocoaWindow()

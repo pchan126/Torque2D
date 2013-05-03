@@ -37,6 +37,7 @@
 #include "zlib.h"
 #include "ctype.h"  // Needed for isupper and tolower
 #include "graphics/gfxDevice.h"
+#include "string/stringUnit.h"
 
 S32 GFont::smSheetIdCount = 0;
 const U32 GFont::csm_fileVersion = 3;
@@ -418,9 +419,19 @@ void GFont::getFontCacheFilename(const char *faceName, U32 size, U32 buffLen, ch
 Resource<GFont> GFont::create(const char *faceName, U32 size, const char *cacheDirectory, U32 charset /* = TGE_ANSI_CHARSET */)
 {
    char buf[256];
+   Resource<GFont> ret;
+    
+    dSprintf(buf, sizeof(buf), "%s/%s %d (%s).fnt", cacheDirectory, faceName, size, getFontCharSetName(charset));
+    
+    ret = ResourceManager->load(buf);
+    if(bool(ret))
+    {
+        ret->mGFTFile = StringTable->insert(buf);
+        return ret;
+    }
    dSprintf(buf, sizeof(buf), "%s/%s %d (%s).uft", cacheDirectory, faceName, size, getFontCharSetName(charset));
 
-   Resource<GFont> ret = ResourceManager->load(buf);
+   ret = ResourceManager->load(buf);
    if(bool(ret))
    {
       ret->mGFTFile = StringTable->insert(buf);
@@ -635,7 +646,6 @@ void GFont::addBitmap(PlatformFont::CharInfo &charInfo)
    }
    
     TEXMGR->reloadTexture(mTextureSheets[mCurSheet]);
-//   mTextureSheets[mCurSheet]->refresh();
 }
 
 void GFont::addSheet()
@@ -1333,3 +1343,226 @@ void GFont::importStrip(const char *fileName, U32 padding, U32 kerning)
        TEXMGR->reloadTexture(mTextureSheets[i]);
 //      mTextureSheets[i]->refresh();
 }
+
+// ==================================
+// bmFont support
+// ==================================
+
+ResourceInstance* constructBMFont(Stream& stream)
+{
+
+    GFont *ret = new GFont;
+
+    if(!ret->readBMFont(stream))
+    {
+        SAFE_DELETE(ret);
+        ret = NULL;
+    }
+
+    return ret;
+}
+
+bool GFont::readBMFont(Stream& io_rStream)
+{
+    for (U32 i = 0; i < (sizeof(mRemapTable) / sizeof(S32)); i++)
+        mRemapTable[i] = -1;
+    
+    U32 bmWidth = 0;
+    U32 bmHeight = 0;
+    U32 numSheets = 0;
+    U32 currentPage = 0;
+    StringTableEntry fileName = StringTable->insert("");
+    
+    U32 numBytes = io_rStream.getStreamSize() - io_rStream.getPosition();
+    while((io_rStream.getStatus() != Stream::EOS) && numBytes > 0)
+    {
+        char Read[256];
+        char Token[256];
+        char *buffer = Con::getReturnBuffer(256);
+        io_rStream.readLine((U8 *)buffer, 256);
+        
+        char temp[256];
+        U32 tokenCount = StringUnit::getUnitCount(buffer, "\"");
+        
+        if (tokenCount > 1)
+        {
+            dSprintf(Token, 256, "%s", StringUnit::getUnit(buffer, 1, "\""));
+            dSprintf(temp, 256, "tok1");
+            dSprintf(buffer, 256, "%s", (char*)StringUnit::setUnit(buffer, 1, temp, "\""));
+        }
+        
+        U32 wordCount = StringUnit::getUnitCount(buffer, " \t\n");
+        
+        dSprintf(Read, 256, "%s", StringUnit::getUnit(buffer, 0, " \t\n"));
+        if( dStrcmp( Read, "info") == 0 )
+        {
+            U32 currentWordCount = 1;
+            while( currentWordCount < wordCount )
+            {
+                dSprintf(Read, 256, StringUnit::getUnit(buffer, currentWordCount, " \t\n"));
+                char temp[256];
+                char Key[256];
+                char Value[256];
+                
+                dSprintf(temp, 256, "%s", Read);
+                dSprintf(Key, 256, "%s", StringUnit::getUnit(temp, 0, "="));
+                dSprintf(Value, 256, "%s", StringUnit::getUnit(temp, 1, "="));
+                
+                if (dStrcmp( Value, "\"tok1\"") == 0) {
+                    dSprintf(Value, 256, "%s", Token);
+                }
+                
+                if( dStrcmp( Key, "size" ) == 0 )
+                    mSize = U16(dAtoi(Value));
+                currentWordCount++;
+            }
+        }
+        if( dStrcmp( Read, "common" ) == 0 )
+        {
+            U32 currentWordCount = 1;
+            //this holds common data
+            while( currentWordCount < wordCount )
+            {
+                dSprintf(Read, 256, "%s", StringUnit::getUnit(buffer, currentWordCount, " \t\n"));
+                char temp[256];
+                char Key[256];
+                char Value[256];
+                
+                dSprintf(temp, 256, "%s", Read);
+                dSprintf(Key, 256, "%s", StringUnit::getUnit(temp, 0, "="));
+                dSprintf(Value, 256, "%s", StringUnit::getUnit(temp, 1, "="));
+                
+                if (dStrcmp( Value, "\"tok1\"") == 0) {
+                    dSprintf(Value, 256, "%s", Token);
+                }
+                
+                if( dStrcmp( Key, "lineHeight" ) == 0 )
+                     mHeight = U16(dAtoi(Value));
+                else if( dStrcmp( Key, "base" ) == 0 )
+                    mBaseline = U16(dAtoi(Value));
+                else if( dStrcmp( Key, "scaleW" ) == 0 )
+                    bmWidth = U16(dAtoi(Value));
+                else if( dStrcmp( Key, "scaleH" ) == 0 )
+                    bmHeight = U16(dAtoi(Value));
+                else if( dStrcmp( Key, "pages" ) == 0 )
+                    numSheets = U16(dAtoi(Value));
+                currentWordCount++;
+            }
+            mAscent = mBaseline;
+            mDescent = mHeight - mBaseline;
+        }
+        else if( dStrcmp( Read, "page" ) == 0 )
+        {
+            //this is data for a page
+            U32 currentWordCount = 1;
+            //this holds common data
+            char lineLeft[256];
+            dSprintf ( lineLeft, 256, "%s", StringUnit::getUnit(buffer, 1, " \t\n"));
+            
+            while( currentWordCount < wordCount )
+            {
+                dSprintf(Read, 256, "%s", StringUnit::getUnit(buffer, currentWordCount, " \t\n"));
+                char temp[256];
+                char Key[256];
+                char Value[256];
+                
+                dSprintf(temp, 256, "%s", Read);
+                dSprintf(Key, 256, "%s", StringUnit::getUnit(temp, 0, "="));
+                dSprintf(Value, 256, "%s", StringUnit::getUnit(temp, 1, "="));
+                
+                if (dStrcmp( Value, "\"tok1\"") == 0) {
+                    dSprintf(Value, 256, "%s", Token);
+                }
+                
+                //assign the correct value
+                if( dStrcmp( Key, "id" ) == 0 )
+                    currentPage = U32(dAtoi(Value));
+                else if (dStrcmp( Key, "file" ) == 0 )
+                    fileName = StringTable->insert(Value);
+
+                currentWordCount++;
+            }
+        }
+        
+        else if( dStrcmp( Read, "char" ) == 0 )
+        {
+            PlatformFont::CharInfo ci; //  = &mCharInfoList[charIndex];
+            ci.bitmapData = NULL;
+            ci.bitmapIndex = currentPage;
+            //this is data for a character set
+            U16 CharID = 0;
+            U32 currentWordCount = 1;
+            //this holds common data
+            while( currentWordCount < wordCount )
+            {
+                dSprintf(Read, 256, "%s", StringUnit::getUnit(buffer, currentWordCount, " \t\n"));
+                char temp[256];
+                char Key[256];
+                char Value[256];
+                
+                
+                dSprintf(temp, 256, "%s", Read);
+                dSprintf(Key, 256, "%s", StringUnit::getUnit(temp, 0, "="));
+                dSprintf(Value, 256, "%s", StringUnit::getUnit(temp, 1, "="));
+                
+                if (dStrcmp( Value, "\"tok1\"") == 0) {
+                    dSprintf(Value, 256, "%s", Token);
+                }
+                
+                //assign the correct value
+                if( dStrcmp( Key, "id" ) == 0 )
+                    CharID = U32(dAtoi(Value));
+                if( dStrcmp( Key, "x" ) == 0 )
+                    ci.xOffset = U32(dAtoi(Value));
+                else if( dStrcmp( Key, "y" ) == 0 )
+                    ci.yOffset = U32(dAtoi(Value));
+                else if( dStrcmp( Key, "width" ) == 0 )
+                    ci.width = U32(dAtoi(Value));
+                else if( dStrcmp( Key, "height" ) == 0 )
+                    ci.height = U32(dAtoi(Value));
+                else if( dStrcmp( Key, "xoffset" ) == 0 )
+                    ci.xOrigin = S32(dAtoi(Value));
+                else if( dStrcmp( Key, "yoffset" ) == 0 )
+                    ci.yOrigin = mBaseline - S32(dAtoi(Value));
+                else if( dStrcmp( Key, "xadvance" ) == 0 )
+                    ci.xIncrement = S32(dAtoi(Value));
+                currentWordCount++;
+            }
+            mCharInfoList.push_back(ci);
+            mRemapTable[ CharID ] = mCharInfoList.size()-1;
+        }
+    }
+    
+    for(U32 i = 0; i < numSheets; i++)
+    {
+        char buf[1024];
+        dSprintf(buf, sizeof(buf), "%s/%s", Con::getVariable("$GUI::fontCacheDirectory"), fileName);
+        Con::printf("Platform::makeFullPathName %s", buf);
+        
+        GBitmap *bmp = dynamic_cast<GBitmap*>(ResourceManager->loadInstance(buf));
+        
+        if(bmp == NULL)
+        {
+            return false;
+        }
+        
+        char buff[30];
+        dSprintf(buff, sizeof(buff), "font_%d", smSheetIdCount++);
+        
+        GFXTexHandle handle = GFXTexHandle( bmp, &GFXFontTextureProfile, true, avar("%s() - (line %d)", __FUNCTION__, __LINE__) );
+        //    GFXTexHandle handle = GFXTexHandle(buf, bitmap, GFXTexHandle::BitmapKeepTexture);
+        //    handle.setFilter(GL_NEAREST);
+        
+        mTextureSheets.increment();
+        constructInPlace(&mTextureSheets.last());
+        mTextureSheets.last() = handle;
+        
+        mCurX = 0;
+        mCurY = 0;
+        mCurSheet = mTextureSheets.size() - 1;
+    }
+    return (io_rStream.getStatus() == Stream::EOS);
+}
+
+
+

@@ -81,13 +81,17 @@ void iOSWindowInputGenerator::handleLongPressEvent( WindowId did, U32 modifier,S
     
 }
 
-void iOSWindowInputGenerator::handlePinchEvent( WindowId did, U32 modifier, S32 x,S32 y, F32 scale, F32 velocity, U32 action )
+void iOSWindowInputGenerator::handlePinchEvent( WindowId did, U32 modifier, F32 scale, F32 velocity, U32 action )
 {
     
 }
 
 void iOSWindowInputGenerator::handleTouchEvent( WindowId did, U32 modifier,S32 x,S32 y, U32 touchid, U32 action, U32 numTouches )
 {
+    if( !mInputController || !mFocused )
+        return;
+
+    
     // Generate a base Movement along and Axis event
     ScreenTouchEventInfo event;
     event.modifier   = modifier;
