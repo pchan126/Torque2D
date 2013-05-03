@@ -310,8 +310,6 @@ void Input::process()
 	//only gets called once per frame, create touches and accelerometer events here
 	//post, then pop each event
 
-    iOSPlatState * platState = [iOSPlatState sharedPlatState];
-
    if (!smActive || !gInputEnabled)
       return;
 

@@ -77,7 +77,7 @@ bool GBitmap::readMSBmp(Stream& stream)
 {
    BITMAPINFOHEADER  bi;
    BITMAPFILEHEADER  bf;
-   RGBQUAD           rgb[256];
+//   RGBQUAD           rgb[256];
 
    stream.read(&bf.bfType);
    stream.read(&bf.bfSize);
@@ -148,7 +148,7 @@ bool GBitmap::readMSBmp(Stream& stream)
 bool GBitmap::writeMSBmp(Stream& io_rStream) const
 {
 
-   RGBQUAD           rgb[256];
+//   RGBQUAD           rgb[256];
    BITMAPINFOHEADER  bi;
    BITMAPFILEHEADER  bf;
 

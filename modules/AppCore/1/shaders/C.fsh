@@ -8,7 +8,6 @@ varying vec4 DestinationColor;
 void main()
 {  
      gl_FragColor = DestinationColor;
-    gl_FragColor.rgb = vec3(1.0, 0.0, 0.0);
 }
 
 #else

@@ -859,6 +859,13 @@ public:
     /// Pops the world matrix stack
     virtual void popWorldMatrix() = 0;
     
+    /// Pushes the world matrix stack and copies the current top
+    /// matrix to the new top of the stack
+    virtual void pushProjectionMatrix() = 0;
+    
+    /// Pops the world matrix stack
+    virtual void popProjectionMatrix() = 0;
+
     /// Sets the projection matrix
     /// @param   newProj   New projection matrix to set
     virtual void setProjectionMatrix( const MatrixF &newProj ){ setMatrix(GFXMatrixProjection, newProj);};

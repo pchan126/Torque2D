@@ -967,12 +967,13 @@ void Scene::sceneRender( const SceneRenderState* pSceneRenderState )
     pDebugStats->batchNoBatchFlush              = 0;
     pDebugStats->batchAnonymousFlush            = 0;
 
-    MatrixF oldProj = GFX->getProjectionMatrix();
+    GFX->pushProjectionMatrix();
 
     Point2F sceneSize = pSceneRenderState->mRenderCamera.mDestinationArea.extent;
     // Calculate Zoom Reciprocal.
     
     // Set orthographic projection.
+    GFX->pushWorldMatrix();
     MatrixF ortho = MatrixF(true);
     ortho.setOrtho(-sceneSize.x/2, sceneSize.x/2, -sceneSize.y/2, sceneSize.y/2, 0.0f, MAX_LAYERS_SUPPORTED);
     GFX->setProjectionMatrix(ortho);
@@ -1283,7 +1284,7 @@ void Scene::sceneRender( const SceneRenderState* pSceneRenderState )
         Con::executef( this, 1, "onSceneRender" );
     }
     
-    GFX->setProjectionMatrix(oldProj);
+    GFX->popProjectionMatrix();
 }
 
 //-----------------------------------------------------------------------------

@@ -1665,7 +1665,6 @@ void GuiControl::onAction()
    if (! mActive)
       return;
 
-    Con::printf("GuiControl onAction %s", mConsoleCommand.c_str());
    //execute the console command
    if (mConsoleCommand && mConsoleCommand[0])
    {

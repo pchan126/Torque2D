@@ -1642,12 +1642,12 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
     Point2F sceneSize = mCameraCurrent.mSourceArea.extent;
     
     // Fetch current camera.
-    const Point2F& sceneWindowScale = mCameraCurrent.mSceneWindowScale;
+//    const Point2F& sceneWindowScale = mCameraCurrent.mSceneWindowScale;
     Point2F sceneMin = mCameraCurrent.mSceneMin;
     Point2F sceneMax = mCameraCurrent.mSceneMax;
 
     // Fetch bounds.
-    const RectI& bounds = getBounds();  
+    const RectI& bounds = getBounds();
 //    const Point2I globalTopLeft( updateRect.point.x, updateRect.point.y );
 //    const Point2I globalBottomRight( updateRect.point.x + updateRect.extent.x, updateRect.point.y + updateRect.extent.y );
 //    const Point2I localTopLeft = globalToLocalCoord( globalTopLeft );
@@ -1721,9 +1721,11 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
 
     // Restore Matrices.
     GFX->popWorldMatrix();
+    GFX->setViewMatrix(MatrixF(true));
+    
 
-//    // Render the metrics.
-//    renderMetricsOverlay( offset, updateRect );
+    // Render the metrics.
+    renderMetricsOverlay( offset, updateRect );
 
     // Render Children.
     renderChildControls( offset, updateRect );

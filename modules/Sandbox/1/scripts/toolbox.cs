@@ -187,7 +187,6 @@ function initializeToolbox()
 
 function toggleToolbox(%make)
 {
-    echo ("toggleToolbox");
     // Finish if being released.
     if ( !%make )
         return;

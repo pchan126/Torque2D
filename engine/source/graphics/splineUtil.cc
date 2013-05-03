@@ -22,6 +22,8 @@
 
 #include "graphics/splineUtil.h"
 #include "platform/platformGL.h"
+#include "graphics/gfxDevice.h"
+#include "graphics/gfxVertexTypes.h"
 
 namespace SplineUtil{
 
@@ -41,9 +43,8 @@ void drawSplineBeam( const Point3F& camPos, U32 numSegments,
    F32 approxBeamLength = (beginPoint - endPoint).len();
    F32 texRepFactor = approxBeamLength * numTexRep;
 
-
-//   glBegin(GL_TRIANGLE_STRIP);
-
+    Vector<GFXVertexPT> verts;
+    verts.setSize(numSegments*2);
 
    for( U32 i=0; i<numSegments; i++ )
    {
@@ -80,18 +81,20 @@ void drawSplineBeam( const Point3F& camPos, U32 numSegments,
 
       crossVec *= width * 0.5f;
 
-//      F32 u = uvOffset + texRepFactor * t;
-
-//      glTexCoord2f( u, 0.0f );
-//      glVertex3fv( curPoint + crossVec );
-//
-//      glTexCoord2f( u, 1.0f );
-//      glVertex3fv( curPoint - crossVec );
-
+      F32 u = uvOffset + texRepFactor * t;
+      verts[i*2].point.set(curPoint + crossVec);
+      verts[i*2].texCoord.set(u, 0.0f );
+       verts[i*2+1].point.set(curPoint - crossVec);
+       verts[i*2+1].texCoord.set(u, 1.0f );
+       
    }
-
-//   glEnd();
-
+    GFXVertexBufferHandle<GFXVertexPC> mTempVertBuffHandle;
+    mTempVertBuffHandle.set(GFX, verts.size(), GFXBufferTypeVolatile, verts.address() );
+    GFX->setVertexBuffer( mTempVertBuffHandle );
+    
+    // Draw the triangles
+    GFX->setupGenericShaders(GFXDevice::GSTexture);
+    GFX->drawPrimitive(GFXTriangleStrip, 0, verts.size()-2);
 
 }
 
@@ -110,11 +113,10 @@ void drawSplineBeam( SplineBeamInfo &sbi )
    F32 approxBeamLength = (beginPoint - endPoint).len();
    F32 texRepFactor = approxBeamLength * sbi.numTexRep;
 
+    Vector<GFXVertexPCT> verts;
+    verts.setSize(sbi.numSegments*2);
 
-//   glBegin(GL_TRIANGLE_STRIP);
-
-
-   for( U32 i=0; i<sbi.numSegments; i++ )
+    for( U32 i=0; i<sbi.numSegments; i++ )
    {
       F32 t = ((F32)i) / ((F32)(sbi.numSegments - 1));
 
@@ -151,25 +153,29 @@ void drawSplineBeam( SplineBeamInfo &sbi )
 
       F32 u = sbi.uvOffset + texRepFactor * t;
 
-//      if( i== 0 && sbi.zeroAlphaStart )
-//      {
-//         glColor4f( sbi.color.red, sbi.color.green, sbi.color.blue, 0.0f );
-//      }
-//      else
-//      {
-//         glColor4fv( sbi.color.address());
-//      }
-//
-//      glTexCoord2f( u, 0.0 );
-//      glVertex3fv( curPoint + crossVec );
-//
-//      glTexCoord2f( u, 1.0 );
-//      glVertex3fv( curPoint - crossVec );
-
+       verts[i*2].point.set(curPoint + crossVec);
+       verts[i*2].texCoord.set(u, 0.0f );
+       verts[i*2+1].point.set(curPoint - crossVec);
+       verts[i*2+1].texCoord.set(u, 1.0f );
+       
+      if( i== 0 && sbi.zeroAlphaStart )
+      {
+          verts[i*2].color.set(sbi.color.red, sbi.color.green, sbi.color.blue, 0.0f);
+          verts[i*2+1].color.set(sbi.color.red, sbi.color.green, sbi.color.blue, 0.0f);
+      }
+      else
+      {
+          verts[i*2].color = sbi.color;
+          verts[i*2+1].color = sbi.color;
+      }
    }
-
-//   glEnd();
-
+    GFXVertexBufferHandle<GFXVertexPC> mTempVertBuffHandle;
+    mTempVertBuffHandle.set(GFX, verts.size(), GFXBufferTypeVolatile, verts.address() );
+    GFX->setVertexBuffer( mTempVertBuffHandle );
+    
+    // Draw the triangles
+    GFX->setupGenericShaders(GFXDevice::GSTexture);
+    GFX->drawPrimitive(GFXTriangleStrip, 0, verts.size()-2);
 }
 
 

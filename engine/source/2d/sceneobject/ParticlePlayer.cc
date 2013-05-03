@@ -608,7 +608,6 @@ void ParticlePlayer::sceneRender( const SceneRenderState* pSceneRenderState, con
            // Move into emitter-space.
            //            wMatrix.translate(renderPosition.x/20.0, renderPosition.y/15.0, 0.0f );
            wMatrix.translate(renderPosition.x, renderPosition.y, 0.0f );
-           wMatrix.transpose();
 
            // Is the rotation attached to the emitter?
             if ( pParticleAssetEmitter->getAttachRotationToEmitter() )

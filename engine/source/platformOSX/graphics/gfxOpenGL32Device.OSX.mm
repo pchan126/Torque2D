@@ -235,6 +235,18 @@ inline void GFXOpenGL32Device::popWorldMatrix()
     m_WorldStack.pop_back();
 }
 
+inline void GFXOpenGL32Device::pushProjectionMatrix()
+{
+    MatrixF newMatrix = m_ProjectionStack.last();
+    m_ProjectionStack.push_back(newMatrix);
+}
+
+inline void GFXOpenGL32Device::popProjectionMatrix()
+{
+    m_ProjectionStack.pop_back();
+}
+
+
 inline void GFXOpenGL32Device::multWorld( const MatrixF &mat )
 {
     MatrixF newMatrix = m_WorldStack.last();
@@ -589,7 +601,7 @@ const MatrixF GFXOpenGL32Device::getMatrix( GFXMatrixType mtype )
     {
         case GFXMatrixWorld :
         {
-            return m_WorldStack.last().transpose();
+            return m_WorldStack.last();
         }
             break;
         case GFXMatrixView :
@@ -599,7 +611,7 @@ const MatrixF GFXOpenGL32Device::getMatrix( GFXMatrixType mtype )
             break;
         case GFXMatrixProjection :
         {
-            return m_ProjectionStack.last().transpose();
+            return m_ProjectionStack.last();
         }
             break;
             // CodeReview - Add support for texture transform matrix types

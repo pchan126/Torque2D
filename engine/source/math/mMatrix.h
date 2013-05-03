@@ -896,10 +896,10 @@ inline void MatrixF::setOrtho(float left, float right,
                               float bottom, float top,
                               float nearZ, float farZ)
 {
-#ifdef __GLK_MATRIX_4_H
-    mGM = GLKMatrix4MakeOrtho(left, right, bottom, top, nearZ, farZ);
-    transpose();
-#else
+//#ifdef __GLK_MATRIX_4_H
+//    mGM = GLKMatrix4MakeOrtho(left, right, bottom, top, nearZ, farZ);
+//    transpose();
+//#else
     float ral = right + left;
     float rsl = right - left;
     float tab = top + bottom;
@@ -923,8 +923,8 @@ inline void MatrixF::setOrtho(float left, float right,
     m[13] = 0.0f;
     m[14] = 0.0f;
     m[15] = 1.0f;
-    this->transpose();
-#endif
+//    this->transpose();
+//#endif
 }
 
 inline void MatrixF::setLookAt(float eyeX, float eyeY, float eyeZ,

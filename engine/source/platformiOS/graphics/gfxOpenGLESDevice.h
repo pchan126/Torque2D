@@ -167,9 +167,9 @@ private:
    StrongRefPtr<GFXOpenGLESVertexBuffer> mCurrentVB;
    
    /// Since GL does not have separate world and view matrices we need to track them
-    MatrixF m_mCurrentView;
-    GLKMatrixStackRef m_WorldStackRef;
-    GLKMatrixStackRef m_ProjectionStackRef;
+//    MatrixF m_mCurrentView;
+//    GLKMatrixStackRef m_WorldStackRef;
+//    GLKMatrixStackRef m_ProjectionStackRef;
 
 //    bool    mWorldMatrixDirty;
 //    bool    mProjectionMatrixDirty;
@@ -180,13 +180,18 @@ private:
 //    bool    mTextureMatrixDirty;
 //    bool    mTextureMatrixCheckDirty;
     
-    /// Pushes the world matrix stack and copies the current top
-    /// matrix to the new top of the stack
+    typedef Vector<MatrixF> MatrixStack;
+    
+    /// Since GL does not have separate world and view matrices we need to track them
+    MatrixF m_mCurrentView;
+    MatrixStack m_WorldStack;
+    MatrixStack m_ProjectionStack;
+    
     virtual void pushWorldMatrix();
-    
-    /// Pops the world matrix stack
     virtual void popWorldMatrix();
-    
+    virtual void pushProjectionMatrix();
+    virtual void popProjectionMatrix();
+
     virtual void multWorld( const MatrixF &mat );
 
     void _handleTextureLoaded(GFXTexNotifyCode code);

@@ -86,8 +86,10 @@ GFXOpenGLESDevice::GFXOpenGLESDevice( U32 adapterIndex ) : GFXOpenGLDevice( adap
     for (int i = 0; i < TEXTURE_STAGE_COUNT; i++)
         mActiveTextureType[i] = GL_TEXTURE_2D;
     
-    m_WorldStackRef = GLKMatrixStackCreate(kCFAllocatorDefault);
-    m_ProjectionStackRef = GLKMatrixStackCreate(kCFAllocatorDefault);
+//    m_WorldStackRef = GLKMatrixStackCreate(kCFAllocatorDefault);
+//    m_ProjectionStackRef = GLKMatrixStackCreate(kCFAllocatorDefault);
+    m_WorldStack.push_back(MatrixF(true));
+    m_ProjectionStack.push_back(MatrixF(true));
     
     mDeviceName = "OpenGLES";
     mFullScreenOnly = false;
@@ -96,8 +98,8 @@ GFXOpenGLESDevice::GFXOpenGLESDevice( U32 adapterIndex ) : GFXOpenGLDevice( adap
 
 GFXOpenGLESDevice::~GFXOpenGLESDevice()
 {
-    CFRelease(m_WorldStackRef);
-    CFRelease(m_ProjectionStackRef);
+//    CFRelease(m_WorldStackRef);
+//    CFRelease(m_ProjectionStackRef);
 }
 
 
@@ -191,25 +193,65 @@ void GFXOpenGLESDevice::enumerateAdapters( Vector<GFXAdapter*> &adapterList )
 
 
 
+//inline void GFXOpenGLESDevice::pushWorldMatrix()
+//{
+////    mWorldMatrixDirty = true;
+////    mStateDirty = true;
+//    GLKMatrixStackPush(m_WorldStackRef);
+//}
+//
+//inline void GFXOpenGLESDevice::popWorldMatrix()
+//{
+////    mWorldMatrixDirty = true;
+////    mStateDirty = true;
+//    GLKMatrixStackPop(m_WorldStackRef);
+//}
+//
+//inline void GFXOpenGLESDevice::pushProjectionMatrix()
+//{
+//    //    mWorldMatrixDirty = true;
+//    //    mStateDirty = true;
+//    GLKMatrixStackPush(m_WorldStackRef);
+//}
+//
+//inline void GFXOpenGLESDevice::popProjectionMatrix()
+//{
+//    //    mWorldMatrixDirty = true;
+//    //    mStateDirty = true;
+//    GLKMatrixStackPop(m_WorldStackRef);
+//}
+
 inline void GFXOpenGLESDevice::pushWorldMatrix()
 {
-//    mWorldMatrixDirty = true;
-//    mStateDirty = true;
-    GLKMatrixStackPush(m_WorldStackRef);
+    MatrixF newMatrix = m_WorldStack.last();
+    m_WorldStack.push_back(newMatrix);
 }
 
 inline void GFXOpenGLESDevice::popWorldMatrix()
 {
-//    mWorldMatrixDirty = true;
-//    mStateDirty = true;
-    GLKMatrixStackPop(m_WorldStackRef);
+    m_WorldStack.pop_back();
 }
+
+inline void GFXOpenGLESDevice::pushProjectionMatrix()
+{
+    MatrixF newMatrix = m_ProjectionStack.last();
+    m_ProjectionStack.push_back(newMatrix);
+}
+
+inline void GFXOpenGLESDevice::popProjectionMatrix()
+{
+    m_ProjectionStack.pop_back();
+}
+
 
 inline void GFXOpenGLESDevice::multWorld( const MatrixF &mat )
 {
 //    mWorldMatrixDirty = true;
 //    mStateDirty = true;
-    GLKMatrixStackMultiplyMatrix4(m_WorldStackRef, GLKMatrix4MakeWithArray(mat));
+//    GLKMatrixStackMultiplyMatrix4(m_WorldStackRef, GLKMatrix4MakeWithArray(mat));
+    MatrixF newMatrix = m_WorldStack.last();
+    newMatrix*=mat;
+    m_WorldStack.last() = newMatrix;
 }
 
 
@@ -508,11 +550,33 @@ void GFXOpenGLESDevice::setTextureInternal(U32 textureUnit, const GFXTextureObje
 
 void GFXOpenGLESDevice::setMatrix( GFXMatrixType mtype, const MatrixF &mat )
 {
+//    switch (mtype)
+//    {
+//        case GFXMatrixWorld :
+//        {
+//            GLKMatrixStackLoadMatrix4(m_WorldStackRef, GLKMatrix4MakeWithArrayAndTranspose(mat));
+//        }
+//            break;
+//        case GFXMatrixView :
+//        {
+//            m_mCurrentView = mat;
+//        }
+//            break;
+//        case GFXMatrixProjection :
+//        {
+//            GLKMatrixStackLoadMatrix4(m_ProjectionStackRef, GLKMatrix4MakeWithArrayAndTranspose(mat));
+//        }
+//            break;
+//            // CodeReview - Add support for texture transform matrix types
+//        default:
+//            AssertFatal(false, "GFXOpenGLESDevice::setMatrix - Unknown matrix mode!");
+//            return;
+//    }
     switch (mtype)
     {
         case GFXMatrixWorld :
         {
-            GLKMatrixStackLoadMatrix4(m_WorldStackRef, GLKMatrix4MakeWithArrayAndTranspose(mat));
+            m_WorldStack.last() = mat;
         }
             break;
         case GFXMatrixView :
@@ -522,12 +586,12 @@ void GFXOpenGLESDevice::setMatrix( GFXMatrixType mtype, const MatrixF &mat )
             break;
         case GFXMatrixProjection :
         {
-            GLKMatrixStackLoadMatrix4(m_ProjectionStackRef, GLKMatrix4MakeWithArrayAndTranspose(mat));
+            m_ProjectionStack.last() = mat;
         }
             break;
             // CodeReview - Add support for texture transform matrix types
         default:
-            AssertFatal(false, "GFXOpenGLESDevice::setMatrix - Unknown matrix mode!");
+            AssertFatal(false, "GFXOpenGL32Device::setMatrix - Unknown matrix mode!");
             return;
     }
 }
@@ -535,13 +599,37 @@ void GFXOpenGLESDevice::setMatrix( GFXMatrixType mtype, const MatrixF &mat )
 
 const MatrixF GFXOpenGLESDevice::getMatrix( GFXMatrixType mtype )
 {
+//    MatrixF ret = MatrixF(true);
+//    switch (mtype)
+//    {
+//        case GFXMatrixWorld :
+//        {
+//            MatrixF ret = GLKMatrixStackGetMatrix4(m_WorldStackRef);
+//            return ret;
+//        }
+//            break;
+//        case GFXMatrixView :
+//        {
+//            return m_mCurrentView;
+//        }
+//            break;
+//        case GFXMatrixProjection :
+//        {
+//            MatrixF ret = GLKMatrixStackGetMatrix4(m_ProjectionStackRef);
+//            return ret;
+//        }
+//            break;
+//            // CodeReview - Add support for texture transform matrix types
+//        default:
+//            AssertFatal(false, "GFXOpenGLESDevice::setMatrix - Unknown matrix mode!");
+//    }
+//    return ret;
     MatrixF ret = MatrixF(true);
     switch (mtype)
     {
         case GFXMatrixWorld :
         {
-            MatrixF ret = GLKMatrixStackGetMatrix4(m_WorldStackRef);
-            return ret;
+            return m_WorldStack.last();
         }
             break;
         case GFXMatrixView :
@@ -551,8 +639,7 @@ const MatrixF GFXOpenGLESDevice::getMatrix( GFXMatrixType mtype )
             break;
         case GFXMatrixProjection :
         {
-            MatrixF ret = GLKMatrixStackGetMatrix4(m_ProjectionStackRef);
-            return ret;
+            return m_ProjectionStack.last();
         }
             break;
             // CodeReview - Add support for texture transform matrix types

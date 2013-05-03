@@ -486,8 +486,6 @@ public:
     /// Called when one of this objects children is removed
     virtual void onChildRemoved( GuiControl *child );
 
-    /// Called when this object is added to the scene
-
       /// Called when this object is added to the scene
       virtual bool onAdd();
       

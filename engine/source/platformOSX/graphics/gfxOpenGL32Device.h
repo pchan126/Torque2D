@@ -201,6 +201,9 @@ private:
     /// Pops the world matrix stack
     virtual void popWorldMatrix();
     
+    virtual void pushProjectionMatrix();
+    virtual void popProjectionMatrix();
+
     virtual void multWorld( const MatrixF &mat );
 
    NSOpenGLContext* mContext;       // NSOpenGLContext
