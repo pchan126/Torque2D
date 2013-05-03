@@ -224,36 +224,6 @@ bool _iOSTorqueFatalError = false;
 	}
 }
 
--(bool) isStatusBarHidden
-{
-    return statusBarHidden;
-}
-
--(bool) setStatusBarHidden:(bool) hidden
-{
-    statusBarHidden = hidden;
-    return statusBarHidden;
-}
-
--(void) setStatusBarType:(int) type
-{
-    switch (type)
-    {
-        case 0: //Hidden
-            [self setStatusBarHidden:true];
-            break;
-        case 1: //Black Opaque
-            [self setStatusBarHidden:false];
-            break;
-        case 2: //Black Transparent
-            [self setStatusBarHidden:false];
-            break;
-        default:
-            break;
-    }
-    
-    statusBarType = type;
-}
 
 #pragma mark - GLKView and GLKViewController delegate methods
 

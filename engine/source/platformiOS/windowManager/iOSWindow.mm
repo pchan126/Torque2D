@@ -70,6 +70,10 @@ void iOSWindow::_initCocoaWindow(const char* windowText, Point2I clientExtent)
     GFXOpenGLESDevice *device = dynamic_cast<GFXOpenGLESDevice*>(GFX);
     EAGLContext *context = device->getEAGLContext();
 
+    S32 tempType = Con::getIntVariable("$pref::iOS::StatusBarType");
+    if (tempType == 0)
+        [[UIApplication sharedApplication] setStatusBarHidden:YES];
+
     T2DAppDelegate *appDelegate = (T2DAppDelegate*)[[UIApplication sharedApplication] delegate];
     appDelegate.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
@@ -87,11 +91,6 @@ void iOSWindow::_initCocoaWindow(const char* windowText, Point2I clientExtent)
     appDelegate.window.rootViewController = viewController;
     appDelegate.window.backgroundColor = [UIColor blackColor];
     [appDelegate.window makeKeyAndVisible];
-    
-    S32 tempType = Con::getIntVariable("$pref::iOS::StatusBarType");
-    if (tempType == 0)
-        [UIApplication sharedApplication].statusBarHidden = YES;
-    
 }
 
 void iOSWindow::_disassociateCocoaWindow()
@@ -316,17 +315,10 @@ bool iOSWindow::isMaximized()
 
 void iOSWindow::clearFocus()
 {
-   // Clear the focus state for this Window.  
-   // If the Window does not have focus, nothing happens.
-   // If the Window has focus, it relinquishes it's focus to the Operating System
-   
-   // TODO: find out if we can do anything correct here. We are instructed *not* to call [NSWindow resignKeyWindow], and we don't necessarily have another window to assign as key.
 }
 
 bool iOSWindow::setCaption(const char* windowText)
 {
-//   mTitle = windowText;
-//   [mGLKWindow setTitle:@(mTitle)];
    return true;
 }
 

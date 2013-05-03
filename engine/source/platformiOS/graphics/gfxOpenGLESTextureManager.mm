@@ -345,27 +345,8 @@ void GFXOpenGLESTextureManager::innerCreateTexture( GFXOpenGLESTextureObject *re
    
    // Bind it
    glActiveTexture(GL_TEXTURE0);
-//   PRESERVE_2D_TEXTURE();
-//   PRESERVE_3D_TEXTURE();
    glBindTexture(binding, retTex->getHandle());
    
-//   // Create it
-//   // TODO: Reenable mipmaps on render targets when Apple fixes their drivers
-//   if(forceMips && !retTex->mIsNPoT2)
-//   {
-//      glTexParameteri(binding, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
-//      retTex->mMipLevels = 0;
-//   }
-//   else if(profile->testFlag(GFXTextureProfile::NoMipmap) || profile->testFlag(GFXTextureProfile::RenderTarget) || numMipLevels == 1 || retTex->mIsNPoT2)
-//   {
-//      retTex->mMipLevels = 1;
-//   }
-//   else
-//   {
-//      glTexParameteri(binding, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
-//      retTex->mMipLevels = 0;
-//   }
-
    if(!retTex->mIsNPoT2)
    {
       if(!isPow2(width))
@@ -380,26 +361,13 @@ void GFXOpenGLESTextureManager::innerCreateTexture( GFXOpenGLESTextureObject *re
    AssertFatal(GFXGLTextureFormat[format] != GL_ZERO, "GFXOpenGLESTextureManager::innerCreateTexture - invalid format");
    AssertFatal(GFXGLTextureType[format] != GL_ZERO, "GFXOpenGLESTextureManager::innerCreateTexture - invalid type");
    
-//   if(binding != GL_TEXTURE_3D)
-      glTexImage2D(binding, 0, GFXGLTextureInternalFormat[format], width, height, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], NULL);
-//   else
-//      glTexImage3D(GL_TEXTURE_3D, 0, GFXGLTextureInternalFormat[format], width, height, depth, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], NULL);
+    glTexImage2D(binding, 0, GFXGLTextureInternalFormat[format], width, height, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], NULL);
    
    // Complete the texture
-   glTexParameteri(binding, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-   glTexParameteri(binding, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+   glTexParameteri(binding, GL_TEXTURE_MIN_FILTER, retTex->getFilter());
+   glTexParameteri(binding, GL_TEXTURE_MAG_FILTER, retTex->getFilter());
    glTexParameteri(binding, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
    glTexParameteri(binding, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-//   if(binding == GL_TEXTURE_3D)
-//      glTexParameteri(binding, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-   
-   // Get the size from GL (you never know...)
-//   GLint texHeight, texWidth, texDepth = 0;
-   
-//   glGetTexLevelParameteriv(binding, 0, GL_TEXTURE_WIDTH, &texWidth);
-//   glGetTexLevelParameteriv(binding, 0, GL_TEXTURE_HEIGHT, &texHeight);
-//   if(binding == GL_TEXTURE_3D)
-//      glGetTexLevelParameteriv(binding, 0, GL_TEXTURE_DEPTH, &texDepth);
    
    retTex->mTextureSize.set(width, height, 0);
 }

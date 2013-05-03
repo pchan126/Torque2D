@@ -123,143 +123,142 @@ double accelAxes[6];
     return motionManager.gyroActive;
 }
 
-static double filteredAccel[3] = {0, 0, 0};
 
 void (^accelerometerHandler)(CMAccelerometerData*, NSError*) = ^(CMAccelerometerData *accelData, NSError *)
 {
-    if(gMotionManager.accelerometerEnabled)
-    {
-        U32 accelAxes[6] = { SI_ACCELX, SI_ACCELY, SI_ACCELZ, SI_GRAVX, SI_GRAVY, SI_GRAVZ };
-        iOSPlatState *platState = [iOSPlatState sharedPlatState];
-        
-        double userAcc[6];
-        
-        if(platState.portrait)
-        {
-        
-            filteredAccel[0] = (accelData.acceleration.x * kFilterConst) + (filteredAccel[0] * (1.0 - kFilterConst));
-            filteredAccel[1] = (accelData.acceleration.y * kFilterConst) + (filteredAccel[1] * (1.0 - kFilterConst));
-            filteredAccel[2] = (accelData.acceleration.z * kFilterConst) + (filteredAccel[2] * (1.0 - kFilterConst));
-            
-            userAcc[0] = accelData.acceleration.x - filteredAccel[0];
-            userAcc[1] = accelData.acceleration.y - filteredAccel[1];
-            userAcc[2] = accelData.acceleration.z - filteredAccel[2];
-            
-            // Assign the non-filtered data to gravity
-            userAcc[3] = accelData.acceleration.x;
-            userAcc[4] = accelData.acceleration.y;
-            userAcc[5] = accelData.acceleration.z;
-        }
-        else 
-        {
-            filteredAccel[0] = (accelData.acceleration.y * kFilterConst) + (filteredAccel[0] * (1.0 - kFilterConst));
-            filteredAccel[1] = (accelData.acceleration.x * kFilterConst) + (filteredAccel[1] * (1.0 - kFilterConst));
-            filteredAccel[2] = (accelData.acceleration.z * kFilterConst) + (filteredAccel[2] * (1.0 - kFilterConst));
-
-            userAcc[0] = accelData.acceleration.y - filteredAccel[0];
-            userAcc[1] = accelData.acceleration.x - filteredAccel[1];
-            userAcc[2] = accelData.acceleration.z - filteredAccel[2];
-            
-            // Assign the non-filtered data to gravity
-            userAcc[3] = accelData.acceleration.y;
-            userAcc[4] = accelData.acceleration.x;
-            userAcc[5] = accelData.acceleration.z;
-        }
-        
-        for( int i = 0; i < 6; i++)
-        {
-            InputEventInfo event;
-            
-            event.deviceInst = 0;
-            event.fValue = userAcc[i];
-            event.deviceType = AccelerometerDeviceType;
-            event.objType = accelAxes[i];
-            event.objInst = i;
-            event.action = SI_MOTION;
-            event.modifier = 0;
-            
-//            Game->postEvent(event);
-        }
-    }
+//    if(gMotionManager.accelerometerEnabled)
+//    {
+//        U32 accelAxes[6] = { SI_ACCELX, SI_ACCELY, SI_ACCELZ, SI_GRAVX, SI_GRAVY, SI_GRAVZ };
+//        iOSPlatState *platState = [iOSPlatState sharedPlatState];
+//        
+//        double userAcc[6];
+//        
+//        if(platState.portrait)
+//        {
+//        
+//            filteredAccel[0] = (accelData.acceleration.x * kFilterConst) + (filteredAccel[0] * (1.0 - kFilterConst));
+//            filteredAccel[1] = (accelData.acceleration.y * kFilterConst) + (filteredAccel[1] * (1.0 - kFilterConst));
+//            filteredAccel[2] = (accelData.acceleration.z * kFilterConst) + (filteredAccel[2] * (1.0 - kFilterConst));
+//            
+//            userAcc[0] = accelData.acceleration.x - filteredAccel[0];
+//            userAcc[1] = accelData.acceleration.y - filteredAccel[1];
+//            userAcc[2] = accelData.acceleration.z - filteredAccel[2];
+//            
+//            // Assign the non-filtered data to gravity
+//            userAcc[3] = accelData.acceleration.x;
+//            userAcc[4] = accelData.acceleration.y;
+//            userAcc[5] = accelData.acceleration.z;
+//        }
+//        else 
+//        {
+//            filteredAccel[0] = (accelData.acceleration.y * kFilterConst) + (filteredAccel[0] * (1.0 - kFilterConst));
+//            filteredAccel[1] = (accelData.acceleration.x * kFilterConst) + (filteredAccel[1] * (1.0 - kFilterConst));
+//            filteredAccel[2] = (accelData.acceleration.z * kFilterConst) + (filteredAccel[2] * (1.0 - kFilterConst));
+//
+//            userAcc[0] = accelData.acceleration.y - filteredAccel[0];
+//            userAcc[1] = accelData.acceleration.x - filteredAccel[1];
+//            userAcc[2] = accelData.acceleration.z - filteredAccel[2];
+//            
+//            // Assign the non-filtered data to gravity
+//            userAcc[3] = accelData.acceleration.y;
+//            userAcc[4] = accelData.acceleration.x;
+//            userAcc[5] = accelData.acceleration.z;
+//        }
+//        
+//        for( int i = 0; i < 6; i++)
+//        {
+//            InputEventInfo event;
+//            
+//            event.deviceInst = 0;
+//            event.fValue = userAcc[i];
+//            event.deviceType = AccelerometerDeviceType;
+//            event.objType = accelAxes[i];
+//            event.objInst = i;
+//            event.action = SI_MOTION;
+//            event.modifier = 0;
+//            
+////            Game->postEvent(event);
+//        }
+//    }
 };
 
 void (^motionHandler)(CMDeviceMotion*, NSError*) = ^(CMDeviceMotion *motionData, NSError *error)
 {
-    iOSPlatState * platState = [iOSPlatState sharedPlatState];
-
-    if(gMotionManager.referenceAttitude == NULL)
-        [gMotionManager resetDeviceMotionReference];
-    
-    CMAttitude* currentAttitude = motionData.attitude;
-  
-    [currentAttitude multiplyByInverseOfAttitude:gMotionManager.referenceAttitude];
-  
-    if(gMotionManager.accelerometerEnabled)
-    {
-        U32 accelAxes[6] = { SI_ACCELX, SI_ACCELY, SI_ACCELZ, SI_GRAVX, SI_GRAVY, SI_GRAVZ };
-        
-        double userAcc[6];
-        if(platState.portrait)
-        {
-            userAcc[0] = motionData.userAcceleration.x; 
-            userAcc[1] = motionData.userAcceleration.y;
-            userAcc[2] = motionData.userAcceleration.z;
-            userAcc[3] = motionData.gravity.x; 
-            userAcc[4] = motionData.gravity.y;
-            userAcc[5] = motionData.gravity.z;
-        }
-        else 
-        {
-            userAcc[0] = motionData.userAcceleration.y; 
-            userAcc[1] = motionData.userAcceleration.x;
-            userAcc[2] = motionData.userAcceleration.z;
-            userAcc[3] = motionData.gravity.y; 
-            userAcc[4] = motionData.gravity.x;
-            userAcc[5] = motionData.gravity.z;            
-        }
-
-        for( int i = 0; i < 6; i++)
-        {
-            InputEventInfo event;
-        
-            event.deviceInst = 0;
-            event.fValue = userAcc[i];
-            event.deviceType = AccelerometerDeviceType;
-            event.objType = accelAxes[i];
-            event.objInst = i;
-            event.action = SI_MOTION;
-            event.modifier = 0;
-        
-//            Game->postEvent(event);
-        }
-    }
-    
-    if(gMotionManager.gyroscopeEnabled)
-    {
-        double gyroData[6] = { currentAttitude.pitch, 
-                               currentAttitude.yaw, 
-                               currentAttitude.roll, 
-                               motionData.rotationRate.x, 
-                               motionData.rotationRate.y, 
-                               motionData.rotationRate.z };
-        
-        U32 gyroAxes[6] = { SI_PITCH, SI_YAW, SI_ROLL, SI_GYROX, SI_GYROY, SI_GYROZ };
-        
-        for( int i = 0; i < 6; i++)
-        {
-            InputEventInfo event;
-            
-            event.deviceInst = 0;
-            event.fValue = gyroData[i];
-            event.deviceType = GyroscopeDeviceType;
-            event.objType = gyroAxes[i];
-            event.objInst = i;
-            event.action = SI_MOTION;
-            event.modifier = 0;
-            
-//            Game->postEvent(event);
-        }
-    }
+//    iOSPlatState * platState = [iOSPlatState sharedPlatState];
+//
+//    if(gMotionManager.referenceAttitude == NULL)
+//        [gMotionManager resetDeviceMotionReference];
+//    
+//    CMAttitude* currentAttitude = motionData.attitude;
+//  
+//    [currentAttitude multiplyByInverseOfAttitude:gMotionManager.referenceAttitude];
+//  
+//    if(gMotionManager.accelerometerEnabled)
+//    {
+//        U32 accelAxes[6] = { SI_ACCELX, SI_ACCELY, SI_ACCELZ, SI_GRAVX, SI_GRAVY, SI_GRAVZ };
+//        
+//        double userAcc[6];
+//        if(platState.portrait)
+//        {
+//            userAcc[0] = motionData.userAcceleration.x; 
+//            userAcc[1] = motionData.userAcceleration.y;
+//            userAcc[2] = motionData.userAcceleration.z;
+//            userAcc[3] = motionData.gravity.x; 
+//            userAcc[4] = motionData.gravity.y;
+//            userAcc[5] = motionData.gravity.z;
+//        }
+//        else 
+//        {
+//            userAcc[0] = motionData.userAcceleration.y; 
+//            userAcc[1] = motionData.userAcceleration.x;
+//            userAcc[2] = motionData.userAcceleration.z;
+//            userAcc[3] = motionData.gravity.y; 
+//            userAcc[4] = motionData.gravity.x;
+//            userAcc[5] = motionData.gravity.z;            
+//        }
+//
+//        for( int i = 0; i < 6; i++)
+//        {
+//            InputEventInfo event;
+//        
+//            event.deviceInst = 0;
+//            event.fValue = userAcc[i];
+//            event.deviceType = AccelerometerDeviceType;
+//            event.objType = accelAxes[i];
+//            event.objInst = i;
+//            event.action = SI_MOTION;
+//            event.modifier = 0;
+//        
+////            Game->postEvent(event);
+//        }
+//    }
+//    
+//    if(gMotionManager.gyroscopeEnabled)
+//    {
+//        double gyroData[6] = { currentAttitude.pitch, 
+//                               currentAttitude.yaw, 
+//                               currentAttitude.roll, 
+//                               motionData.rotationRate.x, 
+//                               motionData.rotationRate.y, 
+//                               motionData.rotationRate.z };
+//        
+//        U32 gyroAxes[6] = { SI_PITCH, SI_YAW, SI_ROLL, SI_GYROX, SI_GYROY, SI_GYROZ };
+//        
+//        for( int i = 0; i < 6; i++)
+//        {
+//            InputEventInfo event;
+//            
+//            event.deviceInst = 0;
+//            event.fValue = gyroData[i];
+//            event.deviceType = GyroscopeDeviceType;
+//            event.objType = gyroAxes[i];
+//            event.objInst = i;
+//            event.action = SI_MOTION;
+//            event.modifier = 0;
+//            
+////            Game->postEvent(event);
+//        }
+//    }
     
 };
 

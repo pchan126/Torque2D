@@ -5,7 +5,6 @@
 
 #import "./iOSWindowManager.h"
 #import "./iOSWindow.h"
-//#import "core/util/journal/process.h"
 #import "console/console.h"
 #import "graphics/gfxDevice.h"
 #import "game/version.h"
@@ -25,7 +24,6 @@ iOSWindowManager::iOSWindowManager() : mNotifyShutdownDelegate(this, &iOSWindowM
                                         mIsShuttingDown(false)
 {
    mWindowList.clear();
-//   Process::notifyShutdown(mNotifyShutdownDelegate);
 }
 
 iOSWindowManager::~iOSWindowManager()

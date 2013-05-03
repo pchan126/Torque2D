@@ -826,32 +826,35 @@ void ImageAsset::setTextureFilter( const TextureFilterMode filterMode )
         return;
 
     // Select Hardware Filter Mode.
-    GLint glFilterMode;
+    GFXTextureFilterType glFilterMode;
 
     switch( filterMode )
     {
         // Nearest ("none").
         case FILTER_NEAREST:
         {
-            glFilterMode = GL_NEAREST;
-
+            glFilterMode = GFXTextureFilterPoint;
         } break;
 
         // Bilinear ("smooth").
         case FILTER_BILINEAR:
         {
-            glFilterMode = GL_LINEAR;
+            glFilterMode = GFXTextureFilterLinear;
 
         } break;
 
         // Huh?
         default:
             // Oh well...
-            glFilterMode = GL_LINEAR;
+            glFilterMode = GFXTextureFilterLinear;
     };
 
-//    // Set the texture objects filter mode.
-//    mImageTextureHandle.setFilter( glFilterMode );
+//    GFXGLTextureFilter[GFXTextureFilterNone] = GL_NEAREST;
+//    GFXGLTextureFilter[GFXTextureFilterPoint] = GL_NEAREST;
+//    GFXGLTextureFilter[GFXTextureFilterLinear] = GL_LINEAR;
+    
+    //    // Set the texture objects filter mode.
+//    mImageTextureHandle->setFilter( glFilterMode );
 }
 
 //------------------------------------------------------------------------------

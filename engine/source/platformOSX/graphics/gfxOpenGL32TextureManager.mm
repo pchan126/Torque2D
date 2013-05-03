@@ -446,7 +446,7 @@ void GFXOpenGL32TextureManager::innerCreateTexture( GFXOpenGL32TextureObject *re
    AssertFatal(GFXGLTextureType[format] != GL_ZERO, "GFXOpenGL32TextureManager::innerCreateTexture - invalid type");
    
     //   if(binding != GL_TEXTURE_3D)
-      GL_CHECK(glTexImage2D(binding, 0, GFXGLTextureInternalFormat[format], width, height, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], NULL));
+    glTexImage2D(binding, 0, GFXGLTextureInternalFormat[format], width, height, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], NULL);
 
     //   else
 //      glTexImage3D(GL_TEXTURE_3D, 0, GFXGLTextureInternalFormat[format], width, height, depth, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], NULL);

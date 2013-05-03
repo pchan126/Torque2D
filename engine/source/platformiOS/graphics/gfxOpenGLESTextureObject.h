@@ -22,7 +22,6 @@ public:
    
    inline GLuint getHandle() const { return mHandle; }
    inline GLenum getBinding() const { return mBinding; }
-//   inline GLuint getBuffer() const { return mBuffer; }
    
    inline bool isZombie() const { return mIsZombie; }
 
@@ -54,8 +53,10 @@ public:
    virtual bool copyToBmp(GBitmap *); ///< Not implemented
    
    bool mIsNPoT2;
-
-   // GFXResource interface
+    inline GLuint getFilter( void ) { return mFilter; }
+    virtual void setFilter( const GFXTextureFilterType filter );
+    
+    // GFXResource interface
    virtual void zombify();
    virtual void resurrect();
    virtual const String describeSelf() const;
@@ -65,9 +66,9 @@ private:
    typedef GFXTextureObject Parent;
    /// Internal GL object
    GLuint mHandle;
-//   GLuint mBuffer;
-
    GLenum mBinding;
+    GLuint mFilter;
+    bool mClamp;
    
    U32 mBytesPerTexel;
    GFXLockedRect mLockedRect;
@@ -80,6 +81,7 @@ private:
    U8* mZombieCache;
    
    void copyIntoCache();
+
 };
 
 #endif

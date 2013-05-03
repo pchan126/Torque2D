@@ -39,7 +39,8 @@ GFXOpenGL32TextureObject::GFXOpenGL32TextureObject(GFXDevice * aDevice, GFXTextu
     mBytesPerTexel(4),
     mLockedRectRect(0, 0, 0, 0),
     mGLDevice(static_cast<GFXOpenGL32Device*>(mDevice)),
-    mZombieCache(NULL)
+    mZombieCache(NULL),
+    mFilter( GL_NEAREST )
 {
     mBitmap = NULL;
 //    setTexture(texInfo);
@@ -52,7 +53,8 @@ GFXOpenGL32TextureObject::GFXOpenGL32TextureObject(GFXDevice * aDevice, GFXTextu
    mBytesPerTexel(4),
    mLockedRectRect(0, 0, 0, 0),
    mGLDevice(static_cast<GFXOpenGL32Device*>(mDevice)),
-   mZombieCache(NULL)
+   mZombieCache(NULL),
+   mFilter( GL_NEAREST )
 {
    AssertFatal(dynamic_cast<GFXOpenGL32Device*>(mDevice), "GFXOpenGL32TextureObject::GFXOpenGL32TextureObject - Invalid device type, expected GFXOpenGL32Device!");
    glGenTextures(1, &mHandle);
@@ -371,3 +373,20 @@ const String GFXOpenGL32TextureObject::describeSelf() const
    
    return ret;
 }
+
+void GFXOpenGL32TextureObject::setFilter(const GFXTextureFilterType filter)
+{
+    // Set filter.
+    mFilter = GFXGLTextureFilter[filter];
+    
+    // Finish if no GL texture name.
+    if ( mHandle == 0 )
+        return;
+    
+    // Set texture state.
+    glBindTexture( GL_TEXTURE_2D, mHandle );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mFilter );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, mFilter );
+}
+
+

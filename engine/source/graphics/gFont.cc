@@ -660,8 +660,7 @@ void GFont::addSheet()
     dMemset(bits, 0, sizeof(U8) *TextureSheetSize*TextureSheetSize);
 
     GFXTexHandle handle = GFXTexHandle( bitmap, &GFXFontTextureProfile, true, avar("%s() - (line %d)", __FUNCTION__, __LINE__) );
-//    GFXTexHandle handle = GFXTexHandle(buf, bitmap, GFXTexHandle::BitmapKeepTexture);
-//    handle.setFilter(GL_NEAREST);
+    handle.setFilter(GFXTextureFilterPoint);
 
     mTextureSheets.increment();
     constructInPlace(&mTextureSheets.last());

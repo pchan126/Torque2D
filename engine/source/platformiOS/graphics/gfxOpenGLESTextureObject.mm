@@ -20,7 +20,8 @@ GFXOpenGLESTextureObject::GFXOpenGLESTextureObject(GFXDevice * aDevice, GFXTextu
     mBytesPerTexel(4),
     mLockedRectRect(0, 0, 0, 0),
     mGLDevice(static_cast<GFXOpenGLESDevice*>(mDevice)),
-    mZombieCache(NULL)
+    mZombieCache(NULL),
+    mFilter( GL_NEAREST )
 {
     GLKTextureInfo *textureInfo = (__bridge GLKTextureInfo*) texInfo;
     mTextureSize.set([ textureInfo width ], [ textureInfo height ], 0.0);
@@ -243,3 +244,20 @@ const String GFXOpenGLESTextureObject::describeSelf() const
    
    return ret;
 }
+
+void GFXOpenGLESTextureObject::setFilter(const GFXTextureFilterType filter)
+{
+    // Set filter.
+    mFilter = GFXGLTextureFilter[filter];
+    
+    // Finish if no GL texture name.
+    if ( mHandle == 0 )
+        return;
+    
+    // Set texture state.
+    glBindTexture( GL_TEXTURE_2D, mHandle );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter );
+}
+
+

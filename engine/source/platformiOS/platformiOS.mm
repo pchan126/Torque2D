@@ -55,7 +55,6 @@
 
 static iOSPlatState * tempSharedPlatState = nil;
 
-//bool setScreenOrientation(bool, bool);
 bool getStatusBarHidden();
 bool setStatusBarHidden(bool);
 void setStatusBarType(S32);
@@ -63,10 +62,6 @@ void setStatusBarType(S32);
 //Hidden by Default. 1 Black Opaque, 2 Black Translucent
 S32 gStatusBarType = 0;
 bool gStatusBarHidden = true;
-
-//Landscape by default. 0 Landscape, 1 Portrait
-S32 gScreenOrientation = 0;
-bool gScreenUpsideDown = true;
 
 //-----------------------------------------------------------------------------
 

@@ -73,6 +73,8 @@ public:
    virtual bool copyToBmp(GBitmap *); ///< Not implemented
    
    bool mIsNPoT2;
+    inline GLuint getFilter( void ) { return mFilter; }
+    virtual void setFilter( const GFXTextureFilterType filter );
 
    // GFXResource interface
    virtual void zombify();
@@ -85,6 +87,8 @@ private:
    /// Internal GL object
    GLuint mHandle;
    GLenum mBinding;
+    GLuint mFilter;
+    bool mClamp;
    
    U32 mBytesPerTexel;
    GFXLockedRect mLockedRect;

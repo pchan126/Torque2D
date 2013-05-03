@@ -40,8 +40,6 @@
     
     bool              ctxNeedsUpdate;
 
-    bool			portrait;
-
     U32               currentTime;
     bool				 fullscreen;
 
@@ -108,7 +106,6 @@
 @property BOOL backgrounded;
 @property BOOL minimized;
 @property BOOL quit;
-@property BOOL portrait;
 @property BOOL multipleTouchesEnabled;
 
 /// Global singleton that encapsulates a lot of mac platform state & globals.

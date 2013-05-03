@@ -1677,12 +1677,11 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
 //        sceneMax.x -= (bounds.extent.x - localBottomRight.x ) * sceneWindowScale.x;
 //    }
 //
-//    // Add camera shake offset if active.
-//    if ( mCameraShaking )
-//    {
-//        sceneMin += mCameraShakeOffset;
-//        sceneMax += mCameraShakeOffset;
-//    }
+    // Add camera shake offset if active.
+    if ( mCameraShaking )
+    {
+        mCameraCurrent.mSourceArea.point += mCameraShakeOffset;
+    }
 
     // Set ModelView.
     GFX->pushWorldMatrix();

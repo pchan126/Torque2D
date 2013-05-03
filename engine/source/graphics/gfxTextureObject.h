@@ -240,6 +240,9 @@ public:
     
     inline S32 getTextureResidentSize( void ) const { return mTextureResidentSize; }
     inline S32 getBitmapResidentSize( void ) const { return mBitmapResidentSize; }
+    
+    virtual void setFilter(GFXTextureFilterType filterType) = 0 ;
+    
 };
 
 #endif // _GFXTEXTUREOBJECT_H_

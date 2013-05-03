@@ -66,6 +66,8 @@ public:
     U32 getBitmapDepth() const    { return getPointer() ? getPointer()->getBitmapDepth()  : 0; }
     GFXFormat getFormat() const { return getPointer() ? getPointer()->getFormat() : GFXFormat_COUNT; }
    
+    void setFilter(GFXTextureFilterType filterType) { getPointer()->setFilter(filterType); };
+    
    /// Reloads the texture.
    /// @see GFXTextureManager::reloadTexture
    void refresh();
