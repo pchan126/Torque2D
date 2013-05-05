@@ -146,6 +146,15 @@ void FontRenderBatcher::render( F32 rot, const Point2F &offset )
          verts[currentPt].texCoord.set( texLeft, texBottom );
          currentPt++;
 
+         tmp.set( screenRight, screenTop, 0.f );
+         if(doRotation)
+            rotMatrix.mulP( tmp, &verts[currentPt].point);
+         else
+            verts[currentPt].point = tmp;
+         verts[currentPt].color = m.color;
+         verts[currentPt].texCoord.set( texRight, texTop );
+         currentPt++;
+
          tmp.set( screenRight, screenBottom, 0.f );
          if(doRotation)
             rotMatrix.mulP( tmp, &verts[currentPt].point);
@@ -155,14 +164,6 @@ void FontRenderBatcher::render( F32 rot, const Point2F &offset )
          verts[currentPt].texCoord.set( texRight, texBottom );
          currentPt++;
 
-         tmp.set( screenRight, screenTop, 0.f );
-         if(doRotation)
-            rotMatrix.mulP( tmp, &verts[currentPt].point);
-         else
-            verts[currentPt].point = tmp;
-         verts[currentPt].color = m.color;
-         verts[currentPt].texCoord.set( texRight, texTop );
-         currentPt++;
       }
        
        vHandle.set(GFX, verts.size(), GFXBufferTypeVolatile, verts.address());
