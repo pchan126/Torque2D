@@ -981,11 +981,8 @@ bool GFont::read(Stream& io_rStream)
 
        mTextureSheets.increment();
        constructInPlace(&mTextureSheets.last());
-//       mTextureSheets.last() = GFXTextureHandle(buf, bmp, GFXTexHandle::BitmapKeepTexture);
        GFXTexHandle handle = GFXTexHandle(bmp, &GFXFontTextureProfile, true, avar(""));
-       
-//       mTextureSheets.last() = GFXTexHandle(buf, bmp, GFXTexHandle::BitmapKeepTexture);
-//       mTextureSheets.last().setFilter(GL_NEAREST);;
+//       mTextureSheets.last().setFilter(GL_NEAREST);
    }
    
    // Read last position info

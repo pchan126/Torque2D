@@ -32,7 +32,7 @@ GFXOpenGLESVertexBuffer::GFXOpenGLESVertexBuffer(  GFXDevice *device,
     U8* buffer = (U8*)getBuffer();
     
     // Configure the attributes in the VAO.
-    U32 texCoordIndex = 0;
+    mTextureCount = 0;
     for ( U32 i=0; i < mVertexFormat.getElementCount(); i++ )
     {
         const GFXVertexElement &element = mVertexFormat.getElement( i );
@@ -57,10 +57,10 @@ GFXOpenGLESVertexBuffer::GFXOpenGLESVertexBuffer(  GFXDevice *device,
         }
         else // Everything else is a texture coordinate.
         {
-            glVertexAttribPointer(GLKVertexAttribTexCoord0+texCoordIndex, 2, GL_FLOAT, GL_FALSE, mVertexSize, buffer);
-            glEnableVertexAttribArray(GLKVertexAttribTexCoord0+texCoordIndex);
+            glVertexAttribPointer(GLKVertexAttribTexCoord0+mTextureCount, 2, GL_FLOAT, GL_FALSE, mVertexSize, buffer);
+            glEnableVertexAttribArray(GLKVertexAttribTexCoord0+mTextureCount);
             buffer += element.getSizeInBytes();
-            ++texCoordIndex;
+            ++mTextureCount;
         }
     }
     

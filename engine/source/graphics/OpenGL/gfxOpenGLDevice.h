@@ -107,6 +107,7 @@ public:
    GLsizei primCountToIndexCount(GFXPrimitiveType primType, U32 primitiveCount);
 
     virtual void setCullMode( GFXCullMode );
+    virtual void setBlending( bool DoesItBlend );
 protected:
 
     void preDrawPrimitive();
@@ -191,6 +192,7 @@ private:
    F32 mPixelShaderVersion;
    
    bool mSupportsAnisotropic;
+   bool mIsBlending;
    
     U32 mMaxShaderTextures;
     U32 mMaxFFTextures;

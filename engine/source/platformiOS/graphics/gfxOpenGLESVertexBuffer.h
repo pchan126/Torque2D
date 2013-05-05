@@ -43,6 +43,7 @@ private:
    friend class GFXOpenGLESDevice;
 	/// GL buffer handle
 	GLuint mBuffer, mVertexArrayObject, elementBufferName;
+   U32 mTextureCount;
    
    U8* mZombieCache;
 };

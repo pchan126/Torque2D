@@ -79,8 +79,6 @@
 
     NSTimeInterval	 timerInterval;
     UIApplication	*application;
-    //-Mat
-    bool		multipleTouchesEnabled;
 
     // Reports the quit state for the applications
     BOOL _quit;
@@ -106,7 +104,6 @@
 @property BOOL backgrounded;
 @property BOOL minimized;
 @property BOOL quit;
-@property BOOL multipleTouchesEnabled;
 
 /// Global singleton that encapsulates a lot of mac platform state & globals.
 + (id)sharedPlatState;

@@ -26,9 +26,9 @@
 
 
 GFXOpenGLDevice::GFXOpenGLDevice( U32 adapterIndex ) :
-            currentCullMode(GFXCullNone)
+            currentCullMode(GFXCullNone),
+            mIsBlending( false )
 {
-    
 }
 
 
@@ -47,6 +47,23 @@ void GFXOpenGLDevice::setCullMode(GFXCullMode mode)
         glEnable(GL_CULL_FACE);
         glCullFace(GFXGLCullMode[mode]);
     }
+}
+
+
+void GFXOpenGLDevice::setBlending( bool DoesItBlend )
+{
+   if (mIsBlending != DoesItBlend)
+   {
+      if (DoesItBlend)
+      {
+         glEnable(GL_BLEND);
+      }
+      else
+      {
+         glDisable(GL_BLEND);
+      }
+      mIsBlending = DoesItBlend;
+   }
 }
 
 void GFXOpenGLDevice::preDrawPrimitive()

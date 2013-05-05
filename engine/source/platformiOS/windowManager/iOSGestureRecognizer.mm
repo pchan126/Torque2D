@@ -15,6 +15,7 @@
 @implementation iOSGestureRecognizer
 @synthesize tapGestureRecognizer;
 @synthesize panGestureRecognizer;
+@synthesize touchGestureRecognizer;
 @synthesize rotationGestureRecognizer;
 @synthesize swipeGestureRecognizer;
 @synthesize longPressGestureRecognizer;

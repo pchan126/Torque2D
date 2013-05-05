@@ -527,12 +527,12 @@ void GFXOpenGLESDevice::updateStates(bool forceSetAll /*=false*/)
 void GFXOpenGLESDevice::setTextureInternal(U32 textureUnit, const GFXTextureObject*texture)
 {
     const GFXOpenGLESTextureObject *tex = static_cast<const GFXOpenGLESTextureObject*>(texture);
-    glActiveTexture(GL_TEXTURE0 + textureUnit);
     if (tex)
     {
         // GFXOpenGLESTextureObject::bind also handles applying the current sampler state.
         if(mActiveTextureType[textureUnit] != tex->getBinding() && mActiveTextureType[textureUnit] != GL_ZERO)
         {
+            glActiveTexture(GL_TEXTURE0 + textureUnit);
             glBindTexture(mActiveTextureType[textureUnit], GL_ZERO);
         }
         mActiveTextureType[textureUnit] = tex->getBinding();
@@ -540,6 +540,7 @@ void GFXOpenGLESDevice::setTextureInternal(U32 textureUnit, const GFXTextureObje
     }
     else if(mActiveTextureType[textureUnit] != GL_ZERO)
     {
+        glActiveTexture(GL_TEXTURE0 + textureUnit);
         glBindTexture(mActiveTextureType[textureUnit], GL_ZERO);
         mActiveTextureType[textureUnit] = GL_ZERO;
     }
@@ -837,8 +838,8 @@ void GFXOpenGLESDevice::setShader( GFXOpenGLESShader *shader )
 
 void GFXOpenGLESDevice::disableShaders()
 {
-    setShader(NULL);
-    setShaderConstBuffer( NULL );
+//    setShader(NULL);
+//    setShaderConstBuffer( NULL );
 }
 
 void GFXOpenGLESDevice::setShaderConstBufferInternal(GFXShaderConstBuffer* buffer)
