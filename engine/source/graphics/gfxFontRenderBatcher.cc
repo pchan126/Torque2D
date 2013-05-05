@@ -227,7 +227,7 @@ void FontRenderBatcher::init( GFont *font, U32 n )
    // Clear out batched results
    dMemset(mSheets.address(), 0, mSheets.memSize());
    mSheets.clear();
-   mStorage.freeBlocks();
+   mStorage.freeBlocks(true);
 
    mFont = font;
    mLength = n;
