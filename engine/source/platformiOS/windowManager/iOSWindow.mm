@@ -75,22 +75,10 @@ void iOSWindow::_initCocoaWindow(const char* windowText, Point2I clientExtent)
         [[UIApplication sharedApplication] setStatusBarHidden:YES];
 
     T2DAppDelegate *appDelegate = (T2DAppDelegate*)[[UIApplication sharedApplication] delegate];
-    appDelegate.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
     view = [[GLKView alloc] initWithFrame:[[UIScreen mainScreen] bounds] context:context];
     view.delegate = appDelegate;
     view.drawableDepthFormat = GLKViewDrawableDepthFormat16;
-
-    viewController = [[GLKViewController alloc] initWithNibName:nil bundle:nil];
-    viewController.view = view;
-    viewController.delegate = appDelegate;
-    viewController.preferredFramesPerSecond = 60;
-    viewController.paused = NO;
-    
-    appDelegate.T2DWindow = this;
-    appDelegate.window.rootViewController = viewController;
-    appDelegate.window.backgroundColor = [UIColor blackColor];
-    [appDelegate.window makeKeyAndVisible];
 }
 
 void iOSWindow::_disassociateCocoaWindow()
@@ -98,7 +86,6 @@ void iOSWindow::_disassociateCocoaWindow()
     T2DAppDelegate *appDelegate = (T2DAppDelegate*)[[UIApplication sharedApplication] delegate];
 
     view = nil;
-    viewController = nil;
     appDelegate.window = nil;
 }
 

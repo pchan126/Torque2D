@@ -146,13 +146,13 @@
 
 - (void) handleTouch:(T2DUITouchGestureRecognizer*)paramSender {
 
-   UIViewController *vc = (UIViewController*)self.window->getViewController();
+   UIView *view = (UIView*)window->view;
    for (int i = 0; i < 5; i++)
    {
        UITouch* touch = [paramSender touchAtLocation:i];
        if (touch != nil)
        {
-           CGPoint point = [touch locationInView:vc.view];
+           CGPoint point = [touch locationInView:view];
             U32 touchType = 0;
             switch ( touch.phase )
             {
@@ -164,7 +164,7 @@
                     break;
                 case UITouchPhaseEnded:
                     touchType = SI_BREAK;
-                    point = [touch previousLocationInView:vc.view];
+                    point = [touch previousLocationInView:view];
                     break;
                 case UITouchPhaseCancelled:
                     touchType = SI_BREAK;

@@ -151,14 +151,12 @@ private:
    CGRect mDisplayBounds;
    CGRect mMainDisplayBounds;
    
-    GLKView *view;
-    GLKViewController *viewController;
    Point2I mSize;
     
 public:
     CGFloat mDisplayScale;
+    GLKView *view;
 
-    GLKViewController* getViewController() { return viewController; };
     iOSGestureRecognizer *gestureRecognizer;
     
     void addGestureRecognizer( UIGestureRecognizer* );

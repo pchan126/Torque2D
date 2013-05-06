@@ -8,6 +8,7 @@
 
 #import "windowManager/platformWindowMgr.h"
 #import "collection/vector.h"
+#import <GLKit/GLKit.h>
 
 class iOSWindow;
 
@@ -18,7 +19,9 @@ private:
    WindowList mWindowList;
    U32 mFadeToken;
    Delegate<bool(void)> mNotifyShutdownDelegate;
-   
+    UIWindow *extWindow;
+    UIScreen *extScreen;
+    
 public:
    iOSWindowManager();
    ~iOSWindowManager();
@@ -104,7 +107,7 @@ public:
    bool onShutdown();
    bool canWindowGainFocus(iOSWindow* window);
    
-   
+    GLKViewController *viewController;
 private:
    bool mIsShuttingDown;
 };

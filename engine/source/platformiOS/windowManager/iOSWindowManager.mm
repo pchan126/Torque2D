@@ -9,6 +9,7 @@
 #import "graphics/gfxDevice.h"
 #import "game/version.h"
 #import <UIKit/UIKit.h>
+#import "platformiOS/T2DAppDelegate.h"
 
 PlatformWindowManager* CreatePlatformWindowManager()
 {
@@ -23,7 +24,20 @@ static inline RectI convertCGRectToRectI(CGRect r)
 iOSWindowManager::iOSWindowManager() : mNotifyShutdownDelegate(this, &iOSWindowManager::onShutdown),
                                         mIsShuttingDown(false)
 {
+   extWindow = nil;
+   extScreen = nil;
    mWindowList.clear();
+    T2DAppDelegate *appDelegate = (T2DAppDelegate*)[[UIApplication sharedApplication] delegate];
+    appDelegate.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+
+    viewController = [[GLKViewController alloc] initWithNibName:nil bundle:nil];
+
+    viewController.delegate = appDelegate;
+    viewController.preferredFramesPerSecond = 60;
+    viewController.paused = NO;
+
+    appDelegate.window.rootViewController = viewController;
+    appDelegate.window.backgroundColor = [UIColor blackColor];
 }
 
 iOSWindowManager::~iOSWindowManager()
@@ -31,6 +45,8 @@ iOSWindowManager::~iOSWindowManager()
    for(U32 i = 0; i < mWindowList.size(); i++)
       delete mWindowList[i];
    mWindowList.clear();
+    extWindow = nil;
+    extScreen = nil;
 }
 
 RectI iOSWindowManager::getPrimaryDesktopArea()
@@ -163,9 +179,17 @@ void iOSWindowManager::_addWindow(iOSWindow* window)
    else
       window->mNextWindow = NULL;
 
+   viewController.view = window->view;
+    T2DAppDelegate *appDelegate = (T2DAppDelegate*)[[UIApplication sharedApplication] delegate];
+    appDelegate.T2DWindow = window;
+    
    mWindowList.push_back(window);
    window->mOwningWindowManager = this;
    window->appEvent.notify(this, &iOSWindowManager::_onAppSignal);
+    
+   if (mWindowList.size() > 0)
+       [appDelegate.window makeKeyAndVisible];
+
 }
 
 void iOSWindowManager::_removeWindow(iOSWindow* window)

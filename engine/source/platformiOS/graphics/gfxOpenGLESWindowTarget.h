@@ -16,10 +16,8 @@ class GFXOpenGLESWindowTarget : public GFXWindowTarget
 public:
 
    GFXOpenGLESWindowTarget(PlatformWindow *win, GFXDevice *d);
-   const Point2I getSize() 
-   {
-       return mWindow->getClientExtent();
-   }
+   const Point2I getSize();
+
    virtual GFXFormat getFormat()
    {
       // TODO: Fix me!

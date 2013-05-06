@@ -10,6 +10,7 @@
 
 #import "platformiOS/windowManager/iOSWindow.h"
 #include "platform/platformGL.h"
+#import <GLKit/GLKit.h>
 
 GFXOpenGLESWindowTarget::GFXOpenGLESWindowTarget(PlatformWindow *win, GFXDevice *d)
       : GFXWindowTarget(win), mDevice(d), mContext(NULL), mFullscreenContext(NULL)
@@ -23,6 +24,13 @@ void GFXOpenGLESWindowTarget::resetMode()
 {
     _teardownCurrentMode();
     _setupNewMode();
+}
+
+const Point2I GFXOpenGLESWindowTarget::getSize()
+{
+   iOSWindow *win = (iOSWindow*)mWindow;
+   GLKView *view = (GLKView*)win->view;
+   return Point2I(view.drawableWidth, view.drawableHeight);
 }
 
 bool GFXOpenGLESWindowTarget::present()
