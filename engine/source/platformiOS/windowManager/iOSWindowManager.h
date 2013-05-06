@@ -21,6 +21,7 @@ private:
    Delegate<bool(void)> mNotifyShutdownDelegate;
     UIWindow *extWindow;
     UIScreen *extScreen;
+    GLKViewController *extViewController;
     
 public:
    iOSWindowManager();
@@ -61,6 +62,8 @@ public:
    
    /// @name Window Lookup
    /// @{
+    
+    void updateWindows();
    
    /// Get the number of Window's in this system
    virtual S32 getWindowCount();

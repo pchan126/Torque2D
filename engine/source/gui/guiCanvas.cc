@@ -159,12 +159,6 @@ bool GuiCanvas::onAdd()
         mPlatformWindow->setInputController( dynamic_cast<IProcessInput*>(this) );
     }
 
-//    // Need to get painted, too! :)
-//    Process::notify(this, &GuiCanvas::paint, PROCESS_RENDER_ORDER);
-    
-//    // Set up the fences
-//    setupFences();
-    
     // Make sure we're able to render.
     newDevice->setAllowRender( true );
     
@@ -172,9 +166,6 @@ bool GuiCanvas::onAdd()
     // CodeReview - if GuiCanvas fails to add for whatever reason, what happens to
     // all the event registration above?
     bool parentRet = Parent::onAdd();
-    
-//    // Define the menu bar for this canvas (if any)
-//    Con::executef(this, "onCreateMenu");
     
 #ifdef TORQUE_DEMO_PURCHASE
     mPurchaseScreen = new PurchaseScreen;
@@ -192,12 +183,6 @@ void GuiCanvas::onRemove()
     if (mPurchaseScreen && mPurchaseScreen->isAwake())
         removeObject(mPurchaseScreen);
 #endif
-    
-//    // And the process list
-//    Process::remove(this, &GuiCanvas::paint);
-    
-//    // Destroy the menu bar for this canvas (if any)
-//    Con::executef(this, "onDestroyMenu");
     
     Parent::onRemove();
 }
@@ -222,17 +207,6 @@ void GuiCanvas::handlePaintEvent(WindowId did)
 {
     bool canRender = mPlatformWindow->isVisible() && GFX->allowRender() && !GFX->canCurrentlyRender();
     
-//	// Do the screenshot first.
-//    if ( gScreenShot != NULL && gScreenShot->isPending() && canRender )
-//		gScreenShot->capture( this );
-//    
-//    // If the video capture is waiting for a canvas, start the capture
-//    if ( VIDCAP->isWaitingForCanvas() && canRender )
-//        VIDCAP->begin( this );
-//    
-//    // Now capture the video
-//    if ( VIDCAP->isRecording() && canRender )
-//        VIDCAP->capture();
     if (canRender)
         renderFrame(false);
 }

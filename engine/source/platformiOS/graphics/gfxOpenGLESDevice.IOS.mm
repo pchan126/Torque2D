@@ -90,9 +90,6 @@ GFXOpenGLESDevice::GFXOpenGLESDevice( U32 adapterIndex ) : GFXOpenGLDevice( adap
 //    m_ProjectionStackRef = GLKMatrixStackCreate(kCFAllocatorDefault);
     m_WorldStack.push_back(MatrixF(true));
     m_ProjectionStack.push_back(MatrixF(true));
-    
-    mDeviceName = "OpenGLES";
-    mFullScreenOnly = false;
 }
 
 

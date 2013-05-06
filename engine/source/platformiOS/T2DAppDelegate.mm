@@ -128,19 +128,16 @@ bool _iOSTorqueFatalError = false;
         return;
     }
     
-   // To display content on an external display, do the following:
-   // 1. Use the screens class method of the UIScreen class to determine if an external display is available.
-   NSArray	*screens = [UIScreen screens];
-	
-   NSUInteger screenCount = [screens count];
    
    if ( Con::isFunction("oniOSScreenDidChange") )
       Con::executef( 1, "oniOSScreenDidChange" );
 
     GFXInit::enumerateAdapters();
+
+    winManager->updateWindows();
     
-	if (screenCount > 1)
-   {
+//	if (screenCount > 1)
+//   {
 //       winManager
       //      // 2. If an external screen is available, get the screen object and look at the values in its availableModes
       //      // property. This property contains the configurations supported by the screen.
@@ -195,9 +192,9 @@ bool _iOSTorqueFatalError = false;
       //
       //      // Display the fullscreen UI on the iPhone/iPad screen
       //      [self.view addSubview:self.userInterfaceController.view];
-	}
-	else //handles disconnection of the external display
-   {
+//	}
+//	else //handles disconnection of the external display
+//   {
       //      // Release external screen and window
       //		self.extScreen = nil;
       //		self.extWindow = nil;
@@ -221,7 +218,7 @@ bool _iOSTorqueFatalError = false;
       //      
       //      // Display the GL view on the iPhone/iPad screen
       //      [self.view addSubview:self.glController.view];
-	}
+//	}
 }
 
 
@@ -229,7 +226,7 @@ bool _iOSTorqueFatalError = false;
 
 - (void)glkViewControllerUpdate:(GLKViewController *)controller
 {
-   NSTimeInterval timeUp = [controller timeSinceLastUpdate];
+    NSTimeInterval timeUp = [controller timeSinceLastUpdate];
     if(Game->isRunning())
     {
         Game->mainLoop( timeUp );

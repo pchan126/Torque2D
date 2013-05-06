@@ -26,12 +26,13 @@ iOSWindowManager::iOSWindowManager() : mNotifyShutdownDelegate(this, &iOSWindowM
 {
    extWindow = nil;
    extScreen = nil;
-   mWindowList.clear();
+   extViewController = nil;
+
+    mWindowList.clear();
     T2DAppDelegate *appDelegate = (T2DAppDelegate*)[[UIApplication sharedApplication] delegate];
     appDelegate.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
     viewController = [[GLKViewController alloc] initWithNibName:nil bundle:nil];
-
     viewController.delegate = appDelegate;
     viewController.preferredFramesPerSecond = 60;
     viewController.paused = NO;
@@ -139,6 +140,38 @@ void iOSWindowManager::_processCmdLineArgs(const S32 argc, const char **argv)
 {
    // TODO: accept command line args if necessary.
 }
+
+void iOSWindowManager::updateWindows()
+{
+    NSArray	*screens = [UIScreen screens];
+    NSUInteger screenCount = [screens count];
+
+    if (screenCount > 1)
+    {
+        extScreen = [screens objectAtIndex:1]; //index 0 is your iPhone/iPad
+        NSArray	*availableModes = [extScreen availableModes];
+
+      // Select the highest resolution in this sample
+      NSInteger selectedRow = [availableModes count] - 1;
+      extScreen.currentMode = [availableModes objectAtIndex:selectedRow];
+
+      // Set a proper overscanCompensation mode
+      extScreen.overscanCompensation = UIScreenOverscanCompensationInsetApplicationFrame;
+
+      if (extWindow == nil) {
+         extWindow = [[UIWindow alloc] initWithFrame:[extScreen bounds]];
+      }
+        extWindow.screen = extScreen;
+       
+      T2DAppDelegate *appDelegate = (T2DAppDelegate*)[[UIApplication sharedApplication] delegate];
+      extViewController = [[GLKViewController alloc] initWithNibName:nil bundle:nil];
+      extViewController.preferredFramesPerSecond = 60;
+
+        extWindow.rootViewController = viewController;
+//      [extWindow makeKeyAndVisible];
+    }
+}
+
 
 PlatformWindow *iOSWindowManager::createWindow(GFXDevice *device, const GFXVideoMode &mode)
 {

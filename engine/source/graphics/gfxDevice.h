@@ -54,9 +54,6 @@
 
 #include "math/mPoint.h"
 #include "math/mMatrix.h"
-//#ifndef _MATHUTIL_FRUSTUM_H_
-//#include "math/util/frustum.h"
-//#endif
 #include "graphics/gfxEnums.h"
 #include "graphics/gfxTextureHandle.h"
 //#include "graphics/gfxTextureManager.h"
@@ -65,9 +62,7 @@ class FontRenderBatcher;
 class GFont;
 class GFXCardProfiler;
 class GFXDrawUtil;
-//class GFXFence;
 //class GFXOcclusionQuery;
-//class GFXPrimitiveBuffer;
 class GFXShader;
 class GFXStateBlock;
 class GFXShaderConstBuffer;
@@ -280,7 +275,6 @@ public:
 //   /// Initialize this GFXDevice, optionally specifying a platform window to
 //   /// bind to.
    virtual void init( const GFXVideoMode &mode, PlatformWindow *window = NULL ) = 0;
-//   virtual void init( ) = 0;
 
    /// Returns true if the scene has begun and its
    /// safe to make rendering calls.
@@ -412,37 +406,23 @@ protected:
    /// @name Light Tracking
    /// @{
 
-   GFXLightInfo  mCurrentLight[LIGHT_STAGE_COUNT]; 
-   bool          mCurrentLightEnable[LIGHT_STAGE_COUNT];
-   bool          mLightDirty[LIGHT_STAGE_COUNT];
-   bool          mLightsDirty;
-
-   ColorF        mGlobalAmbientColor;
-   bool          mGlobalAmbientColorDirty;
+//   GFXLightInfo  mCurrentLight[LIGHT_STAGE_COUNT]; 
+//   bool          mCurrentLightEnable[LIGHT_STAGE_COUNT];
+//   bool          mLightDirty[LIGHT_STAGE_COUNT];
+//   bool          mLightsDirty;
+//
+//   ColorF        mGlobalAmbientColor;
+//   bool          mGlobalAmbientColorDirty;
 
    /// @}
 
    /// @name Fixed function material tracking
    /// @{
 
-   GFXLightMaterial mCurrentLightMaterial;
-   bool mLightMaterialDirty;
+//   GFXLightMaterial mCurrentLightMaterial;
+//   bool mLightMaterialDirty;
 
    /// @}
-
-   /// @name Bitmap modulation and color stack
-   /// @{
-
-   ///
-
-   /// @}
-
-//   /// @see getDeviceSwizzle32
-//   Swizzle<U8, 4> *mDeviceSwizzle32;
-//
-//   /// @see getDeviceSwizzle24
-//   Swizzle<U8, 3> *mDeviceSwizzle24;
-
 
    //-----------------------------------------------------------------------------
 
@@ -619,7 +599,6 @@ protected:
 
 public:
    F32 getPixelScale() { return pixelScale; }
-//   F32 getWorldToScreenScale() { return worldToScreenScale; };
 //   F32 projectRadius(F32 dist, F32 radius) { return (radius / dist) * worldToScreenScale; }
    
    /// @name Texture functions
@@ -637,18 +616,6 @@ public:
    
    ///@}
    
-//   /// Swizzle to convert 32bpp bitmaps from RGBA to the native device format.
-//   const Swizzle<U8, 4> *getDeviceSwizzle32() const
-//   {
-//      return mDeviceSwizzle32;
-//   }
-//   
-//   /// Swizzle to convert 24bpp bitmaps from RGB to the native device format.
-//   const Swizzle<U8, 3> *getDeviceSwizzle24() const
-//   {
-//      return mDeviceSwizzle24;
-//   }
-//   
    /// @name Render Target functions
    /// @{
 
@@ -897,52 +864,6 @@ public:
     virtual void setClipRect( const RectI &rect ) = 0;
     virtual const RectI &getClipRect() const = 0;
     
-    /// Set the projection frustum.
-    ///
-    /// @see MathUtils::makeFrustum()
-
-   
-   void setFrustum(F32 left, F32 right, F32 bottom, F32 top, F32 nearDist, F32 farDist, bool ortho = false);
-   
-//    virtual void setFrustum( const Frustum& frust,
-//                            bool bRotate = true );
-   
-//   void getFrustum(F64 *left, F64 *right, F64 *bottom, F64 *top, F64 *nearDist, F64 *farDist);
-
-    /// Get the projection frustum.
-    void getFrustum(  F32 *left,
-                    F32 *right,
-                    F32 *bottom,
-                    F32 *top,
-                    F32 *nearPlane,
-                    F32 *farPlane,
-                    bool *isOrtho ) const;
-   
-//    /// Get the projection frustum.
-//    const Frustum& getFrustum() const { return mFrustum; }
-   
-    /// This will construct and apply an orthographic projection matrix with the provided parameters
-    /// @param doRotate If set to true, the resulting matrix will be rotated PI/2 around the X axis
-    //                  for support in tsShapeInstance. You probably want to leave this as 'false'.
-    void setOrtho(F32 left, F32 right, F32 bottom, F32 top, F32 nearPlane, F32 farPlane, bool doRotate = false);
-    
-    /// Return true if the current frustum uses orthographic projection rather than perspective projection.
-    bool isFrustumOrtho() const { return isOrtho; }
-    /// @}
-
-   /// Returns the scale for converting world space 
-   /// units to screen space units... aka pixels.
-   ///
-   /// This is the true scale which is best used for GUI
-   /// drawing.  For doing lod calculations you should be
-   /// using the functions in SceneState which is adjusted
-   /// for special cases like shadows and reflections.
-   ///
-   /// @see SceneState::getWorldToScreenScale()
-   /// @see SceneState::projectRadius()
-   ///
-   Point2F getWorldToScreenScale() const;
-
 public:
    enum GenericShaderType
    {
@@ -986,34 +907,6 @@ public:
 
 protected:
    GFXDrawUtil *mDrawer;
-    
-// t2 DisplayDevice functions
-    
-public:
-    const char* mDeviceName;
-    
-protected:
-//    static GFXVideoMode    smCurrentRes;
-    
-//    Vector<Resolution>   mResolutionList;
-    bool                 mFullScreenOnly;
-    
-public:
-//    virtual void initDevice() = 0;
-//    virtual bool activate( U32 width, U32 height, U32 bpp, bool fullScreen ) = 0;
-//    virtual void shutdown() = 0;
-//    
-//    virtual void swapBuffers() = 0;
-//    virtual const char* getDriverInfo() = 0;
-//    virtual bool getGammaCorrection(F32 &g) = 0;
-//    virtual bool setGammaCorrection(F32 g) = 0;
-//    virtual bool setVerticalSync( bool on ) = 0;
-    
-//    const char* getResolutionList();
-    bool isFullScreenOnly()   { return( mFullScreenOnly ); }
-    
-    static GFXVideoMode getResolution();
-    static bool       isFullScreen();
 };
 
 

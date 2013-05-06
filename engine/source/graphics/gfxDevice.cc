@@ -10,15 +10,11 @@
 #include "graphics/gfxDevice.h"
 
 #include "graphics/gfxInit.h"
-//#include "graphics/gfxCubemap.h"
 #include "graphics/primBuilder.h"
 #include "graphics/gfxDrawUtil.h"
-//#include "graphics/gfxFence.h"
 #include "graphics/gfxFontRenderBatcher.h"
-//#include "graphics/gfxPrimitiveBuffer.h"
 #include "graphics/gfxShader.h"
 #include "graphics/gfxStateBlock.h"
-//#include "graphics/screenshot.h"
 #include "graphics/gfxStringEnumTranslate.h"
 #include "graphics/gfxTextureManager.h"
 
@@ -27,7 +23,6 @@
 #include "string/unicode.h"
 #include "delegates/process.h"
 #include "memory/safeDelete.h"
-//#include "math/util/frustum.h"
 #include "console/consoleTypes.h"
 #include "console/console.h"
 #include "game/version.h"
@@ -43,31 +38,6 @@ bool gDisassembleAllShaders = false;
 void GFXDevice::initConsole()
 {
    GFXStringEnumTranslate::init();
-//
-//    Con::addVariable( "$gfx::wireframe", TypeBool, &smWireframe);
-////      "Used to toggle wireframe rendering at runtime.\n"
-////      "@ingroup GFX\n" );
-//
-//    Con::addVariable( "$gfx::disassembleAllShaders", TypeBool, &gDisassembleAllShaders);
-////      "On supported devices this will dump shader disassembly to the "
-////      "procedural shader folder.\n"
-////      "@ingroup GFX\n" );
-//
-//    Con::addVariable( "$gfx::disableOcclusionQuery", TypeBool, &smDisableOcclusionQuery);
-////      "Debug helper that disables all hardware occlusion queries causing "
-////      "them to return only the visibile state.\n"
-////      "@ingroup GFX\n" );
-//
-//    Con::addVariable( "$pref::Video::disableVerticalSync", TypeBool, &smDisableVSync);
-////      "Disables vertical sync on the active device.\n"
-////      "@note The video mode must be reset for the change to take affect.\n"
-////      "@ingroup GFX\n" );
-//
-//    Con::addVariable( "$pref::Video::forcedPixVersion", TypeF32, &smForcedPixVersion);
-////      "Will force the shader model if the value is positive and less than the "
-////      "shader model supported by the active device.  Use 0 for fixed function.\n"
-////      "@note The graphics device must be reset for the change to take affect.\n"
-////      "@ingroup GFX\n" );
 }
 
 GFXDevice::DeviceEventSignal& GFXDevice::getDeviceEventSignal()
@@ -78,9 +48,8 @@ GFXDevice::DeviceEventSignal& GFXDevice::getDeviceEventSignal()
 
 GFXDevice::GFXDevice()
 {
-    mDeviceName = NULL;
    VECTOR_SET_ASSOCIATION( mVideoModes );
-//   VECTOR_SET_ASSOCIATION( mRTStack );
+   VECTOR_SET_ASSOCIATION( mRTStack );
 
     mStateDirty = false;
 
@@ -121,8 +90,8 @@ GFXDevice::GFXDevice()
 //      mCurrentLightEnable[i] = false;
 //   }
 
-   mGlobalAmbientColorDirty = false;
-   mGlobalAmbientColor = ColorF(0.0f, 0.0f, 0.0f, 1.0f);
+//   mGlobalAmbientColorDirty = false;
+//   mGlobalAmbientColor = ColorF(0.0f, 0.0f, 0.0f, 1.0f);
 
 //   mLightMaterialDirty = false;
 //   dMemset(&mCurrentLightMaterial, NULL, sizeof(GFXLightMaterial));
@@ -139,16 +108,12 @@ GFXDevice::GFXDevice()
    mCanCurrentlyRender = false;
    mInitialized = false;
 
-//   mRTDirty = false;
+   mRTDirty = false;
    mCurrentRT = NULL;
    mViewport = RectI(0, 0, 0, 0);
    mViewportDirty = false;
-//
-//   mCurrentFrontBufferIdx = 0;
-//
-//   mDeviceSwizzle32 = NULL;
-//   mDeviceSwizzle24 = NULL;
-   mResourceListHead = NULL;
+
+    mResourceListHead = NULL;
 
    mCardProfiler = NULL;
 
@@ -323,97 +288,6 @@ void GFXDevice::drawPrimitive( const GFXPrimitive &prim )
 }
 
 
-//ConsoleMethod( GFXDevice, getDisplayDeviceList, const char *, 2, 2,
-//   "Returns a tab-seperated string of the detected devices across all adapters.\n"
-//   "@ingroup GFX\n" )
-//{
-//   Vector<GFXAdapter*> adapters;
-//   GFXInit::getAdapters(&adapters);
-//
-//   StringBuilder str;
-//   for (S32 i=0; i<adapters.size(); i++)
-//   {
-//      if (i)
-//         str.append( '\t' );
-//      str.append(adapters[i]->mName);
-//   }
-//
-//   return str.end();
-//}
-//
-//void GFXDevice::setFrustum(   F32 left, 
-//                              F32 right, 
-//                              F32 bottom, 
-//                              F32 top, 
-//                              F32 nearPlane, 
-//                              F32 farPlane,
-//                              bool bRotate )
-//{
-//   // store values
-//   mFrustum.set(false, left, right, top, bottom, nearPlane, farPlane);
-//   
-//   // compute matrix
-//   MatrixF projection;
-//   mFrustum.getProjectionMatrix(&projection, bRotate);
-//   setProjectionMatrix( projection );
-//}
-
-//void GFXDevice::setFrustum( const Frustum& frust, bool bRotate )
-//{
-//   // store values
-//   mFrustum = frust;
-//   
-//   // compute matrix
-//   MatrixF projection;
-//   mFrustum.getProjectionMatrix(&projection, bRotate);
-//   setProjectionMatrix( projection );
-//}
-
-//
-//void GFXDevice::getFrustum( F32 *left, F32 *right, F32 *bottom, F32 *top, F32 *nearPlane, F32 *farPlane, bool *isOrtho ) const
-//{   
-//   if ( left )       *left       = mFrustum.getNearLeft();
-//   if ( right )      *right      = mFrustum.getNearRight();
-//   if ( bottom )     *bottom     = mFrustum.getNearBottom();
-//   if ( top )        *top        = mFrustum.getNearTop();
-//   if ( nearPlane )  *nearPlane  = mFrustum.getNearDist();
-//   if ( farPlane )   *farPlane   = mFrustum.getFarDist();
-//   if ( isOrtho )    *isOrtho    = isFrustumOrtho()();
-//}
-//
-//void GFXDevice::setOrtho(  F32 left, 
-//                           F32 right, 
-//                           F32 bottom, 
-//                           F32 top, 
-//                           F32 nearPlane, 
-//                           F32 farPlane,
-//                           bool doRotate )
-//{
-//   // store values
-//   mFrustum.set(true, left, right, top, bottom, nearPlane, farPlane);
-//
-//   // compute matrix
-//   MatrixF projection;
-//   mFrustum.getProjectionMatrix(&projection, doRotate);  
-//
-//   setProjectionMatrix( projection );
-//}
-
-Point2F GFXDevice::getWorldToScreenScale() const
-{
-   Point2F scale;
-//
-//   const RectI &viewport = getViewport();
-//
-//   if ( isFrustumOrtho() )
-//      scale.set(  viewport.extent.x / mFrustum.getWidth(),
-//                  viewport.extent.y / mFrustum.getHeight() );
-//   else
-//      scale.set(  ( mFrustum.getNearDist() * viewport.extent.x ) / mFrustum.getWidth(),
-//                  ( mFrustum.getNearDist() * viewport.extent.y ) / mFrustum.getHeight() );
-//
-   return scale;
-}
 
 //-----------------------------------------------------------------------------
 // Set Light
@@ -443,14 +317,14 @@ void GFXDevice::setLightMaterial(GFXLightMaterial mat)
 //   mStateDirty = true;
 }
 
-void GFXDevice::setGlobalAmbientColor(ColorF color)
-{
-   if(mGlobalAmbientColor != color)
-   {
-      mGlobalAmbientColor = color;
-      mGlobalAmbientColorDirty = true;
-   }
-}
+//void GFXDevice::setGlobalAmbientColor(ColorF color)
+//{
+//   if(mGlobalAmbientColor != color)
+//   {
+//      mGlobalAmbientColor = color;
+//      mGlobalAmbientColorDirty = true;
+//   }
+//}
 
 //-----------------------------------------------------------------------------
 // Set texture
@@ -531,20 +405,7 @@ inline void GFXDevice::endScene()
 
 void GFXDevice::setViewport( const RectI &inRect )
 {
-//    x, y
-//    Specify the lower left corner of the viewport rectangle,
-//    in pixels. The initial value is (0,0).
-//    width, height
-//    Specify the width and height
-//    of the viewport.
-//    When a GL context is first attached to a window,
-//    width and height are set to the dimensions of that
-//    window.
-    
-//    Con::printf("GFXDevice::setViewport %i %i %i %i", inRect.point.x, inRect.point.y, inRect.extent.x, inRect.extent.y);
    // Clip the rect against the renderable size.
-
-    
    Point2I size = mCurrentRT->getSize();
    RectI maxRect(Point2I(0,0), size);
    RectI rect = inRect;
@@ -604,52 +465,6 @@ void GFXDevice::setActiveRenderTarget( GFXTarget *target )
    setViewport( RectI( Point2I(0,0), mCurrentRT->getSize() ) );
 }
 
-
-//void GFXDevice::setFrustum( const Frustum& frust, bool bRotate )
-//{
-////   // store values
-////   mFrustum = frust;
-////   
-////   // compute matrix
-////   MatrixF projection;
-////   mFrustum.getProjectionMatrix(&projection, bRotate);
-////   setProjectionMatrix( projection );
-//}
-
-
-void GFXDevice::getFrustum( F32 *left, F32 *right, F32 *bottom, F32 *top, F32 *nearPlane, F32 *farPlane, bool *isOrtho ) const
-{
-//   if ( left )       *left       = frustLeft;
-//   if ( right )      *right      = frustRight;
-//   if ( bottom )     *bottom     = frustBottom;
-//   if ( top )        *top        = mFrustum.getNearTop();
-//   if ( nearPlane )  *nearPlane  = mFrustum.getNearDist();
-//   if ( farPlane )   *farPlane   = mFrustum.getFarDist();
-//   if ( isOrtho )    *isOrtho    = isFrustumOrtho();
-}
-
-void GFXDevice::setOrtho(  F32 left,
-                         F32 right,
-                         F32 bottom,
-                         F32 top,
-                         F32 nearPlane,
-                         F32 farPlane,
-                         bool doRotate )
-{
-//   frustLeft = left;
-//   frustRight = right;
-//   frustBottom = bottom;
-//   frustTop = top;
-//   frustNear = nearPlane;
-//   frustFar = farPlane;
-//   isOrtho = true;
-//   
-//   // compute matrix
-//   MatrixF projection;
-//   projection.setOrtho(left, right, bottom, top, nearPlane, farPlane);
-//   setProjectionMatrix( projection );
-}
-
 /// Helper class for GFXDevice::describeResources.
 class DescriptionOutputter
 {
@@ -692,54 +507,54 @@ public:
 
 void GFXDevice::listResources(bool unflaggedOnly)
 {
-//   U32 numTextures = 0, numShaders = 0, numRenderToTextureTargs = 0, numWindowTargs = 0;
-//   U32 numCubemaps = 0, numVertexBuffers = 0, numPrimitiveBuffers = 0, numFences = 0;
-//   U32 numStateBlocks = 0;
-//
-//   GFXResource* walk = mResourceListHead;
-//   while(walk)
-//   {
-//      if(unflaggedOnly && walk->isFlagged())
-//      {
-//         walk = walk->getNextResource();
-//         continue;
-//      }
-//
-//      if(dynamic_cast<GFXTextureObject*>(walk))
-//         numTextures++;
-//      else if(dynamic_cast<GFXShader*>(walk))
-//         numShaders++;
-//      else if(dynamic_cast<GFXTextureTarget*>(walk))
-//         numRenderToTextureTargs++;
-//      else if(dynamic_cast<GFXWindowTarget*>(walk))
-//         numWindowTargs++;
-////      else if(dynamic_cast<GFXCubemap*>(walk))
-////         numCubemaps++;
-//      else if(dynamic_cast<GFXVertexBuffer*>(walk))
-//         numVertexBuffers++;
+   U32 numTextures = 0, numShaders = 0, numRenderToTextureTargs = 0, numWindowTargs = 0;
+   U32 numCubemaps = 0, numVertexBuffers = 0, numPrimitiveBuffers = 0, numFences = 0;
+   U32 numStateBlocks = 0;
+
+   GFXResource* walk = mResourceListHead;
+   while(walk)
+   {
+      if(unflaggedOnly && walk->isFlagged())
+      {
+         walk = walk->getNextResource();
+         continue;
+      }
+
+      if(dynamic_cast<GFXTextureObject*>(walk))
+         numTextures++;
+      else if(dynamic_cast<GFXShader*>(walk))
+         numShaders++;
+      else if(dynamic_cast<GFXTextureTarget*>(walk))
+         numRenderToTextureTargs++;
+      else if(dynamic_cast<GFXWindowTarget*>(walk))
+         numWindowTargs++;
+//      else if(dynamic_cast<GFXCubemap*>(walk))
+//         numCubemaps++;
+      else if(dynamic_cast<GFXVertexBuffer*>(walk))
+         numVertexBuffers++;
 //      else if(dynamic_cast<GFXPrimitiveBuffer*>(walk))
 //         numPrimitiveBuffers++;
 //      else if(dynamic_cast<GFXFence*>(walk))
 //         numFences++;
-//      else if (dynamic_cast<GFXStateBlock*>(walk))
-//         numStateBlocks++;
-//      else
-//         Con::warnf("Unknown resource: %x", walk);
-//
-//      walk = walk->getNextResource();
-//   }
-//   const char* flag = unflaggedOnly ? "unflagged" : "allocated";
-//
-//   Con::printf("GFX currently has:");
-//   Con::printf("   %i %s textures", numTextures, flag);
-//   Con::printf("   %i %s shaders", numShaders, flag);
-//   Con::printf("   %i %s texture targets", numRenderToTextureTargs, flag);
-//   Con::printf("   %i %s window targets", numWindowTargs, flag);
-//   Con::printf("   %i %s cubemaps", numCubemaps, flag);
-//   Con::printf("   %i %s vertex buffers", numVertexBuffers, flag);
-//   Con::printf("   %i %s primitive buffers", numPrimitiveBuffers, flag);
-//   Con::printf("   %i %s fences", numFences, flag);
-//   Con::printf("   %i %s state blocks", numStateBlocks, flag);
+      else if (dynamic_cast<GFXStateBlock*>(walk))
+         numStateBlocks++;
+      else
+         Con::warnf("Unknown resource: %x", walk);
+
+      walk = walk->getNextResource();
+   }
+   const char* flag = unflaggedOnly ? "unflagged" : "allocated";
+
+   Con::printf("GFX currently has:");
+   Con::printf("   %i %s textures", numTextures, flag);
+   Con::printf("   %i %s shaders", numShaders, flag);
+   Con::printf("   %i %s texture targets", numRenderToTextureTargs, flag);
+   Con::printf("   %i %s window targets", numWindowTargs, flag);
+   Con::printf("   %i %s cubemaps", numCubemaps, flag);
+   Con::printf("   %i %s vertex buffers", numVertexBuffers, flag);
+   Con::printf("   %i %s primitive buffers", numPrimitiveBuffers, flag);
+   Con::printf("   %i %s fences", numFences, flag);
+   Con::printf("   %i %s state blocks", numStateBlocks, flag);
 }
 
 void GFXDevice::fillResourceVectors(const char* resNames, bool unflaggedOnly, Vector<GFXResource*> &textureObjects,
