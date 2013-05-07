@@ -40,7 +40,7 @@ bool _iOSTorqueFatalError = false;
 @implementation T2DAppDelegate
 
 @synthesize window = _window;
-@synthesize T2DWindow = _T2DWindow;
+@synthesize mainController = _mainController;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -235,10 +235,17 @@ bool _iOSTorqueFatalError = false;
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect
 {
-    if (self.T2DWindow != nil)
-        self.T2DWindow->displayEvent.trigger(self.T2DWindow->getWindowId());
-    else
-        NSLog(@"%@", @"ack");
+    VectorPtr<PlatformWindow*> windows;
+    WindowManager->getWindows(windows);
+    for (iOSWindowManager::WindowList::iterator itr = (iOSWindowManager::WindowList::iterator)windows.begin(); itr != (iOSWindowManager::WindowList::iterator)windows.end(); ++itr)
+    {
+        if ((*itr)->view == view)
+        {
+            (*itr)->displayEvent.trigger((*itr)->getWindowId());
+            return;
+        }
+    }
+    NSLog(@"%@", @"ack");
 }
 
 

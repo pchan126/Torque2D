@@ -22,6 +22,7 @@
 
 #import <UIKit/UIKit.h>
 #import <GLKit/GLKit.h>
+#import "iOSWindowManager.h"
 
 class iOSWindow;
 
@@ -30,6 +31,6 @@ class iOSWindow;
 }
 
 @property (nonatomic, strong) UIWindow *window;
-@property (nonatomic) iOSWindow *T2DWindow;
+@property (nonatomic, strong) GLKViewController *mainController;
 
 @end

@@ -14,8 +14,10 @@ class iOSWindow;
 
 class iOSWindowManager : public PlatformWindowManager
 {
+public:
+    typedef VectorPtr<iOSWindow*> WindowList;
+
 private:
-   typedef VectorPtr<iOSWindow*> WindowList;
    WindowList mWindowList;
    U32 mFadeToken;
    Delegate<bool(void)> mNotifyShutdownDelegate;

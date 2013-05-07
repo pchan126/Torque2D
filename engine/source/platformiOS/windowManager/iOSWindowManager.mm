@@ -36,6 +36,7 @@ iOSWindowManager::iOSWindowManager() : mNotifyShutdownDelegate(this, &iOSWindowM
     viewController.delegate = appDelegate;
     viewController.preferredFramesPerSecond = 60;
     viewController.paused = NO;
+    appDelegate.mainController = viewController;
 
     appDelegate.window.rootViewController = viewController;
     appDelegate.window.backgroundColor = [UIColor blackColor];
@@ -148,7 +149,7 @@ void iOSWindowManager::updateWindows()
 
     if (screenCount > 1)
     {
-        extScreen = [screens objectAtIndex:1]; //index 0 is your iPhone/iPad
+        extScreen = screens[1]; //index 0 is your iPhone/iPad
         NSArray	*availableModes = [extScreen availableModes];
 
       // Select the highest resolution in this sample
@@ -164,11 +165,18 @@ void iOSWindowManager::updateWindows()
         extWindow.screen = extScreen;
        
       T2DAppDelegate *appDelegate = (T2DAppDelegate*)[[UIApplication sharedApplication] delegate];
-      extViewController = [[GLKViewController alloc] initWithNibName:nil bundle:nil];
-      extViewController.preferredFramesPerSecond = 60;
+                
+        UIScreen *phoneScreen = screens[0];
+        GLKViewController *newController = [[GLKViewController alloc] initWithNibName:nil bundle:nil];
+        newController.preferredFramesPerSecond = 30;
+        appDelegate.window.rootViewController = newController;
 
-        extWindow.rootViewController = viewController;
-//      [extWindow makeKeyAndVisible];
+        extWindow.rootViewController = appDelegate.mainController;
+        [extWindow makeKeyAndVisible];
+    }
+    else
+    {
+        
     }
 }
 
@@ -200,6 +208,7 @@ PlatformWindow *iOSWindowManager::createWindow(GFXDevice *device, const GFXVideo
    return window;
 }
 
+
 void iOSWindowManager::_addWindow(iOSWindow* window)
 {
 #ifdef TORQUE_DEBUG
@@ -213,8 +222,8 @@ void iOSWindowManager::_addWindow(iOSWindow* window)
       window->mNextWindow = NULL;
 
    viewController.view = window->view;
+
     T2DAppDelegate *appDelegate = (T2DAppDelegate*)[[UIApplication sharedApplication] delegate];
-    appDelegate.T2DWindow = window;
     
    mWindowList.push_back(window);
    window->mOwningWindowManager = this;
@@ -222,7 +231,6 @@ void iOSWindowManager::_addWindow(iOSWindow* window)
     
    if (mWindowList.size() > 0)
        [appDelegate.window makeKeyAndVisible];
-
 }
 
 void iOSWindowManager::_removeWindow(iOSWindow* window)
