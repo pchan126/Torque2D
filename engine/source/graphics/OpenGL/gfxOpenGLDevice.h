@@ -110,7 +110,7 @@ public:
     virtual void setBlending( bool DoesItBlend );
 protected:
 
-    void preDrawPrimitive();
+   virtual void preDrawPrimitive();
     void postDrawPrimitive(U32 primitiveCount);
 
     /// Called by GFXDevice to create a device specific stateblock

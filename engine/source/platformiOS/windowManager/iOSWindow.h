@@ -118,9 +118,8 @@ private:
    friend class iOSCursorController;
     friend class GFXOpenGLESWindowTarget;
    
-   iOSWindow(U32 windowId, const char* windowText, Point2I clientExtent);
+   iOSWindow(U32 windowId);
    
-   void _initCocoaWindow(const char* windowText, Point2I clientExtent);
    void setWindowId(U32 newid) { mWindowId = newid;}
    void signalGainFocus();
 

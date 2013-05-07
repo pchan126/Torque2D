@@ -114,7 +114,8 @@ void GFXOpenGLESDevice::init( const GFXVideoMode &mode, PlatformWindow *window )
         mTextureManager = new GFXOpenGLESTextureManager();
         
         initGLState();
-        initGenericShaders();
+//        initGenericShaders();
+        mBaseEffect = [[GLKBaseEffect alloc] init];
         mInitialized = true;
         deviceInited();
     }
@@ -533,7 +534,19 @@ void GFXOpenGLESDevice::setTextureInternal(U32 textureUnit, const GFXTextureObje
             glBindTexture(mActiveTextureType[textureUnit], GL_ZERO);
         }
         mActiveTextureType[textureUnit] = tex->getBinding();
-        tex->bind(textureUnit);
+        
+        switch (textureUnit) {
+            case 0:
+                mBaseEffect.texture2d0.name = tex->getHandle();
+                break;
+            case 1:
+                mBaseEffect.texture2d1.name = tex->getHandle();
+                break;
+                
+            default:
+                break;
+        }
+//        tex->bind(textureUnit);
     }
     else if(mActiveTextureType[textureUnit] != GL_ZERO)
     {
@@ -758,50 +771,60 @@ void GFXOpenGLESDevice::setupGenericShaders( GenericShaderType type )
 //    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
 //    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
 //    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
-    xform *= GFX->getProjectionMatrix();
+    MatrixF projMatrix = GFX->getProjectionMatrix();
 //    Con::printf("projectionMatrix");
 //    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
 //    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
 //    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
 //    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
    
-    xform.transpose();
-   
+//    xform.transpose();
+//    projMatrix.transpose();
+    
+    mBaseEffect.transform.projectionMatrix = GLKMatrix4MakeWithArrayAndTranspose(projMatrix);
+    mBaseEffect.transform.modelviewMatrix = GLKMatrix4MakeWithArrayAndTranspose(xform);
+    mBaseEffect.useConstantColor = GL_TRUE;
+    mBaseEffect.constantColor = GLKVector4Make(1.0, 1.0, 1.0, 1.0);
+
     switch (type) {
         case GSColor:
-            setShader(mGenericShader[0]);
-            setShaderConstBuffer( mGenericShaderConst[0] );
-            mGenericShaderConst[0]->setSafe( mGenericShader[0]->getShaderConstHandle("$mvp_matrix"), xform );
+            mBaseEffect.texture2d0.enabled = GL_FALSE;
+            mBaseEffect.texture2d1.enabled = GL_FALSE;
+//            setShader(mGenericShader[0]);
+//            setShaderConstBuffer( mGenericShaderConst[0] );
+//            mGenericShaderConst[0]->setSafe( mGenericShader[0]->getShaderConstHandle("$mvp_matrix"), xform );
             break;
         case GSTexture:
         case GSModColorTexture:
         case GSAddColorTexture:
-            setShader(mGenericShader[1]);
-            setShaderConstBuffer( mGenericShaderConst[1] );
-            mGenericShaderConst[1]->setSafe( mGenericShader[1]->getShaderConstHandle("$mvp_matrix"), xform );
-            mGenericShaderConst[1]->setSafe( mGenericShader[1]->getShaderConstHandle("$sampler2d_0"), 0);
+            mBaseEffect.texture2d0.enabled = GL_TRUE;
+            mBaseEffect.texture2d1.enabled = GL_FALSE;
+//            setShader(mGenericShader[1]);
+//            setShaderConstBuffer( mGenericShaderConst[1] );
+//            mGenericShaderConst[1]->setSafe( mGenericShader[1]->getShaderConstHandle("$mvp_matrix"), xform );
+//            mGenericShaderConst[1]->setSafe( mGenericShader[1]->getShaderConstHandle("$sampler2d_0"), 0);
             break;
         case GSPoint:
-            setShader(mGenericShader[2]);
-            setShaderConstBuffer( mGenericShaderConst[2] );
-            mGenericShaderConst[2]->setSafe( mGenericShader[2]->getShaderConstHandle("$mvp_matrix"), xform );
-            mGenericShaderConst[2]->setSafe( mGenericShader[2]->getShaderConstHandle("$sampler2d_0"), 0);
+            mBaseEffect.texture2d0.enabled = GL_TRUE;
+            mBaseEffect.texture2d1.enabled = GL_FALSE;
+//            setShader(mGenericShader[2]);
+//            setShaderConstBuffer( mGenericShaderConst[2] );
+//            mGenericShaderConst[2]->setSafe( mGenericShader[2]->getShaderConstHandle("$mvp_matrix"), xform );
+//            mGenericShaderConst[2]->setSafe( mGenericShader[2]->getShaderConstHandle("$sampler2d_0"), 0);
             break;
         case GSTest:
-            setShader(mGenericShader[3]);
-            setShaderConstBuffer( mGenericShaderConst[3] );
-            mGenericShaderConst[3]->setSafe( mGenericShader[3]->getShaderConstHandle("$mvp_matrix"), xform );
+//            setShader(mGenericShader[3]);
+//            setShaderConstBuffer( mGenericShaderConst[3] );
+//            mGenericShaderConst[3]->setSafe( mGenericShader[3]->getShaderConstHandle("$mvp_matrix"), xform );
             break;
         case GSAlphaTexture:
-            setShader(mGenericShader[4]);
-            setShaderConstBuffer( mGenericShaderConst[4] );
-            mGenericShaderConst[4]->setSafe( mGenericShader[4]->getShaderConstHandle("$mvp_matrix"), xform );
-            mGenericShaderConst[4]->setSafe( mGenericShader[4]->getShaderConstHandle("$sampler2d_0"), 0);
+            mBaseEffect.texture2d0.enabled = GL_TRUE;
+            mBaseEffect.texture2d1.enabled = GL_FALSE;
+//            setShader(mGenericShader[4]);
+//            setShaderConstBuffer( mGenericShaderConst[4] );
+//            mGenericShaderConst[4]->setSafe( mGenericShader[4]->getShaderConstHandle("$mvp_matrix"), xform );
+//            mGenericShaderConst[4]->setSafe( mGenericShader[4]->getShaderConstHandle("$sampler2d_0"), 0);
             break;
-            //        case GSTargetRestore:
-
-            
-            //        case GSTargetRestore:
             
         default:
             break;
@@ -921,6 +944,20 @@ GFXFormat GFXOpenGLESDevice::selectSupportedFormat(   GFXTextureProfile* profile
     }
     
     return GFXFormatR8G8B8A8;
+}
+
+
+void GFXOpenGLESDevice::preDrawPrimitive()
+{
+    if( mStateDirty )
+    {
+        updateStates();
+    }
+    
+//    if(mCurrentShaderConstBuffer)
+//        setShaderConstBufferInternal(mCurrentShaderConstBuffer);
+    
+    [mBaseEffect prepareToDraw];
 }
 
 //

@@ -18,6 +18,7 @@ class GFXDevice;
 struct GFXVideoMode;
 class GFXWindowTarget;
 class IProcessInput;
+class GuiCanvas;
 
 /// Abstract representation of a native OS window.
 ///
@@ -35,7 +36,7 @@ class PlatformWindow
 {
    friend class PlatformWindowManager;
 protected:
-
+    
    /// Are we enabling IME or other keyboard input translation services,
    /// or concerned about raw input?
    bool mEnableKeyboardTranslation;
@@ -88,6 +89,8 @@ protected:
    }
 
 public:
+    GuiCanvas* mBoundCanvas;
+   void bindCanvas(GuiCanvas* canvas) { mBoundCanvas = canvas; };
 
    /// To get rid of a window, just delete it. Make sure the GFXDevice is
    /// done with it first!

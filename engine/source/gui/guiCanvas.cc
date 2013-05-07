@@ -146,10 +146,7 @@ bool GuiCanvas::onAdd()
     {
         newDevice->init(vm);
         mPlatformWindow = WindowManager->createWindow(newDevice, vm);
-        
-        // Set a minimum on the window size so people can't break us by resizing tiny.
-        mPlatformWindow->setMinimumWindowSize(Point2I(640,480));
-       this->setBounds(0, 0, vm.resolution.x, vm.resolution.y);
+        mPlatformWindow->bindCanvas(this);
         
         // Now, we have to hook in our event callbacks so we'll get
         // appropriate events from the window.
@@ -167,24 +164,16 @@ bool GuiCanvas::onAdd()
     // all the event registration above?
     bool parentRet = Parent::onAdd();
     
-#ifdef TORQUE_DEMO_PURCHASE
-    mPurchaseScreen = new PurchaseScreen;
-    mPurchaseScreen->init();
-    
-    mLastPurchaseHideTime = 0;
-#endif
-    
     return parentRet;
 }
 
 void GuiCanvas::onRemove()
 {
-#ifdef TORQUE_DEMO_PURCHASE
-    if (mPurchaseScreen && mPurchaseScreen->isAwake())
-        removeObject(mPurchaseScreen);
-#endif
-    
     Parent::onRemove();
+    mPlatformWindow->resizeEvent.remove(this, &GuiCanvas::handleResize);
+    mPlatformWindow->appEvent.remove(this, &GuiCanvas::handleAppEvent);
+    mPlatformWindow->displayEvent.remove(this, &GuiCanvas::handlePaintEvent);
+    mPlatformWindow->setInputController( NULL );
 }
 
 void GuiCanvas::setWindowTitle(const char *newTitle)
@@ -1410,35 +1399,6 @@ void GuiCanvas::renderFrame(bool preRenderOnly, bool bufferSwap /* = true */)
 
       GFX->setClipRect(updateUnion);
 
-      //temp draw the mouse
-      if (cursorON && mShowCursor && !mouseCursor)
-      {
-#ifdef TORQUE_OS_IOS
-         
-#pragma message ("removed")
-//         glColor4ub(255, 0, 0, 255);
-//         GLfloat vertices[] = {
-//              (GLfloat)(mCursorPt.x),(GLfloat)(mCursorPt.y),
-//              (GLfloat)(mCursorPt.x + 2),(GLfloat)(mCursorPt.y),
-//              (GLfloat)(mCursorPt.x + 2),(GLfloat)(mCursorPt.y + 2),
-//              (GLfloat)(mCursorPt.x),(GLfloat)(mCursorPt.y + 2),
-//          };
-//          glEnableClientState(GL_VERTEX_ARRAY);
-//          glVertexPointer(2, GL_FLOAT, 0, vertices);
-//          glDrawArrays(GL_LINE_LOOP, 0, 4);
-#else
-//         glColor4ub(255, 0, 0, 255);
-//         glRecti((S32)mCursorPt.x, (S32)mCursorPt.y, (S32)(mCursorPt.x + 2), (S32)(mCursorPt.y + 2));
-#endif
-      }
-       
-      //DEBUG
-      //draw the help ctrl
-      //if (helpCtrl)
-      //{
-      //   helpCtrl->render(srf);
-      //}
-
       if (cursorON && mouseCursor && mShowCursor)
       {
          Point2I pos((S32)mCursorPt.x, (S32)mCursorPt.y);
@@ -1457,12 +1417,6 @@ void GuiCanvas::renderFrame(bool preRenderOnly, bool bufferSwap /* = true */)
       swapBuffers();
     
     GuiCanvas::getGuiCanvasFrameSignal().trigger(false);
-//#if defined(TORQUE_OS_WIN32)
-//   PROFILE_START(glFinish);
-//   glFinish(); // This was changed to work with the D3D layer -pw
-//   PROFILE_END();
-//#endif
-
 }
 
 

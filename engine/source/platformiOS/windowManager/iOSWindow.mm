@@ -15,7 +15,7 @@
 
 iOSWindow* iOSWindow::sInstance = NULL;
 
-iOSWindow::iOSWindow(U32 windowId, const char* windowText, Point2I clientExtent)
+iOSWindow::iOSWindow(U32 windowId)
 {
    mMouseLocked      = false;
    mShouldMouseLock  = false;
@@ -34,13 +34,25 @@ iOSWindow::iOSWindow(U32 windowId, const char* windowText, Point2I clientExtent)
    
    mSkipMouseEvents = 0;
     
-    mDisplay = [UIScreen mainScreen];
+    mDisplay = [UIScreen screens][windowId];
     mDisplayScale = [mDisplay scale];
     
     mMainDisplayBounds = mDisplayBounds = [mDisplay bounds];
     
    mWindowId = windowId;
-    _initCocoaWindow(windowText, clientExtent);
+
+    GFXOpenGLESDevice *device = dynamic_cast<GFXOpenGLESDevice*>(GFX);
+    EAGLContext *context = device->getEAGLContext();
+    
+    S32 tempType = Con::getIntVariable("$pref::iOS::StatusBarType");
+    if (tempType == 0)
+        [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    
+    T2DAppDelegate *appDelegate = (T2DAppDelegate*)[[UIApplication sharedApplication] delegate];
+    
+    view = [[GLKView alloc] initWithFrame:[mDisplay bounds] context:context];
+    view.delegate = appDelegate;
+    view.drawableDepthFormat = GLKViewDrawableDepthFormat16;
     
    gestureRecognizer = [[iOSGestureRecognizer alloc]initWithT2DWindow:this];
    
@@ -64,22 +76,6 @@ iOSWindow::~iOSWindow()
    sInstance = NULL;
 }
 
-
-void iOSWindow::_initCocoaWindow(const char* windowText, Point2I clientExtent)
-{
-    GFXOpenGLESDevice *device = dynamic_cast<GFXOpenGLESDevice*>(GFX);
-    EAGLContext *context = device->getEAGLContext();
-
-    S32 tempType = Con::getIntVariable("$pref::iOS::StatusBarType");
-    if (tempType == 0)
-        [[UIApplication sharedApplication] setStatusBarHidden:YES];
-
-    T2DAppDelegate *appDelegate = (T2DAppDelegate*)[[UIApplication sharedApplication] delegate];
-
-    view = [[GLKView alloc] initWithFrame:[[UIScreen mainScreen] bounds] context:context];
-    view.delegate = appDelegate;
-    view.drawableDepthFormat = GLKViewDrawableDepthFormat16;
-}
 
 void iOSWindow::_disassociateCocoaWindow()
 {
@@ -182,7 +178,10 @@ void iOSWindow::setClientExtent( const Point2I newExtent )
 
 const Point2I iOSWindow::getClientExtent()
 {
-   return mSize;
+    CGSize size = [view bounds].size;
+    return Point2I(size.width*mDisplayScale,size.height*mDisplayScale);
+
+//    return mSize;
 }
 
 void iOSWindow::setBounds( const RectI &newBounds )

@@ -154,23 +154,23 @@ bool GFXOpenGLESTextureObject::copyToBmp(GBitmap * bmp)
 
 void GFXOpenGLESTextureObject::bind(U32 textureUnit) const
 {
-    AssertFatal(mBinding == GL_TEXTURE_2D, "GFXOpenGLESTextureObject::bind - only GL_TEXTURE_2D supported");
-   glActiveTexture(GL_TEXTURE0 + textureUnit);
-
-    GLuint han = mHandle;
-   glBindTexture(mBinding, han);
-    
-   GFXOpenGLESStateBlockRef sb = mGLDevice->getCurrentStateBlock();
-   AssertFatal(sb, "GFXOpenGLESTextureObject::bind - No active stateblock!");
-   if (!sb)
-      return;
-         
-   const GFXSamplerStateDesc ssd = sb->getDesc().samplers[textureUnit];
-   glTexParameteri(mBinding, GL_TEXTURE_MIN_FILTER, minificationFilter(ssd.minFilter, ssd.mipFilter, mMipLevels));   
-   glTexParameteri(mBinding, GL_TEXTURE_MAG_FILTER, GFXGLTextureFilter[ssd.magFilter]);
-    
-   glTexParameteri(mBinding, GL_TEXTURE_WRAP_S, !mIsNPoT2 ? GFXGLTextureAddress[ssd.addressModeU] : GL_CLAMP_TO_EDGE);
-   glTexParameteri(mBinding, GL_TEXTURE_WRAP_T, !mIsNPoT2 ? GFXGLTextureAddress[ssd.addressModeV] : GL_CLAMP_TO_EDGE);
+//    AssertFatal(mBinding == GL_TEXTURE_2D, "GFXOpenGLESTextureObject::bind - only GL_TEXTURE_2D supported");
+//   glActiveTexture(GL_TEXTURE0 + textureUnit);
+//
+//    GLuint han = mHandle;
+//   glBindTexture(mBinding, han);
+//    
+//   GFXOpenGLESStateBlockRef sb = mGLDevice->getCurrentStateBlock();
+//   AssertFatal(sb, "GFXOpenGLESTextureObject::bind - No active stateblock!");
+//   if (!sb)
+//      return;
+//         
+//   const GFXSamplerStateDesc ssd = sb->getDesc().samplers[textureUnit];
+//   glTexParameteri(mBinding, GL_TEXTURE_MIN_FILTER, minificationFilter(ssd.minFilter, ssd.mipFilter, mMipLevels));   
+//   glTexParameteri(mBinding, GL_TEXTURE_MAG_FILTER, GFXGLTextureFilter[ssd.magFilter]);
+//    
+//   glTexParameteri(mBinding, GL_TEXTURE_WRAP_S, !mIsNPoT2 ? GFXGLTextureAddress[ssd.addressModeU] : GL_CLAMP_TO_EDGE);
+//   glTexParameteri(mBinding, GL_TEXTURE_WRAP_T, !mIsNPoT2 ? GFXGLTextureAddress[ssd.addressModeV] : GL_CLAMP_TO_EDGE);
 }
 
 U8* GFXOpenGLESTextureObject::getTextureData()
@@ -199,7 +199,7 @@ void GFXOpenGLESTextureObject::reloadFromCache()
    glBindTexture(mBinding, mHandle);
    glTexSubImage2D(mBinding, 0, 0, 0, mTextureSize.x, mTextureSize.y, GFXGLTextureFormat[mFormat], GFXGLTextureType[mFormat], mZombieCache);
    
-   if(GFX->getCardProfiler()->queryProfile("GL::Workaround::needsExplicitGenerateMipmap") && mMipLevels != 1)
+//   if(GFX->getCardProfiler()->queryProfile("GL::Workaround::needsExplicitGenerateMipmap") && mMipLevels != 1)
       glGenerateMipmap(mBinding);
       
    delete[] mZombieCache;
@@ -247,17 +247,17 @@ const String GFXOpenGLESTextureObject::describeSelf() const
 
 void GFXOpenGLESTextureObject::setFilter(const GFXTextureFilterType filter)
 {
-    // Set filter.
-    mFilter = GFXGLTextureFilter[filter];
-    
-    // Finish if no GL texture name.
-    if ( mHandle == 0 )
-        return;
-    
-    // Set texture state.
-    glBindTexture( GL_TEXTURE_2D, mHandle );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter );
+//    // Set filter.
+//    mFilter = GFXGLTextureFilter[filter];
+//    
+//    // Finish if no GL texture name.
+//    if ( mHandle == 0 )
+//        return;
+//    
+//    // Set texture state.
+//    glBindTexture( GL_TEXTURE_2D, mHandle );
+//    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter );
+//    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter );
 }
 
 

@@ -19,7 +19,7 @@ class GFXOpenGLESTextureTarget;
 //class GFXOpenGLESCubemap;
 //class GLKMatrixStackRef;
 
-@class EAGLContext, GLKTextureLoader;
+@class EAGLContext, GLKTextureLoader, GLKBaseEffect;
 
 class GFXOpenGLESDevice : public GFXOpenGLDevice
 {
@@ -165,21 +165,7 @@ private:
    U32 mAdapterIndex;
    
    StrongRefPtr<GFXOpenGLESVertexBuffer> mCurrentVB;
-   
-   /// Since GL does not have separate world and view matrices we need to track them
-//    MatrixF m_mCurrentView;
-//    GLKMatrixStackRef m_WorldStackRef;
-//    GLKMatrixStackRef m_ProjectionStackRef;
 
-//    bool    mWorldMatrixDirty;
-//    bool    mProjectionMatrixDirty;
-//    MatrixF mViewMatrix;
-//    bool    mViewMatrixDirty;
-    
-//    MatrixF mTextureMatrix[TEXTURE_STAGE_COUNT];
-//    bool    mTextureMatrixDirty;
-//    bool    mTextureMatrixCheckDirty;
-    
     typedef Vector<MatrixF> MatrixStack;
     
     /// Since GL does not have separate world and view matrices we need to track them
@@ -199,6 +185,7 @@ private:
     EAGLContext* mContext;
     void* mPixelFormat;
     GLKTextureLoader* mTextureLoader; // GLKTextureLoader
+    GLKBaseEffect* mBaseEffect;
 
    F32 mPixelShaderVersion;
    
@@ -226,6 +213,8 @@ private:
    
    void initGLState(); ///< Guaranteed to be called after all extensions have been loaded, use to init card profiler, shader version, max samplers, etc.
    void initGenericShaders();
+    
+    virtual void preDrawPrimitive();
 };
 
 

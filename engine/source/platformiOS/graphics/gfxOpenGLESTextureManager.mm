@@ -364,10 +364,10 @@ void GFXOpenGLESTextureManager::innerCreateTexture( GFXOpenGLESTextureObject *re
     glTexImage2D(binding, 0, GFXGLTextureInternalFormat[format], width, height, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], NULL);
    
    // Complete the texture
-   glTexParameteri(binding, GL_TEXTURE_MIN_FILTER, retTex->getFilter());
-   glTexParameteri(binding, GL_TEXTURE_MAG_FILTER, retTex->getFilter());
-   glTexParameteri(binding, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-   glTexParameteri(binding, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+//   glTexParameteri(binding, GL_TEXTURE_MIN_FILTER, retTex->getFilter());
+//   glTexParameteri(binding, GL_TEXTURE_MAG_FILTER, retTex->getFilter());
+//   glTexParameteri(binding, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+//   glTexParameteri(binding, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
    
    retTex->mTextureSize.set(width, height, 0);
 }

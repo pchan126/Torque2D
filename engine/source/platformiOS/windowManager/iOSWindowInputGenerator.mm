@@ -57,7 +57,7 @@ void iOSWindowInputGenerator::handleTapEvent( WindowId did, U32 modifier, S32 x,
     event.xPos = x * mWindow->mDisplayScale;
     event.yPos = y * mWindow->mDisplayScale;
     event.action = eventType;
-//    Con::printf("handleTapEvent %i %i", x, y);
+
     mInputController->processScreenTouchEvent( event );
 }
 
