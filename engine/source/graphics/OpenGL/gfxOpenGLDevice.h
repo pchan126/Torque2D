@@ -20,8 +20,8 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#ifndef _GFXGLDEVICE_H_
-#define _GFXGLDEVICE_H_
+#ifndef _GFXOPENGLDEVICE_H_
+#define _GFXOPENGLDEVICE_H_
 
 #include "graphics/gfxDevice.h"
 #include "windowManager/platformWindow.h"
