@@ -982,8 +982,8 @@ void ImageAsset::calculateImplicitMode( void )
     // Sanity!
     AssertFatal( !mExplicitMode, "Cannot calculate implicit cells when in explicit mode." );
 
-//    // Fetch the texture object.
-//    TextureObject* pTextureObject = ((TextureObject*)mImageTextureHandle);
+    // Fetch the texture object.
+    GFXTextureObject* pTextureObject = mImageTextureHandle.getPointer();
  
     // Calculate texel scales.
     const F32 texelWidthScale = 1.0f / (F32)mImageTextureHandle->getWidth();

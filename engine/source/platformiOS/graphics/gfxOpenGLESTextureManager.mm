@@ -11,6 +11,7 @@
 #include "platformiOS/graphics/gfxOpenGLESUtils.h"
 #import <GLKit/GLKit.h>
 
+
 #define EXT_ARRAY_SIZE 4
 static const char* extArray[EXT_ARRAY_SIZE] = { "png", "pvr", "jpg", ""};
 
@@ -192,100 +193,69 @@ GFXTextureObject *GFXOpenGLESTextureManager::_createTexture(  GBitmap *bmp,
 ////-----------------------------------------------------------------------------
 //// createTexture
 ////-----------------------------------------------------------------------------
-//GFXTextureObject *GFXOpenGLESTextureManager::createTexture( const StringTableEntry &path, GFXTextureProfile *profile )
-//{
-//    PROFILE_SCOPE( GFXTextureManager_createTexture );
-//    
-//    StringTableEntry thePath = path;
-//    bool textureExt = thePath.getExtension().isNotEmpty();
-//    GLKTextureInfo *texture = nil;
-//    
-//    String fullPath = path.getFullPath();
-//    
-//    // Check the cache first...
-//    String pathNoExt;
-//    pathNoExt = StringTableEntry::Join( thePath.getPath(), '/', thePath.getFileName() );
-//    Con::printf("GFXOpenGLTextureManager::createTexture %s", pathNoExt.c_str());
-//    
-//    GFXTextureObject *retTexObj = _lookupTexture( pathNoExt, profile );
-//    
-//    if( retTexObj )
-//        return retTexObj;
-//    
-//    NSDictionary *options = @{GLKTextureLoaderOriginBottomLeft: @NO};
-//    
-//    NSString *npath = nil;
-//    NSError * error;
-//    NSString* temppath = nil;
-//    
-//    U32 i = 0;
-//    do
-//    {
-//        if (!textureExt)
-//            thePath.setExtension(extArray[i]);
-//        
-//        //Ask the bundle for the path to the file
-//        NSFileManager* fMan = [[NSFileManager alloc] init];
-//        temppath = [[NSString alloc] initWithUTF8String:thePath];
-//        Con::printf("s %s", [temppath UTF8String]);
-//        
-//        if ([fMan fileExistsAtPath:temppath ])
-//            npath = temppath;
-//        i++;
-//    }
-//    while (!npath && !textureExt && ( i < EXT_ARRAY_SIZE));
-//    
-//    if (!npath)
-//    {
-//        Con::printf("GFXOpenGLESTextureManager::createTexture unable to find: %s - %s", [temppath UTF8String], path.getExtension().c_str());
-//        return NULL;
-//    }
-//    
-//    if (npath)
-//    {
-//        Con::printf("loading %s", [npath UTF8String] );
-//        
-//        texture = [GLKTextureLoader textureWithContentsOfFile:npath
-//                                                      options:options error:&error];
-//        
-//        if (!texture) // error loading - use old loading
-//        {
-//            NSLog(@"Error loading texture: %@ %@", npath, [error localizedDescription]);
-//            return Parent::createTexture( path, profile );
-//        }
-//        
-//        retTexObj = new GFXOpenGLESTextureObject( GFX, profile, (__bridge void*)texture );
-//        retTexObj->registerResourceWithDevice( GFX );
-//        
-//        
-//        //            GLKTextureLoaderCallback texCallback = ^(GLKTextureInfo *textureInfo, NSError *outError){
-//        //                this->parseTextureInfo(textureInfo);
-//        //            };
-//        //
-//        //            [ platState.textureLoader textureWithContentsOfFile:path options:options queue:NULL completionHandler:
-//        //             ^(GLKTextureInfo *textureInfo, NSError *outError)
-//        //             {
-//        //             if (outError) {     Con::printf("imageloadError"); };     //[ISDebugger logError:outError inMethod:_cmd];
-//        //             GLuint textureName = [textureInfo name];
-//        //             this->parseTextureInfo(textureInfo);
-//        //             } ];
-//    }
-//    
-//    
-//    if ( retTexObj )
-//    {
-//        // Store the path for later use.
-//        retTexObj->mPath = thePath;
-//        _linkTexture( retTexObj );
-//    }
-//    else
-//    {
-//        Con::printf("unable to make texture");
-//    }
-//    
-//    return retTexObj;
-//}
-//
+GFXTextureObject *GFXOpenGLESTextureManager::createTexture( const String &fullPath, GFXTextureProfile *profile )
+{
+    GLKTextureInfo *texture = nil;
+
+    StringTableEntry path, fileName;
+    
+    static char buf[1024];
+    char *ptr = (char *) dStrrchr (fullPath.c_str(), '/');
+    if (!ptr)
+    {
+        path = NULL;
+        fileName = StringTable->insert (fullPath.c_str());
+    }
+    else
+    {
+        S32 len = ptr - fullPath.c_str();
+        dStrncpy (buf, fullPath.c_str(), len);
+        buf[len] = 0;
+        fileName = StringTable->insert (ptr + 1);
+        path = StringTable->insert (buf);
+    }
+    if(path)
+    {
+        char fullPath[1024];
+        Platform::makeFullPathName(path, fullPath, sizeof(fullPath));
+        path = StringTable->insert(fullPath);
+    }
+    
+    GFXTextureObject *retTexObj = _lookupTexture( fileName, profile );
+
+    if( retTexObj )
+        return retTexObj;
+
+    NSDictionary *options = @{GLKTextureLoaderOriginBottomLeft: @NO};
+    NSString *npath = [[NSString alloc] initWithUTF8String:fullPath.c_str()];
+    NSError * error;
+    texture = [GLKTextureLoader textureWithContentsOfFile:npath
+                                                      options:options error:&error];
+
+    if (!texture) // error loading - use old loading
+    {
+        NSLog(@"Error loading texture: %@ %@", npath, [error localizedDescription]);
+        GBitmap* bmp = GBitmap::load(fullPath);
+        return createTexture( bmp, path, profile, true );
+    }
+
+    retTexObj = new GFXOpenGLESTextureObject( GFX, profile, texture );
+    retTexObj->registerResourceWithDevice( GFX );
+
+    if ( retTexObj )
+    {
+        // Store the path for later use.
+        retTexObj->mPath = fullPath;
+        _linkTexture( retTexObj );
+    }
+    else
+    {
+        Con::printf("unable to make texture");
+    }
+    
+    return retTexObj;
+}
+
 
 GFXTextureObject *GFXOpenGLESTextureManager::_createTextureObject(   U32 height,
                                                                U32 width,
@@ -363,12 +333,6 @@ void GFXOpenGLESTextureManager::innerCreateTexture( GFXOpenGLESTextureObject *re
    
     glTexImage2D(binding, 0, GFXGLTextureInternalFormat[format], width, height, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], NULL);
    
-   // Complete the texture
-//   glTexParameteri(binding, GL_TEXTURE_MIN_FILTER, retTex->getFilter());
-//   glTexParameteri(binding, GL_TEXTURE_MAG_FILTER, retTex->getFilter());
-//   glTexParameteri(binding, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-//   glTexParameteri(binding, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-   
    retTex->mTextureSize.set(width, height, 0);
 }
 
@@ -399,7 +363,10 @@ bool GFXOpenGLESTextureManager::_loadTexture(GFXTextureObject *aTexture, GBitmap
    glActiveTexture(GL_TEXTURE0);
    glBindTexture(texture->getBinding(), texture->getHandle());
    
-      _slowTextureLoad(texture, pDL);
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+
+    _slowTextureLoad(texture, pDL);
    
    glBindTexture(texture->getBinding(), 0);
    
@@ -436,6 +403,26 @@ bool GFXOpenGLESTextureManager::_freeTexture(GFXTextureObject *texture, bool zom
 bool GFXOpenGLESTextureManager::_refreshTexture(GFXTextureObject *texture)
 {
     GFXOpenGLESTextureObject * pTextureObject = dynamic_cast<GFXOpenGLESTextureObject*>(texture);
+
+    if (pTextureObject->mBitmap == NULL)
+    {
+        NSDictionary *options = @{GLKTextureLoaderOriginBottomLeft: @NO};
+        NSString *npath = [[NSString alloc] initWithUTF8String:pTextureObject->mPath.c_str()];
+        NSError * error;
+        GLKTextureInfo *textureInfo = nil;
+        textureInfo = [GLKTextureLoader textureWithContentsOfFile:npath
+                                                      options:options error:&error];
+        
+        if (textureInfo)
+        {
+            pTextureObject->mTextureSize.set([ textureInfo width ], [ textureInfo height ], 0.0);
+            pTextureObject->mBitmapSize.set([ textureInfo width ], [ textureInfo height ], 0.0);
+            pTextureObject->mBinding = [ textureInfo target];
+            pTextureObject->mHandle = [ textureInfo name ];
+            return true;
+        }
+    }
+    
     // Fetch bitmaps.
     GBitmap* pSourceBitmap = texture->mBitmap;
     GBitmap* pNewBitmap = pSourceBitmap->createPowerOfTwoBitmap();
@@ -489,9 +476,6 @@ bool GFXOpenGLESTextureManager::_refreshTexture(GFXTextureObject *texture)
     }
     else
     {
-       GLenum dstFormat = GFXGLTextureFormat[pNewBitmap->getFormat()];
-       GLenum byteFormat = GFXGLTextureType[pNewBitmap->getFormat()];
-       const U8* bits = pNewBitmap->getBits();
         // No, so upload as-is.
         glTexImage2D(GL_TEXTURE_2D,
                      0,
@@ -503,9 +487,6 @@ bool GFXOpenGLESTextureManager::_refreshTexture(GFXTextureObject *texture)
                      pNewBitmap->getBits());
     }
     
-//    const GLuint filter = pTextureObject->getFilter();
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GFXGLTextureFilter[pTextureObject->mProfile->getFilter()]);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GFXGLTextureFilter[pTextureObject->mProfile->getFilter()]);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
    
@@ -522,33 +503,6 @@ bool GFXOpenGLESTextureManager::_refreshTexture(GFXTextureObject *texture)
     {
         delete pNewBitmap;
     }
-    
-//   U32 usedStrategies = 0;
-//   GFXOpenGLESTextureObject* realTex = static_cast<GFXOpenGLESTextureObject*>(texture);
-//      
-//   if(texture->mProfile->doStoreBitmap())
-//   {
-//      if(realTex->isZombie())
-//      {
-//         realTex->resurrect();
-//         innerCreateTexture(realTex, texture->getHeight(), texture->getWidth(), texture->getDepth(), texture->mFormat, texture->mProfile, texture->mMipLevels);
-//      }
-//      if(texture->mBitmap)
-//         _loadTexture(texture, texture->mBitmap);
-//      
-//      usedStrategies++;
-//   }
-//   
-//   if(texture->mProfile->isRenderTarget() || texture->mProfile->isDynamic() || texture->mProfile->isZTarget() || !usedStrategies)
-//   {
-//      realTex->release();
-//      realTex->resurrect();
-//      innerCreateTexture(realTex, texture->getHeight(), texture->getWidth(), texture->getDepth(), texture->mFormat, texture->mProfile, texture->mMipLevels);
-//      realTex->reloadFromCache();
-//      usedStrategies++;
-//   }
-//   
-//   AssertFatal(usedStrategies < 2, "GFXOpenGLESTextureManager::_refreshTexture - Inconsistent profile flags (store bitmap and dynamic/target");
    
    return true;
 }

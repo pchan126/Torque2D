@@ -55,7 +55,6 @@ GFXTexHandle::GFXTexHandle( const String &texName, GFXTextureProfile *profile, c
 
 bool GFXTexHandle::set( const String &texName, GFXTextureProfile *profile, const String &desc )
 {
-//    Con::printf("GFXTexHandle::set %s %s", texName.c_str(), desc.c_str());
    // Clear the existing texture first, so that
    // its memory is free for the new allocation.
    free();

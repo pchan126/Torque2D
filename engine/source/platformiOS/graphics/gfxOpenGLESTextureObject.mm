@@ -15,7 +15,7 @@
 #include "graphics/gfxCardProfile.h"
 #import <GLKit/GLKit.h>
 
-GFXOpenGLESTextureObject::GFXOpenGLESTextureObject(GFXDevice * aDevice, GFXTextureProfile *profile, void* texInfo) :
+GFXOpenGLESTextureObject::GFXOpenGLESTextureObject(GFXDevice * aDevice, GFXTextureProfile *profile, GLKTextureInfo* textureInfo) :
     GFXTextureObject(aDevice, profile),
     mBytesPerTexel(4),
     mLockedRectRect(0, 0, 0, 0),
@@ -23,12 +23,10 @@ GFXOpenGLESTextureObject::GFXOpenGLESTextureObject(GFXDevice * aDevice, GFXTextu
     mZombieCache(NULL),
     mFilter( GL_NEAREST )
 {
-    GLKTextureInfo *textureInfo = (__bridge GLKTextureInfo*) texInfo;
     mTextureSize.set([ textureInfo width ], [ textureInfo height ], 0.0);
+    mBitmapSize.set([ textureInfo width ], [ textureInfo height ], 0.0);
     mBinding = [ textureInfo target];
     mHandle = [ textureInfo name ];
-    
-    Con::printf("make texture: %i", mHandle);
 }
 
 

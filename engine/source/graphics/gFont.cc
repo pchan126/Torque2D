@@ -1535,17 +1535,18 @@ bool GFont::readBMFont(Stream& io_rStream)
         dSprintf(buf, sizeof(buf), "%s/%s", Con::getVariable("$GUI::fontCacheDirectory"), fileName);
         Con::printf("Platform::makeFullPathName %s", buf);
         
-        GBitmap *bmp = dynamic_cast<GBitmap*>(ResourceManager->loadInstance(buf));
+//        GBitmap *bmp = dynamic_cast<GBitmap*>(ResourceManager->loadInstance(buf));
         
-        if(bmp == NULL)
-        {
-            return false;
-        }
+//        if(bmp == NULL)
+//        {
+//            return false;
+//        }
         
         char buff[30];
         dSprintf(buff, sizeof(buff), "font_%d", smSheetIdCount++);
-        
-        GFXTexHandle handle = GFXTexHandle( bmp, &GFXFontTextureProfile, true, avar("%s() - (line %d)", __FUNCTION__, __LINE__) );
+
+        GFXTexHandle handle = GFXTexHandle( buf, &GFXFontTextureProfile, avar("constructBMFont" ));
+//        GFXTexHandle handle = GFXTexHandle( bmp, &GFXFontTextureProfile, true, avar("%s() - (line %d)", __FUNCTION__, __LINE__) );
         //    GFXTexHandle handle = GFXTexHandle(buf, bitmap, GFXTexHandle::BitmapKeepTexture);
         //    handle.setFilter(GL_NEAREST);
         

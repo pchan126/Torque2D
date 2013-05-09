@@ -466,7 +466,6 @@ public:
    /// graohics drawing context on or to the window
    /// Win32 D3D and OpenGL typically needs an HWND
    /// Mac Cocoa OpenGL typically needs an NSOpenGLView
-   /// Mac Carbon OpenGL typically needs a WindowRef
    ///
    virtual void* getPlatformDrawable() const = 0;
 protected:

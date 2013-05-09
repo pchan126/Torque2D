@@ -23,8 +23,10 @@ public:
 protected:
 
    // GFXTextureManager
-//   virtual GFXTextureObject* createTexture( const StringTableEntry &path, GFXTextureProfile *profile );
-   virtual GFXTextureObject* createTexture( GBitmap *bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp );
+    virtual GFXTextureObject* createTexture(  const String &path,
+                                            GFXTextureProfile *profile );
+
+    virtual GFXTextureObject* createTexture( GBitmap *bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp );
 
    GFXTextureObject* _createTexture(  GBitmap *bmp,
                                       const String &resourceName,

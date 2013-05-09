@@ -10,11 +10,12 @@
 #import <OpenGLES/ES2/glext.h>
 
 class GFXOpenGLESDevice;
+@class GLKTextureInfo;
 
 class GFXOpenGLESTextureObject : public GFXTextureObject
 {
 public:
-   GFXOpenGLESTextureObject(GFXDevice * aDevice, GFXTextureProfile *profile, void* texInfo);
+   GFXOpenGLESTextureObject(GFXDevice * aDevice, GFXTextureProfile *profile, GLKTextureInfo* texInfo);
    GFXOpenGLESTextureObject(GFXDevice * aDevice, GFXTextureProfile *profile);
    virtual ~GFXOpenGLESTextureObject();
    
