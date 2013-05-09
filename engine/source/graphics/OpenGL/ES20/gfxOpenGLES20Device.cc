@@ -35,7 +35,34 @@ GFXOpenGLES20Device::~GFXOpenGLES20Device()
 {
 }
 
-
+void GFXOpenGLES20Device::clear(U32 flags, ColorI color, F32 z, U32 stencil)
+{
+    // Make sure we have flushed our render target state.
+    _updateRenderTargets();
+    
+    bool zwrite = true;
+    //   if (mCurrentGLStateBlock)
+    //   {
+    //      zwrite = mCurrentGLStateBlock->getDesc().zWriteEnable;
+    //   }
+    
+    glDepthMask(true);
+    
+    GLbitfield clearflags = 0;
+    clearflags |= (flags & GFXClearTarget)   ? GL_COLOR_BUFFER_BIT : 0;
+    clearflags |= (flags & GFXClearZBuffer)  ? GL_DEPTH_BUFFER_BIT : 0;
+    clearflags |= (flags & GFXClearStencil)  ? GL_STENCIL_BUFFER_BIT : 0;
+    
+    glClear(clearflags);
+    
+    ColorF c = color;
+    glClearDepthf(z);
+    glClearStencil(stencil);
+    glClearColor(c.red, c.green, c.blue, c.alpha);
+    
+    if(!zwrite)
+        glDepthMask(false);
+}
 
 GFXVertexBuffer* GFXOpenGLES20Device::findVolatileVBO(U32 vertexCount, const GFXVertexFormat *vertexFormat, U32 vertSize, void* vertexData, U32 indexSize, void* indexData)
 {

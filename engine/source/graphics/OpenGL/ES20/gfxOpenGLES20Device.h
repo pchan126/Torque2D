@@ -60,6 +60,7 @@ public:
     
    virtual void setupGenericShaders( GenericShaderType type = GSColor ) = 0;
    
+   virtual void clear(U32 flags, ColorI color, F32 z, U32 stencil);
 protected:
 
    /// @name State Initalization.

@@ -397,7 +397,7 @@ void GFXOpenGLDevice::clear(U32 flags, ColorI color, F32 z, U32 stencil)
     glClear(clearflags);
     
     ColorF c = color;
-    glClearDepthf(z);
+    glClearDepth(z);
     glClearStencil(stencil);
     glClearColor(c.red, c.green, c.blue, c.alpha);
     
