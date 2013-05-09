@@ -3,10 +3,9 @@
 // Copyright GarageGames, LLC 2011
 //-----------------------------------------------------------------------------
 
-#include "platformiOS/graphics/gfxOpenGLESCardProfiler.h"
-#include "platformiOS/graphics/GFXOpenGLESDevice.h"
-#include "platformiOS/graphics/gfxOpenGLESEnumTranslate.h"
-#import <OpenGLES/ES2/glext.h>
+#include "./gfxOpenGLES20IOSCardProfiler.h"
+#include "./GFXOpenGLES20IOSDevice.h"
+#include "./gfxOpenGLES20IOSEnumTranslate.h"
 
 BOOL CheckForExtension(NSString *searchName)
 {
@@ -18,7 +17,7 @@ BOOL CheckForExtension(NSString *searchName)
     return [extensionsNames containsObject: searchName];
 }
 
-void GFXOpenGLESCardProfiler::init()
+void GFXOpenGLES20iOSCardProfiler::init()
 {
    mChipSet = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
 
@@ -102,7 +101,7 @@ void GFXOpenGLESCardProfiler::init()
     
 }
 
-void GFXOpenGLESCardProfiler::setupCardCapabilities()
+void GFXOpenGLES20iOSCardProfiler::setupCardCapabilities()
 {
     GLint maxTexSize;
     GLint maxDepthBits;

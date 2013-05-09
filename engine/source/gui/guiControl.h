@@ -142,7 +142,7 @@ public:
         vertResizeWindowRelative ///< resize window relative
     };
 
-private:
+protected:
     
     SimGroup               *mAddGroup;   ///< The internal name of a SimGroup child of the global GuiGroup in which to organize this gui on creation
     RectI                   mBounds;     ///< The internal bounds of this control

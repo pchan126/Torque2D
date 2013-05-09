@@ -3,13 +3,13 @@
 // Copyright GarageGames, LLC 2011
 //-----------------------------------------------------------------------------
 
-#ifndef _GFXGLESEnumTranslate_H_
-#define _GFXGLESEnumTranslate_H_
+#ifndef _GFXGLES20iOSEnumTranslate_H_
+#define _GFXGLES20iOSEnumTranslate_H_
 
 #import <OpenGLES/ES2/glext.h>
 #include "graphics/gfxEnums.h"
 
-namespace GFXGLESEnumTranslate
+namespace GFXGLES20iOSEnumTranslate
 {
    void init();
 };

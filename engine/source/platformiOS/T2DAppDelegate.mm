@@ -28,8 +28,8 @@
 #include "console/console.h"
 #include "game/gameInterface.h"
 #include "graphics/gfxInit.h"
-#include "graphics/gfxOpenGLESDevice.h"
-#include "platformiOS/windowManager/iOSWindow.h"
+#include "./graphics/GFXOpenGLES20iOSDevice.h"
+#include "./windowManager/iOSWindow.h"
 
 // Store current orientation for easy access
 extern void _iOSGameChangeOrientation(S32 newOrientation);

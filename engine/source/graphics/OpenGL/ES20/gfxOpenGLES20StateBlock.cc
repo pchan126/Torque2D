@@ -3,38 +3,38 @@
 // Copyright GarageGames, LLC 2011
 //-----------------------------------------------------------------------------
 
-#include "platformiOS/graphics/gfxOpenGLESStateBlock.h"
-#include "platformiOS/graphics/gfxOpenGLESDevice.h"
-#include "platformiOS/graphics/gfxOpenGLESEnumTranslate.h"
-#include "platformiOS/graphics/gfxOpenGLESUtils.h"
-#include "platformiOS/graphics/gfxOpenGLESTextureObject.h"
+#include "./GFXOpenGLES20StateBlock.h"
+#include "./GFXOpenGLES20Device.h"
+#include "./GFXOpenGLES20EnumTranslate.h"
+#include "./GFXOpenGLES20Utils.h"
+#include "./GFXOpenGLES20TextureObject.h"
 
 
-GFXOpenGLESStateBlock::GFXOpenGLESStateBlock(const GFXStateBlockDesc& desc) : GFXOpenGLStateBlock( desc ),
+GFXOpenGLES20StateBlock::GFXOpenGLES20StateBlock(const GFXStateBlockDesc& desc) : GFXOpenGLStateBlock( desc ),
    mDesc(desc),
    mCachedHashValue(desc.getHashValue())
 {
 }
 
-GFXOpenGLESStateBlock::~GFXOpenGLESStateBlock()
+GFXOpenGLES20StateBlock::~GFXOpenGLES20StateBlock()
 {
 }
 
 /// Returns the hash value of the desc that created this block
-U32 GFXOpenGLESStateBlock::getHashValue() const
+U32 GFXOpenGLES20StateBlock::getHashValue() const
 {
    return mCachedHashValue;
 }
 
 /// Returns a GFXStateBlockDesc that this block represents
-const GFXStateBlockDesc& GFXOpenGLESStateBlock::getDesc() const
+const GFXStateBlockDesc& GFXOpenGLES20StateBlock::getDesc() const
 {
    return mDesc;   
 }
 
 /// Called by OpenGL device to active this state block.
 /// @param oldState  The current state, used to make sure we don't set redundant states on the device.  Pass NULL to reset all states.
-void GFXOpenGLESStateBlock::activate(const GFXOpenGLESStateBlock* oldState)
+void GFXOpenGLES20StateBlock::activate(const GFXOpenGLES20StateBlock* oldState)
 {
    // Big scary warning copied from Apple docs 
    // http://developer.apple.com/documentation/GraphicsImaging/Conceptual/OpenGL-MacProgGuide/opengl_performance/chapter_13_section_2.html#//apple_ref/doc/uid/TP40001987-CH213-SW12
@@ -50,7 +50,7 @@ void GFXOpenGLESStateBlock::activate(const GFXOpenGLESStateBlock* oldState)
 #define TOGGLE_STATE(state, enum) if(mDesc.state) glEnable(enum); else glDisable(enum)
 #define CHECK_TOGGLE_STATE(state, enum) if(!oldState || oldState->mDesc.state != mDesc.state) { if(mDesc.state) { glEnable(enum); } else { glDisable(enum); } }
 
-    GFXOpenGLESDevice* device = dynamic_cast<GFXOpenGLESDevice*>(GFX);
+    GFXOpenGLES20Device* device = dynamic_cast<GFXOpenGLES20Device*>(GFX);
 
     // Blending
    device->setBlending(mDesc.blendEnable);
@@ -115,7 +115,7 @@ void GFXOpenGLESStateBlock::activate(const GFXOpenGLESStateBlock* oldState)
 //   // Non per object texture mode states
 //   for (U32 i = 0; i < getMin(getOwningDevice()->getNumSamplers(), (U32) TEXTURE_STAGE_COUNT); i++)
 //   {
-//      GFXOpenGLESTextureObject* tex = static_cast<GFXOpenGLESTextureObject*>(getOwningDevice()->getCurrentTexture(i));
+//      GFXOpenGLES20TextureObject* tex = static_cast<GFXOpenGLES20TextureObject*>(getOwningDevice()->getCurrentTexture(i));
 //      const GFXSamplerStateDesc &ssd = mDesc.samplers[i];
 //      bool updateTexParam = true;
 //      glActiveTexture(GL_TEXTURE0 + i);
@@ -154,7 +154,7 @@ void GFXOpenGLESStateBlock::activate(const GFXOpenGLESStateBlock* oldState)
 ////         SSW(addressModeV, GL_TEXTURE_WRAP_T, GFXGLTextureAddress[ssd.addressModeV], tex);
 //
 //         if( ( !oldState || oldState->mDesc.samplers[i].maxAnisotropy != ssd.maxAnisotropy ) &&
-//             static_cast< GFXOpenGLESDevice* >( GFX )->supportsAnisotropic() )
+//             static_cast< GFXOpenGLES20Device* >( GFX )->supportsAnisotropic() )
 //            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, ssd.maxAnisotropy);
 //
 ////         if( ( !oldState || oldState->mDesc.samplers[i].mipLODBias != ssd.mipLODBias ) )

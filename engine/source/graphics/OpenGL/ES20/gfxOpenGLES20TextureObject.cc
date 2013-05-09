@@ -3,62 +3,46 @@
 // Copyright GarageGames, LLC 2011
 //-----------------------------------------------------------------------------
 
-#import <OpenGLES/ES2/glext.h>
-
+#include "platform/platformGL.h"
 #include "console/console.h"
 #include "math/mRect.h"
-#include "platformiOS/graphics/gfxOpenGLESTextureObject.h"
-#include "platformiOS/graphics/gfxOpenGLESDevice.h"
-#include "platformiOS/graphics/gfxOpenGLESEnumTranslate.h"
-#include "platformiOS/graphics/gfxOpenGLESTextureManager.h"
-#include "platformiOS/graphics/gfxOpenGLESUtils.h"
+#include "./GFXOpenGLES20TextureObject.h"
+#include "./GFXOpenGLES20Device.h"
+#include "./GFXOpenGLES20EnumTranslate.h"
+#include "./GFXOpenGLES20TextureManager.h"
+#include "./GFXOpenGLES20Utils.h"
 #include "graphics/gfxCardProfile.h"
-#import <GLKit/GLKit.h>
-
-GFXOpenGLESTextureObject::GFXOpenGLESTextureObject(GFXDevice * aDevice, GFXTextureProfile *profile, GLKTextureInfo* textureInfo) :
-    GFXTextureObject(aDevice, profile),
-    mBytesPerTexel(4),
-    mLockedRectRect(0, 0, 0, 0),
-    mGLDevice(static_cast<GFXOpenGLESDevice*>(mDevice)),
-    mZombieCache(NULL),
-    mFilter( GL_NEAREST )
-{
-    mTextureSize.set([ textureInfo width ], [ textureInfo height ], 0.0);
-    mBitmapSize.set([ textureInfo width ], [ textureInfo height ], 0.0);
-    mBinding = [ textureInfo target];
-    mHandle = [ textureInfo name ];
-}
 
 
-GFXOpenGLESTextureObject::GFXOpenGLESTextureObject(GFXDevice * aDevice, GFXTextureProfile *profile) :
+GFXOpenGLES20TextureObject::GFXOpenGLES20TextureObject(GFXDevice * aDevice, GFXTextureProfile *profile) :
    GFXTextureObject(aDevice, profile),
    mBinding(GL_TEXTURE_2D),
    mBytesPerTexel(4),
    mLockedRectRect(0, 0, 0, 0),
-   mGLDevice(static_cast<GFXOpenGLESDevice*>(mDevice)),
+   mGLDevice(static_cast<GFXOpenGLES20Device*>(mDevice)),
    mZombieCache(NULL)
 {
-   AssertFatal(dynamic_cast<GFXOpenGLESDevice*>(mDevice), "GFXOpenGLESTextureObject::GFXOpenGLESTextureObject - Invalid device type, expected GFXOpenGLESDevice!");
+   AssertFatal(dynamic_cast<GFXOpenGLES20Device*>(mDevice), "GFXOpenGLES20TextureObject::GFXOpenGLES20TextureObject - Invalid device type, expected GFXOpenGLES20Device!");
    glGenTextures(1, &mHandle);
 }
 
-GFXOpenGLESTextureObject::~GFXOpenGLESTextureObject() 
+GFXOpenGLES20TextureObject::~GFXOpenGLES20TextureObject() 
 {
 //   glDeleteBuffers(1, &mBuffer);
    delete[] mZombieCache;
    kill();
 }
 
-GFXLockedRect* GFXOpenGLESTextureObject::lock(U32 mipLevel, RectI *inRect)
+GFXLockedRect* GFXOpenGLES20TextureObject::lock(U32 mipLevel, RectI *inRect)
 {
-//   AssertFatal(mBinding != GL_TEXTURE_3D, "GFXOpenGLESTextureObject::lock - We don't support locking 3D textures yet");
+//   AssertFatal(mBinding != GL_TEXTURE_3D, "GFXOpenGLES20TextureObject::lock - We don't support locking 3D textures yet");
    U32 width = mTextureSize.x >> mipLevel;
    U32 height = mTextureSize.y >> mipLevel;
 
    if(inRect)
    {
       if((inRect->point.x + inRect->extent.x > width) || (inRect->point.y + inRect->extent.y > height))
-         AssertFatal(false, "GFXOpenGLESTextureObject::lock - Rectangle too big!");
+         AssertFatal(false, "GFXOpenGLES20TextureObject::lock - Rectangle too big!");
 
       mLockedRectRect = *inRect;
    }
@@ -75,7 +59,7 @@ GFXLockedRect* GFXOpenGLESTextureObject::lock(U32 mipLevel, RectI *inRect)
    return &mLockedRect;
 }
 
-void GFXOpenGLESTextureObject::unlock(U32 mipLevel)
+void GFXOpenGLES20TextureObject::unlock(U32 mipLevel)
 {
    if(!mLockedRect.bits)
       return;
@@ -88,13 +72,13 @@ void GFXOpenGLESTextureObject::unlock(U32 mipLevel)
    glBindTexture(GL_TEXTURE_2D, boundTexture);
 }
 
-void GFXOpenGLESTextureObject::release()
+void GFXOpenGLES20TextureObject::release()
 {
    glDeleteTextures(1, &mHandle);
    mHandle = 0;
 }
 
-GBitmap* GFXOpenGLESTextureObject::getBitmap()
+GBitmap* GFXOpenGLES20TextureObject::getBitmap()
 {
     if (mBitmap)
         return mBitmap;
@@ -144,22 +128,22 @@ GBitmap* GFXOpenGLESTextureObject::getBitmap()
 }
 
 
-bool GFXOpenGLESTextureObject::copyToBmp(GBitmap * bmp)
+bool GFXOpenGLES20TextureObject::copyToBmp(GBitmap * bmp)
 {
     // not supported in opengl es
    return false;
 }
 
-void GFXOpenGLESTextureObject::bind(U32 textureUnit) const
+void GFXOpenGLES20TextureObject::bind(U32 textureUnit) const
 {
-//    AssertFatal(mBinding == GL_TEXTURE_2D, "GFXOpenGLESTextureObject::bind - only GL_TEXTURE_2D supported");
+//    AssertFatal(mBinding == GL_TEXTURE_2D, "GFXOpenGLES20TextureObject::bind - only GL_TEXTURE_2D supported");
 //   glActiveTexture(GL_TEXTURE0 + textureUnit);
 //
 //    GLuint han = mHandle;
 //   glBindTexture(mBinding, han);
 //    
-//   GFXOpenGLESStateBlockRef sb = mGLDevice->getCurrentStateBlock();
-//   AssertFatal(sb, "GFXOpenGLESTextureObject::bind - No active stateblock!");
+//   GFXOpenGLES20StateBlockRef sb = mGLDevice->getCurrentStateBlock();
+//   AssertFatal(sb, "GFXOpenGLES20TextureObject::bind - No active stateblock!");
 //   if (!sb)
 //      return;
 //         
@@ -171,14 +155,14 @@ void GFXOpenGLESTextureObject::bind(U32 textureUnit) const
 //   glTexParameteri(mBinding, GL_TEXTURE_WRAP_T, !mIsNPoT2 ? GFXGLTextureAddress[ssd.addressModeV] : GL_CLAMP_TO_EDGE);
 }
 
-U8* GFXOpenGLESTextureObject::getTextureData()
+U8* GFXOpenGLES20TextureObject::getTextureData()
 {
    U8* data = new U8[mTextureSize.x * mTextureSize.y * mBytesPerTexel];
    glBindTexture(GL_TEXTURE_2D, mHandle);
    return data;
 }
 
-void GFXOpenGLESTextureObject::copyIntoCache()
+void GFXOpenGLES20TextureObject::copyIntoCache()
 {
    glBindTexture(mBinding, mHandle);
    U32 cacheSize = mTextureSize.x * mTextureSize.y;
@@ -189,7 +173,7 @@ void GFXOpenGLESTextureObject::copyIntoCache()
    glBindTexture(mBinding, 0);
 }
 
-void GFXOpenGLESTextureObject::reloadFromCache()
+void GFXOpenGLES20TextureObject::reloadFromCache()
 {
    if(!mZombieCache)
       return;
@@ -205,7 +189,7 @@ void GFXOpenGLESTextureObject::reloadFromCache()
    mIsZombie = false;
 }
 
-void GFXOpenGLESTextureObject::zombify()
+void GFXOpenGLES20TextureObject::zombify()
 {
    if(mIsZombie)
       return;
@@ -217,7 +201,7 @@ void GFXOpenGLESTextureObject::zombify()
    release();
 }
 
-void GFXOpenGLESTextureObject::resurrect()
+void GFXOpenGLES20TextureObject::resurrect()
 {
    if(!mIsZombie)
       return;
@@ -225,17 +209,17 @@ void GFXOpenGLESTextureObject::resurrect()
    glGenTextures(1, &mHandle);
 }
 
-F32 GFXOpenGLESTextureObject::getMaxUCoord() const
+F32 GFXOpenGLES20TextureObject::getMaxUCoord() const
 {
    return mBinding == GL_TEXTURE_2D ? 1.0f : (F32)getWidth();
 }
 
-F32 GFXOpenGLESTextureObject::getMaxVCoord() const
+F32 GFXOpenGLES20TextureObject::getMaxVCoord() const
 {
    return mBinding == GL_TEXTURE_2D ? 1.0f : (F32)getHeight();
 }
 
-const String GFXOpenGLESTextureObject::describeSelf() const
+const String GFXOpenGLES20TextureObject::describeSelf() const
 {
    String ret = Parent::describeSelf();
    ret += String::ToString("   GL Handle: %i", mHandle);
@@ -243,7 +227,7 @@ const String GFXOpenGLESTextureObject::describeSelf() const
    return ret;
 }
 
-void GFXOpenGLESTextureObject::setFilter(const GFXTextureFilterType filter)
+void GFXOpenGLES20TextureObject::setFilter(const GFXTextureFilterType filter)
 {
 //    // Set filter.
 //    mFilter = GFXGLTextureFilter[filter];

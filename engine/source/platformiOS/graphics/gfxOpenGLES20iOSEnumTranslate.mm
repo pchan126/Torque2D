@@ -4,7 +4,7 @@
 //-----------------------------------------------------------------------------
 
 #include "platform/platform.h"
-#include "platformiOS/graphics/gfxOpenGLESEnumTranslate.h"
+#include "./gfxOpenGLES20iOSEnumTranslate.h"
 #include "String/StringTable.h"
  
 GLenum GFXGLPrimType[GFXPT_COUNT];
@@ -23,7 +23,7 @@ GLenum GFXGLCullMode[GFXCull_COUNT];
 GLenum GFXGLFillMode[GFXFill_COUNT];
 StringTableEntry GFXGLShaderAttributes[NUM_ATTRIBUTES];
 
-void GFXGLESEnumTranslate::init()
+void GFXGLES20iOSEnumTranslate::init()
 {
    // Buffer types
    GFXGLBufferType[GFXBufferTypeStatic] = GL_STATIC_DRAW;

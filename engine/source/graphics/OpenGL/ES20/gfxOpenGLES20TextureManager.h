@@ -3,22 +3,21 @@
 // Copyright GarageGames, LLC 2011
 //-----------------------------------------------------------------------------
 
-#ifndef _GFXOpenGLESTextureManager_H
-#define _GFXOpenGLESTextureManager_H
+#ifndef _GFXOpenGLES20TextureManager_H
+#define _GFXOpenGLES20TextureManager_H
 
-#import <OpenGLES/ES2/glext.h>
-
+#include "platform/platformGL.h"
 #include "graphics/gfxDevice.h"
 #include "graphics/gfxTextureManager.h"
-#include "platformiOS/graphics/gfxOpenGLESTextureObject.h"
+#include "./GFXOpenGLES20TextureObject.h"
 
-class GFXOpenGLESTextureManager : public GFXTextureManager
+class GFXOpenGLES20TextureManager : public GFXTextureManager
 {   
 public:
     typedef GFXTextureManager Parent;
     
-   GFXOpenGLESTextureManager();
-   ~GFXOpenGLESTextureManager();
+   GFXOpenGLES20TextureManager();
+   ~GFXOpenGLES20TextureManager();
    
 protected:
 
@@ -50,10 +49,10 @@ protected:
    bool _freeTexture(GFXTextureObject *texture, bool zombify = false);
 
 private:
-   friend class GFXOpenGLESTextureObject;
+   friend class GFXOpenGLES20TextureObject;
    
    /// Creates internal GL texture
-   void innerCreateTexture(GFXOpenGLESTextureObject *obj, U32 height, U32 width, U32 depth, GFXFormat format, GFXTextureProfile *profile, U32 numMipLevels, bool forceMips = false);
+   void innerCreateTexture(GFXOpenGLES20TextureObject *obj, U32 height, U32 width, U32 depth, GFXFormat format, GFXTextureProfile *profile, U32 numMipLevels, bool forceMips = false);
     
     void handleTextureCallback(void *textureInfo);
 };

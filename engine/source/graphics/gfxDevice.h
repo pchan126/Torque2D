@@ -352,13 +352,6 @@ public:
    /// @see GFXVideoMode
    const Vector<GFXVideoMode>* const getVideoModeList() const { return &mVideoModes; }
 
-//   /// Returns the first format from the list which meets all 
-//   /// the criteria of the texture profile and query options.      
-//   virtual GFXFormat selectSupportedFormat(GFXTextureProfile *profile,
-//	   const Vector<GFXFormat> &formats, bool texture, bool mustblend, bool mustfilter) = 0;
-
-   /// @}
-
    //-----------------------------------------------------------------------------
 protected:
 
@@ -651,8 +644,8 @@ public:
    /// Returns the number of simultaneous render targets supported by the device.
    virtual U32 getNumRenderTargets() const = 0;
    
-   virtual void setShader( GFXShader *shader ) {}
-   virtual void disableShaders() {}
+    virtual void setShader( GFXShader *shader ) = 0;
+    virtual void disableShaders() = 0;
 
    /// Set the buffer! (Actual set happens on the next draw call, just like textures, state blocks, etc)
    void setShaderConstBuffer(GFXShaderConstBuffer* buffer);

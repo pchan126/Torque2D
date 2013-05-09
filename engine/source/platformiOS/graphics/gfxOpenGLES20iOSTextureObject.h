@@ -3,21 +3,21 @@
 // Copyright GarageGames, LLC 2011
 //-----------------------------------------------------------------------------
 
-#ifndef _GFXOpenGLESTextureObject_H
-#define _GFXOpenGLESTextureObject_H
+#ifndef _GFXOpenGLES20iOSTextureObject_H
+#define _GFXOpenGLES20iOSTextureObject_H
 
+#include "platform/platformGL.h"
 #include "graphics/gfxTextureObject.h"
-#import <OpenGLES/ES2/glext.h>
 
-class GFXOpenGLESDevice;
+class GFXOpenGLES20iOSDevice;
 @class GLKTextureInfo;
 
-class GFXOpenGLESTextureObject : public GFXTextureObject
+class GFXOpenGLES20iOSTextureObject : public GFXTextureObject
 {
 public:
-   GFXOpenGLESTextureObject(GFXDevice * aDevice, GFXTextureProfile *profile, GLKTextureInfo* texInfo);
-   GFXOpenGLESTextureObject(GFXDevice * aDevice, GFXTextureProfile *profile);
-   virtual ~GFXOpenGLESTextureObject();
+   GFXOpenGLES20iOSTextureObject(GFXDevice * aDevice, GFXTextureProfile *profile, GLKTextureInfo* texInfo);
+   GFXOpenGLES20iOSTextureObject(GFXDevice * aDevice, GFXTextureProfile *profile);
+   virtual ~GFXOpenGLES20iOSTextureObject();
    
    void release();
    
@@ -63,7 +63,7 @@ public:
    virtual const String describeSelf() const;
    
 private:
-   friend class GFXOpenGLESTextureManager;
+   friend class GFXOpenGLES20iOSTextureManager;
    typedef GFXTextureObject Parent;
    /// Internal GL object
    GLuint mHandle;
@@ -76,7 +76,7 @@ private:
    RectI mLockedRectRect;
 
    /// Pointer to owner device
-   GFXOpenGLESDevice* mGLDevice;
+   GFXOpenGLES20iOSDevice* mGLDevice;
    
    bool mIsZombie;
    U8* mZombieCache;

@@ -8,7 +8,7 @@
 
 #import "console/console.h"
 #import "platformiOS/platformiOS.h"
-#import "platformiOS/graphics/GFXOpenGLESDevice.h"
+#import "platformiOS/graphics/GFXOpenGLES20iOSDevice.h"
 #import "platformiOS/T2DAppDelegate.h"
 #import "platformiOS/windowManager/iOSGestureRecognizer.h"
 #import "platformiOS/windowManager/iOSWindowInputGenerator.h"
@@ -41,7 +41,7 @@ iOSWindow::iOSWindow(U32 windowId)
     
    mWindowId = windowId;
 
-    GFXOpenGLESDevice *device = dynamic_cast<GFXOpenGLESDevice*>(GFX);
+    GFXOpenGLES20iOSDevice *device = dynamic_cast<GFXOpenGLES20iOSDevice*>(GFX);
     EAGLContext *context = device->getEAGLContext();
     
     S32 tempType = Con::getIntVariable("$pref::iOS::StatusBarType");

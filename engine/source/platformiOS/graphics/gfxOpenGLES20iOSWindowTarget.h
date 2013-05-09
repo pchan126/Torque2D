@@ -3,19 +3,19 @@
 // Copyright GarageGames, LLC 2011
 //-----------------------------------------------------------------------------
 
-#ifndef _GFXOpenGLESWindowTarget_H_
-#define _GFXOpenGLESWindowTarget_H_
+#ifndef _GFXOpenGLES20iOSWindowTarget_H_
+#define _GFXOpenGLES20iOSWindowTarget_H_
 
 #include "graphics/gfxTarget.h"
 #include "windowManager/platformWindow.h"
 
 @class EAGLContext;
 
-class GFXOpenGLESWindowTarget : public GFXWindowTarget
+class GFXOpenGLES20iOSWindowTarget : public GFXWindowTarget
 {
 public:
 
-   GFXOpenGLESWindowTarget(PlatformWindow *win, GFXDevice *d);
+   GFXOpenGLES20iOSWindowTarget(PlatformWindow *win, GFXDevice *d);
    const Point2I getSize();
 
    virtual GFXFormat getFormat()
@@ -36,11 +36,11 @@ public:
 private:
     typedef GFXDevice Parent;
     
-    friend class GFXOpenGLESTextureObject;
+    friend class GFXOpenGLES20iOSTextureObject;
 //    friend class GFXOpenGLESCubemap;
-    friend class GFXOpenGLESWindowTarget;
-    friend class GFXOpenGLESVertexBuffer;
-    friend class GFXOpenGLESDevice;
+    friend class GFXOpenGLES20iOSWindowTarget;
+    friend class GFXOpenGLES20iOSVertexBuffer;
+    friend class GFXOpenGLES20iOSDevice;
 
    PlatformWindow *mWindow;
    friend class GFXOpenGLESDevice;

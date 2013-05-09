@@ -20,12 +20,12 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#ifndef _GFXGLESCARDPROFILE_H
-#define _GFXGLESCARDPROFILE_H
+#ifndef _GFXGLES20IOSCARDPROFILE_H
+#define _GFXGLES20IOSCARDPROFILE_H
 
 #include "graphics/OpenGL/gfxOpenGLCardProfiler.h"
 
-class GFXOpenGLESCardProfiler : public GFXOpenGLCardProfiler
+class GFXOpenGLES20iOSCardProfiler : public GFXOpenGLCardProfiler
 {
 public:
    void init();

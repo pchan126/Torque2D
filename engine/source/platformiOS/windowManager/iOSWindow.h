@@ -116,7 +116,7 @@ protected:
 private:
    friend class iOSWindowManager;
    friend class iOSCursorController;
-    friend class GFXOpenGLESWindowTarget;
+    friend class GFXOpenGLES20WindowTarget;
    
    iOSWindow(U32 windowId);
    

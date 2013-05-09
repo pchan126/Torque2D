@@ -10,7 +10,7 @@
 #import "game/version.h"
 #import <UIKit/UIKit.h>
 #import "platformiOS/T2DAppDelegate.h"
-#import "platformiOS/graphics/GFXOpenGLESDevice.h"
+#import "platformiOS/graphics/GFXOpenGLES20iOSDevice.h"
 
 PlatformWindowManager* CreatePlatformWindowManager()
 {
@@ -173,7 +173,7 @@ void iOSWindowManager::updateWindows()
         extWindow.rootViewController = newController;
                 
         
-        GFXOpenGLESDevice *device = dynamic_cast<GFXOpenGLESDevice*>(GFX);
+        GFXOpenGLES20iOSDevice *device = dynamic_cast<GFXOpenGLES20iOSDevice*>(GFX);
         EAGLContext *context = device->getEAGLContext();
 //        GLKView* newView = [[GLKView alloc] initWithFrame:[extScreen bounds] context:context];
 //        extWindow.rootViewController.view = newView;

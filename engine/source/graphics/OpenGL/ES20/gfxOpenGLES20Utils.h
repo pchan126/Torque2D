@@ -19,7 +19,7 @@
 #define TORQUE_CONCAT(x, y) _TORQUE_CONCAT(x, y)
 
 
-#include "platformiOS/graphics/gfxOpenGLESEnumTranslate.h"
+#include "./GFXOpenGLES20EnumTranslate.h"
 #import <OpenGLES/ES2/glext.h>
 
 static inline GLenum minificationFilter(U32 minFilter, U32 mipFilter, U32 mipLevels)
@@ -55,7 +55,7 @@ static inline GLenum minificationFilter(U32 minFilter, U32 mipFilter, U32 mipLev
 /// Simple class which preserves a given GL integer.
 /// This class determines the integer to preserve on construction and restores 
 /// it on destruction.
-class GFXOpenGLESPreserveInteger
+class GFXOpenGLES20PreserveInteger
 {
 public:
    typedef void(*BindFn)(GLenum, GLuint);
@@ -65,15 +65,15 @@ public:
    /// @param getBinding The parameter to be passed to glGetIntegerv to determine
    /// the integer to be preserved.
    /// @param binder The gl function to call to restore the integer.
-   GFXOpenGLESPreserveInteger(GLenum binding, GLint getBinding, BindFn binder) :
+   GFXOpenGLES20PreserveInteger(GLenum binding, GLint getBinding, BindFn binder) :
       mBinding(binding), mPreserved(0), mBinder(binder)
    {
-      AssertFatal(mBinder, "GFXOpenGLESPreserveInteger - Need a valid binder function");
+      AssertFatal(mBinder, "GFXOpenGLES20PreserveInteger - Need a valid binder function");
       glGetIntegerv(getBinding, &mPreserved);
    }
    
    /// Restores the integer.
-   ~GFXOpenGLESPreserveInteger()
+   ~GFXOpenGLES20PreserveInteger()
    {
       mBinder(mBinding, mPreserved);
    }
@@ -86,14 +86,14 @@ private:
 
 /// Helper macro to preserve the current VBO binding.
 #define PRESERVE_VERTEX_BUFFER() \
-GFXOpenGLESPreserveInteger TORQUE_CONCAT(preserve_, __LINE__) (GL_ARRAY_BUFFER, GL_ARRAY_BUFFER_BINDING, glBindBuffer)
+GFXOpenGLES20PreserveInteger TORQUE_CONCAT(preserve_, __LINE__) (GL_ARRAY_BUFFER, GL_ARRAY_BUFFER_BINDING, glBindBuffer)
 
 /// Helper macro to preserve the current element array binding.
 #define PRESERVE_INDEX_BUFFER() \
-GFXOpenGLESPreserveInteger TORQUE_CONCAT(preserve_, __LINE__) (GL_ELEMENT_ARRAY_BUFFER, GL_ELEMENT_ARRAY_BUFFER_BINDING, glBindBuffer)
+GFXOpenGLES20PreserveInteger TORQUE_CONCAT(preserve_, __LINE__) (GL_ELEMENT_ARRAY_BUFFER, GL_ELEMENT_ARRAY_BUFFER_BINDING, glBindBuffer)
 
 /// Helper macro to preserve the current 2D texture binding.
 #define PRESERVE_2D_TEXTURE() \
-GFXOpenGLESPreserveInteger TORQUE_CONCAT(preserve_, __LINE__) (GL_TEXTURE_2D, GL_TEXTURE_BINDING_2D, glBindTexture)
+GFXOpenGLES20PreserveInteger TORQUE_CONCAT(preserve_, __LINE__) (GL_TEXTURE_2D, GL_TEXTURE_BINDING_2D, glBindTexture)
 
 #endif

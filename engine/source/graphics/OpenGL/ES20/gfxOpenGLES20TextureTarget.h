@@ -9,7 +9,7 @@
 #include "graphics/gfxTarget.h"
 #include "memory/autoPtr.h"
 
-class GFXOpenGLESTextureObject;
+class GFXOpenGLES20TextureObject;
 class _GFXOpenGLESTextureTargetImpl;
 
 /// Internal struct used to track texture information for FBO attachments
@@ -53,11 +53,11 @@ private:
 /// 4) If the DepthStencil target is GFXTextureTarget::sDefaultStencil, then the
 /// Color0 target should be the same size as the current backbuffer and should also
 /// be the same format (typically R8G8B8A8)
-class GFXOpenGLESTextureTarget : public GFXTextureTarget
+class GFXOpenGLES20TextureTarget : public GFXTextureTarget
 {
 public:
-    GFXOpenGLESTextureTarget();
-    virtual ~GFXOpenGLESTextureTarget();
+    GFXOpenGLES20TextureTarget();
+    virtual ~GFXOpenGLES20TextureTarget();
     
     virtual const Point2I getSize();
     virtual GFXFormat getFormat();
@@ -84,7 +84,7 @@ public:
     
 protected:
     
-    friend class GFXOpenGLESDevice;
+    friend class GFXOpenGLES20Device;
     
     /// The callback used to get texture events.
     /// @see GFXTextureManager::addEventDelegate
@@ -114,7 +114,7 @@ protected:
 class _GFXOpenGLESTextureTargetImpl
 {
 public:
-    GFXOpenGLESTextureTarget* mTarget;
+    GFXOpenGLES20TextureTarget* mTarget;
     
     virtual ~_GFXOpenGLESTextureTargetImpl() {}
     
@@ -129,7 +129,7 @@ class _GFXOpenGLESTextureTargetFBOImpl : public _GFXOpenGLESTextureTargetImpl
 public:
     GLuint mFramebuffer, mRenderBuffer;
     
-    _GFXOpenGLESTextureTargetFBOImpl(GFXOpenGLESTextureTarget* target);
+    _GFXOpenGLESTextureTargetFBOImpl(GFXOpenGLES20TextureTarget* target);
     virtual ~_GFXOpenGLESTextureTargetFBOImpl();
     
     virtual void applyState();

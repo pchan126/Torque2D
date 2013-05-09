@@ -21,7 +21,7 @@
 //-----------------------------------------------------------------------------
 
 #include "platform/platform.h"
-#include "platformiOS/graphics/gfxOpenGLESShader.h"
+#include "platformiOS/graphics/gfxOpenGLES20iOSShader.h"
 
 #include "memory/frameAllocator.h"
 #include "io/fileStream.h"
@@ -29,19 +29,19 @@
 #include "math/mPoint.h"
 #include "graphics/gfxStructs.h"
 #include "console/console.h"
-#include "./gfxOpenGLESEnumTranslate.h"
+#include "./gfxOpenGLES20iOSEnumTranslate.h"
 
 
 
-class GFXOpenGLESShaderConstHandle : public GFXShaderConstHandle
+class GFXOpenGLES20iOSShaderConstHandle : public GFXShaderConstHandle
 {
-   friend class GFXOpenGLESShader;
+   friend class GFXOpenGLES20iOSShader;
 
 public:  
    
-   GFXOpenGLESShaderConstHandle( GFXOpenGLESShader *shader );
-   GFXOpenGLESShaderConstHandle( GFXOpenGLESShader *shader, const GFXShaderConstDesc &desc, GLuint loc, S32 samplerNum );
-   virtual ~GFXOpenGLESShaderConstHandle();
+   GFXOpenGLES20iOSShaderConstHandle( GFXOpenGLES20iOSShader *shader );
+   GFXOpenGLES20iOSShaderConstHandle( GFXOpenGLES20iOSShader *shader, const GFXShaderConstDesc &desc, GLuint loc, S32 samplerNum );
+   virtual ~GFXOpenGLES20iOSShaderConstHandle();
    
    void reinit( const GFXShaderConstDesc &desc, GLuint loc, S32 samplerNum );
 
@@ -56,14 +56,14 @@ public:
    S32 getSamplerRegister() const { return mSamplerNum; }
 
    GFXShaderConstDesc mDesc;
-   GFXOpenGLESShader* mShader;
+   GFXOpenGLES20iOSShader* mShader;
    GLuint mLocation;
    U32 mOffset;
    U32 mSize;  
    S32 mSamplerNum; 
 };
 
-GFXOpenGLESShaderConstHandle::GFXOpenGLESShaderConstHandle( GFXOpenGLESShader *shader )
+GFXOpenGLES20iOSShaderConstHandle::GFXOpenGLES20iOSShaderConstHandle( GFXOpenGLES20iOSShader *shader )
  : mShader( shader ), mSamplerNum(-1)
 {
    mValid = false;
@@ -99,13 +99,13 @@ static U32 shaderConstTypeSize(GFXShaderConstType type)
    }
 }
 
-GFXOpenGLESShaderConstHandle::GFXOpenGLESShaderConstHandle( GFXOpenGLESShader *shader, const GFXShaderConstDesc &desc, GLuint loc, S32 samplerNum ) 
+GFXOpenGLES20iOSShaderConstHandle::GFXOpenGLES20iOSShaderConstHandle( GFXOpenGLES20iOSShader *shader, const GFXShaderConstDesc &desc, GLuint loc, S32 samplerNum ) 
  : mShader(shader)
 {
    reinit(desc, loc, samplerNum);
 }
 
-void GFXOpenGLESShaderConstHandle::reinit( const GFXShaderConstDesc& desc, GLuint loc, S32 samplerNum )
+void GFXOpenGLES20iOSShaderConstHandle::reinit( const GFXShaderConstDesc& desc, GLuint loc, S32 samplerNum )
 {
    mDesc = desc;
    mLocation = loc;
@@ -113,32 +113,32 @@ void GFXOpenGLESShaderConstHandle::reinit( const GFXShaderConstDesc& desc, GLuin
    mOffset = 0;
    
    U32 elemSize = shaderConstTypeSize(mDesc.constType);
-   AssertFatal(elemSize, "GFXOpenGLESShaderConst::GFXOpenGLESShaderConst - elemSize is 0");
+   AssertFatal(elemSize, "GFXOpenGLES20iOSShaderConst::GFXOpenGLES20iOSShaderConst - elemSize is 0");
    mSize = mDesc.arraySize * elemSize;
    mValid = true;
 }
 
 
-U32 GFXOpenGLESShaderConstHandle::getSize() const
+U32 GFXOpenGLES20iOSShaderConstHandle::getSize() const
 {
    return mSize;
 }
 
-GFXOpenGLESShaderConstHandle::~GFXOpenGLESShaderConstHandle()
+GFXOpenGLES20iOSShaderConstHandle::~GFXOpenGLES20iOSShaderConstHandle()
 {
 }
 
-GFXOpenGLESShaderConstBuffer::GFXOpenGLESShaderConstBuffer(GFXOpenGLESShader* shader, U32 bufSize, U8* existingConstants):
-                            GFXOpenGLShaderConstBuffer(shader, bufSize, existingConstants)
+GFXOpenGLES20iOSShaderConstBuffer::GFXOpenGLES20iOSShaderConstBuffer(GFXOpenGLES20iOSShader* shader, U32 bufSize, U8* existingConstants):
+                            GFXOpenGLES20ShaderConstBuffer(shader, bufSize, existingConstants)
 {
 }
 
-GFXOpenGLESShaderConstBuffer::~GFXOpenGLESShaderConstBuffer()
+GFXOpenGLES20iOSShaderConstBuffer::~GFXOpenGLES20iOSShaderConstBuffer()
 {
 }
 
 
-bool GFXOpenGLESShader::_init()
+bool GFXOpenGLES20iOSShader::_init()
 {
    // Don't initialize empty shaders.
    if ( mVertexFile == StringTable->EmptyString || mPixelFile == StringTable->EmptyString )
@@ -197,7 +197,7 @@ bool GFXOpenGLESShader::_init()
       {
          if ( smLogErrors )
          {
-            Con::errorf( "GFXOpenGLESShader::init - Error linking shader!" );
+            Con::errorf( "GFXOpenGLES20iOSShader::init - Error linking shader!" );
             Con::errorf( "Program %s / %s: %s", 
                 mVertexFile, mPixelFile, log);
          }
@@ -221,12 +221,12 @@ bool GFXOpenGLESShader::_init()
    // to worry about unnecessarily calling.
    Vector<GFXShaderConstBuffer*>::iterator biter = mActiveBuffers.begin();
    for ( ; biter != mActiveBuffers.end(); biter++ )   
-      ((GFXOpenGLESShaderConstBuffer*)(*biter))->onShaderReload( this );
+      ((GFXOpenGLES20iOSShaderConstBuffer*)(*biter))->onShaderReload( this );
    
    return true;
 }
 
-bool GFXOpenGLESShader::_loadShaderFromStream(  GLuint shader,
+bool GFXOpenGLES20iOSShader::_loadShaderFromStream(  GLuint shader,
                                             const StringTableEntry path,
                                             FileStream* s,
                                             const Vector<GFXShaderMacro>& macros )
@@ -271,7 +271,7 @@ bool GFXOpenGLESShader::_loadShaderFromStream(  GLuint shader,
     return true;
 }
 
-bool GFXOpenGLESShader::initShader( const StringTableEntry file,
+bool GFXOpenGLES20iOSShader::initShader( const StringTableEntry file,
                                  bool isVertex,
                                  const Vector<GFXShaderMacro> &macros )
 {

@@ -3,21 +3,21 @@
 // Copyright GarageGames, LLC 2011
 //-----------------------------------------------------------------------------
 
-#ifndef _GFXOpenGLESShader_H_
-#define _GFXOpenGLESShader_H_
+#ifndef _GFXOpenGLES20iOSShader_H_
+#define _GFXOpenGLES20iOSShader_H_
 
-#include "graphics/OpenGL/gfxOpenGLShader.h"
+#include "graphics/OpenGL/ES20/gfxOpenGLES20Shader.h"
 
 class GFXOpenGLESShaderConstHandle;
 class FileStream;
 class GFXOpenGLESShaderConstBuffer;
 
-class GFXOpenGLESShader : public GFXOpenGLShader
+class GFXOpenGLES20iOSShader : public GFXOpenGLES20Shader
 {
    typedef HashMap<String, GFXOpenGLESShaderConstHandle*> HandleMap;
 public:
-   GFXOpenGLESShader() {};
-    virtual ~GFXOpenGLESShader() {};
+   GFXOpenGLES20iOSShader() {};
+    virtual ~GFXOpenGLES20iOSShader() {};
    
 protected:
 
@@ -38,11 +38,11 @@ protected:
     Vector<U32> mAttributes;
 };
 
-class GFXOpenGLESShaderConstBuffer : public GFXOpenGLShaderConstBuffer
+class GFXOpenGLES20iOSShaderConstBuffer : public GFXOpenGLES20ShaderConstBuffer
 {
 public:
-   GFXOpenGLESShaderConstBuffer(GFXOpenGLESShader* shader, U32 bufSize, U8* existingConstants);
-   ~GFXOpenGLESShaderConstBuffer();
+   GFXOpenGLES20iOSShaderConstBuffer(GFXOpenGLES20iOSShader* shader, U32 bufSize, U8* existingConstants);
+   ~GFXOpenGLES20iOSShaderConstBuffer();
    
    // GFXShaderConstBuffer
    virtual GFXShader* getShader() { return mShader; }
@@ -73,8 +73,8 @@ public:
 
 private:
 
-   friend class GFXOpenGLESShader;
-   WeakRefPtr<GFXOpenGLESShader> mShader;
+   friend class GFXOpenGLES20iOSShader;
+   WeakRefPtr<GFXOpenGLES20iOSShader> mShader;
     
    
 //   template<typename ConstType>

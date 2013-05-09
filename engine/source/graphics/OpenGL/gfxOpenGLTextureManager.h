@@ -27,14 +27,12 @@
 #include "graphics/gfxTextureManager.h"
 #include "./gfxOpenGLTextureObject.h"
 
-@class NSOpenGLContext;
-
 class GFXOpenGLTextureManager : public GFXTextureManager
 {   
 public:
     typedef GFXTextureManager Parent;
     
-   GFXOpenGLTextureManager(NSOpenGLContext* mContext);
+   GFXOpenGLTextureManager();
    ~GFXOpenGLTextureManager();
    
 protected:
@@ -90,8 +88,6 @@ private:
    void innerCreateTexture(GFXOpenGLTextureObject *obj, U32 height, U32 width, U32 depth, GFXFormat format, GFXTextureProfile *profile, U32 numMipLevels, bool forceMips = false);
 
    void handleTextureCallback(void *textureInfo);
-    
-    NSOpenGLContext* mContext;
     // t2d texture mananger
 public:
     bool mDGLRender;

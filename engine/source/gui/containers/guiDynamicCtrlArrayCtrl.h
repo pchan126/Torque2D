@@ -42,6 +42,8 @@ public:
     
     DECLARE_CONOBJECT(GuiDynamicCtrlArrayControl);
     
+    void updateChildControls();
+
     // ConsoleObject
     static void initPersistFields();
     

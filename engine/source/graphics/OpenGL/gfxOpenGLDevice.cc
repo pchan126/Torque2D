@@ -23,12 +23,19 @@
 #include "platform/platform.h"
 #include "./gfxOpenGLDevice.h"
 #include "./gfxOpenGLEnumTranslate.h"
-
+#include "./gfxOpenGLTextureObject.h"
+#include "./gfxOpenGLVertexBuffer.h"
 
 GFXOpenGLDevice::GFXOpenGLDevice( U32 adapterIndex ) :
             currentCullMode(GFXCullNone),
-            mIsBlending( false )
+            mIsBlending( false ),
+            mMaxShaderTextures(2),
+            m_mCurrentView(true),
+            mClip(0, 0, 0, 0),
+            mPixelShaderVersion(0.0f)
 {
+    m_WorldStack.push_back(MatrixF(true));
+    m_ProjectionStack.push_back(MatrixF(true));
 }
 
 
@@ -156,7 +163,7 @@ void GFXOpenGLDevice::drawIndexedPrimitive(   GFXPrimitiveType primType,
 
 void GFXOpenGLDevice::setClipRect( const RectI &inRect )
 {
-    AssertFatal(mCurrentRT.isValid(), "GFXOpenGLESDevice::setClipRect - must have a render target set to do any rendering operations!");
+    AssertFatal(mCurrentRT.isValid(), "GFXOpenGLDevice::setClipRect - must have a render target set to do any rendering operations!");
     
     // Clip the rect against the renderable size.
     Point2I size = mCurrentRT->getSize();
@@ -240,6 +247,403 @@ void GFXOpenGLDevice::setLightMaterialInternal(const GFXLightMaterial mat)
 void GFXOpenGLDevice::setGlobalAmbientInternal(ColorF color)
 {
     //   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, (GLfloat*)&color);
+}
+
+
+const MatrixF GFXOpenGLDevice::getMatrix( GFXMatrixType mtype )
+{
+    MatrixF ret = MatrixF(true);
+    switch (mtype)
+    {
+        case GFXMatrixWorld :
+        {
+            return m_WorldStack.last();
+        }
+            break;
+        case GFXMatrixView :
+        {
+            return m_mCurrentView;
+        }
+            break;
+        case GFXMatrixProjection :
+        {
+            return m_ProjectionStack.last();
+        }
+            break;
+            // CodeReview - Add support for texture transform matrix types
+        default:
+            AssertFatal(false, "GFXOpenGLES20iOSDevice::setMatrix - Unknown matrix mode!");
+    }
+    return ret;
+}
+
+void GFXOpenGLDevice::setMatrix( GFXMatrixType mtype, const MatrixF &mat )
+{
+    switch (mtype)
+    {
+        case GFXMatrixWorld :
+        {
+            m_WorldStack.last() = mat;
+        }
+            break;
+        case GFXMatrixView :
+        {
+            m_mCurrentView = mat;
+        }
+            break;
+        case GFXMatrixProjection :
+        {
+            m_ProjectionStack.last() = mat;
+        }
+            break;
+            // CodeReview - Add support for texture transform matrix types
+        default:
+            AssertFatal(false, "GFXOpenGL32Device::setMatrix - Unknown matrix mode!");
+            return;
+    }
+}
+
+void GFXOpenGLDevice::setShader( GFXShader *shader )
+{
+    GFXOpenGLShader* iOSShader = dynamic_cast<GFXOpenGLShader*>(shader);
+    if ( shader )
+    {
+        if (shader != mpCurrentShader)
+        {
+            mpCurrentShader = iOSShader;
+            iOSShader->useProgram();
+        }
+    }
+    else
+    {
+        mpCurrentShader = NULL;
+        glUseProgram(0);
+    }
+}
+
+void GFXOpenGLDevice::disableShaders()
+{
+}
+
+GFXFormat GFXOpenGLDevice::selectSupportedFormat(   GFXTextureProfile* profile,
+                                                        const Vector<GFXFormat>& formats,
+                                                        bool texture,
+                                                        bool mustblend,
+                                                        bool mustfilter )
+{
+    for(U32 i = 0; i < formats.size(); i++)
+    {
+        // Single channel textures are not supported by FBOs.
+        if(profile->testFlag(GFXTextureProfile::RenderTarget) && (formats[i] == GFXFormatA8 || formats[i] == GFXFormatL8 || formats[i] == GFXFormatL16))
+            continue;
+        if(GFXGLTextureInternalFormat[formats[i]] == GL_ZERO)
+            continue;
+        
+        return formats[i];
+    }
+    
+    return GFXFormatR8G8B8A8;
+}
+
+
+inline void GFXOpenGLDevice::pushWorldMatrix()
+{
+    MatrixF newMatrix = m_WorldStack.last();
+    m_WorldStack.push_back(newMatrix);
+}
+
+inline void GFXOpenGLDevice::popWorldMatrix()
+{
+    m_WorldStack.pop_back();
+}
+
+inline void GFXOpenGLDevice::pushProjectionMatrix()
+{
+    MatrixF newMatrix = m_ProjectionStack.last();
+    m_ProjectionStack.push_back(newMatrix);
+}
+
+inline void GFXOpenGLDevice::popProjectionMatrix()
+{
+    m_ProjectionStack.pop_back();
+}
+
+
+inline void GFXOpenGLDevice::multWorld( const MatrixF &mat )
+{
+    MatrixF newMatrix = m_WorldStack.last();
+    newMatrix*=mat;
+    m_WorldStack.last() = newMatrix;
+}
+
+void GFXOpenGLDevice::clear(U32 flags, ColorI color, F32 z, U32 stencil)
+{
+    // Make sure we have flushed our render target state.
+    _updateRenderTargets();
+    
+    bool zwrite = true;
+    //   if (mCurrentGLStateBlock)
+    //   {
+    //      zwrite = mCurrentGLStateBlock->getDesc().zWriteEnable;
+    //   }
+    
+    glDepthMask(true);
+    
+    GLbitfield clearflags = 0;
+    clearflags |= (flags & GFXClearTarget)   ? GL_COLOR_BUFFER_BIT : 0;
+    clearflags |= (flags & GFXClearZBuffer)  ? GL_DEPTH_BUFFER_BIT : 0;
+    clearflags |= (flags & GFXClearStencil)  ? GL_STENCIL_BUFFER_BIT : 0;
+    
+    glClear(clearflags);
+    
+    ColorF c = color;
+    glClearDepthf(z);
+    glClearStencil(stencil);
+    glClearColor(c.red, c.green, c.blue, c.alpha);
+    
+    if(!zwrite)
+        glDepthMask(false);
+}
+
+void GFXOpenGLDevice::updateStates(bool forceSetAll /*=false*/)
+{
+    PROFILE_SCOPE(GFXDevice_updateStates);
+    
+    if(forceSetAll)
+    {
+        bool rememberToEndScene = false;
+        if(!canCurrentlyRender())
+        {
+            if (!beginScene())
+            {
+                AssertFatal(false, "GFXDevice::updateStates:  Unable to beginScene!");
+            }
+            rememberToEndScene = true;
+        }
+        
+        setVertexDecl( mCurrVertexDecl );
+        
+        for ( U32 i=0; i < VERTEX_STREAM_COUNT; i++ )
+        {
+            setVertexStream( i, mCurrentVertexBuffer[i] );
+        }
+        
+        /// Stateblocks
+        if ( mNewStateBlock )
+            setStateBlockInternal(mNewStateBlock, true);
+        mCurrentStateBlock = mNewStateBlock;
+        
+        for(U32 i = 0; i < getNumSamplers(); i++)
+        {
+            switch (mTexType[i])
+            {
+                case GFXTDT_Normal :
+                {
+                    mCurrentTexture[i] = mNewTexture[i];
+                    setTextureInternal(i, mCurrentTexture[i]);
+                }
+                    break;
+                    //                case GFXTDT_Cube :
+                    //                {
+                    //                    mCurrentCubemap[i] = mNewCubemap[i];
+                    //                    if (mCurrentCubemap[i])
+                    //                        mCurrentCubemap[i]->setToTexUnit(i);
+                    //                    else
+                    //                        setTextureInternal(i, NULL);
+                    //                }
+                    //                    break;
+                default:
+                    AssertFatal(false, "Unknown texture type!");
+                    break;
+            }
+        }
+        
+        //        // Set our material
+        //        setLightMaterialInternal(mCurrentLightMaterial);
+        //
+        //        // Set our lights
+        //        for(U32 i = 0; i < LIGHT_STAGE_COUNT; i++)
+        //        {
+        //            setLightInternal(i, mCurrentLight[i], mCurrentLightEnable[i]);
+        //        }
+        
+        _updateRenderTargets();
+        
+        if(rememberToEndScene)
+            endScene();
+        
+        return;
+    }
+    
+    if (!mStateDirty)
+        return;
+    
+    // Normal update logic begins here.
+    mStateDirty = false;
+    
+    // Update the vertex declaration.
+    if ( mVertexDeclDirty )
+    {
+        setVertexDecl( mCurrVertexDecl );
+        mVertexDeclDirty = false;
+    }
+    
+    // Update the vertex buffers.
+    for ( U32 i=0; i < VERTEX_STREAM_COUNT; i++ )
+    {
+        if ( mVertexBufferDirty[i] )
+        {
+            setVertexStream( i, mCurrentVertexBuffer[i] );
+            mVertexBufferDirty[i] = false;
+        }
+        
+        if ( mVertexBufferFrequencyDirty[i] )
+        {
+            mVertexBufferFrequencyDirty[i] = false;
+        }
+    }
+    
+    // NOTE: With state blocks, it's now important to update state before setting textures
+    // some devices (e.g. OpenGL) set states on the texture and we need that information before
+    // the texture is activated.
+    if (mStateBlockDirty)
+    {
+        setStateBlockInternal(mNewStateBlock, false);
+        mCurrentStateBlock = mNewStateBlock;
+        mStateBlockDirty = false;
+    }
+    
+    if( mTexturesDirty )
+    {
+        mTexturesDirty = false;
+        for(U32 i = 0; i < getNumSamplers(); i++)
+        {
+            if(!mTextureDirty[i])
+                continue;
+            mTextureDirty[i] = false;
+            
+            switch (mTexType[i])
+            {
+                case GFXTDT_Normal :
+                {
+                    mCurrentTexture[i] = mNewTexture[i];
+                    setTextureInternal(i, mCurrentTexture[i]);
+                }
+                    break;
+                    //                case GFXTDT_Cube :
+                    //                {
+                    //                    mCurrentCubemap[i] = mNewCubemap[i];
+                    //                    if (mCurrentCubemap[i])
+                    //                        mCurrentCubemap[i]->setToTexUnit(i);
+                    //                    else
+                    //                        setTextureInternal(i, NULL);
+                    //                }
+                    //                    break;
+                default:
+                    AssertFatal(false, "Unknown texture type!");
+                    break;
+            }
+        }
+    }
+    
+    //    // Set light material
+    //    if(mLightMaterialDirty)
+    //    {
+    //        setLightMaterialInternal(mCurrentLightMaterial);
+    //        mLightMaterialDirty = false;
+    //    }
+    //
+    //    // Set our lights
+    //    if(mLightsDirty)
+    //    {
+    //        mLightsDirty = false;
+    //        for(U32 i = 0; i < LIGHT_STAGE_COUNT; i++)
+    //        {
+    //            if(!mLightDirty[i])
+    //                continue;
+    //            
+    //            mLightDirty[i] = false;
+    //            setLightInternal(i, mCurrentLight[i], mCurrentLightEnable[i]);
+    //        }
+    //    }
+    
+    _updateRenderTargets();
+    
+#ifdef TORQUE_DEBUG_RENDER
+    doParanoidStateCheck();
+#endif
+}
+
+/// Creates a state block object based on the desc passed in.  This object
+/// represents an immutable state.
+GFXStateBlockRef GFXOpenGLDevice::createStateBlockInternal(const GFXStateBlockDesc& desc)
+{
+    GFXOpenGLStateBlockRef ret = new GFXOpenGLStateBlock(desc);
+    ret->setView(getMatrix(GFXMatrixView));
+    ret->setModel(getMatrix(GFXMatrixWorld));
+    ret->setProjection(getMatrix(GFXMatrixProjection));
+    return GFXStateBlockRef(ret);
+}
+
+/// Activates a stateblock
+void GFXOpenGLDevice::setStateBlockInternal(GFXStateBlock* block, bool force)
+{
+    AssertFatal(dynamic_cast<GFXOpenGLStateBlock*>(block), "GFXOpenGLES20iOSDevice::setStateBlockInternal - Incorrect stateblock type for this device!");
+    GFXOpenGLStateBlock* glBlock = static_cast<GFXOpenGLStateBlock*>(block);
+    GFXOpenGLStateBlock* glCurrent = static_cast<GFXOpenGLStateBlock*>(mCurrentStateBlock.getPointer());
+    if (force)
+        glCurrent = NULL;
+    
+    glBlock->activate(glCurrent); // Doesn't use current yet.
+    mCurrentGLStateBlock = glBlock;
+}
+
+void GFXOpenGLDevice::setShaderConstBufferInternal(GFXShaderConstBuffer* buffer)
+{
+    static_cast<GFXOpenGLShaderConstBuffer*>(buffer)->activate();
+}
+
+void GFXOpenGLDevice::setTextureInternal(U32 textureUnit, const GFXTextureObject*texture)
+{
+    const GFXOpenGLTextureObject *tex = static_cast<const GFXOpenGLTextureObject*>(texture);
+    if (tex)
+    {
+        // GFXOpenGLES20iOSTextureObject::bind also handles applying the current sampler state.
+        if(mActiveTextureType[textureUnit] != tex->getBinding() && mActiveTextureType[textureUnit] != GL_ZERO)
+        {
+            glActiveTexture(GL_TEXTURE0 + textureUnit);
+            glBindTexture(mActiveTextureType[textureUnit], GL_ZERO);
+        }
+        mActiveTextureType[textureUnit] = tex->getBinding();
+        tex->bind(textureUnit);
+    }
+    else if(mActiveTextureType[textureUnit] != GL_ZERO)
+    {
+        glActiveTexture(GL_TEXTURE0 + textureUnit);
+        glBindTexture(mActiveTextureType[textureUnit], GL_ZERO);
+        mActiveTextureType[textureUnit] = GL_ZERO;
+    }
+    glActiveTexture(GL_TEXTURE0);
+}
+
+void GFXOpenGLDevice::setVertexStream( U32 stream, GFXVertexBuffer *buffer )
+{
+    if (stream > 0) return;
+    
+    AssertFatal( stream == 0, "GFXOpenGLES20Device::setVertexStream - We don't support multiple vertex streams!" );
+    
+    // Reset the state the old VB required, then set the state the new VB requires.
+    if ( mCurrentVB )
+        mCurrentVB->finish();
+    
+    mCurrentVB = static_cast<GFXOpenGLVertexBuffer*>( buffer );
+    if ( mCurrentVB )
+        mCurrentVB->prepare();
+}
+
+void GFXOpenGLDevice::_handleTextureLoaded(GFXTexNotifyCode code)
+{
+    mTexturesDirty = true;
 }
 
 //-----------------------------------------------------------------------------

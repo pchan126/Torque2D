@@ -63,11 +63,15 @@ public:
    virtual void _updateRenderTargets() = 0;
 
    ///@}
+    GFXOpenGLShader* mpCurrentShader;
+    GFXOpenGLShader* mGenericShader[5];
 
+    virtual void setShader(GFXShader* shd);
+    virtual void disableShaders(); ///< Equivalent to setShader(NULL)
    
    /// @attention GL cannot check if the given format supports blending or filtering!
    virtual GFXFormat selectSupportedFormat(GFXTextureProfile *profile,
-                                           const Vector<GFXFormat> &formats, bool texture, bool mustblend, bool mustfilter) = 0;;
+                                           const Vector<GFXFormat> &formats, bool texture, bool mustblend, bool mustfilter);
     
    /// Returns the number of texture samplers that can be used in a shader rendering pass
     virtual U32 getNumSamplers() const { return mMaxShaderTextures; }
@@ -75,9 +79,7 @@ public:
    /// Returns the number of simultaneous render targets supported by the device.
     virtual U32 getNumRenderTargets() const { return 1; };
 
-   virtual GFXOpenGLShader* createShader() = 0;
-    
-   virtual void clear( U32 flags, ColorI color, F32 z, U32 stencil ) = 0;
+   virtual void clear( U32 flags, ColorI color, F32 z, U32 stencil );
    virtual bool beginSceneInternal();
    virtual void endSceneInternal();
 
@@ -98,7 +100,7 @@ public:
    virtual U32 getMaxDynamicVerts() { return MAX_DYNAMIC_VERTS; }
    virtual U32 getMaxDynamicIndices() { return MAX_DYNAMIC_INDICES; }
    
-   virtual void updateStates(bool forceSetAll = false) =0;
+   virtual void updateStates(bool forceSetAll = false);
     
    virtual void setupGenericShaders( GenericShaderType type = GSColor ) = 0;
    
@@ -108,20 +110,39 @@ public:
 
     virtual void setCullMode( GFXCullMode );
     virtual void setBlending( bool DoesItBlend );
+
+    typedef Vector<MatrixF> MatrixStack;
+    
+    /// Since GL does not have separate world and view matrices we need to track them
+    MatrixF m_mCurrentView;
+    MatrixStack m_WorldStack;
+    MatrixStack m_ProjectionStack;
+    
+    virtual void pushWorldMatrix();
+    virtual void popWorldMatrix();
+    virtual void pushProjectionMatrix();
+    virtual void popProjectionMatrix();
+    
+    virtual void multWorld( const MatrixF &mat );
+
+    virtual F32 getPixelShaderVersion() const { return mPixelShaderVersion; }
+    virtual void  setPixelShaderVersion( F32 version ) { mPixelShaderVersion = version; }
+    
+    const GFXOpenGLStateBlockRef getCurrentStateBlock() { return mCurrentGLStateBlock;};
 protected:
 
    virtual void preDrawPrimitive();
     void postDrawPrimitive(U32 primitiveCount);
 
     /// Called by GFXDevice to create a device specific stateblock
-   virtual GFXStateBlockRef createStateBlockInternal(const GFXStateBlockDesc& desc) = 0;
+   virtual GFXStateBlockRef createStateBlockInternal(const GFXStateBlockDesc& desc);
    /// Called by GFXDevice to actually set a stateblock.
-   virtual void setStateBlockInternal(GFXStateBlock* block, bool force) = 0;
+   virtual void setStateBlockInternal(GFXStateBlock* block, bool force);
 
    /// Called by base GFXDevice to actually set a const buffer
-   virtual void setShaderConstBufferInternal(GFXShaderConstBuffer* buffer) = 0;
+   virtual void setShaderConstBufferInternal(GFXShaderConstBuffer* buffer);
 
-   virtual void setTextureInternal(U32 textureUnit, const GFXTextureObject* texture) = 0;
+   virtual void setTextureInternal(U32 textureUnit, const GFXTextureObject* texture);
 //   virtual void setCubemapInternal(U32 cubemap, const GFXOpenGLCubemap* texture);
 
    virtual void setLightInternal(U32 lightStage, const GFXLightInfo light, bool lightEnable);
@@ -135,8 +156,8 @@ protected:
    /// is created.
     virtual void initStates() = 0;
 
-   virtual void setMatrix( GFXMatrixType mtype, const MatrixF &mat ) = 0;
-   virtual const MatrixF getMatrix (GFXMatrixType mtype ) = 0;
+   virtual const MatrixF getMatrix( GFXMatrixType mtype );
+   virtual void setMatrix( GFXMatrixType mtype, const MatrixF &mat );
 
    virtual inline const MatrixF getWorldMatrix() { return getMatrix(GFXMatrixWorld);};
    virtual inline const MatrixF getProjectionMatrix() { return getMatrix(GFXMatrixProjection);};
@@ -162,10 +183,12 @@ protected:
 
    virtual void setVertexDecl( const GFXVertexDecl *decl ) { }
 
-    virtual void setVertexStream( U32 stream, GFXVertexBuffer *buffer ) {};
+    virtual void setVertexStream( U32 stream, GFXVertexBuffer *buffer );
 
     GFXCullMode currentCullMode;
+    U32 mMaxShaderTextures;
 
+    void _handleTextureLoaded(GFXTexNotifyCode code);
 private:
    typedef GFXDevice Parent;
    
@@ -180,24 +203,11 @@ private:
    
    StrongRefPtr<GFXOpenGLVertexBuffer> mCurrentVB;
     
-    /// Pushes the world matrix stack and copies the current top
-    /// matrix to the new top of the stack
-    virtual void pushWorldMatrix() = 0;
-    
-    /// Pops the world matrix stack
-    virtual void popWorldMatrix() = 0;
-    
-    virtual void multWorld( const MatrixF &mat ) = 0;
-
    F32 mPixelShaderVersion;
-   
-   bool mSupportsAnisotropic;
+    bool mSupportsAnisotropic;
    bool mIsBlending;
-   
-    U32 mMaxShaderTextures;
     U32 mMaxFFTextures;
-
-   RectI mClip;
+    RectI mClip;
 
    GFXOpenGLStateBlockRef mCurrentGLStateBlock;
    

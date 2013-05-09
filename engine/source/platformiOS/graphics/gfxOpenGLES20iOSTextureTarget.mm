@@ -4,23 +4,23 @@
 //-----------------------------------------------------------------------------
 
 #include "console/console.h"
-#include "platformiOS/graphics/gfxOpenGLESDevice.h"
-#include "platformiOS/graphics/gfxOpenGLESTextureTarget.h"
-#include "platformiOS/graphics/gfxOpenGLESTextureObject.h"
-//#include "platformiOS/graphics/gfxOpenGLESCubemap.h"
+#include "./gfxOpenGLES20iOSDevice.h"
+#include "./gfxOpenGLES20iOSTextureTarget.h"
+#include "./gfxOpenGLES20iOSTextureObject.h"
+//#include "./gfxOpenGLES20iOSCubemap.h"
 #include "graphics/gfxTextureManager.h"
-#include "platformiOS/graphics/gfxOpenGLESUtils.h"
+#include "./gfxOpenGLES20iOSUtils.h"
 
 /// Internal struct used to track 2D/Rect texture information for FBO attachment
-class _GFXOpenGLESTextureTargetDesc : public _GFXOpenGLESTargetDesc
+class _GFXOpenGLES20iOSTextureTargetDesc : public _GFXOpenGLES20iOSTargetDesc
 {
 public:
-   _GFXOpenGLESTextureTargetDesc(GFXOpenGLESTextureObject* tex, U32 _mipLevel, U32 _zOffset) 
-      : _GFXOpenGLESTargetDesc(_mipLevel, _zOffset), mTex(tex)
+   _GFXOpenGLES20iOSTextureTargetDesc(GFXOpenGLES20iOSTextureObject* tex, U32 _mipLevel, U32 _zOffset) 
+      : _GFXOpenGLES20iOSTargetDesc(_mipLevel, _zOffset), mTex(tex)
    {
    }
    
-   virtual ~_GFXOpenGLESTextureTargetDesc() {}
+   virtual ~_GFXOpenGLES20iOSTextureTargetDesc() {}
    
    virtual U32 getHandle() { return mTex->getHandle(); }
    virtual U32 getWidth() { return mTex->getWidth(); }
@@ -30,29 +30,29 @@ public:
    virtual GLenum getBinding() { return mTex->getBinding(); }
    
 private:
-   StrongRefPtr<GFXOpenGLESTextureObject> mTex;
+   StrongRefPtr<GFXOpenGLES20iOSTextureObject> mTex;
 };
 //
 ///// Internal struct used to track Cubemap texture information for FBO attachment
-//class _GFXOpenGLESCubemapTargetDesc : public _GFXOpenGLESTargetDesc
+//class _GFXOpenGLES20iOSCubemapTargetDesc : public _GFXOpenGLES20iOSTargetDesc
 //{
 //public:
-//   _GFXOpenGLESCubemapTargetDesc(GFXOpenGLESCubemap* tex, U32 _face, U32 _mipLevel, U32 _zOffset) 
-//      : _GFXOpenGLESTargetDesc(_mipLevel, _zOffset), mTex(tex), mFace(_face)
+//   _GFXOpenGLES20iOSCubemapTargetDesc(gfxOpenGLES20iOSCubemap* tex, U32 _face, U32 _mipLevel, U32 _zOffset) 
+//      : _GFXOpenGLES20iOSTargetDesc(_mipLevel, _zOffset), mTex(tex), mFace(_face)
 //   {
 //   }
 //   
-//   virtual ~_GFXOpenGLESCubemapTargetDesc() {}
+//   virtual ~_GFXOpenGLES20iOSCubemapTargetDesc() {}
 //   
 //   virtual U32 getHandle() { return mTex->getHandle(); }
 //   virtual U32 getWidth() { return mTex->getWidth(); }
 //   virtual U32 getHeight() { return mTex->getHeight(); }
 //   virtual U32 getDepth() { return 0; }
 //   virtual bool hasMips() { return mTex->getNumMipLevels() != 1; }
-//   virtual GLenum getBinding() { return GFXOpenGLESCubemap::getEnumForFaceNumber(mFace); }
+//   virtual GLenum getBinding() { return gfxOpenGLES20iOSCubemap::getEnumForFaceNumber(mFace); }
 //   
 //private:
-//   StrongRefPtr<GFXOpenGLESCubemap> mTex;
+//   StrongRefPtr<gfxOpenGLES20iOSCubemap> mTex;
 //   U32 mFace;
 //};
 
@@ -83,23 +83,23 @@ AssertFatal(false, "Something really bad happened with an FBO");\
 }\
 }
 
-_GFXOpenGLESTextureTargetFBOImpl::_GFXOpenGLESTextureTargetFBOImpl(GFXOpenGLESTextureTarget* target)
+_GFXOpenGLES20iOSTextureTargetFBOImpl::_GFXOpenGLES20iOSTextureTargetFBOImpl(GFXOpenGLES20iOSTextureTarget* target)
 {
     glGenFramebuffers(1, &mFramebuffer);
 }
 
-_GFXOpenGLESTextureTargetFBOImpl::~_GFXOpenGLESTextureTargetFBOImpl()
+_GFXOpenGLES20iOSTextureTargetFBOImpl::~_GFXOpenGLES20iOSTextureTargetFBOImpl()
 {
    glDeleteFramebuffers(1, &mFramebuffer);
 }
 
-void _GFXOpenGLESTextureTargetFBOImpl::applyState()
+void _GFXOpenGLES20iOSTextureTargetFBOImpl::applyState()
 {
     // REMINDER: When we implement MRT support, check against GFXGLDevice::getNumRenderTargets()
     
     glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
     
-    _GFXOpenGLESTargetDesc* color0 = mTarget->getTargetDesc(GFXTextureTarget::Color0);
+    _GFXOpenGLES20iOSTargetDesc* color0 = mTarget->getTargetDesc(GFXTextureTarget::Color0);
     if(color0)
     {
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, color0->getBinding(), color0->getHandle(), color0->getMipLevel());
@@ -110,7 +110,7 @@ void _GFXOpenGLESTextureTargetFBOImpl::applyState()
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
     }
     
-    _GFXOpenGLESTargetDesc* depthStencil = mTarget->getTargetDesc(GFXTextureTarget::DepthStencil);
+    _GFXOpenGLES20iOSTargetDesc* depthStencil = mTarget->getTargetDesc(GFXTextureTarget::DepthStencil);
     if(depthStencil)
     {
         // Certain drivers have issues with depth only FBOs.  That and the next two asserts assume we have a color target.
@@ -128,16 +128,16 @@ void _GFXOpenGLESTextureTargetFBOImpl::applyState()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void _GFXOpenGLESTextureTargetFBOImpl::makeActive()
+void _GFXOpenGLES20iOSTextureTargetFBOImpl::makeActive()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
 }
 
-void _GFXOpenGLESTextureTargetFBOImpl::finish()
+void _GFXOpenGLES20iOSTextureTargetFBOImpl::finish()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     
-    _GFXOpenGLESTargetDesc* color0 = mTarget->getTargetDesc(GFXTextureTarget::Color0);
+    _GFXOpenGLES20iOSTargetDesc* color0 = mTarget->getTargetDesc(GFXTextureTarget::Color0);
     if(!color0 || !(color0->hasMips()))
         return;
     
@@ -150,24 +150,24 @@ void _GFXOpenGLESTextureTargetFBOImpl::finish()
 }
 
 
-// Actual GFXOpenGLESTextureTarget interface
-GFXOpenGLESTextureTarget::GFXOpenGLESTextureTarget()
+// Actual GFXOpenGLES20iOSTextureObject interface
+GFXOpenGLES20iOSTextureTarget::GFXOpenGLES20iOSTextureTarget()
 {
    for(U32 i=0; i<MaxRenderSlotId; i++)
       mTargets[i] = NULL;
    
-//   GFXTextureManager::addEventDelegate( this, &GFXOpenGLESTextureTarget::_onTextureEvent );
+//   GFXTextureManager::addEventDelegate( this, &GFXOpenGLES20iOSTextureObject::_onTextureEvent );
 
-   _impl = new _GFXOpenGLESTextureTargetFBOImpl(this);
+   _impl = new _GFXOpenGLES20iOSTextureTargetFBOImpl(this);
    _needsAux = false;
 }
 
-GFXOpenGLESTextureTarget::~GFXOpenGLESTextureTarget()
+GFXOpenGLES20iOSTextureTarget::~GFXOpenGLES20iOSTextureTarget()
 {
-//   GFXTextureManager::removeEventDelegate( this, &GFXOpenGLESTextureTarget::_onTextureEvent );
+//   GFXTextureManager::removeEventDelegate( this, &GFXOpenGLES20iOSTextureObject::_onTextureEvent );
 }
 
-const Point2I GFXOpenGLESTextureTarget::getSize()
+const Point2I GFXOpenGLES20iOSTextureTarget::getSize()
 {
    if(mTargets[Color0].isValid())
       return Point2I(mTargets[Color0]->getWidth(), mTargets[Color0]->getHeight());
@@ -175,13 +175,13 @@ const Point2I GFXOpenGLESTextureTarget::getSize()
    return Point2I(0, 0);
 }
 
-GFXFormat GFXOpenGLESTextureTarget::getFormat()
+GFXFormat GFXOpenGLES20iOSTextureTarget::getFormat()
 {
    // TODO: Fix me!
    return GFXFormatR8G8B8A8;
 }
 
-void GFXOpenGLESTextureTarget::attachTexture( RenderSlot slot, GFXTextureObject *tex, U32 mipLevel/*=0*/, U32 zOffset /*= 0*/ )
+void GFXOpenGLES20iOSTextureTarget::attachTexture( RenderSlot slot, GFXTextureObject *tex, U32 mipLevel/*=0*/, U32 zOffset /*= 0*/ )
 {
    // GFXTextureTarget::sDefaultDepthStencil is a hint that we want the window's depth buffer.
    if(tex == GFXTextureTarget::sDefaultDepthStencil)
@@ -194,39 +194,39 @@ void GFXOpenGLESTextureTarget::attachTexture( RenderSlot slot, GFXTextureObject 
    invalidateState();
 
    // We stash the texture and info into an internal struct.
-   GFXOpenGLESTextureObject* glTexture = static_cast<GFXOpenGLESTextureObject*>(tex);
+   GFXOpenGLES20iOSTextureObject* glTexture = static_cast<GFXOpenGLES20iOSTextureObject*>(tex);
    if(tex && tex != GFXTextureTarget::sDefaultDepthStencil)
-      mTargets[slot] = new _GFXOpenGLESTextureTargetDesc(glTexture, mipLevel, zOffset);
+      mTargets[slot] = new _GFXOpenGLES20iOSTextureTargetDesc(glTexture, mipLevel, zOffset);
    else
       mTargets[slot] = NULL;
 }
 
-void GFXOpenGLESTextureTarget::attachTexture( RenderSlot slot, GFXCubemap *tex, U32 face, U32 mipLevel/*=0*/ )
-{
-   // No depth cubemaps, sorry
-   AssertFatal(slot != DepthStencil, "GFXOpenGLESTextureTarget::attachTexture (cube) - Cube depth textures not supported!");
-   if(slot == DepthStencil)
-      return;
-    
-   // Triggers an update when we next render
-   invalidateState();
-   
-//   // We stash the texture and info into an internal struct.
-//   GFXOpenGLESCubemap* glTexture = static_cast<GFXOpenGLESCubemap*>(tex);
-//    if(tex)
-//      mTargets[slot] = new _GFXOpenGLESCubemapTargetDesc(glTexture, face, mipLevel, 0);
-//   else
-      mTargets[slot] = NULL;
-}
+//void GFXOpenGLES20iOSTextureTarget::attachTexture( RenderSlot slot, GFXCubemap *tex, U32 face, U32 mipLevel/*=0*/ )
+//{
+//   // No depth cubemaps, sorry
+//   AssertFatal(slot != DepthStencil, "GFXOpenGLES20iOSTextureObject::attachTexture (cube) - Cube depth textures not supported!");
+//   if(slot == DepthStencil)
+//      return;
+//    
+//   // Triggers an update when we next render
+//   invalidateState();
+//   
+////   // We stash the texture and info into an internal struct.
+////   gfxOpenGLES20iOSCubemap* glTexture = static_cast<gfxOpenGLES20iOSCubemap*>(tex);
+////    if(tex)
+////      mTargets[slot] = new _GFXOpenGLES20iOSCubemapTargetDesc(glTexture, face, mipLevel, 0);
+////   else
+//      mTargets[slot] = NULL;
+//}
 
-void GFXOpenGLESTextureTarget::clearAttachments()
+void GFXOpenGLES20iOSTextureTarget::clearAttachments()
 {
    deactivate();
    for(S32 i=1; i<MaxRenderSlotId; i++)
       attachTexture((RenderSlot)i, NULL);
 }
 
-void GFXOpenGLESTextureTarget::zombify()
+void GFXOpenGLES20iOSTextureTarget::zombify()
 {
    invalidateState();
    
@@ -234,22 +234,22 @@ void GFXOpenGLESTextureTarget::zombify()
    _impl = NULL;
 }
 
-void GFXOpenGLESTextureTarget::resurrect()
+void GFXOpenGLES20iOSTextureTarget::resurrect()
 {
    // Dealt with when the target is next bound
 }
 
-void GFXOpenGLESTextureTarget::makeActive()
+void GFXOpenGLES20iOSTextureTarget::makeActive()
 {
    _impl->makeActive();
 }
 
-void GFXOpenGLESTextureTarget::deactivate()
+void GFXOpenGLES20iOSTextureTarget::deactivate()
 {
    _impl->finish();
 }
 
-void GFXOpenGLESTextureTarget::applyState()
+void GFXOpenGLES20iOSTextureTarget::applyState()
 {
    if(!isPendingState())
       return;
@@ -257,23 +257,23 @@ void GFXOpenGLESTextureTarget::applyState()
    // So we don't do this over and over again
    stateApplied();
    
-   _impl = new _GFXOpenGLESTextureTargetFBOImpl(this);
+   _impl = new _GFXOpenGLES20iOSTextureTargetFBOImpl(this);
            
    _impl->applyState();
 }
 
-_GFXOpenGLESTargetDesc* GFXOpenGLESTextureTarget::getTargetDesc(RenderSlot slot) const
+_GFXOpenGLES20iOSTargetDesc* GFXOpenGLES20iOSTextureTarget::getTargetDesc(RenderSlot slot) const
 {
    // This can only be called by our implementations, and then will not actually store the pointer so this is (almost) safe
    return mTargets[slot].ptr();
 }
 
-void GFXOpenGLESTextureTarget::_onTextureEvent( GFXTexCallbackCode code )
+void GFXOpenGLES20iOSTextureTarget::_onTextureEvent( GFXTexCallbackCode code )
 {
    invalidateState();
 }
 
-const String GFXOpenGLESTextureTarget::describeSelf() const
+const String GFXOpenGLES20iOSTextureTarget::describeSelf() const
 {
    String ret = String::ToString("   Color0 Attachment: %i", mTargets[Color0].isValid() ? mTargets[Color0]->getHandle() : 0);
    ret += String::ToString("   Depth Attachment: %i", mTargets[DepthStencil].isValid() ? mTargets[DepthStencil]->getHandle() : 0);
@@ -281,10 +281,10 @@ const String GFXOpenGLESTextureTarget::describeSelf() const
    return ret;
 }
 
-void GFXOpenGLESTextureTarget::resolve()
+void GFXOpenGLES20iOSTextureTarget::resolve()
 {
 }
 
-void GFXOpenGLESTextureTarget::resolveTo(GFXTextureObject* obj)
+void GFXOpenGLES20iOSTextureTarget::resolveTo(GFXTextureObject* obj)
 {
 }
