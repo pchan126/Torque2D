@@ -58,9 +58,12 @@ public:
     GFXShaderConstBufferRef mGenericShaderConst[4];
     GFXStateBlockRef mGenericShaderStateblock[4];
     
-   virtual void setupGenericShaders( GenericShaderType type = GSColor ) = 0;
+   virtual void setupGenericShaders( GenericShaderType type = GSColor );
    
    virtual void clear(U32 flags, ColorI color, F32 z, U32 stencil);
+    
+   virtual GFXShader* createShader();
+
 protected:
 
    /// @name State Initalization.
@@ -86,6 +89,9 @@ private:
    friend class GFXOpenGLES20TextureObject;
    friend class GFXOpenGLES20WindowTarget;
    friend class GFXOpenGLES20VertexBuffer;
+    
+   virtual void initGenericShaders();
+
 
 //   U32 mAdapterIndex;
 //   

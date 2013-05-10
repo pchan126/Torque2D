@@ -8,7 +8,7 @@
 
 #include "platformiOS/platformiOS.h"
 #include "platform/platformGL.h"
-#include "graphics/OpenGL/gfxOpenGLDevice.h"
+#include "graphics/OpenGL/ES20/gfxOpenGLES20Device.h"
 
 #include "graphics/gfxResource.h"
 #include "./gfxOpenGLES20IOSStateBlock.h"
@@ -21,7 +21,7 @@ class GFXOpenGLES20iOSTextureTarget;
 
 @class EAGLContext, GLKTextureLoader, GLKBaseEffect;
 
-class GFXOpenGLES20iOSDevice : public GFXOpenGLDevice
+class GFXOpenGLES20iOSDevice : public GFXOpenGLES20Device
 {
 public:
    void zombify();
@@ -89,7 +89,7 @@ public:
    /// Returns the number of simultaneous render targets supported by the device.
    virtual U32 getNumRenderTargets() const;
 
-   virtual GFXOpenGLES20iOSShader* createShader();
+   virtual GFXShader* createShader();
     
    virtual void clear( U32 flags, ColorI color, F32 z, U32 stencil );
 
@@ -212,7 +212,7 @@ private:
                                     void* indexData = 0);
    
    void initGLState(); ///< Guaranteed to be called after all extensions have been loaded, use to init card profiler, shader version, max samplers, etc.
-   void initGenericShaders();
+   virtual void initGenericShaders();
     
     virtual void preDrawPrimitive();
 };

@@ -24,18 +24,18 @@ protected:
    friend class GFXOpenGLES20ShaderConstBuffer;
    friend class GFXOpenGLES20ShaderConstHandle;
    
-//    bool _loadShaderFromStream(  GLuint shader,
-//                                      const StringTableEntry path,
-//                                      FileStream* s,
-//                                      const Vector<GFXShaderMacro>& macros );
-//
-//    virtual bool _init();
-//
-//    bool initShader(  const StringTableEntry file,
-//                    bool isVertex,
-//                    const Vector<GFXShaderMacro> &macros ) ;
-//
-//    Vector<U32> mAttributes;
+    bool _loadShaderFromStream(  GLuint shader,
+                                      const StringTableEntry path,
+                                      FileStream* s,
+                                      const Vector<GFXShaderMacro>& macros );
+
+    virtual bool _init();
+
+    bool initShader(  const StringTableEntry file,
+                    bool isVertex,
+                    const Vector<GFXShaderMacro> &macros ) ;
+
+    Vector<U32> mAttributes;
 };
 
 class GFXOpenGLES20ShaderConstBuffer : public GFXOpenGLShaderConstBuffer

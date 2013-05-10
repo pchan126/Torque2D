@@ -70,7 +70,7 @@ void GFXOpenGLES20iOSDevice::initGLState()
 
 //-----------------------------------------------------------------------------
 // Matrix interface
-GFXOpenGLES20iOSDevice::GFXOpenGLES20iOSDevice( U32 adapterIndex ) : GFXOpenGLDevice( adapterIndex ),
+GFXOpenGLES20iOSDevice::GFXOpenGLES20iOSDevice( U32 adapterIndex ) : GFXOpenGLES20Device( adapterIndex ),
                     mAdapterIndex(adapterIndex),
                     mCurrentVB(NULL),
                     m_mCurrentView(true),
@@ -114,8 +114,7 @@ void GFXOpenGLES20iOSDevice::init( const GFXVideoMode &mode, PlatformWindow *win
         mTextureManager = new GFXOpenGLES20iOSTextureManager();
         
         initGLState();
-//        initGenericShaders();
-        mBaseEffect = [[GLKBaseEffect alloc] init];
+        initGenericShaders();
         mInitialized = true;
         deviceInited();
     }
@@ -709,52 +708,7 @@ GFXTextureTarget * GFXOpenGLES20iOSDevice::allocRenderToTextureTarget()
 
 void GFXOpenGLES20iOSDevice::initGenericShaders()
 {
-    Vector<GFXShaderMacro> macros;
-    char vertBuffer[1024];
-    char fragBuffer[1024];
-    //  #Color Shader
-    
-    const char* shaderDirectory = Con::getVariable("$GUI::shaderDirectory");
-    Con::printf("loading shaders from %s", shaderDirectory);
-    
-    dSprintf(vertBuffer, sizeof(vertBuffer), "%s/C.vsh", shaderDirectory);
-    dSprintf(fragBuffer, sizeof(fragBuffer), "%s/C.fsh", shaderDirectory);
-    
-    mGenericShader[0] = createShader();
-    mGenericShader[0]->init(String(vertBuffer), String(fragBuffer), 0, macros);
-    mGenericShaderConst[0] = mGenericShader[0]->allocConstBuffer();
-    
-    //  #Texture Shader
-    dSprintf(vertBuffer, sizeof(vertBuffer), "%s/simple.vsh", shaderDirectory);
-    dSprintf(fragBuffer, sizeof(fragBuffer), "%s/simple.fsh", shaderDirectory);
-    
-    mGenericShader[1] = createShader();
-    mGenericShader[1]->init(String(vertBuffer), String(fragBuffer), 0, macros);
-    mGenericShaderConst[1] = mGenericShader[1]->allocConstBuffer();
-    
-    //  #Point Shader
-    dSprintf(vertBuffer, sizeof(vertBuffer), "%s/point.vsh", shaderDirectory);
-    dSprintf(fragBuffer, sizeof(fragBuffer), "%s/point.fsh", shaderDirectory);
-    
-    mGenericShader[2] = createShader();
-    mGenericShader[2]->init(String(vertBuffer), String(fragBuffer), 0, macros);
-    mGenericShaderConst[2] = mGenericShader[2]->allocConstBuffer();
-    
-    //    GFXShaderConstHandle* hand = mGenericShader[0]->getShaderConstHandle("$mvp_matrix");
-    //  #Point Shader
-    dSprintf(vertBuffer, sizeof(vertBuffer), "%s/test.vsh", shaderDirectory);
-    dSprintf(fragBuffer, sizeof(fragBuffer), "%s/test.fsh", shaderDirectory);
-    
-    mGenericShader[3] = createShader();
-    mGenericShader[3]->init(String(vertBuffer), String(fragBuffer), 0, macros);
-    mGenericShaderConst[3] = mGenericShader[3]->allocConstBuffer();
-    
-    dSprintf(vertBuffer, sizeof(vertBuffer), "%s/alpha.vsh", shaderDirectory);
-    dSprintf(fragBuffer, sizeof(fragBuffer), "%s/alpha.fsh", shaderDirectory);
-    
-    mGenericShader[4] = createShader();
-    mGenericShader[4]->init(String(vertBuffer), String(fragBuffer), 0, macros);
-    mGenericShaderConst[4] = mGenericShader[4]->allocConstBuffer();
+    mBaseEffect = [[GLKBaseEffect alloc] init];
 }
 
 void GFXOpenGLES20iOSDevice::setupGenericShaders( GenericShaderType type )
@@ -831,7 +785,7 @@ void GFXOpenGLES20iOSDevice::setupGenericShaders( GenericShaderType type )
     }
 }
 
-GFXOpenGLES20iOSShader* GFXOpenGLES20iOSDevice::createShader()
+GFXShader* GFXOpenGLES20iOSDevice::createShader()
 {
     GFXOpenGLES20iOSShader* shader = new GFXOpenGLES20iOSShader();
     shader->registerResourceWithDevice( this );
