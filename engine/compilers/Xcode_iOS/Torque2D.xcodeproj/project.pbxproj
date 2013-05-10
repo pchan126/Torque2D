@@ -609,7 +609,6 @@
 		86555D3E16B2C75900881446 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 		867BAC9416AEC8BB0033868F /* GameCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameCenter.h; sourceTree = "<group>"; };
 		867BAC9516AEC8BB0033868F /* GameCenter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GameCenter.mm; sourceTree = "<group>"; };
-		867BAC9616AEC8BB0033868F /* iOS_common_prefix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iOS_common_prefix.h; sourceTree = "<group>"; };
 		867BAC9716AEC8BB0033868F /* iOSAlerts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iOSAlerts.h; sourceTree = "<group>"; };
 		867BAC9816AEC8BB0033868F /* iOSAlerts.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iOSAlerts.mm; sourceTree = "<group>"; };
 		867BAC9916AEC8BB0033868F /* iOSAudio.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iOSAudio.mm; sourceTree = "<group>"; };
@@ -1721,7 +1720,6 @@
 				867BAC9416AEC8BB0033868F /* GameCenter.h */,
 				867BAC9516AEC8BB0033868F /* GameCenter.mm */,
 				D15E7E6216F05FA700BB43B1 /* graphics */,
-				867BAC9616AEC8BB0033868F /* iOS_common_prefix.h */,
 				867BAC9716AEC8BB0033868F /* iOSAlerts.h */,
 				867BAC9816AEC8BB0033868F /* iOSAlerts.mm */,
 				867BAC9916AEC8BB0033868F /* iOSAudio.mm */,
@@ -3158,10 +3156,10 @@
 		D10529C9173B665000BFC4FF /* ES20 */ = {
 			isa = PBXGroup;
 			children = (
-				D127CE11173CEEEA006AB038 /* gfxOpenGLES20Shader.cc */,
 				D10529ED173B832600BFC4FF /* gfxOpenGLES20Device.cc */,
 				D10529CD173B665000BFC4FF /* gfxOpenGLES20Device.h */,
 				D10529D0173B665000BFC4FF /* gfxOpenGLES20EnumTranslate.h */,
+				D127CE11173CEEEA006AB038 /* gfxOpenGLES20Shader.cc */,
 				D10529D4173B665100BFC4FF /* gfxOpenGLES20Shader.h */,
 				D10529D7173B665100BFC4FF /* gfxOpenGLES20TextureManager.cc */,
 				D10529D8173B665100BFC4FF /* gfxOpenGLES20TextureManager.h */,

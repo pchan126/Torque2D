@@ -15,6 +15,8 @@
 class GFXOpenGLES20VertexBuffer;
 class GFXOpenGLES20TextureTarget;
 
+// virtual class for OpenGLES 2.0 devices (Mobile)
+
 class GFXOpenGLES20Device : public GFXOpenGLDevice
 {
 public:

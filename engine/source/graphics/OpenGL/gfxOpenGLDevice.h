@@ -127,6 +127,9 @@ public:
     virtual void  setPixelShaderVersion( F32 version ) { mPixelShaderVersion = version; }
     
     const GFXOpenGLStateBlockRef getCurrentStateBlock() { return mCurrentGLStateBlock;};
+
+   virtual void updateStates(bool forceSetAll = false);
+
 protected:
 
    virtual void preDrawPrimitive();

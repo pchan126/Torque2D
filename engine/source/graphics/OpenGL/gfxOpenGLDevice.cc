@@ -450,6 +450,176 @@ void GFXOpenGLDevice::_handleTextureLoaded(GFXTexNotifyCode code)
     mTexturesDirty = true;
 }
 
+
+void GFXOpenGLDevice::updateStates(bool forceSetAll /*=false*/)
+{
+    PROFILE_SCOPE(GFXDevice_updateStates);
+
+    if(forceSetAll)
+    {
+        bool rememberToEndScene = false;
+        if(!canCurrentlyRender())
+        {
+            if (!beginScene())
+            {
+                AssertFatal(false, "GFXDevice::updateStates:  Unable to beginScene!");
+            }
+            rememberToEndScene = true;
+        }
+
+        setVertexDecl( mCurrVertexDecl );
+
+        for ( U32 i=0; i < VERTEX_STREAM_COUNT; i++ )
+        {
+            setVertexStream( i, mCurrentVertexBuffer[i] );
+        }
+
+        /// Stateblocks
+        if ( mNewStateBlock )
+            setStateBlockInternal(mNewStateBlock, true);
+        mCurrentStateBlock = mNewStateBlock;
+
+        for(U32 i = 0; i < getNumSamplers(); i++)
+        {
+            switch (mTexType[i])
+            {
+                case GFXTDT_Normal :
+                {
+                    mCurrentTexture[i] = mNewTexture[i];
+                    setTextureInternal(i, mCurrentTexture[i]);
+                }
+                    break;
+//                case GFXTDT_Cube :
+//                {
+//                    mCurrentCubemap[i] = mNewCubemap[i];
+//                    if (mCurrentCubemap[i])
+//                        mCurrentCubemap[i]->setToTexUnit(i);
+//                    else
+//                        setTextureInternal(i, NULL);
+//                }
+//                    break;
+                default:
+                    AssertFatal(false, "Unknown texture type!");
+                    break;
+            }
+        }
+
+//        // Set our material
+//        setLightMaterialInternal(mCurrentLightMaterial);
+//
+//        // Set our lights
+//        for(U32 i = 0; i < LIGHT_STAGE_COUNT; i++)
+//        {
+//            setLightInternal(i, mCurrentLight[i], mCurrentLightEnable[i]);
+//        }
+
+        _updateRenderTargets();
+
+        if(rememberToEndScene)
+            endScene();
+
+        return;
+    }
+
+    if (!mStateDirty)
+        return;
+
+    // Normal update logic begins here.
+    mStateDirty = false;
+
+    // Update the vertex declaration.
+    if ( mVertexDeclDirty )
+    {
+        setVertexDecl( mCurrVertexDecl );
+        mVertexDeclDirty = false;
+    }
+
+    // Update the vertex buffers.
+    for ( U32 i=0; i < VERTEX_STREAM_COUNT; i++ )
+    {
+        if ( mVertexBufferDirty[i] )
+        {
+            setVertexStream( i, mCurrentVertexBuffer[i] );
+            mVertexBufferDirty[i] = false;
+        }
+
+        if ( mVertexBufferFrequencyDirty[i] )
+        {
+            mVertexBufferFrequencyDirty[i] = false;
+        }
+    }
+
+    // NOTE: With state blocks, it's now important to update state before setting textures
+    // some devices (e.g. OpenGL) set states on the texture and we need that information before
+    // the texture is activated.
+    if (mStateBlockDirty)
+    {
+        setStateBlockInternal(mNewStateBlock, false);
+        mCurrentStateBlock = mNewStateBlock;
+        mStateBlockDirty = false;
+    }
+
+    if( mTexturesDirty )
+    {
+        mTexturesDirty = false;
+        for(U32 i = 0; i < getNumSamplers(); i++)
+        {
+            if(!mTextureDirty[i])
+                continue;
+            mTextureDirty[i] = false;
+
+            switch (mTexType[i])
+            {
+                case GFXTDT_Normal :
+                {
+                    mCurrentTexture[i] = mNewTexture[i];
+                    setTextureInternal(i, mCurrentTexture[i]);
+                }
+                    break;
+//                case GFXTDT_Cube :
+//                {
+//                    mCurrentCubemap[i] = mNewCubemap[i];
+//                    if (mCurrentCubemap[i])
+//                        mCurrentCubemap[i]->setToTexUnit(i);
+//                    else
+//                        setTextureInternal(i, NULL);
+//                }
+//                    break;
+                default:
+                    AssertFatal(false, "Unknown texture type!");
+                    break;
+            }
+        }
+    }
+
+//    // Set light material
+//    if(mLightMaterialDirty)
+//    {
+//        setLightMaterialInternal(mCurrentLightMaterial);
+//        mLightMaterialDirty = false;
+//    }
+//
+//    // Set our lights
+//    if(mLightsDirty)
+//    {
+//        mLightsDirty = false;
+//        for(U32 i = 0; i < LIGHT_STAGE_COUNT; i++)
+//        {
+//            if(!mLightDirty[i])
+//                continue;
+//
+//            mLightDirty[i] = false;
+//            setLightInternal(i, mCurrentLight[i], mCurrentLightEnable[i]);
+//        }
+//    }
+
+    _updateRenderTargets();
+
+#ifdef TORQUE_DEBUG_RENDER
+    doParanoidStateCheck();
+#endif
+}
+
 //-----------------------------------------------------------------------------
 
 

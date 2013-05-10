@@ -17,7 +17,6 @@
 class GFXOpenGLES20iOSVertexBuffer;
 class GFXOpenGLES20iOSTextureTarget;
 //class GFXOpenGLESCubemap;
-//class GLKMatrixStackRef;
 
 @class EAGLContext, GLKTextureLoader, GLKBaseEffect;
 
@@ -73,12 +72,6 @@ public:
     GFXShaderConstBufferRef mGenericShaderConst[4];
     GFXStateBlockRef mGenericShaderStateblock[4];
     
-   virtual F32 getPixelShaderVersion() const { return mPixelShaderVersion; }
-   virtual void  setPixelShaderVersion( F32 version ) { mPixelShaderVersion = version; }
-   
-   virtual void setShader(GFXOpenGLES20iOSShader* shd);
-   virtual void disableShaders(); ///< Equivalent to setShader(NULL)
-   
    /// @attention GL cannot check if the given format supports blending or filtering!
    virtual GFXFormat selectSupportedFormat(GFXTextureProfile *profile,
 	   const Vector<GFXFormat> &formats, bool texture, bool mustblend, bool mustfilter);
@@ -91,16 +84,9 @@ public:
 
    virtual GFXShader* createShader();
     
-   virtual void clear( U32 flags, ColorI color, F32 z, U32 stencil );
-
-   virtual void updateStates(bool forceSetAll = false);
-   
    GFXOpenGLES20iOSStateBlockRef getCurrentStateBlock() { return mCurrentGLStateBlock; }
    
    virtual void setupGenericShaders( GenericShaderType type = GSColor );
-   
-   ///
-   bool supportsAnisotropic() const { return mSupportsAnisotropic; }
    
     EAGLContext* getEAGLContext() const { return mContext; };
     GLKTextureLoader* getTextureLoader() const { return mTextureLoader; };
@@ -122,14 +108,6 @@ protected:
    /// State initalization. This MUST BE CALLED in setVideoMode after the device
    /// is created.
    virtual void initStates() { }
-
-   virtual void setMatrix( GFXMatrixType mtype, const MatrixF &mat );
-   virtual const MatrixF getMatrix (GFXMatrixType mtype );
-
-   virtual inline const MatrixF getWorldMatrix() { return getMatrix(GFXMatrixWorld);};
-   virtual inline const MatrixF getProjectionMatrix() { return getMatrix(GFXMatrixProjection);};
-   virtual inline const MatrixF getViewMatrix() { return getMatrix(GFXMatrixView);};
-   
 
    virtual GFXVertexBuffer *allocVertexBuffer(  U32 numVerts, 
                                                 const GFXVertexFormat *vertexFormat,
@@ -166,31 +144,12 @@ private:
    
    StrongRefPtr<GFXOpenGLES20iOSVertexBuffer> mCurrentVB;
 
-    typedef Vector<MatrixF> MatrixStack;
-    
-    /// Since GL does not have separate world and view matrices we need to track them
-    MatrixF m_mCurrentView;
-    MatrixStack m_WorldStack;
-    MatrixStack m_ProjectionStack;
-    
-    virtual void pushWorldMatrix();
-    virtual void popWorldMatrix();
-    virtual void pushProjectionMatrix();
-    virtual void popProjectionMatrix();
-
-    virtual void multWorld( const MatrixF &mat );
-
     void _handleTextureLoaded(GFXTexNotifyCode code);
 
     EAGLContext* mContext;
-    void* mPixelFormat;
     GLKTextureLoader* mTextureLoader; // GLKTextureLoader
     GLKBaseEffect* mBaseEffect;
 
-   F32 mPixelShaderVersion;
-   
-   bool mSupportsAnisotropic;
-   
    U32 mMaxShaderTextures;
 
    RectI mClip;
