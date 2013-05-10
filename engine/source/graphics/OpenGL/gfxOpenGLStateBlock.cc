@@ -158,7 +158,7 @@ void GFXOpenGLStateBlock::activate(const GFXOpenGLStateBlock* oldState)
     //   // Non per object texture mode states
     //   for (U32 i = 0; i < getMin(getOwningDevice()->getNumSamplers(), (U32) TEXTURE_STAGE_COUNT); i++)
     //   {
-    //      GFXOpenGLESTextureObject* tex = static_cast<GFXOpenGLESTextureObject*>(getOwningDevice()->getCurrentTexture(i));
+    //      GFXOpenGLES20iOSTextureObject* tex = static_cast<GFXOpenGLES20iOSTextureObject*>(getOwningDevice()->getCurrentTexture(i));
     //      const GFXSamplerStateDesc &ssd = mDesc.samplers[i];
     //      bool updateTexParam = true;
     //      glActiveTexture(GL_TEXTURE0 + i);

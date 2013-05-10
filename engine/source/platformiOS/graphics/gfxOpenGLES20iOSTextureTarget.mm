@@ -4,12 +4,12 @@
 //-----------------------------------------------------------------------------
 
 #include "console/console.h"
-#include "./gfxOpenGLES20iOSDevice.h"
-#include "./gfxOpenGLES20iOSTextureTarget.h"
-#include "./gfxOpenGLES20iOSTextureObject.h"
-//#include "./gfxOpenGLES20iOSCubemap.h"
+#include "platformiOS/graphics/gfxOpenGLES20iOSDevice.h"
+#include "platformiOS/graphics/GFXOpenGLES20iOSTextureTarget.h"
+#include "platformiOS/graphics/gfxOpenGLES20iOSTextureObject.h"
+//#include "platformiOS/graphics/gfxOpenGLESCubemap.h"
 #include "graphics/gfxTextureManager.h"
-#include "./gfxOpenGLES20iOSUtils.h"
+#include "platformiOS/graphics/gfxOpenGLES20iOSUtils.h"
 
 /// Internal struct used to track 2D/Rect texture information for FBO attachment
 class _GFXOpenGLES20iOSTextureTargetDesc : public _GFXOpenGLES20iOSTargetDesc
@@ -34,25 +34,25 @@ private:
 };
 //
 ///// Internal struct used to track Cubemap texture information for FBO attachment
-//class _GFXOpenGLES20iOSCubemapTargetDesc : public _GFXOpenGLES20iOSTargetDesc
+//class _GFXOpenGLESCubemapTargetDesc : public _GFXOpenGLES20iOSTargetDesc
 //{
 //public:
-//   _GFXOpenGLES20iOSCubemapTargetDesc(gfxOpenGLES20iOSCubemap* tex, U32 _face, U32 _mipLevel, U32 _zOffset) 
+//   _GFXOpenGLESCubemapTargetDesc(GFXOpenGLESCubemap* tex, U32 _face, U32 _mipLevel, U32 _zOffset) 
 //      : _GFXOpenGLES20iOSTargetDesc(_mipLevel, _zOffset), mTex(tex), mFace(_face)
 //   {
 //   }
 //   
-//   virtual ~_GFXOpenGLES20iOSCubemapTargetDesc() {}
+//   virtual ~_GFXOpenGLESCubemapTargetDesc() {}
 //   
 //   virtual U32 getHandle() { return mTex->getHandle(); }
 //   virtual U32 getWidth() { return mTex->getWidth(); }
 //   virtual U32 getHeight() { return mTex->getHeight(); }
 //   virtual U32 getDepth() { return 0; }
 //   virtual bool hasMips() { return mTex->getNumMipLevels() != 1; }
-//   virtual GLenum getBinding() { return gfxOpenGLES20iOSCubemap::getEnumForFaceNumber(mFace); }
+//   virtual GLenum getBinding() { return GFXOpenGLESCubemap::getEnumForFaceNumber(mFace); }
 //   
 //private:
-//   StrongRefPtr<gfxOpenGLES20iOSCubemap> mTex;
+//   StrongRefPtr<GFXOpenGLESCubemap> mTex;
 //   U32 mFace;
 //};
 
@@ -150,13 +150,13 @@ void _GFXOpenGLES20iOSTextureTargetFBOImpl::finish()
 }
 
 
-// Actual GFXOpenGLES20iOSTextureObject interface
+// Actual GFXOpenGLES20iOSTextureTarget interface
 GFXOpenGLES20iOSTextureTarget::GFXOpenGLES20iOSTextureTarget()
 {
    for(U32 i=0; i<MaxRenderSlotId; i++)
       mTargets[i] = NULL;
    
-//   GFXTextureManager::addEventDelegate( this, &GFXOpenGLES20iOSTextureObject::_onTextureEvent );
+//   GFXTextureManager::addEventDelegate( this, &GFXOpenGLES20iOSTextureTarget::_onTextureEvent );
 
    _impl = new _GFXOpenGLES20iOSTextureTargetFBOImpl(this);
    _needsAux = false;
@@ -164,7 +164,7 @@ GFXOpenGLES20iOSTextureTarget::GFXOpenGLES20iOSTextureTarget()
 
 GFXOpenGLES20iOSTextureTarget::~GFXOpenGLES20iOSTextureTarget()
 {
-//   GFXTextureManager::removeEventDelegate( this, &GFXOpenGLES20iOSTextureObject::_onTextureEvent );
+//   GFXTextureManager::removeEventDelegate( this, &GFXOpenGLES20iOSTextureTarget::_onTextureEvent );
 }
 
 const Point2I GFXOpenGLES20iOSTextureTarget::getSize()
@@ -201,23 +201,23 @@ void GFXOpenGLES20iOSTextureTarget::attachTexture( RenderSlot slot, GFXTextureOb
       mTargets[slot] = NULL;
 }
 
-//void GFXOpenGLES20iOSTextureTarget::attachTexture( RenderSlot slot, GFXCubemap *tex, U32 face, U32 mipLevel/*=0*/ )
-//{
-//   // No depth cubemaps, sorry
-//   AssertFatal(slot != DepthStencil, "GFXOpenGLES20iOSTextureObject::attachTexture (cube) - Cube depth textures not supported!");
-//   if(slot == DepthStencil)
-//      return;
-//    
-//   // Triggers an update when we next render
-//   invalidateState();
-//   
-////   // We stash the texture and info into an internal struct.
-////   gfxOpenGLES20iOSCubemap* glTexture = static_cast<gfxOpenGLES20iOSCubemap*>(tex);
-////    if(tex)
-////      mTargets[slot] = new _GFXOpenGLES20iOSCubemapTargetDesc(glTexture, face, mipLevel, 0);
-////   else
-//      mTargets[slot] = NULL;
-//}
+void GFXOpenGLES20iOSTextureTarget::attachTexture( RenderSlot slot, GFXCubemap *tex, U32 face, U32 mipLevel/*=0*/ )
+{
+   // No depth cubemaps, sorry
+   AssertFatal(slot != DepthStencil, "GFXOpenGLES20iOSTextureTarget::attachTexture (cube) - Cube depth textures not supported!");
+   if(slot == DepthStencil)
+      return;
+    
+   // Triggers an update when we next render
+   invalidateState();
+   
+//   // We stash the texture and info into an internal struct.
+//   GFXOpenGLESCubemap* glTexture = static_cast<GFXOpenGLESCubemap*>(tex);
+//    if(tex)
+//      mTargets[slot] = new _GFXOpenGLESCubemapTargetDesc(glTexture, face, mipLevel, 0);
+//   else
+      mTargets[slot] = NULL;
+}
 
 void GFXOpenGLES20iOSTextureTarget::clearAttachments()
 {

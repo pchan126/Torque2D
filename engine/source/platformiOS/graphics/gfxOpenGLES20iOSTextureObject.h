@@ -6,8 +6,8 @@
 #ifndef _GFXOpenGLES20iOSTextureObject_H
 #define _GFXOpenGLES20iOSTextureObject_H
 
-#include "platform/platformGL.h"
 #include "graphics/gfxTextureObject.h"
+#import <OpenGLES/ES2/glext.h>
 
 class GFXOpenGLES20iOSDevice;
 @class GLKTextureInfo;
@@ -40,7 +40,7 @@ public:
    virtual F32 getMaxUCoord() const;
    virtual F32 getMaxVCoord() const;
    
-   void reloadFromCache(); ///< Reloads texture from zombie cache, used by GFXOpenGLESTextureManager to resurrect the texture.
+   void reloadFromCache(); ///< Reloads texture from zombie cache, used by GFXOpenGLES20iOSTextureManager to resurrect the texture.
    
 #ifdef TORQUE_DEBUG
    virtual void pureVirtualCrash() {}

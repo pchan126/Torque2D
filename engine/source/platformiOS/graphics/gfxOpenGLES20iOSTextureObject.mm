@@ -3,13 +3,15 @@
 // Copyright GarageGames, LLC 2011
 //-----------------------------------------------------------------------------
 
+#import <OpenGLES/ES2/glext.h>
+
 #include "console/console.h"
 #include "math/mRect.h"
-#include "./gfxOpenGLES20iOSTextureObject.h"
-#include "./gfxOpenGLES20iOSDevice.h"
-#include "./gfxOpenGLES20iOSEnumTranslate.h"
-#include "./gfxOpenGLES20iOSTextureManager.h"
-#include "./gfxOpenGLES20iOSUtils.h"
+#include "platformiOS/graphics/GFXOpenGLES20iOSTextureObject.h"
+#include "platformiOS/graphics/gfxOpenGLES20iOSDevice.h"
+#include "platformiOS/graphics/gfxOpenGLES20iOSEnumTranslate.h"
+#include "platformiOS/graphics/gfxOpenGLES20iOSTextureManager.h"
+#include "platformiOS/graphics/gfxOpenGLES20iOSUtils.h"
 #include "graphics/gfxCardProfile.h"
 #import <GLKit/GLKit.h>
 
@@ -156,7 +158,7 @@ void GFXOpenGLES20iOSTextureObject::bind(U32 textureUnit) const
 //    GLuint han = mHandle;
 //   glBindTexture(mBinding, han);
 //    
-//   GFXOpenGLESStateBlockRef sb = mGLDevice->getCurrentStateBlock();
+//   GFXOpenGLES20iOSStateBlockRef sb = mGLDevice->getCurrentStateBlock();
 //   AssertFatal(sb, "GFXOpenGLES20iOSTextureObject::bind - No active stateblock!");
 //   if (!sb)
 //      return;

@@ -272,7 +272,7 @@ const MatrixF GFXOpenGLDevice::getMatrix( GFXMatrixType mtype )
             break;
             // CodeReview - Add support for texture transform matrix types
         default:
-            AssertFatal(false, "GFXOpenGLES20iOSDevice::setMatrix - Unknown matrix mode!");
+            AssertFatal(false, "GFXOpenGLESDevice::setMatrix - Unknown matrix mode!");
     }
     return ret;
 }
@@ -376,203 +376,7 @@ inline void GFXOpenGLDevice::multWorld( const MatrixF &mat )
     m_WorldStack.last() = newMatrix;
 }
 
-void GFXOpenGLDevice::clear(U32 flags, ColorI color, F32 z, U32 stencil)
-{
-    // Make sure we have flushed our render target state.
-    _updateRenderTargets();
-    
-    bool zwrite = true;
-    //   if (mCurrentGLStateBlock)
-    //   {
-    //      zwrite = mCurrentGLStateBlock->getDesc().zWriteEnable;
-    //   }
-    
-    glDepthMask(true);
-    
-    GLbitfield clearflags = 0;
-    clearflags |= (flags & GFXClearTarget)   ? GL_COLOR_BUFFER_BIT : 0;
-    clearflags |= (flags & GFXClearZBuffer)  ? GL_DEPTH_BUFFER_BIT : 0;
-    clearflags |= (flags & GFXClearStencil)  ? GL_STENCIL_BUFFER_BIT : 0;
-    
-    glClear(clearflags);
-    
-    ColorF c = color;
-    glClearDepth(z);
-    glClearStencil(stencil);
-    glClearColor(c.red, c.green, c.blue, c.alpha);
-    
-    if(!zwrite)
-        glDepthMask(false);
-}
 
-void GFXOpenGLDevice::updateStates(bool forceSetAll /*=false*/)
-{
-    PROFILE_SCOPE(GFXDevice_updateStates);
-    
-    if(forceSetAll)
-    {
-        bool rememberToEndScene = false;
-        if(!canCurrentlyRender())
-        {
-            if (!beginScene())
-            {
-                AssertFatal(false, "GFXDevice::updateStates:  Unable to beginScene!");
-            }
-            rememberToEndScene = true;
-        }
-        
-        setVertexDecl( mCurrVertexDecl );
-        
-        for ( U32 i=0; i < VERTEX_STREAM_COUNT; i++ )
-        {
-            setVertexStream( i, mCurrentVertexBuffer[i] );
-        }
-        
-        /// Stateblocks
-        if ( mNewStateBlock )
-            setStateBlockInternal(mNewStateBlock, true);
-        mCurrentStateBlock = mNewStateBlock;
-        
-        for(U32 i = 0; i < getNumSamplers(); i++)
-        {
-            switch (mTexType[i])
-            {
-                case GFXTDT_Normal :
-                {
-                    mCurrentTexture[i] = mNewTexture[i];
-                    setTextureInternal(i, mCurrentTexture[i]);
-                }
-                    break;
-                    //                case GFXTDT_Cube :
-                    //                {
-                    //                    mCurrentCubemap[i] = mNewCubemap[i];
-                    //                    if (mCurrentCubemap[i])
-                    //                        mCurrentCubemap[i]->setToTexUnit(i);
-                    //                    else
-                    //                        setTextureInternal(i, NULL);
-                    //                }
-                    //                    break;
-                default:
-                    AssertFatal(false, "Unknown texture type!");
-                    break;
-            }
-        }
-        
-        //        // Set our material
-        //        setLightMaterialInternal(mCurrentLightMaterial);
-        //
-        //        // Set our lights
-        //        for(U32 i = 0; i < LIGHT_STAGE_COUNT; i++)
-        //        {
-        //            setLightInternal(i, mCurrentLight[i], mCurrentLightEnable[i]);
-        //        }
-        
-        _updateRenderTargets();
-        
-        if(rememberToEndScene)
-            endScene();
-        
-        return;
-    }
-    
-    if (!mStateDirty)
-        return;
-    
-    // Normal update logic begins here.
-    mStateDirty = false;
-    
-    // Update the vertex declaration.
-    if ( mVertexDeclDirty )
-    {
-        setVertexDecl( mCurrVertexDecl );
-        mVertexDeclDirty = false;
-    }
-    
-    // Update the vertex buffers.
-    for ( U32 i=0; i < VERTEX_STREAM_COUNT; i++ )
-    {
-        if ( mVertexBufferDirty[i] )
-        {
-            setVertexStream( i, mCurrentVertexBuffer[i] );
-            mVertexBufferDirty[i] = false;
-        }
-        
-        if ( mVertexBufferFrequencyDirty[i] )
-        {
-            mVertexBufferFrequencyDirty[i] = false;
-        }
-    }
-    
-    // NOTE: With state blocks, it's now important to update state before setting textures
-    // some devices (e.g. OpenGL) set states on the texture and we need that information before
-    // the texture is activated.
-    if (mStateBlockDirty)
-    {
-        setStateBlockInternal(mNewStateBlock, false);
-        mCurrentStateBlock = mNewStateBlock;
-        mStateBlockDirty = false;
-    }
-    
-    if( mTexturesDirty )
-    {
-        mTexturesDirty = false;
-        for(U32 i = 0; i < getNumSamplers(); i++)
-        {
-            if(!mTextureDirty[i])
-                continue;
-            mTextureDirty[i] = false;
-            
-            switch (mTexType[i])
-            {
-                case GFXTDT_Normal :
-                {
-                    mCurrentTexture[i] = mNewTexture[i];
-                    setTextureInternal(i, mCurrentTexture[i]);
-                }
-                    break;
-                    //                case GFXTDT_Cube :
-                    //                {
-                    //                    mCurrentCubemap[i] = mNewCubemap[i];
-                    //                    if (mCurrentCubemap[i])
-                    //                        mCurrentCubemap[i]->setToTexUnit(i);
-                    //                    else
-                    //                        setTextureInternal(i, NULL);
-                    //                }
-                    //                    break;
-                default:
-                    AssertFatal(false, "Unknown texture type!");
-                    break;
-            }
-        }
-    }
-    
-    //    // Set light material
-    //    if(mLightMaterialDirty)
-    //    {
-    //        setLightMaterialInternal(mCurrentLightMaterial);
-    //        mLightMaterialDirty = false;
-    //    }
-    //
-    //    // Set our lights
-    //    if(mLightsDirty)
-    //    {
-    //        mLightsDirty = false;
-    //        for(U32 i = 0; i < LIGHT_STAGE_COUNT; i++)
-    //        {
-    //            if(!mLightDirty[i])
-    //                continue;
-    //            
-    //            mLightDirty[i] = false;
-    //            setLightInternal(i, mCurrentLight[i], mCurrentLightEnable[i]);
-    //        }
-    //    }
-    
-    _updateRenderTargets();
-    
-#ifdef TORQUE_DEBUG_RENDER
-    doParanoidStateCheck();
-#endif
-}
 
 /// Creates a state block object based on the desc passed in.  This object
 /// represents an immutable state.
@@ -588,7 +392,7 @@ GFXStateBlockRef GFXOpenGLDevice::createStateBlockInternal(const GFXStateBlockDe
 /// Activates a stateblock
 void GFXOpenGLDevice::setStateBlockInternal(GFXStateBlock* block, bool force)
 {
-    AssertFatal(dynamic_cast<GFXOpenGLStateBlock*>(block), "GFXOpenGLES20iOSDevice::setStateBlockInternal - Incorrect stateblock type for this device!");
+    AssertFatal(dynamic_cast<GFXOpenGLStateBlock*>(block), "GFXOpenGLESDevice::setStateBlockInternal - Incorrect stateblock type for this device!");
     GFXOpenGLStateBlock* glBlock = static_cast<GFXOpenGLStateBlock*>(block);
     GFXOpenGLStateBlock* glCurrent = static_cast<GFXOpenGLStateBlock*>(mCurrentStateBlock.getPointer());
     if (force)
@@ -608,7 +412,7 @@ void GFXOpenGLDevice::setTextureInternal(U32 textureUnit, const GFXTextureObject
     const GFXOpenGLTextureObject *tex = static_cast<const GFXOpenGLTextureObject*>(texture);
     if (tex)
     {
-        // GFXOpenGLES20iOSTextureObject::bind also handles applying the current sampler state.
+        // GFXOpenGLESTextureObject::bind also handles applying the current sampler state.
         if(mActiveTextureType[textureUnit] != tex->getBinding() && mActiveTextureType[textureUnit] != GL_ZERO)
         {
             glActiveTexture(GL_TEXTURE0 + textureUnit);

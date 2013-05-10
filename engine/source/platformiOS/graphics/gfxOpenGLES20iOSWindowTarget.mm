@@ -3,12 +3,13 @@
 // Copyright GarageGames, LLC 2011
 //-----------------------------------------------------------------------------
 
-#include "./gfxOpenGLES20iOSDevice.h"
-#include "./gfxOpenGLES20iOSWindowTarget.h"
-#include "./gfxOpenGLES20iOSTextureObject.h"
-#include "./gfxOpenGLES20iOSUtils.h"
-#import "platformiOS/windowManager/iOSWindow.h"
+#include "platformiOS/graphics/gfxOpenGLES20iOSDevice.h"
+#include "platformiOS/graphics/GFXOpenGLES20iOSWindowTarget.h"
+#include "platformiOS/graphics/gfxOpenGLES20iOSTextureObject.h"
+#include "platformiOS/graphics/gfxOpenGLES20iOSUtils.h"
 
+#import "platformiOS/windowManager/iOSWindow.h"
+#include "platform/platformGL.h"
 #import <GLKit/GLKit.h>
 
 GFXOpenGLES20iOSWindowTarget::GFXOpenGLES20iOSWindowTarget(PlatformWindow *win, GFXDevice *d)

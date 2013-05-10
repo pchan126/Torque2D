@@ -21,7 +21,7 @@
 //-----------------------------------------------------------------------------
 
 #include "platform/platform.h"
-#include "platformiOS/graphics/gfxOpenGLES20iOSShader.h"
+#include "platformiOS/graphics/GFXOpenGLES20iOSShader.h"
 
 #include "memory/frameAllocator.h"
 #include "io/fileStream.h"
@@ -129,7 +129,7 @@ GFXOpenGLES20iOSShaderConstHandle::~GFXOpenGLES20iOSShaderConstHandle()
 }
 
 GFXOpenGLES20iOSShaderConstBuffer::GFXOpenGLES20iOSShaderConstBuffer(GFXOpenGLES20iOSShader* shader, U32 bufSize, U8* existingConstants):
-                            GFXOpenGLES20ShaderConstBuffer(shader, bufSize, existingConstants)
+                            GFXOpenGLShaderConstBuffer(shader, bufSize, existingConstants)
 {
 }
 

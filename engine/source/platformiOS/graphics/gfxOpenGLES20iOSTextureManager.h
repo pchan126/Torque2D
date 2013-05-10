@@ -6,10 +6,11 @@
 #ifndef _GFXOpenGLES20iOSTextureManager_H
 #define _GFXOpenGLES20iOSTextureManager_H
 
-#include "platform/platformGL.h"
+#import <OpenGLES/ES2/glext.h>
+
 #include "graphics/gfxDevice.h"
 #include "graphics/gfxTextureManager.h"
-#include "./gfxOpenGLES20iOSTextureObject.h"
+#include "platformiOS/graphics/gfxOpenGLES20iOSTextureObject.h"
 
 class GFXOpenGLES20iOSTextureManager : public GFXTextureManager
 {   

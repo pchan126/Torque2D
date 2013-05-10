@@ -4,11 +4,11 @@
 //-----------------------------------------------------------------------------
 
 #include "platform/platform.h"
-#include "./gfxOpenGLES20iOSVertexBuffer.h"
+#include "platformiOS/graphics/GFXOpenGLES20iOSVertexBuffer.h"
 
-#include "./gfxOpenGLES20iOSDevice.h"
-#include "./gfxOpenGLES20iOSEnumTranslate.h"
-#include "./gfxOpenGLES20iOSUtils.h"
+#include "platformiOS/graphics/gfxOpenGLES20iOSDevice.h"
+#include "platformiOS/graphics/gfxOpenGLES20iOSEnumTranslate.h"
+#include "platformiOS/graphics/gfxOpenGLES20iOSUtils.h"
 #import <GLKit/GLKit.h>
 
 GFXOpenGLES20iOSVertexBuffer::GFXOpenGLES20iOSVertexBuffer(  GFXDevice *device, 

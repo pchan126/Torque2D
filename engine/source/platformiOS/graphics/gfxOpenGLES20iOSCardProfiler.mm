@@ -3,9 +3,10 @@
 // Copyright GarageGames, LLC 2011
 //-----------------------------------------------------------------------------
 
-#include "./gfxOpenGLES20IOSCardProfiler.h"
-#include "./GFXOpenGLES20IOSDevice.h"
-#include "./gfxOpenGLES20IOSEnumTranslate.h"
+#include "./GFXOpenGLES20iOSCardProfiler.h"
+#include "./GFXOpenGLES20iOSDevice.h"
+#include "./gfxOpenGLES20iOSEnumTranslate.h"
+#import <OpenGLES/ES2/glext.h>
 
 BOOL CheckForExtension(NSString *searchName)
 {
@@ -40,7 +41,7 @@ void GFXOpenGLES20iOSCardProfiler::init()
    mCardDescription = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
    mVersionString = reinterpret_cast<const char*>(glGetString(GL_VERSION));
    
-//   mVideoMemory = static_cast<GFXOpenGLESDevice*>(GFX)->getTotalVideoMemory();
+//   mVideoMemory = static_cast<GFXOpenGLES20iOSDevice*>(GFX)->getTotalVideoMemory();
 
    Parent::init();
    

@@ -4,14 +4,13 @@
 //-----------------------------------------------------------------------------
 
 #include "platform/platform.h"
-#include "platform/platformGL.h"
-
+#include "platformiOS/graphics/GFXOpenGLES20iOSTextureManager.h"
+#include "platformiOS/graphics/gfxOpenGLES20iOSEnumTranslate.h"
 #include "graphics/gfxCardProfile.h"
 #include "memory/safeDelete.h"
-#include "./gfxOpenGLES20iOSUtils.h"
-#include "./gfxOpenGLES20iOSTextureManager.h"
-#include "./gfxOpenGLES20iOSEnumTranslate.h"
+#include "platformiOS/graphics/gfxOpenGLES20iOSUtils.h"
 #import <GLKit/GLKit.h>
+
 
 #define EXT_ARRAY_SIZE 4
 static const char* extArray[EXT_ARRAY_SIZE] = { "png", "pvr", "jpg", ""};

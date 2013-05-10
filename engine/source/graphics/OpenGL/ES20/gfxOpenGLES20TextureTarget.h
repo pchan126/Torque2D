@@ -3,27 +3,27 @@
 // Copyright GarageGames, LLC 2011
 //-----------------------------------------------------------------------------
 
-#ifndef _GFXOpenGLESTextureTarget_H_
-#define _GFXOpenGLESTextureTarget_H_
+#ifndef _GFXOpenGLES20TextureTarget_H_
+#define _GFXOpenGLES20TextureTarget_H_
 
 #include "graphics/gfxTarget.h"
 #include "memory/autoPtr.h"
 
 class GFXOpenGLES20TextureObject;
-class _GFXOpenGLESTextureTargetImpl;
+class _GFXOpenGLES20TextureTargetImpl;
 
 /// Internal struct used to track texture information for FBO attachments
 /// This serves as an abstract base so we can deal with cubemaps and standard
 /// 2D/Rect textures through the same interface
-class _GFXOpenGLESTargetDesc
+class _GFXOpenGLES20TargetDesc
 {
 public:
-    _GFXOpenGLESTargetDesc(U32 _mipLevel, U32 _zOffset) :
+    _GFXOpenGLES20TargetDesc(U32 _mipLevel, U32 _zOffset) :
     mipLevel(_mipLevel), zOffset(_zOffset)
     {
     }
     
-    virtual ~_GFXOpenGLESTargetDesc() {}
+    virtual ~_GFXOpenGLES20TargetDesc() {}
     
     virtual U32 getHandle() = 0;
     virtual U32 getWidth() = 0;
@@ -69,7 +69,7 @@ public:
     /// @{
     
     /// Returns the internal structure for the given slot.  This should only be called by our internal implementations.
-    _GFXOpenGLESTargetDesc* getTargetDesc(RenderSlot slot) const;
+    _GFXOpenGLES20TargetDesc* getTargetDesc(RenderSlot slot) const;
     
     /// @}
     
@@ -94,10 +94,10 @@ protected:
     bool _needsAux;
     
     /// Pointer to our internal implementation
-    AutoPtr<_GFXOpenGLESTextureTargetImpl> _impl;
+    AutoPtr<_GFXOpenGLES20TextureTargetImpl> _impl;
     
-    /// Array of _GFXOpenGLESTargetDesc's, an internal struct used to keep track of texture data.
-    AutoPtr<_GFXOpenGLESTargetDesc> mTargets[MaxRenderSlotId];
+    /// Array of _GFXOpenGLES20TargetDesc's, an internal struct used to keep track of texture data.
+    AutoPtr<_GFXOpenGLES20TargetDesc> mTargets[MaxRenderSlotId];
     
     /// These redirect to our internal implementation
     /// @{
@@ -111,12 +111,12 @@ protected:
 
 
 // Internal implementations
-class _GFXOpenGLESTextureTargetImpl
+class _GFXOpenGLES20TextureTargetImpl
 {
 public:
     GFXOpenGLES20TextureTarget* mTarget;
     
-    virtual ~_GFXOpenGLESTextureTargetImpl() {}
+    virtual ~_GFXOpenGLES20TextureTargetImpl() {}
     
     virtual void applyState() = 0;
     virtual void makeActive() = 0;
@@ -124,13 +124,13 @@ public:
 };
 
 // Use FBOs to render to texture.  This is the preferred implementation and is almost always used.
-class _GFXOpenGLESTextureTargetFBOImpl : public _GFXOpenGLESTextureTargetImpl
+class _GFXOpenGLES20TextureTargetFBOImpl : public _GFXOpenGLES20TextureTargetImpl
 {
 public:
     GLuint mFramebuffer, mRenderBuffer;
     
-    _GFXOpenGLESTextureTargetFBOImpl(GFXOpenGLES20TextureTarget* target);
-    virtual ~_GFXOpenGLESTextureTargetFBOImpl();
+    _GFXOpenGLES20TextureTargetFBOImpl(GFXOpenGLES20TextureTarget* target);
+    virtual ~_GFXOpenGLES20TextureTargetFBOImpl();
     
     virtual void applyState();
     virtual void makeActive();

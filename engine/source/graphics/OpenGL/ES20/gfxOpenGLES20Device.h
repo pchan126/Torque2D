@@ -70,13 +70,13 @@ protected:
    /// is created.
    virtual void initStates() { }
 
-   virtual GFXVertexBuffer *allocVertexBuffer(  U32 numVerts, 
-                                                const GFXVertexFormat *vertexFormat,
-                                                U32 vertSize, 
-                                                GFXBufferType bufferType,
-                                                void *data = NULL,
-                                              U32 indexCount = 0,
-                                              void *indexData = NULL);
+//   virtual GFXVertexBuffer *allocVertexBuffer(  U32 numVerts, 
+//                                                const GFXVertexFormat *vertexFormat,
+//                                                U32 vertSize, 
+//                                                GFXBufferType bufferType,
+//                                                void *data = NULL,
+//                                              U32 indexCount = 0,
+//                                              void *indexData = NULL);
 
     
     GLenum mActiveTextureType[TEXTURE_STAGE_COUNT];
@@ -87,21 +87,21 @@ private:
    friend class GFXOpenGLES20WindowTarget;
    friend class GFXOpenGLES20VertexBuffer;
 
-   U32 mAdapterIndex;
-   
-   StrongRefPtr<GFXOpenGLES20VertexBuffer> mCurrentVB;
-   
-   Vector< StrongRefPtr<GFXOpenGLES20VertexBuffer> > mVolatileVBs;
-    ///< Pool of existing volatile VBs so we can reuse previously created ones
-
-    
-    ///< Returns an existing volatile VB which has >= numVerts and the same vert flags/size, or creates a new VB if necessary
-   GFXVertexBuffer* findVolatileVBO(U32 numVerts,
-                                    const GFXVertexFormat *vertexFormat,
-                                    U32 vertSize,
-                                    void* vertData = NULL,
-                                    U32 numIndex =0,
-                                    void* indexData = 0);
+//   U32 mAdapterIndex;
+//   
+//   StrongRefPtr<GFXOpenGLES20VertexBuffer> mCurrentVB;
+//   
+//   Vector< StrongRefPtr<GFXOpenGLES20VertexBuffer> > mVolatileVBs;
+//    ///< Pool of existing volatile VBs so we can reuse previously created ones
+//
+//    
+//    ///< Returns an existing volatile VB which has >= numVerts and the same vert flags/size, or creates a new VB if necessary
+//   virtual GFXVertexBuffer* findVolatileVBO(U32 numVerts,
+//                                    const GFXVertexFormat *vertexFormat,
+//                                    U32 vertSize,
+//                                    void* vertData = NULL,
+//                                    U32 numIndex =0,
+//                                    void* indexData = 0);
 };
 
 

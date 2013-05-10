@@ -79,7 +79,7 @@ public:
    /// Returns the number of simultaneous render targets supported by the device.
     virtual U32 getNumRenderTargets() const { return 1; };
 
-   virtual void clear( U32 flags, ColorI color, F32 z, U32 stencil );
+   virtual void clear( U32 flags, ColorI color, F32 z, U32 stencil ) = 0;
    virtual bool beginSceneInternal();
    virtual void endSceneInternal();
 
@@ -99,8 +99,6 @@ public:
 
    virtual U32 getMaxDynamicVerts() { return MAX_DYNAMIC_VERTS; }
    virtual U32 getMaxDynamicIndices() { return MAX_DYNAMIC_INDICES; }
-   
-   virtual void updateStates(bool forceSetAll = false);
     
    virtual void setupGenericShaders( GenericShaderType type = GSColor ) = 0;
    

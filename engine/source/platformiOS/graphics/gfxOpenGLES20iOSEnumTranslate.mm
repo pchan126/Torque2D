@@ -4,7 +4,7 @@
 //-----------------------------------------------------------------------------
 
 #include "platform/platform.h"
-#include "./gfxOpenGLES20iOSEnumTranslate.h"
+#include "platformiOS/graphics/gfxOpenGLES20iOSEnumTranslate.h"
 #include "String/StringTable.h"
  
 GLenum GFXGLPrimType[GFXPT_COUNT];

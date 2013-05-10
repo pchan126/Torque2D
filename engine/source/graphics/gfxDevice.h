@@ -878,7 +878,7 @@ public:
    /// things which need just generic position/texture/color shaders
    ///
    /// @param  type  Type of generic shader, add your own if you need
-   virtual void setupGenericShaders( GenericShaderType type = GSColor ) {};
+   virtual void setupGenericShaders( GenericShaderType type = GSColor ) = 0;
 
    /// Get the fill convention for this device
    virtual F32 getFillConventionOffset() const = 0;

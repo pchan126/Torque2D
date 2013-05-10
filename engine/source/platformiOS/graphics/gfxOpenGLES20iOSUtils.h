@@ -3,8 +3,8 @@
 // Copyright GarageGames, LLC 2011
 //-----------------------------------------------------------------------------
 
-#ifndef TORQUE_GFX_GLES20iOS_GFXGLUTILS_H_
-#define TORQUE_GFX_GLES20iOS_GFXGLUTILS_H_
+#ifndef TORQUE_GFX_GLES20IOS_GFXGLUTILS_H_
+#define TORQUE_GFX_GLES20IOS_GFXGLUTILS_H_
 
 /// @defgroup preprocess_helpers Preprocessor Helpers
 /// These are some handy preprocessor macros to simplify certain tasks, like
@@ -19,8 +19,8 @@
 #define TORQUE_CONCAT(x, y) _TORQUE_CONCAT(x, y)
 
 
-#include "platform/platformGL.h"
-#include "./gfxOpenGLES20iOSEnumTranslate.h"
+#include "platformiOS/graphics/gfxOpenGLES20iOSEnumTranslate.h"
+#import <OpenGLES/ES2/glext.h>
 
 static inline GLenum minificationFilter(U32 minFilter, U32 mipFilter, U32 mipLevels)
 {

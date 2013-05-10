@@ -6,8 +6,11 @@
 #ifndef _GFXOpenGLES20iOSVertexBuffer_H_
 #define _GFXOpenGLES20iOSVertexBuffer_H_
 
+#ifndef _GFXVERTEXBUFFER_H_
 #include "graphics/gfxVertexBuffer.h"
-#include "platform/platformGL.h"
+#endif
+
+#import <OpenGLES/ES2/glext.h>
 
 /// This is a vertex buffer which uses GL_ARB_vertex_buffer_object.
 class GFXOpenGLES20iOSVertexBuffer : public GFXVertexBuffer 
@@ -37,7 +40,7 @@ public:
    virtual void resurrect();
    
 private:
-   friend class GFXOpenGLESDevice;
+   friend class GFXOpenGLES20iOSDevice;
 	/// GL buffer handle
 	GLuint mBuffer, mVertexArrayObject, elementBufferName;
    U32 mTextureCount;

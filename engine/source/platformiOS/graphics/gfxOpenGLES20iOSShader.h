@@ -6,23 +6,23 @@
 #ifndef _GFXOpenGLES20iOSShader_H_
 #define _GFXOpenGLES20iOSShader_H_
 
-#include "graphics/OpenGL/ES20/gfxOpenGLES20Shader.h"
+#include "graphics/OpenGL/gfxOpenGLShader.h"
 
-class GFXOpenGLESShaderConstHandle;
+class GFXOpenGLES20iOSShaderConstHandle;
 class FileStream;
-class GFXOpenGLESShaderConstBuffer;
+class GFXOpenGLES20iOSShaderConstBuffer;
 
-class GFXOpenGLES20iOSShader : public GFXOpenGLES20Shader
+class GFXOpenGLES20iOSShader : public GFXOpenGLShader
 {
-   typedef HashMap<String, GFXOpenGLESShaderConstHandle*> HandleMap;
+   typedef HashMap<String, GFXOpenGLES20iOSShaderConstHandle*> HandleMap;
 public:
    GFXOpenGLES20iOSShader() {};
     virtual ~GFXOpenGLES20iOSShader() {};
    
 protected:
 
-   friend class GFXOpenGLESShaderConstBuffer;
-   friend class GFXOpenGLESShaderConstHandle;
+   friend class GFXOpenGLES20iOSShaderConstBuffer;
+   friend class GFXOpenGLES20iOSShaderConstHandle;
    
     bool _loadShaderFromStream(  GLuint shader,
                                       const StringTableEntry path,
@@ -38,7 +38,7 @@ protected:
     Vector<U32> mAttributes;
 };
 
-class GFXOpenGLES20iOSShaderConstBuffer : public GFXOpenGLES20ShaderConstBuffer
+class GFXOpenGLES20iOSShaderConstBuffer : public GFXOpenGLShaderConstBuffer
 {
 public:
    GFXOpenGLES20iOSShaderConstBuffer(GFXOpenGLES20iOSShader* shader, U32 bufSize, U8* existingConstants);
@@ -84,4 +84,4 @@ private:
 //   void internalSet(GFXShaderConstHandle* handle, const AlignedArray<ConstType>& fv);
 };
 
-#endif // _GFXOpenGLESShader_H_
+#endif // _GFXOpenGLES20iOSShader_H_

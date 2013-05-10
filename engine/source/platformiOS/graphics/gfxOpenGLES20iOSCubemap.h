@@ -3,8 +3,8 @@
 // Copyright GarageGames, LLC 2011
 //-----------------------------------------------------------------------------
 
-#ifndef _GFXGLES20iOSCubemap_H_
-#define _GFXGLES20iOSCubemap_H_
+#ifndef _GFXGLESCubemap_H_
+#define _GFXGLESCubemap_H_
 
 #ifndef _GFXCUBEMAP_H_
 #include "gfx/gfxCubemap.h"

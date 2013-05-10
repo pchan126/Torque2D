@@ -9,7 +9,7 @@
 #include "platform/platformGL.h"
 #include "graphics/gfxEnums.h"
 
-namespace GFXGLESEnumTranslate
+namespace GFXGLES20EnumTranslate
 {
    void init();
 };

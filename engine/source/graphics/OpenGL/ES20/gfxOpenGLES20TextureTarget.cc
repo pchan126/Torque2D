@@ -12,15 +12,15 @@
 #include "./GFXOpenGLES20Utils.h"
 
 /// Internal struct used to track 2D/Rect texture information for FBO attachment
-class _GFXOpenGLESTextureTargetDesc : public _GFXOpenGLESTargetDesc
+class _GFXOpenGLES20TextureTargetDesc : public _GFXOpenGLES20TargetDesc
 {
 public:
-   _GFXOpenGLESTextureTargetDesc(GFXOpenGLES20TextureObject* tex, U32 _mipLevel, U32 _zOffset) 
-      : _GFXOpenGLESTargetDesc(_mipLevel, _zOffset), mTex(tex)
+   _GFXOpenGLES20TextureTargetDesc(GFXOpenGLES20TextureObject* tex, U32 _mipLevel, U32 _zOffset) 
+      : _GFXOpenGLES20TargetDesc(_mipLevel, _zOffset), mTex(tex)
    {
    }
    
-   virtual ~_GFXOpenGLESTextureTargetDesc() {}
+   virtual ~_GFXOpenGLES20TextureTargetDesc() {}
    
    virtual U32 getHandle() { return mTex->getHandle(); }
    virtual U32 getWidth() { return mTex->getWidth(); }
@@ -34,11 +34,11 @@ private:
 };
 //
 ///// Internal struct used to track Cubemap texture information for FBO attachment
-//class _GFXOpenGLESCubemapTargetDesc : public _GFXOpenGLESTargetDesc
+//class _GFXOpenGLESCubemapTargetDesc : public _GFXOpenGLES20TargetDesc
 //{
 //public:
 //   _GFXOpenGLESCubemapTargetDesc(GFXOpenGLES20Cubemap* tex, U32 _face, U32 _mipLevel, U32 _zOffset) 
-//      : _GFXOpenGLESTargetDesc(_mipLevel, _zOffset), mTex(tex), mFace(_face)
+//      : _GFXOpenGLES20TargetDesc(_mipLevel, _zOffset), mTex(tex), mFace(_face)
 //   {
 //   }
 //   
@@ -83,23 +83,23 @@ AssertFatal(false, "Something really bad happened with an FBO");\
 }\
 }
 
-_GFXOpenGLESTextureTargetFBOImpl::_GFXOpenGLESTextureTargetFBOImpl(GFXOpenGLES20TextureTarget* target)
+_GFXOpenGLES20TextureTargetFBOImpl::_GFXOpenGLES20TextureTargetFBOImpl(GFXOpenGLES20TextureTarget* target)
 {
     glGenFramebuffers(1, &mFramebuffer);
 }
 
-_GFXOpenGLESTextureTargetFBOImpl::~_GFXOpenGLESTextureTargetFBOImpl()
+_GFXOpenGLES20TextureTargetFBOImpl::~_GFXOpenGLES20TextureTargetFBOImpl()
 {
    glDeleteFramebuffers(1, &mFramebuffer);
 }
 
-void _GFXOpenGLESTextureTargetFBOImpl::applyState()
+void _GFXOpenGLES20TextureTargetFBOImpl::applyState()
 {
     // REMINDER: When we implement MRT support, check against GFXGLDevice::getNumRenderTargets()
     
     glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
     
-    _GFXOpenGLESTargetDesc* color0 = mTarget->getTargetDesc(GFXTextureTarget::Color0);
+    _GFXOpenGLES20TargetDesc* color0 = mTarget->getTargetDesc(GFXTextureTarget::Color0);
     if(color0)
     {
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, color0->getBinding(), color0->getHandle(), color0->getMipLevel());
@@ -110,7 +110,7 @@ void _GFXOpenGLESTextureTargetFBOImpl::applyState()
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
     }
     
-    _GFXOpenGLESTargetDesc* depthStencil = mTarget->getTargetDesc(GFXTextureTarget::DepthStencil);
+    _GFXOpenGLES20TargetDesc* depthStencil = mTarget->getTargetDesc(GFXTextureTarget::DepthStencil);
     if(depthStencil)
     {
         // Certain drivers have issues with depth only FBOs.  That and the next two asserts assume we have a color target.
@@ -128,16 +128,16 @@ void _GFXOpenGLESTextureTargetFBOImpl::applyState()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void _GFXOpenGLESTextureTargetFBOImpl::makeActive()
+void _GFXOpenGLES20TextureTargetFBOImpl::makeActive()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
 }
 
-void _GFXOpenGLESTextureTargetFBOImpl::finish()
+void _GFXOpenGLES20TextureTargetFBOImpl::finish()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     
-    _GFXOpenGLESTargetDesc* color0 = mTarget->getTargetDesc(GFXTextureTarget::Color0);
+    _GFXOpenGLES20TargetDesc* color0 = mTarget->getTargetDesc(GFXTextureTarget::Color0);
     if(!color0 || !(color0->hasMips()))
         return;
     
@@ -158,7 +158,7 @@ GFXOpenGLES20TextureTarget::GFXOpenGLES20TextureTarget()
    
 //   GFXTextureManager::addEventDelegate( this, &GFXOpenGLES20TextureTarget::_onTextureEvent );
 
-   _impl = new _GFXOpenGLESTextureTargetFBOImpl(this);
+   _impl = new _GFXOpenGLES20TextureTargetFBOImpl(this);
    _needsAux = false;
 }
 
@@ -196,7 +196,7 @@ void GFXOpenGLES20TextureTarget::attachTexture( RenderSlot slot, GFXTextureObjec
    // We stash the texture and info into an internal struct.
    GFXOpenGLES20TextureObject* glTexture = static_cast<GFXOpenGLES20TextureObject*>(tex);
    if(tex && tex != GFXTextureTarget::sDefaultDepthStencil)
-      mTargets[slot] = new _GFXOpenGLESTextureTargetDesc(glTexture, mipLevel, zOffset);
+      mTargets[slot] = new _GFXOpenGLES20TextureTargetDesc(glTexture, mipLevel, zOffset);
    else
       mTargets[slot] = NULL;
 }
@@ -257,12 +257,12 @@ void GFXOpenGLES20TextureTarget::applyState()
    // So we don't do this over and over again
    stateApplied();
    
-   _impl = new _GFXOpenGLESTextureTargetFBOImpl(this);
+   _impl = new _GFXOpenGLES20TextureTargetFBOImpl(this);
            
    _impl->applyState();
 }
 
-_GFXOpenGLESTargetDesc* GFXOpenGLES20TextureTarget::getTargetDesc(RenderSlot slot) const
+_GFXOpenGLES20TargetDesc* GFXOpenGLES20TextureTarget::getTargetDesc(RenderSlot slot) const
 {
    // This can only be called by our implementations, and then will not actually store the pointer so this is (almost) safe
    return mTargets[slot].ptr();

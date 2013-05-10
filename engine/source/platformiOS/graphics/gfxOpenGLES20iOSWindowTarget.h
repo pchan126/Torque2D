@@ -43,7 +43,7 @@ private:
     friend class GFXOpenGLES20iOSDevice;
 
    PlatformWindow *mWindow;
-   friend class GFXOpenGLESDevice;
+   friend class GFXOpenGLES20iOSDevice;
 
     GFXDevice* mDevice;
    EAGLContext* mContext;
