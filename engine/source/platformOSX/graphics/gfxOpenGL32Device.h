@@ -101,10 +101,6 @@ public:
    virtual void setShader(GFXOpenGL32Shader* shd);
    virtual void disableShaders(); ///< Equivalent to setShader(NULL)
    
-   /// @attention GL cannot check if the given format supports blending or filtering!
-   virtual GFXFormat selectSupportedFormat(GFXTextureProfile *profile,
-	   const Vector<GFXFormat> &formats, bool texture, bool mustblend, bool mustfilter);
-    
    /// Returns the number of texture samplers that can be used in a shader rendering pass
    virtual U32 getNumSamplers() const;
 
@@ -114,8 +110,6 @@ public:
    virtual GFXOpenGL32Shader* createShader();
     
    virtual void clear( U32 flags, ColorI color, F32 z, U32 stencil );
-    
-   virtual void updateStates(bool forceSetAll = false);
    
    GFXOpenGL32StateBlockRef getCurrentStateBlock() { return mCurrentGLStateBlock; }
    
@@ -143,14 +137,6 @@ protected:
    /// State initalization. This MUST BE CALLED in setVideoMode after the device
    /// is created.
    virtual void initStates() { }
-
-   virtual void setMatrix( GFXMatrixType mtype, const MatrixF &mat );
-   virtual const MatrixF getMatrix (GFXMatrixType mtype );
-
-   virtual inline const MatrixF getWorldMatrix() { return getMatrix(GFXMatrixWorld);};
-   virtual inline const MatrixF getProjectionMatrix() { return getMatrix(GFXMatrixProjection);};
-   virtual inline const MatrixF getViewMatrix() { return getMatrix(GFXMatrixView);};
-   
 
    virtual GFXVertexBuffer *allocVertexBuffer(  U32 numVerts, 
                                                 const GFXVertexFormat *vertexFormat,
@@ -187,25 +173,6 @@ private:
    
    StrongRefPtr<GFXOpenGL32VertexBuffer> mCurrentVB;
    
-   typedef Vector<MatrixF> MatrixStack;
-
-   /// Since GL does not have separate world and view matrices we need to track them
-    MatrixF m_mCurrentView;
-    MatrixStack m_WorldStack;
-    MatrixStack m_ProjectionStack;
-    
-    /// Pushes the world matrix stack and copies the current top
-    /// matrix to the new top of the stack
-    virtual void pushWorldMatrix();
-    
-    /// Pops the world matrix stack
-    virtual void popWorldMatrix();
-    
-    virtual void pushProjectionMatrix();
-    virtual void popProjectionMatrix();
-
-    virtual void multWorld( const MatrixF &mat );
-
    NSOpenGLContext* mContext;       // NSOpenGLContext
    NSOpenGLPixelFormat* mPixelFormat;   // NSOpenGLPixelFormat
    void* mTextureLoader; // GLKTextureLoader - for OSX version 10.8

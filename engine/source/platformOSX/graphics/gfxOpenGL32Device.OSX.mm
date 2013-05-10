@@ -70,7 +70,6 @@ void GFXOpenGL32Device::initGLState()
 GFXOpenGL32Device::GFXOpenGL32Device( U32 adapterIndex )  : GFXOpenGLDevice( adapterIndex ),
                         mAdapterIndex(adapterIndex),
                         mCurrentVB(NULL),
-                        m_mCurrentView(true),
                         mContext(nil),
                         mPixelFormat(NULL),
                         mPixelShaderVersion(0.0f),
@@ -82,9 +81,6 @@ GFXOpenGL32Device::GFXOpenGL32Device( U32 adapterIndex )  : GFXOpenGLDevice( ada
    
     for (int i = 0; i < TEXTURE_STAGE_COUNT; i++)
         mActiveTextureType[i] = GL_TEXTURE_2D;
-    
-    m_WorldStack.push_back(MatrixF(true));
-    m_ProjectionStack.push_back(MatrixF(true));
 }
 
 
@@ -219,39 +215,6 @@ void GFXOpenGL32Device::enumerateVideoModes()
     CFArrayApplyFunction(modeArray, CFRangeMake(0,CFArrayGetCount(modeArray)), addVideoModeCallback, &mVideoModes);
 }
 
-
-
-inline void GFXOpenGL32Device::pushWorldMatrix()
-{
-    MatrixF newMatrix = m_WorldStack.last();
-    m_WorldStack.push_back(newMatrix);
-}
-
-inline void GFXOpenGL32Device::popWorldMatrix()
-{
-    m_WorldStack.pop_back();
-}
-
-inline void GFXOpenGL32Device::pushProjectionMatrix()
-{
-    MatrixF newMatrix = m_ProjectionStack.last();
-    m_ProjectionStack.push_back(newMatrix);
-}
-
-inline void GFXOpenGL32Device::popProjectionMatrix()
-{
-    m_ProjectionStack.pop_back();
-}
-
-
-inline void GFXOpenGL32Device::multWorld( const MatrixF &mat )
-{
-    MatrixF newMatrix = m_WorldStack.last();
-    newMatrix*=mat;
-    m_WorldStack.last() = newMatrix;
-}
-
-
 void GFXOpenGL32Device::zombify()
 {
     mTextureManager->zombify();
@@ -370,177 +333,6 @@ void GFXOpenGL32Device::clear(U32 flags, ColorI color, F32 z, U32 stencil)
 }
 
 
-
-void GFXOpenGL32Device::updateStates(bool forceSetAll /*=false*/)
-{
-    PROFILE_SCOPE(GFXDevice_updateStates);
-    
-    if(forceSetAll)
-    {
-        bool rememberToEndScene = false;
-        if(!canCurrentlyRender())
-        {
-            if (!beginScene())
-            {
-                AssertFatal(false, "GFXDevice::updateStates:  Unable to beginScene!");
-            }
-            rememberToEndScene = true;
-        }
-        
-        setVertexDecl( mCurrVertexDecl );
-        
-        for ( U32 i=0; i < VERTEX_STREAM_COUNT; i++ )
-        {
-            setVertexStream( i, mCurrentVertexBuffer[i] );
-        }
-        
-        /// Stateblocks
-        if ( mNewStateBlock )
-            setStateBlockInternal(mNewStateBlock, true);
-        mCurrentStateBlock = mNewStateBlock;
-        
-        for(U32 i = 0; i < getNumSamplers(); i++)
-        {
-            switch (mTexType[i])
-            {
-                case GFXTDT_Normal :
-                {
-                    mCurrentTexture[i] = mNewTexture[i];
-                    setTextureInternal(i, mCurrentTexture[i]);
-                }
-                    break;
-//                case GFXTDT_Cube :
-//                {
-//                    mCurrentCubemap[i] = mNewCubemap[i];
-//                    if (mCurrentCubemap[i])
-//                        mCurrentCubemap[i]->setToTexUnit(i);
-//                    else
-//                        setTextureInternal(i, NULL);
-//                }
-//                    break;
-                default:
-                    AssertFatal(false, "Unknown texture type!");
-                    break;
-            }
-        }
-        
-//        // Set our material
-//        setLightMaterialInternal(mCurrentLightMaterial);
-        
-//        // Set our lights
-//        for(U32 i = 0; i < LIGHT_STAGE_COUNT; i++)
-//        {
-//            setLightInternal(i, mCurrentLight[i], mCurrentLightEnable[i]);
-//        }
-        
-        _updateRenderTargets();
-        
-        if(rememberToEndScene)
-            endScene();
-        
-        return;
-    }
-    
-    if (!mStateDirty)
-        return;
-    
-    // Normal update logic begins here.
-    mStateDirty = false;
-    
-    // Update the vertex declaration.
-    if ( mVertexDeclDirty )
-    {
-        setVertexDecl( mCurrVertexDecl );
-        mVertexDeclDirty = false;
-    }
-    
-    // Update the vertex buffers.
-    for ( U32 i=0; i < VERTEX_STREAM_COUNT; i++ )
-    {
-        if ( mVertexBufferDirty[i] )
-        {
-            setVertexStream( i, mCurrentVertexBuffer[i] );
-            mVertexBufferDirty[i] = false;
-        }
-        
-        if ( mVertexBufferFrequencyDirty[i] )
-        {
-            mVertexBufferFrequencyDirty[i] = false;
-        }
-    }
-    
-    // NOTE: With state blocks, it's now important to update state before setting textures
-    // some devices (e.g. OpenGL) set states on the texture and we need that information before
-    // the texture is activated.
-    if (mStateBlockDirty)
-    {
-        setStateBlockInternal(mNewStateBlock, false);
-        mCurrentStateBlock = mNewStateBlock;
-        mStateBlockDirty = false;
-    }
-    
-    if( mTexturesDirty )
-    {
-        mTexturesDirty = false;
-        for(U32 i = 0; i < getNumSamplers(); i++)
-        {
-            if(!mTextureDirty[i])
-                continue;
-            mTextureDirty[i] = false;
-            
-            switch (mTexType[i])
-            {
-                case GFXTDT_Normal :
-                {
-                    mCurrentTexture[i] = mNewTexture[i];
-                    setTextureInternal(i, mCurrentTexture[i]);
-                }
-                    break;
-//                case GFXTDT_Cube :
-//                {
-//                    mCurrentCubemap[i] = mNewCubemap[i];
-//                    if (mCurrentCubemap[i])
-//                        mCurrentCubemap[i]->setToTexUnit(i);
-//                    else
-//                        setTextureInternal(i, NULL);
-//                }
-//                    break;
-                default:
-                    AssertFatal(false, "Unknown texture type!");
-                    break;
-            }
-        }
-    }
-    
-//    // Set light material
-//    if(mLightMaterialDirty)
-//    {
-//        setLightMaterialInternal(mCurrentLightMaterial);
-//        mLightMaterialDirty = false;
-//    }
-//    
-//    // Set our lights
-//    if(mLightsDirty)
-//    {
-//        mLightsDirty = false;
-//        for(U32 i = 0; i < LIGHT_STAGE_COUNT; i++)
-//        {
-//            if(!mLightDirty[i])
-//                continue;
-//            
-//            mLightDirty[i] = false;
-//            setLightInternal(i, mCurrentLight[i], mCurrentLightEnable[i]);
-//        }
-//    }
-    
-    _updateRenderTargets();
-    
-#ifdef TORQUE_DEBUG_RENDER
-    doParanoidStateCheck();
-#endif
-}
-
-
 void GFXOpenGL32Device::setTextureInternal(U32 textureUnit, const GFXTextureObject *texture)
 {
     const GFXOpenGL32TextureObject *tex = static_cast<const GFXOpenGL32TextureObject*>(texture);
@@ -563,60 +355,6 @@ void GFXOpenGL32Device::setTextureInternal(U32 textureUnit, const GFXTextureObje
     glActiveTexture(GL_TEXTURE0);
 }
 
-
-void GFXOpenGL32Device::setMatrix( GFXMatrixType mtype, const MatrixF &mat )
-{
-    switch (mtype)
-    {
-        case GFXMatrixWorld :
-        {
-            m_WorldStack.last() = mat;
-        }
-            break;
-        case GFXMatrixView :
-        {
-            m_mCurrentView = mat;
-        }
-            break;
-        case GFXMatrixProjection :
-        {
-            m_ProjectionStack.last() = mat;
-        }
-            break;
-            // CodeReview - Add support for texture transform matrix types
-        default:
-            AssertFatal(false, "GFXOpenGL32Device::setMatrix - Unknown matrix mode!");
-            return;
-    }
-}
-
-
-const MatrixF GFXOpenGL32Device::getMatrix( GFXMatrixType mtype )
-{
-    MatrixF ret = MatrixF(true);
-    switch (mtype)
-    {
-        case GFXMatrixWorld :
-        {
-            return m_WorldStack.last();
-        }
-            break;
-        case GFXMatrixView :
-        {
-            return m_mCurrentView;
-        }
-            break;
-        case GFXMatrixProjection :
-        {
-            return m_ProjectionStack.last();
-        }
-            break;
-            // CodeReview - Add support for texture transform matrix types
-        default:
-            AssertFatal(false, "GFXOpenGL32Device::setMatrix - Unknown matrix mode!");
-    }
-    return ret;
-}
 
 /// Creates a state block object based on the desc passed in.  This object
 /// represents an immutable state.
@@ -864,38 +602,17 @@ void GFXOpenGL32Device::_updateRenderTargets()
     }
 }
 
-
-GFXFormat GFXOpenGL32Device::selectSupportedFormat(   GFXTextureProfile* profile, 
-                                               const Vector<GFXFormat>& formats, 
-                                               bool texture, 
-                                               bool mustblend,
-                                               bool mustfilter )
-{
-    for(U32 i = 0; i < formats.size(); i++)
-    {
-        // Single channel textures are not supported by FBOs.
-        if(profile->testFlag(GFXTextureProfile::RenderTarget) && (formats[i] == GFXFormatA8 || formats[i] == GFXFormatL8 || formats[i] == GFXFormatL16))
-            continue;
-        if(GFXGLTextureInternalFormat[formats[i]] == GL_ZERO)
-            continue;
-        
-        return formats[i];
-    }
-    
-    return GFXFormatR8G8B8A8;
-}
-
 //
 // Register this device with GFXInit
 //
-class GFXOpenGLRegisterDevice
+class GFXOpenGL32RegisterDevice
 {
 public:
-    GFXOpenGLRegisterDevice()
+    GFXOpenGL32RegisterDevice()
     {
         GFXInit::getRegisterDeviceSignal().notify(&GFXOpenGL32Device::enumerateAdapters);
     }
 };
 
-static GFXOpenGLRegisterDevice pGLRegisterDevice;
+static GFXOpenGL32RegisterDevice pGLRegisterDevice;
 

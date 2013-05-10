@@ -34,7 +34,7 @@
 void GFXOpenGLTextureObject::bind(U32 textureUnit) const
 {
     GFXOpenGLDevice* device = dynamic_cast<GFXOpenGLDevice*>(GFX);
-    AssertFatal(mBinding == GL_TEXTURE_2D, "GFXOpenGLES20TextureObject::bind - only GL_TEXTURE_2D supported");
+    AssertFatal(mBinding == GL_TEXTURE_2D, "GFXOpenGLTextureObject::bind - only GL_TEXTURE_2D supported");
    glActiveTexture(GL_TEXTURE0 + textureUnit);
 
     GLuint han = mHandle;
