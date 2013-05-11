@@ -198,6 +198,7 @@
     </Filter>
     <Filter Include="windowManager">
       <UniqueIdentifier>{6491d16e-04b4-453b-bad5-9181b76f1c9b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\audio\audio.cc">
