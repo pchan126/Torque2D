@@ -1666,7 +1666,7 @@ void GuiControl::onAction()
       return;
 
    //execute the console command
-   if (mConsoleCommand && mConsoleCommand[0])
+   if( mConsoleCommand.isNotEmpty() )
    {
       execConsoleCallback();
    }
@@ -1813,7 +1813,7 @@ void GuiControl::getCursor(GuiCursor *&cursor, bool &showCursor, const GuiEvent 
 
 const char* GuiControl::execConsoleCallback()
 {
-   if (mConsoleCommand && mConsoleCommand[0])
+   if( mConsoleCommand.isNotEmpty() )
    {
       Con::setVariable("$ThisControl", avar("%d",getId()));
       return Con::evaluate(mConsoleCommand, false);
@@ -1823,7 +1823,7 @@ const char* GuiControl::execConsoleCallback()
 
 const char* GuiControl::execAltConsoleCallback()
 {
-   if(mAltConsoleCommand && mAltConsoleCommand[0])
+   if( mAltConsoleCommand.isNotEmpty() )
    {
       Con::setVariable("$ThisControl", avar("%d",getId()));
       return Con::evaluate(mAltConsoleCommand, false);

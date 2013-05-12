@@ -199,6 +199,7 @@ struct InputEventInfo
 /// @{
 
 /// Input event constants:
+typedef U32 InputObjectInstances;
 enum KeyCodes {
    KEY_NULL          = 0x000,     ///< Invalid KeyCode
    KEY_BACKSPACE     = 0x001,
@@ -411,33 +412,91 @@ enum GyroCodes
    SI_ROLL        = 0x30B
 };
 
+enum XInputCodes
+{
+   XI_CONNECT        = 0x310,
+   XI_THUMBLX        = 0x311,
+   XI_THUMBLY        = 0x312,
+   XI_THUMBRX        = 0x313,
+   XI_THUMBRY        = 0x314,
+   XI_LEFT_TRIGGER   = 0x315,
+   XI_RIGHT_TRIGGER  = 0x316,
+
+   /*XI_DPAD_UP        = 0x317,
+   XI_DPAD_DOWN      = 0x318,
+   XI_DPAD_LEFT      = 0x319,
+   XI_DPAD_RIGHT     = 0x320,*/
+   
+   XI_START          = 0x321,
+   XI_BACK           = 0x322,
+   XI_LEFT_THUMB     = 0x323,
+   XI_RIGHT_THUMB    = 0x324,
+   XI_LEFT_SHOULDER  = 0x325,
+   XI_RIGHT_SHOULDER = 0x326,
+
+   XI_A              = 0x327,
+   XI_B              = 0x328,
+   XI_X              = 0x329,
+   XI_Y              = 0x330,
+};
+
 
 /// Input device types
-enum InputDeviceTypes
+typedef U32 InputDeviceTypes;
+enum InputDeviceTypesEnum
 {
    UnknownDeviceType,
    MouseDeviceType,
    KeyboardDeviceType,
    JoystickDeviceType,
    AccelerometerDeviceType,
-   GyroscopeDeviceType
+   GyroscopeDeviceType,
+   GamepadDeviceType,
+   XInputDeviceType,
+
+   NUM_INPUT_DEVICE_TYPES,
+
+   INPUT_DEVICE_PLUGIN_DEVICES_START = NUM_INPUT_DEVICE_TYPES,
+
 };
 
 /// Device Event Action Types
-#define SI_MAKE      0x01
-#define SI_BREAK     0x02
-#define SI_MOVE      0x03
-#define SI_REPEAT    0x04
+enum InputActionType
+{
+   /// Button was depressed.
+   SI_MAKE    = 0x01,
+
+   /// Button was released.
+   SI_BREAK   = 0x02,
+
+   /// An axis moved.
+   SI_MOVE    = 0x03,
+
+   /// A key repeat occurred. Happens in between a SI_MAKE and SI_BREAK.
+   SI_REPEAT  = 0x04,
+
+   /// A value of some type.  Matched with SI_FLOAT or SI_INT.
+   SI_VALUE   = 0x05,
+};
+
 
 ///Device Event Types
-#define SI_UNKNOWN   0x01
-#define SI_BUTTON    0x02
-#define SI_POV       0x03
-#define SI_KEY       0x0A
-#define SI_TEXT      0x0B
-#define SI_TOUCH     0x0C
-#define SI_GESTURE   0x0D
-#define SI_MOTION    0x0F
+enum InputEventType
+{
+   SI_UNKNOWN = 0x01,
+   SI_BUTTON  = 0x02,   // Button press/release
+   SI_POV     = 0x03,   // Point of View hat
+   SI_AXIS    = 0x04,   // Axis in range -1.0..1.0
+   SI_POS     = 0x05,   // Absolute position value (Point3F)
+   SI_ROT     = 0x06,   // Absolute rotation value (QuatF)
+   SI_INT     = 0x07,   // Integer value (S32)
+   SI_FLOAT   = 0x08,   // Float value (F32)
+   SI_KEY     = 0x0A,   // Keyboard key
+   SI_TEXT    = 0x0B,
+   SI_TOUCH   = 0x0C,
+   SI_GESTURE = 0x0D,
+   SI_MOTION  = 0x0F
+};
 
 /// Event SubTypes
 #define SI_ANY       0xff

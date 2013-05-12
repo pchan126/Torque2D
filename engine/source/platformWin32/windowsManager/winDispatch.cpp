@@ -16,12 +16,11 @@
 
 #include "platform/event.h"
 #include "platform/platformInput.h"
-#include "windowManager/win32/winDispatch.h"
-#include "windowManager/win32/win32Window.h"
-#include "windowManager/win32/win32CursorController.h"
+#include "./winDispatch.h"
+#include "./win32Window.h"
+#include "./win32CursorController.h"
 #include "platformWin32/winDirectInput.h"
-#include "core/util/journal/process.h"
-#include "core/util/journal/journaledSignal.h"
+#include "delegates/delegateSignal.h"
 
 static U32 _ModifierKeys=0;
 static BYTE keyboardState[256];

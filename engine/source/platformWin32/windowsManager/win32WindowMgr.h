@@ -9,9 +9,8 @@
 #include <windows.h>
 
 #include "math/mMath.h"
-#include "gfx/gfxStructs.h"
-#include "windowManager/win32/win32Window.h"
-#include "core/util/tVector.h"
+#include "graphics/gfxStructs.h"
+#include "./win32Window.h"
 
 /// Win32 implementation of the window manager interface.
 class Win32WindowManager : public PlatformWindowManager

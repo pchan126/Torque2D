@@ -21,7 +21,7 @@
 //-----------------------------------------------------------------------------
 
 #include "math/mMath.h"
-#include "graphics/dgl.h"
+#include "graphics/gfxDevice.h"
 #include "graphics/gBitmap.h"
 
 #if !defined(__MWERKS__) && defined(_MSC_VER)

@@ -4,11 +4,11 @@
 //-----------------------------------------------------------------------------
 
 #include "platformWin32/platformWin32.h"
-#include "windowManager/win32/win32WindowMgr.h"
-#include "gfx/gfxDevice.h"
-#include "windowManager/win32/winDispatch.h"
-#include "core/util/journal/process.h"
-#include "core/strings/unicode.h"
+#include "./win32WindowMgr.h"
+#include "graphics/gfxDevice.h"
+#include "./winDispatch.h"
+#include "delegates/process.h"
+#include "string/unicode.h"
 
 // ------------------------------------------------------------------------
 

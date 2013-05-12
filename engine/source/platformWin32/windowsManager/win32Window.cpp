@@ -7,12 +7,12 @@
 #include <tchar.h>
 #include <winuser.h>
 #include "math/mMath.h"
-#include "gfx/gfxStructs.h"
+#include "graphics/gfxStructs.h"
 
-#include "windowManager/win32/win32Window.h"
-#include "windowManager/win32/win32WindowMgr.h"
-#include "windowManager/win32/win32CursorController.h"
-#include "windowManager/win32/winDispatch.h"
+#include "./win32Window.h"
+#include "./win32WindowMgr.h"
+#include "./win32CursorController.h"
+#include "./winDispatch.h"
 
 #include "platform/menus/popupMenu.h"
 #include "platform/platformInput.h"
@@ -21,7 +21,7 @@
 #include "platformWin32/platformWin32.h"
 
 #include <d3d9types.h>
-#include "gfx/gfxDevice.h"
+#include "graphics/gfxDevice.h"
 
 #include <zmouse.h>
 
@@ -120,7 +120,7 @@ void Win32Window::setVideoMode( const GFXVideoMode &mode )
 	mSuppressReset = true;
 
    // Can't switch to fullscreen while a child of another window
-   if(mode.fullScreen && !Platform::getWebDeployment() && mOwningManager->getParentWindow())
+   if(mode.fullScreen && mOwningManager->getParentWindow())
    {
       mOldParent = (HWND)mOwningManager->getParentWindow();
       mOwningManager->setParentWindow(NULL);
@@ -132,7 +132,7 @@ void Win32Window::setVideoMode( const GFXVideoMode &mode )
    }
 
 	// Set our window to have the right style based on the mode
-   if(mode.fullScreen && !Platform::getWebDeployment() && !mOffscreenRender)
+   if(mode.fullScreen && !mOffscreenRender)
 	{
 		SetWindowLong( getHWND(), GWL_STYLE, WS_POPUP);
 		SetWindowPos( getHWND(), HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
@@ -173,7 +173,7 @@ void Win32Window::setVideoMode( const GFXVideoMode &mode )
       }
 
       // Make sure we're the correct resolution for web deployment
-      if (!Platform::getWebDeployment() || !mOwningManager->getParentWindow() || mOffscreenRender)
+      if (!mOwningManager->getParentWindow() || mOffscreenRender)
       {
          setSize(mode.resolution);
       }
@@ -669,7 +669,7 @@ LRESULT PASCAL Win32Window::WindowProc( HWND hWnd, UINT message, WPARAM wParam, 
       }
 
 		// If our foreground window is the browser and we don't have focus grab it
-		if (Platform::getWebDeployment() && GetFocus() != hWnd)
+		if ( GetFocus() != hWnd)
 		{
 			HWND phwnd = GetParent(hWnd);
 			while (phwnd)
@@ -717,7 +717,7 @@ LRESULT PASCAL Win32Window::WindowProc( HWND hWnd, UINT message, WPARAM wParam, 
 			break;
 
 		// This is dispatched immediately to prevent a race condition with journaling and window minimizing
-		if (wParam != SIZE_MINIMIZED && !Journal::IsPlaying()) 
+		if (wParam != SIZE_MINIMIZED) // && !Journal::IsPlaying()) 
 			Dispatch( ImmediateDispatch, hWnd,message,wParam,lParam );
 
 		if(wParam != SIZE_MINIMIZED && window != NULL )

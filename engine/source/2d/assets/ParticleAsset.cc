@@ -34,7 +34,7 @@
 
 static EnumTable::Enums particleAssetLifeModeLookup[] =
 {
-    { ParticleAsset::INFINITE,  "INFINITE" },
+    { ParticleAsset::INFINITE_LIFEMODE,  "INFINITE" },
     { ParticleAsset::CYCLE,     "CYCLE" },
     { ParticleAsset::STOP,      "STOP" },
     { ParticleAsset::KILL,      "KILL" },
@@ -123,7 +123,7 @@ ConsoleSetType( TypeParticleAssetPtr )
 
 ParticleAsset::ParticleAsset() :
                     mLifetime( 0.0f ),
-                    mLifeMode( INFINITE )
+                    mLifeMode( INFINITE_LIFEMODE )
 
 {
     // Set Vector Associations.

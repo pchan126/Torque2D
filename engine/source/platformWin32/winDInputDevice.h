@@ -29,15 +29,10 @@
 #ifndef _PLATFORMINPUT_H_
 #include "platform/platformInput.h"
 #endif
-#ifndef _EVENT_H_
-#include "platform/event.h"
-#endif
 
-
-//Luma: Adding this for direct input header
-#define DIRECTINPUT_VERSION  0x0800
-
+#define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
+
 
 class DInputDevice : public InputDevice
 {
@@ -55,14 +50,11 @@ class DInputDevice : public InputDevice
          SIZEOF_POV    = 4,
       };
 
-      static U8   smKeyboardCount;
-      static U8   smMouseCount;
-      static U8   smJoystickCount;
-      static U8   smUnknownCount;
-
-      static U8   smModifierKeys;
-      static bool smKeyStates[256];
+      static U8   smDeviceCount[ NUM_INPUT_DEVICE_TYPES ];
       static bool smInitialized;
+
+      /// Are we an XInput device?
+      bool mIsXInput;
 
       //--------------------------------------
       LPDIRECTINPUTDEVICE8 mDevice;
@@ -73,6 +65,10 @@ class DInputDevice : public InputDevice
 
       bool                 mAcquired;
       bool                 mNeedSync;
+
+      LPDIRECTINPUTEFFECT  mForceFeedbackEffect;   ///< Holds our DirectInput FF Effect
+      DWORD                mNumForceFeedbackAxes;  ///< # axes (we only support 0, 1, or 2
+      DWORD                mForceFeedbackAxes[2];  ///< Force Feedback axes offsets into DIOBJECTFORMAT
 
       //--------------------------------------
       DIDEVICEOBJECTINSTANCE* mObjInstance;
@@ -95,9 +91,6 @@ class DInputDevice : public InputDevice
       bool enumerateObjects();
       bool processAsync();
       bool processImmediate();
-      bool processKeyEvent( InputEvent &event );
-
-      void syncKeyboardState();
 
       DWORD findObjInstance( DWORD offset );
       bool  buildEvent( DWORD offset, S32 newData, S32 oldData );
@@ -107,8 +100,7 @@ class DInputDevice : public InputDevice
       ~DInputDevice();
 
       static void init();
-      static void resetModifierKeys();
-
+ 
       bool create();
       void destroy();
 
@@ -123,6 +115,9 @@ class DInputDevice : public InputDevice
 
       const char* getName();
       const char* getProductName();
+
+      // Constant Effect Force Feedback
+      void rumble( float x, float y );
 
       // Console interface functions:
       const char* getJoystickAxesString();
@@ -142,7 +137,7 @@ inline bool DInputDevice::isAcquired()
 inline bool DInputDevice::isPolled()
 {
    //return true;
-   return ( mDeviceCaps.dwFlags & DIDC_POLLEDDEVICE );
+   return ( mDeviceCaps.dwFlags & DIDC_POLLEDDEVICE ) != 0;
 }
 
 //------------------------------------------------------------------------------
@@ -159,6 +154,6 @@ inline U8 DInputDevice::getDeviceID()
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
-U16 DIK_to_Key( U8 dikCode );
+InputObjectInstances DIK_to_Key( U8 dikCode );
 U8  Key_to_DIK( U16 keyCode );
 #endif // _H_WINDINPUTDEVICE_

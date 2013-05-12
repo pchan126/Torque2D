@@ -27,7 +27,7 @@
 #include "2d/core/vector2.h"
 #endif
 
-#include "SceneWindow.h"
+#include "2d/gui/SceneWindow.h"
 
 //-----------------------------------------------------------------------------
 

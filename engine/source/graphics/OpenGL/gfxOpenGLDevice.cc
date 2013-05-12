@@ -176,11 +176,11 @@ void GFXOpenGLDevice::setClipRect( const RectI &inRect )
     const F32 right = mClip.centre().x + (mClip.extent.x)/2;
     const F32 bottom = mClip.centre().y + mClip.extent.y / 2;
     const F32 top = mClip.centre().y - mClip.extent.y / 2;
-    const F32 near = 0.0f;
-    const F32 far = 1.0f;
+    const F32 p_near = 0.0f;
+    const F32 p_far = 1.0f;
     
     MatrixF projection(true);
-    projection.setOrtho(left, right, bottom, top, near, far);
+    projection.setOrtho(left, right, bottom, top, p_near, p_far);
     setMatrix(GFXMatrixProjection, projection);
     
     MatrixF mTempMatrix(true);
@@ -298,7 +298,7 @@ void GFXOpenGLDevice::setMatrix( GFXMatrixType mtype, const MatrixF &mat )
             break;
             // CodeReview - Add support for texture transform matrix types
         default:
-            AssertFatal(false, "GFXOpenGL32Device::setMatrix - Unknown matrix mode!");
+            AssertFatal(false, "GFXOpenGL33WinDevice::setMatrix - Unknown matrix mode!");
             return;
     }
 }

@@ -459,7 +459,7 @@ bool OpenGLDevice::activate( U32 width, U32 height, U32 bpp, bool fullScreen )
    if ( winState.hinstOpenGL )
       GL_Shutdown();
 
-   GL_Init( "opengl32", "glu32" );
+   GL_Init( "OpenGL33Win", "glu32" );
 
     static bool onceAlready = false;
     bool profiled = false;
@@ -1096,7 +1096,7 @@ DisplayDevice* OpenGLDevice::create()
    //------------------------------------------------------------------------------
    // Initialize GL
    //------------------------------------------------------------------------------
-   if (!GL_Init( "opengl32", "glu32" ))
+   if (!GL_Init( "OpenGL33Win", "glu32" ))
       return NULL;
 
    //------------------------------------------------------------------------------

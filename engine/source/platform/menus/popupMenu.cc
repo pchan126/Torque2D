@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// Copyright (c) 2013 GarageGames, LLC
+// Copyright (c) 2012 GarageGames, LLC
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to
@@ -20,23 +20,39 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#include "platform/menus/popupMenu.h"
+#include "./popupMenu.h"
 #include "console/consoleTypes.h"
-#include "gui/guiCanvas.h"
 #include "memory/safeDelete.h"
 
-//////////////////////////////////////////////////////////////////////////
-// Constructor/Destructor
-//////////////////////////////////////////////////////////////////////////
+static U32 sMaxPopupGUID = 0;
+PopupMenuEvent PopupMenu::smPopupMenuEvent;
+bool PopupMenu::smSelectionEventHandled = false;
 
-PopupMenu::PopupMenu()
+/// Event class used to remove popup menus from the event notification in a safe way
+class PopUpNotifyRemoveEvent : public SimEvent
+{   
+public:
+   void process(SimObject *object)
+   {
+      PopupMenu::smPopupMenuEvent.remove((PopupMenu *)object, &PopupMenu::handleSelectEvent);
+   }
+};
+
+//-----------------------------------------------------------------------------
+// Constructor/Destructor
+//-----------------------------------------------------------------------------
+
+PopupMenu::PopupMenu() : mCanvas(NULL)
 {
    createPlatformPopupMenuData();
 
    mSubmenus = new SimSet;
    mSubmenus->registerObject();
 
+   mBarTitle = StringTable->insert("");
    mIsPopup = false;
+
+	mPopupGUID = sMaxPopupGUID++;
 }
 
 PopupMenu::~PopupMenu()
@@ -53,23 +69,32 @@ PopupMenu::~PopupMenu()
 
    mSubmenus->deleteObject();
    deletePlatformPopupMenuData();
+
+   PopupMenu::smPopupMenuEvent.remove(this, &PopupMenu::handleSelectEvent);
 }
 
 IMPLEMENT_CONOBJECT(PopupMenu);
 
-//////////////////////////////////////////////////////////////////////////
+ConsoleDocClass( PopupMenu,
+   "@brief PopupMenu represents a system menu.\n\n"
+   "You can add menu items to the menu, but there is no torque object associated "
+   "with these menu items, they exist only in a  platform specific manner.\n\n"
+   "@note Internal use only\n\n"
+   "@internal"
+);
+
+
+//-----------------------------------------------------------------------------
 
 void PopupMenu::initPersistFields()
 {
-   Parent::initPersistFields();
+   addField("isPopup",     TypeBool,         Offset(mIsPopup, PopupMenu),  "true if this is a pop-up/context menu. defaults to false.");
+   addField("barTitle",    TypeCaseString,   Offset(mBarTitle, PopupMenu), "the title of this menu when attached to a menu bar");
 
-   // [neo, 5/7/2007 - #2973]
-   // isPopup field corrected to TypeBool instead of TypeString which caused
-   // a crash when reading field value e.g. in dump()   
-   addField( "isPopup", TypeBool, Offset(mIsPopup, PopupMenu));
+   Parent::initPersistFields();
 }
 
-//////////////////////////////////////////////////////////////////////////
+//-----------------------------------------------------------------------------
 
 bool PopupMenu::onAdd()
 {
@@ -78,52 +103,107 @@ bool PopupMenu::onAdd()
 
    createPlatformMenu();
 
+   Con::executef(this, "onAdd");
    return true;
 }
 
 void PopupMenu::onRemove()
 {
+   Con::executef(this, "onRemove");
+
    Parent::onRemove();
 }
 
-//////////////////////////////////////////////////////////////////////////
+//-----------------------------------------------------------------------------
+
+void PopupMenu::onMenuSelect()
+{
+   Con::executef(this, "onMenuSelect");
+}
+
+//-----------------------------------------------------------------------------
+
+void PopupMenu::handleSelectEvent(U32 popID, U32 command)
+{	
+	if (popID == mPopupGUID && canHandleID(command))	
+		if (handleSelect(command))
+			smSelectionEventHandled = true;
+}
+
+//-----------------------------------------------------------------------------
+
+void PopupMenu::onAttachToMenuBar(GuiCanvas *canvas, S32 pos, const char *title)
+{
+   mCanvas = canvas;
+
+	// Attached menus must be notified of menu events
+	smPopupMenuEvent.notify(this, &PopupMenu::handleSelectEvent);
+   
+   // Pass on to sub menus
+   for(SimSet::iterator i = mSubmenus->begin();i != mSubmenus->end();++i)
+   {
+      PopupMenu *mnu = dynamic_cast<PopupMenu *>(*i);
+      if(mnu == NULL)
+         continue;
+
+      mnu->onAttachToMenuBar(canvas, pos, title);
+   }
+
+   // Call script
+   if(isProperlyAdded())
+      Con::executef(this, "onAttachToMenuBar", Con::getIntArg(canvas ? canvas->getId() : 0), Con::getIntArg(pos), title);
+}
+
+void PopupMenu::onRemoveFromMenuBar(GuiCanvas *canvas)
+{
+   mCanvas = NULL;
+
+	// We are no longer interested in select events, remove ourselves from the notification list in a safe way
+	Sim::postCurrentEvent(this, new PopUpNotifyRemoveEvent());
+      
+   // Pass on to sub menus
+   for(SimSet::iterator i = mSubmenus->begin();i != mSubmenus->end();++i)
+   {
+      PopupMenu *mnu = dynamic_cast<PopupMenu *>(*i);
+      if(mnu == NULL)
+         continue;
+
+      mnu->onRemoveFromMenuBar(canvas);
+   }
+
+   // Call script
+   if(isProperlyAdded())
+      Con::executef(this, "onRemoveFromMenuBar", Con::getIntArg(canvas ? canvas->getId() : 0));
+}
+
+//-----------------------------------------------------------------------------
 
 bool PopupMenu::onMessageReceived(StringTableEntry queue, const char* event, const char* data)
 {
-   return Con::executef(this, 4, "onMessageReceived", queue, event, data);
+   return Con::executef(this, "onMessageReceived", queue, event, data);
 }
 
 
 bool PopupMenu::onMessageObjectReceived(StringTableEntry queue, Message *msg )
 {
-   return Con::executef(this, 4, "onMessageReceived", queue, Con::getIntArg(msg->getId()));
+   return Con::executef(this, "onMessageReceived", queue, Con::getIntArg(msg->getId()));
 }
 
-//////////////////////////////////////////////////////////////////////////
+//-----------------------------------------------------------------------------
 // Console Methods
-//////////////////////////////////////////////////////////////////////////
+//-----------------------------------------------------------------------------
 
-ConsoleMethod(PopupMenu, insertItem, S32, 3, 5, "(pos[, title][, accelerator) Insert a new menu item\n"
-              "@param pos The position of the item\n"
-              "@param title The title of the item to add (optional)\n"
-              "@param accelerator A keyboard accelerator for the menu item\n"
-              "@return Returns the id of the new menu item as a nonnegative integer (-1 on fail)")
+ConsoleMethod(PopupMenu, insertItem, S32, 3, 5, "(pos[, title][, accelerator])")
 {
    return object->insertItem(dAtoi(argv[2]), argc < 4 ? NULL : argv[3], argc < 5 ? "" : argv[4]);
 }
 
-ConsoleMethod(PopupMenu, removeItem, void, 3, 3, "(pos) Removes the menu item at the given position\n"
-              "@param pos The position of the desired menu item to obliterate\n"
-              "@return No return value")
+ConsoleMethod(PopupMenu, removeItem, void, 3, 3, "(pos)")
 {
    object->removeItem(dAtoi(argv[2]));
 }
 
-ConsoleMethod(PopupMenu, insertSubMenu, S32, 5, 5, "(pos, title, subMenu) Inserts a menu item into the current object\n"
-              "@param pos The position of the menu item\n"
-              "@param The desired title of the sub menu\n"
-              "@param subMenu The submenu you are inserting.\n"
-              "@return Returns the ID of the inserted item or -1 on failure")
+ConsoleMethod(PopupMenu, insertSubMenu, S32, 5, 5, "(pos, title, subMenu)")
 {
    PopupMenu *mnu = dynamic_cast<PopupMenu *>(Sim::findObject(argv[4]));
    if(mnu == NULL)
@@ -134,66 +214,56 @@ ConsoleMethod(PopupMenu, insertSubMenu, S32, 5, 5, "(pos, title, subMenu) Insert
    return object->insertSubMenu(dAtoi(argv[2]), argv[3], mnu);
 }
 
-//////////////////////////////////////////////////////////////////////////
+ConsoleMethod(PopupMenu, setItem, bool, 4, 5, "(pos, title[, accelerator])")
+{
+   return object->setItem(dAtoi(argv[2]), argv[3], argc < 5 ? "" : argv[4]);
+}
 
-ConsoleMethod(PopupMenu, enableItem, void, 4, 4, "(pos, enabled) Enables the item at the given position\n"
-              "@param pos The item's position\n"
-              "@param enabled A boolean value to set its current status\n"
-              "@return No return value")
+//-----------------------------------------------------------------------------
+
+ConsoleMethod(PopupMenu, enableItem, void, 4, 4, "(pos, enabled)")
 {
    object->enableItem(dAtoi(argv[2]), dAtob(argv[3]));
 }
 
-ConsoleMethod(PopupMenu, checkItem, void, 4, 4, "(pos, checked) Sets the given item's \"checked\" status\n"
-              "@param pos The item's position\n"
-              "@return No return value")
+ConsoleMethod(PopupMenu, checkItem, void, 4, 4, "(pos, checked)")
 {
    object->checkItem(dAtoi(argv[2]), dAtob(argv[3]));
 }
 
-ConsoleMethod(PopupMenu, checkRadioItem, void, 5, 5, "(firstPos, lastPos, checkPos) Checks the specified menu item and makes it a radio item\n"
-              "@param firstPos The position of the first item in the group\n"
-              "@param lastPos The position of the last item in the group\n"
-              "@param checkPos The position of the item to check\n"
-              "@return No return value.")
+ConsoleMethod(PopupMenu, checkRadioItem, void, 5, 5, "(firstPos, lastPos, checkPos)")
 {
    object->checkRadioItem(dAtoi(argv[2]), dAtoi(argv[3]), dAtoi(argv[4]));
 }
 
-ConsoleMethod(PopupMenu, isItemChecked, bool, 3, 3, "(pos) Checks (no pun intended) the \"checked\" flag of the given menu item\n"
-              "@param pos The position of the desired item\n"
-              "@return Returns true if checked, false otherwise")
+ConsoleMethod(PopupMenu, isItemChecked, bool, 3, 3, "(pos)")
 {
    return object->isItemChecked(dAtoi(argv[2]));
 }
 
-//////////////////////////////////////////////////////////////////////////
-
-ConsoleMethod(PopupMenu, attachToMenuBar, void, 5, 5, "(GuiCanvas, pos, title) Attaches given menu item to menu bar\n"
-              "@param GuiCanvas The GuiCanvas to attach to\n"
-              "@param pos The position of the desired menu item\n"
-              "@param title The menu item title\n"
-              "@return No return value")
+ConsoleMethod(PopupMenu, getItemCount, S32, 2, 2, "()")
 {
-    object->attachToMenuBar(dynamic_cast<GuiCanvas*>(Sim::findObject(argv[2])),dAtoi(argv[3]), argv[4]);
+   return object->getItemCount();
 }
 
+//-----------------------------------------------------------------------------
 
-ConsoleMethod(PopupMenu, removeFromMenuBar, void, 2, 2, "() Removes current item from menu bar"
-              "@return No return value")
+ConsoleMethod(PopupMenu, attachToMenuBar, void, 5, 5, "(GuiCanvas, pos, title)")
+{
+   object->attachToMenuBar(dynamic_cast<GuiCanvas*>(Sim::findObject(argv[2])),dAtoi(argv[3]), argv[4]);
+}
+
+ConsoleMethod(PopupMenu, removeFromMenuBar, void, 2, 2, "()")
 {
    object->removeFromMenuBar();
 }
 
-//////////////////////////////////////////////////////////////////////////
+//-----------------------------------------------------------------------------
 
-ConsoleMethod(PopupMenu, showPopup, void, 3, 5, "(Canvas, [x, y]) Show the menu (optional: specify position)\n"
-              "@param Canvas The GuiCanvas to attach to\n"
-              "@param x,y Coodinates to display menu (upper left corner)\n"
-              "@return No return value.")
+ConsoleMethod(PopupMenu, showPopup, void, 3, 5, "(Canvas,[x, y])")
 {
-    GuiCanvas *pCanvas = dynamic_cast<GuiCanvas*>(Sim::findObject(argv[2]));
-    S32 x = argc >= 4 ? dAtoi(argv[3]) : -1;
-    S32 y = argc >= 5 ? dAtoi(argv[4]) : -1;
-    object->showPopup(pCanvas, x, y);
+   GuiCanvas *pCanvas = dynamic_cast<GuiCanvas*>(Sim::findObject(argv[2]));
+   S32 x = argc >= 4 ? dAtoi(argv[3]) : -1;
+   S32 y = argc >= 5 ? dAtoi(argv[4]) : -1;
+   object->showPopup(pCanvas, x, y);
 }

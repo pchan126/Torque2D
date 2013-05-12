@@ -402,7 +402,7 @@ void ParticlePlayer::integrateObject( const F32 totalTime, const F32 elapsedTime
     const ParticleAsset::LifeMode lifeMode = pParticleAsset->getLifeMode();
 
     // Finish if the particle player is in "infinite" mode.
-    if ( lifeMode == ParticleAsset::INFINITE )
+    if ( lifeMode == ParticleAsset::INFINITE_LIFEMODE )
         return;
 
     // Are we waiting for particles and there are non left?

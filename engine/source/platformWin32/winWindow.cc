@@ -70,7 +70,7 @@ static bool sgQueueEvents;
    ((0x41 <= (c)) && ((c) <= 0x5a)) || \
    ((0x70 <= (c)) && ((c) <= 0x7B)))
 
-extern U16  DIK_to_Key( U8 dikCode );
+extern InputObjectInstances  DIK_to_Key( U8 dikCode );
 
 Win32PlatState winState;
 

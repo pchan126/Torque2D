@@ -54,7 +54,7 @@ public:
     {
         INVALID_LIFEMODE,
 
-        INFINITE,
+        INFINITE_LIFEMODE,
         CYCLE,
         STOP,
         KILL

@@ -5,12 +5,12 @@
 
 #include <windows.h>
 #include <tchar.h>
-#include "core/strings/unicode.h"
+#include "string/unicode.h"
 #include "math/mMath.h"
-#include "windowManager/win32/win32Window.h"
-#include "windowManager/win32/win32WindowMgr.h"
-#include "windowManager/win32/winDispatch.h"
-#include "windowManager/win32/win32CursorController.h"
+#include "./win32Window.h"
+#include "./win32WindowMgr.h"
+#include "./winDispatch.h"
+#include "./win32CursorController.h"
 #include "platform/platformInput.h"
 #include <zmouse.h>
 

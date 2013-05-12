@@ -34,20 +34,6 @@ static bool loggingEnabled = false;
 static bool outlineEnabled = false;
 static bool perfEnabled = false;
 
-#define GL_FUNCTION(fn_type, fn_name, fn_args, fn_body) extern fn_type (APIENTRY * dll##fn_name)fn_args;
-#define WGL_FUNCTION(fn_type, fn_name, fn_args, fn_body) extern fn_type (APIENTRY * dlld##fn_name)fn_args;
-#define WGLD3D_FUNCTION(fn_type, fn_name, fn_args, fn_body) extern fn_type (APIENTRY * dlldwgl##fn_name)fn_args;
-
-//includes...
-#include "platform/GLCoreFunc.h"
-#include "platform/GLExtFunc.h"
-#include "platform/GLUFunc.h"
-#include "platformWin32/GLWinFunc.h"
-
-//undefs...
-#undef GL_FUNCTION
-#undef WGL_FUNCTION
-#undef WGLD3D_FUNCTION
 
 static const char * BooleanToString( GLboolean b )
 {
@@ -106,10 +92,6 @@ static const char * PrimToString( GLenum mode )
       strcpy( prim, "GL_TRIANGLE_FAN" );
    else if ( mode == GL_QUADS )
       strcpy( prim, "GL_QUADS" );
-   else if ( mode == GL_QUAD_STRIP )
-      strcpy( prim, "GL_QUAD_STRIP" );
-   else if ( mode == GL_POLYGON )
-      strcpy( prim, "GL_POLYGON" );
    else if ( mode == GL_POINTS )
       strcpy( prim, "GL_POINTS" );
    else if ( mode == GL_LINES )

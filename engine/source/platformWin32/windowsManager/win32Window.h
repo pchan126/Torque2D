@@ -8,9 +8,9 @@
 
 #include <windows.h>
 #include "windowManager/platformWindowMgr.h"
-#include "gfx/gfxTarget.h"
-#include "gfx/gfxStructs.h"
-#include "sim/actionMap.h"
+#include "graphics/gfxTarget.h"
+#include "graphics/gfxStructs.h"
+#include "input/actionMap.h"
 
 class Win32WindowManager;
 
