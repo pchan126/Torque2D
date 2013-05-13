@@ -22,6 +22,11 @@
 
 #include "gui/containers/guiDynamicCtrlArrayCtrl.h"
 
+ConsoleMethod(GuiDynamicCtrlArrayControl, refresh, void, 2, 2, "() Recalculates the position and size of this control and all its children")
+{
+    object->refresh();
+}
+
 IMPLEMENT_CONOBJECT(GuiDynamicCtrlArrayControl);
 
 GuiDynamicCtrlArrayControl::GuiDynamicCtrlArrayControl()
@@ -51,23 +56,10 @@ void GuiDynamicCtrlArrayControl::initPersistFields()
   addField("colSpacing",   TypeS32,       Offset(mColSpacing,  GuiDynamicCtrlArrayControl));
 }
 
-// SimObject...
-
 void GuiDynamicCtrlArrayControl::inspectPostApply()
 {
     resize(getPosition(), getExtent());
     Parent::inspectPostApply();
-}
-
-
-// SimSet...
-
-void GuiDynamicCtrlArrayControl::addObject(SimObject *obj)
-{
-    Parent::addObject(obj);
-    updateChildControls();
-//    if ( !mFrozen )
-//        refresh();
 }
 
 void GuiDynamicCtrlArrayControl::updateChildControls()
@@ -148,7 +140,18 @@ bool GuiDynamicCtrlArrayControl::resize(const Point2I &newPosition, const Point2
     setUpdate();
     
     updateChildControls();
+
+    mResizing = false;
+
     return Parent::resize(newPosition, newExtent);
+}
+
+void GuiDynamicCtrlArrayControl::addObject(SimObject *obj)
+{
+    Parent::addObject(obj);
+    updateChildControls();
+//    if ( !mFrozen )
+//        refresh();
 }
 
 void GuiDynamicCtrlArrayControl::childResized(GuiControl *child)
@@ -164,8 +167,5 @@ void GuiDynamicCtrlArrayControl::refresh()
     resize( getPosition(), getExtent() );
 }
 
-ConsoleMethod(GuiDynamicCtrlArrayControl, refresh, void, 2, 2, "() Recalculates the position and size of this control and all its children")
-{
-    object->refresh();
-}
+
 

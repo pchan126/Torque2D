@@ -614,7 +614,7 @@ void ParticlePlayer::sceneRender( const SceneRenderState* pSceneRenderState, con
             {
                 // Yes, so rotate into emitter-space.
                 // NOTE:- We need clockwise rotation here.
-                wMatrix.rotateX(getRenderAngle());
+                wMatrix.rotateZ(getRenderAngle());
             }
            
             GFX->setWorldMatrix(wMatrix);

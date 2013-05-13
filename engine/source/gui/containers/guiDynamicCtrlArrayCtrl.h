@@ -33,32 +33,8 @@
 
 class GuiDynamicCtrlArrayControl : public GuiControl
 {
+private:
     typedef GuiControl Parent;
-    
-public:
-    
-    GuiDynamicCtrlArrayControl();
-    virtual ~GuiDynamicCtrlArrayControl();
-    
-    DECLARE_CONOBJECT(GuiDynamicCtrlArrayControl);
-    
-    void updateChildControls();
-
-    // ConsoleObject
-    static void initPersistFields();
-    
-    // SimObject
-    void inspectPostApply();
-    
-    // SimSet
-    void addObject(SimObject *obj);
-    
-    // GuiControl
-    bool resize(const Point2I &newPosition, const Point2I &newExtent);
-    void childResized(GuiControl *child);
-    
-    // GuiDynamicCtrlArrayCtrl
-    void refresh();
     
 protected:
     
@@ -76,6 +52,28 @@ protected:
     bool mFillRowFirst;
     
     RectSpacingI mPadding;
+
+
+public:
+    
+    GuiDynamicCtrlArrayControl();
+    virtual ~GuiDynamicCtrlArrayControl();
+    
+    
+    void updateChildControls();
+    bool resize(const Point2I &newPosition, const Point2I &newExtent);
+
+    void addObject(SimObject *obj);
+
+    void childResized(GuiControl *child);
+
+    void inspectPostApply();
+
+    // GuiDynamicCtrlArrayCtrl
+    void refresh();
+
+    static void initPersistFields();
+    DECLARE_CONOBJECT(GuiDynamicCtrlArrayControl);
 };
 
 
