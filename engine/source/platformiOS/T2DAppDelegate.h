@@ -28,9 +28,11 @@ class iOSWindow;
 
 @interface T2DAppDelegate : UIResponder <UIApplicationDelegate, GLKViewDelegate, GLKViewControllerDelegate> {
     //Hidden by Default. 1 Black Opaque, 2 Black Translucent
+    NSTimeInterval lastUpdate;
 }
 
 @property (nonatomic, strong) UIWindow *window;
 @property (nonatomic, strong) GLKViewController *mainController;
+@property (nonatomic) NSTimeInterval lastUpdate;
 
 @end

@@ -106,7 +106,7 @@ void GFXOpenGLES20Device::setupGenericShaders( GenericShaderType type )
     //    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
     //    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
     //    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
-    MatrixF projMatrix = GFX->getProjectionMatrix();
+    xform *= GFX->getProjectionMatrix();
     //    Con::printf("projectionMatrix");
     //    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
     //    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);

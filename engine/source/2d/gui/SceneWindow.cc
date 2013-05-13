@@ -1647,7 +1647,7 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
     Point2F sceneMax = mCameraCurrent.mSceneMax;
 
     // Fetch bounds.
-    const RectI& bounds = getBounds();
+//    const RectI& bounds = getBounds();
 //    const Point2I globalTopLeft( updateRect.point.x, updateRect.point.y );
 //    const Point2I globalBottomRight( updateRect.point.x + updateRect.extent.x, updateRect.point.y + updateRect.extent.y );
 //    const Point2I localTopLeft = globalToLocalCoord( globalTopLeft );

@@ -113,7 +113,7 @@
 }
 
 - (void) handleLongPress:(UILongPressGestureRecognizer*)paramSender {
-    NSUInteger touchCounter = 0;
+//    NSUInteger touchCounter = 0;
     switch (paramSender.state)
     {
         case UIGestureRecognizerStateEnded:
@@ -125,8 +125,8 @@
 }
 
 - (void) handlePinch:(UIPinchGestureRecognizer*)paramSender {
-    NSUInteger touchCounter = 0;
-    static CGPoint center;
+//    NSUInteger touchCounter = 0;
+//    static CGPoint center;
 
     switch (paramSender.state)
     {

@@ -41,6 +41,7 @@ bool _iOSTorqueFatalError = false;
 
 @synthesize window = _window;
 @synthesize mainController = _mainController;
+@synthesize lastUpdate;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -226,10 +227,10 @@ bool _iOSTorqueFatalError = false;
 
 - (void)glkViewControllerUpdate:(GLKViewController *)controller
 {
-    NSTimeInterval timeUp = [controller timeSinceLastUpdate];
+    lastUpdate = [controller timeSinceLastUpdate];
     if(Game->isRunning())
     {
-        Game->mainLoop( timeUp );
+        Game->mainLoop();
     }
 }
 

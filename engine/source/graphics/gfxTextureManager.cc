@@ -352,7 +352,7 @@ GFXTextureObject *GFXTextureManager::_createTexture(  GBitmap *bmp,
    // a conversion
    if( realBmp->getFormat() != realFmt )
    {
-      const GFXFormat oldFmt = realBmp->getFormat();
+//      const GFXFormat oldFmt = realBmp->getFormat();
 
       if( !realBmp->setFormat( realFmt ) )
       {

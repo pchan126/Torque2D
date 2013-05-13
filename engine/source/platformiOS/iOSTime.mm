@@ -25,6 +25,7 @@
 #import "platform/event.h"
 #import "game/gameInterface.h"
 #import "platform/platformTimer.h"
+#import "platformiOS/T2DAppDelegate.h"
 
 #pragma mark ---- TimeManager Class Methods ----
 
@@ -128,8 +129,32 @@ void Platform::sleep(U32 ms)
    usleep( ms * 1000 );
 }
 
+class iOSPlatformTimer : public PlatformTimer
+{
+    S32 mThisTime;
+    
+public:
+    iOSPlatformTimer()
+    {
+        mThisTime = 0; 
+    }
+    
+    const S32 getElapsedMs()
+    {
+        T2DAppDelegate *appDelegate = (T2DAppDelegate*)[[UIApplication sharedApplication] delegate];
+        mThisTime = appDelegate.lastUpdate * 1000;
+        return (mThisTime);
+    }
+    
+    void reset()
+    {
+        mThisTime = 0;
+    }
+};
+
+
 PlatformTimer *PlatformTimer::create()
 {
-   return new DefaultPlatformTimer();
+   return new iOSPlatformTimer();
 }
 

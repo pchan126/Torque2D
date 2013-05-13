@@ -181,7 +181,7 @@ void iOSWindowManager::updateWindows()
         GLKView* view = mWindowList[0]->view;
         [view removeFromSuperview];
         appDelegate.window.rootViewController.view = nil;
-        CGRect fram = extWindow.frame;
+//        CGRect fram = extWindow.frame;
         view.frame = extWindow.frame;
         extWindow.rootViewController.view = view;
 //        [(GLKView*)view display];
