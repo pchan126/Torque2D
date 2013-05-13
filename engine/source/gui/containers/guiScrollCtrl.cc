@@ -420,7 +420,7 @@ void GuiScrollCtrl::scrollTo(S32 x, S32 y)
    for(SimSet::iterator i = begin(); i != end();i++)
    {
       GuiControl *ctrl = (GuiControl *) (*i);
-      ctrl->setPosition( getPosition() - delta);
+      ctrl->setPosition( ctrl->getPosition() - delta);
    }
    calcThumbs();
 

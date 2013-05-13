@@ -150,16 +150,16 @@ void GuiDynamicCtrlArrayControl::addObject(SimObject *obj)
 {
     Parent::addObject(obj);
     updateChildControls();
-//    if ( !mFrozen )
-//        refresh();
+    if ( !mFrozen )
+        refresh();
 }
 
 void GuiDynamicCtrlArrayControl::childResized(GuiControl *child)
 {
     Parent::childResized(child);
     updateChildControls();
-//    if ( !mFrozen )
-//        refresh();
+    if ( !mFrozen )
+        refresh();
 }
 
 void GuiDynamicCtrlArrayControl::refresh()
