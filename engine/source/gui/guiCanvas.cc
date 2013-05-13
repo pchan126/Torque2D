@@ -360,6 +360,10 @@ void GuiCanvas::processScreenTouchEvent(const ScreenTouchEventInfo &event)
         
         rootScreenTouchDown(mLastEvent);
     }
+    else if (event.action == SI_MOVE)
+    {
+        rootScreenTouchMove(mLastEvent);
+    }
     //else button was released
     else if(event.action == SI_BREAK)
     {
