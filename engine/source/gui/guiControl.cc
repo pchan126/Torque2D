@@ -888,6 +888,36 @@ void GuiControl::write(Stream &stream, U32 tabStop, U32 flags)
 }
 
 
+
+
+//-----------------------------------------------------------------------------
+// Causes sleep - Assert Fatal gotta check why...
+
+void GuiControl::onGroupRemove()
+{
+//    // If we have a first responder in our hierarchy,
+//    // make sure to kill it off.
+//    
+//    if( mFirstResponder )
+//        mFirstResponder->clearFirstResponder();
+//    else
+//    {
+//        GuiCanvas* root = getRoot();
+//        if( root )
+//        {
+//            GuiControl* firstResponder = root->getFirstResponder();
+//            if( firstResponder && firstResponder->isChildOfGroup( this ) )
+//                firstResponder->clearFirstResponder();
+//        }
+//    }
+//    
+//    // If we are awake, put us to sleep.
+//    
+//    if( isAwake() )
+//        sleep();
+}
+
+
 void GuiControl::onRemove()
 {
    clearFirstResponder();
@@ -905,31 +935,6 @@ void GuiControl::onChildRemoved( GuiControl *child )
    // Base does nothing with this
 }
 
-//-----------------------------------------------------------------------------
-
-void GuiControl::onGroupRemove()
-{
-    // If we have a first responder in our hierarchy,
-    // make sure to kill it off.
-    
-    if( mFirstResponder )
-        mFirstResponder->clearFirstResponder();
-    else
-    {
-        GuiCanvas* root = getRoot();
-        if( root )
-        {
-            GuiControl* firstResponder = root->getFirstResponder();
-            if( firstResponder && firstResponder->isChildOfGroup( this ) )
-                firstResponder->clearFirstResponder();
-        }
-    }
-    
-    // If we are awake, put us to sleep.
-    
-    if( isAwake() )
-        sleep();
-}
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- //
 
 const char *GuiControl::getScriptValue()
@@ -1816,6 +1821,7 @@ const char* GuiControl::execConsoleCallback()
    if( mConsoleCommand.isNotEmpty() )
    {
       Con::setVariable("$ThisControl", avar("%d",getId()));
+       Con::printf(mConsoleCommand);
       return Con::evaluate(mConsoleCommand, false);
    }
    return "";
