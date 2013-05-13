@@ -71,10 +71,6 @@
 #include "platform/platformMath.h"
 #endif
 
-#ifndef _PLATFORM_TIME_MANAGER_H_
-#include "platform/platformTimeManager.h"
-#endif
-
 #include "string/str.h"
 
 //------------------------------------------------------------------------------

@@ -442,215 +442,215 @@ Net::Error Net::sendto(const NetAddress *address, const U8 *buffer, S32  bufferS
 
 void Net::process()
 {
-    sockaddr sa;
-    
-    PacketReceiveEvent receiveEvent;
-    for(;;)
-    {
-        U32 addrLen = sizeof(sa);
-        S32 bytesRead = -1;
-        if(udpSocket != InvalidSocket)
-            bytesRead = recvfrom(udpSocket, (char *) receiveEvent.data,  MaxPacketDataSize, 0, &sa, &addrLen);
-        if(bytesRead == -1 && ipxSocket != InvalidSocket)
-        {
-            addrLen = sizeof(sa);
-            bytesRead = recvfrom(ipxSocket, (char *) receiveEvent.data,  MaxPacketDataSize, 0, &sa, &addrLen);
-        }
-        
-        if(bytesRead == -1)
-            break;
-        
-        if(sa.sa_family == AF_INET)
-            IPSocketToNetAddress((sockaddr_in *) &sa,  &receiveEvent.sourceAddress);
-        else
-            continue;
-        
-        NetAddress &na = receiveEvent.sourceAddress;
-        if(na.type == NetAddress::IPAddress &&
-           na.netNum[0] == 127 &&
-           na.netNum[1] == 0 &&
-           na.netNum[2] == 0 &&
-           na.netNum[3] == 1 &&
-           na.port == netPort)
-            continue;
-        if(bytesRead <= 0)
-            continue;
-        receiveEvent.size = PacketReceiveEventHeaderSize + bytesRead;
-        Game->postEvent(receiveEvent);
-    }
-    
-    // process the polled sockets.  This blob of code performs functions
-    // similar to WinsockProc in winNet.cc
-    
-    if (gPolledSockets.size() == 0)
-        return;
-    
-    static ConnectedNotifyEvent notifyEvent;
-    static ConnectedAcceptEvent acceptEvent;
-    static ConnectedReceiveEvent cReceiveEvent;
-    
-    S32 optval;
-    socklen_t optlen = sizeof(S32);
-    S32 bytesRead;
-    Net::Error err;
-    bool removeSock = false;
-    Socket *currentSock = NULL;
-    sockaddr_in ipAddr;
-    NetSocket incoming = InvalidSocket;
-    char out_h_addr[1024];
-    int out_h_length = 0;
-    
-    for (S32 i = 0; i < gPolledSockets.size();
-         /* no increment, this is done at end of loop body */)
-    {
-        removeSock = false;
-        currentSock = gPolledSockets[i];
-        switch (currentSock->state)
-        {
-            case InvalidState:
-                Con::errorf("Error, InvalidState socket in polled sockets  list");
-                break;
-            case ConnectionPending:
-                notifyEvent.tag = currentSock->fd;
-                // see if it is now connected
-                if (getsockopt(currentSock->fd, SOL_SOCKET, SO_ERROR,
-                               &optval, &optlen) == -1)
-                {
-                    Con::errorf("Error getting socket options: %s",  strerror(errno));
-                    notifyEvent.state = ConnectedNotifyEvent::ConnectFailed;
-                    Game->postEvent(notifyEvent);
-                    removeSock = true;
-                }
-                else
-                {
-                    if (optval == EINPROGRESS)
-                        // still connecting...
-                        break;
-                    
-                    if (optval == 0)
-                    {
-                        // poll for writable status to be sure we're connected.
-                        bool ready = netSocketWaitForWritable(currentSock->fd,0);
-                        if(!ready)
-                            break;
-                        
-                        // connected.
-                        notifyEvent.state = ConnectedNotifyEvent::Connected;
-                        Game->postEvent(notifyEvent);
-                        currentSock->state = Connected;
-                    }
-                    else
-                    {
-                        // some kind of error
-                        Con::errorf("Error connecting: %s", strerror(errno));
-                        notifyEvent.state =  ConnectedNotifyEvent::ConnectFailed;
-                        Game->postEvent(notifyEvent);
-                        removeSock = true;
-                    }
-                }
-                break;
-            case Connected:
-                bytesRead = 0;
-                // try to get some data
-                err = Net::recv(currentSock->fd, cReceiveEvent.data,                            MaxPacketDataSize, &bytesRead);
-                if(err == Net::NoError)
-                {
-                    if (bytesRead > 0)
-                    {
-                        // got some data, post it
-                        cReceiveEvent.tag = currentSock->fd;
-                        cReceiveEvent.size = ConnectedReceiveEventHeaderSize +
-                        bytesRead;
-                        Game->postEvent(cReceiveEvent);
-                    }
-                    else
-                    {
-                        // zero bytes read means EOF
-                        if (bytesRead < 0)
-                            // ack! this shouldn't happen
-                            Con::errorf("Unexpected error on socket: %s",
-                                        strerror(errno));
-                        
-                        notifyEvent.tag = currentSock->fd;
-                        notifyEvent.state =  ConnectedNotifyEvent::Disconnected;
-                        Game->postEvent(notifyEvent);
-                        removeSock = true;
-                    }
-                }
-                else if (err != Net::NoError && err != Net::WouldBlock)
-                {
-                    Con::errorf("Error reading from socket: %s",  strerror(errno));
-                    notifyEvent.tag = currentSock->fd;
-                    notifyEvent.state = ConnectedNotifyEvent::Disconnected;
-                    Game->postEvent(notifyEvent);
-                    removeSock = true;
-                }
-                break;
-            case NameLookupRequired:
-                // is the lookup complete?
-                if (!gNetAsync.checkLookup(
-                                           currentSock->fd, out_h_addr, &out_h_length,
-                                           sizeof(out_h_addr)))
-                    break;
-                
-                notifyEvent.tag = currentSock->fd;
-                if (out_h_length == -1)
-                {
-                    Con::errorf("DNS lookup failed: %s",  currentSock->remoteAddr);
-                    notifyEvent.state = ConnectedNotifyEvent::DNSFailed;
-                    removeSock = true;
-                }
-                else
-                {
-                    // try to connect
-                    dMemcpy(&(ipAddr.sin_addr.s_addr), out_h_addr,  out_h_length);
-                    ipAddr.sin_port = currentSock->remotePort;
-                    ipAddr.sin_family = AF_INET;
-                    if(::connect(currentSock->fd, (struct sockaddr *)&ipAddr,
-                                 sizeof(ipAddr)) == -1)
-                    {
-                        if (errno == EINPROGRESS)
-                        {
-                            notifyEvent.state =  ConnectedNotifyEvent::DNSResolved;
-                            currentSock->state = ConnectionPending;
-                        }
-                        else
-                        {
-                            Con::errorf("Error connecting to %s: %s",
-                                        currentSock->remoteAddr,  strerror(errno));
-                            notifyEvent.state = ConnectedNotifyEvent::ConnectFailed;
-                            removeSock = true;
-                        }
-                    }
-                    else
-                    {
-                        notifyEvent.state = ConnectedNotifyEvent::Connected;
-                        currentSock->state = Connected;
-                    }
-                }
-                Game->postEvent(notifyEvent);
-                break;
-            case Listening:
-                incoming =
-                Net::accept(currentSock->fd, &acceptEvent.address);
-                if(incoming != InvalidSocket)
-                {
-                    acceptEvent.portTag = currentSock->fd;
-                    acceptEvent.connectionTag = incoming;
-                    setBlocking(incoming, false);
-                    addPolledSocket(incoming, Connected);
-                    Game->postEvent(acceptEvent);
-                }
-                break;
-        }
-        
-        // only increment index if we're not removing the connection,  since
-        // the removal will shift the indices down by one
-        if (removeSock)
-            closeConnectTo(currentSock->fd);
-        else
-            i++;
-    }
+//    sockaddr sa;
+//    
+//    PacketReceiveEvent receiveEvent;
+//    for(;;)
+//    {
+//        U32 addrLen = sizeof(sa);
+//        S32 bytesRead = -1;
+//        if(udpSocket != InvalidSocket)
+//            bytesRead = recvfrom(udpSocket, (char *) receiveEvent.data,  MaxPacketDataSize, 0, &sa, &addrLen);
+//        if(bytesRead == -1 && ipxSocket != InvalidSocket)
+//        {
+//            addrLen = sizeof(sa);
+//            bytesRead = recvfrom(ipxSocket, (char *) receiveEvent.data,  MaxPacketDataSize, 0, &sa, &addrLen);
+//        }
+//        
+//        if(bytesRead == -1)
+//            break;
+//        
+//        if(sa.sa_family == AF_INET)
+//            IPSocketToNetAddress((sockaddr_in *) &sa,  &receiveEvent.sourceAddress);
+//        else
+//            continue;
+//        
+//        NetAddress &na = receiveEvent.sourceAddress;
+//        if(na.type == NetAddress::IPAddress &&
+//           na.netNum[0] == 127 &&
+//           na.netNum[1] == 0 &&
+//           na.netNum[2] == 0 &&
+//           na.netNum[3] == 1 &&
+//           na.port == netPort)
+//            continue;
+//        if(bytesRead <= 0)
+//            continue;
+//        receiveEvent.size = PacketReceiveEventHeaderSize + bytesRead;
+//        Game->postEvent(receiveEvent);
+//    }
+//    
+//    // process the polled sockets.  This blob of code performs functions
+//    // similar to WinsockProc in winNet.cc
+//    
+//    if (gPolledSockets.size() == 0)
+//        return;
+//    
+//    static ConnectedNotifyEvent notifyEvent;
+//    static ConnectedAcceptEvent acceptEvent;
+//    static ConnectedReceiveEvent cReceiveEvent;
+//    
+//    S32 optval;
+//    socklen_t optlen = sizeof(S32);
+//    S32 bytesRead;
+//    Net::Error err;
+//    bool removeSock = false;
+//    Socket *currentSock = NULL;
+//    sockaddr_in ipAddr;
+//    NetSocket incoming = InvalidSocket;
+//    char out_h_addr[1024];
+//    int out_h_length = 0;
+//    
+//    for (S32 i = 0; i < gPolledSockets.size();
+//         /* no increment, this is done at end of loop body */)
+//    {
+//        removeSock = false;
+//        currentSock = gPolledSockets[i];
+//        switch (currentSock->state)
+//        {
+//            case InvalidState:
+//                Con::errorf("Error, InvalidState socket in polled sockets  list");
+//                break;
+//            case ConnectionPending:
+//                notifyEvent.tag = currentSock->fd;
+//                // see if it is now connected
+//                if (getsockopt(currentSock->fd, SOL_SOCKET, SO_ERROR,
+//                               &optval, &optlen) == -1)
+//                {
+//                    Con::errorf("Error getting socket options: %s",  strerror(errno));
+//                    notifyEvent.state = ConnectedNotifyEvent::ConnectFailed;
+//                    Game->postEvent(notifyEvent);
+//                    removeSock = true;
+//                }
+//                else
+//                {
+//                    if (optval == EINPROGRESS)
+//                        // still connecting...
+//                        break;
+//                    
+//                    if (optval == 0)
+//                    {
+//                        // poll for writable status to be sure we're connected.
+//                        bool ready = netSocketWaitForWritable(currentSock->fd,0);
+//                        if(!ready)
+//                            break;
+//                        
+//                        // connected.
+//                        notifyEvent.state = ConnectedNotifyEvent::Connected;
+//                        Game->postEvent(notifyEvent);
+//                        currentSock->state = Connected;
+//                    }
+//                    else
+//                    {
+//                        // some kind of error
+//                        Con::errorf("Error connecting: %s", strerror(errno));
+//                        notifyEvent.state =  ConnectedNotifyEvent::ConnectFailed;
+//                        Game->postEvent(notifyEvent);
+//                        removeSock = true;
+//                    }
+//                }
+//                break;
+//            case Connected:
+//                bytesRead = 0;
+//                // try to get some data
+//                err = Net::recv(currentSock->fd, cReceiveEvent.data,                            MaxPacketDataSize, &bytesRead);
+//                if(err == Net::NoError)
+//                {
+//                    if (bytesRead > 0)
+//                    {
+//                        // got some data, post it
+//                        cReceiveEvent.tag = currentSock->fd;
+//                        cReceiveEvent.size = ConnectedReceiveEventHeaderSize +
+//                        bytesRead;
+//                        Game->postEvent(cReceiveEvent);
+//                    }
+//                    else
+//                    {
+//                        // zero bytes read means EOF
+//                        if (bytesRead < 0)
+//                            // ack! this shouldn't happen
+//                            Con::errorf("Unexpected error on socket: %s",
+//                                        strerror(errno));
+//                        
+//                        notifyEvent.tag = currentSock->fd;
+//                        notifyEvent.state =  ConnectedNotifyEvent::Disconnected;
+//                        Game->postEvent(notifyEvent);
+//                        removeSock = true;
+//                    }
+//                }
+//                else if (err != Net::NoError && err != Net::WouldBlock)
+//                {
+//                    Con::errorf("Error reading from socket: %s",  strerror(errno));
+//                    notifyEvent.tag = currentSock->fd;
+//                    notifyEvent.state = ConnectedNotifyEvent::Disconnected;
+//                    Game->postEvent(notifyEvent);
+//                    removeSock = true;
+//                }
+//                break;
+//            case NameLookupRequired:
+//                // is the lookup complete?
+//                if (!gNetAsync.checkLookup(
+//                                           currentSock->fd, out_h_addr, &out_h_length,
+//                                           sizeof(out_h_addr)))
+//                    break;
+//                
+//                notifyEvent.tag = currentSock->fd;
+//                if (out_h_length == -1)
+//                {
+//                    Con::errorf("DNS lookup failed: %s",  currentSock->remoteAddr);
+//                    notifyEvent.state = ConnectedNotifyEvent::DNSFailed;
+//                    removeSock = true;
+//                }
+//                else
+//                {
+//                    // try to connect
+//                    dMemcpy(&(ipAddr.sin_addr.s_addr), out_h_addr,  out_h_length);
+//                    ipAddr.sin_port = currentSock->remotePort;
+//                    ipAddr.sin_family = AF_INET;
+//                    if(::connect(currentSock->fd, (struct sockaddr *)&ipAddr,
+//                                 sizeof(ipAddr)) == -1)
+//                    {
+//                        if (errno == EINPROGRESS)
+//                        {
+//                            notifyEvent.state =  ConnectedNotifyEvent::DNSResolved;
+//                            currentSock->state = ConnectionPending;
+//                        }
+//                        else
+//                        {
+//                            Con::errorf("Error connecting to %s: %s",
+//                                        currentSock->remoteAddr,  strerror(errno));
+//                            notifyEvent.state = ConnectedNotifyEvent::ConnectFailed;
+//                            removeSock = true;
+//                        }
+//                    }
+//                    else
+//                    {
+//                        notifyEvent.state = ConnectedNotifyEvent::Connected;
+//                        currentSock->state = Connected;
+//                    }
+//                }
+//                Game->postEvent(notifyEvent);
+//                break;
+//            case Listening:
+//                incoming =
+//                Net::accept(currentSock->fd, &acceptEvent.address);
+//                if(incoming != InvalidSocket)
+//                {
+//                    acceptEvent.portTag = currentSock->fd;
+//                    acceptEvent.connectionTag = incoming;
+//                    setBlocking(incoming, false);
+//                    addPolledSocket(incoming, Connected);
+//                    Game->postEvent(acceptEvent);
+//                }
+//                break;
+//        }
+//        
+//        // only increment index if we're not removing the connection,  since
+//        // the removal will shift the indices down by one
+//        if (removeSock)
+//            closeConnectTo(currentSock->fd);
+//        else
+//            i++;
+//    }
 }
 
 NetSocket Net::openSocket()

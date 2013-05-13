@@ -115,8 +115,8 @@ public:
    /// Sets whether or not this NetInterface allows connections from remote hosts.
    void setAllowsConnections(bool conn) { mAllowConnections = conn; }
 
-   /// Dispatch function for processing all network packets through this NetInterface.
-   virtual void processPacketReceiveEvent(PacketReceiveEvent *event);
+//   /// Dispatch function for processing all network packets through this NetInterface.
+//   virtual void processPacketReceiveEvent(NetAddress srcAddress, RawData packetData);
 
    /// Handles all packets that don't fall into the category of connection handshake or game data.
    virtual void handleInfoPacket(const NetAddress *address, U8 packetType, BitStream *stream);

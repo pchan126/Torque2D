@@ -385,55 +385,55 @@ ConsoleMethod(TCPObject, URLEncodeString, const char*, 3, 3, "(string data) Perf
 }
 
 
-void DefaultGame::processConnectedReceiveEvent(ConnectedReceiveEvent* event )
-{
-   TCPObject *tcpo = TCPObject::find(event->tag);
-   if(!tcpo)
-   {
-      Con::printf("Got bad connected receive event.");
-      return;
-   }
-   U32 size = U32(event->size - ConnectedReceiveEventHeaderSize);
-   U8 *buffer = event->data;
-
-   while(size)
-   {
-      U32 ret = tcpo->onReceive(buffer, size);
-      AssertFatal(ret <= size, "Invalid return size");
-      size -= ret;
-      buffer += ret;
-   }
-}
-
-void DefaultGame::processConnectedAcceptEvent( ConnectedAcceptEvent* event )
-{
-   TCPObject *tcpo = TCPObject::find(event->portTag);
-   if(!tcpo)
-      return;
-   tcpo->onConnectionRequest(&event->address, event->connectionTag);
-}
-
-void DefaultGame::processConnectedNotifyEvent( ConnectedNotifyEvent* event )
-{
-   TCPObject *tcpo = TCPObject::find(event->tag);
-   if(!tcpo)
-      return;
-   switch(event->state)
-   {
-      case ConnectedNotifyEvent::DNSResolved:
-         tcpo->onDNSResolved();
-         break;
-      case ConnectedNotifyEvent::DNSFailed:
-         tcpo->onDNSFailed();
-         break;
-      case ConnectedNotifyEvent::Connected:
-         tcpo->onConnected();
-         break;
-      case ConnectedNotifyEvent::ConnectFailed:
-         tcpo->onConnectFailed();
-         break;
-      case ConnectedNotifyEvent::Disconnected:
-         tcpo->onDisconnect();
-         break;
-   }
-}
+//void DefaultGame::processConnectedReceiveEvent(ConnectedReceiveEvent* event )
+//{
+//   TCPObject *tcpo = TCPObject::find(event->tag);
+//   if(!tcpo)
+//   {
+//      Con::printf("Got bad connected receive event.");
+//      return;
+//   }
+//   U32 size = U32(event->size - ConnectedReceiveEventHeaderSize);
+//   U8 *buffer = event->data;
+//
+//   while(size)
+//   {
+//      U32 ret = tcpo->onReceive(buffer, size);
+//      AssertFatal(ret <= size, "Invalid return size");
+//      size -= ret;
+//      buffer += ret;
+//   }
+//}
+//
+//void DefaultGame::processConnectedAcceptEvent( ConnectedAcceptEvent* event )
+//{
+//   TCPObject *tcpo = TCPObject::find(event->portTag);
+//   if(!tcpo)
+//      return;
+//   tcpo->onConnectionRequest(&event->address, event->connectionTag);
+//}
+//
+//void DefaultGame::processConnectedNotifyEvent( ConnectedNotifyEvent* event )
+//{
+//   TCPObject *tcpo = TCPObject::find(event->tag);
+//   if(!tcpo)
+//      return;
+//   switch(event->state)
+//   {
+//      case ConnectedNotifyEvent::DNSResolved:
+//         tcpo->onDNSResolved();
+//         break;
+//      case ConnectedNotifyEvent::DNSFailed:
+//         tcpo->onDNSFailed();
+//         break;
+//      case ConnectedNotifyEvent::Connected:
+//         tcpo->onConnected();
+//         break;
+//      case ConnectedNotifyEvent::ConnectFailed:
+//         tcpo->onConnectFailed();
+//         break;
+//      case ConnectedNotifyEvent::Disconnected:
+//         tcpo->onDisconnect();
+//         break;
+//   }
+//}

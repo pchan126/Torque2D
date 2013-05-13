@@ -55,13 +55,15 @@ public:
     virtual void interpolateTick( F32 delta ) {};
     virtual void advanceTime( F32 timeDelta );
 
-    void processQuitEvent();
-    void processTimeEvent(TimeEvent *event);
-    void processConsoleEvent(ConsoleEvent *event);
-    void processPacketReceiveEvent(PacketReceiveEvent *event);
-    void processConnectedAcceptEvent(ConnectedAcceptEvent *event);
-    void processConnectedReceiveEvent(ConnectedReceiveEvent *event);
-    void processConnectedNotifyEvent(ConnectedNotifyEvent *event);
+//    void processQuitEvent();
+    void processTimeEvent(S32 elapsedTime);
+//    void processConsoleEvent(ConsoleEvent *event);
+//    void processPacketReceiveEvent(PacketReceiveEvent *event);
+//    void processConnectedAcceptEvent(ConnectedAcceptEvent *event);
+//    void processConnectedReceiveEvent(ConnectedReceiveEvent *event);
+//    void processConnectedNotifyEvent(ConnectedNotifyEvent *event);
 };
+
+bool clientProcess(U32 timeDelta);
 
 #endif

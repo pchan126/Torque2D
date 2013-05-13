@@ -330,6 +330,7 @@ bool PopupMenu::isItemChecked(S32 pos)
    return (mark == checkMark);
 }
 
+
 //////////////////////////////////////////////////////////////////////////
 
 // this method really isn't necessary for the mac implementation
@@ -508,5 +509,14 @@ void PopupMenu::deletePlatformPopupMenuData()
 void PopupMenu::createPlatformMenu()
 {}
 
+U32 PopupMenu::getItemCount()
+{
+   return 0;
+}
+
+bool PopupMenu::setItem(S32 pos, const char *title, const char *accelerator)
+{
+   return false;
+}
 
 #endif

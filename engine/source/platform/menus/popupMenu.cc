@@ -75,14 +75,6 @@ PopupMenu::~PopupMenu()
 
 IMPLEMENT_CONOBJECT(PopupMenu);
 
-ConsoleDocClass( PopupMenu,
-   "@brief PopupMenu represents a system menu.\n\n"
-   "You can add menu items to the menu, but there is no torque object associated "
-   "with these menu items, they exist only in a  platform specific manner.\n\n"
-   "@note Internal use only\n\n"
-   "@internal"
-);
-
 
 //-----------------------------------------------------------------------------
 
@@ -103,13 +95,13 @@ bool PopupMenu::onAdd()
 
    createPlatformMenu();
 
-   Con::executef(this, "onAdd");
+   Con::executef(this, 1, "onAdd");
    return true;
 }
 
 void PopupMenu::onRemove()
 {
-   Con::executef(this, "onRemove");
+   Con::executef(this, 1, "onRemove");
 
    Parent::onRemove();
 }
@@ -118,7 +110,7 @@ void PopupMenu::onRemove()
 
 void PopupMenu::onMenuSelect()
 {
-   Con::executef(this, "onMenuSelect");
+   Con::executef(this, 1, "onMenuSelect");
 }
 
 //-----------------------------------------------------------------------------
@@ -151,7 +143,7 @@ void PopupMenu::onAttachToMenuBar(GuiCanvas *canvas, S32 pos, const char *title)
 
    // Call script
    if(isProperlyAdded())
-      Con::executef(this, "onAttachToMenuBar", Con::getIntArg(canvas ? canvas->getId() : 0), Con::getIntArg(pos), title);
+      Con::executef(this, 4, "onAttachToMenuBar", Con::getIntArg(canvas ? canvas->getId() : 0), Con::getIntArg(pos), title);
 }
 
 void PopupMenu::onRemoveFromMenuBar(GuiCanvas *canvas)
@@ -173,20 +165,20 @@ void PopupMenu::onRemoveFromMenuBar(GuiCanvas *canvas)
 
    // Call script
    if(isProperlyAdded())
-      Con::executef(this, "onRemoveFromMenuBar", Con::getIntArg(canvas ? canvas->getId() : 0));
+      Con::executef(this, 4, "onRemoveFromMenuBar", Con::getIntArg(canvas ? canvas->getId() : 0));
 }
 
 //-----------------------------------------------------------------------------
 
 bool PopupMenu::onMessageReceived(StringTableEntry queue, const char* event, const char* data)
 {
-   return Con::executef(this, "onMessageReceived", queue, event, data);
+   return Con::executef(this, 4, "onMessageReceived", queue, event, data);
 }
 
 
 bool PopupMenu::onMessageObjectReceived(StringTableEntry queue, Message *msg )
 {
-   return Con::executef(this, "onMessageReceived", queue, Con::getIntArg(msg->getId()));
+   return Con::executef(this, 4, "onMessageReceived", queue, Con::getIntArg(msg->getId()));
 }
 
 //-----------------------------------------------------------------------------
@@ -243,7 +235,7 @@ ConsoleMethod(PopupMenu, isItemChecked, bool, 3, 3, "(pos)")
 
 ConsoleMethod(PopupMenu, getItemCount, S32, 2, 2, "()")
 {
-   return object->getItemCount();
+   return (S32)object->getItemCount();
 }
 
 //-----------------------------------------------------------------------------

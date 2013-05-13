@@ -39,8 +39,6 @@ private:
    
    U32   inBufPos;
    char  inBuf[MaxConsoleLineSize];
-   ConsoleEvent postEvent;
-   
    void clearInBuf();
    
 public:

@@ -24,45 +24,46 @@
 #import "platformiOS/platformiOS.h"
 #import "platform/event.h"
 #import "game/gameInterface.h"
+#import "platform/platformTimer.h"
 
 #pragma mark ---- TimeManager Class Methods ----
 
 //--------------------------------------
 
-static void _iOSUpdateSleepTicks()
-{
-    iOSPlatState * platState = [iOSPlatState sharedPlatState];
-
-    if (platState.backgrounded)
-        platState.sleepTicks = Platform::getBackgroundSleepTime();
-    else
-        platState.sleepTicks = sgTimeManagerProcessInterval;
-}
-
-//------------------------------------------------------------------------------
-// Responsible for calculating ticks and posting the TimeEvent
-void TimeManager::process( double elapsedTime )
-{
-    iOSPlatState * platState = [iOSPlatState sharedPlatState];
+//static void _iOSUpdateSleepTicks()
+//{
+//    iOSPlatState * platState = [iOSPlatState sharedPlatState];
 //
-//    _iOSUpdateSleepTicks();
+//    if (platState.backgrounded)
+//        platState.sleepTicks = Platform::getBackgroundSleepTime();
+//    else
+//        platState.sleepTicks = sgTimeManagerProcessInterval;
+//}
+//
+////------------------------------------------------------------------------------
+//// Responsible for calculating ticks and posting the TimeEvent
+//void TimeManager::process( double elapsedTime )
+//{
+//    iOSPlatState * platState = [iOSPlatState sharedPlatState];
+////
+////    _iOSUpdateSleepTicks();
+////    
+////    U32 curTime = Platform::getRealMilliseconds(); // GTC returns Milliseconds, FYI.
+////   
+////   Con::printf("%u", curTime);
+//    S32 _elapsedTime = (S32)(elapsedTime * 1000);
 //    
-//    U32 curTime = Platform::getRealMilliseconds(); // GTC returns Milliseconds, FYI.
+////    if(_elapsedTime <= platState.sleepTicks)
+////    {
+////        Platform::sleep(platState.sleepTicks - _elapsedTime);
+////    }
 //   
-//   Con::printf("%u", curTime);
-    S32 _elapsedTime = (S32)(elapsedTime * 1000);
-    
-//    if(_elapsedTime <= platState.sleepTicks)
-//    {
-//        Platform::sleep(platState.sleepTicks - _elapsedTime);
-//    }
-   
-    platState.lastTimeTick += _elapsedTime;
-    
-    TimeEvent event;
-    event.elapsedTime = _elapsedTime;
-    Game->postEvent(event);
-}
+//    platState.lastTimeTick += _elapsedTime;
+//    
+//    TimeEvent event;
+//    event.elapsedTime = _elapsedTime;
+//    Game->postEvent(event);
+//}
 
 
 #pragma mark ---- Platform Namespace Time Functions  ----
@@ -125,5 +126,10 @@ void Platform::sleep(U32 ms)
    
    //Luma:	Re-enable sleeping... why was it commented out? No sense in that!
    usleep( ms * 1000 );
+}
+
+PlatformTimer *PlatformTimer::create()
+{
+   return new DefaultPlatformTimer();
 }
 

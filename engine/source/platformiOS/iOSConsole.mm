@@ -140,34 +140,34 @@ void iOSConsole::clearInBuf()
 
 void iOSConsole::inputLoop()
 {
-   Con::printf("Console Input Thread Started");
-   unsigned char c;
-   while(consoleEnabled)
-   {
-      c = fgetc(stdin);
-      if(c == '\n')
-      {
-         // exec the line
-         dStrcpy(postEvent.data, inBuf);
-         postEvent.size = ConsoleEventHeaderSize + dStrlen(inBuf) + 1;
-         Con::printf("=> %s",postEvent.data);
-         Game->postEvent(postEvent);
-         // clear the buffer
-         clearInBuf();
-         // display the prompt. Note that we're using real printf, not Con::printf...
-         printf("=> ");
-      }
-      else
-      {
-         // add it to the buffer.
-         inBuf[inBufPos++] = c;
-         // if we're full, clear & warn.
-         if(inBufPos >= MaxConsoleLineSize-1)
-         {
-            clearInBuf();
-            Con::warnf("Line to long, discarding the last 512 bytes...");
-         }
-      }
-   }
-   Con::printf("Console Input Thread Stopped");
+//   Con::printf("Console Input Thread Started");
+//   unsigned char c;
+//   while(consoleEnabled)
+//   {
+//      c = fgetc(stdin);
+//      if(c == '\n')
+//      {
+//         // exec the line
+//         dStrcpy(postEvent.data, inBuf);
+//         postEvent.size = ConsoleEventHeaderSize + dStrlen(inBuf) + 1;
+//         Con::printf("=> %s",postEvent.data);
+//         Game->postEvent(postEvent);
+//         // clear the buffer
+//         clearInBuf();
+//         // display the prompt. Note that we're using real printf, not Con::printf...
+//         printf("=> ");
+//      }
+//      else
+//      {
+//         // add it to the buffer.
+//         inBuf[inBufPos++] = c;
+//         // if we're full, clear & warn.
+//         if(inBufPos >= MaxConsoleLineSize-1)
+//         {
+//            clearInBuf();
+//            Con::warnf("Line to long, discarding the last 512 bytes...");
+//         }
+//      }
+//   }
+//   Con::printf("Console Input Thread Stopped");
 }

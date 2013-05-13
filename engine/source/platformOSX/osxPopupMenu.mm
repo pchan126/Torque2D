@@ -33,7 +33,7 @@ public:
     PlatformPopupMenuData()
     {
         mController = NULL;
-
+      
         tag = getTag();
     }
 
@@ -127,6 +127,14 @@ S32 PopupMenu::insertSubMenu(S32 pos, const char *title, PopupMenu *submenu)
     return 0;
 }
 
+bool PopupMenu::setItem(S32 pos, const char *title, const char* accel)
+{
+   removeItem(pos);
+   S32 ret = insertItem(pos, title, accel);
+   return (ret != -1);
+}
+
+
 //-----------------------------------------------------------------------------
 void PopupMenu::removeItem(S32 itemPos)
 {
@@ -162,6 +170,33 @@ bool PopupMenu::isItemChecked(S32 pos)
 
     return (state == NSOnState);
 }
+
+U32 PopupMenu::getItemCount()
+{
+   return 0;
+}
+
+
+bool PopupMenu::canHandleID(U32 id)
+{
+//   for (S32 i = 0; i < mSubmenus->size(); i++)
+//   {
+//      PopupMenu *subM = dynamic_cast<PopupMenu *>((*mSubmenus)[i]);
+//      if (subM == NULL)
+//         continue;
+//      
+//      if(subM->canHandleID(id))
+//         return true;
+//   }
+//   
+//   if (id >= mData->mMenuID * PlatformPopupMenuData::PopupMenuIDRange &&
+//       id < (mData->mMenuID+1) * PlatformPopupMenuData::PopupMenuIDRange)
+//   {
+//      return true;
+//   }
+   return false;
+}
+
 
 //-----------------------------------------------------------------------------
 bool PopupMenu::handleSelect(U32 command, const char *text /* = NULL */)

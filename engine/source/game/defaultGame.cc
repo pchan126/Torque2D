@@ -89,12 +89,15 @@
 // Script binding.
 #include "platform/platform_ScriptBinding.h"
 
+#include "platform/platformTimer.h"
+
 //-----------------------------------------------------------------------------
 
 DefaultGame GameObject;
 DemoNetInterface GameNetInterface;
 NetworkProcessList gServerProcessList(true);
 StringTableEntry gMasterAddress;
+TimeManager* tm = NULL;
 
 static F32 gTimeScale = 1.0;
 static U32 gTimeAdvance = 0;
@@ -238,6 +241,8 @@ bool initializeGame(int argc, const char **argv)
     globalMap->registerObject("GlobalActionMap");
     Sim::getActiveActionMapSet()->pushObject(globalMap);
 
+   
+   
     // Let the remote debugger process the command-line.
     RemoteDebuggerBridge::processCommandLine( argc, argv );
 
@@ -369,6 +374,9 @@ bool DefaultGame::mainInitialize(int argc, const char **argv)
         return false;
     }
 
+   tm = new TimeManager();
+   tm->timeEvent.notify(this, &DefaultGame::processTimeEvent);
+   
     // Start processing ticks.
     setProcessTicks( true );
 
@@ -442,42 +450,7 @@ void DefaultGame::advanceTime( F32 timeDelta )
 
 void DefaultGame::mainLoop( double elapsedTime )
 {	
-#ifdef TORQUE_OS_IOS_PROFILE
-    iPhoneProfilerStart("MAIN_LOOP");
-#endif	
-         PROFILE_START(MainLoop);
-#ifdef TORQUE_ALLOW_JOURNALING
-         PROFILE_START(JournalMain);
-   Game->journalProcess();
-         PROFILE_END();
-#endif // TORQUE_ALLOW_JOURNALING
-         PROFILE_START(NetProcessMain);
-   Net::process();      // read in all events
-         PROFILE_END();
-         PROFILE_START(PlatformProcessMain);
-    Platform::process(); // keys, etc.
-         PROFILE_END();
-         PROFILE_START(TelconsoleProcessMain);
-   TelConsole->process();
-         PROFILE_END();
-         PROFILE_START(TelDebuggerProcessMain);
-   TelDebugger->process();
-         PROFILE_END();
-         PROFILE_START(TimeManagerProcessMain);
-   TimeManager::process( elapsedTime); // guaranteed to produce an event
-         PROFILE_END();
-         PROFILE_START(GameProcessEvents);
-    Game->processEvents(); // process all non-sim posted events.
-         PROFILE_END();
-         PROFILE_END();
-    
-#ifdef TORQUE_OS_IOS_PROFILE
-    iPhoneProfilerEnd("MAIN_LOOP");
-    if(iPhoneProfilerGetCount() >= 60){
-        iPhoneProfilerPrintAllResults();
-        iPhoneProfilerProfilerInit();
-    }
-#endif
+   Process::processEvents();
 }
 
 //-----------------------------------------------------------------------------
@@ -503,10 +476,6 @@ void DefaultGame::gameReactivate( void )
 
    if ( !Input::isActive() )
       Input::reactivate();
-
-//   TextureManager::mDGLRender = true;
-//   if ( Canvas )
-//      Canvas->resetUpdateRegions();
 }
 
 //--------------------------------------------------------------------------
@@ -518,9 +487,6 @@ void DefaultGame::gameDeactivate( const bool noRender )
 
    if ( Input::isEnabled() )
       Input::disable();
-
-//   if ( noRender )
-//      TextureManager::mDGLRender = false;
 }
 
 //--------------------------------------------------------------------------
@@ -547,17 +513,16 @@ void DefaultGame::refreshWindow()
 
 //--------------------------------------------------------------------------
 
-void DefaultGame::processQuitEvent()
-{
-   setRunning(false);
-}
+//void DefaultGame::processQuitEvent()
+//{
+//   setRunning(false);
+//}
 
 //--------------------------------------------------------------------------
 
-void DefaultGame::processTimeEvent(TimeEvent *event)
+void DefaultGame::processTimeEvent(S32 elapsedTime)
 {
     PROFILE_START(ProcessTimeEvent);
-   U32 elapsedTime = event->elapsedTime;
 
    if(elapsedTime > 1024)
    {
@@ -610,10 +575,7 @@ iPhoneProfilerStart("SERVER_PROC");
     iPhoneProfilerStart("CLIENT_PROC");
 #endif
 
-   PROFILE_START(TickableAdvanceTime);
-   Tickable::advanceTime(elapsedTime);	
-   PROFILE_END();
-
+   clientProcess(elapsedTime);
     // This is based on PW's stuff
 #ifndef NO_AUDIO_SUPPORT
 
@@ -639,8 +601,6 @@ iPhoneProfilerStart("SERVER_PROC");
       GNet->processClient();
    PROFILE_END();
     
-    Process::processEvents();
-    
    GNet->checkTimeouts();
     
 #ifdef TORQUE_ALLOW_MUSICPLAYER
@@ -650,20 +610,10 @@ iPhoneProfilerStart("SERVER_PROC");
 }
 
 
-//--------------------------------------------------------------------------
-
-void DefaultGame::processConsoleEvent(ConsoleEvent *event)
+bool clientProcess(U32 timeDelta)
 {
-    char *argv[2];
-    argv[0] = (char*)"eval";
-    argv[1] = event->data;
-    Sim::postCurrentEvent(Sim::getRootGroup(), new SimConsoleEvent(2, const_cast<const char**>(argv), false));
-}
-
-//--------------------------------------------------------------------------
-
-void DefaultGame::processPacketReceiveEvent(PacketReceiveEvent * prEvent)
-{
-   GNet->processPacketReceiveEvent(prEvent);
+   PROFILE_START(TickableAdvanceTime);
+   Tickable::advanceTime(timeDelta);
+   PROFILE_END();
 }
 

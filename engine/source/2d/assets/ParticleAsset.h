@@ -169,7 +169,7 @@ protected:
     static bool writeLifetime( void* obj, StringTableEntry pFieldName )     { return mNotZero( static_cast<ParticleAsset*>(obj)->getLifetime() ); }
 
     static bool setLifeMode(void* obj, const char* data)                    { static_cast<ParticleAsset*>(obj)->setLifeMode( ParticleAsset::getParticleAssetLifeModeEnum(data) ); return false; }
-    static bool writeLifeMode( void* obj, StringTableEntry pFieldName )     { return static_cast<ParticleAsset*>(obj)->getLifeMode() != INFINITE; }
+    static bool writeLifeMode( void* obj, StringTableEntry pFieldName )     { return static_cast<ParticleAsset*>(obj)->getLifeMode() != INFINITE_LIFEMODE; }
 };
 
 #endif // _PARTICLE_ASSET_H_

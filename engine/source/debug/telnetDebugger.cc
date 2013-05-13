@@ -432,121 +432,121 @@ void TelnetDebugger::breakProcess()
 
 void TelnetDebugger::sendBreak()
 {
-   // echo out the break
-   send("BREAK");
-   char buffer[MaxCommandSize];
-   char scope[MaxCommandSize];
-
-   S32 last = 0;
-
-   for(S32 i = (S32) gEvalState.stack.size() - 1; i >= last; i--)
-   {
-      CodeBlock *code = gEvalState.stack[i]->code;
-      const char *file = "<none>";
-      if (code && code->name && code->name[0])
-         file = code->name;
-
-      Namespace *ns = gEvalState.stack[i]->scopeNamespace;
-      scope[0] = 0;
-      if ( ns ) {
-         
-         if ( ns->mParent && ns->mParent->mPackage && ns->mParent->mPackage[0] ) {
-            dStrcat( scope, ns->mParent->mPackage );
-            dStrcat( scope, "::" );
-         }
-         if ( ns->mName && ns->mName[0] ) {
-            dStrcat( scope, ns->mName );
-            dStrcat( scope, "::" );
-         }
-      }
-
-      const char *function = gEvalState.stack[i]->scopeName;
-      if ((!function) || (!function[0]))
-         function = "<none>";
-      dStrcat( scope, function );
-
-      U32 line=0, inst;
-      U32 ip = gEvalState.stack[i]->ip;
-      if (code)
-         code->findBreakLine(ip, line, inst);
-      dSprintf(buffer, MaxCommandSize, " %s %d %s", file, line, scope);
-      send(buffer);
-   }
-
-   send("\r\n");
+//   // echo out the break
+//   send("BREAK");
+//   char buffer[MaxCommandSize];
+//   char scope[MaxCommandSize];
+//
+//   S32 last = 0;
+//
+//   for(S32 i = (S32) gEvalState.stack.size() - 1; i >= last; i--)
+//   {
+//      CodeBlock *code = gEvalState.stack[i]->code;
+//      const char *file = "<none>";
+//      if (code && code->name && code->name[0])
+//         file = code->name;
+//
+//      Namespace *ns = gEvalState.stack[i]->scopeNamespace;
+//      scope[0] = 0;
+//      if ( ns ) {
+//         
+//         if ( ns->mParent && ns->mParent->mPackage && ns->mParent->mPackage[0] ) {
+//            dStrcat( scope, ns->mParent->mPackage );
+//            dStrcat( scope, "::" );
+//         }
+//         if ( ns->mName && ns->mName[0] ) {
+//            dStrcat( scope, ns->mName );
+//            dStrcat( scope, "::" );
+//         }
+//      }
+//
+//      const char *function = gEvalState.stack[i]->scopeName;
+//      if ((!function) || (!function[0]))
+//         function = "<none>";
+//      dStrcat( scope, function );
+//
+//      U32 line=0, inst;
+//      U32 ip = gEvalState.stack[i]->ip;
+//      if (code)
+//         code->findBreakLine(ip, line, inst);
+//      dSprintf(buffer, MaxCommandSize, " %s %d %s", file, line, scope);
+//      send(buffer);
+//   }
+//
+//   send("\r\n");
 }
 
 void TelnetDebugger::processLineBuffer(S32 cmdLen)
 {
-   if (mState == PasswordTry)
-   {
-      if(dStrncmp(mLineBuffer, mDebuggerPassword, cmdLen-1))
-      {
-         // failed password:
-         send("PASS WrongPassword.\r\n");
-         disconnect();
-      }
-      else
-      {
-         send("PASS Connected.\r\n");
-         mState = mWaitForClient ? Initialize : Connected;
-      }
-
-      return;
-   }
-   else
-   {
-      char evalBuffer[MaxCommandSize];
-      char varBuffer[MaxCommandSize];
-      char fileBuffer[MaxCommandSize];
-      char clear[MaxCommandSize];
-      S32 passCount, line, frame;
-
-      if(dSscanf(mLineBuffer, "CEVAL %[^\n]", evalBuffer) == 1)
-      {
-         ConsoleEvent postEvent;
-         dStrcpy(postEvent.data, evalBuffer);
-         postEvent.size = ConsoleEventHeaderSize + dStrlen(evalBuffer) + 1;
-         Game->postEvent(postEvent);
-      }
-      else if(dSscanf(mLineBuffer, "BRKVARSET %s %d %[^\n]", varBuffer, &passCount, evalBuffer) == 3)
-         addVariableBreakpoint(varBuffer, passCount, evalBuffer);
-      else if(dSscanf(mLineBuffer, "BRKVARCLR %s", varBuffer) == 1)
-         removeVariableBreakpoint(varBuffer);
-      else if(dSscanf(mLineBuffer, "BRKSET %s %d %s %d %[^\n]", fileBuffer,&line,&clear,&passCount,evalBuffer) == 5)
-         addBreakpoint(fileBuffer, line, dAtob(clear), passCount, evalBuffer);
-      else if(dSscanf(mLineBuffer, "BRKCLR %s %d", fileBuffer, &line) == 2)
-         removeBreakpoint(fileBuffer, line);
-      else if(!dStrncmp(mLineBuffer, "BRKCLRALL\n", cmdLen))
-         removeAllBreakpoints();
-      else if(!dStrncmp(mLineBuffer, "BRKNEXT\n", cmdLen))
-         debugBreakNext();
-      else if(!dStrncmp(mLineBuffer, "CONTINUE\n", cmdLen))
-         debugContinue();
-      else if(!dStrncmp(mLineBuffer, "STEPIN\n", cmdLen))
-         debugStepIn();
-      else if(!dStrncmp(mLineBuffer, "STEPOVER\n", cmdLen))
-         debugStepOver();
-      else if(!dStrncmp(mLineBuffer, "STEPOUT\n", cmdLen))
-         debugStepOut();
-      else if(dSscanf(mLineBuffer, "EVAL %s %d %[^\n]", varBuffer, &frame, evalBuffer) == 3)
-         evaluateExpression(varBuffer, frame, evalBuffer);
-      else if(!dStrncmp(mLineBuffer, "FILELIST\n", cmdLen))
-         dumpFileList();
-      else if(dSscanf(mLineBuffer, "BREAKLIST %s", fileBuffer) == 1)
-         dumpBreakableList(fileBuffer);
-      else
-      {
-         S32 errorLen = dStrlen(mLineBuffer) + 32; // ~25 in error message, plus buffer
-         FrameTemp<char> errorBuffer(errorLen);
-
-         mLineBuffer[cmdLen-1] = 0;    // Make sure the line is terminated
-
-         dSprintf( errorBuffer, errorLen, "DBGERR Invalid command(%s)!\r\n", mLineBuffer );
-         // invalid stuff.
-         send( errorBuffer );
-      }
-   }
+//   if (mState == PasswordTry)
+//   {
+//      if(dStrncmp(mLineBuffer, mDebuggerPassword, cmdLen-1))
+//      {
+//         // failed password:
+//         send("PASS WrongPassword.\r\n");
+//         disconnect();
+//      }
+//      else
+//      {
+//         send("PASS Connected.\r\n");
+//         mState = mWaitForClient ? Initialize : Connected;
+//      }
+//
+//      return;
+//   }
+//   else
+//   {
+//      char evalBuffer[MaxCommandSize];
+//      char varBuffer[MaxCommandSize];
+//      char fileBuffer[MaxCommandSize];
+//      char clear[MaxCommandSize];
+//      S32 passCount, line, frame;
+//
+//      if(dSscanf(mLineBuffer, "CEVAL %[^\n]", evalBuffer) == 1)
+//      {
+//         ConsoleEvent postEvent;
+//         dStrcpy(postEvent.data, evalBuffer);
+//         postEvent.size = ConsoleEventHeaderSize + dStrlen(evalBuffer) + 1;
+//         Game->postEvent(postEvent);
+//      }
+//      else if(dSscanf(mLineBuffer, "BRKVARSET %s %d %[^\n]", varBuffer, &passCount, evalBuffer) == 3)
+//         addVariableBreakpoint(varBuffer, passCount, evalBuffer);
+//      else if(dSscanf(mLineBuffer, "BRKVARCLR %s", varBuffer) == 1)
+//         removeVariableBreakpoint(varBuffer);
+//      else if(dSscanf(mLineBuffer, "BRKSET %s %d %s %d %[^\n]", fileBuffer,&line,&clear,&passCount,evalBuffer) == 5)
+//         addBreakpoint(fileBuffer, line, dAtob(clear), passCount, evalBuffer);
+//      else if(dSscanf(mLineBuffer, "BRKCLR %s %d", fileBuffer, &line) == 2)
+//         removeBreakpoint(fileBuffer, line);
+//      else if(!dStrncmp(mLineBuffer, "BRKCLRALL\n", cmdLen))
+//         removeAllBreakpoints();
+//      else if(!dStrncmp(mLineBuffer, "BRKNEXT\n", cmdLen))
+//         debugBreakNext();
+//      else if(!dStrncmp(mLineBuffer, "CONTINUE\n", cmdLen))
+//         debugContinue();
+//      else if(!dStrncmp(mLineBuffer, "STEPIN\n", cmdLen))
+//         debugStepIn();
+//      else if(!dStrncmp(mLineBuffer, "STEPOVER\n", cmdLen))
+//         debugStepOver();
+//      else if(!dStrncmp(mLineBuffer, "STEPOUT\n", cmdLen))
+//         debugStepOut();
+//      else if(dSscanf(mLineBuffer, "EVAL %s %d %[^\n]", varBuffer, &frame, evalBuffer) == 3)
+//         evaluateExpression(varBuffer, frame, evalBuffer);
+//      else if(!dStrncmp(mLineBuffer, "FILELIST\n", cmdLen))
+//         dumpFileList();
+//      else if(dSscanf(mLineBuffer, "BREAKLIST %s", fileBuffer) == 1)
+//         dumpBreakableList(fileBuffer);
+//      else
+//      {
+//         S32 errorLen = dStrlen(mLineBuffer) + 32; // ~25 in error message, plus buffer
+//         FrameTemp<char> errorBuffer(errorLen);
+//
+//         mLineBuffer[cmdLen-1] = 0;    // Make sure the line is terminated
+//
+//         dSprintf( errorBuffer, errorLen, "DBGERR Invalid command(%s)!\r\n", mLineBuffer );
+//         // invalid stuff.
+//         send( errorBuffer );
+//      }
+//   }
 }
 
 void TelnetDebugger::addVariableBreakpoint(const char*, S32, const char*)

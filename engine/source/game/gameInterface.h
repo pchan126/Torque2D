@@ -41,9 +41,6 @@ private:
    bool mJournalBreak;
    bool mRequiresRestart;
 
-   /// Events are stored here by any thread, for processing by the main thread.
-   Vector<Event*> eventQueue1, eventQueue2, *eventQueue;
-   
 public:
    GameInterface();
 
@@ -64,26 +61,26 @@ public:
    virtual void textureResurrect( void ) = 0;
    virtual void refreshWindow( void ) = 0;
 
-   /// Place an event in Game's event queue.
-   virtual void postEvent(Event &event);
+//   /// Place an event in Game's event queue.
+//   virtual void postEvent(Event &event);
 
-   /// Process all the events in Game's event queue. Only the main thread should call this.
-   virtual void processEvents();
+//   /// Process all the events in Game's event queue. Only the main thread should call this.
+//   virtual void processEvents();
    /// @}
 
    /// @name Event Handlers
    /// default event behavior with journaling support
    /// default handler forwards events to appropriate routines
    /// @{
-   virtual void processEvent(Event *event);
+//   virtual void processEvent(Event *event);
 
-   virtual void processQuitEvent() = 0;
-   virtual void processTimeEvent(TimeEvent *event) = 0;
-   virtual void processConsoleEvent(ConsoleEvent *event) = 0;
-   virtual void processPacketReceiveEvent(PacketReceiveEvent *event) = 0;
-   virtual void processConnectedAcceptEvent(ConnectedAcceptEvent *event) = 0;
-   virtual void processConnectedReceiveEvent(ConnectedReceiveEvent *event) = 0;
-   virtual void processConnectedNotifyEvent(ConnectedNotifyEvent *event) = 0;
+//   virtual void processQuitEvent() = 0;
+   virtual void processTimeEvent(S32 elapsedTime) = 0;
+//   virtual void processConsoleEvent(ConsoleEvent *event) = 0;
+//   virtual void processPacketReceiveEvent(PacketReceiveEvent *event) = 0;
+//   virtual void processConnectedAcceptEvent(ConnectedAcceptEvent *event) = 0;
+//   virtual void processConnectedReceiveEvent(ConnectedReceiveEvent *event) = 0;
+//   virtual void processConnectedNotifyEvent(ConnectedNotifyEvent *event) = 0;
    /// @}
 
    /// @name Running

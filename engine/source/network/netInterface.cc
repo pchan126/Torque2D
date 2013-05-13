@@ -79,62 +79,62 @@ NetConnection *NetInterface::findPendingConnection(const NetAddress *address, U3
    return NULL;
 }
 
-void NetInterface::processPacketReceiveEvent(PacketReceiveEvent *prEvent)
-{
-
-   U32 dataSize = prEvent->size - PacketReceiveEventHeaderSize;
-   BitStream pStream(prEvent->data, dataSize);
-
-   // Determine what to do with this packet:
-
-   if(prEvent->data[0] & 0x01) // it's a protocol packet...
-   {
-      // if the LSB of the first byte is set, it's a game data packet
-      // so pass it to the appropriate connection.
-
-      // lookup the connection in the addressTable
-      NetConnection *conn = NetConnection::lookup(&prEvent->sourceAddress);
-      if(conn)
-         conn->processRawPacket(&pStream);
-   }
-   else
-   {
-      // Otherwise, it's either a game info packet or a
-      // connection handshake packet.
-
-      U8 packetType;
-      pStream.read(&packetType);
-      NetAddress *addr = &prEvent->sourceAddress;
-
-      if(packetType <= GameHeartbeat)
-         handleInfoPacket(addr, packetType, &pStream);
-      else
-      {
-         // check if there's a connection already:
-         switch(packetType)
-         {
-            case ConnectChallengeRequest:
-               handleConnectChallengeRequest(addr, &pStream);
-               break;
-            case ConnectRequest:
-               handleConnectRequest(addr, &pStream);
-               break;
-            case ConnectChallengeResponse:
-               handleConnectChallengeResponse(addr, &pStream);
-               break;
-            case ConnectAccept:
-               handleConnectAccept(addr, &pStream);
-               break;
-            case Disconnect:
-               handleDisconnect(addr, &pStream);
-               break;
-            case ConnectReject:
-               handleConnectReject(addr, &pStream);
-               break;
-         }
-      }
-   }
-}
+//void NetInterface::processPacketReceiveEvent(PacketReceiveEvent *prEvent)
+//{
+//
+//   U32 dataSize = prEvent->size - PacketReceiveEventHeaderSize;
+//   BitStream pStream(prEvent->data, dataSize);
+//
+//   // Determine what to do with this packet:
+//
+//   if(prEvent->data[0] & 0x01) // it's a protocol packet...
+//   {
+//      // if the LSB of the first byte is set, it's a game data packet
+//      // so pass it to the appropriate connection.
+//
+//      // lookup the connection in the addressTable
+//      NetConnection *conn = NetConnection::lookup(&prEvent->sourceAddress);
+//      if(conn)
+//         conn->processRawPacket(&pStream);
+//   }
+//   else
+//   {
+//      // Otherwise, it's either a game info packet or a
+//      // connection handshake packet.
+//
+//      U8 packetType;
+//      pStream.read(&packetType);
+//      NetAddress *addr = &prEvent->sourceAddress;
+//
+//      if(packetType <= GameHeartbeat)
+//         handleInfoPacket(addr, packetType, &pStream);
+//      else
+//      {
+//         // check if there's a connection already:
+//         switch(packetType)
+//         {
+//            case ConnectChallengeRequest:
+//               handleConnectChallengeRequest(addr, &pStream);
+//               break;
+//            case ConnectRequest:
+//               handleConnectRequest(addr, &pStream);
+//               break;
+//            case ConnectChallengeResponse:
+//               handleConnectChallengeResponse(addr, &pStream);
+//               break;
+//            case ConnectAccept:
+//               handleConnectAccept(addr, &pStream);
+//               break;
+//            case Disconnect:
+//               handleDisconnect(addr, &pStream);
+//               break;
+//            case ConnectReject:
+//               handleConnectReject(addr, &pStream);
+//               break;
+//         }
+//      }
+//   }
+//}
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------

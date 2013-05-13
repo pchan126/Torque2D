@@ -133,183 +133,183 @@ void TelnetConsole::processConsoleLine(const char *consoleLine)
 
 void TelnetConsole::process()
 {
-   NetAddress address;
-
-   if(mAcceptSocket != InvalidSocket)
-   {
-      // ok, see if we have any new connections:
-      NetSocket newConnection;
-      newConnection = Net::accept(mAcceptSocket, &address);
-
-      if(newConnection != InvalidSocket)
-      {
-        Con::printf ("Telnet connection from %i.%i.%i.%i",
-                address.netNum[0], address.netNum[1], address.netNum[2], address.netNum[3]);
-
-         TelnetClient *cl = new TelnetClient;
-         cl->socket = newConnection;
-         cl->curPos = 0;
-         cl->state = PasswordTryOne;
-
-         Net::setBlocking(newConnection, false);
-
-         const char *connectMessage = "Torque Telnet Remote Console\r\n\r\nEnter Password:";
-
-         if ( cl->socket != InvalidSocket )
-            Net::send(cl->socket, (const unsigned char*)connectMessage, dStrlen(connectMessage)+1);
-         cl->nextClient = mClientList;
-         mClientList = cl;
-      }
-   }
-
-   char recvBuf[256];
-   char reply[1024];
-
-   // see if we have any input to process...
-
-   for(TelnetClient *client = mClientList; client; client = client->nextClient)
-   {
-      S32 numBytes;
-      Net::Error err = Net::NotASocket;
-      
-      if ( client->socket != InvalidSocket )
-         Net::recv(client->socket, (unsigned char*)recvBuf, sizeof(recvBuf), &numBytes);
-
-      if((err != Net::NoError && err != Net::WouldBlock) || numBytes == 0)
-      {
-         if ( client->socket != InvalidSocket )
-         {
-            Net::closeSocket(client->socket);
-            client->socket = InvalidSocket;
-         }
-         continue;
-      }
-
-      S32 replyPos = 0;
-      for(S32 i = 0; i < numBytes;i++)
-      {
-         if(recvBuf[i] == '\r')
-            continue;
-         // execute the current command
-
-         if(recvBuf[i] == '\n')
-         {
-            reply[replyPos++] = '\r';
-            reply[replyPos++] = '\n';
-
-            client->curLine[client->curPos] = 0;
-            client->curPos = 0;
-
-            if(client->state == FullAccessConnected)
-            {
-               if ( client->socket != InvalidSocket )
-                  Net::send(client->socket, (const unsigned char*)reply, replyPos);
-               replyPos = 0;
-
-               dStrcpy(mPostEvent.data, client->curLine);
-               mPostEvent.size = ConsoleEventHeaderSize + dStrlen(client->curLine) + 1;
-               Game->postEvent(mPostEvent);
-
-               // note - send prompt next
-               const char *prompt = Con::getVariable("Con::Prompt");
-               if ( client->socket != InvalidSocket )
-                  Net::send(client->socket, (const unsigned char*)prompt, dStrlen(prompt));
-            }
-            else if(client->state == ReadOnlyConnected)
-            {
-               if ( client->socket != InvalidSocket )
-                  Net::send(client->socket, (const unsigned char*)reply, replyPos);
-               replyPos = 0;
-            }
-            else
-            {
-               client->state++;
-               if(!dStrncmp(client->curLine, mTelnetPassword, PasswordMaxLength))
-               {
-                  if ( client->socket != InvalidSocket )
-                     Net::send(client->socket, (const unsigned char*)reply, replyPos);
-                  replyPos = 0;
-
-                  // send prompt
-                  const char *prompt = Con::getVariable("Con::Prompt");
-                  if ( client->socket != InvalidSocket )
-                     Net::send(client->socket, (const unsigned char*)prompt, dStrlen(prompt));
-                  client->state = FullAccessConnected;
-               }
-               else if(!dStrncmp(client->curLine, mListenPassword, PasswordMaxLength))
-               {
-                  if ( client->socket != InvalidSocket )
-                     Net::send(client->socket, (const unsigned char*)reply, replyPos);
-                  replyPos = 0;
-
-                  // send prompt
-                  const char *listenConnected = "Connected.\r\n";
-                  if ( client->socket != InvalidSocket )
-                     Net::send(client->socket, (const unsigned char*)listenConnected, dStrlen(listenConnected));
-                  client->state = ReadOnlyConnected;
-               }
-               else
-               {
-                  const char *sendStr;
-                  if(client->state == DisconnectThisDude)
-                     sendStr = "Too many tries... cya.";
-                  else
-                     sendStr = "Nope... try agian.\r\nEnter Password:";
-                  if ( client->socket != InvalidSocket )
-                     Net::send(client->socket, (const unsigned char*)sendStr, dStrlen(sendStr));
-                  if(client->state == DisconnectThisDude)
-                  {
-                     if ( client->socket != InvalidSocket )
-                     {
-                        Net::closeSocket(client->socket);
-                        client->socket = InvalidSocket;
-                     }
-                  }
-               }
-            }
-         }
-         else if(recvBuf[i] == '\b')
-         {
-            // pull the old backspace manuever...
-            if(client->curPos > 0)
-            {
-               client->curPos--;
-               if(client->state == FullAccessConnected)
-               {
-                  reply[replyPos++] = '\b';
-                  reply[replyPos++] = ' ';
-                  reply[replyPos++] = '\b';
-               }
-            }
-         }
-         else if(client->curPos < Con::MaxLineLength-1)
-         {
-            client->curLine[client->curPos++] = recvBuf[i];
-            // don't echo password chars...
-            if(client->state == FullAccessConnected)
-               reply[replyPos++] = recvBuf[i];
-         }
-      }
-
-      // Echo the character back to the user, unless the remote echo
-      // is disabled (by default)
-      if(replyPos && mRemoteEchoEnabled)
-      {
-         if ( client->socket != InvalidSocket )
-            Net::send(client->socket, (const unsigned char*)reply, replyPos);
-      }
-   }
-
-   TelnetClient ** walk = &mClientList;
-   TelnetClient *cl;
-   while((cl = *walk) != NULL)
-   {
-      if(cl->socket == InvalidSocket)
-      {
-         *walk = cl->nextClient;
-         delete cl;
-      }
-      else
-         walk = &cl->nextClient;
-   }
+//   NetAddress address;
+//
+//   if(mAcceptSocket != InvalidSocket)
+//   {
+//      // ok, see if we have any new connections:
+//      NetSocket newConnection;
+//      newConnection = Net::accept(mAcceptSocket, &address);
+//
+//      if(newConnection != InvalidSocket)
+//      {
+//        Con::printf ("Telnet connection from %i.%i.%i.%i",
+//                address.netNum[0], address.netNum[1], address.netNum[2], address.netNum[3]);
+//
+//         TelnetClient *cl = new TelnetClient;
+//         cl->socket = newConnection;
+//         cl->curPos = 0;
+//         cl->state = PasswordTryOne;
+//
+//         Net::setBlocking(newConnection, false);
+//
+//         const char *connectMessage = "Torque Telnet Remote Console\r\n\r\nEnter Password:";
+//
+//         if ( cl->socket != InvalidSocket )
+//            Net::send(cl->socket, (const unsigned char*)connectMessage, dStrlen(connectMessage)+1);
+//         cl->nextClient = mClientList;
+//         mClientList = cl;
+//      }
+//   }
+//
+//   char recvBuf[256];
+//   char reply[1024];
+//
+//   // see if we have any input to process...
+//
+//   for(TelnetClient *client = mClientList; client; client = client->nextClient)
+//   {
+//      S32 numBytes;
+//      Net::Error err = Net::NotASocket;
+//      
+//      if ( client->socket != InvalidSocket )
+//         Net::recv(client->socket, (unsigned char*)recvBuf, sizeof(recvBuf), &numBytes);
+//
+//      if((err != Net::NoError && err != Net::WouldBlock) || numBytes == 0)
+//      {
+//         if ( client->socket != InvalidSocket )
+//         {
+//            Net::closeSocket(client->socket);
+//            client->socket = InvalidSocket;
+//         }
+//         continue;
+//      }
+//
+//      S32 replyPos = 0;
+//      for(S32 i = 0; i < numBytes;i++)
+//      {
+//         if(recvBuf[i] == '\r')
+//            continue;
+//         // execute the current command
+//
+//         if(recvBuf[i] == '\n')
+//         {
+//            reply[replyPos++] = '\r';
+//            reply[replyPos++] = '\n';
+//
+//            client->curLine[client->curPos] = 0;
+//            client->curPos = 0;
+//
+//            if(client->state == FullAccessConnected)
+//            {
+//               if ( client->socket != InvalidSocket )
+//                  Net::send(client->socket, (const unsigned char*)reply, replyPos);
+//               replyPos = 0;
+//
+//               dStrcpy(mPostEvent.data, client->curLine);
+//               mPostEvent.size = ConsoleEventHeaderSize + dStrlen(client->curLine) + 1;
+//               Game->postEvent(mPostEvent);
+//
+//               // note - send prompt next
+//               const char *prompt = Con::getVariable("Con::Prompt");
+//               if ( client->socket != InvalidSocket )
+//                  Net::send(client->socket, (const unsigned char*)prompt, dStrlen(prompt));
+//            }
+//            else if(client->state == ReadOnlyConnected)
+//            {
+//               if ( client->socket != InvalidSocket )
+//                  Net::send(client->socket, (const unsigned char*)reply, replyPos);
+//               replyPos = 0;
+//            }
+//            else
+//            {
+//               client->state++;
+//               if(!dStrncmp(client->curLine, mTelnetPassword, PasswordMaxLength))
+//               {
+//                  if ( client->socket != InvalidSocket )
+//                     Net::send(client->socket, (const unsigned char*)reply, replyPos);
+//                  replyPos = 0;
+//
+//                  // send prompt
+//                  const char *prompt = Con::getVariable("Con::Prompt");
+//                  if ( client->socket != InvalidSocket )
+//                     Net::send(client->socket, (const unsigned char*)prompt, dStrlen(prompt));
+//                  client->state = FullAccessConnected;
+//               }
+//               else if(!dStrncmp(client->curLine, mListenPassword, PasswordMaxLength))
+//               {
+//                  if ( client->socket != InvalidSocket )
+//                     Net::send(client->socket, (const unsigned char*)reply, replyPos);
+//                  replyPos = 0;
+//
+//                  // send prompt
+//                  const char *listenConnected = "Connected.\r\n";
+//                  if ( client->socket != InvalidSocket )
+//                     Net::send(client->socket, (const unsigned char*)listenConnected, dStrlen(listenConnected));
+//                  client->state = ReadOnlyConnected;
+//               }
+//               else
+//               {
+//                  const char *sendStr;
+//                  if(client->state == DisconnectThisDude)
+//                     sendStr = "Too many tries... cya.";
+//                  else
+//                     sendStr = "Nope... try agian.\r\nEnter Password:";
+//                  if ( client->socket != InvalidSocket )
+//                     Net::send(client->socket, (const unsigned char*)sendStr, dStrlen(sendStr));
+//                  if(client->state == DisconnectThisDude)
+//                  {
+//                     if ( client->socket != InvalidSocket )
+//                     {
+//                        Net::closeSocket(client->socket);
+//                        client->socket = InvalidSocket;
+//                     }
+//                  }
+//               }
+//            }
+//         }
+//         else if(recvBuf[i] == '\b')
+//         {
+//            // pull the old backspace manuever...
+//            if(client->curPos > 0)
+//            {
+//               client->curPos--;
+//               if(client->state == FullAccessConnected)
+//               {
+//                  reply[replyPos++] = '\b';
+//                  reply[replyPos++] = ' ';
+//                  reply[replyPos++] = '\b';
+//               }
+//            }
+//         }
+//         else if(client->curPos < Con::MaxLineLength-1)
+//         {
+//            client->curLine[client->curPos++] = recvBuf[i];
+//            // don't echo password chars...
+//            if(client->state == FullAccessConnected)
+//               reply[replyPos++] = recvBuf[i];
+//         }
+//      }
+//
+//      // Echo the character back to the user, unless the remote echo
+//      // is disabled (by default)
+//      if(replyPos && mRemoteEchoEnabled)
+//      {
+//         if ( client->socket != InvalidSocket )
+//            Net::send(client->socket, (const unsigned char*)reply, replyPos);
+//      }
+//   }
+//
+//   TelnetClient ** walk = &mClientList;
+//   TelnetClient *cl;
+//   while((cl = *walk) != NULL)
+//   {
+//      if(cl->socket == InvalidSocket)
+//      {
+//         *walk = cl->nextClient;
+//         delete cl;
+//      }
+//      else
+//         walk = &cl->nextClient;
+//   }
 }

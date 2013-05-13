@@ -63,7 +63,6 @@ class TelnetConsole
    bool mRemoteEchoEnabled;
    char mTelnetPassword[PasswordMaxLength+1];
    char mListenPassword[PasswordMaxLength+1];
-   ConsoleEvent mPostEvent;
 
    /// State of a TelnetClient.
    enum State

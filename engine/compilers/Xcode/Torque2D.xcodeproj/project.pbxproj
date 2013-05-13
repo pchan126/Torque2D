@@ -42,6 +42,8 @@
 		2AF1C54016B439BB00C1CF3A /* declaredAssets.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2AF1C53C16B439BB00C1CF3A /* declaredAssets.cc */; };
 		2AF1C54116B439BB00C1CF3A /* referencedAssets.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2AF1C53E16B439BB00C1CF3A /* referencedAssets.cc */; };
 		2AF3633916A9BBE0004ED7AA /* ParticleSystem.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2AF3633716A9BBE0004ED7AA /* ParticleSystem.cc */; };
+		30D54746173FD18B00CB43DA /* platformTimer.cc in Sources */ = {isa = PBXBuildFile; fileRef = 30D54745173FD18B00CB43DA /* platformTimer.cc */; };
+		30D54748173FD6A100CB43DA /* osxTimer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30D54747173FD6A100CB43DA /* osxTimer.mm */; };
 		86063A251654180000362D83 /* platformOSX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 86063A241654180000362D83 /* platformOSX.mm */; };
 		8609FE2F16556DD2004662ED /* osxSemaphore.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8609FE2E16556DD2004662ED /* osxSemaphore.mm */; };
 		8609FE3116556E5A004662ED /* osxThread.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8609FE3016556E5A004662ED /* osxThread.mm */; };
@@ -584,6 +586,8 @@
 		2AF3633716A9BBE0004ED7AA /* ParticleSystem.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ParticleSystem.cc; sourceTree = "<group>"; };
 		2AF3633816A9BBE0004ED7AA /* ParticleSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticleSystem.h; sourceTree = "<group>"; };
 		2AF80CFF16A80CB400CE13F1 /* ParticleAssetEmitter_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticleAssetEmitter_ScriptBinding.h; sourceTree = "<group>"; };
+		30D54745173FD18B00CB43DA /* platformTimer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = platformTimer.cc; sourceTree = "<group>"; };
+		30D54747173FD6A100CB43DA /* osxTimer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxTimer.mm; sourceTree = "<group>"; };
 		86063A231654180000362D83 /* platformOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformOSX.h; sourceTree = "<group>"; };
 		86063A241654180000362D83 /* platformOSX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = platformOSX.mm; sourceTree = "<group>"; };
 		8609FE2E16556DD2004662ED /* osxSemaphore.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxSemaphore.mm; sourceTree = "<group>"; };
@@ -1329,7 +1333,7 @@
 		86BC833F16518FC900D96ADF /* mutex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mutex.h; sourceTree = "<group>"; };
 		86BC834016518FC900D96ADF /* semaphore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = semaphore.h; sourceTree = "<group>"; };
 		86BC834116518FC900D96ADF /* thread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thread.h; sourceTree = "<group>"; };
-		86BC834216518FE800D96ADF /* platformTimeManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformTimeManager.h; sourceTree = "<group>"; };
+		86BC834216518FE800D96ADF /* platformTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformTimer.h; sourceTree = "<group>"; };
 		86BC834316518FE800D96ADF /* platformMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformMath.h; sourceTree = "<group>"; };
 		86BC834416518FE800D96ADF /* platformFont.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = platformFont.cc; sourceTree = "<group>"; };
 		86BC834516518FE800D96ADF /* platformMemory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformMemory.h; sourceTree = "<group>"; };
@@ -1938,6 +1942,7 @@
 				8658B173165A7BFB0087ABC1 /* osxString.mm */,
 				8609FE3016556E5A004662ED /* osxThread.mm */,
 				866381E81655674B00C8C551 /* osxTime.mm */,
+				30D54747173FD6A100CB43DA /* osxTimer.mm */,
 				86D76F74165682BF0046D71F /* platformGL.h */,
 				86063A231654180000362D83 /* platformOSX.h */,
 				86063A241654180000362D83 /* platformOSX.mm */,
@@ -3009,7 +3014,8 @@
 				86BC834616518FE800D96ADF /* platformNetwork.h */,
 				86BC835E16518FE800D96ADF /* platformSemaphore.h */,
 				86BC834716518FE800D96ADF /* platformString.h */,
-				86BC834216518FE800D96ADF /* platformTimeManager.h */,
+				86BC834216518FE800D96ADF /* platformTimer.h */,
+				30D54745173FD18B00CB43DA /* platformTimer.cc */,
 				86BC835F16518FE800D96ADF /* platformTLS.h */,
 				86BC836016518FE800D96ADF /* platformVFS.h */,
 				86BC831816518F6800D96ADF /* threads */,
@@ -3675,6 +3681,8 @@
 				D162450717265AB000E4E1F7 /* gfxOpenGLStateBlock.cc in Sources */,
 				D176A012172FC1E4000785CB /* osxWindowInputGenerator.mm in Sources */,
 				D10529F2173B9F3B00BFC4FF /* gfxOpenGLTextureObject.cc in Sources */,
+				30D54746173FD18B00CB43DA /* platformTimer.cc in Sources */,
+				30D54748173FD6A100CB43DA /* osxTimer.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -274,10 +274,10 @@ void Platform::restartInstance()
 // Starts the quit process for the main Game instance
 void Platform::postQuitMessage(const U32 in_quitVal)
 {
-    Event quitEvent;
-    quitEvent.type = QuitEventType;
-    
-    Game->postEvent(quitEvent);
+//    Event quitEvent;
+//    quitEvent.type = QuitEventType;
+//    
+//    Game->postEvent(quitEvent);
 }
 
 //-----------------------------------------------------------------------------

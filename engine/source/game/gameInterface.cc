@@ -40,13 +40,6 @@ static U32 sReentrantCount = 0;
 
 //-----------------------------------------------------------------------------
 
-struct ReadEvent : public Event
-{
-   U8 data[3072];
-};
-
-//-----------------------------------------------------------------------------
-
 GameInterface::GameInterface()
 {
    AssertFatal(Game == NULL, "ERROR: Multiple games declared.");
@@ -56,108 +49,6 @@ GameInterface::GameInterface()
    mRequiresRestart = false;
    if(!gGameEventQueueMutex)
       gGameEventQueueMutex = Mutex::createMutex();
-   eventQueue = &eventQueue1;
-}
-
-//-----------------------------------------------------------------------------
-
-void GameInterface::processEvent(Event *event)
-{
-   if(!mRunning)
-      return;
-
-   if(PlatformAssert::processingAssert()) // ignore any events if an assert dialog is up.
-      return;
-
-#ifdef TORQUE_DEBUG
-   sReentrantCount++;
-   AssertFatal(sReentrantCount == 1, "Error! ProcessEvent is NOT re-entrant.");
-#endif
-
-   switch(event->type)
-   {
-      case PacketReceiveEventType:
-         processPacketReceiveEvent((PacketReceiveEvent *) event);
-         break;
-      case QuitEventType:
-         processQuitEvent();
-         break;
-      case TimeEventType:
-         processTimeEvent((TimeEvent *) event);
-         break;
-      case ConsoleEventType:
-         processConsoleEvent((ConsoleEvent *) event);
-         break;
-      case ConnectedAcceptEventType:
-         processConnectedAcceptEvent( (ConnectedAcceptEvent *) event );
-         break;
-      case ConnectedReceiveEventType:
-         processConnectedReceiveEvent( (ConnectedReceiveEvent *) event );
-         break;
-      case ConnectedNotifyEventType:
-         processConnectedNotifyEvent( (ConnectedNotifyEvent *) event );
-         break;
-   }
-
-#ifdef TORQUE_DEBUG
-   sReentrantCount--;
-#endif
-}
-
-//-----------------------------------------------------------------------------
-
-void GameInterface::postEvent(Event &event)
-{
-#ifdef TORQUE_ALLOW_JOURNALING
-   if(mJournalMode == JournalPlay && event.type != QuitEventType)
-      return;
-#endif //TORQUE_ALLOW_JOURNALING
-
-   // Only one thread can post at a time.
-   Mutex::lockMutex(gGameEventQueueMutex);
-
-#ifdef TORQUE_ALLOW_JOURNALING
-   if(mJournalMode == JournalSave)
-   {
-      gJournalStream.write(event.size, &event);
-      gJournalStream.flush();
-   }
-#endif //TORQUE_ALLOW_JOURNALING 
-
-   // Create a deep copy of event, and save a pointer to the copy in a vector.
-   Event* copy = (Event*)dMalloc(event.size);
-   dMemcpy(copy, &event, event.size);
-   eventQueue->push_back(copy);
-   
-   Mutex::unlockMutex(gGameEventQueueMutex);   
-}
-
-
-
-
-void GameInterface::processEvents()
-{
-   // We want to lock the queue when processing as well - don't need
-   // anyone putting new events in the middle of this.
-   // We double-buffer the event queues so we'll block the other thread(s) for
-   // a minimum amount of time.
-   Mutex::lockMutex(gGameEventQueueMutex);
-      // swap event queue pointers
-      Vector<Event*> &fullEventQueue = *eventQueue;
-      if(eventQueue == &eventQueue1)
-         eventQueue = &eventQueue2;
-      else
-         eventQueue = &eventQueue1;
-   Mutex::unlockMutex(gGameEventQueueMutex);
-
-   // Walk the event queue in fifo order, processing the events, then clear the queue.
-   for(int i=0; i < fullEventQueue.size(); i++)
-   {
-      Game->processEvent(fullEventQueue[i]);
-      dFree(fullEventQueue[i]);
-   }
-   fullEventQueue.clear();
-
 }
 
 void GameInterface::journalProcess()

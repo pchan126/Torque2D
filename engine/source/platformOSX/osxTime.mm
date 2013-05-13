@@ -27,6 +27,8 @@
 
 #pragma mark ---- TimeManager Class Methods ----
 
+extern S32 sgTimeManagerProcessInterval;
+
 //------------------------------------------------------------------------------
 
 static void _OSXUpdateSleepTicks()
@@ -39,44 +41,28 @@ static void _OSXUpdateSleepTicks()
         platState.sleepTicks = (U32)sgTimeManagerProcessInterval;
 }
 
-//TimeManager::TimeManager()
+////------------------------------------------------------------------------------
+//// Responsible for calculating ticks and posting the TimeEvent
+//void TimeManager::process(double timeSinceLastUpdate)
 //{
-//    mBackground = false;
-//    mTimer = PlatformTimer::create();
-//    Process::notify(this, &TimeManager::process, PROCESS_TIME_ORDER);
+//    osxPlatState * platState = [osxPlatState sharedPlatState];
 //    
-//    mForegroundThreshold = 5;
-//    mBackgroundThreshold = 10;
+//    _OSXUpdateSleepTicks();
+//    
+//    U32 curTime = Platform::getRealMilliseconds(); // GTC returns Milliseconds, FYI.
+//    U32 elapsedTime = curTime - platState.lastTimeTick;
+//    
+//    if(elapsedTime <= platState.sleepTicks)
+//    {
+//        Platform::sleep(platState.sleepTicks - elapsedTime);
+//    }
+//    
+//    platState.lastTimeTick = Platform::getRealMilliseconds();
+//    
+//    TimeEvent event;
+//    event.elapsedTime = elapsedTime;
+//    Game->postEvent(event);
 //}
-//
-//TimeManager::~TimeManager()
-//{
-//    Process::remove(this, &TimeManager::process);
-//    delete mTimer;
-//}
-
-//------------------------------------------------------------------------------
-// Responsible for calculating ticks and posting the TimeEvent
-void TimeManager::process(double timeSinceLastUpdate)
-{
-    osxPlatState * platState = [osxPlatState sharedPlatState];
-    
-    _OSXUpdateSleepTicks();
-    
-    U32 curTime = Platform::getRealMilliseconds(); // GTC returns Milliseconds, FYI.
-    U32 elapsedTime = curTime - platState.lastTimeTick;
-    
-    if(elapsedTime <= platState.sleepTicks)
-    {
-        Platform::sleep(platState.sleepTicks - elapsedTime);
-    }
-    
-    platState.lastTimeTick = Platform::getRealMilliseconds();
-    
-    TimeEvent event;
-    event.elapsedTime = elapsedTime;
-    Game->postEvent(event);
-}
 
 #pragma mark ---- Platform Namespace Time Functions  ----
 
@@ -144,3 +130,7 @@ void Platform::sleep(U32 ms)
     // Note: This will overflow if you want to sleep for more than 49 days
     usleep(ms * 1000);
 }
+
+
+
+
