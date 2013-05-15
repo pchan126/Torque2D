@@ -217,6 +217,8 @@ public:
     inline void translate( float tx, float ty, float tz);
     inline void translate( Point3F vec );
     
+    inline void rotate(float radians, float x, float y, float z);
+    
     inline void setFustrum(float left, float right,
                            float bottom, float top,
                            float nearZ, float farZ);
@@ -614,6 +616,44 @@ inline Point3F MatrixF::getPosition() const
    return pos;
 }
 
+inline void MatrixF::rotate(float radians, float x, float y, float z)
+{
+#ifdef __GLK_MATRIX_4_H
+    transpose();
+    mGM = GLKMatrix4Rotate(mGM, radians, x, y, z);
+    transpose();
+#else
+    MatrixF tempThis(*this);
+    Point3F v(x, y, z);
+    v.normalize();
+    float cos = cosf(radians);
+    float cosp = 1.0f - cos;
+    float sin = sinf(radians);
+    
+    MatrixF m({
+        cos + cosp * v[0] * v[0],
+        cosp * v[0] * v[1] - v[2] * sin,
+        cosp * v[0] * v[2] + v[1] * sin,
+        0.0f,
+        cosp * v[0] * v[1] + v[2] * sin,
+        cos + cosp * v[1] * v[1],
+        cosp * v[1] * v[2] - v[0] * sin,
+        0.0f,
+        cosp * v[0] * v[2] - v[1] * sin,
+        cosp * v[1] * v[2] + v[0] * sin,
+        cos + cosp * v[2] * v[2],
+        0.0f,
+        0.0f,
+        0.0f,
+        0.0f,
+        1.0f});
+    
+    m_matF_x_matF(tempThis, m, *this);
+    
+#endif
+}
+
+
 inline void MatrixF::makeXRotation(float radians)
 {
 #ifdef __GLK_MATRIX_4_H
@@ -699,19 +739,19 @@ inline void MatrixF::rotateY(float radians)
 
 inline void MatrixF::makeZRotation(float radians)
 {
-#ifdef __GLK_MATRIX_4_H
-   transpose();
-    mGM = GLKMatrix4MakeZRotation( radians);
-   transpose();
-#else
+//#ifdef __GLK_MATRIX_4_H
+//   transpose();
+//    mGM = GLKMatrix4MakeZRotation( radians);
+//   transpose();
+//#else
     float cos = cosf(radians);
     float sin = sinf(radians);
     
     m[0]  = cos;
-    m[1]  = sin;
+    m[1]  = -sin;
     m[2]  = 0.0f;
     m[3]  = 0.0f;
-    m[4]  = -sin;
+    m[4]  = sin;
     m[5]  = cos;
     m[6]  = 0.0f;
     m[7]  = 0.0f;
@@ -723,7 +763,7 @@ inline void MatrixF::makeZRotation(float radians)
     m[13] = 0.0f;
     m[14] = 0.0f;
     m[15] = 1.0f;
-#endif
+//#endif
 }
 
 inline void MatrixF::rotateZ(float radians)

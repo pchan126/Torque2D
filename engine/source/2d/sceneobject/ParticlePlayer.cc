@@ -606,17 +606,15 @@ void ParticlePlayer::sceneRender( const SceneRenderState* pSceneRenderState, con
             MatrixF wMatrix = GFX->getWorldMatrix();
             
            // Move into emitter-space.
-           //            wMatrix.translate(renderPosition.x/20.0, renderPosition.y/15.0, 0.0f );
-           wMatrix.translate(renderPosition.x, renderPosition.y, 0.0f );
-
-           // Is the rotation attached to the emitter?
+            wMatrix.translate(renderPosition.x, renderPosition.y, 0.0f );
+            
+            // Is the rotation attached to the emitter?
             if ( pParticleAssetEmitter->getAttachRotationToEmitter() )
             {
                 // Yes, so rotate into emitter-space.
                 // NOTE:- We need clockwise rotation here.
-                wMatrix.rotateZ(getRenderAngle());
+                wMatrix.rotate(getRenderAngle(), 0.0, 0.0, 1.0);
             }
-           
             GFX->setWorldMatrix(wMatrix);
         }
 
