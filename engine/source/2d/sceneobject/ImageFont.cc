@@ -263,7 +263,7 @@ void ImageFont::sceneRender( const SceneRenderState* pSceneRenderState, const Sc
             Vector2( texUpper.x, texUpper.y ),
             Vector2( texUpper.x, texLower.y ),
             Vector2( texLower.x, texLower.y ),
-            mImageAsset->getImageTexture() );
+            mImageAsset->getImageTexture(), mBlendColor );
 
         // Translate character OOBB.
         characterOOBB0 += characterWidthStride;

@@ -314,20 +314,6 @@ void Scroller::sceneRender( const SceneRenderState* pSceneRenderState, const Sce
     // Flush any existing batches.
     pBatchRenderer->flush();
 
-//    // Set-up a set of clip-planes against the OOBB.
-//    GLdouble left[4] = {1, 0, 0, -renderOOBB0.x};
-//    GLdouble right[4] = {-1, 0, 0, renderOOBB1.x};
-//    GLdouble top[4] = {0, -1, 0, renderOOBB3.y};
-//    GLdouble bottom[4] = {0, 1, 0, -renderOOBB0.y};
-//    glClipPlane(GL_CLIP_PLANE0, left);
-//    glClipPlane(GL_CLIP_PLANE1, right);
-//    glClipPlane(GL_CLIP_PLANE2, top);
-//    glClipPlane(GL_CLIP_PLANE3, bottom);
-//    glEnable(GL_CLIP_PLANE0);
-//    glEnable(GL_CLIP_PLANE1);
-//    glEnable(GL_CLIP_PLANE2);
-//    glEnable(GL_CLIP_PLANE3);
-
     // Render repeat Y.
     for ( S32 repeatIndexY = 0; repeatIndexY < wholeRegionY; ++repeatIndexY )
     {
@@ -369,12 +355,6 @@ void Scroller::sceneRender( const SceneRenderState* pSceneRenderState, const Sce
 
     // Flush the scroller batches.
     pBatchRenderer->flush();
-
-//    // Disable the OOBB clip-planes.
-//    glDisable(GL_CLIP_PLANE0);
-//    glDisable(GL_CLIP_PLANE1);
-//    glDisable(GL_CLIP_PLANE2);
-//    glDisable(GL_CLIP_PLANE3);
 }
 
 //------------------------------------------------------------------------------
@@ -391,7 +371,7 @@ void Scroller::renderRegionSplitX( BatchRender* pBatchRenderer, GFXTexHandle& te
         Vector2( splitRegion.mTexSplitLowerX2, splitRegion.mTexSplitLowerY1 ),
         Vector2( splitRegion.mTexSplitLowerX2, splitRegion.mTexSplitLowerY2 ),
         Vector2( splitRegion.mTexSplitLowerX1, splitRegion.mTexSplitLowerY2 ),
-        texture );
+        texture, mBlendColor );
 
     // Submit batched quad.
     pBatchRenderer->SubmitQuad(
@@ -403,7 +383,7 @@ void Scroller::renderRegionSplitX( BatchRender* pBatchRenderer, GFXTexHandle& te
         Vector2( splitRegion.mTexSplitUpperX2, splitRegion.mTexSplitLowerY1 ),
         Vector2( splitRegion.mTexSplitUpperX2, splitRegion.mTexSplitLowerY2 ),
         Vector2( splitRegion.mTexSplitUpperX1, splitRegion.mTexSplitLowerY2 ),
-        texture );
+        texture, mBlendColor );
 }
 
 //------------------------------------------------------------------------------
@@ -420,7 +400,7 @@ void Scroller::renderRegionSplitY( BatchRender* pBatchRenderer, GFXTexHandle& te
         Vector2( splitRegion.mTexSplitLowerX2, splitRegion.mTexSplitLowerY1 ),
         Vector2( splitRegion.mTexSplitLowerX2, splitRegion.mTexSplitLowerY2 ),
         Vector2( splitRegion.mTexSplitLowerX1, splitRegion.mTexSplitLowerY2 ),
-        texture );
+        texture, mBlendColor );
 
     // Submit batched quad.
     pBatchRenderer->SubmitQuad(
@@ -432,7 +412,7 @@ void Scroller::renderRegionSplitY( BatchRender* pBatchRenderer, GFXTexHandle& te
         Vector2( splitRegion.mTexSplitLowerX2, splitRegion.mTexSplitUpperY1 ),
         Vector2( splitRegion.mTexSplitLowerX2, splitRegion.mTexSplitUpperY2 ),
         Vector2( splitRegion.mTexSplitLowerX1, splitRegion.mTexSplitUpperY2 ),
-        texture );
+        texture, mBlendColor );
 
 }
 
@@ -450,7 +430,7 @@ void Scroller::renderRegionSplitXY( BatchRender* pBatchRenderer, GFXTexHandle& t
         Vector2( splitRegion.mTexSplitLowerX2, splitRegion.mTexSplitLowerY1 ),
         Vector2( splitRegion.mTexSplitLowerX2, splitRegion.mTexSplitLowerY2 ),
         Vector2( splitRegion.mTexSplitLowerX1, splitRegion.mTexSplitLowerY2 ),
-        texture );
+        texture, mBlendColor );
 
     // Submit batched quad.
     pBatchRenderer->SubmitQuad(
@@ -462,7 +442,7 @@ void Scroller::renderRegionSplitXY( BatchRender* pBatchRenderer, GFXTexHandle& t
         Vector2( splitRegion.mTexSplitUpperX2, splitRegion.mTexSplitLowerY1 ),
         Vector2( splitRegion.mTexSplitUpperX2, splitRegion.mTexSplitLowerY2 ),
         Vector2( splitRegion.mTexSplitUpperX1, splitRegion.mTexSplitLowerY2 ),
-        texture );
+        texture, mBlendColor );
 
     // Submit batched quad.
     pBatchRenderer->SubmitQuad(
@@ -474,7 +454,7 @@ void Scroller::renderRegionSplitXY( BatchRender* pBatchRenderer, GFXTexHandle& t
         Vector2( splitRegion.mTexSplitLowerX2, splitRegion.mTexSplitUpperY1 ),
         Vector2( splitRegion.mTexSplitLowerX2, splitRegion.mTexSplitUpperY2 ),
         Vector2( splitRegion.mTexSplitLowerX1, splitRegion.mTexSplitUpperY2 ),
-        texture );
+        texture, mBlendColor );
 
     // Submit batched quad.
     pBatchRenderer->SubmitQuad(
@@ -486,7 +466,7 @@ void Scroller::renderRegionSplitXY( BatchRender* pBatchRenderer, GFXTexHandle& t
         Vector2( splitRegion.mTexSplitUpperX2, splitRegion.mTexSplitUpperY1 ),
         Vector2( splitRegion.mTexSplitUpperX2, splitRegion.mTexSplitUpperY2 ),
         Vector2( splitRegion.mTexSplitUpperX1, splitRegion.mTexSplitUpperY2 ),
-        texture );
+        texture, mBlendColor );
 }
 
 //------------------------------------------------------------------------------
@@ -503,7 +483,7 @@ void Scroller::renderRegionNoSplit( BatchRender* pBatchRenderer, GFXTexHandle& t
         Vector2( splitRegion.mTexSplitLowerX2, splitRegion.mTexSplitLowerY1 ),
         Vector2( splitRegion.mTexSplitLowerX2, splitRegion.mTexSplitLowerY2 ),
         Vector2( splitRegion.mTexSplitLowerX1, splitRegion.mTexSplitLowerY2 ),
-        texture );
+        texture, mBlendColor );
 }
 
 //------------------------------------------------------------------------------
