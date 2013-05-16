@@ -225,6 +225,8 @@ public:
             GFXTexHandle& texture,
             const ColorF& color = ColorF(-1.0f, -1.0f, -1.0f) );
 
+    void SubmitTriangleStrip( const Vector<GFXVertexPCT> verts, GFXTexHandle& texture);
+
     /// Submit a quad for batching.
     /// Vertex and textures are indexed as:
     ///  3 ___ 2

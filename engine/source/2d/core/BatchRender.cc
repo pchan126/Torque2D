@@ -199,6 +199,79 @@ void BatchRender::SubmitTriangles(
     }
 }
 
+void BatchRender::SubmitTriangleStrip( const Vector<GFXVertexPCT> verts, GFXTexHandle& texture)
+{
+    // Sanity!
+    AssertFatal( mpDebugStats != NULL, "Debug stats have not been configured." );
+    
+    if (verts.size() < 1)
+        return;
+    
+    // Debug Profiling.
+    PROFILE_SCOPE(BatchRender_SubmitTriangleStrip);
+    
+    // Would we exceed the triangle buffer size?
+    if ( (mTriangleCount + verts.size()/3) > BATCHRENDER_MAXTRIANGLES )
+    {
+        // Yes, so flush.
+        flush( mpDebugStats->batchBufferFullFlush );
+    }
+    
+    Vector<GFXVertexPCT>* vertBuffer = &mVertexBuffer;
+    
+    // Strict order mode?
+    if ( mStrictOrderMode )
+    {
+        // Yes, so is there a texture change?
+        if ( texture != mStrictOrderTextureHandle && mVertexBuffer.size() > 0 )
+        {
+            // Yes, so flush.
+            flush( mpDebugStats->batchTextureChangeFlush );
+        }
+        
+        // Set strict order mode texture handle.
+        mStrictOrderTextureHandle = texture;
+    }
+    else
+    {
+        // No, so add triangle run.
+        vertBuffer = findTextureBatch( texture );
+    }
+    
+    // degenerate linking triangle
+    if (mVertexBuffer.size() > 0)
+    {
+        vertBuffer->push_back(vertBuffer->last());
+        vertBuffer->push_back(verts[0]);
+    }
+    
+    // Add textured vertices.
+    // NOTE: We swap #2/#3 here.
+    vertBuffer->merge(verts);
+    
+    // Stats.
+    mpDebugStats->batchTrianglesSubmitted+=2;
+    
+    // Increase triangle count.
+    mTriangleCount += 2;
+    
+    // Have we reached the buffer limit?
+    if ( mTriangleCount == BATCHRENDER_MAXTRIANGLES )
+    {
+        // Yes, so flush.
+        flush( mpDebugStats->batchBufferFullFlush );
+    }
+    // Is batching enabled?
+    else if ( !mBatchEnabled )
+    {
+        // No, so flush immediately.
+        // NOTE: Technically this is still batching but will still revert to using
+        // more draw calls therefore can be used in comparison.
+        flushInternal();
+    }
+}
+
+
 void BatchRender::SubmitQuad(const GFXVertexPCT* vertex,
                              GFXTexHandle& texture)
 {
@@ -215,11 +288,6 @@ void BatchRender::SubmitQuad(const GFXVertexPCT* vertex,
         // Yes, so flush.
         flush( mpDebugStats->batchBufferFullFlush );
     }
-//    // Do we have anything batched?
-//    else if ( mTriangleCount > 0 )
-//    {
-//        flush( mpDebugStats->batchColorStateFlush );
-//    }
    
     Vector<GFXVertexPCT>* vertBuffer = &mVertexBuffer;
 

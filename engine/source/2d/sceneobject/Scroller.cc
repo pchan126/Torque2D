@@ -243,247 +243,119 @@ void Scroller::updateTickScrollPosition( void )
 };
 
 //------------------------------------------------------------------------------
-
 void Scroller::sceneRender( const SceneRenderState* pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer )
 {
     // Finish if we can't render.
     if ( !ImageFrameProvider::validRender() )
         return;
-
+    
     // Fetch texture and texture area.
     const ImageAsset::FrameArea::TexelArea& frameTexelArea = getProviderImageFrameArea().mTexelArea;
     GFXTexHandle& texture = getProviderTexture();
-
+    
     // Calculate render offset.
     F32 renderOffsetX = mFmod( mRenderTickTextureOffset.x, 1.0f );
     F32 renderOffsetY = mFmod( mRenderTickTextureOffset.y, 1.0f );
     if ( renderOffsetX < 0.0f ) renderOffsetX += 1.0f;
     if ( renderOffsetY < 0.0f ) renderOffsetY += 1.0f;
-
+    
     // Calculate if frame has split rendering or not.
     const bool isSplitRenderFrameX = mNotZero( renderOffsetX );
     const bool isSplitRenderFrameY = mNotZero( renderOffsetY );
-
+    
     // Clamp Texture Offsets.
     const F32 textureOffsetX = frameTexelArea.mTexelWidth * renderOffsetX;
     const F32 textureOffsetY = frameTexelArea.mTexelHeight * renderOffsetY;
-
+    
     // Fetch lower/upper texture coordinates.
     const Vector2& texLower = frameTexelArea.mTexelLower;
     const Vector2& texUpper = frameTexelArea.mTexelUpper;
-
-    ScrollSplitRegion baseSplitRegion;
-
-    // Calculate split texel regions.
-    baseSplitRegion.mTexSplitLowerX1 = texLower.x + textureOffsetX;
-    baseSplitRegion.mTexSplitLowerY1 = texUpper.y - textureOffsetY;
-    baseSplitRegion.mTexSplitLowerX2 = texUpper.x;
-    baseSplitRegion.mTexSplitLowerY2 = texLower.y;
-    baseSplitRegion.mTexSplitUpperX1 = texLower.x;
-    baseSplitRegion.mTexSplitUpperY1 = texUpper.y;
-    baseSplitRegion.mTexSplitUpperX2 = baseSplitRegion.mTexSplitLowerX1;
-    baseSplitRegion.mTexSplitUpperY2 = baseSplitRegion.mTexSplitLowerY1;
-
+    
     // Fetch render area.
     const Vector2& renderOOBB0 = mRenderOOBB[0];
     const Vector2& renderOOBB1 = mRenderOOBB[1];
     const Vector2& renderOOBB3 = mRenderOOBB[3];
-
+    
     // Calculate region dimensions.
     const F32 regionWidth = (renderOOBB1.x - renderOOBB0.x) / mRepeatX;
     const F32 regionHeight = (renderOOBB3.y - renderOOBB0.y) / mRepeatY;
-
+    
     // Calculate split region dimensions.
     const F32 splitRegionWidth = regionWidth * (1.0f-renderOffsetX);
     const F32 splitRegionHeight = regionHeight * (1.0f-renderOffsetY);
-
-    // Calculate split vertex regions.
-    baseSplitRegion.mVertSplitLowerX1 = renderOOBB0.x;
-    baseSplitRegion.mVertSplitLowerX2 = renderOOBB0.x + splitRegionWidth;
-    baseSplitRegion.mVertSplitUpperX1 = baseSplitRegion.mVertSplitLowerX2;
-    baseSplitRegion.mVertSplitUpperX2 = renderOOBB0.x + regionWidth;
-    baseSplitRegion.mVertSplitLowerY1 = renderOOBB0.y;
-    baseSplitRegion.mVertSplitLowerY2 = renderOOBB0.y + splitRegionHeight;
-    baseSplitRegion.mVertSplitUpperY1 = baseSplitRegion.mVertSplitLowerY2;
-    baseSplitRegion.mVertSplitUpperY2 = renderOOBB0.y + regionHeight;
-
+    
     // Fetch the whole regions.
     const S32 wholeRegionX = (S32)mCeil( mRepeatX );
     const S32 wholeRegionY = (S32)mCeil( mRepeatY );
-
+    
     // Flush any existing batches.
     pBatchRenderer->flush();
 
-    // Render repeat Y.
-    for ( S32 repeatIndexY = 0; repeatIndexY < wholeRegionY; ++repeatIndexY )
+    F32 baseX = mRenderOOBB[0].x;
+    F32 baseY = mRenderOOBB[0].y;
+    F32 nextX;
+    F32 nextY;
+    
+    F32 texX1;
+    F32 texY1;
+    F32 texX2;
+    F32 texY2;
+    
+    while (baseY < mRenderOOBB[2].y)
     {
-        // Set base split region.
-        ScrollSplitRegion splitRegion = baseSplitRegion;
-
-        // Move vertex if appropriate.
-        if ( repeatIndexY > 0 )
-            splitRegion.addVertexOffset( 0.0f, regionHeight * repeatIndexY );
-
-        // Render repeat X.
-        for ( S32 repeatIndexX = 0; repeatIndexX < wholeRegionX; ++repeatIndexX )
+        if (baseY == mRenderOOBB[0].y)
         {
-            // Split in X only?
-            if ( isSplitRenderFrameX && !isSplitRenderFrameY )
+            nextY = getMin(baseY + splitRegionHeight, mRenderOOBB[2].y);
+            texY1 = frameTexelArea.mTexelUpper.y - textureOffsetY;
+            texY2 = frameTexelArea.mTexelLower.y;
+        }
+        else
+        {
+            nextY = getMin(baseY + regionHeight, mRenderOOBB[2].y);
+            texY1 = frameTexelArea.mTexelUpper.y;
+            if (nextY < mRenderOOBB[2].y )
+                texY2 = frameTexelArea.mTexelLower.y;
+            else
+                texY2 = frameTexelArea.mTexelUpper.y - textureOffsetY;
+        }
+        
+        while (baseX < mRenderOOBB[2].x) {
+            if (baseX == mRenderOOBB[0].x)
             {
-                renderRegionSplitX( pBatchRenderer, texture, splitRegion );
+                nextX = getMin(baseX + splitRegionWidth, mRenderOOBB[2].x);
+                texX1 = frameTexelArea.mTexelLower.x + textureOffsetX;
+                texX2 = frameTexelArea.mTexelUpper.x;
             }
-            // Split in Y only?
-            else if ( !isSplitRenderFrameX && isSplitRenderFrameY )
-            {
-                renderRegionSplitY( pBatchRenderer, texture, splitRegion );
-            }
-            // Split in X and Y?
-            else if ( isSplitRenderFrameX && isSplitRenderFrameY )
-            {
-                renderRegionSplitXY( pBatchRenderer, texture, splitRegion );
-            }
-            // Not split.
             else
             {
-                renderRegionNoSplit( pBatchRenderer, texture, splitRegion );
+                nextX = getMin(baseX + regionWidth, mRenderOOBB[2].x);
+                texX1 = frameTexelArea.mTexelLower.x;
+                if (nextX < mRenderOOBB[2].x)
+                    texX2 = frameTexelArea.mTexelUpper.x;
+                else
+                    texX2 = mLerp(frameTexelArea.mTexelLower.x, frameTexelArea.mTexelUpper.x, ((mRenderOOBB[2].x-baseX)/regionWidth));
             }
-
-            // Offset vertexes.
-            splitRegion.addVertexOffset( regionWidth, 0.0f );
+            
+            pBatchRenderer->SubmitQuad(
+                                       Vector2( baseX, baseY ),
+                                       Vector2( nextX, baseY ),
+                                       Vector2( nextX, nextY ),
+                                       Vector2( baseX, nextY ),
+                                       Vector2( texX1, texY1 ),
+                                       Vector2( texX2, texY1 ),
+                                       Vector2( texX2, texY2 ),
+                                       Vector2( texX1, texY2 ),
+                                       texture, mBlendColor );
+            
+            baseX = nextX;
         }
+        baseY = nextY;
     }
-
+    
+    
     // Flush the scroller batches.
     pBatchRenderer->flush();
-}
-
-//------------------------------------------------------------------------------
-
-void Scroller::renderRegionSplitX( BatchRender* pBatchRenderer, GFXTexHandle& texture, const ScrollSplitRegion& splitRegion )
-{
-    // Submit batched quad.
-    pBatchRenderer->SubmitQuad(
-        Vector2( splitRegion.mVertSplitLowerX1, splitRegion.mVertSplitLowerY1 ),
-        Vector2( splitRegion.mVertSplitLowerX2, splitRegion.mVertSplitLowerY1 ),
-        Vector2( splitRegion.mVertSplitLowerX2, splitRegion.mVertSplitUpperY2 ),
-        Vector2( splitRegion.mVertSplitLowerX1, splitRegion.mVertSplitUpperY2 ),
-        Vector2( splitRegion.mTexSplitLowerX1, splitRegion.mTexSplitLowerY1 ),
-        Vector2( splitRegion.mTexSplitLowerX2, splitRegion.mTexSplitLowerY1 ),
-        Vector2( splitRegion.mTexSplitLowerX2, splitRegion.mTexSplitLowerY2 ),
-        Vector2( splitRegion.mTexSplitLowerX1, splitRegion.mTexSplitLowerY2 ),
-        texture, mBlendColor );
-
-    // Submit batched quad.
-    pBatchRenderer->SubmitQuad(
-        Vector2( splitRegion.mVertSplitUpperX1, splitRegion.mVertSplitLowerY1 ),
-        Vector2( splitRegion.mVertSplitUpperX2, splitRegion.mVertSplitLowerY1 ),
-        Vector2( splitRegion.mVertSplitUpperX2, splitRegion.mVertSplitUpperY2 ),
-        Vector2( splitRegion.mVertSplitUpperX1, splitRegion.mVertSplitUpperY2 ),
-        Vector2( splitRegion.mTexSplitUpperX1, splitRegion.mTexSplitLowerY1 ),
-        Vector2( splitRegion.mTexSplitUpperX2, splitRegion.mTexSplitLowerY1 ),
-        Vector2( splitRegion.mTexSplitUpperX2, splitRegion.mTexSplitLowerY2 ),
-        Vector2( splitRegion.mTexSplitUpperX1, splitRegion.mTexSplitLowerY2 ),
-        texture, mBlendColor );
-}
-
-//------------------------------------------------------------------------------
-
-void Scroller::renderRegionSplitY( BatchRender* pBatchRenderer, GFXTexHandle& texture, const ScrollSplitRegion& splitRegion )
-{
-    // Submit batched quad.
-    pBatchRenderer->SubmitQuad(
-        Vector2( splitRegion.mVertSplitLowerX1, splitRegion.mVertSplitLowerY1 ),
-        Vector2( splitRegion.mVertSplitUpperX2, splitRegion.mVertSplitLowerY1 ),
-        Vector2( splitRegion.mVertSplitUpperX2, splitRegion.mVertSplitLowerY2 ),
-        Vector2( splitRegion.mVertSplitLowerX1, splitRegion.mVertSplitLowerY2 ),
-        Vector2( splitRegion.mTexSplitLowerX1, splitRegion.mTexSplitLowerY1 ),
-        Vector2( splitRegion.mTexSplitLowerX2, splitRegion.mTexSplitLowerY1 ),
-        Vector2( splitRegion.mTexSplitLowerX2, splitRegion.mTexSplitLowerY2 ),
-        Vector2( splitRegion.mTexSplitLowerX1, splitRegion.mTexSplitLowerY2 ),
-        texture, mBlendColor );
-
-    // Submit batched quad.
-    pBatchRenderer->SubmitQuad(
-        Vector2( splitRegion.mVertSplitLowerX1, splitRegion.mVertSplitUpperY1 ),
-        Vector2( splitRegion.mVertSplitUpperX2, splitRegion.mVertSplitUpperY1 ),
-        Vector2( splitRegion.mVertSplitUpperX2, splitRegion.mVertSplitUpperY2 ),
-        Vector2( splitRegion.mVertSplitLowerX1, splitRegion.mVertSplitUpperY2 ),
-        Vector2( splitRegion.mTexSplitLowerX1, splitRegion.mTexSplitUpperY1 ),
-        Vector2( splitRegion.mTexSplitLowerX2, splitRegion.mTexSplitUpperY1 ),
-        Vector2( splitRegion.mTexSplitLowerX2, splitRegion.mTexSplitUpperY2 ),
-        Vector2( splitRegion.mTexSplitLowerX1, splitRegion.mTexSplitUpperY2 ),
-        texture, mBlendColor );
-
-}
-
-//------------------------------------------------------------------------------
-
-void Scroller::renderRegionSplitXY( BatchRender* pBatchRenderer, GFXTexHandle& texture, const ScrollSplitRegion& splitRegion )
-{
-    // Submit batched quad.
-    pBatchRenderer->SubmitQuad(
-        Vector2( splitRegion.mVertSplitLowerX1, splitRegion.mVertSplitLowerY1 ),
-        Vector2( splitRegion.mVertSplitLowerX2, splitRegion.mVertSplitLowerY1 ),
-        Vector2( splitRegion.mVertSplitLowerX2, splitRegion.mVertSplitLowerY2 ),
-        Vector2( splitRegion.mVertSplitLowerX1, splitRegion.mVertSplitLowerY2 ),
-        Vector2( splitRegion.mTexSplitLowerX1, splitRegion.mTexSplitLowerY1 ),
-        Vector2( splitRegion.mTexSplitLowerX2, splitRegion.mTexSplitLowerY1 ),
-        Vector2( splitRegion.mTexSplitLowerX2, splitRegion.mTexSplitLowerY2 ),
-        Vector2( splitRegion.mTexSplitLowerX1, splitRegion.mTexSplitLowerY2 ),
-        texture, mBlendColor );
-
-    // Submit batched quad.
-    pBatchRenderer->SubmitQuad(
-        Vector2( splitRegion.mVertSplitUpperX1, splitRegion.mVertSplitLowerY1 ),
-        Vector2( splitRegion.mVertSplitUpperX2, splitRegion.mVertSplitLowerY1 ),
-        Vector2( splitRegion.mVertSplitUpperX2, splitRegion.mVertSplitLowerY2 ),
-        Vector2( splitRegion.mVertSplitUpperX1, splitRegion.mVertSplitLowerY2 ),
-        Vector2( splitRegion.mTexSplitUpperX1, splitRegion.mTexSplitLowerY1 ),
-        Vector2( splitRegion.mTexSplitUpperX2, splitRegion.mTexSplitLowerY1 ),
-        Vector2( splitRegion.mTexSplitUpperX2, splitRegion.mTexSplitLowerY2 ),
-        Vector2( splitRegion.mTexSplitUpperX1, splitRegion.mTexSplitLowerY2 ),
-        texture, mBlendColor );
-
-    // Submit batched quad.
-    pBatchRenderer->SubmitQuad(
-        Vector2( splitRegion.mVertSplitLowerX1, splitRegion.mVertSplitUpperY1 ),
-        Vector2( splitRegion.mVertSplitLowerX2, splitRegion.mVertSplitUpperY1 ),
-        Vector2( splitRegion.mVertSplitLowerX2, splitRegion.mVertSplitUpperY2 ),
-        Vector2( splitRegion.mVertSplitLowerX1, splitRegion.mVertSplitUpperY2 ),
-        Vector2( splitRegion.mTexSplitLowerX1, splitRegion.mTexSplitUpperY1 ),
-        Vector2( splitRegion.mTexSplitLowerX2, splitRegion.mTexSplitUpperY1 ),
-        Vector2( splitRegion.mTexSplitLowerX2, splitRegion.mTexSplitUpperY2 ),
-        Vector2( splitRegion.mTexSplitLowerX1, splitRegion.mTexSplitUpperY2 ),
-        texture, mBlendColor );
-
-    // Submit batched quad.
-    pBatchRenderer->SubmitQuad(
-        Vector2( splitRegion.mVertSplitUpperX1, splitRegion.mVertSplitUpperY1 ),
-        Vector2( splitRegion.mVertSplitUpperX2, splitRegion.mVertSplitUpperY1 ),
-        Vector2( splitRegion.mVertSplitUpperX2, splitRegion.mVertSplitUpperY2 ),
-        Vector2( splitRegion.mVertSplitUpperX1, splitRegion.mVertSplitUpperY2 ),
-        Vector2( splitRegion.mTexSplitUpperX1, splitRegion.mTexSplitUpperY1 ),
-        Vector2( splitRegion.mTexSplitUpperX2, splitRegion.mTexSplitUpperY1 ),
-        Vector2( splitRegion.mTexSplitUpperX2, splitRegion.mTexSplitUpperY2 ),
-        Vector2( splitRegion.mTexSplitUpperX1, splitRegion.mTexSplitUpperY2 ),
-        texture, mBlendColor );
-}
-
-//------------------------------------------------------------------------------
-
-void Scroller::renderRegionNoSplit( BatchRender* pBatchRenderer, GFXTexHandle& texture, const ScrollSplitRegion& splitRegion )
-{
-    // Submit batched quad.
-    pBatchRenderer->SubmitQuad(
-        Vector2( splitRegion.mVertSplitLowerX1, splitRegion.mVertSplitLowerY1 ),
-        Vector2( splitRegion.mVertSplitUpperX2, splitRegion.mVertSplitLowerY1 ),
-        Vector2( splitRegion.mVertSplitUpperX2, splitRegion.mVertSplitUpperY2 ),
-        Vector2( splitRegion.mVertSplitLowerX1, splitRegion.mVertSplitUpperY2 ),
-        Vector2( splitRegion.mTexSplitLowerX1, splitRegion.mTexSplitLowerY1 ),
-        Vector2( splitRegion.mTexSplitLowerX2, splitRegion.mTexSplitLowerY1 ),
-        Vector2( splitRegion.mTexSplitLowerX2, splitRegion.mTexSplitLowerY2 ),
-        Vector2( splitRegion.mTexSplitLowerX1, splitRegion.mTexSplitLowerY2 ),
-        texture, mBlendColor );
+    
 }
 
 //------------------------------------------------------------------------------

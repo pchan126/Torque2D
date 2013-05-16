@@ -49,41 +49,8 @@ private:
     Vector2               mPreTickTextureOffset;
     Vector2               mPostTickTextureOffset;
     Vector2               mRenderTickTextureOffset;
-
-    /// Scroll split region.
-    struct ScrollSplitRegion
-    {
-        /// Vertexes.
-        F32 mVertSplitLowerX1;
-        F32 mVertSplitLowerX2;
-        F32 mVertSplitUpperX1;
-        F32 mVertSplitUpperX2;
-        F32 mVertSplitLowerY1;
-        F32 mVertSplitLowerY2;
-        F32 mVertSplitUpperY1;
-        F32 mVertSplitUpperY2;
-
-        F32 mTexSplitLowerX1;
-        F32 mTexSplitLowerX2;
-        F32 mTexSplitUpperX1;
-        F32 mTexSplitUpperX2;
-        F32 mTexSplitLowerY1;
-        F32 mTexSplitLowerY2;
-        F32 mTexSplitUpperY1;
-        F32 mTexSplitUpperY2;
-
-        inline void addVertexOffset( const F32 offsetX, const F32 offsetY )
-        {
-            mVertSplitLowerX1 += offsetX;
-            mVertSplitLowerX2 += offsetX;
-            mVertSplitUpperX1 += offsetX;
-            mVertSplitUpperX2 += offsetX;
-            mVertSplitLowerY1 += offsetY;
-            mVertSplitLowerY2 += offsetY;
-            mVertSplitUpperY1 += offsetY;
-            mVertSplitUpperY2 += offsetY;
-        }
-    };
+    
+    Vector<GFXVertexPCT> mVertexBuffer;
 
 public:
     Scroller();
@@ -125,12 +92,6 @@ public:
 
     /// Declare Console Object.
     DECLARE_CONOBJECT(Scroller);
-
-private:
-    void renderRegionSplitX( BatchRender* pBatchRenderer, GFXTexHandle& texture, const ScrollSplitRegion& splitRegion );
-    void renderRegionSplitY( BatchRender* pBatchRenderer, GFXTexHandle& texture, const ScrollSplitRegion& splitRegion );
-    void renderRegionSplitXY( BatchRender* pBatchRenderer, GFXTexHandle& texture, const ScrollSplitRegion& splitRegion );
-    void renderRegionNoSplit( BatchRender* pBatchRenderer, GFXTexHandle& texture, const ScrollSplitRegion& splitRegion );
 
 protected:
     static bool setRepeatX(void* obj, const char* data)                { static_cast<Scroller*>(obj)->setRepeatX( dAtof(data) ); return false; }
