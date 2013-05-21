@@ -132,27 +132,29 @@ void ShapeVector::sceneRender( const SceneRenderState* pSceneRenderState, const 
     // Fetch Position/Rotation.
     const Vector2 position = getRenderPosition();
 
+    GFXStateBlockDesc desc;
+    desc.cullMode = GFXCullNone;
+    desc.setBlend( mBlendMode, mSrcBlendFactor, mDstBlendFactor );
+    if (mFillMode)
+        desc.setFillModeSolid();
+    else
+        desc.setFillModeWireframe();
+    
     if (mIsCircle)
     {
-        GFXStateBlockDesc desc;
-        desc.setBlend( mBlendMode, mSrcBlendFactor, mDstBlendFactor );
-        GFX->getDrawUtil()->drawCircleShape(desc, position.ToPoint2F(), mCircleRadius, ColorI(mLineColor));
+        GFX->getDrawUtil()->drawCircleShape(desc, position.ToPoint2F(), mCircleRadius, ColorI(mFillColor), ColorI(mLineColor));
     }
     else
     {
         // Move into Vector-Space.
-        GFXStateBlockDesc desc;
-        desc.setBlend( mBlendMode, mSrcBlendFactor, mDstBlendFactor );
-        GFX->setStateBlockByDesc( desc );
         Vector<Point3F> pts;
         for (U32 i = 0; i < mPolygonLocalList.size(); i++)
         {
             Point3F add = Point3F(mPolygonLocalList[i].x, mPolygonLocalList[i].y, 0.0);
             pts.push_back(add);
         }
-        GFX->getDrawUtil()->drawPolygon(desc, pts.address(), pts.size(), ColorI(mLineColor));
+        GFX->getDrawUtil()->drawPolygon(desc, pts.address(), pts.size(), ColorI(mFillColor), ColorI(mLineColor));
     }
-
     // Restore Matrix.
     GFX->popWorldMatrix();
 }
@@ -225,15 +227,15 @@ void ShapeVector::setPolyPrimitive( const U32 polyVertexCount )
         // Set Polygon Point.
         mPolygonBasisList[0].Set(0.0f, 0.0f);
     }
-    // Special-Case Quad?
-    else if ( polyVertexCount == 4 )
-    {
-        // Yes, so set Quad.
-        mPolygonBasisList[0].Set(-0.5f, -0.5f);
-        mPolygonBasisList[1].Set(+0.5f, -0.5f);
-        mPolygonBasisList[2].Set(+0.5f, +0.5f);
-        mPolygonBasisList[3].Set(-0.5f, +0.5f);
-    }
+//    // Special-Case Quad?
+//    else if ( polyVertexCount == 4 )
+//    {
+//        // Yes, so set Quad.
+//        mPolygonBasisList[0].Set(-0.5f, -0.5f);
+//        mPolygonBasisList[1].Set(-0.5f, +0.5f);
+//        mPolygonBasisList[2].Set(+0.5f, -0.5f);
+//        mPolygonBasisList[3].Set(+0.5f, +0.5f);
+//    }
     else
     {
         // No, so calculate Regular (Primitive) Polygon Stepping.

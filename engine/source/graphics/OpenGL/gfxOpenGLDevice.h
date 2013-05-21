@@ -108,6 +108,9 @@ public:
 
     virtual void setCullMode( GFXCullMode );
     virtual void setBlending( bool DoesItBlend );
+    virtual void setBlendFunc( GFXBlend blendSrc, GFXBlend blendDest);
+    virtual void setBlendEquation( GFXBlendOp blendOp);
+    virtual void setColorMask(bool colorWriteRed, bool colorWriteBlue, bool colorWriteGreen, bool colorWriteAlpha);
 
     typedef Vector<MatrixF> MatrixStack;
     
@@ -206,7 +209,16 @@ private:
     
    F32 mPixelShaderVersion;
     bool mSupportsAnisotropic;
-   bool mIsBlending;
+    bool mIsBlending;
+    GFXBlend mBlendSrcState;
+    GFXBlend mBlendDestState;
+    GFXBlendOp mBlendOp;
+    
+    bool mColorWriteRed;
+    bool mColorWriteBlue;
+    bool mColorWriteGreen;
+    bool mColorWriteAlpha;
+    
     U32 mMaxFFTextures;
     RectI mClip;
 

@@ -32,7 +32,9 @@ GFXOpenGLDevice::GFXOpenGLDevice( U32 adapterIndex ) :
             mMaxShaderTextures(2),
             m_mCurrentView(true),
             mClip(0, 0, 0, 0),
-            mPixelShaderVersion(0.0f)
+            mPixelShaderVersion(0.0f),
+            mBlendSrcState(GFXBlendSrcAlpha),
+            mBlendDestState(GFXBlendInvSrcAlpha)
 {
     m_WorldStack.push_back(MatrixF(true));
     m_ProjectionStack.push_back(MatrixF(true));
@@ -45,6 +47,7 @@ void GFXOpenGLDevice::setCullMode(GFXCullMode mode)
         return;
     
     // Culling
+    currentCullMode = mode;
     if (mode == GFXCullNone)
     {
         glDisable(GL_CULL_FACE);
@@ -72,6 +75,39 @@ void GFXOpenGLDevice::setBlending( bool DoesItBlend )
       mIsBlending = DoesItBlend;
    }
 }
+
+void GFXOpenGLDevice::setBlendFunc( GFXBlend blendSrc, GFXBlend blendDest )
+{
+    if (mBlendSrcState != blendSrc || mBlendDestState != blendDest)
+    {
+        mBlendSrcState = blendSrc;
+        mBlendDestState = blendDest;
+        glBlendFunc(GFXGLBlend[mBlendSrcState], GFXGLBlend[mBlendDestState]);
+    }
+}
+
+void GFXOpenGLDevice::setBlendEquation( GFXBlendOp blendOp)
+{
+    if (mBlendOp != blendOp)
+    {
+        mBlendOp = blendOp;
+        glBlendEquation(GFXGLBlendOp[mBlendOp]);
+    }
+}
+
+void GFXOpenGLDevice::setColorMask(bool colorWriteRed, bool colorWriteBlue, bool colorWriteGreen, bool colorWriteAlpha)
+{
+    // Color write masks
+    if (colorWriteRed != mColorWriteRed || colorWriteBlue != mColorWriteBlue || colorWriteGreen != mColorWriteGreen || colorWriteAlpha != mColorWriteAlpha)
+    {
+        mColorWriteRed = colorWriteRed;
+        mColorWriteBlue = colorWriteBlue;
+        mColorWriteGreen = colorWriteGreen;
+        mColorWriteAlpha = colorWriteAlpha;
+        glColorMask(mColorWriteRed, mColorWriteBlue, mColorWriteGreen, mColorWriteAlpha);
+    }
+}
+
 
 void GFXOpenGLDevice::preDrawPrimitive()
 {

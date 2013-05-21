@@ -771,18 +771,17 @@ void GFXDrawUtil::_drawSolidTriangle( const GFXStateBlockDesc &desc, const Point
    mDevice->drawPrimitive( GFXTriangleList, 0, 1 );
 }
 
-void GFXDrawUtil::drawPolygon( const GFXStateBlockDesc& desc, const Point3F* points, U32 numPoints, const ColorI& color, const MatrixF* xfm /* = NULL */ )
+void GFXDrawUtil::drawPolygon( const GFXStateBlockDesc& desc, const Point3F* points, U32 numPoints,  const ColorI& mFillColor, const ColorI& mLineColor, const MatrixF* xfm /* = NULL */ )
 {
-   const bool isWireframe = ( desc.fillMode == GFXFillWireframe );
-   const U32 numVerts = isWireframe ? numPoints + 1 : numPoints;
+   const bool isWireframe = desc.fillMode == GFXFillWireframe;
 
     Vector<GFXVertexPC> verts;
-    verts.setSize(numVerts);
+    verts.setSize(numPoints);
 
-   for( U32 i = 0; i < numPoints; ++ i )
+   for( U32 i = 0; i < verts.size(); ++ i )
    {
       verts[ i ].point = points[ i ];
-      verts[ i ].color = color;
+      verts[ i ].color = mLineColor;
    }
 
    if( xfm )
@@ -791,33 +790,42 @@ void GFXDrawUtil::drawPolygon( const GFXStateBlockDesc& desc, const Point3F* poi
          xfm->mulP( verts[ i ].point );
    }
    
+    if( !isWireframe )
+    {
+        mLineVertex->set(verts.address(), verts.size()*sizeof(GFXVertexPC));
+        mDevice->setStateBlockByDesc( desc );
+        
+        mDevice->setVertexBuffer( mLineVertex );
+        mDevice->setupGenericShaders(GFXDevice::GSColor);
+        mDevice->drawPrimitive( GFXTriangleFan, 0, numPoints - 2 );
+    }
+
    if( isWireframe )
    {
-      verts[ numVerts - 1 ].point = verts[ 0 ].point;
-      verts[ numVerts - 1 ].color = color;
+      verts.push_back(verts[ 0 ]);
+       for( U32 i = 0; i < verts.size(); ++ i )
+       {
+           verts[ i ].color = mLineColor;
+       }
    }
-
-   mLineVertex->set(verts.address(), verts.size());
-   mDevice->setStateBlockByDesc( desc );
-
-   mDevice->setVertexBuffer( mLineVertex );
-   mDevice->setupGenericShaders();
-
-   if( desc.fillMode == GFXFillWireframe )
-      mDevice->drawPrimitive( GFXLineStrip, 0, numPoints );
-   else
-      mDevice->drawPrimitive( GFXTriangleFan, 0, numPoints - 2 );
+    
+    mLineVertex->set(verts.address(), verts.size()*sizeof(GFXVertexPC));
+    mDevice->setStateBlockByDesc( desc );
+    mDevice->setVertexBuffer( mLineVertex );
+    mDevice->setupGenericShaders(GFXDevice::GSColor);
+    mDevice->drawPrimitive( GFXLineStrip, 0, verts.size() -1 );
+    
 }
 
 
-void GFXDrawUtil::drawCircleShape(const GFXStateBlockDesc& desc, const Point2F position, const F32 radius, const ColorI& color)
+void GFXDrawUtil::drawCircleShape(const GFXStateBlockDesc& desc, const Point2F position, const F32 radius, const ColorI& fillColor, const ColorI& lineColor)
 {
     const bool isWireframe = ( desc.fillMode == GFXFillWireframe );
-    const U32 numVerts = isWireframe ? 32 : 36;
+    const U32 numVerts = isWireframe ? 37 : 34;
     Vector<GFXVertexPC> verts;
     verts.setSize(numVerts);
 
-    if (isWireframe)
+    if (!isWireframe)
     {
         mDevice->setStateBlockByDesc( desc );
 
@@ -826,27 +834,31 @@ void GFXDrawUtil::drawCircleShape(const GFXStateBlockDesc& desc, const Point2F p
         F32 theta = 0.0f;
         
         
-        for (U32 i = 0; i < numVerts; ++i)
+        verts[ 0 ].point = Point3F(position.x, position.y, 0.0);
+        verts[ 0 ].color = fillColor;
+        Point2F v = position + radius * Point2F(cosf(theta), sinf(theta));
+        for (U32 i = numVerts-1; i > 0; --i)
         {
-            Point2F v = position + radius * Point2F(cosf(theta), sinf(theta));
+            v = position + radius * Point2F(cosf(theta), sinf(theta));
             verts[ i ].point = Point3F(v.x, v.y, 0.0);
-            verts[ i ].color = ColorI(255, 255, 255, 255);
+            verts[ i ].color = fillColor;
             theta += k_increment;
         }
         
+        mLineVertex->set(verts.address(), verts.size()*sizeof(GFXVertexPC));
+        mDevice->setVertexBuffer( mLineVertex );
+        mDevice->setupGenericShaders();
         mDevice->drawPrimitive( GFXTriangleFan, 0, numVerts - 2 );
-
-        theta = 0.0f;
         
-        for (U32 i = 0; i < k_segments; ++i)
+        for (U32 i = numVerts-1; i > 0; --i)
         {
-            Point2F v = position + radius * Point2F(cosf(theta), sinf(theta));
-            verts[ i ].point = Point3F(v.x, v.y, 0.0);
-            verts[ i ].color = color;
-            theta += k_increment;
+            verts[ i ].color = lineColor;
         }
 
-        mDevice->drawPrimitive( GFXLineStrip, 0, numVerts - 1 );
+        mLineVertex->set((void*)&verts[1], (verts.size()-1)*sizeof(GFXVertexPC));
+        mDevice->setVertexBuffer( mLineVertex );
+        mDevice->setupGenericShaders();
+        mDevice->drawPrimitive( GFXLineStrip, 0, verts.size() - 2 );
     }
     else
     {
@@ -858,11 +870,17 @@ void GFXDrawUtil::drawCircleShape(const GFXStateBlockDesc& desc, const Point2F p
         {
             Point2F v = position + radius * Point2F(cosf(theta), sinf(theta));
             verts[ i ].point = Point3F(v.x, v.y, 0.0);
-            verts[ i ].color = color;
+            verts[ i ].color = lineColor;
             theta += k_increment;
         }
+        verts[numVerts-1] = verts[0];
+        
+        mLineVertex->set(verts.address(), verts.size()*sizeof(GFXVertexPC));
+        mDevice->setVertexBuffer( mLineVertex );
+        mDevice->setupGenericShaders();
         mDevice->drawPrimitive( GFXLineStrip, 0, numVerts - 1 );
     }
+
 }
 
 //void GFXDrawUtil::drawCube( const GFXStateBlockDesc &desc, const Box3F &box, const ColorI &color, const MatrixF *xfm )
