@@ -630,25 +630,25 @@ inline void MatrixF::rotate(float radians, float x, float y, float z)
     float cosp = 1.0f - cos;
     float sin = sinf(radians);
     
-    MatrixF m({
-        cos + cosp * v[0] * v[0],
-        cosp * v[0] * v[1] - v[2] * sin,
-        cosp * v[0] * v[2] + v[1] * sin,
-        0.0f,
-        cosp * v[0] * v[1] + v[2] * sin,
-        cos + cosp * v[1] * v[1],
-        cosp * v[1] * v[2] - v[0] * sin,
-        0.0f,
-        cosp * v[0] * v[2] - v[1] * sin,
-        cosp * v[1] * v[2] + v[0] * sin,
-        cos + cosp * v[2] * v[2],
-        0.0f,
-        0.0f,
-        0.0f,
-        0.0f,
-        1.0f});
+    MatrixF rm;
+    rm [0] = cos + cosp * v[0] * v[0];
+    rm [1] = cosp * v[0] * v[1] - v[2] * sin;
+    rm [2] = cosp * v[0] * v[2] + v[1] * sin;
+    rm [3] = 0.0f;
+    rm [4] = cosp * v[0] * v[1] + v[2] * sin;
+    rm [5] = cos + cosp * v[1] * v[1];
+    rm [6] = cosp * v[1] * v[2] - v[0] * sin;
+    rm [7] = 0.0f;
+    rm [8] = cosp * v[0] * v[2] - v[1] * sin;
+    rm [9] = cosp * v[1] * v[2] + v[0] * sin;
+    rm [10] = cos + cosp * v[2] * v[2];
+    rm [11] = 0.0f;
+    rm [12] = 0.0f;
+    rm [13] = 0.0f;
+    rm [14] = 0.0f;
+    rm [15] = 1.0f;
     
-    m_matF_x_matF(tempThis, m, *this);
+    m_matF_x_matF(tempThis, rm, *this);
     
 #endif
 }
