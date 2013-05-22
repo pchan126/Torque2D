@@ -81,6 +81,39 @@ bool SpriteBatchQuery::update( SpriteBatchItem* pSpriteBatchItem, const b2AABB& 
 
 //-----------------------------------------------------------------------------
 
+U32 SpriteBatchQuery::queryArea2( const b2AABB& aabb, const bool targetOOBB )
+{
+    // Debug Profiling.
+    PROFILE_SCOPE(SpriteBatchQuery_QueryArea);
+    
+    mMasterQueryKey++;
+    
+    // Flag as not a ray-cast query result.
+    mIsRaycastQueryResult = false;
+    
+//    b2Vec2 center = aabb.GetCenter();
+    
+//    b2AABB aabb2;
+//    aabb2.lowerBound = center;
+//    aabb2.upperBound = center;
+//    mCompareTransform.SetIdentity();
+//    mCheckOOBB = targetOOBB;
+
+    // Query.
+    b2Vec2 verts[4];
+    verts[0].Set( aabb.lowerBound.x, aabb.lowerBound.y );
+    verts[1].Set( aabb.upperBound.x, aabb.lowerBound.y );
+    verts[2].Set( aabb.upperBound.x, aabb.upperBound.y );
+    verts[3].Set( aabb.lowerBound.x, aabb.upperBound.y );
+    mComparePolygonShape.Set( verts, 4 );
+    mCompareTransform.Set(b2Vec2(0.0, 0.0), 45);
+    mCheckOOBB = targetOOBB;
+    Query( this, aabb );
+    mCheckOOBB = false;
+    
+    return getQueryResultsCount();
+}
+
 U32 SpriteBatchQuery::queryArea( const b2AABB& aabb, const bool targetOOBB )
 {
     // Debug Profiling.

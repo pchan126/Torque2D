@@ -53,16 +53,23 @@ function CompositeSpriteToy::createCustomLayout( %this )
         // We could also use an animation here.         
         %composite.setSpriteImage( "ToyAssets:Gems", getRandom(0,63) );            
         
+        %x = getRandom(0,360);
+
         // Set an interesting angle.
         %composite.setSpriteAngle( %x );
-        
-        // Set the sprite spinning to make it more interesting.
-        %composite.setAngularVelocity( CompositeSpriteToy.AngularVelocity );               
-        
+
         // Set a random depth.
         %composite.SetSpriteDepth( getRandom( -10.0, 10 ) );        
     }
-	
+
+    %x = getRandom(0,360);
+    // Set an interesting angle.
+    %composite.setAngle( %x );
+    echo ("%composite.setSpriteAngle( "SPC %x SPC" );");
+
+    // Set the sprite spinning to make it more interesting.
+    %composite.setAngularVelocity( CompositeSpriteToy.AngularVelocity );               
+
 	// Add to the scene.
 	SandboxScene.add( %composite );
 	

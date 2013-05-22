@@ -1024,22 +1024,42 @@ ConsoleMethod(CompositeSprite, pickArea, const char*, 4, 6, "(startx/y, endx/y )
     // Fetch the render transform.
     const b2Transform& renderTransform = object->getRenderTransform();
     
-    // Translate into local space.
-    v1 -= renderTransform.p;
-    v2 -= renderTransform.p;
+    Point3F pt1(v1.x, v1.y, 0.0);
+    Point3F pt2(v2.x, v2.y, 0.0);
+    
+    Vector2 renderPosition = object->getRenderPosition();
+    F32 renderAngle = object->getRenderAngle();
+    
+    MatrixF temp = MatrixF(true);
+    temp.translate(renderPosition.x, renderPosition.y, 0.0);
+    temp.rotate(mDegToRad(renderAngle), 0.0, 0.0, 1.0);
+    temp.inverse();
+    
+    // Transform into local space.
+    Vector2 point1 = b2MulT( renderTransform, v1 );
+    Vector2 point2 = b2MulT( renderTransform, v2 );
 
+    temp.mulP(pt1);
+    temp.mulP(pt2);
+    
     // Calculate normalized AABB.
     b2AABB aabb;
-    aabb.lowerBound.x = getMin( v1.x, v2.x );
-    aabb.lowerBound.y = getMin( v1.y, v2.y );
-    aabb.upperBound.x = getMax( v1.x, v2.x );
-    aabb.upperBound.y = getMax( v1.y, v2.y );
+    aabb.lowerBound.x = getMin( pt1.x, pt2.x );
+    aabb.lowerBound.y = getMin( pt1.y, pt2.y );
+    aabb.upperBound.x = getMax( pt1.x, pt2.x );
+    aabb.upperBound.y = getMax( pt1.y, pt2.y );
+//    aabb.lowerBound.x = getMin( point1.x, point2.x );
+//    aabb.lowerBound.y = getMin( point1.y, point2.y );
+//    aabb.upperBound.x = getMax( point1.x, point2.x );
+//    aabb.upperBound.y = getMax( point1.y, point2.y );
 
-    // Rotate the AABB into local space.
-    CoreMath::mRotateAABB( aabb, -renderTransform.q.GetAngle(), aabb );
-
-    // Perform query.
-    pSpriteBatchQuery->queryArea( aabb, true );
+//    b2Vec2 center = aabb.GetCenter();
+//    pSpriteBatchQuery->queryPoint( center, true );
+//    Con::printf("QueryArea %f %f", center.x, center.y);
+//    Con::printf("QueryArea %f %f %f %f", aabb.lowerBound.x, aabb.lowerBound.y, aabb.upperBound.x, aabb.upperBound.y);
+    
+//    // Perform query.
+    pSpriteBatchQuery->queryArea2( aabb, true );
 
     // Fetch result count.
     const U32 resultCount = pSpriteBatchQuery->getQueryResultsCount();

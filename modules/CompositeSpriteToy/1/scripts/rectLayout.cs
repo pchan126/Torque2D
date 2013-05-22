@@ -30,11 +30,11 @@ function CompositeSpriteToy::createRectLayout( %this )
 
     // Set the default sprite stride.
     // This is used in rectilinear layout mode to scale the specified logical position arguments.	
-    %composite.setDefaultSpriteStride( 8, 8 );
-    
+    %composite.setDefaultSpriteStride( 2, 2 );
+
     // Set the default sprite size used to a little less than the stride so we get a "gap"
     // in between the sprites.
-    %composite.setDefaultSpriteSize( 6, 6 );
+    %composite.setDefaultSpriteSize( 2, 2 );
 
 	// Set the batch layout mode.  We must do this before we add any sprites.
     %composite.SetBatchLayout( "rect" );
@@ -65,9 +65,9 @@ function CompositeSpriteToy::createRectLayout( %this )
             // We could also use an animation here.         
             %composite.setSpriteImage( "ToyAssets:Blocks", getRandom(0,55) );            
             
-            // Set an interesting angle.
-            %composite.setSpriteAngle( (%x+%y) * 10 );
-                                    
+//            // Set an interesting angle.
+//            %composite.setSpriteAngle( (%x+%y) * 10 );
+
             // Set the sprite spinning to make it more interesting.
             %composite.setAngularVelocity( CompositeSpriteToy.AngularVelocity );           
             
@@ -76,6 +76,8 @@ function CompositeSpriteToy::createRectLayout( %this )
         }
 	}
 	
+    %composite.setAngle( 45 );
+
 	// Add to the scene.
 	SandboxScene.add( %composite );
 	

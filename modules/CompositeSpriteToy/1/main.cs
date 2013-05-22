@@ -36,15 +36,15 @@ function CompositeSpriteToy::create( %this )
     Sandbox.useManipulation( pan );   
 
     // Configure the toy.
-    CompositeSpriteToy.LayoutMode = "None";
-    CompositeSpriteToy.AngularVelocity = 15;
-    CompositeSpriteToy.SpriteCount = 50;
+    CompositeSpriteToy.LayoutMode = "Rectilinear";
+    CompositeSpriteToy.AngularVelocity = 0;
+    CompositeSpriteToy.SpriteCount = 250;
     CompositeSpriteToy.RenderIsolated = false;
 
     // Add the configuration options.
     addSelectionOption( "None,Custom,Rectilinear,Isometric", "Layout Mode", 4, "setLayoutMode", true, "Selects the layout mode for the composite sprite." );
     addNumericOption("Maximum Sprite Count", 10, 1000, 10, "setSpriteCount", CompositeSpriteToy.SpriteCount, true, "Sets the maximum number of sprites to create." );
-    addNumericOption("Angular Velocity", -180, 180, 20, "setAngularVelocity", CompositeSpriteToy.AngularVelocity, false, "Sets the rate at which the composite sprite spins." );    
+    addNumericOption("Angular Velocity", -180, 180, 0, "setAngularVelocity", CompositeSpriteToy.AngularVelocity, false, "Sets the rate at which the composite sprite spins." );    
     addFlagOption("Render Isolated", "setRenderIsolated", CompositeSpriteToy.RenderIsolated, true , "Whether the composite renders its sprites isolated from the scene layer it occupies or not.");
     
     // Reset the toy.
@@ -143,8 +143,13 @@ function CompositeSpriteToy::onTouchDown(%this, %touchID, %worldPosition)
     // Fetch the composite sprite.
     %compositeSprite = CompositeSpriteToy.CompositeSprite;
     
+    %pickarea1 = %worldPosition.x-10 SPC %worldPosition.y-10;
+    %pickarea2 = %worldPosition.x+10 SPC %worldPosition.y+10;
+    echo (%worldPosition);
+    echo ("CompositeSpriteToy::onTouchDown " SPC %pickarea1 SPC %pickarea2);
     // Pick sprites.
-    %sprites = %compositeSprite.pickPoint( %worldPosition );    
+    %sprites = %compositeSprite.pickArea( %pickarea1, %pickarea2 );    
+//    %sprites = %compositeSprite.pickPoint( %pickarea1 );
 
     // Fetch sprite count.    
     %spriteCount = %sprites.count;
