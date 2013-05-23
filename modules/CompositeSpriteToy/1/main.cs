@@ -143,8 +143,8 @@ function CompositeSpriteToy::onTouchDown(%this, %touchID, %worldPosition)
     // Fetch the composite sprite.
     %compositeSprite = CompositeSpriteToy.CompositeSprite;
     
-    %pickarea1 = %worldPosition.x-10 SPC %worldPosition.y-10;
-    %pickarea2 = %worldPosition.x+10 SPC %worldPosition.y+10;
+    %pickarea1 = %worldPosition.x-5 SPC %worldPosition.y-5;
+    %pickarea2 = %worldPosition.x+5 SPC %worldPosition.y+5;
     echo (%worldPosition);
     echo ("CompositeSpriteToy::onTouchDown " SPC %pickarea1 SPC %pickarea2);
     // Pick sprites.
