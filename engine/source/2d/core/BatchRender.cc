@@ -41,6 +41,7 @@ BatchRender::BatchRender() :
     mBlendColor( ColorF(1.0f,1.0f,1.0f,1.0f) ),
     mBatchEnabled( true )
 {
+    mVertexBuffer.setSize(65535);
 }
 
 //-----------------------------------------------------------------------------

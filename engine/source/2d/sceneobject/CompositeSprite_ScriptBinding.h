@@ -1052,6 +1052,7 @@ ConsoleMethod(CompositeSprite, pickArea, const char*, 4, 6, "(startx/y, endx/y )
     aabb.upperBound.x = getMax( v1.x, v2.x );
     aabb.upperBound.y = getMax( v1.y, v2.y );
    
+    Vector2 testCent = aabb.GetCenter();
    Vector2 center = b2MulT( renderTransform, aabb.GetCenter());
    Vector2 size = aabb.GetExtents();
    
@@ -1068,7 +1069,7 @@ ConsoleMethod(CompositeSprite, pickArea, const char*, 4, 6, "(startx/y, endx/y )
 //    Con::printf("QueryArea %f %f %f %f", aabb.lowerBound.x, aabb.lowerBound.y, aabb.upperBound.x, aabb.upperBound.y);
     
 //    // Perform query.
-    pSpriteBatchQuery->queryArea2(b2Vec2(0.0, 0.0), renderAngle, aabb, true );
+    pSpriteBatchQuery->queryArea2(testCent, renderAngle, aabb, true );
 
     // Fetch result count.
     const U32 resultCount = pSpriteBatchQuery->getQueryResultsCount();

@@ -38,7 +38,7 @@ function CompositeSpriteToy::create( %this )
     // Configure the toy.
     CompositeSpriteToy.LayoutMode = "Rectilinear";
     CompositeSpriteToy.AngularVelocity = 0;
-    CompositeSpriteToy.SpriteCount = 250;
+    CompositeSpriteToy.SpriteCount = 1350;
     CompositeSpriteToy.RenderIsolated = false;
 
     // Add the configuration options.
