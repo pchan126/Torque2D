@@ -238,7 +238,15 @@ void FilterImageAsset::calculateImage( void )
     if (filter)
     {
         [filter setValue:image forKey:@"inputImage"];
-        NSDictionary *attrs = [filter attributes];
+        NSArray *attrKey = [filter inputKeys];
+        for ( NSString *string in attrKey)
+        {
+            StringTableEntry entry = StringTable->insert(string.UTF8String);
+            Con::printf("%s", entry);
+            StringTableEntry value = getDataField(entry, NULL);
+//            getDataField(<#StringTableEntry slotName#>, <#const char *array#>)
+//            [filter setValue: forKey:string];
+        }
 
         @try {
             image = filter.outputImage;
