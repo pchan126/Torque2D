@@ -33,6 +33,8 @@
 
 // Store current orientation for easy access
 extern void _iOSGameChangeOrientation(S32 newOrientation);
+extern Vector<StringTableEntry> gFilterIndexNames;
+
 UIDeviceOrientation currentOrientation;
 
 bool _iOSTorqueFatalError = false;
@@ -57,8 +59,23 @@ bool _iOSTorqueFatalError = false;
                                               object:nil];
     
     iOSPlatState * platState = [iOSPlatState sharedPlatState];
-   BOOL initialResult = [platState initializeTorque2D];
-   if (!initialResult)
+    
+	NSArray *categoryNames = @[ kCICategoryBuiltIn ];
+    NSArray* filterNames = [CIFilter filterNamesInCategories:categoryNames];
+    
+    for (NSString *temp in filterNames)
+    {
+        gFilterIndexNames.push_back(StringTable->insert([temp UTF8String]));
+    }
+    
+    BOOL initialResult = [platState initializeTorque2D];
+
+    for (int i = 0; i < gFilterIndexNames.size(); i++)
+    {
+        Con::printf("Filter: %s", gFilterIndexNames[i]);
+    }
+
+    if (!initialResult)
    {
 		Game->mainShutdown();
 		exit(0);

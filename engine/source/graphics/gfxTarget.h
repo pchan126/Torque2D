@@ -154,7 +154,11 @@ public:
    enum RenderSlot
    {
       DepthStencil,
-      Color0, Color1, Color2, Color3, Color4,
+      Color0,
+      Color1,
+      Color2,
+      Color3,
+      Color4,
       MaxRenderSlotId,
    };
 
@@ -171,7 +175,7 @@ public:
    /// @param mipLevel What level of this texture are we rendering to?
    /// @param zOffset  If this is a depth texture, what z level are we 
    ///                 rendering to?
-   virtual void attachTexture(RenderSlot slot, GFXTextureObject *tex, U32 mipLevel=0, U32 zOffset = 0) = 0;
+    virtual void attachTexture(GFXTextureObject *tex, RenderSlot slot = Color0, U32 mipLevel=0, U32 zOffset = 0) = 0;
 
    /// Support binding to cubemaps.
    ///
@@ -180,7 +184,7 @@ public:
    /// @param tex  What cubemap will we be rendering to?
    /// @param face A face identifier.
    /// @param mipLevel What level of this texture are we rendering to?
-//   virtual void attachTexture(RenderSlot slot, GFXCubemap *tex, U32 face, U32 mipLevel=0) = 0;
+//   virtual void attachTexture(GFXCubemap *tex, U32 face, RenderSlot slot = Color0, U32 mipLevel=0) = 0;
 
    /// Resolve the current render target data to the associated textures. This method
    /// will get called automatically when a rendertarget is changed, before new geometry

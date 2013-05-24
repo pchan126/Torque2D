@@ -74,6 +74,7 @@ GFXOpenGLES20iOSDevice::GFXOpenGLES20iOSDevice( U32 adapterIndex ) : GFXOpenGLES
                     mAdapterIndex(adapterIndex),
                     mCurrentVB(NULL),
                     mContext(nil),
+                    mCIContext(nil),
                     mMaxShaderTextures(2),
                     mClip(0, 0, 0, 0),
                     mTextureLoader(NULL)
@@ -100,6 +101,8 @@ void GFXOpenGLES20iOSDevice::init( const GFXVideoMode &mode, PlatformWindow *win
                     initWithAPI:kEAGLRenderingAPIOpenGLES2];
 
         [EAGLContext setCurrentContext:mContext];
+        
+        mCIContext = [CIContext contextWithEAGLContext:mContext];
         
         mTextureManager = new GFXOpenGLES20iOSTextureManager();
         
@@ -469,6 +472,19 @@ void GFXOpenGLES20iOSDevice::preDrawPrimitive()
     
     [mBaseEffect prepareToDraw];
 }
+
+
+// special immediate function for drawing CIImages
+void GFXOpenGLES20iOSDevice::drawImage( CIImage* image, CGRect inRect, CGRect fromRect)
+{
+    if( mStateDirty )
+    {
+        updateStates();
+    }
+    
+    [mCIContext drawImage:image inRect:inRect fromRect:fromRect];
+}
+
 
 //
 // Register this device with GFXInit

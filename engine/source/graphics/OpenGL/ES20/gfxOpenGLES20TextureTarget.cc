@@ -62,20 +62,20 @@ private:
 #define CHECK_FRAMEBUFFER_STATUS()\
 {\
 GLenum status;\
-status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER);\
+status = glCheckFramebufferStatus(GL_FRAMEBUFFER);\
 switch(status) {\
-case GL_FRAMEBUFFER_COMPLETE_EXT:\
+case GL_FRAMEBUFFER_COMPLETE:\
 break;\
-case GL_FRAMEBUFFER_UNSUPPORTED_EXT:\
+case GL_FRAMEBUFFER_UNSUPPORTED:\
 AssertFatal(false, "Unsupported FBO");\
 break;\
-case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT:\
+case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:\
 AssertFatal(false, "Incomplete FBO Attachment");\
 break;\
-case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:\
+case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS:\
 AssertFatal(false, "Incomplete FBO dimensions");\
 break;\
-case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:\
+case GL_FRAMEBUFFER_INCOMPLETE_FORMATS:\
 AssertFatal(false, "Incomplete FBO formats");\
 default:\
 /* programming error; will fail on all hardware */\
@@ -181,7 +181,7 @@ GFXFormat GFXOpenGLES20TextureTarget::getFormat()
    return GFXFormatR8G8B8A8;
 }
 
-void GFXOpenGLES20TextureTarget::attachTexture( RenderSlot slot, GFXTextureObject *tex, U32 mipLevel/*=0*/, U32 zOffset /*= 0*/ )
+void GFXOpenGLES20TextureTarget::attachTexture( GFXTextureObject *tex, RenderSlot slot, U32 mipLevel/*=0*/, U32 zOffset /*= 0*/ )
 {
    // GFXTextureTarget::sDefaultDepthStencil is a hint that we want the window's depth buffer.
    if(tex == GFXTextureTarget::sDefaultDepthStencil)
@@ -201,7 +201,7 @@ void GFXOpenGLES20TextureTarget::attachTexture( RenderSlot slot, GFXTextureObjec
       mTargets[slot] = NULL;
 }
 
-void GFXOpenGLES20TextureTarget::attachTexture( RenderSlot slot, GFXCubemap *tex, U32 face, U32 mipLevel/*=0*/ )
+void GFXOpenGLES20TextureTarget::attachTexture( GFXCubemap *tex, U32 face, RenderSlot slot, U32 mipLevel/*=0*/ )
 {
    // No depth cubemaps, sorry
    AssertFatal(slot != DepthStencil, "GFXOpenGLES20TextureTarget::attachTexture (cube) - Cube depth textures not supported!");
@@ -223,7 +223,7 @@ void GFXOpenGLES20TextureTarget::clearAttachments()
 {
    deactivate();
    for(S32 i=1; i<MaxRenderSlotId; i++)
-      attachTexture((RenderSlot)i, NULL);
+      attachTexture(NULL, (RenderSlot)i);
 }
 
 void GFXOpenGLES20TextureTarget::zombify()

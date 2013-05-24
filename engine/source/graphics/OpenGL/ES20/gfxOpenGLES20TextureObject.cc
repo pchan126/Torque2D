@@ -86,44 +86,6 @@ GBitmap* GFXOpenGLES20TextureObject::getBitmap()
     if (mPath.isEmpty())
         return NULL;
     
-//    GBitmap
-//
-//    Stream& io_rStream;
-//    int filesize = io_rStream.getStreamSize();
-//    U8 *buff = new U8[filesize+1024];
-//    // UNUSED: JOSEPH THOMAS -> unsigned long size = io_rStream.read(filesize,buff);
-//    
-//    CGDataProviderRef data_provider = CGDataProviderCreateWithData(nil, buff, filesize, nil);
-//    CGImageRef apple_image = CGImageCreateWithPNGDataProvider(data_provider, nil, false, kCGRenderingIntentDefault);
-//    
-//    // Choose alpha strategy based on whether the source image has alpha or not.
-//    // UNUSED: JOSEPH THOMAS -> CGImageAlphaInfo alpha_info = CGImageGetAlphaInfo(apple_image);
-//    int width = CGImageGetWidth(apple_image);
-//    int height = CGImageGetHeight(apple_image);
-//    U32 rowBytes = width * 4;
-//    
-//    // Set up the row pointers...
-//    AssertISV(width <= 1024, "Error, cannot load images wider than 1024 pixels!");
-//    AssertISV(height <= 1024, "Error, cannot load images taller than 1024 pixels!");
-//    
-//    BitmapFormat format = RGBA;
-//    // actually allocate the bitmap space...
-//    allocateBitmap(width, height,
-//                   false,            // don't extrude miplevels...
-//                   format);          // use determined format...
-//    
-//    U8 *pBase = (U8*)getBits();
-//    
-//    CGColorSpaceRef color_space = CGColorSpaceCreateDeviceRGB();
-//    CGContextRef texture_context = CGBitmapContextCreate(pBase, width, height, 8, rowBytes, color_space, kCGImageAlphaPremultipliedLast);
-//    
-//    CGContextDrawImage(texture_context, CGRectMake(0.0, 0.0, width, height), apple_image);
-//    
-//    
-//    CGImageRelease(apple_image);
-//    CGDataProviderRelease(data_provider);
-    
-//    delete [] buff;
     return NULL;
 }
 
@@ -134,26 +96,6 @@ bool GFXOpenGLES20TextureObject::copyToBmp(GBitmap * bmp)
    return false;
 }
 
-void GFXOpenGLES20TextureObject::bind(U32 textureUnit) const
-{
-//    AssertFatal(mBinding == GL_TEXTURE_2D, "GFXOpenGLES20TextureObject::bind - only GL_TEXTURE_2D supported");
-//   glActiveTexture(GL_TEXTURE0 + textureUnit);
-//
-//    GLuint han = mHandle;
-//   glBindTexture(mBinding, han);
-//    
-//   GFXOpenGLES20StateBlockRef sb = mGLDevice->getCurrentStateBlock();
-//   AssertFatal(sb, "GFXOpenGLES20TextureObject::bind - No active stateblock!");
-//   if (!sb)
-//      return;
-//         
-//   const GFXSamplerStateDesc ssd = sb->getDesc().samplers[textureUnit];
-//   glTexParameteri(mBinding, GL_TEXTURE_MIN_FILTER, minificationFilter(ssd.minFilter, ssd.mipFilter, mMipLevels));   
-//   glTexParameteri(mBinding, GL_TEXTURE_MAG_FILTER, GFXGLTextureFilter[ssd.magFilter]);
-//    
-//   glTexParameteri(mBinding, GL_TEXTURE_WRAP_S, !mIsNPoT2 ? GFXGLTextureAddress[ssd.addressModeU] : GL_CLAMP_TO_EDGE);
-//   glTexParameteri(mBinding, GL_TEXTURE_WRAP_T, !mIsNPoT2 ? GFXGLTextureAddress[ssd.addressModeV] : GL_CLAMP_TO_EDGE);
-}
 
 U8* GFXOpenGLES20TextureObject::getTextureData()
 {

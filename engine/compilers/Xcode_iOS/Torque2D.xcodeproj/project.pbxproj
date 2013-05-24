@@ -473,6 +473,7 @@
 		D10BF28A172E724100E0D95D /* iOSCursorController.mm in Sources */ = {isa = PBXBuildFile; fileRef = D10BF289172E724000E0D95D /* iOSCursorController.mm */; };
 		D10BF28D172E75F700E0D95D /* iOSGestureRecognizer.mm in Sources */ = {isa = PBXBuildFile; fileRef = D10BF28C172E75F600E0D95D /* iOSGestureRecognizer.mm */; };
 		D10BF290172E7C4E00E0D95D /* iOSWindowInputGenerator.mm in Sources */ = {isa = PBXBuildFile; fileRef = D10BF28F172E7C4E00E0D95D /* iOSWindowInputGenerator.mm */; };
+		D11B0D13174F00D6002CB743 /* FilterImageAsset.mm in Sources */ = {isa = PBXBuildFile; fileRef = D11B0D11174F00D6002CB743 /* FilterImageAsset.mm */; };
 		D123F8891716756600F8EFEF /* gfxOpenGLShader.cc in Sources */ = {isa = PBXBuildFile; fileRef = D123F8881716756500F8EFEF /* gfxOpenGLShader.cc */; };
 		D123F88B1716794800F8EFEF /* gfxOpenGLStateBlock.cc in Sources */ = {isa = PBXBuildFile; fileRef = D123F88A1716794700F8EFEF /* gfxOpenGLStateBlock.cc */; };
 		D123F88D171681DA00F8EFEF /* gfxOpenGLDevice.cc in Sources */ = {isa = PBXBuildFile; fileRef = D123F88C171681DA00F8EFEF /* gfxOpenGLDevice.cc */; };
@@ -1466,6 +1467,8 @@
 		D10BF28C172E75F600E0D95D /* iOSGestureRecognizer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iOSGestureRecognizer.mm; sourceTree = "<group>"; };
 		D10BF28E172E7C4D00E0D95D /* iOSWindowInputGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iOSWindowInputGenerator.h; sourceTree = "<group>"; };
 		D10BF28F172E7C4E00E0D95D /* iOSWindowInputGenerator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iOSWindowInputGenerator.mm; sourceTree = "<group>"; };
+		D11B0D11174F00D6002CB743 /* FilterImageAsset.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FilterImageAsset.mm; sourceTree = "<group>"; };
+		D11B0D12174F00D6002CB743 /* FilterImageAsset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilterImageAsset.h; sourceTree = "<group>"; };
 		D123F8671716652400F8EFEF /* gfxOpenGLCardProfiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLCardProfiler.h; sourceTree = "<group>"; };
 		D123F8691716652400F8EFEF /* gfxOpenGLDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLDevice.h; sourceTree = "<group>"; };
 		D123F86B1716652400F8EFEF /* gfxOpenGLEnumTranslate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLEnumTranslate.h; sourceTree = "<group>"; };
@@ -1718,6 +1721,7 @@
 		867BAC9116AEC8BB0033868F /* platformiOS */ = {
 			isa = PBXGroup;
 			children = (
+				D11B0D0F174F00BC002CB743 /* 2d */,
 				D16581591702EE3D00A21928 /* windowManager */,
 				867BAC9416AEC8BB0033868F /* GameCenter.h */,
 				867BAC9516AEC8BB0033868F /* GameCenter.mm */,
@@ -3176,6 +3180,23 @@
 			path = ES20;
 			sourceTree = "<group>";
 		};
+		D11B0D0F174F00BC002CB743 /* 2d */ = {
+			isa = PBXGroup;
+			children = (
+				D11B0D10174F00BC002CB743 /* assets */,
+			);
+			path = 2d;
+			sourceTree = "<group>";
+		};
+		D11B0D10174F00BC002CB743 /* assets */ = {
+			isa = PBXGroup;
+			children = (
+				D11B0D11174F00D6002CB743 /* FilterImageAsset.mm */,
+				D11B0D12174F00D6002CB743 /* FilterImageAsset.h */,
+			);
+			path = assets;
+			sourceTree = "<group>";
+		};
 		D123F8651716652400F8EFEF /* OpenGL */ = {
 			isa = PBXGroup;
 			children = (
@@ -3825,6 +3846,7 @@
 				D127CE10173CE479006AB038 /* gfxOpenGLES20iOSWindowTarget.mm in Sources */,
 				D127CE12173CEEEA006AB038 /* gfxOpenGLES20Shader.cc in Sources */,
 				30D5475C173FF5D300CB43DA /* platformTimer.cc in Sources */,
+				D11B0D13174F00D6002CB743 /* FilterImageAsset.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

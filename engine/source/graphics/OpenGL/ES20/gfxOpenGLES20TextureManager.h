@@ -27,7 +27,9 @@ protected:
 
     virtual GFXTextureObject* createTexture( GBitmap *bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp );
 
-   GFXTextureObject* _createTexture(  GBitmap *bmp,
+    virtual GFXTextureObject* createTexture(  U32 width, U32 height, void *pixels, GFXFormat format, GFXTextureProfile *profile );
+    
+    GFXTextureObject* _createTexture(  GBitmap *bmp,
                                       const String &resourceName,
                                       GFXTextureProfile *profile,
                                       bool deleteBmp,

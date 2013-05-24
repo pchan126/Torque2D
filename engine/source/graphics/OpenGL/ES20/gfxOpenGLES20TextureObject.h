@@ -23,11 +23,6 @@ public:
    inline GLenum getBinding() const { return mBinding; }
    
    inline bool isZombie() const { return mIsZombie; }
-
-   /// Binds the texture to the given texture unit
-   /// and applies the current sampler state because GL tracks
-   /// filtering and wrapper per object, while GFX tracks per sampler.
-   void bind(U32 textureUnit) const;
    
    /// @return An array containing the texture data
    /// @note You are responsible for deleting the returned data! (Use delete[])

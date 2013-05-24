@@ -134,7 +134,7 @@ public:
         TexelArea mTexelArea;
     };
 
-private:
+protected:
     typedef Vector<FrameArea> typeFrameAreaVector;
     typedef Vector<FrameArea::PixelArea> typeExplicitFrameAreaVector;
 
@@ -234,7 +234,7 @@ public:
 
 private:
     inline void clampFrame( U32& frame ) const                              { const U32 totalFrames = getFrameCount(); if ( frame >= totalFrames ) frame = (totalFrames == 0 ? 0 : totalFrames-1 ); };
-    void calculateImage( void );
+    virtual void calculateImage( void );
     void calculateImplicitMode( void );
     void calculateExplicitMode( void );
     void setTextureFilter( const TextureFilterMode filterMode );

@@ -259,17 +259,9 @@ void Scroller::sceneRender( const SceneRenderState* pSceneRenderState, const Sce
     if ( renderOffsetX < 0.0f ) renderOffsetX += 1.0f;
     if ( renderOffsetY < 0.0f ) renderOffsetY += 1.0f;
     
-    // Calculate if frame has split rendering or not.
-    const bool isSplitRenderFrameX = mNotZero( renderOffsetX );
-    const bool isSplitRenderFrameY = mNotZero( renderOffsetY );
-    
     // Clamp Texture Offsets.
     const F32 textureOffsetX = frameTexelArea.mTexelWidth * renderOffsetX;
     const F32 textureOffsetY = frameTexelArea.mTexelHeight * renderOffsetY;
-    
-    // Fetch lower/upper texture coordinates.
-    const Vector2& texLower = frameTexelArea.mTexelLower;
-    const Vector2& texUpper = frameTexelArea.mTexelUpper;
     
     // Fetch render area.
     const Vector2& renderOOBB0 = mRenderOOBB[0];
@@ -283,10 +275,6 @@ void Scroller::sceneRender( const SceneRenderState* pSceneRenderState, const Sce
     // Calculate split region dimensions.
     const F32 splitRegionWidth = regionWidth * (1.0f-renderOffsetX);
     const F32 splitRegionHeight = regionHeight * (1.0f-renderOffsetY);
-    
-    // Fetch the whole regions.
-    const S32 wholeRegionX = (S32)mCeil( mRepeatX );
-    const S32 wholeRegionY = (S32)mCeil( mRepeatY );
     
     // Flush any existing batches.
     pBatchRenderer->flush();

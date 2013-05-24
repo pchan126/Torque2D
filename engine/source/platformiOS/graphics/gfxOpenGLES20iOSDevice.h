@@ -18,7 +18,7 @@ class GFXOpenGLES20iOSVertexBuffer;
 class GFXOpenGLES20iOSTextureTarget;
 //class GFXOpenGLESCubemap;
 
-@class EAGLContext, GLKTextureLoader, GLKBaseEffect;
+@class EAGLContext, GLKTextureLoader, GLKBaseEffect, CIImage;
 
 class GFXOpenGLES20iOSDevice : public GFXOpenGLES20Device
 {
@@ -90,6 +90,11 @@ public:
    
     EAGLContext* getEAGLContext() const { return mContext; };
     GLKTextureLoader* getTextureLoader() const { return mTextureLoader; };
+
+    // special immediate function for drawing CIImages
+    void drawImage( CIImage* image, CGRect inRect, CGRect fromRect);
+
+
 protected:
    /// Called by GFXDevice to create a device specific stateblock
    virtual GFXStateBlockRef createStateBlockInternal(const GFXStateBlockDesc& desc);
@@ -147,6 +152,7 @@ private:
     void _handleTextureLoaded(GFXTexNotifyCode code);
 
     EAGLContext* mContext;
+    CIContext* mCIContext;
     GLKTextureLoader* mTextureLoader; // GLKTextureLoader
     GLKBaseEffect* mBaseEffect;
 

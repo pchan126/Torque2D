@@ -48,6 +48,20 @@ GFXTextureObject *GFXOpenGLES20TextureManager::createTexture( GBitmap *bmp, cons
 }
 
 
+GFXTextureObject *GFXOpenGLES20TextureManager::createTexture(  U32 width, U32 height, void *pixels, GFXFormat format, GFXTextureProfile *profile )
+{
+    AssertFatal(format >= 0 && format < GFXFormat_COUNT, "GFXOpenGLES20iOSTextureManager::_createTexture - invalid format!");
+    
+    GFXOpenGLES20TextureObject *retTex;
+    retTex = new GFXOpenGLES20TextureObject( GFX, profile );
+    retTex->registerResourceWithDevice( GFX );
+    
+    innerCreateTexture(retTex, height, width, 0, format, profile, 1);
+    
+    return retTex;
+}
+
+
 GFXTextureObject *GFXOpenGLES20TextureManager::_createTexture(  GBitmap *bmp,
                                                     const String &resourceName,
                                                     GFXTextureProfile *profile,

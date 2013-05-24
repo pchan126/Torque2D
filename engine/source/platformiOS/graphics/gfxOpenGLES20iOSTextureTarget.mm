@@ -181,7 +181,7 @@ GFXFormat GFXOpenGLES20iOSTextureTarget::getFormat()
    return GFXFormatR8G8B8A8;
 }
 
-void GFXOpenGLES20iOSTextureTarget::attachTexture( RenderSlot slot, GFXTextureObject *tex, U32 mipLevel/*=0*/, U32 zOffset /*= 0*/ )
+void GFXOpenGLES20iOSTextureTarget::attachTexture( GFXTextureObject *tex, RenderSlot slot, U32 mipLevel/*=0*/, U32 zOffset /*= 0*/ )
 {
    // GFXTextureTarget::sDefaultDepthStencil is a hint that we want the window's depth buffer.
    if(tex == GFXTextureTarget::sDefaultDepthStencil)
@@ -201,7 +201,7 @@ void GFXOpenGLES20iOSTextureTarget::attachTexture( RenderSlot slot, GFXTextureOb
       mTargets[slot] = NULL;
 }
 
-void GFXOpenGLES20iOSTextureTarget::attachTexture( RenderSlot slot, GFXCubemap *tex, U32 face, U32 mipLevel/*=0*/ )
+void GFXOpenGLES20iOSTextureTarget::attachTexture( GFXCubemap *tex, U32 face, RenderSlot slot, U32 mipLevel/*=0*/ )
 {
    // No depth cubemaps, sorry
    AssertFatal(slot != DepthStencil, "GFXOpenGLES20iOSTextureTarget::attachTexture (cube) - Cube depth textures not supported!");
@@ -223,7 +223,7 @@ void GFXOpenGLES20iOSTextureTarget::clearAttachments()
 {
    deactivate();
    for(S32 i=1; i<MaxRenderSlotId; i++)
-      attachTexture((RenderSlot)i, NULL);
+      attachTexture(NULL, (RenderSlot)i);
 }
 
 void GFXOpenGLES20iOSTextureTarget::zombify()
