@@ -192,7 +192,8 @@ void GFXOpenGLDevice::drawIndexedPrimitive(   GFXPrimitiveType primType,
     AssertFatal( startVertex == 0, "GFXOpenGLDevice::drawIndexedPrimitive() - Non-zero startVertex unsupported!" );
     
     preDrawPrimitive();
-    glDrawElements(GFXGLPrimType[primType], primCountToIndexCount(primType, primitiveCount), GL_UNSIGNED_SHORT, (GLvoid*)0);
+    int count = primCountToIndexCount(primType, primitiveCount);
+    glDrawElements(GFXGLPrimType[primType], count, GL_UNSIGNED_SHORT, (GLvoid*)0);
     postDrawPrimitive(primitiveCount);
 }
 

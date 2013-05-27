@@ -22,6 +22,7 @@ GFXOpenGLES20iOSVertexBuffer::GFXOpenGLES20iOSVertexBuffer(  GFXDevice *device,
    :  GFXVertexBuffer( device, vertexCount, vertexFormat, vertexSize, bufferType ),
       mZombieCache(NULL)
 {
+    mIndexCount = indexCount;
     glGenVertexArraysOES(1,&mVertexArrayObject);
     glBindVertexArrayOES(mVertexArrayObject);
     
@@ -66,12 +67,22 @@ GFXOpenGLES20iOSVertexBuffer::GFXOpenGLES20iOSVertexBuffer(  GFXDevice *device,
     
     if (indexCount)
     {
+        U16* iB = (U16*)indexBuffer;
+        for (int i = 0; i < indexCount; i++)
+        {
+            U16 x = iB[i];
+            if (x > vertexCount)
+            {
+                AssertFatal((x < vertexCount), "ack");
+            }
+        }
+        
         // This also attaches the element array buffer to the VAO
         glGenBuffers(1, &elementBufferName);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferName);
         
         // Allocate and load vertex array element data into VBO
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount*sizeof(U16), indexBuffer, GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount*sizeof(U16), indexBuffer, GFXGLBufferType[bufferType]);
     }
 }
 
@@ -106,11 +117,21 @@ void GFXOpenGLES20iOSVertexBuffer::set( void* data, U32 dataSize, U32 indexCount
 
     if (indexCount)
     {
+        U16* iB = (U16*)indexData;
+        for (int i = 0; i < indexCount; i++)
+        {
+            U16 x = iB[i];
+            if (x > mVertexCount)
+            {
+                AssertFatal((x < mVertexCount), "ack");
+            }
+        }
+
         // This also attaches the element array buffer to the VAO
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferName);
         
         // Allocate and load vertex array element data into VBO
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount*sizeof(U16), indexData, GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount*sizeof(U16), indexData, GFXGLBufferType[mBufferType]);
     }
 }
 

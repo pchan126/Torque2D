@@ -60,35 +60,44 @@ class SceneRenderRequest;
 class BatchRender
 {
 private:
-//    struct TriangleRun
-//    {
-//        enum PrimitiveMode
-//        {
-//            TRIANGLE,
-//            QUAD,
-//        };
-//
-//        TriangleRun( const PrimitiveMode primitive, const U32 primitiveCount, const U32 startIndex ) :
-//            mPrimitiveMode( primitive ),
-//            mPrimitiveCount( primitiveCount ),
-//            mStartIndex( startIndex )
-//        { }
-//
-//        PrimitiveMode mPrimitiveMode;
-//        U32 mPrimitiveCount;
-//        U32 mStartIndex;
-//    };
+    struct indexedPrim
+    {
+        indexedPrim( const GFXPrimitiveType primitive, const U32 primitiveCount, const U32 startIndex ) :
+            mPrimitiveMode( primitive ),
+            mPrimitiveCount( primitiveCount ),
+            mStartIndex( startIndex )
+        {
+            verts = new Vector<GFXVertexPCT>;
+            index = new Vector<U16>;
+        }
+        
+        ~indexedPrim()
+        {
+            delete verts;
+            delete index;
+        }
+        
+        GFXPrimitiveType mPrimitiveMode;
+        U32 mPrimitiveCount;
+        U32 mStartIndex;
 
-//    typedef Vector<GFXVertexPCT> indexVectorType;
-    typedef HashMap<GFXTexHandle, Vector<GFXVertexPCT> *> textureBatchType;
+        Vector<GFXVertexPCT>* verts;
+        Vector<U16>* index;
+    };
 
-    VectorPtr< Vector<GFXVertexPCT>* > mIndexVectorPool;
+//    typedef Vector<indexedPrim> indexVectorType;
+    typedef HashMap<GFXTexHandle, indexedPrim*> textureBatchType;
+
+//    VectorPtr< Vector<GFXVertexPCT>* > mIndexVectorPool;
+    VectorPtr< indexedPrim* > mIndexVectorPool;
     textureBatchType    mTextureBatchMap;
 
     const ColorF        NoColor;
 
     Vector<GFXVertexPCT> mVertexBuffer;
     GFXVertexBufferHandle<GFXVertexPCT> mTempVertBuffHandle;
+    Vector<U16>          mIndexBuffer;
+    
    
     U32                 mTriangleCount;
 
@@ -298,7 +307,7 @@ private:
     void flushInternal( void );
 
     /// Find texture batch.
-    Vector<GFXVertexPCT>* findTextureBatch( GFXTexHandle& handle );
+    indexedPrim* findTextureBatch( GFXTexHandle& handle );
 
 };
 

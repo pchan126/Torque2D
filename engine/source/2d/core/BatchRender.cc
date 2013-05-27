@@ -55,7 +55,7 @@ BatchRender::~BatchRender()
     mTextureBatchMap.clear();
 
     // Destroy index vectors in index vector pool.
-    for ( VectorPtr< Vector<GFXVertexPCT> * >::iterator itr = mIndexVectorPool.begin(); itr != mIndexVectorPool.end(); ++itr )
+    for ( VectorPtr< indexedPrim* >::iterator itr = mIndexVectorPool.begin(); itr != mIndexVectorPool.end(); ++itr )
     {
         delete (*itr);
     }
@@ -128,7 +128,9 @@ void BatchRender::SubmitTriangles(
 //        flush( mpDebugStats->batchColorStateFlush );
 //    }
    
+    
     Vector<GFXVertexPCT>* vertBuffer = &mVertexBuffer;
+    Vector<U16>* indexBuffer = &mIndexBuffer;
 
     // Strict order mode?
     if ( mStrictOrderMode )
@@ -146,7 +148,8 @@ void BatchRender::SubmitTriangles(
     else
     {
         // No, so add triangle run.
-        vertBuffer = findTextureBatch( texture );
+        vertBuffer = findTextureBatch( texture )->verts;
+        indexBuffer = findTextureBatch(texture)->index;
     }
 
     // Add textured vertices.
@@ -166,15 +169,15 @@ void BatchRender::SubmitTriangles(
         // degenerate joining triangle
         if (n != 0 && vertBuffer->size() > 0)
         {
-            vertBuffer->push_back(vertBuffer->last());
-            vertBuffer->push_back(vert[0]);
+            indexBuffer->push_back(vertBuffer->push_back_unique(vertBuffer->last()));
+            indexBuffer->push_back(vertBuffer->push_back_unique(vert[0]));
         }
 
         // Add textured vertices.
         // NOTE: We swap #2/#3 here.
-        vertBuffer->push_back(vert[0]);
-        vertBuffer->push_back(vert[1]);
-        vertBuffer->push_back(vert[2]);
+        indexBuffer->push_back(vertBuffer->push_back_unique(vert[0]));
+        indexBuffer->push_back(vertBuffer->push_back_unique(vert[1]));
+        indexBuffer->push_back(vertBuffer->push_back_unique(vert[2]));
     }
 
     // Stats.
@@ -218,6 +221,7 @@ void BatchRender::SubmitTriangleStrip( const Vector<GFXVertexPCT> verts, GFXTexH
     }
     
     Vector<GFXVertexPCT>* vertBuffer = &mVertexBuffer;
+    Vector<U16>* indexBuffer = &mIndexBuffer;
     
     // Strict order mode?
     if ( mStrictOrderMode )
@@ -235,14 +239,15 @@ void BatchRender::SubmitTriangleStrip( const Vector<GFXVertexPCT> verts, GFXTexH
     else
     {
         // No, so add triangle run.
-        vertBuffer = findTextureBatch( texture );
+        vertBuffer = findTextureBatch( texture )->verts;
+        indexBuffer = findTextureBatch(texture)->index;
     }
     
     // degenerate linking triangle
     if (mVertexBuffer.size() > 0)
     {
-        vertBuffer->push_back(vertBuffer->last());
-        vertBuffer->push_back(verts[0]);
+        indexBuffer->push_back(vertBuffer->push_back_unique(vertBuffer->last()));
+        indexBuffer->push_back(vertBuffer->push_back_unique(verts[0]));
     }
     
     // Add textured vertices.
@@ -290,6 +295,7 @@ void BatchRender::SubmitQuad(const GFXVertexPCT* vertex,
     }
    
     Vector<GFXVertexPCT>* vertBuffer = &mVertexBuffer;
+    Vector<U16>* indexBuffer = &mIndexBuffer;
 
     // Strict order mode?
     if ( mStrictOrderMode )
@@ -307,22 +313,23 @@ void BatchRender::SubmitQuad(const GFXVertexPCT* vertex,
     else
     {
         // No, so add triangle run.
-        vertBuffer = findTextureBatch( texture );
+        vertBuffer = findTextureBatch( texture )->verts;
+        indexBuffer = findTextureBatch(texture)->index;
     }
     
     // degenerate linking triangle
     if (mVertexBuffer.size() > 0)
     {
-        vertBuffer->push_back(vertBuffer->last());
-        vertBuffer->push_back(vertex[0]);
+        indexBuffer->push_back(vertBuffer->push_back_unique(vertBuffer->last()));
+        indexBuffer->push_back(vertBuffer->push_back_unique(vertex[0]));
     }
     
     // Add textured vertices.
     // NOTE: We swap #2/#3 here.
-    vertBuffer->push_back(vertex[0]);
-    vertBuffer->push_back(vertex[1]);
-    vertBuffer->push_back(vertex[3]);
-    vertBuffer->push_back(vertex[2]);
+    indexBuffer->push_back(vertBuffer->push_back_unique(vertex[0]));
+    indexBuffer->push_back(vertBuffer->push_back_unique(vertex[1]));
+    indexBuffer->push_back(vertBuffer->push_back_unique(vertex[3]));
+    indexBuffer->push_back(vertBuffer->push_back_unique(vertex[2]));
     
     // Stats.
     mpDebugStats->batchTrianglesSubmitted+=2;
@@ -465,12 +472,29 @@ void BatchRender::flushInternal( void )
         else
             Con::printf("!mWireframeMode");
 
-        mTempVertBuffHandle.set(GFX, mVertexBuffer.size(), GFXBufferTypeVolatile, mVertexBuffer.address() );
+//        U16* iB = (U16*)indexData;
+        Con::printf("flushInternal %i %i", mVertexBuffer.size(), mIndexBuffer.size());
+        
+        for (int i = 0; i < mIndexBuffer.size(); i++)
+        {
+            U16 x = mIndexBuffer[i];
+            if (x > mVertexBuffer.size())
+            {
+                Con::printf("!ack");
+                
+            }
+        }
+
+        
+        
+        //        mTempVertBuffHandle.set(GFX, mVertexBuffer.size(), GFXBufferTypeVolatile, mVertexBuffer.address() );
+        mTempVertBuffHandle.set(GFX, mVertexBuffer.size(), GFXBufferTypeVolatile, mVertexBuffer.address(), mIndexBuffer.size(), mIndexBuffer.address() );
         GFX->setVertexBuffer( mTempVertBuffHandle );
         
         // Draw the triangles
         GFX->setupGenericShaders(GFXDevice::GSTexture);
-        GFX->drawPrimitive(GFXTriangleStrip, 0, mVertexBuffer.size()-2);
+        GFX->drawIndexedPrimitive(GFXTriangleStrip, 0, 0, mVertexBuffer.size(), mIndexBuffer.size(), mIndexBuffer.size()-2);
+//        GFX->drawPrimitive(GFXTriangleStrip, 0, mVertexBuffer.size()-2);
 
         // Stats.
         mpDebugStats->batchDrawCallsStrict++;
@@ -489,11 +513,15 @@ void BatchRender::flushInternal( void )
         // No, so iterate texture batch map.
         for( textureBatchType::iterator batchItr = mTextureBatchMap.begin(); batchItr != mTextureBatchMap.end(); ++batchItr )
         {
+            // Fetch indexedPrim
+            indexedPrim* indexPrim = batchItr->value;
+            
             // Bind the texture if not in wireframe mode.
             GFX->setTexture(0, batchItr->key);
-            Vector<GFXVertexPCT>* pVertexVector = batchItr->value;
+            Vector<GFXVertexPCT>* pVertexVector = indexPrim->verts;
+            Vector<U16>* pIndex = indexPrim->index;
 
-            mTempVertBuffHandle.set(GFX, pVertexVector->size(), GFXBufferTypeVolatile, pVertexVector->address() );
+            mTempVertBuffHandle.set(GFX, pVertexVector->size(), GFXBufferTypeVolatile, pVertexVector->address(), pIndex->size(), pIndex->address() );
             GFX->setVertexBuffer( mTempVertBuffHandle );
 
             // Draw the triangles.
@@ -514,7 +542,8 @@ void BatchRender::flushInternal( void )
 
             // Return index vector to pool.
             pVertexVector->clear();
-            mIndexVectorPool.push_back( pVertexVector );
+            pIndex->clear();
+            mIndexVectorPool.push_back( indexPrim );
         }
 
         // Clear texture batch map.
@@ -523,13 +552,15 @@ void BatchRender::flushInternal( void )
     // Reset batch state.
     mTriangleCount = 0;
     mVertexBuffer.clear();
+    mIndexBuffer.clear();
 }
 
 //-----------------------------------------------------------------------------
 
-Vector<GFXVertexPCT> * BatchRender::findTextureBatch( GFXTexHandle& handle )
+BatchRender::indexedPrim* BatchRender::findTextureBatch( GFXTexHandle& handle )
 {
-    Vector<GFXVertexPCT> * pIndexVector = NULL;
+//    Vector<GFXVertexPCT> * pIndexVector = NULL;
+    indexedPrim* pIndexVector = NULL;
 
     // Find texture binding.
     textureBatchType::iterator itr = mTextureBatchMap.find( handle );
@@ -550,7 +581,8 @@ Vector<GFXVertexPCT> * BatchRender::findTextureBatch( GFXTexHandle& handle )
         else
         {
             // No, so generate one.
-            pIndexVector = new Vector<GFXVertexPCT>;
+//            pIndexVector = new Vector<GFXVertexPCT>;
+            pIndexVector = new indexedPrim( GFXTriangleStrip, 0, 0 );
         }
 
         // Insert into texture batch map.

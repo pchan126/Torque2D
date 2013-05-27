@@ -74,6 +74,11 @@ GFXDeclareVertexFormat( GFXVertexPCT )
    Point3F point;
    ColorI color;
    Point2F texCoord;
+    
+    bool operator==(const GFXVertexPCT& in_Cmp) const
+    {
+        return ( (point == in_Cmp.point) && (color == in_Cmp.color) && (texCoord == in_Cmp.texCoord));
+    };
 };
 
 GFXDeclareVertexFormat( GFXVertexPCTT )

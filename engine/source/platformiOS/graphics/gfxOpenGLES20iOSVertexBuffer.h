@@ -44,6 +44,7 @@ private:
 	/// GL buffer handle
 	GLuint mBuffer, mVertexArrayObject, elementBufferName;
    U32 mTextureCount;
+    U32 mIndexCount;
    
    U8* mZombieCache;
 };
