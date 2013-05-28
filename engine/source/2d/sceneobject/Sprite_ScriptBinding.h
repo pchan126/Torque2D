@@ -80,3 +80,41 @@ ConsoleMethod(Sprite, getFlipY, bool, 2, 2,     "() Gets whether or not the text
 {
    return object->getFlipY();
 }
+
+
+
+//-----------------------------------------------------------------------------
+
+ConsoleMethod(Sprite, setRows, void, 3, 3,     "(bool flipX) Sets whether or not the texture is flipped horizontally.\n"
+              "@param flipX Whether or not to flip the texture along the x (horizontal) axis."
+              "@return No return value.")
+{
+    // Set Flip.
+    object->setRows( dAtoi(argv[2]) );
+}
+
+//-----------------------------------------------------------------------------
+
+ConsoleMethod(Sprite, setColumns, void, 3, 3,     "(int columns) Sets the number of columns to render.\n"
+              "@param columns The number of columns to render."
+              "@return No return value.")
+{
+    // Set Flip.
+    object->setColumns( dAtoi(argv[2]) );
+}
+
+//-----------------------------------------------------------------------------
+
+ConsoleMethod(Sprite, getRows, S32, 2, 2,     "() Gets the number of rows the sprite is rendered in.\n"
+              "@return (int rows) the number of rows that are rendered.")
+{
+    return object->getRows();
+}
+
+//-----------------------------------------------------------------------------
+
+ConsoleMethod(Sprite, getColumns, S32, 2, 2,     "() Gets whether or not the texture is flipped vertically."
+              "@return (int columns) the number of columns that are rendered.")
+{
+    return object->getColumns();
+}

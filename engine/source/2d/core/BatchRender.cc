@@ -213,12 +213,12 @@ void BatchRender::SubmitTriangleStrip( const Vector<GFXVertexPCT> verts, GFXTexH
     // Debug Profiling.
     PROFILE_SCOPE(BatchRender_SubmitTriangleStrip);
     
-    // Would we exceed the triangle buffer size?
-    if ( (mTriangleCount + verts.size()/3) > BATCHRENDER_MAXTRIANGLES )
-    {
-        // Yes, so flush.
-        flush( mpDebugStats->batchBufferFullFlush );
-    }
+//    // Would we exceed the triangle buffer size?
+//    if ( (mTriangleCount + verts.size()/3) > BATCHRENDER_MAXTRIANGLES )
+//    {
+//        // Yes, so flush.
+//        flush( mpDebugStats->batchBufferFullFlush );
+//    }
     
     Vector<GFXVertexPCT>* vertBuffer = &mVertexBuffer;
     Vector<U16>* indexBuffer = &mIndexBuffer;
@@ -250,9 +250,12 @@ void BatchRender::SubmitTriangleStrip( const Vector<GFXVertexPCT> verts, GFXTexH
         indexBuffer->push_back(vertBuffer->push_back_unique(verts[0]));
     }
     
-    // Add textured vertices.
-    // NOTE: We swap #2/#3 here.
-    vertBuffer->merge(verts);
+    for (int i = 0; i < verts.size(); i++)
+        indexBuffer->push_back(vertBuffer->push_back_unique(verts[i]));
+
+    //    // Add textured vertices.
+//    // NOTE: We swap #2/#3 here.
+//    vertBuffer->merge(verts);
     
     // Stats.
     mpDebugStats->batchTrianglesSubmitted+=2;

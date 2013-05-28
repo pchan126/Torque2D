@@ -194,7 +194,9 @@ void ImageFrameProviderCore::render(
     const Vector2& vertexPos2,
     const Vector2& vertexPos3,
     BatchRender* pBatchRenderer,
-    const ColorF& color ) const
+    const ColorF& color,
+    const U8 rows,
+    const U8 columns) const
 {
     // Finish if we can't render.
     if ( !validRender() )
@@ -210,18 +212,36 @@ void ImageFrameProviderCore::render(
     const Vector2& texLower = texelArea.mTexelLower;
     const Vector2& texUpper = texelArea.mTexelUpper;
     
-    // Submit batched quad.
-    pBatchRenderer->SubmitQuad(
-        vertexPos0,
-        vertexPos1,
-        vertexPos2,
-        vertexPos3,
-        Vector2( texLower.x, texUpper.y ),
-        Vector2( texUpper.x, texUpper.y ),
-        Vector2( texUpper.x, texLower.y ),
-        Vector2( texLower.x, texLower.y ),
-        getProviderTexture(),
-        color);
+    Vector<GFXVertexPCT> verts;
+
+    Vector2 subVert0 = vertexPos0;
+    Vector2 subVert3 = vertexPos3;
+    for (int j = 1; j <= rows; j++)
+    {
+        F32 texfactor = (F32)(j-1)/(F32)rows;
+        F32 factorY = (F32)j/(F32)rows;
+        Vector2 subVert1 = (mLerp(vertexPos0, vertexPos1, factorY));
+        Vector2 subVert2 = (mLerp(vertexPos3, vertexPos2, factorY));
+        
+        verts.setSize(columns*2+2);
+        for (int i = 0; i <= columns; i++)
+        {
+            F32 factor = (F32)i/(F32)columns;
+            verts[i*2+0].point.set(mLerp(subVert0.x, subVert3.x, factor),
+                                 mLerp(subVert0.y, subVert3.y, factor), 0.0);
+            verts[i*2+1].point.set(mLerp(subVert1.x, subVert2.x, factor),
+                                 mLerp(subVert1.y, subVert2.y, factor), 0.0);
+            verts[i*2+0].texCoord.set(mLerp(texLower.x, texUpper.x, texfactor),
+                                      mLerp(texUpper.y, texLower.y, factor));
+            verts[i*2+1].texCoord.set(mLerp(texLower.x, texUpper.x, factorY),
+                                      mLerp(texUpper.y, texLower.y, factor));
+            verts[i*2+0].color = color;
+            verts[i*2+1].color = color;
+        }
+        pBatchRenderer->SubmitTriangleStrip(verts, getProviderTexture());
+        subVert0 = subVert1;
+        subVert3 = subVert2;
+    }
 }
 
 //-----------------------------------------------------------------------------
