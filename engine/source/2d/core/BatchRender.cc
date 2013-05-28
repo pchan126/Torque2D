@@ -473,7 +473,7 @@ void BatchRender::flushInternal( void )
             Con::printf("!mWireframeMode");
 
 //        U16* iB = (U16*)indexData;
-        Con::printf("flushInternal %i %i", mVertexBuffer.size(), mIndexBuffer.size());
+//        Con::printf("flushInternal %i %i", mVertexBuffer.size(), mIndexBuffer.size());
         
         for (int i = 0; i < mIndexBuffer.size(); i++)
         {

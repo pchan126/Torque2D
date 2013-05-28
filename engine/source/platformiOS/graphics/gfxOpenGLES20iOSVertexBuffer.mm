@@ -20,7 +20,8 @@ GFXOpenGLES20iOSVertexBuffer::GFXOpenGLES20iOSVertexBuffer(  GFXDevice *device,
                                        U32 indexCount,
                                        const GLvoid *indexBuffer)
    :  GFXVertexBuffer( device, vertexCount, vertexFormat, vertexSize, bufferType ),
-      mZombieCache(NULL)
+      mZombieCache(NULL),
+      mIndexCount(indexCount)
 {
     mIndexCount = indexCount;
     glGenVertexArraysOES(1,&mVertexArrayObject);
@@ -67,15 +68,15 @@ GFXOpenGLES20iOSVertexBuffer::GFXOpenGLES20iOSVertexBuffer(  GFXDevice *device,
     
     if (indexCount)
     {
-        U16* iB = (U16*)indexBuffer;
-        for (int i = 0; i < indexCount; i++)
-        {
-            U16 x = iB[i];
-            if (x > vertexCount)
-            {
-                AssertFatal((x < vertexCount), "ack");
-            }
-        }
+//        U16* iB = (U16*)indexBuffer;
+//        for (int i = 0; i < indexCount; i++)
+//        {
+//            U16 x = iB[i];
+//            if (x > vertexCount)
+//            {
+//                AssertFatal((x < vertexCount), "ack");
+//            }
+//        }
         
         // This also attaches the element array buffer to the VAO
         glGenBuffers(1, &elementBufferName);
@@ -112,26 +113,35 @@ void GFXOpenGLES20iOSVertexBuffer::lock( U32 vertexStart, U32 vertexEnd, void **
 
 void GFXOpenGLES20iOSVertexBuffer::set( void* data, U32 dataSize, U32 indexCount, void* indexData)
 {
+    glBindVertexArrayOES(mVertexArrayObject);
     glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
     glBufferData(GL_ARRAY_BUFFER, dataSize, data, GFXGLBufferType[GFXBufferTypeVolatile]);
 
     if (indexCount)
     {
-        U16* iB = (U16*)indexData;
-        for (int i = 0; i < indexCount; i++)
-        {
-            U16 x = iB[i];
-            if (x > mVertexCount)
-            {
-                AssertFatal((x < mVertexCount), "ack");
-            }
-        }
+        if (elementBufferName == 0)
+            glGenBuffers(1, &elementBufferName);
+        
+        
+//        U16* iB = (U16*)indexData;
+//        for (int i = 0; i < indexCount; i++)
+//        {
+//            U16 x = iB[i];
+//            if (x > mVertexCount)
+//            {
+//                AssertFatal((x < mVertexCount), "ack");
+//            }
+//        }
 
         // This also attaches the element array buffer to the VAO
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferName);
         
         // Allocate and load vertex array element data into VBO
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount*sizeof(U16), indexData, GFXGLBufferType[mBufferType]);
+    }
+    else
+    {
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 }
 
