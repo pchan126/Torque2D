@@ -389,6 +389,7 @@
     <ClCompile Include="..\..\source\graphics\PNGImage.cpp" />
     <ClCompile Include="..\..\source\graphics\primBuilder.cc" />
     <ClCompile Include="..\..\source\graphics\splineUtil.cc" />
+
     <ClCompile Include="..\..\source\gui\guiArrayCtrl.cc" />
     <ClCompile Include="..\..\source\gui\guiBackgroundCtrl.cc" />
     <ClCompile Include="..\..\source\gui\guiBitmapBorderCtrl.cc" />
