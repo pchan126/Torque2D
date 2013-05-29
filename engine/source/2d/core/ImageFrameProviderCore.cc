@@ -235,9 +235,28 @@ void ImageFrameProviderCore::render(
                                       mLerp(texUpper.y, texLower.y, factor));
             verts[i*2+1].texCoord.set(mLerp(texLower.x, texUpper.x, factorY),
                                       mLerp(texUpper.y, texLower.y, factor));
-            verts[i*2+0].color = color;
-            verts[i*2+1].color = color;
         }
+        
+        for (int i = 0; i < verts.size(); i++)
+        {
+            LightInfo* light = NULL;
+            LightQuery query;
+            query.init( SphereF( verts[i].point, 500.0) );
+            query.getLights( &light, 1 );
+            if (light != NULL)
+            {
+                F32 d = (light->getPosition()-verts[i].point).len();
+                F32 dist = mClampF((light->getPosition()-verts[i].point).len()/light->getRange().x, 0.0, 1.0);
+                F32 range = light->getRange().x;
+                ColorF lightAdd = color + light->getColor()*dist;
+                verts[i].color = lightAdd;
+//                verts[i].color.set(lightAdd.red * 255.0, lightAdd.green * 255.0, lightAdd.blue * 255.0);
+//                verts[i].color= ColorF(1.0, 1.0, 1.0);
+            }
+            else
+                verts[i].color = color;
+        }
+        
         pBatchRenderer->SubmitTriangleStrip(verts, getProviderTexture());
         subVert0 = subVert1;
         subVert3 = subVert2;

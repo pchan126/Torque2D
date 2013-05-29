@@ -3182,6 +3182,17 @@ ConsoleMethod(SceneObject, getVisible, bool, 2, 2, "() - Gets the object's visib
     return object->getVisible();
 } 
 
+ConsoleMethod(SceneObject, setLightType, void, 3, 3, "")
+{
+    SceneObject::LightType lightType = SceneObject::getLightTypeLookupEnum(argv[2]);
+    object->setLightType(lightType);
+}
+
+ConsoleMethod(SceneObject, getLightType, const char*, 2, 2, "")
+{
+    return SceneObject::getLightTypeLookupDescription(object->getLightType());
+}
+
 //-----------------------------------------------------------------------------
 
 ConsoleMethod(SceneObject, setBlendMode, void, 3, 3,    "(bool blendMode) - Sets whether blending is on or not.\n"

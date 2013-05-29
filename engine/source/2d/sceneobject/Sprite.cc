@@ -92,7 +92,7 @@ void Sprite::sceneRender( const SceneRenderState* pSceneRenderState, const Scene
         mRenderOOBB[2],
         mRenderOOBB[3],
         pBatchRenderer,
-        getBlendColor() );
+        getBlendColor()*getScene()->getSceneLight() );
 }
 
 

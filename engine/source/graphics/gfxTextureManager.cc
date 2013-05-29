@@ -779,7 +779,7 @@ void GFXTextureManager::_validateTexParams( const U32 width, const U32 height,
 //GFXCubemap* GFXTextureManager::createCubemap( const String &path )
 //{
 //   // Very first thing... check the cache.
-//   CubemapTable::Iterator iter = mCubemapTable.find( path.getFullPath() );
+//   CubemapTable::iterator iter = mCubemapTable.find( path.getFullPath() );
 //   if ( iter != mCubemapTable.end() )
 //      return iter->value;
 //
@@ -804,7 +804,7 @@ void GFXTextureManager::_validateTexParams( const U32 width, const U32 height,
 ////
 ////   const String &path = cubemap->getPath();
 ////
-////   CubemapTable::Iterator iter = mCubemapTable.find( path );
+////   CubemapTable::iterator iter = mCubemapTable.find( path );
 ////   if ( iter != mCubemapTable.end() && iter->value == cubemap )
 ////      mCubemapTable.erase( iter );
 ////

@@ -75,6 +75,9 @@
 #include "assets/assetPtr.h"
 #endif
 
+#include "lighting/lightInfo.h"
+#include "lighting/lightManager.h"
+
 //-----------------------------------------------------------------------------
 
 extern EnumTable jointTypeTable;
@@ -267,6 +270,9 @@ private:
     typeContactHash             mBeginContacts;
     typeContactVector           mEndContacts;
     U32                         mSceneIndex;
+    
+    ColorF                      mSceneLighting;   // global ambient lighting
+    LightManager                mLightManager;
 
 private:   
     /// Contacts.
@@ -367,6 +373,10 @@ public:
     inline void             setScenePause( bool status )                { mScenePause = status; }
     inline bool             getScenePause( void ) const                 { return mScenePause; };
 
+    /// Scene Lighting
+    inline ColorF           getSceneLight( void ) const                 { return mSceneLighting; };
+    inline void             setSceneLight( ColorF sceneLight )          { mSceneLighting = sceneLight; };
+    
     /// Joint access.
     inline U32              getJointCount( void ) const                 { return mJoints.size(); }
     b2JointType             getJointType( const S32 jointId );
@@ -689,6 +699,10 @@ protected:
     static bool writeGravity( void* obj, StringTableEntry pFieldName )              { return Vector2(static_cast<Scene*>(obj)->getGravity()).notEqual( Vector2::getZero() ); }
     static bool writeVelocityIterations( void* obj, StringTableEntry pFieldName )   { return static_cast<Scene*>(obj)->getVelocityIterations() != 8; }
     static bool writePositionIterations( void* obj, StringTableEntry pFieldName )   { return static_cast<Scene*>(obj)->getPositionIterations() != 3; }
+    
+    /// Lighting.
+    static bool writeSceneLight( void* obj, StringTableEntry pFieldName )              { return ColorF(static_cast<Scene*>(obj)->getSceneLight())!=( ColorF(1.0, 1.0, 1.0, 1.0)); }
+    
 
     static bool writeLayerSortMode( void* obj, StringTableEntry pFieldName )
     {

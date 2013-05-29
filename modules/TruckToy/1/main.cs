@@ -80,6 +80,8 @@ function TruckToy::reset( %this )
     
     // Set a typical Earth gravity.
     SandboxScene.setGravity( 0, -9.8 );  
+    
+    SandboxScene.setAmbientLight( 0.2, 0.2, 0.2, 1.0);
 
     // Camera Configuration
     SandboxWindow.setCameraPosition( TruckToy.WorldLeft + (TruckToy.CameraWidth/2) - 10, 0 );
@@ -710,6 +712,9 @@ function TruckToy::createTruck( %this, %posX, %posY )
     TruckToy.TruckBody.setCollisionGroups( TruckToy.ObstacleDomain, TruckToy.ObstacleDomain-1, TruckToy.GroundDomain );
     TruckToy.TruckBody.createPolygonCollisionShape( "-2 0.2 -2 -0.5 0 -.95 2 -0.5 2 0.0 0 0.7 -1.5 0.7" ); 
     //TruckToy.TruckBody.setDebugOn( 5 );
+    TruckToy.TruckBody.setLightType("CONSTLIGHT");
+    TruckToy.TruckBody.setRows(10);
+    TruckToy.TruckBody.setColumns(10);
     SandboxScene.add( TruckToy.TruckBody );
 
     // Attach the exhaust output to the truck body.   

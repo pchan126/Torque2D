@@ -171,7 +171,9 @@ Scene::Scene() :
     mIsEditorScene(0),
     mUpdateCallback(false),
     mRenderCallback(false),
-    mSceneIndex(0)
+    mSceneIndex(0),
+    mSceneLighting(1.0, 1.0, 1.0, 1.0),
+    mLightManager("Basic2D","LM")
 {
     // Set Vector Associations.
     VECTOR_SET_ASSOCIATION( mSceneObjects );
@@ -307,6 +309,9 @@ void Scene::initPersistFields()
     addField("VelocityIterations", TypeS32, Offset(mVelocityIterations, Scene), &writeVelocityIterations, "" );
     addField("PositionIterations", TypeS32, Offset(mPositionIterations, Scene), &writePositionIterations, "" );
 
+    // Lighting
+    addField("AmbientLighting", TypeColorF, Offset(mSceneLighting, Scene), &writeSceneLight, "");
+    
     // Layer sort modes.
     char buffer[64];
     for ( U32 n = 0; n < MAX_LAYERS_SUPPORTED; n++ )
@@ -1006,6 +1011,9 @@ void Scene::sceneRender( const SceneRenderState* pSceneRenderState )
 
     // Query render AABB.
     mpWorldQuery->aabbQueryAABB( cameraAABB );
+    
+    typeWorldQueryResultVector& globalResults = mpWorldQuery->getQueryResults();
+    mLightManager.registerGlobalLights( globalResults );
 
     // Debug Profiling.
     PROFILE_END();  //Scene_RenderSceneVisibleQuery
@@ -1228,6 +1236,8 @@ void Scene::sceneRender( const SceneRenderState* pSceneRenderState )
         SceneRenderQueueFactory.cacheObject( pSceneRenderQueue );
     }
 
+    mLightManager.unregisterAllLights();
+    
     // Draw controllers.
     if ( getDebugMask() & Scene::SCENE_DEBUG_CONTROLLERS )
     {

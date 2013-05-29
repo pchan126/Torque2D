@@ -658,7 +658,7 @@ void ParticlePlayer::sceneRender( const SceneRenderState* pSceneRenderState, con
                 Vector2( texUpper.x, texLower.y ),
                 Vector2( texLower.x, texLower.y ),
                 frameTexture,
-                pParticleNode->mColor );
+                pParticleNode->mColor*getScene()->getSceneLight() );
 
             // Move to next Particle ( using appropriate sort-order ).
             pParticleNode = oldestInFront ? pParticleNode->mNextNode : pParticleNode->mPreviousNode;

@@ -897,6 +897,16 @@ inline void MatrixF::translate( Point3F vec )
     translate(vec.m[0], vec.m[1], vec.m[2]);
 }
 
+//inline void MatrixF::setPerspective()
+//{
+//#ifdef __GLK_MATRIX_4_H
+//    mGM = GLKMatrix4MakePerspective();
+//    this->transpose();
+//#else
+//#endif
+//}
+
+
 inline void MatrixF::setFustrum(float left, float right,
                                 float bottom, float top,
                                 float nearZ, float farZ)

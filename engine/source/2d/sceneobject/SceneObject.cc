@@ -98,6 +98,7 @@ static StringTableEntry edgeTypeName            = StringTable->insert( "Edge" );
 
 //------------------------------------------------------------------------------
 
+
 // Important: If these defaults are changed then modify the associated "write" field protected methods to ensure
 // that the associated field is persisted if not the default.
 SceneObject::SceneObject() :
@@ -148,6 +149,13 @@ SceneObject::SceneObject() :
     mDstBlendFactor(GFXBlendInvSrcAlpha),
     mBlendColor(ColorF(1.0f,1.0f,1.0f,1.0f)),
     mAlphaTest(-1.0f),
+
+    /// Lighting
+    mLightType(NoLight),
+    mLightColor(1.f,1.f,1.f,1.f),
+    mLightTime(1000),
+    mLightRadius(100.f),
+    mLightFade(1.0f),
 
     /// Render sorting.
     mSortPoint(0.0f,0.0f),
@@ -308,6 +316,19 @@ void SceneObject::initPersistFields()
     addField("BlendColor", TypeColorF, Offset(mBlendColor, SceneObject), &writeBlendColor, "");
     addField("AlphaTest", TypeF32, Offset(mAlphaTest, SceneObject), &writeAlphaTest, "");
 
+    /// Lighting
+    addField("lightType", TypeEnum, Offset(mLightType, SceneObject), &writeLightType, 1, &lightTypeTable);
+    addField("lightColor",        TypeColorF,    Offset(mLightColor,         SceneObject), &writeLightColor, "" );
+//    addField("lightTime",         TypeS32,       Offset(mLightTime,          SceneObject), &setLightTime, &defaultProtectedGetFn, &writeLightTime, "" );
+//             "@brief Time value for the light of this ItemData, used to control the pulse speed of the PulsingLight LightType.\n\n"
+//             "@see lightType\n");
+//    addField("lightRadius",       TypeF32,       Offset(mLightRadius,        SceneObject), &setLightTime, &defaultProtectedGetFn, &writeLightTime, "" );
+//             "@brief Distance from the center point of this ItemData for the light to affect\n\n"
+//             "@see lightType\n");
+//             addField("lightOnlyStatic",   TypeBool,      Offset(lightOnlyStatic,    ItemData));
+//             "@brief If true, this ItemData will only cast a light if the Item for this ItemData has a static value of true.\n\n"
+//             "@see lightType\n");
+    
     /// Render sorting.
     addField("SortPoint", TypeVector2, Offset(mSortPoint, SceneObject), &writeSortPoint, "");
     addField("RenderGroup", TypeString, Offset(mRenderGroup, SceneObject), &writeRenderGroup, "");
@@ -2586,55 +2607,6 @@ Vector2 SceneObject::getEdgeCollisionShapeAdjacentEnd( const U32 shapeIndex ) co
     return pShape->m_vertex3;
 }
 
-//-----------------------------------------------------------------------------
-
-//void SceneObject::setBlendOptions( void )
-//{
-//    // Set Blend Status.
-//    if ( mBlendMode )
-//    {
-//        // Enable Blending.
-//        glEnable( GL_BLEND );
-//        // Set Blend Function.
-//        glBlendFunc( mSrcBlendFactor, mDstBlendFactor );
-//
-//        // Set color.
-//        glColor4f(mBlendColor.red,mBlendColor.green,mBlendColor.blue,mBlendColor.alpha );
-//    }
-//    else
-//    {
-//        // Disable Blending.
-//        glDisable( GL_BLEND );
-//        // Reset color.
-//        glColor4f(1,1,1,1);
-//    }
-//
-//    // Set Alpha Test.
-//    if ( mAlphaTest >= 0.0f )
-//    {
-//        // Enable Test.
-//        glEnable( GL_ALPHA_TEST );
-//        glAlphaFunc( GL_GREATER, mAlphaTest );
-//    }
-//    else
-//    {
-//        // Disable Test.
-//        glDisable( GL_ALPHA_TEST );
-//    }
-//}
-//
-////-----------------------------------------------------------------------------
-//
-//void SceneObject::resetBlendOptions( void )
-//{
-//    // Disable Blending.
-//    glDisable( GL_BLEND );
-//
-//    glDisable( GL_ALPHA_TEST);
-//
-//    // Reset color.
-//    glColor4f(1,1,1,1);
-//}
 
 //---------------------------------------------------------------------------------------------
 
@@ -2862,6 +2834,10 @@ void SceneObject::copyTo( SimObject* obj )
     /// Render sorting.
     pSceneObject->setSortPoint( getSortPoint() );
 
+    /// Lighting
+    pSceneObject->setLightType(getLightType());
+    pSceneObject->setLightColor(getLightColor());
+    
     /// Input events.
     pSceneObject->setUseInputEvents( getUseInputEvents() );
 
@@ -3132,6 +3108,50 @@ S32 SceneObject::copyEdgeCollisionShapeTo( SceneObject* pSceneObject, const b2Fi
 
     return shapeIndex;
 }
+
+// Lighting: -----------------------------------------------------------------
+
+void SceneObject::submitLights(LightManager * lightManager, bool staticLighting)
+{
+    if(staticLighting)
+        return;
+    
+    if (mLightType == SceneObject::NoLight)
+        return;
+    
+    F32 intensity;
+    switch(mLightType)
+    {
+        case ConstantLight:
+            intensity = mLightFade;
+            break;
+            
+//        case PulsingLight:
+//        {
+//            S32 delta = Sim::getCurrentTime() - mDropTime;
+//            intensity = 0.5f + 0.5f * mSin(M_PI_F * F32(delta) / F32(mDataBlock->lightTime));
+//            intensity = 0.15f + intensity * 0.85f;
+//            intensity *= mLightFadeVal;  // fade out light on flags
+//            break;
+//        }
+            
+        default:
+            return;
+    }
+    
+    // Create a light if needed
+    if (!mLight)
+    {
+        mLight = lightManager->createLightInfo();
+    }
+    mLight->setColor( mLightColor * intensity );
+    mLight->setType( LightInfo::Point );
+    mLight->setRange( mLightRadius );
+    mLight->setPosition( Point3F(getPosition().x, getPosition().y, 0.0));
+    
+    lightManager->registerGlobalLight( mLight, this );
+}
+
 
 //-----------------------------------------------------------------------------
 
@@ -3956,7 +3976,20 @@ static EnumTable::Enums dstBlendFactorLookup[] =
 
 EnumTable dstBlendFactorTable(sizeof(dstBlendFactorLookup) / sizeof(EnumTable::Enums), &dstBlendFactorLookup[0]);
 
+
 //-----------------------------------------------------------------------------
+
+static EnumTable::Enums lightTypeLookup[] =
+{
+    { SceneObject::NoLight,                  "NOLIGHT" },
+    { SceneObject::ConstantLight,            "CONSTLIGHT" },
+    { SceneObject::PulsingLight,             "PULSELIGHT" }
+};
+
+EnumTable lightTypeTable(sizeof(lightTypeLookup) / sizeof(EnumTable::Enums), &lightTypeLookup[0]);
+
+//-----------------------------------------------------------------------------
+
 
 b2BodyType SceneObject::getBodyTypeEnum(const char* label)
 {
@@ -4091,6 +4124,41 @@ const char* SceneObject::getDstBlendFactorDescription(const GLenum factor)
     // Warn.
     Con::warnf( "SceneObject::getDstBlendFactorDescription() - Invalid destination blend factor." );
 
+    return StringTable->EmptyString;
+}
+
+//-----------------------------------------------------------------------------
+
+SceneObject::LightType SceneObject::getLightTypeLookupEnum(const char* label)
+{
+    // Search for Mnemonic.
+    for (U32 i = 0; i < (sizeof(lightTypeLookup) / sizeof(EnumTable::Enums)); i++)
+    {
+        if( dStricmp(lightTypeLookup[i].label, label) == 0)
+            return(LightType)(lightTypeLookup[i].index);
+    }
+    
+    // Warn.
+    Con::warnf("SceneObject::getSrcBlendFactorEnum() - Invalid destination blend factor of '%s'", label );
+    
+    return NoLight;
+}
+
+
+//-----------------------------------------------------------------------------
+
+const char* SceneObject::getLightTypeLookupDescription(const LightType factor)
+{
+    // Search for Mnemonic.
+    for(U32 i = 0; i < (sizeof(lightTypeLookup) / sizeof(EnumTable::Enums)); i++)
+    {
+        if( lightTypeLookup[i].index == (S32)factor )
+            return lightTypeLookup[i].label;
+    }
+    
+    // Warn.
+    Con::warnf( "SceneObject::getDstBlendFactorDescription() - Invalid destination blend factor." );
+    
     return StringTable->EmptyString;
 }
 
