@@ -118,6 +118,8 @@ protected:
    ColorF mColor;
 
    F32 mBrightness;
+    
+    F32 mDropoff;
 
    ColorF mAmbient;
 
@@ -182,7 +184,10 @@ public:
    void setRange( const Point3F &range ) { mRange = range; }
    void setRange( F32 range ) { mRange.set( range, range, range ); }
 
-   F32 getInnerConeAngle() const { return mInnerConeAngle; }
+    F32 getDropoff() const { return mDropoff; }
+    void setDropoff( F32 val ) { mDropoff = val; }
+
+    F32 getInnerConeAngle() const { return mInnerConeAngle; }
    void setInnerConeAngle( F32 val ) { mInnerConeAngle = val; }
 
    F32 getOuterConeAngle() const { return mOuterConeAngle; }

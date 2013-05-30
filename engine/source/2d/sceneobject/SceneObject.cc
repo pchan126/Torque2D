@@ -151,10 +151,11 @@ SceneObject::SceneObject() :
     mAlphaTest(-1.0f),
 
     /// Lighting
+    mLight(NULL),
     mLightType(NoLight),
     mLightColor(1.f,1.f,1.f,1.f),
     mLightTime(1000),
-    mLightRadius(100.f),
+    mLightRadius(2.0f),
     mLightFade(1.0f),
 
     /// Render sorting.
@@ -3119,7 +3120,7 @@ void SceneObject::submitLights(LightManager * lightManager, bool staticLighting)
     if (mLightType == SceneObject::NoLight)
         return;
     
-    F32 intensity;
+    F32 intensity = 1.0;
     switch(mLightType)
     {
         case ConstantLight:

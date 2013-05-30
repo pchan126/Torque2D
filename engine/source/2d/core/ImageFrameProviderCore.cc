@@ -245,10 +245,10 @@ void ImageFrameProviderCore::render(
             query.getLights( &light, 1 );
             if (light != NULL)
             {
-                F32 d = (light->getPosition()-verts[i].point).len();
-                F32 dist = mClampF((light->getPosition()-verts[i].point).len()/light->getRange().x, 0.0, 1.0);
-                F32 range = light->getRange().x;
-                ColorF lightAdd = color + light->getColor()*dist;
+                F32 len = (light->getPosition()-verts[i].point).len();
+                F32 rad = light->getRange().x;
+                F32 factor = 1.0-mClampF( (len-rad)/rad, 0.0, 1.0 );
+                ColorF lightAdd = color + light->getColor()*factor;
                 verts[i].color = lightAdd;
 //                verts[i].color.set(lightAdd.red * 255.0, lightAdd.green * 255.0, lightAdd.blue * 255.0);
 //                verts[i].color= ColorF(1.0, 1.0, 1.0);

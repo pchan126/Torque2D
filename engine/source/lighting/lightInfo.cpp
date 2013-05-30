@@ -45,6 +45,7 @@ LightInfo::LightInfo()
    :  mTransform( true ), 
       mColor( 0.0f, 0.0f, 0.0f, 1.0f ), 
       mBrightness( 1.0f ),
+      mDropoff( 1.0f ),
       mAmbient( 0.0f, 0.0f, 0.0f, 1.0f ), 
       mRange( 1.0f, 1.0f, 1.0f ),
       mInnerConeAngle( 90.0f ), 
@@ -67,6 +68,7 @@ void LightInfo::set( const LightInfo *light )
    mTransform = light->mTransform;
    mColor = light->mColor;
    mBrightness = light->mBrightness;
+   mDropoff = light->mDropoff;
    mAmbient = light->mAmbient;
    mRange = light->mRange;
    mInnerConeAngle = light->mInnerConeAngle;

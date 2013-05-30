@@ -639,7 +639,8 @@ function TruckToy::createBonfire(%this, %x, %y, %scale, %layer)
     %particlePlayer.Particle = "ToyAssets:bonfire";
     %particlePlayer.SizeScale = %scale;
     %particlePlayer.CameraIdleDistance = TruckToy.CameraWidth * 0.8;
-    SandboxScene.add( %particlePlayer ); 
+    %particlePlayer.setLightType("CONSTLIGHT");
+    SandboxScene.add( %particlePlayer );
     return %particlePlayer;
     
 }
@@ -662,7 +663,8 @@ function TruckToy::createProjectile(%this)
     %projectile.createCircleCollisionShape( 0.2 ); 
     %projectile.setCollisionGroups( TruckToy.GroundDomain );
     %projectile.CollisionCallback = true;
-    SandboxScene.add( %projectile ); 
+    %projectile.setLightType("CONSTLIGHT");
+    SandboxScene.add( %projectile );
 }
 
 // -----------------------------------------------------------------------------
@@ -678,6 +680,8 @@ function TruckProjectile::onCollision(%this, %object, %collisionDetails)
     %particlePlayer.ParticleInterpolation = true;
     %particlePlayer.Particle = "ToyAssets:ImpactExplosion";
     %particlePlayer.SizeScale = getRandom(TruckToy.ExplosionScale, TruckToy.ExplosionScale * 1.5);
+    %particlePlayer.setLightType("CONSTLIGHT");
+
     SandboxScene.add( %particlePlayer ); 
     
     // Start the camera shaking.
@@ -712,9 +716,8 @@ function TruckToy::createTruck( %this, %posX, %posY )
     TruckToy.TruckBody.setCollisionGroups( TruckToy.ObstacleDomain, TruckToy.ObstacleDomain-1, TruckToy.GroundDomain );
     TruckToy.TruckBody.createPolygonCollisionShape( "-2 0.2 -2 -0.5 0 -.95 2 -0.5 2 0.0 0 0.7 -1.5 0.7" ); 
     //TruckToy.TruckBody.setDebugOn( 5 );
-    TruckToy.TruckBody.setLightType("CONSTLIGHT");
-    TruckToy.TruckBody.setRows(10);
-    TruckToy.TruckBody.setColumns(10);
+    TruckToy.TruckBody.setRows(2);
+    TruckToy.TruckBody.setColumns(2);
     SandboxScene.add( TruckToy.TruckBody );
 
     // Attach the exhaust output to the truck body.   
