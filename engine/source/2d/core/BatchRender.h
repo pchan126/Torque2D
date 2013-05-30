@@ -306,7 +306,9 @@ private:
     /// Flush (render) any pending batches.
     void flushInternal( void );
 
-    /// Find texture batch.
+   void _lightAndDraw( Vector<GFXVertexPCT>* pVertexVector, Vector<U16>* pIndex, GFXTexHandle handle = NULL);
+
+   /// Find texture batch.
     indexedPrim* findTextureBatch( GFXTexHandle& handle );
 
 };

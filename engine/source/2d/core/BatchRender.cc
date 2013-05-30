@@ -471,39 +471,9 @@ void BatchRender::flushInternal( void )
     {
         // Bind the texture if not in wireframe mode.
         if ( !mWireframeMode )
-            GFX->setTexture(0, mStrictOrderTextureHandle);
-        else
-            Con::printf("!mWireframeMode");
-
-       Vector<GFXVertexPCT>* pVertexVector = &mVertexBuffer;
-       Vector<U16>* pIndex = &mIndexBuffer;
-       
-       // vertex lighting
-       for (int i = 0; i < mVertexBuffer.size(); i++)
-       {
-          LightInfo* light = NULL;
-          LightQuery query;
-          query.init( SphereF( pVertexVector->at(i).point, 500.0) );
-          query.getLights( &light, 1 );
-          if (light != NULL)
-          {
-             F32 len = (light->getPosition()-pVertexVector->at(i).point).len();
-             F32 rad = light->getRange().x;
-             F32 factor = 1.0-mClampF( (len-rad)/rad, 0.0, 1.0 );
-             U8 alpha = mVertexBuffer[i].color;
-             ColorF lightAdd = ColorF(mVertexBuffer[i].color) + light->getColor()*factor;
-             lightAdd.clamp();
-             mVertexBuffer[i].color = lightAdd;
-             mVertexBuffer[i].color.alpha = alpha;
-          }
-       }
-
-       mTempVertBuffHandle.set(GFX, pVertexVector->size(), GFXBufferTypeVolatile, pVertexVector->address(), pIndex->size(), pIndex->address() );
-       GFX->setVertexBuffer( mTempVertBuffHandle );
-       
-       // Draw the triangles.
-       GFX->setupGenericShaders(GFXDevice::GSTexture);
-       GFX->drawIndexedPrimitive(GFXTriangleStrip, 0, 0, pVertexVector->size(), pIndex->size(), pIndex->size()-2);
+           _lightAndDraw( &mVertexBuffer, &mIndexBuffer, mStrictOrderTextureHandle);
+      else
+         _lightAndDraw(  &mVertexBuffer, &mIndexBuffer );
 
         // Stats.
         mpDebugStats->batchDrawCallsStrict++;
@@ -524,54 +494,23 @@ void BatchRender::flushInternal( void )
         {
             // Fetch indexedPrim
             indexedPrim* indexPrim = batchItr->value;
-            
-            // Bind the texture if not in wireframe mode.
-            GFX->setTexture(0, batchItr->key);
-            Vector<GFXVertexPCT>* pVertexVector = indexPrim->verts;
-            Vector<U16>* pIndex = indexPrim->index;
+           _lightAndDraw( indexPrim->verts, indexPrim->index, batchItr->key);
 
-           // vertex lighting
-           for (int i = 0; i < mVertexBuffer.size(); i++)
-           {
-              LightInfo* light = NULL;
-              LightQuery query;
-              query.init( SphereF( pVertexVector->at(i).point, 500.0) );
-              query.getLights( &light, 1 );
-              if (light != NULL)
-              {
-                 F32 len = (light->getPosition()-pVertexVector->at(i).point).len();
-                 F32 rad = light->getRange().x;
-                 F32 factor = 1.0-mClampF( (len-rad)/rad, 0.0, 1.0 );
-                 U8 alpha = mVertexBuffer[i].color;
-                 ColorF lightAdd = ColorF(mVertexBuffer[i].color) + light->getColor()*factor;
-                 lightAdd.clamp();
-                 mVertexBuffer[i].color = lightAdd;
-                 mVertexBuffer[i].color.alpha = alpha;
-              }
-           }
-
-           mTempVertBuffHandle.set(GFX, pVertexVector->size(), GFXBufferTypeVolatile, pVertexVector->address(), pIndex->size(), pIndex->address() );
-            GFX->setVertexBuffer( mTempVertBuffHandle );
-
-            // Draw the triangles.
-            GFX->setupGenericShaders(GFXDevice::GSTexture);
-            GFX->drawIndexedPrimitive(GFXTriangleStrip, 0, 0, pVertexVector->size(), pIndex->size(), pIndex->size()-2);
-
-            // Stats.
+           // Stats.
             mpDebugStats->batchDrawCallsSorted++;
 
             // Stats.
-            const U32 trianglesDrawn = pVertexVector->size()-2;
+            const U32 trianglesDrawn = indexPrim->verts->size()-2;
             if ( trianglesDrawn > mpDebugStats->batchMaxTriangleDrawn )
                 mpDebugStats->batchMaxTriangleDrawn = trianglesDrawn;
 
            // Stats.
-           if ( pVertexVector->size() > mpDebugStats->batchMaxVertexBuffer )
-              mpDebugStats->batchMaxVertexBuffer = pVertexVector->size();
+           if ( indexPrim->verts->size() > mpDebugStats->batchMaxVertexBuffer )
+              mpDebugStats->batchMaxVertexBuffer = indexPrim->verts->size();
 
            // Return index vector to pool.
-            pVertexVector->clear();
-            pIndex->clear();
+            indexPrim->verts->clear();
+            indexPrim->index->clear();
             mIndexVectorPool.push_back( indexPrim );
         }
 
@@ -583,6 +522,41 @@ void BatchRender::flushInternal( void )
     mVertexBuffer.clear();
     mIndexBuffer.clear();
 }
+
+void BatchRender::_lightAndDraw( Vector<GFXVertexPCT>* pVertexVector, Vector<U16>* pIndex, GFXTexHandle handle )
+{
+   // Bind the texture if not in wireframe mode.
+   if (!handle.IsNull())
+      GFX->setTexture(0, handle);
+   
+   // vertex lighting
+   for (int i = 0; i < mVertexBuffer.size(); i++)
+   {
+      LightInfo* light = NULL;
+      LightQuery query;
+      query.init( SphereF( pVertexVector->at(i).point, 500.0) );
+      query.getLights( &light, 1 );
+      if (light != NULL)
+      {
+         F32 len = (light->getPosition()-pVertexVector->at(i).point).len();
+         F32 rad = light->getRange().x;
+         F32 factor = 1.0-mClampF( (len-rad)/rad, 0.0, 1.0 );
+         U8 alpha = mVertexBuffer[i].color;
+         ColorF lightAdd = ColorF(mVertexBuffer[i].color) + light->getColor()*factor;
+         lightAdd.clamp();
+         mVertexBuffer[i].color = lightAdd;
+         mVertexBuffer[i].color.alpha = alpha;
+      }
+   }
+   
+   mTempVertBuffHandle.set(GFX, pVertexVector->size(), GFXBufferTypeVolatile, pVertexVector->address(), pIndex->size(), pIndex->address() );
+   GFX->setVertexBuffer( mTempVertBuffHandle );
+   
+   // Draw the triangles.
+   GFX->setupGenericShaders(GFXDevice::GSTexture);
+   GFX->drawIndexedPrimitive(GFXTriangleStrip, 0, 0, pVertexVector->size(), pIndex->size(), pIndex->size()-2);
+}
+
 
 //-----------------------------------------------------------------------------
 
