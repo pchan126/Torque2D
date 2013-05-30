@@ -263,7 +263,7 @@ GFXFormat GFXOpenGL32TextureTarget::getFormat()
    return GFXFormatR8G8B8A8;
 }
 
-void GFXOpenGL32TextureTarget::attachTexture( RenderSlot slot, GFXTextureObject *tex, U32 mipLevel/*=0*/, U32 zOffset /*= 0*/ )
+void GFXOpenGL32TextureTarget::attachTexture(GFXTextureObject *tex, RenderSlot slot, U32 mipLevel, U32 zOffset)
 {
    // Triggers an update when we next render
    invalidateState();
@@ -298,7 +298,7 @@ void GFXOpenGL32TextureTarget::clearAttachments()
 {
    deactivate();
    for(S32 i=1; i<MaxRenderSlotId; i++)
-      attachTexture((RenderSlot)i, NULL);
+      attachTexture(NULL, (RenderSlot)i);
 }
 
 void GFXOpenGL32TextureTarget::zombify()

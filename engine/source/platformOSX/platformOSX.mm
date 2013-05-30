@@ -187,7 +187,7 @@ static osxPlatState * tempSharedPlatState = nil;
     if(Game->isRunning())
     {
         Game->mainLoop();
-        if (_torqueView)
+        if (_torqueView && Game->isRunning())
             _torqueView->displayEvent.trigger(_torqueView->getWindowId());
     }
     else

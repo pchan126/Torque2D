@@ -102,7 +102,7 @@ Point2F getClosestPointOnLine( Point2F &a, Point2F &b, Point2F &point);
 
     /// Build a GFX projection matrix from the frustum parameters
     /// including the optional rotation required by GFX.
-    MatrixF makeProjection( F32 fovYInRadians,
+inline MatrixF makeProjection( F32 fovYInRadians,
                            F32 aspectRatio,
                            F32 nearPlane,
                            F32 farPlane,
@@ -113,14 +113,23 @@ Point2F getClosestPointOnLine( Point2F &a, Point2F &b, Point2F &point);
         ret = MatrixF(GLKMatrix4MakePerspective( fovYInRadians, aspectRatio, nearPlane, farPlane));
         ret.transpose();
 #else
-//        float cotan = 1.0f / tanf(fovyRadians / 2.0f);
-//        
-//        GLKMatrix4 m = { cotan / aspect, 0.0f, 0.0f, 0.0f,
-//            0.0f, cotan, 0.0f, 0.0f,
-//            0.0f, 0.0f, (farZ + nearZ) / (nearZ - farZ), -1.0f,
-//            0.0f, 0.0f, (2.0f * farZ * nearZ) / (nearZ - farZ), 0.0f };
-//        
-//        return m;
+        float cotan = 1.0f / tanf(fovYInRadians / 2.0f);
+       ret[0] = cotan / aspectRatio;
+       ret[1] = 0.0f;
+       ret[2] = 0.0f;
+       ret[3] = 0.0f;
+       ret[4] = 0.0f;
+       ret[5] = cotan;
+       ret[6] = 0.0f;
+       ret[7] = 0.0f;
+       ret[8] = 0.0f;
+       ret[9] = 0.0f;
+       ret[10]= (farPlane + nearPlane) / (nearPlane - farPlane);
+       ret[11] = (2.0f * farPlane * nearPlane) / (nearPlane - farPlane);
+       ret[12] = 0.0f;
+       ret[13] = 0.0f;
+       ret[14] = -1.0f;
+       ret[15] = 0.0f;
 #endif
         return ret;
     }

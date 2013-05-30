@@ -416,7 +416,7 @@
 {
     // We close the window ourselves
     mTorqueWindow->appEvent.trigger(mTorqueWindow->getWindowId(), WindowDestroy);
-    return YES;
+    return NO;
 }
 
 - (void)windowWillClose:(NSNotification *) notification

@@ -450,7 +450,11 @@ void DefaultGame::advanceTime( F32 timeDelta )
 
 void DefaultGame::mainLoop( double elapsedTime )
 {	
-   Process::processEvents();
+   if(!Process::processEvents())
+   {
+      setRunning(false);
+      mainShutdown();
+   }
 }
 
 //-----------------------------------------------------------------------------

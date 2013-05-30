@@ -145,6 +145,7 @@ void MacWindow::setVideoMode(const GFXVideoMode &mode)
 
 void MacWindow::_onAppEvent(WindowId, S32 evt)
 {
+   
    if(evt == LoseFocus && isFullscreen())
    {
       mShouldFullscreen = true;

@@ -23,12 +23,12 @@
 #include "platform/platform.h"
 #include "lighting/lightInfo.h"
 
-#include "math/mMath.h"
 #include "graphics/color.h"
 //#include "graphics/gfxCubemap.h"
 //#include "console/simObject.h"
 #include "memory/safeDelete.h"
 #include "math/mathUtils.h"
+#include "math/mMath.h"
 
 
 LightInfoExType::LightInfoExType( const char *type )
