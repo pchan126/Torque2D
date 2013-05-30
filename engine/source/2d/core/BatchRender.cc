@@ -466,7 +466,7 @@ void BatchRender::flushInternal( void )
 
     GFX->setStateBlockByDesc( desc );
 
-    // Strict order mode?
+   // Strict order mode?
     if ( mStrictOrderMode )
     {
         // Bind the texture if not in wireframe mode.
@@ -475,29 +475,33 @@ void BatchRender::flushInternal( void )
         else
             Con::printf("!mWireframeMode");
 
-//        U16* iB = (U16*)indexData;
-//        Con::printf("flushInternal %i %i", mVertexBuffer.size(), mIndexBuffer.size());
-        
-        for (int i = 0; i < mIndexBuffer.size(); i++)
-        {
-            U16 x = mIndexBuffer[i];
-            if (x > mVertexBuffer.size())
-            {
-                Con::printf("!ack");
-                
-            }
-        }
+       Vector<GFXVertexPCT>* pVertexVector = &mVertexBuffer;
+       Vector<U16>* pIndex = &mIndexBuffer;
+       
+       // vertex lighting
+       for (int i = 0; i < mVertexBuffer.size(); i++)
+       {
+          LightInfo* light = NULL;
+          LightQuery query;
+          query.init( SphereF( pVertexVector->at(i).point, 500.0) );
+          query.getLights( &light, 1 );
+          if (light != NULL)
+          {
+             F32 len = (light->getPosition()-pVertexVector->at(i).point).len();
+             F32 rad = light->getRange().x;
+             F32 factor = 1.0-mClampF( (len-rad)/rad, 0.0, 1.0 );
+             ColorF lightAdd = ColorF(mVertexBuffer[i].color) + light->getColor()*factor;
+             lightAdd.clamp();
+             mVertexBuffer[i].color = lightAdd;
+          }
+       }
 
-        
-        
-        //        mTempVertBuffHandle.set(GFX, mVertexBuffer.size(), GFXBufferTypeVolatile, mVertexBuffer.address() );
-        mTempVertBuffHandle.set(GFX, mVertexBuffer.size(), GFXBufferTypeVolatile, mVertexBuffer.address(), mIndexBuffer.size(), mIndexBuffer.address() );
-        GFX->setVertexBuffer( mTempVertBuffHandle );
-        
-        // Draw the triangles
-        GFX->setupGenericShaders(GFXDevice::GSTexture);
-        GFX->drawIndexedPrimitive(GFXTriangleStrip, 0, 0, mVertexBuffer.size(), mIndexBuffer.size(), mIndexBuffer.size()-2);
-//        GFX->drawPrimitive(GFXTriangleStrip, 0, mVertexBuffer.size()-2);
+       mTempVertBuffHandle.set(GFX, pVertexVector->size(), GFXBufferTypeVolatile, pVertexVector->address(), pIndex->size(), pIndex->address() );
+       GFX->setVertexBuffer( mTempVertBuffHandle );
+       
+       // Draw the triangles.
+       GFX->setupGenericShaders(GFXDevice::GSTexture);
+       GFX->drawIndexedPrimitive(GFXTriangleStrip, 0, 0, pVertexVector->size(), pIndex->size(), pIndex->size()-2);
 
         // Stats.
         mpDebugStats->batchDrawCallsStrict++;
@@ -524,26 +528,44 @@ void BatchRender::flushInternal( void )
             Vector<GFXVertexPCT>* pVertexVector = indexPrim->verts;
             Vector<U16>* pIndex = indexPrim->index;
 
-            mTempVertBuffHandle.set(GFX, pVertexVector->size(), GFXBufferTypeVolatile, pVertexVector->address(), pIndex->size(), pIndex->address() );
+           // vertex lighting
+           for (int i = 0; i < mVertexBuffer.size(); i++)
+           {
+              LightInfo* light = NULL;
+              LightQuery query;
+              query.init( SphereF( pVertexVector->at(i).point, 500.0) );
+              query.getLights( &light, 1 );
+              if (light != NULL)
+              {
+                 F32 len = (light->getPosition()-pVertexVector->at(i).point).len();
+                 F32 rad = light->getRange().x;
+                 F32 factor = 1.0-mClampF( (len-rad)/rad, 0.0, 1.0 );
+                 ColorF lightAdd = ColorF(mVertexBuffer[i].color) + light->getColor()*factor;
+                 lightAdd.clamp();
+                 mVertexBuffer[i].color = lightAdd;
+              }
+           }
+
+           mTempVertBuffHandle.set(GFX, pVertexVector->size(), GFXBufferTypeVolatile, pVertexVector->address(), pIndex->size(), pIndex->address() );
             GFX->setVertexBuffer( mTempVertBuffHandle );
 
             // Draw the triangles.
             GFX->setupGenericShaders(GFXDevice::GSTexture);
-            GFX->drawPrimitive(GFXTriangleStrip, 0, pVertexVector->size()-2);
+            GFX->drawIndexedPrimitive(GFXTriangleStrip, 0, 0, pVertexVector->size(), pIndex->size(), pIndex->size()-2);
 
             // Stats.
             mpDebugStats->batchDrawCallsSorted++;
-
-            // Stats.
-            if ( pVertexVector->size()-2 > mpDebugStats->batchMaxVertexBuffer )
-                mpDebugStats->batchMaxVertexBuffer = pVertexVector->size()-2;
 
             // Stats.
             const U32 trianglesDrawn = pVertexVector->size()-2;
             if ( trianglesDrawn > mpDebugStats->batchMaxTriangleDrawn )
                 mpDebugStats->batchMaxTriangleDrawn = trianglesDrawn;
 
-            // Return index vector to pool.
+           // Stats.
+           if ( pVertexVector->size() > mpDebugStats->batchMaxVertexBuffer )
+              mpDebugStats->batchMaxVertexBuffer = pVertexVector->size();
+
+           // Return index vector to pool.
             pVertexVector->clear();
             pIndex->clear();
             mIndexVectorPool.push_back( indexPrim );

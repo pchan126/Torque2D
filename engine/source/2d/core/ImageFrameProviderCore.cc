@@ -238,24 +238,7 @@ void ImageFrameProviderCore::render(
         }
         
         for (int i = 0; i < verts.size(); i++)
-        {
-            LightInfo* light = NULL;
-            LightQuery query;
-            query.init( SphereF( verts[i].point, 500.0) );
-            query.getLights( &light, 1 );
-            if (light != NULL)
-            {
-                F32 len = (light->getPosition()-verts[i].point).len();
-                F32 rad = light->getRange().x;
-                F32 factor = 1.0-mClampF( (len-rad)/rad, 0.0, 1.0 );
-                ColorF lightAdd = color + light->getColor()*factor;
-                verts[i].color = lightAdd;
-//                verts[i].color.set(lightAdd.red * 255.0, lightAdd.green * 255.0, lightAdd.blue * 255.0);
-//                verts[i].color= ColorF(1.0, 1.0, 1.0);
-            }
-            else
-                verts[i].color = color;
-        }
+             verts[i].color = color;
         
         pBatchRenderer->SubmitTriangleStrip(verts, getProviderTexture());
         subVert0 = subVert1;
