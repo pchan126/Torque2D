@@ -155,7 +155,7 @@ SceneObject::SceneObject() :
     mLightType(NoLight),
     mLightColor(1.f,1.f,1.f,1.f),
     mLightTime(1000),
-    mLightRadius(2.0f),
+    mLightRadius(0.5f),
     mLightFade(1.0f),
 
     /// Render sorting.

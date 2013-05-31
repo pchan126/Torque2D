@@ -196,7 +196,9 @@ function TruckToy::createBackground(%this)
     %obj.setCollisionSuppress();
     %obj.setAwake( false );
     %obj.setActive( false );
-    SandboxScene.add( %obj );  
+//     %obj.setRows(10);
+//    %obj.setColumns(10);
+    SandboxScene.add( %obj );
 
 
     // Industrial Background
@@ -251,6 +253,8 @@ function TruckToy::createBrokenCementWall( %this, %posX, %posY )
     %obj.setCollisionSuppress();
     %obj.setAwake( false );
     %obj.setActive( false );
+//     %obj.setRows(6);
+//    %obj.setColumns(6);
     SandboxScene.add( %obj );
 
     return %obj;   
@@ -270,6 +274,8 @@ function TruckToy::createWoodPile( %this, %posX, %posY )
     %obj.setCollisionSuppress();
     %obj.setAwake( false );
     %obj.setActive( false );
+//     %obj.setRows(5);
+//    %obj.setColumns(8);
     SandboxScene.add( %obj );
 
     return %obj;   
@@ -437,6 +443,8 @@ function TruckToy::createWreckedBuilding( %this, %posX, %posY )
     %obj.setCollisionSuppress();
     %obj.setAwake( false );
     %obj.setActive( false );
+//    %obj.setRows(8);
+//    %obj.setColumns(9);
     SandboxScene.add( %obj );
 
     %this.createChain( %posX - 3, %posY + 3.4, 10 );   
@@ -468,6 +476,8 @@ function TruckToy::createForegroundBrickWall( %this, %wallNumber, %posX, %posY )
     %obj.setCollisionSuppress();
     %obj.setAwake( false );
     %obj.setActive( false );
+//    %obj.setColumns(10);
+//    %obj.setRows(5);
     SandboxScene.add( %obj );
       
 
@@ -497,6 +507,8 @@ function TruckToy::createForegroundWall( %this, %wallNumber, %posX, %posY )
     %obj.setCollisionSuppress();
     %obj.setAwake( false );
     %obj.setActive( false );
+//    %obj.setColumns(6);
+//    %obj.setRows(6);
     SandboxScene.add( %obj );
 
     return %obj;   
@@ -544,7 +556,8 @@ function TruckToy::createBrickPile( %this, %posX, %posY )
     %obj.setCollisionSuppress();
     %obj.setAwake( false );
     %obj.setActive( false );
-    SandboxScene.add( %obj );   
+    %obj.setColumns(4);
+    SandboxScene.add( %obj );
 }
 
 // -----------------------------------------------------------------------------
@@ -571,6 +584,7 @@ function TruckToy::createPlank( %this, %plankNumber, %posX, %posY, %angle, %stat
     %obj.setCollisionGroups( TruckToy.GroundDomain, TruckToy.ObstacleDomain );
     %obj.setAwake( false );
     %obj.setDefaultFriction( 1.0 );
+    %obj.setColumns(5);
 
     switch$( %plankNumber )
     {  
@@ -610,6 +624,8 @@ function TruckToy::createWreckedCar( %this, %carNumber, %posX, %posY, %angle, %s
     %obj.setCollisionGroups( TruckToy.GroundDomain, TruckToy.ObstacleDomain );
     %obj.setAwake( false );
     %obj.setDefaultFriction( TruckToy.ObstacleFriction );
+//    %obj.setColumns(4);
+//    %obj.setRows(2);
 
     switch$( %carNumber )
     {  
@@ -716,8 +732,8 @@ function TruckToy::createTruck( %this, %posX, %posY )
     TruckToy.TruckBody.setCollisionGroups( TruckToy.ObstacleDomain, TruckToy.ObstacleDomain-1, TruckToy.GroundDomain );
     TruckToy.TruckBody.createPolygonCollisionShape( "-2 0.2 -2 -0.5 0 -.95 2 -0.5 2 0.0 0 0.7 -1.5 0.7" ); 
     //TruckToy.TruckBody.setDebugOn( 5 );
-    TruckToy.TruckBody.setRows(2);
-    TruckToy.TruckBody.setColumns(2);
+//    TruckToy.TruckBody.setRows(2);
+//    TruckToy.TruckBody.setColumns(5);
     SandboxScene.add( TruckToy.TruckBody );
 
     // Attach the exhaust output to the truck body.   
@@ -742,6 +758,8 @@ function TruckToy::createTruck( %this, %posX, %posY )
     %tireRear.setDefaultFriction( TruckToy.WheelFriction );
     %tireRear.setDefaultDensity( TruckToy.RearWheelDensity );
     %tireRear.createCircleCollisionShape( 0.8 ); 
+//    %tireRear.setColumns(2);
+//    %tireRear.setRows(2);
     SandboxScene.add( %tireRear );
     TruckToy.RearWheel = %tireRear;
     
@@ -756,7 +774,9 @@ function TruckToy::createTruck( %this, %posX, %posY )
     %tireFront.setDefaultFriction( TruckToy.WheelFriction );
     %tireFront.setDefaultDensity( TruckToy.FrontWheelDensity );
     %tireFront.createCircleCollisionShape( 0.8 ); 
-    SandboxScene.add( %tireFront );   
+//    %tireFront.setColumns(2);
+//    %tireFront.setRows(2);
+    SandboxScene.add( %tireFront );
     TruckToy.FrontWheel = %tireFront;
 
     // Suspension joints.

@@ -195,13 +195,16 @@ void ImageFrameProviderCore::render(
     const Vector2& vertexPos3,
     BatchRender* pBatchRenderer,
     const ColorF& color,
-    const U8 rows,
-    const U8 columns) const
+    const U32 rows,
+    const U32 columns) const
 {
     // Finish if we can't render.
     if ( !validRender() )
         return;
 
+//   Con::printf("rows %i columns %i", rows, columns);
+
+   
     // Fetch texel area.
     ImageAsset::FrameArea::TexelArea texelArea = getProviderImageFrameArea().mTexelArea;
 
@@ -239,7 +242,7 @@ void ImageFrameProviderCore::render(
         
         for (int i = 0; i < verts.size(); i++)
              verts[i].color = color;
-        
+       
         pBatchRenderer->SubmitTriangleStrip(verts, getProviderTexture());
         subVert0 = subVert1;
         subVert3 = subVert2;
