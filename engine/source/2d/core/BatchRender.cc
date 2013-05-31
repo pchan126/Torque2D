@@ -541,11 +541,15 @@ void BatchRender::_lightAndDraw( Vector<GFXVertexPCT>* pVertexVector, Vector<U16
          F32 len = (light->getPosition()-pVertexVector->at(i).point).len();
          F32 rad = light->getRange().x;
          F32 factor = 1.0-mClampF( (len-rad)/rad, 0.0, 1.0 );
-         U8 alpha = mVertexBuffer[i].color;
-         ColorF lightAdd = ColorF(mVertexBuffer[i].color) + light->getColor()*factor;
-         lightAdd.clamp();
-         mVertexBuffer[i].color = lightAdd;
-         mVertexBuffer[i].color.alpha = alpha;
+         if (factor > 0.0)
+         {
+            U8 alpha = mVertexBuffer[i].color;
+            ColorF lightColor = light->getColor()*factor;
+            ColorF lightAdd = ColorF(mVertexBuffer[i].color) + lightColor;
+            lightAdd.clamp();
+            mVertexBuffer[i].color = lightAdd;
+            mVertexBuffer[i].color.alpha = alpha;
+         }
       }
    }
    

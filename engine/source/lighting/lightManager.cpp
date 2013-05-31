@@ -138,6 +138,8 @@ void LightManager::registerGlobalLight( LightInfo *light, SimObject *obj )
    AssertFatal( !mRegisteredLights.contains( light ), 
       "LightManager::registerGlobalLight - This light is already registered!" );
 
+   Con::printf("registerGlobalLight #%i %s", mRegisteredLights.size(), light->getColor().scriptThis());
+   
    mRegisteredLights.push_back( light );
 }
 

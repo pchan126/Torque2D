@@ -528,7 +528,12 @@ public:
     inline LightType         getLightType( void ) const             { return mLightType; }
     inline void             setLightColor( const ColorF& lightColor )   { mLightColor = lightColor; }
     inline const ColorF&    getLightColor( void ) const                 { return mLightColor; }
+   inline void             setLightRadius( const F32 lightRadius )   { mLightRadius = lightRadius; }
+   inline const F32        getLightRadius( void ) const                 { return mLightRadius; }
+   inline void             setLightFade( const F32 lightFade )   { mLightFade = lightFade; }
+   inline const F32        getLightFade( void ) const                 { return mLightFade; }
 
+   
     /// Render sorting.
     inline void             setSortPoint( const Vector2& pt )           { mSortPoint = pt; }
     inline const Vector2&   getSortPoint(void) const                    { return mSortPoint; }
@@ -739,6 +744,10 @@ protected:
     /// Lighting
     static bool             writeLightType( void* obj, StringTableEntry pFieldName ) { return static_cast<SceneObject*>(obj)->getLightType() != NoLight; }
     static bool             writeLightColor( void* obj, StringTableEntry pFieldName ) { return static_cast<SceneObject*>(obj)->getLightColor() != ColorF(1.0f, 1.0f, 1.0f, 1.0f); }
+   static bool             setLightRadius(void* obj, const char* data)  { static_cast<SceneObject*>(obj)->setLightRadius(dAtof(data)); return false; }
+   static bool             writeLightRadius( void* obj, StringTableEntry pFieldName ) { return static_cast<SceneObject*>(obj)->getLightRadius() != 0.5; }
+   static bool             setLightFade(void* obj, const char* data)  { static_cast<SceneObject*>(obj)->setLightFade(dAtof(data)); return false; }
+   static bool             writeLightFade( void* obj, StringTableEntry pFieldName ) { return static_cast<SceneObject*>(obj)->getLightFade() != 1.0; }
 
     /// Input events.
     static bool             writeUseInputEvents( void* obj, StringTableEntry pFieldName ) { return static_cast<SceneObject*>(obj)->getUseInputEvents() == true; }

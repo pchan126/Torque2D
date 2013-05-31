@@ -105,7 +105,9 @@ function TruckToy::reset( %this )
     %this.createBrick( 3, -87.5, TruckToy.FloorLevel + 0.25, true );     
     %this.createBrick( 4, -87.5, TruckToy.FloorLevel + 0.75, true );     
     %this.createBrick( 2, -79, TruckToy.FloorLevel + 0.25, true );     
-    %this.createBonfire( -91.5, TruckToy.FloorLevel + 0.5, 1, TruckToy.BackgroundDomain-1 );
+    %particlePlayer = %this.createBonfire( -91.5, TruckToy.FloorLevel + 0.5, 1, TruckToy.BackgroundDomain-1 );
+    %particlePlayer.setLightRadius(3.0);
+//    %particlePlayer.setLightColor(1.0, 0.15, 0.15);
 
     // Building with chains.   
     %this.createForegroundWall( 2, -99, -5 );   
@@ -137,8 +139,12 @@ function TruckToy::reset( %this )
     %this.createPlank( 3, -19, TruckToy.FloorLevel + 4, 0, true );
     %this.createPlank( 1, -16.5, TruckToy.FloorLevel + 1.5, -90, true );
     %this.createForegroundBrickWall( 2, -19, -6 );
-    %this.createBonfire( -46.5, TruckToy.FloorLevel, 3, TruckToy.BackgroundDomain-1 );
-    %this.createBonfire( -18.7, TruckToy.FloorLevel + 1, 2, TruckToy.BackgroundDomain-1 );
+    %particlePlayer = %this.createBonfire( -46.5, TruckToy.FloorLevel, 3, TruckToy.BackgroundDomain-1 );
+    %particlePlayer.setLightRadius(2.0);
+//    %particlePlayer.setLightColor(1.0, 0.75, 0.75);
+    %particlePlayer = %this.createBonfire( -18.7, TruckToy.FloorLevel + 1, 2, TruckToy.BackgroundDomain-1 );
+    %particlePlayer.setLightRadius(2.0);
+//    %particlePlayer.setLightColor(1.0, 0.75, 0.75);
 
     // More wrecked cars.
     %this.createWreckedCar( 1, -12, TruckToy.FloorLevel + 0.75, 0, true );
@@ -406,7 +412,9 @@ function TruckToy::createChain( %this, %posX, %posY, %linkCount )
         }
         else
         {
-            %obj = %this.createBonfire( %posX, %posY - (%n*%linkHeight), 0.5, TruckToy.BackgroundDomain-1 );                    
+            %obj = %this.createBonfire( %posX, %posY - (%n*%linkHeight), 0.5, TruckToy.BackgroundDomain-1 );
+            %obj.setLightType("CONSTLIGHT");
+            %obj.setLightColor(1.0, 0.0, 0.0);
             %obj.BodyType = dynamic;
         }
         
@@ -655,7 +663,7 @@ function TruckToy::createBonfire(%this, %x, %y, %scale, %layer)
     %particlePlayer.Particle = "ToyAssets:bonfire";
     %particlePlayer.SizeScale = %scale;
     %particlePlayer.CameraIdleDistance = TruckToy.CameraWidth * 0.8;
-    %particlePlayer.setLightType("CONSTLIGHT");
+//    %particlePlayer.setLightType("CONSTLIGHT");
     SandboxScene.add( %particlePlayer );
     return %particlePlayer;
     
@@ -679,7 +687,7 @@ function TruckToy::createProjectile(%this)
     %projectile.createCircleCollisionShape( 0.2 ); 
     %projectile.setCollisionGroups( TruckToy.GroundDomain );
     %projectile.CollisionCallback = true;
-    %projectile.setLightType("CONSTLIGHT");
+//    %projectile.setLightType("CONSTLIGHT");
     SandboxScene.add( %projectile );
 }
 

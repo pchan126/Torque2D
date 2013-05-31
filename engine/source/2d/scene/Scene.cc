@@ -1364,7 +1364,7 @@ void Scene::addToScene( SceneObject* pSceneObject )
     // Register with the scene.
     pSceneObject->OnRegisterScene( this );
 
-    // Perform callback only if properly added to the simulation.
+   // Perform callback only if properly added to the simulation.
     if ( pSceneObject->isProperlyAdded() )
     {
         Con::executef(pSceneObject, 2, "onAddToScene", getIdString());
@@ -1406,7 +1406,10 @@ void Scene::removeFromScene( SceneObject* pSceneObject )
         (dynamic_cast<SceneWindow*>(mAttachedSceneWindows[i]))->removeFromInputEventPick(pSceneObject);
     }
 
-    // Unregister from scene.
+   if ( pSceneObject->mLight)
+      pSceneObject->mpScene->mLightManager.unregisterGlobalLight(pSceneObject->mLight);
+
+      // Unregister from scene.
     pSceneObject->OnUnregisterScene( this );
 
     // Find scene object and remove it quickly.
@@ -1418,7 +1421,7 @@ void Scene::removeFromScene( SceneObject* pSceneObject )
             break;
         }
     }
-
+   
     // Perform callback.
     Con::executef( pSceneObject, 2, "onRemoveFromScene", getIdString() );
 }

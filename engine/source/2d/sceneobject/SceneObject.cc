@@ -320,16 +320,9 @@ void SceneObject::initPersistFields()
     /// Lighting
     addField("lightType", TypeEnum, Offset(mLightType, SceneObject), &writeLightType, 1, &lightTypeTable);
     addField("lightColor",        TypeColorF,    Offset(mLightColor,         SceneObject), &writeLightColor, "" );
-//    addField("lightTime",         TypeS32,       Offset(mLightTime,          SceneObject), &setLightTime, &defaultProtectedGetFn, &writeLightTime, "" );
-//             "@brief Time value for the light of this ItemData, used to control the pulse speed of the PulsingLight LightType.\n\n"
-//             "@see lightType\n");
-//    addField("lightRadius",       TypeF32,       Offset(mLightRadius,        SceneObject), &setLightTime, &defaultProtectedGetFn, &writeLightTime, "" );
-//             "@brief Distance from the center point of this ItemData for the light to affect\n\n"
-//             "@see lightType\n");
-//             addField("lightOnlyStatic",   TypeBool,      Offset(lightOnlyStatic,    ItemData));
-//             "@brief If true, this ItemData will only cast a light if the Item for this ItemData has a static value of true.\n\n"
-//             "@see lightType\n");
-    
+    addField("lightRadius",       TypeF32,       Offset(mLightRadius,        SceneObject), &writeLightRadius, "" );
+   addField("lightFade",       TypeF32,       Offset(mLightFade,        SceneObject), &writeLightFade, "" );
+   
     /// Render sorting.
     addField("SortPoint", TypeVector2, Offset(mSortPoint, SceneObject), &writeSortPoint, "");
     addField("RenderGroup", TypeString, Offset(mRenderGroup, SceneObject), &writeRenderGroup, "");
