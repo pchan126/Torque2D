@@ -242,6 +242,7 @@ void GuiFormCtrl::onRender(Point2I offset, const RectI &updateRect)
 
    S32 textWidth = 0;
 
+   GFX->getDrawUtil()->setBatchEnabled(true);
    // Draw our little bar, too
    if(mProfile->mBitmapArrayRects.size() >= 5)
    {
@@ -278,6 +279,7 @@ void GuiFormCtrl::onRender(Point2I offset, const RectI &updateRect)
 
       GFX->getDrawUtil()->drawBitmapStretchSR( mProfile->mTextureHandle, RectI(barOffset, mProfile->mBitmapArrayRects[4].extent),
          mProfile->mBitmapArrayRects[4]);
+      GFX->getDrawUtil()->setBatchEnabled(false);
 
       GFX->getDrawUtil()->setBitmapModulation((mMouseOver ? mProfile->mFontColorHL : mProfile->mFontColor));
       renderJustifiedText(Point2I(mThumbSize.x, 0) + offset, Point2I(getWidth() - mThumbSize.x - mProfile->mBitmapArrayRects[4].extent.x, mThumbSize.y), (mUseSmallCaption ? mSmallCaption : mCaption) );

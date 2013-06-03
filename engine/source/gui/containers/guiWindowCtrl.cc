@@ -649,6 +649,7 @@ void GuiWindowCtrl::onRender(Point2I offset, const RectI &updateRect)
 
    GFX->getDrawUtil()->drawRectFill(winRect, mProfile->mFillColor);
 
+   GFX->getDrawUtil()->setBatchEnabled(true);
    GFX->getDrawUtil()->clearBitmapModulation();
    GFX->getDrawUtil()->drawBitmapSR(mTextureObject, offset, mBitmapBounds[topBase]);
    GFX->getDrawUtil()->drawBitmapSR(mTextureObject, Point2I(offset.x + getWidth() - mBitmapBounds[topBase+1].extent.x, offset.y),
@@ -692,6 +693,7 @@ void GuiWindowCtrl::onRender(Point2I offset, const RectI &updateRect)
    stretchRect.inset(1,0);
 
    GFX->getDrawUtil()->drawBitmapStretchSR(mTextureObject, destRect, stretchRect);
+   GFX->getDrawUtil()->setBatchEnabled(false);
 
     // Draw the title
     // dhc addition: copied/modded from renderJustifiedText, since we enforce a

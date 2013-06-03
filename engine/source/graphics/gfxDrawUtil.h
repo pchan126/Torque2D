@@ -39,6 +39,22 @@ public:
    GFXDrawUtil(GFXDevice *);
    ~GFXDrawUtil();
 
+   void batchTriangleStrip( const Vector<GFXVertexPCT> verts, GFXTexHandle& texture);
+   void flushInternal(void);
+   
+   /// Sets the batch enabled mode.
+   inline void setBatchEnabled( const bool enabled )
+   {
+      // Ignore no change.
+      if ( mBatchEnabled == enabled )
+         return;
+      
+      // Flush.
+      flushInternal();
+      
+      mBatchEnabled = enabled;
+   }
+   
    //-----------------------------------------------------------------------------
    // Draw Rectangles
    //-----------------------------------------------------------------------------
@@ -90,7 +106,7 @@ public:
     void drawBitmap( GFXTextureObject *texture, const Point2F &in_rAt, const GFXBitmapFlip in_flip = GFXBitmapFlip_None, const GFXTextureFilterType filter = GFXTextureFilterPoint , bool in_wrap = true );
     void drawBitmapSR( GFXTextureObject *texture, const Point2F &in_rAt, const RectF &srcRect, const GFXBitmapFlip in_flip = GFXBitmapFlip_None, const GFXTextureFilterType filter = GFXTextureFilterPoint , bool in_wrap = true );
     void drawBitmapStretch( GFXTextureObject *texture, const RectF &dstRect, const GFXBitmapFlip in_flip = GFXBitmapFlip_None, const GFXTextureFilterType filter = GFXTextureFilterPoint , bool in_wrap = true );
-    void drawBitmapStretchSR( GFXTextureObject *texture, const RectF &dstRect, const RectF &srcRect, const GFXBitmapFlip in_flip = GFXBitmapFlip_None, const GFXTextureFilterType filter = GFXTextureFilterPoint , bool in_wrap = true );
+   void drawBitmapStretchSR( GFXTextureObject *texture, const RectF &dstRect, const RectF &srcRect, const GFXBitmapFlip in_flip = GFXBitmapFlip_None, const GFXTextureFilterType filter = GFXTextureFilterPoint , bool in_wrap = true );
     
     void drawBitmap( GFXTextureObject *texture, const Point2I &in_rAt, const GFXBitmapFlip in_flip = GFXBitmapFlip_None, const GFXTextureFilterType filter = GFXTextureFilterPoint , bool in_wrap = true );
     void drawBitmapSR( GFXTextureObject *texture, const Point2I &in_rAt, const RectI &srcRect, const GFXBitmapFlip in_flip = GFXBitmapFlip_None, const GFXTextureFilterType filter = GFXTextureFilterPoint , bool in_wrap = true );
@@ -170,6 +186,11 @@ protected:
    GFXStateBlockRef mBitmapStretchWrapLinearSB;
    GFXStateBlockRef mRectFillSB;
    
+   bool mBatchEnabled;
+   GFXTextureFilterType mFilter;
+   GFXTexHandle         mTextureHandle;
+   Vector<GFXVertexPCT> mVertexBuffer;
+
     GFXVertexBufferHandle<GFXVertexPCT> mTextureVertex;
     GFXVertexBufferHandle<GFXVertexPC> mLineVertex;
     
