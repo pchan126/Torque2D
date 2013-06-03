@@ -227,7 +227,7 @@ void GuiBitmapCtrl::onRender(Point2I offset, const RectI &updateRect)
                                       ((mTextureObject->getBitmapHeight()*y)+offset.y)-yshift,
                                       mTextureObject->getBitmapWidth(),	
                                       mTextureObject->getBitmapHeight());
-//                GFX->getDrawUtil()->drawBitmapStretchSR(texture,dstRegion, srcRegion, false);
+
                     GFX->getDrawUtil()->drawBitmapStretchSR(mTextureObject, dstRegion, srcRegion, GFXBitmapFlip_None, GFXTextureFilterLinear);
                 }
         }
@@ -240,12 +240,10 @@ void GuiBitmapCtrl::onRender(Point2I offset, const RectI &updateRect)
          {
             RectI srcRegion;
             srcRegion = mSourceRect;
-//            GFX->getDrawUtil()->drawBitmapStretchSR(mTextureObject,rect, srcRegion, false);
              GFX->getDrawUtil()->drawBitmapStretchSR(mTextureObject,rect, srcRegion, GFXBitmapFlip_None, GFXTextureFilterLinear);
         }
         else
         {
-//            GFX->getDrawUtil()->drawBitmapStretch(mTextureObject, rect);
             GFX->getDrawUtil()->drawBitmapStretch(mTextureObject, rect, GFXBitmapFlip_None, GFXTextureFilterLinear, false);
         }
       }
@@ -264,7 +262,6 @@ void GuiBitmapCtrl::setValue(S32 x, S32 y)
 {
    if (mTextureObject)
    {
-//        TextureObject* texture = (TextureObject *) mTextureObject;
         x+=mTextureObject->getBitmapWidth()/2;
         y+=mTextureObject->getBitmapHeight()/2;
     }

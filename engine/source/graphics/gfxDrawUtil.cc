@@ -37,7 +37,8 @@
 //#include "math/mPolyhedron.impl.h"
 
 
-GFXDrawUtil::GFXDrawUtil( GFXDevice * d)
+GFXDrawUtil::GFXDrawUtil( GFXDevice * d):
+  mBatchEnabled(false)
 {
    mDevice = d;
    mBitmapModulation.set(0xFF, 0xFF, 0xFF, 0xFF);
@@ -88,6 +89,80 @@ void GFXDrawUtil::_setupStateBlocks()
    rectFill.setZReadWrite(false);
    rectFill.setBlend(true, GFXBlendSrcAlpha, GFXBlendInvSrcAlpha);
    mRectFillSB = mDevice->createStateBlock(rectFill);
+}
+
+void GFXDrawUtil::batchTriangleStrip( const Vector<GFXVertexPCT> verts, GFXTexHandle& texture)
+{
+   if (verts.size() < 1)
+      return;
+   
+   // Debug Profiling.
+   PROFILE_SCOPE(BatchRender_SubmitTriangleStrip);
+   
+   //    // Would we exceed the triangle buffer size?
+   //    if ( (mTriangleCount + verts.size()/3) > BATCHRENDER_MAXTRIANGLES )
+   //    {
+   //        // Yes, so flush.
+   //        flush( mpDebugStats->batchBufferFullFlush );
+   //    }
+   
+   Vector<GFXVertexPCT>* vertBuffer = &mVertexBuffer;
+   
+   // Yes, so is there a texture change?
+   if ( texture != mTextureHandle && mVertexBuffer.size() > 0 )
+   {
+      // Yes, so flush.
+      flushInternal( );
+   }
+   
+   // Set strict order mode texture handle.
+   mTextureHandle = texture;
+
+   // degenerate linking triangle
+   if (mVertexBuffer.size() > 0)
+   {
+      vertBuffer->push_back(vertBuffer->last());
+      vertBuffer->push_back(verts[0]);
+   }
+   
+   for (int i = 0; i < verts.size(); i++)
+      vertBuffer->push_back(verts[i]);
+}
+
+//-----------------------------------------------------------------------------
+
+void GFXDrawUtil::flushInternal( void )
+{
+   // Debug Profiling.
+   PROFILE_SCOPE(T2D_BatchRender_flush);
+   
+   // Finish if no triangles to flush.
+   if ( mVertexBuffer.size() == 0 )
+      return;
+   
+   mTextureVertex.set(mDevice, mVertexBuffer.size(), GFXBufferTypeVolatile, mVertexBuffer.address());
+   mDevice->setVertexBuffer( mTextureVertex );
+   
+   switch (mFilter)
+   {
+      case GFXTextureFilterPoint :
+         mDevice->setStateBlock( mBitmapStretchSB);
+         break;
+      case GFXTextureFilterLinear :
+         mDevice->setStateBlock( mBitmapStretchLinearSB);
+         break;
+      default:
+         AssertFatal(false, "No GFXDrawUtil state block defined for this filter type!");
+         mDevice->setStateBlock(mBitmapStretchSB);
+         break;
+   }
+   mDevice->setTexture( 0, mTextureHandle );
+   mDevice->setupGenericShaders( GFXDevice::GSModColorTexture );
+   
+   mDevice->drawPrimitive( GFXTriangleStrip, 0, mVertexBuffer.size()-2 );
+
+   // Reset batch state.
+   mVertexBuffer.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -358,13 +433,17 @@ void GFXDrawUtil::drawBitmapSR( GFXTextureObject*texture, const Point2F &in_rAt,
    drawBitmapStretchSR( texture, stretch, srcRect, in_flip, filter, in_wrap );
 }
 
-void GFXDrawUtil::drawBitmapStretchSR( GFXTextureObject *texture, const RectF &dstRect, const RectF &srcRect, const GFXBitmapFlip in_flip /*= GFXBitmapFlip_None*/, const GFXTextureFilterType filter /*= GFXTextureFilterPoint */ , bool in_wrap /*= true*/ )
+void GFXDrawUtil::drawBitmapStretchSR( GFXTextureObject *texture, const RectF &dstRect, const RectF &srcRect, const GFXBitmapFlip in_flip /*= GFXBitmapFlip_None*/, const GFXTextureFilterType filter /*= GFXTextureFilterPoint */ , bool in_wrap /*= true*/)
 {
    // Sanity if no texture is specified.
    if(!texture)
       return;   
 
-    GFXVertexPCT verts[4];
+   mFilter = filter;
+   
+   Vector<GFXVertexPCT> verts;
+   verts.setSize(4);
+   GFXTexHandle texHandle(texture);
     
    F32 texLeft   = (srcRect.point.x)                    / (texture->getWidth());
    F32 texRight  = (srcRect.point.x + srcRect.extent.x) / (texture->getWidth());
@@ -402,26 +481,24 @@ void GFXDrawUtil::drawBitmapStretchSR( GFXTextureObject *texture, const RectF &d
    verts[2].texCoord.set( texLeft,  texBottom );
    verts[3].texCoord.set( texRight, texBottom );
 
-    mTextureVertex.set(mDevice, 4, GFXBufferTypeVolatile, verts);
-   mDevice->setVertexBuffer( mTextureVertex );
+   batchTriangleStrip(verts, texHandle);
 
    switch (filter)
    {
-   case GFXTextureFilterPoint :
-      mDevice->setStateBlock(in_wrap ? mBitmapStretchWrapSB : mBitmapStretchSB);
-      break;
-   case GFXTextureFilterLinear :
-      mDevice->setStateBlock(in_wrap ? mBitmapStretchWrapLinearSB : mBitmapStretchLinearSB);
-      break;
-   default:
-      AssertFatal(false, "No GFXDrawUtil state block defined for this filter type!");
-      mDevice->setStateBlock(mBitmapStretchSB);
-      break;
-   }   
-   mDevice->setTexture( 0, texture );
-   mDevice->setupGenericShaders( GFXDevice::GSModColorTexture );
-
-   mDevice->drawPrimitive( GFXTriangleStrip, 0, 2 );
+      case GFXTextureFilterPoint :
+         mDevice->setStateBlock(in_wrap ? mBitmapStretchWrapSB : mBitmapStretchSB);
+         break;
+      case GFXTextureFilterLinear :
+         mDevice->setStateBlock(in_wrap ? mBitmapStretchWrapLinearSB : mBitmapStretchLinearSB);
+         break;
+      default:
+         AssertFatal(false, "No GFXDrawUtil state block defined for this filter type!");
+         mDevice->setStateBlock(mBitmapStretchSB);
+         break;
+   }
+   
+   if (!mBatchEnabled)
+      flushInternal();
 }
 
 //-----------------------------------------------------------------------------

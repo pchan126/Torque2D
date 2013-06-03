@@ -192,6 +192,7 @@ void renderBorder(RectI &bounds, GuiControlProfile *profile)
 
          // Draw all corners first.
 
+         GFX->getDrawUtil()->setBatchEnabled(true);
          //top left border
          GFX->getDrawUtil()->drawBitmapSR(profile->mTextureHandle,Point2I(bounds.point.x,bounds.point.y),mBitmapBounds[BorderTopLeft]);
          //top right border
@@ -249,6 +250,7 @@ void renderBorder(RectI &bounds, GuiControlProfile *profile)
          stretchRect.inset(0,1);
          //draw it
          GFX->getDrawUtil()->drawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
+         GFX->getDrawUtil()->setBatchEnabled(false);
 
          // End drawing sides and top stretched borders
          break;
@@ -303,6 +305,7 @@ void renderSizableBitmapBordersFilled(RectI &bounds, S32 baseMultiplier, GuiCont
 
       // Draw all corners first.
 
+      GFX->getDrawUtil()->setBatchEnabled(true);
       //top left border
       GFX->getDrawUtil()->drawBitmapSR(profile->mTextureHandle,Point2I(bounds.point.x,bounds.point.y),mBitmapBounds[BorderTopLeft]);
       //top right border
@@ -371,6 +374,7 @@ void renderSizableBitmapBordersFilled(RectI &bounds, S32 baseMultiplier, GuiCont
       //draw it
       GFX->getDrawUtil()->drawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
 
+      GFX->getDrawUtil()->setBatchEnabled(false);
       // End drawing sides and top stretched borders
    }
 }
@@ -401,6 +405,7 @@ void renderSizableBitmapBordersFilledIndex(RectI &bounds, S32 startIndex, GuiCon
 
       // Draw all corners first.
 
+      GFX->getDrawUtil()->setBatchEnabled(true);
       //top left border
       GFX->getDrawUtil()->drawBitmapSR(profile->mTextureHandle,Point2I(bounds.point.x,bounds.point.y),mBitmapBounds[BorderTopLeft]);
       //top right border
@@ -468,6 +473,7 @@ void renderSizableBitmapBordersFilledIndex(RectI &bounds, S32 startIndex, GuiCon
       stretchRect.inset(1,1);
       //draw it
       GFX->getDrawUtil()->drawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
+      GFX->getDrawUtil()->setBatchEnabled(false);
 
       // End drawing sides and top stretched borders
    }
@@ -539,6 +545,7 @@ void renderFixedBitmapBordersFilledIndex(RectI &bounds, S32 startIndex, GuiContr
 
       // Draw all corners first.
 
+      GFX->getDrawUtil()->setBatchEnabled(true);
       //left border
       GFX->getDrawUtil()->drawBitmapSR(profile->mTextureHandle,Point2I(bounds.point.x,bounds.point.y),mBitmapBounds[BorderLeft]);
       //right border
@@ -558,6 +565,7 @@ void renderFixedBitmapBordersFilledIndex(RectI &bounds, S32 startIndex, GuiContr
       stretchRect.inset(1,0);
       //draw it
       GFX->getDrawUtil()->drawBitmapStretchSR(profile->mTextureHandle,destRect,stretchRect);
+      GFX->getDrawUtil()->setBatchEnabled(false);
 
       // End drawing fill
    }
@@ -583,6 +591,7 @@ void renderFixedBitmapBordersStretchYFilled(RectI &bounds, S32 baseMultiplier, G
 
       // Draw all corners first.
 
+      GFX->getDrawUtil()->setBatchEnabled(true);
       //left border
       GFX->getDrawUtil()->drawBitmapStretchSR(profile->mTextureHandle, RectI( bounds.point.x, bounds.point.y, mBitmapBounds[BorderLeft].extent.x, bounds.extent.y ), mBitmapBounds[BorderLeft] );
       //right border
@@ -602,6 +611,7 @@ void renderFixedBitmapBordersStretchYFilled(RectI &bounds, S32 baseMultiplier, G
       stretchRect.inset(1,0);
       //draw it
       GFX->getDrawUtil()->drawBitmapStretchSR(profile->mTextureHandle, destRect, stretchRect);
+      GFX->getDrawUtil()->setBatchEnabled(false);
 
       // End drawing fill
    }
