@@ -725,7 +725,7 @@ void GuiCanvas::rootScreenTouchDown(const GuiEvent &event)
                 continue;  
             else  
             {  
-                controlHit->onMouseDown(event);  
+                controlHit->onTouchDown(event);
                 break;  
             }  
         }  
@@ -752,22 +752,10 @@ void GuiCanvas::rootScreenTouchUp(const GuiEvent &event)
             continue;
         else
         {
-            controlHit->onMouseUp(event);
+            controlHit->onTouchUp(event);
             break;
         }
     }
-//    mPrevMouseTime = Platform::getVirtualMilliseconds();
-//    mMouseButtonDown = false;
-//    
-//    //pass the event to the mouse locked control
-//    if (bool(mMouseCapturedControl))
-//        mMouseCapturedControl->onMouseUp(event);
-//    else
-//    {
-//        findMouseControl(event);
-//        if(bool(mMouseControl))
-//            mMouseControl->onMouseUp(event);
-//    }
 }
 
 void GuiCanvas::rootScreenTouchMove(const GuiEvent &event)
@@ -777,14 +765,14 @@ void GuiCanvas::rootScreenTouchMove(const GuiEvent &event)
    {
       checkLockMouseMove(event);
       if(!mMouseCapturedControl.isNull())
-            mMouseCapturedControl->onMouseDragged(event);
+            mMouseCapturedControl->onTouchDragged(event);
    }
    else
    {
       findMouseControl(event);
       if(bool(mMouseControl))
       {
-          mMouseControl->onMouseDragged(event);		  
+          mMouseControl->onTouchDragged(event);
       }
    }
 }

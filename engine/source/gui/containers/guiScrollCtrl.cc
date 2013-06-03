@@ -229,11 +229,32 @@ void GuiScrollCtrl::addObject(SimObject *object)
 
 GuiControl* GuiScrollCtrl::findHitControl(const Point2I &pt, S32 initialLayer)
 {
-   if(pt.x < mProfile->mBorderThickness || pt.y < mProfile->mBorderThickness)
+   GuiScrollCtrl::Region region = findHitRegion(pt);
+
+   switch (region) {
+      case UpArrow:
+      case DownArrow:
+      case UpPage:
+      case VertThumb:
+      case DownPage:
+      case LeftArrow:
+      case RightArrow:
+      case LeftPage:
+      case HorizThumb:
+      case RightPage:
+         return this;
+         break;
+         
+      default:
+         break;
+   }
+
+#if defined(TORQUE_OS_IOS)
+   if(pt.x <= getWidth() && pt.y <= getHeight())
+   {
       return this;
-   if(pt.x >= getWidth() - mProfile->mBorderThickness - (mHasVScrollBar ? mScrollBarThickness : 0) ||
-      pt.y >= getHeight() - mProfile->mBorderThickness - (mHasHScrollBar ? mScrollBarThickness : 0))
-      return this;
+   }
+#endif
    return Parent::findHitControl(pt, initialLayer);
 }
 
@@ -372,7 +393,7 @@ void GuiScrollCtrl::calcThumbs()
       else
          mHThumbSize = getMax(mBaseThumbSize, S32((mContentExt.x * trackSize) / mChildExt.x));
 
-      mHThumbPos = mHTrackRect.point.x + (mChildRelPos.x * (trackSize - mHThumbSize)) / (mChildExt.x - mContentExt.x);
+      mThumbPos.x = mHTrackRect.point.x + (mChildRelPos.x * (trackSize - mHThumbSize)) / (mChildExt.x - mContentExt.x);
    }
    if (mVBarEnabled)
    {
@@ -383,7 +404,7 @@ void GuiScrollCtrl::calcThumbs()
       else
          mVThumbSize = getMax(mBaseThumbSize, S32((mContentExt.y * trackSize) / mChildExt.y));
 
-      mVThumbPos = mVTrackRect.point.y + (mChildRelPos.y * (trackSize - mVThumbSize)) / (mChildExt.y - mContentExt.y);
+      mThumbPos.y = mVTrackRect.point.y + (mChildRelPos.y * (trackSize - mVThumbSize)) / (mChildExt.y - mContentExt.y);
    }
 }
 
@@ -397,21 +418,17 @@ void GuiScrollCtrl::scrollTo(S32 x, S32 y)
 {
    if(!size())
       return;
+   
+   Con::printf("GuiScrolCtrl::ScrollTo(%i, %i)", x, y);
 
     // keep scroll start state
     Point2I startPoint = mChildPos;
     Point2I startPointRel = mChildRelPos;
 
    setUpdate();
-   if (x > mChildExt.x - mContentExt.x)
-      x = mChildExt.x - mContentExt.x;
-   if (x < 0)
-      x = 0;
-
-   if (y > mChildExt.y - mContentExt.y)
-      y = mChildExt.y - mContentExt.y;
-   if (y < 0)
-      y = 0;
+   
+   x = mClampF(x, 0, mChildExt.x - mContentExt.x);
+   y = mClampF(y, 0, mChildExt.y - mContentExt.y);
 
    Point2I delta(x - mChildRelPos.x, y - mChildRelPos.y);
    mChildRelPos += delta;
@@ -446,9 +463,9 @@ GuiScrollCtrl::Region GuiScrollCtrl::findHitRegion(const Point2I &pt)
          return DownArrow;
       else if (mVTrackRect.pointInRect(pt))
       {
-         if (pt.y < mVThumbPos)
+         if (pt.y < mThumbPos.y)
             return UpPage;
-         else if (pt.y < mVThumbPos + mVThumbSize)
+         else if (pt.y < mThumbPos.y + mVThumbSize)
             return VertThumb;
          else
             return DownPage;
@@ -462,9 +479,9 @@ GuiScrollCtrl::Region GuiScrollCtrl::findHitRegion(const Point2I &pt)
          return RightArrow;
       else if (mHTrackRect.pointInRect(pt))
       {
-         if (pt.x < mHThumbPos)
+         if (pt.x < mThumbPos.x)
             return LeftPage;
-         else if (pt.x < mHThumbPos + mHThumbSize)
+         else if (pt.x < mThumbPos.x + mHThumbSize)
             return HorizThumb;
          else
             return RightPage;
@@ -542,12 +559,12 @@ void GuiScrollCtrl::onMouseDown(const GuiEvent &event)
    if (curHitRegion == VertThumb)
    {
       mChildRelPosAnchor = mChildRelPos;
-      mThumbMouseDelta = curMousePos.y - mVThumbPos;
+      mThumbMouseDelta.y = curMousePos.y - mThumbPos.y;
    }
    else if (curHitRegion == HorizThumb)
    {
       mChildRelPosAnchor = mChildRelPos;
-      mThumbMouseDelta = curMousePos.x - mHThumbPos;
+      mThumbMouseDelta.x = curMousePos.x - mThumbPos.x;
    }
 }
 
@@ -586,8 +603,8 @@ void GuiScrollCtrl::onMouseDragged(const GuiEvent &event)
          curMousePos.y >= mVTrackRect.point.y - mScrollBarDragTolerance &&
          curMousePos.y <= mVTrackRect.point.y + mVTrackRect.extent.y - 1 + mScrollBarDragTolerance)
       {
-         S32 newVThumbPos = curMousePos.y - mThumbMouseDelta;
-         if(newVThumbPos != mVThumbPos)
+         S32 newVThumbPos = curMousePos.y - mThumbMouseDelta.y;
+         if(newVThumbPos != mThumbPos.y)
          {
             S32 newVPos = (newVThumbPos - mVTrackRect.point.y) *
                           (mChildExt.y - mContentExt.y) /
@@ -606,8 +623,8 @@ void GuiScrollCtrl::onMouseDragged(const GuiEvent &event)
          curMousePos.y >= mHTrackRect.point.y - mScrollBarDragTolerance &&
          curMousePos.y <= mHTrackRect.point.y + mHTrackRect.extent.y - 1 + mScrollBarDragTolerance)
       {
-         S32 newHThumbPos = curMousePos.x - mThumbMouseDelta;
-         if(newHThumbPos != mHThumbPos)
+         S32 newHThumbPos = curMousePos.x - mThumbMouseDelta.x;
+         if(newHThumbPos != mThumbPos.x)
          {
             S32 newHPos = (newHThumbPos - mHTrackRect.point.x) *
                           (mChildExt.x - mContentExt.x) /
@@ -619,6 +636,64 @@ void GuiScrollCtrl::onMouseDragged(const GuiEvent &event)
       else
          scrollTo(mChildRelPosAnchor.x, mChildRelPosAnchor.y);
    }
+}
+
+void GuiScrollCtrl::onTouchUp(const GuiEvent &event)
+{
+   Point2I curMousePos = globalToLocalCoord(event.mousePoint);
+
+   mouseUnlock();
+   
+   setUpdate();
+   
+   curHitRegion = None;
+   stateDepressed = false;
+
+   if (mAbs(mThumbMouseDelta.y - curMousePos.y) < 10.0f && mAbs(mThumbMouseDelta.x - curMousePos.x) < 10.0f)
+   {
+      GuiControl *controlHit = Parent::findHitControl(curMousePos);
+
+      //see if the controlHit is a modeless dialog...
+      if (( controlHit->mActive) || ( controlHit->mProfile->mModal))
+      {
+         controlHit->onTouchDown(event);
+         controlHit->onTouchUp(event);
+      }
+   }
+}
+
+void GuiScrollCtrl::onTouchDown(const GuiEvent &event)
+{
+   mouseLock();
+   
+   setUpdate();
+   
+   Point2I curMousePos = globalToLocalCoord(event.mousePoint);
+   curHitRegion = findHitRegion(curMousePos);
+   stateDepressed = true;
+   
+   // Set a 0.5 second delay before we start scrolling
+   mLastUpdated = Platform::getVirtualMilliseconds() + 500;
+   
+   scrollByRegion(curHitRegion);
+   
+   mChildRelPosAnchor = mChildRelPos;
+   mThumbMouseDelta.y = curMousePos.y;
+   mThumbMouseDelta.x = curMousePos.x;
+}
+
+void GuiScrollCtrl::onTouchDragged(const GuiEvent &event)
+{
+   Point2I curMousePos = globalToLocalCoord(event.mousePoint);
+   setUpdate();
+   
+   S32 newVPos = mChildRelPosAnchor.y + (mThumbMouseDelta.y - curMousePos.y);
+   S32 newHPos = mChildRelPosAnchor.x + (curMousePos.x - mThumbMouseDelta.x);
+   
+   newHPos = mClampF(newHPos, 0, mChildExt.x - mContentExt.x);
+   newVPos = mClampF(newVPos, 0, mChildExt.y - mContentExt.y);
+   
+   scrollTo(newHPos, newVPos);
 }
 
 bool GuiScrollCtrl::onMouseWheelUp(const GuiEvent &event)
@@ -846,7 +921,7 @@ void GuiScrollCtrl::drawVScrollBar(const Point2I &offset)
    pos.y += mScrollBarArrowBtnLength;
    S32 end;
    if (mVBarEnabled)
-      end = mVThumbPos + offset.y;
+      end = mThumbPos.y + offset.y;
    else
       end = mDownArrowRect.point.y + offset.y;
 
@@ -871,7 +946,7 @@ void GuiScrollCtrl::drawVScrollBar(const Point2I &offset)
       GFX->getDrawUtil()->clearBitmapModulation();
       GFX->getDrawUtil()->drawBitmapSR(mTextureHandle, pos, mBitmapBounds[ttop]);
       pos.y += mBitmapBounds[ttop].extent.y;
-      end = mVThumbPos + mVThumbSize - mBitmapBounds[tbot].extent.y + offset.y;
+      end = mThumbPos.y + mVThumbSize - mBitmapBounds[tbot].extent.y + offset.y;
 
       if (end > pos.y)
       {
@@ -921,7 +996,7 @@ void GuiScrollCtrl::drawHScrollBar(const Point2I &offset)
    //draw the left page
    S32 end;
    if (mHBarEnabled)
-      end = mHThumbPos + offset.x;
+      end = mThumbPos.x + offset.x;
    else
       end = mRightArrowRect.point.x + offset.x;
 
@@ -947,7 +1022,7 @@ void GuiScrollCtrl::drawHScrollBar(const Point2I &offset)
       GFX->getDrawUtil()->clearBitmapModulation();
       GFX->getDrawUtil()->drawBitmapSR(mTextureHandle, pos, mBitmapBounds[ttop]);
       pos.x += mBitmapBounds[ttop].extent.x;
-      end = mHThumbPos + mHThumbSize - mBitmapBounds[tbot].extent.x + offset.x;
+      end = mThumbPos.x + mHThumbSize - mBitmapBounds[tbot].extent.x + offset.x;
       if (end > pos.x)
       {
          GFX->getDrawUtil()->clearBitmapModulation();

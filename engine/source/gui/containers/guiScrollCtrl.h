@@ -94,15 +94,14 @@ protected:
    //--------------------------------------
    // for mouse dragging the thumb
    Point2I mChildRelPosAnchor; // the original childRelPos when scrolling started
-   S32 mThumbMouseDelta;
+   Point2I mThumbMouseDelta;
 
    S32 mLastUpdated;
 
    S32 mHThumbSize;
-   S32 mHThumbPos;
+   Point2I mThumbPos;
 
    S32 mVThumbSize;
-   S32 mVThumbPos;
 
    S32 mBaseThumbSize;
 
@@ -208,6 +207,10 @@ public:
    void onMouseDragged(const GuiEvent &event);
    bool onMouseWheelUp(const GuiEvent &event);
    bool onMouseWheelDown(const GuiEvent &event);
+
+   virtual void onTouchUp(const GuiEvent &event);
+   virtual void onTouchDown(const GuiEvent &event);
+   virtual void onTouchDragged(const GuiEvent &event);
 
    bool onWake();
    void onSleep();

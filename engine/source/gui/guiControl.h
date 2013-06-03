@@ -573,7 +573,12 @@ public:
     virtual void onMiddleMouseDown(const GuiEvent &event);
     virtual void onMiddleMouseUp(const GuiEvent &event);
     virtual void onMiddleMouseDragged(const GuiEvent &event);
-      /// @}
+
+   virtual void onTouchUp(const GuiEvent &event) { onMouseUp(event); };
+   virtual void onTouchDown(const GuiEvent &event) { onMouseDown(event); };
+   virtual void onTouchDragged(const GuiEvent &event) { onMouseDragged(event); };
+   
+   /// @}
       
       /// @name Gamepad Events
       /// These functions are called when the input event which is in the name of
