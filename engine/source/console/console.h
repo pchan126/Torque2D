@@ -31,6 +31,9 @@
 #endif
 #include <stdarg.h>
 
+#include "platform/rawData.h"
+#include "delegates/delegateSignal.h"
+
 class SimObject;
 struct EnumTable;
 class Namespace;
@@ -264,6 +267,12 @@ namespace Con
    void removeConsumer(ConsumerCallback cb);
    /// @}
 
+   typedef Signal<void(RawData)> ConsoleInputEvent;
+   
+   /// Called from the native consoles to provide lines of console input
+   /// to process. This will schedule it for execution ASAP.
+   extern ConsoleInputEvent smConsoleInput;
+   
    /// @name Miscellaneous
    /// @{
 

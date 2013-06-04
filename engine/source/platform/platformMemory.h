@@ -64,6 +64,25 @@ template <class T> inline void destructInPlace(T* p)
 }
 
 //------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+/// Memory functions
+
+//#if !defined(TORQUE_DISABLE_MEMORY_MANAGER)
+//#  define TORQUE_TMM_ARGS_DECL   , const char* fileName, const U32 lineNum
+//#  define TORQUE_TMM_ARGS        , fileName, lineNum
+//#  define TORQUE_TMM_LOC         , __FILE__, __LINE__
+//extern void* FN_CDECL operator new(dsize_t size, const char*, const U32);
+//extern void* FN_CDECL operator new[](dsize_t size, const char*, const U32);
+//extern void  FN_CDECL operator delete(void* ptr);
+//extern void  FN_CDECL operator delete[](void* ptr);
+//#  define _new new(__FILE__, __LINE__)
+//#  define new  _new
+//#else
+#  define TORQUE_TMM_ARGS_DECL
+#  define TORQUE_TMM_ARGS
+#  define TORQUE_TMM_LOC
+//#endif
+
 
 extern void* dMalloc_r(dsize_t in_size, const char*, const dsize_t);
 extern void  dFree(void* in_pFree);
