@@ -155,6 +155,7 @@ private:
 
 public:
     ButtonEvent       mouseButtonEvent;
+    MouseEvent        mouseEvent;
 };
 
 #endif

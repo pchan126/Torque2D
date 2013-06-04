@@ -369,8 +369,8 @@
     U32 modifiers = 0;
     [self getModifierKey:modifiers event:event];
     
-//    // Post the event
-//    mTorqueWindow->mouseEvent.trigger(mTorqueWindow->getWindowId(), modifiers, (S32)location.x, (S32)location.y, mTorqueWindow->isMouseLocked());
+    // Post the event
+    mTorqueWindow->mouseEvent.trigger(mTorqueWindow->getWindowId(), modifiers, (S32)location.x, (S32)location.y, mTorqueWindow->isMouseLocked());
 }
 
 

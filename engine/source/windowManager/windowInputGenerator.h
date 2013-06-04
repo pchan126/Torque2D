@@ -17,8 +17,6 @@ class PlatformWindow;
 
 class WindowInputGenerator
 {
-      bool mNotifyPosition;
-      
    protected:
 
       PlatformWindow *mWindow;
@@ -26,6 +24,7 @@ class WindowInputGenerator
       Point2I         mLastCursorPos;
       bool            mClampToWindow;
       bool            mFocused; ///< We store this off to avoid polling the OS constantly
+      bool            mNotifyPosition;
 
       ///  This is the scale factor which relates  mouse movement in pixels
       /// (one unit of mouse movement is a mickey) to units in the GUI.
