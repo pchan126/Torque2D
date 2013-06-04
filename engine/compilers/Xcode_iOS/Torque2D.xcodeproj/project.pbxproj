@@ -601,6 +601,7 @@
 		303FE31C1711B1B7002124CC /* autoPtr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = autoPtr.h; sourceTree = "<group>"; };
 		303FE31D1711B1E2002124CC /* process.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = process.cpp; sourceTree = "<group>"; };
 		303FE31E1711B1E2002124CC /* process.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = process.h; sourceTree = "<group>"; };
+		308DD039175E8B70008FBC32 /* rawData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rawData.h; sourceTree = "<group>"; };
 		30D5475A173FF5D300CB43DA /* platformTimer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = platformTimer.cc; sourceTree = "<group>"; };
 		30D5475B173FF5D300CB43DA /* platformTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformTimer.h; sourceTree = "<group>"; };
 		332307DBC5B7EEEB22E5A736 /* guiSliderCtrl.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiSliderCtrl.cc; sourceTree = "<group>"; };
@@ -2674,6 +2675,7 @@
 		867BAF7216AEC9050033868F /* platform */ = {
 			isa = PBXGroup;
 			children = (
+				308DD039175E8B70008FBC32 /* rawData.h */,
 				30D5475A173FF5D300CB43DA /* platformTimer.cc */,
 				30D5475B173FF5D300CB43DA /* platformTimer.h */,
 				867BAF7416AEC9050033868F /* eaxtypes.h */,

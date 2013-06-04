@@ -216,6 +216,9 @@ static U32 completionBaseLen;
 static S32 gMainThreadID = -1;
 #endif
 
+String gInstantGroup;
+Con::ConsoleInputEvent smConsoleInput;
+
 /// Current script file name and root, these are registered as
 /// console variables.
 /// @{
@@ -224,6 +227,9 @@ static S32 gMainThreadID = -1;
 StringTableEntry gCurrentFile;
 StringTableEntry gCurrentRoot;
 /// @}
+
+bool alwaysUseDebugOutput = true;
+bool useTimestamp = false;
 
 ConsoleFunctionGroupBegin( Clipboard, "Miscellaneous functions to control the clipboard and clear the console.");
 
@@ -252,6 +258,8 @@ ConsoleFunction( setClipboard, bool, 2, 2, "( string ) Use the setClipboard func
 };
 
 ConsoleFunctionGroupEnd( Clipboard );
+
+void postConsoleInput( RawData data );
 
 void init()
 {
@@ -291,6 +299,26 @@ void init()
 
    // And finally, the ACR...
    AbstractClassRep::initialize();
+
+   // alwaysUseDebugOutput determines whether to send output to the platform's
+   // "debug" system.  see winConsole for an example.
+   // in ship builds we don't expose this variable to script
+   // and we set it to false by default (don't want to provide more information
+   // to potential hackers).  platform code should also ifdef out the code that
+   // pays attention to this in ship builds (see winConsole.cpp)
+   // note that enabling this can slow down your game
+   // if you are running from the debugger and printing a lot of console messages.
+//#ifndef TORQUE_SHIPPING
+//   addVariable("Con::alwaysUseDebugOutput", TypeBool, &alwaysUseDebugOutput,
+//               "@brief Determines whether to send output to the platform's \"debug\" system.\n\n"
+//               "@note This is disabled in shipping builds.\n"
+//               "@ingroup Console");
+//#else
+   alwaysUseDebugOutput = false;
+//#endif
+
+   // Plug us into the journaled console input signal.
+   smConsoleInput.notify(postConsoleInput);
 }
 
 //--------------------------------------
@@ -299,6 +327,8 @@ void shutdown()
 {
    AssertFatal(active == true, "Con::shutdown should only be called once.");
    active = false;
+
+   smConsoleInput.remove(postConsoleInput);
 
    consoleLogFile.close();
    Namespace::shutdown();
@@ -1237,6 +1267,15 @@ StringTableEntry getModNameFromPath(const char *path)
    return StringTable->insert(buf);
 }
 
+void postConsoleInput( RawData data )
+{
+   // Schedule this to happen at the next time event.
+   char *argv[2];
+   argv[0] = "eval";
+   argv[1] = ( char* ) data.data;
+   Sim::postCurrentEvent(Sim::getRootGroup(), new SimConsoleEvent(2, const_cast<const char**>(argv), false));
+}
+   
 //-----------------------------------------------------------------------------
 
 typedef HashMap<StringTableEntry, StringTableEntry> typePathExpandoMap;

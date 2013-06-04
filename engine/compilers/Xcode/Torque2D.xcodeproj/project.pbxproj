@@ -588,6 +588,7 @@
 		2AF3633716A9BBE0004ED7AA /* ParticleSystem.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ParticleSystem.cc; sourceTree = "<group>"; };
 		2AF3633816A9BBE0004ED7AA /* ParticleSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticleSystem.h; sourceTree = "<group>"; };
 		2AF80CFF16A80CB400CE13F1 /* ParticleAssetEmitter_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticleAssetEmitter_ScriptBinding.h; sourceTree = "<group>"; };
+		308DD038175E8741008FBC32 /* rawData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rawData.h; sourceTree = "<group>"; };
 		30D54745173FD18B00CB43DA /* platformTimer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = platformTimer.cc; sourceTree = "<group>"; };
 		30D54747173FD6A100CB43DA /* osxTimer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxTimer.mm; sourceTree = "<group>"; };
 		86063A231654180000362D83 /* platformOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformOSX.h; sourceTree = "<group>"; };
@@ -2989,6 +2990,7 @@
 		86BC82ED16518F6800D96ADF /* platform */ = {
 			isa = PBXGroup;
 			children = (
+				308DD038175E8741008FBC32 /* rawData.h */,
 				DA91B30A16C2216800EB7B6E /* platformIntrinsics.gcc.h */,
 				DA91B30B16C2216800EB7B6E /* platformIntrinsics.h */,
 				DA91B30C16C2216800EB7B6E /* typetraits.h */,
