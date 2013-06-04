@@ -83,12 +83,12 @@
                 // Manually adding the extensions supported by the engine for now
                 if (dStrncmp(ext, "*.*", 3) == 0)
                 {
-                    [types addObject:[NSString stringWithUTF8String:"png"]];
-                    [types addObject:[NSString stringWithUTF8String:"jpg"]];
-                    [types addObject:[NSString stringWithUTF8String:"eff"]];
-                    [types addObject:[NSString stringWithUTF8String:"lyr"]];
-                    [types addObject:[NSString stringWithUTF8String:"gui"]];
-                    [types addObject:[NSString stringWithUTF8String:"bmp"]];
+                    [types addObject:@"png"];
+                    [types addObject:@"jpg"];
+                    [types addObject:@"eff"];
+                    [types addObject:@"lyr"];
+                    [types addObject:@"gui"];
+                    [types addObject:@"bmp"];
                     continue;
                 }
 

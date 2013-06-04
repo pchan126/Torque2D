@@ -112,7 +112,7 @@ S32 PopupMenu::insertSubMenu(S32 pos, const char *title, PopupMenu *submenu)
 
     newItem = [[NSMenuItem allocWithZone:[NSMenu menuZone]]
             initWithTitle:[NSString stringWithUTF8String:title] action:NULL
-            keyEquivalent:[NSString stringWithUTF8String:""]];
+            keyEquivalent:@""];
 
     [newItem setSubmenu:[submenu->mData->mController menu]];
     [newItem setTarget:submenu->mData->mController];

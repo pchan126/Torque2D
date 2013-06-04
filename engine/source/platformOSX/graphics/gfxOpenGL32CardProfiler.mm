@@ -94,20 +94,22 @@ void GFXOpenGL32OSXCardProfiler::setupCardCapabilities()
     
     setCapability("maxTextureImageUnits", maxShaderTextures);
  
-    setCapability("GL::EXT_depth_bounds_test", CheckForExtension([NSString stringWithUTF8String:"GL_EXT_depth_bounds_test"]));
-    setCapability("GL::EXT_framebuffer_multisample_blit_scaled", CheckForExtension([NSString stringWithUTF8String:"GL_EXT_framebuffer_multisample_blit_scaled"]));
+    setCapability("GL::EXT_depth_bounds_test", CheckForExtension(@"GL_EXT_depth_bounds_test"));
+    setCapability("GL::EXT_framebuffer_multisample_blit_scaled", CheckForExtension(@"GL_EXT_framebuffer_multisample_blit_scaled"));
 
-    setCapability("GL::EXT_texture_compression_s3tc", CheckForExtension([NSString stringWithUTF8String:"GL_EXT_texture_compression_s3tc"]));
-    setCapability("GL::EXT_texture_filter_anisotropic", CheckForExtension([NSString stringWithUTF8String:"GL_EXT_texture_filter_anisotropic"]));
-    setCapability("GL::EXT_texture_mirror_clamp", CheckForExtension([NSString stringWithUTF8String:"GL_EXT_texture_mirror_clamp"]));
-    setCapability("GL::EXT_texture_sRGB_decode", CheckForExtension([NSString stringWithUTF8String:"GL_EXT_texture_sRGB_decode"]));
+    setCapability("GL::EXT_texture_compression_s3tc", CheckForExtension(@"GL_EXT_texture_compression_s3tc"));
+    setCapability("GL::EXT_texture_filter_anisotropic", CheckForExtension(@"GL_EXT_texture_filter_anisotropic"));
+    setCapability("GL::EXT_texture_mirror_clamp", CheckForExtension(@"GL_EXT_texture_mirror_clamp"));
+    setCapability("GL::EXT_texture_sRGB_decode", CheckForExtension(@"GL_EXT_texture_sRGB_decode"));
     
-    setCapability("GL::APPLE_client_storage", CheckForExtension([NSString stringWithUTF8String:"GL_APPLE_client_storage"]));
-    setCapability("GL::APPLE_container_object_shareable", CheckForExtension([NSString stringWithUTF8String:"GL_APPLE_container_object_shareable"]));
-    setCapability("GL::APPLE_object_purgeable", CheckForExtension([NSString stringWithUTF8String:"GL_APPLE_object_purgeable"]));
-    setCapability("GL::APPLE_rgb_422", CheckForExtension([NSString stringWithUTF8String:"GL_APPLE_rgb_422"]));
-    setCapability("GL::APPLE_row_bytes", CheckForExtension([NSString stringWithUTF8String:"GL_APPLE_row_bytes"]));
-    setCapability("GL::APPLE_texture_range", CheckForExtension([NSString stringWithUTF8String:"GL_APPLE_texture_range"]));
+    setCapability("GL::APPLE_client_storage", CheckForExtension(@"GL_APPLE_client_storage"));
+    setCapability("GL::APPLE_container_object_shareable", CheckForExtension(@"GL_APPLE_container_object_shareable"));
+    setCapability("GL::APPLE_object_purgeable", CheckForExtension(@"GL_APPLE_object_purgeable"));
+    setCapability("GL::APPLE_rgb_422", CheckForExtension(@"GL_APPLE_rgb_422"));
+    setCapability("GL::APPLE_row_bytes", CheckForExtension(@"GL_APPLE_row_bytes"));
+    setCapability("GL::APPLE_texture_range", CheckForExtension(@"GL_APPLE_texture_range"));
+   
+    setCapability("GL::GL_ARB_sampler_objects", CheckForExtension(@"GL_ARB_sampler_objects"));
 }
 
 bool GFXOpenGL32OSXCardProfiler::_queryCardCap(const String& query, U32& foundResult)
