@@ -116,17 +116,24 @@ void GFXOpenGL32VertexBuffer::lock( U32 vertexStart, U32 vertexEnd, void **verte
 
 void GFXOpenGL32VertexBuffer::set( void* data, U32 dataSize, U32 indexCount, void* indexBuffer)
 {
+    glBindVertexArray(mVertexArrayObject);
     glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
     glBufferData(GL_ARRAY_BUFFER, dataSize, data, GFXGLBufferType[GFXBufferTypeVolatile]);
 
     if (indexCount)
     {
-        // This also attaches the element array buffer to the VAO
-        glGenBuffers(1, &elementBufferName);
+       if (elementBufferName == 0)
+          glGenBuffers(1, &elementBufferName);
+
+       // This also attaches the element array buffer to the VAO
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferName);
         
         // Allocate and load vertex array element data into VBO
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount*sizeof(U16), indexBuffer, GL_STATIC_DRAW);
+    }
+    else
+    {
+       glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
 }

@@ -194,7 +194,7 @@ private:
    GFXVertexBuffer* findVolatileVBO(U32 numVerts,
                                     const GFXVertexFormat *vertexFormat,
                                     U32 vertSize,
-                                    void* data = NULL); ///< Returns an existing volatile VB which has >= numVerts and the same vert flags/size, or creates a new VB if necessary
+                                    void* data = NULL, U32 indexSize = 0, void* indexData = NULL); ///< Returns an existing volatile VB which has >= numVerts and the same vert flags/size, or creates a new VB if necessary
    
    void initGLState(); ///< Guaranteed to be called after all extensions have been loaded, use to init card profiler, shader version, max samplers, etc.
    

@@ -656,6 +656,7 @@ void GuiScrollCtrl::onTouchUp(const GuiEvent &event)
       //see if the controlHit is a modeless dialog...
       if (( controlHit->mActive) || ( controlHit->mProfile->mModal))
       {
+         // Simulate a tap event
          controlHit->onTouchDown(event);
          controlHit->onTouchUp(event);
       }

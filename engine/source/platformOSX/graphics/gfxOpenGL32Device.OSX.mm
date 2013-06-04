@@ -244,7 +244,7 @@ void GFXOpenGL32Device::resurrect()
 }
 
 
-GFXVertexBuffer* GFXOpenGL32Device::findVolatileVBO(U32 numVerts, const GFXVertexFormat *vertexFormat, U32 vertSize, void* data)
+GFXVertexBuffer* GFXOpenGL32Device::findVolatileVBO(U32 numVerts, const GFXVertexFormat *vertexFormat, U32 vertSize, void* data, U32 indexSize, void* indexData)
 {
     for(U32 i = 0; i < mVolatileVBs.size(); i++)
         if (  mVolatileVBs[i]->mVertexCount >= numVerts &&
@@ -252,12 +252,12 @@ GFXVertexBuffer* GFXOpenGL32Device::findVolatileVBO(U32 numVerts, const GFXVerte
             mVolatileVBs[i]->mVertexSize == vertSize &&
             mVolatileVBs[i]->getRefCount() == 1 )
         {
-            mVolatileVBs[i].getPointer()->set(data, numVerts*vertSize);
+            mVolatileVBs[i].getPointer()->set(data, numVerts*vertSize, indexSize, indexData);
             return mVolatileVBs[i];
         }
     
     // No existing VB, so create one
-    StrongRefPtr<GFXOpenGL32VertexBuffer> buf(new GFXOpenGL32VertexBuffer(GFX, numVerts, vertexFormat, vertSize, GFXBufferTypeVolatile, data));
+    StrongRefPtr<GFXOpenGL32VertexBuffer> buf(new GFXOpenGL32VertexBuffer(GFX, numVerts, vertexFormat, vertSize, GFXBufferTypeVolatile, data, indexSize, indexData));
     buf->registerResourceWithDevice(this);
     mVolatileVBs.push_back(buf);
     return buf.getPointer();
@@ -273,7 +273,7 @@ GFXVertexBuffer *GFXOpenGL32Device::allocVertexBuffer(   U32 vertexCount,
                                                     void *indexBuffer)
 {
     if(bufferType == GFXBufferTypeVolatile)
-        return findVolatileVBO(vertexCount, vertexFormat, vertSize, vertexBuffer);
+        return findVolatileVBO(vertexCount, vertexFormat, vertSize, vertexBuffer, indexCount, indexBuffer);
    
     GFXOpenGL32VertexBuffer* buf = new GFXOpenGL32VertexBuffer( GFX, vertexCount, vertexFormat, vertSize, bufferType, vertexBuffer, indexCount, indexBuffer );
     buf->registerResourceWithDevice(this);
