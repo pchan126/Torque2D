@@ -28,14 +28,14 @@
 class GFXOpenGLES20iOSCardProfiler : public GFXOpenGLCardProfiler
 {
 public:
-   void init();
+   virtual void init();
 
 protected:
    virtual void setupCardCapabilities();
 
 private:
     String mRendererString;
-   typedef GFXCardProfiler Parent;
+   typedef GFXOpenGLCardProfiler Parent;
 };
 
 #endif

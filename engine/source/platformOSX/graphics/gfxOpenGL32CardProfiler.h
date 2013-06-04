@@ -20,12 +20,12 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#ifndef _GFXGL32CARDPROFILE_H
-#define _GFXGL32CARDPROFILE_H
+#ifndef _GFXGL32OSXCARDPROFILE_H
+#define _GFXGL32OSXCARDPROFILE_H
 
-#include "graphics/gfxCardProfile.h"
+#include "graphics/OpenGL/gfxOpenGLCardProfiler.h"
 
-class GFXOpenGLCardProfiler : public GFXCardProfiler
+class GFXOpenGL32OSXCardProfiler : public GFXOpenGLCardProfiler
 {
 public:
    void init();
@@ -38,7 +38,7 @@ protected:
 
 private:
    String mRendererString;
-   typedef GFXCardProfiler Parent;
+   typedef GFXOpenGLCardProfiler Parent;
 };
 
 #endif

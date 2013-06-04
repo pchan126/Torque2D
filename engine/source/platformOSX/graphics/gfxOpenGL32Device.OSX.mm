@@ -57,7 +57,7 @@ void GFXOpenGL32Device::initGLState()
     // need to happen.
     
     // Deal with the card profiler here when we know we have a valid context.
-    mCardProfiler = new GFXOpenGLCardProfiler();
+    mCardProfiler = new GFXOpenGL32OSXCardProfiler();
     mCardProfiler->init();
 
     glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, (GLint*)&mMaxShaderTextures);

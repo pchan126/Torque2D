@@ -78,83 +78,22 @@ CGLContextObj getContextForCapsCheck(CGDirectDisplayID display)
 
 
 
-void GFXOpenGLCardProfiler::init()
+void GFXOpenGL32OSXCardProfiler::init()
 {
-//    CGLContextObj curr_ctx = CGLGetCurrentContext();
-//    CGLContextObj temp_ctx =  getContextForCapsCheck(CGMainDisplayID());
-//    
-//    if (!temp_ctx)
-//    {
-//        Con::errorf("OpenGL may not be set up correctly!");
-//        return;
-//    }
-    
-//    CGLSetCurrentContext(temp_ctx);
-    
-//    AssertFatal(CGMainDisplayID(), "GFXOpenGLCardProfiler was called before a monitor was chosen!");
-
-    mChipSet = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
-
-   // get the major and minor parts of the GL version. These are defined to be
-   // in the order "[major].[minor] [other]|[major].[minor].[release] [other] in the spec
-   const char *versionStart = reinterpret_cast<const char*>(glGetString(GL_VERSION));
-   const char *versionEnd = versionStart;
-   // get the text for the version "x.x.xxxx "
-   for( S32 tok = 0; tok < 2; ++tok )
-   {
-      char *text = dStrdup( versionEnd );
-      dStrtok(text, ". ");
-      versionEnd += dStrlen( text ) + 1;
-      dFree( text );
-   }
-
-   mRendererString = "GL";
-   mRendererString += String::SpanToString(versionStart, versionEnd - 1);
-
-   mCardDescription = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
-   mVersionString = reinterpret_cast<const char*>(glGetString(GL_VERSION));
-   
-//   mVideoMemory = static_cast<GFXOpenGL32Device*>(GFX)->getTotalVideoMemory();
-
    Parent::init();
-   
-//    if(queryProfile("GL::suppBlendMinMax"))
-    // done. silently restore the old cgl context.
-//    CGLSetCurrentContext(curr_ctx);
-//    CGLDestroyContext(temp_ctx);
 }
 
-void GFXOpenGLCardProfiler::setupCardCapabilities()
+
+void GFXOpenGL32OSXCardProfiler::setupCardCapabilities()
 {
-    GLint maxTexSize;
-//    GLint maxDepthBits;
-//    GLint maxStencilBits;
-    GLint numCompressedTexFormats;
+   Parent::setupCardCapabilities();
+   
     GLint maxShaderTextures;
     
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTexSize);
     glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, (GLint*)&maxShaderTextures);
-    
-//    glGetIntegerv(GL_DEPTH_BITS, &maxDepthBits);
-//    glGetIntegerv(GL_STENCIL_BITS, &maxStencilBits);
-
-    const char* versionString = reinterpret_cast<const char*>(glGetString(GL_SHADING_LANGUAGE_VERSION));
-    
-    Con::printf("OpenGl Shading Language Version: %s", versionString);
-   
-    // OpenGL doesn't have separate maximum width/height.
-    setCapability("maxTextureWidth", maxTexSize);
-    setCapability("maxTextureHeight", maxTexSize);
-    setCapability("maxTextureSize", maxTexSize);
     
     setCapability("maxTextureImageUnits", maxShaderTextures);
  
-    glGetIntegerv(GL_NUM_COMPRESSED_TEXTURE_FORMATS, &numCompressedTexFormats);
-    setCapability("numCompressedTextureFormats", numCompressedTexFormats);
-    
-//    setCapability("maxDepthBits", maxDepthBits);
-//    setCapability("maxStencilBits", maxStencilBits);
-
     setCapability("GL::EXT_depth_bounds_test", CheckForExtension([NSString stringWithUTF8String:"GL_EXT_depth_bounds_test"]));
     setCapability("GL::EXT_framebuffer_multisample_blit_scaled", CheckForExtension([NSString stringWithUTF8String:"GL_EXT_framebuffer_multisample_blit_scaled"]));
 
@@ -171,13 +110,13 @@ void GFXOpenGLCardProfiler::setupCardCapabilities()
     setCapability("GL::APPLE_texture_range", CheckForExtension([NSString stringWithUTF8String:"GL_APPLE_texture_range"]));
 }
 
-bool GFXOpenGLCardProfiler::_queryCardCap(const String& query, U32& foundResult)
+bool GFXOpenGL32OSXCardProfiler::_queryCardCap(const String& query, U32& foundResult)
 {
    // Just doing what the D3D9 layer does
    return 0;
 }
 
-bool GFXOpenGLCardProfiler::_queryFormat(const GFXFormat fmt, const GFXTextureProfile *profile, bool &inOutAutogenMips)
+bool GFXOpenGL32OSXCardProfiler::_queryFormat(const GFXFormat fmt, const GFXTextureProfile *profile, bool &inOutAutogenMips)
 {
 	// We assume if the format is valid that we can use it for any purpose.
    // This may not be the case, but we have no way to check short of in depth 

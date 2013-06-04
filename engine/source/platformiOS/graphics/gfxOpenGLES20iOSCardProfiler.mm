@@ -20,29 +20,6 @@ BOOL CheckForExtension(NSString *searchName)
 
 void GFXOpenGLES20iOSCardProfiler::init()
 {
-   mChipSet = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
-
-   // get the major and minor parts of the GL version. These are defined to be
-   // in the order "[major].[minor] [other]|[major].[minor].[release] [other] in the spec
-   const char *versionStart = reinterpret_cast<const char*>(glGetString(GL_VERSION));
-   const char *versionEnd = versionStart;
-   // get the text for the version "x.x.xxxx "
-   for( S32 tok = 0; tok < 2; ++tok )
-   {
-      char *text = dStrdup( versionEnd );
-      dStrtok(text, ". ");
-      versionEnd += dStrlen( text ) + 1;
-      dFree( text );
-   }
-
-   mRendererString = "GL";
-   mRendererString += String::SpanToString(versionStart, versionEnd - 1);
-
-   mCardDescription = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
-   mVersionString = reinterpret_cast<const char*>(glGetString(GL_VERSION));
-   
-//   mVideoMemory = static_cast<GFXOpenGLES20iOSDevice*>(GFX)->getTotalVideoMemory();
-
    Parent::init();
    
    // Set new enums here so if our profile script forces this to be false we keep the GL_ZEROs.
@@ -104,31 +81,18 @@ void GFXOpenGLES20iOSCardProfiler::init()
 
 void GFXOpenGLES20iOSCardProfiler::setupCardCapabilities()
 {
-    GLint maxTexSize;
-    GLint maxDepthBits;
-    GLint maxStencilBits;
-    GLint numCompressedTexFormats;
-
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTexSize);
-    glGetIntegerv(GL_DEPTH_BITS, &maxDepthBits);
-    glGetIntegerv(GL_STENCIL_BITS, &maxStencilBits);
-
-    const char* versionString = reinterpret_cast<const char*>(glGetString(GL_SHADING_LANGUAGE_VERSION));
-    
-    Con::printf("OpenGl Shading Language Version: %s", versionString);
+   Parent::setupCardCapabilities();
    
-    // OpenGL doesn't have separate maximum width/height.
-    setCapability("maxTextureWidth", maxTexSize);
-    setCapability("maxTextureHeight", maxTexSize);
-    setCapability("maxTextureSize", maxTexSize);
- 
-    setCapability("maxDepthBits", maxDepthBits);
-    setCapability("maxStencilBits", maxStencilBits);
+   GLint maxDepthBits;
+   GLint maxStencilBits;
 
-    glGetIntegerv(GL_NUM_COMPRESSED_TEXTURE_FORMATS, &numCompressedTexFormats);
-    setCapability("numCompressedTextureFormats", numCompressedTexFormats);
+   glGetIntegerv(GL_DEPTH_BITS, &maxDepthBits);
+   glGetIntegerv(GL_STENCIL_BITS, &maxStencilBits);
 
-    // The GL_APPLE_copy_texture_levels extension builds on top of the functionality of the GL_EXT_texture_storage extension and allows a set of texture mipmaps to be copied from one texture to another. (iOS 6.0)
+   setCapability("maxDepthBits", maxDepthBits);
+   setCapability("maxStencilBits", maxStencilBits);
+
+   // The GL_APPLE_copy_texture_levels extension builds on top of the functionality of the GL_EXT_texture_storage extension and allows a set of texture mipmaps to be copied from one texture to another. (iOS 6.0)
     setCapability("GL::GL_APPLE_copy_texture_levels", CheckForExtension(@"GL_APPLE_copy_texture_levels"));
 
     // The APPLE_framebuffer_multisample extension enables full-scene anti-aliasing. (iOS 4.0)
