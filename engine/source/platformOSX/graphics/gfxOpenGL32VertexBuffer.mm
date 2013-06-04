@@ -37,7 +37,8 @@ GFXOpenGL32VertexBuffer::GFXOpenGL32VertexBuffer(  GFXDevice *device,
                                        U32 indexCount,
                                        const GLvoid *indexBuffer)
    :  GFXVertexBuffer( device, vertexCount, vertexFormat, vertexSize, bufferType ),
-      mZombieCache(NULL)
+      mZombieCache(NULL),
+      elementBufferName(0)
 {
     glGenVertexArrays(1, &mVertexArrayObject);
     glBindVertexArray(mVertexArrayObject);

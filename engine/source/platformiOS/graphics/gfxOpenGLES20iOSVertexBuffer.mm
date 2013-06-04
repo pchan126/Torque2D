@@ -21,7 +21,8 @@ GFXOpenGLES20iOSVertexBuffer::GFXOpenGLES20iOSVertexBuffer(  GFXDevice *device,
                                        const GLvoid *indexBuffer)
    :  GFXVertexBuffer( device, vertexCount, vertexFormat, vertexSize, bufferType ),
       mZombieCache(NULL),
-      mIndexCount(indexCount)
+      mIndexCount(indexCount),
+      elementBufferName(0)
 {
     mIndexCount = indexCount;
     glGenVertexArraysOES(1,&mVertexArrayObject);
