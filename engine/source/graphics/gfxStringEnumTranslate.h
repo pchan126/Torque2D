@@ -31,13 +31,6 @@
 #ifndef _CONSOLE_H_
    #include "console/console.h"
 #endif
-//#ifndef _DYNAMIC_CONSOLETYPES_H_
-//   #include "console/dynamicTypes.h"
-//#endif
-//#ifndef _GFXAPI_H_
-//   #include "graphics/gfxAPI.h"
-//#endif
-
 
 //------------------------------------------------------------------------------
 
@@ -78,12 +71,5 @@ extern StringValueLookupFn GFXStringTextureStageStateValueLookup[GFXTSS_COUNT];
          break; \
       } \
 
-
-// TODOS!
-extern EnumTable gTextureArgumentEnumTable_M;
-//extern EnumTable srcBlendFactorTable;
-//extern EnumTable dstBlendFactorTable;
-//extern EnumTable::Enums srcBlendFactorLookup[9];
-//extern EnumTable::Enums dstBlendFactorLookup[9];
-
 #endif
+

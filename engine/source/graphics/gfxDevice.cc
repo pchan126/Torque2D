@@ -148,7 +148,7 @@ GFXDrawUtil* GFXDevice::getDrawUtil()
 void GFXDevice::deviceInited()
 {
    getDeviceEventSignal().trigger(deInit);
-//   mDeviceStatistics.setPrefix("$GFXDeviceStatistics::");
+   mDeviceStatistics.setPrefix("$GFXDeviceStatistics::");
 //
 //   // Initialize the static helper textures.
 //   GBitmap temp( 2, 2, false, GFXFormatR8G8B8A8 );
@@ -382,7 +382,7 @@ inline bool GFXDevice::beginScene()
 {
    AssertFatal( mCanCurrentlyRender == false, "GFXDevice::beginScene() - The scene has already begun!" );
 
-//   mDeviceStatistics.clear();
+   mDeviceStatistics.clear();
 
    // Send the start of frame signal.
    getDeviceEventSignal().trigger( GFXDevice::deStartOfFrame );
@@ -400,7 +400,7 @@ inline void GFXDevice::endScene()
    getDeviceEventSignal().trigger( GFXDevice::deEndOfFrame );
 
    endSceneInternal();
-//   mDeviceStatistics.exportToConsole();
+   mDeviceStatistics.exportToConsole();
 }
 
 void GFXDevice::setViewport( const RectI &inRect )

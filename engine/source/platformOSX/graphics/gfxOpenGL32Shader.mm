@@ -862,10 +862,6 @@ bool GFXOpenGL32Shader::initShader( const StringTableEntry file,
    else
       mPixelShader = activeShader;
    glAttachShader(mProgram, activeShader);
-     
-//    char szFullPathBuffer[1024];
-//    Con::printf("%s", szFullPathBuffer);
-//    Con::expandScriptFilename( szFullPathBuffer, sizeof(szFullPathBuffer), file );
    
    // Ok it's not in the shader gen manager, so ask Torque for it
    FileStream stream;

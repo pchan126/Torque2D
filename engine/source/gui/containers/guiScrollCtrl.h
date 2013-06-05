@@ -172,7 +172,7 @@ public:
    void computeSizes();
 
    // you can change the bitmap array dynamically.
-   void loadBitmapArray();
+//   void loadBitmapArray();
 
    void addObject(SimObject *obj);
    bool resize(const Point2I &newPosition, const Point2I &newExtent);

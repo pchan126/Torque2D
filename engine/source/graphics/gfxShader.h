@@ -346,9 +346,6 @@ public:
 
 protected:
 
-//   /// Called when the shader files change on disk.
-//   void _onFileChanged( const String &path ) { reload(); }
-
    /// Internal initialization function overloaded for
    /// each GFX device type.
    virtual bool _init() = 0;

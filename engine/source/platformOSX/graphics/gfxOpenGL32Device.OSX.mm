@@ -60,7 +60,6 @@ void GFXOpenGL32Device::initGLState()
     mCardProfiler = new GFXOpenGL32OSXCardProfiler();
     mCardProfiler->init();
 
-    glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, (GLint*)&mMaxShaderTextures);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 }
 
@@ -569,8 +568,8 @@ void GFXOpenGL32Device::_updateRenderTargets()
         // as the GFXTextureTarget supports MRT internally.  So when
         // we activate a GFXTarget it could result in multiple calls
         // to SetRenderTarget on the actual device.
-        //      mDeviceStatistics.mRenderTargetChanges++;
-        
+        mDeviceStatistics.mRenderTargetChanges++;
+       
         GFXOpenGL32TextureTarget *tex = dynamic_cast<GFXOpenGL32TextureTarget*>( mCurrentRT.getPointer() );
         if ( tex )
         {

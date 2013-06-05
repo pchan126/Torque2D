@@ -162,7 +162,6 @@
 		867BB04B16AEC9050033868F /* bitmapPng.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAE1E16AEC9050033868F /* bitmapPng.cc */; };
 		867BB04C16AEC9050033868F /* bitmapPvr.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAE1F16AEC9050033868F /* bitmapPvr.cc */; };
 		867BB04E16AEC9050033868F /* color.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAE2216AEC9050033868F /* color.cc */; };
-		867BB05116AEC9050033868F /* DynamicTexture.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAE2716AEC9050033868F /* DynamicTexture.cc */; };
 		867BB05216AEC9050033868F /* gBitmap.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAE2916AEC9050033868F /* gBitmap.cc */; };
 		867BB05316AEC9050033868F /* gFont.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAE2B16AEC9050033868F /* gFont.cc */; };
 		867BB05416AEC9050033868F /* gPalette.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAE2D16AEC9050033868F /* gPalette.cc */; };
@@ -479,6 +478,7 @@
 		D123F8891716756600F8EFEF /* gfxOpenGLShader.cc in Sources */ = {isa = PBXBuildFile; fileRef = D123F8881716756500F8EFEF /* gfxOpenGLShader.cc */; };
 		D123F88B1716794800F8EFEF /* gfxOpenGLStateBlock.cc in Sources */ = {isa = PBXBuildFile; fileRef = D123F88A1716794700F8EFEF /* gfxOpenGLStateBlock.cc */; };
 		D123F88D171681DA00F8EFEF /* gfxOpenGLDevice.cc in Sources */ = {isa = PBXBuildFile; fileRef = D123F88C171681DA00F8EFEF /* gfxOpenGLDevice.cc */; };
+		D1272BD8175F10B10012995E /* gfxDeviceStatistics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1272BD6175F10AF0012995E /* gfxDeviceStatistics.cpp */; };
 		D127CE05173CE479006AB038 /* gfxOpenGLES20iOSCardProfiler.mm in Sources */ = {isa = PBXBuildFile; fileRef = D127CDED173CE479006AB038 /* gfxOpenGLES20iOSCardProfiler.mm */; };
 		D127CE07173CE479006AB038 /* gfxOpenGLES20iOSDevice.IOS.mm in Sources */ = {isa = PBXBuildFile; fileRef = D127CDF1173CE479006AB038 /* gfxOpenGLES20iOSDevice.IOS.mm */; };
 		D127CE08173CE479006AB038 /* gfxOpenGLES20iOSEnumTranslate.mm in Sources */ = {isa = PBXBuildFile; fileRef = D127CDF3173CE479006AB038 /* gfxOpenGLES20iOSEnumTranslate.mm */; };
@@ -898,8 +898,6 @@
 		867BAE1F16AEC9050033868F /* bitmapPvr.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bitmapPvr.cc; sourceTree = "<group>"; };
 		867BAE2216AEC9050033868F /* color.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = color.cc; sourceTree = "<group>"; };
 		867BAE2316AEC9050033868F /* color.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = color.h; sourceTree = "<group>"; };
-		867BAE2716AEC9050033868F /* DynamicTexture.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DynamicTexture.cc; sourceTree = "<group>"; };
-		867BAE2816AEC9050033868F /* DynamicTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DynamicTexture.h; sourceTree = "<group>"; };
 		867BAE2916AEC9050033868F /* gBitmap.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gBitmap.cc; sourceTree = "<group>"; };
 		867BAE2A16AEC9050033868F /* gBitmap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gBitmap.h; sourceTree = "<group>"; };
 		867BAE2B16AEC9050033868F /* gFont.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gFont.cc; sourceTree = "<group>"; };
@@ -1491,6 +1489,8 @@
 		D123F88C171681DA00F8EFEF /* gfxOpenGLDevice.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxOpenGLDevice.cc; sourceTree = "<group>"; };
 		D123F89117168E6000F8EFEF /* IProcessInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IProcessInput.h; sourceTree = "<group>"; };
 		D123F89317168F8200F8EFEF /* IUniform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IUniform.h; sourceTree = "<group>"; };
+		D1272BD6175F10AF0012995E /* gfxDeviceStatistics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxDeviceStatistics.cpp; sourceTree = "<group>"; };
+		D1272BD7175F10B00012995E /* gfxDeviceStatistics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxDeviceStatistics.h; sourceTree = "<group>"; };
 		D127CDEC173CE479006AB038 /* gfxOpenGLES20iOSCardProfiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSCardProfiler.h; sourceTree = "<group>"; };
 		D127CDED173CE479006AB038 /* gfxOpenGLES20iOSCardProfiler.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLES20iOSCardProfiler.mm; sourceTree = "<group>"; };
 		D127CDF0173CE479006AB038 /* gfxOpenGLES20iOSDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSDevice.h; sourceTree = "<group>"; };
@@ -2185,6 +2185,8 @@
 		867BAE1B16AEC9050033868F /* graphics */ = {
 			isa = PBXGroup;
 			children = (
+				D1272BD6175F10AF0012995E /* gfxDeviceStatistics.cpp */,
+				D1272BD7175F10B00012995E /* gfxDeviceStatistics.h */,
 				867BAE1C16AEC9050033868F /* bitmapBmp.cc */,
 				867BAE1D16AEC9050033868F /* bitmapJpeg.cc */,
 				867BAE1E16AEC9050033868F /* bitmapPng.cc */,
@@ -2193,8 +2195,6 @@
 				D15E7E8916F061CF00BB43B1 /* bitmapUtils.h */,
 				867BAE2216AEC9050033868F /* color.cc */,
 				867BAE2316AEC9050033868F /* color.h */,
-				867BAE2716AEC9050033868F /* DynamicTexture.cc */,
-				867BAE2816AEC9050033868F /* DynamicTexture.h */,
 				867BAE2916AEC9050033868F /* gBitmap.cc */,
 				867BAE2A16AEC9050033868F /* gBitmap.h */,
 				867BAE2B16AEC9050033868F /* gFont.cc */,
@@ -3497,7 +3497,6 @@
 				867BB04B16AEC9050033868F /* bitmapPng.cc in Sources */,
 				867BB04C16AEC9050033868F /* bitmapPvr.cc in Sources */,
 				867BB04E16AEC9050033868F /* color.cc in Sources */,
-				867BB05116AEC9050033868F /* DynamicTexture.cc in Sources */,
 				867BB05216AEC9050033868F /* gBitmap.cc in Sources */,
 				867BB05316AEC9050033868F /* gFont.cc in Sources */,
 				867BB05416AEC9050033868F /* gPalette.cc in Sources */,
@@ -3859,6 +3858,7 @@
 				30D5475C173FF5D300CB43DA /* platformTimer.cc in Sources */,
 				D11B0D13174F00D6002CB743 /* FilterImageAsset.mm in Sources */,
 				D11F9A89175DDF9C00AB3E10 /* gfxOpenGLCardProfiler.cc in Sources */,
+				D1272BD8175F10B10012995E /* gfxDeviceStatistics.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

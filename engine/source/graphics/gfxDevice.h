@@ -48,6 +48,7 @@
 //#include "graphics/gfxCubemap.h"
 //#endif
 
+#include "graphics/gfxDeviceStatistics.h"
 #include "collection/hashTable.h"
 
 #include "delegates/delegateSignal.h"
@@ -328,9 +329,9 @@ public:
    virtual void describeResources(const char* resName, const char* file, bool unflaggedOnly);
 
    /// Returns the current GFXDeviceStatistics, stats are cleared every ::beginScene call.
-//   GFXDeviceStatistics* getDeviceStatistics() { return &mDeviceStatistics; }
+   GFXDeviceStatistics* getDeviceStatistics() { return &mDeviceStatistics; }
 protected:
-//   GFXDeviceStatistics mDeviceStatistics;
+   GFXDeviceStatistics mDeviceStatistics;
 
    /// This is a helper method for describeResourcesToFile.  It walks through the
    /// GFXResource list and sorts it by item type, putting the resources into the proper vector.
@@ -419,35 +420,14 @@ protected:
 
    //-----------------------------------------------------------------------------
 
-   /// @name Matrix managing variables
-   /// @{
-
-   ///
-//   MatrixF mWorldMatrix[WORLD_STACK_MAX];
-//   bool    mWorldMatrixDirty;
-//   S32     mWorldStackSize;
-//
-//   MatrixF mProjectionMatrix;
-//   bool    mProjectionMatrixDirty;
-//
-//   MatrixF mViewMatrix;
-//   bool    mViewMatrixDirty;
-//
-//   MatrixF mTextureMatrix[TEXTURE_STAGE_COUNT];
-//   bool    mTextureMatrixDirty[TEXTURE_STAGE_COUNT];
-//   bool    mTextureMatrixCheckDirty;
-   /// @}
-
     /// @name Current frustum planes
     /// @{
     
-    ///
 //    Frustum mFrustum;
 
     F64 frustLeft, frustRight, frustBottom, frustTop, frustNear, frustFar;
    RectI viewPort;
    F32 pixelScale;
-//   F32 worldToScreenScale;
    bool isOrtho;
 
 

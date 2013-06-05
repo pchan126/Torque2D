@@ -925,7 +925,6 @@ void ImageAsset::calculateImage( void )
             mImageTextureHandle.refresh();
 
     // Get image texture.
-//    mImageTextureHandle.set( mImageFile, TextureHandle::BitmapTexture, true, getForce16Bit() );
     mImageTextureHandle.set( mImageFile, &GFXImageAssetTextureProfile, "mImageTextureHandle");
 
     // Is the texture valid?
@@ -1137,9 +1136,6 @@ void ImageAsset::calculateExplicitMode( void )
     // Sanity!
     AssertFatal( mExplicitMode, "Cannot calculate explicit cells when not in explicit mode." );
 
-//    // Fetch the texture object.
-//    TextureObject* pTextureObject = ((TextureObject*)mImageTextureHandle);
- 
     // Calculate texel scales.
     const F32 texelWidthScale = 1.0f / (F32)mImageTextureHandle->getWidth();
     const F32 texelHeightScale = 1.0f / (F32)mImageTextureHandle->getHeight();

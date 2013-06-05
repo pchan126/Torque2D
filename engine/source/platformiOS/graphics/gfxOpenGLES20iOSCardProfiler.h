@@ -34,7 +34,6 @@ protected:
    virtual void setupCardCapabilities();
 
 private:
-    String mRendererString;
    typedef GFXOpenGLCardProfiler Parent;
 };
 

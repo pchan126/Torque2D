@@ -28,7 +28,6 @@ Vector<GFXShaderMacro> GFXShader::smGlobalMacros;
 bool GFXShader::smLogErrors = true;
 bool GFXShader::smLogWarnings = true;
 
-//IMPLEMENT_CONOBJECT(GFXShader);
 
 GFXShader::GFXShader()
    :  mPixVersion( 0.0f ),
@@ -38,8 +37,6 @@ GFXShader::GFXShader()
 
 GFXShader::~GFXShader()
 {
-//   Torque::FS::RemoveChangeNotification( mVertexFile, this, &GFXShader::_onFileChanged );
-//   Torque::FS::RemoveChangeNotification( mPixelFile, this, &GFXShader::_onFileChanged );
 }
 
 bool GFXShader::init(   const StringTableEntry &vertFile,
@@ -65,10 +62,6 @@ bool GFXShader::init(   const StringTableEntry &vertFile,
       return false;
 
    _updateDesc();
-
-   // Add file change notifications for reloads.
-//   Torque::FS::AddChangeNotification( mVertexFile, this, &GFXShader::_onFileChanged );
-//   Torque::FS::AddChangeNotification( mPixelFile, this, &GFXShader::_onFileChanged );
 
    return true;
 }

@@ -26,62 +26,10 @@
 #include "platform/platform.h"
 #include "console/console.h"
 #include "io/resource/resourceManager.h"
-//#include "console/engineAPI.h"
-//#include "core/volume.h"
-
-// NOTE: The script class docs are in 
-// Documentation\scriptDocs\docs\classGFXCardProfiler.txt
 
 
-//void GFXCardProfiler::loadProfileScript(const char* aScriptName)
-//{
-//   const String   profilePath = Con::getVariable( "$pref::Video::profilePath" );
-//   String scriptName = !profilePath.isEmpty() ? profilePath.c_str() : "profile";
-//   scriptName += "/";
-//   scriptName += aScriptName;
-//   
-//   const char  *data = NULL;
-//   U32   dataSize = 0;
-//
-////   Torque::FS::ReadFile( scriptName.c_str(), data, dataSize, true );
-//    
-//    Stream *s = ResourceManager->openStream(scriptName.c_str());
-//
-//   if(!s)
-//   {
-//      Con::warnf("      - No card profile %s exists", scriptName.c_str());
-//      return;
-//   }
-//
-//    U32 mBufferSize = ResourceManager->getSize(scriptName.c_str());
-//    char  *script = (char  *) dMalloc(mBufferSize + 1);
-//    script[mBufferSize] = 0;
-//    s->read(mBufferSize, script);
-//    ResourceManager->closeStream(s);
-//    
-//   Con::printf("      - Loaded card profile %s", scriptName.c_str());
-//
-////   Con::executef("eval", script);
-//    Con::evaluatef(script);
-//   delete[] script;
-//}
-//
-//void GFXCardProfiler::loadProfileScripts(const String& render, const String& vendor, const String& card, const String& version)
-//{
-//   String script = render + ".cs";
-//   loadProfileScript(script);
-//
-//   script = render + "." + vendor + ".cs";
-//   loadProfileScript(script);
-//
-//   script = render + "." + vendor + "." + card + ".cs";
-//   loadProfileScript(script);
-//
-//   script = render + "." + vendor + "." + card + "." + version + ".cs";
-//   loadProfileScript(script);
-//}
 
-GFXCardProfiler::GFXCardProfiler() : mVideoMemory( 0 )
+GFXCardProfiler::GFXCardProfiler()
 {
 }
 
@@ -89,24 +37,6 @@ GFXCardProfiler::~GFXCardProfiler()
 {
    mCapDictionary.clear();
 }
-
-//String GFXCardProfiler::strippedString(const char *string)
-//{
-//   String res = "";
-//
-//   // And fill it with the stripped string...
-//   const char *a=string;
-//   while(*a)
-//   {
-//      if(isalnum(*a))
-//      {
-//         res += *a;
-//      }
-//      a++;
-//   }
-//
-//   return res;
-//}
 
 void GFXCardProfiler::init()
 {
@@ -120,15 +50,6 @@ void GFXCardProfiler::init()
    Con::printf("   - Scanning card capabilities...");
 
    setupCardCapabilities();
-
-   // And finally, load stuff up...
-//   String render  = strippedString(getRendererString());
-//   String chipset  = strippedString(getChipString());
-//   String card    = strippedString(getCardString());
-//   String version = strippedString(getVersionString());
-
-//   Con::printf("   - Loading card profiles...");
-//   loadProfileScripts(render, chipset, card, version);
 }
 
 U32 GFXCardProfiler::queryProfile(const String &cap)
@@ -178,21 +99,6 @@ bool GFXCardProfiler::checkFormat( const GFXFormat fmt, const GFXTextureProfile 
    return _queryFormat( fmt, profile, inOutAutogenMips );
 }
 
-//DECLARE_SCOPE( GFXCardProfilerAPI );
-//IMPLEMENT_SCOPE( GFXCardProfilerAPI, GFXCardProfiler,, "");
-//ConsoleDoc(
-//   "@class GFXCardProfilerAPI\n"
-//   "@brief This class is the interface between TorqueScript and GFXCardProfiler.\n\n"
-//   "You will not actually declare GFXCardProfilerAPI in TorqueScript. It exists solely "
-//   "to give access to the GFXCardProfiler's querying functions, such as GFXCardProfiler::getRenderer.\n\n"
-//   "@tsexample\n"
-//   "// Example of accessing GFXCardProfiler function from script\n"
-//   "// Notice you are not using the API version\n"
-//   "%videoMem = GFXCardProfiler::getVideoMemoryMB();\n"
-//   "@endtsexample\n\n"
-//   "@see GFXCardProfiler for more information\n\n"
-//   "@ingroup GFX\n"
-//);
 
 ConsoleStaticMethod( GFXCardProfilerAPI, getVersion, const char *, 2, 2,
    "Returns the driver version string." )
@@ -219,12 +125,6 @@ ConsoleStaticMethod( GFXCardProfilerAPI, getRenderer, const char *, 2, 2,
 	return GFX->getCardProfiler()->getRendererString();
 }
 
-ConsoleStaticMethod( GFXCardProfilerAPI, getVideoMemoryMB, S32, 2, 2,
-   "Returns the amount of video memory in megabytes." )
-{
-   return GFX->getCardProfiler()->getVideoMemoryInMB();
-}
-
 ConsoleStaticMethod( GFXCardProfilerAPI, setCapability, void, 4, 4,
    "Used to set the value for a specific card capability.\n"
    "@param name The name of the capability being set.\n"
@@ -235,12 +135,12 @@ ConsoleStaticMethod( GFXCardProfilerAPI, setCapability, void, 4, 4,
 	GFX->getCardProfiler()->setCapability( name, (U32)value );
 }
 
-//ConsoleStaticMethod( GFXCardProfilerAPI, queryProfile, S32, 4, 4,
-//   "Used to query the value of a specific card capability.\n"
-//   "@param name The name of the capability being queried.\n"
-//   "@param defaultValue The value to return if the capability is not defined." )
-//{
-//    const char *name = argv[2];
-//    S32 defaultValue = dAtoi( argv[3] );
-//	return (S32)GFX->getCardProfiler()->queryProfile( name, (U32)defaultValue );
-//}
+ConsoleStaticMethod( GFXCardProfilerAPI, queryProfile, S32, 4, 4,
+   "Used to query the value of a specific card capability.\n"
+   "@param name The name of the capability being queried.\n"
+   "@param defaultValue The value to return if the capability is not defined." )
+{
+    const char *name = argv[2];
+    S32 defaultValue = dAtoi( argv[3] );
+	return (S32)GFX->getCardProfiler()->queryProfile( name, (U32)defaultValue );
+}

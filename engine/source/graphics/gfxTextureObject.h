@@ -220,7 +220,6 @@ public:
 //    /// The texture event signal.
 //    EventSignal *smEventSignal;
 
-    //    DECLARE_CONOBJECT(GFXTextureObject);
 protected:
     S32                 mTextureResidentWasteSize;
     S32                 mTextureResidentSize;

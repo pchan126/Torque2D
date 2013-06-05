@@ -27,8 +27,6 @@
 #include "graphics/gBitmap.h"
 #include "platform/platformString.h"
 #include "console/console.h"
-//#include "console/engineAPI.h"
-
 
 // Set up defaults...
 GFX_ImplementTextureProfile(GFXDefaultRenderTargetProfile, 

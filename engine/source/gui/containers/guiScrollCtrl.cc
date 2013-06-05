@@ -419,8 +419,6 @@ void GuiScrollCtrl::scrollTo(S32 x, S32 y)
    if(!size())
       return;
    
-   Con::printf("GuiScrolCtrl::ScrollTo(%i, %i)", x, y);
-
     // keep scroll start state
     Point2I startPoint = mChildPos;
     Point2I startPointRel = mChildRelPos;

@@ -49,8 +49,8 @@ inline static void _GFXInitGetInitialRes(GFXVideoMode &vm, const Point2I &initia
    const U32 kDefaultBitDepth = 32;
    const U32 kDefaultRefreshRate = 60;
 
-   // cache the desktop size of the main screen
-   GFXVideoMode desktopVm = GFXInit::getDesktopResolution();
+//   // cache the desktop size of the main screen
+//   GFXVideoMode desktopVm = GFXInit::getDesktopResolution();
 
    // load pref variables, properly choose windowed / fullscreen  
    const String resString = Con::getVariable("$pref::Video::mode");

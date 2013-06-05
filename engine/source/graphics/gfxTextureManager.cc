@@ -26,19 +26,12 @@
 #include "graphics/gfxDevice.h"
 #include "graphics/gfxCardProfile.h"
 #include "graphics/gfxStringEnumTranslate.h"
-//#include "graphics/bitmap/ddsUtils.h"
 #include "platform/platformString.h"
 #include "memory/safeDelete.h"
 #include "io/resource/resourceManager.h"
-//#include "core/volume.h"
-//#include "core/util/dxt5nmSwizzle.h"
 #include "console/consoleTypes.h"
-//#include "console/engineAPI.h"
-//#include "core/util/path.h"
 
 //#define DEBUG_SPEW
-
-//IMPLEMENT_CONOBJECT(GFXTextureManager);
 
 S32 GFXTextureManager::smTextureReductionLevel = 0;
 
@@ -654,30 +647,24 @@ void GFXTextureManager::_linkTexture( GFXTextureObject *obj )
 
 void GFXTextureManager::deleteTexture( GFXTextureObject *texture )
 {
-//   if ( mTextureManagerState == GFXTextureManager::Dead )
-//      return;
-//
-//   #ifdef DEBUG_SPEW
-//   Platform::outputDebugString( "[GFXTextureManager] deleteTexture '%s'",
-//      texture->mTextureLookupName.c_str()
-//   );
-//   #endif
-//
-//   if( mListHead == texture )
-//      mListHead = texture->mNext;
-//   if( mListTail == texture )
-//      mListTail = texture->mPrev;
-//
-//   hashRemove( texture );
-//
-//   // If we have a path for the texture then
-//   // remove change notifications for it.
-//    String texPath = texture->getPath();
-////   if ( !texPath.isEmpty() )
-////      FS::RemoveChangeNotification( texPath, this, &GFXTextureManager::_onFileChanged );
-//
-//   GFXTextureProfile::updateStatsForDeletion(texture);
-//
+   if ( mTextureManagerState == GFXTextureManager::Dead )
+      return;
+
+   #ifdef DEBUG_SPEW
+   Platform::outputDebugString( "[GFXTextureManager] deleteTexture '%s'",
+      texture->mTextureLookupName.c_str()
+   );
+   #endif
+
+   if( mListHead == texture )
+      mListHead = texture->mNext;
+   if( mListTail == texture )
+      mListTail = texture->mPrev;
+
+   hashRemove( texture );
+
+   GFXTextureProfile::updateStatsForDeletion(texture);
+
 //   freeTexture( texture );
 }
 
@@ -815,24 +802,6 @@ void GFXTextureManager::_validateTexParams( const U32 width, const U32 height,
 ////      //FS::RemoveChangeNotification( texPath, this, &GFXTextureManager::_onFileChanged );
 //}
 
-void GFXTextureManager::_onFileChanged( const String &path )
-{
-//   String pathNoExt = String::Join( path.getRoot(), ':', path.getPath() );
-//   pathNoExt = String::Join( pathNoExt, '/', path.getFileName() );
-//
-//   // See if we've got it loaded.
-//   GFXTextureObject *obj = find( pathNoExt );
-//   if ( !obj || path != obj->getPath() )
-//      return;
-//
-//   Con::errorf( "[GFXTextureManager::_onFileChanged] : File changed [%s]", path );
-//
-//   const U32 scalePower = getTextureDownscalePower( obj->mProfile );
-//
-//      Resource<GBitmap> bmp = GBitmap::load( path );
-//      if( bmp )
-//         _createTexture( bmp, obj->mTextureLookupName, obj->mProfile, false, obj );
-}
 
 void GFXTextureManager::reloadTextures()
 {
@@ -843,7 +812,7 @@ void GFXTextureManager::reloadTextures()
       const String path( tex->mPath );
       if ( !path.isEmpty() )
       {
-         const U32 scalePower = getTextureDownscalePower( tex->mProfile );
+//         const U32 scalePower = getTextureDownscalePower( tex->mProfile );
 
         GBitmap *bmp = GBitmap::load( path );
         if( bmp )
@@ -854,33 +823,33 @@ void GFXTextureManager::reloadTextures()
    }
 }
 
-//ConsoleFunction( flushTextureCache, void, 2, 2,
-//   "Releases all textures and resurrects the texture manager.\n"
-//   "@ingroup GFX\n" )
-//{
-//   if ( !GFX || !TEXMGR )
-//      return;
-//
-//   TEXMGR->zombify();
-//   TEXMGR->resurrect();
-//}
-//
-//ConsoleFunction( cleanupTexturePool, void, 2, 2,
-//   "Release the unused pooled textures in texture manager freeing up video memory.\n"
-//   "@ingroup GFX\n" )
-//{
-//   if ( !GFX || !TEXMGR )
-//      return;
-//
-//   TEXMGR->cleanupPool();
-//}
-//
-//ConsoleFunction( reloadTextures, void, 2, 2, 
-//   "Reload all the textures from disk.\n"
-//   "@ingroup GFX\n" )
-//{
-//   if ( !GFX || !TEXMGR )
-//      return;
-//
-//   TEXMGR->reloadTextures();
-//}
+ConsoleFunction( flushTextureCache, void, 2, 2,
+   "Releases all textures and resurrects the texture manager.\n"
+   "@ingroup GFX\n" )
+{
+   if ( !GFX || !TEXMGR )
+      return;
+
+   TEXMGR->zombify();
+   TEXMGR->resurrect();
+}
+
+ConsoleFunction( cleanupTexturePool, void, 2, 2,
+   "Release the unused pooled textures in texture manager freeing up video memory.\n"
+   "@ingroup GFX\n" )
+{
+   if ( !GFX || !TEXMGR )
+      return;
+
+   TEXMGR->cleanupPool();
+}
+
+ConsoleFunction( reloadTextures, void, 2, 2,
+   "Reload all the textures from disk.\n"
+   "@ingroup GFX\n" )
+{
+   if ( !GFX || !TEXMGR )
+      return;
+
+   TEXMGR->reloadTextures();
+}

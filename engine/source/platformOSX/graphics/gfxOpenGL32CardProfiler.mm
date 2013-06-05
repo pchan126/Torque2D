@@ -28,18 +28,12 @@
 
 BOOL CheckForExtension(NSString *searchName)
 {
-    int num;
-    glGetIntegerv(GL_NUM_EXTENSIONS, &num);
-    // For performance, the array can be created once and cached.
-    for (int count = 0; count < num; count++)
-    {
-        NSString *extensionsString = [[NSString alloc ]initWithUTF8String:(const char*)glGetStringi(GL_EXTENSIONS, count)];
-        NSComparisonResult result = [extensionsString compare: searchName];
-        [extensionsString release];
-        if (result == NSOrderedSame)
-            return true;
-    }
-    return false;
+   // For performance, the array can be created once and cached.
+   static NSString *extensionsString = nil;
+   if (extensionsString == nil)
+      extensionsString = [[NSString alloc ]initWithUTF8String:(const char*)glGetString(GL_EXTENSIONS)];
+   NSArray *extensionsNames = [extensionsString componentsSeparatedByString:@" "];
+   return [extensionsNames containsObject: searchName];
 }
 
 
@@ -108,8 +102,6 @@ void GFXOpenGL32OSXCardProfiler::setupCardCapabilities()
     setCapability("GL::APPLE_rgb_422", CheckForExtension(@"GL_APPLE_rgb_422"));
     setCapability("GL::APPLE_row_bytes", CheckForExtension(@"GL_APPLE_row_bytes"));
     setCapability("GL::APPLE_texture_range", CheckForExtension(@"GL_APPLE_texture_range"));
-   
-    setCapability("GL::GL_ARB_sampler_objects", CheckForExtension(@"GL_ARB_sampler_objects"));
 }
 
 bool GFXOpenGL32OSXCardProfiler::_queryCardCap(const String& query, U32& foundResult)

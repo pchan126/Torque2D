@@ -122,8 +122,8 @@ void GFXOpenGLDevice::preDrawPrimitive()
 
 void GFXOpenGLDevice::postDrawPrimitive(U32 primitiveCount)
 {
-    //   mDeviceStatistics.mDrawCalls++;
-    //   mDeviceStatistics.mPolyCount += primitiveCount;
+   mDeviceStatistics.mDrawCalls++;
+   mDeviceStatistics.mPolyCount += primitiveCount;
 }
 
 

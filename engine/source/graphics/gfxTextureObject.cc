@@ -29,9 +29,6 @@
 #include "platform/platformString.h"
 #include "io/fileStream.h"
 #include "console/console.h"
-//#include "console/engineAPI.h"
-
-//IMPLEMENT_CONOBJECT(GFXTextureObject);
 
 // TODO: Change this to be in non-shipping builds maybe?
 #ifdef TORQUE_DEBUG
@@ -170,7 +167,6 @@ void GFXTextureObject::kill()
 
    // Delete the stored bitmap.
    SAFE_DELETE(mBitmap)
-//   SAFE_DELETE(mDDS);
 
    // Clean up linked list
    if(mNext)
@@ -232,16 +228,3 @@ U32 GFXTextureObject::getEstimatedSizeInBytes() const
    return totalBytes;
 }
 
-//bool GFXTextureObject::dumpToDisk( const String &bmType, const String &path )
-//{   
-//   FileStream stream;
-//   if ( !stream.open( path, FileStream::Write ) )
-//      return false;
-//
-//   if ( mBitmap )
-//      return mBitmap->writeBitmap( bmType, stream );
-//
-//   GBitmap bitmap( getWidth(), getHeight(), false, getFormat() );
-//   copyToBmp( &bitmap );
-//   return bitmap.writeBitmap( bmType, stream );
-//}

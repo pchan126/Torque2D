@@ -23,32 +23,21 @@
 #ifndef _GFXTEXTUREMANAGER_H_
 #define _GFXTEXTUREMANAGER_H_
 
-#ifndef _GFXTEXTUREOBJECT_H_
 #include "graphics/gfxTextureObject.h"
-#endif 
-#ifndef _GBITMAP_H_
 #include "graphics/gBitmap.h"
-#endif 
 #include "io/resource/resourceManager.h"
 #include "collection/hashTable.h"
 #include "sim/simBase.h"
 #include "delegates/delegateSignal.h"
 #include "graphics/gfxTextureHandle.h"
 
-//namespace Torque
-//{
-//   class Path;
-//}
-
 //class GFXCubemap;
-
 
 class GFXTextureManager : public SimObject
 {   
 public:
     typedef SimObject Parent;
-    
-//   DECLARE_CONOBJECT(GFXTextureManager);
+   
    enum
    {
       AA_MATCH_BACKBUFFER = -1
@@ -301,8 +290,6 @@ protected:
    // New texture manager methods for the cleanup work:
    GFXTextureObject *_lookupTexture( const char *filename, const GFXTextureProfile *profile  );
 
-   void _onFileChanged( const String &path );
-
    /// The texture event signal type.
    typedef Signal<void(GFXTexCallbackCode code)> EventSignal;
 
@@ -359,10 +346,7 @@ protected:
         void postTextureEvent(const TextureEventCode eventCode);
         void freeTexture( GFXTextureObject* pTextureObject );
         void refresh(GFXTextureObject* pTextureObject);
-        
-//        static GBitmap* loadBitmap(const char *textureName, bool recurse = true, bool nocompression = false);
-//        static U16* create16BitBitmap( GBitmap *pDL, U8 *in_source8, GBitmap::BitmapFormat alpha_info, GLint *GLformat, GLint *GLdata_type, U32 width, U32 height );
-//        static void getSourceDestByteFormat(GBitmap *pBitmap, U32 *sourceFormat, U32 *destFormat, U32 *byteFormat, U32* texelSize);
+   
         static F32 getResidentFraction( void );
 };
 

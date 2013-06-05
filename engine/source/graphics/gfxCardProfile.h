@@ -64,7 +64,6 @@ public:
    const String &getVersionString() const { return mVersionString; }
    const String &getCardString() const { return mCardDescription; }
    const String &getChipString() const { return mChipSet; }
-   U32 getVideoMemoryInMB() const { return mVideoMemory; }
 
    virtual const String &getRendererString() const = 0;
 
@@ -73,7 +72,6 @@ protected:
    String mVersionString;
    String mCardDescription;
    String mChipSet;
-   U32 mVideoMemory;
 
    virtual void setupCardCapabilities()=0;
 
@@ -93,20 +91,6 @@ protected:
    virtual bool _queryFormat( const GFXFormat fmt, const GFXTextureProfile *profile, bool &inOutAutogenMips ) = 0;
    /// @}
 
-   /// @name helpergroup Helper Functions
-   ///
-   /// Various helper functions.
-
-//   /// Load a specified script file from the profiles directory, if it exists.
-//   void loadProfileScript(const char* scriptName);
-//   
-//   /// Load the script files in order for the specified card profile tuple.
-//   void loadProfileScripts(const String& render, const String& vendor, const String& card, const String& version);
-//
-//   String strippedString(const char*string);
-
-   /// @}
-   
    /// Capability dictionary.
    HashMap<String, U32> mCapDictionary;
 
