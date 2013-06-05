@@ -41,12 +41,49 @@
 
 GFXAdapter::CreateDeviceInstanceDelegate GFXOpenGL33WinDevice::mCreateDeviceInstance(GFXOpenGL33WinDevice::createInstance);
 
+// yonked from winWindow.cc
+void CreatePixelFormat( PIXELFORMATDESCRIPTOR *pPFD, S32 colorBits, S32 depthBits, S32 stencilBits, bool stereo )
+{
+   PIXELFORMATDESCRIPTOR src =
+   {
+      sizeof(PIXELFORMATDESCRIPTOR),   // size of this pfd
+      1,                      // version number
+      PFD_DRAW_TO_WINDOW |    // support window
+      PFD_SUPPORT_OPENGL |    // support OpenGL
+      PFD_DOUBLEBUFFER,       // double buffered
+      PFD_TYPE_RGBA,          // RGBA type
+      colorBits,              // color depth
+      0, 0, 0, 0, 0, 0,       // color bits ignored
+      0,                      // no alpha buffer
+      0,                      // shift bit ignored
+      0,                      // no accumulation buffer
+      0, 0, 0, 0,             // accum bits ignored
+      depthBits,              // z-buffer
+      stencilBits,            // stencil buffer
+      0,                      // no auxiliary buffer
+      PFD_MAIN_PLANE,         // main layer
+      0,                      // reserved
+      0, 0, 0                 // layer masks ignored
+    };
+
+   if ( stereo )
+   {
+      //ri.Printf( PRINT_ALL, "...attempting to use stereo\n" );
+      src.dwFlags |= PFD_STEREO;
+      //glConfig.stereoEnabled = true;
+   }
+   else
+   {
+      //glConfig.stereoEnabled = qfalse;
+   }
+   *pPFD = src;
+}
+
+
 GFXDevice *GFXOpenGL33WinDevice::createInstance( U32 adapterIndex )
 {
     return new GFXOpenGL33WinDevice(adapterIndex);
 }
-
-#include "osxGLUtils.h"
 
 void GFXOpenGL33WinDevice::initGLState()
 {
@@ -92,31 +129,152 @@ GFXOpenGL33WinDevice::~GFXOpenGL33WinDevice()
 
 void GFXOpenGL33WinDevice::init( const GFXVideoMode &mode, PlatformWindow *window )
 {
-    if(!mInitialized)
-    {
-		int nPixCount = 0;
-		int pixAttribs[] = {
-			WGL_SUPPORT_OPENGL_ARB, 1,
-			WGL_DRAW_TO_WINDOW_ARB, 1,
-			WGL_RED_BITS_ARB, 8,
-			WGL_GREEN_BITS_ARB, 8,
-			WGL_BLUE_BITS_ARB, 8,
-			WGL_DEPTH_BITS_ARB, 16,
-			WGL_ACCELERATION_ARB,
-			WGL_FULL_ACCELERATION_ARB,
-			WGL_PIXEL_TYPE_ARB,
-			WGL_TYPE_RGBA_ARB,
-			0};
+    if(mInitialized)
+		return;
 
-		wglChoosePixelFormatARB(*mContext, &pixAttribs[0], NULL, 1, mPixelFormat, (UINT*)&nPixCount);
-	   
-       mTextureManager = new GFXOpenGL33WinTextureManager();
+   //bool result = false;
+   //bool fullScreenOnly = false;
 
-       initGLState();
-       initGenericShaders();
-       mInitialized = true;
-       deviceInited();
-    }
+   ////------------------------------------------------------------------------------
+   //// Create a test window to see if OpenGL hardware acceleration is available:
+   ////------------------------------------------------------------------------------
+   //WNDCLASS wc;
+   //dMemset(&wc, 0, sizeof(wc));
+   //wc.style         = CS_OWNDC;
+   //wc.lpfnWndProc   = DefWindowProc;
+   //wc.hInstance     = winState.appInstance;
+   //wc.lpszClassName = dT("OGLTest");
+   //RegisterClass( &wc );
+
+   ////------------------------------------------------------------------------------
+   //// Create the Test Window
+   ////------------------------------------------------------------------------------
+   ////MIN_RESOLUTION defined in platformWin32/platformGL.h
+   //HWND testWindow = CreateWindow( dT("OGLTest"),dT(""), WS_POPUP, 0, 0, MIN_RESOLUTION_X, MIN_RESOLUTION_Y, NULL, NULL, winState.appInstance, NULL );
+   //if ( !testWindow )
+   //{
+   //   // Unregister the Window Class
+   //   UnregisterClass( dT("OGLTest"), winState.appInstance );
+
+   //   // Shutdown GL
+   //   GL_Shutdown();
+
+   //   // Return Failure
+   //   return;
+   //}
+
+   ////------------------------------------------------------------------------------
+   //// Create Pixel Format ( Default 16bpp )
+   ////------------------------------------------------------------------------------
+   //PIXELFORMATDESCRIPTOR pfd;
+   //CreatePixelFormat( &pfd, 16, 16, 8, false );
+
+   //HDC testDC = GetDC( testWindow );
+   //U32 chosenFormat = ChooseBestPixelFormat( testDC, &pfd );
+   //if ( chosenFormat != 0 )
+   //{
+   //   dwglDescribePixelFormat( testDC, chosenFormat, sizeof( pfd ), &pfd );
+
+   //   result = !( pfd.dwFlags & PFD_GENERIC_FORMAT );
+
+   //   if ( result && winState.desktopBitsPixel < 16 && !smCanDo32Bit)
+   //   {
+   //      // If Windows 95 cannot switch bit depth, it should only attempt 16-bit cards
+   //      // with a 16-bit desktop
+
+   //      // See if we can get a 32-bit pixel format:
+   //      PIXELFORMATDESCRIPTOR pfd;
+
+   //      CreatePixelFormat( &pfd, 32, 24, 8, false );
+   //      S32 chosenFormat = ChooseBestPixelFormat( testDC, &pfd );
+   //      if ( chosenFormat != 0 )
+   //      {
+   //         dwglDescribePixelFormat( winState.appDC, chosenFormat, sizeof( pfd ), &pfd );
+
+   //         if (pfd.cColorBits == 16)
+   //         {
+   //            Platform::AlertOK("Requires 16-Bit Desktop",
+   //               "You must run in 16-bit color to run a Torque game.\nPlease quit the game, set your desktop color depth to 16-bit\nand then restart the application.");
+
+   //            result = false;
+   //         }
+   //      }
+   //   }
+   //}
+   //else if ( winState.desktopBitsPixel < 16 && smCanSwitchBitDepth )
+   //{
+   //   // Try again after changing the display to 16-bit:
+   //   ReleaseDC( testWindow, testDC );
+   //   DestroyWindow( testWindow );
+
+   //   DEVMODE devMode;
+   //   dMemset( &devMode, 0, sizeof( devMode ) );
+   //   devMode.dmSize       = sizeof( devMode );
+   //   devMode.dmBitsPerPel = 16;
+   //   devMode.dmFields     = DM_BITSPERPEL;
+
+   //   U32 test = ChangeDisplaySettings( &devMode, 0 );
+   //   if ( test == DISP_CHANGE_SUCCESSFUL )
+   //   {
+   // //MIN_RESOLUTION defined in platformWin32/platformGL.h
+   //      testWindow = CreateWindow( dT("OGLTest"), dT(""), WS_OVERLAPPED | WS_CAPTION, 0, 0, MIN_RESOLUTION_X, MIN_RESOLUTION_Y, NULL, NULL, winState.appInstance, NULL );
+   //      if ( testWindow )
+   //      {
+   //         testDC = GetDC( testWindow );
+   //         if ( testDC )
+   //         {
+   //            CreatePixelFormat( &pfd, 16, 16, 8, false );
+   //            chosenFormat = ChooseBestPixelFormat( testDC, &pfd );
+   //            if ( chosenFormat != 0 )
+   //            {
+   //               dwglDescribePixelFormat( testDC, chosenFormat, sizeof( pfd ), &pfd );
+
+   //               result = !( pfd.dwFlags & PFD_GENERIC_FORMAT );
+   //               if ( result )
+   //                  fullScreenOnly = true;
+   //            }
+   //         }
+   //      }
+   //   }
+   //   ChangeDisplaySettings( NULL, 0 );
+   //}
+   ////------------------------------------------------------------------------------
+   //// Can't do even 16 bit, alert user they need to upgrade.
+   ////------------------------------------------------------------------------------
+   //else if ( winState.desktopBitsPixel < 16 && !smCanSwitchBitDepth )
+   //{
+   //   Platform::AlertOK("Requires 16-Bit Desktop", "You must run in 16-bit color to run a Torque game.\nPlease quit the game, set your desktop color depth to 16-bit\nand then restart the application.");
+   //}
+
+   //ReleaseDC( testWindow, testDC );
+   //DestroyWindow( testWindow );
+
+   //UnregisterClass( dT("OGLTest"), winState.appInstance );
+
+   //GL_Shutdown();
+
+	//int nPixCount = 0;
+	//int pixAttribs[] = {
+	//	WGL_SUPPORT_OPENGL_ARB, 1,
+	//	WGL_DRAW_TO_WINDOW_ARB, 1,
+	//	WGL_RED_BITS_ARB, 8,
+	//	WGL_GREEN_BITS_ARB, 8,
+	//	WGL_BLUE_BITS_ARB, 8,
+	//	WGL_DEPTH_BITS_ARB, 16,
+	//	WGL_ACCELERATION_ARB,
+	//	WGL_FULL_ACCELERATION_ARB,
+	//	WGL_PIXEL_TYPE_ARB,
+	//	WGL_TYPE_RGBA_ARB,
+	//	0};
+
+	//wglChoosePixelFormatARB(*mContext, &pixAttribs[0], NULL, 1, mPixelFormat, (UINT*)&nPixCount);
+	//   
+ //   mTextureManager = new GFXOpenGL33WinTextureManager();
+
+ //   initGLState();
+ //   initGenericShaders();
+ //   mInitialized = true;
+ //   deviceInited();
 }
 
 void GFXOpenGL33WinDevice::addVideoMode(GFXVideoMode toAdd)
