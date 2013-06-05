@@ -31,15 +31,9 @@
 #include "graphics/gfxCardProfile.h"
 #include "platform/platformGL.h"
 
-//#import <GLKit/GLKit.h>
-//#import <ImageIO/ImageIO.h>
-
 GFXOpenGL32TextureObject::GFXOpenGL32TextureObject(GFXDevice * aDevice, GFXTextureProfile *profile, void* texInfo) :
-    GFXTextureObject(aDevice, profile),
-    mBytesPerTexel(4),
-    mLockedRectRect(0, 0, 0, 0),
+    GFXOpenGLTextureObject(aDevice, profile),
     mGLDevice(static_cast<GFXOpenGL32Device*>(mDevice)),
-    mZombieCache(NULL),
     mFilter( GL_NEAREST )
 {
     mBitmap = NULL;
@@ -48,12 +42,8 @@ GFXOpenGL32TextureObject::GFXOpenGL32TextureObject(GFXDevice * aDevice, GFXTextu
 
 
 GFXOpenGL32TextureObject::GFXOpenGL32TextureObject(GFXDevice * aDevice, GFXTextureProfile *profile) :
-   GFXTextureObject(aDevice, profile),
-   mBinding(GL_TEXTURE_2D),
-   mBytesPerTexel(4),
-   mLockedRectRect(0, 0, 0, 0),
+   GFXOpenGLTextureObject(aDevice, profile),
    mGLDevice(static_cast<GFXOpenGL32Device*>(mDevice)),
-   mZombieCache(NULL),
    mFilter( GL_NEAREST )
 {
    AssertFatal(dynamic_cast<GFXOpenGL32Device*>(mDevice), "GFXOpenGL32TextureObject::GFXOpenGL32TextureObject - Invalid device type, expected GFXOpenGL32Device!");
@@ -66,229 +56,6 @@ GFXOpenGL32TextureObject::~GFXOpenGL32TextureObject()
    kill();
 }
 
-//void GFXOpenGL32TextureObject::setTexture(void* texInfo)
-//{
-//    if (texInfo != NULL)
-//    {
-//        GLKTextureInfo *textureInfo = (GLKTextureInfo*) texInfo;
-//        mBitmapSize.set([ textureInfo width ], [ textureInfo height ], 0.0);
-//        mTextureSize.set([ textureInfo width ], [ textureInfo height ], 0.0);
-//        mBinding = [ textureInfo target];
-//        mHandle = [ textureInfo name ];
-//        mLoaded = true;
-//        smEventSignal.trigger(GFXLoadNotify);
-//    }
-//    else
-//    {
-//        mLoaded = false;
-//    }
-//}
-
-
-GFXLockedRect* GFXOpenGL32TextureObject::lock(U32 mipLevel, RectI *inRect)
-{
-//   AssertFatal(mBinding != GL_TEXTURE_3D, "GFXOpenGL32TextureObject::lock - We don't support locking 3D textures yet");
-   U32 width = mTextureSize.x >> mipLevel;
-   U32 height = mTextureSize.y >> mipLevel;
-
-   if(inRect)
-   {
-      if((inRect->point.x + inRect->extent.x > width) || (inRect->point.y + inRect->extent.y > height))
-         AssertFatal(false, "GFXOpenGL32TextureObject::lock - Rectangle too big!");
-
-      mLockedRectRect = *inRect;
-   }
-   else
-   {
-      mLockedRectRect = RectI(0, 0, width, height);
-   }
-   
-   mLockedRect.pitch = mLockedRectRect.extent.x * mBytesPerTexel;
-   
-   if( !mLockedRect.bits )
-      return NULL;
-
-   return &mLockedRect;
-}
-
-void GFXOpenGL32TextureObject::unlock(U32 mipLevel)
-{
-   if(!mLockedRect.bits)
-      return;
-
-   glActiveTexture(GL_TEXTURE0);
-   U32 boundTexture;
-   glGetIntegerv(GL_TEXTURE_BINDING_2D, (GLint*)&boundTexture);
-   mLockedRect.bits = NULL;
-
-   glBindTexture(GL_TEXTURE_2D, boundTexture);
-}
-
-void GFXOpenGL32TextureObject::release()
-{
-   glDeleteTextures(1, &mHandle);
-   mHandle = 0;
-}
-
-#if (defined TORQUE_OS_IPHONE || defined TORQUE_OS_MAC)
-#define EXT_ARRAY_SIZE 4
-static const char* extArray[EXT_ARRAY_SIZE] = { "", ".pvr", ".jpg", ".png"};
-#else
-#define EXT_ARRAY_SIZE 3
-static const char* extArray[EXT_ARRAY_SIZE] = { "", ".jpg", ".png"};
-#endif
-
-
-//GBitmap* GFXOpenGL32TextureObject::getBitmap()
-//{
-//    if (mPath.isEmpty())
-//        return NULL;
-//
-//    if (mLoaded == false)
-//        return NULL;
-//    
-//    if (mBitmap)
-//        return mBitmap;
-//    
-//    MutexHandle mutex;
-//    mutex.lock( &mMutex, true );
-//
-//    bool textureExt = mPath.getExtension().isNotEmpty();
-//
-//    // Check the cache first...
-//    String pathNoExt;
-//    pathNoExt = String::Join( mPath.getPath(), '/', mPath.getFileName() );
-//    
-//    NSDictionary *options = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO]
-//                                                        forKey:GLKTextureLoaderOriginBottomLeft];
-//    
-//    NSString *npath = nil;
-//    
-//    U32 i = 0;
-//    NSString *typeName;
-//    do
-//    {
-//        if (!textureExt)
-//            mPath.setExtension(extArray[i]);
-//        
-//        //Ask the bundle for the path to the file
-//        NSFileManager* fMan = [[NSFileManager alloc] init];
-//        NSString* temppath = [[NSString alloc] initWithUTF8String:mPath.getFullPath().c_str()];
-//        
-//        if ([fMan fileExistsAtPath:temppath ])
-//            npath = [[NSString alloc] initWithString: temppath];
-//        i++;
-//       [ fMan release] ;
-//       [temppath release];
-//    }
-//    while ((npath == nil ) && !textureExt && ( i < EXT_ARRAY_SIZE));
-//
-//    
-//    //
-////    
-////    do
-////    {
-////        if (mPath.getExtension().isEmpty())
-////            typeName = [[NSString alloc] initWithUTF8String:extArray[i]];
-////        else
-////            typeName = [[NSString alloc] initWithUTF8String:mPath.getExtension().c_str()];
-////        
-////        NSString* fnameOnly =[[NSString alloc] initWithUTF8String:mPath.getFileName().c_str()];
-////        NSString* pathOnly = [[NSString alloc] initWithUTF8String:collaspedBitmapName];
-////        
-////        //Ask the bundle for the path to the file
-////        npath = [bundle pathForResource:fnameOnly ofType:typeName inDirectory:pathOnly];
-////        i++;
-////    }
-////    while (!npath && mPath.getExtension().isEmpty() && ( i < EXT_ARRAY_SIZE));
-//
-//    if (!npath)
-//    {
-//        Con::printf("GFXOpenGL32TextureObject::createTexture unable to find: %s.%s", mPath.getFullPath().c_str(), mPath.getExtension().c_str());
-//        return NULL;
-//    }
-//
-//    Con::printf("loading %s", [npath UTF8String] );
-//    NSURL *url = [[NSURL alloc ] initFileURLWithPath: npath];
-//    CGDataProviderRef data_provider = CGDataProviderCreateWithURL((CFURLRef)url);
-//   
-//    CGImageRef apple_image;
-//   
-//    typeName = [[NSString alloc] initWithUTF8String:mPath.getExtension().c_str()];
-//    if ([typeName isEqualToString:@"png"]) {
-//        apple_image = CGImageCreateWithPNGDataProvider(data_provider, nil, false, kCGRenderingIntentDefault);
-//    } else if ([typeName isEqualToString:@"jpg"]) {
-//        apple_image = CGImageCreateWithJPEGDataProvider(data_provider, nil, false, kCGRenderingIntentDefault);
-//    } else
-//        return NULL;
-//    
-//   [typeName release];
-//
-//    // Choose alpha strategy based on whether the source image has alpha or not.
-//    // UNUSED: JOSEPH THOMAS -> CGImageAlphaInfo alpha_info = CGImageGetAlphaInfo(apple_image);
-//	int width = CGImageGetWidth(apple_image);
-//	int height = CGImageGetHeight(apple_image);
-//    U32 rowBytes = width * 4;
-//    
-//    // Set up the row pointers...
-//    AssertISV(width <= 1024, "Error, cannot load images wider than 1024 pixels!");
-//    AssertISV(height <= 1024, "Error, cannot load images taller than 1024 pixels!");
-//    
-//    mBitmap = new GBitmap( mTextureSize.x, mTextureSize.y, false, GFXFormatR8G8B8A8);
-//
-//    U8 *pBase = (U8*)mBitmap->getBits();
-//    
-//    CGColorSpaceRef color_space = CGColorSpaceCreateDeviceRGB();
-//    CGContextRef texture_context = CGBitmapContextCreate(pBase, width, height, 8, rowBytes, color_space, kCGImageAlphaPremultipliedLast);
-//    
-//    CGContextDrawImage(texture_context, CGRectMake(0.0, 0.0, width, height), apple_image);
-//    
-//    CGImageRelease(apple_image);
-//    CGDataProviderRelease(data_provider);
-//   CFRelease(color_space);
-//    CFRelease(texture_context);
-//    return mBitmap;
-//}
-
-
-bool GFXOpenGL32TextureObject::copyToBmp(GBitmap * bmp)
-{
-    // not supported in opengl es
-   return false;
-}
-
-void GFXOpenGL32TextureObject::bind(U32 textureUnit) const
-{
-    AssertFatal(mBinding == GL_TEXTURE_2D, "GFXOpenGL32TextureObject::bind - only GL_TEXTURE_2D supported");
-   glActiveTexture(GL_TEXTURE0 + textureUnit);
-    
-    GLuint han = mHandle;
-    if (!mHandle)
-        return;
-    
-    
-//   if (glIsTexture(mHandle) != GL_TRUE)
-//   {
-//       Con::printf("bad texture bind");
-//   }
-   glBindTexture(mBinding, han);
-//    Con::printf("texture bind %i", han);
-//   glEnable(mBinding);
-  
-   GFXOpenGL32StateBlockRef sb = mGLDevice->getCurrentStateBlock();
-   AssertFatal(sb, "GFXOpenGL32TextureObject::bind - No active stateblock!");
-   if (!sb)
-      return;
-         
-   const GFXSamplerStateDesc ssd = sb->getDesc().samplers[textureUnit];
-   glTexParameteri(mBinding, GL_TEXTURE_MIN_FILTER, minificationFilter(ssd.minFilter, ssd.mipFilter, mMipLevels));   
-   glTexParameteri(mBinding, GL_TEXTURE_MAG_FILTER, GFXGLTextureFilter[ssd.magFilter]);
-//    glTexParameteri(mBinding, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//    glTexParameteri(mBinding, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    
-   glTexParameteri(mBinding, GL_TEXTURE_WRAP_S, !mIsNPoT2 ? GFXGLTextureAddress[ssd.addressModeU] : GL_CLAMP_TO_EDGE);
-   glTexParameteri(mBinding, GL_TEXTURE_WRAP_T, !mIsNPoT2 ? GFXGLTextureAddress[ssd.addressModeV] : GL_CLAMP_TO_EDGE);
-}
 
 U8* GFXOpenGL32TextureObject::getTextureData()
 {
@@ -354,24 +121,6 @@ void GFXOpenGL32TextureObject::resurrect()
       return;
       
    glGenTextures(1, &mHandle);
-}
-
-F32 GFXOpenGL32TextureObject::getMaxUCoord() const
-{
-   return mBinding == GL_TEXTURE_2D ? 1.0f : (F32)getWidth();
-}
-
-F32 GFXOpenGL32TextureObject::getMaxVCoord() const
-{
-   return mBinding == GL_TEXTURE_2D ? 1.0f : (F32)getHeight();
-}
-
-const String GFXOpenGL32TextureObject::describeSelf() const
-{
-   String ret = Parent::describeSelf();
-   ret += String::ToString("   GL Handle: %i", mHandle);
-   
-   return ret;
 }
 
 void GFXOpenGL32TextureObject::setFilter(const GFXTextureFilterType filter)

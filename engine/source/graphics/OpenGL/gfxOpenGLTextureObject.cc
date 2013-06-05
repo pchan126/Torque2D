@@ -31,6 +31,30 @@
 #include "graphics/gfxCardProfile.h"
 #include "platform/platformGL.h"
 
+
+GFXOpenGLTextureObject::GFXOpenGLTextureObject(GFXDevice * aDevice, GFXTextureProfile *profile, void* texInfo) : GFXTextureObject(aDevice, profile),
+   mBinding(GL_TEXTURE_2D),
+   mBytesPerTexel(4),
+   mLockedRectRect(0, 0, 0, 0),
+   mZombieCache(NULL)
+{
+   
+}
+
+GFXOpenGLTextureObject::GFXOpenGLTextureObject(GFXDevice * aDevice, GFXTextureProfile *profile): GFXTextureObject(aDevice, profile),
+   mBinding(GL_TEXTURE_2D),
+   mBytesPerTexel(4),
+   mLockedRectRect(0, 0, 0, 0),
+   mZombieCache(NULL)
+{
+   
+}
+
+GFXOpenGLTextureObject::~GFXOpenGLTextureObject()
+{
+   
+}
+
 void GFXOpenGLTextureObject::bind(U32 textureUnit) const
 {
     GFXOpenGLDevice* device = dynamic_cast<GFXOpenGLDevice*>(GFX);
@@ -53,6 +77,53 @@ void GFXOpenGLTextureObject::bind(U32 textureUnit) const
    glTexParameteri(mBinding, GL_TEXTURE_WRAP_T, !mIsNPoT2 ? GFXGLTextureAddress[ssd.addressModeV] : GL_CLAMP_TO_EDGE);
 }
 
+void GFXOpenGLTextureObject::release()
+{
+   glDeleteTextures(1, &mHandle);
+   mHandle = 0;
+}
+
+GFXLockedRect* GFXOpenGLTextureObject::lock(U32 mipLevel, RectI *inRect)
+{
+   AssertFatal(mBinding == GL_TEXTURE_2D, "GFXOpenGLTextureObject::lock - We don't support locking 3D textures yet");
+   U32 width = mTextureSize.x >> mipLevel;
+   U32 height = mTextureSize.y >> mipLevel;
+   
+   if(inRect)
+   {
+      if((inRect->point.x + inRect->extent.x > width) || (inRect->point.y + inRect->extent.y > height))
+         AssertFatal(false, "GFXOpenGLTextureObject::lock - Rectangle too big!");
+      
+      mLockedRectRect = *inRect;
+   }
+   else
+   {
+      mLockedRectRect = RectI(0, 0, width, height);
+   }
+   
+   mLockedRect.pitch = mLockedRectRect.extent.x * mBytesPerTexel;
+   
+   if( !mLockedRect.bits )
+      return NULL;
+   
+   return &mLockedRect;
+}
+
+void GFXOpenGLTextureObject::unlock(U32 mipLevel)
+{
+   if(!mLockedRect.bits)
+      return;
+   
+   glActiveTexture(GL_TEXTURE0);
+   U32 boundTexture;
+   glGetIntegerv(GL_TEXTURE_BINDING_2D, (GLint*)&boundTexture);
+   mLockedRect.bits = NULL;
+   
+   glBindTexture(GL_TEXTURE_2D, boundTexture);
+}
+
+
+
 F32 GFXOpenGLTextureObject::getMaxUCoord() const
 {
    return mBinding == GL_TEXTURE_2D ? 1.0f : (F32)getWidth();
@@ -62,6 +133,48 @@ F32 GFXOpenGLTextureObject::getMaxVCoord() const
 {
    return mBinding == GL_TEXTURE_2D ? 1.0f : (F32)getHeight();
 }
+
+
+void GFXOpenGLTextureObject::copyIntoCache()
+{
+   glBindTexture(mBinding, mHandle);
+   U32 cacheSize = mTextureSize.x * mTextureSize.y;
+   
+   cacheSize *= mBytesPerTexel;
+   mZombieCache = new U8[cacheSize];
+   
+   glBindTexture(mBinding, 0);
+}
+
+
+void GFXOpenGLTextureObject::zombify()
+{
+   if(mIsZombie)
+      return;
+   
+   mIsZombie = true;
+   if(!mProfile->doStoreBitmap() && !mProfile->isRenderTarget() && !mProfile->isDynamic() && !mProfile->isZTarget())
+      copyIntoCache();
+   
+   release();
+}
+
+void GFXOpenGLTextureObject::resurrect()
+{
+   if(!mIsZombie)
+      return;
+   
+   glGenTextures(1, &mHandle);
+}
+
+const String GFXOpenGLTextureObject::describeSelf() const
+{
+   String ret = Parent::describeSelf();
+   ret += String::ToString("   GL Handle: %i", mHandle);
+   
+   return ret;
+}
+
 
 GBitmap* GFXOpenGLTextureObject::getBitmap()
 {

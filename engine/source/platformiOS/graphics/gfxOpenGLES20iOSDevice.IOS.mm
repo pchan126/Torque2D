@@ -73,7 +73,6 @@ void GFXOpenGLES20iOSDevice::initGLState()
 // Matrix interface
 GFXOpenGLES20iOSDevice::GFXOpenGLES20iOSDevice( U32 adapterIndex ) : GFXOpenGLES20Device( adapterIndex ),
                     mAdapterIndex(adapterIndex),
-                    mCurrentVB(NULL),
                     mContext(nil),
                     mCIContext(nil),
                     mMaxShaderTextures(2),
@@ -217,22 +216,6 @@ GFXVertexBuffer *GFXOpenGLES20iOSDevice::allocVertexBuffer(   U32 numVerts,
     GFXOpenGLES20iOSVertexBuffer* buf = new GFXOpenGLES20iOSVertexBuffer( GFX, numVerts, vertexFormat, vertSize, bufferType, vertexBuffer, indexCount, indexBuffer );
     buf->registerResourceWithDevice(this);
     return buf;
-}
-
-
-void GFXOpenGLES20iOSDevice::setVertexStream( U32 stream, GFXVertexBuffer *buffer )
-{
-    if (stream > 0) return;
-    
-    AssertFatal( stream == 0, "GFXOpenGLES20iOSDevice::setVertexStream - We don't support multiple vertex streams!" );
-    
-    // Reset the state the old VB required, then set the state the new VB requires.
-    if ( mCurrentVB )
-        mCurrentVB->finish();
-    
-    mCurrentVB = static_cast<GFXOpenGLES20iOSVertexBuffer*>( buffer );
-    if ( mCurrentVB )
-        mCurrentVB->prepare();
 }
 
 

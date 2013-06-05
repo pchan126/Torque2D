@@ -5,26 +5,10 @@
 
 #include "platform/platform.h"
 #include "./GFXOpenGLES20Device.h"
-
-//#include "graphics/gfxDrawUtil.h"
-//#include "graphics/gfxInit.h"
-//
-//#include "./GFXOpenGLES20EnumTranslate.h"
-//#include "./GFXOpenGLES20VertexBuffer.h"
-//#include "./GFXOpenGLES20TextureTarget.h"
-//#include "./GFXOpenGLES20TextureManager.h"
 #include "./GFXOpenGLES20TextureObject.h"
-//#include "./GFXOpenGLES20CardProfiler.h"
-//#include "./GFXOpenGLES20WindowTarget.h"
-//
-//#include "./GFXOpenGLES20Shader.h"
-//#include "graphics/primBuilder.h"
-//#include "console/console.h"
 
 //-----------------------------------------------------------------------------
-GFXOpenGLES20Device::GFXOpenGLES20Device( U32 adapterIndex ) : GFXOpenGLDevice( adapterIndex )//,
-//mAdapterIndex(adapterIndex) ///,
-//mCurrentVB(NULL)
+GFXOpenGLES20Device::GFXOpenGLES20Device( U32 adapterIndex ) : GFXOpenGLDevice( adapterIndex )
 {
     for (int i = 0; i < TEXTURE_STAGE_COUNT; i++)
         mActiveTextureType[i] = GL_TEXTURE_2D;

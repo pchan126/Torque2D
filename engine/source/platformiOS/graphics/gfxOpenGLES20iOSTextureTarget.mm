@@ -7,7 +7,7 @@
 #include "platformiOS/graphics/gfxOpenGLES20iOSDevice.h"
 #include "platformiOS/graphics/GFXOpenGLES20iOSTextureTarget.h"
 #include "platformiOS/graphics/gfxOpenGLES20iOSTextureObject.h"
-//#include "platformiOS/graphics/gfxOpenGLESCubemap.h"
+#include "platformiOS/graphics/gfxOpenGLES20iOSCubemap.h"
 #include "graphics/gfxTextureManager.h"
 #include "platformiOS/graphics/gfxOpenGLES20iOSUtils.h"
 
@@ -32,29 +32,29 @@ public:
 private:
    StrongRefPtr<GFXOpenGLES20iOSTextureObject> mTex;
 };
-//
-///// Internal struct used to track Cubemap texture information for FBO attachment
-//class _GFXOpenGLESCubemapTargetDesc : public _GFXOpenGLES20iOSTargetDesc
-//{
-//public:
-//   _GFXOpenGLESCubemapTargetDesc(GFXOpenGLESCubemap* tex, U32 _face, U32 _mipLevel, U32 _zOffset) 
-//      : _GFXOpenGLES20iOSTargetDesc(_mipLevel, _zOffset), mTex(tex), mFace(_face)
-//   {
-//   }
-//   
-//   virtual ~_GFXOpenGLESCubemapTargetDesc() {}
-//   
-//   virtual U32 getHandle() { return mTex->getHandle(); }
-//   virtual U32 getWidth() { return mTex->getWidth(); }
-//   virtual U32 getHeight() { return mTex->getHeight(); }
-//   virtual U32 getDepth() { return 0; }
-//   virtual bool hasMips() { return mTex->getNumMipLevels() != 1; }
-//   virtual GLenum getBinding() { return GFXOpenGLESCubemap::getEnumForFaceNumber(mFace); }
-//   
-//private:
-//   StrongRefPtr<GFXOpenGLESCubemap> mTex;
-//   U32 mFace;
-//};
+
+/// Internal struct used to track Cubemap texture information for FBO attachment
+class _GFXOpenGLES20iOSCubemapTargetDesc : public _GFXOpenGLES20iOSTargetDesc
+{
+public:
+   _GFXOpenGLES20iOSCubemapTargetDesc(GFXOpenGLES20iOSCubemap* tex, U32 _face, U32 _mipLevel, U32 _zOffset)
+      : _GFXOpenGLES20iOSTargetDesc(_mipLevel, _zOffset), mTex(tex), mFace(_face)
+   {
+   }
+   
+   virtual ~_GFXOpenGLES20iOSCubemapTargetDesc() {}
+   
+   virtual U32 getHandle() { return mTex->getHandle(); }
+   virtual U32 getWidth() { return mTex->getWidth(); }
+   virtual U32 getHeight() { return mTex->getHeight(); }
+   virtual U32 getDepth() { return 0; }
+   virtual bool hasMips() { return mTex->getNumMipLevels() != 1; }
+   virtual GLenum getBinding() { return GFXOpenGLES20iOSCubemap::getEnumForFaceNumber(mFace); }
+   
+private:
+   StrongRefPtr<GFXOpenGLES20iOSCubemap> mTex;
+   U32 mFace;
+};
 
 // Handy macro for checking the status of a framebuffer.  Framebuffers can fail in 
 // all sorts of interesting ways, these are just the most common.  Further, no existing GL profiling 

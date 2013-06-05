@@ -281,21 +281,6 @@ GFXVertexBuffer *GFXOpenGL32Device::allocVertexBuffer(   U32 vertexCount,
 }
 
 
-void GFXOpenGL32Device::setVertexStream( U32 stream, GFXVertexBuffer *buffer )
-{
-    if (stream > 0) return;
-    
-    AssertFatal( stream == 0, "GFXOpenGL32Device::setVertexStream - We don't support multiple vertex streams!" );
-    
-    // Reset the state the old VB required, then set the state the new VB requires.
-    if ( mCurrentVB )
-        mCurrentVB->finish();
-    
-    mCurrentVB = static_cast<GFXOpenGL32VertexBuffer*>( buffer );
-    if ( mCurrentVB )
-        mCurrentVB->prepare();
-}
-
 GFXCubemap* GFXOpenGL32Device::createCubemap()
 {
     GFXOpenGL32Cubemap* cube = new GFXOpenGL32Cubemap();

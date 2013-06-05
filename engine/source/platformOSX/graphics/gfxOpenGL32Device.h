@@ -155,13 +155,11 @@ protected:
 
    virtual void setVertexDecl( const GFXVertexDecl *decl ) { }
 
-   virtual void setVertexStream( U32 stream, GFXVertexBuffer *buffer );
-
 private:
-   typedef GFXDevice Parent;
+   typedef GFXOpenGLDevice Parent;
    
    friend class GFXOpenGL32TextureObject;
-//   friend class GFXOpenGL32Cubemap;
+   friend class GFXOpenGL32Cubemap;
    friend class GFXOpenGL32WindowTarget;
    friend class GFXOpenGL32VertexBuffer;
 

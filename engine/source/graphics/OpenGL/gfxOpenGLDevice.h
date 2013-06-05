@@ -201,7 +201,8 @@ private:
    friend class GFXOpenGLWindowTarget;
    friend class GFXOpenGLVertexBuffer;
 
-   static GFXAdapter::CreateDeviceInstanceDelegate mCreateDeviceInstance; 
+protected:
+   static GFXAdapter::CreateDeviceInstanceDelegate mCreateDeviceInstance;
 
    U32 mAdapterIndex;
    

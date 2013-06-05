@@ -29,17 +29,16 @@
 class GFXOpenGLCardProfiler : public GFXCardProfiler
 {
 public:
+   typedef GFXCardProfiler Parent;
    virtual void init();
 
 protected:
    virtual const String& getRendererString() const { return mRendererString; }
    virtual void setupCardCapabilities();
-    virtual bool _queryCardCap(const String& query, U32& foundResult) { return 0;};
-    virtual bool _queryFormat(const GFXFormat fmt, const GFXTextureProfile *profile, bool &inOutAutogenMips) {return GFXGLTextureInternalFormat[fmt] != GL_ZERO;};
+   virtual bool _queryCardCap(const String& query, U32& foundResult) { return 0;};
+   virtual bool _queryFormat(const GFXFormat fmt, const GFXTextureProfile *profile, bool &inOutAutogenMips) {return GFXGLTextureInternalFormat[fmt] != GL_ZERO;};
 
-private:
    String mRendererString;
-   typedef GFXCardProfiler Parent;
 };
 
 #endif

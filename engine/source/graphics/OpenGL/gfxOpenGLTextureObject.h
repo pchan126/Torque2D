@@ -38,8 +38,6 @@ public:
    
    void release();
    
-//   void setTexture(void* texInfo);  // for GLKIT async loading
-    
     inline GLuint getHandle() const { return mHandle; }
    inline GLenum getBinding() const { return mBinding; }
    
@@ -70,7 +68,7 @@ public:
    virtual GFXLockedRect* lock(U32 mipLevel = 0, RectI *inRect = NULL);
    virtual void unlock(U32 mipLevel = 0 );
 
-   virtual bool copyToBmp(GBitmap *); ///< Not implemented
+   virtual bool copyToBmp(GBitmap *) { return false; }; ///< Not implemented
    
    bool mIsNPoT2;
 
@@ -82,6 +80,8 @@ public:
 private:
    friend class GFXOpenGLTextureManager;
    typedef GFXTextureObject Parent;
+   
+protected:
    /// Internal GL object
    GLuint mHandle;
    GLenum mBinding;

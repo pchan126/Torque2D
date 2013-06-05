@@ -23,14 +23,11 @@
 #ifndef _GFXOpenGL32VertexBuffer_H_
 #define _GFXOpenGL32VertexBuffer_H_
 
-#ifndef _GFXVERTEXBUFFER_H_
-#include "graphics/gfxVertexBuffer.h"
-#endif
-
+#include "graphics/OpenGL/gfxOpenGLVertexBuffer.h"
 #include "platform/platformGL.h"
 
 /// This is a vertex buffer which uses GL_ARB_vertex_buffer_object.
-class GFXOpenGL32VertexBuffer : public GFXVertexBuffer 
+class GFXOpenGL32VertexBuffer : public GFXOpenGLVertexBuffer 
 {
 public:
 	GFXOpenGL32VertexBuffer(   GFXDevice *device, 
@@ -46,10 +43,10 @@ public:
 
 	virtual void lock(U32 vertexStart, U32 vertexEnd, void **vertexPtr); ///< calls glMapBuffer and offsets the pointer by vertex start
     virtual void set( void* data, U32 dataSize, U32 indexCount = 0, void* indexData = NULL );
-	virtual void unlock(); ///< calls glUnmapBufferOES, unbinds the buffer
-	virtual void prepare(); ///< Binds the buffer
-   virtual void finish(); ///< We're done here
-
+	virtual void unlock(); 
+	virtual void prepare();
+   virtual void finish();
+   
    // GFXResource interface
    virtual void zombify();
    virtual void resurrect();

@@ -7,7 +7,7 @@
 #include "./GFXOpenGLES20Device.h"
 #include "./GFXOpenGLES20TextureTarget.h"
 #include "./GFXOpenGLES20TextureObject.h"
-//#include "./GFXOpenGLES20Cubemap.h"
+#include "./GFXOpenGLES20Cubemap.h"
 #include "graphics/gfxTextureManager.h"
 #include "./GFXOpenGLES20Utils.h"
 
@@ -32,29 +32,29 @@ public:
 private:
    StrongRefPtr<GFXOpenGLES20TextureObject> mTex;
 };
-//
-///// Internal struct used to track Cubemap texture information for FBO attachment
-//class _GFXOpenGLESCubemapTargetDesc : public _GFXOpenGLES20TargetDesc
-//{
-//public:
-//   _GFXOpenGLESCubemapTargetDesc(GFXOpenGLES20Cubemap* tex, U32 _face, U32 _mipLevel, U32 _zOffset) 
-//      : _GFXOpenGLES20TargetDesc(_mipLevel, _zOffset), mTex(tex), mFace(_face)
-//   {
-//   }
-//   
-//   virtual ~_GFXOpenGLESCubemapTargetDesc() {}
-//   
-//   virtual U32 getHandle() { return mTex->getHandle(); }
-//   virtual U32 getWidth() { return mTex->getWidth(); }
-//   virtual U32 getHeight() { return mTex->getHeight(); }
-//   virtual U32 getDepth() { return 0; }
-//   virtual bool hasMips() { return mTex->getNumMipLevels() != 1; }
-//   virtual GLenum getBinding() { return GFXOpenGLES20Cubemap::getEnumForFaceNumber(mFace); }
-//   
-//private:
-//   StrongRefPtr<GFXOpenGLES20Cubemap> mTex;
-//   U32 mFace;
-//};
+
+/// Internal struct used to track Cubemap texture information for FBO attachment
+class _GFXOpenGLESCubemapTargetDesc : public _GFXOpenGLES20TargetDesc
+{
+public:
+   _GFXOpenGLESCubemapTargetDesc(GFXOpenGLES20Cubemap* tex, U32 _face, U32 _mipLevel, U32 _zOffset) 
+      : _GFXOpenGLES20TargetDesc(_mipLevel, _zOffset), mTex(tex), mFace(_face)
+   {
+   }
+   
+   virtual ~_GFXOpenGLESCubemapTargetDesc() {}
+   
+   virtual U32 getHandle() { return mTex->getHandle(); }
+   virtual U32 getWidth() { return mTex->getWidth(); }
+   virtual U32 getHeight() { return mTex->getHeight(); }
+   virtual U32 getDepth() { return 0; }
+   virtual bool hasMips() { return mTex->getNumMipLevels() != 1; }
+   virtual GLenum getBinding() { return GFXOpenGLES20Cubemap::getEnumForFaceNumber(mFace); }
+   
+private:
+   StrongRefPtr<GFXOpenGLES20Cubemap> mTex;
+   U32 mFace;
+};
 
 // Handy macro for checking the status of a framebuffer.  Framebuffers can fail in 
 // all sorts of interesting ways, these are just the most common.  Further, no existing GL profiling 

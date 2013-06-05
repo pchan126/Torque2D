@@ -133,8 +133,6 @@ protected:
 
    virtual void setVertexDecl( const GFXVertexDecl *decl ) { }
 
-   virtual void setVertexStream( U32 stream, GFXVertexBuffer *buffer );
-
 private:
    typedef GFXDevice Parent;
    
@@ -147,7 +145,7 @@ private:
 
    U32 mAdapterIndex;
    
-   StrongRefPtr<GFXOpenGLES20iOSVertexBuffer> mCurrentVB;
+//   StrongRefPtr<GFXOpenGLES20iOSVertexBuffer> mCurrentVB;
 
     void _handleTextureLoaded(GFXTexNotifyCode code);
 
