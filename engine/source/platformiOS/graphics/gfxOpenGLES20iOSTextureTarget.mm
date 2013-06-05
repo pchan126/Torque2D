@@ -95,7 +95,7 @@ _GFXOpenGLES20iOSTextureTargetFBOImpl::~_GFXOpenGLES20iOSTextureTargetFBOImpl()
 
 void _GFXOpenGLES20iOSTextureTargetFBOImpl::applyState()
 {
-    // REMINDER: When we implement MRT support, check against GFXGLDevice::getNumRenderTargets()
+    // REMINDER: When we implement MRT support, check against GFXOpenGLDevice::getNumRenderTargets()
     
     glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
     
@@ -175,11 +175,6 @@ const Point2I GFXOpenGLES20iOSTextureTarget::getSize()
    return Point2I(0, 0);
 }
 
-GFXFormat GFXOpenGLES20iOSTextureTarget::getFormat()
-{
-   // TODO: Fix me!
-   return GFXFormatR8G8B8A8;
-}
 
 void GFXOpenGLES20iOSTextureTarget::attachTexture( GFXTextureObject *tex, RenderSlot slot, U32 mipLevel/*=0*/, U32 zOffset /*= 0*/ )
 {

@@ -7,11 +7,11 @@
 #define _GFXOpenGLES20TextureObject_H
 
 #include "platform/platformGL.h"
-#include "graphics/gfxTextureObject.h"
+#include "graphics/OpenGL/gfxOpenGLTextureObject.h"
 
 class GFXOpenGLES20Device;
 
-class GFXOpenGLES20TextureObject : public GFXTextureObject
+class GFXOpenGLES20TextureObject : public GFXOpenGLTextureObject
 {
 public:
    GFXOpenGLES20TextureObject(GFXDevice * aDevice, GFXTextureProfile *profile);
@@ -19,20 +19,10 @@ public:
    
    void release();
    
-   inline GLuint getHandle() const { return mHandle; }
-   inline GLenum getBinding() const { return mBinding; }
-   
-   inline bool isZombie() const { return mIsZombie; }
-   
    /// @return An array containing the texture data
    /// @note You are responsible for deleting the returned data! (Use delete[])
    U8* getTextureData();
-    
-   virtual GBitmap *getBitmap();
 
-   virtual F32 getMaxUCoord() const;
-   virtual F32 getMaxVCoord() const;
-   
    void reloadFromCache(); ///< Reloads texture from zombie cache, used by GFXOpenGLES20TextureManager to resurrect the texture.
    
 #ifdef TORQUE_DEBUG

@@ -74,7 +74,7 @@ public:
    
 protected:
 
-   friend class GFXGLDevice;
+   friend class GFXOpenGLDevice;
 
    /// The callback used to get texture events.
    /// @see GFXTextureManager::addEventDelegate

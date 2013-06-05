@@ -50,8 +50,6 @@ public:
 	virtual void prepare(); ///< Binds the buffer
    virtual void finish(); ///< We're done here
 
-	GLvoid* getBuffer(); ///< returns NULL
-
    // GFXResource interface
    virtual void zombify();
    virtual void resurrect();

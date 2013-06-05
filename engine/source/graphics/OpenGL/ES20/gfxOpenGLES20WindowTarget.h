@@ -35,7 +35,7 @@ private:
     typedef GFXDevice Parent;
     
     friend class GFXOpenGLES20TextureObject;
-//    friend class GFXOpenGLES20Cubemap;
+    friend class GFXOpenGLES20Cubemap;
     friend class GFXOpenGLES20WindowTarget;
     friend class GFXOpenGLES20VertexBuffer;
     friend class GFXOpenGLES20Device;

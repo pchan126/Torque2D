@@ -580,7 +580,7 @@ protected:
    GFXTextureManager * mTextureManager;
    
 public:
-//   virtual GFXCubemap * createCubemap() = 0;
+   virtual GFXCubemap * createCubemap() = 0;
    
    inline GFXTextureManager *getTextureManager()
    {

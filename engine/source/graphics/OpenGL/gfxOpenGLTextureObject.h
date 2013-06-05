@@ -54,7 +54,7 @@ public:
    /// @note You are responsible for deleting the returned data! (Use delete[])
    U8* getTextureData();
     
-//   virtual GBitmap *getBitmap();
+   virtual GBitmap *getBitmap();
 
    virtual F32 getMaxUCoord() const;
    virtual F32 getMaxVCoord() const;

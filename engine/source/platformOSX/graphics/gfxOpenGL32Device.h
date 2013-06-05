@@ -35,7 +35,7 @@
 
 class GFXOpenGL32VertexBuffer;
 class GFXOpenGL32TextureTarget;
-//class GFXOpenGL32Cubemap;
+class GFXOpenGL32Cubemap;
 //class GLKMatrixStackRef;
 
 typedef uint32_t CGDirectDisplayID;
@@ -66,9 +66,7 @@ public:
    virtual void enumerateVideoModes();
    void addVideoMode(const GFXVideoMode toAdd);
 
-//   virtual U32 getTotalVideoMemory();
-
-//   virtual GFXCubemap * createCubemap();
+   virtual GFXCubemap * createCubemap();
 
    virtual F32 getFillConventionOffset() const { return 0.0f; }
 

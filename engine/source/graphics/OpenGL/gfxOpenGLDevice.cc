@@ -24,6 +24,7 @@
 #include "./gfxOpenGLDevice.h"
 #include "./gfxOpenGLEnumTranslate.h"
 #include "./gfxOpenGLTextureObject.h"
+#include "./gfxOpenGLCubemap.h"
 #include "./gfxOpenGLVertexBuffer.h"
 
 GFXOpenGLDevice::GFXOpenGLDevice( U32 adapterIndex ) :
@@ -467,11 +468,35 @@ void GFXOpenGLDevice::setTextureInternal(U32 textureUnit, const GFXTextureObject
     glActiveTexture(GL_TEXTURE0);
 }
 
+
+void GFXOpenGLDevice::setCubemapInternal(U32 textureUnit, const GFXOpenGLCubemap* texture)
+{
+   glActiveTexture(GL_TEXTURE0 + textureUnit);
+   if(texture)
+   {
+      if(mActiveTextureType[textureUnit] != GL_TEXTURE_CUBE_MAP && mActiveTextureType[textureUnit] != GL_ZERO)
+      {
+         glBindTexture(mActiveTextureType[textureUnit], 0);
+         glDisable(mActiveTextureType[textureUnit]);
+      }
+      mActiveTextureType[textureUnit] = GL_TEXTURE_CUBE_MAP;
+      texture->bind(textureUnit);
+   }
+   else if(mActiveTextureType[textureUnit] != GL_ZERO)
+   {
+      glBindTexture(mActiveTextureType[textureUnit], 0);
+      glDisable(mActiveTextureType[textureUnit]);
+      mActiveTextureType[textureUnit] = GL_ZERO;
+   }
+   
+   glActiveTexture(GL_TEXTURE0);
+}
+
 void GFXOpenGLDevice::setVertexStream( U32 stream, GFXVertexBuffer *buffer )
 {
     if (stream > 0) return;
     
-    AssertFatal( stream == 0, "GFXOpenGLES20Device::setVertexStream - We don't support multiple vertex streams!" );
+    AssertFatal( stream == 0, "GFXOpenGLDevice::setVertexStream - We don't support multiple vertex streams!" );
     
     // Reset the state the old VB required, then set the state the new VB requires.
     if ( mCurrentVB )

@@ -147,7 +147,7 @@ protected:
    virtual void setShaderConstBufferInternal(GFXShaderConstBuffer* buffer);
 
    virtual void setTextureInternal(U32 textureUnit, const GFXTextureObject* texture);
-//   virtual void setCubemapInternal(U32 cubemap, const GFXOpenGLCubemap* texture);
+   virtual void setCubemapInternal(U32 cubemap, const GFXOpenGLCubemap* texture);
 
    virtual void setLightInternal(U32 lightStage, const GFXLightInfo light, bool lightEnable);
    virtual void setLightMaterialInternal(const GFXLightMaterial mat);

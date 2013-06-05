@@ -95,7 +95,7 @@ _GFXOpenGLES20TextureTargetFBOImpl::~_GFXOpenGLES20TextureTargetFBOImpl()
 
 void _GFXOpenGLES20TextureTargetFBOImpl::applyState()
 {
-    // REMINDER: When we implement MRT support, check against GFXGLDevice::getNumRenderTargets()
+    // REMINDER: When we implement MRT support, check against GFXOpenGLDevice::getNumRenderTargets()
     
     glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
     

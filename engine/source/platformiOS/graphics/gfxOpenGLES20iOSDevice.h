@@ -16,7 +16,7 @@
 
 class GFXOpenGLES20iOSVertexBuffer;
 class GFXOpenGLES20iOSTextureTarget;
-//class GFXOpenGLESCubemap;
+class GFXOpenGLES20iOSCubemap;
 
 @class EAGLContext, GLKTextureLoader, GLKBaseEffect, CIImage;
 
@@ -45,7 +45,7 @@ public:
 
 //   virtual U32 getTotalVideoMemory();
 
-//   virtual GFXCubemap * createCubemap();
+   virtual GFXCubemap * createCubemap();
 
    virtual F32 getFillConventionOffset() const { return 0.0f; }
 
@@ -105,7 +105,7 @@ protected:
    virtual void setShaderConstBufferInternal(GFXShaderConstBuffer* buffer);
 
    virtual void setTextureInternal(U32 textureUnit, const GFXTextureObject*texture);
-//   virtual void setCubemapInternal(U32 cubemap, const GFXOpenGLESCubemap* texture);
+//   virtual void setCubemapInternal(U32 cubemap, const GFXOpenGLES20iOSCubemap* texture);
 
    /// @name State Initalization.
    /// @{

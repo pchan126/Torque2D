@@ -161,14 +161,8 @@ void GFXOpenGL32VertexBuffer::prepare()
 void GFXOpenGL32VertexBuffer::finish()
 {
     glBindVertexArray(0);
-
 }
 
-GLvoid* GFXOpenGL32VertexBuffer::getBuffer()
-{
-	// NULL specifies no offset into the hardware buffer
-	return (GLvoid*)NULL;
-}
 
 void GFXOpenGL32VertexBuffer::zombify()
 {

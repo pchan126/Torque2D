@@ -6,14 +6,12 @@
 #ifndef _GFXOpenGLES20iOSVertexBuffer_H_
 #define _GFXOpenGLES20iOSVertexBuffer_H_
 
-#ifndef _GFXVERTEXBUFFER_H_
-#include "graphics/gfxVertexBuffer.h"
-#endif
+#include "graphics/OpenGL/gfxOpenGLVertexBuffer.h"
 
 #import <OpenGLES/ES2/glext.h>
 
 /// This is a vertex buffer which uses GL_ARB_vertex_buffer_object.
-class GFXOpenGLES20iOSVertexBuffer : public GFXVertexBuffer 
+class GFXOpenGLES20iOSVertexBuffer : public GFXOpenGLVertexBuffer
 {
 public:
 	GFXOpenGLES20iOSVertexBuffer(   GFXDevice *device, 
@@ -33,8 +31,6 @@ public:
 	virtual void prepare(); ///< Binds the buffer
    virtual void finish(); ///< We're done here
 
-	GLvoid* getBuffer(); ///< returns NULL
-
    // GFXResource interface
    virtual void zombify();
    virtual void resurrect();
@@ -44,7 +40,7 @@ private:
 	/// GL buffer handle
 	GLuint mBuffer, mVertexArrayObject, elementBufferName;
    U32 mTextureCount;
-    U32 mIndexCount;
+   U32 mIndexCount;
    
    U8* mZombieCache;
 };

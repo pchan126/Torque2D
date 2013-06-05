@@ -763,8 +763,8 @@ void GFXTextureManager::_validateTexParams( const U32 width, const U32 height,
    }
 }
 
-//GFXCubemap* GFXTextureManager::createCubemap( const String &path )
-//{
+GFXCubemap* GFXTextureManager::createCubemap( const String &path )
+{
 //   // Very first thing... check the cache.
 //   CubemapTable::Iterator iter = mCubemapTable.find( path.getFullPath() );
 //   if ( iter != mCubemapTable.end() )
@@ -774,33 +774,33 @@ void GFXTextureManager::_validateTexParams( const U32 width, const U32 height,
 //
 //   const U32 scalePower = getTextureDownscalePower( NULL );
 //
-//   GFXCubemap *cubemap = GFX->createCubemap();
+   GFXCubemap *cubemap = GFX->createCubemap();
 //   cubemap->initStatic( dds );
 //   cubemap->_setPath( path.getFullPath() );
 //
 //   // Store the cubemap into the cache.
 //   mCubemapTable.insertUnique( path.getFullPath(), cubemap );
-//
-//   return cubemap;
-//}
 
-//void GFXTextureManager::releaseCubemap( GFXCubemap *cubemap )
-//{
-////   if ( mTextureManagerState == GFXTextureManager::Dead )
-////      return;
-////
-////   const String &path = cubemap->getPath();
-////
-////   CubemapTable::Iterator iter = mCubemapTable.find( path );
-////   if ( iter != mCubemapTable.end() && iter->value == cubemap )
-////      mCubemapTable.erase( iter );
-////
-////   // If we have a path for the texture then
-////   // remove change notifications for it.
-////   //Path texPath = texture->getPath();
-////   //if ( !texPath.isEmpty() )
-////      //FS::RemoveChangeNotification( texPath, this, &GFXTextureManager::_onFileChanged );
-//}
+   return cubemap;
+}
+
+void GFXTextureManager::releaseCubemap( GFXCubemap *cubemap )
+{
+   if ( mTextureManagerState == GFXTextureManager::Dead )
+      return;
+//
+//   const String &path = cubemap->getPath();
+//
+//   CubemapTable::Iterator iter = mCubemapTable.find( path );
+//   if ( iter != mCubemapTable.end() && iter->value == cubemap )
+//      mCubemapTable.erase( iter );
+//
+//   // If we have a path for the texture then
+//   // remove change notifications for it.
+//   //Path texPath = texture->getPath();
+//   //if ( !texPath.isEmpty() )
+//      //FS::RemoveChangeNotification( texPath, this, &GFXTextureManager::_onFileChanged );
+}
 
 
 void GFXTextureManager::reloadTextures()

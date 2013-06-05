@@ -18,6 +18,7 @@
 #include "./gfxOpenGLES20iOSTextureObject.h"
 #include "./gfxOpenGLES20iOSCardProfiler.h"
 #include "./gfxOpenGLES20iOSWindowTarget.h"
+#include "./gfxOpenGLES20iOSCubemap.h"
 
 #include "./gfxOpenGLES20iOSShader.h"
 #include "graphics/primBuilder.h"
@@ -162,7 +163,7 @@ void GFXOpenGLES20iOSDevice::enumerateAdapters( Vector<GFXAdapter*> &adapterList
         toAdd->mIndex = screenNum-1;
         toAdd->mCreateDeviceInstanceDelegate = mCreateDeviceInstance;
         String renderer = _getRendererForDisplay(aScreen);
-        AssertFatal(dStrlen(renderer.c_str()) < GFXAdapter::MaxAdapterNameLen, "GFXGLDevice::enumerateAdapter - renderer name too long, increae the size of GFXAdapter::MaxAdapterNameLen (or use String!)");
+        AssertFatal(dStrlen(renderer.c_str()) < GFXAdapter::MaxAdapterNameLen, "GFXOpenGLDevice::enumerateAdapter - renderer name too long, increae the size of GFXAdapter::MaxAdapterNameLen (or use String!)");
         dStrncpy(toAdd->mName, renderer.c_str(), GFXAdapter::MaxAdapterNameLen);
         
         adapterList.push_back(toAdd);
@@ -235,12 +236,12 @@ void GFXOpenGLES20iOSDevice::setVertexStream( U32 stream, GFXVertexBuffer *buffe
 }
 
 
-//GFXCubemap* GFXOpenGLES20iOSDevice::createCubemap()
-//{
-//    GFXOpenGLESCubemap* cube = new GFXOpenGLESCubemap();
-//    cube->registerResourceWithDevice(this);
-//    return cube;
-//};
+GFXCubemap* GFXOpenGLES20iOSDevice::createCubemap()
+{
+    GFXOpenGLES20iOSCubemap* cube = new GFXOpenGLES20iOSCubemap();
+    cube->registerResourceWithDevice(this);
+    return cube;
+};
 
 
 void GFXOpenGLES20iOSDevice::setTextureInternal(U32 textureUnit, const GFXTextureObject*texture)

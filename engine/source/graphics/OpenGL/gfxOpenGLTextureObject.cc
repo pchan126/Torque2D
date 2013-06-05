@@ -53,3 +53,24 @@ void GFXOpenGLTextureObject::bind(U32 textureUnit) const
    glTexParameteri(mBinding, GL_TEXTURE_WRAP_T, !mIsNPoT2 ? GFXGLTextureAddress[ssd.addressModeV] : GL_CLAMP_TO_EDGE);
 }
 
+F32 GFXOpenGLTextureObject::getMaxUCoord() const
+{
+   return mBinding == GL_TEXTURE_2D ? 1.0f : (F32)getWidth();
+}
+
+F32 GFXOpenGLTextureObject::getMaxVCoord() const
+{
+   return mBinding == GL_TEXTURE_2D ? 1.0f : (F32)getHeight();
+}
+
+GBitmap* GFXOpenGLTextureObject::getBitmap()
+{
+   if (mBitmap)
+      return mBitmap;
+   
+   if (mPath.isEmpty())
+      return NULL;
+   
+   return NULL;
+}
+

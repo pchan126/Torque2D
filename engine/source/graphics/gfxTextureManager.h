@@ -31,7 +31,7 @@
 #include "delegates/delegateSignal.h"
 #include "graphics/gfxTextureHandle.h"
 
-//class GFXCubemap;
+class GFXCubemap;
 
 class GFXTextureManager : public SimObject
 {   
@@ -140,11 +140,11 @@ public:
 
    /// @}
 
-//   /// Load a cubemap from a texture file.
-//   GFXCubemap* createCubemap( const String &path );
-//
-//   /// Used to remove a cubemap from the cache.
-//   void releaseCubemap( GFXCubemap *cubemap );
+   /// Load a cubemap from a texture file.
+   GFXCubemap* createCubemap( const String &path );
+
+   /// Used to remove a cubemap from the cache.
+   void releaseCubemap( GFXCubemap *cubemap );
 
 protected:
 

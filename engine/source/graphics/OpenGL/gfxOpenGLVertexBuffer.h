@@ -39,21 +39,22 @@ public:
                           GFXBufferType bufferType,
                           const GLvoid * vertexData = NULL,
                           U32 indexCount = 0,
-                          const GLvoid * indexData = NULL);
+                         const GLvoid * indexData = NULL)
+   :GFXVertexBuffer( device, vertexCount, vertexFormat, vertexSize, bufferType) {} ;
 	
-    ~GFXOpenGLVertexBuffer();
+   ~GFXOpenGLVertexBuffer() {};
 
-	virtual void lock(U32 vertexStart, U32 vertexEnd, void **vertexPtr); 
-    virtual void set( void* data, U32 dataSize );
-	virtual void unlock(); 
-	virtual void prepare(); 
-   virtual void finish(); 
+	virtual void lock(U32 vertexStart, U32 vertexEnd, void **vertexPtr) = 0;
+   virtual void set( void* data, U32 dataSize, U32 indexCount, void* indexData ) = 0;
+	virtual void unlock() = 0;
+	virtual void prepare() = 0;
+   virtual void finish() = 0;
 
-	GLvoid* getBuffer();
-
+	virtual GLvoid* getBuffer() { return (GLvoid*)NULL; };
+   
    // GFXResource interface
-   virtual void zombify();
-   virtual void resurrect();
+   virtual void zombify() = 0;
+   virtual void resurrect() = 0;
    
 private:
    friend class GFXOpenGLDevice;

@@ -15,7 +15,7 @@
 
 
 GFXOpenGLES20TextureObject::GFXOpenGLES20TextureObject(GFXDevice * aDevice, GFXTextureProfile *profile) :
-   GFXTextureObject(aDevice, profile),
+   GFXOpenGLTextureObject(aDevice, profile),
    mBinding(GL_TEXTURE_2D),
    mBytesPerTexel(4),
    mLockedRectRect(0, 0, 0, 0),
@@ -78,17 +78,6 @@ void GFXOpenGLES20TextureObject::release()
    mHandle = 0;
 }
 
-GBitmap* GFXOpenGLES20TextureObject::getBitmap()
-{
-    if (mBitmap)
-        return mBitmap;
-    
-    if (mPath.isEmpty())
-        return NULL;
-    
-    return NULL;
-}
-
 
 bool GFXOpenGLES20TextureObject::copyToBmp(GBitmap * bmp)
 {
@@ -149,16 +138,6 @@ void GFXOpenGLES20TextureObject::resurrect()
       return;
       
    glGenTextures(1, &mHandle);
-}
-
-F32 GFXOpenGLES20TextureObject::getMaxUCoord() const
-{
-   return mBinding == GL_TEXTURE_2D ? 1.0f : (F32)getWidth();
-}
-
-F32 GFXOpenGLES20TextureObject::getMaxVCoord() const
-{
-   return mBinding == GL_TEXTURE_2D ? 1.0f : (F32)getHeight();
 }
 
 const String GFXOpenGLES20TextureObject::describeSelf() const

@@ -3,16 +3,16 @@
 // Copyright GarageGames, LLC 2011
 //-----------------------------------------------------------------------------
 
-#ifndef _GFXOpenGLES20Cubemap_H_
-#define _GFXOpenGLES20Cubemap_H_
+#ifndef _GFXOpenGL32Cubemap_H_
+#define _GFXOpenGL32Cubemap_H_
 
 #include "graphics/OpenGL/gfxOpenGLCubemap.h"
 
-class GFXOpenGLES20Cubemap : public GFXOpenGLCubemap
+class GFXOpenGL32Cubemap : public GFXOpenGLCubemap
 {
 public:
-   GFXOpenGLES20Cubemap();
-   virtual ~GFXOpenGLES20Cubemap();
+   GFXOpenGL32Cubemap();
+   virtual ~GFXOpenGL32Cubemap();
 
    virtual void initDynamic( U32 texSize, GFXFormat faceFormat = GFXFormatR8G8B8A8 );
 

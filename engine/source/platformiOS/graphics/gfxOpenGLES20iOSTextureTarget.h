@@ -6,7 +6,7 @@
 #ifndef _GFXOpenGLES20iOSTextureTarget_H_
 #define _GFXOpenGLES20iOSTextureTarget_H_
 
-#include "graphics/gfxTarget.h"
+#include "graphics/OpenGL/ES20/gfxOpenGLES20TextureTarget.h"
 #include "memory/autoPtr.h"
 
 class GFXOpenGLES20iOSTextureObject;
@@ -53,14 +53,13 @@ private:
 /// 4) If the DepthStencil target is GFXTextureTarget::sDefaultStencil, then the
 /// Color0 target should be the same size as the current backbuffer and should also
 /// be the same format (typically R8G8B8A8)
-class GFXOpenGLES20iOSTextureTarget : public GFXTextureTarget
+class GFXOpenGLES20iOSTextureTarget : public GFXOpenGLES20TextureTarget
 {
 public:
     GFXOpenGLES20iOSTextureTarget();
     virtual ~GFXOpenGLES20iOSTextureTarget();
     
     virtual const Point2I getSize();
-    virtual GFXFormat getFormat();
     virtual void attachTexture( GFXTextureObject *tex, RenderSlot slot = Color0, U32 mipLevel=0, U32 zOffset = 0);
     virtual void attachTexture(GFXCubemap *tex, U32 face, RenderSlot slot, U32 mipLevel=0);
     virtual void clearAttachments();

@@ -19,7 +19,7 @@ GFXOpenGLES20iOSVertexBuffer::GFXOpenGLES20iOSVertexBuffer(  GFXDevice *device,
                                        const GLvoid * data,
                                        U32 indexCount,
                                        const GLvoid *indexBuffer)
-   :  GFXVertexBuffer( device, vertexCount, vertexFormat, vertexSize, bufferType ),
+   :  GFXOpenGLVertexBuffer( device, vertexCount, vertexFormat, vertexSize, bufferType ),
       mZombieCache(NULL),
       mIndexCount(indexCount),
       elementBufferName(0)
@@ -69,16 +69,6 @@ GFXOpenGLES20iOSVertexBuffer::GFXOpenGLES20iOSVertexBuffer(  GFXDevice *device,
     
     if (indexCount)
     {
-//        U16* iB = (U16*)indexBuffer;
-//        for (int i = 0; i < indexCount; i++)
-//        {
-//            U16 x = iB[i];
-//            if (x > vertexCount)
-//            {
-//                AssertFatal((x < vertexCount), "ack");
-//            }
-//        }
-        
         // This also attaches the element array buffer to the VAO
         glGenBuffers(1, &elementBufferName);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferName);
@@ -122,17 +112,6 @@ void GFXOpenGLES20iOSVertexBuffer::set( void* data, U32 dataSize, U32 indexCount
     {
         if (elementBufferName == 0)
             glGenBuffers(1, &elementBufferName);
-        
-        
-//        U16* iB = (U16*)indexData;
-//        for (int i = 0; i < indexCount; i++)
-//        {
-//            U16 x = iB[i];
-//            if (x > mVertexCount)
-//            {
-//                AssertFatal((x < mVertexCount), "ack");
-//            }
-//        }
 
         // This also attaches the element array buffer to the VAO
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferName);
@@ -170,12 +149,6 @@ void GFXOpenGLES20iOSVertexBuffer::finish()
 {
     glBindVertexArrayOES(0);
 
-}
-
-GLvoid* GFXOpenGLES20iOSVertexBuffer::getBuffer()
-{
-	// NULL specifies no offset into the hardware buffer
-	return (GLvoid*)NULL;
 }
 
 void GFXOpenGLES20iOSVertexBuffer::zombify()

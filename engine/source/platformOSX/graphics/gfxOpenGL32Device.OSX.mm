@@ -32,6 +32,7 @@
 #include "./gfxOpenGL32TextureTarget.h"
 #include "./gfxOpenGL32TextureManager.h"
 #include "./gfxOpenGL32TextureObject.h"
+#include "./gfxOpenGL32Cubemap.h"
 #include "./gfxOpenGL32CardProfiler.h"
 #include "./gfxOpenGL32WindowTarget.h"
 
@@ -295,12 +296,12 @@ void GFXOpenGL32Device::setVertexStream( U32 stream, GFXVertexBuffer *buffer )
         mCurrentVB->prepare();
 }
 
-//GFXCubemap* GFXOpenGL32Device::createCubemap()
-//{
-////    GFXOpenGLCubemap* cube = new GFXOpenGLCubemap();
-////    cube->registerResourceWithDevice(this);
-////    return cube;
-//};
+GFXCubemap* GFXOpenGL32Device::createCubemap()
+{
+    GFXOpenGL32Cubemap* cube = new GFXOpenGL32Cubemap();
+    cube->registerResourceWithDevice(this);
+    return cube;
+};
 
 void GFXOpenGL32Device::clear(U32 flags, ColorI color, F32 z, U32 stencil)
 {
