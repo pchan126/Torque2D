@@ -1404,7 +1404,6 @@
 		D16244FD17265AB000E4E1F7 /* gfxOpenGLTextureTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLTextureTarget.h; sourceTree = "<group>"; };
 		D16244FE17265AB000E4E1F7 /* gfxOpenGLUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLUtils.h; sourceTree = "<group>"; };
 		D162450017265AB000E4E1F7 /* gfxOpenGLVertexBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLVertexBuffer.h; sourceTree = "<group>"; };
-		D162450217265AB000E4E1F7 /* gfxOpenGLWindowTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLWindowTarget.h; sourceTree = "<group>"; };
 		D162450317265AB000E4E1F7 /* IUniform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IUniform.h; sourceTree = "<group>"; };
 		D16580731702942800A21928 /* gfxInit.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxInit.cpp; sourceTree = "<group>"; };
 		D16580741702942800A21928 /* gfxInit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxInit.h; sourceTree = "<group>"; };
@@ -3100,7 +3099,6 @@
 				D16244FD17265AB000E4E1F7 /* gfxOpenGLTextureTarget.h */,
 				D16244FE17265AB000E4E1F7 /* gfxOpenGLUtils.h */,
 				D162450017265AB000E4E1F7 /* gfxOpenGLVertexBuffer.h */,
-				D162450217265AB000E4E1F7 /* gfxOpenGLWindowTarget.h */,
 				D162450317265AB000E4E1F7 /* IUniform.h */,
 			);
 			path = OpenGL;

@@ -46,14 +46,14 @@ class GFXOpenGLTextureTarget : public GFXTextureTarget
 {
 public:
     friend GFXOpenGLDevice;
-   GFXOpenGLTextureTarget();
-   virtual ~GFXOpenGLTextureTarget();
+   GFXOpenGLTextureTarget() {};
+   virtual ~GFXOpenGLTextureTarget() {};
 
-   virtual const Point2I getSize();
-   virtual GFXFormat getFormat();
+   virtual const Point2I getSize() = 0;
+   virtual GFXFormat getFormat() = 0;
     virtual void attachTexture(GFXTextureObject *tex, RenderSlot slot = Color0, U32 mipLevel=0, U32 zOffset = 0) = 0;
-    //   virtual void attachTexture(GFXCubemap *tex, U32 face, RenderSlot slot = Color0, U32 mipLevel=0) = 0;
-   virtual void clearAttachments();
+   virtual void attachTexture(GFXCubemap *tex, U32 face, RenderSlot slot = Color0, U32 mipLevel=0) = 0;
+   virtual void clearAttachments() = 0;
 
    /// Functions to query internal state
    /// @{
@@ -66,11 +66,11 @@ public:
    void deactivate();
    void zombify();
    void resurrect();
-   virtual const String describeSelf() const;
+   virtual const String describeSelf() const = 0;
    
-   virtual void resolve();
+   virtual void resolve() = 0;
    
-   virtual void resolveTo(GFXTextureObject* obj);
+   virtual void resolveTo(GFXTextureObject* obj) = 0;
    
 protected:
 

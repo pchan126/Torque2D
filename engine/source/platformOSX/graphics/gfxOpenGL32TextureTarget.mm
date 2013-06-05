@@ -24,7 +24,7 @@
 #include "./gfxOpenGL32Device.h"
 #include "./GFXOpenGL32TextureTarget.h"
 #include "./GFXOpenGL32TextureObject.h"
-//#include "./gfxGLCubemap.h"
+#include "./gfxOpenGL32Cubemap.h"
 #include "graphics/gfxTextureManager.h"
 #include "./gfxOpenGL32Utils.h"
 
@@ -78,28 +78,28 @@ private:
    StrongRefPtr<GFXOpenGL32TextureObject> mTex;
 };
 
-///// Internal struct used to track Cubemap texture information for FBO attachment
-//class _GFXGLCubemapTargetDesc : public _GFXGLTargetDesc
-//{
-//public:
-//   _GFXGLCubemapTargetDesc(GFXGLCubemap* tex, U32 _face, U32 _mipLevel, U32 _zOffset) 
-//      : _GFXGLTargetDesc(_mipLevel, _zOffset), mTex(tex), mFace(_face)
-//   {
-//   }
-//   
-//   virtual ~_GFXGLCubemapTargetDesc() {}
-//   
-//   virtual U32 getHandle() { return mTex->getHandle(); }
-//   virtual U32 getWidth() { return mTex->getWidth(); }
-//   virtual U32 getHeight() { return mTex->getHeight(); }
-//   virtual U32 getDepth() { return 0; }
-//   virtual bool hasMips() { return mTex->getNumMipLevels() != 1; }
-//   virtual GLenum getBinding() { return GFXGLCubemap::getEnumForFaceNumber(mFace); }
-//   
-//private:
-//   StrongRefPtr<GFXGLCubemap> mTex;
-//   U32 mFace;
-//};
+/// Internal struct used to track Cubemap texture information for FBO attachment
+class _GFXOpenGL32CubemapTargetDesc : public _GFXGLTargetDesc
+{
+public:
+   _GFXOpenGL32CubemapTargetDesc(GFXOpenGL32Cubemap* tex, U32 _face, U32 _mipLevel, U32 _zOffset)
+      : _GFXGLTargetDesc(_mipLevel, _zOffset), mTex(tex), mFace(_face)
+   {
+   }
+   
+   virtual ~_GFXOpenGL32CubemapTargetDesc() {}
+   
+   virtual U32 getHandle() { return mTex->getHandle(); }
+   virtual U32 getWidth() { return mTex->getWidth(); }
+   virtual U32 getHeight() { return mTex->getHeight(); }
+   virtual U32 getDepth() { return 0; }
+   virtual bool hasMips() { return mTex->getNumMipLevels() != 1; }
+   virtual GLenum getBinding() { return GFXOpenGL32Cubemap::getEnumForFaceNumber(mFace); }
+   
+private:
+   StrongRefPtr<GFXOpenGL32Cubemap> mTex;
+   U32 mFace;
+};
 
 // Internal implementations
 class _GFXOpenGL32TextureTargetImpl
@@ -276,23 +276,23 @@ void GFXOpenGL32TextureTarget::attachTexture( GFXTextureObject *tex, RenderSlot 
       mTargets[slot] = NULL;
 }
 
-//void GFXOpenGL32TextureTarget::attachTexture( RenderSlot slot, GFXCubemap *tex, U32 face, U32 mipLevel/*=0*/ )
-//{
-//   // No depth cubemaps, sorry
-//   AssertFatal(slot != DepthStencil, "GFXOpenGL32TextureTarget::attachTexture (cube) - Cube depth textures not supported!");
-//   if(slot == DepthStencil)
-//      return;
-//    
-//   // Triggers an update when we next render
-//   invalidateState();
-//   
-//   // We stash the texture and info into an internal struct.
-//   GFXGLCubemap* glTexture = static_cast<GFXGLCubemap*>(tex);
-//   if(tex)
-//      mTargets[slot] = new _GFXGLCubemapTargetDesc(glTexture, face, mipLevel, 0);
-//   else
-//      mTargets[slot] = NULL;
-//}
+void GFXOpenGL32TextureTarget::attachTexture( GFXCubemap *tex, U32 face, RenderSlot slot, U32 mipLevel/*=0*/ )
+{
+   // No depth cubemaps, sorry
+   AssertFatal(slot != DepthStencil, "GFXOpenGL32TextureTarget::attachTexture (cube) - Cube depth textures not supported!");
+   if(slot == DepthStencil)
+      return;
+    
+   // Triggers an update when we next render
+   invalidateState();
+   
+   // We stash the texture and info into an internal struct.
+   GFXOpenGL32Cubemap* glTexture = static_cast<GFXOpenGL32Cubemap*>(tex);
+   if(tex)
+      mTargets[slot] = new _GFXOpenGL32CubemapTargetDesc(glTexture, face, mipLevel, 0);
+   else
+      mTargets[slot] = NULL;
+}
 
 void GFXOpenGL32TextureTarget::clearAttachments()
 {
