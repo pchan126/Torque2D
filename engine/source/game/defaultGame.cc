@@ -619,5 +619,6 @@ bool clientProcess(U32 timeDelta)
    PROFILE_START(TickableAdvanceTime);
    Tickable::advanceTime(timeDelta);
    PROFILE_END();
+   return true;
 }
 

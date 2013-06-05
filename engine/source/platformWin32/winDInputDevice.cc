@@ -28,7 +28,7 @@
 
 #include "math/mMath.h"
 #include "console/console.h"
-#include "core/strings/unicode.h"
+#include "string/unicode.h"
 #include "windowManager/platformWindowMgr.h"
 
 // Static class data:

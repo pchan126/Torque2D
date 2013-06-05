@@ -34,10 +34,11 @@
 //%PUAP%-->
 
 #define GLCOREARB_PROTOTYPES
+#define WGL_WGLEXT_PROTOTYPES
 
 #include "./glcorearb.h"
-#include "wglext.h"
-
+#include <wglext.h>
+#include <glext.h>
 
 typedef enum {
 	GLKVertexAttribPosition,

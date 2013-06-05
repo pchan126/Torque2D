@@ -1377,9 +1377,6 @@
     <ClCompile Include="..\..\source\persistence\taml\json\tamlJSONParser.cc">
       <Filter>persistence\taml\json</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\gui\containers\guiGridCtrl.cc">
-      <Filter>gui\containers</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\source\graphics\OpenGL\gfxOpenGLDevice.cc">
       <Filter>graphics\OpenGL</Filter>
     </ClCompile>
@@ -1433,6 +1430,9 @@
     </ClCompile>
     <ClCompile Include="..\..\source\platform\menus\menuBar.cpp">
       <Filter>platform\menus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\platformWin32\windowsManager\win32WindowInputGenerator.cpp">
+      <Filter>platformWin32\windowsManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2823,9 +2823,6 @@
     <ClInclude Include="..\..\source\persistence\taml\json\tamlJSONParser.h">
       <Filter>persistence\taml\json</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\gui\containers\guiGridCtrl.h">
-      <Filter>gui\containers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\graphics\gfxAdapter.h">
       <Filter>graphics</Filter>
     </ClInclude>
@@ -2990,6 +2987,12 @@
     </ClInclude>
     <ClInclude Include="..\..\source\platform\menus\menuBar.h">
       <Filter>platform\menus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platform\rawData.h">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platformWin32\windowsManager\win32WindowInputGenerator.h">
+      <Filter>platformWin32\windowsManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

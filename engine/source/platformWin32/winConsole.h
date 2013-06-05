@@ -38,7 +38,6 @@ class WinConsole
    HANDLE stdOut;
    HANDLE stdIn;
    HANDLE stdErr;
-   ConsoleEvent postEvent;
    char inbuf[512];
    S32  inpos;
    bool lineOutput;

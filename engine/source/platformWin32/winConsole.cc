@@ -28,6 +28,12 @@
 
 WinConsole *WindowsConsole = NULL;
 
+namespace Con
+{
+	extern bool alwaysUseDebugOutput;
+}
+
+
 ConsoleFunction(enableWinConsole, void, 2, 2, "( enable ) Use the enableWinConsole function to tell TGB to create an external console window, either as a separate DOS window or as a new window under OSX/Linux/*NIX.\n"
                                                                 "Subsequent calls to this function do nothing. Only one external console is allowed\n"
                                                                 "@param enable A boolean. If this value is set to true, a new console window will be created.\n"
@@ -281,12 +287,13 @@ void WinConsole::process()
                         outbuf[outpos] = 0;
                         printf("%s", outbuf);
 
-                        S32 eventSize;
-                        eventSize = ConsoleEventHeaderSize;
+						{
+							RawData rd;
+							rd.size = inpos + 1;
+							rd.data = ( S8* ) inbuf;
+							Con::smConsoleInput.trigger(rd);
+						}
 
-                        dStrcpy(postEvent.data, inbuf);
-                        postEvent.size = eventSize + dStrlen(inbuf) + 1;
-                        Game->postEvent(postEvent);
 
                         // If we've gone off the end of our array, wrap
                         // back to the beginning

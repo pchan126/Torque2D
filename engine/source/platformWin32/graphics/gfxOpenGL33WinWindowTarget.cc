@@ -9,8 +9,7 @@
 #include "./gfxOpenGL33WinUtils.h"
 
 #include "platform/platformGL.h"
-#import "platformOSX/windowManager/macWindow.h"
-#import "osxGLUtils.h"
+#include "platformWin32/windowsManager/win32Window.h"
 
 
 GFXOpenGL33WinWindowTarget::GFXOpenGL33WinWindowTarget(PlatformWindow *window, GFXDevice *d)
@@ -44,15 +43,8 @@ void GFXOpenGL33WinWindowTarget::_onAppSignal(WindowId wnd, S32 event)
 
 bool GFXOpenGL33WinWindowTarget::present()
 {
-//    GFX->updateStates();
-    if (mFullscreenContext)
-    {
-        [(NSOpenGLContext*)mFullscreenContext flushBuffer];
-    }
-    else
-    {
-       [mContext flushBuffer];
-    }
+	HWND hwnd = GETHWND(getWindow());
+	SwapBuffers(GetDC(hwnd));
     return true;
 }
 
@@ -81,8 +73,8 @@ void GFXOpenGL33WinWindowTarget::resolveTo(GFXTextureObject* obj)
 
 void GFXOpenGL33WinWindowTarget::makeActive()
 {
-    [(NSOpenGLContext*)mContext makeCurrentContext];
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    //[(NSOpenGLContext*)mContext makeCurrentContext];
+    //glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 
@@ -90,42 +82,42 @@ void GFXOpenGL33WinWindowTarget::_teardownCurrentMode()
 {
     GFX->setActiveRenderTarget(this);
     static_cast<GFXOpenGL33WinDevice*>(mDevice)->zombify();
-    if(mFullscreenContext)
-    {
-        [NSOpenGLContext clearCurrentContext];
-        [(NSOpenGLContext*)mFullscreenContext clearDrawable];
-    }
+    //if(mFullscreenContext)
+    //{
+    //    [NSOpenGLContext clearCurrentContext];
+    //    [(NSOpenGLContext*)mFullscreenContext clearDrawable];
+    //}
 }
 
 
 void GFXOpenGL33WinWindowTarget::_setupNewMode()
 {
-    if(mWindow->getVideoMode().fullScreen && !mFullscreenContext)
-    {
-        // We have to create a fullscreen context.
-        Vector<NSOpenGLPixelFormatAttribute> attributes = _beginPixelFormatAttributesForDisplay(static_cast<MacWindow*>(mWindow)->getDisplay());
-        _addColorAlphaDepthStencilAttributes(attributes, 24, 8, 24, 8);
-        _addFullscreenAttributes(attributes);
-        _endAttributeList(attributes);
+    //if(mWindow->getVideoMode().fullScreen && !mFullscreenContext)
+    //{
+    //    // We have to create a fullscreen context.
+    //    Vector<NSOpenGLPixelFormatAttribute> attributes = _beginPixelFormatAttributesForDisplay(static_cast<MacWindow*>(mWindow)->getDisplay());
+    //    _addColorAlphaDepthStencilAttributes(attributes, 24, 8, 24, 8);
+    //    _addFullscreenAttributes(attributes);
+    //    _endAttributeList(attributes);
 
-        NSOpenGLPixelFormat* fmt = [[NSOpenGLPixelFormat alloc] initWithAttributes:attributes.address()];
-        mFullscreenContext = [[[NSOpenGLContext alloc] initWithFormat:fmt shareContext:nil] retain];
-        [fmt release];
-        [(NSOpenGLContext*)mFullscreenContext setFullScreen];
-        [(NSOpenGLContext*)mFullscreenContext makeCurrentContext];
-        // Restore resources in new context
-        static_cast<GFXOpenGL33WinDevice*>(mDevice)->resurrect();
-        GFX->updateStates(true);
-    }
-    else if(!mWindow->getVideoMode().fullScreen && mFullscreenContext)
-    {
-        [(NSOpenGLContext*)mFullscreenContext release];
-        mFullscreenContext = NULL;
-        [(NSOpenGLContext*)mContext makeCurrentContext];
-        GFX->clear(GFXClearTarget | GFXClearZBuffer | GFXClearStencil, ColorI(0, 0, 0), 1.0f, 0);
-        static_cast<GFXOpenGL33WinDevice*>(mDevice)->resurrect();
-        GFX->updateStates(true);
-    }
+    //    NSOpenGLPixelFormat* fmt = [[NSOpenGLPixelFormat alloc] initWithAttributes:attributes.address()];
+    //    mFullscreenContext = [[[NSOpenGLContext alloc] initWithFormat:fmt shareContext:nil] retain];
+    //    [fmt release];
+    //    [(NSOpenGLContext*)mFullscreenContext setFullScreen];
+    //    [(NSOpenGLContext*)mFullscreenContext makeCurrentContext];
+    //    // Restore resources in new context
+    //    static_cast<GFXOpenGL33WinDevice*>(mDevice)->resurrect();
+    //    GFX->updateStates(true);
+    //}
+    //else if(!mWindow->getVideoMode().fullScreen && mFullscreenContext)
+    //{
+    //    [(NSOpenGLContext*)mFullscreenContext release];
+    //    mFullscreenContext = NULL;
+    //    [(NSOpenGLContext*)mContext makeCurrentContext];
+    //    GFX->clear(GFXClearTarget | GFXClearZBuffer | GFXClearStencil, ColorI(0, 0, 0), 1.0f, 0);
+    //    static_cast<GFXOpenGL33WinDevice*>(mDevice)->resurrect();
+    //    GFX->updateStates(true);
+    //}
 }
 
 

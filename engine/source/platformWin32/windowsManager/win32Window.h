@@ -210,5 +210,10 @@ public:
    /// Return the platform specific object needed to create or attach an
    /// accelerated graohics drawing context on or to the window
    virtual void* getPlatformDrawable() const { return mWindowHandle; }
+
+   public:
+	   MouseEvent  mouseEvent;
+       ButtonEvent mouseButtonEvent;
+	   MouseWheelEvent wheelEvent;
 };
 #endif

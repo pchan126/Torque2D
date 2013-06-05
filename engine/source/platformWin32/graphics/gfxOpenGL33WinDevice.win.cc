@@ -74,8 +74,7 @@ GFXOpenGL33WinDevice::GFXOpenGL33WinDevice( U32 adapterIndex )  : GFXOpenGLDevic
                         mPixelFormat(NULL),
                         mPixelShaderVersion(0.0f),
                         mMaxShaderTextures(2),
-                        mClip(0, 0, 0, 0),
-                        mTextureLoader(NULL)
+                        mClip(0, 0, 0, 0)
 {
     GFXOpenGLEnumTranslate::init();
    
@@ -95,17 +94,23 @@ void GFXOpenGL33WinDevice::init( const GFXVideoMode &mode, PlatformWindow *windo
 {
     if(!mInitialized)
     {
-       AssertFatal(!mContext && !mPixelFormat, "_createInitialContextAndFormat - Already created initial context and format");
-       
-//       mPixelFormat = generateValidPixelFormat(mode.fullScreen, mode.bitDepth, 0);
-       AssertFatal(mPixelFormat, "_createInitialContextAndFormat - Unable to create an OpenGL pixel format");
-       
-       mContext = [[[NSOpenGLContext alloc] initWithFormat: (NSOpenGLPixelFormat*)mPixelFormat shareContext: nil] retain];
-       AssertFatal(mContext, "_createInitialContextAndFormat - Unable to create an OpenGL context");
+		int nPixCount = 0;
+		int pixAttribs[] = {
+			WGL_SUPPORT_OPENGL_ARB, 1,
+			WGL_DRAW_TO_WINDOW_ARB, 1,
+			WGL_RED_BITS_ARB, 8,
+			WGL_GREEN_BITS_ARB, 8,
+			WGL_BLUE_BITS_ARB, 8,
+			WGL_DEPTH_BITS_ARB, 16,
+			WGL_ACCELERATION_ARB,
+			WGL_FULL_ACCELERATION_ARB,
+			WGL_PIXEL_TYPE_ARB,
+			WGL_TYPE_RGBA_ARB,
+			0};
 
-       [mContext makeCurrentContext];
-       
-       mTextureManager = new GFXOpenGL33WinTextureManager(mContext);
+		wglChoosePixelFormatARB(*mContext, &pixAttribs[0], NULL, 1, mPixelFormat, (UINT*)&nPixCount);
+	   
+       mTextureManager = new GFXOpenGL33WinTextureManager();
 
        initGLState();
        initGenericShaders();
@@ -122,27 +127,6 @@ void GFXOpenGL33WinDevice::addVideoMode(GFXVideoMode toAdd)
 
 void addVideoModeCallback( const void *value, void *context )
 {
-	if (CFGetTypeID (value) == CGDisplayModeGetTypeID())
-    {
-        CGDisplayModeRef mode = (CGDisplayModeRef)value;
-        Vector<GFXVideoMode> *videoModes = (Vector<GFXVideoMode> *)context;
-        GFXVideoMode toAdd;
-
-        toAdd.resolution.x = CGDisplayModeGetWidth(mode); //  valueForKey:@"Width"] intValue];
-        toAdd.resolution.y = CGDisplayModeGetHeight(mode); //  [[mode valueForKey:@"Height"] intValue];
-        CFStringRef pixCode = CGDisplayModeCopyPixelEncoding(mode);
-        toAdd.bitDepth = CFStringGetLength(pixCode); // [[mode valueForKey:@"BitsPerPixel"] intValue];
-        toAdd.refreshRate = CGDisplayModeGetRefreshRate(mode); // [[mode valueForKey:@"RefreshRate"] intValue];
-        
-        toAdd.fullScreen = false;
-        
-        CFRelease(pixCode);
-        // skip if mode claims to be 8bpp
-        if( toAdd.bitDepth == 8 )
-            return;
-        
-        videoModes->push_back_unique(toAdd);
-    }
 }
 
 void GFXOpenGL33WinDevice::enumerateAdapters( Vector<GFXAdapter*> &adapterList )
@@ -150,45 +134,12 @@ void GFXOpenGL33WinDevice::enumerateAdapters( Vector<GFXAdapter*> &adapterList )
     GFXAdapter *toAdd;
     
     Vector<GFXVideoMode> videoModes;
-    
-    CGDirectDisplayID display = CGMainDisplayID();
-    
-    // Enumerate all available resolutions: // depreciated use CGDisplayCopyAllDisplayModes
-    CFArrayRef modeArray = CGDisplayCopyAllDisplayModes( display, NULL );
-    CFArrayApplyFunction(modeArray, CFRangeMake(0,CFArrayGetCount(modeArray)), addVideoModeCallback, &videoModes);
-    
-    // Get number of displays
-    CGDisplayCount dispCnt;
-    CGGetActiveDisplayList(0, NULL, &dispCnt);
-    
-    // Take advantage of GNU-C
-    CGDirectDisplayID displays[dispCnt];
-    
-    CGGetActiveDisplayList(dispCnt, displays, &dispCnt);
-    for(U32 i = 0; i < dispCnt; i++)
-    {
-        toAdd = new GFXAdapter();
-        toAdd->mType = OpenGL;
-        toAdd->mIndex = (U32)displays[i];
-        toAdd->mCreateDeviceInstanceDelegate = mCreateDeviceInstance;
-        String renderer = _getRendererForDisplay(displays[i]);
-        AssertFatal(dStrlen(renderer.c_str()) < GFXAdapter::MaxAdapterNameLen, "GFXGLDevice::enumerateAdapter - renderer name too long, increae the size of GFXAdapter::MaxAdapterNameLen (or use String!)");
-        dStrncpy(toAdd->mName, renderer.c_str(), GFXAdapter::MaxAdapterNameLen);
-        adapterList.push_back(toAdd);
-        
-        for (S32 j = videoModes.size() - 1 ; j >= 0 ; j--)
-            toAdd->mAvailableModes.push_back(videoModes[j]);
-    }
+
 }
 
 void GFXOpenGL33WinDevice::enumerateVideoModes()
 {
     mVideoModes.clear();
-    CGDirectDisplayID display = CGMainDisplayID();
-    
-    // Enumerate all available resolutions:
-    CFArrayRef modeArray = CGDisplayCopyAllDisplayModes( display, NULL );
-    CFArrayApplyFunction(modeArray, CFRangeMake(0,CFArrayGetCount(modeArray)), addVideoModeCallback, &mVideoModes);
 }
 
 void GFXOpenGL33WinDevice::zombify()
@@ -220,7 +171,7 @@ void GFXOpenGL33WinDevice::resurrect()
 }
 
 
-GFXVertexBuffer* GFXOpenGL33WinDevice::findVolatileVBO(U32 numVerts, const GFXVertexFormat *vertexFormat, U32 vertSize, void* data)
+GFXVertexBuffer* GFXOpenGL33WinDevice::findVolatileVBO(U32 numVerts, const GFXVertexFormat *vertexFormat, U32 vertSize, void* data, U32 indexSize, void* indexData)
 {
     for(U32 i = 0; i < mVolatileVBs.size(); i++)
         if (  mVolatileVBs[i]->mVertexCount >= numVerts &&
@@ -228,12 +179,12 @@ GFXVertexBuffer* GFXOpenGL33WinDevice::findVolatileVBO(U32 numVerts, const GFXVe
             mVolatileVBs[i]->mVertexSize == vertSize &&
             mVolatileVBs[i]->getRefCount() == 1 )
         {
-            mVolatileVBs[i].getPointer()->set(data, numVerts*vertSize);
+            mVolatileVBs[i].getPointer()->set(data, numVerts*vertSize, indexSize, indexData);
             return mVolatileVBs[i];
         }
     
     // No existing VB, so create one
-    StrongRefPtr<GFXOpenGL33WinVertexBuffer> buf(new GFXOpenGL33WinVertexBuffer(GFX, numVerts, vertexFormat, vertSize, GFXBufferTypeVolatile, data));
+    StrongRefPtr<GFXOpenGL33WinVertexBuffer> buf(new GFXOpenGL33WinVertexBuffer(GFX, numVerts, vertexFormat, vertSize, GFXBufferTypeVolatile, data, indexSize, indexData));
     buf->registerResourceWithDevice(this);
     mVolatileVBs.push_back(buf);
     return buf.getPointer();
@@ -360,22 +311,22 @@ GFXWindowTarget *GFXOpenGL33WinDevice::allocWindowTarget(PlatformWindow *window)
    if (window == NULL)
       return NULL;
    
-   NSOpenGLView* view = (NSOpenGLView*)window->getPlatformDrawable();
-   AssertFatal([view isKindOfClass:[NSOpenGLView class]], avar("_createContextForWindow - Supplied a %s instead of a NSOpenGLView", [[view className] UTF8String]));
-   
-   NSOpenGLContext* ctx = nil;
-   ctx = [[[ NSOpenGLContext alloc] initWithFormat:mPixelFormat shareContext:mContext] autorelease];
-   
-   AssertFatal(ctx, "Unable to create a shared OpenGL context");
-   if (ctx != nil)
-   {
-      [view setPixelFormat: (NSOpenGLPixelFormat*)mPixelFormat];
-      [view setOpenGLContext: ctx];
-   }
+   //NSOpenGLView* view = (NSOpenGLView*)window->getPlatformDrawable();
+   //AssertFatal([view isKindOfClass:[NSOpenGLView class]], avar("_createContextForWindow - Supplied a %s instead of a NSOpenGLView", [[view className] UTF8String]));
+   //
+   //NSOpenGLContext* ctx = nil;
+   //ctx = [[[ NSOpenGLContext alloc] initWithFormat:mPixelFormat shareContext:mContext] autorelease];
+   //
+   //AssertFatal(ctx, "Unable to create a shared OpenGL context");
+   //if (ctx != nil)
+   //{
+   //   [view setPixelFormat: (NSOpenGLPixelFormat*)mPixelFormat];
+   //   [view setOpenGLContext: ctx];
+   //}
    
     // Allocate the wintarget and create a new context.
     GFXOpenGL33WinWindowTarget *gwt = new GFXOpenGL33WinWindowTarget(window, this);
-    gwt->mContext = ctx ? ctx : mContext;
+    //gwt->mContext = ctx ? ctx : mContext;
     return gwt;
 }
 

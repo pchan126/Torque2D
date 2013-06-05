@@ -389,7 +389,6 @@
     <ClCompile Include="..\..\source\graphics\PNGImage.cpp" />
     <ClCompile Include="..\..\source\graphics\primBuilder.cc" />
     <ClCompile Include="..\..\source\graphics\splineUtil.cc" />
-
     <ClCompile Include="..\..\source\gui\guiArrayCtrl.cc" />
     <ClCompile Include="..\..\source\gui\guiBackgroundCtrl.cc" />
     <ClCompile Include="..\..\source\gui\guiBitmapBorderCtrl.cc" />
@@ -548,6 +547,7 @@
     <ClCompile Include="..\..\source\platformWin32\nativeDialogs\win32FileDialog.cc" />
     <ClCompile Include="..\..\source\platformWin32\windowsManager\win32CursorController.cpp" />
     <ClCompile Include="..\..\source\platformWin32\windowsManager\win32Window.cpp" />
+    <ClCompile Include="..\..\source\platformWin32\windowsManager\win32WindowInputGenerator.cpp" />
     <ClCompile Include="..\..\source\platformWin32\windowsManager\win32WindowMgr.cpp" />
     <ClCompile Include="..\..\source\platformWin32\windowsManager\winDispatch.cpp" />
     <ClCompile Include="..\..\source\platform\menus\menuBar.cpp" />
@@ -1057,6 +1057,7 @@
     <ClInclude Include="..\..\source\platformWin32\graphics\osxGLUtils.h" />
     <ClInclude Include="..\..\source\platformWin32\windowsManager\win32CursorController.h" />
     <ClInclude Include="..\..\source\platformWin32\windowsManager\win32Window.h" />
+    <ClInclude Include="..\..\source\platformWin32\windowsManager\win32WindowInputGenerator.h" />
     <ClInclude Include="..\..\source\platformWin32\windowsManager\win32WindowMgr.h" />
     <ClInclude Include="..\..\source\platformWin32\windowsManager\winDispatch.h" />
     <ClInclude Include="..\..\source\platformWin32\winWindow.h" />
@@ -1082,6 +1083,7 @@
     <ClInclude Include="..\..\source\platform\platformTLS.h" />
     <ClInclude Include="..\..\source\platform\platformVFS.h" />
     <ClInclude Include="..\..\source\platform\platform_ScriptBinding.h" />
+    <ClInclude Include="..\..\source\platform\rawData.h" />
     <ClInclude Include="..\..\source\platform\Tickable.h" />
     <ClInclude Include="..\..\source\platform\types.codewarrior.h" />
     <ClInclude Include="..\..\source\platform\types.gcc.h" />

@@ -39,7 +39,7 @@ extern InputObjectInstances DIK_to_Key( U8 dikCode );
 
 extern U8 TranslateOSKeyCode(U8 vcode );
 
-extern InputModifiers convertModifierBits(const U32 in);
+extern U32 convertModifierBits(const U32 in);
 
 static void _keyboardEvent(Win32Window* window,UINT message, WPARAM wParam, WPARAM lParam)
 {
@@ -411,8 +411,8 @@ static bool _dispatch(HWND hWnd,UINT message,WPARAM wParam,WPARAM lParam)
 
 		// Force a quit if we're in play mode, otherwise there would be
 		// no way to stop a journal playback.(
-		if (Journal::IsPlaying())
-			Process::requestShutdown();
+//		if (Journal::IsPlaying())
+//			Process::requestShutdown();
 		break;
 
 	case WM_TIMER: {
