@@ -35,10 +35,12 @@ GFXOpenGLDevice::GFXOpenGLDevice( U32 adapterIndex ) :
             mClip(0, 0, 0, 0),
             mPixelShaderVersion(0.0f),
             mBlendSrcState(GFXBlendSrcAlpha),
-            mBlendDestState(GFXBlendInvSrcAlpha)
+            mBlendDestState(GFXBlendInvSrcAlpha),
+            m_globalAmbientColor(1.0, 1.0, 1.0, 1.0)
 {
     m_WorldStack.push_back(MatrixF(true));
     m_ProjectionStack.push_back(MatrixF(true));
+    m_lightStack.setSize(LIGHT_STAGE_COUNT);
 }
 
 
@@ -230,64 +232,6 @@ void GFXOpenGLDevice::setClipRect( const RectI &inRect )
     setViewport(viewport);
 }
 
-
-void GFXOpenGLDevice::setLightInternal(U32 lightStage, const GFXLightInfo light, bool lightEnable)
-{
-    //   if(!lightEnable)
-    //   {
-    //      glDisable(GL_LIGHT0 + lightStage);
-    //      return;
-    //   }
-    //
-    //   if(light.mType == GFXLightInfo::Ambient)
-    //   {
-    //      AssertFatal(false, "Instead of setting an ambient light you should set the global ambient color.");
-    //      return;
-    //   }
-    //
-    //   GLenum lightEnum = GL_LIGHT0 + lightStage;
-    //   glLightfv(lightEnum, GL_AMBIENT, (GLfloat*)&light.mAmbient);
-    //   glLightfv(lightEnum, GL_DIFFUSE, (GLfloat*)&light.mColor);
-    //   glLightfv(lightEnum, GL_SPECULAR, (GLfloat*)&light.mColor);
-    //
-    //   F32 pos[4];
-    //
-    //   if(light.mType != GFXLightInfo::Vector)
-    //   {
-    //      dMemcpy(pos, &light.mPos, sizeof(light.mPos));
-    //      pos[3] = 1.0;
-    //   }
-    //   else
-    //   {
-    //      dMemcpy(pos, &light.mDirection, sizeof(light.mDirection));
-    //      pos[3] = 0.0;
-    //   }
-    //   // Harcoded attenuation
-    //   glLightf(lightEnum, GL_CONSTANT_ATTENUATION, 1.0f);
-    //   glLightf(lightEnum, GL_LINEAR_ATTENUATION, 0.1f);
-    //   glLightf(lightEnum, GL_QUADRATIC_ATTENUATION, 0.0f);
-    //
-    //   glLightfv(lightEnum, GL_POSITION, (GLfloat*)&pos);
-    //   glEnable(lightEnum);
-}
-
-void GFXOpenGLDevice::setLightMaterialInternal(const GFXLightMaterial mat)
-{
-    //   // CodeReview - Setting these for front and back is unnecessary.  We should consider
-    //   // checking what faces we're culling and setting this only for the unculled faces.
-    //   glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, (GLfloat*)&mat.ambient);
-    //   glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, (GLfloat*)&mat.diffuse);
-    //   glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, (GLfloat*)&mat.specular);
-    //   glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, (GLfloat*)&mat.emissive);
-    //   glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, mat.shininess);
-}
-
-void GFXOpenGLDevice::setGlobalAmbientInternal(ColorF color)
-{
-    //   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, (GLfloat*)&color);
-}
-
-
 const MatrixF GFXOpenGLDevice::getMatrix( GFXMatrixType mtype )
 {
     MatrixF ret = MatrixF(true);
@@ -445,6 +389,57 @@ void GFXOpenGLDevice::setShaderConstBufferInternal(GFXShaderConstBuffer* buffer)
     static_cast<GFXOpenGLShaderConstBuffer*>(buffer)->activate();
 }
 
+void GFXOpenGLDevice::setLightInternal(U32 lightStage, const GFXLightInfo light, bool lightEnable)
+{
+   m_lightStack[lightStage] = light;
+//   if(!lightEnable)
+//   {
+//      glDisable(GL_LIGHT0 + lightStage);
+//      return;
+//   }
+//   
+//   if(light.mType == GFXLightInfo::Ambient)
+//   {
+//      AssertFatal(false, "Instead of setting an ambient light you should set the global ambient color.");
+//      return;
+//   }
+//   
+//   GLenum lightEnum = GL_LIGHT0 + lightStage;
+//   glLightfv(lightEnum, GL_AMBIENT, (GLfloat*)&light.mAmbient);
+//   glLightfv(lightEnum, GL_DIFFUSE, (GLfloat*)&light.mColor);
+//   glLightfv(lightEnum, GL_SPECULAR, (GLfloat*)&light.mColor);
+//   
+//   F32 pos[4];
+//   
+//   if(light.mType != GFXLightInfo::Vector)
+//   {
+//      dMemcpy(pos, &light.mPos, sizeof(light.mPos));
+//      pos[3] = 1.0;
+//   }
+//   else
+//   {
+//      dMemcpy(pos, &light.mDirection, sizeof(light.mDirection));
+//      pos[3] = 0.0;
+//   }
+//   // Harcoded attenuation
+//   glLightf(lightEnum, GL_CONSTANT_ATTENUATION, 1.0f);
+//   glLightf(lightEnum, GL_LINEAR_ATTENUATION, 0.1f);
+//   glLightf(lightEnum, GL_QUADRATIC_ATTENUATION, 0.0f);
+//   
+//   glLightfv(lightEnum, GL_POSITION, (GLfloat*)&pos);
+//   glEnable(lightEnum);
+}
+
+void GFXOpenGLDevice::setLightMaterialInternal(const GFXLightMaterial mat)
+{
+   mCurrentLightMaterial = mat;
+}
+
+void GFXOpenGLDevice::setGlobalAmbientInternal(ColorF color)
+{
+   m_globalAmbientColor = color;
+}
+
 void GFXOpenGLDevice::setTextureInternal(U32 textureUnit, const GFXTextureObject*texture)
 {
     const GFXOpenGLTextureObject *tex = static_cast<const GFXOpenGLTextureObject*>(texture);
@@ -551,29 +546,29 @@ void GFXOpenGLDevice::updateStates(bool forceSetAll /*=false*/)
                     setTextureInternal(i, mCurrentTexture[i]);
                 }
                     break;
-//                case GFXTDT_Cube :
-//                {
-//                    mCurrentCubemap[i] = mNewCubemap[i];
-//                    if (mCurrentCubemap[i])
-//                        mCurrentCubemap[i]->setToTexUnit(i);
-//                    else
-//                        setTextureInternal(i, NULL);
-//                }
-//                    break;
+                case GFXTDT_Cube :
+                {
+                    mCurrentCubemap[i] = mNewCubemap[i];
+                    if (mCurrentCubemap[i])
+                       static_cast<GFXOpenGLCubemap*>(mCurrentCubemap[i].getPointer())->setToTexUnit(i);
+                    else
+                        setTextureInternal(i, NULL);
+                }
+                    break;
                 default:
                     AssertFatal(false, "Unknown texture type!");
                     break;
             }
         }
 
-//        // Set our material
-//        setLightMaterialInternal(mCurrentLightMaterial);
-//
-//        // Set our lights
-//        for(U32 i = 0; i < LIGHT_STAGE_COUNT; i++)
-//        {
-//            setLightInternal(i, mCurrentLight[i], mCurrentLightEnable[i]);
-//        }
+        // Set our material
+        setLightMaterialInternal(mCurrentLightMaterial);
+
+        // Set our lights
+        for(U32 i = 0; i < LIGHT_STAGE_COUNT; i++)
+        {
+            setLightInternal(i, mCurrentLight[i], mCurrentLightEnable[i]);
+        }
 
         _updateRenderTargets();
 
@@ -638,15 +633,15 @@ void GFXOpenGLDevice::updateStates(bool forceSetAll /*=false*/)
                     setTextureInternal(i, mCurrentTexture[i]);
                 }
                     break;
-//                case GFXTDT_Cube :
-//                {
-//                    mCurrentCubemap[i] = mNewCubemap[i];
-//                    if (mCurrentCubemap[i])
-//                        mCurrentCubemap[i]->setToTexUnit(i);
-//                    else
-//                        setTextureInternal(i, NULL);
-//                }
-//                    break;
+                case GFXTDT_Cube :
+                {
+                    mCurrentCubemap[i] = mNewCubemap[i];
+                    if (mCurrentCubemap[i])
+                        static_cast<GFXOpenGLCubemap*>(mCurrentCubemap[i].getPointer())->setToTexUnit(i);
+                    else
+                        setTextureInternal(i, NULL);
+                }
+                    break;
                 default:
                     AssertFatal(false, "Unknown texture type!");
                     break;
@@ -654,26 +649,26 @@ void GFXOpenGLDevice::updateStates(bool forceSetAll /*=false*/)
         }
     }
 
-//    // Set light material
-//    if(mLightMaterialDirty)
-//    {
-//        setLightMaterialInternal(mCurrentLightMaterial);
-//        mLightMaterialDirty = false;
-//    }
-//
-//    // Set our lights
-//    if(mLightsDirty)
-//    {
-//        mLightsDirty = false;
-//        for(U32 i = 0; i < LIGHT_STAGE_COUNT; i++)
-//        {
-//            if(!mLightDirty[i])
-//                continue;
-//
-//            mLightDirty[i] = false;
-//            setLightInternal(i, mCurrentLight[i], mCurrentLightEnable[i]);
-//        }
-//    }
+    // Set light material
+    if(mLightMaterialDirty)
+    {
+        setLightMaterialInternal(mCurrentLightMaterial);
+        mLightMaterialDirty = false;
+    }
+
+    // Set our lights
+    if(mLightsDirty)
+    {
+        mLightsDirty = false;
+        for(U32 i = 0; i < LIGHT_STAGE_COUNT; i++)
+        {
+            if(!mLightDirty[i])
+                continue;
+
+            mLightDirty[i] = false;
+            setLightInternal(i, mCurrentLight[i], mCurrentLightEnable[i]);
+        }
+    }
 
     _updateRenderTargets();
 

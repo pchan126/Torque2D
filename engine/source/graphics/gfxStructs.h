@@ -56,6 +56,7 @@ public:
       Spot     = 1,
       Vector   = 2,
       Ambient  = 3,
+      None     = 255,
    };
    Type        mType;
 

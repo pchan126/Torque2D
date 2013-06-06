@@ -44,9 +44,9 @@
 #ifndef _GFXSHADER_H_
 #include "graphics/gfxShader.h"
 #endif
-//#ifndef _GFXCUBEMAP_H_
-//#include "graphics/gfxCubemap.h"
-//#endif
+#ifndef _GFXCUBEMAP_H_
+#include "graphics/gfxCubemap.h"
+#endif
 
 #include "graphics/gfxDeviceStatistics.h"
 #include "collection/hashTable.h"
@@ -57,7 +57,6 @@
 #include "math/mMatrix.h"
 #include "graphics/gfxEnums.h"
 #include "graphics/gfxTextureHandle.h"
-//#include "graphics/gfxTextureManager.h"
 
 class FontRenderBatcher;
 class GFont;
@@ -178,7 +177,6 @@ class GFXDevice: public SimObject
 {
 private:
    friend class GFXInit;
-//   friend class GFXPrimitiveBufferHandle;
    friend class GFXVertexBufferHandleBase;
    friend class GFXTextureObject;
    friend class GFXTextureObject;
@@ -364,8 +362,8 @@ protected:
    
    GFXTexHandle mCurrentTexture[TEXTURE_STAGE_COUNT];
    GFXTexHandle mNewTexture[TEXTURE_STAGE_COUNT];
-//   GFXCubemapHandle mCurrentCubemap[TEXTURE_STAGE_COUNT];
-//   GFXCubemapHandle mNewCubemap[TEXTURE_STAGE_COUNT];
+   GFXCubemapHandle mCurrentCubemap[TEXTURE_STAGE_COUNT];
+   GFXCubemapHandle mNewCubemap[TEXTURE_STAGE_COUNT];
 
    TexDirtyType   mTexType[TEXTURE_STAGE_COUNT];
    bool           mTextureDirty[TEXTURE_STAGE_COUNT];
@@ -400,21 +398,21 @@ protected:
    /// @name Light Tracking
    /// @{
 
-//   GFXLightInfo  mCurrentLight[LIGHT_STAGE_COUNT]; 
-//   bool          mCurrentLightEnable[LIGHT_STAGE_COUNT];
-//   bool          mLightDirty[LIGHT_STAGE_COUNT];
-//   bool          mLightsDirty;
-//
-//   ColorF        mGlobalAmbientColor;
-//   bool          mGlobalAmbientColorDirty;
+   GFXLightInfo  mCurrentLight[LIGHT_STAGE_COUNT]; 
+   bool          mCurrentLightEnable[LIGHT_STAGE_COUNT];
+   bool          mLightDirty[LIGHT_STAGE_COUNT];
+   bool          mLightsDirty;
+
+   ColorF        mGlobalAmbientColor;
+   bool          mGlobalAmbientColorDirty;
 
    /// @}
 
    /// @name Fixed function material tracking
    /// @{
 
-//   GFXLightMaterial mCurrentLightMaterial;
-//   bool mLightMaterialDirty;
+   GFXLightMaterial mCurrentLightMaterial;
+   bool mLightMaterialDirty;
 
    /// @}
 
@@ -448,9 +446,9 @@ protected:
 
    virtual void setTextureInternal(U32 textureUnit, const GFXTextureObject* texture) = 0;
 
-//   virtual void setLightInternal(U32 lightStage, const GFXLightInfo light, bool lightEnable) = 0;
-//   virtual void setGlobalAmbientInternal(ColorF color) = 0;
-//   virtual void setLightMaterialInternal(const GFXLightMaterial mat) = 0;
+   virtual void setLightInternal(U32 lightStage, const GFXLightInfo light, bool lightEnable) = 0;
+   virtual void setGlobalAmbientInternal(ColorF color) = 0;
+   virtual void setLightMaterialInternal(const GFXLightMaterial mat) = 0;
 
    virtual bool beginSceneInternal() = 0;
    virtual void endSceneInternal() = 0;

@@ -24,7 +24,7 @@
 #include "graphics/primBuilder.h"
 #include "console/console.h"
 #import <UIKit/UIKit.h>
-
+#import <GLKit/GLKit.h>
 
 GFXAdapter::CreateDeviceInstanceDelegate GFXOpenGLES20iOSDevice::mCreateDeviceInstance(GFXOpenGLES20iOSDevice::createInstance);
 
@@ -227,6 +227,63 @@ GFXCubemap* GFXOpenGLES20iOSDevice::createCubemap()
 };
 
 
+void GFXOpenGLES20iOSDevice::setLightInternal(U32 lightStage, const GFXLightInfo light, bool lightEnable)
+{
+//   if(!lightEnable)
+//   {
+//      glDisable(GL_LIGHT0 + lightStage);
+//      return;
+//   }
+//   
+//   if(light.mType == GFXLightInfo::Ambient)
+//   {
+//      AssertFatal(false, "Instead of setting an ambient light you should set the global ambient color.");
+//      return;
+//   }
+//   
+//   GLenum lightEnum = GL_LIGHT0 + lightStage;
+//   glLightfv(lightEnum, GL_AMBIENT, (GLfloat*)&light.mAmbient);
+//   glLightfv(lightEnum, GL_DIFFUSE, (GLfloat*)&light.mColor);
+//   glLightfv(lightEnum, GL_SPECULAR, (GLfloat*)&light.mColor);
+//   
+//   F32 pos[4];
+//   
+//   if(light.mType != GFXLightInfo::Vector)
+//   {
+//      dMemcpy(pos, &light.mPos, sizeof(light.mPos));
+//      pos[3] = 1.0;
+//   }
+//   else
+//   {
+//      dMemcpy(pos, &light.mDirection, sizeof(light.mDirection));
+//      pos[3] = 0.0;
+//   }
+//   // Harcoded attenuation
+//   glLightf(lightEnum, GL_CONSTANT_ATTENUATION, 1.0f);
+//   glLightf(lightEnum, GL_LINEAR_ATTENUATION, 0.1f);
+//   glLightf(lightEnum, GL_QUADRATIC_ATTENUATION, 0.0f);
+//   
+//   glLightfv(lightEnum, GL_POSITION, (GLfloat*)&pos);
+//   glEnable(lightEnum);
+}
+
+void GFXOpenGLES20iOSDevice::setLightMaterialInternal(const GFXLightMaterial mat)
+{
+//   // CodeReview - Setting these for front and back is unnecessary.  We should consider
+//   // checking what faces we're culling and setting this only for the unculled faces.
+//   glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, (GLfloat*)&mat.ambient);
+//   glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, (GLfloat*)&mat.diffuse);
+//   glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, (GLfloat*)&mat.specular);
+//   glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, (GLfloat*)&mat.emissive);
+//   glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, mat.shininess);
+}
+
+void GFXOpenGLES20iOSDevice::setGlobalAmbientInternal(ColorF color)
+{
+   mBaseEffect.lightModelAmbientColor = GLKVector4MakeWithArray(color.v);
+}
+
+
 void GFXOpenGLES20iOSDevice::setTextureInternal(U32 textureUnit, const GFXTextureObject*texture)
 {
     const GFXOpenGLES20iOSTextureObject *tex = static_cast<const GFXOpenGLES20iOSTextureObject*>(texture);
@@ -251,7 +308,6 @@ void GFXOpenGLES20iOSDevice::setTextureInternal(U32 textureUnit, const GFXTextur
             default:
                 break;
         }
-//        tex->bind(textureUnit);
     }
     else if(mActiveTextureType[textureUnit] != GL_ZERO)
     {

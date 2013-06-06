@@ -107,6 +107,10 @@ protected:
    virtual void setTextureInternal(U32 textureUnit, const GFXTextureObject*texture);
 //   virtual void setCubemapInternal(U32 cubemap, const GFXOpenGLES20iOSCubemap* texture);
 
+   virtual void setLightInternal(U32 lightStage, const GFXLightInfo light, bool lightEnable);
+   virtual void setLightMaterialInternal(const GFXLightMaterial mat);
+   virtual void setGlobalAmbientInternal(ColorF color);
+   
    /// @name State Initalization.
    /// @{
 

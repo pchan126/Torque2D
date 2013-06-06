@@ -1586,6 +1586,9 @@
 		D16581601702EE3D00A21928 /* iOSWindowManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iOSWindowManager.h; sourceTree = "<group>"; };
 		D16581611702EE3E00A21928 /* iOSWindowManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iOSWindowManager.mm; sourceTree = "<group>"; };
 		D176A00C172F8502000785CB /* iOSWindowEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iOSWindowEvents.h; sourceTree = "<group>"; };
+		D1AF776B1760987A005463CC /* mPoint2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mPoint2.h; sourceTree = "<group>"; };
+		D1AF776C1760987A005463CC /* mPoint3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mPoint3.h; sourceTree = "<group>"; };
+		D1AF776D1760987A005463CC /* mPoint4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mPoint4.h; sourceTree = "<group>"; };
 		D1C75BD716F31D6C0019C495 /* str.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = str.cpp; sourceTree = "<group>"; };
 		D1C75BD816F31D6C0019C495 /* str.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = str.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -2512,6 +2515,9 @@
 		867BAEF316AEC9050033868F /* math */ = {
 			isa = PBXGroup;
 			children = (
+				D1AF776B1760987A005463CC /* mPoint2.h */,
+				D1AF776C1760987A005463CC /* mPoint3.h */,
+				D1AF776D1760987A005463CC /* mPoint4.h */,
 				867BAEF416AEC9050033868F /* mathIO.h */,
 				867BAEF516AEC9050033868F /* mathTypes.cc */,
 				867BAEF616AEC9050033868F /* mathTypes.h */,

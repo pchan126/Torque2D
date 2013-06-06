@@ -149,8 +149,11 @@ protected:
    virtual void setTextureInternal(U32 textureUnit, const GFXTextureObject* texture);
    virtual void setCubemapInternal(U32 cubemap, const GFXOpenGLCubemap* texture);
 
+   Vector<GFXLightInfo> m_lightStack;
    virtual void setLightInternal(U32 lightStage, const GFXLightInfo light, bool lightEnable);
+   GFXLightMaterial mCurrentLightMaterial;
    virtual void setLightMaterialInternal(const GFXLightMaterial mat);
+   ColorF m_globalAmbientColor;
    virtual void setGlobalAmbientInternal(ColorF color);
 
    /// @name State Initalization.

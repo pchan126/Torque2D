@@ -45,11 +45,13 @@ class ColorI;
 
 class ColorF
 {
-  public:
-   F32 red;
-   F32 green;
-   F32 blue;
-   F32 alpha;
+public:
+   union
+   {
+      struct { F32 red, green, blue, alpha; };
+      float v[4];
+      struct { F32 x, y, z, w; };
+   };
 
   public:
    ColorF() { }
