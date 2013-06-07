@@ -75,26 +75,26 @@ GFXDevice::GFXDevice()
       mTextureDirty[i] = false;
       mCurrentTexture[i] = NULL;
       mNewTexture[i] = NULL;
-//      mCurrentCubemap[i] = NULL;
-//      mNewCubemap[i] = NULL;
+      mCurrentCubemap[i] = NULL;
+      mNewCubemap[i] = NULL;
       mTexType[i] = GFXTDT_Normal;
 
 //      mTextureMatrix[i].identity();
 //      mTextureMatrixDirty[i] = false;
    }
 
-//   mLightsDirty = false;
-//   for(U32 i = 0; i < LIGHT_STAGE_COUNT; i++)
-//   {
-//      mLightDirty[i] = false;
-//      mCurrentLightEnable[i] = false;
-//   }
+   mLightsDirty = false;
+   for(U32 i = 0; i < LIGHT_STAGE_COUNT; i++)
+   {
+      mLightDirty[i] = false;
+      mCurrentLightEnable[i] = false;
+   }
 
-//   mGlobalAmbientColorDirty = false;
-//   mGlobalAmbientColor = ColorF(0.0f, 0.0f, 0.0f, 1.0f);
+   mGlobalAmbientColorDirty = false;
+   mGlobalAmbientColor = ColorF(0.0f, 0.0f, 0.0f, 1.0f);
 
-//   mLightMaterialDirty = false;
-//   dMemset(&mCurrentLightMaterial, NULL, sizeof(GFXLightMaterial));
+   mLightMaterialDirty = false;
+   dMemset(&mCurrentLightMaterial, NULL, sizeof(GFXLightMaterial));
 
    // State block 
    mStateBlockDirty = false;

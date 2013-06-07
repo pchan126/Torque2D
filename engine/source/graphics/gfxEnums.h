@@ -565,7 +565,7 @@ enum GFXMatrixType
 };
 
 // Light define
-#define LIGHT_STAGE_COUNT 8
+#define LIGHT_STAGE_COUNT 2
 
 #define GFXVERTEXFLAG_F32     3
 #define GFXVERTEXFLAG_POINT2F 0

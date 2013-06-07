@@ -31,6 +31,10 @@
 #include "console/consoleBaseType.h"
 #endif
 
+#ifdef TORQUE_OS_IOS
+#import <GLKit/GLKMath.h>
+#endif
+
 //-----------------------------------------------------------------------------
 
 DefineConsoleType( TypeColorI )
@@ -51,6 +55,9 @@ public:
       struct { F32 red, green, blue, alpha; };
       float v[4];
       struct { F32 x, y, z, w; };
+#ifdef __GLK_VECTOR_4_H
+      GLKVector4 mGV;
+#endif
    };
 
   public:

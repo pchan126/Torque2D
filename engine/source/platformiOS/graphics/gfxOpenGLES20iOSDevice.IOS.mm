@@ -229,58 +229,69 @@ GFXCubemap* GFXOpenGLES20iOSDevice::createCubemap()
 
 void GFXOpenGLES20iOSDevice::setLightInternal(U32 lightStage, const GFXLightInfo light, bool lightEnable)
 {
-//   if(!lightEnable)
-//   {
-//      glDisable(GL_LIGHT0 + lightStage);
-//      return;
-//   }
-//   
-//   if(light.mType == GFXLightInfo::Ambient)
-//   {
-//      AssertFatal(false, "Instead of setting an ambient light you should set the global ambient color.");
-//      return;
-//   }
-//   
-//   GLenum lightEnum = GL_LIGHT0 + lightStage;
-//   glLightfv(lightEnum, GL_AMBIENT, (GLfloat*)&light.mAmbient);
-//   glLightfv(lightEnum, GL_DIFFUSE, (GLfloat*)&light.mColor);
-//   glLightfv(lightEnum, GL_SPECULAR, (GLfloat*)&light.mColor);
-//   
-//   F32 pos[4];
-//   
-//   if(light.mType != GFXLightInfo::Vector)
-//   {
-//      dMemcpy(pos, &light.mPos, sizeof(light.mPos));
-//      pos[3] = 1.0;
-//   }
-//   else
-//   {
-//      dMemcpy(pos, &light.mDirection, sizeof(light.mDirection));
-//      pos[3] = 0.0;
-//   }
-//   // Harcoded attenuation
-//   glLightf(lightEnum, GL_CONSTANT_ATTENUATION, 1.0f);
-//   glLightf(lightEnum, GL_LINEAR_ATTENUATION, 0.1f);
-//   glLightf(lightEnum, GL_QUADRATIC_ATTENUATION, 0.0f);
-//   
-//   glLightfv(lightEnum, GL_POSITION, (GLfloat*)&pos);
-//   glEnable(lightEnum);
+   if(light.mType == GFXLightInfo::Ambient)
+   {
+      AssertFatal(false, "Instead of setting an ambient light you should set the global ambient color.");
+      return;
+   }
+
+   Vector4F pos;
+   if(light.mType != GFXLightInfo::Vector)
+   {
+      dMemcpy(pos, &light.mPos, sizeof(light.mPos));
+      pos[3] = 1.0;
+   }
+   else
+   {
+      dMemcpy(pos, &light.mDirection, sizeof(light.mDirection));
+      pos[3] = 0.0;
+   }
+   
+   switch (lightStage) {
+      case 0:
+         mBaseEffect.light0.enabled = lightEnable;
+         mBaseEffect.light0.specularColor = light.specular.mGV;
+         mBaseEffect.light0.ambientColor = light.ambient.mGV;
+         mBaseEffect.light0.diffuseColor = light.diffuse.mGV;
+         mBaseEffect.light0.position = pos.mGV;
+         mBaseEffect.light0.linearAttenuation = 0.1;
+         break;
+         
+      case 1:
+         mBaseEffect.light1.enabled = lightEnable;
+         mBaseEffect.light1.specularColor = light.specular.mGV;
+         mBaseEffect.light1.ambientColor = light.ambient.mGV;
+         mBaseEffect.light1.diffuseColor = light.diffuse.mGV;
+         mBaseEffect.light1.position = pos.mGV;
+         mBaseEffect.light1.linearAttenuation = 0.1;
+         
+      case 2:
+         mBaseEffect.light2.enabled = lightEnable;
+         mBaseEffect.light2.specularColor = light.specular.mGV;
+         mBaseEffect.light2.ambientColor = light.ambient.mGV;
+         mBaseEffect.light2.diffuseColor = light.diffuse.mGV;
+         mBaseEffect.light2.position = pos.mGV;
+         mBaseEffect.light2.linearAttenuation = 0.1;
+         
+      default:
+         Con::printf("GFXOpenGLES20iOSDevice::setLightInternal - Only 3 lights");
+         break;
+   }
+
 }
 
 void GFXOpenGLES20iOSDevice::setLightMaterialInternal(const GFXLightMaterial mat)
 {
-//   // CodeReview - Setting these for front and back is unnecessary.  We should consider
-//   // checking what faces we're culling and setting this only for the unculled faces.
-//   glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, (GLfloat*)&mat.ambient);
-//   glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, (GLfloat*)&mat.diffuse);
-//   glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, (GLfloat*)&mat.specular);
-//   glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, (GLfloat*)&mat.emissive);
-//   glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, mat.shininess);
+   mBaseEffect.material.diffuseColor = mat.diffuse.mGV;
+   mBaseEffect.material.emissiveColor = mat.emissive.mGV;
+   mBaseEffect.material.specularColor = mat.specular.mGV;
+   mBaseEffect.material.ambientColor = mat.ambient.mGV;
+   mBaseEffect.material.shininess = mat.shininess;
 }
 
 void GFXOpenGLES20iOSDevice::setGlobalAmbientInternal(ColorF color)
 {
-   mBaseEffect.lightModelAmbientColor = GLKVector4MakeWithArray(color.v);
+   mBaseEffect.lightModelAmbientColor = color.mGV;
 }
 
 
