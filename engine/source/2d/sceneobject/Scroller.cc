@@ -333,7 +333,7 @@ void Scroller::sceneRender( const SceneRenderState* pSceneRenderState, const Sce
                                        Vector2( texX2, texY1 ),
                                        Vector2( texX2, texY2 ),
                                        Vector2( texX1, texY2 ),
-                                       texture, mBlendColor );
+                                       texture, mBlendColor*getScene()->getSceneLight() );
             
             baseX = nextX;
         }

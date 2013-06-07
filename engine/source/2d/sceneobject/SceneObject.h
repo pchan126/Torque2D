@@ -69,6 +69,8 @@
 
 #include "graphics/gfxDevice.h"
 #include "graphics/gfxEnums.h"
+#include "lighting/lightInfo.h"
+#include "lighting/lightManager.h"
 
 //-----------------------------------------------------------------------------
 
@@ -94,13 +96,15 @@ const S32 INVALID_COLLISION_SHAPE_INDEX = -1;
 extern EnumTable bodyTypeTable;
 extern EnumTable srcBlendFactorTable;
 extern EnumTable dstBlendFactorTable;
+extern EnumTable lightTypeTable;
 
 //-----------------------------------------------------------------------------
 
 class SceneObject :
     public BehaviorComponent,
     public SceneRenderObject,
-    public PhysicsProxy
+    public PhysicsProxy,
+    public ISceneLight
 {
 
 private:
@@ -115,6 +119,15 @@ public:
     friend class SceneObjectMoveToEvent;
     friend class SceneObjectRotateToEvent;
 
+    enum LightType
+    {
+        NoLight = 0,
+        ConstantLight,
+        PulsingLight,
+        
+        NumLightTypes,
+    };
+    
 protected:
     /// Scene.
     SimObjectPtr<Scene>  mpScene;
@@ -184,6 +197,15 @@ protected:
 
     /// Render sorting.
     Vector2                 mSortPoint;
+    
+    /// Lighting
+    LightType               mLightType;
+    bool        mLightOnlyStatic;
+    ColorF      mLightColor;
+    S32         mLightTime;
+    F32         mLightRadius;
+    F32         mLightFade;
+    LightInfo*  mLight;
 
     /// Input events.
     bool                    mUseInputEvents;
@@ -273,6 +295,12 @@ public:
     virtual void            sceneRender( const SceneRenderState* pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer ) {}
     virtual void            sceneRenderFallback( const SceneRenderState* pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer );
     virtual void            sceneRenderOverlay( const SceneRenderState* pSceneRenderState );
+
+//    /// Lighting
+//    virtual void            registerLights(LightManager * lightManager, bool lightingScene);
+    // ISceneLight
+    virtual void submitLights( LightManager *lm, bool staticLighting );
+    virtual LightInfo* getLight() { return NULL; }
 
     /// Networking.
     virtual U32             packUpdate(NetConnection * conn, U32 mask, BitStream *stream);
@@ -494,9 +522,18 @@ public:
     inline F32              getBlendAlpha( void ) const                 { return mBlendColor.alpha; }
     inline void             setAlphaTest( const F32 alpha )             { mAlphaTest = alpha; }
     inline F32              getAlphaTest( void ) const                  { return mAlphaTest; }
-//    void                    setBlendOptions( void );
-//    static                  void resetBlendOptions( void );
 
+    /// Lighting.
+    inline void             setLightType( const LightType lightType )  { mLightType = lightType; }
+    inline LightType         getLightType( void ) const             { return mLightType; }
+    inline void             setLightColor( const ColorF& lightColor )   { mLightColor = lightColor; }
+    inline const ColorF&    getLightColor( void ) const                 { return mLightColor; }
+   inline void             setLightRadius( const F32 lightRadius )   { mLightRadius = lightRadius; }
+   inline const F32        getLightRadius( void ) const                 { return mLightRadius; }
+   inline void             setLightFade( const F32 lightFade )   { mLightFade = lightFade; }
+   inline const F32        getLightFade( void ) const                 { return mLightFade; }
+
+   
     /// Render sorting.
     inline void             setSortPoint( const Vector2& pt )           { mSortPoint = pt; }
     inline const Vector2&   getSortPoint(void) const                    { return mSortPoint; }
@@ -575,6 +612,8 @@ public:
     static GFXBlend getDstBlendFactorEnum(const char* label);
     static const char* getSrcBlendFactorDescription(const GLenum factor);
     static const char* getDstBlendFactorDescription(const GLenum factor);
+    static SceneObject::LightType getLightTypeLookupEnum(const char* label);
+    static const char* getLightTypeLookupDescription(const LightType factor);
 
     /// Declare Console Object.
     DECLARE_CONOBJECT( SceneObject );
@@ -700,7 +739,15 @@ protected:
 
     /// Render sorting.
     static bool             writeSortPoint( void* obj, StringTableEntry pFieldName ) { return static_cast<SceneObject*>(obj)->getSortPoint().notZero(); }
-    static bool             writeRenderGroup( void* obj, StringTableEntry pFieldName ) { return static_cast<SceneObject*>(obj)->getRenderGroup() != StringTable->EmptyString; }    
+    static bool             writeRenderGroup( void* obj, StringTableEntry pFieldName ) { return static_cast<SceneObject*>(obj)->getRenderGroup() != StringTable->EmptyString; }
+    
+    /// Lighting
+    static bool             writeLightType( void* obj, StringTableEntry pFieldName ) { return static_cast<SceneObject*>(obj)->getLightType() != NoLight; }
+    static bool             writeLightColor( void* obj, StringTableEntry pFieldName ) { return static_cast<SceneObject*>(obj)->getLightColor() != ColorF(1.0f, 1.0f, 1.0f, 1.0f); }
+   static bool             setLightRadius(void* obj, const char* data)  { static_cast<SceneObject*>(obj)->setLightRadius(dAtof(data)); return false; }
+   static bool             writeLightRadius( void* obj, StringTableEntry pFieldName ) { return static_cast<SceneObject*>(obj)->getLightRadius() != 0.5; }
+   static bool             setLightFade(void* obj, const char* data)  { static_cast<SceneObject*>(obj)->setLightFade(dAtof(data)); return false; }
+   static bool             writeLightFade( void* obj, StringTableEntry pFieldName ) { return static_cast<SceneObject*>(obj)->getLightFade() != 1.0; }
 
     /// Input events.
     static bool             writeUseInputEvents( void* obj, StringTableEntry pFieldName ) { return static_cast<SceneObject*>(obj)->getUseInputEvents() == true; }

@@ -37,8 +37,8 @@ private:
     /// Render flipping.
     bool mFlipX;
     bool mFlipY;
-    U8   mRows;
-    U8   mColumns;
+    U32   mRows;
+    U32   mColumns;
 
 public:
     Sprite();
@@ -53,10 +53,13 @@ public:
     void setFlipY( const bool flipY )                   { setFlip( mFlipX, flipY ); }
     inline bool getFlipX( void ) const                  { return mFlipX; }
     inline bool getFlipY( void ) const                  { return mFlipY; }
-    void setRows( const U8 rows )                       { mRows = rows; }
-    void setColumns( const U8 columns )                 { mColumns = columns; }
-    inline U8 getRows( void ) const                     { return mRows; }
-    inline U8 getColumns( void ) const                  { return mColumns; }
+   
+    virtual void setSize( const Vector2& size );
+
+    void setRows( const U32 rows )                       { mRows = mClamp(rows, 1, 10); }
+    void setColumns( const U32 columns )                 { mColumns = mClamp(columns, (U32)1, 10); }
+    inline U32 getRows( void ) const                     { return mRows; }
+    inline U32 getColumns( void ) const                  { return mColumns; }
 
     virtual void sceneRender( const SceneRenderState* pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer );
 
@@ -66,8 +69,8 @@ public:
 protected:
     static bool writeFlipX( void* obj, StringTableEntry pFieldName )        { return static_cast<Sprite*>(obj)->getFlipX() == true; }
     static bool writeFlipY( void* obj, StringTableEntry pFieldName )        { return static_cast<Sprite*>(obj)->getFlipY() == true; }
-    static U8 writeRows( void* obj, StringTableEntry pFieldName )        { return static_cast<Sprite*>(obj)->getRows(); }
-    static U8 writeColumns( void* obj, StringTableEntry pFieldName )        { return static_cast<Sprite*>(obj)->getColumns(); }
+    static U32 writeRows( void* obj, StringTableEntry pFieldName )        { return static_cast<Sprite*>(obj)->getRows(); }
+    static U32 writeColumns( void* obj, StringTableEntry pFieldName )        { return static_cast<Sprite*>(obj)->getColumns(); }
 };
 
 #endif // _SPRITE_H_

@@ -25,7 +25,10 @@
 #include "math/mRandom.h"
 #include "2d/core/Vector2.h"
 
-RandomLCG sgRandom(0xdeadbeef); ///< Our random number generator.
+namespace MathUtils
+{
+
+    RandomLCG sgRandom(0xdeadbeef); ///< Our random number generator.
 
 //------------------------------------------------------------------------------
 // Creates orientation matrix from a direction vector.  Assumes ( 0 0 1 ) is up.
@@ -54,7 +57,43 @@ MatrixF createOrientFromDir( Point3F &direction )
     return mat;
 }
 
+//-----------------------------------------------------------------------------
 
+void getMatrixFromUpVector( const VectorF &up, MatrixF *outMat )
+{
+   AssertFatal( up.isUnitLength(), "MathUtils::getMatrixFromUpVector() - Up vector was not normalized!" );
+   AssertFatal( outMat, "MathUtils::getMatrixFromUpVector() - Got null output matrix!" );
+   AssertFatal( outMat->isAffine(), "MathUtils::getMatrixFromUpVector() - Got uninitialized matrix!" );
+
+   VectorF forward = mPerp( up );
+   VectorF right = mCross( forward, up );
+   right.normalize();
+   forward = mCross( up, right );
+   forward.normalize();
+
+   outMat->setColumn( 0, right );
+   outMat->setColumn( 1, forward );
+   outMat->setColumn( 2, up );
+}
+
+//-----------------------------------------------------------------------------
+
+void getMatrixFromForwardVector( const VectorF &forward, MatrixF *outMat  )
+{
+   AssertFatal( forward.isUnitLength(), "MathUtils::getMatrixFromForwardVector() - Forward vector was not normalized!" );
+   AssertFatal( outMat, "MathUtils::getMatrixFromForwardVector() - Got null output matrix!" );
+   AssertFatal( outMat->isAffine(), "MathUtils::getMatrixFromForwardVector() - Got uninitialized matrix!" );
+
+   VectorF up = mPerp( forward );
+   VectorF right = mCross( forward, up );
+   right.normalize();
+   up = mCross( right, forward );
+   up.normalize();
+
+   outMat->setColumn( 0, right );
+   outMat->setColumn( 1, forward );
+   outMat->setColumn( 2, up );
+}
 //------------------------------------------------------------------------------
 // Creates random direction given angle parameters similar to the particle system.
 // The angles are relative to the specified axis.
@@ -138,4 +177,5 @@ void getVectorFromAngles( VectorF &vec, F32 &yawAng, F32 &pitchAng )
    mat2.mulV( pnt );
 
    vec = pnt;
+}
 }

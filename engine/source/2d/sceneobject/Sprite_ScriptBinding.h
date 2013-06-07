@@ -85,8 +85,8 @@ ConsoleMethod(Sprite, getFlipY, bool, 2, 2,     "() Gets whether or not the text
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(Sprite, setRows, void, 3, 3,     "(bool flipX) Sets whether or not the texture is flipped horizontally.\n"
-              "@param flipX Whether or not to flip the texture along the x (horizontal) axis."
+ConsoleMethod(Sprite, setRows, void, 3, 3,     "(int rows) Sets the number of rows in the sprite mesh.\n"
+              "@param rows The number of rows in the mesh."
               "@return No return value.")
 {
     // Set Flip.
@@ -96,7 +96,7 @@ ConsoleMethod(Sprite, setRows, void, 3, 3,     "(bool flipX) Sets whether or not
 //-----------------------------------------------------------------------------
 
 ConsoleMethod(Sprite, setColumns, void, 3, 3,     "(int columns) Sets the number of columns to render.\n"
-              "@param columns The number of columns to render."
+              "@param columns The number of columns in the mesh."
               "@return No return value.")
 {
     // Set Flip.
@@ -105,7 +105,7 @@ ConsoleMethod(Sprite, setColumns, void, 3, 3,     "(int columns) Sets the number
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(Sprite, getRows, S32, 2, 2,     "() Gets the number of rows the sprite is rendered in.\n"
+ConsoleMethod(Sprite, getRows, S32, 2, 2,     "() Gets the number of rows in the sprites rendering mesh.\n"
               "@return (int rows) the number of rows that are rendered.")
 {
     return object->getRows();
@@ -113,7 +113,7 @@ ConsoleMethod(Sprite, getRows, S32, 2, 2,     "() Gets the number of rows the sp
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(Sprite, getColumns, S32, 2, 2,     "() Gets whether or not the texture is flipped vertically."
+ConsoleMethod(Sprite, getColumns, S32, 2, 2,     "() Gets the number columns in the sprites rendering mesh."
               "@return (int columns) the number of columns that are rendered.")
 {
     return object->getColumns();

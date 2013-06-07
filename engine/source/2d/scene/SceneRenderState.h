@@ -48,14 +48,14 @@ struct SceneRenderState
         const Vector2& renderScale,
         DebugStats* pDebugStats,
         SimObject* pRenderHost )
+   : mRenderCamera(renderCamera),
+     mRenderScale(renderScale),
+     mRenderLayerMask(renderLayerMask),
+     mRenderGroupMask(renderGroupMask),
+     mpDebugStats(pDebugStats),
+     mpRenderHost(pRenderHost)
     {
-        mRenderCamera       = renderCamera;
         mRenderAABB       = CoreMath::mRectFtoAABB( renderCamera.mSourceArea );
-        mRenderScale      = renderScale;
-        mRenderLayerMask  = renderLayerMask;
-        mRenderGroupMask  = renderGroupMask;
-        mpDebugStats      = pDebugStats;
-        mpRenderHost      = pRenderHost;
     }
 
     CameraView      mRenderCamera;

@@ -214,15 +214,19 @@ void MacWindowManager::_removeWindow(MacWindow* window)
 
 void MacWindowManager::_onAppSignal(WindowId wnd, S32 event)
 {
-   if(event != WindowHidden)
-      return;
-   
-   for(U32 i = 0; i < mWindowList.size(); i++)
-   {
-      if(mWindowList[i]->getWindowId() == wnd)
-         continue;
-      
-      mWindowList[i]->signalGainFocus();
+   switch (event) {
+      case WindowHidden:
+         for(U32 i = 0; i < mWindowList.size(); i++)
+         {
+            if(mWindowList[i]->getWindowId() == wnd)
+               continue;
+            
+            mWindowList[i]->signalGainFocus();
+         }
+         break;
+         
+      default:
+         break;
    }
 }
 

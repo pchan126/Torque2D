@@ -382,6 +382,21 @@ template<class T> inline void Vector<T>::erase_fast(U32 index)
    decrement();
 }
 
+template<class T> inline bool Vector<T>::contains(const T& x) const
+{
+	const_iterator i = begin();
+	while (i != end())
+	{
+		if (*i == x)
+			return true;
+        
+		i++;
+	}
+    
+	return false;
+}
+
+
 template<class T> inline T& Vector<T>::first()
 {
    AssertFatal(mElementCount != 0, "Vector<T>::first - Error, no first element of a zero sized array!");

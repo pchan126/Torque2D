@@ -36,6 +36,7 @@ protected:
                     const Vector<GFXShaderMacro> &macros ) ;
 
     Vector<U32> mAttributes;
+   
 };
 
 class GFXOpenGLES20iOSShaderConstBuffer : public GFXOpenGLShaderConstBuffer

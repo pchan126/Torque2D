@@ -105,6 +105,9 @@ public:
 
    const F32* address( void ) const { return &red; }
 
+    operator Point3F() const { return Point3F( red, green, blue ); }
+    operator Point4F() const { return Point4F( red, green, blue, alpha ); }
+
    U32 getARGBPack() const;
    U32 getRGBAPack() const;
    U32 getBGRAPack() const;
@@ -662,10 +665,10 @@ inline U16 ColorI::get4444() const
 
 inline ColorF::operator ColorI() const
 {
-   return ColorI(U8(red   * 255.0f + 0.5),
-                  U8(green * 255.0f + 0.5),
-                  U8(blue  * 255.0f + 0.5),
-                  U8(alpha * 255.0f + 0.5));
+   return ColorI(U8(mClamp(red   * 255.0f + 0.5, 0.0f, 255.0f)  ),
+                  U8(mClamp(green * 255.0f + 0.5, 0.0f, 255.0f) ),
+                  U8(mClamp(blue  * 255.0f + 0.5, 0.0f, 255.0f) ),
+                  U8(mClamp(alpha * 255.0f + 0.5, 0.0f, 255.0f) ));
 }
 
 //-----------------------------------------------------------------------------

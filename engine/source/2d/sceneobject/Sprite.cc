@@ -41,7 +41,7 @@ IMPLEMENT_CONOBJECT(Sprite);
 
 Sprite::Sprite() :
     mFlipX(false),
-    mFlipY(false)
+    mFlipY(false), mRows(1), mColumns(1)
 {
 }
 
@@ -82,6 +82,15 @@ void Sprite::initPersistFields()
 
 //------------------------------------------------------------------------------
 
+void Sprite::setSize( const Vector2& size )
+{
+   SceneObject::setSize(size);
+   
+   setColumns(U32(mCeil(size.x)));
+   setRows(U32(mCeil(size.y)));
+}
+
+
 void Sprite::sceneRender( const SceneRenderState* pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer )
 {
     // Let the parent render.
@@ -92,7 +101,8 @@ void Sprite::sceneRender( const SceneRenderState* pSceneRenderState, const Scene
         mRenderOOBB[2],
         mRenderOOBB[3],
         pBatchRenderer,
-        getBlendColor() );
+        getBlendColor()*getScene()->getSceneLight()
+   , mRows, mColumns);
 }
 
 

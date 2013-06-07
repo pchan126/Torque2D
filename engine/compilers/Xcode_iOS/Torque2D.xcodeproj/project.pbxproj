@@ -494,6 +494,10 @@
 		D127CE0F173CE479006AB038 /* gfxOpenGLES20iOSVertexBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = D127CE02173CE479006AB038 /* gfxOpenGLES20iOSVertexBuffer.mm */; };
 		D127CE10173CE479006AB038 /* gfxOpenGLES20iOSWindowTarget.mm in Sources */ = {isa = PBXBuildFile; fileRef = D127CE04173CE479006AB038 /* gfxOpenGLES20iOSWindowTarget.mm */; };
 		D127CE12173CEEEA006AB038 /* gfxOpenGLES20Shader.cc in Sources */ = {isa = PBXBuildFile; fileRef = D127CE11173CEEEA006AB038 /* gfxOpenGLES20Shader.cc */; };
+		D137585917559AF8004FC011 /* lightMapParams.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D137582317559AF8004FC011 /* lightMapParams.cpp */; };
+		D137585E17559AF8004FC011 /* lightInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D137582F17559AF8004FC011 /* lightInfo.cpp */; };
+		D137586017559AF8004FC011 /* lightManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D137583317559AF8004FC011 /* lightManager.cpp */; };
+		D137586117559AF8004FC011 /* lightQuery.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D137583517559AF8004FC011 /* lightQuery.cpp */; };
 		D151F8EE1731F86A00AB343E /* T2DUITouchGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = D151F8ED1731F86A00AB343E /* T2DUITouchGestureRecognizer.m */; };
 		D15E7E8A16F061CF00BB43B1 /* bitmapUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D15E7E8816F061CF00BB43B1 /* bitmapUtils.cpp */; };
 		D15E7EB216F061E200BB43B1 /* gfxCardProfile.cc in Sources */ = {isa = PBXBuildFile; fileRef = D15E7E8B16F061E200BB43B1 /* gfxCardProfile.cc */; };
@@ -1526,6 +1530,15 @@
 		D127CE03173CE479006AB038 /* gfxOpenGLES20iOSWindowTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSWindowTarget.h; sourceTree = "<group>"; };
 		D127CE04173CE479006AB038 /* gfxOpenGLES20iOSWindowTarget.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLES20iOSWindowTarget.mm; sourceTree = "<group>"; };
 		D127CE11173CEEEA006AB038 /* gfxOpenGLES20Shader.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxOpenGLES20Shader.cc; sourceTree = "<group>"; };
+		D137582317559AF8004FC011 /* lightMapParams.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lightMapParams.cpp; sourceTree = "<group>"; };
+		D137582417559AF8004FC011 /* lightMapParams.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lightMapParams.h; sourceTree = "<group>"; };
+		D137582917559AF8004FC011 /* sceneLightingGlobals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sceneLightingGlobals.h; sourceTree = "<group>"; };
+		D137582F17559AF8004FC011 /* lightInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lightInfo.cpp; sourceTree = "<group>"; };
+		D137583017559AF8004FC011 /* lightInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lightInfo.h; sourceTree = "<group>"; };
+		D137583317559AF8004FC011 /* lightManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lightManager.cpp; sourceTree = "<group>"; };
+		D137583417559AF8004FC011 /* lightManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lightManager.h; sourceTree = "<group>"; };
+		D137583517559AF8004FC011 /* lightQuery.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lightQuery.cpp; sourceTree = "<group>"; };
+		D137583617559AF8004FC011 /* lightQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lightQuery.h; sourceTree = "<group>"; };
 		D151F8EC1731F86A00AB343E /* T2DUITouchGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T2DUITouchGestureRecognizer.h; sourceTree = "<group>"; };
 		D151F8ED1731F86A00AB343E /* T2DUITouchGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = T2DUITouchGestureRecognizer.m; sourceTree = "<group>"; };
 		D15E7E8816F061CF00BB43B1 /* bitmapUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bitmapUtils.cpp; sourceTree = "<group>"; };
@@ -3160,6 +3173,7 @@
 				867BAE3A16AEC9050033868F /* gui */,
 				867BAEBB16AEC9050033868F /* input */,
 				867BAEBE16AEC9050033868F /* io */,
+				D137580517559AF8004FC011 /* lighting */,
 				867BAEF316AEC9050033868F /* math */,
 				867BAF1A16AEC9050033868F /* memory */,
 				867BAF2116AEC9050033868F /* messaging */,
@@ -3267,6 +3281,31 @@
 				D123F89117168E6000F8EFEF /* IProcessInput.h */,
 			);
 			path = interfaces;
+			sourceTree = "<group>";
+		};
+		D137580517559AF8004FC011 /* lighting */ = {
+			isa = PBXGroup;
+			children = (
+				D137582017559AF8004FC011 /* common */,
+				D137582F17559AF8004FC011 /* lightInfo.cpp */,
+				D137583017559AF8004FC011 /* lightInfo.h */,
+				D137583317559AF8004FC011 /* lightManager.cpp */,
+				D137583417559AF8004FC011 /* lightManager.h */,
+				D137583517559AF8004FC011 /* lightQuery.cpp */,
+				D137583617559AF8004FC011 /* lightQuery.h */,
+			);
+			name = lighting;
+			path = ../../../source/lighting;
+			sourceTree = "<group>";
+		};
+		D137582017559AF8004FC011 /* common */ = {
+			isa = PBXGroup;
+			children = (
+				D137582317559AF8004FC011 /* lightMapParams.cpp */,
+				D137582417559AF8004FC011 /* lightMapParams.h */,
+				D137582917559AF8004FC011 /* sceneLightingGlobals.h */,
+			);
+			path = common;
 			sourceTree = "<group>";
 		};
 		D15E7E6216F05FA700BB43B1 /* graphics */ = {
@@ -3902,6 +3941,10 @@
 				D127CE12173CEEEA006AB038 /* gfxOpenGLES20Shader.cc in Sources */,
 				30D5475C173FF5D300CB43DA /* platformTimer.cc in Sources */,
 				D11B0D13174F00D6002CB743 /* FilterImageAsset.mm in Sources */,
+				D137585917559AF8004FC011 /* lightMapParams.cpp in Sources */,
+				D137585E17559AF8004FC011 /* lightInfo.cpp in Sources */,
+				D137586017559AF8004FC011 /* lightManager.cpp in Sources */,
+				D137586117559AF8004FC011 /* lightQuery.cpp in Sources */,
 				D11F9A89175DDF9C00AB3E10 /* gfxOpenGLCardProfiler.cc in Sources */,
 				D1272BD8175F10B10012995E /* gfxDeviceStatistics.cpp in Sources */,
 				D1272BEC175F1CD60012995E /* gfxCubemap.cc in Sources */,

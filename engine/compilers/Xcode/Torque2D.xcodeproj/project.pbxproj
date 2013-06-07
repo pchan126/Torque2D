@@ -451,6 +451,10 @@
 		D16580751702942800A21928 /* gfxInit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D16580731702942800A21928 /* gfxInit.cpp */; };
 		D16580791702A5AE00A21928 /* guiContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D16580771702A5AE00A21928 /* guiContainer.cpp */; };
 		D176A012172FC1E4000785CB /* osxWindowInputGenerator.mm in Sources */ = {isa = PBXBuildFile; fileRef = D176A011172FC1E4000785CB /* osxWindowInputGenerator.mm */; };
+		D19A5C10175739B1003A76CE /* lightMapParams.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D19A5BDE175739B1003A76CE /* lightMapParams.cpp */; };
+		D19A5C14175739B1003A76CE /* lightInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D19A5BE8175739B1003A76CE /* lightInfo.cpp */; };
+		D19A5C15175739B1003A76CE /* lightManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D19A5BEA175739B1003A76CE /* lightManager.cpp */; };
+		D19A5C16175739B1003A76CE /* lightQuery.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D19A5BEC175739B1003A76CE /* lightQuery.cpp */; };
 		D1A6957017016C270060D928 /* platformCursorController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1A6955617016C270060D928 /* platformCursorController.cpp */; };
 		D1A6957117016C270060D928 /* platformInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1A6955817016C270060D928 /* platformInterface.cpp */; };
 		D1A6957217016C270060D928 /* platformWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1A6955917016C270060D928 /* platformWindow.cpp */; };
@@ -1414,6 +1418,15 @@
 		D16581421702E7AB00A21928 /* guiCanvas_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiCanvas_ScriptBinding.h; sourceTree = "<group>"; };
 		D176A010172FC1E4000785CB /* osxWindowInputGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxWindowInputGenerator.h; sourceTree = "<group>"; };
 		D176A011172FC1E4000785CB /* osxWindowInputGenerator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxWindowInputGenerator.mm; sourceTree = "<group>"; };
+		D19A5BDE175739B1003A76CE /* lightMapParams.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lightMapParams.cpp; sourceTree = "<group>"; };
+		D19A5BDF175739B1003A76CE /* lightMapParams.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lightMapParams.h; sourceTree = "<group>"; };
+		D19A5BE2175739B1003A76CE /* sceneLightingGlobals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sceneLightingGlobals.h; sourceTree = "<group>"; };
+		D19A5BE8175739B1003A76CE /* lightInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lightInfo.cpp; sourceTree = "<group>"; };
+		D19A5BE9175739B1003A76CE /* lightInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lightInfo.h; sourceTree = "<group>"; };
+		D19A5BEA175739B1003A76CE /* lightManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lightManager.cpp; sourceTree = "<group>"; };
+		D19A5BEB175739B1003A76CE /* lightManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lightManager.h; sourceTree = "<group>"; };
+		D19A5BEC175739B1003A76CE /* lightQuery.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lightQuery.cpp; sourceTree = "<group>"; };
+		D19A5BED175739B1003A76CE /* lightQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lightQuery.h; sourceTree = "<group>"; };
 		D1A6955617016C270060D928 /* platformCursorController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = platformCursorController.cpp; sourceTree = "<group>"; };
 		D1A6955717016C270060D928 /* platformCursorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformCursorController.h; sourceTree = "<group>"; };
 		D1A6955817016C270060D928 /* platformInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = platformInterface.cpp; sourceTree = "<group>"; };
@@ -2007,6 +2020,7 @@
 		869FF8C21651518C002FE082 /* Torque2D */ = {
 			isa = PBXGroup;
 			children = (
+				D19A5BC0175739B1003A76CE /* lighting */,
 				86BC7E7516518D4600D96ADF /* 2d */,
 				86BC7EE016518D4600D96ADF /* algorithm */,
 				86BC7EE716518D4600D96ADF /* assets */,
@@ -3104,6 +3118,31 @@
 			path = OpenGL;
 			sourceTree = "<group>";
 		};
+		D19A5BC0175739B1003A76CE /* lighting */ = {
+			isa = PBXGroup;
+			children = (
+				D19A5BDB175739B1003A76CE /* common */,
+				D19A5BE8175739B1003A76CE /* lightInfo.cpp */,
+				D19A5BE9175739B1003A76CE /* lightInfo.h */,
+				D19A5BEA175739B1003A76CE /* lightManager.cpp */,
+				D19A5BEB175739B1003A76CE /* lightManager.h */,
+				D19A5BEC175739B1003A76CE /* lightQuery.cpp */,
+				D19A5BED175739B1003A76CE /* lightQuery.h */,
+			);
+			name = lighting;
+			path = ../../../source/lighting;
+			sourceTree = "<group>";
+		};
+		D19A5BDB175739B1003A76CE /* common */ = {
+			isa = PBXGroup;
+			children = (
+				D19A5BDE175739B1003A76CE /* lightMapParams.cpp */,
+				D19A5BDF175739B1003A76CE /* lightMapParams.h */,
+				D19A5BE2175739B1003A76CE /* sceneLightingGlobals.h */,
+			);
+			path = common;
+			sourceTree = "<group>";
+		};
 		D1A6954917016C270060D928 /* windowManager */ = {
 			isa = PBXGroup;
 			children = (
@@ -3706,6 +3745,10 @@
 				D10529F2173B9F3B00BFC4FF /* gfxOpenGLTextureObject.cc in Sources */,
 				30D54746173FD18B00CB43DA /* platformTimer.cc in Sources */,
 				30D54748173FD6A100CB43DA /* osxTimer.mm in Sources */,
+				D19A5C10175739B1003A76CE /* lightMapParams.cpp in Sources */,
+				D19A5C14175739B1003A76CE /* lightInfo.cpp in Sources */,
+				D19A5C15175739B1003A76CE /* lightManager.cpp in Sources */,
+				D19A5C16175739B1003A76CE /* lightQuery.cpp in Sources */,
 				D11F9A87175DDCC800AB3E10 /* gfxOpenGLCardProfiler.cc in Sources */,
 				D1272BC4175EF6F10012995E /* gfxDeviceStatistics.cpp in Sources */,
 				D1272BFA175F2E9C0012995E /* gfxOpenGLCubemap.cc in Sources */,
