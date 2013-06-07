@@ -19,41 +19,51 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
-#ifndef __GFXSTATEBLOCKDATA_H_
-#define __GFXSTATEBLOCKDATA_H_
+#ifndef __GFXStateBlockAsset_H_
+#define __GFXStateBlockAsset_H_
 
 #ifndef _GFXSTATEBLOCK_H_
-#include "gfx/gfxStateBlock.h"
+#include "graphics/gfxStateBlock.h"
 #endif
-#ifndef _SIMOBJECT_H_
-#include "console/simObject.h"
+#ifndef _ASSET_BASE_H_
+#include "assets/assetBase.h"
+#endif
+#ifndef _ASSET_PTR_H_
+#include "assets/assetPtr.h"
 #endif
 
+class GFXSamplerStateAsset;
 
-class GFXSamplerStateData;
+//-----------------------------------------------------------------------------
+
+DefineConsoleType( TypeGFXStateBlockAssetPtr )
+DefineConsoleType( TypeGFXSamplerStateAssetPtr )
+
+//-----------------------------------------------------------------------------
+
 
 /// Allows definition of render state via script, basically wraps a GFXStateBlockDesc
-class GFXStateBlockData : public SimObject
+class GFXStateBlockAsset : public AssetBase
 {
    typedef SimObject Parent;
 
    GFXStateBlockDesc mState;
-   GFXSamplerStateData* mSamplerStates[TEXTURE_STAGE_COUNT];
+   AssetPtr<GFXSamplerStateAsset> mSamplerStates[TEXTURE_STAGE_COUNT];
 public:
-   GFXStateBlockData();
+   GFXStateBlockAsset();
 
    // SimObject
    virtual bool onAdd();
    static void initPersistFields();  
 
-   // GFXStateBlockData
+   // GFXStateBlockAsset
    const GFXStateBlockDesc getState() const { return mState; }
         
-   DECLARE_CONOBJECT(GFXStateBlockData);   
+   DECLARE_CONOBJECT(GFXStateBlockAsset);   
 };
 
 /// Allows definition of sampler state via script, basically wraps a GFXSamplerStateDesc
-class GFXSamplerStateData : public SimObject
+class GFXSamplerStateAsset : public AssetBase
 {
    typedef SimObject Parent;
    GFXSamplerStateDesc mState;
@@ -64,8 +74,8 @@ public:
    /// Copies the data of this object into desc
    void setSamplerState(GFXSamplerStateDesc& desc);
 
-   DECLARE_CONOBJECT(GFXSamplerStateData);
+   DECLARE_CONOBJECT(GFXSamplerStateAsset);
 };
 
 
-#endif // __GFXSTATEBLOCKDATA_H_
+#endif // __GFXStateBlockAsset_H_

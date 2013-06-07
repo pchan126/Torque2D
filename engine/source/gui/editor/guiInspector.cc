@@ -674,7 +674,7 @@ bool GuiInspectorGroup::inspectGroup()
          continue;
       }
 
-      if( ( bGrabItems == true || ( bNoGroup == true && bGrabItems == false ) ) && itr->type != AbstractClassRep::DepricatedFieldType )
+      if( ( bGrabItems == true || ( bNoGroup == true && bGrabItems == false ) ) && itr->type != AbstractClassRep::DeprecatedFieldType )
       {
          if( bNoGroup == true && bGrabItems == true )
             continue; 

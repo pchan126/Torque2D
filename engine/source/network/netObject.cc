@@ -254,7 +254,7 @@ void NetObject::onCameraScopeQuery(NetConnection *cr, CameraScopeQuery* /*camInf
    // default behavior -
    // ghost everything that is ghostable
 
-   for (SimSetIterator obj(Sim::getRootGroup()); *obj; ++obj)
+   for (SimSetiterator obj(Sim::getRootGroup()); *obj; ++obj)
    {
         NetObject* nobj = dynamic_cast<NetObject*>(*obj);
         if (nobj)

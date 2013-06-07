@@ -100,8 +100,8 @@ private:
     bool                                    mOldestInFront;
 
     bool                                    mBlendMode;
-    S32                                     mSrcBlendFactor;
-    S32                                     mDstBlendFactor;
+    GFXBlend                                mSrcBlendFactor;
+    GFXBlend                                mDstBlendFactor;
     F32                                     mAlphaTest;
 
     bool                                    mStaticMode;
@@ -195,10 +195,10 @@ public:
 
     inline void setBlendMode( bool blendMode ) { mBlendMode = blendMode; refreshAsset(); }
     inline bool getBlendMode( void ) const { return mBlendMode; };
-    inline void setSrcBlendFactor( const S32 blendFactor ) { mSrcBlendFactor = blendFactor; refreshAsset(); }
-    inline S32 getSrcBlendFactor( void ) const { return mSrcBlendFactor; };
-    inline void setDstBlendFactor( const S32 blendFactor ) { mDstBlendFactor = blendFactor; refreshAsset(); }
-    inline S32 getDstBlendFactor( void ) const { return mDstBlendFactor; };
+    inline void setSrcBlendFactor( const GFXBlend blendFactor ) { mSrcBlendFactor = blendFactor; refreshAsset(); }
+    inline GFXBlend getSrcBlendFactor( void ) const { return mSrcBlendFactor; };
+    inline void setDstBlendFactor( const GFXBlend blendFactor ) { mDstBlendFactor = blendFactor; refreshAsset(); }
+    inline GFXBlend getDstBlendFactor( void ) const { return mDstBlendFactor; };
     inline void setAlphaTest( const F32 alphaTest ) { mAlphaTest = alphaTest; refreshAsset(); }
     inline F32 getAlphaTest( void ) const { return mAlphaTest; }
 
@@ -313,9 +313,9 @@ protected:
     static bool     setBlendMode(void* obj, const char* data)                           { static_cast<ParticleAssetEmitter*>(obj)->setBlendMode(dAtob(data)); return false; }
     static bool     writeBlendMode( void* obj, StringTableEntry pFieldName )            { return static_cast<ParticleAssetEmitter*>(obj)->getBlendMode() == false; }
     static bool     setSrcBlendFactor(void* obj, const char* data)                      { static_cast<ParticleAssetEmitter*>(obj)->setSrcBlendFactor(SceneObject::getSrcBlendFactorEnum(data)); return false; }
-    static bool     writeSrcBlendFactor( void* obj, StringTableEntry pFieldName )       { return static_cast<ParticleAssetEmitter*>(obj)->getSrcBlendFactor() != GL_SRC_ALPHA; }
+    static bool     writeSrcBlendFactor( void* obj, StringTableEntry pFieldName )       { return static_cast<ParticleAssetEmitter*>(obj)->getSrcBlendFactor() != GFXBlendSrcAlpha; }
     static bool     setDstBlendFactor(void* obj, const char* data)                      { static_cast<ParticleAssetEmitter*>(obj)->setDstBlendFactor(SceneObject::getDstBlendFactorEnum(data)); return false; }
-    static bool     writeDstBlendFactor( void* obj, StringTableEntry pFieldName )       { return static_cast<ParticleAssetEmitter*>(obj)->getDstBlendFactor() != GL_ONE_MINUS_SRC_ALPHA; }
+    static bool     writeDstBlendFactor( void* obj, StringTableEntry pFieldName )       { return static_cast<ParticleAssetEmitter*>(obj)->getDstBlendFactor() != GFXBlendInvSrcAlpha; }
     static bool     setAlphaTest(void* obj, const char* data)                           { static_cast<ParticleAssetEmitter*>(obj)->setAlphaTest(dAtof(data)); return false; }
     static bool     writeAlphaTest( void* obj, StringTableEntry pFieldName )            { return static_cast<ParticleAssetEmitter*>(obj)->getAlphaTest() >= 0.0f; }
 };

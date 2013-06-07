@@ -381,11 +381,11 @@ void SpriteBatchItem::onTamlCustomWrite( TamlCustomNode* pParentNode )
         pSpriteNode->addField( spriteBlendModeName, mBlendMode );
 
     // Write source blend factor.
-    if ( mBlendMode && mSrcBlendFactor != GL_SRC_ALPHA )
+    if ( mBlendMode && mSrcBlendFactor != GFXBlendSrcAlpha )
         pSpriteNode->addField( spriteSrcBlendFactorName, SceneObject::getSrcBlendFactorDescription(mSrcBlendFactor) );
         
     // Write destination blend factor.
-    if ( mBlendMode && mDstBlendFactor != GL_ONE_MINUS_SRC_ALPHA )
+    if ( mBlendMode && mDstBlendFactor != GFXBlendInvSrcAlpha )
         pSpriteNode->addField( spriteDstBlendFactorName, SceneObject::getDstBlendFactorDescription(mDstBlendFactor) );
 
     // Write blend color.

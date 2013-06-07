@@ -40,7 +40,7 @@
 //#include "renderInstance/renderPrePassMgr.h"
 
 
-//Signal<void(const char*,bool)> LightManager::smActivateSignal;
+Signal<void(const char*,bool)> LightManager::smActivateSignal;
 LightManager *LightManager::smActiveLM = NULL;
 
 
@@ -142,6 +142,65 @@ void LightManager::registerGlobalLight( LightInfo *light, SimObject *obj )
    
    mRegisteredLights.push_back( light );
 }
+
+void LightManager::setLightInfo(  ProcessedMaterial* pmat,
+                                     const Material* mat,
+                                     const SceneData& sgData,
+                                     const SceneRenderState *state,
+                                     U32 pass,
+                                     GFXShaderConstBuffer* shaderConsts )
+{
+//   PROFILE_SCOPE( LightManager_SetLightInfo );
+//   
+//   GFXShader *shader = shaderConsts->getShader();
+//   
+//   // Check to see if this is the same shader.  Since we
+//   // sort by material we should get hit repeatedly by the
+//   // same one.  This optimization should save us many
+//   // hash table lookups.
+//   if ( mLastShader.getPointer() != shader )
+//   {
+//      LightConstantMap::Iterator iter = mConstantLookup.find(shader);
+//      if ( iter != mConstantLookup.end() )
+//      {
+//         mLastConstants = iter->value;
+//      }
+//      else
+//      {
+//         LightingShaderConstants* lsc = new LightingShaderConstants();
+//         mConstantLookup[shader] = lsc;
+//         
+//         mLastConstants = lsc;
+//      }
+//      
+//      // Set our new shader
+//      mLastShader = shader;
+//   }
+//   
+//   // Make sure that our current lighting constants are initialized
+//   if (!mLastConstants->mInit)
+//      mLastConstants->init(shader);
+//   
+//   // NOTE: If you encounter a crash from this point forward
+//   // while setting a shader constant its probably because the
+//   // mConstantLookup has bad shaders/constants in it.
+//   //
+//   // This is a known crash bug that can occur if materials/shaders
+//   // are reloaded and the light manager is not reset.
+//   //
+//   // We should look to fix this by clearing the table.
+//   
+//   _update4LightConsts( sgData,
+//                       mLastConstants->mLightPosition,
+//                       mLastConstants->mLightDiffuse,
+//                       mLastConstants->mLightAmbient,
+//                       mLastConstants->mLightInvRadiusSq,
+//                       mLastConstants->mLightSpotDir,
+//                       mLastConstants->mLightSpotAngle,
+//                       mLastConstants->mLightSpotFalloff,
+//                       shaderConsts );
+}
+
 
 void LightManager::unregisterGlobalLight( LightInfo *light )
 {

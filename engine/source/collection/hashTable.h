@@ -102,7 +102,7 @@ private:
 public:
    // iterator support
    template<typename U,typename E, typename M>
-   class _Iterator {
+   class _iterator {
       friend class HashTable;
       E* mLink;
       M* mtHashTable;
@@ -112,28 +112,28 @@ public:
       typedef U* Pointer;
       typedef U& Reference;
 
-      _Iterator()
+      _iterator()
       {
          mtHashTable = 0;
          mLink = 0;
       }
 
-      _Iterator(M* table,E* ptr)
+      _iterator(M* table,E* ptr)
       {
          mtHashTable = table;
          mLink = ptr;
       }
 
-      _Iterator& operator++()
+      _iterator& operator++()
       {
          mLink = mLink->mNext? mLink->mNext :
             mtHashTable->_next(mtHashTable->_index(mLink->mPair.key) + 1);
          return *this;
       }
 
-      _Iterator operator++(int)
+      _iterator operator++(int)
       {
-         _Iterator itr(*this);
+         _iterator itr(*this);
          ++(*this);
          return itr;
       }
@@ -145,12 +145,12 @@ public:
           return (Value)(0);
       }
 
-      bool operator==(const _Iterator& b) const
+      bool operator==(const _iterator& b) const
       {
          return mtHashTable == b.mtHashTable && mLink == b.mLink;
       }
 
-      bool operator!=(const _Iterator& b) const
+      bool operator!=(const _iterator& b) const
       {
          return !(*this == b);
       }
@@ -173,8 +173,8 @@ public:
    typedef S32         DifferenceType;
    typedef U32         SizeType;
 
-   typedef _Iterator<Pair,Node,HashTable>  iterator;
-   typedef _Iterator<const Pair,const Node,const HashTable>  const_iterator;
+   typedef _iterator<Pair,Node,HashTable>  iterator;
+   typedef _iterator<const Pair,const Node,const HashTable>  const_iterator;
 
    // Initialization
    HashTable();
@@ -454,6 +454,21 @@ typename HashTable<Key,Value>::iterator HashTable<Key,Value>::find(const Key& ke
    return iterator(this,0);
 }
 
+
+template<typename Key, typename Value>
+typename HashTable<Key,Value>::const_iterator HashTable<Key,Value>::find(const Key& key) const
+{
+   if (mTableSize)
+   {
+      for (Node* itr = mTable[_index(key)]; itr; itr = itr->mNext)
+      {
+         if ( tKeyCompare::equals<Key>( itr->mPair.key, key ) )
+            return const_iterator(this,itr);
+      }
+   }
+   return const_iterator(this,0);
+}
+
 template<typename Key, typename Value>
 S32 HashTable<Key,Value>::count(const Key& key)
 {
@@ -537,20 +552,15 @@ void HashTable<Key,Value>::operator=(const HashTable& p)
 template<typename Key, typename Value, class Sequence = HashTable<Key,Value> >
 class HashMap: private Sequence
 {
-   typedef HashTable<Key,Value> Parent;
-
-private:
-   Sequence mHashMap;
-
 public:
    // types
-   typedef typename Parent::Pair Pair;
+   typedef typename Sequence::Pair Pair;
    typedef Pair        ValueType;
    typedef Pair&       Reference;
    typedef const Pair& ConstReference;
 
-   typedef typename Parent::iterator  iterator;
-   typedef typename Parent::const_iterator const_iterator;
+   typedef typename Sequence::iterator  iterator;
+   typedef typename Sequence::const_iterator const_iterator;
    typedef S32         DifferenceType;
    typedef U32         SizeType;
 
@@ -561,6 +571,7 @@ public:
 
    // management
    U32  size() const;                  ///< Return the number of elements
+   void resize(U32 size);
    void clear();                       ///< Empty the HashMap
    bool isEmpty() const;               ///< Returns true if the map is empty
 
@@ -576,15 +587,32 @@ public:
    {
       return mHashMap.count(a) > 0;
    }
+   /// Try to get the value of the specified key.  Returns true and fills in the value
+   /// if the key exists.  Returns false otherwise.
+   /// Unlike operator [], this function does not create the key/value if the key
+   /// is not found.
+   bool tryGetValue(const Key& key, Value& val) const
+   {
+      const_iterator iter = find(key);
+      if (iter != end())
+      {
+         val = (*iter).value;
+         return true;
+      }
+      return false;
+   }
 
    // forward iterator access
    iterator       begin();             ///< iterator to first element
    const_iterator begin() const;       ///< iterator to first element
-   iterator       end();               ///< IIterator to last element + 1
+   iterator       end();               ///< Iiterator to last element + 1
    const_iterator end() const;         ///< iterator to last element + 1
 
    // operators
    Value& operator[](const Key&);      ///< Index using the given key. If the key is not currently in the map it is added.
+
+private:
+   Sequence mHashMap;
 };
 
 template<typename Key, typename Value, class Sequence> HashMap<Key,Value,Sequence>::HashMap(const HashMap& p)
@@ -649,7 +677,14 @@ typename HashMap<Key,Value,Sequence>::iterator HashMap<Key,Value,Sequence>::find
    return mHashMap.find(key);
 }
 
-//-----------------------------------------------------------------------------
+//---------------------------------
+template<typename Key, typename Value, class Sequence>
+typename HashMap<Key,Value,Sequence>::const_iterator HashMap<Key,Value,Sequence>::find(const Key& key) const
+{
+   return mHashMap.find(key);
+}
+
+//--------------------------------------------
 // iterator access
 
 template<typename Key, typename Value, class Sequence>

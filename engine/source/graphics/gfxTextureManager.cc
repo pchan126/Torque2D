@@ -791,7 +791,7 @@ void GFXTextureManager::releaseCubemap( GFXCubemap *cubemap )
 //
 //   const String &path = cubemap->getPath();
 //
-//   CubemapTable::Iterator iter = mCubemapTable.find( path );
+//   CubemapTable::iterator iter = mCubemapTable.find( path );
 //   if ( iter != mCubemapTable.end() && iter->value == cubemap )
 //      mCubemapTable.erase( iter );
 //

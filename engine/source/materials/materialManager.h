@@ -27,8 +27,6 @@
 
 #include "graphics/gfxDevice.h"
 
-// Global macro
-#define MATMGR MaterialManager::get()
 
 class SimSet;
 class MatInstance;
@@ -39,7 +37,7 @@ public:
    MaterialManager();
    ~MaterialManager();
 
-   static MaterialManager *get() { return smMaterialManager; }
+   static MaterialManager *get() { if (smMaterialManager  == NULL) new MaterialManager(); return smMaterialManager; }
 
 private:
     static MaterialManager* smMaterialManager; ///< Global MaterialManager
@@ -128,8 +126,8 @@ protected:
    void _track(MatInstance*);
    void _untrack(MatInstance*);
 
-//   /// @see LightManager::smActivateSignal
-//   void _onLMActivate( const char *lm, bool activate );
+   /// @see LightManager::smActivateSignal
+   void _onLMActivate( const char *lm, bool activate );
 
    bool _handleGFXEvent(GFXDevice::GFXDeviceEventType event);
 
@@ -178,5 +176,9 @@ protected:
 //#endif
 
 };
+
+// Global macro
+#define MATMGR MaterialManager::get()
+
 
 #endif // _MATERIAL_MGR_H_

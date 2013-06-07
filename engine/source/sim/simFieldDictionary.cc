@@ -31,6 +31,16 @@ SimFieldDictionary::Entry *SimFieldDictionary::mFreeList = NULL;
 
 static Chunker<SimFieldDictionary::Entry> fieldChunker;
 
+U32 SimFieldDictionary::getHashValue( StringTableEntry slotName )
+{
+   return HashPointer( slotName ) % HashTableSize;
+}
+
+U32 SimFieldDictionary::getHashValue( const String& fieldName )
+{
+   return getHashValue( StringTable->insert( fieldName ) );
+}
+
 SimFieldDictionary::Entry *SimFieldDictionary::allocEntry()
 {
    if(mFreeList)
@@ -113,7 +123,7 @@ void SimFieldDictionary::setFieldValue(StringTableEntry slotName, const char *va
 
 const char *SimFieldDictionary::getFieldValue(StringTableEntry slotName)
 {
-   U32 bucket = HashPointer(slotName) % HashTableSize;
+   U32 bucket = getHashValue( slotName );
 
    for(Entry *walk = mHashTable[bucket];walk;walk = walk->next)
       if(walk->slotName == slotName)
@@ -122,6 +132,18 @@ const char *SimFieldDictionary::getFieldValue(StringTableEntry slotName)
    return NULL;
 }
 
+SimFieldDictionary::Entry  *SimFieldDictionary::findDynamicField(const String &fieldName) const
+{
+   U32 bucket = getHashValue( fieldName );
+   
+   for( Entry *walk = mHashTable[bucket]; walk; walk = walk->next )
+   {
+      if( fieldName.equal(walk->slotName, String::NoCase) )
+         return walk;
+   }
+   
+   return NULL;
+}
 
 void SimFieldDictionary::assignFrom(SimFieldDictionary *dict)
 {

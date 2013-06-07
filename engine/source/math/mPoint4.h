@@ -190,9 +190,6 @@ class Point4F
 
 	//-------------------------------------- Public static constants
   public:
-	const static Point4F One;
-	const static Point4F Zero;
-
     static const Point4F ZERO;
     static const Point4F ONE;
     static const Point4F WHITE;

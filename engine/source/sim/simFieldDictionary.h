@@ -46,16 +46,23 @@ class SimFieldDictionary
       char *value;
       Entry *next;
    };
+
+private:
    enum
    {
       HashTableSize = 19
    };
    Entry *mHashTable[HashTableSize];
-  private:
 
-   static Entry *mFreeList;
-   static void freeEntry(Entry *entry);
-   static Entry *allocEntry();
+   static Entry   *mFreeList;
+   
+   static void    freeEntry(Entry *entry);
+   static Entry*  allocEntry();
+
+   static U32     getHashValue( StringTableEntry slotName );
+   static U32     getHashValue( const String& fieldName );
+   
+   U32   mNumFields;
 
    /// In order to efficiently detect when a dynamic field has been
    /// added or deleted, we increment this every time we add or
@@ -69,9 +76,14 @@ public:
    ~SimFieldDictionary();
    void setFieldValue(StringTableEntry slotName, const char *value);
    const char *getFieldValue(StringTableEntry slotName);
+   Entry  *findDynamicField(const String &fieldName) const;
+   Entry  *findDynamicField( StringTableEntry fieldName) const {return findDynamicField(String(fieldName)); };
    void writeFields(SimObject *obj, Stream &strem, U32 tabStop);
    void printFields(SimObject *obj);
    void assignFrom(SimFieldDictionary *dict);
+   U32   getNumFields() const { return mNumFields; }
+   
+   Entry  *operator[](U32 index);
 };
 
 //-----------------------------------------------------------------------------

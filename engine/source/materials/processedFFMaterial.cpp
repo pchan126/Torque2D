@@ -6,15 +6,16 @@
 #include "platform/platform.h"
 #include "materials/processedFFMaterial.h"
 
-//#include "gfx/sim/cubemapData.h"
+#include "graphics/sim/cubemapAsset.h"
 #include "materials/sceneData.h"
-//#include "materials/customMaterialDefinition.h"
+#include "materials/customMaterialDefinition.h"
 #include "materials/materialFeatureTypes.h"
-//#include "gfx/sim/gfxStateBlockData.h"
+#include "graphics/sim/GFXStateBlockAsset.h"
 #include "graphics/gfxDevice.h"
 //#include "gfx/genericConstBuffer.h"
 #include "materials/materialParameters.h"
-//#include "lighting/lightInfo.h"
+#include "lighting/lightInfo.h"
+#include "lighting/lightManager.h"
 //#include "scene/sceneRenderState.h"
 #include "memory/safeDelete.h"
 //#include "math/util/matrixSet.h"
@@ -86,10 +87,10 @@ void ProcessedFFMaterial::_determineFeatures(   U32 stageNum,
    if ( mStages[stageNum].getTex( MFT_DiffuseMap ) )
       featData.features[FixedFuncFeatureData::DiffuseMap] = true;
 
-   if ( features.hasFeature( MFT_LightMap ) )
-      featData.features[FixedFuncFeatureData::LightMap] = true;
-   if ( features.hasFeature( MFT_ToneMap )) 
-      featData.features[FixedFuncFeatureData::ToneMap] = true;
+//   if ( features.hasFeature( MFT_LightMap ) )
+//      featData.features[FixedFuncFeatureData::LightMap] = true;
+//   if ( features.hasFeature( MFT_ToneMap )) 
+//      featData.features[FixedFuncFeatureData::ToneMap] = true;
 }
 
 U32 ProcessedFFMaterial::getNumStages()
@@ -103,16 +104,16 @@ U32 ProcessedFFMaterial::getNumStages()
       // Assume stage is inactive
       bool stageActive = false;
 
-//      // Cubemaps only on first stage
-//      if( i == 0 )
-//      {
-//         // If we have a cubemap the stage is active
-//         if( mMaterial->mCubemapData || mMaterial->mDynamicCubemap )
-//         {
-//            numStages++;
-//            continue;
-//         }
-//      }
+      // Cubemaps only on first stage
+      if( i == 0 )
+      {
+         // If we have a cubemap the stage is active
+         if( mMaterial->mCubemapAsset ) //|| mMaterial->mDynamicCubemap )
+         {
+            numStages++;
+            continue;
+         }
+      }
 
       // If we have a texture for the a feature the 
       // stage is active.
@@ -354,8 +355,8 @@ void ProcessedFFMaterial::_initPassStateBlock( RenderPassData *rpd, GFXStateBloc
       result.blendSrc = GFXBlendOne;
    }
 
-   // This is here for generic FF shader fallbacks.
-   CustomMaterial* custmat = dynamic_cast<CustomMaterial*>(mMaterial);
-   if (custmat && custmat->getStateBlockData() )
-      result.addDesc(custmat->getStateBlockData()->getState());
+//   // This is here for generic FF shader fallbacks.
+//   CustomMaterial* custmat = dynamic_cast<CustomMaterial*>(mMaterial);
+//   if (custmat && custmat->getStateBlockData() )
+//      result.addDesc(custmat->getStateBlockData()->getState());
 }

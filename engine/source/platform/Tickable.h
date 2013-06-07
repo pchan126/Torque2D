@@ -92,7 +92,7 @@ private:
    static U32 smLastDelta; ///< Last delta value for advanceTime
 
    // This just makes life easy
-   typedef Vector<Tickable *>::iterator ProcessListIterator;
+   typedef Vector<Tickable *>::iterator ProcessListiterator;
 
    /// Returns a reference to the list of all Tickable objects.
    static Vector<Tickable *>& getProcessList();

@@ -38,10 +38,10 @@ public:
 	typedef Encoding EncodingType;					//!< Encoding type from template parameter.
 	typedef Allocator AllocatorType;				//!< Allocator type from template parameter.
 	typedef typename Encoding::Ch Ch;				//!< Character type derived from Encoding.
-	typedef Member* MemberIterator;					//!< Member iterator for iterating in object.
-	typedef const Member* ConstMemberIterator;		//!< Constant member iterator for iterating in object.
-	typedef GenericValue* ValueIterator;			//!< Value iterator for iterating in array.
-	typedef const GenericValue* ConstValueIterator;	//!< Constant value iterator for iterating in array.
+	typedef Member* Memberiterator;					//!< Member iterator for iterating in object.
+	typedef const Member* ConstMemberiterator;		//!< Constant member iterator for iterating in object.
+	typedef GenericValue* Valueiterator;			//!< Value iterator for iterating in array.
+	typedef const GenericValue* ConstValueiterator;	//!< Constant value iterator for iterating in array.
 
 	//!@name Constructors and destructor.
 	//@{
@@ -247,10 +247,10 @@ public:
 	const GenericValue& operator[](const Ch* name) const { return const_cast<GenericValue&>(*this)[name]; }
 
 	//! Member iterators.
-	ConstMemberIterator MemberBegin() const	{ RAPIDJSON_ASSERT(IsObject()); return data_.o.members; }
-	ConstMemberIterator MemberEnd()	const	{ RAPIDJSON_ASSERT(IsObject()); return data_.o.members + data_.o.size; }
-	MemberIterator MemberBegin()			{ RAPIDJSON_ASSERT(IsObject()); return data_.o.members; }
-	MemberIterator MemberEnd()				{ RAPIDJSON_ASSERT(IsObject()); return data_.o.members + data_.o.size; }
+	ConstMemberiterator MemberBegin() const	{ RAPIDJSON_ASSERT(IsObject()); return data_.o.members; }
+	ConstMemberiterator MemberEnd()	const	{ RAPIDJSON_ASSERT(IsObject()); return data_.o.members + data_.o.size; }
+	Memberiterator MemberBegin()			{ RAPIDJSON_ASSERT(IsObject()); return data_.o.members; }
+	Memberiterator MemberEnd()				{ RAPIDJSON_ASSERT(IsObject()); return data_.o.members + data_.o.size; }
 
 	//! Check whether a member exists in the object.
 	/*!
@@ -394,10 +394,10 @@ int z = a[0u].GetInt();				// This works too.
 	const GenericValue& operator[](SizeType index) const { return const_cast<GenericValue&>(*this)[index]; }
 
 	//! Element iterator
-	ValueIterator Begin() { RAPIDJSON_ASSERT(IsArray()); return data_.a.elements; }
-	ValueIterator End() { RAPIDJSON_ASSERT(IsArray()); return data_.a.elements + data_.a.size; }
-	ConstValueIterator Begin() const { return const_cast<GenericValue&>(*this).Begin(); }
-	ConstValueIterator End() const { return const_cast<GenericValue&>(*this).End(); }
+	Valueiterator Begin() { RAPIDJSON_ASSERT(IsArray()); return data_.a.elements; }
+	Valueiterator End() { RAPIDJSON_ASSERT(IsArray()); return data_.a.elements + data_.a.size; }
+	ConstValueiterator Begin() const { return const_cast<GenericValue&>(*this).Begin(); }
+	ConstValueiterator End() const { return const_cast<GenericValue&>(*this).End(); }
 
 	//! Request the array to have enough capacity to store elements.
 	/*! \param newCapacity	The capacity that the array at least need to have.

@@ -36,8 +36,8 @@
 #include "sim/SimObjectList.h"
 #endif
 
-#ifndef _FIND_ITERATOR_H_
-#include "collection/findIterator.h"
+#ifndef _FIND_iterator_H_
+#include "collection/finditerator.h"
 #endif
 
 #ifndef _SIMDICTIONARY_H_
@@ -71,7 +71,7 @@
 /// @code
 ///        // (Example from netObject.cc)
 ///        // To iterate over all the objects in the Sim:
-///        for (SimSetIterator obj(Sim::getRootGroup()); *obj; ++obj)
+///        for (SimSetiterator obj(Sim::getRootGroup()); *obj; ++obj)
 ///        {
 ///                  NetObject* nobj = dynamic_cast<NetObject*>(*obj);
 ///
@@ -244,10 +244,10 @@ public:
 #  define SIMSET_SET_ASSOCIATION( x )
 #endif
 
-/// Iterator for use with SimSets
+/// iterator for use with SimSets
 ///
 /// @see SimSet
-class SimSetIterator
+class SimSetiterator
 {
 protected:
    struct Entry {
@@ -261,7 +261,7 @@ protected:
    Stack stack;
 
 public:
-   SimSetIterator(SimSet*);
+   SimSetiterator(SimSet*);
    SimObject* operator++();
    SimObject* operator*() {
       return stack.empty()? 0: *stack.last().itr;
@@ -330,10 +330,10 @@ inline void SimGroup::addObject(SimObject *obj, const char *name)
    obj->assignName(name);
 }
 
-class SimGroupIterator: public SimSetIterator
+class SimGroupiterator: public SimSetiterator
 {
 public:
-   SimGroupIterator(SimGroup* grp): SimSetIterator(grp) {}
+   SimGroupiterator(SimGroup* grp): SimSetiterator(grp) {}
    SimObject* operator++();
 };
 

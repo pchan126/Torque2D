@@ -22,7 +22,7 @@
 
 #include "sceneObjectList.h"
 #include "2d/sceneObject/sceneObject.h"
-#include "collection/findIterator.h"
+#include "collection/finditerator.h"
 
 //-----------------------------------------------------------------------------
 

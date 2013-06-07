@@ -520,7 +520,7 @@ ConsoleMethod(ParticleAssetEmitter, setSrcBlendFactor, void, 3, 3,  "(srcBlend) 
                                                                     "@return No return Value.")
 {
     // Fetch source blend factor.
-    const  GLenum blendFactor = SceneObject::getSrcBlendFactorEnum(argv[2]);
+    const  GFXBlend blendFactor = SceneObject::getSrcBlendFactorEnum(argv[2]);
 
     object->setSrcBlendFactor( blendFactor );
 }
@@ -540,7 +540,7 @@ ConsoleMethod(ParticleAssetEmitter, setDstBlendFactor, void, 3, 3,  "(dstBlend) 
                                                                     "@return No return Value.")
 {
     // Fetch destination blend factor.
-    const GLenum blendFactor = SceneObject::getDstBlendFactorEnum(argv[2]);
+    const GFXBlend blendFactor = SceneObject::getDstBlendFactorEnum(argv[2]);
 
     object->setDstBlendFactor( blendFactor );
 }

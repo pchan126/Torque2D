@@ -231,8 +231,15 @@ public:
                           float upX, float upY, float upZ);
 
 
+   MatrixF&  mul(const MatrixF &a);                    ///< M * a -> M
+   MatrixF&  mulL(const MatrixF &a);                   ///< a * M -> M
+   MatrixF&  mul(const MatrixF &a, const MatrixF &b);  ///< a * b -> M
+   
    // Scalar multiplies
-
+   MatrixF&  mul(const F32 a);                         ///< M * a -> M
+   MatrixF&  mul(const MatrixF &a, const F32 b);       ///< a * b -> M
+   
+   // Scalar multiplies
    void mul( Point4F& p ) const;                       ///< M * p -> p (full [4x4] * [1x4])
    void mulP( Point2F& p ) const;                      ///< M * p -> p (assume z = 1.0f, w = 1.0f)
    void mulP( Point3F& p ) const;                      ///< M * p -> p (assume w = 1.0f)
@@ -443,6 +450,50 @@ inline void MatrixF::normalize()
     m_matF_normalize(m);
 }
 
+
+inline MatrixF& MatrixF::mul( const MatrixF &a )
+{  // M * a -> M
+   AssertFatal(&a != this, "MatrixF::mul - a.mul(a) is invalid!");
+   
+   MatrixF tempThis(*this);
+   m_matF_x_matF(tempThis, a, *this);
+   return (*this);
+}
+
+inline MatrixF& MatrixF::mulL( const MatrixF &a )
+{  // a * M -> M
+   AssertFatal(&a != this, "MatrixF::mulL - a.mul(a) is invalid!");
+   
+   MatrixF tempThis(*this);
+   m_matF_x_matF(a, tempThis, *this);
+   return (*this);
+}
+
+inline MatrixF& MatrixF::mul( const MatrixF &a, const MatrixF &b )
+{  // a * b -> M
+   AssertFatal((&a != this) && (&b != this), "MatrixF::mul - a.mul(a, b) a.mul(b, a) a.mul(a, a) is invalid!");
+   
+   m_matF_x_matF(a, b, *this);
+   return (*this);
+}
+
+
+inline MatrixF& MatrixF::mul(const F32 a)
+{
+   for (U32 i = 0; i < 16; i++)
+      m[i] *= a;
+   
+   return *this;
+}
+
+
+inline MatrixF& MatrixF::mul(const MatrixF &a, const F32 b)
+{
+   *this = a;
+   mul(b);
+   
+   return *this;
+}
 
 inline void MatrixF::mul( Point4F& p ) const
 {

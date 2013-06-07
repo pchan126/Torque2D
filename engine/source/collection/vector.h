@@ -166,6 +166,11 @@ class Vector
    void clear();
    void compact();
    void sort(compare_func f);
+
+   /// Finds the first matching element and erases it.
+   /// @return Returns true if a match is found.
+   bool remove( const T& );
+   
    T& first();
    T& last();
    const T& first() const;
@@ -367,6 +372,24 @@ template<class T> inline void Vector<T>::erase(U32 index)
    }
 
    mElementCount--;
+}
+
+
+template<class T> inline bool Vector<T>::remove( const T& x )
+{
+   iterator i = begin();
+   while (i != end())
+   {
+      if (*i == x)
+      {
+         erase( i );
+         return true;
+      }
+      
+      i++;
+   }
+   
+   return false;
 }
 
 template<class T> inline void Vector<T>::erase_fast(U32 index)

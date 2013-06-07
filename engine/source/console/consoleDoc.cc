@@ -24,7 +24,7 @@
 #include "console/console.h"
 
 #include "console/ast.h"
-#include "collection/findIterator.h"
+#include "collection/finditerator.h"
 #include "io/resource/resourceManager.h"
 
 #include "string/findMatch.h"
@@ -471,6 +471,9 @@ void Namespace::dumpClasses( bool dumpScript, bool dumpEngine )
          {
             switch((*fieldList)[j].type)
             {
+               case AbstractClassRep::StartArrayFieldType:
+               case AbstractClassRep::EndArrayFieldType:
+                  break;
             case AbstractClassRep::StartGroupFieldType:
                printGroupStart((*fieldList)[j].pGroupname, (*fieldList)[j].pFieldDocs);
                break;
@@ -478,9 +481,9 @@ void Namespace::dumpClasses( bool dumpScript, bool dumpEngine )
                printGroupEnd();
                break;
             default:
-            case AbstractClassRep::DepricatedFieldType:
+            case AbstractClassRep::DeprecatedFieldType:
                {
-                  bool isDeprecated = ((*fieldList)[j].type == AbstractClassRep::DepricatedFieldType);
+                  bool isDeprecated = ((*fieldList)[j].type == AbstractClassRep::DeprecatedFieldType);
 
                   if(isDeprecated)
                   {

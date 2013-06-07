@@ -65,7 +65,7 @@ bool SimComponent::_registerComponents( SimComponent *owner )
    if( hasComponents() )
    {
       VectorPtr<SimComponent *> &components = lockComponentList();
-      for( SimComponentIterator i = components.begin(); i != components.end(); i++ )
+      for( SimComponentiterator i = components.begin(); i != components.end(); i++ )
       {
          if( !(*i)->onComponentRegister( owner ) )
          {
@@ -95,7 +95,7 @@ void SimComponent::_unregisterComponents()
       return;
 
    VectorPtr<SimComponent *> &components = lockComponentList();
-   for( SimComponentIterator i = components.begin(); i != components.end(); i++ )
+   for( SimComponentiterator i = components.begin(); i != components.end(); i++ )
    {
       (*i)->onComponentUnRegister();
 
@@ -162,7 +162,7 @@ bool SimComponent::addComponent( SimComponent *component )
    MutexHandle mh;
    if( mh.lock( mMutex, true ) )
    {
-      for( SimComponentIterator nItr = mComponentList.begin(); nItr != mComponentList.end(); nItr++ )
+      for( SimComponentiterator nItr = mComponentList.begin(); nItr != mComponentList.end(); nItr++ )
       {
          SimComponent *pComponent = dynamic_cast<SimComponent*>(*nItr);
          AssertFatal( pComponent, "SimComponent::addComponent - NULL component in list!" );
@@ -187,7 +187,7 @@ bool SimComponent::removeComponent( SimComponent *component )
    MutexHandle mh;
    if( mh.lock( mMutex, true ) )
    {
-      for( SimComponentIterator nItr = mComponentList.begin(); nItr != mComponentList.end(); nItr++ )
+      for( SimComponentiterator nItr = mComponentList.begin(); nItr != mComponentList.end(); nItr++ )
       {
          SimComponent *pComponent = dynamic_cast<SimComponent*>(*nItr);
          AssertFatal( pComponent, "SimComponent::removeComponent - NULL component in list!" );
@@ -288,7 +288,7 @@ bool SimComponent::callMethodOnComponents( U32 argc, const char* argv[], const c
          // Need to try the component's children
          bool handled = false;
          VectorPtr<SimComponent *>&componentList = lockComponentList();
-         for( SimComponentIterator nItr = (componentList.end()-1);  nItr >= componentList.begin(); nItr-- )
+         for( SimComponentiterator nItr = (componentList.end()-1);  nItr >= componentList.begin(); nItr-- )
          {
             argv[0] = cbName;
 

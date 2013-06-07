@@ -76,7 +76,7 @@ void Tickable::setProcessTicks( bool tick /* = true  */ )
     }
 
     // No, so remove from process list.
-    for( ProcessListIterator i = getProcessList().begin(); i != getProcessList().end(); i++ )
+    for( ProcessListiterator i = getProcessList().begin(); i != getProcessList().end(); i++ )
     {
         if( (*i) == this )
         {
@@ -104,7 +104,7 @@ bool Tickable::advanceTime( U32 timeDelta )
 
         for( ; smLastTick != targetTick; smLastTick += smTickMs )
         {
-            for( ProcessListIterator i = safeProcessList.begin(); i != safeProcessList.end(); i++ )
+            for( ProcessListiterator i = safeProcessList.begin(); i != safeProcessList.end(); i++ )
             {           
                 (*i)->processTick();
             }
@@ -118,7 +118,7 @@ bool Tickable::advanceTime( U32 timeDelta )
     safeProcessList = getProcessList();
 
     // Interpolate tick.
-    for( ProcessListIterator i = safeProcessList.begin(); i != safeProcessList.end(); i++ )
+    for( ProcessListiterator i = safeProcessList.begin(); i != safeProcessList.end(); i++ )
     {
         (*i)->interpolateTick( dt );
     }
@@ -127,7 +127,7 @@ bool Tickable::advanceTime( U32 timeDelta )
     safeProcessList = getProcessList();
 
     dt = F32( timeDelta ) / 1000.f;	
-    for( ProcessListIterator i = safeProcessList.begin(); i != safeProcessList.end(); i++ )
+    for( ProcessListiterator i = safeProcessList.begin(); i != safeProcessList.end(); i++ )
     {
         (*i)->advanceTime( dt );
     }

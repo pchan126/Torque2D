@@ -20,15 +20,15 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#ifndef _FIND_ITERATOR_H_
-#define _FIND_ITERATOR_H_
+#ifndef _FIND_iterator_H_
+#define _FIND_iterator_H_
 
-template <class Iterator, class Value>
-Iterator find(Iterator first, Iterator last, Value value)
+template <class iterator, class Value>
+iterator find(iterator first, iterator last, Value value)
 {
    while (first != last && *first != value)
       ++first;
    return first;
 }
 
-#endif //_FIND_ITERATOR_H_
+#endif //_FIND_iterator_H_

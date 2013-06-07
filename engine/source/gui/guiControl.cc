@@ -170,8 +170,8 @@ void GuiControl::initPersistFields()
    addField("Extent",            TypePoint2I,		Offset(mBounds.extent, GuiControl));
    addField("MinExtent",         TypePoint2I,		Offset(mMinExtent, GuiControl));
    addField("Visible",           TypeBool,			Offset(mVisible, GuiControl));
-   addDepricatedField("Modal");
-   addDepricatedField("SetFirstResponder");
+   addDeprecatedField("Modal");
+   addDeprecatedField("SetFirstResponder");
 
    addField("Variable",          TypeString,		Offset(mConsoleVariable, GuiControl));
    addField("Command",           TypeRealString,		Offset(mConsoleCommand, GuiControl));

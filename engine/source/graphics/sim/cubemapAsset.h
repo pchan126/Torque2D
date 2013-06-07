@@ -20,11 +20,11 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#ifndef _CUBEMAPDATA_H_
-#define _CUBEMAPDATA_H_
+#ifndef _cubemapAsset_H_
+#define _cubemapAsset_H_
 
-#ifndef _SIMOBJECT_H_
-#include "sim/simObject.h"
+#ifndef _ASSET_BASE_H_
+#include "assets/assetBase.h"
 #endif
 
 #ifndef _GFXCUBEMAP_H_
@@ -39,29 +39,35 @@
 #include "scene/sceneManager.h"
 #endif
 
+//-----------------------------------------------------------------------------
+
+DefineConsoleType( TypeCubemapAssetPtr )
+
+//-----------------------------------------------------------------------------
+
 
 /// A script interface for creating static or dynamic cubemaps.
-class CubemapData : public SimObject
+class CubemapAsset : public AssetBase
 {
-   typedef SimObject Parent;   
+   typedef AssetBase Parent;   
 
 public:   
 
    GFXCubemapHandle  mCubemap;
 
-   CubemapData();
-   ~CubemapData();
+   CubemapAsset();
+   ~CubemapAsset();
 
    bool onAdd();
    static void initPersistFields();
 
-   DECLARE_CONOBJECT(CubemapData);
+   DECLARE_CONOBJECT(CubemapAsset);
 
    // Force creation of cubemap
    void createMap();   
 
    // Update a dynamic cubemap @ pos
-   void updateDynamic(SceneManager* sm, const Point3F& pos);
+//   void updateDynamic(SceneManager* sm, const Point3F& pos);
 	void updateFaces();
    
    // Dynamic cube map support
@@ -83,5 +89,5 @@ protected:
 #endif
 };
 
-#endif // CUBEMAPDATA
+#endif // cubemapAsset
 

@@ -24,16 +24,16 @@
 #include "materials/matInstance.h"
 
 #include "materials/materialManager.h"
-//#include "materials/customMaterialDefinition.h"
+#include "materials/customMaterialDefinition.h"
 #include "materials/processedMaterial.h"
-//#include "materials/processedFFMaterial.h"
+#include "materials/processedFFMaterial.h"
 #include "materials/processedShaderMaterial.h"
-//#include "materials/processedCustomMaterial.h"
+#include "materials/processedCustomMaterial.h"
 #include "materials/materialFeatureTypes.h"
 //#include "shaderGen/featureMgr.h"
 #include "graphics/gfxDevice.h"
-//#include "graphics/sim/cubemapData.h"
-//#include "graphics/gfxCubemap.h"
+#include "graphics/sim/cubemapAsset.h"
+#include "graphics/gfxCubemap.h"
 #include "memory/safeDelete.h"
 #include "collection/alignedArray.h"
 
@@ -231,7 +231,7 @@ MatInstance::MatInstance( Material &mat )
 
    mMaterial = &mat;
 
-//   mCreatedFromCustomMaterial = (dynamic_cast<CustomMaterial *>(&mat) != NULL);
+   mCreatedFromCustomMaterial = (dynamic_cast<CustomMaterial *>(&mat) != NULL);
 
    construct();
 }
@@ -322,73 +322,73 @@ bool MatInstance::processMaterial()
 
    SAFE_DELETE(mDefaultParameters);
 
-//   CustomMaterial *custMat = NULL;
-//
-//   if( dynamic_cast<CustomMaterial*>(mMaterial) )
-//   {
-//      F32 pixVersion = GFX->getPixelShaderVersion();
-//      custMat = static_cast<CustomMaterial*>(mMaterial);
-//      if ((custMat->mVersion > pixVersion) || (custMat->mVersion == 0.0))
-//      {
-//         if(custMat->mFallback)
-//         {
-//            mMaterial = custMat->mFallback;
-//            return processMaterial();            
-//         }
-//         else
-//         {            
-//            AssertWarn(custMat->mVersion == 0.0f, avar("Can't load CustomMaterial %s for %s, using generic FF fallback", 
-//               String(mMaterial->getName()).isEmpty() ? "Unknown" : mMaterial->getName(), custMat->mMapTo.c_str()));
-//            mProcessedMaterial = new ProcessedFFMaterial(*mMaterial);
-//         }
-//      }
-//      else 
-//         mProcessedMaterial = new ProcessedCustomMaterial(*mMaterial);
-//   }
-//   else if(GFX->getPixelShaderVersion() > 0.001)
-//      mProcessedMaterial = getShaderMaterial();
-//   else
-//      mProcessedMaterial = new ProcessedFFMaterial(*mMaterial);
-//
-//   if (mProcessedMaterial)
-//   {
-//      mProcessedMaterial->addStateBlockDesc( mUserDefinedState );
-//      mProcessedMaterial->setShaderMacros( mUserMacros );
-//      mProcessedMaterial->setUserObject( mUserObject );
-//
-//      FeatureSet features( mFeatureList );
-//      features.exclude( MATMGR->getExclusionFeatures() );
-//      
+   CustomMaterial *custMat = NULL;
+
+   if( dynamic_cast<CustomMaterial*>(mMaterial) )
+   {
+      F32 pixVersion = GFX->getPixelShaderVersion();
+      custMat = static_cast<CustomMaterial*>(mMaterial);
+      if ((custMat->mVersion > pixVersion) || (custMat->mVersion == 0.0))
+      {
+         if(custMat->mFallback)
+         {
+            mMaterial = custMat->mFallback;
+            return processMaterial();            
+         }
+         else
+         {            
+            AssertWarn(custMat->mVersion == 0.0f, avar("Can't load CustomMaterial %s for %s, using generic FF fallback", 
+               String(mMaterial->getName()).isEmpty() ? "Unknown" : mMaterial->getName(), custMat->mMapTo.c_str()));
+            mProcessedMaterial = new ProcessedFFMaterial(*mMaterial);
+         }
+      }
+      else 
+         mProcessedMaterial = new ProcessedCustomMaterial(*mMaterial);
+   }
+   else if(GFX->getPixelShaderVersion() > 0.001)
+      mProcessedMaterial = getShaderMaterial();
+   else
+      mProcessedMaterial = new ProcessedFFMaterial(*mMaterial);
+
+   if (mProcessedMaterial)
+   {
+      mProcessedMaterial->addStateBlockDesc( mUserDefinedState );
+      mProcessedMaterial->setShaderMacros( mUserMacros );
+      mProcessedMaterial->setUserObject( mUserObject );
+
+      FeatureSet features( mFeatureList );
+      features.exclude( MATMGR->getExclusionFeatures() );
+      
 //      if( !mProcessedMaterial->init(features, mVertexFormat, mFeaturesDelegate) )
 //      {
 //         Con::errorf( "Failed to initialize material '%s'", getMaterial()->getName() );
 //         SAFE_DELETE( mProcessedMaterial );
 //         return false;
 //      }
-//
-//      mDefaultParameters = new MatInstParameters(mProcessedMaterial->getDefaultMaterialParameters());
-//      mActiveParameters = mDefaultParameters;
-//
-//      const FeatureSet &finalFeatures = mProcessedMaterial->getFeatures();
-//      mHasNormalMaps = finalFeatures.hasFeature( MFT_NormalMap );
-//
-//      mIsForwardLit =   (  custMat && custMat->mForwardLit ) || 
-//                        (  !finalFeatures.hasFeature( MFT_IsEmissive ) &&
-//                           finalFeatures.hasFeature( MFT_ForwardShading ) );
-//
-//      return true;
-//   }
+
+      mDefaultParameters = new MatInstParameters(mProcessedMaterial->getDefaultMaterialParameters());
+      mActiveParameters = mDefaultParameters;
+
+      const FeatureSet &finalFeatures = mProcessedMaterial->getFeatures();
+      mHasNormalMaps = finalFeatures.hasFeature( MFT_NormalMap );
+
+      mIsForwardLit =   (  custMat && custMat->mForwardLit ) || 
+                        (  !finalFeatures.hasFeature( MFT_IsEmissive ) &&
+                           finalFeatures.hasFeature( MFT_ForwardShading ) );
+
+      return true;
+   }
    
    return false;
 }
 
-//const MatStateHint& MatInstance::getStateHint() const
-//{
-//   if ( mProcessedMaterial )
-//      return mProcessedMaterial->getStateHint();
-//   else
-//      return MatStateHint::Default;
-//}
+const MatStateHint& MatInstance::getStateHint() const
+{
+   if ( mProcessedMaterial )
+      return mProcessedMaterial->getStateHint();
+   else
+      return MatStateHint::Default;
+}
 
 ProcessedMaterial* MatInstance::getShaderMaterial()
 {
@@ -459,9 +459,9 @@ void MatInstance::setSceneInfo(SceneRenderState * state, const SceneData& sgData
    mProcessedMaterial->setSceneInfo(state, sgData, getCurPass());
 }
 
-void MatInstance::setBuffers(GFXVertexBufferHandleBase* vertBuffer, GFXPrimitiveBufferHandle* primBuffer)
+void MatInstance::setBuffers(GFXVertexBufferHandleBase* vertBuffer) //, GFXPrimitiveBufferHandle* primBuffer)
 {
-   mProcessedMaterial->setBuffers(vertBuffer, primBuffer);
+   mProcessedMaterial->setBuffers(vertBuffer); //, primBuffer);
 }
 
 void MatInstance::setTextureStages(SceneRenderState * state, const SceneData &sgData )
@@ -472,7 +472,8 @@ void MatInstance::setTextureStages(SceneRenderState * state, const SceneData &sg
 
 bool MatInstance::isInstanced() const 
 {
-   return mProcessedMaterial->getFeatures().hasFeature( MFT_UseInstancing );
+//   return mProcessedMaterial->getFeatures().hasFeature( MFT_UseInstancing );
+   return false;
 }
 
 bool MatInstance::stepInstance()

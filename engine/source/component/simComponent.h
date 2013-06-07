@@ -53,7 +53,7 @@ protected:
    SimComponent *_getOwner() { return mOwner; }
 
    /// Returns a const reference to private mComponentList
-   typedef VectorPtr<SimComponent *>::iterator SimComponentIterator;
+   typedef VectorPtr<SimComponent *>::iterator SimComponentiterator;
    VectorPtr<SimComponent *> &lockComponentList()
    {
       Mutex::lockMutex( mMutex );

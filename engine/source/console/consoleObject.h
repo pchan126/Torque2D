@@ -212,12 +212,41 @@ protected:
     static ConsoleObject* create(const U32 groupId, const U32 typeId, const U32 in_classId);
 
 public:
-    enum ACRFieldTypes
-    {
-        StartGroupFieldType = 0xFFFFFFFD,
-        EndGroupFieldType   = 0xFFFFFFFE,
-        DepricatedFieldType = 0xFFFFFFFF
-    };
+   /// These are special field type values used to mark
+   /// groups and arrays in the field list.
+   /// @see Field::type
+   /// @see addArray, endArray
+   /// @see addGroup, endGroup
+   /// @see addGroup, endGroup
+   /// @see addDeprecatedField
+   enum ACRFieldTypes
+   {
+      /// The first custom field type... all fields
+      /// types greater or equal to this one are not
+      /// console data types.
+      ARCFirstCustomField = 0xFFFFFFFB,
+      
+      /// Marks the start of a fixed size array of fields.
+      /// @see addArray
+      StartArrayFieldType = 0xFFFFFFFB,
+      
+      /// Marks the end of a fixed size array of fields.
+      /// @see endArray
+      EndArrayFieldType   = 0xFFFFFFFC,
+      
+      /// Marks the beginning of a group of fields.
+      /// @see addGroup
+      StartGroupFieldType = 0xFFFFFFFD,
+      
+      /// Marks the beginning of a group of fields.
+      /// @see endGroup
+      EndGroupFieldType   = 0xFFFFFFFE,
+      
+      /// Marks a field that is depreciated and no
+      /// longer stores a value.
+      /// @see addDeprecatedField
+      DeprecatedFieldType = 0xFFFFFFFF
+   };
 
     struct Field {
         const char* pFieldname;    ///< Name of the field.
@@ -523,6 +552,14 @@ protected:
     /// @see console_autodoc
     static void endGroup(const char*  in_pGroupname);
 
+   /// Marks the start of a fixed size array of fields.
+   /// @see console_autodoc
+   static void addArray( const char *arrayName, S32 count );
+   
+   /// Marks the end of an array of fields.
+   /// @see console_autodoc
+   static void endArray( const char *arrayName );
+   
     /// Register a complex field.
     ///
     /// @param  in_pFieldname     Name of the field.
@@ -671,7 +708,7 @@ protected:
     ///
     /// A deprecated field will always be undefined, even if you assign a value to it. This
     /// is useful when you need to make sure that a field is not being used anymore.
-    static void addDepricatedField(const char *fieldName);
+    static void addDeprecatedField(const char *fieldName);
 
     /// Remove a field.
     ///
@@ -683,7 +720,7 @@ protected:
 public:
     /// Register dynamic fields in a subclass of ConsoleObject.
     ///
-    /// @see addField(), addFieldV(), addDepricatedField(), addGroup(), endGroup()
+    /// @see addField(), addFieldV(), addDeprecatedField(), addGroup(), endGroup()
     static void initPersistFields();
 
     /// Register global constant variables and do other one-time initialization tasks in

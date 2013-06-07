@@ -80,7 +80,7 @@ void TamlJSONReader::resetParse( void )
 
 //-----------------------------------------------------------------------------
 
-SimObject* TamlJSONReader::parseType( const rapidjson::Value::ConstMemberIterator& memberItr )
+SimObject* TamlJSONReader::parseType( const rapidjson::Value::ConstMemberiterator& memberItr )
 {
     // Debug Profiling.
     PROFILE_SCOPE(TamlJSONReader_ParseType);
@@ -144,7 +144,7 @@ SimObject* TamlJSONReader::parseType( const rapidjson::Value::ConstMemberIterato
     }
 
     // Parse field members.
-    for( rapidjson::Value::ConstMemberIterator fieldMemberItr = typeValue.MemberBegin(); fieldMemberItr != typeValue.MemberEnd(); ++fieldMemberItr )
+    for( rapidjson::Value::ConstMemberiterator fieldMemberItr = typeValue.MemberBegin(); fieldMemberItr != typeValue.MemberEnd(); ++fieldMemberItr )
     {
         // Fetch value.
         const rapidjson::Value& fieldValue = fieldMemberItr->value;
@@ -188,7 +188,7 @@ SimObject* TamlJSONReader::parseType( const rapidjson::Value::ConstMemberIterato
     }
 
     // Parse children and custom node members.
-    for( rapidjson::Value::ConstMemberIterator objectMemberItr = typeValue.MemberBegin(); objectMemberItr != typeValue.MemberEnd(); ++objectMemberItr )
+    for( rapidjson::Value::ConstMemberiterator objectMemberItr = typeValue.MemberBegin(); objectMemberItr != typeValue.MemberEnd(); ++objectMemberItr )
     {
         // Fetch name and value.
         const rapidjson::Value& objectName = objectMemberItr->name;
@@ -226,7 +226,7 @@ SimObject* TamlJSONReader::parseType( const rapidjson::Value::ConstMemberIterato
 
 //-----------------------------------------------------------------------------
 
-inline void TamlJSONReader::parseField( rapidjson::Value::ConstMemberIterator& memberItr, SimObject* pSimObject )
+inline void TamlJSONReader::parseField( rapidjson::Value::ConstMemberiterator& memberItr, SimObject* pSimObject )
 {
     // Debug Profiling.
     PROFILE_SCOPE(TamlJSONReader_ParseField);
@@ -259,7 +259,7 @@ inline void TamlJSONReader::parseField( rapidjson::Value::ConstMemberIterator& m
 
 //-----------------------------------------------------------------------------
 
-inline void TamlJSONReader::parseChild( rapidjson::Value::ConstMemberIterator& memberItr, SimObject* pSimObject )
+inline void TamlJSONReader::parseChild( rapidjson::Value::ConstMemberiterator& memberItr, SimObject* pSimObject )
 {
     // Debug Profiling.
     PROFILE_SCOPE(TamlJSONReader_ParseChild);
@@ -326,7 +326,7 @@ inline void TamlJSONReader::parseChild( rapidjson::Value::ConstMemberIterator& m
 
 //-----------------------------------------------------------------------------
 
-inline void TamlJSONReader::parseCustom( rapidjson::Value::ConstMemberIterator& memberItr, SimObject* pSimObject, const char* pCustomNodeName, TamlCustomNodes& customNodes )
+inline void TamlJSONReader::parseCustom( rapidjson::Value::ConstMemberiterator& memberItr, SimObject* pSimObject, const char* pCustomNodeName, TamlCustomNodes& customNodes )
 {
     // Debug Profiling.
     PROFILE_SCOPE(TamlJSONReader_ParseCustom);
@@ -338,7 +338,7 @@ inline void TamlJSONReader::parseCustom( rapidjson::Value::ConstMemberIterator& 
     TamlCustomNode* pCustomNode = customNodes.addNode( pCustomNodeName );
 
     // Iterate members.
-    for( rapidjson::Value::ConstMemberIterator customMemberItr = value.MemberBegin(); customMemberItr != value.MemberEnd(); ++customMemberItr )
+    for( rapidjson::Value::ConstMemberiterator customMemberItr = value.MemberBegin(); customMemberItr != value.MemberEnd(); ++customMemberItr )
     {
         // Fetch value.
         const rapidjson::Value& customValue = customMemberItr->value;
@@ -358,7 +358,7 @@ inline void TamlJSONReader::parseCustom( rapidjson::Value::ConstMemberIterator& 
 
 //-----------------------------------------------------------------------------
 
-inline void TamlJSONReader::parseCustomNode( rapidjson::Value::ConstMemberIterator& memberItr, TamlCustomNode* pCustomNode )
+inline void TamlJSONReader::parseCustomNode( rapidjson::Value::ConstMemberiterator& memberItr, TamlCustomNode* pCustomNode )
 {
     // Debug Profiling.
     PROFILE_SCOPE(TamlJSONReader_ParseCustomNode);
@@ -418,7 +418,7 @@ inline void TamlJSONReader::parseCustomNode( rapidjson::Value::ConstMemberIterat
     }
 
     // Iterate child members.
-    for( rapidjson::Value::ConstMemberIterator childMemberItr = value.MemberBegin(); childMemberItr != value.MemberEnd(); ++childMemberItr )
+    for( rapidjson::Value::ConstMemberiterator childMemberItr = value.MemberBegin(); childMemberItr != value.MemberEnd(); ++childMemberItr )
     {
         // Fetch name and value.
         const rapidjson::Value& childName = childMemberItr->name;
@@ -574,7 +574,7 @@ inline U32 TamlJSONReader::getTamlRefId( const rapidjson::Value& value )
     }
 
     // Iterate members.
-    for( rapidjson::Value::ConstMemberIterator memberItr = value.MemberBegin(); memberItr != value.MemberEnd(); ++memberItr )
+    for( rapidjson::Value::ConstMemberiterator memberItr = value.MemberBegin(); memberItr != value.MemberEnd(); ++memberItr )
     {
         // Insert member name.
         StringTableEntry attributeName = StringTable->insert( memberItr->name.GetString() );
@@ -615,7 +615,7 @@ inline U32 TamlJSONReader::getTamlRefToId( const rapidjson::Value& value )
     }
 
     // Iterate members.
-    for( rapidjson::Value::ConstMemberIterator memberItr = value.MemberBegin(); memberItr != value.MemberEnd(); ++memberItr )
+    for( rapidjson::Value::ConstMemberiterator memberItr = value.MemberBegin(); memberItr != value.MemberEnd(); ++memberItr )
     {
         // Insert member name.
         StringTableEntry attributeName = StringTable->insert( memberItr->name.GetString() );
@@ -656,7 +656,7 @@ inline const char* TamlJSONReader::getTamlObjectName( const rapidjson::Value& va
     }
 
     // Iterate members.
-    for( rapidjson::Value::ConstMemberIterator memberItr = value.MemberBegin(); memberItr != value.MemberEnd(); ++memberItr )
+    for( rapidjson::Value::ConstMemberiterator memberItr = value.MemberBegin(); memberItr != value.MemberEnd(); ++memberItr )
     {
         // Insert member name.
         StringTableEntry attributeName = StringTable->insert( memberItr->name.GetString() );

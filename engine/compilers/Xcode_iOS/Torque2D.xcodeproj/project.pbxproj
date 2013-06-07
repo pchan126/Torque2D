@@ -529,6 +529,23 @@
 		D16581651702EE3E00A21928 /* iOSWindowManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = D16581611702EE3E00A21928 /* iOSWindowManager.mm */; };
 		D1736FB417617DFE008D010C /* processedFFMaterial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1736FB217617DFE008D010C /* processedFFMaterial.cpp */; };
 		D1736FB817617F45008D010C /* materialDefinition.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1736FB617617F45008D010C /* materialDefinition.cpp */; };
+		D1736FBB17618D7F008D010C /* matStateHint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1736FB917618D7F008D010C /* matStateHint.cpp */; };
+		D1736FBE17618DA0008D010C /* processedMaterial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1736FBC17618DA0008D010C /* processedMaterial.cpp */; };
+		D1736FC117619CCB008D010C /* customMaterialDefinition.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1736FBF17619CCB008D010C /* customMaterialDefinition.cpp */; };
+		D1736FC417619FC8008D010C /* shaderData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1736FC217619FC7008D010C /* shaderData.cpp */; };
+		D1736FD31761A72E008D010C /* cubemapAsset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1736FCD1761A72E008D010C /* cubemapAsset.cpp */; };
+		D1736FD51761A72E008D010C /* gfxStateBlockAsset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1736FD11761A72E008D010C /* gfxStateBlockAsset.cpp */; };
+		D1736FD71761B664008D010C /* mPoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1736FD61761B664008D010C /* mPoint.cpp */; };
+		D1736FDA1761B6FF008D010C /* materialManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1736FD81761B6FD008D010C /* materialManager.cpp */; };
+		D1736FDD1761BCA1008D010C /* matInstance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1736FDB1761BC9E008D010C /* matInstance.cpp */; };
+		D1736FE01761BD36008D010C /* baseMatInstance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1736FDE1761BD33008D010C /* baseMatInstance.cpp */; };
+		D1736FE31761BDB4008D010C /* materialFeatureTypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1736FE11761BDB1008D010C /* materialFeatureTypes.cpp */; };
+		D1736FE91761BE7E008D010C /* featureSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1736FE51761BE7E008D010C /* featureSet.cpp */; };
+		D1736FEA1761BE7E008D010C /* featureType.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1736FE71761BE7E008D010C /* featureType.cpp */; };
+		D1736FED1761BF9F008D010C /* processedShaderMaterial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1736FEB1761BF98008D010C /* processedShaderMaterial.cpp */; };
+		D1736FF01761C259008D010C /* materialFeatureData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1736FEE1761C255008D010C /* materialFeatureData.cpp */; };
+		D1736FF31761C27A008D010C /* matTextureTarget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1736FF11761C274008D010C /* matTextureTarget.cpp */; };
+		D1736FF61761C7C5008D010C /* processedCustomMaterial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1736FF41761C7C0008D010C /* processedCustomMaterial.cpp */; };
 		D1C75BD916F31D6C0019C495 /* str.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1C75BD716F31D6C0019C495 /* str.cpp */; };
 /* End PBXBuildFile section */
 
@@ -1605,6 +1622,40 @@
 		D1736FB517617F11008D010C /* materialParameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = materialParameters.h; sourceTree = "<group>"; };
 		D1736FB617617F45008D010C /* materialDefinition.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = materialDefinition.cpp; sourceTree = "<group>"; };
 		D1736FB717617F45008D010C /* materialDefinition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = materialDefinition.h; sourceTree = "<group>"; };
+		D1736FB917618D7F008D010C /* matStateHint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = matStateHint.cpp; sourceTree = "<group>"; };
+		D1736FBA17618D7F008D010C /* matStateHint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = matStateHint.h; sourceTree = "<group>"; };
+		D1736FBC17618DA0008D010C /* processedMaterial.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = processedMaterial.cpp; sourceTree = "<group>"; };
+		D1736FBD17618DA0008D010C /* processedMaterial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = processedMaterial.h; sourceTree = "<group>"; };
+		D1736FBF17619CCB008D010C /* customMaterialDefinition.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = customMaterialDefinition.cpp; sourceTree = "<group>"; };
+		D1736FC017619CCB008D010C /* customMaterialDefinition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = customMaterialDefinition.h; sourceTree = "<group>"; };
+		D1736FC217619FC7008D010C /* shaderData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = shaderData.cpp; sourceTree = "<group>"; };
+		D1736FC317619FC7008D010C /* shaderData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = shaderData.h; sourceTree = "<group>"; };
+		D1736FC51761A3A7008D010C /* baseMaterialDefinition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = baseMaterialDefinition.h; sourceTree = "<group>"; };
+		D1736FCD1761A72E008D010C /* cubemapAsset.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cubemapAsset.cpp; sourceTree = "<group>"; };
+		D1736FCE1761A72E008D010C /* cubemapAsset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cubemapAsset.h; sourceTree = "<group>"; };
+		D1736FD11761A72E008D010C /* gfxStateBlockAsset.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxStateBlockAsset.cpp; sourceTree = "<group>"; };
+		D1736FD21761A72E008D010C /* gfxStateBlockAsset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxStateBlockAsset.h; sourceTree = "<group>"; };
+		D1736FD61761B664008D010C /* mPoint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mPoint.cpp; sourceTree = "<group>"; };
+		D1736FD81761B6FD008D010C /* materialManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = materialManager.cpp; sourceTree = "<group>"; };
+		D1736FD91761B6FE008D010C /* materialManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = materialManager.h; sourceTree = "<group>"; };
+		D1736FDB1761BC9E008D010C /* matInstance.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = matInstance.cpp; sourceTree = "<group>"; };
+		D1736FDC1761BC9F008D010C /* matInstance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = matInstance.h; sourceTree = "<group>"; };
+		D1736FDE1761BD33008D010C /* baseMatInstance.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = baseMatInstance.cpp; sourceTree = "<group>"; };
+		D1736FDF1761BD35008D010C /* baseMatInstance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = baseMatInstance.h; sourceTree = "<group>"; };
+		D1736FE11761BDB1008D010C /* materialFeatureTypes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = materialFeatureTypes.cpp; sourceTree = "<group>"; };
+		D1736FE21761BDB2008D010C /* materialFeatureTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = materialFeatureTypes.h; sourceTree = "<group>"; };
+		D1736FE51761BE7E008D010C /* featureSet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = featureSet.cpp; sourceTree = "<group>"; };
+		D1736FE61761BE7E008D010C /* featureSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = featureSet.h; sourceTree = "<group>"; };
+		D1736FE71761BE7E008D010C /* featureType.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = featureType.cpp; sourceTree = "<group>"; };
+		D1736FE81761BE7E008D010C /* featureType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = featureType.h; sourceTree = "<group>"; };
+		D1736FEB1761BF98008D010C /* processedShaderMaterial.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = processedShaderMaterial.cpp; sourceTree = "<group>"; };
+		D1736FEC1761BF9C008D010C /* processedShaderMaterial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = processedShaderMaterial.h; sourceTree = "<group>"; };
+		D1736FEE1761C255008D010C /* materialFeatureData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = materialFeatureData.cpp; sourceTree = "<group>"; };
+		D1736FEF1761C257008D010C /* materialFeatureData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = materialFeatureData.h; sourceTree = "<group>"; };
+		D1736FF11761C274008D010C /* matTextureTarget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = matTextureTarget.cpp; sourceTree = "<group>"; };
+		D1736FF21761C276008D010C /* matTextureTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = matTextureTarget.h; sourceTree = "<group>"; };
+		D1736FF41761C7C0008D010C /* processedCustomMaterial.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = processedCustomMaterial.cpp; sourceTree = "<group>"; };
+		D1736FF51761C7C3008D010C /* processedCustomMaterial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = processedCustomMaterial.h; sourceTree = "<group>"; };
 		D176A00C172F8502000785CB /* iOSWindowEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iOSWindowEvents.h; sourceTree = "<group>"; };
 		D1AF776B1760987A005463CC /* mPoint2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mPoint2.h; sourceTree = "<group>"; };
 		D1AF776C1760987A005463CC /* mPoint3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mPoint3.h; sourceTree = "<group>"; };
@@ -2219,6 +2270,7 @@
 		867BAE1B16AEC9050033868F /* graphics */ = {
 			isa = PBXGroup;
 			children = (
+				D1736FCC1761A72E008D010C /* sim */,
 				D1272BEA175F1CD40012995E /* gfxCubemap.cc */,
 				D1272BEB175F1CD50012995E /* gfxCubemap.h */,
 				D1272BD6175F10AF0012995E /* gfxDeviceStatistics.cpp */,
@@ -2535,6 +2587,7 @@
 		867BAEF316AEC9050033868F /* math */ = {
 			isa = PBXGroup;
 			children = (
+				D1736FD61761B664008D010C /* mPoint.cpp */,
 				D1AF776B1760987A005463CC /* mPoint2.h */,
 				D1AF776C1760987A005463CC /* mPoint3.h */,
 				D1AF776D1760987A005463CC /* mPoint4.h */,
@@ -3158,6 +3211,7 @@
 		86A9A3BA16AEC786003F01E6 /* Torque2D */ = {
 			isa = PBXGroup;
 			children = (
+				D1736FE41761BE7A008D010C /* shaderGen */,
 				D1736F9017617DC9008D010C /* materials */,
 				867BACF816AEC9050033868F /* 2d */,
 				867BAD6916AEC9050033868F /* algorithm */,
@@ -3377,14 +3431,62 @@
 		D1736F9017617DC9008D010C /* materials */ = {
 			isa = PBXGroup;
 			children = (
+				D1736FF41761C7C0008D010C /* processedCustomMaterial.cpp */,
+				D1736FF51761C7C3008D010C /* processedCustomMaterial.h */,
+				D1736FC51761A3A7008D010C /* baseMaterialDefinition.h */,
+				D1736FDE1761BD33008D010C /* baseMatInstance.cpp */,
+				D1736FDF1761BD35008D010C /* baseMatInstance.h */,
+				D1736FBF17619CCB008D010C /* customMaterialDefinition.cpp */,
+				D1736FC017619CCB008D010C /* customMaterialDefinition.h */,
 				D1736FB617617F45008D010C /* materialDefinition.cpp */,
 				D1736FB717617F45008D010C /* materialDefinition.h */,
+				D1736FEE1761C255008D010C /* materialFeatureData.cpp */,
+				D1736FEF1761C257008D010C /* materialFeatureData.h */,
+				D1736FE11761BDB1008D010C /* materialFeatureTypes.cpp */,
+				D1736FE21761BDB2008D010C /* materialFeatureTypes.h */,
+				D1736FD81761B6FD008D010C /* materialManager.cpp */,
+				D1736FD91761B6FE008D010C /* materialManager.h */,
 				D1736FB517617F11008D010C /* materialParameters.h */,
+				D1736FDB1761BC9E008D010C /* matInstance.cpp */,
+				D1736FDC1761BC9F008D010C /* matInstance.h */,
+				D1736FB917618D7F008D010C /* matStateHint.cpp */,
+				D1736FBA17618D7F008D010C /* matStateHint.h */,
+				D1736FF11761C274008D010C /* matTextureTarget.cpp */,
+				D1736FF21761C276008D010C /* matTextureTarget.h */,
 				D1736FB217617DFE008D010C /* processedFFMaterial.cpp */,
 				D1736FB317617DFE008D010C /* processedFFMaterial.h */,
+				D1736FBC17618DA0008D010C /* processedMaterial.cpp */,
+				D1736FBD17618DA0008D010C /* processedMaterial.h */,
+				D1736FEB1761BF98008D010C /* processedShaderMaterial.cpp */,
+				D1736FEC1761BF9C008D010C /* processedShaderMaterial.h */,
+				D1736FC217619FC7008D010C /* shaderData.cpp */,
+				D1736FC317619FC7008D010C /* shaderData.h */,
 			);
 			name = materials;
 			path = ../../../source/materials;
+			sourceTree = "<group>";
+		};
+		D1736FCC1761A72E008D010C /* sim */ = {
+			isa = PBXGroup;
+			children = (
+				D1736FCD1761A72E008D010C /* cubemapAsset.cpp */,
+				D1736FCE1761A72E008D010C /* cubemapAsset.h */,
+				D1736FD11761A72E008D010C /* gfxStateBlockAsset.cpp */,
+				D1736FD21761A72E008D010C /* gfxStateBlockAsset.h */,
+			);
+			path = sim;
+			sourceTree = "<group>";
+		};
+		D1736FE41761BE7A008D010C /* shaderGen */ = {
+			isa = PBXGroup;
+			children = (
+				D1736FE51761BE7E008D010C /* featureSet.cpp */,
+				D1736FE61761BE7E008D010C /* featureSet.h */,
+				D1736FE71761BE7E008D010C /* featureType.cpp */,
+				D1736FE81761BE7E008D010C /* featureType.h */,
+			);
+			name = shaderGen;
+			path = ../../../source/shaderGen;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -3953,6 +4055,23 @@
 				D1272BF7175F22050012995E /* gfxOpenGLES20Cubemap.cc in Sources */,
 				D1736FB417617DFE008D010C /* processedFFMaterial.cpp in Sources */,
 				D1736FB817617F45008D010C /* materialDefinition.cpp in Sources */,
+				D1736FBB17618D7F008D010C /* matStateHint.cpp in Sources */,
+				D1736FBE17618DA0008D010C /* processedMaterial.cpp in Sources */,
+				D1736FC117619CCB008D010C /* customMaterialDefinition.cpp in Sources */,
+				D1736FC417619FC8008D010C /* shaderData.cpp in Sources */,
+				D1736FD31761A72E008D010C /* cubemapAsset.cpp in Sources */,
+				D1736FD51761A72E008D010C /* gfxStateBlockAsset.cpp in Sources */,
+				D1736FD71761B664008D010C /* mPoint.cpp in Sources */,
+				D1736FDA1761B6FF008D010C /* materialManager.cpp in Sources */,
+				D1736FDD1761BCA1008D010C /* matInstance.cpp in Sources */,
+				D1736FE01761BD36008D010C /* baseMatInstance.cpp in Sources */,
+				D1736FE31761BDB4008D010C /* materialFeatureTypes.cpp in Sources */,
+				D1736FE91761BE7E008D010C /* featureSet.cpp in Sources */,
+				D1736FEA1761BE7E008D010C /* featureType.cpp in Sources */,
+				D1736FED1761BF9F008D010C /* processedShaderMaterial.cpp in Sources */,
+				D1736FF01761C259008D010C /* materialFeatureData.cpp in Sources */,
+				D1736FF31761C27A008D010C /* matTextureTarget.cpp in Sources */,
+				D1736FF61761C7C5008D010C /* processedCustomMaterial.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

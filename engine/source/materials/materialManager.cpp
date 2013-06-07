@@ -24,8 +24,8 @@
 #include "materials/materialManager.h"
 
 #include "materials/matInstance.h"
-//#include "materials/materialFeatureTypes.h"
-//#include "lighting/lightManager.h"
+#include "materials/materialFeatureTypes.h"
+#include "lighting/lightManager.h"
 #include "memory/safeDelete.h"
 //#include "shaderGen/shaderGen.h"
 //#include "core/module.h"
@@ -38,27 +38,27 @@ MaterialManager::MaterialManager()
     AssertFatal(smMaterialManager == NULL, "Already a MaterialManager created! Bad!");
     smMaterialManager = this;
 
-    //   VECTOR_SET_ASSOCIATION( mMatInstanceList );
-//
-//   mDt = 0.0f; 
-//   mAccumTime = 0.0f; 
-//   mLastTime = 0; 
-//   mWarningInst = NULL;
-//   
-//   GFXDevice::getDeviceEventSignal().notify( this, &MaterialManager::_handleGFXEvent );
-//
-//   // Make sure we get activation signals
-//   // and that we're the last to get them.
-//   LightManager::smActivateSignal.notify( this, &MaterialManager::_onLMActivate, 9999 );
-//
-//   mMaterialSet = NULL;
-//
-//   mUsingPrePass = false;
-//
-//   mFlushAndReInit = false;
-//
-//   mDefaultAnisotropy = 1;
-//   Con::addVariable( "$pref::Video::defaultAnisotropy", TypeS32, &mDefaultAnisotropy, 
+   VECTOR_SET_ASSOCIATION( mMatInstanceList );
+
+   mDt = 0.0f; 
+   mAccumTime = 0.0f; 
+   mLastTime = 0; 
+   mWarningInst = NULL;
+   
+   GFXDevice::getDeviceEventSignal().notify( this, &MaterialManager::_handleGFXEvent );
+
+   // Make sure we get activation signals
+   // and that we're the last to get them.
+   LightManager::smActivateSignal.notify( this, &MaterialManager::_onLMActivate, 9999 );
+
+   mMaterialSet = NULL;
+
+   mUsingPrePass = false;
+
+   mFlushAndReInit = false;
+
+   mDefaultAnisotropy = 1;
+//   Con::addVariable( "$pref::Video::defaultAnisotropy", TypeS32, &mDefaultAnisotropy,
 //      "@brief Global variable defining the default anisotropy value.\n\n"
 //      "Controls the default anisotropic texture filtering level for all materials, including the terrain. "
 //      "This value can be changed at runtime to see its affect without reloading.\n\n "
@@ -92,18 +92,18 @@ MaterialManager::~MaterialManager()
 //#endif
 }
 
-//void MaterialManager::_onLMActivate( const char *lm, bool activate )
-//{
-//   if ( !activate )
-//      return;
-//
-//   // Since the light manager usually swaps shadergen features
-//   // and changes system wide shader defines we need to completely
-//   // flush and rebuild all the material instances.
-//
-//   mFlushAndReInit = true;
-//}
-//
+void MaterialManager::_onLMActivate( const char *lm, bool activate )
+{
+   if ( !activate )
+      return;
+
+   // Since the light manager usually swaps shadergen features
+   // and changes system wide shader defines we need to completely
+   // flush and rebuild all the material instances.
+
+   mFlushAndReInit = true;
+}
+
 //void MaterialManager::_updateDefaultAnisotropy()
 //{
 //   // Update all the materials.
@@ -277,15 +277,15 @@ String MaterialManager::getMapEntry(const String & textureName) const
    return iter->value;
 }
 
-//void MaterialManager::flushAndReInitInstances()
-//{
-//   // Clear the flag if its set.
-//   mFlushAndReInit = false;   
-//
-//   // Check to see if any shader preferences have changed.
-//   recalcFeaturesFromPrefs();
-//
-//   // First we flush all the shader gen shaders which will
+void MaterialManager::flushAndReInitInstances()
+{
+   // Clear the flag if its set.
+   mFlushAndReInit = false;   
+
+   // Check to see if any shader preferences have changed.
+   recalcFeaturesFromPrefs();
+
+//  // First we flush all the shader gen shaders which will
 //   // invalidate all GFXShader* to them.
 //   SHADERGEN->flushProceduralShaders();   
 //   mFlushSignal.trigger();
@@ -310,7 +310,7 @@ String MaterialManager::getMapEntry(const String & textureName) const
 //   iter = mMatInstanceList.begin();
 //   for ( ; iter != mMatInstanceList.end(); iter++ )
 //      (*iter)->reInit();
-//}
+}
 
 // Used in the materialEditor. This flushes the material preview object so it can be reloaded easily.
 void MaterialManager::flushInstance( BaseMaterialDefinition *target )
@@ -394,49 +394,49 @@ void MaterialManager::_untrack( MatInstance *matInstance )
    mMatInstanceList.remove( matInstance );
 }
 
-//void MaterialManager::recalcFeaturesFromPrefs()
-//{
-//   mDefaultFeatures.clear();
-//   FeatureType::addDefaultTypes( &mDefaultFeatures );
-//
-//   mExclusionFeatures.setFeature(   MFT_NormalMap, 
-//                                    Con::getBoolVariable( "$pref::Video::disableNormalMapping", false ) );
-//
-//   mExclusionFeatures.setFeature(   MFT_PixSpecular,
-//                                    Con::getBoolVariable( "$pref::Video::disablePixSpecular", false ) );
-//
-//   mExclusionFeatures.setFeature(   MFT_CubeMap, 
-//                                    Con::getBoolVariable( "$pref::Video::disableCubemapping", false ) );
-//
-//   mExclusionFeatures.setFeature(   MFT_Parallax, 
-//                                    Con::getBoolVariable( "$pref::Video::disableParallaxMapping", false ) );
-//}
-//
-//bool MaterialManager::_handleGFXEvent( GFXDevice::GFXDeviceEventType event_ )
-//{
-//   switch ( event_ )
-//   {
-//      case GFXDevice::deInit:
-//         recalcFeaturesFromPrefs();
-//         break;
-//
-//      case GFXDevice::deDestroy :
-//         SAFE_DELETE( mWarningInst );
-//         break;
-//
-//      case GFXDevice::deStartOfFrame:
-//         if ( mFlushAndReInit )
-//            flushAndReInitInstances();
-//         break;
-//
-//      default:
-//         break;
-//   }
-//
-//   return true;
-//}
-//
-//ConsoleFunction( reInitMaterials, void, 1, 1, 
+void MaterialManager::recalcFeaturesFromPrefs()
+{
+   mDefaultFeatures.clear();
+   FeatureType::addDefaultTypes( &mDefaultFeatures );
+
+   mExclusionFeatures.setFeature(   MFT_NormalMap, 
+                                    Con::getBoolVariable( "$pref::Video::disableNormalMapping", false ) );
+
+   mExclusionFeatures.setFeature(   MFT_PixSpecular,
+                                    Con::getBoolVariable( "$pref::Video::disablePixSpecular", false ) );
+
+   mExclusionFeatures.setFeature(   MFT_CubeMap, 
+                                    Con::getBoolVariable( "$pref::Video::disableCubemapping", false ) );
+
+   mExclusionFeatures.setFeature(   MFT_Parallax, 
+                                    Con::getBoolVariable( "$pref::Video::disableParallaxMapping", false ) );
+}
+
+bool MaterialManager::_handleGFXEvent( GFXDevice::GFXDeviceEventType event_ )
+{
+   switch ( event_ )
+   {
+      case GFXDevice::deInit:
+         recalcFeaturesFromPrefs();
+         break;
+
+      case GFXDevice::deDestroy :
+         SAFE_DELETE( mWarningInst );
+         break;
+
+      case GFXDevice::deStartOfFrame:
+         if ( mFlushAndReInit )
+            flushAndReInitInstances();
+         break;
+
+      default:
+         break;
+   }
+
+   return true;
+}
+
+//ConsoleFunction( reInitMaterials, void, 1, 1,
 //   "@brief Flushes all procedural shaders and re-initializes all active material instances.\n\n" 
 //   "@ingroup Materials")
 //{

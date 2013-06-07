@@ -120,7 +120,7 @@ public:
    virtual void setTextureStages(SceneRenderState *, const SceneData &sgData, U32 pass );
    virtual void setTransforms(const MatrixSet &matrixSet, SceneRenderState *state, const U32 pass);
    virtual void setSceneInfo(SceneRenderState *, const SceneData& sgData, U32 pass);
-   virtual void setBuffers(GFXVertexBufferHandleBase* vertBuffer, GFXPrimitiveBufferHandle* primBuffer); 
+   virtual void setBuffers(GFXVertexBufferHandleBase* vertBuffer); //, GFXPrimitiveBufferHandle* primBuffer);
    virtual bool stepInstance();
    virtual void dumpMaterialInfo();
    virtual MaterialParameters* allocMaterialParameters();    

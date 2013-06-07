@@ -56,8 +56,8 @@ const Point3D Point3D::Zero(0.0, 0.0, 0.0);
 const Point4I Point4I::One(1, 1, 1, 1);
 const Point4I Point4I::Zero(0, 0, 0, 0);
 
-const Point4F Point4F::One(1.0f, 1.0f, 1.0f, 1.0f);
-const Point4F Point4F::Zero(0.0f, 0.0f, 0.0f, 0.0f);
+const Point4F Point4F::ONE(1.0f, 1.0f, 1.0f, 1.0f);
+const Point4F Point4F::ZERO(0.0f, 0.0f, 0.0f, 0.0f);
 
 
 Point3F mPerp( const Point3F &inVec )

@@ -249,7 +249,7 @@ SimObject* SimSet::findObjectByInternalName(const char* internalName, bool searc
 IMPLEMENT_CONOBJECT_CHILDREN(SimSet);
 
 
-inline void SimSetIterator::Stack::push_back(SimSet* set)
+inline void SimSetiterator::Stack::push_back(SimSet* set)
 {
    increment();
    last().set = set;
@@ -259,7 +259,7 @@ inline void SimSetIterator::Stack::push_back(SimSet* set)
 
 //-----------------------------------------------------------------------------
 
-SimSetIterator::SimSetIterator(SimSet* set)
+SimSetiterator::SimSetiterator(SimSet* set)
 {
    VECTOR_SET_ASSOCIATION(stack);
 
@@ -270,7 +270,7 @@ SimSetIterator::SimSetIterator(SimSet* set)
 
 //-----------------------------------------------------------------------------
 
-SimObject* SimSetIterator::operator++()
+SimObject* SimSetiterator::operator++()
 {
    SimSet* set;
    if ((set = dynamic_cast<SimSet*>(*stack.last().itr)) != 0) 
@@ -291,7 +291,7 @@ SimObject* SimSetIterator::operator++()
    return *stack.last().itr;
 }	
 
-SimObject* SimGroupIterator::operator++()
+SimObject* SimGroupiterator::operator++()
 {
    SimGroup* set;
    if ((set = dynamic_cast<SimGroup*>(*stack.last().itr)) != 0) 

@@ -255,7 +255,7 @@ SceneObject* SceneObjectSet::findObjectByInternalName(const char* internalName, 
 
 //-----------------------------------------------------------------------------
 
-inline void SceneObjectSetIterator::Stack::push_back(SceneObjectSet* set)
+inline void SceneObjectSetiterator::Stack::push_back(SceneObjectSet* set)
 {
    increment();
    last().set = set;
@@ -264,7 +264,7 @@ inline void SceneObjectSetIterator::Stack::push_back(SceneObjectSet* set)
 
 //-----------------------------------------------------------------------------
 
-SceneObjectSetIterator::SceneObjectSetIterator(SceneObjectSet* set)
+SceneObjectSetiterator::SceneObjectSetiterator(SceneObjectSet* set)
 {
    VECTOR_SET_ASSOCIATION(stack);
 
@@ -274,7 +274,7 @@ SceneObjectSetIterator::SceneObjectSetIterator(SceneObjectSet* set)
 
 //-----------------------------------------------------------------------------
 
-SceneObject* SceneObjectSetIterator::operator++()
+SceneObject* SceneObjectSetiterator::operator++()
 {
    SceneObjectSet* set;
    if ((set = dynamic_cast<SceneObjectSet*>(*stack.last().itr)) != 0) 

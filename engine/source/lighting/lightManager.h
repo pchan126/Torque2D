@@ -76,8 +76,8 @@ public:
 //   /// Returns a tab seperated list of available light managers.
 //   static void getLightManagerNames( String *outString );
 
-//   /// The light manager activation signal.
-//   static Signal<void(const char*,bool)> smActivateSignal;
+   /// The light manager activation signal.
+   static Signal<void(const char*,bool)> smActivateSignal;
 
    /// Returns the active LM.
    static inline LightManager* getActiveLM() { return smActiveLM; }
@@ -117,6 +117,8 @@ public:
 //   /// Set a special light type.
 //   virtual void setSpecialLight( SpecialLightTypesEnum type, LightInfo *light );
 
+//   GFXShaderRef mLastShader;
+
    // registered before scene traversal...
    virtual void registerGlobalLight( LightInfo *light, SimObject *obj );
    virtual void unregisterGlobalLight( LightInfo *light );
@@ -131,20 +133,20 @@ public:
    /// Returns all unsorted and un-scored lights (both global and local).
    void getAllUnsortedLights( Vector<LightInfo*> *list ) const;
 
-//   /// Sets shader constants / textures for light infos
-//   virtual void setLightInfo( ProcessedMaterial *pmat, 
-//                              const Material *mat, 
-//                              const SceneData &sgData, 
-//                              const SceneRenderState *state,
-//                              U32 pass, 
-//                              GFXShaderConstBuffer *shaderConsts ) = 0;
-//
-//   /// Allows us to set textures during the Material::setTextureStage call, return true if we've done work.
-//   virtual bool setTextureStage( const SceneData &sgData, 
-//                                 const U32 currTexFlag, 
-//                                 const U32 textureSlot, 
-//                                 GFXShaderConstBuffer *shaderConsts, 
-//                                 ShaderConstHandles *handles ) = 0;
+   /// Sets shader constants / textures for light infos
+   virtual void setLightInfo( ProcessedMaterial *pmat, 
+                              const Material *mat, 
+                              const SceneData &sgData, 
+                              const SceneRenderState *state,
+                              U32 pass, 
+                             GFXShaderConstBuffer *shaderConsts );
+
+   /// Allows us to set textures during the Material::setTextureStage call, return true if we've done work.
+   virtual bool setTextureStage( const SceneData &sgData, 
+                                 const U32 currTexFlag, 
+                                 const U32 textureSlot, 
+                                 GFXShaderConstBuffer *shaderConsts, 
+                                 ShaderConstHandles *handles )  { return false; };
 
 //   /// Called when the static scene lighting (aka lightmaps) should be computed.
 //   virtual bool lightScene( const char* callback, const char* param );

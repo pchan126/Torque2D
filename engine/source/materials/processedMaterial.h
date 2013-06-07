@@ -35,9 +35,9 @@
 #ifndef _MATTEXTURETARGET_H_
 #include "materials/matTextureTarget.h"
 #endif
-//#ifndef _MATSTATEHINT_H_
-//#include "materials/matStateHint.h"
-//#endif
+#ifndef _MATSTATEHINT_H_
+#include "materials/matStateHint.h"
+#endif
 
 class ShaderFeature;
 class MaterialParameters;
@@ -72,7 +72,7 @@ public:
    /// The cubemap to use when the texture type is
    /// set to Material::Cube.
    /// @see mTexType
-//   GFXCubemap *mCubeMap;
+   GFXCubemap *mCubeMap;
 
    U32 mNumTex;
 
@@ -145,7 +145,7 @@ public:
    virtual void setSceneInfo(SceneRenderState *, const SceneData& sgData, U32 pass) = 0;
 
    /// Sets the given vertex and primitive buffers so we can render geometry
-   virtual void setBuffers(GFXVertexBufferHandleBase* vertBuffer, GFXPrimitiveBufferHandle* primBuffer); 
+   virtual void setBuffers(GFXVertexBufferHandleBase* vertBuffer); //, GFXPrimitiveBufferHandle* primBuffer);
    
    /// @see BaseMatInstance::setUserObject
    virtual void setUserObject( SimObject *userObject ) { mUserObject = userObject; }
@@ -163,7 +163,7 @@ public:
    /// Returns the state hint which can be used for 
    /// sorting and fast comparisions of the equality 
    /// of a material instance.
-//   virtual const MatStateHint& getStateHint() const { return mStateHint; }
+   virtual const MatStateHint& getStateHint() const { return mStateHint; }
 
    /// Sets up the given pass.  Returns true if the pass was set up, false if there was an error or if
    /// the specified pass is out of bounds.
@@ -262,7 +262,7 @@ protected:
 
    /// The state hint used for material sorting 
    /// and quick equality comparision.
-//   MatStateHint mStateHint;
+   MatStateHint mStateHint;
 
    /// Loads all the textures for all of the stages in the Material
    virtual void _setStageData();

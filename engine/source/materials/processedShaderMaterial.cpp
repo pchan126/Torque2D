@@ -24,11 +24,11 @@
 #include "materials/processedShaderMaterial.h"
 
 #include "memory/safeDelete.h"
-//#include "graphics/sim/cubemapData.h"
+#include "graphics/sim/cubemapAsset.h"
 #include "graphics/gfxShader.h"
 //#include "graphics/genericConstBuffer.h"
-#include "graphics/gfxPrimitiveBuffer.h"
-#include "scene/sceneRenderState.h"
+//#include "graphics/gfxPrimitiveBuffer.h"
+//#include "scene/sceneRenderState.h"
 //#include "shaderGen/shaderFeature.h"
 //#include "shaderGen/shaderGenVars.h"
 //#include "shaderGen/featureMgr.h"
@@ -245,7 +245,7 @@ U32 ProcessedShaderMaterial::getNumStages()
 //      if( i == 0 )
 //      {
 //         // If we have a cubemap the stage is active
-//         if( mMaterial->mCubemapData || mMaterial->mDynamicCubemap )
+//         if( mMaterial->mcubemapAsset || mMaterial->mDynamicCubemap )
 //         {
 //            numStages++;
 //            continue;
@@ -346,7 +346,7 @@ void ProcessedShaderMaterial::_determineFeatures(  U32 stageNum,
    
 //   // cubemaps only available on stage 0 for now - bramage   
 //   if ( stageNum < 1 && 
-//         (  (  mMaterial->mCubemapData && mMaterial->mCubemapData->mCubemap ) ||
+//         (  (  mMaterial->mcubemapAsset && mMaterial->mcubemapAsset->mCubemap ) ||
 //               mMaterial->mDynamicCubemap ) )
 //   fd.features.addFeature( MFT_CubeMap );
 
@@ -1169,14 +1169,14 @@ void ProcessedShaderMaterial::setSceneInfo(SceneRenderState * state, const Scene
 //   LIGHTMGR->setLightInfo( this, mMaterial, sgData, state, pass, shaderConsts );
 }
 
-void ProcessedShaderMaterial::setBuffers( GFXVertexBufferHandleBase *vertBuffer, GFXPrimitiveBufferHandle *primBuffer )
+void ProcessedShaderMaterial::setBuffers( GFXVertexBufferHandleBase *vertBuffer ) //, GFXPrimitiveBufferHandle *primBuffer )
 {
    PROFILE_SCOPE(ProcessedShaderMaterial_setBuffers);
 
    // If we're not instanced then just call the parent.
    if ( !mInstancingState )
    {
-      Parent::setBuffers( vertBuffer, primBuffer );
+      Parent::setBuffers( vertBuffer ); //, primBuffer );
       return;
    }
 
@@ -1186,8 +1186,8 @@ void ProcessedShaderMaterial::setBuffers( GFXVertexBufferHandleBase *vertBuffer,
    AssertFatal( instCount > 0,
       "ProcessedShaderMaterial::setBuffers - No instances rendered!" );
 
-   // Nothing special here.
-   GFX->setPrimitiveBuffer( *primBuffer );
+//   // Nothing special here.
+//   GFX->setPrimitiveBuffer( *primBuffer );
 
    // Set the first stream the the normal VB and set the
    // correct frequency for the number of instances to render.

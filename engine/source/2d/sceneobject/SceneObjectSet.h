@@ -27,8 +27,8 @@
 #include "2d/sceneObject/sceneObjectList.h"
 #endif
 
-#ifndef _FIND_ITERATOR_H_
-#include "collection/findIterator.h"
+#ifndef _FIND_iterator_H_
+#include "collection/finditerator.h"
 #endif
 
 #ifndef _SIMDICTIONARY_H_
@@ -146,7 +146,7 @@ public:
 
 //-----------------------------------------------------------------------------
 
-class SceneObjectSetIterator
+class SceneObjectSetiterator
 {
 protected:
     struct Entry
@@ -162,7 +162,7 @@ protected:
     Stack stack;
 
 public:
-    SceneObjectSetIterator(SceneObjectSet*);
+    SceneObjectSetiterator(SceneObjectSet*);
     SceneObject* operator++();
     SceneObject* operator*() {
         return stack.empty()? 0: *stack.last().itr;

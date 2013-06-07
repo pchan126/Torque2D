@@ -27,7 +27,7 @@
 #include "math/mathTypes.h"
 #include "materials/materialManager.h"
 #include "sceneData.h"
-//#include "gfx/sim/cubemapData.h"
+#include "graphics/sim/cubemapAsset.h"
 #include "graphics/gfxCubemap.h"
 #include "math/mathIO.h"
 #include "materials/matInstance.h"
@@ -37,6 +37,49 @@
 
 
 IMPLEMENT_CONOBJECT( Material );
+
+//------------------------------------------------------------------------------
+
+ConsoleType( MaterialPtr, TypeMaterialAssetPtr, sizeof(AssetPtr<Material>), ASSET_ID_FIELD_PREFIX )
+
+//-----------------------------------------------------------------------------
+
+ConsoleGetType( TypeMaterialAssetPtr )
+{
+   // Fetch asset Id.
+   return (*((AssetPtr<Material>*)dptr)).getAssetId();
+}
+
+//-----------------------------------------------------------------------------
+
+ConsoleSetType( TypeMaterialAssetPtr )
+{
+   // Was a single argument specified?
+   if( argc == 1 )
+   {
+      // Yes, so fetch field value.
+      const char* pFieldValue = argv[0];
+      
+      // Fetch asset pointer.
+      AssetPtr<Material>* pAssetPtr = dynamic_cast<AssetPtr<Material>*>((AssetPtrBase*)(dptr));
+      
+      // Is the asset pointer the correct type?
+      if ( pAssetPtr == NULL )
+      {
+         // No, so fail.
+         Con::warnf( "(TypeMaterialPtr) - Failed to set asset Id '%d'.", pFieldValue );
+         return;
+      }
+      
+      // Set asset.
+      pAssetPtr->setAssetId( pFieldValue );
+      
+      return;
+   }
+   
+   // Warn.
+   Con::warnf( "(TypeMaterialPtr) - Cannot set multiple args to a single asset." );
+}
 
 //ConsoleDocClass( Material,
 //	"@brief A material in Torque 3D is a data structure that describes a surface.\n\n"
@@ -160,7 +203,7 @@ Material::Material()
    dMemset(mNormalMapAtlas, 0, sizeof(mNormalMapAtlas));
    dMemset(mUseAnisotropic, 0, sizeof(mUseAnisotropic));
 
-   mImposterLimits = Point4F::Zero;
+   mImposterLimits = Point4F::ZERO;
 
    mDoubleSided = false;
 
@@ -175,7 +218,7 @@ Material::Material()
 
    mPlanarReflection = false;
 
-//   mCubemapData = NULL;
+   mCubemapAsset = NULL;
 //   mDynamicCubemap = NULL;
 
    mLastUpdateTime = 0;
@@ -353,7 +396,7 @@ void Material::initPersistFields()
       "The alpha reference value for alpha testing.  Must be between 0 to 255.\n@see alphaTest\n" );
 
 //   addField("cubemap", TypeRealString, Offset(mCubemapName, Material),
-//      "The name of a CubemapData for environment mapping." );
+//      "The name of a CubemapAsset for environment mapping." );
 //
 //   addField("dynamicCubemap", TypeBool, Offset(mDynamicCubemap, Material),
 //      "Enables the material to use the dynamic cubemap from the ShapeBase object its applied to." );
@@ -397,7 +440,7 @@ bool Material::onAdd()
    if (Parent::onAdd() == false)
       return false;
 
-//   mCubemapData = dynamic_cast<CubemapData*>(Sim::findObject( mCubemapName ) );
+//   mCubemapAsset = dynamic_cast<CubemapAsset*>(Sim::findObject( mCubemapName ) );
 
    if( mTranslucentBlendOp >= NumBlendTypes || mTranslucentBlendOp < 0 )
    {

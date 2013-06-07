@@ -23,10 +23,11 @@
 #define _BASEMATERIALDEFINITION_H_
 
 #include "sim/simObject.h"
+#include "assets/assetBase.h"
 
 class BaseMatInstance;
 
-class BaseMaterialDefinition : public SimObject
+class BaseMaterialDefinition : public AssetBase
 {
    typedef SimObject Parent;
 public:

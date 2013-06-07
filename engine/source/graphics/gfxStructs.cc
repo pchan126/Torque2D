@@ -63,17 +63,17 @@ const StringTableEntry GFXVideoMode::toString() const
    return String::ToString("%d %d %s %d %d %d", resolution.x, resolution.y, (fullScreen ? "true" : "false"), bitDepth,  refreshRate, antialiasLevel);
 }
 
-//void GFXShaderMacro::stringize( const Vector<GFXShaderMacro> &macros, StringTableEntry *outString )
-//{
-//   Vector<GFXShaderMacro>::const_iterator itr = macros.begin();
-//   for ( ; itr != macros.end(); itr++ )
-//   {
-//      (*outString) += itr->name;
-//      if ( itr->value.isNotEmpty() )
-//      {
-//         (*outString) += "=";
-//         (*outString) += itr->value;
-//      }
-//      (*outString) += ";";
-//   }
-//}
+void GFXShaderMacro::stringize( const Vector<GFXShaderMacro> &macros, String *outString )
+{
+   Vector<GFXShaderMacro>::const_iterator itr = macros.begin();
+   for ( ; itr != macros.end(); itr++ )
+   {
+      (*outString) += itr->name;
+      if ( itr->value.isNotEmpty() )
+      {
+         (*outString) += "=";
+         (*outString) += itr->value;
+      }
+      (*outString) += ";";
+   }
+}

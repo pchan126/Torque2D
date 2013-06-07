@@ -80,7 +80,7 @@ bool GuiConsoleEditCtrl::onKeyDown(const GuiEvent &event)
             if (pGroup) 
             {
                // Find the first scroll control in the same group as us.
-               for (SimSetIterator itr(pGroup); *itr; ++itr) 
+               for (SimSetiterator itr(pGroup); *itr; ++itr) 
                {
                   if ((mSiblingScroller = dynamic_cast<GuiScrollCtrl*>(*itr))) 
                   {

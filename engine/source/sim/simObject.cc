@@ -310,7 +310,7 @@ void SimObject::writeFields(Stream &stream, U32 tabStop)
    {
       const AbstractClassRep::Field* f = &list[i];
 
-      if( f->type == AbstractClassRep::DepricatedFieldType ||
+      if( f->type == AbstractClassRep::DeprecatedFieldType ||
           f->type == AbstractClassRep::StartGroupFieldType ||
           f->type == AbstractClassRep::EndGroupFieldType) continue;
 
@@ -680,7 +680,7 @@ ConsoleMethod( SimObject, getFieldCount, S32, 2, 2, "() - Gets the number of per
    {
       f = &list[i];
 
-      if( f->type == AbstractClassRep::DepricatedFieldType ||
+      if( f->type == AbstractClassRep::DeprecatedFieldType ||
          f->type == AbstractClassRep::StartGroupFieldType ||
          f->type == AbstractClassRep::EndGroupFieldType )
       {
@@ -705,7 +705,7 @@ ConsoleMethod( SimObject, getField, const char*, 3, 3, "(int index) - Gets the n
       f = &list[i];
       
       // skip any dummy fields   
-      if(f->type == AbstractClassRep::DepricatedFieldType ||
+      if(f->type == AbstractClassRep::DeprecatedFieldType ||
          f->type == AbstractClassRep::StartGroupFieldType ||
          f->type == AbstractClassRep::EndGroupFieldType)
       {
@@ -739,7 +739,7 @@ ConsoleMethod(SimObject,dump, void, 2, 2, "() Use the dump method to display the
    for(Vector<const AbstractClassRep::Field *>::iterator itr = flist.begin(); itr != flist.end(); itr++)
    {
       const AbstractClassRep::Field* f = *itr;
-      if( f->type == AbstractClassRep::DepricatedFieldType ||
+      if( f->type == AbstractClassRep::DeprecatedFieldType ||
           f->type == AbstractClassRep::StartGroupFieldType ||
           f->type == AbstractClassRep::EndGroupFieldType) continue;
 
@@ -821,7 +821,7 @@ void SimObject::setDataField(StringTableEntry slotName, const char *array, const
       const AbstractClassRep::Field *fld = findField(slotName);
       if(fld)
       {
-         if( fld->type == AbstractClassRep::DepricatedFieldType ||
+         if( fld->type == AbstractClassRep::DeprecatedFieldType ||
             fld->type == AbstractClassRep::StartGroupFieldType ||
             fld->type == AbstractClassRep::EndGroupFieldType) 
             return;

@@ -695,7 +695,7 @@ void SimXMLDocument::setObjectAttributes(const char* objectID)
       for(itr = fieldList.begin(); itr != fieldList.end(); itr++)
       {
 
-         if( itr->type == AbstractClassRep::DepricatedFieldType ||
+         if( itr->type == AbstractClassRep::DeprecatedFieldType ||
             itr->type == AbstractClassRep::StartGroupFieldType ||
             itr->type == AbstractClassRep::EndGroupFieldType) continue;
 

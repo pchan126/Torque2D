@@ -3240,7 +3240,7 @@ void SceneObject::notifyComponentsAddToScene( void )
 
     // Notify components.
     VectorPtr<SimComponent*>& componentList = lockComponentList();
-    for( SimComponentIterator itr = componentList.begin(); itr != componentList.end(); ++itr )
+    for( SimComponentiterator itr = componentList.begin(); itr != componentList.end(); ++itr )
     {
         SimComponent *pComponent = *itr;
         if( pComponent != NULL )
@@ -3258,7 +3258,7 @@ void SceneObject::notifyComponentsRemoveFromScene( void )
 
     // Notify components.
     VectorPtr<SimComponent*>& componentList = lockComponentList();
-    for( SimComponentIterator itr = componentList.begin(); itr != componentList.end(); ++itr )
+    for( SimComponentiterator itr = componentList.begin(); itr != componentList.end(); ++itr )
     {
         SimComponent *pComponent = *itr;
         if( pComponent != NULL )
@@ -3276,7 +3276,7 @@ void SceneObject::notifyComponentsUpdate( void )
 
     // Notify components.
     VectorPtr<SimComponent*>& componentList = lockComponentList();
-    for( SimComponentIterator itr = componentList.begin(); itr != componentList.end(); ++itr )
+    for( SimComponentiterator itr = componentList.begin(); itr != componentList.end(); ++itr )
     {
         SimComponent *pComponent = *itr;
         if( pComponent != NULL )

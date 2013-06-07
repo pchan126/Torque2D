@@ -335,6 +335,48 @@ void ConsoleObject::endGroup(const char*  in_pGroupname)
    sg_tempFieldList.push_back(f);
 }
 
+void ConsoleObject::addArray( const char *arrayName, S32 count )
+{
+   char *nameBuff = suppressSpaces(arrayName);
+   dStrcat(nameBuff, "_beginarray");
+   
+   // Create Field.
+   AbstractClassRep::Field f;
+   f.pFieldname   = StringTable->insert(nameBuff);
+   f.pGroupname   = arrayName;
+   
+   f.type         = AbstractClassRep::StartArrayFieldType;
+   f.elementCount = count;
+   f.groupExpand  = false;
+   f.validator    = NULL;
+   f.setDataFn    = &defaultProtectedSetFn;
+   f.getDataFn    = &defaultProtectedGetFn;
+   
+   // Add to field list.
+   sg_tempFieldList.push_back(f);
+}
+
+void ConsoleObject::endArray( const char *arrayName )
+{
+   char *nameBuff = suppressSpaces(arrayName);
+   dStrcat(nameBuff, "_endarray");
+   
+   // Create Field.
+   AbstractClassRep::Field f;
+   f.pFieldname   = StringTable->insert(nameBuff);
+   f.pGroupname   = arrayName;
+   f.type         = AbstractClassRep::EndArrayFieldType;
+   f.groupExpand  = false;
+   f.validator    = NULL;
+   f.setDataFn    = &defaultProtectedSetFn;
+   f.getDataFn    = &defaultProtectedGetFn;
+   f.elementCount = 0;
+   
+   // Add to field list.
+   sg_tempFieldList.push_back(f);
+}
+
+
 void ConsoleObject::addField(const char*  in_pFieldname,
                        const U32 in_fieldType,
                        const dsize_t in_fieldOffset,
@@ -531,13 +573,13 @@ void ConsoleObject::addFieldV(const char*  in_pFieldname,
    sg_tempFieldList.push_back(f);
 }
 
-void ConsoleObject::addDepricatedField(const char *fieldName)
+void ConsoleObject::addDeprecatedField(const char *fieldName)
 {
    AbstractClassRep::Field f;
    f.pFieldname   = StringTable->insert(fieldName);
    f.pGroupname   = NULL;
    f.pFieldDocs   = NULL;
-   f.type         = AbstractClassRep::DepricatedFieldType;
+   f.type         = AbstractClassRep::DeprecatedFieldType;
    f.offset       = 0;
    f.elementCount = 0;
    f.table        = NULL;

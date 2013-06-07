@@ -171,8 +171,8 @@ struct GFXShaderMacro
          value( macro.value ) 
       {}
 
-   GFXShaderMacro(   const StringTableEntry &name_,
-                     const StringTableEntry &value_ = StringTable->EmptyString )
+   GFXShaderMacro(   const String &name_,
+                     const String &value_ = StringTable->EmptyString )
       :  name( name_ ), 
          value( value_ ) 
       {}
@@ -180,12 +180,12 @@ struct GFXShaderMacro
    ~GFXShaderMacro() {}
 
    /// The macro name.
-   StringTableEntry name;
+   String name;
 
    /// The optional macro value.
-   StringTableEntry value;
+   String value;
 
-   static void stringize( const Vector<GFXShaderMacro> &macros, StringTableEntry *outString );
+   static void stringize( const Vector<GFXShaderMacro> &macros, String *outString );
 };
 
 

@@ -84,7 +84,7 @@ NamedTexTarget* NamedTexTarget::find( const String &name )
 }
 
 NamedTexTarget::NamedTexTarget()
-   :  mViewport( RectI::One ),
+   :  mViewport( RectI( 0, 0, 1, 1 ) ),
       mIsRegistered( false ) //,
 //      mConditioner( NULL )
 {
@@ -109,8 +109,8 @@ void NamedTexTarget::release()
    mTex[3] = NULL;
 }
 
-//void NamedTexTarget::getShaderMacros( Vector<GFXShaderMacro> *outMacros )
-//{
+void NamedTexTarget::getShaderMacros( Vector<GFXShaderMacro> *outMacros )
+{
 //   ConditionerFeature *cond = getConditioner();
 //   if ( !cond )
 //      return;
@@ -138,4 +138,4 @@ void NamedTexTarget::release()
 //      macro.value = uncondMethod;
 //      outMacros->push_back( macro );
 //   }
-//}
+}

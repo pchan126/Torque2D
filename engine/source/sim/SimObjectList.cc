@@ -21,7 +21,7 @@
 //-----------------------------------------------------------------------------
 
 #include "simObjectList.h"
-#include "collection/findIterator.h"
+#include "collection/finditerator.h"
 #include "simObject.h"
 
 //-----------------------------------------------------------------------------

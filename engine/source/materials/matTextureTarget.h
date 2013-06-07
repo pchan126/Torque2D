@@ -103,7 +103,7 @@ public:
    void setupSamplerState( GFXSamplerStateDesc *desc ) const  { *desc = mSamplerDesc; }
 //   void setConditioner( ConditionerFeature *cond ) { mConditioner = cond; }
 //   ConditionerFeature* getConditioner() const { return mConditioner; }
-//   void getShaderMacros( Vector<GFXShaderMacro> *outMacros );
+   void getShaderMacros( Vector<GFXShaderMacro> *outMacros );
 
 protected:
    

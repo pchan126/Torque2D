@@ -22,6 +22,9 @@
 #ifndef _MATERIALDEFINITION_H_
 #define _MATERIALDEFINITION_H_
 
+#ifndef _ASSET_PTR_H_
+#include "assets/assetPtr.h"
+#endif
 
 #include "materials/baseMaterialDefinition.h"
 
@@ -37,7 +40,7 @@
 
 
 
-//class CubemapData;
+class CubemapAsset;
 //class SFXTrack;
 struct SceneData;
 class FeatureSet;
@@ -46,12 +49,14 @@ class MaterialSoundProfile;
 class MaterialPhysicsProfile;
 
 
+DefineConsoleType( TypeMaterialAssetPtr )
+
 /// The basic material definition.
 class Material : public BaseMaterialDefinition
 {
    typedef BaseMaterialDefinition Parent;
 public:
-//   static GFXCubemap *GetNormalizeCube();
+   static GFXCubemap *GetNormalizeCube();
 
    //-----------------------------------------------------------------------
    // Enums
@@ -275,8 +280,8 @@ public:
 
    bool mDoubleSided;
 
-//   String mCubemapName;
-//   CubemapData* mCubemapData;
+   String mCubemapName;
+   CubemapAsset* mCubemapAsset;
 //   bool mDynamicCubemap;
 
    bool mTranslucent;   

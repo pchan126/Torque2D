@@ -28,7 +28,7 @@
 #include "io/fileStream.h"
 #include "io/resource/resourceManager.h"
 #include "console/ast.h"
-#include "collection/findIterator.h"
+#include "collection/finditerator.h"
 #include "console/consoleTypes.h"
 #include "debug/telnetDebugger.h"
 #include "sim/simBase.h"

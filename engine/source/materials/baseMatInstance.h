@@ -37,9 +37,9 @@
 //#ifndef _MATINSTANCEHOOK_H_
 //#include "materials/matInstanceHook.h"
 //#endif
-//#ifndef _MATSTATEHINT_H_
-//#include "materials/matStateHint.h"
-//#endif
+#ifndef _MATSTATEHINT_H_
+#include "materials/matStateHint.h"
+#endif
 
 struct RenderPassData;
 class GFXVertexBufferHandleBase;
@@ -153,7 +153,7 @@ public:
 
    /// Sets the vertex and primitive buffers as well as the instancing 
    /// stream buffer for the current material if the material is instanced.
-   virtual void setBuffers( GFXVertexBufferHandleBase *vertBuffer, GFXPrimitiveBufferHandle *primBuffer ) = 0;
+   virtual void setBuffers( GFXVertexBufferHandleBase *vertBuffer) = 0; //, GFXPrimitiveBufferHandle *primBuffer ) = 0;
 
    /// Returns true if this material is instanced.
    virtual bool isInstanced() const = 0;
@@ -186,7 +186,7 @@ public:
    /// Returns the state hint which can be used for 
    /// sorting and fast comparisions of the equality 
    /// of a material instance.
-//   virtual const MatStateHint& getStateHint() const = 0;
+   virtual const MatStateHint& getStateHint() const = 0;
 
    /// Returns the active features in use by this material.
    /// @see getRequestedFeatures

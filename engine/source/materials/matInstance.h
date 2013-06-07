@@ -39,7 +39,7 @@
 #endif
 
 class GFXShader;
-//class GFXCubemap;
+class GFXCubemap;
 class ShaderFeature;
 class MatInstanceParameterHandle;
 class MatInstParameters;
@@ -67,7 +67,7 @@ public:
    virtual void setTransforms(const MatrixSet &matrixSet, SceneRenderState *state);
    virtual void setSceneInfo(SceneRenderState *, const SceneData& sgData);
    virtual void setTextureStages(SceneRenderState * state, const SceneData &sgData );
-   virtual void setBuffers(GFXVertexBufferHandleBase* vertBuffer, GFXPrimitiveBufferHandle* primBuffer);
+   virtual void setBuffers(GFXVertexBufferHandleBase* vertBuffer); //, GFXPrimitiveBufferHandle* primBuffer);
    virtual bool isInstanced() const;
    virtual bool stepInstance();
    virtual bool isForwardLit() const { return mIsForwardLit; }
@@ -78,7 +78,7 @@ public:
    virtual U32 getCurPass() { return getMax( mCurPass, 0 ); }
    virtual U32 getCurStageNum();
    virtual RenderPassData *getPass(U32 pass);   
-//   virtual const MatStateHint& getStateHint() const;
+   virtual const MatStateHint& getStateHint() const;
    virtual const GFXVertexFormat* getVertexFormat() const { return mVertexFormat; }
    virtual const FeatureSet& getFeatures() const;
    virtual const FeatureSet& getRequestedFeatures() const { return mFeatureList; }

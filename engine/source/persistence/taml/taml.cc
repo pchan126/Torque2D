@@ -653,7 +653,7 @@ void Taml::compileStaticFields( TamlWriteNode* pTamlWriteNode )
         const AbstractClassRep::Field* pField = &fieldList[index];
 
         // Ignore if field not appropriate.
-        if( pField->type == AbstractClassRep::DepricatedFieldType ||
+        if( pField->type == AbstractClassRep::DeprecatedFieldType ||
             pField->type == AbstractClassRep::StartGroupFieldType ||
             pField->type == AbstractClassRep::EndGroupFieldType)
             continue;
@@ -748,9 +748,9 @@ void Taml::compileDynamicFields( TamlWriteNode* pTamlWriteNode )
     Vector<SimFieldDictionary::Entry*> dynamicFieldList(__FILE__, __LINE__);
 
     // Ensure the dynamic field doesn't conflict with static field.
-    for( U32 hashIndex = 0; hashIndex < SimFieldDictionary::HashTableSize; ++hashIndex )
+    for (SimFieldDictionaryIterator itr(getFieldDictionary()); *itr; ++itr)
     {
-        for( SimFieldDictionary::Entry* pEntry = pFieldDictionary->mHashTable[hashIndex]; pEntry; pEntry = pEntry->next )
+        for( SimFieldDictionary::Entry* pEntry = *itr; pEntry; pEntry = pEntry->next )
         {
             // Iterate static fields.
             U32 fieldIndex;
@@ -1332,7 +1332,7 @@ bool Taml::generateTamlSchema()
             const AbstractClassRep::Field& field = fields[index];
 
             // Skip if not a data field.
-            if( field.type == AbstractClassRep::DepricatedFieldType ||
+            if( field.type == AbstractClassRep::DeprecatedFieldType ||
                 field.type == AbstractClassRep::StartGroupFieldType ||
                 field.type == AbstractClassRep::EndGroupFieldType )
             continue;

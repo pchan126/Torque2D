@@ -68,8 +68,8 @@ public:
     Package();
     ~Package();
 	
-	typedef tHashTable<StringTableEntry, Namespace*>::iterator nameSpaceIterator;
-	typedef tHashTable<StringTableEntry, Package*>::iterator packageIterator;
+	typedef tHashTable<StringTableEntry, Namespace*>::iterator nameSpaceiterator;
+	typedef tHashTable<StringTableEntry, Package*>::iterator packageiterator;
 	tHashTable<StringTableEntry, Namespace*> *mChildNamespaceList;
 	tHashTable<StringTableEntry, Package*> *mChildPackageList;
 

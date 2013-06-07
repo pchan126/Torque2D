@@ -1258,7 +1258,7 @@ public:
         return (NULL);
     }
     
-    iterator GetIterator() { return begin(); }
+    iterator Getiterator() { return begin(); }
     
     UInt32 Size () const { return size(); }
     bool Empty () const { return empty(); }
