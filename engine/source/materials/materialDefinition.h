@@ -31,7 +31,7 @@
 
 #include "graphics/gfxStructs.h"
 
-//#include "gfx/gfxCubemap.h"
+#include "graphics/gfxCubemap.h"
 
 //#include "console/dynamicTypes.h"
 
@@ -126,12 +126,12 @@ public:
       TextureTable mTextures;
 
       /// The cubemap for this stage.
-//      GFXCubemap *mCubemap;
+      GFXCubemap *mCubemap;
 
    public:
 
       StageData()
-//         : mCubemap( NULL )
+         : mCubemap( NULL )
       {
       }
 
@@ -179,11 +179,11 @@ public:
       /// Returns the active texture features.
       void getFeatureSet( FeatureSet *outFeatures ) const;
 
-//      /// Returns the stage cubemap.
-//      GFXCubemap* getCubemap() const { return mCubemap; }
+      /// Returns the stage cubemap.
+      GFXCubemap* getCubemap() const { return mCubemap; }
 
-//      /// Set the stage cubemap.
-//      void setCubemap( GFXCubemap *cubemap ) { mCubemap = cubemap; }
+      /// Set the stage cubemap.
+      void setCubemap( GFXCubemap *cubemap ) { mCubemap = cubemap; }
 
    };
 
@@ -381,8 +381,8 @@ protected:
    /// in the "mapTo" data variable.
    virtual void _mapMaterial();
 
-//private:
-//   static GFXCubemapHandle smNormalizeCube;
+private:
+   static GFXCubemapHandle smNormalizeCube;
 };
 
 typedef Material::AnimType MaterialAnimType;

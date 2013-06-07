@@ -744,7 +744,7 @@ public:
 
    ///
    void setTexture(U32 stage, GFXTextureObject *texture);
-//   void setCubeTexture( U32 stage, GFXCubemap *cubemap );
+   void setCubeTexture( U32 stage, GFXCubemap *cubemap );
    inline GFXTextureObject* getCurrentTexture( U32 stage ) { return mCurrentTexture[stage]; }
 
    /// @}

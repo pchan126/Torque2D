@@ -354,29 +354,29 @@ void GFXDevice::setTexture( U32 stage, GFXTextureObject *texture )
 //   mCurrentCubemap[stage] = NULL;
 }
 
-////-----------------------------------------------------------------------------
-//// Set cube texture
-////-----------------------------------------------------------------------------
-//void GFXDevice::setCubeTexture( U32 stage, GFXCubemap *texture )
-//{
-////   AssertFatal(stage < getNumSamplers(), "GFXDevice::setTexture - out of range stage!");
-////
-////   if (  mTexType[stage] == GFXTDT_Cube &&
-////         (  ( mTextureDirty[stage] && mNewCubemap[stage].getPointer() == texture ) ||
-////            ( !mTextureDirty[stage] && mCurrentCubemap[stage].getPointer() == texture ) ) )
-////      return;
-////
-////   mStateDirty = true;
-////   mTexturesDirty = true;
-////   mTextureDirty[stage] = true;
-////
-////   mNewCubemap[stage] = texture;
-////   mTexType[stage] = GFXTDT_Cube;
-////
-////   // Clear out the normal textures
-////   mNewTexture[stage] = NULL;
-////   mCurrentTexture[stage] = NULL;
-//}
+//-----------------------------------------------------------------------------
+// Set cube texture
+//-----------------------------------------------------------------------------
+void GFXDevice::setCubeTexture( U32 stage, GFXCubemap *texture )
+{
+   AssertFatal(stage < getNumSamplers(), "GFXDevice::setTexture - out of range stage!");
+
+   if (  mTexType[stage] == GFXTDT_Cube &&
+         (  ( mTextureDirty[stage] && mNewCubemap[stage].getPointer() == texture ) ||
+            ( !mTextureDirty[stage] && mCurrentCubemap[stage].getPointer() == texture ) ) )
+      return;
+
+   mStateDirty = true;
+   mTexturesDirty = true;
+   mTextureDirty[stage] = true;
+
+   mNewCubemap[stage] = texture;
+   mTexType[stage] = GFXTDT_Cube;
+
+   // Clear out the normal textures
+   mNewTexture[stage] = NULL;
+   mCurrentTexture[stage] = NULL;
+}
 
 inline bool GFXDevice::beginScene()
 {

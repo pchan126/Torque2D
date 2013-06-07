@@ -523,6 +523,8 @@
 		D16581581702EDA900A21928 /* windowInputGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D16581531702EDA900A21928 /* windowInputGenerator.cpp */; };
 		D16581641702EE3E00A21928 /* iOSWindow.mm in Sources */ = {isa = PBXBuildFile; fileRef = D165815F1702EE3D00A21928 /* iOSWindow.mm */; };
 		D16581651702EE3E00A21928 /* iOSWindowManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = D16581611702EE3E00A21928 /* iOSWindowManager.mm */; };
+		D1736FB417617DFE008D010C /* processedFFMaterial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1736FB217617DFE008D010C /* processedFFMaterial.cpp */; };
+		D1736FB817617F45008D010C /* materialDefinition.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1736FB617617F45008D010C /* materialDefinition.cpp */; };
 		D1C75BD916F31D6C0019C495 /* str.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1C75BD716F31D6C0019C495 /* str.cpp */; };
 /* End PBXBuildFile section */
 
@@ -1585,6 +1587,11 @@
 		D165815F1702EE3D00A21928 /* iOSWindow.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iOSWindow.mm; sourceTree = "<group>"; };
 		D16581601702EE3D00A21928 /* iOSWindowManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iOSWindowManager.h; sourceTree = "<group>"; };
 		D16581611702EE3E00A21928 /* iOSWindowManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iOSWindowManager.mm; sourceTree = "<group>"; };
+		D1736FB217617DFE008D010C /* processedFFMaterial.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = processedFFMaterial.cpp; sourceTree = "<group>"; };
+		D1736FB317617DFE008D010C /* processedFFMaterial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = processedFFMaterial.h; sourceTree = "<group>"; };
+		D1736FB517617F11008D010C /* materialParameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = materialParameters.h; sourceTree = "<group>"; };
+		D1736FB617617F45008D010C /* materialDefinition.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = materialDefinition.cpp; sourceTree = "<group>"; };
+		D1736FB717617F45008D010C /* materialDefinition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = materialDefinition.h; sourceTree = "<group>"; };
 		D176A00C172F8502000785CB /* iOSWindowEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iOSWindowEvents.h; sourceTree = "<group>"; };
 		D1AF776B1760987A005463CC /* mPoint2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mPoint2.h; sourceTree = "<group>"; };
 		D1AF776C1760987A005463CC /* mPoint3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mPoint3.h; sourceTree = "<group>"; };
@@ -3138,6 +3145,7 @@
 		86A9A3BA16AEC786003F01E6 /* Torque2D */ = {
 			isa = PBXGroup;
 			children = (
+				D1736F9017617DC9008D010C /* materials */,
 				867BACF816AEC9050033868F /* 2d */,
 				867BAD6916AEC9050033868F /* algorithm */,
 				867BAD7016AEC9050033868F /* assets */,
@@ -3325,6 +3333,19 @@
 				D151F8ED1731F86A00AB343E /* T2DUITouchGestureRecognizer.m */,
 			);
 			path = windowManager;
+			sourceTree = "<group>";
+		};
+		D1736F9017617DC9008D010C /* materials */ = {
+			isa = PBXGroup;
+			children = (
+				D1736FB617617F45008D010C /* materialDefinition.cpp */,
+				D1736FB717617F45008D010C /* materialDefinition.h */,
+				D1736FB517617F11008D010C /* materialParameters.h */,
+				D1736FB217617DFE008D010C /* processedFFMaterial.cpp */,
+				D1736FB317617DFE008D010C /* processedFFMaterial.h */,
+			);
+			name = materials;
+			path = ../../../source/materials;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -3887,6 +3908,8 @@
 				D1272BEF175F1E600012995E /* gfxOpenGLCubemap.cc in Sources */,
 				D1272BF4175F1FE20012995E /* gfxOpenGLES20iOSCubemap.mm in Sources */,
 				D1272BF7175F22050012995E /* gfxOpenGLES20Cubemap.cc in Sources */,
+				D1736FB417617DFE008D010C /* processedFFMaterial.cpp in Sources */,
+				D1736FB817617F45008D010C /* materialDefinition.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

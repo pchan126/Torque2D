@@ -28,7 +28,7 @@
 #include "materials/materialManager.h"
 #include "sceneData.h"
 //#include "gfx/sim/cubemapData.h"
-//#include "gfx/gfxCubemap.h"
+#include "graphics/gfxCubemap.h"
 #include "math/mathIO.h"
 #include "materials/matInstance.h"
 //#include "sfx/sfxTrack.h"
@@ -97,16 +97,16 @@ IMPLEMENT_CONOBJECT( Material );
 
 bool Material::sAllowTextureTargetAssignment = false;
 
-//GFXCubemap * Material::GetNormalizeCube()
-//{
-//   if(smNormalizeCube)
-//      return smNormalizeCube;
-//   smNormalizeCube = GFX->createCubemap();
-//   smNormalizeCube->initNormalize(64);
-//   return smNormalizeCube;
-//}
-//
-//GFXCubemapHandle Material::smNormalizeCube;
+GFXCubemap * Material::GetNormalizeCube()
+{
+   if(smNormalizeCube)
+      return smNormalizeCube;
+   smNormalizeCube = GFX->createCubemap();
+   smNormalizeCube->initNormalize(64);
+   return smNormalizeCube;
+}
+
+GFXCubemapHandle Material::smNormalizeCube;
 
 Material::Material()
 {
