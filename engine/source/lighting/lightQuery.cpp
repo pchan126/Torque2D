@@ -95,6 +95,7 @@ void LightQuery::_scoreLights()
 
    const Point3F lumDot( 0.2125f, 0.7154f, 0.0721f );
 
+   int i = 0;
    Vector<LightInfo*>::iterator iter = mLights.begin();
    for ( ; iter != mLights.end(); iter++ )
    {
@@ -102,7 +103,7 @@ void LightQuery::_scoreLights()
       LightInfo *light = (*iter);
 
       F32 luminace = 0.0f;
-      F32 dist = 0.0f;
+      F32 factor = 0.0f;
       F32 weight = 0.0f;
 
       const bool isSpot = light->getType() == LightInfo::Spot;
@@ -116,15 +117,13 @@ void LightQuery::_scoreLights()
          // Get the distance to the light... score it 1 to 0 near to far.
          F32 lenSq = ( mVolume.center - light->getPosition() ).lenSquared();
 
-         F32 radiusSq = mSquared( light->getRange().x + mVolume.radius );
-         F32 distSq = radiusSq - lenSq;
+         F32 len = (light->getPosition()-mVolume.center).len();
+         F32 rad = light->getRange().x;
+         factor = 1.0-mClampF( (len-rad)/rad, 0.0, 1.0 );
          
-         if ( distSq > 0.0f )
-            dist = mClampF( distSq / ( 1000.0f * 1000.0f ), 0.0f, 1.0f );
-
          // TODO: This culling is broken... it culls spotlights 
          // that are actually visible.
-         if ( false && isSpot && dist > 0.0f )
+         if ( false && isSpot && factor > 0.0f )
          {
             // TODO: I cannot test to see if we're within
             // the cone without a more detailed test... so
@@ -133,14 +132,15 @@ void LightQuery::_scoreLights()
             Point3F toCenter = mVolume.center - light->getPosition();
             F32 angDot = mDot( toCenter, light->getDirection() );
             if ( angDot < 0.0f )
-               dist = 0.0f;
+               factor = 0.0f;
          }
 
          weight = light->getPriority();
       }
       else
       {
-//         // The sun always goes first 
+         Con::printf("not point/spot");
+//         // The sun always goes first
 //         // regardless of the settings.
 //         if ( light == sun )
 //         {
@@ -157,7 +157,9 @@ void LightQuery::_scoreLights()
       
       // TODO: Manager ambient lights here too!
 
-      light->setScore( luminace * weight * dist );
+      light->setScore( luminace * weight * factor );
+//      Con::printf("score (%i) lum = %f, w = %f, d = %f", i, luminace, weight, factor);
+      i++;
    }
 
    // Sort them!

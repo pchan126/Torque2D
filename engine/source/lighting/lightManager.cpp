@@ -122,6 +122,7 @@ void LightManager::initLightFields()
 
 void LightManager::registerGlobalLights( typeWorldQueryResultVector queryVector )
 {
+//   Con::printf("LightManager::registerGlobalLights");
     // Let the lights register themselves.
     for( typeWorldQueryResultVector::iterator worldQueryItr = queryVector.begin(); worldQueryItr != queryVector.end(); ++worldQueryItr )
     {
@@ -138,7 +139,7 @@ void LightManager::registerGlobalLight( LightInfo *light, SimObject *obj )
    AssertFatal( !mRegisteredLights.contains( light ), 
       "LightManager::registerGlobalLight - This light is already registered!" );
 
-   Con::printf("registerGlobalLight #%i %s", mRegisteredLights.size(), light->getColor().scriptThis());
+//   Con::printf("registerGlobalLight #%i %s", mRegisteredLights.size(), light->getColor().scriptThis());
    
    mRegisteredLights.push_back( light );
 }
