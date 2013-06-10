@@ -147,34 +147,34 @@ Material * MaterialManager::getMaterialDefinitionByName(const String &matName)
    return foundMat;
 }
 
-//BaseMatInstance* MaterialManager::createMatInstance(const String &matName)
-//{
-//   BaseMaterialDefinition* mat = NULL;
-//   if (Sim::findObject(matName, mat))
-//      return mat->createMatInstance();
-//
-//   return NULL;
-//}
-//
-//BaseMatInstance* MaterialManager::createMatInstance(  const String &matName, 
-//                                                      const GFXVertexFormat *vertexFormat )
-//{
-//   return createMatInstance( matName, getDefaultFeatures(), vertexFormat );
-//}
-//
-//BaseMatInstance* MaterialManager::createMatInstance(  const String &matName, 
-//                                                      const FeatureSet& features, 
-//                                                      const GFXVertexFormat *vertexFormat )
-//{
-//   BaseMatInstance* mat = createMatInstance(matName);
-//   if (mat)
-//   {
-//      mat->init( features, vertexFormat );
-//      return mat;
-//   }
-//
-//   return NULL;
-//}
+BaseMatInstance* MaterialManager::createMatInstance(const String &matName)
+{
+   BaseMaterialDefinition* mat = NULL;
+   if (Sim::findObject(matName, mat))
+      return mat->createMatInstance();
+
+   return NULL;
+}
+
+BaseMatInstance* MaterialManager::createMatInstance(  const String &matName, 
+                                                      const GFXVertexFormat *vertexFormat )
+{
+   return createMatInstance( matName, getDefaultFeatures(), vertexFormat );
+}
+
+BaseMatInstance* MaterialManager::createMatInstance(  const String &matName, 
+                                                      const FeatureSet& features, 
+                                                      const GFXVertexFormat *vertexFormat )
+{
+   BaseMatInstance* mat = createMatInstance(matName);
+   if (mat)
+   {
+      mat->init( features, vertexFormat );
+      return mat;
+   }
+
+   return NULL;
+}
 
 BaseMatInstance  * MaterialManager::createWarningMatInstance()
 {

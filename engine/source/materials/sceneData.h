@@ -23,11 +23,11 @@
 #define _SCENEDATA_H_
 
 #ifndef _SCENERENDERSTATE_H_
-#include "scene/sceneRenderState.h"
+#include "2d/scene/sceneRenderState.h"
 #endif
-//#ifndef _LIGHTMANAGER_H_
-//#include "lighting/lightManager.h"
-//#endif
+#ifndef _LIGHTMANAGER_H_
+#include "lighting/lightManager.h"
+#endif
 
 #include "graphics/gfxDevice.h"
 

@@ -202,9 +202,6 @@ void ImageFrameProviderCore::render(
     if ( !validRender() )
         return;
 
-//   Con::printf("rows %i columns %i", rows, columns);
-
-   
     // Fetch texel area.
     ImageAsset::FrameArea::TexelArea texelArea = getProviderImageFrameArea().mTexelArea;
 

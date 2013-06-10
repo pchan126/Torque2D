@@ -433,6 +433,42 @@ static void m_matF_inverse_C(F32 *m)
    m[11]= temp[6];
 }
 
+static void m_matF_invert_to_C(const F32 *m, F32 *d)
+{
+   // using Cramers Rule find the Inverse
+   // Minv = (1/det(M)) * adjoint(M)
+   F32 det = m_matF_determinant( m );
+   AssertFatal( det != 0.0f, "MatrixF::inverse: non-singular matrix, no inverse.");
+   
+   F32 invDet = 1.0f/det;
+   
+   d[0] = (m[5] * m[10]- m[6] * m[9]) * invDet;
+   d[1] = (m[9] * m[2] - m[10]* m[1]) * invDet;
+   d[2] = (m[1] * m[6] - m[2] * m[5]) * invDet;
+   
+   d[4] = (m[6] * m[8] - m[4] * m[10])* invDet;
+   d[5] = (m[10]* m[0] - m[8] * m[2]) * invDet;
+   d[6] = (m[2] * m[4] - m[0] * m[6]) * invDet;
+   
+   d[8] = (m[4] * m[9] - m[5] * m[8]) * invDet;
+   d[9] = (m[8] * m[1] - m[9] * m[0]) * invDet;
+   d[10]= (m[0] * m[5] - m[1] * m[4]) * invDet;
+   
+   // invert the translation
+   F32 temp[6];
+   temp[0] = -m[3];
+   temp[1] = -m[7];
+   temp[2] = -m[11];
+   m_matF_x_vectorF(d, temp, &temp[3]);
+   d[3] = temp[3];
+   d[7] = temp[4];
+   d[11]= temp[5];
+   d[ 12 ] = m[ 12 ];
+   d[ 13 ] = m[ 13 ];
+   d[ 14 ] = m[ 14 ];
+   d[ 15 ] = m[ 15 ];
+}
+
 //--------------------------------------
 static void m_matF_affineInverse_C(F32 *m)
 {
@@ -781,11 +817,13 @@ void (*m_matF_set_euler_point)(const F32 *e, const F32 *p, F32 *result) = m_matF
 void (*m_matF_identity)(F32 *m)  = m_matF_identity_C;
 void (*m_matF_inverse)(F32 *m)   = m_matF_inverse_C;
 void (*m_matF_affineInverse)(F32 *m)   = m_matF_affineInverse_C;
+void (*m_matF_invert_to)(const F32 *m, F32 *d) = m_matF_invert_to_C;
 void (*m_matF_transpose)(F32 *m) = m_matF_transpose_C;
 void (*m_matF_scale)(F32 *m,const F32* p) = m_matF_scale_C;
 void (*m_matF_normalize)(F32 *m) = m_matF_normalize_C;
 F32  (*m_matF_determinant)(const F32 *m) = m_matF_determinant_C;
 void (*m_matF_x_matF)(const F32 *a, const F32 *b, F32 *mresult)    = default_matF_x_matF_C;
+void (*m_matF_x_matF_aligned)(const F32 *a, const F32 *b, F32 *mresult)    = default_matF_x_matF_C;
 // void (*m_matF_x_point3F)(const F32 *m, const F32 *p, F32 *presult) = m_matF_x_point3F_C;
 // void (*m_matF_x_vectorF)(const F32 *m, const F32 *v, F32 *vresult) = m_matF_x_vectorF_C;
 void (*m_matF_x_point4F)(const F32 *m, const F32 *p, F32 *presult) = m_matF_x_point4F_C;
@@ -822,11 +860,13 @@ void mInstallLibrary_C()
    m_matF_identity         = m_matF_identity_C;
    m_matF_inverse          = m_matF_inverse_C;
    m_matF_affineInverse    = m_matF_affineInverse_C;
+   m_matF_invert_to        = m_matF_invert_to_C;
    m_matF_transpose        = m_matF_transpose_C;
    m_matF_scale            = m_matF_scale_C;
    m_matF_normalize        = m_matF_normalize_C;
    m_matF_determinant      = m_matF_determinant_C;
    m_matF_x_matF           = default_matF_x_matF_C;
+   m_matF_x_matF_aligned   = default_matF_x_matF_C;
 //    m_matF_x_point3F        = m_matF_x_point3F_C;
 //    m_matF_x_vectorF        = m_matF_x_vectorF_C;
    m_matF_x_point4F        = m_matF_x_point4F_C;

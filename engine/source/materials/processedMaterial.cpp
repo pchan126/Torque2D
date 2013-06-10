@@ -28,7 +28,7 @@
 #include "materials/matTextureTarget.h"
 #include "materials/materialFeatureTypes.h"
 #include "materials/materialManager.h"
-#include "scene/sceneRenderState.h"
+#include "2d/scene/sceneRenderState.h"
 //#include "graphics/gfxPrimitiveBuffer.h"
 #include "graphics/gfxTextureManager.h"
 #include "graphics/sim/cubemapAsset.h"

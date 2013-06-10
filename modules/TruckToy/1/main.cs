@@ -663,7 +663,7 @@ function TruckToy::createBonfire(%this, %x, %y, %scale, %layer)
     %particlePlayer.Particle = "ToyAssets:bonfire";
     %particlePlayer.SizeScale = %scale;
     %particlePlayer.CameraIdleDistance = TruckToy.CameraWidth * 0.8;
-//    %particlePlayer.setLightType("CONSTLIGHT");
+    %particlePlayer.setLightType("CONSTLIGHT");
     SandboxScene.add( %particlePlayer );
     return %particlePlayer;
     
@@ -687,7 +687,7 @@ function TruckToy::createProjectile(%this)
     %projectile.createCircleCollisionShape( 0.2 ); 
     %projectile.setCollisionGroups( TruckToy.GroundDomain );
     %projectile.CollisionCallback = true;
-//    %projectile.setLightType("CONSTLIGHT");
+    %projectile.setLightType("CONSTLIGHT");
     SandboxScene.add( %projectile );
 }
 

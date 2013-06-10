@@ -18,7 +18,6 @@
 #include "lighting/lightManager.h"
 //#include "scene/sceneRenderState.h"
 #include "memory/safeDelete.h"
-//#include "math/util/matrixSet.h"
 
 class FFMaterialParameterHandle : public MaterialParameterHandle
 {
@@ -215,11 +214,11 @@ MaterialParameterHandle* ProcessedFFMaterial::getMaterialParameterHandle(const S
    return mDefaultHandle;
 }
 
-void ProcessedFFMaterial::setTransforms(const MatrixSet &matrixSet, SceneRenderState *state, const U32 pass)
+void ProcessedFFMaterial::setTransforms(const MatrixF view, const MatrixF world, const MatrixF projection, SceneRenderState *state, const U32 pass)
 {
-//   GFX->setWorldMatrix(matrixSet.getObjectToWorld());
-//   GFX->setViewMatrix(matrixSet.getWorldToCamera());
-//   GFX->setProjectionMatrix(matrixSet.getCameraToScreen());
+   GFX->setWorldMatrix(world);
+   GFX->setViewMatrix(view);
+   GFX->setProjectionMatrix(projection);
 }
 
 void ProcessedFFMaterial::setSceneInfo(SceneRenderState * state, const SceneData& sgData, U32 pass)

@@ -1014,6 +1014,7 @@ void Scene::sceneRender( const SceneRenderState* pSceneRenderState )
     
     typeWorldQueryResultVector& globalResults = mpWorldQuery->getQueryResults();
     mLightManager.registerGlobalLights( globalResults );
+//   mLightManager.
 
     // Debug Profiling.
     PROFILE_END();  //Scene_RenderSceneVisibleQuery

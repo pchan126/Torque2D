@@ -118,7 +118,7 @@ public:
                         const MatFeaturesDelegate &featuresDelegate );
    virtual bool setupPass(SceneRenderState *, const SceneData& sgData, U32 pass);
    virtual void setTextureStages(SceneRenderState *, const SceneData &sgData, U32 pass );
-   virtual void setTransforms(const MatrixSet &matrixSet, SceneRenderState *state, const U32 pass);
+   virtual void setTransforms(const MatrixF view, const MatrixF world, const MatrixF projection, SceneRenderState *state, const U32 pass);
    virtual void setSceneInfo(SceneRenderState *, const SceneData& sgData, U32 pass);
    virtual void setBuffers(GFXVertexBufferHandleBase* vertBuffer); //, GFXPrimitiveBufferHandle* primBuffer);
    virtual bool stepInstance();

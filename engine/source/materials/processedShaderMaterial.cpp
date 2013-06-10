@@ -39,7 +39,6 @@
 //#include "materials/shaderMaterialParameters.h"
 #include "materials/matTextureTarget.h"
 //#include "gfx/util/screenspace.h"
-//#include "math/util/matrixSet.h"
 
 // We need to include customMaterialDefinition for ShaderConstHandles::init
 //#include "materials/customMaterialDefinition.h"
@@ -1093,7 +1092,7 @@ bool ProcessedShaderMaterial::_hasCubemap(U32 pass)
    return false;
 }
 
-void ProcessedShaderMaterial::setTransforms(const MatrixSet &matrixSet, SceneRenderState *state, const U32 pass)
+void ProcessedShaderMaterial::setTransforms(const MatrixF view, const MatrixF world, const MatrixF projection, SceneRenderState *state, const U32 pass)
 {
    PROFILE_SCOPE( ProcessedShaderMaterial_setTransforms );
 

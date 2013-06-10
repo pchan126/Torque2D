@@ -548,6 +548,9 @@
 		D1736FF31761C27A008D010C /* matTextureTarget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1736FF11761C274008D010C /* matTextureTarget.cpp */; };
 		D1736FF61761C7C5008D010C /* processedCustomMaterial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1736FF41761C7C0008D010C /* processedCustomMaterial.cpp */; };
 		D1C75BD916F31D6C0019C495 /* str.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1C75BD716F31D6C0019C495 /* str.cpp */; };
+		D1C7B2D017659888009C9BBA /* renderPassManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1C7B2CD17659888009C9BBA /* renderPassManager.cpp */; };
+		D1C7B67D1765A117009C9BBA /* renderBinManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1C7B67B1765A117009C9BBA /* renderBinManager.cpp */; };
+		D1C7B6901765A375009C9BBA /* SceneRenderState.cc in Sources */ = {isa = PBXBuildFile; fileRef = D1C7B68F1765A375009C9BBA /* SceneRenderState.cc */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -1664,6 +1667,11 @@
 		D1AF776D1760987A005463CC /* mPoint4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mPoint4.h; sourceTree = "<group>"; };
 		D1C75BD716F31D6C0019C495 /* str.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = str.cpp; sourceTree = "<group>"; };
 		D1C75BD816F31D6C0019C495 /* str.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = str.h; sourceTree = "<group>"; };
+		D1C7B2CD17659888009C9BBA /* renderPassManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = renderPassManager.cpp; sourceTree = "<group>"; };
+		D1C7B2CE17659888009C9BBA /* renderPassManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = renderPassManager.h; sourceTree = "<group>"; };
+		D1C7B67B1765A117009C9BBA /* renderBinManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = renderBinManager.cpp; sourceTree = "<group>"; };
+		D1C7B67C1765A117009C9BBA /* renderBinManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = renderBinManager.h; sourceTree = "<group>"; };
+		D1C7B68F1765A375009C9BBA /* SceneRenderState.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SceneRenderState.cc; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1986,6 +1994,7 @@
 				867BAD3E16AEC9050033868F /* SceneRenderQueue.h */,
 				867BAD3F16AEC9050033868F /* SceneRenderRequest.h */,
 				867BAD4016AEC9050033868F /* SceneRenderState.h */,
+				D1C7B68F1765A375009C9BBA /* SceneRenderState.cc */,
 				867BAD4116AEC9050033868F /* WorldQuery.cc */,
 				867BAD4216AEC9050033868F /* WorldQuery.h */,
 				867BAD4316AEC9050033868F /* WorldQueryFilter.h */,
@@ -3214,6 +3223,7 @@
 		86A9A3BA16AEC786003F01E6 /* Torque2D */ = {
 			isa = PBXGroup;
 			children = (
+				D1C7B2CA17659886009C9BBA /* renderInstance */,
 				D1736FE41761BE7A008D010C /* shaderGen */,
 				D1736F9017617DC9008D010C /* materials */,
 				867BACF816AEC9050033868F /* 2d */,
@@ -3490,6 +3500,18 @@
 			);
 			name = shaderGen;
 			path = ../../../source/shaderGen;
+			sourceTree = "<group>";
+		};
+		D1C7B2CA17659886009C9BBA /* renderInstance */ = {
+			isa = PBXGroup;
+			children = (
+				D1C7B67B1765A117009C9BBA /* renderBinManager.cpp */,
+				D1C7B67C1765A117009C9BBA /* renderBinManager.h */,
+				D1C7B2CD17659888009C9BBA /* renderPassManager.cpp */,
+				D1C7B2CE17659888009C9BBA /* renderPassManager.h */,
+			);
+			name = renderInstance;
+			path = ../../../source/renderInstance;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -4076,6 +4098,9 @@
 				D1736FF31761C27A008D010C /* matTextureTarget.cpp in Sources */,
 				D1736FF61761C7C5008D010C /* processedCustomMaterial.cpp in Sources */,
 				30804B101764CB3300472030 /* gfxEnums.cc in Sources */,
+				D1C7B2D017659888009C9BBA /* renderPassManager.cpp in Sources */,
+				D1C7B67D1765A117009C9BBA /* renderBinManager.cpp in Sources */,
+				D1C7B6901765A375009C9BBA /* SceneRenderState.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

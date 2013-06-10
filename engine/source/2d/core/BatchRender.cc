@@ -544,7 +544,8 @@ void BatchRender::_lightAndDraw( Vector<GFXVertexPCT>* pVertexVector, Vector<U16
          if (factor > 0.0)
          {
             U8 alpha = mVertexBuffer[i].color;
-            ColorF lightColor = light->getColor()*factor;
+            ColorF lightColor = light[0].getColor()*factor;
+//            Con::printf("lightcolor %f %f %f", lightColor.red, lightColor.green, lightColor.blue);
             ColorF lightAdd = ColorF(mVertexBuffer[i].color) + lightColor;
             lightAdd.clamp();
             mVertexBuffer[i].color = lightAdd;

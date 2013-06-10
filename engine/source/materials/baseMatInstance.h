@@ -48,7 +48,6 @@ struct SceneData;
 class SceneRenderState;
 struct GFXStateBlockDesc;
 class GFXVertexFormat;
-class MatrixSet;
 class ProcessedMaterial;
 
 
@@ -138,7 +137,7 @@ public:
    /// This initializes the material transforms and should be 
    /// called after setupPass() within the pass loop.
    /// @see setupPass
-   virtual void setTransforms( const MatrixSet &matrixSet, SceneRenderState *state ) = 0;
+   virtual void setTransforms( const MatrixF view, const MatrixF world, const MatrixF projection, SceneRenderState *state ) = 0;
 
    /// This initializes various material scene state settings and
    /// should be called after setupPass() within the pass loop.
