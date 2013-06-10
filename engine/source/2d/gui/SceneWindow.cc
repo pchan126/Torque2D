@@ -1702,17 +1702,8 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
     // Clear the background color if requested.
     if ( mUseBackgroundColor )
     {
-        // Enable the scissor.
-        const RectI& clipRect = GFX->getClipRect();
-        glEnable(GL_SCISSOR_TEST );
-        glScissor( clipRect.point.x, getRoot()->getWindowSize().y - (clipRect.point.y + clipRect.extent.y), clipRect.len_x(), clipRect.len_y() );
-
-        // Clear the background.
-        glClearColor( mBackgroundColor.red, mBackgroundColor.green, mBackgroundColor.blue, mBackgroundColor.alpha );
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        // Disable the scissor.
-        glDisable( GL_SCISSOR_TEST );
+       // Clear the zBuffer so GUI doesn't hose object rendering accidentally
+       GFX->clear( GFXClearZBuffer , ColorI(mBackgroundColor), 1.0f, 0 );
     }
 
     // Render View.

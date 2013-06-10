@@ -87,6 +87,7 @@ extern EnumTable jointTypeTable;
 class SceneObject;
 class SceneWindow;
 class SceneRenderState;
+class RenderPassManager;
 
 ///-----------------------------------------------------------------------------
 
@@ -331,7 +332,16 @@ public:
     virtual void            interpolateTick( F32 delta );
     virtual void            advanceTime( F32 timeDelta ) {};
 
-    /// Render output.
+   /// @name Rendering
+   /// @{
+   
+   /// Return the default RenderPassManager for the scene.
+   RenderPassManager* getDefaultRenderPass() const;
+   
+   /// Set the default render pass for the scene.
+   void setDefaultRenderPass( RenderPassManager* rpm ) { mDefaultRenderPass = rpm; }
+
+   /// Render output.
     void                    sceneRender( const SceneRenderState* pSceneRenderState );
 
     /// World.
@@ -737,6 +747,10 @@ protected:
     // Callbacks.
     static bool writeUpdateCallback( void* obj, StringTableEntry pFieldName )       { return static_cast<Scene*>(obj)->getUpdateCallback(); }
     static bool writeRenderCallback( void* obj, StringTableEntry pFieldName )       { return static_cast<Scene*>(obj)->getRenderCallback(); }
+
+   /// RenderPassManager for the default render pass.  This is set up
+   /// in script and looked up by getDefaultRenderPass().
+   mutable RenderPassManager* mDefaultRenderPass;
 
 public:
     static SimObjectPtr<Scene> LoadingScene;
