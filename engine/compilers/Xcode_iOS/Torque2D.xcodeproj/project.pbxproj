@@ -2272,11 +2272,6 @@
 		867BAE1B16AEC9050033868F /* graphics */ = {
 			isa = PBXGroup;
 			children = (
-				D1736FCC1761A72E008D010C /* sim */,
-				D1272BEA175F1CD40012995E /* gfxCubemap.cc */,
-				D1272BEB175F1CD50012995E /* gfxCubemap.h */,
-				D1272BD6175F10AF0012995E /* gfxDeviceStatistics.cpp */,
-				D1272BD7175F10B00012995E /* gfxDeviceStatistics.h */,
 				867BAE1C16AEC9050033868F /* bitmapBmp.cc */,
 				867BAE1D16AEC9050033868F /* bitmapJpeg.cc */,
 				867BAE1E16AEC9050033868F /* bitmapPng.cc */,
@@ -2292,10 +2287,15 @@
 				D16581431702ED3600A21928 /* gfxAdapter.h */,
 				D15E7E8B16F061E200BB43B1 /* gfxCardProfile.cc */,
 				D15E7E8C16F061E200BB43B1 /* gfxCardProfile.h */,
+				D1272BEA175F1CD40012995E /* gfxCubemap.cc */,
+				D1272BEB175F1CD50012995E /* gfxCubemap.h */,
 				D15E7E8D16F061E200BB43B1 /* gfxDevice.cc */,
 				D15E7E8E16F061E200BB43B1 /* gfxDevice.h */,
+				D1272BD6175F10AF0012995E /* gfxDeviceStatistics.cpp */,
+				D1272BD7175F10B00012995E /* gfxDeviceStatistics.h */,
 				D15E7E8F16F061E200BB43B1 /* gfxDrawUtil.cc */,
 				D15E7E9016F061E200BB43B1 /* gfxDrawUtil.h */,
+				30804B0F1764CB3200472030 /* gfxEnums.cc */,
 				D15E7E9116F061E200BB43B1 /* gfxEnums.h */,
 				D15E7E9216F061E200BB43B1 /* gfxFontRenderBatcher.cc */,
 				D15E7E9316F061E200BB43B1 /* gfxFontRenderBatcher.h */,
@@ -2334,9 +2334,9 @@
 				867BAE3016AEC9050033868F /* PNGImage.h */,
 				D15E7EC516F0622D00BB43B1 /* primBuilder.cc */,
 				D15E7EC616F0622D00BB43B1 /* primBuilder.h */,
+				D1736FCC1761A72E008D010C /* sim */,
 				867BAE3116AEC9050033868F /* splineUtil.cc */,
 				867BAE3216AEC9050033868F /* splineUtil.h */,
-				30804B0F1764CB3200472030 /* gfxEnums.cc */,
 			);
 			name = graphics;
 			path = ../../../source/graphics;

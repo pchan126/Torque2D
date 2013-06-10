@@ -37,6 +37,14 @@ class GFXSamplerStateAsset;
 extern EnumTable srcBlendFactorTable;
 extern EnumTable dstBlendFactorTable;
 extern EnumTable blendOpFactorTable;
+extern EnumTable cmpFactorTable;
+extern EnumTable cullModeTable;
+extern EnumTable stencilOpTable;
+extern EnumTable GFXTextureOpTable;
+extern EnumTable GFXTextureArgumentTable;
+extern EnumTable GFXTextureAddressModeTable;
+extern EnumTable GFXTextureFilterTypeTable;
+extern EnumTable GFXTextureTransformFlagsTable;
 
 //-----------------------------------------------------------------------------
 
@@ -70,6 +78,13 @@ public:
    static bool             writeSepSrcBlendFactor( void* obj, StringTableEntry pFieldName ) { return static_cast<GFXStateBlockAsset*>(obj)->getState().separateAlphaBlendSrc != GFXBlendOne; }
    static bool             writeSepDstBlendFactor( void* obj, StringTableEntry pFieldName ) { return static_cast<GFXStateBlockAsset*>(obj)->getState().separateAlphaBlendDest != GFXBlendZero; }
    static bool             writeSepBlendOpFactor( void* obj, StringTableEntry pFieldName ) { return static_cast<GFXStateBlockAsset*>(obj)->getState().separateAlphaBlendOp != GFXBlendOpAdd; }
+   static bool             writeAlphaTestFunc( void* obj, StringTableEntry pFieldName ) { return static_cast<GFXStateBlockAsset*>(obj)->getState().alphaTestFunc != GFXCmpGreaterEqual; }
+   static bool             writeCullMode( void* obj, StringTableEntry pFieldName ) { return static_cast<GFXStateBlockAsset*>(obj)->getState().cullMode != GFXCullCCW; }
+   static bool             writeZTestFunc( void* obj, StringTableEntry pFieldName ) { return static_cast<GFXStateBlockAsset*>(obj)->getState().zFunc != GFXCmpLessEqual; }
+   static bool             writeStencilFailFunc( void* obj, StringTableEntry pFieldName ) { return static_cast<GFXStateBlockAsset*>(obj)->getState().stencilFailOp != GFXStencilOpKeep; }
+   static bool             writeStencilZFailFunc( void* obj, StringTableEntry pFieldName ) { return static_cast<GFXStateBlockAsset*>(obj)->getState().stencilZFailOp != GFXStencilOpKeep; }
+   static bool             writeStencilPassFunc( void* obj, StringTableEntry pFieldName ) { return static_cast<GFXStateBlockAsset*>(obj)->getState().stencilPassOp != GFXStencilOpKeep; }
+   static bool             writeStencilFunc( void* obj, StringTableEntry pFieldName ) { return static_cast<GFXStateBlockAsset*>(obj)->getState().stencilFunc != GFXCmpNever; }
 
    
    DECLARE_CONOBJECT(GFXStateBlockAsset);
@@ -86,6 +101,31 @@ public:
 
    /// Copies the data of this object into desc
    void setSamplerState(GFXSamplerStateDesc& desc);
+
+   // GFXStateBlockAsset
+   const GFXSamplerStateDesc getState() const { return mState; }
+
+   static bool             writeTextureColorOp( void* obj, StringTableEntry pFieldName ) { return static_cast<GFXSamplerStateAsset*>(obj)->getState().textureColorOp != GFXTOPDisable; }
+   static bool             writeColorArg1( void* obj, StringTableEntry pFieldName ) { return static_cast<GFXSamplerStateAsset*>(obj)->getState().colorArg1 != GFXTACurrent; }
+   static bool             writeColorArg2( void* obj, StringTableEntry pFieldName ) { return static_cast<GFXSamplerStateAsset*>(obj)->getState().colorArg2 != GFXTATexture; }
+   static bool             writeColorArg3( void* obj, StringTableEntry pFieldName ) { return static_cast<GFXSamplerStateAsset*>(obj)->getState().colorArg3 != GFXTACurrent; }
+   static bool             writeAlphaOp( void* obj, StringTableEntry pFieldName ) { return static_cast<GFXSamplerStateAsset*>(obj)->getState().alphaOp != GFXTOPModulate; }
+   static bool             writeAlphaArg1( void* obj, StringTableEntry pFieldName ) { return static_cast<GFXSamplerStateAsset*>(obj)->getState().alphaArg1 != GFXTATexture; }
+   static bool             writeAlphaArg2( void* obj, StringTableEntry pFieldName ) { return static_cast<GFXSamplerStateAsset*>(obj)->getState().alphaArg2 != GFXTADiffuse; }
+   static bool             writeAlphaArg3( void* obj, StringTableEntry pFieldName ) { return static_cast<GFXSamplerStateAsset*>(obj)->getState().alphaArg3 != GFXTACurrent; }
+
+   static bool             writeAddressModeU( void* obj, StringTableEntry pFieldName ) { return static_cast<GFXSamplerStateAsset*>(obj)->getState().addressModeU != GFXAddressWrap; }
+   static bool             writeAddressModeV( void* obj, StringTableEntry pFieldName ) { return static_cast<GFXSamplerStateAsset*>(obj)->getState().addressModeV != GFXAddressWrap; }
+   static bool             writeAddressModeW( void* obj, StringTableEntry pFieldName ) { return static_cast<GFXSamplerStateAsset*>(obj)->getState().addressModeW != GFXAddressWrap; }
+
+   static bool             writeMagFilter( void* obj, StringTableEntry pFieldName ) { return static_cast<GFXSamplerStateAsset*>(obj)->getState().magFilter != GFXTextureFilterLinear; }
+   static bool             writeMinFilter( void* obj, StringTableEntry pFieldName ) { return static_cast<GFXSamplerStateAsset*>(obj)->getState().minFilter != GFXTextureFilterLinear; }
+   static bool             writeMipFilter( void* obj, StringTableEntry pFieldName ) { return static_cast<GFXSamplerStateAsset*>(obj)->getState().mipFilter != GFXTextureFilterLinear; }
+   
+   static bool             writeTextureTransform( void* obj, StringTableEntry pFieldName ) { return static_cast<GFXSamplerStateAsset*>(obj)->getState().textureTransform != GFXTTFFDisable; }
+   static bool             writeResultArg( void* obj, StringTableEntry pFieldName ) { return static_cast<GFXSamplerStateAsset*>(obj)->getState().resultArg != GFXTACurrent; }
+
+   
 
    DECLARE_CONOBJECT(GFXSamplerStateAsset);
 };

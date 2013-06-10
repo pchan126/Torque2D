@@ -165,15 +165,15 @@ void CubemapAsset::createMap()
 {
    if( !mCubemap )
    {
-      if( mDynamic )
-      {
-         mCubemap = GFX->createCubemap();
-         mCubemap->initDynamic( mDynamicSize );
-         mDepthBuff = GFXTexHandle( mDynamicSize, mDynamicSize, GFXFormatD24S8, 
-            &GFXDefaultZTargetProfile, avar("%s() - mDepthBuff (line %d)", __FUNCTION__, __LINE__));
-         mRenderTarget = GFX->allocRenderToTextureTarget();
-      }
-      else
+//      if( mDynamic )
+//      {
+//         mCubemap = GFX->createCubemap();
+//         mCubemap->initDynamic( mDynamicSize );
+//         mDepthBuff = GFXTexHandle( mDynamicSize, mDynamicSize, GFXFormatD24S8, 
+//            &GFXDefaultZTargetProfile, avar("%s() - mDepthBuff (line %d)", __FUNCTION__, __LINE__));
+//         mRenderTarget = GFX->allocRenderToTextureTarget();
+//      }
+//      else
       {
          bool initSuccess = true;
 

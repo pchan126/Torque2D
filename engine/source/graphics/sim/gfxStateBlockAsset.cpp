@@ -155,7 +155,7 @@ void GFXStateBlockAsset::initPersistFields()
       addField( "alphaTestEnable", TypeBool, Offset(mState.alphaTestEnable, GFXStateBlockAsset),
          "Enables per-pixel alpha testing.  The default is false." );
 
-      addField( "alphaTestFunc", TypeEnum, Offset(mState.alphaTestFunc, GFXStateBlockAsset),
+      addField( "alphaTestFunc", TypeEnum, Offset(mState.alphaTestFunc, GFXStateBlockAsset),  &writeAlphaTestFunc, 1, &cmpFactorTable,
          "The test function used to accept or reject a pixel based on its alpha value.  The default is GFXCmpGreaterEqual." );
 
       addField( "alphaTestRef", TypeS32, Offset(mState.alphaTestRef, GFXStateBlockAsset),
@@ -189,7 +189,7 @@ void GFXStateBlockAsset::initPersistFields()
       addField("cullDefined", TypeBool, Offset(mState.cullDefined, GFXStateBlockAsset),
          "Set to true if the culling state is not all defaults." );
 
-      addField("cullMode", TypeEnum, Offset(mState.cullMode, GFXStateBlockAsset),
+      addField("cullMode", TypeEnum, Offset(mState.cullMode, GFXStateBlockAsset), &writeCullMode, 1, &cullModeTable,
          "Defines how back facing triangles are culled if at all.  The default is GFXCullCCW." );
 
    endGroup( "Culling" );
@@ -206,7 +206,7 @@ void GFXStateBlockAsset::initPersistFields()
       addField( "zWriteEnable", TypeBool, Offset(mState.zWriteEnable, GFXStateBlockAsset),
          "Enables z-buffer writes.  The default is true." );
 
-      addField( "zFunc", TypeEnum, Offset(mState.zFunc, GFXStateBlockAsset),
+      addField( "zFunc", TypeEnum, Offset(mState.zFunc, GFXStateBlockAsset), &writeZTestFunc, 1, &cmpFactorTable,
          "The depth comparision function which a pixel must pass to be written to the z-buffer.  The default is GFXCmpLessEqual." );
 
       addField( "zBias", TypeF32, Offset(mState.zBias, GFXStateBlockAsset),
@@ -226,16 +226,16 @@ void GFXStateBlockAsset::initPersistFields()
       addField( "stencilEnable", TypeBool, Offset(mState.stencilEnable, GFXStateBlockAsset),
          "Enables stenciling.  The default is false." );
 
-      addField( "stencilFailOp", TypeEnum, Offset(mState.stencilFailOp, GFXStateBlockAsset),
+      addField( "stencilFailOp", TypeEnum, Offset(mState.stencilFailOp, GFXStateBlockAsset), &writeStencilFailFunc, 1, &stencilOpTable,
          "The stencil operation to perform if the stencil test fails.  The default is GFXStencilOpKeep." );
       
-      addField( "stencilZFailOp", TypeEnum, Offset(mState.stencilZFailOp, GFXStateBlockAsset),
+      addField( "stencilZFailOp", TypeEnum, Offset(mState.stencilZFailOp, GFXStateBlockAsset), &writeStencilZFailFunc, 1, &stencilOpTable,
          "The stencil operation to perform if the stencil test passes and the depth test fails.  The default is GFXStencilOpKeep." );
       
-      addField( "stencilPassOp", TypeEnum, Offset(mState.stencilPassOp, GFXStateBlockAsset), 
+      addField( "stencilPassOp", TypeEnum, Offset(mState.stencilPassOp, GFXStateBlockAsset), &writeStencilPassFunc, 1, &stencilOpTable,
          "The stencil operation to perform if both the stencil and the depth tests pass.  The default is GFXStencilOpKeep." );
       
-      addField( "stencilFunc", TypeEnum, Offset(mState.stencilFunc, GFXStateBlockAsset),
+      addField( "stencilFunc", TypeEnum, Offset(mState.stencilFunc, GFXStateBlockAsset), &writeStencilFunc, 1, &cmpFactorTable,
          "The comparison function to test the reference value to a stencil buffer entry.  The default is GFXCmpNever." );
 
       addField( "stencilRef", TypeS32, Offset(mState.stencilRef, GFXStateBlockAsset),
@@ -373,58 +373,58 @@ void GFXSamplerStateAsset::initPersistFields()
 
    addGroup( "Color Op" );
 
-      addField("textureColorOp", TypeEnum, Offset(mState.textureColorOp, GFXSamplerStateAsset),
+      addField("textureColorOp", TypeEnum, Offset(mState.textureColorOp, GFXSamplerStateAsset), &writeTextureColorOp, 1, &GFXTextureOpTable,
          "The texture color blending operation.  The default value is GFXTOPDisable which disables the sampler." );
 
-      addField("colorArg1", TypeEnum, Offset(mState.colorArg1, GFXSamplerStateAsset),
+      addField("colorArg1", TypeEnum, Offset(mState.colorArg1, GFXSamplerStateAsset), &writeColorArg1, 1, &GFXTextureArgumentTable,
          "The first color argument for the texture stage.  The default value is GFXTACurrent." );
 
-      addField("colorArg2", TypeEnum, Offset(mState.colorArg2, GFXSamplerStateAsset),
+      addField("colorArg2", TypeEnum, Offset(mState.colorArg2, GFXSamplerStateAsset), &writeColorArg2, 1, &GFXTextureArgumentTable,
          "The second color argument for the texture stage.  The default value is GFXTATexture." );
 
-      addField("colorArg3", TypeEnum, Offset(mState.colorArg3, GFXSamplerStateAsset),
+      addField("colorArg3", TypeEnum, Offset(mState.colorArg3, GFXSamplerStateAsset), &writeColorArg3, 1, &GFXTextureArgumentTable,
          "The third color argument for triadic operations (multiply, add, and linearly interpolate).  The default value is GFXTACurrent." );
 
    endGroup( "Color Op" );
 
    addGroup( "Alpha Op" );
 
-      addField("alphaOp", TypeEnum, Offset(mState.alphaOp, GFXSamplerStateAsset),
+      addField("alphaOp", TypeEnum, Offset(mState.alphaOp, GFXSamplerStateAsset), &writeAlphaOp, 1, &GFXTextureOpTable,
          "The texture alpha blending operation.  The default value is GFXTOPModulate." );
 
-      addField("alphaArg1", TypeEnum, Offset(mState.alphaArg1, GFXSamplerStateAsset),
+      addField("alphaArg1", TypeEnum, Offset(mState.alphaArg1, GFXSamplerStateAsset), &writeAlphaArg1, 1, &GFXTextureArgumentTable,
          "The first alpha argument for the texture stage.  The default value is GFXTATexture." );
 
-      addField("alphaArg2", TypeEnum, Offset(mState.alphaArg2, GFXSamplerStateAsset),
+      addField("alphaArg2", TypeEnum, Offset(mState.alphaArg2, GFXSamplerStateAsset), &writeAlphaArg2, 1, &GFXTextureArgumentTable,
          "The second alpha argument for the texture stage.  The default value is GFXTADiffuse." );
 
-      addField("alphaArg3", TypeEnum, Offset(mState.alphaArg3, GFXSamplerStateAsset),
+      addField("alphaArg3", TypeEnum, Offset(mState.alphaArg3, GFXSamplerStateAsset), &writeAlphaArg3, 1, &GFXTextureArgumentTable,
          "The third alpha channel selector operand for triadic operations (multiply, add, and linearly interpolate).  The default value is GFXTACurrent." );
 
    endGroup( "Alpha Op" );
 
    addGroup( "Address Mode" );
 
-      addField("addressModeU", TypeEnum, Offset(mState.addressModeU, GFXSamplerStateAsset),
+      addField("addressModeU", TypeEnum, Offset(mState.addressModeU, GFXSamplerStateAsset), &writeAddressModeU, 1, &GFXTextureAddressModeTable,
          "The texture address mode for the u coordinate.  The default is GFXAddressWrap." );
 
-      addField("addressModeV", TypeEnum, Offset(mState.addressModeV, GFXSamplerStateAsset),
+      addField("addressModeV", TypeEnum, Offset(mState.addressModeV, GFXSamplerStateAsset), &writeAddressModeV, 1, &GFXTextureAddressModeTable,
          "The texture address mode for the v coordinate.  The default is GFXAddressWrap." );
 
-      addField("addressModeW", TypeEnum, Offset(mState.addressModeW, GFXSamplerStateAsset),
+      addField("addressModeW", TypeEnum, Offset(mState.addressModeW, GFXSamplerStateAsset), &writeAddressModeW, 1, &GFXTextureAddressModeTable,
          "The texture address mode for the w coordinate.  The default is GFXAddressWrap." );
 
    endGroup( "Address Mode" );
 
    addGroup( "Filter State" );
 
-      addField("magFilter", TypeEnum, Offset(mState.magFilter, GFXSamplerStateAsset),
+      addField("magFilter", TypeEnum, Offset(mState.magFilter, GFXSamplerStateAsset), &writeMagFilter, 1, &GFXTextureFilterTypeTable,
          "The texture magnification filter.  The default is GFXTextureFilterLinear." );
 
-      addField("minFilter", TypeEnum, Offset(mState.minFilter, GFXSamplerStateAsset),
+      addField("minFilter", TypeEnum, Offset(mState.minFilter, GFXSamplerStateAsset), &writeMinFilter, 1, &GFXTextureFilterTypeTable,
          "The texture minification filter.  The default is GFXTextureFilterLinear." );
 
-      addField("mipFilter", TypeEnum, Offset(mState.mipFilter, GFXSamplerStateAsset),
+      addField("mipFilter", TypeEnum, Offset(mState.mipFilter, GFXSamplerStateAsset), &writeMipFilter, 1, &GFXTextureFilterTypeTable,
          "The texture mipmap filter used during minification.  The default is GFXTextureFilterLinear." );
 
       addField("mipLODBias", TypeF32, Offset(mState.mipLODBias, GFXSamplerStateAsset),
@@ -435,10 +435,10 @@ void GFXSamplerStateAsset::initPersistFields()
 
    endGroup( "Filter State" );
 
-   addField("textureTransform", TypeEnum, Offset(mState.textureTransform, GFXSamplerStateAsset),
+   addField("textureTransform", TypeEnum, Offset(mState.textureTransform, GFXSamplerStateAsset), &writeTextureTransform, 1, &GFXTextureTransformFlagsTable,
       "Sets the texture transform state.  The default is GFXTTFFDisable." );
 
-   addField("resultArg", TypeEnum, Offset(mState.resultArg, GFXSamplerStateAsset),
+   addField("resultArg", TypeEnum, Offset(mState.resultArg, GFXSamplerStateAsset), &writeResultArg, 1, &GFXTextureArgumentTable,
       "The selection of the destination register for the result of this stage.  The default is GFXTACurrent." );
 }
 

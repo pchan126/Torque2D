@@ -301,36 +301,6 @@ public:
 
    static bool sAllowTextureTargetAssignment;
 
-   ///@{
-   /// Behavioral properties.
-
-   bool mShowFootprints;            ///< If true, show footprints when walking on surface with this material.  Defaults to false.
-   bool mShowDust;                  ///< If true, show dust emitters (footpuffs, hover trails, etc) when on surface with this material.  Defaults to false.
-
-   /// Color to use for particle effects and such when located on this material.
-   ColorF mEffectColor[ NUM_EFFECT_COLOR_STAGES ];
-
-//   /// Footstep sound to play when walking on surface with this material.
-//   /// Numeric ID of footstep sound defined on player datablock (0 == soft,
-//   /// 1 == hard, 2 == metal, 3 == snow).
-//   /// Defaults to -1 which deactivates default sound.
-//   /// @see mFootstepSoundCustom
-//   S32 mFootstepSoundId;
-//   S32 mImpactSoundId;
-//
-//   /// Sound effect to play when walking on surface with this material.
-//   /// If defined, overrides mFootstepSoundId.
-//   /// @see mFootstepSoundId
-//   SFXTrack* mFootstepSoundCustom;
-//   SFXTrack* mImpactSoundCustom;
-//
-//   F32 mFriction;                   ///< Friction coefficient when moving along surface.
-//
-//   F32 mDirectSoundOcclusion;       ///< Amount of volume occlusion on direct sounds.
-//   F32 mReverbSoundOcclusion;       ///< Amount of volume occlusion on reverb sounds.
-
-   ///@}
-   
    String mMapTo; // map Material to this texture name
   
    ///
