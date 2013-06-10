@@ -732,8 +732,8 @@ protected:
 
     /// Render blending.
     static bool             writeBlendMode( void* obj, StringTableEntry pFieldName ) { return static_cast<SceneObject*>(obj)->getBlendMode() == false; }
-    static bool             writeSrcBlendFactor( void* obj, StringTableEntry pFieldName ) { return static_cast<SceneObject*>(obj)->getSrcBlendFactor() != GL_SRC_ALPHA; }
-    static bool             writeDstBlendFactor( void* obj, StringTableEntry pFieldName ) { return static_cast<SceneObject*>(obj)->getDstBlendFactor() != GL_ONE_MINUS_SRC_ALPHA; }
+    static bool             writeSrcBlendFactor( void* obj, StringTableEntry pFieldName ) { return static_cast<SceneObject*>(obj)->getSrcBlendFactor() != GFXBlendSrcAlpha; }
+    static bool             writeDstBlendFactor( void* obj, StringTableEntry pFieldName ) { return static_cast<SceneObject*>(obj)->getDstBlendFactor() != GFXBlendInvSrcAlpha; }
     static bool             writeBlendColor( void* obj, StringTableEntry pFieldName ) { return static_cast<SceneObject*>(obj)->getBlendColor() != ColorF(1.0f, 1.0f, 1.0f, 1.0f); }
     static bool             writeAlphaTest( void* obj, StringTableEntry pFieldName ) { return static_cast<SceneObject*>(obj)->getAlphaTest() >= 0.0f; }
 

@@ -35,9 +35,9 @@
 #include "graphics/gfxTarget.h"
 #endif
 
-#ifndef _SCENEMANAGER_H_
-#include "scene/sceneManager.h"
-#endif
+//#ifndef _SCENEMANAGER_H_
+//#include "scene/sceneManager.h"
+//#endif
 
 //-----------------------------------------------------------------------------
 

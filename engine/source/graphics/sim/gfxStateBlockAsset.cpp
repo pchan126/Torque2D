@@ -117,16 +117,11 @@ void GFXStateBlockAsset::initPersistFields()
       addField( "blendEnable", TypeBool, Offset(mState.blendEnable, GFXStateBlockAsset),
          "Enables alpha blending.  The default is false." );
 
-   addField("SrcBlendFactor", TypeEnum, Offset(mState.blendSrc, GFXStateBlockAsset), "The source blend state.  The default is GFXBlendOne.");
-   addField("DstBlendFactor", TypeEnum, Offset(mState.blendDest, GFXStateBlockAsset), "The destination blend state.  The default is GFXBlendZero.");
+      addField("SrcBlendFactor", TypeEnum, Offset(mState.blendSrc, GFXStateBlockAsset), &writeSrcBlendFactor, 1, &srcBlendFactorTable, "The source blend state.  The default is GFXBlendOne.");
 
-//   addField( "blendSrc", TypeGFXBlend, Offset(mState.blendSrc, GFXStateBlockAsset),
-//         "The source blend state.  The default is GFXBlendOne." );
-//
-//      addField("blendDest", TypeGFXBlend, Offset(mState.blendDest, GFXStateBlockAsset),
-//         "The destination blend state.  The default is GFXBlendZero." );
+      addField("DstBlendFactor", TypeEnum, Offset(mState.blendDest, GFXStateBlockAsset), &writeDstBlendFactor, 1, &dstBlendFactorTable, "The destination blend state.  The default is GFXBlendZero.");
 
-      addField("blendOp", TypeEnum, Offset(mState.blendOp, GFXStateBlockAsset),
+      addField("blendOp", TypeEnum, Offset(mState.blendOp, GFXStateBlockAsset), &writeBlendOpFactor, 1, &blendOpFactorTable,
          "The arithmetic operation applied to alpha blending.  The default is GFXBlendOpAdd." );   
 
    endGroup( "Alpha Blending" );
@@ -140,13 +135,13 @@ void GFXStateBlockAsset::initPersistFields()
       addField( "separateAlphaBlendEnable", TypeBool, Offset(mState.separateAlphaBlendEnable, GFXStateBlockAsset),
          "Enables the separate blend mode for the alpha channel.  The default is false." );
 
-      addField( "separateAlphaBlendSrc", TypeEnum, Offset(mState.separateAlphaBlendSrc, GFXStateBlockAsset),
+      addField( "separateAlphaBlendSrc", TypeEnum, Offset(mState.separateAlphaBlendSrc, GFXStateBlockAsset), &writeSepSrcBlendFactor, 1, &srcBlendFactorTable,
          "The source blend state.  The default is GFXBlendOne." );
 
-      addField( "separateAlphaBlendDest", TypeEnum, Offset(mState.separateAlphaBlendDest, GFXStateBlockAsset),
+      addField( "separateAlphaBlendDest", TypeEnum, Offset(mState.separateAlphaBlendDest, GFXStateBlockAsset), &writeSepDstBlendFactor, 1, &dstBlendFactorTable,
          "The destination blend state.  The default is GFXBlendZero." );
 
-      addField( "separateAlphaBlendOp", TypeEnum, Offset(mState.separateAlphaBlendOp, GFXStateBlockAsset),
+      addField( "separateAlphaBlendOp", TypeEnum, Offset(mState.separateAlphaBlendOp, GFXStateBlockAsset), &writeSepBlendOpFactor, 1, &blendOpFactorTable,
          "The arithmetic operation applied to separate alpha blending.  The default is GFXBlendOpAdd." );   
 
    endGroup( "Separate Alpha Blending" );

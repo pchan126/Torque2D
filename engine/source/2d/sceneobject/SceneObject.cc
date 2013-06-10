@@ -3939,40 +3939,6 @@ EnumTable collisionShapeTypeTable(sizeof(collisionShapeTypeLookup) / sizeof(Enum
 
 //-----------------------------------------------------------------------------
 
-static EnumTable::Enums srcBlendFactorLookup[] =
-                {
-                    { GFXBlendZero,                  "ZERO"                  },
-                    { GFXBlendOne,                   "ONE"                   },
-                    { GFXBlendDestColor,             "DST_COLOR"             },
-                    { GFXBlendInvDestAlpha,   "ONE_MINUS_DST_COLOR"   },
-                    { GFXBlendSrcAlpha,             "SRC_ALPHA"             },
-                    { GFXBlendInvSrcColor,   "ONE_MINUS_SRC_ALPHA"   },
-                    { GFXBlendDestAlpha,             "DST_ALPHA"             },
-                    { GFXBlendInvDestAlpha,   "ONE_MINUS_DST_ALPHA"   },
-                    { GFXBlendSrcAlphaSat,    "SRC_ALPHA_SATURATE"    },
-                };
-
-EnumTable srcBlendFactorTable(sizeof(srcBlendFactorLookup) / sizeof(EnumTable::Enums), &srcBlendFactorLookup[0]);
-
-//-----------------------------------------------------------------------------
-
-static EnumTable::Enums dstBlendFactorLookup[] =
-                {
-                    { GFXBlendZero,                  "ZERO" },
-                    { GFXBlendOne,                   "ONE" },
-                    { GFXBlendSrcColor,             "SRC_COLOR" },
-                    { GFXBlendInvSrcColor,   "ONE_MINUS_SRC_COLOR" },
-                    { GFXBlendSrcAlpha,             "SRC_ALPHA" },
-                    { GFXBlendInvSrcAlpha,   "ONE_MINUS_SRC_ALPHA" },
-                    { GFXBlendDestAlpha,             "DST_ALPHA" },
-                    { GFXBlendInvDestAlpha,   "ONE_MINUS_DST_ALPHA" },
-                };
-
-EnumTable dstBlendFactorTable(sizeof(dstBlendFactorLookup) / sizeof(EnumTable::Enums), &dstBlendFactorLookup[0]);
-
-
-//-----------------------------------------------------------------------------
-
 static EnumTable::Enums lightTypeLookup[] =
 {
     { SceneObject::NoLight,                  "NOLIGHT" },

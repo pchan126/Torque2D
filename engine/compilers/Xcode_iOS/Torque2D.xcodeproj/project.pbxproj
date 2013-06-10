@@ -32,6 +32,7 @@
 		2AF1C54B16B439D900C1CF3A /* declaredAssets.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2AF1C54716B439D900C1CF3A /* declaredAssets.cc */; };
 		2AF1C54C16B439D900C1CF3A /* referencedAssets.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2AF1C54916B439D900C1CF3A /* referencedAssets.cc */; };
 		303FE31F1711B1E2002124CC /* process.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 303FE31D1711B1E2002124CC /* process.cpp */; };
+		30804B101764CB3300472030 /* gfxEnums.cc in Sources */ = {isa = PBXBuildFile; fileRef = 30804B0F1764CB3200472030 /* gfxEnums.cc */; };
 		30D5475C173FF5D300CB43DA /* platformTimer.cc in Sources */ = {isa = PBXBuildFile; fileRef = 30D5475A173FF5D300CB43DA /* platformTimer.cc */; };
 		33230F1656FA2C7C493DA2D2 /* guiSliderCtrl.cc in Sources */ = {isa = PBXBuildFile; fileRef = 332307DBC5B7EEEB22E5A736 /* guiSliderCtrl.cc */; };
 		860A196C171F0666000E9FE8 /* guiGridCtrl.cc in Sources */ = {isa = PBXBuildFile; fileRef = 860A196A171F0666000E9FE8 /* guiGridCtrl.cc */; };
@@ -628,6 +629,7 @@
 		303FE31C1711B1B7002124CC /* autoPtr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = autoPtr.h; sourceTree = "<group>"; };
 		303FE31D1711B1E2002124CC /* process.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = process.cpp; sourceTree = "<group>"; };
 		303FE31E1711B1E2002124CC /* process.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = process.h; sourceTree = "<group>"; };
+		30804B0F1764CB3200472030 /* gfxEnums.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxEnums.cc; sourceTree = "<group>"; };
 		308DD039175E8B70008FBC32 /* rawData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rawData.h; sourceTree = "<group>"; };
 		30D5475A173FF5D300CB43DA /* platformTimer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = platformTimer.cc; sourceTree = "<group>"; };
 		30D5475B173FF5D300CB43DA /* platformTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformTimer.h; sourceTree = "<group>"; };
@@ -2334,6 +2336,7 @@
 				D15E7EC616F0622D00BB43B1 /* primBuilder.h */,
 				867BAE3116AEC9050033868F /* splineUtil.cc */,
 				867BAE3216AEC9050033868F /* splineUtil.h */,
+				30804B0F1764CB3200472030 /* gfxEnums.cc */,
 			);
 			name = graphics;
 			path = ../../../source/graphics;
@@ -4072,6 +4075,7 @@
 				D1736FF01761C259008D010C /* materialFeatureData.cpp in Sources */,
 				D1736FF31761C27A008D010C /* matTextureTarget.cpp in Sources */,
 				D1736FF61761C7C5008D010C /* processedCustomMaterial.cpp in Sources */,
+				30804B101764CB3300472030 /* gfxEnums.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

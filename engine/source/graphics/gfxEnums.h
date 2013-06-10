@@ -24,6 +24,7 @@
 #define _GFXENUMS_H_
 
 //#include "core/util/fourcc.h"
+#include "console/console.h"
 
 // These are for the enum translation. It will help with porting to other platforms
 // and API's.
@@ -644,5 +645,60 @@ enum GFXDeclType
    /// The count of total GFXDeclTypes.
    GFXDeclType_COUNT,
 };
+
+//-----------------------------------------------------------------------------
+
+static EnumTable::Enums srcBlendFactorLookup[] =
+{
+   { GFXBlendZero,                  "ZERO"                  },
+   { GFXBlendOne,                   "ONE"                   },
+   { GFXBlendDestColor,             "DST_COLOR"             },
+   { GFXBlendInvDestAlpha,   "ONE_MINUS_DST_COLOR"   },
+   { GFXBlendSrcAlpha,             "SRC_ALPHA"             },
+   { GFXBlendInvSrcColor,   "ONE_MINUS_SRC_ALPHA"   },
+   { GFXBlendDestAlpha,             "DST_ALPHA"             },
+   { GFXBlendInvDestAlpha,   "ONE_MINUS_DST_ALPHA"   },
+   { GFXBlendSrcAlphaSat,    "SRC_ALPHA_SATURATE"    },
+};
+
+//-----------------------------------------------------------------------------
+
+static EnumTable::Enums dstBlendFactorLookup[] =
+{
+   { GFXBlendZero,                  "ZERO" },
+   { GFXBlendOne,                   "ONE" },
+   { GFXBlendSrcColor,             "SRC_COLOR" },
+   { GFXBlendInvSrcColor,   "ONE_MINUS_SRC_COLOR" },
+   { GFXBlendSrcAlpha,             "SRC_ALPHA" },
+   { GFXBlendInvSrcAlpha,   "ONE_MINUS_SRC_ALPHA" },
+   { GFXBlendDestAlpha,             "DST_ALPHA" },
+   { GFXBlendInvDestAlpha,   "ONE_MINUS_DST_ALPHA" },
+};
+
+
+
+//-----------------------------------------------------------------------------
+
+static EnumTable::Enums blendOpFactorLookup[] =
+{
+   { GFXBlendOpAdd,                  "ADD" },
+   { GFXBlendOpSubtract,                   "SUBTRACT" },
+   { GFXBlendOpRevSubtract,             "REV_SUBTRACT" },
+   { GFXBlendOpMin,   "MIN" },
+   { GFXBlendOpMax,             "MAX" },
+};
+
+static EnumTable::Enums CmpFactorLookup[] =
+{
+   { GFXCmpNever,                  "NEVER" },
+   { GFXCmpLess,                   "LESS" },
+   { GFXCmpEqual,             "EQUAL" },
+   { GFXCmpLessEqual,   "LESS_EQUAL" },
+   { GFXCmpGreater,             "GREATER" },
+   { GFXCmpNotEqual,             "NOT_EQUAL" },
+   { GFXCmpGreaterEqual,             "GREATER_EQUAL" },
+   { GFXCmpAlways,             "ALWAYS" },
+};
+
 
 #endif // _GFXENUMS_H_

@@ -34,6 +34,10 @@
 
 class GFXSamplerStateAsset;
 
+extern EnumTable srcBlendFactorTable;
+extern EnumTable dstBlendFactorTable;
+extern EnumTable blendOpFactorTable;
+
 //-----------------------------------------------------------------------------
 
 DefineConsoleType( TypeGFXStateBlockAssetPtr )
@@ -58,8 +62,17 @@ public:
 
    // GFXStateBlockAsset
    const GFXStateBlockDesc getState() const { return mState; }
-        
-   DECLARE_CONOBJECT(GFXStateBlockAsset);   
+   
+   static bool             writeSrcBlendFactor( void* obj, StringTableEntry pFieldName ) { return static_cast<GFXStateBlockAsset*>(obj)->getState().blendSrc != GFXBlendOne; }
+   static bool             writeDstBlendFactor( void* obj, StringTableEntry pFieldName ) { return static_cast<GFXStateBlockAsset*>(obj)->getState().blendDest != GFXBlendZero; }
+   static bool             writeBlendOpFactor( void* obj, StringTableEntry pFieldName ) { return static_cast<GFXStateBlockAsset*>(obj)->getState().blendOp != GFXBlendOpAdd; }
+
+   static bool             writeSepSrcBlendFactor( void* obj, StringTableEntry pFieldName ) { return static_cast<GFXStateBlockAsset*>(obj)->getState().separateAlphaBlendSrc != GFXBlendOne; }
+   static bool             writeSepDstBlendFactor( void* obj, StringTableEntry pFieldName ) { return static_cast<GFXStateBlockAsset*>(obj)->getState().separateAlphaBlendDest != GFXBlendZero; }
+   static bool             writeSepBlendOpFactor( void* obj, StringTableEntry pFieldName ) { return static_cast<GFXStateBlockAsset*>(obj)->getState().separateAlphaBlendOp != GFXBlendOpAdd; }
+
+   
+   DECLARE_CONOBJECT(GFXStateBlockAsset);
 };
 
 /// Allows definition of sampler state via script, basically wraps a GFXSamplerStateDesc
