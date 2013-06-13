@@ -49,13 +49,11 @@ bool ContactFilter::ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB)
         return false;
 
     // Check collision rule A -> B.
-    if ( (pSceneObjectA->mCollisionGroupMask & pSceneObjectB->mSceneGroupMask) != 0 &&
-         (pSceneObjectA->mCollisionLayerMask & pSceneObjectB->mSceneLayerMask) != 0 )
+    if ( (pSceneObjectA->mCollisionGroupMask & pSceneObjectB->mSceneGroupMask) != 0)
          return true;
 
     // Check collision rule B -> A.
-    if ( (pSceneObjectB->mCollisionGroupMask & pSceneObjectA->mSceneGroupMask) != 0 &&
-         (pSceneObjectB->mCollisionLayerMask & pSceneObjectA->mSceneLayerMask) != 0 )
+    if ( (pSceneObjectB->mCollisionGroupMask & pSceneObjectA->mSceneGroupMask) != 0)
          return true;
 
     return false;

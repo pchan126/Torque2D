@@ -624,11 +624,11 @@ bool WorldQuery::ReportFixture( b2Fixture* fixture )
             return true;
 
     // Fetch layer and group masks.
-    const U32 sceneLayerMask = pSceneObject->getSceneLayerMask();
+    const U32 sceneLayerMask = pSceneObject->getSceneLayer();
     const U32 sceneGroupMask = pSceneObject->getSceneGroupMask();
 
     // Compare masks and report.
-    if ( (mQueryFilter.mSceneLayerMask & sceneLayerMask) != 0 && (mQueryFilter.mSceneGroupMask & sceneGroupMask) != 0 )
+    if ( (mQueryFilter.mSceneLayerMask.contains(sceneLayerMask)) && (mQueryFilter.mSceneGroupMask & sceneGroupMask) != 0 )
     {
         WorldQueryResult queryResult( pSceneObject );
         mLayeredQueryResults[pSceneObject->getSceneLayer()].push_back( queryResult );
@@ -673,7 +673,7 @@ F32 WorldQuery::ReportFixture( b2Fixture* fixture, const b2Vec2& point, const b2
         return 1.0f;
 
     // Fetch layer and group masks.
-    const U32 sceneLayerMask = pSceneObject->getSceneLayerMask();
+    const U32 sceneLayerMask = pSceneObject->getSceneLayer();
     const U32 sceneGroupMask = pSceneObject->getSceneGroupMask();
 
     // Fetch collision shape index.
@@ -683,7 +683,7 @@ F32 WorldQuery::ReportFixture( b2Fixture* fixture, const b2Vec2& point, const b2
     AssertFatal( shapeIndex >= 0, "WorldQuery::ReportFixture() - Cannot find shape index reported on physics proxy of a fixture." );
 
     // Compare masks and report.
-    if ( (mQueryFilter.mSceneLayerMask & sceneLayerMask) != 0 && (mQueryFilter.mSceneGroupMask & sceneGroupMask) != 0 )
+    if ( (mQueryFilter.mSceneLayerMask.contains(sceneLayerMask)) != 0 && (mQueryFilter.mSceneGroupMask & sceneGroupMask) != 0 )
     {
         WorldQueryResult queryResult( pSceneObject, point, normal, fraction, (U32)shapeIndex );
         mLayeredQueryResults[pSceneObject->getSceneLayer()].push_back( queryResult );
@@ -771,11 +771,11 @@ bool WorldQuery::QueryCallback( S32 proxyId )
 
 
     // Fetch layer and group masks.
-    const U32 sceneLayerMask = pSceneObject->getSceneLayerMask();
+    const U32 sceneLayerMask = pSceneObject->getSceneLayer();
     const U32 sceneGroupMask = pSceneObject->getSceneGroupMask();
 
     // Compare masks and report.
-    if ( (mQueryFilter.mSceneLayerMask & sceneLayerMask) != 0 && (mQueryFilter.mSceneGroupMask & sceneGroupMask) != 0 )
+    if ( (mQueryFilter.mSceneLayerMask.contains(sceneLayerMask)) != 0 && (mQueryFilter.mSceneGroupMask & sceneGroupMask) != 0 )
     {
         WorldQueryResult queryResult( pSceneObject );
         mLayeredQueryResults[pSceneObject->getSceneLayer()].push_back( queryResult );
@@ -831,11 +831,11 @@ F32 WorldQuery::RayCastCallback( const b2RayCastInput& input, S32 proxyId )
     }
 
     // Fetch layer and group masks.
-    const U32 sceneLayerMask = pSceneObject->getSceneLayerMask();
+    const U32 sceneLayerMask = pSceneObject->getSceneLayer();
     const U32 sceneGroupMask = pSceneObject->getSceneGroupMask();
 
     // Compare masks and report.
-    if ( (mQueryFilter.mSceneLayerMask & sceneLayerMask) != 0 && (mQueryFilter.mSceneGroupMask & sceneGroupMask) != 0 )
+    if ( mQueryFilter.mSceneLayerMask.contains(sceneLayerMask) && (mQueryFilter.mSceneGroupMask & sceneGroupMask) != 0 )
     {
         WorldQueryResult queryResult( pSceneObject );
         mLayeredQueryResults[pSceneObject->getSceneLayer()].push_back( queryResult );
@@ -882,11 +882,11 @@ void WorldQuery::injectAlwaysInScope( void )
             continue;
 
         // Fetch layer and group masks.
-        const U32 sceneLayerMask = pSceneObject->getSceneLayerMask();
+        const U32 sceneLayerMask = pSceneObject->getSceneLayer();
         const U32 sceneGroupMask = pSceneObject->getSceneGroupMask();
 
         // Compare masks and report.
-        if ( (mQueryFilter.mSceneLayerMask & sceneLayerMask) != 0 && (mQueryFilter.mSceneGroupMask & sceneGroupMask) != 0 )
+        if ( mQueryFilter.mSceneLayerMask.contains(sceneLayerMask) != 0 && (mQueryFilter.mSceneGroupMask & sceneGroupMask) != 0 )
         {
             WorldQueryResult queryResult( pSceneObject );
             mLayeredQueryResults[pSceneObject->getSceneLayer()].push_back( queryResult );

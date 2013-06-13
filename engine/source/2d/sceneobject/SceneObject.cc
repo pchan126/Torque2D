@@ -112,7 +112,6 @@ SceneObject::SceneObject() :
 
     /// Layers.
     mSceneLayer(0),
-    mSceneLayerMask(BIT(mSceneLayer)),
     mSceneLayerDepth(0.0f),
 
     /// Scene groups.
@@ -134,7 +133,6 @@ SceneObject::SceneObject() :
     mWorldQueryKey(0),
 
     /// Collision control.
-    mCollisionLayerMask(MASK_ALL),
     mCollisionGroupMask(MASK_ALL),
     mCollisionSuppress(false),
     mGatherContacts(false),
@@ -291,7 +289,6 @@ void SceneObject::initPersistFields()
 
     /// Collision control.
     addProtectedField("CollisionGroups", TypeS32, Offset(mCollisionGroupMask, SceneObject), &setCollisionGroups, &defaultProtectedGetFn, &writeCollisionGroups, "");
-    addProtectedField("CollisionLayers", TypeS32, Offset(mCollisionLayerMask, SceneObject), &setCollisionLayers, &defaultProtectedGetFn, &writeCollisionLayers, "");
     addField("CollisionSuppress", TypeBool, Offset(mCollisionSuppress, SceneObject), &writeCollisionSuppress, "");
     addProtectedField("GatherContacts", TypeBool, NULL, &setGatherContacts, &defaultProtectedGetFn, &writeGatherContacts, "");
     addProtectedField("DefaultDensity", TypeF32, Offset( mDefaultFixture.density, SceneObject), &setDefaultDensity, &defaultProtectedGetFn, &writeDefaultDensity, "");
@@ -829,6 +826,7 @@ void SceneObject::unpackUpdate(NetConnection * conn, BitStream *stream)
 {
 }
 
+
 //-----------------------------------------------------------------------------
 
 void SceneObject::setEnabled( const bool enabled )
@@ -902,8 +900,8 @@ void SceneObject::setSceneLayer( const U32 sceneLayer )
     // Set Layer.
     mSceneLayer = sceneLayer;
 
-    // Set Layer Mask.
-    mSceneLayerMask = BIT( mSceneLayer );
+//    // Set Layer Mask.
+//    mSceneLayerMask = BIT( mSceneLayer );
 }
 
 //-----------------------------------------------------------------------------
@@ -1417,13 +1415,11 @@ void SceneObject::setCollisionAgainst( const SceneObject* pSceneObject, const bo
     {
         // Yes, so just set the masks to the referenced-objects' masks.
         setCollisionGroupMask( pSceneObject->getSceneGroupMask() );
-        setCollisionLayerMask( pSceneObject->getSceneLayerMask() ); 
     }
     else
     {
         // No, so merge with existing masks.
         setCollisionGroupMask( getCollisionGroupMask() | pSceneObject->getSceneGroupMask() );
-        setCollisionLayerMask( getCollisionLayerMask() | pSceneObject->getSceneLayerMask() ); 
     }
 }
 
@@ -2796,7 +2792,6 @@ void SceneObject::copyTo( SimObject* obj )
 
     /// Collision control.
     pSceneObject->setCollisionGroupMask( getCollisionGroupMask() );
-    pSceneObject->setCollisionLayerMask( getCollisionLayerMask() );
     pSceneObject->setCollisionSuppress( getCollisionSuppress() );
     pSceneObject->setGatherContacts( getGatherContacts() );
     pSceneObject->setDefaultDensity( getDefaultDensity() );

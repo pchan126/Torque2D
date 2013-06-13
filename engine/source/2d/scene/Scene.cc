@@ -558,8 +558,7 @@ void Scene::dispatchBeginContactCallbacks( void )
         }
 
         // Is object A allowed to collide with object B?
-        if (    (pSceneObjectA->mCollisionGroupMask & pSceneObjectB->mSceneGroupMask) != 0 &&
-                (pSceneObjectA->mCollisionLayerMask & pSceneObjectB->mSceneLayerMask) != 0 )
+        if ((pSceneObjectA->mCollisionGroupMask & pSceneObjectB->mSceneGroupMask) != 0)
         {
             // Yes, so does it handle the collision callback?
             if ( pSceneObjectA->isMethod("onCollision") )            
@@ -578,8 +577,7 @@ void Scene::dispatchBeginContactCallbacks( void )
         }
 
         // Is object B allowed to collide with object A?
-        if (    (pSceneObjectB->mCollisionGroupMask & pSceneObjectA->mSceneGroupMask) != 0 &&
-                (pSceneObjectB->mCollisionLayerMask & pSceneObjectA->mSceneLayerMask) != 0 )
+        if (    (pSceneObjectB->mCollisionGroupMask & pSceneObjectA->mSceneGroupMask) != 0)
         {
             // Yes, so does it handle the collision callback?
             if ( pSceneObjectB->isMethod("onCollision") )            
@@ -670,8 +668,7 @@ void Scene::dispatchEndContactCallbacks( void )
         }
 
         // Is object A allowed to collide with object B?
-        if (    (pSceneObjectA->mCollisionGroupMask & pSceneObjectB->mSceneGroupMask) != 0 &&
-                (pSceneObjectA->mCollisionLayerMask & pSceneObjectB->mSceneLayerMask) != 0 )
+        if (    (pSceneObjectA->mCollisionGroupMask & pSceneObjectB->mSceneGroupMask) != 0)
         {
             // Yes, so does it handle the collision callback?
             if ( pSceneObjectA->isMethod("onEndCollision") )            
@@ -690,8 +687,7 @@ void Scene::dispatchEndContactCallbacks( void )
         }
 
         // Is object B allowed to collide with object A?
-        if (    (pSceneObjectB->mCollisionGroupMask & pSceneObjectA->mSceneGroupMask) != 0 &&
-                (pSceneObjectB->mCollisionLayerMask & pSceneObjectA->mSceneLayerMask) != 0 )
+        if (    (pSceneObjectB->mCollisionGroupMask & pSceneObjectA->mSceneGroupMask) != 0 )
         {
             // Yes, so does it handle the collision callback?
             if ( pSceneObjectB->isMethod("onEndCollision") )            

@@ -37,24 +37,24 @@ struct WorldQueryFilter
         }
 
     WorldQueryFilter(
-        const U32 sceneLayerMask,
+        const Vector<U32> sceneLayerMask,
         const U32 sceneGroupMask,
         const bool enabledFilter,
         const bool visibleFilter,
         const bool pickingAllowedFilter,
-        const bool alwaysInScopeFilter ) :        
-        mSceneLayerMask( sceneLayerMask ),
+        const bool alwaysInScopeFilter ) :
         mSceneGroupMask( sceneGroupMask ),
         mEnabledFilter( enabledFilter ),
         mVisibleFilter( visibleFilter ),
         mPickingAllowedFilter( pickingAllowedFilter ),
         mAlwaysInScopeFilter( alwaysInScopeFilter )
         {
+           mSceneLayerMask.merge(sceneLayerMask);
         }
 
     void resetQuery( void )
     {
-        mSceneLayerMask       = MASK_ALL;
+        mSceneLayerMask.clear();
         mSceneGroupMask       = MASK_ALL;
         mEnabledFilter        = true;
         mVisibleFilter        = false;
@@ -71,7 +71,7 @@ struct WorldQueryFilter
     inline void     setAlwaysInScopeFilter( const bool filter )     { mAlwaysInScopeFilter = filter; }
     inline bool     getAlwaysInScopeFilter( void ) const            { return mAlwaysInScopeFilter; }
     
-    U32     mSceneLayerMask;
+    Vector<U32>    mSceneLayerMask;
     U32     mSceneGroupMask;
     bool    mEnabledFilter;
     bool    mVisibleFilter;

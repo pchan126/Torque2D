@@ -145,7 +145,6 @@ protected:
     
     /// Scene layers.
     U32                     mSceneLayer;
-    U32                     mSceneLayerMask;
     F32                     mSceneLayerDepth;
 
     /// Scene groups.
@@ -174,7 +173,6 @@ protected:
     U32                     mWorldQueryKey;
 
     /// Collision control.
-    U32                     mCollisionLayerMask;
     U32                     mCollisionGroupMask;
     bool                    mCollisionSuppress;
     b2FixtureDef            mDefaultFixture;
@@ -321,7 +319,6 @@ public:
     /// Scene layers.
     void                    setSceneLayer( const U32 sceneLayer );
     inline U32              getSceneLayer(void) const                   { return mSceneLayer; }
-    inline U32              getSceneLayerMask( void ) const             { return mSceneLayerMask; }
 
     /// Scene Layer depth.
     inline void             setSceneLayerDepth( const F32 order )       { mSceneLayerDepth = order; };
@@ -389,8 +386,6 @@ public:
     void                    setCollisionAgainst( const SceneObject* pSceneObject, const bool clearMasks );
     inline void             setCollisionGroupMask( const U32 groupMask ) { mCollisionGroupMask = groupMask; }
     inline U32              getCollisionGroupMask(void) const           { return mCollisionGroupMask; }
-    inline void             setCollisionLayerMask( const U32 layerMask ) { mCollisionLayerMask = layerMask; }
-    inline U32              getCollisionLayerMask(void) const           { return mCollisionLayerMask; }
     void                    setDefaultDensity( const F32 density, const bool updateShapes = true );
     inline F32              getDefaultDensity( void ) const             { return mDefaultFixture.density; }
     void                    setDefaultFriction( const F32 friction, const bool updateShapes = true );
@@ -702,8 +697,6 @@ protected:
     static bool             writeDefaultRestitution( void* obj, StringTableEntry pFieldName ) { return mNotEqual(static_cast<SceneObject*>(obj)->getDefaultRestitution(), 0.0f); }
     static bool             setCollisionGroups(void* obj, const char* data) { static_cast<SceneObject*>(obj)->setCollisionGroupMask(dAtoi(data)); return false; }
     static bool             writeCollisionGroups( void* obj, StringTableEntry pFieldName ) { return static_cast<SceneObject*>(obj)->getCollisionGroupMask() != MASK_ALL; }
-    static bool             setCollisionLayers(void* obj, const char* data) { static_cast<SceneObject*>(obj)->setCollisionLayerMask(dAtoi(data)); return false; }
-    static bool             writeCollisionLayers( void* obj, StringTableEntry pFieldName ) { return static_cast<SceneObject*>(obj)->getCollisionLayerMask() != MASK_ALL; }
     static bool             writeCollisionSuppress( void* obj, StringTableEntry pFieldName ) { return static_cast<SceneObject*>(obj)->getCollisionSuppress() == true; }
     static bool             setGatherContacts(void* obj, const char* data)  { static_cast<SceneObject*>(obj)->setGatherContacts(dAtoi(data)); return false; }
     static bool             writeGatherContacts( void* obj, StringTableEntry pFieldName ) { return static_cast<SceneObject*>(obj)->getGatherContacts() == true; }

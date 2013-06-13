@@ -1050,39 +1050,6 @@ ConsoleMethod(SceneObject, getContact, const char*, 3, 3,    "(contactIndex) Get
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(SceneObject, setCollisionMasks, void, 3, 4,    "(groupMask, [layerMask]) - Sets the collision masks.\n"
-                                                                "Collision masks limit the objects that are collided with based on their scene group and scene Layer. In order for two objects to collide, the sending object must have the receiving object's Graph Group and Rendering Layer in its masks. The receiving object's masks, however, do not have to contain the sending object's Graph Group and Rendering Layer.\n"
-                                                                "@param sceneGroupMask The scene group(s) to enable collision with.\n"
-                                                                "@param sceneLayerMask The scene layer(s) to enable collision with. If sceneLayerMask is not specified then all scene layers will be included."
-                                                                "@return No return value.")
-{
-    // Calculate Group-Mask.
-    const U32 groupMask = dAtoi(argv[2]);
-    // Calculate Layer-Mask.
-    const U32 layerMask = (argc > 3) ? dAtoi(argv[3]) : MASK_ALL;
-
-    // Set Collision Masks.
-    object->setCollisionGroupMask( groupMask );
-    object->setCollisionLayerMask( layerMask );
-}
-
-//-----------------------------------------------------------------------------
-
-ConsoleMethod(SceneObject, getCollisionMasks, const char*, 2, 2, "Gets the collision group/layer masks.\n"
-                                                                    "@return (groupMask/layerMask) The scene group(s) and scene layer(s) the object is enabled to collide with.")
-{
-    // Create Returnable Buffer.
-    char* pBuffer = Con::getReturnBuffer(32);
-
-    // Format Buffer.
-    dSprintf(pBuffer, 32, "%d %d", object->getCollisionGroupMask(), (U32)object->getCollisionLayerMask());
-
-    // Return Buffer.
-    return pBuffer;
-}
-
-//-----------------------------------------------------------------------------
-
 ConsoleMethod(SceneObject, setCollisionAgainst, void, 3, 4, "(SceneObject object, [clearMasks? = false]) - Sets the collision masks against a specific object.\n"
                                                                "@param object The SceneObject to set collision masks against\n"
                                                                "@param clearMasks Whether or not to clear the collision masks before setting them against the object."
@@ -1105,87 +1072,6 @@ ConsoleMethod(SceneObject, setCollisionAgainst, void, 3, 4, "(SceneObject object
     object->setCollisionAgainst( pSceneObject, clearMasks );
 }
 
-//-----------------------------------------------------------------------------
-
-ConsoleMethod(SceneObject, setCollisionLayers, void, 2, 2 + MASK_BITCOUNT,  "(layers) - Sets the collision layers(s).\n"
-                                                                            "@param layers A list of layers to collide with.\n"
-                                                                            "@return No return value.")
-{
-    // Set to all if no arguments.
-    if ( argc == 2 )
-    {
-        object->setCollisionLayerMask(MASK_ALL);
-        return;
-    }
-
-    // Grab the element count of the first parameter.
-    const U32 elementCount = Utility::mGetStringElementCount(argv[2]);
-
-    // Make sure we get at least one number.
-    if (elementCount < 1)
-    {
-        object->setCollisionLayerMask(MASK_ALL);
-        return;
-    }
-    else if ( elementCount == 1 )
-    {
-        if ( dStricmp( argv[2], "all" ) == 0 )
-        {
-            object->setCollisionLayerMask(MASK_ALL);
-            return;
-        }
-        else if ( dStricmp( argv[2], "none" ) == 0 || dStricmp( argv[2], "off" ) == 0 )
-        {
-            object->setCollisionLayerMask(0);
-            return;
-        }
-
-        return;
-    }
-
-    // The mask.
-    U32 mask = 0;
-
-    // Space separated list.
-    if (argc == 3)
-    {
-        // Convert the string to a mask.
-        for (U32 i = 0; i < elementCount; i++)
-        {
-            S32 bit = dAtoi(Utility::mGetStringElement(argv[2], i));
-         
-            // Make sure the group is valid.
-            if ((bit < 0) || (bit >= MASK_BITCOUNT))
-            {
-            Con::warnf("SceneObject::setCollisionLayers() - Invalid layer specified (%d); skipped!", bit);
-            continue;
-            }
-         
-            mask |= (1 << bit);
-        }
-    }
-
-    // Comma separated list.
-    else
-    {
-        // Convert the list to a mask.
-        for (U32 i = 2; i < (U32)argc; i++)
-        {
-            S32 bit = dAtoi(argv[i]);
-         
-            // Make sure the group is valid.
-            if ((bit < 0) || (bit >= MASK_BITCOUNT))
-            {
-            Con::warnf("SceneObject::setCollisionLayers() - Invalid layer specified (%d); skipped!", bit);
-            continue;
-            }
-
-            mask |= (1 << bit);
-        }
-    }
-    // Set Collision Layers
-    object->setCollisionLayerMask(mask);
-}
 
 //-----------------------------------------------------------------------------
 
@@ -1265,30 +1151,6 @@ ConsoleMethod(SceneObject, setCollisionGroups, void, 2, 2 + MASK_BITCOUNT,  "(gr
     }
     // Set Collision Groups.
     object->setCollisionGroupMask(mask);
-}
-
-//-----------------------------------------------------------------------------
-
-ConsoleMethod(SceneObject, getCollisionLayers, const char*, 2, 2, "() - Gets the collision layers.\n"
-                                                                     "@return (collisionLayers) A list of collision layers.")
-{
-    U32 mask = object->getCollisionLayerMask();
-
-    bool first = true;
-    char* bits = Con::getReturnBuffer(128);
-    bits[0] = '\0';
-    for (S32 i = 0; i < MASK_BITCOUNT; i++)
-    {
-        if (mask & BIT(i))
-        {
-            char bit[4];
-            dSprintf(bit, 4, "%s%d", first ? "" : " ", i);
-            first = false;
-            dStrcat(bits, bit);
-        }
-    }
-
-    return bits;
 }
 
 //-----------------------------------------------------------------------------

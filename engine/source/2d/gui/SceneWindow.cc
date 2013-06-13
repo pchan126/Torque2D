@@ -2030,15 +2030,13 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
             
         // SceneObject #4.
         const bool collisionSuppress = pDebugSceneObject->getCollisionSuppress();
-        const U32 collisionLayerMask = pDebugSceneObject->getCollisionLayerMask();
         const U32 collisionGroupMask = pDebugSceneObject->getCollisionGroupMask();
         const U32 collisionShapeCount = pDebugSceneObject->getCollisionShapeCount();
-        dSprintf( mDebugText, sizeof( mDebugText ), "- Shapes=%d, ColSuppress=%d, ColLayer=%0.8x, ColGroup=%0.8x",
-            collisionShapeCount,
-            collisionSuppress,
-            collisionLayerMask,
-            collisionGroupMask
-            );
+       dSprintf( mDebugText, sizeof( mDebugText ), "- Shapes=%d, ColSuppress=%d, ColGroup=%0.8x",
+                collisionShapeCount,
+                collisionSuppress,
+                collisionGroupMask
+                );
         GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
     }
 
