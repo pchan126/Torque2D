@@ -114,7 +114,6 @@ SceneWindow::SceneWindow() :    mpScene(NULL),
                                 mUseWindowInputEvents(true),
                                 mUseObjectInputEvents(false),
                                 mInputEventGroupMaskFilter(MASK_ALL),
-                                mInputEventLayerMaskFilter(MASK_ALL),
                                 mInputEventInvisibleFilter( true )
 {
     // Set Vector Associations.
@@ -578,7 +577,7 @@ F32 SceneWindow::interpolate( F32 from, F32 to, F32 delta )
 {
     // Linear.
     if ( mCameraInterpolationMode == LINEAR )
-        return linearInterpolate( from, to, delta );
+        return mLerp( from, to, delta );
     // Sigmoid.
     else if ( mCameraInterpolationMode == SIGMOID )
         return sigmoidInterpolate( from, to, delta );
@@ -587,19 +586,6 @@ F32 SceneWindow::interpolate( F32 from, F32 to, F32 delta )
         return from;
 }
 
-//-----------------------------------------------------------------------------
-
-F32 SceneWindow::linearInterpolate( F32 from, F32 to, F32 delta )
-{
-    // Clamp if we're over/under time.
-    if ( delta <= 0.0f )
-        return from;
-    else if ( delta >= 1.0f )
-        return to;
-
-    // Calculate resultant interpolation.
-    return ( from * ( 1.0f - delta ) ) + ( to * delta );
-}
 
 //-----------------------------------------------------------------------------
 
@@ -763,12 +749,13 @@ void SceneWindow::setViewLimitOn( const Vector2& limitMin, const Vector2& limitM
     // Activate View Limit.
     mViewLimitActive = true;
 
-    // Set View Limit Min/Max.
-    mViewLimitMin = limitMin;
-    mViewLimitMax = limitMax;
-
     // Calculate Camera Area.
-    mViewLimitArea = mViewLimitMax - mViewLimitMin;
+    Vector2 limitArea = limitMax - limitMin;
+
+   mViewLimitRect.point.x = limitMin.x;
+   mViewLimitRect.point.y = limitMin.y;
+   mViewLimitRect.extent.x = limitArea.x;
+   mViewLimitRect.extent.y = limitArea.y;
 }
 
 //-----------------------------------------------------------------------------
@@ -796,11 +783,10 @@ void SceneWindow::clampCameraViewLimit( void )
 
 //-----------------------------------------------------------------------------
 
-void SceneWindow::setObjectInputEventFilter( const U32 groupMask, const U32 layerMask, const bool useInvisible )
+void SceneWindow::setObjectInputEventFilter( const U32 groupMask, const bool useInvisible )
 {
     // Set Object Mouse Event Filter.
     mInputEventGroupMaskFilter = groupMask;
-    mInputEventLayerMaskFilter = layerMask;
     mInputEventInvisibleFilter = useInvisible;
 }
 
@@ -809,16 +795,6 @@ void SceneWindow::setObjectInputEventFilter( const U32 groupMask, const U32 laye
 void SceneWindow::setObjectInputEventGroupFilter( const U32 groupMask )
 {
     mInputEventGroupMaskFilter = groupMask;
-
-    // Clear existing watched input events.
-    clearWatchedInputEvents();
-}
-
-//-----------------------------------------------------------------------------
-
-void SceneWindow::setObjectInputEventLayerFilter( const U32 layerMask )
-{
-    mInputEventLayerMaskFilter = layerMask;
 
     // Clear existing watched input events.
     clearWatchedInputEvents();
@@ -1051,7 +1027,7 @@ void SceneWindow::sendObjectInputEvent( StringTableEntry name, const GuiEvent& e
     WorldQuery* pWorldQuery = getScene()->getWorldQuery( true );
 
     // Set filter.
-    WorldQueryFilter queryFilter( mInputEventLayerMaskFilter, mInputEventGroupMaskFilter, true, mInputEventInvisibleFilter, true, true );
+    WorldQueryFilter queryFilter( mInputEventGroupMaskFilter, true, mInputEventInvisibleFilter, true, true );
     pWorldQuery->setQueryFilter( queryFilter );
 
     // Perform world query.
@@ -1386,99 +1362,11 @@ void SceneWindow::calculateCameraView( CameraView* pCameraView )
     // Debug Profiling.
     PROFILE_SCOPE(SceneWindow_CalculateCameraView);
 
-    // Calculate Zoom Reciprocal.
-    const F32 zoomRecip = pCameraView->mCameraZoom > 0.0f ? 1.0f / pCameraView->mCameraZoom : pCameraView->mCameraZoom;
-
-    // Calculate Zoom X/Y Factors.
-    const F32 zoomFactorX = (pCameraView->mSourceArea.len_x() - (pCameraView->mSourceArea.len_x() * zoomRecip))/2;
-    const F32 zoomFactorY = (pCameraView->mSourceArea.len_y() - (pCameraView->mSourceArea.len_y() * zoomRecip))/2;
-
-    // Fetch Camera View.
-    pCameraView->mDestinationArea = pCameraView->mSourceArea;
-
-    // Inset Window by Zoom Factor (if it's big enough to do so).
-    if (    pCameraView->mDestinationArea.extent.x > (zoomFactorX*2.0f) &&
-            pCameraView->mDestinationArea.extent.y > (zoomFactorY*2.0f) )
-    {
-        pCameraView->mDestinationArea.inset( zoomFactorX, zoomFactorY );
-    }
-        
-    // Ensure we've got a valid window.
-    if ( !pCameraView->mDestinationArea.isValidRect() )
-        // Make it real!
-        pCameraView->mDestinationArea.extent = Point2F(1,1);
-
-    // Calculate Scene Min/Max.
-    pCameraView->mSceneMin.x = pCameraView->mDestinationArea.point.x;
-    pCameraView->mSceneMin.y = pCameraView->mDestinationArea.point.y;
-    pCameraView->mSceneMax.x = pCameraView->mDestinationArea.point.x + pCameraView->mDestinationArea.extent.x;
-    pCameraView->mSceneMax.y = pCameraView->mDestinationArea.point.y + pCameraView->mDestinationArea.extent.y;
-
+    pCameraView->calculateView();
     // Is View Limit Active?
     if ( mViewLimitActive )
     {
-        // Yes, so is the limit area X less than the current view X?
-        if ( mViewLimitArea.x < pCameraView->mDestinationArea.len_x() )
-        {
-            // Yes, so calculate center of view.
-            const F32 viewCenterX = mViewLimitMin.x + ( mViewLimitArea.x * 0.5f );
-
-            // Half Camera Width.
-            const F32 halfCameraX = pCameraView->mDestinationArea.len_x() * 0.5f;
-
-            // Calculate Min/Max X.
-            pCameraView->mSceneMin.x = viewCenterX - halfCameraX;
-            pCameraView->mSceneMax.x = viewCenterX + halfCameraX;
-        }
-        else
-        {
-            // No, so calculate window min overlap.
-            const F32 windowMinOverlapX = getMax(0.0f, mViewLimitMin.x - pCameraView->mSceneMin.x);
-
-            // Calculate window max overlap.
-            const F32 windowMaxOverlapX = getMin(0.0f, mViewLimitMax.x - pCameraView->mSceneMax.x);
-
-            // Adjust Window.
-            pCameraView->mSceneMin.x += windowMinOverlapX + windowMaxOverlapX;
-            pCameraView->mSceneMax.x += windowMinOverlapX + windowMaxOverlapX;
-        }
-
-        // Is the limit area Y less than the current view Y?
-        if ( mViewLimitArea.y < pCameraView->mDestinationArea.len_y() )
-        {
-            // Yes, so calculate center of view.
-            const F32 viewCenterY = mViewLimitMin.y + ( mViewLimitArea.y * 0.5f );
-
-            // Half Camera Height.
-            const F32 halfCameraY = pCameraView->mDestinationArea.len_y() * 0.5f;
-
-            // Calculate Min/Max Y.
-            pCameraView->mSceneMin.y = viewCenterY - halfCameraY;
-            pCameraView->mSceneMax.y = viewCenterY + halfCameraY;
-        }
-        else
-        {
-            // No, so calculate window min overlap.
-            const F32 windowMinOverlapY = getMax(0.0f, mViewLimitMin.y - pCameraView->mSceneMin.y);
-
-            // Calculate window max overlap.
-            const F32 windowMaxOverlapY = getMin(0.0f, mViewLimitMax.y - pCameraView->mSceneMax.y);
-
-            // Adjust Window.
-            pCameraView->mSceneMin.y += windowMinOverlapY + windowMaxOverlapY;
-            pCameraView->mSceneMax.y += windowMinOverlapY + windowMaxOverlapY;
-        }
-
-        // Recalculate destination area.
-        pCameraView->mDestinationArea.point  = pCameraView->mSceneMin;
-        pCameraView->mDestinationArea.extent = pCameraView->mSceneMax - pCameraView->mSceneMin;
-
-        // Inset Window by Zoom Factor (if it's big enough to do so).
-        if (    pCameraView->mDestinationArea.extent.x > (zoomFactorX*2.0f) &&
-                pCameraView->mDestinationArea.extent.y > (zoomFactorY*2.0f) )
-        {
-            pCameraView->mDestinationArea.inset( zoomFactorX, zoomFactorY );
-        }
+       pCameraView->limitView( mViewLimitRect );
     }
 
     // Calculate Scene Window Scale.
@@ -1639,44 +1527,6 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
     // Calculate current camera View ( if needed ).
     calculateCameraView( &mCameraCurrent );
 
-    Point2F sceneSize = mCameraCurrent.mSourceArea.extent;
-    
-    // Fetch current camera.
-//    const Point2F& sceneWindowScale = mCameraCurrent.mSceneWindowScale;
-    Point2F sceneMin = mCameraCurrent.mSceneMin;
-    Point2F sceneMax = mCameraCurrent.mSceneMax;
-
-    // Fetch bounds.
-//    const RectI& bounds = getBounds();
-//    const Point2I globalTopLeft( updateRect.point.x, updateRect.point.y );
-//    const Point2I globalBottomRight( updateRect.point.x + updateRect.extent.x, updateRect.point.y + updateRect.extent.y );
-//    const Point2I localTopLeft = globalToLocalCoord( globalTopLeft );
-//    const Point2I localBottomRight = globalToLocalCoord( globalBottomRight );
-//
-//    // Clip top?
-//    if ( localTopLeft.y > 0 )
-//    {
-//        sceneMax.y -= localTopLeft.y * sceneWindowScale.y;
-//    }
-//
-//    // Clip left?
-//    if ( localTopLeft.x > 0 )
-//    {
-//        sceneMin.x += localTopLeft.x * sceneWindowScale.x;
-//    }
-//
-//    // Clip bottom?
-//    if ( localBottomRight.y < bounds.extent.y )
-//    {
-//        sceneMin.y += (bounds.extent.y - localBottomRight.y ) * sceneWindowScale.y;
-//    }
-//
-//    // Clip right?
-//    if ( localBottomRight.x < bounds.extent.x )
-//    {
-//        sceneMax.x -= (bounds.extent.x - localBottomRight.x ) * sceneWindowScale.x;
-//    }
-//
     // Add camera shake offset if active.
     if ( mCameraShaking )
     {
@@ -1693,9 +1543,7 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
     // Create a scene render state.
     SceneRenderState sceneRenderState(
         mCameraCurrent,
-        mRenderLayerMask,
         mRenderGroupMask,
-        Vector2( mCameraCurrent.mSceneWindowScale ),
         &debugStats,
         this );
 

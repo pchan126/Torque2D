@@ -111,6 +111,7 @@ private:
     typedef BehaviorComponent Parent;
 
 public:
+    friend class Layer;
     friend class Scene;
     friend class SceneWindow;
     friend class ContactFilter;

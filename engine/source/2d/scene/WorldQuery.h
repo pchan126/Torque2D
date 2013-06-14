@@ -113,7 +113,7 @@ private:
     bool                        mCheckAABB;
     bool                        mCheckOOBB;
     bool                        mCheckCircle;
-    typeWorldQueryResultVector  mLayeredQueryResults[MAX_LAYERS_SUPPORTED];
+    Vector<typeWorldQueryResultVector>  mLayeredQueryResults;
     typeWorldQueryResultVector  mQueryResults;
     bool                        mIsRaycastQueryResult;
     typeSceneObjectVector       mAlwaysInScopeSet;

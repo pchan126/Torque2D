@@ -97,7 +97,7 @@ void SpriteBatch::prepareRender( SceneRenderObject* pSceneRenderObject, const Sc
     pSceneRenderQueue->setSortMode( getBatchSortMode() );
 
     // Calculate local AABB.
-    const b2AABB localAABB = calculateLocalAABB( pSceneRenderState->mRenderAABB );
+    const b2AABB localAABB = calculateLocalAABB( pSceneRenderState->mRenderCamera.getAABB() );
 
     // Do we have a sprite batch query?
     if ( mpSpriteBatchQuery != NULL )

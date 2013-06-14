@@ -762,87 +762,18 @@ ConsoleMethod(SceneWindow, setRenderGroups, void, 3, 2 + MASK_BITCOUNT, "(groups
    object->setRenderGroups(mask);
 }
 
-//-----------------------------------------------------------------------------
 
-ConsoleMethod(SceneWindow, setRenderLayers, void, 3, 2 + MASK_BITCOUNT, "(layers$) - Sets the render layers(s)."
-              "@param The layer numbers you wish to set.\n"
-              "@return No return value.")
-{
-   // The mask.
-   U32 mask = 0;
-
-   // Grab the element count of the first parameter.
-   U32 elementCount = Utility::mGetStringElementCount(argv[2]);
-
-   // Make sure we get at least one number.
-   if (elementCount < 1)
-   {
-      Con::warnf("SceneWindow::setRenderLayers() - Invalid number of parameters!");
-      return;
-   }
-
-   // Space separated list.
-   if (argc == 3)
-   {
-      // Convert the string to a mask.
-      for (U32 i = 0; i < elementCount; i++)
-      {
-         S32 bit = dAtoi(Utility::mGetStringElement(argv[2], i));
-         
-         // Make sure the group is valid.
-         if ((bit < 0) || (bit >= MASK_BITCOUNT))
-         {
-            Con::warnf("SceneWindow::setRenderLayers() - Invalid layer specified (%d); skipped!", bit);
-            continue;
-         }
-         
-         mask |= (1 << bit);
-      }
-   }
-
-   // Comma separated list.
-   else
-   {
-      // Convert the list to a mask.
-      for ( U32 i = 2; i < (U32)argc; i++ )
-      {
-         S32 bit = dAtoi(argv[i]);
-         
-         // Make sure the group is valid.
-         if ((bit < 0) || (bit >= MASK_BITCOUNT))
-         {
-            Con::warnf("SceneWindow::setRenderLayers() - Invalid layer specified (%d); skipped!", bit);
-            continue;
-         }
-
-         mask |= (1 << bit);
-      }
-   }
-   // Set Collision Groups.
-   object->setRenderLayers(mask);
-}
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(SceneWindow, setRenderMasks, void, 3, 4, "(layerMask, groupMask) - Sets the layer/group mask which control what is rendered."
-              "@param layermask The bitmask for setting the layers to render\n"
+ConsoleMethod(SceneWindow, setRenderMasks, void, 3, 3, "(groupMask) - Sets the group mask which control what is rendered."
               "@param groupmask The bitmask for setting the groups to render\n"
               "@return No return value.")
 {
     // Set Render Masks.
-   if( argc < 4 )
-      object->setRenderLayers( dAtoi( argv[2] ) );
-   else
       object->setRenderMasks( dAtoi(argv[2]), dAtoi(argv[3]) );
 }   
 
-//-----------------------------------------------------------------------------
-
-ConsoleMethod(SceneWindow, getRenderLayerMask, S32, 2, 2, "() - Gets the layer mask which controls what is rendered."
-              "@returns The bit mask corresponding to the layers which are to be rendered")
-{
-   return object->getRenderLayerMask();
-}   
 
 //-----------------------------------------------------------------------------
 
@@ -1067,74 +998,13 @@ ConsoleMethod(SceneWindow, setObjectInputEventGroupFilter, void, 3, 2 + MASK_BIT
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(SceneWindow, setObjectInputEventLayerFilter, void, 3, 2 + MASK_BITCOUNT, "(layers$) Sets the input events layer filter."
-              "@param The list of layers to filter input events with.\n"
-              "@return No return value.")
-{
-   // The mask.
-   U32 mask = 0;
-
-   // Grab the element count of the first parameter.
-   U32 elementCount = Utility::mGetStringElementCount(argv[2]);
-
-   // Make sure we get at least one number.
-   if (elementCount < 1)
-   {
-      Con::warnf("SceneWindow::setObjectInputEventLayerFilter() - Invalid number of parameters!");
-      return;
-   }
-
-   // Space separated list.
-   if (argc == 3)
-   {
-      // Convert the string to a mask.
-      for (U32 i = 0; i < elementCount; i++)
-      {
-         S32 bit = dAtoi(Utility::mGetStringElement(argv[2], i));
-         
-         // Make sure the group is valid.
-         if ((bit < 0) || (bit >= MASK_BITCOUNT))
-         {
-            Con::warnf("SceneWindow::setObjectInputEventLayerFilter() - Invalid layer specified (%d); skipped!", bit);
-            continue;
-         }
-         
-         mask |= (1 << bit);
-      }
-   }
-
-   // Comma separated list.
-   else
-   {
-      // Convert the list to a mask.
-      for ( U32 i = 2; i < (U32)argc; i++ )
-      {
-         S32 bit = dAtoi(argv[i]);
-         
-         // Make sure the group is valid.
-         if ((bit < 0) || (bit >= MASK_BITCOUNT))
-         {
-            Con::warnf("SceneWindow::setObjectInputEventLayerFilter() - Invalid layer specified (%d); skipped!", bit);
-            continue;
-         }
-
-         mask |= (1 << bit);
-      }
-   }
-
-   // Set layer filter.
-   object->setObjectInputEventLayerFilter(mask);
-}
-
-//-----------------------------------------------------------------------------
-
-ConsoleMethod(SceneWindow, setObjectInputEventFilter, void, 4, 5, "(groupMask, layerMask, [useInvisibleFilter?]) Sets input filter for input events.")
+ConsoleMethod(SceneWindow, setObjectInputEventFilter, void, 4, 5, "(groupMask, [useInvisibleFilter?]) Sets input filter for input events.")
 {
     // Calculate Use Invisible Flag.
     bool useInvisible = argc >= 5 ? dAtob(argv[4]) : true;
 
     // Set input event filter.
-    object->setObjectInputEventFilter( dAtoi(argv[2]), dAtoi(argv[3]), useInvisible );
+    object->setObjectInputEventFilter( dAtoi(argv[2]), useInvisible );
 }
 
 //-----------------------------------------------------------------------------

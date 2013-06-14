@@ -59,9 +59,9 @@ protected:
 //   /// The array of active material hooks indexed 
 //   /// by a MatInstanceHookType.
 //   Vector<MatInstanceHook*> mHooks;
-//
-//   ///
-//   MatFeaturesDelegate mFeaturesDelegate;
+
+   ///
+   MatFeaturesDelegate mFeaturesDelegate;
 
    /// Should be true if init has been called and it succeeded.
    /// It is up to the derived class to set this variable appropriately.
@@ -204,7 +204,7 @@ public:
    bool hasNormalMap() const { return mHasNormalMaps; }
 
    ///
-//   MatFeaturesDelegate& getFeaturesDelegate() { return mFeaturesDelegate; }
+   MatFeaturesDelegate& getFeaturesDelegate() { return mFeaturesDelegate; }
 
    /// Returns true if this MatInstance is built from a CustomMaterial.
    virtual bool isCustomMaterial() const = 0;

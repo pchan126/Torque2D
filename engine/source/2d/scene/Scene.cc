@@ -24,9 +24,7 @@
 #include "Scene.h"
 #endif
 
-#ifndef _DGL_H_
 #include "graphics/gfxDevice.h"
-#endif
 
 #ifndef _CONSOLETYPES_H_
 #include "console/consoleTypes.h"
@@ -55,6 +53,8 @@
 #ifndef _PARTICLE_SYSTEM_H_
 #include "2d/core/particleSystem.h"
 #endif
+
+#include "Layer.h"
 
 // Script bindings.
 #include "Scene_ScriptBinding.h"
@@ -182,10 +182,6 @@ Scene::Scene() :
     VECTOR_SET_ASSOCIATION( mEndContacts );
     VECTOR_SET_ASSOCIATION( mAssetPreloads );
      
-    // Initialize layer sort mode.
-    for ( U32 n = 0; n < MAX_LAYERS_SUPPORTED; ++n )
-       mLayerSortModes[n] = SceneRenderQueue::RENDER_SORT_NEWEST;
-
     // Set debug stats for batch renderer.
     mBatchRenderer.setDebugStats( &mDebugStats );
 
@@ -312,13 +308,13 @@ void Scene::initPersistFields()
     // Lighting
     addField("AmbientLighting", TypeColorF, Offset(mSceneLighting, Scene), &writeSceneLight, "");
     
-    // Layer sort modes.
-    char buffer[64];
-    for ( U32 n = 0; n < MAX_LAYERS_SUPPORTED; n++ )
-    {
-       dSprintf( buffer, 64, "layerSortMode%d", n );
-       addField( buffer, TypeEnum, OffsetNonConst(mLayerSortModes[n], Scene), &writeLayerSortMode, 1, &SceneRenderQueue::renderSortTable, "");
-    }
+//    // Layer sort modes.
+//    char buffer[64];
+//    for ( U32 n = 0; n < MAX_LAYERS_SUPPORTED; n++ )
+//    {
+//       dSprintf( buffer, 64, "layerSortMode%d", n );
+//       addField( buffer, TypeEnum, OffsetNonConst(mLayerSortModes[n], Scene), &writeLayerSortMode, 1, &SceneRenderQueue::renderSortTable, "");
+//    }
 
     addProtectedField("Controllers", TypeSimObjectPtr, Offset(mControllers, Scene), &defaultProtectedNotSetFn, &defaultProtectedGetFn, &defaultProtectedNotWriteFn, "The scene controllers to use.");
     
@@ -970,14 +966,9 @@ void Scene::sceneRender( const SceneRenderState* pSceneRenderState )
 
     GFX->pushProjectionMatrix();
 
-    Point2F sceneSize = pSceneRenderState->mRenderCamera.mDestinationArea.extent;
-    // Calculate Zoom Reciprocal.
-    
     // Set orthographic projection.
     GFX->pushWorldMatrix();
-    MatrixF ortho = MatrixF(true);
-    ortho.setOrtho(-sceneSize.x/2, sceneSize.x/2, -sceneSize.y/2, sceneSize.y/2, 0.0f, MAX_LAYERS_SUPPORTED);
-    GFX->setProjectionMatrix(ortho);
+    GFX->setProjectionMatrix(pSceneRenderState->mRenderCamera.getCameraProjOrtho());
 
     // Set batch renderer wireframe mode.
     mBatchRenderer.setWireframeMode( getDebugMask() & SCENE_DEBUG_WIREFRAME_RENDER );
@@ -986,23 +977,15 @@ void Scene::sceneRender( const SceneRenderState* pSceneRenderState )
     PROFILE_START(Scene_RenderSceneVisibleQuery);
 
     // Rotate the render AABB by the camera angle.
-    b2AABB cameraAABB;
-    CoreMath::mRotateAABB( pSceneRenderState->mRenderAABB, pSceneRenderState->mRenderCamera.mCameraAngle, cameraAABB );
+    b2AABB cameraAABB = pSceneRenderState->mRenderCamera.getRotatedAABB();
 
-    // Rotate the world matrix by the camera angle.
-    const Vector2& cameraPosition = pSceneRenderState->mRenderCamera.mDestinationArea.centre();
-   
-    MatrixF vm = GFX->getViewMatrix();
-    vm.translate(cameraPosition.x, cameraPosition.y, 0.0f);
-    vm = vm.inverse();
-    vm.rotateZ(pSceneRenderState->mRenderCamera.mCameraAngle);
-    GFX->setViewMatrix(vm);
+    GFX->setViewMatrix(pSceneRenderState->mRenderCamera.getCameraViewMatrix());
 
     // Clear world query.
     mpWorldQuery->clearQuery();
 
     // Set filter.
-    WorldQueryFilter queryFilter( pSceneRenderState->mRenderLayerMask, pSceneRenderState->mRenderGroupMask, true, true, false, false );
+    WorldQueryFilter queryFilter( pSceneRenderState->mRenderGroupMask, true, true, false, false );
     mpWorldQuery->setQueryFilter( queryFilter );
 
     // Query render AABB.
@@ -1025,7 +1008,7 @@ void Scene::sceneRender( const SceneRenderState* pSceneRenderState )
         SceneRenderQueue* pSceneRenderQueue = SceneRenderQueueFactory.createObject();      
 
         // Yes so step through layers.
-        for ( S32 layer = MAX_LAYERS_SUPPORTED-1; layer >= 0 ; layer-- )
+        for ( S32 layer = mLayers.size()-1; layer >= 0 ; layer-- )
         {
             // Fetch layer.
             typeWorldQueryResultVector& layerResults = mpWorldQuery->getLayeredQueryResults( layer );
@@ -1099,7 +1082,7 @@ void Scene::sceneRender( const SceneRenderState* pSceneRenderState )
                     PROFILE_SCOPE(Scene_RenderSceneLayerSorting);
 
                     // Yes, so fetch layer sort mode.
-                    SceneRenderQueue::RenderSort& mode = mLayerSortModes[layer];
+                    SceneRenderQueue::RenderSort mode = mLayers[layer].getSortMode();
 
                     // Temporarily switch to normal sort if batch sort but batcher disabled.
                     if ( !mBatchRenderer.getBatchEnabled() && mode == SceneRenderQueue::RENDER_SORT_BATCH )
@@ -1358,6 +1341,11 @@ void Scene::addToScene( SceneObject* pSceneObject )
     // Add scene object.
     mSceneObjects.push_back( pSceneObject );
 
+    if (mLayers.size() < pSceneObject->getSceneLayer() )
+       mLayers.setSize(pSceneObject->getSceneLayer()+1);
+   
+    mLayers[pSceneObject->getSceneLayer()].addObject(pSceneObject);
+   
     // Register with the scene.
     pSceneObject->OnRegisterScene( this );
 
@@ -1397,7 +1385,9 @@ void Scene::removeFromScene( SceneObject* pSceneObject )
     // Dismount Any Camera.
     pSceneObject->dismountCamera();
 
-    // Remove from the SceneWindow last pickers
+    mLayers[pSceneObject->getSceneLayer()].removeObject(pSceneObject);
+
+   // Remove from the SceneWindow last pickers
     for( U32 i = 0; i < (U32)mAttachedSceneWindows.size(); ++i )
     {
         (dynamic_cast<SceneWindow*>(mAttachedSceneWindows[i]))->removeFromInputEventPick(pSceneObject);
@@ -3576,7 +3566,7 @@ void Scene::setDebugSceneObject( SceneObject* pSceneObject )
 void Scene::setLayerSortMode( const U32 layer, const SceneRenderQueue::RenderSort sortMode )
 {
     // Is the layer valid?
-    if ( layer > MAX_LAYERS_SUPPORTED )
+    if ( layer > mLayers.size() )
     {
         // No, so warn.
         Con::warnf( "Scene::setLayerSortMode() - Layer '%d' is out of range.", layer );
@@ -3593,7 +3583,7 @@ void Scene::setLayerSortMode( const U32 layer, const SceneRenderQueue::RenderSor
         return;
     }
 
-    mLayerSortModes[layer] = sortMode;
+    mLayers[layer].setSortMode(sortMode);
 }
 
 //-----------------------------------------------------------------------------
@@ -3601,7 +3591,7 @@ void Scene::setLayerSortMode( const U32 layer, const SceneRenderQueue::RenderSor
 SceneRenderQueue::RenderSort Scene::getLayerSortMode( const U32 layer )
 {
     // Is the layer valid?
-    if ( layer > MAX_LAYERS_SUPPORTED )
+    if ( layer >= mLayers.size() )
     {
         // No, so warn.
         Con::warnf( "Scene::getLayerSortMode() - Layer '%d' is out of range.", layer );
@@ -3609,7 +3599,7 @@ SceneRenderQueue::RenderSort Scene::getLayerSortMode( const U32 layer )
         return SceneRenderQueue::RENDER_SORT_INVALID;
     }
 
-    return mLayerSortModes[layer];
+    return mLayers[layer].getSortMode();
 }
 
 //-----------------------------------------------------------------------------

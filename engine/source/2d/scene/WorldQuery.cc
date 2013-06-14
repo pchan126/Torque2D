@@ -45,12 +45,13 @@ WorldQuery::WorldQuery( Scene* pScene ) :
         mCheckCircle(false)
 {
     // Set debug associations.
-    for ( U32 n = 0; n < MAX_LAYERS_SUPPORTED; n++ )
+    mLayeredQueryResults.setSize(pScene->getLayerCount());
+    for ( U32 n = 0; n < mLayeredQueryResults.size(); n++ )
     {
         VECTOR_SET_ASSOCIATION( mLayeredQueryResults[n] );
     }
     VECTOR_SET_ASSOCIATION( mQueryResults );
-
+   
     // Clear the query.
     clearQuery();
 }
@@ -532,7 +533,7 @@ void WorldQuery::clearQuery( void )
     // Debug Profiling.
     PROFILE_SCOPE(WorldQuery_ClearQuery);
 
-    for ( U32 n = 0; n < MAX_LAYERS_SUPPORTED; n++ )
+    for ( U32 n = 0; n < mLayeredQueryResults.size(); n++ )
     {
         mLayeredQueryResults[n].clear();
     }
@@ -545,7 +546,7 @@ void WorldQuery::clearQuery( void )
 typeWorldQueryResultVector& WorldQuery::getLayeredQueryResults( const U32 layer ) 
 {
     // Sanity!
-    AssertFatal( layer < MAX_LAYERS_SUPPORTED, "WorldQuery::getResults() - Layer out of range." );
+    AssertFatal( layer < mLayeredQueryResults.size(), "WorldQuery::getResults() - Layer out of range." );
 
     return mLayeredQueryResults[ layer ];
 }
@@ -564,7 +565,7 @@ void WorldQuery::sortRaycastQueryResult( void )
     // Sort query results.
     dQsort( mQueryResults.address(), mQueryResults.size(), sizeof(WorldQueryResult), rayCastFractionSort );
 
-    for ( U32 layer = 0; layer < MAX_LAYERS_SUPPORTED; ++layer )
+    for ( U32 layer = 0; layer < mLayeredQueryResults.size(); ++layer )
     {
         // Fetch layer query results.
         typeWorldQueryResultVector& layerQueryResults = mLayeredQueryResults[layer];
@@ -624,11 +625,10 @@ bool WorldQuery::ReportFixture( b2Fixture* fixture )
             return true;
 
     // Fetch layer and group masks.
-    const U32 sceneLayerMask = pSceneObject->getSceneLayer();
     const U32 sceneGroupMask = pSceneObject->getSceneGroupMask();
 
     // Compare masks and report.
-    if ( (mQueryFilter.mSceneLayerMask.contains(sceneLayerMask)) && (mQueryFilter.mSceneGroupMask & sceneGroupMask) != 0 )
+    if ((mQueryFilter.mSceneGroupMask & sceneGroupMask) != 0 )
     {
         WorldQueryResult queryResult( pSceneObject );
         mLayeredQueryResults[pSceneObject->getSceneLayer()].push_back( queryResult );
@@ -673,7 +673,6 @@ F32 WorldQuery::ReportFixture( b2Fixture* fixture, const b2Vec2& point, const b2
         return 1.0f;
 
     // Fetch layer and group masks.
-    const U32 sceneLayerMask = pSceneObject->getSceneLayer();
     const U32 sceneGroupMask = pSceneObject->getSceneGroupMask();
 
     // Fetch collision shape index.
@@ -683,7 +682,7 @@ F32 WorldQuery::ReportFixture( b2Fixture* fixture, const b2Vec2& point, const b2
     AssertFatal( shapeIndex >= 0, "WorldQuery::ReportFixture() - Cannot find shape index reported on physics proxy of a fixture." );
 
     // Compare masks and report.
-    if ( (mQueryFilter.mSceneLayerMask.contains(sceneLayerMask)) != 0 && (mQueryFilter.mSceneGroupMask & sceneGroupMask) != 0 )
+    if ((mQueryFilter.mSceneGroupMask & sceneGroupMask) != 0 )
     {
         WorldQueryResult queryResult( pSceneObject, point, normal, fraction, (U32)shapeIndex );
         mLayeredQueryResults[pSceneObject->getSceneLayer()].push_back( queryResult );
@@ -771,11 +770,10 @@ bool WorldQuery::QueryCallback( S32 proxyId )
 
 
     // Fetch layer and group masks.
-    const U32 sceneLayerMask = pSceneObject->getSceneLayer();
     const U32 sceneGroupMask = pSceneObject->getSceneGroupMask();
 
     // Compare masks and report.
-    if ( (mQueryFilter.mSceneLayerMask.contains(sceneLayerMask)) != 0 && (mQueryFilter.mSceneGroupMask & sceneGroupMask) != 0 )
+    if (( mQueryFilter.mSceneGroupMask & sceneGroupMask) != 0 )
     {
         WorldQueryResult queryResult( pSceneObject );
         mLayeredQueryResults[pSceneObject->getSceneLayer()].push_back( queryResult );
@@ -831,11 +829,10 @@ F32 WorldQuery::RayCastCallback( const b2RayCastInput& input, S32 proxyId )
     }
 
     // Fetch layer and group masks.
-    const U32 sceneLayerMask = pSceneObject->getSceneLayer();
     const U32 sceneGroupMask = pSceneObject->getSceneGroupMask();
 
     // Compare masks and report.
-    if ( mQueryFilter.mSceneLayerMask.contains(sceneLayerMask) && (mQueryFilter.mSceneGroupMask & sceneGroupMask) != 0 )
+    if ((mQueryFilter.mSceneGroupMask & sceneGroupMask) != 0 )
     {
         WorldQueryResult queryResult( pSceneObject );
         mLayeredQueryResults[pSceneObject->getSceneLayer()].push_back( queryResult );
@@ -882,11 +879,10 @@ void WorldQuery::injectAlwaysInScope( void )
             continue;
 
         // Fetch layer and group masks.
-        const U32 sceneLayerMask = pSceneObject->getSceneLayer();
         const U32 sceneGroupMask = pSceneObject->getSceneGroupMask();
 
         // Compare masks and report.
-        if ( mQueryFilter.mSceneLayerMask.contains(sceneLayerMask) != 0 && (mQueryFilter.mSceneGroupMask & sceneGroupMask) != 0 )
+        if ( (mQueryFilter.mSceneGroupMask & sceneGroupMask) != 0 )
         {
             WorldQueryResult queryResult( pSceneObject );
             mLayeredQueryResults[pSceneObject->getSceneLayer()].push_back( queryResult );

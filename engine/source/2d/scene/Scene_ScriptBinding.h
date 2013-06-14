@@ -2458,7 +2458,7 @@ ConsoleMethod(Scene, pickArea, const char*, 4, 9, "(startx/y, endx/y, [sceneGrou
     WorldQuery* pWorldQuery = object->getWorldQuery( true );
 
     // Set filter.
-    WorldQueryFilter queryFilter( sceneLayerMask, sceneGroupMask, true, false, true, true );
+    WorldQueryFilter queryFilter( sceneGroupMask, true, false, true, true );
     pWorldQuery->setQueryFilter( queryFilter );
 
     // Calculate normalized AABB.
@@ -2533,11 +2533,10 @@ ConsoleMethod(Scene, pickArea, const char*, 4, 9, "(startx/y, endx/y, [sceneGrou
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(Scene, pickRay, const char*, 4, 9, "(startx/y, endx/y, [sceneGroupMask], [sceneLayerMask], [pickMode] ) Picks objects intersecting the specified ray with optional group/layer masks.\n"
+ConsoleMethod(Scene, pickRay, const char*, 4, 9, "(startx/y, endx/y, [sceneGroupMask], [pickMode] ) Picks objects intersecting the specified ray with optional group/layer masks.\n"
               "@param startx/y The coordinates of the start point as either (\"x y\") or (x,y)\n"
               "@param endx/y The coordinates of the end point as either (\"x y\") or (x,y)\n"
               "@param sceneGroupMask Optional scene group mask.  (-1) or empty string selects all groups.\n"
-              "@param sceneLayerMask Optional scene layer mask.  (-1) or empty string selects all layers.\n"
               "@param pickMode Optional mode 'any', 'aabb', 'oobb' or 'collision' (default is 'oobb').\n"
               "@return Returns list of object IDs.")
 {
@@ -2592,14 +2591,6 @@ ConsoleMethod(Scene, pickRay, const char*, 4, 9, "(startx/y, endx/y, [sceneGroup
             sceneGroupMask = dAtoi(argv[firstArg]);
     }
 
-    // Calculate scene layer mask.
-    U32 sceneLayerMask = MASK_ALL;
-    if ( (U32)argc > (firstArg + 1) )
-    {
-        if ( *argv[firstArg + 1] != 0 )
-            sceneLayerMask = dAtoi(argv[firstArg + 1]);
-    }
-
     // Calculate pick mode.
     Scene::PickMode pickMode = Scene::PICK_OOBB;
     if ( (U32)argc > (firstArg + 2))
@@ -2617,7 +2608,7 @@ ConsoleMethod(Scene, pickRay, const char*, 4, 9, "(startx/y, endx/y, [sceneGroup
     WorldQuery* pWorldQuery = object->getWorldQuery( true );
 
     // Set filter.
-    WorldQueryFilter queryFilter( sceneLayerMask, sceneGroupMask, true, false, true, true );
+    WorldQueryFilter queryFilter( sceneGroupMask, true, false, true, true );
     pWorldQuery->setQueryFilter( queryFilter );
 
     // Perform query.
@@ -2736,13 +2727,13 @@ ConsoleMethod(Scene, pickPoint, const char*, 3, 7, "(x / y, [sceneGroupMask], [s
             sceneGroupMask = dAtoi(argv[firstArg]);
     }
 
-    // Calculate scene layer mask.
-    U32 sceneLayerMask = MASK_ALL;
-    if ( (U32)argc > (firstArg + 1) )
-    {
-        if ( *argv[firstArg + 1] != 0 )
-            sceneLayerMask = dAtoi(argv[firstArg + 1]);
-    }
+//    // Calculate scene layer mask.
+//    U32 sceneLayerMask = MASK_ALL;
+//    if ( (U32)argc > (firstArg + 1) )
+//    {
+//        if ( *argv[firstArg + 1] != 0 )
+//            sceneLayerMask = dAtoi(argv[firstArg + 1]);
+//    }
 
     // Calculate pick mode.
     Scene::PickMode pickMode = Scene::PICK_OOBB;
@@ -2761,7 +2752,7 @@ ConsoleMethod(Scene, pickPoint, const char*, 3, 7, "(x / y, [sceneGroupMask], [s
     WorldQuery* pWorldQuery = object->getWorldQuery( true );
 
     // Set filter.
-    WorldQueryFilter queryFilter( sceneLayerMask, sceneGroupMask, true, false, true, true );
+    WorldQueryFilter queryFilter( sceneGroupMask, true, false, true, true );
     pWorldQuery->setQueryFilter( queryFilter );
 
     // Perform query.
@@ -2885,13 +2876,13 @@ ConsoleMethod(Scene, pickCircle, const char*, 4, 8, "(x / y, radius, [sceneGroup
             sceneGroupMask = dAtoi(argv[firstArg]);
     }
 
-    // Calculate scene layer mask.
-    U32 sceneLayerMask = MASK_ALL;
-    if ( (U32)argc > (firstArg + 1) )
-    {
-        if ( *argv[firstArg + 1] != 0 )
-            sceneLayerMask = dAtoi(argv[firstArg + 1]);
-    }
+//    // Calculate scene layer mask.
+//    U32 sceneLayerMask = MASK_ALL;
+//    if ( (U32)argc > (firstArg + 1) )
+//    {
+//        if ( *argv[firstArg + 1] != 0 )
+//            sceneLayerMask = dAtoi(argv[firstArg + 1]);
+//    }
 
     // Calculate pick mode.
     Scene::PickMode pickMode = Scene::PICK_OOBB;
@@ -2910,7 +2901,7 @@ ConsoleMethod(Scene, pickCircle, const char*, 4, 8, "(x / y, radius, [sceneGroup
     WorldQuery* pWorldQuery = object->getWorldQuery( true );
 
     // Set filter.
-    WorldQueryFilter queryFilter( sceneLayerMask, sceneGroupMask, true, false, true, true );
+    WorldQueryFilter queryFilter( sceneGroupMask, true, false, true, true );
     pWorldQuery->setQueryFilter( queryFilter );
 
     // Perform query.
@@ -3039,19 +3030,19 @@ ConsoleMethod(Scene, pickRayCollision, const char*, 4, 8, "(startx/y, endx/y, [s
             sceneGroupMask = dAtoi(argv[firstArg]);
     }
 
-    // Calculate scene layer mask.
-    U32 sceneLayerMask = MASK_ALL;
-    if ( (U32)argc > (firstArg + 1) )
-    {
-        if ( *argv[firstArg + 1] != 0 )
-            sceneLayerMask = dAtoi(argv[firstArg + 1]);
-    }
+//    // Calculate scene layer mask.
+//    U32 sceneLayerMask = MASK_ALL;
+//    if ( (U32)argc > (firstArg + 1) )
+//    {
+//        if ( *argv[firstArg + 1] != 0 )
+//            sceneLayerMask = dAtoi(argv[firstArg + 1]);
+//    }
 
     // Fetch world query and clear results.
     WorldQuery* pWorldQuery = object->getWorldQuery( true );
 
     // Set filter.
-    WorldQueryFilter queryFilter( sceneLayerMask, sceneGroupMask, true, false, true, true );
+    WorldQueryFilter queryFilter( sceneGroupMask, true, false, true, true );
     pWorldQuery->setQueryFilter( queryFilter );
 
     // Perform query.

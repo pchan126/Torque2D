@@ -551,6 +551,7 @@
 		D1C7B2D017659888009C9BBA /* renderPassManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1C7B2CD17659888009C9BBA /* renderPassManager.cpp */; };
 		D1C7B67D1765A117009C9BBA /* renderBinManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1C7B67B1765A117009C9BBA /* renderBinManager.cpp */; };
 		D1C7B6901765A375009C9BBA /* SceneRenderState.cc in Sources */ = {isa = PBXBuildFile; fileRef = D1C7B68F1765A375009C9BBA /* SceneRenderState.cc */; };
+		D1FE58131769907C00207569 /* Layer.cc in Sources */ = {isa = PBXBuildFile; fileRef = D1FE58111769907C00207569 /* Layer.cc */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -1672,6 +1673,8 @@
 		D1C7B67B1765A117009C9BBA /* renderBinManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = renderBinManager.cpp; sourceTree = "<group>"; };
 		D1C7B67C1765A117009C9BBA /* renderBinManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = renderBinManager.h; sourceTree = "<group>"; };
 		D1C7B68F1765A375009C9BBA /* SceneRenderState.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SceneRenderState.cc; sourceTree = "<group>"; };
+		D1FE58111769907C00207569 /* Layer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Layer.cc; sourceTree = "<group>"; };
+		D1FE58121769907C00207569 /* Layer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Layer.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1999,6 +2002,8 @@
 				867BAD4216AEC9050033868F /* WorldQuery.h */,
 				867BAD4316AEC9050033868F /* WorldQueryFilter.h */,
 				867BAD4416AEC9050033868F /* WorldQueryResult.h */,
+				D1FE58111769907C00207569 /* Layer.cc */,
+				D1FE58121769907C00207569 /* Layer.h */,
 			);
 			path = scene;
 			sourceTree = "<group>";
@@ -4101,6 +4106,7 @@
 				D1C7B2D017659888009C9BBA /* renderPassManager.cpp in Sources */,
 				D1C7B67D1765A117009C9BBA /* renderBinManager.cpp in Sources */,
 				D1C7B6901765A375009C9BBA /* SceneRenderState.cc in Sources */,
+				D1FE58131769907C00207569 /* Layer.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

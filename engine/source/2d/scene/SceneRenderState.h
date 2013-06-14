@@ -76,7 +76,9 @@ protected:
 
    /// The render pass which we are setting up with this scene state.
    RenderPassManager* mRenderPass;
-   
+   ///
+   MatrixF mDiffuseCameraTransform;
+
 public:
    
    /// Construct a new SceneRenderState.
@@ -88,19 +90,15 @@ public:
    ///   then Scene::getDefaultRenderPass() is used.
    /// @param usePostEffect Whether PostFX are enabled in the rendering pass.
    SceneRenderState( const CameraView renderCamera,
-                    U32 renderLayerMask,
                     U32 renderGroupMask,
-                    const Vector2& renderScale,
                     DebugStats* pDebugStats,
                     SimObject* pRenderHost );
    
    ~SceneRenderState();
    
     CameraView      mRenderCamera;
-    b2AABB          mRenderAABB;
-    U32             mRenderLayerMask;
+   
     U32             mRenderGroupMask;
-    Vector2         mRenderScale;
     DebugStats*     mpDebugStats;
     SimObject*      mpRenderHost;
 
@@ -125,6 +123,74 @@ public:
    
    /// Returns true if this is not one of the other rendering passes.
    bool isOtherPass() const { return mScenePassType >= SPT_Other; }
+   
+   /// @}
+
+   /// @name Transforms, projections, and viewports.
+   /// @{
+   
+//   /// Return the screen-space viewport rectangle.
+//   const RectI& getViewport() const { return getCullingState().getCameraState().getViewport(); }
+   
+   /// Return the world->view transform matrix.
+   const MatrixF& getWorldViewMatrix() const;
+   
+   /// Return the project transform matrix.
+   const MatrixF& getProjectionMatrix() const;
+   
+//   /// Returns the actual camera position.
+//   /// @see getDiffuseCameraPosition
+//   const Point3F& getCameraPosition() const { return getCullingState().getCameraState().getViewPosition(); }
+//   
+//   /// Returns the camera transform (view->world) this SceneRenderState is using.
+//   const MatrixF& getCameraTransform() const { return getCullingState().getCameraState().getViewWorldMatrix(); }
+   
+//   /// Returns the minimum distance something must be from the camera to not be culled.
+//   F32 getNearPlane() const { return getFrustum().getNearDist();   }
+//   
+//   /// Returns the maximum distance something can be from the camera to not be culled.
+//   F32 getFarPlane() const { return getFrustum().getFarDist();    }
+   
+//   /// Returns the camera vector normalized to 1 / far distance.
+//   const Point3F& getVectorEye() const { return mVectorEye; }
+   
+//   /// Returns the possibly overloaded world to screen scale.
+//   /// @see projectRadius
+//   const Point2F& getWorldToScreenScale() const { return mWorldToScreenScale; }
+   
+//   /// Set a new world to screen scale to overload
+//   /// future screen metrics operations.
+//   void setWorldToScreenScale( const Point2F& scale ) { mWorldToScreenScale = scale; }
+   
+   /// Returns the pixel size of the radius projected to the screen at a desired distance.
+   ///
+   /// Internally this uses the stored world to screen scale and viewport extents.  This
+   /// allows the projection to be overloaded in special cases like when rendering shadows
+   /// or reflections.
+   ///
+   /// @see getWorldToScreenScale
+   /// @see getViewportExtent
+//   F32 projectRadius( F32 dist, F32 radius ) const
+//   {
+//      // We fixup any negative or zero distance
+//      // so we don't get a divide by zero.
+//      dist = dist > 0.0f ? dist : 0.001f;
+//      return ( radius / dist ) * mWorldToScreenScale.y;
+//   }
+   
+   /// Returns the camera position used during the diffuse rendering pass which may be different
+   /// from the actual camera position.
+   ///
+   /// This is useful when doing level of detail calculations that need to be relative to the
+   /// diffuse pass.
+   ///
+   /// @see getCameraPosition
+   Point3F getDiffuseCameraPosition() const { return mDiffuseCameraTransform.getPosition(); }
+   const MatrixF& getDiffuseCameraTransform() const { return mDiffuseCameraTransform; }
+   
+   /// Set a new diffuse camera transform.
+   /// @see getDiffuseCameraTransform
+   void setDiffuseCameraTransform( const MatrixF &mat ) { mDiffuseCameraTransform = mat; }
    
    /// @}
 };

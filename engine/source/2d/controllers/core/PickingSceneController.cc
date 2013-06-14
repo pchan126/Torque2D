@@ -34,8 +34,7 @@ IMPLEMENT_CONOBJECT(PickingSceneController);
 //------------------------------------------------------------------------------
 
 PickingSceneController::PickingSceneController() :
-        mControlGroupMask( MASK_ALL ),
-        mControlLayerMask( MASK_ALL )
+        mControlGroupMask( MASK_ALL )
 {
 }
 
@@ -71,7 +70,7 @@ WorldQuery* PickingSceneController::prepareQueryFilter( Scene* pScene, const boo
     WorldQuery* pWorldQuery = pScene->getWorldQuery( clearQuery );
 
     // Set filter.
-    WorldQueryFilter queryFilter( mControlLayerMask, mControlGroupMask, true, false, true, true );
+    WorldQueryFilter queryFilter( mControlGroupMask, true, false, true, true );
     pWorldQuery->setQueryFilter( queryFilter );
 
     return pWorldQuery;

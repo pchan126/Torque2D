@@ -56,6 +56,8 @@ class RectI
    Point2I centre( void ) const;
    S32   len_x() const;
    S32   len_y() const;
+   Point2I min() const;
+   Point2I max() const;
 
    bool operator==(const RectI&) const;
    bool operator!=(const RectI&) const;
@@ -83,6 +85,8 @@ class RectF
    Point2F centre( void ) const;
    F32 len_x() const;
    F32 len_y() const;
+   Point2F min() const;
+   Point2F max() const;
 
    bool isValidRect() const { return (extent.x > 0 && extent.y > 0); }
 };
@@ -106,6 +110,8 @@ class RectD
    Point2D centre( void ) const;
    F64 len_x() const;
    F64 len_y() const;
+   Point2D min() const;
+   Point2D max() const;
 
    bool isValidRect() const { return (extent.x > 0 && extent.y > 0); }
 };
@@ -233,6 +239,18 @@ RectI::len_y() const
    return extent.y;
 }
 
+inline Point2I
+RectI::min() const
+{
+   return point;
+}
+
+inline Point2I
+RectI::max() const
+{
+   return point + extent;
+}
+
 inline bool
 RectI::operator==(const RectI& in_rCompare) const
 {
@@ -281,6 +299,18 @@ inline F32
 RectF::len_y() const
 {
    return extent.y;
+}
+
+inline Point2F
+RectF::min() const
+{
+   return point;
+}
+
+inline Point2F
+RectF::max() const
+{
+   return point + extent;
 }
 
 inline bool RectF::intersect(const RectF& clipRect)
@@ -342,6 +372,18 @@ inline F64
 RectD::len_y() const
 {
    return extent.y;
+}
+
+inline Point2D
+RectD::min() const
+{
+   return point;
+}
+
+inline Point2D
+RectD::max() const
+{
+   return point + extent;
 }
 
 inline bool RectD::intersect(const RectD& clipRect)

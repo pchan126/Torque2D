@@ -423,8 +423,6 @@ void GuiSceneObjectCtrl::onRender(Point2I offset, const RectI& updateRect)
       SceneRenderState guiSceneRenderState(
           CameraView(clipBounds),
           MASK_ALL,
-          MASK_ALL,
-          Vector2::getOne(),
           &debugStats,
           this );
 
@@ -457,8 +455,6 @@ void GuiSceneObjectCtrl::onRender(Point2I offset, const RectI& updateRect)
    captionRect.inset(1, 1);   
    GFX->getDrawUtil()->setBitmapModulation( mProfile->mFontColor );
    renderJustifiedText(captionRect.point, captionRect.extent, mCaption);
-
-   
 
    // Render Child Controls.
    renderChildControls(offset, updateRect);

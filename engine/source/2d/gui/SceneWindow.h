@@ -66,8 +66,6 @@ class CameraView
         mCameraZoom = 1.0f;
         mCameraAngle = 0.0f;
         mDestinationArea = area;
-        mSceneMin = Point2F(0.0f, 0.0f);
-        mSceneMax = Point2F(area.extent.x, area.extent.y);
         mSceneWindowScale = Point2F(1.0f, 1.0f);
     }
     
@@ -81,6 +79,143 @@ class CameraView
         mSceneMax = Point2F(10.0f, 10.0f);
         mSceneWindowScale = Point2F(1.0f, 1.0f);
     }
+   
+   MatrixF getCameraProjOrtho() const
+   {
+      Point2F sceneSize = mDestinationArea.extent;
+      
+      // Set orthographic projection.
+      MatrixF ortho(true);
+      ortho.setOrtho(-sceneSize.x/2, sceneSize.x/2, -sceneSize.y/2, sceneSize.y/2, 0.0f, MAX_LAYERS_SUPPORTED);
+      return ortho;
+   }
+
+   MatrixF getCameraViewMatrix() const
+   {
+      // Rotate the world matrix by the camera angle.
+      const Vector2& cameraPosition = mDestinationArea.centre();
+      
+      MatrixF vm(true);
+      vm.translate(cameraPosition.x, cameraPosition.y, 0.0f);
+      vm = vm.inverse();
+      vm.rotateZ(mCameraAngle);
+      return vm;
+   }
+
+   b2AABB getAABB() const
+   {
+      b2AABB AABB       = CoreMath::mRectFtoAABB( mSourceArea );
+      return AABB;
+   }
+
+   b2AABB getRotatedAABB() const
+   {
+      b2AABB AABB;
+      CoreMath::mRotateAABB( getAABB(), mCameraAngle, AABB );
+      return AABB;
+   }
+
+   void calculateView()
+   {
+      // Calculate Zoom Reciprocal.
+      const F32 zoomRecip = mCameraZoom > 0.0f ? 1.0f / mCameraZoom : mCameraZoom;
+      
+      // Calculate Zoom X/Y Factors.
+      const F32 zoomFactorX = (mSourceArea.len_x() - (mSourceArea.len_x() * zoomRecip))/2;
+      const F32 zoomFactorY = (mSourceArea.len_y() - (mSourceArea.len_y() * zoomRecip))/2;
+      
+      // Fetch Camera View.
+      mDestinationArea = mSourceArea;
+      
+      // Inset Window by Zoom Factor (if it's big enough to do so).
+      if ( mDestinationArea.extent.x > (zoomFactorX*2.0f) &&
+          mDestinationArea.extent.y > (zoomFactorY*2.0f) )
+      {
+         mDestinationArea.inset( zoomFactorX, zoomFactorY );
+      }
+      
+      // Ensure we've got a valid window.
+      if ( !mDestinationArea.isValidRect() )
+         // Make it real!
+         mDestinationArea.extent = Point2F(1,1);
+      
+      // Calculate Scene Min/Max.
+      mSceneMin = mDestinationArea.min();
+      mSceneMax = mDestinationArea.max();
+   }
+
+   void limitView(RectF limits)
+   {
+      // Calculate Zoom Reciprocal.
+      const F32 zoomRecip = mCameraZoom > 0.0f ? 1.0f / mCameraZoom : mCameraZoom;
+      
+      // Calculate Zoom X/Y Factors.
+      const F32 zoomFactorX = (mSourceArea.len_x() - (mSourceArea.len_x() * zoomRecip))/2;
+      const F32 zoomFactorY = (mSourceArea.len_y() - (mSourceArea.len_y() * zoomRecip))/2;
+
+      // Yes, so is the limit area X less than the current view X?
+      if ( limits.extent.x < mDestinationArea.len_x() )
+      {
+         // Yes, so calculate center of view.
+         const F32 viewCenterX = limits.centre().x;
+         
+         // Half Camera Width.
+         const F32 halfCameraX = mDestinationArea.len_x() * 0.5f;
+         
+         // Calculate Min/Max X.
+         mSceneMin.x = viewCenterX - halfCameraX;
+         mSceneMax.x = viewCenterX + halfCameraX;
+      }
+      else
+      {
+         // No, so calculate window min overlap.
+         const F32 windowMinOverlapX = getMax(0.0f, limits.point.x - mSceneMin.x);
+         
+         // Calculate window max overlap.
+         const F32 windowMaxOverlapX = getMin(0.0f, limits.point.x + limits.extent.x - mSceneMax.x);
+         
+         // Adjust Window.
+         mSceneMin.x += windowMinOverlapX + windowMaxOverlapX;
+         mSceneMax.x += windowMinOverlapX + windowMaxOverlapX;
+      }
+      
+      // Is the limit area Y less than the current view Y?
+      if ( limits.extent.y < mDestinationArea.len_y() )
+      {
+         // Yes, so calculate center of view.
+         const F32 viewCenterY = limits.centre().y;
+         
+         // Half Camera Height.
+         const F32 halfCameraY = mDestinationArea.len_y() * 0.5f;
+         
+         // Calculate Min/Max Y.
+         mSceneMin.y = viewCenterY - halfCameraY;
+         mSceneMax.y = viewCenterY + halfCameraY;
+      }
+      else
+      {
+         // No, so calculate window min overlap.
+         const F32 windowMinOverlapY = getMax(0.0f, limits.point.y - mSceneMin.y);
+         
+         // Calculate window max overlap.
+         const F32 windowMaxOverlapY = getMin(0.0f, limits.point.y + limits.extent.y - mSceneMax.y);
+         
+         // Adjust Window.
+         mSceneMin.y += windowMinOverlapY + windowMaxOverlapY;
+         mSceneMax.y += windowMinOverlapY + windowMaxOverlapY;
+      }
+      
+      // Recalculate destination area.
+      mDestinationArea.point  = mSceneMin;
+      mDestinationArea.extent = mSceneMax - mSceneMin;
+      
+      // Inset Window by Zoom Factor (if it's big enough to do so).
+      if (    mDestinationArea.extent.x > (zoomFactorX*2.0f) &&
+          mDestinationArea.extent.y > (zoomFactorY*2.0f) )
+      {
+         mDestinationArea.inset( zoomFactorX, zoomFactorY );
+      }
+   }
 };
 
 class SceneWindow : public GuiControl, public virtual Tickable
@@ -119,9 +254,7 @@ private:
 
     /// View Limit.
     bool                mViewLimitActive;
-    Vector2             mViewLimitMin;
-    Vector2             mViewLimitMax;
-    Vector2             mViewLimitArea;
+    RectF               mViewLimitRect;
 
     /// Camera Shaking.
     bool                mCameraShaking;
@@ -140,7 +273,6 @@ private:
     bool                mUseWindowInputEvents;
     bool                mUseObjectInputEvents;
     U32                 mInputEventGroupMaskFilter;
-    U32                 mInputEventLayerMaskFilter;
     bool                mInputEventInvisibleFilter;
     typeWorldQueryResultVector mInputEventQuery;
     typeSceneObjectVector mInputEventEntering;
@@ -183,7 +315,6 @@ public:
     virtual void setScene( Scene* pScene );
     virtual void resetScene( void );
     inline void setRenderGroups( const U32 groupMask) { mRenderGroupMask = groupMask; }
-    inline void setRenderLayers( const U32 layerMask) { mRenderLayerMask = layerMask; }
     inline void setRenderMasks( const U32 layerMask,const  U32 groupMask ) { mRenderLayerMask = layerMask; mRenderGroupMask = groupMask; }
     inline U32 getRenderLayerMask( void ) { return mRenderLayerMask; }
     inline U32 getRenderGroupMask( void ) { return mRenderGroupMask; }
@@ -204,9 +335,8 @@ public:
     inline bool             getUseBackgroundColor( void ) const         { return mUseBackgroundColor; }
 
     /// Input.
-    void setObjectInputEventFilter( const U32 groupMask, const U32 layerMask, const bool useInvisible = false );
+    void setObjectInputEventFilter( const U32 groupMask, const bool useInvisible = false );
     void setObjectInputEventGroupFilter( const U32 groupMask );
-    void setObjectInputEventLayerFilter( const U32 layerMask );
     void setObjectInputEventInvisibleFilter( const bool useInvisible );
     inline void setUseWindowInputEvents( const bool inputStatus ) { mUseWindowInputEvents = inputStatus; };
     inline void setUseObjectInputEvents( const bool inputStatus ) { mUseObjectInputEvents = inputStatus; };
@@ -233,8 +363,7 @@ public:
     void setViewLimitOn( const Vector2& limitMin, const Vector2& limitMax );
     inline void setViewLimitOff( void ) { mViewLimitActive = false; };
     inline bool isViewLimitOn( void ) const { return mViewLimitActive; }
-    inline Vector2 getViewLimitMin( void ) const { return mViewLimitMin; }
-    inline Vector2 getViewLimitMax( void ) const { return mViewLimitMax; }
+    inline RectF getViewLimit( void ) const { return mViewLimitRect; }
     inline void clampCameraViewLimit( void );
 
     /// Tick Processing.
@@ -281,7 +410,6 @@ public:
     void completeCameraMove( void );
     void undoCameraMove( const F32 interpolationTime );
     F32 interpolate( F32 from, F32 to, F32 delta );
-    F32 linearInterpolate( F32 from, F32 to, F32 delta );
     F32 sigmoidInterpolate( F32 from, F32 to, F32 delta );
     void updateCamera( void );
 

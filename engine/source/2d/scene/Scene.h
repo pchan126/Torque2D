@@ -88,6 +88,7 @@ class SceneObject;
 class SceneWindow;
 class SceneRenderState;
 class RenderPassManager;
+class Layer;
 
 ///-----------------------------------------------------------------------------
 
@@ -236,6 +237,8 @@ private:
     /// Scene controllers.
     SimObjectPtr<SimSet>	    mControllers;
 
+    Vector<Layer>              mLayers;
+   
     /// Asset pre-loads.
     typeAssetPtrVector          mAssetPreloads;
 
@@ -247,9 +250,6 @@ private:
     DebugStats                  mDebugStats;
     U32                         mDebugMask;
     SceneObject*                mpDebugSceneObject;
-
-    /// Layer sorting and draw order.
-    SceneRenderQueue::RenderSort mLayerSortModes[MAX_LAYERS_SUPPORTED];
 
     /// Batch rendering.
     BatchRender                 mBatchRenderer;
@@ -356,7 +356,7 @@ public:
     inline S32              getVelocityIterations( void ) const         { return mVelocityIterations; }
     inline void             setPositionIterations( const S32 iterations ) { mPositionIterations = iterations; }
     inline S32              getPositionIterations( void ) const         { return mPositionIterations; }
-
+   
     /// Scene occupancy.
     void                    clearScene( bool deleteObjects = true );
     void                    addToScene( SceneObject* pSceneObject );
@@ -654,6 +654,7 @@ public:
     inline SceneObject*     getDebugSceneObject( void ) const           { return mpDebugSceneObject; }
 
     /// Layer sorting.
+    U32 getLayerCount(void)            { return mLayers.size(); };
     void setLayerSortMode( const U32 layer, const SceneRenderQueue::RenderSort sortMode );
     SceneRenderQueue::RenderSort getLayerSortMode( const U32 layer );
 
