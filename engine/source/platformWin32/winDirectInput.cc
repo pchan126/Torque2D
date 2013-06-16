@@ -31,6 +31,8 @@
 
 //------------------------------------------------------------------------------
 // Static class variables:
+bool DInputManager::smKeyboardEnabled = true;
+bool DInputManager::smMouseEnabled = false;
 bool DInputManager::smJoystickEnabled = true;
 bool DInputManager::smXInputEnabled = true;
 
@@ -43,6 +45,7 @@ DInputManager::DInputManager()
    mEnabled          = false;
    mDInputLib        = NULL;
    mDInputInterface  = NULL;
+   mKeyboardActive   = mMouseActive = false;
    mJoystickActive = mXInputActive = true;
    mXInputLib        = NULL;
 
@@ -53,6 +56,8 @@ DInputManager::DInputManager()
 //------------------------------------------------------------------------------
 void DInputManager::init()
 {
+   Con::addVariable( "pref::Input::KeyboardEnabled",  TypeBool, &smKeyboardEnabled );
+   Con::addVariable( "pref::Input::MouseEnabled",     TypeBool, &smMouseEnabled );
    Con::addVariable( "pref::Input::JoystickEnabled",  TypeBool, &smJoystickEnabled);
 }
 
@@ -283,6 +288,135 @@ BOOL CALLBACK DInputManager::EnumDevicesProc( const DIDEVICEINSTANCE* pddi, LPVO
    }
 
    return (DIENUM_CONTINUE);
+}
+
+//------------------------------------------------------------------------------
+bool DInputManager::enableKeyboard()
+{
+   DInputManager* mgr = dynamic_cast<DInputManager*>( Input::getManager() );
+   if ( !mgr || !mgr->isEnabled() )
+      return( false );
+
+   if ( smKeyboardEnabled && mgr->isKeyboardActive() )
+      return( true );
+
+   smKeyboardEnabled = true;
+   if ( Input::isActive() )
+      smKeyboardEnabled = mgr->activateKeyboard();
+
+   if ( smKeyboardEnabled )
+   {
+      Con::printf( "DirectInput keyboard enabled." );
+   }
+   else
+   {
+      Con::warnf( "DirectInput keyboard failed to enable!" );
+   }
+
+   return( smKeyboardEnabled );
+}
+
+//------------------------------------------------------------------------------
+void DInputManager::disableKeyboard()
+{
+   DInputManager* mgr = dynamic_cast<DInputManager*>( Input::getManager() );
+   if ( !mgr || !mgr->isEnabled() || !smKeyboardEnabled )
+      return;
+
+   mgr->deactivateKeyboard();
+   smKeyboardEnabled = false;
+   Con::printf( "DirectInput keyboard disabled." );
+}
+
+//------------------------------------------------------------------------------
+bool DInputManager::isKeyboardEnabled()
+{
+   return( smKeyboardEnabled );
+}
+
+//------------------------------------------------------------------------------
+bool DInputManager::activateKeyboard()
+{
+   if ( !mEnabled || !Input::isActive() || !smKeyboardEnabled )
+      return( false );
+
+   // Acquire only one keyboard:
+   mKeyboardActive = acquire( KeyboardDeviceType, 0 );
+   return( mKeyboardActive );
+}
+
+//------------------------------------------------------------------------------
+void DInputManager::deactivateKeyboard()
+{
+   if ( mEnabled && mKeyboardActive )
+   {
+      unacquire( KeyboardDeviceType, SI_ANY );
+      mKeyboardActive = false;
+   }
+}
+
+//------------------------------------------------------------------------------
+bool DInputManager::enableMouse()
+{
+   DInputManager* mgr = dynamic_cast<DInputManager*>( Input::getManager() );
+   if ( !mgr || !mgr->isEnabled() )
+      return( false );
+
+   if ( smMouseEnabled && mgr->isMouseActive() )
+      return( true );
+
+   smMouseEnabled = true;
+   if ( Input::isActive() )
+      smMouseEnabled = mgr->activateMouse();
+
+   if ( smMouseEnabled )
+   {
+      Con::printf( "DirectInput mouse enabled." );
+   }
+   else
+   {
+      Con::warnf( "DirectInput mouse failed to enable!" );
+   }
+
+   return( smMouseEnabled );
+}
+
+//------------------------------------------------------------------------------
+void DInputManager::disableMouse()
+{
+   DInputManager* mgr = dynamic_cast<DInputManager*>( Input::getManager() );
+   if ( !mgr || !mgr->isEnabled() || !smMouseEnabled )
+      return;
+
+   mgr->deactivateMouse();
+   smMouseEnabled = false;
+   Con::printf( "DirectInput mouse disabled." );
+}
+
+//------------------------------------------------------------------------------
+bool DInputManager::isMouseEnabled()
+{
+   return( smMouseEnabled );
+}
+
+//------------------------------------------------------------------------------
+bool DInputManager::activateMouse()
+{
+   if ( !mEnabled || !Input::isActive() || !smMouseEnabled )
+      return( false );
+
+   mMouseActive = acquire( MouseDeviceType, SI_ANY );
+   return( mMouseActive );
+}
+
+//------------------------------------------------------------------------------
+void DInputManager::deactivateMouse()
+{
+   if ( mEnabled && mMouseActive )
+   {
+      unacquire( MouseDeviceType, SI_ANY );
+      mMouseActive = false;
+   }
 }
 
 //------------------------------------------------------------------------------

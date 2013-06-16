@@ -776,9 +776,9 @@ LRESULT PASCAL Win32Window::WindowProc( HWND hWnd, UINT message, WPARAM wParam, 
 		// some Dx clipping state that isn't getting restored properly
 		ValidateRect(hWnd,0);
 
-		// Skip it if we're dispatching.
-		if(Journal::IsDispatching())
-			break;
+		//// Skip it if we're dispatching.
+		//if(Journal::IsDispatching())
+		//	break;
 
 		if( window == NULL )
 			break;

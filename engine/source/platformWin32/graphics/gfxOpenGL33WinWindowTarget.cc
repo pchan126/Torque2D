@@ -43,7 +43,7 @@ void GFXOpenGL33WinWindowTarget::_onAppSignal(WindowId wnd, S32 event)
 
 bool GFXOpenGL33WinWindowTarget::present()
 {
-	HWND hwnd = GETHWND(getWindow());
+	HWND hwnd = getWin32WindowHandle();
 	SwapBuffers(GetDC(hwnd));
     return true;
 }

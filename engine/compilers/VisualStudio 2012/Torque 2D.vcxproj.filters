@@ -205,6 +205,12 @@
     <Filter Include="platformWin32\windowsManager">
       <UniqueIdentifier>{249e87c3-74af-44e4-859a-53d0e92b5899}</UniqueIdentifier>
     </Filter>
+    <Filter Include="lighting">
+      <UniqueIdentifier>{219b4fb6-1523-4f18-a468-5491f5203053}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lighting\common">
+      <UniqueIdentifier>{11d1ddf8-29fd-4fb8-8d67-9a0628eed2bb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\audio\audio.cc">
@@ -1089,9 +1095,6 @@
     <ClCompile Include="..\..\source\audio\AudioAsset.cc">
       <Filter>audio</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\graphics\DynamicTexture.cc">
-      <Filter>graphics</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\source\persistence\taml\tamlWriteNode.cc">
       <Filter>persistence\taml</Filter>
     </ClCompile>
@@ -1433,6 +1436,36 @@
     </ClCompile>
     <ClCompile Include="..\..\source\platformWin32\windowsManager\win32WindowInputGenerator.cpp">
       <Filter>platformWin32\windowsManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\2d\scene\Layer.cc">
+      <Filter>2d\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\delegates\process.cpp">
+      <Filter>delegates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\gui\containers\guiContainer.cpp">
+      <Filter>gui\containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphics\gfxEnums.cc">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\2d\scene\SceneRenderState.cc">
+      <Filter>2d\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\lighting\lightInfo.cpp">
+      <Filter>lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\lighting\lightManager.cpp">
+      <Filter>lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\lighting\lightQuery.cpp">
+      <Filter>lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\lighting\common\lightMapParams.cpp">
+      <Filter>lighting\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphics\bitmapUtils.cpp">
+      <Filter>graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2399,9 +2432,6 @@
     <ClInclude Include="..\..\source\audio\AudioAsset.h">
       <Filter>audio</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\graphics\DynamicTexture.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\persistence\taml\tamlWriteNode.h">
       <Filter>persistence\taml</Filter>
     </ClInclude>
@@ -2622,9 +2652,6 @@
       <Filter>testing</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\platform\platformFileIO.h">
-      <Filter>platform</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platform\platformInput_ScriptBinding.h">
       <Filter>platform</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\platformWin32\winWindow.h">
@@ -2993,6 +3020,36 @@
     </ClInclude>
     <ClInclude Include="..\..\source\platformWin32\windowsManager\win32WindowInputGenerator.h">
       <Filter>platformWin32\windowsManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platform\platformIntrinsics.visualc.h">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\2d\scene\Layer.h">
+      <Filter>2d\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\delegates\process.h">
+      <Filter>delegates</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\gui\containers\guiContainer.h">
+      <Filter>gui\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\lighting\lightInfo.h">
+      <Filter>lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\lighting\lightManager.h">
+      <Filter>lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\lighting\lightQuery.h">
+      <Filter>lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\lighting\common\lightMapParams.h">
+      <Filter>lighting\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\lighting\common\sceneLightingGlobals.h">
+      <Filter>lighting\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\bitmapUtils.h">
+      <Filter>graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

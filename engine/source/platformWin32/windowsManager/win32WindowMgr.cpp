@@ -9,6 +9,7 @@
 #include "./winDispatch.h"
 #include "delegates/process.h"
 #include "string/unicode.h"
+#include "game/version.h"
 
 // ------------------------------------------------------------------------
 
@@ -146,7 +147,7 @@ PlatformWindow *Win32WindowManager::createWindow(GFXDevice *device, const GFXVid
    w32w->mWindowHandle = CreateWindowEx(
       dwExStyle,
       Win32Window::getWindowClassName(),           //class name
-      String( getEngineProductString() ).utf16(),  //window title
+	  String(getVersionString()).utf16(),  //window title
       dwStyle,                                     //style - need clip siblings/children for opengl
       0,
       0,
@@ -228,7 +229,7 @@ void Win32WindowManager::_process()
    // needed ? If it is, this should be rewritten to use the one loop that
    // adjusts as needed based on _blocking and Journal::IsPlaying()
 
-   if (_blocking && !Journal::IsPlaying()) 
+   if (_blocking /*&& !Journal::IsPlaying()*/) 
    {
       // In blocking mode, we process one message at a time.
       if (GetMessage(&msg, NULL, 0, 0)) 

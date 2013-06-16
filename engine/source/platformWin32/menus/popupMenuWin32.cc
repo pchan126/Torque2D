@@ -268,7 +268,7 @@ bool PopupMenu::handleSelect(U32 command, const char *text /* = NULL */)
 
 //////////////////////////////////////////////////////////////////////////
 
-void PopupMenu::showPopup(S32 x /* = -1 */, S32 y /* = -1 */)
+void PopupMenu::showPopup(GuiCanvas *owner, S32 x /* = -1 */, S32 y /* = -1 */)
 {
    POINT p;
    if(x == -1 && y == -1)
@@ -289,7 +289,7 @@ void PopupMenu::showPopup(S32 x /* = -1 */, S32 y /* = -1 */)
 
 //////////////////////////////////////////////////////////////////////////
 
-void PopupMenu::attachToMenuBar(S32 pos, const char *title)
+void PopupMenu::attachToMenuBar(GuiCanvas *owner, S32 pos, const char *title)
 {
    if(winState.appMenu == NULL)
    {

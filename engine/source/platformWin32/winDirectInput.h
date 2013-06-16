@@ -71,9 +71,13 @@ class DInputManager : public InputManager
       HMODULE        mDInputLib;
       LPDIRECTINPUT8 mDInputInterface;
 
+      static bool smKeyboardEnabled;
+      static bool smMouseEnabled;
       static bool smJoystickEnabled;
       static bool smXInputEnabled;
 
+      bool mKeyboardActive;
+      bool mMouseActive;
       bool mJoystickActive;
       bool mXInputActive;
 
@@ -105,6 +109,20 @@ class DInputManager : public InputManager
 
       // DirectInput functions:
       static void init();
+
+      static bool enableKeyboard();
+      static void disableKeyboard();
+      static bool isKeyboardEnabled();
+      bool activateKeyboard();
+      void deactivateKeyboard();
+      bool isKeyboardActive()       { return( mKeyboardActive ); }
+
+      static bool enableMouse();
+      static void disableMouse();
+      static bool isMouseEnabled();
+      bool activateMouse();
+      void deactivateMouse();
+      bool isMouseActive()          { return( mMouseActive ); }
 
       static bool enableJoystick();
       static void disableJoystick();

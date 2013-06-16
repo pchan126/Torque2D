@@ -25,8 +25,9 @@
 #include "platformWin32/winDirectInput.h"
 #include "platform/event.h"
 #include "console/console.h"
+#include "delegates/process.h"
 
-#include "platform/platformInput_ScriptBinding.h"
+//#include "platform/platformInput_ScriptBinding.h"
 
 // Static class variables:
 InputManager*  Input::smManager;
@@ -36,6 +37,7 @@ U8             Input::smModifierKeys; //*** DAW: Added
 bool           Input::smLastKeyboardActivated;
 bool           Input::smLastMouseActivated;
 bool           Input::smLastJoystickActivated;
+InputEvent     Input::smInputEvent;
 
 static void fillAsciiTable();
 
@@ -121,6 +123,8 @@ void Input::init()
    fillAsciiTable();
    Con::printf( "" );
 
+   // Set ourselves to participate in per-frame processing.
+   Process::notify(Input::process, PROCESS_INPUT_ORDER);
 
 }
 
@@ -397,82 +401,6 @@ void Input::process()
       smManager->process();
 }
 
-//------------------------------------------------------------------------------
-// Accesses the global input manager to see if its mouse is enabled
-bool Input::isMouseEnabled()
-{
-	DInputManager* dInputManager = dynamic_cast<DInputManager*>( smManager );
-
-    if ( !dInputManager || !dInputManager->isEnabled() )
-        return( false );
-    
-	if (dInputManager->isMouseEnabled() && dInputManager->isMouseActive() )
-        return( true );
-    
-    return false;
-}
-
-//------------------------------------------------------------------------------
-// Accesses the global input manager to see if its keyboard is enabled
-bool Input::isKeyboardEnabled()
-{
-    DInputManager* dInputManager = dynamic_cast<DInputManager*>( smManager );
-
-    if ( !dInputManager || !dInputManager->isEnabled() )
-        return( false );
-    
-	if ( dInputManager->isKeyboardEnabled() && dInputManager->isKeyboardActive() )
-        return( true );
-    
-    return false;
-}
-
-//------------------------------------------------------------------------------
-// Access the global input manager and enables its mouse
-void Input::enableMouse()
-{
-    DInputManager::enableMouse();
-}
-
-//------------------------------------------------------------------------------
-// Access the global input manager and disables its mouse
-void Input::disableMouse()
-{
-    DInputManager::disableMouse();
-}
-
-//------------------------------------------------------------------------------
-// Access the global input manager and enables its keyboard
-void Input::enableKeyboard()
-{
-    DInputManager::enableKeyboard();
-}
-
-//------------------------------------------------------------------------------
-// Access the global input manager and enables its keyboard
-void Input::disableKeyboard()
-{
-    DInputManager::disableKeyboard();
-}
-
-//------------------------------------------------------------------------------
-bool Input::activateKeyboard()
-{
-	DInputManager* mgr = dynamic_cast<DInputManager*>( Input::getManager() );
-   
-	if ( mgr )
-      return( mgr->activateKeyboard() );
-
-   return( false );
-}
-
-//------------------------------------------------------------------------------
-void Input::deactivateKeyboard()
-{
-	DInputManager* mgr = dynamic_cast<DInputManager*>( Input::getManager() );
-   if ( mgr )
-      mgr->deactivateKeyboard();
-}
 
 //------------------------------------------------------------------------------
 bool Input::enableJoystick()
@@ -486,125 +414,6 @@ void Input::disableJoystick()
 	DInputManager::disableJoystick();
 }
 
-//------------------------------------------------------------------------------
-void Input::echoInputState()
-{
-    DInputManager* mgr = dynamic_cast<DInputManager*>( Input::getManager() );
-	
-	if ( mgr && mgr->isEnabled() )
-	{
-		Con::printf( "DirectInput is enabled %s.", Input::isActive() ? "and active" : "but inactive" );
-		
-		Con::printf( "- Keyboard is %sabled and %sactive.",
-            mgr->isKeyboardEnabled() ? "en" : "dis",
-            mgr->isKeyboardActive() ? "" : "in" );
-      
-		Con::printf( "- Mouse is %sabled and %sactive.",
-            mgr->isMouseEnabled() ? "en" : "dis",
-            mgr->isMouseActive() ? "" : "in" );
-      
-		Con::printf( "- Joystick is %sabled and %sactive.",
-            mgr->isJoystickEnabled() ? "en" : "dis",
-            mgr->isJoystickActive() ? "" : "in" );
-   }
-   else
-    {
-		Con::printf( "DirectInput is not enabled." );
-    }
-}
-
-//------------------------------------------------------------------------------
-void Input::setCursorPos(S32 x, S32 y)
-{   
-   POINT pt;   
-   pt.x = x;   
-   pt.y = y;   
-   ClientToScreen(winState.appWindow, &pt);   
-   SetCursorPos(pt.x, pt.y);
-}
-
-//------------------------------------------------------------------------------
-// Set the cursor to draw (true) or not (false)
-void Input::setCursorState(bool on)
-{
-   ShowCursor(on);
-}
-
-//------------------------------------------------------------------------------
-static struct { U32 id; LPTSTR resourceID; } sgCursorShapeMap[]=
-{
-   { CursorManager::curArrow,       IDC_ARROW },
-   { CursorManager::curWait,        IDC_WAIT },
-   { CursorManager::curPlus,        IDC_CROSS },
-   { CursorManager::curResizeVert,  IDC_SIZEWE },
-   { CursorManager::curResizeHorz,  IDC_SIZENS },
-   { CursorManager::curResizeAll,   IDC_SIZEALL },
-   { CursorManager::curIBeam,       IDC_IBEAM },
-   { CursorManager::curResizeNESW,  IDC_SIZENESW },
-   { CursorManager::curResizeNWSE,  IDC_SIZENWSE },
-   { 0,                             0 },
-};
-
-void Input::setCursorShape(U32 cursorID)
-{
-   LPTSTR resourceID = NULL;
-
-   for(S32 i = 0;sgCursorShapeMap[i].resourceID != NULL;++i)
-   {
-      if(cursorID == sgCursorShapeMap[i].id)
-      {
-         resourceID = sgCursorShapeMap[i].resourceID;
-         break;
-      }
-   }
-
-   if(resourceID == NULL)
-      return;
-
-   HCURSOR cur = LoadCursor(NULL, resourceID);
-   if(cur)
-      SetCursor(cur);
-}
-
-//------------------------------------------------------------------------------
-// Functions to change the cursor shape using the Input class.
-void Input::pushCursor(S32 cursorID)
-{
-   CursorManager* cm = getCursorManager();
-   if(cm)
-      cm->pushCursor(cursorID);
-}
-
-void Input::popCursor()
-{
-   CursorManager* cm = getCursorManager();
-   if(cm)
-      cm->popCursor();
-}
-
-void Input::refreshCursor()
-{
-   CursorManager* cm = getCursorManager();
-   if(cm)
-      cm->refreshCursor();
-}
-
-//------------------------------------------------------------------------------
-
-U32 Input::getDoubleClickTime()
-{
-   return GetDoubleClickTime();
-}
-
-S32 Input::getDoubleClickWidth()
-{
-   return GetSystemMetrics(SM_CXDOUBLECLK);
-}
-
-S32 Input::getDoubleClickHeight()
-{
-   return GetSystemMetrics(SM_CYDOUBLECLK);
-}
 
 //------------------------------------------------------------------------------
 InputManager* Input::getManager()
@@ -897,6 +706,16 @@ static U8 VcodeRemap[256] =
 U8 TranslateOSKeyCode(U8 vcode)
 {
    return VcodeRemap[vcode];
+}
+
+U8 TranslateKeyCodeToOS(U8 keycode)
+{
+   for(S32 i = 0;i < sizeof(VcodeRemap) / sizeof(U8);++i)
+   {
+      if(VcodeRemap[i] == keycode)
+         return i;
+   }
+   return 0;
 }
 
 //-----------------------------------------------------------------------------

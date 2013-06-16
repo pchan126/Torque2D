@@ -65,7 +65,7 @@ public:
 
 //   virtual U32 getTotalVideoMemory();
 
-//   virtual GFXCubemap * createCubemap();
+   virtual GFXCubemap * createCubemap();
 
    virtual F32 getFillConventionOffset() const { return 0.0f; }
 
@@ -107,8 +107,6 @@ public:
    virtual GFXOpenGL33WinShader* createShader();
     
    virtual void clear( U32 flags, ColorI color, F32 z, U32 stencil );
-   
-   GFXOpenGL33WinStateBlockRef getCurrentStateBlock() { return mCurrentGLStateBlock; }
    
    virtual void setupGenericShaders( GenericShaderType type = GSColor );
    
@@ -179,8 +177,6 @@ private:
     U32 mMaxShaderTextures;
 
    RectI mClip;
-
-   GFXOpenGL33WinStateBlockRef mCurrentGLStateBlock;
    
    GLenum mActiveTextureType[TEXTURE_STAGE_COUNT];
    

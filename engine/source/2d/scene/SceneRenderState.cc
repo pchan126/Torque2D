@@ -24,6 +24,7 @@ SceneRenderState::~SceneRenderState()
 const MatrixF& SceneRenderState::getWorldViewMatrix() const
 {
 //   return getRenderPass()->getMatrixSet().getWorldToCamera();
+	return MatrixF(true);
 }
 
 //-----------------------------------------------------------------------------
@@ -31,5 +32,6 @@ const MatrixF& SceneRenderState::getWorldViewMatrix() const
 const MatrixF& SceneRenderState::getProjectionMatrix() const
 {
 //   return getRenderPass()->getMatrixSet().getCameraToScreen();
+	return MatrixF(true);
 }
 

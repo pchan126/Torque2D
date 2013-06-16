@@ -1596,11 +1596,11 @@ String String::GetTrailingNumber(const char* str, S32& number)
       p--;
 
    // Need at least one digit!
-   if (!isdigit(*p))
+   if (!dIsdigit(*p))
       return base;
 
    // Back up to the first non-digit character
-   while ((p != base.c_str()) && isdigit(*p))
+   while ((p != base.c_str()) && dIsdigit(*p))
       p--;
 
    // Convert number => allow negative numbers, treat '_' as '-' for Maya

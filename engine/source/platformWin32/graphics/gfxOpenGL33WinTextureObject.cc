@@ -275,7 +275,7 @@ void GFXOpenGL33WinTextureObject::bind(U32 textureUnit) const
 //    Con::printf("texture bind %i", han);
 //   glEnable(mBinding);
   
-   GFXOpenGL33WinStateBlockRef sb = mGLDevice->getCurrentStateBlock();
+   GFXOpenGLStateBlockRef sb = mGLDevice->getCurrentStateBlock();
    AssertFatal(sb, "GFXOpenGL33WinTextureObject::bind - No active stateblock!");
    if (!sb)
       return;

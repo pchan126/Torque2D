@@ -381,12 +381,13 @@ void GFXOpenGL33WinDevice::setVertexStream( U32 stream, GFXVertexBuffer *buffer 
         mCurrentVB->prepare();
 }
 
-//GFXCubemap* GFXOpenGL33WinDevice::createCubemap()
-//{
-////    GFXOpenGLCubemap* cube = new GFXOpenGLCubemap();
-////    cube->registerResourceWithDevice(this);
-////    return cube;
-//};
+GFXCubemap* GFXOpenGL33WinDevice::createCubemap()
+{
+    //GFXOpenGLCubemap* cube = new GFXOpenGLCubemap();
+    //cube->registerResourceWithDevice(this);
+    //return cube;
+	return NULL;
+};
 
 void GFXOpenGL33WinDevice::clear(U32 flags, ColorI color, F32 z, U32 stencil)
 {
@@ -458,7 +459,7 @@ void GFXOpenGL33WinDevice::setStateBlockInternal(GFXStateBlock* block, bool forc
         glCurrent = NULL;
     
     glBlock->activate(glCurrent); // Doesn't use current yet.
-    mCurrentGLStateBlock = glBlock;
+    mCurrentGLStateBlock = (GFXOpenGLStateBlock*)glBlock;
 }
 
 ////------------------------------------------------------------------------------
@@ -670,7 +671,7 @@ void GFXOpenGL33WinDevice::_updateRenderTargets()
             
             win->makeActive();
             
-            if( win->mContext != static_cast<GFXOpenGL33WinDevice*>(GFX)->mContext )
+            if( win->mContext != *(static_cast<GFXOpenGL33WinDevice*>(GFX)->mContext ))
             {
                 mRTDirty = false;
                 GFX->updateStates(true);
