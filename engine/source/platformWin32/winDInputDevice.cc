@@ -868,7 +868,7 @@ bool DInputDevice::buildEvent( DWORD offset, S32 newData, S32 oldData )
    newEvent.deviceInst  = mDeviceID;
    newEvent.objType     = objInfo.mType;
    newEvent.objInst     = objInfo.mInst;
-   newEvent.modifier    = (InputModifiers)0;
+   newEvent.modifier    = (U32)0;
 
    switch ( newEvent.objType )
    {
@@ -1088,8 +1088,8 @@ void DInputDevice::rumble(float x, float y)
    }
 
    // Clamp the input floats to [0 - 1]
-   x = max(0, min(1, x));
-   y = max(0, min(1, y));
+   x = mClamp(x, 0, 1);
+   y = mClamp(y, 0, 1);
 
    if ( 1 == mNumForceFeedbackAxes )
    {

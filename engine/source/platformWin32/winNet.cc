@@ -72,112 +72,112 @@ static LRESULT PASCAL WinsockProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM
    Net::Error err;
    S32 bytesRead;
 
-   static ConnectedNotifyEvent notifyEvent;
-   static ConnectedReceiveEvent receiveEvent;
-   static ConnectedAcceptEvent acceptEvent;
+   //static ConnectedNotifyEvent notifyEvent;
+   //static ConnectedReceiveEvent receiveEvent;
+   //static ConnectedAcceptEvent acceptEvent;
 
-   switch(message)
-   {
-      case WM_USER:
-         error = WSAGETSELECTERROR(lParam);
-         event = WSAGETSELECTEVENT(lParam);
-         socket = wParam;
-         switch(event)
-         {
-            case FD_READ:
-               err = Net::recv(socket, receiveEvent.data, MaxPacketDataSize, &bytesRead);
-               if(err == Net::NoError && bytesRead != 0)
-               {
-                  receiveEvent.tag = socket;
-                  receiveEvent.size = ConnectedReceiveEventHeaderSize + bytesRead;
-                  Game->postEvent(receiveEvent);
-               }
-               break;
-            case FD_CONNECT:
-               notifyEvent.tag = socket;
-               if(error)
-                  notifyEvent.state = ConnectedNotifyEvent::ConnectFailed;
-               else
-                  notifyEvent.state = ConnectedNotifyEvent::Connected;
-               Game->postEvent(notifyEvent);
-               break;
-            case FD_CLOSE:
-               // see first if there is anything to read:
-               for(;;)
-               {
-                  err = Net::recv(socket, receiveEvent.data, MaxPacketDataSize, &bytesRead);
-                  if(err != Net::NoError || bytesRead == 0)
-                     break;
+   //switch(message)
+   //{
+   //   case WM_USER:
+   //      error = WSAGETSELECTERROR(lParam);
+   //      event = WSAGETSELECTEVENT(lParam);
+   //      socket = wParam;
+   //      switch(event)
+   //      {
+   //         case FD_READ:
+   //            err = Net::recv(socket, receiveEvent.data, MaxPacketDataSize, &bytesRead);
+   //            if(err == Net::NoError && bytesRead != 0)
+   //            {
+   //               receiveEvent.tag = socket;
+   //               receiveEvent.size = ConnectedReceiveEventHeaderSize + bytesRead;
+   //               Game->postEvent(receiveEvent);
+   //            }
+   //            break;
+   //         case FD_CONNECT:
+   //            notifyEvent.tag = socket;
+   //            if(error)
+   //               notifyEvent.state = ConnectedNotifyEvent::ConnectFailed;
+   //            else
+   //               notifyEvent.state = ConnectedNotifyEvent::Connected;
+   //            Game->postEvent(notifyEvent);
+   //            break;
+   //         case FD_CLOSE:
+   //            // see first if there is anything to read:
+   //            for(;;)
+   //            {
+   //               err = Net::recv(socket, receiveEvent.data, MaxPacketDataSize, &bytesRead);
+   //               if(err != Net::NoError || bytesRead == 0)
+   //                  break;
 
-                  receiveEvent.tag = socket;
-                  receiveEvent.size = ConnectedReceiveEventHeaderSize + bytesRead;
-                  Game->postEvent(receiveEvent);
-               }
-               notifyEvent.tag = socket;
-               notifyEvent.state = ConnectedNotifyEvent::Disconnected;
-               Game->postEvent(notifyEvent);
-               break;
-            case FD_ACCEPT:
-               acceptEvent.portTag = socket;
-               acceptEvent.connectionTag = Net::accept(socket, &acceptEvent.address);
-               if(acceptEvent.connectionTag != InvalidSocket)
-               {
-                  Net::setBlocking(acceptEvent.connectionTag, false);
-                  WSAAsyncSelect(acceptEvent.connectionTag, winsockWindow, WM_USER, FD_READ | FD_CONNECT | FD_CLOSE);
-                  Game->postEvent(acceptEvent);
-               }
-               break;
-         }
-         break;
-      case WM_USER + 1:
-         error = WSAGETASYNCERROR(lParam);
-         bufLen = WSAGETASYNCBUFLEN(lParam);
-         HANDLE handle;
-         handle = HANDLE(wParam);
-         NameLookup **walk;
-         for(walk = &lookupList; *walk; walk = &((*walk)->nextLookup))
-         {
-            if((*walk)->lookupHandle == handle)
-            {
-               NameLookup *temp = *walk;
-               struct hostent *hp = (struct hostent *) temp->hostEntStruct;
+   //               receiveEvent.tag = socket;
+   //               receiveEvent.size = ConnectedReceiveEventHeaderSize + bytesRead;
+   //               Game->postEvent(receiveEvent);
+   //            }
+   //            notifyEvent.tag = socket;
+   //            notifyEvent.state = ConnectedNotifyEvent::Disconnected;
+   //            Game->postEvent(notifyEvent);
+   //            break;
+   //         case FD_ACCEPT:
+   //            acceptEvent.portTag = socket;
+   //            acceptEvent.connectionTag = Net::accept(socket, &acceptEvent.address);
+   //            if(acceptEvent.connectionTag != InvalidSocket)
+   //            {
+   //               Net::setBlocking(acceptEvent.connectionTag, false);
+   //               WSAAsyncSelect(acceptEvent.connectionTag, winsockWindow, WM_USER, FD_READ | FD_CONNECT | FD_CLOSE);
+   //               Game->postEvent(acceptEvent);
+   //            }
+   //            break;
+   //      }
+   //      break;
+   //   case WM_USER + 1:
+   //      error = WSAGETASYNCERROR(lParam);
+   //      bufLen = WSAGETASYNCBUFLEN(lParam);
+   //      HANDLE handle;
+   //      handle = HANDLE(wParam);
+   //      NameLookup **walk;
+   //      for(walk = &lookupList; *walk; walk = &((*walk)->nextLookup))
+   //      {
+   //         if((*walk)->lookupHandle == handle)
+   //         {
+   //            NameLookup *temp = *walk;
+   //            struct hostent *hp = (struct hostent *) temp->hostEntStruct;
 
-               if(error)
-               {
-                  notifyEvent.state = ConnectedNotifyEvent::DNSFailed;
-                  notifyEvent.tag = temp->socket;
-                  ::closesocket(temp->socket);
-               }
-               else
-               {
-                  SOCKADDR_IN ipAddr;
-                  memcpy(&ipAddr.sin_addr.s_addr, hp->h_addr, sizeof(IN_ADDR));
-                  ipAddr.sin_port = temp->port;
-                  ipAddr.sin_family = AF_INET;
+   //            if(error)
+   //            {
+   //               notifyEvent.state = ConnectedNotifyEvent::DNSFailed;
+   //               notifyEvent.tag = temp->socket;
+   //               ::closesocket(temp->socket);
+   //            }
+   //            else
+   //            {
+   //               SOCKADDR_IN ipAddr;
+   //               memcpy(&ipAddr.sin_addr.s_addr, hp->h_addr, sizeof(IN_ADDR));
+   //               ipAddr.sin_port = temp->port;
+   //               ipAddr.sin_family = AF_INET;
 
-                  notifyEvent.tag = temp->socket;
+   //               notifyEvent.tag = temp->socket;
 
-                  WSAAsyncSelect(temp->socket, winsockWindow, WM_USER, FD_READ | FD_CONNECT | FD_CLOSE);
-                  bool wserr = ::connect(temp->socket, (PSOCKADDR) &ipAddr, sizeof(ipAddr)); // always errors out
-                  if (wserr && WSAGetLastError() == WSAEWOULDBLOCK)
-                     notifyEvent.state = ConnectedNotifyEvent::DNSResolved;
-                  else {
-                     Con::printf("Connect error: %d", WSAGetLastError());
-                     ::closesocket(temp->socket);
-                     notifyEvent.state = ConnectedNotifyEvent::ConnectFailed;
-                  }
-               }
-               Game->postEvent(notifyEvent);
+   //               WSAAsyncSelect(temp->socket, winsockWindow, WM_USER, FD_READ | FD_CONNECT | FD_CLOSE);
+   //               bool wserr = ::connect(temp->socket, (PSOCKADDR) &ipAddr, sizeof(ipAddr)); // always errors out
+   //               if (wserr && WSAGetLastError() == WSAEWOULDBLOCK)
+   //                  notifyEvent.state = ConnectedNotifyEvent::DNSResolved;
+   //               else {
+   //                  Con::printf("Connect error: %d", WSAGetLastError());
+   //                  ::closesocket(temp->socket);
+   //                  notifyEvent.state = ConnectedNotifyEvent::ConnectFailed;
+   //               }
+   //            }
+   //            Game->postEvent(notifyEvent);
 
-               *walk = temp->nextLookup;
-               delete temp;
-               break;
-            }
-         }
-         break;
-      default:
-         return DefWindowProc( hWnd, message, wParam, lParam );
-   }
+   //            *walk = temp->nextLookup;
+   //            delete temp;
+   //            break;
+   //         }
+   //      }
+   //      break;
+   //   default:
+   //      return DefWindowProc( hWnd, message, wParam, lParam );
+   //}
    return 0;
 }
 
@@ -545,42 +545,42 @@ void Net::process()
 {
    SOCKADDR sa;
 
-   PacketReceiveEvent receiveEvent;
-   for(;;)
-   {
-      S32 addrLen = sizeof(sa);
-      S32 bytesRead = SOCKET_ERROR;
-      if(udpSocket != INVALID_SOCKET)
-         bytesRead = recvfrom(udpSocket, (char *) receiveEvent.data, MaxPacketDataSize, 0, &sa, &addrLen);
-      if(bytesRead == SOCKET_ERROR && ipxSocket != INVALID_SOCKET)
-      {
-         addrLen = sizeof(sa);
-         bytesRead = recvfrom(ipxSocket, (char *) receiveEvent.data, MaxPacketDataSize, 0, &sa, &addrLen);
-      }
+   //PacketReceiveEvent receiveEvent;
+   //for(;;)
+   //{
+   //   S32 addrLen = sizeof(sa);
+   //   S32 bytesRead = SOCKET_ERROR;
+   //   if(udpSocket != INVALID_SOCKET)
+   //      bytesRead = recvfrom(udpSocket, (char *) receiveEvent.data, MaxPacketDataSize, 0, &sa, &addrLen);
+   //   if(bytesRead == SOCKET_ERROR && ipxSocket != INVALID_SOCKET)
+   //   {
+   //      addrLen = sizeof(sa);
+   //      bytesRead = recvfrom(ipxSocket, (char *) receiveEvent.data, MaxPacketDataSize, 0, &sa, &addrLen);
+   //   }
 
-      if(bytesRead == SOCKET_ERROR)
-         break;
+   //   if(bytesRead == SOCKET_ERROR)
+   //      break;
 
-      if(sa.sa_family == AF_INET)
-         IPSocketToNetAddress((SOCKADDR_IN *) &sa, &receiveEvent.sourceAddress);
-      else if(sa.sa_family == AF_IPX)
-         IPXSocketToNetAddress((SOCKADDR_IPX *) &sa, &receiveEvent.sourceAddress);
-      else
-         continue;
+   //   if(sa.sa_family == AF_INET)
+   //      IPSocketToNetAddress((SOCKADDR_IN *) &sa, &receiveEvent.sourceAddress);
+   //   else if(sa.sa_family == AF_IPX)
+   //      IPXSocketToNetAddress((SOCKADDR_IPX *) &sa, &receiveEvent.sourceAddress);
+   //   else
+   //      continue;
 
-      NetAddress &na = receiveEvent.sourceAddress;
-      if(na.type == NetAddress::IPAddress &&
-            na.netNum[0] == 127 &&
-            na.netNum[1] == 0 &&
-            na.netNum[2] == 0 &&
-            na.netNum[3] == 1 &&
-            na.port == netPort)
-         continue;
-      if(bytesRead <= 0)
-         continue;
-      receiveEvent.size = PacketReceiveEventHeaderSize + bytesRead;
-      Game->postEvent(receiveEvent);
-   }
+   //   NetAddress &na = receiveEvent.sourceAddress;
+   //   if(na.type == NetAddress::IPAddress &&
+   //         na.netNum[0] == 127 &&
+   //         na.netNum[1] == 0 &&
+   //         na.netNum[2] == 0 &&
+   //         na.netNum[3] == 1 &&
+   //         na.port == netPort)
+   //      continue;
+   //   if(bytesRead <= 0)
+   //      continue;
+   //   receiveEvent.size = PacketReceiveEventHeaderSize + bytesRead;
+   //   Game->postEvent(receiveEvent);
+   //}
 }
 
 NetSocket Net::openSocket()

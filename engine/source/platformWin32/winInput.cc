@@ -31,7 +31,7 @@
 // Static class variables:
 InputManager*  Input::smManager;
 bool           Input::smActive;
-CursorManager* Input::smCursorManager = 0; //*** DAW: Added
+//CursorManager* Input::smCursorManager = 0; //*** DAW: Added
 U8             Input::smModifierKeys; //*** DAW: Added
 bool           Input::smLastKeyboardActivated;
 bool           Input::smLastMouseActivated;
@@ -101,20 +101,20 @@ void Input::init()
          Con::printf( "  WinNT detected -- DirectInput not enabled." );
    }
 
-   // Startup the Cursor Manager
-   if(!smCursorManager)
-   {
-      smCursorManager = new CursorManager();
-      if(smCursorManager)
-      {
-         // Add the arrow cursor to the stack
-         smCursorManager->pushCursor(CursorManager::curArrow);
-      }
-      else
-      {
-         Con::printf("   Cursor Manager not enabled.");
-      }
-   }
+   //// Startup the Cursor Manager
+   //if(!smCursorManager)
+   //{
+   //   smCursorManager = new CursorManager();
+   //   if(smCursorManager)
+   //   {
+   //      // Add the arrow cursor to the stack
+   //      smCursorManager->pushCursor(CursorManager::curArrow);
+   //   }
+   //   else
+   //   {
+   //      Con::printf("   Cursor Manager not enabled.");
+   //   }
+   //}
 
    // Init the current modifier keys
    setModifierKeys(0);
@@ -323,33 +323,23 @@ void Input::disable()
 void Input::activate()
 {
 #ifdef UNICODE
-   winState.imeHandle = ImmGetContext( winState.appWindow );
-   ImmReleaseContext( winState.appWindow, winState.imeHandle );
+   //winState.imeHandle = ImmGetContext( getWin32WindowHandle() );
+   //ImmReleaseContext( getWin32WindowHandle(), winState.imeHandle );
 #endif
 
-   DInputDevice::resetModifierKeys();
    if ( !Con::getBoolVariable( "$enableDirectInput" ) )
       return;
 
    if ( smManager && smManager->isEnabled() && !smActive )
    {
       Con::printf( "Activating DirectInput..." );
+#ifdef LOG_INPUT
+      Input::log( "Activating DirectInput...\n" );
+#endif
       smActive = true;
       DInputManager* dInputManager = dynamic_cast<DInputManager*>( smManager );
       if ( dInputManager )
       {
-         if ( dInputManager->isKeyboardEnabled() && smLastKeyboardActivated )
-            dInputManager->activateKeyboard();
-
-         if ( Video::isFullScreen() )
-         {
-            // DirectInput Mouse Hook-Up:
-            if ( dInputManager->isMouseEnabled() && smLastMouseActivated )
-               dInputManager->activateMouse();
-         }
-         else
-            dInputManager->deactivateMouse();
-
          if ( dInputManager->isJoystickEnabled() && smLastJoystickActivated )
             dInputManager->activateJoystick();
       }
@@ -361,16 +351,14 @@ void Input::deactivate()
 {
    if ( smManager && smManager->isEnabled() && smActive )
    {
+#ifdef LOG_INPUT
+      Input::log( "Deactivating DirectInput...\n" );
+#endif
       DInputManager* dInputManager = dynamic_cast<DInputManager*>( smManager );
 
       if ( dInputManager )
       {
-         smLastKeyboardActivated = dInputManager->isKeyboardActive();
-         smLastMouseActivated    = dInputManager->isMouseActive();
          smLastJoystickActivated = dInputManager->isJoystickActive();
-
-         dInputManager->deactivateKeyboard();
-         dInputManager->deactivateMouse();
          dInputManager->deactivateJoystick();
       }
 
@@ -378,6 +366,7 @@ void Input::deactivate()
       Con::printf( "DirectInput deactivated." );
    }
 }
+
 
 //------------------------------------------------------------------------------
 void Input::reactivate()

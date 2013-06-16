@@ -14,6 +14,7 @@
 
 #include <windows.h>
 
+#include "game/gameInterface.h"
 #include "platform/event.h"
 #include "platform/platformInput.h"
 #include "./winDispatch.h"
@@ -274,8 +275,12 @@ static bool _dispatch(HWND hWnd,UINT message,WPARAM wParam,WPARAM lParam)
 		if (GetCapture() != hWnd)
 			SetCapture(hWnd);
 
+		// Grab the mouse pos so we can modify it.
+		S32 mouseX = S16(LOWORD(lParam));
+		S32 mouseY = S16(HIWORD(lParam));
+
 		if (window)
-			window->buttonEvent.trigger(devId,_ModifierKeys,IA_MAKE,index);
+			window->mouseButtonEvent.trigger(devId,_ModifierKeys, mouseX, mouseY, IA_MAKE,index);
 		break;
 						 }
 
@@ -289,8 +294,12 @@ static bool _dispatch(HWND hWnd,UINT message,WPARAM wParam,WPARAM lParam)
 		if (!button[0] && !button[1] && !button[2])
 			ReleaseCapture();
 
+		// Grab the mouse pos so we can modify it.
+		S32 mouseX = S16(LOWORD(lParam));
+		S32 mouseY = S16(HIWORD(lParam));
+
 		if (window)
-			window->buttonEvent.trigger(devId,_ModifierKeys,IA_BREAK,index);
+			window->mouseButtonEvent.trigger(devId,_ModifierKeys, mouseX, mouseY, IA_MAKE,index);
 		break;
 					   }
 
@@ -433,7 +442,7 @@ static bool _dispatch(HWND hWnd,UINT message,WPARAM wParam,WPARAM lParam)
 		// Quit indicates that we're not going to receive anymore Win32 messages.
 		// Therefore, it's appropriate to flag our event loop for exit as well,
 		// since we won't be getting any more messages.
-		Process::requestShutdown();
+		Game->mainShutdown();
 		break;
 				  }
 
@@ -448,31 +457,30 @@ static bool _dispatch(HWND hWnd,UINT message,WPARAM wParam,WPARAM lParam)
 				  //   if (window && window->isOpen() && !winState.renderThreadBlocked )
 				  //      window->displayEvent.trigger(devId);
 				  //}
-	case WM_SIZE: {
-		if (window && wParam != SIZE_MINIMIZED && !Journal::IsPlaying())
-		{
-			window->resizeEvent.trigger(window->getWindowId(), LOWORD(lParam),HIWORD(lParam));
+	//case WM_SIZE: {
+	//	if (window && wParam != SIZE_MINIMIZED && !Journal::IsPlaying())
+	//	{
+	//		window->resizeEvent.trigger(window->getWindowId(), LOWORD(lParam),HIWORD(lParam));
 
-			// Consume all existing mouse events and those posted to our own dispatch queue
-			MSG msg;
-			PeekMessage( &msg, 0,WM_MOUSEFIRST,WM_MOUSELAST , PM_QS_POSTMESSAGE | PM_NOYIELD | PM_REMOVE );
-			RemoveMessages( NULL, WM_MOUSEMOVE, WM_MOUSEMOVE );
+	//		// Consume all existing mouse events and those posted to our own dispatch queue
+	//		MSG msg;
+	//		PeekMessage( &msg, 0,WM_MOUSEFIRST,WM_MOUSELAST , PM_QS_POSTMESSAGE | PM_NOYIELD | PM_REMOVE );
+	//		RemoveMessages( NULL, WM_MOUSEMOVE, WM_MOUSEMOVE );
 
-			if( window->isMouseLocked())
-			{
-				RECT r;
-				GetWindowRect(window->getHWND(), &r);
+	//		if( window->isMouseLocked())
+	//		{
+	//			RECT r;
+	//			GetWindowRect(window->getHWND(), &r);
 
-				S32 centerX = (r.right + r.left) >> 1;
-				S32 centerY = ((r.bottom + r.top) >> 1);
-				window->setCursorPosition( centerX, centerY );
+	//			S32 centerX = (r.right + r.left) >> 1;
+	//			S32 centerY = ((r.bottom + r.top) >> 1);
+	//			window->setCursorPosition( centerX, centerY );
 
-				// Set the CursorPos
-				SetCursorPos(centerX, centerY);
-			}
-		}
-
-				  }
+	//			// Set the CursorPos
+	//			SetCursorPos(centerX, centerY);
+	//		}
+	//	}
+//				  }
 
 	}
 	return true;
