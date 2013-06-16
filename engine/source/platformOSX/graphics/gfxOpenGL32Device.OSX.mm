@@ -358,7 +358,7 @@ void GFXOpenGL32Device::setStateBlockInternal(GFXStateBlock* block, bool force)
         glCurrent = NULL;
     
     glBlock->activate(glCurrent); // Doesn't use current yet.
-    mCurrentGLStateBlock = glBlock;
+    mCurrentGLStateBlock = (GFXOpenGLStateBlock*)glBlock;
 }
 
 ////------------------------------------------------------------------------------

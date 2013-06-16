@@ -108,9 +108,7 @@ public:
    virtual GFXOpenGL32Shader* createShader();
     
    virtual void clear( U32 flags, ColorI color, F32 z, U32 stencil );
-   
-   GFXOpenGL32StateBlockRef getCurrentStateBlock() { return mCurrentGLStateBlock; }
-   
+      
    virtual void setupGenericShaders( GenericShaderType type = GSColor );
    
    ///
@@ -181,8 +179,6 @@ private:
 
    RectI mClip;
 
-   GFXOpenGL32StateBlockRef mCurrentGLStateBlock;
-   
    GLenum mActiveTextureType[TEXTURE_STAGE_COUNT];
    
    Vector< StrongRefPtr<GFXOpenGL32VertexBuffer> > mVolatileVBs; ///< Pool of existing volatile VBs so we can reuse previously created ones

@@ -129,7 +129,7 @@ public:
     virtual F32 getPixelShaderVersion() const { return mPixelShaderVersion; }
     virtual void  setPixelShaderVersion( F32 version ) { mPixelShaderVersion = version; }
     
-    const GFXOpenGLStateBlockRef getCurrentStateBlock() { return mCurrentGLStateBlock;};
+    virtual const GFXOpenGLStateBlockRef getCurrentStateBlock() { return mCurrentGLStateBlock;};
 
    virtual void updateStates(bool forceSetAll = false);
 

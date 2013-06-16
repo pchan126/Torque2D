@@ -42,6 +42,10 @@
 		2AF1C54016B439BB00C1CF3A /* declaredAssets.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2AF1C53C16B439BB00C1CF3A /* declaredAssets.cc */; };
 		2AF1C54116B439BB00C1CF3A /* referencedAssets.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2AF1C53E16B439BB00C1CF3A /* referencedAssets.cc */; };
 		2AF3633916A9BBE0004ED7AA /* ParticleSystem.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2AF3633716A9BBE0004ED7AA /* ParticleSystem.cc */; };
+		30666082176DCD2700BE2909 /* Layer.cc in Sources */ = {isa = PBXBuildFile; fileRef = 3066607F176DCD2700BE2909 /* Layer.cc */; };
+		30666083176DCD2700BE2909 /* SceneRenderState.cc in Sources */ = {isa = PBXBuildFile; fileRef = 30666081176DCD2700BE2909 /* SceneRenderState.cc */; };
+		30666085176DCD7A00BE2909 /* gfxOpenGLTextureTarget.cc in Sources */ = {isa = PBXBuildFile; fileRef = 30666084176DCD7A00BE2909 /* gfxOpenGLTextureTarget.cc */; };
+		30666087176DCE0B00BE2909 /* gfxEnums.cc in Sources */ = {isa = PBXBuildFile; fileRef = 30666086176DCE0B00BE2909 /* gfxEnums.cc */; };
 		30D54746173FD18B00CB43DA /* platformTimer.cc in Sources */ = {isa = PBXBuildFile; fileRef = 30D54745173FD18B00CB43DA /* platformTimer.cc */; };
 		30D54748173FD6A100CB43DA /* osxTimer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30D54747173FD6A100CB43DA /* osxTimer.mm */; };
 		86063A251654180000362D83 /* platformOSX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 86063A241654180000362D83 /* platformOSX.mm */; };
@@ -595,6 +599,11 @@
 		2AF3633716A9BBE0004ED7AA /* ParticleSystem.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ParticleSystem.cc; sourceTree = "<group>"; };
 		2AF3633816A9BBE0004ED7AA /* ParticleSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticleSystem.h; sourceTree = "<group>"; };
 		2AF80CFF16A80CB400CE13F1 /* ParticleAssetEmitter_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticleAssetEmitter_ScriptBinding.h; sourceTree = "<group>"; };
+		3066607F176DCD2700BE2909 /* Layer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Layer.cc; sourceTree = "<group>"; };
+		30666080176DCD2700BE2909 /* Layer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Layer.h; sourceTree = "<group>"; };
+		30666081176DCD2700BE2909 /* SceneRenderState.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SceneRenderState.cc; sourceTree = "<group>"; };
+		30666084176DCD7A00BE2909 /* gfxOpenGLTextureTarget.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxOpenGLTextureTarget.cc; sourceTree = "<group>"; };
+		30666086176DCE0B00BE2909 /* gfxEnums.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxEnums.cc; sourceTree = "<group>"; };
 		308DD038175E8741008FBC32 /* rawData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rawData.h; sourceTree = "<group>"; };
 		30D54745173FD18B00CB43DA /* platformTimer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = platformTimer.cc; sourceTree = "<group>"; };
 		30D54747173FD6A100CB43DA /* osxTimer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxTimer.mm; sourceTree = "<group>"; };
@@ -2157,6 +2166,9 @@
 		86BC7EA216518D4600D96ADF /* scene */ = {
 			isa = PBXGroup;
 			children = (
+				3066607F176DCD2700BE2909 /* Layer.cc */,
+				30666080176DCD2700BE2909 /* Layer.h */,
+				30666081176DCD2700BE2909 /* SceneRenderState.cc */,
 				86BC7EA316518D4600D96ADF /* ContactFilter.cc */,
 				86BC7EA416518D4600D96ADF /* ContactFilter.h */,
 				86BC7EA516518D4600D96ADF /* DebugDraw.cc */,
@@ -2458,6 +2470,7 @@
 		86BC7FB916518D4600D96ADF /* graphics */ = {
 			isa = PBXGroup;
 			children = (
+				30666086176DCE0B00BE2909 /* gfxEnums.cc */,
 				D1272BFB175F2EA90012995E /* gfxCubemap.cc */,
 				D1272BFC175F2EA90012995E /* gfxCubemap.h */,
 				D1272BC2175EF6F10012995E /* gfxDeviceStatistics.cpp */,
@@ -3096,6 +3109,7 @@
 		D16244EE17265AAF00E4E1F7 /* OpenGL */ = {
 			isa = PBXGroup;
 			children = (
+				30666084176DCD7A00BE2909 /* gfxOpenGLTextureTarget.cc */,
 				D1272BF8175F2E9C0012995E /* gfxOpenGLCubemap.cc */,
 				D1272BF9175F2E9C0012995E /* gfxOpenGLCubemap.h */,
 				D10529F1173B9F3B00BFC4FF /* gfxOpenGLTextureObject.cc */,
@@ -3754,6 +3768,10 @@
 				D1272BFA175F2E9C0012995E /* gfxOpenGLCubemap.cc in Sources */,
 				D1272BFD175F2EA90012995E /* gfxCubemap.cc in Sources */,
 				D1272C00175F2F630012995E /* gfxOpenGL32Cubemap.mm in Sources */,
+				30666082176DCD2700BE2909 /* Layer.cc in Sources */,
+				30666083176DCD2700BE2909 /* SceneRenderState.cc in Sources */,
+				30666085176DCD7A00BE2909 /* gfxOpenGLTextureTarget.cc in Sources */,
+				30666087176DCE0B00BE2909 /* gfxEnums.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

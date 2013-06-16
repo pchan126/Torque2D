@@ -46,8 +46,8 @@ class GFXOpenGLTextureTarget : public GFXTextureTarget
 {
 public:
     friend GFXOpenGLDevice;
-   GFXOpenGLTextureTarget() {};
-   virtual ~GFXOpenGLTextureTarget() {};
+   GFXOpenGLTextureTarget();
+   virtual ~GFXOpenGLTextureTarget();
 
    virtual const Point2I getSize() = 0;
    virtual GFXFormat getFormat() = 0;

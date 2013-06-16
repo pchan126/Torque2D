@@ -26,7 +26,7 @@
 #include "./GFXOpenGLTextureObject.h"
 //#include "./gfxGLCubemap.h"
 #include "graphics/gfxTextureManager.h"
-#include "platformOSX/graphics/gfxOpenGLUtils.h"
+#include "./gfxOpenGLUtils.h"
 
 /// Internal struct used to track texture information for FBO attachments
 /// This serves as an abstract base so we can deal with cubemaps and standard 
@@ -263,7 +263,7 @@ GFXFormat GFXOpenGLTextureTarget::getFormat()
    return GFXFormatR8G8B8A8;
 }
 
-void GFXOpenGLTextureTarget::attachTexture( RenderSlot slot, GFXTextureObject *tex, U32 mipLevel/*=0*/, U32 zOffset /*= 0*/ )
+void GFXOpenGLTextureTarget::attachTexture( GFXTextureObject *tex, RenderSlot slot, U32 mipLevel/*=0*/, U32 zOffset /*= 0*/ )
 {
    // Triggers an update when we next render
    invalidateState();
@@ -298,7 +298,7 @@ void GFXOpenGLTextureTarget::clearAttachments()
 {
    deactivate();
    for(S32 i=1; i<MaxRenderSlotId; i++)
-      attachTexture((RenderSlot)i, NULL);
+      attachTexture(NULL, (RenderSlot)i);
 }
 
 void GFXOpenGLTextureTarget::zombify()

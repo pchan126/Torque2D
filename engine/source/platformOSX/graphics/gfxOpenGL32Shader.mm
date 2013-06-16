@@ -827,7 +827,7 @@ bool GFXOpenGL32Shader::_loadShaderFromStream(  GLuint shader,
    // Now add all the macros.
    for( U32 i = 0; i < macros.size(); i++ )
    {
-      String define = String::ToString( "#define %s %s\n", macros[i].name, macros[i].value );
+      String define = String::ToString( "#define %s %s\n", macros[i].name.c_str(), macros[i].value.c_str() );
       buffers.push_back( dStrdup( define.c_str() ) );
       lengths.push_back( define.length() );
    }

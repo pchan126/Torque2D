@@ -776,8 +776,12 @@ bool WorldQuery::QueryCallback( S32 proxyId )
     if (( mQueryFilter.mSceneGroupMask & sceneGroupMask) != 0 )
     {
         WorldQueryResult queryResult( pSceneObject );
-        if (mLayeredQueryResults.size() <= pSceneObject->getSceneLayer())
-           mLayeredQueryResults.setSize(pSceneObject->getSceneLayer()+1);
+        while (mLayeredQueryResults.size() <= pSceneObject->getSceneLayer())
+        {
+           typeWorldQueryResultVector* temp = new typeWorldQueryResultVector();
+           mLayeredQueryResults.push_back(*temp);
+           free(temp);
+        }
 
        mLayeredQueryResults[pSceneObject->getSceneLayer()].push_back( queryResult );
         mQueryResults.push_back( queryResult );

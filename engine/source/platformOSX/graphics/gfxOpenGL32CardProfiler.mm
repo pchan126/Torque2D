@@ -25,6 +25,7 @@
 #include "./gfxOpenGL32EnumTranslate.h"
 #include "./osxGLUtils.h"
 #include <OpenGL/gl3.h>
+#include <ApplicationServices/ApplicationServices.h>
 
 BOOL CheckForExtension(NSString *searchName)
 {
@@ -40,7 +41,7 @@ BOOL CheckForExtension(NSString *searchName)
 //-----------------------------------------------------------------------------
 // helper function for getGLCapabilities.
 //  returns a new CGL context for platState.hDisplay
-CGLContextObj getContextForCapsCheck(CGDirectDisplayID display)
+NSOpenGLContext* getContextForCapsCheck()
 {
     // silently create an opengl context on the current display, so that
     // we can get valid renderer and capability info
@@ -63,7 +64,7 @@ CGLContextObj getContextForCapsCheck(CGDirectDisplayID display)
     NSOpenGLPixelFormat *pf = [[[NSOpenGLPixelFormat alloc] initWithAttributes:attrs] autorelease];
     NSOpenGLContext* context = [[[NSOpenGLContext alloc] initWithFormat:pf shareContext:nil] autorelease];
     
-    return (CGLContextObj)[context CGLContextObj];
+    return context;
    
     // if we can't get a good context, we can't check caps... this won't be good.
     Con::errorf("getContextForCapsCheck could not create a cgl context on the display for gl capabilities checking!");
@@ -80,28 +81,56 @@ void GFXOpenGL32OSXCardProfiler::init()
 
 void GFXOpenGL32OSXCardProfiler::setupCardCapabilities()
 {
-   Parent::setupCardCapabilities();
+//   NSOpenGLContext* tempCtx = getContextForCapsCheck();
+//   [tempCtx makeCurrentContext];
    
-    GLint maxShaderTextures;
-    
-    glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, (GLint*)&maxShaderTextures);
-    
-    setCapability("maxTextureImageUnits", maxShaderTextures);
- 
-    setCapability("GL::EXT_depth_bounds_test", CheckForExtension(@"GL_EXT_depth_bounds_test"));
-    setCapability("GL::EXT_framebuffer_multisample_blit_scaled", CheckForExtension(@"GL_EXT_framebuffer_multisample_blit_scaled"));
-
-    setCapability("GL::EXT_texture_compression_s3tc", CheckForExtension(@"GL_EXT_texture_compression_s3tc"));
-    setCapability("GL::EXT_texture_filter_anisotropic", CheckForExtension(@"GL_EXT_texture_filter_anisotropic"));
-    setCapability("GL::EXT_texture_mirror_clamp", CheckForExtension(@"GL_EXT_texture_mirror_clamp"));
-    setCapability("GL::EXT_texture_sRGB_decode", CheckForExtension(@"GL_EXT_texture_sRGB_decode"));
-    
-    setCapability("GL::APPLE_client_storage", CheckForExtension(@"GL_APPLE_client_storage"));
-    setCapability("GL::APPLE_container_object_shareable", CheckForExtension(@"GL_APPLE_container_object_shareable"));
-    setCapability("GL::APPLE_object_purgeable", CheckForExtension(@"GL_APPLE_object_purgeable"));
-    setCapability("GL::APPLE_rgb_422", CheckForExtension(@"GL_APPLE_rgb_422"));
-    setCapability("GL::APPLE_row_bytes", CheckForExtension(@"GL_APPLE_row_bytes"));
-    setCapability("GL::APPLE_texture_range", CheckForExtension(@"GL_APPLE_texture_range"));
+   
+   CGDirectDisplayID display = CGMainDisplayID ();
+   CGOpenGLDisplayMask cglDisplayMask = CGDisplayIDToOpenGLDisplayMask (display);
+   { // check capabilities of display represented by display mask
+      CGLPixelFormatAttribute attribs[] = {kCGLPFADisplayMask,
+         (CGLPixelFormatAttribute)cglDisplayMask, (CGLPixelFormatAttribute)0};
+      CGLPixelFormatObj pixelFormat = NULL;
+      GLint numPixelFormats = 0;
+      CGLContextObj cglContext = 0;
+      CGLContextObj curr_ctx = CGLGetCurrentContext ();
+      
+      CGLChoosePixelFormat (attribs, &pixelFormat, &numPixelFormats);
+      if (pixelFormat) {
+         CGLCreateContext (pixelFormat, NULL, &cglContext);
+         CGLDestroyPixelFormat (pixelFormat);
+         if (cglContext) {
+            CGLSetCurrentContext (cglContext);
+            Parent::setupCardCapabilities();
+            
+            GLint maxShaderTextures;
+            
+            glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, (GLint*)&maxShaderTextures);
+            
+            setCapability("maxTextureImageUnits", maxShaderTextures);
+            
+            setCapability("GL::EXT_depth_bounds_test", CheckForExtension(@"GL_EXT_depth_bounds_test"));
+            setCapability("GL::EXT_framebuffer_multisample_blit_scaled", CheckForExtension(@"GL_EXT_framebuffer_multisample_blit_scaled"));
+            
+            setCapability("GL::EXT_texture_compression_s3tc", CheckForExtension(@"GL_EXT_texture_compression_s3tc"));
+            setCapability("GL::EXT_texture_filter_anisotropic", CheckForExtension(@"GL_EXT_texture_filter_anisotropic"));
+            setCapability("GL::EXT_texture_mirror_clamp", CheckForExtension(@"GL_EXT_texture_mirror_clamp"));
+            setCapability("GL::EXT_texture_sRGB_decode", CheckForExtension(@"GL_EXT_texture_sRGB_decode"));
+            
+            setCapability("GL::APPLE_client_storage", CheckForExtension(@"GL_APPLE_client_storage"));
+            setCapability("GL::APPLE_container_object_shareable", CheckForExtension(@"GL_APPLE_container_object_shareable"));
+            setCapability("GL::APPLE_object_purgeable", CheckForExtension(@"GL_APPLE_object_purgeable"));
+            setCapability("GL::APPLE_rgb_422", CheckForExtension(@"GL_APPLE_rgb_422"));
+            setCapability("GL::APPLE_row_bytes", CheckForExtension(@"GL_APPLE_row_bytes"));
+            setCapability("GL::APPLE_texture_range", CheckForExtension(@"GL_APPLE_texture_range"));
+            CGLDestroyContext (cglContext);
+         }
+      }
+      CGLSetCurrentContext (curr_ctx); // reset current CGL context
+   }
+   
+   
+//   [tempCtx release];
 }
 
 bool GFXOpenGL32OSXCardProfiler::_queryCardCap(const String& query, U32& foundResult)
