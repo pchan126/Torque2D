@@ -391,6 +391,7 @@
     <ClCompile Include="..\..\source\graphics\OpenGL\gfxOpenGLDevice.cc" />
     <ClCompile Include="..\..\source\graphics\OpenGL\gfxOpenGLShader.cc" />
     <ClCompile Include="..\..\source\graphics\OpenGL\gfxOpenGLStateBlock.cc" />
+    <ClCompile Include="..\..\source\graphics\OpenGL\gfxOpenGLTextureObject.cc" />
     <ClCompile Include="..\..\source\graphics\PNGImage.cpp" />
     <ClCompile Include="..\..\source\graphics\primBuilder.cc" />
     <ClCompile Include="..\..\source\graphics\splineUtil.cc" />
@@ -458,6 +459,7 @@
     <ClCompile Include="..\..\source\lighting\lightInfo.cpp" />
     <ClCompile Include="..\..\source\lighting\lightManager.cpp" />
     <ClCompile Include="..\..\source\lighting\lightQuery.cpp" />
+    <ClCompile Include="..\..\source\math\mPoint.cpp" />
     <ClCompile Include="..\..\source\math\rectClipper.cpp" />
     <ClCompile Include="..\..\source\memory\dataChunker.cc" />
     <ClCompile Include="..\..\source\memory\frameAllocator.cc" />
@@ -554,12 +556,14 @@
     <ClCompile Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinTextureTarget.cc" />
     <ClCompile Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinVertexBuffer.cc" />
     <ClCompile Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinWindowTarget.cc" />
+    <ClCompile Include="..\..\source\platformWin32\menus\menuBarWin32.cpp" />
     <ClCompile Include="..\..\source\platformWin32\nativeDialogs\win32FileDialog.cc" />
     <ClCompile Include="..\..\source\platformWin32\windowsManager\win32CursorController.cpp" />
     <ClCompile Include="..\..\source\platformWin32\windowsManager\win32Window.cpp" />
     <ClCompile Include="..\..\source\platformWin32\windowsManager\win32WindowInputGenerator.cpp" />
     <ClCompile Include="..\..\source\platformWin32\windowsManager\win32WindowMgr.cpp" />
     <ClCompile Include="..\..\source\platformWin32\windowsManager\winDispatch.cpp" />
+    <ClCompile Include="..\..\source\platformWin32\winTimer.cpp" />
     <ClCompile Include="..\..\source\platform\menus\menuBar.cpp" />
     <ClCompile Include="..\..\source\platform\nativeDialogs\fileDialog.cc" />
     <ClCompile Include="..\..\source\platform\platform.cc" />

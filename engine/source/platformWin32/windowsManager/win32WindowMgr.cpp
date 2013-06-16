@@ -13,7 +13,7 @@
 
 // ------------------------------------------------------------------------
 
-void CloseSplashWindow(HINSTANCE hinst);
+//void CloseSplashWindow(HINSTANCE hinst);
 
 PlatformWindowManager * CreatePlatformWindowManager()
 {
@@ -182,8 +182,8 @@ PlatformWindow *Win32WindowManager::createWindow(GFXDevice *device, const GFXVid
    if (!mOffscreenRender)
       ShowWindow( w32w->mWindowHandle, SW_SHOWDEFAULT );
 
-   // Close any splash screen we created
-   CloseSplashWindow(winState.appInstance);
+   //// Close any splash screen we created
+   //CloseSplashWindow(winState.appInstance);
 
    // Bind the window to the specified device.
    if(device)

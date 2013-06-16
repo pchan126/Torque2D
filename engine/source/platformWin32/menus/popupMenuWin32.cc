@@ -342,3 +342,19 @@ void PopupMenu::removeFromMenuBar()
    RemoveMenu(winState.appMenu, pos, MF_BYPOSITION);
    DrawMenuBar(winState.appWindow);
 }
+
+bool PopupMenu::setItem(S32 pos, const char *title, const char* accelerator)
+{
+   return false;
+}
+
+
+U32 PopupMenu::getItemCount()
+{
+   return GetMenuItemCount( mData->mMenu );
+}
+
+S32 PopupMenu::getPosOnMenuBar()
+{
+      return -1;
+}

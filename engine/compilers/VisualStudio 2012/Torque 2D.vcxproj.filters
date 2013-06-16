@@ -1473,6 +1473,18 @@
     <ClCompile Include="..\..\source\graphics\gfxDeviceStatistics.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\math\mPoint.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\platformWin32\menus\menuBarWin32.cpp">
+      <Filter>platformWin32\menus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\platformWin32\winTimer.cpp">
+      <Filter>platformWin32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphics\OpenGL\gfxOpenGLTextureObject.cc">
+      <Filter>graphics\OpenGL</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\source\audio\audio.h">

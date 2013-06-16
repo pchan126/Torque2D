@@ -42,7 +42,7 @@ class PopupMenu : public SimObject, public virtual Dispatcher::IMessageListener
 
 private:
    /// Used by MenuBar to attach the menu to the menu bar. Do not use anywhere else.
-   void attachToMenuBar(GuiCanvas *owner, S32 pos);
+//   void attachToMenuBar(GuiCanvas *owner, S32 pos);
 
 protected:
    PlatformPopupMenuData *mData;
@@ -132,7 +132,7 @@ public:
    /// @param owner The GuiCanvas that owns the PlatformWindow that this call is associated with
    /// @param pos The relative position at which to place the menu.
    /// @param title The name of the menu
-   void attachToMenuBar(GuiCanvas *owner, S32 pos, const char *title);
+   void attachToMenuBar(GuiCanvas *owner, S32 pos, const char *title = NULL);
    
    /// Removes this menu from the menu bar.
    void removeFromMenuBar();
