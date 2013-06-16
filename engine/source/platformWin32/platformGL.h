@@ -37,9 +37,53 @@
 #define GL_GLEXT_PROTOTYPES 1
 #define WGL_WGLEXT_PROTOTYPES
 
-#include "./glcorearb.h"
-#include <wglext.h>
-#include <glext.h>
+#include <glew.h>
+//#include "./glcorearb.h"
+//#include "./glext.h"
+//
+//#pragma comment(lib,"opengl32.lib")
+
+//extern PFNGLCREATEPROGRAMPROC glCreateProgram;
+//extern PFNGLCREATEPROGRAMPROC glDeleteProgram;
+//extern PFNGLCREATEPROGRAMPROC glUseProgram;
+//extern PFNGLCREATEPROGRAMPROC glAttachShader;
+//extern PFNGLCREATEPROGRAMPROC glDetachShader;
+//extern PFNGLCREATEPROGRAMPROC glLinkProgram;
+//extern PFNGLCREATEPROGRAMPROC glGetProgramiv;
+//extern PFNGLCREATEPROGRAMPROC glGetShaderInfoLog;
+//extern PFNGLCREATEPROGRAMPROC glGetUniformLocation;
+//extern PFNGLCREATEPROGRAMPROC glUniform1i;
+//extern PFNGLCREATEPROGRAMPROC glUniform1iv;
+//extern PFNGLCREATEPROGRAMPROC glUniform2iv;
+//extern PFNGLCREATEPROGRAMPROC glUniform3iv;
+//extern PFNGLCREATEPROGRAMPROC glUniform4iv;
+//extern PFNGLCREATEPROGRAMPROC glUniform1f;
+//extern PFNGLCREATEPROGRAMPROC glUniform1fv;
+//extern PFNGLCREATEPROGRAMPROC glUniform2fv;
+//extern PFNGLCREATEPROGRAMPROC glUniform3fv;
+//extern PFNGLCREATEPROGRAMPROC glUniform4fv;
+//extern PFNGLCREATEPROGRAMPROC glUniformMatrix4fv;
+//extern PFNGLCREATEPROGRAMPROC glGetAttribLocation;
+//extern PFNGLCREATEPROGRAMPROC glVertexAttrib1f;
+//extern PFNGLCREATEPROGRAMPROC glVertexAttrib1fv;
+//extern PFNGLCREATEPROGRAMPROC glVertexAttrib2fv;
+//extern PFNGLCREATEPROGRAMPROC glVertexAttrib3fv;
+//extern PFNGLCREATEPROGRAMPROC glVertexAttrib4fv;
+//extern PFNGLCREATEPROGRAMPROC glEnableVertexAttribArray;
+//extern PFNGLCREATEPROGRAMPROC glBindAttribLocation;
+//
+//// Shader
+//extern PFNGLCREATEPROGRAMPROC glCreateShader;
+//extern PFNGLCREATEPROGRAMPROC glDeleteShader;
+//extern PFNGLCREATEPROGRAMPROC glShaderSource;
+//extern PFNGLCREATEPROGRAMPROC glCompileShader;
+//extern PFNGLCREATEPROGRAMPROC glGetShaderiv;
+//
+//// VBO
+//extern PFNGLCREATEPROGRAMPROC glGenBuffers;
+//extern PFNGLCREATEPROGRAMPROC glBindBuffer;
+//extern PFNGLCREATEPROGRAMPROC glBufferData;
+//extern PFNGLCREATEPROGRAMPROC glVertexAttribPointer;
 
 typedef enum {
 	GLKVertexAttribPosition,

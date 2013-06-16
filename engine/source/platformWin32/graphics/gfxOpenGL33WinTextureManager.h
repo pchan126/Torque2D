@@ -96,7 +96,7 @@ private:
 
    void handleTextureCallback(void *textureInfo);
     
-    HDC* mContext;
+//    HDC* mContext;
     // t2d texture mananger
 public:
     bool mDGLRender;
