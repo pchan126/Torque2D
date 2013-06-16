@@ -140,8 +140,8 @@ class CameraView
          mDestinationArea.extent = Point2F(1,1);
       
       // Calculate Scene Min/Max.
-      mSceneMin = mDestinationArea.min();
-      mSceneMax = mDestinationArea.max();
+      mSceneMin = mDestinationArea.point;
+	  mSceneMax = mDestinationArea.point + mDestinationArea.extent;
    }
 
    void limitView(RectF limits)
