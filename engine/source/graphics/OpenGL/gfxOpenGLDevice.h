@@ -33,7 +33,6 @@ class GFXOpenGLVertexBuffer;
 class GFXOpenGLTextureTarget;
 class GFXOpenGLCubemap;
 
-
 class GFXOpenGLDevice : public GFXDevice
 {
 public:

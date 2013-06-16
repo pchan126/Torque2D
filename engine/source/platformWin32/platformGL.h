@@ -34,6 +34,7 @@
 //%PUAP%-->
 
 #define GLCOREARB_PROTOTYPES
+#define GL_GLEXT_PROTOTYPES 1
 #define WGL_WGLEXT_PROTOTYPES
 
 #include "./glcorearb.h"

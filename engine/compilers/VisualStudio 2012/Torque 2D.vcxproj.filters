@@ -1467,6 +1467,12 @@
     <ClCompile Include="..\..\source\graphics\bitmapUtils.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\platform\platformTimer.cc">
+      <Filter>platform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphics\gfxDeviceStatistics.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\source\audio\audio.h">
@@ -2636,9 +2642,6 @@
     <ClInclude Include="..\..\source\platform\platformMath.h">
       <Filter>platform</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\platform\platformTimeManager.h">
-      <Filter>platform</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\platform\platform_ScriptBinding.h">
       <Filter>platform</Filter>
     </ClInclude>
@@ -3049,6 +3052,12 @@
       <Filter>lighting\common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\graphics\bitmapUtils.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platform\platformTimer.h">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\gfxDeviceStatistics.h">
       <Filter>graphics</Filter>
     </ClInclude>
   </ItemGroup>
