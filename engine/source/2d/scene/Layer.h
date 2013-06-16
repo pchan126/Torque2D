@@ -8,7 +8,7 @@
 #ifndef __Torque2D__Layer__
 #define __Torque2D__Layer__
 
-#include "SceneObject.h"
+#include "2d/sceneobject/SceneObject.h"
 
 //---------------------------------------------------------------------------
 /// A group of SceneObjects.
