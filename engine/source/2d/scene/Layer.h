@@ -51,21 +51,26 @@ public:
    void addObject(SceneObject*, SimObjectId);
    void addObject(SceneObject*, const char *name);
    
-   /// Remove an object from the group.
-   virtual void removeObject(SceneObject*);
+//   /// Remove an object from the group.
+//   virtual void removeObject(SceneObject*);
+//   
+//   virtual void onRemove();
    
-   virtual void onRemove();
-   
-   /// Find an object in the group.
-   virtual SceneObject* findObject(const char* name);
+//   /// Find an object in the group.
+//   virtual SceneObject* findObject(const char* name);
    
    void setSortMode( const SceneRenderQueue::RenderSort sortMode ) { mSortMode = sortMode; };
    SceneRenderQueue::RenderSort getSortMode(void) { return mSortMode; };
    
-   bool processArguments(S32 argc, const char **argv);
+//   bool processArguments(S32 argc, const char **argv);
    
    DECLARE_CONOBJECT(Layer);
 };
+
+inline void Layer::addObject(SceneObject* obj)
+{
+   Parent::addObject( obj );
+}
 
 inline void Layer::addObject(SceneObject* obj, SimObjectId id)
 {

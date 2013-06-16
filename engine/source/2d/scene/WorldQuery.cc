@@ -771,12 +771,15 @@ bool WorldQuery::QueryCallback( S32 proxyId )
 
     // Fetch layer and group masks.
     const U32 sceneGroupMask = pSceneObject->getSceneGroupMask();
-
+   
     // Compare masks and report.
     if (( mQueryFilter.mSceneGroupMask & sceneGroupMask) != 0 )
     {
         WorldQueryResult queryResult( pSceneObject );
-        mLayeredQueryResults[pSceneObject->getSceneLayer()].push_back( queryResult );
+        if (mLayeredQueryResults.size() <= pSceneObject->getSceneLayer())
+           mLayeredQueryResults.setSize(pSceneObject->getSceneLayer()+1);
+
+       mLayeredQueryResults[pSceneObject->getSceneLayer()].push_back( queryResult );
         mQueryResults.push_back( queryResult );
 
         // Tag with world query key.

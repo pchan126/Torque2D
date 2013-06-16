@@ -229,10 +229,10 @@
 // Processes keyboard up and down events, posts to the event system
 - (void)processKeyEvent:(NSEvent *)event make:(BOOL)make
 {
-    // If input and keyboard are enabled
-    if (!Input::isEnabled() && !Input::isKeyboardEnabled())
-        return;
-    
+//    // If input and keyboard are enabled
+//    if (!Input::isEnabled() && !Input::isKeyboardEnabled())
+//        return;
+   
     // Get the key code for the event
     U32 keyCode = [event keyCode];
     
@@ -261,9 +261,9 @@
 // Default mouseDown override
 - (void)mouseDown:(NSEvent *)event
 {
-    if (!Input::isEnabled() && !Input::isMouseEnabled())
-        return;
-    
+//    if (!Input::isEnabled() && !Input::isMouseEnabled())
+//        return;
+   
     [self processMouseButton:event button:KEY_BUTTON0 action:SI_MAKE];
 }
 
@@ -271,9 +271,9 @@
 // Default mouseDragged override
 - (void)mouseDragged:(NSEvent *)event
 {
-    if (!Input::isEnabled() && !Input::isMouseEnabled())
-        return;
-    
+//    if (!Input::isEnabled() && !Input::isMouseEnabled())
+//        return;
+   
     [self processMouseButton:event button:KEY_BUTTON0 action:SI_MOVE];
 }
 
@@ -281,9 +281,9 @@
 // Default rightMouseDown override
 - (void)rightMouseDown:(NSEvent *)event
 {
-    if (!Input::isEnabled() && !Input::isMouseEnabled())
-        return;
-    
+//    if (!Input::isEnabled() && !Input::isMouseEnabled())
+//        return;
+   
     [self processMouseButton:event button:KEY_BUTTON1 action:SI_MAKE];
 }
 
@@ -291,9 +291,9 @@
 // Default rightMouseDragged override
 - (void)rightMouseDragged:(NSEvent *)event
 {
-    if (!Input::isEnabled() && !Input::isMouseEnabled())
-        return;
-    
+//    if (!Input::isEnabled() && !Input::isMouseEnabled())
+//        return;
+   
     [self processMouseButton:event button:KEY_BUTTON1 action:SI_MOVE];
 }
 
@@ -302,9 +302,9 @@
 // Default otherMouseDown override
 - (void)otherMouseDown:(NSEvent *)event
 {
-    if (!Input::isEnabled() && !Input::isMouseEnabled())
-        return;
-    
+//    if (!Input::isEnabled() && !Input::isMouseEnabled())
+//        return;
+   
     [self processMouseButton:event button:KEY_BUTTON2 action:SI_MAKE];
 }
 
@@ -313,9 +313,9 @@
 // Default rightMouseDragged override
 - (void)otherMouseDragged:(NSEvent *)event
 {
-    if (!Input::isEnabled() && !Input::isMouseEnabled())
-        return;
-    
+//    if (!Input::isEnabled() && !Input::isMouseEnabled())
+//        return;
+   
     [self processMouseButton:event button:KEY_BUTTON2 action:SI_MOVE];
 }
 
@@ -324,9 +324,9 @@
 // Default mouseUp override
 - (void)mouseUp:(NSEvent *)event
 {
-    if (!Input::isEnabled() && !Input::isMouseEnabled())
-        return;
-    
+//    if (!Input::isEnabled() && !Input::isMouseEnabled())
+//        return;
+   
     [self processMouseButton:event button:KEY_BUTTON0 action:SI_BREAK];
 }
 
@@ -334,9 +334,9 @@
 // Default rightMouseUp override
 - (void)rightMouseUp:(NSEvent *)event
 {
-    if (!Input::isEnabled() && !Input::isMouseEnabled())
-        return;
-    
+//    if (!Input::isEnabled() && !Input::isMouseEnabled())
+//        return;
+   
     [self processMouseButton:event button:KEY_BUTTON1 action:SI_BREAK];
 }
 
@@ -344,9 +344,9 @@
 // Default otherMouseUp override
 - (void)otherMouseUp:(NSEvent *)event
 {
-    if (!Input::isEnabled() && !Input::isMouseEnabled())
-        return;
-    
+//    if (!Input::isEnabled() && !Input::isMouseEnabled())
+//        return;
+   
     [self processMouseButton:event button:KEY_BUTTON2 action:SI_BREAK];
 }
 
@@ -354,9 +354,9 @@
 // Default otherMouseDown override
 - (void)mouseMoved:(NSEvent *)event
 {
-    if (!Input::isEnabled() && !Input::isMouseEnabled())
-        return;
-    
+//    if (!Input::isEnabled() && !Input::isMouseEnabled())
+//        return;
+   
     // Get the mouse location
     NSPoint location = [self convertPoint:[event locationInWindow] fromView:nil];
     
@@ -378,9 +378,9 @@
 // Default scrollWheel override
 - (void)scrollWheel:(NSEvent *)event
 {
-    if (!Input::isEnabled() && !Input::isMouseEnabled())
-        return;
-    
+//    if (!Input::isEnabled() && !Input::isMouseEnabled())
+//        return;
+   
     // Grab any modifiers
     U32 modifiers = 0;
     [self getModifierKey:modifiers event:event];

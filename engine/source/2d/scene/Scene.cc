@@ -202,6 +202,10 @@ Scene::~Scene()
     if ( mControllers.notNull() )
         mControllers->deleteObject();
 
+   for (int i = 0; i < mLayers.size(); i++) {
+      delete mLayers[i];
+   }
+   
     // Decrease scene count.
     --sSceneCount;
 }
@@ -1082,7 +1086,7 @@ void Scene::sceneRender( const SceneRenderState* pSceneRenderState )
                     PROFILE_SCOPE(Scene_RenderSceneLayerSorting);
 
                     // Yes, so fetch layer sort mode.
-                    SceneRenderQueue::RenderSort mode = mLayers[layer].getSortMode();
+                    SceneRenderQueue::RenderSort mode = mLayers[layer]->getSortMode();
 
                     // Temporarily switch to normal sort if batch sort but batcher disabled.
                     if ( !mBatchRenderer.getBatchEnabled() && mode == SceneRenderQueue::RENDER_SORT_BATCH )
@@ -1341,10 +1345,18 @@ void Scene::addToScene( SceneObject* pSceneObject )
     // Add scene object.
     mSceneObjects.push_back( pSceneObject );
 
-    if (mLayers.size() < pSceneObject->getSceneLayer() )
-       mLayers.setSize(pSceneObject->getSceneLayer()+1);
+   U32 objLayer = pSceneObject->getSceneLayer();
+    while (mLayers.size() <= objLayer )
+    {
+       Layer* temp = new Layer;
+       mLayers.push_back(temp);
+//       mLayers.setSize(pSceneObject->getSceneLayer()+1);
+//       
+    }
    
-    mLayers[pSceneObject->getSceneLayer()].addObject(pSceneObject);
+   U32 l = mLayers.size();
+   Layer* temp = mLayers[pSceneObject->getSceneLayer()];
+   temp->addObject(pSceneObject);
    
     // Register with the scene.
     pSceneObject->OnRegisterScene( this );
@@ -1385,7 +1397,7 @@ void Scene::removeFromScene( SceneObject* pSceneObject )
     // Dismount Any Camera.
     pSceneObject->dismountCamera();
 
-    mLayers[pSceneObject->getSceneLayer()].removeObject(pSceneObject);
+    mLayers[pSceneObject->getSceneLayer()]->removeObject(pSceneObject);
 
    // Remove from the SceneWindow last pickers
     for( U32 i = 0; i < (U32)mAttachedSceneWindows.size(); ++i )
@@ -3583,7 +3595,7 @@ void Scene::setLayerSortMode( const U32 layer, const SceneRenderQueue::RenderSor
         return;
     }
 
-    mLayers[layer].setSortMode(sortMode);
+    mLayers[layer]->setSortMode(sortMode);
 }
 
 //-----------------------------------------------------------------------------
@@ -3599,7 +3611,7 @@ SceneRenderQueue::RenderSort Scene::getLayerSortMode( const U32 layer )
         return SceneRenderQueue::RENDER_SORT_INVALID;
     }
 
-    return mLayers[layer].getSortMode();
+    return mLayers[layer]->getSortMode();
 }
 
 //-----------------------------------------------------------------------------

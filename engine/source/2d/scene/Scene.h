@@ -237,7 +237,7 @@ private:
     /// Scene controllers.
     SimObjectPtr<SimSet>	    mControllers;
 
-    Vector<Layer>              mLayers;
+    VectorPtr<Layer*>              mLayers;
    
     /// Asset pre-loads.
     typeAssetPtrVector          mAssetPreloads;
