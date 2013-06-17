@@ -356,35 +356,4 @@ const String GFXOpenGLTextureTarget::describeSelf() const
    return ret;
 }
 
-void GFXOpenGLTextureTarget::resolve()
-{
-}
 
-void GFXOpenGLTextureTarget::resolveTo(GFXTextureObject* obj)
-{
-   AssertFatal(dynamic_cast<GFXOpenGLTextureObject*>(obj), "GFXOpenGLTextureTarget::resolveTo - Incorrect type of texture, expected a GFXOpenGLTextureObject");
-   GFXOpenGLTextureObject* glTexture = static_cast<GFXOpenGLTextureObject*>(obj);
-
-//   PRESERVE_FRAMEBUFFER();
-   
-   GLuint dest;
-   GLuint src;
-   
-   glGenFramebuffers(1, &dest);
-   glGenFramebuffers(1, &src);
-   
-   glBindFramebuffer(GL_DRAW_FRAMEBUFFER, dest);
-   glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, glTexture->getHandle(), 0);
-   
-   glBindFramebuffer(GL_READ_FRAMEBUFFER, src);
-   glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,mTargets[Color0]->getHandle(), 0);
-   
-   glBlitFramebuffer(0, 0, mTargets[Color0]->getWidth(), mTargets[Color0]->getHeight(),
-      0, 0, glTexture->getWidth(), glTexture->getHeight(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
-   
-   glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-   glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
-   
-   glDeleteFramebuffers(1, &dest);
-   glDeleteFramebuffers(1, &src);
-}

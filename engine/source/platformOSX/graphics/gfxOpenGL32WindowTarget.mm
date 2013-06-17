@@ -50,28 +50,6 @@ bool GFXOpenGL32WindowTarget::present()
 }
 
 
-void GFXOpenGL32WindowTarget::resolveTo(GFXTextureObject* obj)
-{
-    AssertFatal(dynamic_cast<GFXOpenGL32TextureObject*>(obj), "GFXGLTextureTarget::resolveTo - Incorrect type of texture, expected a GFXGLTextureObject");
-    GFXOpenGL32TextureObject* glTexture = static_cast<GFXOpenGL32TextureObject*>(obj);
-    
-    GLuint dest;
-    
-    glGenFramebuffers(1, &dest);
-    
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, dest);
-    glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, glTexture->getHandle(), 0);
-    
-    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
-    
-    glBlitFramebuffer(0, 0, getSize().x, getSize().y,
-                         0, 0, glTexture->getWidth(), glTexture->getHeight(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
-    
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-    
-    glDeleteFramebuffers(1, &dest);
-}
-
 void GFXOpenGL32WindowTarget::makeActive()
 {
    mWindow->makeContextCurrent();

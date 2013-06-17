@@ -97,10 +97,6 @@ public:
    /// This tells the target that the contents of this target should be restored
    /// when activate() is next called.
    virtual void preserve() { }
-
-   /// Copy this surface to the passed GFXTextureObject.   
-   /// @param tex The GFXTextureObject to copy to.
-   virtual void resolveTo( GFXTextureObject *tex ) { }
 };
 
 /// A render target associated with an OS window.
@@ -185,14 +181,6 @@ public:
    /// @param face A face identifier.
    /// @param mipLevel What level of this texture are we rendering to?
 //   virtual void attachTexture(GFXCubemap *tex, U32 face, RenderSlot slot = Color0, U32 mipLevel=0) = 0;
-
-   /// Resolve the current render target data to the associated textures. This method
-   /// will get called automatically when a rendertarget is changed, before new geometry
-   /// is drawn to a different rendertarget. This method can also be called to 
-   /// gather render target data without switching targets.
-   /// 
-   /// By default, this method will resolve all color targets.
-   virtual void resolve()=0;
 };
 
 typedef StrongRefPtr<GFXTarget> GFXTargetRef;

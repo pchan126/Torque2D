@@ -157,6 +157,7 @@ private:
    static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
    static void mousebutton_callback(GLFWwindow* window, int button, int action, int mods);
    static void mousemove_callback(GLFWwindow* window, double xpos, double ypos);
+   static void window_close_callback(GLFWwindow* window);
 
 public:
     ButtonEvent       mouseButtonEvent;

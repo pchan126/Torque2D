@@ -32,8 +32,6 @@ public:
    virtual void zombify() { }
    virtual void resurrect() { }
    
-   virtual void resolveTo(GFXTextureObject* obj);
-   
    void _onAppSignal(WindowId wnd, S32 event);
    
    NSOpenGLContext* getContext();

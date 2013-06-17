@@ -68,10 +68,6 @@ public:
    void resurrect();
    virtual const String describeSelf() const = 0;
    
-   virtual void resolve() = 0;
-   
-   virtual void resolveTo(GFXTextureObject* obj) = 0;
-   
 protected:
 
    friend class GFXOpenGLDevice;

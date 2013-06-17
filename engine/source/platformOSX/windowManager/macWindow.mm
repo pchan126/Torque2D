@@ -70,6 +70,7 @@ MacWindow::MacWindow(U32 windowId, const char* windowText, Point2I clientExtent)
    glfwSetKeyCallback(window, &MacWindow::key_callback);
    glfwSetMouseButtonCallback(window, &MacWindow::mousebutton_callback);
    glfwSetCursorPosCallback(window, &MacWindow::mousemove_callback);
+   glfwSetWindowCloseCallback(window, &MacWindow::window_close_callback);
    appEvent.notify(this, &MacWindow::_onAppEvent);
    
    sInstance = this;
@@ -425,4 +426,8 @@ void MacWindow::mousemove_callback(GLFWwindow* window, double xpos, double ypos)
    torqueWindow->mouseEvent.trigger(torqueWindow->getWindowId(), 0, xpos, ypos, false);
 }
 
-
+void MacWindow::window_close_callback(GLFWwindow* window)
+{
+   MacWindow* torqueWindow = MacWindowManager::get()->getWindowByGLFW(window);
+//   torqueWindow->appEvent.trigger(<#unsigned int a#>, <#int b#>)
+}
