@@ -111,10 +111,9 @@ public:
    void _dissociateMouse();
    void _centerMouse();
 
-   // For GGMacView
-//   void _disassociateCocoaWindow();
-//    OSXTorqueView* _torqueView;
-   
+   void makeContextCurrent();
+   NSOpenGLContext* getContext();
+
 protected:
    virtual void _setFullscreen(bool fullScreen);
    

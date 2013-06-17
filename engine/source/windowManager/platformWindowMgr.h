@@ -79,6 +79,7 @@ public:
    /// @return The first window in the list, or NULL if no windows found
    virtual PlatformWindow *getFirstWindow()=0;
 
+   virtual PlatformWindow* assignCanvas(GFXDevice* device, const GFXVideoMode &mode ,GuiCanvas* canvas)=0;
 
    /// Set the parent window
    ///

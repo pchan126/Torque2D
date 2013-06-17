@@ -160,6 +160,25 @@ void MacWindowManager::_processCmdLineArgs(const S32 argc, const char **argv)
    // TODO: accept command line args if necessary.
 }
 
+PlatformWindow* MacWindowManager::assignCanvas(GFXDevice* device, const GFXVideoMode &mode, GuiCanvas* canvas)
+{
+   // Find the window by its arbirary WindowId.
+   for(U32 i = 0; i < mWindowList.size(); i++)
+   {
+      PlatformWindow* w = mWindowList[i];
+      if (w->mBoundCanvas == NULL)
+      {
+         w->setVideoMode(mode);
+         w->bindCanvas(canvas);
+         return w;
+      }
+   }
+   PlatformWindow* w = createWindow(device, mode);
+   w->bindCanvas(canvas);
+   return w;
+}
+
+
 PlatformWindow *MacWindowManager::createWindow(GFXDevice *device, const GFXVideoMode &mode)
 {
    MacWindow* window = new MacWindow(getNextId(), getVersionString(), mode.resolution);

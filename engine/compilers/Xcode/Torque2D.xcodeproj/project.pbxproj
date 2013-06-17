@@ -1392,6 +1392,7 @@
 		86DE5687171F05F60054CB83 /* guiGridCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiGridCtrl.h; sourceTree = "<group>"; };
 		86EA5B3E1678C7C700598E68 /* osxCocoaUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxCocoaUtilities.h; sourceTree = "<group>"; };
 		86EA5B3F1678C7C700598E68 /* osxCocoaUtilities.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxCocoaUtilities.mm; sourceTree = "<group>"; };
+		D1006350176EFB01007E2318 /* glfw3native.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glfw3native.h; path = ../../lib/glfw/include/GLFW/glfw3native.h; sourceTree = "<group>"; };
 		D1049A0B16F6F8C40096749B /* mPoint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mPoint.cpp; sourceTree = "<group>"; };
 		D10529F1173B9F3B00BFC4FF /* gfxOpenGLTextureObject.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxOpenGLTextureObject.cc; sourceTree = "<group>"; };
 		D11F9A86175DDCC800AB3E10 /* gfxOpenGLCardProfiler.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxOpenGLCardProfiler.cc; sourceTree = "<group>"; };
@@ -3142,6 +3143,7 @@
 		D16C4CC5176EA9AD006936B5 /* glfw */ = {
 			isa = PBXGroup;
 			children = (
+				D1006350176EFB01007E2318 /* glfw3native.h */,
 				D16C4CF0176EAE6F006936B5 /* glfw3.h */,
 			);
 			name = glfw;

@@ -454,7 +454,7 @@ void GFXDevice::setActiveRenderTarget( GFXTarget *target )
    
    mRTDirty = true;
    mCurrentRT = target;
-   
+   target->activate();
    // When a target changes we also change the viewport
    // to match it.  This causes problems when the viewport
    // has been modified for clipping to a GUI bounds.

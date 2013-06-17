@@ -36,6 +36,8 @@ public:
    
    void _onAppSignal(WindowId wnd, S32 event);
    
+   NSOpenGLContext* getContext();
+   
 private:
     typedef GFXWindowTarget Parent;
     

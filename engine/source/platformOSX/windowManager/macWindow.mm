@@ -53,7 +53,13 @@ MacWindow::MacWindow(U32 windowId, const char* windowText, Point2I clientExtent)
    
    mWindowId = windowId;
    
-   window = glfwCreateWindow(640, 480, "Torque", NULL, NULL);
+   GLFWwindow* sWindow = NULL;
+   MacWindow* shareWindow = dynamic_cast<MacWindow*>(WindowManager->getFirstWindow());
+
+   if (shareWindow != NULL)
+      sWindow = shareWindow->window;
+   
+   window = glfwCreateWindow(640, 480, "Torque", NULL, sWindow);
    if (!window)
    {
       glfwTerminate();
@@ -382,6 +388,17 @@ void MacWindow::swapBuffers()
 {
    glfwSwapBuffers(window);
 }
+
+void MacWindow::makeContextCurrent()
+{
+   glfwMakeContextCurrent(window);
+}
+
+NSOpenGLContext* MacWindow::getContext()
+{
+   return glfwGetNSGLContext(window);
+}
+
 
 void MacWindow::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {

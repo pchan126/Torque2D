@@ -82,10 +82,15 @@ void GFXOpenGL32WindowTarget::resolveTo(GFXTextureObject* obj)
 
 void GFXOpenGL32WindowTarget::makeActive()
 {
+   mWindow->makeContextCurrent();
 //    [(NSOpenGLContext*)mContext makeCurrentContext];
-//    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+NSOpenGLContext* GFXOpenGL32WindowTarget::getContext()
+{
+   return mWindow->getContext();
+}
 
 void GFXOpenGL32WindowTarget::_teardownCurrentMode()
 {

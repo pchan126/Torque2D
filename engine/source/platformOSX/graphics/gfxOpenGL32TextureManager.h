@@ -97,7 +97,7 @@ private:
 
    void handleTextureCallback(void *textureInfo);
     
-    NSOpenGLContext* mContext;
+//    NSOpenGLContext* mContext;
     // t2d texture mananger
 public:
     bool mDGLRender;

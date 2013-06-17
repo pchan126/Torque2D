@@ -106,6 +106,7 @@ public:
    bool onShutdown();
    bool canWindowGainFocus(MacWindow* window);
    
+   virtual PlatformWindow* assignCanvas(GFXDevice* device, const GFXVideoMode &mode ,GuiCanvas* canvas);
    
 private:
    bool mIsShuttingDown;

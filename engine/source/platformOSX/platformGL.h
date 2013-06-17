@@ -35,6 +35,10 @@
 #define GLFW_INCLUDE_GLCOREARB 1
 #include <glfw3.h>
 
+#define GLFW_EXPOSE_NATIVE_COCOA 1
+#define GLFW_EXPOSE_NATIVE_NSGL 1
+#include <glfw3native.h>
+
 typedef enum {
     GLKVertexAttribPosition,
     GLKVertexAttribNormal,

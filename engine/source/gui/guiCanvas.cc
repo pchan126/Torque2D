@@ -145,9 +145,8 @@ bool GuiCanvas::onAdd()
     if (a && a->mType != NullDevice)
     {
         newDevice->init(vm);
-        mPlatformWindow = WindowManager->createWindow(newDevice, vm);
-        mPlatformWindow->bindCanvas(this);
-        
+        mPlatformWindow = WindowManager->assignCanvas(newDevice, vm, this);
+       
         // Now, we have to hook in our event callbacks so we'll get
         // appropriate events from the window.
         mPlatformWindow->resizeEvent .notify(this, &GuiCanvas::handleResize);
