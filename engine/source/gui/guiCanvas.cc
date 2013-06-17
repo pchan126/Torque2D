@@ -1281,7 +1281,8 @@ void GuiCanvas::renderFrame(bool preRenderOnly, bool bufferSwap /* = true */)
    PROFILE_START(CanvasPreRender);
 
     // Set our window as the current render target so we can see outputs.
-    GFX->setActiveRenderTarget(mPlatformWindow->getGFXTarget());
+   GFXTarget* target = mPlatformWindow->getGFXTarget();
+    GFX->setActiveRenderTarget(target);
     
     if (!GFX->getActiveRenderTarget())
     {

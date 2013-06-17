@@ -37,10 +37,11 @@ MacWindow::MacWindow(U32 windowId, const char* windowText, Point2I clientExtent)
    mShouldMouseLock  = false;
    mTitle            = NULL;
    mMouseCaptured    = false;
-   
+   mBoundCanvas = NULL;
    mWindowInputGenerator = new osxWindowInputGenerator( this);
    mCursorController = new MacCursorController( this );
    mOwningWindowManager = NULL;
+   mTarget = NULL;
    
    mFullscreen = false;
    mShouldFullscreen = false;
@@ -291,6 +292,7 @@ bool MacWindow::isOpen()
 bool MacWindow::isVisible()
 {
 //   return !isMinimized() && ([mCocoaWindow isVisible] == YES);
+   return true;
 }
    
 void MacWindow::setFocus()
@@ -344,44 +346,19 @@ bool MacWindow::setCaption(const char* windowText)
 
 void MacWindow::_doMouseLockNow()
 {
-//   if(!isVisible())
-//      return;
-//      
-//   if(mShouldMouseLock == mMouseLocked && mMouseLocked != isCursorVisible())
-//      return;
-//   
-//   if(mShouldMouseLock)
-//      _dissociateMouse();
-//   else
-//      _associateMouse();
-//   
-//   // hide the cursor if we're locking, show it if we're unlocking
-//   setCursorVisible(!shouldLockMouse());
-//
-//   mMouseLocked = mShouldMouseLock;
-
    return;
 }
 
 void MacWindow::_associateMouse()
 {
-//   CGAssociateMouseAndMouseCursorPosition(true);
 }
 
 void MacWindow::_dissociateMouse()
 {
-//   _centerMouse();
-//   CGAssociateMouseAndMouseCursorPosition(false);
 }
 
 void MacWindow::_centerMouse()
 {
-//   NSRect frame = [mCocoaWindow frame];
-//   
-//   // Deal with the y flip (really fun when more than one monitor is involved)
-//   F32 offsetY = mMainDisplayBounds.size.height - mDisplayBounds.size.height;
-//   frame.origin.y = (mDisplayBounds.size.height + offsetY) - (S32)frame.origin.y - (S32)frame.size.height;
-//   mCursorController->setCursorPosition(frame.origin.x + frame.size.width / 2, frame.origin.y + frame.size.height / 2);
 }
 
 void MacWindow::swapBuffers()

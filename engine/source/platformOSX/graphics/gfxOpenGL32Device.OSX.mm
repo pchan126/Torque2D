@@ -352,26 +352,15 @@ void GFXOpenGL32Device::setStateBlockInternal(GFXStateBlock* block, bool force)
 //-----------------------------------------------------------------------------
 GFXWindowTarget *GFXOpenGL32Device::allocWindowTarget(PlatformWindow *window)
 {
-   if (window == NULL)
+   MacWindow* thewindow = dynamic_cast<MacWindow*>(window);
+
+   if (thewindow == NULL)
       return NULL;
    
-//   NSOpenGLView* view = (NSOpenGLView*)window->getPlatformDrawable();
-//   AssertFatal([view isKindOfClass:[NSOpenGLView class]], avar("_createContextForWindow - Supplied a %s instead of a NSOpenGLView", [[view className] UTF8String]));
-//   
-//   NSOpenGLContext* ctx = nil;
-//   ctx = [[[ NSOpenGLContext alloc] initWithFormat:mPixelFormat shareContext:mContext] autorelease];
-//   
-//   AssertFatal(ctx, "Unable to create a shared OpenGL context");
-//   if (ctx != nil)
-//   {
-//      [view setPixelFormat: (NSOpenGLPixelFormat*)mPixelFormat];
-//      [view setOpenGLContext: ctx];
-//   }
-//   
-//    // Allocate the wintarget and create a new context.
-//    GFXOpenGL32WindowTarget *gwt = new GFXOpenGL32WindowTarget(window, this);
+    // Allocate the wintarget and create a new context.
+    GFXOpenGL32WindowTarget *gwt = new GFXOpenGL32WindowTarget(thewindow, this);
 //    gwt->mContext = ctx ? ctx : mContext;
-//    return gwt;
+    return gwt;
 }
 
 

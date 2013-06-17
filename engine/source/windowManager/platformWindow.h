@@ -86,6 +86,7 @@ protected:
       mSuppressReset = false;
 
       mOffscreenRender = false;
+      mBoundCanvas = NULL;
    }
 
 public:

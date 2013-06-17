@@ -45,14 +45,6 @@ void GFXOpenGL32WindowTarget::_onAppSignal(WindowId wnd, S32 event)
 bool GFXOpenGL32WindowTarget::present()
 {
     GFX->updateStates();
-//    if (mFullscreenContext)
-//    {
-//        [(NSOpenGLContext*)mFullscreenContext flushBuffer];
-//    }
-//    else
-//    {
-//       [mContext flushBuffer];
-//    }
     mWindow->swapBuffers();
     return true;
 }
