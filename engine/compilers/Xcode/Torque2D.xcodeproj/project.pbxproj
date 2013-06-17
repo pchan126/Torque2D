@@ -443,7 +443,6 @@
 		86EA5B401678C7C700598E68 /* osxCocoaUtilities.mm in Sources */ = {isa = PBXBuildFile; fileRef = 86EA5B3F1678C7C700598E68 /* osxCocoaUtilities.mm */; };
 		D1049A0C16F6F8C40096749B /* mPoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1049A0B16F6F8C40096749B /* mPoint.cpp */; };
 		D10529F2173B9F3B00BFC4FF /* gfxOpenGLTextureObject.cc in Sources */ = {isa = PBXBuildFile; fileRef = D10529F1173B9F3B00BFC4FF /* gfxOpenGLTextureObject.cc */; };
-		D11F54E81703E48500797E52 /* osxTorqueView.mm in Sources */ = {isa = PBXBuildFile; fileRef = D11F54E71703E48500797E52 /* osxTorqueView.mm */; };
 		D11F9A87175DDCC800AB3E10 /* gfxOpenGLCardProfiler.cc in Sources */ = {isa = PBXBuildFile; fileRef = D11F9A86175DDCC800AB3E10 /* gfxOpenGLCardProfiler.cc */; };
 		D1272BC4175EF6F10012995E /* gfxDeviceStatistics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1272BC2175EF6F10012995E /* gfxDeviceStatistics.cpp */; };
 		D1272BFA175F2E9C0012995E /* gfxOpenGLCubemap.cc in Sources */ = {isa = PBXBuildFile; fileRef = D1272BF8175F2E9C0012995E /* gfxOpenGLCubemap.cc */; };
@@ -454,6 +453,8 @@
 		D162450717265AB000E4E1F7 /* gfxOpenGLStateBlock.cc in Sources */ = {isa = PBXBuildFile; fileRef = D16244F617265AB000E4E1F7 /* gfxOpenGLStateBlock.cc */; };
 		D16580751702942800A21928 /* gfxInit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D16580731702942800A21928 /* gfxInit.cpp */; };
 		D16580791702A5AE00A21928 /* guiContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D16580771702A5AE00A21928 /* guiContainer.cpp */; };
+		D16C4CC9176EAB3B006936B5 /* libglfw3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D16C4CC8176EAB3B006936B5 /* libglfw3.a */; };
+		D16C4CF7176EB524006936B5 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D16C4CF6176EB524006936B5 /* IOKit.framework */; };
 		D176A012172FC1E4000785CB /* osxWindowInputGenerator.mm in Sources */ = {isa = PBXBuildFile; fileRef = D176A011172FC1E4000785CB /* osxWindowInputGenerator.mm */; };
 		D19A5C10175739B1003A76CE /* lightMapParams.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D19A5BDE175739B1003A76CE /* lightMapParams.cpp */; };
 		D19A5C14175739B1003A76CE /* lightInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D19A5BE8175739B1003A76CE /* lightInfo.cpp */; };
@@ -1393,8 +1394,6 @@
 		86EA5B3F1678C7C700598E68 /* osxCocoaUtilities.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxCocoaUtilities.mm; sourceTree = "<group>"; };
 		D1049A0B16F6F8C40096749B /* mPoint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mPoint.cpp; sourceTree = "<group>"; };
 		D10529F1173B9F3B00BFC4FF /* gfxOpenGLTextureObject.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxOpenGLTextureObject.cc; sourceTree = "<group>"; };
-		D11F54E61703E48500797E52 /* osxTorqueView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxTorqueView.h; sourceTree = "<group>"; };
-		D11F54E71703E48500797E52 /* osxTorqueView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxTorqueView.mm; sourceTree = "<group>"; };
 		D11F9A86175DDCC800AB3E10 /* gfxOpenGLCardProfiler.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxOpenGLCardProfiler.cc; sourceTree = "<group>"; };
 		D1272BC2175EF6F10012995E /* gfxDeviceStatistics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxDeviceStatistics.cpp; sourceTree = "<group>"; };
 		D1272BC3175EF6F10012995E /* gfxDeviceStatistics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxDeviceStatistics.h; sourceTree = "<group>"; };
@@ -1425,6 +1424,9 @@
 		D16580781702A5AE00A21928 /* guiContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiContainer.h; sourceTree = "<group>"; };
 		D165807A1702E64A00A21928 /* guiControl_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiControl_ScriptBinding.h; sourceTree = "<group>"; };
 		D16581421702E7AB00A21928 /* guiCanvas_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiCanvas_ScriptBinding.h; sourceTree = "<group>"; };
+		D16C4CC8176EAB3B006936B5 /* libglfw3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libglfw3.a; path = ../../lib/glfw/maclib/libglfw3.a; sourceTree = "<group>"; };
+		D16C4CF0176EAE6F006936B5 /* glfw3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glfw3.h; path = ../../lib/glfw/include/GLFW/glfw3.h; sourceTree = "<group>"; };
+		D16C4CF6176EB524006936B5 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		D176A010172FC1E4000785CB /* osxWindowInputGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxWindowInputGenerator.h; sourceTree = "<group>"; };
 		D176A011172FC1E4000785CB /* osxWindowInputGenerator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxWindowInputGenerator.mm; sourceTree = "<group>"; };
 		D19A5BDE175739B1003A76CE /* lightMapParams.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lightMapParams.cpp; sourceTree = "<group>"; };
@@ -1532,6 +1534,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D16C4CF7176EB524006936B5 /* IOKit.framework in Frameworks */,
 				DA4645FF16C3A7C500EF1922 /* QuartzCore.framework in Frameworks */,
 				865A20CA16515B1E00527C44 /* AppKit.framework in Frameworks */,
 				865A20CB16515B1E00527C44 /* AVFoundation.framework in Frameworks */,
@@ -1541,6 +1544,7 @@
 				865A20CF16515B1E00527C44 /* Foundation.framework in Frameworks */,
 				865A20D016515B1E00527C44 /* OpenAL.framework in Frameworks */,
 				865A20D116515B1E00527C44 /* OpenGL.framework in Frameworks */,
+				D16C4CC9176EAB3B006936B5 /* libglfw3.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1694,6 +1698,8 @@
 		865A20C916515AEF00527C44 /* System */ = {
 			isa = PBXGroup;
 			children = (
+				D16C4CF6176EB524006936B5 /* IOKit.framework */,
+				D16C4CC8176EAB3B006936B5 /* libglfw3.a */,
 				869FF8BF1651518C002FE082 /* AppKit.framework */,
 				865A20C116515ACE00527C44 /* AVFoundation.framework */,
 				869FF8BC1651518C002FE082 /* Cocoa.framework */,
@@ -1710,6 +1716,7 @@
 		865A21E71651875E00527C44 /* Support_Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				D16C4CC5176EA9AD006936B5 /* glfw */,
 				865A22D6165187D700527C44 /* lpng */,
 				865A22D5165187D100527C44 /* ljpeg */,
 				865A21E8165187B600527C44 /* box2d */,
@@ -3132,6 +3139,14 @@
 			path = OpenGL;
 			sourceTree = "<group>";
 		};
+		D16C4CC5176EA9AD006936B5 /* glfw */ = {
+			isa = PBXGroup;
+			children = (
+				D16C4CF0176EAE6F006936B5 /* glfw3.h */,
+			);
+			name = glfw;
+			sourceTree = "<group>";
+		};
 		D19A5BC0175739B1003A76CE /* lighting */ = {
 			isa = PBXGroup;
 			children = (
@@ -3178,8 +3193,6 @@
 			children = (
 				D176A010172FC1E4000785CB /* osxWindowInputGenerator.h */,
 				D176A011172FC1E4000785CB /* osxWindowInputGenerator.mm */,
-				D11F54E61703E48500797E52 /* osxTorqueView.h */,
-				D11F54E71703E48500797E52 /* osxTorqueView.mm */,
 				D1A6957C17016CA90060D928 /* macCursorController.h */,
 				D1A6957D17016CA90060D928 /* macCursorController.mm */,
 				D1A6958017016CA90060D928 /* macWindow.h */,
@@ -3741,7 +3754,6 @@
 				D1A6958717016CA90060D928 /* macWindowManager.mm in Sources */,
 				D16580751702942800A21928 /* gfxInit.cpp in Sources */,
 				D16580791702A5AE00A21928 /* guiContainer.cpp in Sources */,
-				D11F54E81703E48500797E52 /* osxTorqueView.mm in Sources */,
 				D1E8DDFC170412D50001367B /* process.cpp in Sources */,
 				2AD42140170433FE005BB8AD /* tamlXmlParser.cc in Sources */,
 				2AD42141170433FE005BB8AD /* tamlXmlReader.cc in Sources */,
@@ -3839,7 +3851,10 @@
 					"$(SYSTEM_LIBRARY_DIR)/Frameworks/OpenGL.framework/Headers",
 				);
 				INFOPLIST_FILE = "Torque2D/Torque2D-Info.plist";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../lib/glfw/maclib\"",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = /usr/lib/libz.dylib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -3936,7 +3951,10 @@
 					"$(SYSTEM_LIBRARY_DIR)/Frameworks/OpenGL.framework/Headers",
 				);
 				INFOPLIST_FILE = "Torque2D/Torque2D-Info.plist";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../lib/glfw/maclib\"",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = /usr/lib/libz.dylib;
 				PRODUCT_NAME = "$(TARGET_NAME)_DEBUG";
@@ -3970,7 +3988,10 @@
 					"$(SYSTEM_LIBRARY_DIR)/Frameworks/OpenGL.framework/Headers",
 				);
 				INFOPLIST_FILE = "Torque2D/Torque2D-Info.plist";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../lib/glfw/maclib\"",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = /usr/lib/libz.dylib;
 				PRODUCT_NAME = "$(TARGET_NAME)";

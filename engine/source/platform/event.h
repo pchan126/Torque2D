@@ -412,21 +412,56 @@ enum InputEventType
 #define SI_ANY       0xff
 
 // Modifier Keys
-/// shift and ctrl are the same between platforms.
-#define SI_LSHIFT    (1<<0)
-#define SI_RSHIFT    (1<<1)
-#define SI_SHIFT     (SI_LSHIFT|SI_RSHIFT)
-#define SI_LCTRL     (1<<2)
-#define SI_RCTRL     (1<<3)
-#define SI_CTRL      (SI_LCTRL|SI_RCTRL)
-/// win altkey, mapped to mac cmdkey.
-#define SI_LALT      (1<<4)
-#define SI_RALT      (1<<5)
-#define SI_ALT       (SI_LALT|SI_RALT)
-/// mac optionkey
-#define SI_MAC_LOPT  (1<<6)
-#define SI_MAC_ROPT  (1<<7)
-#define SI_MAC_OPT   (SI_MAC_LOPT|SI_MAC_ROPT)
+enum InputModifiers
+{
+   /// shift and ctrl are the same between platforms.
+   SI_LSHIFT = BIT(0),
+   SI_RSHIFT = BIT(1),
+   SI_SHIFT  = (SI_LSHIFT|SI_RSHIFT),
+   SI_LCTRL  = BIT(2),
+   SI_RCTRL  = BIT(3),
+   SI_CTRL   = (SI_LCTRL|SI_RCTRL),
+   
+   /// win altkey, mapped to mac cmdkey.
+   SI_LALT = BIT(4),
+   SI_RALT = BIT(5),
+   SI_ALT = (SI_LALT|SI_RALT),
+   
+   /// mac optionkey
+   SI_MAC_LOPT  = BIT(6),
+   SI_MAC_ROPT  = BIT(7),
+   SI_MAC_OPT   = (SI_MAC_LOPT|SI_MAC_ROPT),
+   
+   /// modifier keys used for common operations
+#if defined(TORQUE_OS_MAC)
+   SI_COPYPASTE = SI_ALT,
+   SI_MULTISELECT = SI_ALT,
+   SI_RANGESELECT = SI_SHIFT,
+   SI_PRIMARY_ALT = SI_MAC_OPT,  ///< Primary key used for toggling into alternates of commands.
+   SI_PRIMARY_CTRL = SI_ALT,     ///< Primary key used for triggering commands.
+#else
+   SI_COPYPASTE = SI_CTRL,
+   SI_MULTISELECT = SI_CTRL,
+   SI_RANGESELECT = SI_SHIFT,
+   SI_PRIMARY_ALT = SI_ALT,
+   SI_PRIMARY_CTRL = SI_CTRL,
+#endif
+   /// modfier key used in conjunction w/ arrow keys to move cursor to next word
+#if defined(TORQUE_OS_MAC)
+   SI_WORDJUMP = SI_MAC_OPT,
+#else
+   SI_WORDJUMP = SI_CTRL,
+#endif
+   /// modifier key used in conjunction w/ arrow keys to move cursor to beginning / end of line
+   SI_LINEJUMP = SI_ALT,
+   
+   /// modifier key used in conjunction w/ home & end to jump to the top or bottom of a document
+#if defined(TORQUE_OS_MAC)
+   SI_DOCJUMP = SI_ANY,
+#else
+   SI_DOCJUMP = SI_CTRL,
+#endif
+};
 
 /// @}
 

@@ -33,6 +33,8 @@
 U8 TranslateOSKeyCode( U8 vcode );
 U8 TranslateKeyCodeToOS(U8 keycode);
 
+U8 TranslateGLFWKeyCode( S32 vcode );
+
 //------------------------------------------------------------------------------
 
 class InputDevice : public SimObject

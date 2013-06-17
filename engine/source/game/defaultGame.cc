@@ -116,6 +116,7 @@ bool initializeLibraries()
     PlatformAssert::create();
     Con::init();
     Sim::init();
+   
     GFXInit::init();
     Process::init();
 

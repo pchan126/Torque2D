@@ -74,9 +74,9 @@ bool Input::enable()
     if (smManager && !smManager->isEnabled())
         enabledValue = smManager->enable();
 
-    // Also enable mouse and keyboard automatically
-    enableMouse();
-    enableKeyboard();
+//    // Also enable mouse and keyboard automatically
+//    enableMouse();
+//    enableKeyboard();
 
     return enabledValue;
 }
@@ -88,8 +88,8 @@ void Input::disable()
     if (smManager && smManager->isEnabled())
         return smManager->disable();
 
-    disableMouse();
-    disableKeyboard();
+//    disableMouse();
+//    disableKeyboard();
 }
 
 //------------------------------------------------------------------------------
@@ -127,29 +127,29 @@ bool Input::isEnabled()
     return false;
 }
 
-//------------------------------------------------------------------------------
-// Accesses the global input manager to see if its mouse is enabled
-bool Input::isMouseEnabled()
-{
-    osxInputManager* inputManager = (osxInputManager*)getManager();
-
-    if (inputManager)
-        return inputManager->isMouseEnabled();
-
-    return false;
-}
-
-//------------------------------------------------------------------------------
-// Accesses the global input manager to see if its keyboard is enabled
-bool Input::isKeyboardEnabled()
-{
-    osxInputManager* inputManager = (osxInputManager*)getManager();
-
-    if (inputManager)
-        return inputManager->isKeyboardEnabled();
-
-    return false;
-}
+////------------------------------------------------------------------------------
+//// Accesses the global input manager to see if its mouse is enabled
+//bool Input::isMouseEnabled()
+//{
+//    osxInputManager* inputManager = (osxInputManager*)getManager();
+//
+//    if (inputManager)
+//        return inputManager->isMouseEnabled();
+//
+//    return false;
+//}
+//
+////------------------------------------------------------------------------------
+//// Accesses the global input manager to see if its keyboard is enabled
+//bool Input::isKeyboardEnabled()
+//{
+//    osxInputManager* inputManager = (osxInputManager*)getManager();
+//
+//    if (inputManager)
+//        return inputManager->isKeyboardEnabled();
+//
+//    return false;
+//}
 
 //------------------------------------------------------------------------------
 // Does nothing on OS X.
@@ -161,74 +161,74 @@ bool Input::isActive()
     return true;
 }
 
-//------------------------------------------------------------------------------
-// Access the global osxInputManager and enables its mouse
-void Input::enableMouse()
-{
-    osxInputManager *inputManager = (osxInputManager *) getManager();
-
-    if (inputManager)
-        return inputManager->enableMouse();
-}
-
-//------------------------------------------------------------------------------
-// Access the global osxInputManager and disables its mouse
-void Input::disableMouse()
-{
-    osxInputManager *inputManager = (osxInputManager *) getManager();
-
-    if (inputManager)
-        return inputManager->disableMouse();
-}
-
-//------------------------------------------------------------------------------
-// Access the global osxInputManager and enables its keyboard
-void Input::enableKeyboard()
-{
-    osxInputManager *inputManager = (osxInputManager *) getManager();
-
-    if (inputManager)
-        inputManager->enableKeyboard();
-}
-
-//------------------------------------------------------------------------------
-// Access the global osxInputManager and enables its keyboard
-void Input::disableKeyboard()
-{
-    osxInputManager *inputManager = (osxInputManager *) getManager();
-
-    if (inputManager)
-        return inputManager->disableKeyboard();
-}
-
-//------------------------------------------------------------------------------
-// This is essentially the same as enableKeyboard. The redunancy is due to
-// keep parallel functionality with Windows, which has a different usage
-// for activateKeyboard due to DirectInput
-bool Input::activateKeyboard()
-{
-    osxInputManager *inputManager = (osxInputManager *) getManager();
-
-    if (inputManager)
-    {
-        inputManager->enableKeyboard();
-        return true;
-    }
-
-    return false;
-}
-
-//------------------------------------------------------------------------------
-// This is essentially the same as disableKeyboard. The redunancy is due to
-// keep parallel functionality with Windows, which has a different usage
-// for deactivateKeyboard due to DirectInput
-void Input::deactivateKeyboard()
-{
-    osxInputManager *inputManager = (osxInputManager *) getManager();
-
-    if (inputManager)
-        inputManager->disableKeyboard();
-}
+////------------------------------------------------------------------------------
+//// Access the global osxInputManager and enables its mouse
+//void Input::enableMouse()
+//{
+//    osxInputManager *inputManager = (osxInputManager *) getManager();
+//
+//    if (inputManager)
+//        return inputManager->enableMouse();
+//}
+//
+////------------------------------------------------------------------------------
+//// Access the global osxInputManager and disables its mouse
+//void Input::disableMouse()
+//{
+//    osxInputManager *inputManager = (osxInputManager *) getManager();
+//
+//    if (inputManager)
+//        return inputManager->disableMouse();
+//}
+//
+////------------------------------------------------------------------------------
+//// Access the global osxInputManager and enables its keyboard
+//void Input::enableKeyboard()
+//{
+//    osxInputManager *inputManager = (osxInputManager *) getManager();
+//
+//    if (inputManager)
+//        inputManager->enableKeyboard();
+//}
+//
+////------------------------------------------------------------------------------
+//// Access the global osxInputManager and enables its keyboard
+//void Input::disableKeyboard()
+//{
+//    osxInputManager *inputManager = (osxInputManager *) getManager();
+//
+//    if (inputManager)
+//        return inputManager->disableKeyboard();
+//}
+//
+////------------------------------------------------------------------------------
+//// This is essentially the same as enableKeyboard. The redunancy is due to
+//// keep parallel functionality with Windows, which has a different usage
+//// for activateKeyboard due to DirectInput
+//bool Input::activateKeyboard()
+//{
+//    osxInputManager *inputManager = (osxInputManager *) getManager();
+//
+//    if (inputManager)
+//    {
+//        inputManager->enableKeyboard();
+//        return true;
+//    }
+//
+//    return false;
+//}
+//
+////------------------------------------------------------------------------------
+//// This is essentially the same as disableKeyboard. The redunancy is due to
+//// keep parallel functionality with Windows, which has a different usage
+//// for deactivateKeyboard due to DirectInput
+//void Input::deactivateKeyboard()
+//{
+//    osxInputManager *inputManager = (osxInputManager *) getManager();
+//
+//    if (inputManager)
+//        inputManager->disableKeyboard();
+//}
 
 //------------------------------------------------------------------------------
 // Enable joystick input
@@ -577,3 +577,155 @@ U8 TranslateOSKeyCode(U8 vcode)
 {
     return VcodeRemap[vcode];
 }
+
+//--------------------------------------------------------------------------
+//#pragma message("input remap table might need tweaking - rumors of ibooks having diff virt keycodes, might need intermediate remap...")
+static U8 GLFWcodeRemap[512] =
+{
+   0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0,
+   KEY_SPACE,                 // 32
+   0, 0, 0, 0, 0, 0,
+   KEY_APOSTROPHE,            // 39
+   0, 0, 0, 0,
+   KEY_COMMA,                 // 44
+   KEY_MINUS,                 // 45
+   KEY_PERIOD,                // 46
+   KEY_SLASH,                 // 47
+   KEY_0,                     // 48
+   KEY_1,                     // 49
+   KEY_2,                     // 50
+   KEY_3,                     // 51
+   KEY_4,                     // 52
+   KEY_5,                     // 53
+   KEY_6,                     // 54
+   KEY_7,                     // 55
+   KEY_8,                     // 56
+   KEY_9,                     // 57
+   KEY_SEMICOLON,             // 58
+   0,
+   KEY_EQUALS,                // 61
+   0, 0, 0,
+   KEY_A,                     // 65
+   KEY_B,                     // 66
+   KEY_C,                     // 67
+   KEY_D,                     // 68
+   KEY_E,                     // 69
+   KEY_F,                     // 70
+   KEY_G,                     // 71
+   KEY_H,                     // 72
+   KEY_I,                     // 73
+   KEY_J,                     // 74
+   KEY_K,                     // 75
+   KEY_L,                     // 76
+   KEY_M,                     // 77
+   KEY_N,                     // 78
+   KEY_O,                     // 79
+   KEY_P,                     // 80
+   KEY_Q,                     // 81
+   KEY_R,                     // 82
+   KEY_S,                     // 83
+   KEY_T,                     // 84
+   KEY_U,                     // 85
+   KEY_V,                     // 86
+   KEY_W,                     // 87
+   KEY_X,                     // 88
+   KEY_Y,                     // 89
+   KEY_Z,                     // 90
+   KEY_LBRACKET,              // 91
+   KEY_BACKSLASH,             // 92
+   KEY_RBRACKET,              // 93
+   0, 0,
+   KEY_TILDE,                 // 96
+   0, 0, 0, 0, 0, 0, 0,       // 103
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 203
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 253
+   0, 0,
+   KEY_ESCAPE,                // 256
+   KEY_RETURN,                // 257
+   KEY_TAB,                   // 258
+   KEY_BACKSPACE,             // 259
+   KEY_INSERT,                // 260 // also known as mac Help
+   KEY_DELETE,                // 261 // FwdDel
+   KEY_RIGHT,                 // 262
+   KEY_LEFT,                  // 263
+   KEY_DOWN,                  // 264
+   KEY_UP,                    // 265
+   KEY_PAGE_UP,               // 266
+   KEY_PAGE_DOWN,             // 267
+   KEY_HOME,                  // 268
+   KEY_END,                   // 269
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 279
+   KEY_CAPSLOCK,              // 280
+   KEY_SCROLLLOCK,            // 281
+   KEY_NUMLOCK,               // 282
+   KEY_PRINT,                 // 283
+   KEY_PAUSE,                 // 284
+   0, 0, 0, 0, 0,             // 289
+   KEY_F1,                    // 290
+   KEY_F2,                    // 291
+   KEY_F3,                    // 292
+   KEY_F4,                    // 293
+   KEY_F5,                    // 294
+   KEY_F6,                    // 295
+   KEY_F7,                    // 296
+   KEY_F8,                    // 297
+   KEY_F9,                    // 298
+   KEY_F11,                   // 299
+   KEY_F10,                   // 300
+   KEY_F12,                   // 301
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 311
+   0, 0, 0, 0, 0, 0, 0, 0,       // 319
+
+   KEY_NUMPAD0,               // 320
+   KEY_NUMPAD1,               // 321
+   KEY_NUMPAD2,               // 322
+   KEY_NUMPAD3,               // 323
+   KEY_NUMPAD4,               // 324
+   KEY_NUMPAD5,               // 325
+   KEY_NUMPAD6,               // 326
+   KEY_NUMPAD7,               // 327
+   KEY_NUMPAD8,               // 328
+   KEY_NUMPAD9,               // 329
+   KEY_DECIMAL,               // 330
+   KEY_DIVIDE,                // 331
+   KEY_MULTIPLY,              // 332
+   KEY_SUBTRACT,              // 333
+   KEY_ADD,                   // 334
+   KEY_NUMPADENTER,           // 335
+   KEY_SEPARATOR,             // 336
+   0, 0, 0,
+   KEY_LSHIFT,                // 340
+   KEY_LCONTROL,              // 341
+   KEY_LALT,                  // 342
+   0,                         // 343
+   KEY_RSHIFT,                // 344
+   KEY_RCONTROL,              // 345
+   KEY_RALT,                  // 346
+   0,                         //
+   0,                         //
+};
+
+U8 TranslateGLFWKeyCode(S32 vcode)
+{
+   return GLFWcodeRemap[vcode];
+}
+
+

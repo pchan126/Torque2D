@@ -95,7 +95,7 @@ void WindowInputGenerator::handleMouseMove( WindowId did, U32 modifier, S32 x, S
     mInputController->processMouseMoveEvent( event );
 }
 
-void WindowInputGenerator::handleMouseButton( WindowId did, U32 modifiers, S32 x, S32 y, U32 action, U16 button )
+void WindowInputGenerator::handleMouseButton( WindowId did, U32 modifiers, U32 action, U16 button )
 {
    if( !mInputController || !mFocused )
       return;
@@ -111,8 +111,6 @@ void WindowInputGenerator::handleMouseButton( WindowId did, U32 modifiers, S32 x
     
     ButtonEventInfo event;
     event.modifier   = convertModifierBits(modifiers);
-    event.xPos  = x;
-    event.yPos  = y;
     event.buttonID = button;
     event.action = action;
 

@@ -7,6 +7,7 @@
 #define _MACWINDOWMANAGER_H_
 
 #import "windowManager/platformWindowMgr.h"
+#import "platform/platformGL.h"
 #import "collection/vector.h"
 
 class MacWindow;
@@ -70,6 +71,7 @@ public:
    /// @return The window associated with the specified ID, or NULL if no
    ///         match was found.
    virtual PlatformWindow *getWindowById(WindowId id);
+   MacWindow      *getWindowByGLFW(GLFWwindow* window);
 
    virtual PlatformWindow *getFirstWindow();
    virtual PlatformWindow* getFocusedWindow();
@@ -95,7 +97,7 @@ public:
    
    /// @}
    
-   // static MacWindowManager* get() { return (MacWindowManager*)PlatformWindowManager::get(); }
+   static MacWindowManager* get() { return (MacWindowManager*)PlatformWindowManager::get(); }
    void _addWindow(MacWindow* window);
    void _removeWindow(MacWindow* window);
    

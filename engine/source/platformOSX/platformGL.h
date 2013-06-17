@@ -32,11 +32,8 @@
 //%PUAP%-->
 
 /// We use the standard Apple OpenGL framework headers.
-//#define GLFW_INCLUDE_GL3 1
-//#include <GL/glfw.h>
-#include <OpenGL/gl3.h>
-#include <OpenGL/gl3ext.h>
-
+#define GLFW_INCLUDE_GLCOREARB 1
+#include <glfw3.h>
 
 typedef enum {
     GLKVertexAttribPosition,

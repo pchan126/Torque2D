@@ -16,12 +16,14 @@ class osxWindowInputGenerator : public WindowInputGenerator
        MacWindow *mWindow;
 
     // Event Handlers
-    void handleMouseButtonEvent( WindowId did, U32 modifier, S32 x, S32 y, U32 action, U16 button );
+    void handleMouseButtonEvent( WindowId did, U32 modifier, U32 action, U16 button );
    
    public:
    
       osxWindowInputGenerator( MacWindow *window );
       virtual ~osxWindowInputGenerator();
+   
+
 };
 
 #endif // _osxWINDOW_INPUTGENERATOR_H_

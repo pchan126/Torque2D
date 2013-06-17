@@ -515,8 +515,10 @@ bool GuiCanvas::processInputEvent(const InputEventInfo &event)
 bool GuiCanvas::processMouseButtonEvent( const ButtonEventInfo &event )
 {
     //copy the cursor point into the event
-    mLastEvent.mousePoint.x = S32(event.xPos);
-    mLastEvent.mousePoint.y = S32(event.yPos);
+//    mLastEvent.mousePoint.x = S32(event.xPos);
+//    mLastEvent.mousePoint.y = S32(event.yPos);
+   mLastEvent.mousePoint.x = S32(mCursorPt.x);
+   mLastEvent.mousePoint.y = S32(mCursorPt.y);
     mLastEvent.eventID = event.buttonID;
     
     if( isCursorON() )

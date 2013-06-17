@@ -9,10 +9,11 @@
 #import "windowManager/platformWindow.h"
 #import "./macWindowManager.h"
 #import "./macCursorController.h"
-#import "./osxTorqueView.h"
 
 #import "graphics/gfxTarget.h"
 #import "graphics/gfxStructs.h"
+
+class GLFWwindow;
 
 class MacWindow : public PlatformWindow
 {
@@ -26,8 +27,8 @@ public:
    
    virtual WindowId getWindowId() { return mWindowId; }
    
-   void setDisplay(CGDirectDisplayID display);
-   CGDirectDisplayID getDisplay() { return mDisplay; }
+//   void setDisplay(CGDirectDisplayID display);
+//   CGDirectDisplayID getDisplay() { return mDisplay; }
    CGRect getMainDisplayBounds() { return mMainDisplayBounds; }
    CGRect getDisplayBounds() { return mDisplayBounds; }
 
@@ -87,6 +88,8 @@ public:
    
    virtual void* getPlatformDrawable() const;
    
+   void swapBuffers();
+   
    // TODO: These should be private, but GGMacView (an Obj-C class) needs access to these and we can't friend Obj-C classes
    bool _skipNextMouseEvent() { return mSkipMouseEvents != 0; }
    void _skipAnotherMouseEvent() { mSkipMouseEvents++; }
@@ -109,8 +112,8 @@ public:
    void _centerMouse();
 
    // For GGMacView
-   void _disassociateCocoaWindow();
-    OSXTorqueView* _torqueView;
+//   void _disassociateCocoaWindow();
+//    OSXTorqueView* _torqueView;
    
 protected:
    virtual void _setFullscreen(bool fullScreen);
@@ -121,13 +124,12 @@ private:
    
    MacWindow(U32 windowId, const char* windowText, Point2I clientExtent);
    
-   void _initCocoaWindow(const char* windowText, Point2I clientExtent);
    void setWindowId(U32 newid) { mWindowId = newid;}
    void signalGainFocus();
 
    static MacWindow* sInstance;
-   
-   NSWindow* mCocoaWindow;
+   GLFWwindow* window;
+
    GFXDevice *mDevice;
    GFXWindowTargetRef mTarget;
    GFXVideoMode mCurrentMode;
@@ -152,6 +154,10 @@ private:
    CGDirectDisplayID mDisplay;
    CGRect mDisplayBounds;
    CGRect mMainDisplayBounds;
+
+   static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+   static void mousebutton_callback(GLFWwindow* window, int button, int action, int mods);
+   static void mousemove_callback(GLFWwindow* window, int xpos, int ypos);
 
 public:
     ButtonEvent       mouseButtonEvent;

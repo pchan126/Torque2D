@@ -30,17 +30,8 @@ class WindowInputGenerator
       /// (one unit of mouse movement is a mickey) to units in the GUI.
       F32             mPixelsPerMickey;
 
-      // Event Handlers
-      void handleMouseButton(WindowId did, U32 modifier,  S32 x, S32 y, U32 action, U16 button);
-      void handleMouseWheel (WindowId did, U32 modifier,  S32 wheelDeltaX, S32 wheelDeltaY);
-      void handleMouseMove  (WindowId did, U32 modifier,  S32 x,      S32 y, bool isRelative);
-      void handleKeyboard   (WindowId did, U32 modifier,  U32 action, U16 key);
-      void handleCharInput  (WindowId did, U32 modifier,  U16 key);
-      void handleAppEvent   (WindowId did, S32 event);
-      void handleInputEvent (U32 deviceInst,F32 fValue, U16 deviceType, U16 objType, U16 ascii, U16 objInst, U8 action, U8 modifier);
-
-      void generateInputEvent( InputEventInfo &inputEvent );
-      
+   void generateInputEvent( InputEventInfo &inputEvent );
+   
    public:
    
       WindowInputGenerator( PlatformWindow *window );
@@ -51,6 +42,16 @@ class WindowInputGenerator
       /// Returns true if the given keypress event should be send as a raw keyboard
       /// event even if it maps to a character input event.
       bool wantAsKeyboardEvent( U32 modifiers, U32 key );
+
+   // Event Handlers
+   void handleMouseButton(WindowId did, U32 modifier,  U32 action, U16 button);
+   void handleMouseWheel (WindowId did, U32 modifier,  S32 wheelDeltaX, S32 wheelDeltaY);
+   void handleMouseMove  (WindowId did, U32 modifier,  S32 x,      S32 y, bool isRelative);
+   void handleKeyboard   (WindowId did, U32 modifier,  U32 action, U16 key);
+   void handleCharInput  (WindowId did, U32 modifier,  U16 key);
+   void handleAppEvent   (WindowId did, S32 event);
+   void handleInputEvent (U32 deviceInst,F32 fValue, U16 deviceType, U16 objType, U16 ascii, U16 objInst, U8 action, U8 modifier);
+   
 };
 
 #endif // _WINDOW_INPUTGENERATOR_H_

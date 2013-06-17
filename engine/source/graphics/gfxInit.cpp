@@ -4,13 +4,12 @@
 //-----------------------------------------------------------------------------
 
 #include "platform/platform.h"
+#include "platform/platformGL.h"
 #include "graphics/gfxInit.h"
-
 #include "graphics/gfxTextureManager.h"
 #include "console/console.h"
 #include "windowManager/platformWindowMgr.h"
 #include "graphics/gfxEnums.h"
-
 
 Vector<GFXAdapter*> GFXInit::smAdapters( __FILE__, __LINE__ );
 GFXInit::RegisterDeviceSignal* GFXInit::smRegisterDeviceSignal;
@@ -74,6 +73,11 @@ GFXInit::RegisterDeviceSignal& GFXInit::getRegisterDeviceSignal()
    return *smRegisterDeviceSignal;
 }
 
+static void error_callback(int error, const char* description)
+{
+   fputs(description, stderr);
+}
+
 void GFXInit::init()
 {
    // init only once.
@@ -83,6 +87,13 @@ void GFXInit::init()
    doneOnce = true;
    
    Con::printf( "GFX Init:" );
+
+#ifndef TORQUE_OS_IOS
+   glfwSetErrorCallback(error_callback);
+
+   if (!glfwInit())
+      exit(EXIT_FAILURE);
+#endif
 
    //find our adapters
    Vector<GFXAdapter*> adapters( __FILE__, __LINE__ );

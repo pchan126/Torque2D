@@ -187,6 +187,7 @@ static osxPlatState * tempSharedPlatState = nil;
     if(Game->isRunning())
     {
         Game->mainLoop();
+//       glfwPollEvents();
        if (_torqueView && Game->isRunning())
             _torqueView->displayEvent.trigger(_torqueView->getWindowId());
     }

@@ -144,75 +144,54 @@ void GFXOpenGL32Device::addVideoMode(GFXVideoMode toAdd)
     mVideoModes.push_back_unique( toAdd );
 }
 
-void addVideoModeCallback( const void *value, void *context )
-{
-	if (CFGetTypeID (value) == CGDisplayModeGetTypeID())
-    {
-        CGDisplayModeRef mode = (CGDisplayModeRef)value;
-        Vector<GFXVideoMode> *videoModes = (Vector<GFXVideoMode> *)context;
-        GFXVideoMode toAdd;
-
-        toAdd.resolution.x = CGDisplayModeGetWidth(mode); //  valueForKey:@"Width"] intValue];
-        toAdd.resolution.y = CGDisplayModeGetHeight(mode); //  [[mode valueForKey:@"Height"] intValue];
-        CFStringRef pixCode = CGDisplayModeCopyPixelEncoding(mode);
-        toAdd.bitDepth = CFStringGetLength(pixCode); // [[mode valueForKey:@"BitsPerPixel"] intValue];
-        toAdd.refreshRate = CGDisplayModeGetRefreshRate(mode); // [[mode valueForKey:@"RefreshRate"] intValue];
-        
-        toAdd.fullScreen = false;
-        
-        CFRelease(pixCode);
-        // skip if mode claims to be 8bpp
-        if( toAdd.bitDepth == 8 )
-            return;
-        
-        videoModes->push_back_unique(toAdd);
-    }
-}
 
 void GFXOpenGL32Device::enumerateAdapters( Vector<GFXAdapter*> &adapterList )
 {
     GFXAdapter *toAdd;
     
     Vector<GFXVideoMode> videoModes;
-    
-    CGDirectDisplayID display = CGMainDisplayID();
-    
-    // Enumerate all available resolutions: // depreciated use CGDisplayCopyAllDisplayModes
-    CFArrayRef modeArray = CGDisplayCopyAllDisplayModes( display, NULL );
-    CFArrayApplyFunction(modeArray, CFRangeMake(0,CFArrayGetCount(modeArray)), addVideoModeCallback, &videoModes);
-    
-    // Get number of displays
-    CGDisplayCount dispCnt;
-    CGGetActiveDisplayList(0, NULL, &dispCnt);
-    
-    // Take advantage of GNU-C
-    CGDirectDisplayID displays[dispCnt];
-    
-    CGGetActiveDisplayList(dispCnt, displays, &dispCnt);
-    for(U32 i = 0; i < dispCnt; i++)
-    {
-        toAdd = new GFXAdapter();
-        toAdd->mType = OpenGL;
-        toAdd->mIndex = (U32)displays[i];
-        toAdd->mCreateDeviceInstanceDelegate = mCreateDeviceInstance;
-        String renderer = _getRendererForDisplay(displays[i]);
-        AssertFatal(dStrlen(renderer.c_str()) < GFXAdapter::MaxAdapterNameLen, "GFXGLDevice::enumerateAdapter - renderer name too long, increae the size of GFXAdapter::MaxAdapterNameLen (or use String!)");
-        dStrncpy(toAdd->mName, renderer.c_str(), GFXAdapter::MaxAdapterNameLen);
-        adapterList.push_back(toAdd);
-        
-        for (S32 j = videoModes.size() - 1 ; j >= 0 ; j--)
-            toAdd->mAvailableModes.push_back(videoModes[j]);
-    }
+
+   int monitorCount;
+   GLFWmonitor** monitorArray = glfwGetMonitors(&monitorCount);
+   for (U32 i = 0; i < monitorCount; i++)
+   {
+      toAdd = new GFXAdapter();
+      toAdd->mType = OpenGL;
+      toAdd->mIndex = i;
+      toAdd->mCreateDeviceInstanceDelegate = mCreateDeviceInstance;
+      adapterList.push_back(toAdd);
+
+      int videoModeCount;
+      const GLFWvidmode* videoModes = glfwGetVideoModes(monitorArray[i], &videoModeCount);
+      for (U32 j = 0; j < videoModeCount; j++)
+      {
+         GFXVideoMode toVMAdd;
+         
+         toVMAdd.resolution.x = videoModes[j].width;
+         toVMAdd.resolution.y = videoModes[j].height;
+         toVMAdd.refreshRate = videoModes[j].refreshRate;
+         toVMAdd.fullScreen = false;
+         toAdd->mAvailableModes.push_back(toVMAdd);
+      }
+   }
 }
 
 void GFXOpenGL32Device::enumerateVideoModes()
 {
-    mVideoModes.clear();
-    CGDirectDisplayID display = CGMainDisplayID();
-    
-    // Enumerate all available resolutions:
-    CFArrayRef modeArray = CGDisplayCopyAllDisplayModes( display, NULL );
-    CFArrayApplyFunction(modeArray, CFRangeMake(0,CFArrayGetCount(modeArray)), addVideoModeCallback, &mVideoModes);
+   mVideoModes.clear();
+   
+   int videoModeCount;
+   const GLFWvidmode* videoModes = glfwGetVideoModes(glfwGetPrimaryMonitor(), &videoModeCount);
+   for (U32 j = 0; j < videoModeCount; j++)
+   {
+      GFXVideoMode toVMAdd;
+      
+      toVMAdd.resolution.x = videoModes[j].width;
+      toVMAdd.resolution.y = videoModes[j].height;
+      toVMAdd.refreshRate = videoModes[j].refreshRate;
+      toVMAdd.fullScreen = false;
+      mVideoModes.push_back(toVMAdd);
+   }
 }
 
 void GFXOpenGL32Device::zombify()
@@ -369,23 +348,23 @@ GFXWindowTarget *GFXOpenGL32Device::allocWindowTarget(PlatformWindow *window)
    if (window == NULL)
       return NULL;
    
-   NSOpenGLView* view = (NSOpenGLView*)window->getPlatformDrawable();
-   AssertFatal([view isKindOfClass:[NSOpenGLView class]], avar("_createContextForWindow - Supplied a %s instead of a NSOpenGLView", [[view className] UTF8String]));
-   
-   NSOpenGLContext* ctx = nil;
-   ctx = [[[ NSOpenGLContext alloc] initWithFormat:mPixelFormat shareContext:mContext] autorelease];
-   
-   AssertFatal(ctx, "Unable to create a shared OpenGL context");
-   if (ctx != nil)
-   {
-      [view setPixelFormat: (NSOpenGLPixelFormat*)mPixelFormat];
-      [view setOpenGLContext: ctx];
-   }
-   
-    // Allocate the wintarget and create a new context.
-    GFXOpenGL32WindowTarget *gwt = new GFXOpenGL32WindowTarget(window, this);
-    gwt->mContext = ctx ? ctx : mContext;
-    return gwt;
+//   NSOpenGLView* view = (NSOpenGLView*)window->getPlatformDrawable();
+//   AssertFatal([view isKindOfClass:[NSOpenGLView class]], avar("_createContextForWindow - Supplied a %s instead of a NSOpenGLView", [[view className] UTF8String]));
+//   
+//   NSOpenGLContext* ctx = nil;
+//   ctx = [[[ NSOpenGLContext alloc] initWithFormat:mPixelFormat shareContext:mContext] autorelease];
+//   
+//   AssertFatal(ctx, "Unable to create a shared OpenGL context");
+//   if (ctx != nil)
+//   {
+//      [view setPixelFormat: (NSOpenGLPixelFormat*)mPixelFormat];
+//      [view setOpenGLContext: ctx];
+//   }
+//   
+//    // Allocate the wintarget and create a new context.
+//    GFXOpenGL32WindowTarget *gwt = new GFXOpenGL32WindowTarget(window, this);
+//    gwt->mContext = ctx ? ctx : mContext;
+//    return gwt;
 }
 
 
@@ -564,17 +543,17 @@ void GFXOpenGL32Device::_updateRenderTargets()
         }
         else
         {
-            GFXOpenGL32WindowTarget *win = dynamic_cast<GFXOpenGL32WindowTarget*>( mCurrentRT.getPointer() );
-            AssertFatal( win != NULL,
-                        "GFXOpenGL32Device::_updateRenderTargets() - invalid target subclass passed!" );
-            
-            win->makeActive();
-            
-            if( win->mContext != static_cast<GFXOpenGL32Device*>(GFX)->mContext )
-            {
-                mRTDirty = false;
-                GFX->updateStates(true);
-            }
+//            GFXOpenGL32WindowTarget *win = dynamic_cast<GFXOpenGL32WindowTarget*>( mCurrentRT.getPointer() );
+//            AssertFatal( win != NULL,
+//                        "GFXOpenGL32Device::_updateRenderTargets() - invalid target subclass passed!" );
+//            
+//            win->makeActive();
+//            
+//            if( win->mContext != static_cast<GFXOpenGL32Device*>(GFX)->mContext )
+//            {
+//                mRTDirty = false;
+//                GFX->updateStates(true);
+//            }
         }
         
         mRTDirty = false;

@@ -113,6 +113,19 @@ PlatformWindow* MacWindowManager::getWindowById(WindowId zid)
    return NULL;
 }
 
+MacWindow* MacWindowManager::getWindowByGLFW(GLFWwindow* window)
+{
+   // Find the window by its arbirary WindowId.
+   for(U32 i = 0; i < mWindowList.size(); i++)
+   {
+      MacWindow* w = dynamic_cast<MacWindow*>(mWindowList[i]);
+      if( w->window == window)
+         return w;
+   }
+   return NULL;
+}
+
+
 void MacWindowManager::lowerCurtain()
 {
    // fade all displays.
