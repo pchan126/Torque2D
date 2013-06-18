@@ -54,6 +54,7 @@ LightManager::LightManager( const char *name, const char *id )
     if (smActiveLM == NULL)
         smActiveLM = this;
 
+   mRegisteredLights.setSize(0);
 //   dMemset( &mSpecialLights, 0, sizeof( mSpecialLights ) );
 }
 

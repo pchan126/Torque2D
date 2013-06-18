@@ -1309,6 +1309,8 @@ void Scene::clearScene( bool deleteObjects )
             pControllerSet->at(0)->deleteObject();
     }
 
+    mLightManager.unregisterAllLights();
+   
     // Clear asset preloads.
     clearAssetPreloads();
 }
