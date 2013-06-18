@@ -31,25 +31,4 @@ osxWindowInputGenerator::~osxWindowInputGenerator()
    }
 }
 
-//
-////-----------------------------------------------------------------------------
-//// Touch Screen Events
-////-----------------------------------------------------------------------------
-//void osxWindowInputGenerator::handleMouseButtonEvent( WindowId did, U32 modifier, U32 action, U16 button )
-//{
-//    if( !mInputController || !mFocused )
-//      return;
-//
-//    // Generate a base Movement along and Axis event
-//    ButtonEventInfo event;
-//    event.modifier   = modifier;
-////    event.xPos = x;
-////    event.yPos = y;
-//    event.action = action;
-//    event.buttonID = button;
-////    Con::printf("handleTapEvent %i %i", x, y);
-//    mInputController->processMouseButtonEvent( event );
-//}
-//
-//
-//
+

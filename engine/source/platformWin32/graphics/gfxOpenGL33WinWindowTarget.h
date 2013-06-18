@@ -7,7 +7,7 @@
 #define _GFXOpenGL33WinWindowTarget_H_
 
 #include "graphics/gfxTarget.h"
-#include "windowManager/platformWindow.h"
+#include "platformWin32/windowManager/Win32Window.h"
 #include "memory/autoPtr.h"
 
 class GFXOpenGL33WinWindowTarget : public GFXWindowTarget
@@ -30,9 +30,9 @@ public:
    virtual void zombify() { }
    virtual void resurrect() { }
    
-   virtual void resolveTo(GFXTextureObject* obj);
-   
    void _onAppSignal(WindowId wnd, S32 event);
+
+	HGLRC getContext();
    
 private:
     typedef GFXWindowTarget Parent;
@@ -45,8 +45,8 @@ private:
 
    Point2I size;
    GFXDevice* mDevice;
-   HGLRC mContext;
-   HGLRC mFullscreenContext;
+   Win32Window* mWindow;
+
    void _teardownCurrentMode();
    void _setupNewMode();
 };

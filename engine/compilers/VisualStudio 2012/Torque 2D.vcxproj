@@ -75,7 +75,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>../../Lib/zlib;../../Lib/lpng;../../Lib/ljpeg;../../Lib/openal/win32;../../Source;../../Source/persistence/rapidjson/include;../../Source/persistence/libjson;../../source/testing/googleTest;../../source/testing/googleTest/include;../../source/testing/googleTest;../../source/testing/googleTest/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../Lib/zlib;../../Lib/lpng;../../lib/glew/glew-1.9.0/include;../../Lib;../../Lib/ljpeg;../../Lib/openal/win32;../../Source;../../Source/persistence/rapidjson/include;../../Source/persistence/libjson;../../source/testing/googleTest;../../source/testing/googleTest/include;D:\Torque\Torque2D-GFX\engine\lib\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>TORQUE_DEBUG;TORQUE_DEBUG_GUARD;_CRT_SECURE_NO_DEPRECATE;UNICODE;_VARIADIC_MAX=10;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -100,10 +100,10 @@
       <AdditionalIncludeDirectories>../../Lib/MSPlatformSDK/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>COMCTL32.LIB;COMDLG32.LIB;USER32.LIB;ADVAPI32.LIB;GDI32.LIB;RPCRT4.LIB;WINMM.LIB;WSOCK32.LIB;vfw32.lib;Imm32.lib;unicows.lib;shell32.lib;shlwapi.lib;ole32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>COMCTL32.LIB;COMDLG32.LIB;USER32.LIB;ADVAPI32.LIB;GDI32.LIB;RPCRT4.LIB;WINMM.LIB;WSOCK32.LIB;vfw32.lib;Imm32.lib;unicows.lib;shell32.lib;shlwapi.lib;ole32.lib;glfw3dll.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../Torque2D_DEBUG.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>../../Lib/unicode;../../lib/MSPlatformSDK/Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Torque\Torque2D-GFX\engine\lib\glew\glew-1.9.0\lib;../../lib\glfw\lib-msvc110;../../Lib/unicode;../../lib/MSPlatformSDK/Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>LIBC;LIBCD;LIBCMTD;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(IntDir)$(ProjectName).pdb</ProgramDatabaseFile>
@@ -124,7 +124,7 @@
     <ClCompile>
       <Optimization>MinSpace</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>../../Lib/opengl/;../../Lib/zlib;../../Lib/lpng;../../Lib/ljpeg;../../Lib/openal/win32;../../Source;../../Source/persistence/rapidjson/include;../../Source/persistence/libjson;../../source/testing/googleTest;../../source/testing/googleTest/include;../../Lib/glew/glew-1.9.0/include/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../Lib;../../Lib/zlib;../../Lib/lpng;../../Lib/ljpeg;../../Lib/openal/win32;../../Source;../../Source/persistence/rapidjson/include;../../Source/persistence/libjson;../../source/testing/googleTest;../../source/testing/googleTest/include;../../lib/glfw/include/GLFW;../../lib/glfw/deps;D:\Torque\Torque2D-GFX\engine\lib\glew\glew-1.9.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>UNICODE;_CRT_SECURE_NO_DEPRECATE;_VARIADIC_MAX=10;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -149,10 +149,10 @@
       <AdditionalIncludeDirectories>../../Lib/MSPlatformSDK/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>COMCTL32.LIB;COMDLG32.LIB;USER32.LIB;ADVAPI32.LIB;GDI32.LIB;WINMM.LIB;WSOCK32.LIB;vfw32.lib;Imm32.lib;unicows.lib;shell32.lib;shlwapi.lib;ole32.lib;RPCRT4.LIB;opengl32.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>COMCTL32.LIB;COMDLG32.LIB;USER32.LIB;ADVAPI32.LIB;GDI32.LIB;WINMM.LIB;WSOCK32.LIB;vfw32.lib;Imm32.lib;unicows.lib;shell32.lib;shlwapi.lib;ole32.lib;RPCRT4.LIB;opengl32.lib;glfw3dll.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../Torque2D.exe</OutputFile>
       <SuppressStartupBanner>false</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>../../Lib/unicode;../../Lib/MSPlatformSDK/Lib;../../lib/glew/glew-1.9.0/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../Lib/unicode;../../Lib/MSPlatformSDK/Lib;../../lib/glfw/lib-msvc110;../../lib/glew/glew-1.9.0/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>LIBC;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <ProgramDatabaseFile>$(IntDir)$(ProjectName).pdb</ProgramDatabaseFile>
@@ -556,15 +556,12 @@
     <ClCompile Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinTextureTarget.cc" />
     <ClCompile Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinVertexBuffer.cc" />
     <ClCompile Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinWindowTarget.cc" />
-    <ClCompile Include="..\..\source\platformWin32\menus\menuBarWin32.cpp" />
     <ClCompile Include="..\..\source\platformWin32\nativeDialogs\win32FileDialog.cc" />
-    <ClCompile Include="..\..\source\platformWin32\windowsManager\win32CursorController.cpp" />
-    <ClCompile Include="..\..\source\platformWin32\windowsManager\win32Window.cpp" />
-    <ClCompile Include="..\..\source\platformWin32\windowsManager\win32WindowInputGenerator.cpp" />
-    <ClCompile Include="..\..\source\platformWin32\windowsManager\win32WindowMgr.cpp" />
-    <ClCompile Include="..\..\source\platformWin32\windowsManager\winDispatch.cpp" />
+    <ClCompile Include="..\..\source\platformWin32\windowManager\win32CursorController.cpp" />
+    <ClCompile Include="..\..\source\platformWin32\windowManager\win32Window.cpp" />
+    <ClCompile Include="..\..\source\platformWin32\windowManager\win32WindowInputGenerator.cpp" />
+    <ClCompile Include="..\..\source\platformWin32\windowManager\win32WindowMgr.cpp" />
     <ClCompile Include="..\..\source\platformWin32\winTimer.cpp" />
-    <ClCompile Include="..\..\source\platform\menus\menuBar.cpp" />
     <ClCompile Include="..\..\source\platform\nativeDialogs\fileDialog.cc" />
     <ClCompile Include="..\..\source\platform\platform.cc" />
     <ClCompile Include="..\..\source\platform\platformAssert.cc" />
@@ -573,14 +570,11 @@
     <ClCompile Include="..\..\source\platform\platformFont.cc" />
     <ClCompile Include="..\..\source\platform\platformMemory.cc" />
     <ClCompile Include="..\..\source\platform\platformNetwork.cc" />
-    <ClCompile Include="..\..\source\platform\menus\popupMenu.cc" />
     <ClCompile Include="..\..\source\platform\nativeDialogs\msgBox.cpp" />
     <ClCompile Include="..\..\source\platformWin32\cardProfile.cpp" />
     <ClCompile Include="..\..\source\platformWin32\winAsmBlit.cc" />
     <ClCompile Include="..\..\source\platformWin32\winConsole.cc" />
     <ClCompile Include="..\..\source\platformWin32\winCPUInfo.cc" />
-    <ClCompile Include="..\..\source\platformWin32\winDInputDevice.cc" />
-    <ClCompile Include="..\..\source\platformWin32\winDirectInput.cc" />
     <ClCompile Include="..\..\source\platformWin32\winExec.cc" />
     <ClCompile Include="..\..\source\platformWin32\winFileio.cc" />
     <ClCompile Include="..\..\source\platformWin32\winFont.cc" />
@@ -598,7 +592,6 @@
     <ClCompile Include="..\..\source\platformWin32\winUser.cc" />
     <ClCompile Include="..\..\source\platformWin32\winVFS.cc" />
     <ClCompile Include="..\..\source\platformWin32\winWindow.cc" />
-    <ClCompile Include="..\..\source\platformWin32\menus\popupMenuWin32.cc" />
     <ClCompile Include="..\..\source\platformWin32\nativeDialogs\win32DirectoryResolver.cpp" />
     <ClCompile Include="..\..\source\platformWin32\nativeDialogs\win32MsgBox.cpp" />
     <ClCompile Include="..\..\source\platformWin32\threads\mutex.cc" />
@@ -1066,7 +1059,6 @@
     <ClInclude Include="..\..\source\math\mSphere.h" />
     <ClInclude Include="..\..\source\math\mSplinePatch.h" />
     <ClInclude Include="..\..\source\persistence\SimXMLDocument.h" />
-    <ClInclude Include="..\..\source\platformWin32\glcorearb.h" />
     <ClInclude Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinCardProfiler.h" />
     <ClInclude Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinDevice.h" />
     <ClInclude Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinEnumTranslate.h" />
@@ -1079,14 +1071,12 @@
     <ClInclude Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinVertexBuffer.h" />
     <ClInclude Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinWindowTarget.h" />
     <ClInclude Include="..\..\source\platformWin32\graphics\osxGLUtils.h" />
-    <ClInclude Include="..\..\source\platformWin32\windowsManager\win32CursorController.h" />
-    <ClInclude Include="..\..\source\platformWin32\windowsManager\win32Window.h" />
-    <ClInclude Include="..\..\source\platformWin32\windowsManager\win32WindowInputGenerator.h" />
-    <ClInclude Include="..\..\source\platformWin32\windowsManager\win32WindowMgr.h" />
-    <ClInclude Include="..\..\source\platformWin32\windowsManager\winDispatch.h" />
+    <ClInclude Include="..\..\source\platformWin32\windowManager\win32CursorController.h" />
+    <ClInclude Include="..\..\source\platformWin32\windowManager\win32Window.h" />
+    <ClInclude Include="..\..\source\platformWin32\windowManager\win32WindowInputGenerator.h" />
+    <ClInclude Include="..\..\source\platformWin32\windowManager\win32WindowMgr.h" />
     <ClInclude Include="..\..\source\platformWin32\winWindow.h" />
     <ClInclude Include="..\..\source\platform\event.h" />
-    <ClInclude Include="..\..\source\platform\menus\menuBar.h" />
     <ClInclude Include="..\..\source\platform\platform.h" />
     <ClInclude Include="..\..\source\platform\platformAL.h" />
     <ClInclude Include="..\..\source\platform\platformAssert.h" />
@@ -1120,7 +1110,6 @@
     <ClInclude Include="..\..\source\platform\typesPPC.h" />
     <ClInclude Include="..\..\source\platform\typesWin32.h" />
     <ClInclude Include="..\..\source\platform\typesX86UNIX.h" />
-    <ClInclude Include="..\..\source\platform\menus\popupMenu.h" />
     <ClInclude Include="..\..\source\platform\nativeDialogs\fileDialog.h" />
     <ClInclude Include="..\..\source\platform\nativeDialogs\msgBox.h" />
     <ClInclude Include="..\..\source\platform\threads\mutex.h" />
@@ -1134,8 +1123,6 @@
     <ClInclude Include="..\..\source\platformWin32\win_debug_prefix.h" />
     <ClInclude Include="..\..\source\platformWin32\win_release_prefix.h" />
     <ClInclude Include="..\..\source\platformWin32\winConsole.h" />
-    <ClInclude Include="..\..\source\platformWin32\winDInputDevice.h" />
-    <ClInclude Include="..\..\source\platformWin32\winDirectInput.h" />
     <ClInclude Include="..\..\source\platformWin32\winFont.h" />
     <ClInclude Include="..\..\source\platformWin32\nativeDialogs\win32DirectoryResolver.h" />
     <ClInclude Include="..\..\source\sim\scriptGroup.h" />

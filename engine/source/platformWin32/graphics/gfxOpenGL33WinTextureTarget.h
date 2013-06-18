@@ -24,6 +24,7 @@
 #define _GFXOpenGL33WinTextureTARGET_H_
 
 #include "graphics/gfxTarget.h"
+#include "platformWin32/windowManager/Win32Window.h"
 #include "memory/autoPtr.h"
 
 class GFXOpenGL33WinTextureObject;

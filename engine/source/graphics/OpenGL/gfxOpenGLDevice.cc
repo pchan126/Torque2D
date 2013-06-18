@@ -21,6 +21,7 @@
 //-----------------------------------------------------------------------------
 
 #include "platform/platform.h"
+#include "platform/platformGL.h"
 #include "./gfxOpenGLDevice.h"
 #include "./gfxOpenGLEnumTranslate.h"
 #include "./gfxOpenGLTextureObject.h"

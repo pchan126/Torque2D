@@ -43,6 +43,153 @@ static void fillAsciiTable();
 
 //------------------------------------------------------------------------------
 //
+// This function translates an internal key code to the associated
+// DirectInput scan code
+//
+//------------------------------------------------------------------------------
+U8 Key_to_DIK( U16 keyCode )
+{
+   switch ( keyCode )
+   {
+      case KEY_BACKSPACE:     return DIK_BACK;
+      case KEY_TAB:           return DIK_TAB;
+      case KEY_RETURN:        return DIK_RETURN;
+      //KEY_CONTROL:
+      //KEY_ALT:
+      //KEY_SHIFT:
+      case KEY_PAUSE:         return DIK_PAUSE;
+      case KEY_CAPSLOCK:      return DIK_CAPSLOCK;
+      case KEY_ESCAPE:        return DIK_ESCAPE;
+
+      case KEY_SPACE:         return DIK_SPACE;
+      case KEY_PAGE_DOWN:     return DIK_PGDN;
+      case KEY_PAGE_UP:       return DIK_PGUP;
+      case KEY_END:           return DIK_END;
+      case KEY_HOME:          return DIK_HOME;
+      case KEY_LEFT:          return DIK_LEFT;
+      case KEY_UP:            return DIK_UP;
+      case KEY_RIGHT:         return DIK_RIGHT;
+      case KEY_DOWN:          return DIK_DOWN;
+      case KEY_PRINT:         return DIK_SYSRQ;
+      case KEY_INSERT:        return DIK_INSERT;
+      case KEY_DELETE:        return DIK_DELETE;
+      case KEY_HELP:          return 0;
+
+      case KEY_0:             return DIK_0;
+      case KEY_1:             return DIK_1;
+      case KEY_2:             return DIK_2;
+      case KEY_3:             return DIK_3;
+      case KEY_4:             return DIK_4;
+      case KEY_5:             return DIK_5;
+      case KEY_6:             return DIK_6;
+      case KEY_7:             return DIK_7;
+      case KEY_8:             return DIK_8;
+      case KEY_9:             return DIK_9;
+
+      case KEY_A:             return DIK_A;
+      case KEY_B:             return DIK_B;
+      case KEY_C:             return DIK_C;
+      case KEY_D:             return DIK_D;
+      case KEY_E:             return DIK_E;
+      case KEY_F:             return DIK_F;
+      case KEY_G:             return DIK_G;
+      case KEY_H:             return DIK_H;
+      case KEY_I:             return DIK_I;
+      case KEY_J:             return DIK_J;
+      case KEY_K:             return DIK_K;
+      case KEY_L:             return DIK_L;
+      case KEY_M:             return DIK_M;
+      case KEY_N:             return DIK_N;
+      case KEY_O:             return DIK_O;
+      case KEY_P:             return DIK_P;
+      case KEY_Q:             return DIK_Q;
+      case KEY_R:             return DIK_R;
+      case KEY_S:             return DIK_S;
+      case KEY_T:             return DIK_T;
+      case KEY_U:             return DIK_U;
+      case KEY_V:             return DIK_V;
+      case KEY_W:             return DIK_W;
+      case KEY_X:             return DIK_X;
+      case KEY_Y:             return DIK_Y;
+      case KEY_Z:             return DIK_Z;
+
+      case KEY_TILDE:         return DIK_GRAVE;
+      case KEY_MINUS:         return DIK_MINUS;
+      case KEY_EQUALS:        return DIK_EQUALS;
+      case KEY_LBRACKET:      return DIK_LBRACKET;
+      case KEY_RBRACKET:      return DIK_RBRACKET;
+      case KEY_BACKSLASH:     return DIK_BACKSLASH;
+      case KEY_SEMICOLON:     return DIK_SEMICOLON;
+      case KEY_APOSTROPHE:    return DIK_APOSTROPHE;
+      case KEY_COMMA:         return DIK_COMMA;
+      case KEY_PERIOD:        return DIK_PERIOD;
+      case KEY_SLASH:         return DIK_SLASH;
+
+      case KEY_NUMPAD0:       return DIK_NUMPAD0;
+      case KEY_NUMPAD1:       return DIK_NUMPAD1;
+      case KEY_NUMPAD2:       return DIK_NUMPAD2;
+      case KEY_NUMPAD3:       return DIK_NUMPAD3;
+      case KEY_NUMPAD4:       return DIK_NUMPAD4;
+      case KEY_NUMPAD5:       return DIK_NUMPAD5;
+      case KEY_NUMPAD6:       return DIK_NUMPAD6;
+      case KEY_NUMPAD7:       return DIK_NUMPAD7;
+      case KEY_NUMPAD8:       return DIK_NUMPAD8;
+      case KEY_NUMPAD9:       return DIK_NUMPAD9;
+      case KEY_MULTIPLY:      return DIK_MULTIPLY;
+      case KEY_ADD:           return DIK_ADD;
+      case KEY_SEPARATOR:     return DIK_NUMPADCOMMA;
+      case KEY_SUBTRACT:      return DIK_SUBTRACT;
+      case KEY_DECIMAL:       return DIK_DECIMAL;
+      case KEY_DIVIDE:        return DIK_DIVIDE;
+      case KEY_NUMPADENTER:   return DIK_NUMPADENTER;
+
+      case KEY_F1:            return DIK_F1;
+      case KEY_F2:            return DIK_F2;
+      case KEY_F3:            return DIK_F3;
+      case KEY_F4:            return DIK_F4;
+      case KEY_F5:            return DIK_F5;
+      case KEY_F6:            return DIK_F6;
+      case KEY_F7:            return DIK_F7;
+      case KEY_F8:            return DIK_F8;
+      case KEY_F9:            return DIK_F9;
+      case KEY_F10:           return DIK_F10;
+      case KEY_F11:           return DIK_F11;
+      case KEY_F12:           return DIK_F12;
+      case KEY_F13:           return DIK_F13;
+      case KEY_F14:           return DIK_F14;
+      case KEY_F15:           return DIK_F15;
+      case KEY_F16:
+      case KEY_F17:
+      case KEY_F18:
+      case KEY_F19:
+      case KEY_F20:
+      case KEY_F21:
+      case KEY_F22:
+      case KEY_F23:
+      case KEY_F24:           return 0;
+
+      case KEY_NUMLOCK:       return DIK_NUMLOCK;
+      case KEY_SCROLLLOCK:    return DIK_SCROLL;
+      case KEY_LCONTROL:      return DIK_LCONTROL;
+      case KEY_RCONTROL:      return DIK_RCONTROL;
+      case KEY_LALT:          return DIK_LALT;
+      case KEY_RALT:          return DIK_RALT;
+      case KEY_LSHIFT:        return DIK_LSHIFT;
+      case KEY_RSHIFT:        return DIK_RSHIFT;
+
+      case KEY_WIN_LWINDOW:   return DIK_LWIN;
+      case KEY_WIN_RWINDOW:   return DIK_RWIN;
+      case KEY_WIN_APPS:      return DIK_APPS;
+      case KEY_OEM_102:       return DIK_OEM_102;
+
+   };
+
+   return 0;
+}
+
+
+//------------------------------------------------------------------------------
+//
 // This function gets the standard ASCII code corresponding to our key code
 // and the existing modifier key state.
 //
@@ -78,30 +225,30 @@ void Input::init()
    smLastMouseActivated = true;
    smLastJoystickActivated = true;
 
-   OSVERSIONINFO OSVersionInfo;
-   dMemset( &OSVersionInfo, 0, sizeof( OSVERSIONINFO ) );
-   OSVersionInfo.dwOSVersionInfoSize = sizeof( OSVERSIONINFO );
-   if ( GetVersionEx( &OSVersionInfo ) )
-   {
+   //OSVERSIONINFO OSVersionInfo;
+   //dMemset( &OSVersionInfo, 0, sizeof( OSVERSIONINFO ) );
+   //OSVersionInfo.dwOSVersionInfoSize = sizeof( OSVERSIONINFO );
+   //if ( GetVersionEx( &OSVersionInfo ) )
+   //{
 
-      if ( !( OSVersionInfo.dwPlatformId == VER_PLATFORM_WIN32_NT && OSVersionInfo.dwMajorVersion < 5 ) )
-      {
-         smManager = new DInputManager;
-         if ( !smManager->enable() )
-         {
-            Con::printf( "   DirectInput not enabled." );
-            delete smManager;
-            smManager = NULL;
-         }
-         else
-         {
-            DInputManager::init();
-            Con::printf( "   DirectInput enabled." );
-         }
-      }
-      else
-         Con::printf( "  WinNT detected -- DirectInput not enabled." );
-   }
+   //   if ( !( OSVersionInfo.dwPlatformId == VER_PLATFORM_WIN32_NT && OSVersionInfo.dwMajorVersion < 5 ) )
+   //   {
+   //      smManager = new DInputManager;
+   //      if ( !smManager->enable() )
+   //      {
+   //         Con::printf( "   DirectInput not enabled." );
+   //         delete smManager;
+   //         smManager = NULL;
+   //      }
+   //      else
+   //      {
+   //         DInputManager::init();
+   //         Con::printf( "   DirectInput enabled." );
+   //      }
+   //   }
+   //   else
+   //      Con::printf( "  WinNT detected -- DirectInput not enabled." );
+   //}
 
    //// Startup the Cursor Manager
    //if(!smCursorManager)
@@ -128,29 +275,29 @@ void Input::init()
 
 }
 
-//------------------------------------------------------------------------------
-ConsoleFunction( isJoystickDetected, bool, 1, 1, "() Use the isJoystickDetected function to determine if one or more joysticks are connected to the system.\n"
-																"This doesn't tell us how many joysticks there are, just that there are joysticks. It is our job to find out how many and to attach them.\n"
-																"@return Returns true if one or more joysticks are attached and detected, false otherwise.\n"
-																"@sa disableJoystick, enableJoystick, getJoystickAxes")
-{
-   argc; argv;
-   return( DInputDevice::joystickDetected() );
-}
-
-//------------------------------------------------------------------------------
-ConsoleFunction( getJoystickAxes, const char*, 2, 2, "( instance ) Use the getJoystickAxes function to get the current axes position (x and y ) of any intance of a joystick.\n"
-																"@param instance A non-negative number value selecting a specific joystick instance attached to this computer.\n"
-																"@return Returns a string containing the \"x y\" position of the joystick.\n"
-																"@sa disableJoystick, enableJoystick, isJoystickDetected")
-{
-   argc;
-   DInputManager* mgr = dynamic_cast<DInputManager*>( Input::getManager() );
-   if ( mgr )
-      return( mgr->getJoystickAxesString( dAtoi( argv[1] ) ) );
-
-   return( "" );
-}
+////------------------------------------------------------------------------------
+//ConsoleFunction( isJoystickDetected, bool, 1, 1, "() Use the isJoystickDetected function to determine if one or more joysticks are connected to the system.\n"
+//																"This doesn't tell us how many joysticks there are, just that there are joysticks. It is our job to find out how many and to attach them.\n"
+//																"@return Returns true if one or more joysticks are attached and detected, false otherwise.\n"
+//																"@sa disableJoystick, enableJoystick, getJoystickAxes")
+//{
+//   argc; argv;
+//   return( DInputDevice::joystickDetected() );
+//}
+//
+////------------------------------------------------------------------------------
+//ConsoleFunction( getJoystickAxes, const char*, 2, 2, "( instance ) Use the getJoystickAxes function to get the current axes position (x and y ) of any intance of a joystick.\n"
+//																"@param instance A non-negative number value selecting a specific joystick instance attached to this computer.\n"
+//																"@return Returns a string containing the \"x y\" position of the joystick.\n"
+//																"@sa disableJoystick, enableJoystick, isJoystickDetected")
+//{
+//   argc;
+//   DInputManager* mgr = dynamic_cast<DInputManager*>( Input::getManager() );
+//   if ( mgr )
+//      return( mgr->getJoystickAxesString( dAtoi( argv[1] ) ) );
+//
+//   return( "" );
+//}
 
 //------------------------------------------------------------------------------
 static void fillAsciiTable()
@@ -334,41 +481,41 @@ void Input::activate()
    if ( !Con::getBoolVariable( "$enableDirectInput" ) )
       return;
 
-   if ( smManager && smManager->isEnabled() && !smActive )
-   {
-      Con::printf( "Activating DirectInput..." );
-#ifdef LOG_INPUT
-      Input::log( "Activating DirectInput...\n" );
-#endif
-      smActive = true;
-      DInputManager* dInputManager = dynamic_cast<DInputManager*>( smManager );
-      if ( dInputManager )
-      {
-         if ( dInputManager->isJoystickEnabled() && smLastJoystickActivated )
-            dInputManager->activateJoystick();
-      }
-   }
+//   if ( smManager && smManager->isEnabled() && !smActive )
+//   {
+//      Con::printf( "Activating DirectInput..." );
+//#ifdef LOG_INPUT
+//      Input::log( "Activating DirectInput...\n" );
+//#endif
+//      smActive = true;
+//      DInputManager* dInputManager = dynamic_cast<DInputManager*>( smManager );
+//      if ( dInputManager )
+//      {
+//         if ( dInputManager->isJoystickEnabled() && smLastJoystickActivated )
+//            dInputManager->activateJoystick();
+//      }
+//   }
 }
 
 //------------------------------------------------------------------------------
 void Input::deactivate()
 {
-   if ( smManager && smManager->isEnabled() && smActive )
-   {
-#ifdef LOG_INPUT
-      Input::log( "Deactivating DirectInput...\n" );
-#endif
-      DInputManager* dInputManager = dynamic_cast<DInputManager*>( smManager );
-
-      if ( dInputManager )
-      {
-         smLastJoystickActivated = dInputManager->isJoystickActive();
-         dInputManager->deactivateJoystick();
-      }
-
-      smActive = false;
-      Con::printf( "DirectInput deactivated." );
-   }
+//   if ( smManager && smManager->isEnabled() && smActive )
+//   {
+//#ifdef LOG_INPUT
+//      Input::log( "Deactivating DirectInput...\n" );
+//#endif
+//      DInputManager* dInputManager = dynamic_cast<DInputManager*>( smManager );
+//
+//      if ( dInputManager )
+//      {
+//         smLastJoystickActivated = dInputManager->isJoystickActive();
+//         dInputManager->deactivateJoystick();
+//      }
+//
+//      smActive = false;
+//      Con::printf( "DirectInput deactivated." );
+//   }
 }
 
 
@@ -405,13 +552,14 @@ void Input::process()
 //------------------------------------------------------------------------------
 bool Input::enableJoystick()
 {
-	return( DInputManager::enableJoystick() );
+	//return( DInputManager::enableJoystick() );
+	return false;
 }
 
 //------------------------------------------------------------------------------
 void Input::disableJoystick()
 {
-	DInputManager::disableJoystick();
+	//DInputManager::disableJoystick();
 }
 
 
@@ -773,3 +921,152 @@ bool Platform::setClipboard(const char *text)
    return true;
 }
 
+//--------------------------------------------------------------------------
+//#pragma message("input remap table might need tweaking - rumors of ibooks having diff virt keycodes, might need intermediate remap...")
+static U8 GLFWcodeRemap[512] =
+{
+   0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0,
+   KEY_SPACE,                 // 32
+   0, 0, 0, 0, 0, 0,
+   KEY_APOSTROPHE,            // 39
+   0, 0, 0, 0,
+   KEY_COMMA,                 // 44
+   KEY_MINUS,                 // 45
+   KEY_PERIOD,                // 46
+   KEY_SLASH,                 // 47
+   KEY_0,                     // 48
+   KEY_1,                     // 49
+   KEY_2,                     // 50
+   KEY_3,                     // 51
+   KEY_4,                     // 52
+   KEY_5,                     // 53
+   KEY_6,                     // 54
+   KEY_7,                     // 55
+   KEY_8,                     // 56
+   KEY_9,                     // 57
+   KEY_SEMICOLON,             // 58
+   0,
+   KEY_EQUALS,                // 61
+   0, 0, 0,
+   KEY_A,                     // 65
+   KEY_B,                     // 66
+   KEY_C,                     // 67
+   KEY_D,                     // 68
+   KEY_E,                     // 69
+   KEY_F,                     // 70
+   KEY_G,                     // 71
+   KEY_H,                     // 72
+   KEY_I,                     // 73
+   KEY_J,                     // 74
+   KEY_K,                     // 75
+   KEY_L,                     // 76
+   KEY_M,                     // 77
+   KEY_N,                     // 78
+   KEY_O,                     // 79
+   KEY_P,                     // 80
+   KEY_Q,                     // 81
+   KEY_R,                     // 82
+   KEY_S,                     // 83
+   KEY_T,                     // 84
+   KEY_U,                     // 85
+   KEY_V,                     // 86
+   KEY_W,                     // 87
+   KEY_X,                     // 88
+   KEY_Y,                     // 89
+   KEY_Z,                     // 90
+   KEY_LBRACKET,              // 91
+   KEY_BACKSLASH,             // 92
+   KEY_RBRACKET,              // 93
+   0, 0,
+   KEY_TILDE,                 // 96
+   0, 0, 0, 0, 0, 0, 0,       // 103
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 203
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 253
+   0, 0,
+   KEY_ESCAPE,                // 256
+   KEY_RETURN,                // 257
+   KEY_TAB,                   // 258
+   KEY_BACKSPACE,             // 259
+   KEY_INSERT,                // 260 // also known as mac Help
+   KEY_DELETE,                // 261 // FwdDel
+   KEY_RIGHT,                 // 262
+   KEY_LEFT,                  // 263
+   KEY_DOWN,                  // 264
+   KEY_UP,                    // 265
+   KEY_PAGE_UP,               // 266
+   KEY_PAGE_DOWN,             // 267
+   KEY_HOME,                  // 268
+   KEY_END,                   // 269
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 279
+   KEY_CAPSLOCK,              // 280
+   KEY_SCROLLLOCK,            // 281
+   KEY_NUMLOCK,               // 282
+   KEY_PRINT,                 // 283
+   KEY_PAUSE,                 // 284
+   0, 0, 0, 0, 0,             // 289
+   KEY_F1,                    // 290
+   KEY_F2,                    // 291
+   KEY_F3,                    // 292
+   KEY_F4,                    // 293
+   KEY_F5,                    // 294
+   KEY_F6,                    // 295
+   KEY_F7,                    // 296
+   KEY_F8,                    // 297
+   KEY_F9,                    // 298
+   KEY_F11,                   // 299
+   KEY_F10,                   // 300
+   KEY_F12,                   // 301
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 311
+   0, 0, 0, 0, 0, 0, 0, 0,       // 319
+
+   KEY_NUMPAD0,               // 320
+   KEY_NUMPAD1,               // 321
+   KEY_NUMPAD2,               // 322
+   KEY_NUMPAD3,               // 323
+   KEY_NUMPAD4,               // 324
+   KEY_NUMPAD5,               // 325
+   KEY_NUMPAD6,               // 326
+   KEY_NUMPAD7,               // 327
+   KEY_NUMPAD8,               // 328
+   KEY_NUMPAD9,               // 329
+   KEY_DECIMAL,               // 330
+   KEY_DIVIDE,                // 331
+   KEY_MULTIPLY,              // 332
+   KEY_SUBTRACT,              // 333
+   KEY_ADD,                   // 334
+   KEY_NUMPADENTER,           // 335
+   KEY_SEPARATOR,             // 336
+   0, 0, 0,
+   KEY_LSHIFT,                // 340
+   KEY_LCONTROL,              // 341
+   KEY_LALT,                  // 342
+   0,                         // 343
+   KEY_RSHIFT,                // 344
+   KEY_RCONTROL,              // 345
+   KEY_RALT,                  // 346
+   0,                         //
+   0,                         //
+};
+
+U8 TranslateGLFWKeyCode(S32 vcode)
+{
+   return GLFWcodeRemap[vcode];
+}

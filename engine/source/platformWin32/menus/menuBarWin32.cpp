@@ -24,8 +24,8 @@
 #include "platform/menus/menuBar.h"
 #include "platform/menus/popupMenu.h"
 #include "gui/guiCanvas.h"
-#include "platformWin32/windowsManager/win32WindowMgr.h"
-#include "platformWin32/windowsManager/win32Window.h"
+#include "platformWin32/windowManager/win32WindowMgr.h"
+#include "platformWin32/windowManager/win32Window.h"
 #include "memory/safeDelete.h"
 
 //-----------------------------------------------------------------------------

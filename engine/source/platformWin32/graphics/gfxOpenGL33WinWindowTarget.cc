@@ -9,23 +9,24 @@
 #include "./gfxOpenGL33WinUtils.h"
 
 #include "platform/platformGL.h"
-#include "platformWin32/windowsManager/win32Window.h"
+#include "platformWin32/windowManager/win32Window.h"
 
 
 GFXOpenGL33WinWindowTarget::GFXOpenGL33WinWindowTarget(PlatformWindow *window, GFXDevice *d)
-      : GFXWindowTarget(window), mDevice(d), mContext(NULL), mFullscreenContext(NULL)
+      : GFXWindowTarget(window), mDevice(d)
 {
+	mWindow = dynamic_cast<Win32Window*>(window);
     window->appEvent.notify(this, &GFXOpenGL33WinWindowTarget::_onAppSignal);
     size = window->getBounds().extent;
 }
 
 void GFXOpenGL33WinWindowTarget::resetMode()
 {
-    if(mWindow->getVideoMode().fullScreen != mWindow->isFullscreen())
-    {
-        _teardownCurrentMode();
-        _setupNewMode();
-    }
+//    if(mWindow->getVideoMode().fullScreen != mWindow->isFullscreen())
+//    {
+//        _teardownCurrentMode();
+//        _setupNewMode();
+//    }
 }
 
 void GFXOpenGL33WinWindowTarget::_onAppSignal(WindowId wnd, S32 event)
@@ -43,40 +44,22 @@ void GFXOpenGL33WinWindowTarget::_onAppSignal(WindowId wnd, S32 event)
 
 bool GFXOpenGL33WinWindowTarget::present()
 {
-	HWND hwnd = getWin32WindowHandle();
-	SwapBuffers(GetDC(hwnd));
+    GFX->updateStates();
+    mWindow->swapBuffers();
     return true;
 }
 
 
-void GFXOpenGL33WinWindowTarget::resolveTo(GFXTextureObject* obj)
-{
-    AssertFatal(dynamic_cast<GFXOpenGL33WinTextureObject*>(obj), "GFXGLTextureTarget::resolveTo - Incorrect type of texture, expected a GFXGLTextureObject");
-    GFXOpenGL33WinTextureObject* glTexture = static_cast<GFXOpenGL33WinTextureObject*>(obj);
-    
-    GLuint dest;
-    
-    glGenFramebuffers(1, &dest);
-    
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, dest);
-    glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, glTexture->getHandle(), 0);
-    
-    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
-    
-    glBlitFramebuffer(0, 0, getSize().x, getSize().y,
-                         0, 0, glTexture->getWidth(), glTexture->getHeight(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
-    
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-    
-    glDeleteFramebuffers(1, &dest);
-}
-
 void GFXOpenGL33WinWindowTarget::makeActive()
 {
-    //[(NSOpenGLContext*)mContext makeCurrentContext];
-    //glBindFramebuffer(GL_FRAMEBUFFER, 0);
+   mWindow->makeContextCurrent();
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+HGLRC GFXOpenGL33WinWindowTarget::getContext()
+{
+   return mWindow->getContext();
+}
 
 void GFXOpenGL33WinWindowTarget::_teardownCurrentMode()
 {

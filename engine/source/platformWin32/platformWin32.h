@@ -66,9 +66,6 @@
 
 #define NOMINMAX
 
-// Hack to get a correct HWND instead of using global state.
-extern HWND getWin32WindowHandle();
-
 struct Win32PlatState
 {
    FILE *log_fp;

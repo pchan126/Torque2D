@@ -101,26 +101,3 @@ void Platform::closeWindow()
    SAFE_DELETE(gWindow);
 }
 
-//------------------------------------------------------------------------------
-
-
-
-#ifdef TORQUE_OS_WIN32
-// Hack so we can get the HWND of the global window more easily - replacement
-// for the HWND that was in the platstate.
-#include "platformWin32/windowsManager/win32Window.h"
-
-HWND getWin32WindowHandle()
-{
-   PlatformWindow* window = WindowManager->getFocusedWindow();
-   if( !window )
-   {
-      window = WindowManager->getFirstWindow();
-      if( !window )
-         return NULL;
-   }
-
-   return ( ( Win32Window* ) window )->getHWND();
-}
-
-#endif

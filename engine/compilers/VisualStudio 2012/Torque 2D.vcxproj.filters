@@ -133,9 +133,6 @@
     <Filter Include="platform">
       <UniqueIdentifier>{f5858e14-ed7e-4887-a22e-4123ab41a6f1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="platform\menus">
-      <UniqueIdentifier>{a9dbe516-9ed6-43a6-987e-6f2bc6f59928}</UniqueIdentifier>
-    </Filter>
     <Filter Include="platform\nativeDialogs">
       <UniqueIdentifier>{d98ec67b-b10a-4c7b-bb2f-a6394a861b67}</UniqueIdentifier>
     </Filter>
@@ -144,9 +141,6 @@
     </Filter>
     <Filter Include="platformWin32">
       <UniqueIdentifier>{3f7e4a0c-c3da-4972-a9bc-9cb0e0ce622e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="platformWin32\menus">
-      <UniqueIdentifier>{d77ee12f-a922-4d39-9e6c-2ad87a5b4a4e}</UniqueIdentifier>
     </Filter>
     <Filter Include="platformWin32\nativeDialogs">
       <UniqueIdentifier>{9da3da8f-0660-4a53-b5cf-3994c2dca7e3}</UniqueIdentifier>
@@ -202,14 +196,14 @@
     <Filter Include="graphics\OpenGL">
       <UniqueIdentifier>{be972417-7ab8-4dec-8401-53e1ed70a021}</UniqueIdentifier>
     </Filter>
-    <Filter Include="platformWin32\windowsManager">
-      <UniqueIdentifier>{249e87c3-74af-44e4-859a-53d0e92b5899}</UniqueIdentifier>
-    </Filter>
     <Filter Include="lighting">
       <UniqueIdentifier>{219b4fb6-1523-4f18-a468-5491f5203053}</UniqueIdentifier>
     </Filter>
     <Filter Include="lighting\common">
       <UniqueIdentifier>{11d1ddf8-29fd-4fb8-8d67-9a0628eed2bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="platformWin32\windowManager">
+      <UniqueIdentifier>{249e87c3-74af-44e4-859a-53d0e92b5899}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -360,9 +354,6 @@
     <ClCompile Include="..\..\source\platform\platformMemory.cc">
       <Filter>platform</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\platform\menus\popupMenu.cc">
-      <Filter>platform\menus</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\source\platform\nativeDialogs\msgBox.cpp">
       <Filter>platform\nativeDialogs</Filter>
     </ClCompile>
@@ -376,12 +367,6 @@
       <Filter>platformWin32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\platformWin32\winCPUInfo.cc">
-      <Filter>platformWin32</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\platformWin32\winDInputDevice.cc">
-      <Filter>platformWin32</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\platformWin32\winDirectInput.cc">
       <Filter>platformWin32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\platformWin32\winExec.cc">
@@ -434,9 +419,6 @@
     </ClCompile>
     <ClCompile Include="..\..\source\platformWin32\winWindow.cc">
       <Filter>platformWin32</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\platformWin32\menus\popupMenuWin32.cc">
-      <Filter>platformWin32\menus</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\platformWin32\nativeDialogs\win32DirectoryResolver.cpp">
       <Filter>platformWin32\nativeDialogs</Filter>
@@ -1419,24 +1401,6 @@
     <ClCompile Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinTextureObject.cc">
       <Filter>platformWin32\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\platformWin32\windowsManager\win32CursorController.cpp">
-      <Filter>platformWin32\windowsManager</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\platformWin32\windowsManager\win32WindowMgr.cpp">
-      <Filter>platformWin32\windowsManager</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\platformWin32\windowsManager\winDispatch.cpp">
-      <Filter>platformWin32\windowsManager</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\platformWin32\windowsManager\win32Window.cpp">
-      <Filter>platformWin32\windowsManager</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\platform\menus\menuBar.cpp">
-      <Filter>platform\menus</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\platformWin32\windowsManager\win32WindowInputGenerator.cpp">
-      <Filter>platformWin32\windowsManager</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\source\2d\scene\Layer.cc">
       <Filter>2d\scene</Filter>
     </ClCompile>
@@ -1476,14 +1440,23 @@
     <ClCompile Include="..\..\source\math\mPoint.cpp">
       <Filter>math</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\platformWin32\menus\menuBarWin32.cpp">
-      <Filter>platformWin32\menus</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\source\platformWin32\winTimer.cpp">
       <Filter>platformWin32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\graphics\OpenGL\gfxOpenGLTextureObject.cc">
       <Filter>graphics\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\platformWin32\windowManager\win32CursorController.cpp">
+      <Filter>platformWin32\windowManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\platformWin32\windowManager\win32Window.cpp">
+      <Filter>platformWin32\windowManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\platformWin32\windowManager\win32WindowInputGenerator.cpp">
+      <Filter>platformWin32\windowManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\platformWin32\windowManager\win32WindowMgr.cpp">
+      <Filter>platformWin32\windowManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1682,9 +1655,6 @@
     <ClInclude Include="..\..\source\platform\typesX86UNIX.h">
       <Filter>platform</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\platform\menus\popupMenu.h">
-      <Filter>platform\menus</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\platform\nativeDialogs\fileDialog.h">
       <Filter>platform\nativeDialogs</Filter>
     </ClInclude>
@@ -1722,12 +1692,6 @@
       <Filter>platformWin32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\platformWin32\winConsole.h">
-      <Filter>platformWin32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platformWin32\winDInputDevice.h">
-      <Filter>platformWin32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platformWin32\winDirectInput.h">
       <Filter>platformWin32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\platformWin32\winFont.h">
@@ -2937,9 +2901,6 @@
     <ClInclude Include="..\..\source\windowManager\windowInputGenerator.h">
       <Filter>windowManager</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\platformWin32\glcorearb.h">
-      <Filter>platformWin32</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\graphics\primBuilder.h">
       <Filter>graphics</Filter>
     </ClInclude>
@@ -3015,26 +2976,8 @@
     <ClInclude Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinTextureManager.h">
       <Filter>platformWin32\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\platformWin32\windowsManager\win32CursorController.h">
-      <Filter>platformWin32\windowsManager</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platformWin32\windowsManager\win32WindowMgr.h">
-      <Filter>platformWin32\windowsManager</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platformWin32\windowsManager\winDispatch.h">
-      <Filter>platformWin32\windowsManager</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platformWin32\windowsManager\win32Window.h">
-      <Filter>platformWin32\windowsManager</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platform\menus\menuBar.h">
-      <Filter>platform\menus</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\platform\rawData.h">
       <Filter>platform</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platformWin32\windowsManager\win32WindowInputGenerator.h">
-      <Filter>platformWin32\windowsManager</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\platform\platformIntrinsics.visualc.h">
       <Filter>platform</Filter>
@@ -3071,6 +3014,18 @@
     </ClInclude>
     <ClInclude Include="..\..\source\graphics\gfxDeviceStatistics.h">
       <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platformWin32\windowManager\win32CursorController.h">
+      <Filter>platformWin32\windowManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platformWin32\windowManager\win32Window.h">
+      <Filter>platformWin32\windowManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platformWin32\windowManager\win32WindowInputGenerator.h">
+      <Filter>platformWin32\windowManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platformWin32\windowManager\win32WindowMgr.h">
+      <Filter>platformWin32\windowManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
