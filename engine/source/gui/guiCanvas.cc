@@ -103,7 +103,7 @@ GuiCanvas::GuiCanvas():GuiControl(),
 
 GuiCanvas::~GuiCanvas()
 {
-    SAFE_DELETE(mPlatformWindow);
+   mPlatformWindow->bindCanvas(NULL);
 }
 
 
@@ -233,6 +233,7 @@ void GuiCanvas::handleAppEvent( WindowId did, S32 event )
             // Else just shutdown
             Process::requestShutdown();
         }
+       this->deleteObject();
     }
 }
 
@@ -1225,10 +1226,6 @@ void GuiCanvas::paint()
     // inhibit explicit refreshes in the case we're swapped out
     if( mPlatformWindow && mPlatformWindow->isVisible() && GFX->allowRender())
         mPlatformWindow->displayEvent.trigger(mPlatformWindow->getWindowId());
-
-//   // inhibit explicit refreshes in the case we're swapped out
-//   if (TextureManager::mDGLRender)
-//      renderFrame(false);
 }
 
 void GuiCanvas::repaint(U32 elapsedMS)
@@ -1240,7 +1237,7 @@ void GuiCanvas::repaint(U32 elapsedMS)
 //    // Has enough time elapsed?
 //    U32 elapsed = Platform::getRealMilliseconds() - mLastRenderMs;
 //    if (elapsed < elapsedMS)
-        return;
+//        return;
     
     // Do the render.
     resetUpdateRegions();

@@ -25,7 +25,7 @@ static inline RectI convertCGRectToRectI(NSRect r)
 MacWindowManager::MacWindowManager() : mNotifyShutdownDelegate(this, &MacWindowManager::onShutdown), mIsShuttingDown(false)
 {
    mWindowList.clear();
-//   Process::notifyShutdown(mNotifyShutdownDelegate);
+   Process::notifyShutdown(mNotifyShutdownDelegate);
 }
 
 MacWindowManager::~MacWindowManager()
@@ -33,8 +33,6 @@ MacWindowManager::~MacWindowManager()
    for(U32 i = 0; i < mWindowList.size(); i++)
       delete mWindowList[i];
    mWindowList.clear();
-   
-   CGReleaseDisplayFadeReservation(mFadeToken);
 }
 
 RectI MacWindowManager::getPrimaryDesktopArea()
@@ -123,35 +121,6 @@ MacWindow* MacWindowManager::getWindowByGLFW(GLFWwindow* window)
          return w;
    }
    return NULL;
-}
-
-
-void MacWindowManager::lowerCurtain()
-{
-   // fade all displays.
-   CGError err;
-   err = CGAcquireDisplayFadeReservation(kCGMaxDisplayReservationInterval, &mFadeToken);
-   AssertWarn(!err, "MacWindowManager::lowerCurtain() could not get a token");
-   if(err) return;
-   
-   err = CGDisplayFade(mFadeToken, 0.3, kCGDisplayBlendNormal, kCGDisplayBlendSolidColor, 0, 0, 0, true);
-   AssertWarn(!err, "MacWindowManager::lowerCurtain() failed the fade");
-   if(err) return;
-   
-   // we do not release the token, because that will un-fade the screen!
-   // the token will last for 15 sec, and then the screen will un-fade regardless.
-   //CGReleaseDisplayFadeReservation(mFadeToken);
-}
-
-void MacWindowManager::raiseCurtain()
-{
-   // release the fade on all displays
-   CGError err;
-   err = CGDisplayFade(mFadeToken, 0.3, kCGDisplayBlendSolidColor, kCGDisplayBlendNormal, 0, 0, 0, false);
-   AssertWarn(!err, "MacWindowManager::raiseCurtain() failed the fade");
-   
-   err = CGReleaseDisplayFadeReservation(mFadeToken);
-   AssertWarn(!err, "MacWindowManager::raiseCurtain() failed releasing the token");
 }
 
 

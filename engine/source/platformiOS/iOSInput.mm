@@ -31,7 +31,7 @@
 #include "gui/guiCanvas.h"
 
 // Static class variables:
-InputManager* Input::smManager;
+//InputManager* Input::smManager;
 bool           Input::smActive;
 InputEvent     Input::smInputEvent;
 
@@ -82,43 +82,13 @@ struct AsciiData
 #define KEY_FIRST KEY_ESCAPE
 static AsciiData AsciiTable[NUM_KEYS];
 
-void Input::enableMouse()
-{
-    // Do nothing on iOS
-}
 
-void Input::disableMouse()
-{
-    // Do nothing on iOS
-}
-
-void Input::enableKeyboard()
-{
-    // Do nothing on iOS
-}
-
-void Input::disableKeyboard()
-{
-    // Do nothing on iOS
-}
-
-bool Input::isMouseEnabled()
-{
-    return true;
-}
-
-bool Input::isKeyboardEnabled()
-{
-    return false;
-}
- 
 //--------------------------------------------------------------------------
 void Input::init()
 {
     Con::printf( "Input Init:" );
    destroy();
 
-   smManager = NULL;
 	//smManager = new iOSInputManager();
    smActive = false;
 
@@ -220,12 +190,6 @@ void Input::destroy()
    if (gInputEnabled)
       disable();
    
-   if ( smManager && smManager->isEnabled() )
-   {
-      smManager->disable();
-      delete smManager;
-      smManager = NULL;
-   }
 }
 
 //------------------------------------------------------------------------------
@@ -235,10 +199,7 @@ bool Input::enable()
 
    gInputEnabled = true;
 
-   if ( smManager && !smManager->isEnabled() )
-      return( smManager->enable() );
-
-   enableMouse();
+//   enableMouse();
    //enableKeyboard();
 
    return( gInputEnabled );
@@ -251,10 +212,8 @@ void Input::disable()
 
    gInputEnabled = false;
 
-  if ( smManager && smManager->isEnabled() )
-      smManager->disable();
 
-   disableMouse();
+//   disableMouse();
    //disableKeyboard();
 }
 
@@ -263,7 +222,7 @@ void Input::activate()
 {
    smActive = true;
 
-   enableMouse();
+//   enableMouse();
 // enableKeyboard();
 }
 
@@ -272,7 +231,7 @@ void Input::deactivate()
 {
 //Con::printf( "[]Input::deactivate." );
 
-   deactivateMouse();
+//   deactivateMouse();
    //deactivateKeyboard();
 
    smActive = false;
@@ -292,9 +251,6 @@ void Input::reactivate()
 //------------------------------------------------------------------------------
 bool Input::isEnabled()
 {
-   if ( smManager )
-      return smManager->isEnabled();
-
    return(gInputEnabled);
 }
 
@@ -315,16 +271,6 @@ void Input::process()
 
    if (!gMouseEnabled || !gMouseActive)
       return;
-      
- 
-   if ( smManager && smManager->isEnabled() && smActive )
-      smManager->process();
-}
-
-//------------------------------------------------------------------------------
-InputManager* Input::getManager()
-{
-   return( smManager );
 }
 
 
@@ -612,7 +558,7 @@ const char* Platform::getClipboard()
 //-----------------------------------------------------------------------------
 bool Platform::setClipboard(const char *text)
 {
-	return NULL;//no clipboard on iOS
+	return false;//no clipboard on iOS
 }
 
 

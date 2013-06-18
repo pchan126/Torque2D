@@ -476,22 +476,12 @@ void DefaultGame::mainShutdown( void )
 
 void DefaultGame::gameReactivate( void )
 {
-   if ( !Input::isEnabled() )
-      Input::enable();
-
-   if ( !Input::isActive() )
-      Input::reactivate();
 }
 
 //--------------------------------------------------------------------------
 
 void DefaultGame::gameDeactivate( const bool noRender )
 {
-   if ( Input::isActive() )
-      Input::deactivate();
-
-   if ( Input::isEnabled() )
-      Input::disable();
 }
 
 //--------------------------------------------------------------------------

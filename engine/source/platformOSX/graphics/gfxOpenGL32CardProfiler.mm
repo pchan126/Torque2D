@@ -23,7 +23,6 @@
 #include "./gfxOpenGL32CardProfiler.h"
 #include "./GFXOpenGL32Device.h"
 #include "./gfxOpenGL32EnumTranslate.h"
-#include "./osxGLUtils.h"
 #include "platform/platformGL.h"
 
 BOOL CheckForExtension(NSString *searchName)

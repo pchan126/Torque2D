@@ -199,8 +199,6 @@ S32 Platform::messageBox(const UTF8 *title, const UTF8 *message, MBButtons butto
     NSString *nsTitle = [NSString stringWithUTF8String:title];
     NSString *nsMessage = [NSString stringWithUTF8String:message];
 
-//    Input::setCursorShape(CursorManager::curIBeam);
-
     NSAlert *alert = [[[NSAlert alloc] init] autorelease];
     [alert setAlertStyle:NSWarningAlertStyle];
     [alert addButtonWithTitle:okBtn];

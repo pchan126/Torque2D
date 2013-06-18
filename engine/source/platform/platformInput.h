@@ -101,7 +101,6 @@ enum KEY_STATE
 class Input
 {
 protected:
-    static InputManager* smManager; ///< Input Manager Singleton
     static bool smActive; ///< Is Input Active
     static bool smLastKeyboardActivated;
     static U8 smModifierKeys; ///< Current Modifier Keys Pressed
@@ -119,12 +118,6 @@ public:
     static void deactivate();
     static void reactivate();
 
- //   static void enableMouse();
- //   static void disableMouse();
- //   static void enableKeyboard();
- //   static void disableKeyboard();
-	//static bool activateKeyboard();
-	//static void deactivateKeyboard();
 	static bool enableJoystick();
 	static void disableJoystick();
 	static void echoInputState();
@@ -134,24 +127,8 @@ public:
 
     static bool isEnabled();
     static bool isActive();
-    //static bool isMouseEnabled();
-    //static bool isKeyboardEnabled();
 
     static void process();
-    //static void setCursorPos(S32 x, S32 y);
-    //static void setCursorState(bool on); ///< If True, turn on the platform's cursor
-
-    //static void setCursorShape(U32 cursorID);
-
-    //static void pushCursor(S32 cursorID); ///< Push a cursor shape using the Cursor Manager
-    //static void popCursor(); ///< Pop the current cursor off of the Cursor Manager stack
-    //static void refreshCursor(); ///< Refresh the current cursor's shape.
-
-    //static U32 getDoubleClickTime();
-    //static S32 getDoubleClickWidth();
-    //static S32 getDoubleClickHeight();
-
-    static InputManager* getManager(); ///< Return InputManager Singleton
 
     static U8 getModifierKeys() {return smModifierKeys;}
     static void setModifierKeys(U8 mod) {smModifierKeys = mod;}

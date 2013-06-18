@@ -1963,21 +1963,3 @@ AsciiMapping gAsciiMap[] =
 };
 
 
-////Device Event Types
-//#define SI_UNKNOWN   0x01
-//#define SI_BUTTON    0x02
-//#define SI_POV       0x03
-//#define SI_XPOV      0x04
-//#define SI_YPOV      0x05
-//#define SI_UPOV      0x06
-//#define SI_DPOV      0x07
-//#define SI_LPOV      0x08
-//#define SI_RPOV      0x09
-//#define SI_KEY       0x0A
-//#define SI_XAXIS     0x0B
-//#define SI_YAXIS     0x0C
-//#define SI_ZAXIS     0x0D
-//#define SI_RXAXIS    0x0E
-//#define SI_RYAXIS    0x0F
-//#define SI_RZAXIS    0x10
-//#define SI_SLIDER    0x11

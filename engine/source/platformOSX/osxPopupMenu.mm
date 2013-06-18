@@ -179,21 +179,7 @@ U32 PopupMenu::getItemCount()
 
 bool PopupMenu::canHandleID(U32 id)
 {
-//   for (S32 i = 0; i < mSubmenus->size(); i++)
-//   {
-//      PopupMenu *subM = dynamic_cast<PopupMenu *>((*mSubmenus)[i]);
-//      if (subM == NULL)
-//         continue;
-//      
-//      if(subM->canHandleID(id))
-//         return true;
-//   }
-//   
-//   if (id >= mData->mMenuID * PlatformPopupMenuData::PopupMenuIDRange &&
-//       id < (mData->mMenuID+1) * PlatformPopupMenuData::PopupMenuIDRange)
-//   {
-//      return true;
-//   }
+
    return false;
 }
 

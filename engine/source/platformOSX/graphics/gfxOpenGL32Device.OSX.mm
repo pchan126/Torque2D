@@ -47,7 +47,6 @@ GFXDevice *GFXOpenGL32Device::createInstance( U32 adapterIndex )
     return new GFXOpenGL32Device(adapterIndex);
 }
 
-#include "osxGLUtils.h"
 
 void GFXOpenGL32Device::initGLState()
 {
@@ -86,48 +85,17 @@ GFXOpenGL32Device::GFXOpenGL32Device( U32 adapterIndex )  : GFXOpenGLDevice( ada
 
 GFXOpenGL32Device::~GFXOpenGL32Device()
 {
-//    [(NSOpenGLContext*)mContext release];
+   if(mInitialized)
+   {
+      glfwTerminate();
+   }
 }
-
-//static String _getRendererForDisplay(CGDirectDisplayID display)
-//{
-//    Vector<NSOpenGLPixelFormatAttribute> attributes = _createStandardPixelFormatAttributesForDisplay(display);
-//    
-//    NSOpenGLPixelFormat* fmt = [[NSOpenGLPixelFormat alloc] initWithAttributes:attributes.address()];
-//    AssertFatal(fmt, "_getRendererForDisplay - Unable to create a pixel format object");
-//    attributes.clear();
-//    
-//    NSOpenGLContext* ctx = [[[NSOpenGLContext alloc] initWithFormat:fmt shareContext:nil] retain];
-//    [fmt release];
-//    AssertFatal(ctx, "_getRendererForDisplay - Unable to create an OpenGL context");
-//    
-//    // Save the current context, just in case
-//    NSOpenGLContext* currCtx = [NSOpenGLContext currentContext];
-//    [ctx makeCurrentContext];
-//    
-//    // get the renderer string
-//    String ret((const char*)glGetString(GL_RENDERER));
-//    
-//    // Restore our old context, release the context and pixel format.
-//    [currCtx makeCurrentContext];
-//    [ctx release];
-//    return ret;
-//}
 
 
 void GFXOpenGL32Device::init( const GFXVideoMode &mode, PlatformWindow *window )
 {
     if(!mInitialized)
     {
-//       AssertFatal(!mContext && !mPixelFormat, "_createInitialContextAndFormat - Already created initial context and format");
-//       
-//       mPixelFormat = generateValidPixelFormat(mode.fullScreen, mode.bitDepth, 0);
-//       AssertFatal(mPixelFormat, "_createInitialContextAndFormat - Unable to create an OpenGL pixel format");
-//       
-//       mContext = [[[NSOpenGLContext alloc] initWithFormat: (NSOpenGLPixelFormat*)mPixelFormat shareContext: nil] retain];
-//       AssertFatal(mContext, "_createInitialContextAndFormat - Unable to create an OpenGL context");
-//
-//       [mContext makeCurrentContext];
        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, 1);
@@ -135,7 +103,8 @@ void GFXOpenGL32Device::init( const GFXVideoMode &mode, PlatformWindow *window )
        
        MacWindow* mWindow = dynamic_cast<MacWindow*>(WindowManager->createWindow(this, mode));
        mContext = mWindow->getContext();
-       [mContext makeCurrentContext];
+       mWindow->makeContextCurrent();
+
        mTextureManager = new GFXOpenGL32TextureManager(mContext);
 
        initGLState();

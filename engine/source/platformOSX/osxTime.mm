@@ -41,29 +41,6 @@ static void _OSXUpdateSleepTicks()
         platState.sleepTicks = (U32)sgTimeManagerProcessInterval;
 }
 
-////------------------------------------------------------------------------------
-//// Responsible for calculating ticks and posting the TimeEvent
-//void TimeManager::process(double timeSinceLastUpdate)
-//{
-//    osxPlatState * platState = [osxPlatState sharedPlatState];
-//    
-//    _OSXUpdateSleepTicks();
-//    
-//    U32 curTime = Platform::getRealMilliseconds(); // GTC returns Milliseconds, FYI.
-//    U32 elapsedTime = curTime - platState.lastTimeTick;
-//    
-//    if(elapsedTime <= platState.sleepTicks)
-//    {
-//        Platform::sleep(platState.sleepTicks - elapsedTime);
-//    }
-//    
-//    platState.lastTimeTick = Platform::getRealMilliseconds();
-//    
-//    TimeEvent event;
-//    event.elapsedTime = elapsedTime;
-//    Game->postEvent(event);
-//}
-
 #pragma mark ---- Platform Namespace Time Functions  ----
 
 //------------------------------------------------------------------------------

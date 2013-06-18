@@ -23,9 +23,11 @@
 #import "platform/platformInput.h"
 #import "platformOSX/osxInputManager.h"
 #import "platform/event.h"
+#include "platformOSX/windowManager/macWindowManager.h"
+#include "platformOSX/windowManager/macWindow.h"
 
 #pragma mark ---- Static Variables ----
-InputManager *Input::smManager = 0;
+//InputManager *Input::smManager = 0;
 bool Input::smActive;
 U8             Input::smModifierKeys;
 InputEvent     Input::smInputEvent;
@@ -41,11 +43,7 @@ void Input::init()
     // Cleanup if initialized previously
     destroy();
 
-    smManager = NULL;
     smActive = false;
-
-    if (!smManager)
-        smManager = new osxInputManager();
 
     Input::enable();
 }
@@ -53,12 +51,6 @@ void Input::init()
 //--------------------------------------------------------------------------
 void Input::destroy()
 {
-    if (smManager)
-    {
-        smManager->disable();
-        delete smManager;
-        smManager = NULL;
-    }
     smActive = false;
 }
 
@@ -70,9 +62,9 @@ bool Input::enable()
 
     // Check for any restrictions or errors
 
-    // If the manager exists and is not enabled, dos o
-    if (smManager && !smManager->isEnabled())
-        enabledValue = smManager->enable();
+//    // If the manager exists and is not enabled, dos o
+//    if (smManager && !smManager->isEnabled())
+//        enabledValue = smManager->enable();
 
 //    // Also enable mouse and keyboard automatically
 //    enableMouse();
@@ -85,8 +77,8 @@ bool Input::enable()
 // Disable all input in the application
 void Input::disable()
 {
-    if (smManager && smManager->isEnabled())
-        return smManager->disable();
+//    if (smManager && smManager->isEnabled())
+//        return smManager->disable();
 
 //    disableMouse();
 //    disableKeyboard();
@@ -121,8 +113,8 @@ void Input::echoInputState()
 // Accesses the global input manager to see if it is enabled
 bool Input::isEnabled()
 {
-    if (smManager)
-        return smManager->isEnabled();
+//    if (smManager)
+//        return smManager->isEnabled();
 
     return false;
 }
@@ -244,23 +236,6 @@ void Input::disableJoystick()
 }
 
 //------------------------------------------------------------------------------
-// Handles platform and game input processing separately
-void Input::process()
-{
-    // Perform any initial processing
-
-    // Run the input manager's process
-    smManager->process();
-}
-
-//------------------------------------------------------------------------------
-// Returns the single instances of smManager, an osxInputManager in this case
-InputManager *Input::getManager()
-{
-    return smManager;
-}
-
-//------------------------------------------------------------------------------
 // Not yet implemented. Will resolve in the next platform update
 U16 Input::getKeyCode(U16 asciiCode)
 {
@@ -280,14 +255,25 @@ U16 Input::getAscii(U16 keyCode, KEY_STATE keyState)
 // Not yet implemented. Will resolve in the next platform update
 const char *Platform::getClipboard()
 {
-    return NULL;
+   MacWindow* macWindow = dynamic_cast<MacWindow*>(WindowManager->getFirstWindow());
+   if (macWindow != NULL)
+      return macWindow->getClipboardString();
+   else
+      return NULL;
 }
 
 //-----------------------------------------------------------------------------
 // Not yet implemented. Will resolve in the next platform update
 bool Platform::setClipboard(const char *text)
 {
-    return false;
+   MacWindow* macWindow = dynamic_cast<MacWindow*>(WindowManager->getFirstWindow());
+   if (macWindow != NULL)
+   {
+      macWindow->setClipboardString(text);
+      return true;
+   }
+
+   return false;
 }
 
 //-----------------------------------------------------------------------------

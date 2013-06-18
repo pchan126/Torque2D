@@ -28,12 +28,6 @@
 
 @interface osxPlatState : NSObject
 {
-    // Main view for Torque 2D engine display
-    MacWindow* _torqueView;
-    
-//    // Core graphics display ID the app will start with
-//    CGDirectDisplayID _cgDisplay;
-
     // Process ID for this application instance
     id _applicationID;
     
@@ -93,9 +87,6 @@
     NSTimer* _osxTimer;
 }
 
-//@property (strong) NSWindow* window;
-@property MacWindow* torqueView;
-//@property CGDirectDisplayID cgDisplay;
 @property (strong) id applicationID;
 @property void* alertSemaphore;
 @property RandomLCG* platformRandom;
@@ -121,11 +112,5 @@
 - (BOOL)initializeTorque2D;
 - (void)runTorque2D;
 - (void)shutDownTorque2D;
-
-//- (void)updateWindowTitle:(const char*)title;
-//- (void)setWindowSize:(int)width height:(int)height;
-//- (Point2I&)getWindowSize;
-//- (U32)windowWidth;
-//- (U32)windowHeight;
 
 @end

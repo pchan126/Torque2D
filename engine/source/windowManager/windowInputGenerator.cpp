@@ -34,7 +34,6 @@ WindowInputGenerator::WindowInputGenerator( PlatformWindow *window ) :
       mFocused = true;
 
    mWindow->appEvent.notify(this, &WindowInputGenerator::handleAppEvent);
-//   mWindow->wheelEvent.notify(this, &WindowInputGenerator::handleMouseWheel);
    mWindow->buttonEvent.notify(this, &WindowInputGenerator::handleMouseButton);
    mWindow->keyEvent.notify(this, &WindowInputGenerator::handleKeyboard);
    mWindow->charEvent.notify(this, &WindowInputGenerator::handleCharInput);
@@ -47,7 +46,6 @@ WindowInputGenerator::~WindowInputGenerator()
 {
    if( mWindow )
    {
-//      mWindow->wheelEvent.remove(this, &WindowInputGenerator::handleMouseWheel);
       mWindow->keyEvent.remove(this, &WindowInputGenerator::handleKeyboard);
       mWindow->charEvent.remove(this, &WindowInputGenerator::handleCharInput);
       mWindow->appEvent.remove(this, &WindowInputGenerator::handleAppEvent);
@@ -99,16 +97,7 @@ void WindowInputGenerator::handleMouseButton( WindowId did, U32 modifiers, U32 a
 {
    if( !mInputController || !mFocused )
       return;
-
-//    InputEventInfo event;
-//   event.deviceType = MouseDeviceType;
-//   event.deviceInst = 0;
-//   event.objType    = SI_BUTTON;
-//   event.objInst    = button;
-//   event.ascii      = 0;
-//   event.action     = (action==IA_MAKE) ? SI_MAKE : SI_BREAK;
-//   event.fValue     = (action==IA_MAKE) ? 1.0 : 0.0;
-    
+   
     ButtonEventInfo event;
     event.modifier   = convertModifierBits(modifiers);
     event.buttonID = button;
@@ -119,31 +108,31 @@ void WindowInputGenerator::handleMouseButton( WindowId did, U32 modifiers, U32 a
 
 void WindowInputGenerator::handleMouseWheel( WindowId did, U32 modifiers, S32 wheelDeltaX, S32 wheelDeltaY )
 {
-//   if( !mInputController || !mFocused )
-//      return;
-//
-//   InputEventInfo event;
-//   event.deviceType = MouseDeviceType;
-//   event.deviceInst = 0;
-//   event.objType    = SI_AXIS;
-//   event.modifier   = convertModifierBits(modifiers);
-//   event.ascii      = 0;
-//   event.action     = SI_MOVE;
-//
-//   if( wheelDeltaY ) // Vertical
-//   {
-//      event.objInst    = SI_ZAXIS;
-//      event.fValue     = (F32)wheelDeltaY;
-//
-//      generateInputEvent(event);
-//   }
-//   if( wheelDeltaX ) // Horizontal
-//   {
-//      event.objInst    = SI_RZAXIS;
-//      event.fValue     = (F32)wheelDeltaX;
-//
-//      generateInputEvent(event);
-//   }
+   if( !mInputController || !mFocused )
+      return;
+
+   InputEventInfo event;
+   event.deviceType = MouseDeviceType;
+   event.deviceInst = 0;
+   event.objType    = SI_AXIS;
+   event.modifier   = convertModifierBits(modifiers);
+   event.ascii      = 0;
+   event.action     = SI_MOVE;
+
+   if( wheelDeltaY ) // Vertical
+   {
+      event.objInst    = SI_ZAXIS;
+      event.fValue     = (F32)wheelDeltaY;
+
+      generateInputEvent(event);
+   }
+   if( wheelDeltaX ) // Horizontal
+   {
+      event.objInst    = SI_RZAXIS;
+      event.fValue     = (F32)wheelDeltaX;
+
+      generateInputEvent(event);
+   }
 }
 
 //-----------------------------------------------------------------------------

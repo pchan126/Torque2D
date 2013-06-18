@@ -176,7 +176,6 @@
 		865A23501651881300527C44 /* pngwutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 865A23411651881300527C44 /* pngwutil.c */; };
 		865A235A16518AD300527C44 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 865A235816518AD300527C44 /* AppDelegate.mm */; };
 		865A235B16518AD300527C44 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 865A235916518AD300527C44 /* main.mm */; };
-		865BD2F9166FA7F80064F595 /* osxInputManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 865BD2F8166FA7F80064F595 /* osxInputManager.mm */; };
 		866381D31655484400C8C551 /* mRandom.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC80AF16518D4600D96ADF /* mRandom.cc */; };
 		866381D8165550FF00C8C551 /* osxFileIO.mm in Sources */ = {isa = PBXBuildFile; fileRef = 866381D7165550FF00C8C551 /* osxFileIO.mm */; };
 		866381DA1655562400C8C551 /* osxMemory.mm in Sources */ = {isa = PBXBuildFile; fileRef = 866381D91655562400C8C551 /* osxMemory.mm */; };
@@ -790,8 +789,6 @@
 		865A235716518AD300527C44 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		865A235816518AD300527C44 /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
 		865A235916518AD300527C44 /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
-		865BD2F6166FA6460064F595 /* osxInputManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxInputManager.h; sourceTree = "<group>"; };
-		865BD2F8166FA7F80064F595 /* osxInputManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxInputManager.mm; sourceTree = "<group>"; };
 		8660471D16557B3000A67DE6 /* osxMath_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxMath_ScriptBinding.h; sourceTree = "<group>"; };
 		866381D7165550FF00C8C551 /* osxFileIO.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxFileIO.mm; sourceTree = "<group>"; };
 		866381D91655562400C8C551 /* osxMemory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxMemory.mm; sourceTree = "<group>"; };
@@ -1527,7 +1524,6 @@
 		DA91B32716C2280E00EB7B6E /* gfxOpenGL32Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32Utils.h; sourceTree = "<group>"; };
 		DA91B32816C2280E00EB7B6E /* gfxOpenGL32VertexBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32VertexBuffer.h; sourceTree = "<group>"; };
 		DA91B32916C2280E00EB7B6E /* gfxOpenGL32VertexBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32VertexBuffer.mm; sourceTree = "<group>"; };
-		DA91B32A16C2280E00EB7B6E /* osxGLUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxGLUtils.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1973,8 +1969,6 @@
 				866381D7165550FF00C8C551 /* osxFileIO.mm */,
 				8609FE37165572EC004662ED /* osxFont.mm */,
 				2A0A68DF166E268E0093AD41 /* osxFont.h */,
-				865BD2F6166FA6460064F595 /* osxInputManager.h */,
-				865BD2F8166FA7F80064F595 /* osxInputManager.mm */,
 				866381E41655615200C8C551 /* osxInput.mm */,
 				866381DB165556AD00C8C551 /* osxMath.mm */,
 				8660471D16557B3000A67DE6 /* osxMath_ScriptBinding.h */,
@@ -3239,7 +3233,6 @@
 				DA91B32916C2280E00EB7B6E /* gfxOpenGL32VertexBuffer.mm */,
 				DA1640E316C4AEDA009C2F0F /* gfxOpenGL32WindowTarget.h */,
 				DA1640E416C4AEDB009C2F0F /* gfxOpenGL32WindowTarget.mm */,
-				DA91B32A16C2280E00EB7B6E /* osxGLUtils.h */,
 			);
 			path = graphics;
 			sourceTree = "<group>";
@@ -3691,7 +3684,6 @@
 				2A033011165D1D4100E9CD70 /* platformFileIoTests.cc in Sources */,
 				2AC5C7E81667C85700A0D046 /* platformStringTests.cc in Sources */,
 				2ACFC0A8166CE1AB00FE7370 /* platformMemoryTests.cc in Sources */,
-				865BD2F9166FA7F80064F595 /* osxInputManager.mm in Sources */,
 				86EA5B401678C7C700598E68 /* osxCocoaUtilities.mm in Sources */,
 				861CD8D01678F6C200DAE1A0 /* fileDialog.cc in Sources */,
 				2AE851D21681E56E00193F17 /* color.cc in Sources */,

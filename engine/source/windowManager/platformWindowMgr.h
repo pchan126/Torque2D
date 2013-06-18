@@ -89,15 +89,6 @@ public:
    /// Get the parent window
    virtual void* getParentWindow() = 0;
 
-
-   /// This method cues the appearance of that window ("lowering the curtain").
-   virtual void lowerCurtain()=0;
-
-   /// @see lowerCurtain
-   ///
-   /// This method removes the curtain window.
-   virtual void raiseCurtain()=0;
-
 private:
    /// Process command line arguments from StandardMainLoop. This is done to
    /// allow web plugin functionality, where we are passed platform-specific

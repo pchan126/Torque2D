@@ -335,7 +335,7 @@ void GFXOpenGLES20iOSDevice::setTextureInternal(U32 textureUnit, const GFXTextur
 /// represents an immutable state.
 GFXStateBlockRef GFXOpenGLES20iOSDevice::createStateBlockInternal(const GFXStateBlockDesc& desc)
 {
-    GFXOpenGLES20iOSStateBlockRef ret = new GFXOpenGLES20iOSStateBlock(desc);
+    GFXOpenGLStateBlockRef ret = new GFXOpenGLStateBlock(desc);
     ret->setView(getMatrix(GFXMatrixView));
     ret->setModel(getMatrix(GFXMatrixWorld));
     ret->setProjection(getMatrix(GFXMatrixProjection));
@@ -345,9 +345,9 @@ GFXStateBlockRef GFXOpenGLES20iOSDevice::createStateBlockInternal(const GFXState
 /// Activates a stateblock
 void GFXOpenGLES20iOSDevice::setStateBlockInternal(GFXStateBlock* block, bool force)
 {
-    AssertFatal(dynamic_cast<GFXOpenGLES20iOSStateBlock*>(block), "GFXOpenGLES20iOSDevice::setStateBlockInternal - Incorrect stateblock type for this device!");
-    GFXOpenGLES20iOSStateBlock* glBlock = static_cast<GFXOpenGLES20iOSStateBlock*>(block);
-    GFXOpenGLES20iOSStateBlock* glCurrent = static_cast<GFXOpenGLES20iOSStateBlock*>(mCurrentStateBlock.getPointer());
+    AssertFatal(dynamic_cast<GFXOpenGLStateBlock*>(block), "GFXOpenGLES20iOSDevice::setStateBlockInternal - Incorrect stateblock type for this device!");
+    GFXOpenGLStateBlock* glBlock = static_cast<GFXOpenGLStateBlock*>(block);
+    GFXOpenGLStateBlock* glCurrent = static_cast<GFXOpenGLStateBlock*>(mCurrentStateBlock.getPointer());
     if (force)
         glCurrent = NULL;
     

@@ -27,11 +27,6 @@ public:
    
    virtual WindowId getWindowId() { return mWindowId; }
    
-//   void setDisplay(CGDirectDisplayID display);
-//   CGDirectDisplayID getDisplay() { return mDisplay; }
-   CGRect getMainDisplayBounds() { return mMainDisplayBounds; }
-   CGRect getDisplayBounds() { return mDisplayBounds; }
-
    virtual bool clearFullscreen() 
    { 
       // TODO: properly drop out of full screen
@@ -113,6 +108,12 @@ public:
 
    void makeContextCurrent();
    NSOpenGLContext* getContext();
+   
+   void getCursorPosition( Point2I &point );
+   void setCursorPosition( const Point2D point );
+   
+   const char* getClipboardString() { return glfwGetClipboardString(window); };
+   void setClipboardString(const char *string) { glfwSetClipboardString(window, string); };
 
 protected:
    virtual void _setFullscreen(bool fullScreen);
@@ -146,22 +147,21 @@ private:
    
    bool mFullscreen;
    bool mShouldFullscreen;
-   CGDisplayModeRef mDefaultDisplayMode;
    
    void _onAppEvent(WindowId,S32);
    
-   CGDirectDisplayID mDisplay;
-   CGRect mDisplayBounds;
-   CGRect mMainDisplayBounds;
-
    static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
    static void mousebutton_callback(GLFWwindow* window, int button, int action, int mods);
    static void mousemove_callback(GLFWwindow* window, double xpos, double ypos);
    static void window_close_callback(GLFWwindow* window);
+   static void window_focus_callback(GLFWwindow* window, int focus);
+   static void window_iconify_callback(GLFWwindow* window, int iconified);
+   static void window_scroll_callback(GLFWwindow* window, double xoffset, double yoffset );
 
 public:
     ButtonEvent       mouseButtonEvent;
     MouseEvent        mouseEvent;
+    MouseWheelEvent   mouseWheelEvent;
 };
 
 #endif

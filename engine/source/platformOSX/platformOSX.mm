@@ -33,7 +33,6 @@
 
 @implementation osxPlatState
 
-@synthesize torqueView = _torqueView;
 @synthesize applicationID = _applicationID;
 @synthesize alertSemaphore = _alertSemaphore;
 @synthesize fullScreen = _fullscreen;
@@ -78,9 +77,6 @@ static osxPlatState * tempSharedPlatState = nil;
         
         _windowTitle = [[NSString alloc] initWithString:@"Torque 2D OS X"];
         
-//        // Default window
-//        _window = nil;
-        
         // Default system variables
         _currentSimTime = 0;
         _sleepTicks = 0;
@@ -97,9 +93,6 @@ static osxPlatState * tempSharedPlatState = nil;
 
 - (void)dealloc
 {
-//    if (_window)
-//        [_window release];
-    
     if (_windowTitle)
         [_windowTitle release];
     
@@ -222,8 +215,6 @@ static osxPlatState * tempSharedPlatState = nil;
 {
     // Shutdown the game
     Game->mainShutdown();
-    
-    // Perform any platform cleanup
 }
 
 @end
@@ -236,12 +227,7 @@ void Platform::init()
 {
     // Set the global script variable $Platform to "macos"
     Con::setVariable("$Platform", "macos");
-    
-    // Initialize standard libraries (namespaces)
-    Input::init();
-    
-    // Initialize OS X specific libraries and services
-    
+   
     Con::printSeparator();
 }
 
@@ -255,7 +241,6 @@ void Platform::process()
 // Shuts down the OS X platform layer code
 void Platform::shutdown()
 {
-    Input::destroy();
 }
 
 //-----------------------------------------------------------------------------

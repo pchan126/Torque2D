@@ -45,12 +45,8 @@ MacWindow::MacWindow(U32 windowId, const char* windowText, Point2I clientExtent)
    
    mFullscreen = false;
    mShouldFullscreen = false;
-   mDefaultDisplayMode = NULL;
    
    mSkipMouseEvents = 0;
-   
-   mDisplay = kCGDirectMainDisplay;
-   mMainDisplayBounds = mDisplayBounds = CGDisplayBounds(mDisplay);
    
    mWindowId = windowId;
    
@@ -71,6 +67,10 @@ MacWindow::MacWindow(U32 windowId, const char* windowText, Point2I clientExtent)
    glfwSetMouseButtonCallback(window, &MacWindow::mousebutton_callback);
    glfwSetCursorPosCallback(window, &MacWindow::mousemove_callback);
    glfwSetWindowCloseCallback(window, &MacWindow::window_close_callback);
+   glfwSetWindowFocusCallback(window, &MacWindow::window_focus_callback);
+   glfwSetWindowIconifyCallback(window, &MacWindow::window_iconify_callback);
+   glfwSetScrollCallback(window, &MacWindow::window_scroll_callback);
+   
    appEvent.notify(this, &MacWindow::_onAppEvent);
    
    sInstance = this;
@@ -342,7 +342,6 @@ bool MacWindow::setCaption(const char* windowText)
 {
    mTitle = windowText;
    glfwSetWindowTitle(window, windowText);
-//   [mCocoaWindow setTitle:[NSString stringWithUTF8String:mTitle]];
    return true;
 }
 
@@ -361,6 +360,19 @@ void MacWindow::_dissociateMouse()
 
 void MacWindow::_centerMouse()
 {
+}
+
+void MacWindow::getCursorPosition( Point2I &point )
+{
+   double xpos, ypos;
+   glfwGetCursorPos(window, &xpos, &ypos);
+   point.x = (U32)xpos;
+   point.y = (U32)ypos;
+}
+
+void MacWindow::setCursorPosition( const Point2D point )
+{
+   glfwSetCursorPos(window, (double)point.x, (double)point.y);
 }
 
 void MacWindow::swapBuffers()
@@ -429,5 +441,32 @@ void MacWindow::mousemove_callback(GLFWwindow* window, double xpos, double ypos)
 void MacWindow::window_close_callback(GLFWwindow* window)
 {
    MacWindow* torqueWindow = MacWindowManager::get()->getWindowByGLFW(window);
-//   torqueWindow->appEvent.trigger(<#unsigned int a#>, <#int b#>)
+   torqueWindow->appEvent.trigger(torqueWindow->getWindowId(), WindowDestroy);
+   delete torqueWindow;
 }
+
+void MacWindow::window_focus_callback(GLFWwindow* window, int focused)
+{
+   MacWindow* torqueWindow = MacWindowManager::get()->getWindowByGLFW(window);
+   if (focused == GL_TRUE)
+      torqueWindow->appEvent.trigger(torqueWindow->getWindowId(), GainFocus);
+   else if (focused == GL_FALSE)
+      torqueWindow->appEvent.trigger(torqueWindow->getWindowId(), LoseFocus);
+}
+
+void MacWindow::window_iconify_callback(GLFWwindow* window, int iconified)
+{
+   MacWindow* torqueWindow = MacWindowManager::get()->getWindowByGLFW(window);
+   if (iconified == GL_TRUE)
+      torqueWindow->appEvent.trigger(torqueWindow->getWindowId(), WindowHidden);
+   else if (iconified == GL_FALSE)
+      torqueWindow->appEvent.trigger(torqueWindow->getWindowId(), WindowShown);
+}
+
+void MacWindow::window_scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+   MacWindow* torqueWindow = MacWindowManager::get()->getWindowByGLFW(window);
+   torqueWindow->mouseWheelEvent.trigger(torqueWindow->getWindowId(), 0, (S32)xoffset, (S32)yoffset);
+}
+
+

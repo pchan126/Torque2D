@@ -11,7 +11,6 @@
 #include "graphics/OpenGL/ES20/gfxOpenGLES20Device.h"
 
 #include "graphics/gfxResource.h"
-#include "./gfxOpenGLES20IOSStateBlock.h"
 #include "./gfxOpenGLES20IOSShader.h"
 
 class GFXOpenGLES20iOSVertexBuffer;
@@ -84,7 +83,7 @@ public:
 
    virtual GFXShader* createShader();
     
-   GFXOpenGLES20iOSStateBlockRef getCurrentStateBlock() { return mCurrentGLStateBlock; }
+   virtual const GFXOpenGLStateBlockRef getCurrentStateBlock() { return mCurrentGLStateBlock; }
    
    virtual void setupGenericShaders( GenericShaderType type = GSColor );
    
@@ -162,7 +161,7 @@ private:
 
    RectI mClip;
 
-   GFXOpenGLES20iOSStateBlockRef mCurrentGLStateBlock;
+   GFXOpenGLStateBlockRef mCurrentGLStateBlock;
    
    GLenum mActiveTextureType[TEXTURE_STAGE_COUNT];
    

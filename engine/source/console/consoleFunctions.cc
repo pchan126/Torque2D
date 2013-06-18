@@ -1573,31 +1573,6 @@ ConsoleFunctionGroupEnd( MetaScripting );
 
 //----------------------------------------------------------------
 
-ConsoleFunctionGroupBegin( InputManagement, "Functions that let you deal with input from scripts" );
-
-ConsoleFunction( deactivateDirectInput, void, 1, 1, "() Use the deactivateDirectInput function to de-activate polling of direct input devices (keyboard, mouse, joystick, et cetera).\n"
-                                                                "@return No return value.\n"
-                                                                "@sa activateDirectInput")
-{
-   TORQUE_UNUSED( argc );
-   TORQUE_UNUSED( argv );
-   if ( Input::isActive() )
-      Input::deactivate();
-}
-
-//--------------------------------------------------------------------------
-ConsoleFunction( activateDirectInput, void, 1, 1, "() Use the activateDirectInput function to activate polling of direct input devices (keyboard, mouse, joystick, et cetera).\n"
-                                                                "@return No return value.\n"
-                                                                "@sa deactivateDirectInput")
-{
-   TORQUE_UNUSED( argc );
-   TORQUE_UNUSED( argv );
-   if ( !Input::isActive() )
-      Input::activate();
-}
-
-ConsoleFunctionGroupEnd( InputManagement );
-
 ConsoleFunction(openFolder, void, 2, 2, "(folder) Opens a folder of the platform")
 {
     Platform::openFolder(argv[1]);

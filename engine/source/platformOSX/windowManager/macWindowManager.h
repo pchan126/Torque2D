@@ -75,18 +75,7 @@ public:
 
    virtual PlatformWindow *getFirstWindow();
    virtual PlatformWindow* getFocusedWindow();
-   
-   /// During full-screen toggles we want to suppress ugly transition states,
-   /// which we do (on Win32) by showing and hiding a full-monitor black window.
-   ///
-   /// This method cues the appearance of that window ("lowering the curtain").
-   virtual void lowerCurtain();
-   
-   /// @see lowerCurtain
-   ///
-   /// This method removes the curtain window.
-   virtual void raiseCurtain();
-   
+      
    /// @}
    /// @name Command Line Usage
    /// @{

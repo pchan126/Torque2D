@@ -9,9 +9,6 @@
 #include "component/interfaces/IProcessInput.h"
 
 
-extern U32 convertModifierBits(const U32 in);
-
-
 //-----------------------------------------------------------------------------
 // Constructor/Destructor
 //-----------------------------------------------------------------------------
@@ -21,6 +18,7 @@ osxWindowInputGenerator::osxWindowInputGenerator( MacWindow *window ):
     mWindow = window;
    mWindow->mouseButtonEvent.notify(this, &osxWindowInputGenerator::handleMouseButton);
    mWindow->mouseEvent.notify(this, &osxWindowInputGenerator::handleMouseMove);
+   mWindow->mouseWheelEvent.notify(this, &osxWindowInputGenerator::handleMouseWheel);
 }
 
 osxWindowInputGenerator::~osxWindowInputGenerator()
@@ -28,6 +26,8 @@ osxWindowInputGenerator::~osxWindowInputGenerator()
    if( mWindow )
    {
       mWindow->mouseButtonEvent.remove(this, &osxWindowInputGenerator::handleMouseButton);
+      mWindow->mouseEvent.remove(this, &osxWindowInputGenerator::handleMouseMove);
+      mWindow->mouseWheelEvent.remove(this, &osxWindowInputGenerator::handleMouseWheel);
    }
 }
 

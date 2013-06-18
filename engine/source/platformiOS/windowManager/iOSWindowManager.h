@@ -112,7 +112,9 @@ public:
    bool onShutdown();
    bool canWindowGainFocus(iOSWindow* window);
    
-    GLKViewController *viewController;
+   virtual PlatformWindow* assignCanvas(GFXDevice* device, const GFXVideoMode &mode ,GuiCanvas* canvas);
+
+   GLKViewController *viewController;
 private:
    bool mIsShuttingDown;
 };
