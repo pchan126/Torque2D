@@ -69,7 +69,6 @@
 		867BACF116AEC8BB0033868F /* iOSUserMusicLibrary.mm in Sources */ = {isa = PBXBuildFile; fileRef = 867BACC516AEC8BB0033868F /* iOSUserMusicLibrary.mm */; };
 		867BACF216AEC8BB0033868F /* iOSUtil.mm in Sources */ = {isa = PBXBuildFile; fileRef = 867BACC716AEC8BB0033868F /* iOSUtil.mm */; };
 		867BACF416AEC8BB0033868F /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 867BACCA16AEC8BB0033868F /* main.mm */; };
-		867BACF516AEC8BB0033868F /* popupMenu.mm in Sources */ = {isa = PBXBuildFile; fileRef = 867BACCC16AEC8BB0033868F /* popupMenu.mm */; };
 		867BACF616AEC8BB0033868F /* SoundEngine.mm in Sources */ = {isa = PBXBuildFile; fileRef = 867BACD016AEC8BB0033868F /* SoundEngine.mm */; };
 		867BAFDF16AEC9050033868F /* AnimationAsset.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BACFA16AEC9050033868F /* AnimationAsset.cc */; };
 		867BAFE116AEC9050033868F /* ImageAsset.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BACFF16AEC9050033868F /* ImageAsset.cc */; };
@@ -304,7 +303,6 @@
 		867BB0EE16AEC9050033868F /* tinyxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 867BAF6E16AEC9050033868F /* tinyxml.cpp */; };
 		867BB0EF16AEC9050033868F /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 867BAF7016AEC9050033868F /* tinyxmlerror.cpp */; };
 		867BB0F016AEC9050033868F /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 867BAF7116AEC9050033868F /* tinyxmlparser.cpp */; };
-		867BB0F216AEC9050033868F /* popupMenu.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAF7A16AEC9050033868F /* popupMenu.cc */; };
 		867BB0F316AEC9050033868F /* fileDialog.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAF7D16AEC9050033868F /* fileDialog.cc */; };
 		867BB0F416AEC9050033868F /* msgBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 867BAF8016AEC9050033868F /* msgBox.cpp */; };
 		867BB0F516AEC9050033868F /* platform.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAF8216AEC9050033868F /* platform.cc */; };
@@ -687,7 +685,6 @@
 		867BACC616AEC8BB0033868F /* iOSUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iOSUtil.h; sourceTree = "<group>"; };
 		867BACC716AEC8BB0033868F /* iOSUtil.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iOSUtil.mm; sourceTree = "<group>"; };
 		867BACCA16AEC8BB0033868F /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
-		867BACCC16AEC8BB0033868F /* popupMenu.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = popupMenu.mm; sourceTree = "<group>"; };
 		867BACCD16AEC8BB0033868F /* platformGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformGL.h; sourceTree = "<group>"; };
 		867BACCE16AEC8BB0033868F /* platformiOS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformiOS.h; sourceTree = "<group>"; };
 		867BACCF16AEC8BB0033868F /* SoundEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SoundEngine.h; sourceTree = "<group>"; };
@@ -1211,8 +1208,6 @@
 		867BAF7116AEC9050033868F /* tinyxmlparser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlparser.cpp; sourceTree = "<group>"; };
 		867BAF7416AEC9050033868F /* eaxtypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = eaxtypes.h; sourceTree = "<group>"; };
 		867BAF7516AEC9050033868F /* event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = event.h; sourceTree = "<group>"; };
-		867BAF7A16AEC9050033868F /* popupMenu.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = popupMenu.cc; sourceTree = "<group>"; };
-		867BAF7B16AEC9050033868F /* popupMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = popupMenu.h; sourceTree = "<group>"; };
 		867BAF7D16AEC9050033868F /* fileDialog.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fileDialog.cc; sourceTree = "<group>"; };
 		867BAF7E16AEC9050033868F /* fileDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fileDialog.h; sourceTree = "<group>"; };
 		867BAF7F16AEC9050033868F /* fileDialog_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fileDialog_ScriptBinding.h; sourceTree = "<group>"; };
@@ -1866,7 +1861,6 @@
 				867BACC616AEC8BB0033868F /* iOSUtil.h */,
 				867BACC716AEC8BB0033868F /* iOSUtil.mm */,
 				867BACCA16AEC8BB0033868F /* main.mm */,
-				867BACCB16AEC8BB0033868F /* menus */,
 				867BACCD16AEC8BB0033868F /* platformGL.h */,
 				867BACCE16AEC8BB0033868F /* platformiOS.h */,
 				D15E7EC916F0815100BB43B1 /* platformiOS.mm */,
@@ -1877,14 +1871,6 @@
 			);
 			name = platformiOS;
 			path = ../../source/platformiOS;
-			sourceTree = "<group>";
-		};
-		867BACCB16AEC8BB0033868F /* menus */ = {
-			isa = PBXGroup;
-			children = (
-				867BACCC16AEC8BB0033868F /* popupMenu.mm */,
-			);
-			path = menus;
 			sourceTree = "<group>";
 		};
 		867BACF816AEC9050033868F /* 2d */ = {
@@ -2789,7 +2775,6 @@
 				30D5475B173FF5D300CB43DA /* platformTimer.h */,
 				867BAF7416AEC9050033868F /* eaxtypes.h */,
 				867BAF7516AEC9050033868F /* event.h */,
-				867BAF7916AEC9050033868F /* menus */,
 				867BAF7C16AEC9050033868F /* nativeDialogs */,
 				867BAF8216AEC9050033868F /* platform.cc */,
 				867BAF8316AEC9050033868F /* platform.h */,
@@ -2837,15 +2822,6 @@
 			);
 			name = platform;
 			path = ../../../source/platform;
-			sourceTree = "<group>";
-		};
-		867BAF7916AEC9050033868F /* menus */ = {
-			isa = PBXGroup;
-			children = (
-				867BAF7A16AEC9050033868F /* popupMenu.cc */,
-				867BAF7B16AEC9050033868F /* popupMenu.h */,
-			);
-			path = menus;
 			sourceTree = "<group>";
 		};
 		867BAF7C16AEC9050033868F /* nativeDialogs */ = {
@@ -3620,7 +3596,6 @@
 				867BACF116AEC8BB0033868F /* iOSUserMusicLibrary.mm in Sources */,
 				867BACF216AEC8BB0033868F /* iOSUtil.mm in Sources */,
 				867BACF416AEC8BB0033868F /* main.mm in Sources */,
-				867BACF516AEC8BB0033868F /* popupMenu.mm in Sources */,
 				867BACF616AEC8BB0033868F /* SoundEngine.mm in Sources */,
 				867BAFDF16AEC9050033868F /* AnimationAsset.cc in Sources */,
 				867BAFE116AEC9050033868F /* ImageAsset.cc in Sources */,
@@ -3854,7 +3829,6 @@
 				867BB0EE16AEC9050033868F /* tinyxml.cpp in Sources */,
 				867BB0EF16AEC9050033868F /* tinyxmlerror.cpp in Sources */,
 				867BB0F016AEC9050033868F /* tinyxmlparser.cpp in Sources */,
-				867BB0F216AEC9050033868F /* popupMenu.cc in Sources */,
 				867BB0F316AEC9050033868F /* fileDialog.cc in Sources */,
 				867BB0F416AEC9050033868F /* msgBox.cpp in Sources */,
 				867BB0F516AEC9050033868F /* platform.cc in Sources */,
