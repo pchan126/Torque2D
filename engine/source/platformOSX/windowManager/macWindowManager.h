@@ -35,28 +35,6 @@ public:
    
    virtual PlatformWindow *createWindow(GFXDevice *device, const GFXVideoMode &mode);
    
-   /// @name Desktop Queries
-   /// @{
-   
-   /// Return the extents in window coordinates of the primary desktop
-   /// area. On a single monitor system this is just the display extents.
-   /// On a multi-monitor system this is the primary monitor (which Torque should
-   /// launch on).
-   virtual RectI getPrimaryDesktopArea();
-   
-   /// Populate a vector with all monitors and their extents in window space.
-   virtual void getMonitorRegions(Vector<RectI> &regions);
-   
-   /// Retrieve the currently set desktop bit depth
-   /// @return The current desktop bit depth, or -1 if an error occurred
-   virtual S32 getDesktopBitDepth();
-   
-   /// Retrieve the currently set desktop resolution
-   /// @return The current desktop bit depth, or Point2I(-1,-1) if an error occurred
-   virtual Point2I getDesktopResolution();
-   
-   /// @}
-   
    /// @name Window Lookup
    /// @{
    

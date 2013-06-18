@@ -48,10 +48,7 @@ inline static void _GFXInitGetInitialRes(GFXVideoMode &vm, const Point2I &initia
    const U32 kDefaultBitDepth = 32;
    const U32 kDefaultRefreshRate = 60;
 
-//   // cache the desktop size of the main screen
-//   GFXVideoMode desktopVm = GFXInit::getDesktopResolution();
-
-   // load pref variables, properly choose windowed / fullscreen  
+   // load pref variables, properly choose windowed / fullscreen
    const String resString = Con::getVariable("$pref::Video::mode");
 
    // Set defaults into the video mode, then have it parse the user string.
@@ -90,7 +87,6 @@ void GFXInit::init()
 
 #ifndef TORQUE_OS_IOS
    glfwSetErrorCallback(error_callback);
-
    if (!glfwInit())
       exit(EXIT_FAILURE);
 #endif
@@ -287,21 +283,7 @@ void GFXInit::getAdapters(Vector<GFXAdapter*> *adapters)
       adapters->push_back(smAdapters[k]);
 }
 
-GFXVideoMode GFXInit::getDesktopResolution()
-{
-   GFXVideoMode resVm;
-
-   // Retrieve Resolution Information.
-   resVm.bitDepth    = WindowManager->getDesktopBitDepth();
-   resVm.resolution  = WindowManager->getDesktopResolution();
-   resVm.fullScreen  = false;
-   resVm.refreshRate = 60;
-
-   // Return results
-   return resVm;
-}
-
-void GFXInit::enumerateAdapters() 
+void GFXInit::enumerateAdapters()
 {
    // Call each device class and have it report any adapters it supports.
    if(smAdapters.size())
@@ -335,13 +317,6 @@ GFXDevice *GFXInit::createDevice( GFXAdapter *adapter )
 }
 
 
-//DefineEngineFunction( getDesktopResolution, Point3F, (),,
-//   "Returns the width, height, and bitdepth of the screen/desktop.\n\n@ingroup GFX" )
-//{
-//   GFXVideoMode res = GFXInit::getDesktopResolution();
-//   return Point3F( res.resolution.x, res.resolution.y, res.bitDepth );
-//}
-//
 //DefineEngineStaticMethod( GFXInit, getAdapterCount, S32, (),,
 //   "Return the number of graphics adapters available. @ingroup GFX")
 //{

@@ -40,23 +40,6 @@ public:
 
    static void processCmdLineArgs(const S32 argc, const char **argv);
 
-   /// Return the extents in window coordinates of the primary desktop
-   /// area. On a single monitor system this is just the display extents.
-   /// On a multimon system this is the primary monitor (which Torque should
-   /// launch on).
-   virtual RectI getPrimaryDesktopArea() = 0;
-
-   /// Retrieve the currently set desktop bit depth
-   /// @return The current desktop bit depth, or -1 if an error occurred
-   virtual S32 getDesktopBitDepth() = 0;
-
-   /// Retrieve the currently set desktop resolution
-   /// @return The current desktop bit depth, or Point2I(-1,-1) if an error occurred
-   virtual Point2I getDesktopResolution() = 0;
-
-   /// Populate a vector with all monitors and their extents in window space.
-   virtual void getMonitorRegions(Vector<RectI> &regions) = 0;
-
    /// Create a new window, appropriate for the specified device and mode.
    ///
    /// @return Pointer to the new window.

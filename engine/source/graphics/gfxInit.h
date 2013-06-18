@@ -60,10 +60,6 @@ public:
    /// Converts a string to a GFXAdapterType. Useful for reading in prefs.
    static GFXAdapterType getAdapterTypeFromName( const char* name );
    
-   /// Returns a GFXVideoMode that describes the current state of the main monitor.
-   /// This should probably move to the abstract window manager
-   static GFXVideoMode getDesktopResolution();
-
    /// Based on user preferences (or in the absence of a valid user selection,
    /// a heuristic), return a "best" adapter.
    static GFXAdapter *getBestAdapterChoice();

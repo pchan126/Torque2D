@@ -17,11 +17,6 @@ PlatformWindowManager* CreatePlatformWindowManager()
    return new MacWindowManager();
 }
 
-static inline RectI convertCGRectToRectI(NSRect r)
-{
-   return RectI(r.origin.x, r.origin.y, r.size.width, r.size.height);
-}
-
 MacWindowManager::MacWindowManager() : mNotifyShutdownDelegate(this, &MacWindowManager::onShutdown), mIsShuttingDown(false)
 {
    mWindowList.clear();
@@ -33,38 +28,6 @@ MacWindowManager::~MacWindowManager()
    for(U32 i = 0; i < mWindowList.size(); i++)
       delete mWindowList[i];
    mWindowList.clear();
-}
-
-RectI MacWindowManager::getPrimaryDesktopArea()
-{
-   // Get the area of the main desktop that isn't taken by the dock or menu bar.
-   return convertCGRectToRectI([[NSScreen mainScreen] visibleFrame]);
-}
-
-void MacWindowManager::getMonitorRegions(Vector<RectI> &regions)
-{
-   // Populate a vector with all monitors and their extents in window space.
-   NSArray *screenList = [NSScreen screens];
-   for(U32 i = 0; i < [screenList count]; i++)
-   {
-      NSRect screenBounds = [[screenList objectAtIndex: i] frame];
-      regions.push_back(convertCGRectToRectI(screenBounds));
-   }
-}
-
-S32 MacWindowManager::getDesktopBitDepth()
-{
-   // get the current desktop bit depth
-   // TODO: return -1 if an error occurred
-   return NSBitsPerPixelFromDepth([[NSScreen mainScreen] depth]);
-}
-
-Point2I MacWindowManager::getDesktopResolution()
-{
-   // get the current desktop width/height
-   // TODO: return Point2I(-1,-1) if an error occurred
-   NSRect desktopBounds = [[NSScreen mainScreen] frame];
-   return Point2I((U32)desktopBounds.size.width, (U32)desktopBounds.size.height);
 }
 
 S32 MacWindowManager::getWindowCount()
