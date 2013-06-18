@@ -3,46 +3,44 @@
 // Copyright GarageGames, LLC 2011
 //-----------------------------------------------------------------------------
 
-#import <Cocoa/Cocoa.h>
-#import "./macWindowManager.h"
-#import "./macWindow.h"
-#import "delegates/process.h"
-#import "console/console.h"
-#import "graphics/gfxDevice.h"
-#import "game/version.h"
-#import "platformOSX/platformOSX.h"
+#include "./GLFWWindowManager.h"
+#include "./GLFWWindow.h"
+#include "delegates/process.h"
+#include "console/console.h"
+#include "graphics/gfxDevice.h"
+#include "game/version.h"
 
 PlatformWindowManager* CreatePlatformWindowManager()
 {
-   return new MacWindowManager();
+   return new GLFWWindowManager();
 }
 
-MacWindowManager::MacWindowManager() : mNotifyShutdownDelegate(this, &MacWindowManager::onShutdown), mIsShuttingDown(false)
+GLFWWindowManager::GLFWWindowManager() : mNotifyShutdownDelegate(this, &GLFWWindowManager::onShutdown), mIsShuttingDown(false)
 {
    mWindowList.clear();
    Process::notifyShutdown(mNotifyShutdownDelegate);
 }
 
-MacWindowManager::~MacWindowManager()
+GLFWWindowManager::~GLFWWindowManager()
 {  
    for(U32 i = 0; i < mWindowList.size(); i++)
       delete mWindowList[i];
    mWindowList.clear();
 }
 
-S32 MacWindowManager::getWindowCount()
+S32 GLFWWindowManager::getWindowCount()
 {
    // Get the number of PlatformWindow's in this manager
    return mWindowList.size();
 }
 
-void MacWindowManager::getWindows(VectorPtr<PlatformWindow*> &windows)
+void GLFWWindowManager::getWindows(VectorPtr<PlatformWindow*> &windows)
 {
    // Populate a list with references to all the windows created from this manager.
    windows.merge(mWindowList);
 }
 
-PlatformWindow * MacWindowManager::getFirstWindow()
+PlatformWindow * GLFWWindowManager::getFirstWindow()
 {
    if (mWindowList.size() > 0)
       return mWindowList[0];
@@ -51,7 +49,7 @@ PlatformWindow * MacWindowManager::getFirstWindow()
 }
 
 
-PlatformWindow* MacWindowManager::getFocusedWindow()
+PlatformWindow* GLFWWindowManager::getFocusedWindow()
 {
    for (U32 i = 0; i < mWindowList.size(); i++)
    {
@@ -62,7 +60,7 @@ PlatformWindow* MacWindowManager::getFocusedWindow()
    return NULL;
 }
 
-PlatformWindow* MacWindowManager::getWindowById(WindowId zid)
+PlatformWindow* GLFWWindowManager::getWindowById(WindowId zid)
 {
    // Find the window by its arbirary WindowId.
    for(U32 i = 0; i < mWindowList.size(); i++)
@@ -74,12 +72,12 @@ PlatformWindow* MacWindowManager::getWindowById(WindowId zid)
    return NULL;
 }
 
-MacWindow* MacWindowManager::getWindowByGLFW(GLFWwindow* window)
+GLFWWindow* GLFWWindowManager::getWindowByGLFW(GLFWwindow* window)
 {
    // Find the window by its arbirary WindowId.
    for(U32 i = 0; i < mWindowList.size(); i++)
    {
-      MacWindow* w = dynamic_cast<MacWindow*>(mWindowList[i]);
+      GLFWWindow* w = dynamic_cast<GLFWWindow*>(mWindowList[i]);
       if( w->window == window)
          return w;
    }
@@ -87,12 +85,12 @@ MacWindow* MacWindowManager::getWindowByGLFW(GLFWwindow* window)
 }
 
 
-void MacWindowManager::_processCmdLineArgs(const S32 argc, const char **argv)
+void GLFWWindowManager::_processCmdLineArgs(const S32 argc, const char **argv)
 {
    // TODO: accept command line args if necessary.
 }
 
-PlatformWindow* MacWindowManager::assignCanvas(GFXDevice* device, const GFXVideoMode &mode, GuiCanvas* canvas)
+PlatformWindow* GLFWWindowManager::assignCanvas(GFXDevice* device, const GFXVideoMode &mode, GuiCanvas* canvas)
 {
    // Find the window by its arbirary WindowId.
    for(U32 i = 0; i < mWindowList.size(); i++)
@@ -111,9 +109,9 @@ PlatformWindow* MacWindowManager::assignCanvas(GFXDevice* device, const GFXVideo
 }
 
 
-PlatformWindow *MacWindowManager::createWindow(GFXDevice *device, const GFXVideoMode &mode)
+PlatformWindow *GLFWWindowManager::createWindow(GFXDevice *device, const GFXVideoMode &mode)
 {
-   MacWindow* window = new MacWindow(getNextId(), getVersionString(), mode.resolution);
+   GLFWWindow* window = new GLFWWindow(getNextId(), getVersionString(), mode.resolution);
    _addWindow(window);
    
    // Set the video mode on the window
@@ -128,22 +126,22 @@ PlatformWindow *MacWindowManager::createWindow(GFXDevice *device, const GFXVideo
       window->mDevice = device;
       window->mTarget = device->allocWindowTarget(window);
       AssertISV(window->mTarget, 
-         "MacWindowManager::createWindow - failed to get a window target back from the device.");
+         "GLFWWindowManager::createWindow - failed to get a window target back from the device.");
    }
    else
    {
-      Con::warnf("MacWindowManager::createWindow - created a window with no device!");
+      Con::warnf("GLFWWindowManager::createWindow - created a window with no device!");
    }
 
    return window;
 }
 
-void MacWindowManager::_addWindow(MacWindow* window)
+void GLFWWindowManager::_addWindow(GLFWWindow* window)
 {
 #ifdef TORQUE_DEBUG
    // Make sure we aren't adding the window twice
    for(U32 i = 0; i < mWindowList.size(); i++)
-      AssertFatal(window != mWindowList[i], "MacWindowManager::_addWindow - Should not add a window more than once");
+      AssertFatal(window != mWindowList[i], "GLFWWindowManager::_addWindow - Should not add a window more than once");
 #endif
    if (mWindowList.size() > 0)
       window->mNextWindow = mWindowList.last();
@@ -152,10 +150,10 @@ void MacWindowManager::_addWindow(MacWindow* window)
 
    mWindowList.push_back(window);
    window->mOwningWindowManager = this;
-   window->appEvent.notify(this, &MacWindowManager::_onAppSignal);
+   window->appEvent.notify(this, &GLFWWindowManager::_onAppSignal);
 }
 
-void MacWindowManager::_removeWindow(MacWindow* window)
+void GLFWWindowManager::_removeWindow(GLFWWindow* window)
 {
    for(WindowList::iterator i = mWindowList.begin(); i != mWindowList.end(); i++)
    {
@@ -168,15 +166,14 @@ void MacWindowManager::_removeWindow(MacWindow* window)
     
     if (mWindowList.size() == 0)
     {
-        osxPlatState * platState = [osxPlatState sharedPlatState];
-        [platState shutDownTorque2D];
+       Process::shutdown();
     }
     
         
-   AssertFatal(false, avar("MacWindowManager::_removeWindow - Failed to remove window %x, perhaps it was already removed?", window));
+   AssertFatal(false, avar("GLFWWindowManager::_removeWindow - Failed to remove window %x, perhaps it was already removed?", window));
 }
 
-void MacWindowManager::_onAppSignal(WindowId wnd, S32 event)
+void GLFWWindowManager::_onAppSignal(WindowId wnd, S32 event)
 {
    switch (event) {
       case WindowHidden:
@@ -194,13 +191,13 @@ void MacWindowManager::_onAppSignal(WindowId wnd, S32 event)
    }
 }
 
-bool MacWindowManager::onShutdown()
+bool GLFWWindowManager::onShutdown()
 {
    mIsShuttingDown = true;
    return true;
 }
 
-bool MacWindowManager::canWindowGainFocus(MacWindow* window)
+bool GLFWWindowManager::canWindowGainFocus(GLFWWindow* window)
 {
    return !mIsShuttingDown;
 }

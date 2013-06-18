@@ -14,7 +14,7 @@
 GFXOpenGL32WindowTarget::GFXOpenGL32WindowTarget(PlatformWindow *window, GFXDevice *d)
       : GFXWindowTarget(window), mDevice(d)
 {
-    mWindow = dynamic_cast<MacWindow*>(window);
+    mWindow = dynamic_cast<GLFWWindow*>(window);
     window->appEvent.notify(this, &GFXOpenGL32WindowTarget::_onAppSignal);
     size = window->getBounds().extent;
 }

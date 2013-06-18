@@ -48,7 +48,7 @@ public:
    /// @{
    virtual bool mainInitialize( int argc, const char **argv ) = 0;
    virtual void mainLoop( double elapsedTime = 0.0 ) = 0;
-   virtual void mainShutdown( void ) = 0;
+   virtual bool mainShutdown( void ) = 0;
    /// @}
 
    virtual void gameDeactivate( const bool noRender ) = 0;

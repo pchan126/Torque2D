@@ -24,7 +24,7 @@
 #include "platform/types.h"
 #include "math/mPoint.h"
 #include "math/mRandom.h"
-#include "platformOSX/windowManager/macWindow.h"
+#include "platformOSX/windowManager/GLFWWindow.h"
 
 @interface osxPlatState : NSObject
 {

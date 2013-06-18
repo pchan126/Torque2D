@@ -86,6 +86,7 @@ void GFXInit::init()
    Con::printf( "GFX Init:" );
 
 #ifndef TORQUE_OS_IOS
+   Con::printf("Init GLFW: %s", glfwGetVersionString());
    glfwSetErrorCallback(error_callback);
    if (!glfwInit())
       exit(EXIT_FAILURE);

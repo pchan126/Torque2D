@@ -42,7 +42,7 @@ class DefaultGame : public GameInterface, public virtual Tickable
 public:
     virtual bool mainInitialize( int argc, const char **argv );
     virtual void mainLoop( double elapsedTime = 0.0 );
-    virtual void mainShutdown( void );
+    virtual bool mainShutdown( void );
 
     virtual void gameDeactivate( const bool noRender );
     virtual void gameReactivate( void );
@@ -55,13 +55,7 @@ public:
     virtual void interpolateTick( F32 delta ) {};
     virtual void advanceTime( F32 timeDelta );
 
-//    void processQuitEvent();
     void processTimeEvent(S32 elapsedTime);
-//    void processConsoleEvent(ConsoleEvent *event);
-//    void processPacketReceiveEvent(PacketReceiveEvent *event);
-//    void processConnectedAcceptEvent(ConnectedAcceptEvent *event);
-//    void processConnectedReceiveEvent(ConnectedReceiveEvent *event);
-//    void processConnectedNotifyEvent(ConnectedNotifyEvent *event);
 };
 
 bool clientProcess(U32 timeDelta);

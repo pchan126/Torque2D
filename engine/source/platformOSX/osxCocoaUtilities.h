@@ -21,7 +21,6 @@
 //-----------------------------------------------------------------------------
 #include "platform/nativeDialogs/fileDialog.h"
 #include "memory/safeDelete.h"
-#include "platform/menus/popupMenu.h"
 
 class FileDialogFileExtList
 {
@@ -62,17 +61,18 @@ public:
 + (NSArray *)showOpenPanel:(FileDialogData *)withData;
 @end
 
-@interface osxPopupMenuController : NSObject
-{
-    NSMenu* _menu;
-    NSMenuItem* _menuItem;
-    PopupMenu* _owner;
-}
+//@interface osxPopupMenuController : NSObject
+//{
+//    NSMenu* _menu;
+//    NSMenuItem* _menuItem;
+//    PopupMenu* _owner;
+//}
+//
+//@property (strong) NSMenu* menu;
+//@property (strong) NSMenuItem* menuItem;
+//@property (assign) PopupMenu* owner;
+//
+//-(void)handleSelect:(id)sender;
+//
+//@end
 
-@property (strong) NSMenu* menu;
-@property (strong) NSMenuItem* menuItem;
-@property (assign) PopupMenu* owner;
-
--(void)handleSelect:(id)sender;
-
-@end

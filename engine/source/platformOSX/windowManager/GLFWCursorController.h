@@ -3,15 +3,15 @@
 // Copyright GarageGames, LLC 2011
 //-----------------------------------------------------------------------------
 
-#ifndef _MACCURSORCONTROLLER_H_
-#define _MACCURSORCONTROLLER_H_
+#ifndef _GLFWCursorController_H_
+#define _GLFWCursorController_H_
 
 #include "windowManager/platformCursorController.h"
 
-class MacCursorController : public PlatformCursorController
+class GLFWCursorController : public PlatformCursorController
 {
 public:
-   MacCursorController(MacWindow* owner)
+   GLFWCursorController(GLFWWindow* owner)
       : PlatformCursorController( ( PlatformWindow* ) owner )
    {
       pushCursor(PlatformCursorController::curArrow);

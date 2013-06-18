@@ -235,55 +235,56 @@
 
 @end
 
-@implementation osxPopupMenuController
+//@implementation osxPopupMenuController
+//
+//@synthesize menu = _menu;
+//@synthesize menuItem = _menuItem;
+//@synthesize owner = _owner;
+//
+//-(id) init
+//{
+//    self = [super init];
+//
+//    if (self)
+//    {
+//        _owner = NULL;
+//        _menu = [[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@"New Menu"];
+//        _menuItem = [[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:@"New Menu Item" action:NULL keyEquivalent:@""];
+//        [_menuItem setSubmenu:_menu];
+//    }
+//
+//    return self;
+//}
+//
+//-(void) dealloc
+//{
+//    if (_menu)
+//        [_menu release];
+//
+//    if (_menuItem)
+//        [_menuItem release];
+//
+//    [super dealloc];
+//}
+//
+//-(void)handleSelect:(id)sender
+//{
+//    if(!_owner)
+//    {
+//        Con::errorf("osxPopupMenuController::handleSelect error: _owner is invalid");
+//        return;
+//    }
+//
+//    // Get the title
+//    NSString* itemTitle = [sender title];
+//
+//    // Get the index
+//    NSMenu* menu = [sender menu];
+//
+//    S32 index = [menu indexOfItemWithTitle:itemTitle];
+//
+//    _owner->handleSelect(index, [[_menu title] UTF8String]);
+//}
+//
+//@end
 
-@synthesize menu = _menu;
-@synthesize menuItem = _menuItem;
-@synthesize owner = _owner;
-
--(id) init
-{
-    self = [super init];
-
-    if (self)
-    {
-        _owner = NULL;
-        _menu = [[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@"New Menu"];
-        _menuItem = [[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:@"New Menu Item" action:NULL keyEquivalent:@""];
-        [_menuItem setSubmenu:_menu];
-    }
-
-    return self;
-}
-
--(void) dealloc
-{
-    if (_menu)
-        [_menu release];
-
-    if (_menuItem)
-        [_menuItem release];
-
-    [super dealloc];
-}
-
--(void)handleSelect:(id)sender
-{
-    if(!_owner)
-    {
-        Con::errorf("osxPopupMenuController::handleSelect error: _owner is invalid");
-        return;
-    }
-
-    // Get the title
-    NSString* itemTitle = [sender title];
-
-    // Get the index
-    NSMenu* menu = [sender menu];
-
-    S32 index = [menu indexOfItemWithTitle:itemTitle];
-
-    _owner->handleSelect(index, [[_menu title] UTF8String]);
-}
-
-@end

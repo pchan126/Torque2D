@@ -743,6 +743,9 @@ typedef Signal<void(WindowId)> DisplayEvent;
 /// void event(WindowId, S32 width, S32 height)
 typedef Signal<void(WindowId, S32, S32)> ResizeEvent;
 
+/// void event(WindowId, S32 width, S32 height)
+typedef Signal<void(WindowId, S32, S32)> FramebufferResizeEvent;
+
 /// void event(S32 timeDelta)
 typedef Signal<void(S32)> TimeManagerEvent;
 

@@ -101,7 +101,7 @@ void GFXOpenGL32Device::init( const GFXVideoMode &mode, PlatformWindow *window )
        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, 1);
        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
        
-       MacWindow* mWindow = dynamic_cast<MacWindow*>(WindowManager->createWindow(this, mode));
+       GLFWWindow* mWindow = dynamic_cast<GLFWWindow*>(WindowManager->createWindow(this, mode));
        mContext = mWindow->getContext();
        mWindow->makeContextCurrent();
 
@@ -321,7 +321,7 @@ void GFXOpenGL32Device::setStateBlockInternal(GFXStateBlock* block, bool force)
 //-----------------------------------------------------------------------------
 GFXWindowTarget *GFXOpenGL32Device::allocWindowTarget(PlatformWindow *window)
 {
-   MacWindow* thewindow = dynamic_cast<MacWindow*>(window);
+   GLFWWindow* thewindow = dynamic_cast<GLFWWindow*>(window);
 
    if (thewindow == NULL)
       return NULL;

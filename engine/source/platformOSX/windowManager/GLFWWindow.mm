@@ -3,15 +3,13 @@
 // Copyright GarageGames, LLC 2011
 //-----------------------------------------------------------------------------
 
-#import <Cocoa/Cocoa.h>
-#import "./macWindow.h"
-#import "platform/platformGL.h"
-#import "platformOSX/platformOSX.h"
-#import "platformOSX/windowManager/osxWindowInputGenerator.h"
-#import "console/console.h"
-#import "AppDelegate.h"
+#include "./GLFWWindow.h"
+#include "platform/platformGL.h"
+#include "./GLFWWindowInputGenerator.h"
+#include "console/console.h"
+#include "AppDelegate.h"
 
-MacWindow* MacWindow::sInstance = NULL;
+GLFWWindow* GLFWWindow::sInstance = NULL;
 
 extern InputModifiers convertModifierBits( const U32 in );
 
@@ -31,15 +29,15 @@ inline U32 GLFWModifiersToTorqueModifiers( int mods )
    return torqueMods;
 }
 
-MacWindow::MacWindow(U32 windowId, const char* windowText, Point2I clientExtent)
+GLFWWindow::GLFWWindow(U32 windowId, const char* windowText, Point2I clientExtent)
 {
    mMouseLocked      = false;
    mShouldMouseLock  = false;
    mTitle            = NULL;
    mMouseCaptured    = false;
    mBoundCanvas = NULL;
-   mWindowInputGenerator = new osxWindowInputGenerator( this);
-   mCursorController = new MacCursorController( this );
+   mWindowInputGenerator = new GLFWWindowInputGenerator( this);
+   mCursorController = new GLFWCursorController( this );
    mOwningWindowManager = NULL;
    mTarget = NULL;
    
@@ -51,7 +49,7 @@ MacWindow::MacWindow(U32 windowId, const char* windowText, Point2I clientExtent)
    mWindowId = windowId;
    
    GLFWwindow* sWindow = NULL;
-   MacWindow* shareWindow = dynamic_cast<MacWindow*>(WindowManager->getFirstWindow());
+   GLFWWindow* shareWindow = dynamic_cast<GLFWWindow*>(WindowManager->getFirstWindow());
 
    if (shareWindow != NULL)
       sWindow = shareWindow->window;
@@ -63,25 +61,25 @@ MacWindow::MacWindow(U32 windowId, const char* windowText, Point2I clientExtent)
       exit(EXIT_FAILURE);
    }
 
-   glfwSetKeyCallback(window, &MacWindow::key_callback);
-   glfwSetMouseButtonCallback(window, &MacWindow::mousebutton_callback);
-   glfwSetCursorPosCallback(window, &MacWindow::mousemove_callback);
-   glfwSetWindowCloseCallback(window, &MacWindow::window_close_callback);
-   glfwSetWindowFocusCallback(window, &MacWindow::window_focus_callback);
-   glfwSetWindowIconifyCallback(window, &MacWindow::window_iconify_callback);
-   glfwSetScrollCallback(window, &MacWindow::window_scroll_callback);
+   glfwSetKeyCallback(window, &GLFWWindow::key_callback);
+   glfwSetMouseButtonCallback(window, &GLFWWindow::mousebutton_callback);
+   glfwSetCursorPosCallback(window, &GLFWWindow::mousemove_callback);
+   glfwSetWindowCloseCallback(window, &GLFWWindow::window_close_callback);
+   glfwSetWindowFocusCallback(window, &GLFWWindow::window_focus_callback);
+   glfwSetWindowIconifyCallback(window, &GLFWWindow::window_iconify_callback);
+   glfwSetScrollCallback(window, &GLFWWindow::window_scroll_callback);
    
-   appEvent.notify(this, &MacWindow::_onAppEvent);
+   appEvent.notify(this, &GLFWWindow::_onAppEvent);
    
    sInstance = this;
 }
 
-MacWindow::~MacWindow()
+GLFWWindow::~GLFWWindow()
 {
    if(mFullscreen)
       _setFullscreen(false);
 
-   appEvent.remove(this, &MacWindow::_onAppEvent);
+   appEvent.remove(this, &GLFWWindow::_onAppEvent);
 
    //ensure our view isn't the delegate
    [NSApp setDelegate:nil];
@@ -100,7 +98,7 @@ MacWindow::~MacWindow()
 }
 
 
-void MacWindow::setVideoMode(const GFXVideoMode &mode)
+void GLFWWindow::setVideoMode(const GFXVideoMode &mode)
 {
    mCurrentMode = mode;
    setSize(mCurrentMode.resolution);
@@ -111,7 +109,7 @@ void MacWindow::setVideoMode(const GFXVideoMode &mode)
    _setFullscreen(mCurrentMode.fullScreen);
 }
 
-void MacWindow::_onAppEvent(WindowId, S32 evt)
+void GLFWWindow::_onAppEvent(WindowId, S32 evt)
 {
    
    if(evt == LoseFocus && isFullscreen())
@@ -131,7 +129,7 @@ void MacWindow::_onAppEvent(WindowId, S32 evt)
    }
 }
 
-void MacWindow::_setFullscreen(bool fullScreen)
+void GLFWWindow::_setFullscreen(bool fullScreen)
 {
    if(mFullscreen == fullScreen)
       return;
@@ -146,18 +144,18 @@ void MacWindow::_setFullscreen(bool fullScreen)
    }
 }
 
-void* MacWindow::getPlatformDrawable() const
+void* GLFWWindow::getPlatformDrawable() const
 {
    return NULL;
 }
 
-void MacWindow::show()
+void GLFWWindow::show()
 {
    appEvent.trigger(getWindowId(), WindowShown);
    appEvent.trigger(getWindowId(), GainFocus);
 }
 
-void MacWindow::close()
+void GLFWWindow::close()
 {
    glfwDestroyWindow(window);
    appEvent.trigger(mWindowId, LoseFocus);
@@ -168,30 +166,30 @@ void MacWindow::close()
    delete this;
 }
 
-void MacWindow::hide()
+void GLFWWindow::hide()
 {
    glfwHideWindow(window);
    appEvent.trigger(getWindowId(), WindowHidden);
 }
 
-//void MacWindow::setDisplay(CGDirectDisplayID display)
+//void GLFWWindow::setDisplay(CGDirectDisplayID display)
 //{
 //   mDisplay = display;
 //   mDisplayBounds = CGDisplayBounds(mDisplay);
 //}
 
-PlatformWindow* MacWindow::getNextWindow() const
+PlatformWindow* GLFWWindow::getNextWindow() const
 {
    return mNextWindow;
 }
 
-bool MacWindow::setSize(const Point2I &newSize)
+bool GLFWWindow::setSize(const Point2I &newSize)
 {
    glfwSetWindowSize(window, newSize.x, newSize.y);
    return true;
 }
 
-void MacWindow::setClientExtent( const Point2I newExtent )
+void GLFWWindow::setClientExtent( const Point2I newExtent )
 {
    if(!mFullscreen)
    {
@@ -202,7 +200,7 @@ void MacWindow::setClientExtent( const Point2I newExtent )
    }
 }
 
-const Point2I MacWindow::getClientExtent()
+const Point2I GLFWWindow::getClientExtent()
 {
       // Get the Client Area Extent (Resolution) of this window
       Point2I ret;
@@ -210,7 +208,7 @@ const Point2I MacWindow::getClientExtent()
       return ret;
 }
 
-void MacWindow::setBounds( const RectI &newBounds )
+void GLFWWindow::setBounds( const RectI &newBounds )
 {
    glfwSetWindowPos(window, newBounds.point.x, newBounds.point.y);
    glfwSetWindowSize(window, newBounds.extent.x, newBounds.extent.y);
@@ -218,7 +216,7 @@ void MacWindow::setBounds( const RectI &newBounds )
 //   [mCocoaWindow setFrame:newFrame display:YES];
 }
 
-const RectI MacWindow::getBounds() const
+const RectI GLFWWindow::getBounds() const
 {
 //   if(!mFullscreen)
 //   {
@@ -236,7 +234,7 @@ const RectI MacWindow::getBounds() const
 //   }
 }
 
-void MacWindow::setPosition( const Point2I newPosition )
+void GLFWWindow::setPosition( const Point2I newPosition )
 {
    glfwSetWindowPos(window, newPosition.x, newPosition.y);
 //   NSScreen *screen = [mCocoaWindow screen];
@@ -246,7 +244,7 @@ void MacWindow::setPosition( const Point2I newPosition )
 //   [mCocoaWindow setFrameTopLeftPoint: pos];
 }
 
-const Point2I MacWindow::getPosition()
+const Point2I GLFWWindow::getPosition()
 {
 //   NSScreen *screen = [mCocoaWindow screen];
 //   NSRect screenFrame = [screen frame];
@@ -258,12 +256,12 @@ const Point2I MacWindow::getPosition()
 //   return Point2I(frame.origin.x, screenFrame.size.height - (frame.origin.y + frame.size.height));
 }
 
-void MacWindow::centerWindow()
+void GLFWWindow::centerWindow()
 {
 //   [mCocoaWindow center];
 }
 
-Point2I MacWindow::clientToScreen( const Point2I& pos )
+Point2I GLFWWindow::clientToScreen( const Point2I& pos )
 {
 //   NSPoint p = { static_cast<CGFloat>(pos.x), static_cast<CGFloat>(pos.y) };
 //   
@@ -271,7 +269,7 @@ Point2I MacWindow::clientToScreen( const Point2I& pos )
 //   return Point2I( p.x, p.y );
 }
 
-Point2I MacWindow::screenToClient( const Point2I& pos )
+Point2I GLFWWindow::screenToClient( const Point2I& pos )
 {
 //   NSPoint p = { static_cast<CGFloat>(pos.x), static_cast<CGFloat>(pos.y) };
 //   
@@ -279,90 +277,90 @@ Point2I MacWindow::screenToClient( const Point2I& pos )
 //   return Point2I( p.x, p.y );
 }
 
-bool MacWindow::isFocused()
+bool GLFWWindow::isFocused()
 {
 //   return [mCocoaWindow isKeyWindow];
    return false;
 }
 
-bool MacWindow::isOpen()
+bool GLFWWindow::isOpen()
 {
    // Maybe check if _window != NULL ?
    return true;
 }
 
-bool MacWindow::isVisible()
+bool GLFWWindow::isVisible()
 {
 //   return !isMinimized() && ([mCocoaWindow isVisible] == YES);
    return true;
 }
    
-void MacWindow::setFocus()
+void GLFWWindow::setFocus()
 {
 //   [mCocoaWindow makeKeyAndOrderFront:nil];
 }
 
-void MacWindow::signalGainFocus()
+void GLFWWindow::signalGainFocus()
 {
 //   if(isFocused())
 //      [[mCocoaWindow delegate] performSelector:@selector(signalGainFocus)];
 }
 
-void MacWindow::minimize()
+void GLFWWindow::minimize()
 {
    glfwIconifyWindow(window);
 }
 
-void MacWindow::maximize()
+void GLFWWindow::maximize()
 {
    if(!isVisible())
       return;
 }
 
-void MacWindow::restore()
+void GLFWWindow::restore()
 {
    glfwRestoreWindow(window);
 }
 
-bool MacWindow::isMinimized()
+bool GLFWWindow::isMinimized()
 {
     return false;
 }
 
-bool MacWindow::isMaximized()
+bool GLFWWindow::isMaximized()
 {
    return false;
 }
 
-void MacWindow::clearFocus()
+void GLFWWindow::clearFocus()
 {
 }
 
-bool MacWindow::setCaption(const char* windowText)
+bool GLFWWindow::setCaption(const char* windowText)
 {
    mTitle = windowText;
    glfwSetWindowTitle(window, windowText);
    return true;
 }
 
-void MacWindow::_doMouseLockNow()
+void GLFWWindow::_doMouseLockNow()
 {
    return;
 }
 
-void MacWindow::_associateMouse()
+void GLFWWindow::_associateMouse()
 {
 }
 
-void MacWindow::_dissociateMouse()
+void GLFWWindow::_dissociateMouse()
 {
 }
 
-void MacWindow::_centerMouse()
+void GLFWWindow::_centerMouse()
 {
 }
 
-void MacWindow::getCursorPosition( Point2I &point )
+void GLFWWindow::getCursorPosition( Point2I &point )
 {
    double xpos, ypos;
    glfwGetCursorPos(window, &xpos, &ypos);
@@ -370,30 +368,25 @@ void MacWindow::getCursorPosition( Point2I &point )
    point.y = (U32)ypos;
 }
 
-void MacWindow::setCursorPosition( const Point2D point )
+void GLFWWindow::setCursorPosition( const Point2D point )
 {
    glfwSetCursorPos(window, (double)point.x, (double)point.y);
 }
 
-void MacWindow::swapBuffers()
+void GLFWWindow::swapBuffers()
 {
    glfwSwapBuffers(window);
 }
 
-void MacWindow::makeContextCurrent()
+void GLFWWindow::makeContextCurrent()
 {
    glfwMakeContextCurrent(window);
 }
 
-NSOpenGLContext* MacWindow::getContext()
-{
-   return glfwGetNSGLContext(window);
-}
 
-
-void MacWindow::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+void GLFWWindow::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-   MacWindow* torqueWindow = MacWindowManager::get()->getWindowByGLFW(window);
+   GLFWWindow* torqueWindow = GLFWWindowManager::get()->getWindowByGLFW(window);
    U32 eventAction = SI_MAKE;
    switch (action) {
       case GLFW_PRESS:
@@ -415,9 +408,9 @@ void MacWindow::key_callback(GLFWwindow* window, int key, int scancode, int acti
    torqueWindow->keyEvent.trigger(torqueWindow->getWindowId(), mLastMods, eventAction, torqueKeyCode);
 }
 
-void MacWindow::mousebutton_callback(GLFWwindow* window, int button, int action, int mods)
+void GLFWWindow::mousebutton_callback(GLFWwindow* window, int button, int action, int mods)
 {
-   MacWindow* torqueWindow = MacWindowManager::get()->getWindowByGLFW(window);
+   GLFWWindow* torqueWindow = GLFWWindowManager::get()->getWindowByGLFW(window);
    U32 eventAction = SI_MAKE;
    switch (action) {
       case GLFW_PRESS:
@@ -432,41 +425,51 @@ void MacWindow::mousebutton_callback(GLFWwindow* window, int button, int action,
    torqueWindow->buttonEvent.trigger(torqueWindow->getWindowId(), mLastMods, eventAction, buttonNumber);
 }
 
-void MacWindow::mousemove_callback(GLFWwindow* window, double xpos, double ypos)
+void GLFWWindow::mousemove_callback(GLFWwindow* window, double xpos, double ypos)
 {
-   MacWindow* torqueWindow = MacWindowManager::get()->getWindowByGLFW(window);
+   GLFWWindow* torqueWindow = GLFWWindowManager::get()->getWindowByGLFW(window);
    torqueWindow->mouseEvent.trigger(torqueWindow->getWindowId(), 0, xpos, ypos, false);
 }
 
-void MacWindow::window_close_callback(GLFWwindow* window)
+void GLFWWindow::window_close_callback(GLFWwindow* window)
 {
-   MacWindow* torqueWindow = MacWindowManager::get()->getWindowByGLFW(window);
+   GLFWWindow* torqueWindow = GLFWWindowManager::get()->getWindowByGLFW(window);
    torqueWindow->appEvent.trigger(torqueWindow->getWindowId(), WindowDestroy);
    delete torqueWindow;
 }
 
-void MacWindow::window_focus_callback(GLFWwindow* window, int focused)
+void GLFWWindow::window_focus_callback(GLFWwindow* window, int focused)
 {
-   MacWindow* torqueWindow = MacWindowManager::get()->getWindowByGLFW(window);
+   GLFWWindow* torqueWindow = GLFWWindowManager::get()->getWindowByGLFW(window);
    if (focused == GL_TRUE)
       torqueWindow->appEvent.trigger(torqueWindow->getWindowId(), GainFocus);
    else if (focused == GL_FALSE)
       torqueWindow->appEvent.trigger(torqueWindow->getWindowId(), LoseFocus);
 }
 
-void MacWindow::window_iconify_callback(GLFWwindow* window, int iconified)
+void GLFWWindow::window_iconify_callback(GLFWwindow* window, int iconified)
 {
-   MacWindow* torqueWindow = MacWindowManager::get()->getWindowByGLFW(window);
+   GLFWWindow* torqueWindow = GLFWWindowManager::get()->getWindowByGLFW(window);
    if (iconified == GL_TRUE)
       torqueWindow->appEvent.trigger(torqueWindow->getWindowId(), WindowHidden);
    else if (iconified == GL_FALSE)
       torqueWindow->appEvent.trigger(torqueWindow->getWindowId(), WindowShown);
 }
 
-void MacWindow::window_scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+void GLFWWindow::window_scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-   MacWindow* torqueWindow = MacWindowManager::get()->getWindowByGLFW(window);
+   GLFWWindow* torqueWindow = GLFWWindowManager::get()->getWindowByGLFW(window);
    torqueWindow->mouseWheelEvent.trigger(torqueWindow->getWindowId(), 0, (S32)xoffset, (S32)yoffset);
 }
 
+void GLFWWindow::window_resize_callback(GLFWwindow* window, int width, int height)
+{
+   GLFWWindow* torqueWindow = GLFWWindowManager::get()->getWindowByGLFW(window);
+   torqueWindow->resizeEvent.trigger(torqueWindow->getWindowId(), width, height);
+}
 
+void GLFWWindow::framebuffer_resize_callback(GLFWwindow* window, int width, int height)
+{
+   GLFWWindow* torqueWindow = GLFWWindowManager::get()->getWindowByGLFW(window);
+   torqueWindow->framebufferResizeEvent.trigger(torqueWindow->getWindowId(), width, height);
+}

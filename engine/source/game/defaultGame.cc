@@ -356,7 +356,7 @@ bool DefaultGame::mainInitialize(int argc, const char **argv)
 {
     if(!initializeLibraries())
         return false;
-    
+   
     // Allow the window manager to process command line inputs; this is
     // done to let web plugin functionality happen in a fairly transparent way.
     PlatformWindowManager::get()->processCmdLineArgs(argc, argv);
@@ -460,7 +460,7 @@ void DefaultGame::mainLoop( double elapsedTime )
 
 //-----------------------------------------------------------------------------
 
-void DefaultGame::mainShutdown( void )
+bool DefaultGame::mainShutdown( void )
 {
     // Stop processing ticks.
     setProcessTicks( false );
@@ -470,6 +470,8 @@ void DefaultGame::mainShutdown( void )
 
     if( Game->requiresRestart() )
     Platform::restartInstance();
+   
+   return true;
 }
 
 //--------------------------------------------------------------------------

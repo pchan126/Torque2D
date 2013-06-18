@@ -3,22 +3,22 @@
 // Copyright GarageGames, LLC 2011
 //-----------------------------------------------------------------------------
 
-#ifndef _TORQUE_MACWINDOW_H_
-#define _TORQUE_MACWINDOW_H_
+#ifndef _TORQUE_GLFWWindow_H_
+#define _TORQUE_GLFWWindow_H_
 
-#import "windowManager/platformWindow.h"
-#import "./macWindowManager.h"
-#import "./macCursorController.h"
+#include "windowManager/platformWindow.h"
+#include "./GLFWWindowManager.h"
+#include "./GLFWCursorController.h"
 
-#import "graphics/gfxTarget.h"
-#import "graphics/gfxStructs.h"
+#include "graphics/gfxTarget.h"
+#include "graphics/gfxStructs.h"
 
 class GLFWwindow;
 
-class MacWindow : public PlatformWindow
+class GLFWWindow : public PlatformWindow
 {
 public:
-   virtual ~MacWindow();
+   virtual ~GLFWWindow();
 
    virtual GFXDevice *getGFXDevice() { return mDevice; }
    virtual GFXWindowTarget *getGFXTarget() { return mTarget; }
@@ -107,7 +107,14 @@ public:
    void _centerMouse();
 
    void makeContextCurrent();
-   NSOpenGLContext* getContext();
+   
+#if defined(GLFW_EXPOSE_NATIVE_NSGL)
+   NSOpenGLContext* getContext() { return glfwGetNSGLContext(window); };
+#endif
+
+#if defined(GLFW_EXPOSE_NATIVE_WGL)
+   HGLRC getContext()  { return glfwGetWGLContext(window); };
+#endif
    
    void getCursorPosition( Point2I &point );
    void setCursorPosition( const Point2D point );
@@ -119,22 +126,22 @@ protected:
    virtual void _setFullscreen(bool fullScreen);
    
 private:
-   friend class MacWindowManager;
-   friend class MacCursorController;
+   friend class GLFWWindowManager;
+   friend class GLFWCursorController;
    
-   MacWindow(U32 windowId, const char* windowText, Point2I clientExtent);
+   GLFWWindow(U32 windowId, const char* windowText, Point2I clientExtent);
    
    void setWindowId(U32 newid) { mWindowId = newid;}
    void signalGainFocus();
 
-   static MacWindow* sInstance;
+   static GLFWWindow* sInstance;
    GLFWwindow* window;
 
    GFXDevice *mDevice;
    GFXWindowTargetRef mTarget;
    GFXVideoMode mCurrentMode;
    
-   MacWindow *mNextWindow;
+   GLFWWindow *mNextWindow;
 
    bool mMouseLocked;
    bool mShouldMouseLock;
@@ -142,7 +149,7 @@ private:
    const char* mTitle;
    bool mMouseCaptured;
    
-   MacWindowManager* mOwningWindowManager;
+   GLFWWindowManager* mOwningWindowManager;
    U32 mSkipMouseEvents;
    
    bool mFullscreen;
@@ -157,11 +164,14 @@ private:
    static void window_focus_callback(GLFWwindow* window, int focus);
    static void window_iconify_callback(GLFWwindow* window, int iconified);
    static void window_scroll_callback(GLFWwindow* window, double xoffset, double yoffset );
+   static void window_resize_callback(GLFWwindow* window, int width, int height);
+   static void framebuffer_resize_callback(GLFWwindow* window, int width, int height);
 
 public:
     ButtonEvent       mouseButtonEvent;
     MouseEvent        mouseEvent;
     MouseWheelEvent   mouseWheelEvent;
+    FramebufferResizeEvent framebufferResizeEvent;
 };
 
 #endif

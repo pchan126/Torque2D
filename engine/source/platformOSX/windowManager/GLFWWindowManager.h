@@ -3,26 +3,26 @@
 // Copyright GarageGames, LLC 2011
 //-----------------------------------------------------------------------------
 
-#ifndef _MACWINDOWMANAGER_H_
-#define _MACWINDOWMANAGER_H_
+#ifndef _GLFWWindowMANAGER_H_
+#define _GLFWWindowMANAGER_H_
 
 #import "windowManager/platformWindowMgr.h"
 #import "platform/platformGL.h"
 #import "collection/vector.h"
 
-class MacWindow;
+class GLFWWindow;
 
-class MacWindowManager : public PlatformWindowManager
+class GLFWWindowManager : public PlatformWindowManager
 {
 private:
-   typedef VectorPtr<MacWindow*> WindowList;
+   typedef VectorPtr<GLFWWindow*> WindowList;
    WindowList mWindowList;
    U32 mFadeToken;
    Delegate<bool(void)> mNotifyShutdownDelegate;
    
 public:
-   MacWindowManager();
-   ~MacWindowManager();
+   GLFWWindowManager();
+   ~GLFWWindowManager();
 
    virtual void setParentWindow(void* newParent) {
    }
@@ -49,7 +49,7 @@ public:
    /// @return The window associated with the specified ID, or NULL if no
    ///         match was found.
    virtual PlatformWindow *getWindowById(WindowId id);
-   MacWindow      *getWindowByGLFW(GLFWwindow* window);
+   GLFWWindow      *getWindowByGLFW(GLFWwindow* window);
 
    virtual PlatformWindow *getFirstWindow();
    virtual PlatformWindow* getFocusedWindow();
@@ -64,14 +64,14 @@ public:
    
    /// @}
    
-   static MacWindowManager* get() { return (MacWindowManager*)PlatformWindowManager::get(); }
-   void _addWindow(MacWindow* window);
-   void _removeWindow(MacWindow* window);
+   static GLFWWindowManager* get() { return (GLFWWindowManager*)PlatformWindowManager::get(); }
+   void _addWindow(GLFWWindow* window);
+   void _removeWindow(GLFWWindow* window);
    
    void _onAppSignal(WindowId wnd, S32 event);
    
    bool onShutdown();
-   bool canWindowGainFocus(MacWindow* window);
+   bool canWindowGainFocus(GLFWWindow* window);
    
    virtual PlatformWindow* assignCanvas(GFXDevice* device, const GFXVideoMode &mode ,GuiCanvas* canvas);
    

@@ -3,42 +3,41 @@
 // Copyright GarageGames, LLC 2011
 //-----------------------------------------------------------------------------
 
-#import <Cocoa/Cocoa.h>
-#import "./macWindow.h"
-#import "./macCursorController.h"
+#include "./GLFWWindow.h"
+#include "./GLFWCursorController.h"
 
-void MacCursorController::setCursorPosition(S32 x, S32 y)
+void GLFWCursorController::setCursorPosition(S32 x, S32 y)
 {
-   MacWindow* macWindow = static_cast<MacWindow*>(mOwner);
-   macWindow->setCursorPosition(Point2D(x, y));
+   GLFWWindow* glfwWindow = static_cast<GLFWWindow*>(mOwner);
+   glfwWindow->setCursorPosition(Point2D(x, y));
 }
 
-void MacCursorController::getCursorPosition( Point2I &point )
+void GLFWCursorController::getCursorPosition( Point2I &point )
 {
-   MacWindow* macWindow = static_cast<MacWindow*>(mOwner);
-   macWindow->getCursorPosition(point);
+   GLFWWindow* glfwWindow = static_cast<GLFWWindow*>(mOwner);
+   glfwWindow->getCursorPosition(point);
 }
 
 ////------------------------------------------------------------------------------
 //// Not yet implemented. Will resolve in the next platform update
-//void MacCursorController::pushCursor(S32 cursorID)
+//void GLFWCursorController::pushCursor(S32 cursorID)
 //{
 //}
 //
 ////------------------------------------------------------------------------------
 //// Not yet implemented. Will resolve in the next platform update
-//void MacCursorController::popCursor()
+//void GLFWCursorController::popCursor()
 //{
 //}
 //
 ////-----------------------------------------------------------------------------
 //// Not yet implemented. Will resolve in the next platform update
-//void MacCursorController::refreshCursor()
+//void GLFWCursorController::refreshCursor()
 //{
 //}
 
 //------------------------------------------------------------------------------
-U32 MacCursorController::getDoubleClickTime()
+U32 GLFWCursorController::getDoubleClickTime()
 {
     // Get system specified double click time
     NSTimeInterval doubleInterval = [NSEvent doubleClickInterval];
@@ -47,14 +46,14 @@ U32 MacCursorController::getDoubleClickTime()
 }
 
 //------------------------------------------------------------------------------
-S32 MacCursorController::getDoubleClickWidth()
+S32 GLFWCursorController::getDoubleClickWidth()
 {
     // this is an arbitrary value.
     return 10;
 }
 
 //------------------------------------------------------------------------------
-S32 MacCursorController::getDoubleClickHeight()
+S32 GLFWCursorController::getDoubleClickHeight()
 {
     return getDoubleClickWidth();
 }

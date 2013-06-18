@@ -23,8 +23,8 @@
 #import "platform/platformInput.h"
 #import "platformOSX/osxInputManager.h"
 #import "platform/event.h"
-#include "platformOSX/windowManager/macWindowManager.h"
-#include "platformOSX/windowManager/macWindow.h"
+#include "platformOSX/windowManager/GLFWWindowManager.h"
+#include "platformOSX/windowManager/GLFWWindow.h"
 
 #pragma mark ---- Static Variables ----
 //InputManager *Input::smManager = 0;
@@ -255,9 +255,9 @@ U16 Input::getAscii(U16 keyCode, KEY_STATE keyState)
 // Not yet implemented. Will resolve in the next platform update
 const char *Platform::getClipboard()
 {
-   MacWindow* macWindow = dynamic_cast<MacWindow*>(WindowManager->getFirstWindow());
-   if (macWindow != NULL)
-      return macWindow->getClipboardString();
+   GLFWWindow* glfwWindow = dynamic_cast<GLFWWindow*>(WindowManager->getFirstWindow());
+   if (glfwWindow != NULL)
+      return glfwWindow->getClipboardString();
    else
       return NULL;
 }
@@ -266,10 +266,10 @@ const char *Platform::getClipboard()
 // Not yet implemented. Will resolve in the next platform update
 bool Platform::setClipboard(const char *text)
 {
-   MacWindow* macWindow = dynamic_cast<MacWindow*>(WindowManager->getFirstWindow());
-   if (macWindow != NULL)
+   GLFWWindow* glfwWindow = dynamic_cast<GLFWWindow*>(WindowManager->getFirstWindow());
+   if (glfwWindow != NULL)
    {
-      macWindow->setClipboardString(text);
+      glfwWindow->setClipboardString(text);
       return true;
    }
 

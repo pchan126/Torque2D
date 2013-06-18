@@ -7,7 +7,7 @@
 #define _GFXOpenGL32WindowTarget_H_
 
 #include "graphics/gfxTarget.h"
-#include "platformOSX/windowManager/macWindow.h"
+#include "platformOSX/windowManager/GLFWWindow.h"
 #include "memory/autoPtr.h"
 
 @class NSOpenGLContext;
@@ -47,7 +47,7 @@ private:
 
    Point2I size;
    GFXDevice* mDevice;
-   MacWindow* mWindow;
+   GLFWWindow* mWindow;
    void _teardownCurrentMode();
    void _setupNewMode();
 };
