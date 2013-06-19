@@ -26,6 +26,9 @@
 #import <UIKit/UIKit.h>
 #import <GLKit/GLKit.h>
 
+#include "lighting/lightInfo.h"
+#include "lighting/lightManager.h"
+
 GFXAdapter::CreateDeviceInstanceDelegate GFXOpenGLES20iOSDevice::mCreateDeviceInstance(GFXOpenGLES20iOSDevice::createInstance);
 
 GFXDevice *GFXOpenGLES20iOSDevice::createInstance( U32 adapterIndex )
@@ -254,7 +257,9 @@ void GFXOpenGLES20iOSDevice::setLightInternal(U32 lightStage, const GFXLightInfo
          mBaseEffect.light0.ambientColor = light.ambient.mGV;
          mBaseEffect.light0.diffuseColor = light.diffuse.mGV;
          mBaseEffect.light0.position = pos.mGV;
-         mBaseEffect.light0.linearAttenuation = 0.1;
+         mBaseEffect.light0.constantAttenuation = light.constantAttenuation;
+         mBaseEffect.light0.linearAttenuation = light.linearAttenuation;
+         mBaseEffect.light0.quadraticAttenuation = light.quadraticAttenuation;
          break;
          
       case 1:
@@ -263,7 +268,9 @@ void GFXOpenGLES20iOSDevice::setLightInternal(U32 lightStage, const GFXLightInfo
          mBaseEffect.light1.ambientColor = light.ambient.mGV;
          mBaseEffect.light1.diffuseColor = light.diffuse.mGV;
          mBaseEffect.light1.position = pos.mGV;
-         mBaseEffect.light1.linearAttenuation = 0.1;
+         mBaseEffect.light1.constantAttenuation = light.constantAttenuation;
+         mBaseEffect.light1.linearAttenuation = light.linearAttenuation;
+         mBaseEffect.light1.quadraticAttenuation = light.quadraticAttenuation;
          
       case 2:
          mBaseEffect.light2.enabled = lightEnable;
@@ -271,7 +278,9 @@ void GFXOpenGLES20iOSDevice::setLightInternal(U32 lightStage, const GFXLightInfo
          mBaseEffect.light2.ambientColor = light.ambient.mGV;
          mBaseEffect.light2.diffuseColor = light.diffuse.mGV;
          mBaseEffect.light2.position = pos.mGV;
-         mBaseEffect.light2.linearAttenuation = 0.1;
+         mBaseEffect.light2.constantAttenuation = light.constantAttenuation;
+         mBaseEffect.light2.linearAttenuation = light.linearAttenuation;
+         mBaseEffect.light2.quadraticAttenuation = light.quadraticAttenuation;
          
       default:
          Con::printf("GFXOpenGLES20iOSDevice::setLightInternal - Only 3 lights");
@@ -384,7 +393,12 @@ void GFXOpenGLES20iOSDevice::initGenericShaders()
 
 void GFXOpenGLES20iOSDevice::setupGenericShaders( GenericShaderType type )
 {
-    MatrixF xform(GFX->getWorldMatrix());
+   LightInfo* light[3];
+   LightQuery query;
+   GFXLightInfo outLight;
+//   void LightInfo::setGFXLight( GFXLightInfo *outLight )
+
+   MatrixF xform(GFX->getWorldMatrix());
     xform *= GFX->getViewMatrix();
     MatrixF projMatrix = GFX->getProjectionMatrix();
     
@@ -414,7 +428,40 @@ void GFXOpenGLES20iOSDevice::setupGenericShaders( GenericShaderType type )
             mBaseEffect.texture2d0.enabled = GL_TRUE;
             mBaseEffect.texture2d1.enabled = GL_FALSE;
             break;
-            
+       case GSBatchTexture:
+       {
+          mBaseEffect.texture2d0.enabled = GL_TRUE;
+          mBaseEffect.texture2d1.enabled = GL_FALSE;
+          // vertex lighting
+
+          query.init( SphereF( GFX->getViewMatrix().getPosition(), 500.0) );
+          U32 lightcount = query.getLights( light, 3 );
+          for (U32 i = 0; i < 3; i ++)
+          {
+             if (i < lightcount)
+             {
+                light[i]->setGFXLight(&outLight);
+                setLightInternal(i, outLight, true);
+             }
+             else
+             {
+                setLightInternal(i, outLight, false);
+             }
+//             F32 len = (light->getPosition());
+//             F32 rad = light->getRange().x;
+//             F32 factor = 1.0-mClampF( (len-rad)/rad, 0.0, 1.0 );
+//             if (factor > 0.0)
+//             {
+//                U8 alpha = mVertexBuffer[i].color;
+//                ColorF lightColor = light[0].getColor()*factor;
+//                ColorF lightAdd = ColorF(mVertexBuffer[i].color) + lightColor;
+//                lightAdd.clamp();
+//                mVertexBuffer[i].color = lightAdd;
+//                mVertexBuffer[i].color.alpha = alpha;
+//             }
+          }
+          break;
+       }
         default:
             break;
     }

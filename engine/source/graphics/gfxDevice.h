@@ -843,6 +843,7 @@ public:
       GSModColorTexture,
       GSAddColorTexture,
       GSAlphaTexture,
+      GSBatchTexture,
       GSTargetRestore,
       GSPoint,
       GSVideo,

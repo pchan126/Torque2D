@@ -529,36 +529,35 @@ void BatchRender::_lightAndDraw( Vector<GFXVertexPCT>* pVertexVector, Vector<U16
    if (!handle.IsNull())
       GFX->setTexture(0, handle);
    
-   // vertex lighting
-   for (int i = 0; i < mVertexBuffer.size(); i++)
-   {
-      LightInfo* light = NULL;
-      LightQuery query;
-      query.init( SphereF( pVertexVector->at(i).point, 500.0) );
-      query.getLights( &light, 1 );
-      if (light != NULL)
-      {
-         F32 len = (light->getPosition()-pVertexVector->at(i).point).len();
-         F32 rad = light->getRange().x;
-         F32 factor = 1.0-mClampF( (len-rad)/rad, 0.0, 1.0 );
-         if (factor > 0.0)
-         {
-            U8 alpha = mVertexBuffer[i].color;
-            ColorF lightColor = light[0].getColor()*factor;
-//            Con::printf("lightcolor %f %f %f", lightColor.red, lightColor.green, lightColor.blue);
-            ColorF lightAdd = ColorF(mVertexBuffer[i].color) + lightColor;
-            lightAdd.clamp();
-            mVertexBuffer[i].color = lightAdd;
-            mVertexBuffer[i].color.alpha = alpha;
-         }
-      }
-   }
+//   // vertex lighting
+//   for (int i = 0; i < mVertexBuffer.size(); i++)
+//   {
+//      LightInfo* light = NULL;
+//      LightQuery query;
+//      query.init( SphereF( pVertexVector->at(i).point, 500.0) );
+//      query.getLights( &light, 1 );
+//      if (light != NULL)
+//      {
+//         F32 len = (light->getPosition()-pVertexVector->at(i).point).len();
+//         F32 rad = light->getRange().x;
+//         F32 factor = 1.0-mClampF( (len-rad)/rad, 0.0, 1.0 );
+//         if (factor > 0.0)
+//         {
+//            U8 alpha = mVertexBuffer[i].color;
+//            ColorF lightColor = light[0].getColor()*factor;
+//            ColorF lightAdd = ColorF(mVertexBuffer[i].color) + lightColor;
+//            lightAdd.clamp();
+//            mVertexBuffer[i].color = lightAdd;
+//            mVertexBuffer[i].color.alpha = alpha;
+//         }
+//      }
+//   }
    
    mTempVertBuffHandle.set(GFX, pVertexVector->size(), GFXBufferTypeVolatile, pVertexVector->address(), pIndex->size(), pIndex->address() );
    GFX->setVertexBuffer( mTempVertBuffHandle );
    
    // Draw the triangles.
-   GFX->setupGenericShaders(GFXDevice::GSTexture);
+   GFX->setupGenericShaders(GFXDevice::GSBatchTexture);
    GFX->drawIndexedPrimitive(GFXTriangleStrip, 0, 0, pVertexVector->size(), pIndex->size(), pIndex->size()-2);
 }
 
