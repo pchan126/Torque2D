@@ -78,6 +78,8 @@ void Sprite::initPersistFields()
     /// Render flipping.
     addField("FlipX", TypeBool, Offset(mFlipX, Sprite), &writeFlipX, "");
     addField("FlipY", TypeBool, Offset(mFlipY, Sprite), &writeFlipY, "");
+    addField( "MeshRows", TypeS32, Offset(mRows, Sprite), &writeRows, "" );
+    addField( "MeshColumns", TypeS32, Offset(mColumns, Sprite), &writeColumns, "" );
 }
 
 //------------------------------------------------------------------------------

@@ -238,3 +238,38 @@ ConsoleMethod(Scroller, setScrollPosition, void, 3, 4, "(positionX / positionY) 
    object->setScrollPosition(scrollX, scrollY);
 }
 
+//-----------------------------------------------------------------------------
+
+ConsoleMethod(Scroller, setRows, void, 3, 3,     "(int rows) Sets the number of rows in the sprite mesh.\n"
+              "@param rows The number of rows in the mesh."
+              "@return No return value.")
+{
+   // Set Flip.
+   object->setRows( dAtoi(argv[2]) );
+}
+
+//-----------------------------------------------------------------------------
+
+ConsoleMethod(Scroller, setColumns, void, 3, 3,     "(int columns) Sets the number of columns to render.\n"
+              "@param columns The number of columns in the mesh."
+              "@return No return value.")
+{
+   // Set Flip.
+   object->setColumns( dAtoi(argv[2]) );
+}
+
+//-----------------------------------------------------------------------------
+
+ConsoleMethod(Scroller, getRows, S32, 2, 2,     "() Gets the number of rows in the rendering mesh.\n"
+              "@return (int rows) the number of rows that are rendered.")
+{
+   return object->getRows();
+}
+
+//-----------------------------------------------------------------------------
+
+ConsoleMethod(Scroller, getColumns, S32, 2, 2,     "() Gets the number columns in the rendering mesh."
+              "@return (int columns) the number of columns that are rendered.")
+{
+   return object->getColumns();
+}

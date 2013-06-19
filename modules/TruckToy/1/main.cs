@@ -202,8 +202,8 @@ function TruckToy::createBackground(%this)
     %obj.setCollisionSuppress();
     %obj.setAwake( false );
     %obj.setActive( false );
-//     %obj.setRows(10);
-//    %obj.setColumns(10);
+    %obj.setRows(3);
+    %obj.setColumns(3);
     SandboxScene.add( %obj );
 
 
@@ -219,7 +219,9 @@ function TruckToy::createBackground(%this)
     %obj.setCollisionSuppress();
     %obj.setAwake( false );
     %obj.setActive( false );
-    SandboxScene.add( %obj );    
+    %obj.setRows(3);
+    %obj.setColumns(3);
+    SandboxScene.add( %obj );
 }
 
 // -----------------------------------------------------------------------------

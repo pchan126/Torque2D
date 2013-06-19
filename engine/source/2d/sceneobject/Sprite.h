@@ -69,8 +69,11 @@ public:
 protected:
     static bool writeFlipX( void* obj, StringTableEntry pFieldName )        { return static_cast<Sprite*>(obj)->getFlipX() == true; }
     static bool writeFlipY( void* obj, StringTableEntry pFieldName )        { return static_cast<Sprite*>(obj)->getFlipY() == true; }
-    static U32 writeRows( void* obj, StringTableEntry pFieldName )        { return static_cast<Sprite*>(obj)->getRows(); }
-    static U32 writeColumns( void* obj, StringTableEntry pFieldName )        { return static_cast<Sprite*>(obj)->getColumns(); }
+
+   static bool setRows(void* obj, const char* data) { static_cast<Sprite*>(obj)->setRows( dAtoi(data) ); return false; }
+   static bool writeRows( void* obj, StringTableEntry pFieldName ) { return static_cast<Sprite*>(obj)->getRows() > 0; }
+   static bool setColumns(void* obj, const char* data) { static_cast<Sprite*>(obj)->setColumns( dAtoi(data) ); return false; }
+   static bool writeColumns( void* obj, StringTableEntry pFieldName ) { return static_cast<Sprite*>(obj)->getColumns() > 0; }
 };
 
 #endif // _SPRITE_H_

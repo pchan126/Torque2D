@@ -51,6 +51,8 @@ private:
     Vector2               mRenderTickTextureOffset;
     
     Vector<GFXVertexPCT> mVertexBuffer;
+   U32   mRows;
+   U32   mColumns;
 
 public:
     Scroller();
@@ -90,7 +92,12 @@ public:
 
     virtual void copyTo(SimObject* object);
 
-    /// Declare Console Object.
+   void setRows( const U32 rows )                       { mRows = mClamp(rows, 1, 10); }
+   void setColumns( const U32 columns )                 { mColumns = mClamp(columns, (U32)1, 10); }
+   inline U32 getRows( void ) const                     { return mRows; }
+   inline U32 getColumns( void ) const                  { return mColumns; }
+
+   /// Declare Console Object.
     DECLARE_CONOBJECT(Scroller);
 
 protected:
@@ -102,6 +109,8 @@ protected:
     static bool writeScrollY( void* obj, StringTableEntry pFieldName ) { return mNotZero(static_cast<Scroller*>(obj)->mScrollY); }
     static bool writeScrollPositionX( void* obj, StringTableEntry pFieldName ) { return mNotZero(static_cast<Scroller*>(obj)->mTextureOffsetX); }
     static bool writeScrollPositionY( void* obj, StringTableEntry pFieldName ) { return mNotZero(static_cast<Scroller*>(obj)->mTextureOffsetY); }
+   static bool writeRows( void* obj, StringTableEntry pFieldName ) { return static_cast<Scroller*>(obj)->getRows() > 0; }
+   static bool writeColumns( void* obj, StringTableEntry pFieldName ) { return static_cast<Scroller*>(obj)->getColumns() > 0; }
 };
 
 #endif // _SCROLLER_H_
