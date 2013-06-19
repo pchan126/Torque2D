@@ -58,7 +58,7 @@ void LightQuery::init( const Box3F &bounds )
    mLights.clear();
 }
 
-void LightQuery::getLights( LightInfo** outLights, U32 maxLights )
+U32 LightQuery::getLights( LightInfo** outLights, U32 maxLights )
 {
    PROFILE_SCOPE( LightQuery_getLights );
 
@@ -80,6 +80,7 @@ void LightQuery::getLights( LightInfo** outLights, U32 maxLights )
 
       outLights[i] = light;
    }
+   return lightCount;
 }
 
 void LightQuery::_scoreLights()

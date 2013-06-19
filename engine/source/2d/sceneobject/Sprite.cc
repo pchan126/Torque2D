@@ -32,6 +32,7 @@
 
 // Script bindings.
 #include "Sprite_ScriptBinding.h"
+#include "Layer.h"
 
 //------------------------------------------------------------------------------
 
@@ -103,7 +104,7 @@ void Sprite::sceneRender( const SceneRenderState* pSceneRenderState, const Scene
         mRenderOOBB[2],
         mRenderOOBB[3],
         pBatchRenderer,
-        getBlendColor()*getScene()->getSceneLight()
+        getBlendColor()*getSceneLayerObj()->getLight()
    , mRows, mColumns);
 }
 

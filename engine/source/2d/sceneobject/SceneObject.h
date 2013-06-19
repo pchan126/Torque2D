@@ -308,6 +308,7 @@ public:
     /// Scene.
     inline Scene* const     getScene( void ) const                      { return mpScene; }
     inline F32              getSceneTime( void ) const                  { if ( mpScene ) return mpScene->getSceneTime(); else return 0.0f; }
+   
 
     /// Enabled.
     virtual void            setEnabled( const bool enabled );
@@ -321,7 +322,9 @@ public:
     void                    setSceneLayer( const U32 sceneLayer );
     inline U32              getSceneLayer(void) const                   { return mSceneLayer; }
 
-    /// Scene Layer depth.
+    inline Layer* const     getSceneLayerObj( void ) const              { return mpScene->getLayer( getSceneLayer() ); }
+
+   /// Scene Layer depth.
     inline void             setSceneLayerDepth( const F32 order )       { mSceneLayerDepth = order; };
     inline F32              getSceneLayerDepth( void ) const            { return mSceneLayerDepth; }
     bool                    setSceneLayerDepthFront( void );

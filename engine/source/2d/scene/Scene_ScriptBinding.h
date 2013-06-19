@@ -96,6 +96,48 @@ ConsoleMethod(Scene, setAmbientLight, void, 5, 6, "(float red, float green, floa
     object->setSceneLight(ColorF(red, green, blue, alpha));
 }
 
+//-----------------------------------------------------------------------------
+
+ConsoleMethod(Scene, setLayerLight, void, 6, 7, "int layer, (float red, float green, float blue, [float alpha = 1.0]) or ( stockColorName ) - Sets the sprite blend color."
+              "@param layer The layer to set an ambient Light for.\n"
+              "@param red The red value.\n"
+              "@param green The green value.\n"
+              "@param blue The blue value.\n"
+              "@param alpha The alpha value.\n"
+              "@return No return Value.")
+{
+   // The Layer.
+   S32 layer;
+   // The colors.
+   F32 red;
+   F32 green;
+   F32 blue;
+   F32 alpha = 1.0f;
+   
+   layer = dAtoi(argv[2]);
+   
+   // (R, G, B)
+   if (argc >= 6)
+   {
+      red   = dAtof(argv[3]);
+      green = dAtof(argv[4]);
+      blue  = dAtof(argv[5]);
+      
+      // Grab the alpha if it's there.
+      if (argc > 6)
+         alpha = dAtof(argv[6]);
+   }
+   
+   // Invalid.
+   else
+   {
+      Con::warnf("Scene::setAmbientLight() - Invalid Number of parameters!");
+      return;
+   }
+   
+   // Set blend color.
+   object->setLayerLight(layer, ColorF(red, green, blue, alpha));
+}
 
 //-----------------------------------------------------------------------------
 

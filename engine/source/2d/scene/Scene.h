@@ -237,7 +237,7 @@ private:
     /// Scene controllers.
     SimObjectPtr<SimSet>	    mControllers;
 
-    VectorPtr<Layer*>              mLayers;
+    VectorPtr<Layer*>           mLayers;
    
     /// Asset pre-loads.
     typeAssetPtrVector          mAssetPreloads;
@@ -386,7 +386,10 @@ public:
     /// Scene Lighting
     inline ColorF           getSceneLight( void ) const                 { return mSceneLighting; };
     inline void             setSceneLight( ColorF sceneLight )          { mSceneLighting = sceneLight; };
-    
+   
+   inline Layer* const     getLayer( U32 layer ) const              { return (mLayers.size() > layer) ? mLayers[layer] : NULL; };
+   void                    setLayerLight( U32 layer, ColorF light);
+   
     /// Joint access.
     inline U32              getJointCount( void ) const                 { return mJoints.size(); }
     b2JointType             getJointType( const S32 jointId );

@@ -41,15 +41,19 @@ private:
    SceneRenderQueue::RenderSort mSortMode;
    
    Point3F mCameraTranslationScale;
+   ColorF mLight;
    
 public:
-   Layer(): mSortMode(SceneRenderQueue::RENDER_SORT_NEWEST) {};
+   Layer(): mSortMode(SceneRenderQueue::RENDER_SORT_NEWEST), mLight(1.0f, 1.0f, 1.0f, 1.0f) {};
    ~Layer();
    
    /// Add an object to the group.
-   virtual void addObject(SceneObject*);
-   void addObject(SceneObject*, SimObjectId);
-   void addObject(SceneObject*, const char *name);
+   inline virtual void addObject(SceneObject* obj) { Parent::addObject( obj ); };
+   void addObject(SceneObject* obj, SimObjectId id);
+   void addObject(SceneObject* obj, const char *name);
+   
+   inline ColorF getLight( void) { return mLight; };
+   inline void setLight( ColorF light) { mLight = light; };
    
 //   /// Remove an object from the group.
 //   virtual void removeObject(SceneObject*);
@@ -66,11 +70,6 @@ public:
    
    DECLARE_CONOBJECT(Layer);
 };
-
-inline void Layer::addObject(SceneObject* obj)
-{
-   Parent::addObject( obj );
-}
 
 inline void Layer::addObject(SceneObject* obj, SimObjectId id)
 {

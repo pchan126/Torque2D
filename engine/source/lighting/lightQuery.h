@@ -60,7 +60,7 @@ public:
    void init( const Box3F &bounds );
 
    /// This returns the best lights based on the query volume.
-   void getLights( LightInfo** outLights, U32 maxLights );
+   U32 getLights( LightInfo** outLights, U32 maxLights );
 
 protected:
 

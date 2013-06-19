@@ -1351,12 +1351,10 @@ void Scene::addToScene( SceneObject* pSceneObject )
     while (mLayers.size() <= objLayer )
     {
        Layer* temp = new Layer;
+       temp->setLight(getSceneLight());
        mLayers.push_back(temp);
-//       mLayers.setSize(pSceneObject->getSceneLayer()+1);
-//       
     }
    
-   U32 l = mLayers.size();
    Layer* temp = mLayers[pSceneObject->getSceneLayer()];
    temp->addObject(pSceneObject);
    
@@ -3574,6 +3572,13 @@ void Scene::setDebugSceneObject( SceneObject* pSceneObject )
     // Add delete notification for new monitored object.
     deleteNotify( pSceneObject );
 }
+
+void Scene::setLayerLight(U32 layer, ColorF light)
+{
+   if (mLayers.size() > layer)
+      mLayers[layer]->setLight(light);
+};
+
 
 //-----------------------------------------------------------------------------
 

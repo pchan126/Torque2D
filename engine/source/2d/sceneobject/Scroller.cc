@@ -40,6 +40,7 @@
 
 // Script bindings.
 #include "Scroller_ScriptBinding.h"
+#include "Layer.h"
 
 //------------------------------------------------------------------------------
 
@@ -344,7 +345,7 @@ void Scroller::sceneRender( const SceneRenderState* pSceneRenderState, const Sce
                                        Vector2( qtX2, qtY1 ),
                                        Vector2( qtX2, qtY2 ),
                                        Vector2( qtX1, qtY2 ),
-                                       texture, mBlendColor*getScene()->getSceneLight() );
+                                       texture, mBlendColor*getSceneLayerObj()->getLight() );
              }
           }
             baseX = nextX;
