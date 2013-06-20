@@ -18,6 +18,7 @@ class GFXOpenGLES20iOSTextureTarget;
 class GFXOpenGLES20iOSCubemap;
 
 @class EAGLContext, GLKTextureLoader, GLKBaseEffect, CIImage;
+@protocol GLKNamedEffect;
 
 class GFXOpenGLES20iOSDevice : public GFXOpenGLES20Device
 {
@@ -156,6 +157,7 @@ private:
     CIContext* mCIContext;
     GLKTextureLoader* mTextureLoader; // GLKTextureLoader
     GLKBaseEffect* mBaseEffect;
+   id <GLKNamedEffect> currentEffect;
 
    U32 mMaxShaderTextures;
 
