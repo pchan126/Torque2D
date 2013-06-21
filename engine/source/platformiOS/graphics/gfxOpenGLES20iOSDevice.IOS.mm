@@ -237,6 +237,19 @@ void GFXOpenGLES20iOSDevice::setLightInternal(U32 lightStage, const GFXLightInfo
       AssertFatal(false, "Instead of setting an ambient light you should set the global ambient color.");
       return;
    }
+   
+   if (lightEnable == false)
+   {
+      switch (lightStage) {
+         case 0:
+            mBaseEffect.light0.enabled = lightEnable;
+         case 1:
+            mBaseEffect.light1.enabled = lightEnable;
+         case 2:
+            mBaseEffect.light2.enabled = lightEnable;
+      }
+      return;
+   }
 
    Vector4F pos;
    if(light.mType != GFXLightInfo::Vector)
@@ -254,34 +267,34 @@ void GFXOpenGLES20iOSDevice::setLightInternal(U32 lightStage, const GFXLightInfo
       case 0:
          mBaseEffect.light0.enabled = lightEnable;
          mBaseEffect.light0.specularColor = light.specular.mGV;
-         mBaseEffect.light0.ambientColor = light.ambient.mGV;
+//         mBaseEffect.light0.ambientColor = light.ambient.mGV;
          mBaseEffect.light0.diffuseColor = light.diffuse.mGV;
          mBaseEffect.light0.position = pos.mGV;
-         mBaseEffect.light0.constantAttenuation = light.constantAttenuation;
-         mBaseEffect.light0.linearAttenuation = light.linearAttenuation;
-         mBaseEffect.light0.quadraticAttenuation = light.quadraticAttenuation;
+         mBaseEffect.light0.constantAttenuation = 1.0;
+         mBaseEffect.light0.linearAttenuation = 0.0;
+         mBaseEffect.light0.quadraticAttenuation = 0.0;
          break;
          
       case 1:
          mBaseEffect.light1.enabled = lightEnable;
          mBaseEffect.light1.specularColor = light.specular.mGV;
-         mBaseEffect.light1.ambientColor = light.ambient.mGV;
+//         mBaseEffect.light1.ambientColor = light.ambient.mGV;
          mBaseEffect.light1.diffuseColor = light.diffuse.mGV;
          mBaseEffect.light1.position = pos.mGV;
-         mBaseEffect.light1.constantAttenuation = light.constantAttenuation;
-         mBaseEffect.light1.linearAttenuation = light.linearAttenuation;
-         mBaseEffect.light1.quadraticAttenuation = light.quadraticAttenuation;
-         
+         mBaseEffect.light1.constantAttenuation = 0.9;
+         mBaseEffect.light1.linearAttenuation = 0.1;
+         mBaseEffect.light1.quadraticAttenuation = 0.0;
+         break;
       case 2:
          mBaseEffect.light2.enabled = lightEnable;
          mBaseEffect.light2.specularColor = light.specular.mGV;
-         mBaseEffect.light2.ambientColor = light.ambient.mGV;
+//         mBaseEffect.light2.ambientColor = light.ambient.mGV;
          mBaseEffect.light2.diffuseColor = light.diffuse.mGV;
          mBaseEffect.light2.position = pos.mGV;
-         mBaseEffect.light2.constantAttenuation = light.constantAttenuation;
-         mBaseEffect.light2.linearAttenuation = light.linearAttenuation;
-         mBaseEffect.light2.quadraticAttenuation = light.quadraticAttenuation;
-         
+         mBaseEffect.light2.constantAttenuation = 0.9;
+         mBaseEffect.light2.linearAttenuation = 0.1;
+         mBaseEffect.light2.quadraticAttenuation = 0.0;
+         break;
       default:
          Con::printf("GFXOpenGLES20iOSDevice::setLightInternal - Only 3 lights");
          break;
@@ -393,10 +406,9 @@ void GFXOpenGLES20iOSDevice::initGenericShaders()
 
 void GFXOpenGLES20iOSDevice::setupGenericShaders( GenericShaderType type )
 {
-   LightInfo* light[3];
+	Vector<LightInfo*> mLights;
    LightQuery query;
    GFXLightInfo outLight;
-//   void LightInfo::setGFXLight( GFXLightInfo *outLight )
 
    MatrixF xform(GFX->getWorldMatrix());
     xform *= GFX->getViewMatrix();
@@ -411,22 +423,30 @@ void GFXOpenGLES20iOSDevice::setupGenericShaders( GenericShaderType type )
         case GSColor:
             mBaseEffect.texture2d0.enabled = GL_FALSE;
             mBaseEffect.texture2d1.enabled = GL_FALSE;
+            currentEffect = mBaseEffect;
             break;
         case GSTexture:
         case GSModColorTexture:
         case GSAddColorTexture:
             mBaseEffect.texture2d0.enabled = GL_TRUE;
             mBaseEffect.texture2d1.enabled = GL_FALSE;
+          for (U32 i = 0; i < 1; i++)
+          {
+             setLightInternal(i, outLight, false);
+          }
+          currentEffect = mBaseEffect;
             break;
         case GSPoint:
             mBaseEffect.texture2d0.enabled = GL_TRUE;
             mBaseEffect.texture2d1.enabled = GL_FALSE;
+          currentEffect = mBaseEffect;
             break;
         case GSTest:
             break;
         case GSAlphaTexture:
             mBaseEffect.texture2d0.enabled = GL_TRUE;
             mBaseEffect.texture2d1.enabled = GL_FALSE;
+            currentEffect = mBaseEffect;
             break;
        case GSBatchTexture:
        {
@@ -434,19 +454,25 @@ void GFXOpenGLES20iOSDevice::setupGenericShaders( GenericShaderType type )
           mBaseEffect.texture2d1.enabled = GL_FALSE;
           // vertex lighting
 
-          query.init( SphereF( GFX->getViewMatrix().getPosition(), 500.0) );
-          U32 lightcount = query.getLights( light, 3 );
-          for (U32 i = 0; i < 3; i ++)
-          {
-             if (i < lightcount)
-             {
-                light[i]->setGFXLight(&outLight);
-                setLightInternal(i, outLight, true);
-             }
-             else
-             {
-                setLightInternal(i, outLight, false);
-             }
+//          query.init( SphereF( GFX->getViewMatrix().getPosition(), 5000000.0) );
+//          U32 lightcount = query.getLights( light, 3 );
+//          Point3F cameraPos = GFX->getViewMatrix().getPosition();
+//          
+//          mBaseEffect.lightModelTwoSided = GL_TRUE;
+//          mBaseEffect.material.ambientColor = GLKVector4Make(1.0, 1.0, 1.0, 1.0);
+//          mBaseEffect.material.diffuseColor = GLKVector4Make(1.0, 1.0, 1.0, 1.0);
+//          LIGHTMGR->getSortedLightsByDistance( &mLights, GFX->getViewMatrix().getPosition() );
+//          for (U32 i = 0; i < 1; i++)
+//          {
+//             if (i < mLights.size())
+//             {
+//                mLights[i]->setGFXLight(&outLight);
+//                setLightInternal(i, outLight, true);
+//             }
+//             else
+//             {
+//                setLightInternal(i, outLight, false);
+//             }
 //             F32 len = (light->getPosition());
 //             F32 rad = light->getRange().x;
 //             F32 factor = 1.0-mClampF( (len-rad)/rad, 0.0, 1.0 );
@@ -459,7 +485,8 @@ void GFXOpenGLES20iOSDevice::setupGenericShaders( GenericShaderType type )
 //                mVertexBuffer[i].color = lightAdd;
 //                mVertexBuffer[i].color.alpha = alpha;
 //             }
-          }
+             currentEffect = mBaseEffect;
+//          }
           break;
        }
         default:
@@ -565,10 +592,8 @@ void GFXOpenGLES20iOSDevice::preDrawPrimitive()
         updateStates();
     }
     
-//    if(mCurrentShaderConstBuffer)
-//        setShaderConstBufferInternal(mCurrentShaderConstBuffer);
-    
-    [mBaseEffect prepareToDraw];
+    [currentEffect prepareToDraw];
+
 }
 
 
@@ -581,6 +606,8 @@ void GFXOpenGLES20iOSDevice::drawImage( CIImage* image, CGRect inRect, CGRect fr
     }
     
     [mCIContext drawImage:image inRect:inRect fromRect:fromRect];
+   mBaseEffect.lightModelTwoSided = GL_FALSE;
+
 }
 
 

@@ -69,7 +69,8 @@ U32 LightQuery::getLights( LightInfo** outLights, U32 maxLights )
    U32 lightCount = getMin( (U32)mLights.size(), getMin( mMaxLights, maxLights ) );
 
    // Copy them over.
-   for ( U32 i = 0; i < lightCount; i++ )
+   U32 i = 0;
+   while (  i < lightCount )
    {
       LightInfo *light = mLights[i];
 
@@ -79,8 +80,9 @@ U32 LightQuery::getLights( LightInfo** outLights, U32 maxLights )
          break;
 
       outLights[i] = light;
-   }
-   return lightCount;
+      i++;
+   };
+   return i;
 }
 
 void LightQuery::_scoreLights()

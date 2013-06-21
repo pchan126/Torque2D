@@ -81,7 +81,7 @@ function TruckToy::reset( %this )
     // Set a typical Earth gravity.
     SandboxScene.setGravity( 0, -9.8 );  
     
-    SandboxScene.setAmbientLight( 0.2, 0.2, 0.2, 1.0);
+    SandboxScene.setAmbientLight( 1.0, 1.0, 1.0, 1.0);
 
     // Camera Configuration
     SandboxWindow.setCameraPosition( TruckToy.WorldLeft + (TruckToy.CameraWidth/2) - 10, 0 );

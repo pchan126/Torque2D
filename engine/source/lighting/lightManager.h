@@ -133,6 +133,8 @@ public:
    /// Returns all unsorted and un-scored lights (both global and local).
    void getAllUnsortedLights( Vector<LightInfo*> *list ) const;
 
+   void getSortedLightsByDistance( Vector<LightInfo*> *list, Point3F);
+
    /// Sets shader constants / textures for light infos
    virtual void setLightInfo( ProcessedMaterial *pmat, 
                               const Material *mat, 
@@ -153,7 +155,7 @@ public:
 //
 //   /// Returns true if this light manager is active
 //   virtual bool isActive() const { return mIsActive; }
-
+   Point3F getSortPoint() { return sortPoint; };
 protected:
 
    /// The current active light manager.
@@ -214,6 +216,9 @@ protected:
 
    /// Is true if this light manager has been activated.
    bool mIsActive;
+
+   Point3F sortPoint;
+   static S32 QSORT_CALLBACK lightDistance(const void* a, const void* b);
 };
 
 /// Returns the current active light manager.

@@ -50,7 +50,7 @@ LightInfo::LightInfo()
       mRange( 1.0f, 1.0f, 1.0f ),
       mInnerConeAngle( 90.0f ), 
       mOuterConeAngle( 90.0f ),
-      mType( Vector ),
+      mType( Point ),
       mCastShadows( false ),
       mPriority( 1.0f ),
       mScore( 0.0f ),
@@ -116,6 +116,10 @@ void LightInfo::setGFXLight( GFXLightInfo *outLight )
    outLight->mRadius = mRange.x;
    outLight->mInnerConeAngle = mInnerConeAngle;
    outLight->mOuterConeAngle = mOuterConeAngle;
+   outLight->specular = mColor;
+   outLight->diffuse = mColor;
+   outLight->specular = mColor;
+   outLight->ambient = mColor;
 }
 
 void LightInfo::setDirection( const VectorF &dir )
