@@ -122,7 +122,15 @@ namespace Con
         return ret;
     }
 
-    char *getArgBuffer(U32 bufferSize)
+   char* getReturnBuffer( const String& str )
+   {
+      const U32 size = str.size();
+      char* ret = STR.getReturnBuffer( size );
+      dMemcpy( ret, str.c_str(), size );
+      return ret;
+   }
+
+   char *getArgBuffer(U32 bufferSize)
     {
         return STR.getArgBuffer(bufferSize);
     }

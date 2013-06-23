@@ -1458,6 +1458,9 @@
     <ClCompile Include="..\..\source\platformWin32\windowManager\GLFWWindowManager.cc">
       <Filter>platformWin32\windowManager</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\lib\glew\glew-1.9.0\src\glew.c">
+      <Filter>platformWin32\graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\source\audio\audio.h">

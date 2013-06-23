@@ -121,9 +121,8 @@ void GFXOpenGL33WinStateBlock::activate(const GFXOpenGL33WinStateBlock* oldState
 //
 //   glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 //   CHECK_TOGGLE_STATE(vertexColorEnable, GL_COLOR_MATERIAL);
-
    if(STATE_CHANGE(fillMode))
-      GL_CHECK(glPolygonMode(GL_FRONT_AND_BACK, GFXGLFillMode[mDesc.fillMode]));
+      glPolygonMode(GL_FRONT_AND_BACK, GFXGLFillMode[mDesc.fillMode]);
 
 #undef CHECK_STATE
 #undef TOGGLE_STATE

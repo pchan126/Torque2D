@@ -819,20 +819,20 @@ bool GFXOpenGL33WinShader::_loadShaderFromStream(  GLuint shader,
                                   const Vector<GFXShaderMacro>& macros )
 {
    Vector<char*> buffers;
-   Vector<U32> lengths;
+   Vector<S32> lengths;
    
    // The GLSL version declaration must go first!
-   const char *versionDecl = "#version 150\r\n\r\n";
+   const char *versionDecl = "#version 150\n";
    buffers.push_back( dStrdup( versionDecl ) );
    lengths.push_back( dStrlen( versionDecl ) );
 
-   // Now add all the macros.
-   for( U32 i = 0; i < macros.size(); i++ )
-   {
-      String define = String::ToString( "#define %s %s\n", macros[i].name, macros[i].value );
-      buffers.push_back( dStrdup( define.c_str() ) );
-      lengths.push_back( define.length() );
-   }
+   //// Now add all the macros.
+   //for( U32 i = 0; i < macros.size(); i++ )
+   //{
+   //   String define = String::ToString( "#define %s %s\n", macros[i].name, macros[i].value );
+   //   buffers.push_back( dStrdup( define.c_str() ) );
+   //   lengths.push_back( define.length() );
+   //}
    
    // Now finally add the shader source.
    U32 shaderLen = s->getStreamSize();
@@ -842,8 +842,11 @@ bool GFXOpenGL33WinShader::_loadShaderFromStream(  GLuint shader,
    
    buffers.push_back(buffer);
    lengths.push_back(shaderLen);
-   
-   glShaderSource(shader, buffers.size(), (const GLchar**)const_cast<const char**>(buffers.address()), NULL);
+
+   //for ( int i = 0; i < buffers.size(); i++)
+	  // Con::printf("%d %s", i, buffers[i]);
+
+   glShaderSource(shader, buffers.size(), (const GLchar**)const_cast<const char**>(buffers.address()), lengths.address());
 
    // Cleanup the shader source buffer.
    for ( U32 i=0; i < buffers.size(); i++ )

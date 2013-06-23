@@ -1546,6 +1546,28 @@ String String::VToString(const char* str, va_list args)
    return sub;
 }
 
+
+//String String::VToString(const char* str, void* args)
+//{
+//   StrFormat format(str,&args);
+//
+//   // Copy it into a string
+//   U32         len = format.length();
+//   StringData* sub;
+//   if( !len )
+//      sub = StringData::Empty();
+//   else
+//   {
+//      sub = new ( len ) StringData( NULL );
+//
+//      format.copy( sub->utf8() );
+//      sub->utf8()[ len ] = 0;
+//   }
+//
+//   return sub;
+//}
+
+
 String   String::SpanToString(const char *start, const char *end)
 {
    if ( end == start )

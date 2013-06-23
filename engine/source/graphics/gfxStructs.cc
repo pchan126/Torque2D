@@ -58,7 +58,7 @@ void GFXVideoMode::parseFromString( const char *str )
    delete [] tempBuf;
 }
 
-const StringTableEntry GFXVideoMode::toString() const
+const String GFXVideoMode::toString() const
 {
    return String::ToString("%d %d %s %d %d %d", resolution.x, resolution.y, (fullScreen ? "true" : "false"), bitDepth,  refreshRate, antialiasLevel);
 }

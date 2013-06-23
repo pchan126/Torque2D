@@ -140,12 +140,18 @@ void GFXOpenGL33WinDevice::init( const GFXVideoMode &mode, PlatformWindow *windo
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, 1);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
 		GLFWWindow* mWindow = dynamic_cast<GLFWWindow*>(WindowManager->createWindow(this,mode));
 		mContext = mWindow->getContext();
 		mWindow->makeContextCurrent();
+		glfwSwapInterval(1);
 
-	    glewInit();
+		glewExperimental = GL_TRUE;
+		GLenum err = glewInit();
+	    if (GLEW_OK != err)
+		{
+			Con::printf("glewInit error %s", glewGetErrorString(err));
+		}
+		Con::printf("Using GLEW %s", glewGetString(GLEW_VERSION));
 
         mTextureManager = new GFXOpenGL33WinTextureManager();
 	    initGLState();
@@ -479,6 +485,7 @@ void GFXOpenGL33WinDevice::setupGenericShaders( GenericShaderType type )
         case GSTexture:
         case GSModColorTexture:
         case GSAddColorTexture:
+		case GSBatchTexture:
             setShader(mGenericShader[1]);
             setShaderConstBuffer( mGenericShaderConst[1] );
             mGenericShaderConst[1]->setSafe( mGenericShader[1]->getShaderConstHandle("$mvp_matrix"), xform );

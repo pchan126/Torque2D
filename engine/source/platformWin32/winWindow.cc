@@ -1021,6 +1021,10 @@ static S32 run(S32 argc, const char **argv)
     while( Game->isRunning() )
     {
         Game->mainLoop();
+		if (WindowManager->getFirstWindow())
+		{
+			WindowManager->getFirstWindow()->displayEvent.trigger(WindowManager->getFirstWindow()->getWindowId());
+		}
     }
 
     // Shut the game down.
