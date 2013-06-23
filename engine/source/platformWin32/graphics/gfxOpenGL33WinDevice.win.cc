@@ -277,7 +277,7 @@ GFXVertexBuffer *GFXOpenGL33WinDevice::allocVertexBuffer(   U32 vertexCount,
                                                     void *indexBuffer)
 {
     if(bufferType == GFXBufferTypeVolatile)
-        return findVolatileVBO(vertexCount, vertexFormat, vertSize, vertexBuffer);
+        return findVolatileVBO(vertexCount, vertexFormat, vertSize, vertexBuffer, indexCount, indexBuffer);
    
     GFXOpenGL33WinVertexBuffer* buf = new GFXOpenGL33WinVertexBuffer( GFX, vertexCount, vertexFormat, vertSize, bufferType, vertexBuffer, indexCount, indexBuffer );
     buf->registerResourceWithDevice(this);
