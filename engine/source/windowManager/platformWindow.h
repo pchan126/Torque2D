@@ -91,7 +91,7 @@ protected:
 
 public:
     GuiCanvas* mBoundCanvas;
-   void bindCanvas(GuiCanvas* canvas) { mBoundCanvas = canvas; };
+    virtual void bindCanvas(GuiCanvas* canvas) { mBoundCanvas = canvas; };
 
    /// To get rid of a window, just delete it. Make sure the GFXDevice is
    /// done with it first!

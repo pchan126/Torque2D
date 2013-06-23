@@ -7,6 +7,8 @@
 #include "platform/platformGL.h"
 #include "./GLFWWindowInputGenerator.h"
 #include "console/console.h"
+#include "delegates/process.h"
+#include "gui/guiCanvas.h"
 
 GLFWWindow* GLFWWindow::sInstance = NULL;
 
@@ -69,7 +71,6 @@ GLFWWindow::GLFWWindow(U32 windowId, const char* windowText, Point2I clientExten
    glfwSetScrollCallback(window, &GLFWWindow::window_scroll_callback);
    
    appEvent.notify(this, &GLFWWindow::_onAppEvent);
-   
    sInstance = this;
 }
 
@@ -80,7 +81,12 @@ GLFWWindow::~GLFWWindow()
 
    appEvent.remove(this, &GLFWWindow::_onAppEvent);
    
-   if( window )
+	if (mBoundCanvas != NULL)
+	{
+       Process::remove(mBoundCanvas, &GuiCanvas::paint);
+	}
+
+	if( window )
    {
       glfwDestroyWindow (window);
    }
@@ -93,6 +99,17 @@ GLFWWindow::~GLFWWindow()
    sInstance = NULL;
 }
 
+
+void GLFWWindow::bindCanvas(GuiCanvas* canvas)
+{
+	if (mBoundCanvas != NULL)
+	{
+       Process::remove(mBoundCanvas, &GuiCanvas::paint);
+	}
+
+ mBoundCanvas = canvas;
+ Process::notify(mBoundCanvas, &GuiCanvas::paint, PROCESS_RENDER_ORDER);
+}
 
 void GLFWWindow::setVideoMode(const GFXVideoMode &mode)
 {

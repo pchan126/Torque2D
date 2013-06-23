@@ -140,6 +140,9 @@ void GFXOpenGL33WinDevice::init( const GFXVideoMode &mode, PlatformWindow *windo
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, 1);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#if defined(TORQUE_DEBUG)
+		glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+#endif
 		GLFWWindow* mWindow = dynamic_cast<GLFWWindow*>(WindowManager->createWindow(this,mode));
 		mContext = mWindow->getContext();
 		mWindow->makeContextCurrent();

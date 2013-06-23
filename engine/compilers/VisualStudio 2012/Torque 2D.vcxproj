@@ -100,7 +100,7 @@
       <AdditionalIncludeDirectories>../../Lib/MSPlatformSDK/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>COMCTL32.LIB;COMDLG32.LIB;USER32.LIB;ADVAPI32.LIB;GDI32.LIB;RPCRT4.LIB;WINMM.LIB;WSOCK32.LIB;vfw32.lib;Imm32.lib;unicows.lib;shell32.lib;shlwapi.lib;ole32.lib;glfw3dll.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>COMCTL32.LIB;COMDLG32.LIB;USER32.LIB;ADVAPI32.LIB;GDI32.LIB;RPCRT4.LIB;WINMM.LIB;WSOCK32.LIB;vfw32.lib;Imm32.lib;unicows.lib;shell32.lib;shlwapi.lib;ole32.lib;glfw3dll.lib;opengl32.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../Torque2D_DEBUG.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>D:\Torque\Torque2D-GFX\engine\lib\glew\glew-1.9.0\lib;../../lib\glfw\lib-msvc110;../../Lib/unicode;../../lib/MSPlatformSDK/Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -239,7 +239,6 @@
     <ResourceCompile Include="Torque 2D.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\lib\glew\glew-1.9.0\src\glew.c" />
     <ClCompile Include="..\..\source\2d\assets\AnimationAsset.cc" />
     <ClCompile Include="..\..\source\2d\assets\ImageAsset.cc" />
     <ClCompile Include="..\..\source\2d\assets\ParticleAsset.cc" />

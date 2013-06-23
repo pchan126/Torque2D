@@ -82,7 +82,9 @@ public:
    virtual void clearFocus();
    
    virtual void* getPlatformDrawable() const;
-   
+
+   virtual void bindCanvas(GuiCanvas* canvas);
+
    void swapBuffers();
    
    // TODO: These should be private, but GGMacView (an Obj-C class) needs access to these and we can't friend Obj-C classes
@@ -116,6 +118,10 @@ public:
    HGLRC getContext()  { return glfwGetWGLContext(window); };
 #endif
    
+#if defined(GLFW_EXPOSE_NATIVE_WIN32)
+   GLFWAPI HWND getPlatformWindow() { return glfwGetWin32Window(window); };
+#endif
+
    void getCursorPosition( Point2I &point );
    void setCursorPosition( const Point2D point );
    

@@ -146,7 +146,10 @@ void GLFWWindowManager::_addWindow(GLFWWindow* window)
    if (mWindowList.size() > 0)
       window->mNextWindow = mWindowList.last();
    else
+   {
+      Process::notify(&glfwPollEvents);
       window->mNextWindow = NULL;
+   }
 
    mWindowList.push_back(window);
    window->mOwningWindowManager = this;
@@ -166,6 +169,7 @@ void GLFWWindowManager::_removeWindow(GLFWWindow* window)
     
     if (mWindowList.size() == 0)
     {
+       Process::remove(&glfwPollEvents);
        Process::shutdown();
     }
     
