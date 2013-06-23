@@ -409,6 +409,7 @@ void GFXOpenGL32Device::setupGenericShaders( GenericShaderType type )
         case GSTexture:
         case GSModColorTexture:
         case GSAddColorTexture:
+       case GSBatchTexture:
             setShader(mGenericShader[1]);
             setShaderConstBuffer( mGenericShaderConst[1] );
             mGenericShaderConst[1]->setSafe( mGenericShader[1]->getShaderConstHandle("$mvp_matrix"), xform );
