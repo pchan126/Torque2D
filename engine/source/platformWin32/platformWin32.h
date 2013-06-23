@@ -23,6 +23,8 @@
 #ifndef _PLATFORMWIN32_H_
 #define _PLATFORMWIN32_H_
 
+#include "platformWin32\windowManager\GLFWWindow.h"
+
 // Sanity check for UNICODE
 #ifdef TORQUE_UNICODE
 #  ifndef UNICODE
@@ -42,7 +44,7 @@
 #define _WIN32_WINNT 0x0400
 #endif
 
-#include <windows.h>
+//#include <windows.h>
 #ifndef _PLATFORM_H_
 #include "platform/platform.h"
 #endif

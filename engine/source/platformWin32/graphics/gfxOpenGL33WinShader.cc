@@ -362,9 +362,14 @@ GFXOpenGL33WinShader::~GFXOpenGL33WinShader()
 
 void GFXOpenGL33WinShader::clearShaders()
 {
-   glDeleteProgram(mProgram);
-   glDeleteShader(mVertexShader);
-   glDeleteShader(mPixelShader);
+	if (mProgram != 0)
+	   glDeleteProgram(mProgram);
+
+	if (mVertexShader != 0)
+		glDeleteShader(mVertexShader);
+   
+	if (mPixelShader != 0)
+		glDeleteShader(mPixelShader);
    
    mProgram = 0;
    mVertexShader = 0;

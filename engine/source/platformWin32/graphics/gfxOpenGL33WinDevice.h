@@ -167,7 +167,7 @@ private:
    
    StrongRefPtr<GFXOpenGL33WinVertexBuffer> mCurrentVB;
    
-   HGLRC* mContext;       // 
+   HGLRC mContext;       // 
    int* mPixelFormat;   // 
 
    F32 mPixelShaderVersion;

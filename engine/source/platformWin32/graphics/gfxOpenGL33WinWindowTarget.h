@@ -7,7 +7,7 @@
 #define _GFXOpenGL33WinWindowTarget_H_
 
 #include "graphics/gfxTarget.h"
-#include "platformWin32/windowManager/Win32Window.h"
+#include "platformWin32/windowManager/GLFWWindow.h"
 #include "memory/autoPtr.h"
 
 class GFXOpenGL33WinWindowTarget : public GFXWindowTarget
@@ -45,7 +45,7 @@ private:
 
    Point2I size;
    GFXDevice* mDevice;
-   Win32Window* mWindow;
+   GLFWWindow* mWindow;
 
    void _teardownCurrentMode();
    void _setupNewMode();

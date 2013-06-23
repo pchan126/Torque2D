@@ -9,13 +9,13 @@
 #include "./gfxOpenGL33WinUtils.h"
 
 #include "platform/platformGL.h"
-#include "platformWin32/windowManager/win32Window.h"
+#include "platformWin32/windowManager/GLFWWindow.h"
 
 
 GFXOpenGL33WinWindowTarget::GFXOpenGL33WinWindowTarget(PlatformWindow *window, GFXDevice *d)
       : GFXWindowTarget(window), mDevice(d)
 {
-	mWindow = dynamic_cast<Win32Window*>(window);
+	mWindow = dynamic_cast<GLFWWindow*>(window);
     window->appEvent.notify(this, &GFXOpenGL33WinWindowTarget::_onAppSignal);
     size = window->getBounds().extent;
 }
@@ -52,7 +52,7 @@ bool GFXOpenGL33WinWindowTarget::present()
 
 void GFXOpenGL33WinWindowTarget::makeActive()
 {
-   mWindow->makeContextCurrent();
+    mWindow->makeContextCurrent();
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 

@@ -25,10 +25,10 @@
 #include "platformWin32/winWindow.h"
 #include "platformWin32/platformGL.h"
 
-#include "platformWin32/windowManager/win32Window.h"
-#include "platformWin32/windowManager/win32WindowMgr.h"
-#include "platformWin32/windowManager/win32CursorController.h"
-#include "platformWin32/windowManager/winDispatch.h"
+#include "platformWin32/windowManager/GLFWWindow.h"
+#include "platformWin32/windowManager/GLFWWindowManager.h"
+#include "platformWin32/windowManager/GLFWCursorController.h"
+//#include "platformWin32/windowManager/winDispatch.h"
 
 #include "platform/event.h"
 #include "console/console.h"

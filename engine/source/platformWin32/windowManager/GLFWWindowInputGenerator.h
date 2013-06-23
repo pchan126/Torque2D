@@ -3,22 +3,24 @@
 // Copyright GarageGames, LLC 2011
 //-----------------------------------------------------------------------------
 
-#ifndef _win32WINDOW_INPUTGENERATOR_H_
-#define _win32WINDOW_INPUTGENERATOR_H_
+#ifndef _GLFW_WINDOW_INPUTGENERATOR_H_
+#define _GLFW_WINDOW_INPUTGENERATOR_H_
 
 #include "windowManager/windowInputGenerator.h"
-#include "platformWin32/windowManager/win32Window.h"
+#include "./GLFWWindow.h"
 
-class Win32WindowInputGenerator : public WindowInputGenerator
+class GLFWWindowInputGenerator : public WindowInputGenerator
 {
 
     protected:
-       Win32Window *mWindow;
-
+       GLFWWindow *mWindow;
+   
    public:
    
-      Win32WindowInputGenerator( Win32Window *window );
-      virtual ~Win32WindowInputGenerator();
+      GLFWWindowInputGenerator( GLFWWindow *window );
+      virtual ~GLFWWindowInputGenerator();
+   
+
 };
 
 #endif // _osxWINDOW_INPUTGENERATOR_H_

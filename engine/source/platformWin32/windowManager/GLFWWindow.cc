@@ -3,13 +3,12 @@
 // Copyright GarageGames, LLC 2011
 //-----------------------------------------------------------------------------
 
-#include "platformWin32/platformWin32.h"
+#include "./GLFWWindow.h"
 #include "platform/platformGL.h"
-#include "platformWin32/windowManager/win32Window.h"
-#include "platformWin32/windowManager/Win32WindowInputGenerator.h"
-#include "platformWin32/windowManager/win32WindowMgr.h"
-#include "platformWin32/windowManager/win32CursorController.h"
+#include "./GLFWWindowInputGenerator.h"
 #include "console/console.h"
+
+GLFWWindow* GLFWWindow::sInstance = NULL;
 
 extern U32 convertModifierBits( const U32 in );
 
@@ -29,15 +28,15 @@ inline U32 GLFWModifiersToTorqueModifiers( int mods )
    return torqueMods;
 }
 
-Win32Window::Win32Window(U32 windowId, const char* windowText, Point2I clientExtent)
+GLFWWindow::GLFWWindow(U32 windowId, const char* windowText, Point2I clientExtent)
 {
    mMouseLocked      = false;
    mShouldMouseLock  = false;
    mTitle            = NULL;
    mMouseCaptured    = false;
    mBoundCanvas = NULL;
-   mWindowInputGenerator = new Win32WindowInputGenerator( this);
-   mCursorController = new Win32CursorController( this );
+   mWindowInputGenerator = new GLFWWindowInputGenerator( this);
+   mCursorController = new GLFWCursorController( this );
    mOwningWindowManager = NULL;
    mTarget = NULL;
    
@@ -45,11 +44,11 @@ Win32Window::Win32Window(U32 windowId, const char* windowText, Point2I clientExt
    mShouldFullscreen = false;
    
    mSkipMouseEvents = 0;
-      
+   
    mWindowId = windowId;
    
    GLFWwindow* sWindow = NULL;
-   Win32Window* shareWindow = dynamic_cast<Win32Window*>(WindowManager->getFirstWindow());
+   GLFWWindow* shareWindow = dynamic_cast<GLFWWindow*>(WindowManager->getFirstWindow());
 
    if (shareWindow != NULL)
       sWindow = shareWindow->window;
@@ -61,20 +60,26 @@ Win32Window::Win32Window(U32 windowId, const char* windowText, Point2I clientExt
       exit(EXIT_FAILURE);
    }
 
-   glfwSetKeyCallback(window, &Win32Window::key_callback);
-   glfwSetMouseButtonCallback(window, &Win32Window::mousebutton_callback);
-   glfwSetCursorPosCallback(window, &Win32Window::mousemove_callback);
-   glfwSetWindowCloseCallback(window, &Win32Window::window_close_callback);
-   appEvent.notify(this, &Win32Window::_onAppEvent);
+   glfwSetKeyCallback(window, &GLFWWindow::key_callback);
+   glfwSetMouseButtonCallback(window, &GLFWWindow::mousebutton_callback);
+   glfwSetCursorPosCallback(window, &GLFWWindow::mousemove_callback);
+   glfwSetWindowCloseCallback(window, &GLFWWindow::window_close_callback);
+   glfwSetWindowFocusCallback(window, &GLFWWindow::window_focus_callback);
+   glfwSetWindowIconifyCallback(window, &GLFWWindow::window_iconify_callback);
+   glfwSetScrollCallback(window, &GLFWWindow::window_scroll_callback);
+   
+   appEvent.notify(this, &GLFWWindow::_onAppEvent);
+   
+   sInstance = this;
 }
 
-Win32Window::~Win32Window()
+GLFWWindow::~GLFWWindow()
 {
    if(mFullscreen)
       _setFullscreen(false);
 
-   appEvent.remove(this, &Win32Window::_onAppEvent);
-
+   appEvent.remove(this, &GLFWWindow::_onAppEvent);
+   
    if( window )
    {
       glfwDestroyWindow (window);
@@ -84,10 +89,12 @@ Win32Window::~Win32Window()
    appEvent.trigger(mWindowId, WindowDestroy);
    
    mOwningWindowManager->_removeWindow(this);
+   
+   sInstance = NULL;
 }
 
 
-void Win32Window::setVideoMode(const GFXVideoMode &mode)
+void GLFWWindow::setVideoMode(const GFXVideoMode &mode)
 {
    mCurrentMode = mode;
    setSize(mCurrentMode.resolution);
@@ -98,7 +105,7 @@ void Win32Window::setVideoMode(const GFXVideoMode &mode)
    _setFullscreen(mCurrentMode.fullScreen);
 }
 
-void Win32Window::_onAppEvent(WindowId, S32 evt)
+void GLFWWindow::_onAppEvent(WindowId, S32 evt)
 {
    
    if(evt == LoseFocus && isFullscreen())
@@ -118,7 +125,7 @@ void Win32Window::_onAppEvent(WindowId, S32 evt)
    }
 }
 
-void Win32Window::_setFullscreen(bool fullScreen)
+void GLFWWindow::_setFullscreen(bool fullScreen)
 {
    if(mFullscreen == fullScreen)
       return;
@@ -133,18 +140,18 @@ void Win32Window::_setFullscreen(bool fullScreen)
    }
 }
 
-void* Win32Window::getPlatformDrawable() const
+void* GLFWWindow::getPlatformDrawable() const
 {
    return NULL;
 }
 
-void Win32Window::show()
+void GLFWWindow::show()
 {
    appEvent.trigger(getWindowId(), WindowShown);
    appEvent.trigger(getWindowId(), GainFocus);
 }
 
-void Win32Window::close()
+void GLFWWindow::close()
 {
    glfwDestroyWindow(window);
    appEvent.trigger(mWindowId, LoseFocus);
@@ -155,30 +162,30 @@ void Win32Window::close()
    delete this;
 }
 
-void Win32Window::hide()
+void GLFWWindow::hide()
 {
    glfwHideWindow(window);
    appEvent.trigger(getWindowId(), WindowHidden);
 }
 
-//void Win32Window::setDisplay(CGDirectDisplayID display)
+//void GLFWWindow::setDisplay(CGDirectDisplayID display)
 //{
 //   mDisplay = display;
 //   mDisplayBounds = CGDisplayBounds(mDisplay);
 //}
 
-PlatformWindow* Win32Window::getNextWindow() const
+PlatformWindow* GLFWWindow::getNextWindow() const
 {
    return mNextWindow;
 }
 
-bool Win32Window::setSize(const Point2I &newSize)
+bool GLFWWindow::setSize(const Point2I &newSize)
 {
    glfwSetWindowSize(window, newSize.x, newSize.y);
    return true;
 }
 
-void Win32Window::setClientExtent( const Point2I newExtent )
+void GLFWWindow::setClientExtent( const Point2I newExtent )
 {
    if(!mFullscreen)
    {
@@ -189,7 +196,7 @@ void Win32Window::setClientExtent( const Point2I newExtent )
    }
 }
 
-const Point2I Win32Window::getClientExtent()
+const Point2I GLFWWindow::getClientExtent()
 {
       // Get the Client Area Extent (Resolution) of this window
       Point2I ret;
@@ -197,7 +204,7 @@ const Point2I Win32Window::getClientExtent()
       return ret;
 }
 
-void Win32Window::setBounds( const RectI &newBounds )
+void GLFWWindow::setBounds( const RectI &newBounds )
 {
    glfwSetWindowPos(window, newBounds.point.x, newBounds.point.y);
    glfwSetWindowSize(window, newBounds.extent.x, newBounds.extent.y);
@@ -205,7 +212,7 @@ void Win32Window::setBounds( const RectI &newBounds )
 //   [mCocoaWindow setFrame:newFrame display:YES];
 }
 
-const RectI Win32Window::getBounds() const
+const RectI GLFWWindow::getBounds() const
 {
 //   if(!mFullscreen)
 //   {
@@ -223,7 +230,7 @@ const RectI Win32Window::getBounds() const
 //   }
 }
 
-void Win32Window::setPosition( const Point2I newPosition )
+void GLFWWindow::setPosition( const Point2I newPosition )
 {
    glfwSetWindowPos(window, newPosition.x, newPosition.y);
 //   NSScreen *screen = [mCocoaWindow screen];
@@ -233,7 +240,7 @@ void Win32Window::setPosition( const Point2I newPosition )
 //   [mCocoaWindow setFrameTopLeftPoint: pos];
 }
 
-const Point2I Win32Window::getPosition()
+const Point2I GLFWWindow::getPosition()
 {
 //   NSScreen *screen = [mCocoaWindow screen];
 //   NSRect screenFrame = [screen frame];
@@ -245,132 +252,137 @@ const Point2I Win32Window::getPosition()
 //   return Point2I(frame.origin.x, screenFrame.size.height - (frame.origin.y + frame.size.height));
 }
 
-void Win32Window::centerWindow()
+void GLFWWindow::centerWindow()
 {
 //   [mCocoaWindow center];
 }
 
-Point2I Win32Window::clientToScreen( const Point2I& pos )
+Point2I GLFWWindow::clientToScreen( const Point2I& pos )
 {
 //   NSPoint p = { static_cast<CGFloat>(pos.x), static_cast<CGFloat>(pos.y) };
 //   
 //   p = [ mCocoaWindow convertBaseToScreen: p ];
-//   return Point2I( p.x, p.y );
-	return Point2I( 0, 0);
+   return pos;
 }
 
-Point2I Win32Window::screenToClient( const Point2I& pos )
+Point2I GLFWWindow::screenToClient( const Point2I& pos )
 {
 //   NSPoint p = { static_cast<CGFloat>(pos.x), static_cast<CGFloat>(pos.y) };
 //   
 //   p = [ mCocoaWindow convertScreenToBase: p ];
-//   return Point2I( p.x, p.y );
-	return Point2I( 0, 0);
+	return pos;
 }
 
-bool Win32Window::isFocused()
+bool GLFWWindow::isFocused()
 {
 //   return [mCocoaWindow isKeyWindow];
    return false;
 }
 
-bool Win32Window::isOpen()
+bool GLFWWindow::isOpen()
 {
    // Maybe check if _window != NULL ?
    return true;
 }
 
-bool Win32Window::isVisible()
+bool GLFWWindow::isVisible()
 {
 //   return !isMinimized() && ([mCocoaWindow isVisible] == YES);
    return true;
 }
    
-void Win32Window::setFocus()
+void GLFWWindow::setFocus()
 {
 //   [mCocoaWindow makeKeyAndOrderFront:nil];
 }
 
-void Win32Window::signalGainFocus()
+void GLFWWindow::signalGainFocus()
 {
 //   if(isFocused())
 //      [[mCocoaWindow delegate] performSelector:@selector(signalGainFocus)];
 }
 
-void Win32Window::minimize()
+void GLFWWindow::minimize()
 {
    glfwIconifyWindow(window);
 }
 
-void Win32Window::maximize()
+void GLFWWindow::maximize()
 {
    if(!isVisible())
       return;
 }
 
-void Win32Window::restore()
+void GLFWWindow::restore()
 {
    glfwRestoreWindow(window);
 }
 
-bool Win32Window::isMinimized()
+bool GLFWWindow::isMinimized()
 {
     return false;
 }
 
-bool Win32Window::isMaximized()
+bool GLFWWindow::isMaximized()
 {
    return false;
 }
 
-void Win32Window::clearFocus()
+void GLFWWindow::clearFocus()
 {
 }
 
-bool Win32Window::setCaption(const char* windowText)
+bool GLFWWindow::setCaption(const char* windowText)
 {
    mTitle = windowText;
    glfwSetWindowTitle(window, windowText);
-//   [mCocoaWindow setTitle:[NSString stringWithUTF8String:mTitle]];
    return true;
 }
 
-void Win32Window::_doMouseLockNow()
+void GLFWWindow::_doMouseLockNow()
 {
    return;
 }
 
-void Win32Window::_associateMouse()
+void GLFWWindow::_associateMouse()
 {
 }
 
-void Win32Window::_dissociateMouse()
+void GLFWWindow::_dissociateMouse()
 {
 }
 
-void Win32Window::_centerMouse()
+void GLFWWindow::_centerMouse()
 {
 }
 
-void Win32Window::swapBuffers()
+void GLFWWindow::getCursorPosition( Point2I &point )
+{
+   double xpos, ypos;
+   glfwGetCursorPos(window, &xpos, &ypos);
+   point.x = (U32)xpos;
+   point.y = (U32)ypos;
+}
+
+void GLFWWindow::setCursorPosition( const Point2D point )
+{
+   glfwSetCursorPos(window, (double)point.x, (double)point.y);
+}
+
+void GLFWWindow::swapBuffers()
 {
    glfwSwapBuffers(window);
 }
 
-void Win32Window::makeContextCurrent()
+void GLFWWindow::makeContextCurrent()
 {
    glfwMakeContextCurrent(window);
 }
 
-HGLRC Win32Window::getContext()
-{
-	return glfwGetWGLContext(window);
-}
 
-
-void Win32Window::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+void GLFWWindow::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-   Win32Window* torqueWindow = Win32WindowManager::get()->getWindowByGLFW(window);
+   GLFWWindow* torqueWindow = GLFWWindowManager::get()->getWindowByGLFW(window);
    U32 eventAction = SI_MAKE;
    switch (action) {
       case GLFW_PRESS:
@@ -392,9 +404,9 @@ void Win32Window::key_callback(GLFWwindow* window, int key, int scancode, int ac
    torqueWindow->keyEvent.trigger(torqueWindow->getWindowId(), mLastMods, eventAction, torqueKeyCode);
 }
 
-void Win32Window::mousebutton_callback(GLFWwindow* window, int button, int action, int mods)
+void GLFWWindow::mousebutton_callback(GLFWwindow* window, int button, int action, int mods)
 {
-   Win32Window* torqueWindow = Win32WindowManager::get()->getWindowByGLFW(window);
+   GLFWWindow* torqueWindow = GLFWWindowManager::get()->getWindowByGLFW(window);
    U32 eventAction = SI_MAKE;
    switch (action) {
       case GLFW_PRESS:
@@ -409,14 +421,51 @@ void Win32Window::mousebutton_callback(GLFWwindow* window, int button, int actio
    torqueWindow->buttonEvent.trigger(torqueWindow->getWindowId(), mLastMods, eventAction, buttonNumber);
 }
 
-void Win32Window::mousemove_callback(GLFWwindow* window, double xpos, double ypos)
+void GLFWWindow::mousemove_callback(GLFWwindow* window, double xpos, double ypos)
 {
-   Win32Window* torqueWindow = Win32WindowManager::get()->getWindowByGLFW(window);
+   GLFWWindow* torqueWindow = GLFWWindowManager::get()->getWindowByGLFW(window);
    torqueWindow->mouseEvent.trigger(torqueWindow->getWindowId(), 0, xpos, ypos, false);
 }
 
-void Win32Window::window_close_callback(GLFWwindow* window)
+void GLFWWindow::window_close_callback(GLFWwindow* window)
 {
-   Win32Window* torqueWindow = Win32WindowManager::get()->getWindowByGLFW(window);
-//   torqueWindow->appEvent.trigger(<#unsigned int a#>, <#int b#>)
+   GLFWWindow* torqueWindow = GLFWWindowManager::get()->getWindowByGLFW(window);
+   torqueWindow->appEvent.trigger(torqueWindow->getWindowId(), WindowDestroy);
+   delete torqueWindow;
+}
+
+void GLFWWindow::window_focus_callback(GLFWwindow* window, int focused)
+{
+   GLFWWindow* torqueWindow = GLFWWindowManager::get()->getWindowByGLFW(window);
+   if (focused == GL_TRUE)
+      torqueWindow->appEvent.trigger(torqueWindow->getWindowId(), GainFocus);
+   else if (focused == GL_FALSE)
+      torqueWindow->appEvent.trigger(torqueWindow->getWindowId(), LoseFocus);
+}
+
+void GLFWWindow::window_iconify_callback(GLFWwindow* window, int iconified)
+{
+   GLFWWindow* torqueWindow = GLFWWindowManager::get()->getWindowByGLFW(window);
+   if (iconified == GL_TRUE)
+      torqueWindow->appEvent.trigger(torqueWindow->getWindowId(), WindowHidden);
+   else if (iconified == GL_FALSE)
+      torqueWindow->appEvent.trigger(torqueWindow->getWindowId(), WindowShown);
+}
+
+void GLFWWindow::window_scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+   GLFWWindow* torqueWindow = GLFWWindowManager::get()->getWindowByGLFW(window);
+   torqueWindow->mouseWheelEvent.trigger(torqueWindow->getWindowId(), 0, (S32)xoffset, (S32)yoffset);
+}
+
+void GLFWWindow::window_resize_callback(GLFWwindow* window, int width, int height)
+{
+   GLFWWindow* torqueWindow = GLFWWindowManager::get()->getWindowByGLFW(window);
+   torqueWindow->resizeEvent.trigger(torqueWindow->getWindowId(), width, height);
+}
+
+void GLFWWindow::framebuffer_resize_callback(GLFWwindow* window, int width, int height)
+{
+   GLFWWindow* torqueWindow = GLFWWindowManager::get()->getWindowByGLFW(window);
+   torqueWindow->framebufferResizeEvent.trigger(torqueWindow->getWindowId(), width, height);
 }

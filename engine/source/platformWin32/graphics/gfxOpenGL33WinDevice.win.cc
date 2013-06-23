@@ -41,93 +41,6 @@
 
 GFXAdapter::CreateDeviceInstanceDelegate GFXOpenGL33WinDevice::mCreateDeviceInstance(GFXOpenGL33WinDevice::createInstance);
 
-//PFNGLCREATEPROGRAMPROC glCreateProgram;
-//PFNGLDELETEPROGRAMPROC glDeleteProgram;
-//PFNGLUSEPROGRAMPROC glUseProgram;
-//PFNGLATTACHSHADERPROC glAttachShader;
-//PFNGLDETACHSHADERPROC glDetachShader;
-//PFNGLLINKPROGRAMPROC glLinkProgram;
-//PFNGLGETPROGRAMIVPROC glGetProgramiv;
-//PFNGLGETSHADERINFOLOGPROC glGetShaderInfoLog;
-//PFNGLGETUNIFORMLOCATIONPROC glGetUniformLocation;
-//PFNGLUNIFORM1IPROC glUniform1i;
-//PFNGLUNIFORM1IVPROC glUniform1iv;
-//PFNGLUNIFORM2IVPROC glUniform2iv;
-//PFNGLUNIFORM3IVPROC glUniform3iv;
-//PFNGLUNIFORM4IVPROC glUniform4iv;
-//PFNGLUNIFORM1FPROC glUniform1f;
-//PFNGLUNIFORM1FVPROC glUniform1fv;
-//PFNGLUNIFORM2FVPROC glUniform2fv;
-//PFNGLUNIFORM3FVPROC glUniform3fv;
-//PFNGLUNIFORM4FVPROC glUniform4fv;
-//PFNGLUNIFORMMATRIX4FVPROC glUniformMatrix4fv;
-//PFNGLGETATTRIBLOCATIONPROC glGetAttribLocation;
-//PFNGLVERTEXATTRIB1FPROC glVertexAttrib1f;
-//PFNGLVERTEXATTRIB1FVPROC glVertexAttrib1fv;
-//PFNGLVERTEXATTRIB2FVPROC glVertexAttrib2fv;
-//PFNGLVERTEXATTRIB3FVPROC glVertexAttrib3fv;
-//PFNGLVERTEXATTRIB4FVPROC glVertexAttrib4fv;
-//PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray;
-//PFNGLBINDATTRIBLOCATIONPROC glBindAttribLocation;
-//
-//      // Shader
-//PFNGLCREATESHADERPROC glCreateShader;
-//PFNGLDELETESHADERPROC glDeleteShader;
-//PFNGLSHADERSOURCEPROC glShaderSource;
-//PFNGLCOMPILESHADERPROC glCompileShader;
-//PFNGLGETSHADERIVPROC glGetShaderiv;
-//
-//      // VBO
-//PFNGLGENBUFFERSPROC glGenBuffers;
-//PFNGLBINDBUFFERPROC glBindBuffer;
-//PFNGLBUFFERDATAPROC glBufferData;
-//PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer;
-//
-//void InitAPI()
-//{
-//      // Program
-//      glCreateProgram = (PFNGLCREATEPROGRAMPROC)glfwGetProcAddress("glCreateProgram");
-//      glDeleteProgram = (PFNGLDELETEPROGRAMPROC)glfwGetProcAddress("glDeleteProgram");
-//      glUseProgram = (PFNGLUSEPROGRAMPROC)glfwGetProcAddress("glUseProgram");
-//      glAttachShader = (PFNGLATTACHSHADERPROC)glfwGetProcAddress("glAttachShader");
-//      glDetachShader = (PFNGLDETACHSHADERPROC)glfwGetProcAddress("glDetachShader");
-//      glLinkProgram = (PFNGLLINKPROGRAMPROC)glfwGetProcAddress("glLinkProgram");
-//      glGetProgramiv = (PFNGLGETPROGRAMIVPROC)glfwGetProcAddress("glGetProgramiv");
-//      glGetShaderInfoLog = (PFNGLGETSHADERINFOLOGPROC)glfwGetProcAddress("glGetShaderInfoLog");
-//      glGetUniformLocation = (PFNGLGETUNIFORMLOCATIONPROC)glfwGetProcAddress("glGetUniformLocation");
-//      glUniform1i = (PFNGLUNIFORM1IPROC)glfwGetProcAddress("glUniform1i");
-//      glUniform1iv = (PFNGLUNIFORM1IVPROC)glfwGetProcAddress("glUniform1iv");
-//      glUniform2iv = (PFNGLUNIFORM2IVPROC)glfwGetProcAddress("glUniform2iv");
-//      glUniform3iv = (PFNGLUNIFORM3IVPROC)glfwGetProcAddress("glUniform3iv");
-//      glUniform4iv = (PFNGLUNIFORM4IVPROC)glfwGetProcAddress("glUniform4iv");
-//      glUniform1f = (PFNGLUNIFORM1FPROC)glfwGetProcAddress("glUniform1f");
-//      glUniform1fv = (PFNGLUNIFORM1FVPROC)glfwGetProcAddress("glUniform1fv");
-//      glUniform2fv = (PFNGLUNIFORM2FVPROC)glfwGetProcAddress("glUniform2fv");
-//      glUniform3fv = (PFNGLUNIFORM3FVPROC)glfwGetProcAddress("glUniform3fv");
-//      glUniform4fv = (PFNGLUNIFORM4FVPROC)glfwGetProcAddress("glUniform4fv");
-//      glUniformMatrix4fv = (PFNGLUNIFORMMATRIX4FVPROC)glfwGetProcAddress("glUniformMatrix4fv");
-//      glGetAttribLocation = (PFNGLGETATTRIBLOCATIONPROC)glfwGetProcAddress("glGetAttribLocation");
-//      glVertexAttrib1f = (PFNGLVERTEXATTRIB1FPROC)glfwGetProcAddress("glVertexAttrib1f");
-//      glVertexAttrib1fv = (PFNGLVERTEXATTRIB1FVPROC)glfwGetProcAddress("glVertexAttrib1fv");
-//      glVertexAttrib2fv = (PFNGLVERTEXATTRIB2FVPROC)glfwGetProcAddress("glVertexAttrib2fv");
-//      glVertexAttrib3fv = (PFNGLVERTEXATTRIB3FVPROC)glfwGetProcAddress("glVertexAttrib3fv");
-//      glVertexAttrib4fv = (PFNGLVERTEXATTRIB4FVPROC)glfwGetProcAddress("glVertexAttrib4fv");
-//      glEnableVertexAttribArray = (PFNGLENABLEVERTEXATTRIBARRAYPROC)glfwGetProcAddress("glEnableVertexAttribArray");
-//      glBindAttribLocation = (PFNGLBINDATTRIBLOCATIONPROC)glfwGetProcAddress("glBindAttribLocation");
-//
-//      // Shader
-//      glCreateShader = (PFNGLCREATESHADERPROC)glfwGetProcAddress("glCreateShader");
-//      glDeleteShader = (PFNGLDELETESHADERPROC)glfwGetProcAddress("glDeleteShader");
-//      glShaderSource = (PFNGLSHADERSOURCEPROC)glfwGetProcAddress("glShaderSource");
-//      glCompileShader = (PFNGLCOMPILESHADERPROC)glfwGetProcAddress("glCompileShader");
-//      glGetShaderiv = (PFNGLGETSHADERIVPROC)glfwGetProcAddress("glGetShaderiv");
-//
-//      // VBO
-//      glGenBuffers = (PFNGLGENBUFFERSPROC)glfwGetProcAddress("glGenBuffers");
-//      glBindBuffer = (PFNGLBINDBUFFERPROC)glfwGetProcAddress("glBindBuffer");
-//      glBufferData = (PFNGLBUFFERDATAPROC)glfwGetProcAddress("glBufferData");
-//      glVertexAttribPointer = (PFNGLVERTEXATTRIBPOINTERPROC)glfwGetProcAddress("glVertexAttribPointer");
-//}
 
 // yonked from winWindow.cc
 void CreatePixelFormat( PIXELFORMATDESCRIPTOR *pPFD, S32 colorBits, S32 depthBits, S32 stencilBits, bool stereo )
@@ -206,13 +119,14 @@ GFXOpenGL33WinDevice::GFXOpenGL33WinDevice( U32 adapterIndex )  : GFXOpenGLDevic
     for (int i = 0; i < TEXTURE_STAGE_COUNT; i++)
         mActiveTextureType[i] = GL_TEXTURE_2D;
 
-    glewInit();
 //	InitAPI();
 }
 
 
 GFXOpenGL33WinDevice::~GFXOpenGL33WinDevice()
 {
+	if (mInitialized)
+		glfwTerminate();
 }
 
 
@@ -220,152 +134,25 @@ GFXOpenGL33WinDevice::~GFXOpenGL33WinDevice()
 
 void GFXOpenGL33WinDevice::init( const GFXVideoMode &mode, PlatformWindow *window )
 {
-    if(mInitialized)
-		return;
+    if(!mInitialized)
+	{
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, 1);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-   //bool result = false;
-   //bool fullScreenOnly = false;
+		GLFWWindow* mWindow = dynamic_cast<GLFWWindow*>(WindowManager->createWindow(this,mode));
+		mContext = mWindow->getContext();
+		mWindow->makeContextCurrent();
 
-   ////------------------------------------------------------------------------------
-   //// Create a test window to see if OpenGL hardware acceleration is available:
-   ////------------------------------------------------------------------------------
-   //WNDCLASS wc;
-   //dMemset(&wc, 0, sizeof(wc));
-   //wc.style         = CS_OWNDC;
-   //wc.lpfnWndProc   = DefWindowProc;
-   //wc.hInstance     = winState.appInstance;
-   //wc.lpszClassName = dT("OGLTest");
-   //RegisterClass( &wc );
+	    glewInit();
 
-   ////------------------------------------------------------------------------------
-   //// Create the Test Window
-   ////------------------------------------------------------------------------------
-   ////MIN_RESOLUTION defined in platformWin32/platformGL.h
-   //HWND testWindow = CreateWindow( dT("OGLTest"),dT(""), WS_POPUP, 0, 0, MIN_RESOLUTION_X, MIN_RESOLUTION_Y, NULL, NULL, winState.appInstance, NULL );
-   //if ( !testWindow )
-   //{
-   //   // Unregister the Window Class
-   //   UnregisterClass( dT("OGLTest"), winState.appInstance );
-
-   //   // Shutdown GL
-   //   GL_Shutdown();
-
-   //   // Return Failure
-   //   return;
-   //}
-
-   ////------------------------------------------------------------------------------
-   //// Create Pixel Format ( Default 16bpp )
-   ////------------------------------------------------------------------------------
-   //PIXELFORMATDESCRIPTOR pfd;
-   //CreatePixelFormat( &pfd, 16, 16, 8, false );
-
-   //HDC testDC = GetDC( testWindow );
-   //U32 chosenFormat = ChooseBestPixelFormat( testDC, &pfd );
-   //if ( chosenFormat != 0 )
-   //{
-   //   dwglDescribePixelFormat( testDC, chosenFormat, sizeof( pfd ), &pfd );
-
-   //   result = !( pfd.dwFlags & PFD_GENERIC_FORMAT );
-
-   //   if ( result && winState.desktopBitsPixel < 16 && !smCanDo32Bit)
-   //   {
-   //      // If Windows 95 cannot switch bit depth, it should only attempt 16-bit cards
-   //      // with a 16-bit desktop
-
-   //      // See if we can get a 32-bit pixel format:
-   //      PIXELFORMATDESCRIPTOR pfd;
-
-   //      CreatePixelFormat( &pfd, 32, 24, 8, false );
-   //      S32 chosenFormat = ChooseBestPixelFormat( testDC, &pfd );
-   //      if ( chosenFormat != 0 )
-   //      {
-   //         dwglDescribePixelFormat( winState.appDC, chosenFormat, sizeof( pfd ), &pfd );
-
-   //         if (pfd.cColorBits == 16)
-   //         {
-   //            Platform::AlertOK("Requires 16-Bit Desktop",
-   //               "You must run in 16-bit color to run a Torque game.\nPlease quit the game, set your desktop color depth to 16-bit\nand then restart the application.");
-
-   //            result = false;
-   //         }
-   //      }
-   //   }
-   //}
-   //else if ( winState.desktopBitsPixel < 16 && smCanSwitchBitDepth )
-   //{
-   //   // Try again after changing the display to 16-bit:
-   //   ReleaseDC( testWindow, testDC );
-   //   DestroyWindow( testWindow );
-
-   //   DEVMODE devMode;
-   //   dMemset( &devMode, 0, sizeof( devMode ) );
-   //   devMode.dmSize       = sizeof( devMode );
-   //   devMode.dmBitsPerPel = 16;
-   //   devMode.dmFields     = DM_BITSPERPEL;
-
-   //   U32 test = ChangeDisplaySettings( &devMode, 0 );
-   //   if ( test == DISP_CHANGE_SUCCESSFUL )
-   //   {
-   // //MIN_RESOLUTION defined in platformWin32/platformGL.h
-   //      testWindow = CreateWindow( dT("OGLTest"), dT(""), WS_OVERLAPPED | WS_CAPTION, 0, 0, MIN_RESOLUTION_X, MIN_RESOLUTION_Y, NULL, NULL, winState.appInstance, NULL );
-   //      if ( testWindow )
-   //      {
-   //         testDC = GetDC( testWindow );
-   //         if ( testDC )
-   //         {
-   //            CreatePixelFormat( &pfd, 16, 16, 8, false );
-   //            chosenFormat = ChooseBestPixelFormat( testDC, &pfd );
-   //            if ( chosenFormat != 0 )
-   //            {
-   //               dwglDescribePixelFormat( testDC, chosenFormat, sizeof( pfd ), &pfd );
-
-   //               result = !( pfd.dwFlags & PFD_GENERIC_FORMAT );
-   //               if ( result )
-   //                  fullScreenOnly = true;
-   //            }
-   //         }
-   //      }
-   //   }
-   //   ChangeDisplaySettings( NULL, 0 );
-   //}
-   ////------------------------------------------------------------------------------
-   //// Can't do even 16 bit, alert user they need to upgrade.
-   ////------------------------------------------------------------------------------
-   //else if ( winState.desktopBitsPixel < 16 && !smCanSwitchBitDepth )
-   //{
-   //   Platform::AlertOK("Requires 16-Bit Desktop", "You must run in 16-bit color to run a Torque game.\nPlease quit the game, set your desktop color depth to 16-bit\nand then restart the application.");
-   //}
-
-   //ReleaseDC( testWindow, testDC );
-   //DestroyWindow( testWindow );
-
-   //UnregisterClass( dT("OGLTest"), winState.appInstance );
-
-   //GL_Shutdown();
-
-	//int nPixCount = 0;
-	//int pixAttribs[] = {
-	//	WGL_SUPPORT_OPENGL_ARB, 1,
-	//	WGL_DRAW_TO_WINDOW_ARB, 1,
-	//	WGL_RED_BITS_ARB, 8,
-	//	WGL_GREEN_BITS_ARB, 8,
-	//	WGL_BLUE_BITS_ARB, 8,
-	//	WGL_DEPTH_BITS_ARB, 16,
-	//	WGL_ACCELERATION_ARB,
-	//	WGL_FULL_ACCELERATION_ARB,
-	//	WGL_PIXEL_TYPE_ARB,
-	//	WGL_TYPE_RGBA_ARB,
-	//	0};
-
-	//wglChoosePixelFormatARB(*mContext, &pixAttribs[0], NULL, 1, mPixelFormat, (UINT*)&nPixCount);
-	//   
- //   mTextureManager = new GFXOpenGL33WinTextureManager();
-
-    initGLState();
-    initGenericShaders();
-    mInitialized = true;
-    deviceInited();
+        mTextureManager = new GFXOpenGL33WinTextureManager();
+	    initGLState();
+	    initGenericShaders();
+		mInitialized = true;
+		deviceInited();
+	}
 }
 
 void GFXOpenGL33WinDevice::addVideoMode(GFXVideoMode toAdd)
@@ -384,11 +171,46 @@ void GFXOpenGL33WinDevice::enumerateAdapters( Vector<GFXAdapter*> &adapterList )
     
     Vector<GFXVideoMode> videoModes;
 
+	int monitorCount;
+	GLFWmonitor** monitorArray = glfwGetMonitors(&monitorCount);
+	for (U32 i = 0; i < monitorCount; i++)
+	{
+		toAdd = new GFXAdapter();
+		toAdd->mType = OpenGL;
+		toAdd->mIndex = i;
+		toAdd->mCreateDeviceInstanceDelegate = mCreateDeviceInstance;
+		adapterList.push_back(toAdd);
+
+		int videoModeCount;
+		const GLFWvidmode* videoModes = glfwGetVideoModes(monitorArray[i], &videoModeCount);
+		for (U32 j= 0; j< videoModeCount; j++)
+		{
+			GFXVideoMode toVMAdd;
+
+			toVMAdd.resolution.x = videoModes[j].width;
+			toVMAdd.resolution.y = videoModes[j].height;
+			toVMAdd.refreshRate = videoModes[j].refreshRate;
+			toVMAdd.fullScreen = false;
+			toAdd->mAvailableModes.push_back(toVMAdd);
+		}
+	}
 }
 
 void GFXOpenGL33WinDevice::enumerateVideoModes()
 {
     mVideoModes.clear();
+
+	int videoModeCount;
+	const GLFWvidmode* videoModes = glfwGetVideoModes(glfwGetPrimaryMonitor(), &videoModeCount);
+	for (U32 j= 0; j < videoModeCount; j++)
+	{
+		GFXVideoMode toVMAdd;
+		toVMAdd.resolution.x = videoModes[j].width;
+		toVMAdd.resolution.y = videoModes[j].height;
+		toVMAdd.refreshRate = videoModes[j].refreshRate;
+		toVMAdd.fullScreen = false;
+		mVideoModes.push_back(toVMAdd);
+	}
 }
 
 void GFXOpenGL33WinDevice::zombify()
@@ -762,7 +584,7 @@ void GFXOpenGL33WinDevice::_updateRenderTargets()
             
             win->makeActive();
             
-            if( win->getContext() != *(static_cast<GFXOpenGL33WinDevice*>(GFX)->mContext ))
+            //if( win->getContext() != *(static_cast<GFXOpenGL33WinDevice*>(GFX)->mContext ))
             {
                 mRTDirty = false;
                 GFX->updateStates(true);

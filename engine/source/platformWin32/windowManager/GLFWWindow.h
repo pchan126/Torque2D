@@ -3,23 +3,22 @@
 // Copyright GarageGames, LLC 2011
 //-----------------------------------------------------------------------------
 
-#ifndef  _WINDOWMANAGER_WIN32_WIN32WINDOW_
-#define  _WINDOWMANAGER_WIN32_WIN32WINDOW_
+#ifndef _TORQUE_GLFWWindow_H_
+#define _TORQUE_GLFWWindow_H_
 
 #include "windowManager/platformWindow.h"
-#include "windowManager/platformWindowMgr.h"
-#include "platform/platformGL.h"
+#include "./GLFWWindowManager.h"
+#include "./GLFWCursorController.h"
 
 #include "graphics/gfxTarget.h"
 #include "graphics/gfxStructs.h"
 
 class GLFWwindow;
 
-/// Implementation of a window on Win32.
-class Win32Window : public PlatformWindow
+class GLFWWindow : public PlatformWindow
 {
 public:
-   virtual ~Win32Window();
+   virtual ~GLFWWindow();
 
    virtual GFXDevice *getGFXDevice() { return mDevice; }
    virtual GFXWindowTarget *getGFXTarget() { return mTarget; }
@@ -108,27 +107,41 @@ public:
    void _centerMouse();
 
    void makeContextCurrent();
-   HGLRC getContext();
+   
+#if defined(GLFW_EXPOSE_NATIVE_NSGL)
+   NSOpenGLContext* getContext() { return glfwGetNSGLContext(window); };
+#endif
+
+#if defined(GLFW_EXPOSE_NATIVE_WGL)
+   HGLRC getContext()  { return glfwGetWGLContext(window); };
+#endif
+   
+   void getCursorPosition( Point2I &point );
+   void setCursorPosition( const Point2D point );
+   
+   const char* getClipboardString() { return glfwGetClipboardString(window); };
+   void setClipboardString(const char *string) { glfwSetClipboardString(window, string); };
 
 protected:
    virtual void _setFullscreen(bool fullScreen);
    
 private:
-   friend class Win32WindowManager;
-   friend class MacCursorController;
+   friend class GLFWWindowManager;
+   friend class GLFWCursorController;
    
-   Win32Window(U32 windowId, const char* windowText, Point2I clientExtent);
+   GLFWWindow(U32 windowId, const char* windowText, Point2I clientExtent);
    
    void setWindowId(U32 newid) { mWindowId = newid;}
    void signalGainFocus();
 
+   static GLFWWindow* sInstance;
    GLFWwindow* window;
 
    GFXDevice *mDevice;
    GFXWindowTargetRef mTarget;
    GFXVideoMode mCurrentMode;
    
-   Win32Window *mNextWindow;
+   GLFWWindow *mNextWindow;
 
    bool mMouseLocked;
    bool mShouldMouseLock;
@@ -136,7 +149,7 @@ private:
    const char* mTitle;
    bool mMouseCaptured;
    
-   Win32WindowManager* mOwningWindowManager;
+   GLFWWindowManager* mOwningWindowManager;
    U32 mSkipMouseEvents;
    
    bool mFullscreen;
@@ -148,10 +161,17 @@ private:
    static void mousebutton_callback(GLFWwindow* window, int button, int action, int mods);
    static void mousemove_callback(GLFWwindow* window, double xpos, double ypos);
    static void window_close_callback(GLFWwindow* window);
+   static void window_focus_callback(GLFWwindow* window, int focus);
+   static void window_iconify_callback(GLFWwindow* window, int iconified);
+   static void window_scroll_callback(GLFWwindow* window, double xoffset, double yoffset );
+   static void window_resize_callback(GLFWwindow* window, int width, int height);
+   static void framebuffer_resize_callback(GLFWwindow* window, int width, int height);
 
 public:
     ButtonEvent       mouseButtonEvent;
     MouseEvent        mouseEvent;
+    MouseWheelEvent   mouseWheelEvent;
+    FramebufferResizeEvent framebufferResizeEvent;
 };
 
 #endif

@@ -1320,18 +1320,6 @@
     <ClCompile Include="..\..\source\graphics\gfxVertexTypes.cc">
       <Filter>graphics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\windowManager\platformCursorController.cpp">
-      <Filter>windowManager</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\windowManager\platformInterface.cpp">
-      <Filter>windowManager</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\windowManager\platformWindow.cpp">
-      <Filter>windowManager</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\windowManager\windowInputGenerator.cpp">
-      <Filter>windowManager</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\source\graphics\primBuilder.cc">
       <Filter>graphics</Filter>
     </ClCompile>
@@ -1446,16 +1434,28 @@
     <ClCompile Include="..\..\source\graphics\OpenGL\gfxOpenGLTextureObject.cc">
       <Filter>graphics\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\platformWin32\windowManager\win32CursorController.cpp">
+    <ClCompile Include="..\..\source\windowManager\platformCursorController.cpp">
+      <Filter>windowManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\windowManager\platformInterface.cpp">
+      <Filter>windowManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\windowManager\platformWindow.cpp">
+      <Filter>windowManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\windowManager\windowInputGenerator.cpp">
+      <Filter>windowManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\platformWin32\windowManager\GLFWCursorController.cc">
       <Filter>platformWin32\windowManager</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\platformWin32\windowManager\win32Window.cpp">
+    <ClCompile Include="..\..\source\platformWin32\windowManager\GLFWWindow.cc">
       <Filter>platformWin32\windowManager</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\platformWin32\windowManager\win32WindowInputGenerator.cpp">
+    <ClCompile Include="..\..\source\platformWin32\windowManager\GLFWWindowInputGenerator.cc">
       <Filter>platformWin32\windowManager</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\platformWin32\windowManager\win32WindowMgr.cpp">
+    <ClCompile Include="..\..\source\platformWin32\windowManager\GLFWWindowManager.cc">
       <Filter>platformWin32\windowManager</Filter>
     </ClCompile>
   </ItemGroup>
@@ -2889,18 +2889,6 @@
     <ClInclude Include="..\..\source\graphics\gfxVertexTypes.h">
       <Filter>graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\windowManager\platformCursorController.h">
-      <Filter>windowManager</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\windowManager\platformWindow.h">
-      <Filter>windowManager</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\windowManager\platformWindowMgr.h">
-      <Filter>windowManager</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\windowManager\windowInputGenerator.h">
-      <Filter>windowManager</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\graphics\primBuilder.h">
       <Filter>graphics</Filter>
     </ClInclude>
@@ -3015,16 +3003,28 @@
     <ClInclude Include="..\..\source\graphics\gfxDeviceStatistics.h">
       <Filter>graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\platformWin32\windowManager\win32CursorController.h">
+    <ClInclude Include="..\..\source\windowManager\platformCursorController.h">
+      <Filter>windowManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\windowManager\platformWindow.h">
+      <Filter>windowManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\windowManager\platformWindowMgr.h">
+      <Filter>windowManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\windowManager\windowInputGenerator.h">
+      <Filter>windowManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platformWin32\windowManager\GLFWCursorController.h">
       <Filter>platformWin32\windowManager</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\platformWin32\windowManager\win32Window.h">
+    <ClInclude Include="..\..\source\platformWin32\windowManager\GLFWWindow.h">
       <Filter>platformWin32\windowManager</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\platformWin32\windowManager\win32WindowInputGenerator.h">
+    <ClInclude Include="..\..\source\platformWin32\windowManager\GLFWWindowInputGenerator.h">
       <Filter>platformWin32\windowManager</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\platformWin32\windowManager\win32WindowMgr.h">
+    <ClInclude Include="..\..\source\platformWin32\windowManager\GLFWWindowManager.h">
       <Filter>platformWin32\windowManager</Filter>
     </ClInclude>
   </ItemGroup>
