@@ -32,7 +32,7 @@
 
 // Script bindings.
 #include "Sprite_ScriptBinding.h"
-#include "Layer.h"
+#include "2d/scene/Layer.h"
 
 //------------------------------------------------------------------------------
 

@@ -40,7 +40,6 @@
 #include "game/resource.h"
 #include "string/unicode.h"
 #include "gui/guiCanvas.h"
-#include "platform/menus/popupMenu.h"
 #include "debug/profiler.h"
 
 //-------------------------------------- Resource Includes

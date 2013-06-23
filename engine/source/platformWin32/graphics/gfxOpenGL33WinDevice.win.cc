@@ -206,6 +206,7 @@ GFXOpenGL33WinDevice::GFXOpenGL33WinDevice( U32 adapterIndex )  : GFXOpenGLDevic
     for (int i = 0; i < TEXTURE_STAGE_COUNT; i++)
         mActiveTextureType[i] = GL_TEXTURE_2D;
 
+    glewInit();
 //	InitAPI();
 }
 
@@ -361,10 +362,10 @@ void GFXOpenGL33WinDevice::init( const GFXVideoMode &mode, PlatformWindow *windo
 	//   
  //   mTextureManager = new GFXOpenGL33WinTextureManager();
 
- //   initGLState();
- //   initGenericShaders();
- //   mInitialized = true;
- //   deviceInited();
+    initGLState();
+    initGenericShaders();
+    mInitialized = true;
+    deviceInited();
 }
 
 void GFXOpenGL33WinDevice::addVideoMode(GFXVideoMode toAdd)

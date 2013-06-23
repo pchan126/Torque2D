@@ -30,7 +30,6 @@
 //#include "platform/platformInput_ScriptBinding.h"
 
 // Static class variables:
-InputManager*  Input::smManager;
 bool           Input::smActive;
 //CursorManager* Input::smCursorManager = 0; //*** DAW: Added
 U8             Input::smModifierKeys; //*** DAW: Added
@@ -445,19 +444,19 @@ U16 Input::getAscii( U16 keyCode, KEY_STATE keyState )
 //------------------------------------------------------------------------------
 void Input::destroy()
 {
-   if ( smManager && smManager->isEnabled() )
-   {
-      smManager->disable();
-      delete smManager;
-      smManager = NULL;
-   }
+   //if ( smManager && smManager->isEnabled() )
+   //{
+   //   smManager->disable();
+   //   delete smManager;
+   //   smManager = NULL;
+   //}
 }
 
 //------------------------------------------------------------------------------
 bool Input::enable()
 {
-   if ( smManager && !smManager->isEnabled() )
-      return( smManager->enable() );
+   //if ( smManager && !smManager->isEnabled() )
+   //   //return( smManager->enable() );
 
    return( false );
 }
@@ -465,8 +464,8 @@ bool Input::enable()
 //------------------------------------------------------------------------------
 void Input::disable()
 {
-   if ( smManager && smManager->isEnabled() )
-      smManager->disable();
+   //if ( smManager && smManager->isEnabled() )
+   //   smManager->disable();
 }
 
 //------------------------------------------------------------------------------
@@ -530,8 +529,8 @@ void Input::reactivate()
 //------------------------------------------------------------------------------
 bool Input::isEnabled()
 {
-   if ( smManager )
-      return smManager->isEnabled();
+   //if ( smManager )
+   //   return smManager->isEnabled();
    return false;
 }
 
@@ -544,8 +543,8 @@ bool Input::isActive()
 //------------------------------------------------------------------------------
 void Input::process()
 {
-   if ( smManager && smManager->isEnabled() && smActive )
-      smManager->process();
+   //if ( smManager && smManager->isEnabled() && smActive )
+   //   smManager->process();
 }
 
 
@@ -562,12 +561,6 @@ void Input::disableJoystick()
 	//DInputManager::disableJoystick();
 }
 
-
-//------------------------------------------------------------------------------
-InputManager* Input::getManager()
-{
-   return( smManager );
-}
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
