@@ -61,6 +61,7 @@ IMPLEMENT_CONOBJECT(FilterImageAsset);
 
 FilterImageAsset::FilterImageAsset()
 {
+   mFilter = nil;
 }
 
 //------------------------------------------------------------------------------
@@ -145,10 +146,6 @@ void FilterImageAsset::copyTo(SimObject* object)
     
     // Copy state.
     pAsset->setImage( getImage().getAssetId() );
-//    pAsset->setAnimationFrames( Con::getData( TypeS32Vector, (void*)&getSpecifiedAnimationFrames(), 0 ) );
-//    pAsset->setAnimationTime( getAnimationTime() );
-//    pAsset->setAnimationCycle( getAnimationCycle() );
-//    pAsset->setRandomStart( getRandomStart() );
 }
 
 //------------------------------------------------------------------------------
@@ -162,105 +159,195 @@ void FilterImageAsset::setImage( const char* pAssetId )
     // Update.
     mImageAsset = pAssetId;
     
-    // Refresh the asset.
+//   // Finish if we don't have a valid image asset.
+//   if ( mImageAsset.isNull() )
+//      return;
+
+   // Refresh the asset.
     refreshAsset();
+
+//   // Ignore no change.
+//   if ( mImageAsset.getAssetId() == StringTable->insert( pAssetId ) )
+//      return;
+//   
+//   // Update.
+//   mImageAsset = pAssetId;
+//   
+//   // Validate frames.
+//   validateFrames();
+//   
+//   // Refresh the asset.
+//   refreshAsset();
+
 }
 
 
 void FilterImageAsset::setFilterName( const char* pAssetId )
 {
-    // Ignore no change.
-    if ( mImageAsset.getAssetId() == StringTable->insert( pAssetId ) )
-        return;
-    
+//    // Ignore no change.
+//    if ( mImageAsset.getAssetId() == StringTable->insert( pAssetId ) )
+//        return;
+//    
     // Update.
     mFilterName = pAssetId;
     
-    // Refresh the asset.
+   NSString *filterString = [[NSString alloc] initWithUTF8String:mFilterName];
+   mFilter = [CIFilter filterWithName:filterString];
+
+   // Refresh the asset.
     refreshAsset();
 }
 
 
 void FilterImageAsset::calculateImage( void )
 {
-    // Debug Profiling.
-    PROFILE_SCOPE(FilterImageAsset_CalculateImage);
+    // Debug Profiling.    PROFILE_SCOPE(FilterImageAsset_CalculateImage);
     GFXOpenGLES20iOSDevice *device = dynamic_cast<GFXOpenGLES20iOSDevice*>(GFX);
     
     // Clear frames.
     mFrames.clear();
-    
-//    // If we have an existing texture and we're setting to the same bitmap then force the texture manager
-//    // to refresh the texture itself.
-//    if ( !mImageTextureHandle.IsNull())
-//        if (dStricmp(mImageTextureHandle->getTextureKey(), mImageFile) == 0 )
-//            mImageTextureHandle.refresh();
-    // GFXTextureObject *GFXTextureManager::createTexture(  U32 width, U32 height, void *pixels, GFXFormat format, GFXTextureProfile *profile )
-//    {
-//        // For now, stuff everything into a GBitmap and pass it off... This may need to be revisited -- BJG
-//        GBitmap *bmp = new GBitmap(width, height, 0, format);
-//        dMemcpy(bmp->getWritableBits(), pixels, width * height * bmp->mBytesPerPixel);
-//        
-//        return createTexture( bmp, String::EmptyString, profile, true );
-//    }
-    
+   
     // Get image texture.
-    GFXOpenGLES20iOSTextureObject* texture = dynamic_cast<GFXOpenGLES20iOSTextureObject*>(TEXMGR->createTexture( mImageFile, &GFXImageAssetTextureProfile ));
-    mImageTextureHandle = GFXTexHandle( texture );
     
+    GFXOpenGLTextureObject* texture = dynamic_cast<GFXOpenGLTextureObject*>(mImageAsset->getImageTexture().getPointer());
+   
+   // Is the texture valid?
+   if ( texture == NULL )
+   {
+      // No, so warn.
+      Con::warnf( "Image '%s' could not load texture '%s'.", getAssetId(), mImageFile );
+      return;
+   }
+
     GFXTextureTarget *texTarget = GFX->allocRenderToTextureTarget();
     
-    GFXOpenGLES20iOSTextureObject* intTexture = dynamic_cast<GFXOpenGLES20iOSTextureObject*>(TEXMGR->createTexture( texture->getWidth(), texture->getHeight(), NULL, GFXFormatR8G8B8A8, &GFXImageAssetTextureProfile  ));
-    
-    texTarget->attachTexture(intTexture);
+    mImageTextureHandle = TEXMGR->createTexture( texture->getWidth(), texture->getHeight(), GFXFormatR8G8B8A8, &GFXImageAssetTextureProfile, 0, 0 );
+    GFXOpenGLTextureObject* outTexture = dynamic_cast<GFXOpenGLTextureObject*>(mImageTextureHandle.getPointer());
+   
+    texTarget->attachTexture(mImageTextureHandle);
     
     GFXTarget *oldTarget = GFX->getActiveRenderTarget();
     device->setActiveRenderTarget(texTarget);
-
-    // Is the texture valid?
-    if ( mImageTextureHandle.IsNull() )
-    {
-        // No, so warn.
-        Con::warnf( "Image '%s' could not load texture '%s'.", getAssetId(), mImageFile );
-        return;
-    }
-    
+   
     CGSize texSize;
     texSize.height = texture->getHeight();
     texSize.width = texture->getWidth();
-    CGColorSpaceRef color_space = CGColorSpaceCreateDeviceRGB();
-    CIImage *image = [CIImage imageWithTexture:texture->getHandle() size:texSize flipped:FALSE colorSpace:color_space];
-
-    NSString *filterString = [[NSString alloc] initWithUTF8String:mFilterName];
-    CIFilter *filter = [CIFilter filterWithName:filterString];
+    CIImage *input = [CIImage imageWithTexture:texture->getHandle() size:texSize flipped:FALSE colorSpace:nil];
     CGRect rect = CGRectMake(0, 0, texSize.width, texSize.height);
     
-    if (filter)
+    if (mFilter != nil)
     {
-        [filter setValue:image forKey:@"inputImage"];
-        NSArray *attrKey = [filter inputKeys];
-        for ( NSString *string in attrKey)
+       [mFilter setDefaults];
+       [mFilter setValue:input forKey:@"inputImage"];
+        for ( NSString *string in [mFilter inputKeys])
         {
-            StringTableEntry entry = StringTable->insert(string.UTF8String);
-            Con::printf("%s", entry);
-            StringTableEntry value = getDataField(entry, NULL);
-//            getDataField(<#StringTableEntry slotName#>, <#const char *array#>)
-//            [filter setValue: forKey:string];
-        }
-
-        @try {
-            image = filter.outputImage;
-        }
-        @catch (NSException *exception) {
-            Con::printf("error ");
-            return;
+           NSDictionary* info = [mFilter.attributes objectForKey:string];
+           StringTableEntry strvalue = getDataField(StringTable->insert(string.UTF8String), NULL);
+           Con::printf("%s: %s", string.UTF8String, strvalue);
+           
+           if (strvalue != NULL)
+           {
+              NSObject *value = [NSClassFromString([info objectForKey:kCIAttributeClass]) alloc];
+              NSString *aType = [info objectForKey:kCIAttributeType];
+              if ([value isMemberOfClass:[NSNumber class]])
+              {
+                 if ([aType isEqualToString:kCIAttributeTypeTime])
+                 {
+                    [mFilter setValue:[NSNumber numberWithFloat:mClamp(dAtof(strvalue), 0.0, 1.0)] forKey:string];
+                 }
+                 else
+                 {
+                    [mFilter setValue:[NSNumber numberWithFloat:dAtof(strvalue)] forKey:string];
+                 }
+              }
+              else if ([value isMemberOfClass:[CIVector class]])
+              {
+                 if ([aType isEqualToString:kCIAttributeTypePosition] || [aType isEqualToString:kCIAttributeTypeOffset])
+                 {
+                    if (StringUnit::getUnitCount(strvalue, " ") == 2)
+                    {
+                       char buffer[128];
+                       dSprintf( buffer, 127, "[%s]", strvalue);
+                       [mFilter setValue:[CIVector vectorWithString:[[NSString alloc] initWithUTF8String:buffer ]] forKey:string];
+                    }
+                 }
+                 else if ([aType isEqualToString:kCIAttributeTypePosition3])
+                 {
+                    if (StringUnit::getUnitCount(strvalue, " ") == 3)
+                    {
+                       char buffer[128];
+                       dSprintf( buffer, 127, "[%s]", strvalue);
+                       [mFilter setValue:[CIVector vectorWithString:[[NSString alloc] initWithUTF8String:buffer ]] forKey:string];
+                    }
+                 }
+                 else if ([aType isEqualToString:kCIAttributeTypeRectangle])
+                 {
+                    if (StringUnit::getUnitCount(strvalue, " ") == 4)
+                    {
+                       char buffer[128];
+                       dSprintf( buffer, 127, "[%s]", strvalue);
+                       [mFilter setValue:[CIVector vectorWithString:[[NSString alloc] initWithUTF8String:buffer ]] forKey:string];
+                    }
+                 }
+              }
+              else if ([value isMemberOfClass:[NSValue class]])
+              {
+                 if ([aType isEqualToString:kCIAttributeTypeTransform])
+                 {
+                    if (StringUnit::getUnitCount(strvalue, " ") == 6)
+                     {
+                        CGAffineTransform xform;
+                        xform.a = (CGFloat)dAtof(StringUnit::getUnit(strvalue, 0, " "));
+                        xform.b = (CGFloat)dAtof(StringUnit::getUnit(strvalue, 1, " "));
+                        xform.c = (CGFloat)dAtof(StringUnit::getUnit(strvalue, 2, " "));
+                        xform.d = (CGFloat)dAtof(StringUnit::getUnit(strvalue, 3, " "));
+                        xform.tx = (CGFloat)dAtof(StringUnit::getUnit(strvalue, 4, " "));
+                        xform.ty = (CGFloat)dAtof(StringUnit::getUnit(strvalue, 5, " "));
+                        [mFilter setValue:[NSValue valueWithBytes:&xform objCType:@encode(CGAffineTransform)] forKey:string];
+                     }
+                 }
+              }
+              else if ([value isMemberOfClass:[CIColor class]])
+              {
+                 GLKVector4 temp;
+                 if (StringUnit::getUnitCount(strvalue, " ") >= 3)
+                 {
+                    temp.r = (CGFloat)dAtof(StringUnit::getUnit(strvalue, 0, " "));
+                    temp.g = (CGFloat)dAtof(StringUnit::getUnit(strvalue, 1, " "));
+                    temp.b = (CGFloat)dAtof(StringUnit::getUnit(strvalue, 2, " "));
+                 }
+                 if (StringUnit::getUnitCount(strvalue, " ") == 4)
+                 {
+                    temp.a = (CGFloat)dAtof(StringUnit::getUnit(strvalue, 3, " "));
+                 }
+                 else
+                 {
+                    temp.a = 1.0;
+                 }
+                 [mFilter setValue:[CIColor colorWithRed:temp.r green:temp.g blue:temp.b alpha:temp.a ] forKey:string];
+              }
+           }
         }
     }
     
+    CIImage *output = [mFilter valueForKey:kCIOutputImageKey];
     // draw Image to textureTarget
-    device->drawImage([filter valueForKey:kCIOutputImageKey ], rect, rect);
+    device->drawImage(output, rect, rect);
 
     GFX->setActiveRenderTarget(oldTarget);
+   GFX->updateStates(true);
+
+
+   // Calculate according to mode.
+   if ( mExplicitMode )
+   {
+      calculateExplicitMode();
+   }
+   else
+   {
+      calculateImplicitMode();
+   }
+
 }
 
 //------------------------------------------------------------------------------

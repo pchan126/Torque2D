@@ -997,7 +997,6 @@ void Scene::sceneRender( const SceneRenderState* pSceneRenderState )
     
     typeWorldQueryResultVector& globalResults = mpWorldQuery->getQueryResults();
     mLightManager.registerGlobalLights( globalResults );
-//   mLightManager.
 
     // Debug Profiling.
     PROFILE_END();  //Scene_RenderSceneVisibleQuery
@@ -1023,6 +1022,9 @@ void Scene::sceneRender( const SceneRenderState* pSceneRenderState )
             // Are there any objects to render in this layer?
             if ( layerObjectCount > 0 )
             {
+//               GFXTarget* oldTarget = GFX->getActiveRenderTarget();
+//               mLayers[layer]->setRenderTarget();
+               
                 // Yes, so increase render picked.
                 pDebugStats->renderPicked += layerObjectCount;
 
@@ -1210,6 +1212,8 @@ void Scene::sceneRender( const SceneRenderState* pSceneRenderState )
                     // Render object overlay.
                     pSceneObject->sceneRenderOverlay( pSceneRenderState );
                 }
+
+//               GFX->setActiveRenderTarget(oldTarget);
             }
 
             // Reset render queue.

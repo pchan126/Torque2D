@@ -47,6 +47,9 @@ public:
     /// Declare Console Object.
     DECLARE_CONOBJECT(FilterImageAsset);
 
+    GFXTexHandle intTexture;
+    CIFilter* mFilter;
+   
 protected:
     virtual void initializeAsset( void );
     virtual void onAssetRefresh( void );
@@ -57,7 +60,7 @@ private:
 protected:
     static bool setImage( void* obj, const char* data )                         { static_cast<FilterImageAsset*>(obj)->setImage( data ); return false; }
     static bool writeImage( void* obj, StringTableEntry pFieldName )            { return static_cast<FilterImageAsset*>(obj)->mImageAsset.notNull(); }
-    static bool setFilterName( void* obj, const char* data )                         { static_cast<FilterImageAsset*>(obj)->setImage( data ); return false; }
+    static bool setFilterName( void* obj, const char* data )                         { static_cast<FilterImageAsset*>(obj)->setFilterName( data ); return false; }
     static bool writeFilterName( void* obj, StringTableEntry pFieldName )            { return static_cast<FilterImageAsset*>(obj)->mFilterName; }
 
 };

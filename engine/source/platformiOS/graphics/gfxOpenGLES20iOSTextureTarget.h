@@ -80,7 +80,8 @@ public:
     virtual void resolve();
     
     virtual void resolveTo(GFXTextureObject* obj);
-    
+   
+   GLuint mFramebuffer;
 protected:
     
     friend class GFXOpenGLES20iOSDevice;
@@ -88,12 +89,6 @@ protected:
     /// The callback used to get texture events.
     /// @see GFXTextureManager::addEventDelegate
     void _onTextureEvent( GFXTexCallbackCode code );
-    
-    /// If true our implementation should use AUX buffers
-    bool _needsAux;
-    
-    /// Pointer to our internal implementation
-    AutoPtr<_GFXOpenGLES20iOSTextureTargetImpl> _impl;
     
     /// Array of _GFXOpenGLES20iOSTargetDesc's, an internal struct used to keep track of texture data.
     AutoPtr<_GFXOpenGLES20iOSTargetDesc> mTargets[MaxRenderSlotId];

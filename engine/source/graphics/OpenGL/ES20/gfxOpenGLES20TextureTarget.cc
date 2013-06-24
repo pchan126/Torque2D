@@ -83,72 +83,6 @@ AssertFatal(false, "Something really bad happened with an FBO");\
 }\
 }
 
-_GFXOpenGLES20TextureTargetFBOImpl::_GFXOpenGLES20TextureTargetFBOImpl(GFXOpenGLES20TextureTarget* target)
-{
-    glGenFramebuffers(1, &mFramebuffer);
-}
-
-_GFXOpenGLES20TextureTargetFBOImpl::~_GFXOpenGLES20TextureTargetFBOImpl()
-{
-   glDeleteFramebuffers(1, &mFramebuffer);
-}
-
-void _GFXOpenGLES20TextureTargetFBOImpl::applyState()
-{
-    // REMINDER: When we implement MRT support, check against GFXOpenGLDevice::getNumRenderTargets()
-    
-    glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
-    
-    _GFXOpenGLES20TargetDesc* color0 = mTarget->getTargetDesc(GFXTextureTarget::Color0);
-    if(color0)
-    {
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, color0->getBinding(), color0->getHandle(), color0->getMipLevel());
-    }
-    else
-    {
-        // Clears the texture (note that the binding is irrelevent)
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
-    }
-    
-    _GFXOpenGLES20TargetDesc* depthStencil = mTarget->getTargetDesc(GFXTextureTarget::DepthStencil);
-    if(depthStencil)
-    {
-        // Certain drivers have issues with depth only FBOs.  That and the next two asserts assume we have a color target.
-        AssertFatal(color0, "GFXGLTextureTarget::applyState() - Cannot set DepthStencil target without Color0 target!");
-        AssertFatal(depthStencil->getWidth() == color0->getWidth(), "GFXGLTextureTarget::applyState() - DepthStencil and Color0 targets MUST have the same width!");
-        AssertFatal(depthStencil->getHeight() == color0->getHeight(), "GFXGLTextureTarget::applyState() - DepthStencil and Color0 targets MUST have the same height!");
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthStencil->getBinding(), depthStencil->getHandle(), depthStencil->getMipLevel());
-    }
-    else
-    {
-        // Clears the texture (note that the binding is irrelevent)
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, 0, 0);
-    }
-    
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
-void _GFXOpenGLES20TextureTargetFBOImpl::makeActive()
-{
-    glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
-}
-
-void _GFXOpenGLES20TextureTargetFBOImpl::finish()
-{
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    
-    _GFXOpenGLES20TargetDesc* color0 = mTarget->getTargetDesc(GFXTextureTarget::Color0);
-    if(!color0 || !(color0->hasMips()))
-        return;
-    
-    // Generate mips if necessary
-    // Assumes a 2D texture.
-    glActiveTexture(GL_TEXTURE0);
-    PRESERVE_2D_TEXTURE();
-    glBindTexture(GL_TEXTURE_2D, color0->getHandle());
-    glGenerateMipmap(GL_TEXTURE_2D);
-}
-
 
 // Actual GFXOpenGLES20TextureTarget interface
 GFXOpenGLES20TextureTarget::GFXOpenGLES20TextureTarget()
@@ -156,14 +90,12 @@ GFXOpenGLES20TextureTarget::GFXOpenGLES20TextureTarget()
    for(U32 i=0; i<MaxRenderSlotId; i++)
       mTargets[i] = NULL;
    
-//   GFXTextureManager::addEventDelegate( this, &GFXOpenGLES20TextureTarget::_onTextureEvent );
-
-   _impl = new _GFXOpenGLES20TextureTargetFBOImpl(this);
-   _needsAux = false;
+   glGenFramebuffers(1, &mFramebuffer);
 }
 
 GFXOpenGLES20TextureTarget::~GFXOpenGLES20TextureTarget()
 {
+   glDeleteFramebuffers(1, &mFramebuffer);
 //   GFXTextureManager::removeEventDelegate( this, &GFXOpenGLES20TextureTarget::_onTextureEvent );
 }
 
@@ -183,13 +115,6 @@ GFXFormat GFXOpenGLES20TextureTarget::getFormat()
 
 void GFXOpenGLES20TextureTarget::attachTexture( GFXTextureObject *tex, RenderSlot slot, U32 mipLevel/*=0*/, U32 zOffset /*= 0*/ )
 {
-   // GFXTextureTarget::sDefaultDepthStencil is a hint that we want the window's depth buffer.
-   if(tex == GFXTextureTarget::sDefaultDepthStencil)
-      _needsAux = true;
-   
-   if(slot == DepthStencil && tex != GFXTextureTarget::sDefaultDepthStencil)
-      _needsAux = false;
-   
    // Triggers an update when we next render
    invalidateState();
 
@@ -229,9 +154,6 @@ void GFXOpenGLES20TextureTarget::clearAttachments()
 void GFXOpenGLES20TextureTarget::zombify()
 {
    invalidateState();
-   
-   // Will be recreated in applyState
-   _impl = NULL;
 }
 
 void GFXOpenGLES20TextureTarget::resurrect()
@@ -241,12 +163,23 @@ void GFXOpenGLES20TextureTarget::resurrect()
 
 void GFXOpenGLES20TextureTarget::makeActive()
 {
-   _impl->makeActive();
+   glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
 }
 
 void GFXOpenGLES20TextureTarget::deactivate()
 {
-   _impl->finish();
+   glBindFramebuffer(GL_FRAMEBUFFER, 0);
+   
+   _GFXOpenGLES20TargetDesc* color0 = getTargetDesc(GFXTextureTarget::Color0);
+   if(!color0 || !(color0->hasMips()))
+      return;
+   
+   // Generate mips if necessary
+   // Assumes a 2D texture.
+   glActiveTexture(GL_TEXTURE0);
+   PRESERVE_2D_TEXTURE();
+   glBindTexture(GL_TEXTURE_2D, color0->getHandle());
+   glGenerateMipmap(GL_TEXTURE_2D);
 }
 
 void GFXOpenGLES20TextureTarget::applyState()
@@ -257,9 +190,35 @@ void GFXOpenGLES20TextureTarget::applyState()
    // So we don't do this over and over again
    stateApplied();
    
-   _impl = new _GFXOpenGLES20TextureTargetFBOImpl(this);
-           
-   _impl->applyState();
+   glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
+   
+   _GFXOpenGLES20TargetDesc* color0 = getTargetDesc(GFXTextureTarget::Color0);
+   if(color0)
+   {
+      glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, color0->getBinding(), color0->getHandle(), color0->getMipLevel());
+   }
+   else
+   {
+      // Clears the texture (note that the binding is irrelevent)
+      glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
+   }
+   
+   _GFXOpenGLES20TargetDesc* depthStencil = getTargetDesc(GFXTextureTarget::DepthStencil);
+   if(depthStencil)
+   {
+      // Certain drivers have issues with depth only FBOs.  That and the next two asserts assume we have a color target.
+      AssertFatal(color0, "GFXGLTextureTarget::applyState() - Cannot set DepthStencil target without Color0 target!");
+      AssertFatal(depthStencil->getWidth() == color0->getWidth(), "GFXGLTextureTarget::applyState() - DepthStencil and Color0 targets MUST have the same width!");
+      AssertFatal(depthStencil->getHeight() == color0->getHeight(), "GFXGLTextureTarget::applyState() - DepthStencil and Color0 targets MUST have the same height!");
+      glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthStencil->getBinding(), depthStencil->getHandle(), depthStencil->getMipLevel());
+   }
+   else
+   {
+      // Clears the texture (note that the binding is irrelevent)
+      glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, 0, 0);
+   }
+   
+   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 _GFXOpenGLES20TargetDesc* GFXOpenGLES20TextureTarget::getTargetDesc(RenderSlot slot) const

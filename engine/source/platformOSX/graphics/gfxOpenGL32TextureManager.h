@@ -60,14 +60,14 @@ protected:
 //                                            void *pixels,
 //                                            GFXFormat format,
 //                                            GFXTextureProfile *profile );
-//    
+    
 //    virtual GFXTextureObject *createTexture(  U32 width,
 //                                            U32 height,
 //                                            GFXFormat format,
 //                                            GFXTextureProfile *profile,
 //                                            U32 numMipLevels,
 //                                            S32 antialiasLevel);
-    
+   
    GFXTextureObject *_createTextureObject(   U32 height,
                                              U32 width,
                                              U32 depth,

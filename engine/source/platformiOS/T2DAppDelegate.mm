@@ -60,20 +60,20 @@ bool _iOSTorqueFatalError = false;
     
     iOSPlatState * platState = [iOSPlatState sharedPlatState];
     
-	NSArray *categoryNames = @[ kCICategoryBuiltIn ];
-    NSArray* filterNames = [CIFilter filterNamesInCategories:categoryNames];
-    
-    for (NSString *temp in filterNames)
-    {
-        gFilterIndexNames.push_back(StringTable->insert([temp UTF8String]));
-    }
-    
+//	NSArray *categoryNames = @[ kCICategoryBuiltIn ];
+//    NSArray* filterNames = [CIFilter filterNamesInCategories:categoryNames];
+   
+//    for (NSString *temp in filterNames)
+//    {
+//        gFilterIndexNames.push_back(StringTable->insert([temp UTF8String]));
+//    }
+   
     BOOL initialResult = [platState initializeTorque2D];
 
-    for (int i = 0; i < gFilterIndexNames.size(); i++)
-    {
-        Con::printf("Filter: %s", gFilterIndexNames[i]);
-    }
+//    for (int i = 0; i < gFilterIndexNames.size(); i++)
+//    {
+//        Con::printf("Filter: %s", gFilterIndexNames[i]);
+//    }
 
     if (!initialResult)
    {

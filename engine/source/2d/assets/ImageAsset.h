@@ -232,14 +232,13 @@ public:
     /// Declare Console Object.
     DECLARE_CONOBJECT(ImageAsset);
 
-private:
+protected:
     inline void clampFrame( U32& frame ) const                              { const U32 totalFrames = getFrameCount(); if ( frame >= totalFrames ) frame = (totalFrames == 0 ? 0 : totalFrames-1 ); };
     virtual void calculateImage( void );
     void calculateImplicitMode( void );
     void calculateExplicitMode( void );
     void setTextureFilter( const TextureFilterMode filterMode );
 
-protected:
     virtual void initializeAsset( void );
     virtual void onAssetRefresh( void );
 

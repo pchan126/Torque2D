@@ -39,6 +39,7 @@
 #include "./gfxOpenGL32Shader.h"
 #include "graphics/primBuilder.h"
 #include "console/console.h"
+#import <QuartzCore/QuartzCore.h>
 
 GFXAdapter::CreateDeviceInstanceDelegate GFXOpenGL32Device::mCreateDeviceInstance(GFXOpenGL32Device::createInstance);
 
@@ -105,6 +106,15 @@ void GFXOpenGL32Device::init( const GFXVideoMode &mode, PlatformWindow *window )
        mContext = mWindow->getContext();
        mWindow->makeContextCurrent();
 
+       CGLContextObj cglContext = (CGLContextObj)[mContext CGLContextObj];
+       CGLPixelFormatObj cglPixelFormat = CGLGetPixelFormat(cglContext);
+       
+       NSDictionary *opts = @{ kCIContextWorkingColorSpace : [NSNull null] };
+       mCIContext = [CIContext contextWithCGLContext: cglContext
+                                                 pixelFormat: cglPixelFormat
+                                                  colorSpace:nil
+                                                     options:opts];
+       
        mTextureManager = new GFXOpenGL32TextureManager(mContext);
 
        initGLState();
@@ -328,7 +338,6 @@ GFXWindowTarget *GFXOpenGL32Device::allocWindowTarget(PlatformWindow *window)
    
     // Allocate the wintarget and create a new context.
     GFXOpenGL32WindowTarget *gwt = new GFXOpenGL32WindowTarget(thewindow, this);
-//    gwt->mContext = ctx ? ctx : mContext;
     return gwt;
 }
 
@@ -530,6 +539,18 @@ void GFXOpenGL32Device::_updateRenderTargets()
         glViewport( mViewport.point.x, mViewport.point.y, mViewport.extent.x, mViewport.extent.y );
         mViewportDirty = false;
     }
+}
+
+// special immediate function for drawing CIImages
+void GFXOpenGL32Device::drawImage( CIImage* image, CGRect inRect, CGRect fromRect)
+{
+   if( mStateDirty )
+   {
+      updateStates();
+   }
+   
+   [mCIContext drawImage:image inRect:inRect fromRect:fromRect];
+//   mBaseEffect.lightModelTwoSided = GL_FALSE;
 }
 
 //

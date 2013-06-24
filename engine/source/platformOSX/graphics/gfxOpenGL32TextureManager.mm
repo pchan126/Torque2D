@@ -96,7 +96,7 @@ GFXTextureObject *GFXOpenGL32TextureManager::createTexture(  GBitmap *bmp,
 //{
 //    
 //}
-//
+
 //GFXTextureObject *GFXOpenGL32TextureManager::createTexture(  U32 width,
 //                                        U32 height,
 //                                        GFXFormat format,

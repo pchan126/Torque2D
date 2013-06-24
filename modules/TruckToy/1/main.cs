@@ -760,7 +760,7 @@ function TruckToy::createTruck( %this, %posX, %posY )
     // Rear tire.   
     %tireRear = new Sprite();
     %tireRear.setPosition( %posX-1.4, %posY-1.0 );
-    %tireRear.setImage( "ToyAssets:tires" );
+    %tireRear.setImage( "ToyAssets:F_tires" );
     %tireRear.setSize( 1.7, 1.7 );
     %tireRear.setSceneLayer( TruckToy.TruckDomain-1 );
     %tireRear.setSceneGroup( TruckToy.ObstacleDomain );

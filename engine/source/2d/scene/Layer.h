@@ -10,6 +10,8 @@
 
 #include "2d/sceneobject/SceneObject.h"
 
+GFX_DeclareTextureProfile(GFXLayerTextureProfile);
+
 //---------------------------------------------------------------------------
 /// A group of SceneObjects.
 ///
@@ -43,8 +45,12 @@ private:
    Point3F mCameraTranslationScale;
    ColorF mLight;
    
+   void makeRenderTarget(void);
+   GFXTextureTargetRef texTarget;
+   GFXTexHandle texHandle;
+   
 public:
-   Layer(): mSortMode(SceneRenderQueue::RENDER_SORT_NEWEST), mLight(1.0f, 1.0f, 1.0f, 1.0f) {};
+   Layer();
    ~Layer();
    
    /// Add an object to the group.
@@ -54,6 +60,8 @@ public:
    
    inline ColorF getLight( void) { return mLight; };
    inline void setLight( ColorF light) { mLight = light; };
+   
+   void setRenderTarget();
    
 //   /// Remove an object from the group.
 //   virtual void removeObject(SceneObject*);
@@ -73,6 +81,10 @@ public:
 
 inline void Layer::addObject(SceneObject* obj, SimObjectId id)
 {
+   if ( empty() )
+   {
+      makeRenderTarget();
+   }
    obj->mId = id;
    addObject( obj );
 }

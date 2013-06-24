@@ -72,16 +72,12 @@ protected:
 
    friend class GFXOpenGLDevice;
 
+   GLuint mFramebuffer;
+
    /// The callback used to get texture events.
    /// @see GFXTextureManager::addEventDelegate
    void _onTextureEvent( GFXTexCallbackCode code );
    
-   /// If true our implementation should use AUX buffers
-//   bool _needsAux;
-   
-   /// Pointer to our internal implementation
-   AutoPtr<_GFXOpenGLTextureTargetImpl> _impl;
-
    /// Array of _GFXGLTargetDesc's, an internal struct used to keep track of texture data.
    AutoPtr<_GFXGLTargetDesc> mTargets[MaxRenderSlotId];
 

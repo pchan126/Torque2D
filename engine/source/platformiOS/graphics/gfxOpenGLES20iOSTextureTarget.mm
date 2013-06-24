@@ -83,87 +83,18 @@ AssertFatal(false, "Something really bad happened with an FBO");\
 }\
 }
 
-_GFXOpenGLES20iOSTextureTargetFBOImpl::_GFXOpenGLES20iOSTextureTargetFBOImpl(GFXOpenGLES20iOSTextureTarget* target)
-{
-    glGenFramebuffers(1, &mFramebuffer);
-}
-
-_GFXOpenGLES20iOSTextureTargetFBOImpl::~_GFXOpenGLES20iOSTextureTargetFBOImpl()
-{
-   glDeleteFramebuffers(1, &mFramebuffer);
-}
-
-void _GFXOpenGLES20iOSTextureTargetFBOImpl::applyState()
-{
-    // REMINDER: When we implement MRT support, check against GFXOpenGLDevice::getNumRenderTargets()
-    
-    glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
-    
-    _GFXOpenGLES20iOSTargetDesc* color0 = mTarget->getTargetDesc(GFXTextureTarget::Color0);
-    if(color0)
-    {
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, color0->getBinding(), color0->getHandle(), color0->getMipLevel());
-    }
-    else
-    {
-        // Clears the texture (note that the binding is irrelevent)
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
-    }
-    
-    _GFXOpenGLES20iOSTargetDesc* depthStencil = mTarget->getTargetDesc(GFXTextureTarget::DepthStencil);
-    if(depthStencil)
-    {
-        // Certain drivers have issues with depth only FBOs.  That and the next two asserts assume we have a color target.
-        AssertFatal(color0, "GFXGLTextureTarget::applyState() - Cannot set DepthStencil target without Color0 target!");
-        AssertFatal(depthStencil->getWidth() == color0->getWidth(), "GFXGLTextureTarget::applyState() - DepthStencil and Color0 targets MUST have the same width!");
-        AssertFatal(depthStencil->getHeight() == color0->getHeight(), "GFXGLTextureTarget::applyState() - DepthStencil and Color0 targets MUST have the same height!");
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthStencil->getBinding(), depthStencil->getHandle(), depthStencil->getMipLevel());
-    }
-    else
-    {
-        // Clears the texture (note that the binding is irrelevent)
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, 0, 0);
-    }
-    
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
-void _GFXOpenGLES20iOSTextureTargetFBOImpl::makeActive()
-{
-    glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
-}
-
-void _GFXOpenGLES20iOSTextureTargetFBOImpl::finish()
-{
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    
-    _GFXOpenGLES20iOSTargetDesc* color0 = mTarget->getTargetDesc(GFXTextureTarget::Color0);
-    if(!color0 || !(color0->hasMips()))
-        return;
-    
-    // Generate mips if necessary
-    // Assumes a 2D texture.
-    glActiveTexture(GL_TEXTURE0);
-    PRESERVE_2D_TEXTURE();
-    glBindTexture(GL_TEXTURE_2D, color0->getHandle());
-    glGenerateMipmap(GL_TEXTURE_2D);
-}
-
-
 // Actual GFXOpenGLES20iOSTextureTarget interface
 GFXOpenGLES20iOSTextureTarget::GFXOpenGLES20iOSTextureTarget()
 {
    for(U32 i=0; i<MaxRenderSlotId; i++)
       mTargets[i] = NULL;
    
-//   GFXTextureManager::addEventDelegate( this, &GFXOpenGLES20iOSTextureTarget::_onTextureEvent );
-
-   _impl = new _GFXOpenGLES20iOSTextureTargetFBOImpl(this);
-   _needsAux = false;
+   glGenFramebuffers(1, &mFramebuffer);
 }
 
 GFXOpenGLES20iOSTextureTarget::~GFXOpenGLES20iOSTextureTarget()
 {
+   glDeleteFramebuffers(1, &mFramebuffer);
 //   GFXTextureManager::removeEventDelegate( this, &GFXOpenGLES20iOSTextureTarget::_onTextureEvent );
 }
 
@@ -178,13 +109,6 @@ const Point2I GFXOpenGLES20iOSTextureTarget::getSize()
 
 void GFXOpenGLES20iOSTextureTarget::attachTexture( GFXTextureObject *tex, RenderSlot slot, U32 mipLevel/*=0*/, U32 zOffset /*= 0*/ )
 {
-   // GFXTextureTarget::sDefaultDepthStencil is a hint that we want the window's depth buffer.
-   if(tex == GFXTextureTarget::sDefaultDepthStencil)
-      _needsAux = true;
-   
-   if(slot == DepthStencil && tex != GFXTextureTarget::sDefaultDepthStencil)
-      _needsAux = false;
-   
    // Triggers an update when we next render
    invalidateState();
 
@@ -236,12 +160,23 @@ void GFXOpenGLES20iOSTextureTarget::resurrect()
 
 void GFXOpenGLES20iOSTextureTarget::makeActive()
 {
-   _impl->makeActive();
+   glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
 }
 
 void GFXOpenGLES20iOSTextureTarget::deactivate()
 {
-   _impl->finish();
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    _GFXOpenGLES20iOSTargetDesc* color0 = getTargetDesc(GFXTextureTarget::Color0);
+    if(!color0 || !(color0->hasMips()))
+        return;
+
+    // Generate mips if necessary
+    // Assumes a 2D texture.
+    glActiveTexture(GL_TEXTURE0);
+    PRESERVE_2D_TEXTURE();
+    glBindTexture(GL_TEXTURE_2D, color0->getHandle());
+    glGenerateMipmap(GL_TEXTURE_2D);
 }
 
 void GFXOpenGLES20iOSTextureTarget::applyState()
@@ -252,9 +187,35 @@ void GFXOpenGLES20iOSTextureTarget::applyState()
    // So we don't do this over and over again
    stateApplied();
    
-   _impl = new _GFXOpenGLES20iOSTextureTargetFBOImpl(this);
-           
-   _impl->applyState();
+   glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
+   
+   _GFXOpenGLES20iOSTargetDesc* color0 = getTargetDesc(GFXTextureTarget::Color0);
+   if(color0)
+   {
+      glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, color0->getBinding(), color0->getHandle(), color0->getMipLevel());
+   }
+   else
+   {
+      // Clears the texture (note that the binding is irrelevent)
+      glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
+   }
+   
+   _GFXOpenGLES20iOSTargetDesc* depthStencil = getTargetDesc(GFXTextureTarget::DepthStencil);
+   if(depthStencil)
+   {
+      // Certain drivers have issues with depth only FBOs.  That and the next two asserts assume we have a color target.
+      AssertFatal(color0, "GFXGLTextureTarget::applyState() - Cannot set DepthStencil target without Color0 target!");
+      AssertFatal(depthStencil->getWidth() == color0->getWidth(), "GFXGLTextureTarget::applyState() - DepthStencil and Color0 targets MUST have the same width!");
+      AssertFatal(depthStencil->getHeight() == color0->getHeight(), "GFXGLTextureTarget::applyState() - DepthStencil and Color0 targets MUST have the same height!");
+      glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthStencil->getBinding(), depthStencil->getHandle(), depthStencil->getMipLevel());
+   }
+   else
+   {
+      // Clears the texture (note that the binding is irrelevent)
+      glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, 0, 0);
+   }
+   
+   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 _GFXOpenGLES20iOSTargetDesc* GFXOpenGLES20iOSTextureTarget::getTargetDesc(RenderSlot slot) const

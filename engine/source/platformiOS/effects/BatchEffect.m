@@ -25,7 +25,8 @@
       self.lightModelTwoSided = GL_FALSE;
       self.useConstantColor = GL_TRUE;
       
-      self.lights = nil;
+      GLKVector3 temp = GLKVector3Make(0.0, 0.0, 0.0);
+      self.lights = [NSArray arrayWithObjects: [NSValue valueWithBytes:&temp objCType:@encode(GLKVector3)], nil];
       
       self.lightingType = GLKLightingTypePerVertex;
       self.lightModelAmbientColor = GLKVector4Make(0.2, 0.2, 0.2, 1.0);

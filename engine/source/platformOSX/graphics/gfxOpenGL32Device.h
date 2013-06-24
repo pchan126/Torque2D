@@ -115,6 +115,10 @@ public:
    bool supportsAnisotropic() const { return mSupportsAnisotropic; }
    
     void* getTextureLoader() const { return mTextureLoader; };
+   
+   // special immediate function for drawing CIImages
+   void drawImage( CIImage* image, CGRect inRect, CGRect fromRect);
+
 protected:
    /// Called by GFXDevice to create a device specific stateblock
    virtual GFXStateBlockRef createStateBlockInternal(const GFXStateBlockDesc& desc);
@@ -169,6 +173,7 @@ private:
    
    NSOpenGLContext* mContext;       // NSOpenGLContext
    NSOpenGLPixelFormat* mPixelFormat;   // NSOpenGLPixelFormat
+   CIContext *mCIContext;
    void* mTextureLoader; // GLKTextureLoader - for OSX version 10.8
 
    F32 mPixelShaderVersion;

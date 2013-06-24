@@ -81,7 +81,8 @@ public:
     virtual void resolve();
     
     virtual void resolveTo(GFXTextureObject* obj);
-    
+   
+    GLuint mFramebuffer, mRenderBuffer;
 protected:
     
     friend class GFXOpenGLES20Device;
@@ -89,9 +90,6 @@ protected:
     /// The callback used to get texture events.
     /// @see GFXTextureManager::addEventDelegate
     void _onTextureEvent( GFXTexCallbackCode code );
-    
-    /// If true our implementation should use AUX buffers
-    bool _needsAux;
     
     /// Pointer to our internal implementation
     AutoPtr<_GFXOpenGLES20TextureTargetImpl> _impl;
@@ -110,32 +108,32 @@ protected:
 };
 
 
-// Internal implementations
-class _GFXOpenGLES20TextureTargetImpl
-{
-public:
-    GFXOpenGLES20TextureTarget* mTarget;
-    
-    virtual ~_GFXOpenGLES20TextureTargetImpl() {}
-    
-    virtual void applyState() = 0;
-    virtual void makeActive() = 0;
-    virtual void finish() = 0;
-};
-
-// Use FBOs to render to texture.  This is the preferred implementation and is almost always used.
-class _GFXOpenGLES20TextureTargetFBOImpl : public _GFXOpenGLES20TextureTargetImpl
-{
-public:
-    GLuint mFramebuffer, mRenderBuffer;
-    
-    _GFXOpenGLES20TextureTargetFBOImpl(GFXOpenGLES20TextureTarget* target);
-    virtual ~_GFXOpenGLES20TextureTargetFBOImpl();
-    
-    virtual void applyState();
-    virtual void makeActive();
-    virtual void finish();
-};
-
+//// Internal implementations
+//class _GFXOpenGLES20TextureTargetImpl
+//{
+//public:
+//    GFXOpenGLES20TextureTarget* mTarget;
+//    
+//    virtual ~_GFXOpenGLES20TextureTargetImpl() {}
+//    
+//    virtual void applyState() = 0;
+//    virtual void makeActive() = 0;
+//    virtual void finish() = 0;
+//};
+//
+//// Use FBOs to render to texture.  This is the preferred implementation and is almost always used.
+//class _GFXOpenGLES20TextureTargetFBOImpl : public _GFXOpenGLES20TextureTargetImpl
+//{
+//public:
+//    GLuint mFramebuffer, mRenderBuffer;
+//    
+//    _GFXOpenGLES20TextureTargetFBOImpl(GFXOpenGLES20TextureTarget* target);
+//    virtual ~_GFXOpenGLES20TextureTargetFBOImpl();
+//    
+//    virtual void applyState();
+//    virtual void makeActive();
+//    virtual void finish();
+//};
+//
 
 #endif

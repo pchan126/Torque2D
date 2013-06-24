@@ -600,11 +600,9 @@ void GFXOpenGLES20iOSDevice::preDrawPrimitive()
 // special immediate function for drawing CIImages
 void GFXOpenGLES20iOSDevice::drawImage( CIImage* image, CGRect inRect, CGRect fromRect)
 {
-    if( mStateDirty )
-    {
-        updateStates();
-    }
-    
+     updateStates(true);
+//   _updateRenderTargets();
+   
     [mCIContext drawImage:image inRect:inRect fromRect:fromRect];
    mBaseEffect.lightModelTwoSided = GL_FALSE;
 
