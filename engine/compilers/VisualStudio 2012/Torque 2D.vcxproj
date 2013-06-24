@@ -124,7 +124,7 @@
     <ClCompile>
       <Optimization>MinSpace</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>../../Lib;../../Lib/zlib;../../Lib/lpng;../../Lib/ljpeg;../../Lib/openal/win32;../../Source;../../Source/persistence/rapidjson/include;../../Source/persistence/libjson;../../source/testing/googleTest;../../source/testing/googleTest/include;../../lib/glfw/include;../../lib/glfw/deps;D:\Torque\Torque2D-GFX\engine\lib\glew\glew-1.9.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../Lib;../../Lib/zlib;../../Lib/lpng;../../Lib/ljpeg;../../Lib/openal/win32;../../Source;../../Source/persistence/rapidjson/include;../../Source/persistence/libjson;../../source/testing/googleTest;../../source/testing/googleTest/include;../../lib/glfw/include;../../lib/glfw/deps;../../lib/glew/glew-1.9.0/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>UNICODE;_CRT_SECURE_NO_DEPRECATE;_VARIADIC_MAX=10;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
