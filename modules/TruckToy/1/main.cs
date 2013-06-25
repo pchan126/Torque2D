@@ -735,7 +735,7 @@ function TruckToy::createTruck( %this, %posX, %posY )
 
     TruckToy.TruckBody = new Sprite();
     TruckToy.TruckBody.setPosition( %posX, %posY );
-    TruckToy.TruckBody.setImage( "TruckToy:truckBody" );
+    TruckToy.TruckBody.setImage( "TruckToy:F_truck" );
     TruckToy.TruckBody.setSize( 5, 2.5 );
     TruckToy.TruckBody.setSceneLayer( TruckToy.TruckDomain );
     TruckToy.TruckBody.setSceneGroup( TruckToy.ObstacleDomain);
@@ -776,7 +776,7 @@ function TruckToy::createTruck( %this, %posX, %posY )
     // Front tire.
     %tireFront = new Sprite();
     %tireFront.setPosition( %posX+1.7, %posY-1.0 );
-    %tireFront.setImage( "ToyAssets:tires" );
+    %tireFront.setImage( "ToyAssets:F_tires" );
     %tireFront.setSize( 1.7, 1.7 );
     %tireFront.setSceneLayer( TruckToy.TruckDomain-1 );
     %tireFront.setSceneGroup( TruckToy.ObstacleDomain );

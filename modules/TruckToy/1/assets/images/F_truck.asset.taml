@@ -1,0 +1,4 @@
+<FilterImageAsset
+    AssetName="F_truck"
+    Image="@asset=TruckToy:truckBody"
+    Filter="CIPixellate" />

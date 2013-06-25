@@ -544,10 +544,7 @@ void GFXOpenGL32Device::_updateRenderTargets()
 // special immediate function for drawing CIImages
 void GFXOpenGL32Device::drawImage( CIImage* image, CGRect inRect, CGRect fromRect)
 {
-   if( mStateDirty )
-   {
-      updateStates();
-   }
+   updateStates();
    
    [mCIContext drawImage:image inRect:inRect fromRect:fromRect];
 //   mBaseEffect.lightModelTwoSided = GL_FALSE;

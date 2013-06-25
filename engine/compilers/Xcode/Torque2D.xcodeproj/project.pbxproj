@@ -464,6 +464,7 @@
 		D1A6958417016CA90060D928 /* GLFWCursorController.mm in Sources */ = {isa = PBXBuildFile; fileRef = D1A6957D17016CA90060D928 /* GLFWCursorController.mm */; };
 		D1A6958617016CA90060D928 /* GLFWWindow.mm in Sources */ = {isa = PBXBuildFile; fileRef = D1A6958117016CA90060D928 /* GLFWWindow.mm */; };
 		D1A6958717016CA90060D928 /* GLFWWindowManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = D1A6958317016CA90060D928 /* GLFWWindowManager.mm */; };
+		D1CC09F617799B3800206488 /* FilterImageAsset.mm in Sources */ = {isa = PBXBuildFile; fileRef = D1CC09F517799B3800206488 /* FilterImageAsset.mm */; };
 		D1E8DDFC170412D50001367B /* process.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1E8DDFA170412D50001367B /* process.cpp */; };
 		DA1640E516C4AEDB009C2F0F /* gfxOpenGL32WindowTarget.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA1640E416C4AEDB009C2F0F /* gfxOpenGL32WindowTarget.mm */; };
 		DA4645FF16C3A7C500EF1922 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA4645FE16C3A7C400EF1922 /* QuartzCore.framework */; };
@@ -1447,6 +1448,8 @@
 		D1A6958317016CA90060D928 /* GLFWWindowManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GLFWWindowManager.mm; sourceTree = "<group>"; };
 		D1A6959A170185400060D928 /* IProcessInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IProcessInput.h; sourceTree = "<group>"; };
 		D1C8F141170ABF7C00D554EF /* mDualQuat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mDualQuat.h; sourceTree = "<group>"; };
+		D1CC09F417799B3800206488 /* FilterImageAsset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilterImageAsset.h; sourceTree = "<group>"; };
+		D1CC09F517799B3800206488 /* FilterImageAsset.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FilterImageAsset.mm; sourceTree = "<group>"; };
 		D1E8DDFA170412D50001367B /* process.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = process.cpp; sourceTree = "<group>"; };
 		D1E8DDFB170412D50001367B /* process.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = process.h; sourceTree = "<group>"; };
 		DA1640E316C4AEDA009C2F0F /* gfxOpenGL32WindowTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32WindowTarget.h; sourceTree = "<group>"; };
@@ -1951,6 +1954,7 @@
 		865A2351165188AF00527C44 /* platformOSX */ = {
 			isa = PBXGroup;
 			children = (
+				D1CC09F217799B3800206488 /* 2d */,
 				D1A6957B17016CA90060D928 /* windowManager */,
 				DA91B31416C2280E00EB7B6E /* graphics */,
 				86EA5B3E1678C7C700598E68 /* osxCocoaUtilities.h */,
@@ -3191,6 +3195,23 @@
 			path = interfaces;
 			sourceTree = "<group>";
 		};
+		D1CC09F217799B3800206488 /* 2d */ = {
+			isa = PBXGroup;
+			children = (
+				D1CC09F317799B3800206488 /* assets */,
+			);
+			path = 2d;
+			sourceTree = "<group>";
+		};
+		D1CC09F317799B3800206488 /* assets */ = {
+			isa = PBXGroup;
+			children = (
+				D1CC09F417799B3800206488 /* FilterImageAsset.h */,
+				D1CC09F517799B3800206488 /* FilterImageAsset.mm */,
+			);
+			path = assets;
+			sourceTree = "<group>";
+		};
 		DA91B31416C2280E00EB7B6E /* graphics */ = {
 			isa = PBXGroup;
 			children = (
@@ -3760,6 +3781,7 @@
 				30666083176DCD2700BE2909 /* SceneRenderState.cc in Sources */,
 				30666085176DCD7A00BE2909 /* gfxOpenGLTextureTarget.cc in Sources */,
 				30666087176DCE0B00BE2909 /* gfxEnums.cc in Sources */,
+				D1CC09F617799B3800206488 /* FilterImageAsset.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
