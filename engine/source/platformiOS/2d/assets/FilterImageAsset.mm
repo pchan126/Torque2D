@@ -106,14 +106,11 @@ void FilterImageAsset::onRemove()
 
 void FilterImageAsset::initializeAsset( void )
 {
-    // Call parent.
+   // Ensure the image-file is expanded.
+   mImageFile = expandAssetFilePath( mImageFile );
+
+   // Call parent.
     Parent::initializeAsset();
-    
-    // Ensure the image-file is expanded.
-    mImageFile = expandAssetFilePath( mImageFile );
-    
-    // Calculate the image.
-    calculateImage();
 }
 
 //------------------------------------------------------------------------------
@@ -225,9 +222,11 @@ void FilterImageAsset::calculateImage( void )
     GFXOpenGLTextureObject* outTexture = dynamic_cast<GFXOpenGLTextureObject*>(mImageTextureHandle.getPointer());
    
     texTarget->attachTexture(mImageTextureHandle);
-    
+//   texTarget->attachTexture(texture);
+   
     GFXTarget *oldTarget = GFX->getActiveRenderTarget();
     device->setActiveRenderTarget(texTarget);
+    GFX->updateStates(true);
    
     CGSize texSize;
     texSize.height = texture->getHeight();

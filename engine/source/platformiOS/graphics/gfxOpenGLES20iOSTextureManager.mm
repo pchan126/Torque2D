@@ -331,7 +331,9 @@ void GFXOpenGLES20iOSTextureManager::innerCreateTexture( GFXOpenGLES20iOSTexture
    AssertFatal(GFXGLTextureFormat[format] != GL_ZERO, "GFXOpenGLES20iOSTextureManager::innerCreateTexture - invalid format");
    AssertFatal(GFXGLTextureType[format] != GL_ZERO, "GFXOpenGLES20iOSTextureManager::innerCreateTexture - invalid type");
    
-    glTexImage2D(binding, 0, GFXGLTextureInternalFormat[format], width, height, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], NULL);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+   
+   glTexImage2D(binding, 0, GFXGLTextureInternalFormat[format], width, height, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], NULL);
    
    retTex->mTextureSize.set(width, height, 0);
 }

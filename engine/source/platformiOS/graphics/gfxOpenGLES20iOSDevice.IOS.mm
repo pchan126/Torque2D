@@ -105,8 +105,8 @@ void GFXOpenGLES20iOSDevice::init( const GFXVideoMode &mode, PlatformWindow *win
 
         [EAGLContext setCurrentContext:mContext];
         
-        mCIContext = [CIContext contextWithEAGLContext:mContext];
-        
+       mCIContext = [CIContext contextWithEAGLContext:mContext options:@{kCIContextWorkingColorSpace: [NSNull null]}];
+       
         mTextureManager = new GFXOpenGLES20iOSTextureManager();
         
         initGLState();
@@ -114,6 +114,11 @@ void GFXOpenGLES20iOSDevice::init( const GFXVideoMode &mode, PlatformWindow *win
         mInitialized = true;
         deviceInited();
     }
+}
+
+void GFXOpenGLES20iOSDevice::refreshCIContext()
+{
+   mCIContext = [CIContext contextWithEAGLContext:mContext];
 }
 
 
@@ -603,9 +608,13 @@ void GFXOpenGLES20iOSDevice::drawImage( CIImage* image, CGRect inRect, CGRect fr
      updateStates(true);
 //   _updateRenderTargets();
    
-    [mCIContext drawImage:image inRect:inRect fromRect:fromRect];
-   mBaseEffect.lightModelTwoSided = GL_FALSE;
-
+   CIContext* ciContext = [CIContext contextWithEAGLContext:mContext options:@{kCIContextWorkingColorSpace: [NSNull null]}];
+//   glClearColor(0.0, 0.5, 0.0, 1.0);
+//   glClear(GL_COLOR_BUFFER_BIT);
+   glFlush();
+   [ciContext drawImage:image inRect:inRect fromRect:fromRect];
+//   mBaseEffect.lightModelTwoSided = GL_FALSE;
+//   ciContext = nil;
 }
 
 

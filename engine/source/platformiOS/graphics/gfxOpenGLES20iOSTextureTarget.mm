@@ -189,10 +189,10 @@ void GFXOpenGLES20iOSTextureTarget::applyState()
    
    glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
    
-   _GFXOpenGLES20iOSTargetDesc* color0 = getTargetDesc(GFXTextureTarget::Color0);
+   _GFXOpenGLES20iOSTextureTargetDesc* color0 = dynamic_cast<_GFXOpenGLES20iOSTextureTargetDesc*>(getTargetDesc(GFXTextureTarget::Color0));
    if(color0)
    {
-      glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, color0->getBinding(), color0->getHandle(), color0->getMipLevel());
+      glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, color0->getBinding(), color0->getHandle(), 0);
    }
    else
    {
@@ -215,7 +215,7 @@ void GFXOpenGLES20iOSTextureTarget::applyState()
       glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, 0, 0);
    }
    
-   glBindFramebuffer(GL_FRAMEBUFFER, 0);
+//   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 _GFXOpenGLES20iOSTargetDesc* GFXOpenGLES20iOSTextureTarget::getTargetDesc(RenderSlot slot) const

@@ -11,6 +11,7 @@
 #import <UIKit/UIKit.h>
 #import "platformiOS/T2DAppDelegate.h"
 #import "platformiOS/graphics/GFXOpenGLES20iOSDevice.h"
+#import "platformiOS/T2DViewController.h"
 
 PlatformWindowManager* CreatePlatformWindowManager()
 {
@@ -33,7 +34,7 @@ iOSWindowManager::iOSWindowManager() : mNotifyShutdownDelegate(this, &iOSWindowM
     T2DAppDelegate *appDelegate = (T2DAppDelegate*)[[UIApplication sharedApplication] delegate];
     appDelegate.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
-    viewController = [[GLKViewController alloc] initWithNibName:nil bundle:nil];
+    viewController = [[T2DViewController alloc] initWithNibName:nil bundle:nil];
     viewController.delegate = appDelegate;
     viewController.preferredFramesPerSecond = 30;
     viewController.paused = NO;
@@ -167,7 +168,7 @@ void iOSWindowManager::updateWindows()
         T2DAppDelegate *appDelegate = (T2DAppDelegate*)[[UIApplication sharedApplication] delegate];
                 
         UIScreen *phoneScreen = screens[0];
-        GLKViewController *newController = [[GLKViewController alloc] initWithNibName:nil bundle:nil];
+        T2DViewController *newController = [[T2DViewController alloc] initWithNibName:nil bundle:nil];
         newController.delegate = appDelegate;
         newController.preferredFramesPerSecond = 30;
         extWindow.rootViewController = newController;
@@ -193,7 +194,7 @@ void iOSWindowManager::updateWindows()
         appDelegate.mainController.delegate = appDelegate;
         extWindow.hidden = NO;
         
-        [GLKViewController attemptRotationToDeviceOrientation];
+        [T2DViewController attemptRotationToDeviceOrientation];
 //        [extWindow makeKeyAndVisible];
     }
     else

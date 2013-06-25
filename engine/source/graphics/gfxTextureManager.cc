@@ -676,13 +676,13 @@ void GFXTextureManager::_validateTexParams( const U32 width, const U32 height,
    // Validate mipmap parameter. If this profile requests no mips, set mips to 1.
    if( profile->noMip() )
    {
-      inOutNumMips = 1;
+      inOutNumMips = 0;
    }
    else if( !isPow2( width ) || !isPow2( height ) )
    {
       // If a texture is not power-of-2 in size for both dimensions, it must
       // have only 1 mip level.
-      inOutNumMips = 1;
+      inOutNumMips = 0;
    }
    
    // Check format, and compatibility with texture profile requirements

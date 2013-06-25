@@ -94,7 +94,7 @@ public:
     // special immediate function for drawing CIImages
     void drawImage( CIImage* image, CGRect inRect, CGRect fromRect);
 
-
+   void refreshCIContext(void);
 protected:
    /// Called by GFXDevice to create a device specific stateblock
    virtual GFXStateBlockRef createStateBlockInternal(const GFXStateBlockDesc& desc);

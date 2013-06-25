@@ -9,6 +9,7 @@
 #import "windowManager/platformWindowMgr.h"
 #import "collection/vector.h"
 #import <GLKit/GLKit.h>
+#import "platformiOS/T2DViewController.h"
 
 class iOSWindow;
 
@@ -23,7 +24,7 @@ private:
    Delegate<bool(void)> mNotifyShutdownDelegate;
     UIWindow *extWindow;
     UIScreen *extScreen;
-    GLKViewController *extViewController;
+    T2DViewController *extViewController;
     
 public:
    iOSWindowManager();
@@ -114,7 +115,7 @@ public:
    
    virtual PlatformWindow* assignCanvas(GFXDevice* device, const GFXVideoMode &mode ,GuiCanvas* canvas);
 
-   GLKViewController *viewController;
+   T2DViewController *viewController;
 private:
    bool mIsShuttingDown;
 };

@@ -15,7 +15,7 @@
 #import "graphics/gfxStructs.h"
 
 @class GLKView;
-@class GLKViewController;
+@class T2DViewController;
 @class iOSGestureRecognizer;
 
 class iOSWindow : public PlatformWindow

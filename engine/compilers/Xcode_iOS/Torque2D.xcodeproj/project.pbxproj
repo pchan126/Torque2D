@@ -519,6 +519,7 @@
 		D15E7EC416F061E200BB43B1 /* gfxVertexTypes.cc in Sources */ = {isa = PBXBuildFile; fileRef = D15E7EB016F061E200BB43B1 /* gfxVertexTypes.cc */; };
 		D15E7EC716F0622D00BB43B1 /* primBuilder.cc in Sources */ = {isa = PBXBuildFile; fileRef = D15E7EC516F0622D00BB43B1 /* primBuilder.cc */; };
 		D15E7ECA16F0815200BB43B1 /* platformiOS.mm in Sources */ = {isa = PBXBuildFile; fileRef = D15E7EC916F0815100BB43B1 /* platformiOS.mm */; };
+		D164854D17793C3E0050E93D /* T2DViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = D164854C17793C3E0050E93D /* T2DViewController.mm */; };
 		D16581461702ED3600A21928 /* gfxInit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D16581441702ED3600A21928 /* gfxInit.cpp */; };
 		D165814B1702ED6900A21928 /* guiContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D16581491702ED6900A21928 /* guiContainer.cpp */; };
 		D16581551702EDA900A21928 /* platformCursorController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D165814D1702EDA900A21928 /* platformCursorController.cpp */; };
@@ -1602,6 +1603,8 @@
 		D15E7EC516F0622D00BB43B1 /* primBuilder.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = primBuilder.cc; sourceTree = "<group>"; };
 		D15E7EC616F0622D00BB43B1 /* primBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = primBuilder.h; sourceTree = "<group>"; };
 		D15E7EC916F0815100BB43B1 /* platformiOS.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = platformiOS.mm; sourceTree = "<group>"; };
+		D164854B17793C3E0050E93D /* T2DViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T2DViewController.h; sourceTree = "<group>"; };
+		D164854C17793C3E0050E93D /* T2DViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = T2DViewController.mm; sourceTree = "<group>"; };
 		D16581431702ED3600A21928 /* gfxAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxAdapter.h; sourceTree = "<group>"; };
 		D16581441702ED3600A21928 /* gfxInit.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxInit.cpp; sourceTree = "<group>"; };
 		D16581451702ED3600A21928 /* gfxInit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxInit.h; sourceTree = "<group>"; };
@@ -1872,6 +1875,8 @@
 				867BACD016AEC8BB0033868F /* SoundEngine.mm */,
 				86555D3116B2C2B400881446 /* T2DAppDelegate.h */,
 				86555D3216B2C2B400881446 /* T2DAppDelegate.mm */,
+				D164854B17793C3E0050E93D /* T2DViewController.h */,
+				D164854C17793C3E0050E93D /* T2DViewController.mm */,
 			);
 			name = platformiOS;
 			path = ../../source/platformiOS;
@@ -4095,6 +4100,7 @@
 				D1C7B6901765A375009C9BBA /* SceneRenderState.cc in Sources */,
 				D1FE58131769907C00207569 /* Layer.cc in Sources */,
 				D10BBF5E17741A5E000B68E9 /* BatchEffect.m in Sources */,
+				D164854D17793C3E0050E93D /* T2DViewController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
