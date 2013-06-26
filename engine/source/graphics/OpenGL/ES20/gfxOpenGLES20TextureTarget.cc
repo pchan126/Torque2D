@@ -164,22 +164,21 @@ void GFXOpenGLES20TextureTarget::resurrect()
 void GFXOpenGLES20TextureTarget::makeActive()
 {
    glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
-}
-
-void GFXOpenGLES20TextureTarget::deactivate()
-{
-   glBindFramebuffer(GL_FRAMEBUFFER, 0);
-   
    _GFXOpenGLES20TargetDesc* color0 = getTargetDesc(GFXTextureTarget::Color0);
-   if(!color0 || !(color0->hasMips()))
+   if(!color0) // || !(color0->hasMips()))
       return;
    
    // Generate mips if necessary
    // Assumes a 2D texture.
    glActiveTexture(GL_TEXTURE0);
-   PRESERVE_2D_TEXTURE();
+//   PRESERVE_2D_TEXTURE();
    glBindTexture(GL_TEXTURE_2D, color0->getHandle());
-   glGenerateMipmap(GL_TEXTURE_2D);
+//   glGenerateMipmap(GL_TEXTURE_2D);
+}
+
+void GFXOpenGLES20TextureTarget::deactivate()
+{
+   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void GFXOpenGLES20TextureTarget::applyState()
