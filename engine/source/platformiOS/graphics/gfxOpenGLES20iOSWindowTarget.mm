@@ -58,6 +58,7 @@ void GFXOpenGLES20iOSWindowTarget::resolveTo(GFXTextureObject* obj)
 
 void GFXOpenGLES20iOSWindowTarget::makeActive()
 {
+   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void GFXOpenGLES20iOSWindowTarget::_teardownCurrentMode()

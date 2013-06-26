@@ -1227,7 +1227,8 @@ MaterialParameters* ProcessedShaderMaterial::allocMaterialParameters()
 //      buffers[i] = _getRPD(i)->shader->allocConstBuffer();
 //   // smp now owns these buffers.
 //   smp->setBuffers(mShaderConstDesc, buffers);
-//   return smp;   
+//   return smp;
+    return NULL;
 }
 
 MaterialParameterHandle* ProcessedShaderMaterial::getMaterialParameterHandle(const String& name)
@@ -1250,6 +1251,7 @@ MaterialParameterHandle* ProcessedShaderMaterial::getMaterialParameterHandle(con
 //   mParameterHandles.push_back(smph);
 //
 //   return smph;
+    return NULL;
 }
 
 /// This is here to deal with the differences between ProcessedCustomMaterials and ProcessedShaderMaterials.

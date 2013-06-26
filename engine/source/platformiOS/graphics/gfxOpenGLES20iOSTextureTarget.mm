@@ -148,9 +148,6 @@ void GFXOpenGLES20iOSTextureTarget::clearAttachments()
 void GFXOpenGLES20iOSTextureTarget::zombify()
 {
    invalidateState();
-   
-   // Will be recreated in applyState
-   _impl = NULL;
 }
 
 void GFXOpenGLES20iOSTextureTarget::resurrect()
@@ -161,22 +158,19 @@ void GFXOpenGLES20iOSTextureTarget::resurrect()
 void GFXOpenGLES20iOSTextureTarget::makeActive()
 {
    glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
+   _GFXOpenGLES20iOSTargetDesc* color0 = getTargetDesc(GFXTextureTarget::Color0);
+   if(!color0 )
+      return;
+   
+   // Generate mips if necessary
+   // Assumes a 2D texture.
+   glActiveTexture(GL_TEXTURE0);
+   glBindTexture(GL_TEXTURE_2D, color0->getHandle());
 }
 
 void GFXOpenGLES20iOSTextureTarget::deactivate()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-    _GFXOpenGLES20iOSTargetDesc* color0 = getTargetDesc(GFXTextureTarget::Color0);
-    if(!color0 || !(color0->hasMips()))
-        return;
-
-    // Generate mips if necessary
-    // Assumes a 2D texture.
-    glActiveTexture(GL_TEXTURE0);
-    PRESERVE_2D_TEXTURE();
-    glBindTexture(GL_TEXTURE_2D, color0->getHandle());
-    glGenerateMipmap(GL_TEXTURE_2D);
 }
 
 void GFXOpenGLES20iOSTextureTarget::applyState()

@@ -10,7 +10,6 @@
 #include "memory/autoPtr.h"
 
 class GFXOpenGLES20TextureObject;
-class _GFXOpenGLES20TextureTargetImpl;
 
 /// Internal struct used to track texture information for FBO attachments
 /// This serves as an abstract base so we can deal with cubemaps and standard
@@ -90,9 +89,6 @@ protected:
     /// The callback used to get texture events.
     /// @see GFXTextureManager::addEventDelegate
     void _onTextureEvent( GFXTexCallbackCode code );
-    
-    /// Pointer to our internal implementation
-    AutoPtr<_GFXOpenGLES20TextureTargetImpl> _impl;
     
     /// Array of _GFXOpenGLES20TargetDesc's, an internal struct used to keep track of texture data.
     AutoPtr<_GFXOpenGLES20TargetDesc> mTargets[MaxRenderSlotId];

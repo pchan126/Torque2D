@@ -545,7 +545,7 @@ S32 GuiTabBookCtrl::calculatePageTabWidth( GuiTabPageCtrl *page )
     
     const char* text = page->getText();
     
-    if( !text || dStrlen(text) == 0 || mProfile->mFont == NULL )
+    if( !text || dStrlen(text) == 0 || mProfile->mFont.isNull() )
         return mMinTabWidth;
     
     GFont *font = mProfile->mFont;

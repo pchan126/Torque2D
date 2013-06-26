@@ -222,12 +222,12 @@ void iOSWindow::centerWindow()
 
 Point2I iOSWindow::clientToScreen( const Point2I& pos )
 {
-     
+    return pos;
 }
 
 Point2I iOSWindow::screenToClient( const Point2I& pos )
 {
-
+   return pos;
 }
 
 bool iOSWindow::isFocused()
