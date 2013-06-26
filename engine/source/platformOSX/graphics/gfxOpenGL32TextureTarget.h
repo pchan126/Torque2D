@@ -28,7 +28,6 @@
 
 class GFXOpenGL32TextureObject;
 class _GFXGLTargetDesc;
-class _GFXOpenGL32TextureTargetImpl;
 
 /// Render to texture support for OpenGL.
 /// This class needs to make a number of assumptions due to the requirements
@@ -53,7 +52,6 @@ public:
    virtual GFXFormat getFormat();
    virtual void attachTexture( GFXTextureObject *tex, RenderSlot slot = Color0, U32 mipLevel=0, U32 zOffset = 0);
    virtual void attachTexture( GFXCubemap *tex, U32 face,  RenderSlot slot = Color0,  U32 mipLevel=0);
-   virtual void clearAttachments();
 
    /// Functions to query internal state
    /// @{
@@ -64,8 +62,6 @@ public:
    /// @}
    
    void deactivate();
-   void zombify();
-   void resurrect();
    virtual const String describeSelf() const;
    
 protected:
@@ -78,8 +74,6 @@ protected:
 
    /// Array of _GFXGLTargetDesc's, an internal struct used to keep track of texture data.
    AutoPtr<_GFXGLTargetDesc> mTargets[MaxRenderSlotId];
-
-   GLuint mFramebuffer;
 
    /// These redirect to our internal implementation
    /// @{

@@ -31,14 +31,9 @@
 #include "./gfxOpenGL32VertexBuffer.h"
 #include "./gfxOpenGL32TextureTarget.h"
 #include "./gfxOpenGL32TextureManager.h"
-#include "./gfxOpenGL32TextureObject.h"
 #include "./gfxOpenGL32Cubemap.h"
 #include "./gfxOpenGL32CardProfiler.h"
 #include "./gfxOpenGL32WindowTarget.h"
-
-#include "./gfxOpenGL32Shader.h"
-#include "graphics/primBuilder.h"
-#include "console/console.h"
 #import <QuartzCore/QuartzCore.h>
 
 GFXAdapter::CreateDeviceInstanceDelegate GFXOpenGL32Device::mCreateDeviceInstance(GFXOpenGL32Device::createInstance);

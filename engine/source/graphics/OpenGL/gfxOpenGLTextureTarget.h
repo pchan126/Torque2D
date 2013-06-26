@@ -53,7 +53,7 @@ public:
    virtual GFXFormat getFormat() = 0;
     virtual void attachTexture(GFXTextureObject *tex, RenderSlot slot = Color0, U32 mipLevel=0, U32 zOffset = 0) = 0;
    virtual void attachTexture(GFXCubemap *tex, U32 face, RenderSlot slot = Color0, U32 mipLevel=0) = 0;
-   virtual void clearAttachments() = 0;
+   virtual void clearAttachments();
 
    /// Functions to query internal state
    /// @{

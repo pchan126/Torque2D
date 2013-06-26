@@ -26,7 +26,6 @@
 #include "./GFXOpenGL32TextureObject.h"
 #include "./gfxOpenGL32Cubemap.h"
 #include "graphics/gfxTextureManager.h"
-#include "./gfxOpenGL32Utils.h"
 
 /// Internal struct used to track texture information for FBO attachments
 /// This serves as an abstract base so we can deal with cubemaps and standard 
@@ -194,46 +193,25 @@ void GFXOpenGL32TextureTarget::attachTexture( GFXCubemap *tex, U32 face, RenderS
       mTargets[slot] = NULL;
 }
 
-void GFXOpenGL32TextureTarget::clearAttachments()
-{
-   deactivate();
-   for(S32 i=1; i<MaxRenderSlotId; i++)
-      attachTexture(NULL, (RenderSlot)i);
-}
-
-void GFXOpenGL32TextureTarget::zombify()
-{
-   invalidateState();
-}
-
-void GFXOpenGL32TextureTarget::resurrect()
-{
-   // Dealt with when the target is next bound
-}
 
 void GFXOpenGL32TextureTarget::makeActive()
 {
    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mFramebuffer);
    glBindFramebuffer(GL_READ_FRAMEBUFFER, mFramebuffer);
+    _GFXGLTargetDesc* color0 = getTargetDesc(GFXTextureTarget::Color0);
+    if(!color0 || !(color0->hasMips()))
+        return;
+
+    // Generate mips if necessary
+    // Assumes a 2D texture.
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, color0->getHandle());
 }
 
 void GFXOpenGL32TextureTarget::deactivate()
 {
    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
-
-    Con::printf("_GFXOpenGL32TextureTargetFBOImpl::finish glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mFramebuffer); ");
-
-    _GFXGLTargetDesc* color0 = getTargetDesc(GFXTextureTarget::Color0);
-   if(!color0 || !(color0->hasMips()))
-      return;
-
-   // Generate mips if necessary
-   // Assumes a 2D texture.
-   glActiveTexture(GL_TEXTURE0);
-//   PRESERVE_2D_TEXTURE();
-   glBindTexture(GL_TEXTURE_2D, color0->getHandle());
-   glGenerateMipmap(GL_TEXTURE_2D);
 }
 
 void GFXOpenGL32TextureTarget::applyState()

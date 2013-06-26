@@ -263,18 +263,12 @@ void GLFWWindow::centerWindow()
 
 Point2I GLFWWindow::clientToScreen( const Point2I& pos )
 {
-//   NSPoint p = { static_cast<CGFloat>(pos.x), static_cast<CGFloat>(pos.y) };
-//   
-//   p = [ mCocoaWindow convertBaseToScreen: p ];
-//   return Point2I( p.x, p.y );
+    return pos;
 }
 
 Point2I GLFWWindow::screenToClient( const Point2I& pos )
 {
-//   NSPoint p = { static_cast<CGFloat>(pos.x), static_cast<CGFloat>(pos.y) };
-//   
-//   p = [ mCocoaWindow convertScreenToBase: p ];
-//   return Point2I( p.x, p.y );
+    return pos;
 }
 
 bool GLFWWindow::isFocused()
