@@ -14,7 +14,6 @@
 #include "./gfxOpenGLES20IOSShader.h"
 
 class GFXOpenGLES20iOSVertexBuffer;
-class GFXOpenGLES20iOSTextureTarget;
 class GFXOpenGLES20iOSCubemap;
 
 @class EAGLContext, GLKTextureLoader, GLKBaseEffect, CIImage;

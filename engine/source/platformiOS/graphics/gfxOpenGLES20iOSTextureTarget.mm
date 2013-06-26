@@ -56,32 +56,6 @@ private:
    U32 mFace;
 };
 
-// Handy macro for checking the status of a framebuffer.  Framebuffers can fail in 
-// all sorts of interesting ways, these are just the most common.  Further, no existing GL profiling 
-// tool catches framebuffer errors when the framebuffer is created, so we actually need this.
-#define CHECK_FRAMEBUFFER_STATUS()\
-{\
-GLenum status;\
-status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER);\
-switch(status) {\
-case GL_FRAMEBUFFER_COMPLETE_EXT:\
-break;\
-case GL_FRAMEBUFFER_UNSUPPORTED_EXT:\
-AssertFatal(false, "Unsupported FBO");\
-break;\
-case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT:\
-AssertFatal(false, "Incomplete FBO Attachment");\
-break;\
-case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:\
-AssertFatal(false, "Incomplete FBO dimensions");\
-break;\
-case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:\
-AssertFatal(false, "Incomplete FBO formats");\
-default:\
-/* programming error; will fail on all hardware */\
-AssertFatal(false, "Something really bad happened with an FBO");\
-}\
-}
 
 // Actual GFXOpenGLES20iOSTextureTarget interface
 GFXOpenGLES20iOSTextureTarget::GFXOpenGLES20iOSTextureTarget()
@@ -96,14 +70,6 @@ GFXOpenGLES20iOSTextureTarget::~GFXOpenGLES20iOSTextureTarget()
 {
    glDeleteFramebuffers(1, &mFramebuffer);
 //   GFXTextureManager::removeEventDelegate( this, &GFXOpenGLES20iOSTextureTarget::_onTextureEvent );
-}
-
-const Point2I GFXOpenGLES20iOSTextureTarget::getSize()
-{
-   if(mTargets[Color0].isValid())
-      return Point2I(mTargets[Color0]->getWidth(), mTargets[Color0]->getHeight());
-
-   return Point2I(0, 0);
 }
 
 
@@ -136,13 +102,6 @@ void GFXOpenGLES20iOSTextureTarget::attachTexture( GFXCubemap *tex, U32 face, Re
 //      mTargets[slot] = new _GFXOpenGLESCubemapTargetDesc(glTexture, face, mipLevel, 0);
 //   else
       mTargets[slot] = NULL;
-}
-
-void GFXOpenGLES20iOSTextureTarget::clearAttachments()
-{
-   deactivate();
-   for(S32 i=1; i<MaxRenderSlotId; i++)
-      attachTexture(NULL, (RenderSlot)i);
 }
 
 void GFXOpenGLES20iOSTextureTarget::zombify()
@@ -208,8 +167,6 @@ void GFXOpenGLES20iOSTextureTarget::applyState()
       // Clears the texture (note that the binding is irrelevent)
       glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, 0, 0);
    }
-   
-//   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 _GFXOpenGLES20iOSTargetDesc* GFXOpenGLES20iOSTextureTarget::getTargetDesc(RenderSlot slot) const

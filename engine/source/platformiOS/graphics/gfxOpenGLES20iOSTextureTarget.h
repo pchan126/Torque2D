@@ -10,7 +10,6 @@
 #include "memory/autoPtr.h"
 
 class GFXOpenGLES20iOSTextureObject;
-class _GFXOpenGLES20iOSTextureTargetImpl;
 
 /// Internal struct used to track texture information for FBO attachments
 /// This serves as an abstract base so we can deal with cubemaps and standard
@@ -59,11 +58,9 @@ public:
     GFXOpenGLES20iOSTextureTarget();
     virtual ~GFXOpenGLES20iOSTextureTarget();
     
-    virtual const Point2I getSize();
     virtual void attachTexture( GFXTextureObject *tex, RenderSlot slot = Color0, U32 mipLevel=0, U32 zOffset = 0);
     virtual void attachTexture(GFXCubemap *tex, U32 face, RenderSlot slot, U32 mipLevel=0);
-    virtual void clearAttachments();
-    
+
     /// Functions to query internal state
     /// @{
     
@@ -81,7 +78,6 @@ public:
     
     virtual void resolveTo(GFXTextureObject* obj);
    
-   GLuint mFramebuffer;
 protected:
     
     friend class GFXOpenGLES20iOSDevice;
@@ -102,34 +98,5 @@ protected:
     /// @}
     
 };
-
-
-// Internal implementations
-class _GFXOpenGLES20iOSTextureTargetImpl
-{
-public:
-    GFXOpenGLES20iOSTextureTarget* mTarget;
-    
-    virtual ~_GFXOpenGLES20iOSTextureTargetImpl() {}
-    
-    virtual void applyState() = 0;
-    virtual void makeActive() = 0;
-    virtual void finish() = 0;
-};
-
-// Use FBOs to render to texture.  This is the preferred implementation and is almost always used.
-class _GFXOpenGLES20iOSTextureTargetFBOImpl : public _GFXOpenGLES20iOSTextureTargetImpl
-{
-public:
-    GLuint mFramebuffer, mRenderBuffer;
-    
-    _GFXOpenGLES20iOSTextureTargetFBOImpl(GFXOpenGLES20iOSTextureTarget* target);
-    virtual ~_GFXOpenGLES20iOSTextureTargetFBOImpl();
-    
-    virtual void applyState();
-    virtual void makeActive();
-    virtual void finish();
-};
-
 
 #endif
