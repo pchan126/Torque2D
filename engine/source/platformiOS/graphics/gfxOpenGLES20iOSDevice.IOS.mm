@@ -398,7 +398,7 @@ GFXWindowTarget *GFXOpenGLES20iOSDevice::allocWindowTarget(PlatformWindow *windo
 
 GFXTextureTarget * GFXOpenGLES20iOSDevice::allocRenderToTextureTarget()
 {
-    GFXOpenGLES20iOSTextureTarget *targ = new GFXOpenGLES20iOSTextureTarget();
+    GFXOpenGLES20TextureTarget *targ = new GFXOpenGLES20TextureTarget();
     targ->registerResourceWithDevice(this);
     return targ;
 }
@@ -536,8 +536,8 @@ void GFXOpenGLES20iOSDevice::_updateRenderTargets()
         // we activate a GFXTarget it could result in multiple calls
         // to SetRenderTarget on the actual device.
         //      mDeviceStatistics.mRenderTargetChanges++;
-        
-        GFXOpenGLES20iOSTextureTarget *tex = dynamic_cast<GFXOpenGLES20iOSTextureTarget*>( mCurrentRT.getPointer() );
+
+        GFXOpenGLES20TextureTarget *tex = dynamic_cast<GFXOpenGLES20TextureTarget*>( mCurrentRT.getPointer() );
         if ( tex )
         {
             tex->applyState();

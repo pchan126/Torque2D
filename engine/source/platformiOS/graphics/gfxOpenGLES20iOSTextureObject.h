@@ -21,16 +21,10 @@ public:
    
    inline bool isZombie() const { return mIsZombie; }
 
-   /// @return An array containing the texture data
-   /// @note You are responsible for deleting the returned data! (Use delete[])
-   U8* getTextureData();
-   
-   void reloadFromCache(); ///< Reloads texture from zombie cache, used by GFXOpenGLES20iOSTextureManager to resurrect the texture.
+    ///< Reloads texture from zombie cache, used by GFXOpenGLES20iOSTextureManager to resurrect the texture.
    
    bool mIsNPoT2;
-    inline GLuint getFilter( void ) { return mFilter; }
-    virtual void setFilter( const GFXTextureFilterType filter );
-    
+
 private:
    friend class GFXOpenGLES20iOSTextureManager;
    typedef GFXOpenGLES20TextureObject Parent;

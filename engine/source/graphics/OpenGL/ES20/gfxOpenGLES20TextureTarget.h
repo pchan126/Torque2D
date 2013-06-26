@@ -80,7 +80,11 @@ public:
     virtual void resolve();
     
     virtual void resolveTo(GFXTextureObject* obj);
-   
+
+    void applyState();
+
+    void makeActive();
+
 protected:
     
     friend class GFXOpenGLES20Device;
@@ -94,9 +98,6 @@ protected:
     
     /// These redirect to our internal implementation
     /// @{
-    
-    void applyState();
-    void makeActive();
 
     GLuint mFramebuffer;
     /// @}

@@ -58,6 +58,7 @@ void GFXOpenGLES20iOSWindowTarget::resolveTo(GFXTextureObject* obj)
 
 void GFXOpenGLES20iOSWindowTarget::makeActive()
 {
+    // setting framebuffer to 0 targets the default framebuffer included in GLKView
    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 

@@ -122,7 +122,7 @@ bool _iOSTorqueFatalError = false;
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
-{
+{  
     if ( Con::isFunction("oniOSWillTerminate") )
         Con::executef( 1, "oniOSWillTerminate" );
 

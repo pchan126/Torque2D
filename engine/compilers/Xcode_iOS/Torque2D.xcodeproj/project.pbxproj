@@ -490,7 +490,6 @@
 		D127CE0B173CE479006AB038 /* gfxOpenGLES20iOSStateBlock.mm in Sources */ = {isa = PBXBuildFile; fileRef = D127CDF9173CE479006AB038 /* gfxOpenGLES20iOSStateBlock.mm */; };
 		D127CE0C173CE479006AB038 /* gfxOpenGLES20iOSTextureManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = D127CDFB173CE479006AB038 /* gfxOpenGLES20iOSTextureManager.mm */; };
 		D127CE0D173CE479006AB038 /* gfxOpenGLES20iOSTextureObject.mm in Sources */ = {isa = PBXBuildFile; fileRef = D127CDFD173CE479006AB038 /* gfxOpenGLES20iOSTextureObject.mm */; };
-		D127CE0E173CE479006AB038 /* gfxOpenGLES20iOSTextureTarget.mm in Sources */ = {isa = PBXBuildFile; fileRef = D127CDFF173CE479006AB038 /* gfxOpenGLES20iOSTextureTarget.mm */; };
 		D127CE0F173CE479006AB038 /* gfxOpenGLES20iOSVertexBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = D127CE02173CE479006AB038 /* gfxOpenGLES20iOSVertexBuffer.mm */; };
 		D127CE10173CE479006AB038 /* gfxOpenGLES20iOSWindowTarget.mm in Sources */ = {isa = PBXBuildFile; fileRef = D127CE04173CE479006AB038 /* gfxOpenGLES20iOSWindowTarget.mm */; };
 		D127CE12173CEEEA006AB038 /* gfxOpenGLES20Shader.cc in Sources */ = {isa = PBXBuildFile; fileRef = D127CE11173CEEEA006AB038 /* gfxOpenGLES20Shader.cc */; };
@@ -639,6 +638,7 @@
 		30D5475B173FF5D300CB43DA /* platformTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformTimer.h; sourceTree = "<group>"; };
 		332307DBC5B7EEEB22E5A736 /* guiSliderCtrl.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiSliderCtrl.cc; sourceTree = "<group>"; };
 		33230911303CCA4C673E1A22 /* guiSliderCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiSliderCtrl.h; sourceTree = "<group>"; };
+		4B8AA506A21CCF7A52646E9C /* gfxOpenGLES20iOSTextureTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSTextureTarget.h; sourceTree = "<group>"; };
 		860A196A171F0666000E9FE8 /* guiGridCtrl.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiGridCtrl.cc; sourceTree = "<group>"; };
 		860A196B171F0666000E9FE8 /* guiGridCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiGridCtrl.h; sourceTree = "<group>"; };
 		8610F32D16AEEC670015BCEB /* main.cs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = main.cs; path = ../../../main.cs; sourceTree = "<group>"; };
@@ -1544,8 +1544,6 @@
 		D127CDFB173CE479006AB038 /* gfxOpenGLES20iOSTextureManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLES20iOSTextureManager.mm; sourceTree = "<group>"; };
 		D127CDFC173CE479006AB038 /* gfxOpenGLES20iOSTextureObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSTextureObject.h; sourceTree = "<group>"; };
 		D127CDFD173CE479006AB038 /* gfxOpenGLES20iOSTextureObject.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLES20iOSTextureObject.mm; sourceTree = "<group>"; };
-		D127CDFE173CE479006AB038 /* gfxOpenGLES20iOSTextureTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSTextureTarget.h; sourceTree = "<group>"; };
-		D127CDFF173CE479006AB038 /* gfxOpenGLES20iOSTextureTarget.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLES20iOSTextureTarget.mm; sourceTree = "<group>"; };
 		D127CE00173CE479006AB038 /* gfxOpenGLES20iOSUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSUtils.h; sourceTree = "<group>"; };
 		D127CE01173CE479006AB038 /* gfxOpenGLES20iOSVertexBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSVertexBuffer.h; sourceTree = "<group>"; };
 		D127CE02173CE479006AB038 /* gfxOpenGLES20iOSVertexBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLES20iOSVertexBuffer.mm; sourceTree = "<group>"; };
@@ -3393,13 +3391,12 @@
 				D127CDFB173CE479006AB038 /* gfxOpenGLES20iOSTextureManager.mm */,
 				D127CDFC173CE479006AB038 /* gfxOpenGLES20iOSTextureObject.h */,
 				D127CDFD173CE479006AB038 /* gfxOpenGLES20iOSTextureObject.mm */,
-				D127CDFE173CE479006AB038 /* gfxOpenGLES20iOSTextureTarget.h */,
-				D127CDFF173CE479006AB038 /* gfxOpenGLES20iOSTextureTarget.mm */,
 				D127CE00173CE479006AB038 /* gfxOpenGLES20iOSUtils.h */,
 				D127CE01173CE479006AB038 /* gfxOpenGLES20iOSVertexBuffer.h */,
 				D127CE02173CE479006AB038 /* gfxOpenGLES20iOSVertexBuffer.mm */,
 				D127CE03173CE479006AB038 /* gfxOpenGLES20iOSWindowTarget.h */,
 				D127CE04173CE479006AB038 /* gfxOpenGLES20iOSWindowTarget.mm */,
+				4B8AA506A21CCF7A52646E9C /* gfxOpenGLES20iOSTextureTarget.h */,
 			);
 			path = graphics;
 			sourceTree = "<group>";
@@ -4059,7 +4056,6 @@
 				D127CE0B173CE479006AB038 /* gfxOpenGLES20iOSStateBlock.mm in Sources */,
 				D127CE0C173CE479006AB038 /* gfxOpenGLES20iOSTextureManager.mm in Sources */,
 				D127CE0D173CE479006AB038 /* gfxOpenGLES20iOSTextureObject.mm in Sources */,
-				D127CE0E173CE479006AB038 /* gfxOpenGLES20iOSTextureTarget.mm in Sources */,
 				D127CE0F173CE479006AB038 /* gfxOpenGLES20iOSVertexBuffer.mm in Sources */,
 				D127CE10173CE479006AB038 /* gfxOpenGLES20iOSWindowTarget.mm in Sources */,
 				D127CE12173CEEEA006AB038 /* gfxOpenGLES20Shader.cc in Sources */,
