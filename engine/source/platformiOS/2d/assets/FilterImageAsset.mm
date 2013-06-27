@@ -328,8 +328,9 @@ void FilterImageAsset::calculateImage( void )
            }
         }
     }
-    
-    CIImage *output = [mFilter valueForKey:kCIOutputImageKey];
+
+    CIImage *output;
+    output = [mFilter valueForKey:kCIOutputImageKey];
     // draw Image to textureTarget
     device->drawImage(output, rect, rect);
 

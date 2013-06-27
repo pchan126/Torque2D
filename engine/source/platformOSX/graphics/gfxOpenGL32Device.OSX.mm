@@ -34,7 +34,7 @@
 #include "./gfxOpenGL32Cubemap.h"
 #include "./gfxOpenGL32CardProfiler.h"
 #include "./gfxOpenGL32WindowTarget.h"
-#import <QuartzCore/QuartzCore.h>
+#import <QuartzCore/CoreImage.h>
 
 GFXAdapter::CreateDeviceInstanceDelegate GFXOpenGL32Device::mCreateDeviceInstance(GFXOpenGL32Device::createInstance);
 
@@ -96,14 +96,16 @@ void GFXOpenGL32Device::init( const GFXVideoMode &mode, PlatformWindow *window )
        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, 1);
        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+       glfwWindowHint(GLFW_DEPTH_BITS, 0);
+       glfwWindowHint(GLFW_STENCIL_BITS, 0);
        
        GLFWWindow* mWindow = dynamic_cast<GLFWWindow*>(WindowManager->createWindow(this, mode));
        mContext = mWindow->getContext();
        mWindow->makeContextCurrent();
-
+       
        CGLContextObj cglContext = (CGLContextObj)[mContext CGLContextObj];
        CGLPixelFormatObj cglPixelFormat = CGLGetPixelFormat(cglContext);
-       
+
        NSDictionary *opts = @{ kCIContextWorkingColorSpace : [NSNull null] };
        mCIContext = [CIContext contextWithCGLContext: cglContext
                                                  pixelFormat: cglPixelFormat
@@ -539,10 +541,23 @@ void GFXOpenGL32Device::_updateRenderTargets()
 // special immediate function for drawing CIImages
 void GFXOpenGL32Device::drawImage( CIImage* image, CGRect inRect, CGRect fromRect)
 {
-   updateStates();
+   updateStates(true);
+
+    CIContext *context = [[NSGraphicsContext currentContext] CIContext];
+
+   CGLContextObj cglContext = (CGLContextObj)[[NSOpenGLContext currentContext] CGLContextObj];
+   CGLPixelFormatObj cglPixelFormat = CGLGetPixelFormat(cglContext);
    
+   NSDictionary *opts = @{ kCIContextWorkingColorSpace : [NSNull null] };
+   mCIContext = [CIContext contextWithCGLContext: cglContext
+                                     pixelFormat: cglPixelFormat
+                                      colorSpace:nil
+                                         options:opts];
+   
+//   [context drawImage:image inRect:inRect fromRect:fromRect];
    [mCIContext drawImage:image inRect:inRect fromRect:fromRect];
-//   mBaseEffect.lightModelTwoSided = GL_FALSE;
+
+    glGetError();
 }
 
 //

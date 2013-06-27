@@ -172,6 +172,9 @@ class Scene :
     public virtual Tickable
 {
 public:
+    /// A signal used to notify of render passes.
+    typedef Signal< void( Scene*, const SceneRenderState* ) > RenderSignal;
+
     typedef HashMap<S32, b2Joint*>              typeJointHash;
     typedef HashMap<U32, S32>                   typeReverseJointHash;
     typedef Vector<tDeleteRequest>              typeDeleteVector;
@@ -275,6 +278,9 @@ private:
     ColorF                      mSceneLighting;   // global ambient lighting
     LightManager                mLightManager;
 
+    RenderSignal                mPreRenderSignal;
+    RenderSignal                mPostRenderSignal;
+
 private:   
     /// Contacts.
     void                        forwardContacts( void );
@@ -340,6 +346,9 @@ public:
    
    /// Set the default render pass for the scene.
    void setDefaultRenderPass( RenderPassManager* rpm ) { mDefaultRenderPass = rpm; }
+
+    RenderSignal& getPreRenderSignal()    { return mPreRenderSignal;};
+    RenderSignal& getPostRenderSignal()     {return mPostRenderSignal; };
 
    /// Render output.
     void                    sceneRender( const SceneRenderState* pSceneRenderState );

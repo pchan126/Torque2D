@@ -63,7 +63,11 @@ public:
    
    void deactivate();
    virtual const String describeSelf() const;
-   
+
+    void applyState();
+
+    void makeActive();
+
 protected:
 
    friend class GFXGLDevice;
@@ -77,11 +81,8 @@ protected:
 
    /// These redirect to our internal implementation
    /// @{
-   
-   void applyState();
-   void makeActive();
-   
-   /// @}
+
+    /// @}
 
 };
 

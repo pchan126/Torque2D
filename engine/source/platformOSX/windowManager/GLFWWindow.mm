@@ -4,10 +4,7 @@
 //-----------------------------------------------------------------------------
 
 #include "./GLFWWindow.h"
-#include "platform/platformGL.h"
 #include "./GLFWWindowInputGenerator.h"
-#include "console/console.h"
-#include "AppDelegate.h"
 
 GLFWWindow* GLFWWindow::sInstance = NULL;
 

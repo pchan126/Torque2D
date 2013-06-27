@@ -198,14 +198,14 @@ void GFXOpenGL32TextureTarget::makeActive()
 {
    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mFramebuffer);
    glBindFramebuffer(GL_READ_FRAMEBUFFER, mFramebuffer);
-    _GFXGLTargetDesc* color0 = getTargetDesc(GFXTextureTarget::Color0);
-    if(!color0 || !(color0->hasMips()))
-        return;
-
-    // Generate mips if necessary
-    // Assumes a 2D texture.
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, color0->getHandle());
+//    _GFXGLTargetDesc* color0 = getTargetDesc(GFXTextureTarget::Color0);
+//    if(!color0 || !(color0->hasMips()))
+//        return;
+//
+//    // Generate mips if necessary
+//    // Assumes a 2D texture.
+//    glActiveTexture(GL_TEXTURE0);
+//    glBindTexture(GL_TEXTURE_2D, color0->getHandle());
 }
 
 void GFXOpenGL32TextureTarget::deactivate()
@@ -224,7 +224,8 @@ void GFXOpenGL32TextureTarget::applyState()
    
    // REMINDER: When we implement MRT support, check against GFXGLDevice::getNumRenderTargets()
 
-   glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
+   glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mFramebuffer);
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, mFramebuffer);
     Con::printf("_GFXOpenGL32TextureTargetFBOImpl::applyState:: glBindFramebuffer ");
 
    _GFXGLTargetDesc* color0 = getTargetDesc(GFXTextureTarget::Color0);
@@ -258,8 +259,6 @@ void GFXOpenGL32TextureTarget::applyState()
       // Clears the texture (note that the binding is irrelevent)
       glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, 0, 0);
    }
-   
-   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 _GFXGLTargetDesc* GFXOpenGL32TextureTarget::getTargetDesc(RenderSlot slot) const

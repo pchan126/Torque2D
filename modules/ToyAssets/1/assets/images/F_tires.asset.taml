@@ -1,4 +1,4 @@
 <FilterImageAsset
     AssetName="F_tires"
     Image="@asset=ToyAssets:tires"
-    Filter="CIPixellate" />
+    Filter="CIDotScreen" />
