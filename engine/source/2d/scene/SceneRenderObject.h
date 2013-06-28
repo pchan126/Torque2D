@@ -25,7 +25,6 @@
 
 //-----------------------------------------------------------------------------
 
-#include "2d/scene/SceneRenderState.h"
 #include "2d/scene/SceneRenderQueue.h"
 #include "2d/core/BatchRender.h"
 

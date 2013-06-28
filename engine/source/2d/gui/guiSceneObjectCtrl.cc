@@ -26,6 +26,7 @@
 #include "gui/guiDefaultControlRender.h"
 #include "GuiSceneObjectCtrl.h"
 #include "debug/profiler.h"
+#include "2d/scene/SceneRenderState.h"
 
 // -----------------------------------------------------------------------------
 
@@ -420,11 +421,10 @@ void GuiSceneObjectCtrl::onRender(Point2I offset, const RectI& updateRect)
       DebugStats debugStats;
 
       // Render Object in GUI-space.
-      SceneRenderState guiSceneRenderState(
+      SceneRenderState guiSceneRenderState( NULL,
+          SPT_Diffuse,
           CameraView(clipBounds),
-          MASK_ALL,
-          &debugStats,
-          this );
+          MASK_ALL );
 
       SceneRenderRequest guiSceneRenderRequest;
       guiSceneRenderRequest.set(

@@ -90,6 +90,25 @@ class SceneRenderState;
 class RenderPassManager;
 class Layer;
 
+/// The type of scene pass.
+/// @see SceneManager
+/// @see SceneRenderState
+enum ScenePassType
+{
+    /// The regular diffuse scene pass.
+            SPT_Diffuse,
+
+    /// The scene pass made for reflection rendering.
+            SPT_Reflect,
+
+    /// The scene pass made for shadow map rendering.
+            SPT_Shadow,
+
+    /// A scene pass that isn't one of the other
+    /// predefined scene pass types.
+            SPT_Other,
+};
+
 ///-----------------------------------------------------------------------------
 
 struct tDeleteRequest
@@ -275,7 +294,7 @@ private:
     typeContactVector           mEndContacts;
     U32                         mSceneIndex;
     
-    ColorF                      mSceneLighting;   // global ambient lighting
+    ColorF                      mAmbientLightColor;   // global ambient lighting
     LightManager                mLightManager;
 
     RenderSignal                mPreRenderSignal;
@@ -318,6 +337,7 @@ protected:
 public:
     Scene();
     virtual ~Scene();
+    friend class SceneRenderState;
 
     /// Engine.
     virtual bool            onAdd();
@@ -351,7 +371,8 @@ public:
     RenderSignal& getPostRenderSignal()     {return mPostRenderSignal; };
 
    /// Render output.
-    void                    sceneRender( const SceneRenderState* pSceneRenderState );
+    void                    renderScene( ScenePassType passType );
+    void                    renderScene(SceneRenderState *renderState);
 
     /// World.
     inline b2World*         getWorld( void ) const                      { return mpWorld; }
@@ -393,8 +414,8 @@ public:
     inline bool             getScenePause( void ) const                 { return mScenePause; };
 
     /// Scene Lighting
-    inline ColorF           getSceneLight( void ) const                 { return mSceneLighting; };
-    inline void             setSceneLight( ColorF sceneLight )          { mSceneLighting = sceneLight; };
+    inline ColorF           getSceneLight( void ) const                 { return mAmbientLightColor; };
+    inline void             setSceneLight( ColorF sceneLight )          { mAmbientLightColor = sceneLight; };
    
    inline Layer* const     getLayer( U32 layer ) const              { return (mLayers.size() > layer) ? mLayers[layer] : NULL; };
    void                    setLayerLight( U32 layer, ColorF light);
@@ -764,6 +785,7 @@ protected:
    /// RenderPassManager for the default render pass.  This is set up
    /// in script and looked up by getDefaultRenderPass().
    mutable RenderPassManager* mDefaultRenderPass;
+   RenderPassManager* mBaseRenderPass;
 
 public:
     static SimObjectPtr<Scene> LoadingScene;

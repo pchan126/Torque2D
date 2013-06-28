@@ -188,9 +188,6 @@ void FilterImageAsset::setFilterName( const char* pAssetId )
     // Update.
     mFilterName = pAssetId;
     
-   NSString *filterString = [[NSString alloc] initWithUTF8String:mFilterName];
-   mFilter = [CIFilter filterWithName:filterString];
-
    // Refresh the asset.
     refreshAsset();
 }
@@ -217,17 +214,17 @@ void FilterImageAsset::calculateImage( void )
    }
 
     GFXTextureTarget *texTarget = GFX->allocRenderToTextureTarget();
-    
     mImageTextureHandle = TEXMGR->createTexture( texture->getWidth(), texture->getHeight(), GFXFormatR8G8B8A8, &GFXImageAssetTextureProfile, 0, 0 );
     GFXOpenGLTextureObject* outTexture = dynamic_cast<GFXOpenGLTextureObject*>(mImageTextureHandle.getPointer());
-   
     texTarget->attachTexture(mImageTextureHandle);
 //   texTarget->attachTexture(texture);
    
     GFXTarget *oldTarget = GFX->getActiveRenderTarget();
     device->setActiveRenderTarget(texTarget);
     GFX->updateStates(true);
-   
+
+    NSString *filterString = [[NSString alloc] initWithUTF8String:mFilterName];
+    mFilter = [CIFilter filterWithName:filterString];
     CGSize texSize;
     texSize.height = texture->getHeight();
     texSize.width = texture->getWidth();

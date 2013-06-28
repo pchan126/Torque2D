@@ -340,14 +340,14 @@ void RenderPassManager::assignSharedXform( SharedTransformType stt, const Matrix
    }
 }
 
-// Script interface
-
-//DefineEngineMethod(RenderPassManager, getManagerCount, S32, (),, 
+//// Script interface
+//
+//ConsoleMethod(RenderPassManager, getManagerCount, S32,
 //   "Returns the total number of bin managers." )
 //{
 //   return object->getManagerCount();
 //}
-
+//
 //DefineEngineMethod( RenderPassManager, getManager, RenderBinManager*, ( S32 index ),,
 //   "Returns the render bin manager at the index or null if the index is out of range." )
 //{
@@ -356,18 +356,18 @@ void RenderPassManager::assignSharedXform( SharedTransformType stt, const Matrix
 //
 //   return object->getManager(index);
 //}
-
-//DefineEngineMethod( RenderPassManager, addManager, void, ( RenderBinManager *renderBin ),, 
+//
+//DefineEngineMethod( RenderPassManager, addManager, void, ( RenderBinManager *renderBin ),,
 //   "Add as a render bin manager to the pass." )
 //{
 //   if ( renderBin )
 //      object->addManager( renderBin );
 //}
-
-//DefineEngineMethod( RenderPassManager, removeManager, void, ( RenderBinManager *renderBin ),, 
+//
+//DefineEngineMethod( RenderPassManager, removeManager, void, ( RenderBinManager *renderBin ),,
 //   "Removes a render bin manager." )
 //{
 //   if ( renderBin )
 //      object->removeManager( renderBin );
 //}
-
+//

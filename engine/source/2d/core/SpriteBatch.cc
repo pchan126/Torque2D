@@ -32,6 +32,8 @@
 #include "2d/scene/SceneRenderObject.h"
 #endif
 
+#include "2d/scene/SceneRenderState.h"
+
 //------------------------------------------------------------------------------
 
 static StringTableEntry spritesNodeName = StringTable->insert( "Sprites" );

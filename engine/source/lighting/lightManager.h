@@ -40,7 +40,6 @@ class SimObject;
 class LightManager;
 class Material;
 class ProcessedMaterial;
-class SceneManager;
 struct SceneData;
 class Point3F;
 class AvailableSLInterfaces;

@@ -30,6 +30,7 @@
 #include "2d/sceneobject/SceneObject.h"
 #include "2d/core/Utility.h"
 #include "2d/gui/SceneWindow.h"
+#include "2d/scene/SceneRenderState.h"
 
 #ifndef _ASSET_MANAGER_H_
 #include "assets/assetManager.h"
@@ -68,6 +69,12 @@ static StringTableEntry mouseEventLeaveName            = StringTable->insert("on
 IMPLEMENT_CONOBJECT(SceneWindow);
 
 //-----------------------------------------------------------------------------
+
+GFX_ImplementTextureProfile(GFXSceneWindowTextureProfile,
+GFXTextureProfile::DiffuseMap,
+GFXTextureProfile::PreserveSize |
+        GFXTextureProfile::Static,
+GFXTextureProfile::None);
 
 
 static EnumTable::Enums interpolationModeLookup[] =
@@ -1542,10 +1549,10 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
 
     // Create a scene render state.
     SceneRenderState sceneRenderState(
+        pScene,
+        SPT_Diffuse,
         mCameraCurrent,
-        mRenderGroupMask,
-        &debugStats,
-        this );
+        mRenderGroupMask );
 
     // Clear the background color if requested.
     if ( mUseBackgroundColor )
@@ -1554,13 +1561,22 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
        GFX->clear( GFXClearZBuffer , ColorI(mBackgroundColor), 1.0f, 0 );
     }
 
+    GFXTextureTarget *texTarget = GFX->allocRenderToTextureTarget();
+    GFXTexHandle pImageTextureHandle = TEXMGR->createTexture( getWidth(), getHeight(), GFXFormatR8G8B8A8, &GFXSceneWindowTextureProfile, 0, 0 );
+    texTarget->attachTexture(pImageTextureHandle);
+
+    GFXTarget *oldTarget = GFX->getActiveRenderTarget();
+    GFX->setActiveRenderTarget(texTarget);
+    GFX->updateStates(true);
+
     // Render View.
-    pScene->sceneRender( &sceneRenderState );
+    pScene->renderScene( &sceneRenderState );
 
     // Restore Matrices.
     GFX->popWorldMatrix();
     GFX->setViewMatrix(MatrixF(true));
-    
+
+//    GFX->setTexture(0, pImageTextureHandle);
 
     // Render the metrics.
     renderMetricsOverlay( offset, updateRect );

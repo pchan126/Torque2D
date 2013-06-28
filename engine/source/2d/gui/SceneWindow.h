@@ -44,6 +44,7 @@
 #endif
 
 //-----------------------------------------------------------------------------
+GFX_DeclareTextureProfile(GFXSceneWindowTextureProfile);
 
 /// Camera View.
 class CameraView

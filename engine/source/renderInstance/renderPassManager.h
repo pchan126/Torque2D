@@ -23,14 +23,9 @@
 #define _RENDERPASSMANAGER_H_
 
 #include "graphics/gfxDevice.h"
-
-#ifndef _SCENE_H_
 #include "2d/scene/scene.h"
-#endif
-
-#ifndef _SCENE_OBJECT_H_
 #include "2d/sceneObject/sceneObject.h"
-#endif
+
 //#include "scene/sceneObject.h"
 //#include "console/simObject.h"
 //#include "core/dataChunker.h"
@@ -195,7 +190,7 @@ public:
    /// @}
 
    /// Get scene manager which this render pass belongs to.
-   SceneManager* getSceneManager()   {      return mSceneManager;   }
+   Scene* getSceneManager()   {      return mSceneManager;   }
 
    /// This signal is triggered when a render bin is about to be rendered.
    ///
@@ -234,7 +229,7 @@ protected:
 
    AddInstTable mAddInstSignals;
 
-   SceneManager * mSceneManager;
+   Scene * mSceneManager;
    GFXTexHandle mDepthBuff;
 
    MatrixF    mProjection;
