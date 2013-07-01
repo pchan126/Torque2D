@@ -356,6 +356,89 @@ SimGroup *getRootGroup()
    return gRootGroup;
 }
 
+   String getUniqueName( const char *inName )
+   {
+      String outName( inName );
+      
+      if ( outName.isEmpty() )
+         return String::EmptyString;
+      
+      SimObject *dummy;
+      
+      if ( !Sim::findObject( outName, dummy ) )
+         return outName;
+      
+      S32 suffixNumb = -1;
+      String nameStr( String::GetTrailingNumber( outName, suffixNumb ) );
+      suffixNumb = mAbs( suffixNumb ) + 1;
+      
+#define MAX_TRIES 100
+      
+      for ( U32 i = 0; i < MAX_TRIES; i++ )
+      {
+         outName = String::ToString( "%s%d", nameStr.c_str(), suffixNumb );
+         
+         if ( !Sim::findObject( outName, dummy ) )
+            return outName;
+         
+         suffixNumb++;
+      }
+      
+      Con::errorf( "Sim::getUniqueName( %s ) - failed after %d attempts", inName, MAX_TRIES );
+      return String::EmptyString;
+   }
+   
+   String getUniqueInternalName( const char *inName, SimSet *inSet, bool searchChildren )
+   {
+      // Since SimSet::findObjectByInternalName operates with StringTableEntry(s)
+      // we have to muck up the StringTable with our attempts.
+      // But then again, so does everywhere else.
+      
+      StringTableEntry outName = StringTable->insert( inName );
+      
+      if ( !outName || !outName[0] )
+         return String::EmptyString;
+      
+      if ( !inSet->findObjectByInternalName( outName, searchChildren ) )
+         return String(outName);
+      
+      S32 suffixNumb = -1;
+      String nameStr( String::GetTrailingNumber( outName, suffixNumb ) );
+      suffixNumb++;
+      
+      static char tempStr[512];
+      
+#define MAX_TRIES 100
+      
+      for ( U32 i = 0; i < MAX_TRIES; i++ )
+      {
+         dSprintf( tempStr, 512, "%s%d", nameStr.c_str(), suffixNumb );
+         outName = StringTable->insert( tempStr );
+         
+         if ( !inSet->findObjectByInternalName( outName, searchChildren ) )
+            return String(outName);         
+         
+         suffixNumb++;
+      }
+      
+      Con::errorf( "Sim::getUniqueInternalName( %s ) - failed after %d attempts", inName, MAX_TRIES );
+      return String::EmptyString;
+   }
+   
+   bool isValidObjectName( const char* name )
+   {
+      if( !name || !name[ 0 ] )
+         return true; // Anonymous object.
+      
+      if( !dIsalpha( name[ 0 ] ) && name[ 0 ] != '_' )
+         return false;
+      
+      for( U32 i = 1; name[ i ]; ++ i )
+         if( !dIsalnum( name[ i ] ) && name[ i ] != '_' )
+            return false;
+      
+      return true;
+   }
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 

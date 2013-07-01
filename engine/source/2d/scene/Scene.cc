@@ -62,7 +62,7 @@
 
 // Debug Profiling.
 #include "debug/profiler.h"
-#include "renderPassManager.h"
+#include "renderInstance/renderPassManager.h"
 
 //------------------------------------------------------------------------------
 

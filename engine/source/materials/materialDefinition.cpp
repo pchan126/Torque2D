@@ -512,7 +512,8 @@ void Material::_mapMaterial()
 
 BaseMatInstance* Material::createMatInstance()
 {
-   return new MatInstance(*this);
+//   return new MatInstance(*this);
+   return NULL;
 }
 
 void Material::flush()

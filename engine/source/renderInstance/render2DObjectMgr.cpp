@@ -2,7 +2,7 @@
 // Torque
 // Copyright GarageGames, LLC 2011
 //-----------------------------------------------------------------------------
-#include "render2dObjectMgr.h"
+#include "./render2dObjectMgr.h"
 #include "console/consoleTypes.h"
 #include "2d/sceneobject/sceneObject.h"
 

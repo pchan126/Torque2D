@@ -17,6 +17,7 @@ GFXOpenGL32WindowTarget::GFXOpenGL32WindowTarget(PlatformWindow *window, GFXDevi
     mWindow = dynamic_cast<GLFWWindow*>(window);
     window->appEvent.notify(this, &GFXOpenGL32WindowTarget::_onAppSignal);
     size = window->getBounds().extent;
+//   mFramebuffer
 }
 
 void GFXOpenGL32WindowTarget::resetMode()

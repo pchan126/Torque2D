@@ -87,6 +87,9 @@
 #include "simDatablockGroup.h"
 #endif
 
+#include "string/str.h"
+
+
 //---------------------------------------------------------------------------
 
 /// Definition of some basic Sim system constants.
@@ -215,6 +218,15 @@ namespace Sim
    U32  getEventTimeLeft(U32 eventId);
    U32  getTimeSinceStart(U32 eventId);
    U32  getScheduleDuration(U32 eventId);
+
+   /// Appends numbers to inName until an unused SimObject name is created
+   String getUniqueName( const char *inName );
+   /// Appends numbers to inName until an internal name not taken in the inSet is found.
+   String getUniqueInternalName( const char *inName, SimSet *inSet, bool searchChildren );
+   
+   /// Return true if the given name string makes for a valid object name.
+   /// Empty strings and NULL are also treated as valid names (anonymous objects).
+   bool isValidObjectName( const char* name );
 
    bool saveObject(SimObject *obj, Stream *stream);
    SimObject *loadObjectStream(Stream *stream);

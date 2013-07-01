@@ -1,0 +1,360 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		D17F031917814F7900C6FCA4 /* glext.h in Headers */ = {isa = PBXBuildFile; fileRef = D17F02DF17814F7900C6FCA4 /* glext.h */; };
+		D17F031A17814F7900C6FCA4 /* glxext.h in Headers */ = {isa = PBXBuildFile; fileRef = D17F02E017814F7900C6FCA4 /* glxext.h */; };
+		D17F031B17814F7900C6FCA4 /* wglext.h in Headers */ = {isa = PBXBuildFile; fileRef = D17F02E117814F7900C6FCA4 /* wglext.h */; };
+		D17F031E17814F7900C6FCA4 /* glfw3.h in Headers */ = {isa = PBXBuildFile; fileRef = D17F02E617814F7900C6FCA4 /* glfw3.h */; };
+		D17F031F17814F7900C6FCA4 /* glfw3native.h in Headers */ = {isa = PBXBuildFile; fileRef = D17F02E717814F7900C6FCA4 /* glfw3native.h */; };
+		D17F032017814F7900C6FCA4 /* clipboard.c in Sources */ = {isa = PBXBuildFile; fileRef = D17F02E917814F7900C6FCA4 /* clipboard.c */; };
+		D17F032117814F7900C6FCA4 /* cocoa_clipboard.m in Sources */ = {isa = PBXBuildFile; fileRef = D17F02EA17814F7900C6FCA4 /* cocoa_clipboard.m */; };
+		D17F032217814F7900C6FCA4 /* cocoa_gamma.c in Sources */ = {isa = PBXBuildFile; fileRef = D17F02EB17814F7900C6FCA4 /* cocoa_gamma.c */; };
+		D17F032317814F7900C6FCA4 /* cocoa_init.m in Sources */ = {isa = PBXBuildFile; fileRef = D17F02EC17814F7900C6FCA4 /* cocoa_init.m */; };
+		D17F032417814F7900C6FCA4 /* cocoa_joystick.m in Sources */ = {isa = PBXBuildFile; fileRef = D17F02ED17814F7900C6FCA4 /* cocoa_joystick.m */; };
+		D17F032517814F7900C6FCA4 /* cocoa_monitor.m in Sources */ = {isa = PBXBuildFile; fileRef = D17F02EE17814F7900C6FCA4 /* cocoa_monitor.m */; };
+		D17F032617814F7900C6FCA4 /* cocoa_platform.h in Headers */ = {isa = PBXBuildFile; fileRef = D17F02EF17814F7900C6FCA4 /* cocoa_platform.h */; };
+		D17F032717814F7900C6FCA4 /* cocoa_time.c in Sources */ = {isa = PBXBuildFile; fileRef = D17F02F017814F7900C6FCA4 /* cocoa_time.c */; };
+		D17F032817814F7900C6FCA4 /* cocoa_window.m in Sources */ = {isa = PBXBuildFile; fileRef = D17F02F117814F7900C6FCA4 /* cocoa_window.m */; };
+		D17F032917814F7900C6FCA4 /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = D17F02F217814F7900C6FCA4 /* config.h */; };
+		D17F032A17814F7900C6FCA4 /* context.c in Sources */ = {isa = PBXBuildFile; fileRef = D17F02F417814F7900C6FCA4 /* context.c */; };
+		D17F032D17814F7900C6FCA4 /* gamma.c in Sources */ = {isa = PBXBuildFile; fileRef = D17F02F717814F7900C6FCA4 /* gamma.c */; };
+		D17F033017814F7900C6FCA4 /* init.c in Sources */ = {isa = PBXBuildFile; fileRef = D17F02FA17814F7900C6FCA4 /* init.c */; };
+		D17F033117814F7900C6FCA4 /* input.c in Sources */ = {isa = PBXBuildFile; fileRef = D17F02FB17814F7900C6FCA4 /* input.c */; };
+		D17F033217814F7900C6FCA4 /* internal.h in Headers */ = {isa = PBXBuildFile; fileRef = D17F02FC17814F7900C6FCA4 /* internal.h */; };
+		D17F033317814F7900C6FCA4 /* joystick.c in Sources */ = {isa = PBXBuildFile; fileRef = D17F02FD17814F7900C6FCA4 /* joystick.c */; };
+		D17F033417814F7900C6FCA4 /* monitor.c in Sources */ = {isa = PBXBuildFile; fileRef = D17F02FE17814F7900C6FCA4 /* monitor.c */; };
+		D17F033517814F7900C6FCA4 /* nsgl_context.m in Sources */ = {isa = PBXBuildFile; fileRef = D17F02FF17814F7900C6FCA4 /* nsgl_context.m */; };
+		D17F033617814F7900C6FCA4 /* nsgl_platform.h in Headers */ = {isa = PBXBuildFile; fileRef = D17F030017814F7900C6FCA4 /* nsgl_platform.h */; };
+		D17F033717814F7900C6FCA4 /* time.c in Sources */ = {isa = PBXBuildFile; fileRef = D17F030117814F7900C6FCA4 /* time.c */; };
+		D17F034217814F7900C6FCA4 /* window.c in Sources */ = {isa = PBXBuildFile; fileRef = D17F030C17814F7900C6FCA4 /* window.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		D17F02CB17814F5800C6FCA4 /* libglfw.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libglfw.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		D17F02DF17814F7900C6FCA4 /* glext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glext.h; sourceTree = "<group>"; };
+		D17F02E017814F7900C6FCA4 /* glxext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glxext.h; sourceTree = "<group>"; };
+		D17F02E117814F7900C6FCA4 /* wglext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wglext.h; sourceTree = "<group>"; };
+		D17F02E617814F7900C6FCA4 /* glfw3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glfw3.h; sourceTree = "<group>"; };
+		D17F02E717814F7900C6FCA4 /* glfw3native.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glfw3native.h; sourceTree = "<group>"; };
+		D17F02E917814F7900C6FCA4 /* clipboard.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = clipboard.c; sourceTree = "<group>"; };
+		D17F02EA17814F7900C6FCA4 /* cocoa_clipboard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = cocoa_clipboard.m; sourceTree = "<group>"; };
+		D17F02EB17814F7900C6FCA4 /* cocoa_gamma.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cocoa_gamma.c; sourceTree = "<group>"; };
+		D17F02EC17814F7900C6FCA4 /* cocoa_init.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = cocoa_init.m; sourceTree = "<group>"; };
+		D17F02ED17814F7900C6FCA4 /* cocoa_joystick.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = cocoa_joystick.m; sourceTree = "<group>"; };
+		D17F02EE17814F7900C6FCA4 /* cocoa_monitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = cocoa_monitor.m; sourceTree = "<group>"; };
+		D17F02EF17814F7900C6FCA4 /* cocoa_platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cocoa_platform.h; sourceTree = "<group>"; };
+		D17F02F017814F7900C6FCA4 /* cocoa_time.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cocoa_time.c; sourceTree = "<group>"; };
+		D17F02F117814F7900C6FCA4 /* cocoa_window.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = cocoa_window.m; sourceTree = "<group>"; };
+		D17F02F217814F7900C6FCA4 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
+		D17F02F417814F7900C6FCA4 /* context.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = context.c; sourceTree = "<group>"; };
+		D17F02F717814F7900C6FCA4 /* gamma.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gamma.c; sourceTree = "<group>"; };
+		D17F02FA17814F7900C6FCA4 /* init.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = init.c; sourceTree = "<group>"; };
+		D17F02FB17814F7900C6FCA4 /* input.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = input.c; sourceTree = "<group>"; };
+		D17F02FC17814F7900C6FCA4 /* internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = internal.h; sourceTree = "<group>"; };
+		D17F02FD17814F7900C6FCA4 /* joystick.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = joystick.c; sourceTree = "<group>"; };
+		D17F02FE17814F7900C6FCA4 /* monitor.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = monitor.c; sourceTree = "<group>"; };
+		D17F02FF17814F7900C6FCA4 /* nsgl_context.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = nsgl_context.m; sourceTree = "<group>"; };
+		D17F030017814F7900C6FCA4 /* nsgl_platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nsgl_platform.h; sourceTree = "<group>"; };
+		D17F030117814F7900C6FCA4 /* time.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = time.c; sourceTree = "<group>"; };
+		D17F030C17814F7900C6FCA4 /* window.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = window.c; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D17F02C817814F5800C6FCA4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		D17F02C217814F5800C6FCA4 = {
+			isa = PBXGroup;
+			children = (
+				D17F02D817814F7900C6FCA4 /* glfw */,
+				D17F02CC17814F5800C6FCA4 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D17F02CC17814F5800C6FCA4 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D17F02CB17814F5800C6FCA4 /* libglfw.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D17F02D817814F7900C6FCA4 /* glfw */ = {
+			isa = PBXGroup;
+			children = (
+				D17F02D917814F7900C6FCA4 /* deps */,
+				D17F02E417814F7900C6FCA4 /* include */,
+				D17F02E817814F7900C6FCA4 /* src */,
+			);
+			name = glfw;
+			path = ../../../source/glfw;
+			sourceTree = "<group>";
+		};
+		D17F02D917814F7900C6FCA4 /* deps */ = {
+			isa = PBXGroup;
+			children = (
+				D17F02DE17814F7900C6FCA4 /* GL */,
+			);
+			path = deps;
+			sourceTree = "<group>";
+		};
+		D17F02DE17814F7900C6FCA4 /* GL */ = {
+			isa = PBXGroup;
+			children = (
+				D17F02DF17814F7900C6FCA4 /* glext.h */,
+				D17F02E017814F7900C6FCA4 /* glxext.h */,
+				D17F02E117814F7900C6FCA4 /* wglext.h */,
+			);
+			path = GL;
+			sourceTree = "<group>";
+		};
+		D17F02E417814F7900C6FCA4 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				D17F02E517814F7900C6FCA4 /* GLFW */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		D17F02E517814F7900C6FCA4 /* GLFW */ = {
+			isa = PBXGroup;
+			children = (
+				D17F02E617814F7900C6FCA4 /* glfw3.h */,
+				D17F02E717814F7900C6FCA4 /* glfw3native.h */,
+			);
+			path = GLFW;
+			sourceTree = "<group>";
+		};
+		D17F02E817814F7900C6FCA4 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				D17F02E917814F7900C6FCA4 /* clipboard.c */,
+				D17F02EA17814F7900C6FCA4 /* cocoa_clipboard.m */,
+				D17F02EB17814F7900C6FCA4 /* cocoa_gamma.c */,
+				D17F02EC17814F7900C6FCA4 /* cocoa_init.m */,
+				D17F02ED17814F7900C6FCA4 /* cocoa_joystick.m */,
+				D17F02EE17814F7900C6FCA4 /* cocoa_monitor.m */,
+				D17F02EF17814F7900C6FCA4 /* cocoa_platform.h */,
+				D17F02F017814F7900C6FCA4 /* cocoa_time.c */,
+				D17F02F117814F7900C6FCA4 /* cocoa_window.m */,
+				D17F02F217814F7900C6FCA4 /* config.h */,
+				D17F02F417814F7900C6FCA4 /* context.c */,
+				D17F02F717814F7900C6FCA4 /* gamma.c */,
+				D17F02FA17814F7900C6FCA4 /* init.c */,
+				D17F02FB17814F7900C6FCA4 /* input.c */,
+				D17F02FC17814F7900C6FCA4 /* internal.h */,
+				D17F02FD17814F7900C6FCA4 /* joystick.c */,
+				D17F02FE17814F7900C6FCA4 /* monitor.c */,
+				D17F02FF17814F7900C6FCA4 /* nsgl_context.m */,
+				D17F030017814F7900C6FCA4 /* nsgl_platform.h */,
+				D17F030117814F7900C6FCA4 /* time.c */,
+				D17F030C17814F7900C6FCA4 /* window.c */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		D17F02C917814F5800C6FCA4 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D17F031917814F7900C6FCA4 /* glext.h in Headers */,
+				D17F031A17814F7900C6FCA4 /* glxext.h in Headers */,
+				D17F031B17814F7900C6FCA4 /* wglext.h in Headers */,
+				D17F031E17814F7900C6FCA4 /* glfw3.h in Headers */,
+				D17F031F17814F7900C6FCA4 /* glfw3native.h in Headers */,
+				D17F032617814F7900C6FCA4 /* cocoa_platform.h in Headers */,
+				D17F032917814F7900C6FCA4 /* config.h in Headers */,
+				D17F033217814F7900C6FCA4 /* internal.h in Headers */,
+				D17F033617814F7900C6FCA4 /* nsgl_platform.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		D17F02CA17814F5800C6FCA4 /* glfw */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D17F02CF17814F5800C6FCA4 /* Build configuration list for PBXNativeTarget "glfw" */;
+			buildPhases = (
+				D17F02C717814F5800C6FCA4 /* Sources */,
+				D17F02C817814F5800C6FCA4 /* Frameworks */,
+				D17F02C917814F5800C6FCA4 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = glfw;
+			productName = glfw;
+			productReference = D17F02CB17814F5800C6FCA4 /* libglfw.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D17F02C317814F5800C6FCA4 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0460;
+				ORGANIZATIONNAME = "Paul L Jan";
+			};
+			buildConfigurationList = D17F02C617814F5800C6FCA4 /* Build configuration list for PBXProject "glfw" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = D17F02C217814F5800C6FCA4;
+			productRefGroup = D17F02CC17814F5800C6FCA4 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D17F02CA17814F5800C6FCA4 /* glfw */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D17F02C717814F5800C6FCA4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D17F032017814F7900C6FCA4 /* clipboard.c in Sources */,
+				D17F032117814F7900C6FCA4 /* cocoa_clipboard.m in Sources */,
+				D17F032217814F7900C6FCA4 /* cocoa_gamma.c in Sources */,
+				D17F032317814F7900C6FCA4 /* cocoa_init.m in Sources */,
+				D17F032417814F7900C6FCA4 /* cocoa_joystick.m in Sources */,
+				D17F032517814F7900C6FCA4 /* cocoa_monitor.m in Sources */,
+				D17F032717814F7900C6FCA4 /* cocoa_time.c in Sources */,
+				D17F032817814F7900C6FCA4 /* cocoa_window.m in Sources */,
+				D17F032A17814F7900C6FCA4 /* context.c in Sources */,
+				D17F032D17814F7900C6FCA4 /* gamma.c in Sources */,
+				D17F033017814F7900C6FCA4 /* init.c in Sources */,
+				D17F033117814F7900C6FCA4 /* input.c in Sources */,
+				D17F033317814F7900C6FCA4 /* joystick.c in Sources */,
+				D17F033417814F7900C6FCA4 /* monitor.c in Sources */,
+				D17F033517814F7900C6FCA4 /* nsgl_context.m in Sources */,
+				D17F033717814F7900C6FCA4 /* time.c in Sources */,
+				D17F034217814F7900C6FCA4 /* window.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		D17F02CD17814F5800C6FCA4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		D17F02CE17814F5800C6FCA4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		D17F02D017814F5800C6FCA4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		D17F02D117814F5800C6FCA4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		D17F02C617814F5800C6FCA4 /* Build configuration list for PBXProject "glfw" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D17F02CD17814F5800C6FCA4 /* Debug */,
+				D17F02CE17814F5800C6FCA4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D17F02CF17814F5800C6FCA4 /* Build configuration list for PBXNativeTarget "glfw" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D17F02D017814F5800C6FCA4 /* Debug */,
+				D17F02D117814F5800C6FCA4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D17F02C317814F5800C6FCA4 /* Project object */;
+}

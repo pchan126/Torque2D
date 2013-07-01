@@ -1565,8 +1565,8 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
     GFXTexHandle pImageTextureHandle = TEXMGR->createTexture( getWidth(), getHeight(), GFXFormatR8G8B8A8, &GFXSceneWindowTextureProfile, 0, 0 );
     texTarget->attachTexture(pImageTextureHandle);
 
-    GFXTarget *oldTarget = GFX->getActiveRenderTarget();
-    GFX->setActiveRenderTarget(texTarget);
+//    GFXTarget *oldTarget = GFX->getActiveRenderTarget();
+//    GFX->setActiveRenderTarget(texTarget);
     GFX->updateStates(true);
 
     // Render View.

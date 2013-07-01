@@ -450,9 +450,23 @@
 		D162450717265AB000E4E1F7 /* gfxOpenGLStateBlock.cc in Sources */ = {isa = PBXBuildFile; fileRef = D16244F617265AB000E4E1F7 /* gfxOpenGLStateBlock.cc */; };
 		D16580751702942800A21928 /* gfxInit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D16580731702942800A21928 /* gfxInit.cpp */; };
 		D16580791702A5AE00A21928 /* guiContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D16580771702A5AE00A21928 /* guiContainer.cpp */; };
-		D16C4CC9176EAB3B006936B5 /* libglfw3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D16C4CC8176EAB3B006936B5 /* libglfw3.a */; };
 		D16C4CF7176EB524006936B5 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D16C4CF6176EB524006936B5 /* IOKit.framework */; };
 		D176A012172FC1E4000785CB /* GLFWWindowInputGenerator.mm in Sources */ = {isa = PBXBuildFile; fileRef = D176A011172FC1E4000785CB /* GLFWWindowInputGenerator.mm */; };
+		D17F024D178135A200C6FCA4 /* render2DObjectMgr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D17F0247178135A200C6FCA4 /* render2DObjectMgr.cpp */; };
+		D17F024E178135A200C6FCA4 /* renderBinManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D17F0249178135A200C6FCA4 /* renderBinManager.cpp */; };
+		D17F024F178135A200C6FCA4 /* renderPassManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D17F024B178135A200C6FCA4 /* renderPassManager.cpp */; };
+		D17F0254178135DB00C6FCA4 /* baseMatInstance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D17F0252178135DB00C6FCA4 /* baseMatInstance.cpp */; };
+		D17F03511781514900C6FCA4 /* materialFeatureTypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D17F034F1781514900C6FCA4 /* materialFeatureTypes.cpp */; };
+		D17F03541781516F00C6FCA4 /* materialFeatureData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D17F03521781516F00C6FCA4 /* materialFeatureData.cpp */; };
+		D17F035A1781517E00C6FCA4 /* featureSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D17F03561781517E00C6FCA4 /* featureSet.cpp */; };
+		D17F035B1781517E00C6FCA4 /* featureType.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D17F03581781517E00C6FCA4 /* featureType.cpp */; };
+		D17F0375178151AA00C6FCA4 /* materialDefinition.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D17F035E178151A900C6FCA4 /* materialDefinition.cpp */; };
+		D17F0376178151AA00C6FCA4 /* materialList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D17F0360178151A900C6FCA4 /* materialList.cpp */; };
+		D17F0377178151AA00C6FCA4 /* materialManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D17F0362178151A900C6FCA4 /* materialManager.cpp */; };
+		D17F0378178151AA00C6FCA4 /* matStateHint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D17F0365178151A900C6FCA4 /* matStateHint.cpp */; };
+		D17F0379178151AA00C6FCA4 /* matTextureTarget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D17F0367178151A900C6FCA4 /* matTextureTarget.cpp */; };
+		D17F037E178151AA00C6FCA4 /* shaderData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D17F0372178151AA00C6FCA4 /* shaderData.cpp */; };
+		D17F039C17815D0200C6FCA4 /* libglfw.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D17F039917815CDD00C6FCA4 /* libglfw.a */; };
 		D19A5C10175739B1003A76CE /* lightMapParams.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D19A5BDE175739B1003A76CE /* lightMapParams.cpp */; };
 		D19A5C14175739B1003A76CE /* lightInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D19A5BE8175739B1003A76CE /* lightInfo.cpp */; };
 		D19A5C15175739B1003A76CE /* lightManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D19A5BEA175739B1003A76CE /* lightManager.cpp */; };
@@ -498,6 +512,23 @@
 		DA91B33316C2280E00EB7B6E /* gfxOpenGL32TextureTarget.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B32616C2280E00EB7B6E /* gfxOpenGL32TextureTarget.mm */; };
 		DA91B33416C2280E00EB7B6E /* gfxOpenGL32VertexBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA91B32916C2280E00EB7B6E /* gfxOpenGL32VertexBuffer.mm */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D17F039817815CDD00C6FCA4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D17F039417815CDC00C6FCA4 /* glfw.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D17F02CB17814F5800C6FCA4;
+			remoteInfo = glfw;
+		};
+		D17F039A17815CFC00C6FCA4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D17F039417815CDC00C6FCA4 /* glfw.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D17F02CA17814F5800C6FCA4;
+			remoteInfo = glfw;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		2A03300B165D1D2100E9CD70 /* unitTesting.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = unitTesting.cc; path = ../../../source/testing/unitTesting.cc; sourceTree = "<group>"; };
@@ -1385,7 +1416,6 @@
 		86DE5687171F05F60054CB83 /* guiGridCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiGridCtrl.h; sourceTree = "<group>"; };
 		86EA5B3E1678C7C700598E68 /* osxCocoaUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxCocoaUtilities.h; sourceTree = "<group>"; };
 		86EA5B3F1678C7C700598E68 /* osxCocoaUtilities.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxCocoaUtilities.mm; sourceTree = "<group>"; };
-		D1006350176EFB01007E2318 /* glfw3native.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glfw3native.h; path = ../../lib/glfw/include/GLFW/glfw3native.h; sourceTree = "<group>"; };
 		D1049A0B16F6F8C40096749B /* mPoint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mPoint.cpp; sourceTree = "<group>"; };
 		D10529F1173B9F3B00BFC4FF /* gfxOpenGLTextureObject.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxOpenGLTextureObject.cc; sourceTree = "<group>"; };
 		D11F9A86175DDCC800AB3E10 /* gfxOpenGLCardProfiler.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxOpenGLCardProfiler.cc; sourceTree = "<group>"; };
@@ -1419,10 +1449,43 @@
 		D165807A1702E64A00A21928 /* guiControl_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiControl_ScriptBinding.h; sourceTree = "<group>"; };
 		D16581421702E7AB00A21928 /* guiCanvas_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiCanvas_ScriptBinding.h; sourceTree = "<group>"; };
 		D16C4CC8176EAB3B006936B5 /* libglfw3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libglfw3.a; path = ../../lib/glfw/maclib/libglfw3.a; sourceTree = "<group>"; };
-		D16C4CF0176EAE6F006936B5 /* glfw3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glfw3.h; path = ../../lib/glfw/include/GLFW/glfw3.h; sourceTree = "<group>"; };
 		D16C4CF6176EB524006936B5 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		D176A010172FC1E4000785CB /* GLFWWindowInputGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLFWWindowInputGenerator.h; sourceTree = "<group>"; };
 		D176A011172FC1E4000785CB /* GLFWWindowInputGenerator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GLFWWindowInputGenerator.mm; sourceTree = "<group>"; };
+		D17F0247178135A200C6FCA4 /* render2DObjectMgr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = render2DObjectMgr.cpp; path = ../../../source/renderInstance/render2DObjectMgr.cpp; sourceTree = "<group>"; };
+		D17F0248178135A200C6FCA4 /* render2DObjectMgr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = render2DObjectMgr.h; path = ../../../source/renderInstance/render2DObjectMgr.h; sourceTree = "<group>"; };
+		D17F0249178135A200C6FCA4 /* renderBinManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = renderBinManager.cpp; path = ../../../source/renderInstance/renderBinManager.cpp; sourceTree = "<group>"; };
+		D17F024A178135A200C6FCA4 /* renderBinManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = renderBinManager.h; path = ../../../source/renderInstance/renderBinManager.h; sourceTree = "<group>"; };
+		D17F024B178135A200C6FCA4 /* renderPassManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = renderPassManager.cpp; path = ../../../source/renderInstance/renderPassManager.cpp; sourceTree = "<group>"; };
+		D17F024C178135A200C6FCA4 /* renderPassManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = renderPassManager.h; path = ../../../source/renderInstance/renderPassManager.h; sourceTree = "<group>"; };
+		D17F0251178135DB00C6FCA4 /* baseMaterialDefinition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = baseMaterialDefinition.h; path = ../../../source/materials/baseMaterialDefinition.h; sourceTree = "<group>"; };
+		D17F0252178135DB00C6FCA4 /* baseMatInstance.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = baseMatInstance.cpp; path = ../../../source/materials/baseMatInstance.cpp; sourceTree = "<group>"; };
+		D17F0253178135DB00C6FCA4 /* baseMatInstance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = baseMatInstance.h; path = ../../../source/materials/baseMatInstance.h; sourceTree = "<group>"; };
+		D17F034F1781514900C6FCA4 /* materialFeatureTypes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = materialFeatureTypes.cpp; path = ../../../source/materials/materialFeatureTypes.cpp; sourceTree = "<group>"; };
+		D17F03501781514900C6FCA4 /* materialFeatureTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = materialFeatureTypes.h; path = ../../../source/materials/materialFeatureTypes.h; sourceTree = "<group>"; };
+		D17F03521781516F00C6FCA4 /* materialFeatureData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = materialFeatureData.cpp; path = ../../../source/materials/materialFeatureData.cpp; sourceTree = "<group>"; };
+		D17F03531781516F00C6FCA4 /* materialFeatureData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = materialFeatureData.h; path = ../../../source/materials/materialFeatureData.h; sourceTree = "<group>"; };
+		D17F03561781517E00C6FCA4 /* featureSet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = featureSet.cpp; sourceTree = "<group>"; };
+		D17F03571781517E00C6FCA4 /* featureSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = featureSet.h; sourceTree = "<group>"; };
+		D17F03581781517E00C6FCA4 /* featureType.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = featureType.cpp; sourceTree = "<group>"; };
+		D17F03591781517E00C6FCA4 /* featureType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = featureType.h; sourceTree = "<group>"; };
+		D17F035E178151A900C6FCA4 /* materialDefinition.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = materialDefinition.cpp; path = ../../../source/materials/materialDefinition.cpp; sourceTree = "<group>"; };
+		D17F035F178151A900C6FCA4 /* materialDefinition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = materialDefinition.h; path = ../../../source/materials/materialDefinition.h; sourceTree = "<group>"; };
+		D17F0360178151A900C6FCA4 /* materialList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = materialList.cpp; path = ../../../source/materials/materialList.cpp; sourceTree = "<group>"; };
+		D17F0361178151A900C6FCA4 /* materialList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = materialList.h; path = ../../../source/materials/materialList.h; sourceTree = "<group>"; };
+		D17F0362178151A900C6FCA4 /* materialManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = materialManager.cpp; path = ../../../source/materials/materialManager.cpp; sourceTree = "<group>"; };
+		D17F0363178151A900C6FCA4 /* materialManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = materialManager.h; path = ../../../source/materials/materialManager.h; sourceTree = "<group>"; };
+		D17F0364178151A900C6FCA4 /* materialParameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = materialParameters.h; path = ../../../source/materials/materialParameters.h; sourceTree = "<group>"; };
+		D17F0365178151A900C6FCA4 /* matStateHint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = matStateHint.cpp; path = ../../../source/materials/matStateHint.cpp; sourceTree = "<group>"; };
+		D17F0366178151A900C6FCA4 /* matStateHint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = matStateHint.h; path = ../../../source/materials/matStateHint.h; sourceTree = "<group>"; };
+		D17F0367178151A900C6FCA4 /* matTextureTarget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = matTextureTarget.cpp; path = ../../../source/materials/matTextureTarget.cpp; sourceTree = "<group>"; };
+		D17F0368178151AA00C6FCA4 /* matTextureTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = matTextureTarget.h; path = ../../../source/materials/matTextureTarget.h; sourceTree = "<group>"; };
+		D17F0371178151AA00C6FCA4 /* sceneData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sceneData.h; path = ../../../source/materials/sceneData.h; sourceTree = "<group>"; };
+		D17F0372178151AA00C6FCA4 /* shaderData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = shaderData.cpp; path = ../../../source/materials/shaderData.cpp; sourceTree = "<group>"; };
+		D17F0373178151AA00C6FCA4 /* shaderData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = shaderData.h; path = ../../../source/materials/shaderData.h; sourceTree = "<group>"; };
+		D17F0381178151FA00C6FCA4 /* glfw3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glfw3.h; path = ../../lib/glfw/include/GLFW/glfw3.h; sourceTree = "<group>"; };
+		D17F0382178151FA00C6FCA4 /* glfw3native.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glfw3native.h; path = ../../lib/glfw/include/GLFW/glfw3native.h; sourceTree = "<group>"; };
+		D17F039417815CDC00C6FCA4 /* glfw.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = glfw.xcodeproj; path = glfw/glfw.xcodeproj; sourceTree = "<group>"; };
 		D19A5BDE175739B1003A76CE /* lightMapParams.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lightMapParams.cpp; sourceTree = "<group>"; };
 		D19A5BDF175739B1003A76CE /* lightMapParams.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lightMapParams.h; sourceTree = "<group>"; };
 		D19A5BE2175739B1003A76CE /* sceneLightingGlobals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sceneLightingGlobals.h; sourceTree = "<group>"; };
@@ -1529,6 +1592,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D17F039C17815D0200C6FCA4 /* libglfw.a in Frameworks */,
 				D16C4CF7176EB524006936B5 /* IOKit.framework in Frameworks */,
 				DA4645FF16C3A7C500EF1922 /* QuartzCore.framework in Frameworks */,
 				865A20CA16515B1E00527C44 /* AppKit.framework in Frameworks */,
@@ -1539,7 +1603,6 @@
 				865A20CF16515B1E00527C44 /* Foundation.framework in Frameworks */,
 				865A20D016515B1E00527C44 /* OpenAL.framework in Frameworks */,
 				865A20D116515B1E00527C44 /* OpenGL.framework in Frameworks */,
-				D16C4CC9176EAB3B006936B5 /* libglfw3.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1711,7 +1774,7 @@
 		865A21E71651875E00527C44 /* Support_Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				D16C4CC5176EA9AD006936B5 /* glfw */,
+				D17F037F178151E200C6FCA4 /* glfw */,
 				865A22D6165187D700527C44 /* lpng */,
 				865A22D5165187D100527C44 /* ljpeg */,
 				865A21E8165187B600527C44 /* box2d */,
@@ -1991,6 +2054,7 @@
 		869FF8AD1651518C002FE082 = {
 			isa = PBXGroup;
 			children = (
+				D17F039417815CDC00C6FCA4 /* glfw.xcodeproj */,
 				8652F29F16C146CF00639EFE /* torque2d.icns */,
 				869FF8C21651518C002FE082 /* Torque2D */,
 				865A2351165188AF00527C44 /* platformOSX */,
@@ -2029,6 +2093,9 @@
 		869FF8C21651518C002FE082 /* Torque2D */ = {
 			isa = PBXGroup;
 			children = (
+				D17F03551781517E00C6FCA4 /* shaderGen */,
+				D17F0250178135BE00C6FCA4 /* materials */,
+				D17F02461781358A00C6FCA4 /* renderInstance */,
 				D19A5BC0175739B1003A76CE /* lighting */,
 				86BC7E7516518D4600D96ADF /* 2d */,
 				86BC7EE016518D4600D96ADF /* algorithm */,
@@ -3122,13 +3189,74 @@
 			path = OpenGL;
 			sourceTree = "<group>";
 		};
-		D16C4CC5176EA9AD006936B5 /* glfw */ = {
+		D17F02461781358A00C6FCA4 /* renderInstance */ = {
 			isa = PBXGroup;
 			children = (
-				D1006350176EFB01007E2318 /* glfw3native.h */,
-				D16C4CF0176EAE6F006936B5 /* glfw3.h */,
+				D17F0247178135A200C6FCA4 /* render2DObjectMgr.cpp */,
+				D17F0248178135A200C6FCA4 /* render2DObjectMgr.h */,
+				D17F0249178135A200C6FCA4 /* renderBinManager.cpp */,
+				D17F024A178135A200C6FCA4 /* renderBinManager.h */,
+				D17F024B178135A200C6FCA4 /* renderPassManager.cpp */,
+				D17F024C178135A200C6FCA4 /* renderPassManager.h */,
+			);
+			name = renderInstance;
+			sourceTree = "<group>";
+		};
+		D17F0250178135BE00C6FCA4 /* materials */ = {
+			isa = PBXGroup;
+			children = (
+				D17F035E178151A900C6FCA4 /* materialDefinition.cpp */,
+				D17F035F178151A900C6FCA4 /* materialDefinition.h */,
+				D17F0360178151A900C6FCA4 /* materialList.cpp */,
+				D17F0361178151A900C6FCA4 /* materialList.h */,
+				D17F0362178151A900C6FCA4 /* materialManager.cpp */,
+				D17F0363178151A900C6FCA4 /* materialManager.h */,
+				D17F0364178151A900C6FCA4 /* materialParameters.h */,
+				D17F0365178151A900C6FCA4 /* matStateHint.cpp */,
+				D17F0366178151A900C6FCA4 /* matStateHint.h */,
+				D17F0367178151A900C6FCA4 /* matTextureTarget.cpp */,
+				D17F0368178151AA00C6FCA4 /* matTextureTarget.h */,
+				D17F0371178151AA00C6FCA4 /* sceneData.h */,
+				D17F0372178151AA00C6FCA4 /* shaderData.cpp */,
+				D17F0373178151AA00C6FCA4 /* shaderData.h */,
+				D17F03521781516F00C6FCA4 /* materialFeatureData.cpp */,
+				D17F03531781516F00C6FCA4 /* materialFeatureData.h */,
+				D17F034F1781514900C6FCA4 /* materialFeatureTypes.cpp */,
+				D17F03501781514900C6FCA4 /* materialFeatureTypes.h */,
+				D17F0251178135DB00C6FCA4 /* baseMaterialDefinition.h */,
+				D17F0252178135DB00C6FCA4 /* baseMatInstance.cpp */,
+				D17F0253178135DB00C6FCA4 /* baseMatInstance.h */,
+			);
+			name = materials;
+			sourceTree = "<group>";
+		};
+		D17F03551781517E00C6FCA4 /* shaderGen */ = {
+			isa = PBXGroup;
+			children = (
+				D17F03561781517E00C6FCA4 /* featureSet.cpp */,
+				D17F03571781517E00C6FCA4 /* featureSet.h */,
+				D17F03581781517E00C6FCA4 /* featureType.cpp */,
+				D17F03591781517E00C6FCA4 /* featureType.h */,
+			);
+			name = shaderGen;
+			path = ../../../source/shaderGen;
+			sourceTree = "<group>";
+		};
+		D17F037F178151E200C6FCA4 /* glfw */ = {
+			isa = PBXGroup;
+			children = (
+				D17F0381178151FA00C6FCA4 /* glfw3.h */,
+				D17F0382178151FA00C6FCA4 /* glfw3native.h */,
 			);
 			name = glfw;
+			sourceTree = "<group>";
+		};
+		D17F039517815CDC00C6FCA4 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D17F039917815CDD00C6FCA4 /* libglfw.a */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		D19A5BC0175739B1003A76CE /* lighting */ = {
@@ -3256,6 +3384,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				D17F039B17815CFC00C6FCA4 /* PBXTargetDependency */,
 			);
 			name = Torque2D;
 			productName = Torque2D;
@@ -3281,12 +3410,28 @@
 			mainGroup = 869FF8AD1651518C002FE082;
 			productRefGroup = 869FF8B91651518C002FE082 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = D17F039517815CDC00C6FCA4 /* Products */;
+					ProjectRef = D17F039417815CDC00C6FCA4 /* glfw.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				869FF8B71651518C002FE082 /* Torque2D */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		D17F039917815CDD00C6FCA4 /* libglfw.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libglfw.a;
+			remoteRef = D17F039817815CDD00C6FCA4 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		869FF8B61651518C002FE082 /* Resources */ = {
@@ -3782,10 +3927,32 @@
 				30666085176DCD7A00BE2909 /* gfxOpenGLTextureTarget.cc in Sources */,
 				30666087176DCE0B00BE2909 /* gfxEnums.cc in Sources */,
 				D1CC09F617799B3800206488 /* FilterImageAsset.mm in Sources */,
+				D17F024D178135A200C6FCA4 /* render2DObjectMgr.cpp in Sources */,
+				D17F024E178135A200C6FCA4 /* renderBinManager.cpp in Sources */,
+				D17F024F178135A200C6FCA4 /* renderPassManager.cpp in Sources */,
+				D17F0254178135DB00C6FCA4 /* baseMatInstance.cpp in Sources */,
+				D17F03511781514900C6FCA4 /* materialFeatureTypes.cpp in Sources */,
+				D17F03541781516F00C6FCA4 /* materialFeatureData.cpp in Sources */,
+				D17F035A1781517E00C6FCA4 /* featureSet.cpp in Sources */,
+				D17F035B1781517E00C6FCA4 /* featureType.cpp in Sources */,
+				D17F0375178151AA00C6FCA4 /* materialDefinition.cpp in Sources */,
+				D17F0376178151AA00C6FCA4 /* materialList.cpp in Sources */,
+				D17F0377178151AA00C6FCA4 /* materialManager.cpp in Sources */,
+				D17F0378178151AA00C6FCA4 /* matStateHint.cpp in Sources */,
+				D17F0379178151AA00C6FCA4 /* matTextureTarget.cpp in Sources */,
+				D17F037E178151AA00C6FCA4 /* shaderData.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D17F039B17815CFC00C6FCA4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = glfw;
+			targetProxy = D17F039A17815CFC00C6FCA4 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		86C281CB16A4307E00F030F4 /* MainMenu.xib */ = {
@@ -3847,11 +4014,15 @@
 					../../source/persistence/rapidjson/include,
 					"$(SYSTEM_LIBRARY_DIR)/Frameworks/ApplicationServices.framework/Versions/Current/Frameworks/QD.framework/Headers",
 					"$(SYSTEM_LIBRARY_DIR)/Frameworks/OpenGL.framework/Headers",
+					../../lib/glfw/include,
 				);
 				INFOPLIST_FILE = "Torque2D/Torque2D-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../lib/glfw/maclib\"",
+					"\"$(SRCROOT)/../../lib/glfw/src/Debug\"",
+					"\"$(SRCROOT)/../../lib/glfw/src/GLFW.build/Debug/glfw.build/Objects-normal/i386\"",
+					"\"$(SRCROOT)/../../lib/glfw/src/GLFW.build/Debug/glfw.build/Objects-normal/x86_64\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = /usr/lib/libz.dylib;
@@ -3947,11 +4118,15 @@
 					../../source/testing/googleTest/include,
 					"$(SYSTEM_LIBRARY_DIR)/Frameworks/ApplicationServices.framework/Versions/Current/Frameworks/QD.framework/Headers",
 					"$(SYSTEM_LIBRARY_DIR)/Frameworks/OpenGL.framework/Headers",
+					../../lib/glfw/include,
 				);
 				INFOPLIST_FILE = "Torque2D/Torque2D-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../lib/glfw/maclib\"",
+					"\"$(SRCROOT)/../../lib/glfw/src/Debug\"",
+					"\"$(SRCROOT)/../../lib/glfw/src/GLFW.build/Debug/glfw.build/Objects-normal/i386\"",
+					"\"$(SRCROOT)/../../lib/glfw/src/GLFW.build/Debug/glfw.build/Objects-normal/x86_64\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = /usr/lib/libz.dylib;
@@ -3984,11 +4159,15 @@
 					../../source/testing/googleTest/include,
 					"$(SYSTEM_LIBRARY_DIR)/Frameworks/ApplicationServices.framework/Versions/Current/Frameworks/QD.framework/Headers",
 					"$(SYSTEM_LIBRARY_DIR)/Frameworks/OpenGL.framework/Headers",
+					../../lib/glfw/include,
 				);
 				INFOPLIST_FILE = "Torque2D/Torque2D-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../lib/glfw/maclib\"",
+					"\"$(SRCROOT)/../../lib/glfw/src/Debug\"",
+					"\"$(SRCROOT)/../../lib/glfw/src/GLFW.build/Debug/glfw.build/Objects-normal/i386\"",
+					"\"$(SRCROOT)/../../lib/glfw/src/GLFW.build/Debug/glfw.build/Objects-normal/x86_64\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = /usr/lib/libz.dylib;
