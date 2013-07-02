@@ -822,7 +822,7 @@ bool ImageAsset::removeExplicitCell( const S32 cellIndex )
 void ImageAsset::setTextureFilter( const TextureFilterMode filterMode )
 {
     // Finish if no texture.
-    if ( mImageTextureHandle.IsNull() )
+    if ( mImageTextureHandle.isNull() )
         return;
 
     // Select Hardware Filter Mode.
@@ -920,7 +920,7 @@ void ImageAsset::calculateImage( void )
 
     // If we have an existing texture and we're setting to the same bitmap then force the texture manager
     // to refresh the texture itself.
-    if ( !mImageTextureHandle.IsNull())
+    if ( !mImageTextureHandle.isNull())
         if (dStricmp(mImageTextureHandle->getTextureKey(), mImageFile) == 0 )
             mImageTextureHandle.refresh();
 
@@ -928,7 +928,7 @@ void ImageAsset::calculateImage( void )
     mImageTextureHandle.set( mImageFile, &GFXImageAssetTextureProfile, "mImageTextureHandle");
 
     // Is the texture valid?
-    if ( mImageTextureHandle.IsNull() )
+    if ( mImageTextureHandle.isNull() )
     {
         // No, so warn.
         Con::warnf( "Image '%s' could not load texture '%s'.", getAssetId(), mImageFile );

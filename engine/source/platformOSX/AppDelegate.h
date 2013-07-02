@@ -20,10 +20,17 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
+#import "platformOSX/JoystickManager/JoystickNotificationDelegate.h"
 
-@interface AppDelegate : NSObject <NSApplicationDelegate> {
+@interface AppDelegate : NSObject <NSApplicationDelegate, JoystickNotificationDelegate> {
     NSWindow *window;
 }
+
+- (void)joystickAdded:(Joystick *)joystick;
+
+- (void)joystickStateChanged:(Joystick *)joystick;
+- (void)joystickButtonPushed:(int)buttonIndex onJoystick:(Joystick *)joystick;
+- (void)joystickButtonReleased:(int)buttonIndex onJoystick:(Joystick *)joystick;
 
 @property (assign) IBOutlet NSWindow *window;
 

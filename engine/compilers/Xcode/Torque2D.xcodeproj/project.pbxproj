@@ -467,6 +467,9 @@
 		D17F0379178151AA00C6FCA4 /* matTextureTarget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D17F0367178151A900C6FCA4 /* matTextureTarget.cpp */; };
 		D17F037E178151AA00C6FCA4 /* shaderData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D17F0372178151AA00C6FCA4 /* shaderData.cpp */; };
 		D17F039C17815D0200C6FCA4 /* libglfw.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D17F039917815CDD00C6FCA4 /* libglfw.a */; };
+		D198208017827DF500469581 /* Joystick.m in Sources */ = {isa = PBXBuildFile; fileRef = D198207A17827DF500469581 /* Joystick.m */; };
+		D198208117827DF500469581 /* JoystickHatswitch.m in Sources */ = {isa = PBXBuildFile; fileRef = D198207C17827DF500469581 /* JoystickHatswitch.m */; };
+		D198208217827DF500469581 /* JoystickManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D198207E17827DF500469581 /* JoystickManager.m */; };
 		D19A5C10175739B1003A76CE /* lightMapParams.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D19A5BDE175739B1003A76CE /* lightMapParams.cpp */; };
 		D19A5C14175739B1003A76CE /* lightInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D19A5BE8175739B1003A76CE /* lightInfo.cpp */; };
 		D19A5C15175739B1003A76CE /* lightManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D19A5BEA175739B1003A76CE /* lightManager.cpp */; };
@@ -1486,6 +1489,13 @@
 		D17F0381178151FA00C6FCA4 /* glfw3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glfw3.h; path = ../../lib/glfw/include/GLFW/glfw3.h; sourceTree = "<group>"; };
 		D17F0382178151FA00C6FCA4 /* glfw3native.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glfw3native.h; path = ../../lib/glfw/include/GLFW/glfw3native.h; sourceTree = "<group>"; };
 		D17F039417815CDC00C6FCA4 /* glfw.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = glfw.xcodeproj; path = glfw/glfw.xcodeproj; sourceTree = "<group>"; };
+		D198207917827DF500469581 /* Joystick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Joystick.h; sourceTree = "<group>"; };
+		D198207A17827DF500469581 /* Joystick.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Joystick.m; sourceTree = "<group>"; };
+		D198207B17827DF500469581 /* JoystickHatswitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JoystickHatswitch.h; sourceTree = "<group>"; };
+		D198207C17827DF500469581 /* JoystickHatswitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JoystickHatswitch.m; sourceTree = "<group>"; };
+		D198207D17827DF500469581 /* JoystickManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JoystickManager.h; sourceTree = "<group>"; };
+		D198207E17827DF500469581 /* JoystickManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JoystickManager.m; sourceTree = "<group>"; };
+		D198207F17827DF500469581 /* JoystickNotificationDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JoystickNotificationDelegate.h; sourceTree = "<group>"; };
 		D19A5BDE175739B1003A76CE /* lightMapParams.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lightMapParams.cpp; sourceTree = "<group>"; };
 		D19A5BDF175739B1003A76CE /* lightMapParams.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lightMapParams.h; sourceTree = "<group>"; };
 		D19A5BE2175739B1003A76CE /* sceneLightingGlobals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sceneLightingGlobals.h; sourceTree = "<group>"; };
@@ -2017,6 +2027,7 @@
 		865A2351165188AF00527C44 /* platformOSX */ = {
 			isa = PBXGroup;
 			children = (
+				D198207817827DF500469581 /* JoystickManager */,
 				D1CC09F217799B3800206488 /* 2d */,
 				D1A6957B17016CA90060D928 /* windowManager */,
 				DA91B31416C2280E00EB7B6E /* graphics */,
@@ -3259,6 +3270,20 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		D198207817827DF500469581 /* JoystickManager */ = {
+			isa = PBXGroup;
+			children = (
+				D198207917827DF500469581 /* Joystick.h */,
+				D198207A17827DF500469581 /* Joystick.m */,
+				D198207B17827DF500469581 /* JoystickHatswitch.h */,
+				D198207C17827DF500469581 /* JoystickHatswitch.m */,
+				D198207D17827DF500469581 /* JoystickManager.h */,
+				D198207E17827DF500469581 /* JoystickManager.m */,
+				D198207F17827DF500469581 /* JoystickNotificationDelegate.h */,
+			);
+			path = JoystickManager;
+			sourceTree = "<group>";
+		};
 		D19A5BC0175739B1003A76CE /* lighting */ = {
 			isa = PBXGroup;
 			children = (
@@ -3941,6 +3966,9 @@
 				D17F0378178151AA00C6FCA4 /* matStateHint.cpp in Sources */,
 				D17F0379178151AA00C6FCA4 /* matTextureTarget.cpp in Sources */,
 				D17F037E178151AA00C6FCA4 /* shaderData.cpp in Sources */,
+				D198208017827DF500469581 /* Joystick.m in Sources */,
+				D198208117827DF500469581 /* JoystickHatswitch.m in Sources */,
+				D198208217827DF500469581 /* JoystickManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

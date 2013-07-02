@@ -227,7 +227,7 @@ void GFXOpenGL32TextureTarget::applyState()
 
    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mFramebuffer);
     glBindFramebuffer(GL_READ_FRAMEBUFFER, mFramebuffer);
-    Con::printf("GFXOpenGL32TextureTarget::applyState:: glBindFramebuffer %i", mFramebuffer);
+//    Con::printf("GFXOpenGL32TextureTarget::applyState:: glBindFramebuffer %i", mFramebuffer);
 
    _GFXGLTargetDesc* color0 = getTargetDesc(GFXTextureTarget::Color0);
    if(color0)

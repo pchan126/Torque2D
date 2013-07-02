@@ -248,7 +248,7 @@ void GFXOpenGLTextureTarget::applyState()
    // REMINDER: When we implement MRT support, check against GFXGLDevice::getNumRenderTargets()
    
    glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
-   Con::printf("_GFXOpenGLTextureTargetFBOImpl::applyState:: glBindFramebuffer ");
+//   Con::printf("_GFXOpenGLTextureTargetFBOImpl::applyState:: glBindFramebuffer ");
    
    _GFXGLTargetDesc* color0 = getTargetDesc(GFXTextureTarget::Color0);
    if(color0)
@@ -280,7 +280,7 @@ void GFXOpenGLTextureTarget::applyState()
    }
    
    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-   Con::printf("_GFXOpenGLTextureTargetFBOImpl::applyState:: glBindFramebuffer(GL_FRAMEBUFFER, 0); ");
+//   Con::printf("_GFXOpenGLTextureTargetFBOImpl::applyState:: glBindFramebuffer(GL_FRAMEBUFFER, 0); ");
 
 }
 

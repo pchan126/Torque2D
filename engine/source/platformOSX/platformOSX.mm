@@ -227,6 +227,7 @@ void Platform::init()
 {
     // Set the global script variable $Platform to "macos"
     Con::setVariable("$Platform", "macos");
+    Input::init();
    
     Con::printSeparator();
 }

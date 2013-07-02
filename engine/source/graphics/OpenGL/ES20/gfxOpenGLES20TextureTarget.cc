@@ -89,22 +89,21 @@ GFXOpenGLES20TextureTarget::GFXOpenGLES20TextureTarget()
 {
    for(U32 i=0; i<MaxRenderSlotId; i++)
       mTargets[i] = NULL;
-   
+
+   GFXTextureManager::addEventDelegate( this, &GFXOpenGLES20TextureTarget::_onTextureEvent );
+
    glGenFramebuffers(1, &mFramebuffer);
 }
 
 GFXOpenGLES20TextureTarget::~GFXOpenGLES20TextureTarget()
 {
    glDeleteFramebuffers(1, &mFramebuffer);
-//   GFXTextureManager::removeEventDelegate( this, &GFXOpenGLES20TextureTarget::_onTextureEvent );
+   GFXTextureManager::removeEventDelegate( this, &GFXOpenGLES20TextureTarget::_onTextureEvent );
 }
 
 const Point2I GFXOpenGLES20TextureTarget::getSize()
 {
-   if(mTargets[Color0].isValid())
-      return Point2I(mTargets[Color0]->getWidth(), mTargets[Color0]->getHeight());
-
-   return Point2I(0, 0);
+    return mTargets[Color0].isValid() ? Point2I(mTargets[Color0]->getWidth(), mTargets[Color0]->getHeight()) : Point2I(0, 0);
 }
 
 GFXFormat GFXOpenGLES20TextureTarget::getFormat()

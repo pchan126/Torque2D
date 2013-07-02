@@ -574,7 +574,7 @@ void GuiEditCtrl::onRender(Point2I offset, const RectI &updateRect)
         const Point2I& snap = mGridSnap;
         U32 maxdot = (U32)(mCeil(cext.x / (F32)snap.x) - 1) * (U32)(mCeil(cext.y / (F32)snap.y) - 1);
         
-        if( mDots.IsNull() || maxdot != mDots->mVertexCount)
+        if( mDots.isNull() || maxdot != mDots->mVertexCount)
         {
             mDots.set(GFX, maxdot, GFXBufferTypeStatic);
             

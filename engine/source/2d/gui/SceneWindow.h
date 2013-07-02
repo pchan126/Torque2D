@@ -266,7 +266,11 @@ private:
 
     /// Misc.
     Scene*              mpScene;
-    S32                 mLastRenderTime;
+
+   GFXTextureTargetRef  renderTarget;
+   GFXTexHandle         mImageTextureHandle;
+
+   S32                 mLastRenderTime;
     bool                mLockMouse;
     bool                mWindowDirty;
 

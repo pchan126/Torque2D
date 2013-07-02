@@ -283,7 +283,7 @@ public:
       return *this;
    }
    
-   bool IsNull()  const  { return mObject == 0; }
+   bool isNull()  const  { return mObject == 0; }
    bool isValid() const  { return mObject != 0; }
    T* operator->() const { return getPointer(); }
    T& operator*() const  { return *getPointer(); }
@@ -325,7 +325,7 @@ public:
    bool operator != (const ExposedType * t ) const { return mPtr != t; }
    bool operator == (const Union &t ) const { return mPtr == t.mPtr; }
    bool operator != (const Union &t ) const { return mPtr != t.mPtr; }
-   bool IsNull()  const  { return mReference.IsNull() || !mPtr; }
+   bool isNull()  const  { return mReference.isNull() || !mPtr; }
    bool isValid() const  { return mReference.isValid() && mPtr; }
    
    ExposedType* operator->() const { return mPtr; }

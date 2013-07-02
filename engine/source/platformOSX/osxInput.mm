@@ -21,10 +21,9 @@
 //-----------------------------------------------------------------------------
 #import "platform/platform.h"
 #import "platform/platformInput.h"
-#import "platformOSX/osxInputManager.h"
-#import "platform/event.h"
 #include "platformOSX/windowManager/GLFWWindowManager.h"
 #include "platformOSX/windowManager/GLFWWindow.h"
+#include "delegates/process.h"
 
 #pragma mark ---- Static Variables ----
 //InputManager *Input::smManager = 0;
@@ -55,33 +54,43 @@ void Input::destroy()
 }
 
 //------------------------------------------------------------------------------
-// Disable all input for the application
+// Joystick input on OSX is handled through the JoystickManager events rather than polling
+// glfw 3.0.2 currently doesn't work -> only returns the name of the joystick.
+//
 bool Input::enable()
 {
-    bool enabledValue = false;
 
-    // Check for any restrictions or errors
-
-//    // If the manager exists and is not enabled, dos o
-//    if (smManager && !smManager->isEnabled())
-//        enabledValue = smManager->enable();
-
-//    // Also enable mouse and keyboard automatically
-//    enableMouse();
-//    enableKeyboard();
-
-    return enabledValue;
+//    // Check for any restrictions or errors
+//    Process::notify(&Input::process, PROCESS_INPUT_ORDER);
 }
 
 //------------------------------------------------------------------------------
 // Disable all input in the application
 void Input::disable()
 {
-//    if (smManager && smManager->isEnabled())
-//        return smManager->disable();
+//    Process::remove(&Input::process);
+}
 
-//    disableMouse();
-//    disableKeyboard();
+void Input::process()
+{
+//    if (glfwJoystickPresent(GLFW_JOYSTICK_1) == GL_TRUE)
+//    {
+//        Con::printf("%s", glfwGetJoystickName(GLFW_JOYSTICK_1));
+//        const float* axes;
+//        int axesCount;
+//        axes = glfwGetJoystickAxes (GLFW_JOYSTICK_1, &axesCount);
+//        for (int i = 0; i < axesCount; i++)
+//        {
+//            Con::printf("joystick axis %i: %.3f", i, axes[i]);
+//        }
+//        const unsigned char* buttons;
+//        int buttonCount;
+//        buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &buttonCount);
+//        for (int i = 0; i < buttonCount; i++)
+//        {
+//            Con::printf("joystick button %i: %i", i, buttons[i]);
+//        }
+//    }
 }
 
 //------------------------------------------------------------------------------

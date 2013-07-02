@@ -526,7 +526,7 @@ void BatchRender::flushInternal( void )
 void BatchRender::_lightAndDraw( Vector<GFXVertexPCT>* pVertexVector, Vector<U16>* pIndex, GFXTexHandle handle )
 {
    // Bind the texture if not in wireframe mode.
-   if (!handle.IsNull())
+   if (!handle.isNull())
       GFX->setTexture(0, handle);
    
 //   // vertex lighting

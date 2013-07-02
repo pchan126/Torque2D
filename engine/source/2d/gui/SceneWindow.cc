@@ -157,7 +157,7 @@ bool SceneWindow::onAdd()
     // Reset the camera size.
     setCameraSize( Vector2( 100.0f, 75.0f ) );
 
-    // Reset the camera zoom.
+   // Reset the camera zoom.
     setCameraZoom( 1.0f );
 
     // Zero Camera Time.
@@ -177,7 +177,7 @@ void SceneWindow::onRemove()
     // Unregister input sets.
     mInputEventWatching.unregisterObject();
     mInputListeners.unregisterObject();
-
+   
     // Call Parent.
     Parent::onRemove();
 }
@@ -1561,12 +1561,15 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
        GFX->clear( GFXClearZBuffer , ColorI(mBackgroundColor), 1.0f, 0 );
     }
 
-    GFXTextureTarget *texTarget = GFX->allocRenderToTextureTarget();
-    GFXTexHandle pImageTextureHandle = TEXMGR->createTexture( getWidth(), getHeight(), GFXFormatR8G8B8A8, &GFXSceneWindowTextureProfile, 0, 0 );
-    texTarget->attachTexture(pImageTextureHandle);
+    if (renderTarget.isNull())
+       renderTarget = GFX->allocRenderToTextureTarget();
 
-//    GFXTarget *oldTarget = GFX->getActiveRenderTarget();
-//    GFX->setActiveRenderTarget(texTarget);
+    if (mImageTextureHandle.isNull())
+        mImageTextureHandle = TEXMGR->createTexture( getWidth(), getHeight(), GFXFormatR8G8B8A8, &GFXSceneWindowTextureProfile, 0, 0 );
+
+    renderTarget->attachTexture(mImageTextureHandle);
+    GFX->pushActiveRenderTarget();
+    GFX->setActiveRenderTarget(renderTarget);
     GFX->updateStates(true);
 
     // Render View.
@@ -1576,9 +1579,11 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
     GFX->popWorldMatrix();
     GFX->setViewMatrix(MatrixF(true));
 
-//    GFX->setTexture(0, pImageTextureHandle);
+    GFX->popActiveRenderTarget();
+    GFX->updateStates(true);
+    GFX->getDrawUtil()->drawBitmapStretch(mImageTextureHandle, updateRect, GFXBitmapFlip_Y);
 
-    // Render the metrics.
+   // Render the metrics.
     renderMetricsOverlay( offset, updateRect );
 
     // Render Children.

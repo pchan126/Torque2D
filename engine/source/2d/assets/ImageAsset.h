@@ -216,7 +216,7 @@ public:
     inline const void       bindImageTexture( void)                         { GFX->setTexture(0, getImageTexture()); };
     //glBindTexture( GL_TEXTURE_2D, getImageTexture().getGLName() ); };
     
-    virtual bool            isAssetValid( void ) const                      { return !mImageTextureHandle.IsNull(); }
+    virtual bool            isAssetValid( void ) const                      { return !mImageTextureHandle.isNull(); }
 
     /// Explicit cell control.
     bool                    clearExplicitCells( void );
