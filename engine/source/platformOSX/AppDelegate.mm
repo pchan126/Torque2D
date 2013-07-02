@@ -23,7 +23,6 @@
 #import "AppDelegate.h"
 #import "platformOSX/platformOSX.h"
 #import "platformOSX/JoystickManager/JoystickManager.h"
-#import "platformOSX/JoystickManager/Joystick.h"
 #include "actionMap.h"
 
 @implementation AppDelegate
@@ -81,7 +80,33 @@
 
 - (void)joystickAdded:(Joystick *)joystick {
    [joystick registerForNotications:self];
-   NSLog(@"added %@", joystick);
+
+    CFStringRef valueRef = 0;
+//    // Get manufacturer
+//    valueRef = (CFStringRef)(IOHIDDeviceGetProperty(joystick.device, CFSTR(kIOHIDManufacturerKey)));
+//    char manuName[255];
+//    if (valueRef)
+//    {
+//        CFStringGetCString(valueRef,
+//                manuName,
+//                sizeof(manuName),
+//                kCFStringEncodingUTF8);
+//
+//        CFRelease(valueRef);
+//    }
+    // Get product string
+    valueRef = (CFStringRef)(IOHIDDeviceGetProperty(joystick.device, CFSTR(kIOHIDProductKey)));
+    char HIDName[255];
+    if (valueRef)
+    {
+        CFStringGetCString(valueRef,
+                HIDName,
+                sizeof(HIDName),
+                kCFStringEncodingUTF8);
+
+        CFRelease(valueRef);
+    }
+    NSLog(@"added %@ %s %s", joystick, HIDName);
 }
 
 - (void)joystickStateChanged:(Joystick *)joystick {
@@ -92,17 +117,22 @@
       {
          InputEventInfo inputEvent;
 
-         inputEvent.deviceInst = 0;
+          JoystickManager *theJoystickManager = [JoystickManager sharedInstance];
+          int val = [theJoystickManager deviceIDByReference:joystick.device];
+//          deviceIDByReference
+//           Con::printf("joystick #%i", val);
+
+          inputEvent.deviceInst = val;
          inputEvent.fValue = value;
          inputEvent.deviceType = JoystickDeviceType;
          inputEvent.objType = (i % 2) == 0 ? SI_XAXIS : SI_YAXIS;
          inputEvent.objInst = i/2;
          inputEvent.action = SI_MOVE;
-         inputEvent.modifier = 0;
+         inputEvent.modifier = (i/2);                                    // number of the axis
 
            // Give the ActionMap first shot.
            if (ActionMap::handleEventGlobal(&inputEvent))
-               return;
+               continue;
 
            // If we get here we failed to process it with anything prior... so let
            // the ActionMap handle it.
@@ -115,8 +145,13 @@
    // Build the input event
     InputEventInfo inputEvent;
 
+    JoystickManager *theJoystickManager = [JoystickManager sharedInstance];
+    int val = [theJoystickManager deviceIDByReference:joystick.device];
+
+    Con::printf("button: %i", buttonIndex);
+
+    inputEvent.deviceInst = val;
     inputEvent.deviceType = JoystickDeviceType;
-    inputEvent.deviceInst = 0;
     inputEvent.objType = SI_BUTTON;
     inputEvent.objInst = KEY_BUTTON0+buttonIndex;
     inputEvent.ascii = 0;
@@ -136,8 +171,11 @@
    // Build the input event
     InputEventInfo inputEvent;
 
+    JoystickManager *theJoystickManager = [JoystickManager sharedInstance];
+    int val = [theJoystickManager deviceIDByReference:joystick.device];
+
     inputEvent.deviceType = JoystickDeviceType;
-    inputEvent.deviceInst = 0;
+    inputEvent.deviceInst = val;
     inputEvent.objType = SI_BUTTON;
     inputEvent.objInst = KEY_BUTTON0+buttonIndex;
     inputEvent.ascii = 0;

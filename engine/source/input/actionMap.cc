@@ -1275,7 +1275,7 @@ bool ActionMap::processAction(const InputEventInfo* pEvent)
 
          return true;
       } 
-      else
+      else if (pEvent->deviceType == JoystickDeviceType)
       {
          // Joystick events...
          const Node* pNode = findNode( pEvent->deviceType, pEvent->deviceInst,
