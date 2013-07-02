@@ -22,34 +22,16 @@
 
 #include "platform/platform.h"
 #include "platformiOS/platformiOS.h"
-#include "platform/platformFileIO.h"
-#include "collection/vector.h"
-#include "string/stringTable.h"
-#include "console/console.h"
-#include "debug/profiler.h"
 #include "io/resource/resourceManager.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <errno.h>
 
-#include <utime.h>
 
-#include <sys/types.h>
 #include <dirent.h>
-#include <unistd.h>
 #include <sys/stat.h>
 #include <sys/time.h>
 
 //TODO: file io still needs some work...
 
 #define MAX_MAC_PATH_LONG     2048
-
-//-----------------------------------------------------------------------------
-//#if defined(TORQUE_OS_MAC_OSX)
-#include <CoreFoundation/CFBundle.h>
-//#else
-//#include <CFBundle.h>
-//#endif
 
 //-----------------------------------------------------------------------------
 bool Platform::fileDelete(const char * name)

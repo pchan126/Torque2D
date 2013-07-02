@@ -50,7 +50,6 @@
 		867BACD516AEC8BB0033868F /* iOSConsole.mm in Sources */ = {isa = PBXBuildFile; fileRef = 867BAC9B16AEC8BB0033868F /* iOSConsole.mm */; };
 		867BACD616AEC8BB0033868F /* iOSCPUInfo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 867BAC9C16AEC8BB0033868F /* iOSCPUInfo.mm */; };
 		867BACD716AEC8BB0033868F /* iOSDialogs.mm in Sources */ = {isa = PBXBuildFile; fileRef = 867BAC9D16AEC8BB0033868F /* iOSDialogs.mm */; };
-		867BACD816AEC8BB0033868F /* iOSEvents.mm in Sources */ = {isa = PBXBuildFile; fileRef = 867BAC9F16AEC8BB0033868F /* iOSEvents.mm */; };
 		867BACD916AEC8BB0033868F /* iOSFileio.mm in Sources */ = {isa = PBXBuildFile; fileRef = 867BACA016AEC8BB0033868F /* iOSFileio.mm */; };
 		867BACDA16AEC8BB0033868F /* iOSFont.mm in Sources */ = {isa = PBXBuildFile; fileRef = 867BACA216AEC8BB0033868F /* iOSFont.mm */; };
 		867BACDD16AEC8BB0033868F /* iOSInput.mm in Sources */ = {isa = PBXBuildFile; fileRef = 867BACA616AEC8BB0033868F /* iOSInput.mm */; };
@@ -661,8 +660,6 @@
 		867BAC9B16AEC8BB0033868F /* iOSConsole.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iOSConsole.mm; sourceTree = "<group>"; };
 		867BAC9C16AEC8BB0033868F /* iOSCPUInfo.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iOSCPUInfo.mm; sourceTree = "<group>"; };
 		867BAC9D16AEC8BB0033868F /* iOSDialogs.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iOSDialogs.mm; sourceTree = "<group>"; };
-		867BAC9E16AEC8BB0033868F /* iOSEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iOSEvents.h; sourceTree = "<group>"; };
-		867BAC9F16AEC8BB0033868F /* iOSEvents.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iOSEvents.mm; sourceTree = "<group>"; };
 		867BACA016AEC8BB0033868F /* iOSFileio.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iOSFileio.mm; sourceTree = "<group>"; };
 		867BACA116AEC8BB0033868F /* iOSFont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iOSFont.h; sourceTree = "<group>"; };
 		867BACA216AEC8BB0033868F /* iOSFont.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iOSFont.mm; sourceTree = "<group>"; };
@@ -1840,8 +1837,6 @@
 				867BAC9B16AEC8BB0033868F /* iOSConsole.mm */,
 				867BAC9C16AEC8BB0033868F /* iOSCPUInfo.mm */,
 				867BAC9D16AEC8BB0033868F /* iOSDialogs.mm */,
-				867BAC9E16AEC8BB0033868F /* iOSEvents.h */,
-				867BAC9F16AEC8BB0033868F /* iOSEvents.mm */,
 				867BACA016AEC8BB0033868F /* iOSFileio.mm */,
 				867BACA116AEC8BB0033868F /* iOSFont.h */,
 				867BACA216AEC8BB0033868F /* iOSFont.mm */,
@@ -3596,7 +3591,6 @@
 				867BACD516AEC8BB0033868F /* iOSConsole.mm in Sources */,
 				867BACD616AEC8BB0033868F /* iOSCPUInfo.mm in Sources */,
 				867BACD716AEC8BB0033868F /* iOSDialogs.mm in Sources */,
-				867BACD816AEC8BB0033868F /* iOSEvents.mm in Sources */,
 				867BACD916AEC8BB0033868F /* iOSFileio.mm in Sources */,
 				867BACDA16AEC8BB0033868F /* iOSFont.mm in Sources */,
 				867BACDD16AEC8BB0033868F /* iOSInput.mm in Sources */,

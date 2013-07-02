@@ -24,7 +24,6 @@
 
 #import "platform/platform.h"
 #import "math/mMath.h"
-#import "platformiOS/iOSEvents.h"
 
 // Mich Note: Do not try to spend too much time analyzing this class.
 // It is planned to refactor the iOS platform layer and replace this

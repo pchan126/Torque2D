@@ -1,5 +1,5 @@
 //
-//  iOSEvents.h
+//  iOSWindowEvents.h
 //  Torque2D
 //
 //  Created by Paul L Jan on 2013-04-30.

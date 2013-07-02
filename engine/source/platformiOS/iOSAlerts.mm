@@ -22,12 +22,6 @@
 
 
 #include "platformiOS/platformiOS.h"
-#include "platform/platformSemaphore.h"
-#include "platform/threads/thread.h"
-#include "console/console.h"
-#include "platformiOS/iOSEvents.h"
-#include "platform/nativeDialogs/msgBox.h"
-
 #include "platformiOS/iOSAlerts.h"
 
 

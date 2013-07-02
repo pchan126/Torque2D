@@ -22,13 +22,7 @@
 
 
 #include "platformiOS/platformiOS.h"
-#include "platformiOS/iOSUtil.h"
 #include "platform/platformInput.h"
-#include "platform/event.h"
-#include "console/console.h"
-#include "game/gameInterface.h"
-#include "string/Unicode.h"
-#include "gui/guiCanvas.h"
 
 // Static class variables:
 //InputManager* Input::smManager;

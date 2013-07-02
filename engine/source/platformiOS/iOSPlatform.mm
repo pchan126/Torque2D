@@ -183,3 +183,17 @@ bool Platform::fileRename(const char *source, const char *dest)
    return ret;
 }
 
+//-----------------------------------------------------------------------------
+// Not yet implemented. Will resolve in the next platform update
+void Platform::enableKeyboardTranslation(void)
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Not yet implemented. Will resolve in the next platform update
+void Platform::disableKeyboardTranslation(void)
+{
+
+}
+
