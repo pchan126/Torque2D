@@ -35,6 +35,19 @@
 
 struct InputEventInfo;
 
+struct CodeMapping
+{
+    const char* pDescription;
+    U8  type;
+    U32 code;
+};
+
+struct AsciiMapping
+{
+    const char* pDescription;
+    U16         asciiCode;
+};
+
 struct EventDescriptor
 {
    U8  flags;      ///< Combination of any modifier flags.

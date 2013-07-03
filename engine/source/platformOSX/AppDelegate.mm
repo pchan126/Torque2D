@@ -211,6 +211,11 @@
                 inputEvent.objType = SI_RZAXIS;
                 break;
             }
+            case kHIDUsage_GD_Slider:
+            {
+                inputEvent.objType = SI_SLIDER;
+                break;
+            }
         }
 
         inputEvent.objInst = SI_AXIS;

@@ -28,7 +28,6 @@
 #include "2d/core/RenderProxy.h"
 #endif
 
-#include "graphics/gfxDevice.h"
 #include "graphics/gfxDrawUtil.h"
 
 #ifndef _CONSOLE_H_

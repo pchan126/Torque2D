@@ -20,6 +20,38 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
+function joypad_leftstickx(%value)  
+{  
+   echo("Joystick_leftstick X" SPC %value);
+}  
+
+function joypad_leftsticky(%value)
+{  
+   echo("Joystick_leftstick Y" SPC %value);
+}  
+
+function joypad_rightstickx(%value)  
+{  
+   echo("Joystick_rightstick X" SPC %value);
+}  
+
+function joypad_rightsticky(%value)
+{  
+   echo("Joystick_rightstick Y" SPC %value);
+}  
+
+function joypad_button0(%value)
+{
+   echo("joypad_button0" SPC %value);
+}
+
+function joypad_button1(%value)
+{
+   echo("joypad_button1" SPC %value);
+}
+
+
+
 function TruckToy::create( %this )
 {        
     TruckToy.ObstacleFriction = 1.5;
@@ -58,7 +90,11 @@ function TruckToy::create( %this )
     addFlagOption("Front Wheel Drive", "setFrontWheelDrive", TruckToy.FrontWheelDrive, false, "Whether the motor on the front wheel is active or not." );
     addFlagOption("Rear Wheel Drive", "setRearWheelDrive", TruckToy.RearWheelDrive, false, "Whether the motor on the rear wheel is active or not." );
     addFlagOption("Rotate Camera", "setRotateCamera", TruckToy.RotateCamera, true, "Whether the rotate the camera that is mounted to the truck or not." );
-    
+      
+   GlobalActionMap.bind(joystick, xaxis, "joypad_leftstickx");
+   GlobalActionMap.bind(joystick, yaxis, "joypad_leftsticky");
+   GlobalActionMap.bind(joystick, zaxis, "joypad_rightstickx");
+   GlobalActionMap.bind(joystick, rzaxis, "joypad_rightsticky");
     // Reset the toy.
     %this.reset();
 }

@@ -22,11 +22,11 @@
 
 #include "input/actionMap.h"
 #include "platform/event.h"
-#include "console/console.h"
-#include "platform/platform.h"
+//#include "console/console.h"
+//#include "platform/platform.h"
 #include "platform/platformInput.h"
-#include "platform/platformAssert.h"
-#include "io/fileStream.h"
+//#include "platform/platformAssert.h"
+//#include "io/fileStream.h"
 #include "io/resource/resourceManager.h"
 
 IMPLEMENT_CONOBJECT(ActionMap);
@@ -36,19 +36,6 @@ static inline bool dIsDecentChar(U8 c)
 {
    return ((U8(0xa0) <= c) || (( U8(0x21) <= c) && (c <= U8(0x7e))) || ((U8(0x91) <= c) && (c <= U8(0x92))));
 }
-
-struct CodeMapping
-{
-   const char* pDescription;
-   U8  type;
-   U32 code;
-};
-
-struct AsciiMapping
-{
-   const char* pDescription;
-   U16         asciiCode;
-};
 
 extern CodeMapping gVirtualMap[];
 extern AsciiMapping gAsciiMap[];

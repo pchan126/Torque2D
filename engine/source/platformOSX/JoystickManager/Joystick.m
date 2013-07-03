@@ -15,6 +15,7 @@
 
 - (id)initWithDevice:(IOHIDDeviceRef)theDevice
 {
+    NSArray *axisTypes = [NSArray arrayWithObjects:kHIDUsage_GD_X, kHIDUsage_GD_Y, kHIDUsage_GD_Z, kHIDUsage_GD_Rz, kHIDUsage_GD_Rx, kHIDUsage_GD_Ry, kHIDUsage_GD_Slider, nil];
     self = [super init];
     if (self) {
         device = theDevice;
@@ -40,7 +41,7 @@
                 [tempHats addObject:hatSwitch];
                 [hatSwitch release];
 //            if (elementUsage == kHIDUsage_GD_X || elementUsage == kHIDUsage_GD_Y)
-            } else if (elementUsage == kHIDUsage_GD_X || elementUsage == kHIDUsage_GD_Y || elementUsage == kHIDUsage_GD_Z || elementUsage == kHIDUsage_GD_Rz) {
+            } else if ([axisTypes containsObject: elementUsage] ) {
                 [tempAxes addObject:thisElement];
             } else if (elementType == kIOHIDElementTypeInput_Button) {
                 [tempButtons addObject:thisElement];
@@ -67,7 +68,8 @@
 }
 
 - (void)elementReportedChange:(IOHIDElementRef)theElement {
-    
+
+    NSArray *axisTypes = [NSArray arrayWithObjects:kHIDUsage_GD_X, kHIDUsage_GD_Y, kHIDUsage_GD_Z, kHIDUsage_GD_Rz, kHIDUsage_GD_Rx, kHIDUsage_GD_Ry, kHIDUsage_GD_Slider, nil];
     int elementType = IOHIDElementGetType(theElement);
     IOHIDValueRef pValue;
     IOHIDDeviceGetValue(device, theElement, &pValue);
@@ -120,28 +122,28 @@
     }
 
 //    if (elementType == kIOHIDElementTypeInput_Axis) {
-    if ( elementUsage == kHIDUsage_GD_X || elementUsage == kHIDUsage_GD_Y || elementUsage == kHIDUsage_GD_Z || elementUsage == kHIDUsage_GD_Rz) {
+    if ( [axisTypes containsObject: elementUsage] ) {
         for (i=0; i<delegates.count; ++i) {
             id <JoystickNotificationDelegate> delegate = [delegates objectAtIndex:i];
 
             [delegate joystickAxisChanged:[axes indexOfObject:theElement] ofType:elementUsage onJoystick:self];
         }
 
-        CFIndex lmin = IOHIDElementGetLogicalMin(theElement);
-        CFIndex lmax = IOHIDElementGetLogicalMax(theElement);
+//        CFIndex lmin = IOHIDElementGetLogicalMin(theElement);
+//        CFIndex lmax = IOHIDElementGetLogicalMax(theElement);
 
-        if (elementUsage == kHIDUsage_GD_X)
-        {
-            NSLog(@"X Axis #%i reported value of %d", [axes indexOfObject:theElement], value);
-        }
-        else if ( elementUsage == kHIDUsage_GD_Y)
-        {
-            NSLog(@"Y Axis #%i reported value of %d", [axes indexOfObject:theElement], value);
-        }
-        else if ( elementUsage == kHIDUsage_GD_Z )
-        {
-            NSLog(@"Z Axis #%i reported value of %d", [axes indexOfObject:theElement], value);
-        }
+//        if (elementUsage == kHIDUsage_GD_X)
+//        {
+//            NSLog(@"X Axis #%i reported value of %d", [axes indexOfObject:theElement], value);
+//        }
+//        else if ( elementUsage == kHIDUsage_GD_Y)
+//        {
+//            NSLog(@"Y Axis #%i reported value of %d", [axes indexOfObject:theElement], value);
+//        }
+//        else if ( elementUsage == kHIDUsage_GD_Z )
+//        {
+//            NSLog(@"Z Axis #%i reported value of %d", [axes indexOfObject:theElement], value);
+//        }
 
     }
 }
