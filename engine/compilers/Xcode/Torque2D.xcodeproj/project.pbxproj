@@ -46,45 +46,45 @@
 		30666085176DCD7A00BE2909 /* gfxOpenGLTextureTarget.cc in Sources */ = {isa = PBXBuildFile; fileRef = 30666084176DCD7A00BE2909 /* gfxOpenGLTextureTarget.cc */; };
 		30666087176DCE0B00BE2909 /* gfxEnums.cc in Sources */ = {isa = PBXBuildFile; fileRef = 30666086176DCE0B00BE2909 /* gfxEnums.cc */; };
 		30D54746173FD18B00CB43DA /* platformTimer.cc in Sources */ = {isa = PBXBuildFile; fileRef = 30D54745173FD18B00CB43DA /* platformTimer.cc */; };
-		4B8AA0B53B5DC42A8DA85921 /* osxTime.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAC5269465C1B1D766289 /* osxTime.mm */; };
-		4B8AA16E03471C69EBF119AE /* osxString.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA5D8E9CA2ADDB6AE8DB5 /* osxString.mm */; };
-		4B8AA1C961AE661C7D905679 /* gfxOpenGL32TextureTarget.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA92D1683F33174EE629E /* gfxOpenGL32TextureTarget.mm */; };
-		4B8AA1CE99D76BE1D51F02C4 /* Joystick.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA2D51C6CECA16775C90B /* Joystick.m */; };
-		4B8AA2AD9684D4F77B279732 /* gfxOpenGL32VertexBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AADC328B3D1232C546DE7 /* gfxOpenGL32VertexBuffer.mm */; };
-		4B8AA3395309C63786EBCF1F /* osxSemaphore.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA214E2F3D8436AA8B342 /* osxSemaphore.mm */; };
-		4B8AA3D0FE6C54D6533EA244 /* osxNetwork.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAA8913A45B5C610121EA /* osxNetwork.mm */; };
-		4B8AA47BD451087DDE8465A3 /* osxAudio.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA00B56F1E18F19BB32A1 /* osxAudio.mm */; };
-		4B8AA5135CCA50F1F6828071 /* osxTimer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA437205AA19617EC98E4 /* osxTimer.mm */; };
-		4B8AA53E78D363799CFB0AA4 /* gfxOpenGL32Cubemap.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA2CFD67078160F2CAA33 /* gfxOpenGL32Cubemap.mm */; };
-		4B8AA54097558A71E56EBC34 /* gfxOpenGL32Shader.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA674B941C245E6346A7A /* gfxOpenGL32Shader.mm */; };
-		4B8AA5495F0A8BD2A19E5431 /* GLFWWindow.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAA577E3AD20E0E224E54 /* GLFWWindow.mm */; };
-		4B8AA5D6475A8A62BED9F1F7 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA9DD8F64325F895DF38B /* AppDelegate.mm */; };
-		4B8AA6199FBB957EEBD46CF3 /* gfxOpenGL32Device.OSX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAC6AC8B66A35A0C50EDF /* gfxOpenGL32Device.OSX.mm */; };
-		4B8AA61DCB92B1066299EFC6 /* platformOSX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA64CFEAD4E0BD3C29C12 /* platformOSX.mm */; };
-		4B8AA64358E0C772BC2D21D6 /* osxCocoaUtilities.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA1F8AEC88032335FCFC7 /* osxCocoaUtilities.mm */; };
-		4B8AA6DDEE767F5949E29C9F /* osxMath.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA28CF400D64957098ED2 /* osxMath.mm */; };
-		4B8AA72F012BD4DA02969A29 /* osxCPU.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA580ED8025EC901748C9 /* osxCPU.mm */; };
-		4B8AA74C19C3372C2E2D72B2 /* osxFileIO.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA5D7615202B762E404B3 /* osxFileIO.mm */; };
-		4B8AA7A49C77252E8902C763 /* gfxOpenGL32EnumTranslate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA804F606C82D00E9686B /* gfxOpenGL32EnumTranslate.mm */; };
-		4B8AA89C3AB46C35826F2D45 /* gfxOpenGL32TextureManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAC5B7219A92938768EFD /* gfxOpenGL32TextureManager.mm */; };
-		4B8AA9285AD26A33CFD4348E /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAC365C1BB690BB0B3E0F /* main.mm */; };
-		4B8AA9305148D37E2A45832E /* gfxOpenGL32TextureObject.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA0232287DBFA0E4C7789 /* gfxOpenGL32TextureObject.mm */; };
-		4B8AA9C093D9F1661F2DD5D0 /* gfxOpenGL32StateBlock.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAD6628A4C710426039E6 /* gfxOpenGL32StateBlock.mm */; };
-		4B8AAA03B19666F1FD4827E9 /* JoystickManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAA572212658BCD0D86BD /* JoystickManager.m */; };
-		4B8AAA958ABF54909BFCB68D /* osxThread.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA855EBB4E5DA275DA736 /* osxThread.mm */; };
-		4B8AAAC264B9D9ABF2D6947A /* JoystickHatswitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA4B0643A9DF256EC91BB /* JoystickHatswitch.m */; };
-		4B8AAB348A949B4A9467F147 /* gfxOpenGL32WindowTarget.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAA49526A9FF0580EDFD9 /* gfxOpenGL32WindowTarget.mm */; };
-		4B8AAB8D733BCBE6A0DD83A3 /* GLFWWindowManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA5B3F42117C39EC14FAD /* GLFWWindowManager.mm */; };
-		4B8AAB9A046CA6786376FE77 /* osxInput.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AABD9E831882F78DE1A14 /* osxInput.mm */; };
-		4B8AABEBE4E6A7BFF78140D5 /* FilterImageAsset.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAE66C53DDDCC214507E7 /* FilterImageAsset.mm */; };
-		4B8AAC977FBCB506A88D9465 /* osxMutex.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AACDF16EFFEF3D23D127F /* osxMutex.mm */; };
-		4B8AADD6327E68C56B6DC7AE /* GLFWWindowInputGenerator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA106FC1EDA3F25F73690 /* GLFWWindowInputGenerator.mm */; };
-		4B8AAF0C9DFF3BDB42591CDD /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4B8AACE88F1EFFE926EFFBB6 /* MainMenu.xib */; };
-		4B8AAF6B7988755AEC02E3CA /* GLFWCursorController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AACE97A0F61027DC8678C /* GLFWCursorController.mm */; };
-		4B8AAF9655A01132B60B9D31 /* osxFileDialogs.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA7407BF372B3535CD3E1 /* osxFileDialogs.mm */; };
-		4B8AAFB800A4EFAB56B29BF2 /* osxFont.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAFB79DF3A9163E69BB51 /* osxFont.mm */; };
-		4B8AAFDD75EA424D6F8F6258 /* osxMemory.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA8B88858020EB7397F93 /* osxMemory.mm */; };
-		4B8AAFEFE3A7AE14B71F9EC3 /* gfxOpenGL32CardProfiler.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA9FF87A0F25B86259800 /* gfxOpenGL32CardProfiler.mm */; };
+		4B8AA028104652588B331564 /* osxMutex.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA880AFA0FE58E4348849 /* osxMutex.mm */; };
+		4B8AA05B1E6982E22A3740E1 /* gfxOpenGL32StateBlock.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AADFE2906ECE60EB40C40 /* gfxOpenGL32StateBlock.mm */; };
+		4B8AA08D4C7EEA1380B27B30 /* osxFileIO.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA0B11DDA96BD47186F76 /* osxFileIO.mm */; };
+		4B8AA0DEAAE60B4260BBA860 /* osxString.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AADA0924D86266231C195 /* osxString.mm */; };
+		4B8AA0FE9797A22AA72F2553 /* GLFWWindow.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA3792790F13E2361DC52 /* GLFWWindow.mm */; };
+		4B8AA15ECF2A3D298AEEBA7C /* JoystickManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA46D739FCCB4F83D86AE /* JoystickManager.m */; };
+		4B8AA1EAAD7F710B653887CC /* gfxOpenGL32EnumTranslate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAF83D230B0CC6FBB2017 /* gfxOpenGL32EnumTranslate.mm */; };
+		4B8AA34253769CDA6BE69C4E /* osxSemaphore.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA2C1D429AB0EEB1A559B /* osxSemaphore.mm */; };
+		4B8AA3477C8195DFE4B7B137 /* gfxOpenGL32TextureManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAC5BB132D6663C47F0B1 /* gfxOpenGL32TextureManager.mm */; };
+		4B8AA3537E794BF5814C7CA5 /* osxTimer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AABB873B432C0D5A9F6DA /* osxTimer.mm */; };
+		4B8AA3A1C470C970CB5E1152 /* Joystick.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA32C09EDD591433F32C1 /* Joystick.m */; };
+		4B8AA3A8C335291CC55A959A /* osxMath.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAE8DB9D7EEE678826797 /* osxMath.mm */; };
+		4B8AA3A9879986254D0D370C /* gfxOpenGL32TextureObject.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA887B3C88E67F03088EA /* gfxOpenGL32TextureObject.mm */; };
+		4B8AA3CB3BE744C906D47EE6 /* gfxOpenGL32WindowTarget.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA63E1E0D3091A75B6226 /* gfxOpenGL32WindowTarget.mm */; };
+		4B8AA4CC60C7165B1980804F /* gfxOpenGL32CardProfiler.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA1A0C99209306FFC37B3 /* gfxOpenGL32CardProfiler.mm */; };
+		4B8AA53F95C98181905E5524 /* osxThread.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA9949541404C1292B9F9 /* osxThread.mm */; };
+		4B8AA590A413FC6964354724 /* JoystickHatswitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA2EA27DDCF404CF01ABC /* JoystickHatswitch.m */; };
+		4B8AA6A9654E2527B2FE8D88 /* osxAudio.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA3FABCB53401B420F689 /* osxAudio.mm */; };
+		4B8AA6D0F562569478D5CF13 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAAFF68BBF4EF6BD5378B /* main.mm */; };
+		4B8AA6F7F73CD71CF2A73BB6 /* gfxOpenGL32VertexBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA72B371610384CA2A574 /* gfxOpenGL32VertexBuffer.mm */; };
+		4B8AA757620E6AA3EF39BF53 /* osxCocoaUtilities.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA5FC4546D3233A02A56C /* osxCocoaUtilities.mm */; };
+		4B8AA7DFDD7F25A01937172B /* gfxOpenGL32Device.OSX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA9BE241316556146B265 /* gfxOpenGL32Device.OSX.mm */; };
+		4B8AA9C9BDCD233C686B600A /* gfxOpenGL32Shader.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA1A5B9F6EDB0D867D795 /* gfxOpenGL32Shader.mm */; };
+		4B8AA9FE28CF062DD5A660FF /* GLFWWindowManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA80FD83636B8BF425CD5 /* GLFWWindowManager.mm */; };
+		4B8AAAD0AC81DCC871CB4183 /* gfxOpenGL32TextureTarget.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAD79AA190B9FF796818D /* gfxOpenGL32TextureTarget.mm */; };
+		4B8AABEC84868C0D290DA248 /* FilterImageAsset.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA983A034257634CDF5C6 /* FilterImageAsset.mm */; };
+		4B8AAC0408F50E03D0025DEE /* osxInput.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAE22F6048FE09CDC7D07 /* osxInput.mm */; };
+		4B8AAC5C6BAF7EB28C6D04EC /* GLFWCursorController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAA085A2ABAC2CE538F09 /* GLFWCursorController.mm */; };
+		4B8AAC816BE087E1B24A84AA /* osxTime.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA50774EF4F2173E712A7 /* osxTime.mm */; };
+		4B8AAD09C7F11F49EB1201D2 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAA1340591455828BFB00 /* AppDelegate.mm */; };
+		4B8AAD464DE91C0A1C7697E2 /* platformOSX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA4FF586EA294D9F1772F /* platformOSX.mm */; };
+		4B8AAD9ADDE58C24CD367C23 /* osxNetwork.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA120421D765D4A1A32AF /* osxNetwork.mm */; };
+		4B8AAE06F9EB1B3DF29552EE /* osxMemory.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA984E295A563F26E3D27 /* osxMemory.mm */; };
+		4B8AAE3B7021EA64ABA57552 /* osxCPU.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAEE8C36DC12BC8F878AB /* osxCPU.mm */; };
+		4B8AAF2E27E93709C7ACB163 /* osxFont.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA960CF6C1D3EF472151C /* osxFont.mm */; };
+		4B8AAF379C2D853CB3F47E19 /* osxFileDialogs.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAA51BB16FFB1EC572E6F /* osxFileDialogs.mm */; };
+		4B8AAF3BD30509872A2C9A71 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4B8AA2F1832A8038C6967D88 /* MainMenu.xib */; };
+		4B8AAFDA1BA4051EA2BE6C74 /* gfxOpenGL32Cubemap.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAA14E1C020C365C91296 /* gfxOpenGL32Cubemap.mm */; };
+		4B8AAFFB9D407E230CF23A5E /* GLFWWindowInputGenerator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA7D746C0B226894D6D92 /* GLFWWindowInputGenerator.mm */; };
 		861CD8D01678F6C200DAE1A0 /* fileDialog.cc in Sources */ = {isa = PBXBuildFile; fileRef = 861CD8CF1678F6C200DAE1A0 /* fileDialog.cc */; };
 		8652F2A016C146CF00639EFE /* torque2d.icns in Resources */ = {isa = PBXBuildFile; fileRef = 8652F29F16C146CF00639EFE /* torque2d.icns */; };
 		865A20CA16515B1E00527C44 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 869FF8BF1651518C002FE082 /* AppKit.framework */; };
@@ -637,75 +637,75 @@
 		30666086176DCE0B00BE2909 /* gfxEnums.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxEnums.cc; sourceTree = "<group>"; };
 		308DD038175E8741008FBC32 /* rawData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rawData.h; sourceTree = "<group>"; };
 		30D54745173FD18B00CB43DA /* platformTimer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = platformTimer.cc; sourceTree = "<group>"; };
-		4B8AA00B56F1E18F19BB32A1 /* osxAudio.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxAudio.mm; sourceTree = "<group>"; };
-		4B8AA0232287DBFA0E4C7789 /* gfxOpenGL32TextureObject.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32TextureObject.mm; sourceTree = "<group>"; };
-		4B8AA03E022FADBB1100F89F /* gfxOpenGL32Cubemap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32Cubemap.h; sourceTree = "<group>"; };
-		4B8AA106FC1EDA3F25F73690 /* GLFWWindowInputGenerator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GLFWWindowInputGenerator.mm; sourceTree = "<group>"; };
-		4B8AA11BB15D10AF6CCD6DB4 /* JoystickHatswitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JoystickHatswitch.h; sourceTree = "<group>"; };
-		4B8AA1F8AEC88032335FCFC7 /* osxCocoaUtilities.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxCocoaUtilities.mm; sourceTree = "<group>"; };
-		4B8AA214E2F3D8436AA8B342 /* osxSemaphore.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxSemaphore.mm; sourceTree = "<group>"; };
-		4B8AA28CF400D64957098ED2 /* osxMath.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxMath.mm; sourceTree = "<group>"; };
-		4B8AA2CFD67078160F2CAA33 /* gfxOpenGL32Cubemap.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32Cubemap.mm; sourceTree = "<group>"; };
-		4B8AA2D51C6CECA16775C90B /* Joystick.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Joystick.m; sourceTree = "<group>"; };
-		4B8AA2D724075231177EC96A /* GLFWWindowInputGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLFWWindowInputGenerator.h; sourceTree = "<group>"; };
-		4B8AA437205AA19617EC98E4 /* osxTimer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxTimer.mm; sourceTree = "<group>"; };
-		4B8AA43A44E04AF023A262C7 /* gfxOpenGL32TextureObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32TextureObject.h; sourceTree = "<group>"; };
-		4B8AA475D45ACB71A3B4A9A9 /* gfxOpenGL32Shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32Shader.h; sourceTree = "<group>"; };
-		4B8AA4B0643A9DF256EC91BB /* JoystickHatswitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JoystickHatswitch.m; sourceTree = "<group>"; };
-		4B8AA4D68A87FCB21FC1DF31 /* GLFWWindowManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLFWWindowManager.h; sourceTree = "<group>"; };
-		4B8AA4D6CE98867C36273C9F /* gfxOpenGL32CardProfiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32CardProfiler.h; sourceTree = "<group>"; };
-		4B8AA4FD8B07AAC4FAC43A6C /* gfxOpenGL32EnumTranslate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32EnumTranslate.h; sourceTree = "<group>"; };
-		4B8AA580ED8025EC901748C9 /* osxCPU.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxCPU.mm; sourceTree = "<group>"; };
-		4B8AA5923BEA87DCCC89D510 /* JoystickManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JoystickManager.h; sourceTree = "<group>"; };
-		4B8AA5A8AD3FDB663AA4B9C1 /* Torque2D-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Torque2D-Prefix.pch"; path = "Torque2D/Torque2D-Prefix.pch"; sourceTree = SOURCE_ROOT; };
-		4B8AA5B3F42117C39EC14FAD /* GLFWWindowManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GLFWWindowManager.mm; sourceTree = "<group>"; };
-		4B8AA5D7615202B762E404B3 /* osxFileIO.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxFileIO.mm; sourceTree = "<group>"; };
-		4B8AA5D8E9CA2ADDB6AE8DB5 /* osxString.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxString.mm; sourceTree = "<group>"; };
-		4B8AA5FF252C2E0B8DE9ED55 /* osxCocoaUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxCocoaUtilities.h; sourceTree = "<group>"; };
-		4B8AA64CFEAD4E0BD3C29C12 /* platformOSX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = platformOSX.mm; sourceTree = "<group>"; };
-		4B8AA674B941C245E6346A7A /* gfxOpenGL32Shader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32Shader.mm; sourceTree = "<group>"; };
-		4B8AA6C67605AB9915A466E6 /* osxMath_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxMath_ScriptBinding.h; sourceTree = "<group>"; };
-		4B8AA6FF7796AF1C6080C7C5 /* osxFont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxFont.h; sourceTree = "<group>"; };
-		4B8AA711C08B21B4C6B9601F /* platformGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformGL.h; sourceTree = "<group>"; };
-		4B8AA72B58091E0D870C3FF3 /* gfxOpenGL32Device.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32Device.h; sourceTree = "<group>"; };
-		4B8AA7407BF372B3535CD3E1 /* osxFileDialogs.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxFileDialogs.mm; sourceTree = "<group>"; };
-		4B8AA804F606C82D00E9686B /* gfxOpenGL32EnumTranslate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32EnumTranslate.mm; sourceTree = "<group>"; };
-		4B8AA855EBB4E5DA275DA736 /* osxThread.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxThread.mm; sourceTree = "<group>"; };
-		4B8AA899CEB6B7DD41D21431 /* gfxOpenGL32Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32Utils.h; sourceTree = "<group>"; };
-		4B8AA8B88858020EB7397F93 /* osxMemory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxMemory.mm; sourceTree = "<group>"; };
-		4B8AA9146C027F7E75D074CB /* GLFWWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLFWWindow.h; sourceTree = "<group>"; };
-		4B8AA92D1683F33174EE629E /* gfxOpenGL32TextureTarget.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32TextureTarget.mm; sourceTree = "<group>"; };
-		4B8AA9CEB226975F581BBC75 /* GLFWCursorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLFWCursorController.h; sourceTree = "<group>"; };
-		4B8AA9DD8F64325F895DF38B /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
-		4B8AA9F912BA9BD0BF0AE493 /* Torque2DGame-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.info; name = "Torque2DGame-Info.plist"; path = "Torque2D/Torque2DGame-Info.plist"; sourceTree = SOURCE_ROOT; };
-		4B8AA9FF87A0F25B86259800 /* gfxOpenGL32CardProfiler.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32CardProfiler.mm; sourceTree = "<group>"; };
-		4B8AAA49526A9FF0580EDFD9 /* gfxOpenGL32WindowTarget.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32WindowTarget.mm; sourceTree = "<group>"; };
-		4B8AAA572212658BCD0D86BD /* JoystickManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JoystickManager.m; sourceTree = "<group>"; };
-		4B8AAA577E3AD20E0E224E54 /* GLFWWindow.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GLFWWindow.mm; sourceTree = "<group>"; };
-		4B8AAA8913A45B5C610121EA /* osxNetwork.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxNetwork.mm; sourceTree = "<group>"; };
-		4B8AAB48CFB2F99FC0AAAA35 /* gfxOpenGL32StateBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32StateBlock.h; sourceTree = "<group>"; };
-		4B8AABC2E05B71D66F2C28AA /* FilterImageAsset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilterImageAsset.h; sourceTree = "<group>"; };
-		4B8AABC9DB05D1ACC475EEFC /* gfxOpenGL32TextureTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32TextureTarget.h; sourceTree = "<group>"; };
-		4B8AABD9E831882F78DE1A14 /* osxInput.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxInput.mm; sourceTree = "<group>"; };
-		4B8AABDF1EBA3319ACEFB855 /* gfxOpenGL32VertexBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32VertexBuffer.h; sourceTree = "<group>"; };
-		4B8AABE98A320942C617A339 /* Joystick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Joystick.h; sourceTree = "<group>"; };
-		4B8AAC365C1BB690BB0B3E0F /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
-		4B8AAC38443F948432CB5A9C /* Torque2D-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.info; name = "Torque2D-Info.plist"; path = "Torque2D/Torque2D-Info.plist"; sourceTree = SOURCE_ROOT; };
-		4B8AAC5269465C1B1D766289 /* osxTime.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxTime.mm; sourceTree = "<group>"; };
-		4B8AAC5B7219A92938768EFD /* gfxOpenGL32TextureManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32TextureManager.mm; sourceTree = "<group>"; };
-		4B8AAC6AC8B66A35A0C50EDF /* gfxOpenGL32Device.OSX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32Device.OSX.mm; sourceTree = "<group>"; };
-		4B8AAC88D303FEC9B6950607 /* gfxOpenGL32WindowTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32WindowTarget.h; sourceTree = "<group>"; };
-		4B8AACDF16EFFEF3D23D127F /* osxMutex.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxMutex.mm; sourceTree = "<group>"; };
-		4B8AACE97A0F61027DC8678C /* GLFWCursorController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GLFWCursorController.mm; sourceTree = "<group>"; };
-		4B8AAD1ADCE707DCA6585DCB /* JoystickNotificationDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JoystickNotificationDelegate.h; sourceTree = "<group>"; };
-		4B8AAD37DCB3CD5C418369AC /* platformOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformOSX.h; sourceTree = "<group>"; };
-		4B8AAD6628A4C710426039E6 /* gfxOpenGL32StateBlock.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32StateBlock.mm; sourceTree = "<group>"; };
-		4B8AADC328B3D1232C546DE7 /* gfxOpenGL32VertexBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32VertexBuffer.mm; sourceTree = "<group>"; };
-		4B8AADF513646D28ADF95E3B /* gfxOpenGL32TextureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32TextureManager.h; sourceTree = "<group>"; };
-		4B8AAE66C53DDDCC214507E7 /* FilterImageAsset.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FilterImageAsset.mm; sourceTree = "<group>"; };
-		4B8AAEF973ACD7FC68DE10C0 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = Torque2D/en.lproj/MainMenu.xib; sourceTree = SOURCE_ROOT; };
-		4B8AAF9FB393C44860FE9D24 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		4B8AAFB79DF3A9163E69BB51 /* osxFont.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxFont.mm; sourceTree = "<group>"; };
+		4B8AA0B11DDA96BD47186F76 /* osxFileIO.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxFileIO.mm; sourceTree = "<group>"; };
+		4B8AA0CE464FE0593242589F /* Torque2DGame-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.info; name = "Torque2DGame-Info.plist"; path = "Torque2D/Torque2DGame-Info.plist"; sourceTree = SOURCE_ROOT; };
+		4B8AA0D42C42CB1100392605 /* FilterImageAsset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilterImageAsset.h; sourceTree = "<group>"; };
+		4B8AA120421D765D4A1A32AF /* osxNetwork.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxNetwork.mm; sourceTree = "<group>"; };
+		4B8AA1A0C99209306FFC37B3 /* gfxOpenGL32CardProfiler.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32CardProfiler.mm; sourceTree = "<group>"; };
+		4B8AA1A5B9F6EDB0D867D795 /* gfxOpenGL32Shader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32Shader.mm; sourceTree = "<group>"; };
+		4B8AA1F31450D3F7937BE343 /* gfxOpenGL32Shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32Shader.h; sourceTree = "<group>"; };
+		4B8AA221564ACA3169727BB0 /* Joystick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Joystick.h; sourceTree = "<group>"; };
+		4B8AA2C1D429AB0EEB1A559B /* osxSemaphore.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxSemaphore.mm; sourceTree = "<group>"; };
+		4B8AA2EA27DDCF404CF01ABC /* JoystickHatswitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JoystickHatswitch.m; sourceTree = "<group>"; };
+		4B8AA2FE025649E0732E8770 /* gfxOpenGL32VertexBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32VertexBuffer.h; sourceTree = "<group>"; };
+		4B8AA32C09EDD591433F32C1 /* Joystick.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Joystick.m; sourceTree = "<group>"; };
+		4B8AA34CFB805A160AD17E63 /* gfxOpenGL32TextureObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32TextureObject.h; sourceTree = "<group>"; };
+		4B8AA35C3E3115E6A78749A9 /* GLFWCursorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLFWCursorController.h; sourceTree = "<group>"; };
+		4B8AA3792790F13E2361DC52 /* GLFWWindow.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GLFWWindow.mm; sourceTree = "<group>"; };
+		4B8AA38127911426C728C85A /* gfxOpenGL32TextureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32TextureManager.h; sourceTree = "<group>"; };
+		4B8AA3FABCB53401B420F689 /* osxAudio.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxAudio.mm; sourceTree = "<group>"; };
+		4B8AA46016B746A61CE97966 /* osxMath_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxMath_ScriptBinding.h; sourceTree = "<group>"; };
+		4B8AA46D739FCCB4F83D86AE /* JoystickManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JoystickManager.m; sourceTree = "<group>"; };
+		4B8AA4FF586EA294D9F1772F /* platformOSX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = platformOSX.mm; sourceTree = "<group>"; };
+		4B8AA501B0B2721A33615F0A /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = Torque2D/en.lproj/MainMenu.xib; sourceTree = SOURCE_ROOT; };
+		4B8AA5060D2438316645F09E /* GLFWWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLFWWindow.h; sourceTree = "<group>"; };
+		4B8AA50774EF4F2173E712A7 /* osxTime.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxTime.mm; sourceTree = "<group>"; };
+		4B8AA584D23283B8D2235451 /* Torque2D-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.info; name = "Torque2D-Info.plist"; path = "Torque2D/Torque2D-Info.plist"; sourceTree = SOURCE_ROOT; };
+		4B8AA59CBE2500F45870305F /* gfxOpenGL32EnumTranslate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32EnumTranslate.h; sourceTree = "<group>"; };
+		4B8AA5FC4546D3233A02A56C /* osxCocoaUtilities.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxCocoaUtilities.mm; sourceTree = "<group>"; };
+		4B8AA63E1E0D3091A75B6226 /* gfxOpenGL32WindowTarget.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32WindowTarget.mm; sourceTree = "<group>"; };
+		4B8AA67812DD7EE0ACFEF67F /* Torque2D-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Torque2D-Prefix.pch"; path = "Torque2D/Torque2D-Prefix.pch"; sourceTree = SOURCE_ROOT; };
+		4B8AA6CE573B26A7A2598E15 /* platformOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformOSX.h; sourceTree = "<group>"; };
+		4B8AA72B371610384CA2A574 /* gfxOpenGL32VertexBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32VertexBuffer.mm; sourceTree = "<group>"; };
+		4B8AA75C6986C5E3952EA7A1 /* osxFont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxFont.h; sourceTree = "<group>"; };
+		4B8AA7D746C0B226894D6D92 /* GLFWWindowInputGenerator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GLFWWindowInputGenerator.mm; sourceTree = "<group>"; };
+		4B8AA80FD83636B8BF425CD5 /* GLFWWindowManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GLFWWindowManager.mm; sourceTree = "<group>"; };
+		4B8AA832114B3E6EC56E1A20 /* gfxOpenGL32CardProfiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32CardProfiler.h; sourceTree = "<group>"; };
+		4B8AA880AFA0FE58E4348849 /* osxMutex.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxMutex.mm; sourceTree = "<group>"; };
+		4B8AA887B3C88E67F03088EA /* gfxOpenGL32TextureObject.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32TextureObject.mm; sourceTree = "<group>"; };
+		4B8AA9214E108BD3443695FC /* osxCocoaUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxCocoaUtilities.h; sourceTree = "<group>"; };
+		4B8AA959FD3C173CDA928FAA /* GLFWWindowInputGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLFWWindowInputGenerator.h; sourceTree = "<group>"; };
+		4B8AA960CF6C1D3EF472151C /* osxFont.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxFont.mm; sourceTree = "<group>"; };
+		4B8AA983A034257634CDF5C6 /* FilterImageAsset.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FilterImageAsset.mm; sourceTree = "<group>"; };
+		4B8AA984E295A563F26E3D27 /* osxMemory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxMemory.mm; sourceTree = "<group>"; };
+		4B8AA9949541404C1292B9F9 /* osxThread.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxThread.mm; sourceTree = "<group>"; };
+		4B8AA9BE241316556146B265 /* gfxOpenGL32Device.OSX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32Device.OSX.mm; sourceTree = "<group>"; };
+		4B8AAA085A2ABAC2CE538F09 /* GLFWCursorController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GLFWCursorController.mm; sourceTree = "<group>"; };
+		4B8AAA1340591455828BFB00 /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
+		4B8AAA14E1C020C365C91296 /* gfxOpenGL32Cubemap.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32Cubemap.mm; sourceTree = "<group>"; };
+		4B8AAA51BB16FFB1EC572E6F /* osxFileDialogs.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxFileDialogs.mm; sourceTree = "<group>"; };
+		4B8AAAF93BCFB8FFF33F758D /* gfxOpenGL32StateBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32StateBlock.h; sourceTree = "<group>"; };
+		4B8AAAFF68BBF4EF6BD5378B /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
+		4B8AAB07587D199CD399C277 /* JoystickManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JoystickManager.h; sourceTree = "<group>"; };
+		4B8AAB9C2B5B3AA3FF07E2C8 /* gfxOpenGL32WindowTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32WindowTarget.h; sourceTree = "<group>"; };
+		4B8AABB873B432C0D5A9F6DA /* osxTimer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxTimer.mm; sourceTree = "<group>"; };
+		4B8AAC5BB132D6663C47F0B1 /* gfxOpenGL32TextureManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32TextureManager.mm; sourceTree = "<group>"; };
+		4B8AAC8E2EA83E967594EE44 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		4B8AACBFDA94720FD88292AF /* gfxOpenGL32TextureTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32TextureTarget.h; sourceTree = "<group>"; };
+		4B8AAD06ACAD2875A6FCA94E /* gfxOpenGL32Cubemap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32Cubemap.h; sourceTree = "<group>"; };
+		4B8AAD2BF8FB395E3AE34477 /* platformGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformGL.h; sourceTree = "<group>"; };
+		4B8AAD46B6FBD21C98C6A516 /* gfxOpenGL32Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32Utils.h; sourceTree = "<group>"; };
+		4B8AAD6BC9B2B76B676924BB /* GLFWWindowManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLFWWindowManager.h; sourceTree = "<group>"; };
+		4B8AAD79AA190B9FF796818D /* gfxOpenGL32TextureTarget.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32TextureTarget.mm; sourceTree = "<group>"; };
+		4B8AAD8823D462312F21D3D7 /* JoystickHatswitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JoystickHatswitch.h; sourceTree = "<group>"; };
+		4B8AADA0924D86266231C195 /* osxString.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxString.mm; sourceTree = "<group>"; };
+		4B8AADFE2906ECE60EB40C40 /* gfxOpenGL32StateBlock.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32StateBlock.mm; sourceTree = "<group>"; };
+		4B8AAE22F6048FE09CDC7D07 /* osxInput.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxInput.mm; sourceTree = "<group>"; };
+		4B8AAE8DB9D7EEE678826797 /* osxMath.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxMath.mm; sourceTree = "<group>"; };
+		4B8AAEBAA71112A5765DFAC2 /* gfxOpenGL32Device.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32Device.h; sourceTree = "<group>"; };
+		4B8AAEE8C36DC12BC8F878AB /* osxCPU.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxCPU.mm; sourceTree = "<group>"; };
+		4B8AAF19B05781C0171ED319 /* JoystickNotificationDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JoystickNotificationDelegate.h; sourceTree = "<group>"; };
+		4B8AAF83D230B0CC6FBB2017 /* gfxOpenGL32EnumTranslate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32EnumTranslate.mm; sourceTree = "<group>"; };
 		861CD8CE1678F6C200DAE1A0 /* fileDialog_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fileDialog_ScriptBinding.h; sourceTree = "<group>"; };
 		861CD8CF1678F6C200DAE1A0 /* fileDialog.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fileDialog.cc; sourceTree = "<group>"; };
 		864ECFEA1652795700012416 /* platform_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platform_ScriptBinding.h; sourceTree = "<group>"; };
@@ -1755,137 +1755,136 @@
 			name = composites;
 			sourceTree = "<group>";
 		};
-		4B8AA11E52F23B2C62916703 /* 2d */ = {
+		4B8AA136A3BEA42B552ECF0F /* 2d */ = {
 			isa = PBXGroup;
 			children = (
-				4B8AA6A0C0F5950D0C123D7F /* assets */,
+				4B8AA99BAEE8ED2AEBD77CD5 /* assets */,
 			);
 			path = 2d;
 			sourceTree = "<group>";
 		};
-		4B8AA6A0C0F5950D0C123D7F /* assets */ = {
+		4B8AA4104F0D970B71996F6C /* graphics */ = {
 			isa = PBXGroup;
 			children = (
-				4B8AABC2E05B71D66F2C28AA /* FilterImageAsset.h */,
-				4B8AAE66C53DDDCC214507E7 /* FilterImageAsset.mm */,
+				4B8AAA14E1C020C365C91296 /* gfxOpenGL32Cubemap.mm */,
+				4B8AAD06ACAD2875A6FCA94E /* gfxOpenGL32Cubemap.h */,
+				4B8AA832114B3E6EC56E1A20 /* gfxOpenGL32CardProfiler.h */,
+				4B8AA1A0C99209306FFC37B3 /* gfxOpenGL32CardProfiler.mm */,
+				4B8AAEBAA71112A5765DFAC2 /* gfxOpenGL32Device.h */,
+				4B8AA9BE241316556146B265 /* gfxOpenGL32Device.OSX.mm */,
+				4B8AA59CBE2500F45870305F /* gfxOpenGL32EnumTranslate.h */,
+				4B8AAF83D230B0CC6FBB2017 /* gfxOpenGL32EnumTranslate.mm */,
+				4B8AA1F31450D3F7937BE343 /* gfxOpenGL32Shader.h */,
+				4B8AA1A5B9F6EDB0D867D795 /* gfxOpenGL32Shader.mm */,
+				4B8AAAF93BCFB8FFF33F758D /* gfxOpenGL32StateBlock.h */,
+				4B8AADFE2906ECE60EB40C40 /* gfxOpenGL32StateBlock.mm */,
+				4B8AA38127911426C728C85A /* gfxOpenGL32TextureManager.h */,
+				4B8AAC5BB132D6663C47F0B1 /* gfxOpenGL32TextureManager.mm */,
+				4B8AA34CFB805A160AD17E63 /* gfxOpenGL32TextureObject.h */,
+				4B8AA887B3C88E67F03088EA /* gfxOpenGL32TextureObject.mm */,
+				4B8AACBFDA94720FD88292AF /* gfxOpenGL32TextureTarget.h */,
+				4B8AAD79AA190B9FF796818D /* gfxOpenGL32TextureTarget.mm */,
+				4B8AAD46B6FBD21C98C6A516 /* gfxOpenGL32Utils.h */,
+				4B8AA2FE025649E0732E8770 /* gfxOpenGL32VertexBuffer.h */,
+				4B8AA72B371610384CA2A574 /* gfxOpenGL32VertexBuffer.mm */,
+				4B8AAB9C2B5B3AA3FF07E2C8 /* gfxOpenGL32WindowTarget.h */,
+				4B8AA63E1E0D3091A75B6226 /* gfxOpenGL32WindowTarget.mm */,
 			);
-			path = assets;
+			path = graphics;
 			sourceTree = "<group>";
 		};
-		4B8AA6D96B7832299DA8089E /* JoystickManager */ = {
+		4B8AA53051B8E3AE8D1EFE69 /* platformOSX */ = {
 			isa = PBXGroup;
 			children = (
-				4B8AABE98A320942C617A339 /* Joystick.h */,
-				4B8AA2D51C6CECA16775C90B /* Joystick.m */,
-				4B8AA11BB15D10AF6CCD6DB4 /* JoystickHatswitch.h */,
-				4B8AA4B0643A9DF256EC91BB /* JoystickHatswitch.m */,
-				4B8AA5923BEA87DCCC89D510 /* JoystickManager.h */,
-				4B8AAA572212658BCD0D86BD /* JoystickManager.m */,
-				4B8AAD1ADCE707DCA6585DCB /* JoystickNotificationDelegate.h */,
-			);
-			path = JoystickManager;
-			sourceTree = "<group>";
-		};
-		4B8AA9F03E2CFD4EEAAF80D5 /* platformOSX */ = {
-			isa = PBXGroup;
-			children = (
-				4B8AA6D96B7832299DA8089E /* JoystickManager */,
-				4B8AA11E52F23B2C62916703 /* 2d */,
-				4B8AACD7FB27087C14481A23 /* windowManager */,
-				4B8AAFBF9FDE749F38F6A18F /* graphics */,
-				4B8AA5FF252C2E0B8DE9ED55 /* osxCocoaUtilities.h */,
-				4B8AA1F8AEC88032335FCFC7 /* osxCocoaUtilities.mm */,
-				4B8AAF9FB393C44860FE9D24 /* AppDelegate.h */,
-				4B8AA9DD8F64325F895DF38B /* AppDelegate.mm */,
-				4B8AAC365C1BB690BB0B3E0F /* main.mm */,
-				4B8AA00B56F1E18F19BB32A1 /* osxAudio.mm */,
-				4B8AA580ED8025EC901748C9 /* osxCPU.mm */,
-				4B8AA7407BF372B3535CD3E1 /* osxFileDialogs.mm */,
-				4B8AA5D7615202B762E404B3 /* osxFileIO.mm */,
-				4B8AAFB79DF3A9163E69BB51 /* osxFont.mm */,
-				4B8AA6FF7796AF1C6080C7C5 /* osxFont.h */,
-				4B8AABD9E831882F78DE1A14 /* osxInput.mm */,
-				4B8AA28CF400D64957098ED2 /* osxMath.mm */,
-				4B8AA6C67605AB9915A466E6 /* osxMath_ScriptBinding.h */,
-				4B8AA8B88858020EB7397F93 /* osxMemory.mm */,
-				4B8AACDF16EFFEF3D23D127F /* osxMutex.mm */,
-				4B8AAA8913A45B5C610121EA /* osxNetwork.mm */,
-				4B8AA214E2F3D8436AA8B342 /* osxSemaphore.mm */,
-				4B8AA5D8E9CA2ADDB6AE8DB5 /* osxString.mm */,
-				4B8AA855EBB4E5DA275DA736 /* osxThread.mm */,
-				4B8AAC5269465C1B1D766289 /* osxTime.mm */,
-				4B8AA437205AA19617EC98E4 /* osxTimer.mm */,
-				4B8AA711C08B21B4C6B9601F /* platformGL.h */,
-				4B8AAD37DCB3CD5C418369AC /* platformOSX.h */,
-				4B8AA64CFEAD4E0BD3C29C12 /* platformOSX.mm */,
-				4B8AAFBC274BB2CCAA4875B5 /* Supporting Files */,
+				4B8AA6033D1CCDDA094808F4 /* JoystickManager */,
+				4B8AA136A3BEA42B552ECF0F /* 2d */,
+				4B8AA5A7945B17E2A01E032B /* windowManager */,
+				4B8AA4104F0D970B71996F6C /* graphics */,
+				4B8AA9214E108BD3443695FC /* osxCocoaUtilities.h */,
+				4B8AA5FC4546D3233A02A56C /* osxCocoaUtilities.mm */,
+				4B8AAC8E2EA83E967594EE44 /* AppDelegate.h */,
+				4B8AAA1340591455828BFB00 /* AppDelegate.mm */,
+				4B8AAAFF68BBF4EF6BD5378B /* main.mm */,
+				4B8AA3FABCB53401B420F689 /* osxAudio.mm */,
+				4B8AAEE8C36DC12BC8F878AB /* osxCPU.mm */,
+				4B8AAA51BB16FFB1EC572E6F /* osxFileDialogs.mm */,
+				4B8AA0B11DDA96BD47186F76 /* osxFileIO.mm */,
+				4B8AA960CF6C1D3EF472151C /* osxFont.mm */,
+				4B8AA75C6986C5E3952EA7A1 /* osxFont.h */,
+				4B8AAE22F6048FE09CDC7D07 /* osxInput.mm */,
+				4B8AAE8DB9D7EEE678826797 /* osxMath.mm */,
+				4B8AA46016B746A61CE97966 /* osxMath_ScriptBinding.h */,
+				4B8AA984E295A563F26E3D27 /* osxMemory.mm */,
+				4B8AA880AFA0FE58E4348849 /* osxMutex.mm */,
+				4B8AA120421D765D4A1A32AF /* osxNetwork.mm */,
+				4B8AA2C1D429AB0EEB1A559B /* osxSemaphore.mm */,
+				4B8AADA0924D86266231C195 /* osxString.mm */,
+				4B8AA9949541404C1292B9F9 /* osxThread.mm */,
+				4B8AA50774EF4F2173E712A7 /* osxTime.mm */,
+				4B8AABB873B432C0D5A9F6DA /* osxTimer.mm */,
+				4B8AAD2BF8FB395E3AE34477 /* platformGL.h */,
+				4B8AA6CE573B26A7A2598E15 /* platformOSX.h */,
+				4B8AA4FF586EA294D9F1772F /* platformOSX.mm */,
+				4B8AAACA87922A4BEA9C7E9D /* Supporting Files */,
 			);
 			name = platformOSX;
 			path = ../../source/platformOSX;
 			sourceTree = "<group>";
 		};
-		4B8AACD7FB27087C14481A23 /* windowManager */ = {
+		4B8AA5A7945B17E2A01E032B /* windowManager */ = {
 			isa = PBXGroup;
 			children = (
-				4B8AA2D724075231177EC96A /* GLFWWindowInputGenerator.h */,
-				4B8AA106FC1EDA3F25F73690 /* GLFWWindowInputGenerator.mm */,
-				4B8AA9CEB226975F581BBC75 /* GLFWCursorController.h */,
-				4B8AACE97A0F61027DC8678C /* GLFWCursorController.mm */,
-				4B8AA9146C027F7E75D074CB /* GLFWWindow.h */,
-				4B8AAA577E3AD20E0E224E54 /* GLFWWindow.mm */,
-				4B8AA4D68A87FCB21FC1DF31 /* GLFWWindowManager.h */,
-				4B8AA5B3F42117C39EC14FAD /* GLFWWindowManager.mm */,
+				4B8AA959FD3C173CDA928FAA /* GLFWWindowInputGenerator.h */,
+				4B8AA7D746C0B226894D6D92 /* GLFWWindowInputGenerator.mm */,
+				4B8AA35C3E3115E6A78749A9 /* GLFWCursorController.h */,
+				4B8AAA085A2ABAC2CE538F09 /* GLFWCursorController.mm */,
+				4B8AA5060D2438316645F09E /* GLFWWindow.h */,
+				4B8AA3792790F13E2361DC52 /* GLFWWindow.mm */,
+				4B8AAD6BC9B2B76B676924BB /* GLFWWindowManager.h */,
+				4B8AA80FD83636B8BF425CD5 /* GLFWWindowManager.mm */,
 			);
 			path = windowManager;
 			sourceTree = "<group>";
 		};
-		4B8AAFBC274BB2CCAA4875B5 /* Supporting Files */ = {
+		4B8AA6033D1CCDDA094808F4 /* JoystickManager */ = {
 			isa = PBXGroup;
 			children = (
-				4B8AA5A8AD3FDB663AA4B9C1 /* Torque2D-Prefix.pch */,
-				4B8AACE88F1EFFE926EFFBB6 /* MainMenu.xib */,
-				4B8AAC38443F948432CB5A9C /* Torque2D-Info.plist */,
-				4B8AA9F912BA9BD0BF0AE493 /* Torque2DGame-Info.plist */,
+				4B8AA221564ACA3169727BB0 /* Joystick.h */,
+				4B8AA32C09EDD591433F32C1 /* Joystick.m */,
+				4B8AAD8823D462312F21D3D7 /* JoystickHatswitch.h */,
+				4B8AA2EA27DDCF404CF01ABC /* JoystickHatswitch.m */,
+				4B8AAB07587D199CD399C277 /* JoystickManager.h */,
+				4B8AA46D739FCCB4F83D86AE /* JoystickManager.m */,
+				4B8AAF19B05781C0171ED319 /* JoystickNotificationDelegate.h */,
+			);
+			path = JoystickManager;
+			sourceTree = "<group>";
+		};
+		4B8AA99BAEE8ED2AEBD77CD5 /* assets */ = {
+			isa = PBXGroup;
+			children = (
+				4B8AA0D42C42CB1100392605 /* FilterImageAsset.h */,
+				4B8AA983A034257634CDF5C6 /* FilterImageAsset.mm */,
+			);
+			path = assets;
+			sourceTree = "<group>";
+		};
+		4B8AAACA87922A4BEA9C7E9D /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				4B8AA67812DD7EE0ACFEF67F /* Torque2D-Prefix.pch */,
+				4B8AA2F1832A8038C6967D88 /* MainMenu.xib */,
+				4B8AA584D23283B8D2235451 /* Torque2D-Info.plist */,
+				4B8AA0CE464FE0593242589F /* Torque2DGame-Info.plist */,
 			);
 			name = "Supporting Files";
 			path = ../../compilers/New_Xcode/Torque2D;
-			sourceTree = "<group>";
-		};
-		4B8AAFBF9FDE749F38F6A18F /* graphics */ = {
-			isa = PBXGroup;
-			children = (
-				4B8AA2CFD67078160F2CAA33 /* gfxOpenGL32Cubemap.mm */,
-				4B8AA03E022FADBB1100F89F /* gfxOpenGL32Cubemap.h */,
-				4B8AA4D6CE98867C36273C9F /* gfxOpenGL32CardProfiler.h */,
-				4B8AA9FF87A0F25B86259800 /* gfxOpenGL32CardProfiler.mm */,
-				4B8AA72B58091E0D870C3FF3 /* gfxOpenGL32Device.h */,
-				4B8AAC6AC8B66A35A0C50EDF /* gfxOpenGL32Device.OSX.mm */,
-				4B8AA4FD8B07AAC4FAC43A6C /* gfxOpenGL32EnumTranslate.h */,
-				4B8AA804F606C82D00E9686B /* gfxOpenGL32EnumTranslate.mm */,
-				4B8AA475D45ACB71A3B4A9A9 /* gfxOpenGL32Shader.h */,
-				4B8AA674B941C245E6346A7A /* gfxOpenGL32Shader.mm */,
-				4B8AAB48CFB2F99FC0AAAA35 /* gfxOpenGL32StateBlock.h */,
-				4B8AAD6628A4C710426039E6 /* gfxOpenGL32StateBlock.mm */,
-				4B8AADF513646D28ADF95E3B /* gfxOpenGL32TextureManager.h */,
-				4B8AAC5B7219A92938768EFD /* gfxOpenGL32TextureManager.mm */,
-				4B8AA43A44E04AF023A262C7 /* gfxOpenGL32TextureObject.h */,
-				4B8AA0232287DBFA0E4C7789 /* gfxOpenGL32TextureObject.mm */,
-				4B8AABC9DB05D1ACC475EEFC /* gfxOpenGL32TextureTarget.h */,
-				4B8AA92D1683F33174EE629E /* gfxOpenGL32TextureTarget.mm */,
-				4B8AA899CEB6B7DD41D21431 /* gfxOpenGL32Utils.h */,
-				4B8AABDF1EBA3319ACEFB855 /* gfxOpenGL32VertexBuffer.h */,
-				4B8AADC328B3D1232C546DE7 /* gfxOpenGL32VertexBuffer.mm */,
-				4B8AAC88D303FEC9B6950607 /* gfxOpenGL32WindowTarget.h */,
-				4B8AAA49526A9FF0580EDFD9 /* gfxOpenGL32WindowTarget.mm */,
-			);
-			path = graphics;
 			sourceTree = "<group>";
 		};
 		865A20BD1651589F00527C44 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
 				865A20BE165158CA00527C44 /* torque2d.icns */,
-				4B8AA9F03E2CFD4EEAAF80D5 /* platformOSX */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -2162,6 +2161,7 @@
 				869FF8BB1651518C002FE082 /* Frameworks */,
 				869FF8B91651518C002FE082 /* Products */,
 				865A20B01651530B00527C44 /* Config.xcconfig */,
+				4B8AA53051B8E3AE8D1EFE69 /* platformOSX */,
 			);
 			sourceTree = "<group>";
 		};
@@ -3464,7 +3464,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8652F2A016C146CF00639EFE /* torque2d.icns in Resources */,
-				4B8AAF0C9DFF3BDB42591CDD /* MainMenu.xib in Resources */,
+				4B8AAF3BD30509872A2C9A71 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3931,44 +3931,44 @@
 				D17F0378178151AA00C6FCA4 /* matStateHint.cpp in Sources */,
 				D17F0379178151AA00C6FCA4 /* matTextureTarget.cpp in Sources */,
 				D17F037E178151AA00C6FCA4 /* shaderData.cpp in Sources */,
-				4B8AA1CE99D76BE1D51F02C4 /* Joystick.m in Sources */,
-				4B8AAAC264B9D9ABF2D6947A /* JoystickHatswitch.m in Sources */,
-				4B8AAA03B19666F1FD4827E9 /* JoystickManager.m in Sources */,
-				4B8AABEBE4E6A7BFF78140D5 /* FilterImageAsset.mm in Sources */,
-				4B8AADD6327E68C56B6DC7AE /* GLFWWindowInputGenerator.mm in Sources */,
-				4B8AAF6B7988755AEC02E3CA /* GLFWCursorController.mm in Sources */,
-				4B8AA5495F0A8BD2A19E5431 /* GLFWWindow.mm in Sources */,
-				4B8AAB8D733BCBE6A0DD83A3 /* GLFWWindowManager.mm in Sources */,
-				4B8AA53E78D363799CFB0AA4 /* gfxOpenGL32Cubemap.mm in Sources */,
-				4B8AAFEFE3A7AE14B71F9EC3 /* gfxOpenGL32CardProfiler.mm in Sources */,
-				4B8AA6199FBB957EEBD46CF3 /* gfxOpenGL32Device.OSX.mm in Sources */,
-				4B8AA7A49C77252E8902C763 /* gfxOpenGL32EnumTranslate.mm in Sources */,
-				4B8AA54097558A71E56EBC34 /* gfxOpenGL32Shader.mm in Sources */,
-				4B8AA9C093D9F1661F2DD5D0 /* gfxOpenGL32StateBlock.mm in Sources */,
-				4B8AA89C3AB46C35826F2D45 /* gfxOpenGL32TextureManager.mm in Sources */,
-				4B8AA9305148D37E2A45832E /* gfxOpenGL32TextureObject.mm in Sources */,
-				4B8AA1C961AE661C7D905679 /* gfxOpenGL32TextureTarget.mm in Sources */,
-				4B8AA2AD9684D4F77B279732 /* gfxOpenGL32VertexBuffer.mm in Sources */,
-				4B8AAB348A949B4A9467F147 /* gfxOpenGL32WindowTarget.mm in Sources */,
-				4B8AA64358E0C772BC2D21D6 /* osxCocoaUtilities.mm in Sources */,
-				4B8AA5D6475A8A62BED9F1F7 /* AppDelegate.mm in Sources */,
-				4B8AA9285AD26A33CFD4348E /* main.mm in Sources */,
-				4B8AA47BD451087DDE8465A3 /* osxAudio.mm in Sources */,
-				4B8AA72F012BD4DA02969A29 /* osxCPU.mm in Sources */,
-				4B8AAF9655A01132B60B9D31 /* osxFileDialogs.mm in Sources */,
-				4B8AA74C19C3372C2E2D72B2 /* osxFileIO.mm in Sources */,
-				4B8AAFB800A4EFAB56B29BF2 /* osxFont.mm in Sources */,
-				4B8AAB9A046CA6786376FE77 /* osxInput.mm in Sources */,
-				4B8AA6DDEE767F5949E29C9F /* osxMath.mm in Sources */,
-				4B8AAFDD75EA424D6F8F6258 /* osxMemory.mm in Sources */,
-				4B8AAC977FBCB506A88D9465 /* osxMutex.mm in Sources */,
-				4B8AA3D0FE6C54D6533EA244 /* osxNetwork.mm in Sources */,
-				4B8AA3395309C63786EBCF1F /* osxSemaphore.mm in Sources */,
-				4B8AA16E03471C69EBF119AE /* osxString.mm in Sources */,
-				4B8AAA958ABF54909BFCB68D /* osxThread.mm in Sources */,
-				4B8AA0B53B5DC42A8DA85921 /* osxTime.mm in Sources */,
-				4B8AA5135CCA50F1F6828071 /* osxTimer.mm in Sources */,
-				4B8AA61DCB92B1066299EFC6 /* platformOSX.mm in Sources */,
+				4B8AA3A1C470C970CB5E1152 /* Joystick.m in Sources */,
+				4B8AA590A413FC6964354724 /* JoystickHatswitch.m in Sources */,
+				4B8AA15ECF2A3D298AEEBA7C /* JoystickManager.m in Sources */,
+				4B8AABEC84868C0D290DA248 /* FilterImageAsset.mm in Sources */,
+				4B8AAFFB9D407E230CF23A5E /* GLFWWindowInputGenerator.mm in Sources */,
+				4B8AAC5C6BAF7EB28C6D04EC /* GLFWCursorController.mm in Sources */,
+				4B8AA0FE9797A22AA72F2553 /* GLFWWindow.mm in Sources */,
+				4B8AA9FE28CF062DD5A660FF /* GLFWWindowManager.mm in Sources */,
+				4B8AAFDA1BA4051EA2BE6C74 /* gfxOpenGL32Cubemap.mm in Sources */,
+				4B8AA4CC60C7165B1980804F /* gfxOpenGL32CardProfiler.mm in Sources */,
+				4B8AA7DFDD7F25A01937172B /* gfxOpenGL32Device.OSX.mm in Sources */,
+				4B8AA1EAAD7F710B653887CC /* gfxOpenGL32EnumTranslate.mm in Sources */,
+				4B8AA9C9BDCD233C686B600A /* gfxOpenGL32Shader.mm in Sources */,
+				4B8AA05B1E6982E22A3740E1 /* gfxOpenGL32StateBlock.mm in Sources */,
+				4B8AA3477C8195DFE4B7B137 /* gfxOpenGL32TextureManager.mm in Sources */,
+				4B8AA3A9879986254D0D370C /* gfxOpenGL32TextureObject.mm in Sources */,
+				4B8AAAD0AC81DCC871CB4183 /* gfxOpenGL32TextureTarget.mm in Sources */,
+				4B8AA6F7F73CD71CF2A73BB6 /* gfxOpenGL32VertexBuffer.mm in Sources */,
+				4B8AA3CB3BE744C906D47EE6 /* gfxOpenGL32WindowTarget.mm in Sources */,
+				4B8AA757620E6AA3EF39BF53 /* osxCocoaUtilities.mm in Sources */,
+				4B8AAD09C7F11F49EB1201D2 /* AppDelegate.mm in Sources */,
+				4B8AA6D0F562569478D5CF13 /* main.mm in Sources */,
+				4B8AA6A9654E2527B2FE8D88 /* osxAudio.mm in Sources */,
+				4B8AAE3B7021EA64ABA57552 /* osxCPU.mm in Sources */,
+				4B8AAF379C2D853CB3F47E19 /* osxFileDialogs.mm in Sources */,
+				4B8AA08D4C7EEA1380B27B30 /* osxFileIO.mm in Sources */,
+				4B8AAF2E27E93709C7ACB163 /* osxFont.mm in Sources */,
+				4B8AAC0408F50E03D0025DEE /* osxInput.mm in Sources */,
+				4B8AA3A8C335291CC55A959A /* osxMath.mm in Sources */,
+				4B8AAE06F9EB1B3DF29552EE /* osxMemory.mm in Sources */,
+				4B8AA028104652588B331564 /* osxMutex.mm in Sources */,
+				4B8AAD9ADDE58C24CD367C23 /* osxNetwork.mm in Sources */,
+				4B8AA34253769CDA6BE69C4E /* osxSemaphore.mm in Sources */,
+				4B8AA0DEAAE60B4260BBA860 /* osxString.mm in Sources */,
+				4B8AA53F95C98181905E5524 /* osxThread.mm in Sources */,
+				4B8AAC816BE087E1B24A84AA /* osxTime.mm in Sources */,
+				4B8AA3537E794BF5814C7CA5 /* osxTimer.mm in Sources */,
+				4B8AAD464DE91C0A1C7697E2 /* platformOSX.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3983,10 +3983,10 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		4B8AACE88F1EFFE926EFFBB6 /* MainMenu.xib */ = {
+		4B8AA2F1832A8038C6967D88 /* MainMenu.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				4B8AAEF973ACD7FC68DE10C0 /* en */,
+				4B8AA501B0B2721A33615F0A /* en */,
 			);
 			name = MainMenu.xib;
 			sourceTree = "<group>";

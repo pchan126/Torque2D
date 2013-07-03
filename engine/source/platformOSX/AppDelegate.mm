@@ -95,8 +95,8 @@
 //        CFRelease(valueRef);
 //    }
     // Get product string
-    valueRef = (CFStringRef)(IOHIDDeviceGetProperty(joystick.device, CFSTR(kIOHIDProductKey)));
-    char HIDName[255];
+    valueRef = (CFStringRef) IOHIDDeviceGetProperty(joystick.device, CFSTR(kIOHIDProductKey));
+    char HIDName[1024];
     if (valueRef)
     {
         CFStringGetCString(valueRef,
@@ -106,7 +106,7 @@
 
         CFRelease(valueRef);
     }
-    NSLog(@"added %@ %s %s", joystick, HIDName);
+    NSLog(@"added %@ %s", joystick, HIDName);
 }
 
 - (void)joystickStateChanged:(Joystick *)joystick {

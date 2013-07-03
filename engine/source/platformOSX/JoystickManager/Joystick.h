@@ -20,6 +20,7 @@
     NSArray *axes;
     NSArray *buttons;
     NSArray *hats;
+    NSArray *misc;
     
     NSMutableArray *delegates;
 }

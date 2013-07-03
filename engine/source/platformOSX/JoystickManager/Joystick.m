@@ -26,6 +26,7 @@
         NSMutableArray *tempButtons = [NSMutableArray array];
         NSMutableArray *tempAxes = [NSMutableArray array];
         NSMutableArray *tempHats = [NSMutableArray array];
+        NSMutableArray *tempMisc = [NSMutableArray array];
         
         int i;
         for (i=0; i<elements.count; ++i) {
@@ -38,15 +39,19 @@
                 JoystickHatswitch *hatSwitch = [[JoystickHatswitch alloc] initWithElement:thisElement andOwner:self];
                 [tempHats addObject:hatSwitch];
                 [hatSwitch release];
-            } else if (elementType == kIOHIDElementTypeInput_Axis || elementType == kIOHIDElementTypeInput_Misc) {
+            } else if (elementType == kIOHIDElementTypeInput_Axis) {
                 [tempAxes addObject:thisElement];
-            } else {
+            } else if (elementType == kIOHIDElementTypeInput_Button) {
                 [tempButtons addObject:thisElement];
+            } else if ( elementType == kIOHIDElementTypeInput_Misc) {
+                [tempMisc addObject:thisElement];
             }
+
         }
         buttons = [[NSArray arrayWithArray:tempButtons] retain];
         axes = [[NSArray arrayWithArray:tempAxes] retain];
         hats = [[NSArray arrayWithArray:tempHats] retain];
+        misc = [[NSArray arrayWithArray:tempMisc] retain];
         
         NSLog(@"New device address: %p from %p",device,theDevice);
         NSLog(@"found %lu buttons, %lu axes and %lu hats",tempButtons.count,tempAxes.count,tempHats.count);
@@ -97,26 +102,21 @@
         return;
     }
     
-    
-    if (elementType != kIOHIDElementTypeInput_Axis && elementType != kIOHIDElementTypeInput_Misc) {
-        
-        
+    if (elementType == kIOHIDElementTypeInput_Button)
+    {
         for (i=0; i<delegates.count; ++i) {
             id <JoystickNotificationDelegate> delegate = [delegates objectAtIndex:i];
-            
+
             if (value==1)
-                [delegate joystickButtonPushed:[self getElementIndex:theElement] onJoystick:self];
+                [delegate joystickButtonPushed:[buttons indexOfObject:theElement] onJoystick:self];
             else
-                [delegate joystickButtonReleased:[self getElementIndex:theElement] onJoystick:self];
+                [delegate joystickButtonReleased:[buttons indexOfObject:theElement] onJoystick:self];
                  
         }
-        
-        NSLog(@"Non-axis reported value of %d",value);
+        NSLog(@"button reported value of %d",value);
         return;
     }
-    
-    
-    
+
     NSLog(@"Axis reported value of %d",value);
     
     for (i=0; i<delegates.count; ++i) {
