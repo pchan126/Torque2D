@@ -111,34 +111,6 @@
 
 - (void)joystickStateChanged:(Joystick *)joystick {
    
-   for (int i = 0; i< [joystick numAxes]; i++)
-   {
-      double value = mLerp(-1.0f, 1.0f, [joystick getRelativeValueOfAxesIndex:(i)]);
-      {
-         InputEventInfo inputEvent;
-
-          JoystickManager *theJoystickManager = [JoystickManager sharedInstance];
-          int val = [theJoystickManager deviceIDByReference:joystick.device];
-//          deviceIDByReference
-//           Con::printf("joystick #%i", val);
-
-          inputEvent.deviceInst = val;
-         inputEvent.fValue = value;
-         inputEvent.deviceType = JoystickDeviceType;
-         inputEvent.objType = (i % 2) == 0 ? SI_XAXIS : SI_YAXIS;
-         inputEvent.objInst = i/2;
-         inputEvent.action = SI_MOVE;
-         inputEvent.modifier = (i/2);                                    // number of the axis
-
-           // Give the ActionMap first shot.
-           if (ActionMap::handleEventGlobal(&inputEvent))
-               continue;
-
-           // If we get here we failed to process it with anything prior... so let
-           // the ActionMap handle it.
-           ActionMap::handleEvent(&inputEvent);
-      }
-   }
 }
 
 - (void) joystickButtonPushed:(int)buttonIndex onJoystick:(Joystick *)joystick {
@@ -190,4 +162,71 @@
     // the ActionMap handle it.
     ActionMap::handleEvent(&inputEvent);
 }
+
+- (void)joystickAxisChanged:(int)axisIndex ofType:(int)type onJoystick:(Joystick*)joystick
+{
+    int i = axisIndex;
+    double value = mLerp(-1.0f, 1.0f, [joystick getRelativeValueOfAxesIndex:(i)]);
+    {
+        InputEventInfo inputEvent;
+
+        JoystickManager *theJoystickManager = [JoystickManager sharedInstance];
+        int val = [theJoystickManager deviceIDByReference:joystick.device];
+//          deviceIDByReference
+//           Con::printf("joystick #%i", val);
+
+        inputEvent.deviceInst = val;
+        inputEvent.fValue = value;
+        inputEvent.deviceType = JoystickDeviceType;
+
+        switch (type)
+        {
+            case kHIDUsage_GD_X:
+            {
+                inputEvent.objType = SI_XAXIS;
+                break;
+            }
+            case kHIDUsage_GD_Y:
+            {
+                inputEvent.objType = SI_YAXIS;
+                break;
+            }
+            case kHIDUsage_GD_Z:
+            {
+                inputEvent.objType = SI_ZAXIS;
+                break;
+            }
+            case kHIDUsage_GD_Rx:
+            {
+                inputEvent.objType = SI_RXAXIS;
+                break;
+            }
+            case kHIDUsage_GD_Ry:
+            {
+                inputEvent.objType = SI_RYAXIS;
+                break;
+            }
+            case kHIDUsage_GD_Rz:
+            {
+                inputEvent.objType = SI_RZAXIS;
+                break;
+            }
+        }
+
+        inputEvent.objInst = SI_AXIS;
+        inputEvent.action = SI_MOVE;
+        inputEvent.modifier = 0;
+
+        // Give the ActionMap first shot.
+        if (ActionMap::handleEventGlobal(&inputEvent))
+            return;
+
+        // If we get here we failed to process it with anything prior... so let
+        // the ActionMap handle it.
+        ActionMap::handleEvent(&inputEvent);
+    }
+}
+
+
+
 @end

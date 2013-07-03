@@ -15,5 +15,6 @@
 - (void)joystickStateChanged:(Joystick*)joystick;
 - (void)joystickButtonPushed:(int)buttonIndex onJoystick:(Joystick*)joystick;
 - (void)joystickButtonReleased:(int)buttonIndex onJoystick:(Joystick*)joystick;
+- (void)joystickAxisChanged:(int)axisIndex ofType:(int)type onJoystick:(Joystick*)joystick;
 
 @end

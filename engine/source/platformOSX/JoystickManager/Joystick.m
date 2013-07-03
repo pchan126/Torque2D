@@ -39,13 +39,15 @@
                 JoystickHatswitch *hatSwitch = [[JoystickHatswitch alloc] initWithElement:thisElement andOwner:self];
                 [tempHats addObject:hatSwitch];
                 [hatSwitch release];
-            } else if (elementType == kIOHIDElementTypeInput_Axis) {
+//            if (elementUsage == kHIDUsage_GD_X || elementUsage == kHIDUsage_GD_Y)
+            } else if (elementUsage == kHIDUsage_GD_X || elementUsage == kHIDUsage_GD_Y || elementUsage == kHIDUsage_GD_Z || elementUsage == kHIDUsage_GD_Rz) {
                 [tempAxes addObject:thisElement];
             } else if (elementType == kIOHIDElementTypeInput_Button) {
                 [tempButtons addObject:thisElement];
             } else if ( elementType == kIOHIDElementTypeInput_Misc) {
                 [tempMisc addObject:thisElement];
-            }
+            } else
+                NSLog(@"unidentified element");
 
         }
         buttons = [[NSArray arrayWithArray:tempButtons] retain];
@@ -54,7 +56,7 @@
         misc = [[NSArray arrayWithArray:tempMisc] retain];
         
         NSLog(@"New device address: %p from %p",device,theDevice);
-        NSLog(@"found %lu buttons, %lu axes and %lu hats",tempButtons.count,tempAxes.count,tempHats.count);
+        NSLog(@"found %lu buttons, %lu axes, %lu hats, %lu misc",tempButtons.count,tempAxes.count,tempHats.count, tempMisc.count);
         // For more detailed info there are Usage tables
         // eg: kHIDUsage_GD_X
         // declared in IOHIDUsageTables.h
@@ -113,16 +115,34 @@
                 [delegate joystickButtonReleased:[buttons indexOfObject:theElement] onJoystick:self];
                  
         }
-        NSLog(@"button reported value of %d",value);
+        NSLog(@"button #%i reported value of %d", [buttons indexOfObject:theElement], value);
         return;
     }
 
-    NSLog(@"Axis reported value of %d",value);
-    
-    for (i=0; i<delegates.count; ++i) {
-        id <JoystickNotificationDelegate> delegate = [delegates objectAtIndex:i];
-        
-        [delegate joystickStateChanged:self];
+//    if (elementType == kIOHIDElementTypeInput_Axis) {
+    if ( elementUsage == kHIDUsage_GD_X || elementUsage == kHIDUsage_GD_Y || elementUsage == kHIDUsage_GD_Z || elementUsage == kHIDUsage_GD_Rz) {
+        for (i=0; i<delegates.count; ++i) {
+            id <JoystickNotificationDelegate> delegate = [delegates objectAtIndex:i];
+
+            [delegate joystickAxisChanged:[axes indexOfObject:theElement] ofType:elementUsage onJoystick:self];
+        }
+
+        CFIndex lmin = IOHIDElementGetLogicalMin(theElement);
+        CFIndex lmax = IOHIDElementGetLogicalMax(theElement);
+
+        if (elementUsage == kHIDUsage_GD_X)
+        {
+            NSLog(@"X Axis #%i reported value of %d", [axes indexOfObject:theElement], value);
+        }
+        else if ( elementUsage == kHIDUsage_GD_Y)
+        {
+            NSLog(@"Y Axis #%i reported value of %d", [axes indexOfObject:theElement], value);
+        }
+        else if ( elementUsage == kHIDUsage_GD_Z )
+        {
+            NSLog(@"Z Axis #%i reported value of %d", [axes indexOfObject:theElement], value);
+        }
+
     }
 }
 
