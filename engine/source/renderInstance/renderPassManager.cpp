@@ -25,8 +25,8 @@
 
 #include "materials/sceneData.h"
 #include "materials/matInstance.h"
-#include "materials/customMaterialDefinition.h"
-#include "materials/materialManager.h"
+//#include "materials/customMaterialDefinition.h"
+//#include "materials/materialManager.h"
 //#include "scene/sceneManager.h"
 //#include "scene/sceneObject.h"
 //#include "gfx/primBuilder.h"

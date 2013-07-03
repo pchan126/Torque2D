@@ -394,6 +394,7 @@
     <ClCompile Include="..\..\source\graphics\OpenGL\gfxOpenGLTextureObject.cc" />
     <ClCompile Include="..\..\source\graphics\PNGImage.cpp" />
     <ClCompile Include="..\..\source\graphics\primBuilder.cc" />
+    <ClCompile Include="..\..\source\graphics\sim\gfxStateBlockAsset.cpp" />
     <ClCompile Include="..\..\source\graphics\splineUtil.cc" />
     <ClCompile Include="..\..\source\gui\containers\guiContainer.cpp" />
     <ClCompile Include="..\..\source\gui\guiArrayCtrl.cc" />
@@ -598,6 +599,9 @@
     <ClCompile Include="..\..\source\platformWin32\threads\thread.cc" />
     <ClCompile Include="..\..\source\platform\platformTimer.cc" />
     <ClCompile Include="..\..\source\platform\Tickable.cc" />
+    <ClCompile Include="..\..\source\renderInstance\render2DObjectMgr.cpp" />
+    <ClCompile Include="..\..\source\renderInstance\renderBinManager.cpp" />
+    <ClCompile Include="..\..\source\renderInstance\renderPassManager.cpp" />
     <ClCompile Include="..\..\source\sim\scriptGroup.cc" />
     <ClCompile Include="..\..\source\sim\scriptObject.cc" />
     <ClCompile Include="..\..\source\sim\simBase.cc" />
@@ -890,6 +894,7 @@
     <ClInclude Include="..\..\source\graphics\OpenGL\gfxOpenGLWindowTarget.h" />
     <ClInclude Include="..\..\source\graphics\PNGImage.h" />
     <ClInclude Include="..\..\source\graphics\primBuilder.h" />
+    <ClInclude Include="..\..\source\graphics\sim\gfxStateBlockAsset.h" />
     <ClInclude Include="..\..\source\graphics\splineUtil.h" />
     <ClInclude Include="..\..\source\gui\containers\guiContainer.h" />
     <ClInclude Include="..\..\source\gui\guiArrayCtrl.h" />
@@ -1125,6 +1130,9 @@
     <ClInclude Include="..\..\source\platformWin32\winConsole.h" />
     <ClInclude Include="..\..\source\platformWin32\winFont.h" />
     <ClInclude Include="..\..\source\platformWin32\nativeDialogs\win32DirectoryResolver.h" />
+    <ClInclude Include="..\..\source\renderInstance\render2DObjectMgr.h" />
+    <ClInclude Include="..\..\source\renderInstance\renderBinManager.h" />
+    <ClInclude Include="..\..\source\renderInstance\renderPassManager.h" />
     <ClInclude Include="..\..\source\sim\scriptGroup.h" />
     <ClInclude Include="..\..\source\sim\scriptObject.h" />
     <ClInclude Include="..\..\source\sim\simBase.h" />

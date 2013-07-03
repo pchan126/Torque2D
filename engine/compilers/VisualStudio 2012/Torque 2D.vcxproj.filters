@@ -205,6 +205,12 @@
     <Filter Include="platformWin32\windowManager">
       <UniqueIdentifier>{249e87c3-74af-44e4-859a-53d0e92b5899}</UniqueIdentifier>
     </Filter>
+    <Filter Include="renderInstance">
+      <UniqueIdentifier>{af942f6e-3673-4aed-bb4f-4fd4a9c52e38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="graphics\sim">
+      <UniqueIdentifier>{4d79c8c3-b266-4df5-9635-d26dbf3409f6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\audio\audio.cc">
@@ -1457,6 +1463,18 @@
     </ClCompile>
     <ClCompile Include="..\..\source\platformWin32\windowManager\GLFWWindowManager.cc">
       <Filter>platformWin32\windowManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\renderInstance\render2DObjectMgr.cpp">
+      <Filter>renderInstance</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\renderInstance\renderBinManager.cpp">
+      <Filter>renderInstance</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\renderInstance\renderPassManager.cpp">
+      <Filter>renderInstance</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphics\sim\gfxStateBlockAsset.cpp">
+      <Filter>graphics\sim</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -3026,6 +3044,18 @@
     </ClInclude>
     <ClInclude Include="..\..\source\platformWin32\windowManager\GLFWWindowManager.h">
       <Filter>platformWin32\windowManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\renderInstance\render2DObjectMgr.h">
+      <Filter>renderInstance</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\renderInstance\renderBinManager.h">
+      <Filter>renderInstance</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\renderInstance\renderPassManager.h">
+      <Filter>renderInstance</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\sim\gfxStateBlockAsset.h">
+      <Filter>graphics\sim</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
