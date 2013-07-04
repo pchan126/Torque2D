@@ -30,6 +30,7 @@
 //#include "platform/platformInput_ScriptBinding.h"
 
 // Static class variables:
+InputManager*  Input::smManager;
 bool           Input::smActive;
 //CursorManager* Input::smCursorManager = 0; //*** DAW: Added
 U8             Input::smModifierKeys; //*** DAW: Added
@@ -39,152 +40,6 @@ bool           Input::smLastJoystickActivated;
 InputEvent     Input::smInputEvent;
 
 static void fillAsciiTable();
-
-//------------------------------------------------------------------------------
-//
-// This function translates an internal key code to the associated
-// DirectInput scan code
-//
-//------------------------------------------------------------------------------
-U8 Key_to_DIK( U16 keyCode )
-{
-   switch ( keyCode )
-   {
-      case KEY_BACKSPACE:     return DIK_BACK;
-      case KEY_TAB:           return DIK_TAB;
-      case KEY_RETURN:        return DIK_RETURN;
-      //KEY_CONTROL:
-      //KEY_ALT:
-      //KEY_SHIFT:
-      case KEY_PAUSE:         return DIK_PAUSE;
-      case KEY_CAPSLOCK:      return DIK_CAPSLOCK;
-      case KEY_ESCAPE:        return DIK_ESCAPE;
-
-      case KEY_SPACE:         return DIK_SPACE;
-      case KEY_PAGE_DOWN:     return DIK_PGDN;
-      case KEY_PAGE_UP:       return DIK_PGUP;
-      case KEY_END:           return DIK_END;
-      case KEY_HOME:          return DIK_HOME;
-      case KEY_LEFT:          return DIK_LEFT;
-      case KEY_UP:            return DIK_UP;
-      case KEY_RIGHT:         return DIK_RIGHT;
-      case KEY_DOWN:          return DIK_DOWN;
-      case KEY_PRINT:         return DIK_SYSRQ;
-      case KEY_INSERT:        return DIK_INSERT;
-      case KEY_DELETE:        return DIK_DELETE;
-      case KEY_HELP:          return 0;
-
-      case KEY_0:             return DIK_0;
-      case KEY_1:             return DIK_1;
-      case KEY_2:             return DIK_2;
-      case KEY_3:             return DIK_3;
-      case KEY_4:             return DIK_4;
-      case KEY_5:             return DIK_5;
-      case KEY_6:             return DIK_6;
-      case KEY_7:             return DIK_7;
-      case KEY_8:             return DIK_8;
-      case KEY_9:             return DIK_9;
-
-      case KEY_A:             return DIK_A;
-      case KEY_B:             return DIK_B;
-      case KEY_C:             return DIK_C;
-      case KEY_D:             return DIK_D;
-      case KEY_E:             return DIK_E;
-      case KEY_F:             return DIK_F;
-      case KEY_G:             return DIK_G;
-      case KEY_H:             return DIK_H;
-      case KEY_I:             return DIK_I;
-      case KEY_J:             return DIK_J;
-      case KEY_K:             return DIK_K;
-      case KEY_L:             return DIK_L;
-      case KEY_M:             return DIK_M;
-      case KEY_N:             return DIK_N;
-      case KEY_O:             return DIK_O;
-      case KEY_P:             return DIK_P;
-      case KEY_Q:             return DIK_Q;
-      case KEY_R:             return DIK_R;
-      case KEY_S:             return DIK_S;
-      case KEY_T:             return DIK_T;
-      case KEY_U:             return DIK_U;
-      case KEY_V:             return DIK_V;
-      case KEY_W:             return DIK_W;
-      case KEY_X:             return DIK_X;
-      case KEY_Y:             return DIK_Y;
-      case KEY_Z:             return DIK_Z;
-
-      case KEY_TILDE:         return DIK_GRAVE;
-      case KEY_MINUS:         return DIK_MINUS;
-      case KEY_EQUALS:        return DIK_EQUALS;
-      case KEY_LBRACKET:      return DIK_LBRACKET;
-      case KEY_RBRACKET:      return DIK_RBRACKET;
-      case KEY_BACKSLASH:     return DIK_BACKSLASH;
-      case KEY_SEMICOLON:     return DIK_SEMICOLON;
-      case KEY_APOSTROPHE:    return DIK_APOSTROPHE;
-      case KEY_COMMA:         return DIK_COMMA;
-      case KEY_PERIOD:        return DIK_PERIOD;
-      case KEY_SLASH:         return DIK_SLASH;
-
-      case KEY_NUMPAD0:       return DIK_NUMPAD0;
-      case KEY_NUMPAD1:       return DIK_NUMPAD1;
-      case KEY_NUMPAD2:       return DIK_NUMPAD2;
-      case KEY_NUMPAD3:       return DIK_NUMPAD3;
-      case KEY_NUMPAD4:       return DIK_NUMPAD4;
-      case KEY_NUMPAD5:       return DIK_NUMPAD5;
-      case KEY_NUMPAD6:       return DIK_NUMPAD6;
-      case KEY_NUMPAD7:       return DIK_NUMPAD7;
-      case KEY_NUMPAD8:       return DIK_NUMPAD8;
-      case KEY_NUMPAD9:       return DIK_NUMPAD9;
-      case KEY_MULTIPLY:      return DIK_MULTIPLY;
-      case KEY_ADD:           return DIK_ADD;
-      case KEY_SEPARATOR:     return DIK_NUMPADCOMMA;
-      case KEY_SUBTRACT:      return DIK_SUBTRACT;
-      case KEY_DECIMAL:       return DIK_DECIMAL;
-      case KEY_DIVIDE:        return DIK_DIVIDE;
-      case KEY_NUMPADENTER:   return DIK_NUMPADENTER;
-
-      case KEY_F1:            return DIK_F1;
-      case KEY_F2:            return DIK_F2;
-      case KEY_F3:            return DIK_F3;
-      case KEY_F4:            return DIK_F4;
-      case KEY_F5:            return DIK_F5;
-      case KEY_F6:            return DIK_F6;
-      case KEY_F7:            return DIK_F7;
-      case KEY_F8:            return DIK_F8;
-      case KEY_F9:            return DIK_F9;
-      case KEY_F10:           return DIK_F10;
-      case KEY_F11:           return DIK_F11;
-      case KEY_F12:           return DIK_F12;
-      case KEY_F13:           return DIK_F13;
-      case KEY_F14:           return DIK_F14;
-      case KEY_F15:           return DIK_F15;
-      case KEY_F16:
-      case KEY_F17:
-      case KEY_F18:
-      case KEY_F19:
-      case KEY_F20:
-      case KEY_F21:
-      case KEY_F22:
-      case KEY_F23:
-      case KEY_F24:           return 0;
-
-      case KEY_NUMLOCK:       return DIK_NUMLOCK;
-      case KEY_SCROLLLOCK:    return DIK_SCROLL;
-      case KEY_LCONTROL:      return DIK_LCONTROL;
-      case KEY_RCONTROL:      return DIK_RCONTROL;
-      case KEY_LALT:          return DIK_LALT;
-      case KEY_RALT:          return DIK_RALT;
-      case KEY_LSHIFT:        return DIK_LSHIFT;
-      case KEY_RSHIFT:        return DIK_RSHIFT;
-
-      case KEY_WIN_LWINDOW:   return DIK_LWIN;
-      case KEY_WIN_RWINDOW:   return DIK_RWIN;
-      case KEY_WIN_APPS:      return DIK_APPS;
-      case KEY_OEM_102:       return DIK_OEM_102;
-
-   };
-
-   return 0;
-}
 
 
 //------------------------------------------------------------------------------
@@ -214,55 +69,74 @@ static AsciiData AsciiTable[NUM_KEYS];
 //------------------------------------------------------------------------------
 void Input::init()
 {
-   Con::printSeparator();
-   Con::printf( "Input Initialization:" );
+   Con::printf( "Input Init:" );
 
    destroy();
+
+#ifdef LOG_INPUT
+   struct tm* newTime;
+   time_t aclock;
+   time( &aclock );
+   newTime = localtime( &aclock );
+   asctime( newTime );
+
+   gInputLog = CreateFile( L"input.log", GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL );
+   log( "Input log opened at %s\n", asctime( newTime ) );
+#endif
 
    smActive = false;
    smLastKeyboardActivated = true;
    smLastMouseActivated = true;
    smLastJoystickActivated = true;
 
-   //OSVERSIONINFO OSVersionInfo;
-   //dMemset( &OSVersionInfo, 0, sizeof( OSVERSIONINFO ) );
-   //OSVersionInfo.dwOSVersionInfoSize = sizeof( OSVERSIONINFO );
-   //if ( GetVersionEx( &OSVersionInfo ) )
-   //{
+   OSVERSIONINFO OSVersionInfo;
+   dMemset( &OSVersionInfo, 0, sizeof( OSVERSIONINFO ) );
+   OSVersionInfo.dwOSVersionInfoSize = sizeof( OSVERSIONINFO );
+   if ( GetVersionEx( &OSVersionInfo ) )
+   {
+#ifdef LOG_INPUT
+      log( "Operating System:\n" );
+      switch ( OSVersionInfo.dwPlatformId )
+      {
+         case VER_PLATFORM_WIN32s:
+            log( "  Win32s on Windows 3.1 version %d.%d\n", OSVersionInfo.dwMajorVersion, OSVersionInfo.dwMinorVersion );
+            break;
 
-   //   if ( !( OSVersionInfo.dwPlatformId == VER_PLATFORM_WIN32_NT && OSVersionInfo.dwMajorVersion < 5 ) )
-   //   {
-   //      smManager = new DInputManager;
-   //      if ( !smManager->enable() )
-   //      {
-   //         Con::printf( "   DirectInput not enabled." );
-   //         delete smManager;
-   //         smManager = NULL;
-   //      }
-   //      else
-   //      {
-   //         DInputManager::init();
-   //         Con::printf( "   DirectInput enabled." );
-   //      }
-   //   }
-   //   else
-   //      Con::printf( "  WinNT detected -- DirectInput not enabled." );
-   //}
+         case VER_PLATFORM_WIN32_WINDOWS:
+            log( "  Windows 95 version %d.%d\n", OSVersionInfo.dwMajorVersion, OSVersionInfo.dwMinorVersion );
+            log( "  Build number %d\n", LOWORD( OSVersionInfo.dwBuildNumber ) );
+            break;
 
-   //// Startup the Cursor Manager
-   //if(!smCursorManager)
-   //{
-   //   smCursorManager = new CursorManager();
-   //   if(smCursorManager)
-   //   {
-   //      // Add the arrow cursor to the stack
-   //      smCursorManager->pushCursor(CursorManager::curArrow);
-   //   }
-   //   else
-   //   {
-   //      Con::printf("   Cursor Manager not enabled.");
-   //   }
-   //}
+         case VER_PLATFORM_WIN32_NT:
+            log( "  WinNT version %d.%d\n", OSVersionInfo.dwMajorVersion, OSVersionInfo.dwMinorVersion );
+            log( "  Build number %d\n", OSVersionInfo.dwBuildNumber );
+            break;
+      }
+
+      if ( OSVersionInfo.szCSDVersion != NULL )
+         log( "  %s\n", OSVersionInfo.szCSDVersion );
+
+      log( "\n" );
+#endif
+
+      if ( !( OSVersionInfo.dwPlatformId == VER_PLATFORM_WIN32_NT && OSVersionInfo.dwMajorVersion < 5 ) )
+      {
+         smManager = new DInputManager;
+         if ( !smManager->enable() )
+         {
+            Con::printf( "   DirectInput not enabled." );
+            delete smManager;
+            smManager = NULL;
+         }
+         else
+         {
+            DInputManager::init();
+            Con::printf( "   DirectInput enabled." );
+         }
+      }
+      else
+         Con::printf( "  WinNT detected -- DirectInput not enabled." );
+   }
 
    // Init the current modifier keys
    setModifierKeys(0);
@@ -271,7 +145,12 @@ void Input::init()
 
    // Set ourselves to participate in per-frame processing.
    Process::notify(Input::process, PROCESS_INPUT_ORDER);
+}
 
+//------------------------------------------------------------------------------
+InputManager* Input::getManager()
+{
+   return( smManager );
 }
 
 ////------------------------------------------------------------------------------
@@ -444,19 +323,19 @@ U16 Input::getAscii( U16 keyCode, KEY_STATE keyState )
 //------------------------------------------------------------------------------
 void Input::destroy()
 {
-   //if ( smManager && smManager->isEnabled() )
-   //{
-   //   smManager->disable();
-   //   delete smManager;
-   //   smManager = NULL;
-   //}
+   if ( smManager && smManager->isEnabled() )
+   {
+      smManager->disable();
+      delete smManager;
+      smManager = NULL;
+   }
 }
 
 //------------------------------------------------------------------------------
 bool Input::enable()
 {
-   //if ( smManager && !smManager->isEnabled() )
-   //   //return( smManager->enable() );
+   if ( smManager && !smManager->isEnabled() )
+      return( smManager->enable() );
 
    return( false );
 }
@@ -543,22 +422,8 @@ bool Input::isActive()
 //------------------------------------------------------------------------------
 void Input::process()
 {
-   //if ( smManager && smManager->isEnabled() && smActive )
-   //   smManager->process();
-}
-
-
-//------------------------------------------------------------------------------
-bool Input::enableJoystick()
-{
-	//return( DInputManager::enableJoystick() );
-	return false;
-}
-
-//------------------------------------------------------------------------------
-void Input::disableJoystick()
-{
-	//DInputManager::disableJoystick();
+   if ( smManager && smManager->isEnabled() && smActive )
+      smManager->process();
 }
 
 

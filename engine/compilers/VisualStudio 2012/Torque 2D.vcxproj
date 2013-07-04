@@ -557,6 +557,8 @@
     <ClCompile Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinTextureTarget.cc" />
     <ClCompile Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinVertexBuffer.cc" />
     <ClCompile Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinWindowTarget.cc" />
+    <ClCompile Include="..\..\source\platformWin32\Joystick\winDInputDevice.cpp" />
+    <ClCompile Include="..\..\source\platformWin32\Joystick\winDirectInput.cpp" />
     <ClCompile Include="..\..\source\platformWin32\nativeDialogs\win32FileDialog.cc" />
     <ClCompile Include="..\..\source\platformWin32\windowManager\GLFWCursorController.cc" />
     <ClCompile Include="..\..\source\platformWin32\windowManager\GLFWWindow.cc" />
@@ -1076,6 +1078,8 @@
     <ClInclude Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinVertexBuffer.h" />
     <ClInclude Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinWindowTarget.h" />
     <ClInclude Include="..\..\source\platformWin32\graphics\osxGLUtils.h" />
+    <ClInclude Include="..\..\source\platformWin32\Joystick\winDInputDevice.h" />
+    <ClInclude Include="..\..\source\platformWin32\Joystick\winDirectInput.h" />
     <ClInclude Include="..\..\source\platformWin32\windowManager\GLFWCursorController.h" />
     <ClInclude Include="..\..\source\platformWin32\windowManager\GLFWWindow.h" />
     <ClInclude Include="..\..\source\platformWin32\windowManager\GLFWWindowInputGenerator.h" />

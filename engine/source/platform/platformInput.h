@@ -101,6 +101,7 @@ enum KEY_STATE
 class Input
 {
 protected:
+    static InputManager* smManager;
     static bool smActive; ///< Is Input Active
     static bool smLastKeyboardActivated;
     static U8 smModifierKeys; ///< Current Modifier Keys Pressed
@@ -118,8 +119,6 @@ public:
     static void deactivate();
     static void reactivate();
 
-	static bool enableJoystick();
-	static void disableJoystick();
 	static void echoInputState();
 
     static U16  getAscii( U16 keyCode, KEY_STATE keyState );
@@ -130,7 +129,9 @@ public:
 
     static void process();
 
-    static U8 getModifierKeys() {return smModifierKeys;}
+   static InputManager* getManager();
+
+   static U8 getModifierKeys() {return smModifierKeys;}
     static void setModifierKeys(U8 mod) {smModifierKeys = mod;}
     
     /// Global input routing JournaledSignal; post input events here for

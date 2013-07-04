@@ -119,7 +119,7 @@ public:
 #endif
    
 #if defined(GLFW_EXPOSE_NATIVE_WIN32)
-   GLFWAPI HWND getPlatformWindow() { return glfwGetWin32Window(window); };
+   GLFWAPI HWND getWin32WindowHandle() { return glfwGetWin32Window(window); };
 #endif
 
    void getCursorPosition( Point2I &point );

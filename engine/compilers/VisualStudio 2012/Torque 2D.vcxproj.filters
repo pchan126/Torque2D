@@ -211,6 +211,9 @@
     <Filter Include="graphics\sim">
       <UniqueIdentifier>{4d79c8c3-b266-4df5-9635-d26dbf3409f6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="platformWin32\joystick">
+      <UniqueIdentifier>{edc7dd09-cc95-48c7-9067-d3bbe95062fe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\audio\audio.cc">
@@ -1475,6 +1478,12 @@
     </ClCompile>
     <ClCompile Include="..\..\source\graphics\sim\gfxStateBlockAsset.cpp">
       <Filter>graphics\sim</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\platformWin32\Joystick\winDInputDevice.cpp">
+      <Filter>platformWin32\joystick</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\platformWin32\Joystick\winDirectInput.cpp">
+      <Filter>platformWin32\joystick</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -3056,6 +3065,12 @@
     </ClInclude>
     <ClInclude Include="..\..\source\graphics\sim\gfxStateBlockAsset.h">
       <Filter>graphics\sim</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platformWin32\Joystick\winDInputDevice.h">
+      <Filter>platformWin32\joystick</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platformWin32\Joystick\winDirectInput.h">
+      <Filter>platformWin32\joystick</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
