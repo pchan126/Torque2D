@@ -25,7 +25,7 @@
 #include "platform/platformInput.h"
 
 // Static class variables:
-//InputManager* Input::smManager;
+InputManager* Input::smManager;
 bool           Input::smActive;
 InputEvent     Input::smInputEvent;
 
@@ -257,9 +257,6 @@ bool Input::isActive()
 //------------------------------------------------------------------------------
 void Input::process()
 {
-	//only gets called once per frame, create touches and accelerometer events here
-	//post, then pop each event
-
    if (!smActive || !gInputEnabled)
       return;
 

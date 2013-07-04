@@ -28,7 +28,7 @@
 #endif
 
 #include "graphics/gfxTextureManager.h"
-
+#include "2d/gui/guiSpriteCtrl.h"
 
 #ifndef _IMAGE_ASSET_H_
 #include "2d/assets/ImageAsset.h"
@@ -60,6 +60,9 @@ protected:
     AssetPtr<ImageAsset> mImageCircleAsset;
     AssetPtr<ImageAsset> mImageStickAsset;
 
+    GuiSpriteCtrl *mCircle;
+    GuiSpriteCtrl *mStick;
+
     U16 m_XeventCode;
     U16 m_YeventCode;
     Point2I m_TouchDown;
@@ -71,6 +74,9 @@ protected:
 
 public:
     GuiJoystickButtonCtrl();
+
+    virtual bool onAdd();
+
    bool onWake();
    void onSleep();
    void onRender(Point2I offset, const RectI &updateRect);

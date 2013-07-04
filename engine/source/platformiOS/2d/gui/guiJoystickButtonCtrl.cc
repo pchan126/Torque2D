@@ -345,3 +345,19 @@ void GuiJoystickButtonCtrl::renderButton( ImageAsset* pImageAsset, const U32 fra
 //    // Update the control.
 //    setUpdate();
 }
+
+bool GuiJoystickButtonCtrl::onAdd() {
+    // Let Parent Do Work.
+    if(!Parent::onAdd())
+        return false;
+
+    mCircle = new GuiSpriteCtrl();
+    AssertFatal(mCircle, "Failed to create the GuiSpriteCtrl for the Circle");
+    mCircle->registerObject();
+
+    mStick = new GuiSpriteCtrl();
+    AssertFatal(mStick, "Failed to create the GuiSpriteCtrl for the Stick");
+    mStick->registerObject();
+
+    return true;
+}

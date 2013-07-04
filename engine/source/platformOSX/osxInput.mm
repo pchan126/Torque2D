@@ -231,18 +231,6 @@ bool Input::isActive()
 //        inputManager->disableKeyboard();
 //}
 
-//------------------------------------------------------------------------------
-// Enable joystick input
-bool Input::enableJoystick()
-{
-    return false;
-}
-
-//------------------------------------------------------------------------------
-// Disable joystick input
-void Input::disableJoystick()
-{
-}
 
 //------------------------------------------------------------------------------
 // Not yet implemented. Will resolve in the next platform update
