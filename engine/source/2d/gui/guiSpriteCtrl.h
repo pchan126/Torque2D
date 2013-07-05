@@ -24,14 +24,13 @@
 #define _GUISPRITECTRL_H_
 
 #include "2d/core/imageFrameProvider.h"
-#include "guiTickCtrl.h"
 
 //-----------------------------------------------------------------------------
 
-class GuiSpriteCtrl : public GuiTickCtrl, public ImageFrameProvider
+class GuiSpriteCtrl : public GuiControl, public ImageFrameProvider
 {
 private:
-    typedef GuiTickCtrl Parent;
+    typedef GuiControl Parent;
 
 protected:
     StringTableEntry                mImageAssetId;

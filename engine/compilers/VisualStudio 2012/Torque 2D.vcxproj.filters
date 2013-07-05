@@ -1485,6 +1485,9 @@
     <ClCompile Include="..\..\source\platformWin32\Joystick\winDirectInput.cpp">
       <Filter>platformWin32\joystick</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\math\mRect.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\source\audio\audio.h">

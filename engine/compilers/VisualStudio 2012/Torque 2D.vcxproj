@@ -461,6 +461,7 @@
     <ClCompile Include="..\..\source\lighting\lightManager.cpp" />
     <ClCompile Include="..\..\source\lighting\lightQuery.cpp" />
     <ClCompile Include="..\..\source\math\mPoint.cpp" />
+    <ClCompile Include="..\..\source\math\mRect.cpp" />
     <ClCompile Include="..\..\source\math\rectClipper.cpp" />
     <ClCompile Include="..\..\source\memory\dataChunker.cc" />
     <ClCompile Include="..\..\source\memory\frameAllocator.cc" />
