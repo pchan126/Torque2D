@@ -225,6 +225,7 @@ protected:
     bool                    mAttachedGuiSizeControl;
     GuiControl*             mpAttachedGui;
     SceneWindow*            mpAttachedGuiSceneWindow;
+    Point2F                 mAttachedGuiOffset;       // GuiOffset (local)
 
     /// Safe deletion.
     bool                    mBeingSafeDeleted;
@@ -563,9 +564,9 @@ public:
     inline void             dismountCamera( void )                      { if ( mpAttachedCamera ) mpAttachedCamera->dismountMe( this ); }
 
     // GUI attachment.
-    void                    attachGui( GuiControl* pGuiControl, SceneWindow* pSceneWindow, const bool sizeControl );
+    void attachGui(GuiControl *pGuiControl, SceneWindow *pSceneWindow, const bool sizeControl, const Point2F offset);
     void                    detachGui( void );
-    inline void             updateAttachedGui( void );
+    inline void updateAttachedGui();
 
     // Picking.
     inline void             setPickingAllowed( const bool pickingAllowed ) { mPickingAllowed = pickingAllowed; }

@@ -54,8 +54,6 @@ class RectI
    void unionRects(const RectI&);
 
    Point2I centre( void ) const;
-   S32   len_x() const;
-   S32   len_y() const;
 
    bool operator==(const RectI&) const;
    bool operator!=(const RectI&) const;
@@ -81,10 +79,9 @@ class RectF
    bool overlaps(const RectF&) const;
 
    Point2F centre( void ) const;
-   F32 len_x() const;
-   F32 len_y() const;
 
    bool isValidRect() const { return (extent.x > 0 && extent.y > 0); }
+   static RectF limitedBy( const RectF& inRect, const RectF& limitRect);
 };
 
 class RectD
@@ -104,8 +101,6 @@ class RectD
    bool intersect(const RectD& clipRect);
 
    Point2D centre( void ) const;
-   F64 len_x() const;
-   F64 len_y() const;
 
    bool isValidRect() const { return (extent.x > 0 && extent.y > 0); }
 };
@@ -221,18 +216,6 @@ inline Point2I RectI::centre( void ) const
     return Point2I( point.x + (S32)(extent.x * 0.5f), point.y + (S32)(extent.y * 0.5f) );
 }
 
-inline S32
-RectI::len_x() const
-{
-   return extent.x;
-}
-
-inline S32
-RectI::len_y() const
-{
-   return extent.y;
-}
-
 
 inline bool
 RectI::operator==(const RectI& in_rCompare) const
@@ -270,18 +253,6 @@ RectF::RectF(const F32 in_left,  const F32 in_top,
 inline Point2F RectF::centre( void ) const
 {
     return Point2F( point.x + (extent.x * 0.5f), point.y + (extent.y * 0.5f) );
-}
-
-inline F32
-RectF::len_x() const
-{
-   return extent.x;
-}
-
-inline F32
-RectF::len_y() const
-{
-   return extent.y;
 }
 
 inline bool RectF::intersect(const RectF& clipRect)
@@ -333,17 +304,6 @@ inline Point2D RectD::centre( void ) const
     return Point2D( point.x + (F64)(extent.x * 0.5), point.y + (F64)(extent.y * 0.5) );
 }
 
-inline F64
-RectD::len_x() const
-{
-   return extent.x;
-}
-
-inline F64
-RectD::len_y() const
-{
-   return extent.y;
-}
 
 
 inline bool RectD::intersect(const RectD& clipRect)
@@ -361,4 +321,6 @@ inline bool RectD::intersect(const RectD& clipRect)
    return isValidRect();
 }
 
+
 #endif //_RECT_H_
+

@@ -386,7 +386,7 @@ void GuiScrollCtrl::calcThumbs()
 {
    if (mHBarEnabled)
    {
-      U32 trackSize = mHTrackRect.len_x();
+      U32 trackSize = mHTrackRect.extent.x;
 
       if (mUseConstantHeightThumb)
          mHThumbSize = mBaseThumbSize;
@@ -397,7 +397,7 @@ void GuiScrollCtrl::calcThumbs()
    }
    if (mVBarEnabled)
    {
-      U32 trackSize = mVTrackRect.len_y();
+      U32 trackSize = mVTrackRect.extent.y;
 
       if (mUseConstantHeightThumb)
          mVThumbSize = mBaseThumbSize;

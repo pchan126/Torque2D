@@ -37,6 +37,7 @@
 		33230F1656FA2C7C493DA2D2 /* guiSliderCtrl.cc in Sources */ = {isa = PBXBuildFile; fileRef = 332307DBC5B7EEEB22E5A736 /* guiSliderCtrl.cc */; };
 		4B8AA645A2B83EAB64F41454 /* guiJoystickButtonCtrl.cc in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAB8C7B170DE2B1C83143 /* guiJoystickButtonCtrl.cc */; };
 		4B8AA6EFAB1E83E6E1DD9CE6 /* render2DObjectMgr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA3F49A3463DC9D4C56AB /* render2DObjectMgr.cpp */; };
+		4B8AAE742D18ABC94DC3FDC5 /* mRect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA70EC9A24A9699C62600 /* mRect.cpp */; };
 		860A196C171F0666000E9FE8 /* guiGridCtrl.cc in Sources */ = {isa = PBXBuildFile; fileRef = 860A196A171F0666000E9FE8 /* guiGridCtrl.cc */; };
 		8610F32F16AEEC670015BCEB /* main.cs in Resources */ = {isa = PBXBuildFile; fileRef = 8610F32D16AEEC670015BCEB /* main.cs */; };
 		8610F33016AEEC670015BCEB /* modules in Resources */ = {isa = PBXBuildFile; fileRef = 8610F32E16AEEC670015BCEB /* modules */; };
@@ -643,6 +644,7 @@
 		4B8AA3F49A3463DC9D4C56AB /* render2DObjectMgr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = render2DObjectMgr.cpp; sourceTree = "<group>"; };
 		4B8AA506A21CCF7A52646E9C /* gfxOpenGLES20iOSTextureTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSTextureTarget.h; sourceTree = "<group>"; };
 		4B8AA643B344244F09BC5153 /* render2DObjectMgr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render2DObjectMgr.h; sourceTree = "<group>"; };
+		4B8AA70EC9A24A9699C62600 /* mRect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mRect.cpp; sourceTree = "<group>"; };
 		4B8AAB7E71D8EE670C6CD843 /* guiJoystickButtonCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = guiJoystickButtonCtrl.h; path = gui/guiJoystickButtonCtrl.h; sourceTree = "<group>"; };
 		4B8AAB8C7B170DE2B1C83143 /* guiJoystickButtonCtrl.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = guiJoystickButtonCtrl.cc; path = gui/guiJoystickButtonCtrl.cc; sourceTree = "<group>"; };
 		860A196A171F0666000E9FE8 /* guiGridCtrl.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiGridCtrl.cc; sourceTree = "<group>"; };
@@ -2648,6 +2650,7 @@
 				867BAF1716AEC9050033868F /* mSplinePatch.h */,
 				867BAF1816AEC9050033868F /* rectClipper.cpp */,
 				867BAF1916AEC9050033868F /* rectClipper.h */,
+				4B8AA70EC9A24A9699C62600 /* mRect.cpp */,
 			);
 			name = math;
 			path = ../../../source/math;
@@ -4113,6 +4116,7 @@
 				D164854D17793C3E0050E93D /* T2DViewController.mm in Sources */,
 				4B8AA6EFAB1E83E6E1DD9CE6 /* render2DObjectMgr.cpp in Sources */,
 				4B8AA645A2B83EAB64F41454 /* guiJoystickButtonCtrl.cc in Sources */,
+				4B8AAE742D18ABC94DC3FDC5 /* mRect.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -240,7 +240,7 @@ public:
    MatrixF&  mul(const MatrixF &a, const F32 b);       ///< a * b -> M
    
    // Scalar multiplies
-   void mul( Point4F& p ) const;                       ///< M * p -> p (full [4x4] * [1x4])
+   void mulP( Point4F& p ) const;                       ///< M * p -> p (full [4x4] * [1x4])
    void mulP( Point2F& p ) const;                      ///< M * p -> p (assume z = 1.0f, w = 1.0f)
    void mulP( Point3F& p ) const;                      ///< M * p -> p (assume w = 1.0f)
    void mulP( const Point3F &p, Point3F *d) const;     ///< M * p -> d (assume w = 1.0f)
@@ -495,10 +495,10 @@ inline MatrixF& MatrixF::mul(const MatrixF &a, const F32 b)
    return *this;
 }
 
-inline void MatrixF::mul( Point4F& p ) const
+inline void MatrixF::mulP( Point4F& p ) const
 {
 #ifdef __GLK_MATRIX_4_H
-    p.mGV = GLKMatrix4MultiplyVector4( mGM, p.mGV);
+    p.mGV = GLKMatrix4MultiplyVector4( GLKMatrix4Transpose( mGM ), p.mGV);
 #else
     Point4F temp;
     m_matF_x_point4F(*this, &p.x, &temp.x);
@@ -512,7 +512,7 @@ inline void MatrixF::mulP( Point2F& p) const
     Point3F pn = Point3F(p.x, p.y, 1.0);
     
 #ifdef __GLK_MATRIX_4_H
-    pn.mGV = GLKMatrix4MultiplyVector3( mGM, pn.mGV);
+    pn.mGV = GLKMatrix4MultiplyVector3( GLKMatrix4Transpose( mGM ), pn.mGV);
 #else
     Point3F d;
     m_matF_x_point3F(*this, &pn.x, &d.x);
@@ -526,7 +526,7 @@ inline void MatrixF::mulP( Point2F& p) const
 inline void MatrixF::mulP( Point3F& p) const
 {
 #ifdef __GLK_MATRIX_4_H
-    p.mGV = GLKMatrix4MultiplyVector3( mGM, p.mGV);
+    p.mGV = GLKMatrix4MultiplyVector3( GLKMatrix4Transpose( mGM ), p.mGV);
 #else
     Point3F d;
     m_matF_x_point3F(*this, &p.x, &d.x);

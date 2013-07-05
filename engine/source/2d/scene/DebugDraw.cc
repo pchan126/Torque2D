@@ -267,7 +267,6 @@ void DebugDraw::DrawPolygon( const b2Vec2* vertices, int32 vertexCount, const Co
 
     GFXStateBlockDesc desc;
     desc.cullMode = GFXCullNone;
-//    desc.setBlend( mBlendMode, mSrcBlendFactor, mDstBlendFactor );
     desc.setFillModeWireframe();
 
     // Move into Vector-Space.
@@ -278,136 +277,77 @@ void DebugDraw::DrawPolygon( const b2Vec2* vertices, int32 vertexCount, const Co
         pts.push_back(add);
     }
     GFX->getDrawUtil()->drawPolygon(desc, pts.address(), pts.size(), ColorI(color), ColorI(color));
-
-//    glColor3f(color.red, color.green, color.blue);
-//    glBegin(GL_LINE_LOOP);
-//    for (int32 i = 0; i < vertexCount; ++i)
-//    {
-//        glVertex2f(vertices[i].x, vertices[i].y);
-//    }
-//    glEnd();
-
 }
 
 //-----------------------------------------------------------------------------
 
 void DebugDraw::DrawSolidPolygon( const b2Vec2* vertices, int32 vertexCount, const ColorF& color )
 {
-//    // Debug Profiling.
-//    PROFILE_SCOPE(DebugDraw_DrawSolidPolygon);
-//
-//    glEnable(GL_BLEND);
-//    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//    glColor4f(0.5f * color.red, 0.5f * color.green, 0.5f * color.blue, 0.15f);
-//    glBegin(GL_TRIANGLE_FAN);
-//    for (int32 i = 0; i < vertexCount; ++i)
-//    {
-//        glVertex2f(vertices[i].x, vertices[i].y);
-//    }
-//    glEnd();
-//    glDisable(GL_BLEND);
-//
-//    glColor4f(color.red, color.green, color.blue, 1.0f);
-//    glBegin(GL_LINE_LOOP);
-//    for (int32 i = 0; i < vertexCount; ++i)
-//    {
-//        glVertex2f(vertices[i].x, vertices[i].y);
-//    }
-//    glEnd();
+    // Debug Profiling.
+    PROFILE_SCOPE(DebugDraw_DrawSolidPolygon);
+
+    GFXStateBlockDesc desc;
+    desc.cullMode = GFXCullNone;
+    desc.setFillModeSolid();
+
+    // Move into Vector-Space.
+    Vector<Point3F> pts;
+    for (U32 i = 0; i < vertexCount; i++)
+    {
+        Point3F add = Point3F(vertices[i].x, vertices[i].y, 0.0);
+        pts.push_back(add);
+    }
+    GFX->getDrawUtil()->drawPolygon(desc, pts.address(), pts.size(), ColorI(color), ColorI(color));
+
 }
 
 //-----------------------------------------------------------------------------
 
 void DebugDraw::DrawCircle( const b2Vec2& center, float32 radius, const ColorF& color )
 {
-//    // Debug Profiling.
-//    PROFILE_SCOPE(DebugDraw_DrawCircle);
-//
-//    const float32 k_segments = 16.0f;
-//    const float32 k_increment = 2.0f * b2_pi / k_segments;
-//    float32 theta = 0.0f;
-//    glColor3f(color.red, color.green, color.blue);
-//    glBegin(GL_LINE_LOOP);
-//    for (int32 i = 0; i < k_segments; ++i)
-//    {
-//        b2Vec2 v = center + radius * b2Vec2(cosf(theta), sinf(theta));
-//        glVertex2f(v.x, v.y);
-//        theta += k_increment;
-//    }
-//    glEnd();
+    // Debug Profiling.
+    PROFILE_SCOPE(DebugDraw_DrawCircle);
+
+    GFXStateBlockDesc desc;
+    desc.cullMode = GFXCullNone;
+    desc.setFillModeWireframe();
+
+    GFX->getDrawUtil()->drawCircleShape(desc, Point2F(center.x, center.y), radius, ColorI(0.0, 0.0, 0.0), ColorI(color));
 }
     
 //-----------------------------------------------------------------------------
 
 void DebugDraw::DrawSolidCircle( const b2Vec2& center, float32 radius, const b2Vec2& axis, const ColorF& color )
 {
-//    // Debug Profiling.
-//    PROFILE_SCOPE(DebugDraw_DrawSolidCircle);
-//
-//    const float32 k_segments = 12.0f;
-//    const float32 k_increment = 2.0f * b2_pi / k_segments;
-//    float32 theta = 0.0f;
-//    glEnable(GL_BLEND);
-//    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//    glColor4f(0.5f * color.red, 0.5f * color.green, 0.5f * color.blue, 0.15f);
-//    glBegin(GL_TRIANGLE_FAN);
-//    for (int32 i = 0; i < k_segments; ++i)
-//    {
-//        b2Vec2 v = center + radius * b2Vec2(cosf(theta), sinf(theta));
-//        glVertex2f(v.x, v.y);
-//        theta += k_increment;
-//    }
-//    glEnd();
-//    glDisable(GL_BLEND);
-//
-//    theta = 0.0f;
-//    glColor4f(color.red, color.green, color.blue, 1.0f);
-//    glBegin(GL_LINE_LOOP);
-//    for (int32 i = 0; i < k_segments; ++i)
-//    {
-//        b2Vec2 v = center + radius * b2Vec2(cosf(theta), sinf(theta));
-//        glVertex2f(v.x, v.y);
-//        theta += k_increment;
-//    }
-//    glEnd();
-//
-//    b2Vec2 p = center + radius * axis;
-//    glBegin(GL_LINES);
-//    glVertex2f(center.x, center.y);
-//    glVertex2f(p.x, p.y);
-//    glEnd();
+    // Debug Profiling.
+    PROFILE_SCOPE(DebugDraw_DrawSolidCircle);
+
+    GFXStateBlockDesc desc;
+    desc.cullMode = GFXCullNone;
+    desc.setFillModeSolid();
+
+    GFX->getDrawUtil()->drawCircleShape(desc, Point2F(center.x, center.y), radius, ColorI(color), ColorI(color));
 }
     
 //-----------------------------------------------------------------------------
 
 void DebugDraw::DrawSegment( const b2Vec2& p1, const b2Vec2& p2, const ColorF& color )
 {
-//    glColor3f(color.red, color.green, color.blue);
-//    glBegin(GL_LINES);
-//    glVertex2f(p1.x, p1.y);
-//    glVertex2f(p2.x, p2.y);
-//    glEnd();
+    GFX->getDrawUtil()->drawLine( p1.x, p1.y, p2.x, p2.y, ColorI(color));
 }
 
 //-----------------------------------------------------------------------------
 
 void DebugDraw::DrawTransform( const b2Transform& xf )
 {
-//    b2Vec2 p1 = xf.p, p2;
-//    const float32 k_axisScale = 0.4f;
-//    glBegin(GL_LINES);
-//    
-//    glColor3f(1.0f, 0.0f, 0.0f);
-//    glVertex2f(p1.x, p1.y);
-//    p2 = p1 + k_axisScale * xf.q.GetXAxis();
-//    glVertex2f(p2.x, p2.y);
-//
-//    glColor3f(0.0f, 1.0f, 0.0f);
-//    glVertex2f(p1.x, p1.y);
-//    p2 = p1 + k_axisScale * xf.q.GetYAxis();
-//    glVertex2f(p2.x, p2.y);
-//
-//    glEnd();
+    b2Vec2 p1 = xf.p, p2;
+    const float32 k_axisScale = 0.4f;
+
+    p2 = p1 + k_axisScale * xf.q.GetXAxis();
+    GFX->getDrawUtil()->drawLine( p1.x, p1.y, p2.x, p2.y, ColorI(255, 0, 0));
+
+    p2 = p1 + k_axisScale * xf.q.GetYAxis();
+    GFX->getDrawUtil()->drawLine( p1.x, p1.y, p2.x, p2.y, ColorI(0, 255, 0));
 }
 
 //-----------------------------------------------------------------------------

@@ -204,6 +204,27 @@ if (!isObject(GuiTextProfile)) new GuiControlProfile (GuiTextProfile)
 
 //-----------------------------------------------------------------------------
 
+if (!isObject(GuiTextLabelProfile)) new GuiControlProfile (GuiTextLabelProfile)
+{
+    border=false;
+
+    // font
+    fontType = $platformFontType;
+    fontSize = $platformFontSize;
+
+    fontColor = "white";
+
+    modal = true;
+    justify = "center";
+    autoSizeWidth = false;
+    autoSizeHeight = false;
+    returnTab = false;
+    numbersOnly = false;
+    cursorColor = "0 0 0 255";
+};
+
+//-----------------------------------------------------------------------------
+
 if (!isObject(GuiCheckBoxProfile)) new GuiControlProfile (GuiCheckBoxProfile)
 {
     opaque = false;

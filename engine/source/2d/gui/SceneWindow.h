@@ -122,8 +122,8 @@ class CameraView
       const F32 zoomRecip = mCameraZoom > 0.0f ? 1.0f / mCameraZoom : mCameraZoom;
       
       // Calculate Zoom X/Y Factors.
-      const F32 zoomFactorX = (mSourceArea.len_x() - (mSourceArea.len_x() * zoomRecip))/2;
-      const F32 zoomFactorY = (mSourceArea.len_y() - (mSourceArea.len_y() * zoomRecip))/2;
+      const F32 zoomFactorX = (mSourceArea.extent.x - (mSourceArea.extent.x * zoomRecip))/2;
+      const F32 zoomFactorY = (mSourceArea.extent.y - (mSourceArea.extent.y * zoomRecip))/2;
       
       // Fetch Camera View.
       mDestinationArea = mSourceArea;
@@ -151,65 +151,14 @@ class CameraView
       const F32 zoomRecip = mCameraZoom > 0.0f ? 1.0f / mCameraZoom : mCameraZoom;
       
       // Calculate Zoom X/Y Factors.
-      const F32 zoomFactorX = (mSourceArea.len_x() - (mSourceArea.len_x() * zoomRecip))/2;
-      const F32 zoomFactorY = (mSourceArea.len_y() - (mSourceArea.len_y() * zoomRecip))/2;
+      const F32 zoomFactorX = (mSourceArea.extent.x - (mSourceArea.extent.x * zoomRecip))/2;
+      const F32 zoomFactorY = (mSourceArea.extent.y - (mSourceArea.extent.y * zoomRecip))/2;
 
-      // Yes, so is the limit area X less than the current view X?
-      if ( limits.extent.x < mDestinationArea.len_x() )
-      {
-         // Yes, so calculate center of view.
-         const F32 viewCenterX = limits.centre().x;
-         
-         // Half Camera Width.
-         const F32 halfCameraX = mDestinationArea.len_x() * 0.5f;
-         
-         // Calculate Min/Max X.
-         mSceneMin.x = viewCenterX - halfCameraX;
-         mSceneMax.x = viewCenterX + halfCameraX;
-      }
-      else
-      {
-         // No, so calculate window min overlap.
-         const F32 windowMinOverlapX = getMax(0.0f, limits.point.x - mSceneMin.x);
-         
-         // Calculate window max overlap.
-         const F32 windowMaxOverlapX = getMin(0.0f, limits.point.x + limits.extent.x - mSceneMax.x);
-         
-         // Adjust Window.
-         mSceneMin.x += windowMinOverlapX + windowMaxOverlapX;
-         mSceneMax.x += windowMinOverlapX + windowMaxOverlapX;
-      }
-      
-      // Is the limit area Y less than the current view Y?
-      if ( limits.extent.y < mDestinationArea.len_y() )
-      {
-         // Yes, so calculate center of view.
-         const F32 viewCenterY = limits.centre().y;
-         
-         // Half Camera Height.
-         const F32 halfCameraY = mDestinationArea.len_y() * 0.5f;
-         
-         // Calculate Min/Max Y.
-         mSceneMin.y = viewCenterY - halfCameraY;
-         mSceneMax.y = viewCenterY + halfCameraY;
-      }
-      else
-      {
-         // No, so calculate window min overlap.
-         const F32 windowMinOverlapY = getMax(0.0f, limits.point.y - mSceneMin.y);
-         
-         // Calculate window max overlap.
-         const F32 windowMaxOverlapY = getMin(0.0f, limits.point.y + limits.extent.y - mSceneMax.y);
-         
-         // Adjust Window.
-         mSceneMin.y += windowMinOverlapY + windowMaxOverlapY;
-         mSceneMax.y += windowMinOverlapY + windowMaxOverlapY;
-      }
-      
-      // Recalculate destination area.
-      mDestinationArea.point  = mSceneMin;
-      mDestinationArea.extent = mSceneMax - mSceneMin;
-      
+       mDestinationArea = RectF::limitedBy(mDestinationArea, limits);
+
+       mSceneMin = mDestinationArea.point;
+       mSceneMax = mDestinationArea.extent + mDestinationArea.point;
+
       // Inset Window by Zoom Factor (if it's big enough to do so).
       if (    mDestinationArea.extent.x > (zoomFactorX*2.0f) &&
           mDestinationArea.extent.y > (zoomFactorY*2.0f) )
@@ -415,7 +364,6 @@ public:
     void completeCameraMove( void );
     void undoCameraMove( const F32 interpolationTime );
     F32 interpolate( F32 from, F32 to, F32 delta );
-    F32 sigmoidInterpolate( F32 from, F32 to, F32 delta );
     void updateCamera( void );
 
     inline Vector2 getCameraRenderPosition( void )                      { calculateCameraView( &mCameraCurrent ); return mCameraCurrent.mDestinationArea.centre(); }

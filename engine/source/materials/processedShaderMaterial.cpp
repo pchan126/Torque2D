@@ -836,7 +836,7 @@ void ProcessedShaderMaterial::_setTextureTransforms(const U32 pass)
             test.setColumn( 3, Point3F( mMaterial->mRotPivotOffset[pass].x, 
                mMaterial->mRotPivotOffset[pass].y,
                0.0 ) );
-            texMat.mul( test );
+             texMat.mul(test);
          }
          else
          {
@@ -848,7 +848,7 @@ void ProcessedShaderMaterial::_setTextureTransforms(const U32 pass)
             test.setColumn( 3, Point3F( mMaterial->mRotPivotOffset[pass].x, 
                mMaterial->mRotPivotOffset[pass].y,
                0.0 ) );
-            texMat.mul( test );
+             texMat.mul(test);
          }
       }
 
@@ -865,7 +865,7 @@ void ProcessedShaderMaterial::_setTextureTransforms(const U32 pass)
          temp.setRow( 1, Point3F( 0.0,  wOffset,  0.0 ) );
          temp.setRow( 2, Point3F( 0.0,  0.0,  wOffset ) );
          temp.setColumn( 3, Point3F( -wOffset * 0.5, -wOffset * 0.5, 0.0 ) );
-         texMat.mul( temp );
+          texMat.mul(temp);
       }
 
       // handle sequence

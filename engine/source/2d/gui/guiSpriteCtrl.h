@@ -23,16 +23,15 @@
 #ifndef _GUISPRITECTRL_H_
 #define _GUISPRITECTRL_H_
 
-#ifndef _IMAGE_FRAME_PROVIDER_H
 #include "2d/core/imageFrameProvider.h"
-#endif
+#include "guiTickCtrl.h"
 
 //-----------------------------------------------------------------------------
 
-class GuiSpriteCtrl : public GuiControl, public ImageFrameProvider
+class GuiSpriteCtrl : public GuiTickCtrl, public ImageFrameProvider
 {
 private:
-    typedef GuiControl Parent;
+    typedef GuiTickCtrl Parent;
 
 protected:
     StringTableEntry                mImageAssetId;
@@ -50,6 +49,11 @@ public:
     virtual bool setImage( const char* pImageAssetId );
     virtual bool setImageFrame( const U32 frame );
     virtual bool setAnimation( const char* pAnimationAssetId );
+
+    // So this can be instantiated and not be a pure virtual class
+    virtual void interpolateTick( F32 delta ) {};
+    virtual void processTick() {};
+    virtual void advanceTime( F32 timeDelta ) {};
 
     // Declare type.
     DECLARE_CONOBJECT(GuiSpriteCtrl);

@@ -372,12 +372,14 @@ inline U32 mMulDiv(S32 a, S32 b, U32 c)
 template <typename T>
 inline T mLerp( const T &v1, const T &v2, F32 factor )
 {
+    factor = mClampF( factor, 0.0f, 1.0f);
     return ( v1 * ( 1.0f - factor ) ) + ( v2 * factor );
 }
 
 template <typename T>
 inline T mSmoothStep( const T &v1, const T &v2, F32 factor)
 {
+    factor = mClampF( factor, 0.0f, 1.0f);
     return mLerp(v1, v2, (3*(factor*factor) - 2*(factor*factor*factor)));
 }
 

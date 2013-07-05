@@ -3675,7 +3675,7 @@ ConsoleMethod(SceneObject, setDebugOff, void, 3, 2 + DEBUG_MODE_COUNT,  "(debugO
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(SceneObject, attachGui, void, 4, 5, "(guiControl guiObject, SceneWindow window, [sizeControl? = false]) - Attach a GUI Control to the object.\n"
+ConsoleMethod(SceneObject, attachGui, void, 4, 7, "(guiControl guiObject, SceneWindow window, [sizeControl? = false, Point2F offset]) - Attach a GUI Control to the object.\n"
                                                      "@param guiObject The GuiControl to attach.\n"
                                                      "@param window The SceneWindow to bind the GuiControl to.\n"
                                                      "@param sizeControl Whether or not to size the GuiControl to the size of this object.\n"
@@ -3704,8 +3704,12 @@ ConsoleMethod(SceneObject, attachGui, void, 4, 5, "(guiControl guiObject, SceneW
     // Calculate Send to Mount.
     const bool sizeControl = argc >= 5 ? dAtob(argv[4]) : false;
 
+    Point2F offset;
+    offset.x = argc >= 6 ? dAtof(argv[5]) : 0.0;
+    offset.y = argc >= 7 ? dAtof(argv[6]) : 0.0;
+
     // Attach GUI Control.
-    object->attachGui( pGuiControl, pSceneWindow, sizeControl );
+    object->attachGui(pGuiControl, pSceneWindow, sizeControl, offset);
 }
 
 //-----------------------------------------------------------------------------

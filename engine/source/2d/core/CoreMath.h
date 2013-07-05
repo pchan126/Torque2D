@@ -107,7 +107,7 @@ inline b2AABB mRectFtoAABB( const RectF& rect )
 {
     b2AABB aabb;
     b2Vec2 lower(rect.point.x, rect.point.y);
-    b2Vec2 upper(lower.x + rect.len_x(), lower.y + rect.len_y() );
+    b2Vec2 upper(lower.x + rect.extent.x, lower.y + rect.extent.y );
     aabb.lowerBound = lower;
     aabb.upperBound = upper;
     return aabb;

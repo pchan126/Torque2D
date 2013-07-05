@@ -753,6 +753,37 @@ function TruckProjectile::onCollision(%this, %object, %collisionDetails)
     %this.safeDelete();   
 }
 
+
+//-----------------------------------------------------------------------------
+
+function createTruckLabel(%text)
+{
+    %labelWidth = Sandbox.customLabelWidth + (%characterCount * 5);
+    %labelExtent = %labelWidth SPC Sandbox.customLabelHeight;
+
+    %labelControl = new GuiTextCtrl()
+    {
+        text = %text;
+        Extent = %labelExtent;
+        HorizSizing = "relative";
+        VertSizing = "relative";
+        Profile = "GuiTextLabelProfile";
+        canSaveDynamicFields = "0";
+        isContainer = "0";
+        Position = "3 0";
+        MinExtent = "8 2";
+        canSave = "0";
+        Visible = "1";
+        Active = "0";
+        tooltipprofile = "GuiToolTipProfile";
+        tooltipWidth = "0";
+        maxLength = "255";
+        truncate = "0";
+    };
+
+    return %labelControl;
+}
+
 // -----------------------------------------------------------------------------
 
 function TruckToy::createTruck( %this, %posX, %posY )
@@ -827,7 +858,11 @@ function TruckToy::createTruck( %this, %posX, %posY )
 
     // Suspension joints.
     TruckToy.RearMotorJoint = SandboxScene.createWheelJoint( TruckToy.TruckBody, %tireRear, "-1.4 -1.25", "0 0", "0 1" );
-    TruckToy.FrontMotorJoint = SandboxScene.createWheelJoint( TruckToy.TruckBody, %tireFront, "1.7 -1.25", "0 0", "0 1" );     
+    TruckToy.FrontMotorJoint = SandboxScene.createWheelJoint( TruckToy.TruckBody, %tireFront, "1.7 -1.25", "0 0", "0 1" );
+
+    %label = createTruckLabel("Fred");
+    %label.autoSizeWidth = true;
+    TruckToy.TruckBody.attachGui(%label, SandboxWindow, false, 0.0, -0.75);
 }
 
 // -----------------------------------------------------------------------------

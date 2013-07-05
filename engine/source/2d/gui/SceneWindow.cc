@@ -587,26 +587,11 @@ F32 SceneWindow::interpolate( F32 from, F32 to, F32 delta )
         return mLerp( from, to, delta );
     // Sigmoid.
     else if ( mCameraInterpolationMode == SIGMOID )
-        return sigmoidInterpolate( from, to, delta );
-    // Hmmm...
+        return mSmoothStep( from, to, delta );
     else
         return from;
 }
 
-
-//-----------------------------------------------------------------------------
-
-F32 SceneWindow::sigmoidInterpolate( F32 from, F32 to, F32 delta )
-{
-    // Range Expand/Clamp Delta to (-1 -> +1).
-    delta = mClampF( (delta - 0.5f) * 2.0f, -1.0f, 1.0f );
-
-    // Calculate interpolator value using sigmoid function.
-    F32 sigmoid = mClampF ( 1.0f / (1.0f + mPow(2.718282f, -15.0f * delta)), 0.0f, 1.0f );
-
-    // Calculate resultant interpolation.
-    return ( from * ( 1.0f - sigmoid ) ) + ( to * sigmoid );
-}
 
 //-----------------------------------------------------------------------------
 
@@ -717,8 +702,8 @@ void SceneWindow::mount( SceneObject* pSceneObject, const Vector2& mountOffset, 
         const Vector2& mountPos = mpMountedTo->getBody()->GetWorldPoint( mountOffset );
 
         // Calculate Window Half-Dimensions.
-        const F32 halfWidth = mCameraCurrent.mSourceArea.len_x() * 0.5f;
-        const F32 halfHeight = mCameraCurrent.mSourceArea.len_y() * 0.5f;
+        const F32 halfWidth = mCameraCurrent.mSourceArea.extent.x * 0.5f;
+        const F32 halfHeight = mCameraCurrent.mSourceArea.extent.y * 0.5f;
 
         // Set Current View to Object Position.
         mCameraCurrent.mSourceArea.point.set( mountPos.x - halfWidth, mountPos.y - halfHeight );
@@ -936,7 +921,13 @@ void SceneWindow::windowToScenePoint( const Vector2& srcPoint, Vector2& dstPoint
 void SceneWindow::sceneToWindowPoint( const Vector2& srcPoint, Vector2& dstPoint ) const
 {
     // Return Conversion.
-    dstPoint.Set( (srcPoint.x - mCameraCurrent.mSceneMin.x) / mCameraCurrent.mSceneWindowScale.x, (mCameraCurrent.mSceneMax.y - srcPoint.y) / mCameraCurrent.mSceneWindowScale.y );
+    Point4F temp(srcPoint.x, srcPoint.y, 0.0f, 1.0f);
+    MatrixF xform = mCameraCurrent.getCameraProjOrtho();
+    MatrixF view = mCameraCurrent.getCameraViewMatrix();
+    Point2I size = getBounds().extent;
+    view.mulP(temp);
+    xform.mulP(temp);
+    dstPoint.Set((temp.x*size.x/2)+(size.x/2), (-temp.y*size.y/2)+(size.y/2));
 }
 
 //-----------------------------------------------------------------------------
@@ -1320,8 +1311,8 @@ void SceneWindow::calculateCameraMount( const F32 elapsedTime )
     mCameraCurrent.mSourceArea.point = mPreTickPosition;
 
     // Calculate Window Half-Dimensions.
-    const F32 halfWidth = mCameraCurrent.mSourceArea.len_x() * 0.5f;
-    const F32 halfHeight = mCameraCurrent.mSourceArea.len_y() * 0.5f;
+    const F32 halfWidth = mCameraCurrent.mSourceArea.extent.x * 0.5f;
+    const F32 halfHeight = mCameraCurrent.mSourceArea.extent.y * 0.5f;
 
     // Calculate Target Position.
     const Point2F targetPos = Point2F( mountPos.x - halfWidth, mountPos.y - halfHeight );
@@ -1330,7 +1321,6 @@ void SceneWindow::calculateCameraMount( const F32 elapsedTime )
     if ( mMountAngle )
     {
         mCameraCurrent.mCameraAngle = -mpMountedTo->getAngle();
-//getRenderAngle
     }
 
     // Rigid Mount?
@@ -1377,8 +1367,8 @@ void SceneWindow::calculateCameraView( CameraView* pCameraView )
     }
 
     // Calculate Scene Window Scale.
-    pCameraView->mSceneWindowScale.x = (pCameraView->mSceneMax.x - pCameraView->mSceneMin.x) / getBounds().len_x();
-    pCameraView->mSceneWindowScale.y = (pCameraView->mSceneMax.y - pCameraView->mSceneMin.y) / getBounds().len_y();
+    pCameraView->mSceneWindowScale.x = (pCameraView->mSceneMax.x - pCameraView->mSceneMin.x) / getBounds().extent.x;
+    pCameraView->mSceneWindowScale.y = (pCameraView->mSceneMax.y - pCameraView->mSceneMin.y) / getBounds().extent.y;
 }
 
 //-----------------------------------------------------------------------------
@@ -1561,16 +1551,16 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
        GFX->clear( GFXClearZBuffer , ColorI(mBackgroundColor), 1.0f, 0 );
     }
 
-    if (renderTarget.isNull())
-       renderTarget = GFX->allocRenderToTextureTarget();
-
-    if (mImageTextureHandle.isNull())
-        mImageTextureHandle = TEXMGR->createTexture( getWidth(), getHeight(), GFXFormatR8G8B8A8, &GFXSceneWindowTextureProfile, 0, 0 );
-
-    renderTarget->attachTexture(mImageTextureHandle);
-    GFX->pushActiveRenderTarget();
-    GFX->setActiveRenderTarget(renderTarget);
-    GFX->updateStates(true);
+//    if (renderTarget.isNull())
+//       renderTarget = GFX->allocRenderToTextureTarget();
+//
+//    if (mImageTextureHandle.isNull())
+//        mImageTextureHandle = TEXMGR->createTexture( getWidth(), getHeight(), GFXFormatR8G8B8A8, &GFXSceneWindowTextureProfile, 0, 0 );
+//
+//    renderTarget->attachTexture(mImageTextureHandle);
+//    GFX->pushActiveRenderTarget();
+//    GFX->setActiveRenderTarget(renderTarget);
+//    GFX->updateStates(true);
 
     // Render View.
     pScene->renderScene( &sceneRenderState );
@@ -1579,9 +1569,9 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
     GFX->popWorldMatrix();
     GFX->setViewMatrix(MatrixF(true));
 
-    GFX->popActiveRenderTarget();
-    GFX->updateStates(true);
-    GFX->getDrawUtil()->drawBitmapStretch(mImageTextureHandle, updateRect, GFXBitmapFlip_Y);
+//    GFX->popActiveRenderTarget();
+//    GFX->updateStates(true);
+//    GFX->getDrawUtil()->drawBitmapStretch(mImageTextureHandle, updateRect, GFXBitmapFlip_Y);
 
    // Render the metrics.
     renderMetricsOverlay( offset, updateRect );

@@ -609,12 +609,6 @@ void SceneObject::integrateObject( const F32 totalTime, const F32 elapsedTime, D
         updateLifetime( elapsedTime );
     }
 
-    // Update Any Attached GUI.
-    if ( mpAttachedGui && mpAttachedGuiSceneWindow )
-    {
-        updateAttachedGui();
-    }
-
     // Are we attached to a camera?
     if ( mpAttachedCamera )
     {
@@ -710,12 +704,6 @@ void SceneObject::interpolateObject( const F32 timeDelta )
         CoreMath::mCalculateOOBB( getLocalSizedOOBB(), renderXF, mRenderOOBB );
     }
 
-    // Update Any Attached GUI.
-    if ( mpAttachedGui && mpAttachedGuiSceneWindow )
-    {
-        updateAttachedGui();
-    }
-
     // Are we attached to a camera?
     if ( mpAttachedCamera )
     {
@@ -765,6 +753,12 @@ void SceneObject::sceneRenderOverlay( const SceneRenderState* sceneRenderState )
     // Don't draw debug if not enabled.
     if ( !isEnabled() )
         return;
+
+    // Update Any Attached GUI.
+    if ( mpAttachedGui && mpAttachedGuiSceneWindow )
+    {
+        updateAttachedGui();
+    }
 
     // Get merged Local/Scene Debug Mask.
     U32 debugMask = getDebugMask() | pScene->getDebugMask();
@@ -2623,7 +2617,7 @@ void SceneObject::onInputEvent( StringTableEntry name, const GuiEvent& event, co
 
 //-----------------------------------------------------------------------------
 
-void SceneObject::attachGui( GuiControl* pGuiControl, SceneWindow* pSceneWindow, const bool sizeControl )
+void SceneObject::attachGui(GuiControl *pGuiControl, SceneWindow *pSceneWindow, const bool sizeControl, const Point2F offset)
 {
     // Attach Gui Control.
     mpAttachedGui = pGuiControl;
@@ -2633,6 +2627,9 @@ void SceneObject::attachGui( GuiControl* pGuiControl, SceneWindow* pSceneWindow,
 
     // Set Size Gui Flag.
     mAttachedGuiSizeControl = sizeControl;
+
+    // Set Gui Mount Offset
+    mAttachedGuiOffset = offset;
 
     // Register Gui Control/Window References.
     mpAttachedGui->registerReference( (SimObject**)&mpAttachedGui );
@@ -2677,7 +2674,7 @@ void SceneObject::detachGui( void )
 
 //-----------------------------------------------------------------------------
 
-void SceneObject::updateAttachedGui( void )
+void SceneObject::updateAttachedGui()
 {
     // Debug Profiling.
     PROFILE_SCOPE(SceneObject_updateAttachedGui);
@@ -2705,6 +2702,7 @@ void SceneObject::updateAttachedGui( void )
     {
         // Yes, so fetch Clip Rectangle; this forms the area we want to fix the Gui-Control to.
         const RectF objAABB = getAABBRectangle();
+
         // Fetch Top-Left.
         Vector2 upperLeft = Vector2( objAABB.point.x, objAABB.point.y + objAABB.extent.y );
         Vector2 lowerRight = Vector2( objAABB.point.x + objAABB.extent.x, objAABB.point.y );
@@ -2718,16 +2716,18 @@ void SceneObject::updateAttachedGui( void )
     }
     else
     {
-        // No, so center GUI-Control on objects position but don't resize it.
-
-        // Calculate Position from World Clip.
-        const RectF clipRectangle = getAABBRectangle();
-        // Calculate center position.
-        const Vector2 centerPosition = clipRectangle.point + Vector2(clipRectangle.len_x()*0.5f, clipRectangle.len_y()*0.5f);
-
         // Convert Scene to Window Coordinates.
         Vector2 positionI;
-        mpAttachedGuiSceneWindow->sceneToWindowPoint( centerPosition, positionI );
+
+        b2Vec2 *renderOOBB = (b2Vec2 *) getRenderOOBB();
+        b2AABB temp;
+        CoreMath::mOOBBtoAABB( renderOOBB, temp );
+        b2Vec2 t1 = (temp.lowerBound - temp.upperBound);
+        b2Vec2 t2 = b2Vec2( t1.x * mAttachedGuiOffset.x, t1.y * mAttachedGuiOffset.y);
+
+        mpAttachedGuiSceneWindow->sceneToWindowPoint( Vector2(getRenderPosition()) + Vector2(t2), positionI );
+
+//        mpAttachedGuiSceneWindow->sceneToWindowPoint( Vector2(getWorldPoint(Vector2(mAttachedGuiOffset))), positionI );
         // Fetch Control Extents (which don't change here).
         extentI = mpAttachedGui->getExtent();
         // Calculate new top-left.

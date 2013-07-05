@@ -429,7 +429,7 @@ void GFXDrawUtil::drawBitmapSR( GFXTextureObject*texture, const Point2F &in_rAt,
 {
    AssertFatal( texture != 0, "No texture specified for drawBitmapSR()" );
 
-   RectF stretch( in_rAt.x, in_rAt.y, srcRect.len_x(), srcRect.len_y() );
+   RectF stretch( in_rAt.x, in_rAt.y, srcRect.extent.x, srcRect.extent.y );
    drawBitmapStretchSR( texture, stretch, srcRect, in_flip, filter, in_wrap );
 }
 
