@@ -44,7 +44,7 @@ GFXDrawUtil::GFXDrawUtil( GFXDevice * d):
    mBitmapModulation.set(0xFF, 0xFF, 0xFF, 0xFF);
    mTextAnchorColor.set(0xFF, 0xFF, 0xFF, 0xFF);
    mFontRenderBatcher = new FontRenderBatcher();
-    
+
    _setupStateBlocks();   
 }
 
@@ -869,7 +869,7 @@ void GFXDrawUtil::drawPolygon( const GFXStateBlockDesc& desc, const Point3F* poi
    
     if( !isWireframe )
     {
-        mLineVertex->set(verts.address(), verts.size()*sizeof(GFXVertexPC));
+        mLineVertex.set(GFX, verts.size(), GFXBufferTypeVolatile, verts.address());
         mDevice->setStateBlockByDesc( desc );
         
         mDevice->setVertexBuffer( mLineVertex );
@@ -886,7 +886,7 @@ void GFXDrawUtil::drawPolygon( const GFXStateBlockDesc& desc, const Point3F* poi
        }
    }
     
-    mLineVertex->set(verts.address(), verts.size()*sizeof(GFXVertexPC));
+    mLineVertex.set(GFX, verts.size(), GFXBufferTypeVolatile, verts.address());
     mDevice->setStateBlockByDesc( desc );
     mDevice->setVertexBuffer( mLineVertex );
     mDevice->setupGenericShaders(GFXDevice::GSColor);
@@ -922,7 +922,7 @@ void GFXDrawUtil::drawCircleShape(const GFXStateBlockDesc& desc, const Point2F p
             theta += k_increment;
         }
         
-        mLineVertex->set(verts.address(), verts.size()*sizeof(GFXVertexPC));
+        mLineVertex.set(GFX, verts.size(), GFXBufferTypeVolatile, verts.address());
         mDevice->setVertexBuffer( mLineVertex );
         mDevice->setupGenericShaders();
         mDevice->drawPrimitive( GFXTriangleFan, 0, numVerts - 2 );
@@ -932,7 +932,7 @@ void GFXDrawUtil::drawCircleShape(const GFXStateBlockDesc& desc, const Point2F p
             verts[ i ].color = lineColor;
         }
 
-        mLineVertex->set((void*)&verts[1], (verts.size()-1)*sizeof(GFXVertexPC));
+        mLineVertex.set(GFX, verts.size(), GFXBufferTypeVolatile, verts.address());
         mDevice->setVertexBuffer( mLineVertex );
         mDevice->setupGenericShaders();
         mDevice->drawPrimitive( GFXLineStrip, 0, verts.size() - 2 );
@@ -952,7 +952,7 @@ void GFXDrawUtil::drawCircleShape(const GFXStateBlockDesc& desc, const Point2F p
         }
         verts[numVerts-1] = verts[0];
         
-        mLineVertex->set(verts.address(), verts.size()*sizeof(GFXVertexPC));
+        mLineVertex.set(GFX, verts.size(), GFXBufferTypeVolatile, verts.address());
         mDevice->setVertexBuffer( mLineVertex );
         mDevice->setupGenericShaders();
         mDevice->drawPrimitive( GFXLineStrip, 0, numVerts - 1 );

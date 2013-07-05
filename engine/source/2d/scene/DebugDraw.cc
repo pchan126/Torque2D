@@ -21,6 +21,7 @@
 //-----------------------------------------------------------------------------
 
 #include "graphics/gfxDevice.h"
+#include "graphics/gfxDrawUtil.h"
 #include "2d/scene/DebugDraw.h"
 
 // Debug Profiling.
@@ -261,9 +262,23 @@ void DebugDraw::DrawJoints( b2World* pWorld )
 
 void DebugDraw::DrawPolygon( const b2Vec2* vertices, int32 vertexCount, const ColorF& color )
 {
-//    // Debug Profiling.
-//    PROFILE_SCOPE(DebugDraw_DrawPolygon);
-//
+    // Debug Profiling.
+    PROFILE_SCOPE(DebugDraw_DrawPolygon);
+
+    GFXStateBlockDesc desc;
+    desc.cullMode = GFXCullNone;
+//    desc.setBlend( mBlendMode, mSrcBlendFactor, mDstBlendFactor );
+    desc.setFillModeWireframe();
+
+    // Move into Vector-Space.
+    Vector<Point3F> pts;
+    for (U32 i = 0; i < vertexCount; i++)
+    {
+        Point3F add = Point3F(vertices[i].x, vertices[i].y, 0.0);
+        pts.push_back(add);
+    }
+    GFX->getDrawUtil()->drawPolygon(desc, pts.address(), pts.size(), ColorI(color), ColorI(color));
+
 //    glColor3f(color.red, color.green, color.blue);
 //    glBegin(GL_LINE_LOOP);
 //    for (int32 i = 0; i < vertexCount; ++i)
@@ -271,6 +286,7 @@ void DebugDraw::DrawPolygon( const b2Vec2* vertices, int32 vertexCount, const Co
 //        glVertex2f(vertices[i].x, vertices[i].y);
 //    }
 //    glEnd();
+
 }
 
 //-----------------------------------------------------------------------------
