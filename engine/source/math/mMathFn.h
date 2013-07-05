@@ -375,6 +375,13 @@ inline T mLerp( const T &v1, const T &v2, F32 factor )
     return ( v1 * ( 1.0f - factor ) ) + ( v2 * factor );
 }
 
+template <typename T>
+inline T mSmoothStep( const T &v1, const T &v2, F32 factor)
+{
+    return mLerp(v1, v2, (3*(factor*factor) - 2*(factor*factor*factor)));
+}
+
+
 inline F32 mSin(const F32 angle)
 {
    return (F32) sin(angle);
