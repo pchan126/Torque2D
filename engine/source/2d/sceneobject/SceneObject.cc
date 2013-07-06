@@ -177,6 +177,7 @@ SceneObject::SceneObject() :
     mAttachedGuiSizeControl(false),
     mpAttachedGui(NULL),
     mpAttachedGuiSceneWindow(NULL),
+    mAttachedGuiOffset(0.0, 0.0),
 
     /// Safe deletion.
     mBeingSafeDeleted(false),
@@ -2718,16 +2719,10 @@ void SceneObject::updateAttachedGui()
     {
         // Convert Scene to Window Coordinates.
         Vector2 positionI;
+        Vector2 temp2 = getHalfSize() * (Vector2(mAttachedGuiOffset));
+        temp2.rotate(getRenderAngle());
 
-        b2Vec2 *renderOOBB = (b2Vec2 *) getRenderOOBB();
-        b2AABB temp;
-        CoreMath::mOOBBtoAABB( renderOOBB, temp );
-        b2Vec2 t1 = (temp.lowerBound - temp.upperBound);
-        b2Vec2 t2 = b2Vec2( t1.x * mAttachedGuiOffset.x, t1.y * mAttachedGuiOffset.y);
-
-        mpAttachedGuiSceneWindow->sceneToWindowPoint( Vector2(getRenderPosition()) + Vector2(t2), positionI );
-
-//        mpAttachedGuiSceneWindow->sceneToWindowPoint( Vector2(getWorldPoint(Vector2(mAttachedGuiOffset))), positionI );
+        mpAttachedGuiSceneWindow->sceneToWindowPoint( Vector2(getRenderPosition() + temp2), positionI );
         // Fetch Control Extents (which don't change here).
         extentI = mpAttachedGui->getExtent();
         // Calculate new top-left.

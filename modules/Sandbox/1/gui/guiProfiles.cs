@@ -22,6 +22,8 @@
 
 $platformFontType = ($platform $= "windows") ? "lucida console" : "monaco";
 $platformFontSize = ($platform $= "ios") ? 18 : 12;
+$labelFontType = "Crimewave BB";
+$labelFontSize = 94;
 
 //-----------------------------------------------------------------------------
 
@@ -209,8 +211,8 @@ if (!isObject(GuiTextLabelProfile)) new GuiControlProfile (GuiTextLabelProfile)
     border=false;
 
     // font
-    fontType = $platformFontType;
-    fontSize = $platformFontSize;
+    fontType = $labelFontType;
+    fontSize = $labelFontSize;
 
     fontColor = "white";
 

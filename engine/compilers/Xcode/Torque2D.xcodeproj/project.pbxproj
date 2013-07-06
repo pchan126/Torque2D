@@ -457,6 +457,7 @@
 		86D770BB1656873C0046D71F /* stringUnit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 86BC815116518D4600D96ADF /* stringUnit.cpp */; };
 		86D770BC1656873C0046D71F /* unicode.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC815316518D4600D96ADF /* unicode.cc */; };
 		86DE5688171F05F60054CB83 /* guiGridCtrl.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86DE5686171F05F60054CB83 /* guiGridCtrl.cc */; };
+		C541968ADC47A8E453CEECB8 /* mRect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C5419985987DCF2FA1EE23A1 /* mRect.cpp */; };
 		D1049A0C16F6F8C40096749B /* mPoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1049A0B16F6F8C40096749B /* mPoint.cpp */; };
 		D10529F2173B9F3B00BFC4FF /* gfxOpenGLTextureObject.cc in Sources */ = {isa = PBXBuildFile; fileRef = D10529F1173B9F3B00BFC4FF /* gfxOpenGLTextureObject.cc */; };
 		D11F9A87175DDCC800AB3E10 /* gfxOpenGLCardProfiler.cc in Sources */ = {isa = PBXBuildFile; fileRef = D11F9A86175DDCC800AB3E10 /* gfxOpenGLCardProfiler.cc */; };
@@ -1459,6 +1460,7 @@
 		86CEFC76166FE17500DAF75D /* platformInput_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformInput_ScriptBinding.h; sourceTree = "<group>"; };
 		86DE5686171F05F60054CB83 /* guiGridCtrl.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiGridCtrl.cc; sourceTree = "<group>"; };
 		86DE5687171F05F60054CB83 /* guiGridCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiGridCtrl.h; sourceTree = "<group>"; };
+		C5419985987DCF2FA1EE23A1 /* mRect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mRect.cpp; sourceTree = "<group>"; };
 		D1049A0B16F6F8C40096749B /* mPoint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mPoint.cpp; sourceTree = "<group>"; };
 		D10529F1173B9F3B00BFC4FF /* gfxOpenGLTextureObject.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxOpenGLTextureObject.cc; sourceTree = "<group>"; };
 		D11F9A86175DDCC800AB3E10 /* gfxOpenGLCardProfiler.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxOpenGLCardProfiler.cc; sourceTree = "<group>"; };
@@ -2983,6 +2985,7 @@
 				86BC80B516518D4600D96ADF /* mSplinePatch.h */,
 				86BC80B616518D4600D96ADF /* rectClipper.cpp */,
 				86BC80B716518D4600D96ADF /* rectClipper.h */,
+				C5419985987DCF2FA1EE23A1 /* mRect.cpp */,
 			);
 			name = math;
 			path = ../../../source/math;
@@ -3969,6 +3972,7 @@
 				4B8AAC816BE087E1B24A84AA /* osxTime.mm in Sources */,
 				4B8AA3537E794BF5814C7CA5 /* osxTimer.mm in Sources */,
 				4B8AAD464DE91C0A1C7697E2 /* platformOSX.mm in Sources */,
+				C541968ADC47A8E453CEECB8 /* mRect.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

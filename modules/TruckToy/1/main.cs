@@ -110,7 +110,9 @@ function TruckToy::destroy( %this )
 //-----------------------------------------------------------------------------
 
 function TruckToy::reset( %this )
-{   
+{
+    echo("trucktoy reset" SPC $Trucklabel);
+    $Trucklabel.delete();
     // Clear the scene.
     SandboxScene.clear();    
     
@@ -758,13 +760,15 @@ function TruckProjectile::onCollision(%this, %object, %collisionDetails)
 
 function createTruckLabel(%text)
 {
+    echo ("createTrucklabel");
     %labelWidth = Sandbox.customLabelWidth + (%characterCount * 5);
     %labelExtent = %labelWidth SPC Sandbox.customLabelHeight;
+
 
     %labelControl = new GuiTextCtrl()
     {
         text = %text;
-        Extent = %labelExtent;
+        Extent = %labelExtent * 10;
         HorizSizing = "relative";
         VertSizing = "relative";
         Profile = "GuiTextLabelProfile";
@@ -860,9 +864,11 @@ function TruckToy::createTruck( %this, %posX, %posY )
     TruckToy.RearMotorJoint = SandboxScene.createWheelJoint( TruckToy.TruckBody, %tireRear, "-1.4 -1.25", "0 0", "0 1" );
     TruckToy.FrontMotorJoint = SandboxScene.createWheelJoint( TruckToy.TruckBody, %tireFront, "1.7 -1.25", "0 0", "0 1" );
 
-    %label = createTruckLabel("Fred");
-    %label.autoSizeWidth = true;
-    TruckToy.TruckBody.attachGui(%label, SandboxWindow, false, 0.0, -0.75);
+    $Trucklabel = createTruckLabel("Fred");
+    $Trucklabel.autoSizeWidth = true;
+    $Trucklabel.autoSizeHeight = true;
+    TruckToy.TruckBody.attachGui($Trucklabel, SandboxWindow, false, 0.0, 1.5);
+
 }
 
 // -----------------------------------------------------------------------------
