@@ -116,6 +116,6 @@ public:
 @end
 
 // The global variable used when interfacing with TorqueScript
-static GameCenterManager* gameCenterManager;
+static GameCenterManager* gameCenterManager = nil;
 
 #endif //TORQUE_ALLOW_GAMEKIT
