@@ -1407,8 +1407,10 @@ bool GFont::readBMFont(Stream& io_rStream)
                 if (dStrcmp( Value, "\"tok1\"") == 0) {
                     dSprintf(Value, 256, "%s", Token);
                 }
-                
-                if( dStrcmp( Key, "size" ) == 0 )
+
+                if( dStrcmp( Key, "face") == 0)
+                    mFaceName = StringTable->insert(Value);
+                else if( dStrcmp( Key, "size" ) == 0 )
                     mSize = U16(dAtoi(Value));
                 currentWordCount++;
             }

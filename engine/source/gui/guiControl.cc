@@ -1758,9 +1758,11 @@ void GuiControl::getScrollLineSizes(U32 *rowHeight, U32 *columnWidth)
     *rowHeight = 30;
 }
 
-void GuiControl::renderJustifiedText(Point2I offset, Point2I extent, const char *text)
+void GuiControl::renderJustifiedText(Point2I offset, Point2I extent, const char *text, GFont* font)
 {
-   GFont *font = mProfile->mFont;
+   if (font == NULL)
+       font = mProfile->mFont;
+
    S32 textWidth = font->getStrWidth((const UTF8*)text);
    Point2I start;
 

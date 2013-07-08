@@ -22,8 +22,8 @@
 
 $platformFontType = ($platform $= "windows") ? "lucida console" : "monaco";
 $platformFontSize = ($platform $= "ios") ? 18 : 12;
-$labelFontType = "Crimewave BB";
-$labelFontSize = 94;
+$labelFontType = "Armor Piercing";
+$labelFontSize = 60;
 
 //-----------------------------------------------------------------------------
 

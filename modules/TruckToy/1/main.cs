@@ -785,6 +785,7 @@ function createTruckLabel(%text)
         truncate = "0";
     };
 
+    %labelControl.resizeWidthToText();
     return %labelControl;
 }
 
@@ -867,6 +868,8 @@ function TruckToy::createTruck( %this, %posX, %posY )
     $Trucklabel = createTruckLabel("Fred");
     $Trucklabel.autoSizeWidth = true;
     $Trucklabel.autoSizeHeight = true;
+    $Trucklabel.setFontSize(40);
+    $Trucklabel.resizeWidthToText();
     TruckToy.TruckBody.attachGui($Trucklabel, SandboxWindow, false, 0.0, 1.5);
 
 }

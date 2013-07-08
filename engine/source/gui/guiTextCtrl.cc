@@ -27,6 +27,7 @@
 #include "graphics/gfxDevice.h"
 #include "graphics/gfxDrawUtil.h"
 #include "gui/language/lang.h"
+#include "guiDefaultControlRender.h"
 
 // -----------------------------------------------------------------------------
 IMPLEMENT_CONOBJECT(GuiTextCtrl);
@@ -39,6 +40,7 @@ GuiTextCtrl::GuiTextCtrl()
    mText[0] = '\0';
    mMaxStrLen = GuiTextCtrl::MAX_STRING_LENGTH;
    mTruncateWhenUnfocused = false;
+   mFont = NULL;
 }
 
 ConsoleMethod( GuiTextCtrl, setText, void, 3, 3, "( newText ) Use the setText method to set the content of label to newText.\n"
@@ -88,8 +90,10 @@ bool GuiTextCtrl::onWake()
 {
    if ( !Parent::onWake() )
       return false;
-   
-   mFont = mProfile->mFont;
+
+   if (mFont.isNull())
+       mFont = mProfile->mFont;
+
    AssertFatal(mFont, "GuiTextCtrl::onWake: invalid font in profile" );
    if(mInitialTextID && *mInitialTextID != 0)
 	   setTextID(mInitialTextID);
@@ -151,7 +155,7 @@ void GuiTextCtrl::setText(const char *txt)
 	//Luma:	If the font isn't found, we want to decrement the profile usage and return now or we may crash!
 	if (mFont.isNull())	
 	{
-		//decrement the profile referrence
+		//decrement the profile reference
 		mProfile->decRefCount();
 		return;
 	}
@@ -216,13 +220,17 @@ void GuiTextCtrl::onRender(Point2I offset, const RectI &updateRect)
         const UTF8* truncatedBufferPtr = truncatedBuffer.getPtr8();
         
         GFX->getDrawUtil()->setBitmapModulation(fontColor);
-		renderJustifiedText(offset, getExtent(), (char*)truncatedBufferPtr);
+		renderJustifiedText(offset, getExtent(), (char*)truncatedBufferPtr, mFont);
     }
     else
     {
 		GFX->getDrawUtil()->setBitmapModulation(fontColor);
-		renderJustifiedText(offset, getExtent(), (char*)mText);
+		renderJustifiedText(offset, getExtent(), (char*)mText, mFont);
 	}
+
+//    RectI ctrlRect(offset, getExtent());
+//    mProfile->mBorder = 1;
+//    renderBorder(ctrlRect, mProfile);
 
     //render the child controls
     renderChildControls(offset, updateRect);
@@ -297,5 +305,42 @@ S32 GuiTextCtrl::textBufferWidth(StringBuffer buffer)
     return charLength;
 }
 
-// -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- //
-// EOF //
+ConsoleMethod( GuiTextCtrl, resizeWidthToText, void, 2, 2, "( ) Resize the text control to match the size of the text.\n"
+        "@param newTextID The desired new ID\n"
+        "@return No return value.")
+{
+    object->resizeWidthToText(  );
+}
+
+void GuiTextCtrl::resizeWidthToText() {
+    GFont *font = mProfile->mFont;
+    S32 textWidth = font->getStrWidth((const UTF8*)mText);
+    setWidth(textWidth);
+}
+
+
+void GuiTextCtrl::setFontSize( U32 fontSize )
+{
+    StringTableEntry sFontCacheDirectory = Con::getVariable("$GUI::fontCacheDirectory");
+    if (mFont == NULL)
+        mFont = mProfile->mFont;
+    mFont = GFont::create(mFont->getFontFaceName(), fontSize, sFontCacheDirectory);
+}
+
+//-----------------------------------------------------------------------------
+
+ConsoleMethod(GuiTextCtrl, setFontSize, void, 3, 3,   "(size) - Set the size of the font characters.\n"
+        "@param size The size of a font type.\n"
+        "@return No return value.")
+{
+    U32 size = dAtoi(argv[2]);
+    object->setFontSize( size );
+}
+
+//-----------------------------------------------------------------------------
+//
+//ConsoleMethod(GuiTextCtrl, getFontSize, const char*, 2, 2,    "() - Gets the size of the font characters.\n"
+//        "@return The size of the font characters.")
+//{
+//    return object->getFontSize().scriptThis();
+//}
