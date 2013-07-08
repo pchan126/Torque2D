@@ -749,8 +749,8 @@ typedef Signal<void(WindowId, S32, S32)> FramebufferResizeEvent;
 /// void event(S32 timeDelta)
 typedef Signal<void(S32)> TimeManagerEvent;
 
-// void event(U32 deviceInst,F32 fValue, U16 deviceType, U16 objType, U16 ascii, U16 objInst, U8 action, U8 modifier)
-typedef Signal<void(U32,F32,U16,U16,U16,U16,U8,U8)> InputEvent;
+// void event(U32 deviceInst,F32 fValue, U16 deviceType, U32 objType, U16 ascii, U16 objInst, U8 action, U8 modifier)
+typedef Signal<void(U32,F32,U16,U32,U16,U16,U8,U8)> InputEvent;
 
 /// void event(U32 popupGUID, U32 commandID, bool& returnValue)
 typedef Signal<void(U32, U32)> PopupMenuEvent;

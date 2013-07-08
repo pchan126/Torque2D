@@ -97,6 +97,25 @@ function TruckToy::create( %this )
    GlobalActionMap.bind(joystick, rzaxis, "joypad_rightsticky");
     // Reset the toy.
     %this.reset();
+
+    if ( $platform $= "iOS" )
+    {
+        TruckToy.joystick1 = new GuiJoystickCtrl()
+        {
+            Profile = SandboxWindowProfile;
+            Position = "64 64";
+            Extent = "300 300";
+        };
+        // Add it as a child window.
+        SandboxWindow.add( TruckToy.joystick1 );
+
+        // Add window to the toy so it is destroyed.
+        MultiWindowToy.add( TruckToy.joystick1 );
+
+        TruckToy.joystick1.Xevent = "xaxis";
+        TruckToy.joystick1.Yevent = "yaxis";
+    }
+
 }
 
 //-----------------------------------------------------------------------------
@@ -865,12 +884,12 @@ function TruckToy::createTruck( %this, %posX, %posY )
     TruckToy.RearMotorJoint = SandboxScene.createWheelJoint( TruckToy.TruckBody, %tireRear, "-1.4 -1.25", "0 0", "0 1" );
     TruckToy.FrontMotorJoint = SandboxScene.createWheelJoint( TruckToy.TruckBody, %tireFront, "1.7 -1.25", "0 0", "0 1" );
 
-    $Trucklabel = createTruckLabel("Fred");
-    $Trucklabel.autoSizeWidth = true;
-    $Trucklabel.autoSizeHeight = true;
-    $Trucklabel.setFontSize(40);
-    $Trucklabel.resizeWidthToText();
-    TruckToy.TruckBody.attachGui($Trucklabel, SandboxWindow, false, 0.0, 1.5);
+//    $Trucklabel = createTruckLabel("Fred");
+//    $Trucklabel.autoSizeWidth = true;
+//    $Trucklabel.autoSizeHeight = true;
+//    $Trucklabel.setFontSize(40);
+//    $Trucklabel.resizeWidthToText();
+//    TruckToy.TruckBody.attachGui($Trucklabel, SandboxWindow, false, 0.0, 1.5);
 
 }
 

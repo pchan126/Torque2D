@@ -50,7 +50,7 @@ class WindowInputGenerator
    void handleKeyboard   (WindowId did, U32 modifier,  U32 action, U16 key);
    void handleCharInput  (WindowId did, U32 modifier,  U16 key);
    void handleAppEvent   (WindowId did, S32 event);
-   void handleInputEvent (U32 deviceInst,F32 fValue, U16 deviceType, U16 objType, U16 ascii, U16 objInst, U8 action, U8 modifier);
+   void handleInputEvent (U32 deviceInst,F32 fValue, U16 deviceType, U32 objType, U16 ascii, U16 objInst, U8 action, U8 modifier);
    
 };
 

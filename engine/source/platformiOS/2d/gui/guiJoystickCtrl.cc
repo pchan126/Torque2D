@@ -20,7 +20,7 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#include "platformiOS/2d/gui/guiJoystickButtonCtrl.h"
+#include "guiJoystickCtrl.h"
 
 #ifndef _RENDER_PROXY_H_
 #include "2d/core/RenderProxy.h"
@@ -45,23 +45,24 @@
 #endif
 
 /// Script bindings.
-#include "guiJoystickButtonCtrl_ScriptBindings.h"
+#include "guiJoystickCtrl_ScriptBindings.h"
 #include "input/actionMap.h"
+#import "iOSInputManager.h"
 
 extern CodeMapping gVirtualMap[];
 
 //-----------------------------------------------------------------------------
 
-IMPLEMENT_CONOBJECT(GuiJoystickButtonCtrl);
+IMPLEMENT_CONOBJECT(GuiJoystickCtrl);
 
 //-----------------------------------------------------------------------------
 
-GuiJoystickButtonCtrl::GuiJoystickButtonCtrl() :
+GuiJoystickCtrl::GuiJoystickCtrl() :
     mCircleAssetId( StringTable->EmptyString ),
     mStickAssetId( StringTable->EmptyString ),
     m_XeventCode(0),
     m_YeventCode(0),
-    m_touchRadius(50),
+    m_touchRadius(100),
     m_state(INACTIVE)
 {
     setExtent(140, 30);
@@ -69,21 +70,21 @@ GuiJoystickButtonCtrl::GuiJoystickButtonCtrl() :
 
 //-----------------------------------------------------------------------------
 
-void GuiJoystickButtonCtrl::initPersistFields()
+void GuiJoystickCtrl::initPersistFields()
 {
     // Call parent.
     Parent::initPersistFields();
 
-    addProtectedField("CircleImage", TypeAssetId, Offset(mCircleAssetId, GuiJoystickButtonCtrl), &setCircleImage, &getCircleImage, "The image asset Id used for the normal button state.");
-    addProtectedField("StickImage", TypeAssetId, Offset(mStickAssetId, GuiJoystickButtonCtrl), &setStickImage, &getStickImage, "The image asset Id used for the hover button state.");
-    addProtectedField("Xevent", TypeS32, Offset(m_XeventCode, GuiJoystickButtonCtrl), &setXevent, &getXevent, "");
-    addProtectedField("Yevent", TypeS32, Offset(m_YeventCode, GuiJoystickButtonCtrl), &setYevent, &getYevent, "");
-    addProtectedField("TouchRadius", TypeS32, Offset(m_touchRadius, GuiJoystickButtonCtrl), &setTouchRadius, &defaultProtectedGetFn, &defaultProtectedWriteFn, "");
+    addProtectedField("CircleImage", TypeAssetId, Offset(mCircleAssetId, GuiJoystickCtrl), &setCircleImage, &getCircleImage, "The image asset Id used for the normal button state.");
+    addProtectedField("StickImage", TypeAssetId, Offset(mStickAssetId, GuiJoystickCtrl), &setStickImage, &getStickImage, "The image asset Id used for the hover button state.");
+    addProtectedField("Xevent", TypeS32, Offset(m_XeventCode, GuiJoystickCtrl), &setXevent, &getXevent, "");
+    addProtectedField("Yevent", TypeS32, Offset(m_YeventCode, GuiJoystickCtrl), &setYevent, &getYevent, "");
+    addProtectedField("TouchRadius", TypeS32, Offset(m_touchRadius, GuiJoystickCtrl), &setTouchRadius, &defaultProtectedGetFn, &defaultProtectedWriteFn, "");
 }
 
 //-----------------------------------------------------------------------------
 
-bool GuiJoystickButtonCtrl::onWake()
+bool GuiJoystickCtrl::onWake()
 {
     // Call parent.
     if (!Parent::onWake())
@@ -109,7 +110,7 @@ bool GuiJoystickButtonCtrl::onWake()
 
 //-----------------------------------------------------------------------------
 
-void GuiJoystickButtonCtrl::onSleep()
+void GuiJoystickCtrl::onSleep()
 {
     // Clear assets.
     mImageCircleAsset.clear();
@@ -121,7 +122,7 @@ void GuiJoystickButtonCtrl::onSleep()
 
 //-----------------------------------------------------------------------------
 
-void GuiJoystickButtonCtrl::setCircleImage( const char* pImageAssetId )
+void GuiJoystickCtrl::setCircleImage( const char* pImageAssetId )
 {
     // Sanity!
     AssertFatal( pImageAssetId != NULL, "Cannot use a NULL asset Id." );
@@ -139,7 +140,7 @@ void GuiJoystickButtonCtrl::setCircleImage( const char* pImageAssetId )
 
 //-----------------------------------------------------------------------------
 
-void GuiJoystickButtonCtrl::setStickImage( const char* pImageAssetId )
+void GuiJoystickCtrl::setStickImage( const char* pImageAssetId )
 {
     // Sanity!
     AssertFatal( pImageAssetId != NULL, "Cannot use a NULL asset Id." );
@@ -158,7 +159,7 @@ void GuiJoystickButtonCtrl::setStickImage( const char* pImageAssetId )
 
 //-----------------------------------------------------------------------------
 
-void GuiJoystickButtonCtrl::setXevent( const char* pEvent)
+void GuiJoystickCtrl::setXevent( const char* pEvent)
 {
     for (U32 j = 0; gVirtualMap[j].code != 0xFFFFFFFF; j++)
     {
@@ -174,7 +175,7 @@ void GuiJoystickButtonCtrl::setXevent( const char* pEvent)
 //-----------------------------------------------------------------------------
 
 
-StringTableEntry GuiJoystickButtonCtrl::getXevent( void )
+StringTableEntry GuiJoystickCtrl::getXevent( void )
 {
     for (U32 j = 0; gVirtualMap[j].code != 0xFFFFFFFF; j++)
     {
@@ -188,7 +189,7 @@ StringTableEntry GuiJoystickButtonCtrl::getXevent( void )
 //-----------------------------------------------------------------------------
 
 
-void GuiJoystickButtonCtrl::setYevent( const char* pEvent)
+void GuiJoystickCtrl::setYevent( const char* pEvent)
 {
     for (U32 j = 0; gVirtualMap[j].code != 0xFFFFFFFF; j++)
     {
@@ -204,7 +205,7 @@ void GuiJoystickButtonCtrl::setYevent( const char* pEvent)
 //-----------------------------------------------------------------------------
 
 
-StringTableEntry GuiJoystickButtonCtrl::getYevent( void )
+StringTableEntry GuiJoystickCtrl::getYevent( void )
 {
     for (U32 j = 0; gVirtualMap[j].code != 0xFFFFFFFF; j++)
     {
@@ -217,7 +218,7 @@ StringTableEntry GuiJoystickButtonCtrl::getYevent( void )
 
 //-----------------------------------------------------------------------------
 
-void GuiJoystickButtonCtrl::onTouchUp(const GuiEvent &event)
+void GuiJoystickCtrl::onTouchUp(const GuiEvent &event)
 {
     m_TouchDown.set(0, 0);
     m_LastTouch.set(0, 0);
@@ -227,7 +228,7 @@ void GuiJoystickButtonCtrl::onTouchUp(const GuiEvent &event)
 
 //-----------------------------------------------------------------------------
 
-void GuiJoystickButtonCtrl::onTouchDown(const GuiEvent &event)
+void GuiJoystickCtrl::onTouchDown(const GuiEvent &event)
 {
     m_TouchDown = event.mousePoint;
     m_state = ACTIVE;
@@ -236,55 +237,47 @@ void GuiJoystickButtonCtrl::onTouchDown(const GuiEvent &event)
 
 //-----------------------------------------------------------------------------
 
-void GuiJoystickButtonCtrl::onTouchDragged(const GuiEvent &event)
+void GuiJoystickCtrl::onTouchDragged(const GuiEvent &event)
 {
     m_LastTouch = event.mousePoint;
 }
 
 //-----------------------------------------------------------------------------
 
-void GuiJoystickButtonCtrl::poll()
+void GuiJoystickCtrl::process()
 {
-    Point2I offset = m_LastTouch - m_TouchDown;
+    Point2I offset = (m_LastTouch - m_TouchDown);
 
+    if (m_XeventCode)
     {
         InputEventInfo inputEvent;
 
         inputEvent.deviceInst = 0;
-        inputEvent.fValue = mClamp((F32)offset.x/(F32)m_touchRadius, -1.0, 1.0);
+        inputEvent.fValue = mClampF((F32)offset.x/(F32)m_touchRadius, -1.0f, 1.0f);
         inputEvent.deviceType = JoystickDeviceType;
         inputEvent.objType = m_XeventCode;
         inputEvent.objInst = SI_AXIS;
         inputEvent.action = SI_MOVE;
         inputEvent.modifier = 0;
 
-        // Give the ActionMap first shot.
-        if (ActionMap::handleEventGlobal(&inputEvent))
-            return;
-
-        // If we get here we failed to process it with anything prior... so let
-        // the ActionMap handle it.
-        ActionMap::handleEvent(&inputEvent);
+        if (!ActionMap::handleEventGlobal(&inputEvent))
+            ActionMap::handleEvent(&inputEvent);
     }
 
+    if (m_YeventCode)
     {
         InputEventInfo inputEvent;
 
         inputEvent.deviceInst = 0;
-        inputEvent.fValue = mClamp((F32)offset.y/(F32)m_touchRadius, -1.0, 1.0);
+        inputEvent.fValue = mClampF((F32)-offset.y/(F32)m_touchRadius, -1.0f, 1.0f);
         inputEvent.deviceType = JoystickDeviceType;
         inputEvent.objType = m_YeventCode;
         inputEvent.objInst = SI_AXIS;
         inputEvent.action = SI_MOVE;
         inputEvent.modifier = 0;
 
-        // Give the ActionMap first shot.
-        if (ActionMap::handleEventGlobal(&inputEvent))
-            return;
-
-        // If we get here we failed to process it with anything prior... so let
-        // the ActionMap handle it.
-        ActionMap::handleEvent(&inputEvent);
+        if (!ActionMap::handleEventGlobal(&inputEvent))
+            ActionMap::handleEvent(&inputEvent);
     }
 }
 
@@ -293,8 +286,12 @@ void GuiJoystickButtonCtrl::poll()
 
 //-----------------------------------------------------------------------------
 
-void GuiJoystickButtonCtrl::onRender(Point2I offset, const RectI& updateRect)
+void GuiJoystickCtrl::onRender(Point2I offset, const RectI& updateRect)
 {
+    RectI ctrlRect(offset, getExtent());
+    mProfile->mBorder = 1;
+    renderBorder(ctrlRect, mProfile);
+
     if (m_state = ACTIVE)
     {
 
@@ -307,7 +304,7 @@ void GuiJoystickButtonCtrl::onRender(Point2I offset, const RectI& updateRect)
 
 //------------------------------------------------------------------------------
 
-void GuiJoystickButtonCtrl::renderButton( ImageAsset* pImageAsset, const U32 frame, Point2I &offset, const RectI& updateRect )
+void GuiJoystickCtrl::renderButton( ImageAsset* pImageAsset, const U32 frame, Point2I &offset, const RectI& updateRect )
 {
 //    // Ignore an invalid datablock.
 //    if ( pImageAsset == NULL )
@@ -346,7 +343,7 @@ void GuiJoystickButtonCtrl::renderButton( ImageAsset* pImageAsset, const U32 fra
 //    setUpdate();
 }
 
-bool GuiJoystickButtonCtrl::onAdd() {
+bool GuiJoystickCtrl::onAdd() {
     // Let Parent Do Work.
     if(!Parent::onAdd())
         return false;
@@ -359,5 +356,17 @@ bool GuiJoystickButtonCtrl::onAdd() {
     AssertFatal(mStick, "Failed to create the GuiSpriteCtrl for the Stick");
     mStick->registerObject();
 
+    iOSInputManager* inputManager = dynamic_cast<iOSInputManager*>(Input::getManager());
+    if (inputManager)
+        inputManager->addInput(this);
+
     return true;
+}
+
+void GuiJoystickCtrl::onRemove() {
+    iOSInputManager* inputManager = dynamic_cast<iOSInputManager*>(Input::getManager());
+    if (inputManager)
+        inputManager->removeObject(this);
+
+    Parent::onRemove();
 }

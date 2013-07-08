@@ -23,6 +23,8 @@
 
 #include "platformiOS/platformiOS.h"
 #include "platform/platformInput.h"
+#include "./iOSInputManager.h"
+#include "process.h"
 
 // Static class variables:
 InputManager* Input::smManager;
@@ -31,26 +33,6 @@ InputEvent     Input::smInputEvent;
 
 
 bool gInputEnabled = false;
-bool gMouseEnabled = false;
-bool gKBEnabled = false;
-bool gMouseActive = false;
-bool gKBActive = false;
-
-//------------------------------------------------------------------------------
-// Helper functions.  Should migrate to an InputManager object at some point.
-bool enableKeyboard(void);
-void disableKeyboard(void);
-bool activateKeyboard(void);
-void deactivateKeyboard(void);
-bool enableMouse(void);
-void disableMouse(void);
-bool activateMouse(void);
-void deactivateMouse(void);
-
-
-
-static void fillAsciiTable();
-
 
 //------------------------------------------------------------------------------
 //
@@ -88,11 +70,21 @@ void Input::init()
 
    // stop the double-cursor thing
    Con::setBoolVariable("$pref::Gui::noClampTorqueCursorToWindow", true);
-   
+
+    smManager = new iOSInputManager;
+    if ( smManager )
+    {
+        iOSInputManager::init();
+        Con::printf( "   iOSInputManager enabled." );
+    }
+
    // enable main input
    Input::enable();
 
-   Con::printf( "" );
+    // Set ourselves to participate in per-frame processing.
+    Process::notify(Input::process, PROCESS_INPUT_ORDER);
+
+    Input::activate();
 }
 
 //------------------------------------------------------------------------------
@@ -112,11 +104,6 @@ ConsoleFunction( getJoystickAxes, const char*, 2, 2, "(handle instance)" )
    return( "" );
 }
 
-//------------------------------------------------------------------------------
-static void fillAsciiTable()
-{
-
-}
 
 //------------------------------------------------------------------------------
 U16 Input::getKeyCode( U16 asciiCode )
@@ -189,45 +176,28 @@ void Input::destroy()
 //------------------------------------------------------------------------------
 bool Input::enable()
 {
-	Con::printf( "[]Input::enable." );
+    if ( smManager && !smManager->isEnabled() )
+        return( smManager->enable() );
 
-   gInputEnabled = true;
-
-//   enableMouse();
-   //enableKeyboard();
-
-   return( gInputEnabled );
+    return( false );
 }
 
 //------------------------------------------------------------------------------
 void Input::disable()
 {
-	Con::printf( "[]Input::disable." );
-
-   gInputEnabled = false;
-
-
-//   disableMouse();
-   //disableKeyboard();
+    if ( smManager && smManager->isEnabled() )
+       smManager->disable();
 }
 
 //------------------------------------------------------------------------------
 void Input::activate()
 {
    smActive = true;
-
-//   enableMouse();
-// enableKeyboard();
 }
 
 //------------------------------------------------------------------------------
 void Input::deactivate()
 {
-//Con::printf( "[]Input::deactivate." );
-
-//   deactivateMouse();
-   //deactivateKeyboard();
-
    smActive = false;
 
 }
@@ -257,11 +227,8 @@ bool Input::isActive()
 //------------------------------------------------------------------------------
 void Input::process()
 {
-   if (!smActive || !gInputEnabled)
-      return;
-
-   if (!gMouseEnabled || !gMouseActive)
-      return;
+    if ( smManager && smManager->isEnabled() && smActive )
+        smManager->process();
 }
 
 
@@ -553,127 +520,6 @@ bool Platform::setClipboard(const char *text)
 }
 
 
-//------------------------------------------------------------------------------
-bool enableKeyboard()
-{
-   if ( !gInputEnabled )
-      return( false );
-
-   if ( gKBEnabled && gKBActive )
-      return( true );
-
-   gKBEnabled = true;
-   if ( Input::isActive() )
-      gKBEnabled = activateKeyboard();
-
-   if ( gKBEnabled )
-   {
-      Con::printf( "Hardware-direct keyboard enabled." );
-   }
-   else
-   {
-      Con::warnf( "Hardware-direct keyboard failed to enable!" );
-   }
-
-   return( gKBEnabled );
-}
-
-//------------------------------------------------------------------------------
-void disableKeyboard()
-{
-   if ( !gInputEnabled || !gKBEnabled )
-      return;
-
-   deactivateKeyboard();
-   gKBEnabled = false;
-
-   Con::printf( "Hardware-direct keyboard disabled." );
-}
-
-//------------------------------------------------------------------------------
-bool activateKeyboard()
-{
-   if ( !gInputEnabled || !Input::isActive() || !gKBEnabled )
-      return( false );
-
-   OSStatus status = noErr;
-   if (status==noErr)
-      gKBActive = true;
-
-   return( gKBActive );
-}
-
-//------------------------------------------------------------------------------
-void deactivateKeyboard()
-{
-   if ( gInputEnabled && gKBActive )
-   {
-      gKBActive = false;
-   }
-}
-
-//------------------------------------------------------------------------------
-bool enableMouse()
-{
-   if ( !gInputEnabled )
-      return( false );
-
-   if ( gMouseEnabled && gMouseActive )
-      return( true );
-
-   gMouseEnabled = activateMouse();
-
-   return( gMouseEnabled );
-}
-
-//------------------------------------------------------------------------------
-void disableMouse()
-{
-   if ( !gInputEnabled || !gMouseEnabled )
-      return;
-
-   deactivateMouse();
-   gMouseEnabled = false;
-
-   bool hwMouse = false;
-   Con::printf( "%s disabled", hwMouse?"Hardware-direct mouse":"Basic mouse capture");
-}
-
-//------------------------------------------------------------------------------
-bool activateMouse()
-{
-   if ( !gInputEnabled || !Input::isActive() || !gMouseEnabled )
-      return( false );
-   
-   if (gMouseActive)
-      return(true);
-
-   gMouseActive = true;
-
-   return( gMouseActive );
-}
-
-//------------------------------------------------------------------------------
-void deactivateMouse()
-{
-   if ( !gInputEnabled || !gMouseActive )
-       return;
-   
-   gMouseActive = false;
-}
-
-
-//------------------------------------------------------------------------------
-ConsoleFunction( enableMouse, bool, 1, 1, "enableMouse()" )
-{
-   return( enableMouse() );
-}
-
-//------------------------------------------------------------------------------
-ConsoleFunction( disableMouse, void, 1, 1, "disableMouse()" )
-{
-   disableMouse();
-}
 
 //------------------------------------------------------------------------------
 void printInputState(void)
@@ -681,18 +527,6 @@ void printInputState(void)
    if ( gInputEnabled )
    {
          Con::printf( "Low-level input system is enabled." );
-      
-      Con::printf( "- Keyboard is %sabled and %sactive.", 
-            gKBEnabled ? "en" : "dis",
-            gKBActive ? "" : "in" );
-      Con::printf( "- Mouse is %sabled and %sactive.", 
-            gMouseEnabled ? "en" : "dis",
-            gMouseActive ? "" : "in" );
-/*
-      Con::printf( "- Joystick is %sabled and %sactive.", 
-            gJoystickEnabled() ? "en" : "dis",
-            gJoystickActive() ? "" : "in" );
-*/
    }
    else
    {
@@ -717,15 +551,7 @@ ConsoleFunction( toggleInputState, void, 1, 1, "toggleInputState()" )
    printInputState();
 }
 
-//------------------------------------------------------------------------------
-ConsoleFunction( deactivateKeyboard, void, 1, 1, "deactivateKeyboard();")
-{
-   // these are only useful on the windows side. They deal with some vagaries of win32 DirectInput.
+
+InputManager *Input::getManager() {
+    return smManager;
 }
-
-ConsoleFunction( activateKeyboard, void, 1, 1, "activateKeyboard();")
-{
-   // these are only useful on the windows side. They deal with some vagaries of win32 DirectInput.
-}
-
-

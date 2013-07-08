@@ -20,7 +20,7 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-ConsoleMethod( GuiJoystickButtonCtrl, setCircleImage, void, 3, 3,  "(imageAssetId) Sets the asset Id the button \"up\" state.\n"
+ConsoleMethod( GuiJoystickCtrl, setCircleImage, void, 3, 3,  "(imageAssetId) Sets the asset Id the button \"up\" state.\n"
                                                                 "@return No return value.")
 {
    object->setCircleImage( argv[2] );
@@ -28,7 +28,7 @@ ConsoleMethod( GuiJoystickButtonCtrl, setCircleImage, void, 3, 3,  "(imageAssetI
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod( GuiJoystickButtonCtrl, setStickImage, void, 3, 3,       "(imageAssetId) Sets the asset Id the button \"hover\" state.\n"
+ConsoleMethod( GuiJoystickCtrl, setStickImage, void, 3, 3,       "(imageAssetId) Sets the asset Id the button \"hover\" state.\n"
                                                                     "@return No return value.")
 {
    object->setStickImage( argv[2]  );
