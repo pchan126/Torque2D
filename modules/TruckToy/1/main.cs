@@ -114,6 +114,8 @@ function TruckToy::create( %this )
 
         TruckToy.joystick1.Xevent = "xaxis";
         TruckToy.joystick1.Yevent = "yaxis";
+        TruckToy.joystick1.CircleImage = "ToyAssets:Circle1";
+        TruckToy.joystick1.StickImage = "ToyAssets:Circle2";
     }
 
 }

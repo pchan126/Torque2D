@@ -62,8 +62,12 @@ GuiJoystickCtrl::GuiJoystickCtrl() :
     mStickAssetId( StringTable->EmptyString ),
     m_XeventCode(0),
     m_YeventCode(0),
-    m_touchRadius(100),
-    m_state(INACTIVE)
+    m_touchRadius(150),
+    m_state(INACTIVE),
+    circleframe(0),
+    stickframe(0),
+    mImageCircleAsset(NULL),
+    mImageStickAsset(NULL)
 {
     setExtent(140, 30);
 }
@@ -288,60 +292,92 @@ void GuiJoystickCtrl::process()
 
 void GuiJoystickCtrl::onRender(Point2I offset, const RectI& updateRect)
 {
-    RectI ctrlRect(offset, getExtent());
-    mProfile->mBorder = 1;
-    renderBorder(ctrlRect, mProfile);
 
-    if (m_state = ACTIVE)
+    if (m_state == ACTIVE)
     {
-
+        renderButtons( offset, updateRect);
     }
     else
     {
-
+        RectI ctrlRect(offset, getExtent());
+        mProfile->mBorder = 1;
+        renderBorder(ctrlRect, mProfile);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void GuiJoystickCtrl::renderButton( ImageAsset* pImageAsset, const U32 frame, Point2I &offset, const RectI& updateRect )
+void GuiJoystickCtrl::renderButtons( Point2I &offset, const RectI& updateRect)
 {
-//    // Ignore an invalid datablock.
-//    if ( pImageAsset == NULL )
-//        return;
-//
-//    // Is the asset valid and has the specified frame?
-//    if ( pImageAsset->isAssetValid() && frame < pImageAsset->getFrameCount() )
-//    {
-//        // Yes, so calculate the source region.
-//        const ImageAsset::FrameArea::PixelArea& pixelArea = pImageAsset->getImageFrameArea( frame ).mPixelArea;
-//        RectI sourceRegion( pixelArea.mPixelOffset, Point2I(pixelArea.mPixelWidth, pixelArea.mPixelHeight) );
-//
-//        // Calculate destination region.
-//        RectI destinationRegion(offset, getExtent());
-//
-//        // Render image.
-//        GFX->getDrawUtil()->setBitmapModulation( mProfile->mFillColor );
-//        GFX->getDrawUtil()->drawBitmapStretchSR( pImageAsset->getImageTexture(), destinationRegion, sourceRegion );
-//        GFX->getDrawUtil()->clearBitmapModulation();
-//        renderChildControls( offset, updateRect);
-//    }
-//    else
-//    {
-//        // No, so fetch the 'cannot render' proxy.
-//        RenderProxy* pNoImageRenderProxy = Sim::findObject<RenderProxy>( CANNOT_RENDER_PROXY_NAME );
-//
-//        // Finish if no render proxy available or it can't render.
-//        if ( pNoImageRenderProxy == NULL || !pNoImageRenderProxy->validRender() )
-//            return;
-//
-//        // Render using render-proxy..
-//        pNoImageRenderProxy->renderGui( *this, offset, updateRect );
-//    }
-//
-//    // Update the control.
-//    setUpdate();
+    // Ignore an invalid datablock.
+    if ( mImageCircleAsset == NULL )
+        return;
+
+    // Is the asset valid and has the specified frame?
+    if ( mImageCircleAsset->isAssetValid() && circleframe < mImageCircleAsset->getFrameCount() )
+    {
+        // Yes, so calculate the source region.
+        const ImageAsset::FrameArea::PixelArea& pixelArea = mImageCircleAsset->getImageFrameArea( circleframe ).mPixelArea;
+        RectI sourceRegion( pixelArea.mPixelOffset, Point2I(pixelArea.mPixelWidth, pixelArea.mPixelHeight) );
+
+        // Calculate destination region.
+        RectI destinationRegion(m_TouchDown-Point2I(m_touchRadius, m_touchRadius), Point2I(m_touchRadius*2, m_touchRadius*2));
+
+        // Render image.
+        GFX->getDrawUtil()->setBitmapModulation( ColorI(255, 255, 255) );
+        GFX->getDrawUtil()->drawBitmapStretchSR( mImageCircleAsset->getImageTexture(), destinationRegion, sourceRegion );
+        GFX->getDrawUtil()->clearBitmapModulation();
+        renderChildControls( offset, updateRect);
+    }
+    else
+    {
+        // No, so fetch the 'cannot render' proxy.
+        RenderProxy* pNoImageRenderProxy = Sim::findObject<RenderProxy>( CANNOT_RENDER_PROXY_NAME );
+
+        // Finish if no render proxy available or it can't render.
+        if ( pNoImageRenderProxy == NULL || !pNoImageRenderProxy->validRender() )
+            return;
+
+        // Render using render-proxy..
+        pNoImageRenderProxy->renderGui( *this, offset, updateRect );
+    }
+
+    // Ignore an invalid datablock.
+    if ( mImageStickAsset == NULL )
+        return;
+
+    // Is the asset valid and has the specified frame?
+    if ( mImageStickAsset->isAssetValid() && stickframe < mImageStickAsset->getFrameCount() )
+    {
+        // Yes, so calculate the source region.
+        const ImageAsset::FrameArea::PixelArea& pixelArea = mImageStickAsset->getImageFrameArea( stickframe ).mPixelArea;
+        RectI sourceRegion( pixelArea.mPixelOffset, Point2I(pixelArea.mPixelWidth, pixelArea.mPixelHeight) );
+
+        // Calculate destination region.
+        RectI destinationRegion(m_LastTouch-Point2I(m_touchRadius/2, m_touchRadius/2), Point2I(m_touchRadius, m_touchRadius));
+
+        // Render image.
+        GFX->getDrawUtil()->setBitmapModulation( ColorI(255, 255, 255) );
+        GFX->getDrawUtil()->drawBitmapStretchSR( mImageStickAsset->getImageTexture(), destinationRegion, sourceRegion );
+        GFX->getDrawUtil()->clearBitmapModulation();
+        renderChildControls( offset, updateRect);
+    }
+    else
+    {
+        // No, so fetch the 'cannot render' proxy.
+        RenderProxy* pNoImageRenderProxy = Sim::findObject<RenderProxy>( CANNOT_RENDER_PROXY_NAME );
+
+        // Finish if no render proxy available or it can't render.
+        if ( pNoImageRenderProxy == NULL || !pNoImageRenderProxy->validRender() )
+            return;
+
+        // Render using render-proxy..
+        pNoImageRenderProxy->renderGui( *this, offset, updateRect );
+    }
 }
+
+//------------------------------------------------------------------------------
+
 
 bool GuiJoystickCtrl::onAdd() {
     // Let Parent Do Work.

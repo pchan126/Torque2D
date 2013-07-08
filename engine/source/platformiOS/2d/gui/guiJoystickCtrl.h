@@ -59,6 +59,8 @@ protected:
 
     AssetPtr<ImageAsset> mImageCircleAsset;
     AssetPtr<ImageAsset> mImageStickAsset;
+    U32 circleframe;
+    U32 stickframe;
 
     GuiSpriteCtrl *mCircle;
     GuiSpriteCtrl *mStick;
@@ -70,7 +72,7 @@ protected:
     U32 m_touchRadius;
     ButtonState m_state;
 
-    void renderButton( ImageAsset* pImageAsset, const U32 frame, Point2I &offset, const RectI& updateRect);
+    void renderButtons( Point2I &offset, const RectI& updateRect);
 
 public:
     GuiJoystickCtrl();
