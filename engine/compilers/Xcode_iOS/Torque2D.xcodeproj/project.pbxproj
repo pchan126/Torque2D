@@ -37,6 +37,7 @@
 		33230F1656FA2C7C493DA2D2 /* guiSliderCtrl.cc in Sources */ = {isa = PBXBuildFile; fileRef = 332307DBC5B7EEEB22E5A736 /* guiSliderCtrl.cc */; };
 		4B8AA645A2B83EAB64F41454 /* guiJoystickCtrl.cc in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAB8C7B170DE2B1C83143 /* guiJoystickCtrl.cc */; };
 		4B8AA6EFAB1E83E6E1DD9CE6 /* render2DObjectMgr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA3F49A3463DC9D4C56AB /* render2DObjectMgr.cpp */; };
+		4B8AA80EC028431CE04DC27D /* iOSCursorController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA9A93BBBA232436F0DDF /* iOSCursorController.mm */; };
 		4B8AA88C053A6612EFCA9D10 /* iOSInputManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA81DE24DF738778D59DC /* iOSInputManager.mm */; };
 		4B8AAE742D18ABC94DC3FDC5 /* mRect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA70EC9A24A9699C62600 /* mRect.cpp */; };
 		860A196C171F0666000E9FE8 /* guiGridCtrl.cc in Sources */ = {isa = PBXBuildFile; fileRef = 860A196A171F0666000E9FE8 /* guiGridCtrl.cc */; };
@@ -473,7 +474,6 @@
 		D10529EE173B832700BFC4FF /* gfxOpenGLES20Device.cc in Sources */ = {isa = PBXBuildFile; fileRef = D10529ED173B832600BFC4FF /* gfxOpenGLES20Device.cc */; };
 		D10529F0173B91E500BFC4FF /* gfxOpenGLTextureObject.cc in Sources */ = {isa = PBXBuildFile; fileRef = D10529EF173B91E400BFC4FF /* gfxOpenGLTextureObject.cc */; };
 		D10BBF5E17741A5E000B68E9 /* BatchEffect.m in Sources */ = {isa = PBXBuildFile; fileRef = D10BBF5D17741A5E000B68E9 /* BatchEffect.m */; };
-		D10BF28A172E724100E0D95D /* iOSCursorController.mm in Sources */ = {isa = PBXBuildFile; fileRef = D10BF289172E724000E0D95D /* iOSCursorController.mm */; };
 		D10BF28D172E75F700E0D95D /* iOSGestureRecognizer.mm in Sources */ = {isa = PBXBuildFile; fileRef = D10BF28C172E75F600E0D95D /* iOSGestureRecognizer.mm */; };
 		D10BF290172E7C4E00E0D95D /* iOSWindowInputGenerator.mm in Sources */ = {isa = PBXBuildFile; fileRef = D10BF28F172E7C4E00E0D95D /* iOSWindowInputGenerator.mm */; };
 		D11B0D13174F00D6002CB743 /* FilterImageAsset.mm in Sources */ = {isa = PBXBuildFile; fileRef = D11B0D11174F00D6002CB743 /* FilterImageAsset.mm */; };
@@ -641,6 +641,7 @@
 		30D5475B173FF5D300CB43DA /* platformTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformTimer.h; sourceTree = "<group>"; };
 		332307DBC5B7EEEB22E5A736 /* guiSliderCtrl.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiSliderCtrl.cc; sourceTree = "<group>"; };
 		33230911303CCA4C673E1A22 /* guiSliderCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiSliderCtrl.h; sourceTree = "<group>"; };
+		4B8AA01C54D88FD452C6B674 /* iOSCursorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iOSCursorController.h; path = ../windowManager/iOSCursorController.h; sourceTree = "<group>"; };
 		4B8AA02DFD7C90E1065C23DC /* iOSInputManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iOSInputManager.h; sourceTree = "<group>"; };
 		4B8AA2356D2CABA30E9BEB5C /* guiJoystickCtrl_ScriptBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = guiJoystickCtrl_ScriptBindings.h; path = gui/guiJoystickCtrl_ScriptBindings.h; sourceTree = "<group>"; };
 		4B8AA3F49A3463DC9D4C56AB /* render2DObjectMgr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = render2DObjectMgr.cpp; sourceTree = "<group>"; };
@@ -648,6 +649,7 @@
 		4B8AA643B344244F09BC5153 /* render2DObjectMgr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render2DObjectMgr.h; sourceTree = "<group>"; };
 		4B8AA70EC9A24A9699C62600 /* mRect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mRect.cpp; sourceTree = "<group>"; };
 		4B8AA81DE24DF738778D59DC /* iOSInputManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iOSInputManager.mm; sourceTree = "<group>"; };
+		4B8AA9A93BBBA232436F0DDF /* iOSCursorController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = iOSCursorController.mm; path = ../windowManager/iOSCursorController.mm; sourceTree = "<group>"; };
 		4B8AAB7E71D8EE670C6CD843 /* guiJoystickCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = guiJoystickCtrl.h; path = gui/guiJoystickCtrl.h; sourceTree = "<group>"; };
 		4B8AAB8C7B170DE2B1C83143 /* guiJoystickCtrl.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = guiJoystickCtrl.cc; path = gui/guiJoystickCtrl.cc; sourceTree = "<group>"; };
 		860A196A171F0666000E9FE8 /* guiGridCtrl.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiGridCtrl.cc; sourceTree = "<group>"; };
@@ -1505,8 +1507,6 @@
 		D10529EF173B91E400BFC4FF /* gfxOpenGLTextureObject.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxOpenGLTextureObject.cc; sourceTree = "<group>"; };
 		D10BBF5C17741A5E000B68E9 /* BatchEffect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BatchEffect.h; sourceTree = "<group>"; };
 		D10BBF5D17741A5E000B68E9 /* BatchEffect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BatchEffect.m; sourceTree = "<group>"; };
-		D10BF288172E724000E0D95D /* iOSCursorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iOSCursorController.h; sourceTree = "<group>"; };
-		D10BF289172E724000E0D95D /* iOSCursorController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iOSCursorController.mm; sourceTree = "<group>"; };
 		D10BF28B172E75F600E0D95D /* iOSGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iOSGestureRecognizer.h; sourceTree = "<group>"; };
 		D10BF28C172E75F600E0D95D /* iOSGestureRecognizer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iOSGestureRecognizer.mm; sourceTree = "<group>"; };
 		D10BF28E172E7C4D00E0D95D /* iOSWindowInputGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iOSWindowInputGenerator.h; sourceTree = "<group>"; };
@@ -1836,6 +1836,8 @@
 				4B8AAB8C7B170DE2B1C83143 /* guiJoystickCtrl.cc */,
 				4B8AAB7E71D8EE670C6CD843 /* guiJoystickCtrl.h */,
 				4B8AA2356D2CABA30E9BEB5C /* guiJoystickCtrl_ScriptBindings.h */,
+				4B8AA9A93BBBA232436F0DDF /* iOSCursorController.mm */,
+				4B8AA01C54D88FD452C6B674 /* iOSCursorController.h */,
 			);
 			name = gui;
 			sourceTree = "<group>";
@@ -3443,8 +3445,6 @@
 			children = (
 				D10BF28E172E7C4D00E0D95D /* iOSWindowInputGenerator.h */,
 				D10BF28F172E7C4E00E0D95D /* iOSWindowInputGenerator.mm */,
-				D10BF288172E724000E0D95D /* iOSCursorController.h */,
-				D10BF289172E724000E0D95D /* iOSCursorController.mm */,
 				D165815E1702EE3D00A21928 /* iOSWindow.h */,
 				D165815F1702EE3D00A21928 /* iOSWindow.mm */,
 				D16581601702EE3D00A21928 /* iOSWindowManager.h */,
@@ -4062,7 +4062,6 @@
 				2AD42167170434F0005BB8AD /* tamlJSONWriter.cc in Sources */,
 				2ACAFD471705CF340022601C /* tamlJSONParser.cc in Sources */,
 				860A196C171F0666000E9FE8 /* guiGridCtrl.cc in Sources */,
-				D10BF28A172E724100E0D95D /* iOSCursorController.mm in Sources */,
 				D10BF28D172E75F700E0D95D /* iOSGestureRecognizer.mm in Sources */,
 				D10BF290172E7C4E00E0D95D /* iOSWindowInputGenerator.mm in Sources */,
 				D151F8EE1731F86A00AB343E /* T2DUITouchGestureRecognizer.m in Sources */,
@@ -4123,6 +4122,7 @@
 				4B8AA645A2B83EAB64F41454 /* guiJoystickCtrl.cc in Sources */,
 				4B8AAE742D18ABC94DC3FDC5 /* mRect.cpp in Sources */,
 				4B8AA88C053A6612EFCA9D10 /* iOSInputManager.mm in Sources */,
+				4B8AA80EC028431CE04DC27D /* iOSCursorController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

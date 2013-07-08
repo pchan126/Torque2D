@@ -244,6 +244,17 @@ void GuiJoystickCtrl::onTouchDown(const GuiEvent &event)
 void GuiJoystickCtrl::onTouchDragged(const GuiEvent &event)
 {
     m_LastTouch = event.mousePoint;
+    Point2I m_Vect = m_LastTouch - m_TouchDown;
+    U32 vecLen = m_Vect.len();
+    if ( vecLen > m_touchRadius)
+    {
+        m_Vect *= m_touchRadius;
+        m_Vect /= vecLen;
+        m_LastTouch = m_Vect + m_TouchDown;
+    }
+
+//    m_LastTouch.x = mClamp(m_LastTouch.x, m_TouchDown.x-m_touchRadius, m_TouchDown.x+m_touchRadius);
+//    m_LastTouch.y = mClamp(m_LastTouch.y, m_TouchDown.y-m_touchRadius, m_TouchDown.y+m_touchRadius);
 }
 
 //-----------------------------------------------------------------------------
@@ -297,12 +308,14 @@ void GuiJoystickCtrl::onRender(Point2I offset, const RectI& updateRect)
     {
         renderButtons( offset, updateRect);
     }
+#ifdef TORQUE_DEBUG
     else
     {
         RectI ctrlRect(offset, getExtent());
         mProfile->mBorder = 1;
         renderBorder(ctrlRect, mProfile);
     }
+#endif
 }
 
 //------------------------------------------------------------------------------
