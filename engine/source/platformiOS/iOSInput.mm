@@ -29,6 +29,7 @@
 #include "game/gameInterface.h"
 #include "string/Unicode.h"
 #include "gui/guiCanvas.h"
+#import "iOSInputManager.h"
 
 
 // <Mat> just some random number 50, we'll get a proper value later
@@ -166,8 +167,8 @@ void Input::init()
    destroy();
 
    smManager = NULL;
-	//smManager = new iOSInputManager();
-   smActive = false;
+   smManager = new iOSInputManager();
+   smActive = true;
 
    // stop the double-cursor thing
    Con::setBoolVariable("$pref::Gui::noClampTorqueCursorToWindow", true);
@@ -367,7 +368,7 @@ bool Input::isEnabled()
    if ( smManager )
       return smManager->isEnabled();
 
-   return(gInputEnabled);
+   return false;
 }
 
 //------------------------------------------------------------------------------
@@ -384,14 +385,10 @@ void Input::process()
 
 	if(platState.multipleTouchesEnabled) processMultipleTouches();
 	
-   if (!smActive || !gInputEnabled)
-      return;
+   if ( !smManager )
+       return;
 
-   if (!gMouseEnabled || !gMouseActive)
-      return;
-      
- 
-   if ( smManager && smManager->isEnabled() && smActive )
+   if ( smManager->isEnabled() && smActive )
       smManager->process();
 }
 

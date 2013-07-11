@@ -482,6 +482,8 @@
 		86A9A3FE16AEC836003F01E6 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86A9A3E416AEC817003F01E6 /* OpenAL.framework */; };
 		86A9A3FF16AEC836003F01E6 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86A9A3E516AEC817003F01E6 /* OpenGLES.framework */; };
 		86A9A40016AEC836003F01E6 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86A9A3E616AEC817003F01E6 /* QuartzCore.framework */; };
+		D1DF1559178E5DCB00711CB1 /* guiJoystickCtrl.cc in Sources */ = {isa = PBXBuildFile; fileRef = D1DF1556178E5DCB00711CB1 /* guiJoystickCtrl.cc */; };
+		D1DF155C178E5DDB00711CB1 /* iOSInputManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = D1DF155B178E5DDB00711CB1 /* iOSInputManager.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -1444,6 +1446,11 @@
 		86A9A3E416AEC817003F01E6 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		86A9A3E516AEC817003F01E6 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		86A9A3E616AEC817003F01E6 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		D1DF1556178E5DCB00711CB1 /* guiJoystickCtrl.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiJoystickCtrl.cc; sourceTree = "<group>"; };
+		D1DF1557178E5DCB00711CB1 /* guiJoystickCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiJoystickCtrl.h; sourceTree = "<group>"; };
+		D1DF1558178E5DCB00711CB1 /* guiJoystickCtrl_ScriptBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiJoystickCtrl_ScriptBindings.h; sourceTree = "<group>"; };
+		D1DF155A178E5DDB00711CB1 /* iOSInputManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iOSInputManager.h; sourceTree = "<group>"; };
+		D1DF155B178E5DDB00711CB1 /* iOSInputManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iOSInputManager.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1594,6 +1601,9 @@
 		867BAC9116AEC8BB0033868F /* platformiOS */ = {
 			isa = PBXGroup;
 			children = (
+				D1DF155A178E5DDB00711CB1 /* iOSInputManager.h */,
+				D1DF155B178E5DDB00711CB1 /* iOSInputManager.mm */,
+				D1DF1555178E5DCB00711CB1 /* gui */,
 				86555D3116B2C2B400881446 /* T2DAppDelegate.h */,
 				86555D3216B2C2B400881446 /* T2DAppDelegate.mm */,
 				86555D3316B2C2B400881446 /* T2DView.h */,
@@ -3010,6 +3020,16 @@
 			path = Torque2D;
 			sourceTree = "<group>";
 		};
+		D1DF1555178E5DCB00711CB1 /* gui */ = {
+			isa = PBXGroup;
+			children = (
+				D1DF1556178E5DCB00711CB1 /* guiJoystickCtrl.cc */,
+				D1DF1557178E5DCB00711CB1 /* guiJoystickCtrl.h */,
+				D1DF1558178E5DCB00711CB1 /* guiJoystickCtrl_ScriptBindings.h */,
+			);
+			path = gui;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -3528,6 +3548,8 @@
 				2AD42167170434F0005BB8AD /* tamlJSONWriter.cc in Sources */,
 				2ACAFD471705CF340022601C /* tamlJSONParser.cc in Sources */,
 				860A196C171F0666000E9FE8 /* guiGridCtrl.cc in Sources */,
+				D1DF1559178E5DCB00711CB1 /* guiJoystickCtrl.cc in Sources */,
+				D1DF155C178E5DDB00711CB1 /* iOSInputManager.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
