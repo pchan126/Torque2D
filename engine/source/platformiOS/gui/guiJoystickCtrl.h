@@ -103,6 +103,7 @@ public:
     virtual void onMouseUp(const GuiEvent &event);
     virtual void onMouseDown(const GuiEvent &event);
     virtual void onMouseDragged(const GuiEvent &event);
+    virtual void onMouseLeave(const GuiEvent &event);
 
     virtual bool pointInControl(const Point2I& parentCoordPoint);
 

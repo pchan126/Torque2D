@@ -234,9 +234,12 @@ void GuiJoystickCtrl::onMouseUp(const GuiEvent &event)
 
 void GuiJoystickCtrl::onMouseDown(const GuiEvent &event)
 {
+   if (event.mousePoint.x >= getPosition().x+m_touchRadius && getPosition().y+event.mousePoint.y >= m_touchRadius && event.mousePoint.x < getPosition().x+getWidth()-m_touchRadius && event.mousePoint.y < getPosition().y+getHeight()-m_touchRadius)
+   {
     m_TouchDown = event.mousePoint;
     m_LastTouch = event.mousePoint;
     m_state = ACTIVE;
+   }
 }
 
 
@@ -244,7 +247,9 @@ void GuiJoystickCtrl::onMouseDown(const GuiEvent &event)
 
 void GuiJoystickCtrl::onMouseDragged(const GuiEvent &event)
 {
-    m_LastTouch = event.mousePoint;
+   if (m_state != ACTIVE) return;
+
+   m_LastTouch = event.mousePoint;
     Point2I m_Vect = m_LastTouch - m_TouchDown;
     U32 vecLen = m_Vect.len();
     if ( vecLen > m_touchRadius)
@@ -420,8 +425,9 @@ bool GuiJoystickCtrl::pointInControl(const Point2I& parentCoordPoint) {
     S32 xt = parentCoordPoint.x - getPosition().x;
     S32 yt = parentCoordPoint.y - getPosition().y;
 
-    if (m_state == ACTIVE)
-        return xt >= 0 && yt >= 0 && xt < getWidth() && yt < getHeight();
-    else
-        return xt >= m_touchRadius && yt >= m_touchRadius && xt < getWidth()-m_touchRadius && yt < getHeight()-m_touchRadius;
+   return xt >= 0 && yt >= 0 && xt < getWidth() && yt < getHeight();
+}
+
+void GuiJoystickCtrl::onMouseLeave(const GuiEvent& event) {
+//   onMouseUp(event);
 }
