@@ -73,7 +73,6 @@ osxInputManager::osxInputManager()
     hidManager = IOHIDManagerCreate( kCFAllocatorDefault, kIOHIDOptionsTypeNone);
 
     int usageKeys[] = { kHIDUsage_GD_GamePad,kHIDUsage_GD_Joystick,kHIDUsage_GD_MultiAxisController };
-
     int i;
 
     NSMutableArray *criterionSets = [NSMutableArray arrayWithCapacity:3];
@@ -96,18 +95,7 @@ osxInputManager::osxInputManager()
     (void)tIOReturn; // to suppress warnings
  }
 
-//--------------------------------------------------------------------------
-bool osxInputManager::enable()
-{
-    mEnabled = true;
-    return mEnabled;
-}
 
-//--------------------------------------------------------------------------
-void osxInputManager::disable()
-{
-    mEnabled = false;
-}
 
 //--------------------------------------------------------------------------
 void osxInputManager::process()
@@ -193,58 +181,8 @@ void osxInputManager::process()
     }
 }
 
-#pragma mark ---- Keyboard Handling Functions ----
 
 //--------------------------------------------------------------------------
-void osxInputManager::enableKeyboard()
-{
-    if (!mEnabled)
-        mEnabled = true;
-
-    mKeyboardEnabled = true;
-}
-
-//--------------------------------------------------------------------------
-void osxInputManager::disableKeyboard()
-{
-    mKeyboardEnabled = false;
-}
-
-//--------------------------------------------------------------------------
-bool osxInputManager::isKeyboardEnabled()
-{
-    if (mEnabled)
-        return mKeyboardEnabled;
-
-    return false;
-}
-
-#pragma mark ---- Mouse Handling Functions ----
-
-//--------------------------------------------------------------------------
-void osxInputManager::enableMouse()
-{
-    if (!mEnabled)
-        mEnabled = true;
-
-    mMouseEnabled = true;
-}
-
-//--------------------------------------------------------------------------
-void osxInputManager::disableMouse()
-{
-    mMouseEnabled = false;
-}
-
-//--------------------------------------------------------------------------
-bool osxInputManager::isMouseEnabled()
-{
-    if (mEnabled)
-        return mMouseEnabled;
-
-    return false;
-}
-
 void osxInputManager::registerNewJoystick(Joystick *joystick)
 {
     [joysticks setObject:joystick forKey:[NSNumber numberWithInt:joystickIDIndex++]];
@@ -291,7 +229,6 @@ void osxInputManager::elementReportedChange(IOHIDDeviceRef device, IOHIDElementR
     IOHIDValueRef pValue;
     IOHIDDeviceGetValue(joystick.device, theElement, &pValue);
 
-    S32 elementUsage = IOHIDElementGetUsage(theElement);
     S32 value = IOHIDValueGetIntegerValue(pValue);
     S32 buttonIndex = [joystick getButtonIndex:theElement];
 
@@ -304,7 +241,7 @@ void osxInputManager::elementReportedChange(IOHIDDeviceRef device, IOHIDElementR
         inputEvent.objType = SI_BUTTON;
         inputEvent.objInst = KEY_BUTTON0+buttonIndex;
         inputEvent.ascii = 0;
-        inputEvent.fValue = 1.0;
+        inputEvent.fValue = (F32)value;
 
         if (value==1)
             inputEvent.action = SI_MAKE;

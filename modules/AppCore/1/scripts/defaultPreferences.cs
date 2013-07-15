@@ -56,6 +56,7 @@ $pref::T2D::warnSceneOccupancy = 1;
 $pref::T2D::imageAssetGlobalFilterMode = Bilinear;
 $pref::T2D::TAMLSchema="";
 $pref::T2D::JSONStrict = 1;
+$pref::T2D::joystickDeadZone = 0.05;
 
 /// Video
 $pref::Video::appliedPref = 0;

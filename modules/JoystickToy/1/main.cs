@@ -63,12 +63,34 @@ function joypad_rightsticky(%value)
 
 function joypad_button0(%value)
 {
-
+	if (%value == 1)
+	    JoystickToy.circle0.BlendColor = Blue;
+	else
+	    JoystickToy.circle0.BlendColor = Black;
 }
 
 function joypad_button1(%value)
 {
+	if (%value == 1)
+	    JoystickToy.circle1.BlendColor = Green;
+	else
+	    JoystickToy.circle1.BlendColor = Black;
+}
 
+function joypad_button2(%value)
+{
+	if (%value == 1)
+	    JoystickToy.circle2.BlendColor = Red;
+	else
+	    JoystickToy.circle2.BlendColor = Black;
+}
+
+function joypad_button3(%value)
+{
+	if (%value == 1)
+	    JoystickToy.circle3.BlendColor = Yellow;
+	else
+	    JoystickToy.circle3.BlendColor = Black;
 }
 
 
@@ -83,6 +105,11 @@ function JoystickToy::create( %this )
    GlobalActionMap.bind(joystick, yaxis, "joypad_leftsticky");
    GlobalActionMap.bind(joystick, zaxis, "joypad_rightstickx");
    GlobalActionMap.bind(joystick, rzaxis, "joypad_rightsticky");
+
+   GlobalActionMap.bind(joystick, button0, "joypad_button0");
+   GlobalActionMap.bind(joystick, button1, "joypad_button1");
+   GlobalActionMap.bind(joystick, button2, "joypad_button2");
+   GlobalActionMap.bind(joystick, button3, "joypad_button3");
 
 
     if ( $platform $= "iOS" )
@@ -214,6 +241,62 @@ function JoystickToy::createBackground(%this)
     %obj.setActive( false );
     SandboxScene.add( %obj );
     JoystickToy.stick2 = %obj;
+    
+    %obj = new Sprite(circle0);
+    %obj.setBodyType( "static" );
+    %obj.setImage( "ToyAssets:BlankCircle" );
+    %obj.BlendColor = Black;
+    %obj.setSize( 1, 1 );
+    %obj.setPosition(3, 2);
+    %obj.setSceneLayer( JoystickToy.BackdropDomain-1);
+    %obj.setSceneGroup( JoystickToy.BackdropDomain );
+    %obj.setCollisionSuppress();
+    %obj.setAwake( false );
+    %obj.setActive( false );
+    SandboxScene.add( %obj );
+    JoystickToy.circle0 = %obj;
+
+    %obj = new Sprite(circle1);
+    %obj.setBodyType( "static" );
+    %obj.setImage( "ToyAssets:BlankCircle" );
+    %obj.BlendColor = Black;
+    %obj.setSize( 1, 1 );
+    %obj.setPosition(4, 1);
+    %obj.setSceneLayer( JoystickToy.BackdropDomain-1);
+    %obj.setSceneGroup( JoystickToy.BackdropDomain );
+    %obj.setCollisionSuppress();
+    %obj.setAwake( false );
+    %obj.setActive( false );
+    SandboxScene.add( %obj );
+    JoystickToy.circle1 = %obj;
+
+    %obj = new Sprite(circle2);
+    %obj.setBodyType( "static" );
+    %obj.setImage( "ToyAssets:BlankCircle" );
+    %obj.BlendColor = Black;
+    %obj.setSize( 1, 1 );
+    %obj.setPosition(5, 2);
+    %obj.setSceneLayer( JoystickToy.BackdropDomain-1);
+    %obj.setSceneGroup( JoystickToy.BackdropDomain );
+    %obj.setCollisionSuppress();
+    %obj.setAwake( false );
+    %obj.setActive( false );
+    SandboxScene.add( %obj );
+    JoystickToy.circle2 = %obj;
+
+    %obj = new Sprite(circle3);
+    %obj.setBodyType( "static" );
+    %obj.setImage( "ToyAssets:BlankCircle" );
+    %obj.BlendColor = Black;
+    %obj.setSize( 1, 1 );
+    %obj.setPosition(4, 3);
+    %obj.setSceneLayer( JoystickToy.BackdropDomain-1);
+    %obj.setSceneGroup( JoystickToy.BackdropDomain );
+    %obj.setCollisionSuppress();
+    %obj.setAwake( false );
+    %obj.setActive( false );
+    SandboxScene.add( %obj );
+    JoystickToy.circle3 = %obj;
 }
 
 

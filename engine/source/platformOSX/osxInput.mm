@@ -96,6 +96,7 @@ bool Input::enable()
     // Also enable mouse and keyboard automatically
     enableMouse();
     enableKeyboard();
+    enableJoystick();
 
     return enabledValue;
 }
@@ -109,6 +110,7 @@ void Input::disable()
 
     disableMouse();
     disableKeyboard();
+    disableJoystick();
 }
 
 //------------------------------------------------------------------------------
@@ -253,6 +255,14 @@ void Input::deactivateKeyboard()
 // Enable joystick input
 bool Input::enableJoystick()
 {
+    osxInputManager *inputManager = (osxInputManager *) getManager();
+
+    if (inputManager)
+    {
+        inputManager->enableJoystick();
+        return true;
+    }
+
     return false;
 }
 
@@ -260,6 +270,10 @@ bool Input::enableJoystick()
 // Disable joystick input
 void Input::disableJoystick()
 {
+    osxInputManager *inputManager = (osxInputManager *) getManager();
+
+    if (inputManager)
+        inputManager->disableJoystick();
 }
 
 //------------------------------------------------------------------------------

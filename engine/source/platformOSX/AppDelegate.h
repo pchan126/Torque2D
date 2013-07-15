@@ -21,7 +21,6 @@
 //-----------------------------------------------------------------------------
 
 #import <Cocoa/Cocoa.h>
-#import "platformOSX/JoystickManager/JoystickNotificationDelegate.h"
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 {

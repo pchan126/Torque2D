@@ -32,31 +32,38 @@ private:
 
     bool mKeyboardEnabled;
     bool mMouseEnabled;
+    bool mJoystickEnabled;
 
     IOHIDManagerRef hidManager;
 
     NSMutableDictionary  *joysticks;
 
     int                 joystickIDIndex;
+    F32                 joystickDeadZone;
 
 public:
 
     osxInputManager();
 
     // InputManager handling
-    bool enable();
-    void disable();
+    bool enable() { mEnabled = true; return mEnabled; };
+    void disable() { mEnabled = false; };
     void process();
 
-    // Keyboard handling
-    void enableKeyboard();
-    void disableKeyboard();
-    bool isKeyboardEnabled();
+        // Keyboard handling
+    void enableKeyboard() { mKeyboardEnabled = true; };
+    void disableKeyboard() { mKeyboardEnabled = false; };
+    bool isKeyboardEnabled() { return (mEnabled && mKeyboardEnabled); };
 
     // Mouse handling
-    void enableMouse();
-    void disableMouse();
-    bool isMouseEnabled();
+    void enableMouse() { mMouseEnabled = true; };
+    void disableMouse() { mMouseEnabled = false; };
+    bool isMouseEnabled() { return (mEnabled && mMouseEnabled); };
+
+    // Joystick handling
+    void enableJoystick() { mJoystickEnabled = true; };
+    void disableJoystick() { mJoystickEnabled = false; };
+    bool isJoystickEnabled() { return (mEnabled && mJoystickEnabled); };
 
     void registerNewJoystick(Joystick *joystick);
     void unregisterJoystick(IOHIDDeviceRef deviceRef);
