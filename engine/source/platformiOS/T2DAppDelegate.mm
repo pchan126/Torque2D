@@ -58,8 +58,6 @@ bool _iOSTorqueFatalError = false;
                                                 name:UIScreenDidDisconnectNotification
                                               object:nil];
     
-    iOSPlatState * platState = [iOSPlatState sharedPlatState];
-    
 //	NSArray *categoryNames = @[ kCICategoryBuiltIn ];
 //    NSArray* filterNames = [CIFilter filterNamesInCategories:categoryNames];
    
@@ -68,7 +66,7 @@ bool _iOSTorqueFatalError = false;
 //        gFilterIndexNames.push_back(StringTable->insert([temp UTF8String]));
 //    }
    
-    BOOL initialResult = [platState initializeTorque2D];
+    BOOL initialResult = [[iOSPlatState sharedPlatState] initializeTorque2D];
 
 //    for (int i = 0; i < gFilterIndexNames.size(); i++)
 //    {

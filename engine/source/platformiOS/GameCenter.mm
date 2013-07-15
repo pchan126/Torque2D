@@ -19,14 +19,12 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
-#ifdef TORQUE_ALLOW_GAMEKIT
-#import "GameCenter.h"
 
 #include "platformiOS.h"
-#include "string/stringBuffer.h"
-#include "sim/simBase.h"
 
-extern iOSPlatState platState;
+#ifdef TORQUE_ALLOW_GAMEKIT
+#import "GameCenter.h"
+#import "T2DAppDelegate.h"
 
 IMPLEMENT_CONOBJECT(Achievement);
 
@@ -164,10 +162,8 @@ BOOL isGameCenterAvailable()
     
     self.achievementCache = NULL;
     
-    if(gameCenterViewController != NULL)
-        [gameCenterViewController release];
-    
-    [super dealloc];
+    if(gameCenterViewController != nil)
+        gameCenterViewController = nil;
 }
 
 // This is the second part of initializing Game Center. The init function simply allocates memory.
@@ -187,38 +183,65 @@ BOOL isGameCenterAvailable()
         Con::printf("Failed to authenticate player. This iOS does not support Game Center");
 		return;
 	}
-	
-    // The iOS supports Game Center, so attempt to authenticate
-    [[GKLocalPlayer localPlayer] authenticateWithCompletionHandler:^(NSError *error)
-    {
-        // Something went wrong with the authentication
-        // Find out what the error is and print it to the console
-		if (error != nil)
+
+    GKLocalPlayer *localPlayer = [GKLocalPlayer localPlayer];
+
+    localPlayer.authenticateHandler = ^(UIViewController *viewController, NSError *error){
+
+        if (localPlayer.isAuthenticated)
         {
-            const char* errorMessage = [[error localizedDescription] UTF8String];
-            Con::printf("Failed to authenticate player. %s", errorMessage);
-            
-            // Let the scripts know. 0 means it failed
-            Con::executef(2, "gameCenterAuthenticationChanged", "0");
+            [self authenticatedPlayer: localPlayer];
+        }
+        else if (viewController != nil)
+        {
+            [self showAuthenticationDialogWhenReasonable:viewController ];
         }
         else
         {
-            // Successful authentication occurred
-			isAuthenticated = YES;
-            
-            // Start listening for changes in authentication
-			[self registerForAuthenticationNotification:error];
-			
-            // Cache the achievements
-			[self cacheAchievements];
-            
-			// Let the scripts know. 1 means it succeeded
-			Con::executef(2, "gameCenterAuthenticationChanged", "1");
-		}
-	}];
+            [self disableGameCenter];
+        }
+    };
 }
 
-// Helper function. This watches for any changes to the authentication for the Local Player 
+- (void)disableGameCenter {
+    // Successful authentication occurred
+    isAuthenticated = NO;
+
+//    const char* errorMessage = [[error localizedDescription] UTF8String];
+//    Con::printf("Failed to authenticate player. %s", errorMessage);
+
+    // Let the scripts know. 0 means it failed
+    Con::executef(2, "gameCenterAuthenticationChanged", "0");
+}
+
+- (void)authenticatedPlayer:(GKLocalPlayer *)player {
+    // Successful authentication occurred
+    isAuthenticated = YES;
+
+//    // Start listening for changes in authentication
+//    [self registerForAuthenticationNotification:error];
+
+//    // Cache the achievements
+//    [self cacheAchievements];
+
+    // Let the scripts know. 1 means it succeeded
+    Con::executef(2, "gameCenterAuthenticationChanged", "1");
+}
+
+- (void)showAuthenticationDialogWhenReasonable:(UIViewController *)controller {
+
+    T2DAppDelegate *appDelegate = (T2DAppDelegate*)[[UIApplication sharedApplication] delegate];
+
+    [appDelegate.window.rootViewController presentViewController:controller animated:YES
+                                                                                completion:nil];
+}
+
+//GFXTexHandle::GFXTexHandle( const String &texName, GFXTextureProfile *profile, const String &desc )
+//{
+//    set( texName, profile, desc );
+//}
+
+// Helper function. This watches for any changes to the authentication for the Local Player
 - (void)registerForAuthenticationNotification: (NSError*) error
 {
     if(error == NULL)
@@ -262,7 +285,7 @@ BOOL isGameCenterAvailable()
 // Exposed to TorqueScript via reloadHighScores(%category);
 - (void) reloadHighScoresForCategory:(NSString *)category
 {
-    GKLeaderboard* leaderBoard = [[[GKLeaderboard alloc] init] autorelease];
+    GKLeaderboard* leaderBoard = [[GKLeaderboard alloc] init];
     
     leaderBoard.playerScope = GKLeaderboardPlayerScopeGlobal;
     leaderBoard.category = category;
@@ -292,7 +315,7 @@ BOOL isGameCenterAvailable()
 // Exposed to TorqueScript via reportScore(%score, %category);
 - (void) reportScore:(int64_t)score forCategory:(NSString *)category
 {
-    GKScore* scoreReporter = [[[GKScore alloc] initWithCategory:category] autorelease];
+    GKScore* scoreReporter = [[GKScore alloc] initWithCategory:category];
     
     scoreReporter.value = score;
     
@@ -344,7 +367,6 @@ BOOL isGameCenterAvailable()
 {
     [gameCenterViewController dismissModalViewControllerAnimated:YES];
     [viewController.view removeFromSuperview];
-    [viewController release];
 }
 
 // Responsible for submitting achievement progress
@@ -366,7 +388,7 @@ BOOL isGameCenterAvailable()
     }
     else
     {
-        achievement = [[[GKAchievement alloc] initWithIdentifier:identifier] autorelease];
+        achievement = [[GKAchievement alloc] initWithIdentifier:identifier];
         achievement.percentComplete = percentComplete;
             
         [self.achievementCache setObject:achievement forKey:achievement.identifier];
@@ -445,7 +467,6 @@ BOOL isGameCenterAvailable()
 {
     [gameCenterViewController dismissModalViewControllerAnimated:YES];
 	[viewController.view removeFromSuperview];
-	[viewController release];
 }
 
 // This extremely important function is used for grabbing all the achievements this app supports
@@ -540,15 +561,6 @@ BOOL isGameCenterAvailable()
 @end
 
 
-// The rest of the code consists of exposing the GameCenterManager to TorqueScript
-// via global ConsoleFunctions
-
-ConsoleFunction(isGameCenterAvailable, bool, 1, 1, "() Used to determine if current iOS is capable of using Game Center\n"
-                                                   "@return True if Game Center is supported, false otherwise")
-{
-    return isGameCenterAvailable();
-}
-
 ConsoleFunction(initGameCenter, bool, 1, 1, "() Initialize Game Center and authenticate the player\n"
                                             "@return True if Game Center was successfully initialized, false if there was an error")
 {
@@ -561,7 +573,7 @@ ConsoleFunction(initGameCenter, bool, 1, 1, "() Initialize Game Center and authe
 
 ConsoleFunction(closeGameCenter, void, 1, 1, "() This will cleanup and close Game Center. Should only be called when the game is closed")
 {
-    [gameCenterManager release];
+    gameCenterManager = nil;
 }
 
 ConsoleFunction(showLeaderboard, void, 1, 1, "() Display the leaderboards for this app using Game Center's view")
@@ -606,7 +618,7 @@ ConsoleFunction(submitScore, bool, 3, 3, "(int score, string category) Submit a 
                                          "@return True if the score was successfully submitted, false if there was an error")
 {
     // Convert the identifier from a char* to a NSString
-    NSString* category = [[[NSString alloc] initWithUTF8String:argv[2]] autorelease];
+    NSString* category = [[NSString alloc] initWithUTF8String:argv[2]];
     
     // Convert score from char* to an int
     int score = dAtoi(argv[1]);
@@ -621,7 +633,7 @@ ConsoleFunction(reportAchievement, bool, 3, 3, "(string identifier, float percen
                 "@return True if the achievement succesfully registered, false if there was an error")
 {
     // Convert the identifier from a char* to a NSString
-    NSString* identifier = [[[NSString alloc] initWithUTF8String:argv[1]] autorelease];
+    NSString* identifier = [[NSString alloc] initWithUTF8String:argv[1]];
     
     // Convert the percentComplete from a char* to a float
     float percentComplete = dAtof(argv[2]);
@@ -632,7 +644,7 @@ ConsoleFunction(reportAchievement, bool, 3, 3, "(string identifier, float percen
 
 ConsoleFunction(reloadHighScores, void, 2, 2, "(string category) Reload the highscore for a leaderboard, specified by category")
 {
-    NSString* category = [[[NSString alloc] initWithUTF8String:argv[1]] autorelease];
+    NSString* category = [[NSString alloc] initWithUTF8String:argv[1]];
     
     [gameCenterManager reloadHighScoresForCategory:category];
 }
@@ -642,3 +654,16 @@ ConsoleFunction(resetAchievements, bool, 1, 1, "() Reset the achievement progres
     [gameCenterManager resetAchievements];
 }
 #endif //TORQUE_ALLOW_GAMEKIT
+
+// The rest of the code consists of exposing the GameCenterManager to TorqueScript
+// via global ConsoleFunctions
+
+ConsoleFunction(isGameCenterAvailable, bool, 1, 1, "() Used to determine if current iOS is capable of using Game Center\n"
+        "@return True if Game Center is supported, false otherwise")
+{
+#if defined(TORQUE_ALLOW_GAMEKIT)
+    return isGameCenterAvailable();
+#else
+    return false;
+#endif
+}

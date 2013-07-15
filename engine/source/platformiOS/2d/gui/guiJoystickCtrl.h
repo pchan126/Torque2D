@@ -42,7 +42,7 @@
 
 //-----------------------------------------------------------------------------
 
-class GuiJoystickButtonCtrl : public GuiButtonCtrl
+class GuiJoystickCtrl : public GuiButtonCtrl
 {
 private:
    typedef GuiButtonCtrl Parent;
@@ -59,6 +59,8 @@ protected:
 
     AssetPtr<ImageAsset> mImageCircleAsset;
     AssetPtr<ImageAsset> mImageStickAsset;
+    U32 circleframe;
+    U32 stickframe;
 
     GuiSpriteCtrl *mCircle;
     GuiSpriteCtrl *mStick;
@@ -70,12 +72,13 @@ protected:
     U32 m_touchRadius;
     ButtonState m_state;
 
-    void renderButton( ImageAsset* pImageAsset, const U32 frame, Point2I &offset, const RectI& updateRect);
+    void renderButtons( Point2I &offset, const RectI& updateRect);
 
 public:
-    GuiJoystickButtonCtrl();
+    GuiJoystickCtrl();
 
     virtual bool onAdd();
+    virtual void onRemove();
 
    bool onWake();
    void onSleep();
@@ -96,27 +99,27 @@ public:
     inline void setTouchRadius( const F32 radius) { m_touchRadius = radius;};
     inline F32 getTouchRadius( ) const { return m_touchRadius;};
 
-    void poll();
+    void process();
 
     virtual void onTouchUp(const GuiEvent &event);
     virtual void onTouchDown(const GuiEvent &event);
     virtual void onTouchDragged(const GuiEvent &event);
 
    // Declare type.
-   DECLARE_CONOBJECT(GuiJoystickButtonCtrl);
+   DECLARE_CONOBJECT(GuiJoystickCtrl);
 
 protected:
-    static bool setCircleImage(void* obj, const char* data) { static_cast<GuiJoystickButtonCtrl*>(obj)->setCircleImage( data ); return false; }
-    static const char*getCircleImage(void* obj, const char* data) { return static_cast<GuiJoystickButtonCtrl*>(obj)->getCircleImage(); }
-    static bool setStickImage(void* obj, const char* data) { static_cast<GuiJoystickButtonCtrl*>(obj)->setStickImage( data ); return false; }
-    static const char*getStickImage(void* obj, const char* data) { return static_cast<GuiJoystickButtonCtrl*>(obj)->getStickImage(); }
+    static bool setCircleImage(void* obj, const char* data) { static_cast<GuiJoystickCtrl *>(obj)->setCircleImage( data ); return false; }
+    static const char*getCircleImage(void* obj, const char* data) { return static_cast<GuiJoystickCtrl *>(obj)->getCircleImage(); }
+    static bool setStickImage(void* obj, const char* data) { static_cast<GuiJoystickCtrl *>(obj)->setStickImage( data ); return false; }
+    static const char*getStickImage(void* obj, const char* data) { return static_cast<GuiJoystickCtrl *>(obj)->getStickImage(); }
 
-    static bool setXevent(void* obj, const char* data) { static_cast<GuiJoystickButtonCtrl*>(obj)->setXevent( data ); return false; }
-    static const char*getXevent(void* obj, const char* data) { return static_cast<GuiJoystickButtonCtrl*>(obj)->getXevent(); }
-    static bool setYevent(void* obj, const char* data) { static_cast<GuiJoystickButtonCtrl*>(obj)->setYevent( data ); return false; }
-    static const char*getYevent(void* obj, const char* data) { return static_cast<GuiJoystickButtonCtrl*>(obj)->getYevent(); }
+    static bool setXevent(void* obj, const char* data) { static_cast<GuiJoystickCtrl *>(obj)->setXevent( data ); return false; }
+    static const char*getXevent(void* obj, const char* data) { return static_cast<GuiJoystickCtrl *>(obj)->getXevent(); }
+    static bool setYevent(void* obj, const char* data) { static_cast<GuiJoystickCtrl *>(obj)->setYevent( data ); return false; }
+    static const char*getYevent(void* obj, const char* data) { return static_cast<GuiJoystickCtrl *>(obj)->getYevent(); }
 
-    static bool setTouchRadius(void* obj, const char* data) { static_cast<GuiJoystickButtonCtrl*>(obj)->setTouchRadius(dAtof(data)); return false; }
+    static bool setTouchRadius(void* obj, const char* data) { static_cast<GuiJoystickCtrl *>(obj)->setTouchRadius(dAtof(data)); return false; }
 };
 
 #endif //_GUIIMAGEBUTTON_H_

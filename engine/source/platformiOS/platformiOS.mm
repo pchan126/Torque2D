@@ -315,15 +315,7 @@ bool Platform::openWebBrowser(const char *webAddress)
 bool isStatusBarHidden()
 {
    // Get the shared iOS platform state
-   iOSPlatState * platState = [iOSPlatState sharedPlatState];
-   if ([platState application].statusBarHidden == YES)
-   {
-      return true;
-   }
-   else
-   {
-      return false;
-   }
+   return [[iOSPlatState sharedPlatState] application].statusBarHidden;
 }
 
 bool setStatusBarHidden(bool hidden)

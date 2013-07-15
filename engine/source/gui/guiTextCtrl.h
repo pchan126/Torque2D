@@ -85,6 +85,10 @@ public:
    void onRender(Point2I offset, const RectI &updateRect);
    void displayText( S32 xOffset, S32 yOffset );
 
+    void setFontSize( U32 fontSize );
+
+    void resizeWidthToText();
+
    //Console methods
    const char *getScriptValue();
    void setScriptValue(const char *value);

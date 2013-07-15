@@ -38,10 +38,6 @@ void Math::init(U32 properties)
 //------------------------------------------------------------------------------
 F32 Platform::getRandom()
 {
-    iOSPlatState *platState = [iOSPlatState sharedPlatState];
-    
-    RandomLCG* random = [platState platformRandom];
-    
-    return random->randF();
+    return [[iOSPlatState sharedPlatState] platformRandom]->randF();
 }
 

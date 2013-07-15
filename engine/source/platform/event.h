@@ -93,7 +93,7 @@ struct InputEventInfo
    U32   deviceInst;  ///< Device instance: joystick0, joystick1, etc
    F32   fValue;      ///< Value ranges from -1.0 to 1.0
    U16   deviceType;  ///< One of mouse, keyboard, joystick, unknown
-   U16   objType;     ///< One of SI_XAXIS, SI_BUTTON, SI_KEY ...
+   U32   objType;     ///< One of SI_XAXIS, SI_BUTTON, SI_KEY ...
    U16   ascii;       ///< ASCII character code if this is a keyboard event.
    U16   objInst;     ///< Which type instance or a KeyCode
    U8    action;      ///< What was the action? (MAKE/BREAK/MOVE)
