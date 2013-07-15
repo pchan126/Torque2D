@@ -425,7 +425,8 @@ GuiCanvas::GuiCanvas()
    lastCursorON = false;
    rLastFrameTime = 0.0f;
 
-   mMouseCapturedControl = NULL;
+    for (int i = 0; i < 5; i++)
+        mMouseCapturedControl[i] = NULL;
    mMouseControl = NULL;
    mMouseControlClicked = false;
    mMouseButtonDown = false;
@@ -909,8 +910,8 @@ void GuiCanvas::rootMouseDown(const GuiEvent &event)
    mMouseButtonDown = true;
 
    //pass the event to the mouse locked control
-   if (bool(mMouseCapturedControl))
-      mMouseCapturedControl->onMouseDown(event);
+   if (mMouseCapturedControl[event.eventID].notNull())
+      mMouseCapturedControl[event.eventID]->onMouseDown(event);
 
    //else pass it to whoever is underneath the cursor
    else
@@ -933,7 +934,7 @@ void GuiCanvas::rootMouseDown(const GuiEvent &event)
          }
       }
    }
-   if (bool(mMouseControl))
+   if (mMouseControl.notNull())
       mMouseControlClicked = true;
 }
 
@@ -947,7 +948,7 @@ void GuiCanvas::findMouseControl(const GuiEvent &event)
    GuiControl *controlHit = findHitControl(event.mousePoint);
    if(controlHit != static_cast<GuiControl*>(mMouseControl))
    {
-      if(bool(mMouseControl))
+      if(mMouseControl.notNull())
          mMouseControl->onMouseLeave(event);
       mMouseControl = controlHit;
       mMouseControl->onMouseEnter(event);
@@ -971,13 +972,13 @@ void GuiCanvas::rootScreenTouchDown(const GuiEvent &event)
               
             //If the control we hit is not the same one that is locked,  
             // then unlock the existing control.  
-            if (bool(mMouseCapturedControl))  
+            if (mMouseCapturedControl[event.eventID].notNull())
             {  
-                if(mMouseCapturedControl->isMouseLocked())  
+                if(mMouseCapturedControl[event.eventID]->isMouseLocked())
                 {  
-                    if(mMouseCapturedControl != controlHit)  
+                    if(mMouseCapturedControl[event.eventID] != controlHit)
                     {  
-                        mMouseCapturedControl->onMouseLeave(event);  
+                        mMouseCapturedControl[event.eventID]->onMouseLeave(event);
                     }  
                 }  
             }  
@@ -992,7 +993,7 @@ void GuiCanvas::rootScreenTouchDown(const GuiEvent &event)
             }  
         }  
       
-    if (bool(mMouseControl))  
+    if (mMouseControl.notNull())
         mMouseControlClicked = true;  
 }
 
@@ -1023,16 +1024,16 @@ void GuiCanvas::rootScreenTouchUp(const GuiEvent &event)
 void GuiCanvas::rootScreenTouchMove(const GuiEvent &event)
 {
     //pass the event to the mouse locked control
-   if (bool(mMouseCapturedControl))
+   if (mMouseCapturedControl[event.eventID].notNull())
    {
       checkLockMouseMove(event);
-      if(!mMouseCapturedControl.isNull())
-            mMouseCapturedControl->onMouseDragged(event);
+      if(!mMouseCapturedControl[event.eventID].isNull())
+            mMouseCapturedControl[event.eventID]->onMouseDragged(event);
    }
    else
    {
       findMouseControl(event);
-      if(bool(mMouseControl))
+      if(mMouseControl.notNull())
       {
           mMouseControl->onMouseDragged(event);		  
       }
@@ -1052,12 +1053,12 @@ void GuiCanvas::rootMouseUp(const GuiEvent &event)
    mMouseButtonDown = false;
 
    //pass the event to the mouse locked control
-   if (bool(mMouseCapturedControl))
-      mMouseCapturedControl->onMouseUp(event);
+   if (mMouseCapturedControl[event.eventID].notNull())
+      mMouseCapturedControl[event.eventID]->onMouseUp(event);
    else
    {
       findMouseControl(event);
-      if(bool(mMouseControl))
+      if(mMouseControl.notNull())
          mMouseControl->onMouseUp(event);
    }
 }
@@ -1067,10 +1068,10 @@ void GuiCanvas::checkLockMouseMove(const GuiEvent &event)
     GuiControl *controlHit = findHitControl(event.mousePoint);
    if(controlHit != mMouseControl)
    {
-      if(mMouseControl == mMouseCapturedControl)
-         mMouseCapturedControl->onMouseLeave(event);
-      else if(controlHit == mMouseCapturedControl)
-         mMouseCapturedControl->onMouseEnter(event);
+      if(mMouseControl == mMouseCapturedControl[event.eventID])
+         mMouseCapturedControl[event.eventID]->onMouseLeave(event);
+      else if(controlHit == mMouseCapturedControl[event.eventID])
+         mMouseCapturedControl[event.eventID]->onMouseEnter(event);
       mMouseControl = controlHit;
    }
 }
@@ -1078,20 +1079,20 @@ void GuiCanvas::checkLockMouseMove(const GuiEvent &event)
 void GuiCanvas::rootMouseDragged(const GuiEvent &event)
 {
    //pass the event to the mouse locked control
-   if (bool(mMouseCapturedControl))
+   if (mMouseCapturedControl[event.eventID].notNull())
    {
       checkLockMouseMove(event);
-      if(!mMouseCapturedControl.isNull())
-            mMouseCapturedControl->onMouseDragged(event);
+      if(!mMouseCapturedControl[event.eventID].isNull())
+            mMouseCapturedControl[event.eventID]->onMouseDragged(event);
        //Luma: Mouse dragged calls mouse Moved on iPhone
 #ifdef TORQUE_OS_IOS
-       mMouseCapturedControl->onMouseMove(event);
+       mMouseCapturedControl[event.eventID]->onMouseMove(event);
 #endif //TORQUE_OS_IOS
    }
    else
    {
       findMouseControl(event);
-      if(bool(mMouseControl))
+      if(mMouseControl.notNull())
       {
           mMouseControl->onMouseDragged(event);
 #ifdef TORQUE_OS_IOS
@@ -1104,16 +1105,16 @@ void GuiCanvas::rootMouseDragged(const GuiEvent &event)
 
 void GuiCanvas::rootMouseMove(const GuiEvent &event)
 {
-   if(mMouseCapturedControl != NULL)
+   if(mMouseCapturedControl[event.eventID] != NULL)
    {
       checkLockMouseMove(event);
-      if(mMouseCapturedControl != NULL)
-        mMouseCapturedControl->onMouseMove(event);
+      if(mMouseCapturedControl[event.eventID] != NULL)
+        mMouseCapturedControl[event.eventID]->onMouseMove(event);
    }
    else
    {
       findMouseControl(event);
-      if(bool(mMouseControl))
+      if(mMouseControl.notNull())
          mMouseControl->onMouseMove(event);
    }
 }
@@ -1123,13 +1124,13 @@ void GuiCanvas::rootRightMouseDown(const GuiEvent &event)
    mPrevMouseTime = Platform::getVirtualMilliseconds();
    mMouseRightButtonDown = true;
 
-   if (bool(mMouseCapturedControl))
-      mMouseCapturedControl->onRightMouseDown(event);
+   if (mMouseCapturedControl[event.eventID].notNull())
+      mMouseCapturedControl[event.eventID]->onRightMouseDown(event);
    else
    {
       findMouseControl(event);
 
-      if(bool(mMouseControl))
+      if(mMouseControl.notNull())
       {
          mMouseControl->onRightMouseDown(event);
       }
@@ -1141,13 +1142,13 @@ void GuiCanvas::rootRightMouseUp(const GuiEvent &event)
    mPrevMouseTime = Platform::getVirtualMilliseconds();
    mMouseRightButtonDown = false;
 
-   if (bool(mMouseCapturedControl))
-      mMouseCapturedControl->onRightMouseUp(event);
+   if (mMouseCapturedControl[event.eventID].notNull())
+      mMouseCapturedControl[event.eventID]->onRightMouseUp(event);
    else
    {
       findMouseControl(event);
 
-      if(bool(mMouseControl))
+      if(mMouseControl.notNull())
          mMouseControl->onRightMouseUp(event);
    }
 }
@@ -1156,16 +1157,16 @@ void GuiCanvas::rootRightMouseDragged(const GuiEvent &event)
 {
    mPrevMouseTime = Platform::getVirtualMilliseconds();
 
-   if (bool(mMouseCapturedControl))
+   if (mMouseCapturedControl[event.eventID].notNull())
    {
       checkLockMouseMove(event);
-      mMouseCapturedControl->onRightMouseDragged(event);
+      mMouseCapturedControl[event.eventID]->onRightMouseDragged(event);
    }
    else
    {
       findMouseControl(event);
 
-      if(bool(mMouseControl))
+      if(mMouseControl.notNull())
          mMouseControl->onRightMouseDragged(event);
    }
 }
@@ -1175,13 +1176,13 @@ void GuiCanvas::rootMiddleMouseDown(const GuiEvent &event)
    mPrevMouseTime = Platform::getVirtualMilliseconds();
    mMouseMiddleButtonDown = true;
 
-   if (bool(mMouseCapturedControl))
-      mMouseCapturedControl->onMiddleMouseDown(event);
+   if (mMouseCapturedControl[event.eventID].notNull())
+      mMouseCapturedControl[event.eventID]->onMiddleMouseDown(event);
    else
    {
       findMouseControl(event);
 
-      if(bool(mMouseControl))
+      if(mMouseControl.notNull())
       {
          mMouseControl->onMiddleMouseDown(event);
       }
@@ -1193,13 +1194,13 @@ void GuiCanvas::rootMiddleMouseUp(const GuiEvent &event)
    mPrevMouseTime = Platform::getVirtualMilliseconds();
    mMouseMiddleButtonDown = false;
 
-   if (bool(mMouseCapturedControl))
-      mMouseCapturedControl->onMiddleMouseUp(event);
+   if (mMouseCapturedControl[event.eventID].notNull())
+      mMouseCapturedControl[event.eventID]->onMiddleMouseUp(event);
    else
    {
       findMouseControl(event);
 
-      if(bool(mMouseControl))
+      if(mMouseControl.notNull())
          mMouseControl->onMiddleMouseUp(event);
    }
 }
@@ -1208,42 +1209,42 @@ void GuiCanvas::rootMiddleMouseDragged(const GuiEvent &event)
 {
    mPrevMouseTime = Platform::getVirtualMilliseconds();
 
-   if (bool(mMouseCapturedControl))
+   if (mMouseCapturedControl[event.eventID].notNull())
    {
       checkLockMouseMove(event);
-      mMouseCapturedControl->onMiddleMouseDragged(event);
+      mMouseCapturedControl[event.eventID]->onMiddleMouseDragged(event);
    }
    else
    {
       findMouseControl(event);
 
-      if(bool(mMouseControl))
+      if(mMouseControl.notNull())
          mMouseControl->onMiddleMouseDragged(event);
    }
 }
 
 void GuiCanvas::rootMouseWheelUp(const GuiEvent &event)
 {
-   if (bool(mMouseCapturedControl))
-      mMouseCapturedControl->onMouseWheelUp(event);
+   if (mMouseCapturedControl[event.eventID].notNull())
+      mMouseCapturedControl[event.eventID]->onMouseWheelUp(event);
    else
    {
       findMouseControl(event);
 
-      if (bool(mMouseControl))
+      if (mMouseControl.notNull())
          mMouseControl->onMouseWheelUp(event);
    }
 }
 
 void GuiCanvas::rootMouseWheelDown(const GuiEvent &event)
 {
-   if (bool(mMouseCapturedControl))
-      mMouseCapturedControl->onMouseWheelDown(event);
+   if (mMouseCapturedControl[event.eventID].notNull())
+      mMouseCapturedControl[event.eventID]->onMouseWheelDown(event);
    else
    {
       findMouseControl(event);
 
-      if (bool(mMouseControl))
+      if (mMouseControl.notNull())
          mMouseControl->onMouseWheelDown(event);
    }
 }
@@ -1450,12 +1451,12 @@ void GuiCanvas::popDialogControl(S32 layer)
       popDialogControl(ctrl);
 }
 
-void GuiCanvas::mouseLock(GuiControl *lockingControl)
+void GuiCanvas::mouseLock(GuiControl *lockingControl, S32 mouseNumber)
 {
-   if (bool(mMouseCapturedControl))
+   if (mMouseCapturedControl[mouseNumber].notNull())
       return;
-   mMouseCapturedControl = lockingControl;
-   if(mMouseControl && mMouseControl != mMouseCapturedControl)
+   mMouseCapturedControl[mouseNumber] = lockingControl;
+   if(mMouseControl && mMouseControl != mMouseCapturedControl[0])
    {
       GuiEvent evt;
       evt.mousePoint.x = S32(cursorPt.x);
@@ -1465,9 +1466,9 @@ void GuiCanvas::mouseLock(GuiControl *lockingControl)
    }
 }
 
-void GuiCanvas::mouseUnlock(GuiControl *lockingControl)
+void GuiCanvas::mouseUnlock(GuiControl *lockingControl, S32 mouseNumber)
 {
-   if (static_cast<GuiControl*>(mMouseCapturedControl) != lockingControl)
+   if (static_cast<GuiControl*>(mMouseCapturedControl[mouseNumber]) != lockingControl)
       return;
 
    GuiEvent evt;
@@ -1475,14 +1476,14 @@ void GuiCanvas::mouseUnlock(GuiControl *lockingControl)
    evt.mousePoint.y = S32(cursorPt.y);
 
    GuiControl * controlHit = findHitControl(evt.mousePoint);
-   if(controlHit != mMouseCapturedControl)
+   if(controlHit != mMouseCapturedControl[mouseNumber])
    {
       mMouseControl = controlHit;
       mMouseControlClicked = false;
-      if(bool(mMouseControl))
+      if(mMouseControl.notNull())
          mMouseControl->onMouseEnter(evt);
    }
-   mMouseCapturedControl = NULL;
+   mMouseCapturedControl[0] = NULL;
 }
 
 void GuiCanvas::paint()
@@ -1573,9 +1574,9 @@ void GuiCanvas::renderFrame(bool preRenderOnly, bool bufferSwap /* = true */)
    GuiCursor *mouseCursor = NULL;
    bool cursorVisible = true;
 
-   if(bool(mMouseCapturedControl))
-      mMouseCapturedControl->getCursor(mouseCursor, cursorVisible, mLastEvent);
-   else if(bool(mMouseControl))
+   if(mMouseCapturedControl[0].notNull())
+      mMouseCapturedControl[0]->getCursor(mouseCursor, cursorVisible, mLastEvent);
+   else if(mMouseControl.notNull())
       mMouseControl->getCursor(mouseCursor, cursorVisible, mLastEvent);
 
    Point2I cursorPos((S32)cursorPt.x, (S32)cursorPt.y);
@@ -1624,7 +1625,7 @@ void GuiCanvas::renderFrame(bool preRenderOnly, bool bufferSwap /* = true */)
       }
 
       // Tooltip resource
-      if(bool(mMouseControl))
+      if(mMouseControl.notNull())
       {
          U32 curTime = Platform::getRealMilliseconds();
          if(hoverControl == mMouseControl)

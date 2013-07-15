@@ -42,10 +42,10 @@ ConsoleMethod(GuiDragAndDropControl, startDragging, void, 2, 4, "( int x, int y 
       offset.x = dAtoi(argv[2]);
       offset.y = dAtoi(argv[3]);
    }
-   object->startDragging(offset);
+    object->startDragging(0, offset);
 }
 
-void GuiDragAndDropControl::startDragging(Point2I offset)
+void GuiDragAndDropControl::startDragging(S32 i, Point2I offset)
 {
    GuiCanvas* canvas = getRoot();
    AssertFatal(canvas, "DragAndDropControl wasn't added to the gui before the drag started.");
@@ -63,7 +63,7 @@ void GuiDragAndDropControl::startDragging(Point2I offset)
 
 void GuiDragAndDropControl::onMouseDown(const GuiEvent& event)
 {
-   startDragging(event.mousePoint - mBounds.point);
+    startDragging(event.eventID, event.mousePoint - mBounds.point);
 }
 
 void GuiDragAndDropControl::onMouseDragged(const GuiEvent& event)

@@ -498,7 +498,7 @@ void GuiTextListCtrl::setSize(Point2I newSize)
 {
    mSize = newSize;
 
-   if ( bool( mFont ) )
+   if (  mFont.isNull())
    {
       if ( mSize.x == 1 && mFitParentWidth )
       {

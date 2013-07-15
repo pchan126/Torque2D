@@ -460,16 +460,16 @@ public:
 
     /// Lock the mouse within the provided control
     /// @param   lockingControl   Control to lock the mouse within
-    void mouseLock(GuiControl *lockingControl);
+    void mouseLock(GuiControl *lockingControl, S32 MouseNumber = 0);
 
     /// Turn on mouse locking with last used lock control
-    void mouseLock();
+    void mouseLock(S32 MouseNumber = 0);
 
     /// Unlock the mouse
-    void mouseUnlock();
+    void mouseUnlock(S32 MouseNumber = 0);
 
     /// Returns true if the mouse is locked
-    bool isMouseLocked();
+    bool isMouseLocked(S32 MouseNumber = 0);
     /// @}
 
 

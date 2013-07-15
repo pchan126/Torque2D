@@ -132,7 +132,7 @@ static S32 gFileXOffset = 44;
 
 void DbgFileView::AdjustCellSize()
 {
-   if (! bool(mFont))
+   if (mFont.isNull())
       return;
    S32 maxWidth = 1;
    for (U32 i = 0; i < (U32)mFileView.size(); i++)

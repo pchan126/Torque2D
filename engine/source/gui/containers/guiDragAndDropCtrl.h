@@ -50,7 +50,7 @@ private:
 public:
    GuiDragAndDropControl() { }
 
-   void startDragging(Point2I offset = Point2I(0, 0));
+   void startDragging(S32 i, Point2I offset);
 
    virtual void onMouseDown(const GuiEvent& event);
    virtual void onMouseDragged(const GuiEvent& event);

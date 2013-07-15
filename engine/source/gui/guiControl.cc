@@ -1280,31 +1280,31 @@ GuiControl* GuiControl::findHitControl(const Point2I &pt, S32 initialLayer)
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- //
 
-bool GuiControl::isMouseLocked()
+bool GuiControl::isMouseLocked(int mouseNumber)
 {
    GuiCanvas *root = getRoot();
-   return root ? root->getMouseLockedControl() == this : false;
+   return root ? root->getMouseLockedControl(mouseNumber) == this : false;
 }
 
-void GuiControl::mouseLock(GuiControl *lockingControl)
+void GuiControl::mouseLock(GuiControl *lockingControl, int mouseNumber)
 {
    GuiCanvas *root = getRoot();
    if (root)
-      root->mouseLock(lockingControl);
+      root->mouseLock(lockingControl, mouseNumber);
 }
 
-void GuiControl::mouseLock()
+void GuiControl::mouseLock(int mouseNumber)
 {
    GuiCanvas *root = getRoot();
    if (root)
-      root->mouseLock(this);
+      root->mouseLock(this, mouseNumber);
 }
 
-void GuiControl::mouseUnlock()
+void GuiControl::mouseUnlock(int mouseNumber)
 {
    GuiCanvas *root = getRoot();
    if (root)
-      root->mouseUnlock(this);
+      root->mouseUnlock(this, mouseNumber);
 }
 
 bool GuiControl::onInputEvent(const InputEvent &event)

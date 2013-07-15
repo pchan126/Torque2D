@@ -937,7 +937,7 @@ GuiMLTextCtrl::Font *GuiMLTextCtrl::allocFont(const char *faceName, U32 faceName
    ret->size = size;
    ret->next = mFontList;
    ret->fontRes = GFont::create(ret->faceName, size, GuiControlProfile::sFontCacheDirectory);
-   if(bool(ret->fontRes))
+   if(!ret->fontRes.isNull())
    {
       ret->next = mFontList;
       mFontList = ret;
@@ -963,7 +963,7 @@ GuiMLTextCtrl::Bitmap *GuiMLTextCtrl::allocBitmap(const char *bitmapName, U32 bi
    dStrncpy(nameBuffer, bitmapName, bitmapNameLen);
    nameBuffer[bitmapNameLen] = 0;
    ret->bitmapHandle = TextureHandle(nameBuffer, TextureHandle::BitmapTexture);
-   if(bool(ret->bitmapHandle))
+   if(ret->bitmapHandle.NotNull())
    {
       ret->next = mBitmapList;
       mBitmapList = ret;
@@ -1941,7 +1941,7 @@ textemit:
 //-----------------------------------------------------------------------------
 char* GuiMLTextCtrl::stripControlChars(const char *inString)
 {
-   if (! bool(inString))
+   if (inString == NULL)
       return NULL;
    U32 maxBufLength = 64;
    char *strippedBuffer = Con::getReturnBuffer(maxBufLength);

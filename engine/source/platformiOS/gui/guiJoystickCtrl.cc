@@ -286,7 +286,7 @@ void GuiJoystickCtrl::process()
         InputEvent inputEvent;
 
         inputEvent.deviceInst = 0;
-        inputEvent.fValue = mClampF((F32)-offset.y/(F32)m_touchRadius, -1.0f, 1.0f);
+        inputEvent.fValue = mClampF((F32)offset.y/(F32)m_touchRadius, -1.0f, 1.0f);
         inputEvent.deviceType = JoystickDeviceType;
         inputEvent.objType = m_YeventCode;
         inputEvent.objInst = 0;

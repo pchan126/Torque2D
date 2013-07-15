@@ -114,7 +114,7 @@ protected:
    /// @name Mouse Input
    /// @{
 
-   SimObjectPtr<GuiControl>   mMouseCapturedControl;  ///< All mouse events will go to this ctrl only
+   SimObjectPtr<GuiControl>   mMouseCapturedControl[5];  ///< All mouse events will go to this ctrl only
    SimObjectPtr<GuiControl>   mMouseControl;          ///< the control the mouse was last seen in unless some other one captured it
    bool                       mMouseControlClicked;   ///< whether the current ctrl has been clicked - used by helpctrl
    U32                        mPrevMouseTime;         ///< this determines how long the mouse has been in the same control
@@ -306,17 +306,17 @@ public:
    /// When a control gets the mouse lock this means that that control gets
    /// ALL mouse input and no other control recieves any input.
    /// @param   lockingControl   Control to lock mouse to
-   virtual void mouseLock(GuiControl *lockingControl);
+   virtual void mouseLock(GuiControl *lockingControl, S32 mouseNumber = 0);
 
    /// Unlocks the mouse from a control
    /// @param   lockingControl   Control to unlock from
-   virtual void mouseUnlock(GuiControl *lockingControl);
+   virtual void mouseUnlock(GuiControl *lockingControl, S32 mouseNumber = 0);
 
    /// Returns the control which the mouse is over
    virtual GuiControl* getMouseControl()       { return mMouseControl; }
 
    /// Returns the control which the mouse is locked to if any
-   virtual GuiControl* getMouseLockedControl() { return mMouseCapturedControl; }
+   virtual GuiControl* getMouseLockedControl(S32 i = 0) { return mMouseCapturedControl[i]; }
 
    /// Returns true if the left mouse button is down
    virtual bool mouseButtonDown(void) { return mMouseButtonDown; }

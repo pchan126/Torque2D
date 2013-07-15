@@ -568,7 +568,7 @@ bool GuiMessageVectorCtrl::onWake()
    if (Parent::onWake() == false)
       return false;
 
-   if (bool(mProfile->mFont) == false)
+   if (mProfile->mFont.isNull())
       return false;
 
    mMinSensibleWidth = 1;

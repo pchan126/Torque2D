@@ -231,7 +231,7 @@ S32 LangTable::addLanguage(const UTF8 *filename, const UTF8 *name /* = NULL */)
 
 	if((pLang = new LangFile(name)))
 	{
-		if(bool(ResourceManager->find((const char*)filename)))
+		if(ResourceManager->find((const char*)filename) == NULL)
 		{
 			pLang->setLangFile(filename);
 			
