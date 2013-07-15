@@ -8,21 +8,19 @@
 
 #import <Foundation/Foundation.h>
 #import <IOKit/hid/IOHIDLib.h>
-#import "JoystickNotificationDelegate.h"
 
 @interface Joystick : NSObject {
     IOHIDDeviceRef  device;
     
-    
+
 @private
     NSArray  *elements;
-    
-    NSArray *axes;
+
+    NSArray *_axes;
     NSArray *buttons;
     NSArray *hats;
     NSArray *misc;
     
-    NSMutableArray *delegates;
 }
 
 @property(readwrite) IOHIDDeviceRef device;
@@ -31,13 +29,13 @@
 @property(readonly) unsigned int numAxes;
 @property(readonly) unsigned int numHats;
 
+@property(nonatomic, retain) NSArray *axes;
+
 - (id)initWithDevice:(IOHIDDeviceRef)theDevice;
 - (int)getElementIndex:(IOHIDElementRef)theElement;
+- (int)getButtonIndex:(IOHIDElementRef)theElement;
+- (int)getAxisIndex:(IOHIDElementRef)theElement;
 
 - (double)getRelativeValueOfAxesIndex:(int)index;
-
-- (void)elementReportedChange:(IOHIDElementRef)theElement;
-- (void)registerForNotications:(id <JoystickNotificationDelegate>)delegate;
-- (void)deregister:(id<JoystickNotificationDelegate>)delegate;
 
 @end

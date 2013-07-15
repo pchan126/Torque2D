@@ -22,7 +22,6 @@
 
 #import "AppDelegate.h"
 #import "platformOSX/platformOSX.h"
-#import "platformOSX/JoystickManager/JoystickManager.h"
 #include "actionMap.h"
 #include "gameInterface.h"
 
@@ -60,9 +59,6 @@
     
     platState.argv = newArgv;
     
-   JoystickManager *theJoystickManager = [JoystickManager sharedInstance];
-   [theJoystickManager setJoystickAddedDelegate:self];
-
    // With the command line arguments stored, let's run Torque
     [platState runTorque2D];
 }
@@ -82,127 +78,7 @@
     [platState shutDownTorque2D];
 }
 
-- (void)joystickAdded:(Joystick *)joystick {
-   [joystick registerForNotications:self];
 
-    CFStringRef valueRef = 0;
-
-    // Get product string
-    valueRef = (CFStringRef) IOHIDDeviceGetProperty(joystick.device, CFSTR(kIOHIDProductKey));
-    char HIDName[1024];
-    if (valueRef)
-    {
-        CFStringGetCString(valueRef,
-                HIDName,
-                sizeof(HIDName),
-                kCFStringEncodingUTF8);
-
-    }
-    NSLog(@"added %@ %s", joystick, HIDName);
-}
-
-- (void)joystickStateChanged:(Joystick *)joystick {
-   
-}
-
-- (void) joystickButtonPushed:(int)buttonIndex onJoystick:(Joystick *)joystick {
-   // Build the input event
-    InputEvent inputEvent;
-
-    JoystickManager *theJoystickManager = [JoystickManager sharedInstance];
-    int val = [theJoystickManager deviceIDByReference:joystick.device];
-
-    Con::printf("button: %i", buttonIndex);
-
-    inputEvent.deviceInst = val;
-    inputEvent.deviceType = JoystickDeviceType;
-    inputEvent.objType = SI_BUTTON;
-    inputEvent.objInst = KEY_BUTTON0+buttonIndex;
-    inputEvent.ascii = 0;
-    inputEvent.action = SI_MAKE;
-    inputEvent.fValue = 1.0;
-
-    Game->postEvent(inputEvent);
-}
-
-- (void) joystickButtonReleased:(int)buttonIndex onJoystick:(Joystick *)joystick {
-   // Build the input event
-    InputEvent inputEvent;
-
-    JoystickManager *theJoystickManager = [JoystickManager sharedInstance];
-    int val = [theJoystickManager deviceIDByReference:joystick.device];
-
-    inputEvent.deviceType = JoystickDeviceType;
-    inputEvent.deviceInst = val;
-    inputEvent.objType = SI_BUTTON;
-    inputEvent.objInst = KEY_BUTTON0+buttonIndex;
-    inputEvent.ascii = 0;
-    inputEvent.action = SI_BREAK;
-    inputEvent.fValue = 1.0;
-
-    Game->postEvent(inputEvent);
-}
-
-- (void)joystickAxisChanged:(int)axisIndex ofType:(int)type onJoystick:(Joystick*)joystick
-{
-    int i = axisIndex;
-    double value = mLerp(-1.0f, 1.0f, [joystick getRelativeValueOfAxesIndex:(i)]);
-    {
-        InputEvent inputEvent;
-
-        JoystickManager *theJoystickManager = [JoystickManager sharedInstance];
-        int val = [theJoystickManager deviceIDByReference:joystick.device];
-
-        inputEvent.deviceInst = val;
-        inputEvent.fValue = value;
-        inputEvent.deviceType = JoystickDeviceType;
-
-        switch (type)
-        {
-            case kHIDUsage_GD_X:
-            {
-                inputEvent.objType = SI_XAXIS;
-                break;
-            }
-            case kHIDUsage_GD_Y:
-            {
-                inputEvent.objType = SI_YAXIS;
-                break;
-            }
-            case kHIDUsage_GD_Z:
-            {
-                inputEvent.objType = SI_ZAXIS;
-                break;
-            }
-            case kHIDUsage_GD_Rx:
-            {
-                inputEvent.objType = SI_RXAXIS;
-                break;
-            }
-            case kHIDUsage_GD_Ry:
-            {
-                inputEvent.objType = SI_RYAXIS;
-                break;
-            }
-            case kHIDUsage_GD_Rz:
-            {
-                inputEvent.objType = SI_RZAXIS;
-                break;
-            }
-            case kHIDUsage_GD_Slider:
-            {
-                inputEvent.objType = SI_SLIDER;
-                break;
-            }
-        }
-
-        inputEvent.objInst = 0;
-        inputEvent.action = SI_MOVE;
-        inputEvent.modifier = 0;
-
-        Game->postEvent(inputEvent);
-    }
-}
 
 
 

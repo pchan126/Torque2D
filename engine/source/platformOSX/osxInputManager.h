@@ -23,6 +23,8 @@
 #define _OSXINPUT_H_
 
 #import "platform/platformInput.h"
+#import <IOKit/hid/IOHIDLib.h>
+#import "Joystick.h"
 
 class osxInputManager : public InputManager
 {
@@ -30,7 +32,13 @@ private:
 
     bool mKeyboardEnabled;
     bool mMouseEnabled;
-    
+
+    IOHIDManagerRef hidManager;
+
+    NSMutableDictionary  *joysticks;
+
+    int                 joystickIDIndex;
+
 public:
 
     osxInputManager();
@@ -49,6 +57,13 @@ public:
     void enableMouse();
     void disableMouse();
     bool isMouseEnabled();
+
+    void registerNewJoystick(Joystick *joystick);
+    void unregisterJoystick(IOHIDDeviceRef deviceRef);
+
+    S32  getDeviceIDByReference(IOHIDDeviceRef deviceRef);
+
+    void elementReportedChange(IOHIDDeviceRef device, IOHIDElementRef theElement);
 };
 
 #endif

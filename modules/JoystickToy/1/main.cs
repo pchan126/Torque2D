@@ -22,24 +22,43 @@
 
 function joypad_leftstickx(%value)  
 {  
-    %vec = VectorNormalize(-3 + %value *2 SPC JoystickToy.stick1.getPosition().y);
-    echo ("joypad_leftstickx" SPC %value);
-	JoystickToy.stick1.setPosition(%vec.x, %vec.y);
+    JoystickToy.stick1.x = %value;
+    if (VectorLen(JoystickToy.stick1.x SPC JoystickToy.stick1.y SPC 0) < 1)
+    	%vec = (JoystickToy.stick1.x SPC JoystickToy.stick1.y SPC 0);
+    else
+	    %vec = VectorNormalize( JoystickToy.stick1.x SPC JoystickToy.stick1.y SPC 0);
+
+	JoystickToy.stick1.setPosition(%vec.x*2 -3, %vec.y*2 -3);
 }
 
 function joypad_leftsticky(%value)
 {  
-	JoystickToy.stick1.setPosition(JoystickToy.stick1.getPosition().x, -3 + %value *2);
+    JoystickToy.stick1.y = -%value;
+    if (VectorLen(JoystickToy.stick1.x SPC JoystickToy.stick1.y SPC 0) < 1)
+    	%vec = (JoystickToy.stick1.x SPC JoystickToy.stick1.y SPC 0);
+    else
+	    %vec = VectorNormalize( JoystickToy.stick1.x SPC JoystickToy.stick1.y SPC 0);
+	JoystickToy.stick1.setPosition(%vec.x*2 -3, %vec.y*2 -3);
 }
 
 function joypad_rightstickx(%value)  
 {  
-	JoystickToy.stick2.setPosition(-3 + %value * 2, JoystickToy.stick2.getPosition().y);
+    JoystickToy.stick2.x = %value;
+    if (VectorLen(JoystickToy.stick2.x SPC JoystickToy.stick2.y SPC 0) < 1)
+    	%vec = (JoystickToy.stick2.x SPC JoystickToy.stick2.y SPC 0);
+    else
+	    %vec = VectorNormalize( JoystickToy.stick2.x SPC JoystickToy.stick2.y SPC 0);
+	JoystickToy.stick2.setPosition(%vec.x*2 +3, %vec.y*2 -3);
 }  
 
 function joypad_rightsticky(%value)
 {  
-	JoystickToy.stick2.setPosition(JoystickToy.stick2.getPosition().x, -3 + %value * 2);
+    JoystickToy.stick2.y = -%value;
+    if (VectorLen(JoystickToy.stick2.x SPC JoystickToy.stick2.y SPC 0) < 1)
+    	%vec = (JoystickToy.stick2.x SPC JoystickToy.stick2.y SPC 0);
+    else
+	    %vec = VectorNormalize( JoystickToy.stick2.x SPC JoystickToy.stick2.y SPC 0);
+	JoystickToy.stick2.setPosition(%vec.x*2 +3, %vec.y*2 -3);
 }  
 
 function joypad_button0(%value)
@@ -196,4 +215,6 @@ function JoystickToy::createBackground(%this)
     SandboxScene.add( %obj );
     JoystickToy.stick2 = %obj;
 }
+
+
 

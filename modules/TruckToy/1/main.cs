@@ -20,6 +20,26 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
+function joypad_leftstickx(%value)
+{
+   echo("Joystick_leftstick X" SPC %value);
+}
+
+function joypad_leftsticky(%value)
+{
+   echo("Joystick_leftstick Y" SPC %value);
+}
+
+function joypad_rightstickx(%value)
+{
+   echo("Joystick_rightstick X" SPC %value);
+}
+
+function joypad_rightsticky(%value)
+{
+   echo("Joystick_rightstick Y" SPC %value);
+}
+
 function TruckToy::create( %this )
 {        
     TruckToy.ObstacleFriction = 1.5;
@@ -61,6 +81,48 @@ function TruckToy::create( %this )
     
     // Reset the toy.
     %this.reset();
+
+   GlobalActionMap.bind(joystick, xaxis, "joypad_leftstickx");
+   GlobalActionMap.bind(joystick, yaxis, "joypad_leftsticky");
+   GlobalActionMap.bind(joystick, zaxis, "joypad_rightstickx");
+   GlobalActionMap.bind(joystick, rzaxis, "joypad_rightsticky");
+
+    if ( $platform $= "iOS" )
+    {
+        TruckToy.joystick1 = new GuiJoystickCtrl()
+        {
+            Profile = SandboxWindowProfile;
+            Position = "0 0";
+            Extent = "480 600";
+        };
+        TruckToy.joystick2 = new GuiJoystickCtrl()
+        {
+            Profile = SandboxWindowProfile;
+            Position = "0 0";
+            Extent = "480 600";
+        };
+        // Add it as a child window.
+        SandboxWindow.add( TruckToy.joystick1 );
+        SandboxWindow.add( TruckToy.joystick2 );
+
+        // Add window to the toy so it is destroyed.
+        TruckToy.add( TruckToy.joystick1 );
+        TruckToy.add( TruckToy.joystick2 );
+
+        %extent = SandboxWindow.getExtent();
+        TruckToy.joystick1.setExtent(%extent.x/2, %extent.y-40);
+        TruckToy.joystick1.Xevent = "xaxis";
+        TruckToy.joystick1.Yevent = "yaxis";
+        TruckToy.joystick1.CircleImage = "ToyAssets:Circle1";
+        TruckToy.joystick1.StickImage = "ToyAssets:Circle2";
+
+        TruckToy.joystick2.setExtent(%extent.x/2, %extent.y-40);
+        TruckToy.joystick2.setPosition(%extent.x/2, 0);
+        TruckToy.joystick2.Xevent = "zaxis";
+        TruckToy.joystick2.Yevent = "rzaxis";
+        TruckToy.joystick2.CircleImage = "ToyAssets:Circle1";
+        TruckToy.joystick2.StickImage = "ToyAssets:Circle2";
+    }
 }
 
 //-----------------------------------------------------------------------------

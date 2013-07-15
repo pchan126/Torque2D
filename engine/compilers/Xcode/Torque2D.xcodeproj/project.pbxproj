@@ -43,6 +43,7 @@
 		2AF1C54116B439BB00C1CF3A /* referencedAssets.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2AF1C53E16B439BB00C1CF3A /* referencedAssets.cc */; };
 		2AF3633916A9BBE0004ED7AA /* ParticleSystem.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2AF3633716A9BBE0004ED7AA /* ParticleSystem.cc */; };
 		4B8AA374641AAE8A95580BB8 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B8AAF0655D93E2B07CEADE4 /* IOKit.framework */; };
+		4B8AAE54F366FFE8A664377D /* Joystick.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AADFD227802E03305FB35 /* Joystick.m */; };
 		86063A251654180000362D83 /* platformOSX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 86063A241654180000362D83 /* platformOSX.mm */; };
 		8609FE2F16556DD2004662ED /* osxSemaphore.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8609FE2E16556DD2004662ED /* osxSemaphore.mm */; };
 		8609FE3116556E5A004662ED /* osxThread.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8609FE3016556E5A004662ED /* osxThread.mm */; };
@@ -452,9 +453,6 @@
 		86DE5688171F05F60054CB83 /* guiGridCtrl.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86DE5686171F05F60054CB83 /* guiGridCtrl.cc */; };
 		86EA5B401678C7C700598E68 /* osxCocoaUtilities.mm in Sources */ = {isa = PBXBuildFile; fileRef = 86EA5B3F1678C7C700598E68 /* osxCocoaUtilities.mm */; };
 		86EC5AC7165C1E0100757872 /* osxTorqueView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 86EC5AC6165C1E0100757872 /* osxTorqueView.mm */; };
-		D16965821793994800EC1C19 /* Joystick.m in Sources */ = {isa = PBXBuildFile; fileRef = D169657C1793994800EC1C19 /* Joystick.m */; };
-		D16965831793994800EC1C19 /* JoystickHatswitch.m in Sources */ = {isa = PBXBuildFile; fileRef = D169657E1793994800EC1C19 /* JoystickHatswitch.m */; };
-		D16965841793994800EC1C19 /* JoystickManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D16965801793994800EC1C19 /* JoystickManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -557,6 +555,8 @@
 		2AF3633716A9BBE0004ED7AA /* ParticleSystem.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ParticleSystem.cc; sourceTree = "<group>"; };
 		2AF3633816A9BBE0004ED7AA /* ParticleSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticleSystem.h; sourceTree = "<group>"; };
 		2AF80CFF16A80CB400CE13F1 /* ParticleAssetEmitter_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticleAssetEmitter_ScriptBinding.h; sourceTree = "<group>"; };
+		4B8AAAA35E15D5D8D94CC34B /* Joystick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Joystick.h; sourceTree = "<group>"; };
+		4B8AADFD227802E03305FB35 /* Joystick.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Joystick.m; sourceTree = "<group>"; };
 		4B8AAF0655D93E2B07CEADE4 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = ../../../../../../Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/IOKit.framework; sourceTree = "<group>"; };
 		86063A231654180000362D83 /* platformOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformOSX.h; sourceTree = "<group>"; };
 		86063A241654180000362D83 /* platformOSX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = platformOSX.mm; sourceTree = "<group>"; };
@@ -1369,13 +1369,6 @@
 		86EA5B3F1678C7C700598E68 /* osxCocoaUtilities.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxCocoaUtilities.mm; sourceTree = "<group>"; };
 		86EC5AC5165C1E0100757872 /* osxTorqueView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxTorqueView.h; sourceTree = "<group>"; };
 		86EC5AC6165C1E0100757872 /* osxTorqueView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxTorqueView.mm; sourceTree = "<group>"; };
-		D169657B1793994800EC1C19 /* Joystick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Joystick.h; sourceTree = "<group>"; };
-		D169657C1793994800EC1C19 /* Joystick.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Joystick.m; sourceTree = "<group>"; };
-		D169657D1793994800EC1C19 /* JoystickHatswitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JoystickHatswitch.h; sourceTree = "<group>"; };
-		D169657E1793994800EC1C19 /* JoystickHatswitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JoystickHatswitch.m; sourceTree = "<group>"; };
-		D169657F1793994800EC1C19 /* JoystickManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JoystickManager.h; sourceTree = "<group>"; };
-		D16965801793994800EC1C19 /* JoystickManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JoystickManager.m; sourceTree = "<group>"; };
-		D16965811793994800EC1C19 /* JoystickNotificationDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JoystickNotificationDelegate.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1803,7 +1796,6 @@
 		865A2351165188AF00527C44 /* platformOSX */ = {
 			isa = PBXGroup;
 			children = (
-				D169657A1793994800EC1C19 /* JoystickManager */,
 				86EA5B3E1678C7C700598E68 /* osxCocoaUtilities.h */,
 				86EA5B3F1678C7C700598E68 /* osxCocoaUtilities.mm */,
 				865A235716518AD300527C44 /* AppDelegate.h */,
@@ -1843,6 +1835,8 @@
 				86063A231654180000362D83 /* platformOSX.h */,
 				86063A241654180000362D83 /* platformOSX.mm */,
 				869FF8C31651518C002FE082 /* Supporting Files */,
+				4B8AAAA35E15D5D8D94CC34B /* Joystick.h */,
+				4B8AADFD227802E03305FB35 /* Joystick.m */,
 			);
 			name = platformOSX;
 			path = ../../source/platformOSX;
@@ -2910,20 +2904,6 @@
 			path = threads;
 			sourceTree = "<group>";
 		};
-		D169657A1793994800EC1C19 /* JoystickManager */ = {
-			isa = PBXGroup;
-			children = (
-				D169657B1793994800EC1C19 /* Joystick.h */,
-				D169657C1793994800EC1C19 /* Joystick.m */,
-				D169657D1793994800EC1C19 /* JoystickHatswitch.h */,
-				D169657E1793994800EC1C19 /* JoystickHatswitch.m */,
-				D169657F1793994800EC1C19 /* JoystickManager.h */,
-				D16965801793994800EC1C19 /* JoystickManager.m */,
-				D16965811793994800EC1C19 /* JoystickNotificationDelegate.h */,
-			);
-			path = JoystickManager;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -3421,9 +3401,7 @@
 				2AD4214E17043413005BB8AD /* tamlBinaryWriter.cc in Sources */,
 				2ACAFD4A1705CF4A0022601C /* tamlJSONParser.cc in Sources */,
 				86DE5688171F05F60054CB83 /* guiGridCtrl.cc in Sources */,
-				D16965821793994800EC1C19 /* Joystick.m in Sources */,
-				D16965831793994800EC1C19 /* JoystickHatswitch.m in Sources */,
-				D16965841793994800EC1C19 /* JoystickManager.m in Sources */,
+				4B8AAE54F366FFE8A664377D /* Joystick.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

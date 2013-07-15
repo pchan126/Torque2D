@@ -53,7 +53,8 @@ void TimeManager::process()
     {
         Platform::sleep(platState.sleepTicks - elapsedTime);
     }
-    
+
+    Input::process();
     platState.lastTimeTick = Platform::getRealMilliseconds();
     
     TimeEvent event;

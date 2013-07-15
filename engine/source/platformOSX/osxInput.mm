@@ -24,6 +24,7 @@
 #import "platformOSX/osxInputManager.h"
 #import "platform/event.h"
 
+
 #pragma mark ---- Static Variables ----
 InputManager *Input::smManager = 0;
 CursorManager *Input::smCursorManager = 0;
