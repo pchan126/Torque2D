@@ -548,6 +548,7 @@
     <ClCompile Include="..\..\source\math\mSolver.cc" />
     <ClCompile Include="..\..\source\math\mSplinePatch.cc" />
     <ClCompile Include="..\..\source\persistence\SimXMLDocument.cpp" />
+    <ClCompile Include="..\..\source\platformWin32\2d\assets\FilterImageAsset.cpp" />
     <ClCompile Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinCardProfiler.cc" />
     <ClCompile Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinDevice.win.cc" />
     <ClCompile Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinEnumTranslate.cc" />
@@ -1067,6 +1068,7 @@
     <ClInclude Include="..\..\source\math\mSphere.h" />
     <ClInclude Include="..\..\source\math\mSplinePatch.h" />
     <ClInclude Include="..\..\source\persistence\SimXMLDocument.h" />
+    <ClInclude Include="..\..\source\platformWin32\2d\assets\FilterImageAsset.h" />
     <ClInclude Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinCardProfiler.h" />
     <ClInclude Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinDevice.h" />
     <ClInclude Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinEnumTranslate.h" />
