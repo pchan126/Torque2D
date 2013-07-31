@@ -96,9 +96,8 @@ void GuiListBoxCtrl::clearSelection()
    if( !mSelectedItems.size() )
       return;
 
-   VectorPtr<LBItem*>::iterator i = mSelectedItems.begin();
-   for( ; i != mSelectedItems.end(); i++ )
-      (*i)->isSelected = false;
+   for(auto i: mSelectedItems  )
+      (i)->isSelected = false;
 
    mSelectedItems.clear();
 }
@@ -138,11 +137,11 @@ void GuiListBoxCtrl::removeSelection( LBItem *item, S32 index )
    if( !item )
       return;
 
-   for( S32 i = 0 ; i < mSelectedItems.size(); i++ )
+   for( auto itr = mSelectedItems.begin(); itr != mSelectedItems.end(); itr++)
    {
-      if( mSelectedItems[i] == item )
+      if( *itr == item )
       {
-         mSelectedItems.erase( &mSelectedItems[i] );
+         mSelectedItems.erase( itr );
          item->isSelected = false;
          Con::executef(this, 3, "onUnSelect", Con::getIntArg( index ), item->itemText);
          return;
@@ -260,11 +259,10 @@ ConsoleMethod( GuiListBoxCtrl, getSelectedItems, const char*, 2, 2, "()\n @retur
 
    UTF8 *retBuffer = Con::getReturnBuffer( selItems.size() * 4 );
    dMemset( retBuffer, 0, selItems.size() * 4 );
-   Vector<S32>::iterator i = selItems.begin();
-   for( ; i != selItems.end(); i++ )
+   for( auto i: selItems )
    {
       UTF8 retFormat[12];
-      dSprintf( retFormat, 12, "%d ", (*i) );
+      dSprintf( retFormat, 12, "%d ", (i) );
       dStrcat( retBuffer, retFormat );
    }
 
@@ -596,18 +594,18 @@ void  GuiListBoxCtrl::deleteItem( S32 index )
    // Remove it from the selected list.
    if( item->isSelected )
    {
-      for( VectorPtr<LBItem*>::iterator i = mSelectedItems.begin(); i != mSelectedItems.end(); i++ )
+      for( auto i = mSelectedItems.begin(); i != mSelectedItems.end(); i++ )
       {
          if( item == *i )
          {
-            mSelectedItems.erase_fast( i );
+            mSelectedItems.erase( i );
             break;
          }
       }
    }
 
    // Remove it from the list
-   mItems.erase( &mItems[ index ] );
+   mItems.erase( mItems.begin()+index );
 
    // Free the memory associated with it
    delete item;

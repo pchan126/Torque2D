@@ -354,8 +354,6 @@ GuiTreeViewCtrl::GuiTreeViewCtrl()
 {
    VECTOR_SET_ASSOCIATION(mItems);
    VECTOR_SET_ASSOCIATION(mVisibleItems);
-   VECTOR_SET_ASSOCIATION(mSelectedItems);
-   VECTOR_SET_ASSOCIATION(mSelected);
 
    mItemFreeList  =  NULL;
    mRoot          =  NULL;
@@ -428,13 +426,7 @@ void GuiTreeViewCtrl::initPersistFields()
 
 GuiTreeViewCtrl::Item * GuiTreeViewCtrl::getItem(S32 itemId)
 {
-   if((itemId > 0) && (itemId <= mItems.size()))
-   {
-      if (mItems[itemId-1] != NULL)
-         return(mItems[itemId-1]);
-   }
-
-   return(0);
+    return mItems[itemId];
 }
 
 //------------------------------------------------------------------------------
@@ -470,7 +462,7 @@ GuiTreeViewCtrl::Item * GuiTreeViewCtrl::createItem(S32 icon)
    else
       pNewItem->mIcon = Default; //default icon to stick next to an item
 
-   pNewItem->mState.clear();
+   pNewItem->mState.reset();
    pNewItem->mState = 0;
    pNewItem->mTabLevel = 0;
 
@@ -659,7 +651,7 @@ void GuiTreeViewCtrl::buildVisibleTree(bool bForceFullUpdate)
    mVisibleItems.clear();
 
    // Update the flags.
-   mFlags.clear(RebuildVisible);
+   mFlags.reset(RebuildVisible);
 
    // build the root items
    Item *traverse = mRoot;
@@ -675,7 +667,7 @@ void GuiTreeViewCtrl::buildVisibleTree(bool bForceFullUpdate)
    syncSelection();
 
    // Done Recursing.
-   mFlags.clear( BuildingVisTree );
+   mFlags.reset( BuildingVisTree );
 }
 
 //------------------------------------------------------------------------------
@@ -1201,7 +1193,7 @@ bool GuiTreeViewCtrl::hitTest(const Point2I & pnt, Item* & item, BitSet32 & flag
 
    // Initialize some things.
    const Point2I pos = globalToLocalCoord(pnt);
-   flags.clear();
+   flags.reset();
    item = 0;
 
    // get the hit cell
@@ -1353,23 +1345,23 @@ void GuiTreeViewCtrl::removeSelection(S32 itemId)
 
    // the item may have been selected at one point but was never created/visible in the tree
    // so remove it.
-   for (S32 j = 0; j <mSelected.size(); j++) 
+   for (  std::deque<S32>::iterator itr = mSelected.begin(); itr != mSelected.end(); itr++)
    {
-      if (item) 
+      if (item)
       {
-         if (item->isInspectorData()) 
+         if (item->isInspectorData())
          {
-            if (item->getObject() && item->getObject()->getId() == mSelected[j]) 
+            if (item->getObject() && item->getObject()->getId() == (*itr))
             {
-               mSelected.erase(j);
+               mSelected.erase(itr);
                break;
             }
          }
       }
 
-      if (mSelected[j] == itemId) 
+      if ((*itr) == itemId)
       {
-         mSelected.erase(j);
+         mSelected.erase(itr);
          break;
       }
    }
@@ -1377,7 +1369,7 @@ void GuiTreeViewCtrl::removeSelection(S32 itemId)
    if(!item)
    {
       // maybe what we were passed wasn't an item id but an object id.
-      for (S32 i = 0; i <mItems.size(); i++) 
+      for (S32 i = 0; i <mItems.size(); i++)
       {
          if (mItems[i] != NULL) 
          {
@@ -1401,11 +1393,11 @@ void GuiTreeViewCtrl::removeSelection(S32 itemId)
 
    item->mState.set(Item::Selected, false);
    
-   for (S32 i = 0; i < mSelectedItems.size(); i++) 
+   for (  std::deque<Item*>::iterator itr = mSelectedItems.begin(); itr != mSelectedItems.end(); itr++)
    {
-      if (mSelectedItems[i] == item) 
+      if ((*itr) == item)
       {
-         mSelectedItems.erase(i);
+         mSelectedItems.erase(itr);
          break;
       }
    }
@@ -1439,7 +1431,7 @@ void GuiTreeViewCtrl::addSelection(S32 itemId)
                   item = mItems[itr];
                   //looks like it is. check to see if it is on the list
                   bool alreadySelected = false;
-                  Vector<Item *>::iterator i;
+                   std::deque<Item *>::iterator i;
                   for(i = mSelectedItems.begin(); i != mSelectedItems.end(); i++)
                   {
                      if (*(i) == item)
@@ -1570,7 +1562,7 @@ bool GuiTreeViewCtrl::setItemSelected(S32 itemId, bool select)
       if (mDebug) Con::printf("setItemSelected called false");
 
       // remove it from the mSelected list
-      for (S32 j = 0; j <mSelected.size(); j++)
+      for (  std::deque<S32>::iterator itr = mSelected.begin(); itr != mSelected.end(); itr++)
       {
          if (item)
          {
@@ -1578,24 +1570,23 @@ bool GuiTreeViewCtrl::setItemSelected(S32 itemId, bool select)
             {
                if (item->getObject())
                {
-                  if(item->getObject()->getId() == mSelected[j])
+                  if(item->getObject()->getId() == (*itr))
                   {
-                     mSelected.erase(j);
+                     mSelected.erase(itr);
                      break;
                   }
                }
                else
                {
                   // Zombie, kill it!
-                  mSelected.erase(j);
-                  j--;
+                  mSelected.erase(itr);
                }
             }
          }
 
-         if (mSelected[j] == itemId)
+         if ((*itr) == itemId)
          {
-            mSelected.erase(j);
+            mSelected.erase(itr);
             break;
          }
       }
@@ -1651,11 +1642,11 @@ bool GuiTreeViewCtrl::setItemSelected(S32 itemId, bool select)
          Con::executef(this, 2, "onUnSelect", Con::getIntArg(item->mId));
 
       // remove it from the selected items list
-      for (S32 i = 0; i < mSelectedItems.size(); i++)
+      for (  std::deque<Item*>::iterator itr = mSelectedItems.begin(); itr != mSelectedItems.end(); itr++)
       {
-         if (mSelectedItems[i] == item)
+         if ((*itr) == item)
          {
-            mSelectedItems.erase(i);
+            mSelectedItems.erase(itr);
             break;
          }
       }
@@ -1802,9 +1793,8 @@ void GuiTreeViewCtrl::deleteSelection()
    }
    else
    {
-      Vector<Item*> delSelection;
-      delSelection = mSelectedItems;
-      mSelectedItems.clear();
+      std::deque<Item*> delSelection;
+      delSelection.swap(mSelectedItems);
       while (!delSelection.empty())
       {
          Item * item = delSelection.front();
@@ -1860,7 +1850,7 @@ bool GuiTreeViewCtrl::onKeyDown( const GuiEvent& event )
    if ( mSelectedItems.empty() || (mSelectedItems.size() > 1))
       return true;
 
-   Item* item = mSelectedItems.first();
+   Item* item = mSelectedItems[0];
 
    if ( !item )
       return true;
@@ -2119,7 +2109,7 @@ bool GuiTreeViewCtrl::onKeyDown( const GuiEvent& event )
             while ( item->mNext )
                item = item->mNext;
          }
-         setItemSelected(mSelectedItems.first()->mId,false);
+         setItemSelected(mSelectedItems[0]->mId,false);
          setItemSelected( item->mId, true );
          scrollVisible(item);
          return true;
@@ -2128,7 +2118,7 @@ bool GuiTreeViewCtrl::onKeyDown( const GuiEvent& event )
       // or select parent:
       if ( item->mParent )
       {
-         setItemSelected(mSelectedItems.first()->mId,false);
+         setItemSelected(mSelectedItems[0]->mId,false);
          setItemSelected( item->mParent->mId, true );
          scrollVisible(item->mParent);
          return true;
@@ -2141,7 +2131,7 @@ bool GuiTreeViewCtrl::onKeyDown( const GuiEvent& event )
       // Selected child if it is visible:
       if ( item->isParent() && item->isExpanded() )
       {
-         setItemSelected(mSelectedItems.first()->mId,false);
+         setItemSelected(mSelectedItems[0]->mId,false);
          setItemSelected( item->mChild->mId, true );
          scrollVisible(item->mChild);
          return true;
@@ -2151,7 +2141,7 @@ bool GuiTreeViewCtrl::onKeyDown( const GuiEvent& event )
       {
          if ( item->mNext )
          {
-            setItemSelected(mSelectedItems.first()->mId,false);
+            setItemSelected(mSelectedItems[0]->mId,false);
             setItemSelected(item->mNext->mId, true );
             scrollVisible(item->mNext);
             return true;
@@ -2174,7 +2164,7 @@ bool GuiTreeViewCtrl::onKeyDown( const GuiEvent& event )
       // or select parent:
       if ( item->mParent )
       {
-         setItemSelected(mSelectedItems.first()->mId,false);
+         setItemSelected(mSelectedItems[0]->mId,false);
          setItemSelected( item->mParent->mId, true );
          scrollVisible(item->mParent);
          return true;
@@ -2195,7 +2185,7 @@ bool GuiTreeViewCtrl::onKeyDown( const GuiEvent& event )
          }
 
          // or select child:
-         setItemSelected(mSelectedItems.first()->mId,false);
+         setItemSelected(mSelectedItems[0]->mId,false);
          setItemSelected( item->mChild->mId, true );
          scrollVisible(item->mChild);
          return true;
@@ -2249,11 +2239,12 @@ void GuiTreeViewCtrl::onMouseUp(const GuiEvent &event)
             return;
          }
 
-         newItem2->mState.clear(Item::MouseOverBmp | Item::MouseOverText );
+         newItem2->mState.reset(Item::MouseOverBmp);
+         newItem2->mState.reset(Item::MouseOverText );
          
          // if the newItem isn't in the mSelectedItemList then continue.
 
-         Vector<Item *>::iterator k;
+          std::deque<Item *>::iterator k;
          for(k = mSelectedItems.begin(); k != mSelectedItems.end(); k++) 
          {
             newItem = newItem2;
@@ -2300,7 +2291,8 @@ void GuiTreeViewCtrl::onMouseUp(const GuiEvent &event)
             if (mDebug) Con::printf("----------------------------");
          
             // clear old highlighting of the item
-            item->mState.clear(Item::MouseOverBmp | Item::MouseOverText );
+            item->mState.reset(Item::MouseOverBmp);
+            item->mState.reset(Item::MouseOverText );
 
             // move the selected item to the newItem
             Item* oldParent = item->mParent;
@@ -2626,7 +2618,10 @@ void GuiTreeViewCtrl::onMouseDragged(const GuiEvent &event)
    S32 yDiff = currentY-midpCell;
    S32 variance = (mItemHeight/5);
    if (mPreviousDragCell >= 0)
-      mVisibleItems[mPreviousDragCell]->mState.clear( Item::MouseOverBmp | Item::MouseOverText );
+   {
+      mVisibleItems[mPreviousDragCell]->mState.reset( Item::MouseOverBmp );
+      mVisibleItems[mPreviousDragCell]->mState.reset( Item::MouseOverText );
+   }
 
    if (mAbs(yDiff) > variance)
    {
@@ -2785,7 +2780,7 @@ void GuiTreeViewCtrl::onMouseDown(const GuiEvent & event)
                for (S32 j = (mCurrentDragCell); j < firstSelectedIndex; j++) {
                   //if the item isn't already selected, then select it
                   bool newSelection = true;
-                  Vector<Item *>::iterator k;
+                   std::deque<Item *>::iterator k;
                   for(k = mSelectedItems.begin(); k != mSelectedItems.end(); k++)
                   {
                      if (mVisibleItems[j] == *(k)){
@@ -2806,7 +2801,7 @@ void GuiTreeViewCtrl::onMouseDown(const GuiEvent & event)
                // select down
                for (S32 j = firstSelectedIndex+1; j < (mCurrentDragCell+1); j++) {
                   bool newSelection = true;
-                  Vector<Item *>::iterator k;
+                   std::deque<Item *>::iterator k;
                   for(k = mSelectedItems.begin(); k != mSelectedItems.end(); k++) {
                      if (mVisibleItems[j] == *(k)){
                         newSelection = false;
@@ -2835,7 +2830,7 @@ void GuiTreeViewCtrl::onMouseDown(const GuiEvent & event)
    {
       // first check to see if the item is already selected
       bool newSelection = true;
-      Vector<Item *>::iterator k;
+       std::deque<Item *>::iterator k;
       for(k = mSelectedItems.begin(); k != mSelectedItems.end(); k++) {
          if(*(k) == item)
          {
@@ -2876,7 +2871,10 @@ void GuiTreeViewCtrl::onMouseDown(const GuiEvent & event)
 void GuiTreeViewCtrl::onMouseMove( const GuiEvent &event )
 {
    if ( mMouseOverCell.y >= 0 && mVisibleItems.size() > mMouseOverCell.y)
-      mVisibleItems[mMouseOverCell.y]->mState.clear( Item::MouseOverBmp | Item::MouseOverText );
+   {
+      mVisibleItems[mMouseOverCell.y]->mState.reset( Item::MouseOverBmp );
+      mVisibleItems[mMouseOverCell.y]->mState.reset( Item::MouseOverText );
+   }
 
    Parent::onMouseMove( event );
 
@@ -2912,7 +2910,10 @@ void GuiTreeViewCtrl::onMouseEnter( const GuiEvent &event )
 void GuiTreeViewCtrl::onMouseLeave( const GuiEvent &event )
 {
    if ( mMouseOverCell.y >= 0 && mVisibleItems.size() > mMouseOverCell.y)
-      mVisibleItems[mMouseOverCell.y]->mState.clear( Item::MouseOverBmp | Item::MouseOverText );
+   {
+      mVisibleItems[mMouseOverCell.y]->mState.reset( Item::MouseOverBmp );
+      mVisibleItems[mMouseOverCell.y]->mState.reset( Item::MouseOverText );
+   }
 
    Parent::onMouseLeave( event );
 }
@@ -3238,7 +3239,7 @@ void GuiTreeViewCtrl::clearSelection()
 {
    while (!mSelectedItems.empty())
    {
-      if(!setItemSelected(mSelectedItems.last()->mId, false))
+      if(!setItemSelected(mSelectedItems.back()->mId, false))
          mSelectedItems.pop_back();
    }
 

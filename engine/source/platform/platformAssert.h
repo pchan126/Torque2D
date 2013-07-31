@@ -93,7 +93,10 @@ public:
     */
    #define AssertFatal(x, y)         \
          { if (((bool)(x))==(bool)0) \
-            { if ( PlatformAssert::processAssert(PlatformAssert::Fatal, __FILE__, __LINE__,  y) ) { Platform::debugBreak(); } } }
+            { if ( PlatformAssert::processAssert(PlatformAssert::Fatal, __FILE__, __LINE__,  y) ) \
+              { Platform::debugBreak(); } \
+            } \
+         }
 
 #else
    #define AssertFatal(x, y)   { TORQUE_UNUSED(x); }

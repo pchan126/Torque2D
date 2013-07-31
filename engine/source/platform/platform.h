@@ -214,6 +214,8 @@ struct Platform
     static bool pathCopy(const char *fromName, const char *toName, bool nooverwrite = true);
     static StringTableEntry osGetTemporaryDirectory();
 
+    static bool deleteDirectoryRecursive( const char* pPath );
+
     /// Misc.
     static StringTableEntry createUUID( void );
     static bool openWebBrowser( const char* webAddress );

@@ -91,11 +91,8 @@ void ParticleAssetField::copyTo( ParticleAssetField& field )
 
     // Copy data keys.    
     field.clearDataKeys();
-    for ( S32 i = 0; i < mDataKeys.size(); i++ )
-    {
-        DataKey key = mDataKeys[i];
+    for ( DataKey key:mDataKeys )
         field.addDataKey(key.mTime, key.mValue);
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -543,7 +540,7 @@ void ParticleAssetField::onTamlCustomWrite( TamlCustomNode* pCustomNode )
         const DataKey& dataKey = mDataKeys[index];
 
         // Add a key node.
-        TamlCustomNode* pKeyNode = pCustomNode->addNode( particleAssetFieldDataKeyName );
+        TamlCustomNode* pKeyNode = pAssetField->addNode( particleAssetFieldDataKeyName );
 
         // Add key fields.
         pKeyNode->addField( particleAssetFieldDataKeyTimeName, dataKey.mTime );
@@ -576,11 +573,8 @@ void ParticleAssetField::onTamlCustomRead( const TamlCustomNode* pCustomNode )
     const TamlCustomFieldVector& fields = pCustomNode->getFields();
 
     // Iterate fields.
-    for ( TamlCustomFieldVector::const_iterator fieldItr = fields.begin(); fieldItr != fields.end(); ++fieldItr )
+    for ( TamlCustomField* pField:fields )
     {
-        // Fetch field.
-        TamlCustomField* pField = *fieldItr;
-
         // Fetch property field name.
         StringTableEntry fieldName = pField->getFieldName();
 
@@ -638,14 +632,9 @@ void ParticleAssetField::onTamlCustomRead( const TamlCustomNode* pCustomNode )
     }
 
     // Fetch any children.
-    const TamlCustomNodeVector& children = pCustomNode->getChildren();
-
     // Iterate node children.
-    for( TamlCustomNodeVector::const_iterator childItr = children.begin(); childItr != children.end(); ++childItr )
+    for( TamlCustomNode* pKeyNode:pCustomNode->getChildren() )
     {
-        // Fetch node.
-        TamlCustomNode* pKeyNode = *childItr;
-
         // Ignore anything that isn't a key.
         if ( pKeyNode->getNodeName() != particleAssetFieldDataKeyName )
             continue;

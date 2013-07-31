@@ -33,7 +33,6 @@
 
 class GFXTextureProfile;
 
-
 /// A reference counted handle to a texture resource.
 class GFXTexHandle : public StrongRefPtr<GFXTextureObject>
 {
@@ -126,6 +125,18 @@ public:
    static GFXTexHandle ZUP;
 
 };
+
+namespace std
+{
+    template<>
+    struct hash<GFXTexHandle>
+    {
+        size_t operator () (const GFXTexHandle handle) const
+        {
+            return hash<GFXTexHandle>()(handle.getPointer());
+        }
+    };
+}
 
 //-----------------------------------------------------------------------------
 

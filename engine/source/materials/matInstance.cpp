@@ -409,20 +409,19 @@ void MatInstance::updateStateBlocks()
 void MatInstance::addShaderMacro( const String &name, const String &value )
 {   
    // Check to see if we already have this macro.
-   Vector<GFXShaderMacro>::iterator iter = mUserMacros.begin();
-   for ( ; iter != mUserMacros.end(); iter++ )
+   for ( GFXShaderMacro iter:mUserMacros )
    {
-      if ( iter->name == name )
+      if ( iter.name == name )
       {
-         iter->value = value;
+         iter.value = value;
          return;
       }
    }
 
    // Add a new macro.
    mUserMacros.increment();
-   mUserMacros.last().name = name;
-   mUserMacros.last().value = value;
+   mUserMacros.back().name = name;
+   mUserMacros.back().value = value;
 }
 
 //----------------------------------------------------------------------------

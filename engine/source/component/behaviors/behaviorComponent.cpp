@@ -149,34 +149,31 @@ void BehaviorComponent::copyTo(SimObject* obj)
     for( typeInstanceConnectionHash::iterator instanceItr = mBehaviorConnections.begin(); instanceItr != mBehaviorConnections.end(); ++instanceItr )
     {
         // Fetch output name connection(s).
-        typeOutputNameConnectionHash* pOutputNameConnection = instanceItr->value;
+        typeOutputNameConnectionHash* pOutputNameConnection = instanceItr->second;
 
         // Iterate output name connections.
         for( typeOutputNameConnectionHash::iterator outputItr = pOutputNameConnection->begin(); outputItr != pOutputNameConnection->end(); ++outputItr )
         {
             // Fetch port connection(s).
-            typePortConnectionVector* pPortConnections = outputItr->value;
+            typePortConnectionVector* pPortConnections = outputItr->second;
 
             // Iterate input connections.
             for( typePortConnectionVector::iterator connectionItr = pPortConnections->begin(); connectionItr != pPortConnections->end(); ++connectionItr )
             {
-                // Fetch connection.
-                BehaviorPortConnection* pConnection = connectionItr;
-
                 // Find behavior instance mappings.
-                typeBehaviorCloneHash::iterator toOutputItr = behaviorInstanceCloneMap.find( pConnection->mOutputInstance );
-                typeBehaviorCloneHash::iterator toInputItr = behaviorInstanceCloneMap.find( pConnection->mInputInstance );
+                typeBehaviorCloneHash::iterator toOutputItr = behaviorInstanceCloneMap.find( connectionItr->mOutputInstance );
+                typeBehaviorCloneHash::iterator toInputItr = behaviorInstanceCloneMap.find( connectionItr->mInputInstance );
 
                 // Sanity!
                 AssertFatal( toOutputItr != behaviorInstanceCloneMap.end(), "Failed to find output behavior instance mapping during copy." );
                 AssertFatal( toInputItr != behaviorInstanceCloneMap.end(), "Failed to find input behavior instance mapping during copy." );
 
                 // Fetch behavior instance mappings.
-                BehaviorInstance* pToInstanceOutput = toOutputItr->value;
-                BehaviorInstance* pToInstanceInput = toInputItr->value;
+                BehaviorInstance* pToInstanceOutput = toOutputItr->second;
+                BehaviorInstance* pToInstanceInput = toInputItr->second;
 
                 // Make cloned connection.
-                pObject->connect( pToInstanceOutput, pToInstanceInput, pConnection->mOutputName, pConnection->mInputName );
+                pObject->connect( pToInstanceOutput, pToInstanceInput, connectionItr->mOutputName, connectionItr->mInputName );
             }
         }
     }
@@ -310,13 +307,13 @@ void BehaviorComponent::destroyBehaviorOutputConnections( BehaviorInstance* pOut
         return;
 
     // Fetch output name hash.
-    typeOutputNameConnectionHash* pOutputNameHash = instanceItr->value;
+    typeOutputNameConnectionHash* pOutputNameHash = instanceItr->second;
 
     // Iterate all outputs.
     for ( typeOutputNameConnectionHash::iterator outputItr = pOutputNameHash->begin(); outputItr != pOutputNameHash->end(); ++outputItr )
     {
         // Fetch port connection(s).
-        typePortConnectionVector* pPortConnections = outputItr->value;
+        typePortConnectionVector* pPortConnections = outputItr->second;
 
         // Destroy port connections.
         delete pPortConnections;
@@ -340,13 +337,13 @@ void BehaviorComponent::destroyBehaviorInputConnections( BehaviorInstance* pInpu
     for ( typeInstanceConnectionHash::iterator instanceItr = mBehaviorConnections.begin(); instanceItr != mBehaviorConnections.end(); ++instanceItr )
     {
         // Fetch output name hash.
-        typeOutputNameConnectionHash* pOutputNameHash = instanceItr->value;
+        typeOutputNameConnectionHash* pOutputNameHash = instanceItr->second;
 
         // Iterate all outputs.
         for ( typeOutputNameConnectionHash::iterator outputItr = pOutputNameHash->begin(); outputItr != pOutputNameHash->end(); ++outputItr )
         {
             // Fetch port connection(s).
-            typePortConnectionVector* pPortConnections = outputItr->value;
+            typePortConnectionVector* pPortConnections = outputItr->second;
 
             bool connectionFound;
             do
@@ -361,7 +358,7 @@ void BehaviorComponent::destroyBehaviorInputConnections( BehaviorInstance* pInpu
                     if ( connectionItr->mInputInstance == pInputBehavior )
                     {
                         // Yes, so destroy it.
-                        pPortConnections->erase_fast( connectionItr );
+                        pPortConnections->erase( connectionItr );
 
                         // Flag connection as 'found'.
                         connectionFound = true;
@@ -472,7 +469,7 @@ bool BehaviorComponent::connect( BehaviorInstance* pOutputBehavior, BehaviorInst
     }
 
     // Fetch output name hash.
-    typeOutputNameConnectionHash* pOutputNameHash = instanceItr->value;
+    typeOutputNameConnectionHash* pOutputNameHash = instanceItr->second;
 
     // Find instance output connection.
     typeOutputNameConnectionHash::iterator outputItr = pOutputNameHash->find( pOutputName );
@@ -488,7 +485,7 @@ bool BehaviorComponent::connect( BehaviorInstance* pOutputBehavior, BehaviorInst
     }
 
     // Fetch port connection(s).
-    typePortConnectionVector* pPortConnections = outputItr->value;
+    typePortConnectionVector* pPortConnections = outputItr->second;
 
     // Look for an identical connection.
     for ( typePortConnectionVector::iterator connectionItr = pPortConnections->begin(); connectionItr != pPortConnections->end(); ++connectionItr )
@@ -605,7 +602,7 @@ bool BehaviorComponent::disconnect( BehaviorInstance* pOutputBehavior, BehaviorI
     }
 
     // Fetch output name hash.
-    typeOutputNameConnectionHash* pOutputNameHash = instanceItr->value;
+    typeOutputNameConnectionHash* pOutputNameHash = instanceItr->second;
 
     // Find instance output connection.
     typeOutputNameConnectionHash::iterator outputItr = pOutputNameHash->find( pOutputName );
@@ -625,7 +622,7 @@ bool BehaviorComponent::disconnect( BehaviorInstance* pOutputBehavior, BehaviorI
     }
 
     // Fetch port connection(s).
-    typePortConnectionVector* pPortConnections = outputItr->value;
+    typePortConnectionVector* pPortConnections = outputItr->second;
 
     // Look for an existing connection to the specified input.
     for ( typePortConnectionVector::iterator connectionItr = pPortConnections->begin(); connectionItr != pPortConnections->end(); ++connectionItr )
@@ -634,7 +631,7 @@ bool BehaviorComponent::disconnect( BehaviorInstance* pOutputBehavior, BehaviorI
         if ( connectionItr->mInputInstance == pInputBehavior && connectionItr->mInputName == pInputName )
         {
             // Yes, so remove connection.
-            pPortConnections->erase_fast( connectionItr );
+            pPortConnections->erase( connectionItr );
 
             return true;
         }
@@ -697,14 +694,14 @@ bool BehaviorComponent::raise( BehaviorInstance* pOutputBehavior, StringTableEnt
         return true;
 
     // Find instance output connection.
-    typeOutputNameConnectionHash::iterator outputItr = instanceItr->value->find( pOutputName );
+    typeOutputNameConnectionHash::iterator outputItr = instanceItr->second->find( pOutputName );
 
     // Finish if there are no outbound connections for this output.
-    if ( outputItr == instanceItr->value->end() )
+    if ( outputItr == instanceItr->second->end() )
         return true;
 
     // Fetch port connection(s).
-    typePortConnectionVector* pPortConnections = outputItr->value;
+    typePortConnectionVector* pPortConnections = outputItr->second;
 
     // Process output connection(s).
     for ( typePortConnectionVector::iterator connectionItr = pPortConnections->begin(); connectionItr != pPortConnections->end(); ++connectionItr )
@@ -780,14 +777,14 @@ U32 BehaviorComponent::getBehaviorConnectionCount( BehaviorInstance* pOutputBeha
         return 0;
 
     // Find instance output connection.
-    typeOutputNameConnectionHash::iterator outputItr = instanceItr->value->find( pOutputName );
+    typeOutputNameConnectionHash::iterator outputItr = instanceItr->second->find( pOutputName );
 
     // Finish if there are no outbound connections for this output.
-    if ( outputItr == instanceItr->value->end() )
+    if ( outputItr == instanceItr->second->end() )
         return 0;
 
     // Fetch port connection(s).
-    typePortConnectionVector* pPortConnections = outputItr->value;
+    typePortConnectionVector* pPortConnections = outputItr->second;
 
     // Return number of connections.
     return pPortConnections->size();
@@ -872,14 +869,14 @@ const BehaviorComponent::typePortConnectionVector* BehaviorComponent::getBehavio
         return NULL;
 
     // Find instance output connection.
-    typeOutputNameConnectionHash::iterator outputItr = instanceItr->value->find( pOutputName );
+    typeOutputNameConnectionHash::iterator outputItr = instanceItr->second->find( pOutputName );
 
     // Finish if there are no outbound connections for this output.
-    if ( outputItr == instanceItr->value->end() )
+    if ( outputItr == instanceItr->second->end() )
         return NULL;
 
     // Fetch port connection(s).
-    typePortConnectionVector* pPortConnections = outputItr->value;
+    typePortConnectionVector* pPortConnections = outputItr->second;
 
     // Return number of connections.
     return pPortConnections;
@@ -1135,26 +1132,23 @@ void BehaviorComponent::onTamlCustomWrite( TamlCustomNodes& customNodes )
     for( typeInstanceConnectionHash::iterator instanceItr = mBehaviorConnections.begin(); instanceItr != mBehaviorConnections.end(); ++instanceItr )
     {
         // Fetch output name connection(s).
-        typeOutputNameConnectionHash* pOutputNameConnection = instanceItr->value;
+        typeOutputNameConnectionHash* pOutputNameConnection = instanceItr->second;
 
         // Iterate output name connections.
         for( typeOutputNameConnectionHash::iterator outputItr = pOutputNameConnection->begin(); outputItr != pOutputNameConnection->end(); ++outputItr )
         {
             // Fetch port connection(s).
-            typePortConnectionVector* pPortConnections = outputItr->value;
+            typePortConnectionVector* pPortConnections = outputItr->second;
 
             // Iterate input connections.
             for( typePortConnectionVector::iterator connectionItr = pPortConnections->begin(); connectionItr != pPortConnections->end(); ++connectionItr )
             {
-                // Fetch connection.
-                BehaviorPortConnection* pConnection = connectionItr;
-
                 // Add connectionnode.
                 TamlCustomNode* pConnectionNode = pCustomBehaviorNode->addNode( BEHAVIOR_CONNECTION_TYPE_NAME );
 
                 // Add behavior field.
-                pConnectionNode->addField( pConnection->mOutputName, pConnection->mOutputInstance->getBehaviorId() );
-                pConnectionNode->addField( pConnection->mInputName, pConnection->mInputInstance->getBehaviorId() );
+                pConnectionNode->addField( connectionItr->mOutputName, connectionItr->mOutputInstance->getBehaviorId() );
+                pConnectionNode->addField( connectionItr->mInputName, connectionItr->mInputInstance->getBehaviorId() );
             }
         }
     }

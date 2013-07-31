@@ -36,7 +36,7 @@ void MatStateHint::init( const ProcessedMaterial *mat )
 
    // Finally intern the state string for
    // fast pointer comparisions.
-   mState = mState.intern();
+   mState.intern();
 }
 
 

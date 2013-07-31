@@ -39,13 +39,13 @@
 /// @see GFXVertexFormat
 namespace GFXSemantic
 {
-   extern const String POSITION;
-   extern const String NORMAL;
-   extern const String BINORMAL;
-   extern const String TANGENT;
-   extern const String TANGENTW;
-   extern const String COLOR;
-   extern const String TEXCOORD;
+   extern const StringTableEntry POSITION;
+   extern const StringTableEntry NORMAL;
+   extern const StringTableEntry BINORMAL;
+   extern const StringTableEntry TANGENT;
+   extern const StringTableEntry TANGENTW;
+   extern const StringTableEntry COLOR;
+   extern const StringTableEntry TEXCOORD;
 }
 
 
@@ -80,7 +80,7 @@ protected:
 
    /// A valid Torque shader symantic.
    /// @see GFXSemantic   
-   String mSemantic;
+   StringTableEntry mSemantic;
 
    /// The semantic index is used where there are
    /// multiple semantics of the same type.  For 
@@ -115,18 +115,10 @@ public:
    /// Returns the semantic name which is usually a
    /// valid Torque semantic.
    /// @see GFXSemantic
-   const String& getSemantic() const { return mSemantic; }
-
-   /// Returns the semantic index which is used where there
-   /// are multiple semantics of the same type.  For instance
-   /// with texcoords.
-   U32 getSemanticIndex() const { return mSemanticIndex; }
+   const StringTableEntry& getSemantic() const { return mSemantic; }
 
    /// Returns the type for the semantic.
    GFXDeclType getType() const { return mType; }
-
-   /// Returns true of the semantic matches.
-   bool isSemantic( const String& str ) const { return ( mSemantic == str ); }
 
    /// Returns the size in bytes of the semantic type.
    U32 getSizeInBytes() const;
@@ -172,7 +164,7 @@ public:
    /// @param type The element type.
    /// @param index The semantic index which is typically only used for texcoords.
    ///
-   void addElement( const String& semantic, GFXDeclType type, U32 index = 0, U32 stream = 0 );
+   void addElement( const StringTableEntry semantic, GFXDeclType type, U32 index = 0, U32 stream = 0 );
    
    /// Returns true if there is a NORMAL semantic in this vertex format.
    bool hasNormal() const;

@@ -678,7 +678,7 @@ void GuiEditCtrl::getCursor(GuiCursor *&cursor, bool &showCursor, const GuiEvent
    // first see if we hit a sizing knob on the currently selected control...
    if (mSelectedControls.size() == 1 && initCursors() == true )
    {
-      ctrl = mSelectedControls.first();
+      ctrl = mSelectedControls.front();
       cext = ctrl->getExtent();
       ctOffset = globalToLocalCoord(ctrl->localToGlobalCoord(Point2I(0,0)));
       RectI box(ctOffset.x,ctOffset.y,cext.x, cext.y);
@@ -743,7 +743,7 @@ void GuiEditCtrl::onMouseDown(const GuiEvent &event)
    // first see if we hit a sizing knob on the currently selected control...
    if (mSelectedControls.size() == 1)
    {
-      ctrl = mSelectedControls.first();
+      ctrl = mSelectedControls.front();
       cext = ctrl->getExtent();
       ctOffset = globalToLocalCoord(ctrl->localToGlobalCoord(Point2I(0,0)));
       RectI box(ctOffset.x,ctOffset.y,cext.x, cext.y);
@@ -971,7 +971,7 @@ void GuiEditCtrl::onMouseDragged(const GuiEvent &event)
       if (mGridSnap.y)
          mousePoint.y -= mousePoint.y % mGridSnap.y;
 
-      GuiControl *ctrl = mSelectedControls.first();
+      GuiControl *ctrl = mSelectedControls.front();
 
       // can't resize a locked control
       if (ctrl && ctrl->isLocked())

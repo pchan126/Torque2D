@@ -124,7 +124,6 @@ SceneWindow::SceneWindow() :    mpScene(NULL),
                                 mInputEventInvisibleFilter( true )
 {
     // Set Vector Associations.
-    VECTOR_SET_ASSOCIATION( mCameraQueue );
     VECTOR_SET_ASSOCIATION( mInputEventQuery );
     VECTOR_SET_ASSOCIATION( mInputEventEntering );
     VECTOR_SET_ASSOCIATION( mInputEventLeaving );    
@@ -545,7 +544,7 @@ void SceneWindow::undoCameraMove( const F32 interpolationTime )
     mMovingCamera = true;
 
     // Fetch Last Queued Camera Target.
-    mCameraTarget = mCameraQueue.last();
+    mCameraTarget = mCameraQueue.back();
     // Remove Last Target.
     mCameraQueue.pop_back();
 
@@ -990,10 +989,10 @@ void SceneWindow::sendWindowInputEvent( StringTableEntry name, const GuiEvent& e
     Con::executef(this, 4, name, argBuffer[0], argBuffer[1], argBuffer[2]);
 
     // Iterate listeners.
-    for( SimSet::iterator listenerItr = mInputListeners.begin(); listenerItr != mInputListeners.end(); ++listenerItr )
+    for( SimObject* listenerItr:mInputListeners )
     {
         // Call scripts on listener.
-        Con::executef( *listenerItr, 4, name, argBuffer[0], argBuffer[1], argBuffer[2] );
+        Con::executef( listenerItr, 4, name, argBuffer[0], argBuffer[1], argBuffer[2] );
     }
 }
 
@@ -1533,9 +1532,6 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
     // Set ModelView.
     GFX->pushWorldMatrix();
     GFX->setWorldMatrix(MatrixF(true));
-
-    // Get Debug Stats.
-    DebugStats& debugStats = pScene->getDebugStats();
 
     // Create a scene render state.
     SceneRenderState sceneRenderState(

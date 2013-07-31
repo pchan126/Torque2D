@@ -40,25 +40,24 @@ bool SimObject::writeObject(Stream *stream)
    // Static fields
    AbstractClassRep *rep = getClassRep();
    AbstractClassRep::FieldList &fieldList = rep->mFieldList;
-   AbstractClassRep::FieldList::iterator itr;
-   
+
    U32 savePos = stream->getPosition();
    U32 numFields = fieldList.size();
    stream->write(numFields);
 
-   for(itr = fieldList.begin();itr != fieldList.end();itr++)
+   for(auto itr : fieldList )
    {
-      if(itr->type >= AbstractClassRep::StartGroupFieldType || isFiltered(itr->pFieldname))
+      if(itr.type >= AbstractClassRep::StartGroupFieldType || isFiltered(itr.pFieldname))
       {
          numFields--;
          continue;
       }
 
-      const char *field = getDataField(itr->pFieldname, NULL);
+      const char *field = getDataField(itr.pFieldname, NULL);
       if(field == NULL)
          field = "";
 
-      stream->writeString(itr->pFieldname);
+      stream->writeString(itr.pFieldname);
       stream->writeString(field);
    }
 
@@ -170,9 +169,9 @@ bool SimSet::writeObject( Stream *stream )
       return false;
 
    stream->write(size());
-   for(SimSet::iterator i = begin();i < end();++i)
+   for(auto i:*this)
    {
-      if(! Sim::saveObject((*i), stream))
+      if(! Sim::saveObject(i, stream))
          return false;
    }
    return true;

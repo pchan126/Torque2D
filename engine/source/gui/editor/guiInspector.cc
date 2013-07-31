@@ -712,14 +712,14 @@ bool GuiInspectorGroup::inspectGroup()
                field = constructField( itr->type );
                if( field == NULL )
                {
-                  field = new GuiInspectorField( this, mTarget, itr );
-                  field->setInspectorField( itr, intToStr );
+                  field = new GuiInspectorField( this, mTarget, &(*itr) );
+                  field->setInspectorField( &(*itr), intToStr );
                }
                else
                {
                   field->setTarget( mTarget );
                   field->setParent( this );
-                  field->setInspectorField( itr, intToStr );
+                  field->setInspectorField( &(*itr), intToStr );
                }
 
                field->registerObject();
@@ -741,12 +741,12 @@ bool GuiInspectorGroup::inspectGroup()
 
             field = constructField( itr->type );
             if( field == NULL )
-               field = new GuiInspectorField( this, mTarget, itr );
+               field = new GuiInspectorField( this, mTarget, &(*itr) );
             else
             {
                field->setTarget( mTarget );
                field->setParent( this );
-               field->setInspectorField( itr );
+               field->setInspectorField( &(*itr) );
             }
 
             field->registerObject();

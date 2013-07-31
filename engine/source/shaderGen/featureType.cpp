@@ -53,8 +53,11 @@ FeatureType::FeatureType( const char *name, U32 group, F32 order, bool isDefault
    FeatureTypeVector &types = _getTypes();
 
    #ifdef TORQUE_DEBUG
-      for ( U32 i=0; i < types.size(); i++ )
-         AssertFatal( !mName.equal( types[i]->getName() ), "FeatureType - This feature already exists!" );
+      for (const FeatureType* type: types)
+      {
+          if (mName.equal(type->getName()))
+             AssertFatal( !mName.equal( type->getName() ), "FeatureType - This feature already exists!" );
+      }
    #endif
 
    mId = types.size();

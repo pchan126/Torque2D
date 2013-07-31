@@ -105,9 +105,6 @@ IMPLEMENT_CONOBJECT(UndoManager);
 UndoManager::UndoManager(U32 levels)
 {
    mNumLevels = levels;
-   // levels can be arbitrarily high, so we don't really want to reserve(levels).
-   mUndoStack.reserve(10);
-   mRedoStack.reserve(10);
 }
 
 //-----------------------------------------------------------------------------
@@ -130,7 +127,7 @@ void UndoManager::initPersistFields()
 //-----------------------------------------------------------------------------
 UndoManager& UndoManager::getDefaultManager()
 {
-   // the default manager is created the first time it is asked for.
+   // the default manager is created the front time it is asked for.
    static UndoManager *defaultMan = NULL;
    if(!defaultMan)
    {
@@ -154,12 +151,12 @@ void UndoManager::clearAll()
 }
 
 //-----------------------------------------------------------------------------
-void UndoManager::clearStack(Vector<UndoAction*> &stack)
+void UndoManager::clearStack(std::deque<UndoAction*> &stack)
 {
-   Vector<UndoAction*>::iterator itr = stack.begin();
+    std::deque<UndoAction*>::iterator itr = stack.begin();
    while (itr != stack.end())
    {
-      UndoAction* undo = stack.first();
+      UndoAction* undo = stack.front();
       stack.pop_front();
       // Don't delete script created undos.
       if (dynamic_cast<UndoScriptAction*>(undo))
@@ -171,7 +168,7 @@ void UndoManager::clearStack(Vector<UndoAction*> &stack)
 }
 
 //-----------------------------------------------------------------------------
-void UndoManager::clampStack(Vector<UndoAction*> &stack)
+void UndoManager::clampStack(std::deque<UndoAction*> &stack)
 {
    while((U32)stack.size() > mNumLevels)
    {
@@ -188,7 +185,7 @@ void UndoManager::clampStack(Vector<UndoAction*> &stack)
 
 void UndoManager::removeAction(UndoAction *action)
 {
-   Vector<UndoAction*>::iterator itr = mUndoStack.begin();
+    std::deque<UndoAction*>::iterator itr = mUndoStack.begin();
    while (itr != mUndoStack.end())
    {
       if ((*itr) == action)
@@ -227,7 +224,7 @@ void UndoManager::undo()
       return;
 
    // pop the action off the undo stack
-   UndoAction *act = mUndoStack.last();
+   UndoAction *act = mUndoStack.back();
    mUndoStack.pop_back();
    
    // add it to the redo stack
@@ -249,7 +246,7 @@ void UndoManager::redo()
       return;
 
    // pop the action off the redo stack
-   UndoAction *react = mRedoStack.last();
+   UndoAction *react = mRedoStack.back();
    mRedoStack.pop_back();
    
    // add it to the undo stack
@@ -319,7 +316,7 @@ StringTableEntry UndoManager::getNextUndoName()
    if(mUndoStack.size() < 1)
       return NULL;
       
-   UndoAction *act = mUndoStack.last();
+   UndoAction *act = mUndoStack.back();
    return (*act).mActionName;
 }
 
@@ -329,7 +326,7 @@ StringTableEntry UndoManager::getNextRedoName()
    if(mRedoStack.size() < 1)
       return NULL;
 
-   UndoAction *act = mRedoStack.last();
+   UndoAction *act = mRedoStack.back();
    return (*act).mActionName;
 }
 

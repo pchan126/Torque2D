@@ -27,7 +27,6 @@
 #include "console/console.h"
 
 #include "console/ast.h"
-#include "collection/finditerator.h"
 #include "io/resource/resourceManager.h"
 
 #include "string/findMatch.h"
@@ -46,7 +45,7 @@ void ExprEvalState::pushFrame(StringTableEntry frameName, Namespace *ns)
 
 void ExprEvalState::popFrame()
 {
-   Dictionary *last = stack.last();
+   Dictionary *last = stack.back();
    stack.pop_back();
    delete last;
 }

@@ -139,6 +139,18 @@ ConsoleMethod(Scene, setLayerLight, void, 6, 7, "int layer, (float red, float gr
    object->setLayerLight(layer, ColorF(red, green, blue, alpha));
 }
 
+
+//-----------------------------------------------------------------------------
+
+ConsoleMethod(Scene, setCameraPositionScale, void, 5, 5, "int layer, (float x, float y) - Sets the sprite blend color."
+        "@param layer The layer to set an position scale for.\n"
+        "@param x The x value.\n"
+        "@param y The y value.\n"
+        "@return No return Value.")
+{
+    object->getLayer(dAtoi(argv[2]))->setCameraTranslationScale(Point3F(dAtof(argv[3]), dAtof(argv[4]), 1.0f));
+}
+
 //-----------------------------------------------------------------------------
 
 ConsoleMethod(Scene, getGravity, const char*, 2, 2, "() Gets the gravity force applied to all objects in the scene.\n"

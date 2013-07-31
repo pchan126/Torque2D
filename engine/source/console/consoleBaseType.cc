@@ -27,7 +27,7 @@ ConsoleBaseType *ConsoleBaseType::smListHead = NULL;
 S32              ConsoleBaseType::smConsoleTypeCount = 1; // This makes 0 an invalid console type.
 
 // And, we also privately store the types lookup table.
-VectorPtr<ConsoleBaseType*> gConsoleTypeTable;
+Vector<ConsoleBaseType*> gConsoleTypeTable;
 
 ConsoleBaseType *ConsoleBaseType::getListHead()
 {

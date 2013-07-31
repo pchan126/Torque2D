@@ -32,6 +32,7 @@
 #ifndef _DATACHUNKER_H_
 #include "memory/dataChunker.h"
 #endif
+#include <unordered_map>
 
 //--------------------------------------
 /// A global table for the hashing and tracking of strings.
@@ -81,18 +82,19 @@ private:
    /// @name Implementation details
    /// @{
 
-   /// This is internal to the _StringTable class.
-   struct Node
-   {
-      char *val;
-      Node *next;
-   };
+//   /// This is internal to the _StringTable class.
+//   struct Node
+//   {
+//      char *val;
+//      Node *next;
+//   };
+//
+//   Node**      buckets;
+//   U32         numBuckets;
+//   U32         itemCount;
+//   DataChunker mempool;
 
-   Node**      buckets;
-   U32         numBuckets;
-   U32         itemCount;
-   DataChunker mempool;
-
+   std::unordered_map<std::string, StringTableEntry> _table;
    Mutex mMutex;
 
   protected:
@@ -144,13 +146,6 @@ private:
    /// @param  caseSens Determines whether case matters.
    StringTableEntry lookupn(const char *string, S32 len, bool caseSens = false);
 
-
-   /// Resize the StringTable to be able to hold newSize items. This
-   /// is called automatically by the StringTable when the table is
-   /// full past a certain threshhold.
-   ///
-   /// @param newSize   Number of new items to allocate space for.
-   void             resize(const U32 newSize);
 
    /// Hash a string into a U32.
    static U32 hashString(const char* in_pString);

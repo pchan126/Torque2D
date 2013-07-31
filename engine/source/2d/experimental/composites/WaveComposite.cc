@@ -293,11 +293,8 @@ void WaveComposite::updateComposition( const F32 time )
     Vector2 spritePosition( mSpriteSize.x * mSpriteCount * -0.5f, 0.0f );
 
     // Update sprite positions.
-    for( typeWaveSpritesVector::iterator spriteItr = mWaveSprites.begin(); spriteItr < mWaveSprites.end(); ++spriteItr )
+    for( SpriteBatchItem* pSprite:mWaveSprites )
     {
-        // Fetch sprite,
-        SpriteBatchItem* pSprite = *spriteItr;
-
         // Set y position.
         spritePosition.y = mSin(mDegToRad(scaledTime + (spritePosition.x * mFrequency))) * mAmplitude;
 

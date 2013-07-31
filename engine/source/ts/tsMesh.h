@@ -78,6 +78,8 @@ class TSMesh
    struct TSMeshVertexArray;
   protected:
 
+   typedef Vector<String> TSMaterialList;
+
    U32 meshType;
    Box3F mBounds;
    Point3F mCenter;
@@ -90,10 +92,9 @@ class TSMesh
    U32 mVertSize;
 
    GFXVertexBufferDataHandle mVB;
-   GFXPrimitiveBufferHandle mPB;
 
    void _convertToAlignedMeshData( TSMeshVertexArray &vertexData, const Vector<Point3F> &_verts, const Vector<Point3F> &_norms );
-   void _createVBIB( GFXVertexBufferDataHandle &vb, GFXPrimitiveBufferHandle &pb );
+   void _createVBIB( GFXVertexBufferDataHandle &vb );
 
   public:
 
@@ -484,7 +485,7 @@ public:
    Vector<S32> vertexIndex;
 
    /// set verts and normals...
-   void updateSkin( const Vector<MatrixF> &transforms, GFXVertexBufferDataHandle &instanceVB, GFXPrimitiveBufferHandle &instancePB );
+   void updateSkin( const Vector<MatrixF> &transforms, GFXVertexBufferDataHandle &instanceVB );
 
 //   // render methods..
 //   void render( GFXVertexBufferHandle &instanceVB, GFXPrimitiveBufferHandle &instancePB );

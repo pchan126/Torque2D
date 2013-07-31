@@ -42,6 +42,8 @@
 #ifndef _H_CONNECTIONSTRINGTABLE
 #include "network/connectionStringTable.h"
 #endif
+#include <deque>
+
 //----------------------------------------------------------------------------
 // the sim connection encapsulates the packet stream,
 // ghost manager, event manager and playerPSC of the old tribes net code
@@ -464,10 +466,10 @@ public:
 
     enum NetConnectionFlags
     {
-        ConnectionToServer      = BIT(0),
-        ConnectionToClient      = BIT(1),
-        LocalClientConnection   = BIT(2),
-        NetworkConnection       = BIT(3),
+        ConnectionToServer      = 0,
+        ConnectionToClient      = 1,
+        LocalClientConnection   = 2,
+        NetworkConnection       = 3,
     };
 
 private:
@@ -568,7 +570,7 @@ public:
 
     void setIsConnectionToServer()        { mTypeFlags.set(ConnectionToServer); }
     void setIsLocalClientConnection()   { mTypeFlags.set(LocalClientConnection); }
-    void setNetworkConnection(bool net) { mTypeFlags.set(BitSet32(NetworkConnection), net); }
+    void setNetworkConnection(bool net) { mTypeFlags.set(NetworkConnection, net); }
 
     virtual void setEstablished();
 
@@ -918,7 +920,7 @@ protected:
     /// List of files missing for this connection.
     ///
     /// The currently downloading file is always first in the list (ie, [0]).
-    Vector<char *> mMissingFileList;
+    std::deque<char *> mMissingFileList;
 
     /// Stream for currently uploading file (if any).
     Stream *mCurrentDownloadingFile;
@@ -945,7 +947,7 @@ protected:
     };
 
     /// List of objects to ghost-always.
-    Vector<GhostSave> mGhostAlwaysSaveList;
+    std::deque<GhostSave> mGhostAlwaysSaveList;
 
 public:
     /// Start sending the specified file over the link.

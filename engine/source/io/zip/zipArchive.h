@@ -304,11 +304,11 @@ protected:
    // mRoot forms a tree of entries for fast queries given a file path
    // mEntries allows easy iteration of the entire file list
    ZipEntry *mRoot;
-   VectorPtr<ZipEntry *> mEntries;
+   Vector<ZipEntry *> mEntries;
 
    const char *mFilename;
 
-   VectorPtr<ZipTempStream *> mTempFiles;
+   Vector<ZipTempStream *> mTempFiles;
 
    bool readCentralDirectory();
 

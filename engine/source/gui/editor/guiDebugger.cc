@@ -202,8 +202,8 @@ void DbgFileView::addLine(const char *string, U32 strLen)
 
 void DbgFileView::clear()
 {
-   for(Vector<FileLine>::iterator i = mFileView.begin(); i != mFileView.end(); i++)
-      dFree(i->text);
+   for(auto i : mFileView )
+      dFree(i.text);
    mFileView.clear();
 }
 
@@ -522,10 +522,10 @@ bool DbgFileView::findMouseOverVariable()
 
 void DbgFileView::clearBreakPositions()
 {
-   for(Vector<FileLine>::iterator i = mFileView.begin(); i != mFileView.end(); i++)
+   for(auto i : mFileView )
    {
-      i->breakPosition = false;
-      i->breakOnLine = false;
+      i.breakPosition = false;
+      i.breakOnLine = false;
    }
 }
 

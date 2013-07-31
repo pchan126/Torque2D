@@ -46,7 +46,7 @@ public:
    virtual PlatformWindow *createWindow(GFXDevice *device, const GFXVideoMode &mode) = 0;
 
    /// Populate a list with references to all the windows created from this manager.
-   virtual void getWindows(VectorPtr<PlatformWindow*> &windows) = 0;
+   virtual void getWindows(Vector<PlatformWindow*> &windows) = 0;
 
    /// Get the window that currently has the input focus or NULL.
    virtual PlatformWindow* getFocusedWindow() = 0;

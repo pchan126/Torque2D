@@ -33,7 +33,7 @@ class SceneObject;
 
 //-----------------------------------------------------------------------------
 
-class SceneObjectList : public VectorPtr<SceneObject*>
+class SceneObjectList : public Vector<SceneObject*>
 {
 	static S32 QSORT_CALLBACK compareId(const void* a,const void* b);
 
@@ -43,9 +43,6 @@ public:
 
 	///< Add the SceneObject* to the end of the list, moving it there if it's already present in the list.
 	void pushBackForce(SceneObject*);
-
-	///< Add the SceneObject* to the start of the list.
-	void pushFront(SceneObject*);
 
 	///< Remove the SceneObject* from the list; may disrupt order of the list.
 	void remove(SceneObject*);         

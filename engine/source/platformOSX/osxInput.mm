@@ -62,6 +62,7 @@ bool Input::enable()
 
 //    // Check for any restrictions or errors
 //    Process::notify(&Input::process, PROCESS_INPUT_ORDER);
+   return true;
 }
 
 //------------------------------------------------------------------------------

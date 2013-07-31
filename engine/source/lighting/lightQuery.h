@@ -67,6 +67,7 @@ protected:
    void _scoreLights();
 
    static S32 _lightScoreCmp( LightInfo* const *a, LightInfo* const *b );
+//    static bool _lightScoreCmp( LightInfo a, LightInfo b);
 
    /// The maximum lights to return from the query.
    const U32 mMaxLights;

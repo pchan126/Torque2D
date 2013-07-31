@@ -36,7 +36,7 @@ iOSWindowManager::iOSWindowManager() : mNotifyShutdownDelegate(this, &iOSWindowM
 
     viewController = [[T2DViewController alloc] initWithNibName:nil bundle:nil];
     viewController.delegate = appDelegate;
-    viewController.preferredFramesPerSecond = 30;
+    viewController.preferredFramesPerSecond = 60;
     viewController.paused = NO;
     appDelegate.mainController = viewController;
 
@@ -92,10 +92,14 @@ S32 iOSWindowManager::getWindowCount()
    return mWindowList.size();
 }
 
-void iOSWindowManager::getWindows(VectorPtr<PlatformWindow*> &windows)
+void iOSWindowManager::getWindows(Vector<PlatformWindow*> &windows)
 {
-   // Populate a list with references to all the windows created from this manager.
-   windows.merge(mWindowList);
+    for (iOSWindow* item: mWindowList)
+    {
+        PlatformWindow* temp = dynamic_cast<PlatformWindow*>(item);
+        if (temp != nullptr)
+            windows.push_back(temp);
+    }
 }
 
 PlatformWindow * iOSWindowManager::getFirstWindow()
@@ -149,57 +153,48 @@ void iOSWindowManager::updateWindows()
     NSArray	*screens = [UIScreen screens];
     NSUInteger screenCount = [screens count];
 
-//    return;
-    if (screenCount > 1)
+    GFXOpenGLES20iOSDevice *device = dynamic_cast<GFXOpenGLES20iOSDevice*>(GFX);
+    EAGLContext *context = device->getEAGLContext();
+
+    if ([UIScreen screens].count > 1)
     {
         [[UIApplication sharedApplication] setStatusBarHidden:NO];
 
       extScreen = screens[1]; //index 0 is your iPhone/iPad
       extScreen.currentMode = [extScreen preferredMode];
 
-      // Set a proper overscanCompensation mode
-      extScreen.overscanCompensation = UIScreenOverscanCompensationInsetApplicationFrame;
+      CGRect rect = (CGRect){.size = [extScreen preferredMode].size};
+
+//      // Set a proper overscanCompensation mode
+//      extScreen.overscanCompensation = UIScreenOverscanCompensationInsetApplicationFrame;
 
       if (extWindow == nil) {
          extWindow = [[UIWindow alloc] initWithFrame:[extScreen bounds]];
       }
-        extWindow.screen = extScreen;
-       
-        T2DAppDelegate *appDelegate = (T2DAppDelegate*)[[UIApplication sharedApplication] delegate];
-                
-        UIScreen *phoneScreen = screens[0];
-        T2DViewController *newController = [[T2DViewController alloc] initWithNibName:nil bundle:nil];
-        newController.delegate = appDelegate;
-        newController.preferredFramesPerSecond = 30;
-        extWindow.rootViewController = newController;
-                
-        
-        GFXOpenGLES20iOSDevice *device = dynamic_cast<GFXOpenGLES20iOSDevice*>(GFX);
-        EAGLContext *context = device->getEAGLContext();
-//        GLKView* newView = [[GLKView alloc] initWithFrame:[extScreen bounds] context:context];
-//        extWindow.rootViewController.view = newView;
+      extWindow.screen = extScreen;
+      [extWindow makeKeyAndVisible];
+      extWindow.frame = rect;
+
+       GLKView* baseView = [[GLKView alloc] initWithFrame:rect];
+        [extWindow addSubview:baseView];
+        [baseView setContext:context ];
+
+//        T2DAppDelegate *appDelegate = (T2DAppDelegate*)[[UIApplication sharedApplication] delegate];
+//
+////        UIScreen *phoneScreen = screens[0];
+//        T2DViewController *newController = [[T2DViewController alloc] initWithNibName:nil bundle:nil];
+//        newController.delegate = appDelegate;
+//        newController.preferredFramesPerSecond = 60;
+//        extWindow.rootViewController = newController;
+//
+//
 
         GLKView* view = mWindowList[0]->view;
-        [view removeFromSuperview];
-        appDelegate.window.rootViewController.view = nil;
-//        CGRect fram = extWindow.frame;
-        view.frame = extWindow.frame;
-        extWindow.rootViewController.view = view;
-//        [(GLKView*)view display];
-//        [extWindow.rootViewController.view addSubview:view];
-
-        GLKView* moreView = [[GLKView alloc] initWithFrame:[[UIScreen mainScreen] bounds] context:context];
-        appDelegate.window.rootViewController.view = moreView;
-        appDelegate.window.rootViewController = appDelegate.mainController;
-        appDelegate.mainController.delegate = appDelegate;
-        extWindow.hidden = NO;
-        
-        [T2DViewController attemptRotationToDeviceOrientation];
-//        [extWindow makeKeyAndVisible];
+        [view.window makeKeyAndVisible];
     }
     else
     {
-        
+        extWindow = nil;
     }
 }
 
@@ -263,7 +258,7 @@ void iOSWindowManager::_addWindow(iOSWindow* window)
       AssertFatal(window != mWindowList[i], "iOSWindowManager::_addWindow - Should not add a window more than once");
 #endif
    if (mWindowList.size() > 0)
-      window->mNextWindow = mWindowList.last();
+      window->mNextWindow = mWindowList.back();
    else
       window->mNextWindow = NULL;
 
@@ -281,11 +276,11 @@ void iOSWindowManager::_addWindow(iOSWindow* window)
 
 void iOSWindowManager::_removeWindow(iOSWindow* window)
 {
-   for(WindowList::iterator i = mWindowList.begin(); i != mWindowList.end(); i++)
+   for(auto i : mWindowList)
    {
-      if(*i == window)
+      if(i == window)
       {
-         mWindowList.erase(i);
+         mWindowList.remove(i);
          return;
       }
    }
@@ -297,12 +292,12 @@ void iOSWindowManager::_onAppSignal(WindowId wnd, S32 event)
    if(event != WindowHidden)
       return;
    
-   for(U32 i = 0; i < mWindowList.size(); i++)
+   for(iOSWindow* i:mWindowList)
    {
-      if(mWindowList[i]->getWindowId() == wnd)
+      if(i->getWindowId() == wnd)
          continue;
       
-      mWindowList[i]->signalGainFocus();
+      i->signalGainFocus();
    }
 }
 

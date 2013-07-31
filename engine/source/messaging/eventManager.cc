@@ -188,7 +188,7 @@ void EventManager::unregisterEvent( const char* event )
       // Erase the event.
       if( *iter == eventName )
       {
-         mEvents.erase_fast( iter );
+         mEvents.erase( iter );
          break;
       }
    }
@@ -292,7 +292,7 @@ void EventManager::remove(SimObject *cbObj, const char* event)
       // Erase the event.
       if( iter->listener == cbObj )
       {
-         subscribers->erase_fast( iter );
+         subscribers->erase( iter );
          break;
       }
    }

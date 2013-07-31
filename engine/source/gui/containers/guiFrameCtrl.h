@@ -122,7 +122,7 @@ protected:
    GuiCursor *mLeftRightCursor;
    GuiCursor *mDefaultCursor;
    FrameDetail mFramesetDetails;
-   VectorPtr<FrameDetail *> mFrameDetails;
+   Vector<FrameDetail *> mFrameDetails;
    bool mAutoBalance;
    S32   mFudgeFactor;
 

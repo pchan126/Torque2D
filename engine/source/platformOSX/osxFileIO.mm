@@ -189,7 +189,7 @@ static void recurseDumpPath(const char* curPath, Vector<Platform::FileInfo>& fil
         
         // Allocate a file entry.
         fileVector.increment();
-        Platform::FileInfo& info = fileVector.last();
+        Platform::FileInfo& info = fileVector.back();
         
         // Populate file entry.
         info.pFullPath = StringTable->insert( pDirectoryPath );
@@ -949,33 +949,35 @@ S32 Platform::getFileSize(const char* pFilePath)
     
     // Convert pFilePath to a NSString
     NSString* path = [[NSString stringWithUTF8String:pFilePath] stringByStandardizingPath];
-    
-    // Get all the attributes of the file
-    NSDictionary* attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:&fileError];
-    
-    // File manager could not gather attributes
-    if (attributes == nil)
-    {
-        // Get the error message as a char*
-        const char* errorMessage = [[fileError localizedDescription] UTF8String];
-        
-        // Print the error to the console
-        Con::errorf("Platform::getFileSize: %s", errorMessage);
-        
-        [pool drain];
-        
-        // Return a 0 filesize
+
+    NSDirectoryEnumerator *dirEnum = [[NSFileManager defaultManager] enumeratorAtPath:path];
+    if (dirEnum == nil)
         return 0;
-    }
-    
-    // Get the file size
-    U32 fileLength = [[attributes objectForKey:NSFileSize] integerValue];
-    
+
+    U32 fileLength = [[dirEnum fileAttributes] fileSize];
+
     // Clean up temp string
     [pool drain];
     
     // Return the result
     return fileLength;
+}
+
+//-----------------------------------------------------------------------------
+
+bool Platform::deleteDirectoryRecursive( const char* pPath )
+{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+
+    NSString *npath = [[NSString alloc] initWithUTF8String:pPath];
+    NSError *error;
+    bool result = [[NSFileManager defaultManager] removeItemAtPath:npath error:&error];
+
+    // Clean up temp string
+    [pool drain];
+
+    // Return the result
+    return result;
 }
 
 //-----------------------------------------------------------------------------

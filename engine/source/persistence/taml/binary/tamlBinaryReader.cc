@@ -132,7 +132,7 @@ SimObject* TamlBinaryReader::parseElement( Stream& stream, const U32 versionId )
         }
 
         // Return object.
-        return referenceItr->value;
+        return referenceItr->second;
     }
 
 #ifdef TORQUE_DEBUG

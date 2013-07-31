@@ -29,9 +29,6 @@
 #ifndef _NETCONNECTION_H_
 #include "network/netConnection.h"
 #endif
-#ifndef _BITVECTOR_H_
-#include "collection/bitVector.h"
-#endif
 
 enum GameConnectionConstants {
    MaxClients = 126,

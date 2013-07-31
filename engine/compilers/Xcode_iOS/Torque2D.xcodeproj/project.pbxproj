@@ -35,6 +35,7 @@
 		30804B101764CB3300472030 /* gfxEnums.cc in Sources */ = {isa = PBXBuildFile; fileRef = 30804B0F1764CB3200472030 /* gfxEnums.cc */; };
 		30D5475C173FF5D300CB43DA /* platformTimer.cc in Sources */ = {isa = PBXBuildFile; fileRef = 30D5475A173FF5D300CB43DA /* platformTimer.cc */; };
 		33230F1656FA2C7C493DA2D2 /* guiSliderCtrl.cc in Sources */ = {isa = PBXBuildFile; fileRef = 332307DBC5B7EEEB22E5A736 /* guiSliderCtrl.cc */; };
+		4B8AA489BC5E0D8EDB45B697 /* gfxOpenGLTextureTarget.cc in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAC926AB3AD1F47EB2AC2 /* gfxOpenGLTextureTarget.cc */; };
 		4B8AA645A2B83EAB64F41454 /* guiJoystickCtrl.cc in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAB8C7B170DE2B1C83143 /* guiJoystickCtrl.cc */; };
 		4B8AA6EFAB1E83E6E1DD9CE6 /* render2DObjectMgr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA3F49A3463DC9D4C56AB /* render2DObjectMgr.cpp */; };
 		4B8AA80EC028431CE04DC27D /* iOSCursorController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA9A93BBBA232436F0DDF /* iOSCursorController.mm */; };
@@ -120,11 +121,8 @@
 		867BB01216AEC9050033868F /* audioFunctions.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAD9216AEC9050033868F /* audioFunctions.cc */; };
 		867BB01316AEC9050033868F /* audioStreamSourceFactory.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAD9416AEC9050033868F /* audioStreamSourceFactory.cc */; };
 		867BB01416AEC9050033868F /* wavStreamSource.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAD9616AEC9050033868F /* wavStreamSource.cc */; };
-		867BB01516AEC9050033868F /* bitTables.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAD9B16AEC9050033868F /* bitTables.cc */; };
-		867BB01616AEC9050033868F /* hashTable.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BADA016AEC9050033868F /* hashTable.cc */; };
 		867BB01716AEC9050033868F /* nameTags.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 867BADA316AEC9050033868F /* nameTags.cpp */; };
 		867BB01816AEC9050033868F /* undo.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BADA816AEC9050033868F /* undo.cc */; };
-		867BB01916AEC9050033868F /* vector.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BADAA16AEC9050033868F /* vector.cc */; };
 		867BB02016AEC9050033868F /* behaviorComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 867BADBF16AEC9050033868F /* behaviorComponent.cpp */; };
 		867BB02116AEC9050033868F /* behaviorInstance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 867BADC316AEC9050033868F /* behaviorInstance.cpp */; };
 		867BB02216AEC9050033868F /* behaviorTemplate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 867BADC616AEC9050033868F /* behaviorTemplate.cpp */; };
@@ -652,6 +650,7 @@
 		4B8AA9A93BBBA232436F0DDF /* iOSCursorController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = iOSCursorController.mm; path = ../windowManager/iOSCursorController.mm; sourceTree = "<group>"; };
 		4B8AAB7E71D8EE670C6CD843 /* guiJoystickCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = guiJoystickCtrl.h; path = gui/guiJoystickCtrl.h; sourceTree = "<group>"; };
 		4B8AAB8C7B170DE2B1C83143 /* guiJoystickCtrl.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = guiJoystickCtrl.cc; path = gui/guiJoystickCtrl.cc; sourceTree = "<group>"; };
+		4B8AAC926AB3AD1F47EB2AC2 /* gfxOpenGLTextureTarget.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxOpenGLTextureTarget.cc; sourceTree = "<group>"; };
 		860A196A171F0666000E9FE8 /* guiGridCtrl.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiGridCtrl.cc; sourceTree = "<group>"; };
 		860A196B171F0666000E9FE8 /* guiGridCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiGridCtrl.h; sourceTree = "<group>"; };
 		8610F32D16AEEC670015BCEB /* main.cs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = main.cs; path = ../../../main.cs; sourceTree = "<group>"; };
@@ -833,16 +832,8 @@
 		867BAD9516AEC9050033868F /* audioStreamSourceFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = audioStreamSourceFactory.h; sourceTree = "<group>"; };
 		867BAD9616AEC9050033868F /* wavStreamSource.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = wavStreamSource.cc; sourceTree = "<group>"; };
 		867BAD9716AEC9050033868F /* wavStreamSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wavStreamSource.h; sourceTree = "<group>"; };
-		867BAD9916AEC9050033868F /* bitMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bitMatrix.h; sourceTree = "<group>"; };
 		867BAD9A16AEC9050033868F /* bitSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bitSet.h; sourceTree = "<group>"; };
-		867BAD9B16AEC9050033868F /* bitTables.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bitTables.cc; sourceTree = "<group>"; };
-		867BAD9C16AEC9050033868F /* bitTables.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bitTables.h; sourceTree = "<group>"; };
-		867BAD9D16AEC9050033868F /* bitVector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bitVector.h; sourceTree = "<group>"; };
-		867BAD9E16AEC9050033868F /* bitVectorW.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bitVectorW.h; sourceTree = "<group>"; };
-		867BAD9F16AEC9050033868F /* findIterator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = findIterator.h; sourceTree = "<group>"; };
-		867BADA016AEC9050033868F /* hashTable.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hashTable.cc; sourceTree = "<group>"; };
 		867BADA116AEC9050033868F /* hashTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hashTable.h; sourceTree = "<group>"; };
-		867BADA216AEC9050033868F /* linkedList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = linkedList.h; sourceTree = "<group>"; };
 		867BADA316AEC9050033868F /* nameTags.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = nameTags.cpp; sourceTree = "<group>"; };
 		867BADA416AEC9050033868F /* nameTags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nameTags.h; sourceTree = "<group>"; };
 		867BADA516AEC9050033868F /* nameTags_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nameTags_ScriptBinding.h; sourceTree = "<group>"; };
@@ -850,11 +841,7 @@
 		867BADA716AEC9050033868F /* sparseArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sparseArray.h; sourceTree = "<group>"; };
 		867BADA816AEC9050033868F /* undo.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = undo.cc; sourceTree = "<group>"; };
 		867BADA916AEC9050033868F /* undo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = undo.h; sourceTree = "<group>"; };
-		867BADAA16AEC9050033868F /* vector.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vector.cc; sourceTree = "<group>"; };
 		867BADAB16AEC9050033868F /* vector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vector.h; sourceTree = "<group>"; };
-		867BADAC16AEC9050033868F /* vector2d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vector2d.h; sourceTree = "<group>"; };
-		867BADAD16AEC9050033868F /* vectorHeap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vectorHeap.h; sourceTree = "<group>"; };
-		867BADAE16AEC9050033868F /* vectorQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vectorQueue.h; sourceTree = "<group>"; };
 		867BADBF16AEC9050033868F /* behaviorComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = behaviorComponent.cpp; sourceTree = "<group>"; };
 		867BADC016AEC9050033868F /* behaviorComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = behaviorComponent.h; sourceTree = "<group>"; };
 		867BADC116AEC9050033868F /* behaviorComponent_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = behaviorComponent_ScriptBinding.h; sourceTree = "<group>"; };
@@ -2131,16 +2118,8 @@
 		867BAD9816AEC9050033868F /* collection */ = {
 			isa = PBXGroup;
 			children = (
-				867BAD9916AEC9050033868F /* bitMatrix.h */,
 				867BAD9A16AEC9050033868F /* bitSet.h */,
-				867BAD9B16AEC9050033868F /* bitTables.cc */,
-				867BAD9C16AEC9050033868F /* bitTables.h */,
-				867BAD9D16AEC9050033868F /* bitVector.h */,
-				867BAD9E16AEC9050033868F /* bitVectorW.h */,
-				867BAD9F16AEC9050033868F /* findIterator.h */,
-				867BADA016AEC9050033868F /* hashTable.cc */,
 				867BADA116AEC9050033868F /* hashTable.h */,
-				867BADA216AEC9050033868F /* linkedList.h */,
 				867BADA316AEC9050033868F /* nameTags.cpp */,
 				867BADA416AEC9050033868F /* nameTags.h */,
 				867BADA516AEC9050033868F /* nameTags_ScriptBinding.h */,
@@ -2148,11 +2127,7 @@
 				867BADA716AEC9050033868F /* sparseArray.h */,
 				867BADA816AEC9050033868F /* undo.cc */,
 				867BADA916AEC9050033868F /* undo.h */,
-				867BADAA16AEC9050033868F /* vector.cc */,
 				867BADAB16AEC9050033868F /* vector.h */,
-				867BADAC16AEC9050033868F /* vector2d.h */,
-				867BADAD16AEC9050033868F /* vectorHeap.h */,
-				867BADAE16AEC9050033868F /* vectorQueue.h */,
 			);
 			name = collection;
 			path = ../../../source/collection;
@@ -3358,6 +3333,7 @@
 				D123F8781716652400F8EFEF /* gfxOpenGLUtils.h */,
 				D123F87A1716652400F8EFEF /* gfxOpenGLVertexBuffer.h */,
 				D123F89317168F8200F8EFEF /* IUniform.h */,
+				4B8AAC926AB3AD1F47EB2AC2 /* gfxOpenGLTextureTarget.cc */,
 			);
 			path = OpenGL;
 			sourceTree = "<group>";
@@ -3680,11 +3656,8 @@
 				867BB01216AEC9050033868F /* audioFunctions.cc in Sources */,
 				867BB01316AEC9050033868F /* audioStreamSourceFactory.cc in Sources */,
 				867BB01416AEC9050033868F /* wavStreamSource.cc in Sources */,
-				867BB01516AEC9050033868F /* bitTables.cc in Sources */,
-				867BB01616AEC9050033868F /* hashTable.cc in Sources */,
 				867BB01716AEC9050033868F /* nameTags.cpp in Sources */,
 				867BB01816AEC9050033868F /* undo.cc in Sources */,
-				867BB01916AEC9050033868F /* vector.cc in Sources */,
 				867BB02016AEC9050033868F /* behaviorComponent.cpp in Sources */,
 				867BB02116AEC9050033868F /* behaviorInstance.cpp in Sources */,
 				867BB02216AEC9050033868F /* behaviorTemplate.cpp in Sources */,
@@ -4123,6 +4096,7 @@
 				4B8AAE742D18ABC94DC3FDC5 /* mRect.cpp in Sources */,
 				4B8AA88C053A6612EFCA9D10 /* iOSInputManager.mm in Sources */,
 				4B8AA80EC028431CE04DC27D /* iOSCursorController.mm in Sources */,
+				4B8AA489BC5E0D8EDB45B697 /* gfxOpenGLTextureTarget.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -20,36 +20,14 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#include <stdarg.h>
-#include <stdio.h>
-
-#include "platform/platform.h"
 #include "string/str.h"
-
-// Sigh... guess what compiler needs this...
-namespace DictHash { U32 hash( String::StringData* ); }
-namespace KeyCmp
-{
-   template< typename Key > bool equals( const Key&, const Key& );
-   template<> bool equals<>( String::StringData* const&, String::StringData* const& );
-}
-
-#include "collection/hashTable.h"
-#include "platform/platformString.h"
-#include "string/unicode.h"
-#include "algorithm/hashFunction.h"
-#include "memory/autoPtr.h"
-#include "collection/vector.h"
-#include "memory/dataChunker.h"
-#include "console/console.h"
-
-#include "math/mMathFn.h"
-
+#include <functional>
+#include <locale>
 #include "platform/platform.h"
-#include "debug/profiler.h"
-#include "platform/platformIntrinsics.h"
-//#include "platform/threads/mutex.h"
-//#include "algorithm/hashFunction.h"
+#include "collection/hashTable.h"
+#include "string/unicode.h"
+#include "memory/autoPtr.h"
+#include "console/console.h"
 
 const String::SizeType String::NPos = U32(~0);
 const String String::EmptyString;
@@ -222,243 +200,7 @@ static const char* StrFind(const char* hay, const char* needle, S32 pos, U32 mod
    return 0;
 }
 
-//-----------------------------------------------------------------------------
 
-/// Struct with String::StringData's field so we can initialize
-/// this without a constructor.
-struct StringDataImpl
-{
-#ifdef TORQUE_DEBUG
-      StringChar*       mString;       ///< so we can inspect data in a debugger
-#endif
-
-      U32               mRefCount;     ///< String reference count; string is not refcounted if this is U32_MAX (necessary for thread-safety of interned strings and the empty string).
-      U32               mLength;       ///< String length in bytes excluding null.
-      mutable U32       mNumChars;     ///< Character count; varies from byte count for strings with multi-bytes characters.
-      mutable U32       mHashCase;     ///< case-sensitive hash
-      mutable U32       mHashNoCase;   ///< case-insensitive hash
-      mutable UTF16*    mUTF16;
-      bool              mIsInterned;   ///< If true, this string is interned in the string table.
-      StringChar        mData[1];      ///< Start of string data
-};
-
-///
-class String::StringData : protected StringDataImpl
-{
-   public:
-
-      ///
-      StringData( const StringChar* data, bool interned = false )
-      {
-         mRefCount = 1;
-         mNumChars = U32_MAX;
-         mHashCase = U32_MAX;
-         mHashNoCase = U32_MAX;
-         mUTF16 = NULL;
-         mIsInterned = interned;
-         
-         // mLength is initialized by operator new()
-
-         if( data )
-         {
-            dMemcpy( mData, data, sizeof( StringChar ) * mLength );
-            mData[ mLength ] = '\0';
-         }
-         
-#ifdef TORQUE_DEBUG
-         mString = &mData[0];
-#endif
-         if( mIsInterned )
-            mRefCount = U32_MAX;
-      }
-
-      ~StringData()
-      {
-         if( mUTF16 )
-            delete [] mUTF16;
-      }
-
-      void* operator new(size_t size, U32 len);
-      void* operator new( size_t size, U32 len, DataChunker& chunker );
-      void operator delete(void *);
-
-      bool isShared() const
-      {
-         return ( mRefCount > 1 );
-      }
-
-      void addRef()
-      {
-         if( mRefCount != U32_MAX )
-            mRefCount ++;
-      }
-
-      void release()
-      {
-         if( mRefCount != U32_MAX )
-         {
-            -- mRefCount;
-            if( !mRefCount )
-               delete this;
-         }
-      }
-
-      U32 getLength() const
-      {
-         return mLength;
-      }
-
-      U32 getDataSize() const
-      {
-         return ( mLength + 1 );
-      }
-
-      U32 getDataSizeUTF16() const
-      {
-         return ( mLength * sizeof( UTF16 ) );
-      }
-
-      UTF8 operator []( U32 index ) const
-      {
-         AssertFatal( index < mLength, "String::StringData::operator []() - index out of range" );
-         return mData[ index ];
-      }
-
-      UTF8* utf8()
-      {
-         return mData;
-      }
-
-      const UTF8* utf8() const
-      {
-         return mData;
-      }
-
-      UTF16* utf16() const
-      {
-         if( !mUTF16 )
-         {
-            // Do this atomically to protect interned strings.
-            
-            UTF16* utf16 = convertUTF8toUTF16( mData );
-            if( !dCompareAndSwap( mUTF16,( UTF16* ) NULL, utf16 ) )
-               delete [] utf16;
-         }
-         return mUTF16;
-      }
-
-      U32 getHashCase() const
-      {
-         return mHashCase;
-      }
-
-      U32 getOrCreateHashCase() const
-      {
-         if( mHashCase == U32_MAX )
-         {
-            PROFILE_SCOPE(StringData_getOrCreateHashCase);
-            mHashCase = hash((U8 *)(mData), mLength, 0);
-         }
-         return mHashCase;
-      }
-
-      U32 getHashNoCase() const
-      {
-         return mHashNoCase;
-      }
-
-      U32 getOrCreateHashNoCase() const
-      {
-         if( mHashNoCase == U32_MAX)
-         {
-            PROFILE_SCOPE(StringData_getOrCreateHashNoCase);
-            UTF8 *lower = new UTF8[ mLength + 1 ];
-            dStrncpy( lower, utf8(), mLength );
-            lower[ mLength ] = 0;
-            dStrlwr( lower );
-            mHashNoCase = hash( (U8*)lower, mLength, 0 );
-            delete [] lower;
-         }
-
-         return mHashNoCase;
-      }
-
-      U32 getNumChars() const
-      {
-         if( mNumChars == U32_MAX )
-            mNumChars = dStrlen( utf16() );
-         
-         return mNumChars;
-      }
-
-      bool isInterned() const
-      {
-         return mIsInterned;
-      }
-
-      static StringData* Empty()
-      {
-         static UTF16 emptyUTF16[ 1 ] = { 0 };
-         static StringDataImpl empty =
-         {
-            #ifdef TORQUE_DEBUG
-            "",            // mString
-            #endif
-            
-            U32_MAX,       // mRefCount
-            0,             // mLength
-            0,             // mNumChars
-            0,             // mHashCase
-            0,             // mHashNoCase
-            emptyUTF16,    // mUTF16
-            true,          // mIsInterned
-            { 0 }          // mData
-         };
-                        
-         return ( StringData* ) &empty;
-      }
-};
-
-//-----------------------------------------------------------------------------
-
-namespace DictHash
-{
-   inline U32 hash( String::StringData* data )
-   {
-      return data->getOrCreateHashCase();
-   }
-}
-namespace KeyCmp
-{
-   template<>
-   inline bool equals<>( String::StringData* const& d1, String::StringData* const& d2 )
-   {
-      return ( dStrcmp( d1->utf8(), d2->utf8() ) == 0 );
-   }
-}
-
-/// Type for the intern string table.  We don't want String instances directly
-/// on the table so that destructors don't run when the table is destroyed.  This
-/// is because we really shouldn't depend on dtor ordering within this file and thus
-/// we can't tell whether the intern string memory is freed before or after the
-/// table is destroyed.
-struct StringInternTable : public HashTable< String::StringData*, String::StringData* >
-{
-   Mutex mMutex;
-   DataChunker mChunker;
-};
-
-static StringInternTable* sInternTable;
-
-struct KillInternTable
-{
-   ~KillInternTable()
-   {
-      if( sInternTable )
-         delete sInternTable;
-   }
-};
-static KillInternTable sKillInternTable;
 
 //-----------------------------------------------------------------------------
 
@@ -481,329 +223,86 @@ ConsoleFunction( dumpStringMemStats, void, 1, 1, "()"
 
 #endif
 
-//-----------------------------------------------------------------------------
 
-void* String::StringData::operator new( size_t size, U32 len )
+String::String(const StringChar *str, SizeType len):_intern(NULL)
 {
-   AssertFatal( len != 0, "String::StringData::operator new() - string must not be empty" );
-   StringData *str = reinterpret_cast<StringData*>( dMalloc( size + len * sizeof(StringChar) ) );
-
-   str->mLength      = len;
-
-#ifdef TORQUE_DEBUG
-   dFetchAndAdd( sgStringMemBytes, size + len * sizeof(StringChar) );
-   dFetchAndAdd( sgStringInstances, 1 );
-#endif
-
-   return str;
+    _string = str;
+    _string.resize(len);
 }
 
-void String::StringData::operator delete(void *ptr)
-{
-   StringData* sub = static_cast<StringData *>(ptr);
-   AssertFatal( sub->mRefCount == 0, "StringData::delete() - invalid refcount" );
 
-#ifdef TORQUE_DEBUG
-   dFetchAndAdd( sgStringMemBytes, U32( -( S32( sizeof( StringData ) + sub->mLength * sizeof(StringChar) ) ) ) );
-   dFetchAndAdd( sgStringInstances, U32( -1 ) );
-#endif
-
-   dFree( ptr );
-}
-
-void* String::StringData::operator new( size_t size, U32 len, DataChunker& chunker )
-{
-   AssertFatal( len != 0, "String::StringData::operator new() - string must not be empty" );
-   StringData *str = reinterpret_cast<StringData*>( chunker.alloc( size + len * sizeof(StringChar) ) );
-
-   str->mLength      = len;
-
-#ifdef TORQUE_DEBUG
-   dFetchAndAdd( sgStringMemBytes, size + len * sizeof(StringChar) );
-   dFetchAndAdd( sgStringInstances, 1 );
-#endif
-
-   return str;
-}
-
-//-----------------------------------------------------------------------------
-
-String::String()
-{
-   PROFILE_SCOPE(String_default_constructor);
-   _string = StringData::Empty();
-}
-
-String::String(const String &str)
-{
-   PROFILE_SCOPE(String_String_constructor);
-   _string = str._string;
-   _string->addRef();
-}
-
-String::String(const StringChar *str)
-{
-   PROFILE_SCOPE(String_char_constructor);
-   if( str && *str )
-   {
-      U32 len = dStrlen(str);
-      _string = new ( len ) StringData( str );
-   }
-   else
-      _string = StringData::Empty();
-}
-
-String::String(const StringChar *str, SizeType len)
-{
-   PROFILE_SCOPE(String_char_len_constructor);
-   if (str && *str && len!=0)
-   {
-      AssertFatal(len<=dStrlen(str), "String::String: string too short");
-      _string = new ( len ) StringData( str );
-   }
-   else
-      _string = StringData::Empty();
-}
-
-String::String(const UTF16 *str)
+String::String(const UTF16 *str):_intern(NULL)
 {
    PROFILE_SCOPE(String_UTF16_constructor);
 
    if( str && str[ 0 ] )
    {
       UTF8* utf8 = convertUTF16toUTF8( str );
-      U32 len = dStrlen( utf8 );
-      _string = new ( len ) StringData( utf8 );
+      _string = utf8;
       delete [] utf8;
    }
    else
-      _string = StringData::Empty();
+      _string.clear();
 }
 
 String::~String()
 {
-   _string->release();
-}
-
-//-----------------------------------------------------------------------------
-
-String String::intern() const
-{
-   if( isInterned() )
-      return *this;
-      
-   // Create the intern table, if we haven't already.
-   
-   if( !sInternTable )
-      sInternTable = new StringInternTable;
-      
-   // Lock the string table.
-         
-   MutexHandle mutex;
-   mutex.lock( &sInternTable->mMutex );
-   
-   // Lookup.
-   
-   StringInternTable::iterator iter = sInternTable->find( _string );
-   if( iter != sInternTable->end() )
-      return ( *iter ).value;
-      
-   // Create new.
-   
-   StringData* data = new ( length(), sInternTable->mChunker ) StringData( c_str(), true );
-   iter = sInternTable->insertUnique( data, data );
-   
-   return ( *iter ).value;
-}
-
-//-----------------------------------------------------------------------------
-
-const StringChar* String::c_str() const
-{
-   return _string->utf8();
-}
-
-const UTF16 *String::utf16() const
-{
-   return _string->utf16();
-}
-
-String::SizeType String::length() const
-{
-   return _string->getLength();
-}
-
-String::SizeType String::size() const
-{
-   return _string->getDataSize();
-}
-
-String::SizeType String::numChars() const
-{
-   return _string->getNumChars();
-}
-
-bool String::isEmpty() const
-{
-   return ( _string == StringData::Empty() );
-}
-
-bool String::isShared() const
-{
-   return _string->isShared();
-}
-
-bool String::isSame( const String& str ) const
-{
-   return ( _string == str._string );
-}
-
-bool String::isInterned() const
-{
-   return ( _string->isInterned() );
-}
-
-U32 String::getHashCaseSensitive() const
-{
-   return _string->getOrCreateHashCase();
-}
-
-U32 String::getHashCaseInsensitive() const
-{
-   return _string->getOrCreateHashNoCase();
 }
 
 //-----------------------------------------------------------------------------
 
 String::SizeType String::find(const String &str, SizeType pos, U32 mode) const
 {
-   return find(str._string->utf8(), pos, mode);
+   return find(str._string.c_str(), pos, mode);
 }
 
 String& String::insert(SizeType pos, const String &str)
 {
-   return insert(pos, str._string->utf8());
+   return insert(pos, str._string.c_str());
 }
 
 String& String::replace(SizeType pos, SizeType len, const String &str)
 {
-   return replace(pos, len, str._string->utf8());
+   return replace(pos, len, str._string.c_str());
 }
 
 //-----------------------------------------------------------------------------
 
 String& String::operator=(StringChar c)
 {
-   _string->release();
-
-   _string = new ( 2 ) StringData( 0 );
-   _string->utf8()[ 0 ] = c;
-   _string->utf8()[ 1 ] = '\0';
-
+    _string = c;
    return *this;
 }
 
 String& String::operator+=(StringChar c)
 {
-   // Append the given string into a new string
-   U32 len = _string->getLength();
-   StringData* sub = new ( len + 1 ) StringData( NULL );
-
-   copy( sub->utf8(), _string->utf8(), len );
-   sub->utf8()[len] = c;
-   sub->utf8()[len+1] = 0;
-
-   _string->release();
-   _string = sub;
-
-   return *this;
+    _string+=c;
+    return *this;
 }
 
 //-----------------------------------------------------------------------------
 
 String& String::operator=(const StringChar *str)
 {
-   // Protect against self assignment which is not only a
-   // waste of time, but can also lead to the string being
-   // freed before it can be reassigned.
-   if ( _string->utf8() == str )
-      return *this;
-
-   _string->release();
-
-   if (str && *str)
-   {
-      U32 len = dStrlen(str);
-      _string = new ( len ) StringData( str );
-   }
-   else
-      _string = StringData::Empty();
-
+    _string = str;
    return *this;
 }
 
 String& String::operator=(const String &src)
 {
-   // Inc src first to avoid assignment to self problems.
-   src._string->addRef();
-
-   _string->release();
-   _string = src._string;
-
+    _string = src._string;
    return *this;
 }
 
 String& String::operator+=(const StringChar *src)
 {
-   if( src == NULL && !*src )
-      return *this;
-
-   // Append the given string into a new string
-   U32 lena = _string->getLength();
-   U32 lenb = dStrlen(src);
-   U32 newlen = lena + lenb;
-
-   StringData* sub;
-   if( !newlen )
-      sub = StringData::Empty();
-   else
-   {
-      sub = new ( newlen ) StringData( NULL );
-
-      copy(sub->utf8(),_string->utf8(),lena);
-      copy(sub->utf8() + lena,src,lenb + 1);
-   }
-
-   _string->release();
-   _string = sub;
-
+    _string += src;
    return *this;
 }
 
 String& String::operator+=(const String &src)
 {
-   if( src.isEmpty() )
-      return *this;
-
-   // Append the given string into a new string
-   U32 lena = _string->getLength();
-   U32 lenb = src._string->getLength();
-   U32 newlen = lena + lenb;
-
-   StringData* sub;
-   if( !newlen )
-      sub = StringData::Empty();
-   else
-   {
-      sub = new ( newlen ) StringData( NULL );
-
-      copy(sub->utf8(),_string->utf8(),lena);
-      copy(sub->utf8() + lena,src._string->utf8(),lenb + 1);
-   }
-
-   _string->release();
-   _string = sub;
-
+    _string += src._string;
    return *this;
 }
 
@@ -811,141 +310,68 @@ String& String::operator+=(const String &src)
 
 String operator+(const String &a, const String &b)
 {
-   PROFILE_SCOPE( String_String_plus_String );
-   
-   if( a.isEmpty() )
-      return b;
-   else if( b.isEmpty() )
-      return a;
-
-   U32 lena = a.length();
-   U32 lenb = b.length();
-
-   String::StringData *sub = new ( lena + lenb ) String::StringData( NULL );
-
-   String::copy(sub->utf8(),a._string->utf8(),lena);
-   String::copy(sub->utf8() + lena,b._string->utf8(),lenb + 1);
-
-   return String(sub);
+   return String(a._string + b._string);
 }
 
 String operator+(const String &a, StringChar c)
 {
-   //PROFILE_SCOPE( String_String_plus_Char );
-
-   U32 lena = a.length();
-   String::StringData *sub = new ( lena + 1 ) String::StringData( NULL );
-
-   String::copy(sub->utf8(),a._string->utf8(),lena);
-
-   sub->utf8()[lena] = c;
-   sub->utf8()[lena+1] = 0;
-
-   return String(sub);
+   return String(a._string + &c);
 }
 
 String operator+(StringChar c, const String &a)
 {
-   //PROFILE_SCOPE( String_Char_plus_String );
-
-   U32 lena = a.length();
-   String::StringData *sub = new ( lena + 1 ) String::StringData( NULL );
-
-   String::copy(sub->utf8() + 1,a._string->utf8(),lena + 1);
-   sub->utf8()[0] = c;
-
-   return String(sub);
+   String temp(&c);
+   return String(temp+a._string);
 }
 
 String operator+(const String &a, const StringChar *b)
 {
-   //PROFILE_SCOPE( String_String_plus_CString );
-
-   AssertFatal(b,"String:: Invalid null ptr argument");
-
-   if( a.isEmpty() )
-      return String( b );
-
-   U32 lena = a.length();
-   U32 lenb = dStrlen(b);
-
-   if( !lenb )
-      return a;
-
-   String::StringData *sub = new ( lena + lenb ) String::StringData( NULL );
-
-   String::copy(sub->utf8(),a._string->utf8(),lena);
-   String::copy(sub->utf8() + lena,b,lenb + 1);
-
-   return String(sub);
+    std::string p1 = a._string;
+    std::string p2(b);
+   return String(p1 + p2);
 }
 
 String operator+(const StringChar *a, const String &b)
 {
-   //PROFILE_SCOPE( String_CString_plus_String );
-   AssertFatal(a,"String:: Invalid null ptr argument");
-
-   if( b.isEmpty() )
-      return String( a );
-
-   U32 lena = dStrlen(a);
-   if( !lena )
-      return b;
-
-   U32 lenb = b.length();
-
-   String::StringData* sub = new ( lena + lenb ) String::StringData( NULL );
-
-   String::copy(sub->utf8(),a,lena);
-   String::copy(sub->utf8() + lena,b._string->utf8(),lenb + 1);
-
-   return String(sub);
+    std::string p1(a);
+    std::string p2 = b._string;
+   return String(p1 + p2);
 }
 
 bool String::operator==(const String &str) const
 {
-   //PROFILE_SCOPE( String_op_equal );
+    if (isInterned() && str.isInterned())
+        return (_intern == _intern);
 
-   if( str._string == _string )
-      return true;
-   else if( str._string->isInterned() && _string->isInterned() )
-      return false;
-   else if( str.length() != length() )
-      return false;
-   else if( str._string->getHashCase() != U32_MAX
-            && _string->getHashCase() != U32_MAX
-            && str._string->getHashCase() != _string->getHashCase() )
-      return false;
-   else
-      return ( dMemcmp( str._string->utf8(), _string->utf8(), _string->getLength() ) == 0 );
+    return _string == str._string;
 }
 
 bool String::operator==( StringChar c ) const
 {
-   if( !_string || _string->getLength() != 1 )
+   if( _string.size() != 1 )
       return false;
    else
-      return ( _string->utf8()[ 0 ] == c );
+      return ( _string.c_str()[ 0 ] == c );
 }
 
 bool String::operator<(const String &str) const
 {
-   return ( dStrnatcmp( _string->utf8(), str._string->utf8() ) < 0 );
+   return ( dStrnatcmp( _string.c_str(), str._string.c_str() ) < 0 );
 }
 
 bool String::operator>(const String &str) const
 {
-   return ( dStrnatcmp( _string->utf8(), str._string->utf8() ) > 0 );
+   return ( dStrnatcmp( _string.c_str(), str._string.c_str() ) > 0 );
 }
 
 bool String::operator<=(const String &str) const
 {
-   return ( dStrnatcmp( _string->utf8(), str._string->utf8() ) <= 0 );
+   return ( dStrnatcmp( _string.c_str(), str._string.c_str() ) <= 0 );
 }
 
 bool String::operator>=(const String &str) const
 {
-   return ( dStrnatcmp( _string->utf8(), str._string->utf8() ) >= 0 );
+   return ( dStrnatcmp( _string.c_str(), str._string.c_str() ) >= 0 );
 }
 
 //-----------------------------------------------------------------------------
@@ -953,105 +379,60 @@ bool String::operator>=(const String &str) const
 
 S32 String::compare(const StringChar *str, SizeType len, U32 mode) const
 {
-   PROFILE_SCOPE( String_compare );
-   
-   AssertFatal(str,"String:: Invalid null ptr argument");
+    std::string p1 = _string;
+    std::string p2(str);
+    if (mode & String::NoCase)
+    {
+        std::transform(p1.begin(), p1.end(), p1.begin(), tolower);
+        std::transform(p2.begin(), p2.end(), p2.begin(), tolower);
+    }
 
-   const StringChar  *p1 = _string->utf8();
-   const StringChar  *p2 = str;
+    return ( p1.compare(0, len, p2.c_str()));
 
-   if (p1 == p2)
-      return 0;
-
-   if( mode & String::Right )
-   {
-      U32 n = len;
-      if( n > length() )
-         n = length();
-
-      p1 += length() - n;
-      p2 += dStrlen( str ) - n;
-   }
-
-   if (mode & String::NoCase)
-   {
-      if (len)
-      {
-         for (;--len; p1++,p2++)
-         {
-            if (dTolower(*p1) != dTolower(*p2) || !*p1)
-               break;
-         }
-      }
-      else
-      {
-         while (dTolower(*p1) == dTolower(*p2) && *p1)
-         {
-            p1++;
-            p2++;
-         }
-      }
-
-      return dTolower(*p1) - dTolower(*p2);
-   }
-
-   if (len)
-      return dMemcmp(p1,p2,len);
-
-   while (*p1 == *p2 && *p1)
-   {
-      p1++;
-      p2++;
-   }
-
-   return *p1 - *p2;
 }
 
 S32 String::compare(const String &str, SizeType len, U32 mode) const
 {
-   if ( str._string == _string )
-      return 0;
+    std::string p1 = _string;
+    std::string p2 = str._string;
+    if (mode & String::NoCase)
+    {
+        std::transform(p1.begin(), p1.end(), p1.begin(), tolower);
+        std::transform(p2.begin(), p2.end(), p2.begin(), tolower);
+    }
 
-   return compare( str.c_str(), len, mode );
+    return ( p1.compare(0, len, p2.c_str()));
 }
 
 bool String::equal(const String &str, U32 mode) const
 {
-   if( !mode )
-      return ( *this == str );
-   else
-   {
-      if( _string == str._string )
-         return true;
-      else if( _string->isInterned() && str._string->isInterned() )
-         return false;
-      else if( length() != str.length() )
-         return false;
-      else if( _string->getHashNoCase() != U32_MAX
-               && str._string->getHashNoCase() != U32_MAX
-               && _string->getHashNoCase() != str._string->getHashNoCase() )
-         return false;
-      else
-         return ( compare( str.c_str(), length(), mode ) == 0 );
-   }
+    std::string p1 = _string;
+    std::string p2 = str._string;
+    if (mode & String::NoCase)
+    {
+        std::transform(p1.begin(), p1.end(), p1.begin(), tolower);
+        std::transform(p2.begin(), p2.end(), p2.begin(), tolower);
+    }
+
+     return ( p1.compare( p2.c_str() ) == 0 );
 }
 
 //-----------------------------------------------------------------------------
 
 String::SizeType String::find(StringChar c, SizeType pos, U32 mode) const
 {
-   const StringChar* ptr = StrFind(_string->utf8(),c,pos,mode);
+   const StringChar* ptr = StrFind(_string.c_str(),c,pos,mode);
 
-   return ptr? SizeType(ptr - _string->utf8()): NPos;
+   return ptr? SizeType(ptr - _string.c_str()): NPos;
 }
 
 String::SizeType String::find(const StringChar *str, SizeType pos, U32 mode)  const
 {
    AssertFatal(str,"String:: Invalid null ptr argument");
 
-   const StringChar* ptr = StrFind(_string->utf8(),str,pos,mode);
+   const StringChar* ptr = StrFind(_string.c_str(),str,pos,mode);
 
-   return ptr? SizeType(ptr - _string->utf8()): NPos;
+   return ptr? SizeType(ptr - _string.c_str()): NPos;
 }
 
 
@@ -1064,237 +445,40 @@ String& String::insert(SizeType pos, const StringChar *str)
    return insert(pos,str,dStrlen(str));
 }
 
-///@todo review for error checking
 String& String::insert(SizeType pos, const StringChar *str, SizeType len)
 {
-   if( !len )
-      return *this;
-
-   AssertFatal( str, "String:: Invalid null ptr argument" );
-         
-   SizeType lena = length();
-   AssertFatal((pos <= lena),"Calling String::insert with position greater than length");
-   U32 newlen = lena + len;
-
-   StringData *sub;
-   if( !newlen )
-      sub = StringData::Empty();
-   else
-   {
-      sub = new ( newlen ) StringData( NULL );
-
-      String::copy(sub->utf8(),_string->utf8(),pos);
-      String::copy(sub->utf8() + pos,str,len);
-      String::copy(sub->utf8() + pos + len,_string->utf8() + pos,lena - pos + 1);
-   }
-
-   _string->release();
-   _string = sub;
-
+   _string.insert(pos, str, len);
    return *this;
 }
 
 String& String::erase(SizeType pos, SizeType len)
 {
-   AssertFatal( len != 0, "String::erase() - Calling String::erase with 0 length" );
-   AssertFatal( ( pos + len ) <= length(), "String::erase() - Invalid string region" );
-
-   if( !len )
-      return *this;
-
-   SizeType slen = length();
-   U32 newlen = slen - len;
-
-   StringData *sub;
-   if( !newlen )
-      sub = StringData::Empty();
-   else
-   {
-      sub = new ( newlen ) StringData( NULL );
-
-      if (pos > 0)
-         String::copy(sub->utf8(),_string->utf8(),pos);
-
-      String::copy(sub->utf8() + pos, _string->utf8() + pos + len, slen - (pos + len) + 1);
-   }
-
-   _string->release();
-   _string = sub;
-
-   return *this;
+    _string.erase(pos, len);
+    return *this;
 }
 
-///@todo review for error checking
 String& String::replace(SizeType pos, SizeType len, const StringChar *str)
 {
-   AssertFatal( str, "String::replace() - Invalid null ptr argument" );
-   AssertFatal( len != 0, "String::replace() - Zero length" );
-   AssertFatal( ( pos + len ) <= length(), "String::replace() - Invalid string region" );
-
-   SizeType slen = length();
-   SizeType rlen = dStrlen(str);
-
-   U32 newlen = slen - len + rlen;
-   StringData *sub;
-   if( !newlen )
-      sub = StringData::Empty();
-   else
-   {
-      sub = new ( newlen ) StringData( NULL );
-
-      String::copy(sub->utf8(),_string->utf8(), pos);
-      String::copy(sub->utf8() + pos,str,rlen);
-      String::copy(sub->utf8() + pos + rlen,_string->utf8() + pos + len,slen - pos - len + 1);
-   }
-
-   _string->release();
-   _string = sub;
-
-   return *this;
+    _string.replace(pos, len, str);
+    return *this;
 }
 
 String& String::replace( StringChar c1, StringChar c2 )
 {
    if( isEmpty() )
       return *this;
-      
-   // Create the new string lazily so that we don't needlessly
-   // dup strings when there is nothing to replace.
 
-   StringData* sub = NULL;   
-   bool foundReplacement = false;
-
-   StringChar* c = _string->utf8();
-   while( *c )
-   {
-      if( *c == c1 )
-      {
-         if( !foundReplacement )
-         {
-            sub = new ( length() ) StringData( _string->utf8() );
-            c = &sub->utf8()[ c - _string->utf8() ];
-            foundReplacement = true;
-         }
-         
-         *c = c2;
-      }
-
-      c++;
-   }
- 
-   if( foundReplacement )
-   {
-      _string->release();
-      _string = sub;
-   }
-
+   _string.replace(_string.find(c1), _string.length(), 1, c2);
    return *this;
 }
 
 String &String::replace(const String &s1, const String &s2)
 {
-   // Find number of occurrences of s1 and
-   // Calculate length of the new string...
-
-   const U32 &s1len = s1.length();
-   const U32 &s2len = s2.length();
-
-   U32 pos = 0;
-   Vector<U32> indices;
-   StringChar *walk = _string->utf8();
-
-   while ( walk )
-   {
-      // Casting away the const... was there a better way?
-      walk = (StringChar*)StrFind( _string->utf8(), s1.c_str(), pos, Case|Left );
-      if ( walk )
-      {
-         pos = SizeType(walk - _string->utf8());
-         indices.push_back( pos );
-         pos += s1len;
-      }
-   }
-
-   // Early-out, no StringDatas found.
-   if ( indices.size() == 0 )
-      return *this;
-
-   U32 newSize = size() - ( indices.size() * s1len ) + ( indices.size() * s2len );
-   StringData *sub;
-   if( newSize == 1 )
-      sub = StringData::Empty();
-   else
-   {
-      sub = new (newSize - 1 ) StringData( NULL );
-
-      // Now assemble the new string from the pieces of the old...
-
-      // Index into the old string
-      pos = 0;
-      // Index into the new string
-      U32 newPos = 0;
-      // Used to store a character count to be memcpy'd
-      U32 copyCharCount = 0;
-
-      for ( U32 i = 0; i < indices.size(); i++ )
-      {
-         const U32 &index = indices[i];
-
-         // Number of chars (if any) before the next indexed StringData
-         copyCharCount = index - pos;
-
-         // Copy chars before the StringData if we have any.
-         if ( copyCharCount > 0 )
-         {
-            dMemcpy( sub->utf8() + newPos, _string->utf8() + pos, copyCharCount * sizeof(StringChar) );
-            newPos += copyCharCount;
-         }
-
-         // Copy over the replacement string.
-         if ( s2len > 0 )
-            dMemcpy( sub->utf8() + newPos, s2._string->utf8(), s2len * sizeof(StringChar) );
-
-         newPos += s2len;
-         pos = index + s1len;
-      }
-
-      // There could be characters left in the original string after the last
-      // StringData occurrence, which we need to copy now - outside the loop.
-      copyCharCount = length() - indices.last() - s1len;
-      if ( copyCharCount != 0 )
-         dMemcpy( sub->utf8() + newPos, _string->utf8() + pos, copyCharCount * sizeof(StringChar) );
-
-      // Null terminate it!
-      sub->utf8()[newSize-1] = 0;
-   }
-
-   _string->release();
-   _string = sub;
-
+   _string.replace(_string.find(s1._string), _string.length(), s2._string);
    return *this;
 }
 
-//-----------------------------------------------------------------------------
 
-String String::substr(SizeType pos, SizeType len) const
-{
-   //PROFILE_SCOPE( String_substr );
-   
-   AssertFatal( pos <= length(), "String::substr - Invalid position!" );
-
-   if ( len == -1 )
-      len = length() - pos;
-
-   AssertFatal( len + pos <= length(), "String::substr - Invalid length!" );
-
-   StringData* sub;
-   if( !len )
-      sub = StringData::Empty();
-   else
-      sub = new ( len ) StringData( _string->utf8() + pos );
-
-   return sub;
-}
 
 //-----------------------------------------------------------------------------
 
@@ -1302,27 +486,11 @@ String String::trim() const
 {
    if( isEmpty() )
       return *this;
-   
-   const StringChar* start = _string->utf8();
-   while( *start && dIsspace( *start ) )
-      start ++;
-   
-   const StringChar* end = _string->utf8() + length() - 1;
-   while( end > start && dIsspace( *end ) )
-      end --;
-   end ++;
-   
-   const U32 len = end - start;
-   if( len == length() )
-      return *this;
-   
-   StringData* sub;
-   if( !len )
-      sub = StringData::Empty();
-   else
-      sub = new ( len ) StringData( start );
 
-   return sub;
+    std::string sub = _string;
+    sub.erase(std::find_if(sub.rbegin(), sub.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), sub.end());
+
+   return String(sub);
 }
 
 //-----------------------------------------------------------------------------
@@ -1351,7 +519,7 @@ String String::collapseEscapes() const
 
 void String::split( const char* delimiter, Vector< String >& outElements ) const
 {
-   const char* ptr = _string->utf8();
+   const char* ptr = _string.c_str();
    
    const char* start = ptr;
    while( *ptr )
@@ -1395,22 +563,16 @@ void String::split( const char* delimiter, Vector< String >& outElements ) const
 
 bool String::startsWith( const char* text ) const
 {
-   return dStrStartsWith( _string->utf8(), text );
+   return dStrStartsWith( _string.c_str(), text );
 }
 
 //-----------------------------------------------------------------------------
 
 bool String::endsWith( const char* text ) const
 {
-   return dStrEndsWith( _string->utf8(), text );
+   return dStrEndsWith( _string.c_str(), text );
 }
 
-//-----------------------------------------------------------------------------
-
-void String::copy(StringChar* dst, const StringChar *src, U32 len)
-{
-   dMemcpy(dst, src, len * sizeof(StringChar));
-}
 
 //-----------------------------------------------------------------------------
 
@@ -1529,44 +691,10 @@ String String::ToString(const char *str, ...)
 String String::VToString(const char* str, va_list args)
 {
    StrFormat format(str, args);
+    std::string sub = format.c_str();
 
-   // Copy it into a string
-   U32         len = format.length();
-   StringData* sub;
-   if( !len )
-      sub = StringData::Empty();
-   else
-   {
-      sub = new ( len ) StringData( NULL );
-
-      format.copy( sub->utf8() );
-      sub->utf8()[ len ] = 0;
-   }
-
-   return sub;
+   return String(sub);
 }
-
-
-//String String::VToString(const char* str, void* args)
-//{
-//   StrFormat format(str,&args);
-//
-//   // Copy it into a string
-//   U32         len = format.length();
-//   StringData* sub;
-//   if( !len )
-//      sub = StringData::Empty();
-//   else
-//   {
-//      sub = new ( len ) StringData( NULL );
-//
-//      format.copy( sub->utf8() );
-//      sub->utf8()[ len ] = 0;
-//   }
-//
-//   return sub;
-//}
-
 
 String   String::SpanToString(const char *start, const char *end)
 {
@@ -1575,10 +703,7 @@ String   String::SpanToString(const char *start, const char *end)
    
    AssertFatal( end > start, "Invalid arguments to String::SpanToString - end is before start" );
 
-   U32         len = U32(end - start);
-   StringData* sub = new ( len ) StringData( start );
-
-   return sub;
+   return String(std::string( start, 0, end - start ));
 }
 
 String String::ToLower(const String &string)
@@ -1586,21 +711,16 @@ String String::ToLower(const String &string)
    if ( string.isEmpty() )
       return String();
 
-   StringData* sub = new ( string.length() ) StringData( string );
-   dStrlwr( sub->utf8() );
-
-   return sub;
+    std::string sub = string._string;
+    std::transform(sub.begin(), sub.end(), sub.begin(), ::tolower);
+   return String(sub);
 }
 
 String String::ToUpper(const String &string)
 {
-   if ( string.isEmpty() )
-      return String();
-
-   StringData* sub = new ( string.length() ) StringData( string );
-   dStrupr( sub->utf8() );
-
-   return sub;
+    std::string s = string._string;
+    std::transform(s.begin(), s.end(), s.begin(), toupper);
+    return String(s);
 }
 
 String String::GetTrailingNumber(const char* str, S32& number)
@@ -1637,3 +757,18 @@ String String::GetTrailingNumber(const char* str, S32& number)
 
    return base.substr(0, p - base.c_str());
 }
+
+void String::intern() {
+    _intern = StringTable->insert(_string.c_str());
+}
+
+U32 String::getHashCaseInsensitive() const {
+    std::string sub = _string;
+    std::transform(sub.begin(), sub.end(), sub.begin(), ::tolower);
+    return (U32)std::hash<std::string>()(sub);
+}
+
+U32 String::getHashCaseSensitive() const {
+    return (U32)std::hash<std::string>()(_string);
+}
+

@@ -22,7 +22,6 @@
 
 #include "platform/platform.h"
 #include "io/resource/resourceManager.h"
-#include "collection/finditerator.h"
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------

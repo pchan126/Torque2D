@@ -22,8 +22,6 @@ class GFXOpenGLES20iOSCubemap;
 class GFXOpenGLES20iOSDevice : public GFXOpenGLES20Device
 {
 public:
-   void zombify();
-   void resurrect();
    GFXOpenGLES20iOSDevice(U32 adapterIndex );
    virtual ~GFXOpenGLES20iOSDevice();
 
@@ -32,21 +30,7 @@ public:
 
    virtual void init( const GFXVideoMode &mode, PlatformWindow *window = NULL );
 
-   virtual void activate() { }
-   virtual void deactivate() { }
-   virtual GFXAdapterType getAdapterType() { return OpenGLES; }
-
-   virtual void enterDebugEvent(ColorI color, const char *name) { }
-   virtual void leaveDebugEvent() { }
-   virtual void setDebugMarker(ColorI color, const char *name) { }
-
-   virtual void enumerateVideoModes();
-
-//   virtual U32 getTotalVideoMemory();
-
    virtual GFXCubemap * createCubemap();
-
-   virtual F32 getFillConventionOffset() const { return 0.0f; }
 
    ///@}
 
@@ -65,8 +49,6 @@ public:
 
    /// @name Shader functions
    /// @{
-    GFXOpenGLES20iOSShader* mpCurrentShader;
-    GFXOpenGLES20iOSShader* mGenericShader[5];
 
     GFXShaderConstBufferRef mGenericShaderConst[4];
     GFXStateBlockRef mGenericShaderStateblock[4];
@@ -74,12 +56,6 @@ public:
    /// @attention GL cannot check if the given format supports blending or filtering!
    virtual GFXFormat selectSupportedFormat(GFXTextureProfile *profile,
 	   const Vector<GFXFormat> &formats, bool texture, bool mustblend, bool mustfilter);
-      
-   /// Returns the number of texture samplers that can be used in a shader rendering pass
-   virtual U32 getNumSamplers() const;
-
-   /// Returns the number of simultaneous render targets supported by the device.
-   virtual U32 getNumRenderTargets() const;
 
    virtual GFXShader* createShader();
     
@@ -148,24 +124,16 @@ private:
 
    U32 mAdapterIndex;
    
-//   StrongRefPtr<GFXOpenGLES20iOSVertexBuffer> mCurrentVB;
-
     void _handleTextureLoaded(GFXTexNotifyCode code);
 
     EAGLContext* mContext;
     CIContext* mCIContext;
     GLKTextureLoader* mTextureLoader; // GLKTextureLoader
-    GLKBaseEffect* mBaseEffect;
-   id <GLKNamedEffect> currentEffect;
-
-   U32 mMaxShaderTextures;
 
    RectI mClip;
 
    GFXOpenGLStateBlockRef mCurrentGLStateBlock;
-   
-   GLenum mActiveTextureType[TEXTURE_STAGE_COUNT];
-   
+
    Vector< StrongRefPtr<GFXOpenGLES20iOSVertexBuffer> > mVolatileVBs;
     ///< Pool of existing volatile VBs so we can reuse previously created ones
 
@@ -180,8 +148,6 @@ private:
    
    void initGLState(); ///< Guaranteed to be called after all extensions have been loaded, use to init card profiler, shader version, max samplers, etc.
    virtual void initGenericShaders();
-    
-    virtual void preDrawPrimitive();
 };
 
 

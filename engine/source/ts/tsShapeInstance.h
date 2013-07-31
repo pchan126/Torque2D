@@ -147,7 +147,6 @@ class TSShapeInstance
       bool forceHidden;
 
       GFXVertexBufferDataHandle mVertexBuffer;
-      GFXPrimitiveBufferHandle mPrimitiveBuffer;
       
       /// The time at which this mesh 
       /// was last rendered.
@@ -305,48 +304,48 @@ protected:
 
    TSShape* getShape() const { return mShape; }
 
-//   TSMaterialList* getMaterialList() const { return mMaterialList; }
-//   
-//   /// Set the material list without taking ownership.
-//   /// @see cloneMaterialList
-//   void setMaterialList( TSMaterialList *matList );
-//
-//   /// Call this to own the material list -- i.e., we'll make a copy of the 
-//   /// currently set material list and be responsible for deleting it.  You
-//   /// can pass an optional feature set for initializing the cloned materials.
-//   void cloneMaterialList( const FeatureSet *features = NULL ); 
-//
-//   /// Initializes or re-initializes the material list with 
-//   /// an optional feature set.
-//   void initMaterialList(  const FeatureSet *features = NULL );
-//
-//   bool ownMaterialList() const { return mOwnMaterialList; }
-//
-//   /// Get the number of material targets in this shape instance
-//   S32 getTargetCount() const
-//   {
-//      if ( mOwnMaterialList )
-//         return getMaterialList()->size();
-//      else
-//         return getShape()->getTargetCount();
-//   }
-//
-//   /// Get the indexed material target (may differ from the base TSShape material
-//   /// list if this instance has been reskinned).
-//   const String& getTargetName( S32 mapToNameIndex ) const
-//   {
-//      if ( mOwnMaterialList )
-//      {
-//         if ( mapToNameIndex < 0 || mapToNameIndex >= getMaterialList()->size() )
-//            return String::EmptyString;
-//
-//         return getMaterialList()->getMaterialName( mapToNameIndex );
-//      }
-//      else
-//      {
-//         return getShape()->getTargetName( mapToNameIndex );
-//      }
-//   }
+   TSMaterialList* getMaterialList() const { return mMaterialList; }
+
+   /// Set the material list without taking ownership.
+   /// @see cloneMaterialList
+   void setMaterialList( TSMaterialList *matList );
+
+   /// Call this to own the material list -- i.e., we'll make a copy of the
+   /// currently set material list and be responsible for deleting it.  You
+   /// can pass an optional feature set for initializing the cloned materials.
+   void cloneMaterialList( const FeatureSet *features = NULL ); 
+
+   /// Initializes or re-initializes the material list with 
+   /// an optional feature set.
+   void initMaterialList(  const FeatureSet *features = NULL );
+
+   bool ownMaterialList() const { return mOwnMaterialList; }
+
+   /// Get the number of material targets in this shape instance
+   S32 getTargetCount() const
+   {
+      if ( mOwnMaterialList )
+         return getMaterialList()->size();
+      else
+         return getShape()->getTargetCount();
+   }
+
+   /// Get the indexed material target (may differ from the base TSShape material
+   /// list if this instance has been reskinned).
+   const String& getTargetName( S32 mapToNameIndex ) const
+   {
+      if ( mOwnMaterialList )
+      {
+         if ( mapToNameIndex < 0 || mapToNameIndex >= getMaterialList()->size() )
+            return String::EmptyString;
+
+         return getMaterialList()->at(mapToNameIndex);
+      }
+      else
+      {
+         return getShape()->getTargetName( mapToNameIndex );
+      }
+   }
 
    void reSkin( String newBaseName, String oldBaseName = String::EmptyString );
 

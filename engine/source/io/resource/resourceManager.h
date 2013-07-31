@@ -39,6 +39,7 @@
 #ifndef _CRC_H_
 #include "algorithm/crc.h"
 #endif
+#include <deque>
 
 class Stream;
 class FileStream;
@@ -382,7 +383,7 @@ private:
       RegisteredExtension  *next;
    };
 
-   Vector<char *> mMissingFileList;                ///< List of missing files.
+   std::deque<char *> mMissingFileList;                ///< List of missing files.
    bool mLoggingMissingFiles;                      ///< Are there any missing files?
    void fileIsMissing(const char *fileName);       ///< Called when a file is missing.
 
@@ -415,7 +416,7 @@ public:
    void removePath(const char *path);                 ///< Remove a path. Only removes resources that are not loaded.
 
    void setMissingFileLogging(bool log);              ///< Should we log missing files?
-   bool getMissingFileList(Vector<char *> &list);     ///< Gets which files are missing
+   bool getMissingFileList(std::deque<char *> &list);     ///< Gets which files are missing
    void clearMissingFileList();                       ///< Clears the missing file list
 
    /// Tells the resource manager what to do with a resource that it loads
@@ -458,7 +459,7 @@ public:
    void purge();                                      ///< Goes through the timeoutList and deletes it all.  BURN!!!
    void purge( ResourceObject *obj );                 ///< Deletes one resource object.
    void freeResource(ResourceObject *resObject);      ///< Frees a resource!
-   void serialize(VectorPtr<const char *> &filenames);///< Sorts the resource objects
+   void serialize(Vector<const char *> &filenames);///< Sorts the resource objects
 
    S32  findMatches( FindMatch *pFM );                ///< Finds multiple matches to an expression.
    bool findFile( const char *name );                 ///< Checks to see if a file exists.

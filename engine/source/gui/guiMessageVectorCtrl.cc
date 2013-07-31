@@ -325,8 +325,8 @@ void GuiMessageVectorCtrl::createSpecialMarkers(SpecialMarkers& rSpecial, const 
          U32 end = start + j - 1;
 
          tempSpecials.increment();
-         tempSpecials.last().start = start;
-         tempSpecials.last().end   = end;
+         tempSpecials.back().start = start;
+         tempSpecials.back().end   = end;
          tempTypes.push_back(minMatchType);
 
          pCurr  = &pLCCopy[end + 1];
@@ -360,20 +360,20 @@ void GuiMessageVectorCtrl::createLineWrapping(LineWrapping& rWrapping, const cha
       for (i = 0; i < dStrlen(string); i++) {
          if (string[i] == '\n') {
             tempBreaks.increment();
-            tempBreaks.last().start = currStart;
-            tempBreaks.last().end   = i-1;
+            tempBreaks.back().start = currStart;
+            tempBreaks.back().end   = i-1;
             currStart = i+1;
          } else if (i == dStrlen(string) - 1) {
             tempBreaks.increment();
-            tempBreaks.last().start = currStart;
-            tempBreaks.last().end   = i;
+            tempBreaks.back().start = currStart;
+            tempBreaks.back().end   = i;
             currStart = i+1;
          }
       }
    } else {
       tempBreaks.increment();
-      tempBreaks.last().start = 0;
-      tempBreaks.last().end   = -1;
+      tempBreaks.back().start = 0;
+      tempBreaks.back().end   = -1;
    }
 
    U32 splitWidth = getWidth();

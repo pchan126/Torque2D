@@ -98,21 +98,20 @@ void GFXShader::_updateDesc()
 void GFXShader::addGlobalMacro( const String &name, const String &value )
 {
    // Check to see if we already have this macro.
-   Vector<GFXShaderMacro>::iterator iter = smGlobalMacros.begin();
-   for ( ; iter != smGlobalMacros.end(); iter++ )
+   for ( auto iter: smGlobalMacros )
    {
-      if ( iter->name == name )
+      if ( iter.name == name )
       {
-         if ( iter->value != value )
-            iter->value = value;
+         if ( iter.value != value )
+            iter.value = value;
          return;
       }
    }
 
    // Add a new macro.
    smGlobalMacros.increment();
-   smGlobalMacros.last().name = name;
-   smGlobalMacros.last().value = value;
+   smGlobalMacros.back().name = name;
+   smGlobalMacros.back().value = value;
 }
 
 bool GFXShader::removeGlobalMacro( const String &name )
@@ -137,7 +136,7 @@ void GFXShader::_unlinkBuffer( GFXShaderConstBuffer *buf )
    {
       if ( *iter == buf )
       {
-         mActiveBuffers.erase_fast( iter );
+         mActiveBuffers.erase( iter );
          return;
       }
    }

@@ -215,13 +215,10 @@ bool ModuleManager::scanModules( const char* pPath, const bool rootOnly )
         }
 
         // Iterate files.
-        for ( Vector<Platform::FileInfo>::iterator fileItr = files.begin(); fileItr != files.end(); ++fileItr )
+        for ( Platform::FileInfo fileItr: files )
         {
-            // Fetch file info.
-            Platform::FileInfo* pFileInfo = fileItr;
-
             // Fetch filename.
-            const char* pFilename = pFileInfo->pFileName;
+            const char* pFilename = fileItr.pFileName;
 
             // Find filename length.
             const U32 filenameLength = dStrlen( pFilename );
@@ -235,7 +232,7 @@ bool ModuleManager::scanModules( const char* pPath, const bool rootOnly )
                 continue;
 
             // Register module.
-            registerModule( basePath, pFileInfo->pFileName );
+            registerModule( basePath, fileItr.pFileName );
         }
 
         // Stop processing if we're only processing the root.
@@ -276,7 +273,7 @@ bool ModuleManager::loadModuleGroup( const char* pModuleGroup )
     }
 
     // Is the module group already loaded?
-    if ( findGroupLoaded( moduleGroup ) != NULL )
+    if ( findGroupLoaded( moduleGroup ) != mGroupsLoaded.end() )
     {
         // Yes, so warn.
         Con::warnf( "Module Manager: Cannot load group '%s' as it is already loaded.", moduleGroup );
@@ -299,7 +296,7 @@ bool ModuleManager::loadModuleGroup( const char* pModuleGroup )
     }
 
     // Yes, so fetch the module Ids.
-    typeModuleIdVector* pModuleIds = moduleGroupItr->value;
+    typeModuleIdVector* pModuleIds = moduleGroupItr->second;
 
     // Iterate module groups.
     for( typeModuleIdVector::iterator moduleIdItr = pModuleIds->begin(); moduleIdItr != pModuleIds->end(); ++moduleIdItr )
@@ -319,10 +316,10 @@ bool ModuleManager::loadModuleGroup( const char* pModuleGroup )
         ModuleDefinition* pLoadReadyModuleDefinition = moduleReadyItr->mpModuleDefinition;;
 
         // Fetch the module Id loaded entry.
-        ModuleLoadEntry* pLoadedModuleEntry = findModuleLoaded( pLoadReadyModuleDefinition->getModuleId() );
+        typeModuleLoadEntryVector::iterator pLoadedModuleEntry = findModuleLoaded( pLoadReadyModuleDefinition->getModuleId()) ;
 
         // Did we find a loaded entry?
-        if ( pLoadedModuleEntry != NULL )
+        if ( pLoadedModuleEntry != mModulesLoaded.end() )
         {
             // Yes, so is it the one we need to load?
             if ( pLoadedModuleEntry->mpModuleDefinition != pLoadReadyModuleDefinition )
@@ -361,17 +358,14 @@ bool ModuleManager::loadModuleGroup( const char* pModuleGroup )
     // Iterate the modules, executing their script files and call their create function.
     for ( typeModuleLoadEntryVector::iterator moduleReadyItr = moduleReadyQueue.begin(); moduleReadyItr != moduleReadyQueue.end(); ++moduleReadyItr )
     {
-        // Fetch the ready entry.
-        ModuleLoadEntry* pReadyEntry = moduleReadyItr;
-
         // Fetch load ready module definition.
-        ModuleDefinition* pLoadReadyModuleDefinition = pReadyEntry->mpModuleDefinition;
+        ModuleDefinition* pLoadReadyModuleDefinition = moduleReadyItr->mpModuleDefinition;
 
         // Fetch any loaded entry for the module Id.
-        ModuleLoadEntry* pLoadedEntry = findModuleLoaded( pLoadReadyModuleDefinition->getModuleId() );
+        typeModuleLoadEntryVector::iterator pLoadedEntry = findModuleLoaded( pLoadReadyModuleDefinition->getModuleId());
 
         // Is the module already loaded.
-        if ( pLoadedEntry != NULL )
+        if ( pLoadedEntry != mModulesLoaded.end() )
         {
             // Yes, so increase load count.
             pLoadedEntry->mpModuleDefinition->increaseLoadCount();
@@ -402,13 +396,13 @@ bool ModuleManager::loadModuleGroup( const char* pModuleGroup )
         // Create a scope set.
         SimSet* pScopeSet = new SimSet;
         pScopeSet->registerObject( pLoadReadyModuleDefinition->getModuleId() );
-        pReadyEntry->mpModuleDefinition->mScopeSet = pScopeSet->getId();
+        moduleReadyItr->mpModuleDefinition->mScopeSet = pScopeSet->getId();
 
         // Increase load count.
-        pReadyEntry->mpModuleDefinition->increaseLoadCount();
+        moduleReadyItr->mpModuleDefinition->increaseLoadCount();
 
         // Queue module loaded.
-        mModulesLoaded.push_back( *pReadyEntry );
+        mModulesLoaded.push_back( *moduleReadyItr );
 
         // Bump modules loaded count.
         modulesLoadedCount++;
@@ -482,7 +476,7 @@ bool ModuleManager::unloadModuleGroup( const char* pModuleGroup )
     typeGroupVector::iterator groupLoadedItr = findGroupLoaded( moduleGroup );
 
     // Is the module group already unloaded?
-    if ( groupLoadedItr == NULL )
+    if ( groupLoadedItr == mGroupsLoaded.end() )
     {
         // No, so warn.
         Con::warnf( "Module Manager: Cannot unload group '%s' as it is not loaded.", moduleGroup );
@@ -504,7 +498,7 @@ bool ModuleManager::unloadModuleGroup( const char* pModuleGroup )
     }
 
     // Yes, so fetch the module Ids.
-    typeModuleIdVector* pModuleIds = moduleGroupItr->value;
+    typeModuleIdVector* pModuleIds = moduleGroupItr->second;
 
     // Iterate module groups.
     for( typeModuleIdVector::iterator moduleIdItr = pModuleIds->begin(); moduleIdItr != pModuleIds->end(); ++moduleIdItr )
@@ -524,10 +518,10 @@ bool ModuleManager::unloadModuleGroup( const char* pModuleGroup )
         ModuleDefinition* pLoadReadyModuleDefinition = moduleReadyItr->mpModuleDefinition;;
 
         // Fetch the module Id loaded entry.
-        ModuleLoadEntry* pLoadedModuleEntry = findModuleLoaded( pLoadReadyModuleDefinition->getModuleId() );
+        ModuleManager::typeModuleLoadEntryVector::iterator pLoadedModuleEntry = findModuleLoaded( pLoadReadyModuleDefinition->getModuleId() );
 
         // Did we find a loaded entry?
-        if ( pLoadedModuleEntry != NULL )
+        if ( pLoadedModuleEntry != mModulesLoaded.end())
         {
             // Yes, so is it the one we need to load?
             if ( pLoadedModuleEntry->mpModuleDefinition != pLoadReadyModuleDefinition )
@@ -541,7 +535,7 @@ bool ModuleManager::unloadModuleGroup( const char* pModuleGroup )
     }
 
     // Remove module group.
-    mGroupsLoaded.erase_fast( groupLoadedItr );
+    mGroupsLoaded.erase( groupLoadedItr );
 
     // Reset modules unloaded count.
     U32 modulesUnloadedCount = 0;
@@ -550,16 +544,16 @@ bool ModuleManager::unloadModuleGroup( const char* pModuleGroup )
     for ( typeModuleLoadEntryVector::iterator moduleReadyItr = moduleReadyQueue.end()-1; moduleReadyItr >= moduleReadyQueue.begin(); --moduleReadyItr )
     {
         // Fetch the ready entry.
-        ModuleLoadEntry* pReadyEntry = moduleReadyItr;
+        typeModuleLoadEntryVector::iterator pReadyEntry = moduleReadyItr;
 
         // Fetch load ready module definition.
         ModuleDefinition* pLoadReadyModuleDefinition = pReadyEntry->mpModuleDefinition;;
 
         // Fetch any loaded entry for the module Id.
-        ModuleLoadEntry* pLoadedEntry = findModuleLoaded( pLoadReadyModuleDefinition->getModuleId() );
+        typeModuleLoadEntryVector::iterator pLoadedEntry = findModuleLoaded( pLoadReadyModuleDefinition->getModuleId() );
 
         // Is the module loaded.
-        if ( pLoadedEntry == NULL )
+        if ( pLoadedEntry == mModulesLoaded.end() )
         {
             // No, so warn.
             if ( mEchoInfo )
@@ -595,10 +589,10 @@ bool ModuleManager::unloadModuleGroup( const char* pModuleGroup )
             typeModuleLoadEntryVector::iterator moduleLoadedItr = findModuleLoaded( pLoadReadyModuleDefinition->getModuleId() );
 
             // Sanity!
-            AssertFatal( moduleLoadedItr != NULL, "ModuleManager::unloadModuleGroup() - Cannot find module to unload it." );
+            AssertFatal( moduleLoadedItr != mModulesLoaded.end(), "ModuleManager::unloadModuleGroup() - Cannot find module to unload it." );
 
             // Dequeue module loaded.
-            mModulesLoaded.erase_fast( moduleLoadedItr );
+            mModulesLoaded.erase( moduleLoadedItr );
 
             // Fetch scope set.
             SimSet* pScopeSet = Sim::findObject<SimSet>( pLoadReadyModuleDefinition->mScopeSet );
@@ -685,10 +679,10 @@ bool ModuleManager::loadModuleExplicit( const char* pModuleId, const U32 version
         ModuleDefinition* pLoadReadyModuleDefinition = moduleReadyItr->mpModuleDefinition;
 
         // Fetch the module Id loaded entry.
-        ModuleLoadEntry* pLoadedModuleEntry = findModuleLoaded( pLoadReadyModuleDefinition->getModuleId() );
+        typeModuleLoadEntryVector::iterator pLoadedModuleEntry = findModuleLoaded( pLoadReadyModuleDefinition->getModuleId() );
 
         // Did we find a loaded entry?
-        if ( pLoadedModuleEntry != NULL )
+        if ( pLoadedModuleEntry != mModulesLoaded.end() )
         {
             // Yes, so is it the one we need to load?
             if ( pLoadedModuleEntry->mpModuleDefinition != pLoadReadyModuleDefinition )
@@ -725,16 +719,16 @@ bool ModuleManager::loadModuleExplicit( const char* pModuleId, const U32 version
     for ( typeModuleLoadEntryVector::iterator moduleReadyItr = moduleReadyQueue.begin(); moduleReadyItr != moduleReadyQueue.end(); ++moduleReadyItr )
     {
         // Fetch the ready entry.
-        ModuleLoadEntry* pReadyEntry = moduleReadyItr;
+        typeModuleLoadEntryVector::iterator pReadyEntry = moduleReadyItr;
 
         // Fetch load ready module definition.
         ModuleDefinition* pLoadReadyModuleDefinition = pReadyEntry->mpModuleDefinition;
 
         // Fetch any loaded entry for the module Id.
-        ModuleLoadEntry* pLoadedEntry = findModuleLoaded( pLoadReadyModuleDefinition->getModuleId() );
+        typeModuleLoadEntryVector::iterator pLoadedEntry = findModuleLoaded( pLoadReadyModuleDefinition->getModuleId() );
 
         // Is the module already loaded.
-        if ( pLoadedEntry != NULL )
+        if ( pLoadedEntry !=  mModulesLoaded.end() )
         {
             // Yes, so increase load count.
             pLoadedEntry->mpModuleDefinition->increaseLoadCount();
@@ -877,10 +871,10 @@ bool ModuleManager::unloadModuleExplicit( const char* pModuleId )
         ModuleDefinition* pLoadReadyModuleDefinition = moduleReadyItr->mpModuleDefinition;;
 
         // Fetch the module Id loaded entry.
-        ModuleLoadEntry* pLoadedModuleEntry = findModuleLoaded( pLoadReadyModuleDefinition->getModuleId() );
+        typeModuleLoadEntryVector::iterator pLoadedModuleEntry = findModuleLoaded( pLoadReadyModuleDefinition->getModuleId() );
 
         // Did we find a loaded entry?
-        if ( pLoadedModuleEntry != NULL )
+        if ( pLoadedModuleEntry != mModulesLoaded.end() )
         {
             // Yes, so is it the one we need to load?
             if ( pLoadedModuleEntry->mpModuleDefinition != pLoadReadyModuleDefinition )
@@ -900,16 +894,16 @@ bool ModuleManager::unloadModuleExplicit( const char* pModuleId )
     for ( typeModuleLoadEntryVector::iterator moduleReadyItr = moduleReadyQueue.end()-1; moduleReadyItr >= moduleReadyQueue.begin(); --moduleReadyItr )
     {
         // Fetch the ready entry.
-        ModuleLoadEntry* pReadyEntry = moduleReadyItr;
+        typeModuleLoadEntryVector::iterator pReadyEntry = moduleReadyItr;
 
         // Fetch load ready module definition.
         ModuleDefinition* pLoadReadyModuleDefinition = pReadyEntry->mpModuleDefinition;;
 
         // Fetch any loaded entry for the module Id.
-        ModuleLoadEntry* pLoadedEntry = findModuleLoaded( pLoadReadyModuleDefinition->getModuleId() );
+        typeModuleLoadEntryVector::iterator pLoadedEntry = findModuleLoaded( pLoadReadyModuleDefinition->getModuleId() );
 
         // Is the module loaded.
-        if ( pLoadedEntry == NULL )
+        if ( pLoadedEntry == mModulesLoaded.end() )
         {
             // No, so warn.
             if ( mEchoInfo )
@@ -946,10 +940,10 @@ bool ModuleManager::unloadModuleExplicit( const char* pModuleId )
             typeModuleLoadEntryVector::iterator moduleLoadedItr = findModuleLoaded( pLoadReadyModuleDefinition->getModuleId() );
 
             // Sanity!
-            AssertFatal( moduleLoadedItr != NULL, "ModuleManager::unloadModuleExplicit() - Cannot find module to unload it." );
+            AssertFatal( moduleLoadedItr != mModulesLoaded.end(), "ModuleManager::unloadModuleExplicit() - Cannot find module to unload it." );
 
             // Dequeue module loaded.
-            mModulesLoaded.erase_fast( moduleLoadedItr );
+            mModulesLoaded.erase( moduleLoadedItr );
 
             // Fetch scope set.
             SimSet* pScopeSet = Sim::findObject<SimSet>( pLoadReadyModuleDefinition->mScopeSet );
@@ -996,13 +990,17 @@ ModuleDefinition* ModuleManager::findModule( const char* pModuleId, const U32 ve
     AssertFatal( pModuleId != NULL, "Cannot find module with NULL module Id." );
 
     // Find module definition.
-    ModuleDefinitionEntry::iterator moduleItr = findModuleDefinition( StringTable->insert( pModuleId ), versionId );
+    ModuleDefinitionEntry* pDefinitions = findModuleId(StringTable->insert( pModuleId ));
+    if (pDefinitions != NULL)
+    {
+        typeModuleDefinitionVector::iterator moduleItr = findModuleDefinition( pDefinitions, versionId );
 
-     // Finish if module was not found.
-    if ( moduleItr == NULL )
-        return NULL;
-
-    return *moduleItr;
+        // Finish if module was not found.
+        if ( moduleItr == pDefinitions->mVector.end() )
+            return NULL;
+        return *moduleItr;
+    }
+    return NULL;
 }
 
 //-----------------------------------------------------------------------------
@@ -1036,10 +1034,10 @@ void ModuleManager::findModules( const bool loadedOnly, typeConstModuleDefinitio
     for( typeModuleIdDatabaseHash::iterator moduleIdItr = mModuleIdDatabase.begin(); moduleIdItr != mModuleIdDatabase.end(); ++moduleIdItr )
     {
         // Fetch module definition entry.
-        ModuleDefinitionEntry* pModuleDefinitionEntry = moduleIdItr->value;
+        ModuleDefinitionEntry* pModuleDefinitionEntry = moduleIdItr->second;
 
         // Iterate module definitions.
-        for ( typeModuleDefinitionVector::iterator moduleDefinitionItr = pModuleDefinitionEntry->begin(); moduleDefinitionItr != pModuleDefinitionEntry->end(); ++moduleDefinitionItr )
+        for ( typeModuleDefinitionVector::iterator moduleDefinitionItr = pModuleDefinitionEntry->mVector.begin(); moduleDefinitionItr != pModuleDefinitionEntry->mVector.end(); ++moduleDefinitionItr )
         {
             // Fetch module definition.
             ModuleDefinition* pModuleDefinition = *moduleDefinitionItr;
@@ -1075,14 +1073,14 @@ void ModuleManager::findModuleTypes( const char* pModuleType, const bool loadedO
     for( typeModuleIdDatabaseHash::iterator moduleIdItr = mModuleIdDatabase.begin(); moduleIdItr != mModuleIdDatabase.end(); ++moduleIdItr )
     {
         // Fetch module definition entry.
-        ModuleDefinitionEntry* pModuleDefinitionEntry = moduleIdItr->value;
+        ModuleDefinitionEntry* pModuleDefinitionEntry = moduleIdItr->second;
 
         // Skip if note the module type we're searching for.
         if ( pModuleDefinitionEntry->mModuleType != moduleType )
             continue;
 
         // Iterate module definitions.
-        for ( typeModuleDefinitionVector::iterator moduleDefinitionItr = pModuleDefinitionEntry->begin(); moduleDefinitionItr != pModuleDefinitionEntry->end(); ++moduleDefinitionItr )
+        for ( typeModuleDefinitionVector::iterator moduleDefinitionItr = pModuleDefinitionEntry->mVector.begin(); moduleDefinitionItr != pModuleDefinitionEntry->mVector.end(); ++moduleDefinitionItr )
         {
             // Fetch module definition.
             ModuleDefinition* pModuleDefinition = *moduleDefinitionItr;
@@ -1241,13 +1239,10 @@ StringTableEntry ModuleManager::copyModule( ModuleDefinition* pSourceModuleDefin
         }
 
         // Iterate files.
-        for ( Vector<Platform::FileInfo>::iterator fileItr = files.begin(); fileItr != files.end(); ++fileItr )
+        for (Platform::FileInfo fileItr: files )
         {
-            // Fetch file info.
-            Platform::FileInfo* pFileInfo = fileItr;
-
             // Fetch filename.
-            const char* pFilename = pFileInfo->pFileName;
+            const char* pFilename = fileItr.pFileName;
 
             // Find filename length.
             const U32 filenameLength = dStrlen( pFilename );
@@ -1261,7 +1256,7 @@ StringTableEntry ModuleManager::copyModule( ModuleDefinition* pSourceModuleDefin
                 continue;
 
             char parseFileBuffer[1024];
-            dSprintf( parseFileBuffer, sizeof(parseFileBuffer), "%s/%s", pFileInfo->pFullPath, pFilename );
+            dSprintf( parseFileBuffer, sizeof(parseFileBuffer), "%s/%s", fileItr.pFullPath, pFilename );
 
             // Parse file.            
             if ( !mTaml.parse( parseFileBuffer, moduleIdUpdateVisitor ) )
@@ -1384,34 +1379,38 @@ bool ModuleManager::synchronizeDependencies( ModuleDefinition* pRootModuleDefini
         else
         {
             // Yes, so fetch the module definition for this module Id and version Id in the target.
-            ModuleDefinitionEntry::iterator definitionItr = targetModuleManager.findModuleDefinition( sourceModuleId, sourceVersionId );
-
-            // Is the specific module definition present in the target?
-            if ( definitionItr != NULL )
+            ModuleDefinitionEntry* pDefinitions = findModuleId(sourceModuleId);
+            if (pDefinitions != NULL)
             {
-                // Yes, so fetch the module definition.
-                ModuleDefinition* pTargetModuleDefinition = *definitionItr;
+                typeModuleDefinitionVector::iterator definitionItr = targetModuleManager.findModuleDefinition( pDefinitions, sourceVersionId );
 
-                // Fetch the target module build Id.
-                const U32 targetBuildId = pTargetModuleDefinition->getBuildId();
-
-                // Fetch the target module path.
-                StringTableEntry targetModulePath = pTargetModuleDefinition->getModulePath();
-
-                // Remove the target module definition from the database.
-                targetModuleManager.removeModuleDefinition( pTargetModuleDefinition );
-
-                // Skip if the target definition is the same build Id.
-                if ( targetBuildId == sourceBuildId )
-                    continue;
-
-                // Delete the target module definition folder.
-                if ( !Platform::deleteDirectory( targetModulePath ) )
+                // Is the specific module definition present in the target?
+                if ( definitionItr != pDefinitions->mVector.end() )
                 {
-                    // Warn.
-                    Con::warnf("Cannot synchronize dependencies for module Id '%s' at version Id '%d' as the old module at '%s' could not be deleted.",
-                        sourceModuleId, sourceVersionId, targetModulePath );
-                    return false;
+                    // Yes, so fetch the module definition.
+                    ModuleDefinition* pTargetModuleDefinition = *definitionItr;
+
+                    // Fetch the target module build Id.
+                    const U32 targetBuildId = pTargetModuleDefinition->getBuildId();
+
+                    // Fetch the target module path.
+                    StringTableEntry targetModulePath = pTargetModuleDefinition->getModulePath();
+
+                    // Remove the target module definition from the database.
+                    targetModuleManager.removeModuleDefinition( pTargetModuleDefinition );
+
+                    // Skip if the target definition is the same build Id.
+                    if ( targetBuildId == sourceBuildId )
+                        continue;
+
+                    // Delete the target module definition folder.
+                    if ( !Platform::deleteDirectory( targetModulePath ) )
+                    {
+                        // Warn.
+                        Con::warnf("Cannot synchronize dependencies for module Id '%s' at version Id '%d' as the old module at '%s' could not be deleted.",
+                            sourceModuleId, sourceVersionId, targetModulePath );
+                        return false;
+                    }
                 }
             }
         }
@@ -1501,11 +1500,15 @@ bool ModuleManager::canMergeModules( const char* pMergeSourcePath )
         StringTableEntry moduleGroup = pMergeModuleDefinition->getModuleGroup();
 
         // Cannot merge if module already exists.
-        if ( findModuleDefinition( moduleId, versionId ) != NULL )
-            return false;
+        ModuleDefinitionEntry* pDefinitions = findModuleId(moduleId);
+        if (pDefinitions != NULL)
+        {
+            if ( findModuleDefinition( pDefinitions, versionId ) != pDefinitions->mVector.end() )
+                return false;
+        }
 
         // Cannot merge if module is part of a loaded group.
-        if ( findGroupLoaded( moduleGroup ) != NULL )
+        if ( findGroupLoaded( moduleGroup ) != mGroupsLoaded.end() )
             return false;
     }
 
@@ -1616,34 +1619,42 @@ bool ModuleManager::mergeModules( const char* pMergeTargetPath, const bool remov
         }
         else
         {
-            // Yes, so find the target module definition that matches the source module definition.
-            ModuleDefinitionEntry::iterator targetModuleDefinitionItr = targetModuleManager.findModuleDefinition( sourceModuleId, sourceVersionId );
-
-            // Is there an existing target module definition entry?
-            if ( targetModuleDefinitionItr != NULL )
+            ModuleDefinitionEntry* pDefinitions = findModuleId(sourceModuleId);
+            if (pDefinitions != NULL)
             {
-                // Yes, so fetch the target module definition.
-                const ModuleDefinition* pTargetModuleDefinition = *targetModuleDefinitionItr;
+                typeModuleDefinitionVector::iterator targetModuleDefinitionItr = targetModuleManager.findModuleDefinition( pDefinitions, sourceVersionId );
 
-                // Fetch target module path.
-                StringTableEntry targetModulePath = pTargetModuleDefinition->getModulePath();
-
-                // Yes, so we have to remove it first.
-                if ( !Platform::deleteDirectory( targetModulePath ) )
+                // Is there an existing target module definition entry?
+                if ( targetModuleDefinitionItr != pDefinitions->mVector.end() )
                 {
-                    // Module was not deleted so warn.
-                    Con::warnf( "Failed to remove module folder located at '%s'.  Module will be copied over.", targetModulePath );
-                }
+                    // Yes, so fetch the target module definition.
+                    const ModuleDefinition* pTargetModuleDefinition = *targetModuleDefinitionItr;
 
-                // Is the build Id being downgraded?
-                if ( sourceBuildId < pTargetModuleDefinition->getBuildId() )
+                    // Fetch target module path.
+                    StringTableEntry targetModulePath = pTargetModuleDefinition->getModulePath();
+
+                    // Yes, so we have to remove it first.
+                    if ( !Platform::deleteDirectory( targetModulePath ) )
+                    {
+                        // Module was not deleted so warn.
+                        Con::warnf( "Failed to remove module folder located at '%s'.  Module will be copied over.", targetModulePath );
+                    }
+
+                    // Is the build Id being downgraded?
+                    if ( sourceBuildId < pTargetModuleDefinition->getBuildId() )
+                    {
+                        // Yes, so warn.
+                        Con::warnf( "Encountered a downgraded build Id for module Id '%s' at version Id '%d'.", sourceModuleId, sourceBuildId );
+                    }
+
+                    // Module should not be registered.
+                    shouldRegisterModule = false;
+                }
+                else
                 {
-                    // Yes, so warn.
-                    Con::warnf( "Encountered a downgraded build Id for module Id '%s' at version Id '%d'.", sourceModuleId, sourceBuildId );
+                    // Module Should be registered.
+                    shouldRegisterModule = true;
                 }
-
-                // Module should not be registered.
-                shouldRegisterModule = false;
             }
             else
             {
@@ -1749,10 +1760,10 @@ void ModuleManager::clearDatabase( void )
     for ( typeModuleIdDatabaseHash::iterator moduleItr = mModuleIdDatabase.begin(); moduleItr != mModuleIdDatabase.end(); ++moduleItr )
     {
         // Fetch modules definitions.
-        ModuleDefinitionEntry* pDefinitions = moduleItr->value;
+        ModuleDefinitionEntry* pDefinitions = moduleItr->second;
 
         // Iterate module definitions.
-        for ( ModuleDefinitionEntry::iterator definitionItr = pDefinitions->begin(); definitionItr != pDefinitions->end(); ++definitionItr )
+        for ( typeModuleDefinitionVector::iterator definitionItr = pDefinitions->mVector.begin(); definitionItr != pDefinitions->mVector.end(); ++definitionItr )
         {
             // Fetch module definition.
             ModuleDefinition* pModuleDefinition = *definitionItr;
@@ -1775,7 +1786,7 @@ void ModuleManager::clearDatabase( void )
     for ( typeGroupModuleHash::iterator moduleGroupItr = mGroupModules.begin(); moduleGroupItr != mGroupModules.end(); ++moduleGroupItr )
     {
         // Delete module group vector.
-        delete moduleGroupItr->value;
+        delete moduleGroupItr->second;
     }
 
     // Clear module groups.
@@ -1815,20 +1826,20 @@ bool ModuleManager::removeModuleDefinition( ModuleDefinition* pModuleDefinition 
     AssertFatal( moduleItr != mModuleIdDatabase.end(), "Failed to find module definition." );
 
     // Fetch modules definitions.
-    ModuleDefinitionEntry* pDefinitions = moduleItr->value;
+    ModuleDefinitionEntry* pDefinitions = moduleItr->second;
 
     // Fetch version Id.
     const U32 versionId = pModuleDefinition->getVersionId();
 
     // Iterate module definitions.
-    for ( ModuleDefinitionEntry::iterator definitionItr = pDefinitions->begin(); definitionItr != pDefinitions->end(); ++definitionItr )
+    for ( typeModuleDefinitionVector::iterator definitionItr = pDefinitions->begin(); definitionItr != pDefinitions->end(); ++definitionItr )
     {
         // Skip if this isn't the version Id we're searching for.
         if ( versionId != (*definitionItr)->getVersionId() )
             continue;
 
         // Remove definition entry.
-        pDefinitions->erase( definitionItr ); 
+        pDefinitions->erase( definitionItr );
 
         // Remove notification before we delete it.
         clearNotify( pModuleDefinition );
@@ -1845,7 +1856,7 @@ bool ModuleManager::removeModuleDefinition( ModuleDefinition* pModuleDefinition 
             for( typeGroupModuleHash::iterator moduleGroupItr = mGroupModules.begin(); moduleGroupItr != mGroupModules.end(); ++moduleGroupItr )
             {
                 // Fetch module Ids.
-                typeModuleIdVector* pModuleIds = moduleGroupItr->value;
+                typeModuleIdVector* pModuleIds = moduleGroupItr->second;
 
                 // Iterate module Id.
                 for( typeModuleIdVector::iterator moduleIdItr = pModuleIds->begin(); moduleIdItr != pModuleIds->end(); ++moduleIdItr )
@@ -1971,7 +1982,7 @@ bool ModuleManager::registerModule( const char* pModulePath, const char* pModule
     }
 
     // Is the module group already loaded?
-    if ( findGroupLoaded( moduleGroup ) != NULL )
+    if ( findGroupLoaded( moduleGroup ) != mGroupsLoaded.end() )
     {
         // Yes, so warn.
         Con::warnf( "Module Manager: Found module: '%s' but it is in a module group '%s' which has already been loaded.",
@@ -2005,10 +2016,10 @@ bool ModuleManager::registerModule( const char* pModulePath, const char* pModule
     if ( pDefinitions != NULL )
     {
         // Yes, so find the module definition.
-        ModuleDefinitionEntry::iterator definitionItr = findModuleDefinition( moduleId, versionId );
+        typeModuleDefinitionVector::iterator definitionItr = findModuleDefinition( pDefinitions, versionId );
 
         // Does this version Id already exist?
-        if ( definitionItr != NULL )
+        if ( definitionItr != pDefinitions->end() )
         {
             // Yes, so warn.
             Con::warnf( "Module Manager: Found module: '%s' but it is already registered as module Id '%s' at version Id '%d'.",
@@ -2053,10 +2064,10 @@ bool ModuleManager::registerModule( const char* pModulePath, const char* pModule
     }
     
     // Add module definition.
-    pDefinitions->push_back( pModuleDefinition );
+    pDefinitions->mVector.push_back( pModuleDefinition );
 
     // Sort module definitions by version Id so that higher versions appear first.
-    dQsort( pDefinitions->address(), pDefinitions->size(), sizeof(ModuleDefinition*), moduleDefinitionVersionIdSort );
+    dQsort( pDefinitions->mVector.address(), pDefinitions->mVector.size(), sizeof(ModuleDefinition*), moduleDefinitionVersionIdSort );
 
     // Find module group.
     typeGroupModuleHash::iterator moduleGroupItr = mGroupModules.find( moduleGroup );
@@ -2065,7 +2076,7 @@ bool ModuleManager::registerModule( const char* pModulePath, const char* pModule
     if ( moduleGroupItr != mGroupModules.end() )
     {
         // Yes, so fetch module Ids.
-        typeModuleIdVector* pModuleIds = moduleGroupItr->value;
+        typeModuleIdVector* pModuleIds = moduleGroupItr->second;
 
         // Is the module Id already present?
         bool moduleIdFound = false;
@@ -2090,7 +2101,7 @@ bool ModuleManager::registerModule( const char* pModulePath, const char* pModule
         moduleGroupItr = mGroupModules.insert( pModuleDefinition->getModuleGroup(), new typeModuleIdVector() );
 
         // Add module Id.
-        moduleGroupItr->value->push_back( moduleId );
+        moduleGroupItr->second->push_back( moduleId );
     }
 
     // Notify if the module definition is destroyed.
@@ -2260,22 +2271,18 @@ ModuleManager::ModuleDefinitionEntry* ModuleManager::findModuleId( StringTableEn
     typeModuleIdDatabaseHash::iterator moduleItr = mModuleIdDatabase.find( moduleId );
 
     // Return appropriately.
-    return moduleItr != mModuleIdDatabase.end() ? moduleItr->value : NULL;
+    return moduleItr != mModuleIdDatabase.end() ? moduleItr->second : NULL;
 }
 
 //-----------------------------------------------------------------------------
 
-ModuleManager::ModuleDefinitionEntry::iterator ModuleManager::findModuleDefinition( StringTableEntry moduleId, const U32 versionId )
+ModuleManager::typeModuleDefinitionVector::iterator ModuleManager::findModuleDefinition(ModuleDefinitionEntry *pDefinitions, const U32 versionId)
 {
-    // Fetch modules definitions.
-    ModuleDefinitionEntry* pDefinitions = findModuleId( moduleId );
-
     // Finish if no module definitions for the module Id.
-    if ( pDefinitions == NULL )
-        return NULL;
+    AssertFatal ( pDefinitions != NULL, "A ModuleDefinitionEntry cannot be NULL.")
 
     // Iterate module definitions.
-    for ( ModuleDefinitionEntry::iterator definitionItr = pDefinitions->begin(); definitionItr != pDefinitions->end(); ++definitionItr )
+    for ( typeModuleDefinitionVector::iterator definitionItr = pDefinitions->mVector.begin(); definitionItr != pDefinitions->mVector.end(); ++definitionItr )
     {
         // Skip if this isn't the version Id we're searching for.
         if ( versionId != (*definitionItr)->getVersionId() )
@@ -2286,7 +2293,7 @@ ModuleManager::ModuleDefinitionEntry::iterator ModuleManager::findModuleDefiniti
     }
 
     // Not found.
-    return NULL;
+    return pDefinitions->mVector.end();
 }
 
 //-----------------------------------------------------------------------------
@@ -2316,29 +2323,36 @@ bool ModuleManager::resolveModuleDependencies( StringTableEntry moduleId, const 
             return false;
         }
 
-        // No, so find the required module version Id.
-        ModuleDefinitionEntry::iterator definitionItr = findModuleDefinition( moduleId, versionId );
+        // Fetch modules definitions.
+        ModuleDefinitionEntry* pDefinitions = findModuleId( moduleId );
 
-        // Did we find the requested module definition.
-        if ( definitionItr == NULL )
+        // Did we find the module Id?
+        if ( pDefinitions != NULL )
         {
-            // No, so we can safely ignore the missing dependency if we're not enforcing dependencies.
-            if ( !mEnforceDependencies )
-                return true;
+            // No, so find the module Id at the specific version Id.
+            typeModuleDefinitionVector::iterator definitionItr = findModuleDefinition( pDefinitions, versionId );
 
-            // Warn!
-            Con::warnf( "Module Manager: A missing module dependency was detected loading module Id '%s' at version Id '%d' in group '%s'.",
-                moduleId, versionId, moduleGroup );
-            return false;
+            // Did we find the module definition?
+            if ( definitionItr != pDefinitions->end())
+            {
+                // Set the new module definition.
+                pLoadReadyEntry->mpModuleDefinition = *definitionItr;
+
+                // Set strict version Id.
+                pLoadReadyEntry->mStrictVersionId = true;
+
+                return true;
+            }
         }
 
-        // Set the new module definition.
-        pLoadReadyEntry->mpModuleDefinition = *definitionItr;
+        // No, so we can safely ignore the missing dependency if we're not enforcing dependencies.
+        if ( !mEnforceDependencies )
+            return true;
 
-        // Set strict version Id.
-        pLoadReadyEntry->mStrictVersionId = true;
-                
-        return true;
+        // Warn!
+        Con::warnf( "Module Manager: A missing module dependency was detected loading module Id '%s' at version Id '%d' in group '%s'.",
+                moduleId, versionId, moduleGroup );
+        return false;
     }
 
     // Is the module Id load resolving?
@@ -2373,15 +2387,36 @@ bool ModuleManager::resolveModuleDependencies( StringTableEntry moduleId, const 
         }
 
         // Fetch first module definition which should be the highest version Id.
-        pSelectedModuleDefinition = (*moduleIdItr->value)[0];
+        pSelectedModuleDefinition = (*moduleIdItr->second).mVector[0];
     }
     else
     {
-        // No, so find the module Id at the specific version Id.
-        ModuleDefinitionEntry::iterator definitionItr = findModuleDefinition( moduleId, versionId );
+        // Fetch modules definitions.
+        ModuleDefinitionEntry* pDefinitions = findModuleId( moduleId );
 
-        // Did we find the module definition?
-        if ( definitionItr == NULL )
+        // Did we find the module Id?
+        if ( pDefinitions != NULL )
+        {
+            // No, so find the module Id at the specific version Id.
+            typeModuleDefinitionVector::iterator definitionItr = findModuleDefinition( pDefinitions, versionId );
+
+            // Did we find the module definition?
+            if ( definitionItr == pDefinitions->end())
+            {
+                // No, so we can safely ignore the missing dependency if we're not enforcing dependencies.
+                if ( !mEnforceDependencies )
+                    return true;
+
+                // Warn!
+                Con::warnf( "Module Manager: A missing module dependency was detected loading module Id '%s' at version Id '%d' in group '%s'.",
+                    moduleId, versionId, moduleGroup );
+                return false;
+            }
+
+            // Select the module definition.
+            pSelectedModuleDefinition = *definitionItr;
+        }
+        else
         {
             // No, so we can safely ignore the missing dependency if we're not enforcing dependencies.
             if ( !mEnforceDependencies )
@@ -2389,12 +2424,9 @@ bool ModuleManager::resolveModuleDependencies( StringTableEntry moduleId, const 
 
             // Warn!
             Con::warnf( "Module Manager: A missing module dependency was detected loading module Id '%s' at version Id '%d' in group '%s'.",
-                moduleId, versionId, moduleGroup );
+                    moduleId, versionId, moduleGroup );
             return false;
         }
-
-        // Select the module definition.
-        pSelectedModuleDefinition = *definitionItr;
     }
 
     // If we're only resolving synchronized modules and the module is not synchronized then finish.
@@ -2440,7 +2472,7 @@ ModuleManager::ModuleLoadEntry* ModuleManager::findModuleResolving( StringTableE
     {
         // Finish if found.
         if ( moduleId == loadEntryItr->mpModuleDefinition->getModuleId() )
-            return loadEntryItr;
+            return &(*loadEntryItr);
     }
 
     // Not found.
@@ -2456,7 +2488,7 @@ ModuleManager::ModuleLoadEntry* ModuleManager::findModuleReady( StringTableEntry
     {
         // Finish if found.
         if ( moduleId == loadEntryItr->mpModuleDefinition->getModuleId() )
-            return loadEntryItr;
+            return &(*loadEntryItr);
     }
 
     // Not found.
@@ -2482,23 +2514,14 @@ ModuleManager::typeModuleLoadEntryVector::iterator ModuleManager::findModuleLoad
     }
 
     // Not found.
-    return NULL;
+    return mModulesLoaded.end();
 }
 
 //-----------------------------------------------------------------------------
 
 ModuleManager::typeGroupVector::iterator ModuleManager::findGroupLoaded( StringTableEntry moduleGroup )
 {
-    // Iterate groups loaded queue.
-    for( typeGroupVector::iterator groupsLoadedItr = mGroupsLoaded.begin(); groupsLoadedItr != mGroupsLoaded.end(); ++groupsLoadedItr )
-    {
-        // Finish if found.
-        if ( moduleGroup == *groupsLoadedItr )
-            return groupsLoadedItr;
-    }
-
-    // Not found.
-    return NULL;
+    return std::find(mGroupsLoaded.begin(), mGroupsLoaded.end(), moduleGroup);
 }
 
 //-----------------------------------------------------------------------------

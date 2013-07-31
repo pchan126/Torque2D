@@ -25,7 +25,7 @@ public:
 
    /// Constructor for building special hints.
    MatStateHint( const String &state ) 
-	   : mState( state.intern() )
+	   : mState( state )
    {
    }
 

@@ -27,6 +27,8 @@
 #include "platform/platform.h"
 #endif
 
+#include <bitset>
+
 /// A convenience class to manipulate a set of bits.
 ///
 /// Notice that bits are accessed directly, ie, by passing
@@ -36,40 +38,36 @@ class BitSet32
 {
 private:
    /// Internal representation of bitset.
-   U32 mbits;
+   std::bitset<32> mbits;
 
 public:
    BitSet32()                         { mbits = 0; }
+   BitSet32(std::bitset<32> in_bits)  { mbits = in_bits; }
    BitSet32(const BitSet32& in_rCopy) { mbits = in_rCopy.mbits; }
-   BitSet32(const U32 in_mask)        { mbits = in_mask; }
+   BitSet32(U32 i)                    { mbits = std::bitset<32>(i);}
 
-   operator U32() const               { return mbits; }
-   U32 getMask() const                { return mbits; }
+   operator U32() const               { return (U32)mbits.to_ulong(); }
 
    /// Set all bits to true.
-   void set()                         { mbits  = 0xFFFFFFFFUL; }
-
-   /// Set the specified bit(s) to true.
-   void set(const U32 m)              { mbits |= m; }
-
-   /// Masked-set the bitset; ie, using s as the mask and then setting the masked bits
-   /// to b.
-   void set(BitSet32 s, bool b)       { mbits = (mbits&~(s.mbits))|(b?s.mbits:0); }
+   void set()                         { mbits.set(); }
+   void set(const U32 m)              { mbits.set(m); }
+   void set(const U32 m, bool b)       { mbits.set(m, b); }
 
    /// Clear all bits.
-   void clear()                       { mbits  = 0; }
-
-   /// Clear the specified bit(s).
-   void clear(const U32 m)            { mbits &= ~m; }
+   void reset()                       { mbits.reset(); }
+   void reset(const U32 m)            { mbits.reset(m); }
 
    /// Toggle the specified bit(s).
-   void toggle(const U32 m)           { mbits ^= m; }
+   void flip()                      { mbits.flip(); }
+   void flip(const U32 m)           { mbits.flip(m); }
 
    /// Are any of the specified bit(s) set?
-   bool test(const U32 m) const       { return (mbits & m) != 0; }
+   bool test(const U32 m) const       { return mbits.test(m); }
 
-   /// Are ALL the specified bit(s) set?
-   bool testStrict(const U32 m) const { return (mbits & m) == m; }
+   bool any() const                   { return mbits.any(); }
+   bool none() const                  { return mbits.none(); }
+
+   size_t size() const                {return mbits.size(); }
 
    /// @name Operator Overloads
    /// @{
@@ -78,9 +76,9 @@ public:
    BitSet32& operator&=(const U32 m)  { mbits &= m; return *this; }
    BitSet32& operator^=(const U32 m)  { mbits ^= m; return *this; }
 
-   BitSet32 operator|(const U32 m) const { return BitSet32(mbits | m); }
-   BitSet32 operator&(const U32 m) const { return BitSet32(mbits & m); }
-   BitSet32 operator^(const U32 m) const { return BitSet32(mbits ^ m); }
+   BitSet32 operator|(const BitSet32 m) const { return BitSet32(mbits | m.mbits); }
+   BitSet32 operator&(const BitSet32 m) const { return BitSet32(mbits & m.mbits); }
+   BitSet32 operator^(const BitSet32 m) const { return BitSet32(mbits ^ m.mbits); }
    /// @}
 };
 

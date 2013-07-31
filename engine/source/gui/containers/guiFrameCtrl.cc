@@ -272,7 +272,7 @@ GuiFrameSetCtrl::~GuiFrameSetCtrl()
 {
    while (mFrameDetails.size() > 0)
    {
-      delete mFrameDetails.last();
+      delete mFrameDetails.back();
       mFrameDetails.pop_back();
    }
 }
@@ -304,8 +304,8 @@ void GuiFrameSetCtrl::removeObject(SimObject *object)
 {
    if (object != NULL)
    {
-      VectorPtr<SimObject *>::iterator soitr;
-      VectorPtr<FrameDetail *>::iterator fditr = mFrameDetails.begin();
+      Vector<SimObject *>::iterator soitr;
+      Vector<FrameDetail *>::iterator fditr = mFrameDetails.begin();
       for (soitr = begin(); soitr != end(); soitr++, fditr++)
       {
          if (*soitr == object)
@@ -680,8 +680,8 @@ S32 GuiFrameSetCtrl::findResizableFrames(S32 indexes[])
          break;
    }
    // now, make sure these indexes are for movable frames
-   VectorPtr<SimObject *>::iterator soitr;
-   VectorPtr<FrameDetail *>::iterator fditr = mFrameDetails.begin();
+   Vector<SimObject *>::iterator soitr;
+   Vector<FrameDetail *>::iterator fditr = mFrameDetails.begin();
    GuiControl *gc;
    S32 column = 0;
    S32 row = 0;
@@ -763,8 +763,8 @@ bool GuiFrameSetCtrl::findFrameContents(S32 index, GuiControl **gc, FrameDetail 
 
    if (index >= 0 && index < size())
    {
-      VectorPtr<SimObject *>::iterator soitr;
-      VectorPtr<FrameDetail *>::iterator fditr = mFrameDetails.begin();
+      Vector<SimObject *>::iterator soitr;
+      Vector<FrameDetail *>::iterator fditr = mFrameDetails.begin();
       for (soitr = begin(); soitr != end(); soitr++, fditr++, index--)
       {
          if (index == 0)
@@ -844,7 +844,7 @@ void GuiFrameSetCtrl::computeSizes(bool balanceFrames)
    }
 
    // now, resize the contents of each frame (and move content w/o a frame beyond visible range)
-   VectorPtr<SimObject *>::iterator soitr;
+   Vector<SimObject *>::iterator soitr;
    GuiControl *gc;
    S32 column = 0;
    S32 row = 0;
@@ -949,8 +949,8 @@ void GuiFrameSetCtrl::computeMovableRange(Region hitRegion, S32 vertHit, S32 hor
          return;
    }
    // now that we have the hard ranges, reduce ranges based on minimum frame extents
-   VectorPtr<SimObject *>::iterator soitr;
-   VectorPtr<FrameDetail *>::iterator fditr = mFrameDetails.begin();
+   Vector<SimObject *>::iterator soitr;
+   Vector<FrameDetail *>::iterator fditr = mFrameDetails.begin();
    GuiControl *gc;
    S32 column = 0;
    S32 row = 0;

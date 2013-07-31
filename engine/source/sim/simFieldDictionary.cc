@@ -192,15 +192,15 @@ void SimFieldDictionary::writeFields(SimObject *obj, Stream &stream, U32 tabStop
    dQsort(flist.address(),flist.size(),sizeof(Entry *),compareEntries);
 
    // Save them out
-   for(Vector<Entry *>::iterator itr = flist.begin(); itr != flist.end(); itr++)
+   for(auto itr : flist )
    {
-      U32 nBufferSize = (dStrlen( (*itr)->value ) * 2) + dStrlen( (*itr)->slotName ) + 16;
+      U32 nBufferSize = (dStrlen( (itr)->value ) * 2) + dStrlen( (itr)->slotName ) + 16;
       FrameTemp<char> expandedBuffer( nBufferSize );
 
       stream.writeTabs(tabStop+1);
 
-      dSprintf(expandedBuffer, nBufferSize, "%s = \"", (*itr)->slotName);
-      expandEscape((char*)expandedBuffer + dStrlen(expandedBuffer), (*itr)->value);
+      dSprintf(expandedBuffer, nBufferSize, "%s = \"", (itr)->slotName);
+      expandEscape((char*)expandedBuffer + dStrlen(expandedBuffer), (itr)->value);
       dStrcat(expandedBuffer, "\";\r\n");
 
       stream.write(dStrlen(expandedBuffer),expandedBuffer);
@@ -231,10 +231,10 @@ void SimFieldDictionary::printFields(SimObject *obj)
    }
    dQsort(flist.address(),flist.size(),sizeof(Entry *),compareEntries);
 
-   for(Vector<Entry *>::iterator itr = flist.begin(); itr != flist.end(); itr++)
+   for(auto itr: flist)
    {
-      dSprintf(expandedBuffer, sizeof(expandedBuffer), "  %s = \"", (*itr)->slotName);
-      expandEscape(expandedBuffer + dStrlen(expandedBuffer), (*itr)->value);
+      dSprintf(expandedBuffer, sizeof(expandedBuffer), "  %s = \"", (itr)->slotName);
+      expandEscape(expandedBuffer + dStrlen(expandedBuffer), (itr)->value);
       Con::printf("%s\"", expandedBuffer);
    }
 }

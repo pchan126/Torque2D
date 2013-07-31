@@ -274,9 +274,9 @@ ConsoleMethod(NameTags, queryTags, const char*, 3, 4,   "(tagIds, [excluded]) Fi
     dSprintf(pReturnBuffer, sizeof(pReturnBuffer), "%s", "");
     char* pBuffer = pReturnBuffer;
 
-    for( NameTags::queryType::iterator itr = results.begin(); itr != results.end(); ++itr )
+    for( auto itr : results  )
     {
-        const U32 offset = dSprintf( pBuffer, bufferSize, "%d ", itr->key );
+        const U32 offset = dSprintf( pBuffer, bufferSize, "%d ", itr.first );
         pBuffer += offset;
         bufferSize -= offset;
     }

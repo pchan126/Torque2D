@@ -45,7 +45,7 @@ private:
     bool                    mLeaveCallback;
 
     /// Object Mapping Database.
-    typedef VectorPtr<SceneObject*> collideCallbackType;
+    typedef Vector<SceneObject*> collideCallbackType;
 
     collideCallbackType     mEnterColliders;
     collideCallbackType     mLeaveColliders;

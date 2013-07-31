@@ -1162,7 +1162,7 @@ TSMesh::~TSMesh()
 // TSSkinMesh methods
 //-----------------------------------------------------
 
-void TSSkinMesh::updateSkin( const Vector<MatrixF> &transforms, GFXVertexBufferDataHandle &instanceVB, GFXPrimitiveBufferHandle &instancePB )
+void TSSkinMesh::updateSkin( const Vector<MatrixF> &transforms, GFXVertexBufferDataHandle &instanceVB )
 {
     return;
 //   PROFILE_SCOPE( TSSkinMesh_UpdateSkin );
@@ -2348,104 +2348,104 @@ S8 * TSMesh::getSharedData8( S32 parentMesh, S32 size, S8 **source, bool skip )
 void TSMesh::createVBIB()
 {
    AssertFatal( getMeshType() != SkinMeshType, "TSMesh::createVBIB() - Invalid call for skinned mesh type!" );
-   _createVBIB( mVB, mPB );
+   _createVBIB( mVB );
 }
 
-void TSMesh::_createVBIB( GFXVertexBufferDataHandle &vb, GFXPrimitiveBufferHandle &pb )
+void TSMesh::_createVBIB( GFXVertexBufferDataHandle &vb )
 {
-   AssertFatal(mVertexData.isReady(), "Call convertToAlignedMeshData() before calling _createVBIB()");
-
-   if ( mNumVerts == 0 || !GFXDevice::devicePresent() )
-      return;
-
-   PROFILE_SCOPE( TSMesh_CreateVBIB );
-
-   // Number of verts can change in LOD skinned mesh
-   const bool vertsChanged = ( vb && vb->mNumVerts < mNumVerts );
-
-#if defined(USE_MEM_VERTEX_BUFFERS)
-   if(!mDynamic)
-   {
-#endif
-      // Create the vertex buffer
-      if( vertsChanged || vb == NULL )
-         vb.set( GFX, mVertSize, mVertexFormat, mNumVerts, mDynamic ? 
-#if defined(TORQUE_OS_XENON)
-         // Skinned meshes still will occasionally re-skin more than once per frame.
-         // This cannot happen on the Xbox360. Until this issue is resolved, use
-         // type volatile instead. [1/27/2010 Pat]
-            GFXBufferTypeVolatile : GFXBufferTypeStatic );
-#else
-            GFXBufferTypeDynamic : GFXBufferTypeStatic );
-#endif
-
-      // Copy from aligned memory right into GPU memory
-      U8 *vertData = (U8*)vb.lock();
-#if defined(TORQUE_OS_XENON)
-      XMemCpyStreaming_WriteCombined( vertData, mVertexData.address(), mVertexData.mem_size() );
-#else
-      dMemcpy( vertData, mVertexData.address(), mVertexData.mem_size() );
-#endif
-      vb.unlock();
-#if defined(USE_MEM_VERTEX_BUFFERS)
-   }
-#endif
-
-   const bool primsChanged = ( pb.isValid() && pb->mIndexCount != indices.size() );
-   if( primsChanged || pb.IsNull() )
-   {
-      // go through and create PrimitiveInfo array
-      Vector <GFXPrimitive> piArray;
-      GFXPrimitive pInfo;
-
-      U32 primitivesSize = primitives.size();
-      for ( U32 i = 0; i < primitivesSize; i++ )
-      {
-         const TSDrawPrimitive & draw = primitives[i];
-
-         GFXPrimitiveType drawType = getDrawType( draw.matIndex >> 30 );
-
-         switch( drawType )
-         {
-         case GFXTriangleList:
-            pInfo.type = drawType;
-            pInfo.numPrimitives = draw.numElements / 3;
-            pInfo.startIndex = draw.start;
-            // Use the first index to determine which 16-bit address space we are operating in
-            pInfo.startVertex = indices[draw.start] & 0xFFFF0000;
-            pInfo.minIndex = pInfo.startVertex;
-            pInfo.numVertices = getMin((U32)0x10000, mNumVerts - pInfo.startVertex);
-            break;
-
-         case GFXTriangleStrip:
-         case GFXTriangleFan:
-            pInfo.type = drawType;
-            pInfo.numPrimitives = draw.numElements - 2;
-            pInfo.startIndex = draw.start;
-            // Use the first index to determine which 16-bit address space we are operating in
-            pInfo.startVertex = indices[draw.start] & 0xFFFF0000;
-            pInfo.minIndex = pInfo.startVertex;
-            pInfo.numVertices = getMin((U32)0x10000, mNumVerts - pInfo.startVertex);
-            break;
-
-         default:
-            AssertFatal( false, "WTF?!" );
-         }
-
-         piArray.push_back( pInfo );
-      }
-
-      pb.set( GFX, indices.size(), piArray.size(), GFXBufferTypeStatic );
-
-      U16 *ibIndices = NULL;
-      GFXPrimitive *piInput = NULL;
-      pb.lock( &ibIndices, &piInput );
-
-//      dCopyArray( ibIndices, indices.address(), indices.size() );
-      dMemcpy( piInput, piArray.address(), piArray.size() * sizeof(GFXPrimitive) );
-
-      pb.unlock();
-   }
+//   AssertFatal(mVertexData.isReady(), "Call convertToAlignedMeshData() before calling _createVBIB()");
+//
+//   if ( mNumVerts == 0 || !GFXDevice::devicePresent() )
+//      return;
+//
+//   PROFILE_SCOPE( TSMesh_CreateVBIB );
+//
+//   // Number of verts can change in LOD skinned mesh
+//   const bool vertsChanged = ( vb && vb->mNumVerts < mNumVerts );
+//
+//#if defined(USE_MEM_VERTEX_BUFFERS)
+//   if(!mDynamic)
+//   {
+//#endif
+//      // Create the vertex buffer
+//      if( vertsChanged || vb == NULL )
+//         vb.set( GFX, mVertSize, mVertexFormat, mNumVerts, mDynamic ? 
+//#if defined(TORQUE_OS_XENON)
+//         // Skinned meshes still will occasionally re-skin more than once per frame.
+//         // This cannot happen on the Xbox360. Until this issue is resolved, use
+//         // type volatile instead. [1/27/2010 Pat]
+//            GFXBufferTypeVolatile : GFXBufferTypeStatic );
+//#else
+//            GFXBufferTypeDynamic : GFXBufferTypeStatic );
+//#endif
+//
+//      // Copy from aligned memory right into GPU memory
+//      U8 *vertData = (U8*)vb.lock();
+//#if defined(TORQUE_OS_XENON)
+//      XMemCpyStreaming_WriteCombined( vertData, mVertexData.address(), mVertexData.mem_size() );
+//#else
+//      dMemcpy( vertData, mVertexData.address(), mVertexData.mem_size() );
+//#endif
+//      vb.unlock();
+//#if defined(USE_MEM_VERTEX_BUFFERS)
+//   }
+//#endif
+//
+//   const bool primsChanged = ( pb.isValid() && pb->mIndexCount != indices.size() );
+//   if( primsChanged || pb.IsNull() )
+//   {
+//      // go through and create PrimitiveInfo array
+//      Vector <GFXPrimitive> piArray;
+//      GFXPrimitive pInfo;
+//
+//      U32 primitivesSize = primitives.size();
+//      for ( U32 i = 0; i < primitivesSize; i++ )
+//      {
+//         const TSDrawPrimitive & draw = primitives[i];
+//
+//         GFXPrimitiveType drawType = getDrawType( draw.matIndex >> 30 );
+//
+//         switch( drawType )
+//         {
+//         case GFXTriangleList:
+//            pInfo.type = drawType;
+//            pInfo.numPrimitives = draw.numElements / 3;
+//            pInfo.startIndex = draw.start;
+//            // Use the first index to determine which 16-bit address space we are operating in
+//            pInfo.startVertex = indices[draw.start] & 0xFFFF0000;
+//            pInfo.minIndex = pInfo.startVertex;
+//            pInfo.numVertices = getMin((U32)0x10000, mNumVerts - pInfo.startVertex);
+//            break;
+//
+//         case GFXTriangleStrip:
+//         case GFXTriangleFan:
+//            pInfo.type = drawType;
+//            pInfo.numPrimitives = draw.numElements - 2;
+//            pInfo.startIndex = draw.start;
+//            // Use the first index to determine which 16-bit address space we are operating in
+//            pInfo.startVertex = indices[draw.start] & 0xFFFF0000;
+//            pInfo.minIndex = pInfo.startVertex;
+//            pInfo.numVertices = getMin((U32)0x10000, mNumVerts - pInfo.startVertex);
+//            break;
+//
+//         default:
+//            AssertFatal( false, "WTF?!" );
+//         }
+//
+//         piArray.push_back( pInfo );
+//      }
+//
+//      pb.set( GFX, indices.size(), piArray.size(), GFXBufferTypeStatic );
+//
+//      U16 *ibIndices = NULL;
+//      GFXPrimitive *piInput = NULL;
+//      pb.lock( &ibIndices, &piInput );
+//
+////      dCopyArray( ibIndices, indices.address(), indices.size() );
+//      dMemcpy( piInput, piArray.address(), piArray.size() * sizeof(GFXPrimitive) );
+//
+//      pb.unlock();
+//   }
 }
 
 void TSMesh::assemble( bool skip )
@@ -2538,7 +2538,7 @@ void TSMesh::assemble( bool skip )
             "unique verts prior to export, or use COLLADA.");
       }
 
-      S16 *ind16 = tsalloc.getPointer16(szIndIn);
+//      S16 *ind16 = tsalloc.getPointer16(szIndIn);
 
       // need to copy to temporary arrays
       deleteInputArrays = true;

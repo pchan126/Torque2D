@@ -228,13 +228,11 @@ void ParticlePlayer::preIntegrate( const F32 totalTime, const F32 elapsedTime, D
     const F32 cameraIdleDistanceSqr = mCameraIdleDistance * mCameraIdleDistance;
 
     // Fetch scene windows.
-    SimSet& sceneWindows = getScene()->getAttachedSceneWindows();
-
     // Find a scene window that stops the pause.
-    for( SimSet::iterator itr = sceneWindows.begin(); itr != sceneWindows.end(); itr++ )
+    for( SimObject* itr:getScene()->getAttachedSceneWindows() )
     {
         // Fetch the scene window.
-        SceneWindow* pSceneWindow = static_cast<SceneWindow*>(*itr);
+        SceneWindow* pSceneWindow = static_cast<SceneWindow*>(itr);
 
         // Are we within the camera distance?
         if ( (pSceneWindow->getCameraPosition() - position).LengthSquared() < cameraIdleDistanceSqr )
@@ -291,11 +289,8 @@ void ParticlePlayer::integrateObject( const F32 totalTime, const F32 elapsedTime
         mAge += scaledTime;
 
         // Iterate the emitters.
-        for( typeEmitterVector::iterator emitterItr = mEmitters.begin(); emitterItr != mEmitters.end(); ++emitterItr )
+        for( EmitterNode* pEmitterNode:mEmitters )
         {
-            // Fetch the emitter node.
-            EmitterNode* pEmitterNode = *emitterItr;
-
             // Fetch the asset emitter.
             ParticleAssetEmitter* pParticleAssetEmitter = pEmitterNode->getAssetEmitter();
 
@@ -470,11 +465,8 @@ void ParticlePlayer::interpolateObject( const F32 timeDelta )
         return;
 
     // Iterate the emitters.
-    for( typeEmitterVector::iterator emitterItr = mEmitters.begin(); emitterItr != mEmitters.end(); ++emitterItr )
+    for( EmitterNode* pEmitterNode:mEmitters )
     {
-        // Fetch the emitter node.
-        EmitterNode* pEmitterNode = *emitterItr;
-
         // Fetch First Particle Node.
         ParticleSystem::ParticleNode* pParticleNode = pEmitterNode->getFirstParticle();
 
@@ -792,11 +784,8 @@ bool ParticlePlayer::play( const bool resetParticles )
     mAge = 0.0f;
 
     // Iterate the emitters.
-    for( typeEmitterVector::iterator emitterItr = mEmitters.begin(); emitterItr != mEmitters.end(); ++emitterItr )
+    for( EmitterNode* pEmitterNode:mEmitters )
     {
-        // Fetch the emitter node.
-        EmitterNode* pEmitterNode = *emitterItr;
-
         // Reset the time since last generation.
         pEmitterNode->setTimeSinceLastGeneration( 0.0f );
     }

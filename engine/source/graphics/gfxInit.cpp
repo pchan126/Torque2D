@@ -109,7 +109,7 @@ void GFXInit::cleanup()
 {
    while( smAdapters.size() )
    {
-      GFXAdapter* adapter = smAdapters.last();
+      GFXAdapter* adapter = smAdapters.back();
       smAdapters.decrement();
       delete adapter;
    }
@@ -208,8 +208,8 @@ GFXAdapter *GFXInit::getBestAdapterChoice()
    //
    // If D3D is unavailable, we're not on windows, so GL is de facto the
    // best choice!
-   F32 highestSM9 = 0.f, highestSMGL = 0.f;
-   GFXAdapter  *foundAdapterGLES = NULL, *foundAdapter9 = NULL,
+   F32 highestSMGL = 0.f;
+   GFXAdapter  *foundAdapterGLES = NULL,
                *foundAdapterGL = NULL;
 
    for(S32 i=0; i<smAdapters.size(); i++)

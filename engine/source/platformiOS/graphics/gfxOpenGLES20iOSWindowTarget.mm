@@ -51,24 +51,3 @@ void GFXOpenGLES20iOSWindowTarget::_onAppSignal(WindowId wnd, S32 event)
 //   // masking the issue for the most common case.
    static_cast<GFXOpenGLES20iOSDevice*>(mDevice)->mVolatileVBs.clear();
 }
-
-void GFXOpenGLES20iOSWindowTarget::resolveTo(GFXTextureObject* obj)
-{
-}
-
-void GFXOpenGLES20iOSWindowTarget::makeActive()
-{
-    // setting framebuffer to 0 targets the default framebuffer included in GLKView
-   glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
-void GFXOpenGLES20iOSWindowTarget::_teardownCurrentMode()
-{
-
-}
-
-
-void GFXOpenGLES20iOSWindowTarget::_setupNewMode()
-{
-}
-

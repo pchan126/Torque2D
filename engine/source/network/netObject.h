@@ -271,10 +271,10 @@ protected:
 
    enum NetFlags
    {
-      IsGhost           =  BIT(1),   ///< This is a ghost.
-      ScopeAlways       =  BIT(6),  ///< Object always ghosts to clients.
-      ScopeLocal        =  BIT(7),  ///< Ghost only to local client.
-      Ghostable         =  BIT(8),  ///< Set if this object CAN ghost.
+      IsGhost           =  1,   ///< This is a ghost.
+      ScopeAlways       =  6,  ///< Object always ghosts to clients.
+      ScopeLocal        =  7,  ///< Ghost only to local client.
+      Ghostable         =  8,  ///< Set if this object CAN ghost.
 
       MaxNetFlagBit     =  15
    };

@@ -27,10 +27,6 @@
 #include "collection/vector.h"
 #endif
 
-#ifndef _FIND_iterator_H_
-#include "collection/finditerator.h"
-#endif
-
 #ifndef _BITSET_H_
 #include "collection/bitSet.h"
 #endif

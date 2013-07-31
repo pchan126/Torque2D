@@ -94,9 +94,9 @@ void WorldQuery::addAlwaysInScope( SceneObject* pSceneObject )
     PROFILE_SCOPE(WorldQuery_AddAlwaysInScope);
 
     // Sanity!
-    for( typeSceneObjectVector::iterator itr = mAlwaysInScopeSet.begin(); itr != mAlwaysInScopeSet.end(); ++itr )
+    for( SceneObject* itr:mAlwaysInScopeSet )
     {
-        AssertFatal( (*itr) != pSceneObject, "Object attempted to be in Always-in-Scope more than once." );
+        AssertFatal( itr != pSceneObject, "Object attempted to be in Always-in-Scope more than once." );
     }
 
     // Add to always-in-scope.
@@ -113,14 +113,11 @@ void WorldQuery::removeAlwaysInScope( SceneObject* pSceneObject )
     // Debug Profiling.
     PROFILE_SCOPE(WorldQuery_RemoveAlwaysInScope);
 
-    // Remove from always-in-scope.
-    for( typeSceneObjectVector::iterator itr = mAlwaysInScopeSet.begin(); itr != mAlwaysInScopeSet.end(); ++itr )
-    {
-        // Skip if not object.
-        if ( (*itr) != pSceneObject )
-            continue;
+    auto itr = mAlwaysInScopeSet.find(pSceneObject);
 
-        mAlwaysInScopeSet.erase_fast( itr );
+    if (itr != mAlwaysInScopeSet.end())
+    {
+        mAlwaysInScopeSet.erase( itr );
 
         // Reset always in scope.
         pSceneObject->mAlwaysInScope = false;
@@ -864,11 +861,8 @@ void WorldQuery::injectAlwaysInScope( void )
         return;
 
     // Iterate always-in-scope.
-    for( typeSceneObjectVector::iterator itr = mAlwaysInScopeSet.begin(); itr != mAlwaysInScopeSet.end(); ++itr )
+    for( auto pSceneObject:mAlwaysInScopeSet )
     {
-        // Fetch scene object.
-        SceneObject* pSceneObject = (*itr);
-
         // Ignore if already tagged with the world query key.
         if ( pSceneObject->getWorldQueryKey() == mMasterQueryKey )
             continue;

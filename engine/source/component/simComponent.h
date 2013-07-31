@@ -38,7 +38,7 @@ class SimComponent : public SimObject
    typedef SimObject Parent;
 
 private:
-   VectorPtr<SimComponent *> mComponentList; ///< The Component List
+   Vector<SimComponent *> mComponentList; ///< The Component List
    void *mMutex;                             ///< Component List Mutex
 
    SimObjectPtr<SimComponent> mOwner;        ///< The component which owns this one.
@@ -53,8 +53,8 @@ protected:
    SimComponent *_getOwner() { return mOwner; }
 
    /// Returns a const reference to private mComponentList
-   typedef VectorPtr<SimComponent *>::iterator SimComponentiterator;
-   VectorPtr<SimComponent *> &lockComponentList()
+   typedef Vector<SimComponent *>::iterator SimComponentiterator;
+   Vector<SimComponent *> &lockComponentList()
    {
       Mutex::lockMutex( mMutex );
       return mComponentList;

@@ -104,7 +104,6 @@
                 sizeof(HIDName),
                 kCFStringEncodingUTF8);
 
-        CFRelease(valueRef);
     }
     NSLog(@"added %@ %s", joystick, HIDName);
 }

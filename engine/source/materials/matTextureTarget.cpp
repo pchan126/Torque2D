@@ -64,7 +64,7 @@ void NamedTexTarget::unregister()
    TargetMap::iterator iter = smTargets.find( mName );
 
    AssertFatal( iter != smTargets.end() &&
-                iter->value == this,
+                iter->second == this,
       "NamedTexTarget::unregister - Bad registration!" );
 
    mIsRegistered = false;
@@ -78,7 +78,7 @@ NamedTexTarget* NamedTexTarget::find( const String &name )
 
    TargetMap::iterator iter = smTargets.find( name );
    if ( iter != smTargets.end() )
-      return iter->value;
+      return iter->second;
    else
       return NULL;
 }

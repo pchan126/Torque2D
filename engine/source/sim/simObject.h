@@ -242,19 +242,19 @@ private:
 
     /// Flags for use in mFlags
     enum {
-        Deleted           = BIT( 0 ),    ///< This object is marked for deletion.
-        Removed           = BIT( 1 ),    ///< This object has been unregistered from the object system.
-        Added             = BIT( 3 ),    ///< This object has been registered with the object system.
-        Selected          = BIT( 4 ),    ///< This object has been marked as selected. (in editor)
-        Expanded          = BIT( 5 ),    ///< This object has been marked as expanded. (in editor)
-        ModStaticFields   = BIT( 6 ),    ///< The object allows you to read/modify static fields
-        ModDynamicFields  = BIT( 7 ),    ///< The object allows you to read/modify dynamic fields
-        AutoDelete        = BIT( 8 ),    ///< Delete this object when the last ObjectRef is gone.
-        CannotSave        = BIT( 9 ),    ///< Object should not be saved.
-        EditorOnly        = BIT( 10 ),   ///< This object is for use by the editor only.
-        NoNameChange      = BIT( 11 ),   ///< Whether changing the name of this object is allowed.
-        Hidden            = BIT( 12 ),   ///< Object is hidden in editors.
-        Locked            = BIT( 13 ),   ///< Object is locked in editors.
+        Deleted           = 0,    ///< This object is marked for deletion.
+        Removed           = 1,    ///< This object has been unregistered from the object system.
+        Added             = 3,    ///< This object has been registered with the object system.
+        Selected          = 4,    ///< This object has been marked as selected. (in editor)
+        Expanded          = 5,    ///< This object has been marked as expanded. (in editor)
+        ModStaticFields   = 6,    ///< The object allows you to read/modify static fields
+        ModDynamicFields  = 7,    ///< The object allows you to read/modify dynamic fields
+        AutoDelete        = 8,    ///< Delete this object when the last ObjectRef is gone.
+        CannotSave        = 9,    ///< Object should not be saved.
+        EditorOnly        = 10,   ///< This object is for use by the editor only.
+        NoNameChange      = 11,   ///< Whether changing the name of this object is allowed.
+        Hidden            = 12,   ///< Object is hidden in editors.
+        Locked            = 13,   ///< Object is locked in editors.
     };
 
 public:
@@ -624,7 +624,7 @@ public:
     bool isChildOfGroup(SimGroup* pGroup);
     bool isProperlyAdded() const { return mFlags.test(Added); }
     bool isDeleted() const { return mFlags.test(Deleted); }
-    bool isRemoved() const { return mFlags.test(Deleted | Removed); }
+    bool isRemoved() const { return (mFlags.test(Deleted) || mFlags.test(Removed)); }
     bool isLocked();
     void setLocked( bool b );
     bool isHidden();
@@ -725,16 +725,16 @@ public:
     /// @{
     bool isSelected() const { return mFlags.test(Selected); }
     bool isExpanded() const { return mFlags.test(Expanded); }
-    void setSelected(bool sel) { if(sel) mFlags.set(Selected); else mFlags.clear(Selected); }
-    void setExpanded(bool exp) { if(exp) mFlags.set(Expanded); else mFlags.clear(Expanded); }
-    void setModDynamicFields(bool dyn) { if(dyn) mFlags.set(ModDynamicFields); else mFlags.clear(ModDynamicFields); }
-    void setModStaticFields(bool sta) { if(sta) mFlags.set(ModStaticFields); else mFlags.clear(ModStaticFields); }
+    void setSelected(bool sel) { if(sel) mFlags.set(Selected); else mFlags.reset(Selected); }
+    void setExpanded(bool exp) { if(exp) mFlags.set(Expanded); else mFlags.reset(Expanded); }
+    void setModDynamicFields(bool dyn) { if(dyn) mFlags.set(ModDynamicFields); else mFlags.reset(ModDynamicFields); }
+    void setModStaticFields(bool sta) { if(sta) mFlags.set(ModStaticFields); else mFlags.reset(ModStaticFields); }
 
     /// Returns boolean specifying if the object can be serialized.
     bool getCanSave() const { return !mFlags.test( CannotSave ); }
     
     /// Set serialization flag.
-    virtual void setCanSave( bool val ) { if( !val ) mFlags.set( CannotSave ); else mFlags.clear( CannotSave ); }
+    virtual void setCanSave( bool val ) { if( !val ) mFlags.set( CannotSave ); else mFlags.reset( CannotSave ); }
 
     /// @}
 

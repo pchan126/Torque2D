@@ -15,7 +15,6 @@
 
 - (id)initWithDevice:(IOHIDDeviceRef)theDevice
 {
-    NSArray *axisTypes = [NSArray arrayWithObjects:kHIDUsage_GD_X, kHIDUsage_GD_Y, kHIDUsage_GD_Z, kHIDUsage_GD_Rz, kHIDUsage_GD_Rx, kHIDUsage_GD_Ry, kHIDUsage_GD_Slider, nil];
     self = [super init];
     if (self) {
         device = theDevice;
@@ -40,15 +39,15 @@
                 JoystickHatswitch *hatSwitch = [[JoystickHatswitch alloc] initWithElement:thisElement andOwner:self];
                 [tempHats addObject:hatSwitch];
                 [hatSwitch release];
-//            if (elementUsage == kHIDUsage_GD_X || elementUsage == kHIDUsage_GD_Y)
-            } else if ([axisTypes containsObject: elementUsage] ) {
+            } else if (elementUsage >= kHIDUsage_GD_X && elementUsage <= kHIDUsage_GD_Slider ) {
                 [tempAxes addObject:thisElement];
             } else if (elementType == kIOHIDElementTypeInput_Button) {
                 [tempButtons addObject:thisElement];
             } else if ( elementType == kIOHIDElementTypeInput_Misc) {
                 [tempMisc addObject:thisElement];
-            } else
-                NSLog(@"unidentified element");
+            }
+//            else
+//                NSLog(@"unidentified element");
 
         }
         buttons = [[NSArray arrayWithArray:tempButtons] retain];
@@ -69,7 +68,6 @@
 
 - (void)elementReportedChange:(IOHIDElementRef)theElement {
 
-    NSArray *axisTypes = [NSArray arrayWithObjects:kHIDUsage_GD_X, kHIDUsage_GD_Y, kHIDUsage_GD_Z, kHIDUsage_GD_Rz, kHIDUsage_GD_Rx, kHIDUsage_GD_Ry, kHIDUsage_GD_Slider, nil];
     int elementType = IOHIDElementGetType(theElement);
     IOHIDValueRef pValue;
     IOHIDDeviceGetValue(device, theElement, &pValue);
@@ -121,8 +119,7 @@
         return;
     }
 
-//    if (elementType == kIOHIDElementTypeInput_Axis) {
-    if ( [axisTypes containsObject: elementUsage] ) {
+    if (elementUsage >= kHIDUsage_GD_X && elementUsage <= kHIDUsage_GD_Slider ) {
         for (i=0; i<delegates.count; ++i) {
             id <JoystickNotificationDelegate> delegate = [delegates objectAtIndex:i];
 

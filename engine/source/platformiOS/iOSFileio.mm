@@ -622,54 +622,34 @@ StringTableEntry Platform::getExecutableName()
 //-----------------------------------------------------------------------------
 bool Platform::isFile(const char *path)
 {
-   if (!path || !*path) 
-      return false;
-   
-   // make sure we can stat the file
-   struct stat statData;
-   if( stat(path, &statData) < 0 )
-      return false;
-   
-   // now see if it's a regular file
-   if( (statData.st_mode & S_IFMT) == S_IFREG)
-      return true;
-   
-   return false;
+    NSString *npath = [[NSString alloc] initWithUTF8String:path];
+    return [[NSFileManager defaultManager] fileExistsAtPath:npath];
 }
 
 
 //-----------------------------------------------------------------------------
 bool Platform::isDirectory(const char *path)
 {
-   if (!path || !*path) 
-      return false;
-   
-   // make sure we can stat the file
-   struct stat statData;
-   if( stat(path, &statData) < 0 )
-      return false;
-   
-   // now see if it's a directory
-   if( (statData.st_mode & S_IFMT) == S_IFDIR)
-      return true;
-   
-   return false;
+    NSString *npath = [[NSString alloc] initWithUTF8String:path];
+    BOOL isDirectory;
+    return ([[NSFileManager defaultManager] fileExistsAtPath:npath isDirectory:&isDirectory] && isDirectory);
 }
 
-
-S32 Platform::getFileSize(const char* pFilePath)
+S32 Platform::getFileSize(const char* path)
 {
-   if (!pFilePath || !*pFilePath) 
-      return 0;
-   
-   struct stat statData;
-   if( stat(pFilePath, &statData) < 0 )
-      return 0;
-   
-   // and return it's size in bytes
-   return (S32)statData.st_size;
+    NSString *npath = [[NSString alloc] initWithUTF8String:path];
+    NSDirectoryEnumerator *dirEnum = [[NSFileManager defaultManager] enumeratorAtPath:npath];
+    if (dirEnum == nil)
+        return 0;
+    return [[dirEnum fileAttributes] fileSize];
 }
 
+bool Platform::deleteDirectoryRecursive( const char* pPath )
+{
+    NSString *npath = [[NSString alloc] initWithUTF8String:pPath];
+    NSError *error;
+    return [[NSFileManager defaultManager] removeItemAtPath:npath error:&error];
+}
 
 //-----------------------------------------------------------------------------
 bool Platform::isSubDirectory(const char *pathParent, const char *pathSub)
@@ -860,7 +840,7 @@ static bool recurseDumpPath(const char* curPath, Vector<Platform::FileInfo>& fil
           //printf( "File Name: %s ", entry->d_name );
          const U32 fileSize = Platform::getFileSize(pathbuf);
          fileVector.increment();
-         Platform::FileInfo& rInfo = fileVector.last();
+         Platform::FileInfo& rInfo = fileVector.back();
          rInfo.pFullPath = StringTable->insert(curPath);
          rInfo.pFileName = StringTable->insert(entry->d_name);
          rInfo.fileSize  = fileSize;
@@ -947,8 +927,8 @@ ConsoleFunction(testDumpDirectories,void,4,4,"testDumpDirectories('path', int de
    
    Con::printf("Dumping directories starting from %s with depth %i", argv[1],depth);
    
-   for(Vector<StringTableEntry>::iterator itr = paths.begin(); itr != paths.end(); itr++) {
-      Con::printf(*itr);
+   for(auto itr : paths ) {
+      Con::printf(itr);
    }
    
 }
@@ -962,8 +942,8 @@ ConsoleFunction(testDumpPaths, void, 3, 3, "testDumpPaths('path', int depth)")
    
    Platform::dumpPath(argv[1], files, depth);
    
-   for(Vector<Platform::FileInfo>::iterator itr = files.begin(); itr != files.end(); itr++) {
-      Con::printf("%s/%s",itr->pFullPath, itr->pFileName);
+   for(auto itr : files ) {
+      Con::printf("%s/%s",itr.pFullPath, itr.pFileName);
    }
 }
 
@@ -975,7 +955,8 @@ ConsoleFunction(testFileTouch, bool , 2,2, "testFileTouch('path')")
 
 ConsoleFunction(testGetFileTimes, bool, 2,2, "testGetFileTimes('path')")
 {
-   FileTime create, modify;
+   FileTime create = 0;
+   FileTime modify = 0;
    bool ok;
    ok = Platform::getFileTimes(argv[1],&create, &modify);
    Con::printf("%s Platform::getFileTimes %i, %i", ok ? "+OK" : "-FAIL", create, modify);

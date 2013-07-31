@@ -1043,7 +1043,7 @@ class SoundEngineEffect
         {
             OSStatus result = AL_NO_ERROR;
             ALint numQueuedBuffers = 0;
-            ALuint *bufferIDs = (ALuint*)malloc(numQueuedBuffers * sizeof(ALint));
+            ALuint *bufferIDs = (ALuint*)malloc(numQueuedBuffers * sizeof(ALuint));
             alGetSourcei(mSourceID, AL_BUFFERS_QUEUED, &numQueuedBuffers);
             AssertNoOALError("Error getting OpenAL queued buffer size", end)
             

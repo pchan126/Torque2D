@@ -117,8 +117,8 @@ void LightQuery::_scoreLights()
          // Get the luminocity.
          luminace = mDot( light->getColor(), lumDot ) * light->getBrightness();
 
-         // Get the distance to the light... score it 1 to 0 near to far.
-         F32 lenSq = ( mVolume.center - light->getPosition() ).lenSquared();
+//         // Get the distance to the light... score it 1 to 0 near to far.
+//         F32 lenSq = ( mVolume.center - light->getPosition() ).lenSquared();
 
          F32 len = (light->getPosition()-mVolume.center).len();
          F32 rad = light->getRange().x;
@@ -174,3 +174,8 @@ S32 LightQuery::_lightScoreCmp( LightInfo* const *a, LightInfo* const *b )
    F32 diff = (*a)->getScore() - (*b)->getScore();
    return diff < 0 ? 1 : diff > 0 ? -1 : 0;
 }
+
+//bool LightQuery::_lightScoreCmp( LightInfo a, LightInfo b)
+//{
+//    return a.getScore() < b.getScore();
+//}

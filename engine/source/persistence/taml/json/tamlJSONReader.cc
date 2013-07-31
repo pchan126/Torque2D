@@ -118,7 +118,7 @@ SimObject* TamlJSONReader::parseType( const rapidjson::Value::ConstMemberiterato
         }
 
         // Return object.
-        return referenceItr->value;
+        return referenceItr->second;
     }
 
     // No, so fetch reference Id.

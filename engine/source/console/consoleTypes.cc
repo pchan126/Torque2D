@@ -472,8 +472,10 @@ ConsoleType( flag, TypeFlag, sizeof(S32), "" )
 ConsoleGetType( TypeFlag )
 {
    BitSet32 tempFlags = *(BitSet32 *)dptr;
-   if (tempFlags.test(flag)) return "true";
-   else return "false";
+   if ((tempFlags & flag).any())
+       return "true";
+   else
+       return "false";
 }
 
 ConsoleSetType( TypeFlag )
@@ -487,7 +489,12 @@ ConsoleSetType( TypeFlag )
    {
       value = dAtob(argv[0]);
    }
-   ((BitSet32 *)dptr)->set(flag, value);
+   BitSet32 newMask = BitSet32(flag);
+   if (value)
+       newMask.flip();
+   for (U32 i = 0; i < newMask.size(); i++)
+       if (newMask.test(i))
+           ((BitSet32 *)dptr)->set(i);
 }
 
 

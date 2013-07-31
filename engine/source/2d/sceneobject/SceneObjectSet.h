@@ -27,10 +27,6 @@
 #include "2d/sceneObject/sceneObjectList.h"
 #endif
 
-#ifndef _FIND_iterator_H_
-#include "collection/finditerator.h"
-#endif
-
 #ifndef _SIMDICTIONARY_H_
 #include "sim/simDictionary.h"
 #endif
@@ -70,22 +66,21 @@ public:
     typedef SceneObjectList::value_type value;
 
     inline SceneObject* front( void )    { return mObjectList.front(); }
-    inline SceneObject* first( void )    { return mObjectList.first(); }
-    inline SceneObject* last( void )		{ return mObjectList.last(); }
+    inline SceneObject* back( void )    { return mObjectList.back(); }
     inline bool empty( void )			{ return mObjectList.empty();   }
     inline S32 size( void ) const		{ return mObjectList.size(); }
     inline iterator begin( void )		{ return mObjectList.begin(); }
     inline iterator end( void )			{ return mObjectList.end(); }
     value operator[] (S32 index)         { return mObjectList[U32(index)]; }
 
-    inline iterator find( iterator first, iterator last, SceneObject *obj ) { return ::find(first, last, obj); }
-    inline iterator find( SceneObject *obj ) { return ::find(begin(), end(), obj); }
+    inline iterator find( iterator first, iterator last, SceneObject *obj ) { return std::find(first, last, obj); }
+    inline iterator find( SceneObject *obj ) { return std::find(begin(), end(), obj); }
 
     template <typename T> inline bool containsType( void )
     {
-        for( iterator itr = begin(); itr != end(); ++itr )
+        for( auto itr :*this )
         {
-            if ( dynamic_cast<T*>(*itr) != NULL )
+            if ( dynamic_cast<T*>(itr) != NULL )
                 return true;
         }
 
@@ -144,29 +139,5 @@ public:
 #  define SCENEOBJECT_SET_ASSOCIATION( x )
 #endif
 
-//-----------------------------------------------------------------------------
-
-class SceneObjectSetiterator
-{
-protected:
-    struct Entry
-    {
-        SceneObjectSet* set;
-        SceneObjectSet::iterator itr;
-    };
-
-    class Stack : public Vector<Entry> {
-    public:
-        void push_back(SceneObjectSet*);
-    };
-    Stack stack;
-
-public:
-    SceneObjectSetiterator(SceneObjectSet*);
-    SceneObject* operator++();
-    SceneObject* operator*() {
-        return stack.empty()? 0: *stack.last().itr;
-    }
-};
 
 #endif // _SCENE_OBJECT_SET_H_

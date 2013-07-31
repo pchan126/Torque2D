@@ -24,7 +24,7 @@
 #define _UNDO_H_
 
 #include "sim/simBase.h"
-#include "collection/vector.h"
+#include <deque>
 
 class UndoManager;
 
@@ -74,13 +74,13 @@ private:
    const static U32 kDefaultNumLevels = 100;
 
    /// The stacks of undo & redo actions. They will be capped at size mNumLevels.
-   Vector<UndoAction*> mUndoStack;
-   Vector<UndoAction*> mRedoStack;
+   std::deque<UndoAction*> mUndoStack;
+   std::deque<UndoAction*> mRedoStack;
    
    /// Deletes all the UndoActions in a stack, then clears it.
-   void clearStack(Vector<UndoAction*> &stack);
+   void clearStack(std::deque<UndoAction*> &stack);
    /// Clamps a Vector to mNumLevels entries.
-   void clampStack(Vector<UndoAction*> &stack);
+   void clampStack(std::deque<UndoAction*> &stack);
    
 public:
    /// Number of undo & redo levels.

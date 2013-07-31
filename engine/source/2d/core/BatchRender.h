@@ -85,11 +85,8 @@ private:
         Vector<U16>* index;
     };
 
-//    typedef Vector<indexedPrim> indexVectorType;
     typedef HashMap<GFXTexHandle, indexedPrim*> textureBatchType;
-
-//    VectorPtr< Vector<GFXVertexPCT>* > mIndexVectorPool;
-    VectorPtr< indexedPrim* > mIndexVectorPool;
+    Vector< indexedPrim* > mIndexVectorPool;
     textureBatchType    mTextureBatchMap;
 
     const ColorF        NoColor;

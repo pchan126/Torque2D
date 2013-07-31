@@ -20,9 +20,9 @@ void iOSInputManager::disable() {
 
 void iOSInputManager::process() {
     GuiJoystickCtrl * dptr;
-    for ( iterator ptr = inputs.begin(); ptr != inputs.end(); ptr++ )
+    for ( auto ptr : inputs )
     {
-        dptr = dynamic_cast<GuiJoystickCtrl *>( *ptr );
+        dptr = dynamic_cast<GuiJoystickCtrl *>( ptr );
         if ( dptr )
             dptr->process();
     }

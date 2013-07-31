@@ -12,8 +12,8 @@
 #import <GLKit/GLKit.h>
 
 
-#define EXT_ARRAY_SIZE 4
-static const char* extArray[EXT_ARRAY_SIZE] = { "png", "pvr", "jpg", ""};
+//#define EXT_ARRAY_SIZE 4
+//static const char* extArray[EXT_ARRAY_SIZE] = { "png", "pvr", "jpg", ""};
 
 //-----------------------------------------------------------------------------
 // Constructor

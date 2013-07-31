@@ -66,72 +66,6 @@ ConsoleFunction(getTemporaryFileName, const char *, 1, 1, "() Generates a tempor
 }
 
 //-----------------------------------------------------------------------------
-static char filePathBuffer[1024];
-static bool deleteDirectoryRecusrive( const char* pPath )
-{
-    // Sanity!
-    AssertFatal( pPath != NULL, "Cannot delete directory that is NULL." );
-
-    // Find directories.
-    Vector<StringTableEntry> directories;
-    if ( !Platform::dumpDirectories( pPath, directories, 0 ) )
-    {
-        // Warn.
-        Con::warnf( "Could not retrieve sub-directories of '%s'.", pPath );
-        return false;
-    }
-
-    // Iterate directories.
-    for( Vector<StringTableEntry>::iterator basePathItr = directories.begin(); basePathItr != directories.end(); ++basePathItr )
-    {
-        // Fetch base path.
-        StringTableEntry basePath = *basePathItr;
-
-        // Skip if the base path.
-        if ( basePathItr == directories.begin() && dStrcmp( pPath, basePath ) == 0 )
-            continue;
-
-        // Delete any directories recursively.
-        if ( !deleteDirectoryRecusrive( basePath ) )
-            return false;
-    }
-
-    // Find files.
-    Vector<Platform::FileInfo> files;
-    if ( !Platform::dumpPath( pPath, files, 0 ) )
-    {
-        // Warn.
-        Con::warnf( "Could not retrieve files for directory '%s'.", pPath );
-        return false;
-    }
-
-    // Iterate files.
-    for ( Vector<Platform::FileInfo>::iterator fileItr = files.begin(); fileItr != files.end(); ++fileItr )
-    {
-        // Format file.
-        dSprintf( filePathBuffer, sizeof(filePathBuffer), "%s/%s", fileItr->pFullPath, fileItr->pFileName );
-
-        // Delete file.
-        if ( !Platform::fileDelete( filePathBuffer ) )
-        {
-            // Warn.
-            Con::warnf( "Could not delete file '%s'.", filePathBuffer );
-            return false;
-        }
-    }
-
-    // Delete the directory.
-    if ( !Platform::fileDelete( pPath ) )
-    {
-        // Warn.
-        Con::warnf( "Could not delete directory '%s'.", pPath );
-        return false;
-    }
-
-    return true;
-}
-
-//-----------------------------------------------------------------------------
 
 bool Platform::deleteDirectory( const char* pPath )
 {
@@ -151,7 +85,7 @@ bool Platform::deleteDirectory( const char* pPath )
     Con::expandPath( pathBuffer, sizeof(pathBuffer), pPath, NULL, true );
 
     // Delete directory recursively.
-    return deleteDirectoryRecusrive( pathBuffer );
+    return deleteDirectoryRecursive( pathBuffer );
 }
 
 //-----------------------------------------------------------------------------
@@ -185,15 +119,15 @@ void Platform::clearExcludedDirectories()
 {
    while(gPlatformDirectoryExcludeList.size())
    {
-      dFree(gPlatformDirectoryExcludeList.last());
+      dFree(gPlatformDirectoryExcludeList.back());
       gPlatformDirectoryExcludeList.pop_back();
    }
 }
 
 bool Platform::isExcludedDirectory(const char *pDir)
 {
-   for(CharVector::iterator i=gPlatformDirectoryExcludeList.begin(); i!=gPlatformDirectoryExcludeList.end(); i++)
-      if(!dStricmp(pDir, *i))
+   for(auto i:gPlatformDirectoryExcludeList)
+      if(!dStricmp(pDir, i))
          return true;
 
    return false;

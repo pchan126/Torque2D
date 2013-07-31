@@ -159,7 +159,7 @@ void StringBuffer::set(const UTF8 *in)
       // Easy out, it's a blank string, or a bad string.
       mBuffer.clear();
       mBuffer.push_back(0);
-      AssertFatal(mBuffer.last() == 0, "StringBuffer::set UTF8 - not a null terminated string!");
+      AssertFatal(mBuffer.back() == 0, "StringBuffer::set UTF8 - not a null terminated string!");
       return;
    }
    
@@ -167,7 +167,7 @@ void StringBuffer::set(const UTF8 *in)
    mBuffer.setSize(dStrlen(tmpBuff)+1);
    dMemcpy(mBuffer.address(), tmpBuff, sizeof(UTF16) * mBuffer.size());
    mBuffer.compact();
-   AssertFatal(mBuffer.last() == 0, "StringBuffer::set UTF8 - not a null terminated string!");
+   AssertFatal(mBuffer.back() == 0, "StringBuffer::set UTF8 - not a null terminated string!");
    mDirty8 = true;
 }
 
@@ -178,7 +178,7 @@ void StringBuffer::set(const UTF16 *in)
    mBuffer.setSize(dStrlen(in)+1);
    dMemcpy(mBuffer.address(), in, sizeof(UTF16) * mBuffer.size());
    mBuffer.compact();
-   AssertFatal(mBuffer.last() == 0, "StringBuffer::set UTF16 - not a null terminated string!");
+   AssertFatal(mBuffer.back() == 0, "StringBuffer::set UTF16 - not a null terminated string!");
    mDirty8 = true;
 }
 
@@ -194,7 +194,7 @@ void StringBuffer::setNoConvert(const UTF8 *in)
         // Easy out, it's a blank string, or a bad string.
         mBuffer.clear();
         mBuffer.push_back(0);
-        AssertFatal(mBuffer.last() == 0, "StringBuffer::set UTF8 - not a null terminated string!");
+        AssertFatal(mBuffer.back() == 0, "StringBuffer::set UTF8 - not a null terminated string!");
         return;
     }
    
@@ -252,7 +252,7 @@ void StringBuffer::append(const UTF16* in, const U32 len)
    dMemcpy(&mBuffer[oldSize], in, sizeof(UTF16) * len);
 
    // Terminate the string.
-   mBuffer.last() = 0;
+   mBuffer.back() = 0;
    
    // mark utf8 buffer dirty
    mDirty8 = true;
@@ -324,7 +324,7 @@ void StringBuffer::insert(const U32 charOffset, const UTF16* in, const U32 len)
    dMemcpy(&mBuffer[charOffset], in, sizeof(UTF16) * len);
 
    // All done!
-   AssertFatal(mBuffer.last() == 0, "StringBuffer::insert - not a null terminated string!");
+   AssertFatal(mBuffer.back() == 0, "StringBuffer::insert - not a null terminated string!");
    
    // mark utf8 buffer dirty
    mDirty8 = true;
@@ -348,7 +348,7 @@ StringBuffer StringBuffer::substring(const U32 start, const U32 len) const
    tmp.mBuffer.clear();
    for(U32 i=0; i<len; i++)
       tmp.mBuffer.push_back(mBuffer[start+i]);
-   if(tmp.mBuffer.last() != 0) tmp.mBuffer.push_back(0);
+   if(tmp.mBuffer.back() != 0) tmp.mBuffer.push_back(0);
    
    // Make sure this shit is terminated; we might get a totally empty string.
    if(!tmp.mBuffer.size()) 
@@ -371,7 +371,7 @@ void StringBuffer::cut(const U32 start, const U32 len)
    AssertFatal(start+len <= length(), "StringBuffer::cut - invalid len!");
    AssertFatal(len > 0, "StringBuffer::cut - len >= 1.");
 
-   AssertFatal(mBuffer.last() == 0, "StringBuffer::cut - not a null terminated string! (pre)");
+   AssertFatal(mBuffer.back() == 0, "StringBuffer::cut - not a null terminated string! (pre)");
 
    // Now snip things.
    for(U32 i=start; i<mBuffer.size()-len; i++)
@@ -379,7 +379,7 @@ void StringBuffer::cut(const U32 start, const U32 len)
    mBuffer.decrement(len);
    mBuffer.compact();
 
-   AssertFatal(mBuffer.last() == 0, "StringBuffer::cut - not a null terminated string! (post)");
+   AssertFatal(mBuffer.back() == 0, "StringBuffer::cut - not a null terminated string! (post)");
    
    // mark utf8 buffer dirty
    mDirty8 = true;
@@ -400,7 +400,7 @@ const UTF16 StringBuffer::getChar(const U32 offset) const
 void StringBuffer::getCopy8(UTF8 *buff, const U32 buffSize) const
 {
    incRequestCount8();
-   AssertFatal(mBuffer.last() == 0, "StringBuffer::get UTF8 - not a null terminated string!");
+   AssertFatal(mBuffer.back() == 0, "StringBuffer::get UTF8 - not a null terminated string!");
    convertUTF16toUTF8(mBuffer.address(), buff, buffSize);
 }
 
@@ -408,7 +408,7 @@ void StringBuffer::getCopy(UTF16 *buff, const U32 buffSize) const
 {
    incRequestCount16();
    // Just copy it out.
-   AssertFatal(mBuffer.last() == 0, "StringBuffer::get UTF8 - not a null terminated string!");
+   AssertFatal(mBuffer.back() == 0, "StringBuffer::get UTF8 - not a null terminated string!");
    dMemcpy(buff, mBuffer.address(), sizeof(UTF16) * getMin(buffSize, (U32)mBuffer.size()));
    // ensure null termination.
    buff[buffSize-1] = NULL;
@@ -475,12 +475,12 @@ void StringBufferManager::remove(StringBuffer* s)
    //U32 nstrings = strings.size();
    //for(int i=0; i < nstrings; i++)
    //   if(strings[i] == s)
-   //      strings.erase_fast(i);
+   //      strings.erase(i);
 
    for (int i = 0; i < strings.size(); )
    {
       if (strings[i] == s)
-         strings.erase_fast(i);
+         strings.erase(i);
       else
          i++;
    }

@@ -123,7 +123,7 @@ public:
    protected:
 
       ///
-      typedef HashTable<const FeatureType*,GFXTexHandle> TextureTable;
+      typedef HashMap<const FeatureType*,GFXTexHandle> TextureTable;
 
       /// The sparse table of textures by feature index.
       /// @see getTex
@@ -148,7 +148,7 @@ public:
          if ( iter == mTextures.end() )
             return NULL;
 
-         return iter->value.getPointer();
+         return iter->second.getPointer();
       }
 
       /// Assigns a texture object by feature type.
@@ -163,8 +163,7 @@ public:
             return;
          }
 
-         TextureTable::iterator iter = mTextures.findOrInsert( &type );
-         iter->value = tex;
+         mTextures[ &type ] = tex;
       }
 
       /// Returns true if we have a valid texture assigned to
@@ -174,7 +173,7 @@ public:
          TextureTable::const_iterator iter = mTextures.begin();
          for ( ; iter != mTextures.end(); iter++ )
          {
-            if ( iter->value.isValid() )
+            if ( iter->second.isValid() )
                return true;
          }
 

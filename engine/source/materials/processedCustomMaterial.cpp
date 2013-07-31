@@ -389,8 +389,8 @@ void ProcessedCustomMaterial::setTextureStages( SceneRenderState *state, const S
 
                if ( handles->mRTParamsSC[samplerRegister]->isValid() && texObject )
                {
-                  const Point3I &targetSz = texObject->getSize();
-                  const RectI &targetVp = texTarget->getViewport();
+//                  const Point3I &targetSz = texObject->getSize();
+//                  const RectI &targetVp = texTarget->getViewport();
                   Point4F rtParams;
 
 //                  ScreenSpace::RenderTargetParameters(targetSz, targetVp, rtParams);

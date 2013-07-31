@@ -106,9 +106,9 @@ void SceneObjectSet::callOnChildren( const char * method, S32 argc, const char *
    for (S32 i = 0; i < argc; i++)
       args[i + 2] = argv[i];
 
-   for( iterator i = begin(); i != end(); i++ )
+   for( auto i : *this )
    {
-      SceneObject *childObj = static_cast<SceneObject*>(*i);
+      SceneObject *childObj = static_cast<SceneObject*>(i);
 	  if ( childObj == NULL )
 		  continue;
 
@@ -117,7 +117,7 @@ void SceneObjectSet::callOnChildren( const char * method, S32 argc, const char *
 
       if( executeOnChildGroups )
       {
-         SceneObjectSet* childSet = dynamic_cast<SceneObjectSet*>(*i);
+         SceneObjectSet* childSet = dynamic_cast<SceneObjectSet*>(i);
          if ( childSet )
             childSet->callOnChildren( method, argc, argv, executeOnChildGroups );
       }
@@ -177,8 +177,7 @@ void SceneObjectSet::onRemove()
    {
       // This backwards iterator loop doesn't work if the
       // list is empty, check the size first.
-      for (SceneObjectList::iterator ptr = mObjectList.end() - 1;
-         ptr >= mObjectList.begin(); ptr--)
+      for (auto ptr = mObjectList.rbegin(); ptr != mObjectList.rend(); ptr++)
       {
          clearNotify(*ptr);
       }
@@ -202,7 +201,7 @@ void SceneObjectSet::deleteObjects( void )
 void SceneObjectSet::clear()
 {
    while (size() > 0)
-      removeObject(mObjectList.last());
+      removeObject(mObjectList.back());
 }
 //-----------------------------------------------------------------------------
 
@@ -217,13 +216,13 @@ SimObject *SceneObjectSet::findObject(const char *namePath)
    if(!stName)
       return NULL;
 
-   for(SceneObjectSet::iterator i = begin(); i != end(); i++)
+   for(auto i:*this)
    {
-      if((*i)->getName() == stName)
+      if((i)->getName() == stName)
       {
          if(namePath[len] == 0)
-            return *i;
-         return (*i)->findObject(namePath + len + 1);
+            return i;
+         return (i)->findObject(namePath + len + 1);
       }
    }
    return NULL;
@@ -233,15 +232,14 @@ SimObject *SceneObjectSet::findObject(const char *namePath)
 
 SceneObject* SceneObjectSet::findObjectByInternalName(const char* internalName, bool searchChildren)
 {
-   iterator i;
-   for (i = begin(); i != end(); i++)
+   for (auto i:*this)
    {
-      SceneObject *childObj = static_cast<SceneObject*>(*i);
+      SceneObject *childObj = static_cast<SceneObject*>(i);
       if(childObj->getInternalName() == internalName)
          return childObj;
       else if (searchChildren)
       {
-         SceneObjectSet* childSet = dynamic_cast<SceneObjectSet*>(*i);
+         SceneObjectSet* childSet = dynamic_cast<SceneObjectSet*>(i);
          if (childSet)
          {
             SceneObject* found = childSet->findObjectByInternalName(internalName, searchChildren);
@@ -253,44 +251,3 @@ SceneObject* SceneObjectSet::findObjectByInternalName(const char* internalName, 
    return NULL;
 }
 
-//-----------------------------------------------------------------------------
-
-inline void SceneObjectSetiterator::Stack::push_back(SceneObjectSet* set)
-{
-   increment();
-   last().set = set;
-   last().itr = set->begin();
-}
-
-//-----------------------------------------------------------------------------
-
-SceneObjectSetiterator::SceneObjectSetiterator(SceneObjectSet* set)
-{
-   VECTOR_SET_ASSOCIATION(stack);
-
-   if (!set->empty())
-      stack.push_back(set);
-}
-
-//-----------------------------------------------------------------------------
-
-SceneObject* SceneObjectSetiterator::operator++()
-{
-   SceneObjectSet* set;
-   if ((set = dynamic_cast<SceneObjectSet*>(*stack.last().itr)) != 0) 
-   {
-      if (!set->empty()) 
-      {
-         stack.push_back(set);
-         return *stack.last().itr;
-      }
-   }
-
-   while (++stack.last().itr == stack.last().set->end()) 
-   {
-      stack.pop_back();
-      if (stack.empty())
-         return 0;
-   }
-   return *stack.last().itr;
-}	

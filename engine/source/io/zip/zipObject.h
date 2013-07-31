@@ -42,7 +42,7 @@ protected:
    Zip::ZipArchive *mZipArchive;
 
    // StreamObjects are pooled and reused to avoid creating tons of SimObjects
-   VectorPtr<StreamObject *> mStreamPool;
+   Vector<StreamObject *> mStreamPool;
 
    StreamObject *createStreamObject(Stream *stream);
 

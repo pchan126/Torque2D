@@ -27,7 +27,6 @@
 #include "console/console.h"
 
 #include "console/ast.h"
-#include "collection/finditerator.h"
 #include "io/resource/resourceManager.h"
 
 #include "string/findMatch.h"

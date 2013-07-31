@@ -169,7 +169,7 @@ public:
       {
          if( *iter == em )
          {
-            smEventManagers.erase_fast( iter );
+            smEventManagers.erase( iter );
             break;
          }
       }

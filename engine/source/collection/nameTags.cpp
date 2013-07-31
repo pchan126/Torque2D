@@ -125,7 +125,7 @@ NameTags::TagId NameTags::createTag( const char* pTagName )
     if ( hashItr != mHashTagMap.end() )
     {
         // Yes, so return tag Id.
-        return hashItr->value;
+        return hashItr->second;
     }
 
     // Allocate tag Id.
@@ -159,7 +159,7 @@ NameTags::TagId NameTags::renameTag( const NameTags::TagId tagId, const char* pN
     }
 
     // Remove hash tag.
-    mHashTagMap.erase( StringTable->hashString( itr->value ) );
+    mHashTagMap.erase( StringTable->hashString( itr->second ) );
 
     // Fetch new hash.
     const NameTags::HashId newHashId = StringTable->hashString( pNewTagName );
@@ -168,7 +168,7 @@ NameTags::TagId NameTags::renameTag( const NameTags::TagId tagId, const char* pN
     mHashTagMap.insert( newHashId, tagId );
 
     // Insert new name entry.
-    itr->value = StringTable->insert( pNewTagName, true );
+    itr->second = StringTable->insert( pNewTagName, true );
 
     return tagId;
 }
@@ -214,7 +214,7 @@ StringTableEntry NameTags::getTagName( const NameTags::TagId tagId )
         return StringTable->EmptyString;
     }
 
-    return itr->value;
+    return itr->second;
 }
 
 //-----------------------------------------------------------------------------
@@ -237,7 +237,7 @@ NameTags::TagId NameTags::getTagId( const char* pTagName )
         return 0;
     }
 
-    return hashItr->value;
+    return hashItr->second;
 }
 
 //-----------------------------------------------------------------------------
@@ -400,9 +400,9 @@ void NameTags::queryTags( const char* pTags )
     mExcludedQueryMap.clear();
 
     // Reset excluded.
-    for( Parent::iterator itr = begin(); itr != end(); ++itr )
+    for( auto itr:*this )
     {
-        SimObject* pSimObject = (*itr);
+        SimObject* pSimObject = (itr);
         mExcludedQueryMap.insert( pSimObject->getId(), pSimObject );
     }
 
@@ -437,11 +437,11 @@ void NameTags::queryTags( const char* pTags )
         const NameTags::TagId tagId = tags[tagIndex];
 
         // Iterate excluded objects.
-        for( queryType::iterator itr = mExcludedQueryMap.begin(); itr != mExcludedQueryMap.end(); ++itr )
+        for( auto itr : mExcludedQueryMap  )
         {
             // Fetch object.
-            const SimObjectId objectId = itr->key;
-            SimObject* pSimObject = itr->value;
+            const SimObjectId objectId = itr.first;
+            SimObject* pSimObject = itr.second;
 
             // Fetch tags.
             const char* pFieldTags = pSimObject->getDataField( mNameTagsFieldEntry, NULL );
@@ -492,10 +492,10 @@ S32 NameTags::formatTags( char* pBuffer, U32 bufferLength )
     S32 totalBufferUsed = 0;
 
     // Iterate tags.
-    for( tagNameMapType::iterator itr = mTagNameMap.begin(); itr != mTagNameMap.end(); ++itr )
+    for( auto itr : mTagNameMap  )
     {
         // Format tag (use newline as separator as tag names can have spaces).
-        const U32 offset = dSprintf( pBuffer, bufferLength, "%d\n%s\n", itr->key, itr->value );
+        const U32 offset = dSprintf( pBuffer, bufferLength, "%d\n%s\n", itr.first, itr.second );
         
         // Finish if no formatting occurred.
         if ( offset == 0 )
@@ -537,10 +537,10 @@ void NameTags::writeFields(Stream& stream, U32 tabStop)
         // Write tags.
         StringTableEntry tagFieldName = StringTable->insert("Tag");
         U32 fieldIndex = 0;
-        for( tagNameMapType::iterator itr = mTagNameMap.begin(); itr != mTagNameMap.end(); ++itr )
+        for( auto itr : mTagNameMap )
         {
             dSprintf( tempBuffer, 16, "%d", fieldIndex++ );
-            dSprintf( valueBuffer, 1024, "%d\n%s", itr->key, itr->value );
+            dSprintf( valueBuffer, 1024, "%d\n%s", itr.first, itr.second );
             setDataField( tagFieldName, tempBuffer, valueBuffer ); 
         }
 
@@ -548,9 +548,9 @@ void NameTags::writeFields(Stream& stream, U32 tabStop)
         Parent::writeFields(stream, tabStop);
 
         // Now we've written these temporary fields, clear them.
-        for( tagNameMapType::iterator itr = mTagNameMap.begin(); itr != mTagNameMap.end(); ++itr )
+        for( auto itr : mTagNameMap )
         {
-            dSprintf( tempBuffer, 16, "%d", itr->key );
+            dSprintf( tempBuffer, 16, "%d", itr.first );
             setDataField( tagFieldName, tempBuffer, "" ); 
         }
     }

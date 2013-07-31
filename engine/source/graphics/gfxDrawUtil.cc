@@ -121,7 +121,7 @@ void GFXDrawUtil::batchTriangleStrip( const Vector<GFXVertexPCT> verts, GFXTexHa
    // degenerate linking triangle
    if (mVertexBuffer.size() > 0)
    {
-      vertBuffer->push_back(vertBuffer->last());
+      vertBuffer->push_back(vertBuffer->back());
       vertBuffer->push_back(verts[0]);
    }
    

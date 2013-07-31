@@ -402,8 +402,8 @@ ActionMap::Node* ActionMap::getNode(const U32 inDeviceType, const U32 inDeviceIn
    if (pDeviceMap == NULL) 
    {
       mDeviceMaps.increment();
-      mDeviceMaps.last() = new DeviceMap;
-      pDeviceMap = mDeviceMaps.last();
+      mDeviceMaps.back() = new DeviceMap;
+      pDeviceMap = mDeviceMaps.back();
 
       pDeviceMap->deviceInst = inDeviceInst;
       pDeviceMap->deviceType = inDeviceType;
@@ -422,7 +422,7 @@ ActionMap::Node* ActionMap::getNode(const U32 inDeviceType, const U32 inDeviceIn
    // If we're here, the node doesn't exist.  create it.
    pDeviceMap->nodeMap.increment();
 
-   Node* pRetNode = &pDeviceMap->nodeMap.last();
+   Node* pRetNode = &pDeviceMap->nodeMap.back();
    pRetNode->modifiers = inModifiers;
    pRetNode->action    = inAction;
 

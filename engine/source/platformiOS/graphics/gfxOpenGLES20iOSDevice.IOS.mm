@@ -78,14 +78,10 @@ GFXOpenGLES20iOSDevice::GFXOpenGLES20iOSDevice( U32 adapterIndex ) : GFXOpenGLES
                     mAdapterIndex(adapterIndex),
                     mContext(nil),
                     mCIContext(nil),
-                    mMaxShaderTextures(2),
                     mClip(0, 0, 0, 0),
                     mTextureLoader(NULL)
 {
     GFXGLES20iOSEnumTranslate::init();
-    
-    for (int i = 0; i < TEXTURE_STAGE_COUNT; i++)
-        mActiveTextureType[i] = GL_TEXTURE_2D;
 }
 
 
@@ -127,10 +123,6 @@ void GFXOpenGLES20iOSDevice::_handleTextureLoaded(GFXTexNotifyCode code)
     mTexturesDirty = true;
 }
 
-void GFXOpenGLES20iOSDevice::enumerateVideoModes()
-{
-    mVideoModes.clear();
-}
 
 void GFXOpenGLES20iOSDevice::enumerateAdapters( Vector<GFXAdapter*> &adapterList )
 {
@@ -180,14 +172,6 @@ void GFXOpenGLES20iOSDevice::enumerateAdapters( Vector<GFXAdapter*> &adapterList
         
 		screenNum++;
 	}
-}
-
-void GFXOpenGLES20iOSDevice::zombify()
-{
-}
-
-void GFXOpenGLES20iOSDevice::resurrect()
-{
 }
 
 
@@ -247,11 +231,14 @@ void GFXOpenGLES20iOSDevice::setLightInternal(U32 lightStage, const GFXLightInfo
    {
       switch (lightStage) {
          case 0:
-            mBaseEffect.light0.enabled = lightEnable;
+//            mBaseEffect.light0.enabled = lightEnable;
+              break;
          case 1:
-            mBaseEffect.light1.enabled = lightEnable;
+//            mBaseEffect.light1.enabled = lightEnable;
+              break;
          case 2:
-            mBaseEffect.light2.enabled = lightEnable;
+//            mBaseEffect.light2.enabled = lightEnable;
+              break;
       }
       return;
    }
@@ -270,35 +257,35 @@ void GFXOpenGLES20iOSDevice::setLightInternal(U32 lightStage, const GFXLightInfo
    
    switch (lightStage) {
       case 0:
-         mBaseEffect.light0.enabled = lightEnable;
-         mBaseEffect.light0.specularColor = light.specular.mGV;
+//         mBaseEffect.light0.enabled = lightEnable;
+//         mBaseEffect.light0.specularColor = light.specular.mGV;
 //         mBaseEffect.light0.ambientColor = light.ambient.mGV;
-         mBaseEffect.light0.diffuseColor = light.diffuse.mGV;
-         mBaseEffect.light0.position = pos.mGV;
-         mBaseEffect.light0.constantAttenuation = 1.0;
-         mBaseEffect.light0.linearAttenuation = 0.0;
-         mBaseEffect.light0.quadraticAttenuation = 0.0;
+//         mBaseEffect.light0.diffuseColor = light.diffuse.mGV;
+//         mBaseEffect.light0.position = pos.mGV;
+//         mBaseEffect.light0.constantAttenuation = 1.0;
+//         mBaseEffect.light0.linearAttenuation = 0.0;
+//         mBaseEffect.light0.quadraticAttenuation = 0.0;
          break;
          
       case 1:
-         mBaseEffect.light1.enabled = lightEnable;
-         mBaseEffect.light1.specularColor = light.specular.mGV;
+//         mBaseEffect.light1.enabled = lightEnable;
+//         mBaseEffect.light1.specularColor = light.specular.mGV;
 //         mBaseEffect.light1.ambientColor = light.ambient.mGV;
-         mBaseEffect.light1.diffuseColor = light.diffuse.mGV;
-         mBaseEffect.light1.position = pos.mGV;
-         mBaseEffect.light1.constantAttenuation = 0.9;
-         mBaseEffect.light1.linearAttenuation = 0.1;
-         mBaseEffect.light1.quadraticAttenuation = 0.0;
+//         mBaseEffect.light1.diffuseColor = light.diffuse.mGV;
+//         mBaseEffect.light1.position = pos.mGV;
+//         mBaseEffect.light1.constantAttenuation = 0.9;
+//         mBaseEffect.light1.linearAttenuation = 0.1;
+//         mBaseEffect.light1.quadraticAttenuation = 0.0;
          break;
       case 2:
-         mBaseEffect.light2.enabled = lightEnable;
-         mBaseEffect.light2.specularColor = light.specular.mGV;
+//         mBaseEffect.light2.enabled = lightEnable;
+//         mBaseEffect.light2.specularColor = light.specular.mGV;
 //         mBaseEffect.light2.ambientColor = light.ambient.mGV;
-         mBaseEffect.light2.diffuseColor = light.diffuse.mGV;
-         mBaseEffect.light2.position = pos.mGV;
-         mBaseEffect.light2.constantAttenuation = 0.9;
-         mBaseEffect.light2.linearAttenuation = 0.1;
-         mBaseEffect.light2.quadraticAttenuation = 0.0;
+//         mBaseEffect.light2.diffuseColor = light.diffuse.mGV;
+//         mBaseEffect.light2.position = pos.mGV;
+//         mBaseEffect.light2.constantAttenuation = 0.9;
+//         mBaseEffect.light2.linearAttenuation = 0.1;
+//         mBaseEffect.light2.quadraticAttenuation = 0.0;
          break;
       default:
          Con::printf("GFXOpenGLES20iOSDevice::setLightInternal - Only 3 lights");
@@ -309,43 +296,32 @@ void GFXOpenGLES20iOSDevice::setLightInternal(U32 lightStage, const GFXLightInfo
 
 void GFXOpenGLES20iOSDevice::setLightMaterialInternal(const GFXLightMaterial mat)
 {
-   mBaseEffect.material.diffuseColor = mat.diffuse.mGV;
-   mBaseEffect.material.emissiveColor = mat.emissive.mGV;
-   mBaseEffect.material.specularColor = mat.specular.mGV;
-   mBaseEffect.material.ambientColor = mat.ambient.mGV;
-   mBaseEffect.material.shininess = mat.shininess;
+//   mBaseEffect.material.diffuseColor = mat.diffuse.mGV;
+//   mBaseEffect.material.emissiveColor = mat.emissive.mGV;
+//   mBaseEffect.material.specularColor = mat.specular.mGV;
+//   mBaseEffect.material.ambientColor = mat.ambient.mGV;
+//   mBaseEffect.material.shininess = mat.shininess;
 }
 
 void GFXOpenGLES20iOSDevice::setGlobalAmbientInternal(ColorF color)
 {
-   mBaseEffect.lightModelAmbientColor = color.mGV;
+//   mBaseEffect.lightModelAmbientColor = color.mGV;
 }
 
 
 void GFXOpenGLES20iOSDevice::setTextureInternal(U32 textureUnit, const GFXTextureObject*texture)
 {
-    const GFXOpenGLES20iOSTextureObject *tex = static_cast<const GFXOpenGLES20iOSTextureObject*>(texture);
+    const GFXOpenGLTextureObject *tex = static_cast<const GFXOpenGLTextureObject*>(texture);
     if (tex)
     {
-        // GFXOpenGLES20iOSTextureObject::bind also handles applying the current sampler state.
+        // GFXOpenGLESTextureObject::bind also handles applying the current sampler state.
         if(mActiveTextureType[textureUnit] != tex->getBinding() && mActiveTextureType[textureUnit] != GL_ZERO)
         {
             glActiveTexture(GL_TEXTURE0 + textureUnit);
             glBindTexture(mActiveTextureType[textureUnit], GL_ZERO);
         }
         mActiveTextureType[textureUnit] = tex->getBinding();
-        
-        switch (textureUnit) {
-            case 0:
-                mBaseEffect.texture2d0.name = tex->getHandle();
-                break;
-            case 1:
-                mBaseEffect.texture2d1.name = tex->getHandle();
-                break;
-                
-            default:
-                break;
-        }
+        tex->bind(textureUnit);
     }
     else if(mActiveTextureType[textureUnit] != GL_ZERO)
     {
@@ -353,8 +329,39 @@ void GFXOpenGLES20iOSDevice::setTextureInternal(U32 textureUnit, const GFXTextur
         glBindTexture(mActiveTextureType[textureUnit], GL_ZERO);
         mActiveTextureType[textureUnit] = GL_ZERO;
     }
-    
     glActiveTexture(GL_TEXTURE0);
+
+    //    const GFXOpenGLES20iOSTextureObject *tex = static_cast<const GFXOpenGLES20iOSTextureObject*>(texture);
+//    if (tex)
+//    {
+//        // GFXOpenGLES20iOSTextureObject::bind also handles applying the current sampler state.
+//        if(mActiveTextureType[textureUnit] != tex->getBinding() && mActiveTextureType[textureUnit] != GL_ZERO)
+//        {
+//            glActiveTexture(GL_TEXTURE0 + textureUnit);
+//            glBindTexture(mActiveTextureType[textureUnit], GL_ZERO);
+//        }
+//        mActiveTextureType[textureUnit] = tex->getBinding();
+//
+//        switch (textureUnit) {
+//            case 0:
+////                mBaseEffect.texture2d0.name = tex->getHandle();
+//                break;
+//            case 1:
+////                mBaseEffect.texture2d1.name = tex->getHandle();
+//                break;
+//
+//            default:
+//                break;
+//        }
+//    }
+//    else if(mActiveTextureType[textureUnit] != GL_ZERO)
+//    {
+//        glActiveTexture(GL_TEXTURE0 + textureUnit);
+//        glBindTexture(mActiveTextureType[textureUnit], GL_ZERO);
+//        mActiveTextureType[textureUnit] = GL_ZERO;
+//    }
+//
+//    glActiveTexture(GL_TEXTURE0);
 }
 
 
@@ -406,7 +413,53 @@ GFXTextureTarget * GFXOpenGLES20iOSDevice::allocRenderToTextureTarget()
 
 void GFXOpenGLES20iOSDevice::initGenericShaders()
 {
-    mBaseEffect = [[GLKBaseEffect alloc] init];
+//    mBaseEffect = [[GLKBaseEffect alloc] init];
+    Vector<GFXShaderMacro> macros;
+    char vertBuffer[1024];
+    char fragBuffer[1024];
+    //  #Color Shader
+
+    const char* shaderDirectory = Con::getVariable("$GUI::shaderDirectory");
+    Con::printf("loading shaders from %s", shaderDirectory);
+
+    dSprintf(vertBuffer, sizeof(vertBuffer), "%s/C.vsh", shaderDirectory);
+    dSprintf(fragBuffer, sizeof(fragBuffer), "%s/C.fsh", shaderDirectory);
+
+    mGenericShader[0] = dynamic_cast<GFXOpenGLES20iOSShader*>(createShader());
+    mGenericShader[0]->init(String(vertBuffer), String(fragBuffer), 0, macros);
+    mGenericShaderConst[0] = mGenericShader[0]->allocConstBuffer();
+
+    //  #Texture Shader
+    dSprintf(vertBuffer, sizeof(vertBuffer), "%s/simple.vsh", shaderDirectory);
+    dSprintf(fragBuffer, sizeof(fragBuffer), "%s/simple.fsh", shaderDirectory);
+
+    mGenericShader[1] = dynamic_cast<GFXOpenGLES20iOSShader*>(createShader());
+    mGenericShader[1]->init(String(vertBuffer), String(fragBuffer), 0, macros);
+    mGenericShaderConst[1] = mGenericShader[1]->allocConstBuffer();
+
+    //  #Point Shader
+    dSprintf(vertBuffer, sizeof(vertBuffer), "%s/point.vsh", shaderDirectory);
+    dSprintf(fragBuffer, sizeof(fragBuffer), "%s/point.fsh", shaderDirectory);
+
+    mGenericShader[2] = dynamic_cast<GFXOpenGLES20iOSShader*>(createShader());
+    mGenericShader[2]->init(String(vertBuffer), String(fragBuffer), 0, macros);
+    mGenericShaderConst[2] = mGenericShader[2]->allocConstBuffer();
+
+    //    GFXShaderConstHandle* hand = mGenericShader[0]->getShaderConstHandle("$mvp_matrix");
+    //  #Point Shader
+    dSprintf(vertBuffer, sizeof(vertBuffer), "%s/test.vsh", shaderDirectory);
+    dSprintf(fragBuffer, sizeof(fragBuffer), "%s/test.fsh", shaderDirectory);
+
+    mGenericShader[3] = dynamic_cast<GFXOpenGLES20iOSShader*>(createShader());
+    mGenericShader[3]->init(String(vertBuffer), String(fragBuffer), 0, macros);
+    mGenericShaderConst[3] = mGenericShader[3]->allocConstBuffer();
+
+    dSprintf(vertBuffer, sizeof(vertBuffer), "%s/alpha.vsh", shaderDirectory);
+    dSprintf(fragBuffer, sizeof(fragBuffer), "%s/alpha.fsh", shaderDirectory);
+
+    mGenericShader[4] = dynamic_cast<GFXOpenGLES20iOSShader*>(createShader());
+    mGenericShader[4]->init(String(vertBuffer), String(fragBuffer), 0, macros);
+    mGenericShaderConst[4] = mGenericShader[4]->allocConstBuffer();
 }
 
 void GFXOpenGLES20iOSDevice::setupGenericShaders( GenericShaderType type )
@@ -415,85 +468,44 @@ void GFXOpenGLES20iOSDevice::setupGenericShaders( GenericShaderType type )
    LightQuery query;
    GFXLightInfo outLight;
 
-   MatrixF xform(GFX->getWorldMatrix());
+    MatrixF xform(GFX->getWorldMatrix());
     xform *= GFX->getViewMatrix();
-    MatrixF projMatrix = GFX->getProjectionMatrix();
-    
-    mBaseEffect.transform.projectionMatrix = GLKMatrix4MakeWithArrayAndTranspose(projMatrix);
-    mBaseEffect.transform.modelviewMatrix = GLKMatrix4MakeWithArrayAndTranspose(xform);
-    mBaseEffect.useConstantColor = GL_TRUE;
-    mBaseEffect.constantColor = GLKVector4Make(1.0, 1.0, 1.0, 1.0);
+    xform *= GFX->getProjectionMatrix();
+    xform.transpose();
 
     switch (type) {
         case GSColor:
-            mBaseEffect.texture2d0.enabled = GL_FALSE;
-            mBaseEffect.texture2d1.enabled = GL_FALSE;
-            currentEffect = mBaseEffect;
+            setShader(mGenericShader[0]);
+            setShaderConstBuffer( mGenericShaderConst[0] );
+            mGenericShaderConst[0]->setSafe( mGenericShader[0]->getShaderConstHandle("$mvp_matrix"), xform );
             break;
         case GSTexture:
         case GSModColorTexture:
         case GSAddColorTexture:
-            mBaseEffect.texture2d0.enabled = GL_TRUE;
-            mBaseEffect.texture2d1.enabled = GL_FALSE;
-          for (U32 i = 0; i < 1; i++)
-          {
-             setLightInternal(i, outLight, false);
-          }
-          currentEffect = mBaseEffect;
+        case GSBatchTexture:
+            setShader(mGenericShader[1]);
+            setShaderConstBuffer( mGenericShaderConst[1] );
+            mGenericShaderConst[1]->setSafe( mGenericShader[1]->getShaderConstHandle("$mvp_matrix"), xform );
+            mGenericShaderConst[1]->setSafe( mGenericShader[1]->getShaderConstHandle("$sampler2d_0"), 0);
             break;
         case GSPoint:
-            mBaseEffect.texture2d0.enabled = GL_TRUE;
-            mBaseEffect.texture2d1.enabled = GL_FALSE;
-          currentEffect = mBaseEffect;
+            setShader(mGenericShader[2]);
+            setShaderConstBuffer( mGenericShaderConst[2] );
+            mGenericShaderConst[2]->setSafe( mGenericShader[2]->getShaderConstHandle("$mvp_matrix"), xform );
+            mGenericShaderConst[2]->setSafe( mGenericShader[2]->getShaderConstHandle("$sampler2d_0"), 0);
             break;
         case GSTest:
+            setShader(mGenericShader[3]);
+            setShaderConstBuffer( mGenericShaderConst[3] );
+            mGenericShaderConst[3]->setSafe( mGenericShader[3]->getShaderConstHandle("$mvp_matrix"), xform );
             break;
         case GSAlphaTexture:
-            mBaseEffect.texture2d0.enabled = GL_TRUE;
-            mBaseEffect.texture2d1.enabled = GL_FALSE;
-            currentEffect = mBaseEffect;
+            setShader(mGenericShader[4]);
+            setShaderConstBuffer( mGenericShaderConst[4] );
+            mGenericShaderConst[4]->setSafe( mGenericShader[4]->getShaderConstHandle("$mvp_matrix"), xform );
+            mGenericShaderConst[4]->setSafe( mGenericShader[4]->getShaderConstHandle("$sampler2d_0"), 0);
             break;
-       case GSBatchTexture:
-       {
-          mBaseEffect.texture2d0.enabled = GL_TRUE;
-          mBaseEffect.texture2d1.enabled = GL_FALSE;
-          // vertex lighting
 
-//          query.init( SphereF( GFX->getViewMatrix().getPosition(), 5000000.0) );
-//          U32 lightcount = query.getLights( light, 3 );
-//          Point3F cameraPos = GFX->getViewMatrix().getPosition();
-//          
-//          mBaseEffect.lightModelTwoSided = GL_TRUE;
-//          mBaseEffect.material.ambientColor = GLKVector4Make(1.0, 1.0, 1.0, 1.0);
-//          mBaseEffect.material.diffuseColor = GLKVector4Make(1.0, 1.0, 1.0, 1.0);
-//          LIGHTMGR->getSortedLightsByDistance( &mLights, GFX->getViewMatrix().getPosition() );
-//          for (U32 i = 0; i < 1; i++)
-//          {
-//             if (i < mLights.size())
-//             {
-//                mLights[i]->setGFXLight(&outLight);
-//                setLightInternal(i, outLight, true);
-//             }
-//             else
-//             {
-//                setLightInternal(i, outLight, false);
-//             }
-//             F32 len = (light->getPosition());
-//             F32 rad = light->getRange().x;
-//             F32 factor = 1.0-mClampF( (len-rad)/rad, 0.0, 1.0 );
-//             if (factor > 0.0)
-//             {
-//                U8 alpha = mVertexBuffer[i].color;
-//                ColorF lightColor = light[0].getColor()*factor;
-//                ColorF lightAdd = ColorF(mVertexBuffer[i].color) + lightColor;
-//                lightAdd.clamp();
-//                mVertexBuffer[i].color = lightAdd;
-//                mVertexBuffer[i].color.alpha = alpha;
-//             }
-             currentEffect = mBaseEffect;
-//          }
-          break;
-       }
         default:
             break;
     }
@@ -509,16 +521,6 @@ GFXShader* GFXOpenGLES20iOSDevice::createShader()
 void GFXOpenGLES20iOSDevice::setShaderConstBufferInternal(GFXShaderConstBuffer* buffer)
 {
     static_cast<GFXOpenGLES20iOSShaderConstBuffer*>(buffer)->activate();
-}
-
-U32 GFXOpenGLES20iOSDevice::getNumSamplers() const
-{
-    return mMaxShaderTextures;
-}
-
-U32 GFXOpenGLES20iOSDevice::getNumRenderTargets() const
-{
-    return 1;
 }
 
 void GFXOpenGLES20iOSDevice::_updateRenderTargets()
@@ -587,18 +589,6 @@ GFXFormat GFXOpenGLES20iOSDevice::selectSupportedFormat(   GFXTextureProfile* pr
     }
     
     return GFXFormatR8G8B8A8;
-}
-
-
-void GFXOpenGLES20iOSDevice::preDrawPrimitive()
-{
-    if( mStateDirty )
-    {
-        updateStates();
-    }
-    
-    [currentEffect prepareToDraw];
-
 }
 
 

@@ -98,10 +98,9 @@ LightInfo* LightManager::createLightInfo(LightInfo* light /* = NULL */)
    LightInfo *outLight = (light != NULL) ? light : new LightInfo;
 
    LightManagerMap &lightManagers = _getLightManagers();
-   LightManagerMap::iterator iter = lightManagers.begin();
-   for ( ; iter != lightManagers.end(); iter++ )
+   for ( LightManagerMap::pair iter:lightManagers )
    {
-      LightManager *lm = iter->value;
+      LightManager *lm = iter.second;
       lm->_addLightInfoEx( outLight );
    }
 
@@ -112,10 +111,9 @@ void LightManager::initLightFields()
 {
    LightManagerMap &lightManagers = _getLightManagers();
 
-   LightManagerMap::iterator iter = lightManagers.begin();
-   for ( ; iter != lightManagers.end(); iter++ )
+   for ( LightManagerMap::pair iter:lightManagers )
    {
-      LightManager *lm = iter->value;
+      LightManager *lm = iter.second;
       lm->_initLightFields();
    }
 }

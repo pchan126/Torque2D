@@ -22,46 +22,18 @@
 
 #include "console/console.h"
 #include "./gfxOpenGLDevice.h"
-#include "./GFXOpenGLTextureTarget.h"
-#include "./GFXOpenGLTextureObject.h"
+#include "gfxOpenGLTextureTarget.h"
+#include "gfxOpenGLTextureObject.h"
 //#include "./gfxGLCubemap.h"
 #include "graphics/gfxTextureManager.h"
 #include "./gfxOpenGLUtils.h"
 
-/// Internal struct used to track texture information for FBO attachments
-/// This serves as an abstract base so we can deal with cubemaps and standard 
-/// 2D/Rect textures through the same interface
-class _GFXGLTargetDesc
-{
-public:
-   _GFXGLTargetDesc(U32 _mipLevel, U32 _zOffset) :
-      mipLevel(_mipLevel), zOffset(_zOffset)
-   {
-   }
-   
-   virtual ~_GFXGLTargetDesc() {}
-   
-   virtual U32 getHandle() = 0;
-   virtual U32 getWidth() = 0;
-   virtual U32 getHeight() = 0;
-   virtual U32 getDepth() = 0;
-   virtual bool hasMips() = 0;
-   virtual GLenum getBinding() = 0;
-   
-   U32 getMipLevel() { return mipLevel; }
-   U32 getZOffset() { return zOffset; }
-   
-private:
-   U32 mipLevel;
-   U32 zOffset;
-};
-
 /// Internal struct used to track 2D/Rect texture information for FBO attachment
-class _GFXOpenGLTextureTargetDesc : public _GFXGLTargetDesc
+class _GFXOpenGLTextureTargetDesc : public _GFXOpenGLTargetDesc
 {
 public:
    _GFXOpenGLTextureTargetDesc(GFXOpenGLTextureObject* tex, U32 _mipLevel, U32 _zOffset) 
-      : _GFXGLTargetDesc(_mipLevel, _zOffset), mTex(tex)
+      : _GFXOpenGLTargetDesc(_mipLevel, _zOffset), mTex(tex)
    {
    }
    
@@ -151,10 +123,7 @@ GFXOpenGLTextureTarget::~GFXOpenGLTextureTarget()
 
 const Point2I GFXOpenGLTextureTarget::getSize()
 {
-   if(mTargets[Color0].isValid())
-      return Point2I(mTargets[Color0]->getWidth(), mTargets[Color0]->getHeight());
-
-   return Point2I(0, 0);
+    return mTargets[Color0].isValid() ? Point2I(mTargets[Color0]->getWidth(), mTargets[Color0]->getHeight()) : Point2I(0, 0);
 }
 
 GFXFormat GFXOpenGLTextureTarget::getFormat()
@@ -211,80 +180,8 @@ void GFXOpenGLTextureTarget::resurrect()
    // Dealt with when the target is next bound
 }
 
-void GFXOpenGLTextureTarget::makeActive()
-{
-   glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mFramebuffer);
-   glBindFramebuffer(GL_READ_FRAMEBUFFER, mFramebuffer);
-   Con::printf("_GFXOpenGLTextureTargetFBOImpl::makeActive glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mFramebuffer); ");
-}
 
-void GFXOpenGLTextureTarget::deactivate()
-{
-   glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-   glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
-   
-   Con::printf("_GFXOpenGLTextureTargetFBOImpl::finish glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mFramebuffer); ");
-   
-   _GFXGLTargetDesc* color0 = getTargetDesc(GFXTextureTarget::Color0);
-   if(!color0 || !(color0->hasMips()))
-      return;
-   
-   // Generate mips if necessary
-   // Assumes a 2D texture.
-   glActiveTexture(GL_TEXTURE0);
-   //   PRESERVE_2D_TEXTURE();
-   glBindTexture(GL_TEXTURE_2D, color0->getHandle());
-   glGenerateMipmap(GL_TEXTURE_2D);
-}
-
-void GFXOpenGLTextureTarget::applyState()
-{
-   if(!isPendingState())
-      return;
-
-   // So we don't do this over and over again
-   stateApplied();
-   
-   // REMINDER: When we implement MRT support, check against GFXGLDevice::getNumRenderTargets()
-   
-   glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
-//   Con::printf("_GFXOpenGLTextureTargetFBOImpl::applyState:: glBindFramebuffer ");
-   
-   _GFXGLTargetDesc* color0 = getTargetDesc(GFXTextureTarget::Color0);
-   if(color0)
-   {
-      if(color0->getDepth() == 0)
-         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, color0->getBinding(), color0->getHandle(), color0->getMipLevel());
-      else
-         glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, color0->getBinding(), color0->getHandle(), color0->getMipLevel(), color0->getZOffset());
-   }
-   else
-   {
-      // Clears the texture (note that the binding is irrelevent)
-      glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
-   }
-   
-   _GFXGLTargetDesc* depthStencil = getTargetDesc(GFXTextureTarget::DepthStencil);
-   if(depthStencil)
-   {
-      // Certain drivers have issues with depth only FBOs.  That and the next two asserts assume we have a color target.
-      AssertFatal(color0, "GFXOpenGLTextureTarget::applyState() - Cannot set DepthStencil target without Color0 target!");
-      AssertFatal(depthStencil->getWidth() == color0->getWidth(), "GFXOpenGLTextureTarget::applyState() - DepthStencil and Color0 targets MUST have the same width!");
-      AssertFatal(depthStencil->getHeight() == color0->getHeight(), "GFXOpenGLTextureTarget::applyState() - DepthStencil and Color0 targets MUST have the same height!");
-      glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthStencil->getBinding(), depthStencil->getHandle(), depthStencil->getMipLevel());
-   }
-   else
-   {
-      // Clears the texture (note that the binding is irrelevent)
-      glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, 0, 0);
-   }
-   
-   glBindFramebuffer(GL_FRAMEBUFFER, 0);
-//   Con::printf("_GFXOpenGLTextureTargetFBOImpl::applyState:: glBindFramebuffer(GL_FRAMEBUFFER, 0); ");
-
-}
-
-_GFXGLTargetDesc* GFXOpenGLTextureTarget::getTargetDesc(RenderSlot slot) const
+_GFXOpenGLTargetDesc * GFXOpenGLTextureTarget::getTargetDesc(RenderSlot slot) const
 {
    // This can only be called by our implementations, and then will not actually store the pointer so this is (almost) safe
    return mTargets[slot].ptr();

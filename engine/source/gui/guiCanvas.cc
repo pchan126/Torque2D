@@ -738,26 +738,41 @@ void GuiCanvas::rootScreenTouchDown(const GuiEvent &event)
 
 void GuiCanvas::rootScreenTouchUp(const GuiEvent &event)
 {
-    mPrevMouseTime = Platform::getVirtualMilliseconds();
-    mMouseButtonDown = false;
-
-    iterator i;
-    i = end();
-    while (i != begin())
+    //pass the event to the mouse locked control
+    if (bool(mMouseCapturedControl))
     {
-        i--;    
-        GuiControl *ctrl = static_cast<GuiControl *>(*i);
-        GuiControl *controlHit = ctrl->findHitControl(event.mousePoint);
-        
-        //see if the controlHit is a modeless dialog...
-        if ((! controlHit->mActive) && (! controlHit->mProfile->mModal))
-            continue;
-        else
+        checkLockMouseMove(event);
+        if(!mMouseCapturedControl.isNull())
+            mMouseCapturedControl->onTouchUp(event);
+    }
+    else
+    {
+        findMouseControl(event);
+        if(bool(mMouseControl))
         {
-            controlHit->onTouchUp(event);
-            break;
+            mMouseControl->onTouchUp(event);
         }
     }
+//    mPrevMouseTime = Platform::getVirtualMilliseconds();
+//    mMouseButtonDown = false;
+//
+//    iterator i;
+//    i = end();
+//    while (i != begin())
+//    {
+//        i--;
+//        GuiControl *ctrl = static_cast<GuiControl *>(*i);
+//        GuiControl *controlHit = ctrl->findHitControl(event.mousePoint);
+//
+//        //see if the controlHit is a modeless dialog...
+//        if ((! controlHit->mActive) && (! controlHit->mProfile->mModal))
+//            continue;
+//        else
+//        {
+//            controlHit->onTouchUp(event);
+//            break;
+//        }
+//    }
 }
 
 void GuiCanvas::rootScreenTouchMove(const GuiEvent &event)
@@ -778,6 +793,7 @@ void GuiCanvas::rootScreenTouchMove(const GuiEvent &event)
       }
    }
 }
+
 void GuiCanvas::refreshMouseControl()
 {
    GuiEvent evt;

@@ -109,17 +109,12 @@ bool GuiImageList::FreeTextureEntry( PTextureEntry Entry )
 
 U32 GuiImageList::IndexFromId ( U32 Id )
 {
-  if ( !mTextures.size() ) return -1;
-  Vector<PTextureEntry>::iterator i = mTextures.begin();
   U32 j = 0;
-  for ( ; i != mTextures.end(); i++ )
+  for ( PTextureEntry i: mTextures )
   {
-    if ( i )
-    {
-    if ( (*i)->id == Id )
+    if ( i->id == Id )
       return j;
     j++;
-    }
   }
 
   return -1;

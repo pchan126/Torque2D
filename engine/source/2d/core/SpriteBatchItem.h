@@ -136,6 +136,13 @@ public:
         }
 
         // This should be as unique as possible as it is used for hashing.
+        struct KeyHash {
+            std::size_t operator()(const LogicalPosition& k) const
+            {
+                return (std::size_t)(k.mArgString) * (std::size_t)2654435761;
+            }
+        };
+
         operator const U32() const
         {
             return (U32)(mArgString) * (U32)2654435761;

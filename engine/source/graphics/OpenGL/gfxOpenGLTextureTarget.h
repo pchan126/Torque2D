@@ -27,8 +27,35 @@
 #include "memory/autoPtr.h"
 
 class GFXOpenGLTextureObject;
-class _GFXGLTargetDesc;
-class _GFXOpenGLTextureTargetImpl;
+//class _GFXGLTargetDesc;
+
+/// Internal struct used to track texture information for FBO attachments
+/// This serves as an abstract base so we can deal with cubemaps and standard
+/// 2D/Rect textures through the same interface
+class _GFXOpenGLTargetDesc
+{
+public:
+    _GFXOpenGLTargetDesc(U32 _mipLevel, U32 _zOffset) :
+    mipLevel(_mipLevel), zOffset(_zOffset)
+    {
+    }
+
+    virtual ~_GFXOpenGLTargetDesc() {}
+
+    virtual U32 getHandle() = 0;
+    virtual U32 getWidth() = 0;
+    virtual U32 getHeight() = 0;
+    virtual U32 getDepth() = 0;
+    virtual bool hasMips() = 0;
+    virtual GLenum getBinding() = 0;
+
+    U32 getMipLevel() { return mipLevel; }
+    U32 getZOffset() { return zOffset; }
+
+private:
+    U32 mipLevel;
+    U32 zOffset;
+};
 
 /// Render to texture support for OpenGL.
 /// This class needs to make a number of assumptions due to the requirements
@@ -45,28 +72,28 @@ class _GFXOpenGLTextureTargetImpl;
 class GFXOpenGLTextureTarget : public GFXTextureTarget
 {
 public:
-    friend GFXOpenGLDevice;
+   friend GFXOpenGLDevice;
    GFXOpenGLTextureTarget();
    virtual ~GFXOpenGLTextureTarget();
 
-   virtual const Point2I getSize() = 0;
-   virtual GFXFormat getFormat() = 0;
-    virtual void attachTexture(GFXTextureObject *tex, RenderSlot slot = Color0, U32 mipLevel=0, U32 zOffset = 0) = 0;
-   virtual void attachTexture(GFXCubemap *tex, U32 face, RenderSlot slot = Color0, U32 mipLevel=0) = 0;
+   virtual const Point2I getSize();
+   virtual GFXFormat getFormat();
+    virtual void attachTexture(GFXTextureObject *tex, RenderSlot slot = Color0, U32 mipLevel=0, U32 zOffset = 0);
+//   virtual void attachTexture(GFXCubemap *tex, U32 face, RenderSlot slot = Color0, U32 mipLevel=0);
    virtual void clearAttachments();
 
    /// Functions to query internal state
    /// @{
-   
+
    /// Returns the internal structure for the given slot.  This should only be called by our internal implementations.
-   _GFXGLTargetDesc* getTargetDesc(RenderSlot slot) const;
+   _GFXOpenGLTargetDesc * getTargetDesc(RenderSlot slot) const;
 
    /// @}
    
-   void deactivate();
+   virtual void deactivate() = 0;
    void zombify();
    void resurrect();
-   virtual const String describeSelf() const = 0;
+   virtual const String describeSelf() const;
    
 protected:
 
@@ -76,16 +103,16 @@ protected:
 
    /// The callback used to get texture events.
    /// @see GFXTextureManager::addEventDelegate
-   void _onTextureEvent( GFXTexCallbackCode code );
+   virtual void _onTextureEvent( GFXTexCallbackCode code );
    
    /// Array of _GFXGLTargetDesc's, an internal struct used to keep track of texture data.
-   AutoPtr<_GFXGLTargetDesc> mTargets[MaxRenderSlotId];
+   AutoPtr<_GFXOpenGLTargetDesc> mTargets[MaxRenderSlotId];
 
    /// These redirect to our internal implementation
    /// @{
    
-   void applyState();
-   void makeActive();
+   virtual void applyState() = 0;
+   virtual void makeActive() = 0;
    
    /// @}
 

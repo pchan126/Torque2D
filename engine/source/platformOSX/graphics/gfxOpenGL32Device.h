@@ -95,15 +95,6 @@ public:
     
    virtual F32 getPixelShaderVersion() const { return mPixelShaderVersion; }
    virtual void  setPixelShaderVersion( F32 version ) { mPixelShaderVersion = version; }
-   
-   virtual void setShader(GFXOpenGL32Shader* shd);
-   virtual void disableShaders(); ///< Equivalent to setShader(NULL)
-   
-   /// Returns the number of texture samplers that can be used in a shader rendering pass
-   virtual U32 getNumSamplers() const;
-
-   /// Returns the number of simultaneous render targets supported by the device.
-   virtual U32 getNumRenderTargets() const;
 
    virtual GFXOpenGL32Shader* createShader();
     
@@ -179,8 +170,6 @@ private:
    F32 mPixelShaderVersion;
    
    bool mSupportsAnisotropic;
-   
-    U32 mMaxShaderTextures;
 
    RectI mClip;
 

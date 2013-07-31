@@ -274,7 +274,7 @@ String MaterialManager::getMapEntry(const String & textureName) const
    MaterialMap::const_iterator iter = mMaterialMap.find(String::ToLower(textureName));
    if ( iter == mMaterialMap.end() )
       return String();
-   return iter->value;
+   return iter->second;
 }
 
 void MaterialManager::flushAndReInitInstances()

@@ -186,11 +186,9 @@ void FilterImageAsset::setFilterName( const char* pAssetId )
 //        return;
 //    
     // Update.
-    mFilterName = pAssetId;
-    
-   NSString *filterString = [[NSString alloc] initWithUTF8String:mFilterName];
+   NSString *filterString = [[NSString alloc] initWithUTF8String:pAssetId];
    mFilter = [CIFilter filterWithName:filterString];
-
+   [filterString release];
    // Refresh the asset.
     refreshAsset();
 }

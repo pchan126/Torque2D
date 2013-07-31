@@ -211,7 +211,7 @@ public:
 
    AddInstSignal& getAddSignal( RenderInstTypeHash type )
    {
-      return mAddInstSignals.findOrInsert( type )->value; 
+      return mAddInstSignals[ type ];
    }
 
    // ConsoleObject interface
@@ -225,7 +225,7 @@ protected:
    Vector< RenderBinManager* > mRenderBins;
 
 
-   typedef HashTable<RenderInstTypeHash,AddInstSignal> AddInstTable;
+   typedef HashMap<RenderInstTypeHash,AddInstSignal> AddInstTable;
 
    AddInstTable mAddInstSignals;
 

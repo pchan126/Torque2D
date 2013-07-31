@@ -512,7 +512,7 @@ protected:
     /// @deprecated This is disallowed.
     ConsoleObject() { /* disallowed */ }
     /// @deprecated This is disallowed.
-    ConsoleObject(const ConsoleObject&);
+//    ConsoleObject(const ConsoleObject&);
 
 public:
     /// Get a reference to a field by name.

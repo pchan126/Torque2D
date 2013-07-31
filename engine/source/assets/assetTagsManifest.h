@@ -81,9 +81,9 @@ public:
 
         bool containsAsset( typeAssetId assetId )
         {
-            for ( Vector<typeAssetId>::iterator assetIdItr = mAssets.begin(); assetIdItr != mAssets.end(); ++assetIdItr )
+            for ( auto assetIdItr : mAssets )
             {
-                if ( *assetIdItr == assetId )
+                if ( assetIdItr == assetId )
                     return true;
             }
 
@@ -92,14 +92,9 @@ public:
 
         void removeAsset( typeAssetId assetId )
         {
-            for ( Vector<typeAssetId>::iterator assetIdItr = mAssets.begin(); assetIdItr != mAssets.end(); ++assetIdItr )
-            {
-                if ( *assetIdItr == assetId )
-                {
-                    mAssets.erase( assetIdItr );
-                    return;
-                }
-            }
+            auto assetIdItr = mAssets.find(assetId);
+            if ( assetIdItr != mAssets.end() )
+                mAssets.erase( assetIdItr );
         }
 
         typeAssetTagName mTagName;

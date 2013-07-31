@@ -36,7 +36,6 @@ GuiGraphCtrl::GuiGraphCtrl()
 	   mPlots[i].mAutoPlot = NULL;
 	   mPlots[i].mAutoPlotDelay = 0;
 	   mPlots[i].mGraphColor = ColorF(1.0, 1.0, 1.0);
-	   VECTOR_SET_ASSOCIATION(mPlots[i].mGraphData);
 	   mPlots[i].mGraphMax = 1;
 	   mPlots[i].mGraphType = Polyline;
 	   for(int j = 0; j < MaxDataPoints; j++)

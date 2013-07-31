@@ -16,7 +16,7 @@ class iOSWindow;
 class iOSWindowManager : public PlatformWindowManager
 {
 public:
-    typedef VectorPtr<iOSWindow*> WindowList;
+    typedef Vector<iOSWindow*> WindowList;
 
 private:
    WindowList mWindowList;
@@ -72,7 +72,7 @@ public:
    virtual S32 getWindowCount();
    
    /// Populate a list with references to all the windows created from this manager.
-   virtual void getWindows(VectorPtr<PlatformWindow*> &windows);
+   virtual void getWindows(Vector<PlatformWindow*> &windows);
    
    /// Get a window from a device ID.
    ///

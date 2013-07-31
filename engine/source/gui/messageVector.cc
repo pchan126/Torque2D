@@ -364,12 +364,12 @@ void MessageVector::registerSpectator(SpectatorCallback callBack, void *spectato
    }
 
    mSpectators.increment();
-   mSpectators.last().callback = callBack;
-   mSpectators.last().key      = spectatorKey;
+   mSpectators.back().callback = callBack;
+   mSpectators.back().key      = spectatorKey;
 
    // Need to message this spectator of all the lines currently inserted...
    for (i = 0; i < (U32)mMessageLines.size(); i++) {
-      (*mSpectators.last().callback)(mSpectators.last().key,
+      (*mSpectators.back().callback)(mSpectators.back().key,
                                      LineInserted, i);
    }
 }

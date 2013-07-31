@@ -199,18 +199,17 @@ void RenderPassManager::addInst( RenderInst *inst )
    if ( iter == mAddInstSignals.end() )
       return;
 
-   iter->value.trigger( inst );
+   iter->second.trigger( inst );
 }
 
 void RenderPassManager::sort()
 {
    PROFILE_SCOPE( RenderPassManager_Sort );
 
-   for (Vector<RenderBinManager *>::iterator itr = mRenderBins.begin();
-      itr != mRenderBins.end(); itr++)
+   for (auto itr : mRenderBins )
    {
-      AssertFatal(*itr, "Render manager invalid!");
-      (*itr)->sort();
+      AssertFatal(itr, "Render manager invalid!");
+      (itr)->sort();
    }
 }
 
@@ -220,11 +219,10 @@ void RenderPassManager::clear()
 
    mChunker.clear();
 
-   for (Vector<RenderBinManager *>::iterator itr = mRenderBins.begin();
-      itr != mRenderBins.end(); itr++)
+   for (auto itr : mRenderBins )
    {
-      AssertFatal(*itr, "Invalid render manager!");
-      (*itr)->clear();
+      AssertFatal(itr, "Invalid render manager!");
+      (itr)->clear();
    }
 }
 
@@ -236,10 +234,8 @@ void RenderPassManager::render(SceneRenderState * state)
    MatrixF proj = GFX->getProjectionMatrix();
 
    
-   for (Vector<RenderBinManager *>::iterator itr = mRenderBins.begin();
-      itr != mRenderBins.end(); itr++)
+   for (RenderBinManager *curBin : mRenderBins )
    {
-      RenderBinManager *curBin = *itr;
       AssertFatal(curBin, "Invalid render manager!");
       getRenderBinSignal().trigger(curBin, state, true);
       curBin->render(state);

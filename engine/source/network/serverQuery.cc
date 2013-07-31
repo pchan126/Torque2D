@@ -165,6 +165,8 @@ struct PacketStatus
    U32 time;
    U32 tryCount;
 
+    PacketStatus(): index(0), key(-1), time(0), tryCount( gPacketRetryCount) {};
+
    PacketStatus( U8 _index, S32 _key, U32 _time )
    {
       index = _index;
@@ -794,7 +796,7 @@ Vector<MasterInfo>* getMasterServerList()
          const char* madd = dStrchr(master,':') + 1;
          if (region && Net::stringToAddress(madd,&address)) {
             masterList.increment();
-            MasterInfo& info = masterList.last();
+            MasterInfo& info = masterList.back();
             info.address = address;
             info.region = region;
          }
@@ -1018,7 +1020,7 @@ static ServerInfo* findOrCreateServerInfo( const NetAddress* addr )
    si.address = *addr;
    gServerList.push_back( si );
 
-   return &gServerList.last();
+   return &gServerList.back();
 }
 
 //-----------------------------------------------------------------------------

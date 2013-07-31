@@ -64,7 +64,7 @@ bool SimComponent::_registerComponents( SimComponent *owner )
    // If this doesn't contain components, don't even lock the list.
    if( hasComponents() )
    {
-      VectorPtr<SimComponent *> &components = lockComponentList();
+      Vector<SimComponent *> &components = lockComponentList();
       for( SimComponentiterator i = components.begin(); i != components.end(); i++ )
       {
          if( !(*i)->onComponentRegister( owner ) )
@@ -94,7 +94,7 @@ void SimComponent::_unregisterComponents()
    if( !hasComponents() )
       return;
 
-   VectorPtr<SimComponent *> &components = lockComponentList();
+   Vector<SimComponent *> &components = lockComponentList();
    for( SimComponentiterator i = components.begin(); i != components.end(); i++ )
    {
       (*i)->onComponentUnRegister();
@@ -113,7 +113,7 @@ void SimComponent::onRemove()
    _unregisterComponents();
 
    // Delete all components
-   VectorPtr<SimComponent *>&componentList = lockComponentList();
+   Vector<SimComponent *>&componentList = lockComponentList();
    while(componentList.size() > 0)
    {
       SimComponent *c = componentList[0];
@@ -287,7 +287,7 @@ bool SimComponent::callMethodOnComponents( U32 argc, const char* argv[], const c
       {
          // Need to try the component's children
          bool handled = false;
-         VectorPtr<SimComponent *>&componentList = lockComponentList();
+         Vector<SimComponent *>&componentList = lockComponentList();
          for( SimComponentiterator nItr = (componentList.end()-1);  nItr >= componentList.begin(); nItr-- )
          {
             argv[0] = cbName;

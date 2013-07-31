@@ -22,13 +22,12 @@
 
 #include "sceneObjectList.h"
 #include "2d/sceneObject/sceneObject.h"
-#include "collection/finditerator.h"
 
 //-----------------------------------------------------------------------------
 
 void SceneObjectList::pushBack(SceneObject* obj)
 {
-	if (find(begin(),end(),obj) == end())
+	if (std::find(begin(),end(),obj) == end())
 		push_back(obj);
 }	
 
@@ -36,7 +35,7 @@ void SceneObjectList::pushBack(SceneObject* obj)
 
 void SceneObjectList::pushBackForce(SceneObject* obj)
 {
-	iterator itr = find(begin(),end(),obj);
+	iterator itr = std::find(begin(),end(),obj);
 	if (itr == end()) 
 	{
 		push_back(obj);
@@ -52,17 +51,9 @@ void SceneObjectList::pushBackForce(SceneObject* obj)
 
 //-----------------------------------------------------------------------------
 
-void SceneObjectList::pushFront(SceneObject* obj)
-{
-	if (find(begin(),end(),obj) == end())
-		push_front(obj);
-}	
-
-//-----------------------------------------------------------------------------
-
 void SceneObjectList::remove(SceneObject* obj)
 {
-	iterator ptr = find(begin(),end(),obj);
+	iterator ptr = std::find(begin(),end(),obj);
 	if (ptr != end()) 
 		erase(ptr);
 }
@@ -71,7 +62,7 @@ void SceneObjectList::remove(SceneObject* obj)
 
 void SceneObjectList::removeStable(SceneObject* obj)
 {
-	iterator ptr = find(begin(),end(),obj);
+	iterator ptr = std::find(begin(),end(),obj);
 	if (ptr != end()) 
 		erase(ptr);
 }

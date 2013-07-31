@@ -71,6 +71,7 @@ protected:
     Point2I m_LastTouch;
     U32 m_touchRadius;
     ButtonState m_state;
+    S32 m_eventid;
 
     void renderButtons( Point2I &offset, const RectI& updateRect);
 
@@ -104,6 +105,11 @@ public:
     virtual void onTouchUp(const GuiEvent &event);
     virtual void onTouchDown(const GuiEvent &event);
     virtual void onTouchDragged(const GuiEvent &event);
+
+    virtual void onTouchLeave(const GuiEvent &event);
+    virtual void onMouseLeave(const GuiEvent &event);
+
+    virtual bool pointInControl(const Point2I& parentCoordPoint);
 
    // Declare type.
    DECLARE_CONOBJECT(GuiJoystickCtrl);

@@ -131,10 +131,10 @@ bool AssetManager::compileReferencedAssets( ModuleDefinition* pModuleDefinition 
     mReferencedAssets.clear();
 
     // Iterate the module definition children.
-    for( SimSet::iterator itr = pModuleDefinition->begin(); itr != pModuleDefinition->end(); ++itr )
+    for( auto itr : *pModuleDefinition )
     {
         // Fetch the referenced assets.
-        ReferencedAssets* pReferencedAssets = dynamic_cast<ReferencedAssets*>( *itr );
+        ReferencedAssets* pReferencedAssets = dynamic_cast<ReferencedAssets*>( itr );
 
         // Skip if it's not a referenced assets location.
         if ( pReferencedAssets == NULL )
@@ -174,10 +174,10 @@ bool AssetManager::addModuleDeclaredAssets( ModuleDefinition* pModuleDefinition 
     }
 
     // Iterate the module definition children.
-    for( SimSet::iterator itr = pModuleDefinition->begin(); itr != pModuleDefinition->end(); ++itr )
+    for( auto itr : *pModuleDefinition )
     {
         // Fetch the declared assets.
-        DeclaredAssets* pDeclaredAssets = dynamic_cast<DeclaredAssets*>( *itr );
+        DeclaredAssets* pDeclaredAssets = dynamic_cast<DeclaredAssets*>( itr );
 
         // Skip if it's not a declared assets location.
         if ( pDeclaredAssets == NULL )
@@ -323,7 +323,7 @@ bool AssetManager::removeDeclaredAssets( ModuleDefinition* pModuleDefinition )
     while ( moduleAssets.size() > 0 )
     {
         // Fetch asset definition.
-        AssetDefinition* pAssetDefinition = *moduleAssets.begin();
+        AssetDefinition* pAssetDefinition = moduleAssets.front();
 
         // Remove this asset.
         removeDeclaredAsset( pAssetDefinition->mAssetId );
@@ -361,7 +361,7 @@ bool AssetManager::removeDeclaredAsset( const char* pAssetId )
     }
 
     // Fetch asset definition.
-    AssetDefinition* pAssetDefinition = declaredAssetItr->value;
+    AssetDefinition* pAssetDefinition = declaredAssetItr->second;
 
     // Is the asset private?
     if ( !pAssetDefinition->mAssetPrivate )
@@ -370,14 +370,9 @@ bool AssetManager::removeDeclaredAsset( const char* pAssetId )
         ModuleDefinition::typeModuleAssetsVector& moduleAssets = pAssetDefinition->mpModuleDefinition->getModuleAssets();
 
         // Remove module asset.
-        for ( ModuleDefinition::typeModuleAssetsVector::iterator moduleAssetItr = moduleAssets.begin(); moduleAssetItr != moduleAssets.end(); ++moduleAssetItr )
-        {
-            if ( *moduleAssetItr == pAssetDefinition )
-            {
-                moduleAssets.erase( moduleAssetItr );
-                break;
-            }
-        }
+        auto moduleAssetItr = moduleAssets.find(pAssetDefinition );
+        if ( moduleAssetItr != moduleAssets.end())
+            moduleAssets.erase( moduleAssetItr );
 
         // Remove asset dependencies.
         removeAssetDependencies( pAssetId );
@@ -642,10 +637,10 @@ bool AssetManager::doesAssetDependOn( const char* pAssetId, const char* pDepends
     typeAssetDependsOnHash::iterator dependsOnItr = mAssetDependsOn.find( assetId );
 
     // Iterate all dependencies.
-    while( dependsOnItr != mAssetDependsOn.end() && dependsOnItr->key == assetId )
+    while( dependsOnItr != mAssetDependsOn.end() && dependsOnItr->first == assetId )
     {
         // Finish if a depends on.
-        if ( dependsOnItr->value == dependsOnAssetId )
+        if ( dependsOnItr->second == dependsOnAssetId )
             return true;
 
         // Next dependency.
@@ -676,10 +671,10 @@ bool AssetManager::isAssetDependedOn( const char* pAssetId, const char* pDepende
     typeAssetDependsOnHash::iterator dependedOnItr = mAssetIsDependedOn.find( assetId );
 
     // Iterate all dependencies.
-    while( dependedOnItr != mAssetIsDependedOn.end() && dependedOnItr->key == assetId )
+    while( dependedOnItr != mAssetIsDependedOn.end() && dependedOnItr->first == assetId )
     {
         // Finish if depended-on.
-        if ( dependedOnItr->value == dependedOnByAssetId )
+        if ( dependedOnItr->second == dependedOnByAssetId )
             return true;
 
         // Next dependency.
@@ -779,7 +774,7 @@ bool AssetManager::renameDeclaredAsset( const char* pAssetIdFrom, const char* pA
     AssertFatal( assetDefinitionItr != mDeclaredAssets.end(), "Asset Manager: Failed to find asset." );
 
     // Fetch asset definition.
-    AssetDefinition* pAssetDefinition = assetDefinitionItr->value;
+    AssetDefinition* pAssetDefinition = assetDefinitionItr->second;
 
     // Is this a private asset?
     if ( pAssetDefinition->mAssetPrivate )
@@ -973,10 +968,10 @@ void AssetManager::purgeAssets( void )
     }
 
     // Iterate asset definitions.
-    for( typeDeclaredAssetsHash::iterator assetItr = mDeclaredAssets.begin(); assetItr != mDeclaredAssets.end(); ++assetItr )
+    for( auto assetItr:mDeclaredAssets )
     {
         // Fetch asset definition.
-        AssetDefinition* pAssetDefinition = assetItr->value;
+        AssetDefinition* pAssetDefinition = assetItr.second;
 
         // Skip asset if private, not loaded or referenced.
         if (    pAssetDefinition->mAssetPrivate ||
@@ -1041,10 +1036,10 @@ bool AssetManager::deleteAsset( const char* pAssetId, const bool deleteLooseFile
         typeAssetDependsOnHash::iterator dependedOnItr = mAssetIsDependedOn.find( assetId );
 
         // Iterate all dependencies.
-        while( dependedOnItr != mAssetIsDependedOn.end() && dependedOnItr->key == assetId )
+        while( dependedOnItr != mAssetIsDependedOn.end() && dependedOnItr->first == assetId )
         {
             // Store asset Id.
-            dependantAssets.push_back( dependedOnItr->value );
+            dependantAssets.push_back( dependedOnItr->second );
 
             // Next dependency.
             dependedOnItr++;
@@ -1054,10 +1049,8 @@ bool AssetManager::deleteAsset( const char* pAssetId, const bool deleteLooseFile
         if ( dependantAssets.size() > 0 )
         {
             // Yes, so iterate dependants.
-            for( Vector<typeAssetId>::const_iterator assetItr = dependantAssets.begin(); assetItr !=  dependantAssets.end(); ++assetItr )
+            for( StringTableEntry dependentAssetId:dependantAssets )
             {
-                StringTableEntry dependentAssetId = *assetItr;
-
                 // Info.
                 if ( mEchoInfo )
                 {
@@ -1078,12 +1071,8 @@ bool AssetManager::deleteAsset( const char* pAssetId, const bool deleteLooseFile
     if ( deleteLooseFiles )
     {
         // Yes, so remove loose files.
-        Vector<StringTableEntry>& assetLooseFiles = pAssetDefinition->mAssetLooseFiles;
-        for( Vector<StringTableEntry>::iterator looseFileItr = assetLooseFiles.begin(); looseFileItr != assetLooseFiles.end(); ++looseFileItr )
+        for( StringTableEntry looseFile:pAssetDefinition->mAssetLooseFiles )
         {
-            // Fetch loose file.
-            StringTableEntry looseFile = *looseFileItr;
-
             // Delete the loose file.
             if ( !Platform::fileDelete( looseFile ) )
             {
@@ -1157,17 +1146,17 @@ bool AssetManager::refreshAsset( const char* pAssetId )
         pAssetDefinition->mpAssetBase->onAssetRefresh();
 
         // Asset refresh notifications.
-        for( typeAssetPtrRefreshHash::iterator refreshNotifyItr = mAssetPtrRefreshNotifications.begin(); refreshNotifyItr != mAssetPtrRefreshNotifications.end(); ++refreshNotifyItr )
+        for( auto refreshNotifyItr:mAssetPtrRefreshNotifications )
         {
             // Fetch pointed asset.
-            StringTableEntry pointedAsset = refreshNotifyItr->key->getAssetId();
+            StringTableEntry pointedAsset = refreshNotifyItr.first->getAssetId();
 
             // Ignore if the pointed asset is not the asset or a dependency.
             if ( pointedAsset == StringTable->EmptyString || ( pointedAsset != assetId && !doesAssetDependOn( pointedAsset, assetId ) ) )
                 continue;
 
             // Perform refresh notification callback.
-            refreshNotifyItr->value->onAssetRefreshed( refreshNotifyItr->key );
+            refreshNotifyItr.second->onAssetRefreshed( refreshNotifyItr.first );
         }
     }
     // Is the asset definition allowed to refresh?
@@ -1206,11 +1195,8 @@ bool AssetManager::refreshAsset( const char* pAssetId )
             if ( assetDependencies.size() > 0 )
             {
                 // Yes, so iterate dependencies.
-                for( TamlAssetDeclaredVisitor::typeAssetIdVector::iterator assetDependencyItr = assetDependencies.begin(); assetDependencyItr != assetDependencies.end(); ++assetDependencyItr )
+                for( StringTableEntry dependencyAssetId:assetDependencies )
                 {
-                    // Fetch dependency asset Id.
-                    StringTableEntry dependencyAssetId = *assetDependencyItr;
-
                     // Insert depends-on.
                     mAssetDependsOn.insertEqual( assetId, dependencyAssetId );
 
@@ -1229,25 +1215,25 @@ bool AssetManager::refreshAsset( const char* pAssetId )
             if ( assetLooseFiles.size() > 0 )
             {
                 // Yes, so iterate loose files.
-                for( TamlAssetDeclaredVisitor::typeLooseFileVector::iterator assetLooseFileItr = assetLooseFiles.begin(); assetLooseFileItr != assetLooseFiles.end(); ++assetLooseFileItr )
+                for( auto assetLooseFileItr:assetLooseFiles )
                 {
                     // Store loose file.
-                    pAssetDefinition->mAssetLooseFiles.push_back( *assetLooseFileItr );
+                    pAssetDefinition->mAssetLooseFiles.push_back( assetLooseFileItr );
                 }
             }
 
             // Asset refresh notifications.
-            for( typeAssetPtrRefreshHash::iterator refreshNotifyItr = mAssetPtrRefreshNotifications.begin(); refreshNotifyItr != mAssetPtrRefreshNotifications.end(); ++refreshNotifyItr )
+            for( auto refreshNotifyItr:mAssetPtrRefreshNotifications )
             {
                 // Fetch pointed asset.
-                StringTableEntry pointedAsset = refreshNotifyItr->key->getAssetId();
+                StringTableEntry pointedAsset = refreshNotifyItr.first->getAssetId();
 
                 // Ignore if the pointed asset is not the asset or a dependency.
                 if ( pointedAsset == StringTable->EmptyString || ( pointedAsset != assetId && !doesAssetDependOn( pointedAsset, assetId ) ) )
                     continue;
 
                 // Perform refresh notification callback.
-                refreshNotifyItr->value->onAssetRefreshed( refreshNotifyItr->key );
+                refreshNotifyItr.second->onAssetRefreshed( refreshNotifyItr.first );
             }
 
             // Find is-depends-on entry.
@@ -1260,19 +1246,19 @@ bool AssetManager::refreshAsset( const char* pAssetId )
                 Vector<typeAssetId> dependedOn;
 
                 // Iterate all dependencies.
-                while( isDependedOnItr != mAssetIsDependedOn.end() && isDependedOnItr->key == assetId )
+                while( isDependedOnItr != mAssetIsDependedOn.end() && isDependedOnItr->first == assetId )
                 {
-                    dependedOn.push_back( isDependedOnItr->value );
+                    dependedOn.push_back( isDependedOnItr->second );
 
                     // Next dependency.
                     isDependedOnItr++;
                 }
 
                 // Refresh depended-on assets.
-                for ( Vector<typeAssetId>::iterator isDependedOnItr = dependedOn.begin(); isDependedOnItr != dependedOn.end(); ++isDependedOnItr )
+                for ( typeAssetId isDependedOnItr:dependedOn )
                 {
                     // Refresh dependency asset.
-                    refreshAsset( *isDependedOnItr );
+                    refreshAsset( isDependedOnItr );
                 }
             }
         }
@@ -1308,13 +1294,13 @@ void AssetManager::refreshAllAssets( const bool includeUnloaded )
     if ( includeUnloaded )
     {
         // Yes, so prepare a list of assets to release and load them.
-        for( typeDeclaredAssetsHash::iterator assetItr = mDeclaredAssets.begin(); assetItr != mDeclaredAssets.end(); ++assetItr )
+        for( auto assetItr:mDeclaredAssets )
         {
             // Fetch asset Id.
-            typeAssetId assetId = assetItr->key;
+            typeAssetId assetId = assetItr.first;
 
             // Skip if asset is loaded.
-            if ( assetItr->value->mpAssetBase != NULL )
+            if ( assetItr.second->mpAssetBase != NULL )
                 continue;
 
             // Note asset as needing a release.
@@ -1327,23 +1313,23 @@ void AssetManager::refreshAllAssets( const bool includeUnloaded )
 
     // Refresh the current loaded assets.
     // NOTE: This will result in some assets being refreshed more than once due to asset dependencies.
-    for( typeDeclaredAssetsHash::iterator assetItr = mDeclaredAssets.begin(); assetItr != mDeclaredAssets.end(); ++assetItr )
+    for( auto assetItr:mDeclaredAssets )
     {
         // Skip private assets.
-        if ( assetItr->value->mAssetPrivate )
+        if ( assetItr.second->mAssetPrivate )
             continue;
 
         // Refresh asset if it's loaded.
-        refreshAsset( assetItr->key );
+        refreshAsset( assetItr.first );
     }
 
     // Are we including unloaded assets?
     if ( includeUnloaded )
     {
         // Yes, so release the assets we loaded.
-        for( Vector<typeAssetId>::iterator assetItr = assetsToRelease.begin(); assetItr != assetsToRelease.end(); ++assetItr )
+        for( typeAssetId assetItr:assetsToRelease )
         {
-            releaseAsset( *assetItr );
+            releaseAsset( assetItr );
         }
     }
 
@@ -1366,7 +1352,7 @@ void AssetManager::registerAssetPtrRefreshNotify( AssetPtrBase* pAssetPtrBase, A
     if ( notificationItr != mAssetPtrRefreshNotifications.end() )
     {
         // Yes, so update the callback.
-        notificationItr->value = pCallback;
+        notificationItr->second = pCallback;
         return;
     }
 
@@ -1504,9 +1490,9 @@ void AssetManager::dumpDeclaredAssets( void ) const
     Vector<const AssetDefinition*> assetDefinitions;
 
     // Iterate asset definitions.
-    for( typeDeclaredAssetsHash::const_iterator assetItr = mDeclaredAssets.begin(); assetItr != mDeclaredAssets.end(); ++assetItr )
+    for( auto assetItr:mDeclaredAssets )
     {
-        assetDefinitions.push_back( assetItr->value );
+        assetDefinitions.push_back( assetItr.second );
     }
 
     // Sort asset definitions.
@@ -1518,11 +1504,8 @@ void AssetManager::dumpDeclaredAssets( void ) const
     Con::printBlankLine();
 
     // Iterate sorted asset definitions.
-    for ( Vector<const AssetDefinition*>::iterator assetItr = assetDefinitions.begin(); assetItr != assetDefinitions.end(); ++assetItr )
+    for ( const AssetDefinition* pAssetDefinition: assetDefinitions )
     {
-        // Fetch asset definition.
-        const AssetDefinition* pAssetDefinition = *assetItr;
-
         // Info.
         Con::printf( "AssetId:'%s', RefCount:%d, LoadCount:%d, UnloadCount:%d, AutoUnload:%d, Loaded:%d, Internal:%d, Private: %d, Type:'%s', Module/Version:'%s'/'%d', File:'%s'",
             pAssetDefinition->mAssetId,
@@ -1558,10 +1541,10 @@ S32 AssetManager::findAllAssets( AssetQuery* pAssetQuery, const bool ignoreInter
     S32 resultCount = 0;
 
     // Iterate declared assets.
-    for( typeDeclaredAssetsHash::iterator assetItr = mDeclaredAssets.begin(); assetItr != mDeclaredAssets.end(); ++assetItr )
+    for( auto assetItr : mDeclaredAssets )
     {
         // Fetch asset definition.
-        AssetDefinition* pAssetDefinition = assetItr->value;
+        AssetDefinition* pAssetDefinition = assetItr.second;
 
         // Skip if internal and we're ignoring them.
         if ( ignoreInternal && pAssetDefinition->mAssetInternal )
@@ -1612,10 +1595,10 @@ S32 AssetManager::findAssetName( AssetQuery* pAssetQuery, const char* pAssetName
     S32 resultCount = 0;
 
     // Iterate declared assets.
-    for( typeDeclaredAssetsHash::iterator assetItr = mDeclaredAssets.begin(); assetItr != mDeclaredAssets.end(); ++assetItr )
+    for( auto assetItr : mDeclaredAssets )
     {
         // Fetch asset definition.
-        AssetDefinition* pAssetDefinition = assetItr->value;
+        AssetDefinition* pAssetDefinition = assetItr.second;
 
         // Are we doing partial name search?
         if ( partialName ) 
@@ -1671,10 +1654,10 @@ S32 AssetManager::findAssetCategory( AssetQuery* pAssetQuery, const char* pAsset
         AssetQuery filteredAssets;
 
         // Yes, so iterate asset query.
-        for( Vector<StringTableEntry>::iterator assetItr = pAssetQuery->begin(); assetItr != pAssetQuery->end(); ++assetItr )
+        for( auto assetItr : *pAssetQuery )
         {
             // Fetch asset definition.
-            AssetDefinition* pAssetDefinition = findAsset( *assetItr );
+            AssetDefinition* pAssetDefinition = findAsset( assetItr );
 
             // Skip if this is not the asset we want.
             if (    pAssetDefinition == NULL ||
@@ -1694,10 +1677,10 @@ S32 AssetManager::findAssetCategory( AssetQuery* pAssetQuery, const char* pAsset
     else
     {
         // No, so iterate declared assets.
-        for( typeDeclaredAssetsHash::iterator assetItr = mDeclaredAssets.begin(); assetItr != mDeclaredAssets.end(); ++assetItr )
+        for( auto assetItr : mDeclaredAssets )
         {
             // Fetch asset definition.
-            AssetDefinition* pAssetDefinition = assetItr->value;
+            AssetDefinition* pAssetDefinition = assetItr.second;
 
             // Skip if this is not the asset we want.
             if ( assetCategory != pAssetDefinition->mAssetCategory )
@@ -1731,10 +1714,10 @@ S32 AssetManager::findAssetAutoUnload( AssetQuery* pAssetQuery, const bool asset
         AssetQuery filteredAssets;
 
         // Yes, so iterate asset query.
-        for( Vector<StringTableEntry>::iterator assetItr = pAssetQuery->begin(); assetItr != pAssetQuery->end(); ++assetItr )
+        for( auto assetItr : *pAssetQuery )
         {
             // Fetch asset definition.
-            AssetDefinition* pAssetDefinition = findAsset( *assetItr );
+            AssetDefinition* pAssetDefinition = findAsset( assetItr );
 
             // Skip if this is not the asset we want.
             if (    pAssetDefinition == NULL ||
@@ -1754,10 +1737,10 @@ S32 AssetManager::findAssetAutoUnload( AssetQuery* pAssetQuery, const bool asset
     else
     {
         // No, so iterate declared assets.
-        for( typeDeclaredAssetsHash::iterator assetItr = mDeclaredAssets.begin(); assetItr != mDeclaredAssets.end(); ++assetItr )
+        for( auto assetItr : mDeclaredAssets )
         {
             // Fetch asset definition.
-            AssetDefinition* pAssetDefinition = assetItr->value;
+            AssetDefinition* pAssetDefinition = assetItr.second;
 
             // Skip if this is not the asset we want.
             if ( assetAutoUnload != pAssetDefinition->mAssetAutoUnload )
@@ -1793,10 +1776,10 @@ S32 AssetManager::findAssetInternal( AssetQuery* pAssetQuery, const bool assetIn
         AssetQuery filteredAssets;
 
         // Yes, so iterate asset query.
-        for( Vector<StringTableEntry>::iterator assetItr = pAssetQuery->begin(); assetItr != pAssetQuery->end(); ++assetItr )
+        for( auto assetItr : *pAssetQuery )
         {
             // Fetch asset definition.
-            AssetDefinition* pAssetDefinition = findAsset( *assetItr );
+            AssetDefinition* pAssetDefinition = findAsset( assetItr );
 
             // Skip if this is not the asset we want.
             if (    pAssetDefinition == NULL ||
@@ -1816,10 +1799,10 @@ S32 AssetManager::findAssetInternal( AssetQuery* pAssetQuery, const bool assetIn
     else
     {
         // No, so iterate declared assets.
-        for( typeDeclaredAssetsHash::iterator assetItr = mDeclaredAssets.begin(); assetItr != mDeclaredAssets.end(); ++assetItr )
+        for( auto assetItr : mDeclaredAssets )
         {
             // Fetch asset definition.
-            AssetDefinition* pAssetDefinition = assetItr->value;
+            AssetDefinition* pAssetDefinition = assetItr.second;
 
             // Skip if this is not the asset we want.
             if ( assetInternal != pAssetDefinition->mAssetInternal )
@@ -1855,10 +1838,10 @@ S32 AssetManager::findAssetPrivate( AssetQuery* pAssetQuery, const bool assetPri
         AssetQuery filteredAssets;
 
         // Yes, so iterate asset query.
-        for( Vector<StringTableEntry>::iterator assetItr = pAssetQuery->begin(); assetItr != pAssetQuery->end(); ++assetItr )
+        for( auto assetItr : *pAssetQuery )
         {
             // Fetch asset definition.
-            AssetDefinition* pAssetDefinition = findAsset( *assetItr );
+            AssetDefinition* pAssetDefinition = findAsset( assetItr );
 
             // Skip if this is not the asset we want.
             if (    pAssetDefinition == NULL ||
@@ -1878,10 +1861,10 @@ S32 AssetManager::findAssetPrivate( AssetQuery* pAssetQuery, const bool assetPri
     else
     {
         // No, so iterate declared assets.
-        for( typeDeclaredAssetsHash::iterator assetItr = mDeclaredAssets.begin(); assetItr != mDeclaredAssets.end(); ++assetItr )
+        for( auto assetItr : mDeclaredAssets )
         {
             // Fetch asset definition.
-            AssetDefinition* pAssetDefinition = assetItr->value;
+            AssetDefinition* pAssetDefinition = assetItr.second;
 
             // Skip if this is not the asset we want.
             if ( assetPrivate != pAssetDefinition->mAssetPrivate )
@@ -1921,10 +1904,10 @@ S32 AssetManager::findAssetType( AssetQuery* pAssetQuery, const char* pAssetType
         AssetQuery filteredAssets;
 
         // Yes, so iterate asset query.
-        for( Vector<StringTableEntry>::iterator assetItr = pAssetQuery->begin(); assetItr != pAssetQuery->end(); ++assetItr )
+        for( auto assetItr : *pAssetQuery )
         {
             // Fetch asset definition.
-            AssetDefinition* pAssetDefinition = findAsset( *assetItr );
+            AssetDefinition* pAssetDefinition = findAsset( assetItr );
 
             // Skip if this is not the asset we want.
             if (    pAssetDefinition == NULL ||
@@ -1944,10 +1927,10 @@ S32 AssetManager::findAssetType( AssetQuery* pAssetQuery, const char* pAssetType
     else
     {
         // No, so iterate declared assets.
-        for( typeDeclaredAssetsHash::iterator assetItr = mDeclaredAssets.begin(); assetItr != mDeclaredAssets.end(); ++assetItr )
+        for( auto assetItr: mDeclaredAssets )
         {
             // Fetch asset definition.
-            AssetDefinition* pAssetDefinition = assetItr->value;
+            AssetDefinition* pAssetDefinition = assetItr.second;
 
             // Skip if this is not the asset we want.
             if ( assetType != pAssetDefinition->mAssetType )
@@ -1985,10 +1968,10 @@ S32 AssetManager::findAssetDependsOn( AssetQuery* pAssetQuery, const char* pAsse
     typeAssetDependsOnHash::iterator dependsOnItr = mAssetDependsOn.find( assetId );
 
     // Iterate all dependencies.
-    while( dependsOnItr != mAssetDependsOn.end() && dependsOnItr->key == assetId )
+    while( dependsOnItr != mAssetDependsOn.end() && dependsOnItr->first == assetId )
     {
         // Store as result.
-        pAssetQuery->push_back( dependsOnItr->value );
+        pAssetQuery->push_back( dependsOnItr->second );
 
         // Next dependency.
         dependsOnItr++;
@@ -2021,10 +2004,10 @@ S32 AssetManager::findAssetIsDependedOn( AssetQuery* pAssetQuery, const char* pA
     typeAssetIsDependedOnHash::iterator dependedOnItr = mAssetIsDependedOn.find( assetId );
 
     // Iterate all dependencies.
-    while( dependedOnItr != mAssetIsDependedOn.end() && dependedOnItr->key == assetId )
+    while( dependedOnItr != mAssetIsDependedOn.end() && dependedOnItr->first == assetId )
     {
         // Store as result.
-        pAssetQuery->push_back( dependedOnItr->value );
+        pAssetQuery->push_back( dependedOnItr->second );
 
         // Next dependency.
         dependedOnItr++;
@@ -2050,17 +2033,17 @@ S32 AssetManager::findInvalidAssetReferences( AssetQuery* pAssetQuery )
     S32 resultCount = 0;
 
     // Iterate referenced assets.
-    for( typeReferencedAssetsHash::iterator assetItr = mReferencedAssets.begin(); assetItr != mReferencedAssets.end(); ++assetItr )
+    for( auto assetItr : mReferencedAssets )
     {
         // Find asset definition.
-        AssetDefinition* pAssetDefinition = findAsset( assetItr->key );
+        AssetDefinition* pAssetDefinition = findAsset( assetItr.first );
 
         // Skip if the asset definition was found.
         if ( pAssetDefinition != NULL )
             continue;
 
         // Store as result.
-        pAssetQuery->push_back( assetItr->key );
+        pAssetQuery->push_back( assetItr.first );
 
         // Increase result count.
         resultCount++;
@@ -2134,11 +2117,8 @@ S32 AssetManager::findTaggedAssets( AssetQuery* pAssetQuery, const char* pAssetT
         AssetQuery filteredAssets;
 
         // Yes, so iterate asset query.
-        for( Vector<StringTableEntry>::iterator assetItr = pAssetQuery->begin(); assetItr != pAssetQuery->end(); ++assetItr )
+        for( auto assetId : *pAssetQuery )
         {
-            // Fetch asset Id.
-            StringTableEntry assetId = *assetItr;
-
             // Skip if asset is not valid.
             if ( !isDeclaredAsset( assetId ) )
                 continue;
@@ -2147,11 +2127,8 @@ S32 AssetManager::findTaggedAssets( AssetQuery* pAssetQuery, const char* pAssetT
             bool assetTagMatched = false;
 
             // Iterate asset tags.
-            for ( Vector<AssetTagsManifest::AssetTag*>::iterator assetTagItr = assetTags.begin(); assetTagItr != assetTags.end(); ++assetTagItr )
+            for ( AssetTagsManifest::AssetTag* pAssetTag : assetTags )
             {
-                // Fetch asset tag.
-                AssetTagsManifest::AssetTag* pAssetTag = *assetTagItr;
-
                 // Skip if asset is not tagged.
                 if ( !pAssetTag->containsAsset( assetId ) )
                     continue;
@@ -2182,17 +2159,11 @@ S32 AssetManager::findTaggedAssets( AssetQuery* pAssetQuery, const char* pAssetT
     else
     {
         // Iterate asset tags.
-        for ( Vector<AssetTagsManifest::AssetTag*>::iterator assetTagItr = assetTags.begin(); assetTagItr != assetTags.end(); ++assetTagItr )
+        for ( AssetTagsManifest::AssetTag* pAssetTag : assetTags  )
         {
-            // Fetch asset tag.
-            AssetTagsManifest::AssetTag* pAssetTag = *assetTagItr;
-
             // Iterate tagged assets.
-            for ( Vector<typeAssetId>::iterator assetItr = pAssetTag->mAssets.begin(); assetItr != pAssetTag->mAssets.end(); ++assetItr )
+            for ( StringTableEntry assetId :pAssetTag->mAssets )
             {
-                // Fetch asset Id.
-                StringTableEntry assetId = *assetItr;
-
                 // Skip if asset Id is already present.
                 if ( pAssetQuery->containsAsset( assetId ) )
                     continue;
@@ -2236,10 +2207,10 @@ S32 AssetManager::findAssetLooseFile( AssetQuery* pAssetQuery, const char* pLoos
         AssetQuery filteredAssets;
 
         // Yes, so iterate asset query.
-        for( Vector<StringTableEntry>::iterator assetItr = pAssetQuery->begin(); assetItr != pAssetQuery->end(); ++assetItr )
+        for( auto assetItr : *pAssetQuery )
         {
             // Fetch asset definition.
-            AssetDefinition* pAssetDefinition = findAsset( *assetItr );
+            AssetDefinition* pAssetDefinition = findAsset( assetItr );
 
             // Fetch loose files.
             Vector<StringTableEntry>& assetLooseFiles = pAssetDefinition->mAssetLooseFiles;
@@ -2249,10 +2220,10 @@ S32 AssetManager::findAssetLooseFile( AssetQuery* pAssetQuery, const char* pLoos
                 continue;
 
             // Search the assets loose files.
-            for( Vector<StringTableEntry>::iterator looseFileItr = assetLooseFiles.begin(); looseFileItr != assetLooseFiles.end(); ++looseFileItr )
+            for( auto looseFileItr : assetLooseFiles )
             {
                 // Is this the loose file we are searching for?
-                if ( *looseFileItr != looseFile )
+                if ( looseFileItr != looseFile )
                     continue;
 
                 // Store as result.
@@ -2271,10 +2242,10 @@ S32 AssetManager::findAssetLooseFile( AssetQuery* pAssetQuery, const char* pLoos
     else
     {
         // No, so iterate declared assets.
-        for( typeDeclaredAssetsHash::iterator assetItr = mDeclaredAssets.begin(); assetItr != mDeclaredAssets.end(); ++assetItr )
+        for( auto assetItr:mDeclaredAssets )
         {
             // Fetch asset definition.
-            AssetDefinition* pAssetDefinition = assetItr->value;
+            AssetDefinition* pAssetDefinition = assetItr.second;
 
             // Fetch loose files.
             Vector<StringTableEntry>& assetLooseFiles = pAssetDefinition->mAssetLooseFiles;
@@ -2284,10 +2255,10 @@ S32 AssetManager::findAssetLooseFile( AssetQuery* pAssetQuery, const char* pLoos
                 continue;
 
             // Search the assets loose files.
-            for( Vector<StringTableEntry>::iterator looseFileItr = assetLooseFiles.begin(); looseFileItr != assetLooseFiles.end(); ++looseFileItr )
+            for( auto looseFileItr : assetLooseFiles )
             {
                 // Is this the loose file we are searching for?
-                if ( *looseFileItr != looseFile )
+                if ( looseFileItr != looseFile )
                     continue;
 
                 // Store as result.
@@ -2354,11 +2325,8 @@ bool AssetManager::scanDeclaredAssets( const char* pPath, const char* pExtension
     TamlAssetDeclaredVisitor assetDeclaredVisitor;
 
     // Iterate files.
-    for ( Vector<Platform::FileInfo>::iterator fileItr = files.begin(); fileItr != files.end(); ++fileItr )
+    for ( Platform::FileInfo fileInfo: files )
     {
-        // Fetch file info.
-        Platform::FileInfo& fileInfo = *fileItr;
-
         // Fetch filename.
         const char* pFilename = fileInfo.pFileName;
 
@@ -2419,7 +2387,7 @@ bool AssetManager::scanDeclaredAssets( const char* pPath, const char* pExtension
             Con::warnf( "Asset Manager: Encountered asset Id '%s' in asset file '%s' but it conflicts with existing asset Id in asset file '%s'.",
                 foundAssetDefinition.mAssetId,
                 foundAssetDefinition.mAssetBaseFilePath,
-                mDeclaredAssets.find( foundAssetDefinition.mAssetId )->value->mAssetBaseFilePath );
+                mDeclaredAssets.find( foundAssetDefinition.mAssetId )->second->mAssetBaseFilePath );
 
             continue;
         }
@@ -2453,11 +2421,8 @@ bool AssetManager::scanDeclaredAssets( const char* pPath, const char* pExtension
         if ( assetDependencies.size() > 0 )
         {
             // Yes, so iterate dependencies.
-            for( TamlAssetDeclaredVisitor::typeAssetIdVector::iterator assetDependencyItr = assetDependencies.begin(); assetDependencyItr != assetDependencies.end(); ++assetDependencyItr )
+            for( StringTableEntry dependencyAssetId  : assetDependencies  )
             {
-                // Fetch asset Ids.
-                StringTableEntry dependencyAssetId = *assetDependencyItr;
-
                 // Insert depends-on.
                 mAssetDependsOn.insertEqual( assetId, dependencyAssetId );
 
@@ -2479,11 +2444,8 @@ bool AssetManager::scanDeclaredAssets( const char* pPath, const char* pExtension
         if ( assetLooseFiles.size() > 0 )
         {
             // Yes, so iterate loose files.
-            for( TamlAssetDeclaredVisitor::typeLooseFileVector::iterator assetLooseFileItr = assetLooseFiles.begin(); assetLooseFileItr != assetLooseFiles.end(); ++assetLooseFileItr )
+            for( StringTableEntry looseFile: assetDeclaredVisitor.getAssetLooseFiles())
             {
-                // Fetch loose file.
-                StringTableEntry looseFile = *assetLooseFileItr;
-
                 // Info.
                 if ( mEchoInfo )
                 {
@@ -2545,11 +2507,8 @@ bool AssetManager::scanReferencedAssets( const char* pPath, const char* pExtensi
     TamlAssetReferencedVisitor assetReferencedVisitor;
 
     // Iterate files.
-    for ( Vector<Platform::FileInfo>::iterator fileItr = files.begin(); fileItr != files.end(); ++fileItr )
+    for ( Platform::FileInfo fileInfo:files )
     {
-        // Fetch file info.
-        Platform::FileInfo& fileInfo = *fileItr;
-
         // Fetch filename.
         const char* pFilename = fileInfo.pFileName;
 
@@ -2595,10 +2554,10 @@ bool AssetManager::scanReferencedAssets( const char* pPath, const char* pExtensi
             }
 
             // Iterate usage.
-            for( TamlAssetReferencedVisitor::typeAssetReferencedHash::const_iterator usageItr = assetReferencedMap.begin(); usageItr != assetReferencedMap.end(); ++usageItr )
+            for( auto usageItr : assetReferencedMap  )
             {
                 // Fetch asset name.
-                typeAssetId assetId = usageItr->key;
+                typeAssetId assetId = usageItr.first;
 
                 // Info.
                 if ( mEchoInfo )
@@ -2643,7 +2602,7 @@ AssetDefinition* AssetManager::findAsset( const char* pAssetId )
     if ( declaredAssetItr == mDeclaredAssets.end() )
         return NULL;
 
-    return declaredAssetItr->value;
+    return declaredAssetItr->second;
 }
 
 //-----------------------------------------------------------------------------
@@ -2672,7 +2631,7 @@ void AssetManager::addReferencedAsset( StringTableEntry assetId, StringTableEntr
         while( true )
         {
             // Finish if this file is already present.
-            if ( referencedAssetItr->value == referenceFilePath )
+            if ( referencedAssetItr->second == referenceFilePath )
                 return;
 
             // Move to next asset Id.
@@ -2680,7 +2639,7 @@ void AssetManager::addReferencedAsset( StringTableEntry assetId, StringTableEntr
 
             // Is this the end of referenced assets or a different asset Id?
             if ( referencedAssetItr == mReferencedAssets.end() ||
-                referencedAssetItr->key != assetId )
+                referencedAssetItr->first != assetId )
             {
                 // Yes, so add asset reference.
                 mReferencedAssets.insertEqual( assetId, referenceFilePath );
@@ -2717,7 +2676,7 @@ void AssetManager::renameAssetReferences( StringTableEntry assetIdFrom, StringTa
     while( true )
     {
         // Finish if end of references.
-        if ( referencedAssetItr == mReferencedAssets.end() || referencedAssetItr->key != assetIdFrom )
+        if ( referencedAssetItr == mReferencedAssets.end() || referencedAssetItr->first != assetIdFrom )
             return;
 
         // Info.
@@ -2726,15 +2685,15 @@ void AssetManager::renameAssetReferences( StringTableEntry assetIdFrom, StringTa
             Con::printf( "Asset Manager: Renaming declared Asset Id '%s' to Asset Id '%s'.  Updating referenced file '%s'",
                 assetIdFrom,
                 assetIdTo,
-                referencedAssetItr->value );
+                referencedAssetItr->second );
         }
 
         // Update asset file declaration.
-        if ( !mTaml.parse( referencedAssetItr->value, assetReferencedUpdateVisitor ) )
+        if ( !mTaml.parse( referencedAssetItr->second, assetReferencedUpdateVisitor ) )
         {
             // No, so warn.
             Con::warnf("Asset Manager: Cannot rename referenced asset Id '%s' to asset Id '%s' as the referenced asset file could not be parsed: %s",
-                assetIdFrom, assetIdTo, referencedAssetItr->value );
+                assetIdFrom, assetIdTo, referencedAssetItr->second );
         }
 
         // Move to next reference.
@@ -2768,7 +2727,7 @@ void AssetManager::removeAssetReferences( StringTableEntry assetId )
     while( true )
     {
         // Finish if end of references.
-        if ( referencedAssetItr == mReferencedAssets.end() || referencedAssetItr->key != assetId )
+        if ( referencedAssetItr == mReferencedAssets.end() || referencedAssetItr->first != assetId )
             break;
 
         // Info.
@@ -2776,16 +2735,16 @@ void AssetManager::removeAssetReferences( StringTableEntry assetId )
         {
             Con::printf( "Asset Manager: Removing Asset Id '%s' references from file '%s'",
                 assetId,
-                referencedAssetItr->value );
+                referencedAssetItr->second );
         }
 
         // Update asset file declaration.
-        if ( !mTaml.parse( referencedAssetItr->value, assetReferencedUpdateVisitor ) )
+        if ( !mTaml.parse( referencedAssetItr->second, assetReferencedUpdateVisitor ) )
         {
             // No, so warn.
             Con::warnf("Asset Manager: Cannot remove referenced asset Id '%s' as the referenced asset file could not be parsed: %s",
                 assetId,
-                referencedAssetItr->value );
+                referencedAssetItr->second );
         }
 
         // Move to next reference.
@@ -2814,7 +2773,7 @@ void AssetManager::renameAssetDependencies( StringTableEntry assetIdFrom, String
         typeAssetDependsOnHash::iterator dependsOnItr = mAssetDependsOn.find( assetIdFrom );
 
         // Fetch dependency asset Id.
-        StringTableEntry dependencyAssetId = dependsOnItr->value;
+        StringTableEntry dependencyAssetId = dependsOnItr->second;
 
         // Find is-depends-on entry.
         typeAssetIsDependedOnHash::iterator isDependedOnItr = mAssetIsDependedOn.find( dependencyAssetId );
@@ -2822,13 +2781,13 @@ void AssetManager::renameAssetDependencies( StringTableEntry assetIdFrom, String
         // Sanity!
         AssertFatal( isDependedOnItr != mAssetIsDependedOn.end(), "Asset dependencies are corrupt!" );
 
-        while( isDependedOnItr != mAssetIsDependedOn.end() && isDependedOnItr->key == dependencyAssetId && isDependedOnItr->value != assetIdFrom )
+        while( isDependedOnItr != mAssetIsDependedOn.end() && isDependedOnItr->first == dependencyAssetId && isDependedOnItr->second != assetIdFrom )
         {
             isDependedOnItr++;
         }
 
         // Sanity!
-        AssertFatal( isDependedOnItr->key == dependencyAssetId && isDependedOnItr->value == assetIdFrom, "Asset dependencies are corrupt!" );
+        AssertFatal( isDependedOnItr->first == dependencyAssetId && isDependedOnItr->second == assetIdFrom, "Asset dependencies are corrupt!" );
         
         // Remove is-depended-on.        
         mAssetIsDependedOn.erase( isDependedOnItr );
@@ -2850,7 +2809,7 @@ void AssetManager::renameAssetDependencies( StringTableEntry assetIdFrom, String
         typeAssetIsDependedOnHash::iterator isdependedOnItr = mAssetIsDependedOn.find( assetIdFrom );
 
         // Fetch dependency asset Id.
-        StringTableEntry dependencyAssetId = isdependedOnItr->value;
+        StringTableEntry dependencyAssetId = isdependedOnItr->second;
 
         // Find depends-on entry.
         typeAssetDependsOnHash::iterator dependsOnItr = mAssetDependsOn.find( dependencyAssetId );
@@ -2858,13 +2817,13 @@ void AssetManager::renameAssetDependencies( StringTableEntry assetIdFrom, String
         // Sanity!
         AssertFatal( dependsOnItr != mAssetDependsOn.end(), "Asset dependencies are corrupt!" );
 
-        while( dependsOnItr != mAssetDependsOn.end() && dependsOnItr->key == dependencyAssetId && dependsOnItr->value != assetIdFrom )
+        while( dependsOnItr != mAssetDependsOn.end() && dependsOnItr->first == dependencyAssetId && dependsOnItr->second != assetIdFrom )
         {
             dependsOnItr++;
         }
 
         // Sanity!
-        AssertFatal( dependsOnItr->key == dependencyAssetId && dependsOnItr->value == assetIdFrom, "Asset dependencies are corrupt!" );
+        AssertFatal( dependsOnItr->first == dependencyAssetId && dependsOnItr->second == assetIdFrom, "Asset dependencies are corrupt!" );
         
         // Remove is-depended-on.        
         mAssetIsDependedOn.erase( isdependedOnItr );
@@ -2893,35 +2852,32 @@ void AssetManager::removeAssetDependencies( const char* pAssetId )
     // Fetch asset Id.
     StringTableEntry assetId = StringTable->insert( pAssetId );
 
-    // Remove from depends-on assets.
-    while( mAssetDependsOn.count( assetId ) > 0 )
+    auto dependsOnItrSet = mAssetDependsOn.equal_range( assetId );
+
+    for (typeAssetDependsOnHash::iterator dependsOnItr = dependsOnItrSet.first; dependsOnItr != dependsOnItrSet.second; dependsOnItr++)
     {
-        // Find depends-on.
-        typeAssetDependsOnHash::iterator dependsOnItr = mAssetDependsOn.find( assetId );
-
         // Fetch dependency asset Id.
-        StringTableEntry dependencyAssetId = dependsOnItr->value;
+        StringTableEntry dependencyAssetId = dependsOnItr->second;
 
-        // Find is-depends-on entry.
-        typeAssetIsDependedOnHash::iterator isDependedOnItr = mAssetIsDependedOn.find( dependencyAssetId );
+        auto isDependedOnItrSet = mAssetIsDependedOn.equal_range( dependencyAssetId );
+        typeAssetIsDependedOnHash::iterator isDependedOnItr = isDependedOnItrSet.first;
 
-        // Sanity!
-        AssertFatal( isDependedOnItr != mAssetIsDependedOn.end(), "Asset dependencies are corrupt!" );
-
-        while( isDependedOnItr != mAssetIsDependedOn.end() && isDependedOnItr->key == dependencyAssetId && isDependedOnItr->value != assetId )
+        while ( isDependedOnItr != isDependedOnItrSet.second)
         {
-            isDependedOnItr++;
+            if ( isDependedOnItr->second == assetId )
+            {
+                mAssetIsDependedOn.erase(isDependedOnItr);
+                isDependedOnItrSet = mAssetIsDependedOn.equal_range( dependencyAssetId );
+                isDependedOnItr = isDependedOnItrSet.first;
+            }
+            else
+            {
+               isDependedOnItr++;
+            }
         }
-
-        // Sanity!
-        AssertFatal( isDependedOnItr->key == dependencyAssetId && isDependedOnItr->value == assetId, "Asset dependencies are corrupt!" );
-
-        // Remove is-depended-on.        
-        mAssetIsDependedOn.erase( isDependedOnItr );
-
-        // Remove depends-on.
-        mAssetDependsOn.erase( dependsOnItr );
     }
+   mAssetDependsOn.erase( pAssetId );
+
 }
 
 //-----------------------------------------------------------------------------

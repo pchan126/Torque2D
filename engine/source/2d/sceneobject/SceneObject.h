@@ -82,8 +82,8 @@ struct tDestroyNotification
 
 //-----------------------------------------------------------------------------
 
-typedef VectorPtr<b2FixtureDef*> typeCollisionFixtureDefVector;
-typedef VectorPtr<b2Fixture*> typeCollisionFixtureVector;
+typedef Vector<b2FixtureDef*> typeCollisionFixtureDefVector;
+typedef Vector<b2Fixture*> typeCollisionFixtureVector;
 typedef Vector<tDestroyNotification> typeDestroyNotificationVector;
 
 //-----------------------------------------------------------------------------

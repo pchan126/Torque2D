@@ -35,6 +35,7 @@
 
 #include "messaging/message.h"
 #include "console/console.h"
+#include <deque>
 
 #ifndef _DISPATCHER_H_
 #define _DISPATCHER_H_
@@ -128,7 +129,7 @@ public:
 struct MessageQueue
 {
    StringTableEntry mQueueName;
-   VectorPtr<IMessageListener *> mListeners;
+   std::deque<IMessageListener *> mListeners;
 
    MessageQueue() : mQueueName("")
    {
@@ -138,9 +139,9 @@ struct MessageQueue
 
    bool dispatchMessage(const char* event, const char* data)
    {
-      for(VectorPtr<IMessageListener *>::iterator i = mListeners.begin();i != mListeners.end();i++)
+      for( IMessageListener* i:mListeners)
       {
-         if( !(*i)->onMessageReceived(mQueueName, event, data) )
+         if( !i->onMessageReceived(mQueueName, event, data) )
             return false;
       }
       return true;
@@ -148,9 +149,9 @@ struct MessageQueue
 
    bool dispatchMessageObject(Message *msg)
    {
-      for(VectorPtr<IMessageListener *>::iterator i = mListeners.begin();i != mListeners.end();i++)
+      for( IMessageListener* i:mListeners)
       {
-         if( !(*i)->onMessageObjectReceived(mQueueName, msg) )
+         if( !i->onMessageObjectReceived(mQueueName, msg) )
             return false;
       }
       return true;

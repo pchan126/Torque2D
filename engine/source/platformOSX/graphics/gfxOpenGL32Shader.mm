@@ -25,16 +25,7 @@
 #include "./gfxOpenGL32Shader.h"
 
 #include "memory/frameAllocator.h"
-#include "io/fileStream.h"
-#include "platform/platformString.h"
-#include "math/mPoint.h"
-#include "graphics/gfxStructs.h"
-#include "console/console.h"
-#include "./gfxOpenGL32EnumTranslate.h"
 
-//#if (defined TORQUE_OS_IPHONE || defined TORQUE_OS_MAC)
-//#import <GLKit/GLKit.h>
-//#endif
 
 class GFXOpenGL32ShaderConstHandle : public GFXShaderConstHandle
 {
@@ -344,9 +335,6 @@ void GFXOpenGL32ShaderConstBuffer::onShaderReload( GFXOpenGL32Shader *shader )
 }
 
 GFXOpenGL32Shader::GFXOpenGL32Shader() :
-   mVertexShader(0),
-   mPixelShader(0),
-   mProgram(0),
    mConstBufferSize(0),
    mConstBuffer(NULL)
 {
@@ -358,21 +346,11 @@ GFXOpenGL32Shader::~GFXOpenGL32Shader()
 {
    clearShaders();
    for(HandleMap::iterator i = mHandles.begin(); i != mHandles.end(); i++)
-      delete i->value;
+      delete i->second;
    
    delete[] mConstBuffer;
 }
 
-void GFXOpenGL32Shader::clearShaders()
-{
-   glDeleteProgram(mProgram);
-   glDeleteShader(mVertexShader);
-   glDeleteShader(mPixelShader);
-   
-   mProgram = 0;
-   mVertexShader = 0;
-   mPixelShader = 0;
-}
 
 bool GFXOpenGL32Shader::_init()
 {
@@ -393,8 +371,8 @@ bool GFXOpenGL32Shader::_init()
    const U32 mjVer = (U32)mFloor( mPixVersion );
    const U32 mnVer = (U32)( ( mPixVersion - F32( mjVer ) ) * 10.01f );
    macros.increment();
-   macros.last().name = "TORQUE_SM";
-   macros.last().value = String::ToString( mjVer * 10 + mnVer );
+   macros.back().name = "TORQUE_SM";
+   macros.back().value = String::ToString( mjVer * 10 + mnVer );
 
    // Default to true so we're "successful" if a vertex/pixel shader wasn't specified.
    bool compiledVertexShader = true;
@@ -542,7 +520,7 @@ void GFXOpenGL32Shader::initHandles()
    // Mark all existing handles as invalid.
    // Those that are found when parsing the descriptions will then be marked valid again.
    for ( HandleMap::iterator iter = mHandles.begin(); iter != mHandles.end(); ++iter )      
-      (iter->value)->setValid( false );  
+      (iter->second)->setValid( false );
    mValidHandles.clear();
 
    // Loop through all ConstantDescriptions, 
@@ -562,7 +540,7 @@ void GFXOpenGL32Shader::initHandles()
          assignedSamplerNum++ : -1;
       if ( handle != mHandles.end() )
       {
-         handle->value->reinit( desc, loc, sampler );         
+         handle->second->reinit( desc, loc, sampler );
       }
       else 
       {
@@ -580,7 +558,7 @@ void GFXOpenGL32Shader::initHandles()
 
    for ( HandleMap::iterator iter = mHandles.begin(); iter != mHandles.end(); ++iter )
    {
-      GFXOpenGL32ShaderConstHandle* handle = iter->value;
+      GFXOpenGL32ShaderConstHandle* handle = iter->second;
       if ( handle->isValid() )
       {
       	mValidHandles.push_back(handle);
@@ -597,7 +575,7 @@ void GFXOpenGL32Shader::initHandles()
    // Iterate through uniforms to set sampler numbers.
    for (HandleMap::iterator iter = mHandles.begin(); iter != mHandles.end(); ++iter)
    {
-      GFXOpenGL32ShaderConstHandle* handle = iter->value;
+      GFXOpenGL32ShaderConstHandle* handle = iter->second;
       if(handle->isValid() && (handle->getType() == GFXSCT_Sampler || handle->getType() == GFXSCT_SamplerCube))
       {
          // Set sampler number on our program.
@@ -613,7 +591,7 @@ GFXShaderConstHandle* GFXOpenGL32Shader::getShaderConstHandle(const String& name
 {
    HandleMap::iterator i = mHandles.find(name);
    if(i != mHandles.end())
-      return i->value;
+      return i->second;
    else
    {
       GFXOpenGL32ShaderConstHandle* handle = new GFXOpenGL32ShaderConstHandle( this );
@@ -685,11 +663,6 @@ GFXShaderConstBufferRef GFXOpenGL32Shader::allocConstBuffer()
    buffer->registerResourceWithDevice(getOwningDevice());
    mActiveBuffers.push_back( buffer );
    return buffer;
-}
-
-void GFXOpenGL32Shader::useProgram()
-{
-   glUseProgram(mProgram);
 }
 
 void GFXOpenGL32Shader::zombify()

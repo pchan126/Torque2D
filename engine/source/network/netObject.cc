@@ -208,7 +208,7 @@ void NetObject::clearScopeAlways()
 {
    if(!mNetFlags.test(IsGhost))
    {
-      mNetFlags.clear(ScopeAlways);
+      mNetFlags.reset(ScopeAlways);
       Sim::getGhostAlwaysSet()->removeObject(this);
 
       // Un ghost this object from all the connections

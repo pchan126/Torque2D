@@ -670,7 +670,7 @@ static bool recurseDumpPath(const char *path, const char *pattern, Vector<Platfo
          
          // add it to the list
          fileVector.increment();
-         Platform::FileInfo& rInfo = fileVector.last();
+         Platform::FileInfo& rInfo = fileVector.back();
 
          rInfo.pFullPath = StringTable->insert(path);
          rInfo.pFileName = StringTable->insert(fnbuf);
@@ -1158,4 +1158,70 @@ StringTableEntry Platform::osGetTemporaryDirectory()
 
    forwardslash(buf);
    return StringTable->insert(buf);
+}
+
+//-----------------------------------------------------------------------------
+static char filePathBuffer[1024];
+static bool deleteDirectoryRecursive( const char* pPath )
+{
+   // Sanity!
+   AssertFatal( pPath != NULL, "Cannot delete directory that is NULL." );
+   
+   // Find directories.
+   Vector<StringTableEntry> directories;
+   if ( !Platform::dumpDirectories( pPath, directories, 0 ) )
+   {
+      // Warn.
+      Con::warnf( "Could not retrieve sub-directories of '%s'.", pPath );
+      return false;
+   }
+   
+   // Iterate directories.
+   for( Vector<StringTableEntry>::iterator basePathItr = directories.begin(); basePathItr != directories.end(); ++basePathItr )
+   {
+      // Fetch base path.
+      StringTableEntry basePath = *basePathItr;
+      
+      // Skip if the base path.
+      if ( basePathItr == directories.begin() && dStrcmp( pPath, basePath ) == 0 )
+         continue;
+      
+      // Delete any directories recursively.
+      if ( !deleteDirectoryRecusrive( basePath ) )
+         return false;
+   }
+   
+   // Find files.
+   Vector<Platform::FileInfo> files;
+   if ( !Platform::dumpPath( pPath, files, 0 ) )
+   {
+      // Warn.
+      Con::warnf( "Could not retrieve files for directory '%s'.", pPath );
+      return false;
+   }
+   
+   // Iterate files.
+   for ( Vector<Platform::FileInfo>::iterator fileItr = files.begin(); fileItr != files.end(); ++fileItr )
+   {
+      // Format file.
+      dSprintf( filePathBuffer, sizeof(filePathBuffer), "%s/%s", fileItr->pFullPath, fileItr->pFileName );
+      
+      // Delete file.
+      if ( !Platform::fileDelete( filePathBuffer ) )
+      {
+         // Warn.
+         Con::warnf( "Could not delete file '%s'.", filePathBuffer );
+         return false;
+      }
+   }
+   
+   // Delete the directory.
+   if ( !Platform::fileDelete( pPath ) )
+   {
+      // Warn.
+      Con::warnf( "Could not delete directory '%s'.", pPath );
+      return false;
+   }
+   
+   return true;
 }

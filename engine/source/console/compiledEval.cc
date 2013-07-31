@@ -24,7 +24,6 @@
 #include "console/console.h"
 
 #include "console/ast.h"
-#include "collection/finditerator.h"
 #include "io/resource/resourceManager.h"
 
 #include "string/findMatch.h"
@@ -181,7 +180,7 @@ inline void ExprEvalState::setCurVarName(StringTableEntry name)
    if(name[0] == '$')
       currentVariable = globalVars.lookup(name);
    else if(stack.size())
-      currentVariable = stack.last()->lookup(name);
+      currentVariable = stack.back()->lookup(name);
    if(!currentVariable && gWarnUndefinedScriptVariables)
        Con::warnf(ConsoleLogEntry::Script, "Variable referenced before assignment: %s", name);
 }
@@ -191,7 +190,7 @@ inline void ExprEvalState::setCurVarNameCreate(StringTableEntry name)
    if(name[0] == '$')
       currentVariable = globalVars.add(name);
    else if(stack.size())
-      currentVariable = stack.last()->add(name);
+      currentVariable = stack.back()->add(name);
    else
    {
       currentVariable = NULL;
@@ -1474,8 +1473,8 @@ breakContinue:
             //if this is called from inside a function, append the ip and codeptr
             if (!gEvalState.stack.empty())
             {
-               gEvalState.stack.last()->code = this;
-               gEvalState.stack.last()->ip = ip - 1;
+               gEvalState.stack.back()->code = this;
+               gEvalState.stack.back()->ip = ip - 1;
             }
 
             U32 callType = code[ip+2];
@@ -1715,8 +1714,8 @@ breakContinue:
          {
             //append the ip and codeptr before managing the breakpoint!
             AssertFatal( !gEvalState.stack.empty(), "Empty eval stack on break!");
-            gEvalState.stack.last()->code = this;
-            gEvalState.stack.last()->ip = ip - 1;
+            gEvalState.stack.back()->code = this;
+            gEvalState.stack.back()->ip = ip - 1;
 
             U32 breakLine;
             findBreakLine(ip-1, breakLine, instruction);

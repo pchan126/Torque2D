@@ -810,7 +810,14 @@ public:
     
     /// Gets the projection matrix
     virtual inline const MatrixF getProjectionMatrix() = 0;
-    
+
+    /// Pushes the view matrix stack and copies the current top
+    /// matrix to the new top of the stack
+    virtual void pushViewMatrix() = 0;
+
+    /// Pops the world matrix stack
+    virtual void popViewMatrix() = 0;
+
     /// Sets the view matrix
     /// @param   newView   New view matrix to set
     virtual void setViewMatrix( const MatrixF &newView )  { setMatrix(GFXMatrixView, newView);};

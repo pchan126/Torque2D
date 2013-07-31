@@ -23,13 +23,13 @@ public:
       // TODO: Fix me!
       return GFXFormatR8G8B8A8;
    }
-   void makeActive();
+   void makeActive() { glBindFramebuffer(GL_FRAMEBUFFER, 0); };
    virtual bool present();
    virtual void resetMode();
    virtual void zombify() { }
    virtual void resurrect() { }
    
-   virtual void resolveTo(GFXTextureObject* obj);
+   virtual void resolveTo(GFXTextureObject* obj) {};
    
    void _onAppSignal(WindowId wnd, S32 event);
    
@@ -48,8 +48,8 @@ private:
     GFXDevice* mDevice;
    EAGLContext* mContext;
    void* mFullscreenContext;
-   void _teardownCurrentMode();
-   void _setupNewMode();
+   void _teardownCurrentMode() {};
+   void _setupNewMode() {};
 };
 
 #endif

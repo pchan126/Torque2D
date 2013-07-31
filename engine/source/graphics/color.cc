@@ -274,13 +274,13 @@ const ColorF& StockColor::colorF( const char* pStockColorName )
 
     // Return color if found.
     if ( colorItr != mNameToColorF.end() )
-        return colorItr->value;
+        return colorItr->second;
 
     // Warn.
     Con::warnf( "Could not find stock color name '%s'.", pStockColorName );
 
     // Return default stock color.
-    return mNameToColorF.find( DEFAULT_UNKNOWN_STOCK_COLOR_NAME )->value;          
+    return mNameToColorF.find( DEFAULT_UNKNOWN_STOCK_COLOR_NAME )->second;
 }
 
 //-----------------------------------------------------------------------------
@@ -298,13 +298,13 @@ const ColorI& StockColor::colorI( const char* pStockColorName )
 
     // Return color if found.
     if ( colorItr != mNameToColorI.end() )
-        return colorItr->value;
+        return colorItr->second;
 
     // Warn.
     Con::warnf( "Could not find stock color name '%s'.", colorName );
 
     // Return default stock color.
-    return mNameToColorI.find( DEFAULT_UNKNOWN_STOCK_COLOR_NAME )->value; 
+    return mNameToColorI.find( DEFAULT_UNKNOWN_STOCK_COLOR_NAME )->second;
 }
 
 //-----------------------------------------------------------------------------
@@ -316,7 +316,7 @@ StringTableEntry StockColor::name( const ColorF& color )
 
     // Return name if found.
     if ( colorNameItr != mColorFToName.end() )
-        return colorNameItr->value;
+        return colorNameItr->second;
 
     // Return empty string.
     return StringTable->EmptyString;
@@ -331,7 +331,7 @@ StringTableEntry StockColor::name( const ColorI& color )
 
     // Return name if found.
     if ( colorNameItr != mColorIToName.end() )
-        return colorNameItr->value;
+        return colorNameItr->second;
 
     // Return empty string.
     return StringTable->EmptyString;

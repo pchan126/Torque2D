@@ -1158,11 +1158,8 @@ void ImageAsset::calculateExplicitMode( void )
     }
 
     // Iterate explicit frames.
-    for( typeExplicitFrameAreaVector::iterator frameItr = mExplicitFrames.begin(); frameItr != mExplicitFrames.end(); ++frameItr )
+    for (FrameArea::PixelArea pixelArea:mExplicitFrames)
     {
-        // Fetch pixel area.
-        const FrameArea::PixelArea& pixelArea = *frameItr;
-
         // Set frame area.
         FrameArea frameArea( pixelArea.mPixelOffset.x, pixelArea.mPixelOffset.y, pixelArea.mPixelWidth, pixelArea.mPixelHeight, texelWidthScale, texelHeightScale );
 
@@ -1197,11 +1194,8 @@ void ImageAsset::onTamlCustomWrite( TamlCustomNodes& customNodes )
     TamlCustomNode* pCustomCellNodes = customNodes.addNode( cellCustomNodeName );
 
     // Iterate explicit frames.
-    for( typeExplicitFrameAreaVector::iterator frameItr = mExplicitFrames.begin(); frameItr != mExplicitFrames.end(); ++frameItr )
+    for( const FrameArea::PixelArea pixelArea:mExplicitFrames )
     {
-        // Fetch pixel area.
-        const FrameArea::PixelArea& pixelArea = *frameItr;
-
         // Add cell alias.
         TamlCustomNode* pCellNode = pCustomCellNodes->addNode( cellNodeName );
 
@@ -1236,11 +1230,8 @@ void ImageAsset::onTamlCustomRead( const TamlCustomNodes& customNodes )
     const TamlCustomNodeVector& cellNodes = pCustomCellNodes->getChildren();
 
     // Iterate cells.
-    for( TamlCustomNodeVector::const_iterator cellNodeItr = cellNodes.begin(); cellNodeItr != cellNodes.end(); ++cellNodeItr )
+    for( TamlCustomNode* pCellNode:cellNodes )
     {
-        // Fetch cell node.
-        TamlCustomNode* pCellNode = *cellNodeItr;
-
         // Fetch node name.
         StringTableEntry nodeName = pCellNode->getNodeName();
 
@@ -1260,11 +1251,8 @@ void ImageAsset::onTamlCustomRead( const TamlCustomNodes& customNodes )
         const TamlCustomFieldVector& fields = pCellNode->getFields();
 
         // Iterate property fields.
-        for ( TamlCustomFieldVector::const_iterator fieldItr = fields.begin(); fieldItr != fields.end(); ++fieldItr )
+        for ( const TamlCustomField* pField:fields )
         {
-            // Fetch field.
-            const TamlCustomField* pField = *fieldItr;
-
             // Fetch field name.
             StringTableEntry fieldName = pField->getFieldName();
 

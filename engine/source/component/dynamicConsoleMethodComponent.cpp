@@ -41,11 +41,10 @@ bool DynamicConsoleMethodComponent::handlesConsoleMethod( const char *fname, S32
    }
 
    // on this objects components?
-   S32 nI = 0;
-   VectorPtr<SimComponent*> &componentList = lockComponentList();
-   for( SimComponentiterator nItr = componentList.begin(); nItr != componentList.end(); nItr++, nI++ )
+   Vector<SimComponent*> &componentList = lockComponentList();
+   for( auto nItr : componentList )
    {
-      SimObject *pComponent = dynamic_cast<SimObject*>(*nItr);
+      SimObject *pComponent = dynamic_cast<SimObject*>(nItr);
       if( pComponent != NULL && pComponent->isMethod( fname ) )
       {
          *routingId = -2; // -2 denotes method on component
@@ -96,7 +95,7 @@ const char *DynamicConsoleMethodComponent::_callMethod( U32 argc, const char *ar
 
    if( getComponentCount() > 0 )
    {
-      VectorPtr<SimComponent *>&componentList = lockComponentList();
+      Vector<SimComponent *>&componentList = lockComponentList();
       for( SimComponentiterator nItr = (componentList.end()-1);  nItr >= componentList.begin(); nItr-- )
       {
          argv[0] = cbName;
@@ -139,7 +138,7 @@ const char *DynamicConsoleMethodComponent::callOnBehaviors( U32 argc, const char
 
    if( getComponentCount() > 0 )
    {
-      VectorPtr<SimComponent *>&componentList = lockComponentList();
+      Vector<SimComponent *>&componentList = lockComponentList();
       for( SimComponentiterator nItr = (componentList.end()-1);  nItr >= componentList.begin(); nItr-- )
       {
          argv[0] = StringTable->insert(argv[0]);

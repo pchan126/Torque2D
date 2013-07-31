@@ -83,7 +83,8 @@ bool iOSFont::create( const char* name, U32 size, U32 charset )
     
     // Create the font reference.
     mFontRef = CTFontCreateWithName( fontName, scaledSize, NULL );
-    
+    CFRelease(fontName);
+   
     // Sanity!
     if ( !mFontRef )
     {

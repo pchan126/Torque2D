@@ -155,10 +155,10 @@ void SpriteBatch::prepareRender( SceneRenderObject* pSceneRenderObject, const Sc
     else
     {
         // No, so perform a render request for all the sprites.
-        for( typeSpriteBatchHash::iterator spriteItr = mSprites.begin(); spriteItr != mSprites.end(); ++spriteItr )
+        for( auto spriteItr:mSprites )
         {
             // Fetch sprite batch Item.
-            SpriteBatchItem* pSpriteBatchItem = spriteItr->value;
+            SpriteBatchItem* pSpriteBatchItem = spriteItr.second;
 
             // Skip if not visible.
             if ( !pSpriteBatchItem->getVisible() )
@@ -283,10 +283,10 @@ void SpriteBatch::copyTo( SpriteBatch* pSpriteBatch ) const
     pSpriteBatch->setDefaultSpriteAngle( getDefaultSpriteAngle() );
 
     // Copy sprites.   
-    for( typeSpriteBatchHash::const_iterator spriteItr = mSprites.begin(); spriteItr != mSprites.end(); ++spriteItr )
+    for( auto spriteItr:mSprites )
     {        
         // Fetch sprite.
-        SpriteBatchItem* pSpriteBatchItem = spriteItr->value;
+        SpriteBatchItem* pSpriteBatchItem = spriteItr.second;
 
         // Add a sprite.
         const U32 spriteBatchId = pSpriteBatch->addSprite( pSpriteBatchItem->getLogicalPosition() );
@@ -373,10 +373,9 @@ void SpriteBatch::clearSprites( void )
     mSpriteNames.clear();
 
     // Cache all sprites.
-    for( typeSpriteBatchHash::iterator spriteItr = mSprites.begin(); spriteItr != mSprites.end(); ++spriteItr )
-    {
-        SpriteBatchItemFactory.cacheObject( spriteItr->value );
-    }
+    for( auto spriteItr:mSprites )
+        SpriteBatchItemFactory.cacheObject( spriteItr.second );
+
     mSprites.clear();
     mMasterBatchId = 0;
 
@@ -1037,7 +1036,7 @@ SpriteBatchItem* SpriteBatch::findSpritePosition( const SpriteBatchItem::Logical
     // Find sprite.
     typeSpritePositionHash::iterator spriteItr = mSpritePositions.find( logicalPosition );
 
-    return spriteItr == mSpritePositions.end() ? NULL : spriteItr->value;
+    return spriteItr == mSpritePositions.end() ? NULL : spriteItr->second;
 }
 
 //------------------------------------------------------------------------------
@@ -1050,7 +1049,7 @@ SpriteBatchItem* SpriteBatch::findSpriteId( const U32 batchId )
     // Find sprite.
     typeSpriteBatchHash::iterator spriteItr = mSprites.find( batchId );
 
-    return spriteItr != mSprites.end() ? spriteItr->value : NULL;
+    return spriteItr != mSprites.end() ? spriteItr->second : NULL;
 }
 
 //------------------------------------------------------------------------------
@@ -1067,7 +1066,7 @@ SpriteBatchItem* SpriteBatch::findSpriteName( const char* pName )
     // Find sprite.
     typeSpriteNameHash::iterator spriteItr = mSpriteNames.find( StringTable->insert(pName) );
 
-    return spriteItr != mSpriteNames.end() ? spriteItr->value : NULL;
+    return spriteItr != mSpriteNames.end() ? spriteItr->second : NULL;
 }
 
 //------------------------------------------------------------------------------
@@ -1155,17 +1154,12 @@ void SpriteBatch::updateLocalExtents( void )
         return;
     }
 
-    // Fetch first sprite.
-    typeSpriteBatchHash::iterator spriteItr = mSprites.begin();
-
     // Set render AABB to this sprite.
-    b2AABB localAABB = spriteItr->value->getLocalAABB();
+    b2AABB localAABB = mSprites.begin()->second->getLocalAABB();
 
     // Combine with the rest of the sprites.
-    for( ; spriteItr != mSprites.end(); ++spriteItr )
-    {
-        localAABB.Combine( spriteItr->value->getLocalAABB() );
-    }
+    for( auto spriteItr:mSprites )
+        localAABB.Combine( spriteItr.second->getLocalAABB() );
 
     // Fetch local render extents.
     const b2Vec2& localLowerExtent = localAABB.lowerBound;
@@ -1200,10 +1194,10 @@ void SpriteBatch::createSpriteBatchQuery( void )
         return;
 
     // Add proxies for all the sprites.
-    for( typeSpriteBatchHash::iterator spriteItr = mSprites.begin(); spriteItr != mSprites.end(); ++spriteItr )
+    for( auto spriteItr:mSprites )
     {
         // Fetch sprite batch item.
-        SpriteBatchItem* pSpriteBatchItem = spriteItr->value;
+        SpriteBatchItem* pSpriteBatchItem = spriteItr.second;
 
         // Create query proxy for sprite.
         createQueryProxy( pSpriteBatchItem );
@@ -1221,16 +1215,9 @@ void SpriteBatch::destroySpriteBatchQuery( void )
     if ( mpSpriteBatchQuery == NULL )
         return;
 
-    // Are there any sprites?
-    if ( mSprites.size() > 0 )
-    {
-        // Yes, so destroy proxies of all the sprites.
-        for( typeSpriteBatchHash::iterator spriteItr = mSprites.begin(); spriteItr != mSprites.end(); ++spriteItr )
-        {
-            // Destroy query proxy for sprite.
-            destroyQueryProxy( spriteItr->value );
-        }
-    }
+    // Yes, so destroy proxies of all the sprites.
+    for( auto spriteItr:mSprites )
+        destroyQueryProxy( spriteItr.second );
 
     // Finish if sprite clipping 
     delete mpSpriteBatchQuery;
@@ -1252,7 +1239,7 @@ bool SpriteBatch::destroySprite( const U32 batchId )
         return false;
 
     // Find sprite.    
-    SpriteBatchItem* pSpriteBatchItem = spriteItr->value;
+    SpriteBatchItem* pSpriteBatchItem = spriteItr->second;
 
     // Sanity!
     AssertFatal( pSpriteBatchItem != NULL, "SpriteBatch::destroySprite() - Found sprite but it was NULL." );
@@ -1314,11 +1301,8 @@ void SpriteBatch::onTamlCustomWrite( TamlCustomNodes& customNodes )
     TamlCustomNode* pSpritesNode = customNodes.addNode( spritesNodeName );
 
     // Write all sprites.
-    for( typeSpriteBatchHash::iterator spriteItr = mSprites.begin(); spriteItr != mSprites.end(); ++spriteItr )
-    {      
-        // Write type with sprite item.
-        spriteItr->value->onTamlCustomWrite( pSpritesNode );
-    }
+    for( auto spriteItr:mSprites )
+        spriteItr.second->onTamlCustomWrite( pSpritesNode );
 }
 
 //------------------------------------------------------------------------------
@@ -1336,14 +1320,9 @@ void SpriteBatch::onTamlCustomRead( const TamlCustomNodes& customNodes )
         return;
 
     // Fetch children nodes.
-    const TamlCustomNodeVector& spriteNodes = pSpritesNode->getChildren();
-
     // Iterate sprite item types.
-    for( TamlCustomNodeVector::const_iterator spriteItr = spriteNodes.begin(); spriteItr != spriteNodes.end(); ++spriteItr )
+    for( TamlCustomNode* pNode:pSpritesNode->getChildren() )
     {
-        // Fetch sprite node.
-        TamlCustomNode* pNode = *spriteItr;
-
         // Fetch alias name.
         StringTableEntry nodeName = pNode->getNodeName();
 

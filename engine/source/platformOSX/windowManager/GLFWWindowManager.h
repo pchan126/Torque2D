@@ -15,7 +15,7 @@ class GLFWWindow;
 class GLFWWindowManager : public PlatformWindowManager
 {
 private:
-   typedef VectorPtr<GLFWWindow*> WindowList;
+   typedef Vector<GLFWWindow*> WindowList;
    WindowList mWindowList;
    U32 mFadeToken;
    Delegate<bool(void)> mNotifyShutdownDelegate;
@@ -39,10 +39,10 @@ public:
    /// @{
    
    /// Get the number of Window's in this system
-   virtual S32 getWindowCount();
+   virtual S32 getWindowCount() { return mWindowList.size(); };
    
    /// Populate a list with references to all the windows created from this manager.
-   virtual void getWindows(VectorPtr<PlatformWindow*> &windows);
+   virtual void getWindows(Vector<PlatformWindow*> &windows);
    
    /// Get a window from a device ID.
    ///

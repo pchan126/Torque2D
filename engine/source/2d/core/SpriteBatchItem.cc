@@ -413,14 +413,9 @@ void SpriteBatchItem::onTamlCustomRead( const TamlCustomNode* pSpriteNode )
     AssertFatal( mSpriteBatch != NULL, "SpriteBatchItem::onTamlCustomRead() - Cannot read sprite batch item with sprite batch." );
 
     // Fetch sprite fields.
-    const TamlCustomFieldVector& spriteField = pSpriteNode->getFields();
-
     // Iterate property fields.
-    for ( TamlCustomFieldVector::const_iterator fieldItr = spriteField.begin(); fieldItr != spriteField.end(); ++fieldItr )
+    for ( TamlCustomField* pSpriteField:pSpriteNode->getFields() )
     {
-        // Fetch sprite field.
-        TamlCustomField* pSpriteField = *fieldItr;
-
         // Fetch sprite field name.
         StringTableEntry fieldName = pSpriteField->getFieldName();
 

@@ -87,29 +87,10 @@ AssertFatal(false, "Something really bad happened with an FBO");\
 // Actual GFXOpenGLES20TextureTarget interface
 GFXOpenGLES20TextureTarget::GFXOpenGLES20TextureTarget()
 {
-   for(U32 i=0; i<MaxRenderSlotId; i++)
-      mTargets[i] = NULL;
-
-   GFXTextureManager::addEventDelegate( this, &GFXOpenGLES20TextureTarget::_onTextureEvent );
-
-   glGenFramebuffers(1, &mFramebuffer);
 }
 
 GFXOpenGLES20TextureTarget::~GFXOpenGLES20TextureTarget()
 {
-   glDeleteFramebuffers(1, &mFramebuffer);
-   GFXTextureManager::removeEventDelegate( this, &GFXOpenGLES20TextureTarget::_onTextureEvent );
-}
-
-const Point2I GFXOpenGLES20TextureTarget::getSize()
-{
-    return mTargets[Color0].isValid() ? Point2I(mTargets[Color0]->getWidth(), mTargets[Color0]->getHeight()) : Point2I(0, 0);
-}
-
-GFXFormat GFXOpenGLES20TextureTarget::getFormat()
-{
-   // TODO: Fix me!
-   return GFXFormatR8G8B8A8;
 }
 
 void GFXOpenGLES20TextureTarget::attachTexture( GFXTextureObject *tex, RenderSlot slot, U32 mipLevel/*=0*/, U32 zOffset /*= 0*/ )
@@ -143,27 +124,11 @@ void GFXOpenGLES20TextureTarget::attachTexture( GFXCubemap *tex, U32 face, Rende
       mTargets[slot] = NULL;
 }
 
-void GFXOpenGLES20TextureTarget::clearAttachments()
-{
-   deactivate();
-   for(S32 i=1; i<MaxRenderSlotId; i++)
-      attachTexture(NULL, (RenderSlot)i);
-}
-
-void GFXOpenGLES20TextureTarget::zombify()
-{
-   invalidateState();
-}
-
-void GFXOpenGLES20TextureTarget::resurrect()
-{
-   // Dealt with when the target is next bound
-}
 
 void GFXOpenGLES20TextureTarget::makeActive()
 {
    glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
-   _GFXOpenGLES20TargetDesc* color0 = getTargetDesc(GFXTextureTarget::Color0);
+   _GFXOpenGLES20TargetDesc* color0 = dynamic_cast<_GFXOpenGLES20TargetDesc*>(getTargetDesc(GFXTextureTarget::Color0));
    if(!color0) // || !(color0->hasMips()))
       return;
    
@@ -190,7 +155,7 @@ void GFXOpenGLES20TextureTarget::applyState()
    
    glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
    
-   _GFXOpenGLES20TargetDesc* color0 = getTargetDesc(GFXTextureTarget::Color0);
+   _GFXOpenGLES20TargetDesc* color0 = dynamic_cast<_GFXOpenGLES20TargetDesc*>(getTargetDesc(GFXTextureTarget::Color0));
    if(color0)
    {
       glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, color0->getBinding(), color0->getHandle(), color0->getMipLevel());
@@ -201,7 +166,7 @@ void GFXOpenGLES20TextureTarget::applyState()
       glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
    }
    
-   _GFXOpenGLES20TargetDesc* depthStencil = getTargetDesc(GFXTextureTarget::DepthStencil);
+   _GFXOpenGLES20TargetDesc* depthStencil = dynamic_cast<_GFXOpenGLES20TargetDesc*>(getTargetDesc(GFXTextureTarget::DepthStencil));
    if(depthStencil)
    {
       // Certain drivers have issues with depth only FBOs.  That and the next two asserts assume we have a color target.
@@ -219,16 +184,6 @@ void GFXOpenGLES20TextureTarget::applyState()
    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-_GFXOpenGLES20TargetDesc* GFXOpenGLES20TextureTarget::getTargetDesc(RenderSlot slot) const
-{
-   // This can only be called by our implementations, and then will not actually store the pointer so this is (almost) safe
-   return mTargets[slot].ptr();
-}
-
-void GFXOpenGLES20TextureTarget::_onTextureEvent( GFXTexCallbackCode code )
-{
-   invalidateState();
-}
 
 const String GFXOpenGLES20TextureTarget::describeSelf() const
 {

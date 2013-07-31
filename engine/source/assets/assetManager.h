@@ -193,27 +193,17 @@ public:
             if ( mEchoInfo )
             {
                 // Fetch asset Id.
-                StringTableEntry assetId = StringTable->insert( pAssetId );
+                typeAssetId assetId = StringTable->insert( pAssetId );
 
-                // Find any asset dependencies.
-                typeAssetDependsOnHash::iterator assetDependenciesItr = mAssetDependsOn.find( assetId );
-
-                // Does the asset have any dependencies?
-                if ( assetDependenciesItr != mAssetDependsOn.end() )
-                {
+                auto range = mAssetDependsOn.equal_range( assetId );
+                if (range.first != range.second)
                     // Yes, so show all dependency assets.
                     Con::printf( "Asset Manager: > Found dependencies:" );
 
-                    // Iterate all dependencies.
-                    while( assetDependenciesItr != mAssetDependsOn.end() && assetDependenciesItr->key == assetId )
-                    {
-                        // Info.
-                        Con::printf( "Asset Manager: > Asset Id '%s'", assetDependenciesItr->value );
+                    for( typeAssetDependsOnHash::iterator itr = range.first; itr != range.second; itr++)
+                        Con::printf( "Asset Manager: > Asset Id '%s'", itr->second );
 
-                        // Next dependency.
-                        assetDependenciesItr++;
-                    }
-                }
+
             }
 
             // Flag asset as loading.

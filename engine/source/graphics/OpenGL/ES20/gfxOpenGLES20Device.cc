@@ -10,8 +10,6 @@
 //-----------------------------------------------------------------------------
 GFXOpenGLES20Device::GFXOpenGLES20Device( U32 adapterIndex ) : GFXOpenGLDevice( adapterIndex )
 {
-    for (int i = 0; i < TEXTURE_STAGE_COUNT; i++)
-        mActiveTextureType[i] = GL_TEXTURE_2D;
 }
 
 
@@ -76,30 +74,14 @@ void GFXOpenGLES20Device::initGenericShaders()
     mGenericShaderConst[4] = mGenericShader[4]->allocConstBuffer();
 }
 
+
+
 void GFXOpenGLES20Device::setupGenericShaders( GenericShaderType type )
 {
     MatrixF xform(GFX->getWorldMatrix());
-    //    Con::printf("worldMatrix");
-    //    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
-    //    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
-    //    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
-    //    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
     xform *= GFX->getViewMatrix();
-    //    Con::printf("viewMatrix");
-    //    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
-    //    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
-    //    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
-    //    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
     xform *= GFX->getProjectionMatrix();
-    //    Con::printf("projectionMatrix");
-    //    Con::printf("%f %f %f %f", xform[0], xform[1], xform[2], xform[3]);
-    //    Con::printf("%f %f %f %f", xform[4], xform[5], xform[6], xform[7]);
-    //    Con::printf("%f %f %f %f", xform[8], xform[9], xform[10], xform[11]);
-    //    Con::printf("%f %f %f %f", xform[12], xform[13], xform[14], xform[15]);
-    
-//    xform.transpose();
-//    projMatrix.transpose();
-    
+
     switch (type) {
         case GSColor:
             setShader(mGenericShader[0]);

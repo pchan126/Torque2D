@@ -86,6 +86,7 @@ private:
     /// Loaded module entry.
     struct ModuleLoadEntry
     {
+        ModuleLoadEntry() {};
         ModuleLoadEntry( ModuleDefinition* pModuleDefinition, const bool strictVersionId ) :
             mpModuleDefinition( pModuleDefinition ),
             mStrictVersionId( strictVersionId )
@@ -114,7 +115,7 @@ private:
     SimSet                      mNotificationListeners;
 
     // Module definition entry.
-    struct ModuleDefinitionEntry : public typeModuleDefinitionVector
+    struct ModuleDefinitionEntry
     {
     public:
         ModuleDefinitionEntry( StringTableEntry moduleId, StringTableEntry moduleGroup, StringTableEntry moduleType ) :
@@ -123,10 +124,13 @@ private:
             mModuleType( moduleType )
         {
         }
-
+        typeModuleDefinitionVector mVector;
         const StringTableEntry  mModuleId;
         const StringTableEntry  mModuleGroup;
         const StringTableEntry  mModuleType;
+        typeModuleDefinitionVector::iterator begin() {return mVector.begin();};
+        typeModuleDefinitionVector::iterator end() {return mVector.end();};
+        void erase( typeModuleDefinitionVector::iterator itr) { mVector.erase(itr);};
     };
 
     /// Module databases.
@@ -191,7 +195,7 @@ private:
     void raiseModulePostUnloadNotifications( ModuleDefinition* pModuleDefinition );
 
     ModuleDefinitionEntry* findModuleId( StringTableEntry moduleId );
-    ModuleDefinitionEntry::iterator findModuleDefinition( StringTableEntry moduleId, const U32 versionId );
+    typeModuleDefinitionVector::iterator findModuleDefinition(ModuleDefinitionEntry *pDefinitions, const U32 versionId);
     bool resolveModuleDependencies( StringTableEntry moduleId, const U32 versionId, StringTableEntry moduleGroup, bool synchronizedOnly, typeModuleLoadEntryVector& moduleResolvingQueue, typeModuleLoadEntryVector& moduleReadyQueue );
     ModuleLoadEntry* findModuleResolving( StringTableEntry moduleId, typeModuleLoadEntryVector& moduleResolvingQueue );
     ModuleLoadEntry* findModuleReady( StringTableEntry moduleId, typeModuleLoadEntryVector& moduleReadyQueue );

@@ -152,10 +152,10 @@ public:
                 return true;
 
             // Iterate existing dependencies.
-            for( typeAssetIdVector::iterator dependencyItr = mAssetDependencies.begin(); dependencyItr != mAssetDependencies.end(); ++dependencyItr )
+            for( auto dependencyItr : mAssetDependencies )
             {
                 // Finish if asset Id is already a dependency.
-                if ( *dependencyItr == assetId )
+                if ( dependencyItr == assetId )
                     return true;
             }
 

@@ -242,77 +242,77 @@ void TSShapeInstance::setMaterialList( TSMaterialList *matList )
    // Note: only check the last material instance as this will catch both
    // uninitialised lists, as well as initialised lists that have had new
    // materials appended
-   if ( mMaterialList && !mMaterialList->getMaterialInst( mMaterialList->size()-1 ) )
-   {
-      mMaterialList->setTextureLookupPath( mShapeResource.getPath().getPath() );
-      mMaterialList->mapMaterials();
-      Material::sAllowTextureTargetAssignment = true;
-      initMaterialList();
-      Material::sAllowTextureTargetAssignment = false;
-   }
+//   if ( mMaterialList && !mMaterialList->getMaterialInst( mMaterialList->size()-1 ) )
+//   {
+//      mMaterialList->setTextureLookupPath( mShapeResource.getPath().getPath() );
+//      mMaterialList->mapMaterials();
+//      Material::sAllowTextureTargetAssignment = true;
+//      initMaterialList();
+//      Material::sAllowTextureTargetAssignment = false;
+//   }
 }
 
 void TSShapeInstance::cloneMaterialList( const FeatureSet *features )
 {
-   if ( mOwnMaterialList )
-      return;
-
-   mMaterialList = new TSMaterialList(mMaterialList);
-   initMaterialList( features );
-
-   mOwnMaterialList = true;
+//   if ( mOwnMaterialList )
+//      return;
+//
+//   mMaterialList = new TSMaterialList(mMaterialList);
+//   initMaterialList( features );
+//
+//   mOwnMaterialList = true;
 }
 
 void TSShapeInstance::initMaterialList( const FeatureSet *features )
 {
-   // If we don't have features then use the default.
-   if ( !features )
-      features = &MATMGR->getDefaultFeatures();
-
-   // Initialize the materials.
-   mMaterialList->initMatInstances( *features, mShape->getVertexFormat() );
-
-   // TODO: It would be good to go thru all the meshes and
-   // pre-create all the active material hooks for shadows,
-   // reflections, and instancing.  This would keep these
-   // hiccups from happening at runtime.
+//   // If we don't have features then use the default.
+//   if ( !features )
+//      features = &MATMGR->getDefaultFeatures();
+//
+//   // Initialize the materials.
+//   mMaterialList->initMatInstances( *features, mShape->getVertexFormat() );
+//
+//   // TODO: It would be good to go thru all the meshes and
+//   // pre-create all the active material hooks for shadows,
+//   // reflections, and instancing.  This would keep these
+//   // hiccups from happening at runtime.
 }
 
 void TSShapeInstance::reSkin( String newBaseName, String oldBaseName )
 {
-   if( newBaseName.isEmpty() )
-      newBaseName = "base";
-   if( oldBaseName.isEmpty() )
-      oldBaseName = "base";
-
-   if ( newBaseName.equal( oldBaseName, String::NoCase ) )
-      return;
-
-   const U32 oldBaseNameLength = oldBaseName.length();
-
-   // Make our own copy of the materials list from the resource if necessary
-   if (ownMaterialList() == false)
-      cloneMaterialList();
-
-   TSMaterialList* pMatList = getMaterialList();
-   pMatList->setTextureLookupPath( mShapeResource.getPath().getPath() );
-
-   // Cycle through the materials
-   const Vector<String> &materialNames = pMatList->getMaterialNameList();
-   for ( S32 i = 0; i < materialNames.size(); i++ )
-   {
-      // Try changing base
-      const String &pName = materialNames[i];
-      if ( pName.compare( oldBaseName, oldBaseNameLength, String::NoCase ) == 0 )
-      {
-         String newName( pName );
-         newName.replace( 0, oldBaseNameLength, newBaseName );
-         pMatList->renameMaterial( i, newName );
-      }
-   }
-
-   // Initialize the material instances
-   initMaterialList();
+//   if( newBaseName.isEmpty() )
+//      newBaseName = "base";
+//   if( oldBaseName.isEmpty() )
+//      oldBaseName = "base";
+//
+//   if ( newBaseName.equal( oldBaseName, String::NoCase ) )
+//      return;
+//
+//   const U32 oldBaseNameLength = oldBaseName.length();
+//
+//   // Make our own copy of the materials list from the resource if necessary
+//   if (ownMaterialList() == false)
+//      cloneMaterialList();
+//
+//   TSMaterialList* pMatList = getMaterialList();
+//   pMatList->setTextureLookupPath( mShapeResource.getPath().getPath() );
+//
+//   // Cycle through the materials
+//   const Vector<String> &materialNames = pMatList->getMaterialNameList();
+//   for ( S32 i = 0; i < materialNames.size(); i++ )
+//   {
+//      // Try changing base
+//      const String &pName = materialNames[i];
+//      if ( pName.compare( oldBaseName, oldBaseNameLength, String::NoCase ) == 0 )
+//      {
+//         String newName( pName );
+//         newName.replace( 0, oldBaseNameLength, newBaseName );
+//         pMatList->renameMaterial( i, newName );
+//      }
+//   }
+//
+//   // Initialize the material instances
+//   initMaterialList();
 }
 
 //-------------------------------------------------------------------------------------
@@ -384,15 +384,15 @@ void TSShapeInstance::renderDebugNormals( F32 normalScalar, S32 dl )
 
 void TSShapeInstance::renderDebugNodes()
 {
-   GFXDrawUtil *drawUtil = GFX->getDrawUtil();
-   ColorI color( 255, 0, 0, 255 );
+//   GFXDrawUtil *drawUtil = GFX->getDrawUtil();
+//   ColorI color( 255, 0, 0, 255 );
 
-   GFXStateBlockDesc desc;
-   desc.setBlend( false );
-   desc.setZReadWrite( false, false );
+//   GFXStateBlockDesc desc;
+//   desc.setBlend( false );
+//   desc.setZReadWrite( false, false );
 
-   for ( U32 i = 0; i < mNodeTransforms.size(); i++ )
-      drawUtil->drawTransform( desc, mNodeTransforms[i], NULL, NULL );
+//   for ( U32 i = 0; i < mNodeTransforms.size(); i++ )
+//      drawUtil->drawTransform( desc, mNodeTransforms[i], NULL, NULL );
 }
 
 void TSShapeInstance::listMeshes( const String &state ) const
@@ -505,34 +505,34 @@ void TSShapeInstance::setMeshForceHidden( S32 meshIndex, bool hidden )
 
 void TSShapeInstance::render( const TSRenderState &rdata, S32 dl, F32 intraDL )
 {
-   AssertFatal( dl >= 0 && dl < mShape->details.size(),"TSShapeInstance::render" );
-
-   S32 i;
-
-   const TSDetail * detail = &mShape->details[dl];
-   S32 ss = detail->subShapeNum;
-   S32 od = detail->objectDetailNum;
-
-   // if we're a billboard detail, draw it and exit
-   if ( ss < 0 )
-   {
-      PROFILE_SCOPE( TSShapeInstance_RenderBillboards );
-      
-      if ( !rdata.isNoRenderTranslucent() && ( TSLastDetail::smCanShadow || !rdata.getSceneState()->isShadowPass() ) )
-         mShape->billboardDetails[ dl ]->render( rdata, mAlphaAlways ? mAlphaAlwaysValue : 1.0f );
-
-      return;
-   }
-
-   // run through the meshes   
-   S32 start = rdata.isNoRenderNonTranslucent() ? mShape->subShapeFirstTranslucentObject[ss] : mShape->subShapeFirstObject[ss];
-   S32 end   = rdata.isNoRenderTranslucent() ? mShape->subShapeFirstTranslucentObject[ss] : mShape->subShapeFirstObject[ss] + mShape->subShapeNumObjects[ss];
-   for (i=start; i<end; i++)
-   {
-      // following line is handy for debugging, to see what part of the shape that it is rendering
-      // const char *name = mShape->names[ mMeshObjects[i].object->nameIndex ];
-      mMeshObjects[i].render( od, mMaterialList, rdata, mAlphaAlways ? mAlphaAlwaysValue : 1.0f );
-   }
+//   AssertFatal( dl >= 0 && dl < mShape->details.size(),"TSShapeInstance::render" );
+//
+//   S32 i;
+//
+//   const TSDetail * detail = &mShape->details[dl];
+//   S32 ss = detail->subShapeNum;
+//   S32 od = detail->objectDetailNum;
+//
+//   // if we're a billboard detail, draw it and exit
+//   if ( ss < 0 )
+//   {
+//      PROFILE_SCOPE( TSShapeInstance_RenderBillboards );
+//      
+//      if ( !rdata.isNoRenderTranslucent() && ( TSLastDetail::smCanShadow || !rdata.getSceneState()->isShadowPass() ) )
+//         mShape->billboardDetails[ dl ]->render( rdata, mAlphaAlways ? mAlphaAlwaysValue : 1.0f );
+//
+//      return;
+//   }
+//
+//   // run through the meshes   
+//   S32 start = rdata.isNoRenderNonTranslucent() ? mShape->subShapeFirstTranslucentObject[ss] : mShape->subShapeFirstObject[ss];
+//   S32 end   = rdata.isNoRenderTranslucent() ? mShape->subShapeFirstTranslucentObject[ss] : mShape->subShapeFirstObject[ss] + mShape->subShapeNumObjects[ss];
+//   for (i=start; i<end; i++)
+//   {
+//      // following line is handy for debugging, to see what part of the shape that it is rendering
+//      // const char *name = mShape->names[ mMeshObjects[i].object->nameIndex ];
+//      mMeshObjects[i].render( od, mMaterialList, rdata, mAlphaAlways ? mAlphaAlwaysValue : 1.0f );
+//   }
 }
 
 void TSShapeInstance::setCurrentDetail( S32 dl, F32 intraDL )
@@ -558,85 +558,87 @@ S32 TSShapeInstance::setDetailFromPosAndScale(  const SceneRenderState *state,
                                                 const Point3F &pos, 
                                                 const Point3F &scale )
 {
-   VectorF camVector = pos - state->getDiffuseCameraPosition();
-   F32 dist = getMax( camVector.len(), 0.01f );
-   F32 invScale = ( 1.0f / getMax( getMax( scale.x, scale.y ), scale.z ) );
-
-   return setDetailFromDistance( state, dist * invScale );
+//   VectorF camVector = pos - state->getDiffuseCameraPosition();
+//   F32 dist = getMax( camVector.len(), 0.01f );
+//   F32 invScale = ( 1.0f / getMax( getMax( scale.x, scale.y ), scale.z ) );
+//
+//   return setDetailFromDistance( state, dist * invScale );
+   return 0;
 }
 
 S32 TSShapeInstance::setDetailFromDistance( const SceneRenderState *state, F32 scaledDistance )
 {
-   PROFILE_SCOPE( TSShapeInstance_setDetailFromDistance );
-
-   // For debugging/metrics.
-   smLastScaledDistance = scaledDistance;
-
-   // Shortcut if the distance is really close or negative.
-   if ( scaledDistance <= 0.0f )
-   {
-      mShape->mDetailLevelLookup[0].get( mCurrentDetailLevel, mCurrentIntraDetailLevel );
-      return mCurrentDetailLevel;
-   }
-
-   // The pixel scale is used the linearly scale the lod
-   // selection based on the viewport size.
-   //
-   // The original calculation from TGEA was...
-   //
-   // pixelScale = viewport.extent.x * 1.6f / 640.0f;
-   //
-   // Since we now work on the viewport height, assuming
-   // 4:3 aspect ratio, we've changed the reference value
-   // to 300 to be more compatible with legacy shapes.
-   //
-   const F32 pixelScale = state->getViewport().extent.y / 300.0f;
-
-   // This is legacy DTS support for older "multires" based
-   // meshes.  The original crossbow weapon uses this.
-   //
-   // If we have more than one detail level and the maxError
-   // is non-negative then we do some sort of screen error 
-   // metric for detail selection.
-   //
-   if ( mShape->mUseDetailFromScreenError )
-   {
-      // The pixel size of 1 meter at the input distance.
-      F32 pixelRadius = state->projectRadius( scaledDistance, 1.0f ) * pixelScale;
-      static const F32 smScreenError = 5.0f;
-      return setDetailFromScreenError( smScreenError / pixelRadius );
-   }
-
-   // We're inlining SceneRenderState::projectRadius here to 
-   // skip the unnessasary divide by zero protection.
-   F32 pixelRadius = ( mShape->radius / scaledDistance ) * state->getWorldToScreenScale().y * pixelScale;
-   F32 pixelSize = pixelRadius * smDetailAdjust;
-
-   if (  pixelSize > smSmallestVisiblePixelSize && 
-         pixelSize <= mShape->mSmallestVisibleSize )
-      pixelSize = mShape->mSmallestVisibleSize + 0.01f;
-
-   // For debugging/metrics.
-   smLastPixelSize = pixelSize;
-
-   // Clamp it to an acceptable range for the lookup table.
-   U32 index = (U32)mClampF( pixelSize, 0, mShape->mDetailLevelLookup.size() - 1 );
-
-   // Check the lookup table for the detail and intra detail levels.
-   mShape->mDetailLevelLookup[ index ].get( mCurrentDetailLevel, mCurrentIntraDetailLevel );
-
-   // Restrict the chosen detail level by cutoff value.
-   if ( smNumSkipRenderDetails > 0 && mCurrentDetailLevel >= 0 )
-   {
-      S32 cutoff = getMin( smNumSkipRenderDetails, mShape->mSmallestVisibleDL );
-      if ( mCurrentDetailLevel < cutoff )
-      {
-         mCurrentDetailLevel = cutoff;
-         mCurrentIntraDetailLevel = 1.0f;
-      }
-   }
-
-   return mCurrentDetailLevel;
+//   PROFILE_SCOPE( TSShapeInstance_setDetailFromDistance );
+//
+//   // For debugging/metrics.
+//   smLastScaledDistance = scaledDistance;
+//
+//   // Shortcut if the distance is really close or negative.
+//   if ( scaledDistance <= 0.0f )
+//   {
+//      mShape->mDetailLevelLookup[0].get( mCurrentDetailLevel, mCurrentIntraDetailLevel );
+//      return mCurrentDetailLevel;
+//   }
+//
+//   // The pixel scale is used the linearly scale the lod
+//   // selection based on the viewport size.
+//   //
+//   // The original calculation from TGEA was...
+//   //
+//   // pixelScale = viewport.extent.x * 1.6f / 640.0f;
+//   //
+//   // Since we now work on the viewport height, assuming
+//   // 4:3 aspect ratio, we've changed the reference value
+//   // to 300 to be more compatible with legacy shapes.
+//   //
+//   const F32 pixelScale = state->getViewport().extent.y / 300.0f;
+//
+//   // This is legacy DTS support for older "multires" based
+//   // meshes.  The original crossbow weapon uses this.
+//   //
+//   // If we have more than one detail level and the maxError
+//   // is non-negative then we do some sort of screen error 
+//   // metric for detail selection.
+//   //
+//   if ( mShape->mUseDetailFromScreenError )
+//   {
+//      // The pixel size of 1 meter at the input distance.
+//      F32 pixelRadius = state->projectRadius( scaledDistance, 1.0f ) * pixelScale;
+//      static const F32 smScreenError = 5.0f;
+//      return setDetailFromScreenError( smScreenError / pixelRadius );
+//   }
+//
+//   // We're inlining SceneRenderState::projectRadius here to 
+//   // skip the unnessasary divide by zero protection.
+//   F32 pixelRadius = ( mShape->radius / scaledDistance ) * state->getWorldToScreenScale().y * pixelScale;
+//   F32 pixelSize = pixelRadius * smDetailAdjust;
+//
+//   if (  pixelSize > smSmallestVisiblePixelSize && 
+//         pixelSize <= mShape->mSmallestVisibleSize )
+//      pixelSize = mShape->mSmallestVisibleSize + 0.01f;
+//
+//   // For debugging/metrics.
+//   smLastPixelSize = pixelSize;
+//
+//   // Clamp it to an acceptable range for the lookup table.
+//   U32 index = (U32)mClampF( pixelSize, 0, mShape->mDetailLevelLookup.size() - 1 );
+//
+//   // Check the lookup table for the detail and intra detail levels.
+//   mShape->mDetailLevelLookup[ index ].get( mCurrentDetailLevel, mCurrentIntraDetailLevel );
+//
+//   // Restrict the chosen detail level by cutoff value.
+//   if ( smNumSkipRenderDetails > 0 && mCurrentDetailLevel >= 0 )
+//   {
+//      S32 cutoff = getMin( smNumSkipRenderDetails, mShape->mSmallestVisibleDL );
+//      if ( mCurrentDetailLevel < cutoff )
+//      {
+//         mCurrentDetailLevel = cutoff;
+//         mCurrentIntraDetailLevel = 1.0f;
+//      }
+//   }
+//
+//   return mCurrentDetailLevel;
+   return 0;
 }
 
 S32 TSShapeInstance::setDetailFromScreenError( F32 errorTolerance )
@@ -713,47 +715,47 @@ void TSShapeInstance::MeshObjectInstance::render(  S32 objectDetail,
                                                    const TSRenderState &rdata, 
                                                    F32 alpha )
 {
-   PROFILE_SCOPE( TSShapeInstance_MeshObjectInstance_render );
-
-   if ( forceHidden || ( ( visible * alpha ) <= 0.01f ) )
-      return;
-
-   TSMesh *mesh = getMesh(objectDetail);
-   if ( !mesh )
-      return;
-
-   const MatrixF &transform = getTransform();
-
-   if ( rdata.getCuller() )
-   {
-      Box3F box( mesh->getBounds() );
-      transform.mul( box );
-      if ( rdata.getCuller()->isCulled( box ) )
-         return;
-   }
-
-   GFX->pushWorldMatrix();
-   GFX->multWorld( transform );
-
-   mesh->setFade( visible * alpha );
-
-   // Pass a hint to the mesh that time has advanced and that the
-   // skin is dirty and needs to be updated.  This should result
-   // in the skin only updating once per frame in most cases.
-   const U32 currTime = Sim::getCurrentTime();
-   bool isSkinDirty = currTime != mLastTime;
-
-   mesh->render(  materials, 
-                  rdata, 
-                  isSkinDirty,
-                  *mTransforms, 
-                  mVertexBuffer,
-                  mPrimitiveBuffer );
-
-   // Update the last render time.
-   mLastTime = currTime;
-
-   GFX->popWorldMatrix();
+//   PROFILE_SCOPE( TSShapeInstance_MeshObjectInstance_render );
+//
+//   if ( forceHidden || ( ( visible * alpha ) <= 0.01f ) )
+//      return;
+//
+//   TSMesh *mesh = getMesh(objectDetail);
+//   if ( !mesh )
+//      return;
+//
+//   const MatrixF &transform = getTransform();
+//
+//   if ( rdata.getCuller() )
+//   {
+//      Box3F box( mesh->getBounds() );
+//      transform.mul( box );
+//      if ( rdata.getCuller()->isCulled( box ) )
+//         return;
+//   }
+//
+//   GFX->pushWorldMatrix();
+//   GFX->multWorld( transform );
+//
+//   mesh->setFade( visible * alpha );
+//
+//   // Pass a hint to the mesh that time has advanced and that the
+//   // skin is dirty and needs to be updated.  This should result
+//   // in the skin only updating once per frame in most cases.
+//   const U32 currTime = Sim::getCurrentTime();
+//   bool isSkinDirty = currTime != mLastTime;
+//
+//   mesh->render(  materials, 
+//                  rdata, 
+//                  isSkinDirty,
+//                  *mTransforms, 
+//                  mVertexBuffer,
+//                  mPrimitiveBuffer );
+//
+//   // Update the last render time.
+//   mLastTime = currTime;
+//
+//   GFX->popWorldMatrix();
 }
 
 TSShapeInstance::MeshObjectInstance::MeshObjectInstance() 
@@ -764,13 +766,13 @@ TSShapeInstance::MeshObjectInstance::MeshObjectInstance()
 
 void TSShapeInstance::prepCollision()
 {
-   PROFILE_SCOPE( TSShapeInstance_PrepCollision );
-
-   // Iterate over all our meshes and call prepCollision on them...
-   for(S32 i=0; i<mShape->meshes.size(); i++)
-   {
-      if(mShape->meshes[i])
-         mShape->meshes[i]->prepOpcodeCollision();
-   }
+//   PROFILE_SCOPE( TSShapeInstance_PrepCollision );
+//
+//   // Iterate over all our meshes and call prepCollision on them...
+//   for(S32 i=0; i<mShape->meshes.size(); i++)
+//   {
+//      if(mShape->meshes[i])
+//         mShape->meshes[i]->prepOpcodeCollision();
+//   }
 }
 

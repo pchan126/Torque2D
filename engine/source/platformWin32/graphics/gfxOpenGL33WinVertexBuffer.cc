@@ -54,19 +54,19 @@ GFXOpenGL33WinVertexBuffer::GFXOpenGL33WinVertexBuffer(  GFXDevice *device,
     {
         const GFXVertexElement &element = mVertexFormat.getElement( i );
         
-        if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::POSITION.c_str() ) == 0 )
+        if ( element.getSemantic() == GFXSemantic::POSITION )
         {
             glVertexAttribPointer(GLKVertexAttribPosition, element.getSizeInBytes()/4, GL_FLOAT, GL_FALSE, mVertexSize, buffer);
             glEnableVertexAttribArray(GLKVertexAttribPosition);
             buffer += element.getSizeInBytes();
         }
-        else if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::NORMAL.c_str() ) == 0 )
+        else if ( element.getSemantic() == GFXSemantic::NORMAL )
         {
             glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, mVertexSize, buffer);
             glEnableVertexAttribArray(GLKVertexAttribNormal);
             buffer += element.getSizeInBytes();
         }
-        else if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::COLOR.c_str() ) == 0 )
+        else if ( element.getSemantic() == GFXSemantic::COLOR )
         {
             glVertexAttribPointer(GLKVertexAttribColor, 4, GL_UNSIGNED_BYTE, GL_TRUE, mVertexSize, buffer);
             glEnableVertexAttribArray(GLKVertexAttribColor);

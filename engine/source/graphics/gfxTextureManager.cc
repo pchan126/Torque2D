@@ -171,13 +171,13 @@ void GFXTextureManager::cleanupPool()
    TexturePoolMap::iterator iter = mTexturePool.begin();
    for ( ; iter != mTexturePool.end(); )
    {
-      if ( iter->value->getRefCount() == 1 )
+      if ( iter->second->getRefCount() == 1 )
       {
          // This texture is unreferenced, so take the time
          // now to completely remove it from the pool.
          TexturePoolMap::iterator unref = iter;
          iter++;
-         unref->value = NULL;
+         unref->second = NULL;
          mTexturePool.erase( unref );
          continue;
       }
@@ -214,7 +214,7 @@ void GFXTextureManager::cleanupCache( U32 secondsToLive )
       // then just remove it from the list.
       if ( tex->getRefCount() != 0 )
       {
-         mToDelete.erase_fast( i );
+         mToDelete.erase( i );
          continue;
       }
 
@@ -223,7 +223,7 @@ void GFXTextureManager::cleanupCache( U32 secondsToLive )
       {
          //Con::errorf( "Killed texture: %s", tex->mTextureLookupName.c_str() );
          delete tex;
-         mToDelete.erase_fast( i );
+         mToDelete.erase( i );
          continue;
       }
 
@@ -546,9 +546,9 @@ GFXTextureObject* GFXTextureManager::_findPooledTexure(  U32 width,
 
    // First see if we have a free one in the pool.
    TexturePoolMap::iterator iter = mTexturePool.find( profile );
-   for ( ; iter != mTexturePool.end() && iter->key == profile; iter++ )
+   for ( ; iter != mTexturePool.end() && iter->first == profile; iter++ )
    {
-      outTex = iter->value;
+      outTex = iter->second;
 
       // If the reference count is 1 then we're the only
       // ones holding on to this texture and we can hand

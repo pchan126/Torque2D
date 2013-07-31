@@ -24,7 +24,6 @@
 #include "console/console.h"
 
 #include "console/ast.h"
-#include "collection/finditerator.h"
 #include "io/resource/resourceManager.h"
 
 #include "string/findMatch.h"
@@ -351,7 +350,7 @@ void Namespace::printNamespaceEntries(Namespace * g, bool dumpScript, bool dumpE
 
 void Namespace::dumpClasses( bool dumpScript, bool dumpEngine )
 {
-   VectorPtr<Namespace*> vec;
+   Vector<Namespace*> vec;
    trashCache();
    vec.reserve( 1024 );
 
@@ -362,7 +361,7 @@ void Namespace::dumpClasses( bool dumpScript, bool dumpEngine )
 
    for(Namespace *walk = mNamespaceList; walk; walk = walk->mNext)
    {
-      VectorPtr<Namespace*> stack;
+      Vector<Namespace*> stack;
       stack.reserve( 1024 );
 
       // Get all the parents of this namespace... (and mark them as we go)

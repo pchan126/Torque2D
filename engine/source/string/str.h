@@ -24,6 +24,7 @@
 #define _TORQUE_STRING_H_
 
 #include <stdarg.h>
+#include <string>
 
 #ifndef _TORQUE_TYPES_H_
 #include "platform/types.h"
@@ -40,8 +41,6 @@ typedef UTF8 StringChar;
 class String
 {
 public:
-   class StringData;
-
    /// Default mode is case sensitive starting from the left
    enum Mode
    {
@@ -59,28 +58,28 @@ public:
    /// A predefined empty string.
    static const String EmptyString;
 
-   String();
-   String(const String &str);
-   String(const StringChar *str);
+   String():_intern(NULL) {};
+   String(const String &str):_intern(NULL)                     { _string = str._string;};
+   String(const StringChar *str):_intern(NULL)                 { _string = std::string(str); }
    String(const StringChar *str, SizeType size);
    String(const UTF16 *str);
    ~String();
 
-   const UTF8  *c_str() const;   ///< Return the string as a native type
+   const UTF8  *c_str() const  { return _string.c_str();}   ///< Return the string as a native type
    const UTF16 *utf16() const;
-   const UTF8* utf8() const { return c_str(); }
+   const UTF8* utf8() const    { return c_str(); }
 
-   SizeType length() const;   ///< Returns the length of the string in bytes.
-   SizeType size() const;     ///< Returns the length of the string in bytes including the NULL terminator.
+   SizeType length() const     { return _string.length();}   ///< Returns the length of the string in bytes.
+   SizeType size() const       { return _string.size();}    ///< Returns the length of the string in bytes including the NULL terminator.
    SizeType numChars() const; ///< Returns the length of the string in characters.
-   bool     isEmpty() const;  ///< Is this an empty string [""]?
+   bool     isEmpty() const    { return ( _string.empty()); }///< Is this an empty string [""]?
    bool     isNotEmpty() const { return !isEmpty(); }  ///< Is this not an empty string [""]?
 
-   /// Erases all characters in a string.
-   void clear() { *this = EmptyString; }
+   void     intern();                /// converts the string into an interned string.
+   bool     isInterned() const { return _intern != NULL; }
 
-   bool     isShared() const; ///< Is this string's reference count greater than 1?
-   bool     isSame( const String& str ) const; ///< Return true if both strings refer to the same shared data.
+   /// Erases all characters in a string.
+   void clear() { _string.clear();  }
 
    U32   getHashCaseSensitive() const;    ///< Get the case-sensitive hash of the string [only calculates the hash as necessary]
    U32   getHashCaseInsensitive() const;  ///< Get the case-insensitive hash of the string  [only calculates the hash as necessary]
@@ -130,7 +129,7 @@ public:
    /// Replace all occurrences of StringData 's1' with StringData 's2'
    String &replace(const String &s1, const String &s2);
 
-   String substr( SizeType pos, SizeType len = -1 ) const;
+   String substr( SizeType pos, SizeType len = -1 ) const   { return String(_string.substr(pos, len));};
    
    /// Remove leading and trailing whitespace.
    String trim() const;
@@ -171,6 +170,8 @@ public:
    friend String operator+(const String &a, const String &b);
    friend String operator+(const StringChar *a, const String &b);
 
+   friend std::hash<String>;
+
 public:
    /// @name String Utility routines
    /// @{
@@ -191,30 +192,6 @@ public:
 
    static String GetTrailingNumber(const char* str, S32& number);
 
-   /// @}
-
-   /// @name Interning
-   ///
-   /// Interning maps identical strings to unique instances so that equality
-   /// amounts to simple pointer comparisons.
-   ///
-   /// Note that using interned strings within global destructors is not safe
-   /// as table destruction runs within this phase as well.  Uses o interned
-   /// strings in global destructors is thus dependent on object file ordering.
-   ///
-   /// Also, interned strings are not reference-counted.  Once interned, a
-   /// string will persist until shutdown.  This is to avoid costly concurrent
-   /// reference counting that would otherwise be necessary.
-   ///
-   /// @{
-   
-   /// Return the interned version of the string.
-   /// @note Interning is case-sensitive.
-   String intern() const;
-   
-   /// Return true if this string is interned.
-   bool isInterned() const;
-      
    /// @}
 
    /** An internal support class for ToString().
@@ -284,7 +261,7 @@ public:
    };
 
 private:
-   String(StringData *str)
+   String(std::string str)
       : _string( str ) {}
 
    // Generate compile error if operator bool is used.  Without this we use
@@ -299,7 +276,8 @@ private:
 
    static void copy(StringChar *dst, const StringChar *src, U32 size);
 
-   StringData   *_string;
+   std::string _string;
+   StringTableEntry _intern;
 };
 
 // Utility class for formatting strings.
@@ -394,6 +372,18 @@ extern String operator+(StringChar c, const String &a);
 extern String operator+(const String &a, const StringChar *b);
 extern String operator+(const String &a, const String &b);
 extern String operator+(const StringChar *a, const String &b);
+
+namespace std
+{
+    template<>
+    struct hash<String>
+    {
+        size_t operator () (const String handle) const
+        {
+            return hash<string>()(handle._string);
+        }
+    };
+}
 
 #endif
 

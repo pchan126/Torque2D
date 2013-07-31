@@ -636,8 +636,8 @@ namespace Con
    const char *getTypeName(S32 type);
    bool isDatablockType( S32 type ); */
 
-   void setData(S32 type, void *dptr, S32 index, S32 argc, const char **argv, EnumTable *tbl = NULL, BitSet32 flag = 0);
-   const char *getData(S32 type, void *dptr, S32 index, EnumTable *tbl = NULL, BitSet32 flag = 0);
+   void setData(S32 type, void *dptr, S32 index, S32 argc, const char **argv, EnumTable *tbl = NULL, BitSet32 flag = BitSet32());
+   const char *getData(S32 type, void *dptr, S32 index, EnumTable *tbl = NULL, BitSet32 flag = BitSet32());
    /// @}
 };
 

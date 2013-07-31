@@ -241,11 +241,8 @@
 		86D76FA6165686D80046D71F /* audioFunctions.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7F0916518D4600D96ADF /* audioFunctions.cc */; };
 		86D76FA7165686D80046D71F /* audioStreamSourceFactory.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7F0B16518D4600D96ADF /* audioStreamSourceFactory.cc */; };
 		86D76FA8165686D80046D71F /* wavStreamSource.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7F0D16518D4600D96ADF /* wavStreamSource.cc */; };
-		86D76FA9165686D80046D71F /* bitTables.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7F1216518D4600D96ADF /* bitTables.cc */; };
-		86D76FAA165686D80046D71F /* hashTable.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7F1716518D4600D96ADF /* hashTable.cc */; };
 		86D76FAB165686D80046D71F /* nameTags.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7F1A16518D4600D96ADF /* nameTags.cpp */; };
 		86D76FAC165686D80046D71F /* undo.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7F1F16518D4600D96ADF /* undo.cc */; };
-		86D76FAD165686D80046D71F /* vector.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7F2116518D4600D96ADF /* vector.cc */; };
 		86D76FAF165687060046D71F /* crc.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7EE116518D4600D96ADF /* crc.cc */; };
 		86D76FB0165687060046D71F /* assetBase.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7EE816518D4600D96ADF /* assetBase.cc */; };
 		86D76FB7165687060046D71F /* behaviorComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7F3616518D4600D96ADF /* behaviorComponent.cpp */; };
@@ -996,16 +993,8 @@
 		86BC7F0C16518D4600D96ADF /* audioStreamSourceFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = audioStreamSourceFactory.h; sourceTree = "<group>"; };
 		86BC7F0D16518D4600D96ADF /* wavStreamSource.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = wavStreamSource.cc; sourceTree = "<group>"; };
 		86BC7F0E16518D4600D96ADF /* wavStreamSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wavStreamSource.h; sourceTree = "<group>"; };
-		86BC7F1016518D4600D96ADF /* bitMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bitMatrix.h; sourceTree = "<group>"; };
 		86BC7F1116518D4600D96ADF /* bitSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bitSet.h; sourceTree = "<group>"; };
-		86BC7F1216518D4600D96ADF /* bitTables.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bitTables.cc; sourceTree = "<group>"; };
-		86BC7F1316518D4600D96ADF /* bitTables.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bitTables.h; sourceTree = "<group>"; };
-		86BC7F1416518D4600D96ADF /* bitVector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bitVector.h; sourceTree = "<group>"; };
-		86BC7F1516518D4600D96ADF /* bitVectorW.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bitVectorW.h; sourceTree = "<group>"; };
-		86BC7F1616518D4600D96ADF /* findIterator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = findIterator.h; sourceTree = "<group>"; };
-		86BC7F1716518D4600D96ADF /* hashTable.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hashTable.cc; sourceTree = "<group>"; };
 		86BC7F1816518D4600D96ADF /* hashTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hashTable.h; sourceTree = "<group>"; };
-		86BC7F1916518D4600D96ADF /* linkedList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = linkedList.h; sourceTree = "<group>"; };
 		86BC7F1A16518D4600D96ADF /* nameTags.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = nameTags.cpp; sourceTree = "<group>"; };
 		86BC7F1B16518D4600D96ADF /* nameTags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nameTags.h; sourceTree = "<group>"; };
 		86BC7F1C16518D4600D96ADF /* nameTags_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nameTags_ScriptBinding.h; sourceTree = "<group>"; };
@@ -1013,11 +1002,7 @@
 		86BC7F1E16518D4600D96ADF /* sparseArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sparseArray.h; sourceTree = "<group>"; };
 		86BC7F1F16518D4600D96ADF /* undo.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = undo.cc; sourceTree = "<group>"; };
 		86BC7F2016518D4600D96ADF /* undo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = undo.h; sourceTree = "<group>"; };
-		86BC7F2116518D4600D96ADF /* vector.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vector.cc; sourceTree = "<group>"; };
 		86BC7F2216518D4600D96ADF /* vector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vector.h; sourceTree = "<group>"; };
-		86BC7F2316518D4600D96ADF /* vector2d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vector2d.h; sourceTree = "<group>"; };
-		86BC7F2416518D4600D96ADF /* vectorHeap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vectorHeap.h; sourceTree = "<group>"; };
-		86BC7F2516518D4600D96ADF /* vectorQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vectorQueue.h; sourceTree = "<group>"; };
 		86BC7F3616518D4600D96ADF /* behaviorComponent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = behaviorComponent.cpp; sourceTree = "<group>"; };
 		86BC7F3716518D4600D96ADF /* behaviorComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = behaviorComponent.h; sourceTree = "<group>"; };
 		86BC7F3816518D4600D96ADF /* behaviorComponent_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = behaviorComponent_ScriptBinding.h; sourceTree = "<group>"; };
@@ -2458,16 +2443,8 @@
 		86BC7F0F16518D4600D96ADF /* collection */ = {
 			isa = PBXGroup;
 			children = (
-				86BC7F1016518D4600D96ADF /* bitMatrix.h */,
 				86BC7F1116518D4600D96ADF /* bitSet.h */,
-				86BC7F1216518D4600D96ADF /* bitTables.cc */,
-				86BC7F1316518D4600D96ADF /* bitTables.h */,
-				86BC7F1416518D4600D96ADF /* bitVector.h */,
-				86BC7F1516518D4600D96ADF /* bitVectorW.h */,
-				86BC7F1616518D4600D96ADF /* findIterator.h */,
-				86BC7F1716518D4600D96ADF /* hashTable.cc */,
 				86BC7F1816518D4600D96ADF /* hashTable.h */,
-				86BC7F1916518D4600D96ADF /* linkedList.h */,
 				86BC7F1A16518D4600D96ADF /* nameTags.cpp */,
 				86BC7F1B16518D4600D96ADF /* nameTags.h */,
 				86BC7F1C16518D4600D96ADF /* nameTags_ScriptBinding.h */,
@@ -2475,11 +2452,7 @@
 				86BC7F1E16518D4600D96ADF /* sparseArray.h */,
 				86BC7F1F16518D4600D96ADF /* undo.cc */,
 				86BC7F2016518D4600D96ADF /* undo.h */,
-				86BC7F2116518D4600D96ADF /* vector.cc */,
 				86BC7F2216518D4600D96ADF /* vector.h */,
-				86BC7F2316518D4600D96ADF /* vector2d.h */,
-				86BC7F2416518D4600D96ADF /* vectorHeap.h */,
-				86BC7F2516518D4600D96ADF /* vectorQueue.h */,
 			);
 			name = collection;
 			path = ../../../source/collection;
@@ -3700,11 +3673,8 @@
 				86D76FA6165686D80046D71F /* audioFunctions.cc in Sources */,
 				86D76FA7165686D80046D71F /* audioStreamSourceFactory.cc in Sources */,
 				86D76FA8165686D80046D71F /* wavStreamSource.cc in Sources */,
-				86D76FA9165686D80046D71F /* bitTables.cc in Sources */,
-				86D76FAA165686D80046D71F /* hashTable.cc in Sources */,
 				86D76FAB165686D80046D71F /* nameTags.cpp in Sources */,
 				86D76FAC165686D80046D71F /* undo.cc in Sources */,
-				86D76FAD165686D80046D71F /* vector.cc in Sources */,
 				86D76F8D165686B00046D71F /* SceneRenderFactories.cpp in Sources */,
 				86D76F8E165686B00046D71F /* SceneRenderQueue.cpp in Sources */,
 				86D76F90165686B00046D71F /* CompositeSprite.cc in Sources */,

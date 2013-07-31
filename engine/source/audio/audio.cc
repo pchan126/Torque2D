@@ -112,17 +112,17 @@ static AudioSampleEnvironment*        mSampleEnvironment[MAX_AUDIOSOURCES];     
 static bool                           mEnvironmentEnabled = false;                    // environment enabled?
 static SimObjectPtr<AudioEnvironment> mCurrentEnvironment;                            // the last environment set
 
-struct LoopingList : VectorPtr<LoopingImage*>
+struct LoopingList : Vector<LoopingImage*>
 {
-   LoopingList() : VectorPtr<LoopingImage*>(__FILE__, __LINE__) { }
+   LoopingList() : Vector<LoopingImage*>(__FILE__, __LINE__) { }
 
    LoopingList::iterator findImage(AUDIOHANDLE handle);
    void sort();
 };
 
-struct StreamingList : VectorPtr<AudioStreamSource*>
+struct StreamingList : Vector<AudioStreamSource*>
 {
-   StreamingList() : VectorPtr<AudioStreamSource*>(__FILE__, __LINE__) { }
+   StreamingList() : Vector<AudioStreamSource*>(__FILE__, __LINE__) { }
 
    StreamingList::iterator findImage(AUDIOHANDLE handle);
    void sort();
@@ -177,7 +177,7 @@ inline LoopingList::iterator LoopingList::findImage(AUDIOHANDLE handle)
          itr++;
       }
    }
-   return(0);
+   return(end());
 }
 
 inline S32 QSORT_CALLBACK loopingImageSort(const void * p1, const void * p2)
@@ -209,7 +209,7 @@ inline StreamingList::iterator StreamingList::findImage(AUDIOHANDLE handle)
          itr++;
       }
    }
-   return(0);
+   return(end());
 }
 
 inline S32 QSORT_CALLBACK streamingSourceSort(const void * p1, const void * p2)
@@ -232,7 +232,7 @@ LoopingImage * createLoopingImage()
    LoopingImage *image;
    if (mLoopingFreeList.size())
    {
-      image = mLoopingFreeList.last();
+      image = mLoopingFreeList.back();
       mLoopingFreeList.pop_back();
    }
    else
@@ -299,20 +299,20 @@ static bool cullSource(U32 *index, F32 volume)
 
    // check if culling a looper
    LoopingList::iterator itr = mLoopingList.findImage(mHandle[best]);
-   if(itr)
+   if(itr != mLoopingList.end())
    {
       // check if culling an inactive looper
       if(mHandle[best] & AUDIOHANDLE_INACTIVE_BIT)
       {
-         AssertFatal(!mLoopingInactiveList.findImage(mHandle[best]), "cullSource: image already in inactive list");
-         AssertFatal(!mLoopingCulledList.findImage(mHandle[best]), "cullSource: image should not be in culled list");
+         AssertFatal(mLoopingInactiveList.findImage(mHandle[best])!=mLoopingInactiveList.end(), "cullSource: image already in inactive list");
+         AssertFatal(mLoopingCulledList.findImage(mHandle[best])!=mLoopingCulledList.end(), "cullSource: image should not be in culled list");
          mLoopingInactiveList.push_back(*itr);
       }
       else
       {
          (*itr)->mHandle |= AUDIOHANDLE_INACTIVE_BIT;
-         AssertFatal(!mLoopingCulledList.findImage(mHandle[best]), "cullSource: image already in culled list");
-         AssertFatal(!mLoopingInactiveList.findImage(mHandle[best]), "cullSource: image should no be in inactive list");
+         AssertFatal(mLoopingCulledList.findImage(mHandle[best])!=mLoopingCulledList.end(), "cullSource: image already in culled list");
+         AssertFatal(mLoopingInactiveList.findImage(mHandle[best])!=mLoopingInactiveList.end(), "cullSource: image should no be in inactive list");
          (*itr)->mCullTime = Platform::getRealMilliseconds();
          mLoopingCulledList.push_back(*itr);
       }
@@ -320,20 +320,20 @@ static bool cullSource(U32 *index, F32 volume)
 
    // check if culling a streamer
    StreamingList::iterator itr2 = mStreamingList.findImage(mHandle[best]);
-   if(itr2)
+   if(itr2 != mStreamingList.end())
    {
       // check if culling an inactive streamer
       if(mHandle[best] & AUDIOHANDLE_INACTIVE_BIT)
       {
-         AssertFatal(!mStreamingInactiveList.findImage(mHandle[best]), "cullSource: image already in inactive list");
-         AssertFatal(!mStreamingCulledList.findImage(mHandle[best]), "cullSource: image should not be in culled list");
+         AssertFatal(mStreamingInactiveList.findImage(mHandle[best])!=mStreamingInactiveList.end(), "cullSource: image already in inactive list");
+         AssertFatal(mStreamingCulledList.findImage(mHandle[best])!=mStreamingCulledList.end(), "cullSource: image should not be in culled list");
          mStreamingInactiveList.push_back(*itr2);
       }
       else
       {
          (*itr2)->mHandle |= AUDIOHANDLE_INACTIVE_BIT;
-         AssertFatal(!mStreamingCulledList.findImage(mHandle[best]), "cullSource: image already in culled list");
-         AssertFatal(!mStreamingInactiveList.findImage(mHandle[best]), "cullSource: image should no be in inactive list");
+         AssertFatal(mStreamingCulledList.findImage(mHandle[best])!=mStreamingCulledList.end(), "cullSource: image already in culled list");
+         AssertFatal(mStreamingInactiveList.findImage(mHandle[best])!=mStreamingInactiveList.end(), "cullSource: image should no be in inactive list");
          (*itr2)->freeStream();
          (*itr2)->mCullTime = Platform::getRealMilliseconds();
          mStreamingCulledList.push_back(*itr2);
@@ -410,10 +410,10 @@ bool alxIsValidHandle(AUDIOHANDLE handle)
       return(state == AL_PLAYING);
    }
 
-   if(mLoopingList.findImage(handle))
+   if(mLoopingList.findImage(handle) != mLoopingList.end())
       return(true);
 
-   if(mStreamingList.findImage(handle))
+   if(mStreamingList.findImage(handle) != mStreamingList.end())
       return(true);
 
    return(false);
@@ -708,8 +708,8 @@ AUDIOHANDLE alxCreateSource(const Audio::Description& desc,
             transform->getColumn(1, &image->mDirection);
          }
 
-         AssertFatal(!mLoopingInactiveList.findImage(image->mHandle), "alxCreateSource: handle in inactive list");
-         AssertFatal(!mLoopingCulledList.findImage(image->mHandle), "alxCreateSource: handle in culled list");
+         AssertFatal(mLoopingInactiveList.findImage(image->mHandle)!=mLoopingInactiveList.end(), "alxCreateSource: handle in inactive list");
+         AssertFatal(mLoopingCulledList.findImage(image->mHandle)!=mLoopingCulledList.end(), "alxCreateSource: handle in culled list");
 
          // add to the looping and inactive lists
          mLoopingList.push_back(image);
@@ -742,8 +742,8 @@ AUDIOHANDLE alxCreateSource(const Audio::Description& desc,
                transform->getColumn(1, &streamSource->mDirection);
             }
 
-            AssertFatal(!mStreamingInactiveList.findImage(streamSource->mHandle), "alxCreateSource: handle in inactive list");
-            AssertFatal(!mStreamingCulledList.findImage(streamSource->mHandle), "alxCreateSource: handle in culled list");
+            AssertFatal(mStreamingInactiveList.findImage(streamSource->mHandle)!=mStreamingInactiveList.end(), "alxCreateSource: handle in inactive list");
+            AssertFatal(mStreamingCulledList.findImage(streamSource->mHandle)!=mStreamingCulledList.end(), "alxCreateSource: handle in culled list");
 
             // add to the streaming and inactive lists
             mStreamingList.push_back(streamSource);
@@ -806,8 +806,8 @@ AUDIOHANDLE alxCreateSource(const Audio::Description& desc,
          transform->getColumn(1, &image->mDirection);
       }
 
-      AssertFatal(!mLoopingInactiveList.findImage(image->mHandle), "alxCreateSource: handle in inactive list");
-      AssertFatal(!mLoopingCulledList.findImage(image->mHandle), "alxCreateSource: handle in culled list");
+      AssertFatal(mLoopingInactiveList.findImage(image->mHandle)!=mLoopingInactiveList.end(), "alxCreateSource: handle in inactive list");
+      AssertFatal(mLoopingCulledList.findImage(image->mHandle)!=mLoopingCulledList.end(), "alxCreateSource: handle in culled list");
 
       // add to the looping list
       mLoopingList.push_back(image);
@@ -837,8 +837,8 @@ AUDIOHANDLE alxCreateSource(const Audio::Description& desc,
             transform->getColumn(1, &streamSource->mDirection);
          }
 
-         AssertFatal(!mStreamingInactiveList.findImage(streamSource->mHandle), "alxCreateSource: handle in inactive list");
-         AssertFatal(!mStreamingCulledList.findImage(streamSource->mHandle), "alxCreateSource: handle in culled list");
+         AssertFatal(mStreamingInactiveList.findImage(streamSource->mHandle)!=mStreamingInactiveList.end(), "alxCreateSource: handle in inactive list");
+         AssertFatal(mStreamingCulledList.findImage(streamSource->mHandle)!=mStreamingCulledList.end(), "alxCreateSource: handle in culled list");
 
          alxSourcePlay(streamSource);
 
@@ -885,12 +885,12 @@ AUDIOHANDLE alxPlay(AUDIOHANDLE handle)
 
          // make sure the looping image also clears it's inactive bit
          LoopingList::iterator itr = mLoopingList.findImage(handle);
-         if(itr)
+         if(itr != mLoopingList.end())
             (*itr)->mHandle &= ~(AUDIOHANDLE_INACTIVE_BIT | AUDIOHANDLE_LOADING_BIT);
 
          // make sure the streaming image also clears it's inactive bit
          StreamingList::iterator itr2 = mStreamingList.findImage(handle);
-         if(itr2)
+         if(itr2 != mStreamingList.end())
             (*itr2)->mHandle &= ~(AUDIOHANDLE_INACTIVE_BIT | AUDIOHANDLE_LOADING_BIT);
 
          alSourcePlay(mSource[index]);
@@ -902,15 +902,15 @@ AUDIOHANDLE alxPlay(AUDIOHANDLE handle)
    {
       // move inactive loopers to the culled list, try to start the sound
       LoopingList::iterator itr = mLoopingInactiveList.findImage(handle);
-      if(itr)
+      if(itr != mLoopingInactiveList.end())
       {
-         AssertFatal(!mLoopingCulledList.findImage(handle), "alxPlay: image already in culled list");
+         AssertFatal(mLoopingCulledList.findImage(handle) != mLoopingCulledList.end(), "alxPlay: image already in culled list");
          mLoopingCulledList.push_back(*itr);
-         mLoopingInactiveList.erase_fast(itr);
+         mLoopingInactiveList.erase(itr);
          alxLoopingUpdate();
          return(handle);
       }
-      else if(mLoopingCulledList.findImage(handle))
+      else if(mLoopingCulledList.findImage(handle) != mLoopingCulledList.end())
       {
          alxLoopingUpdate();
          return(handle);
@@ -926,7 +926,7 @@ AUDIOHANDLE alxPlay(AUDIOHANDLE handle)
          AssertFatal(!mStreamingCulledList.findImage(handle), "alxPlay: image already in culled list");
          (*itr2)->freeStream();
          mStreamingCulledList.push_back(*itr2);
-         mStreamingInactiveList.erase_fast(itr2);
+         mStreamingInactiveList.erase(itr2);
          alxStreamingUpdate();
          return(handle);
       }
@@ -1019,7 +1019,7 @@ void alxStop(AUDIOHANDLE handle)
 
    // remove loopingImage and add it to the free list
    LoopingList::iterator itr = mLoopingList.findImage(handle);
-   if(itr)
+   if(itr != mLoopingList.end())
    {
       // remove from inactive/culled list
       if((*itr)->mHandle & AUDIOHANDLE_INACTIVE_BIT)
@@ -1027,29 +1027,29 @@ void alxStop(AUDIOHANDLE handle)
          LoopingList::iterator tmp = mLoopingInactiveList.findImage(handle);
 
          // inactive?
-         if(tmp)
-            mLoopingInactiveList.erase_fast(tmp);
+         if(tmp != mLoopingInactiveList.end())
+            mLoopingInactiveList.erase(tmp);
          else
          {
             //culled?
             tmp = mLoopingCulledList.findImage(handle);
-            AssertFatal(tmp, "alxStop: failed to find inactive looping source");
-            mLoopingCulledList.erase_fast(tmp);
+            AssertFatal(tmp != mLoopingCulledList.end(), "alxStop: failed to find inactive looping source");
+            mLoopingCulledList.erase(tmp);
          }
       }
 
-      AssertFatal(!mLoopingInactiveList.findImage((*itr)->mHandle), "alxStop: handle in inactive list");
-      AssertFatal(!mLoopingCulledList.findImage((*itr)->mHandle), "alxStop: handle in culled list");
+      AssertFatal(mLoopingInactiveList.findImage((*itr)->mHandle)==mLoopingInactiveList.end(), "alxStop: handle in inactive list");
+      AssertFatal(mLoopingCulledList.findImage((*itr)->mHandle)==mLoopingCulledList.end(), "alxStop: handle in culled list");
 
       // remove it
       (*itr)->clear();
       mLoopingFreeList.push_back(*itr);
-      mLoopingList.erase_fast(itr);
+      mLoopingList.erase(itr);
    }
 
    // remove streamingImage and add it to the free list
    StreamingList::iterator itr2 = mStreamingList.findImage(handle);
-   if(itr2)
+   if(itr2 != mStreamingList.end())
    {
       // remove from inactive/culled list
       if((*itr2)->mHandle & AUDIOHANDLE_INACTIVE_BIT)
@@ -1057,24 +1057,24 @@ void alxStop(AUDIOHANDLE handle)
          StreamingList::iterator tmp = mStreamingInactiveList.findImage(handle);
 
          // inactive?
-         if(tmp)
-            mStreamingInactiveList.erase_fast(tmp);
+         if(tmp != mStreamingInactiveList.end())
+            mStreamingInactiveList.erase(tmp);
          else
          {
             //culled?
             tmp = mStreamingCulledList.findImage(handle);
-            AssertFatal(tmp, "alxStop: failed to find inactive looping source");
-            mStreamingCulledList.erase_fast(tmp);
+            AssertFatal(tmp != mStreamingCulledList.end(), "alxStop: failed to find inactive looping source");
+            mStreamingCulledList.erase(tmp);
          }
       }
 
-      AssertFatal(!mStreamingInactiveList.findImage((*itr2)->mHandle), "alxStop: handle in inactive list");
-      AssertFatal(!mStreamingCulledList.findImage((*itr2)->mHandle), "alxStop: handle in culled list");
+      AssertFatal(mStreamingInactiveList.findImage((*itr2)->mHandle)==mStreamingInactiveList.end(), "alxStop: handle in inactive list");
+      AssertFatal(mStreamingCulledList.findImage((*itr2)->mHandle)==mStreamingCulledList.end(), "alxStop: handle in culled list");
 
       // remove it
       (*itr2)->freeStream();
       delete(*itr2);
-      mStreamingList.erase_fast(itr2);
+      mStreamingList.erase(itr2);
    }
 }
 
@@ -1088,17 +1088,17 @@ void alxStopAll()
 
    // stop all looping sources
    while(mLoopingList.size())
-      alxStop(mLoopingList.last()->mHandle);
+      alxStop(mLoopingList.back()->mHandle);
 
 // stop all streaming sources
    while(mStreamingList.size())
-      alxStop(mStreamingList.last()->mHandle);
+      alxStop(mStreamingList.back()->mHandle);
 }
 
 void alxLoopSourcef(AUDIOHANDLE handle, ALenum pname, ALfloat value)
 {
    LoopingList::iterator itr = mLoopingList.findImage(handle);
-   if(itr)
+   if(itr != mLoopingList.end())
    {
       switch(pname)
       {
@@ -1124,7 +1124,7 @@ void alxLoopSourcef(AUDIOHANDLE handle, ALenum pname, ALfloat value)
 void alxLoopSource3f(AUDIOHANDLE handle, ALenum pname, ALfloat value1, ALfloat value2, ALfloat value3)
 {
    LoopingList::iterator itr = mLoopingList.findImage(handle);
-   if(itr)
+   if(itr != mLoopingList.end())
    {
       switch(pname)
       {
@@ -1146,7 +1146,7 @@ void alxLoopSource3f(AUDIOHANDLE handle, ALenum pname, ALfloat value1, ALfloat v
 void alxLoopSourcei(AUDIOHANDLE handle, ALenum pname, ALint value)
 {
    LoopingList::iterator itr = mLoopingList.findImage(handle);
-   if(itr)
+   if(itr != mLoopingList.end())
    {
       switch(pname)
       {
@@ -1166,7 +1166,7 @@ void alxLoopSourcei(AUDIOHANDLE handle, ALenum pname, ALint value)
 void alxLoopGetSourcef(AUDIOHANDLE handle, ALenum pname, ALfloat *value)
 {
    LoopingList::iterator itr = mLoopingList.findImage(handle);
-   if(itr)
+   if(itr != mLoopingList.end())
    {
       switch(pname)
       {
@@ -1192,7 +1192,7 @@ void alxLoopGetSourcef(AUDIOHANDLE handle, ALenum pname, ALfloat *value)
 void alxLoopGetSource3f(AUDIOHANDLE handle, ALenum pname, ALfloat *value1, ALfloat *value2, ALfloat *value3)
 {
    LoopingList::iterator itr = mLoopingList.findImage(handle);
-   if(itr)
+   if(itr != mLoopingList.end())
    {
       switch(pname)
       {
@@ -1214,7 +1214,7 @@ void alxLoopGetSource3f(AUDIOHANDLE handle, ALenum pname, ALfloat *value1, ALflo
 void alxLoopGetSourcei(AUDIOHANDLE handle, ALenum pname, ALint *value)
 {
    LoopingList::iterator itr = mLoopingList.findImage(handle);
-   if(itr)
+   if(itr != mLoopingList.end())
    {
       switch(pname)
       {
@@ -1239,7 +1239,7 @@ void alxLoopGetSourcei(AUDIOHANDLE handle, ALenum pname, ALint *value)
 void alxStreamSourcef(AUDIOHANDLE handle, ALenum pname, ALfloat value)
 {
    StreamingList::iterator itr = mStreamingList.findImage(handle);
-   if(itr)
+   if(itr != mStreamingList.end())
    {
       switch(pname)
       {
@@ -1265,7 +1265,7 @@ void alxStreamSourcef(AUDIOHANDLE handle, ALenum pname, ALfloat value)
 void alxStreamSource3f(AUDIOHANDLE handle, ALenum pname, ALfloat value1, ALfloat value2, ALfloat value3)
 {
    StreamingList::iterator itr = mStreamingList.findImage(handle);
-   if(itr)
+    if(itr != mStreamingList.end())
    {
       switch(pname)
       {
@@ -1287,7 +1287,7 @@ void alxStreamSource3f(AUDIOHANDLE handle, ALenum pname, ALfloat value1, ALfloat
 void alxStreamSourcei(AUDIOHANDLE handle, ALenum pname, ALint value)
 {
    StreamingList::iterator itr = mStreamingList.findImage(handle);
-   if(itr)
+    if(itr != mStreamingList.end())
    {
       switch(pname)
       {
@@ -1307,7 +1307,7 @@ void alxStreamSourcei(AUDIOHANDLE handle, ALenum pname, ALint value)
 void alxStreamGetSourcef(AUDIOHANDLE handle, ALenum pname, ALfloat *value)
 {
    StreamingList::iterator itr = mStreamingList.findImage(handle);
-   if(itr)
+    if(itr != mStreamingList.end())
    {
       switch(pname)
       {
@@ -1333,7 +1333,7 @@ void alxStreamGetSourcef(AUDIOHANDLE handle, ALenum pname, ALfloat *value)
 void alxStreamGetSource3f(AUDIOHANDLE handle, ALenum pname, ALfloat *value1, ALfloat *value2, ALfloat *value3)
 {
    StreamingList::iterator itr = mStreamingList.findImage(handle);
-   if(itr)
+    if(itr != mStreamingList.end())
    {
       switch(pname)
       {
@@ -1355,7 +1355,7 @@ void alxStreamGetSource3f(AUDIOHANDLE handle, ALenum pname, ALfloat *value1, ALf
 void alxStreamGetSourcei(AUDIOHANDLE handle, ALenum pname, ALint *value)
 {
    StreamingList::iterator itr = mStreamingList.findImage(handle);
-   if(itr)
+    if(itr != mStreamingList.end())
    {
       switch(pname)
       {
@@ -1764,16 +1764,16 @@ void alxLoopingUpdate()
                // remove from culled list
                LoopingList::iterator tmp;
                tmp = mLoopingCulledList.findImage((*itr)->mHandle);
-               AssertFatal(tmp, "alxLoopingUpdate: failed to find culled source");
-               mLoopingCulledList.erase_fast(tmp);
+               AssertFatal(tmp!= mLoopingCulledList.end(), "alxLoopingUpdate: failed to find culled source");
+               mLoopingCulledList.erase(tmp);
 
                // remove from looping list (and free)
                tmp = mLoopingList.findImage((*itr)->mHandle);
-               if(tmp)
+               if(tmp != mLoopingList.end())
                {
                   (*tmp)->clear();
                   mLoopingFreeList.push_back(*tmp);
-                  mLoopingList.erase_fast(tmp);
+                  mLoopingList.erase(tmp);
                }
 
                continue;
@@ -1782,8 +1782,8 @@ void alxLoopingUpdate()
 
          // remove from culled list
          LoopingList::iterator tmp = mLoopingCulledList.findImage((*itr)->mHandle);
-         AssertFatal(tmp, "alxLoopingUpdate: failed to find culled source");
-         mLoopingCulledList.erase_fast(tmp);
+         AssertFatal(tmp != mLoopingCulledList.end(), "alxLoopingUpdate: failed to find culled source");
+         mLoopingCulledList.erase(tmp);
 
          // restore all state data
          mHandle[index] = (*itr)->mHandle;
@@ -1866,15 +1866,15 @@ void alxStreamingUpdate()
                // remove from culled list
                StreamingList::iterator tmp;
                tmp = mStreamingCulledList.findImage((*itr)->mHandle);
-               AssertFatal(tmp, "alxStreamingUpdate: failed to find culled source");
-               mStreamingCulledList.erase_fast(tmp);
+               AssertFatal(tmp != mStreamingCulledList.end(), "alxStreamingUpdate: failed to find culled source");
+               mStreamingCulledList.erase(tmp);
 
                // remove from streaming list (and free)
                tmp = mStreamingList.findImage((*itr)->mHandle);
-               if(tmp)
+               if(tmp != mStreamingList.end())
                {
                   delete(*tmp);
-                  mStreamingList.erase_fast(tmp);
+                  mStreamingList.erase(tmp);
                }
 
                continue;
@@ -1883,8 +1883,8 @@ void alxStreamingUpdate()
 
          // remove from culled list
          StreamingList::iterator tmp = mStreamingCulledList.findImage((*itr)->mHandle);
-         AssertFatal(tmp, "alxStreamingUpdate: failed to find culled source");
-         mStreamingCulledList.erase_fast(tmp);
+         AssertFatal(tmp != mStreamingCulledList.end(), "alxStreamingUpdate: failed to find culled source");
+         mStreamingCulledList.erase(tmp);
          alxSourcePlay(*itr);
          // restore all state data
          mHandle[index] = (*itr)->mHandle;
@@ -1927,16 +1927,17 @@ void alxCloseHandles()
       {
          // should be playing? must have encounted an error.. remove
          LoopingList::iterator itr = mLoopingList.findImage(mHandle[i]);
-         if(itr && !((*itr)->mHandle & AUDIOHANDLE_INACTIVE_BIT))
-         {
-            AssertFatal(!mLoopingInactiveList.findImage((*itr)->mHandle), "alxCloseHandles: image incorrectly in inactive list");
-            AssertFatal(!mLoopingCulledList.findImage((*itr)->mHandle), "alxCloseHandles: image already in culled list");
-            mLoopingCulledList.push_back(*itr);
-            (*itr)->mHandle |= AUDIOHANDLE_INACTIVE_BIT;
+         if(itr != mLoopingList.end())
+              if (!((*itr)->mHandle & AUDIOHANDLE_INACTIVE_BIT))
+             {
+                AssertFatal(mLoopingInactiveList.findImage((*itr)->mHandle)==mLoopingInactiveList.end(), "alxCloseHandles: image incorrectly in inactive list");
+                AssertFatal(mLoopingCulledList.findImage((*itr)->mHandle)==mLoopingCulledList.end(), "alxCloseHandles: image already in culled list");
+                mLoopingCulledList.push_back(*itr);
+                (*itr)->mHandle |= AUDIOHANDLE_INACTIVE_BIT;
 
-            mHandle[i] = NULL_AUDIOHANDLE;
-            mBuffer[i] = 0;
-         }
+                mHandle[i] = NULL_AUDIOHANDLE;
+                mBuffer[i] = 0;
+             }
 
          // should be playing? must have encounted an error.. remove
 //         StreamingList::iterator itr2 = mStreamingList.findImage(mHandle[i]);
@@ -2225,7 +2226,7 @@ void alxEnableEnvironmental(bool enable)
       if(enable)
       {
          LoopingList::iterator itr = mLoopingList.findImage(mHandle[i]);
-         if(!itr)
+         if(itr == mLoopingList.end())
             continue;
 
 /* todo
@@ -2291,7 +2292,7 @@ const AudioEnvironment * alxGetEnvironment()
 F32 alxGetStreamPosition( AUDIOHANDLE handle )
 {
    StreamingList::iterator itr = mStreamingList.findImage(handle);
-   if( !itr )
+   if( itr == mStreamingList.end())
       return -1.f;
 
    return (*itr)->getElapsedTime();
@@ -2300,7 +2301,7 @@ F32 alxGetStreamPosition( AUDIOHANDLE handle )
 F32 alxGetStreamDuration( AUDIOHANDLE handle )
 {
    StreamingList::iterator itr = mStreamingList.findImage(handle);
-   if( !itr )
+   if( itr == mStreamingList.end())
       return -1.f;
 
    return (*itr)->getTotalTime();
@@ -2520,15 +2521,15 @@ void OpenALShutdown()
 
    while(mLoopingList.size())
    {
-      mLoopingList.last()->mBuffer.purge();
-      delete mLoopingList.last();
+      mLoopingList.back()->mBuffer.purge();
+      delete mLoopingList.back();
       mLoopingList.pop_back();
    }
 
    while(mLoopingFreeList.size())
    {
-      mLoopingFreeList.last()->mBuffer.purge();
-      delete mLoopingFreeList.last();
+      mLoopingFreeList.back()->mBuffer.purge();
+      delete mLoopingFreeList.back();
       mLoopingFreeList.pop_back();
    }
 
@@ -2557,7 +2558,7 @@ void OpenALShutdown()
 AudioStreamSource* alxFindAudioStreamSource(AUDIOHANDLE handle)
 {
     StreamingList::iterator itr2 = mStreamingList.findImage(handle);
-    if(itr2)
+    if(itr2 != mStreamingList.end())
         return *itr2;
     return NULL;
 }

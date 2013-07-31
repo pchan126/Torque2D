@@ -292,23 +292,20 @@ protected:
         // Iterate module dependencies.
         for ( ModuleDefinition::typeModuleDependencyVector::const_iterator dependencyItr = moduleDependencies.begin(); dependencyItr < moduleDependencies.end(); ++dependencyItr )
         {
-            // Fetch module dependency.
-            const ModuleDefinition::ModuleDependency* pDependency = dependencyItr;
-
             // Fetch version Id.
-            const char* pVersionId = pDependency->mVersionId == 0 ? "*" : avar("%d", pDependency->mVersionId );
+            const char* pVersionId = dependencyItr->mVersionId == 0 ? "*" : avar("%d", dependencyItr->mVersionId );
            
             if ( dependencyItr == moduleDependencies.begin() )
             {
                 // Write out a field/value pair
-                used = dSprintf( pValueBuffer, bufferLeft, "%s=%s", pDependency->mModuleId, pVersionId );
+                used = dSprintf( pValueBuffer, bufferLeft, "%s=%s", dependencyItr->mModuleId, pVersionId );
                 pValueBuffer += used;
                 bufferLeft -= used;
             }
             else
             {
                 // Write out a field/value pair
-                used = dSprintf( pValueBuffer, bufferLeft, ",%s=%s", pDependency->mModuleId, pVersionId );
+                used = dSprintf( pValueBuffer, bufferLeft, ",%s=%s", dependencyItr->mModuleId, pVersionId );
                 pValueBuffer += used;
                 bufferLeft -= used;
             }

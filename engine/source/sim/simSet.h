@@ -36,10 +36,6 @@
 #include "sim/SimObjectList.h"
 #endif
 
-#ifndef _FIND_iterator_H_
-#include "collection/finditerator.h"
-#endif
-
 #ifndef _SIMDICTIONARY_H_
 #include "sim/simDictionary.h"
 #endif
@@ -129,22 +125,22 @@ public:
    typedef SimObjectList::iterator iterator;
    typedef SimObjectList::value_type value;
    SimObject* front() { return objectList.front(); }
-   SimObject* first() { return objectList.first(); }
-   SimObject* last()  { return objectList.last(); }
+   SimObject* first() { return objectList.front(); }
+   SimObject* last()  { return objectList.back(); }
    bool       empty() { return objectList.empty();   }
    S32        size() const  { return objectList.size(); }
    iterator   begin() { return objectList.begin(); }
    iterator   end()   { return objectList.end(); }
    value operator[] (S32 index) { return objectList[U32(index)]; }
 
-   inline iterator find( iterator first, iterator last, SimObject *obj ) { return ::find(first, last, obj); }
-   inline iterator find( SimObject *obj ) { return ::find(begin(), end(), obj); }
+   inline iterator find( iterator first, iterator last, SimObject *obj ) { return std::find(first, last, obj); }
+   inline iterator find( SimObject *obj ) { return std::find(begin(), end(), obj); }
 
    template <typename T> inline bool containsType( void )
    {
-       for( iterator itr = begin(); itr != end(); ++itr )
+       for( auto itr :*this )
        {
-           if ( dynamic_cast<T*>(*itr) != NULL )
+           if ( dynamic_cast<T*>(itr) != NULL )
                return true;
        }
 
@@ -264,7 +260,7 @@ public:
    SimSetiterator(SimSet*);
    SimObject* operator++();
    SimObject* operator*() {
-      return stack.empty()? 0: *stack.last().itr;
+      return stack.empty()? 0: *stack.back().itr;
    }
 };
 
@@ -282,8 +278,7 @@ public:
 ///
 ///      // From game/trigger.cc:46 - iterating over a SimObject's group.
 ///      SimObject* trigger = ...;
-///      SimGroup* pGroup = trigger->getGroup();
-///      for (SimGroup::iterator itr = pGroup->begin(); itr != pGroup->end(); itr++)
+///      for (auto itr:trigger->getGroup())
 ///      {
 ///         // do something with *itr
 ///      }

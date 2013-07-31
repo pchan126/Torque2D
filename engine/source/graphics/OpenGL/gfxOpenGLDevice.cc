@@ -32,7 +32,6 @@ GFXOpenGLDevice::GFXOpenGLDevice( U32 adapterIndex ) :
             currentCullMode(GFXCullNone),
             mIsBlending( false ),
             mMaxShaderTextures(2),
-            m_mCurrentView(true),
             mClip(0, 0, 0, 0),
             mPixelShaderVersion(0.0f),
             mBlendSrcState(GFXBlendSrcAlpha),
@@ -41,7 +40,11 @@ GFXOpenGLDevice::GFXOpenGLDevice( U32 adapterIndex ) :
 {
     m_WorldStack.push_back(MatrixF(true));
     m_ProjectionStack.push_back(MatrixF(true));
+    m_ViewStack.push_back(MatrixF(true));
     m_lightStack.setSize(LIGHT_STAGE_COUNT);
+
+    for (int i = 0; i < TEXTURE_STAGE_COUNT; i++)
+        mActiveTextureType[i] = GL_TEXTURE_2D;
 }
 
 
@@ -240,17 +243,17 @@ const MatrixF GFXOpenGLDevice::getMatrix( GFXMatrixType mtype )
     {
         case GFXMatrixWorld :
         {
-            return m_WorldStack.last();
+            return m_WorldStack.back();
         }
             break;
         case GFXMatrixView :
         {
-            return m_mCurrentView;
+            return m_ViewStack.back();
         }
             break;
         case GFXMatrixProjection :
         {
-            return m_ProjectionStack.last();
+            return m_ProjectionStack.back();
         }
             break;
             // CodeReview - Add support for texture transform matrix types
@@ -266,17 +269,17 @@ void GFXOpenGLDevice::setMatrix( GFXMatrixType mtype, const MatrixF &mat )
     {
         case GFXMatrixWorld :
         {
-            m_WorldStack.last() = mat;
+            m_WorldStack.back() = mat;
         }
             break;
         case GFXMatrixView :
         {
-            m_mCurrentView = mat;
+            m_ViewStack.back() = mat;
         }
             break;
         case GFXMatrixProjection :
         {
-            m_ProjectionStack.last() = mat;
+            m_ProjectionStack.back() = mat;
         }
             break;
             // CodeReview - Add support for texture transform matrix types
@@ -306,6 +309,8 @@ void GFXOpenGLDevice::setShader( GFXShader *shader )
 
 void GFXOpenGLDevice::disableShaders()
 {
+    mpCurrentShader = NULL;
+    glUseProgram(0);
 }
 
 GFXFormat GFXOpenGLDevice::selectSupportedFormat(   GFXTextureProfile* profile,
@@ -331,7 +336,7 @@ GFXFormat GFXOpenGLDevice::selectSupportedFormat(   GFXTextureProfile* profile,
 
 inline void GFXOpenGLDevice::pushWorldMatrix()
 {
-    MatrixF newMatrix = m_WorldStack.last();
+    MatrixF newMatrix = m_WorldStack.back();
     m_WorldStack.push_back(newMatrix);
 }
 
@@ -342,7 +347,7 @@ inline void GFXOpenGLDevice::popWorldMatrix()
 
 inline void GFXOpenGLDevice::pushProjectionMatrix()
 {
-    MatrixF newMatrix = m_ProjectionStack.last();
+    MatrixF newMatrix = m_ProjectionStack.back();
     m_ProjectionStack.push_back(newMatrix);
 }
 
@@ -352,11 +357,23 @@ inline void GFXOpenGLDevice::popProjectionMatrix()
 }
 
 
+inline void GFXOpenGLDevice::pushViewMatrix()
+{
+    MatrixF newMatrix = m_ViewStack.back();
+    m_ViewStack.push_back(newMatrix);
+}
+
+inline void GFXOpenGLDevice::popViewMatrix()
+{
+    m_ViewStack.pop_back();
+}
+
+
 inline void GFXOpenGLDevice::multWorld( const MatrixF &mat )
 {
-    MatrixF newMatrix = m_WorldStack.last();
+    MatrixF newMatrix = m_WorldStack.back();
     newMatrix*=mat;
-    m_WorldStack.last() = newMatrix;
+    m_WorldStack.back() = newMatrix;
 }
 
 

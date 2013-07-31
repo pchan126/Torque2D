@@ -23,18 +23,10 @@
 #ifndef _TSSHAPE_H_
 #define _TSSHAPE_H_
 
-#ifndef _TSMESH_H_
 #include "ts/tsMesh.h"
-#endif
-#ifndef _TSINTEGERSET_H_
 #include "ts/tsIntegerSet.h"
-#endif
-#ifndef _TSTRANSFORM_H_
 #include "ts/tsTransform.h"
-#endif
-#ifndef _TSSHAPEALLOC_H_
 #include "ts/tsShapeAlloc.h"
-#endif
 #include "io/resource/resourceManager.h"
 
 
@@ -405,7 +397,7 @@ class TSShape: public ResourceInstance
    ~TSShape();
    void init();
    void initMaterialList();    ///< you can swap in a new material list, but call this if you do
-   bool preloadMaterialList(const StringTableEntry &path); ///< called to preload and validate the materials in the mat list
+   bool preloadMaterialList(const String &path); ///< called to preload and validate the materials in the mat list
 
    void setupBillboardDetails( const String &cachePath );
 

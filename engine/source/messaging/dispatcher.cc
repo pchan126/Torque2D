@@ -175,9 +175,9 @@ bool registerMessageListener(const char *queue, IMessageListener *listener)
       return false;
    }
 
-   for(VectorPtr<IMessageListener *>::iterator i = q->mListeners.begin();i != q->mListeners.end();i++)
+   for( IMessageListener* i:q->mListeners)
    {
-      if(*i == listener)
+      if(i == listener)
          return false;
    }
 
@@ -200,7 +200,7 @@ void unregisterMessageListener(const char *queue, IMessageListener *listener)
    if(q == NULL)
       return;
 
-   for(VectorPtr<IMessageListener *>::iterator i = q->mListeners.begin();i != q->mListeners.end();i++)
+   for(std::deque<IMessageListener *>::iterator i = q->mListeners.begin();i != q->mListeners.end();i++)
    {
       if(*i == listener)
       {

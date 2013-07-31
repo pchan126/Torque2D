@@ -28,7 +28,6 @@
 #include "io/fileStream.h"
 #include "io/resource/resourceManager.h"
 #include "console/ast.h"
-#include "collection/finditerator.h"
 #include "console/consoleTypes.h"
 #include "debug/telnetDebugger.h"
 #include "sim/simBase.h"
@@ -757,7 +756,7 @@ void setVariable(const char *name, const char *value)
 void setLocalVariable(const char *name, const char *value)
 {
    name = prependPercent(name);
-   gEvalState.stack.last()->setVariable(StringTable->insert(name), value);
+   gEvalState.stack.back()->setVariable(StringTable->insert(name), value);
 }
 
 void setBoolVariable(const char *varName, bool value)
@@ -868,7 +867,7 @@ const char *getLocalVariable(const char *name)
 {
    name = prependPercent(name);
 
-   return gEvalState.stack.last()->getVariable(StringTable->insert(name));
+   return gEvalState.stack.back()->getVariable(StringTable->insert(name));
 }
 
 bool getBoolVariable(const char *varName, bool def)
@@ -1270,7 +1269,7 @@ StringTableEntry getModNameFromPath(const char *path)
 void postConsoleInput( RawData data )
 {
    // Schedule this to happen at the next time event.
-   char *argv[2];
+   const char *argv[2];
    argv[0] = "eval";
    argv[1] = ( char* ) data.data;
    Sim::postCurrentEvent(Sim::getRootGroup(), new SimConsoleEvent(2, const_cast<const char**>(argv), false));
@@ -1340,7 +1339,7 @@ void addPathExpando( const char* pExpandoName, const char* pPath )
     if( expandoItr != PathExpandos.end() )
     {
         // Yes, so modify the path.
-        expandoItr->value = expandedPath;
+        expandoItr->second = expandedPath;
         return;
     }
 
@@ -1365,7 +1364,7 @@ StringTableEntry getPathExpando( const char* pExpandoName )
     if( expandoItr != PathExpandos.end() )
     {
         // Yes, so return it.
-        return expandoItr->value;
+        return expandoItr->second;
     }
 
     // Not found.
@@ -1397,7 +1396,7 @@ void removePathExpando( const char* pExpandoName )
 
     // Info.
     #if defined(TORQUE_DEBUG)
-    Con::printf("Removing path expando of '%s' as '%s'.", expandoName, expandoItr->value );
+    Con::printf("Removing path expando of '%s' as '%s'.", expandoName, expandoItr->second );
     #endif
     // Remove expando.
     PathExpandos.erase( expandoItr );
@@ -1435,7 +1434,7 @@ StringTableEntry getPathExpandoKey( U32 expandoIndex )
     typePathExpandoMap::iterator expandoItr = PathExpandos.begin();
     while( expandoIndex > 0 ) { ++expandoItr; --expandoIndex; }
 
-    return expandoItr->key;
+    return expandoItr->first;
 }
 
 //-----------------------------------------------------------------------------
@@ -1450,7 +1449,7 @@ StringTableEntry getPathExpandoValue( U32 expandoIndex )
     typePathExpandoMap::iterator expandoItr = PathExpandos.begin();
     while( expandoIndex > 0 ) { ++expandoItr; --expandoIndex; }
 
-    return expandoItr->value;
+    return expandoItr->second;
 }
 
 //-----------------------------------------------------------------------------

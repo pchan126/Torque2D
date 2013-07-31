@@ -145,7 +145,7 @@ void GFXGLES20iOSEnumTranslate::init()
    GFXGLTextureFormat[GFXFormatR5G6B5] = GL_RGB;
    GFXGLTextureFormat[GFXFormatR5G5B5A1] = GL_RGBA;
    GFXGLTextureFormat[GFXFormatR5G5B5X1] = GL_RGBA;
-    GFXGLTextureType[GFXFormatR4G4B4A4] = GL_RGBA;
+    GFXGLTextureFormat[GFXFormatR4G4B4A4] = GL_RGBA;
    GFXGLTextureFormat[GFXFormatL16] = GL_LUMINANCE;
    GFXGLTextureFormat[GFXFormatR16F] = GL_ZERO;
    GFXGLTextureFormat[GFXFormatD16] = GL_DEPTH_COMPONENT;

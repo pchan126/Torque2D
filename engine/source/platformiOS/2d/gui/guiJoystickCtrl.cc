@@ -224,9 +224,13 @@ StringTableEntry GuiJoystickCtrl::getYevent( void )
 
 void GuiJoystickCtrl::onTouchUp(const GuiEvent &event)
 {
-    m_TouchDown.set(0, 0);
-    m_LastTouch.set(0, 0);
-    m_state = INACTIVE;
+    if (m_eventid == event.eventID)
+    {
+        m_TouchDown.set(0, 0);
+        m_LastTouch.set(0, 0);
+        m_state = INACTIVE;
+        m_eventid = -1;
+    }
 }
 
 
@@ -234,8 +238,13 @@ void GuiJoystickCtrl::onTouchUp(const GuiEvent &event)
 
 void GuiJoystickCtrl::onTouchDown(const GuiEvent &event)
 {
-    m_TouchDown = event.mousePoint;
-    m_state = ACTIVE;
+    if (event.mousePoint.x >= getPosition().x+m_touchRadius && getPosition().y+event.mousePoint.y >= m_touchRadius && event.mousePoint.x < getPosition().x+getWidth()-m_touchRadius && event.mousePoint.y < getPosition().y+getHeight()-m_touchRadius)
+    {
+        m_TouchDown = event.mousePoint;
+        m_LastTouch = event.mousePoint;
+        m_state = ACTIVE;
+        m_eventid = event.eventID;
+    }
 }
 
 
@@ -243,6 +252,8 @@ void GuiJoystickCtrl::onTouchDown(const GuiEvent &event)
 
 void GuiJoystickCtrl::onTouchDragged(const GuiEvent &event)
 {
+    if (m_state != ACTIVE || event.eventID != m_eventid) return;
+
     m_LastTouch = event.mousePoint;
     Point2I m_Vect = m_LastTouch - m_TouchDown;
     U32 vecLen = m_Vect.len();
@@ -284,7 +295,7 @@ void GuiJoystickCtrl::process()
         InputEventInfo inputEvent;
 
         inputEvent.deviceInst = 0;
-        inputEvent.fValue = mClampF((F32)-offset.y/(F32)m_touchRadius, -1.0f, 1.0f);
+        inputEvent.fValue = mClampF((F32)offset.y/(F32)m_touchRadius, -1.0f, 1.0f);
         inputEvent.deviceType = JoystickDeviceType;
         inputEvent.objType = m_YeventCode;
         inputEvent.objInst = SI_AXIS;
@@ -311,7 +322,7 @@ void GuiJoystickCtrl::onRender(Point2I offset, const RectI& updateRect)
 #ifdef TORQUE_DEBUG
     else
     {
-        RectI ctrlRect(offset, getExtent());
+        RectI ctrlRect(Point2I(offset.x+m_touchRadius, offset.y+m_touchRadius), Point2I(getExtent().x -m_touchRadius*2, getExtent().y -m_touchRadius*2));
         mProfile->mBorder = 1;
         renderBorder(ctrlRect, mProfile);
     }
@@ -418,4 +429,19 @@ void GuiJoystickCtrl::onRemove() {
         inputManager->removeObject(this);
 
     Parent::onRemove();
+}
+
+bool GuiJoystickCtrl::pointInControl(const Point2I& parentCoordPoint) {
+    S32 xt = parentCoordPoint.x - getPosition().x;
+    S32 yt = parentCoordPoint.y - getPosition().y;
+
+    return xt >= 0 && yt >= 0 && xt < getWidth() && yt < getHeight();
+}
+
+void GuiJoystickCtrl::onTouchLeave(const GuiEvent& event) {
+    onTouchUp(event);
+}
+
+void GuiJoystickCtrl::onMouseLeave(const GuiEvent& event) {
+    onTouchUp(event);
 }

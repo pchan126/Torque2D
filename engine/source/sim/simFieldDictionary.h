@@ -46,18 +46,16 @@ class SimFieldDictionary
       char *value;
       Entry *next;
    };
-
-private:
    enum
    {
       HashTableSize = 19
    };
    Entry *mHashTable[HashTableSize];
+  private:
 
-   static Entry   *mFreeList;
-   
-   static void    freeEntry(Entry *entry);
-   static Entry*  allocEntry();
+   static Entry *mFreeList;
+   static void freeEntry(Entry *entry);
+   static Entry *allocEntry();
 
    static U32     getHashValue( StringTableEntry slotName );
    static U32     getHashValue( const String& fieldName );

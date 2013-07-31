@@ -799,7 +799,7 @@ void TSShape::initMaterialList()
 
 }
 
-bool TSShape::preloadMaterialList(const StringTableEntry &path)
+bool TSShape::preloadMaterialList(const String &path)
 {
 //   if (materialList)
 //      materialList->setTextureLookupPath(path.getPath());
@@ -1318,7 +1318,7 @@ void TSShape::assembleShape()
    {
       // get detail information about skins...
       S32 * detailFirstSkin = tsalloc.getPointer32(numDetails);
-      S32 * detailNumSkins = tsalloc.getPointer32(numDetails);
+//      S32 * detailNumSkins = tsalloc.getPointer32(numDetails);
 
       tsalloc.checkGuard();
 

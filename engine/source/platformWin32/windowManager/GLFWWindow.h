@@ -177,7 +177,7 @@ public:
     ButtonEvent       mouseButtonEvent;
     MouseEvent        mouseEvent;
     MouseWheelEvent   mouseWheelEvent;
-    FramebufferResizeEvent framebufferResizeEvent;
+    ResizeEvent       framebufferResizeEvent;
 };
 
 #endif

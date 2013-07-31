@@ -25,8 +25,6 @@
 
 #include "console/consoleTypes.h"
 #include "materials/matInstance.h"
-//#include "scene/sceneManager.h"
-//#include "console/engineAPI.h"
 
 
 IMPLEMENT_CONOBJECT(RenderBinManager);
@@ -120,7 +118,7 @@ void RenderBinManager::addElement( RenderInst *inst )
 void RenderBinManager::internalAddElement(RenderInst* inst)
 {
    mElementList.increment();
-   MainSortElem &elem = mElementList.last();
+   MainSortElem &elem = mElementList.back();
    elem.inst = inst;
    elem.key = elem.key2 = 0;
 

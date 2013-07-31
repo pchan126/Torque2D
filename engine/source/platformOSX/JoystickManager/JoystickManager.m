@@ -66,7 +66,7 @@ static JoystickManager *instance;
 - (void)registerNewJoystick:(Joystick *)joystick {
     [joysticks setObject:joystick forKey:[NSNumber numberWithInt:joystickIDIndex++]];
     NSLog(@"Gamepad was plugged in");
-    NSLog(@"Gamepads registered: %lu", joysticks.count);
+    NSLog(@"Gamepads registered: %i", joysticks.count);
     [joystickAddedDelegate joystickAdded:joystick];
 }
 

@@ -286,7 +286,7 @@ void ProcessedShaderMaterial::_determineFeatures(  U32 stageNum,
    const float shaderVersion = GFX->getPixelShaderVersion();
    AssertFatal(shaderVersion > 0.0 , "Cannot create a shader material if we don't support shaders");
 
-   bool lastStage = stageNum == (mMaxStages-1);
+//   bool lastStage = stageNum == (mMaxStages-1);
 
    // First we add all the features which the 
    // material has defined.
@@ -488,9 +488,9 @@ void ProcessedShaderMaterial::_determineFeatures(  U32 stageNum,
 
 bool ProcessedShaderMaterial::_createPasses( MaterialFeatureData &stageFeatures, U32 stageNum, const FeatureSet &features )
 {
-   // Creates passes for the given stage
-   ShaderRenderPassData passData;
-   U32 texIndex = 0;
+//   // Creates passes for the given stage
+//   ShaderRenderPassData passData;
+//   U32 texIndex = 0;
 
 //   for( U32 i=0; i < FEATUREMGR->getFeatureCount(); i++ )
 //   {
@@ -699,19 +699,19 @@ bool ProcessedShaderMaterial::setupPass( SceneRenderState *state, const SceneDat
 
 void ProcessedShaderMaterial::setTextureStages( SceneRenderState *state, const SceneData &sgData, U32 pass )
 {
-   PROFILE_SCOPE( ProcessedShaderMaterial_SetTextureStages );
+//   PROFILE_SCOPE( ProcessedShaderMaterial_SetTextureStages );
 
-   ShaderConstHandles *handles = _getShaderConstHandles(pass);
+//   ShaderConstHandles *handles = _getShaderConstHandles(pass);
 
    // Set all of the textures we need to render the give pass.
-#ifdef TORQUE_DEBUG
-   AssertFatal( pass<mPasses.size(), "Pass out of bounds" );
-#endif
+//#ifdef TORQUE_DEBUG
+//   AssertFatal( pass<mPasses.size(), "Pass out of bounds" );
+//#endif
 
-   RenderPassData *rpd = mPasses[pass];
-   GFXShaderConstBuffer* shaderConsts = _getShaderConstBuffer(pass);
-   NamedTexTarget *texTarget;
-   GFXTextureObject *texObject; 
+//   RenderPassData *rpd = mPasses[pass];
+//   GFXShaderConstBuffer* shaderConsts = _getShaderConstBuffer(pass);
+//   NamedTexTarget *texTarget;
+//   GFXTextureObject *texObject; 
 
 //   for( U32 i=0; i<rpd->mNumTex; i++ )
 //   {
@@ -1094,10 +1094,10 @@ bool ProcessedShaderMaterial::_hasCubemap(U32 pass)
 
 void ProcessedShaderMaterial::setTransforms(const MatrixF view, const MatrixF world, const MatrixF projection, SceneRenderState *state, const U32 pass)
 {
-   PROFILE_SCOPE( ProcessedShaderMaterial_setTransforms );
-
-   GFXShaderConstBuffer* shaderConsts = _getShaderConstBuffer(pass);
-   ShaderConstHandles* handles = _getShaderConstHandles(pass);
+//   PROFILE_SCOPE( ProcessedShaderMaterial_setTransforms );
+//
+//   GFXShaderConstBuffer* shaderConsts = _getShaderConstBuffer(pass);
+//   ShaderConstHandles* handles = _getShaderConstHandles(pass);
 
 //   // The MatrixSet will lazily generate a matrix under the
 //   // various 'get' methods, so inline the test for a valid

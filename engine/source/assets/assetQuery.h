@@ -65,12 +65,7 @@ public:
     /// Whether asset is contained or not.
     inline bool containsAsset( StringTableEntry assetId )
     {
-        for( Vector<StringTableEntry>::const_iterator assetItr = begin(); assetItr != end(); ++assetItr )
-        {
-            if ( *assetItr == assetId )
-                return true;
-        }
-        return false;
+        return (find(assetId)!=end());
     }
 
     /// Set assets.

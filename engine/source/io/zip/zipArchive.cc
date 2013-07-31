@@ -193,7 +193,7 @@ void ZipArchive::removeEntry(ZipEntry *ze)
    AssertFatal(!ze->mIsDirectory, "ZipArchive::removeEntry - Cannot remove a directory");
 
    // See if we have a temporary file for this entry
-   VectorPtr<ZipTempStream *>::iterator i;
+   Vector<ZipTempStream *>::iterator i;
    for(i = mTempFiles.begin();i != mTempFiles.end();++i)
    {
       if((*i)->getCentralDir() == &ze->mCD)
@@ -206,7 +206,7 @@ void ZipArchive::removeEntry(ZipEntry *ze)
    }
    
    // Remove from the tree
-   VectorPtr<ZipEntry *>::iterator j;
+   Vector<ZipEntry *>::iterator j;
    for(j = mEntries.begin();j != mEntries.end();++j)
    {
       if(*j == ze)

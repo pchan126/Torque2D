@@ -23,36 +23,14 @@
 #ifndef _GFXSHADER_H_
 #define _GFXSHADER_H_
 
-#ifndef _GFXRESOURCE_H_
 #include "graphics/gfxResource.h"
-#endif
-#ifndef _TORQUE_STRING_H_
 #include "string/str.h"
-#endif
-
 #include "collection/vector.h"
-
-//#ifndef _ALIGNEDARRAY_H_
-//#include "core/util/tAlignedArray.h"
-//#endif
-
 #include "math/mMath.h"
 #include "math/mPlane.h"
-
-#ifndef _GFXENUMS_H_
 #include "graphics/gfxEnums.h"
-#endif
-#ifndef _GFXSTRUCTS_H_
 #include "graphics/gfxStructs.h"
-#endif
-
-
-#ifndef _REFBASE_H_
 #include "sim/refBase.h"
-#endif
-//#ifndef _PATH_H_
-//#include "core/util/path.h"
-//#endif
 #include "delegates/delegateSignal.h"
 
 class Point2I;
@@ -184,15 +162,7 @@ public:
     virtual void set(GFXShaderConstHandle* handle, const Point2I& fv) = 0;
     virtual void set(GFXShaderConstHandle* handle, const Point3I& fv) = 0;
     virtual void set(GFXShaderConstHandle* handle, const Point4I& fv) = 0;
-//    virtual void set(GFXShaderConstHandle* handle, const AlignedArray<F32>& fv) = 0;
-//    virtual void set(GFXShaderConstHandle* handle, const AlignedArray<Point2F>& fv) = 0;
-//    virtual void set(GFXShaderConstHandle* handle, const AlignedArray<Point3F>& fv) = 0;
-//    virtual void set(GFXShaderConstHandle* handle, const AlignedArray<Point4F>& fv) = 0;
-//    virtual void set(GFXShaderConstHandle* handle, const AlignedArray<S32>& fv) = 0;
-//    virtual void set(GFXShaderConstHandle* handle, const AlignedArray<Point2I>& fv) = 0;
-//    virtual void set(GFXShaderConstHandle* handle, const AlignedArray<Point3I>& fv) = 0;
-//    virtual void set(GFXShaderConstHandle* handle, const AlignedArray<Point4I>& fv) = 0;
-    
+
     /// Set a variable sized matrix shader constant.
     virtual void set( GFXShaderConstHandle* handle,
                      const MatrixF& mat,

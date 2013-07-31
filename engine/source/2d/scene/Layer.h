@@ -26,12 +26,14 @@ GFX_DeclareTextureProfile(GFXLayerTextureProfile);
 ///
 ///      // From game/trigger.cc:46 - iterating over a SceneObject's group.
 ///      SceneObject* trigger = ...;
-///      Layer* pGroup = trigger->getGroup();
-///      for (Layer::iterator itr = pGroup->begin(); itr != pGroup->end(); itr++)
+///      for (auto itr:trigger->getGroup())
 ///      {
 ///         // do something with *itr
 ///      }
 /// @endcode
+
+typedef Vector<SceneObject> typeLayerQueryResult;
+
 class Layer: public SimSet
 {
 private:
@@ -60,7 +62,12 @@ public:
    
    inline ColorF getLight( void) { return mLight; };
    inline void setLight( ColorF light) { mLight = light; };
-   
+
+   void setCameraTranslationScale( Point3F pScale ) { mCameraTranslationScale = pScale; };
+   Point3F getCameraTranslationScale() { return mCameraTranslationScale; };
+
+   typeLayerQueryResult getObjectsinCamera( const SceneRenderState renderState );
+
    void setRenderTarget();
    
 //   /// Remove an object from the group.

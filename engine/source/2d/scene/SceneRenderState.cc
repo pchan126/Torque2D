@@ -1,6 +1,7 @@
 #include "platform/platform.h"
 #include "./SceneRenderState.h"
 #include "renderInstance/renderPassManager.h"
+#include "Layer.h"
 
 //-----------------------------------------------------------------------------
 
@@ -72,6 +73,25 @@ void SceneRenderState::renderObjects( Scene* pScene, SceneRenderQueue* pSceneRen
     // Yes so step through layers.
     for ( S32 layer = pScene->getLayerCount()-1; layer >= 0 ; layer-- )
     {
+        GFX->pushViewMatrix();
+        MatrixF vM = GFX->getViewMatrix();
+        Layer* layerRef = pScene->getLayer(layer);
+        Point3F tScale = layerRef->getCameraTranslationScale();
+        vM[3] *= tScale.x;
+        vM[7] *= tScale.y;
+        vM[11] *= tScale.z;
+        GFX->setViewMatrix(vM);
+
+        b2AABB cameraAABB = this->mRenderCamera.getRotatedAABB();
+        b2Vec2 centerPosition = cameraAABB.GetCenter();
+        cameraAABB.lowerBound -= centerPosition;
+        cameraAABB.upperBound -= centerPosition;
+        centerPosition.x *= tScale.x;
+        centerPosition.y *= tScale.y;
+        cameraAABB.lowerBound += centerPosition;
+        cameraAABB.upperBound += centerPosition;
+        pScene->getWorldQuery()->aabbQueryAABB( cameraAABB );
+
         // Fetch layer.
         typeWorldQueryResultVector& layerResults = pScene->getWorldQuery()->getLayeredQueryResults( layer );
 
@@ -85,10 +105,10 @@ void SceneRenderState::renderObjects( Scene* pScene, SceneRenderQueue* pSceneRen
             mpDebugStats->renderPicked += layerObjectCount;
 
             // Iterate query results.
-            for( typeWorldQueryResultVector::iterator worldQueryItr = layerResults.begin(); worldQueryItr != layerResults.end(); ++worldQueryItr )
+            for( WorldQueryResult worldQueryItr:layerResults )
             {
                 // Fetch scene object.
-                SceneObject* pSceneObject = worldQueryItr->mpSceneObject;
+                SceneObject* pSceneObject = worldQueryItr.mpSceneObject;
 
                 // Skip if the object should not render.
                 if ( !pSceneObject->shouldRender() )
@@ -158,13 +178,10 @@ void SceneRenderState::renderObjects( Scene* pScene, SceneRenderQueue* pSceneRen
             }
 
             // Iterate render requests.
-            for( SceneRenderQueue::typeRenderRequestVector::iterator renderRequestItr = sceneRenderRequests.begin(); renderRequestItr != sceneRenderRequests.end(); ++renderRequestItr )
+            for( SceneRenderRequest* pSceneRenderRequest:sceneRenderRequests )
             {
                 // Debug Profiling.
                 PROFILE_SCOPE(Scene_RenderSceneRequests);
-
-                // Fetch render request.
-                SceneRenderRequest* pSceneRenderRequest = *renderRequestItr;
 
                 // Fetch scene render object.
                 SceneRenderObject* pSceneRenderObject = pSceneRenderRequest->mpSceneRenderObject;
@@ -206,24 +223,21 @@ void SceneRenderState::renderObjects( Scene* pScene, SceneRenderQueue* pSceneRen
                     // Sort the isolated render requests.
                     pIsolatedRenderQueue->sort();
 
-                    // Fetch isolated render requests.
-                    SceneRenderQueue::typeRenderRequestVector& isolatedRenderRequests = pIsolatedRenderQueue->getRenderRequests();
-
                     // Can the object render?
                     if ( pSceneRenderObject->validRender() )
                     {
                         // Yes, so iterate isolated render requests.
-                        for( SceneRenderQueue::typeRenderRequestVector::iterator isolatedRenderRequestItr = isolatedRenderRequests.begin(); isolatedRenderRequestItr != isolatedRenderRequests.end(); ++isolatedRenderRequestItr )
+                        for( SceneRenderRequest* isolatedRenderRequest:pIsolatedRenderQueue->getRenderRequests() )
                         {
-                            pSceneRenderObject->sceneRender(this, *isolatedRenderRequestItr, &pScene->mBatchRenderer );
+                            pSceneRenderObject->sceneRender(this, isolatedRenderRequest, &pScene->mBatchRenderer );
                         }
                     }
                     else
                     {
                         // No, so iterate isolated render requests.
-                        for( SceneRenderQueue::typeRenderRequestVector::iterator isolatedRenderRequestItr = isolatedRenderRequests.begin(); isolatedRenderRequestItr != isolatedRenderRequests.end(); ++isolatedRenderRequestItr )
+                        for( SceneRenderRequest* isolatedRenderRequest:pIsolatedRenderQueue->getRenderRequests() )
                         {
-                            pSceneRenderObject->sceneRenderFallback(this, *isolatedRenderRequestItr, &pScene->mBatchRenderer );
+                            pSceneRenderObject->sceneRenderFallback(this, isolatedRenderRequest, &pScene->mBatchRenderer );
                         }
 
                         // Increase render fallbacks.
@@ -257,13 +271,13 @@ void SceneRenderState::renderObjects( Scene* pScene, SceneRenderQueue* pSceneRen
             pScene->mBatchRenderer.flush( mpDebugStats->batchLayerFlush );
 
             // Iterate query results.
-            for( typeWorldQueryResultVector::iterator worldQueryItr = layerResults.begin(); worldQueryItr != layerResults.end(); ++worldQueryItr )
+            for( WorldQueryResult worldQuery:layerResults )
             {
                 // Debug Profiling.
                 PROFILE_SCOPE(Scene_RenderObjectOverlays);
 
                 // Fetch scene object.
-                SceneObject* pSceneObject = worldQueryItr->mpSceneObject;
+                SceneObject* pSceneObject = worldQuery.mpSceneObject;
 
                 // Render object overlay.
                 pSceneObject->sceneRenderOverlay(this);
@@ -274,6 +288,7 @@ void SceneRenderState::renderObjects( Scene* pScene, SceneRenderQueue* pSceneRen
 
         // Reset render queue.
         pSceneRenderQueue->resetState();
+        GFX->popViewMatrix();
     }
     getRenderPass()->renderPass( this );
 }

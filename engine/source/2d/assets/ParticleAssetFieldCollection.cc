@@ -45,13 +45,13 @@ ParticleAssetFieldCollection::~ParticleAssetFieldCollection()
 void ParticleAssetFieldCollection::copyTo( ParticleAssetFieldCollection& fieldCollection )
 {
     // Iterate the fields.
-    for( typeFieldHash::iterator fieldItr = mFields.begin(); fieldItr != mFields.end(); ++fieldItr )
+    for( auto fieldItr:mFields )
     {
         // Fetch field.
-        ParticleAssetField* pParticleAssetField = fieldItr->value;
+        ParticleAssetField* pParticleAssetField = fieldItr.second;
 
         // Find target field.
-        ParticleAssetField* pTargetParticleAssetField = fieldCollection.findField( fieldItr->key );
+        ParticleAssetField* pTargetParticleAssetField = fieldCollection.findField( fieldItr.first );
 
         // Sanity!
         AssertFatal( pTargetParticleAssetField != NULL, "ParticleAssetFieldCollection::copyTo() - Could not find target particle asset field." );
@@ -125,7 +125,7 @@ ParticleAssetField* ParticleAssetFieldCollection::findField( const char* pFieldN
     typeFieldHash::iterator fieldItr = mFields.find( StringTable->insert( pFieldName ) );
 
     // Return the field if it was found.
-    return fieldItr == mFields.end() ? NULL : fieldItr->value;
+    return fieldItr == mFields.end() ? NULL : fieldItr->second;
 }
 
 //-----------------------------------------------------------------------------
@@ -434,10 +434,8 @@ void ParticleAssetFieldCollection::onTamlCustomWrite( TamlCustomNodes& customNod
     TamlCustomNode* pParticleAssetCustomNode = customNodes.addNode( particleAssetFieldNodeName );
 
     // Iterate the fields.
-    for( typeFieldHash::iterator fieldItr = mFields.begin(); fieldItr != mFields.end(); ++fieldItr )
-    {
-        fieldItr->value->onTamlCustomWrite( pParticleAssetCustomNode );
-    }
+    for( auto fieldItr:mFields )
+        fieldItr.second->onTamlCustomWrite( pParticleAssetCustomNode );
 }
 
 //-----------------------------------------------------------------------------
@@ -455,14 +453,9 @@ void ParticleAssetFieldCollection::onTamlCustomRead( const TamlCustomNodes& cust
         return;
 
     // Fetch children.
-    const TamlCustomNodeVector& children = pParticleAssetCustomNode->getChildren();
-
     // Iterate the custom properties.
-    for( TamlCustomNodeVector::const_iterator childNodeItr = children.begin(); childNodeItr != children.end(); ++childNodeItr )
+    for( TamlCustomNode* pChildNode:pParticleAssetCustomNode->getChildren() )
     {
-        // Fetch child node.
-        TamlCustomNode* pChildNode = *childNodeItr;
-
         // Fetch node name.
         StringTableEntry nodeName = pChildNode->getNodeName();
 
@@ -511,11 +504,9 @@ void ParticleAssetFieldCollection::WriteCustomTamlSchema( const AbstractClassRep
     pFieldsNodeComplexTypeElement->LinkEndChild( pFieldsNodeChoiceElement );
 
     // Iterate the fields.
-    for( typeFieldHash::const_iterator fieldItr = mFields.begin(); fieldItr != mFields.end(); ++fieldItr )
-    {
-        // Write schema for the field.
-        fieldItr->value->WriteCustomTamlSchema( pClassRep, pFieldsNodeChoiceElement );
-    }
+    // Write schema for the field.
+    for( auto fieldItr:mFields )
+        fieldItr.second->WriteCustomTamlSchema( pClassRep, pFieldsNodeChoiceElement );
 }
 
 

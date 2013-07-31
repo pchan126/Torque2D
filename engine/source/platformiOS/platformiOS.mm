@@ -32,24 +32,11 @@
 
 @implementation iOSPlatState
 
-@synthesize ctx = _ctx;
-@synthesize window = _window;
-//@synthesize torqueView = _torqueView;
-//@synthesize cgDisplay = _cgDisplay;
-@synthesize application = _application;
-@synthesize alertSemaphore = _alertSemaphore;
-@synthesize fullScreen = _fullscreen;
 @synthesize argc = _argc;
 @synthesize argv = _argv;
 @synthesize platformRandom = _platformRandom;
 @synthesize currentSimTime = _currentSimTime;
-@synthesize lastTimeTick = _lastTimeTick;
-@synthesize sleepTicks = _sleepTicks;
 @synthesize mainCSDirectory = _mainCSDirectory;
-@synthesize backgrounded = _backgrounded;
-@synthesize minimized = _minimized;
-@synthesize mouseLocked = _mouseLocked;
-@synthesize windowTitle = _windowTitle;
 @synthesize quit = _quit;
 
 
@@ -72,22 +59,10 @@ bool gStatusBarHidden = true;
     if (self)
     {
         // Default window behaviors
-        _backgrounded = false;
-        _minimized = false;
-        _mouseLocked = true;
-        _fullscreen = false;
         _quit = false;
-        
-        _windowTitle = @"Torque 2D IOS";
-        
-        // Default window
-        _window = nil;
-        _ctx = nil;
         
         // Default system variables
         _currentSimTime = 0;
-        _sleepTicks = 0;
-        _lastTimeTick = 0;
         _argc = 0;
         _alertSemaphore = Semaphore::createSemaphore(0);
         _platformRandom = new RandomLCG();
@@ -102,55 +77,6 @@ bool gStatusBarHidden = true;
 {
     if (_platformRandom)
         delete _platformRandom;
-}
-
--(void) updateWindowTitle:(const char*)title
-{
-    _windowTitle = [NSString stringWithFormat:@"%s", title];
-}
-
-//-----------------------------------------------------------------------------
-
-- (void)setWindowSize:(int)width height:(int)height
-{
-//    // Store the width and height in the state
-//    _windowSize.x = width;
-//    _windowSize.y = height;
-//    
-//    // Get the window's current frame
-//    CGRect frame = NSMakeRect([_window frame].origin.x, [_window frame].origin.y, width, height);
-//    
-//    // Get the starting position of the bar height
-//    F32 barOffset = frame.size.height;
-//    
-//    // If we are not going to full screen mode, get a new frame offset that accounts
-//    // for the title bar height
-//    if (!_fullscreen)
-//    {
-//        frame = [NSWindow frameRectForContentRect:frame styleMask:NSTitledWindowMask];
-//        
-//        // Set the new window frame
-//        [_window setFrame:frame display:YES];
-//        
-//        // Get the new position of the title bar
-//        barOffset -= frame.size.height;
-//    }
-//    else
-//    {
-//        // Otherwise, just go straight full screen
-//        [_window toggleFullScreen:self];
-//    }
-//    
-//    // Update the frame of the torqueView to match the window
-//    frame = NSMakeRect([_window frame].origin.x, [_window frame].origin.y, width, height);
-//    CGRect viewFrame = NSMakeRect(0, 0, frame.size.width, frame.size.height);
-//    
-//    [_torqueView setFrame:viewFrame];
-//    
-//    [_torqueView updateContext];
-//    
-//    [_window makeKeyAndOrderFront:NSApp];
-//    [_window makeFirstResponder:_torqueView];
 }
 
 
@@ -194,16 +120,6 @@ bool gStatusBarHidden = true;
     return Game->mainInitialize(_argc, _argv);
 }
 
-
-//-----------------------------------------------------------------------------
-// Shut down the main Game instancea nd perform any additional cleanup
-- (void) shutDownTorque2D
-{
-    // Shutdown the game
-    Game->mainShutdown();
-    
-    // Perform any platform cleanup
-}
 
 @end
 
@@ -307,7 +223,7 @@ bool Platform::openWebBrowser(const char *webAddress)
 {
    NSString *string = [[NSString alloc] initWithUTF8String:webAddress];
    NSURL *url = [[NSURL alloc] initWithString:string];
-   bool ret = [[[iOSPlatState sharedPlatState] application] openURL:url];
+   bool ret = [[UIApplication sharedApplication] openURL:url];
    
    return ret;// this bails on the application, switching to Safari
 }
@@ -315,24 +231,21 @@ bool Platform::openWebBrowser(const char *webAddress)
 bool isStatusBarHidden()
 {
    // Get the shared iOS platform state
-   return [[iOSPlatState sharedPlatState] application].statusBarHidden;
+   return [UIApplication sharedApplication].statusBarHidden;
 }
 
 bool setStatusBarHidden(bool hidden)
 {
-   // Get the shared iOS platform state
-   iOSPlatState * platState = [iOSPlatState sharedPlatState];
-   
    if (hidden)
    {
-      [platState application].statusBarHidden = YES;
+       [UIApplication sharedApplication].statusBarHidden = YES;
       gStatusBarHidden = true;
       
       return true;
    }
    else
    {
-      [platState application].statusBarHidden = NO;
+       [UIApplication sharedApplication].statusBarHidden = NO;
       gStatusBarHidden = false;
       
       return false;
@@ -341,24 +254,21 @@ bool setStatusBarHidden(bool hidden)
 
 void setStatusBarType(S32 type)
 {
-   // Get the shared iOS platform state
-   iOSPlatState * platState = [iOSPlatState sharedPlatState];
-   
    switch (type)
    {
       case 0: //Hidden
          setStatusBarHidden(true);
          break;
       case 1: //Black Opaque
-         [platState application].statusBarStyle = UIStatusBarStyleBlackOpaque;
+         [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackOpaque;
          setStatusBarHidden(false);
          break;
       case 2: //Black Transparent
-         [platState application].statusBarStyle = UIStatusBarStyleBlackTranslucent;
+          [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
          setStatusBarHidden(false);
          break;
       default:
-         [platState application].statusBarStyle = UIStatusBarStyleDefault;
+          [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
    }
    
    gStatusBarType = type;

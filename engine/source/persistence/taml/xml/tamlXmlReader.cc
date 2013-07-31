@@ -93,7 +93,7 @@ SimObject* TamlXmlReader::parseElement( TiXmlElement* pXmlElement )
         }
 
         // Return object.
-        return referenceItr->value;
+        return referenceItr->second;
     }
 
     // No, so fetch reference Id.

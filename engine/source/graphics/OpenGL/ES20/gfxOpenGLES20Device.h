@@ -20,8 +20,8 @@ class GFXOpenGLES20TextureTarget;
 class GFXOpenGLES20Device : public GFXOpenGLDevice
 {
 public:
-   void zombify();
-   void resurrect();
+   void zombify() {};
+   void resurrect() {};
    GFXOpenGLES20Device(U32 adapterIndex );
    virtual ~GFXOpenGLES20Device();
 
@@ -38,8 +38,7 @@ public:
    virtual void leaveDebugEvent() { }
    virtual void setDebugMarker(ColorI color, const char *name) { }
 
-   virtual void enumerateVideoModes() = 0;
-
+   virtual void enumerateVideoModes() {    mVideoModes.clear();   }
    ///@}
 
    /// @name Render Target functions
@@ -83,8 +82,8 @@ protected:
 //                                              U32 indexCount = 0,
 //                                              void *indexData = NULL);
 
-    
-    GLenum mActiveTextureType[TEXTURE_STAGE_COUNT];
+    virtual void initGenericShaders();
+
 private:
    typedef GFXDevice Parent;
    
@@ -92,7 +91,6 @@ private:
    friend class GFXOpenGLES20WindowTarget;
    friend class GFXOpenGLES20VertexBuffer;
     
-   virtual void initGenericShaders();
 
 
 //   U32 mAdapterIndex;

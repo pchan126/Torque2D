@@ -35,9 +35,11 @@ LightInfoExType::LightInfoExType( const char *type )
 {
    TypeMap::iterator iter = getTypeMap().find( type );
    if ( iter == getTypeMap().end() )
-      iter = getTypeMap().insertUnique( type, getTypeMap().size() );
-
-   mTypeIndex = iter->value;
+   {
+      getTypeMap().insertUnique( type , getTypeMap().size()) ;
+   }
+   iter = getTypeMap().find( type );
+   mTypeIndex = iter->second;
 }
 
 
@@ -219,7 +221,7 @@ void LightInfoList::unregisterLight( LightInfo *light )
 
       // this moves last to i, which allows
       // the search to continue forward...
-      list.erase_fast(i);
+      list.erase(i);
       // want to check this location again...
       i--;
    }

@@ -6,7 +6,7 @@
 #ifndef _GFXOpenGLES20TextureTarget_H_
 #define _GFXOpenGLES20TextureTarget_H_
 
-#include "graphics/gfxTarget.h"
+#include "graphics/OpenGL/gfxOpenGLTextureTarget.h"
 #include "memory/autoPtr.h"
 
 class GFXOpenGLES20TextureObject;
@@ -52,29 +52,16 @@ private:
 /// 4) If the DepthStencil target is GFXTextureTarget::sDefaultStencil, then the
 /// Color0 target should be the same size as the current backbuffer and should also
 /// be the same format (typically R8G8B8A8)
-class GFXOpenGLES20TextureTarget : public GFXTextureTarget
+class GFXOpenGLES20TextureTarget : public GFXOpenGLTextureTarget
 {
 public:
     GFXOpenGLES20TextureTarget();
     virtual ~GFXOpenGLES20TextureTarget();
     
-    virtual const Point2I getSize();
-    virtual GFXFormat getFormat();
     virtual void attachTexture(GFXTextureObject *tex, RenderSlot slot = Color0, U32 mipLevel=0, U32 zOffset = 0);
     virtual void attachTexture(GFXCubemap *tex, U32 face, RenderSlot slot, U32 mipLevel=0);
-    virtual void clearAttachments();
-    
-    /// Functions to query internal state
-    /// @{
-    
-    /// Returns the internal structure for the given slot.  This should only be called by our internal implementations.
-    _GFXOpenGLES20TargetDesc* getTargetDesc(RenderSlot slot) const;
-    
-    /// @}
-    
+
     void deactivate();
-    void zombify();
-    void resurrect();
     virtual const String describeSelf() const;
     
     virtual void resolve();
@@ -89,48 +76,8 @@ protected:
     
     friend class GFXOpenGLES20Device;
     
-    /// The callback used to get texture events.
-    /// @see GFXTextureManager::addEventDelegate
-    void _onTextureEvent( GFXTexCallbackCode code );
-    
     /// Array of _GFXOpenGLES20TargetDesc's, an internal struct used to keep track of texture data.
     AutoPtr<_GFXOpenGLES20TargetDesc> mTargets[MaxRenderSlotId];
-    
-    /// These redirect to our internal implementation
-    /// @{
-
-    GLuint mFramebuffer;
-    /// @}
-    
 };
-
-
-//// Internal implementations
-//class _GFXOpenGLES20TextureTargetImpl
-//{
-//public:
-//    GFXOpenGLES20TextureTarget* mTarget;
-//    
-//    virtual ~_GFXOpenGLES20TextureTargetImpl() {}
-//    
-//    virtual void applyState() = 0;
-//    virtual void makeActive() = 0;
-//    virtual void finish() = 0;
-//};
-//
-//// Use FBOs to render to texture.  This is the preferred implementation and is almost always used.
-//class _GFXOpenGLES20TextureTargetFBOImpl : public _GFXOpenGLES20TextureTargetImpl
-//{
-//public:
-//    GLuint mFramebuffer, mRenderBuffer;
-//    
-//    _GFXOpenGLES20TextureTargetFBOImpl(GFXOpenGLES20TextureTarget* target);
-//    virtual ~_GFXOpenGLES20TextureTargetFBOImpl();
-//    
-//    virtual void applyState();
-//    virtual void makeActive();
-//    virtual void finish();
-//};
-//
 
 #endif

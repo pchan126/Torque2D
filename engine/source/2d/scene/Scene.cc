@@ -408,7 +408,7 @@ void Scene::PostSolve( b2Contact* pContact, const b2ContactImpulse* pImpulse )
         return;
 
     // Fetch contact.
-    TickContact& tickContact = contactItr->value;
+    TickContact& tickContact = contactItr->second;
 
     // Add the impulse.
     for ( U32 index = 0; index < b2_maxManifoldPoints; ++index )
@@ -426,21 +426,18 @@ void Scene::forwardContacts( void )
     PROFILE_SCOPE(Scene_ForwardContacts);
 
     // Iterate end contacts.
-    for( typeContactVector::iterator contactItr = mEndContacts.begin(); contactItr != mEndContacts.end(); ++contactItr )
+    for( TickContact tickContact:mEndContacts )
     {
-        // Fetch tick contact.
-        TickContact& tickContact = *contactItr;
-
         // Inform the scene objects.
         tickContact.mpSceneObjectA->onEndCollision( tickContact );
         tickContact.mpSceneObjectB->onEndCollision( tickContact );
     }
 
     // Iterate begin contacts.
-    for( typeContactHash::iterator contactItr = mBeginContacts.begin(); contactItr != mBeginContacts.end(); ++contactItr )
+    for( auto contactItr:mBeginContacts )
     {
         // Fetch tick contact.
-        TickContact& tickContact = contactItr->value;
+        TickContact& tickContact = contactItr.second;
 
         // Inform the scene objects.
         tickContact.mpSceneObjectA->onBeginCollision( tickContact );
@@ -466,10 +463,10 @@ void Scene::dispatchBeginContactCallbacks( void )
         return;
 
     // Iterate all contacts.
-    for ( typeContactHash::iterator contactItr = mBeginContacts.begin(); contactItr != mBeginContacts.end(); ++contactItr )
+    for ( auto contactItr:mBeginContacts )
     {
         // Fetch contact.
-        const TickContact& tickContact = contactItr->value;
+        const TickContact& tickContact = contactItr.second;
 
         // Fetch scene objects.
         SceneObject* pSceneObjectA = tickContact.mpSceneObjectA;
@@ -614,11 +611,8 @@ void Scene::dispatchEndContactCallbacks( void )
         return;
 
     // Iterate all contacts.
-    for ( typeContactVector::iterator contactItr = mEndContacts.begin(); contactItr != mEndContacts.end(); ++contactItr )
+    for ( const TickContact tickContact:mEndContacts )
     {
-        // Fetch contact.
-        const TickContact& tickContact = *contactItr;
-
         // Fetch scene objects.
         SceneObject* pSceneObjectA = tickContact.mpSceneObjectA;
         SceneObject* pSceneObjectB = tickContact.mpSceneObjectB;
@@ -1221,7 +1215,7 @@ void Scene::removeFromScene( SceneObject* pSceneObject )
     {
         if ( mSceneObjects[n] == pSceneObject )
         {
-            mSceneObjects.erase_fast( n );
+            mSceneObjects.erase( n );
             break;
         }
     }
@@ -1353,7 +1347,7 @@ void Scene::removeAssetPreload( const char* pAssetId )
         if ( mAssetPreloads[index]->getAssetId() == assetId )
         {
             delete mAssetPreloads[index];
-            mAssetPreloads.erase_fast( index );
+            mAssetPreloads.erase( index );
             return;
         }
     }
@@ -1400,7 +1394,7 @@ b2Joint* Scene::findJoint( const S32 jointId )
     // Find joint.
     typeJointHash::iterator itr = mJoints.find( jointId );
 
-    return itr == mJoints.end() ? NULL : itr->value;
+    return itr == mJoints.end() ? NULL : itr->second;
 }
 
 //-----------------------------------------------------------------------------
@@ -1433,7 +1427,7 @@ S32 Scene::findJointId( b2Joint* pJoint )
         return 0;
     }
 
-    return itr->value;
+    return itr->second;
 }
 
 //-----------------------------------------------------------------------------
@@ -3463,8 +3457,8 @@ void Scene::detachAllSceneWindows( void )
 
 bool Scene::isSceneWindowAttached( SceneWindow* pSceneWindow2D )
 {
-    for( SimSet::iterator itr = mAttachedSceneWindows.begin(); itr != mAttachedSceneWindows.end(); itr++ )
-        if ( pSceneWindow2D == dynamic_cast<SceneWindow*>(*itr) )
+    for( SimObject* itr:mAttachedSceneWindows )
+        if ( pSceneWindow2D == dynamic_cast<SceneWindow*>(itr) )
             // Found.
             return true;
 
@@ -3530,7 +3524,7 @@ void Scene::processDeleteRequests( const bool forceImmediate )
         {
             // No, so it looks like the object got deleted prematurely; let's just remove
             // the request instead.
-            mDeleteRequests.erase_fast( requestIndex );
+            mDeleteRequests.erase( requestIndex );
             
             // Repeat this item.
             continue;
@@ -3590,7 +3584,7 @@ void Scene::processDeleteRequests( const bool forceImmediate )
                 pSceneObject->deleteObject();
 
                 // Quickly remove delete-request.
-                mDeleteRequestsTemp.erase_fast( requestIndex );
+                mDeleteRequestsTemp.erase( requestIndex );
 
                 // Repeat this item.
                 continue;
@@ -3696,14 +3690,9 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
     if ( pJointNode != NULL )
     {
         // Yes, so fetch children joint nodes.
-        const TamlCustomNodeVector& jointChildren = pJointNode->getChildren();
-
         // Iterate joints.
-        for( TamlCustomNodeVector::const_iterator jointNodeItr = jointChildren.begin(); jointNodeItr != jointChildren.end(); ++jointNodeItr )
+        for( TamlCustomNode* pJointNode:pJointNode->getChildren() )
         {
-            // Fetch joint node,
-            TamlCustomNode* pJointNode = *jointNodeItr;
-
             // Fetch node name.
             StringTableEntry nodeName = pJointNode->getNodeName();
 
@@ -3734,14 +3723,9 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 F32 dampingRatio = 0.0f;
 
                 // Fetch joint fields.
-                const TamlCustomFieldVector& jointFields = pJointNode->getFields();
-
                 // Iterate property fields.
-                for ( TamlCustomFieldVector::const_iterator jointFieldItr = jointFields.begin(); jointFieldItr != jointFields.end(); ++jointFieldItr )
+                for ( TamlCustomField* pField:pJointNode->getFields() )
                 {
-                    // Fetch field node.
-                    TamlCustomField* pField = *jointFieldItr;
-
                     // Fetch property field name.
                     StringTableEntry fieldName = pField->getFieldName();
 
@@ -3800,14 +3784,9 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 F32 maxLength = -1.0f;
 
                 // Fetch joint fields.
-                const TamlCustomFieldVector& jointFields = pJointNode->getFields();
-
                 // Iterate property fields.
-                for ( TamlCustomFieldVector::const_iterator jointFieldItr = jointFields.begin(); jointFieldItr != jointFields.end(); ++jointFieldItr )
+                for ( TamlCustomField* pField: pJointNode->getFields() )
                 {
-                    // Fetch field node.
-                    TamlCustomField* pField = *jointFieldItr;
-
                     // Fetch property field name.
                     StringTableEntry fieldName = pField->getFieldName();
 
@@ -3864,14 +3843,9 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 F32 maxMotorTorque = 0.0f;
 
                 // Fetch joint fields.
-                const TamlCustomFieldVector& jointFields = pJointNode->getFields();
-
                 // Iterate property fields.
-                for ( TamlCustomFieldVector::const_iterator jointFieldItr = jointFields.begin(); jointFieldItr != jointFields.end(); ++jointFieldItr )
+                for ( TamlCustomField* pField:pJointNode->getFields() )
                 {
-                    // Fetch field node.
-                    TamlCustomField* pField = *jointFieldItr;
-
                     // Fetch property field name.
                     StringTableEntry fieldName = pField->getFieldName();
 
@@ -3948,14 +3922,9 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 F32 dampingRatio = 0.0f;
 
                 // Fetch joint fields.
-                const TamlCustomFieldVector& jointFields = pJointNode->getFields();
-
                 // Iterate property fields.
-                for ( TamlCustomFieldVector::const_iterator jointFieldItr = jointFields.begin(); jointFieldItr != jointFields.end(); ++jointFieldItr )
+                for ( TamlCustomField* pField:pJointNode->getFields() )
                 {
-                    // Fetch field node.
-                    TamlCustomField* pField = *jointFieldItr;
-
                     // Fetch property field name.
                     StringTableEntry fieldName = pField->getFieldName();
 
@@ -4016,14 +3985,9 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 b2Vec2 worldAxis( 0.0f, 1.0f );
 
                 // Fetch joint fields.
-                const TamlCustomFieldVector& jointFields = pJointNode->getFields();
-
                 // Iterate property fields.
-                for ( TamlCustomFieldVector::const_iterator jointFieldItr = jointFields.begin(); jointFieldItr != jointFields.end(); ++jointFieldItr )
+                for ( TamlCustomField* pField:pJointNode->getFields())
                 {
-                    // Fetch field node.
-                    TamlCustomField* pField = *jointFieldItr;
-
                     // Fetch property field name.
                     StringTableEntry fieldName = pField->getFieldName();
 
@@ -4100,14 +4064,9 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 F32 maxTorque = 0.0f;
 
                 // Fetch joint fields.
-                const TamlCustomFieldVector& jointFields = pJointNode->getFields();
-
                 // Iterate property fields.
-                for ( TamlCustomFieldVector::const_iterator jointFieldItr = jointFields.begin(); jointFieldItr != jointFields.end(); ++jointFieldItr )
+                for ( TamlCustomField* pField:pJointNode->getFields() )
                 {
-                    // Fetch field node.
-                    TamlCustomField* pField = *jointFieldItr;
-
                     // Fetch property field name.
                     StringTableEntry fieldName = pField->getFieldName();
 
@@ -4170,14 +4129,9 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 b2Vec2 worldAxis( 0.0f, 1.0f );
 
                 // Fetch joint fields.
-                const TamlCustomFieldVector& jointFields = pJointNode->getFields();
-
                 // Iterate property fields.
-                for ( TamlCustomFieldVector::const_iterator jointFieldItr = jointFields.begin(); jointFieldItr != jointFields.end(); ++jointFieldItr )
+                for ( TamlCustomField* pField:pJointNode->getFields() )
                 {
-                    // Fetch field node.
-                    TamlCustomField* pField = *jointFieldItr;
-
                     // Fetch property field name.
                     StringTableEntry fieldName = pField->getFieldName();
 
@@ -4259,14 +4213,9 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 b2Vec2 worldGroundAnchorB = b2Vec2_zero;
 
                 // Fetch joint fields.
-                const TamlCustomFieldVector& jointFields = pJointNode->getFields();
-
                 // Iterate property fields.
-                for ( TamlCustomFieldVector::const_iterator jointFieldItr = jointFields.begin(); jointFieldItr != jointFields.end(); ++jointFieldItr )
+                for ( TamlCustomField* pField:pJointNode->getFields() )
                 {
-                    // Fetch field node.
-                    TamlCustomField* pField = *jointFieldItr;
-
                     // Fetch property field name.
                     StringTableEntry fieldName = pField->getFieldName();
 
@@ -4333,14 +4282,9 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 F32 dampingRatio = 0.7f;
 
                 // Fetch joint fields.
-                const TamlCustomFieldVector& jointFields = pJointNode->getFields();
-
                 // Iterate property fields.
-                for ( TamlCustomFieldVector::const_iterator jointFieldItr = jointFields.begin(); jointFieldItr != jointFields.end(); ++jointFieldItr )
+                for ( TamlCustomField* pField:pJointNode->getFields() )
                 {
-                    // Fetch field node.
-                    TamlCustomField* pField = *jointFieldItr;
-
                     // Fetch property field name.
                     StringTableEntry fieldName = pField->getFieldName();
 
@@ -4397,14 +4341,9 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 F32 correctionFactor = 0.3f;
 
                 // Fetch joint fields.
-                const TamlCustomFieldVector& jointFields = pJointNode->getFields();
-
                 // Iterate property fields.
-                for ( TamlCustomFieldVector::const_iterator jointFieldItr = jointFields.begin(); jointFieldItr != jointFields.end(); ++jointFieldItr )
+                for ( TamlCustomField* pField:pJointNode->getFields() )
                 {
-                    // Fetch field node.
-                    TamlCustomField* pField = *jointFieldItr;
-
                     // Fetch property field name.
                     StringTableEntry fieldName = pField->getFieldName();
 
@@ -4464,10 +4403,8 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
         SimSet* pControllerSet = getControllers();
 
         // Fetch children controller nodes.
-        const TamlCustomNodeVector& controllerChildren = pControllerNode->getChildren();
-
         // Iterate controllers.
-        for( TamlCustomNodeVector::const_iterator controllerNodeItr = controllerChildren.begin(); controllerNodeItr != controllerChildren.end(); ++controllerNodeItr )
+        for( TamlCustomNode* controllerNode:pControllerNode->getChildren() )
         {
             // Is the node a proxy object?
             if ( !pControllerNode->isProxyObject() )
@@ -4514,14 +4451,9 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
         const S32 assetIdPrefixLength = dStrlen( assetIdTypePrefix );
 
         // Fetch the preload children nodes.
-        const TamlCustomNodeVector& preloadChildren = pAssetPreloadNode->getChildren();
-
         // Iterate asset preloads.
-        for( TamlCustomNodeVector::const_iterator assetPreloadNodeItr = preloadChildren.begin(); assetPreloadNodeItr != preloadChildren.end(); ++assetPreloadNodeItr )
+        for( TamlCustomNode* pAssetNode:pAssetPreloadNode->getChildren() )
         {
-            // Fetch asset node.
-            const TamlCustomNode* pAssetNode = *assetPreloadNodeItr;
-
             // Ignore non-asset nodes.
             if ( pAssetNode->getNodeName() != assetNodeName )
                 continue;
@@ -4566,10 +4498,10 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
         TamlCustomNode* pJointCustomNode = customNodes.addNode( jointCustomNodeName );
 
         // Iterate joints.
-        for( typeJointHash::iterator jointItr = mJoints.begin(); jointItr != mJoints.end(); ++jointItr )
+        for( auto jointItr:mJoints )
         {
             // Fetch base joint.
-            b2Joint* pBaseJoint = jointItr->value;
+            b2Joint* pBaseJoint = jointItr.second;
 
             // Add joint node.
             // NOTE:    The name of the node will get updated shortly.
@@ -5011,13 +4943,13 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
         TamlCustomNode* pAssetPreloadCustomNode = customNodes.addNode( assetPreloadNodeName );
 
         // Iterate asset preloads.
-        for( typeAssetPtrVector::const_iterator assetItr = mAssetPreloads.begin(); assetItr != mAssetPreloads.end(); ++assetItr )
+        for( auto assetItr:mAssetPreloads )
         {
             // Add node.
             TamlCustomNode* pAssetNode = pAssetPreloadCustomNode->addNode( assetNodeName );
 
             char valueBuffer[1024];
-            dSprintf( valueBuffer, sizeof(valueBuffer), "%s%s", assetIdTypePrefix, (*assetItr)->getAssetId() );
+            dSprintf( valueBuffer, sizeof(valueBuffer), "%s%s", assetIdTypePrefix, assetItr->getAssetId() );
 
             // Add asset Id.
             pAssetNode->addField( "Id", valueBuffer );

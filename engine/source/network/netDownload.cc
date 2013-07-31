@@ -39,7 +39,7 @@ public:
    U32 nameCount;
    char mFileNames[MaxFileNames][256];
 
-   FileDownloadRequestEvent(Vector<char *> *nameList = NULL)
+   FileDownloadRequestEvent(std::deque<char *> *nameList = NULL)
    {
       nameCount = 0;
       if(nameList)

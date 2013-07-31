@@ -30,86 +30,35 @@
 // with a platform state similar to what OS X uses.
 @interface iOSPlatState : NSObject
 {
-    UIView*			  _window;
-
-    // Process ID for this application instance
-    UIApplication*    _application;
-
-    EAGLContext*      _ctx;
-    
-    bool              ctxNeedsUpdate;
-
-    U32               currentTime;
-    bool				 fullscreen;
-
-    // Version of operating system
-    U32 osVersion;
-
     // Number of arguments passed into this application
     U32 _argc;
 
     // Arguments passed into this application
     const char** _argv;
 
-    U32 _lastTimeTick;
-    
-    U32 _sleepTicks;
-    
     // Location of the folder containing the main.cs
     NSString* _mainCSDirectory;
     
     // Threaded alert object
     void* _alertSemaphore;
-    S32               alertHit;
 
     // Random generator
     RandomLCG*        _platformRandom;
 
-    // Used to report is mouse is locked to the main window or not
-    BOOL _mouseLocked;
-    
-    // Used to report if the window has been pushed to the background or not
-    BOOL _backgrounded;
-    
-    // Use to report if the window has been minimized or not
-    BOOL _minimized;
-
-    U32               appReturn;
-
-    NSTimeInterval	 timerInterval;
-    UIApplication	*application;
-
     // Reports the quit state for the applications
     BOOL _quit;
-
-    // Timer
-    NSTimer* _iOSTimer;
 };
 
-@property (strong) EAGLContext* ctx;
-@property (strong) UIView* window;
-@property (strong) UIApplication* application;
-@property void* alertSemaphore;
 @property RandomLCG* platformRandom;
-@property BOOL fullScreen;
 @property U32 argc;
 @property const char** argv;
 @property U32 currentSimTime;
-@property U32 lastTimeTick;
-@property U32 sleepTicks;
 @property (nonatomic,strong) NSString* mainCSDirectory;
-@property (nonatomic,strong) NSString* windowTitle;
-@property BOOL mouseLocked;
-@property BOOL backgrounded;
-@property BOOL minimized;
 @property BOOL quit;
 
 /// Global singleton that encapsulates a lot of mac platform state & globals.
 + (id)sharedPlatState;
 
 - (BOOL)initializeTorque2D;
-- (void)shutDownTorque2D;
-
-- (void)updateWindowTitle:(const char*)title;
 
 @end

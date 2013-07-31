@@ -88,9 +88,9 @@ public:
         PROFILE_SCOPE(SceneRenderQueue_ResetState);
 
         // Cache request.
-        for( typeRenderRequestVector::iterator itr = mRenderRequests.begin(); itr != mRenderRequests.end(); ++itr )
+        for( SceneRenderRequest* itr:mRenderRequests )
         {
-            SceneRenderRequestFactory.cacheObject( *itr );
+            SceneRenderRequestFactory.cacheObject( itr );
         }
         mRenderRequests.clear();
 

@@ -24,15 +24,18 @@
 
 - (id)initWithT2DWindow:(iOSWindow *)in_window
 {
-    self.window = in_window;
-
-    iOSGestureRecognizer* gestureRecognizer = self;
-    
-    T2DUITouchGestureRecognizer* newTouchGestureRecognizer = [[T2DUITouchGestureRecognizer alloc] initWithTarget:self action:@selector(handleTouch:)];
-    
-    gestureRecognizer.touchGestureRecognizer = newTouchGestureRecognizer;
-    in_window->addGestureRecognizer( gestureRecognizer.touchGestureRecognizer );
-    
+   self = [super init];
+   if (self)
+   {
+      self.window = in_window;
+      
+      iOSGestureRecognizer* gestureRecognizer = self;
+      
+      T2DUITouchGestureRecognizer* newTouchGestureRecognizer = [[T2DUITouchGestureRecognizer alloc] initWithTarget:self action:@selector(handleTouch:)];
+      
+      gestureRecognizer.touchGestureRecognizer = newTouchGestureRecognizer;
+      in_window->addGestureRecognizer( gestureRecognizer.touchGestureRecognizer );
+   }
     return self;
 }
 

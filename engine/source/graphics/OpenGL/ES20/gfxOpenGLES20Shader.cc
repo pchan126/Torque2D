@@ -219,9 +219,8 @@ bool GFXOpenGLES20Shader::_init()
    // Notify Buffers we might have changed in size. 
    // If this was our first init then we won't have any activeBuffers 
    // to worry about unnecessarily calling.
-   Vector<GFXShaderConstBuffer*>::iterator biter = mActiveBuffers.begin();
-   for ( ; biter != mActiveBuffers.end(); biter++ )   
-      ((GFXOpenGLES20ShaderConstBuffer*)(*biter))->onShaderReload( this );
+   for ( auto biter:mActiveBuffers )
+      ((GFXOpenGLES20ShaderConstBuffer*)(biter))->onShaderReload( this );
    
    return true;
 }

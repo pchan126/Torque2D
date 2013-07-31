@@ -34,10 +34,15 @@ S32 GLFWWindowManager::getWindowCount()
    return mWindowList.size();
 }
 
-void GLFWWindowManager::getWindows(VectorPtr<PlatformWindow*> &windows)
+void GLFWWindowManager::getWindows(Vector<PlatformWindow*> &windows)
 {
    // Populate a list with references to all the windows created from this manager.
-   windows.merge(mWindowList);
+	for (GLFWWindow* item: mWindowList)
+	{
+		PlatformWindow* temp = dynamic_cast<PlatformWindow*>(item);
+		if (temp != nullptr)
+			windows.push_back(temp);
+	}
 }
 
 PlatformWindow * GLFWWindowManager::getFirstWindow()
@@ -144,7 +149,7 @@ void GLFWWindowManager::_addWindow(GLFWWindow* window)
       AssertFatal(window != mWindowList[i], "GLFWWindowManager::_addWindow - Should not add a window more than once");
 #endif
    if (mWindowList.size() > 0)
-      window->mNextWindow = mWindowList.last();
+      window->mNextWindow = mWindowList.back();
    else
    {
       Process::notify(&glfwPollEvents);
@@ -163,7 +168,7 @@ void GLFWWindowManager::_removeWindow(GLFWWindow* window)
       if(*i == window)
       {
          mWindowList.erase(i);
-         return;
+         break;
       }
    }
     
@@ -172,9 +177,6 @@ void GLFWWindowManager::_removeWindow(GLFWWindow* window)
        Process::remove(&glfwPollEvents);
        Process::shutdown();
     }
-    
-        
-   AssertFatal(false, avar("GLFWWindowManager::_removeWindow - Failed to remove window %x, perhaps it was already removed?", window));
 }
 
 void GLFWWindowManager::_onAppSignal(WindowId wnd, S32 event)

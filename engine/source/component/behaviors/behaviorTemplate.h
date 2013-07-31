@@ -116,11 +116,11 @@ public:
     inline BehaviorField* getBehaviorField( const char* fieldName )
     {
         StringTableEntry name = StringTable->insert( fieldName );
-        for( Vector<BehaviorField>::iterator itr = mFields.begin(); itr != mFields.end(); ++itr )
+        for( Vector<BehaviorField>::iterator itr = mFields.begin(); itr != mFields.end(); ++itr  )
         {
             // Check if found.
             if ( name == itr->mName )
-                return itr;
+                return &(*itr);
         }
         return NULL;
     }

@@ -66,7 +66,7 @@ void FeatureSet::_rebuildDesc()
    // By interning the description we have only
    // one instance in the system and we get fast
    // pointer compares for equality.
-   mDescription = desc.intern();
+   mDescription = desc;
 }
 
 const FeatureType& FeatureSet::getAt( U32 index, S32 *outIndex ) const 
@@ -120,7 +120,7 @@ void FeatureSet::setFeature( const FeatureType &type, bool set, S32 index )
             return;
          else
          {
-            mFeatures.erase_fast( i );
+            mFeatures.erase( i );
             mDescription.clear();
             return;
          }
@@ -163,7 +163,7 @@ void FeatureSet::removeFeature( const FeatureType &type )
       const FeatureInfo &info = mFeatures[i];
       if ( info.type == &type )
       {
-         mFeatures.erase_fast( i );
+         mFeatures.erase( i );
          mDescription.clear();
          return;
       }
@@ -189,7 +189,7 @@ void FeatureSet::filter( const FeatureSet &features )
    for ( U32 i=0; i < mFeatures.size(); )
    {
       if ( !features.hasFeature( *mFeatures[i].type ) )
-         mFeatures.erase_fast( i );
+         mFeatures.erase( i );
       else
          i++;
    }

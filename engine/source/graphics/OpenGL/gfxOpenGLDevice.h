@@ -114,7 +114,7 @@ public:
     typedef Vector<MatrixF> MatrixStack;
     
     /// Since GL does not have separate world and view matrices we need to track them
-    MatrixF m_mCurrentView;
+    MatrixStack m_ViewStack;
     MatrixStack m_WorldStack;
     MatrixStack m_ProjectionStack;
     
@@ -122,7 +122,9 @@ public:
     virtual void popWorldMatrix();
     virtual void pushProjectionMatrix();
     virtual void popProjectionMatrix();
-    
+    virtual void pushViewMatrix();
+    virtual void popViewMatrix();
+
     virtual void multWorld( const MatrixF &mat );
 
     virtual F32 getPixelShaderVersion() const { return mPixelShaderVersion; }
@@ -130,7 +132,7 @@ public:
     
     virtual const GFXOpenGLStateBlockRef getCurrentStateBlock() { return mCurrentGLStateBlock;};
 
-   virtual void updateStates(bool forceSetAll = false);
+    virtual void updateStates(bool forceSetAll = false);
 
 protected:
 

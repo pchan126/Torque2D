@@ -116,7 +116,7 @@ void ResManager::clearMissingFileList()
    mMissingFileList.clear();
 }
 
-bool ResManager::getMissingFileList(Vector<char *> &list)
+bool ResManager::getMissingFileList(std::deque<char *> &list)
 {
    if(!mMissingFileList.size())
       return false;
@@ -1166,7 +1166,7 @@ struct ResourceObjectIndex
 
 //------------------------------------------------------------------------------
 
-void ResManager::serialize (VectorPtr < const char *>&filenames)
+void ResManager::serialize (Vector < const char *>&filenames)
 {
    Vector < ResourceObjectIndex > sortVector;
 

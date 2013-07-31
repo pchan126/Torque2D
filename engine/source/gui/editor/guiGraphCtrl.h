@@ -30,6 +30,7 @@
 #include "graphics/gfxTextureManager.h"
 #endif
 
+#include <deque>
 
 class GuiGraphCtrl : public GuiControl
 {
@@ -55,7 +56,7 @@ public:
 	  U32			mAutoPlotDelay;
 	  SimTime		mAutoPlotLastDisplay;
 	  ColorF		mGraphColor;
-	  Vector<F32>	mGraphData;
+	  std::deque<F32>	mGraphData;
 	  F32			mGraphMax;
 	  GraphType		mGraphType;
    };

@@ -650,6 +650,7 @@ void GuiScrollCtrl::onTouchUp(const GuiEvent &event)
    if (mAbs(mThumbMouseDelta.y - curMousePos.y) < 10.0f && mAbs(mThumbMouseDelta.x - curMousePos.x) < 10.0f)
    {
       GuiControl *controlHit = Parent::findHitControl(curMousePos);
+      if (controlHit == this) return;
 
       //see if the controlHit is a modeless dialog...
       if (( controlHit->mActive) || ( controlHit->mProfile->mModal))

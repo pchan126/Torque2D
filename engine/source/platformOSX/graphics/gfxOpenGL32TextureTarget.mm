@@ -30,60 +30,13 @@
 /// Internal struct used to track texture information for FBO attachments
 /// This serves as an abstract base so we can deal with cubemaps and standard 
 /// 2D/Rect textures through the same interface
-class _GFXGLTargetDesc
-{
-public:
-   _GFXGLTargetDesc(U32 _mipLevel, U32 _zOffset) :
-      mipLevel(_mipLevel), zOffset(_zOffset)
-   {
-   }
-   
-   virtual ~_GFXGLTargetDesc() {}
-   
-   virtual U32 getHandle() = 0;
-   virtual U32 getWidth() = 0;
-   virtual U32 getHeight() = 0;
-   virtual U32 getDepth() = 0;
-   virtual bool hasMips() = 0;
-   virtual GLenum getBinding() = 0;
-   
-   U32 getMipLevel() { return mipLevel; }
-   U32 getZOffset() { return zOffset; }
-   
-private:
-   U32 mipLevel;
-   U32 zOffset;
-};
-
-/// Internal struct used to track 2D/Rect texture information for FBO attachment
-class _GFXOpenGL32TextureTargetDesc : public _GFXGLTargetDesc
-{
-public:
-   _GFXOpenGL32TextureTargetDesc(GFXOpenGL32TextureObject* tex, U32 _mipLevel, U32 _zOffset) 
-      : _GFXGLTargetDesc(_mipLevel, _zOffset), mTex(tex)
-   {
-   }
-   
-   virtual ~_GFXOpenGL32TextureTargetDesc() {}
-   
-   virtual U32 getHandle() { return mTex->getHandle(); }
-   virtual U32 getWidth() { return mTex->getWidth(); }
-   virtual U32 getHeight() { return mTex->getHeight(); }
-   virtual U32 getDepth() { return mTex->getDepth(); }
-   virtual bool hasMips() { return mTex->mMipLevels != 1; }
-   virtual GLenum getBinding() { return mTex->getBinding(); }
-   
-private:
-   StrongRefPtr<GFXOpenGL32TextureObject> mTex;
-};
-
 
 /// Internal struct used to track Cubemap texture information for FBO attachment
-class _GFXOpenGL32CubemapTargetDesc : public _GFXGLTargetDesc
+class _GFXOpenGL32CubemapTargetDesc : public _GFXOpenGLTargetDesc
 {
 public:
    _GFXOpenGL32CubemapTargetDesc(GFXOpenGL32Cubemap* tex, U32 _face, U32 _mipLevel, U32 _zOffset)
-      : _GFXGLTargetDesc(_mipLevel, _zOffset), mTex(tex), mFace(_face)
+      : _GFXOpenGLTargetDesc(_mipLevel, _zOffset), mTex(tex), mFace(_face)
    {
    }
    
@@ -133,47 +86,12 @@ AssertFatal(false, "Something really bad happened with an FBO");\
 // Actual GFXOpenGL32TextureTarget interface
 GFXOpenGL32TextureTarget::GFXOpenGL32TextureTarget()
 {
-   for(U32 i=0; i<MaxRenderSlotId; i++)
-      mTargets[i] = NULL;
-   
-   GFXTextureManager::addEventDelegate( this, &GFXOpenGL32TextureTarget::_onTextureEvent );
-
-   glGenFramebuffers(1, &mFramebuffer);
 }
 
 GFXOpenGL32TextureTarget::~GFXOpenGL32TextureTarget()
 {
-   GFXTextureManager::removeEventDelegate( this, &GFXOpenGL32TextureTarget::_onTextureEvent );
-   glDeleteFramebuffers(1, &mFramebuffer);
 }
 
-const Point2I GFXOpenGL32TextureTarget::getSize()
-{
-   if(mTargets[Color0].isValid())
-      return Point2I(mTargets[Color0]->getWidth(), mTargets[Color0]->getHeight());
-
-   return Point2I(0, 0);
-}
-
-GFXFormat GFXOpenGL32TextureTarget::getFormat()
-{
-   // TODO: Fix me!
-   return GFXFormatR8G8B8A8;
-}
-
-void GFXOpenGL32TextureTarget::attachTexture( GFXTextureObject *tex, RenderSlot slot, U32 mipLevel/*=0*/, U32 zOffset /*= 0*/ )
-{
-   // Triggers an update when we next render
-   invalidateState();
-
-   // We stash the texture and info into an internal struct.
-   GFXOpenGL32TextureObject* glTexture = static_cast<GFXOpenGL32TextureObject*>(tex);
-   
-   if(tex && tex != GFXTextureTarget::sDefaultDepthStencil)
-      mTargets[slot] = new _GFXOpenGL32TextureTargetDesc(glTexture, mipLevel, zOffset);
-   else
-      mTargets[slot] = NULL;
-}
 
 void GFXOpenGL32TextureTarget::attachTexture( GFXCubemap *tex, U32 face, RenderSlot slot, U32 mipLevel/*=0*/ )
 {
@@ -196,17 +114,8 @@ void GFXOpenGL32TextureTarget::attachTexture( GFXCubemap *tex, U32 face, RenderS
 
 void GFXOpenGL32TextureTarget::makeActive()
 {
-   
    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mFramebuffer);
    glBindFramebuffer(GL_READ_FRAMEBUFFER, mFramebuffer);
-//    _GFXGLTargetDesc* color0 = getTargetDesc(GFXTextureTarget::Color0);
-//    if(!color0 || !(color0->hasMips()))
-//        return;
-//
-//    // Generate mips if necessary
-//    // Assumes a 2D texture.
-//    glActiveTexture(GL_TEXTURE0);
-//    glBindTexture(GL_TEXTURE_2D, color0->getHandle());
 }
 
 void GFXOpenGL32TextureTarget::deactivate()
@@ -224,12 +133,9 @@ void GFXOpenGL32TextureTarget::applyState()
    stateApplied();
    
    // REMINDER: When we implement MRT support, check against GFXGLDevice::getNumRenderTargets()
+    makeActive();
 
-   glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mFramebuffer);
-    glBindFramebuffer(GL_READ_FRAMEBUFFER, mFramebuffer);
-//    Con::printf("GFXOpenGL32TextureTarget::applyState:: glBindFramebuffer %i", mFramebuffer);
-
-   _GFXGLTargetDesc* color0 = getTargetDesc(GFXTextureTarget::Color0);
+   _GFXOpenGLTargetDesc * color0 = getTargetDesc(GFXTextureTarget::Color0);
    if(color0)
    {
       if(color0->getDepth() == 0)
@@ -246,7 +152,7 @@ void GFXOpenGL32TextureTarget::applyState()
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
    
-   _GFXGLTargetDesc* depthStencil = getTargetDesc(GFXTextureTarget::DepthStencil);
+   _GFXOpenGLTargetDesc * depthStencil = getTargetDesc(GFXTextureTarget::DepthStencil);
    if(depthStencil)
    {
       // Certain drivers have issues with depth only FBOs.  That and the next two asserts assume we have a color target.
@@ -262,23 +168,5 @@ void GFXOpenGL32TextureTarget::applyState()
    }
 }
 
-_GFXGLTargetDesc* GFXOpenGL32TextureTarget::getTargetDesc(RenderSlot slot) const
-{
-   // This can only be called by our implementations, and then will not actually store the pointer so this is (almost) safe
-   return mTargets[slot].ptr();
-}
-
-void GFXOpenGL32TextureTarget::_onTextureEvent( GFXTexCallbackCode code )
-{
-   invalidateState();
-}
-
-const String GFXOpenGL32TextureTarget::describeSelf() const
-{
-   String ret = String::ToString("   Color0 Attachment: %i", mTargets[Color0].isValid() ? mTargets[Color0]->getHandle() : 0);
-   ret += String::ToString("   Depth Attachment: %i", mTargets[DepthStencil].isValid() ? mTargets[DepthStencil]->getHandle() : 0);
-   
-   return ret;
-}
 
 

@@ -79,9 +79,6 @@ void AmbientForceController::copyTo(SimObject* object)
 void AmbientForceController::integrate( Scene* pScene, const F32 totalTime, const F32 elapsedTime, DebugStats* pDebugStats )
 {
     // Process all the scene objects.
-    for( SceneObjectSet::iterator itr = begin(); itr != end(); ++itr )
-    {
-        // Apply the force.
-        (*itr)->applyForce( mForce, true );
-    }
+    for( auto itr:*this )
+        itr->applyForce( mForce, true );
 }

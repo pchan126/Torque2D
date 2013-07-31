@@ -27,7 +27,7 @@
 #include "memory/autoPtr.h"
 
 class GFXOpenGL32TextureObject;
-class _GFXGLTargetDesc;
+class _GFXOpenGLTargetDesc;
 
 /// Render to texture support for OpenGL.
 /// This class needs to make a number of assumptions due to the requirements
@@ -48,42 +48,13 @@ public:
    GFXOpenGL32TextureTarget();
    virtual ~GFXOpenGL32TextureTarget();
 
-   virtual const Point2I getSize();
-   virtual GFXFormat getFormat();
-   virtual void attachTexture( GFXTextureObject *tex, RenderSlot slot = Color0, U32 mipLevel=0, U32 zOffset = 0);
    virtual void attachTexture( GFXCubemap *tex, U32 face,  RenderSlot slot = Color0,  U32 mipLevel=0);
 
-   /// Functions to query internal state
-   /// @{
-   
-   /// Returns the internal structure for the given slot.  This should only be called by our internal implementations.
-   _GFXGLTargetDesc* getTargetDesc(RenderSlot slot) const;
-
-   /// @}
-   
    void deactivate();
-   virtual const String describeSelf() const;
 
     void applyState();
 
     void makeActive();
-
-protected:
-
-   friend class GFXGLDevice;
-
-   /// The callback used to get texture events.
-   /// @see GFXTextureManager::addEventDelegate
-   void _onTextureEvent( GFXTexCallbackCode code );
-
-   /// Array of _GFXGLTargetDesc's, an internal struct used to keep track of texture data.
-   AutoPtr<_GFXGLTargetDesc> mTargets[MaxRenderSlotId];
-
-   /// These redirect to our internal implementation
-   /// @{
-
-    /// @}
-
 };
 
 #endif

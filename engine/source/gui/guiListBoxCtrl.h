@@ -40,6 +40,7 @@
 #include "gui/containers/guiScrollCtrl.h"
 #endif
 
+#include <deque>
 
 class GuiListBoxCtrl : public GuiControl
 {
@@ -60,8 +61,8 @@ public:
       bool              hasColor;
    };
 
-   VectorPtr<LBItem*>   mItems;
-   VectorPtr<LBItem*>   mSelectedItems;
+   Vector<LBItem*>   mItems;
+   std::deque<LBItem*>   mSelectedItems;
    bool                 mMultipleSelections;
    Point2I              mItemSize;
    bool                 mFitParentWidth;

@@ -131,11 +131,12 @@ int dStrcmp(const char *str1, const char *str2)
 
 int dStrcmp( const UTF16 *str1, const UTF16 *str2)
 {
-    int ret;
+    int ret = 0;
     const UTF16 *a, *b;
     a = str1;
     b = str2;
-    
+   
+    ret = *a - *b;
     while(*a && *b && (ret = *a - *b) == 0)
     {
         a++, b++;

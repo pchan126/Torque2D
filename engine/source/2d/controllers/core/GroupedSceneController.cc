@@ -45,7 +45,7 @@ void GroupedSceneController::copyTo(SimObject* object)
     AssertFatal(pController != NULL, "GroupedSceneController::copyTo() - Object is not the correct type.");
 
     // Add objects to the controller.
-    for( SceneObjectSet::iterator objectItr = begin(); objectItr != end(); ++objectItr )
-        pController->addObject( *objectItr );
+    for( auto objectItr:*this )
+        pController->addObject( objectItr );
 }
 

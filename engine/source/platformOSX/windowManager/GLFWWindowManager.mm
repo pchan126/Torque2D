@@ -28,16 +28,15 @@ GLFWWindowManager::~GLFWWindowManager()
    mWindowList.clear();
 }
 
-S32 GLFWWindowManager::getWindowCount()
-{
-   // Get the number of PlatformWindow's in this manager
-   return mWindowList.size();
-}
-
-void GLFWWindowManager::getWindows(VectorPtr<PlatformWindow*> &windows)
+void GLFWWindowManager::getWindows(Vector<PlatformWindow*> &windows)
 {
    // Populate a list with references to all the windows created from this manager.
-   windows.merge(mWindowList);
+    for (GLFWWindow* item: mWindowList)
+    {
+        PlatformWindow* temp = dynamic_cast<PlatformWindow*>(item);
+        if (temp != nullptr)
+            windows.push_back(temp);
+    }
 }
 
 PlatformWindow * GLFWWindowManager::getFirstWindow()
@@ -51,10 +50,10 @@ PlatformWindow * GLFWWindowManager::getFirstWindow()
 
 PlatformWindow* GLFWWindowManager::getFocusedWindow()
 {
-   for (U32 i = 0; i < mWindowList.size(); i++)
+   for (PlatformWindow* window:mWindowList)
    {
-      if( mWindowList[i]->isFocused() )
-         return mWindowList[i];
+      if( window->isFocused() )
+         return window;
    }
 
    return NULL;
@@ -62,10 +61,9 @@ PlatformWindow* GLFWWindowManager::getFocusedWindow()
 
 PlatformWindow* GLFWWindowManager::getWindowById(WindowId zid)
 {
-   // Find the window by its arbirary WindowId.
-   for(U32 i = 0; i < mWindowList.size(); i++)
+   // Find the window by its arbitrary WindowId.
+   for(PlatformWindow* w:mWindowList)
    {
-      PlatformWindow* w = mWindowList[i];
       if( w->getWindowId() == zid)
          return w;
    }
@@ -75,9 +73,9 @@ PlatformWindow* GLFWWindowManager::getWindowById(WindowId zid)
 GLFWWindow* GLFWWindowManager::getWindowByGLFW(GLFWwindow* window)
 {
    // Find the window by its arbirary WindowId.
-   for(U32 i = 0; i < mWindowList.size(); i++)
+   for(PlatformWindow* pw:mWindowList)
    {
-      GLFWWindow* w = dynamic_cast<GLFWWindow*>(mWindowList[i]);
+      GLFWWindow* w = dynamic_cast<GLFWWindow*>(pw);
       if( w->window == window)
          return w;
    }
@@ -92,10 +90,9 @@ void GLFWWindowManager::_processCmdLineArgs(const S32 argc, const char **argv)
 
 PlatformWindow* GLFWWindowManager::assignCanvas(GFXDevice* device, const GFXVideoMode &mode, GuiCanvas* canvas)
 {
-   // Find the window by its arbirary WindowId.
-   for(U32 i = 0; i < mWindowList.size(); i++)
+   // Find the window by its arbitrary WindowId.
+   for(PlatformWindow* w:mWindowList)
    {
-      PlatformWindow* w = mWindowList[i];
       if (w->mBoundCanvas == NULL)
       {
          w->setVideoMode(mode);
@@ -140,11 +137,11 @@ void GLFWWindowManager::_addWindow(GLFWWindow* window)
 {
 #ifdef TORQUE_DEBUG
    // Make sure we aren't adding the window twice
-   for(U32 i = 0; i < mWindowList.size(); i++)
-      AssertFatal(window != mWindowList[i], "GLFWWindowManager::_addWindow - Should not add a window more than once");
+   for(PlatformWindow* w:mWindowList)
+      AssertFatal(window != w, "GLFWWindowManager::_addWindow - Should not add a window more than once");
 #endif
    if (mWindowList.size() > 0)
-      window->mNextWindow = mWindowList.last();
+      window->mNextWindow = mWindowList.back();
    else
       window->mNextWindow = NULL;
 
@@ -155,22 +152,10 @@ void GLFWWindowManager::_addWindow(GLFWWindow* window)
 
 void GLFWWindowManager::_removeWindow(GLFWWindow* window)
 {
-   for(WindowList::iterator i = mWindowList.begin(); i != mWindowList.end(); i++)
-   {
-      if(*i == window)
-      {
-         mWindowList.erase(i);
-         return;
-      }
-   }
-    
-    if (mWindowList.size() == 0)
-    {
+   mWindowList.remove(window);
+
+    if (mWindowList.empty())
        Process::shutdown();
-    }
-    
-        
-   AssertFatal(false, avar("GLFWWindowManager::_removeWindow - Failed to remove window %x, perhaps it was already removed?", window));
 }
 
 void GLFWWindowManager::_onAppSignal(WindowId wnd, S32 event)

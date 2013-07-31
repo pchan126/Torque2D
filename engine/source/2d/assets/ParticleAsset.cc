@@ -208,17 +208,9 @@ void ParticleAsset::onDeleteNotify( SimObject* object )
     if ( pParticleAssetEmitter == NULL )
         return;
 
-    // Iterate emitters.
-    for ( typeEmitterVector::iterator emitterItr = mEmitters.begin(); emitterItr != mEmitters.end(); ++emitterItr )
-    {
-        // Is this the emitter being deleted?
-        if ( *emitterItr == object )
-        {
-            // Yes, so remove it.
-            mEmitters.erase( emitterItr );
-            return;
-        }
-    }
+    auto itr = std::find(mEmitters.begin(), mEmitters.end(), object);
+    if (itr != mEmitters.end())
+        mEmitters.erase(itr);
 }
 
 //------------------------------------------------------------------------------
@@ -352,7 +344,7 @@ void ParticleAsset::removeEmitter( ParticleAssetEmitter* pParticleAssetEmitter, 
     }
 
     // Iterate emitters.
-    for ( typeEmitterVector::iterator emitterItr = mEmitters.begin(); emitterItr != mEmitters.end(); ++emitterItr )
+    auto emitterItr = mEmitters.find( pParticleAssetEmitter );
     {
         if ( *emitterItr == pParticleAssetEmitter )
         {
@@ -384,7 +376,7 @@ void ParticleAsset::clearEmitters( void )
     // Remove all emitters.
     while( mEmitters.size() > 0 )
     {
-        mEmitters.last()->deleteObject();
+        mEmitters.back()->deleteObject();
         mEmitters.pop_back();
     }
 }
@@ -419,10 +411,10 @@ ParticleAssetEmitter* ParticleAsset::findEmitter( const char* pEmitterName ) con
     StringTableEntry emitterName = StringTable->insert( pEmitterName );
 
     // Search for emitter..
-    for( typeEmitterVector::const_iterator emitterItr = mEmitters.begin(); emitterItr != mEmitters.end(); ++emitterItr )
+    for( ParticleAssetEmitter* emitterItr:mEmitters )
     {
-        if ( (*emitterItr)->getEmitterName() == emitterName )
-            return *emitterItr;
+        if ( emitterItr->getEmitterName() == emitterName )
+            return emitterItr;
     }
 
     // Not found.
@@ -456,10 +448,10 @@ void ParticleAsset::moveEmitter( S32 fromIndex, S32 toIndex )
       fromIndex++;
 
    // Fetch Emitter to be moved.
-   typeEmitterVector::iterator fromItr = (mEmitters.address()+fromIndex);
+   typeEmitterVector::iterator fromItr = (mEmitters.begin()+fromIndex);
 
    // Fetch Emitter to be inserted at.
-   typeEmitterVector::iterator toItr = (mEmitters.address()+toIndex);
+   typeEmitterVector::iterator toItr = (mEmitters.begin()+toIndex);
 
    // Insert Object at new Position.
    mEmitters.insert( toItr, (*fromItr) );

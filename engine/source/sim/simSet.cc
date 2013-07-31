@@ -218,7 +218,7 @@ void SimSet::clear()
 {
    lock();
    while (size() > 0)
-      removeObject(objectList.last());
+      removeObject(objectList.back());
    unlock();
 }
 
@@ -252,8 +252,8 @@ IMPLEMENT_CONOBJECT_CHILDREN(SimSet);
 inline void SimSetiterator::Stack::push_back(SimSet* set)
 {
    increment();
-   last().set = set;
-   last().itr = set->begin();
+   back().set = set;
+    back().itr = set->begin();
 }
 
 
@@ -273,43 +273,43 @@ SimSetiterator::SimSetiterator(SimSet* set)
 SimObject* SimSetiterator::operator++()
 {
    SimSet* set;
-   if ((set = dynamic_cast<SimSet*>(*stack.last().itr)) != 0) 
+   if ((set = dynamic_cast<SimSet*>(*stack.back().itr)) != 0)
    {
       if (!set->empty()) 
       {
          stack.push_back(set);
-         return *stack.last().itr;
+         return *stack.back().itr;
       }
    }
 
-   while (++stack.last().itr == stack.last().set->end()) 
+   while (++stack.back().itr == stack.back().set->end())
    {
       stack.pop_back();
       if (stack.empty())
          return 0;
    }
-   return *stack.last().itr;
+   return *stack.back().itr;
 }	
 
 SimObject* SimGroupiterator::operator++()
 {
    SimGroup* set;
-   if ((set = dynamic_cast<SimGroup*>(*stack.last().itr)) != 0) 
+   if ((set = dynamic_cast<SimGroup*>(*stack.back().itr)) != 0)
    {
       if (!set->empty()) 
       {
          stack.push_back(set);
-         return *stack.last().itr;
+         return *stack.back().itr;
       }
    }
 
-   while (++stack.last().itr == stack.last().set->end()) 
+   while (++stack.back().itr == stack.back().set->end())
    {
       stack.pop_back();
       if (stack.empty())
          return 0;
    }
-   return *stack.last().itr;
+   return *stack.back().itr;
 }	
 
 
@@ -330,7 +330,7 @@ SimGroup::~SimGroup()
    objectList.sortId();
    while (!objectList.empty()) 
    {
-      delete objectList.last();
+      delete objectList.back();
       objectList.decrement();
    }
 

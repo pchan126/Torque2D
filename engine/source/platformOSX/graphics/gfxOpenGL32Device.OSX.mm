@@ -68,12 +68,11 @@ GFXOpenGL32Device::GFXOpenGL32Device( U32 adapterIndex )  : GFXOpenGLDevice( ada
                         mContext(nil),
                         mPixelFormat(NULL),
                         mPixelShaderVersion(0.0f),
-                        mMaxShaderTextures(2),
                         mClip(0, 0, 0, 0),
                         mTextureLoader(NULL)
 {
     GFXOpenGLEnumTranslate::init();
-   
+
     for (int i = 0; i < TEXTURE_STAGE_COUNT; i++)
         mActiveTextureType[i] = GL_TEXTURE_2D;
 }
@@ -452,42 +451,10 @@ GFXOpenGL32Shader* GFXOpenGL32Device::createShader()
     return shader;
 }
 
-void GFXOpenGL32Device::setShader( GFXOpenGL32Shader *shader )
-{
-    if ( shader )
-    {
-        if (shader != mpCurrentShader)
-        {
-            mpCurrentShader = shader;
-            shader->useProgram();
-        }
-    }
-    else
-    {
-        mpCurrentShader = NULL;
-        glUseProgram(0);
-    }
-}
-
-void GFXOpenGL32Device::disableShaders()
-{
-    setShader(NULL);
-    setShaderConstBuffer( NULL );
-}
 
 void GFXOpenGL32Device::setShaderConstBufferInternal(GFXShaderConstBuffer* buffer)
 {
     static_cast<GFXOpenGL32ShaderConstBuffer*>(buffer)->activate();
-}
-
-U32 GFXOpenGL32Device::getNumSamplers() const
-{
-    return mMaxShaderTextures;
-}
-
-U32 GFXOpenGL32Device::getNumRenderTargets() const
-{
-    return 1;
 }
 
 
@@ -543,7 +510,7 @@ void GFXOpenGL32Device::drawImage( CIImage* image, CGRect inRect, CGRect fromRec
 {
    updateStates(true);
 
-    CIContext *context = [[NSGraphicsContext currentContext] CIContext];
+//    CIContext *context = [[NSGraphicsContext currentContext] CIContext];
 
    CGLContextObj cglContext = (CGLContextObj)[[NSOpenGLContext currentContext] CGLContextObj];
    CGLPixelFormatObj cglPixelFormat = CGLGetPixelFormat(cglContext);

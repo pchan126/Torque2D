@@ -355,7 +355,7 @@ GFXOpenGL33WinShader::~GFXOpenGL33WinShader()
 {
    clearShaders();
    for(HandleMap::iterator i = mHandles.begin(); i != mHandles.end(); i++)
-      delete i->value;
+      delete i->second;
    
    delete[] mConstBuffer;
 }
@@ -395,8 +395,8 @@ bool GFXOpenGL33WinShader::_init()
    const U32 mjVer = (U32)mFloor( mPixVersion );
    const U32 mnVer = (U32)( ( mPixVersion - F32( mjVer ) ) * 10.01f );
    macros.increment();
-   macros.last().name = "TORQUE_SM";
-   macros.last().value = String::ToString( mjVer * 10 + mnVer );
+   macros.back().name = "TORQUE_SM";
+   macros.back().value = String::ToString( mjVer * 10 + mnVer );
 
    // Default to true so we're "successful" if a vertex/pixel shader wasn't specified.
    bool compiledVertexShader = true;
@@ -544,7 +544,7 @@ void GFXOpenGL33WinShader::initHandles()
    // Mark all existing handles as invalid.
    // Those that are found when parsing the descriptions will then be marked valid again.
    for ( HandleMap::iterator iter = mHandles.begin(); iter != mHandles.end(); ++iter )      
-      (iter->value)->setValid( false );  
+      (iter->second)->setValid( false );  
    mValidHandles.clear();
 
    // Loop through all ConstantDescriptions, 
@@ -564,7 +564,7 @@ void GFXOpenGL33WinShader::initHandles()
          assignedSamplerNum++ : -1;
       if ( handle != mHandles.end() )
       {
-         handle->value->reinit( desc, loc, sampler );         
+         handle->second->reinit( desc, loc, sampler );         
       }
       else 
       {
@@ -582,7 +582,7 @@ void GFXOpenGL33WinShader::initHandles()
 
    for ( HandleMap::iterator iter = mHandles.begin(); iter != mHandles.end(); ++iter )
    {
-      GFXOpenGL33WinShaderConstHandle* handle = iter->value;
+      GFXOpenGL33WinShaderConstHandle* handle = iter->second;
       if ( handle->isValid() )
       {
       	mValidHandles.push_back(handle);
@@ -599,7 +599,7 @@ void GFXOpenGL33WinShader::initHandles()
    // Iterate through uniforms to set sampler numbers.
    for (HandleMap::iterator iter = mHandles.begin(); iter != mHandles.end(); ++iter)
    {
-      GFXOpenGL33WinShaderConstHandle* handle = iter->value;
+      GFXOpenGL33WinShaderConstHandle* handle = iter->second;
       if(handle->isValid() && (handle->getType() == GFXSCT_Sampler || handle->getType() == GFXSCT_SamplerCube))
       {
          // Set sampler number on our program.
@@ -615,7 +615,7 @@ GFXShaderConstHandle* GFXOpenGL33WinShader::getShaderConstHandle(const String& n
 {
    HandleMap::iterator i = mHandles.find(name);
    if(i != mHandles.end())
-      return i->value;
+      return i->second;
    else
    {
       GFXOpenGL33WinShaderConstHandle* handle = new GFXOpenGL33WinShaderConstHandle( this );

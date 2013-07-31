@@ -424,7 +424,7 @@ Resource<GFont> GFont::create(const char *faceName, U32 size, const char *cacheD
     dSprintf(buf, sizeof(buf), "%s/%s %d (%s).fnt", cacheDirectory, faceName, size, getFontCharSetName(charset));
     
     ret = ResourceManager->load(buf);
-    if(bool(ret))
+    if(!ret.isNull())
     {
         ret->mGFTFile = StringTable->insert(buf);
         return ret;
@@ -432,7 +432,7 @@ Resource<GFont> GFont::create(const char *faceName, U32 size, const char *cacheD
    dSprintf(buf, sizeof(buf), "%s/%s %d (%s).uft", cacheDirectory, faceName, size, getFontCharSetName(charset));
 
    ret = ResourceManager->load(buf);
-   if(bool(ret))
+   if(!ret.isNull())
    {
       ret->mGFTFile = StringTable->insert(buf);
       return ret;
@@ -663,8 +663,8 @@ void GFont::addSheet()
     handle.setFilter(GFXTextureFilterPoint);
 
     mTextureSheets.increment();
-    constructInPlace(&mTextureSheets.last());
-    mTextureSheets.last() = handle;
+    constructInPlace(&mTextureSheets.back());
+    mTextureSheets.back() = handle;
 
     mCurX = 0;
     mCurY = 0;
@@ -980,7 +980,7 @@ bool GFont::read(Stream& io_rStream)
        dSprintf(buf, sizeof(buf), "font_%d", smSheetIdCount++);
 
        mTextureSheets.increment();
-       constructInPlace(&mTextureSheets.last());
+       constructInPlace(&mTextureSheets.back());
        GFXTexHandle handle = GFXTexHandle(bmp, &GFXFontTextureProfile, true, avar(""));
 //       mTextureSheets.last().setFilter(GL_NEAREST);
    }
@@ -1230,17 +1230,17 @@ void GFont::importStrip(const char *fileName, U32 padding, U32 kerning)
 
       // Allocate a new bitmap for this glyph, taking into account kerning and padding.
       glyphList.increment();
-      glyphList.last().bitmap = new GBitmap(mCharInfoList[i].width + kerning + 2*padding, mCharInfoList[i].height + 2*padding, false, strip->getFormat());
-      glyphList.last().charId = i;
+      glyphList.back().bitmap = new GBitmap(mCharInfoList[i].width + kerning + 2*padding, mCharInfoList[i].height + 2*padding, false, strip->getFormat());
+      glyphList.back().charId = i;
 
       // Copy the rect.
-      RectI ri(curWidth, getBaseline() - mCharInfoList[i].yOrigin, glyphList.last().bitmap->mWidth, glyphList.last().bitmap->mHeight);
+      RectI ri(curWidth, getBaseline() - mCharInfoList[i].yOrigin, glyphList.back().bitmap->mWidth, glyphList.back().bitmap->mHeight);
       Point2I outRi(0,0);
-      glyphList.last().bitmap->copyRect(strip, ri, outRi); 
+      glyphList.back().bitmap->copyRect(strip, ri, outRi);
 
       // Update glyph attributes.
-      mCharInfoList[i].width = glyphList.last().bitmap->mWidth;
-      mCharInfoList[i].height = glyphList.last().bitmap->mHeight;
+      mCharInfoList[i].width = glyphList.back().bitmap->mWidth;
+      mCharInfoList[i].height = glyphList.back().bitmap->mHeight;
       mCharInfoList[i].xOffset -= kerning + padding;
       mCharInfoList[i].xIncrement += kerning;
       mCharInfoList[i].yOffset -= padding;
@@ -1320,8 +1320,8 @@ void GFont::importStrip(const char *fileName, U32 padding, U32 kerning)
        GFXTexHandle handle = GFXTexHandle( bitmap, &GFXFontTextureProfile, true, avar("Font Sheet for" ));
 
        mTextureSheets.increment();
-      constructInPlace(&mTextureSheets.last());
-      mTextureSheets.last() = handle;
+      constructInPlace(&mTextureSheets.back());
+      mTextureSheets.back() = handle;
    }
 
 
@@ -1363,8 +1363,8 @@ bool GFont::readBMFont(Stream& io_rStream)
     for (U32 i = 0; i < (sizeof(mRemapTable) / sizeof(S32)); i++)
         mRemapTable[i] = -1;
     
-    U32 bmWidth = 0;
-    U32 bmHeight = 0;
+//    U32 bmWidth = 0;
+//    U32 bmHeight = 0;
     U32 numSheets = 0;
     U32 currentPage = 0;
     StringTableEntry fileName = StringTable->insert("");
@@ -1438,10 +1438,10 @@ bool GFont::readBMFont(Stream& io_rStream)
                      mHeight = U16(dAtoi(Value));
                 else if( dStrcmp( Key, "base" ) == 0 )
                     mBaseline = U16(dAtoi(Value));
-                else if( dStrcmp( Key, "scaleW" ) == 0 )
-                    bmWidth = U16(dAtoi(Value));
-                else if( dStrcmp( Key, "scaleH" ) == 0 )
-                    bmHeight = U16(dAtoi(Value));
+//                else if( dStrcmp( Key, "scaleW" ) == 0 )
+//                    bmWidth = U16(dAtoi(Value));
+//                else if( dStrcmp( Key, "scaleH" ) == 0 )
+//                    bmHeight = U16(dAtoi(Value));
                 else if( dStrcmp( Key, "pages" ) == 0 )
                     numSheets = U16(dAtoi(Value));
                 currentWordCount++;
@@ -1553,8 +1553,8 @@ bool GFont::readBMFont(Stream& io_rStream)
         //    handle.setFilter(GL_NEAREST);
         
         mTextureSheets.increment();
-        constructInPlace(&mTextureSheets.last());
-        mTextureSheets.last() = handle;
+        constructInPlace(&mTextureSheets.back());
+        mTextureSheets.back() = handle;
         
         mCurX = 0;
         mCurY = 0;

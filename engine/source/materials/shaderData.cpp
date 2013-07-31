@@ -162,7 +162,7 @@ GFXShader* ShaderData::getShader( const Vector<GFXShaderMacro> &macros )
    // Lookup the shader for this instance.
    ShaderCache::iterator iter = mShaders.find( cacheKey );
    if ( iter != mShaders.end() )
-      return iter->value;
+      return iter->second;
 
    // Create the shader instance... if it fails then
    // bail out and return nothing to the caller.
@@ -225,16 +225,14 @@ GFXShader* ShaderData::_createShader( const Vector<GFXShaderMacro> &macros )
 
 void ShaderData::reloadShaders()
 {
-   ShaderCache::iterator iter = mShaders.begin();
-   for ( ; iter != mShaders.end(); iter++ )
-      iter->value->reload();
+   for ( ShaderCache::pair iter: mShaders )
+      iter.second->reload();
 }
 
 void ShaderData::reloadAllShaders()
 {
-   Vector<ShaderData*>::iterator iter = smAllShaderData.begin();
-   for ( ; iter != smAllShaderData.end(); iter++ )
-      (*iter)->reloadShaders();
+   for (ShaderData* iter:smAllShaderData )
+      iter->reloadShaders();
 }
 
 void ShaderData::_onLMActivate( const char *lm, bool activate )

@@ -252,6 +252,7 @@ U32 ExecuteThread::runNoThread( const char* executable, const char* zargs, const
     [aTask launch];
     [aTask waitUntilExit];
     U32 ret = [aTask terminationStatus];
+   [aTask release];
     return ret;
 }
 

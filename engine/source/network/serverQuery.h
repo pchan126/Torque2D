@@ -60,16 +60,16 @@ struct ServerInfo
    enum StatusFlags
    {
       // Info flags (0-7):
-      Status_Dedicated  = BIT(0),
-      Status_Passworded = BIT(1),
-      Status_Linux      = BIT(2),
+      Status_Dedicated  = 0,
+      Status_Passworded = 1,
+      Status_Linux      = 2,
 
       // Status flags:
       Status_New         = 0,
-      Status_Querying   = BIT(28),
-      Status_Updating   = BIT(29),
-      Status_Responded  = BIT(30),
-      Status_TimedOut   = BIT(31),
+      Status_Querying   = 28,
+      Status_Updating   = 29,
+      Status_Responded  = 30,
+      Status_TimedOut   = 31,
    };
 
    U8          numPlayers;

@@ -76,10 +76,10 @@ bool GBitmap::readPNGiPhone(Stream& io_rStream)
     
     CGColorSpaceRef color_space = CGColorSpaceCreateDeviceRGB();
     CGContextRef texture_context = CGBitmapContextCreate(pBase, width, height, 8, rowBytes, color_space, kCGImageAlphaPremultipliedLast);
-    
+    CGColorSpaceRelease(color_space);
+
     CGContextDrawImage(texture_context, CGRectMake(0.0, 0.0, width, height), apple_image);
-    
-    
+    CGContextRelease(texture_context);
     CGImageRelease(apple_image);
     CGDataProviderRelease(data_provider);
 
@@ -93,7 +93,7 @@ void _iOSGetLocalIP(unsigned char *pcIPString)
 {
     int a,b,c,d ; 
     struct ifaddrs* interface;
-    char* addr;
+    char* addr = NULL;
     
     if (getifaddrs(&interface) == 0) 
     {

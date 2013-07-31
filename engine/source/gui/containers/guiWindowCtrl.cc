@@ -229,7 +229,7 @@ S32 GuiWindowCtrl::findHitEdges( const Point2I &globalPoint )
         // Only the top window in a collapse group can be extended from the top
         if( mCanCollapse && mCollapseGroup >= 0 )
         {
-            if( parent->mCollapseGroupVec[mCollapseGroup].first() !=  this )
+            if( parent->mCollapseGroupVec[mCollapseGroup].front() !=  this )
                 return edgeMask;
         }
         

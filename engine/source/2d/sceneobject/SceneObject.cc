@@ -402,11 +402,8 @@ void SceneObject::OnRegisterScene( Scene* pScene )
     if ( !isEnabled() ) mpBody->SetActive( false );
 
     // Create fixtures.
-    for( typeCollisionFixtureDefVector::iterator itr = mCollisionFixtureDefs.begin(); itr != mCollisionFixtureDefs.end(); itr++ )
+    for( b2FixtureDef* pFixtureDef:mCollisionFixtureDefs )
     {
-        // Fetch fixture definition.
-        b2FixtureDef* pFixtureDef = (*itr);
-
         // Create fixture.
         b2Fixture* pFixture = mpBody->CreateFixture( pFixtureDef );
 
@@ -448,11 +445,8 @@ void SceneObject::OnUnregisterScene( Scene* pScene )
     notifyComponentsRemoveFromScene();
 
     // Copy fixtures to fixture definitions.
-    for( typeCollisionFixtureVector::iterator itr = mCollisionFixtures.begin(); itr != mCollisionFixtures.end(); itr++ )
+    for( b2Fixture* pFixture:mCollisionFixtures )
     {
-        // Fetch fixture.
-        b2Fixture* pFixture = (*itr);
-
         // Create fixture definition.
         b2FixtureDef* pFixtureDef = new b2FixtureDef();
         pFixtureDef->density      = pFixture->GetDensity();
@@ -936,7 +930,7 @@ bool SceneObject::setSceneLayerDepthFront( void )
         return false;
 
     // Fetch furthest front depth.
-    const F32 frontDepth = layerList.last()->getSceneLayerDepth();
+    const F32 frontDepth = layerList.back()->getSceneLayerDepth();
 
     // Adjust depth to be in front.
     setSceneLayerDepth( frontDepth - 1.0f );
@@ -981,7 +975,7 @@ bool SceneObject::setSceneLayerDepthBack( void )
         return false;
 
     // Fetch furthest back depth.
-    const F32 backDepth = layerList.first()->getSceneLayerDepth();
+    const F32 backDepth = layerList.front()->getSceneLayerDepth();
 
     // Adjust depth to be in back.
     setSceneLayerDepth( backDepth + 1.0f );
@@ -1560,13 +1554,13 @@ void SceneObject::onEndCollision( const TickContact& tickContact )
     AssertFatal( tickContact.mpSceneObjectA == this || tickContact.mpSceneObjectB == this, "SceneObject::onEndCollision() - Contact does not involve this scene object." );
 
     // Remove contact.
-    for( Scene::typeContactVector::iterator contactItr = mpCurrentContacts->begin(); contactItr != mpCurrentContacts->end(); ++contactItr )
+    for( auto contactItr = mpCurrentContacts->begin(); contactItr != mpCurrentContacts->end(); ++contactItr )
     {
         // Is this is the correct contact?
         if ( contactItr->mpContact == tickContact.mpContact )
         {
             // Yes, so remove it.
-            mpCurrentContacts->erase_fast( contactItr );
+            mpCurrentContacts->erase( contactItr );
             return;
         }
     }
@@ -1731,11 +1725,12 @@ S32 SceneObject::getCollisionShapeIndex( const b2Fixture* pFixture ) const
 {
     // Iterate collision shapes.
     S32 collisionShapeIndex = 0;
-    for( typeCollisionFixtureVector::const_iterator collisionShapeItr = mCollisionFixtures.begin(); collisionShapeItr != mCollisionFixtures.end(); ++collisionShapeItr, ++collisionShapeIndex )
+    for( b2Fixture* collisionShape:mCollisionFixtures )
     {
         // Return index if this is the collision shape we are searching for.
-        if ( pFixture == *collisionShapeItr )
+        if ( pFixture == collisionShape )
             return collisionShapeIndex;
+        collisionShapeIndex++;
     }
 
     // Not found.
@@ -2042,11 +2037,11 @@ void SceneObject::deleteCollisionShape( const U32 shapeIndex )
     if ( mpScene )
     {
         mpBody->DestroyFixture( mCollisionFixtures[ shapeIndex ] );
-        mCollisionFixtures.erase_fast( shapeIndex );
+        mCollisionFixtures.erase( shapeIndex );
         return;
     }
 
-    mCollisionFixtureDefs.erase_fast( shapeIndex );
+    mCollisionFixtureDefs.erase( shapeIndex );
 }
 
 //-----------------------------------------------------------------------------
@@ -3207,14 +3202,14 @@ void SceneObject::processDestroyNotifications( void )
     while( mDestroyNotifyList.size() )
     {
         // Fetch Notification Item.
-        tDestroyNotification notification = mDestroyNotifyList.first();
+        tDestroyNotification notification = mDestroyNotifyList.back();
         // Only action if we've got a reference active.
         if ( notification.mRefCount > 0 )
             // Call Destroy Notification.
             notification.mpSceneObject->onDestroyNotify( this );
 
         // Remove it.
-        mDestroyNotifyList.pop_front();
+        mDestroyNotifyList.pop_back();
     }
 
     // Sanity!
@@ -3229,10 +3224,9 @@ void SceneObject::notifyComponentsAddToScene( void )
     PROFILE_SCOPE(SceneObject_NotifyComponentsAddToScene);
 
     // Notify components.
-    VectorPtr<SimComponent*>& componentList = lockComponentList();
-    for( SimComponentiterator itr = componentList.begin(); itr != componentList.end(); ++itr )
+    Vector<SimComponent*>& componentList = lockComponentList();
+    for( SimComponent *pComponent:componentList)
     {
-        SimComponent *pComponent = *itr;
         if( pComponent != NULL )
             pComponent->onAddToScene();
     }
@@ -3247,10 +3241,9 @@ void SceneObject::notifyComponentsRemoveFromScene( void )
     PROFILE_SCOPE(SceneObject_NotifyComponentsRemoveFromScene);
 
     // Notify components.
-    VectorPtr<SimComponent*>& componentList = lockComponentList();
-    for( SimComponentiterator itr = componentList.begin(); itr != componentList.end(); ++itr )
+    Vector<SimComponent*>& componentList = lockComponentList();
+    for( SimComponent *pComponent:componentList)
     {
-        SimComponent *pComponent = *itr;
         if( pComponent != NULL )
             pComponent->onRemoveFromScene();
     }
@@ -3265,10 +3258,9 @@ void SceneObject::notifyComponentsUpdate( void )
     PROFILE_SCOPE(SceneObject_NotifyComponentsUpdate);
 
     // Notify components.
-    VectorPtr<SimComponent*>& componentList = lockComponentList();
-    for( SimComponentiterator itr = componentList.begin(); itr != componentList.end(); ++itr )
+    Vector<SimComponent*>& componentList = lockComponentList();
+    for( SimComponent *pComponent:componentList)
     {
-        SimComponent *pComponent = *itr;
         if( pComponent != NULL )
             pComponent->onUpdate();
     }
@@ -3477,14 +3469,9 @@ void SceneObject::onTamlCustomRead( const TamlCustomNodes& customNodes )
         return;
 
     // Fetch children shapes.
-    const TamlCustomNodeVector& collisionShapeChildren = pCustomCollisionShapes->getChildren();
-
     // Iterate collision shapes.
-    for( TamlCustomNodeVector::const_iterator shapeNodeItr = collisionShapeChildren.begin(); shapeNodeItr != collisionShapeChildren.end(); ++shapeNodeItr )
+    for( TamlCustomNode* pShapeNode:pCustomCollisionShapes->getChildren() )
     {
-        // Fetch shape node.
-        TamlCustomNode* pShapeNode = *shapeNodeItr;
-
         // Fetch shape name.
         StringTableEntry shapeName = pShapeNode->getNodeName();
 
@@ -3504,14 +3491,9 @@ void SceneObject::onTamlCustomRead( const TamlCustomNodes& customNodes )
             b2Vec2 offset( 0.0f, 0.0f );
 
             // Fetch shape children.
-            const TamlCustomFieldVector& shapeFields = pShapeNode->getFields();
-
             // Iterate property fields.
-            for ( TamlCustomFieldVector::const_iterator shapeFieldItr = shapeFields.begin(); shapeFieldItr != shapeFields.end(); ++shapeFieldItr )
+            for ( const TamlCustomField* pField:pShapeNode->getFields() )
             {
-                // Fetch field.
-                const TamlCustomField* pField = *shapeFieldItr;
-
                 // Fetch property field name.
                 StringTableEntry fieldName = pField->getFieldName();
 
@@ -3560,14 +3542,9 @@ void SceneObject::onTamlCustomRead( const TamlCustomNodes& customNodes )
         else if ( shapeName == polygonTypeName )
         {
             // Yes, so fetch shape fields.
-            const TamlCustomFieldVector& shapeFields = pShapeNode->getFields();
-
             // Iterate property fields.
-            for ( TamlCustomFieldVector::const_iterator shapeFieldItr = shapeFields.begin(); shapeFieldItr != shapeFields.end(); ++shapeFieldItr )
+            for (const TamlCustomField* pField:pShapeNode->getFields() )
             {
-                // Fetch field.
-                const TamlCustomField* pField = *shapeFieldItr;
-
                 // Fetch property field name.
                 StringTableEntry fieldName = pField->getFieldName();
 
@@ -3604,10 +3581,8 @@ void SceneObject::onTamlCustomRead( const TamlCustomNodes& customNodes )
             if ( shapeChildrenCount > 0 )
             {
                 // Yes, so iterate them.
-                for( TamlCustomNodeVector::const_iterator childItr = shapeChildren.begin(); childItr != shapeChildren.end(); ++childItr )
+                for( TamlCustomNode* pChildNode:shapeChildren )
                 {
-                    TamlCustomNode* pChildNode = *childItr;
-
                     // Skip if it's not a point.
                     if ( pChildNode->getNodeName() != shapePointName )
                         continue;
@@ -3646,14 +3621,9 @@ void SceneObject::onTamlCustomRead( const TamlCustomNodes& customNodes )
             b2Vec2 adjacentEndPoint;
 
             // Fetch shape children.
-            const TamlCustomFieldVector& shapeFields = pShapeNode->getFields();
-
             // Iterate property fields.
-            for ( TamlCustomFieldVector::const_iterator shapeFieldItr = shapeFields.begin(); shapeFieldItr != shapeFields.end(); ++shapeFieldItr )
+            for ( const TamlCustomField* pField:pShapeNode->getFields() )
             {
-                // Fetch field.
-                const TamlCustomField* pField = *shapeFieldItr;
-
                 // Fetch property field name.
                 StringTableEntry fieldName = pField->getFieldName();
 
@@ -3687,10 +3657,8 @@ void SceneObject::onTamlCustomRead( const TamlCustomNodes& customNodes )
             if ( points.size() == 0 && shapeChildrenCount > 0 )
             {
                 // Yes, so iterate them.
-                for( TamlCustomNodeVector::const_iterator childItr = shapeChildren.begin(); childItr != shapeChildren.end(); ++childItr )
+                for( TamlCustomNode* pChildNode:shapeChildren )
                 {
-                    TamlCustomNode* pChildNode = *childItr;
-
                     // Fetch the node name.
                     StringTableEntry nodeName = pChildNode->getNodeName();
 
@@ -3749,14 +3717,9 @@ void SceneObject::onTamlCustomRead( const TamlCustomNodes& customNodes )
             b2Vec2 adjacentEndPoint;
 
             // Fetch shape children.
-            const TamlCustomFieldVector& shapeFields = pShapeNode->getFields();
-
             // Iterate property fields.
-            for ( TamlCustomFieldVector::const_iterator shapeFieldItr = shapeFields.begin(); shapeFieldItr != shapeFields.end(); ++shapeFieldItr )
+            for ( const TamlCustomField* pField:pShapeNode->getFields() )
             {
-                // Fetch field.
-                const TamlCustomField* pField = *shapeFieldItr;
-
                 // Fetch property field name.
                 StringTableEntry fieldName = pField->getFieldName();
 
@@ -3789,10 +3752,8 @@ void SceneObject::onTamlCustomRead( const TamlCustomNodes& customNodes )
             if ( shapeChildrenCount > 0 )
             {
                 // Yes, so iterate them.
-                for( TamlCustomNodeVector::const_iterator childItr = shapeChildren.begin(); childItr != shapeChildren.end(); ++childItr )
+                for( TamlCustomNode* pChildNode:shapeChildren )
                 {
-                    TamlCustomNode* pChildNode = *childItr;
-
                     // Fetch the node name.
                     StringTableEntry nodeName = pChildNode->getNodeName();
 
@@ -4012,10 +3973,10 @@ const char* SceneObject::getCollisionShapeTypeDescription(const b2Shape::Type co
 GFXBlend SceneObject::getSrcBlendFactorEnum(const char* label)
 {
     // Search for Mnemonic.
-    for (U32 i = 0; i < (sizeof(srcBlendFactorLookup) / sizeof(EnumTable::Enums)); i++)
+    for (U32 i = 0; i < 9; i++)
     {
-        if( dStricmp(srcBlendFactorLookup[i].label, label) == 0)
-                        return(GFXBlend)(srcBlendFactorLookup[i].index);
+        if( dStricmp(srcBlendFactorTable.table[i].label, label) == 0)
+                        return(GFXBlend)(srcBlendFactorTable.table[i].index);
     }
     
     // Warn.
@@ -4030,10 +3991,10 @@ GFXBlend SceneObject::getSrcBlendFactorEnum(const char* label)
 const char* SceneObject::getSrcBlendFactorDescription(const GLenum factor)
 {
     // Search for Mnemonic.
-    for (U32 i = 0; i < (sizeof(srcBlendFactorLookup) / sizeof(EnumTable::Enums)); i++)
+    for (U32 i = 0; i < srcBlendFactorTable.size; i++)
     {
-        if( srcBlendFactorLookup[i].index == (S32)factor )
-            return srcBlendFactorLookup[i].label;
+        if( srcBlendFactorTable.table[i].index == (S32)factor )
+            return srcBlendFactorTable.table[i].label;
     }
 
     // Warn.
@@ -4047,10 +4008,10 @@ const char* SceneObject::getSrcBlendFactorDescription(const GLenum factor)
 GFXBlend SceneObject::getDstBlendFactorEnum(const char* label)
 {
     // Search for Mnemonic.
-    for (U32 i = 0; i < (sizeof(dstBlendFactorLookup) / sizeof(EnumTable::Enums)); i++)
+    for (U32 i = 0; i < dstBlendFactorTable.size; i++)
     {
-        if( dStricmp(dstBlendFactorLookup[i].label, label) == 0)
-            return(GFXBlend)(dstBlendFactorLookup[i].index);
+        if( dStricmp(dstBlendFactorTable.table[i].label, label) == 0)
+            return(GFXBlend)(dstBlendFactorTable.table[i].index);
     }
     
     // Warn.
@@ -4065,10 +4026,10 @@ GFXBlend SceneObject::getDstBlendFactorEnum(const char* label)
 const char* SceneObject::getDstBlendFactorDescription(const GLenum factor)
 {
     // Search for Mnemonic.
-    for(U32 i = 0; i < (sizeof(dstBlendFactorLookup) / sizeof(EnumTable::Enums)); i++)
+    for(U32 i = 0; i < dstBlendFactorTable.size; i++)
     {
-        if( dstBlendFactorLookup[i].index == (S32)factor )
-            return dstBlendFactorLookup[i].label;
+        if( dstBlendFactorTable.table[i].index == (S32)factor )
+            return dstBlendFactorTable.table[i].label;
     }
 
     // Warn.

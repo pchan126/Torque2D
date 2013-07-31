@@ -354,8 +354,8 @@ GFXOpenGLShader::GFXOpenGLShader() :
 GFXOpenGLShader::~GFXOpenGLShader()
 {
    clearShaders();
-   for(HandleMap::iterator i = mHandles.begin(); i != mHandles.end(); i++)
-      delete i->value;
+   for(auto i : mHandles )
+      delete i.second;
    
    delete[] mConstBuffer;
 }
@@ -453,8 +453,8 @@ void GFXOpenGLShader::initHandles()
 {      
    // Mark all existing handles as invalid.
    // Those that are found when parsing the descriptions will then be marked valid again.
-   for ( HandleMap::iterator iter = mHandles.begin(); iter != mHandles.end(); ++iter )      
-      (iter->value)->setValid( false );  
+   for ( auto iter : mHandles )
+      (iter.second)->setValid( false );
    mValidHandles.clear();
 
    // Loop through all ConstantDescriptions, 
@@ -474,7 +474,7 @@ void GFXOpenGLShader::initHandles()
          assignedSamplerNum++ : -1;
       if ( handle != mHandles.end() )
       {
-         handle->value->reinit( desc, loc, sampler );         
+         handle->second->reinit( desc, loc, sampler );
       }
       else 
       {
@@ -490,9 +490,9 @@ void GFXOpenGLShader::initHandles()
       delete[] mConstBuffer;
    mConstBufferSize = 0;
 
-   for ( HandleMap::iterator iter = mHandles.begin(); iter != mHandles.end(); ++iter )
+   for ( auto iter : mHandles  )
    {
-      GFXOpenGLShaderConstHandle* handle = iter->value;
+      GFXOpenGLShaderConstHandle* handle = iter.second;
       if ( handle->isValid() )
       {
       	mValidHandles.push_back(handle);
@@ -507,9 +507,9 @@ void GFXOpenGLShader::initHandles()
    // Set our program so uniforms are assigned properly.
    glUseProgram(mProgram);
    // Iterate through uniforms to set sampler numbers.
-   for (HandleMap::iterator iter = mHandles.begin(); iter != mHandles.end(); ++iter)
+   for (auto iter : mHandles )
    {
-      GFXOpenGLShaderConstHandle* handle = iter->value;
+      GFXOpenGLShaderConstHandle* handle = iter.second;
       if(handle->isValid() && (handle->getType() == GFXSCT_Sampler || handle->getType() == GFXSCT_SamplerCube))
       {
          // Set sampler number on our program.
@@ -525,7 +525,7 @@ GFXShaderConstHandle* GFXOpenGLShader::getShaderConstHandle(const String& name)
 {
    HandleMap::iterator i = mHandles.find(name);
    if(i != mHandles.end())
-      return i->value;
+      return i->second;
    else
    {
       GFXOpenGLShaderConstHandle* handle = new GFXOpenGLShaderConstHandle( this );
@@ -537,9 +537,8 @@ GFXShaderConstHandle* GFXOpenGLShader::getShaderConstHandle(const String& name)
 
 void GFXOpenGLShader::setConstantsFromBuffer(GFXOpenGLShaderConstBuffer* buffer)
 {
-   for(Vector<GFXOpenGLShaderConstHandle*>::iterator i = mValidHandles.begin(); i != mValidHandles.end(); ++i)
+   for(GFXOpenGLShaderConstHandle* handle:mValidHandles)
    {
-      GFXOpenGLShaderConstHandle* handle = *i;
       AssertFatal(handle, "GFXOpenGLShader::setConstantsFromBuffer - Null handle");
       if (handle != NULL)
       {

@@ -50,11 +50,8 @@ AssetTagsManifest::AssetTagsManifest()
 AssetTagsManifest::~AssetTagsManifest()
 {
     // Iterate tags.
-    for( typeTagNameHash::iterator tagNameItr = mTagNameDatabase.begin(); tagNameItr != mTagNameDatabase.end(); ++tagNameItr )
-    {
-        // Delete asset tag.
-        delete tagNameItr->value;
-    }
+    for( auto tagNameItr : mTagNameDatabase )
+        delete tagNameItr.second;
 
     // Clear database.
     mTagNameDatabase.clear();
@@ -81,7 +78,7 @@ AssetTagsManifest::AssetTag* AssetTagsManifest::findAssetTag( const char* pTagNa
     // Finish if the tag already exists.
     typeTagNameHash::iterator tagNameItr = mTagNameDatabase.find( tagName );
 
-    return tagNameItr == mTagNameDatabase.end() ? NULL : tagNameItr->value;
+    return tagNameItr == mTagNameDatabase.end() ? NULL : tagNameItr->second;
 }
 
 //-----------------------------------------------------------------------------
@@ -106,7 +103,7 @@ void AssetTagsManifest::renameAssetId( const char* pAssetIdFrom, const char* pAs
             return;
 
         // Fetch asset tag.
-        AssetTag* pAssetTag = assetIdItr->value;
+        AssetTag* pAssetTag = assetIdItr->second;
 
         // Untag old asset Id.
         untag( assetIdFrom, pAssetTag->mTagName );
@@ -131,27 +128,27 @@ void AssetTagsManifest::onTamlCustomWrite( TamlCustomNodes& customNodes )
     TamlCustomNode* pTagsNode = customNodes.addNode( ASSETTAGS_TAGS_NODE_NAME );
 
     // Iterate tags.
-    for( typeTagNameHash::iterator tagItr = mTagNameDatabase.begin(); tagItr != mTagNameDatabase.end(); ++tagItr )
+    for( auto tagItr : mTagNameDatabase )
     {
         // Add tag node.
         TamlCustomNode* pTagNode = pTagsNode->addNode( ASSETTAGS_TAGS_TYPE_NAME );
 
         // Add fields.
-        pTagNode->addField( ASSETTAGS_TAGS_NAME_FIELD, tagItr->key );
+        pTagNode->addField( ASSETTAGS_TAGS_NAME_FIELD, tagItr.first );
     }
 
     // Add node.
     TamlCustomNode* pAssetTagsNode = customNodes.addNode( ASSETTAGS_ASSETS_NODE_NAME );
 
     // Iterate asset locations.
-    for( typeAssetToTagHash::iterator assetTagItr = mAssetToTagDatabase.begin(); assetTagItr != mAssetToTagDatabase.end(); ++assetTagItr )
+    for( auto assetTagItr : mAssetToTagDatabase )
     {
         // Add asset tag node.
         TamlCustomNode* pAssetNode = pAssetTagsNode->addNode( ASSETTAGS_ASSETS_TYPE_NAME );
 
         // Add fields.
-        pAssetNode->addField( ASSETTAGS_ASSETS_ASSETID_FIELD, assetTagItr->key );
-        pAssetNode->addField( ASSETTAGS_ASSETS_TAG_FIELD, assetTagItr->value->mTagName );
+        pAssetNode->addField( ASSETTAGS_ASSETS_ASSETID_FIELD, assetTagItr.first );
+        pAssetNode->addField( ASSETTAGS_ASSETS_TAG_FIELD, assetTagItr.second->mTagName );
     }
 }
 
@@ -172,15 +169,9 @@ void AssetTagsManifest::onTamlCustomRead( const TamlCustomNodes& customNodes )
     // Fetch node name.
     StringTableEntry tagNodeName = StringTable->insert( ASSETTAGS_TAGS_TYPE_NAME );
 
-    // Fetch children asset nodes.
-    const TamlCustomNodeVector& tagNodes = pTagProperty->getChildren();
-
     // Iterate tag nodes.
-    for( TamlCustomNodeVector::const_iterator tagNodeItr = tagNodes.begin(); tagNodeItr != tagNodes.end(); ++tagNodeItr )
+    for( const TamlCustomNode* pTagNode:pTagProperty->getChildren() )
     {
-        // Fetch tag node.
-        const TamlCustomNode* pTagNode = *tagNodeItr;
-
         // Skip if an unknown node name.
         if ( pTagNode->getNodeName() != tagNodeName )
             continue;
@@ -210,15 +201,9 @@ void AssetTagsManifest::onTamlCustomRead( const TamlCustomNodes& customNodes )
     // Fetch node name.
     StringTableEntry assetTagNodeName = StringTable->insert( ASSETTAGS_ASSETS_TYPE_NAME );
 
-    // Fetch children asset tag nodes.
-    const TamlCustomNodeVector& assetTagNodes = pAssetTagProperty->getChildren();
-
     // Iterate property alias.
-    for( TamlCustomNodeVector::const_iterator assetTagNodeItr = assetTagNodes.begin(); assetTagNodeItr != assetTagNodes.end(); ++assetTagNodeItr )
+    for( const TamlCustomNode* pAssetTagNode:pAssetTagProperty->getChildren() )
     {
-        // Fetch asset node.
-        const TamlCustomNode* pAssetTagNode = *assetTagNodeItr;
-
         // Skip if an unknown node name.
         if ( pAssetTagNode->getNodeName() != assetTagNodeName )
             continue;
@@ -307,10 +292,8 @@ bool AssetTagsManifest::renameTag( const char* pOldTagName, const char* pNewTagN
     AssetTag* pNewAssetTag = const_cast<AssetTag*>( createTag( pNewTagName ) );
 
     // Transfer asset tags.
-    for ( Vector<typeAssetId>::iterator assetIdItr = pOldAssetTag->mAssets.begin(); assetIdItr != pOldAssetTag->mAssets.end(); ++assetIdItr )
-    {
-        pNewAssetTag->mAssets.push_back( *assetIdItr );
-    }
+    for ( auto assetIdItr : pOldAssetTag->mAssets )
+        pNewAssetTag->mAssets.push_back( assetIdItr );
 
     // Delete old tag.
     deleteTag( pOldTagName );
@@ -340,16 +323,16 @@ bool AssetTagsManifest::deleteTag( const char* pTagName )
     mTagNameDatabase.erase( pAssetTag->mTagName );
 
     // Remove the asset tags.
-    for ( Vector<typeAssetId>::iterator assetIdItr = pAssetTag->mAssets.begin(); assetIdItr != pAssetTag->mAssets.end(); ++assetIdItr )
+    for ( auto assetIdItr : pAssetTag->mAssets )
     {
         // Find asset Id tag.
-        typeAssetToTagHash::iterator assetItr = mAssetToTagDatabase.find( *assetIdItr );
+        typeAssetToTagHash::iterator assetItr = mAssetToTagDatabase.find( assetIdItr );
 
         // Iterate asset Id tags.
-        while( assetItr != mAssetToTagDatabase.end() && assetItr->key == *assetIdItr )
+        while( assetItr != mAssetToTagDatabase.end() && assetItr->first == assetIdItr )
         {
             // Is this the asset tag?
-            if ( assetItr->value == pAssetTag )
+            if ( assetItr->second == pAssetTag )
             {
                 // Yes, so erase it.
                 mAssetToTagDatabase.erase( assetItr );
@@ -393,7 +376,7 @@ StringTableEntry AssetTagsManifest::getTag( const U32 tagIndex )
     for( U32 index = 0; index  < tagIndex; ++index, ++tagItr ) {};
 
     // Return tag name.
-    return tagItr->value->mTagName;
+    return tagItr->second->mTagName;
 }
 
 //-----------------------------------------------------------------------------
@@ -430,7 +413,7 @@ StringTableEntry AssetTagsManifest::getAssetTag( const char* pAssetId, const U32
     for( U32 index = 0; index  < tagIndex; ++index, ++assetItr ) {};
 
     // Return tag name.
-    return assetItr->value->mTagName;
+    return assetItr->second->mTagName;
 }
 
 //-----------------------------------------------------------------------------
@@ -467,10 +450,10 @@ bool AssetTagsManifest::tag( const char* pAssetId, const char* pTagName )
     typeAssetToTagHash::iterator assetItr = mAssetToTagDatabase.find( assetId );
 
     // Iterate asset Id tags.
-    while( assetItr != mAssetToTagDatabase.end() && assetItr->key == assetId )
+    while( assetItr != mAssetToTagDatabase.end() && assetItr->first == assetId )
     {
         // Is the asset already tagged appropriately?
-        if ( assetItr->value == pAssetTag )
+        if ( assetItr->second == pAssetTag )
             return true;
 
         // Next entry.
@@ -523,10 +506,10 @@ bool AssetTagsManifest::untag( const char* pAssetId, const char* pTagName )
     typeAssetToTagHash::iterator assetItr = mAssetToTagDatabase.find( assetId );
 
     // Iterate asset Id tags.
-    while( assetItr != mAssetToTagDatabase.end() && assetItr->key == assetId )
+    while( assetItr != mAssetToTagDatabase.end() && assetItr->first == assetId )
     {
         // Is this the asset tag?
-        if ( assetItr->value == pAssetTag )
+        if ( assetItr->second == pAssetTag )
         {
             // Yes, so remove it.
             mAssetToTagDatabase.erase( assetItr );

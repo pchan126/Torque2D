@@ -44,7 +44,6 @@
 #endif
 
 //-----------------------------------------------------------------------------
-GFX_DeclareTextureProfile(GFXSceneWindowTextureProfile);
 
 /// Camera View.
 class CameraView
@@ -177,7 +176,7 @@ private:
     CameraView mCameraCurrent, mCameraSource, mCameraTarget;
 
     // Camera Interpolation.
-    Vector<CameraView>  mCameraQueue;
+    std::deque<CameraView>  mCameraQueue;
     S32                 mMaxQueueItems;
     F32                 mCameraTransitionTime;
     F32                 mPreCameraTime;

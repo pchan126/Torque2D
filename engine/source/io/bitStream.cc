@@ -669,7 +669,7 @@ void HuffmanProcessor::buildTables()
 
       // Create a node for this...
       m_huffNodes.increment();
-      HuffNode& rNode = m_huffNodes.last();
+      HuffNode& rNode = m_huffNodes.back();
       rNode.pop    = pWrap[index1].getPop() + pWrap[index2].getPop();
       rNode.index0 = determineIndex(pWrap[index1]);
       rNode.index1 = determineIndex(pWrap[index2]);

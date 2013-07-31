@@ -139,10 +139,10 @@ bool ModuleDefinition::addDependency( const char* pModuleId, const U32 versionId
     if ( mDependencies.size() > 0 )
     {
         // Yes, so is the module Id already a dependency?
-        for( typeModuleDependencyVector::iterator dependencyItr = mDependencies.begin(); dependencyItr != mDependencies.end(); ++dependencyItr )
+        for( auto dependencyItr : mDependencies )
         {
             // Skip if not the same module Id.
-            if ( dependencyItr->mModuleId != moduleId )
+            if ( dependencyItr.mModuleId != moduleId )
                 continue;
 
             // Dependency already exists so warn.

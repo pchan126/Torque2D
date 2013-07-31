@@ -64,13 +64,13 @@ void AssetQuery::onTamlCustomWrite( TamlCustomNodes& customNodes )
         return;
 
     // Iterate asset.
-    for( Vector<StringTableEntry>::iterator assetItr = begin(); assetItr != end(); ++assetItr )
+    for( auto assetItr:*this )
     {
         // Add asset node.
         TamlCustomNode* pAssetNode = pCustomNode->addNode( ASSETQUERY_ASSETNODE_NAME );
 
         // Add field.
-        pAssetNode->addField( ASSETQUERY_ASSETID_FIELD_NAME, *assetItr );
+        pAssetNode->addField( ASSETQUERY_ASSETID_FIELD_NAME, assetItr );
     }
 }
 
@@ -91,15 +91,9 @@ void AssetQuery::onTamlCustomRead( const TamlCustomNodes& customNodes )
     // Fetch node name.
     StringTableEntry assetNodeName = StringTable->insert( ASSETQUERY_ASSETNODE_NAME );
 
-    // Fetch children asset nodes.
-    const TamlCustomNodeVector& assetNodes = pResultsNode->getChildren();
-
     // Iterate asset nodes.
-    for( TamlCustomNodeVector::const_iterator assetNodeItr = assetNodes.begin(); assetNodeItr != assetNodes.end(); ++assetNodeItr )
+    for( const TamlCustomNode* pAssetNode:pResultsNode->getChildren() )
     {
-        // Fetch asset node.
-        const TamlCustomNode* pAssetNode = *assetNodeItr;
-
         // Skip if an unknown node name.
         if ( pAssetNode->getNodeName() != assetNodeName )
             continue;

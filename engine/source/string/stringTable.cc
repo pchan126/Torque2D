@@ -22,6 +22,7 @@
 
 #include "platform/platform.h"
 #include "stringTable.h"
+#include "console.h"
 
 _StringTable *_gStringTable = NULL;
 const U32 _StringTable::csm_stInitSize = 29;
@@ -80,14 +81,6 @@ U32 _StringTable::hashStringn(const char* str, S32 len)
 //--------------------------------------
 _StringTable::_StringTable()
 {
-   buckets = (Node **) dMalloc(csm_stInitSize * sizeof(Node *));
-   for(U32 i = 0; i < csm_stInitSize; i++) {
-      buckets[i] = 0;
-   }
-
-   numBuckets = csm_stInitSize;
-   itemCount = 0;
-
    // Insert empty string.
    EmptyString = insert("");
 }
@@ -95,7 +88,8 @@ _StringTable::_StringTable()
 //--------------------------------------
 _StringTable::~_StringTable()
 {
-   dFree(buckets);
+    for(std::pair<std::string, StringTableEntry> itr:_table)
+        delete (itr.second);
 }
 
 
@@ -118,37 +112,27 @@ void _StringTable::destroy()
 }
 
 //--------------------------------------
-StringTableEntry _StringTable::insert(const char* val, const bool  caseSens)
+StringTableEntry _StringTable::insert(const char* src, const bool  caseSens)
 {
-   if ( val == NULL )
+   if ( src == NULL )
        return StringTable->EmptyString;
 
    MutexHandle mutex;
    mutex.lock(&mMutex, true);
 
-   Node **walk, *temp;
-   U32 key = hashString(val);
-   walk = &buckets[key % numBuckets];
-   while((temp = *walk) != NULL)   {
-      if(caseSens && !dStrcmp(temp->val, val))
-         return temp->val;
-      else if(!caseSens && !dStricmp(temp->val, val))
-         return temp->val;
-      walk = &(temp->next);
+    std::string val(src);
+    if (!caseSens)
+        std::transform(val.begin(), val.end(), val.begin(), tolower);
+
+   if (_table.count(val) == 0)
+   {
+       char * cstr = new char [val.length()+1];
+       std::strcpy (cstr, src);
+
+       _table[val] = cstr;
    }
-   char *ret = 0;
-   if(!*walk) {
-      *walk = (Node *) mempool.alloc(sizeof(Node));
-      (*walk)->next = 0;
-      (*walk)->val = (char *) mempool.alloc(dStrlen(val) + 1);
-      dStrcpy((*walk)->val, val);
-      ret = (*walk)->val;
-      itemCount ++;
-   }
-   if(itemCount > 2 * numBuckets) {
-      resize(4 * numBuckets - 1);
-   }
-   return ret;
+
+   return _table[val];
 }
 
 //--------------------------------------
@@ -168,80 +152,37 @@ StringTableEntry _StringTable::insertn(const char* src, S32 len, const bool  cas
 }
 
 //--------------------------------------
-StringTableEntry _StringTable::lookup(const char* val, const bool  caseSens)
+StringTableEntry _StringTable::lookup(const char* src, const bool  caseSens)
 {
-   if ( val == NULL )
+   if ( src == NULL )
        return StringTable->EmptyString;
 
    MutexHandle mutex;
    mutex.lock(&mMutex, true);
 
-   Node **walk, *temp;
-   U32 key = hashString(val);
-   walk = &buckets[key % numBuckets];
-   while((temp = *walk) != NULL)   {
-      if(caseSens && !dStrcmp(temp->val, val))
-            return temp->val;
-      else if(!caseSens && !dStricmp(temp->val, val))
-         return temp->val;
-      walk = &(temp->next);
-   }
-   return NULL;
+    std::string val(src);
+    if (!caseSens)
+        std::transform(val.begin(), val.end(), val.begin(), tolower);
+
+   if (_table.find(val) == _table.end())
+       return NULL;
+
+   return _table[val];
 }
 
 //--------------------------------------
-StringTableEntry _StringTable::lookupn(const char* val, S32 len, const bool  caseSens)
+StringTableEntry _StringTable::lookupn(const char* src, S32 len, const bool  caseSens)
 {
-   if ( val == NULL )
+   if ( src == NULL )
        return StringTable->EmptyString;
 
-   Node **walk, *temp;
-   U32 key = hashStringn(val, len);
-   walk = &buckets[key % numBuckets];
-   while((temp = *walk) != NULL) {
-      if(caseSens && !dStrncmp(temp->val, val, len) && temp->val[len] == 0)
-         return temp->val;
-      else if(!caseSens && !dStrnicmp(temp->val, val, len) && temp->val[len] == 0)
-         return temp->val;
-      walk = &(temp->next);
-   }
-   return NULL;
+    char val[1024];
+    AssertFatal(len < sizeof(val), "Invalid string to insertn");
+    dStrncpy(val, src, len);
+    val[len] = 0;
+
+   return lookup(val, caseSens);
 }
 
-//--------------------------------------
-void _StringTable::resize(const U32 newSize)
-{
-   Node *head = NULL, *walk, *temp;
-   U32 i;
-   // reverse individual bucket lists
-   // we do this because new strings are added at the end of bucket
-   // lists so that case sens strings are always after their
-   // corresponding case insens strings
 
-   for(i = 0; i < numBuckets; i++) {
-      walk = buckets[i];
-      while(walk)
-      {
-         temp = walk->next;
-         walk->next = head;
-         head = walk;
-         walk = temp;
-      }
-   }
-   buckets = (Node **) dRealloc(buckets, newSize * sizeof(Node));
-   for(i = 0; i < newSize; i++) {
-      buckets[i] = 0;
-   }
-   numBuckets = newSize;
-   walk = head;
-   while(walk) {
-      U32 key;
-      Node *temp = walk;
-
-      walk = walk->next;
-      key = hashString(temp->val);
-      temp->next = buckets[key % newSize];
-      buckets[key % newSize] = temp;
-   }
-}
 

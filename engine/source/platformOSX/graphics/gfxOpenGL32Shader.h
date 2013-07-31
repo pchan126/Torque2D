@@ -57,9 +57,6 @@ public:
    virtual const String describeSelf() const;
    /// @}      
 
-   /// Activates this shader in the GL context.
-   void useProgram();
-   
 protected:
 
    friend class GFXOpenGL32ShaderConstBuffer;
@@ -71,7 +68,6 @@ protected:
                      bool isVertex, 
                      const Vector<GFXShaderMacro> &macros );
 
-   void clearShaders();
    void initConstantDescs();
    void initHandles();
    void setConstantsFromBuffer(GFXOpenGL32ShaderConstBuffer* buffer);
@@ -83,13 +79,6 @@ protected:
                                        FileStream* s, 
                                        const Vector<GFXShaderMacro>& macros );
 
-   /// @name Internal GL handles
-   /// @{
-   GLuint mVertexShader;
-   GLuint mPixelShader;
-   GLuint mProgram;
-   /// @}
-    
    Vector<GFXShaderConstDesc> mConstants;
    U32 mConstBufferSize;
    U8* mConstBuffer;
@@ -120,14 +109,7 @@ public:
    virtual void set(GFXShaderConstHandle* handle, const Point2I& fv);
    virtual void set(GFXShaderConstHandle* handle, const Point3I& fv);
    virtual void set(GFXShaderConstHandle* handle, const Point4I& fv);
-//   virtual void set(GFXShaderConstHandle* handle, const AlignedArray<F32>& fv);
-//   virtual void set(GFXShaderConstHandle* handle, const AlignedArray<Point2F>& fv);
-//   virtual void set(GFXShaderConstHandle* handle, const AlignedArray<Point3F>& fv);
-//   virtual void set(GFXShaderConstHandle* handle, const AlignedArray<Point4F>& fv);   
-//   virtual void set(GFXShaderConstHandle* handle, const AlignedArray<S32>& fv);
-//   virtual void set(GFXShaderConstHandle* handle, const AlignedArray<Point2I>& fv);
-//   virtual void set(GFXShaderConstHandle* handle, const AlignedArray<Point3I>& fv);
-//   virtual void set(GFXShaderConstHandle* handle, const AlignedArray<Point4I>& fv);
+
    virtual void set(GFXShaderConstHandle* handle, const MatrixF& mat, const GFXShaderConstType matType = GFXSCT_Float4x4);
    virtual void set(GFXShaderConstHandle* handle, const MatrixF* mat, const U32 arraySize, const GFXShaderConstType matrixType = GFXSCT_Float4x4);   
 

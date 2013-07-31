@@ -597,14 +597,13 @@ ConsoleMethod(ParticleAssetEmitter, getSelectableFieldName, const char*, 3, 3, "
     if ( fieldIndex >= 0 && fieldIndex < (S32)fieldHash.size() )
     {
         // Yes, but because the fields are in a hash-table, we'll have to iterate and get O(index).
-        for( ParticleAssetFieldCollection::typeFieldHash::const_iterator fieldItr = fieldHash.begin(); fieldItr != fieldHash.end(); ++fieldItr, --fieldIndex )
+        for( auto fieldItr:fieldHash)
         {
-            // Skip if this is not the field index we're looking for?
-            if ( fieldIndex != 0 )
-                continue;
-
             // Found it so return the field name.
-            return fieldItr->value->getFieldName();
+            if ( fieldIndex == 0 )
+                return fieldItr.second->getFieldName();
+
+            --fieldIndex;
         }
     }
 

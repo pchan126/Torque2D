@@ -220,13 +220,13 @@ class Signal<bool()> : public SignalBaseT<bool()>
          this->mTriggerNext.push_back(NULL);
          for( SignalBase::DelegateLink* ptr = this->mList.next; ptr != &this->mList; )
          {
-            this->mTriggerNext.last() = ptr->next;
+            this->mTriggerNext.back() = ptr->next;
             if( !this->getDelegate( ptr )() )
             {
                this->mTriggerNext.pop_back();
                return false;
             }
-            ptr = this->mTriggerNext.last();
+            ptr = this->mTriggerNext.back();
          }
          this->mTriggerNext.pop_back();
          return true;
@@ -243,13 +243,13 @@ class Signal<bool(A)> : public SignalBaseT<bool(A)>
          this->mTriggerNext.push_back(NULL);
          for( SignalBase::DelegateLink* ptr = this->mList.next; ptr != &this->mList; )
          {
-            this->mTriggerNext.last() = ptr->next;
+            this->mTriggerNext.back() = ptr->next;
             if( !this->getDelegate( ptr )( a ) )
             {
                this->mTriggerNext.pop_back();
                return false;
             }
-            ptr = this->mTriggerNext.last();
+            ptr = this->mTriggerNext.back();
          }
          this->mTriggerNext.pop_back();
          return true;
@@ -266,13 +266,13 @@ class Signal<bool(A,B)> : public SignalBaseT<bool(A,B)>
          this->mTriggerNext.push_back(NULL);
          for( SignalBase::DelegateLink* ptr = this->mList.next; ptr != &this->mList; )
          {
-            this->mTriggerNext.last() = ptr->next;
+            this->mTriggerNext.back() = ptr->next;
             if( !this->getDelegate( ptr )( a, b ) )
             {
                this->mTriggerNext.pop_back();
                return false;
             }
-            ptr = this->mTriggerNext.last();
+            ptr = this->mTriggerNext.back();
          }
          this->mTriggerNext.pop_back();
          return true;
@@ -289,13 +289,13 @@ class Signal<bool(A,B,C)> : public SignalBaseT<bool(A,B,C)>
          this->mTriggerNext.push_back(NULL);
          for( SignalBase::DelegateLink* ptr = this->mList.next; ptr != &this->mList; )
          {
-            this->mTriggerNext.last() = ptr->next;
+            this->mTriggerNext.back() = ptr->next;
             if( !this->getDelegate( ptr )( a, b, c ) )
             {
                this->mTriggerNext.pop_back();
                return false;
             }
-            ptr = this->mTriggerNext.last();
+            ptr = this->mTriggerNext.back();
          }
          this->mTriggerNext.pop_back();
          return true;
@@ -312,13 +312,13 @@ class Signal<bool(A,B,C,D)> : public SignalBaseT<bool(A,B,C,D)>
          this->mTriggerNext.push_back(NULL);
          for( SignalBase::DelegateLink* ptr = this->mList.next; ptr != &this->mList; )
          {
-            this->mTriggerNext.last() = ptr->next;
+            this->mTriggerNext.back() = ptr->next;
             if( !this->getDelegate( ptr )( a, b, c, d ) )
             {
                this->mTriggerNext.pop_back();
                return false;
             }
-            ptr = this->mTriggerNext.last();
+            ptr = this->mTriggerNext.back();
          }
          this->mTriggerNext.pop_back();
          return true;
@@ -335,13 +335,13 @@ class Signal<bool(A,B,C,D,E)> : public SignalBaseT<bool(A,B,C,D,E)>
          this->mTriggerNext.push_back(NULL);
          for( SignalBase::DelegateLink* ptr = this->mList.next; ptr != &this->mList; )
          {
-            this->mTriggerNext.last() = ptr->next;
+            this->mTriggerNext.back() = ptr->next;
             if( !this->getDelegate( ptr )( a, b, c, d, e ) )
             {
                this->mTriggerNext.pop_back();
                return false;
             }
-            ptr = this->mTriggerNext.last();
+            ptr = this->mTriggerNext.back();
          }
          this->mTriggerNext.pop_back();
          return true;
@@ -358,13 +358,13 @@ class Signal<bool(A,B,C,D,E,F)> : public SignalBaseT<bool(A,B,C,D,E,F)>
          this->mTriggerNext.push_back(NULL);
          for( SignalBase::DelegateLink* ptr = this->mList.next; ptr != &this->mList; )
          {
-            this->mTriggerNext.last() = ptr->next;
+            this->mTriggerNext.back() = ptr->next;
             if( !this->getDelegate( ptr )( a, b, c, d, e, f ) )
             {
                this->mTriggerNext.pop_back();
                return false;
             }
-            ptr = this->mTriggerNext.last();
+            ptr = this->mTriggerNext.back();
          }
          this->mTriggerNext.pop_back();
          return true;
@@ -381,13 +381,13 @@ class Signal<bool(A,B,C,D,E,F,G)> : public SignalBaseT<bool(A,B,C,D,E,F,G)>
          this->mTriggerNext.push_back(NULL);
          for( SignalBase::DelegateLink* ptr = this->mList.next; ptr != &this->mList; )
          {
-            this->mTriggerNext.last() = ptr->next;
+            this->mTriggerNext.back() = ptr->next;
             if( !this->getDelegate( ptr )( a, b, c, d, e, f, g ) )
             {
                this->mTriggerNext.pop_back();
                return false;
             }
-            ptr = this->mTriggerNext.last();
+            ptr = this->mTriggerNext.back();
          }
          this->mTriggerNext.pop_back();
          return true;
@@ -404,13 +404,13 @@ class Signal<bool(A,B,C,D,E,F,G,H)> : public SignalBaseT<bool(A,B,C,D,E,F,G,H)>
          this->mTriggerNext.push_back(NULL);
          for( SignalBase::DelegateLink* ptr = this->mList.next; ptr != &this->mList; )
          {
-            this->mTriggerNext.last() = ptr->next;
+            this->mTriggerNext.back() = ptr->next;
             if( !this->getDelegate( ptr )( a, b, c, d, e, f, g, h ) )
             {
                this->mTriggerNext.pop_back();
                return false;
             }
-            ptr = this->mTriggerNext.last();
+            ptr = this->mTriggerNext.back();
          }
          this->mTriggerNext.pop_back();
          return true;
@@ -427,13 +427,13 @@ class Signal<bool(A,B,C,D,E,F,G,H,I)> : public SignalBaseT<bool(A,B,C,D,E,F,G,H,
          this->mTriggerNext.push_back(NULL);
          for( SignalBase::DelegateLink* ptr = this->mList.next; ptr != &this->mList; )
          {
-            this->mTriggerNext.last() = ptr->next;
+            this->mTriggerNext.back() = ptr->next;
             if( !this->getDelegate( ptr )( a, b, c, d, e, f, g, h, i ) )
             {
                this->mTriggerNext.pop_back();
                return false;
             }
-            ptr = this->mTriggerNext.last();
+            ptr = this->mTriggerNext.back();
          }
          this->mTriggerNext.pop_back();
          return true;
@@ -450,13 +450,13 @@ class Signal<bool(A,B,C,D,E,F,G,H,I,J)> : public SignalBaseT<bool(A,B,C,D,E,F,G,
          this->mTriggerNext.push_back(NULL);
          for( SignalBase::DelegateLink* ptr = this->mList.next; ptr != &this->mList; )
          {
-            this->mTriggerNext.last() = ptr->next;
+            this->mTriggerNext.back() = ptr->next;
             if( !this->getDelegate( ptr )( a, b, c, d, e, f, g, h, i, j ) )
             {
                this->mTriggerNext.pop_back();
                return false;
             }
-            ptr = this->mTriggerNext.last();
+            ptr = this->mTriggerNext.back();
          }
          this->mTriggerNext.pop_back();
          return true;
@@ -475,9 +475,9 @@ class Signal<void()> : public SignalBaseT<void()>
          this->mTriggerNext.push_back(NULL);
          for( SignalBase::DelegateLink* ptr = this->mList.next; ptr != &this->mList; )
          {
-            this->mTriggerNext.last() = ptr->next;
+            this->mTriggerNext.back() = ptr->next;
             this->getDelegate( ptr )();
-            ptr = this->mTriggerNext.last();
+            ptr = this->mTriggerNext.back();
          }
          this->mTriggerNext.pop_back();
       }
@@ -493,9 +493,9 @@ class Signal<void(A)> : public SignalBaseT<void(A)>
          this->mTriggerNext.push_back(NULL);
          for( SignalBase::DelegateLink* ptr = this->mList.next; ptr != &this->mList; )
          {
-            this->mTriggerNext.last() = ptr->next;
+            this->mTriggerNext.back() = ptr->next;
             this->getDelegate( ptr )( a );
-            ptr = this->mTriggerNext.last();
+            ptr = this->mTriggerNext.back();
          }
          this->mTriggerNext.pop_back();
       }
@@ -511,9 +511,9 @@ class Signal<void(A,B)> : public SignalBaseT<void(A,B)>
         this->mTriggerNext.push_back(NULL);
         for( SignalBase::DelegateLink* ptr = this->mList.next; ptr != &this->mList; )
         {
-           this->mTriggerNext.last() = ptr->next;
+           this->mTriggerNext.back() = ptr->next;
            this->getDelegate( ptr )( a, b );
-           ptr = this->mTriggerNext.last();
+           ptr = this->mTriggerNext.back();
         }
         this->mTriggerNext.pop_back();
       }
@@ -529,9 +529,9 @@ class Signal<void(A,B,C)> : public SignalBaseT<void(A,B,C)>
          this->mTriggerNext.push_back(NULL);
          for( SignalBase::DelegateLink* ptr = this->mList.next; ptr != &this->mList; )
          {
-            this->mTriggerNext.last() = ptr->next;
+            this->mTriggerNext.back() = ptr->next;
             this->getDelegate( ptr )( a, b, c );
-            ptr = this->mTriggerNext.last();
+            ptr = this->mTriggerNext.back();
          }
          this->mTriggerNext.pop_back();
       }
@@ -547,9 +547,9 @@ class Signal<void(A,B,C,D)> : public SignalBaseT<void(A,B,C,D)>
          this->mTriggerNext.push_back(NULL);
          for( SignalBase::DelegateLink* ptr = this->mList.next; ptr != &this->mList; )
          {
-            this->mTriggerNext.last() = ptr->next;
+            this->mTriggerNext.back() = ptr->next;
             this->getDelegate( ptr )( a, b, c, d );
-            ptr = this->mTriggerNext.last();
+            ptr = this->mTriggerNext.back();
          }
          this->mTriggerNext.pop_back();
       }
@@ -565,9 +565,9 @@ class Signal<void(A,B,C,D,E)> : public SignalBaseT<void(A,B,C,D,E)>
          this->mTriggerNext.push_back(NULL);
          for( SignalBase::DelegateLink* ptr = this->mList.next; ptr != &this->mList; )
          {
-            this->mTriggerNext.last() = ptr->next;
+            this->mTriggerNext.back() = ptr->next;
             this->getDelegate( ptr )( a, b, c, d, e );
-            ptr = this->mTriggerNext.last();
+            ptr = this->mTriggerNext.back();
          }
          this->mTriggerNext.pop_back();
       }
@@ -583,9 +583,9 @@ class Signal<void(A,B,C,D,E,F)> : public SignalBaseT<void(A,B,C,D,E,F)>
          this->mTriggerNext.push_back(NULL);
          for( SignalBase::DelegateLink* ptr = this->mList.next; ptr != &this->mList; )
          {
-            this->mTriggerNext.last() = ptr->next;
+            this->mTriggerNext.back() = ptr->next;
             this->getDelegate( ptr )( a, b, c, d, e, f );
-            ptr = this->mTriggerNext.last();
+            ptr = this->mTriggerNext.back();
          }
          this->mTriggerNext.pop_back();
       }
@@ -601,9 +601,9 @@ class Signal<void(A,B,C,D,E,F,G)> : public SignalBaseT<void(A,B,C,D,E,F,G)>
          this->mTriggerNext.push_back(NULL);
          for( SignalBase::DelegateLink* ptr = this->mList.next; ptr != &this->mList; )
          {
-            this->mTriggerNext.last() = ptr->next;
+            this->mTriggerNext.back() = ptr->next;
             this->getDelegate( ptr )( a, b, c, d, e, f, g );
-            ptr = this->mTriggerNext.last();
+            ptr = this->mTriggerNext.back();
          }
          this->mTriggerNext.pop_back();
       }
@@ -619,9 +619,9 @@ class Signal<void(A,B,C,D,E,F,G,H)> : public SignalBaseT<void(A,B,C,D,E,F,G,H)>
          this->mTriggerNext.push_back(NULL);
          for( SignalBase::DelegateLink* ptr = this->mList.next; ptr != &this->mList; )
          {
-            this->mTriggerNext.last() = ptr->next;
+            this->mTriggerNext.back() = ptr->next;
             this->getDelegate( ptr )( a, b, c, d, e, f, g, h );
-            ptr = this->mTriggerNext.last();
+            ptr = this->mTriggerNext.back();
          }
          this->mTriggerNext.pop_back();
       }
@@ -637,9 +637,9 @@ class Signal<void(A,B,C,D,E,F,G,H,I)> : public SignalBaseT<void(A,B,C,D,E,F,G,H,
          this->mTriggerNext.push_back(NULL);
          for( SignalBase::DelegateLink* ptr = this->mList.next; ptr != &this->mList; )
          {
-            this->mTriggerNext.last() = ptr->next;
+            this->mTriggerNext.back() = ptr->next;
             this->getDelegate( ptr )( a, b, c, d, e, f, g, h, i );
-            ptr = this->mTriggerNext.last();
+            ptr = this->mTriggerNext.back();
          }
          this->mTriggerNext.pop_back();
       }
@@ -655,9 +655,9 @@ class Signal<void(A,B,C,D,E,F,G,H,I,J)> : public SignalBaseT<void(A,B,C,D,E,F,G,
          this->mTriggerNext.push_back(NULL);
          for( SignalBase::DelegateLink* ptr = this->mList.next; ptr != &this->mList; )
          {
-            this->mTriggerNext.last() = ptr->next;
+            this->mTriggerNext.back() = ptr->next;
             this->getDelegate( ptr )( a, b, c, d, e, f, g, h, i, j );
-            ptr = this->mTriggerNext.last();
+            ptr = this->mTriggerNext.back();
          }
          this->mTriggerNext.pop_back();
       }
@@ -722,7 +722,7 @@ typedef Signal<void(WindowId,U32,U32,U16)> KeyEvent;
 /// void event(WindowId,U32 modifier,U16 key)
 typedef Signal<void(WindowId,U32,U16)> CharEvent;
 
-///// void event(WindowId,U32 modifier,S32 x,S32 y,U32 action,U16 button)
+/// void event(WindowId,U32 modifier,S32 x,S32 y,U32 action,U16 button)
 //typedef Signal<void(WindowId,U32,S32,S32,U32,U16)> ButtonEvent;
 
 /// void event(WindowId,U32 modifier,U32 action,U16 button)
@@ -743,14 +743,11 @@ typedef Signal<void(WindowId)> DisplayEvent;
 /// void event(WindowId, S32 width, S32 height)
 typedef Signal<void(WindowId, S32, S32)> ResizeEvent;
 
-/// void event(WindowId, S32 width, S32 height)
-typedef Signal<void(WindowId, S32, S32)> FramebufferResizeEvent;
-
 /// void event(S32 timeDelta)
 typedef Signal<void(S32)> TimeManagerEvent;
 
-// void event(U32 deviceInst,F32 fValue, U16 deviceType, U32 objType, U16 ascii, U16 objInst, U8 action, U8 modifier)
-typedef Signal<void(U32,F32,U16,U32,U16,U16,U8,U8)> InputEvent;
+// void event(U32 deviceInst,F32 fValue, U16 deviceType, U16 objType, U16 ascii, U16 objInst, U8 action, U8 modifier)
+typedef Signal<void(U32,F32,U16,U16,U16,U16,U8,U8)> InputEvent;
 
 /// void event(U32 popupGUID, U32 commandID, bool& returnValue)
 typedef Signal<void(U32, U32)> PopupMenuEvent;

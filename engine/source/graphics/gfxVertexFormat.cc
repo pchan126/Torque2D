@@ -30,13 +30,13 @@
 
 namespace GFXSemantic
 {
-    const String POSITION = String( "POSITION" ).intern();
-    const String NORMAL = String( "NORMAL" ).intern();
-    const String BINORMAL = String( "BINORMAL" ).intern();
-    const String TANGENT = String( "TANGENT" ).intern();
-    const String TANGENTW = String( "TANGENTW" ).intern();
-    const String COLOR = String( "COLOR" ).intern();
-    const String TEXCOORD = String( "TEXCOORD" ).intern();
+    const StringTableEntry POSITION = StringTable->insert( "POSITION" );
+    const StringTableEntry NORMAL = StringTable->insert( "NORMAL" );
+    const StringTableEntry BINORMAL = StringTable->insert( "BINORMAL" );
+    const StringTableEntry TANGENT = StringTable->insert( "TANGENT" );
+    const StringTableEntry TANGENTW = StringTable->insert( "TANGENTW" );
+    const StringTableEntry COLOR = StringTable->insert( "COLOR" );
+    const StringTableEntry TEXCOORD = StringTable->insert( "TEXCOORD" );
 }
 
 
@@ -98,9 +98,9 @@ void GFXVertexFormat::append( const GFXVertexFormat &format, U32 streamIndex )
    for ( U32 i=0; i < format.getElementCount(); i++ )
    {
       mElements.increment();
-      mElements.last() = format.getElement( i );
+      mElements.back() = format.getElement( i );
       if ( streamIndex != -1 )
-         mElements.last().mStreamIndex = streamIndex;
+         mElements.back().mStreamIndex = streamIndex;
    }
 
    mDirty = true;
@@ -113,14 +113,14 @@ void GFXVertexFormat::clear()
    mDecl = NULL;
 }
 
-void GFXVertexFormat::addElement( const String& semantic, GFXDeclType type, U32 index, U32 stream )
+void GFXVertexFormat::addElement( const StringTableEntry semantic, GFXDeclType type, U32 index, U32 stream )
 { 
    mDirty = true;
    mElements.increment();
-   mElements.last().mStreamIndex = stream; 
-   mElements.last().mSemantic = semantic.intern();
-   mElements.last().mSemanticIndex = index;
-   mElements.last().mType = type;      
+   mElements.back().mStreamIndex = stream;
+   mElements.back().mSemantic = StringTable->insert(semantic);
+   mElements.back().mSemanticIndex = index;
+   mElements.back().mType = type;
 }
 
 const StringTableEntry& GFXVertexFormat::getDescription() const
@@ -197,24 +197,24 @@ void GFXVertexFormat::_updateDirty()
       const GFXVertexElement &element = mElements[i];
 
       desc += String::ToString( "%d,%s,%d,%d\n",   element.mStreamIndex,
-                                                   element.mSemantic.c_str(),
+                                                   element.mSemantic,
                                                    element.mSemanticIndex, 
                                                    element.mType );
 
-      if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::NORMAL.c_str() ) == 0 )
+      if ( element.getSemantic() == GFXSemantic::NORMAL )
          mHasNormal = true;
-      else if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::TANGENT.c_str() ) == 0 )
+      else if ( element.getSemantic() == GFXSemantic::TANGENT )
          mHasTangent = true;
-      else if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::COLOR.c_str() ) == 0 )
+      else if ( element.getSemantic() == GFXSemantic::COLOR )
          mHasColor = true;
-      else if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::TEXCOORD.c_str() ) == 0 )
+      else if ( element.getSemantic() == GFXSemantic::TEXCOORD )
          ++mTexCoordCount;
 
       mSizeInBytes += element.getSizeInBytes();
    }
 
    // Intern the string for fast compares later.
-   mDescription = desc.intern();
+   mDescription = desc;
 
    mDirty = false;
 }

@@ -560,7 +560,7 @@ TamlWriteNode* Taml::compileObject( SimObject* pSimObject, const bool forceId )
         AssertFatal( mCompiledNodes.size() != 0, "Taml::compileObject() - Found a compiled node at the root." );
 
         // Yes, so fetch node.
-        TamlWriteNode* compiledNode = compiledItr->value;
+        TamlWriteNode* compiledNode = compiledItr->second;
 
         // Is a reference Id already present?
         if ( compiledNode->mRefId == 0 )
@@ -748,9 +748,9 @@ void Taml::compileDynamicFields( TamlWriteNode* pTamlWriteNode )
     Vector<SimFieldDictionary::Entry*> dynamicFieldList(__FILE__, __LINE__);
 
     // Ensure the dynamic field doesn't conflict with static field.
-    for (SimFieldDictionaryIterator itr(getFieldDictionary()); *itr; ++itr)
+    for( U32 hashIndex = 0; hashIndex < SimFieldDictionary::HashTableSize; ++hashIndex )
     {
-        for( SimFieldDictionary::Entry* pEntry = *itr; pEntry; pEntry = pEntry->next )
+        for( SimFieldDictionary::Entry* pEntry = pFieldDictionary->mHashTable[hashIndex]; pEntry; pEntry = pEntry->next )
         {
             // Iterate static fields.
             U32 fieldIndex;
@@ -952,7 +952,7 @@ SimObject* Taml::createType( StringTableEntry typeName, const Taml* pTaml, const
     }
 
     // Create the object.
-    ConsoleObject* pConsoleObject = typeItr->value->create();
+    ConsoleObject* pConsoleObject = typeItr->second->create();
 
     // NOTE: It is important that we don't register the object here as many objects rely on the fact that
     // fields are set prior to the object being registered.  Registering here will invalid those assumptions.
@@ -1294,7 +1294,7 @@ bool Taml::generateTamlSchema()
 
             // Reference the child group.
             TiXmlElement* pChoiceGroupReferenceElement = new TiXmlElement( "xs:group" );
-            pChoiceGroupReferenceElement->SetAttribute( "ref", childGroupItr->value );
+            pChoiceGroupReferenceElement->SetAttribute( "ref", childGroupItr->second );
             pChoiceGroupReferenceElement->SetAttribute( "minOccurs", 0 );
             pChoiceElement->LinkEndChild( pChoiceGroupReferenceElement );
         }

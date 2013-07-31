@@ -104,9 +104,9 @@ bool Tickable::advanceTime( U32 timeDelta )
 
         for( ; smLastTick != targetTick; smLastTick += smTickMs )
         {
-            for( ProcessListiterator i = safeProcessList.begin(); i != safeProcessList.end(); i++ )
+            for( auto i : safeProcessList )
             {           
-                (*i)->processTick();
+                i->processTick();
             }
         }
     }
@@ -118,18 +118,18 @@ bool Tickable::advanceTime( U32 timeDelta )
     safeProcessList = getProcessList();
 
     // Interpolate tick.
-    for( ProcessListiterator i = safeProcessList.begin(); i != safeProcessList.end(); i++ )
+    for( auto i : safeProcessList )
     {
-        (*i)->interpolateTick( dt );
+        i->interpolateTick( dt );
     }
 
     // Fetch a copy of the process list.
     safeProcessList = getProcessList();
 
-    dt = F32( timeDelta ) / 1000.f;	
-    for( ProcessListiterator i = safeProcessList.begin(); i != safeProcessList.end(); i++ )
+    dt = F32( timeDelta ) / 1000.f;
+    for( auto i : safeProcessList )
     {
-        (*i)->advanceTime( dt );
+        i->advanceTime( dt );
     }
 
     smLastTime = targetTime;

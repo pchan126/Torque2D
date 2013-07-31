@@ -215,7 +215,7 @@ void FilterImageAsset::calculateImage( void )
 
     GFXTextureTarget *texTarget = GFX->allocRenderToTextureTarget();
     mImageTextureHandle = TEXMGR->createTexture( texture->getWidth(), texture->getHeight(), GFXFormatR8G8B8A8, &GFXImageAssetTextureProfile, 0, 0 );
-    GFXOpenGLTextureObject* outTexture = dynamic_cast<GFXOpenGLTextureObject*>(mImageTextureHandle.getPointer());
+//    GFXOpenGLTextureObject* outTexture = dynamic_cast<GFXOpenGLTextureObject*>(mImageTextureHandle.getPointer());
     texTarget->attachTexture(mImageTextureHandle);
 //   texTarget->attachTexture(texture);
    

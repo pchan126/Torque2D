@@ -27,6 +27,7 @@
 #include "math/mRect.h"
 #include "gui/guiControl.h"
 #include "gui/guiArrayCtrl.h"
+#include <deque>
 
 //------------------------------------------------------------------------------
 
@@ -45,14 +46,14 @@ class GuiTreeViewCtrl : public GuiArrayCtrl
 
          enum ItemState
          {
-            Selected       = BIT(0),
-            Expanded       = BIT(1),
-            Focus          = BIT(2),
-            MouseOverBmp   = BIT(3),
-            MouseOverText  = BIT(4),
-            InspectorData  = BIT(5), ///< Set if we're representing some inspector
+            Selected       = 0,
+            Expanded       = 1,
+            Focus          = 2,
+            MouseOverBmp   = 3,
+            MouseOverText  = 4,
+            InspectorData  = 5, ///< Set if we're representing some inspector
                                      /// info (ie, use mInspectorInfo, not mScriptInfo)
-            VirtualParent  = BIT(6), ///< This indicates that we should be rendered as
+            VirtualParent  = 6, ///< This indicates that we should be rendered as
                                      ///  a parent even though we don't have any children.
                                      ///  This is useful for preventing scenarios where
                                      ///  we might want to create thousands of
@@ -164,11 +165,11 @@ class GuiTreeViewCtrl : public GuiArrayCtrl
       ///
       enum TreeState
       {
-         RebuildVisible    = BIT(0), ///< Temporary flag, we have to rebuild the tree.
-         IsInspector       = BIT(1), ///< We are mapping a SimObject hierarchy.
-         IsEditable        = BIT(2), ///< We allow items to be moved around.
-         ShowTreeLines     = BIT(3), ///< Should we render tree lines or just icons?
-         BuildingVisTree   = BIT(4), ///< We are currently building the visible tree (prevent recursion)
+         RebuildVisible    = 0, ///< Temporary flag, we have to rebuild the tree.
+         IsInspector       = 1, ///< We are mapping a SimObject hierarchy.
+         IsEditable        = 2, ///< We allow items to be moved around.
+         ShowTreeLines     = 3, ///< Should we render tree lines or just icons?
+         BuildingVisTree   = 4, ///< We are currently building the visible tree (prevent recursion)
       };
 
 protected:
@@ -204,10 +205,10 @@ protected:
       ///
       enum HitFlags
       {
-         OnIndent       = BIT(0),
-         OnImage        = BIT(1),
-         OnText         = BIT(2),
-         OnRow          = BIT(3),
+         OnIndent       = 0,
+         OnImage        = 1,
+         OnText         = 2,
+         OnRow          = 3,
       };
 
       ///
@@ -235,8 +236,8 @@ public:
       ///
       Vector<Item*>           mItems;
       Vector<Item*>           mVisibleItems;
-      Vector<Item*>           mSelectedItems;
-      Vector<S32>             mSelected;     ///< Used for tracking stuff that was
+      std::deque<Item*>           mSelectedItems;
+      std::deque<S32>             mSelected;     ///< Used for tracking stuff that was
                                              ///  selected, but may not have been
                                              ///  created at time of selection
       S32                     mItemCount;

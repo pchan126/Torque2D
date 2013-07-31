@@ -44,35 +44,38 @@ namespace Sim
 
 //-----------------------------------------------------------------------------
 
-SimObject::SimObject( const U8 namespaceLinkMask ) : mNSLinkMask( namespaceLinkMask )
+SimObject::SimObject( const U8 namespaceLinkMask ) :
+    mNSLinkMask( namespaceLinkMask ),
+    objectName(nullptr),
+    mInternalName(nullptr),
+    nextIdObject(nullptr),
+    mId(0),
+    mIdString(StringTable->EmptyString),
+    mGroup(0),
+    mNameSpace(nullptr),
+    mNotifyList(nullptr),
+    mTypeMask(0),
+    mScriptCallbackGuard(0),
+    mFieldDictionary(nullptr),
+    mCanSaveFieldDictionary(true),
+    mClassName(nullptr),
+    mSuperClassName(nullptr),
+    mPeriodicTimerID(0)
 {
-    mFlags.set( ModStaticFields | ModDynamicFields );
-    objectName               = NULL;
-    mInternalName            = NULL;
+    mFlags.set(ModStaticFields);
+    mFlags.set( ModDynamicFields );
     nextNameObject           = (SimObject*)-1;
     nextManagerNameObject    = (SimObject*)-1;
-    nextIdObject             = NULL;  
-    mId                      = 0;
-    mIdString                = StringTable->EmptyString;
-    mGroup                   = 0;
-    mNameSpace               = NULL;
-    mNotifyList              = NULL;
-    mTypeMask                = 0;
-    mScriptCallbackGuard     = 0;
-    mFieldDictionary         = NULL;
-    mCanSaveFieldDictionary	 = true;
-    mClassName               = NULL;
-    mSuperClassName          = NULL;
     mProgenitorFile          = CodeBlock::getCurrentCodeBlockFullPath();
-    mPeriodicTimerID         = 0;
 }
 
 //---------------------------------------------------------------------------
 
 bool SimObject::registerObject()
 {
-    AssertFatal( !mFlags.test( Added ), "reigsterObject - Object already registered!");
-    mFlags.clear(Deleted | Removed);
+    AssertFatal( !mFlags.test( Added ), "registerObject - Object already registered!");
+    mFlags.reset(Deleted);
+    mFlags.reset(Removed);
 
     if( mId == 0 )
     {
@@ -736,9 +739,9 @@ ConsoleMethod(SimObject,dump, void, 2, 2, "() Use the dump method to display the
 
    dQsort(flist.address(),flist.size(),sizeof(AbstractClassRep::Field *),compareFields);
 
-   for(Vector<const AbstractClassRep::Field *>::iterator itr = flist.begin(); itr != flist.end(); itr++)
+   for(auto itr : flist)
    {
-      const AbstractClassRep::Field* f = *itr;
+      const AbstractClassRep::Field* f = itr;
       if( f->type == AbstractClassRep::DeprecatedFieldType ||
           f->type == AbstractClassRep::StartGroupFieldType ||
           f->type == AbstractClassRep::EndGroupFieldType) continue;
@@ -772,8 +775,8 @@ ConsoleMethod(SimObject,dump, void, 2, 2, "() Use the dump method to display the
    if(ns)
       ns->getEntryList(&vec);
 
-   for(Vector<Namespace::Entry *>::iterator j = vec.begin(); j != vec.end(); j++)
-      Con::printf("  %s() - %s", (*j)->mFunctionName, (*j)->mUsage ? (*j)->mUsage : "");
+   for(auto j:vec)
+      Con::printf("  %s() - %s", j->mFunctionName, j->mUsage ? j->mUsage : "");
 
 }
 
@@ -1206,7 +1209,7 @@ bool SimObject::onAdd()
 
 void SimObject::onRemove()
 {
-   mFlags.clear(Added);
+   mFlags.reset(Added);
 
    unlinkNamespaces();
 }

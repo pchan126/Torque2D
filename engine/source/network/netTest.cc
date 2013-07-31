@@ -63,7 +63,8 @@ public:
    char message[256];
    SimpleNetObject()
    {
-      mNetFlags.set(ScopeAlways | Ghostable);
+      mNetFlags.set(ScopeAlways);
+      mNetFlags.set(Ghostable);
       dStrcpy(message, "Hello World!");
    }
    U32 packUpdate(NetConnection *conn, U32 mask, BitStream *stream)

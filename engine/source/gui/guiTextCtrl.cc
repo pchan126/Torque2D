@@ -322,7 +322,7 @@ void GuiTextCtrl::resizeWidthToText() {
 void GuiTextCtrl::setFontSize( U32 fontSize )
 {
     StringTableEntry sFontCacheDirectory = Con::getVariable("$GUI::fontCacheDirectory");
-    if (mFont == NULL)
+    if (mFont.isNull())
         mFont = mProfile->mFont;
     mFont = GFont::create(mFont->getFontFaceName(), fontSize, sFontCacheDirectory);
 }

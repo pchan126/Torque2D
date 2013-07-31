@@ -598,7 +598,7 @@ void GuiControl::renderChildControls(Point2I offset, const RectI &updateRect)
    RectI clipRect = updateRect;
 
    S32 size = objectList.size();
-   S32 size_cpy = size;
+   S32 size_cpy;
     //-Mat look through our vector all normal-like, trying to use an iterator sometimes gives us
    //bad cast on good objects
    for( S32 count = 0; count < objectList.size(); count++ )
@@ -1057,13 +1057,13 @@ void GuiControl::setTooltipProfile( GuiControlProfile *prof )
 {
     AssertFatal( prof, "GuiControl::setTooltipProfile: invalid profile" );
     
-    if ( prof == mTooltipProfile )
+    if ( prof == mTooltipProfile || prof == NULL)
         return;
     
-    bool skipAwaken = false;
-    
-    if ( mTooltipProfile == NULL )
-        skipAwaken = true;
+//    bool skipAwaken = false;
+   
+//    if ( mTooltipProfile == NULL )
+//        skipAwaken = true;
     
 //    if( mTooltipProfile )
 //        mTooltipProfile->decUseCount();
