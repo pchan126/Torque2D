@@ -881,7 +881,7 @@ void ImageAsset::setTextureFilter( const TextureFilterMode filterMode )
 //    GFXGLTextureFilter[GFXTextureFilterLinear] = GL_LINEAR;
     
     //    // Set the texture objects filter mode.
-    mImageTextureHandle->setFilter( glFilterMode );
+//    mImageTextureHandle->setFilter( glFilterMode );
 }
 
 //------------------------------------------------------------------------------

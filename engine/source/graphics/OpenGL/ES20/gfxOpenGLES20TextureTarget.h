@@ -11,35 +11,6 @@
 
 class GFXOpenGLES20TextureObject;
 
-/// Internal struct used to track texture information for FBO attachments
-/// This serves as an abstract base so we can deal with cubemaps and standard
-/// 2D/Rect textures through the same interface
-class _GFXOpenGLES20TargetDesc
-{
-public:
-    _GFXOpenGLES20TargetDesc(U32 _mipLevel, U32 _zOffset) :
-    mipLevel(_mipLevel), zOffset(_zOffset)
-    {
-    }
-    
-    virtual ~_GFXOpenGLES20TargetDesc() {}
-    
-    virtual U32 getHandle() = 0;
-    virtual U32 getWidth() = 0;
-    virtual U32 getHeight() = 0;
-    virtual U32 getDepth() = 0;
-    virtual bool hasMips() = 0;
-    virtual GLenum getBinding() = 0;
-    
-    U32 getMipLevel() { return mipLevel; }
-    U32 getZOffset() { return zOffset; }
-    
-private:
-    U32 mipLevel;
-    U32 zOffset;
-};
-
-
 /// Render to texture support for OpenGL.
 /// This class needs to make a number of assumptions due to the requirements
 /// and complexity of render to texture in OpenGL.
@@ -57,10 +28,7 @@ class GFXOpenGLES20TextureTarget : public GFXOpenGLTextureTarget
 public:
     GFXOpenGLES20TextureTarget();
     virtual ~GFXOpenGLES20TextureTarget();
-    
-    virtual void attachTexture(GFXTextureObject *tex, RenderSlot slot = Color0, U32 mipLevel=0, U32 zOffset = 0);
-    virtual void attachTexture(GFXCubemap *tex, U32 face, RenderSlot slot, U32 mipLevel=0);
-
+   
     void deactivate();
     virtual const String describeSelf() const;
     
@@ -75,9 +43,6 @@ public:
 protected:
     
     friend class GFXOpenGLES20Device;
-    
-    /// Array of _GFXOpenGLES20TargetDesc's, an internal struct used to keep track of texture data.
-    AutoPtr<_GFXOpenGLES20TargetDesc> mTargets[MaxRenderSlotId];
 };
 
 #endif

@@ -71,10 +71,11 @@ IMPLEMENT_CONOBJECT(SceneWindow);
 //-----------------------------------------------------------------------------
 
 GFX_ImplementTextureProfile(GFXSceneWindowTextureProfile,
-GFXTextureProfile::DiffuseMap,
-GFXTextureProfile::PreserveSize |
-        GFXTextureProfile::Static,
-GFXTextureProfile::None);
+                           GFXTextureProfile::DiffuseMap,
+                           GFXTextureProfile::PreserveSize |
+                            GFXTextureProfile::RenderTarget |
+                             GFXTextureProfile::Static,
+                              GFXTextureProfile::None);
 
 
 static EnumTable::Enums interpolationModeLookup[] =
@@ -162,7 +163,12 @@ bool SceneWindow::onAdd()
     // Zero Camera Time.
     zeroCameraTime();
    
-    // Return Okay.
+//   GFX->setActiveRenderTarget(mpTextureTarget);
+//   // Set our window as the current render target so we can see outputs.
+//   GFX->getDrawUtil()->drawBitmapStretch(mImageTextureHandle, getBounds(), GFXBitmapFlip_Y, GFXTextureFilterLinear, false);
+   
+
+   // Return Okay.
     return true;
 }
 
@@ -1547,16 +1553,16 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
        GFX->clear( GFXClearZBuffer , ColorI(mBackgroundColor), 1.0f, 0 );
     }
 
-//    if (renderTarget.isNull())
-//       renderTarget = GFX->allocRenderToTextureTarget();
-//
-//    if (mImageTextureHandle.isNull())
-//        mImageTextureHandle = TEXMGR->createTexture( getWidth(), getHeight(), GFXFormatR8G8B8A8, &GFXSceneWindowTextureProfile, 0, 0 );
-//
-//    renderTarget->attachTexture(mImageTextureHandle);
-//    GFX->pushActiveRenderTarget();
-//    GFX->setActiveRenderTarget(renderTarget);
-//    GFX->updateStates(true);
+    if (renderTarget.isNull())
+       renderTarget = GFX->allocRenderToTextureTarget();
+
+    if (mImageTextureHandle.isNull())
+        mImageTextureHandle = TEXMGR->createTexture( getWidth(), getHeight(), GFXFormatR8G8B8A8, &GFXSceneWindowTextureProfile, 0, 0 );
+
+    renderTarget->attachTexture(mImageTextureHandle);
+    GFX->pushActiveRenderTarget();
+    GFX->setActiveRenderTarget(renderTarget);
+    GFX->updateStates(true);
 
     // Render View.
     pScene->renderScene( &sceneRenderState );
@@ -1565,9 +1571,9 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
     GFX->popWorldMatrix();
     GFX->setViewMatrix(MatrixF(true));
 
-//    GFX->popActiveRenderTarget();
-//    GFX->updateStates(true);
-//    GFX->getDrawUtil()->drawBitmapStretch(mImageTextureHandle, updateRect, GFXBitmapFlip_Y);
+    GFX->popActiveRenderTarget();
+    GFX->updateStates(true);
+    GFX->getDrawUtil()->drawBitmapStretch(mImageTextureHandle, updateRect, GFXBitmapFlip_Y);
 
    // Render the metrics.
     renderMetricsOverlay( offset, updateRect );

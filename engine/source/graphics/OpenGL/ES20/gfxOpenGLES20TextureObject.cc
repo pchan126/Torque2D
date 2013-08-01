@@ -53,19 +53,5 @@ void GFXOpenGLES20TextureObject::reloadFromCache()
 }
 
 
-void GFXOpenGLES20TextureObject::setFilter(const GFXTextureFilterType filter)
-{
-//    // Set filter.
-//    mFilter = GFXGLTextureFilter[filter];
-//    
-//    // Finish if no GL texture name.
-//    if ( mHandle == 0 )
-//        return;
-//    
-//    // Set texture state.
-//    glBindTexture( GL_TEXTURE_2D, mHandle );
-//    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter );
-//    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter );
-}
 
 

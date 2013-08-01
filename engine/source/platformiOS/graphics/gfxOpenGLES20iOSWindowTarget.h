@@ -23,7 +23,7 @@ public:
       // TODO: Fix me!
       return GFXFormatR8G8B8A8;
    }
-   void makeActive() { glBindFramebuffer(GL_FRAMEBUFFER, 0); };
+   void makeActive();
    virtual bool present();
    virtual void resetMode();
    virtual void zombify() { }

@@ -23,16 +23,11 @@ public:
 
    void reloadFromCache(); ///< Reloads texture from zombie cache, used by GFXOpenGLES20TextureManager to resurrect the texture.
       
-    inline GLuint getFilter( void ) { return mFilter; }
-    virtual void setFilter( const GFXTextureFilterType filter );
-    
 private:
    friend class GFXOpenGLES20TextureManager;
    typedef GFXOpenGLTextureObject Parent;
    
 protected:
-   /// Internal GL object
-   GLuint mFilter;
     bool mClamp;
 
    /// Pointer to owner device

@@ -27,7 +27,6 @@ private:
    friend class GFXOpenGLES20iOSTextureManager;
    typedef GFXOpenGLES20TextureObject Parent;
    /// Internal GL object
-    GLuint mFilter;
     bool mClamp;
    
    U32 mBytesPerTexel;

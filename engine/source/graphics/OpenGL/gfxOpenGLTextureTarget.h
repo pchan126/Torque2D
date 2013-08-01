@@ -27,7 +27,6 @@
 #include "memory/autoPtr.h"
 
 class GFXOpenGLTextureObject;
-//class _GFXGLTargetDesc;
 
 /// Internal struct used to track texture information for FBO attachments
 /// This serves as an abstract base so we can deal with cubemaps and standard

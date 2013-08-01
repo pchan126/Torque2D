@@ -20,8 +20,7 @@ GFXOpenGLES20iOSTextureObject::GFXOpenGLES20iOSTextureObject(GFXDevice * aDevice
     mBytesPerTexel(4),
     mLockedRectRect(0, 0, 0, 0),
     mGLDevice(static_cast<GFXOpenGLES20iOSDevice*>(mDevice)),
-    mZombieCache(NULL),
-    mFilter( GL_NEAREST )
+    mZombieCache(NULL)
 {
     mTextureSize.set([ textureInfo width ], [ textureInfo height ], 0.0);
     mBitmapSize.set([ textureInfo width ], [ textureInfo height ], 0.0);

@@ -88,7 +88,6 @@ protected:
     ColorF                      mBackgroundColor;
     bool                        mUseBackgroundColor;
 
-
    /// @name Rendering
    /// @{
 

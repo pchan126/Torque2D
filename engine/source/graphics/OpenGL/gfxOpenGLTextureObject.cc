@@ -67,9 +67,7 @@ void GFXOpenGLTextureObject::bind(U32 textureUnit)
     AssertFatal(mBinding == GL_TEXTURE_2D, "GFXOpenGLTextureObject::bind - only GL_TEXTURE_2D supported");
    
    device->setTextureUnit(textureUnit);
-
-    GLuint han = mHandle;
-   glBindTexture(mBinding, han);
+   glBindTexture(mBinding, mHandle);
 
    GFXOpenGLStateBlockRef sb = device->getCurrentStateBlock();
    AssertFatal(sb, "GFXOpenGLTextureObject::bind - No active stateblock!");
@@ -89,6 +87,23 @@ void GFXOpenGLTextureObject::release()
    glDeleteTextures(1, &mHandle);
    mHandle = 0;
 }
+
+void GFXOpenGLTextureObject::setFilter(const GFXTextureFilterType filter)
+{
+   GFXOpenGLDevice* device = dynamic_cast<GFXOpenGLDevice*>(GFX);
+   AssertFatal(mBinding == GL_TEXTURE_2D, "GFXOpenGLTextureObject::bind - only GL_TEXTURE_2D supported");
+
+   // Finish if no GL texture name.
+    if ( mHandle == 0 )
+        return;
+
+    // Set texture state.
+    device->setTextureUnit(0);
+    glBindTexture( mBinding, mHandle );
+    setParameter(GL_TEXTURE_MAG_FILTER, GFXGLTextureFilter[filter] );
+    setParameter(GL_TEXTURE_MIN_FILTER, GFXGLTextureFilter[filter] );
+}
+
 
 void GFXOpenGLTextureObject::setParameter( GLenum pname, GLint param)
 {

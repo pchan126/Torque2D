@@ -29,8 +29,7 @@ void GFXOpenGLES20iOSWindowTarget::resetMode()
 const Point2I GFXOpenGLES20iOSWindowTarget::getSize()
 {
    iOSWindow *win = (iOSWindow*)mWindow;
-   GLKView *view = (GLKView*)win->view;
-   return Point2I(view.drawableWidth, view.drawableHeight);
+   return mWindow->getBounds().extent;
 }
 
 bool GFXOpenGLES20iOSWindowTarget::present()
@@ -38,6 +37,14 @@ bool GFXOpenGLES20iOSWindowTarget::present()
     // iOS GLKView class automatically presents renderbuffer
     return true;
 }
+
+void GFXOpenGLES20iOSWindowTarget::makeActive()
+{
+   iOSWindow *win = (iOSWindow*)mWindow;
+   GLKView *view = win->view;
+   [view bindDrawable];
+}
+
 
 void GFXOpenGLES20iOSWindowTarget::_onAppSignal(WindowId wnd, S32 event)
 {

@@ -368,10 +368,9 @@ bool GuiControl::resize(const Point2I &newPosition, const Point2I &newExtent)
         // Could be set if we are resizing in response to a child resizing!
         if ( mNotifyChildrenResized )
         {
-            iterator i;
-            for(i = begin(); i != end(); i++)
+           for(auto i:*this)
             {
-                GuiControl *ctrl = static_cast<GuiControl *>(*i);
+                GuiControl *ctrl = static_cast<GuiControl *>(i);
                 ctrl->parentResized(RectI(bounds.point, bounds.extent), RectI(newPosition,actualNewExtent));
             }
         }
@@ -700,10 +699,9 @@ void GuiControl::preRender()
    if(!mAwake)
       return;
 
-   iterator i;
-   for(i = begin(); i != end(); i++)
+   for(auto i:*this)
    {
-      GuiControl *ctrl = static_cast<GuiControl *>(*i);
+      GuiControl *ctrl = static_cast<GuiControl *>(i);
       ctrl->preRender();
    }
    onPreRender();

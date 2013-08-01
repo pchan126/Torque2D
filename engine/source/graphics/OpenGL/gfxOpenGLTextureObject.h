@@ -83,6 +83,8 @@ public:
    virtual void resurrect();
    virtual const String describeSelf() const;
    
+   void setFilter(const GFXTextureFilterType filter);
+
 private:
    friend class GFXOpenGLTextureManager;
    typedef GFXTextureObject Parent;

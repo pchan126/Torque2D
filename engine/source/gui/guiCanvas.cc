@@ -33,8 +33,16 @@
 #include "delegates/process.h"
 
 #include "graphics/gfxInit.h"
+#include "graphics/gfxDrawUtil.h"
 
 IMPLEMENT_CONOBJECT(GuiCanvas);
+
+GFX_ImplementTextureProfile(GFXCanvasTextureProfile,
+                            GFXTextureProfile::DiffuseMap,
+                            GFXTextureProfile::PreserveSize |
+                            GFXTextureProfile::RenderTarget |
+                            GFXTextureProfile::Static,
+                            GFXTextureProfile::None);
 
 GuiCanvas::GuiCanvas():GuiControl(),
                         mShowCursor(true),
@@ -155,6 +163,15 @@ bool GuiCanvas::onAdd()
         mPlatformWindow->setInputController( dynamic_cast<IProcessInput*>(this) );
     }
 
+//    if (mPlatformWindow != NULL)
+//    {
+//       mpTextureTarget = GFX->allocRenderToTextureTarget();
+//       Point2I temp = mPlatformWindow->getGFXTarget()->getSize();
+//       mImageTextureHandle = TEXMGR->createTexture( temp.x, temp.y, GFXFormatR8G8B8A8, &GFXCanvasTextureProfile, 0, 0 );
+//       mpTextureTarget->attachTexture(mImageTextureHandle);
+//       Con::printf("renderbuffer size: %i %i", temp.x, temp.y);
+//    }
+   
     // Make sure we're able to render.
     newDevice->setAllowRender( true );
     
@@ -1293,27 +1310,20 @@ void GuiCanvas::renderFrame(bool preRenderOnly, bool bufferSwap /* = true */)
 {
    PROFILE_START(CanvasPreRender);
 
-    // Set our window as the current render target so we can see outputs.
    GFXTarget* target = mPlatformWindow->getGFXTarget();
-    GFX->setActiveRenderTarget(target);
-    
-    if (!GFX->getActiveRenderTarget())
-    {
-        PROFILE_END();
-        return;
-    }
-    
+   GFX->setActiveRenderTarget(target);
+   GFXTarget* renderTarget = GFX->getActiveRenderTarget();
+   if (renderTarget == NULL)
+   {
+      PROFILE_END();
+      return;
+   }
+   
 #ifdef TORQUE_GFX_STATE_DEBUG
     GFX->getDebugStateManager()->startFrame();
 #endif
-    
-    GFXTarget* renderTarget = GFX->getActiveRenderTarget();
-    if (renderTarget == NULL)
-    {
-        PROFILE_END();
-        return;
-    }
-    
+   
+   
     // Make sure the root control is the size of the canvas.
     Point2I size = renderTarget->getSize();
     
@@ -1395,10 +1405,9 @@ void GuiCanvas::renderFrame(bool preRenderOnly, bool bufferSwap /* = true */)
     }
 
        //render the dialogs
-      iterator i;
-      for(i = begin(); i != end(); i++)
+      for(auto i: *this)
       {
-         GuiControl *contentCtrl = static_cast<GuiControl*>(*i);
+         GuiControl *contentCtrl = static_cast<GuiControl*>(i);
          GFX->setClipRect(updateUnion);
          GFX->setStateBlock(mDefaultGuiSB);
          contentCtrl->onRender(contentCtrl->getPosition(), updateUnion);
@@ -1418,7 +1427,7 @@ void GuiCanvas::renderFrame(bool preRenderOnly, bool bufferSwap /* = true */)
 
    PROFILE_END();
 
-    GFX->endScene();
+   GFX->endScene();
 
    if( bufferSwap )
       swapBuffers();
@@ -1435,12 +1444,6 @@ GuiCanvas::GuiCanvasFrameSignal& GuiCanvas::getGuiCanvasFrameSignal()
 
 void GuiCanvas::swapBuffers()
 {
-//   PROFILE_START(SwapBuffers);
-//   //flip the surface
-//   if(!mRenderFront)
-//      Video::swapBuffers();
-//   PROFILE_END();
-
     AssertISV(mPlatformWindow, "GuiCanvas::swapBuffers - no window present!");
     if(!mPlatformWindow->isVisible())
         return;
