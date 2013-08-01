@@ -11,6 +11,7 @@
 
 class GFXOpenGLES20iOSDevice;
 @class GLKTextureInfo;
+@class CIImage;
 
 class GFXOpenGLES20iOSTextureObject : public GFXOpenGLES20TextureObject
 {
@@ -20,7 +21,7 @@ public:
    virtual ~GFXOpenGLES20iOSTextureObject();
    
    inline bool isZombie() const { return mIsZombie; }
-
+   CIImage* getCIImage();
     ///< Reloads texture from zombie cache, used by GFXOpenGLES20iOSTextureManager to resurrect the texture.
    
 private:

@@ -564,15 +564,9 @@ GFXFormat GFXOpenGLES20iOSDevice::selectSupportedFormat(   GFXTextureProfile* pr
 void GFXOpenGLES20iOSDevice::drawImage( CIImage* image, CGRect inRect, CGRect fromRect)
 {
      updateStates(true);
-//   _updateRenderTargets();
-   
    CIContext* ciContext = [CIContext contextWithEAGLContext:mContext options:@{kCIContextWorkingColorSpace: [NSNull null]}];
-//   glClearColor(0.0, 0.5, 0.0, 1.0);
-//   glClear(GL_COLOR_BUFFER_BIT);
    glFlush();
    [ciContext drawImage:image inRect:inRect fromRect:fromRect];
-//   mBaseEffect.lightModelTwoSided = GL_FALSE;
-//   ciContext = nil;
 }
 
 
