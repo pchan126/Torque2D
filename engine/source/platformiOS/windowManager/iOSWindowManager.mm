@@ -36,7 +36,7 @@ iOSWindowManager::iOSWindowManager() : mNotifyShutdownDelegate(this, &iOSWindowM
 
     viewController = [[T2DViewController alloc] initWithNibName:nil bundle:nil];
     viewController.delegate = appDelegate;
-    viewController.preferredFramesPerSecond = 60;
+    viewController.preferredFramesPerSecond = 30;
     viewController.paused = NO;
     appDelegate.mainController = viewController;
 

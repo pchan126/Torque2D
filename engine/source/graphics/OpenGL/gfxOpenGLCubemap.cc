@@ -39,7 +39,8 @@ GLenum GFXOpenGLCubemap::faceList[6] =
 GFXOpenGLCubemap::GFXOpenGLCubemap() :
       mCubemap(0), 
       mDynamicTexSize(0),
-      mFaceFormat( GFXFormatR8G8B8A8 )
+      mFaceFormat( GFXFormatR8G8B8A8 ),
+      mBinding(GL_TEXTURE_2D)
 {
    for(U32 i = 0; i < 6; i++)
       mTextures[i] = NULL;
@@ -100,3 +101,45 @@ void GFXOpenGLCubemap::_onTextureEvent( GFXTexCallbackCode code )
    else
       tmResurrect();
 }
+
+void GFXOpenGLCubemap::setParameter( GLenum pname, GLint param)
+{
+   switch (pname) {
+      case GL_TEXTURE_MIN_FILTER:
+         if (mMinFilter != param)
+         {
+            mMinFilter = param;
+            glTexParameteri(mBinding, pname, mMinFilter);
+         }
+         break;
+         
+      case GL_TEXTURE_MAG_FILTER:
+         if (mMagFilter != param)
+         {
+            mMagFilter = param;
+            glTexParameteri(mBinding, pname, mMagFilter);
+         }
+         break;
+         
+      case GL_TEXTURE_WRAP_S:
+         if (mWrapS != param)
+         {
+            mWrapS = param;
+            glTexParameteri(mBinding, pname, mWrapS);
+         }
+         break;
+         
+      case GL_TEXTURE_WRAP_T:
+         if (mWrapT != param)
+         {
+            mWrapT = param;
+            glTexParameteri(mBinding, pname, mWrapT);
+         }
+         break;
+         
+      default:
+         break;
+   }
+}
+
+

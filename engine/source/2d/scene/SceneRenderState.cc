@@ -90,6 +90,7 @@ void SceneRenderState::renderObjects( Scene* pScene, SceneRenderQueue* pSceneRen
         centerPosition.y *= tScale.y;
         cameraAABB.lowerBound += centerPosition;
         cameraAABB.upperBound += centerPosition;
+        pScene->getWorldQuery()->clearQuery();
         pScene->getWorldQuery()->aabbQueryAABB( cameraAABB );
 
         // Fetch layer.

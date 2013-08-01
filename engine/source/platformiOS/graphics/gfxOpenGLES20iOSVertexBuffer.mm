@@ -24,10 +24,11 @@ GFXOpenGLES20iOSVertexBuffer::GFXOpenGLES20iOSVertexBuffer(  GFXDevice *device,
       mIndexCount(indexCount),
       elementBufferName(0)
 {
+    GFXOpenGLES20iOSDevice *_device = dynamic_cast<GFXOpenGLES20iOSDevice*>(device);
     mIndexCount = indexCount;
     glGenVertexArraysOES(1,&mVertexArrayObject);
-    glBindVertexArrayOES(mVertexArrayObject);
-    
+   _device->setVertexStream( 0, this );
+   
     glGenBuffers(1, &mBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
 	glBufferData(GL_ARRAY_BUFFER, vertexCount * vertexSize, data, GFXGLBufferType[bufferType]);
@@ -104,8 +105,10 @@ void GFXOpenGLES20iOSVertexBuffer::lock( U32 vertexStart, U32 vertexEnd, void **
 
 void GFXOpenGLES20iOSVertexBuffer::set( void* data, U32 dataSize, U32 indexCount, void* indexData)
 {
-    glBindVertexArrayOES(mVertexArrayObject);
-    glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
+    GFXOpenGLES20iOSDevice *_device = dynamic_cast<GFXOpenGLES20iOSDevice*>(GFX);
+    _device->setVertexStream( 0, this );
+
+   glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
     glBufferData(GL_ARRAY_BUFFER, dataSize, data, GFXGLBufferType[GFXBufferTypeVolatile]);
 
     if (indexCount)
@@ -141,14 +144,12 @@ void GFXOpenGLES20iOSVertexBuffer::unlock()
 
 void GFXOpenGLES20iOSVertexBuffer::prepare()
 {
-//    Con::printf("GFXOpenGLES20iOSVertexBuffer::prepare %s", describeSelf().c_str());
-    glBindVertexArrayOES(mVertexArrayObject);
+   glBindVertexArrayOES(mVertexArrayObject);
 }
 
 void GFXOpenGLES20iOSVertexBuffer::finish()
 {
-    glBindVertexArrayOES(0);
-
+//   glBindVertexArrayOES(0);
 }
 
 void GFXOpenGLES20iOSVertexBuffer::zombify()

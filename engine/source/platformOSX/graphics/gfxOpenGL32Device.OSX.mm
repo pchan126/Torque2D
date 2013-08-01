@@ -279,9 +279,9 @@ void GFXOpenGL32Device::clear(U32 flags, ColorI color, F32 z, U32 stencil)
 }
 
 
-void GFXOpenGL32Device::setTextureInternal(U32 textureUnit, const GFXTextureObject *texture)
+void GFXOpenGL32Device::setTextureInternal(U32 textureUnit, GFXTextureObject *texture)
 {
-    const GFXOpenGL32TextureObject *tex = static_cast<const GFXOpenGL32TextureObject*>(texture);
+    GFXOpenGL32TextureObject *tex = static_cast<GFXOpenGL32TextureObject*>(texture);
     glActiveTexture(GL_TEXTURE0 + textureUnit);
     if (tex)
     {
@@ -498,10 +498,10 @@ void GFXOpenGL32Device::_updateRenderTargets()
         mRTDirty = false;
     }
     
-    if ( mViewportDirty )
+    if ( mViewport != mNextViewport )
     {
+        mViewport = mNextViewport;
         glViewport( mViewport.point.x, mViewport.point.y, mViewport.extent.x, mViewport.extent.y );
-        mViewportDirty = false;
     }
 }
 

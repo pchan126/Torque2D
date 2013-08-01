@@ -604,12 +604,11 @@ void GFXOpenGL33WinDevice::_updateRenderTargets()
         mRTDirty = false;
     }
     
-    if ( mViewportDirty )
-    {
-        glViewport( mViewport.point.x, mViewport.point.y, mViewport.extent.x, mViewport.extent.y );
-        mViewportDirty = false;
-    }
-}
+   if ( mViewport != mNextViewport )
+   {
+      mViewport = mNextViewport;
+      glViewport( mViewport.point.x, mViewport.point.y, mViewport.extent.x, mViewport.extent.y );
+   }
 
 //
 // Register this device with GFXInit

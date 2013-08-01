@@ -50,12 +50,12 @@ protected:
    bool _refreshTexture(GFXTextureObject *texture);
    bool _freeTexture(GFXTextureObject *texture, bool zombify = false);
 
+   /// Creates internal GL texture
+   void innerCreateTexture(GFXOpenGLES20TextureObject *obj, U32 height, U32 width, U32 depth, GFXFormat format, GFXTextureProfile *profile, U32 numMipLevels, bool forceMips = false);
+   
 private:
    friend class GFXOpenGLES20TextureObject;
    
-   /// Creates internal GL texture
-   void innerCreateTexture(GFXOpenGLES20TextureObject *obj, U32 height, U32 width, U32 depth, GFXFormat format, GFXTextureProfile *profile, U32 numMipLevels, bool forceMips = false);
-    
     void handleTextureCallback(void *textureInfo);
 };
 

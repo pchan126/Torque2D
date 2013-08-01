@@ -134,6 +134,12 @@ public:
 
     virtual void updateStates(bool forceSetAll = false);
 
+/// OpenGL state calls
+   virtual void setTextureUnit( U32 texUnit);
+
+protected:
+   U32 mActiveTextureUnit;
+   
 protected:
 
    virtual void preDrawPrimitive();
@@ -147,8 +153,8 @@ protected:
    /// Called by base GFXDevice to actually set a const buffer
    virtual void setShaderConstBufferInternal(GFXShaderConstBuffer* buffer);
 
-   virtual void setTextureInternal(U32 textureUnit, const GFXTextureObject* texture);
-   virtual void setCubemapInternal(U32 cubemap, const GFXOpenGLCubemap* texture);
+   virtual void setTextureInternal(U32 textureUnit, GFXTextureObject* texture);
+   virtual void setCubemapInternal(U32 cubemap, GFXOpenGLCubemap* texture);
 
    Vector<GFXLightInfo> m_lightStack;
    virtual void setLightInternal(U32 lightStage, const GFXLightInfo light, bool lightEnable);

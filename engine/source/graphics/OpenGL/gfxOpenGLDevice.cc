@@ -36,7 +36,8 @@ GFXOpenGLDevice::GFXOpenGLDevice( U32 adapterIndex ) :
             mPixelShaderVersion(0.0f),
             mBlendSrcState(GFXBlendSrcAlpha),
             mBlendDestState(GFXBlendInvSrcAlpha),
-            m_globalAmbientColor(1.0, 1.0, 1.0, 1.0)
+            m_globalAmbientColor(1.0, 1.0, 1.0, 1.0),
+            mActiveTextureUnit(0)
 {
     m_WorldStack.push_back(MatrixF(true));
     m_ProjectionStack.push_back(MatrixF(true));
@@ -300,17 +301,17 @@ void GFXOpenGLDevice::setShader( GFXShader *shader )
             iOSShader->useProgram();
         }
     }
-    else
-    {
-        mpCurrentShader = NULL;
-        glUseProgram(0);
-    }
+//    else
+//    {
+//        mpCurrentShader = NULL;
+//        glUseProgram(0);
+//    }
 }
 
 void GFXOpenGLDevice::disableShaders()
 {
-    mpCurrentShader = NULL;
-    glUseProgram(0);
+//    mpCurrentShader = NULL;
+//    glUseProgram(0);
 }
 
 GFXFormat GFXOpenGLDevice::selectSupportedFormat(   GFXTextureProfile* profile,
@@ -458,15 +459,15 @@ void GFXOpenGLDevice::setGlobalAmbientInternal(ColorF color)
    m_globalAmbientColor = color;
 }
 
-void GFXOpenGLDevice::setTextureInternal(U32 textureUnit, const GFXTextureObject*texture)
+void GFXOpenGLDevice::setTextureInternal(U32 textureUnit, GFXTextureObject*texture)
 {
-    const GFXOpenGLTextureObject *tex = static_cast<const GFXOpenGLTextureObject*>(texture);
+    GFXOpenGLTextureObject *tex = static_cast<GFXOpenGLTextureObject*>(texture);
     if (tex)
     {
         // GFXOpenGLESTextureObject::bind also handles applying the current sampler state.
         if(mActiveTextureType[textureUnit] != tex->getBinding() && mActiveTextureType[textureUnit] != GL_ZERO)
         {
-            glActiveTexture(GL_TEXTURE0 + textureUnit);
+            setTextureUnit(textureUnit);
             glBindTexture(mActiveTextureType[textureUnit], GL_ZERO);
         }
         mActiveTextureType[textureUnit] = tex->getBinding();
@@ -474,17 +475,17 @@ void GFXOpenGLDevice::setTextureInternal(U32 textureUnit, const GFXTextureObject
     }
     else if(mActiveTextureType[textureUnit] != GL_ZERO)
     {
-        glActiveTexture(GL_TEXTURE0 + textureUnit);
+        setTextureUnit(textureUnit);
         glBindTexture(mActiveTextureType[textureUnit], GL_ZERO);
         mActiveTextureType[textureUnit] = GL_ZERO;
     }
-    glActiveTexture(GL_TEXTURE0);
+    setTextureUnit(0);
 }
 
 
-void GFXOpenGLDevice::setCubemapInternal(U32 textureUnit, const GFXOpenGLCubemap* texture)
+void GFXOpenGLDevice::setCubemapInternal(U32 textureUnit, GFXOpenGLCubemap* texture)
 {
-   glActiveTexture(GL_TEXTURE0 + textureUnit);
+   setTextureUnit(textureUnit);
    if(texture)
    {
       if(mActiveTextureType[textureUnit] != GL_TEXTURE_CUBE_MAP && mActiveTextureType[textureUnit] != GL_ZERO)
@@ -501,8 +502,7 @@ void GFXOpenGLDevice::setCubemapInternal(U32 textureUnit, const GFXOpenGLCubemap
       glDisable(mActiveTextureType[textureUnit]);
       mActiveTextureType[textureUnit] = GL_ZERO;
    }
-   
-   glActiveTexture(GL_TEXTURE0);
+   setTextureUnit(0);
 }
 
 void GFXOpenGLDevice::setVertexStream( U32 stream, GFXVertexBuffer *buffer )
@@ -512,10 +512,15 @@ void GFXOpenGLDevice::setVertexStream( U32 stream, GFXVertexBuffer *buffer )
     AssertFatal( stream == 0, "GFXOpenGLDevice::setVertexStream - We don't support multiple vertex streams!" );
     
     // Reset the state the old VB required, then set the state the new VB requires.
+    GFXOpenGLVertexBuffer* nextVB = static_cast<GFXOpenGLVertexBuffer*>( buffer );
+   if (nextVB == mCurrentVB)
+      return;
+
     if ( mCurrentVB )
         mCurrentVB->finish();
+   
+    mCurrentVB = nextVB;
     
-    mCurrentVB = static_cast<GFXOpenGLVertexBuffer*>( buffer );
     if ( mCurrentVB )
         mCurrentVB->prepare();
 }
@@ -694,6 +699,18 @@ void GFXOpenGLDevice::updateStates(bool forceSetAll /*=false*/)
     doParanoidStateCheck();
 #endif
 }
+
+void GFXOpenGLDevice::setTextureUnit(U32 texUnit)
+{
+   if (mActiveTextureUnit != texUnit)
+   {
+      mActiveTextureUnit = texUnit;
+      glActiveTexture(GL_TEXTURE0 + texUnit);
+   }
+}
+
+
+
 
 //-----------------------------------------------------------------------------
 

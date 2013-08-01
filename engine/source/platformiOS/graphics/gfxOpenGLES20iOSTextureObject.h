@@ -23,8 +23,6 @@ public:
 
     ///< Reloads texture from zombie cache, used by GFXOpenGLES20iOSTextureManager to resurrect the texture.
    
-   bool mIsNPoT2;
-
 private:
    friend class GFXOpenGLES20iOSTextureManager;
    typedef GFXOpenGLES20TextureObject Parent;

@@ -10,6 +10,7 @@
 #include "graphics/gfxCardProfile.h"
 #include "memory/safeDelete.h"
 #include "./GFXOpenGLES20Utils.h"
+#include "./gfxOpenGLES20Device.h"
 
 
 //#define EXT_ARRAY_SIZE 4
@@ -249,6 +250,7 @@ void GFXOpenGLES20TextureManager::innerCreateTexture( GFXOpenGLES20TextureObject
                                                U32 numMipLevels,
                                                bool forceMips)
 {
+   GFXOpenGLDevice *device = dynamic_cast<GFXOpenGLDevice*>(GFX);
    // No 24 bit formats.  They trigger various oddities because hardware (and Apple's drivers apparently...) don't natively support them.
    if(format == GFXFormatR8G8B8)
       format = GFXFormatR8G8B8A8;
@@ -263,7 +265,7 @@ void GFXOpenGLES20TextureManager::innerCreateTexture( GFXOpenGLES20TextureObject
    retTex->mBinding = binding;
    
    // Bind it
-   glActiveTexture(GL_TEXTURE0);
+   device->setTextureUnit(0);
    glBindTexture(binding, retTex->getHandle());
    
    if(!retTex->mIsNPoT2)
@@ -297,6 +299,7 @@ static void _slowTextureLoad(GFXOpenGLES20TextureObject* texture, GBitmap* pDL)
 
 bool GFXOpenGLES20TextureManager::_loadTexture(GFXTextureObject *aTexture, GBitmap *pDL)
 {
+   GFXOpenGLDevice *device = dynamic_cast<GFXOpenGLDevice*>(GFX);
    GFXOpenGLES20TextureObject *texture = static_cast<GFXOpenGLES20TextureObject*>(aTexture);
    
    AssertFatal(texture->getBinding() == GL_TEXTURE_2D, 
@@ -309,11 +312,11 @@ bool GFXOpenGLES20TextureManager::_loadTexture(GFXTextureObject *aTexture, GBitm
    if(pDL->getFormat() == GFXFormatR8G8B8)
       pDL->setFormat(GFXFormatR8G8B8A8);
    // Bind to edit
-   glActiveTexture(GL_TEXTURE0);
+   device->setTextureUnit(0);
    glBindTexture(texture->getBinding(), texture->getHandle());
    
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+   texture->setParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+   texture->setParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
     _slowTextureLoad(texture, pDL);
    
@@ -325,12 +328,13 @@ bool GFXOpenGLES20TextureManager::_loadTexture(GFXTextureObject *aTexture, GBitm
 
 bool GFXOpenGLES20TextureManager::_loadTexture(GFXTextureObject *aTexture, void *raw)
 {
+   GFXOpenGLDevice *device = dynamic_cast<GFXOpenGLDevice*>(GFX);
    if(aTexture->getDepth() < 1)
       return false;
    
    GFXOpenGLES20TextureObject* texture = static_cast<GFXOpenGLES20TextureObject*>(aTexture);
    
-   glActiveTexture(GL_TEXTURE0);
+   device->setTextureUnit(0);
 
    glBindTexture(GL_TEXTURE_2D, texture->getHandle());
    glTexImage2D(GL_TEXTURE_2D, 0, 0, 0, texture->getWidth(), texture->getHeight(), GFXGLTextureFormat[texture->mFormat], GFXGLTextureType[texture->mFormat], raw);
@@ -417,18 +421,18 @@ bool GFXOpenGLES20TextureManager::_refreshTexture(GFXTextureObject *texture)
                      pNewBitmap->getBits());
     }
     
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+   pTextureObject->setParameter(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+   pTextureObject->setParameter(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
    
     GLenum glClamp;
     if ( pTextureObject->getClamp() )
         glClamp = GL_CLAMP_TO_EDGE;
     else
         glClamp = GL_REPEAT;
-    
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, glClamp );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, glClamp );
-    
+   
+   pTextureObject->setParameter(GL_TEXTURE_WRAP_S, glClamp );
+   pTextureObject->setParameter(GL_TEXTURE_WRAP_T, glClamp );
+   
     if(pNewBitmap != pSourceBitmap)
     {
         delete pNewBitmap;

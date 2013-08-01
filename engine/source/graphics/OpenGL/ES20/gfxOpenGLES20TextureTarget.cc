@@ -127,17 +127,14 @@ void GFXOpenGLES20TextureTarget::attachTexture( GFXCubemap *tex, U32 face, Rende
 
 void GFXOpenGLES20TextureTarget::makeActive()
 {
+   GFXOpenGLDevice *device = dynamic_cast<GFXOpenGLDevice*>(GFX);
    glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer);
    _GFXOpenGLES20TargetDesc* color0 = dynamic_cast<_GFXOpenGLES20TargetDesc*>(getTargetDesc(GFXTextureTarget::Color0));
    if(!color0) // || !(color0->hasMips()))
       return;
    
-   // Generate mips if necessary
-   // Assumes a 2D texture.
-   glActiveTexture(GL_TEXTURE0);
-//   PRESERVE_2D_TEXTURE();
+   device->setTextureUnit(0);
    glBindTexture(GL_TEXTURE_2D, color0->getHandle());
-//   glGenerateMipmap(GL_TEXTURE_2D);
 }
 
 void GFXOpenGLES20TextureTarget::deactivate()

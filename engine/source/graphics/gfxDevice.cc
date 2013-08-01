@@ -46,7 +46,9 @@ GFXDevice::DeviceEventSignal& GFXDevice::getDeviceEventSignal()
    return theSignal;
 }
 
-GFXDevice::GFXDevice()
+GFXDevice::GFXDevice():
+    mViewport(0, 0, 0, 0),
+    mNextViewport(0, 0, 0, 0)
 {
    VECTOR_SET_ASSOCIATION( mVideoModes );
    VECTOR_SET_ASSOCIATION( mRTStack );
@@ -110,8 +112,6 @@ GFXDevice::GFXDevice()
 
    mRTDirty = false;
    mCurrentRT = NULL;
-   mViewport = RectI(0, 0, 0, 0);
-   mViewportDirty = false;
 
     mResourceListHead = NULL;
 
@@ -411,11 +411,7 @@ void GFXDevice::setViewport( const RectI &inRect )
    RectI rect = inRect;
    rect.intersect(maxRect);
    
-   if ( mViewport != rect )
-   {
-      mViewport = rect;
-      mViewportDirty = true;
-   }
+   mNextViewport = rect;
 }
 
 void GFXDevice::pushActiveRenderTarget()

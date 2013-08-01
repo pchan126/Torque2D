@@ -51,6 +51,12 @@ public:
    
    static GLenum getEnumForFaceNumber(U32 face) { return faceList[face]; } ///< Performs lookup to get a GLenum for the given face number
 
+   void setParameter( GLenum pname, GLint param);
+   GLint mMinFilter;
+   GLint mMagFilter;
+   GLint mWrapS;
+   GLint mWrapT;
+
 protected:
 
    friend class GFXDevice;
@@ -60,6 +66,7 @@ protected:
    /// @see GFXTextureManager::addEventDelegate
    void _onTextureEvent( GFXTexCallbackCode code );
    
+   GLuint mBinding;
    GLuint mCubemap; ///< Internal GL handle
    U32 mDynamicTexSize; ///< Size of faces for a dynamic texture (used in resurrect)
    
@@ -73,7 +80,7 @@ protected:
    
    // should only be called by GFXDevice
    virtual void setToTexUnit( U32 tuNum ); ///< Binds the cubemap to the given texture unit
-   virtual void bind(U32 textureUnit) const = 0; ///< Notifies our owning device that we want to be set to the given texture unit (used for GL internal state tracking)
+   virtual void bind(U32 textureUnit) = 0; ///< Notifies our owning device that we want to be set to the given texture unit (used for GL internal state tracking)
    virtual void fillCubeTextures(GFXTexHandle* faces) = 0; ///< Copies the textures in faces into the cubemap
    
    static GLenum faceList[6]; ///< Lookup table

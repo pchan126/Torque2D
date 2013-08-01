@@ -9,6 +9,7 @@
 #include "graphics/gfxCardProfile.h"
 #include "memory/safeDelete.h"
 #include "platformiOS/graphics/gfxOpenGLES20iOSUtils.h"
+#include "platformiOS/graphics/gfxOpenGLES20iOSDevice.h"
 #import <GLKit/GLKit.h>
 
 
@@ -288,58 +289,6 @@ GFXTextureObject *GFXOpenGLES20iOSTextureManager::_createTextureObject(   U32 he
 }
 
 //-----------------------------------------------------------------------------
-// innerCreateTexture
-//-----------------------------------------------------------------------------
-// This just creates the texture, no info is actually loaded to it.  We do that later.
-void GFXOpenGLES20iOSTextureManager::innerCreateTexture( GFXOpenGLES20iOSTextureObject *retTex, 
-                                               U32 height, 
-                                               U32 width, 
-                                               U32 depth,
-                                               GFXFormat format, 
-                                               GFXTextureProfile *profile, 
-                                               U32 numMipLevels,
-                                               bool forceMips)
-{
-   // No 24 bit formats.  They trigger various oddities because hardware (and Apple's drivers apparently...) don't natively support them.
-   if(format == GFXFormatR8G8B8)
-      format = GFXFormatR8G8B8A8;
-      
-   retTex->mFormat = format;
-   retTex->mIsZombie = false;
-   retTex->mIsNPoT2 = false;
-   
-    GLenum binding = GL_TEXTURE_2D;   // No 3d texture in openGL es 2.0
-   if((profile->testFlag(GFXTextureProfile::RenderTarget) || profile->testFlag(GFXTextureProfile::ZTarget)) && (!isPow2(width) || !isPow2(height)) && !depth)
-      retTex->mIsNPoT2 = true;
-   retTex->mBinding = binding;
-   
-   // Bind it
-   glActiveTexture(GL_TEXTURE0);
-   glBindTexture(binding, retTex->getHandle());
-   
-   if(!retTex->mIsNPoT2)
-   {
-      if(!isPow2(width))
-         width = getNextPow2(width);
-      if(!isPow2(height))
-         height = getNextPow2(height);
-      if(depth && !isPow2(depth))
-         depth = getNextPow2(depth);
-   }
-   
-   AssertFatal(GFXGLTextureInternalFormat[format] != GL_ZERO, "GFXOpenGLES20iOSTextureManager::innerCreateTexture - invalid internal format");
-   AssertFatal(GFXGLTextureFormat[format] != GL_ZERO, "GFXOpenGLES20iOSTextureManager::innerCreateTexture - invalid format");
-   AssertFatal(GFXGLTextureType[format] != GL_ZERO, "GFXOpenGLES20iOSTextureManager::innerCreateTexture - invalid type");
-   
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-   
-   glTexImage2D(binding, 0, GFXGLTextureInternalFormat[format], width, height, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], NULL);
-   
-   retTex->mTextureSize.set(width, height, 0);
-}
-
-
-//-----------------------------------------------------------------------------
 // loadTexture - GBitmap
 //-----------------------------------------------------------------------------
 
@@ -350,6 +299,7 @@ static void _slowTextureLoad(GFXOpenGLES20iOSTextureObject* texture, GBitmap* pD
 
 bool GFXOpenGLES20iOSTextureManager::_loadTexture(GFXTextureObject *aTexture, GBitmap *pDL)
 {
+   GFXOpenGLDevice *device = dynamic_cast<GFXOpenGLDevice*>(GFX);
    GFXOpenGLES20iOSTextureObject *texture = static_cast<GFXOpenGLES20iOSTextureObject*>(aTexture);
    
    AssertFatal(texture->getBinding() == GL_TEXTURE_2D, 
@@ -362,11 +312,11 @@ bool GFXOpenGLES20iOSTextureManager::_loadTexture(GFXTextureObject *aTexture, GB
    if(pDL->getFormat() == GFXFormatR8G8B8)
       pDL->setFormat(GFXFormatR8G8B8A8);
    // Bind to edit
-   glActiveTexture(GL_TEXTURE0);
+   device->setTextureUnit(0);
    glBindTexture(texture->getBinding(), texture->getHandle());
    
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+   texture->setParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+   texture->setParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
     _slowTextureLoad(texture, pDL);
    
@@ -381,9 +331,10 @@ bool GFXOpenGLES20iOSTextureManager::_loadTexture(GFXTextureObject *aTexture, vo
    if(aTexture->getDepth() < 1)
       return false;
    
+   GFXOpenGLDevice *device = dynamic_cast<GFXOpenGLDevice*>(GFX);
    GFXOpenGLES20iOSTextureObject* texture = static_cast<GFXOpenGLES20iOSTextureObject*>(aTexture);
    
-   glActiveTexture(GL_TEXTURE0);
+   device->setTextureUnit(0);
 
    glBindTexture(GL_TEXTURE_2D, texture->getHandle());
    glTexImage2D(GL_TEXTURE_2D, 0, 0, 0, texture->getWidth(), texture->getHeight(), GFXGLTextureFormat[texture->mFormat], GFXGLTextureType[texture->mFormat], raw);
@@ -489,14 +440,18 @@ bool GFXOpenGLES20iOSTextureManager::_refreshTexture(GFXTextureObject *texture)
                      pNewBitmap->getBits());
     }
     
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+   pTextureObject->setParameter(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+   pTextureObject->setParameter(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
    
-    GLenum glClamp = pTextureObject->getClamp() ? GL_CLAMP_TO_EDGE : GL_REPEAT;
+   GLenum glClamp;
+   if ( pTextureObject->getClamp() )
+      glClamp = GL_CLAMP_TO_EDGE;
+   else
+      glClamp = GL_REPEAT;
    
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, glClamp );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, glClamp );
-    
+   pTextureObject->setParameter(GL_TEXTURE_WRAP_S, glClamp );
+   pTextureObject->setParameter(GL_TEXTURE_WRAP_T, glClamp );
+   
     if(pNewBitmap != pSourceBitmap)
     {
         delete pNewBitmap;

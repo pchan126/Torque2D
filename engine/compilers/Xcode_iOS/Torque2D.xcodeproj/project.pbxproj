@@ -682,7 +682,6 @@
 		867BACAE16AEC8BB0033868F /* iOSMoviePlayback.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iOSMoviePlayback.mm; sourceTree = "<group>"; };
 		867BACAF16AEC8BB0033868F /* iOSMutex.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iOSMutex.mm; sourceTree = "<group>"; };
 		867BACB016AEC8BB0033868F /* iOSNet.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iOSNet.mm; sourceTree = "<group>"; };
-		867BACB116AEC8BB0033868F /* iOSNPatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iOSNPatch.h; sourceTree = "<group>"; };
 		867BACB616AEC8BB0033868F /* iOSPlatform.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iOSPlatform.mm; sourceTree = "<group>"; };
 		867BACB816AEC8BB0033868F /* iOSProfiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iOSProfiler.h; sourceTree = "<group>"; };
 		867BACB916AEC8BB0033868F /* iOSProfiler.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iOSProfiler.mm; sourceTree = "<group>"; };
@@ -1857,7 +1856,6 @@
 				867BACAE16AEC8BB0033868F /* iOSMoviePlayback.mm */,
 				867BACAF16AEC8BB0033868F /* iOSMutex.mm */,
 				867BACB016AEC8BB0033868F /* iOSNet.mm */,
-				867BACB116AEC8BB0033868F /* iOSNPatch.h */,
 				867BACB616AEC8BB0033868F /* iOSPlatform.mm */,
 				867BACB816AEC8BB0033868F /* iOSProfiler.h */,
 				867BACB916AEC8BB0033868F /* iOSProfiler.mm */,

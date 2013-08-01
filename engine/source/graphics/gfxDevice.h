@@ -444,7 +444,7 @@ protected:
 //   /// Called by base GFXDevice to actually set a const buffer
 //   virtual void setShaderConstBufferInternal(GFXShaderConstBuffer* buffer) = 0;
 
-   virtual void setTextureInternal(U32 textureUnit, const GFXTextureObject* texture) = 0;
+   virtual void setTextureInternal(U32 textureUnit, GFXTextureObject* texture) = 0;
 
    virtual void setLightInternal(U32 lightStage, const GFXLightInfo light, bool lightEnable) = 0;
    virtual void setGlobalAmbientInternal(ColorF color) = 0;
@@ -563,10 +563,7 @@ protected:
 
    /// The current viewport rect.
     RectI mViewport;
-    
-    /// If true the viewport has been changed and
-    /// it must be updated on the next draw/clear.
-    bool mViewportDirty;
+    RectI mNextViewport;
 
 public:
    F32 getPixelScale() { return pixelScale; }

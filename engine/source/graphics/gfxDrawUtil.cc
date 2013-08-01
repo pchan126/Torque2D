@@ -58,7 +58,7 @@ void GFXDrawUtil::_setupStateBlocks()
    // DrawBitmapStretchSR
    GFXStateBlockDesc bitmapStretchSR;
    bitmapStretchSR.setCullMode(GFXCullNone);
-   bitmapStretchSR.setZReadWrite(false);
+   bitmapStretchSR.setZReadWrite(false, false);
    bitmapStretchSR.setBlend(true, GFXBlendSrcAlpha, GFXBlendInvSrcAlpha);
    bitmapStretchSR.samplersDefined = true;
 
@@ -86,7 +86,7 @@ void GFXDrawUtil::_setupStateBlocks()
 
    GFXStateBlockDesc rectFill;
    rectFill.setCullMode(GFXCullNone);
-   rectFill.setZReadWrite(false);
+   rectFill.setZReadWrite(false, false);
    rectFill.setBlend(true, GFXBlendSrcAlpha, GFXBlendInvSrcAlpha);
    mRectFillSB = mDevice->createStateBlock(rectFill);
 }

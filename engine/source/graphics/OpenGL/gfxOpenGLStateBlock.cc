@@ -161,7 +161,8 @@ void GFXOpenGLStateBlock::activate(const GFXOpenGLStateBlock* oldState)
     //      GFXOpenGLES20iOSTextureObject* tex = static_cast<GFXOpenGLES20iOSTextureObject*>(getOwningDevice()->getCurrentTexture(i));
     //      const GFXSamplerStateDesc &ssd = mDesc.samplers[i];
     //      bool updateTexParam = true;
-    //      glActiveTexture(GL_TEXTURE0 + i);
+   //      GFXOpenGLDevice *device = dynamic_cast<GFXOpenGLDevice*>(GFX);
+   //      device->setActiveTextureUnit(i);
     //      switch (ssd.textureColorOp)
     //      {
     //      case GFXTOPDisable :

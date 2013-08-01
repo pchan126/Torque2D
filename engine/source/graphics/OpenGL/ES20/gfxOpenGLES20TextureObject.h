@@ -23,7 +23,6 @@ public:
 
    void reloadFromCache(); ///< Reloads texture from zombie cache, used by GFXOpenGLES20TextureManager to resurrect the texture.
       
-   bool mIsNPoT2;
     inline GLuint getFilter( void ) { return mFilter; }
     virtual void setFilter( const GFXTextureFilterType filter );
     

@@ -35,11 +35,11 @@ void GFXOpenGL32Cubemap::initDynamic(U32 texSize, GFXFormat faceFormat)
 
    glGenTextures(1, &mCubemap);
    glBindTexture(GL_TEXTURE_CUBE_MAP, mCubemap);
-   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+   setParameter(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    setParameter( GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    setParameter( GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    setParameter( GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    setParameter( GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
    mWidth = texSize;
    mHeight = texSize;
    mMipLevels = 1;
@@ -52,7 +52,7 @@ void GFXOpenGL32Cubemap::initDynamic(U32 texSize, GFXFormat faceFormat)
 }
 
 
-void GFXOpenGL32Cubemap::bind(U32 textureUnit) const
+void GFXOpenGL32Cubemap::bind(U32 textureUnit)
 {
    glActiveTexture(GL_TEXTURE0 + textureUnit);
    glBindTexture(GL_TEXTURE_CUBE_MAP, mCubemap);
@@ -63,11 +63,11 @@ void GFXOpenGL32Cubemap::bind(U32 textureUnit) const
       return;   
       
    const GFXSamplerStateDesc& ssd = sb->getDesc().samplers[textureUnit];
-   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, minificationFilter(ssd.minFilter, ssd.mipFilter, 0));   
-   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GFXGLTextureFilter[ssd.magFilter]);   
-   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GFXGLTextureAddress[ssd.addressModeU]);
-   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GFXGLTextureAddress[ssd.addressModeV]);
-   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GFXGLTextureAddress[ssd.addressModeW]);
+    setParameter( GL_TEXTURE_MIN_FILTER, minificationFilter(ssd.minFilter, ssd.mipFilter, 0));
+    setParameter( GL_TEXTURE_MAG_FILTER, GFXGLTextureFilter[ssd.magFilter]);
+    setParameter( GL_TEXTURE_WRAP_S, GFXGLTextureAddress[ssd.addressModeU]);
+    setParameter( GL_TEXTURE_WRAP_T, GFXGLTextureAddress[ssd.addressModeV]);
+    setParameter( GL_TEXTURE_WRAP_R, GFXGLTextureAddress[ssd.addressModeW]);
 }
 
 
@@ -76,11 +76,11 @@ void GFXOpenGL32Cubemap::fillCubeTextures(GFXTexHandle* faces)
 {
    glActiveTexture(GL_TEXTURE0);
    glBindTexture(GL_TEXTURE_CUBE_MAP, mCubemap);
-   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-   glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    setParameter( GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    setParameter( GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    setParameter( GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    setParameter( GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    setParameter( GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
    
    U32 reqWidth = faces[0]->getWidth();
    U32 reqHeight = faces[0]->getHeight();

@@ -46,7 +46,7 @@ public:
    /// Binds the texture to the given texture unit
    /// and applies the current sampler state because GL tracks
    /// filtering and wrapper per object, while GFX tracks per sampler.
-   void bind(U32 textureUnit) const;
+   void bind(U32 textureUnit);
    
    /// @return An array containing the texture data
    /// @note You are responsible for deleting the returned data! (Use delete[])
@@ -71,6 +71,12 @@ public:
    virtual bool copyToBmp(GBitmap *) { return false; }; ///< Not implemented
    
    bool mIsNPoT2;
+
+   void setParameter( GLenum pname, GLint param);
+   GLint mMinFilter;
+   GLint mMagFilter;
+   GLint mWrapS;
+   GLint mWrapT;
 
    // GFXResource interface
    virtual void zombify();

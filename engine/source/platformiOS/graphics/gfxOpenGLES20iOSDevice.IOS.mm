@@ -309,15 +309,15 @@ void GFXOpenGLES20iOSDevice::setGlobalAmbientInternal(ColorF color)
 }
 
 
-void GFXOpenGLES20iOSDevice::setTextureInternal(U32 textureUnit, const GFXTextureObject*texture)
+void GFXOpenGLES20iOSDevice::setTextureInternal(U32 textureUnit, GFXTextureObject*texture)
 {
-    const GFXOpenGLTextureObject *tex = static_cast<const GFXOpenGLTextureObject*>(texture);
+   GFXOpenGLTextureObject *tex = static_cast< GFXOpenGLTextureObject*>(texture);
     if (tex)
     {
         // GFXOpenGLESTextureObject::bind also handles applying the current sampler state.
         if(mActiveTextureType[textureUnit] != tex->getBinding() && mActiveTextureType[textureUnit] != GL_ZERO)
         {
-            glActiveTexture(GL_TEXTURE0 + textureUnit);
+            setTextureUnit(textureUnit);
             glBindTexture(mActiveTextureType[textureUnit], GL_ZERO);
         }
         mActiveTextureType[textureUnit] = tex->getBinding();
@@ -325,43 +325,11 @@ void GFXOpenGLES20iOSDevice::setTextureInternal(U32 textureUnit, const GFXTextur
     }
     else if(mActiveTextureType[textureUnit] != GL_ZERO)
     {
-        glActiveTexture(GL_TEXTURE0 + textureUnit);
+         setTextureUnit(textureUnit);
         glBindTexture(mActiveTextureType[textureUnit], GL_ZERO);
         mActiveTextureType[textureUnit] = GL_ZERO;
     }
-    glActiveTexture(GL_TEXTURE0);
-
-    //    const GFXOpenGLES20iOSTextureObject *tex = static_cast<const GFXOpenGLES20iOSTextureObject*>(texture);
-//    if (tex)
-//    {
-//        // GFXOpenGLES20iOSTextureObject::bind also handles applying the current sampler state.
-//        if(mActiveTextureType[textureUnit] != tex->getBinding() && mActiveTextureType[textureUnit] != GL_ZERO)
-//        {
-//            glActiveTexture(GL_TEXTURE0 + textureUnit);
-//            glBindTexture(mActiveTextureType[textureUnit], GL_ZERO);
-//        }
-//        mActiveTextureType[textureUnit] = tex->getBinding();
-//
-//        switch (textureUnit) {
-//            case 0:
-////                mBaseEffect.texture2d0.name = tex->getHandle();
-//                break;
-//            case 1:
-////                mBaseEffect.texture2d1.name = tex->getHandle();
-//                break;
-//
-//            default:
-//                break;
-//        }
-//    }
-//    else if(mActiveTextureType[textureUnit] != GL_ZERO)
-//    {
-//        glActiveTexture(GL_TEXTURE0 + textureUnit);
-//        glBindTexture(mActiveTextureType[textureUnit], GL_ZERO);
-//        mActiveTextureType[textureUnit] = GL_ZERO;
-//    }
-//
-//    glActiveTexture(GL_TEXTURE0);
+   setTextureUnit(0);
 }
 
 
@@ -563,10 +531,10 @@ void GFXOpenGLES20iOSDevice::_updateRenderTargets()
         mRTDirty = false;
     }
     
-    if ( mViewportDirty )
+    if ( mViewport != mNextViewport )
     {
+        mViewport = mNextViewport;
         glViewport( mViewport.point.x, mViewport.point.y, mViewport.extent.x, mViewport.extent.y );
-        mViewportDirty = false;
     }
 }
 

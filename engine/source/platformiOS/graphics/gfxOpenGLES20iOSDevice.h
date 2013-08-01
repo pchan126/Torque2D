@@ -70,6 +70,7 @@ public:
     void drawImage( CIImage* image, CGRect inRect, CGRect fromRect);
 
    void refreshCIContext(void);
+
 protected:
    /// Called by GFXDevice to create a device specific stateblock
    virtual GFXStateBlockRef createStateBlockInternal(const GFXStateBlockDesc& desc);
@@ -79,8 +80,8 @@ protected:
    /// Called by base GFXDevice to actually set a const buffer
    virtual void setShaderConstBufferInternal(GFXShaderConstBuffer* buffer);
 
-   virtual void setTextureInternal(U32 textureUnit, const GFXTextureObject*texture);
-//   virtual void setCubemapInternal(U32 cubemap, const GFXOpenGLES20iOSCubemap* texture);
+   virtual void setTextureInternal(U32 textureUnit, GFXTextureObject*texture);
+//   virtual void setCubemapInternal(U32 cubemap, GFXOpenGLES20iOSCubemap* texture);
 
    virtual void setLightInternal(U32 lightStage, const GFXLightInfo light, bool lightEnable);
    virtual void setLightMaterialInternal(const GFXLightMaterial mat);

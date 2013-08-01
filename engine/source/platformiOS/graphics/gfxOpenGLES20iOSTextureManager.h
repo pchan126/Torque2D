@@ -11,8 +11,9 @@
 #include "graphics/gfxDevice.h"
 #include "graphics/gfxTextureManager.h"
 #include "platformiOS/graphics/gfxOpenGLES20iOSTextureObject.h"
+#include "graphics/OpenGL/ES20/gfxOpenGLES20TextureManager.h"
 
-class GFXOpenGLES20iOSTextureManager : public GFXTextureManager
+class GFXOpenGLES20iOSTextureManager : public GFXOpenGLES20TextureManager
 {   
 public:
     typedef GFXTextureManager Parent;
@@ -52,9 +53,6 @@ protected:
 private:
    friend class GFXOpenGLES20iOSTextureObject;
    
-   /// Creates internal GL texture
-   void innerCreateTexture(GFXOpenGLES20iOSTextureObject *obj, U32 height, U32 width, U32 depth, GFXFormat format, GFXTextureProfile *profile, U32 numMipLevels, bool forceMips = false);
-    
     void handleTextureCallback(void *textureInfo);
 };
 

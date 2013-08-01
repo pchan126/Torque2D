@@ -36,7 +36,12 @@ GFXOpenGLTextureObject::GFXOpenGLTextureObject(GFXDevice * aDevice, GFXTexturePr
    mBinding(GL_TEXTURE_2D),
    mBytesPerTexel(4),
    mLockedRectRect(0, 0, 0, 0),
-   mZombieCache(NULL)
+   mZombieCache(NULL),
+   mIsNPoT2(true),
+   mMinFilter(GL_LINEAR),
+   mMagFilter(GL_LINEAR),
+   mWrapS(GL_CLAMP_TO_EDGE),
+   mWrapT(GL_CLAMP_TO_EDGE)
 {
    
 }
@@ -45,7 +50,8 @@ GFXOpenGLTextureObject::GFXOpenGLTextureObject(GFXDevice * aDevice, GFXTexturePr
    mBinding(GL_TEXTURE_2D),
    mBytesPerTexel(4),
    mLockedRectRect(0, 0, 0, 0),
-   mZombieCache(NULL)
+   mZombieCache(NULL),
+   mIsNPoT2(true)
 {
    
 }
@@ -55,11 +61,12 @@ GFXOpenGLTextureObject::~GFXOpenGLTextureObject()
    
 }
 
-void GFXOpenGLTextureObject::bind(U32 textureUnit) const
+void GFXOpenGLTextureObject::bind(U32 textureUnit)
 {
     GFXOpenGLDevice* device = dynamic_cast<GFXOpenGLDevice*>(GFX);
     AssertFatal(mBinding == GL_TEXTURE_2D, "GFXOpenGLTextureObject::bind - only GL_TEXTURE_2D supported");
-   glActiveTexture(GL_TEXTURE0 + textureUnit);
+   
+   device->setTextureUnit(textureUnit);
 
     GLuint han = mHandle;
    glBindTexture(mBinding, han);
@@ -70,17 +77,57 @@ void GFXOpenGLTextureObject::bind(U32 textureUnit) const
       return;
 
    const GFXSamplerStateDesc ssd = sb->getDesc().samplers[textureUnit];
-   glTexParameteri(mBinding, GL_TEXTURE_MIN_FILTER, minificationFilter(ssd.minFilter, ssd.mipFilter, mMipLevels));
-   glTexParameteri(mBinding, GL_TEXTURE_MAG_FILTER, GFXGLTextureFilter[ssd.magFilter]);
+   setParameter( GL_TEXTURE_MIN_FILTER, minificationFilter(ssd.minFilter, ssd.mipFilter, mMipLevels));
+   setParameter( GL_TEXTURE_MAG_FILTER, GFXGLTextureFilter[ssd.magFilter]);
 
-   glTexParameteri(mBinding, GL_TEXTURE_WRAP_S, !mIsNPoT2 ? GFXGLTextureAddress[ssd.addressModeU] : GL_CLAMP_TO_EDGE);
-   glTexParameteri(mBinding, GL_TEXTURE_WRAP_T, !mIsNPoT2 ? GFXGLTextureAddress[ssd.addressModeV] : GL_CLAMP_TO_EDGE);
+   setParameter(GL_TEXTURE_WRAP_S, !mIsNPoT2 ? GFXGLTextureAddress[ssd.addressModeU] : GL_CLAMP_TO_EDGE);
+   setParameter(GL_TEXTURE_WRAP_T, !mIsNPoT2 ? GFXGLTextureAddress[ssd.addressModeV] : GL_CLAMP_TO_EDGE);
 }
 
 void GFXOpenGLTextureObject::release()
 {
    glDeleteTextures(1, &mHandle);
    mHandle = 0;
+}
+
+void GFXOpenGLTextureObject::setParameter( GLenum pname, GLint param)
+{
+   switch (pname) {
+      case GL_TEXTURE_MIN_FILTER:
+         if (mMinFilter != param)
+         {
+            mMinFilter = param;
+            glTexParameteri(mBinding, pname, mMinFilter);
+         }
+         break;
+         
+      case GL_TEXTURE_MAG_FILTER:
+         if (mMagFilter != param)
+         {
+            mMagFilter = param;
+            glTexParameteri(mBinding, pname, mMagFilter);
+         }
+         break;
+
+      case GL_TEXTURE_WRAP_S:
+         if (mWrapS != param)
+         {
+            mWrapS = param;
+            glTexParameteri(mBinding, pname, mWrapS);
+         }
+         break;
+
+      case GL_TEXTURE_WRAP_T:
+         if (mWrapT != param)
+         {
+            mWrapT = param;
+            glTexParameteri(mBinding, pname, mWrapT);
+         }
+         break;
+
+      default:
+         break;
+   }
 }
 
 GFXLockedRect* GFXOpenGLTextureObject::lock(U32 mipLevel, RectI *inRect)
@@ -114,7 +161,8 @@ void GFXOpenGLTextureObject::unlock(U32 mipLevel)
    if(!mLockedRect.bits)
       return;
    
-   glActiveTexture(GL_TEXTURE0);
+   GFXOpenGLDevice *device = dynamic_cast<GFXOpenGLDevice*>(GFX);
+   device->setTextureUnit(0);
    U32 boundTexture;
    glGetIntegerv(GL_TEXTURE_BINDING_2D, (GLint*)&boundTexture);
    mLockedRect.bits = NULL;

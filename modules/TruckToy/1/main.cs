@@ -91,10 +91,10 @@ function TruckToy::create( %this )
     addFlagOption("Rear Wheel Drive", "setRearWheelDrive", TruckToy.RearWheelDrive, false, "Whether the motor on the rear wheel is active or not." );
     addFlagOption("Rotate Camera", "setRotateCamera", TruckToy.RotateCamera, true, "Whether the rotate the camera that is mounted to the truck or not." );
       
-   GlobalActionMap.bind(joystick, xaxis, "joypad_leftstickx");
-   GlobalActionMap.bind(joystick, yaxis, "joypad_leftsticky");
-   GlobalActionMap.bind(joystick, zaxis, "joypad_rightstickx");
-   GlobalActionMap.bind(joystick, rzaxis, "joypad_rightsticky");
+//   GlobalActionMap.bind(joystick, xaxis, "joypad_leftstickx");
+//   GlobalActionMap.bind(joystick, yaxis, "joypad_leftsticky");
+//   GlobalActionMap.bind(joystick, zaxis, "joypad_rightstickx");
+//   GlobalActionMap.bind(joystick, rzaxis, "joypad_rightsticky");
     // Reset the toy.
     %this.reset();
 
@@ -845,7 +845,7 @@ function TruckToy::createTruck( %this, %posX, %posY )
 
     TruckToy.TruckBody = new Sprite();
     TruckToy.TruckBody.setPosition( %posX, %posY );
-    TruckToy.TruckBody.setImage( "TruckToy:F_truck" );
+    TruckToy.TruckBody.setImage( "TruckToy:truckBody" );
     TruckToy.TruckBody.setSize( 5, 2.5 );
     TruckToy.TruckBody.setSceneLayer( TruckToy.TruckDomain );
     TruckToy.TruckBody.setSceneGroup( TruckToy.ObstacleDomain);
@@ -870,7 +870,7 @@ function TruckToy::createTruck( %this, %posX, %posY )
     // Rear tire.   
     %tireRear = new Sprite();
     %tireRear.setPosition( %posX-1.4, %posY-1.0 );
-    %tireRear.setImage( "ToyAssets:F_tires" );
+    %tireRear.setImage( "ToyAssets:tires" );
     %tireRear.setSize( 1.7, 1.7 );
     %tireRear.setSceneLayer( TruckToy.TruckDomain-1 );
     %tireRear.setSceneGroup( TruckToy.ObstacleDomain );
@@ -886,7 +886,7 @@ function TruckToy::createTruck( %this, %posX, %posY )
     // Front tire.
     %tireFront = new Sprite();
     %tireFront.setPosition( %posX+1.7, %posY-1.0 );
-    %tireFront.setImage( "ToyAssets:F_tires" );
+    %tireFront.setImage( "ToyAssets:tires" );
     %tireFront.setSize( 1.7, 1.7 );
     %tireFront.setSceneLayer( TruckToy.TruckDomain-1 );
     %tireFront.setSceneGroup( TruckToy.ObstacleDomain );
