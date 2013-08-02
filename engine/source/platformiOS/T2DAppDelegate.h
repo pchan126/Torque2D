@@ -33,6 +33,7 @@ class iOSWindow;
 
 @property (nonatomic, strong) UIWindow *window;
 @property (nonatomic, strong) GLKViewController *mainController;
+@property (nonatomic, strong) GLKViewController *extController;
 @property (nonatomic) NSTimeInterval lastUpdate;
 
 @end

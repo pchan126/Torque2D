@@ -24,8 +24,7 @@ private:
    Delegate<bool(void)> mNotifyShutdownDelegate;
     UIWindow *extWindow;
     UIScreen *extScreen;
-    T2DViewController *extViewController;
-    
+   
 public:
    iOSWindowManager();
    ~iOSWindowManager();
@@ -116,6 +115,7 @@ public:
    virtual PlatformWindow* assignCanvas(GFXDevice* device, const GFXVideoMode &mode ,GuiCanvas* canvas);
 
    T2DViewController *viewController;
+   T2DViewController *extController;
 private:
    bool mIsShuttingDown;
 };

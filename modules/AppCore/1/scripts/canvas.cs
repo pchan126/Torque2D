@@ -137,3 +137,20 @@ function iOSResolutionFromSetting( %deviceType, %deviceScreenOrientation )
    
     return %x @ " " @ %y;
 }
+
+
+function onCreateIOSExternalWindow()
+{
+    // Atmosphere
+    %canvas = new GuiCanvas();
+
+    if ( !%canvas )
+    {
+        error("Canvas creation failed. Shutting down.");
+        quit();
+    }
+
+    %canvas.setName("EXTCanvas");
+}
+
+

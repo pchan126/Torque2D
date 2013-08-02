@@ -43,6 +43,7 @@ bool _iOSTorqueFatalError = false;
 
 @synthesize window = _window;
 @synthesize mainController = _mainController;
+@synthesize extController = _extController;
 @synthesize lastUpdate;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions

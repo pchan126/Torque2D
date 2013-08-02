@@ -12,6 +12,7 @@
 #import "platformiOS/T2DAppDelegate.h"
 #import "platformiOS/graphics/GFXOpenGLES20iOSDevice.h"
 #import "platformiOS/T2DViewController.h"
+#include "gfxInit.h"
 
 PlatformWindowManager* CreatePlatformWindowManager()
 {
@@ -28,7 +29,7 @@ iOSWindowManager::iOSWindowManager() : mNotifyShutdownDelegate(this, &iOSWindowM
 {
    extWindow = nil;
    extScreen = nil;
-   extViewController = nil;
+   extController = nil;
 
     mWindowList.clear();
     T2DAppDelegate *appDelegate = (T2DAppDelegate*)[[UIApplication sharedApplication] delegate];
@@ -42,6 +43,8 @@ iOSWindowManager::iOSWindowManager() : mNotifyShutdownDelegate(this, &iOSWindowM
 
     appDelegate.window.rootViewController = viewController;
     appDelegate.window.backgroundColor = [UIColor blackColor];
+   
+   updateWindows();
 }
 
 iOSWindowManager::~iOSWindowManager()
@@ -153,6 +156,13 @@ void iOSWindowManager::updateWindows()
     NSArray	*screens = [UIScreen screens];
     NSUInteger screenCount = [screens count];
 
+    // Create a device.
+    GFXAdapter *a = GFXInit::getBestAdapterChoice();
+
+    GFXDevice *newDevice = GFX;
+    if(newDevice == NULL)
+        newDevice = GFXInit::createDevice(a);
+
     GFXOpenGLES20iOSDevice *device = dynamic_cast<GFXOpenGLES20iOSDevice*>(GFX);
     EAGLContext *context = device->getEAGLContext();
 
@@ -175,19 +185,21 @@ void iOSWindowManager::updateWindows()
       [extWindow makeKeyAndVisible];
       extWindow.frame = rect;
 
+       T2DAppDelegate *appDelegate = (T2DAppDelegate*)[[UIApplication sharedApplication] delegate];
        GLKView* baseView = [[GLKView alloc] initWithFrame:rect];
         [extWindow addSubview:baseView];
-        [baseView setContext:context ];
+        [baseView setContext:context];
+       baseView.delegate = appDelegate;
+       baseView.drawableDepthFormat = GLKViewDrawableDepthFormat16;
 
-//        T2DAppDelegate *appDelegate = (T2DAppDelegate*)[[UIApplication sharedApplication] delegate];
-//
-////        UIScreen *phoneScreen = screens[0];
-//        T2DViewController *newController = [[T2DViewController alloc] initWithNibName:nil bundle:nil];
-//        newController.delegate = appDelegate;
-//        newController.preferredFramesPerSecond = 60;
-//        extWindow.rootViewController = newController;
-//
-//
+       extController = [[T2DViewController alloc] initWithNibName:nil bundle:nil];
+       extController.delegate = appDelegate;
+       extController.preferredFramesPerSecond = 30;
+       extController.paused = NO;
+       appDelegate.extController = extController;
+
+       // Do script callback.
+        Con::executef( 1, "onCreateIOSExternalWindow" );
 
         GLKView* view = mWindowList[0]->view;
         [view.window makeKeyAndVisible];
@@ -195,6 +207,9 @@ void iOSWindowManager::updateWindows()
     else
     {
         extWindow = nil;
+        extController = nil;
+//       if (getWindowCount() < 1)
+//          createWindow(GFX, const GFXVideoMode &mode)
     }
 }
 
