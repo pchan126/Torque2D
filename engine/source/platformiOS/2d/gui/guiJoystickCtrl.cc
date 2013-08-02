@@ -67,7 +67,8 @@ GuiJoystickCtrl::GuiJoystickCtrl() :
     circleframe(0),
     stickframe(0),
     mImageCircleAsset(NULL),
-    mImageStickAsset(NULL)
+    mImageStickAsset(NULL),
+    m_fixedCircle(true)
 {
     setExtent(140, 30);
    m_TouchDown.set(0, 0);
@@ -242,7 +243,10 @@ void GuiJoystickCtrl::onTouchDown(const GuiEvent &event)
 {
     if (event.mousePoint.x >= getPosition().x+m_touchRadius && getPosition().y+event.mousePoint.y >= m_touchRadius && event.mousePoint.x < getPosition().x+getWidth()-m_touchRadius && event.mousePoint.y < getPosition().y+getHeight()-m_touchRadius)
     {
-        m_TouchDown = event.mousePoint;
+        if (m_fixedCircle)
+            m_TouchDown = getBounds().centre();
+        else
+            m_TouchDown = event.mousePoint;
         m_LastTouch = event.mousePoint;
         m_state = ACTIVE;
         m_eventid = event.eventID;
@@ -319,7 +323,12 @@ void GuiJoystickCtrl::onRender(Point2I offset, const RectI& updateRect)
 
     if (m_state == ACTIVE)
     {
-        renderButtons( offset, updateRect);
+        renderImageCircle( offset, updateRect);
+        renderImageStick(offset, updateRect);
+    }
+    else if (m_fixedCircle)
+    {
+        renderImageCircle(offset, updateRect);
     }
 #ifdef TORQUE_DEBUG
     else
@@ -333,7 +342,7 @@ void GuiJoystickCtrl::onRender(Point2I offset, const RectI& updateRect)
 
 //------------------------------------------------------------------------------
 
-void GuiJoystickCtrl::renderButtons( Point2I &offset, const RectI& updateRect)
+void GuiJoystickCtrl::renderImageCircle( Point2I &offset, const RectI& updateRect)
 {
     // Ignore an invalid datablock.
     if ( mImageCircleAsset == NULL )
@@ -347,7 +356,13 @@ void GuiJoystickCtrl::renderButtons( Point2I &offset, const RectI& updateRect)
         RectI sourceRegion( pixelArea.mPixelOffset, Point2I(pixelArea.mPixelWidth, pixelArea.mPixelHeight) );
 
         // Calculate destination region.
-        RectI destinationRegion(m_TouchDown-Point2I(m_touchRadius, m_touchRadius), Point2I(m_touchRadius*2, m_touchRadius*2));
+        RectI destinationRegion;
+        if (m_fixedCircle)
+        {
+            destinationRegion = RectI(getBounds().centre()-Point2I(m_touchRadius, m_touchRadius), Point2I(m_touchRadius*2, m_touchRadius*2));
+        }
+        else
+            destinationRegion = RectI(m_TouchDown-Point2I(m_touchRadius, m_touchRadius), Point2I(m_touchRadius*2, m_touchRadius*2));
 
         // Render image.
         GFX->getDrawUtil()->setBitmapModulation( ColorI(255, 255, 255) );
@@ -367,7 +382,10 @@ void GuiJoystickCtrl::renderButtons( Point2I &offset, const RectI& updateRect)
         // Render using render-proxy..
         pNoImageRenderProxy->renderGui( *this, offset, updateRect );
     }
+}
 
+void GuiJoystickCtrl::renderImageStick( Point2I &offset, const RectI& updateRect)
+{
     // Ignore an invalid datablock.
     if ( mImageStickAsset == NULL )
         return;

@@ -34,3 +34,7 @@ ConsoleMethod( GuiJoystickCtrl, setStickImage, void, 3, 3,       "(imageAssetId)
    object->setStickImage( argv[2]  );
 }
 
+ConsoleMethod( GuiJoystickCtrl, setFixedCircle, void, 3, 3,  "")
+{
+   object->setFixedCircle(dAtob(argv[2]));
+}

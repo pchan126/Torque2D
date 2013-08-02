@@ -386,7 +386,9 @@ public:
     inline S32              getVelocityIterations( void ) const         { return mVelocityIterations; }
     inline void             setPositionIterations( const S32 iterations ) { mPositionIterations = iterations; }
     inline S32              getPositionIterations( void ) const         { return mPositionIterations; }
-   
+
+    void                    performBlastImpulse( b2Vec2 center, F32 radius, F32 blastPower, U32 sceneGroupMask = MASK_ALL, S32 numRays = 36);
+
     /// Scene occupancy.
     void                    clearScene( bool deleteObjects = true );
     void                    addToScene( SceneObject* pSceneObject );

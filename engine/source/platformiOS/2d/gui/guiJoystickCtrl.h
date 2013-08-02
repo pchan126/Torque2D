@@ -73,7 +73,10 @@ protected:
     ButtonState m_state;
     S32 m_eventid;
 
-    void renderButtons( Point2I &offset, const RectI& updateRect);
+    bool m_fixedCircle;
+
+    void renderImageCircle( Point2I &offset, const RectI& updateRect);
+    void renderImageStick( Point2I &offset, const RectI& updateRect);
 
 public:
     GuiJoystickCtrl();
@@ -99,6 +102,8 @@ public:
 
     inline void setTouchRadius( const F32 radius) { m_touchRadius = radius;};
     inline F32 getTouchRadius( ) const { return m_touchRadius;};
+    inline void setFixedCircle( const bool fixedCircle) { m_fixedCircle = fixedCircle; }
+    inline bool getFixedCircle() const { return m_fixedCircle; }
 
     void process();
 

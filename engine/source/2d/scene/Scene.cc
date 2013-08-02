@@ -5375,3 +5375,52 @@ RenderPassManager *Scene::getDefaultRenderPass() const {
         return mDefaultRenderPass;
     return NULL;
 }
+
+
+// http://www.iforce2d.net/b2dtut/explosions
+void Scene::performBlastImpulse(b2Vec2 center, F32 radius, F32 blastPower, U32 sceneGroupMask, S32 numRays) {
+    for (S32 i = 0; i < numRays; i++) {
+        F32 angle = mDegToRad((i / (F32)numRays)*360.0);
+        b2Vec2 rayDir( mSin(angle), mCos(angle));
+        b2Vec2 rayEnd = center + radius * rayDir;
+
+        // Fetch world query and clear results.
+        WorldQuery* pWorldQuery = getWorldQuery( true );
+
+        // Set filter.
+        WorldQueryFilter queryFilter( sceneGroupMask, true, false, true, true );
+        pWorldQuery->setQueryFilter( queryFilter );
+
+        // Perform query.
+        pWorldQuery->collisionQueryRay( center, rayEnd );
+
+        // Sanity!
+        AssertFatal( pWorldQuery->getIsRaycastQueryResult(), "Invalid non-ray-cast query result returned." );
+
+        // Fetch result count.
+        const U32 resultCount = pWorldQuery->getQueryResultsCount();
+
+        // Finish if no results.
+        if ( resultCount == 0 )
+            continue;
+
+        // Fetch results.
+        typeWorldQueryResultVector& queryResults = pWorldQuery->getQueryResults();
+
+        // Add Picked Objects to List.
+        for ( WorldQueryResult n: queryResults )
+        {
+            b2Vec2 blastDir = n.mPoint - center;
+            float distance = blastDir.Normalize();
+            //ignore bodies exactly at the blast point - blast direction is undefined
+            if ( distance == 0 )
+                continue;
+            float invDistance = 1 / distance;
+            float impulseMag = blastPower * invDistance * invDistance;
+            n.mpSceneObject->applyLinearImpulse( impulseMag*blastDir, n.mPoint);
+        }
+
+        // Clear world query.
+        pWorldQuery->clearQuery();
+    }
+}

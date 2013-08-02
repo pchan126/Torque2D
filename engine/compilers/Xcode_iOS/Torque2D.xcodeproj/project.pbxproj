@@ -644,14 +644,14 @@
 		4B8AA3F49A3463DC9D4C56AB /* render2DObjectMgr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = render2DObjectMgr.cpp; sourceTree = "<group>"; };
 		4B8AA506A21CCF7A52646E9C /* gfxOpenGLES20iOSTextureTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSTextureTarget.h; sourceTree = "<group>"; };
 		4B8AA643B344244F09BC5153 /* render2DObjectMgr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render2DObjectMgr.h; sourceTree = "<group>"; };
-		4B8AA69E2FAAFC7316092ACB /* gfxOpenGLES20TextureTarget.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gfxOpenGLES20TextureTarget.cc; path = ../../source/graphics/OpenGL/ES20/gfxOpenGLES20TextureTarget.cc; sourceTree = "<group>"; };
+		4B8AA69E2FAAFC7316092ACB /* gfxOpenGLES20TextureTarget.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxOpenGLES20TextureTarget.cc; sourceTree = "<group>"; };
 		4B8AA70EC9A24A9699C62600 /* mRect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mRect.cpp; sourceTree = "<group>"; };
 		4B8AA81DE24DF738778D59DC /* iOSInputManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iOSInputManager.mm; sourceTree = "<group>"; };
 		4B8AA9A93BBBA232436F0DDF /* iOSCursorController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = iOSCursorController.mm; path = ../windowManager/iOSCursorController.mm; sourceTree = "<group>"; };
 		4B8AAB7E71D8EE670C6CD843 /* guiJoystickCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = guiJoystickCtrl.h; path = gui/guiJoystickCtrl.h; sourceTree = "<group>"; };
 		4B8AAB8C7B170DE2B1C83143 /* guiJoystickCtrl.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = guiJoystickCtrl.cc; path = gui/guiJoystickCtrl.cc; sourceTree = "<group>"; };
 		4B8AAC926AB3AD1F47EB2AC2 /* gfxOpenGLTextureTarget.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxOpenGLTextureTarget.cc; sourceTree = "<group>"; };
-		4B8AAE505D4152D7286E2EBE /* gfxOpenGLES20TextureTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gfxOpenGLES20TextureTarget.h; path = ../../source/graphics/OpenGL/ES20/gfxOpenGLES20TextureTarget.h; sourceTree = "<group>"; };
+		4B8AAE505D4152D7286E2EBE /* gfxOpenGLES20TextureTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20TextureTarget.h; sourceTree = "<group>"; };
 		860A196A171F0666000E9FE8 /* guiGridCtrl.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiGridCtrl.cc; sourceTree = "<group>"; };
 		860A196B171F0666000E9FE8 /* guiGridCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiGridCtrl.h; sourceTree = "<group>"; };
 		8610F32D16AEEC670015BCEB /* main.cs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = main.cs; path = ../../../main.cs; sourceTree = "<group>"; };
@@ -3151,8 +3151,6 @@
 			children = (
 				8610F32D16AEEC670015BCEB /* main.cs */,
 				8610F32E16AEEC670015BCEB /* modules */,
-				4B8AAE505D4152D7286E2EBE /* gfxOpenGLES20TextureTarget.h */,
-				4B8AA69E2FAAFC7316092ACB /* gfxOpenGLES20TextureTarget.cc */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -3272,6 +3270,8 @@
 				D10529D4173B665100BFC4FF /* gfxOpenGLES20Shader.h */,
 				D10529D7173B665100BFC4FF /* gfxOpenGLES20TextureManager.cc */,
 				D10529D8173B665100BFC4FF /* gfxOpenGLES20TextureManager.h */,
+				4B8AAE505D4152D7286E2EBE /* gfxOpenGLES20TextureTarget.h */,
+				4B8AA69E2FAAFC7316092ACB /* gfxOpenGLES20TextureTarget.cc */,
 				D10529D9173B665100BFC4FF /* gfxOpenGLES20TextureObject.cc */,
 				D10529DA173B665100BFC4FF /* gfxOpenGLES20TextureObject.h */,
 				D10529DD173B665100BFC4FF /* gfxOpenGLES20Utils.h */,

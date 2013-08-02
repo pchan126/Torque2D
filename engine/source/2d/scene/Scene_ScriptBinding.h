@@ -60,7 +60,7 @@ ConsoleMethod(Scene, setGravity, void, 3, 4, "(forceX / forceY) The gravity forc
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(Scene, setAmbientLight, void, 5, 6, "(float red, float green, float blue, [float alpha = 1.0]) or ( stockColorName ) - Sets the sprite blend color."
+ConsoleMethod(Scene, setAmbientLight, void, 5, 6, "(float red, float green, float blue, [float alpha = 1.0]) or ( stockColorName ) - Sets the scene ambient light color."
               "@param red The red value.\n"
               "@param green The green value.\n"
               "@param blue The blue value.\n"
@@ -2736,10 +2736,70 @@ ConsoleMethod(Scene, pickRay, const char*, 4, 9, "(startx/y, endx/y, [sceneGroup
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(Scene, pickPoint, const char*, 3, 7, "(x / y, [sceneGroupMask], [sceneLayerMask], [pickMode] ) Picks objects intersecting the specified point with optional group/layer masks.\n"
+ConsoleMethod(Scene, performBlastImpulse, void, 4, 7, "(x / y, radius, [blastPower], [sceneGroupMask], [numRays] ) applys force radiating from point with optional group/layer masks.\n"
+        "@param startx/y The coordinates of the start point as either (\"x y\") or (x,y)\n"
+        "@param radius maximum range of blast effect.\n"
+        "@param blastPower Optional blast strength.  (1) or empty string selects all groups.\n"
+        "@param sceneGroupMask Optional scene group mask.  (-1) or empty string selects all groups.\n"
+        "@param numRays Optional number of rayCasts peformed (36).\n"
+        "@returns void.")
+{
+    // The point.
+    Vector2 point;
+
+    // The index of the first optional parameter.
+    U32 firstArg;
+
+    // Grab the number of elements in the first parameter.
+    U32 elementCount = Utility::mGetStringElementCount(argv[2]);
+
+    // ("x y")
+    if ((elementCount == 2) && (argc < 8))
+    {
+        point = Utility::mGetStringElementVector(argv[2]);
+        firstArg = 3;
+    }
+            // (x, y)
+    else if ((elementCount == 1) && (argc > 3))
+    {
+        point = Vector2(dAtof(argv[2]), dAtof(argv[3]));
+        firstArg = 4;
+    }
+            // Invalid
+    else
+    {
+        Con::warnf("Scene::performBlastImpulse() - Invalid number of parameters!");
+        return;
+    }
+
+    F32 radius = dAtof(argv[firstArg]);
+
+    F32 blastPower = 1.0f;
+    if ( (U32)argc > (firstArg + 1 ))
+        blastPower = dAtof(argv[firstArg+1]);
+
+    // Calculate scene group mask.
+    U32 sceneGroupMask = MASK_ALL;
+    if ( (U32)argc > firstArg+2 )
+    {
+        if ( *argv[firstArg+2] != 0 )
+            sceneGroupMask = dAtoi(argv[firstArg+1]);
+    }
+
+    S32 numRays = 36.0f;
+    if ( (U32)argc > (firstArg + 3 ))
+        numRays = dAtoi(argv[firstArg+3]);
+
+    object->performBlastImpulse(point, radius, blastPower, sceneGroupMask, numRays);
+}
+
+
+
+//-----------------------------------------------------------------------------
+
+ConsoleMethod(Scene, pickPoint, const char*, 3, 7, "(x / y, [sceneGroupMask], [pickMode] ) Picks objects intersecting the specified point with optional group/layer masks.\n"
               "@param x/y The coordinate of the point as either (\"x y\") or (x,y)\n"
               "@param sceneGroupMask Optional scene group mask.  (-1) or empty string selects all groups.\n"
-              "@param sceneLayerMask Optional scene layer mask.  (-1) or empty string selects all layers.\n"
               "@param pickMode Optional mode 'any', 'aabb', 'oobb' or 'collision' (default is 'ooabb').\n"
               "@return Returns list of object IDs.")
 {
@@ -2780,14 +2840,6 @@ ConsoleMethod(Scene, pickPoint, const char*, 3, 7, "(x / y, [sceneGroupMask], [s
         if ( *argv[firstArg] != 0 )
             sceneGroupMask = dAtoi(argv[firstArg]);
     }
-
-//    // Calculate scene layer mask.
-//    U32 sceneLayerMask = MASK_ALL;
-//    if ( (U32)argc > (firstArg + 1) )
-//    {
-//        if ( *argv[firstArg + 1] != 0 )
-//            sceneLayerMask = dAtoi(argv[firstArg + 1]);
-//    }
 
     // Calculate pick mode.
     Scene::PickMode pickMode = Scene::PICK_OOBB;
