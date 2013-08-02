@@ -18,11 +18,8 @@ public:
    GFXOpenGLES20iOSWindowTarget(PlatformWindow *win, GFXDevice *d);
    const Point2I getSize();
 
-   virtual GFXFormat getFormat()
-   {
-      // TODO: Fix me!
-      return GFXFormatR8G8B8A8;
-   }
+   virtual GFXFormat getFormat();
+
    void makeActive();
    virtual bool present();
    virtual void resetMode();

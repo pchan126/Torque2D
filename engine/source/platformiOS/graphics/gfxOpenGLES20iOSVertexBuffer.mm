@@ -27,7 +27,7 @@ GFXOpenGLES20iOSVertexBuffer::GFXOpenGLES20iOSVertexBuffer(  GFXDevice *device,
     GFXOpenGLES20iOSDevice *_device = dynamic_cast<GFXOpenGLES20iOSDevice*>(device);
     mIndexCount = indexCount;
     glGenVertexArraysOES(1,&mVertexArrayObject);
-   _device->setVertexStream( 0, this );
+    _device->setVertexStream( 0, this );
    
     glGenBuffers(1, &mBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, mBuffer);

@@ -22,13 +22,14 @@
 
 function joypad_leftstickx(%value)  
 {  
-   echo("Joystick_leftstick X" SPC %value);
-}  
+//   echo("Joystick_leftstick X" SPC %value);
+   truckForward(%value);
+}
 
 function joypad_leftsticky(%value)
 {  
-   echo("Joystick_leftstick Y" SPC %value);
-}  
+//   echo("Joystick_leftstick Y" SPC %value);
+}
 
 function joypad_rightstickx(%value)  
 {  
@@ -90,8 +91,8 @@ function TruckToy::create( %this )
     addFlagOption("Front Wheel Drive", "setFrontWheelDrive", TruckToy.FrontWheelDrive, false, "Whether the motor on the front wheel is active or not." );
     addFlagOption("Rear Wheel Drive", "setRearWheelDrive", TruckToy.RearWheelDrive, false, "Whether the motor on the rear wheel is active or not." );
     addFlagOption("Rotate Camera", "setRotateCamera", TruckToy.RotateCamera, true, "Whether the rotate the camera that is mounted to the truck or not." );
-      
-//   GlobalActionMap.bind(joystick, xaxis, "joypad_leftstickx");
+
+   GlobalActionMap.bind(joystick, xaxis, "joypad_leftstickx");
 //   GlobalActionMap.bind(joystick, yaxis, "joypad_leftsticky");
 //   GlobalActionMap.bind(joystick, zaxis, "joypad_rightstickx");
 //   GlobalActionMap.bind(joystick, rzaxis, "joypad_rightsticky");
@@ -103,22 +104,22 @@ function TruckToy::create( %this )
         TruckToy.joystick1 = new GuiJoystickCtrl()
         {
             Profile = SandboxWindowProfile;
-            Position = "0 0";
-            Extent = "480 600";
+            Position = "0 300";
+            Extent = "300 300";
         };
-        TruckToy.joystick2 = new GuiJoystickCtrl()
-        {
-            Profile = SandboxWindowProfile;
-            Position = "0 0";
-            Extent = "480 600";
-        };
+//        TruckToy.joystick2 = new GuiJoystickCtrl()
+//        {
+//            Profile = SandboxWindowProfile;
+//            Position = "0 0";
+//            Extent = "480 600";
+//        };
         // Add it as a child window.
         SandboxWindow.add( TruckToy.joystick1 );
-        SandboxWindow.add( TruckToy.joystick2 );
+//        SandboxWindow.add( TruckToy.joystick2 );
 
         // Add window to the toy so it is destroyed.
         TruckToy.add( TruckToy.joystick1 );
-        TruckToy.add( TruckToy.joystick2 );
+//        TruckToy.add( TruckToy.joystick2 );
 
         %extent = SandboxWindow.getExtent();
         TruckToy.joystick1.setExtent(%extent.x/2, %extent.y-40);
@@ -127,12 +128,12 @@ function TruckToy::create( %this )
         TruckToy.joystick1.CircleImage = "ToyAssets:Circle1";
         TruckToy.joystick1.StickImage = "ToyAssets:Circle2";
 
-        TruckToy.joystick2.setExtent(%extent.x/2, %extent.y-40);
-        TruckToy.joystick2.setPosition(%extent.x/2, 0);
-        TruckToy.joystick2.Xevent = "zaxis";
-        TruckToy.joystick2.Yevent = "rzaxis";
-        TruckToy.joystick2.CircleImage = "ToyAssets:Circle1";
-        TruckToy.joystick2.StickImage = "ToyAssets:Circle2";
+//        TruckToy.joystick2.setExtent(%extent.x/2, %extent.y-40);
+//        TruckToy.joystick2.setPosition(%extent.x/2, 0);
+//        TruckToy.joystick2.Xevent = "zaxis";
+//        TruckToy.joystick2.Yevent = "rzaxis";
+//        TruckToy.joystick2.CircleImage = "ToyAssets:Circle1";
+//        TruckToy.joystick2.StickImage = "ToyAssets:Circle2";
     }
 
 }
@@ -903,6 +904,9 @@ function TruckToy::createTruck( %this, %posX, %posY )
     TruckToy.RearMotorJoint = SandboxScene.createWheelJoint( TruckToy.TruckBody, %tireRear, "-1.4 -1.25", "0 0", "0 1" );
     TruckToy.FrontMotorJoint = SandboxScene.createWheelJoint( TruckToy.TruckBody, %tireFront, "1.7 -1.25", "0 0", "0 1" );
 
+    TruckToy.TruckExhaust.baseSizeScale = TruckToy.TruckExhaust.SizeScale;
+    TruckToy.TruckExhaust.baseForceScale = TruckToy.TruckExhaust.ForceScale;
+
 //    $Trucklabel = createTruckLabel("Fred");
 //    $Trucklabel.autoSizeWidth = true;
 //    $Trucklabel.autoSizeHeight = true;
@@ -916,14 +920,15 @@ function TruckToy::createTruck( %this, %posX, %posY )
 
 function truckForward(%val)
 {
+    echo("truckForward" SPC %val);
     if(%val)
-    { 
-        if ( !TruckToy.TruckMoving )
-        {
+    {
+//        if ( !TruckToy.TruckMoving )
+//        {
             %driveActive = false;
             if ( TruckToy.FrontWheelDrive )
             {
-                SandboxScene.setWheelJointMotor( TruckToy.FrontMotorJoint, true, -TruckToy.WheelSpeed, 10000 );
+                SandboxScene.setWheelJointMotor( TruckToy.FrontMotorJoint, true, -TruckToy.WheelSpeed*%val, 10000 );
                 %driveActive = true;
             }
             else
@@ -933,7 +938,7 @@ function truckForward(%val)
             
             if ( TruckToy.RearWheelDrive )
             {
-                SandboxScene.setWheelJointMotor( TruckToy.RearMotorJoint, true, -TruckToy.WheelSpeed, 10000 );
+                SandboxScene.setWheelJointMotor( TruckToy.RearMotorJoint, true, -TruckToy.WheelSpeed*%val, 10000 );
                 %driveActive = true;
             }
             else
@@ -943,11 +948,11 @@ function truckForward(%val)
             
             if ( %driveActive )
             {
-                TruckToy.TruckExhaust.SizeScale *= 4;
-                TruckToy.TruckExhaust.ForceScale /= 2;
+                TruckToy.TruckExhaust.SizeScale = TruckToy.TruckExhaust.baseSizeScale*4;
+                TruckToy.TruckExhaust.ForceScale = TruckToy.TruckExhaust.baseForceScale/2;
             }
-        }
-              
+//        }
+
         TruckToy.TruckMoving = true;
     }
     else
@@ -957,51 +962,53 @@ function truckForward(%val)
 }
 
 // -----------------------------------------------------------------------------
-
-function truckReverse(%val)
-{
-    if(%val)
-    {
-        if ( !TruckToy.TruckMoving )
-        {
-            %driveActive = false;
-            if ( TruckToy.FrontWheelDrive )
-            {
-                SandboxScene.setWheelJointMotor( TruckToy.FrontMotorJoint, true, TruckToy.WheelSpeed, 10000 );
-                %driveActive = true;
-            }
-            else
-            {
-                SandboxScene.setWheelJointMotor( TruckToy.FrontMotorJoint, false );
-            }
-            if ( TruckToy.RearWheelDrive )
-            {
-                SandboxScene.setWheelJointMotor( TruckToy.RearMotorJoint, true, TruckToy.WheelSpeed, 10000 );
-                %driveActive = true;
-            }
-            else
-            {
-                SandboxScene.setWheelJointMotor( TruckToy.RearMotorJoint, false );
-            }
-            
-            if ( %driveActive )
-            {
-                TruckToy.TruckExhaust.SizeScale *= 4;
-                TruckToy.TruckExhaust.ForceScale /= 2;
-            }            
-        }
-              
-        TruckToy.TruckMoving = true;
-    }
-    else
-    {
-        truckStop();
-    }
-}
-
+//
+//function truckReverse(%val)
+//{
+//    if(%val)
+//    {
+//        if ( !TruckToy.TruckMoving )
+//        {
+//            %driveActive = false;
+//            if ( TruckToy.FrontWheelDrive )
+//            {
+//                SandboxScene.setWheelJointMotor( TruckToy.FrontMotorJoint, true, TruckToy.WheelSpeed, 10000 );
+//                %driveActive = true;
+//            }
+//            else
+//            {
+//                SandboxScene.setWheelJointMotor( TruckToy.FrontMotorJoint, false );
+//            }
+//            if ( TruckToy.RearWheelDrive )
+//            {
+//                SandboxScene.setWheelJointMotor( TruckToy.RearMotorJoint, true, TruckToy.WheelSpeed, 10000 );
+//                %driveActive = true;
+//            }
+//            else
+//            {
+//                SandboxScene.setWheelJointMotor( TruckToy.RearMotorJoint, false );
+//            }
+//            
+//            if ( %driveActive )
+//            {
+//                TruckToy.TruckExhaust.SizeScale = TruckToy.TruckExhaust.baseSizeScale*4;
+//                TruckToy.TruckExhaust.ForceScale = TruckToy.TruckExhaust.baseForceScale/2;
+//                TruckToy.TruckExhaust.SizeScale *= 4;
+//                TruckToy.TruckExhaust.ForceScale /= 2;
+//            }            
+//        }
+//              
+//        TruckToy.TruckMoving = true;
+//    }
+//    else
+//    {
+//        truckStop();
+//    }
+//}
+//
 //-----------------------------------------------------------------------------
 
-function TruckToy::truckStop(%this)
+function truckStop(%this)
 {
     // Finish if truck is not moving.
     if ( !TruckToy.TruckMoving )
@@ -1010,8 +1017,8 @@ function TruckToy::truckStop(%this)
     // Stop truck moving.
     SandboxScene.setWheelJointMotor( TruckToy.RearMotorJoint, true, 0, 10000 );
     SandboxScene.setWheelJointMotor( TruckToy.FrontMotorJoint, true, 0, 10000 );
-    TruckToy.TruckExhaust.SizeScale /= 4;
-    TruckToy.TruckExhaust.ForceScale *= 2;
+    TruckToy.TruckExhaust.SizeScale = TruckToy.TruckExhaust.baseSizeScale;
+    TruckToy.TruckExhaust.ForceScale = TruckToy.TruckExhaust.baseForceScale;
 
     // Flag truck as not moving.    
     TruckToy.TruckMoving = false;
@@ -1085,43 +1092,43 @@ function TruckToy::setRotateCamera( %this, %value )
 
 //-----------------------------------------------------------------------------
 
-function TruckToy::onTouchDown(%this, %touchID, %worldPosition)
-{
-    // Finish if truck is already moving.
-    if ( TruckToy.TruckMoving )
-        return;
+//function TruckToy::onTouchDown(%this, %touchID, %worldPosition)
+//{
+//    // Finish if truck is already moving.
+//    if ( TruckToy.TruckMoving )
+//        return;
+//
+//    // If we touch in-front of the truck then move forward else reverse.
+//    if ( %worldPosition.x >= TruckToy.TruckBody.Position.x )
+//    {
+//        truckForward( true );
+//    }
+//    else
+//    {
+//        truckReverse( true );
+//    }
+//}
+//
+////-----------------------------------------------------------------------------
+//
+//function TruckToy::onTouchUp(%this, %touchID, %worldPosition)
+//{
+//    // Finish if truck is already moving.
+//
+//    if ( TruckToy.TruckMoving )
+//    {
+//        TruckToy.truckStop();
+//        return;
+//    }
+//
+//    // If we touch in-front of the truck then move forward else reverse.
+//    if ( %worldPosition.x >= TruckToy.TruckBody.Position.x )
+//    {
+//        truckForward( true );
+//    }
+//    else
+//    {
+//        truckReverse( true );
+//    }
+//}
 
-    // If we touch in-front of the truck then move forward else reverse.
-    if ( %worldPosition.x >= TruckToy.TruckBody.Position.x )
-    {
-        truckForward( true );
-    }
-    else
-    {
-        truckReverse( true );
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-function TruckToy::onTouchUp(%this, %touchID, %worldPosition)
-{
-    // Finish if truck is already moving.
-
-    if ( TruckToy.TruckMoving )
-    {
-        TruckToy.truckStop();
-        return;
-    }
-
-    // If we touch in-front of the truck then move forward else reverse.
-    if ( %worldPosition.x >= TruckToy.TruckBody.Position.x )
-    {
-        truckForward( true );
-    }
-    else
-    {
-        truckReverse( true );
-    }
-}
-    

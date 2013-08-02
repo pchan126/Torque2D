@@ -58,3 +58,13 @@ void GFXOpenGLES20iOSWindowTarget::_onAppSignal(WindowId wnd, S32 event)
 //   // masking the issue for the most common case.
    static_cast<GFXOpenGLES20iOSDevice*>(mDevice)->mVolatileVBs.clear();
 }
+
+GFXFormat GFXOpenGLES20iOSWindowTarget::getFormat() {
+    iOSWindow *win = (iOSWindow*)mWindow;
+    GLKView *view = win->view;
+
+    if (view.drawableColorFormat == GLKViewDrawableColorFormatRGB565)
+        return GFXFormatR5G6B5;
+
+    return GFXFormatR8G8B8A8;
+}

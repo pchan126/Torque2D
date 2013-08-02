@@ -6,7 +6,6 @@
 #include "platform/platform.h"
 #import "platformiOS/platformiOS.h"
 #include "./gfxOpenGLES20iOSDevice.h"
-#import <GLKit/GLKit.h>
 
 #include "graphics/gfxDrawUtil.h"
 #include "graphics/gfxInit.h"
@@ -15,16 +14,9 @@
 #include "./gfxOpenGLES20iOSVertexBuffer.h"
 #include "./gfxOpenGLES20iOSTextureTarget.h"
 #include "./gfxOpenGLES20iOSTextureManager.h"
-#include "./gfxOpenGLES20iOSTextureObject.h"
 #include "./gfxOpenGLES20iOSCardProfiler.h"
 #include "./gfxOpenGLES20iOSWindowTarget.h"
 #include "./gfxOpenGLES20iOSCubemap.h"
-
-#include "./gfxOpenGLES20iOSShader.h"
-#include "graphics/primBuilder.h"
-#include "console/console.h"
-#import <UIKit/UIKit.h>
-#import <GLKit/GLKit.h>
 
 #include "lighting/lightInfo.h"
 #include "lighting/lightManager.h"
@@ -393,7 +385,7 @@ void GFXOpenGLES20iOSDevice::initGenericShaders()
     dSprintf(vertBuffer, sizeof(vertBuffer), "%s/C.vsh", shaderDirectory);
     dSprintf(fragBuffer, sizeof(fragBuffer), "%s/C.fsh", shaderDirectory);
 
-    mGenericShader[0] = dynamic_cast<GFXOpenGLES20iOSShader*>(createShader());
+    mGenericShader[0] = dynamic_cast<GFXOpenGLES20Shader*>(createShader());
     mGenericShader[0]->init(String(vertBuffer), String(fragBuffer), 0, macros);
     mGenericShaderConst[0] = mGenericShader[0]->allocConstBuffer();
 
@@ -401,7 +393,7 @@ void GFXOpenGLES20iOSDevice::initGenericShaders()
     dSprintf(vertBuffer, sizeof(vertBuffer), "%s/simple.vsh", shaderDirectory);
     dSprintf(fragBuffer, sizeof(fragBuffer), "%s/simple.fsh", shaderDirectory);
 
-    mGenericShader[1] = dynamic_cast<GFXOpenGLES20iOSShader*>(createShader());
+    mGenericShader[1] = dynamic_cast<GFXOpenGLES20Shader*>(createShader());
     mGenericShader[1]->init(String(vertBuffer), String(fragBuffer), 0, macros);
     mGenericShaderConst[1] = mGenericShader[1]->allocConstBuffer();
 
@@ -409,7 +401,7 @@ void GFXOpenGLES20iOSDevice::initGenericShaders()
     dSprintf(vertBuffer, sizeof(vertBuffer), "%s/point.vsh", shaderDirectory);
     dSprintf(fragBuffer, sizeof(fragBuffer), "%s/point.fsh", shaderDirectory);
 
-    mGenericShader[2] = dynamic_cast<GFXOpenGLES20iOSShader*>(createShader());
+    mGenericShader[2] = dynamic_cast<GFXOpenGLES20Shader*>(createShader());
     mGenericShader[2]->init(String(vertBuffer), String(fragBuffer), 0, macros);
     mGenericShaderConst[2] = mGenericShader[2]->allocConstBuffer();
 
@@ -418,14 +410,14 @@ void GFXOpenGLES20iOSDevice::initGenericShaders()
     dSprintf(vertBuffer, sizeof(vertBuffer), "%s/test.vsh", shaderDirectory);
     dSprintf(fragBuffer, sizeof(fragBuffer), "%s/test.fsh", shaderDirectory);
 
-    mGenericShader[3] = dynamic_cast<GFXOpenGLES20iOSShader*>(createShader());
+    mGenericShader[3] = dynamic_cast<GFXOpenGLES20Shader*>(createShader());
     mGenericShader[3]->init(String(vertBuffer), String(fragBuffer), 0, macros);
     mGenericShaderConst[3] = mGenericShader[3]->allocConstBuffer();
 
     dSprintf(vertBuffer, sizeof(vertBuffer), "%s/alpha.vsh", shaderDirectory);
     dSprintf(fragBuffer, sizeof(fragBuffer), "%s/alpha.fsh", shaderDirectory);
 
-    mGenericShader[4] = dynamic_cast<GFXOpenGLES20iOSShader*>(createShader());
+    mGenericShader[4] = dynamic_cast<GFXOpenGLES20Shader*>(createShader());
     mGenericShader[4]->init(String(vertBuffer), String(fragBuffer), 0, macros);
     mGenericShaderConst[4] = mGenericShader[4]->allocConstBuffer();
 }
@@ -481,14 +473,14 @@ void GFXOpenGLES20iOSDevice::setupGenericShaders( GenericShaderType type )
 
 GFXShader* GFXOpenGLES20iOSDevice::createShader()
 {
-    GFXOpenGLES20iOSShader* shader = new GFXOpenGLES20iOSShader();
+    GFXOpenGLES20Shader* shader = new GFXOpenGLES20Shader();
     shader->registerResourceWithDevice( this );
     return shader;
 }
 
 void GFXOpenGLES20iOSDevice::setShaderConstBufferInternal(GFXShaderConstBuffer* buffer)
 {
-    static_cast<GFXOpenGLES20iOSShaderConstBuffer*>(buffer)->activate();
+    static_cast<GFXOpenGLES20ShaderConstBuffer*>(buffer)->activate();
 }
 
 void GFXOpenGLES20iOSDevice::_updateRenderTargets()

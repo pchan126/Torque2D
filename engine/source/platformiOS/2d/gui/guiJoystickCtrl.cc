@@ -70,6 +70,8 @@ GuiJoystickCtrl::GuiJoystickCtrl() :
     mImageStickAsset(NULL)
 {
     setExtent(140, 30);
+   m_TouchDown.set(0, 0);
+   m_LastTouch.set(0, 0);
 }
 
 //-----------------------------------------------------------------------------
