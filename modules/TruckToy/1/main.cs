@@ -920,38 +920,34 @@ function TruckToy::createTruck( %this, %posX, %posY )
 
 function truckForward(%val)
 {
-    echo("truckForward" SPC %val);
     if(%val)
     {
-//        if ( !TruckToy.TruckMoving )
-//        {
-            %driveActive = false;
-            if ( TruckToy.FrontWheelDrive )
-            {
-                SandboxScene.setWheelJointMotor( TruckToy.FrontMotorJoint, true, -TruckToy.WheelSpeed*%val, 10000 );
-                %driveActive = true;
-            }
-            else
-            {
-                SandboxScene.setWheelJointMotor( TruckToy.FrontMotorJoint, false );
-            }
-            
-            if ( TruckToy.RearWheelDrive )
-            {
-                SandboxScene.setWheelJointMotor( TruckToy.RearMotorJoint, true, -TruckToy.WheelSpeed*%val, 10000 );
-                %driveActive = true;
-            }
-            else
-            {
-                SandboxScene.setWheelJointMotor( TruckToy.RearMotorJoint, false );
-            }            
-            
-            if ( %driveActive )
-            {
-                TruckToy.TruckExhaust.SizeScale = TruckToy.TruckExhaust.baseSizeScale*4;
-                TruckToy.TruckExhaust.ForceScale = TruckToy.TruckExhaust.baseForceScale/2;
-            }
-//        }
+         %driveActive = false;
+         if ( TruckToy.FrontWheelDrive )
+         {
+             SandboxScene.setWheelJointMotor( TruckToy.FrontMotorJoint, true, -TruckToy.WheelSpeed*%val, 10000 );
+             %driveActive = true;
+         }
+         else
+         {
+             SandboxScene.setWheelJointMotor( TruckToy.FrontMotorJoint, false );
+         }
+         
+         if ( TruckToy.RearWheelDrive )
+         {
+             SandboxScene.setWheelJointMotor( TruckToy.RearMotorJoint, true, -TruckToy.WheelSpeed*%val, 10000 );
+             %driveActive = true;
+         }
+         else
+         {
+             SandboxScene.setWheelJointMotor( TruckToy.RearMotorJoint, false );
+         }            
+         
+         if ( %driveActive )
+         {
+             TruckToy.TruckExhaust.SizeScale = TruckToy.TruckExhaust.baseSizeScale*4;
+             TruckToy.TruckExhaust.ForceScale = TruckToy.TruckExhaust.baseForceScale/2;
+         }
 
         TruckToy.TruckMoving = true;
     }
@@ -961,52 +957,6 @@ function truckForward(%val)
     }
 }
 
-// -----------------------------------------------------------------------------
-//
-//function truckReverse(%val)
-//{
-//    if(%val)
-//    {
-//        if ( !TruckToy.TruckMoving )
-//        {
-//            %driveActive = false;
-//            if ( TruckToy.FrontWheelDrive )
-//            {
-//                SandboxScene.setWheelJointMotor( TruckToy.FrontMotorJoint, true, TruckToy.WheelSpeed, 10000 );
-//                %driveActive = true;
-//            }
-//            else
-//            {
-//                SandboxScene.setWheelJointMotor( TruckToy.FrontMotorJoint, false );
-//            }
-//            if ( TruckToy.RearWheelDrive )
-//            {
-//                SandboxScene.setWheelJointMotor( TruckToy.RearMotorJoint, true, TruckToy.WheelSpeed, 10000 );
-//                %driveActive = true;
-//            }
-//            else
-//            {
-//                SandboxScene.setWheelJointMotor( TruckToy.RearMotorJoint, false );
-//            }
-//            
-//            if ( %driveActive )
-//            {
-//                TruckToy.TruckExhaust.SizeScale = TruckToy.TruckExhaust.baseSizeScale*4;
-//                TruckToy.TruckExhaust.ForceScale = TruckToy.TruckExhaust.baseForceScale/2;
-//                TruckToy.TruckExhaust.SizeScale *= 4;
-//                TruckToy.TruckExhaust.ForceScale /= 2;
-//            }            
-//        }
-//              
-//        TruckToy.TruckMoving = true;
-//    }
-//    else
-//    {
-//        truckStop();
-//    }
-//}
-//
-//-----------------------------------------------------------------------------
 
 function truckStop(%this)
 {
