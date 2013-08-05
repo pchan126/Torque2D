@@ -5,11 +5,11 @@
 
 #include "platform/platform.h"
 #include "platform/platformGL.h"
-#include "./GFXOpenGLES20VertexBuffer.h"
+#include "gfxOpenGLES20VertexBuffer.h"
 
-#include "./GFXOpenGLES20Device.h"
-#include "./GFXOpenGLES20EnumTranslate.h"
-#include "./GFXOpenGLES20Utils.h"
+#include "gfxOpenGLES20Device.h"
+#include "gfxOpenGLES20EnumTranslate.h"
+#include "gfxOpenGLES20Utils.h"
 
 typedef enum {
     GLKVertexAttribPosition,

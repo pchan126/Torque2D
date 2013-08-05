@@ -3,10 +3,10 @@
 // Copyright GarageGames, LLC 2011
 //-----------------------------------------------------------------------------
 
-#include "./GFXOpenGLES20Device.h"
-#include "./GFXOpenGLES20WindowTarget.h"
-#include "./GFXOpenGLES20TextureObject.h"
-#include "./GFXOpenGLES20Utils.h"
+#include "gfxOpenGLES20Device.h"
+#include "gfxOpenGLES20WindowTarget.h"
+#include "gfxOpenGLES20TextureObject.h"
+#include "gfxOpenGLES20Utils.h"
 
 #include "platform/platformGL.h"
 

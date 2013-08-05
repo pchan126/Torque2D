@@ -31,6 +31,7 @@
 #include "2d/core/Utility.h"
 #include "2d/gui/SceneWindow.h"
 #include "2d/scene/SceneRenderState.h"
+#include "2d/scene/Layer.h"
 
 #ifndef _ASSET_MANAGER_H_
 #include "assets/assetManager.h"
@@ -106,7 +107,6 @@ SceneWindow::CameraInterpolationMode SceneWindow::getInterpolationModeEnum(const
 SceneWindow::SceneWindow() :    mpScene(NULL),
                                 mLockMouse(false),
                                 mWindowDirty(true),
-                                mRenderLayerMask(MASK_ALL),
                                 mRenderGroupMask(MASK_ALL),
                                 mBackgroundColor( "Black" ),
                                 mUseBackgroundColor(false),   
@@ -1907,3 +1907,8 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
     // Clear Bitmap Modulation.
     GFX->getDrawUtil()->clearBitmapModulation();
 }
+
+void SceneWindow::setRenderFlag( const U32 layer, bool flag )
+{
+   getScene()->getLayer(layer)->setRenderFlag(flag);
+};

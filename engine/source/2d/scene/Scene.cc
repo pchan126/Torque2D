@@ -3383,14 +3383,17 @@ void Scene::setLayerLight(U32 layer, ColorF light)
 
 void Scene::setLayerSortMode( const U32 layer, const SceneRenderQueue::RenderSort sortMode )
 {
-    // Is the layer valid?
-    if ( layer > mLayers.size() )
+   if (layer > 64)
+   {
+      // No, so warn.
+      Con::warnf( "Scene::setLayerSortMode() - Layer '%d' is bigger than 64, is this intended?", layer );
+      //
+   }
+   
+   // Is the layer valid?
+    while ( layer >= mLayers.size() )
     {
-       mLayers.setSize(layer+1);
-//        // No, so warn.
-//        Con::warnf( "Scene::setLayerSortMode() - Layer '%d' is out of range.", layer );
-//
-//        return;
+       mLayers.push_back(new Layer());
     }
 
     // Is the sort mode valid?
@@ -5425,3 +5428,10 @@ void Scene::performBlastImpulse(b2Vec2 center, F32 radius, F32 blastPower, U32 s
         pWorldQuery->clearQuery();
     }
 }
+
+
+void Scene::setAllRenderLayers(bool flag)
+{
+   for (auto itr:mLayers)
+   { itr->setRenderFlag(flag); }
+};

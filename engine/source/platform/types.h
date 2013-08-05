@@ -35,6 +35,9 @@ typedef unsigned short     U16;     ///< Compiler independent Unsigned 16-bit sh
 typedef signed int         S32;     ///< Compiler independent Signed 32-bit integer
 typedef unsigned int       U32;     ///< Compiler independent Unsigned 32-bit integer
 
+typedef long long          S64;     ///< Compiler independent Signed 64-bit integer
+typedef unsigned long long U64;     ///< Compiler independent Unsigned 64-bit integer
+
 typedef float              F32;     ///< Compiler independent 32-bit float
 typedef double             F64;     ///< Compiler independent 64-bit float
 
@@ -76,11 +79,8 @@ static const F32 F32_MAX = F32(3.402823466e+38F);                 ///< Constant 
 //--------------------------------------
 // Identify the compiler being used
 
-// Metrowerks CodeWarrior
-#if defined(__MWERKS__)
-#  include "platform/types.codewarrior.h"
 // Microsoft Visual C++/Visual.NET
-#elif defined(_MSC_VER)
+#if defined(_MSC_VER)
 #  include "platform/types.visualc.h"
 // GNU GCC
 #elif defined(__GNUC__)

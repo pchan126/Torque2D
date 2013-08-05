@@ -21,7 +21,7 @@
 //-----------------------------------------------------------------------------
 
 #include "platform/platform.h"
-#include "graphics/sim/GFXStateBlockAsset.h"
+#include "gfxStateBlockAsset.h"
 
 #include "console/consoleTypes.h"
 #include "graphics/gfxStringEnumTranslate.h"

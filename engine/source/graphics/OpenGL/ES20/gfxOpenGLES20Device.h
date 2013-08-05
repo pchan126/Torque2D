@@ -10,7 +10,7 @@
 #include "graphics/OpenGL/gfxOpenGLDevice.h"
 #include "graphics/gfxResource.h"
 
-#include "./GFXOpenGLES20Shader.h"
+#include "gfxOpenGLES20Shader.h"
 
 class GFXOpenGLES20VertexBuffer;
 class GFXOpenGLES20TextureTarget;

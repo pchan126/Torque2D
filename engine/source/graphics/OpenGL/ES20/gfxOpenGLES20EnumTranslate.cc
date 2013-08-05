@@ -4,8 +4,8 @@
 //-----------------------------------------------------------------------------
 
 #include "platform/platform.h"
-#include "./GFXOpenGLES20EnumTranslate.h"
-#include "String/StringTable.h"
+#include "gfxOpenGLES20EnumTranslate.h"
+#include "stringTable.h"
  
 GLenum GFXGLPrimType[GFXPT_COUNT];
 GLenum GFXGLBlend[GFXBlend_COUNT];

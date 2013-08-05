@@ -4,7 +4,7 @@
 //-----------------------------------------------------------------------------
 
 #include "./gfxOpenGLES20Device.h"
-#include "./GFXOpenGLES20TextureObject.h"
+#include "gfxOpenGLES20TextureObject.h"
 #include "./gfxOpenGLES20EnumTranslate.h"
 #include "./gfxOpenGLES20Utils.h"
 #include "./gfxOpenGLES20Cubemap.h"

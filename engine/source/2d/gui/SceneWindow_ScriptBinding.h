@@ -704,6 +704,14 @@ ConsoleMethod(SceneWindow, clampCameraViewLimit, void, 2, 2, "() Clamps the curr
 
 //-----------------------------------------------------------------------------
 
+ConsoleMethod(SceneWindow, setAllRenderLayers, void, 3, 3, "(groups$) - Sets the render group(s).\n"
+              "@param boolean .\n"
+              "@return No return value.")
+{
+   object->getScene()->setAllRenderLayers(dAtob(argv[2]));
+}
+
+
 ConsoleMethod(SceneWindow, setRenderGroups, void, 3, 2 + MASK_BITCOUNT, "(groups$) - Sets the render group(s).\n"
               "@param groups The list of groups you wish to set.\n"
               "@return No return value.")
@@ -761,18 +769,6 @@ ConsoleMethod(SceneWindow, setRenderGroups, void, 3, 2 + MASK_BITCOUNT, "(groups
    // Set Collision Groups.
    object->setRenderGroups(mask);
 }
-
-
-
-//-----------------------------------------------------------------------------
-
-ConsoleMethod(SceneWindow, setRenderMasks, void, 3, 3, "(groupMask) - Sets the group mask which control what is rendered."
-              "@param groupmask The bitmask for setting the groups to render\n"
-              "@return No return value.")
-{
-    // Set Render Masks.
-      object->setRenderMasks( dAtoi(argv[2]), dAtoi(argv[3]) );
-}   
 
 
 //-----------------------------------------------------------------------------

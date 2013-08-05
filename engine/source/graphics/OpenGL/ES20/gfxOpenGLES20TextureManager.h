@@ -9,7 +9,7 @@
 #include "platform/platformGL.h"
 #include "graphics/gfxDevice.h"
 #include "graphics/gfxTextureManager.h"
-#include "./GFXOpenGLES20TextureObject.h"
+#include "gfxOpenGLES20TextureObject.h"
 
 class GFXOpenGLES20TextureManager : public GFXTextureManager
 {   

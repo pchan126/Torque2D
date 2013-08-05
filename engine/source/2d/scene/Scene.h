@@ -23,58 +23,19 @@
 #ifndef _SCENE_H_
 #define _SCENE_H_
 
-#ifndef _MMATH_H_
 #include "math/mMath.h"
-#endif
-
-#ifndef _VECTOR2_H_
 #include "2d/core/Vector2.h"
-#endif
-
-#ifndef _NETOBJECT_H_
 #include "network/netObject.h"
-#endif
-
-#ifndef _TICKABLE_H_
 #include "platform/Tickable.h"
-#endif
-
-#ifndef _PHYSICS_PROXY_H_
 #include "2d/scene/PhysicsProxy.h"
-#endif
-
-#ifndef _WORLD_QUERY_H_
 #include "2d/scene/WorldQuery.h"
-#endif
-
-#ifndef _DEBUG_DRAW_H_
 #include "2d/scene/DebugDraw.h"
-#endif
-
-#ifndef _HASHTABLE_H
 #include "collection/hashTable.h"
-#endif
-
-#ifndef _BATCH_RENDER_H_
 #include "2d/core/BatchRender.h"
-#endif
-
-#ifndef _SCENE_RENDER_QUEUE_H_
 #include "2d/scene/SceneRenderQueue.h"
-#endif
-
-#ifndef _SCENE_RENDER_OBJECT_H_
 #include "2d/scene/SceneRenderObject.h"
-#endif
-
-#ifndef _BEHAVIOR_COMPONENT_H_
 #include "component/behaviors/behaviorComponent.h"
-#endif
-
-#ifndef _ASSET_PTR_H_
 #include "assets/assetPtr.h"
-#endif
-
 #include "lighting/lightInfo.h"
 #include "lighting/lightManager.h"
 
@@ -259,7 +220,7 @@ private:
     /// Scene controllers.
     SimObjectPtr<SimSet>	    mControllers;
 
-    Vector<Layer*>           mLayers;
+    Vector<Layer*>              mLayers;
    
     /// Asset pre-loads.
     typeAssetPtrVector          mAssetPreloads;
@@ -421,6 +382,7 @@ public:
    
    inline Layer* const     getLayer( U32 layer ) const              { return (mLayers.size() > layer) ? mLayers[layer] : NULL; };
    void                    setLayerLight( U32 layer, ColorF light);
+   void                   setAllRenderLayers(bool flag);
    
     /// Joint access.
     inline U32              getJointCount( void ) const                 { return mJoints.size(); }

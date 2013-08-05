@@ -223,15 +223,14 @@ void SimSet::clear()
 
 SimObject* SimSet::findObjectByInternalName(const char* internalName, bool searchChildren)
 {
-   iterator i;
-   for (i = begin(); i != end(); i++)
+   for (auto i:*this)
    {
-      SimObject *childObj = static_cast<SimObject*>(*i);
+      SimObject *childObj = static_cast<SimObject*>(i);
       if(childObj->getInternalName() == internalName)
          return childObj;
       else if (searchChildren)
       {
-         SimSet* childSet = dynamic_cast<SimSet*>(*i);
+         SimSet* childSet = dynamic_cast<SimSet*>(i);
          if (childSet)
          {
             SimObject* found = childSet->findObjectByInternalName(internalName, searchChildren);

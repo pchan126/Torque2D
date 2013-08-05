@@ -6,11 +6,11 @@
 #include "platform/platformGL.h"
 #include "console/console.h"
 #include "math/mRect.h"
-#include "./GFXOpenGLES20TextureObject.h"
-#include "./GFXOpenGLES20Device.h"
-#include "./GFXOpenGLES20EnumTranslate.h"
-#include "./GFXOpenGLES20TextureManager.h"
-#include "./GFXOpenGLES20Utils.h"
+#include "gfxOpenGLES20TextureObject.h"
+#include "gfxOpenGLES20Device.h"
+#include "gfxOpenGLES20EnumTranslate.h"
+#include "gfxOpenGLES20TextureManager.h"
+#include "gfxOpenGLES20Utils.h"
 #include "graphics/gfxCardProfile.h"
 
 

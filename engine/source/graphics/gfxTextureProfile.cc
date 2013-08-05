@@ -23,7 +23,7 @@
 #include "platform/platform.h"
 #include "graphics/gfxTextureProfile.h"
 
-#include "graphics/GFXTextureObject.h"
+#include "gfxTextureObject.h"
 #include "graphics/gBitmap.h"
 #include "platform/platformString.h"
 #include "console/console.h"

@@ -50,7 +50,8 @@ private:
    void makeRenderTarget(void);
    GFXTextureTargetRef texTarget;
    GFXTexHandle texHandle;
-   
+
+   bool mRenderFlag;
 public:
    Layer();
    ~Layer();
@@ -59,7 +60,10 @@ public:
    inline virtual void addObject(SceneObject* obj) { Parent::addObject( obj ); };
    void addObject(SceneObject* obj, SimObjectId id);
    void addObject(SceneObject* obj, const char *name);
-   
+
+   void setRenderFlag(bool render) { mRenderFlag = true; };
+   bool getRenderFlag() { return mRenderFlag;};
+
    inline ColorF getLight( void) { return mLight; };
    inline void setLight( ColorF light) { mLight = light; };
 

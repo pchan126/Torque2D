@@ -166,6 +166,8 @@ class Vector
    void erase(U32 index)      { _vector.erase(_vector.begin()+index); };
    void clear()               { return _vector.clear(); };
    void compact()             { return _vector.shrink_to_fit(); };
+
+   void emplace_back() { _vector.emplace_back(); };
    void sort(compare_func f);
 
    /// Finds the front matching element and erases it.

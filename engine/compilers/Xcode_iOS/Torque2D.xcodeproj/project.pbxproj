@@ -1246,7 +1246,6 @@
 		867BAFA716AEC9050033868F /* Tickable.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Tickable.cc; sourceTree = "<group>"; };
 		867BAFA816AEC9050033868F /* Tickable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tickable.h; sourceTree = "<group>"; };
 		867BAFA916AEC9050033868F /* types.arm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.arm.h; sourceTree = "<group>"; };
-		867BAFAA16AEC9050033868F /* types.codewarrior.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.codewarrior.h; sourceTree = "<group>"; };
 		867BAFAB16AEC9050033868F /* types.gcc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.gcc.h; sourceTree = "<group>"; };
 		867BAFAC16AEC9050033868F /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
 		867BAFAD16AEC9050033868F /* types.posix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.posix.h; sourceTree = "<group>"; };
@@ -2805,7 +2804,6 @@
 				867BAFA716AEC9050033868F /* Tickable.cc */,
 				867BAFA816AEC9050033868F /* Tickable.h */,
 				867BAFA916AEC9050033868F /* types.arm.h */,
-				867BAFAA16AEC9050033868F /* types.codewarrior.h */,
 				867BAFAB16AEC9050033868F /* types.gcc.h */,
 				867BAFAC16AEC9050033868F /* types.h */,
 				867BAFAD16AEC9050033868F /* types.posix.h */,

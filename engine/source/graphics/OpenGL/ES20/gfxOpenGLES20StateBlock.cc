@@ -4,10 +4,10 @@
 //-----------------------------------------------------------------------------
 
 #include "./GFXOpenGLES20StateBlock.h"
-#include "./GFXOpenGLES20Device.h"
-#include "./GFXOpenGLES20EnumTranslate.h"
-#include "./GFXOpenGLES20Utils.h"
-#include "./GFXOpenGLES20TextureObject.h"
+#include "gfxOpenGLES20Device.h"
+#include "gfxOpenGLES20EnumTranslate.h"
+#include "gfxOpenGLES20Utils.h"
+#include "gfxOpenGLES20TextureObject.h"
 
 
 GFXOpenGLES20StateBlock::GFXOpenGLES20StateBlock(const GFXStateBlockDesc& desc) : GFXOpenGLStateBlock( desc ),

@@ -4,8 +4,8 @@
 //-----------------------------------------------------------------------------
 
 #include "platform/platform.h"
-#include "./GFXOpenGLES20Device.h"
-#include "./GFXOpenGLES20TextureObject.h"
+#include "gfxOpenGLES20Device.h"
+#include "gfxOpenGLES20TextureObject.h"
 
 //-----------------------------------------------------------------------------
 GFXOpenGLES20Device::GFXOpenGLES20Device( U32 adapterIndex ) : GFXOpenGLDevice( adapterIndex )

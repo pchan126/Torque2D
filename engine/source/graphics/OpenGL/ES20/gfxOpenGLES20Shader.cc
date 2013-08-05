@@ -21,7 +21,7 @@
 //-----------------------------------------------------------------------------
 
 #include "platform/platform.h"
-#include "./GFXOpenGLES20Shader.h"
+#include "gfxOpenGLES20Shader.h"
 
 #include "memory/frameAllocator.h"
 #include "io/fileStream.h"
@@ -29,7 +29,7 @@
 #include "math/mPoint.h"
 #include "graphics/gfxStructs.h"
 #include "console/console.h"
-#include "./GFXOpenGLES20EnumTranslate.h"
+#include "gfxOpenGLES20EnumTranslate.h"
 
 
 

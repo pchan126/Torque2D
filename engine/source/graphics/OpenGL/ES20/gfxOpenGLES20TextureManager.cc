@@ -5,11 +5,11 @@
 
 #include "platform/platform.h"
 #include "platform/platformGL.h"
-#include "./GFXOpenGLES20TextureManager.h"
-#include "./GFXOpenGLES20EnumTranslate.h"
+#include "gfxOpenGLES20TextureManager.h"
+#include "gfxOpenGLES20EnumTranslate.h"
 #include "graphics/gfxCardProfile.h"
 #include "memory/safeDelete.h"
-#include "./GFXOpenGLES20Utils.h"
+#include "gfxOpenGLES20Utils.h"
 #include "./gfxOpenGLES20Device.h"
 
 

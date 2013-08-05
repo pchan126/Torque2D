@@ -41,7 +41,6 @@ function createSandboxWindow()
     SandboxWindow.dismount();
     SandboxWindow.setViewLimitOff();
     SandboxWindow.setRenderGroups( %allBits );
-    SandboxWindow.setRenderLayers( %allBits );
     SandboxWindow.setObjectInputEventGroupFilter( %allBits );
     SandboxWindow.setLockMouse( true );
     SandboxWindow.setCameraPosition( 0, 0 );
@@ -116,7 +115,7 @@ function setSceneToWindow()
     SandboxWindow.dismount();
     SandboxWindow.setViewLimitOff();
     SandboxWindow.setRenderGroups( %allBits );
-    SandboxWindow.setRenderLayers( %allBits );
+    SandboxWindow.setAllRenderLayers( true );
     SandboxWindow.setObjectInputEventGroupFilter( %allBits );
     SandboxWindow.setLockMouse( true );
     SandboxWindow.setCameraPosition( 0, 0 );

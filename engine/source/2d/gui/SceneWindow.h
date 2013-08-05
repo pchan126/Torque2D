@@ -23,25 +23,11 @@
 #ifndef _SCENE_WINDOW_H_
 #define _SCENE_WINDOW_H_
 
-#ifndef _GUICONTROL_H_
 #include "gui/guiControl.h"
-#endif
-
-#ifndef _VECTOR_H_
 #include "collection/vector.h"
-#endif
-
-#ifndef _SCENE_H_
 #include "2d/scene/Scene.h"
-#endif
-
-#ifndef _VECTOR2_H_
 #include "2d/core/Vector2.h"
-#endif
-
-#ifndef _UTILITY_H_
 #include "2d/core/Utility.h"
-#endif
 
 //-----------------------------------------------------------------------------
 
@@ -234,7 +220,6 @@ private:
     SimSet              mInputListeners;
 
     /// Render Masks.
-    U32                 mRenderLayerMask;
     U32                 mRenderGroupMask;
 
     char                mDebugText[256];
@@ -268,9 +253,10 @@ public:
     virtual void setScene( Scene* pScene );
     virtual void resetScene( void );
     inline void setRenderGroups( const U32 groupMask) { mRenderGroupMask = groupMask; }
-    inline void setRenderMasks( const U32 layerMask,const  U32 groupMask ) { mRenderLayerMask = layerMask; mRenderGroupMask = groupMask; }
-    inline U32 getRenderLayerMask( void ) { return mRenderLayerMask; }
     inline U32 getRenderGroupMask( void ) { return mRenderGroupMask; }
+
+   void setRenderFlag( const U32 layer, bool flag );
+
 
     /// Get scene.
     inline Scene* getScene( void ) const { return mpScene; };

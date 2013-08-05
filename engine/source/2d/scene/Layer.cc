@@ -19,7 +19,8 @@ GFX_ImplementTextureProfile(GFXLayerTextureProfile,
 
 Layer::Layer() : mSortMode(SceneRenderQueue::RENDER_SORT_NEWEST),
                  mLight(1.0f, 1.0f, 1.0f, 1.0f),
-                 mCameraTranslationScale(1.0f, 1.0f, 1.0f)
+                 mCameraTranslationScale(1.0f, 1.0f, 1.0f),
+                 mRenderFlag(true)
 {
    texTarget = GFX->allocRenderToTextureTarget();
 };

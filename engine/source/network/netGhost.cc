@@ -814,8 +814,6 @@ void NetConnection::activateGhosting()
 
    SimSet* ghostAlwaysSet = Sim::getGhostAlwaysSet();
 
-   SimSet::iterator i;
-
    AssertFatal((mGhostFreeIndex == 0) && (mGhostZeroUpdateIndex == 0), "Error: ghosts in the ghost list before activate.");
 
    U32 sz = ghostAlwaysSet->size();
@@ -834,10 +832,10 @@ void NetConnection::activateGhosting()
       mGhostArray[j]->arrayIndex = j;
    }
    mScoping = true; // so that objectInScope will work
-   for(i = ghostAlwaysSet->begin(); i != ghostAlwaysSet->end(); i++)
+   for(auto i:*ghostAlwaysSet)
    {
-      AssertFatal(dynamic_cast<NetObject *>(*i) != NULL, avar("Non NetObject in GhostAlwaysSet: %s", (*i)->getClassName()));
-      NetObject *obj = (NetObject *)(*i);
+      AssertFatal(dynamic_cast<NetObject *>(i) != NULL, avar("Non NetObject in GhostAlwaysSet: %s", (i)->getClassName()));
+      NetObject *obj = (NetObject *)(i);
       if(obj->mNetFlags.test(NetObject::Ghostable))
          objectInScope(obj);
    }

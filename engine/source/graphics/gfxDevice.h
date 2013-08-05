@@ -32,7 +32,7 @@
 #ifndef _GFXTARGET_H_
 #include "graphics/gfxTarget.h"
 #endif
-#include "graphics/GFXTextureObject.h"
+#include "gfxTextureObject.h"
 
 #ifndef _GFXVERTEXBUFFER_H_
 #include "graphics/gfxVertexBuffer.h"

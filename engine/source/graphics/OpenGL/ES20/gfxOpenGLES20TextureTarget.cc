@@ -4,12 +4,12 @@
 //-----------------------------------------------------------------------------
 
 #include "console/console.h"
-#include "./GFXOpenGLES20Device.h"
-#include "./GFXOpenGLES20TextureTarget.h"
-#include "./GFXOpenGLES20TextureObject.h"
-#include "./GFXOpenGLES20Cubemap.h"
+#include "gfxOpenGLES20Device.h"
+#include "gfxOpenGLES20TextureTarget.h"
+#include "gfxOpenGLES20TextureObject.h"
+#include "gfxOpenGLES20Cubemap.h"
 #include "graphics/gfxTextureManager.h"
-#include "./GFXOpenGLES20Utils.h"
+#include "gfxOpenGLES20Utils.h"
 
 // Handy macro for checking the status of a framebuffer.  Framebuffers can fail in 
 // all sorts of interesting ways, these are just the most common.  Further, no existing GL profiling 
