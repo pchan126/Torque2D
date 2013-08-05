@@ -89,16 +89,16 @@ void SimSet::callOnChildren( const char * method, S32 argc, const char *argv[], 
    for (S32 i = 0; i < argc; i++)
       args[i + 2] = argv[i];
 
-   for( iterator i = begin(); i != end(); i++ )
+   for( auto i:*this )
    {
-      SimObject *childObj = static_cast<SimObject*>(*i);
+      SimObject *childObj = static_cast<SimObject*>(i);
 
       if( childObj->isMethod( method ) )
          Con::execute(childObj, argc + 2, args);
 
       if( executeOnChildGroups )
       {
-         SimSet* childSet = dynamic_cast<SimSet*>(*i);
+         SimSet* childSet = dynamic_cast<SimSet*>(i);
          if ( childSet )
             childSet->callOnChildren( method, argc, argv, executeOnChildGroups );
       }
@@ -160,8 +160,7 @@ void SimSet::onRemove()
    {
       // This backwards iterator loop doesn't work if the
       // list is empty, check the size first.
-      for (SimObjectList::iterator ptr = objectList.end() - 1;
-         ptr >= objectList.begin(); ptr--)
+      for (auto ptr = objectList.rend(); ptr != objectList.rbegin(); ptr++)
       {
          clearNotify(*ptr);
       }
@@ -441,14 +440,14 @@ SimObject *SimSet::findObject(const char *namePath)
       return NULL;
 
    lock();
-   for(SimSet::iterator i = begin(); i != end(); i++)
+   for(auto i:*this)
    {
-      if((*i)->getName() == stName)
+      if(i->getName() == stName)
       {
          unlock();
          if(namePath[len] == 0)
-            return *i;
-         return (*i)->findObject(namePath + len + 1);
+            return i;
+         return i->findObject(namePath + len + 1);
       }
    }
    unlock();
@@ -596,9 +595,9 @@ ConsoleMethod(SimSet, isMember, bool, 3, 3, "(object) @return Returns true if sp
    }
 
    object->lock();
-   for(SimSet::iterator i = object->begin(); i != object->end(); i++)
+   for(auto i:*object)
    {
-      if(*i == testObject)
+      if(i == testObject)
       {
          object->unlock();
          return true;
