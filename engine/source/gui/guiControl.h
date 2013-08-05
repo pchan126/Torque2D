@@ -579,20 +579,7 @@ public:
    virtual void onTouchDragged(const GuiEvent &event) { onMouseDragged(event); };
    
    /// @}
-      
-      /// @name Gamepad Events
-      /// These functions are called when the input event which is in the name of
-      /// the function occurs.
-      /// @{
-      virtual bool onGamepadButtonDown(const GuiEvent &event);  ///< Default behavior is call-through to onKeyDown
-      virtual bool onGamepadButtonUp(const GuiEvent &event);    ///< Default behavior is call-through to onKeyUp
-      virtual bool onGamepadAxisUp(const GuiEvent &event);
-      virtual bool onGamepadAxisDown(const GuiEvent &event);
-      virtual bool onGamepadAxisLeft(const GuiEvent &event);
-      virtual bool onGamepadAxisRight(const GuiEvent &event);
-      virtual bool onGamepadTrigger(const GuiEvent &event);
 
-    /// @}
     
     /// @name Editor Mouse Events
     ///

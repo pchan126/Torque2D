@@ -436,38 +436,65 @@ void GuiControl::parentResized(const RectI &oldParentRect, const RectI &newParen
     
 	S32 deltaX = newParentRect.extent.x - oldParentRect.extent.x;
  	S32 deltaY = newParentRect.extent.y - oldParentRect.extent.y;
-    
-	if (mHorizSizing == horizResizeCenter)
-        newPosition.x = (newParentRect.extent.x - getWidth()) >> 1;
-	else if (mHorizSizing == horizResizeWidth)
-		newExtent.x += deltaX;
-	else if (mHorizSizing == horizResizeLeft)
-        newPosition.x += deltaX;
-    else if (mHorizSizing == horizResizeRelative && oldParentRect.extent.x != 0)
+
+    switch(mHorizSizing)
     {
-        S32 newLeft = mRoundToNearest( ( F32( newPosition.x ) / F32( oldParentRect.extent.x ) ) * F32( newParentRect.extent.x ) );
-        S32 newWidth = mRoundToNearest( ( F32( newExtent.x ) / F32( oldParentRect.extent.x ) ) * F32( newParentRect.extent.x ) );
-        
-        newPosition.x = newLeft;
-        newExtent.x = newWidth;
+        case horizResizeCenter:
+        {
+            newPosition.x = (newParentRect.extent.x - getWidth()) >> 1;
+            return;
+        }
+        case horizResizeWidth:
+        {
+            newExtent.x += deltaX;
+            return;
+        }
+        case horizResizeLeft:
+        {
+            newPosition.x += deltaX;
+            return;
+        }
+        case horizResizeRelative:
+            if (oldParentRect.extent.x != 0)
+            {
+                S32 newLeft = mRoundToNearest( ( F32( newPosition.x ) / F32( oldParentRect.extent.x ) ) * F32( newParentRect.extent.x ) );
+                S32 newWidth = mRoundToNearest( ( F32( newExtent.x ) / F32( oldParentRect.extent.x ) ) * F32( newParentRect.extent.x ) );
+
+                newPosition.x = newLeft;
+                newExtent.x = newWidth;
+            }
+            return;
+    }
+
+    switch(mVertSizing)
+    {
+        case vertResizeCenter:
+        {
+            newPosition.y = (newParentRect.extent.y - getHeight()) >> 1;
+            return;
+        }
+        case vertResizeHeight:
+        {
+            newExtent.y += deltaY;
+            return;
+        }
+        case vertResizeTop:
+        {
+            newPosition.y += deltaY;
+            return;
+        }
+        case vertResizeRelative:
+            if (oldParentRect.extent.y != 0)
+            {
+                S32 newTop = mRoundToNearest( ( F32( newPosition.y ) / F32( oldParentRect.extent.y ) ) * F32( newParentRect.extent.y ) );
+                S32 newHeight = mRoundToNearest( ( F32( newExtent.y ) / F32( oldParentRect.extent.y ) ) * F32( newParentRect.extent.y ) );
+
+                newPosition.y = newTop;
+                newExtent.y = newHeight;
+            }
+            return;
     }
     
-	if (mVertSizing == vertResizeCenter)
-        newPosition.y = (newParentRect.extent.y - getHeight()) >> 1;
-	else if (mVertSizing == vertResizeHeight)
-		newExtent.y += deltaY;
-	else if (mVertSizing == vertResizeTop)
-        newPosition.y += deltaY;
-    else if(mVertSizing == vertResizeRelative && oldParentRect.extent.y != 0)
-    {
-        S32 newTop = mRoundToNearest( ( F32( newPosition.y ) / F32( oldParentRect.extent.y ) ) * F32( newParentRect.extent.y ) );
-        S32 newHeight = mRoundToNearest( ( F32( newExtent.y ) / F32( oldParentRect.extent.y ) ) * F32( newParentRect.extent.y ) );
-        
-        newPosition.y = newTop;
-        newExtent.y = newHeight;
-    }
-    
-    // Resizing Re factor [9/18/2006]
     // Only resize if our minExtent is satisfied with it.
     Point2I minExtent = getMinExtent();
     if( newExtent.x >= minExtent.x && newExtent.y >= minExtent.y )
@@ -650,10 +677,10 @@ void GuiControl::awaken()
    if(mAwake)
       return;
 
-   iterator i;
-   for(i = begin(); i != end(); i++)
+
+   for(auto i:*this)
    {
-      GuiControl *ctrl = static_cast<GuiControl *>(*i);
+      GuiControl *ctrl = static_cast<GuiControl *>(i);
 
       AssertFatal(!ctrl->isAwake(), "GuiControl::awaken: child control is already awake");
       if(!ctrl->isAwake())
@@ -678,10 +705,9 @@ void GuiControl::sleep()
    if(!mAwake)
       return;
 
-   iterator i;
-   for(i = begin(); i != end(); i++)
+   for(auto i:*this)
    {
-      GuiControl *ctrl = static_cast<GuiControl *>(*i);
+      GuiControl *ctrl = static_cast<GuiControl *>(i);
 
       AssertFatal(ctrl->isAwake(), "GuiControl::sleep: child control is already asleep");
       if(ctrl->isAwake())
@@ -1214,100 +1240,6 @@ void GuiControl::onMiddleMouseDragged(const GuiEvent &)
 {
 }
 
-//-----------------------------------------------------------------------------
-
-bool GuiControl::onGamepadButtonDown(const GuiEvent &event)
-{
-    return onKeyDown(event);
-}
-
-//-----------------------------------------------------------------------------
-
-bool GuiControl::onGamepadButtonUp(const GuiEvent &event)
-{
-    return onKeyUp(event);
-}
-
-//-----------------------------------------------------------------------------
-
-bool GuiControl::onGamepadAxisUp(const GuiEvent &event)
-{
-    //pass the event to the parent
-    GuiControl *parent = getParent();
-    if (parent)
-    {
-        return parent->onGamepadAxisUp(event);
-    }
-    else
-    {
-        return false;
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-bool GuiControl::onGamepadAxisDown(const GuiEvent &event)
-{
-    //pass the event to the parent
-    GuiControl *parent = getParent();
-    if (parent)
-    {
-        return parent->onGamepadAxisDown(event);
-    }
-    else
-    {
-        return false;
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-bool GuiControl::onGamepadAxisLeft(const GuiEvent &event)
-{
-    //pass the event to the parent
-    GuiControl *parent = getParent();
-    if (parent)
-    {
-        return parent->onGamepadAxisLeft(event);
-    }
-    else
-    {
-        return false;
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-bool GuiControl::onGamepadAxisRight(const GuiEvent &event)
-{
-    //pass the event to the parent
-    GuiControl *parent = getParent();
-    if (parent)
-    {
-        return parent->onGamepadAxisRight(event);
-    }
-    else
-    {
-        return false;
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-bool GuiControl::onGamepadTrigger(const GuiEvent &event)
-{
-    //pass the event to the parent
-    GuiControl *parent = getParent();
-    if (parent)
-    {
-        return parent->onGamepadTrigger(event);
-    }
-    else
-    {
-        return false;
-    }
-}
-
 
 //-----------------------------------------------------------------------------
 
@@ -1415,10 +1347,9 @@ bool GuiControl::findHitControls( const RectI& rect, Vector< GuiControl* >& outR
 GuiControl* GuiControl::findFirstTabable()
 {
    GuiControl *tabCtrl = NULL;
-   iterator i;
-   for (i = begin(); i != end(); i++)
+   for (auto i:*this)
    {
-      GuiControl *ctrl = static_cast<GuiControl *>(*i);
+      GuiControl *ctrl = static_cast<GuiControl *>(i);
       tabCtrl = ctrl->findFirstTabable();
       if (tabCtrl)
       {
@@ -1441,10 +1372,10 @@ GuiControl* GuiControl::findLastTabable(bool firstCall)
    if (mProfile->mTabable)
       smPrevResponder = this;
 
-   iterator i;
-   for (i = begin(); i != end(); i++)
+
+   for (auto i:*this)
    {
-      GuiControl *ctrl = static_cast<GuiControl *>(*i);
+      GuiControl *ctrl = static_cast<GuiControl *>(i);
       ctrl->findLastTabable(false);
    }
 
@@ -1469,10 +1400,10 @@ GuiControl *GuiControl::findNextTabable(GuiControl *curResponder, bool firstCall
 
    //loop through, checking each child to see if it is the one that follows the firstResponder
    GuiControl *tabCtrl = NULL;
-   iterator i;
-   for (i = begin(); i != end(); i++)
+
+   for (auto i:*this)
    {
-      GuiControl *ctrl = static_cast<GuiControl *>(*i);
+      GuiControl *ctrl = static_cast<GuiControl *>(i);
       tabCtrl = ctrl->findNextTabable(curResponder, false);
       if (tabCtrl) break;
    }
@@ -1495,10 +1426,10 @@ GuiControl *GuiControl::findPrevTabable(GuiControl *curResponder, bool firstCall
 
    //loop through, checking each child to see if it is the one that follows the firstResponder
    GuiControl *tabCtrl = NULL;
-   iterator i;
-   for (i = begin(); i != end(); i++)
+
+   for (auto i:*this)
    {
-      GuiControl *ctrl = static_cast<GuiControl *>(*i);
+      GuiControl *ctrl = static_cast<GuiControl *>(i);
       tabCtrl = ctrl->findPrevTabable(curResponder, false);
       if (tabCtrl) break;
    }
@@ -1539,10 +1470,9 @@ bool GuiControl::ControlIsChild(GuiControl *child)
       return true;
 
    //loop through, checking each child to see if it is ,or contains, the firstResponder
-   iterator i;
-   for (i = begin(); i != end(); i++)
+   for (auto i:*this)
    {
-      GuiControl *ctrl = static_cast<GuiControl *>(*i);
+      GuiControl *ctrl = static_cast<GuiControl *>(i);
       if (ctrl->ControlIsChild(child)) return true;
    }
 
@@ -1602,10 +1532,9 @@ void GuiControl::buildAcceleratorMap()
    addAcceleratorKey();
 
    //add all my childrens keys
-   iterator i;
-   for(i = begin(); i != end(); i++)
+   for(auto i:*this)
    {
-      GuiControl *ctrl = static_cast<GuiControl *>(*i);
+      GuiControl *ctrl = static_cast<GuiControl *>(i);
       ctrl->buildAcceleratorMap();
    }
 }
@@ -1685,10 +1614,10 @@ void GuiControl::messageSiblings(S32 message)
 {
    GuiControl *parent = getParent();
    if (! parent) return;
-   GuiControl::iterator i;
-   for(i = parent->begin(); i != parent->end(); i++)
+
+   for(auto i:*parent)
    {
-      GuiControl *ctrl = dynamic_cast<GuiControl *>(*i);
+      GuiControl *ctrl = dynamic_cast<GuiControl *>(i);
       if (ctrl != this)
          ctrl->onMessage(this, message);
    }
@@ -1715,11 +1644,11 @@ void GuiControl::onDialogPop()
 void GuiControl::setVisible(bool value)
 {
     mVisible = value;
-   iterator i;
+
    setUpdate();
-   for(i = begin(); i != end(); i++)
+   for(auto i:*this)
    {
-      GuiControl *ctrl = static_cast<GuiControl *>(*i);
+      GuiControl *ctrl = static_cast<GuiControl *>(i);
       ctrl->clearFirstResponder();
     }
 

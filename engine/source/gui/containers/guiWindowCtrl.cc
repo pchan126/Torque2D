@@ -163,10 +163,9 @@ bool GuiWindowCtrl::onWake()
       mTabIndex = 0;
 
       //count the number of windows preceeding this one
-      iterator i;
-      for (i = parent->begin(); i != parent->end(); i++)
+      for (auto i:*parent)
       {
-         GuiWindowCtrl *ctrl = dynamic_cast<GuiWindowCtrl *>(*i);
+         GuiWindowCtrl *ctrl = dynamic_cast<GuiWindowCtrl *>(i);
          if (ctrl)
          {
             if (ctrl == this) break;
@@ -511,10 +510,10 @@ GuiControl *GuiWindowCtrl::findNextTabable(GuiControl *curResponder, bool firstC
 
    //loop through, checking each child to see if it is the one that follows the firstResponder
    GuiControl *tabCtrl = NULL;
-   iterator i;
-   for (i = begin(); i != end(); i++)
+
+   for (auto i:*this)
    {
-      GuiControl *ctrl = static_cast<GuiControl *>(*i);
+      GuiControl *ctrl = static_cast<GuiControl *>(i);
       tabCtrl = ctrl->findNextTabable(curResponder, false);
       if (tabCtrl) break;
    }
@@ -545,10 +544,10 @@ GuiControl *GuiWindowCtrl::findPrevTabable(GuiControl *curResponder, bool firstC
 
    //loop through, checking each child to see if it is the one that follows the firstResponder
    GuiControl *tabCtrl = NULL;
-   iterator i;
-   for (i = begin(); i != end(); i++)
+
+   for (auto i:*this)
    {
-      GuiControl *ctrl = static_cast<GuiControl *>(*i);
+      GuiControl *ctrl = static_cast<GuiControl *>(i);
       tabCtrl = ctrl->findPrevTabable(curResponder, false);
       if (tabCtrl) break;
    }
@@ -575,10 +574,9 @@ bool GuiWindowCtrl::onKeyDown(const GuiEvent &event)
       if (parent)
       {
          GuiWindowCtrl *firstWindow = NULL;
-         iterator i;
-         for (i = parent->begin(); i != parent->end(); i++)
+         for (auto i:*parent )
          {
-            GuiWindowCtrl *ctrl = dynamic_cast<GuiWindowCtrl *>(*i);
+            GuiWindowCtrl *ctrl = dynamic_cast<GuiWindowCtrl *>(i);
             if (ctrl && ctrl->getTabIndex() == mTabIndex + 1)
             {
                ctrl->selectWindow();

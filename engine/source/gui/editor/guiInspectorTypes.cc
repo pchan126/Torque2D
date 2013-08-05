@@ -173,9 +173,9 @@ GuiControl* GuiInspectorTypeGuiProfile::constructEditControl()
    Vector<StringTableEntry> entries;
 
    SimGroup * grp = Sim::getGuiDataGroup();
-   for(SimGroup::iterator i = grp->begin(); i != grp->end(); i++)
+   for(auto i:*grp)
    {
-      GuiControlProfile * profile = dynamic_cast<GuiControlProfile *>(*i);
+      GuiControlProfile * profile = dynamic_cast<GuiControlProfile *>(i);
       if(profile)
       {
          entries.push_back(profile->getName());

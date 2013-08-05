@@ -123,11 +123,10 @@ U32 GuiImageList::IndexFromId ( U32 Id )
 U32 GuiImageList::IndexFromPath ( const char* Path )
 {
   if ( !mTextures.size() ) return -1;
-  Vector<PTextureEntry>::iterator i = mTextures.begin();
-  for ( ; i != mTextures.end(); i++ )
+  for ( auto i:mTextures )
   {
-    if ( dStricmp( Path, (*i)->TexturePath ) == 0 )
-      return (*i)->id;
+    if ( dStricmp( Path, i->TexturePath ) == 0 )
+      return i->id;
   }
 
   return -1;
@@ -195,11 +194,10 @@ GFXTextureObject *GuiImageList::GetTextureObject( U32 Index )
 
 GFXTextureObject *GuiImageList::GetTextureObject( const char* TexturePath )
 {
-  Vector<PTextureEntry>::iterator i = mTextures.begin();
-  for ( ; i != mTextures.end(); i++ )
+  for ( auto i:mTextures)
   {
-    if ( dStricmp( TexturePath, (*i)->TexturePath ) == 0 )
-      return (*i)->Object;
+    if ( dStricmp( TexturePath, i->TexturePath ) == 0 )
+      return i->Object;
   }
 
   return NULL;
@@ -217,11 +215,10 @@ GFXTexHandle GuiImageList::GetTextureHandle( U32 Index )
 
 GFXTexHandle GuiImageList::GetTextureHandle( const char* TexturePath )
 {
-  Vector<PTextureEntry>::iterator i = mTextures.begin();
-  for ( ; i != mTextures.end(); i++ )
+  for ( auto i:mTextures )
   {
-    if ( dStricmp( TexturePath, (*i)->TexturePath ) == 0 )
-      return (*i)->Handle;
+    if ( dStricmp( TexturePath, i->TexturePath ) == 0 )
+      return i->Handle;
   }
 
   return NULL;

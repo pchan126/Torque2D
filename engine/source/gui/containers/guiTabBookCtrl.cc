@@ -774,10 +774,9 @@ void GuiTabBookCtrl::selectPage( S32 index )
 
 void GuiTabBookCtrl::selectPage( GuiTabPageCtrl *page )
 {
-   Vector<TabHeaderInfo>::iterator i = mPages.begin();
-   for( ; i != mPages.end() ; i++ )
+   for( auto i:mPages )
    {
-      GuiTabPageCtrl *tab = reinterpret_cast<GuiTabPageCtrl*>((*i).Page);
+      GuiTabPageCtrl *tab = reinterpret_cast<GuiTabPageCtrl*>(i.Page);
       if( page == tab )
       {
          mActivePage = tab;
@@ -796,10 +795,9 @@ void GuiTabBookCtrl::selectPage( GuiTabPageCtrl *page )
 
 void GuiTabBookCtrl::selectPage( const char* pageName )
 {
-   Vector<TabHeaderInfo>::iterator i = mPages.begin();
-   for( ; i != mPages.end() ; i++ )
+   for( auto i:mPages )
    {
-      GuiTabPageCtrl *tab = reinterpret_cast<GuiTabPageCtrl*>((*i).Page);
+      GuiTabPageCtrl *tab = reinterpret_cast<GuiTabPageCtrl*>(i.Page);
       if( dStricmp( pageName, tab->getText() ) == 0 )
       {
          mActivePage = tab;

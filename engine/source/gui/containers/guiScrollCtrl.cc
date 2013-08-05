@@ -325,10 +325,9 @@ void GuiScrollCtrl::computeSizes()
       // apply the deltas to the children...
       if (delta.x || delta.y)
       {
-         SimGroup::iterator i;
-         for(i = begin(); i != end();i++)
+         for(auto i:*this)
          {
-            GuiControl *ctrl = (GuiControl *) (*i);
+            GuiControl *ctrl = (GuiControl *)(i);
             ctrl->setPosition( ctrl->getPosition() + delta);
          }
          mChildPos += delta;

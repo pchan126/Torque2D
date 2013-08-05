@@ -93,9 +93,9 @@ bool GuiAutoScrollCtrl::resize( const Point2I &newPosition, const Point2I &newEx
    if (Parent::resize( newPosition, newExtent ))
        return false;
 
-   for (iterator i = begin(); i != end(); i++)
+   for (auto i:*this)
    {
-      GuiControl* control = static_cast<GuiControl*>(*i);
+      GuiControl* control = static_cast<GuiControl*>(i);
       if (control)
          resetChild(control);
    }

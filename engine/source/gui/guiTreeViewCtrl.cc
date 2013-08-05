@@ -1431,10 +1431,10 @@ void GuiTreeViewCtrl::addSelection(S32 itemId)
                   item = mItems[itr];
                   //looks like it is. check to see if it is on the list
                   bool alreadySelected = false;
-                   std::deque<Item *>::iterator i;
-                  for(i = mSelectedItems.begin(); i != mSelectedItems.end(); i++)
+
+                  for(auto i:mSelectedItems)
                   {
-                     if (*(i) == item)
+                     if (i == item)
                      {
                         //already a selected item which means this call should be ignored
                         alreadySelected = true;
@@ -3434,13 +3434,9 @@ bool GuiTreeViewCtrl::onVirtualParentBuild(Item *item, bool bForceFullUpdate)
    if(!srcObj)
       return true;
 
-   SimSet::iterator i;
-
    // This is slow but probably ok.
-   for(i = srcObj->begin(); i != srcObj->end(); i++)
+   for(SimObject* obj:*srcObj)
    {
-      SimObject *obj = *i;
-
       // If we can't find it, add it.
       // unless it has a parent that is a child that is a script
       Item *res = item->findChildByValue(obj);

@@ -131,7 +131,7 @@ bool GuiGridControl::resize(const Point2I &newPosition, const Point2I &newExtent
 	mBounds.set(newPosition, actualNewExtent);
 
 	bool bFirstResize = false;
-	iterator i;
+
 	Vector<RectI> oldCtrlRect;
 	
 	if (mRowSizes.size() == 0 && mColSizes.size() == 0)
@@ -140,9 +140,9 @@ bool GuiGridControl::resize(const Point2I &newPosition, const Point2I &newExtent
 	}
 	else
 	{
-		for(i = begin(); i != end(); i++)
+		for(auto i:*this)
 		{
-			GuiControl *ctrl = static_cast<GuiControl *>(*i);
+			GuiControl *ctrl = static_cast<GuiControl *>(i);
 			if (ctrl)
 			{
 				RectI newRect = GetGridRect(ctrl);		
@@ -156,9 +156,9 @@ bool GuiGridControl::resize(const Point2I &newPosition, const Point2I &newExtent
 
 	//resize and position all child controls.
 	int idx = 0;
-	for(i = begin(); i != end(); i++)
+	for(auto i:*this)
 	{
-		GuiControl *ctrl = static_cast<GuiControl *>(*i);
+		GuiControl *ctrl = static_cast<GuiControl *>(i);
 		if (ctrl)
 		{
 			RectI newRect = GetGridRect(ctrl);		

@@ -105,10 +105,10 @@ GuiControl *GuiTabPageCtrl::findNextTabable(GuiControl *curResponder, bool first
 
    //loop through, checking each child to see if it is the one that follows the firstResponder
    GuiControl *tabCtrl = NULL;
-   iterator i;
-   for (i = begin(); i != end(); i++)
+
+   for (auto i:*this)
    {
-      GuiControl *ctrl = static_cast<GuiControl *>(*i);
+      GuiControl *ctrl = static_cast<GuiControl *>(i);
       tabCtrl = ctrl->findNextTabable(curResponder, false);
       if (tabCtrl) break;
    }
@@ -139,10 +139,9 @@ GuiControl *GuiTabPageCtrl::findPrevTabable(GuiControl *curResponder, bool first
 
    //loop through, checking each child to see if it is the one that follows the firstResponder
    GuiControl *tabCtrl = NULL;
-   iterator i;
-   for (i = begin(); i != end(); i++)
+   for (auto i:*this)
    {
-      GuiControl *ctrl = static_cast<GuiControl *>(*i);
+      GuiControl *ctrl = static_cast<GuiControl *>(i);
       tabCtrl = ctrl->findPrevTabable(curResponder, false);
       if (tabCtrl) break;
    }

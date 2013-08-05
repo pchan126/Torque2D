@@ -499,11 +499,9 @@ void GuiEditCtrl::onRender(Point2I offset, const RectI &updateRect)
             box.inset(1,1);
             GFX->getDrawUtil()->drawRect(box, ColorI(50, 101, 152,200));
       }
-      Vector<GuiControl *>::iterator i;
       bool multisel = mSelectedControls.size() > 1;
-      for(i = mSelectedControls.begin(); i != mSelectedControls.end(); i++)
+      for(GuiControl *ctrl:mSelectedControls)
       {
-         GuiControl *ctrl = (*i);
          cext = ctrl->getExtent();
          ctOffset = ctrl->localToGlobalCoord(Point2I(0,0));
          RectI box(ctOffset.x,ctOffset.y, cext.x, cext.y);
@@ -615,9 +613,9 @@ void GuiEditCtrl::onRender(Point2I offset, const RectI &updateRect)
 
 bool GuiEditCtrl::selectionContains(GuiControl *ctrl)
 {
-   Vector<GuiControl *>::iterator i;
-   for (i = mSelectedControls.begin(); i != mSelectedControls.end(); i++)
-      if (ctrl == *i) return true;
+   for (auto i:mSelectedControls)
+      if (ctrl == i)
+          return true;
    return false;
 }
 
@@ -775,13 +773,12 @@ void GuiEditCtrl::onMouseDown(const GuiEvent &event)
       //if we're holding shift, de-select the clicked ctrl
       if (event.modifier & SI_SHIFT)
       {
-         Vector<GuiControl *>::iterator i;
-         for(i = mSelectedControls.begin(); i != mSelectedControls.end(); i++)
+         for(GuiControl *i:mSelectedControls)
          {
-            if (*i == ctrl)
+            if (i == ctrl)
             {
                Con::executef(this, 2, "onRemoveSelected", Con::getIntArg(ctrl->getId()));
-               mSelectedControls.erase(i);
+               mSelectedControls.erase(mSelectedControls.find(i));
                break;
             }
          }
@@ -798,9 +795,8 @@ void GuiEditCtrl::onMouseDown(const GuiEvent &event)
          mDragBeginPoints.reserve( mSelectedControls.size() );
 
          // For snapping to origin
-         Vector<GuiControl *>::iterator i;
-         for(i = mSelectedControls.begin(); i != mSelectedControls.end(); i++)
-            mDragBeginPoints.push_back( (*i)->getPosition() );
+         for( GuiControl *i:mSelectedControls)
+            mDragBeginPoints.push_back( i->getPosition() );
 
          // Set Mouse Mode
          mMouseDownMode = MovingSelection;
@@ -1042,20 +1038,18 @@ void GuiEditCtrl::onMouseDragged(const GuiEvent &event)
    }
    else if (mMouseDownMode == MovingSelection && mSelectedControls.size())
    {
-      Vector<GuiControl *>::iterator i = mSelectedControls.begin();
-      //Point2I minPos = (*i)->getPosition();
       Point2I minPos (S32_MAX, S32_MAX);
 
-      for(; i != mSelectedControls.end(); i++)
+      for(GuiControl *i:mSelectedControls)
       {
          // skip locked controls
-         if ((*i)->isLocked())
+         if (i->isLocked())
             continue;
 
-         if ((*i)->getPosition().x < minPos.x)
-            minPos.x = (*i)->getPosition().x;
-         if ((*i)->getPosition().y < minPos.y)
-            minPos.y = (*i)->getPosition().y;
+         if (i->getPosition().x < minPos.x)
+            minPos.x = i->getPosition().x;
+         if (i->getPosition().y < minPos.y)
+            minPos.y = i->getPosition().y;
       }
       Point2I delta = mousePoint - mLastMousePos;
       delta += minPos; // find new minPos;
@@ -1182,13 +1176,12 @@ void GuiEditCtrl::moveAndSnapSelection(const Point2I &delta)
    // undo
    Con::executef(this, 2, "onPreSelectionNudged", Con::getIntArg(getSelectedSet().getId()));
 
-   Vector<GuiControl *>::iterator i;
    Point2I newPos;
-   for(i = mSelectedControls.begin(); i != mSelectedControls.end(); i++)
+   for(auto i:mSelectedControls)
    {
-      newPos = (*i)->getPosition() + delta;
+      newPos = i->getPosition() + delta;
       newPos = snapPoint(newPos, delta, mGridSnap);
-      (*i)->resize(newPos, (*i)->getExtent());
+      i->resize(newPos, i->getExtent());
    }
 
    // undo
@@ -1201,14 +1194,13 @@ void GuiEditCtrl::moveAndSnapSelection(const Point2I &delta)
 
 void GuiEditCtrl::moveSelection(const Point2I &delta)
 {
-   Vector<GuiControl *>::iterator i;
-   for(i = mSelectedControls.begin(); i != mSelectedControls.end(); i++)
+   for(auto i:mSelectedControls)
    {
       // skip locked controls
-      if ((*i)->isLocked())
+      if (i->isLocked())
          continue;
 
-      (*i)->resize((*i)->getPosition() + delta, (*i)->getExtent());
+      i->resize(i->getPosition() + delta, i->getExtent());
    }
 
    // allow script to update the inspector
@@ -1225,7 +1217,7 @@ void GuiEditCtrl::justifySelection(Justification j)
    if (mSelectedControls.size() < 2)
       return;
 
-   Vector<GuiControl *>::iterator i = mSelectedControls.begin();
+   auto i = mSelectedControls.begin();
    minX = (*i)->getPosition().x;
    maxX = minX + (*i)->getWidth();
    minY = (*i)->getPosition().y;
@@ -1319,10 +1311,9 @@ void GuiEditCtrl::deleteSelection(void)
    // undo
    Con::executef(this, 2, "onTrashSelection", Con::getIntArg(getSelectedSet().getId()));
 
-   Vector<GuiControl *>::iterator i;
-   for(i = mSelectedControls.begin(); i != mSelectedControls.end(); i++)
+   for(auto i:mSelectedControls)
    {
-      mTrash.addObject(*i);
+      mTrash.addObject(i);
    }
    mSelectedControls.clear();
 }
@@ -1370,9 +1361,8 @@ void GuiEditCtrl::saveSelection(const char* filename)
    clipboardSet->registerObject();
    Sim::getRootGroup()->addObject(clipboardSet, "guiClipboard");
 
-   Vector<GuiControl *>::iterator i;
-   for(i = mSelectedControls.begin(); i != mSelectedControls.end(); i++)
-      clipboardSet->addObject(*i);
+   for(GuiControl *i:mSelectedControls)
+      clipboardSet->addObject(i);
 
    clipboardSet->write(stream, 0);
    clipboardSet->deleteObject();
@@ -1380,14 +1370,13 @@ void GuiEditCtrl::saveSelection(const char* filename)
 
 void GuiEditCtrl::selectAll()
 {
-   GuiControl::iterator i;
    if (!mCurrentAddSet)
       return;
    Con::executef(this, 1, "onClearSelected");
    mSelectedControls.clear();
-   for(i = mCurrentAddSet->begin(); i != mCurrentAddSet->end(); i++)
+   for(auto i:*mCurrentAddSet)
    {
-      GuiControl *ctrl = dynamic_cast<GuiControl *>(*i);
+      GuiControl *ctrl = dynamic_cast<GuiControl *>(i);
       //if (!(ctrl->isLocked())) {
          mSelectedControls.push_back(ctrl);
          Con::executef(this, 2, "onAddSelected", Con::getIntArg(ctrl->getId()));
@@ -1463,11 +1452,8 @@ void GuiEditCtrl::controlInspectPostApply(GuiControl* object)
 void GuiEditCtrl::updateSelectedSet()
 {
    mSelectedSet.clear();
-   Vector<GuiControl*>::iterator i;
-   for(i = mSelectedControls.begin(); i != mSelectedControls.end(); i++)
-   {
-      mSelectedSet.addObject(*i);
-   }
+   for(GuiControl *i:mSelectedControls)
+      mSelectedSet.addObject(i);
 }
 
 // -----------------------------------------------------------------------------

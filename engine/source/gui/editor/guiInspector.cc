@@ -76,11 +76,9 @@ bool GuiInspector::findExistentGroup( StringTableEntry groupName )
       return false;
 
    // Attempt to find it in the group list
-   Vector<GuiInspectorGroup*>::iterator i = mGroups.begin();
-
-   for( ; i != mGroups.end(); i++ )
+   for( GuiInspectorGroup* i:mGroups )
    {
-      if( dStricmp( (*i)->getGroupName(), groupName ) == 0 )
+      if( dStricmp( i->getGroupName(), groupName ) == 0 )
          return true;
    }
 
@@ -97,11 +95,9 @@ void GuiInspector::clearGroups()
       return;
 
    // Attempt to find it in the group list
-   Vector<GuiInspectorGroup*>::iterator i = mGroups.begin();
-
-   for( ; i != mGroups.end(); i++ )
-      if( (*i)->isProperlyAdded() )
-         (*i)->deleteObject();
+   for( GuiInspectorGroup *i:mGroups )
+      if( i->isProperlyAdded() )
+         i->deleteObject();
 
    mGroups.clear();
 }
@@ -117,9 +113,8 @@ void GuiInspector::inspectObject( SimObject *object )
    // If our target is the same as our current target, just update the groups.
    if( mTarget == object )
    {
-      Vector<GuiInspectorGroup*>::iterator i = mGroups.begin();
-      for ( ; i != mGroups.end(); i++ )
-         (*i)->inspectGroup();
+      for ( GuiInspectorGroup *i:mGroups )
+         i->inspectGroup();
 
       // Don't steal first responder
       if( !currResponder.isNull() )
@@ -621,12 +616,10 @@ GuiInspectorField *GuiInspectorGroup::findField( StringTableEntry fieldName )
    if( mChildren.empty() )
       return NULL;
 
-   Vector<GuiInspectorField*>::iterator i = mChildren.begin();
-
-   for( ; i != mChildren.end(); i++ )
+   for( GuiInspectorField* i:mChildren )
    {
-      if( (*i)->getFieldName() != NULL && dStricmp( (*i)->getFieldName(), fieldName ) == 0 )
-         return (*i);
+      if( i->getFieldName() != NULL && dStricmp( i->getFieldName(), fieldName ) == 0 )
+         return i;
    }
 
    return NULL;

@@ -141,12 +141,10 @@ ConsoleMethod(SceneObjectSet, isMember, bool, 3, 3, "(object) @return Returns tr
       return false;
    }
 
-   for(SceneObjectSet::iterator i = object->begin(); i != object->end(); i++)
+   for(auto i:*object)
    {
-      if(*i == testObject)
-      {
+      if(i == testObject)
          return true;
-      }
    }
 
    return false;
