@@ -105,12 +105,6 @@ public:
    bool supportsAnisotropic() const { return mSupportsAnisotropic; }
    GLsizei primCountToIndexCount(GFXPrimitiveType primType, U32 primitiveCount);
 
-    virtual void setCullMode( GFXCullMode );
-    virtual void setBlending( bool DoesItBlend );
-    virtual void setBlendFunc( GFXBlend blendSrc, GFXBlend blendDest);
-    virtual void setBlendEquation( GFXBlendOp blendOp);
-    virtual void setColorMask(bool colorWriteRed, bool colorWriteBlue, bool colorWriteGreen, bool colorWriteAlpha);
-
     typedef Vector<MatrixF> MatrixStack;
     
     /// Since GL does not have separate world and view matrices we need to track them
@@ -149,6 +143,12 @@ protected:
    virtual GFXStateBlockRef createStateBlockInternal(const GFXStateBlockDesc& desc);
    /// Called by GFXDevice to actually set a stateblock.
    virtual void setStateBlockInternal(GFXStateBlock* block, bool force);
+
+    virtual void setCullMode( GFXCullMode );
+    virtual void setBlending( bool DoesItBlend );
+    virtual void setBlendFunc( GFXBlend blendSrc, GFXBlend blendDest);
+    virtual void setBlendEquation( GFXBlendOp blendOp);
+    virtual void setColorMask(bool colorWriteRed, bool colorWriteBlue, bool colorWriteGreen, bool colorWriteAlpha);
 
    /// Called by base GFXDevice to actually set a const buffer
    virtual void setShaderConstBufferInternal(GFXShaderConstBuffer* buffer);
@@ -224,7 +224,8 @@ protected:
     GFXBlend mBlendSrcState;
     GFXBlend mBlendDestState;
     GFXBlendOp mBlendOp;
-    
+    GFXFillMode mFillMode;
+
     bool mColorWriteRed;
     bool mColorWriteBlue;
     bool mColorWriteGreen;
@@ -242,6 +243,8 @@ protected:
    virtual void initGLState() = 0; ///< Guaranteed to be called after all extensions have been loaded, use to init card profiler, shader version, max samplers, etc.
    
    virtual void initGenericShaders() = 0;
+
+   virtual void setFillMode( GFXFillMode fillMode ) = 0;
 };
 
 void CheckOpenGLError(const char* stmt, const char* fname, int line);

@@ -393,13 +393,53 @@ GFXStateBlockRef GFXOpenGLDevice::createStateBlockInternal(const GFXStateBlockDe
 /// Activates a stateblock
 void GFXOpenGLDevice::setStateBlockInternal(GFXStateBlock* block, bool force)
 {
-    AssertFatal(dynamic_cast<GFXOpenGLStateBlock*>(block), "GFXOpenGLESDevice::setStateBlockInternal - Incorrect stateblock type for this device!");
+    AssertFatal(dynamic_cast<GFXOpenGLStateBlock*>(block), "GFXOpenGLDevice::setStateBlockInternal - Incorrect stateblock type for this device!");
     GFXOpenGLStateBlock* glBlock = static_cast<GFXOpenGLStateBlock*>(block);
     GFXOpenGLStateBlock* glCurrent = static_cast<GFXOpenGLStateBlock*>(mCurrentStateBlock.getPointer());
     if (force)
         glCurrent = NULL;
-    
-    glBlock->activate(glCurrent); // Doesn't use current yet.
+
+    const GFXStateBlockDesc& desc = glBlock->getDesc();
+
+    // Blending
+    setBlending(desc.blendEnable);
+    setBlendFunc(desc.blendSrc, desc.blendDest);
+    setBlendEquation(desc.blendOp);
+    setColorMask(desc.colorWriteRed, desc.colorWriteBlue, desc.colorWriteGreen, desc.colorWriteAlpha);
+    setCullMode(desc.cullMode);
+
+//    // Depth
+//    CHECK_TOGGLE_STATE(zEnable, GL_DEPTH_TEST);
+//
+//    if(STATE_CHANGE(zFunc))
+//        glDepthFunc(GFXGLCmpFunc[mDesc.zFunc]);
+//
+//    if(STATE_CHANGE(zBias))
+//    {
+//        if (mDesc.zBias == 0)
+//        {
+//            glDisable(GL_POLYGON_OFFSET_FILL);
+//        } else {
+//            F32 bias = mDesc.zBias * 10000.0f;
+//            glEnable(GL_POLYGON_OFFSET_FILL);
+//            glPolygonOffset(bias, bias);
+//        }
+//    }
+//
+//    if(STATE_CHANGE(zWriteEnable))
+//        glDepthMask(mDesc.zWriteEnable);
+//
+//    // Stencil
+//    CHECK_TOGGLE_STATE(stencilEnable, GL_STENCIL_TEST);
+//    if(STATE_CHANGE(stencilFunc) || STATE_CHANGE(stencilRef) || STATE_CHANGE(stencilMask))
+//        glStencilFunc(GFXGLCmpFunc[mDesc.stencilFunc], mDesc.stencilRef, mDesc.stencilMask);
+//    if(STATE_CHANGE(stencilFailOp) || STATE_CHANGE(stencilZFailOp) || STATE_CHANGE(stencilPassOp))
+//        glStencilOp(GFXGLStencilOp[mDesc.stencilFailOp], GFXGLStencilOp[mDesc.stencilZFailOp], GFXGLStencilOp[mDesc.stencilPassOp]);
+//    if(STATE_CHANGE(stencilWriteMask))
+//        glStencilMask(mDesc.stencilWriteMask);
+
+    setFillMode(desc.fillMode);
+
     mCurrentGLStateBlock = glBlock;
 }
 

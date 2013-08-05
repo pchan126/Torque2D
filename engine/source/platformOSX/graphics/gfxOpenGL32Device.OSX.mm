@@ -302,26 +302,6 @@ void GFXOpenGL32Device::setTextureInternal(U32 textureUnit, GFXTextureObject *te
 }
 
 
-/// Creates a state block object based on the desc passed in.  This object
-/// represents an immutable state.
-GFXStateBlockRef GFXOpenGL32Device::createStateBlockInternal(const GFXStateBlockDesc& desc)
-{
-    return GFXStateBlockRef(new GFXOpenGL32StateBlock(desc));
-}
-
-/// Activates a stateblock
-void GFXOpenGL32Device::setStateBlockInternal(GFXStateBlock* block, bool force)
-{
-    AssertFatal(dynamic_cast<GFXOpenGL32StateBlock*>(block), "GFXOpenGL32Device::setStateBlockInternal - Incorrect stateblock type for this device!");
-    GFXOpenGL32StateBlock* glBlock = static_cast<GFXOpenGL32StateBlock*>(block);
-    GFXOpenGL32StateBlock* glCurrent = static_cast<GFXOpenGL32StateBlock*>(mCurrentStateBlock.getPointer());
-    if (force)
-        glCurrent = NULL;
-    
-    glBlock->activate(glCurrent); // Doesn't use current yet.
-    mCurrentGLStateBlock = (GFXOpenGLStateBlock*)glBlock;
-}
-
 ////------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
@@ -540,4 +520,12 @@ public:
 };
 
 static GFXOpenGL32RegisterDevice pGLRegisterDevice;
+
+void GFXOpenGL32Device::setFillMode(GFXFillMode fillMode) {
+    if (mFillMode != fillMode)
+    {
+        mFillMode = fillMode;
+        glPolygonMode(GL_FRONT_AND_BACK, GFXGLFillMode[mFillMode]);
+    }
+}
 

@@ -487,7 +487,6 @@
 		D127CE05173CE479006AB038 /* gfxOpenGLES20iOSCardProfiler.mm in Sources */ = {isa = PBXBuildFile; fileRef = D127CDED173CE479006AB038 /* gfxOpenGLES20iOSCardProfiler.mm */; };
 		D127CE07173CE479006AB038 /* gfxOpenGLES20iOSDevice.IOS.mm in Sources */ = {isa = PBXBuildFile; fileRef = D127CDF1173CE479006AB038 /* gfxOpenGLES20iOSDevice.IOS.mm */; };
 		D127CE08173CE479006AB038 /* gfxOpenGLES20iOSEnumTranslate.mm in Sources */ = {isa = PBXBuildFile; fileRef = D127CDF3173CE479006AB038 /* gfxOpenGLES20iOSEnumTranslate.mm */; };
-		D127CE0B173CE479006AB038 /* gfxOpenGLES20iOSStateBlock.mm in Sources */ = {isa = PBXBuildFile; fileRef = D127CDF9173CE479006AB038 /* gfxOpenGLES20iOSStateBlock.mm */; };
 		D127CE0C173CE479006AB038 /* gfxOpenGLES20iOSTextureManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = D127CDFB173CE479006AB038 /* gfxOpenGLES20iOSTextureManager.mm */; };
 		D127CE0D173CE479006AB038 /* gfxOpenGLES20iOSTextureObject.mm in Sources */ = {isa = PBXBuildFile; fileRef = D127CDFD173CE479006AB038 /* gfxOpenGLES20iOSTextureObject.mm */; };
 		D127CE0F173CE479006AB038 /* gfxOpenGLES20iOSVertexBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = D127CE02173CE479006AB038 /* gfxOpenGLES20iOSVertexBuffer.mm */; };
@@ -1531,8 +1530,6 @@
 		D127CDF2173CE479006AB038 /* gfxOpenGLES20iOSEnumTranslate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSEnumTranslate.h; sourceTree = "<group>"; };
 		D127CDF3173CE479006AB038 /* gfxOpenGLES20iOSEnumTranslate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLES20iOSEnumTranslate.mm; sourceTree = "<group>"; };
 		D127CDF6173CE479006AB038 /* gfxOpenGLES20iOSShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSShader.h; sourceTree = "<group>"; };
-		D127CDF8173CE479006AB038 /* gfxOpenGLES20iOSStateBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSStateBlock.h; sourceTree = "<group>"; };
-		D127CDF9173CE479006AB038 /* gfxOpenGLES20iOSStateBlock.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLES20iOSStateBlock.mm; sourceTree = "<group>"; };
 		D127CDFA173CE479006AB038 /* gfxOpenGLES20iOSTextureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSTextureManager.h; sourceTree = "<group>"; };
 		D127CDFB173CE479006AB038 /* gfxOpenGLES20iOSTextureManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLES20iOSTextureManager.mm; sourceTree = "<group>"; };
 		D127CDFC173CE479006AB038 /* gfxOpenGLES20iOSTextureObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSTextureObject.h; sourceTree = "<group>"; };
@@ -3379,8 +3376,6 @@
 				D127CDF2173CE479006AB038 /* gfxOpenGLES20iOSEnumTranslate.h */,
 				D127CDF3173CE479006AB038 /* gfxOpenGLES20iOSEnumTranslate.mm */,
 				D127CDF6173CE479006AB038 /* gfxOpenGLES20iOSShader.h */,
-				D127CDF8173CE479006AB038 /* gfxOpenGLES20iOSStateBlock.h */,
-				D127CDF9173CE479006AB038 /* gfxOpenGLES20iOSStateBlock.mm */,
 				D127CDFA173CE479006AB038 /* gfxOpenGLES20iOSTextureManager.h */,
 				D127CDFB173CE479006AB038 /* gfxOpenGLES20iOSTextureManager.mm */,
 				D127CDFC173CE479006AB038 /* gfxOpenGLES20iOSTextureObject.h */,
@@ -4040,7 +4035,6 @@
 				D127CE05173CE479006AB038 /* gfxOpenGLES20iOSCardProfiler.mm in Sources */,
 				D127CE07173CE479006AB038 /* gfxOpenGLES20iOSDevice.IOS.mm in Sources */,
 				D127CE08173CE479006AB038 /* gfxOpenGLES20iOSEnumTranslate.mm in Sources */,
-				D127CE0B173CE479006AB038 /* gfxOpenGLES20iOSStateBlock.mm in Sources */,
 				D127CE0C173CE479006AB038 /* gfxOpenGLES20iOSTextureManager.mm in Sources */,
 				D127CE0D173CE479006AB038 /* gfxOpenGLES20iOSTextureObject.mm in Sources */,
 				D127CE0F173CE479006AB038 /* gfxOpenGLES20iOSVertexBuffer.mm in Sources */,

@@ -65,10 +65,6 @@ public:
     const MatrixF& getModelView() const { return m_MVMatrix; };
     const MatrixF& getModelViewProjection() const { return m_MVPMatrix; };
 
-    /// Called by OpenGL device to active this state block.
-    /// @param oldState  The current state, used to make sure we don't set redundant states on the device.  Pass NULL to reset all states.
-    virtual void activate(const GFXOpenGLStateBlock* oldState);
-
 private:
    GFXStateBlockDesc mDesc;
    U32 mCachedHashValue;

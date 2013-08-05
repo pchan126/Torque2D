@@ -58,9 +58,7 @@ public:
 	   const Vector<GFXFormat> &formats, bool texture, bool mustblend, bool mustfilter);
 
    virtual GFXShader* createShader();
-    
-   virtual const GFXOpenGLStateBlockRef getCurrentStateBlock() { return mCurrentGLStateBlock; }
-   
+
    virtual void setupGenericShaders( GenericShaderType type = GSColor );
    
     EAGLContext* getEAGLContext() const { return mContext; };
@@ -72,11 +70,6 @@ public:
    void refreshCIContext(void);
 
 protected:
-   /// Called by GFXDevice to create a device specific stateblock
-   virtual GFXStateBlockRef createStateBlockInternal(const GFXStateBlockDesc& desc);
-   /// Called by GFXDevice to actually set a stateblock.
-   virtual void setStateBlockInternal(GFXStateBlock* block, bool force);   
-
    /// Called by base GFXDevice to actually set a const buffer
    virtual void setShaderConstBufferInternal(GFXShaderConstBuffer* buffer);
 
@@ -132,8 +125,6 @@ private:
     GLKTextureLoader* mTextureLoader; // GLKTextureLoader
 
    RectI mClip;
-
-   GFXOpenGLStateBlockRef mCurrentGLStateBlock;
 
    Vector< StrongRefPtr<GFXOpenGLES20iOSVertexBuffer> > mVolatileVBs;
     ///< Pool of existing volatile VBs so we can reuse previously created ones

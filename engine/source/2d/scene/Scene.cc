@@ -3386,10 +3386,11 @@ void Scene::setLayerSortMode( const U32 layer, const SceneRenderQueue::RenderSor
     // Is the layer valid?
     if ( layer > mLayers.size() )
     {
-        // No, so warn.
-        Con::warnf( "Scene::setLayerSortMode() - Layer '%d' is out of range.", layer );
-
-        return;
+       mLayers.setSize(layer+1);
+//        // No, so warn.
+//        Con::warnf( "Scene::setLayerSortMode() - Layer '%d' is out of range.", layer );
+//
+//        return;
     }
 
     // Is the sort mode valid?

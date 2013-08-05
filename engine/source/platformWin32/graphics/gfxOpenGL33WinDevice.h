@@ -26,8 +26,7 @@
 #include "platformWin32/platformWin32.h"
 #include "platform/platformGL.h"
 #include "graphics/OpenGL/gfxOpenGLDevice.h"
-
-
+#include "./gfxOpenGL32EnumTranslate.h"
 #include "windowManager/platformWindow.h"
 #include "graphics/gfxResource.h"
 #include "./gfxOpenGL33WinStateBlock.h"
@@ -36,7 +35,6 @@
 class GFXOpenGL33WinVertexBuffer;
 class GFXOpenGL33WinTextureTarget;
 //class GFXOpenGL33WinCubemap;
-//class GLKMatrixStackRef;
 
 
 class GFXOpenGL33WinDevice : public GFXOpenGLDevice
@@ -114,11 +112,8 @@ public:
    bool supportsAnisotropic() const { return mSupportsAnisotropic; }
    
 protected:
-   /// Called by GFXDevice to create a device specific stateblock
-   virtual GFXStateBlockRef createStateBlockInternal(const GFXStateBlockDesc& desc);
-   /// Called by GFXDevice to actually set a stateblock.
-   virtual void setStateBlockInternal(GFXStateBlock* block, bool force);   
-
+   virtual void setFillMode( GFXFillMode fillMode );
+   
    /// Called by base GFXDevice to actually set a const buffer
    virtual void setShaderConstBufferInternal(GFXShaderConstBuffer* buffer);
 

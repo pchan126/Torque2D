@@ -105,7 +105,7 @@ function TruckToy::create( %this )
         {
             Profile = SandboxWindowProfile;
             Position = "0 300";
-            Extent = "300 300";
+            Extent = "150 150";
         };
 //        TruckToy.joystick2 = new GuiJoystickCtrl()
 //        {

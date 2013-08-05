@@ -28,7 +28,6 @@ void GFXOpenGLES20iOSWindowTarget::resetMode()
 
 const Point2I GFXOpenGLES20iOSWindowTarget::getSize()
 {
-   iOSWindow *win = (iOSWindow*)mWindow;
    return mWindow->getBounds().extent;
 }
 

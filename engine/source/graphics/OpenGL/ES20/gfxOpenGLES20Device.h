@@ -67,6 +67,8 @@ public:
 
 protected:
 
+    virtual void setFillMode( GFXFillMode fillMode );
+
    /// @name State Initalization.
    /// @{
 

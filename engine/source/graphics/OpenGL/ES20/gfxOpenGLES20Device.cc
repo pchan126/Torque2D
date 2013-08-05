@@ -148,6 +148,15 @@ void GFXOpenGLES20Device::clear(U32 flags, ColorI color, F32 z, U32 stencil)
         glDepthMask(false);
 }
 
+void GFXOpenGLES20Device::setFillMode(GFXFillMode fillMode) {
+    if (mFillMode != fillMode)
+    {
+        mFillMode = fillMode;
+//        glPolygonMode(GL_FRONT_AND_BACK, GFXGLFillMode[mFillMode]);
+    }
+}
+
+
 //GFXVertexBuffer* GFXOpenGLES20Device::findVolatileVBO(U32 vertexCount, const GFXVertexFormat *vertexFormat, U32 vertSize, void* vertexData, U32 indexSize, void* indexData)
 //{
 //    for(U32 i = 0; i < mVolatileVBs.size(); i++)

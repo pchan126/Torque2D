@@ -364,26 +364,6 @@ void GFXOpenGL33WinDevice::setTextureInternal(U32 textureUnit, const GFXTextureO
 }
 
 
-/// Creates a state block object based on the desc passed in.  This object
-/// represents an immutable state.
-GFXStateBlockRef GFXOpenGL33WinDevice::createStateBlockInternal(const GFXStateBlockDesc& desc)
-{
-    return GFXStateBlockRef(new GFXOpenGL33WinStateBlock(desc));
-}
-
-/// Activates a stateblock
-void GFXOpenGL33WinDevice::setStateBlockInternal(GFXStateBlock* block, bool force)
-{
-    AssertFatal(dynamic_cast<GFXOpenGL33WinStateBlock*>(block), "GFXOpenGL33WinDevice::setStateBlockInternal - Incorrect stateblock type for this device!");
-    GFXOpenGL33WinStateBlock* glBlock = static_cast<GFXOpenGL33WinStateBlock*>(block);
-    GFXOpenGL33WinStateBlock* glCurrent = static_cast<GFXOpenGL33WinStateBlock*>(mCurrentStateBlock.getPointer());
-    if (force)
-        glCurrent = NULL;
-    
-    glBlock->activate(glCurrent); // Doesn't use current yet.
-    mCurrentGLStateBlock = (GFXOpenGLStateBlock*)glBlock;
-}
-
 ////------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
@@ -392,22 +372,8 @@ GFXWindowTarget *GFXOpenGL33WinDevice::allocWindowTarget(PlatformWindow *window)
    if (window == NULL)
       return NULL;
    
-   //NSOpenGLView* view = (NSOpenGLView*)window->getPlatformDrawable();
-   //AssertFatal([view isKindOfClass:[NSOpenGLView class]], avar("_createContextForWindow - Supplied a %s instead of a NSOpenGLView", [[view className] UTF8String]));
-   //
-   //NSOpenGLContext* ctx = nil;
-   //ctx = [[[ NSOpenGLContext alloc] initWithFormat:mPixelFormat shareContext:mContext] autorelease];
-   //
-   //AssertFatal(ctx, "Unable to create a shared OpenGL context");
-   //if (ctx != nil)
-   //{
-   //   [view setPixelFormat: (NSOpenGLPixelFormat*)mPixelFormat];
-   //   [view setOpenGLContext: ctx];
-   //}
-   
     // Allocate the wintarget and create a new context.
     GFXOpenGL33WinWindowTarget *gwt = new GFXOpenGL33WinWindowTarget(window, this);
-    //gwt->mContext = ctx ? ctx : mContext;
     return gwt;
 }
 
@@ -609,7 +575,15 @@ void GFXOpenGL33WinDevice::_updateRenderTargets()
       mViewport = mNextViewport;
       glViewport( mViewport.point.x, mViewport.point.y, mViewport.extent.x, mViewport.extent.y );
    }
+}
 
+void GFXOpenGL33WinDevice::setFillMode(GFXFillMode fillMode) {
+   if (mFillMode != fillMode)
+   {
+      mFillMode = fillMode;
+      glPolygonMode(GL_FRONT_AND_BACK, GFXGLFillMode[mFillMode]);
+   }
+}
 //
 // Register this device with GFXInit
 //
@@ -623,4 +597,3 @@ public:
 };
 
 static GFXOpenGL33WinRegisterDevice pGLRegisterDevice;
-

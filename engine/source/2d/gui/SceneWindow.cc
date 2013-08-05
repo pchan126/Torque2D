@@ -1546,13 +1546,6 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
         mCameraCurrent,
         mRenderGroupMask );
 
-    // Clear the background color if requested.
-    if ( mUseBackgroundColor )
-    {
-       // Clear the zBuffer so GUI doesn't hose object rendering accidentally
-       GFX->clear( GFXClearZBuffer , ColorI(mBackgroundColor), 1.0f, 0 );
-    }
-
     if (renderTarget.isNull())
        renderTarget = GFX->allocRenderToTextureTarget();
 
@@ -1564,7 +1557,17 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
     GFX->setActiveRenderTarget(renderTarget);
     GFX->updateStates(true);
 
-    // Render View.
+   // Clear the background color if requested.
+   if ( mUseBackgroundColor )
+   {
+      // Clear the zBuffer so GUI doesn't hose object rendering accidentally
+      GFX->clear( GFXClearZBuffer , ColorI(mBackgroundColor), 1.0f, 0 );
+   }
+   
+      GFX->clear( GFXClearTarget, ColorI(0, 0, 0, 0), 1.0f, 0 );
+
+
+   // Render View.
     pScene->renderScene( &sceneRenderState );
 
     // Restore Matrices.

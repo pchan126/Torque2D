@@ -26,11 +26,9 @@
 #include "platformOSX/platformOSX.h"
 #include "platform/platformGL.h"
 #include "graphics/OpenGL/gfxOpenGLDevice.h"
-
-
+#include "./gfxOpenGL32EnumTranslate.h"
 #include "windowManager/platformWindow.h"
 #include "graphics/gfxResource.h"
-#include "./gfxOpenGL32StateBlock.h"
 #include "./gfxOpenGL32Shader.h"
 
 class GFXOpenGL32VertexBuffer;
@@ -111,12 +109,9 @@ public:
    void drawImage( CIImage* image, CGRect inRect, CGRect fromRect);
 
 protected:
-   /// Called by GFXDevice to create a device specific stateblock
-   virtual GFXStateBlockRef createStateBlockInternal(const GFXStateBlockDesc& desc);
-   /// Called by GFXDevice to actually set a stateblock.
-   virtual void setStateBlockInternal(GFXStateBlock* block, bool force);   
+    virtual void setFillMode( GFXFillMode fillMode );
 
-   /// Called by base GFXDevice to actually set a const buffer
+    /// Called by base GFXDevice to actually set a const buffer
    virtual void setShaderConstBufferInternal(GFXShaderConstBuffer* buffer);
 
    virtual void setTextureInternal(U32 textureUnit, GFXTextureObject* texture);
