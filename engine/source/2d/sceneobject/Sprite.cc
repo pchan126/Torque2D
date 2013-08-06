@@ -89,8 +89,8 @@ void Sprite::setSize( const Vector2& size )
 {
    SceneObject::setSize(size);
    
-   setColumns(U32(mCeil(size.x)));
-   setRows(U32(mCeil(size.y)));
+   setColumns(U32(mCeil(size.x/5)));
+   setRows(U32(mCeil(size.y/5)));
 }
 
 

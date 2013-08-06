@@ -20,25 +20,11 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#ifndef _SCROLLER_H_
 #include "Scroller.h"
-#endif
-
 #include "graphics/gfxDevice.h"
-
-#ifndef _MMATHFN_H_
 #include "math/mMathFn.h"
-#endif
-
-#ifndef _CONSOLETYPES_H_
 #include "console/consoleTypes.h"
-#endif
-
-#ifndef _BITSTREAM_H_
 #include "io/bitStream.h"
-#endif
-
-// Script bindings.
 #include "Scroller_ScriptBinding.h"
 #include "2d/scene/Layer.h"
 
@@ -246,6 +232,7 @@ void Scroller::updateTickScrollPosition( void )
     mRenderTickTextureOffset = mPreTickTextureOffset;
 };
 
+
 //------------------------------------------------------------------------------
 void Scroller::sceneRender( const SceneRenderState* pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer )
 {
@@ -262,21 +249,34 @@ void Scroller::sceneRender( const SceneRenderState* pSceneRenderState, const Sce
     F32 renderOffsetY = mFmod( mRenderTickTextureOffset.y, 1.0f );
     if ( renderOffsetX < 0.0f ) renderOffsetX += 1.0f;
     if ( renderOffsetY < 0.0f ) renderOffsetY += 1.0f;
-    
-    // Clamp Texture Offsets.
-    const F32 textureOffsetX = frameTexelArea.mTexelWidth * renderOffsetX;
-    const F32 textureOffsetY = frameTexelArea.mTexelHeight * renderOffsetY;
-    
+   
     // Calculate region dimensions.
     const F32 regionWidth = (mRenderOOBB[1].x - mRenderOOBB[0].x) / mRepeatX;
     const F32 regionHeight = (mRenderOOBB[3].y - mRenderOOBB[0].y) / mRepeatY;
    
-    // Calculate split region dimensions.
-    const F32 splitRegionWidth = regionWidth * (1.0f-renderOffsetX);
-    const F32 splitRegionHeight = regionHeight * (1.0f-renderOffsetY);
-    
     // Flush any existing batches.
     pBatchRenderer->flush();
+   
+    Vector<F32> xDivisions;
+    Vector<F32> yDivisions;
+
+    xDivisions.push_back(0.0f);
+    while(xDivisions.back() < mRepeatX)
+    {
+       xDivisions.push_back(xDivisions.back()+(1.0f-renderOffsetX));
+       if (xDivisions.back() >= mRepeatX)
+          break;
+       xDivisions.push_back(xDivisions.back()+renderOffsetX);
+    }
+
+   yDivisions.push_back(0.0f);
+   while(yDivisions.back() < mRepeatY)
+   {
+      yDivisions.push_back(yDivisions.back()+(1.0f-renderOffsetY));
+      if (yDivisions.back() >= mRepeatY)
+         break;
+      yDivisions.push_back(yDivisions.back()+renderOffsetY);
+   }
 
     F32 baseX = mRenderOOBB[0].x;
     F32 baseY = mRenderOOBB[0].y;
@@ -288,66 +288,76 @@ void Scroller::sceneRender( const SceneRenderState* pSceneRenderState, const Sce
     F32 texX2;
     F32 texY2;
     
-    while (baseY < mRenderOOBB[2].y)
+   for ( auto yitr = yDivisions.begin(); yitr != yDivisions.end(); yitr++)
     {
-        if (baseY == mRenderOOBB[0].y)
-        {
-            nextY = getMin(baseY + splitRegionHeight, mRenderOOBB[2].y);
-            texY1 = frameTexelArea.mTexelUpper.y - textureOffsetY;
-            texY2 = frameTexelArea.mTexelLower.y;
-        }
-        else
-        {
-            nextY = getMin(baseY + regionHeight, mRenderOOBB[2].y);
-            texY1 = frameTexelArea.mTexelUpper.y;
-            if (nextY < mRenderOOBB[2].y )
-               texY2 = frameTexelArea.mTexelLower.y;
-            else
-               texY2 = mLerp(frameTexelArea.mTexelLower.y, frameTexelArea.mTexelUpper.y, ((mRenderOOBB[2].y-baseY)/regionHeight));
-        }
-       
-        while (baseX < mRenderOOBB[2].x) {
-            if (baseX == mRenderOOBB[0].x)
-            {
-                nextX = getMin(baseX + splitRegionWidth, mRenderOOBB[2].x);
-                texX1 = frameTexelArea.mTexelLower.x + textureOffsetX;
-                texX2 = frameTexelArea.mTexelUpper.x;
-            }
-            else
-            {
-                nextX = getMin(baseX + regionWidth, mRenderOOBB[2].x);
-                texX1 = frameTexelArea.mTexelLower.x;
-                if (nextX < mRenderOOBB[2].x)
-                    texX2 = frameTexelArea.mTexelUpper.x;
-                else
-                    texX2 = mLerp(frameTexelArea.mTexelLower.x, frameTexelArea.mTexelUpper.x, ((mRenderOOBB[2].x-baseX)/regionWidth));
-            }
-            
-       for (U32 j = 1; j <= mRows; j++)
+       baseY = mRenderOOBB[0].y + (*yitr * regionHeight);
+       texY1 = frameTexelArea.mTexelUpper.y - frameTexelArea.mTexelHeight*(F32)mFmod((*yitr+renderOffsetY), 1.0f);
+
+       if (yitr+1 == yDivisions.end())
        {
-          for (U32 i = 1; i <= mColumns; i++ )
+          nextY = mRenderOOBB[2].y;
+          texY2 = texY1 - frameTexelArea.mTexelHeight*(F32)mFmod(((mRepeatY)-(*yitr)), 1.0f);
+       }
+       else
+       {
+          nextY = mRenderOOBB[0].y + (*(yitr+1) * regionHeight);
+          texY2 = texY1 - frameTexelArea.mTexelHeight*(F32)mFmod((*(yitr+1)-(*yitr)), 1.0f);
+       }
+       if (texY2 == texY1)
+       {
+          texY2 -= frameTexelArea.mTexelHeight;
+          if (texY2 < 0.0 || texY2 > 1.0)
+             texY2 = mClampF(texY2, 0.0, 1.0);
+       }
+       
+       for ( auto xitr = xDivisions.begin(); xitr != xDivisions.end(); xitr++)
+       {
+          baseX = mRenderOOBB[0].x + (*xitr * regionWidth);
+          texX1 = frameTexelArea.mTexelLower.x + frameTexelArea.mTexelWidth*(F32)mFmod((*xitr+renderOffsetX), 1.0f);
+
+          if (xitr+1 == xDivisions.end())
           {
-             F32 qwX1 = mLerp(baseX, nextX, ((F32)(i-1)/(F32)mColumns));
-             F32 qwX2 = mLerp(baseX, nextX, ((F32)i)/(F32)mColumns);
-             F32 qwY1 = mLerp(baseY, nextY, ((F32)(j-1)/(F32)mRows));
-             F32 qwY2 = mLerp(baseY, nextY, ((F32)j)/(F32)mRows);
-             F32 qtX1 = mLerp(texX1, texX2, ((F32)(i-1)/(F32)mColumns));
-             F32 qtX2 = mLerp(texX1, texX2, ((F32)i)/(F32)mColumns);
-             F32 qtY1 = mLerp(texY1, texY2, ((F32)(j-1)/(F32)mRows));
-             F32 qtY2 = mLerp(texY1, texY2, ((F32)j)/(F32)mRows);
-             
-            pBatchRenderer->SubmitQuad(
-                                       Vector2( qwX1, qwY1 ),
-                                       Vector2( qwX2, qwY1 ),
-                                       Vector2( qwX2, qwY2 ),
-                                       Vector2( qwX1, qwY2 ),
-                                       Vector2( qtX1, qtY1 ),
-                                       Vector2( qtX2, qtY1 ),
-                                       Vector2( qtX2, qtY2 ),
-                                       Vector2( qtX1, qtY2 ),
-                                       texture, mBlendColor*getSceneLayerObj()->getLight() );
-             }
+             nextX = mRenderOOBB[2].x;
+             texX2 = texX1 + frameTexelArea.mTexelWidth*(F32)mFmod(((mRepeatX)-(*xitr)), 1.0f);
           }
+          else
+          {
+             nextX = mRenderOOBB[0].x + (*(xitr+1) * regionWidth);
+             texX2 = texX1 + frameTexelArea.mTexelWidth*(F32)mFmod((*(xitr+1)-(*xitr)), 1.0f);
+          }
+          if (texX2 == texX1)
+          {
+             texX2 += frameTexelArea.mTexelWidth;
+             if (texX2 < 0.0 || texX2 > 1.0)
+                texX2 = mClampF(texX2, 0.0, 1.0);
+          }
+          
+          
+             for (U32 j = 1; j <= mRows; j++)
+             {
+                for (U32 i = 1; i <= mColumns; i++ )
+                {
+                   F32 qwX1 = mLerp(baseX, nextX, ((F32)(i-1)/(F32)mColumns));
+                   F32 qwX2 = mLerp(baseX, nextX, ((F32)i)/(F32)mColumns);
+                   F32 qwY1 = mLerp(baseY, nextY, ((F32)(j-1)/(F32)mRows));
+                   F32 qwY2 = mLerp(baseY, nextY, ((F32)j)/(F32)mRows);
+                   F32 qtX1 = mLerp(texX1, texX2, ((F32)(i-1)/(F32)mColumns));
+                   F32 qtX2 = mLerp(texX1, texX2, ((F32)i)/(F32)mColumns);
+                   F32 qtY1 = mLerp(texY1, texY2, ((F32)(j-1)/(F32)mRows));
+                   F32 qtY2 = mLerp(texY1, texY2, ((F32)j)/(F32)mRows);
+                   
+                  pBatchRenderer->SubmitQuad(
+                                             Vector2( qwX1, qwY1 ),
+                                             Vector2( qwX2, qwY1 ),
+                                             Vector2( qwX2, qwY2 ),
+                                             Vector2( qwX1, qwY2 ),
+                                             Vector2( qtX1, qtY1 ),
+                                             Vector2( qtX2, qtY1 ),
+                                             Vector2( qtX2, qtY2 ),
+                                             Vector2( qtX1, qtY2 ),
+                                             texture, mBlendColor*getSceneLayerObj()->getLight() );
+                   }
+                }
             baseX = nextX;
         }
 

@@ -253,10 +253,6 @@ void BatchRender::SubmitTriangleStrip( const Vector<GFXVertexPCT> verts, GFXTexH
     for (int i = 0; i < verts.size(); i++)
         indexBuffer->push_back(vertBuffer->push_back_unique(verts[i]));
 
-    //    // Add textured vertices.
-//    // NOTE: We swap #2/#3 here.
-//    vertBuffer->merge(verts);
-    
     // Stats.
     mpDebugStats->batchTrianglesSubmitted+=2;
     
