@@ -244,7 +244,7 @@ void BatchRender::SubmitTriangleStrip( const Vector<GFXVertexPCT> verts, GFXTexH
     }
     
     // degenerate linking triangle
-    if (mVertexBuffer.size() > 0)
+    if (vertBuffer->size() > 0)
     {
         indexBuffer->push_back(vertBuffer->push_back_unique(vertBuffer->back()));
         indexBuffer->push_back(vertBuffer->push_back_unique(verts[0]));
@@ -321,7 +321,7 @@ void BatchRender::SubmitQuad(const GFXVertexPCT* vertex,
     }
     
     // degenerate linking triangle
-    if (mVertexBuffer.size() > 0)
+    if (vertBuffer->size() > 0)
     {
         indexBuffer->push_back(vertBuffer->push_back_unique(vertBuffer->back()));
         indexBuffer->push_back(vertBuffer->push_back_unique(vertex[0]));
