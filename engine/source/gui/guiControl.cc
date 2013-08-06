@@ -442,17 +442,17 @@ void GuiControl::parentResized(const RectI &oldParentRect, const RectI &newParen
         case horizResizeCenter:
         {
             newPosition.x = (newParentRect.extent.x - getWidth()) >> 1;
-            return;
+            break;
         }
         case horizResizeWidth:
         {
             newExtent.x += deltaX;
-            return;
+            break;
         }
         case horizResizeLeft:
         {
             newPosition.x += deltaX;
-            return;
+            break;
         }
         case horizResizeRelative:
             if (oldParentRect.extent.x != 0)
@@ -463,7 +463,7 @@ void GuiControl::parentResized(const RectI &oldParentRect, const RectI &newParen
                 newPosition.x = newLeft;
                 newExtent.x = newWidth;
             }
-            return;
+            break;
     }
 
     switch(mVertSizing)
@@ -471,17 +471,17 @@ void GuiControl::parentResized(const RectI &oldParentRect, const RectI &newParen
         case vertResizeCenter:
         {
             newPosition.y = (newParentRect.extent.y - getHeight()) >> 1;
-            return;
+            break;
         }
         case vertResizeHeight:
         {
             newExtent.y += deltaY;
-            return;
+            break;
         }
         case vertResizeTop:
         {
             newPosition.y += deltaY;
-            return;
+            break;
         }
         case vertResizeRelative:
             if (oldParentRect.extent.y != 0)
@@ -492,7 +492,7 @@ void GuiControl::parentResized(const RectI &oldParentRect, const RectI &newParen
                 newPosition.y = newTop;
                 newExtent.y = newHeight;
             }
-            return;
+            break;
     }
     
     // Only resize if our minExtent is satisfied with it.
