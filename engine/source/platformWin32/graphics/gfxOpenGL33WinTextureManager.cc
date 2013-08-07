@@ -445,17 +445,18 @@ void GFXOpenGL33WinTextureManager::innerCreateTexture( GFXOpenGL33WinTextureObje
    AssertFatal(GFXGLTextureFormat[format] != GL_ZERO, "GFXOpenGL33WinTextureManager::innerCreateTexture - invalid format");
    AssertFatal(GFXGLTextureType[format] != GL_ZERO, "GFXOpenGL33WinTextureManager::innerCreateTexture - invalid type");
    
+
+    // Complete the texture
+    glTexParameteri(binding, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(binding, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(binding, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(binding, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     //   if(binding != GL_TEXTURE_3D)
     glTexImage2D(binding, 0, GFXGLTextureInternalFormat[format], width, height, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], NULL);
 
     //   else
 //      glTexImage3D(GL_TEXTURE_3D, 0, GFXGLTextureInternalFormat[format], width, height, depth, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], NULL);
-   
-   // Complete the texture
-   glTexParameteri(binding, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-   glTexParameteri(binding, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-   glTexParameteri(binding, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-   glTexParameteri(binding, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  
 //   if(binding == GL_TEXTURE_3D)
 //      glTexParameteri(binding, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
    

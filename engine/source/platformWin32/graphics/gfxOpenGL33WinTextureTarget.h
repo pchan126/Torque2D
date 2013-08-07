@@ -23,13 +23,11 @@
 #ifndef _GFXOpenGL33WinTextureTARGET_H_
 #define _GFXOpenGL33WinTextureTARGET_H_
 
-#include "graphics/gfxTarget.h"
-#include "platformWin32/windowManager/GLFWWindow.h"
+#include "graphics/OpenGL/gfxOpenGLTextureTarget.h"
 #include "memory/autoPtr.h"
 
 class GFXOpenGL33WinTextureObject;
 class _GFXGLTargetDesc;
-class _GFXOpenGL33WinTextureTargetImpl;
 
 /// Render to texture support for OpenGL.
 /// This class needs to make a number of assumptions due to the requirements
@@ -43,61 +41,18 @@ class _GFXOpenGL33WinTextureTargetImpl;
 /// 4) If the DepthStencil target is GFXTextureTarget::sDefaultStencil, then the
 /// Color0 target should be the same size as the current backbuffer and should also
 /// be the same format (typically R8G8B8A8)
-class GFXOpenGL33WinTextureTarget : public GFXTextureTarget
+class GFXOpenGL33WinTextureTarget : public GFXOpenGLTextureTarget
 {
 public:
     friend GFXOpenGL33WinDevice;
    GFXOpenGL33WinTextureTarget();
    virtual ~GFXOpenGL33WinTextureTarget();
+   //virtual void attachTexture( GFXCubemap *tex, U32 face,  RenderSlot slot = Color0,  U32 mipLevel=0);
 
-   virtual const Point2I getSize();
-   virtual GFXFormat getFormat();
-   virtual void attachTexture(GFXTextureObject *tex, RenderSlot slot, U32 mipLevel=0, U32 zOffset = 0);
-//   virtual void attachTexture(RenderSlot slot, GFXCubemap *tex, U32 face, U32 mipLevel=0);
-   virtual void clearAttachments();
-
-   /// Functions to query internal state
-   /// @{
-   
-   /// Returns the internal structure for the given slot.  This should only be called by our internal implementations.
-   _GFXGLTargetDesc* getTargetDesc(RenderSlot slot) const;
-
-   /// @}
-   
    void deactivate();
-   void zombify();
-   void resurrect();
-   virtual const String describeSelf() const;
-   
-   virtual void resolve();
-   
-   virtual void resolveTo(GFXTextureObject* obj);
-   
-protected:
+    void applyState();
 
-   friend class GFXGLDevice;
-
-   /// The callback used to get texture events.
-   /// @see GFXTextureManager::addEventDelegate
-   void _onTextureEvent( GFXTexCallbackCode code );
-   
-   /// If true our implementation should use AUX buffers
-//   bool _needsAux;
-   
-   /// Pointer to our internal implementation
-   AutoPtr<_GFXOpenGL33WinTextureTargetImpl> _impl;
-
-   /// Array of _GFXGLTargetDesc's, an internal struct used to keep track of texture data.
-   AutoPtr<_GFXGLTargetDesc> mTargets[MaxRenderSlotId];
-
-   /// These redirect to our internal implementation
-   /// @{
-   
-   void applyState();
-   void makeActive();
-   
-   /// @}
-
+    void makeActive();
 };
 
 #endif

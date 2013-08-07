@@ -1162,7 +1162,7 @@ StringTableEntry Platform::osGetTemporaryDirectory()
 
 //-----------------------------------------------------------------------------
 static char filePathBuffer[1024];
-static bool deleteDirectoryRecursive( const char* pPath )
+bool Platform::deleteDirectoryRecursive( const char* pPath )
 {
    // Sanity!
    AssertFatal( pPath != NULL, "Cannot delete directory that is NULL." );
@@ -1187,7 +1187,7 @@ static bool deleteDirectoryRecursive( const char* pPath )
          continue;
       
       // Delete any directories recursively.
-      if ( !deleteDirectoryRecusrive( basePath ) )
+      if ( !deleteDirectoryRecursive( basePath ) )
          return false;
    }
    

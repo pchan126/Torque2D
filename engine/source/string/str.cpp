@@ -21,7 +21,9 @@
 //-----------------------------------------------------------------------------
 
 #include "string/str.h"
+#include <algorithm>
 #include <functional>
+#include <cctype>
 #include <locale>
 #include "platform/platform.h"
 #include "collection/hashTable.h"

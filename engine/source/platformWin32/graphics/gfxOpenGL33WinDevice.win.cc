@@ -341,9 +341,9 @@ void GFXOpenGL33WinDevice::clear(U32 flags, ColorI color, F32 z, U32 stencil)
 }
 
 
-void GFXOpenGL33WinDevice::setTextureInternal(U32 textureUnit, const GFXTextureObject *texture)
+void GFXOpenGL33WinDevice::setTextureInternal(U32 textureUnit, GFXTextureObject *texture)
 {
-    const GFXOpenGL33WinTextureObject *tex = static_cast<const GFXOpenGL33WinTextureObject*>(texture);
+    GFXOpenGL33WinTextureObject *tex = static_cast<GFXOpenGL33WinTextureObject*>(texture);
     glActiveTexture(GL_TEXTURE0 + textureUnit);
     if (tex)
     {

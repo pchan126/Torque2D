@@ -26,10 +26,9 @@
 #include "platformWin32/platformWin32.h"
 #include "platform/platformGL.h"
 #include "graphics/OpenGL/gfxOpenGLDevice.h"
-#include "./gfxOpenGL32EnumTranslate.h"
+#include "./gfxOpenGL33WinEnumTranslate.h"
 #include "windowManager/platformWindow.h"
 #include "graphics/gfxResource.h"
-#include "./gfxOpenGL33WinStateBlock.h"
 #include "./gfxOpenGL33WinShader.h"
 
 class GFXOpenGL33WinVertexBuffer;
@@ -117,7 +116,7 @@ protected:
    /// Called by base GFXDevice to actually set a const buffer
    virtual void setShaderConstBufferInternal(GFXShaderConstBuffer* buffer);
 
-   virtual void setTextureInternal(U32 textureUnit, const GFXTextureObject* texture);
+   virtual void setTextureInternal(U32 textureUnit, GFXTextureObject* texture);
 //   virtual void setCubemapInternal(U32 cubemap, const GFXOpenGLCubemap* texture);
 
    /// @name State Initalization.
