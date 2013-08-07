@@ -71,7 +71,7 @@ public:
     F32             RayCastCallback( const b2RayCastInput& input, S32 proxyId );
 
 private:
-    static S32      QSORT_CALLBACK rayCastFractionSort(const void* a, const void* b);
+    static bool     rayCastFractionSort(const SpriteBatchQueryResult a, const SpriteBatchQueryResult b);
 
 private:
     SpriteBatch*                mpSpriteBatch;

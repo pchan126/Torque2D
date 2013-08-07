@@ -61,16 +61,16 @@ private:
     bool                    mStrictOrderMode;
 
 private:
-    static S32 QSORT_CALLBACK layeredNewFrontSort(const void* a, const void* b);
-    static S32 QSORT_CALLBACK layeredOldFrontSort(const void* a, const void* b);
-    static S32 QSORT_CALLBACK layeredDepthSort(const void* a, const void* b);
-    static S32 QSORT_CALLBACK layeredInverseDepthSort(const void* a, const void* b);
-    static S32 QSORT_CALLBACK layerBatchOrderSort(const void* a, const void* b);
-    static S32 QSORT_CALLBACK layerGroupOrderSort(const void* a, const void* b);
-    static S32 QSORT_CALLBACK layeredXSortPointSort(const void* a, const void* b);
-    static S32 QSORT_CALLBACK layeredYSortPointSort(const void* a, const void* b);
-    static S32 QSORT_CALLBACK layeredInverseXSortPointSort(const void* a, const void* b);
-    static S32 QSORT_CALLBACK layeredInverseYSortPointSort(const void* a, const void* b);
+    static bool layeredNewFrontSort(const SceneRenderRequest *a, const SceneRenderRequest *b);
+    static bool layeredOldFrontSort(const SceneRenderRequest *a, const SceneRenderRequest *b);
+    static bool layeredDepthSort(const SceneRenderRequest *a, const SceneRenderRequest *b);
+    static bool layeredInverseDepthSort(const SceneRenderRequest *a, const SceneRenderRequest *b);
+    static bool layerBatchOrderSort(const SceneRenderRequest *a, const SceneRenderRequest *b);
+    static bool layerGroupOrderSort(const SceneRenderRequest *a, const SceneRenderRequest *b);
+    static bool layeredXSortPointSort(const SceneRenderRequest *a, const SceneRenderRequest *b);
+    static bool layeredYSortPointSort(const SceneRenderRequest *a, const SceneRenderRequest *b);
+    static bool layeredInverseXSortPointSort(const SceneRenderRequest *a, const SceneRenderRequest *b);
+    static bool layeredInverseYSortPointSort(const SceneRenderRequest *a, const SceneRenderRequest *b);
 
 public:
     SceneRenderQueue()
@@ -132,8 +132,7 @@ public:
                 {
                     // Debug Profiling.
                     PROFILE_SCOPE(SceneRenderQueue_SortNewest);
-
-                    dQsort( mRenderRequests.address(), mRenderRequests.size(), sizeof(SceneRenderRequest*), layeredNewFrontSort );
+                    std::sort( mRenderRequests.begin(), mRenderRequests.end(), layeredNewFrontSort);
                     return;
                 }
 
@@ -141,8 +140,7 @@ public:
                 {
                     // Debug Profiling.
                     PROFILE_SCOPE(SceneRenderQueue_SortOldest);
-
-                    dQsort( mRenderRequests.address(), mRenderRequests.size(), sizeof(SceneRenderRequest*), layeredOldFrontSort );
+                    std::sort( mRenderRequests.begin(), mRenderRequests.end(), layeredOldFrontSort);
                     return;
                 }
 
@@ -150,8 +148,7 @@ public:
                 {
                     // Debug Profiling.
                     PROFILE_SCOPE(SceneRenderQueue_SortBatch);
-
-                    dQsort( mRenderRequests.address(), mRenderRequests.size(), sizeof(SceneRenderRequest*), layerBatchOrderSort );
+                    std::sort( mRenderRequests.begin(), mRenderRequests.end(), layerBatchOrderSort);
 
                     // Batching means we don't need strict order.
                     mStrictOrderMode = false;
@@ -162,8 +159,7 @@ public:
                 {
                     // Debug Profiling.
                     PROFILE_SCOPE(SceneRenderQueue_SortGroup);
-
-                    dQsort( mRenderRequests.address(), mRenderRequests.size(), sizeof(SceneRenderRequest*), layerGroupOrderSort );
+                    std::sort( mRenderRequests.begin(), mRenderRequests.end(), layerGroupOrderSort);
                     return;
                 }
 
@@ -171,8 +167,7 @@ public:
                 {
                     // Debug Profiling.
                     PROFILE_SCOPE(SceneRenderQueue_SortXAxis);
-
-                    dQsort( mRenderRequests.address(), mRenderRequests.size(), sizeof(SceneRenderRequest*), layeredXSortPointSort);
+                    std::sort( mRenderRequests.begin(), mRenderRequests.end(), layeredXSortPointSort);
                     return;
                 }
 
@@ -180,8 +175,7 @@ public:
                 {
                     // Debug Profiling.
                     PROFILE_SCOPE(SceneRenderQueue_SortYAxis);
-
-                    dQsort( mRenderRequests.address(), mRenderRequests.size(), sizeof(SceneRenderRequest*), layeredYSortPointSort );
+                    std::sort( mRenderRequests.begin(), mRenderRequests.end(), layeredYSortPointSort);
                     return;
                 }
 
@@ -189,8 +183,7 @@ public:
                 {
                     // Debug Profiling.
                     PROFILE_SCOPE(SceneRenderQueue_SortZAxis);
-
-                    dQsort( mRenderRequests.address(), mRenderRequests.size(), sizeof(SceneRenderRequest*), layeredDepthSort );
+                    std::sort( mRenderRequests.begin(), mRenderRequests.end(), layeredDepthSort);
                     return;
                 }
 
@@ -198,8 +191,7 @@ public:
                 {
                     // Debug Profiling.
                     PROFILE_SCOPE(SceneRenderQueue_SortInverseXAxis);
-
-                    dQsort( mRenderRequests.address(), mRenderRequests.size(), sizeof(SceneRenderRequest*), layeredInverseXSortPointSort );
+                    std::sort( mRenderRequests.begin(), mRenderRequests.end(), layeredInverseXSortPointSort);
                     return;
                 }
 
@@ -207,8 +199,7 @@ public:
                 {
                     // Debug Profiling.
                     PROFILE_SCOPE(SceneRenderQueue_SortInverseYAxis);
-
-                    dQsort( mRenderRequests.address(), mRenderRequests.size(), sizeof(SceneRenderRequest*), layeredInverseYSortPointSort );
+                    std::sort( mRenderRequests.begin(), mRenderRequests.end(), layeredInverseYSortPointSort);
                     return;
                 }
 
@@ -216,8 +207,7 @@ public:
                 {
                     // Debug Profiling.
                     PROFILE_SCOPE(SceneRenderQueue_SortInverseZAxis);
-
-                    dQsort( mRenderRequests.address(), mRenderRequests.size(), sizeof(SceneRenderRequest*), layeredInverseDepthSort );
+                    std::sort( mRenderRequests.begin(), mRenderRequests.end(), layeredInverseDepthSort);
                     return;
                 }
 

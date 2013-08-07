@@ -197,7 +197,7 @@ void SpriteBatchQuery::sortRaycastQueryResult( void )
         return;
 
     // Sort query results.
-    dQsort( mQueryResults.address(), mQueryResults.size(), sizeof(SpriteBatchQueryResult), rayCastFractionSort );
+    std::sort( mQueryResults.begin(), mQueryResults.end(), rayCastFractionSort );
 }
 
 //-----------------------------------------------------------------------------
@@ -276,27 +276,9 @@ F32 SpriteBatchQuery::RayCastCallback( const b2RayCastInput& input, S32 proxyId 
     return 1.0f;
 }
 
-//-----------------------------------------------------------------------------
 
-S32 QSORT_CALLBACK SpriteBatchQuery::rayCastFractionSort(const void* a, const void* b)
+bool SpriteBatchQuery::rayCastFractionSort(const SpriteBatchQueryResult a, const SpriteBatchQueryResult b)
 {
-    // Debug Profiling.
-    PROFILE_SCOPE(SpriteBatchQuery_RayCastFractionSort);
-
-    // Fetch scene objects.
-    SpriteBatchQueryResult* pQueryResultA  = (SpriteBatchQueryResult*)a;
-    SpriteBatchQueryResult* pQueryResultB  = (SpriteBatchQueryResult*)b;
-
-    // Fetch fractions.
-    const F32 queryFractionA = pQueryResultA->mFraction;
-    const F32 queryFractionB = pQueryResultB->mFraction;
-
-    if ( queryFractionA < queryFractionB )
-        return -1;
-
-    if ( queryFractionA > queryFractionB )
-        return 1;
-
-    return 0;
+    return (a.mFraction < b.mFraction);
 }
 

@@ -79,71 +79,51 @@ const char* SceneRenderQueue::getRenderSortDescription( const RenderSort& sortMo
     return StringTable->EmptyString;
 }
 
+
 //-----------------------------------------------------------------------------
 
-S32 QSORT_CALLBACK SceneRenderQueue::layeredNewFrontSort(const void* a, const void* b)
+bool SceneRenderQueue::layeredNewFrontSort(const SceneRenderRequest *a, const SceneRenderRequest *b)
 {
-    // Fetch scene render requests.
-    SceneRenderRequest* pSceneRenderRequestA  = *((SceneRenderRequest**)a);
-    SceneRenderRequest* pSceneRenderRequestB  = *((SceneRenderRequest**)b);
-
-    // Use serial Id,
-    return pSceneRenderRequestA->mSerialId - pSceneRenderRequestB->mSerialId;
-}
-    
-//-----------------------------------------------------------------------------
-
-S32 QSORT_CALLBACK SceneRenderQueue::layeredOldFrontSort(const void* a, const void* b)
-{
-    // Fetch scene render requests.
-    SceneRenderRequest* pSceneRenderRequestA  = *((SceneRenderRequest**)a);
-    SceneRenderRequest* pSceneRenderRequestB  = *((SceneRenderRequest**)b);
-
-    // Use reverse serial Id,
-    return pSceneRenderRequestB->mSerialId - pSceneRenderRequestA->mSerialId;
+    return a->mSerialId < b->mSerialId;
 }
 
 //-----------------------------------------------------------------------------
 
-S32 QSORT_CALLBACK SceneRenderQueue::layeredDepthSort(const void* a, const void* b)
+bool SceneRenderQueue::layeredOldFrontSort(const SceneRenderRequest *a, const SceneRenderRequest *b)
 {
-    // Fetch scene render requests.
-    SceneRenderRequest* pSceneRenderRequestA  = *((SceneRenderRequest**)a);
-    SceneRenderRequest* pSceneRenderRequestB  = *((SceneRenderRequest**)b);
+    return b->mSerialId < a->mSerialId;
+}
 
+//-----------------------------------------------------------------------------
+
+bool SceneRenderQueue::layeredDepthSort(const SceneRenderRequest *a, const SceneRenderRequest *b)
+{
     // Fetch depths.
-    const F32 depthA = pSceneRenderRequestA->mDepth;
-    const F32 depthB = pSceneRenderRequestB->mDepth;
+    const F32 depthA = a->mDepth;
+    const F32 depthB = b->mDepth;
 
-    return depthA < depthB ? 1 : depthA > depthB ? -1 : pSceneRenderRequestA->mSerialId - pSceneRenderRequestB->mSerialId;
+    return depthA < depthB ? false : depthA > depthB ? true : a->mSerialId < b->mSerialId;
 }
+
 
 //-----------------------------------------------------------------------------
 
-S32 QSORT_CALLBACK SceneRenderQueue::layeredInverseDepthSort(const void* a, const void* b)
+bool SceneRenderQueue::layeredInverseDepthSort(const SceneRenderRequest *a, const SceneRenderRequest *b)
 {
-    // Fetch scene render requests.
-    SceneRenderRequest* pSceneRenderRequestA  = *((SceneRenderRequest**)a);
-    SceneRenderRequest* pSceneRenderRequestB  = *((SceneRenderRequest**)b);
-
     // Fetch depths.
-    const F32 depthA = pSceneRenderRequestA->mDepth;
-    const F32 depthB = pSceneRenderRequestB->mDepth;
+    const F32 depthA = a->mDepth;
+    const F32 depthB = b->mDepth;
 
-    return depthA < depthB ? -1 : depthA > depthB ? 1 : pSceneRenderRequestA->mSerialId - pSceneRenderRequestB->mSerialId;
+    return depthA < depthB ? true : depthA > depthB ? true : a->mSerialId < b->mSerialId;
 }
 
 //-----------------------------------------------------------------------------
 
-S32 QSORT_CALLBACK SceneRenderQueue::layerBatchOrderSort(const void* a, const void* b)
+bool SceneRenderQueue::layerBatchOrderSort(const SceneRenderRequest *a, const SceneRenderRequest *b)
 {
-    // Fetch scene render requests.
-    SceneRenderRequest* pSceneRenderRequestA  = *((SceneRenderRequest**)a);
-    SceneRenderRequest* pSceneRenderRequestB  = *((SceneRenderRequest**)b);
-
     // Fetch scene render objects.
-    SceneRenderObject* pSceneRenderObjectA = pSceneRenderRequestA->mpSceneRenderObject;
-    SceneRenderObject* pSceneRenderObjectB = pSceneRenderRequestB->mpSceneRenderObject;
+    SceneRenderObject* pSceneRenderObjectA = a->mpSceneRenderObject;
+    SceneRenderObject* pSceneRenderObjectB = b->mpSceneRenderObject;
 
     // Fetch batch render isolation.
     const bool renderIsolatedA = pSceneRenderObjectA->getBatchIsolated();
@@ -154,95 +134,77 @@ S32 QSORT_CALLBACK SceneRenderQueue::layerBatchOrderSort(const void* a, const vo
     {
         // Use the serial Id if neither are render isolated.
         if ( !renderIsolatedB )
-            return pSceneRenderRequestA->mSerialId - pSceneRenderRequestB->mSerialId;
+            return a->mSerialId < b->mSerialId;
 
         // A not render isolated but B is.
-        return 1;
+        return false;
     }
 
     // B not render isolated?
     if ( !renderIsolatedB )
     {
         // A is render isolated.
-        return -1;
+        return true;
     }
 
     // A and B are render isolated so use serial Id,
-    return pSceneRenderRequestA->mSerialId - pSceneRenderRequestB->mSerialId;
+    return a->mSerialId < b->mSerialId;
 }
 
 //-----------------------------------------------------------------------------
 
-S32 QSORT_CALLBACK SceneRenderQueue::layerGroupOrderSort(const void* a, const void* b)
+bool SceneRenderQueue::layerGroupOrderSort(const SceneRenderRequest *a, const SceneRenderRequest *b)
 {
-    // Fetch scene render requests.
-    SceneRenderRequest* pSceneRenderRequestA  = *((SceneRenderRequest**)a);
-    SceneRenderRequest* pSceneRenderRequestB  = *((SceneRenderRequest**)b);
-
     // Fetch the groups.
-    StringTableEntry renderGroupA = pSceneRenderRequestA->mRenderGroup;
-    StringTableEntry renderGroupB = pSceneRenderRequestB->mRenderGroup;
+    StringTableEntry renderGroupA = a->mRenderGroup;
+    StringTableEntry renderGroupB = b->mRenderGroup;
 
     // Sort by render group (address, arbitrary but static) and use age if render groups are identical.
-    return renderGroupA == renderGroupB ? pSceneRenderRequestA->mSerialId - pSceneRenderRequestB->mSerialId : renderGroupA < renderGroupB ? -1 : 1;
+    return renderGroupA == renderGroupB ? a->mSerialId < b->mSerialId : renderGroupA < renderGroupB ? true : false;
 }
 
 //-----------------------------------------------------------------------------
 
-S32 QSORT_CALLBACK SceneRenderQueue::layeredXSortPointSort(const void* a, const void* b)
+bool SceneRenderQueue::layeredXSortPointSort(const SceneRenderRequest *a, const SceneRenderRequest *b)
 {
-    // Fetch scene render requests.
-    SceneRenderRequest* pSceneRenderRequestA  = *((SceneRenderRequest**)a);
-    SceneRenderRequest* pSceneRenderRequestB  = *((SceneRenderRequest**)b);
-
-    const F32 x1 = pSceneRenderRequestA->mWorldPosition.x + pSceneRenderRequestA->mSortPoint.x;
-    const F32 x2 = pSceneRenderRequestB->mWorldPosition.x + pSceneRenderRequestB->mSortPoint.x;
+    const F32 x1 = a->mWorldPosition.x + a->mSortPoint.x;
+    const F32 x2 = b->mWorldPosition.x + b->mSortPoint.x;
 
     // We sort lower x values before higher values.
-    return x1 < x2 ? -1 : x1 > x2 ? 1 : pSceneRenderRequestA->mSerialId - pSceneRenderRequestB->mSerialId;
+    return x1 < x2 ? true : x1 > x2 ? false : a->mSerialId < b->mSerialId;
 }
 
 //-----------------------------------------------------------------------------
 
-S32 QSORT_CALLBACK SceneRenderQueue::layeredYSortPointSort(const void* a, const void* b)
+bool SceneRenderQueue::layeredYSortPointSort(const SceneRenderRequest *a, const SceneRenderRequest *b)
 {
     // Fetch scene render requests.
-    SceneRenderRequest* pSceneRenderRequestA  = *((SceneRenderRequest**)a);
-    SceneRenderRequest* pSceneRenderRequestB  = *((SceneRenderRequest**)b);
-
-    const F32 y1 = pSceneRenderRequestA->mWorldPosition.y + pSceneRenderRequestA->mSortPoint.y;
-    const F32 y2 = pSceneRenderRequestB->mWorldPosition.y + pSceneRenderRequestB->mSortPoint.y;
+    const F32 y1 = a->mWorldPosition.y + a->mSortPoint.y;
+    const F32 y2 = b->mWorldPosition.y + b->mSortPoint.y;
 
     // We sort lower y values before higher values.
-    return y1 < y2 ? -1 : y1 > y2 ? 1 : pSceneRenderRequestA->mSerialId - pSceneRenderRequestB->mSerialId;
+    return y1 < y2 ? true : y1 > y2 ? false : a->mSerialId < b->mSerialId;
 }
 
 //-----------------------------------------------------------------------------
 
-S32 QSORT_CALLBACK SceneRenderQueue::layeredInverseXSortPointSort(const void* a, const void* b)
+bool SceneRenderQueue::layeredInverseXSortPointSort(const SceneRenderRequest *a, const SceneRenderRequest *b)
 {
     // Fetch scene render requests.
-    SceneRenderRequest* pSceneRenderRequestA  = *((SceneRenderRequest**)a);
-    SceneRenderRequest* pSceneRenderRequestB  = *((SceneRenderRequest**)b);
-
-    const F32 x1 = pSceneRenderRequestA->mWorldPosition.x + pSceneRenderRequestA->mSortPoint.x;
-    const F32 x2 = pSceneRenderRequestB->mWorldPosition.x + pSceneRenderRequestB->mSortPoint.x;
+    const F32 x1 = a->mWorldPosition.x + a->mSortPoint.x;
+    const F32 x2 = b->mWorldPosition.x + b->mSortPoint.x;
 
     // We sort higher x values before lower values.
-    return x1 < x2 ? 1 : x1 > x2 ? -1 : pSceneRenderRequestA->mSerialId - pSceneRenderRequestB->mSerialId;
+    return x1 < x2 ? false : x1 > x2 ? true : a->mSerialId < b->mSerialId;
 }
 
 //-----------------------------------------------------------------------------
 
-S32 QSORT_CALLBACK SceneRenderQueue::layeredInverseYSortPointSort(const void* a, const void* b)
+bool SceneRenderQueue::layeredInverseYSortPointSort(const SceneRenderRequest *a, const SceneRenderRequest *b)
 {
-    // Fetch scene render requests.
-    SceneRenderRequest* pSceneRenderRequestA  = *((SceneRenderRequest**)a);
-    SceneRenderRequest* pSceneRenderRequestB  = *((SceneRenderRequest**)b);
-
-    const F32 y1 = pSceneRenderRequestA->mWorldPosition.y + pSceneRenderRequestA->mSortPoint.y;
-    const F32 y2 = pSceneRenderRequestB->mWorldPosition.y + pSceneRenderRequestB->mSortPoint.y;
+    const F32 y1 = a->mWorldPosition.y + a->mSortPoint.y;
+    const F32 y2 = b->mWorldPosition.y + b->mSortPoint.y;
 
     // We sort higher y values before lower values.
-    return y1 < y2 ? 1 : y1 > y2 ? -1 : pSceneRenderRequestA->mSerialId - pSceneRenderRequestB->mSerialId;
+    return y1 < y2 ? false : y1 > y2 ? true : a->mSerialId < b->mSerialId;
 }
