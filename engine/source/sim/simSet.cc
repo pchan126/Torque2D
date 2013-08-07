@@ -152,23 +152,17 @@ void SimSet::onDeleteNotify(SimObject *object)
 
 void SimSet::onRemove()
 {
-   MutexHandle handle;
-   handle.lock(mMutex);
+    MutexHandle handle;
+    handle.lock(mMutex);
 
-   objectList.sortId();
-   if (objectList.size())
-   {
-      // This backwards iterator loop doesn't work if the
-      // list is empty, check the size first.
-      for (auto ptr = objectList.rend(); ptr != objectList.rbegin(); ptr++)
-      {
-         clearNotify(*ptr);
-      }
-   }
+    objectList.sortId();
 
-   handle.unlock();
+    for (auto ptr = objectList.rbegin(); ptr != objectList.rend(); ptr++)
+        clearNotify(*ptr);
 
-   Parent::onRemove();
+    handle.unlock();
+
+    Parent::onRemove();
 }
 
 void SimSet::write(Stream &stream, U32 tabStop, U32 flags)

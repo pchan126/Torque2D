@@ -73,13 +73,12 @@ void SimObjectList::removeStable(SimObject* obj)
 
 void SimObjectList::sortId()
 {
-   dQsort(address(),size(),sizeof(value_type),compareId);
+    std::sort(begin(), end(), compareId);
 }	
 
 //-----------------------------------------------------------------------------
 
-S32 QSORT_CALLBACK SimObjectList::compareId(const void* a,const void* b)
+bool SimObjectList::compareId(const SimObject* a, const SimObject* b)
 {
-   return (*reinterpret_cast<const SimObject* const*>(a))->getId() -
-      (*reinterpret_cast<const SimObject* const*>(b))->getId();
+    return (a->getId() < b->getId());
 }

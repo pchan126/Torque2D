@@ -35,7 +35,8 @@ class SimObject;
 
 class SimObjectList : public Vector<SimObject*>
 {
-   static S32 QSORT_CALLBACK compareId(const void* a,const void* b);
+//   static S32 QSORT_CALLBACK compareId(const void* a,const void* b);
+   static bool compareId(const SimObject* a, const SimObject* b);
 
 public:
    void pushBack(SimObject*);       ///< Add the SimObject* to the end of the list, unless it's already in the list.
