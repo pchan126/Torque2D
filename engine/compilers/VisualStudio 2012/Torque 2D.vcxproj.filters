@@ -1488,6 +1488,9 @@
     <ClCompile Include="..\..\source\graphics\OpenGL\gfxOpenGLTextureTarget.cc">
       <Filter>graphics\OpenGL</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\gui\guiMoveCtrl.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\source\audio\audio.h">
@@ -3047,6 +3050,9 @@
     </ClInclude>
     <ClInclude Include="..\..\source\platformWin32\2d\assets\FilterImageAsset.h">
       <Filter>platformWin32\2d\assets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\gui\guiMoveCtrl.h">
+      <Filter>gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

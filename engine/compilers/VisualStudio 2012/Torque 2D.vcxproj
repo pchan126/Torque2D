@@ -414,6 +414,7 @@
     <ClCompile Include="..\..\source\gui\guiMLTextCtrl.cc" />
     <ClCompile Include="..\..\source\gui\guiMLTextEditCtrl.cc" />
     <ClCompile Include="..\..\source\gui\guiMouseEventCtrl.cc" />
+    <ClCompile Include="..\..\source\gui\guiMoveCtrl.cpp" />
     <ClCompile Include="..\..\source\gui\guiPopUpCtrl.cc" />
     <ClCompile Include="..\..\source\gui\guiPopUpCtrlEx.cc" />
     <ClCompile Include="..\..\source\gui\guiProgressCtrl.cc" />
@@ -906,6 +907,7 @@
     <ClInclude Include="..\..\source\gui\guiMLTextCtrl.h" />
     <ClInclude Include="..\..\source\gui\guiMLTextEditCtrl.h" />
     <ClInclude Include="..\..\source\gui\guiMouseEventCtrl.h" />
+    <ClInclude Include="..\..\source\gui\guiMoveCtrl.h" />
     <ClInclude Include="..\..\source\gui\guiPopUpCtrl.h" />
     <ClInclude Include="..\..\source\gui\guiPopUpCtrlEx.h" />
     <ClInclude Include="..\..\source\gui\guiProgressCtrl.h" />
