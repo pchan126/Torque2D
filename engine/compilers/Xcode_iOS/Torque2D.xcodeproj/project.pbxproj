@@ -472,7 +472,6 @@
 		D10529E9173B665100BFC4FF /* gfxOpenGLES20TextureObject.cc in Sources */ = {isa = PBXBuildFile; fileRef = D10529D9173B665100BFC4FF /* gfxOpenGLES20TextureObject.cc */; };
 		D10529EE173B832700BFC4FF /* gfxOpenGLES20Device.cc in Sources */ = {isa = PBXBuildFile; fileRef = D10529ED173B832600BFC4FF /* gfxOpenGLES20Device.cc */; };
 		D10529F0173B91E500BFC4FF /* gfxOpenGLTextureObject.cc in Sources */ = {isa = PBXBuildFile; fileRef = D10529EF173B91E400BFC4FF /* gfxOpenGLTextureObject.cc */; };
-		D10BBF5E17741A5E000B68E9 /* BatchEffect.m in Sources */ = {isa = PBXBuildFile; fileRef = D10BBF5D17741A5E000B68E9 /* BatchEffect.m */; };
 		D10BF28D172E75F700E0D95D /* iOSGestureRecognizer.mm in Sources */ = {isa = PBXBuildFile; fileRef = D10BF28C172E75F600E0D95D /* iOSGestureRecognizer.mm */; };
 		D10BF290172E7C4E00E0D95D /* iOSWindowInputGenerator.mm in Sources */ = {isa = PBXBuildFile; fileRef = D10BF28F172E7C4E00E0D95D /* iOSWindowInputGenerator.mm */; };
 		D11B0D13174F00D6002CB743 /* FilterImageAsset.mm in Sources */ = {isa = PBXBuildFile; fileRef = D11B0D11174F00D6002CB743 /* FilterImageAsset.mm */; };
@@ -1491,8 +1490,6 @@
 		D10529E1173B665100BFC4FF /* gfxOpenGLES20WindowTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20WindowTarget.h; sourceTree = "<group>"; };
 		D10529ED173B832600BFC4FF /* gfxOpenGLES20Device.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxOpenGLES20Device.cc; sourceTree = "<group>"; };
 		D10529EF173B91E400BFC4FF /* gfxOpenGLTextureObject.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxOpenGLTextureObject.cc; sourceTree = "<group>"; };
-		D10BBF5C17741A5E000B68E9 /* BatchEffect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BatchEffect.h; sourceTree = "<group>"; };
-		D10BBF5D17741A5E000B68E9 /* BatchEffect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BatchEffect.m; sourceTree = "<group>"; };
 		D10BF28B172E75F600E0D95D /* iOSGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iOSGestureRecognizer.h; sourceTree = "<group>"; };
 		D10BF28C172E75F600E0D95D /* iOSGestureRecognizer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iOSGestureRecognizer.mm; sourceTree = "<group>"; };
 		D10BF28E172E7C4D00E0D95D /* iOSWindowInputGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iOSWindowInputGenerator.h; sourceTree = "<group>"; };
@@ -1828,7 +1825,6 @@
 		867BAC9116AEC8BB0033868F /* platformiOS */ = {
 			isa = PBXGroup;
 			children = (
-				D10BBF5B17741A26000B68E9 /* effects */,
 				D11B0D0F174F00BC002CB743 /* 2d */,
 				D16581591702EE3D00A21928 /* windowManager */,
 				867BAC9416AEC8BB0033868F /* GameCenter.h */,
@@ -3280,15 +3276,6 @@
 			path = ES20;
 			sourceTree = "<group>";
 		};
-		D10BBF5B17741A26000B68E9 /* effects */ = {
-			isa = PBXGroup;
-			children = (
-				D10BBF5C17741A5E000B68E9 /* BatchEffect.h */,
-				D10BBF5D17741A5E000B68E9 /* BatchEffect.m */,
-			);
-			path = effects;
-			sourceTree = "<group>";
-		};
 		D11B0D0F174F00BC002CB743 /* 2d */ = {
 			isa = PBXGroup;
 			children = (
@@ -4079,7 +4066,6 @@
 				D1C7B67D1765A117009C9BBA /* renderBinManager.cpp in Sources */,
 				D1C7B6901765A375009C9BBA /* SceneRenderState.cc in Sources */,
 				D1FE58131769907C00207569 /* Layer.cc in Sources */,
-				D10BBF5E17741A5E000B68E9 /* BatchEffect.m in Sources */,
 				D164854D17793C3E0050E93D /* T2DViewController.mm in Sources */,
 				4B8AA6EFAB1E83E6E1DD9CE6 /* render2DObjectMgr.cpp in Sources */,
 				4B8AA645A2B83EAB64F41454 /* guiJoystickCtrl.cc in Sources */,
