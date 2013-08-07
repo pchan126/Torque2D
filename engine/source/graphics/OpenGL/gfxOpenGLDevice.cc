@@ -36,6 +36,12 @@ GFXOpenGLDevice::GFXOpenGLDevice( U32 adapterIndex ) :
             mPixelShaderVersion(0.0f),
             mBlendSrcState(GFXBlendSrcAlpha),
             mBlendDestState(GFXBlendInvSrcAlpha),
+            mBlendOp(GFXBlendOpAdd),
+            separateAlphaBlendDefined(false),
+            separateAlphaBlendEnable(false),
+            separateAlphaBlendSrc(GFXBlendOne),
+            separateAlphaBlendDest(GFXBlendZero),
+            separateAlphaBlendOp(GFXBlendOpAdd),
             m_globalAmbientColor(1.0, 1.0, 1.0, 1.0),
             mActiveTextureUnit(0)
 {

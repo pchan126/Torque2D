@@ -206,7 +206,7 @@ void Scroller::interpolateObject( const F32 timeDelta )
     Parent::interpolateObject( timeDelta );
 
     // Calculate Render Tick Position.
-    mRenderTickTextureOffset = (timeDelta * mPreTickTextureOffset) + ((1.0f-timeDelta) * mPostTickTextureOffset);
+    mRenderTickTextureOffset = mLerp(mPreTickTextureOffset, mPostTickTextureOffset, timeDelta);
 }
 
 //------------------------------------------------------------------------------
@@ -268,6 +268,7 @@ void Scroller::sceneRender( const SceneRenderState* pSceneRenderState, const Sce
           break;
        xDivisions.push_back(xDivisions.back()+renderOffsetX);
     }
+   xDivisions.pop_back();
 
    yDivisions.push_back(0.0f);
    while(yDivisions.back() < mRepeatY)
@@ -277,6 +278,7 @@ void Scroller::sceneRender( const SceneRenderState* pSceneRenderState, const Sce
          break;
       yDivisions.push_back(yDivisions.back()+renderOffsetY);
    }
+   yDivisions.pop_back();
 
     F32 baseX = mRenderOOBB[0].x;
     F32 baseY = mRenderOOBB[0].y;

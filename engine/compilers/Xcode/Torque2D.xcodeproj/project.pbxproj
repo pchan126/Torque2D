@@ -79,6 +79,7 @@
 		4B8AAD9ADDE58C24CD367C23 /* osxNetwork.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA120421D765D4A1A32AF /* osxNetwork.mm */; };
 		4B8AAE06F9EB1B3DF29552EE /* osxMemory.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA984E295A563F26E3D27 /* osxMemory.mm */; };
 		4B8AAE3B7021EA64ABA57552 /* osxCPU.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAEE8C36DC12BC8F878AB /* osxCPU.mm */; };
+		4B8AAEBDA5F2EF7DEB24E8B5 /* guiMoveCtrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA8651FE1125031F84AD8 /* guiMoveCtrl.cpp */; };
 		4B8AAF2E27E93709C7ACB163 /* osxFont.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA960CF6C1D3EF472151C /* osxFont.mm */; };
 		4B8AAF379C2D853CB3F47E19 /* osxFileDialogs.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAA51BB16FFB1EC572E6F /* osxFileDialogs.mm */; };
 		4B8AAF3BD30509872A2C9A71 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4B8AA2F1832A8038C6967D88 /* MainMenu.xib */; };
@@ -643,6 +644,7 @@
 		4B8AA1F31450D3F7937BE343 /* gfxOpenGL32Shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32Shader.h; sourceTree = "<group>"; };
 		4B8AA221564ACA3169727BB0 /* Joystick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Joystick.h; sourceTree = "<group>"; };
 		4B8AA2C1D429AB0EEB1A559B /* osxSemaphore.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxSemaphore.mm; sourceTree = "<group>"; };
+		4B8AA2D80BA83859CD2B6A9A /* guiMoveCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiMoveCtrl.h; sourceTree = "<group>"; };
 		4B8AA2EA27DDCF404CF01ABC /* JoystickHatswitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JoystickHatswitch.m; sourceTree = "<group>"; };
 		4B8AA2FE025649E0732E8770 /* gfxOpenGL32VertexBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32VertexBuffer.h; sourceTree = "<group>"; };
 		4B8AA32C09EDD591433F32C1 /* Joystick.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Joystick.m; sourceTree = "<group>"; };
@@ -668,6 +670,7 @@
 		4B8AA7D746C0B226894D6D92 /* GLFWWindowInputGenerator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GLFWWindowInputGenerator.mm; sourceTree = "<group>"; };
 		4B8AA80FD83636B8BF425CD5 /* GLFWWindowManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GLFWWindowManager.mm; sourceTree = "<group>"; };
 		4B8AA832114B3E6EC56E1A20 /* gfxOpenGL32CardProfiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32CardProfiler.h; sourceTree = "<group>"; };
+		4B8AA8651FE1125031F84AD8 /* guiMoveCtrl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiMoveCtrl.cpp; sourceTree = "<group>"; };
 		4B8AA880AFA0FE58E4348849 /* osxMutex.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxMutex.mm; sourceTree = "<group>"; };
 		4B8AA887B3C88E67F03088EA /* gfxOpenGL32TextureObject.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32TextureObject.mm; sourceTree = "<group>"; };
 		4B8AA9214E108BD3443695FC /* osxCocoaUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxCocoaUtilities.h; sourceTree = "<group>"; };
@@ -2736,6 +2739,8 @@
 				86BC805316518D4600D96ADF /* language */,
 				86BC805616518D4600D96ADF /* messageVector.cc */,
 				86BC805716518D4600D96ADF /* messageVector.h */,
+				4B8AA2D80BA83859CD2B6A9A /* guiMoveCtrl.h */,
+				4B8AA8651FE1125031F84AD8 /* guiMoveCtrl.cpp */,
 			);
 			name = gui;
 			path = ../../../source/gui;
@@ -3937,6 +3942,7 @@
 				4B8AA3537E794BF5814C7CA5 /* osxTimer.mm in Sources */,
 				4B8AAD464DE91C0A1C7697E2 /* platformOSX.mm in Sources */,
 				C541968ADC47A8E453CEECB8 /* mRect.cpp in Sources */,
+				4B8AAEBDA5F2EF7DEB24E8B5 /* guiMoveCtrl.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

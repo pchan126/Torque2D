@@ -210,7 +210,7 @@ void GuiTextCtrl::onRender(Point2I offset, const RectI &updateRect)
 {
 	StringBuffer textBuffer(mText);
 
-    ColorI fontColor = mProfile->mFontColor;
+   ColorI fontColor = mProfile->mFontColor;
 
 	if (mTruncateWhenUnfocused)
     {
@@ -227,10 +227,6 @@ void GuiTextCtrl::onRender(Point2I offset, const RectI &updateRect)
 		GFX->getDrawUtil()->setBitmapModulation(fontColor);
 		renderJustifiedText(offset, getExtent(), (char*)mText, mFont);
 	}
-
-//    RectI ctrlRect(offset, getExtent());
-//    mProfile->mBorder = 1;
-//    renderBorder(ctrlRect, mProfile);
 
     //render the child controls
     renderChildControls(offset, updateRect);

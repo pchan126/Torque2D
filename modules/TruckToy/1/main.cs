@@ -823,6 +823,7 @@ function createTruckLabel(%text)
         maxLength = "255";
         truncate = "0";
     };
+    SandboxWindow.add( %labelControl );
 
     %labelControl.resizeWidthToText();
     return %labelControl;
@@ -907,12 +908,12 @@ function TruckToy::createTruck( %this, %posX, %posY )
     TruckToy.TruckExhaust.baseSizeScale = TruckToy.TruckExhaust.SizeScale;
     TruckToy.TruckExhaust.baseForceScale = TruckToy.TruckExhaust.ForceScale;
 
-//    $Trucklabel = createTruckLabel("Fred");
+    $Trucklabel = createTruckLabel("Fred");
 //    $Trucklabel.autoSizeWidth = true;
 //    $Trucklabel.autoSizeHeight = true;
 //    $Trucklabel.setFontSize(40);
 //    $Trucklabel.resizeWidthToText();
-//    TruckToy.TruckBody.attachGui($Trucklabel, SandboxWindow, false, 0.0, 1.5);
+    TruckToy.TruckBody.attachGui($Trucklabel, SandboxWindow, false, 0.0, 1.5);
 
 }
 

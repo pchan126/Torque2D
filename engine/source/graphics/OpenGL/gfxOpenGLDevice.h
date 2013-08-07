@@ -224,9 +224,16 @@ protected:
     GFXBlend mBlendSrcState;
     GFXBlend mBlendDestState;
     GFXBlendOp mBlendOp;
-    GFXFillMode mFillMode;
 
-    bool mColorWriteRed;
+   GFXFillMode mFillMode;
+
+   bool separateAlphaBlendDefined;
+   bool separateAlphaBlendEnable;
+   GFXBlend separateAlphaBlendSrc;
+   GFXBlend separateAlphaBlendDest;
+   GFXBlendOp separateAlphaBlendOp;
+
+   bool mColorWriteRed;
     bool mColorWriteBlue;
     bool mColorWriteGreen;
     bool mColorWriteAlpha;

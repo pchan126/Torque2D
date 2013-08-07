@@ -21,7 +21,7 @@
 //-----------------------------------------------------------------------------
 
 // Sandbox.
-$pref::Sandbox::defaultToyId           = "ScrollerToy";
+$pref::Sandbox::defaultToyId           = "AlphaBlendToy";
 $pref::Sandbox::defaultToyVersionId    = 1;
 $pref::Sandbox::defaultBackgroundColor = "Black";
 $pref::Sandbox::metricsOption   = false;

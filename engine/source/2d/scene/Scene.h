@@ -379,7 +379,8 @@ public:
     /// Scene Lighting
     inline ColorF           getSceneLight( void ) const                 { return mAmbientLightColor; };
     inline void             setSceneLight( ColorF sceneLight )          { mAmbientLightColor = sceneLight; };
-   
+
+   inline Vector<Layer*> const getLayerVec() const                 { return mLayers; };
    inline Layer* const     getLayer( U32 layer ) const              { return (mLayers.size() > layer) ? mLayers[layer] : NULL; };
    void                    setLayerLight( U32 layer, ColorF light);
    void                   setAllRenderLayers(bool flag);

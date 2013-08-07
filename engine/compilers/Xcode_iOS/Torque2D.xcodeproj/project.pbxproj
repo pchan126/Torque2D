@@ -41,6 +41,7 @@
 		4B8AA6EFAB1E83E6E1DD9CE6 /* render2DObjectMgr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA3F49A3463DC9D4C56AB /* render2DObjectMgr.cpp */; };
 		4B8AA80EC028431CE04DC27D /* iOSCursorController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA9A93BBBA232436F0DDF /* iOSCursorController.mm */; };
 		4B8AA88C053A6612EFCA9D10 /* iOSInputManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA81DE24DF738778D59DC /* iOSInputManager.mm */; };
+		4B8AAA433A8608406CA76F20 /* guiMoveCtrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA80281B751522AB2B79E /* guiMoveCtrl.cpp */; };
 		4B8AAE742D18ABC94DC3FDC5 /* mRect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA70EC9A24A9699C62600 /* mRect.cpp */; };
 		860A196C171F0666000E9FE8 /* guiGridCtrl.cc in Sources */ = {isa = PBXBuildFile; fileRef = 860A196A171F0666000E9FE8 /* guiGridCtrl.cc */; };
 		8610F32F16AEEC670015BCEB /* main.cs in Resources */ = {isa = PBXBuildFile; fileRef = 8610F32D16AEEC670015BCEB /* main.cs */; };
@@ -645,10 +646,12 @@
 		4B8AA643B344244F09BC5153 /* render2DObjectMgr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render2DObjectMgr.h; sourceTree = "<group>"; };
 		4B8AA69E2FAAFC7316092ACB /* gfxOpenGLES20TextureTarget.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxOpenGLES20TextureTarget.cc; sourceTree = "<group>"; };
 		4B8AA70EC9A24A9699C62600 /* mRect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mRect.cpp; sourceTree = "<group>"; };
+		4B8AA80281B751522AB2B79E /* guiMoveCtrl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiMoveCtrl.cpp; sourceTree = "<group>"; };
 		4B8AA81DE24DF738778D59DC /* iOSInputManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iOSInputManager.mm; sourceTree = "<group>"; };
 		4B8AA9A93BBBA232436F0DDF /* iOSCursorController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = iOSCursorController.mm; path = ../windowManager/iOSCursorController.mm; sourceTree = "<group>"; };
 		4B8AAB7E71D8EE670C6CD843 /* guiJoystickCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = guiJoystickCtrl.h; path = gui/guiJoystickCtrl.h; sourceTree = "<group>"; };
 		4B8AAB8C7B170DE2B1C83143 /* guiJoystickCtrl.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = guiJoystickCtrl.cc; path = gui/guiJoystickCtrl.cc; sourceTree = "<group>"; };
+		4B8AAC46AA26864E02E90563 /* guiMoveCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiMoveCtrl.h; sourceTree = "<group>"; };
 		4B8AAC926AB3AD1F47EB2AC2 /* gfxOpenGLTextureTarget.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxOpenGLTextureTarget.cc; sourceTree = "<group>"; };
 		4B8AAE505D4152D7286E2EBE /* gfxOpenGLES20TextureTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20TextureTarget.h; sourceTree = "<group>"; };
 		860A196A171F0666000E9FE8 /* guiGridCtrl.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiGridCtrl.cc; sourceTree = "<group>"; };
@@ -2408,6 +2411,8 @@
 				867BAEBA16AEC9050033868F /* messageVector.h */,
 				332307DBC5B7EEEB22E5A736 /* guiSliderCtrl.cc */,
 				33230911303CCA4C673E1A22 /* guiSliderCtrl.h */,
+				4B8AA80281B751522AB2B79E /* guiMoveCtrl.cpp */,
+				4B8AAC46AA26864E02E90563 /* guiMoveCtrl.h */,
 			);
 			name = gui;
 			path = ../../../source/gui;
@@ -4083,6 +4088,7 @@
 				4B8AA80EC028431CE04DC27D /* iOSCursorController.mm in Sources */,
 				4B8AA489BC5E0D8EDB45B697 /* gfxOpenGLTextureTarget.cc in Sources */,
 				4B8AA2A21FC701F62B39AA31 /* gfxOpenGLES20TextureTarget.cc in Sources */,
+				4B8AAA433A8608406CA76F20 /* guiMoveCtrl.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
