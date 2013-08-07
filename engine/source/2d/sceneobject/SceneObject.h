@@ -246,7 +246,7 @@ protected:
     StringTableEntry        mRenderGroup;
 
 protected:
-    static S32 QSORT_CALLBACK sceneObjectLayerDepthSort(const void* a, const void* b);
+    static bool sceneObjectLayerDepthSort(const SceneObject* a, const SceneObject* b);
 
 
     /// Scene (un)registering.

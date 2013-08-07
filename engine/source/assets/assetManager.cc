@@ -1470,17 +1470,13 @@ bool AssetManager::restoreAssetTags( void )
 
 //-----------------------------------------------------------------------------
 
-S32 QSORT_CALLBACK descendingAssetDefinitionLoadCount(const void* a, const void* b)
+bool descendingAssetDefinitionLoadCount(const AssetDefinition* a, const AssetDefinition* b)
 {
     // Debug Profiling.
     PROFILE_SCOPE(AssetManager_DescendingAssetDefinitionLoadCount);
 
-    // Fetch asset definitions.
-    const AssetDefinition* pAssetDefinitionA  = *(AssetDefinition**)a;
-    const AssetDefinition* pAssetDefinitionB  = *(AssetDefinition**)b;
-
     // Sort.
-    return pAssetDefinitionB->mAssetLoadedCount - pAssetDefinitionA->mAssetLoadedCount;
+    return a->mAssetLoadedCount < b->mAssetLoadedCount;
 }
 
 //-----------------------------------------------------------------------------
@@ -1496,7 +1492,7 @@ void AssetManager::dumpDeclaredAssets( void ) const
     }
 
     // Sort asset definitions.
-    dQsort( assetDefinitions.address(), assetDefinitions.size(), sizeof(const AssetDefinition*), descendingAssetDefinitionLoadCount );
+    std::sort( assetDefinitions.begin(), assetDefinitions.end(), descendingAssetDefinitionLoadCount );
 
     // Info.
     Con::printSeparator();

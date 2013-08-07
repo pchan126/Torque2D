@@ -912,7 +912,7 @@ bool SceneObject::setSceneLayerDepthFront( void )
     const U32 layerObjectCount = (U32)layerList.size();
 
     // Sort the layer.
-    dQsort(layerList.address(), layerObjectCount, sizeof(SceneObject*), sceneObjectLayerDepthSort);
+    std::sort(layerList.begin(), layerList.end(), sceneObjectLayerDepthSort);
 
     // Reset object index.
     U32 objectIndex = 0;
@@ -957,7 +957,7 @@ bool SceneObject::setSceneLayerDepthBack( void )
     const U32 layerObjectCount = (U32)layerList.size();
 
     // Sort the layer.
-    dQsort(layerList.address(), layerObjectCount, sizeof(SceneObject*), sceneObjectLayerDepthSort);
+    std::sort(layerList.begin(), layerList.end(), sceneObjectLayerDepthSort);
 
     // Reset object index.
     U32 objectIndex = 0;
@@ -1002,7 +1002,7 @@ bool SceneObject::setSceneLayerDepthForward( void )
     const U32 layerObjectCount = (U32)layerList.size();
 
     // Sort the layer.
-    dQsort(layerList.address(), layerObjectCount, sizeof(SceneObject*), sceneObjectLayerDepthSort);
+    std::sort(layerList.begin(), layerList.end(), sceneObjectLayerDepthSort);
 
     // Reset object index.
     U32 objectIndex = 0;
@@ -1061,7 +1061,7 @@ bool SceneObject::setSceneLayerDepthBackward( void )
     const U32 layerObjectCount = (U32)layerList.size();
 
     // Sort the layer.
-    dQsort(layerList.address(), layerObjectCount, sizeof(SceneObject*), sceneObjectLayerDepthSort);
+    std::sort(layerList.begin(), layerList.end(), sceneObjectLayerDepthSort);
 
     // Reset object index.
     U32 objectIndex = 0;
@@ -3842,15 +3842,11 @@ bool SceneObject::writeField(StringTableEntry fieldname, const char* value)
 
 //------------------------------------------------------------------------------
 
-S32 QSORT_CALLBACK SceneObject::sceneObjectLayerDepthSort(const void* a, const void* b)
+bool SceneObject::sceneObjectLayerDepthSort(const SceneObject* a, const SceneObject* b)
 {
-    // Fetch scene objects.
-    SceneObject* pSceneObjectA  = *((SceneObject**)a);
-    SceneObject* pSceneObjectB  = *((SceneObject**)b);
-
     // Fetch layers.
-    const U32 layerA = pSceneObjectA->getSceneLayer();
-    const U32 layerB = pSceneObjectB->getSceneLayer();
+    const U32 layerA = a->getSceneLayer();
+    const U32 layerB = b->getSceneLayer();
 
     if ( layerA < layerB )
         return -1;
@@ -3859,10 +3855,10 @@ S32 QSORT_CALLBACK SceneObject::sceneObjectLayerDepthSort(const void* a, const v
         return 1;
 
     // Fetch layer depths.
-    const F32 depthA = pSceneObjectA->getSceneLayerDepth();
-    const F32 depthB = pSceneObjectB->getSceneLayerDepth();
+    const F32 depthA = a->getSceneLayerDepth();
+    const F32 depthB = b->getSceneLayerDepth();
 
-    return depthA < depthB ? 1 : depthA > depthB ? -1 : pSceneObjectA->getSerialId() - pSceneObjectB->getSerialId();
+    return depthA < depthB ? false : depthA > depthB ? true : a->getSerialId() < b->getSerialId();
 }
 
 //-----------------------------------------------------------------------------

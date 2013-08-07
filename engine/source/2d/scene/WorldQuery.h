@@ -99,7 +99,7 @@ public:
 
 private:
     void            injectAlwaysInScope( void );
-    static S32      QSORT_CALLBACK rayCastFractionSort(const void* a, const void* b);
+    static bool            rayCastFractionSort(const WorldQueryResult a, const WorldQueryResult b);
 
 private:
     Scene*                      mpScene;

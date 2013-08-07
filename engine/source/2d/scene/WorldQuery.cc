@@ -560,7 +560,7 @@ void WorldQuery::sortRaycastQueryResult( void )
         return;
 
     // Sort query results.
-    dQsort( mQueryResults.address(), mQueryResults.size(), sizeof(WorldQueryResult), rayCastFractionSort );
+    std::sort(mQueryResults.begin(), mQueryResults.end(), rayCastFractionSort);
 
     for ( U32 layer = 0; layer < mLayeredQueryResults.size(); ++layer )
     {
@@ -572,7 +572,7 @@ void WorldQuery::sortRaycastQueryResult( void )
             continue;
 
         // Sort query results.
-        dQsort( layerQueryResults.address(), layerQueryResults.size(), sizeof(WorldQueryResult), rayCastFractionSort );
+        std::sort(layerQueryResults.begin(), layerQueryResults.end(), rayCastFractionSort);
     }
 }
 
@@ -897,25 +897,7 @@ void WorldQuery::injectAlwaysInScope( void )
 
 //-----------------------------------------------------------------------------
 
-S32 QSORT_CALLBACK WorldQuery::rayCastFractionSort(const void* a, const void* b)
+bool WorldQuery::rayCastFractionSort(const WorldQueryResult a, const WorldQueryResult b)
 {
-    // Debug Profiling.
-    PROFILE_SCOPE(WorldQuery_RayCastFractionSort);
-
-    // Fetch scene objects.
-    WorldQueryResult* pQueryResultA  = (WorldQueryResult*)a;
-    WorldQueryResult* pQueryResultB  = (WorldQueryResult*)b;
-
-    // Fetch fractions.
-    const F32 queryFractionA = pQueryResultA->mFraction;
-    const F32 queryFractionB = pQueryResultB->mFraction;
-
-    if ( queryFractionA < queryFractionB )
-        return -1;
-
-    if ( queryFractionA > queryFractionB )
-        return 1;
-
-    return 0;
+    return a.mFraction < b.mFraction;
 }
-

@@ -35,7 +35,7 @@ class SceneObject;
 
 class SceneObjectList : public Vector<SceneObject*>
 {
-	static S32 QSORT_CALLBACK compareId(const void* a,const void* b);
+	static bool compareId(const SceneObject* a,const SceneObject* b);
 
 public:
 	///< Add the SceneObject* to the end of the list, unless it's already in the list.

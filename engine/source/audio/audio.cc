@@ -180,18 +180,14 @@ inline LoopingList::iterator LoopingList::findImage(AUDIOHANDLE handle)
    return(end());
 }
 
-inline S32 QSORT_CALLBACK loopingImageSort(const void * p1, const void * p2)
+inline bool loopingImageSort(const LoopingImage * p1, const LoopingImage * p2)
 {
-   const LoopingImage * ip1 = *(const LoopingImage**)p1;
-   const LoopingImage * ip2 = *(const LoopingImage**)p2;
-
-   // min->max
-   return (S32)(ip2->mScore - ip1->mScore);
+   return (S32)(p2->mScore < p1->mScore);
 }
 
 void LoopingList::sort()
 {
-   dQsort(address(), size(), sizeof(LoopingImage*), loopingImageSort);
+    std::sort(begin(), end(), loopingImageSort);
 }
 
 //-------------------------------------------------------------------------
@@ -212,18 +208,15 @@ inline StreamingList::iterator StreamingList::findImage(AUDIOHANDLE handle)
    return(end());
 }
 
-inline S32 QSORT_CALLBACK streamingSourceSort(const void * p1, const void * p2)
+inline bool streamingSourceSort(const AudioStreamSource * p1, const AudioStreamSource * p2)
 {
-   const AudioStreamSource * ip1 = *(const AudioStreamSource**)p1;
-   const AudioStreamSource * ip2 = *(const AudioStreamSource**)p2;
-
    // min->max
-   return (S32)(ip2->mScore - ip1->mScore);
+   return (S32)(p2->mScore < p1->mScore);
 }
 
 void StreamingList::sort()
 {
-   dQsort(address(), size(), sizeof(AudioStreamSource*), streamingSourceSort);
+    std::sort(begin(), end(), streamingSourceSort);
 }
 
 //-------------------------------------------------------------------------

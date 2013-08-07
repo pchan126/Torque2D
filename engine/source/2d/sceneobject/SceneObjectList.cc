@@ -71,13 +71,12 @@ void SceneObjectList::removeStable(SceneObject* obj)
 
 void SceneObjectList::sortId()
 {
-	dQsort(address(),size(),sizeof(value_type),compareId);
+    std::sort(begin(), end(), compareId);
 }	
 
 //-----------------------------------------------------------------------------
 
-S32 QSORT_CALLBACK SceneObjectList::compareId(const void* a,const void* b)
+bool SceneObjectList::compareId(const SceneObject* a, const SceneObject* b)
 {
-   return (*reinterpret_cast<const SceneObject* const*>(a))->getId() -
-      (*reinterpret_cast<const SceneObject* const*>(b))->getId();
+    return a->getId() < b->getId();
 }
