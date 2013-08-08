@@ -59,7 +59,6 @@ ConsoleMethod( GuiTextCtrl, setTextID, void, 3, 3, "( int newTextID ) Set the te
 void GuiTextCtrl::initPersistFields()
 {
    Parent::initPersistFields();
-   //addField( "text",       TypeCaseString,  Offset( mInitialText, GuiTextCtrl ) );
    addProtectedField("text", TypeCaseString, Offset(mInitialText, GuiTextCtrl), setText, getTextProperty, "");
    addField( "textID", TypeString, Offset( mInitialTextID, GuiTextCtrl ) );
    addField( "maxLength", TypeS32, Offset( mMaxStrLen, GuiTextCtrl ) );

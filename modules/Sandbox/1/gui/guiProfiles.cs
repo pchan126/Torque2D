@@ -225,6 +225,25 @@ if (!isObject(GuiTextLabelProfile)) new GuiControlProfile (GuiTextLabelProfile)
     cursorColor = "0 0 0 255";
 };
 
+if (!isObject(GuiRightJustifyProfile)) new GuiControlProfile (GuiRightJustifyProfile)
+{
+    border=false;
+
+    // font
+    fontType = $labelFontType;
+    fontSize = $labelFontSize;
+
+    fontColor = "white";
+
+    modal = true;
+    justify = "right";
+    autoSizeWidth = false;
+    autoSizeHeight = false;
+    returnTab = false;
+    numbersOnly = false;
+    cursorColor = "0 0 0 255";
+};
+
 //-----------------------------------------------------------------------------
 
 if (!isObject(GuiCheckBoxProfile)) new GuiControlProfile (GuiCheckBoxProfile)

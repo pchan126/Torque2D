@@ -43,22 +43,35 @@ function GuiToy::reset( %this )
 	GuiToy.joystick1 = new GuiMoveCtrl(moveCtrl1)
 	{
 		Profile = SandboxWindowProfile;
-		Position = "-500 100";
+		Position = "-900 100";
 		Extent = "1000 150";
        isContainer = "1";
 
     };
 
+  new GuiSpriteCtrl(textBG1)
+  {
+    Profile="GuiToolboxProfile";
+    HorizSizing="width";
+    VertSizing="height";
+    Position="0 0";
+    Extent="550 120";
+    MinExtent="8 8";
+    Visible="1";
+	HelpTag="0";
+	Image="ToyAssets:textBGD1";
+	};
+
         new GuiTextCtrl(text1)
             {
                 text = %text;
-                Extent = %labelExtent * 10;
+                Extent = "400 100";
                 HorizSizing = "relative";
                 VertSizing = "relative";
-                Profile = "GuiTextLabelProfile";
+                Profile = "GuiRightJustifyProfile";
                 canSaveDynamicFields = "0";
                 isContainer = "0";
-                Position = "3 0";
+                Position = "100 5";
                 MinExtent = "8 2";
                 canSave = "0";
                 Visible = "1";
@@ -70,19 +83,37 @@ function GuiToy::reset( %this )
             };
 
     SandboxWindow.add( moveCtrl1 );
+    moveCtrl1.add( textBG1 );
     moveCtrl1.add( text1 );
-    text1.resizeWidthToText();
-	GuiToy.joystick1.setTargetPosition("500 100");
+//    text1.resizeWidthToText();
+//    text1.startTimer("onTimer", 500, 0);
+    text1.count = 0;
+	GuiToy.joystick1.setTargetPosition("-50 100");
 	GuiToy.joystick1.startMove(1.0);
 	GuiToy.joystick1.moveStatus = 1;
 }
 
+//function text1::onTimer(%this)
+//{
+//   %this.count++;
+//   %this.setText(%this.count);
+////   %this.resizeWidthToText();
+//}
+
+
 function moveCtrl1::onMoveToComplete(%this)
 {
+   if (%this.moveStatus == 1)
+   {
+      text1.count++;
+      text1.setText(text1.count);
+   }
+
 	%this.moveStatus = -%this.moveStatus;
 	%pos = %this.getPosition();
-//	echo("moveCtrl1.onMoveToComplete" SPC %pos);
-	%this.setTargetPosition(%pos.x+(1000*%this.moveStatus), %pos.y );
-	%this.startMove();
+
+	%this.setTargetPosition(%pos.x+(900*%this.moveStatus), %pos.y );
+   %this.schedule( 1000, "startMove");
+//	%this.startMove();
 
 }

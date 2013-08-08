@@ -13,14 +13,11 @@
 class GuiMoveCtrl : public GuiTickCtrl
 {
 public:
-    /// Camera Interpolation Mode.
     enum InterpolationMode
     {
         INVALID_INTERPOLATION_MODE,
-
         LINEAR,             ///< Standard Linear.
         SIGMOID             ///< Slow Start / Slow Stop.
-
     } mInterpolationMode;
 
     GuiMoveCtrl();

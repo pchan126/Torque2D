@@ -1738,7 +1738,7 @@ ConsoleMethod(SimObject, getProgenitorFile, const char*, 2, 2,  "() Gets the pro
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(SimObject, startTimer, bool, 4, 5,    "(callbackFunction, float timePeriod, [repeat]) - Starts a periodic timer for this object.\n"
+ConsoleMethod(SimObject, startTimer, bool, 4, 5,    "(callbackFunction, int timePeriod, [repeat]) - Starts a periodic timer for this object.\n"
                                                     "Sets a timer on the object that, when it expires, will cause the object to execute the onTimer() callback.\n"
                                                     "The timer event will continue to occur at regular intervals until setTimerOff() is called.\n"
                                                     "@param callbackFunction The name of the callback function to call for each timer repetition.\n"
