@@ -65,7 +65,7 @@ function GuiToy::reset( %this )
         new GuiTextCtrl(text1)
             {
                 text = %text;
-                Extent = "400 100";
+                Extent = "400 80";
                 HorizSizing = "relative";
                 VertSizing = "relative";
                 Profile = "GuiRightJustifyProfile";

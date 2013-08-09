@@ -227,13 +227,14 @@ if (!isObject(GuiTextLabelProfile)) new GuiControlProfile (GuiTextLabelProfile)
 
 if (!isObject(GuiRightJustifyProfile)) new GuiControlProfile (GuiRightJustifyProfile)
 {
-    border=false;
-
     // font
     fontType = $labelFontType;
     fontSize = $labelFontSize;
 
     fontColor = "white";
+
+    opaque = true;
+    fillColor = "0 0 0 250";
 
     modal = true;
     justify = "right";

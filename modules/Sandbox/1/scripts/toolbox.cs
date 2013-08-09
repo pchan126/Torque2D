@@ -551,10 +551,11 @@ function ToyListArray::initialize(%this, %index)
 
         // Add the toy GUI list.
         %this.addToyButton(%moduleTitle, %moduleDefinition);
-        
+      
         // Select the toy if it's the default and we've not selected a toy yet.
         if (!$defaultToySelected && %moduleDefinition.moduleId $= $pref::Sandbox::defaultToyId && %moduleDefinition.versionId == $pref::Sandbox::defaultToyVersionId )
         {
+        echo (%moduleDefinition.moduleId SPC $pref::Sandbox::defaultToyId);
             $defaultToySelected = true;
             $defaultModuleID = %moduleDefinition.getId();
         }

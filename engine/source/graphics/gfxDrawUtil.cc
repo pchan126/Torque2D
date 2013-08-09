@@ -26,15 +26,8 @@
 #include "memory/frameAllocator.h"
 #include "platform/platformString.h"
 #include "string/unicode.h"
-//#include "math/util/frustum.h"
-//#include "math/util/sphereMesh.h"
-//#include "math/mathUtils.h"
 #include "graphics/gfxFontRenderBatcher.h"
-//#include "graphics/gfxTransformSaver.h"
 #include "graphics/primBuilder.h"
-//#include "graphics/gfxDebugEvent.h"
-
-//#include "math/mPolyhedron.impl.h"
 
 
 GFXDrawUtil::GFXDrawUtil( GFXDevice * d):
@@ -241,6 +234,8 @@ U32 GFXDrawUtil::drawTextN( GFont *font,
                            const U32 maxColorIndex,
                            F32 rot )
 {
+   std::u16string buf(in_string, n);
+   
    // return on zero length strings
    if( n == 0 )
       return ptDraw.x;
@@ -265,9 +260,9 @@ U32 GFXDrawUtil::drawTextN( GFont *font,
    // Queue everything for render.   
    mFontRenderBatcher->init(font, n);
 
-   U32 i;
-   UTF16 c;   
-   for(i = 0, c = in_string[i]; in_string[i] && i < n; i++, c = in_string[i])
+//   U32 i;
+//   UTF16 c;   
+   for(UTF16 c:buf)
    {
       switch(c)
       {

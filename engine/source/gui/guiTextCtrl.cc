@@ -207,9 +207,25 @@ void GuiTextCtrl::onPreRender()
 //------------------------------------------------------------------------------
 void GuiTextCtrl::onRender(Point2I offset, const RectI &updateRect)
 {
+//    bool mOpaque;                                   ///< True if this object is not translucent
+//    ColorI mFillColor;                              ///< Fill color, this is used to fill the bounds of the control if it is opaque
+//    ColorI mFillColorHL;                            ///< This is used insetead of mFillColor if the object is highlited
+//    ColorI mFillColorNA;                            ///< This is used to instead of mFillColor if the object is not active or disabled
+   RectI ctrlRect(offset, getExtent());
+
+    if (mProfile->mOpaque)
+    {
+        ColorI BGColor = mProfile->mFillColor;
+       GFX->getDrawUtil()->setBitmapModulation(BGColor);
+        GFX->getDrawUtil()->drawRectFill(ctrlRect, BGColor);
+    }
+
 	StringBuffer textBuffer(mText);
 
    ColorI fontColor = mProfile->mFontColor;
+   
+   U32 baseline = mFont->getBaseline();
+   S32 vertIndent = getMax(0, (S32)(ctrlRect.extent.y - baseline)/2);
 
 	if (mTruncateWhenUnfocused)
     {

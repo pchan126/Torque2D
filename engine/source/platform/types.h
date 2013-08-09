@@ -46,8 +46,8 @@ typedef double             F64;     ///< Compiler independent 64-bit float
 //------------------------------------- String Types
 
 typedef char           UTF8;        ///< Compiler independent 8  bit Unicode encoded character
-typedef unsigned short UTF16;       ///< Compiler independent 16 bit Unicode encoded character
-typedef unsigned int   UTF32;       ///< Compiler independent 32 bit Unicode encoded character
+typedef char16_t       UTF16;       ///< Compiler independent 16 bit Unicode encoded character
+typedef char32_t       UTF32;       ///< Compiler independent 32 bit Unicode encoded character
 
 typedef const char* StringTableEntry;
 
