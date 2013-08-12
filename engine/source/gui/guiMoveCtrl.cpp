@@ -59,7 +59,10 @@ bool GuiMoveCtrl::onAdd()
 
 F32 GuiMoveCtrl::interpolate( F32 from, F32 to, F32 delta )
 {
-    // Linear.
+   if (from == to)
+      return from;
+
+   // Linear.
     if ( mInterpolationMode == LINEAR )
         return mLerp( from, to, delta );
             // Sigmoid.
@@ -225,10 +228,17 @@ void GuiMoveCtrl::updateMove()
         return;
     }
 
+   if (mBounds.point != mTargetRect.point)  // prevent unnesscessary resizing.
+   {
     mBounds.point.x    = interpolate( mBounds.point.x, mTargetRect.point.x, normTime );
     mBounds.point.y    = interpolate( mBounds.point.y, mTargetRect.point.y, normTime );
-    mBounds.extent.x   = interpolate( mBounds.extent.x, mTargetRect.extent.x, normTime );
-    mBounds.extent.y   = interpolate( mBounds.extent.y, mTargetRect.extent.y, normTime );
+   }
+
+   if (mBounds.extent != mTargetRect.extent)  // prevent unnesscessary resizing.
+   {
+       mBounds.extent.x   = interpolate( mBounds.extent.x, mTargetRect.extent.x, normTime );
+       mBounds.extent.y   = interpolate( mBounds.extent.y, mTargetRect.extent.y, normTime );
+   }
 }
 
 void GuiMoveCtrl::onRender(Point2I offset, const RectI &updateRect)
