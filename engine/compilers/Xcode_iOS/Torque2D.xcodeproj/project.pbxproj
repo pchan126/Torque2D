@@ -227,7 +227,6 @@
 		867BB09216AEC9050033868F /* guiTextEditCtrl.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAEAA16AEC9050033868F /* guiTextEditCtrl.cc */; };
 		867BB09316AEC9050033868F /* guiTextEditSliderCtrl.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAEAC16AEC9050033868F /* guiTextEditSliderCtrl.cc */; };
 		867BB09416AEC9050033868F /* guiTextListCtrl.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAEAE16AEC9050033868F /* guiTextListCtrl.cc */; };
-		867BB09516AEC9050033868F /* guiTickCtrl.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAEB016AEC9050033868F /* guiTickCtrl.cc */; };
 		867BB09616AEC9050033868F /* guiTreeViewCtrl.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAEB216AEC9050033868F /* guiTreeViewCtrl.cc */; };
 		867BB09716AEC9050033868F /* guiTypes.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAEB416AEC9050033868F /* guiTypes.cc */; };
 		867BB09816AEC9050033868F /* lang.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAEB716AEC9050033868F /* lang.cc */; };
@@ -1047,8 +1046,6 @@
 		867BAEAD16AEC9050033868F /* guiTextEditSliderCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiTextEditSliderCtrl.h; sourceTree = "<group>"; };
 		867BAEAE16AEC9050033868F /* guiTextListCtrl.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiTextListCtrl.cc; sourceTree = "<group>"; };
 		867BAEAF16AEC9050033868F /* guiTextListCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiTextListCtrl.h; sourceTree = "<group>"; };
-		867BAEB016AEC9050033868F /* guiTickCtrl.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiTickCtrl.cc; sourceTree = "<group>"; };
-		867BAEB116AEC9050033868F /* guiTickCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiTickCtrl.h; sourceTree = "<group>"; };
 		867BAEB216AEC9050033868F /* guiTreeViewCtrl.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiTreeViewCtrl.cc; sourceTree = "<group>"; };
 		867BAEB316AEC9050033868F /* guiTreeViewCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiTreeViewCtrl.h; sourceTree = "<group>"; };
 		867BAEB416AEC9050033868F /* guiTypes.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiTypes.cc; sourceTree = "<group>"; };
@@ -2396,8 +2393,6 @@
 				867BAEAD16AEC9050033868F /* guiTextEditSliderCtrl.h */,
 				867BAEAE16AEC9050033868F /* guiTextListCtrl.cc */,
 				867BAEAF16AEC9050033868F /* guiTextListCtrl.h */,
-				867BAEB016AEC9050033868F /* guiTickCtrl.cc */,
-				867BAEB116AEC9050033868F /* guiTickCtrl.h */,
 				867BAEB216AEC9050033868F /* guiTreeViewCtrl.cc */,
 				867BAEB316AEC9050033868F /* guiTreeViewCtrl.h */,
 				867BAEB416AEC9050033868F /* guiTypes.cc */,
@@ -3739,7 +3734,6 @@
 				867BB09216AEC9050033868F /* guiTextEditCtrl.cc in Sources */,
 				867BB09316AEC9050033868F /* guiTextEditSliderCtrl.cc in Sources */,
 				867BB09416AEC9050033868F /* guiTextListCtrl.cc in Sources */,
-				867BB09516AEC9050033868F /* guiTickCtrl.cc in Sources */,
 				867BB09616AEC9050033868F /* guiTreeViewCtrl.cc in Sources */,
 				867BB09716AEC9050033868F /* guiTypes.cc in Sources */,
 				867BB09816AEC9050033868F /* lang.cc in Sources */,

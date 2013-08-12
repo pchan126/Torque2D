@@ -23,39 +23,19 @@
 #ifndef _GUICONTROL_H_
 #define _GUICONTROL_H_
 
-#ifndef _PLATFORM_H_
 #include "platform/platform.h"
-#endif
-#ifndef _MPOINT_H_
 #include "math/mPoint.h"
-#endif
-#ifndef _MRECT_H_
 #include "math/mRect.h"
-#endif
-#ifndef _COLOR_H_
 #include "graphics/color.h"
-#endif
-#ifndef _SIMBASE_H_
 #include "sim/simBase.h"
-#endif
-#ifndef _GUITYPES_H_
 #include "gui/guiTypes.h"
-#endif
-#ifndef _EVENT_H_
 #include "platform/event.h"
-#endif
-#ifndef _STRINGBUFFER_H_
 #include "string/stringBuffer.h"
-#endif
-
 #include "delegates/delegateSignal.h"
 #include "collection/vector.h"
-
-#ifndef _LANG_H_
 #include "gui/language/lang.h"
-#endif
-
 #include "graphics/gfxStateBlock.h"
+#include "platform/Tickable.h"
 
 class GuiCanvas;
 class GuiEditCtrl;
@@ -107,7 +87,7 @@ typedef Delegate<bool( const Point2I &hoverPos, const Point2I &cursorPos, const 
 ///
 /// @ingroup gui_group Gui System
 /// @{
-class GuiControl : public SimGroup
+class GuiControl : public SimGroup, public virtual Tickable
 {
 public:
    typedef SimGroup Parent;
@@ -241,6 +221,13 @@ protected:
     F32 getFloatVariable();    ///< Returns value of control's bound variable as a float
 
     GFXStateBlockRef mDefaultGuiSB;
+
+    // So this can be instantiated and not be a pure virtual class
+    virtual void interpolateTick( F32 delta ) {};
+    virtual void processTick() {};
+    virtual void advanceTime( F32 timeDelta ) {};
+
+
 public:
     /// Set the name of the console variable which this GuiObject is bound to
     /// @param   variable   Variable name

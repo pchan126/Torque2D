@@ -283,4 +283,15 @@ ConsoleMethod(GuiControl, setFirstResponder, void , 2, 2, "Sets this control as 
     object->setFirstResponder();
 }
 
+//------------------------------------------------------------------------------
+
+ConsoleMethod( GuiControl, setProcessTicks, void, 2, 3, "( [tick = true] ) - This will set this object to either be processing ticks or not\n"
+        "@return No return value." )
+{
+    if( argc == 3 )
+        object->setProcessTicks( dAtob( argv[2] ) );
+    else
+        object->setProcessTicks();
+}
+
 #endif

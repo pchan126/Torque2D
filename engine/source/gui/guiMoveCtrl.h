@@ -8,9 +8,9 @@
 #define __guiMoveCtrl_H_
 
 #include "gui/guiControl.h"
-#include "gui/guiTickCtrl.h"
+#include "guiControl.h"
 
-class GuiMoveCtrl : public GuiTickCtrl
+class GuiMoveCtrl : public GuiControl
 {
 public:
     enum InterpolationMode
@@ -49,7 +49,7 @@ public:
    void onRender(Point2I offset, const RectI &updateRect);
 
 private:
-    typedef GuiTickCtrl Parent;
+    typedef GuiControl  Parent;
     F32                 mPreTime;
     F32                 mPostTime;
     F32                 mRenderTime;

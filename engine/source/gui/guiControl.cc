@@ -1715,10 +1715,11 @@ void GuiControl::renderJustifiedText(Point2I offset, Point2I extent, const char 
       start.set( 0, 0 );
 
    // center the vertical
-   if(font->getHeight() > (U32)extent.y)
-      start.y = 0 - ((font->getHeight() - extent.y) / 2) ;
+   U32 fontHeight = font->getHeight();
+   if(fontHeight > (U32)extent.y)
+      start.y = 0 - ((fontHeight - extent.y) / 2) ;
    else
-      start.y = ( extent.y - font->getHeight() ) / 2;
+      start.y = ( extent.y - fontHeight ) / 2;
 
    GFX->getDrawUtil()->drawText( font, start + offset, text, mProfile->mFontColors );
 }
@@ -1765,3 +1766,5 @@ const char* GuiControl::execAltConsoleCallback()
    }
    return "";
 }
+
+
