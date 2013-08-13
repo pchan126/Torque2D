@@ -214,31 +214,28 @@ void FilterImageAsset::calculateImage( void )
       return;
    }
    
-   mImageTextureHandle = texture;
+//    mImageTextureHandle = texture;
 
-//    GFXTextureTarget *texTarget = GFX->allocRenderToTextureTarget();
-//    
-//    mImageTextureHandle = TEXMGR->createTexture( texture->getWidth(), texture->getHeight(), GFXFormatR8G8B8A8, &GFXImageAssetTextureProfile, 0, 0 );
-//    GFXOpenGLTextureObject* outTexture = dynamic_cast<GFXOpenGLTextureObject*>(mImageTextureHandle.getPointer());
-//   
-//    texTarget->attachTexture(mImageTextureHandle);
-////   texTarget->attachTexture(texture);
-//   
-//    GFXTarget *oldTarget = GFX->getActiveRenderTarget();
-//    device->setActiveRenderTarget(texTarget);
-//
-//    CGSize texSize;
-//    texSize.height = texture->getHeight();
-//    texSize.width = texture->getWidth();
-//   
-//   CIFilter *newFilter = [CIFilter filterWithName:@"CIConstantColorGenerator"];
-//   [newFilter setDefaults];
-//   [newFilter setValue:[CIColor colorWithRed:1.0f green:0.0f blue:0.0f] forKey:@"inputColor"];
-//   
-////    CIImage *input = [CIImage imageWithTexture:texture->getHandle() size:texSize flipped:FALSE colorSpace:nil];
+    GFXTextureTarget *texTarget = GFX->allocRenderToTextureTarget();
+    mImageTextureHandle = TEXMGR->createTexture( texture->getWidth(), texture->getHeight(), GFXFormatR8G8B8A8, &GFXImageAssetTextureProfile, 0, 0 );
+    texTarget->attachTexture(mImageTextureHandle);
+
+    GFXTarget *oldTarget = GFX->getActiveRenderTarget();
+    device->setActiveRenderTarget(texTarget);
+    GFX->updateStates(true);
+
+    CGSize texSize;
+    texSize.height = texture->getHeight();
+    texSize.width = texture->getWidth();
+
+   CIFilter *newFilter = [CIFilter filterWithName:@"CIConstantColorGenerator"];
+   [newFilter setDefaults];
+   [newFilter setValue:[CIColor colorWithRed:1.0f green:0.0f blue:0.0f] forKey:@"inputColor"];
+
+//    CIImage *input = [CIImage imageWithTexture:texture->getHandle() size:texSize flipped:FALSE colorSpace:nil];
 //   CIImage *input = [newFilter valueForKey:kCIOutputImageKey];
-//    CGRect rect = CGRectMake(0, 0, texSize.width, texSize.height);
-//    
+    CGRect rect = CGRectMake(0, 0, texSize.width, texSize.height);
+
 //    if (mFilter != nil)
 //    {
 //       [mFilter setDefaults];
@@ -248,7 +245,7 @@ void FilterImageAsset::calculateImage( void )
 //           NSDictionary* info = [mFilter.attributes objectForKey:string];
 //           StringTableEntry strvalue = getDataField(StringTable->insert(string.UTF8String), NULL);
 //           Con::printf("%s: %s", string.UTF8String, strvalue);
-//           
+//
 //           if (strvalue != NULL)
 //           {
 //              NSObject *value = [NSClassFromString([info objectForKey:kCIAttributeClass]) alloc];
@@ -332,14 +329,14 @@ void FilterImageAsset::calculateImage( void )
 //           }
 //        }
 //    }
-//    
-//    CIImage *output = [mFilter valueForKey:kCIOutputImageKey];
-//    // draw Image to textureTarget
-//    device->drawImage(output, rect, rect);
-//
-//    GFX->setActiveRenderTarget(oldTarget);
-//    GFX->updateStates(true);
-//
+
+    CIImage *output = [newFilter valueForKey:kCIOutputImageKey];
+    // draw Image to textureTarget
+    device->drawImage(output, rect, rect);
+
+    GFX->setActiveRenderTarget(oldTarget);
+    GFX->updateStates(true);
+
 
    // Calculate according to mode.
    if ( mExplicitMode )

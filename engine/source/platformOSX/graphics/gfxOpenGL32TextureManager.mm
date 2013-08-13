@@ -391,6 +391,7 @@ void GFXOpenGL32TextureManager::innerCreateTexture( GFXOpenGL32TextureObject *re
                                                U32 numMipLevels,
                                                bool forceMips)
 {
+    GFXOpenGLDevice *device = dynamic_cast<GFXOpenGLDevice*>(GFX);
    // No 24 bit formats.  They trigger various oddities because hardware (and Apple's drivers apparently...) don't natively support them.
    if(format == GFXFormatR8G8B8)
       format = GFXFormatR8G8B8A8;
@@ -399,37 +400,16 @@ void GFXOpenGL32TextureManager::innerCreateTexture( GFXOpenGL32TextureObject *re
    retTex->mIsZombie = false;
    retTex->mIsNPoT2 = false;
    
-//   GLenum binding = (depth == 0) ? GL_TEXTURE_2D : GL_TEXTURE_3D;
-    GLenum binding = GL_TEXTURE_2D;
+   GLenum binding = (depth == 0) ? GL_TEXTURE_2D : GL_TEXTURE_3D;
 
-//   if((profile->testFlag(GFXTextureProfile::RenderTarget) || profile->testFlag(GFXTextureProfile::ZTarget)) && (!isPow2(width) || !isPow2(height)) && !depth)
-//   {
-//      retTex->mIsNPoT2 = true;
-//   }
+   if((profile->testFlag(GFXTextureProfile::RenderTarget) || profile->testFlag(GFXTextureProfile::ZTarget)) && (!isPow2(width) || !isPow2(height)) && !depth)
+      retTex->mIsNPoT2 = true;
+
    retTex->mBinding = binding;
    
     // Bind it
-   glActiveTexture(GL_TEXTURE0);
-//   PRESERVE_2D_TEXTURE();
-//   PRESERVE_3D_TEXTURE();
+   device->setTextureUnit(0);
    glBindTexture(binding, retTex->getHandle());
-   
-//   // Create it
-//   // TODO: Reenable mipmaps on render targets when Apple fixes their drivers
-//   if(forceMips && !retTex->mIsNPoT2)
-//   {
-//      glTexParameteri(binding, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
-//      retTex->mMipLevels = 0;
-//   }
-//   else if(profile->testFlag(GFXTextureProfile::NoMipmap) || profile->testFlag(GFXTextureProfile::RenderTarget) || numMipLevels == 1 || retTex->mIsNPoT2)
-//   {
-//      retTex->mMipLevels = 1;
-//   }
-//   else
-//   {
-//      glTexParameteri(binding, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
-//      retTex->mMipLevels = 0;
-//   }
 
    if(!retTex->mIsNPoT2)
    {
@@ -445,28 +425,10 @@ void GFXOpenGL32TextureManager::innerCreateTexture( GFXOpenGL32TextureObject *re
    AssertFatal(GFXGLTextureFormat[format] != GL_ZERO, "GFXOpenGL32TextureManager::innerCreateTexture - invalid format");
    AssertFatal(GFXGLTextureType[format] != GL_ZERO, "GFXOpenGL32TextureManager::innerCreateTexture - invalid type");
 
-    // Complete the texture
-    glTexParameteri(binding, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(binding, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(binding, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(binding, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    //   if(binding != GL_TEXTURE_3D)
-    glTexImage2D(binding, 0, GFXGLTextureInternalFormat[format], width, height, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], NULL);
-
-    //   else
-//      glTexImage3D(GL_TEXTURE_3D, 0, GFXGLTextureInternalFormat[format], width, height, depth, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], NULL);
-   
-//   if(binding == GL_TEXTURE_3D)
-//      glTexParameteri(binding, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-   
-   // Get the size from GL (you never know...)
-//   GLint texHeight, texWidth, texDepth = 0;
-   
-//   glGetTexLevelParameteriv(binding, 0, GL_TEXTURE_WIDTH, &texWidth);
-//   glGetTexLevelParameteriv(binding, 0, GL_TEXTURE_HEIGHT, &texHeight);
-//   if(binding == GL_TEXTURE_3D)
-//      glGetTexLevelParameteriv(binding, 0, GL_TEXTURE_DEPTH, &texDepth);
+   if(binding != GL_TEXTURE_3D)
+       glTexImage2D(binding, 0, GFXGLTextureInternalFormat[format], width, height, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], NULL);
+   else
+      glTexImage3D(GL_TEXTURE_3D, 0, GFXGLTextureInternalFormat[format], width, height, depth, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], NULL);
    
     retTex->mTextureSize.set(width, height, 0);
 }

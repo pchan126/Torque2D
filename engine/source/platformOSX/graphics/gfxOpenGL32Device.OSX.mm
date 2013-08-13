@@ -282,23 +282,24 @@ void GFXOpenGL32Device::clear(U32 flags, ColorI color, F32 z, U32 stencil)
 void GFXOpenGL32Device::setTextureInternal(U32 textureUnit, GFXTextureObject *texture)
 {
     GFXOpenGL32TextureObject *tex = static_cast<GFXOpenGL32TextureObject*>(texture);
-    glActiveTexture(GL_TEXTURE0 + textureUnit);
     if (tex)
     {
         // GFXOpenGL32TextureObject::bind also handles applying the current sampler state.
         if(mActiveTextureType[textureUnit] != tex->getBinding() && mActiveTextureType[textureUnit] != GL_ZERO)
         {
-            glBindTexture(mActiveTextureType[textureUnit], 0);
+            setTextureUnit(textureUnit);
+            glBindTexture(mActiveTextureType[textureUnit], GL_ZERO);
         }
         mActiveTextureType[textureUnit] = tex->getBinding();
         tex->bind(textureUnit);
     }
     else if(mActiveTextureType[textureUnit] != GL_ZERO)
     {
+        setTextureUnit(textureUnit);
         glBindTexture(mActiveTextureType[textureUnit], GL_ZERO);
         mActiveTextureType[textureUnit] = GL_ZERO;
     }
-    glActiveTexture(GL_TEXTURE0);
+    setTextureUnit(0);
 }
 
 
@@ -488,23 +489,8 @@ void GFXOpenGL32Device::_updateRenderTargets()
 // special immediate function for drawing CIImages
 void GFXOpenGL32Device::drawImage( CIImage* image, CGRect inRect, CGRect fromRect)
 {
-   updateStates(true);
-
-//    CIContext *context = [[NSGraphicsContext currentContext] CIContext];
-
-   CGLContextObj cglContext = (CGLContextObj)[[NSOpenGLContext currentContext] CGLContextObj];
-   CGLPixelFormatObj cglPixelFormat = CGLGetPixelFormat(cglContext);
-   
-   NSDictionary *opts = @{ kCIContextWorkingColorSpace : [NSNull null] };
-   mCIContext = [CIContext contextWithCGLContext: cglContext
-                                     pixelFormat: cglPixelFormat
-                                      colorSpace:nil
-                                         options:opts];
-   
-//   [context drawImage:image inRect:inRect fromRect:fromRect];
+   mCIContext = [[NSGraphicsContext currentContext] CIContext];
    [mCIContext drawImage:image inRect:inRect fromRect:fromRect];
-
-    glGetError();
 }
 
 //
