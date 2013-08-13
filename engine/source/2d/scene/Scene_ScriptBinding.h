@@ -142,7 +142,7 @@ ConsoleMethod(Scene, setLayerLight, void, 6, 7, "int layer, (float red, float gr
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(Scene, setCameraPositionScale, void, 5, 5, "int layer, (float x, float y) - Sets the sprite blend color."
+ConsoleMethod(Scene, setCameraPositionScale, void, 5, 5, "int layer, (float x, float y) - Sets a scale value for camera translation for this layer."
         "@param layer The layer to set an position scale for.\n"
         "@param x The x value.\n"
         "@param y The y value.\n"

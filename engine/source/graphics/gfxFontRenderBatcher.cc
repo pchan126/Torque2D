@@ -94,7 +94,10 @@ void FontRenderBatcher::render( F32 rot, const Point2F &offset )
          const PlatformFont::CharInfo &ci = mFont->getCharInfo( m.c );
 
          // Where are we drawing it?
-         F32 drawY = offset.y + mFont->getBaseline() - ci.yOrigin * TEXT_MAG;
+         U32 baseLine = mFont->getBaseline();
+         F32 drawY = offset.y;
+          drawY += baseLine;
+          drawY -= ci.yOrigin * TEXT_MAG;
          F32 drawX = offset.x + m.x + ci.xOrigin;
 
           // Figure some values.

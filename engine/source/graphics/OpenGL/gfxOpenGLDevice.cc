@@ -100,12 +100,116 @@ void GFXOpenGLDevice::setBlendFunc( GFXBlend blendSrc, GFXBlend blendDest )
     }
 }
 
+void GFXOpenGLDevice::setBlendFuncSeparate( GFXBlend srcRGB, GFXBlend dstRGB, GFXBlend srcAlpha, GFXBlend dstAlpha)
+{
+    if (mBlendSrcState != srcRGB || mBlendDestState != dstRGB)
+    {
+        mBlendSrcState = srcRGB;
+        mBlendDestState = dstRGB;
+        glBlendFuncSeparate(GFXGLBlend[mBlendSrcState], GFXGLBlend[mBlendDestState], GFXGLBlend[separateAlphaBlendSrc], GFXGLBlend[separateAlphaBlendDest]);
+    }
+}
+
 void GFXOpenGLDevice::setBlendEquation( GFXBlendOp blendOp)
 {
     if (mBlendOp != blendOp)
     {
         mBlendOp = blendOp;
         glBlendEquation(GFXGLBlendOp[mBlendOp]);
+    }
+}
+
+void GFXOpenGLDevice::setBlendEquationSeparate( GFXBlendOp opRGB, GFXBlendOp opAlpha)
+{
+    if (mBlendOp != opRGB)
+    {
+        mBlendOp = opRGB;
+        separateAlphaBlendOp = opAlpha;
+        glBlendEquationSeparate(GFXGLBlendOp[mBlendOp], GFXGLBlendOp[separateAlphaBlendOp]);
+    }
+}
+
+void GFXOpenGLDevice::setDepthTest(bool enable)
+{
+    if (depthTest != enable)
+    {
+        if (enable)
+        {
+            glEnable(GL_DEPTH_TEST);
+        }
+        else
+        {
+            glDisable(GL_DEPTH_TEST);
+        }
+        depthTest = enable;
+    }
+}
+
+
+void GFXOpenGLDevice::setDepthFunc( GFXCmpFunc func )
+{
+   if ( depthFunc != func )
+   {
+       glDepthFunc(GFXGLCmpFunc[func]);
+       depthFunc = func;
+   }
+}
+
+
+void GFXOpenGLDevice::setDepthMask(bool flag)
+{
+    if (depthMask != flag)
+    {
+        glDepthMask(flag);
+        depthMask = flag;
+    }
+}
+
+
+void GFXOpenGLDevice::setStencilEnable(bool enable)
+{
+    if (mStencilEnable != enable)
+    {
+        if (enable)
+        {
+            glEnable(GL_STENCIL_TEST);
+        }
+        else
+        {
+            glDisable(GL_STENCIL_TEST);
+        }
+        mStencilEnable = enable;
+    }
+}
+
+void GFXOpenGLDevice::setStencilFunc( GFXCmpFunc func, U32 ref, U32 mask)
+{
+    if ( mStencilFunc != func || mStencilRef != ref || mStencilMask != mask )
+    {
+        glStencilFunc(GFXGLCmpFunc[func], ref, mask);
+        mStencilFunc = func;
+        mStencilRef = ref;
+        mStencilMask = mask;
+    }
+}
+
+void GFXOpenGLDevice::setStencilOp(GFXStencilOp failOp, GFXStencilOp zFailOp, GFXStencilOp passOp)
+{
+    if ( mStencilFailOp != failOp || mStencilZFailOp != zFailOp || mStencilPassOp != passOp )
+    {
+        glStencilOp(GFXGLStencilOp[failOp], GFXGLStencilOp[zFailOp], GFXGLStencilOp[passOp]);
+        mStencilFailOp = failOp;
+        mStencilZFailOp = zFailOp;
+        mStencilPassOp = passOp;
+    }
+}
+
+void GFXOpenGLDevice::setStencilWriteMask( U32 writeMask )
+{
+    if (mStencilWriteMask != writeMask)
+    {
+        mStencilMask = writeMask;
+        glStencilMask(writeMask);
     }
 }
 
@@ -409,40 +513,37 @@ void GFXOpenGLDevice::setStateBlockInternal(GFXStateBlock* block, bool force)
 
     // Blending
     setBlending(desc.blendEnable);
-    setBlendFunc(desc.blendSrc, desc.blendDest);
-    setBlendEquation(desc.blendOp);
+    if (desc.separateAlphaBlendEnable)
+    {
+        setBlendFuncSeparate(desc.blendSrc, desc.blendDest, desc.separateAlphaBlendSrc, desc.separateAlphaBlendDest);
+        setBlendEquationSeparate(desc.blendOp, desc.separateAlphaBlendOp);
+    }
+    else
+    {
+        setBlendFunc(desc.blendSrc, desc.blendDest);
+        setBlendEquation(desc.blendOp);
+    }
+
+
     setColorMask(desc.colorWriteRed, desc.colorWriteBlue, desc.colorWriteGreen, desc.colorWriteAlpha);
     setCullMode(desc.cullMode);
 
-//    // Depth
-//    CHECK_TOGGLE_STATE(zEnable, GL_DEPTH_TEST);
-//
-//    if(STATE_CHANGE(zFunc))
-//        glDepthFunc(GFXGLCmpFunc[mDesc.zFunc]);
-//
-//    if(STATE_CHANGE(zBias))
-//    {
-//        if (mDesc.zBias == 0)
-//        {
-//            glDisable(GL_POLYGON_OFFSET_FILL);
-//        } else {
-//            F32 bias = mDesc.zBias * 10000.0f;
-//            glEnable(GL_POLYGON_OFFSET_FILL);
-//            glPolygonOffset(bias, bias);
-//        }
-//    }
-//
-//    if(STATE_CHANGE(zWriteEnable))
-//        glDepthMask(mDesc.zWriteEnable);
-//
-//    // Stencil
-//    CHECK_TOGGLE_STATE(stencilEnable, GL_STENCIL_TEST);
-//    if(STATE_CHANGE(stencilFunc) || STATE_CHANGE(stencilRef) || STATE_CHANGE(stencilMask))
-//        glStencilFunc(GFXGLCmpFunc[mDesc.stencilFunc], mDesc.stencilRef, mDesc.stencilMask);
-//    if(STATE_CHANGE(stencilFailOp) || STATE_CHANGE(stencilZFailOp) || STATE_CHANGE(stencilPassOp))
-//        glStencilOp(GFXGLStencilOp[mDesc.stencilFailOp], GFXGLStencilOp[mDesc.stencilZFailOp], GFXGLStencilOp[mDesc.stencilPassOp]);
-//    if(STATE_CHANGE(stencilWriteMask))
-//        glStencilMask(mDesc.stencilWriteMask);
+    // Depth
+    if (desc.zDefined)
+    {
+        setDepthTest(desc.zEnable);
+        setDepthFunc(desc.zFunc);
+        setDepthMask(desc.zWriteEnable);
+    }
+
+    // Stencil
+    if (desc.stencilDefined)
+    {
+        setStencilEnable(desc.stencilEnable);
+        setStencilFunc(desc.stencilFunc, desc.stencilRef, desc.stencilMask);
+        setStencilOp(desc.stencilFailOp, desc.stencilZFailOp, desc.stencilPassOp);
+        setStencilWriteMask(desc.stencilWriteMask);
+    }
 
     setFillMode(desc.fillMode);
 

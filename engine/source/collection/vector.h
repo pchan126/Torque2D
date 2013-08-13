@@ -303,7 +303,7 @@ template<class T> inline U32 Vector<T>::push_back_unique(const T& x)
       index = _vector.size() - 1;
    }
 
-   return index;
+   return (U32)index;
 }
 
 
@@ -317,7 +317,7 @@ template<class T> inline U32 Vector<T>::push_back_unique(T&& x)
         index = _vector.size() - 1;
     }
 
-    return index;
+    return (U32)index;
 }
 
 template<class T> inline S32 Vector<T>::find_next_index( const T& x, U32 start )

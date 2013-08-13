@@ -23,15 +23,9 @@
 #ifndef _STRINGTABLE_H_
 #define _STRINGTABLE_H_
 
-#ifndef _PLATFORM_H_
 #include "platform/platform.h"
-#endif
-#ifndef _PLATFORM_THREADS_MUTEX_H_
 #include "platform/threads/mutex.h"
-#endif
-#ifndef _DATACHUNKER_H_
 #include "memory/dataChunker.h"
-#endif
 #include <unordered_map>
 
 //--------------------------------------
@@ -79,27 +73,10 @@
 class _StringTable
 {
 private:
-   /// @name Implementation details
-   /// @{
-
-//   /// This is internal to the _StringTable class.
-//   struct Node
-//   {
-//      char *val;
-//      Node *next;
-//   };
-//
-//   Node**      buckets;
-//   U32         numBuckets;
-//   U32         itemCount;
-//   DataChunker mempool;
-
    std::unordered_map<std::string, StringTableEntry> _table;
    Mutex mMutex;
 
   protected:
-   static const U32 csm_stInitSize;
-
    _StringTable();
    ~_StringTable();
 

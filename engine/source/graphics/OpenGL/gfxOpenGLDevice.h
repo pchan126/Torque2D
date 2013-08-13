@@ -148,7 +148,19 @@ protected:
     virtual void setBlending( bool DoesItBlend );
     virtual void setBlendFunc( GFXBlend blendSrc, GFXBlend blendDest);
     virtual void setBlendEquation( GFXBlendOp blendOp);
+    virtual void setBlendFuncSeparate( GFXBlend srcRGB, GFXBlend dstRGB, GFXBlend srcAlpha, GFXBlend dstAlpha);
+    virtual void setBlendEquationSeparate( GFXBlendOp opRGB, GFXBlendOp opAlpha);
+
+    virtual void setDepthTest( bool enable );
+    virtual void setDepthMask( bool flag );
+    virtual void setDepthFunc( GFXCmpFunc func );
+
     virtual void setColorMask(bool colorWriteRed, bool colorWriteBlue, bool colorWriteGreen, bool colorWriteAlpha);
+
+    virtual void setStencilEnable(bool enable);
+    virtual void setStencilFunc( GFXCmpFunc func, U32 ref, U32 mask);
+    virtual void setStencilOp(GFXStencilOp failOp, GFXStencilOp zFailOp, GFXStencilOp passOp);
+    virtual void setStencilWriteMask( U32 writeMask );
 
    /// Called by base GFXDevice to actually set a const buffer
    virtual void setShaderConstBufferInternal(GFXShaderConstBuffer* buffer);
@@ -205,7 +217,7 @@ protected:
     void _handleTextureLoaded(GFXTexNotifyCode code);
 private:
    typedef GFXDevice Parent;
-   
+
    friend class GFXOpenGLTextureObject;
    friend class GFXOpenGLCubemap;
    friend class GFXOpenGLWindowTarget;
@@ -233,11 +245,25 @@ protected:
    GFXBlend separateAlphaBlendDest;
    GFXBlendOp separateAlphaBlendOp;
 
+    bool depthTest;
+    bool depthMask;
+    GFXCmpFunc depthFunc;
+
    bool mColorWriteRed;
     bool mColorWriteBlue;
     bool mColorWriteGreen;
     bool mColorWriteAlpha;
-    
+
+    bool mStencilEnable;
+    GFXStencilOp mStencilFailOp;
+    GFXStencilOp mStencilZFailOp;
+    GFXStencilOp mStencilPassOp;
+    GFXCmpFunc  mStencilFunc;
+    U32 mStencilRef;
+    U32 mStencilMask;
+    U32 mStencilWriteMask;
+
+
     U32 mMaxFFTextures;
     RectI mClip;
 

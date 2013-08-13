@@ -25,7 +25,6 @@
 #include "console/console.h"
 
 _StringTable *_gStringTable = NULL;
-const U32 _StringTable::csm_stInitSize = 29;
 StringTableEntry _StringTable::EmptyString;
 
 //---------------------------------------------------------------

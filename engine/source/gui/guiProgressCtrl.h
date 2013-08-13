@@ -23,14 +23,8 @@
 #ifndef _GUIPROGRESSCTRL_H_
 #define _GUIPROGRESSCTRL_H_
 
-#ifndef _GUICONTROL_H_
 #include "gui/guiControl.h"
-#endif
-
-#ifndef _GUITEXTCTRL_H_
 #include "gui/guiTextCtrl.h"
-#endif
-
 
 class GuiProgressCtrl : public GuiTextCtrl
 {
@@ -44,12 +38,18 @@ public:
    DECLARE_CONOBJECT(GuiProgressCtrl);
    GuiProgressCtrl();
 
+    static void initPersistFields();
+
    //console related methods
    virtual const char *getScriptValue();
    virtual void setScriptValue(const char *value);
 
    void onPreRender();
    void onRender(Point2I offset, const RectI &updateRect);
+
+//    virtual void interpolateTick( F32 delta );
+//    virtual void processTick();
+//    virtual void advanceTime( F32 timeDelta );
 };
 
 #endif

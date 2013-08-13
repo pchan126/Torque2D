@@ -71,7 +71,7 @@ function GuiToy::reset( %this )
                 Profile = "GuiRightJustifyProfile";
                 canSaveDynamicFields = "0";
                 isContainer = "0";
-                Position = "100 5";
+                Position = "100 20";
                 MinExtent = "8 2";
                 canSave = "0";
                 Visible = "1";
@@ -91,6 +91,7 @@ function GuiToy::reset( %this )
 	GuiToy.joystick1.setTargetPosition("-50 100");
 	GuiToy.joystick1.startMove(1.0);
 	GuiToy.joystick1.moveStatus = 1;
+    MainOverlay.setVisible(0);
 }
 
 //function text1::onTimer(%this)
@@ -107,6 +108,7 @@ function moveCtrl1::onMoveToComplete(%this)
    {
       text1.count++;
       text1.setText(text1.count);
+      echo (text1.extent.y);
    }
 
 	%this.moveStatus = -%this.moveStatus;

@@ -347,7 +347,6 @@ void ProcessedFFMaterial::_initPassStateBlock( RenderPassData *rpd, GFXStateBloc
 
    if ( mIsLightingMaterial )
    {
-      result.ffLighting = true;
       result.blendDefined = true;
       result.blendEnable = true;
       result.blendSrc = GFXBlendOne;

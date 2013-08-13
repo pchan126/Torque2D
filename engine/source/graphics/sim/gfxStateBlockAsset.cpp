@@ -249,18 +249,6 @@ void GFXStateBlockAsset::initPersistFields()
 
    endGroup( "Stencil" );
 
-
-   addGroup( "Fixed Function" );
-
-      addField( "ffLighting", TypeBool, Offset(mState.ffLighting, GFXStateBlockAsset),
-         "Enables fixed function lighting when rendering without a shader on geometry with vertex normals.  The default is false." );
-
-      addField( "vertexColorEnable", TypeBool, Offset(mState.vertexColorEnable, GFXStateBlockAsset),
-         "Enables fixed function vertex coloring when rendering without a shader.  The default is false." );
-
-   endGroup( "Fixed Function" );
-
-
    addGroup( "Sampler States" );
 
       addField( "samplersDefined", TypeBool, Offset(mState.samplersDefined, GFXStateBlockAsset),

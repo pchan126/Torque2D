@@ -309,25 +309,26 @@ void SimObject::writeFields(Stream &stream, U32 tabStop)
 {
    const AbstractClassRep::FieldList &list = getFieldList();
 
-   for(U32 i = 0; i < (U32)list.size(); i++)
+//   for(U32 i = 0; i < (U32)list.size(); i++)
+   for(const AbstractClassRep::Field f:list)
    {
-      const AbstractClassRep::Field* f = &list[i];
+//      const AbstractClassRep::Field* f = &list[i];
 
-      if( f->type == AbstractClassRep::DeprecatedFieldType ||
-          f->type == AbstractClassRep::StartGroupFieldType ||
-          f->type == AbstractClassRep::EndGroupFieldType) continue;
+      if( f.type == AbstractClassRep::DeprecatedFieldType ||
+          f.type == AbstractClassRep::StartGroupFieldType ||
+          f.type == AbstractClassRep::EndGroupFieldType) continue;
 
       // Fetch fieldname.
-      StringTableEntry fieldName = StringTable->insert( f->pFieldname );
+      StringTableEntry fieldName = StringTable->insert( f.pFieldname );
 
       // Fetch element count.
-      const S32 elementCount = f->elementCount;
+      const S32 elementCount = f.elementCount;
 
       // Skip if the field should not be written.
       // For now, we only deal with non-array fields.
       if (  elementCount == 1 &&
-            f->writeDataFn != NULL &&
-            f->writeDataFn( this, fieldName ) == false )
+            f.writeDataFn != NULL &&
+            f.writeDataFn( this, fieldName ) == false )
             continue;
 
       for(U32 j = 0; S32(j) < elementCount; j++)
@@ -351,14 +352,14 @@ void SimObject::writeFields(Stream &stream, U32 tabStop)
 
          U32 expandedBufferSize = ( nBufferSize  * 2 ) + 32;
          FrameTemp<char> expandedBuffer( expandedBufferSize );
-         if(f->elementCount == 1)
-            dSprintf(expandedBuffer, expandedBufferSize, "%s = \"", f->pFieldname);
+         if(f.elementCount == 1)
+            dSprintf(expandedBuffer, expandedBufferSize, "%s = \"", f.pFieldname);
          else
-            dSprintf(expandedBuffer, expandedBufferSize, "%s[%d] = \"", f->pFieldname, j);
+            dSprintf(expandedBuffer, expandedBufferSize, "%s[%d] = \"", f.pFieldname, j);
 
          // detect and collapse relative path information
          char fnBuf[1024];
-         if (f->type == TypeFilename)
+         if (f.type == TypeFilename)
          {
             Con::collapsePath(fnBuf, 1024, val);
             val = fnBuf;

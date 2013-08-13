@@ -33,6 +33,16 @@ GuiProgressCtrl::GuiProgressCtrl()
    mProgress = 0.0f;
 }
 
+void GuiProgressCtrl::initPersistFields()
+{
+    Parent::initPersistFields();
+//    addProtectedField("text", TypeCaseString, Offset(mInitialText, GuiTextCtrl), setText, getTextProperty, "");
+//    addField( "textID", TypeString, Offset( mInitialTextID, GuiTextCtrl ) );
+//    addField( "maxLength", TypeS32, Offset( mMaxStrLen, GuiTextCtrl ) );
+//    addField("truncate", TypeBool, Offset(mTruncateWhenUnfocused, GuiTextCtrl));
+}
+
+
 const char* GuiProgressCtrl::getScriptValue()
 {
    char * ret = Con::getReturnBuffer(64);

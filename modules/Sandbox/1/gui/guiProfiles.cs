@@ -234,7 +234,7 @@ if (!isObject(GuiRightJustifyProfile)) new GuiControlProfile (GuiRightJustifyPro
     fontColor = "white";
 
     opaque = true;
-    fillColor = "0 0 0 250";
+    fillColor = "0 0 0 100";
 
     modal = true;
     justify = "right";
