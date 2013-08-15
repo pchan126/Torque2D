@@ -257,7 +257,8 @@ protected:
                                                    U32 numMipLevels, 
                                                    bool forceMips = false, 
                                                    S32 antialiasLevel = 0, 
-                                                   GFXTextureObject *inTex = NULL ) = 0;
+                                                   GFXTextureObject *inTex = nullptr,
+                                                   void* data = nullptr) = 0;
 
    /// Load data into a texture from a GBitmap using the internal API.
    virtual bool _loadTexture(GFXTextureObject *texture, GBitmap *bmp)=0;

@@ -179,6 +179,9 @@ void GBitmap::allocateBitmap(const U32 in_width, const U32 in_height, const bool
         case GFXFormatR5G6B5:
         case GFXFormatR5G5B5A1:     mBytesPerPixel = 2;
             break;
+       case GFXFormatR32G32B32A32F:
+          mBytesPerPixel = 16;
+          break;
         case GFXFormat_PVR2:
         case GFXFormat_PVR2A:
         case GFXFormat_PVR4:

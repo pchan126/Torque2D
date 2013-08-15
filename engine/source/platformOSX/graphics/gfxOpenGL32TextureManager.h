@@ -76,8 +76,9 @@ protected:
                                              U32 numMipLevels,
                                              bool forceMips = false,
                                              S32 antialiasLevel = 0,
-                                             GFXTextureObject *inTex = NULL );
-    
+                                             GFXTextureObject *inTex = nullptr,
+                                             void* data = nullptr);
+
    GFXTextureObject *_createTexture(  GBitmap *bmp,
                                              const String &resourceName,
                                              GFXTextureProfile *profile,
@@ -93,7 +94,7 @@ private:
    friend class GFXOpenGLTextureObject;
    
    /// Creates internal GL texture
-   void innerCreateTexture(GFXOpenGL32TextureObject *obj, U32 height, U32 width, U32 depth, GFXFormat format, GFXTextureProfile *profile, U32 numMipLevels, bool forceMips = false);
+   void innerCreateTexture(GFXOpenGL32TextureObject *obj, U32 height, U32 width, U32 depth, GFXFormat format, GFXTextureProfile *profile, U32 numMipLevels, bool forceMips = false, void* data = nullptr);
 
    void handleTextureCallback(void *textureInfo);
     

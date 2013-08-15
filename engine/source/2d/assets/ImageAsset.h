@@ -209,7 +209,7 @@ public:
     S32                     getCellHeight( void) const						{ return mCellHeight; }
     S32                     getExplicitCellHeight(const S32 cellIndex);
 
-    inline GFXTexHandle&   getImageTexture( void )                         { return mImageTextureHandle; }
+    inline GFXTexHandle&    getImageTexture( void )                         { return mImageTextureHandle; }
     inline S32              getImageWidth( void ) const                     { return mImageTextureHandle.getBitmapWidth(); }
     inline S32              getImageHeight( void ) const                    { return mImageTextureHandle.getBitmapHeight(); }
     inline U32              getFrameCount( void ) const                     { return (U32)mFrames.size(); };

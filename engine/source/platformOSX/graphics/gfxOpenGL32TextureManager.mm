@@ -75,7 +75,7 @@ GFXTextureObject *GFXOpenGL32TextureManager::createTexture(  GBitmap *bmp,
         return cacheHit;
     }
     
-    return _createTexture( bmp, resourceName, profile, deleteBmp, NULL );
+    return _createTexture( bmp, resourceName, profile, deleteBmp, nullptr );
 }
 
 //GFXTextureObject *GFXOpenGL32TextureManager::createTexture(  U32 width,
@@ -173,12 +173,12 @@ GFXTextureObject *GFXOpenGL32TextureManager::_createTexture(  GBitmap *bmp,
          ret = inObj;
    }
    else
-      ret = _createTextureObject(realHeight, realWidth, 0, realFmt, profile, numMips );
+      ret = _createTextureObject(realHeight, realWidth, 0, realFmt, profile, numMips, false, 0, NULL, (void*)bmp->getBits() );
    
    if(!ret)
    {
       Con::errorf("GFXTextureManager - failed to create texture (1) for '%s'", (resourceName.isNotEmpty() ? resourceName.c_str() : "unknown"));
-      return NULL;
+      return nullptr;
    }
    
    GFXOpenGL32TextureObject* retTex = dynamic_cast<GFXOpenGL32TextureObject*>(ret);
@@ -356,7 +356,8 @@ GFXTextureObject *GFXOpenGL32TextureManager::_createTextureObject(   U32 height,
                                                                U32 numMipLevels,
                                                                bool forceMips,
                                                                S32 antialiasLevel,
-                                                               GFXTextureObject *inTex )
+                                                                  GFXTextureObject *inTex,
+                                                                  void* data)
 {
    AssertFatal(format >= 0 && format < GFXFormat_COUNT, "GFXOpenGL32TextureManager::_createTexture - invalid format!");
 
@@ -373,7 +374,7 @@ GFXTextureObject *GFXOpenGL32TextureManager::_createTextureObject(   U32 height,
       retTex->registerResourceWithDevice( GFX );
    }
 
-   innerCreateTexture(retTex, height, width, depth, format, profile, numMipLevels, forceMips);
+   innerCreateTexture(retTex, height, width, depth, format, profile, numMipLevels, forceMips, data);
 
    return retTex;
 }
@@ -389,7 +390,7 @@ void GFXOpenGL32TextureManager::innerCreateTexture( GFXOpenGL32TextureObject *re
                                                GFXFormat format, 
                                                GFXTextureProfile *profile, 
                                                U32 numMipLevels,
-                                               bool forceMips)
+                                               bool forceMips, void* data)
 {
     GFXOpenGLDevice *device = dynamic_cast<GFXOpenGLDevice*>(GFX);
    // No 24 bit formats.  They trigger various oddities because hardware (and Apple's drivers apparently...) don't natively support them.
@@ -425,10 +426,48 @@ void GFXOpenGL32TextureManager::innerCreateTexture( GFXOpenGL32TextureObject *re
    AssertFatal(GFXGLTextureFormat[format] != GL_ZERO, "GFXOpenGL32TextureManager::innerCreateTexture - invalid format");
    AssertFatal(GFXGLTextureType[format] != GL_ZERO, "GFXOpenGL32TextureManager::innerCreateTexture - invalid type");
 
-   if(binding != GL_TEXTURE_3D)
-       glTexImage2D(binding, 0, GFXGLTextureInternalFormat[format], width, height, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], NULL);
+   if(binding == GL_TEXTURE_RECTANGLE)
+      glTexImage2D(binding, 0, GFXGLTextureInternalFormat[format], width, height, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], data);
+   else if(binding == GL_TEXTURE_2D)
+       glTexImage2D(binding, 0, GFXGLTextureInternalFormat[format], width, height, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], data);
    else
-      glTexImage3D(GL_TEXTURE_3D, 0, GFXGLTextureInternalFormat[format], width, height, depth, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], NULL);
+      glTexImage3D(GL_TEXTURE_3D, 0, GFXGLTextureInternalFormat[format], width, height, depth, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], data);
+
+//   switch (binding) {
+//      case GL_TEXTURE_1D:
+//      case GL_PROXY_TEXTURE_1D:
+//         glTexImage1D(binding, 0, GFXGLTextureInternalFormat[format], width, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], data);
+//         break;
+//         
+//      case GL_TEXTURE_2D:
+//         glTexImage2D(binding, 0, GFXGLTextureInternalFormat[format], width, height, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], data);
+//         break;
+//
+//      case GL_PROXY_TEXTURE_2D:
+//      case GL_TEXTURE_1D_ARRAY:
+//      case GL_PROXY_TEXTURE_1D_ARRAY:
+//      case GL_TEXTURE_RECTANGLE:
+//      case GL_PROXY_TEXTURE_RECTANGLE:
+//      case GL_TEXTURE_CUBE_MAP_POSITIVE_X:
+//      case GL_TEXTURE_CUBE_MAP_NEGATIVE_X:
+//      case GL_TEXTURE_CUBE_MAP_POSITIVE_Y:
+//      case GL_TEXTURE_CUBE_MAP_NEGATIVE_Y:
+//      case GL_TEXTURE_CUBE_MAP_POSITIVE_Z:
+//      case GL_TEXTURE_CUBE_MAP_NEGATIVE_Z:
+//      case GL_PROXY_TEXTURE_CUBE_MAP:
+//         glTexImage2D(binding, 0, GFXGLTextureInternalFormat[format], width, height, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], data);
+//         break;
+//         
+//      case GL_TEXTURE_3D:
+//      case GL_PROXY_TEXTURE_3D:
+//      case GL_TEXTURE_2D_ARRAY:
+//      case GL_PROXY_TEXTURE_2D_ARRAY:
+//         glTexImage3D(binding, 0, GFXGLTextureInternalFormat[format], width, height, depth, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], data);
+//         break;
+//
+//      default:
+//         break;
+//   }
    
     retTex->mTextureSize.set(width, height, 0);
 }

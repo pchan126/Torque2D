@@ -137,7 +137,7 @@ void GFXOpenGLEnumTranslate::init()
    GFXGLTextureInternalFormat[GFXFormatD24S8] = GL_ZERO;
    GFXGLTextureInternalFormat[GFXFormatR16G16B16A16] = GL_RGBA16;
    GFXGLTextureInternalFormat[GFXFormatR16G16B16A16F] = GL_RGBA16F;
-   GFXGLTextureInternalFormat[GFXFormatR32G32B32A32F] = GL_RGB32F;
+   GFXGLTextureInternalFormat[GFXFormatR32G32B32A32F] = GL_RGBA32F;
    GFXGLTextureInternalFormat[GFXFormatDXT1] = GL_ZERO;
    GFXGLTextureInternalFormat[GFXFormatDXT2] = GL_ZERO;
    GFXGLTextureInternalFormat[GFXFormatDXT3] = GL_ZERO;
