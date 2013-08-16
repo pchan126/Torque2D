@@ -51,7 +51,10 @@ protected:
    bool _freeTexture(GFXTextureObject *texture, bool zombify = false);
 
    /// Creates internal GL texture
-   void innerCreateTexture(GFXOpenGLES20TextureObject *obj, U32 height, U32 width, U32 depth, GFXFormat format, GFXTextureProfile *profile, U32 numMipLevels, bool forceMips = false);
+   void innerCreateTexture(GFXOpenGLES20TextureObject *obj,
+           U32 height, U32 width, U32 depth, GFXFormat format,
+           GFXTextureProfile *profile, U32 numMipLevels, bool forceMips = false,
+           void* data = nullptr);
    
 private:
    friend class GFXOpenGLES20TextureObject;

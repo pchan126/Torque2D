@@ -77,7 +77,6 @@ void FilterImageAsset::initPersistFields()
     // Call parent.
     Parent::initPersistFields();
     
-    addProtectedField("Image", TypeImageAssetPtr, Offset(mImageAsset, FilterImageAsset), &setImage, &defaultProtectedGetFn, &writeImage, "");
     addProtectedField("Filter", TypeString, Offset(mFilterName, FilterImageAsset), &setFilterName, &defaultProtectedGetFn, &writeFilterName, "");
 }
 
@@ -140,43 +139,9 @@ void FilterImageAsset::copyTo(SimObject* object)
     
     // Sanity!
     AssertFatal(pAsset != NULL, "FilterImageAsset::copyTo() - Object is not the correct type.");
-    
-    // Copy state.
-    pAsset->setImage( getImage().getAssetId() );
 }
 
 //------------------------------------------------------------------------------
-
-void FilterImageAsset::setImage( const char* pAssetId )
-{
-    // Ignore no change.
-    if ( mImageAsset.getAssetId() == StringTable->insert( pAssetId ) )
-        return;
-    
-    // Update.
-    mImageAsset = pAssetId;
-    
-//   // Finish if we don't have a valid image asset.
-//   if ( mImageAsset.isNull() )
-//      return;
-
-   // Refresh the asset.
-    refreshAsset();
-
-//   // Ignore no change.
-//   if ( mImageAsset.getAssetId() == StringTable->insert( pAssetId ) )
-//      return;
-//   
-//   // Update.
-//   mImageAsset = pAssetId;
-//   
-//   // Validate frames.
-//   validateFrames();
-//   
-//   // Refresh the asset.
-//   refreshAsset();
-
-}
 
 
 void FilterImageAsset::setFilterName( const char* pAssetId )
@@ -200,47 +165,25 @@ void FilterImageAsset::calculateImage( void )
     
     // Clear frames.
     mFrames.clear();
-   
-    // Get image texture.
-    
-    GFXOpenGLTextureObject* texture = dynamic_cast<GFXOpenGLTextureObject*>(mImageAsset->getImageTexture().getPointer());
-   
-   // Is the texture valid?
-   if ( texture == NULL )
-   {
-      // No, so warn.
-      Con::warnf( "Image '%s' could not load texture '%s'.", getAssetId(), mImageFile );
-      return;
-   }
 
-    GFXTextureTarget *texTarget = GFX->allocRenderToTextureTarget();
-    mImageTextureHandle = TEXMGR->createTexture( texture->getWidth(), texture->getHeight(), GFXFormatR8G8B8A8, &GFXImageAssetTextureProfile, 0, 0 );
-//    GFXOpenGLTextureObject* outTexture = dynamic_cast<GFXOpenGLTextureObject*>(mImageTextureHandle.getPointer());
-    texTarget->attachTexture(mImageTextureHandle);
-//   texTarget->attachTexture(texture);
-   
-    GFXTarget *oldTarget = GFX->getActiveRenderTarget();
-    device->setActiveRenderTarget(texTarget);
-    GFX->updateStates(true);
+    Vector<CGImageRef> imageRefs;
 
     NSString *filterString = [[NSString alloc] initWithUTF8String:mFilterName];
-    mFilter = [CIFilter filterWithName:filterString];
+    CIFilter *mFilter = [CIFilter filterWithName:filterString];
+    [mFilter setDefaults];
     CGSize texSize;
-    texSize.height = texture->getHeight();
-    texSize.width = texture->getWidth();
-    CIImage *input = [CIImage imageWithTexture:texture->getHandle() size:texSize flipped:FALSE colorSpace:nil];
-    CGRect rect = CGRectMake(0, 0, texSize.width, texSize.height);
-    
+    texSize.width = 256;
+    texSize.height = 256;
+
     if (mFilter != nil)
     {
        [mFilter setDefaults];
-       [mFilter setValue:input forKey:@"inputImage"];
         for ( NSString *string in [mFilter inputKeys])
         {
            NSDictionary* info = [mFilter.attributes objectForKey:string];
            StringTableEntry strvalue = getDataField(StringTable->insert(string.UTF8String), NULL);
            Con::printf("%s: %s", string.UTF8String, strvalue);
-           
+
            if (strvalue != NULL)
            {
               NSObject *value = [NSClassFromString([info objectForKey:kCIAttributeClass]) alloc];
@@ -255,6 +198,17 @@ void FilterImageAsset::calculateImage( void )
                  {
                     [mFilter setValue:[NSNumber numberWithFloat:dAtof(strvalue)] forKey:string];
                  }
+              }
+              else if ([value isMemberOfClass:[CIImage class]])
+              {
+                  const char* temp = expandAssetFilePath(strvalue);
+                  CGDataProviderRef dataProvider = CGDataProviderCreateWithFilename(temp);
+                  CGImageRef img = CGImageCreateWithPNGDataProvider(dataProvider, NULL, NO, kCGRenderingIntentDefault);
+                  CIImage *image = [CIImage imageWithCGImage:img];
+                  [mFilter setValue:image forKey:string];
+                  texSize.height = CGImageGetHeight(img);
+                  texSize.width = CGImageGetWidth(img);
+                  imageRefs.push_back(img);
               }
               else if ([value isMemberOfClass:[CIVector class]])
               {
@@ -326,16 +280,27 @@ void FilterImageAsset::calculateImage( void )
         }
     }
 
+    GFXTextureTarget *texTarget = GFX->allocRenderToTextureTarget();
+    mImageTextureHandle = TEXMGR->createTexture( texSize.width, texSize.height, GFXFormatR8G8B8A8, &GFXImageAssetTextureProfile, 0, 0 );
+    texTarget->attachTexture(mImageTextureHandle);
+
+    GFXTarget *oldTarget = GFX->getActiveRenderTarget();
+    device->setActiveRenderTarget(texTarget);
+
+    CGRect rect = CGRectMake(0, 0, texSize.width, texSize.height);
+
     CIImage *output;
     output = [mFilter valueForKey:kCIOutputImageKey];
     // draw Image to textureTarget
     device->drawImage(output, rect, rect);
 
     GFX->setActiveRenderTarget(oldTarget);
-   GFX->updateStates(true);
+    GFX->updateStates(true);
 
+    for (CGImageRef img:imageRefs)
+        CGImageRelease(img);
 
-   // Calculate according to mode.
+    // Calculate according to mode.
    if ( mExplicitMode )
    {
       calculateExplicitMode();

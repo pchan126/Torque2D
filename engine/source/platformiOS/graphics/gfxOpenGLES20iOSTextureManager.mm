@@ -115,12 +115,12 @@ GFXTextureObject *GFXOpenGLES20iOSTextureManager::_createTexture(  GBitmap *bmp,
             ret = inObj;
     }
     else
-        ret = _createTextureObject(realHeight, realWidth, 0, realFmt, profile, numMips );
+        ret = _createTextureObject(realHeight, realWidth, 0, realFmt, profile, numMips, false, 0, NULL, (void*)bmp->getBits());
    
     if(!ret)
     {
         Con::errorf("GFXTextureManager - failed to create texture (1) for '%s'", (resourceName.isNotEmpty() ? resourceName.c_str() : "unknown"));
-        return NULL;
+        return nullptr;
     }
 
    GFXOpenGLES20iOSTextureObject* retTex = dynamic_cast<GFXOpenGLES20iOSTextureObject*>(ret);
@@ -143,7 +143,7 @@ GFXTextureObject *GFXOpenGLES20iOSTextureManager::_createTexture(  GBitmap *bmp,
     if (!_loadTexture( ret, realBmp ))
     {
         Con::errorf("GFXTextureManager - failed to load GBitmap for '%s'", (resourceName.isNotEmpty() ? resourceName.c_str() : "unknown"));
-        return NULL;
+        return nullptr;
     }
     
     // Do statistics and book-keeping...
@@ -204,7 +204,7 @@ GFXTextureObject *GFXOpenGLES20iOSTextureManager::createTexture( const String &f
     char *ptr = (char *) dStrrchr (fullPath.c_str(), '/');
     if (!ptr)
     {
-        path = NULL;
+        path = nullptr;
         fileName = StringTable->insert (fullPath.c_str());
     }
     else
@@ -266,7 +266,8 @@ GFXTextureObject *GFXOpenGLES20iOSTextureManager::_createTextureObject(   U32 he
                                                                U32 numMipLevels,
                                                                bool forceMips,
                                                                S32 antialiasLevel,
-                                                               GFXTextureObject *inTex )
+                                                               GFXTextureObject *inTex,
+                                                               void* data)
 {
    AssertFatal(format >= 0 && format < GFXFormat_COUNT, "GFXOpenGLES20iOSTextureManager::_createTexture - invalid format!");
 
@@ -283,7 +284,7 @@ GFXTextureObject *GFXOpenGLES20iOSTextureManager::_createTextureObject(   U32 he
       retTex->registerResourceWithDevice( GFX );
    }
 
-   innerCreateTexture(retTex, height, width, depth, format, profile, numMipLevels, forceMips);
+   innerCreateTexture(retTex, height, width, depth, format, profile, numMipLevels, forceMips, data);
 
    return retTex;
 }
@@ -357,7 +358,7 @@ bool GFXOpenGLES20iOSTextureManager::_refreshTexture(GFXTextureObject *texture)
 {
     GFXOpenGLES20iOSTextureObject * pTextureObject = dynamic_cast<GFXOpenGLES20iOSTextureObject*>(texture);
 
-    if (pTextureObject->mBitmap == NULL)
+    if (pTextureObject->mBitmap == nullptr)
     {
         NSDictionary *options = @{GLKTextureLoaderOriginBottomLeft: @NO};
         NSString *npath = [[NSString alloc] initWithUTF8String:pTextureObject->mPath.c_str()];

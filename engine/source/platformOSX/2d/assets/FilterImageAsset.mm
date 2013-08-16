@@ -77,7 +77,6 @@ void FilterImageAsset::initPersistFields()
     // Call parent.
     Parent::initPersistFields();
     
-    addProtectedField("Image", TypeImageAssetPtr, Offset(mImageAsset, FilterImageAsset), &setImage, &defaultProtectedGetFn, &writeImage, "");
     addProtectedField("Filter", TypeString, Offset(mFilterName, FilterImageAsset), &setFilterName, &defaultProtectedGetFn, &writeFilterName, "");
 }
 
@@ -140,43 +139,9 @@ void FilterImageAsset::copyTo(SimObject* object)
     
     // Sanity!
     AssertFatal(pAsset != nullptr, "FilterImageAsset::copyTo() - Object is not the correct type.");
-    
-    // Copy state.
-    pAsset->setImage( getImage().getAssetId() );
 }
 
 //------------------------------------------------------------------------------
-
-void FilterImageAsset::setImage( const char* pAssetId )
-{
-    // Ignore no change.
-    if ( mImageAsset.getAssetId() == StringTable->insert( pAssetId ) )
-        return;
-    
-    // Update.
-    mImageAsset = pAssetId;
-    
-//   // Finish if we don't have a valid image asset.
-//   if ( mImageAsset.isNull() )
-//      return;
-
-   // Refresh the asset.
-    refreshAsset();
-
-//   // Ignore no change.
-//   if ( mImageAsset.getAssetId() == StringTable->insert( pAssetId ) )
-//      return;
-//   
-//   // Update.
-//   mImageAsset = pAssetId;
-//   
-//   // Validate frames.
-//   validateFrames();
-//   
-//   // Refresh the asset.
-//   refreshAsset();
-
-}
 
 
 void FilterImageAsset::setFilterName( const char* pAssetId )
@@ -205,39 +170,18 @@ void FilterImageAsset::calculateImage( void )
     // Clear frames.
     mFrames.clear();
    
-    // Get image texture.
-    
-//    GFXOpenGLTextureObject* texture = dynamic_cast<GFXOpenGLTextureObject*>(mImageAsset->getImageTexture().getPointer());
-   
-//   // Is the texture valid?
-//   if ( texture == nullptr )
-//   {
-//      // No, so warn.
-//      Con::warnf( "Image '%s' could not load texture '%s'.", getAssetId(), mImageFile );
-//      return;
-//   }
-   
-   const char* fileName = mImageAsset->getImageFile();
-   CGDataProviderRef dataProvider = CGDataProviderCreateWithFilename(fileName);
-   CGImageRef img = CGImageCreateWithPNGDataProvider(dataProvider, NULL, NO, kCGRenderingIntentDefault);
-   
-   GBitmap *bmap = new GBitmap(CGImageGetWidth(img), CGImageGetHeight(img), false, GFXFormatR32G32B32A32F);
 
    NSString *filterString = [[NSString alloc] initWithUTF8String:mFilterName];
-//   mFilter = [CIFilter filterWithName:filterString];
-//   mFilter = [CIFilter filterWithName:@"CIStripesGenerator"];
    CIFilter *mFilter = [CIFilter filterWithName:filterString];
    [mFilter setDefaults];
    CGSize texSize;
-   texSize.height = CGImageGetHeight(img);
-   texSize.width = CGImageGetWidth(img);
-   CIImage *input = [CIImage imageWithCGImage:img];
-   CGRect rect = CGRectMake(0, 0, texSize.width, texSize.height);
+   texSize.width = 256;
+   texSize.height = 256;
 
     if (mFilter != nil)
     {
        [mFilter setDefaults];
-       [mFilter setValue:input forKey:@"inputImage"];
+//       [mFilter setValue:input forKey:@"inputImage"];
         for ( NSString *string in [mFilter inputKeys])
         {
            NSDictionary* info = [mFilter.attributes objectForKey:string];
@@ -258,6 +202,16 @@ void FilterImageAsset::calculateImage( void )
                  {
                     [mFilter setValue:[NSNumber numberWithFloat:dAtof(strvalue)] forKey:string];
                  }
+              }
+              else if ([value isMemberOfClass:[CIImage class]])
+              {
+                  const char* temp = expandAssetFilePath(strvalue);
+                  CGDataProviderRef dataProvider = CGDataProviderCreateWithFilename(temp);
+                  CGImageRef img = CGImageCreateWithPNGDataProvider(dataProvider, NULL, NO, kCGRenderingIntentDefault);
+                  CIImage *image = [CIImage imageWithCGImage:img];
+                  [mFilter setValue:image forKey:string];
+                  texSize.height = CGImageGetHeight(img);
+                  texSize.width = CGImageGetWidth(img);
               }
               else if ([value isMemberOfClass:[CIVector class]])
               {
@@ -327,16 +281,16 @@ void FilterImageAsset::calculateImage( void )
            }
         }
     }
+    GBitmap *bmap = new GBitmap(texSize.width, texSize.height, false, GFXFormatR32G32B32A32F);
+    CGRect rect = CGRectMake(0, 0, texSize.width, texSize.height);
 
     CIImage *output = [mFilter valueForKey:kCIOutputImageKey];
    CIContext* temp = [[NSGraphicsContext currentContext] CIContext];
 //    CIContext *temp = (CIContext*)[[NSOpenGLContext currentContext] CGLContextObj];
    [temp render:output toBitmap:(void*)bmap->getWritableBits() rowBytes:bmap->getWidth()*bmap->mBytesPerPixel bounds:rect format:kCIFormatRGBAf colorSpace:NULL];
-   CGImageRelease(img);
+//   CGImageRelease(img);
    
-   std::string strbuff(fileName);
-   strbuff.append("_filter");
-   mImageTextureHandle = TEXMGR->createTexture(bmap, strbuff.c_str(), &GFXImageAssetTextureProfile, true );
+   mImageTextureHandle = TEXMGR->createTexture(bmap, getAssetName(), &GFXImageAssetTextureProfile, true );
 
    // Calculate according to mode.
    if ( mExplicitMode )
@@ -354,10 +308,7 @@ void FilterImageAsset::calculateImage( void )
 
 bool FilterImageAsset::isAssetValid( void ) const
 {
-    return mImageAsset.notNull() && mImageAsset->isAssetValid();
+    return true;
 }
 
 //------------------------------------------------------------------------------
-
-
-// object->getDataField

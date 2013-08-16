@@ -248,7 +248,8 @@ void GFXOpenGLES20TextureManager::innerCreateTexture( GFXOpenGLES20TextureObject
                                                GFXFormat format, 
                                                GFXTextureProfile *profile, 
                                                U32 numMipLevels,
-                                               bool forceMips)
+                                               bool forceMips,
+                                                void* data)
 {
    GFXOpenGLDevice *device = dynamic_cast<GFXOpenGLDevice*>(GFX);
    // No 24 bit formats.  They trigger various oddities because hardware (and Apple's drivers apparently...) don't natively support them.
