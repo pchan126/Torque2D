@@ -146,10 +146,6 @@ void FilterImageAsset::copyTo(SimObject* object)
 
 void FilterImageAsset::setFilterName( const char* pAssetId )
 {
-//    // Ignore no change.
-//    if ( mImageAsset.getAssetId() == StringTable->insert( pAssetId ) )
-//        return;
-//    
     // Update.
     mFilterName = pAssetId;
     
@@ -181,10 +177,10 @@ void FilterImageAsset::calculateImage( void )
         for ( NSString *string in [mFilter inputKeys])
         {
            NSDictionary* info = [mFilter.attributes objectForKey:string];
-           StringTableEntry strvalue = getDataField(StringTable->insert(string.UTF8String), NULL);
+           StringTableEntry strvalue = getDataField(StringTable->insert(string.UTF8String), nullptr);
            Con::printf("%s: %s", string.UTF8String, strvalue);
 
-           if (strvalue != NULL)
+           if (strvalue != nullptr)
            {
               NSObject *value = [NSClassFromString([info objectForKey:kCIAttributeClass]) alloc];
               NSString *aType = [info objectForKey:kCIAttributeType];
@@ -203,7 +199,7 @@ void FilterImageAsset::calculateImage( void )
               {
                   const char* temp = expandAssetFilePath(strvalue);
                   CGDataProviderRef dataProvider = CGDataProviderCreateWithFilename(temp);
-                  CGImageRef img = CGImageCreateWithPNGDataProvider(dataProvider, NULL, NO, kCGRenderingIntentDefault);
+                  CGImageRef img = CGImageCreateWithPNGDataProvider(dataProvider, nullptr, NO, kCGRenderingIntentDefault);
                   CIImage *image = [CIImage imageWithCGImage:img];
                   [mFilter setValue:image forKey:string];
                   texSize.height = CGImageGetHeight(img);
@@ -316,7 +312,6 @@ void FilterImageAsset::calculateImage( void )
 
 bool FilterImageAsset::isAssetValid( void ) const
 {
-    return mImageAsset.notNull() && mImageAsset->isAssetValid();
 }
 
 //------------------------------------------------------------------------------

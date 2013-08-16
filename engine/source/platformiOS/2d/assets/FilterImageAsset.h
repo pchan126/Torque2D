@@ -29,7 +29,6 @@ public:
     FilterImageAsset();
     virtual ~FilterImageAsset();
 
-    AssetPtr<ImageAsset>    mImageAsset;
     StringTableEntry        mFilterName;
 
     // Asset validation.
@@ -40,10 +39,8 @@ public:
     virtual void onRemove();
     virtual void copyTo(SimObject* object);
     
-    void            setImage( const char* pAssetId );
     void            setFilterName( const char* pAssetId );
-    inline const AssetPtr<ImageAsset>& getImage( void ) const           { return mImageAsset; }
-    
+
     /// Declare Console Object.
     DECLARE_CONOBJECT(FilterImageAsset);
 
@@ -58,8 +55,6 @@ private:
     virtual void calculateImage( void );
     
 protected:
-    static bool setImage( void* obj, const char* data )                         { static_cast<FilterImageAsset*>(obj)->setImage( data ); return false; }
-    static bool writeImage( void* obj, StringTableEntry pFieldName )            { return static_cast<FilterImageAsset*>(obj)->mImageAsset.notNull(); }
     static bool setFilterName( void* obj, const char* data )                         { static_cast<FilterImageAsset*>(obj)->setFilterName( data ); return false; }
     static bool writeFilterName( void* obj, StringTableEntry pFieldName )            { return static_cast<FilterImageAsset*>(obj)->mFilterName; }
 
