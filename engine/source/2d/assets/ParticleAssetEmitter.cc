@@ -130,7 +130,7 @@ const char* ParticleAssetEmitter::getOrientationTypeDescription( const ParticleO
 
 ParticleAssetEmitter::ParticleAssetEmitter() :
                             mEmitterName( StringTable->EmptyString ),
-                            mOwner( NULL ),
+                            mOwner( nullptr ),
                             mEmitterType( POINT_EMITTER ),
                             mEmitterOffset( 0.0f, 0.0f),
                             mEmitterAngle( 0.0f ),
@@ -149,10 +149,10 @@ ParticleAssetEmitter::ParticleAssetEmitter() :
                             mAttachRotationToEmitter( false ),
                             mOldestInFront( false ),
                             mStaticMode( true ),
-                            mImageAsset( NULL ),
+                            mImageAsset( nullptr ),
                             mImageFrame( 0 ),
                             mRandomImageFrame( false ),
-                            mAnimationAsset( NULL ),
+                            mAnimationAsset( nullptr ),
                             mBlendMode( true ),
                             mSrcBlendFactor( GFXBlendSrcAlpha ),
                             mDstBlendFactor( GFXBlendInvSrcAlpha ),
@@ -310,7 +310,7 @@ void ParticleAssetEmitter::copyTo(SimObject* object)
 void ParticleAssetEmitter::setEmitterName( const char* pEmitterName )
 {
     // Sanity!
-    AssertFatal( mEmitterName != NULL, "ParticleAssetEmitter::setEmitterName() - Cannot set a NULL particle asset emitter name." );
+    AssertFatal( mEmitterName != nullptr, "ParticleAssetEmitter::setEmitterName() - Cannot set a NULL particle asset emitter name." );
 
     // Set the emitter name.
     mEmitterName = StringTable->insert( pEmitterName );
@@ -324,7 +324,7 @@ void ParticleAssetEmitter::setEmitterName( const char* pEmitterName )
 void ParticleAssetEmitter::setOwner( ParticleAsset* pParticleAsset )
 {
     // Sanity!
-    AssertFatal( mOwner == NULL, "ParticleAssetEmitter::setOwner() - Cannot set an owner when one is already assigned." );
+    AssertFatal( mOwner == nullptr, "ParticleAssetEmitter::setOwner() - Cannot set an owner when one is already assigned." );
 
     // Set owner.
     mOwner = pParticleAsset;
@@ -368,7 +368,7 @@ void ParticleAssetEmitter::setFixedForceAngle( F32 fixedForceAngle )
 bool ParticleAssetEmitter::setImage( const char* pAssetId, U32 frame )
 {
     // Sanity!
-    AssertFatal( pAssetId != NULL, "ParticleAssetEmitter::setImage() - Cannot use a NULL asset Id." );
+    AssertFatal( pAssetId != nullptr, "ParticleAssetEmitter::setImage() - Cannot use a NULL asset Id." );
 
     // Set static mode.
     mStaticMode = true;
@@ -445,7 +445,7 @@ bool ParticleAssetEmitter::setImageFrame( const U32 frame )
 bool ParticleAssetEmitter::setAnimation( const char* pAnimationAssetId )
 {
     // Sanity!
-    AssertFatal( pAnimationAssetId != NULL, "ParticleAssetEmitter::setAnimation() - Cannot use NULL asset Id." );
+    AssertFatal( pAnimationAssetId != nullptr, "ParticleAssetEmitter::setAnimation() - Cannot use NULL asset Id." );
 
     // Set animated mode.
     mStaticMode = false;
@@ -467,7 +467,7 @@ bool ParticleAssetEmitter::setAnimation( const char* pAnimationAssetId )
 inline void ParticleAssetEmitter::refreshAsset( void )
 {
     // Finish if no owner.
-    if ( mOwner == NULL )
+    if ( mOwner == nullptr )
         return;
 
     // Refresh the asset.
@@ -511,8 +511,8 @@ void ParticleAssetEmitter::onTamlCustomRead( const TamlCustomNodes& customNodes 
 static void WriteCustomTamlSchema( const AbstractClassRep* pClassRep, TiXmlElement* pParentElement )
 {
     // Sanity!
-    AssertFatal( pClassRep != NULL,  "ParticleAssetEmitter::WriteCustomTamlSchema() - ClassRep cannot be NULL." );
-    AssertFatal( pParentElement != NULL,  "ParticleAssetEmitter::WriteCustomTamlSchema() - Parent Element cannot be NULL." );
+    AssertFatal( pClassRep != nullptr,  "ParticleAssetEmitter::WriteCustomTamlSchema() - ClassRep cannot be NULL." );
+    AssertFatal( pParentElement != nullptr,  "ParticleAssetEmitter::WriteCustomTamlSchema() - Parent Element cannot be NULL." );
 
     // Write the particle asset emitter fields.
     ParticleAssetEmitter particleAssetEmitter;

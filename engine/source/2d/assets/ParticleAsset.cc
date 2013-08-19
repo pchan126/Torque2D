@@ -102,7 +102,7 @@ ConsoleSetType( TypeParticleAssetPtr )
         AssetPtr<ParticleAsset>* pAssetPtr = dynamic_cast<AssetPtr<ParticleAsset>*>((AssetPtrBase*)(dptr));
 
         // Is the asset pointer the correct type?
-        if ( pAssetPtr == NULL )
+        if ( pAssetPtr == nullptr )
         {
             // No, so fail.
             Con::warnf( "(TypeParticleAssetPtr) - Failed to set asset Id '%d'.", pFieldValue );
@@ -168,7 +168,7 @@ void ParticleAsset::copyTo(SimObject* object)
    ParticleAsset* pParticleAsset = static_cast<ParticleAsset*>( object );
 
    // Sanity!
-   AssertFatal( pParticleAsset != NULL, "ParticleAsset::copyTo() - Object is not the correct type.");
+   AssertFatal( pParticleAsset != nullptr, "ParticleAsset::copyTo() - Object is not the correct type.");
 
    // Copy parent.
    Parent::copyTo( object );
@@ -205,7 +205,7 @@ void ParticleAsset::onDeleteNotify( SimObject* object )
     ParticleAssetEmitter* pParticleAssetEmitter = dynamic_cast<ParticleAssetEmitter*>( object );
 
     // Ignore if not an emitter.
-    if ( pParticleAssetEmitter == NULL )
+    if ( pParticleAssetEmitter == nullptr )
         return;
 
     auto itr = std::find(mEmitters.begin(), mEmitters.end(), object);
@@ -287,7 +287,7 @@ ParticleAssetEmitter* ParticleAsset::createEmitter( void )
 
     // Error.
     delete pParticleAssetEmitter;
-    return NULL;
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -295,10 +295,10 @@ ParticleAssetEmitter* ParticleAsset::createEmitter( void )
 bool ParticleAsset::addEmitter( ParticleAssetEmitter* pParticleAssetEmitter )
 {
     // Sanity!
-    AssertFatal( pParticleAssetEmitter != NULL, "Cannot add a NULL particle asset emitter." );
+    AssertFatal( pParticleAssetEmitter != nullptr, "Cannot add a NULL particle asset emitter." );
 
     // Does the particle already have an owner?
-    if ( pParticleAssetEmitter->getOwner() != NULL )
+    if ( pParticleAssetEmitter->getOwner() != nullptr )
     {
         Con::warnf( "ParticleAsset::addEmitter() - Cannot add a particle asset emitter that already has an owner." );
         return false;
@@ -333,7 +333,7 @@ bool ParticleAsset::addEmitter( ParticleAssetEmitter* pParticleAssetEmitter )
 void ParticleAsset::removeEmitter( ParticleAssetEmitter* pParticleAssetEmitter, const bool deleteEmitter )
 {
     // Sanity!
-    AssertFatal( pParticleAssetEmitter != NULL, "Cannot remove a NULL particle asset emitter." );
+    AssertFatal( pParticleAssetEmitter != nullptr, "Cannot remove a NULL particle asset emitter." );
 
     // Is this emitter owned by this asset?
     if ( pParticleAssetEmitter->getOwner() != this )
@@ -352,7 +352,7 @@ void ParticleAsset::removeEmitter( ParticleAssetEmitter* pParticleAssetEmitter, 
             mEmitters.erase( emitterItr );
 
             // Remove owner.
-            pParticleAssetEmitter->setOwner( NULL );
+            pParticleAssetEmitter->setOwner( nullptr );
 
             // Stop delete notify.
             clearNotify( pParticleAssetEmitter );
@@ -390,7 +390,7 @@ ParticleAssetEmitter* ParticleAsset::getEmitter( const U32 emitterIndex ) const
     {
         // No, so warn.
         Con::warnf( "ParticleAsset::getEmitter() - Invalid emitter index." );
-        return NULL;
+        return nullptr;
     }
 
     return mEmitters[emitterIndex];
@@ -401,7 +401,7 @@ ParticleAssetEmitter* ParticleAsset::getEmitter( const U32 emitterIndex ) const
 ParticleAssetEmitter* ParticleAsset::findEmitter( const char* pEmitterName ) const
 {
     // Sanity!
-    AssertFatal( pEmitterName != NULL, "ParticleAsset::findEmitter() - Cannot find a NULL emitter name." );
+    AssertFatal( pEmitterName != nullptr, "ParticleAsset::findEmitter() - Cannot find a NULL emitter name." );
 
    // Finish if there are no emitters.
    if ( getEmitterCount() == 0 )
@@ -418,7 +418,7 @@ ParticleAssetEmitter* ParticleAsset::findEmitter( const char* pEmitterName ) con
     }
 
     // Not found.
-    return NULL;
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -487,8 +487,8 @@ void ParticleAsset::onTamlCustomRead( const TamlCustomNodes& customNodes )
 static void WriteCustomTamlSchema( const AbstractClassRep* pClassRep, TiXmlElement* pParentElement )
 {
     // Sanity!
-    AssertFatal( pClassRep != NULL,  "ParticleAsset::WriteCustomTamlSchema() - ClassRep cannot be NULL." );
-    AssertFatal( pParentElement != NULL,  "ParticleAsset::WriteCustomTamlSchema() - Parent Element cannot be NULL." );
+    AssertFatal( pClassRep != nullptr,  "ParticleAsset::WriteCustomTamlSchema() - ClassRep cannot be NULL." );
+    AssertFatal( pParentElement != nullptr,  "ParticleAsset::WriteCustomTamlSchema() - Parent Element cannot be NULL." );
 
     // Write the particle asset fields.
     ParticleAsset particleAsset;

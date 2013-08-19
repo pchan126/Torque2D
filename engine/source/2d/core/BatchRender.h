@@ -111,9 +111,27 @@ private:
     bool                mWireframeMode;
     bool                mBatchEnabled;
 
+    GFXShaderRef            mShader;
+    GFXShaderConstBufferRef mShaderConstBuffer;
 public:
     BatchRender();
     virtual ~BatchRender();
+
+    inline void setShader (const GFXShaderRef shader, const bool forceFlush = false )
+    {
+        // Ignore if no change.
+        if ( !forceFlush && shader == mShader )
+            return;
+
+        // Flush.
+        flushInternal();
+
+        // Update strict order mode.
+        mStrictOrderMode = shader;
+    }
+
+    /// Gets the strict order mode.
+    inline GFXShaderRef getShader( void ) const { return mShader; }
 
     /// Set the strict order mode.
     inline void setStrictOrderMode( const bool strictOrder, const bool forceFlush = false )

@@ -67,6 +67,7 @@
 #include "component/behaviors/behaviorInstance.h"
 #endif
 
+#include "2d/assets/ShaderAsset.h"
 #include "graphics/gfxDevice.h"
 #include "graphics/gfxEnums.h"
 #include "lighting/lightInfo.h"
@@ -245,6 +246,7 @@ protected:
     U32                     mSerialId;
     StringTableEntry        mRenderGroup;
 
+    AssetPtr<ShaderAsset>   mShaderAsset;
 protected:
     static bool sceneObjectLayerDepthSort(const SceneObject* a, const SceneObject* b);
 

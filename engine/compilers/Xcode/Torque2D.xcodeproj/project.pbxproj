@@ -70,6 +70,7 @@
 		4B8AA9C9BDCD233C686B600A /* gfxOpenGL32Shader.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA1A5B9F6EDB0D867D795 /* gfxOpenGL32Shader.mm */; };
 		4B8AA9FE28CF062DD5A660FF /* GLFWWindowManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA80FD83636B8BF425CD5 /* GLFWWindowManager.mm */; };
 		4B8AAAD0AC81DCC871CB4183 /* gfxOpenGL32TextureTarget.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAD79AA190B9FF796818D /* gfxOpenGL32TextureTarget.mm */; };
+		4B8AAB30D91BA5D9B6DB99A1 /* ShaderAsset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAFDD1065A8E21A1599C5 /* ShaderAsset.cpp */; };
 		4B8AABEC84868C0D290DA248 /* FilterImageAsset.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA983A034257634CDF5C6 /* FilterImageAsset.mm */; };
 		4B8AAC0408F50E03D0025DEE /* osxInput.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAE22F6048FE09CDC7D07 /* osxInput.mm */; };
 		4B8AAC5C6BAF7EB28C6D04EC /* GLFWCursorController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAA085A2ABAC2CE538F09 /* GLFWCursorController.mm */; };
@@ -634,6 +635,7 @@
 		30666086176DCE0B00BE2909 /* gfxEnums.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxEnums.cc; sourceTree = "<group>"; };
 		308DD038175E8741008FBC32 /* rawData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rawData.h; sourceTree = "<group>"; };
 		30D54745173FD18B00CB43DA /* platformTimer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = platformTimer.cc; sourceTree = "<group>"; };
+		4B8AA0496A7FEE5099FAECE3 /* ShaderAsset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderAsset.h; sourceTree = "<group>"; };
 		4B8AA0B11DDA96BD47186F76 /* osxFileIO.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxFileIO.mm; sourceTree = "<group>"; };
 		4B8AA0CE464FE0593242589F /* Torque2DGame-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.info; name = "Torque2DGame-Info.plist"; path = "Torque2D/Torque2DGame-Info.plist"; sourceTree = SOURCE_ROOT; };
 		4B8AA0D42C42CB1100392605 /* FilterImageAsset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilterImageAsset.h; sourceTree = "<group>"; };
@@ -703,6 +705,7 @@
 		4B8AAEE8C36DC12BC8F878AB /* osxCPU.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxCPU.mm; sourceTree = "<group>"; };
 		4B8AAF19B05781C0171ED319 /* JoystickNotificationDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JoystickNotificationDelegate.h; sourceTree = "<group>"; };
 		4B8AAF83D230B0CC6FBB2017 /* gfxOpenGL32EnumTranslate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32EnumTranslate.mm; sourceTree = "<group>"; };
+		4B8AAFDD1065A8E21A1599C5 /* ShaderAsset.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShaderAsset.cpp; sourceTree = "<group>"; };
 		861CD8CE1678F6C200DAE1A0 /* fileDialog_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fileDialog_ScriptBinding.h; sourceTree = "<group>"; };
 		861CD8CF1678F6C200DAE1A0 /* fileDialog.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fileDialog.cc; sourceTree = "<group>"; };
 		864ECFEA1652795700012416 /* platform_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platform_ScriptBinding.h; sourceTree = "<group>"; };
@@ -2242,6 +2245,8 @@
 				86BC7E7C16518D4600D96ADF /* ImageAsset.cc */,
 				86BC7E7D16518D4600D96ADF /* ImageAsset.h */,
 				86BC7E7E16518D4600D96ADF /* ImageAsset_ScriptBinding.h */,
+				4B8AAFDD1065A8E21A1599C5 /* ShaderAsset.cpp */,
+				4B8AA0496A7FEE5099FAECE3 /* ShaderAsset.h */,
 			);
 			path = assets;
 			sourceTree = "<group>";
@@ -3937,6 +3942,7 @@
 				4B8AAD464DE91C0A1C7697E2 /* platformOSX.mm in Sources */,
 				C541968ADC47A8E453CEECB8 /* mRect.cpp in Sources */,
 				4B8AAEBDA5F2EF7DEB24E8B5 /* guiMoveCtrl.cpp in Sources */,
+				4B8AAB30D91BA5D9B6DB99A1 /* ShaderAsset.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

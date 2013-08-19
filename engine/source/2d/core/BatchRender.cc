@@ -34,7 +34,7 @@
 BatchRender::BatchRender() :
     mTriangleCount( 0 ),
     mStrictOrderMode( false ),
-    mpDebugStats( NULL ),
+    mpDebugStats( nullptr ),
     mBlendMode(true),
     mSrcBlendFactor( GFXBlendSrcAlpha),
     mDstBlendFactor( GFXBlendInvSrcAlpha),
@@ -49,16 +49,14 @@ BatchRender::~BatchRender()
 {
     // Destroy index vectors in texture batch map.
     for ( auto itr:mTextureBatchMap )
-    {
         delete itr.second;
-    }
+
     mTextureBatchMap.clear();
 
     // Destroy index vectors in index vector pool.
     for ( indexedPrim* itr:mIndexVectorPool )
-    {
         delete itr;
-    }
+
     mIndexVectorPool.clear();
 }
 
@@ -103,7 +101,7 @@ void BatchRender::SubmitTriangles(
     PROFILE_SCOPE(BatchRender_SubmitTriangles);
 
     // Sanity!
-    AssertFatal( mpDebugStats != NULL, "Debug stats have not been configured." );
+    AssertFatal( mpDebugStats != nullptr, "Debug stats have not been configured." );
     AssertFatal( vertexCount % 3 == 0, "BatchRender::SubmitTriangles() - Invalid vertex count, cannot represent whole triangles." );
     AssertFatal( vertexCount <= BATCHRENDER_BUFFERSIZE, "BatchRender::SubmitTriangles() - Invalid vertex count." );
 
@@ -205,7 +203,7 @@ void BatchRender::SubmitTriangles(
 void BatchRender::SubmitTriangleStrip( const Vector<GFXVertexPCT> verts, GFXTexHandle& texture)
 {
     // Sanity!
-    AssertFatal( mpDebugStats != NULL, "Debug stats have not been configured." );
+    AssertFatal( mpDebugStats != nullptr, "Debug stats have not been configured." );
     
     if (verts.size() < 1)
         return;
@@ -280,7 +278,7 @@ void BatchRender::SubmitQuad(const GFXVertexPCT* vertex,
                              GFXTexHandle& texture)
 {
     // Sanity!
-    AssertFatal( mpDebugStats != NULL, "Debug stats have not been configured." );
+    AssertFatal( mpDebugStats != nullptr, "Debug stats have not been configured." );
     
     // Debug Profiling.
     PROFILE_SCOPE(BatchRender_SubmitQuad);
@@ -368,7 +366,7 @@ void BatchRender::SubmitQuad(
         const ColorF& color )
 {
     // Sanity!
-    AssertFatal( mpDebugStats != NULL, "Debug stats have not been configured." );
+    AssertFatal( mpDebugStats != nullptr, "Debug stats have not been configured." );
 
     // Debug Profiling.
     PROFILE_SCOPE(BatchRender_SubmitQuad);
@@ -528,11 +526,11 @@ void BatchRender::_lightAndDraw( Vector<GFXVertexPCT>* pVertexVector, Vector<U16
 //   // vertex lighting
 //   for (int i = 0; i < mVertexBuffer.size(); i++)
 //   {
-//      LightInfo* light = NULL;
+//      LightInfo* light = nullptr;
 //      LightQuery query;
 //      query.init( SphereF( pVertexVector->at(i).point, 500.0) );
 //      query.getLights( &light, 1 );
-//      if (light != NULL)
+//      if (light != nullptr)
 //      {
 //         F32 len = (light->getPosition()-pVertexVector->at(i).point).len();
 //         F32 rad = light->getRange().x;
@@ -553,9 +551,17 @@ void BatchRender::_lightAndDraw( Vector<GFXVertexPCT>* pVertexVector, Vector<U16
    GFX->setVertexBuffer( mTempVertBuffHandle );
    
    // Draw the triangles.
-//   GFX->setupGenericShaders(GFXDevice::GSBatchTexture);
-   GFX->setupGenericShaders(GFXDevice::GSTexture);
-   GFX->drawIndexedPrimitive(GFXTriangleStrip, 0, 0, pVertexVector->size(), pIndex->size(), pIndex->size()-2);
+   if (mShader.isNull())
+   {
+       GFX->setupGenericShaders(GFXDevice::GSTexture);
+   }
+    else
+   {
+       GFX->setShader(mShader);
+       GFX->setShaderConstBuffer(mShaderConstBuffer);
+   }
+
+    GFX->drawIndexedPrimitive(GFXTriangleStrip, 0, 0, pVertexVector->size(), pIndex->size(), pIndex->size()-2);
 }
 
 
@@ -563,8 +569,8 @@ void BatchRender::_lightAndDraw( Vector<GFXVertexPCT>* pVertexVector, Vector<U16
 
 BatchRender::indexedPrim* BatchRender::findTextureBatch( GFXTexHandle& handle )
 {
-//    Vector<GFXVertexPCT> * pIndexVector = NULL;
-    indexedPrim* pIndexVector = NULL;
+//    Vector<GFXVertexPCT> * pIndexVector = nullptr;
+    indexedPrim* pIndexVector = nullptr;
 
     // Find texture binding.
     textureBatchType::iterator itr = mTextureBatchMap.find( handle );

@@ -31,7 +31,7 @@
 ParticleSystem::ParticleNode* ParticlePlayer::EmitterNode::createParticle( void )
 {
     // Sanity!
-    AssertFatal( mOwner != NULL, "ParticlePlayer::EmitterNode::createParticle() - Cannot create a particle with a NULL owner." );
+    AssertFatal( mOwner != nullptr, "ParticlePlayer::EmitterNode::createParticle() - Cannot create a particle with a NULL owner." );
   
     // Fetch a free node,
     ParticleSystem::ParticleNode* pFreeParticleNode = ParticleSystem::Instance->createParticle();
@@ -53,7 +53,7 @@ ParticleSystem::ParticleNode* ParticlePlayer::EmitterNode::createParticle( void 
 void ParticlePlayer::EmitterNode::freeParticle( ParticleSystem::ParticleNode* pParticleNode )
 {
     // Sanity!
-    AssertFatal( mOwner != NULL, "ParticlePlayer::EmitterNode::freeParticle() - Cannot free a particle with a NULL owner." );
+    AssertFatal( mOwner != nullptr, "ParticlePlayer::EmitterNode::freeParticle() - Cannot free a particle with a NULL owner." );
 
     // Deallocate the assets.
     pParticleNode->mFrameProvider.deallocateAssets();
@@ -71,7 +71,7 @@ void ParticlePlayer::EmitterNode::freeParticle( ParticleSystem::ParticleNode* pP
 void ParticlePlayer::EmitterNode::freeAllParticles( void )
 {
     // Sanity!
-    AssertFatal( mOwner != NULL, "ParticlePlayer::EmitterNode::freeAllParticles() - Cannot free all particles with a NULL owner." );
+    AssertFatal( mOwner != nullptr, "ParticlePlayer::EmitterNode::freeAllParticles() - Cannot free all particles with a NULL owner." );
 
     // Free all the nodes,
     while( mParticleNodeHead.mNextNode != &mParticleNodeHead )
@@ -138,7 +138,7 @@ void ParticlePlayer::copyTo(SimObject* object)
    ParticlePlayer* pParticlePlayer = static_cast<ParticlePlayer*>( object );
 
    // Sanity!
-   AssertFatal( pParticlePlayer != NULL, "ParticlePlayer::copyTo() - Object is not the correct type.");
+   AssertFatal( pParticlePlayer != nullptr, "ParticlePlayer::copyTo() - Object is not the correct type.");
 
    // Copy parent.
    Parent::copyTo( object );
@@ -276,7 +276,7 @@ void ParticlePlayer::integrateObject( const F32 totalTime, const F32 elapsedTime
     ParticleAsset* pParticleAsset = mParticleAsset;
 
     // Finish if no particle asset assigned.
-    if ( pParticleAsset == NULL )
+    if ( pParticleAsset == nullptr )
         return;
 
     // Reset active particle count.
@@ -691,7 +691,7 @@ void ParticlePlayer::sceneRenderOverlay( const SceneRenderState* sceneRenderStat
 void ParticlePlayer::setParticle( const char* pAssetId )
 {
     // Sanity!
-    AssertFatal( pAssetId != NULL, "ParticlePlayer::setParticle() - Cannot use a NULL asset Id." );
+    AssertFatal( pAssetId != nullptr, "ParticlePlayer::setParticle() - Cannot use a NULL asset Id." );
 
     // Set asset Id.
     mParticleAsset = pAssetId;
@@ -773,7 +773,7 @@ bool ParticlePlayer::play( const bool resetParticles )
     }
 
     // Are we in a scene?
-    if ( getScene() == NULL )
+    if ( getScene() == nullptr )
     {
         // No, so warn.
         Con::warnf("ParticlePlayer::play() - Cannot play when not in a scene!");

@@ -60,8 +60,8 @@ private:
         EmitterNode( ParticlePlayer* pParticlePlayer, ParticleAssetEmitter* pParticleAssetEmitter )
         {
             // Sanity!
-            AssertFatal( pParticlePlayer != NULL, "EmitterNode() - Cannot have a NULL owner." );
-            AssertFatal( pParticleAssetEmitter != NULL, "EmitterNode() - Cannot have a NULL particle asset emitter." );
+            AssertFatal( pParticlePlayer != nullptr, "EmitterNode() - Cannot have a NULL owner." );
+            AssertFatal( pParticleAssetEmitter != nullptr, "EmitterNode() - Cannot have a NULL particle asset emitter." );
 
             // Set owner.
             mOwner = pParticlePlayer;
