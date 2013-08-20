@@ -237,8 +237,8 @@ void ImageFrameProviderCore::render(
                                       mLerp(texUpper.y, texLower.y, factor));
         }
         
-        for (GFXVertexPCT itr:verts)
-             itr.color = color;
+       for (int i = 0; i < verts.size(); i++)
+          verts[i].color = color;
        
         pBatchRenderer->SubmitTriangleStrip(verts, getProviderTexture());
         subVert0 = subVert1;
