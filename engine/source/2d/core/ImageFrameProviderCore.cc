@@ -237,8 +237,8 @@ void ImageFrameProviderCore::render(
                                       mLerp(texUpper.y, texLower.y, factor));
         }
         
-        for (int i = 0; i < verts.size(); i++)
-             verts[i].color = color;
+        for (GFXVertexPCT itr:verts)
+             itr.color = color;
        
         pBatchRenderer->SubmitTriangleStrip(verts, getProviderTexture());
         subVert0 = subVert1;
@@ -291,7 +291,7 @@ void ImageFrameProviderCore::renderGui( GuiControl& owner, Point2I offset, const
 bool ImageFrameProviderCore::setImage( const char* pImageAssetId, const U32 frame )
 {
     // Finish if invalid image asset.
-    if ( pImageAssetId == NULL )
+    if ( pImageAssetId == nullptr )
         return false;
 
     // Set asset.

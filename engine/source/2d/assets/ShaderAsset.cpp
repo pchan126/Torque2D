@@ -77,7 +77,7 @@ void ShaderAsset::initPersistFields()
 
     // Fields.
     addProtectedField("VertexShaderFile", TypeAssetLooseFilePath, Offset(mVertexShaderFile, ShaderAsset), &setVertexShaderFile, &getVertexShaderFile, &defaultProtectedWriteFn, "");
-    addProtectedField("FragementShaderFile", TypeAssetLooseFilePath, Offset(mFragmentShaderFile, ShaderAsset), &setFragmentShaderFile, &getFragmentShaderFile, &defaultProtectedWriteFn, "");
+    addProtectedField("FragmentShaderFile", TypeAssetLooseFilePath, Offset(mFragmentShaderFile, ShaderAsset), &setFragmentShaderFile, &getFragmentShaderFile, &defaultProtectedWriteFn, "");
 }
 
 //------------------------------------------------------------------------------

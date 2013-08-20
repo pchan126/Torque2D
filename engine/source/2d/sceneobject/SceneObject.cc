@@ -337,6 +337,9 @@ void SceneObject::initPersistFields()
 
     /// Scene.
     addProtectedField("scene", TypeSimObjectPtr, Offset(mpScene, SceneObject), &setScene, &defaultProtectedGetFn, &writeScene, "");
+
+    addProtectedField("Shader", TypeShaderAssetPtr, Offset(mShaderAsset, SceneObject), &setShader, &getShader, &writeShader, "");
+
 }
 
 //-----------------------------------------------------------------------------
@@ -4442,3 +4445,13 @@ static void WriteCustomTamlSchema( const AbstractClassRep* pClassRep, TiXmlEleme
 //-----------------------------------------------------------------------------
 
 IMPLEMENT_CONOBJECT_SCHEMA(SceneObject, WriteCustomTamlSchema);
+
+bool SceneObject::setShader(const char *pShaderAssetId) {
+
+    // null shader means use of a generic shader
+
+    // Set asset.
+    mShaderAsset.setAssetId( pShaderAssetId );
+    return true;
+}
+

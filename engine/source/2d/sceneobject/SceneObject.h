@@ -603,6 +603,10 @@ public:
     static U32              getGlobalSceneObjectCount( void );
     inline U32              getSerialId( void ) const                   { return mSerialId; }
 
+    /// Shader
+    inline bool setShader( const char* pShaderAssetId );
+    inline StringTableEntry getShader( void ) const{ return mShaderAsset->getAssetId(); }
+
     // Read / Write fields.
     virtual bool            writeField(StringTableEntry fieldname, const char* value);
 
@@ -784,6 +788,11 @@ protected:
         return false;
     }
     static bool             writeScene( void* obj, StringTableEntry pFieldName ) { return false; }
+
+    /// Shader
+    static bool setShader(void* obj, const char* data)                       { return static_cast<SceneObject*>(obj)->setShader(data); return false; };
+    static const char* getShader(void* obj, const char* data)                { return static_cast<SceneObject*>(obj)->getShader(); }
+    static bool writeShader( void* obj, StringTableEntry pFieldName )        { SceneObject* pCastObject = static_cast<SceneObject*>(obj); return pCastObject->mShaderAsset.notNull(); }
 
 };
 

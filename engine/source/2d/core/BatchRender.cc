@@ -248,8 +248,8 @@ void BatchRender::SubmitTriangleStrip( const Vector<GFXVertexPCT> verts, GFXTexH
         indexBuffer->push_back(vertBuffer->push_back_unique(verts[0]));
     }
     
-    for (int i = 0; i < verts.size(); i++)
-        indexBuffer->push_back(vertBuffer->push_back_unique(verts[i]));
+    for (auto itr:verts)
+        indexBuffer->push_back(vertBuffer->push_back_unique(itr));
 
     // Stats.
     mpDebugStats->batchTrianglesSubmitted+=2;
@@ -557,8 +557,13 @@ void BatchRender::_lightAndDraw( Vector<GFXVertexPCT>* pVertexVector, Vector<U16
    }
     else
    {
+       MatrixF xform(GFX->getWorldMatrix());
+       xform *= GFX->getViewMatrix();
+       xform *= GFX->getProjectionMatrix();
        GFX->setShader(mShader);
        GFX->setShaderConstBuffer(mShaderConstBuffer);
+       mShaderConstBuffer->setSafe( mShader->getShaderConstHandle("$mvp_matrix"), xform );
+       mShaderConstBuffer->setSafe( mShader->getShaderConstHandle("$sampler2d_0"), 0);
    }
 
     GFX->drawIndexedPrimitive(GFXTriangleStrip, 0, 0, pVertexVector->size(), pIndex->size(), pIndex->size()-2);

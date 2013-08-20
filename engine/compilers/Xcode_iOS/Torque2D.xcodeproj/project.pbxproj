@@ -35,12 +35,14 @@
 		30804B101764CB3300472030 /* gfxEnums.cc in Sources */ = {isa = PBXBuildFile; fileRef = 30804B0F1764CB3200472030 /* gfxEnums.cc */; };
 		30D5475C173FF5D300CB43DA /* platformTimer.cc in Sources */ = {isa = PBXBuildFile; fileRef = 30D5475A173FF5D300CB43DA /* platformTimer.cc */; };
 		33230F1656FA2C7C493DA2D2 /* guiSliderCtrl.cc in Sources */ = {isa = PBXBuildFile; fileRef = 332307DBC5B7EEEB22E5A736 /* guiSliderCtrl.cc */; };
+		4B8AA268C459D3CAC485BCFB /* shaderGenVars.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA70E4086F061C83EF1AC /* shaderGenVars.cpp */; };
 		4B8AA2A21FC701F62B39AA31 /* gfxOpenGLES20TextureTarget.cc in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA69E2FAAFC7316092ACB /* gfxOpenGLES20TextureTarget.cc */; };
 		4B8AA489BC5E0D8EDB45B697 /* gfxOpenGLTextureTarget.cc in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAC926AB3AD1F47EB2AC2 /* gfxOpenGLTextureTarget.cc */; };
 		4B8AA645A2B83EAB64F41454 /* guiJoystickCtrl.cc in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAB8C7B170DE2B1C83143 /* guiJoystickCtrl.cc */; };
 		4B8AA6EFAB1E83E6E1DD9CE6 /* render2DObjectMgr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA3F49A3463DC9D4C56AB /* render2DObjectMgr.cpp */; };
 		4B8AA80EC028431CE04DC27D /* iOSCursorController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA9A93BBBA232436F0DDF /* iOSCursorController.mm */; };
 		4B8AA88C053A6612EFCA9D10 /* iOSInputManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA81DE24DF738778D59DC /* iOSInputManager.mm */; };
+		4B8AA8989528FAA453A05720 /* ShaderAsset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AABFFCB723EFC25C2D1AF /* ShaderAsset.cpp */; };
 		4B8AAA433A8608406CA76F20 /* guiMoveCtrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA80281B751522AB2B79E /* guiMoveCtrl.cpp */; };
 		4B8AAE742D18ABC94DC3FDC5 /* mRect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA70EC9A24A9699C62600 /* mRect.cpp */; };
 		860A196C171F0666000E9FE8 /* guiGridCtrl.cc in Sources */ = {isa = PBXBuildFile; fileRef = 860A196A171F0666000E9FE8 /* guiGridCtrl.cc */; };
@@ -643,15 +645,19 @@
 		4B8AA506A21CCF7A52646E9C /* gfxOpenGLES20iOSTextureTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSTextureTarget.h; sourceTree = "<group>"; };
 		4B8AA643B344244F09BC5153 /* render2DObjectMgr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render2DObjectMgr.h; sourceTree = "<group>"; };
 		4B8AA69E2FAAFC7316092ACB /* gfxOpenGLES20TextureTarget.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxOpenGLES20TextureTarget.cc; sourceTree = "<group>"; };
+		4B8AA6E8B5D42932C6BF8339 /* ShaderAsset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderAsset.h; sourceTree = "<group>"; };
+		4B8AA70E4086F061C83EF1AC /* shaderGenVars.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = shaderGenVars.cpp; sourceTree = "<group>"; };
 		4B8AA70EC9A24A9699C62600 /* mRect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mRect.cpp; sourceTree = "<group>"; };
 		4B8AA80281B751522AB2B79E /* guiMoveCtrl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiMoveCtrl.cpp; sourceTree = "<group>"; };
 		4B8AA81DE24DF738778D59DC /* iOSInputManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = iOSInputManager.mm; sourceTree = "<group>"; };
 		4B8AA9A93BBBA232436F0DDF /* iOSCursorController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = iOSCursorController.mm; path = ../windowManager/iOSCursorController.mm; sourceTree = "<group>"; };
 		4B8AAB7E71D8EE670C6CD843 /* guiJoystickCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = guiJoystickCtrl.h; path = gui/guiJoystickCtrl.h; sourceTree = "<group>"; };
 		4B8AAB8C7B170DE2B1C83143 /* guiJoystickCtrl.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = guiJoystickCtrl.cc; path = gui/guiJoystickCtrl.cc; sourceTree = "<group>"; };
+		4B8AABFFCB723EFC25C2D1AF /* ShaderAsset.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShaderAsset.cpp; sourceTree = "<group>"; };
 		4B8AAC46AA26864E02E90563 /* guiMoveCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiMoveCtrl.h; sourceTree = "<group>"; };
 		4B8AAC926AB3AD1F47EB2AC2 /* gfxOpenGLTextureTarget.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxOpenGLTextureTarget.cc; sourceTree = "<group>"; };
 		4B8AAE505D4152D7286E2EBE /* gfxOpenGLES20TextureTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20TextureTarget.h; sourceTree = "<group>"; };
+		4B8AAE9CFC2546FA1FF34C8E /* shaderGenVars.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = shaderGenVars.h; sourceTree = "<group>"; };
 		860A196A171F0666000E9FE8 /* guiGridCtrl.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiGridCtrl.cc; sourceTree = "<group>"; };
 		860A196B171F0666000E9FE8 /* guiGridCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiGridCtrl.h; sourceTree = "<group>"; };
 		8610F32D16AEEC670015BCEB /* main.cs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = main.cs; path = ../../../main.cs; sourceTree = "<group>"; };
@@ -1910,6 +1916,8 @@
 				867BAD0916AEC9050033868F /* ParticleAssetField.h */,
 				867BAD0A16AEC9050033868F /* ParticleAssetFieldCollection.cc */,
 				867BAD0B16AEC9050033868F /* ParticleAssetFieldCollection.h */,
+				4B8AABFFCB723EFC25C2D1AF /* ShaderAsset.cpp */,
+				4B8AA6E8B5D42932C6BF8339 /* ShaderAsset.h */,
 			);
 			path = assets;
 			sourceTree = "<group>";
@@ -3465,6 +3473,8 @@
 				D1736FE61761BE7E008D010C /* featureSet.h */,
 				D1736FE71761BE7E008D010C /* featureType.cpp */,
 				D1736FE81761BE7E008D010C /* featureType.h */,
+				4B8AA70E4086F061C83EF1AC /* shaderGenVars.cpp */,
+				4B8AAE9CFC2546FA1FF34C8E /* shaderGenVars.h */,
 			);
 			name = shaderGen;
 			path = ../../../source/shaderGen;
@@ -4069,6 +4079,8 @@
 				4B8AA489BC5E0D8EDB45B697 /* gfxOpenGLTextureTarget.cc in Sources */,
 				4B8AA2A21FC701F62B39AA31 /* gfxOpenGLES20TextureTarget.cc in Sources */,
 				4B8AAA433A8608406CA76F20 /* guiMoveCtrl.cpp in Sources */,
+				4B8AA8989528FAA453A05720 /* ShaderAsset.cpp in Sources */,
+				4B8AA268C459D3CAC485BCFB /* shaderGenVars.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -96,6 +96,9 @@ void Sprite::setSize( const Vector2& size )
 
 void Sprite::sceneRender( const SceneRenderState* pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer )
 {
+    if (!mShaderAsset.isNull())
+        pBatchRenderer->setShader(*mShaderAsset);
+
     // Let the parent render.
     ImageFrameProvider::render(
         getFlipX(), getFlipY(),
@@ -106,6 +109,9 @@ void Sprite::sceneRender( const SceneRenderState* pSceneRenderState, const Scene
         pBatchRenderer,
         getBlendColor()*getSceneLayerObj()->getLight()
    , mRows, mColumns);
+
+    if (!mShaderAsset.isNull())
+        pBatchRenderer->clearShader();
 }
 
 

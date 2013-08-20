@@ -1,0 +1,4 @@
+<ShaderAsset
+    AssetName="SepiaShader"
+	VertexShaderFile="simple.vsh"
+	FragmentShaderFile="sepia.fsh"/>
