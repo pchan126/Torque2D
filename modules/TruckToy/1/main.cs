@@ -896,7 +896,7 @@ function TruckToy::createTruck( %this, %posX, %posY )
     %tireFront.setDefaultFriction( TruckToy.WheelFriction );
     %tireFront.setDefaultDensity( TruckToy.FrontWheelDensity );
     %tireFront.createCircleCollisionShape( 0.8 );
-    %tireFront.setShader("SepiaShader");
+    %tireFront.setShader("ToyAssets:SepiaShader");
 //    %tireFront.setColumns(2);
 //    %tireFront.setRows(2);
     SandboxScene.add( %tireFront );

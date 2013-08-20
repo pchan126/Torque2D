@@ -65,6 +65,7 @@ ShaderAsset::ShaderAsset() :  mVertexShaderFile(StringTable->EmptyString),
 
 ShaderAsset::~ShaderAsset()
 {
+   SimObject::onRemove();
 }
 
 
