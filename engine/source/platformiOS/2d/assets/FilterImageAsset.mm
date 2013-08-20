@@ -183,7 +183,7 @@ void FilterImageAsset::calculateImage( void )
            if (strvalue != nullptr)
            {
               NSObject *value = [NSClassFromString([info objectForKey:kCIAttributeClass]) alloc];
-              NSString *aType = [info objectForKey:kCIAttributeType];∫
+              NSString *aType = [info objectForKey:kCIAttributeType];
               if ([value isMemberOfClass:[NSNumber class]])
               {
                  if ([aType isEqualToString:kCIAttributeTypeTime])
