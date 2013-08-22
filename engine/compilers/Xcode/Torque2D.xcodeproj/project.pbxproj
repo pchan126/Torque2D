@@ -676,6 +676,7 @@
 		4B8AA8651FE1125031F84AD8 /* guiMoveCtrl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiMoveCtrl.cpp; sourceTree = "<group>"; };
 		4B8AA880AFA0FE58E4348849 /* osxMutex.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxMutex.mm; sourceTree = "<group>"; };
 		4B8AA887B3C88E67F03088EA /* gfxOpenGL32TextureObject.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32TextureObject.mm; sourceTree = "<group>"; };
+		4B8AA8993E904FE0D2C82C21 /* gfxTransformSaver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxTransformSaver.h; sourceTree = "<group>"; };
 		4B8AA9214E108BD3443695FC /* osxCocoaUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxCocoaUtilities.h; sourceTree = "<group>"; };
 		4B8AA959FD3C173CDA928FAA /* GLFWWindowInputGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLFWWindowInputGenerator.h; sourceTree = "<group>"; };
 		4B8AA960CF6C1D3EF472151C /* osxFont.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxFont.mm; sourceTree = "<group>"; };
@@ -2675,6 +2676,7 @@
 				DA91B2F316C2214800EB7B6E /* primBuilder.h */,
 				86BC7FCE16518D4600D96ADF /* splineUtil.cc */,
 				86BC7FCF16518D4600D96ADF /* splineUtil.h */,
+				4B8AA8993E904FE0D2C82C21 /* gfxTransformSaver.h */,
 			);
 			name = graphics;
 			path = ../../../source/graphics;
