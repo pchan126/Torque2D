@@ -175,6 +175,7 @@ class Vector
    bool remove( const T& );
    void merge(const Vector& p)     { _vector.insert(_vector.end(), p._vector.begin(), p._vector.end()); };
 
+    void swap( Vector& x)          { _vector.swap(x._vector); }
    /// @}
 };
 
