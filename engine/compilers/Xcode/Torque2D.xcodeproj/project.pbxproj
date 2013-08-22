@@ -64,6 +64,7 @@
 		4B8AA590A413FC6964354724 /* JoystickHatswitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA2EA27DDCF404CF01ABC /* JoystickHatswitch.m */; };
 		4B8AA6A9654E2527B2FE8D88 /* osxAudio.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA3FABCB53401B420F689 /* osxAudio.mm */; };
 		4B8AA6D0F562569478D5CF13 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AAAFF68BBF4EF6BD5378B /* main.mm */; };
+		4B8AA6ED2907FD60DB65BB4A /* sphereMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA6AF443D813A0BD2790E /* sphereMesh.cpp */; };
 		4B8AA6F7F73CD71CF2A73BB6 /* gfxOpenGL32VertexBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA72B371610384CA2A574 /* gfxOpenGL32VertexBuffer.mm */; };
 		4B8AA757620E6AA3EF39BF53 /* osxCocoaUtilities.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA5FC4546D3233A02A56C /* osxCocoaUtilities.mm */; };
 		4B8AA7DFDD7F25A01937172B /* gfxOpenGL32Device.OSX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA9BE241316556146B265 /* gfxOpenGL32Device.OSX.mm */; };
@@ -665,6 +666,7 @@
 		4B8AA5FC4546D3233A02A56C /* osxCocoaUtilities.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxCocoaUtilities.mm; sourceTree = "<group>"; };
 		4B8AA63E1E0D3091A75B6226 /* gfxOpenGL32WindowTarget.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32WindowTarget.mm; sourceTree = "<group>"; };
 		4B8AA67812DD7EE0ACFEF67F /* Torque2D-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Torque2D-Prefix.pch"; path = "Torque2D/Torque2D-Prefix.pch"; sourceTree = SOURCE_ROOT; };
+		4B8AA6AF443D813A0BD2790E /* sphereMesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sphereMesh.cpp; sourceTree = "<group>"; };
 		4B8AA6CE573B26A7A2598E15 /* platformOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformOSX.h; sourceTree = "<group>"; };
 		4B8AA72B371610384CA2A574 /* gfxOpenGL32VertexBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32VertexBuffer.mm; sourceTree = "<group>"; };
 		4B8AA75C6986C5E3952EA7A1 /* osxFont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxFont.h; sourceTree = "<group>"; };
@@ -681,6 +683,7 @@
 		4B8AA984E295A563F26E3D27 /* osxMemory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxMemory.mm; sourceTree = "<group>"; };
 		4B8AA9949541404C1292B9F9 /* osxThread.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxThread.mm; sourceTree = "<group>"; };
 		4B8AA9BE241316556146B265 /* gfxOpenGL32Device.OSX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32Device.OSX.mm; sourceTree = "<group>"; };
+		4B8AA9F33F3518DE59909BE4 /* sphereMesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sphereMesh.h; sourceTree = "<group>"; };
 		4B8AAA085A2ABAC2CE538F09 /* GLFWCursorController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GLFWCursorController.mm; sourceTree = "<group>"; };
 		4B8AAA1340591455828BFB00 /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
 		4B8AAA14E1C020C365C91296 /* gfxOpenGL32Cubemap.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32Cubemap.mm; sourceTree = "<group>"; };
@@ -1845,6 +1848,15 @@
 			path = JoystickManager;
 			sourceTree = "<group>";
 		};
+		4B8AA875A70B3F689AB537DE /* util */ = {
+			isa = PBXGroup;
+			children = (
+				4B8AA6AF443D813A0BD2790E /* sphereMesh.cpp */,
+				4B8AA9F33F3518DE59909BE4 /* sphereMesh.h */,
+			);
+			path = util;
+			sourceTree = "<group>";
+		};
 		4B8AA99BAEE8ED2AEBD77CD5 /* assets */ = {
 			isa = PBXGroup;
 			children = (
@@ -2959,6 +2971,7 @@
 				86BC80B616518D4600D96ADF /* rectClipper.cpp */,
 				86BC80B716518D4600D96ADF /* rectClipper.h */,
 				C5419985987DCF2FA1EE23A1 /* mRect.cpp */,
+				4B8AA875A70B3F689AB537DE /* util */,
 			);
 			name = math;
 			path = ../../../source/math;
@@ -3943,6 +3956,7 @@
 				C541968ADC47A8E453CEECB8 /* mRect.cpp in Sources */,
 				4B8AAEBDA5F2EF7DEB24E8B5 /* guiMoveCtrl.cpp in Sources */,
 				4B8AAB30D91BA5D9B6DB99A1 /* ShaderAsset.cpp in Sources */,
+				4B8AA6ED2907FD60DB65BB4A /* sphereMesh.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
