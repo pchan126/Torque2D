@@ -560,6 +560,7 @@ void BatchRender::_lightAndDraw( Vector<GFXVertexPCT>* pVertexVector, Vector<U16
        MatrixF xform(GFX->getWorldMatrix());
        xform *= GFX->getViewMatrix();
        xform *= GFX->getProjectionMatrix();
+       xform.transpose();
        GFX->setShader(mShader);
        GFX->setShaderConstBuffer(mShaderConstBuffer);
        mShaderConstBuffer->setSafe( mShader->getShaderConstHandle("$mvp_matrix"), xform );
