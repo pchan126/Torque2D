@@ -1,8 +1,5 @@
 //========================================================================
-// GLFW - An OpenGL library
-// Platform:    X11
-// API version: 3.0
-// WWW:         http://www.glfw.org/
+// GLFW 3.0 X11 - www.glfw.org
 //------------------------------------------------------------------------
 // Copyright (c) 2002-2006 Marcus Geelnard
 // Copyright (c) 2006-2010 Camilla Berglund <elmindreda@elmindreda.org>
@@ -80,8 +77,8 @@ static int openJoystickDevice(int joy, const char* path)
     ioctl(fd, JSIOCGBUTTONS, &buttonCount);
     _glfw.x11.joystick[joy].buttonCount = (int) buttonCount;
 
-    _glfw.x11.joystick[joy].axes = (float*) calloc(axisCount, sizeof(float));
-    _glfw.x11.joystick[joy].buttons = (unsigned char*) calloc(buttonCount, 1);
+    _glfw.x11.joystick[joy].axes = calloc(axisCount, sizeof(float));
+    _glfw.x11.joystick[joy].buttons = calloc(buttonCount, 1);
 
     _glfw.x11.joystick[joy].present = GL_TRUE;
 #endif // __linux__
@@ -162,7 +159,8 @@ static void pollJoystickEvents(void)
 void _glfwInitJoysticks(void)
 {
 #ifdef __linux__
-    int i, joy = 0;
+    int joy = 0;
+    size_t i;
     regex_t regex;
     DIR* dir;
     const char* dirs[] =
