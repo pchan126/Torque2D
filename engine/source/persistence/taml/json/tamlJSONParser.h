@@ -46,7 +46,7 @@ public:
     virtual bool accept( const char* pFilename, TamlVisitor& visitor );
 
 private:
-    inline bool parseType( rapidjson::Value::Memberiterator& memberItr, TamlVisitor& visitor, const bool isRoot );
+    inline bool parseType( rapidjson::Value::MemberIterator& memberItr, TamlVisitor& visitor, const bool isRoot );
     inline bool parseStringValue( char* pBuffer, const S32 bufferSize, const rapidjson::Value& value, const char* pName );
 
     bool mDocumentDirty;

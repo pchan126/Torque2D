@@ -58,11 +58,11 @@ private:
 private:
     void resetParse( void );
 
-    SimObject* parseType( const rapidjson::Value::ConstMemberiterator& memberItr );
-    inline void parseField( rapidjson::Value::ConstMemberiterator& memberItr, SimObject* pSimObject );
-    inline void parseChild( rapidjson::Value::ConstMemberiterator& memberItr, SimObject* pSimObject );
-    inline void parseCustom( rapidjson::Value::ConstMemberiterator& memberItr, SimObject* pSimObject, const char* pCustomNodeName, TamlCustomNodes& customNodes );
-    inline void parseCustomNode( rapidjson::Value::ConstMemberiterator& memberItr, TamlCustomNode* pCustomNode );
+    SimObject* parseType( const rapidjson::Value::ConstMemberIterator& memberItr );
+    inline void parseField( rapidjson::Value::ConstMemberIterator& memberItr, SimObject* pSimObject );
+    inline void parseChild( rapidjson::Value::ConstMemberIterator& memberItr, SimObject* pSimObject );
+    inline void parseCustom( rapidjson::Value::ConstMemberIterator& memberItr, SimObject* pSimObject, const char* pCustomNodeName, TamlCustomNodes& customNodes );
+    inline void parseCustomNode( rapidjson::Value::ConstMemberIterator& memberItr, TamlCustomNode* pCustomNode );
 
     inline StringTableEntry getDemangledName( const char* pMangledName );
     inline bool parseStringValue( char* pBuffer, const S32 bufferSize, const rapidjson::Value& value, const char* pName );

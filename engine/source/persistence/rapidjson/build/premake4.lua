@@ -68,9 +68,6 @@ solution "test"
 
 	project "gtest"
 		kind "StaticLib"
-		
-		defines { "GTEST_HAS_PTHREAD=0" }
-
 		files { 
 			"../thirdparty/gtest/src/gtest-all.cc",
 			"../thirdparty/gtest/src/**.h",
@@ -157,11 +154,6 @@ solution "example"
 	project "pretty"
 		kind "ConsoleApp"
 		files "../example/pretty/*"
-		setTargetObjDir("../bin")
-
-	project "prettyauto"
-		kind "ConsoleApp"
-		files "../example/prettyauto/*"
 		setTargetObjDir("../bin")
 
 	project "tutorial"

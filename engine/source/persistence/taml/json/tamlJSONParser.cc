@@ -85,7 +85,7 @@ bool TamlJSONParser::accept( const char* pFilename, TamlVisitor& visitor )
     mDocumentDirty = false;
 
     // Fetch the root.
-    rapidjson::Value::Memberiterator rootItr = inputDocument.MemberBegin();
+    rapidjson::Value::MemberIterator rootItr = inputDocument.MemberBegin();
 
     // Parse root value.
     parseType( rootItr, visitor, true );
@@ -121,7 +121,7 @@ bool TamlJSONParser::accept( const char* pFilename, TamlVisitor& visitor )
 
 //-----------------------------------------------------------------------------
 
-inline bool TamlJSONParser::parseType( rapidjson::Value::Memberiterator& memberItr, TamlVisitor& visitor, const bool isRoot )
+inline bool TamlJSONParser::parseType( rapidjson::Value::MemberIterator& memberItr, TamlVisitor& visitor, const bool isRoot )
 {
     // Debug Profiling.
     PROFILE_SCOPE(TamlJSONParser_ParseType);
@@ -135,7 +135,7 @@ inline bool TamlJSONParser::parseType( rapidjson::Value::Memberiterator& memberI
     propertyState.setObjectName( typeName.GetString(), isRoot );
 
     // Parse field members.
-    for( rapidjson::Value::Memberiterator fieldMemberItr = typeValue.MemberBegin(); fieldMemberItr != typeValue.MemberEnd(); ++fieldMemberItr )
+    for( rapidjson::Value::MemberIterator fieldMemberItr = typeValue.MemberBegin(); fieldMemberItr != typeValue.MemberEnd(); ++fieldMemberItr )
     {
         // Fetch value.
         const rapidjson::Value& fieldName = fieldMemberItr->name;
@@ -179,7 +179,7 @@ inline bool TamlJSONParser::parseType( rapidjson::Value::Memberiterator& memberI
         return false;
 
     // Parse children and custom node members.
-    for( rapidjson::Value::Memberiterator objectMemberItr = typeValue.MemberBegin(); objectMemberItr != typeValue.MemberEnd(); ++objectMemberItr )
+    for( rapidjson::Value::MemberIterator objectMemberItr = typeValue.MemberBegin(); objectMemberItr != typeValue.MemberEnd(); ++objectMemberItr )
     {
         // Fetch name and value.
         const rapidjson::Value& objectValue = objectMemberItr->value;

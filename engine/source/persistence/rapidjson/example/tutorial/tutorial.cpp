@@ -41,13 +41,6 @@ int main(int, char*[]) {
 	assert(document["hello"].IsString());
 	printf("hello = %s\n", document["hello"].GetString());
 
-	// Since version 0.2, you can use single lookup to check the existing of member and its value:
-	Value::Member* hello = document.FindMember("hello");
-	assert(hello != 0);
-	assert(hello->value.IsString());
-	assert(strcmp("world", hello->value.GetString()) == 0);
-	(void)hello;
-
 	assert(document["t"].IsBool());		// JSON true/false are bool. Can also uses more specific function IsTrue().
 	printf("t = %s\n", document["t"].GetBool() ? "true" : "false");
 
@@ -76,20 +69,8 @@ int main(int, char*[]) {
 		int z = a[0u].GetInt();						// This works too.
 		(void)y;
 		(void)z;
-
-		// Iterating array with iterators
-		printf("a = ");
-		for (Value::ConstValueIterator itr = a.Begin(); itr != a.End(); ++itr)
-			printf("%d ", itr->GetInt());
-		printf("\n");
 	}
 
-	// Iterating object members
-	static const char* kTypeNames[] = { "Null", "False", "True", "Object", "Array", "String", "Number" };
-	for (Value::ConstMemberIterator itr = document.MemberBegin(); itr != document.MemberEnd(); ++itr)
-		printf("Type of member %s is %s\n", itr->name.GetString(), kTypeNames[itr->value.GetType()]);
-
-	////////////////////////////////////////////////////////////////////////////
 	// 3. Modify values in document.
 
 	// Change i to a bigger number
