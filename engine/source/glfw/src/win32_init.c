@@ -1,8 +1,5 @@
 //========================================================================
-// GLFW - An OpenGL library
-// Platform:    Win32/WGL
-// API version: 3.0
-// WWW:         http://www.glfw.org/
+// GLFW 3.0 Win32 - www.glfw.org
 //------------------------------------------------------------------------
 // Copyright (c) 2002-2006 Marcus Geelnard
 // Copyright (c) 2006-2010 Camilla Berglund <elmindreda@elmindreda.org>
@@ -38,6 +35,15 @@
 #include <float.h>
 #endif // __BORLANDC__
 
+
+#if defined(_GLFW_USE_OPTIMUS_HPG)
+
+// Applications exporting this symbol with this value will be automatically
+// directed to the high-performance GPU on nVidia Optimus systems
+//
+GLFWAPI DWORD NvOptimusEnablement = 0x00000001;
+
+#endif // _GLFW_USE_OPTIMUS_HPG
 
 #if defined(_GLFW_BUILD_DLL)
 
@@ -146,7 +152,7 @@ WCHAR* _glfwCreateWideStringFromUTF8(const char* source)
     if (!length)
         return NULL;
 
-    target = (WCHAR*) malloc(sizeof(WCHAR) * (length + 1));
+    target = calloc(length + 1, sizeof(WCHAR));
 
     if (!MultiByteToWideChar(CP_UTF8, 0, source, -1, target, length + 1))
     {
@@ -168,7 +174,7 @@ char* _glfwCreateUTF8FromWideString(const WCHAR* source)
     if (!length)
         return NULL;
 
-    target = (char*) malloc(length + 1);
+    target = calloc(length + 1, sizeof(char));
 
     if (!WideCharToMultiByte(CP_UTF8, 0, source, -1, target, length + 1, NULL, NULL))
     {

@@ -1,8 +1,5 @@
 //========================================================================
-// GLFW - An OpenGL library
-// Platform:    Any
-// API version: 3.0
-// WWW:         http://www.glfw.org/
+// GLFW 3.0 - www.glfw.org
 //------------------------------------------------------------------------
 // Copyright (c) 2010 Camilla Berglund <elmindreda@elmindreda.org>
 //
@@ -56,6 +53,8 @@
 
 // Define this to 1 to disable dynamic loading of winmm
 /* #undef _GLFW_NO_DLOAD_WINMM */
+// Define this to 1 if glfwSwapInterval should ignore DWM compositing status
+/* #undef _GLFW_USE_DWM_SWAP_INTERVAL */
 
 // Define this to 1 if glXGetProcAddress is available
 /* #undef _GLFW_HAS_GLXGETPROCADDRESS */
