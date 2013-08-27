@@ -47,14 +47,12 @@ TEST(Document, Parse) {
 		EXPECT_EQ(i + 1, a[i].GetUint());
 }
 
-// This should be slow due to assignment in inner-loop.
 struct OutputStringStream : public std::ostringstream {
 	typedef char Ch;
 
 	void Put(char c) {
 		put(c);
 	}
-	void Flush() {}
 };
 
 TEST(Document, AcceptWriter) {
@@ -71,7 +69,7 @@ TEST(Document, AcceptWriter) {
 // Issue 44:	SetStringRaw doesn't work with wchar_t
 TEST(Document, UTF16_Document) {
 	GenericDocument< UTF16<> > json;
-	json.Parse<kParseValidateEncodingFlag>(L"[{\"created_at\":\"Wed Oct 30 17:13:20 +0000 2012\"}]");
+	json.Parse<0>(L"[{\"created_at\":\"Wed Oct 30 17:13:20 +0000 2012\"}]");
 
 	ASSERT_TRUE(json.IsArray());
 	GenericValue< UTF16<> >& v = json[0u];

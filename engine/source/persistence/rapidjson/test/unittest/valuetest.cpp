@@ -194,7 +194,7 @@ TEST(Value, Uint) {
 
 TEST(Value, Int64) {
 	// Constructor with int
-	Value x(int64_t(1234LL));
+	Value x(1234LL);
 	EXPECT_EQ(kNumberType, x.GetType());
 	EXPECT_EQ(1234, x.GetInt());
 	EXPECT_EQ(1234u, x.GetUint());
@@ -215,7 +215,7 @@ TEST(Value, Int64) {
 	EXPECT_FALSE(x.IsObject());
 	EXPECT_FALSE(x.IsArray());
 
-	Value nx(int64_t(-1234LL));
+	Value nx(-1234LL);
 	EXPECT_EQ(-1234, nx.GetInt());
 	EXPECT_EQ(-1234, nx.GetInt64());
 	EXPECT_TRUE(nx.IsInt());
@@ -239,7 +239,7 @@ TEST(Value, Int64) {
 
 TEST(Value, Uint64) {
 	// Constructor with int
-	Value x(uint64_t(1234LL));
+	Value x(1234LL);
 	EXPECT_EQ(kNumberType, x.GetType());
 	EXPECT_EQ(1234, x.GetInt());
 	EXPECT_EQ(1234u, x.GetUint());
@@ -581,13 +581,14 @@ TEST(Value, BigNestedObject) {
 	}
 }
 
+
 // Issue 18: Error removing last element of object
 // http://code.google.com/p/rapidjson/issues/detail?id=18
 TEST(Value, RemoveLastElement) {
 	rapidjson::Document doc;
 	rapidjson::Document::AllocatorType& allocator = doc.GetAllocator();
-	rapidjson::Value objVal(rapidjson::kObjectType);        
-	objVal.AddMember("var1", 123, allocator);       
+	rapidjson::Value objVal(rapidjson::kObjectType);	
+	objVal.AddMember("var1", 123, allocator);	
 	objVal.AddMember("var2", "444", allocator);
 	objVal.AddMember("var3", 555, allocator);
 	EXPECT_TRUE(objVal.HasMember("var3"));

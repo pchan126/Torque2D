@@ -603,13 +603,8 @@
 		2AD42163170434F0005BB8AD /* tamlJSONReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tamlJSONReader.h; path = json/tamlJSONReader.h; sourceTree = "<group>"; };
 		2AD42164170434F0005BB8AD /* tamlJSONWriter.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = tamlJSONWriter.cc; path = json/tamlJSONWriter.cc; sourceTree = "<group>"; };
 		2AD42165170434F0005BB8AD /* tamlJSONWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tamlJSONWriter.h; path = json/tamlJSONWriter.h; sourceTree = "<group>"; };
-		2AD4216A17043513005BB8AD /* allocators.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = allocators.h; path = rapidjson/include/rapidjson/allocators.h; sourceTree = "<group>"; };
 		2AD4216B17043513005BB8AD /* document.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = document.h; path = rapidjson/include/rapidjson/document.h; sourceTree = "<group>"; };
-		2AD4216C17043513005BB8AD /* encodedstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = encodedstream.h; path = rapidjson/include/rapidjson/encodedstream.h; sourceTree = "<group>"; };
-		2AD4216D17043513005BB8AD /* encodings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = encodings.h; path = rapidjson/include/rapidjson/encodings.h; sourceTree = "<group>"; };
-		2AD4216E17043513005BB8AD /* filereadstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = filereadstream.h; path = rapidjson/include/rapidjson/filereadstream.h; sourceTree = "<group>"; };
 		2AD4216F17043513005BB8AD /* filestream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = filestream.h; path = rapidjson/include/rapidjson/filestream.h; sourceTree = "<group>"; };
-		2AD4217017043513005BB8AD /* filewritestream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = filewritestream.h; path = rapidjson/include/rapidjson/filewritestream.h; sourceTree = "<group>"; };
 		2AD4217117043513005BB8AD /* prettywriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = prettywriter.h; path = rapidjson/include/rapidjson/prettywriter.h; sourceTree = "<group>"; };
 		2AD4217217043513005BB8AD /* rapidjson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rapidjson.h; path = rapidjson/include/rapidjson/rapidjson.h; sourceTree = "<group>"; };
 		2AD4217317043513005BB8AD /* reader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = reader.h; path = rapidjson/include/rapidjson/reader.h; sourceTree = "<group>"; };
@@ -1768,13 +1763,8 @@
 		2AD42168170434F9005BB8AD /* rapidjson */ = {
 			isa = PBXGroup;
 			children = (
-				2AD4216A17043513005BB8AD /* allocators.h */,
 				2AD4216B17043513005BB8AD /* document.h */,
-				2AD4216C17043513005BB8AD /* encodedstream.h */,
-				2AD4216D17043513005BB8AD /* encodings.h */,
-				2AD4216E17043513005BB8AD /* filereadstream.h */,
 				2AD4216F17043513005BB8AD /* filestream.h */,
-				2AD4217017043513005BB8AD /* filewritestream.h */,
 				2AD4217117043513005BB8AD /* prettywriter.h */,
 				2AD4217217043513005BB8AD /* rapidjson.h */,
 				2AD4217317043513005BB8AD /* reader.h */,
