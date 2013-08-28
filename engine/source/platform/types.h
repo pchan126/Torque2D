@@ -43,6 +43,7 @@ typedef unsigned long long U64;     ///< Compiler independent Unsigned 64-bit in
 typedef float              F32;     ///< Compiler independent 32-bit float
 typedef double             F64;     ///< Compiler independent 64-bit float
 
+typedef size_t             SizeType;  /// < Compiler dependant 32 or 64 bit>
 
 //------------------------------------------------------------------------------
 //------------------------------------- String Types

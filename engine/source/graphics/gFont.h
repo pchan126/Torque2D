@@ -24,32 +24,15 @@
 #define _GFONT_H_
 
 //Includes
-#ifndef _PLATFORM_H_
 #include "platform/platform.h"
-#endif
-#ifndef _PLATFORMFONT_H_
 #include "platform/platformFont.h"
-#endif
-#ifndef _GBITMAP_H_
 #include "graphics/gBitmap.h"
-#endif
-#ifndef _VECTOR_H_
 #include "collection/vector.h"
-#endif
-#ifndef _MRECT_H_
 #include "math/mRect.h"
-#endif
-#ifndef _RESMANAGER_H_
 #include "io/resource/resourceManager.h"
-#endif
-
 #include "graphics/gfxTextureManager.h"
-#ifndef _GFXTEXTUREHANDLE_H_
 #include "graphics/gfxTextureHandle.h"
-#endif
-
-//-Mat use this to make space characters default to a certain x increment
-#define PUAP_SPACE_CHAR_X_INCREMENT	5
+#include <array>
 
 GFX_DeclareTextureProfile(GFXFontTextureProfile);
 
@@ -99,7 +82,7 @@ private:
    Vector<PlatformFont::CharInfo>  mCharInfoList;       // - List of character info structures, must
                                           //    be accessed through the getCharInfo(U32)
                                           //    function to account for remapping...
-   S32             mRemapTable[65536];    // - Index remapping
+   std::array<SizeType, 65536>     mRemapTable;    // - Index remapping
 public:
    GFont();
    virtual ~GFont();
@@ -137,15 +120,15 @@ public:
    U32 getBreakPos(const UTF16 *string, U32 strlen, U32 width, bool breakOnWhitespace);
 
    /// These are the preferred width functions.
-   U32 getStrNWidth(const UTF16*, U32 n);
-   U32 getStrNWidthPrecise(const UTF16*, U32 n);
+   U32 getStrNWidth(const UTF16*, SizeType n);
+   U32 getStrNWidthPrecise(const UTF16*, SizeType n);
    
    /// These UTF8 versions of the width functions will be deprecated, please avoid them.
    U32 getStrWidth(const UTF8*);   // Note: ignores c/r
-   U32 getStrNWidth(const UTF8*, U32 n);
+   U32 getStrNWidth(const UTF8*, SizeType n);
 
    U32 getStrWidthPrecise(const UTF8*);   // Note: ignores c/r
-   U32 getStrNWidthPrecise(const UTF8*, U32 n);
+   U32 getStrNWidthPrecise(const UTF8*, SizeType n);
    
    void wrapString(const UTF8 *string, U32 width, Vector<U32> &startLineOffset, Vector<U32> &lineLen);
 
@@ -162,7 +145,7 @@ public:
    /// chars!
    const bool hasPlatformFont() const
    {
-      return mPlatformFont != NULL;
+      return mPlatformFont != nullptr;
    }
 
    /// Query to determine if we should use add or modulate (as A8 textures

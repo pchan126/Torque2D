@@ -215,6 +215,11 @@ U32 getBinLog2(U32 io_num);
    return (in_num == getNextPow2(in_num));
 }
 
+/// Returns the lesser of the two parameters: a & b.
+inline SizeType getMin(SizeType a, SizeType b)
+{
+   return a>b ? b : a;
+}
 
 /// Returns the lesser of the two parameters: a & b.
 inline U32 getMin(U32 a, U32 b)
@@ -262,6 +267,12 @@ inline float getMin(float a, float b)
 inline double getMin(double a, double b)
 {
    return a>b ? b : a;
+}
+
+inline SizeType getMax(SizeType a, SizeType b)
+{
+   return a>b ? a : b;
+   
 }
 
 /// Returns the greater of the two parameters: a & b.

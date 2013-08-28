@@ -27,88 +27,100 @@
 // as well as hashFunction.cc/h
 
 #include "platform/platform.h"
-
-#include "sparseArray.h"
-#include "algorithm/hashFunction.h"
+#include <functional>
+#include <unordered_map>
 
 #ifndef _TSIMPLEHASHTABLE_H
 #define _TSIMPLEHASHTABLE_H
 
-template <class T> class SimpleHashTable : public SparseArray<T>
+template <class T> class SimpleHashTable
 {
-   typedef SparseArray<T> Parent;
+    bool mCaseSensitive;
 
-   bool mCaseSensitive;
+    char mCaseConvBuf[1024];
 
-   char mCaseConvBuf[1024];
-   
-   // [tom, 9/21/2006] This is incredibly lame and adds a pretty big speed penalty
-   inline const char *caseConv(const char *str)
-   {
-      if(mCaseSensitive)   return str;
+    // [tom, 9/21/2006] This is incredibly lame and adds a pretty big speed penalty
+    inline const char *caseConv(const char *str)
+    {
+        if(mCaseSensitive)   return str;
 
-      S32 len = dStrlen(str);
-      if(len >= sizeof(mCaseConvBuf))  len = sizeof(mCaseConvBuf) - 1;
+        dsize_t len = dStrlen(str);
+        if(len >= sizeof(mCaseConvBuf))  len = sizeof(mCaseConvBuf) - 1;
 
-      char *dptr = mCaseConvBuf;
-      const char *sptr = str;
-      while(*sptr)
-      {
-         *dptr = dTolower(*sptr);
-         ++sptr;
-         ++dptr;
-      }
-      *dptr = 0;
+        char *dptr = mCaseConvBuf;
+        const char *sptr = str;
+        while(*sptr)
+        {
+            *dptr = dTolower(*sptr);
+            ++sptr;
+            ++dptr;
+        }
+        *dptr = 0;
 
-      return mCaseConvBuf;
-   }
+        return mCaseConvBuf;
+    }
 
 public:
-   SimpleHashTable(const U32 modulusSize = 64, bool caseSensitive = true) : Parent(modulusSize), mCaseSensitive(caseSensitive)
+   SimpleHashTable(bool caseSensitive = true): mCaseSensitive(caseSensitive)
    {
    }
+   std::unordered_map<size_t, T*> table;
 
-   void insert(T* pObject, U8 *key, U32 keyLen);
-   T*   remove(U8 *key, U32 keyLen);
-   T*   retrieve(U8 *key, U32 keyLen);
+   std::hash<U8*> ptr_hash;
+
+   void insert(T* pObject, U8 *key);
+   T*   remove(U8 *key);
+   T*   retrieve(U8 *key);
 
    void insert(T* pObject, const char *key);
    T*   remove(const char *key);
    T*   retrieve(const char *key);
+
+   void clearTables();                       // Note: _deletes_ the objects!
 };
 
-template <class T> inline void SimpleHashTable<T>::insert(T* pObject, U8 *key, U32 keyLen)
+template <class T> inline void SimpleHashTable<T>::insert(T* pObject, U8 *key)
 {
-   Parent::insert(pObject, hash(key, keyLen, 0));
+   table.insert(std::pair<size_t, T*>(ptr_hash(key), pObject));
 }
 
-template <class T> inline T* SimpleHashTable<T>::remove(U8 *key, U32 keyLen)
+template <class T> inline T* SimpleHashTable<T>::remove(U8 *key)
 {
-   return Parent::remove(hash(key, keyLen, 0));
+   T* ret = table[ptr_hash(key)];
+   table.erase(ptr_hash(key));
+   return ret;
 }
 
-template <class T> inline T* SimpleHashTable<T>::retrieve(U8 *key, U32 keyLen)
+template <class T> inline T* SimpleHashTable<T>::retrieve(U8 *key)
 {
-   return Parent::retrieve(hash(key, keyLen, 0));
+   return table[ptr_hash(key)];
 }
 
 template <class T> inline void SimpleHashTable<T>::insert(T* pObject, const char *key)
 {
    key = caseConv(key);
-   insert(pObject, (U8 *)key, dStrlen(key));
+   insert(pObject, (U8*)key);
 }
 
 template <class T> T* SimpleHashTable<T>::remove(const char *key)
 {
    key = caseConv(key);
-   return remove((U8 *)key, dStrlen(key));
+   return remove((U8 *)key);
 }
 
 template <class T> T* SimpleHashTable<T>::retrieve(const char *key)
 {
    key = caseConv(key);
-   return retrieve((U8 *)key, dStrlen(key));
+   return retrieve((U8 *)key);
 }
 
+template <class T>
+inline void SimpleHashTable<T>::clearTables()
+{
+   for (std::pair<size_t, T*> itr:table)
+      delete itr.second;
+
+   table.clear();
+}
 
 #endif // _TSIMPLEHASHTABLE_H

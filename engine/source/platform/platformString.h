@@ -28,6 +28,8 @@
 #endif
 #include "platform/platformString.h"
 
+#include <cctype>
+
 //------------------------------------------------------------------------------
 
 extern dsize_t dStrlen(const char *str);
@@ -60,8 +62,8 @@ extern char* dStrncpy(UTF8 *dst, const UTF8 *src, dsize_t len);
 
 extern char* dStrupr(char *str);
 extern char* dStrlwr(char *str);
-inline char dToupper(const char c) { if (c >= char('a') && c <= char('z')) return char(c + 'A' - 'a'); else return c; }
-inline char dTolower(const char c) { if (c >= char('A') && c <= char('Z')) return char(c - 'A' + 'a'); else return c; }
+inline char dToupper(const char c) { return toupper(c); }
+inline char dTolower(const char c) { return tolower(c); }
 
 extern char* dStrchr(char *str, int c);
 extern const char* dStrchr(const char *str, int c);
@@ -91,12 +93,12 @@ extern int dFflushStdout();
 extern int dFflushStderr();
 
 extern void dPrintf(const char *format, ...);
-extern int dVprintf(const char *format, void *arglist);
+extern int dVprintf(const char *format, va_list arglist);
 extern int dSprintf(char *buffer, dsize_t bufferSize, const char *format, ...);
-extern int dVsprintf(char *buffer, dsize_t bufferSize, const char *format, void *arglist);
+extern int dVsprintf(char *buffer, dsize_t bufferSize, const char *format, va_list arglist);
 
 #define QSORT_CALLBACK FN_CDECL
-extern void dQsort(void *base, U32 nelem, U32 width, int (QSORT_CALLBACK *fcmp)(const void *, const void *));
+extern void dQsort(void *base, SizeType nelem, SizeType width, int (QSORT_CALLBACK *fcmp)(const void *, const void *));
 
 // UNICODE is a windows platform API switching flag. Don't define it on other platforms.
 #ifdef UNICODE

@@ -21,21 +21,16 @@
 //-----------------------------------------------------------------------------
 
 #include "platform/platform.h"
-#include "platform/platformFont.h"
-#include "debug/profiler.h"
 #include "platform/threads/mutex.h"
 #include "console/console.h"
 #include "io/stream.h"
 #include "graphics/gBitmap.h"
-#include "io/fileStream.h"
 #include "string/findMatch.h"
 #include "graphics/gfxTextureManager.h"
 #include "graphics/gFont.h"
-#include "memory/safeDelete.h"
 #include "memory/frameAllocator.h"
 #include "string/unicode.h"
 #include "zlib.h"
-#include "ctype.h"  // Needed for isupper and tolower
 #include "graphics/gfxDevice.h"
 #include "string/stringUnit.h"
 
@@ -364,7 +359,7 @@ static PlatformFont* createSafePlatformFont(const char *name, U32 size, U32 char
 {
    PlatformFont *platFont = createPlatformFont(name, size, charset);
    
-   if (platFont == NULL)
+   if (platFont == nullptr)
    {
       Con::errorf("Loading platform font failed, trying font fallbacks...");
       // Couldn't load the requested font.  This probably will be common
@@ -466,8 +461,7 @@ GFont::GFont()
    VECTOR_SET_ASSOCIATION(mCharInfoList);
    VECTOR_SET_ASSOCIATION(mTextureSheets);
 
-   for (U32 i = 0; i < (sizeof(mRemapTable) / sizeof(S32)); i++)
-      mRemapTable[i] = -1;
+   mRemapTable.fill(-1);
 
    mCurX = mCurY = mCurSheet = -1;
 
@@ -706,9 +700,9 @@ const PlatformFont::CharInfo &GFont::getDefaultCharInfo()
 
 U32 GFont::getStrWidth(const UTF8* in_pString)
 {
-   AssertFatal(in_pString != NULL, "GFont::getStrWidth: String is NULL, width is undefined");
+   AssertFatal(in_pString != nullptr, "GFont::getStrWidth: String is NULL, width is undefined");
    // If we ain't running debug...
-   if (in_pString == NULL || *in_pString == '\0')
+   if (in_pString == nullptr || *in_pString == '\0')
       return 0;
 
    return getStrNWidth(in_pString, dStrlen(in_pString));
@@ -716,16 +710,16 @@ U32 GFont::getStrWidth(const UTF8* in_pString)
 
 U32 GFont::getStrWidthPrecise(const UTF8* in_pString)
 {
-   AssertFatal(in_pString != NULL, "GFont::getStrWidth: String is NULL, height is undefined");
+   AssertFatal(in_pString != nullptr, "GFont::getStrWidth: String is NULL, height is undefined");
    // If we ain't running debug...
-   if (in_pString == NULL)
+   if (in_pString == nullptr)
       return 0;
 
    return getStrNWidthPrecise(in_pString, dStrlen(in_pString));
 }
 
 //////////////////////////////////////////////////////////////////////////
-U32 GFont::getStrNWidth(const UTF8 *str, U32 n)
+U32 GFont::getStrNWidth(const UTF8 *str, SizeType n)
 {
    // UTF8 conversion is expensive. Avoid converting in a tight loop.
    FrameTemp<UTF16> str16(n + 1);
@@ -733,7 +727,7 @@ U32 GFont::getStrNWidth(const UTF8 *str, U32 n)
    return getStrNWidth(str16, dStrlen(str16));
 }
 
-U32 GFont::getStrNWidth(const UTF16 *str, U32 n)
+U32 GFont::getStrNWidth(const UTF16 *str, SizeType n)
 {
    AssertFatal(str != NULL, "GFont::getStrNWidth: String is NULL");
 
@@ -765,23 +759,23 @@ U32 GFont::getStrNWidth(const UTF16 *str, U32 n)
    return(totWidth);
 }
 
-U32 GFont::getStrNWidthPrecise(const UTF8 *str, U32 n)
+U32 GFont::getStrNWidthPrecise(const UTF8 *str, SizeType n)
 {
    FrameTemp<UTF16> str16(n + 1);
    convertUTF8toUTF16(str, str16, n);
    return getStrNWidthPrecise(str16, n);
 }
 
-U32 GFont::getStrNWidthPrecise(const UTF16 *str, U32 n)
+U32 GFont::getStrNWidthPrecise(const UTF16 *str, SizeType n)
 {
-   AssertFatal(str != NULL, "GFont::getStrNWidth: String is NULL");
+   AssertFatal(str != nullptr, "GFont::getStrNWidth: String is NULL");
 
-   if (str == NULL || str[0] == '\0' || n == 0)   
+   if (str == nullptr || str[0] == '\0' || n == 0)
       return(0);
       
    U32 totWidth = 0;
    UTF16 curChar;
-   U32 charCount = 0;
+   SizeType charCount = 0;
    
    for(charCount = 0; charCount < n; charCount++)
    {
@@ -863,7 +857,7 @@ void GFont::wrapString(const UTF8 *txt, U32 lineWidth, Vector<U32> &startLineOff
    if (!txt || !txt[0] || lineWidth < getCharWidth('W')) //make sure the line width is greater then a single character
       return;
 
-   U32 len = dStrlen(txt);
+   SizeType len = dStrlen(txt);
 
    U32 startLine; 
 
@@ -1013,7 +1007,7 @@ bool GFont::read(Stream& io_rStream)
 
       // Make sure we've got the right endianness.
       for(i = minGlyph; i <= maxGlyph; i++) {
-         mRemapTable[i] = convertBEndianToHost(mRemapTable[i]);
+         mRemapTable[i] = convertBEndianToHost((U32)mRemapTable[i]);
          if( mRemapTable[i] == -1 ) {
              Con::errorf( "bogus mRemapTable[i] value in %s %i", mFaceName, mSize );
          }
@@ -1043,7 +1037,7 @@ bool GFont::write(Stream& stream)
    S32 minGlyph = S32_MAX, maxGlyph = 0;
    S32 i;
 
-   for(i = 0; i < 65536; i++)
+   for(i = 0; i < mRemapTable.size(); i++)
    {
        if(mRemapTable[i] != -1)
        {
@@ -1078,7 +1072,7 @@ bool GFont::write(Stream& stream)
         stream.write(ci->xIncrement);
    }
 
-   stream.write(mTextureSheets.size());
+   stream.write((U32)mTextureSheets.size());
    for(i = 0; i < mTextureSheets.size(); i++) {
        mTextureSheets[i]->getBitmap()->writePNG(stream);
    }
@@ -1096,7 +1090,7 @@ bool GFont::write(Stream& stream)
    {
       // Put everything big endian, to be consistent. Do this inplace.
       for(i = minGlyph; i <= maxGlyph; i++)
-         mRemapTable[i] = convertHostToBEndian(mRemapTable[i]);
+         mRemapTable[i] = convertHostToBEndian((U32)mRemapTable[i]);
 
       {
          // Compress.
@@ -1112,7 +1106,7 @@ bool GFont::write(Stream& stream)
 
       // Put us back to normal.
       for(i = minGlyph; i <= maxGlyph; i++) {
-         mRemapTable[i] = convertBEndianToHost(mRemapTable[i]);
+         mRemapTable[i] = convertBEndianToHost((U32)mRemapTable[i]);
 
          if( mRemapTable[i] == -1 ) {
              Con::errorf( "bogus mRemapTable[i] value in %s %i", mFaceName, mSize );
@@ -1352,7 +1346,7 @@ ResourceInstance* constructBMFont(Stream& stream)
     if(!ret->readBMFont(stream))
     {
         SAFE_DELETE(ret);
-        ret = NULL;
+        ret = nullptr;
     }
 
     return ret;
@@ -1360,8 +1354,7 @@ ResourceInstance* constructBMFont(Stream& stream)
 
 bool GFont::readBMFont(Stream& io_rStream)
 {
-    for (U32 i = 0; i < (sizeof(mRemapTable) / sizeof(S32)); i++)
-        mRemapTable[i] = -1;
+    mRemapTable.fill(-1);
     
 //    U32 bmWidth = 0;
 //    U32 bmHeight = 0;
