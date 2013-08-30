@@ -312,6 +312,7 @@ void FilterImageAsset::calculateImage( void )
 
 bool FilterImageAsset::isAssetValid( void ) const
 {
+    return true;
 }
 
 //------------------------------------------------------------------------------

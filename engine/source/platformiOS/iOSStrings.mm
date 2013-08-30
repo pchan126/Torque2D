@@ -409,7 +409,7 @@ int dFflushStderr()
    return fflush(stderr);
 }
 
-void dQsort(void *base, U32 nelem, U32 width, int (QSORT_CALLBACK *fcmp)(const void *, const void *))
+void dQsort(void *base, SizeType nelem, SizeType width, int (QSORT_CALLBACK *fcmp)(const void *, const void *))
 {
    qsort(base, nelem, width, fcmp);
 }   
