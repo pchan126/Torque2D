@@ -27,6 +27,7 @@
 #include "platform/threads/mutex.h"
 #include "memory/dataChunker.h"
 #include <unordered_map>
+#include <vector>
 
 //--------------------------------------
 /// A global table for the hashing and tracking of strings.
@@ -74,6 +75,8 @@ class _StringTable
 {
 private:
    std::unordered_map<std::string, StringTableEntry> _table;
+   std::unordered_map<StringTableEntry, U32> _index1;
+   std::unordered_map<U32, StringTableEntry> _index2;
    Mutex mMutex;
 
   protected:
@@ -123,6 +126,9 @@ private:
    /// @param  caseSens Determines whether case matters.
    StringTableEntry lookupn(const char *string, S32 len, bool caseSens = false);
 
+   U32 STEtoU32(StringTableEntry ste);
+
+   StringTableEntry U32toSTE(U32 in);
 
    /// Hash a string into a U32.
    static U32 hashString(const char* in_pString);
@@ -138,7 +144,7 @@ extern _StringTable *_gStringTable;
 
 inline _StringTable* _getStringTable()
 {
-    if(_gStringTable == NULL)
+    if(_gStringTable == nullptr)
         _StringTable::create();
     return _gStringTable;
 }

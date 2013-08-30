@@ -24,7 +24,7 @@
 #include "stringTable.h"
 #include "console/console.h"
 
-_StringTable *_gStringTable = NULL;
+_StringTable *_gStringTable = nullptr;
 StringTableEntry _StringTable::EmptyString;
 
 //---------------------------------------------------------------
@@ -105,15 +105,15 @@ void _StringTable::create()
 //--------------------------------------
 void _StringTable::destroy()
 {
-   AssertFatal(StringTable != NULL, "StringTable::destroy: StringTable does not exist.");
+   AssertFatal(StringTable != nullptr, "StringTable::destroy: StringTable does not exist.");
    delete StringTable;
-   _gStringTable = NULL;
+   _gStringTable = nullptr;
 }
 
 //--------------------------------------
 StringTableEntry _StringTable::insert(const char* src, const bool  caseSens)
 {
-   if ( src == NULL )
+   if ( src == nullptr )
        return StringTable->EmptyString;
 
    MutexHandle mutex;
@@ -129,6 +129,8 @@ StringTableEntry _StringTable::insert(const char* src, const bool  caseSens)
        std::strcpy (cstr, src);
 
        _table[val] = cstr;
+       _index1[cstr] = (U32)_table.size();
+       _index2[(U32)_table.size()] = cstr;
    }
 
    return _table[val];
@@ -137,7 +139,7 @@ StringTableEntry _StringTable::insert(const char* src, const bool  caseSens)
 //--------------------------------------
 StringTableEntry _StringTable::insertn(const char* src, S32 len, const bool  caseSens)
 {
-   if ( src == NULL )
+   if ( src == nullptr )
        return StringTable->EmptyString;
 
    MutexHandle mutex;
@@ -153,7 +155,7 @@ StringTableEntry _StringTable::insertn(const char* src, S32 len, const bool  cas
 //--------------------------------------
 StringTableEntry _StringTable::lookup(const char* src, const bool  caseSens)
 {
-   if ( src == NULL )
+   if ( src == nullptr )
        return StringTable->EmptyString;
 
    MutexHandle mutex;
@@ -164,7 +166,7 @@ StringTableEntry _StringTable::lookup(const char* src, const bool  caseSens)
         std::transform(val.begin(), val.end(), val.begin(), tolower);
 
    if (_table.find(val) == _table.end())
-       return NULL;
+       return nullptr;
 
    return _table[val];
 }
@@ -172,7 +174,7 @@ StringTableEntry _StringTable::lookup(const char* src, const bool  caseSens)
 //--------------------------------------
 StringTableEntry _StringTable::lookupn(const char* src, S32 len, const bool  caseSens)
 {
-   if ( src == NULL )
+   if ( src == nullptr )
        return StringTable->EmptyString;
 
     char val[1024];
@@ -184,4 +186,11 @@ StringTableEntry _StringTable::lookupn(const char* src, S32 len, const bool  cas
 }
 
 
+U32 _StringTable::STEtoU32(StringTableEntry ste) {
+    return _index1[ste];
 
+}
+
+StringTableEntry _StringTable::U32toSTE(U32 in) {
+    return _index2[in];
+}

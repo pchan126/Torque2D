@@ -23,17 +23,9 @@
 #include "platform/platform.h"
 #include "console/console.h"
 #include "debug/telnetDebugger.h"
-#include "platform/event.h"
-
-#include "console/ast.h"
 #include "io/resource/resourceManager.h"
-
-#include "string/findMatch.h"
 #include "console/consoleInternal.h"
-#include "io/fileStream.h"
 #include "console/compiler.h"
-
-#include "sim/simBase.h"
 
 namespace Compiler
 {
@@ -73,7 +65,7 @@ namespace Compiler
 
    U32 evalSTEtoU32(StringTableEntry ste, U32)
    {
-      return *((U32 *) &ste);
+      return StringTable->STEtoU32(ste);
    }
 
    U32 compileSTEtoU32(StringTableEntry ste, U32 ip)
