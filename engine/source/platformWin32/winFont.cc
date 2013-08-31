@@ -29,6 +29,8 @@
 #include "string/unicode.h"
 #include "memory/frameAllocator.h"
 
+#define PUAP_SPACE_CHAR_X_INCREMENT 5
+
 static HDC fontHDC = NULL;
 static HBITMAP fontBMP = NULL;
 

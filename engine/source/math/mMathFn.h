@@ -23,20 +23,14 @@
 #ifndef _MMATHFN_H_
 #define _MMATHFN_H_
 
+#define NOMINMAX 1
+
 #include "platform/platform.h"
 #include "math/mConstants.h"
 #include <math.h>
 #include <stdlib.h>
 #include <limits>
 #include <algorithm>
-
-// Remove a couple of annoying macros, if they are present (In VC 6, they are.)
-#ifdef min
-#undef min
-#endif
-#ifdef max
-#undef max
-#endif
 
 class MatrixF;
 class PlaneF;

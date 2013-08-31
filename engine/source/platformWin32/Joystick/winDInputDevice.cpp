@@ -31,6 +31,7 @@
 #include "console/console.h"
 #include "string/unicode.h"
 #include "windowManager/platformWindowMgr.h"
+#include <algorithm>
 
 // Static class data:
 LPDIRECTINPUT8 DInputDevice::smDInputInterface;
@@ -1091,8 +1092,8 @@ void DInputDevice::rumble(float x, float y)
    }
 
    // Clamp the input floats to [0 - 1]
-   x = max(0, min(1, x));
-   y = max(0, min(1, y));
+   x = std::max(0.0f, std::min(1.0f, x));
+   y = std::max(0.0f, std::min(1.0f, y));
 
    if ( 1 == mNumForceFeedbackAxes )
    {

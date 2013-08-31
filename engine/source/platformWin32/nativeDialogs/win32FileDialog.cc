@@ -216,7 +216,7 @@ static const U32 convertUTF16toUTF8DoubleNULL( const UTF16 *unistring, UTF8  *ou
       nCodeunits += codeunitLen;
    }
 
-   nCodeunits = getMin(nCodeunits,len - 1);
+   nCodeunits = std::min(nCodeunits,len - 1);
    outbuffer[nCodeunits] = '\0';
    outbuffer[nCodeunits+1] = '\0';
 

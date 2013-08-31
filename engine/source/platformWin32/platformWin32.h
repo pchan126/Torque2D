@@ -23,6 +23,8 @@
 #ifndef _PLATFORMWIN32_H_
 #define _PLATFORMWIN32_H_
 
+#define NOMINMAX 1
+
 #include "platformWin32\windowManager\GLFWWindow.h"
 
 // Sanity check for UNICODE

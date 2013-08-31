@@ -138,10 +138,10 @@ GFXTextureObject *GFXOpenGL33WinTextureManager::_createTexture(  GBitmap *bmp,
       
       GBitmap *padBmp = bmp;
       padBmp->extrudeMipLevels();
-      scalePower = getMin( scalePower, padBmp->getNumMipLevels() - 1 );
+      scalePower = std::min( scalePower, padBmp->getNumMipLevels() - 1 );
       
-      realWidth  = getMax( (U32)1, padBmp->getWidth() >> scalePower );
-      realHeight = getMax( (U32)1, padBmp->getHeight() >> scalePower );
+      realWidth  = std::max( (U32)1, padBmp->getWidth() >> scalePower );
+      realHeight = std::max( (U32)1, padBmp->getHeight() >> scalePower );
       realBmp = new GBitmap( realWidth, realHeight, false, bmp->getFormat() );
       
       // Copy to the new bitmap...
@@ -173,7 +173,7 @@ GFXTextureObject *GFXOpenGL33WinTextureManager::_createTexture(  GBitmap *bmp,
          ret = inObj;
    }
    else
-      ret = _createTextureObject(realHeight, realWidth, 0, realFmt, profile, numMips );
+	   ret = _createTextureObject(realHeight, realWidth, 0, realFmt, profile, numMips, false, 0, nullptr, (void*)bmp->getBits() );
    
    if(!ret)
    {
@@ -356,7 +356,8 @@ GFXTextureObject *GFXOpenGL33WinTextureManager::_createTextureObject(   U32 heig
                                                                U32 numMipLevels,
                                                                bool forceMips,
                                                                S32 antialiasLevel,
-                                                               GFXTextureObject *inTex )
+                                                               GFXTextureObject *inTex,
+															   void* data)
 {
    AssertFatal(format >= 0 && format < GFXFormat_COUNT, "GFXOpenGL33WinTextureManager::_createTexture - invalid format!");
 

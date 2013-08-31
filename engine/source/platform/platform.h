@@ -41,10 +41,6 @@
 #include "platform/nativeDialogs/msgBox.h"
 #endif
 
-#ifndef TORQUE_OS_WIN32
-#include <algorithm>
-#endif
-
 #ifndef _PLATFORM_ENDIAN_H_
 #include "platform/platformEndian.h"
 #endif

@@ -188,6 +188,8 @@ void GFXTextureManager::cleanupPool()
 
 void GFXTextureManager::requestDeleteTexture( GFXTextureObject *texture )
 {
+   assert(texture != nullptr); 
+
    // If this is a non-cached texture then just really delete it.
    if ( texture->mTextureLookupName.isEmpty() )
    {

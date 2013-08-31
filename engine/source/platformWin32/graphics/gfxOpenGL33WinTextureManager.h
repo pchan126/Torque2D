@@ -75,7 +75,8 @@ protected:
                                              U32 numMipLevels,
                                              bool forceMips = false,
                                              S32 antialiasLevel = 0,
-                                             GFXTextureObject *inTex = NULL );
+                                             GFXTextureObject *inTex = nullptr,
+											 void* data = nullptr);
     
    GFXTextureObject *_createTexture(  GBitmap *bmp,
                                              const String &resourceName,

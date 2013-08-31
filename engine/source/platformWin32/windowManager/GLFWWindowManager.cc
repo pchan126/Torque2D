@@ -50,43 +50,42 @@ PlatformWindow * GLFWWindowManager::getFirstWindow()
    if (mWindowList.size() > 0)
       return mWindowList[0];
       
-   return NULL;
+   return nullptr;
 }
 
 
 PlatformWindow* GLFWWindowManager::getFocusedWindow()
 {
-   for (U32 i = 0; i < mWindowList.size(); i++)
+   for (PlatformWindow* window:mWindowList)
    {
-      if( mWindowList[i]->isFocused() )
-         return mWindowList[i];
+      if( window->isFocused() )
+         return window;
    }
 
-   return NULL;
+   return nullptr;
 }
 
 PlatformWindow* GLFWWindowManager::getWindowById(WindowId zid)
 {
    // Find the window by its arbirary WindowId.
-   for(U32 i = 0; i < mWindowList.size(); i++)
+   for(PlatformWindow* w:mWindowList)
    {
-      PlatformWindow* w = mWindowList[i];
       if( w->getWindowId() == zid)
          return w;
    }
-   return NULL;
+   return nullptr;
 }
 
 GLFWWindow* GLFWWindowManager::getWindowByGLFW(GLFWwindow* window)
 {
    // Find the window by its arbirary WindowId.
-   for(U32 i = 0; i < mWindowList.size(); i++)
+   for(PlatformWindow* pw:mWindowList)
    {
-      GLFWWindow* w = dynamic_cast<GLFWWindow*>(mWindowList[i]);
+      GLFWWindow* w = dynamic_cast<GLFWWindow*>(pw);
       if( w->window == window)
          return w;
    }
-   return NULL;
+   return nullptr;
 }
 
 
@@ -98,9 +97,8 @@ void GLFWWindowManager::_processCmdLineArgs(const S32 argc, const char **argv)
 PlatformWindow* GLFWWindowManager::assignCanvas(GFXDevice* device, const GFXVideoMode &mode, GuiCanvas* canvas)
 {
    // Find the window by its arbirary WindowId.
-   for(U32 i = 0; i < mWindowList.size(); i++)
+   for(PlatformWindow* w:mWindowList)
    {
-      PlatformWindow* w = mWindowList[i];
       if (w->mBoundCanvas == NULL)
       {
          w->setVideoMode(mode);
@@ -145,8 +143,8 @@ void GLFWWindowManager::_addWindow(GLFWWindow* window)
 {
 #ifdef TORQUE_DEBUG
    // Make sure we aren't adding the window twice
-   for(U32 i = 0; i < mWindowList.size(); i++)
-      AssertFatal(window != mWindowList[i], "GLFWWindowManager::_addWindow - Should not add a window more than once");
+   for(PlatformWindow* w:mWindowList)
+      AssertFatal(window != w, "GLFWWindowManager::_addWindow - Should not add a window more than once");
 #endif
    if (mWindowList.size() > 0)
       window->mNextWindow = mWindowList.back();
@@ -163,16 +161,9 @@ void GLFWWindowManager::_addWindow(GLFWWindow* window)
 
 void GLFWWindowManager::_removeWindow(GLFWWindow* window)
 {
-   for(WindowList::iterator i = mWindowList.begin(); i != mWindowList.end(); i++)
-   {
-      if(*i == window)
-      {
-         mWindowList.erase(i);
-         break;
-      }
-   }
-    
-    if (mWindowList.size() == 0)
+	mWindowList.remove(window);
+
+	if (mWindowList.empty())
     {
        Process::remove(&glfwPollEvents);
        Process::shutdown();
