@@ -77,7 +77,7 @@ class GuiFilterCtrl : public GuiControl
 
 inline F32 GuiFilterCtrl::getValue(S32 n)
 {
-   getMin(getMax(n,0), (S32)mFilter.size()-1);
+   std::min(std::max(n,0), (S32)mFilter.size()-1);
    return mFilter[n];
 }
 

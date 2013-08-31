@@ -179,7 +179,7 @@ GFXShader* ShaderData::_createShader( const Vector<GFXShaderMacro> &macros )
 {
    F32 pixver = mPixVersion;
    if ( mUseDevicePixVersion )
-      pixver = getMax( pixver, GFX->getPixelShaderVersion() );
+      pixver = std::max( pixver, GFX->getPixelShaderVersion() );
 
    // Enable shader error logging.
    GFXShader::setLogging( true, true );

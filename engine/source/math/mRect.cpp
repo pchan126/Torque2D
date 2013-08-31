@@ -23,10 +23,10 @@ RectF RectF::limitedBy(const RectF& inRect, const RectF& limitRect)
     else
     {
         // No, so calculate window min overlap.
-        const F32 windowMinOverlapX = getMax(0.0f, limitRect.point.x - mSceneMin.x);
+        const F32 windowMinOverlapX = std::max(0.0f, limitRect.point.x - mSceneMin.x);
 
         // Calculate window max overlap.
-        const F32 windowMaxOverlapX = getMin(0.0f, limitRect.point.x + limitRect.extent.x - mSceneMax.x);
+        const F32 windowMaxOverlapX = std::min(0.0f, limitRect.point.x + limitRect.extent.x - mSceneMax.x);
 
         // Adjust Window.
         mSceneMin.x += windowMinOverlapX + windowMaxOverlapX;
@@ -49,10 +49,10 @@ RectF RectF::limitedBy(const RectF& inRect, const RectF& limitRect)
     else
     {
         // No, so calculate window min overlap.
-        const F32 windowMinOverlapY = getMax(0.0f, limitRect.point.y - mSceneMin.y);
+        const F32 windowMinOverlapY = std::max(0.0f, limitRect.point.y - mSceneMin.y);
 
         // Calculate window max overlap.
-        const F32 windowMaxOverlapY = getMin(0.0f, limitRect.point.y + limitRect.extent.y - mSceneMax.y);
+        const F32 windowMaxOverlapY = std::min(0.0f, limitRect.point.y + limitRect.extent.y - mSceneMax.y);
 
         // Adjust Window.
         mSceneMin.y += windowMinOverlapY + windowMaxOverlapY;

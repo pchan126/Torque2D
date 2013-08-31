@@ -23,17 +23,12 @@
 #ifndef _MMATHFN_H_
 #define _MMATHFN_H_
 
-#ifndef _PLATFORM_H_
 #include "platform/platform.h"
-#endif
-
-#ifndef _MCONSTANTS_H_
 #include "math/mConstants.h"
-#endif
-
 #include <math.h>
 #include <stdlib.h>
 #include <limits>
+#include <algorithm>
 
 // Remove a couple of annoying macros, if they are present (In VC 6, they are.)
 #ifdef min
@@ -215,113 +210,6 @@ U32 getBinLog2(U32 io_num);
    return (in_num == getNextPow2(in_num));
 }
 
-/// Returns the lesser of the two parameters: a & b.
-inline SizeType getMin(SizeType a, SizeType b)
-{
-   return a>b ? b : a;
-}
-
-/// Returns the lesser of the two parameters: a & b.
-inline U32 getMin(U32 a, U32 b)
-{
-   return a>b ? b : a;
-}
-
-/// Returns the lesser of the two parameters: a & b.
-inline U16 getMin(U16 a, U16 b)
-{
-   return a>b ? b : a;
-}
-
-/// Returns the lesser of the two parameters: a & b.
-inline U8 getMin(U8 a, U8 b)
-{
-   return a>b ? b : a;
-}
-
-/// Returns the lesser of the two parameters: a & b.
-inline S32 getMin(S32 a, S32 b)
-{
-   return a>b ? b : a;
-}
-
-/// Returns the lesser of the two parameters: a & b.
-inline S16 getMin(S16 a, S16 b)
-{
-   return a>b ? b : a;
-}
-
-/// Returns the lesser of the two parameters: a & b.
-inline S8 getMin(S8 a, S8 b)
-{
-   return a>b ? b : a;
-}
-
-/// Returns the lesser of the two parameters: a & b.
-inline float getMin(float a, float b)
-{
-   return a>b ? b : a;
-}
-
-/// Returns the lesser of the two parameters: a & b.
-inline double getMin(double a, double b)
-{
-   return a>b ? b : a;
-}
-
-inline SizeType getMax(SizeType a, SizeType b)
-{
-   return a>b ? a : b;
-   
-}
-
-/// Returns the greater of the two parameters: a & b.
-inline U32 getMax(U32 a, U32 b)
-{
-   return a>b ? a : b;
-}
-
-/// Returns the greater of the two parameters: a & b.
-inline U16 getMax(U16 a, U16 b)
-{
-   return a>b ? a : b;
-}
-
-/// Returns the greater of the two parameters: a & b.
-inline U8 getMax(U8 a, U8 b)
-{
-   return a>b ? a : b;
-}
-
-/// Returns the greater of the two parameters: a & b.
-inline S32 getMax(S32 a, S32 b)
-{
-   return a>b ? a : b;
-}
-
-/// Returns the greater of the two parameters: a & b.
-inline S16 getMax(S16 a, S16 b)
-{
-   return a>b ? a : b;
-}
-
-/// Returns the greater of the two parameters: a & b.
-inline S8 getMax(S8 a, S8 b)
-{
-   return a>b ? a : b;
-}
-
-/// Returns the greater of the two parameters: a & b.
-inline float getMax(float a, float b)
-{
-   return a>b ? a : b;
-}
-
-/// Returns the greater of the two parameters: a & b.
-inline double getMax(double a, double b)
-{
-   return a>b ? a : b;
-}
 
 inline F32 mFloor(const F32 val)
 {
@@ -360,12 +248,12 @@ inline F32 mRoundToNearest( const F32 val )
 
 inline S32 mClamp(S32 val, S32 low, S32 high)
 {
-   return getMax(getMin(val, high), low);
+   return std::max(std::min(val, high), low);
 }
 
 inline F32 mClampF(F32 val, F32 low, F32 high)
 {
-   return (F32) getMax(getMin(val, high), low);
+   return (F32) std::max(std::min(val, high), low);
 }
 
 inline S32 mMulDiv(S32 a, S32 b, S32 c)

@@ -290,10 +290,10 @@ GFXTextureObject *GFXTextureManager::_createTexture(  GBitmap *bmp,
       // you should be using DDS which already has good looking mips.
       GBitmap *padBmp = bmp;
       padBmp->extrudeMipLevels();
-      scalePower = getMin( scalePower, padBmp->getNumMipLevels() - 1 );
+      scalePower = std::min( scalePower, padBmp->getNumMipLevels() - 1 );
 
-      realWidth  = getMax( (U32)1, padBmp->getWidth() >> scalePower );
-      realHeight = getMax( (U32)1, padBmp->getHeight() >> scalePower );
+      realWidth  = std::max( (U32)1, padBmp->getWidth() >> scalePower );
+      realHeight = std::max( (U32)1, padBmp->getHeight() >> scalePower );
       realBmp = new GBitmap( realWidth, realHeight, false, bmp->getFormat() );
 
       // Copy to the new bitmap...

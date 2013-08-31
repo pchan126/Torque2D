@@ -391,8 +391,8 @@ void GuiTextEditCtrl::onMouseDragged( const GuiEvent &event )
    }
 
    // update the block:
-   mBlockStart = getMin( mCursorPos, mMouseDragStart );
-   mBlockEnd = getMax( mCursorPos, mMouseDragStart );
+   mBlockStart = std::min( mCursorPos, mMouseDragStart );
+   mBlockEnd = std::max( mCursorPos, mMouseDragStart );
    if ( mBlockStart < 0 )
       mBlockStart = 0;
 
@@ -1390,7 +1390,7 @@ const char *GuiTextEditCtrl::getScriptValue()
 void GuiTextEditCtrl::setScriptValue(const char *value)
 {
    mTextBuffer.set(value);
-   mCursorPos = getMin((S32)(mTextBuffer.length() - 1), 0);
+   mCursorPos = std::min((S32)(mTextBuffer.length() - 1), 0);
 }
 
 ConsoleMethod( GuiTextEditCtrl, getText, const char*, 2, 2, "() Get the contents of the textedit control\n"

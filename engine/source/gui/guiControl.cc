@@ -100,8 +100,8 @@ bool GuiControl::onAdd()
       mIsContainer = true;
 
    // Clamp to minExtent
-   setWidth( getMax( mMinExtent.x, getWidth() ));
-   setHeight( getMax( mMinExtent.y, getHeight() ));
+   setWidth( std::max( mMinExtent.x, getWidth() ));
+   setHeight( std::max( mMinExtent.y, getHeight() ));
 
 
    // Add to root group.
@@ -340,8 +340,8 @@ Point2I GuiControl::globalToLocalCoord(const Point2I &src)
 bool GuiControl::resize(const Point2I &newPosition, const Point2I &newExtent)
 {
     const Point2I minExtent = getMinExtent();
-    Point2I actualNewExtent = Point2I(getMax(minExtent.x, newExtent.x),
-                                      getMax(minExtent.y, newExtent.y));
+    Point2I actualNewExtent = Point2I(std::max(minExtent.x, newExtent.x),
+                                      std::max(minExtent.y, newExtent.y));
     
     // only do the child control resizing stuff if you really need to.
     const RectI bounds = getBounds();

@@ -262,7 +262,7 @@ bool GuiContainer::dockControl( GuiContainer *control, S32 dockingMode, RectI &c
    case Docking::dockTop:         
 
       dockRect = clientRect;
-      dockRect.extent.y = getMin( control->getHeight() + sizingOptions.mPadding.top + sizingOptions.mPadding.bottom , clientRect.extent.y );
+      dockRect.extent.y = std::min( control->getHeight() + sizingOptions.mPadding.top + sizingOptions.mPadding.bottom , clientRect.extent.y );
 
       // Subtract our rect
       clientRect.point.y += dockRect.extent.y;
@@ -278,7 +278,7 @@ bool GuiContainer::dockControl( GuiContainer *control, S32 dockingMode, RectI &c
    case Docking::dockBottom:
 
       dockRect = clientRect;
-      dockRect.extent.y = getMin( control->getHeight() + sizingOptions.mPadding.top + sizingOptions.mPadding.bottom, clientRect.extent.y );
+      dockRect.extent.y = std::min( control->getHeight() + sizingOptions.mPadding.top + sizingOptions.mPadding.bottom, clientRect.extent.y );
       dockRect.point.y += clientRect.extent.y - dockRect.extent.y;
 
       // Subtract our rect
@@ -294,7 +294,7 @@ bool GuiContainer::dockControl( GuiContainer *control, S32 dockingMode, RectI &c
    case Docking::dockLeft:
 
       dockRect = clientRect;
-      dockRect.extent.x = getMin( control->getWidth() + sizingOptions.mPadding.left + sizingOptions.mPadding.right, clientRect.extent.x );
+      dockRect.extent.x = std::min( control->getWidth() + sizingOptions.mPadding.left + sizingOptions.mPadding.right, clientRect.extent.x );
 
       // Subtract our rect
       clientRect.point.x += dockRect.extent.x;
@@ -310,7 +310,7 @@ bool GuiContainer::dockControl( GuiContainer *control, S32 dockingMode, RectI &c
    case Docking::dockRight:
 
       dockRect = clientRect;
-      dockRect.extent.x = getMin( control->getWidth() + sizingOptions.mPadding.left + sizingOptions.mPadding.right, clientRect.extent.x );
+      dockRect.extent.x = std::min( control->getWidth() + sizingOptions.mPadding.left + sizingOptions.mPadding.right, clientRect.extent.x );
       dockRect.point.x += clientRect.extent.x - dockRect.extent.x;
 
       // Subtract our rect

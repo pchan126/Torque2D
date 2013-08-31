@@ -143,7 +143,7 @@ class ClassChunker: private DataChunker
 public:
    ClassChunker(S32 size = DataChunker::ChunkSize) : DataChunker(size)
    {
-      mElementSize = getMax(U32(sizeof(T)), U32(sizeof(T *)));
+      mElementSize = std::max(U32(sizeof(T)), U32(sizeof(T *)));
       mFreeListHead = NULL;
    }
 
@@ -187,7 +187,7 @@ public:
          mOwnChunker( false ),
          mFreeListHead( NULL )
    {
-      mElementSize = getMax(U32(sizeof(T)), U32(sizeof(T *)));
+      mElementSize = std::max(U32(sizeof(T)), U32(sizeof(T *)));
    }
 
    FreeListChunker(S32 size = DataChunker::ChunkSize)
@@ -196,7 +196,7 @@ public:
       mChunker = new DataChunker( size );
       mOwnChunker = true;
 
-      mElementSize = getMax(U32(sizeof(T)), U32(sizeof(T *)));
+      mElementSize = std::max(U32(sizeof(T)), U32(sizeof(T *)));
    }
 
    ~FreeListChunker()

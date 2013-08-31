@@ -332,8 +332,8 @@ void GuiWindowCtrl::onMouseDragged(const GuiEvent &event)
    bool update = false;
    if (mMouseMovingWin && parent)
    {
-      newPosition.x = getMax(0, getMin(parent->getWidth() - getWidth(), mOrigBounds.point.x + deltaMousePosition.x));
-      newPosition.y = getMax(0, getMin(parent->getHeight() - getHeight(), mOrigBounds.point.y + deltaMousePosition.y));
+      newPosition.x = std::max(0, std::min(parent->getWidth() - getWidth(), mOrigBounds.point.x + deltaMousePosition.x));
+      newPosition.y = std::max(0, std::min(parent->getHeight() - getHeight(), mOrigBounds.point.y + deltaMousePosition.y));
       update = true;
    }
    else if(mPressClose || mPressMaximize || mPressMinimize)
@@ -345,13 +345,13 @@ void GuiWindowCtrl::onMouseDragged(const GuiEvent &event)
       Point2I minExtent = getMinExtent();
       if (mMouseResizeWidth && parent)
       {
-         newExtent.x = getMax(0, getMax(minExtent.x, getMin(parent->getWidth(), mOrigBounds.extent.x + deltaMousePosition.x)));
+         newExtent.x = std::max(0, std::max(minExtent.x, std::min(parent->getWidth(), mOrigBounds.extent.x + deltaMousePosition.x)));
          update = true;
       }
 
       if (mMouseResizeHeight && parent)
       {
-         newExtent.y = getMax(0, getMax(minExtent.y, getMin(parent->getHeight(), mOrigBounds.extent.y + deltaMousePosition.y)));
+         newExtent.y = std::max(0, std::max(minExtent.y, std::min(parent->getHeight(), mOrigBounds.extent.y + deltaMousePosition.y)));
          update = true;
       }
    }
@@ -394,8 +394,8 @@ void GuiWindowCtrl::onMouseUp(const GuiEvent &event)
       if (mMaximized)
       {
          //resize to the previous position and extent, bounded by the parent
-         resize(Point2I(getMax(0, getMin(parent->getWidth() - mStandardBounds.extent.x, mStandardBounds.point.x)),
-                        getMax(0, getMin(parent->getHeight() - mStandardBounds.extent.y, mStandardBounds.point.y))),
+         resize(Point2I(std::max(0, std::min(parent->getWidth() - mStandardBounds.extent.x, mStandardBounds.point.x)),
+                        std::max(0, std::min(parent->getHeight() - mStandardBounds.extent.y, mStandardBounds.point.y))),
                         mStandardBounds.extent);
          //set the flag
          mMaximized = false;
@@ -424,8 +424,8 @@ void GuiWindowCtrl::onMouseUp(const GuiEvent &event)
       if (mMinimized)
       {
          //resize to the previous position and extent, bounded by the parent
-         resize(Point2I(getMax(0, getMin(parent->getWidth() - mStandardBounds.extent.x, mStandardBounds.point.x)),
-                        getMax(0, getMin(parent->getHeight() - mStandardBounds.extent.y, mStandardBounds.point.y))),
+         resize(Point2I(std::max(0, std::min(parent->getWidth() - mStandardBounds.extent.x, mStandardBounds.point.x)),
+                        std::max(0, std::min(parent->getHeight() - mStandardBounds.extent.y, mStandardBounds.point.y))),
                         mStandardBounds.extent);
          //set the flag
          mMinimized = false;
@@ -467,13 +467,13 @@ void GuiWindowCtrl::onMouseUp(const GuiEvent &event)
          }
 
          //if we have more than 32 minimized windows, use the first position
-         count = getMax(0, count);
+         count = std::max(0, count);
 
          //this algorithm assumes all window have the same title height, and will minimize to 98 pix
          Point2I newExtent(98, mTitleHeight);
 
          //first, how many can fit across
-         S32 numAcross = getMax(1, (parent->getWidth() / newExtent.x + 2));
+         S32 numAcross = std::max(1, (parent->getWidth() / newExtent.x + 2));
 
          //find the new "mini position"
          Point2I newPosition;

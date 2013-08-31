@@ -225,14 +225,14 @@ ConsoleFunction( mClamp, F32, 4, 4, "(float number, float min, float max) Clamp 
 
 ConsoleFunction( mGetMin, F32, 3, 3, "(a, b) - Returns the Minimum of two values.")
 {
-   return getMin(dAtof(argv[1]), dAtof(argv[2]));
+   return std::min(dAtof(argv[1]), dAtof(argv[2]));
 }
 
 //-----------------------------------------------------------------------------
 
 ConsoleFunction( mGetMax, F32, 3, 3, "(a, b) - Returns the Maximum of two values.")
 {
-   return getMax(dAtof(argv[1]), dAtof(argv[2]));
+   return std::max(dAtof(argv[1]), dAtof(argv[2]));
 }
 
 //-----------------------------------------------------------------------------

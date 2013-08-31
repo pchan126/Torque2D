@@ -2517,10 +2517,10 @@ ConsoleMethod(Scene, pickArea, const char*, 4, 9, "(startx/y, endx/y, [sceneGrou
 
     // Calculate normalized AABB.
     b2AABB aabb;
-    aabb.lowerBound.x = getMin( v1.x, v2.x );
-    aabb.lowerBound.y = getMin( v1.y, v2.y );
-    aabb.upperBound.x = getMax( v1.x, v2.x );
-    aabb.upperBound.y = getMax( v1.y, v2.y );
+    aabb.lowerBound.x = std::min( v1.x, v2.x );
+    aabb.lowerBound.y = std::min( v1.y, v2.y );
+    aabb.upperBound.x = std::max( v1.x, v2.x );
+    aabb.upperBound.y = std::max( v1.y, v2.y );
 
     // Perform query.
     if ( pickMode == Scene::PICK_ANY )

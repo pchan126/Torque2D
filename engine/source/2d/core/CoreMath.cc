@@ -66,8 +66,8 @@ Vector2 mGetClosestPointOnLine( Vector2 &a, Vector2 &b, Vector2 &point)
 bool mPointInRectangle( const Vector2& point, const Vector2& rectMin, const Vector2& rectMax )
 {
     // Do the trivial check to see if point is within the rectangle.
-    if (    point.x < getMin(rectMin.x,rectMax.x) || point.x > getMax(rectMin.x,rectMax.x) ||
-            point.y < getMin(rectMin.y,rectMax.y) || point.y > getMax(rectMin.y,rectMax.y) )
+    if (    point.x < std::min(rectMin.x,rectMax.x) || point.x > std::max(rectMin.x,rectMax.x) ||
+            point.y < std::min(rectMin.y,rectMax.y) || point.y > std::max(rectMin.y,rectMax.y) )
                 // We possibly haven't a collision!
                 return false;
             else

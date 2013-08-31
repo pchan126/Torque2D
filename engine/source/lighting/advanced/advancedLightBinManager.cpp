@@ -719,7 +719,7 @@ void AdvancedLightBinManager::LightMaterialInfo::setLightParameters( const Light
    case LightInfo::Spot:
       {
          const F32 outerCone = lightInfo->getOuterConeAngle();
-         const F32 innerCone = getMin( lightInfo->getInnerConeAngle(), outerCone );
+         const F32 innerCone = std::min( lightInfo->getInnerConeAngle(), outerCone );
          const F32 outerCos = mCos( mDegToRad( outerCone / 2.0f ) );
          const F32 innerCos = mCos( mDegToRad( innerCone / 2.0f ) );
          Point4F spotParams(  outerCos, 

@@ -402,8 +402,8 @@ void GuiCanvas::processMouseMoveEvent(const MouseMoveEventInfo &event)
       // clamp the cursor to the window, or not
       if( ! Con::getBoolVariable( "$pref::Gui::noClampTorqueCursorToWindow", true ))
       {
-         mCursorPt.x =(F32) getMax(0, getMin((S32)mCursorPt.x, getWidth() - 1));
-         mCursorPt.y = (F32)getMax(0, getMin((S32)mCursorPt.y, getHeight() - 1));
+         mCursorPt.x =(F32) std::max(0, std::min((S32)mCursorPt.x, getWidth() - 1));
+         mCursorPt.y = (F32)std::max(0, std::min((S32)mCursorPt.y, getHeight() - 1));
       }
       
         mLastEvent.mousePoint.x = S32(mCursorPt.x);
@@ -1461,17 +1461,17 @@ void GuiCanvas::buildUpdateUnion(RectI *updateUnion)
    Point2I upperL;
    Point2I lowerR;
 
-   upperL.x = getMin(mOldUpdateRects[0].point.x, mOldUpdateRects[1].point.x);
-   upperL.x = getMin(upperL.x, mCurUpdateRect.point.x);
+   upperL.x = std::min(mOldUpdateRects[0].point.x, mOldUpdateRects[1].point.x);
+   upperL.x = std::min(upperL.x, mCurUpdateRect.point.x);
 
-   upperL.y = getMin(mOldUpdateRects[0].point.y, mOldUpdateRects[1].point.y);
-   upperL.y = getMin(upperL.y, mCurUpdateRect.point.y);
+   upperL.y = std::min(mOldUpdateRects[0].point.y, mOldUpdateRects[1].point.y);
+   upperL.y = std::min(upperL.y, mCurUpdateRect.point.y);
 
-   lowerR.x = getMax(mOldUpdateRects[0].point.x + mOldUpdateRects[0].extent.x, mOldUpdateRects[1].point.x + mOldUpdateRects[1].extent.x);
-   lowerR.x = getMax(lowerR.x, mCurUpdateRect.point.x + mCurUpdateRect.extent.x);
+   lowerR.x = std::max(mOldUpdateRects[0].point.x + mOldUpdateRects[0].extent.x, mOldUpdateRects[1].point.x + mOldUpdateRects[1].extent.x);
+   lowerR.x = std::max(lowerR.x, mCurUpdateRect.point.x + mCurUpdateRect.extent.x);
 
-   lowerR.y = getMax(mOldUpdateRects[0].point.y + mOldUpdateRects[0].extent.y, mOldUpdateRects[1].point.y + mOldUpdateRects[1].extent.y);
-   lowerR.y = getMax(lowerR.y, mCurUpdateRect.point.y + mCurUpdateRect.extent.y);
+   lowerR.y = std::max(mOldUpdateRects[0].point.y + mOldUpdateRects[0].extent.y, mOldUpdateRects[1].point.y + mOldUpdateRects[1].extent.y);
+   lowerR.y = std::max(lowerR.y, mCurUpdateRect.point.y + mCurUpdateRect.extent.y);
 
    updateUnion->point = upperL;
    updateUnion->extent = lowerR - upperL;
@@ -1494,11 +1494,11 @@ void GuiCanvas::addUpdateRegion(Point2I pos, Point2I ext)
    else
    {
       Point2I upperL;
-      upperL.x = getMin(mCurUpdateRect.point.x, pos.x);
-      upperL.y = getMin(mCurUpdateRect.point.y, pos.y);
+      upperL.x = std::min(mCurUpdateRect.point.x, pos.x);
+      upperL.y = std::min(mCurUpdateRect.point.y, pos.y);
       Point2I lowerR;
-      lowerR.x = getMax(mCurUpdateRect.point.x + mCurUpdateRect.extent.x, pos.x + ext.x);
-      lowerR.y = getMax(mCurUpdateRect.point.y + mCurUpdateRect.extent.y, pos.y + ext.y);
+      lowerR.x = std::max(mCurUpdateRect.point.x + mCurUpdateRect.extent.x, pos.x + ext.x);
+      lowerR.y = std::max(mCurUpdateRect.point.y + mCurUpdateRect.extent.y, pos.y + ext.y);
       mCurUpdateRect.point = upperL;
       mCurUpdateRect.extent = lowerR - upperL;
    }

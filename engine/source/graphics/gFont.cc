@@ -795,7 +795,7 @@ U32 GFont::getStrNWidthPrecise(const UTF16 *str, SizeType n)
       }
    }
 
-   UTF16 endChar = str[getMin(charCount,n-1)];
+   UTF16 endChar = str[std::min(charCount,n-1)];
 
    if (isValidChar(endChar))
    {
@@ -1128,8 +1128,8 @@ void GFont::exportStrip(const char *fileName, U32 padding, U32 kerning)
    for(S32 i=0; i<mCharInfoList.size(); i++)
    {
       totalWidth += mCharInfoList[i].width + kerning + 2*padding;
-      heightMin = getMin((S32)heightMin, (S32)getBaseline() - (S32)mCharInfoList[i].yOrigin);
-      heightMax = getMax((S32)heightMax, (S32)getBaseline() - (S32)mCharInfoList[i].yOrigin + (S32)mCharInfoList[i].height);
+      heightMin = std::min((S32)heightMin, (S32)getBaseline() - (S32)mCharInfoList[i].yOrigin);
+      heightMax = std::max((S32)heightMax, (S32)getBaseline() - (S32)mCharInfoList[i].yOrigin + (S32)mCharInfoList[i].height);
    }
 
    totalHeight = heightMax - heightMin + 2*padding;

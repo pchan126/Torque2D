@@ -320,7 +320,7 @@ void CodeBlock::calcBreakList()
       {
          if(seqCount)
             breakList[size++] = seqCount;
-         breakList[size++] = lineNumber - getMax(0, line) - 1;
+         breakList[size++] = lineNumber - std::max(0, line) - 1;
          seqCount = 1;
       }
 
@@ -493,7 +493,7 @@ bool CodeBlock::compile(const char *codeFileName, StringTableEntry fileName, con
    {
       consoleAllocReset();
       return false;
-   }   
+   }
 
    FileStream st;
    if(!ResourceManager->openFileForWrite(st, codeFileName)) 

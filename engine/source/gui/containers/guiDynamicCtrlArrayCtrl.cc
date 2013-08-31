@@ -92,7 +92,7 @@ void GuiDynamicCtrlArrayControl::updateChildControls()
             S32 curCol = childcount % mCols;
             S32 curRow = childcount / mCols;
             
-            rows = getMax( rows, curRow );
+            rows = std::max( rows, curRow );
             
             // Reposition and resize
             Point2I newPos(mColSpacing + (curCol * (mColSize + mColSpacing)), mRowSpacing + (curRow * (mRowSize + mRowSpacing)));
@@ -129,8 +129,8 @@ bool GuiDynamicCtrlArrayControl::resize(const Point2I &newPosition, const Point2
     
     //call set update both before and after
     setUpdate();
-    Point2I actualNewExtent = Point2I(getMax(mMinExtent.x, newExtent.x),
-                                      getMax(mMinExtent.y, newExtent.y));
+    Point2I actualNewExtent = Point2I(std::max(mMinExtent.x, newExtent.x),
+                                      std::max(mMinExtent.y, newExtent.y));
     
     mBounds.set(newPosition, actualNewExtent);
     

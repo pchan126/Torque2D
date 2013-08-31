@@ -200,7 +200,7 @@ void LightShadowMap::calcLightMatrices( MatrixF &outLightMatrix, const Frustum &
          F32 width = (lightViewBB.maxExtents.x - lightViewBB.minExtents.x) / 2.0f;
          F32 height = (lightViewBB.maxExtents.y - lightViewBB.minExtents.y) / 2.0f;
 
-         width = getMax(width, height);
+         width = std::max(width, height);
 
          GFX->setOrtho(-width, width, -width, width, 1.0f, sceneDepth, true);
 
@@ -353,7 +353,7 @@ U32 LightShadowMap::getBestTexSize( U32 scale ) const
    if ( isViewDependent() )
       texSize = params->texSize;
    else
-      texSize = params->texSize * getMin( 1.0f, mLastScreenSize );
+      texSize = params->texSize * std::min( 1.0f, mLastScreenSize );
 
    // Apply the shadow texture scale and make
    // sure this is a power of 2.

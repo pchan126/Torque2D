@@ -569,12 +569,12 @@ inline U32 Point3F::getGreatestComponentIndex() const
 
 inline F32 Point3F::least() const
 {
-   return getMin( mFabs( x ), getMin( mFabs( y ), mFabs( z ) ) );
+   return std::min( mFabs( x ), std::min( mFabs( y ), mFabs( z ) ) );
 }
 
 inline F32 Point3F::most() const
 {
-   return getMax( mFabs( x ), getMax( mFabs( y ), mFabs( z ) ) );
+   return std::max( mFabs( x ), std::max( mFabs( y ), mFabs( z ) ) );
 }
 
 inline void Point3F::neg()

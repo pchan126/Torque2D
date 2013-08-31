@@ -227,7 +227,7 @@ void GBitmap::allocateBitmap(const U32 in_width, const U32 in_height, const bool
     
    if(svBits != NULL)
    {
-      dMemcpy(mBits, svBits, getMin(mByteSize, svByteSize));
+      dMemcpy(mBits, svBits, std::min(mByteSize, svByteSize));
       delete[] svBits;
    }
 }

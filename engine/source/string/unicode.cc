@@ -91,7 +91,7 @@ const U32 convertUTF8toUTF16(const UTF8 *unistring, UTF16 *outbuffer, U32 len)
       nCodepoints++;
    }
 
-   nCodepoints = getMin(nCodepoints,len - 1);
+   nCodepoints = std::min(nCodepoints,len - 1);
    outbuffer[nCodepoints] = '\0';
    
    PROFILE_END();
@@ -114,7 +114,7 @@ const U32 convertUTF8toUTF32(const UTF8 *unistring, UTF32 *outbuffer, U32 len)
       nCodepoints++;
    }
 
-   nCodepoints = getMin(nCodepoints,len - 1);
+   nCodepoints = std::min(nCodepoints,len - 1);
    outbuffer[nCodepoints] = '\0';
    
    PROFILE_END();
@@ -139,7 +139,7 @@ const U32 convertUTF16toUTF8( const UTF16 *unistring, UTF8  *outbuffer, U32 len)
       nCodeunits += codeunitLen;
    }
 
-   nCodeunits = getMin(nCodeunits,len - 1);
+   nCodeunits = std::min(nCodeunits,len - 1);
    outbuffer[nCodeunits] = '\0';
    
    PROFILE_END();
@@ -162,7 +162,7 @@ const U32 convertUTF16toUTF32(const UTF16 *unistring, UTF32 *outbuffer, U32 len)
       nCodepoints++;
    }
    
-   nCodepoints = getMin(nCodepoints,len);
+   nCodepoints = std::min(nCodepoints,len);
    outbuffer[nCodepoints] = '\0';
    
    PROFILE_END();
@@ -184,7 +184,7 @@ const U32 convertUTF32toUTF8( const UTF32 *unistring, UTF8  *outbuffer, U32 len)
       nCodeunits += codeunitLen;
    }
    
-   nCodeunits = getMin(nCodeunits,len);
+   nCodeunits = std::min(nCodeunits,len);
    outbuffer[nCodeunits] = '\0';
    
    PROFILE_END();
@@ -206,7 +206,7 @@ const U32 convertUTF32toUTF16(const UTF32 *unistring, UTF16 *outbuffer, U32 len)
       nCodepoints++;
    }
 
-   nCodepoints = getMin(nCodepoints,len);
+   nCodepoints = std::min(nCodepoints,len);
    outbuffer[nCodepoints] = '\0';
    
    PROFILE_END();

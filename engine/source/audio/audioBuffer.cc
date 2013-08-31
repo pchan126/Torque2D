@@ -337,7 +337,7 @@ bool AudioBuffer::readWAV(ResourceObject *obj)
       AssertFatal(chunkRemaining >= 0, "AudioBuffer::readWAV: remaining chunk data should never be less than zero.");
       while (chunkRemaining > 0)
       {
-         S32 readSize = getMin(1024, chunkRemaining);
+         S32 readSize = std::min(1024, chunkRemaining);
          stream->read(readSize, buffer);
          chunkRemaining -= readSize;
       }

@@ -680,7 +680,7 @@ ConsoleFunction(getRandom, F32, 1, 3, "([ min ],[ max ]) Use the getRandom funct
                                                                 "@sa getRandomSeed")
 {
    if (argc == 2)
-      return F32(gRandGen.randRangeI(0,getMax( dAtoi(argv[1]), 0 )));
+      return F32(gRandGen.randRangeI(0,std::max( dAtoi(argv[1]), 0 )));
    else
    {
       if (argc == 3) 

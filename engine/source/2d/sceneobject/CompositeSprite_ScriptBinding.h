@@ -1023,10 +1023,10 @@ ConsoleMethod(CompositeSprite, pickArea, const char*, 4, 6, "(startx/y, endx/y )
 
     // Calculate normalized AABB.
     b2AABB aabb;
-    aabb.lowerBound.x = getMin( v1.x, v2.x );
-    aabb.lowerBound.y = getMin( v1.y, v2.y );
-    aabb.upperBound.x = getMax( v1.x, v2.x );
-    aabb.upperBound.y = getMax( v1.y, v2.y );
+    aabb.lowerBound.x = std::min( v1.x, v2.x );
+    aabb.lowerBound.y = std::min( v1.y, v2.y );
+    aabb.upperBound.x = std::max( v1.x, v2.x );
+    aabb.upperBound.y = std::max( v1.y, v2.y );
 
 	// Calculate local OOBB.
     b2Vec2 localOOBB[4];

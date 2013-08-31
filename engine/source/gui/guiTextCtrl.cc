@@ -225,7 +225,7 @@ void GuiTextCtrl::onRender(Point2I offset, const RectI &updateRect)
    ColorI fontColor = mProfile->mFontColor;
    
    U32 baseline = mFont->getBaseline();
-   S32 vertIndent = getMax(0, (S32)(ctrlRect.extent.y - baseline)/2);
+   S32 vertIndent = std::max(0, (S32)(ctrlRect.extent.y - baseline)/2);
 
 	if (mTruncateWhenUnfocused)
     {

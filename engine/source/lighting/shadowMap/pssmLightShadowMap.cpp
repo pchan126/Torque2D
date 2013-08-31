@@ -142,7 +142,7 @@ Box3F PSSMLightShadowMap::_calcClipSpaceAABB(const Frustum& f, const MatrixF& tr
    // Calculate frustum bounding sphere radius
    F32 radius = 0.0f;
    for (U32 i = 0; i < 8; i++)      
-      radius = getMax(radius, (f.getPoints()[i] - center).lenSquared());
+      radius = std::max(radius, (f.getPoints()[i] - center).lenSquared());
    radius = mFloor( mSqrt(radius) );
       
    // Now build box for sphere
@@ -269,7 +269,7 @@ void PSSMLightShadowMap::_render(   RenderPassManager* renderPass,
       //
       // Still is it the right thing to do?
       //
-      scale.y = scale.x = ( getMin( scale.x, scale.y ) ); 
+      scale.y = scale.x = ( std::min( scale.x, scale.y ) );
       //scale.x = mFloor(scale.x); 
       //scale.y = mFloor(scale.y); 
 

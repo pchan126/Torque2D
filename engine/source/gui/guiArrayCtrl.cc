@@ -212,7 +212,7 @@ void GuiArrayCtrl::onRender(Point2I offset, const RectI &updateRect)
    //if we have row headings
    if (mHeaderDim.x > 0)
    {
-      clipRect.point.x = getMax(clipRect.point.x, parentOffset.x + mHeaderDim.x);
+      clipRect.point.x = std::max(clipRect.point.x, parentOffset.x + mHeaderDim.x);
       offset.x += mHeaderDim.x;
    }
 
@@ -375,7 +375,7 @@ bool GuiArrayCtrl::onKeyDown(const GuiEvent &event)
    GuiControl *parent = getParent();
    if (parent && mCellSize.y > 0)
    {
-      pageSize = getMax(1, (parent->getHeight() / mCellSize.y) - 1);
+      pageSize = std::max(1, (parent->getHeight() / mCellSize.y) - 1);
    }
 
    Point2I delta(0,0);
@@ -420,8 +420,8 @@ bool GuiArrayCtrl::onKeyDown(const GuiEvent &event)
 
    //select the cell
    Point2I cell = mSelectedCell;
-   cell.x = getMax(0, getMin(mSize.x - 1, cell.x + delta.x));
-   cell.y = getMax(0, getMin(mSize.y - 1, cell.y + delta.y));
+   cell.x = std::max(0, std::min(mSize.x - 1, cell.x + delta.x));
+   cell.y = std::max(0, std::min(mSize.y - 1, cell.y + delta.y));
    cellSelected(cell);
 
    return true;

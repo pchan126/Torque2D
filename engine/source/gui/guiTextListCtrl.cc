@@ -398,7 +398,7 @@ U32 GuiTextListCtrl::getRowWidth(Entry *row)
       else
          textWidth = mFont->getStrWidth((const UTF8*)text);
       if(mColumnOffsets[index] >= 0)
-         width = getMax(width, mColumnOffsets[index] + textWidth);
+         width = std::max(width, mColumnOffsets[index] + textWidth);
       if(!nextCol)
          break;
       text = nextCol+1;

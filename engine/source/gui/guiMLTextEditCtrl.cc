@@ -58,7 +58,7 @@ bool GuiMLTextEditCtrl::resize(const Point2I &newPosition, const Point2I &newExt
     Point2I newExt = newExtent;
     GuiControl* parent = getParent();
     if ( parent )
-        newExt.y = getMax( parent->getHeight(), newExt.y );
+        newExt.y = std::max( parent->getHeight(), newExt.y );
     
     return Parent::resize( newPosition, newExt );
 }

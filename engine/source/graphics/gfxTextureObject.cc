@@ -202,7 +202,7 @@ U32 GFXTextureObject::getEstimatedSizeInBytes() const
    // Else we need to calculate the size ourselves.
    S32 texSizeX = mTextureSize.x;
    S32 texSizeY = mTextureSize.y;
-   S32 volDepth = getMax( 1, mTextureSize.z );
+   S32 volDepth = std::max( 1, mTextureSize.z );
    U32 byteSize = GFXFormat_getByteSize( mFormat );
    U32 totalBytes = texSizeX * texSizeY * volDepth * byteSize;
 //
@@ -218,9 +218,9 @@ U32 GFXTextureObject::getEstimatedSizeInBytes() const
 //   // a complete mip chain.
 //   while ( texSizeX > 1 || texSizeY > 1 )
 //   {
-//      texSizeX = getMax( texSizeX >> 1, 1 );
-//      texSizeY = getMax( texSizeY >> 1, 1 );
-//      volDepth = getMax( volDepth >> 1, 1 );
+//      texSizeX = std::max( texSizeX >> 1, 1 );
+//      texSizeY = std::max( texSizeY >> 1, 1 );
+//      volDepth = std::max( volDepth >> 1, 1 );
 //
 //      totalBytes += texSizeX * texSizeY * volDepth * byteSize;
 //   }

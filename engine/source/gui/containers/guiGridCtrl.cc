@@ -127,7 +127,7 @@ bool GuiGridControl::resize(const Point2I &newPosition, const Point2I &newExtent
 
 	setUpdate();
 
-	Point2I actualNewExtent = Point2I(  getMax(mMinExtent.x, newExtent.x), getMax(mMinExtent.y, newExtent.y));
+	Point2I actualNewExtent = Point2I(  std::max(mMinExtent.x, newExtent.x), std::max(mMinExtent.y, newExtent.y));
 	mBounds.set(newPosition, actualNewExtent);
 
 	bool bFirstResize = false;

@@ -66,7 +66,7 @@ U32 LightQuery::getLights( LightInfo** outLights, U32 maxLights )
    if ( mLights.empty() )
       _scoreLights();
 
-   U32 lightCount = getMin( (U32)mLights.size(), getMin( mMaxLights, maxLights ) );
+   U32 lightCount = std::min( (U32)mLights.size(), std::min( mMaxLights, maxLights ) );
 
    // Copy them over.
    U32 i = 0;

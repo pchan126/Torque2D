@@ -311,8 +311,8 @@ void GuiMLTextCtrl::onRender(Point2I offset, const RectI& updateRect)
             drawAtomText(false, awalk->textStart, awalk->textStart + awalk->len, awalk, lwalk, offset);
          else
          {
-            U32 selectionStart = getMax(awalk->textStart, mSelectionStart);
-            U32 selectionEnd = getMin(awalk->textStart + awalk->len, mSelectionEnd + 1);
+            U32 selectionStart = std::max(awalk->textStart, mSelectionStart);
+            U32 selectionEnd = std::min(awalk->textStart + awalk->len, mSelectionEnd + 1);
 
             // draw some unselected text
             if(selectionStart > awalk->textStart)
@@ -408,7 +408,7 @@ U32 GuiMLTextCtrl::getText(char* pBuffer, const U32 bufferSize) const
 {
    mTextBuffer.getCopy8(pBuffer, bufferSize);
 
-   return getMin(mTextBuffer.length(), bufferSize);
+   return std::min(mTextBuffer.length(), bufferSize);
 }
 
 //--------------------------------------------------------------------------

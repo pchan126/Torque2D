@@ -155,9 +155,9 @@ RectClipper::clipRect(const RectI& in_rRect,
    else                                       out_rRect.point.y = in_rRect.point.y;
 
    Point2I bottomR;
-   bottomR.x = getMin(in_rRect.point.x + in_rRect.extent.x - 1,
+   bottomR.x = std::min(in_rRect.point.x + in_rRect.extent.x - 1,
                      m_clipRect.point.x + m_clipRect.extent.x - 1);
-   bottomR.y = getMin(in_rRect.point.y + in_rRect.extent.y - 1,
+   bottomR.y = std::min(in_rRect.point.y + in_rRect.extent.y - 1,
                      m_clipRect.point.y + m_clipRect.extent.y - 1);
 
    out_rRect.extent.x = bottomR.x - out_rRect.point.x + 1;

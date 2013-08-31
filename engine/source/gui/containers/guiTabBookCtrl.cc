@@ -590,7 +590,7 @@ void GuiTabBookCtrl::calculatePageTabs()
     {
         // Fetch Tab Width
         S32 tabWidth = calculatePageTabWidth( mPages[i].Page ) + ( mTabMargin * 2 );
-        tabWidth = getMax( tabWidth, mMinTabWidth );
+        tabWidth = std::max( tabWidth, mMinTabWidth );
         TabHeaderInfo &info = mPages[i];
         switch( mTabPosition )
         {
@@ -601,7 +601,7 @@ void GuiTabBookCtrl::calculatePageTabs()
                 if( currX + tabWidth > getWidth() )
                 {
                     // Calculate and Advance State.
-                    maxWidth = getMax( tabWidth, maxWidth );
+                    maxWidth = std::max( tabWidth, maxWidth );
                     balanceRow( currRow, currX );
                     info.TabRow = ++currRow;
                     // Reset Necessaries

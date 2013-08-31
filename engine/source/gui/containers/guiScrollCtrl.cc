@@ -310,7 +310,7 @@ void GuiScrollCtrl::computeSizes()
       else if (contentLowerRight.x > childLowerRight.x)
       {
          S32 diff = contentLowerRight.x - childLowerRight.x;
-         delta.x = getMin(mContentPos.x - mChildPos.x, diff);
+         delta.x = std::min(mContentPos.x - mChildPos.x, diff);
       }
 
       //reposition the children if the child extent > the scroll content extent
@@ -319,7 +319,7 @@ void GuiScrollCtrl::computeSizes()
       else if (contentLowerRight.y > childLowerRight.y)
       {
          S32 diff = contentLowerRight.y - childLowerRight.y;
-         delta.y = getMin(mContentPos.y - mChildPos.y, diff);
+         delta.y = std::min(mContentPos.y - mChildPos.y, diff);
       }
 
       // apply the deltas to the children...
@@ -390,7 +390,7 @@ void GuiScrollCtrl::calcThumbs()
       if (mUseConstantHeightThumb)
          mHThumbSize = mBaseThumbSize;
       else
-         mHThumbSize = getMax(mBaseThumbSize, S32((mContentExt.x * trackSize) / mChildExt.x));
+         mHThumbSize = std::max(mBaseThumbSize, S32((mContentExt.x * trackSize) / mChildExt.x));
 
       mThumbPos.x = mHTrackRect.point.x + (mChildRelPos.x * (trackSize - mHThumbSize)) / (mChildExt.x - mContentExt.x);
    }
@@ -401,7 +401,7 @@ void GuiScrollCtrl::calcThumbs()
       if (mUseConstantHeightThumb)
          mVThumbSize = mBaseThumbSize;
       else
-         mVThumbSize = getMax(mBaseThumbSize, S32((mContentExt.y * trackSize) / mChildExt.y));
+         mVThumbSize = std::max(mBaseThumbSize, S32((mContentExt.y * trackSize) / mChildExt.y));
 
       mThumbPos.y = mVTrackRect.point.y + (mChildRelPos.y * (trackSize - mVThumbSize)) / (mChildExt.y - mContentExt.y);
    }

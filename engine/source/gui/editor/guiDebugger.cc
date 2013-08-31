@@ -139,7 +139,7 @@ void DbgFileView::AdjustCellSize()
    for (U32 i = 0; i < (U32)mFileView.size(); i++)
    {
       S32 cellWidth = gFileXOffset + mFont->getStrWidth((const UTF8 *)mFileView[i].text);
-      maxWidth = getMax(maxWidth, cellWidth);
+      maxWidth = std::max(maxWidth, cellWidth);
    }
 
    mCellSize.set(maxWidth, mFont->getHeight() + 2);
@@ -375,7 +375,7 @@ void DbgFileView::scrollToLine(S32 lineNumber)
    if (! (yOffset + getPosition().y >= 0 && yOffset + getPosition().y < parent->getHeight() - mCellSize.y))
    {
       //reposition the control
-      S32 newYOffset = getMin(0, getMax(parent->getHeight() - getHeight(), (mCellSize.y * 4) - yOffset));
+      S32 newYOffset = std::min(0, std::max(parent->getHeight() - getHeight(), (mCellSize.y * 4) - yOffset));
       resize(Point2I(getPosition().x, newYOffset), getExtent());
    }
 

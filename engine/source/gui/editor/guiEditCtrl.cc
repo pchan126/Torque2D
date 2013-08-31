@@ -462,10 +462,10 @@ void GuiEditCtrl::drawNuts(RectI &box, ColorI &outlineColor, ColorI &nutColor)
 
 void GuiEditCtrl::getDragRect(RectI &box)
 {
-   box.point.x = getMin(mLastMousePos.x, mSelectionAnchor.x);
-   box.extent.x = getMax(mLastMousePos.x, mSelectionAnchor.x) - box.point.x + 1;
-   box.point.y = getMin(mLastMousePos.y, mSelectionAnchor.y);
-   box.extent.y = getMax(mLastMousePos.y, mSelectionAnchor.y) - box.point.y + 1;
+   box.point.x = std::min(mLastMousePos.x, mSelectionAnchor.x);
+   box.extent.x = std::max(mLastMousePos.x, mSelectionAnchor.x) - box.point.x + 1;
+   box.point.y = std::min(mLastMousePos.y, mSelectionAnchor.y);
+   box.extent.y = std::max(mLastMousePos.y, mSelectionAnchor.y) - box.point.y + 1;
 }
 
 void GuiEditCtrl::onPreRender()
@@ -1227,10 +1227,10 @@ void GuiEditCtrl::justifySelection(Justification j)
    i++;
    for(;i != mSelectedControls.end(); i++)
    {
-      minX = getMin(minX, (*i)->getPosition().x);
-      maxX = getMax(maxX, (*i)->getPosition().x + (*i)->getWidth());
-      minY = getMin(minY, (*i)->getPosition().y);
-      maxY = getMax(maxY, (*i)->getPosition().y + (*i)->getHeight());
+      minX = std::min(minX, (*i)->getPosition().x);
+      maxX = std::max(maxX, (*i)->getPosition().x + (*i)->getWidth());
+      minY = std::min(minY, (*i)->getPosition().y);
+      maxY = std::max(maxY, (*i)->getPosition().y + (*i)->getHeight());
       extentX += (*i)->getWidth();
       extentY += (*i)->getHeight();
    }

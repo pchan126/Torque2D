@@ -113,7 +113,7 @@ void DebugDraw::DrawSortPoint( const b2Vec2& worldPosition, const b2Vec2& size, 
     // Calculate sort point marker size based upon the object size.
     const b2Vec2 halfSize( size.x * 0.5f, size.y * 0.5f );
     const b2Vec2 objectSize( size.x * 0.2f, size.y * 0.2f );
-    const F32 markerSize = getMin(objectSize.x, objectSize.y);
+    const F32 markerSize = std::min(objectSize.x, objectSize.y);
 
     // Calculate world sort point.
     b2Vec2 worldPoint( worldPosition.x + (localSortPoint.x  * halfSize.x), worldPosition.y + (localSortPoint.y  * halfSize.y) );

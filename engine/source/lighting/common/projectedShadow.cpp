@@ -222,9 +222,9 @@ bool ProjectedShadow::_updateDecal( const SceneRenderState *state )
       weight = mClampF( 1.0f - ( tmp.lenSquared() / (range * range)), 0.00001f, 1.0f );
 
       if ( lights[i]->getType() == LightInfo::Vector )
-         fade = getMax( fade, 1.0f );
+         fade = std::max( fade, 1.0f );
       else
-         fade = getMax( fade, mClampF( 1.0f - dist, 0.00001f, 1.0f ) );
+         fade = std::max( fade, mClampF( 1.0f - dist, 0.00001f, 1.0f ) );
 
       lightDir += tmp * weight;
       lightCount++;

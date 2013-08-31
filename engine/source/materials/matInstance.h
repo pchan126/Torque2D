@@ -75,7 +75,7 @@ public:
    virtual SimObject* getUserObject() const { return mUserObject; }
    virtual Material *getMaterial() { return mMaterial; }
    virtual bool hasGlow();
-   virtual U32 getCurPass() { return getMax( mCurPass, 0 ); }
+   virtual U32 getCurPass() { return std::max( mCurPass, 0 ); }
    virtual U32 getCurStageNum();
    virtual RenderPassData *getPass(U32 pass);   
    virtual const MatStateHint& getStateHint() const;

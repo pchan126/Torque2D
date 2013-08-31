@@ -317,7 +317,7 @@ void GuiSceneObjectCtrl::onRender(Point2I offset, const RectI& updateRect)
           {
               // Adjust the position and extent
               objRect.point.y = baseTop;
-              objRect.extent.y = getMax(targetBottom - baseTop, 0);
+              objRect.extent.y = std::max(targetBottom - baseTop, 0);
               
               // Set the top clipping boundary
               F32 clipRatio = 1.0f - ((1.0f * objRect.extent.y)/targetExtent);
@@ -327,7 +327,7 @@ void GuiSceneObjectCtrl::onRender(Point2I offset, const RectI& updateRect)
           if (baseBottom < targetBottom)
           {
               // Adjust the extent
-              objRect.extent.y = getMax(baseBottom - targetTop, 0);
+              objRect.extent.y = std::max(baseBottom - targetTop, 0);
 
               // Set the bottom clipping boundary
               F32 clipRatio = 1.0f - ((1.0f * objRect.extent.y)/targetExtent);
@@ -363,7 +363,7 @@ void GuiSceneObjectCtrl::onRender(Point2I offset, const RectI& updateRect)
           {
               // Adjust the position and extent
               objRect.point.x = baseLeft;
-              objRect.extent.x = getMax(targetRight - baseLeft, 0);
+              objRect.extent.x = std::max(targetRight - baseLeft, 0);
               
               // Set the left clipping boundary
               F32 clipRatio = 1.0f - ((1.0f * objRect.extent.x)/targetExtent);
@@ -373,7 +373,7 @@ void GuiSceneObjectCtrl::onRender(Point2I offset, const RectI& updateRect)
           if (baseRight < targetRight)
           {
               // Adjust the extent
-              objRect.extent.x = getMax(baseRight - targetLeft, 0);
+              objRect.extent.x = std::max(baseRight - targetLeft, 0);
 
               // Set the right clipping boundary
               F32 clipRatio = 1.0f - ((1.0f * objRect.extent.x)/targetExtent);

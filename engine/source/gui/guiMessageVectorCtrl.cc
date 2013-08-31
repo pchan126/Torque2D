@@ -195,7 +195,7 @@ void GuiMessageVectorCtrl::lineInserted(const U32 arg)
       numLines += mLineWrappings[i].numLines;
    }
 
-   U32 newHeight = (mProfile->mFont->getHeight() + mLineSpacingPixels) * getMax(numLines, U32(1));
+   U32 newHeight = (mProfile->mFont->getHeight() + mLineSpacingPixels) * std::max(numLines, U32(1));
    resize(getPosition(), Point2I(getWidth(), newHeight));
    if(fullyScrolled)
       pScroll->scrollTo(0, 0x7FFFFFFF);
@@ -241,7 +241,7 @@ void GuiMessageVectorCtrl::lineDeleted(const U32 arg)
       numLines += mLineWrappings[i].numLines;
    }
 
-   U32 newHeight = (mProfile->mFont->getHeight() + mLineSpacingPixels) * getMax(numLines, U32(1));
+   U32 newHeight = (mProfile->mFont->getHeight() + mLineSpacingPixels) * std::max(numLines, U32(1));
    resize(getPosition(), Point2I(getWidth(), newHeight));
 }
 

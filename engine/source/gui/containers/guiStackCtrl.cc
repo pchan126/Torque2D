@@ -234,7 +234,7 @@ void GuiStackControl::stackFromTop()
    else if( totalHeight < getExtent().y )
    {
       curPos.x = getExtent().x;
-      curPos.y = getMax( totalHeight , mMinExtent.y );
+      curPos.y = std::max( totalHeight , mMinExtent.y );
       resize(getPosition(), curPos);
    }
 }

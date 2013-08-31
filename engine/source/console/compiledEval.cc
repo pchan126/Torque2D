@@ -491,7 +491,7 @@ const char *CodeBlock::exec(U32 ip, const char *functionName, Namespace *thisNam
       // assume this points into a function decl:
       U32 fnArgc = code[ip + 5];
       thisFunctionName = U32toSTE(code[ip]);
-      argc = getMin(argc-1, fnArgc); // argv[0] is func name
+      argc = std::min(argc-1, fnArgc); // argv[0] is func name
       if(gEvalState.traceOn)
       {
          traceBuffer[0] = 0;

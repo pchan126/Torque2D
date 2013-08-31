@@ -189,7 +189,7 @@ void end( bool useGenericShaders )
    {
       // TODO: Fix this to allow > MAX_DYNAMIC_VERTS!
 
-      U32 copyVerts = getMin( (U32)MAX_DYNAMIC_VERTS, numVerts );
+      U32 copyVerts = std::min( (U32)MAX_DYNAMIC_VERTS, numVerts );
       mVertBuff.set( GFX, copyVerts, GFXBufferTypeVolatile );
 
       GFXVertexPCT *verts = mVertBuff.lock();
@@ -204,7 +204,7 @@ void end( bool useGenericShaders )
    {
       while ( numVerts > 0 )
       {
-         U32 copyVerts = getMin( (U32)MAX_DYNAMIC_VERTS, numVerts );
+         U32 copyVerts = std::min( (U32)MAX_DYNAMIC_VERTS, numVerts );
          copyVerts -= copyVerts % vertStride;
 
          mVertBuff.set( GFX, copyVerts, GFXBufferTypeVolatile );

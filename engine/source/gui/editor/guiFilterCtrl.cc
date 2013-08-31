@@ -117,7 +117,7 @@ void GuiFilterCtrl::onMouseDown(const GuiEvent &event)
    F32 val = (F32(p.x) + (w / 2.f)) / w;
    mCurKnot = S32(val);
 
-   mFilter[mCurKnot] = 1.0f - F32(getMin(getMax(0, p.y), getHeight())/(F32)getHeight());
+   mFilter[mCurKnot] = 1.0f - F32(std::min(std::max(0, p.y), getHeight())/(F32)getHeight());
    setUpdate();
 }
 
@@ -128,7 +128,7 @@ void GuiFilterCtrl::onMouseDragged(const GuiEvent &event)
    setFirstResponder();
 
    Point2I p = globalToLocalCoord(event.mousePoint);
-   mFilter[mCurKnot] = 1.0f - F32(getMin(getMax(0, p.y), getHeight())/(F32)getHeight());
+   mFilter[mCurKnot] = 1.0f - F32(std::min(std::max(0, p.y), getHeight())/(F32)getHeight());
    setUpdate();
 }
 

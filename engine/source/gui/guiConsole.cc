@@ -61,7 +61,7 @@ S32 GuiConsole::getMaxWidth(S32 startIndex, S32 endIndex)
 
    S32 result = 0;
    for(S32 i = startIndex; i <= endIndex; i++)
-      result = getMax(result, (S32)(mFont->getStrWidth((const UTF8 *)log[i].mString)));
+      result = std::max(result, (S32)(mFont->getStrWidth((const UTF8 *)log[i].mString)));
    
    Con::unlockLog();
    

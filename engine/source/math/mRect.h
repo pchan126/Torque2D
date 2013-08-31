@@ -142,11 +142,11 @@ inline void RectI::set(const S32 in_left,  const S32 in_top,
 inline bool RectI::intersect(const RectI& clipRect)
 {
    Point2I bottomL;
-   bottomL.x = getMin(point.x + extent.x - 1, clipRect.point.x + clipRect.extent.x - 1);
-   bottomL.y = getMin(point.y + extent.y - 1, clipRect.point.y + clipRect.extent.y - 1);
+   bottomL.x = std::min(point.x + extent.x - 1, clipRect.point.x + clipRect.extent.x - 1);
+   bottomL.y = std::min(point.y + extent.y - 1, clipRect.point.y + clipRect.extent.y - 1);
 
-   point.x = getMax(point.x, clipRect.point.x);
-   point.y = getMax(point.y, clipRect.point.y);
+   point.x = std::max(point.x, clipRect.point.x);
+   point.y = std::max(point.y, clipRect.point.y);
 
    extent.x = bottomL.x - point.x + 1;
    extent.y = bottomL.y - point.y + 1;
@@ -258,11 +258,11 @@ inline Point2F RectF::centre( void ) const
 inline bool RectF::intersect(const RectF& clipRect)
 {
    Point2F bottomL;
-   bottomL.x = getMin(point.x + extent.x, clipRect.point.x + clipRect.extent.x);
-   bottomL.y = getMin(point.y + extent.y, clipRect.point.y + clipRect.extent.y);
+   bottomL.x = std::min(point.x + extent.x, clipRect.point.x + clipRect.extent.x);
+   bottomL.y = std::min(point.y + extent.y, clipRect.point.y + clipRect.extent.y);
 
-   point.x = getMax(point.x, clipRect.point.x);
-   point.y = getMax(point.y, clipRect.point.y);
+   point.x = std::max(point.x, clipRect.point.x);
+   point.y = std::max(point.y, clipRect.point.y);
 
    extent.x = bottomL.x - point.x;
    extent.y = bottomL.y - point.y;
@@ -309,11 +309,11 @@ inline Point2D RectD::centre( void ) const
 inline bool RectD::intersect(const RectD& clipRect)
 {
    Point2D bottomL;
-   bottomL.x = getMin(point.x + extent.x, clipRect.point.x + clipRect.extent.x);
-   bottomL.y = getMin(point.y + extent.y, clipRect.point.y + clipRect.extent.y);
+   bottomL.x = std::min(point.x + extent.x, clipRect.point.x + clipRect.extent.x);
+   bottomL.y = std::min(point.y + extent.y, clipRect.point.y + clipRect.extent.y);
 
-   point.x = getMax(point.x, clipRect.point.x);
-   point.y = getMax(point.y, clipRect.point.y);
+   point.x = std::max(point.x, clipRect.point.x);
+   point.y = std::max(point.y, clipRect.point.y);
 
    extent.x = bottomL.x - point.x;
    extent.y = bottomL.y - point.y;

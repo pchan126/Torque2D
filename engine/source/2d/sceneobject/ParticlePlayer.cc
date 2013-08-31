@@ -379,7 +379,7 @@ void ParticlePlayer::integrateObject( const F32 totalTime, const F32 elapsedTime
                 if ( emissionCount > 0 )
                 {
                     // Yes, so remove this emission from accumulated time.
-                    pEmitterNode->setTimeSinceLastGeneration( getMax(0.0f, pEmitterNode->getTimeSinceLastGeneration() - (emissionCount / localEmission) ) );
+                    pEmitterNode->setTimeSinceLastGeneration( std::max(0.0f, pEmitterNode->getTimeSinceLastGeneration() - (emissionCount / localEmission) ) );
 
                     // Suppress Precision Errors.
                     if ( mIsZero( pEmitterNode->getTimeSinceLastGeneration() ) )

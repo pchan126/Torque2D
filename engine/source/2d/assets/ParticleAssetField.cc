@@ -401,7 +401,7 @@ F32 ParticleAssetField::getFieldValue( F32 time ) const
         return mDataKeys[0].mValue * mValueScale;
 
     // Clamp Key-Time.
-    time = getMin(getMax( 0.0f, time ), mMaxTime);
+    time = std::min(std::max( 0.0f, time ), mMaxTime);
 
     // Repeat Time.
     time = mFmod( time * mRepeatTime, mMaxTime + FLT_EPSILON );

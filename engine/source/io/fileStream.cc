@@ -109,7 +109,7 @@ U32 FileStream::getStreamSize()
 
    // the stream size may not match the size on-disk if its been written to...
    if (true == mDirty)
-      return(getMax(mFile.getSize(), mBuffTail + 1));
+      return(std::max(mFile.getSize(), mBuffTail + 1));
    // otherwise just get the size on disk...
    else
       return(mFile.getSize());
@@ -244,7 +244,7 @@ bool FileStream::_read(const U32 i_numBytes, void *o_pBuffer)
       {
          // copy as much as possible from the buffer into the destination
          readSize = ((mBuffTail + 1) >= mBuffPos) ? (mBuffTail + 1 - mBuffPos) : 0;
-         readSize = getMin(readSize, remaining);
+         readSize = std::min(readSize, remaining);
          calcBlockHead(mBuffPos, &blockHead);
          dMemcpy(pDst, mBuffer + (mBuffPos - blockHead), readSize);
          // reduce the remaining amount to read
@@ -280,7 +280,7 @@ bool FileStream::_read(const U32 i_numBytes, void *o_pBuffer)
             if (true == fillBuffer(mBuffPos))
             {
                // copy as much as possible from the buffer to the destination
-               remaining = getMin(remaining, mBuffTail - mBuffPos + 1);
+               remaining = std::min(remaining, mBuffTail - mBuffPos + 1);
                dMemcpy(pDst, mBuffer + (mBuffPos - blockHead), remaining);
                // advance the buffer pointer
                mBuffPos += remaining;
@@ -346,7 +346,7 @@ bool FileStream::_write(const U32 i_numBytes, const void *i_pBuffer)
          // copy as much as possible from the source to the buffer
          calcBlockBounds(mBuffHead, &blockHead, &blockTail);
          writeSize = (mBuffPos > blockTail) ? 0 : blockTail - mBuffPos + 1;
-         writeSize = getMin(writeSize, remaining);
+         writeSize = std::min(writeSize, remaining);
 
          AssertFatal(0 == writeSize || (mBuffPos - blockHead) < BUFFER_SIZE, "FileStream::_write: out of bounds buffer position");
          dMemcpy(mBuffer + (mBuffPos - blockHead), pSrc, writeSize);
@@ -354,7 +354,7 @@ bool FileStream::_write(const U32 i_numBytes, const void *i_pBuffer)
          remaining -= writeSize;
          // advance the buffer pointers
          mBuffPos += writeSize;
-         mBuffTail = getMax(mBuffTail, mBuffPos - 1);
+         mBuffTail = std::max(mBuffTail, mBuffPos - 1);
          pSrc += writeSize;
          // mark the buffer dirty
          if (0 < writeSize)

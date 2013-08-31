@@ -68,7 +68,7 @@ public:
 
     inline void setPosition( const Vector2& position ) { mPosition = position; }
     inline const Vector2& getPosition( void ) const { return mPosition; }
-    inline void setRadius( const F32 radius ) { mRadius = getMax( radius, FLT_MIN ); }
+    inline void setRadius( const F32 radius ) { mRadius = std::max( radius, FLT_MIN ); }
     inline F32 getRadius( void ) const { return mRadius; }
     inline void setForce( const F32 force ) { mForce = force; }
     inline F32 getForce( void ) const { return mForce; }

@@ -86,7 +86,7 @@ ConsoleMethod( GuiFrameSetCtrl, frameMinExtent, void, 5, 5, "(index, w, h ) Use 
 																"@param h Minimum height in pixels.\n"
 																"@return No return value.")
 {
-   Point2I extent(getMax(0, dAtoi(argv[3])), getMax(0, dAtoi(argv[4])));
+   Point2I extent(std::max(0, dAtoi(argv[3])), std::max(0, dAtoi(argv[4])));
    object->frameMinExtent(dAtoi(argv[2]), extent);
 }
 
@@ -461,14 +461,14 @@ void GuiFrameSetCtrl::onMouseDragged(const GuiEvent &event)
          switch (mCurHitRegion)
          {
             case VERTICAL_DIVIDER:
-               mColumnOffsets[mCurVerticalHit] = getMin(getMax(range[0], curMousePos.x - mLocOnDivider.x), range[1]);
+               mColumnOffsets[mCurVerticalHit] = std::min(std::max(range[0], curMousePos.x - mLocOnDivider.x), range[1]);
                break;
             case HORIZONTAL_DIVIDER:
-               mRowOffsets[mCurHorizontalHit] = getMin(getMax(range[0], curMousePos.y - mLocOnDivider.y), range[1]);
+               mRowOffsets[mCurHorizontalHit] = std::min(std::max(range[0], curMousePos.y - mLocOnDivider.y), range[1]);
                break;
             case DIVIDER_INTERSECTION:
-               mColumnOffsets[mCurVerticalHit] = getMin(getMax(range[0], curMousePos.x - mLocOnDivider.x), range[1]);
-               mRowOffsets[mCurHorizontalHit] = getMin(getMax(range[2], curMousePos.y - mLocOnDivider.y), range[3]);
+               mColumnOffsets[mCurVerticalHit] = std::min(std::max(range[0], curMousePos.x - mLocOnDivider.x), range[1]);
+               mRowOffsets[mCurHorizontalHit] = std::min(std::max(range[2], curMousePos.y - mLocOnDivider.y), range[3]);
                break;
             default:
                return;
@@ -976,25 +976,25 @@ void GuiFrameSetCtrl::computeMovableRange(Region hitRegion, S32 vertHit, S32 hor
             {
                case VERTICAL_DIVIDER:
                   if (column == indexes[0])
-                     ranges[0] = getMax(ranges[0], hardRanges[0] + (*fditr)->mMinExtent.x);
+                     ranges[0] = std::max(ranges[0], hardRanges[0] + (*fditr)->mMinExtent.x);
                   if (column == indexes[1])
-                     ranges[1] = getMin(ranges[1], hardRanges[1] - (*fditr)->mMinExtent.x);
+                     ranges[1] = std::min(ranges[1], hardRanges[1] - (*fditr)->mMinExtent.x);
                   break;
                case HORIZONTAL_DIVIDER:
                   if (row == indexes[0])
-                     ranges[0] = getMax(ranges[0], hardRanges[0] + (*fditr)->mMinExtent.y);
+                     ranges[0] = std::max(ranges[0], hardRanges[0] + (*fditr)->mMinExtent.y);
                   if (row == indexes[1])
-                     ranges[1] = getMin(ranges[1], hardRanges[1] - (*fditr)->mMinExtent.y);
+                     ranges[1] = std::min(ranges[1], hardRanges[1] - (*fditr)->mMinExtent.y);
                   break;
                case DIVIDER_INTERSECTION:
                   if (column == indexes[0])
-                     ranges[0] = getMax(ranges[0], hardRanges[0] + (*fditr)->mMinExtent.x);
+                     ranges[0] = std::max(ranges[0], hardRanges[0] + (*fditr)->mMinExtent.x);
                   if (column == indexes[1])
-                     ranges[1] = getMin(ranges[1], hardRanges[1] - (*fditr)->mMinExtent.x);
+                     ranges[1] = std::min(ranges[1], hardRanges[1] - (*fditr)->mMinExtent.x);
                   if (row == indexes[2])
-                     ranges[2] = getMax(ranges[2], hardRanges[2] + (*fditr)->mMinExtent.y);
+                     ranges[2] = std::max(ranges[2], hardRanges[2] + (*fditr)->mMinExtent.y);
                   if (row == indexes[3])
-                     ranges[3] = getMin(ranges[3], hardRanges[3] - (*fditr)->mMinExtent.y);
+                     ranges[3] = std::min(ranges[3], hardRanges[3] - (*fditr)->mMinExtent.y);
                   break;
                default:
                   return;

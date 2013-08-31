@@ -302,8 +302,8 @@ void GuiFormCtrl::onMouseDragged(const GuiEvent &event)
    Point2I newExtent = getExtent();
    if (mMouseMovingWin && parent)
    {
-      newPosition.x = getMax(0, getMin(parent->getWidth() - getWidth(), mOrigBounds.point.x + deltaMousePosition.x));
-      newPosition.y = getMax(0, getMin(parent->getHeight() - getHeight(), mOrigBounds.point.y + deltaMousePosition.y));
+      newPosition.x = std::max(0, std::min(parent->getWidth() - getWidth(), mOrigBounds.point.x + deltaMousePosition.x));
+      newPosition.y = std::max(0, std::min(parent->getHeight() - getHeight(), mOrigBounds.point.y + deltaMousePosition.y));
       Point2I pos = parent->localToGlobalCoord(getPosition());
       root->addUpdateRegion(pos, getExtent());
       resize(newPosition, newExtent);

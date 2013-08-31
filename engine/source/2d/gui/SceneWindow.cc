@@ -317,7 +317,7 @@ void SceneWindow::setCameraZoom( const F32 zoomFactor )
     if ( mMovingCamera ) stopCameraMove();
 
     // Set Camera Target.
-    mCameraCurrent.mCameraZoom = getMax( zoomFactor, 0.000001f  );
+    mCameraCurrent.mCameraZoom = std::max( zoomFactor, 0.000001f  );
 
     // Set Camera Target to Current.
     mCameraTarget = mCameraCurrent;
@@ -400,7 +400,7 @@ void SceneWindow::setTargetCameraZoom( const F32 zoomFactor )
     if ( mMovingCamera ) stopCameraMove();
 
     // Set Camera Target.
-    mCameraTarget.mCameraZoom = getMax( zoomFactor, 0.000001f );
+    mCameraTarget.mCameraZoom = std::max( zoomFactor, 0.000001f );
 }
 
 //-----------------------------------------------------------------------------
@@ -1429,7 +1429,7 @@ void SceneWindow::processTick( void )
 //            mCurrentShake -= mShakeRamp * Tickable::smTickSec;
 //
 //            // Clamp Shake.
-//            mCurrentShake = getMax(mCurrentShake, 0.0f);
+//            mCurrentShake = std::max(mCurrentShake, 0.0f);
 //
 //            // Calculate the Screen Shake-Ratio.
 //            const Point2F shakeRatio( mCameraCurrent.mDestinationArea.len_x() / F32(getBounds().len_x()), mCameraCurrent.mDestinationArea.len_y() / F32(getBounds().len_y()) );
