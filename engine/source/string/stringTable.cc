@@ -187,12 +187,20 @@ StringTableEntry _StringTable::lookupn(const char* src, S32 len, const bool  cas
 
 
 U32 _StringTable::STEtoU32(StringTableEntry ste) {
+
+    if ( ste == nullptr )
+        return 0;
+
     AssertFatal(_index1.count(ste) > 0, "No valid entry in StringTable");
     return _index1[ste];
 
 }
 
 StringTableEntry _StringTable::U32toSTE(U32 in) {
+
+    if ( in == 0 )
+        return nullptr;
+
     AssertFatal(_index2.count(in) > 0, "No valid entry in StringTable");
     return _index2[in];
 }

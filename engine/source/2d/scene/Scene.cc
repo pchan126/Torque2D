@@ -1196,6 +1196,7 @@ void Scene::removeFromScene( SceneObject* pSceneObject )
     // Dismount Any Camera.
     pSceneObject->dismountCamera();
 
+    AssertFatal(getLayerCount() > pSceneObject->getSceneLayer(), "object is not in a valid layer" );
     mLayers[pSceneObject->getSceneLayer()]->removeObject(pSceneObject);
 
    // Remove from the SceneWindow last pickers
