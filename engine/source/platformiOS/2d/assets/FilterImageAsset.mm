@@ -176,14 +176,14 @@ void FilterImageAsset::calculateImage( void )
        [mFilter setDefaults];
         for ( NSString *string in [mFilter inputKeys])
         {
-           NSDictionary* info = [mFilter.attributes objectForKey:string];
+           NSDictionary* info = (mFilter.attributes)[string];
            StringTableEntry strvalue = getDataField(StringTable->insert(string.UTF8String), nullptr);
            Con::printf("%s: %s", string.UTF8String, strvalue);
 
            if (strvalue != nullptr)
            {
-              NSObject *value = [NSClassFromString([info objectForKey:kCIAttributeClass]) alloc];
-              NSString *aType = [info objectForKey:kCIAttributeType];
+              NSObject *value = [NSClassFromString(info[kCIAttributeClass]) alloc];
+              NSString *aType = info[kCIAttributeType];
               if ([value isMemberOfClass:[NSNumber class]])
               {
                  if ([aType isEqualToString:kCIAttributeTypeTime])
@@ -192,7 +192,7 @@ void FilterImageAsset::calculateImage( void )
                  }
                  else
                  {
-                    [mFilter setValue:[NSNumber numberWithFloat:dAtof(strvalue)] forKey:string];
+                    [mFilter setValue:@(dAtof(strvalue)) forKey:string];
                  }
               }
               else if ([value isMemberOfClass:[CIImage class]])
