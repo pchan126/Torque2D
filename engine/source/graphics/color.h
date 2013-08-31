@@ -133,10 +133,11 @@ public:
 class ColorI
 {
   public:
-   U8 red;
-   U8 green;
-   U8 blue;
-   U8 alpha;
+    union
+    {
+        struct { U8 red, green, blue, alpha; };
+        U8 v[4];
+    };
 
   public:
    ColorI() { }
