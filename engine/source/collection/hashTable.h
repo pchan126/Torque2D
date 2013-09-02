@@ -29,42 +29,6 @@
 #include <unordered_map>
 #include <functional>
 
-namespace Hash
-{
-//-Mat this was copied from StringTable
-    void initTolowerTable();
-   U32 hash(const char *str);
-
-//-Mat
-   inline U32 hash(U32 data)
-   {
-      return data;
-   }
-
-   inline U32 hash(const void *data)
-   {
-      return (U32)data;
-   }
-
-   U32 nextPrime(U32);
-};
-
-namespace tKeyCompare
-{
-   template<typename Key>
-   inline bool equals( Key keya, Key keyb )
-   {
-      return ( keya == keyb );
-   }
-
-   template<>
-   inline bool equals<>( const char *keya, const char *keyb )
-   {
-       //-Mat make sure this is an accurate compare (do we check case?)
-      return ( dStricmp( keya, keyb ) == 0 );
-   }
-};
-
 /// A HashTable template class.
 ///
 /// The hash table class maps between a key and an associated value. Access

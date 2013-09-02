@@ -96,7 +96,7 @@ typedef unsigned long long  U64;
 #ifndef TORQUE_OS_OSX
 #  define TORQUE_OS_OSX
 #endif
-#if defined(i386)
+#if defined(__i386__) || defined(__x86_64__)
 #  define TORQUE_SUPPORTS_NASM
 #endif
 #  include "platform/types.ppc.h"
@@ -107,7 +107,7 @@ typedef unsigned long long  U64;
 
 //--------------------------------------
 // Identify the CPU
-#if defined(i386)
+#if defined(__i386__) || defined(__x86_64__)
 #  define TORQUE_CPU_STRING "Intel x86"
 #  define TORQUE_CPU_X86
 #  define TORQUE_LITTLE_ENDIAN
