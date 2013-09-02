@@ -110,7 +110,6 @@
 		867BB00316AEC9050033868F /* Sprite.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAD6316AEC9050033868F /* Sprite.cc */; };
 		867BB00416AEC9050033868F /* Trigger.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAD6616AEC9050033868F /* Trigger.cc */; };
 		867BB00516AEC9050033868F /* crc.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAD6A16AEC9050033868F /* crc.cc */; };
-		867BB00616AEC9050033868F /* hashFunction.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAD6D16AEC9050033868F /* hashFunction.cc */; };
 		867BB00716AEC9050033868F /* assetBase.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAD7116AEC9050033868F /* assetBase.cc */; };
 		867BB00816AEC9050033868F /* assetFieldTypes.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAD7516AEC9050033868F /* assetFieldTypes.cc */; };
 		867BB00916AEC9050033868F /* assetManager.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAD7716AEC9050033868F /* assetManager.cc */; };
@@ -790,8 +789,6 @@
 		867BAD6A16AEC9050033868F /* crc.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = crc.cc; sourceTree = "<group>"; };
 		867BAD6B16AEC9050033868F /* crc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crc.h; sourceTree = "<group>"; };
 		867BAD6C16AEC9050033868F /* crctab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crctab.h; sourceTree = "<group>"; };
-		867BAD6D16AEC9050033868F /* hashFunction.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hashFunction.cc; sourceTree = "<group>"; };
-		867BAD6E16AEC9050033868F /* hashFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hashFunction.h; sourceTree = "<group>"; };
 		867BAD6F16AEC9050033868F /* md5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = md5.h; sourceTree = "<group>"; };
 		867BAD7116AEC9050033868F /* assetBase.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = assetBase.cc; sourceTree = "<group>"; };
 		867BAD7216AEC9050033868F /* assetBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = assetBase.h; sourceTree = "<group>"; };
@@ -2030,8 +2027,6 @@
 				867BAD6A16AEC9050033868F /* crc.cc */,
 				867BAD6B16AEC9050033868F /* crc.h */,
 				867BAD6C16AEC9050033868F /* crctab.h */,
-				867BAD6D16AEC9050033868F /* hashFunction.cc */,
-				867BAD6E16AEC9050033868F /* hashFunction.h */,
 				867BAD6F16AEC9050033868F /* md5.h */,
 			);
 			name = algorithm;
@@ -3606,7 +3601,6 @@
 				867BB00316AEC9050033868F /* Sprite.cc in Sources */,
 				867BB00416AEC9050033868F /* Trigger.cc in Sources */,
 				867BB00516AEC9050033868F /* crc.cc in Sources */,
-				867BB00616AEC9050033868F /* hashFunction.cc in Sources */,
 				867BB00716AEC9050033868F /* assetBase.cc in Sources */,
 				867BB00816AEC9050033868F /* assetFieldTypes.cc in Sources */,
 				867BB00916AEC9050033868F /* assetManager.cc in Sources */,

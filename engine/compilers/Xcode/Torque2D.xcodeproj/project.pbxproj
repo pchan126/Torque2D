@@ -229,7 +229,6 @@
 		86D76F97165686B00046D71F /* ShapeVector.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7ED116518D4600D96ADF /* ShapeVector.cc */; };
 		86D76F98165686B00046D71F /* Sprite.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7ED416518D4600D96ADF /* Sprite.cc */; };
 		86D76F99165686B00046D71F /* Trigger.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7ED716518D4600D96ADF /* Trigger.cc */; };
-		86D76F9B165686D80046D71F /* hashFunction.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7EE416518D4600D96ADF /* hashFunction.cc */; };
 		86D76F9C165686D80046D71F /* assetFieldTypes.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7EEC16518D4600D96ADF /* assetFieldTypes.cc */; };
 		86D76F9D165686D80046D71F /* assetManager.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7EEE16518D4600D96ADF /* assetManager.cc */; };
 		86D76F9F165686D80046D71F /* assetQuery.cc in Sources */ = {isa = PBXBuildFile; fileRef = 86BC7EF416518D4600D96ADF /* assetQuery.cc */; };
@@ -950,8 +949,6 @@
 		86BC7EE116518D4600D96ADF /* crc.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = crc.cc; sourceTree = "<group>"; };
 		86BC7EE216518D4600D96ADF /* crc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crc.h; sourceTree = "<group>"; };
 		86BC7EE316518D4600D96ADF /* crctab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crctab.h; sourceTree = "<group>"; };
-		86BC7EE416518D4600D96ADF /* hashFunction.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hashFunction.cc; sourceTree = "<group>"; };
-		86BC7EE516518D4600D96ADF /* hashFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hashFunction.h; sourceTree = "<group>"; };
 		86BC7EE616518D4600D96ADF /* md5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = md5.h; sourceTree = "<group>"; };
 		86BC7EE816518D4600D96ADF /* assetBase.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = assetBase.cc; sourceTree = "<group>"; };
 		86BC7EE916518D4600D96ADF /* assetBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = assetBase.h; sourceTree = "<group>"; };
@@ -2362,8 +2359,6 @@
 				86BC7EE116518D4600D96ADF /* crc.cc */,
 				86BC7EE216518D4600D96ADF /* crc.h */,
 				86BC7EE316518D4600D96ADF /* crctab.h */,
-				86BC7EE416518D4600D96ADF /* hashFunction.cc */,
-				86BC7EE516518D4600D96ADF /* hashFunction.h */,
 				86BC7EE616518D4600D96ADF /* md5.h */,
 			);
 			name = algorithm;
@@ -3643,7 +3638,6 @@
 				86D7703B165687060046D71F /* guiTypes.cc in Sources */,
 				86D7703C165687060046D71F /* lang.cc in Sources */,
 				86D7703D165687060046D71F /* messageVector.cc in Sources */,
-				86D76F9B165686D80046D71F /* hashFunction.cc in Sources */,
 				86D76F9C165686D80046D71F /* assetFieldTypes.cc in Sources */,
 				86D76F9D165686D80046D71F /* assetManager.cc in Sources */,
 				86D76F9F165686D80046D71F /* assetQuery.cc in Sources */,

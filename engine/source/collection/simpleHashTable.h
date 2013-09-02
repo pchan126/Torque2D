@@ -23,6 +23,7 @@
 #include "platform/platform.h"
 #include <functional>
 #include <unordered_map>
+#include <string>
 
 #ifndef _TSIMPLEHASHTABLE_H
 #define _TSIMPLEHASHTABLE_H
@@ -31,40 +32,11 @@ template <class T> class SimpleHashTable
 {
     bool mCaseSensitive;
 
-    char mCaseConvBuf[1024];
-
-    // [tom, 9/21/2006] This is incredibly lame and adds a pretty big speed penalty
-    inline const char *caseConv(const char *str)
-    {
-        if(mCaseSensitive)   return str;
-
-        dsize_t len = dStrlen(str);
-        if(len >= sizeof(mCaseConvBuf))  len = sizeof(mCaseConvBuf) - 1;
-
-        char *dptr = mCaseConvBuf;
-        const char *sptr = str;
-        while(*sptr)
-        {
-            *dptr = dTolower(*sptr);
-            ++sptr;
-            ++dptr;
-        }
-        *dptr = 0;
-
-        return mCaseConvBuf;
-    }
-
 public:
    SimpleHashTable(bool caseSensitive = true): mCaseSensitive(caseSensitive)
    {
    }
-   std::unordered_map<size_t, T*> table;
-
-   std::hash<U8*> ptr_hash;
-
-   void insert(T* pObject, U8 *key);
-   T*   remove(U8 *key);
-   T*   retrieve(U8 *key);
+   std::unordered_map<std::string, T*> table;
 
    void insert(T* pObject, const char *key);
    T*   remove(const char *key);
@@ -73,45 +45,43 @@ public:
    void clearTables();                       // Note: _deletes_ the objects!
 };
 
-template <class T> inline void SimpleHashTable<T>::insert(T* pObject, U8 *key)
-{
-   table.insert(std::pair<size_t, T*>(ptr_hash(key), pObject));
-}
-
-template <class T> inline T* SimpleHashTable<T>::remove(U8 *key)
-{
-   T* ret = table[ptr_hash(key)];
-   table.erase(ptr_hash(key));
-   return ret;
-}
-
-template <class T> inline T* SimpleHashTable<T>::retrieve(U8 *key)
-{
-   return table[ptr_hash(key)];
-}
-
 template <class T> inline void SimpleHashTable<T>::insert(T* pObject, const char *key)
 {
-   key = caseConv(key);
-   insert(pObject, (U8*)key);
+    std::string val(key);
+    if (mCaseSensitive)
+        std::transform(val.begin(), val.end(), val.begin(), tolower);
+
+    table.insert(std::pair<std::string, T*>(std::string(key), pObject));
 }
 
 template <class T> T* SimpleHashTable<T>::remove(const char *key)
 {
-   key = caseConv(key);
-   return remove((U8 *)key);
+    std::string val(key);
+    if (mCaseSensitive)
+        std::transform(val.begin(), val.end(), val.begin(), tolower);
+
+    T* ret = table[val];
+    table.erase(val);
+    return ret;
 }
 
 template <class T> T* SimpleHashTable<T>::retrieve(const char *key)
 {
-   key = caseConv(key);
-   return retrieve((U8 *)key);
+    std::string val(key);
+    if (mCaseSensitive)
+        std::transform(val.begin(), val.end(), val.begin(), tolower);
+
+    auto itr = table.find(val);
+    if (itr == table.end())
+        return nullptr;
+    std::pair<std::string, T*> temp = (*itr);
+    return temp.second;
 }
 
 template <class T>
 inline void SimpleHashTable<T>::clearTables()
 {
-   for (std::pair<size_t, T*> itr:table)
+   for (std::pair<std::string, T*> itr:table)
       delete itr.second;
 
    table.clear();
