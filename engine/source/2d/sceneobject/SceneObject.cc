@@ -103,8 +103,8 @@ static StringTableEntry edgeTypeName            = StringTable->insert( "Edge" );
 // that the associated field is persisted if not the default.
 SceneObject::SceneObject() :
     /// Scene.
-    mpScene(NULL),
-    mpTargetScene(NULL),
+    mpScene(nullptr),
+    mpTargetScene(nullptr),
 
     /// Lifetime.
     mLifetime(0.0f),
@@ -129,14 +129,14 @@ SceneObject::SceneObject() :
     mSpatialDirty( true ),
 
     /// Body.
-    mpBody(NULL),
+    mpBody(nullptr),
     mWorldQueryKey(0),
 
     /// Collision control.
     mCollisionGroupMask(MASK_ALL),
     mCollisionSuppress(false),
     mGatherContacts(false),
-    mpCurrentContacts(NULL),
+    mpCurrentContacts(nullptr),
 
     /// Render visibility.                                        
     mVisible(true),
@@ -149,7 +149,7 @@ SceneObject::SceneObject() :
     mAlphaTest(-1.0f),
 
     /// Lighting
-    mLight(NULL),
+    mLight(nullptr),
     mLightType(NoLight),
     mLightColor(1.f,1.f,1.f,1.f),
     mLightTime(1000),
@@ -171,12 +171,12 @@ SceneObject::SceneObject() :
     mDebugMask(0X00000000),
 
     /// Camera mounting.
-    mpAttachedCamera(NULL),
+    mpAttachedCamera(nullptr),
 
     /// GUI attachment.
     mAttachedGuiSizeControl(false),
-    mpAttachedGui(NULL),
-    mpAttachedGuiSceneWindow(NULL),
+    mpAttachedGui(nullptr),
+    mpAttachedGuiSceneWindow(nullptr),
     mAttachedGuiOffset(0.0, 0.0),
 
     /// Safe deletion.
@@ -229,7 +229,7 @@ SceneObject::SceneObject() :
     mDefaultFixture.friction    = 0.2f;
     mDefaultFixture.restitution = 0.0f;
     mDefaultFixture.isSensor    = false;
-    mDefaultFixture.shape       = NULL;
+    mDefaultFixture.shape       = nullptr;
 
     // Set last awake state.
     mLastAwakeState = !mBodyDefinition.allowSleep || mBodyDefinition.awake;
@@ -337,6 +337,9 @@ void SceneObject::initPersistFields()
 
     /// Scene.
     addProtectedField("scene", TypeSimObjectPtr, Offset(mpScene, SceneObject), &setScene, &defaultProtectedGetFn, &writeScene, "");
+
+    addProtectedField("Shader", TypeShaderAssetPtr, Offset(mShaderAsset, SceneObject), &setShader, &getShader, &writeShader, "");
+
 }
 
 //-----------------------------------------------------------------------------
@@ -353,7 +356,7 @@ bool SceneObject::onAdd()
         // Add to the target scene.
         mpTargetScene->addToScene(this);
 
-        mpTargetScene = NULL;
+        mpTargetScene = nullptr;
     }
    
     // Return Okay.
@@ -386,8 +389,8 @@ void SceneObject::onDestroyNotify( SceneObject* pSceneObject )
 void SceneObject::OnRegisterScene( Scene* pScene )
 {
     // Sanity!
-    AssertFatal( mpScene == NULL, "Cannot register to a scene if already registered." );
-    AssertFatal( mpBody == NULL, "Cannot create a physics body if one already exists." );
+    AssertFatal( mpScene == nullptr, "Cannot register to a scene if already registered." );
+    AssertFatal( mpBody == nullptr, "Cannot create a physics body if one already exists." );
 
     // Initialize contact gathering.
     initializeContactGathering();
@@ -439,7 +442,7 @@ void SceneObject::OnUnregisterScene( Scene* pScene )
 {
     // Sanity!
     AssertFatal( mpScene == pScene, "Cannot unregister from a scene that is not registered." );
-    AssertFatal( mpBody != NULL, "Cannot unregister physics body as it does not exist." );
+    AssertFatal( mpBody != nullptr, "Cannot unregister physics body as it does not exist." );
 
     // Notify components.
     notifyComponentsRemoveFromScene();
@@ -481,11 +484,11 @@ void SceneObject::OnUnregisterScene( Scene* pScene )
 
     // Destroy current contacts.
     delete mpCurrentContacts;
-    mpCurrentContacts = NULL;
+    mpCurrentContacts = nullptr;
 
     // Destroy the physics body.
     mpScene->getWorld()->DestroyBody( mpBody );
-    mpBody = NULL;
+    mpBody = nullptr;
 
     // Destroy world proxy Id.
     if ( mWorldProxyId != -1 )
@@ -496,7 +499,7 @@ void SceneObject::OnUnregisterScene( Scene* pScene )
     }
 
     // Reset scene.
-    mpScene = NULL;
+    mpScene = nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -718,7 +721,7 @@ void SceneObject::sceneRenderFallback( const SceneRenderState* pSceneRenderState
     RenderProxy* pNoImageRenderProxy = Sim::findObject<RenderProxy>( CANNOT_RENDER_PROXY_NAME );
 
     // Finish if no render proxy available or it can't render.
-    if ( pNoImageRenderProxy == NULL || !pNoImageRenderProxy->validRender() )
+    if ( pNoImageRenderProxy == nullptr || !pNoImageRenderProxy->validRender() )
         return;
 
     // Fetch render AABB.
@@ -901,7 +904,7 @@ bool SceneObject::setSceneLayerDepthFront( void )
     Scene* pScene = getScene();
 
     // Finish if no scene or only a single object.
-    if ( pScene == NULL || pScene->getSceneObjectCount() == 1 )
+    if ( pScene == nullptr || pScene->getSceneObjectCount() == 1 )
         return false;
 
     // Fetch scene objects.
@@ -946,7 +949,7 @@ bool SceneObject::setSceneLayerDepthBack( void )
     Scene* pScene = getScene();
 
     // Finish if no scene or only a single object.
-    if ( pScene == NULL || pScene->getSceneObjectCount() == 1 )
+    if ( pScene == nullptr || pScene->getSceneObjectCount() == 1 )
         return false;
 
     // Fetch scene objects.
@@ -991,7 +994,7 @@ bool SceneObject::setSceneLayerDepthForward( void )
     Scene* pScene = getScene();
 
     // Finish if no scene or only a single object.
-    if ( pScene == NULL || pScene->getSceneObjectCount() == 1 )
+    if ( pScene == nullptr || pScene->getSceneObjectCount() == 1 )
         return false;
 
     // Fetch scene objects.
@@ -1050,7 +1053,7 @@ bool SceneObject::setSceneLayerDepthBackward( void )
     Scene* pScene = getScene();
 
     // Finish if no scene or only a single object.
-    if ( pScene == NULL || pScene->getSceneObjectCount() == 1 )
+    if ( pScene == nullptr || pScene->getSceneObjectCount() == 1 )
         return false;
 
     // Fetch scene objects.
@@ -1509,13 +1512,13 @@ void SceneObject::initializeContactGathering( void )
         {
             // Yes, so destroy them.
             delete mpCurrentContacts;
-            mpCurrentContacts = NULL;
+            mpCurrentContacts = nullptr;
         }
         return;
     }
 
     // Clear current contacts if already present.
-    if ( mpCurrentContacts != NULL )
+    if ( mpCurrentContacts != nullptr )
     {
         mpCurrentContacts->clear();
         return;
@@ -1534,7 +1537,7 @@ void SceneObject::onBeginCollision( const TickContact& tickContact )
         return;
 
     // Sanity!
-    AssertFatal( mpCurrentContacts != NULL, "SceneObject::onBeginCollision() - Contacts not initialized correctly." );
+    AssertFatal( mpCurrentContacts != nullptr, "SceneObject::onBeginCollision() - Contacts not initialized correctly." );
     AssertFatal( tickContact.mpSceneObjectA == this || tickContact.mpSceneObjectB == this, "SceneObject::onBeginCollision() - Contact does not involve this scene object." );
 
     // Keep contact.
@@ -1550,7 +1553,7 @@ void SceneObject::onEndCollision( const TickContact& tickContact )
         return;
 
     // Sanity!
-    AssertFatal( mpCurrentContacts != NULL, "SceneObject::onBeginCollision() - Contacts not initialized correctly." );
+    AssertFatal( mpCurrentContacts != nullptr, "SceneObject::onBeginCollision() - Contacts not initialized correctly." );
     AssertFatal( tickContact.mpSceneObjectA == this || tickContact.mpSceneObjectB == this, "SceneObject::onEndCollision() - Contact does not involve this scene object." );
 
     // Remove contact.
@@ -1791,7 +1794,7 @@ const b2CircleShape* SceneObject::getCollisionCircleShape( const U32 shapeIndex 
     const b2CircleShape* pShape = dynamic_cast<const b2CircleShape*>( fixtureDef.shape );
 
     // Sanity!
-    AssertFatal( pShape != NULL, "SceneObject::getCollisionCircleShape() - Invalid circle shape." );
+    AssertFatal( pShape != nullptr, "SceneObject::getCollisionCircleShape() - Invalid circle shape." );
 
     return pShape;
 }
@@ -1813,7 +1816,7 @@ const b2PolygonShape* SceneObject::getCollisionPolygonShape( const U32 shapeInde
     const b2PolygonShape* pShape = dynamic_cast<const b2PolygonShape*>( fixtureDef.shape );
 
     // Sanity!
-    AssertFatal( pShape != NULL, "SceneObject::getCollisionPolygonShape() - Invalid polygon shape." );
+    AssertFatal( pShape != nullptr, "SceneObject::getCollisionPolygonShape() - Invalid polygon shape." );
 
     return pShape;
 }
@@ -1835,7 +1838,7 @@ const b2ChainShape* SceneObject::getCollisionChainShape( const U32 shapeIndex ) 
     const b2ChainShape* pShape = dynamic_cast<const b2ChainShape*>( fixtureDef.shape );
 
     // Sanity!
-    AssertFatal( pShape != NULL, "SceneObject::getCollisionChainShape() - Invalid chain shape." );
+    AssertFatal( pShape != nullptr, "SceneObject::getCollisionChainShape() - Invalid chain shape." );
 
     return pShape;
 }
@@ -1857,7 +1860,7 @@ const b2EdgeShape* SceneObject::getCollisionEdgeShape( const U32 shapeIndex ) co
     const b2EdgeShape* pShape = dynamic_cast<const b2EdgeShape*>( fixtureDef.shape );
 
     // Sanity!
-    AssertFatal( pShape != NULL, "SceneObject::getCollisionEdgeShape() - Invalid edge shape." );
+    AssertFatal( pShape != nullptr, "SceneObject::getCollisionEdgeShape() - Invalid edge shape." );
 
     return pShape;
 }
@@ -2657,14 +2660,14 @@ void SceneObject::detachGui( void )
        // [neo, 5/7/2007 - #2997]
        // Changed to UNregisterReference was registerReference which would crash later
        mpAttachedGui->unregisterReference( (SimObject**)&mpAttachedGui );
-        mpAttachedGui = NULL;
+        mpAttachedGui = nullptr;
     }
 
     // Unregister Gui Control Reference.
     if ( mpAttachedGuiSceneWindow )
     {
         mpAttachedGuiSceneWindow->registerReference( (SimObject**)&mpAttachedGuiSceneWindow );
-        mpAttachedGuiSceneWindow = NULL;
+        mpAttachedGuiSceneWindow = nullptr;
     }
 }
 
@@ -2754,7 +2757,7 @@ void SceneObject::copyTo( SimObject* obj )
     SceneObject* pSceneObject = dynamic_cast<SceneObject*>(obj);
 
     // Sanity!
-    AssertFatal(pSceneObject != NULL, "SceneObject::copyTo() - Object is not the correct type.");
+    AssertFatal(pSceneObject != nullptr, "SceneObject::copyTo() - Object is not the correct type.");
 
     /// Lifetime.
     pSceneObject->setLifetime( getLifetime() );
@@ -2837,7 +2840,7 @@ void SceneObject::copyTo( SimObject* obj )
 S32 SceneObject::copyCollisionShapes( SceneObject* pSceneObject, const bool clearTargetShapes, const S32 shapeIndex )
 {
     // Sanity!
-    AssertFatal( pSceneObject != NULL, "SceneObject::copyCollisionShapes() - Cannot copy to a NULL scene object." );
+    AssertFatal( pSceneObject != nullptr, "SceneObject::copyCollisionShapes() - Cannot copy to a NULL scene object." );
 
     // Clear the collision shapes.
     if ( clearTargetShapes )
@@ -3227,7 +3230,7 @@ void SceneObject::notifyComponentsAddToScene( void )
     Vector<SimComponent*>& componentList = lockComponentList();
     for( SimComponent *pComponent:componentList)
     {
-        if( pComponent != NULL )
+        if( pComponent != nullptr )
             pComponent->onAddToScene();
     }
     unlockComponentList();
@@ -3244,7 +3247,7 @@ void SceneObject::notifyComponentsRemoveFromScene( void )
     Vector<SimComponent*>& componentList = lockComponentList();
     for( SimComponent *pComponent:componentList)
     {
-        if( pComponent != NULL )
+        if( pComponent != nullptr )
             pComponent->onRemoveFromScene();
     }
     unlockComponentList();
@@ -3261,7 +3264,7 @@ void SceneObject::notifyComponentsUpdate( void )
     Vector<SimComponent*>& componentList = lockComponentList();
     for( SimComponent *pComponent:componentList)
     {
-        if( pComponent != NULL )
+        if( pComponent != nullptr )
             pComponent->onUpdate();
     }
     unlockComponentList();
@@ -3329,7 +3332,7 @@ void SceneObject::onTamlCustomWrite( TamlCustomNodes& customNodes )
                 const b2CircleShape* pShape = dynamic_cast<const b2CircleShape*>( fixtureDef.shape );
 
                 // Sanity!
-                AssertFatal( pShape != NULL, "SceneObject::onTamlCustomWrite() - Invalid circle shape type returned." );
+                AssertFatal( pShape != nullptr, "SceneObject::onTamlCustomWrite() - Invalid circle shape type returned." );
 
                 // Add radius property.
                 pCollisionShapeNode->addField( circleRadiusName, pShape->m_radius );
@@ -3349,7 +3352,7 @@ void SceneObject::onTamlCustomWrite( TamlCustomNodes& customNodes )
                 const b2PolygonShape* pShape = dynamic_cast<const b2PolygonShape*>( fixtureDef.shape );
 
                 // Sanity!
-                AssertFatal( pShape != NULL, "SceneObject::onTamlCustomWrite() - Invalid polygon shape type returned." );
+                AssertFatal( pShape != nullptr, "SceneObject::onTamlCustomWrite() - Invalid polygon shape type returned." );
 
                 // Fetch point count.
                 const U32 pointCount = pShape->GetVertexCount();
@@ -3378,7 +3381,7 @@ void SceneObject::onTamlCustomWrite( TamlCustomNodes& customNodes )
                 const b2ChainShape* pShape = dynamic_cast<const b2ChainShape*>( fixtureDef.shape );
 
                 // Sanity!
-                AssertFatal( pShape != NULL, "SceneObject::onTamlCustomWrite() - Invalid chain shape type returned." );
+                AssertFatal( pShape != nullptr, "SceneObject::onTamlCustomWrite() - Invalid chain shape type returned." );
 
                 // Fetch point count.
                 const U32 pointCount = pShape->m_count;
@@ -3418,7 +3421,7 @@ void SceneObject::onTamlCustomWrite( TamlCustomNodes& customNodes )
                 const b2EdgeShape* pShape = dynamic_cast<const b2EdgeShape*>( fixtureDef.shape );
 
                 // Sanity!
-                AssertFatal( pShape != NULL, "SceneObject::onTamlCustomWrite() - Invalid edge shape type returned." );
+                AssertFatal( pShape != nullptr, "SceneObject::onTamlCustomWrite() - Invalid edge shape type returned." );
 
                 // Add start point.
                 TamlCustomNode* pStartPointNode = pCollisionShapeNode->addNode( shapePointName );
@@ -3465,7 +3468,7 @@ void SceneObject::onTamlCustomRead( const TamlCustomNodes& customNodes )
     const TamlCustomNode* pCustomCollisionShapes = customNodes.findNode( shapeCustomNodeName );
 
     // Finish if we don't have collision shapes.
-    if ( pCustomCollisionShapes == NULL )
+    if ( pCustomCollisionShapes == nullptr )
         return;
 
     // Fetch children shapes.
@@ -4074,8 +4077,8 @@ const char* SceneObject::getLightTypeLookupDescription(const LightType factor)
 static void WriteCircleCustomTamlSchema( const AbstractClassRep* pClassRep, TiXmlElement* pParentElement )
 {
     // Sanity!
-    AssertFatal( pClassRep != NULL,  "SceneObject::WriteCircleCustomTamlSchema() - ClassRep cannot be NULL." );
-    AssertFatal( pParentElement != NULL,  "SceneObject::WriteCircleCustomTamlSchema() - Parent Element cannot be NULL." );
+    AssertFatal( pClassRep != nullptr,  "SceneObject::WriteCircleCustomTamlSchema() - ClassRep cannot be NULL." );
+    AssertFatal( pParentElement != nullptr,  "SceneObject::WriteCircleCustomTamlSchema() - Parent Element cannot be NULL." );
 
     // Create circle element.
     TiXmlElement* pCircleElement = new TiXmlElement( "xs:element" );
@@ -4158,8 +4161,8 @@ static void WriteCircleCustomTamlSchema( const AbstractClassRep* pClassRep, TiXm
 static void WritePolygonCustomTamlSchema( const AbstractClassRep* pClassRep, TiXmlElement* pParentElement )
 {
     // Sanity!
-    AssertFatal( pClassRep != NULL,  "SceneObject::WritePolygonCustomTamlSchema() - ClassRep cannot be NULL." );
-    AssertFatal( pParentElement != NULL,  "SceneObject::WritePolygonCustomTamlSchema() - Parent Element cannot be NULL." );
+    AssertFatal( pClassRep != nullptr,  "SceneObject::WritePolygonCustomTamlSchema() - ClassRep cannot be NULL." );
+    AssertFatal( pParentElement != nullptr,  "SceneObject::WritePolygonCustomTamlSchema() - Parent Element cannot be NULL." );
 
     // Create polygon element.
     TiXmlElement* pPolygonElement = new TiXmlElement( "xs:element" );
@@ -4233,8 +4236,8 @@ static void WritePolygonCustomTamlSchema( const AbstractClassRep* pClassRep, TiX
 static void WriteChainCustomTamlSchema( const AbstractClassRep* pClassRep, TiXmlElement* pParentElement )
 {
     // Sanity!
-    AssertFatal( pClassRep != NULL,  "SceneObject::WriteChainCustomTamlSchema() - ClassRep cannot be NULL." );
-    AssertFatal( pParentElement != NULL,  "SceneObject::WriteChainCustomTamlSchema() - Parent Element cannot be NULL." );
+    AssertFatal( pClassRep != nullptr,  "SceneObject::WriteChainCustomTamlSchema() - ClassRep cannot be NULL." );
+    AssertFatal( pParentElement != nullptr,  "SceneObject::WriteChainCustomTamlSchema() - Parent Element cannot be NULL." );
 
     // Create chain element.
     TiXmlElement* pChainElement = new TiXmlElement( "xs:element" );
@@ -4322,8 +4325,8 @@ static void WriteChainCustomTamlSchema( const AbstractClassRep* pClassRep, TiXml
 static void WriteEdgeCustomTamlSchema( const AbstractClassRep* pClassRep, TiXmlElement* pParentElement )
 {
     // Sanity!
-    AssertFatal( pClassRep != NULL,  "SceneObject::WriteEdgeCustomTamlSchema() - ClassRep cannot be NULL." );
-    AssertFatal( pParentElement != NULL,  "SceneObject::WriteCustomTamlSchema() - Parent Element cannot be NULL." );
+    AssertFatal( pClassRep != nullptr,  "SceneObject::WriteEdgeCustomTamlSchema() - ClassRep cannot be NULL." );
+    AssertFatal( pParentElement != nullptr,  "SceneObject::WriteCustomTamlSchema() - Parent Element cannot be NULL." );
 
     // Create edge element.
     TiXmlElement* pEdgeElement = new TiXmlElement( "xs:element" );
@@ -4409,8 +4412,8 @@ static void WriteEdgeCustomTamlSchema( const AbstractClassRep* pClassRep, TiXmlE
 static void WriteCustomTamlSchema( const AbstractClassRep* pClassRep, TiXmlElement* pParentElement )
 {
     // Sanity!
-    AssertFatal( pClassRep != NULL,  "SceneObject::WriteCustomTamlSchema() - ClassRep cannot be NULL." );
-    AssertFatal( pParentElement != NULL,  "SceneObject::WriteCustomTamlSchema() - Parent Element cannot be NULL." );
+    AssertFatal( pClassRep != nullptr,  "SceneObject::WriteCustomTamlSchema() - ClassRep cannot be NULL." );
+    AssertFatal( pParentElement != nullptr,  "SceneObject::WriteCustomTamlSchema() - Parent Element cannot be NULL." );
 
     char buffer[1024];
 
@@ -4442,3 +4445,13 @@ static void WriteCustomTamlSchema( const AbstractClassRep* pClassRep, TiXmlEleme
 //-----------------------------------------------------------------------------
 
 IMPLEMENT_CONOBJECT_SCHEMA(SceneObject, WriteCustomTamlSchema);
+
+bool SceneObject::setShader(const char *pShaderAssetId) {
+
+    // null shader means use of a generic shader
+
+    // Set asset.
+    mShaderAsset.setAssetId( pShaderAssetId );
+    return true;
+}
+

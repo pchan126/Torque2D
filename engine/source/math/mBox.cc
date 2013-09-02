@@ -23,60 +23,66 @@
 #include "math/mBox.h"
 #include "math/mMatrix.h"
 
+//-----------------------------------------------------------------------------
+
 bool Box3F::collideLine(const Point3F& start, const Point3F& end, F32* t, Point3F* n) const
 {
-   // Collide against bounding box. Need at least this for the editor.
-   F32 st,et;
-   F32 fst = 0;
-   F32 fet = 1;
-   const F32* bmin = &mMin.x;
-   const F32* bmax = &mMax.x;
-   const F32* si   = &start.x;
-   const F32* ei   = &end.x;
+    // Collide against bounding box. Need at least this for the editor.
+    F32 st,et;
+    F32 fst = 0;
+    F32 fet = 1;
+    const F32* bmin = &minExtents.x;
+    const F32* bmax = &maxExtents.x;
+    const F32* si   = &start.x;
+    const F32* ei   = &end.x;
 
-   Point3F na[3] = { Point3F(1, 0, 0), Point3F(0, 1, 0), Point3F(0, 0, 1) };
-   Point3F finalNormal;
+    static const Point3F na[3] = { Point3F(1.0f, 0.0f, 0.0f), Point3F(0.0f, 1.0f, 0.0f), Point3F(0.0f, 0.0f, 1.0f) };
+    Point3F finalNormal(0.0f, 0.0f, 0.0f);
 
-   for (int i = 0; i < 3; i++) {
-      Point3F normal = na[i];
-      if (si[i] < ei[i]) {
-         if (si[i] > bmax[i] || ei[i] < bmin[i])
+    for (int i = 0; i < 3; i++) {
+        bool	n_neg = false;
+        if (si[i] < ei[i]) {
+            if (si[i] > bmax[i] || ei[i] < bmin[i])
+                return false;
+            F32 di = ei[i] - si[i];
+            st = (si[i] < bmin[i]) ? (bmin[i] - si[i]) / di : 0.0f;
+            et = (ei[i] > bmax[i]) ? (bmax[i] - si[i]) / di : 1.0f;
+            n_neg = true;
+        }
+        else {
+            if (ei[i] > bmax[i] || si[i] < bmin[i])
+                return false;
+            F32 di = ei[i] - si[i];
+            st = (si[i] > bmax[i]) ? (bmax[i] - si[i]) / di : 0.0f;
+            et = (ei[i] < bmin[i]) ? (bmin[i] - si[i]) / di : 1.0f;
+        }
+        if (st > fst) {
+            fst = st;
+            finalNormal = na[i];
+            if ( n_neg )
+                finalNormal.neg();
+        }
+        if (et < fet)
+            fet = et;
+
+        if (fet < fst)
             return false;
-         F32 di = ei[i] - si[i];
-         st = (si[i] < bmin[i]) ? (bmin[i] - si[i]) / di : 0;
-         et = (ei[i] > bmax[i]) ? (bmax[i] - si[i]) / di : 1;
-         normal.neg();
-      }
-      else {
-         if (ei[i] > bmax[i] || si[i] < bmin[i])
-            return false;
-         F32 di = ei[i] - si[i];
-         st = (si[i] > bmax[i]) ? (bmax[i] - si[i]) / di : 0;
-         et = (ei[i] < bmin[i]) ? (bmin[i] - si[i]) / di : 1;
-      }
-      if (st > fst) {
-         fst = st;
-         finalNormal = normal;
-      }
-      if (et < fet)
-         fet = et;
+    }
 
-      if (fet < fst)
-         return false;
-   }
-
-   *t = fst;
-   *n = finalNormal;
-   return true;
+    *t = fst;
+    *n = finalNormal;
+    return true;
 }
 
+//-----------------------------------------------------------------------------
 
 bool Box3F::collideLine(const Point3F& start, const Point3F& end) const
 {
-   F32 t;
-   Point3F normal;
-   return collideLine(start, end, &t, &normal);
+    F32 t;
+    Point3F normal;
+    return collideLine(start, end, &t, &normal);
 }
+
 
 // returns true if "oriented" box collides with us
 // radiiB is dimension of incoming box (half x,y,z length
@@ -84,13 +90,13 @@ bool Box3F::collideLine(const Point3F& start, const Point3F& end) const
 // assumes incoming box is centered at origin of source space
 bool Box3F::collideOrientedBox(const Point3F & bRadii, const MatrixF & toA) const
 {
-   Point3F p;
-   toA.getColumn(3,&p);
-   Point3F aCenter = mMin + mMax;
-   aCenter *= 0.5f;
-   p -= aCenter; // this essentially puts origin of toA target space on the center of the current box
-   Point3F aRadii = mMax - mMin;
-   aRadii *= 0.5f;
+    Point3F p;
+    toA.getColumn(3,&p);
+    Point3F aCenter = minExtents + maxExtents;
+    aCenter *= 0.5f;
+    p -= aCenter; // this essentially puts origin of toA target space on the center of the current box
+    Point3F aRadii = maxExtents - minExtents;
+    aRadii *= 0.5f;
 
     F32 absXX,absXY,absXZ;
     F32 absYX,absYY,absYZ;

@@ -30,7 +30,7 @@ static StringTableEntry particleAssetFieldNodeName = StringTable->insert("Fields
 //-----------------------------------------------------------------------------
 
 ParticleAssetFieldCollection::ParticleAssetFieldCollection() :
-                                    mpSelectedField( NULL )
+                                    mpSelectedField( nullptr )
 {
 }
 
@@ -54,14 +54,14 @@ void ParticleAssetFieldCollection::copyTo( ParticleAssetFieldCollection& fieldCo
         ParticleAssetField* pTargetParticleAssetField = fieldCollection.findField( fieldItr.first );
 
         // Sanity!
-        AssertFatal( pTargetParticleAssetField != NULL, "ParticleAssetFieldCollection::copyTo() - Could not find target particle asset field." );
+        AssertFatal( pTargetParticleAssetField != nullptr, "ParticleAssetFieldCollection::copyTo() - Could not find target particle asset field." );
 
         // Copy field.
         pParticleAssetField->copyTo( *pTargetParticleAssetField );
     }
 
     // Select the same field name.
-    if ( getSelectedField() != NULL )
+    if ( getSelectedField() != nullptr )
         fieldCollection.selectField( getSelectedField()->getFieldName() );
 }
 
@@ -70,7 +70,7 @@ void ParticleAssetFieldCollection::copyTo( ParticleAssetFieldCollection& fieldCo
 void ParticleAssetFieldCollection::addField( ParticleAssetField& particleAssetField, const char* pFieldName, F32 maxTime, F32 minValue, F32 maxValue, F32 defaultValue )
 {
     // Sanity!
-    AssertFatal( pFieldName != NULL, "ParticleAssetFieldCollection::addField() - Field name cannot be NULL or empty." );
+    AssertFatal( pFieldName != nullptr, "ParticleAssetFieldCollection::addField() - Field name cannot be NULL or empty." );
 
     // Set the field name.
     particleAssetField.setFieldName( pFieldName );
@@ -90,7 +90,7 @@ void ParticleAssetFieldCollection::addField( ParticleAssetField& particleAssetFi
 ParticleAssetField* ParticleAssetFieldCollection::selectField( const char* pFieldName )
 {
     // Sanity!
-    AssertFatal( pFieldName != NULL, "ParticleAssetFieldCollection::selectField() - Field name cannot be NULL or empty." );
+    AssertFatal( pFieldName != nullptr, "ParticleAssetFieldCollection::selectField() - Field name cannot be NULL or empty." );
 
     // Has a field-name been specified?
     if ( dStrlen(pFieldName) > 0 )
@@ -99,7 +99,7 @@ ParticleAssetField* ParticleAssetFieldCollection::selectField( const char* pFiel
         mpSelectedField = findField( pFieldName );
 
         // Did we find the field?
-        if ( mpSelectedField == NULL )
+        if ( mpSelectedField == nullptr )
         {
             // No, so warn.
             Con::warnf( "ParticleAssetFieldCollection::selectField() - Could not find the field name '%s'.", pFieldName );
@@ -108,7 +108,7 @@ ParticleAssetField* ParticleAssetFieldCollection::selectField( const char* pFiel
     else
     {
         // No, so reset the field.
-        mpSelectedField = NULL;
+        mpSelectedField = nullptr;
     }
 
     return mpSelectedField;
@@ -119,13 +119,13 @@ ParticleAssetField* ParticleAssetFieldCollection::selectField( const char* pFiel
 ParticleAssetField* ParticleAssetFieldCollection::findField( const char* pFieldName )
 {
     // Sanity!
-    AssertFatal( pFieldName != NULL, "ParticleAssetFieldCollection::findField() - Cannot find NULL field." );
+    AssertFatal( pFieldName != nullptr, "ParticleAssetFieldCollection::findField() - Cannot find NULL field." );
 
     // Find the field.
     typeFieldHash::iterator fieldItr = mFields.find( StringTable->insert( pFieldName ) );
 
     // Return the field if it was found.
-    return fieldItr == mFields.end() ? NULL : fieldItr->second;
+    return fieldItr == mFields.end() ? nullptr : fieldItr->second;
 }
 
 //-----------------------------------------------------------------------------
@@ -449,7 +449,7 @@ void ParticleAssetFieldCollection::onTamlCustomRead( const TamlCustomNodes& cust
     const TamlCustomNode* pParticleAssetCustomNode = customNodes.findNode( particleAssetFieldNodeName );
 
     // Finish if we don't have a custom node.
-    if ( pParticleAssetCustomNode == NULL )
+    if ( pParticleAssetCustomNode == nullptr )
         return;
 
     // Fetch children.
@@ -463,7 +463,7 @@ void ParticleAssetFieldCollection::onTamlCustomRead( const TamlCustomNodes& cust
         ParticleAssetField* pParticleAssetField = findField( nodeName );
 
         // Did we find the field?
-        if ( pParticleAssetField == NULL )
+        if ( pParticleAssetField == nullptr )
         {
             // No, so warn.
             Con::warnf( "ParticleAssetFieldCollection::onTamlCustomRead() - Cannot find data field '%s'.", nodeName );
@@ -480,8 +480,8 @@ void ParticleAssetFieldCollection::onTamlCustomRead( const TamlCustomNodes& cust
 void ParticleAssetFieldCollection::WriteCustomTamlSchema( const AbstractClassRep* pClassRep, TiXmlElement* pParentElement ) const
 {
     // Sanity!
-    AssertFatal( pClassRep != NULL,  "ParticleAssetFieldCollection::WriteCustomTamlSchema() - ClassRep cannot be NULL." );
-    AssertFatal( pParentElement != NULL,  "ParticleAssetFieldCollection::WriteCustomTamlSchema() - Parent Element cannot be NULL." );
+    AssertFatal( pClassRep != nullptr,  "ParticleAssetFieldCollection::WriteCustomTamlSchema() - ClassRep cannot be NULL." );
+    AssertFatal( pParentElement != nullptr,  "ParticleAssetFieldCollection::WriteCustomTamlSchema() - Parent Element cannot be NULL." );
 
     char buffer[1024];
 

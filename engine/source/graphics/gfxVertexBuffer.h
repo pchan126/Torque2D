@@ -153,8 +153,8 @@ public:
    virtual void set(   GFXDevice *theDevice,
              U32 vertexCount,
              GFXBufferType type = GFXBufferTypeVolatile,
-             void *vertexBuffer = NULL,
-             U32 indexCount = 0, void *indexBuffer = NULL)
+             void *vertexBuffer = nullptr,
+             U32 indexCount = 0, void *indexBuffer = nullptr)
    {
       Parent::set( theDevice, vertexCount, getGFXVertexFormat<T>(), sizeof(T), type, vertexBuffer, indexCount, indexBuffer );
    }

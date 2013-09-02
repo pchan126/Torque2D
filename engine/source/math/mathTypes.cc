@@ -327,8 +327,8 @@ ConsoleGetType( TypeBox3F )
 
    char* returnBuffer = Con::getReturnBuffer(256);
    dSprintf(returnBuffer, 256, "%g %g %g %g %g %g",
-            pBox->mMin.x, pBox->mMin.y, pBox->mMin.z,
-            pBox->mMax.x, pBox->mMax.y, pBox->mMax.z);
+            pBox->minExtents.x, pBox->minExtents.y, pBox->minExtents.z,
+            pBox->maxExtents.x, pBox->maxExtents.y, pBox->maxExtents.z);
 
    return returnBuffer;
 }
@@ -341,8 +341,8 @@ ConsoleSetType( TypeBox3F )
    {
        U32 args;
        args = dSscanf(argv[0], "%g %g %g %g %g %g",
-                         &pDst->mMin.x, &pDst->mMin.y, &pDst->mMin.z,
-                         &pDst->mMax.x, &pDst->mMax.y, &pDst->mMax.z);
+                         &pDst->minExtents.x, &pDst->minExtents.y, &pDst->minExtents.z,
+                         &pDst->maxExtents.x, &pDst->maxExtents.y, &pDst->maxExtents.z);
       AssertWarn(args == 6, "Warning, box probably not read properly");
    } 
    else 
@@ -627,11 +627,11 @@ ConsoleFunction( getBoxCenter, const char*, 2, 2, "( box ) Use the getBoxCenter 
                                                                 "@return Returns a vector containing a three-element floating-point position vector equal to the centroid of the area defined by box")
 {
    Box3F box;
-   box.mMin.set(0,0,0);
-   box.mMax.set(0,0,0);
+   box.minExtents.set(0,0,0);
+   box.maxExtents.set(0,0,0);
    dSscanf(argv[1],"%g %g %g %g %g %g",
-           &box.mMin.x,&box.mMin.y,&box.mMin.z,
-           &box.mMax.x,&box.mMax.y,&box.mMax.z);
+           &box.minExtents.x,&box.minExtents.y,&box.minExtents.z,
+           &box.maxExtents.x,&box.maxExtents.y,&box.maxExtents.z);
    Point3F p;
    box.getCenter(&p);
    char* returnBuffer = Con::getReturnBuffer(256);

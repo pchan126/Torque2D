@@ -3778,3 +3778,21 @@ ConsoleMethod(SceneObject, safeDelete, void, 2, 2, "() - Safely deletes object.\
     object->safeDelete();
 }
 
+//------------------------------------------------------------------------------
+
+ConsoleMethod(SceneObject, setShader, bool, 3, 3, "(string shaderAssetId) - Sets an alternative shader to render.\n"
+        "@param shaderAssetId The shader asset Id to display\n"
+        "@return Returns true on success.")
+{
+    // Set shader.
+    return object->setShader( argv[2] );
+}
+
+//------------------------------------------------------------------------------
+
+ConsoleMethod(SceneObject, getImage, const char*, 2, 2,  "() - Gets current shader asset Id.\n"
+        "@return (string shaderAssetId) The shader being used")
+{
+    // Get shader.
+    return object->getShader();
+}

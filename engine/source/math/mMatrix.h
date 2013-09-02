@@ -567,7 +567,7 @@ inline void MatrixF::mulV( const VectorF &v, Point3F *d) const
 
 inline void MatrixF::mul(Box3F& b) const
 {
-   m_matF_x_box3F(*this, &b.mMin.x, &b.mMax.x);
+   m_matF_x_box3F(*this, &b.minExtents.x, &b.maxExtents.x);
 }
 
 inline void MatrixF::getColumn(S32 col, Point4F *cptr) const

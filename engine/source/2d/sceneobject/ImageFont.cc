@@ -362,15 +362,9 @@ void ImageFont::calculateSpatials( void )
     switch( mTextAlignment )
     {
         case ALIGN_LEFT:
-            {
-                // Size is twice the padded text width as we're aligning to the left from the position expanding rightwards.
-                setSize( totalPaddedTextSize * 2.0f );
-            }
-            break;
-
         case ALIGN_RIGHT:
             {
-                // Size is twice the padded text width as we're aligning to the right from the position expanding leftwards.
+                // Size is twice the padded text width as we're aligning to the left from the position expanding rightwards.
                 setSize( totalPaddedTextSize * 2.0f );
             }
             break;

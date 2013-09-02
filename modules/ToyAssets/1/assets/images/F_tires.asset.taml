@@ -2,4 +2,5 @@
     AssetName="F_tires"
     Image="@asset=ToyAssets:tires"
     inputImage="tires.png"
-    Filter="CIDotScreen" />
+    Filter="CIColorPosterize"
+    inputColor="0.5 0.0 0.0 1.0" />

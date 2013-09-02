@@ -54,7 +54,7 @@ void LightQuery::init( const SphereF &bounds )
 void LightQuery::init( const Box3F &bounds )
 {
    bounds.getCenter( &mVolume.center );
-   mVolume.radius = ( bounds.mMax - mVolume.center ).len();
+   mVolume.radius = ( bounds.maxExtents - mVolume.center ).len();
    mLights.clear();
 }
 

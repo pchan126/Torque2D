@@ -23,28 +23,14 @@
 #ifndef _BATCH_RENDER_H_
 #define _BATCH_RENDER_H_
 
-#ifndef _VECTOR2_H_
 #include "2d/core/Vector2.h"
-#endif
-
-#ifndef _UTILITY_H_
 #include "2d/core/Utility.h"
-#endif
-
-#ifndef _DEBUG_STATS_H_
 #include "2d/scene/DebugStats.h"
-#endif
-
 #include "graphics/gfxDevice.h"
 #include "graphics/gfxTextureHandle.h"
-
-#ifndef _HASHTABLE_H
 #include "collection/hashTable.h"
-#endif
-
-#ifndef _COLOR_H_
 #include "graphics/color.h"
-#endif
+#include "2d/assets/ShaderAsset.h"
 
 //-----------------------------------------------------------------------------
 
@@ -111,9 +97,36 @@ private:
     bool                mWireframeMode;
     bool                mBatchEnabled;
 
+    GFXShaderRef            mShader;
+    GFXShaderConstBufferRef mShaderConstBuffer;
 public:
     BatchRender();
     virtual ~BatchRender();
+
+    inline void setShader ( ShaderAsset shader, const bool forceFlush = false )
+    {
+        // Ignore if no change.
+        if ( !forceFlush && shader.getShader() == mShader )
+            return;
+
+        // Flush.
+        flushInternal();
+        mShader = shader.getShader();
+        mShaderConstBuffer = shader.getShaderConstBuffer();
+    }
+
+    inline void clearShader(const bool forceFlush = false )
+    {
+        if ( !forceFlush && mShader.isNull())
+            return;
+
+        flushInternal();
+        mShader = nullptr;
+        mShaderConstBuffer = nullptr;
+    }
+
+    /// Gets the strict order mode.
+    inline GFXShaderRef getShader( void ) const { return mShader; }
 
     /// Set the strict order mode.
     inline void setStrictOrderMode( const bool strictOrder, const bool forceFlush = false )
