@@ -86,10 +86,10 @@ class Box3F
     F32 len_z() const  { return maxExtents.z - minExtents.z; }
 
     /// Returns the minimum box extent.
-    F32 len_min() const { return getMin( len_x(), getMin( len_y(), len_z() ) ); }
+    F32 len_min() const { return std::min( len_x(), std::min( len_y(), len_z() ) ); }
 
     /// Returns the maximum box extent.
-    F32 len_max() const { return getMax( len_x(), getMax( len_y(), len_z() ) ); }
+    F32 len_max() const { return std::max( len_x(), std::max( len_y(), len_z() ) ); }
 
     /// Returns the diagonal box length.
     F32 len() const { return ( maxExtents - minExtents ).len(); }
