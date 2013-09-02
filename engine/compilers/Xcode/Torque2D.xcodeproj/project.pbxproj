@@ -993,7 +993,6 @@
 		86BC7F1B16518D4600D96ADF /* nameTags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nameTags.h; sourceTree = "<group>"; };
 		86BC7F1C16518D4600D96ADF /* nameTags_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nameTags_ScriptBinding.h; sourceTree = "<group>"; };
 		86BC7F1D16518D4600D96ADF /* simpleHashTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = simpleHashTable.h; sourceTree = "<group>"; };
-		86BC7F1E16518D4600D96ADF /* sparseArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sparseArray.h; sourceTree = "<group>"; };
 		86BC7F1F16518D4600D96ADF /* undo.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = undo.cc; sourceTree = "<group>"; };
 		86BC7F2016518D4600D96ADF /* undo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = undo.h; sourceTree = "<group>"; };
 		86BC7F2216518D4600D96ADF /* vector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vector.h; sourceTree = "<group>"; };
@@ -2434,7 +2433,6 @@
 				86BC7F1B16518D4600D96ADF /* nameTags.h */,
 				86BC7F1C16518D4600D96ADF /* nameTags_ScriptBinding.h */,
 				86BC7F1D16518D4600D96ADF /* simpleHashTable.h */,
-				86BC7F1E16518D4600D96ADF /* sparseArray.h */,
 				86BC7F1F16518D4600D96ADF /* undo.cc */,
 				86BC7F2016518D4600D96ADF /* undo.h */,
 				86BC7F2216518D4600D96ADF /* vector.h */,

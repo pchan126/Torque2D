@@ -20,12 +20,6 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-// [tom, 9/19/2006] Simple hash table. Not intended to replace map<>, but it is
-// generally good enough for simple things that you don't need to iterate.
-//
-// Note: If you move this to another project, you need the updated tSparseArray.h
-// as well as hashFunction.cc/h
-
 #include "platform/platform.h"
 #include <functional>
 #include <unordered_map>

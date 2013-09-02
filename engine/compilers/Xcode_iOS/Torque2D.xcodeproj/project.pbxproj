@@ -833,7 +833,6 @@
 		867BADA416AEC9050033868F /* nameTags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nameTags.h; sourceTree = "<group>"; };
 		867BADA516AEC9050033868F /* nameTags_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = nameTags_ScriptBinding.h; sourceTree = "<group>"; };
 		867BADA616AEC9050033868F /* simpleHashTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = simpleHashTable.h; sourceTree = "<group>"; };
-		867BADA716AEC9050033868F /* sparseArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sparseArray.h; sourceTree = "<group>"; };
 		867BADA816AEC9050033868F /* undo.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = undo.cc; sourceTree = "<group>"; };
 		867BADA916AEC9050033868F /* undo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = undo.h; sourceTree = "<group>"; };
 		867BADAB16AEC9050033868F /* vector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vector.h; sourceTree = "<group>"; };
@@ -2102,7 +2101,6 @@
 				867BADA416AEC9050033868F /* nameTags.h */,
 				867BADA516AEC9050033868F /* nameTags_ScriptBinding.h */,
 				867BADA616AEC9050033868F /* simpleHashTable.h */,
-				867BADA716AEC9050033868F /* sparseArray.h */,
 				867BADA816AEC9050033868F /* undo.cc */,
 				867BADA916AEC9050033868F /* undo.h */,
 				867BADAB16AEC9050033868F /* vector.h */,
