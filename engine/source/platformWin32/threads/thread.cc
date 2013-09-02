@@ -38,7 +38,7 @@ struct PlatformThreadData
    Thread*                 mThread;
    HANDLE                  mThreadHnd;
    Semaphore               mGateway;
-   U32                     mThreadID;
+   PTR                     mThreadID;
 
    PlatformThreadData()
    {
@@ -144,12 +144,12 @@ U32 Thread::getId()
    return mData->mThreadID;
 }
 
-U32 ThreadManager::getCurrentThreadId()
+PTR ThreadManager::getCurrentThreadId()
 {
    return GetCurrentThreadId();
 }
 
-bool ThreadManager::compare(U32 threadId_1, U32 threadId_2)
+bool ThreadManager::compare(PTR threadId_1, PTR threadId_2)
 {
    return (threadId_1 == threadId_2);
 }

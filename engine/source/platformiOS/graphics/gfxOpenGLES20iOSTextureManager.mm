@@ -80,10 +80,10 @@ GFXTextureObject *GFXOpenGLES20iOSTextureManager::_createTexture(  GBitmap *bmp,
         
         GBitmap *padBmp = bmp;
         padBmp->extrudeMipLevels();
-        scalePower = getMin( scalePower, padBmp->getNumMipLevels() - 1 );
+       scalePower = std::min( scalePower, padBmp->getNumMipLevels() - 1 );
         
-        realWidth  = getMax( (U32)1, padBmp->getWidth() >> scalePower );
-        realHeight = getMax( (U32)1, padBmp->getHeight() >> scalePower );
+       realWidth  = std::max( (U32)1, padBmp->getWidth() >> scalePower );
+       realHeight = std::max( (U32)1, padBmp->getHeight() >> scalePower );
         realBmp = new GBitmap( realWidth, realHeight, false, bmp->getFormat() );
         
         // Copy to the new bitmap...
@@ -389,12 +389,12 @@ bool GFXOpenGLES20iOSTextureManager::_refreshTexture(GFXTextureObject *texture)
             case GFXFormat_PVR2:
             case GFXFormat_PVR2A:
                 glCompressedTexImage2D(GL_TEXTURE_2D, 0, GFXGLTextureType[pNewBitmap->getFormat()],
-                                       pNewBitmap->getWidth(), pNewBitmap->getHeight(), 0, (getMax((int)pNewBitmap->getWidth(),16) * getMax((int)pNewBitmap->getHeight(), 8) * 2 + 7) / 8, pNewBitmap->getBits() );
+                                       pNewBitmap->getWidth(), pNewBitmap->getHeight(), 0, (std::max((int)pNewBitmap->getWidth(),16) * std::max((int)pNewBitmap->getHeight(), 8) * 2 + 7) / 8, pNewBitmap->getBits() );
                 break;
             case GFXFormat_PVR4:
             case GFXFormat_PVR4A:
                 glCompressedTexImage2D(GL_TEXTURE_2D, 0, GFXGLTextureType[pNewBitmap->getFormat()],
-                                       pNewBitmap->getWidth(), pNewBitmap->getHeight(), 0, (getMax((int)pNewBitmap->getWidth(),8) * getMax((int)pNewBitmap->getHeight(), 8) * 4 + 7) / 8, pNewBitmap->getBits() );
+                                       pNewBitmap->getWidth(), pNewBitmap->getHeight(), 0, (std::max((int)pNewBitmap->getWidth(),8) * std::max((int)pNewBitmap->getHeight(), 8) * 4 + 7) / 8, pNewBitmap->getBits() );
                 break;
             default:
                 // already tested for range of values, so default is just to keep the compiler happy!

@@ -142,12 +142,12 @@ U32 Thread::getId()
    return mData->mThreadID;
 }
 
-U32 ThreadManager::getCurrentThreadId()
+PTR ThreadManager::getCurrentThreadId()
 {
-   return (U32)pthread_self();
+   return (PTR)pthread_self();
 }
 
-bool ThreadManager::compare(U32 threadId_1, U32 threadId_2)
+bool ThreadManager::compare(PTR threadId_1, PTR threadId_2)
 {
    return (bool)pthread_equal((pthread_t)threadId_1, (pthread_t)threadId_2);
 }
