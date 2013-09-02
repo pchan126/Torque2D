@@ -440,7 +440,7 @@ void ResManager::searchPath (const char *path, bool noDups /* = false */, bool i
 
       // Create a resource for this file...
       //
-      if(noDups && dictionary.find(rInfo.pFullPath, rInfo.pFileName) != NULL)
+      if(noDups && dictionary.find(rInfo.pFullPath, rInfo.pFileName) != nullptr)
          continue;
 
       ResourceObject *ro = createResource (rInfo.pFullPath, rInfo.pFileName);

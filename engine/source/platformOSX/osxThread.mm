@@ -169,14 +169,14 @@ U32 Thread::getId()
 
 //-----------------------------------------------------------------------------
 
-U32 ThreadManager::getCurrentThreadId()
+PTR ThreadManager::getCurrentThreadId()
 {
-   return (U32)pthread_self();
+   return (PTR)pthread_self();
 }
 
 //-----------------------------------------------------------------------------
 
-bool ThreadManager::compare( U32 threadId_1, U32 threadId_2 )
+bool ThreadManager::compare( PTR threadId_1, PTR threadId_2 )
 {
    return (bool)pthread_equal((pthread_t)threadId_1, (pthread_t)threadId_2);
 }
@@ -238,17 +238,17 @@ U32 ExecuteThread::runNoThread( const char* executable, const char* zargs, const
         {
             args[i] = '\0';
             if(*lastarg)
-                [array addObject:[NSString stringWithUTF8String: _unDoubleQuote(lastarg)]];
+                [array addObject:@(_unDoubleQuote(lastarg))];
             lastarg = args + i + 1;
         }
     }
     if(*lastarg)
-        [array addObject:[NSString stringWithUTF8String: _unDoubleQuote(lastarg)]];
+        [array addObject:@(_unDoubleQuote(lastarg))];
     
     [aTask setArguments: array];
     
-    [aTask setCurrentDirectoryPath:[NSString stringWithUTF8String: directory]];
-    [aTask setLaunchPath:[NSString stringWithUTF8String:executable]];
+    [aTask setCurrentDirectoryPath:@(directory)];
+    [aTask setLaunchPath:@(executable)];
     [aTask launch];
     [aTask waitUntilExit];
     U32 ret = [aTask terminationStatus];

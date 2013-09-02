@@ -97,7 +97,7 @@
                     ext += 2;
                 }
 
-                [types addObject:[NSString stringWithUTF8String:ext]];
+                [types addObject:@(ext)];
             }
         }
     }
@@ -160,9 +160,9 @@
     NSString *dir;
 
     if (dStrlen(withData->mDefaultPath) < 1)
-        dir = [[NSString stringWithUTF8String:withData->mDefaultFile] stringByDeletingLastPathComponent];
+        dir = [@(withData->mDefaultFile) stringByDeletingLastPathComponent];
     else
-        dir = [NSString stringWithUTF8String:withData->mDefaultPath];
+        dir = @(withData->mDefaultPath);
 
     [panel setDirectoryURL:[NSURL fileURLWithPath:dir]];
 
@@ -212,9 +212,9 @@
     NSString *dir;
 
     if (dStrlen(withData->mDefaultPath) < 1)
-        dir = [[NSString stringWithUTF8String:withData->mDefaultFile] stringByDeletingLastPathComponent];
+        dir = [@(withData->mDefaultFile) stringByDeletingLastPathComponent];
     else
-        dir = [NSString stringWithUTF8String:withData->mDefaultPath];
+        dir = @(withData->mDefaultPath);
 
     [panel setDirectoryURL:[NSURL fileURLWithPath:dir]];
 

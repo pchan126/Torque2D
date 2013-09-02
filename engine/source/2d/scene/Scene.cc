@@ -66,7 +66,7 @@
 
 //------------------------------------------------------------------------------
 
-SimObjectPtr<Scene> Scene::LoadingScene = NULL;
+SimObjectPtr<Scene> Scene::LoadingScene = nullptr;
 
 //------------------------------------------------------------------------------
 
@@ -150,7 +150,7 @@ static StringTableEntry assetNodeName                     = StringTable->insert(
 
 Scene::Scene() :
     /// World.
-    mpWorld(NULL),
+    mpWorld(nullptr),
     mWorldGravity(0.0f, 0.0f),
     mVelocityIterations(8),
     mPositionIterations(3),
@@ -164,10 +164,10 @@ Scene::Scene() :
 
     /// Debug and metrics.
     mDebugMask(0X00000000),
-    mpDebugSceneObject(NULL),
+    mpDebugSceneObject(nullptr),
 
     /// Window rendering.
-    mpCurrentRenderWindow(NULL),
+    mpCurrentRenderWindow(nullptr),
     
     /// Miscellaneous.
     mIsEditorScene(0),
@@ -271,13 +271,13 @@ void Scene::onRemove()
 
     // Delete ground body.
     mpWorld->DestroyBody( mpGroundBody );
-    mpGroundBody = NULL;
+    mpGroundBody = nullptr;
 
     // Delete physics world and world query.
     delete mpWorldQuery;
     delete mpWorld;
-    mpWorldQuery = NULL;
-    mpWorld = NULL;
+    mpWorldQuery = nullptr;
+    mpWorld = nullptr;
 
     // Detach All Scene Windows.
     detachAllSceneWindows();
@@ -292,7 +292,7 @@ void Scene::onRemove()
 void Scene::onDeleteNotify( SimObject* object )
 {
     // Ignore if we're not monitoring a debug banner scene object.
-    if ( mpDebugSceneObject == NULL )
+    if ( mpDebugSceneObject == nullptr )
         return;
 
     // Ignore if it's not the one we're monitoring.
@@ -301,7 +301,7 @@ void Scene::onDeleteNotify( SimObject* object )
         return;
 
     // Reset the monitored scene object.
-    mpDebugSceneObject = NULL;
+    mpDebugSceneObject = nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -538,7 +538,7 @@ void Scene::dispatchBeginContactCallbacks( void )
 
         // Does the scene handle the collision callback?
         Namespace* pNamespace = getNamespace();
-        if ( pNamespace != NULL && pNamespace->lookup( StringTable->insert( "onSceneCollision" ) ) != NULL )
+        if ( pNamespace != nullptr && pNamespace->lookup( StringTable->insert( "onSceneCollision" ) ) != nullptr )
         {
             // Yes, so perform script callback on the Scene.
             Con::executef( this, 4, "onSceneCollision",
@@ -645,7 +645,7 @@ void Scene::dispatchEndContactCallbacks( void )
 
         // Does the scene handle the collision callback?
         Namespace* pNamespace = getNamespace();
-        if ( pNamespace != NULL && pNamespace->lookup( StringTable->insert( "onSceneEndCollision" ) ) != NULL )
+        if ( pNamespace != nullptr && pNamespace->lookup( StringTable->insert( "onSceneEndCollision" ) ) != nullptr )
         {
             // Yes, so does the scene handle the collision callback?
             Con::executef( this, 4, "onSceneEndCollision",
@@ -806,7 +806,7 @@ void Scene::processTick( void )
         SimSet* pControllerSet = getControllers();
 
         // Do we have any scene controllers?
-        if ( pControllerSet != NULL )
+        if ( pControllerSet != nullptr )
         {
             // Debug Profiling.
             PROFILE_SCOPE(Scene_IntegrateSceneControllers);
@@ -821,7 +821,7 @@ void Scene::processTick( void )
                 SceneController* pController = dynamic_cast<SceneController*>((*pControllerSet)[i]);
 
                 // Skip if not a controller.
-                if ( pController == NULL )
+                if ( pController == nullptr )
                     continue;
 
                 // Integrate.
@@ -1028,7 +1028,7 @@ void Scene::renderScene(SceneRenderState *renderState)
         SimSet* pControllerSet = getControllers();
 
         // Do we have any scene controllers?
-        if ( pControllerSet != NULL )
+        if ( pControllerSet != nullptr )
         {
             // Debug Profiling.
             PROFILE_SCOPE(Scene_RenderControllers);
@@ -1043,7 +1043,7 @@ void Scene::renderScene(SceneRenderState *renderState)
                 SceneController* pController = dynamic_cast<SceneController*>((*pControllerSet)[i]);
 
                 // Skip if not a controller.
-                if ( pController == NULL )
+                if ( pController == nullptr )
                     continue;
 
                 // Render the overlay.
@@ -1101,7 +1101,7 @@ void Scene::clearScene( bool deleteObjects )
     SimSet* pControllerSet = getControllers();
 
     // Do we have any scene controllers?
-    if ( pControllerSet != NULL )
+    if ( pControllerSet != nullptr )
     {
         // Yes, so delete them all.
         while( pControllerSet->size() > 0 )
@@ -1118,7 +1118,7 @@ void Scene::clearScene( bool deleteObjects )
 
 void Scene::addToScene( SceneObject* pSceneObject )
 {
-    if ( pSceneObject == NULL )
+    if ( pSceneObject == nullptr )
         return;
 
     // Fetch current scene.
@@ -1176,7 +1176,7 @@ void Scene::addToScene( SceneObject* pSceneObject )
 
 void Scene::removeFromScene( SceneObject* pSceneObject )
 {
-    if ( pSceneObject == NULL )
+    if ( pSceneObject == nullptr )
         return;
 
     // Check if object is actually in a scene.
@@ -1188,7 +1188,7 @@ void Scene::removeFromScene( SceneObject* pSceneObject )
 
     // Remove as debug-object if set.
     if ( pSceneObject == getDebugSceneObject() )
-        setDebugSceneObject( NULL );
+        setDebugSceneObject( nullptr );
 
     // Process Destroy Notifications.
     pSceneObject->processDestroyNotifications();
@@ -1289,7 +1289,7 @@ const AssetPtr<AssetBase>* Scene::getAssetPreload( const S32 index ) const
     {
         // Yes, so warn.
         Con::warnf( "Scene::getAssetPreload() - Out of range index '%d'.  There are only '%d' asset preloads.", index, mAssetPreloads.size() );
-        return NULL;
+        return nullptr;
     }
 
     return mAssetPreloads[index];
@@ -1300,7 +1300,7 @@ const AssetPtr<AssetBase>* Scene::getAssetPreload( const S32 index ) const
 void Scene::addAssetPreload( const char* pAssetId )
 {
     // Sanity!
-    AssertFatal( pAssetId != NULL, "Scene::addAssetPreload() - Cannot add a NULL asset preload." );
+    AssertFatal( pAssetId != nullptr, "Scene::addAssetPreload() - Cannot add a nullptr asset preload." );
 
     // Fetch asset Id.
     StringTableEntry assetId = StringTable->insert( pAssetId );
@@ -1336,7 +1336,7 @@ void Scene::addAssetPreload( const char* pAssetId )
 void Scene::removeAssetPreload( const char* pAssetId )
 {
     // Sanity!
-    AssertFatal( pAssetId != NULL, "Scene::removeAssetPreload() - Cannot remove a NULL asset preload." );
+    AssertFatal( pAssetId != nullptr, "Scene::removeAssetPreload() - Cannot remove a nullptr asset preload." );
 
     // Fetch asset Id.
     StringTableEntry assetId = StringTable->insert( pAssetId );
@@ -1395,7 +1395,7 @@ b2Joint* Scene::findJoint( const S32 jointId )
     // Find joint.
     typeJointHash::iterator itr = mJoints.find( jointId );
 
-    return itr == mJoints.end() ? NULL : itr->second;
+    return itr == mJoints.end() ? nullptr : itr->second;
 }
 
 //-----------------------------------------------------------------------------
@@ -1417,14 +1417,14 @@ b2JointType Scene::getJointType( const S32 jointId )
 S32 Scene::findJointId( b2Joint* pJoint )
 {
     // Sanity!
-    AssertFatal( pJoint != NULL, "Joint cannot be NULL." );
+    AssertFatal( pJoint != nullptr, "Joint cannot be nullptr." );
 
     // Find joint.
-    typeReverseJointHash::iterator itr = mReverseJoints.find( (U32)pJoint );
+    typeReverseJointHash::iterator itr = mReverseJoints.find( pJoint );
 
     if ( itr == mReverseJoints.end() )
     {
-        Con::warnf("The joint Id could not be found via a joint reference of %x", (U32)pJoint);
+        Con::warnf("The joint Id could not be found via a joint reference of %p", pJoint);
         return 0;
     }
 
@@ -1436,7 +1436,7 @@ S32 Scene::findJointId( b2Joint* pJoint )
 S32 Scene::createJoint( b2JointDef* pJointDef )
 {
     // Sanity!
-    AssertFatal( pJointDef != NULL, "Joint definition cannot be NULL." );
+    AssertFatal( pJointDef != nullptr, "Joint definition cannot be nullptr." );
 
     // Create Joint.
     b2Joint* pJoint = mpWorld->CreateJoint( pJointDef );
@@ -1451,7 +1451,7 @@ S32 Scene::createJoint( b2JointDef* pJointDef )
     AssertFatal( itr != mJoints.end(), "Joint already in hash table." );
 
     // Insert reverse joint.
-    mReverseJoints.insert( (U32)pJoint, jointId );
+    mReverseJoints.insert( pJoint, jointId );
 
     return jointId;
 }
@@ -1464,7 +1464,7 @@ bool Scene::deleteJoint( const U32 jointId )
     b2Joint* pJoint = findJoint( jointId );
 
     // Finish if no joint.
-    if ( pJoint == NULL )
+    if ( pJoint == nullptr )
         return false;
 
     // Destroy joint.
@@ -1480,7 +1480,7 @@ bool Scene::deleteJoint( const U32 jointId )
 bool Scene::hasJoints( SceneObject* pSceneObject )
 {
     // Sanity!
-    AssertFatal( pSceneObject != NULL, "Scene object cannot be NULL!" );
+    AssertFatal( pSceneObject != nullptr, "Scene object cannot be nullptr!" );
     AssertFatal( pSceneObject->getScene() != this, "Scene object is not in this scene" );
 
     // Fetch body.
@@ -1489,7 +1489,7 @@ bool Scene::hasJoints( SceneObject* pSceneObject )
     // Fetch joint edge.
     b2JointEdge* pJointEdge = pBody->GetJointList();
 
-    if ( pJointEdge == NULL || pJointEdge->joint == NULL )
+    if ( pJointEdge == nullptr || pJointEdge->joint == nullptr )
         return false;
 
     // Found at least one joint.
@@ -1507,8 +1507,8 @@ S32 Scene::createDistanceJoint(
     const bool collideConnected )
 {
     // Sanity!
-    if (    (pSceneObjectA != NULL && pSceneObjectA->getScene() == NULL) ||
-            (pSceneObjectB != NULL && pSceneObjectB->getScene() == NULL) )
+    if (    (pSceneObjectA != nullptr && pSceneObjectA->getScene() == nullptr) ||
+            (pSceneObjectB != nullptr && pSceneObjectB->getScene() == nullptr) )
     {
         // Warn.
         Con::printf( "Cannot add a joint to a scene object that is not in a scene." );
@@ -1516,15 +1516,15 @@ S32 Scene::createDistanceJoint(
     }
 
     // Check for two invalid objects.
-    if ( pSceneObjectA == NULL && pSceneObjectB == NULL )
+    if ( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
     {
         Con::warnf("Scene::createDistanceJoint() - Cannot create joint without at least a single scene object." );
         return -1;
     }
 
     // Fetch bodies.
-    b2Body* pBodyA = pSceneObjectA != NULL ? pSceneObjectA->getBody() : getGroundBody();
-    b2Body* pBodyB = pSceneObjectB != NULL ? pSceneObjectB->getBody() : getGroundBody();
+    b2Body* pBodyA = pSceneObjectA != nullptr ? pSceneObjectA->getBody() : getGroundBody();
+    b2Body* pBodyB = pSceneObjectB != nullptr ? pSceneObjectB->getBody() : getGroundBody();
     
     // Populate definition.
     b2DistanceJointDef jointDef;
@@ -1719,8 +1719,8 @@ S32 Scene::createRopeJoint(
         const bool collideConnected )
 {
     // Sanity!
-    if (    (pSceneObjectA != NULL && pSceneObjectA->getScene() == NULL) ||
-            (pSceneObjectB != NULL && pSceneObjectB->getScene() == NULL) )
+    if (    (pSceneObjectA != nullptr && pSceneObjectA->getScene() == nullptr) ||
+            (pSceneObjectB != nullptr && pSceneObjectB->getScene() == nullptr) )
     {
         // Warn.
         Con::printf( "Cannot add a joint to a scene object that is not in a scene." );
@@ -1728,15 +1728,15 @@ S32 Scene::createRopeJoint(
     }
 
     // Check for two invalid objects.
-    if ( pSceneObjectA == NULL && pSceneObjectB == NULL )
+    if ( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
     {
         Con::warnf("Scene::createRopeJoint() - Cannot create joint without at least a single scene object." );
         return -1;
     }
 
     // Fetch bodies.
-    b2Body* pBodyA = pSceneObjectA != NULL ? pSceneObjectA->getBody() : getGroundBody();
-    b2Body* pBodyB = pSceneObjectB != NULL ? pSceneObjectB->getBody() : getGroundBody();
+    b2Body* pBodyA = pSceneObjectA != nullptr ? pSceneObjectA->getBody() : getGroundBody();
+    b2Body* pBodyB = pSceneObjectB != nullptr ? pSceneObjectB->getBody() : getGroundBody();
     
     // Populate definition.
     b2RopeJointDef jointDef;
@@ -1816,8 +1816,8 @@ S32 Scene::createRevoluteJoint(
         const bool collideConnected )
 {
     // Sanity!
-    if (    (pSceneObjectA != NULL && pSceneObjectA->getScene() == NULL) ||
-            (pSceneObjectB != NULL && pSceneObjectB->getScene() == NULL) )
+    if (    (pSceneObjectA != nullptr && pSceneObjectA->getScene() == nullptr) ||
+            (pSceneObjectB != nullptr && pSceneObjectB->getScene() == nullptr) )
     {
         // Warn.
         Con::printf( "Cannot add a joint to a scene object that is not in a scene." );
@@ -1825,15 +1825,15 @@ S32 Scene::createRevoluteJoint(
     }
 
     // Check for two invalid objects.
-    if ( pSceneObjectA == NULL && pSceneObjectB == NULL )
+    if ( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
     {
         Con::warnf("Scene::createRevoluteJoint() - Cannot create joint without at least a single scene object." );
         return -1;
     }
 
     // Fetch bodies.
-    b2Body* pBodyA = pSceneObjectA != NULL ? pSceneObjectA->getBody() : getGroundBody();
-    b2Body* pBodyB = pSceneObjectB != NULL ? pSceneObjectB->getBody() : getGroundBody();
+    b2Body* pBodyA = pSceneObjectA != nullptr ? pSceneObjectA->getBody() : getGroundBody();
+    b2Body* pBodyB = pSceneObjectB != nullptr ? pSceneObjectB->getBody() : getGroundBody();
     
     // Populate definition.
     b2RevoluteJointDef jointDef;
@@ -2046,8 +2046,8 @@ S32 Scene::createWeldJoint(
         const bool collideConnected )
 {
     // Sanity!
-    if (    (pSceneObjectA != NULL && pSceneObjectA->getScene() == NULL) ||
-            (pSceneObjectB != NULL && pSceneObjectB->getScene() == NULL) )
+    if (    (pSceneObjectA != nullptr && pSceneObjectA->getScene() == nullptr) ||
+            (pSceneObjectB != nullptr && pSceneObjectB->getScene() == nullptr) )
     {
         // Warn.
         Con::printf( "Cannot add a joint to a scene object that is not in a scene." );
@@ -2055,15 +2055,15 @@ S32 Scene::createWeldJoint(
     }
 
     // Check for two invalid objects.
-    if ( pSceneObjectA == NULL && pSceneObjectB == NULL )
+    if ( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
     {
         Con::warnf("Scene::createWeldJoint() - Cannot create joint without at least a single scene object." );
         return -1;
     }
 
     // Fetch bodies.
-    b2Body* pBodyA = pSceneObjectA != NULL ? pSceneObjectA->getBody() : getGroundBody();
-    b2Body* pBodyB = pSceneObjectB != NULL ? pSceneObjectB->getBody() : getGroundBody();
+    b2Body* pBodyA = pSceneObjectA != nullptr ? pSceneObjectA->getBody() : getGroundBody();
+    b2Body* pBodyB = pSceneObjectB != nullptr ? pSceneObjectB->getBody() : getGroundBody();
     
     // Populate definition.
     b2WeldJointDef jointDef;
@@ -2203,8 +2203,8 @@ S32 Scene::createWheelJoint(
         const bool collideConnected )
 {
     // Sanity!
-    if (    (pSceneObjectA != NULL && pSceneObjectA->getScene() == NULL) ||
-            (pSceneObjectB != NULL && pSceneObjectB->getScene() == NULL) )
+    if (    (pSceneObjectA != nullptr && pSceneObjectA->getScene() == nullptr) ||
+            (pSceneObjectB != nullptr && pSceneObjectB->getScene() == nullptr) )
     {
         // Warn.
         Con::printf( "Cannot add a joint to a scene object that is not in a scene." );
@@ -2212,15 +2212,15 @@ S32 Scene::createWheelJoint(
     }
 
     // Check for two invalid objects.
-    if ( pSceneObjectA == NULL && pSceneObjectB == NULL )
+    if ( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
     {
         Con::warnf("Scene::createWheelJoint() - Cannot create joint without at least a single scene object." );
         return -1;
     }
 
     // Fetch bodies.
-    b2Body* pBodyA = pSceneObjectA != NULL ? pSceneObjectA->getBody() : getGroundBody();
-    b2Body* pBodyB = pSceneObjectB != NULL ? pSceneObjectB->getBody() : getGroundBody();
+    b2Body* pBodyA = pSceneObjectA != nullptr ? pSceneObjectA->getBody() : getGroundBody();
+    b2Body* pBodyB = pSceneObjectB != nullptr ? pSceneObjectB->getBody() : getGroundBody();
     
     // Populate definition.
     b2WheelJointDef jointDef;
@@ -2426,8 +2426,8 @@ S32 Scene::createFrictionJoint(
         const bool collideConnected )
 {
     // Sanity!
-    if (    (pSceneObjectA != NULL && pSceneObjectA->getScene() == NULL) ||
-            (pSceneObjectB != NULL && pSceneObjectB->getScene() == NULL) )
+    if (    (pSceneObjectA != nullptr && pSceneObjectA->getScene() == nullptr) ||
+            (pSceneObjectB != nullptr && pSceneObjectB->getScene() == nullptr) )
     {
         // Warn.
         Con::printf( "Cannot add a joint to a scene object that is not in a scene." );
@@ -2435,15 +2435,15 @@ S32 Scene::createFrictionJoint(
     }
 
     // Check for two invalid objects.
-    if ( pSceneObjectA == NULL && pSceneObjectB == NULL )
+    if ( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
     {
         Con::warnf("Scene::createFrictionJoint() - Cannot create joint without at least a single scene object." );
         return -1;
     }
 
     // Fetch bodies.
-    b2Body* pBodyA = pSceneObjectA != NULL ? pSceneObjectA->getBody() : getGroundBody();
-    b2Body* pBodyB = pSceneObjectB != NULL ? pSceneObjectB->getBody() : getGroundBody();
+    b2Body* pBodyA = pSceneObjectA != nullptr ? pSceneObjectA->getBody() : getGroundBody();
+    b2Body* pBodyB = pSceneObjectB != nullptr ? pSceneObjectB->getBody() : getGroundBody();
     
     // Populate definition.
     b2FrictionJointDef jointDef;
@@ -2582,8 +2582,8 @@ S32 Scene::createPrismaticJoint(
         const bool collideConnected )
 {
     // Sanity!
-    if (    (pSceneObjectA != NULL && pSceneObjectA->getScene() == NULL) ||
-            (pSceneObjectB != NULL && pSceneObjectB->getScene() == NULL) )
+    if (    (pSceneObjectA != nullptr && pSceneObjectA->getScene() == nullptr) ||
+            (pSceneObjectB != nullptr && pSceneObjectB->getScene() == nullptr) )
     {
         // Warn.
         Con::printf( "Cannot add a joint to a scene object that is not in a scene." );
@@ -2591,15 +2591,15 @@ S32 Scene::createPrismaticJoint(
     }
 
     // Check for two invalid objects.
-    if ( pSceneObjectA == NULL && pSceneObjectB == NULL )
+    if ( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
     {
         Con::warnf("Scene::createPrismaticJoint() - Cannot create joint without at least a single scene object." );
         return -1;
     }
 
     // Fetch bodies.
-    b2Body* pBodyA = pSceneObjectA != NULL ? pSceneObjectA->getBody() : getGroundBody();
-    b2Body* pBodyB = pSceneObjectB != NULL ? pSceneObjectB->getBody() : getGroundBody();
+    b2Body* pBodyA = pSceneObjectA != nullptr ? pSceneObjectA->getBody() : getGroundBody();
+    b2Body* pBodyB = pSceneObjectB != nullptr ? pSceneObjectB->getBody() : getGroundBody();
     
     // Populate definition.
     b2PrismaticJointDef jointDef;
@@ -2760,8 +2760,8 @@ S32 Scene::createPulleyJoint(
         const bool collideConnected )
 {
     // Sanity!
-    if (    (pSceneObjectA != NULL && pSceneObjectA->getScene() == NULL) ||
-            (pSceneObjectB != NULL && pSceneObjectB->getScene() == NULL) )
+    if (    (pSceneObjectA != nullptr && pSceneObjectA->getScene() == nullptr) ||
+            (pSceneObjectB != nullptr && pSceneObjectB->getScene() == nullptr) )
     {
         // Warn.
         Con::printf( "Cannot add a joint to a scene object that is not in a scene." );
@@ -2769,15 +2769,15 @@ S32 Scene::createPulleyJoint(
     }
 
     // Check for two invalid objects.
-    if ( pSceneObjectA == NULL && pSceneObjectB == NULL )
+    if ( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
     {
         Con::warnf("Scene::createPulleyJoint() - Cannot create joint without at least a single scene object." );
         return -1;
     }
 
     // Fetch bodies.
-    b2Body* pBodyA = pSceneObjectA != NULL ? pSceneObjectA->getBody() : getGroundBody();
-    b2Body* pBodyB = pSceneObjectB != NULL ? pSceneObjectB->getBody() : getGroundBody();
+    b2Body* pBodyA = pSceneObjectA != nullptr ? pSceneObjectA->getBody() : getGroundBody();
+    b2Body* pBodyB = pSceneObjectB != nullptr ? pSceneObjectB->getBody() : getGroundBody();
     
     // Populate definition.
     b2PulleyJointDef jointDef;
@@ -2809,7 +2809,7 @@ S32 Scene::createTargetJoint(
         const bool collideConnected )
 {
     // Sanity!
-    if ( pSceneObject != NULL && pSceneObject->getScene() == NULL )
+    if ( pSceneObject != nullptr && pSceneObject->getScene() == nullptr )
     {
         // Warn.
         Con::printf( "Cannot add a joint to a scene object that is not in a scene." );
@@ -2817,7 +2817,7 @@ S32 Scene::createTargetJoint(
     }
 
     // Check for invalid object.
-    if ( pSceneObject == NULL )
+    if ( pSceneObject == nullptr )
     {
         Con::warnf("Scene::createPulleyJoint() - Cannot create joint without a scene object." );
         return -1;
@@ -3090,8 +3090,8 @@ S32 Scene::createMotorJoint(
             const bool collideConnected )
 {
     // Sanity!
-    if (    (pSceneObjectA != NULL && pSceneObjectA->getScene() == NULL) ||
-            (pSceneObjectB != NULL && pSceneObjectB->getScene() == NULL) )
+    if (    (pSceneObjectA != nullptr && pSceneObjectA->getScene() == nullptr) ||
+            (pSceneObjectB != nullptr && pSceneObjectB->getScene() == nullptr) )
     {
         // Warn.
         Con::printf( "Cannot add a joint to a scene object that is not in a scene." );
@@ -3099,15 +3099,15 @@ S32 Scene::createMotorJoint(
     }
 
     // Check for two invalid objects.
-    if ( pSceneObjectA == NULL && pSceneObjectB == NULL )
+    if ( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
     {
         Con::warnf("Scene::createMotorJoint() - Cannot create joint without at least a single scene object." );
         return -1;
     }
 
     // Fetch bodies.
-    b2Body* pBodyA = pSceneObjectA != NULL ? pSceneObjectA->getBody() : getGroundBody();
-    b2Body* pBodyB = pSceneObjectB != NULL ? pSceneObjectB->getBody() : getGroundBody();
+    b2Body* pBodyA = pSceneObjectA != nullptr ? pSceneObjectA->getBody() : getGroundBody();
+    b2Body* pBodyB = pSceneObjectB != nullptr ? pSceneObjectB->getBody() : getGroundBody();
     
     // Populate definition.
     b2MotorJointDef jointDef;
@@ -3359,14 +3359,14 @@ void Scene::setDebugSceneObject( SceneObject* pSceneObject )
         return;
 
     // Remove delete notification for existing monitored object.
-    if ( mpDebugSceneObject != NULL )
+    if ( mpDebugSceneObject != nullptr )
         clearNotify( mpDebugSceneObject );
 
     // Set monitored scene object.
     mpDebugSceneObject = pSceneObject;
 
     // Finish if resetting monitored object.
-    if ( pSceneObject == NULL )
+    if ( pSceneObject == nullptr )
         return;
 
     // Add delete notification for new monitored object.
@@ -3480,7 +3480,7 @@ void Scene::addDeleteRequest( SceneObject* pSceneObject )
         return;
 
     // Populate Delete Request.
-    tDeleteRequest deleteRequest = { pSceneObject->getId(), NULL, false };
+    tDeleteRequest deleteRequest = { pSceneObject->getId(), nullptr, false };
 
     // Push Delete Request.
     mDeleteRequests.push_back( deleteRequest );
@@ -3614,7 +3614,7 @@ void Scene::SayGoodbye( b2Joint* pJoint )
 
     // Remove joint references.
     mJoints.erase( jointId );
-    mReverseJoints.erase( (U32)pJoint );
+    mReverseJoints.erase( pJoint );
 }
 
 //-----------------------------------------------------------------------------
@@ -3622,38 +3622,38 @@ void Scene::SayGoodbye( b2Joint* pJoint )
 SceneObject* Scene::create( const char* pType )
 {
     // Sanity!
-    AssertFatal( pType != NULL, "Scene::create() - Cannot create a NULL type." );
+    AssertFatal( pType != nullptr, "Scene::create() - Cannot create a nullptr type." );
 
     // Find the class rep.
     AbstractClassRep* pClassRep = AbstractClassRep::findClassRep( pType ); 
 
     // Did we find the type?
-    if ( pClassRep == NULL )
+    if ( pClassRep == nullptr )
     {
         // No, so warn.
         Con::warnf( "Scene::create() - Could not find type '%s' to create.", pType );
-        return NULL;
+        return nullptr;
     }
 
     // Find the scene object rep.
     AbstractClassRep* pSceneObjectRep = AbstractClassRep::findClassRep( "SceneObject" ); 
 
     // Sanity!
-    AssertFatal( pSceneObjectRep != NULL,  "Scene::create() - Could not find SceneObject class rep." );
+    AssertFatal( pSceneObjectRep != nullptr,  "Scene::create() - Could not find SceneObject class rep." );
 
     // Is the type derived from scene object?
     if ( !pClassRep->isClass( pSceneObjectRep ) )
     {
         // No, so warn.
         Con::warnf( "Scene::create() - Type '%s' is not derived from SceneObject.", pType );
-        return NULL;
+        return nullptr;
     }
     
     // Create the type.
     SceneObject* pSceneObject = dynamic_cast<SceneObject*>( pClassRep->create() );
 
     // Sanity!
-    AssertFatal( pSceneObject != NULL, "Scene::create() - Failed to create type via class rep." );
+    AssertFatal( pSceneObject != nullptr, "Scene::create() - Failed to create type via class rep." );
 
     // Attempt to register the object.
     if ( !pSceneObject->registerObject() )
@@ -3661,7 +3661,7 @@ SceneObject* Scene::create( const char* pType )
         // No, so warn.
         Con::warnf( "Scene::create() - Failed to register type '%s'.", pType );
         delete pSceneObject;
-        return NULL;
+        return nullptr;
     }
 
     // Add to the scene.
@@ -3686,13 +3686,13 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
     Parent::onTamlPostRead( customNodes );
 
     // Reset the loading scene.
-    Scene::LoadingScene = NULL;
+    Scene::LoadingScene = nullptr;
 
     // Find joint custom node.
     const TamlCustomNode* pJointNode = customNodes.findNode( jointCustomNodeName );
 
     // Do we have any joints?
-    if ( pJointNode != NULL )
+    if ( pJointNode != nullptr )
     {
         // Yes, so fetch children joint nodes.
         // Iterate joints.
@@ -3708,11 +3708,11 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 const TamlCustomNodeVector& jointChildren = pJointNode->getChildren();
 
                 // Fetch joint objects.
-                SceneObject* pSceneObjectA = jointChildren.size() > 0 ? jointChildren[0]->getProxyObject<SceneObject>(true) : NULL;
-                SceneObject* pSceneObjectB = jointChildren.size() == 2 ? jointChildren[1]->getProxyObject<SceneObject>(true) : NULL;
+                SceneObject* pSceneObjectA = jointChildren.size() > 0 ? jointChildren[0]->getProxyObject<SceneObject>(true) : nullptr;
+                SceneObject* pSceneObjectB = jointChildren.size() == 2 ? jointChildren[1]->getProxyObject<SceneObject>(true) : nullptr;
 
                 // Did we get any connected objects?
-                if( pSceneObjectA == NULL && pSceneObjectB == NULL )
+                if( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
                 {
                     // No, so warn.
                     Con::warnf( "Scene::onTamlPostRead() - Encountered a joint '%s' but it has invalid connected objects.", nodeName );
@@ -3771,11 +3771,11 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 const TamlCustomNodeVector& jointChildren = pJointNode->getChildren();
 
                 // Fetch joint objects.
-                SceneObject* pSceneObjectA = jointChildren.size() > 0 ? jointChildren[0]->getProxyObject<SceneObject>(true) : NULL;
-                SceneObject* pSceneObjectB = jointChildren.size() == 2 ? jointChildren[1]->getProxyObject<SceneObject>(true) : NULL;
+                SceneObject* pSceneObjectA = jointChildren.size() > 0 ? jointChildren[0]->getProxyObject<SceneObject>(true) : nullptr;
+                SceneObject* pSceneObjectB = jointChildren.size() == 2 ? jointChildren[1]->getProxyObject<SceneObject>(true) : nullptr;
 
                 // Did we get any connected objects?
-                if( pSceneObjectA == NULL && pSceneObjectB == NULL )
+                if( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
                 {
                     // No, so warn.
                     Con::warnf( "Scene::onTamlPostRead() - Encountered a joint '%s' but it has invalid connected objects.", nodeName );
@@ -3824,11 +3824,11 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 const TamlCustomNodeVector& jointChildren = pJointNode->getChildren();
 
                 // Fetch joint objects.
-                SceneObject* pSceneObjectA = jointChildren.size() > 0 ? jointChildren[0]->getProxyObject<SceneObject>(true) : NULL;
-                SceneObject* pSceneObjectB = jointChildren.size() == 2 ? jointChildren[1]->getProxyObject<SceneObject>(true) : NULL;
+                SceneObject* pSceneObjectA = jointChildren.size() > 0 ? jointChildren[0]->getProxyObject<SceneObject>(true) : nullptr;
+                SceneObject* pSceneObjectB = jointChildren.size() == 2 ? jointChildren[1]->getProxyObject<SceneObject>(true) : nullptr;
 
                 // Did we get any connected objects?
-                if( pSceneObjectA == NULL && pSceneObjectB == NULL )
+                if( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
                 {
                     // No, so warn.
                     Con::warnf( "Scene::onTamlPostRead() - Encountered a joint '%s' but it has invalid connected objects.", nodeName );
@@ -3908,11 +3908,11 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 const TamlCustomNodeVector& jointChildren = pJointNode->getChildren();
 
                 // Fetch joint objects.
-                SceneObject* pSceneObjectA = jointChildren.size() > 0 ? jointChildren[0]->getProxyObject<SceneObject>(true) : NULL;
-                SceneObject* pSceneObjectB = jointChildren.size() == 2 ? jointChildren[1]->getProxyObject<SceneObject>(true) : NULL;
+                SceneObject* pSceneObjectA = jointChildren.size() > 0 ? jointChildren[0]->getProxyObject<SceneObject>(true) : nullptr;
+                SceneObject* pSceneObjectB = jointChildren.size() == 2 ? jointChildren[1]->getProxyObject<SceneObject>(true) : nullptr;
 
                 // Did we get any connected objects?
-                if( pSceneObjectA == NULL && pSceneObjectB == NULL )
+                if( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
                 {
                     // No, so warn.
                     Con::warnf( "Scene::onTamlPostRead() - Encountered a joint '%s' but it has invalid connected objects.", nodeName );
@@ -3966,11 +3966,11 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 const TamlCustomNodeVector& jointChildren = pJointNode->getChildren();
 
                 // Fetch joint objects.
-                SceneObject* pSceneObjectA = jointChildren.size() > 0 ? jointChildren[0]->getProxyObject<SceneObject>(true) : NULL;
-                SceneObject* pSceneObjectB = jointChildren.size() == 2 ? jointChildren[1]->getProxyObject<SceneObject>(true) : NULL;
+                SceneObject* pSceneObjectA = jointChildren.size() > 0 ? jointChildren[0]->getProxyObject<SceneObject>(true) : nullptr;
+                SceneObject* pSceneObjectB = jointChildren.size() == 2 ? jointChildren[1]->getProxyObject<SceneObject>(true) : nullptr;
 
                 // Did we get any connected objects?
-                if( pSceneObjectA == NULL && pSceneObjectB == NULL )
+                if( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
                 {
                     // No, so warn.
                     Con::warnf( "Scene::onTamlPostRead() - Encountered a joint '%s' but it has invalid connected objects.", nodeName );
@@ -4050,11 +4050,11 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 const TamlCustomNodeVector& jointChildren = pJointNode->getChildren();
 
                 // Fetch joint objects.
-                SceneObject* pSceneObjectA = jointChildren.size() > 0 ? jointChildren[0]->getProxyObject<SceneObject>(true) : NULL;
-                SceneObject* pSceneObjectB = jointChildren.size() == 2 ? jointChildren[1]->getProxyObject<SceneObject>(true) : NULL;
+                SceneObject* pSceneObjectA = jointChildren.size() > 0 ? jointChildren[0]->getProxyObject<SceneObject>(true) : nullptr;
+                SceneObject* pSceneObjectB = jointChildren.size() == 2 ? jointChildren[1]->getProxyObject<SceneObject>(true) : nullptr;
 
                 // Did we get any connected objects?
-                if( pSceneObjectA == NULL && pSceneObjectB == NULL )
+                if( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
                 {
                     // No, so warn.
                     Con::warnf( "Scene::onTamlPostRead() - Encountered a joint '%s' but it has invalid connected objects.", nodeName );
@@ -4108,11 +4108,11 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 const TamlCustomNodeVector& jointChildren = pJointNode->getChildren();
 
                 // Fetch joint objects.
-                SceneObject* pSceneObjectA = jointChildren.size() > 0 ? jointChildren[0]->getProxyObject<SceneObject>(true) : NULL;
-                SceneObject* pSceneObjectB = jointChildren.size() == 2 ? jointChildren[1]->getProxyObject<SceneObject>(true) : NULL;
+                SceneObject* pSceneObjectA = jointChildren.size() > 0 ? jointChildren[0]->getProxyObject<SceneObject>(true) : nullptr;
+                SceneObject* pSceneObjectB = jointChildren.size() == 2 ? jointChildren[1]->getProxyObject<SceneObject>(true) : nullptr;
 
                 // Did we get any connected objects?
-                if( pSceneObjectA == NULL && pSceneObjectB == NULL )
+                if( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
                 {
                     // No, so warn.
                     Con::warnf( "Scene::onTamlPostRead() - Encountered a joint '%s' but it has invalid connected objects.", nodeName );
@@ -4196,11 +4196,11 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 const TamlCustomNodeVector& jointChildren = pJointNode->getChildren();
 
                 // Fetch joint objects.
-                SceneObject* pSceneObjectA = jointChildren.size() > 0 ? jointChildren[0]->getProxyObject<SceneObject>(true) : NULL;
-                SceneObject* pSceneObjectB = jointChildren.size() == 2 ? jointChildren[1]->getProxyObject<SceneObject>(true) : NULL;
+                SceneObject* pSceneObjectA = jointChildren.size() > 0 ? jointChildren[0]->getProxyObject<SceneObject>(true) : nullptr;
+                SceneObject* pSceneObjectB = jointChildren.size() == 2 ? jointChildren[1]->getProxyObject<SceneObject>(true) : nullptr;
 
                 // Did we get any connected objects?
-                if( pSceneObjectA == NULL && pSceneObjectB == NULL )
+                if( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
                 {
                     // No, so warn.
                     Con::warnf( "Scene::onTamlPostRead() - Encountered a joint '%s' but it has invalid connected objects.", nodeName );
@@ -4270,10 +4270,10 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 const TamlCustomNodeVector& jointChildren = pJointNode->getChildren();
 
                 // Fetch joint objects.
-                SceneObject* pSceneObject = jointChildren.size() == 1 ? jointChildren[0]->getProxyObject<SceneObject>(true) : NULL;
+                SceneObject* pSceneObject = jointChildren.size() == 1 ? jointChildren[0]->getProxyObject<SceneObject>(true) : nullptr;
 
                 // Did we get any connected objects?
-                if( pSceneObject == NULL )
+                if( pSceneObject == nullptr )
                 {
                     // No, so warn.
                     Con::warnf( "Scene::onTamlPostRead() - Encountered a joint '%s' but it has an invalid connected object.", nodeName );
@@ -4326,11 +4326,11 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 const TamlCustomNodeVector& jointChildren = pJointNode->getChildren();
 
                 // Fetch joint objects.
-                SceneObject* pSceneObjectA = jointChildren.size() > 0 ? jointChildren[0]->getProxyObject<SceneObject>(true) : NULL;
-                SceneObject* pSceneObjectB = jointChildren.size() == 2 ? jointChildren[1]->getProxyObject<SceneObject>(true) : NULL;
+                SceneObject* pSceneObjectA = jointChildren.size() > 0 ? jointChildren[0]->getProxyObject<SceneObject>(true) : nullptr;
+                SceneObject* pSceneObjectB = jointChildren.size() == 2 ? jointChildren[1]->getProxyObject<SceneObject>(true) : nullptr;
 
                 // Did we get any connected objects?
-                if( pSceneObjectA == NULL && pSceneObjectB == NULL )
+                if( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
                 {
                     // No, so warn.
                     Con::warnf( "Scene::onTamlPostRead() - Encountered a joint '%s' but it has invalid connected objects.", nodeName );
@@ -4402,7 +4402,7 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
     const TamlCustomNode* pControllerNode = customNodes.findNode( controllerCustomNodeName );
 
     // Do we have any controllers?
-    if ( pControllerNode != NULL )
+    if ( pControllerNode != nullptr )
     {
         // Yes, so fetch the scene controllers.
         SimSet* pControllerSet = getControllers();
@@ -4424,7 +4424,7 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
             SimObject* pProxyObject = pControllerNode->getProxyObject<SimObject>(false);
 
             // Is it a scene controller?
-            if ( dynamic_cast<SceneController*>( pProxyObject ) == NULL )
+            if ( dynamic_cast<SceneController*>( pProxyObject ) == nullptr )
             {
                 // No, so warn.
                 Con::warnf("Scene::onTamlPostRead() - Reading scene controllers but node '%s'is not a scene controller.", pControllerNode->getNodeName() );
@@ -4444,7 +4444,7 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
     const TamlCustomNode* pAssetPreloadNode = customNodes.findNode( assetPreloadNodeName );
 
     // Do we have any asset preloads?
-    if ( pAssetPreloadNode != NULL )
+    if ( pAssetPreloadNode != nullptr )
     {
         // Yes, so clear any existing asset preloads.
         clearAssetPreloads();
@@ -4467,7 +4467,7 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
             const TamlCustomField* pAssetIdField = pAssetNode->findField( "Id" );
 
             // Did we find the field?
-            if ( pAssetIdField == NULL )
+            if ( pAssetIdField == nullptr )
             {
                 // No, so warn.
                 Con::warnf("Scene::onTamlPostRead() - Found asset preload but failed to find asset Id field." );
@@ -4525,8 +4525,8 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
             PhysicsProxy::ePhysicsProxyType proxyTypeB = static_cast<PhysicsProxy*>(pBodyB->GetUserData())->getPhysicsProxyType();
 
             // Fetch scene objects.
-            SceneObject* pSceneObjectA = proxyTypeA == PhysicsProxy::PHYSIC_PROXY_SCENEOBJECT ? static_cast<SceneObject*>(pPhysicsProxyA) : NULL;
-            SceneObject* pSceneObjectB = proxyTypeB == PhysicsProxy::PHYSIC_PROXY_SCENEOBJECT ? static_cast<SceneObject*>(pPhysicsProxyB) : NULL;
+            SceneObject* pSceneObjectA = proxyTypeA == PhysicsProxy::PHYSIC_PROXY_SCENEOBJECT ? static_cast<SceneObject*>(pPhysicsProxyA) : nullptr;
+            SceneObject* pSceneObjectB = proxyTypeB == PhysicsProxy::PHYSIC_PROXY_SCENEOBJECT ? static_cast<SceneObject*>(pPhysicsProxyB) : nullptr;
 
             // Populate joint appropriately.
             switch( pBaseJoint->GetType() )
@@ -4540,7 +4540,7 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
                         const b2DistanceJoint* pJoint = dynamic_cast<const b2DistanceJoint*>( pBaseJoint );
 
                         // Sanity!
-                        AssertFatal( pJoint != NULL, "Scene::onTamlCustomWrite() - Invalid distance joint type returned." );
+                        AssertFatal( pJoint != nullptr, "Scene::onTamlCustomWrite() - Invalid distance joint type returned." );
 
                         // Add length.
                         pJointNode->addField( jointDistanceLengthName, pJoint->GetLength() );
@@ -4560,10 +4560,10 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
                             pJointNode->addField( jointLocalAnchorBName, pJoint->GetLocalAnchorB() );
 
                         // Add scene object bodies.
-                        if ( pSceneObjectA != NULL )
+                        if ( pSceneObjectA != nullptr )
                             pJointNode->addNode( pSceneObjectA );
 
-                        if ( pSceneObjectB != NULL )
+                        if ( pSceneObjectB != nullptr )
                             pJointNode->addNode( pSceneObjectB );
                     }
                     break;
@@ -4577,7 +4577,7 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
                         const b2RopeJoint* pJoint = dynamic_cast<const b2RopeJoint*>( pBaseJoint );
 
                         // Sanity!
-                        AssertFatal( pJoint != NULL, "Scene::onTamlCustomWrite() - Invalid rope joint type returned." );
+                        AssertFatal( pJoint != nullptr, "Scene::onTamlCustomWrite() - Invalid rope joint type returned." );
 
                         // Add max length.
                         if ( mNotZero( pJoint->GetMaxLength() ) )
@@ -4590,10 +4590,10 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
                             pJointNode->addField( jointLocalAnchorBName, pJoint->GetLocalAnchorB() );
 
                         // Add scene object bodies.
-                        if ( pSceneObjectA != NULL )
+                        if ( pSceneObjectA != nullptr )
                             pJointNode->addNode( pSceneObjectA );
 
-                        if ( pSceneObjectB != NULL )
+                        if ( pSceneObjectB != nullptr )
                             pJointNode->addNode( pSceneObjectB );
                     }
                     break;
@@ -4607,7 +4607,7 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
                         const b2RevoluteJoint* pJoint = dynamic_cast<const b2RevoluteJoint*>( pBaseJoint );
 
                         // Sanity!
-                        AssertFatal( pJoint != NULL, "Scene::onTamlCustomWrite() - Invalid revolute joint type returned." );
+                        AssertFatal( pJoint != nullptr, "Scene::onTamlCustomWrite() - Invalid revolute joint type returned." );
 
                         // Add limit.
                         if ( pJoint->IsLimitEnabled() )
@@ -4632,10 +4632,10 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
                             pJointNode->addField( jointLocalAnchorBName, pJoint->GetLocalAnchorB() );
 
                         // Add scene object bodies.
-                        if ( pSceneObjectA != NULL )
+                        if ( pSceneObjectA != nullptr )
                             pJointNode->addNode( pSceneObjectA );
 
-                        if ( pSceneObjectB != NULL )
+                        if ( pSceneObjectB != nullptr )
                             pJointNode->addNode( pSceneObjectB );
                     }
                     break;
@@ -4649,7 +4649,7 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
                         const b2WeldJoint* pJoint = dynamic_cast<const b2WeldJoint*>( pBaseJoint );
 
                         // Sanity!
-                        AssertFatal( pJoint != NULL, "Scene::onTamlCustomWrite() - Invalid weld joint type returned." );
+                        AssertFatal( pJoint != nullptr, "Scene::onTamlCustomWrite() - Invalid weld joint type returned." );
 
                         // Add frequency.
                         if ( mNotZero( pJoint->GetFrequency() ) )
@@ -4666,10 +4666,10 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
                             pJointNode->addField( jointLocalAnchorBName, pJoint->GetLocalAnchorB() );
 
                         // Add scene object bodies.
-                        if ( pSceneObjectA != NULL )
+                        if ( pSceneObjectA != nullptr )
                             pJointNode->addNode( pSceneObjectA );
 
-                        if ( pSceneObjectB != NULL )
+                        if ( pSceneObjectB != nullptr )
                             pJointNode->addNode( pSceneObjectB );
                     }
                     break;
@@ -4683,7 +4683,7 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
                         b2WheelJoint* pJoint = dynamic_cast<b2WheelJoint*>( pBaseJoint );
 
                         // Sanity!
-                        AssertFatal( pJoint != NULL, "Scene::onTamlCustomWrite() - Invalid wheel joint type returned." );
+                        AssertFatal( pJoint != nullptr, "Scene::onTamlCustomWrite() - Invalid wheel joint type returned." );
 
                         // Add motor.
                         if ( pJoint->IsMotorEnabled() )
@@ -4709,10 +4709,10 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
                         pJointNode->addField( jointLocalAnchorBName, pJoint->GetLocalAnchorB() );
 
                         // Add scene object bodies.
-                        if ( pSceneObjectA != NULL )
+                        if ( pSceneObjectA != nullptr )
                             pJointNode->addNode( pSceneObjectA );
 
-                        if ( pSceneObjectB != NULL )
+                        if ( pSceneObjectB != nullptr )
                             pJointNode->addNode( pSceneObjectB );
                     }
                     break;
@@ -4734,7 +4734,7 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
                             pJointNode->addField( jointFrictionMaxTorqueName, pJoint->GetMaxTorque() );
 
                         // Sanity!
-                        AssertFatal( pJoint != NULL, "Scene::onTamlCustomWrite() - Invalid friction joint type returned." );
+                        AssertFatal( pJoint != nullptr, "Scene::onTamlCustomWrite() - Invalid friction joint type returned." );
 
                         // Add local anchors.
                         if ( mNotZero( pJoint->GetLocalAnchorA().LengthSquared() ) )
@@ -4743,10 +4743,10 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
                             pJointNode->addField( jointLocalAnchorBName, pJoint->GetLocalAnchorB() );
 
                         // Add scene object bodies.
-                        if ( pSceneObjectA != NULL )
+                        if ( pSceneObjectA != nullptr )
                             pJointNode->addNode( pSceneObjectA );
 
-                        if ( pSceneObjectB != NULL )
+                        if ( pSceneObjectB != nullptr )
                             pJointNode->addNode( pSceneObjectB );
                     }
                     break;
@@ -4760,7 +4760,7 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
                         b2PrismaticJoint* pJoint = dynamic_cast<b2PrismaticJoint*>( pBaseJoint );
 
                         // Sanity!
-                        AssertFatal( pJoint != NULL, "Scene::onTamlCustomWrite() - Invalid prismatic joint type returned." );
+                        AssertFatal( pJoint != nullptr, "Scene::onTamlCustomWrite() - Invalid prismatic joint type returned." );
 
                         // Add limit.
                         if ( pJoint->IsLimitEnabled() )
@@ -4786,10 +4786,10 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
                         pJointNode->addField( jointLocalAnchorBName, pJoint->GetLocalAnchorB() );
 
                         // Add scene object bodies.
-                        if ( pSceneObjectA != NULL )
+                        if ( pSceneObjectA != nullptr )
                             pJointNode->addNode( pSceneObjectA );
 
-                        if ( pSceneObjectB != NULL )
+                        if ( pSceneObjectB != nullptr )
                             pJointNode->addNode( pSceneObjectB );
                     }
                     break;
@@ -4803,7 +4803,7 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
                         b2PulleyJoint* pJoint = dynamic_cast<b2PulleyJoint*>( pBaseJoint );
 
                         // Sanity!
-                        AssertFatal( pJoint != NULL, "Scene::onTamlCustomWrite() - Invalid pulley joint type returned." );
+                        AssertFatal( pJoint != nullptr, "Scene::onTamlCustomWrite() - Invalid pulley joint type returned." );
 
                         // Add lengths.
                         pJointNode->addField( jointPulleyLengthAName, pJoint->GetLengthA() );
@@ -4821,10 +4821,10 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
                         pJointNode->addField( jointLocalAnchorBName, pJoint->GetBodyB()->GetLocalPoint( pJoint->GetAnchorB() ) );
 
                         // Add scene object bodies.
-                        if ( pSceneObjectA != NULL )
+                        if ( pSceneObjectA != nullptr )
                             pJointNode->addNode( pSceneObjectA );
 
-                        if ( pSceneObjectB != NULL )
+                        if ( pSceneObjectB != nullptr )
                             pJointNode->addNode( pSceneObjectB );
                     }
                     break;
@@ -4838,7 +4838,7 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
                         const b2MouseJoint* pJoint = dynamic_cast<const b2MouseJoint*>( pBaseJoint );
 
                         // Sanity!
-                        AssertFatal( pJoint != NULL, "Scene::onTamlCustomWrite() - Invalid target joint type returned." );
+                        AssertFatal( pJoint != nullptr, "Scene::onTamlCustomWrite() - Invalid target joint type returned." );
 
                         // Add target.
                         pJointNode->addField( jointTargetWorldTargetName, pJoint->GetTarget() );
@@ -4855,7 +4855,7 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
                         // Add body.
                         // NOTE: This joint uses BODYB as the object, BODYA is the ground-body however for easy of use
                         // we'll refer to this as OBJECTA in the persisted format.
-                        if ( pSceneObjectB != NULL )
+                        if ( pSceneObjectB != nullptr )
                             pJointNode->addNode( pSceneObjectB );
                     }
                     break;
@@ -4869,7 +4869,7 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
                         const b2MotorJoint* pJoint = dynamic_cast<const b2MotorJoint*>( pBaseJoint );
 
                         // Sanity!
-                        AssertFatal( pJoint != NULL, "Scene::onTamlCustomWrite() - Invalid motor joint type returned." );
+                        AssertFatal( pJoint != nullptr, "Scene::onTamlCustomWrite() - Invalid motor joint type returned." );
 
                         // Add linear offset.
                         if ( mNotZero( pJoint->GetLinearOffset().LengthSquared() ) )
@@ -4889,10 +4889,10 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
                         pJointNode->addField( jointMotorCorrectionFactorName, pJoint->GetCorrectionFactor() );
 
                         // Add scene object bodies.
-                        if ( pSceneObjectA != NULL )
+                        if ( pSceneObjectA != nullptr )
                             pJointNode->addNode( pSceneObjectA );
 
-                        if ( pSceneObjectB != NULL )
+                        if ( pSceneObjectB != nullptr )
                             pJointNode->addNode( pSceneObjectB );
                     }
                     break;
@@ -5009,7 +5009,7 @@ SimObject* Scene::getTamlChild( const U32 childIndex ) const
 
     // For when the assert is not used.
     if ( childIndex >= (U32)mSceneObjects.size() )
-        return NULL;
+        return nullptr;
 
     return mSceneObjects[ childIndex ];
 }
@@ -5019,13 +5019,13 @@ SimObject* Scene::getTamlChild( const U32 childIndex ) const
 void Scene::addTamlChild( SimObject* pSimObject )
 {
     // Sanity!
-    AssertFatal( pSimObject != NULL, "Scene::addTamlChild() - Cannot add a NULL child object." );
+    AssertFatal( pSimObject != nullptr, "Scene::addTamlChild() - Cannot add a nullptr child object." );
 
     // Fetch as a scene object.
     SceneObject* pSceneObject = dynamic_cast<SceneObject*>( pSimObject );
 
     // Is it a scene object?
-    if ( pSceneObject == NULL )
+    if ( pSceneObject == nullptr )
     {
         // No, so warn.
         Con::warnf( "Scene::addTamlChild() - Cannot add a child object that isn't a scene object." );
@@ -5185,8 +5185,8 @@ const char* Scene::getPickModeDescription( Scene::PickMode pickMode )
 static void WriteJointsCustomTamlScehema( const AbstractClassRep* pClassRep, TiXmlElement* pParentElement )
 {
     // Sanity!
-    AssertFatal( pClassRep != NULL,  "Taml::WriteJointsCustomTamlScehema() - ClassRep cannot be NULL." );
-    AssertFatal( pParentElement != NULL,  "Taml::WriteJointsCustomTamlScehema() - Parent Element cannot be NULL." );
+    AssertFatal( pClassRep != nullptr,  "Taml::WriteJointsCustomTamlScehema() - ClassRep cannot be nullptr." );
+    AssertFatal( pParentElement != nullptr,  "Taml::WriteJointsCustomTamlScehema() - Parent Element cannot be nullptr." );
 
     char buffer[1024];
 
@@ -5266,8 +5266,8 @@ static void WriteJointsCustomTamlScehema( const AbstractClassRep* pClassRep, TiX
 static void WriteControllersCustomTamlScehema( const AbstractClassRep* pClassRep, TiXmlElement* pParentElement )
 {
     // Sanity!
-    AssertFatal( pClassRep != NULL,  "Taml::WriteControllersCustomTamlScehema() - ClassRep cannot be NULL." );
-    AssertFatal( pParentElement != NULL,  "Taml::WriteControllersCustomTamlScehema() - Parent Element cannot be NULL." );
+    AssertFatal( pClassRep != nullptr,  "Taml::WriteControllersCustomTamlScehema() - ClassRep cannot be nullptr." );
+    AssertFatal( pParentElement != nullptr,  "Taml::WriteControllersCustomTamlScehema() - Parent Element cannot be nullptr." );
 
     char buffer[1024];
 
@@ -5294,11 +5294,11 @@ static void WriteControllersCustomTamlScehema( const AbstractClassRep* pClassRep
     AbstractClassRep* pGroupedSceneControllerType = AbstractClassRep::findClassRep( "GroupedSceneController" );
 
     // Sanity!
-    AssertFatal( pPickingSceneControllerType != NULL, "Scene::WriteControllersCustomTamlScehema() - Cannot find the PickingSceneController type." );
-    AssertFatal( pGroupedSceneControllerType != NULL, "Scene::WriteControllersCustomTamlScehema() - Cannot find the GroupedSceneController type." );
+    AssertFatal( pPickingSceneControllerType != nullptr, "Scene::WriteControllersCustomTamlScehema() - Cannot find the PickingSceneController type." );
+    AssertFatal( pGroupedSceneControllerType != nullptr, "Scene::WriteControllersCustomTamlScehema() - Cannot find the GroupedSceneController type." );
 
     // Add choice members.
-    for ( AbstractClassRep* pChoiceType = AbstractClassRep::getClassList(); pChoiceType != NULL; pChoiceType = pChoiceType->getNextClass() )
+    for ( AbstractClassRep* pChoiceType = AbstractClassRep::getClassList(); pChoiceType != nullptr; pChoiceType = pChoiceType->getNextClass() )
     {
         // Skip if not derived from either of the scene controllers.
         if ( !pChoiceType->isClass( pPickingSceneControllerType ) && !pChoiceType->isClass( pGroupedSceneControllerType ) )
@@ -5318,8 +5318,8 @@ static void WriteControllersCustomTamlScehema( const AbstractClassRep* pClassRep
 static void WritePreloadsCustomTamlScehema( const AbstractClassRep* pClassRep, TiXmlElement* pParentElement )
 {
     // Sanity!
-    AssertFatal( pClassRep != NULL,  "Taml::WritePreloadsCustomTamlScehema() - ClassRep cannot be NULL." );
-    AssertFatal( pParentElement != NULL,  "Taml::WritePreloadsCustomTamlScehema() - Parent Element cannot be NULL." );
+    AssertFatal( pClassRep != nullptr,  "Taml::WritePreloadsCustomTamlScehema() - ClassRep cannot be nullptr." );
+    AssertFatal( pParentElement != nullptr,  "Taml::WritePreloadsCustomTamlScehema() - Parent Element cannot be nullptr." );
 
     char buffer[1024];
 
@@ -5363,8 +5363,8 @@ static void WritePreloadsCustomTamlScehema( const AbstractClassRep* pClassRep, T
 static void WriteCustomTamlSchema( const AbstractClassRep* pClassRep, TiXmlElement* pParentElement )
 {
     // Sanity!
-    AssertFatal( pClassRep != NULL,  "Taml::WriteCustomTamlSchema() - ClassRep cannot be NULL." );
-    AssertFatal( pParentElement != NULL,  "Taml::WriteCustomTamlSchema() - Parent Element cannot be NULL." );
+    AssertFatal( pClassRep != nullptr,  "Taml::WriteCustomTamlSchema() - ClassRep cannot be nullptr." );
+    AssertFatal( pParentElement != nullptr,  "Taml::WriteCustomTamlSchema() - Parent Element cannot be nullptr." );
 
     WriteJointsCustomTamlScehema( pClassRep, pParentElement );
     WriteControllersCustomTamlScehema( pClassRep, pParentElement );
@@ -5378,7 +5378,7 @@ IMPLEMENT_CONOBJECT_CHILDREN_SCHEMA(Scene, WriteCustomTamlSchema);
 RenderPassManager *Scene::getDefaultRenderPass() const {
     if (mDefaultRenderPass)
         return mDefaultRenderPass;
-    return NULL;
+    return nullptr;
 }
 
 

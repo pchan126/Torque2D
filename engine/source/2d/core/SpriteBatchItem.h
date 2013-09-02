@@ -135,18 +135,15 @@ public:
             mArgString = StringTable->EmptyString;
         }
 
-        // This should be as unique as possible as it is used for hashing.
-        struct KeyHash {
-            std::size_t operator()(const LogicalPosition& k) const
-            {
-                return (std::size_t)(k.mArgString) * (std::size_t)2654435761;
-            }
-        };
-
-        operator const U32() const
-        {
-            return (U32)(mArgString) * (U32)2654435761;
-        }
+         std::size_t operator()(const LogicalPosition& k) const
+         {
+            static std::hash<StringTableEntry> hasher;
+             return (std::size_t)(hasher)(k.mArgString);
+         }
+       
+       bool operator<(const LogicalPosition& right) const {
+          return (mArgString < right.mArgString);
+       }
 
         /// Value equality check for hashing.
         bool operator==( const LogicalPosition& logicalPosition ) const

@@ -314,7 +314,7 @@ void Platform::outputDebugString(const char *string)
 // Launch the default OS browser. This has nothing to do with the QT browser
 bool Platform::openWebBrowser( const char* webAddress )
 {
-    NSString* convertedAddress = [NSString stringWithUTF8String:webAddress];
+    NSString* convertedAddress = @(webAddress);
     
     bool result = [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:convertedAddress]];
     

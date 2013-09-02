@@ -101,18 +101,18 @@ class ThreadManager
 public:
 
    /// Returns true if threadId is the same as the calling thread's id.
-   static bool isCurrentThread(U32 threadId);
+   static bool isCurrentThread(PTR threadId);
 
    /// Returns true if the 2 thread ids represent the same thread. Some thread
    /// APIs return an opaque object as a thread id, so the == operator cannot
    /// reliably compare thread ids.
    // this comparator is needed by pthreads and ThreadManager.
-   static bool compare(U32 threadId_1, U32 threadId_2);
+   static bool compare(PTR threadId_1, PTR threadId_2);
       
    /// Returns the platform specific thread id of the calling thread. Some 
    /// platforms do not guarantee that this ID stays the same over the life of 
    /// the thread, so use ThreadManager::compare() to compare thread ids.
-   static U32 getCurrentThreadId();
+   static PTR getCurrentThreadId();
    
    /// Each thread should add itself to the thread pool the first time it runs.
    
@@ -146,7 +146,7 @@ public:
    
    /// Searches the pool of known threads for a thread whose id is equivalent to
    /// the given threadid. Compares thread ids with ThreadManager::compare().
-   static Thread* getThreadById(U32 threadid)
+   static Thread* getThreadById(PTR threadid)
    {
       AssertFatal(threadid != 0, "ThreadManager::getThreadById() Searching for a bad thread id.");
       Thread* ret = NULL;
@@ -172,7 +172,7 @@ public:
    }
 };
 
-inline bool ThreadManager::isCurrentThread(U32 threadId)
+inline bool ThreadManager::isCurrentThread(PTR threadId)
 {
    U32 current = getCurrentThreadId();
    return compare(current, threadId);
