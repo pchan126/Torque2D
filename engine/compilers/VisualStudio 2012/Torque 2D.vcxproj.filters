@@ -220,6 +220,9 @@
     <Filter Include="platformWin32\2d\assets">
       <UniqueIdentifier>{20529507-b778-4a10-9a62-48fb7cc5b16f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="math\util">
+      <UniqueIdentifier>{e6e361a1-b57c-4000-8e59-845d3fa4d9d2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\audio\audio.cc">
@@ -933,9 +936,6 @@
     <ClCompile Include="..\..\source\algorithm\crc.cc">
       <Filter>algorithm</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\algorithm\hashFunction.cc">
-      <Filter>algorithm</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\source\game\gameInterface.cc">
       <Filter>game</Filter>
     </ClCompile>
@@ -1487,6 +1487,12 @@
     </ClCompile>
     <ClCompile Include="..\..\source\gui\guiMoveCtrl.cpp">
       <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\2d\assets\ShaderAsset.cpp">
+      <Filter>2d\assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\math\util\sphereMesh.cpp">
+      <Filter>math\util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2186,9 +2192,6 @@
     <ClInclude Include="..\..\source\collection\simpleHashTable.h">
       <Filter>collection</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\collection\sparseArray.h">
-      <Filter>collection</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\collection\vector.h">
       <Filter>collection</Filter>
     </ClInclude>
@@ -2268,9 +2271,6 @@
       <Filter>algorithm</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\algorithm\crctab.h">
-      <Filter>algorithm</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\algorithm\hashFunction.h">
       <Filter>algorithm</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\graphics\color.h">
@@ -3047,6 +3047,12 @@
     </ClInclude>
     <ClInclude Include="..\..\source\gui\guiMoveCtrl.h">
       <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\2d\assets\ShaderAsset.h">
+      <Filter>2d\assets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\math\util\sphereMesh.h">
+      <Filter>math\util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
