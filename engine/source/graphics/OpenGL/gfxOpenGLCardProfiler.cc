@@ -33,7 +33,7 @@ void GFXOpenGLCardProfiler::setupCardCapabilities()
    GLint numCompressedTexFormats;
    
    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTexSize);
-   
+
    const char* versionString = reinterpret_cast<const char*>(glGetString(GL_SHADING_LANGUAGE_VERSION));
    
    Con::printf("OpenGl Shading Language Version: %s", versionString);

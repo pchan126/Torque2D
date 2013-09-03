@@ -597,7 +597,6 @@ BatchRender::indexedPrim* BatchRender::findTextureBatch( GFXTexHandle& handle )
         else
         {
             // No, so generate one.
-//            pIndexVector = new Vector<GFXVertexPCT>;
             pIndexVector = new indexedPrim( GFXTriangleStrip, 0, 0 );
         }
 

@@ -101,10 +101,25 @@ void GFXOpenGL32OSXCardProfiler::setupCardCapabilities()
             CGLSetCurrentContext (cglContext);
             Parent::setupCardCapabilities();
             
-            GLint maxShaderTextures;
-            glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, (GLint*)&maxShaderTextures);
-            setCapability("maxTextureImageUnits", maxShaderTextures);
-            
+            GLint temp;
+
+             glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &temp);
+             setCapability("maxVertexAttributes", temp);
+
+             glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, &temp);
+             setCapability("maxUniformVertexVectors", temp);
+
+             glGetIntegerv(GL_MAX_FRAGMENT_UNIFORM_COMPONENTS, &temp);
+             setCapability("maxUniformFragmentVectors", temp);
+
+             glGetIntegerv(GL_MAX_VARYING_FLOATS, &temp);
+             setCapability("maxVaryingVectors", temp);
+
+             glGetIntegerv(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, &temp);
+             setCapability("maxVertTextureImageUnits", temp);
+
+             glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &temp);
+             setCapability("maxFragTextureImageUnits", temp);
 //            setCapability("GL::EXT_depth_bounds_test", CheckForExtension(@"GL_EXT_depth_bounds_test"));
 //            setCapability("GL::EXT_framebuffer_multisample_blit_scaled", CheckForExtension(@"GL_EXT_framebuffer_multisample_blit_scaled"));
 //            

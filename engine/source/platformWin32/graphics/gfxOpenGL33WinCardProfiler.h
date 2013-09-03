@@ -23,22 +23,21 @@
 #ifndef _GFXGL33WINCARDPROFILE_H
 #define _GFXGL33WINCARDPROFILE_H
 
-#include "graphics/gfxCardProfile.h"
+#include "graphics/OpenGL/gfxOpenGLCardProfiler.h"
 
-class GFXOpenGLCardProfiler : public GFXCardProfiler
+class GFXOpenGL33WinCardProfiler : public GFXOpenGLCardProfiler
 {
 public:
    void init();
 
 protected:
-   virtual const String& getRendererString() const { return mRendererString; }
    virtual void setupCardCapabilities();
    virtual bool _queryCardCap(const String& query, U32& foundResult);
    virtual bool _queryFormat(const GFXFormat fmt, const GFXTextureProfile *profile, bool &inOutAutogenMips);
 
 private:
-   String mRendererString;
-   typedef GFXCardProfiler Parent;
+   typedef GFXOpenGLCardProfiler Parent;
+   
 };
 
 #endif

@@ -849,6 +849,7 @@ public:
       GSAlphaTexture,
       GSBatchTexture,
       GSTargetRestore,
+      GSLightingTexture,
       GSPoint,
       GSVideo,
        

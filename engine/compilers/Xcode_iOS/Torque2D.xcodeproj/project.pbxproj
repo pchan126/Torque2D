@@ -44,6 +44,7 @@
 		4B8AA88C053A6612EFCA9D10 /* iOSInputManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA81DE24DF738778D59DC /* iOSInputManager.mm */; };
 		4B8AA8989528FAA453A05720 /* ShaderAsset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AABFFCB723EFC25C2D1AF /* ShaderAsset.cpp */; };
 		4B8AAA433A8608406CA76F20 /* guiMoveCtrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA80281B751522AB2B79E /* guiMoveCtrl.cpp */; };
+		4B8AAE439C5F012AC8673AE4 /* sphereMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA1CCC0CEEC19239003A7 /* sphereMesh.cpp */; };
 		4B8AAE742D18ABC94DC3FDC5 /* mRect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA70EC9A24A9699C62600 /* mRect.cpp */; };
 		860A196C171F0666000E9FE8 /* guiGridCtrl.cc in Sources */ = {isa = PBXBuildFile; fileRef = 860A196A171F0666000E9FE8 /* guiGridCtrl.cc */; };
 		8610F32F16AEEC670015BCEB /* main.cs in Resources */ = {isa = PBXBuildFile; fileRef = 8610F32D16AEEC670015BCEB /* main.cs */; };
@@ -634,8 +635,10 @@
 		33230911303CCA4C673E1A22 /* guiSliderCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiSliderCtrl.h; sourceTree = "<group>"; };
 		4B8AA01C54D88FD452C6B674 /* iOSCursorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iOSCursorController.h; path = ../windowManager/iOSCursorController.h; sourceTree = "<group>"; };
 		4B8AA02DFD7C90E1065C23DC /* iOSInputManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iOSInputManager.h; sourceTree = "<group>"; };
+		4B8AA1CCC0CEEC19239003A7 /* sphereMesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sphereMesh.cpp; sourceTree = "<group>"; };
 		4B8AA2356D2CABA30E9BEB5C /* guiJoystickCtrl_ScriptBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = guiJoystickCtrl_ScriptBindings.h; path = gui/guiJoystickCtrl_ScriptBindings.h; sourceTree = "<group>"; };
 		4B8AA3F49A3463DC9D4C56AB /* render2DObjectMgr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = render2DObjectMgr.cpp; sourceTree = "<group>"; };
+		4B8AA4FE99FB3B24D157E810 /* sphereMesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sphereMesh.h; sourceTree = "<group>"; };
 		4B8AA506A21CCF7A52646E9C /* gfxOpenGLES20iOSTextureTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSTextureTarget.h; sourceTree = "<group>"; };
 		4B8AA643B344244F09BC5153 /* render2DObjectMgr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render2DObjectMgr.h; sourceTree = "<group>"; };
 		4B8AA69E2FAAFC7316092ACB /* gfxOpenGLES20TextureTarget.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxOpenGLES20TextureTarget.cc; sourceTree = "<group>"; };
@@ -1811,6 +1814,15 @@
 			name = gui;
 			sourceTree = "<group>";
 		};
+		4B8AA57F173B6285616885BA /* util */ = {
+			isa = PBXGroup;
+			children = (
+				4B8AA4FE99FB3B24D157E810 /* sphereMesh.h */,
+				4B8AA1CCC0CEEC19239003A7 /* sphereMesh.cpp */,
+			);
+			path = util;
+			sourceTree = "<group>";
+		};
 		867BAC9116AEC8BB0033868F /* platformiOS */ = {
 			isa = PBXGroup;
 			children = (
@@ -2612,6 +2624,7 @@
 				867BAF1816AEC9050033868F /* rectClipper.cpp */,
 				867BAF1916AEC9050033868F /* rectClipper.h */,
 				4B8AA70EC9A24A9699C62600 /* mRect.cpp */,
+				4B8AA57F173B6285616885BA /* util */,
 			);
 			name = math;
 			path = ../../../source/math;
@@ -4063,6 +4076,7 @@
 				4B8AAA433A8608406CA76F20 /* guiMoveCtrl.cpp in Sources */,
 				4B8AA8989528FAA453A05720 /* ShaderAsset.cpp in Sources */,
 				4B8AA268C459D3CAC485BCFB /* shaderGenVars.cpp in Sources */,
+				4B8AAE439C5F012AC8673AE4 /* sphereMesh.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

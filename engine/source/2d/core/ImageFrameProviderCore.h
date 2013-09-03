@@ -64,7 +64,7 @@ public:
     virtual ~ImageFrameProviderCore();
 
     void allocateAssets( AssetPtr<ImageAsset>* pImageAssetPtr, AssetPtr<AnimationAsset>* pAnimationAssetPtr );
-    inline void deallocateAssets( void ) { mpImageAsset = NULL; mpAnimationAsset = NULL; }
+    inline void deallocateAssets( void ) { mpImageAsset = nullptr; mpAnimationAsset = nullptr; }
 
     virtual void copyTo( ImageFrameProviderCore* pImageFrameProviderCore ) const;
 
@@ -118,7 +118,7 @@ public:
     inline GFXTexHandle& getProviderTexture( void ) const { return !validRender() ? BadTextureHandle : isStaticFrameProvider() ? (*mpImageAsset)->getImageTexture() : (*mpAnimationAsset)->getImage()->getImageTexture(); };
     inline const ImageAsset::FrameArea& getProviderImageFrameArea( void ) const  { return !validRender() ? BadFrameArea : isStaticFrameProvider() ? (*mpImageAsset)->getImageFrameArea(mImageFrame) : (*mpAnimationAsset)->getImage()->getImageFrameArea(getCurrentAnimationFrame()); };
 
-    inline const AnimationAsset* getCurrentAnimation( void ) const { return mpAnimationAsset->notNull() ? *mpAnimationAsset : NULL; };
+    inline const AnimationAsset* getCurrentAnimation( void ) const { return mpAnimationAsset->notNull() ? *mpAnimationAsset : nullptr; };
     inline const StringTableEntry getCurrentAnimationAssetId( void ) const { return mpAnimationAsset->getAssetId(); };
     const U32 getCurrentAnimationFrame( void ) const;
     inline const F32 getCurrentAnimationTime( void ) const { return mCurrentTime; };

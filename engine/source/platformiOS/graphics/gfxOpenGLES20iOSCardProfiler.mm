@@ -83,14 +83,31 @@ void GFXOpenGLES20iOSCardProfiler::setupCardCapabilities()
 {
    Parent::setupCardCapabilities();
    
-   GLint maxDepthBits;
-   GLint maxStencilBits;
+   GLint temp;
 
-   glGetIntegerv(GL_DEPTH_BITS, &maxDepthBits);
-   glGetIntegerv(GL_STENCIL_BITS, &maxStencilBits);
+    glGetIntegerv(GL_DEPTH_BITS, &temp);
+    setCapability("maxDepthBits", temp);
 
-   setCapability("maxDepthBits", maxDepthBits);
-   setCapability("maxStencilBits", maxStencilBits);
+    glGetIntegerv(GL_STENCIL_BITS, &temp);
+    setCapability("maxStencilBits", temp);
+
+    glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &temp);
+    setCapability("maxVertexAttributes", temp);
+
+    glGetIntegerv(GL_MAX_VERTEX_UNIFORM_VECTORS, &temp);
+    setCapability("maxUniformVertexVectors", temp);
+
+    glGetIntegerv(GL_MAX_FRAGMENT_UNIFORM_VECTORS, &temp);
+    setCapability("maxUniformFragmentVectors", temp);
+
+    glGetIntegerv(GL_MAX_VARYING_VECTORS, &temp);
+    setCapability("maxVaryingVectors", temp);
+
+    glGetIntegerv(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, &temp);
+    setCapability("maxVertTextureImageUnits", temp);
+
+    glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &temp);
+    setCapability("maxFragTextureImageUnits", temp);
 
    // The GL_APPLE_copy_texture_levels extension builds on top of the functionality of the GL_EXT_texture_storage extension and allows a set of texture mipmaps to be copied from one texture to another. (iOS 6.0)
     setCapability("GL::GL_APPLE_copy_texture_levels", CheckForExtension(@"GL_APPLE_copy_texture_levels"));
