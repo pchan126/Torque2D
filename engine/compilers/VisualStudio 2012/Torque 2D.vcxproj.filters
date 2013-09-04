@@ -1494,6 +1494,9 @@
     <ClCompile Include="..\..\source\math\util\sphereMesh.cpp">
       <Filter>math\util</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\graphics\OpenGL\gfxOpenGLCardProfiler.cc">
+      <Filter>graphics\OpenGL</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\source\audio\audio.h">

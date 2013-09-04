@@ -31,7 +31,7 @@ void GFXOpenGL33WinCardProfiler::init()
    Parent::init();
 }
 
-void GFXOpenGLCardProfiler::setupCardCapabilities()
+void GFXOpenGL33WinCardProfiler::setupCardCapabilities()
 {
     GLint maxTexSize;
     GLint numCompressedTexFormats;
@@ -58,12 +58,12 @@ void GFXOpenGLCardProfiler::setupCardCapabilities()
     setCapability("maxFragTextureImageUnits", temp);
 }
 
-bool GFXOpenGLCardProfiler::_queryCardCap(const String& query, U32& foundResult)
+bool GFXOpenGL33WinCardProfiler::_queryCardCap(const String& query, U32& foundResult)
 {
    return glfwExtensionSupported(query.c_str());
 }
 
-bool GFXOpenGLCardProfiler::_queryFormat(const GFXFormat fmt, const GFXTextureProfile *profile, bool &inOutAutogenMips)
+bool GFXOpenGL33WinCardProfiler::_queryFormat(const GFXFormat fmt, const GFXTextureProfile *profile, bool &inOutAutogenMips)
 {
 	// We assume if the format is valid that we can use it for any purpose.
    // This may not be the case, but we have no way to check short of in depth 

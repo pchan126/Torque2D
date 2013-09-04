@@ -95,7 +95,7 @@ void GFXOpenGL33WinDevice::initGLState()
     // need to happen.
     
     // Deal with the card profiler here when we know we have a valid context.
-    mCardProfiler = new GFXOpenGLCardProfiler();
+    mCardProfiler = new GFXOpenGL33WinCardProfiler();
     mCardProfiler->init();
 
     glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, (GLint*)&mMaxShaderTextures);

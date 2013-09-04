@@ -385,6 +385,7 @@
     <ClCompile Include="..\..\source\graphics\gfxVertexFormat.cc" />
     <ClCompile Include="..\..\source\graphics\gfxVertexTypes.cc" />
     <ClCompile Include="..\..\source\graphics\gPalette.cc" />
+    <ClCompile Include="..\..\source\graphics\OpenGL\gfxOpenGLCardProfiler.cc" />
     <ClCompile Include="..\..\source\graphics\OpenGL\gfxOpenGLDevice.cc" />
     <ClCompile Include="..\..\source\graphics\OpenGL\gfxOpenGLShader.cc" />
     <ClCompile Include="..\..\source\graphics\OpenGL\gfxOpenGLStateBlock.cc" />
