@@ -30,7 +30,7 @@
 
 //-----------------------------------------------------------------------------
 
-static EnumTable::Enums renderSortLookup[] =
+EnumTable SceneRenderQueue::renderSortTable =
                 {
                 { SceneRenderQueue::RENDER_SORT_OFF,            "Off" },
                 { SceneRenderQueue::RENDER_SORT_NEWEST,         "New" },
@@ -45,16 +45,12 @@ static EnumTable::Enums renderSortLookup[] =
                 { SceneRenderQueue::RENDER_SORT_INVERSE_ZAXIS,  "-Z" },
                 };
 
-EnumTable SceneRenderQueue::renderSortTable(sizeof(renderSortLookup) /  sizeof(EnumTable::Enums), &renderSortLookup[0]);
-
 //-----------------------------------------------------------------------------
 
 SceneRenderQueue::RenderSort SceneRenderQueue::getRenderSortEnum(const char* label)
 {
-    // Search for Mnemonic.
-    for(U32 i = 0; i < (sizeof(renderSortLookup) / sizeof(EnumTable::Enums)); i++)
-        if( dStricmp(renderSortLookup[i].label, label) == 0)
-            return((RenderSort)renderSortLookup[i].index);
+    if (renderSortTable.isLabel(label))
+        return (RenderSort)renderSortTable[label];
 
     // Warn.
     Con::warnf( "SceneRenderQueue::getRenderSortEnum() - Invalid sort enum of '%s'", label );
@@ -66,12 +62,8 @@ SceneRenderQueue::RenderSort SceneRenderQueue::getRenderSortEnum(const char* lab
 
 const char* SceneRenderQueue::getRenderSortDescription( const RenderSort& sortMode )
 {
-    // Search for Mnemonic.
-    for (U32 i = 0; i < (sizeof(renderSortLookup) / sizeof(EnumTable::Enums)); i++)
-    {
-        if( renderSortLookup[i].index == sortMode )
-            return renderSortLookup[i].label;
-    }
+    if (renderSortTable.isIndex(sortMode))
+        return renderSortTable[sortMode].c_str();
 
     // Warn.
     Con::warnf( "SceneRenderQueue::getRenderSortDescription() - Invalid sort enum." );

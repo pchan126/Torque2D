@@ -3866,18 +3866,16 @@ bool SceneObject::sceneObjectLayerDepthSort(const SceneObject* a, const SceneObj
 
 //-----------------------------------------------------------------------------
 
-static EnumTable::Enums bodyTypeLookup[] =
+EnumTable bodyTypeTable =
                 {
                 { b2_staticBody,    "Static"    },
                 { b2_kinematicBody, "Kinematic" },
                 { b2_dynamicBody,   "Dynamic"   },
                 };
 
-EnumTable bodyTypeTable(sizeof(bodyTypeLookup) / sizeof(EnumTable::Enums), &bodyTypeLookup[0]);
-
 //-----------------------------------------------------------------------------
 
-static EnumTable::Enums collisionShapeTypeLookup[] =
+EnumTable collisionShapeTypeTable =
                 {
                 { b2Shape::e_circle,             "Circle"   },
                 { b2Shape::e_edge,               "Edge"     },
@@ -3885,30 +3883,23 @@ static EnumTable::Enums collisionShapeTypeLookup[] =
                 { b2Shape::e_chain,              "Chain"    },
                 };
 
-EnumTable collisionShapeTypeTable(sizeof(collisionShapeTypeLookup) / sizeof(EnumTable::Enums), &collisionShapeTypeLookup[0]);
-
 //-----------------------------------------------------------------------------
 
-static EnumTable::Enums lightTypeLookup[] =
+EnumTable lightTypeTable =
 {
     { SceneObject::NoLight,                  "NOLIGHT" },
     { SceneObject::ConstantLight,            "CONSTLIGHT" },
     { SceneObject::PulsingLight,             "PULSELIGHT" }
 };
 
-EnumTable lightTypeTable(sizeof(lightTypeLookup) / sizeof(EnumTable::Enums), &lightTypeLookup[0]);
 
 //-----------------------------------------------------------------------------
 
 
 b2BodyType SceneObject::getBodyTypeEnum(const char* label)
 {
-    // Search for Mnemonic.
-    for (U32 i = 0; i < (sizeof(bodyTypeLookup) / sizeof(EnumTable::Enums)); i++)
-    {
-        if( dStricmp(bodyTypeLookup[i].label, label) == 0)
-            return (b2BodyType)bodyTypeLookup[i].index;
-    }
+    if (bodyTypeTable.isLabel(label))
+        return (b2BodyType)bodyTypeTable[label];
 
     // Warn.
     Con::warnf("SceneObject::getBodyTypeEnum() - Invalid body type of '%s'", label );
@@ -3920,12 +3911,8 @@ b2BodyType SceneObject::getBodyTypeEnum(const char* label)
 
 const char* SceneObject::getBodyTypeDescription(const b2BodyType bodyType)
 {
-    // Search for Mnemonic.
-    for (U32 i = 0; i < (sizeof(bodyTypeLookup) / sizeof(EnumTable::Enums)); i++)
-    {
-        if( bodyTypeLookup[i].index == bodyType )
-            return bodyTypeLookup[i].label;
-    }
+    if (bodyTypeTable.isIndex(bodyType))
+        return bodyTypeTable[bodyType].c_str();
 
     // Warn.
     Con::warnf( "SceneObject::getBodyTypeDescription() - Invalid body type." );
@@ -3937,12 +3924,8 @@ const char* SceneObject::getBodyTypeDescription(const b2BodyType bodyType)
 
 b2Shape::Type SceneObject::getCollisionShapeTypeEnum(const char* label)
 {
-    // Search for Mnemonic.
-    for (U32 i = 0; i < (sizeof(collisionShapeTypeLookup) / sizeof(EnumTable::Enums)); i++)
-    {
-        if( dStricmp(collisionShapeTypeLookup[i].label, label) == 0)
-            return (b2Shape::Type)collisionShapeTypeLookup[i].index;
-    }
+    if (collisionShapeTypeTable.isLabel(label))
+        return (b2Shape::Type)collisionShapeTypeTable[label];
 
     // Warn!
     Con::warnf("SceneObject::getCollisionShapeTypeEnum() - Invalid collision shape type of '%s'", label );
@@ -3954,12 +3937,8 @@ b2Shape::Type SceneObject::getCollisionShapeTypeEnum(const char* label)
 
 const char* SceneObject::getCollisionShapeTypeDescription(const b2Shape::Type collisionShapeType)
 {
-    // Search for Mnemonic.
-    for (U32 i = 0; i < (sizeof(collisionShapeTypeLookup) / sizeof(EnumTable::Enums)); i++)
-    {
-        if( collisionShapeTypeLookup[i].index == collisionShapeType )
-            return collisionShapeTypeLookup[i].label;
-    }
+    if (collisionShapeTypeTable.isIndex(collisionShapeType))
+        return collisionShapeTypeTable[collisionShapeType].c_str();
 
     // Warn.
     Con::warnf( "SceneObject::getCollisionShapeTypeDescription() - Invalid collision shape type." );
@@ -3971,13 +3950,9 @@ const char* SceneObject::getCollisionShapeTypeDescription(const b2Shape::Type co
 
 GFXBlend SceneObject::getSrcBlendFactorEnum(const char* label)
 {
-    // Search for Mnemonic.
-    for (U32 i = 0; i < 9; i++)
-    {
-        if( dStricmp(srcBlendFactorTable.table[i].label, label) == 0)
-                        return(GFXBlend)(srcBlendFactorTable.table[i].index);
-    }
-    
+    if (srcBlendFactorTable.isLabel(label))
+        return (GFXBlend)(srcBlendFactorTable[label]);
+
     // Warn.
     Con::warnf("SceneObject::getSrcBlendFactorEnum() - Invalid source blend factor of '%s'", label );
     
@@ -3989,12 +3964,8 @@ GFXBlend SceneObject::getSrcBlendFactorEnum(const char* label)
 
 const char* SceneObject::getSrcBlendFactorDescription(const GLenum factor)
 {
-    // Search for Mnemonic.
-    for (U32 i = 0; i < srcBlendFactorTable.size; i++)
-    {
-        if( srcBlendFactorTable.table[i].index == (S32)factor )
-            return srcBlendFactorTable.table[i].label;
-    }
+    if (srcBlendFactorTable.isIndex(factor))
+        return srcBlendFactorTable[factor].c_str();
 
     // Warn.
     Con::warnf( "SceneObject::getSrcBlendFactorDescription() - Invalid source blend factor." );
@@ -4006,13 +3977,9 @@ const char* SceneObject::getSrcBlendFactorDescription(const GLenum factor)
 
 GFXBlend SceneObject::getDstBlendFactorEnum(const char* label)
 {
-    // Search for Mnemonic.
-    for (U32 i = 0; i < dstBlendFactorTable.size; i++)
-    {
-        if( dStricmp(dstBlendFactorTable.table[i].label, label) == 0)
-            return(GFXBlend)(dstBlendFactorTable.table[i].index);
-    }
-    
+    if (dstBlendFactorTable.isLabel(label))
+        return (GFXBlend)(dstBlendFactorTable[label]);
+
     // Warn.
     Con::warnf("SceneObject::getSrcBlendFactorEnum() - Invalid destination blend factor of '%s'", label );
     
@@ -4024,12 +3991,8 @@ GFXBlend SceneObject::getDstBlendFactorEnum(const char* label)
 
 const char* SceneObject::getDstBlendFactorDescription(const GLenum factor)
 {
-    // Search for Mnemonic.
-    for(U32 i = 0; i < dstBlendFactorTable.size; i++)
-    {
-        if( dstBlendFactorTable.table[i].index == (S32)factor )
-            return dstBlendFactorTable.table[i].label;
-    }
+    if (dstBlendFactorTable.isIndex(factor))
+        return dstBlendFactorTable[factor].c_str();
 
     // Warn.
     Con::warnf( "SceneObject::getDstBlendFactorDescription() - Invalid destination blend factor." );
@@ -4041,15 +4004,12 @@ const char* SceneObject::getDstBlendFactorDescription(const GLenum factor)
 
 SceneObject::LightType SceneObject::getLightTypeLookupEnum(const char* label)
 {
-    // Search for Mnemonic.
-    for (U32 i = 0; i < (sizeof(lightTypeLookup) / sizeof(EnumTable::Enums)); i++)
-    {
-        if( dStricmp(lightTypeLookup[i].label, label) == 0)
-            return(LightType)(lightTypeLookup[i].index);
-    }
-    
+    if (lightTypeTable.isLabel(label))
+        return (LightType)lightTypeTable[label];
+
+
     // Warn.
-    Con::warnf("SceneObject::getSrcBlendFactorEnum() - Invalid destination blend factor of '%s'", label );
+    Con::warnf("SceneObject::getLightTypeLookupEnum() - Invalid destination blend factor of '%s'", label );
     
     return NoLight;
 }
@@ -4059,15 +4019,11 @@ SceneObject::LightType SceneObject::getLightTypeLookupEnum(const char* label)
 
 const char* SceneObject::getLightTypeLookupDescription(const LightType factor)
 {
-    // Search for Mnemonic.
-    for(U32 i = 0; i < (sizeof(lightTypeLookup) / sizeof(EnumTable::Enums)); i++)
-    {
-        if( lightTypeLookup[i].index == (S32)factor )
-            return lightTypeLookup[i].label;
-    }
-    
+    if (lightTypeTable.isIndex(factor))
+        return lightTypeTable[factor].c_str();
+
     // Warn.
-    Con::warnf( "SceneObject::getDstBlendFactorDescription() - Invalid destination blend factor." );
+    Con::warnf( "SceneObject::getLightTypeLookupDescription() - Invalid destination blend factor." );
     
     return StringTable->EmptyString;
 }

@@ -1031,19 +1031,12 @@ void GuiFrameSetCtrl::drawDividers(const Point2I &offset)
 //-----------------------------------------------------------------------------
 void GuiFrameSetCtrl::frameBorderEnable(S32 index, const char *state)
 {
-   GuiControl *gc = NULL;
-   FrameDetail *fd = NULL;
-   if (findFrameContents(index, &gc, &fd) == true && fd != NULL)
+   GuiControl *gc = nullptr;
+   FrameDetail *fd = nullptr;
+   if (findFrameContents(index, &gc, &fd) == true && fd != nullptr)
    {
-      if (state != NULL)
-      {
-         // find the value for the detail member
-         for (S32 i = 0; i < gBorderStateTable.size; i++)
-         {
-            if (dStrcmp(state, gBorderStateTable.table[i].label) == 0)
-               fd->mBorderEnable = gBorderStateTable.table[i].index;
-         }
-      }
+      if (state != nullptr && gBorderStateTable.isLabel(state))
+         fd->mBorderEnable = gBorderStateTable[state];
       else
          // defaults to AUTO if NULL passed in state
          fd->mBorderEnable = FRAME_STATE_AUTO;
@@ -1053,19 +1046,12 @@ void GuiFrameSetCtrl::frameBorderEnable(S32 index, const char *state)
 //-----------------------------------------------------------------------------
 void GuiFrameSetCtrl::frameBorderMovable(S32 index, const char *state)
 {
-   GuiControl *gc = NULL;
-   FrameDetail *fd = NULL;
-   if (findFrameContents(index, &gc, &fd) == true && fd != NULL)
+   GuiControl *gc = nullptr;
+   FrameDetail *fd = nullptr;
+   if (findFrameContents(index, &gc, &fd) == true && fd != nullptr)
    {
-      if (state != NULL)
-      {
-         // find the value for the detail member
-         for (S32 i = 0; i < gBorderStateTable.size; i++)
-         {
-            if (dStrcmp(state, gBorderStateTable.table[i].label) == 0)
-               fd->mBorderMovable = gBorderStateTable.table[i].index;
-         }
-      }
+      if (state != nullptr && gBorderStateTable.isLabel(state))
+         fd->mBorderMovable = gBorderStateTable[state];
       else
          // defaults to AUTO if NULL passed in state
          fd->mBorderMovable = FRAME_STATE_AUTO;
@@ -1075,8 +1061,8 @@ void GuiFrameSetCtrl::frameBorderMovable(S32 index, const char *state)
 //-----------------------------------------------------------------------------
 void GuiFrameSetCtrl::frameMinExtent(S32 index, const Point2I &extent)
 {
-   GuiControl *gc = NULL;
-   FrameDetail *fd = NULL;
-   if (findFrameContents(index, &gc, &fd) == true && fd != NULL)
+   GuiControl *gc = nullptr;
+   FrameDetail *fd = nullptr;
+   if (findFrameContents(index, &gc, &fd) == true && fd != nullptr)
       fd->mMinExtent = extent;
 }

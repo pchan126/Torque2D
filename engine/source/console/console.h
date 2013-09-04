@@ -23,19 +23,16 @@
 #ifndef _CONSOLE_H_
 #define _CONSOLE_H_
 
-#ifndef _PLATFORM_H_
 #include "platform/platform.h"
-#endif
-#ifndef _BITSET_H_
 #include "collection/bitSet.h"
-#endif
 #include <stdarg.h>
-
 #include "platform/rawData.h"
 #include "delegates/delegateSignal.h"
+#include <unordered_map>
+#include <initializer_list>
+#include <array>
 
 class SimObject;
-struct EnumTable;
 class Namespace;
 
 /// Indicates that warnings about undefined script variables should be displayed.
@@ -103,31 +100,54 @@ struct ConsoleLogEntry
 /// to expose enumerations to the scripting language. It
 /// acts to relate named constants to integer values, just
 /// like an enum in C++.
-struct EnumTable
+class EnumTable
 {
-   /// Number of enumerated items in the table.
-   S32 size;
+    private:
+   std::unordered_map<S32, std::string> table;
+   std::unordered_map<std::string, S32> rev_table;
 
-   /// This represents a specific item in the enumeration.
-   struct Enums
-   {
-      S32 index;        ///< Index label maps to.
-      const char *label;///< Label for this index.
-   };
-
-   Enums *table;
+    public:
+    /// This represents a specific item in the enumeration.
+    typedef std::pair<S32, std::string> Enums;
+    typedef std::pair<std::string, S32> RevEnum;
 
    /// Constructor.
-   ///
    /// This sets up the EnumTable with predefined data.
    ///
    /// @param sSize  Size of the table.
    /// @param sTable Pointer to table of Enums.
-   ///
-   /// @see gLiquidTypeTable
-   /// @see gAlignTable
-   EnumTable(S32 sSize, Enums *sTable)
-      { size = sSize; table = sTable; }
+   EnumTable(S32 sSize, EnumTable::Enums* sTable)
+   {
+       for ( S32 i = 0; i < sSize; i++)
+       {
+           Enums itr = sTable[i];
+           table[itr.first] = itr.second;
+           rev_table[itr.second] = itr.first;
+       }
+   }
+
+   EnumTable(std::initializer_list<Enums> list)
+   {
+       for (auto itr: list)
+       {
+           table[itr.first] = itr.second;
+           rev_table[itr.second] = itr.first;
+       }
+   }
+
+
+   SizeType getSize(void) { return table.size(); }
+
+    std::string operator[](S32 i)               { return table[i]; }
+    S32 operator[](std::string i)               { return rev_table[i]; }
+
+    bool isIndex (S32 i)                         { return table.find(i) != table.end(); }
+    bool isLabel (std::string label)             { return rev_table.find(label) != rev_table.end(); }
+
+    std::unordered_map<S32, std::string>::iterator begin() { return table.begin(); };
+    std::unordered_map<S32, std::string>::iterator end() { return table.end(); };
+    const std::unordered_map<S32, std::string>::const_iterator begin() const { return table.begin(); };
+    const std::unordered_map<S32, std::string>::const_iterator end() const { return table.end(); };
 };
 
 typedef const char *StringTableEntry;

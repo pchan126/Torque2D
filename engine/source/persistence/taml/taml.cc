@@ -112,7 +112,7 @@ static EnumTable::Enums tamlFormatModeLookup[] =
                 {
                 { Taml::XmlFormat, "xml" },
                 { Taml::BinaryFormat, "binary" },
-                { Taml::JSONFormat, "json" }
+                { Taml::JSONFormat, "json" },
                 };
 
 EnumTable tamlFormatModeTable(sizeof(tamlFormatModeLookup) / sizeof(EnumTable::Enums), &tamlFormatModeLookup[0]);
@@ -122,15 +122,11 @@ EnumTable tamlFormatModeTable(sizeof(tamlFormatModeLookup) / sizeof(EnumTable::E
 Taml::TamlFormatMode Taml::getFormatModeEnum(const char* label)
 {
     // Search for Mnemonic.
-    for (U32 i = 0; i < (sizeof(tamlFormatModeLookup) / sizeof(EnumTable::Enums)); i++)
-    {
-        if( dStricmp(tamlFormatModeLookup[i].label, label) == 0)
-            return (TamlFormatMode)tamlFormatModeLookup[i].index;
-    }
+    if (tamlFormatModeTable.isLabel(label))
+        return (TamlFormatMode)tamlFormatModeTable[label];
 
     // Warn.
     Con::warnf( "Taml::getFormatModeEnum() - Invalid format of '%s'.", label );
-
     return Taml::InvalidFormat;
 }
 
@@ -138,12 +134,8 @@ Taml::TamlFormatMode Taml::getFormatModeEnum(const char* label)
 
 const char* Taml::getFormatModeDescription(const Taml::TamlFormatMode formatMode)
 {
-    // Search for Mnemonic.
-    for (U32 i = 0; i < (sizeof(tamlFormatModeLookup) / sizeof(EnumTable::Enums)); i++)
-    {
-        if( tamlFormatModeLookup[i].index == (S32)formatMode )
-            return tamlFormatModeLookup[i].label;
-    }
+    if (tamlFormatModeTable.isIndex(formatMode))
+        return tamlFormatModeTable[formatMode].c_str();
 
     // Warn.
     Con::warnf( "Taml::getFormatModeDescription() - Invalid format mode." );
@@ -1360,15 +1352,12 @@ bool Taml::generateTamlSchema()
                 pAttributeRestrictionElement->SetAttribute( "base", "xs:string" );
                 pAttributeSimpleTypeElement->LinkEndChild( pAttributeRestrictionElement );
 
-                // Yes, so fetch enumeration count.
-                const S32 enumCount = field.table->size;
-
                 // Iterate enumeration.
-                for( S32 index = 0; index < enumCount; ++index )
+                for( auto itr: *field.table)
                 {
                     // Add enumeration element.
                     TiXmlElement* pAttributeEnumerationElement = new TiXmlElement( "xs:enumeration" );
-                    pAttributeEnumerationElement->SetAttribute( "value", field.table->table[index].label );
+                    pAttributeEnumerationElement->SetAttribute( "value", itr.second.c_str() );
                     pAttributeRestrictionElement->LinkEndChild( pAttributeEnumerationElement );
                 }
             }

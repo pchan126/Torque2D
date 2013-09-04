@@ -79,22 +79,18 @@ GFX_ImplementTextureProfile(GFXSceneWindowTextureProfile,
                               GFXTextureProfile::None);
 
 
-static EnumTable::Enums interpolationModeLookup[] =
+static EnumTable interpolationModeTable =
                 {
                 { SceneWindow::LINEAR,   "LINEAR" },
                 { SceneWindow::SIGMOID,  "SIGMOID" },
                 };
 
-static EnumTable interpolationModeTable(sizeof(interpolationModeLookup) / sizeof(EnumTable::Enums), &interpolationModeLookup[0]);
-
 //-----------------------------------------------------------------------------
 
 SceneWindow::CameraInterpolationMode SceneWindow::getInterpolationModeEnum(const char* label)
 {
-    // Search for Mnemonic.
-    for(U32 i = 0; i < (sizeof(interpolationModeLookup) / sizeof(EnumTable::Enums)); i++)
-        if( dStricmp(interpolationModeLookup[i].label, label) == 0)
-            return((CameraInterpolationMode)interpolationModeLookup[i].index);
+    if (interpolationModeTable.isLabel(label))
+        return ((CameraInterpolationMode)interpolationModeTable[label]);
 
     // Warn.
     Con::warnf( "SceneWindow::getInterpolationModeEnum() - Invalid interpolation mode '%s'.", label );
@@ -104,7 +100,7 @@ SceneWindow::CameraInterpolationMode SceneWindow::getInterpolationModeEnum(const
 
 //-----------------------------------------------------------------------------
 
-SceneWindow::SceneWindow() :    mpScene(NULL),
+SceneWindow::SceneWindow() :    mpScene(nullptr),
                                 mLockMouse(false),
                                 mWindowDirty(true),
                                 mRenderGroupMask(MASK_ALL),
@@ -114,7 +110,7 @@ SceneWindow::SceneWindow() :    mpScene(NULL),
                                 mMaxQueueItems(64),
                                 mCameraTransitionTime(2.0f),
                                 mMovingCamera(false),
-                                mpMountedTo(NULL),
+                                mpMountedTo(nullptr),
                                 mCameraMounted(false),
                                 mCameraShaking(false),
                                 mCameraShakeOffset(0.0f,0.0f),

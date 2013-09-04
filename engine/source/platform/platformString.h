@@ -23,11 +23,9 @@
 #ifndef _PLATFORM_STRING_H_
 #define _PLATFORM_STRING_H_
 
-#ifndef _TORQUE_TYPES_H_
 #include "platform/types.h"
-#endif
 #include "platform/platformString.h"
-
+#include <string>
 #include <cctype>
 
 //------------------------------------------------------------------------------

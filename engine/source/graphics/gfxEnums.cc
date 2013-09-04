@@ -5,7 +5,7 @@
 
 //-----------------------------------------------------------------------------
 
-EnumTable::Enums srcBlendFactorLookup[] =
+EnumTable srcBlendFactorTable =
         {
                 { GFXBlendZero,                  "ZERO"                  },
                 { GFXBlendOne,                   "ONE"                   },
@@ -20,7 +20,7 @@ EnumTable::Enums srcBlendFactorLookup[] =
 
 //-----------------------------------------------------------------------------
 
-EnumTable::Enums dstBlendFactorLookup[] =
+EnumTable dstBlendFactorTable =
         {
                 { GFXBlendZero,                  "ZERO" },
                 { GFXBlendOne,                   "ONE" },
@@ -32,7 +32,7 @@ EnumTable::Enums dstBlendFactorLookup[] =
                 { GFXBlendInvDestAlpha,   "ONE_MINUS_DST_ALPHA" },
         };
 
-static EnumTable::Enums blendOpFactorLookup[] =
+EnumTable blendOpFactorTable =
 {
    { GFXBlendOpAdd,                  "ADD" },
    { GFXBlendOpSubtract,                   "SUBTRACT" },
@@ -41,7 +41,7 @@ static EnumTable::Enums blendOpFactorLookup[] =
    { GFXBlendOpMax,             "MAX" },
 };
 
-static EnumTable::Enums CmpFactorLookup[] =
+EnumTable cmpFactorTable =
 {
    { GFXCmpNever,                  "NEVER" },
    { GFXCmpLess,                   "LESS" },
@@ -53,14 +53,14 @@ static EnumTable::Enums CmpFactorLookup[] =
    { GFXCmpAlways,             "ALWAYS" },
 };
 
-static EnumTable::Enums cullModeLookup[] =
+EnumTable cullModeTable =
 {
    { GFXCullNone,                 "NONE" },
    { GFXCullCW,                   "CW" },
    { GFXCullCCW,                  "CWW" },
 };
 
-static EnumTable::Enums stencilOpLookup[] =
+EnumTable stencilOpTable =
 {
    { GFXStencilOpKeep,              "KEEP" },
    { GFXStencilOpZero,              "ZERO" },
@@ -73,7 +73,7 @@ static EnumTable::Enums stencilOpLookup[] =
 };
 
 
-static EnumTable::Enums textureOpLookup[] =
+EnumTable GFXTextureOpTable =
 {
    { GFXTOPDisable,                 "DISABLE" },
    { GFXTOPSelectARG1,              "SELECTARG1" },
@@ -102,7 +102,7 @@ static EnumTable::Enums textureOpLookup[] =
    { GFXTOPLERP,                    "LERP" },
 };
 
-static EnumTable::Enums GFXTextureArgumentLookup[] =
+EnumTable GFXTextureArgumentTable =
 {
    { GFXTADiffuse,                  "DIFFUSE" },
    { GFXTACurrent,                  "CURRENT" },
@@ -113,7 +113,7 @@ static EnumTable::Enums GFXTextureArgumentLookup[] =
    { GFXTAConstant,                 "CONSTANT" },
 };
 
-static EnumTable::Enums GFXTextureAddressModeLookup[] =
+EnumTable GFXTextureAddressModeTable =
 {
    { GFXAddressWrap,                "WRAP" },
    { GFXAddressMirror,              "MIRROR" },
@@ -122,7 +122,7 @@ static EnumTable::Enums GFXTextureAddressModeLookup[] =
    { GFXAddressMirrorOnce,          "MIRRORONCE" },
 };
 
-static EnumTable::Enums GFXTextureFilterTypeLookup[] =
+EnumTable GFXTextureFilterTypeTable =
 {
    { GFXTextureFilterNone,          "NONE" },
    { GFXTextureFilterPoint,         "POINT" },
@@ -132,7 +132,7 @@ static EnumTable::Enums GFXTextureFilterTypeLookup[] =
    { GFXTextureFilterGaussianQuad,  "GAUSSIANQUAD" },
 };
 
-static EnumTable::Enums GFXTextureTransformFlagsLookup[] =
+EnumTable GFXTextureTransformFlagsTable =
 {
    { GFXTTFFDisable,                "DISABLE" },
    { GFXTTFFCoord1D,                "COORD1D" },
@@ -141,16 +141,4 @@ static EnumTable::Enums GFXTextureTransformFlagsLookup[] =
    { GFXTTFFCoord4D,                "COORD4D" },
    { GFXTTFFProjected,              "PROJECTED" },
 };
-
-EnumTable srcBlendFactorTable(sizeof(srcBlendFactorLookup) / sizeof(EnumTable::Enums), &srcBlendFactorLookup[0]);
-EnumTable dstBlendFactorTable(sizeof(dstBlendFactorLookup) / sizeof(EnumTable::Enums), &dstBlendFactorLookup[0]);
-EnumTable blendOpFactorTable(sizeof(blendOpFactorLookup) / sizeof(EnumTable::Enums), &blendOpFactorLookup[0]);
-EnumTable cmpFactorTable(sizeof(CmpFactorLookup)/ sizeof(EnumTable::Enums), &CmpFactorLookup[0]);
-EnumTable cullModeTable(sizeof(cullModeLookup)/ sizeof(EnumTable::Enums), &cullModeLookup[0]);
-EnumTable stencilOpTable(sizeof(stencilOpLookup)/ sizeof(EnumTable::Enums), &stencilOpLookup[0]);
-EnumTable GFXTextureOpTable(sizeof(textureOpLookup)/ sizeof(EnumTable::Enums), &textureOpLookup[0]);
-EnumTable GFXTextureArgumentTable(sizeof(GFXTextureArgumentLookup)/ sizeof(EnumTable::Enums), &GFXTextureArgumentLookup[0]);
-EnumTable GFXTextureAddressModeTable(sizeof(GFXTextureAddressModeLookup)/ sizeof(EnumTable::Enums), &GFXTextureAddressModeLookup[0]);
-EnumTable GFXTextureFilterTypeTable(sizeof(GFXTextureFilterTypeLookup)/ sizeof(EnumTable::Enums), &GFXTextureFilterTypeLookup[0]);
-EnumTable GFXTextureTransformFlagsTable(sizeof(GFXTextureTransformFlagsLookup)/ sizeof(EnumTable::Enums), &GFXTextureTransformFlagsLookup[0]);
 

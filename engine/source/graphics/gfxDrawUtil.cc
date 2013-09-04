@@ -719,7 +719,7 @@ void GFXDrawUtil::drawSphere( const GFXStateBlockDesc &desc, F32 radius, const P
    const SphereMesh::TriangleMesh * sphereMesh = gSphere.getMesh(2);
 
    Vector<GFXVertexPC> verts;
-   for (auto itr = sphereMesh->mVerts.begin(); itr != sphereMesh->mVerts.end(); itr)
+   for (auto itr = sphereMesh->mVerts.begin(); itr != sphereMesh->mVerts.end(); itr++)
    {
       GFXVertexPC temp;
       temp.point = *itr;

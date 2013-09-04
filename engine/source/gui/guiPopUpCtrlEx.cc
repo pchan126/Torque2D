@@ -529,9 +529,9 @@ ConsoleMethod( GuiPopUpMenuCtrlEx, setEnumContent, void, 4, 4, "(string class, s
 
    AssertFatal(field.table, avar("enumeration '%s' for class '%s' with NULL ", argv[3], argv[2]));
 
-   // fill it
-   for(i = 0; i < (U32)field.table->size; i++)
-      object->addEntry(field.table->table[i].label, field.table->table[i].index);
+    // fill it
+   for (auto itr: (*field.table))
+       object->addEntry(itr.second.c_str(), itr.first);
 }
 
 //------------------------------------------------------------------------------

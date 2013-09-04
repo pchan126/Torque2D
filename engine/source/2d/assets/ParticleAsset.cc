@@ -21,18 +21,13 @@
 //-----------------------------------------------------------------------------
 
 #include "console/consoleTypes.h"
-
 #include "2d/assets/ParticleAsset.h"
-
-// Script bindings.
 #include "ParticleAsset_ScriptBinding.h"
-
-// Debug Profiling.
 #include "debug/profiler.h"
 
 //------------------------------------------------------------------------------
 
-static EnumTable::Enums particleAssetLifeModeLookup[] =
+static EnumTable LifeModeTable =
 {
     { ParticleAsset::INFINITE_LIFEMODE,  "INFINITE" },
     { ParticleAsset::CYCLE,     "CYCLE" },
@@ -42,16 +37,10 @@ static EnumTable::Enums particleAssetLifeModeLookup[] =
 
 //-----------------------------------------------------------------------------
 
-static EnumTable LifeModeTable(sizeof(particleAssetLifeModeLookup) / sizeof(EnumTable::Enums), &particleAssetLifeModeLookup[0]);
-
-//-----------------------------------------------------------------------------
-
 ParticleAsset::LifeMode ParticleAsset::getParticleAssetLifeModeEnum( const char* label )
 {
-   // Search for Mnemonic.
-   for(U32 i = 0; i < (sizeof(particleAssetLifeModeLookup) / sizeof(EnumTable::Enums)); i++)
-      if( dStricmp(particleAssetLifeModeLookup[i].label, label) == 0)
-          return((ParticleAsset::LifeMode)particleAssetLifeModeLookup[i].index);
+   if (LifeModeTable.isLabel(label))
+       return (ParticleAsset::LifeMode)LifeModeTable[label];
 
    // Warn.
    Con::warnf( "ParticleAsset::getParticleAssetLifeModeEnum() - Invalid life mode '%s'.", label );
@@ -63,12 +52,8 @@ ParticleAsset::LifeMode ParticleAsset::getParticleAssetLifeModeEnum( const char*
 
 const char* ParticleAsset::getParticleAssetLifeModeDescription( const ParticleAsset::LifeMode lifeMode )
 {
-    // Search for Mnemonic.
-    for (U32 i = 0; i < (sizeof(particleAssetLifeModeLookup) / sizeof(EnumTable::Enums)); i++)
-    {
-        if( particleAssetLifeModeLookup[i].index == (S32)lifeMode )
-            return particleAssetLifeModeLookup[i].label;
-    }
+    if (LifeModeTable.isIndex(lifeMode))
+        return LifeModeTable[lifeMode].c_str();
 
     // Warn.
     Con::warnf( "ParticleAsset::getParticleAssetLifeModeDescription() - Invalid life-mode." );

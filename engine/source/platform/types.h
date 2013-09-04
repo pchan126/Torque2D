@@ -28,17 +28,17 @@
 //------------------------------------------------------------------------------
 //-------------------------------------- Basic Types...
 
-typedef signed char        S8;      ///< Compiler independent Signed Char
-typedef unsigned char      U8;      ///< Compiler independent Unsigned Char
+typedef std::int8_t        S8;      ///< Compiler independent Signed Char
+typedef std::uint8_t       U8;      ///< Compiler independent Unsigned Char
 
-typedef signed short       S16;     ///< Compiler independent Signed 16-bit short
-typedef unsigned short     U16;     ///< Compiler independent Unsigned 16-bit short
+typedef std::int16_t       S16;     ///< Compiler independent Signed 16-bit short
+typedef std::uint16_t      U16;     ///< Compiler independent Unsigned 16-bit short
 
-typedef signed int         S32;     ///< Compiler independent Signed 32-bit integer
-typedef unsigned int       U32;     ///< Compiler independent Unsigned 32-bit integer
+typedef std::int32_t       S32;     ///< Compiler independent Signed 32-bit integer
+typedef std::uint32_t      U32;     ///< Compiler independent Unsigned 32-bit integer
 
-typedef long long          S64;     ///< Compiler independent Signed 64-bit integer
-typedef unsigned long long U64;     ///< Compiler independent Unsigned 64-bit integer
+typedef std::int64_t       S64;     ///< Compiler independent Signed 64-bit integer
+typedef std::uint64_t      U64;     ///< Compiler independent Unsigned 64-bit integer
 
 typedef float              F32;     ///< Compiler independent 32-bit float
 typedef double             F64;     ///< Compiler independent 64-bit float

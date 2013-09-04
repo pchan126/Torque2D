@@ -22,8 +22,8 @@
 
 #include "platform/platform.h"
 #include "console/console.h"
-
 #include "platform/nativeDialogs/msgBox.h"
+#include "stringTable.h"
 
 // these are the return values for message box dialog buttons
 void initMessageBoxVars()
@@ -43,7 +43,7 @@ static EnumTable::Enums sgButtonEnums[] =
    { MBRetryCancel,        "RetryCancel" },
    { MBSaveDontSave,       "SaveDontSave" }, // maps to yes/no on win, to save/discard on mac.
    { MBSaveDontSaveCancel, "SaveDontSaveCancel" }, // maps to yes/no/cancel on win, to save/cancel/don'tsave on mac.
-   { 0, NULL }
+   { 0, StringTable->EmptyString }
 };
 
 static EnumTable::Enums sgIconEnums[] =
@@ -52,18 +52,19 @@ static EnumTable::Enums sgIconEnums[] =
    { MIWarning,            "Warning" },    // win & mac: yellow triangle with exclamation pt
    { MIStop,               "Stop" },       // win: red x, mac: app icon or stop icon, depending on version
    { MIQuestion,           "Question" },   // win: blue ?, mac: app icon
-   { 0, NULL }
+   { 0, StringTable->EmptyString }
 };
 
 //////////////////////////////////////////////////////////////////////////
 
 static S32 getIDFromName(EnumTable::Enums *table, const char *name, S32 def = -1)
 {
-   for(S32 i = 0;table[i].label != NULL;++i)
+   for(S32 i = 0; table[i].second != StringTable->EmptyString; ++i)
    {
-      if(dStricmp(table[i].label, name) == 0)
-         return table[i].index;
+      if( table[i].second.compare(name) == 0)
+         return table[i].first;
    }
+
    AssertWarn(false,"getIDFromName(): didn't find that name" );
    return def;
 }

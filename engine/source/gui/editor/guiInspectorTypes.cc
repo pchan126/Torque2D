@@ -48,9 +48,8 @@ GuiControl* GuiInspectorTypeEnum::constructEditControl()
    dSprintf( szBuffer, 512, "%d.%s = %d.getText();%d.inspect(%d);",mTarget->getId(), mField->pFieldname, menu->getId(), mParent->mParent->getId(), mTarget->getId() );
    menu->setField("Command", szBuffer );
 
-   //now add the entries
-   for(S32 i = 0; i < mField->table->size; i++)
-      menu->addEntry(mField->table->table[i].label, mField->table->table[i].index);
+   for (auto itr: *(mField->table))
+       menu->addEntry(itr.second.c_str(), itr.first);
 
    return retCtrl;
 }
@@ -65,16 +64,16 @@ void GuiInspectorTypeEnum::consoleInit()
 void GuiInspectorTypeEnum::updateValue( StringTableEntry newValue )
 {
    GuiPopUpMenuCtrl *ctrl = dynamic_cast<GuiPopUpMenuCtrl*>( mEdit );
-   if( ctrl != NULL )
+   if( ctrl != nullptr )
       ctrl->setText( newValue );
 }
 
 void GuiInspectorTypeEnum::setData( StringTableEntry data )
 {
-   if( mField == NULL || mTarget == NULL )
+   if( mField == nullptr || mTarget == nullptr )
       return;
 
-   mTarget->setDataField( mField->pFieldname, NULL, data );
+   mTarget->setDataField( mField->pFieldname, nullptr, data );
 
    // Force our edit to update
    updateValue( data );
@@ -82,10 +81,10 @@ void GuiInspectorTypeEnum::setData( StringTableEntry data )
 
 StringTableEntry  GuiInspectorTypeEnum::getData()
 {
-   if( mField == NULL || mTarget == NULL )
+   if( mField == nullptr || mTarget == nullptr )
       return "";
 
-   return mTarget->getDataField( mField->pFieldname, NULL );
+   return mTarget->getDataField( mField->pFieldname, nullptr );
 }
 
 //////////////////////////////////////////////////////////////////////////

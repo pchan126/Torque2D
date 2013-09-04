@@ -37,7 +37,7 @@
 
 //------------------------------------------------------------------------------
 
-static EnumTable::Enums batchLayoutTypeLookup[] =
+EnumTable batchLayoutTypeTable =
                 {
                     { CompositeSprite::NO_LAYOUT,           "off"    },
                     { CompositeSprite::RECTILINEAR_LAYOUT,  "rect" },
@@ -45,18 +45,12 @@ static EnumTable::Enums batchLayoutTypeLookup[] =
                     { CompositeSprite::CUSTOM_LAYOUT,       "custom"   },
                 };
 
-EnumTable batchLayoutTypeTable(sizeof(batchLayoutTypeLookup) / sizeof(EnumTable::Enums), &batchLayoutTypeLookup[0]);
-
 //-----------------------------------------------------------------------------
 
 CompositeSprite::BatchLayoutType CompositeSprite::getBatchLayoutTypeEnum(const char* label)
 {
-    // Search for Mnemonic.
-    for (U32 i = 0; i < (sizeof(batchLayoutTypeLookup) / sizeof(EnumTable::Enums)); i++)
-    {
-        if( dStricmp(batchLayoutTypeLookup[i].label, label) == 0)
-            return (BatchLayoutType)batchLayoutTypeLookup[i].index;
-    }
+    if (batchLayoutTypeTable.isLabel(label))
+        return (BatchLayoutType)batchLayoutTypeTable[label];
 
     // Warn.
     Con::warnf("CompositeSprite::getBatchLayoutTypeEnum() - Invalid batch layout type of '%s'", label );
@@ -68,12 +62,8 @@ CompositeSprite::BatchLayoutType CompositeSprite::getBatchLayoutTypeEnum(const c
 
 const char* CompositeSprite::getBatchLayoutTypeDescription(const CompositeSprite::BatchLayoutType batchLayoutType )
 {
-    // Search for Mnemonic.
-    for (U32 i = 0; i < (sizeof(batchLayoutTypeLookup) / sizeof(EnumTable::Enums)); i++)
-    {
-        if( batchLayoutTypeLookup[i].index == batchLayoutType )
-            return batchLayoutTypeLookup[i].label;
-    }
+    if (batchLayoutTypeTable.isIndex(batchLayoutType))
+        return batchLayoutTypeTable[batchLayoutType].c_str();
 
     // Warn.
     Con::warnf( "CompositeSprite::getBatchLayoutTypeDescription() - Invalid batch layout type.");
@@ -425,8 +415,8 @@ void CompositeSprite::onTamlCustomRead( const TamlCustomNodes& customNodes )
 static void WriteCustomTamlSchema( const AbstractClassRep* pClassRep, TiXmlElement* pParentElement )
 {
     // Sanity!
-    AssertFatal( pClassRep != NULL,  "CompositeSprite::WriteCustomTamlSchema() - ClassRep cannot be NULL." );
-    AssertFatal( pParentElement != NULL,  "CompositeSprite::WriteCustomTamlSchema() - Parent Element cannot be NULL." );
+    AssertFatal( pClassRep != nullptr,  "CompositeSprite::WriteCustomTamlSchema() - ClassRep cannot be NULL." );
+    AssertFatal( pParentElement != nullptr,  "CompositeSprite::WriteCustomTamlSchema() - Parent Element cannot be NULL." );
 
     // Write sprite batch.
     SpriteBatch::WriteCustomTamlSchema( pClassRep, pParentElement );

@@ -68,7 +68,6 @@ public:
    F32         mInnerConeAngle;
    F32         mOuterConeAngle;
 
-   /// @todo Revisit below (currently unused by fixed function lights)
 	Point3F position;
 	ColorF ambient;
 	ColorF diffuse;

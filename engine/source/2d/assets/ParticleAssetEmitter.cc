@@ -35,7 +35,7 @@
 
 //------------------------------------------------------------------------------
 
-static EnumTable::Enums emitterTypeLookup[] =
+static EnumTable EmitterTypeTable =
                 {
                 { ParticleAssetEmitter::POINT_EMITTER,      "POINT" },
                 { ParticleAssetEmitter::LINE_EMITTER,       "LINE" },
@@ -47,16 +47,10 @@ static EnumTable::Enums emitterTypeLookup[] =
 
 //------------------------------------------------------------------------------
 
-static EnumTable EmitterTypeTable(sizeof(emitterTypeLookup) / sizeof(EnumTable::Enums), &emitterTypeLookup[0]);
-
-//------------------------------------------------------------------------------
-
 ParticleAssetEmitter::EmitterType ParticleAssetEmitter::getEmitterTypeEnum(const char* label)
 {
-    // Search for Mnemonic.
-    for(U32 i = 0; i < (sizeof(emitterTypeLookup) / sizeof(EnumTable::Enums)); i++)
-        if( dStricmp(emitterTypeLookup[i].label, label) == 0)
-            return((ParticleAssetEmitter::EmitterType)emitterTypeLookup[i].index);
+    if (EmitterTypeTable.isLabel(label))
+        return (ParticleAssetEmitter::EmitterType)EmitterTypeTable[label];
 
     // Warn.
     Con::warnf(  "ParticleAssetEmitter::getEmitterTypeEnum() - Invalid emitter-type '%s'.", label );
@@ -68,12 +62,8 @@ ParticleAssetEmitter::EmitterType ParticleAssetEmitter::getEmitterTypeEnum(const
 
 const char* ParticleAssetEmitter::getEmitterTypeDescription( const EmitterType emitterType )
 {
-    // Search for Mnemonic.
-    for (U32 i = 0; i < (sizeof(emitterTypeLookup) / sizeof(EnumTable::Enums)); i++)
-    {
-        if( emitterTypeLookup[i].index == (S32)emitterType )
-            return emitterTypeLookup[i].label;
-    }
+    if (EmitterTypeTable.isIndex(emitterType))
+        return EmitterTypeTable[emitterType].c_str();
 
     // Warn.
     Con::warnf( "ParticleAssetEmitter::getEmitterTypeDescription() - Invalid emitter-type." );
@@ -83,7 +73,7 @@ const char* ParticleAssetEmitter::getEmitterTypeDescription( const EmitterType e
 
 //------------------------------------------------------------------------------
 
-static EnumTable::Enums particleOrientationTypeLookup[] =
+static EnumTable OrientationTypeTable =
                 {
                 { ParticleAssetEmitter::FIXED_ORIENTATION,    "FIXED" },
                 { ParticleAssetEmitter::ALIGNED_ORIENTATION,  "ALIGNED" },
@@ -92,16 +82,10 @@ static EnumTable::Enums particleOrientationTypeLookup[] =
 
 //------------------------------------------------------------------------------
 
-static EnumTable OrientationTypeTable(sizeof(particleOrientationTypeLookup) / sizeof(EnumTable::Enums), &particleOrientationTypeLookup[0]);
-
-//------------------------------------------------------------------------------
-
 ParticleAssetEmitter::ParticleOrientationType ParticleAssetEmitter::getOrientationTypeEnum(const char* label)
 {
-    // Search for Mnemonic.
-    for(U32 i = 0; i < (sizeof(particleOrientationTypeLookup) / sizeof(EnumTable::Enums)); i++)
-        if( dStricmp(particleOrientationTypeLookup[i].label, label) == 0)
-            return((ParticleAssetEmitter::ParticleOrientationType)particleOrientationTypeLookup[i].index);
+    if (OrientationTypeTable.isLabel(label))
+        return (ParticleAssetEmitter::ParticleOrientationType)OrientationTypeTable[label];
 
     // Warn.
     Con::warnf( "ParticleAssetEmitter::getOrientationTypeEnum() - Invalid orientation type '%s'.", label );
@@ -113,12 +97,8 @@ ParticleAssetEmitter::ParticleOrientationType ParticleAssetEmitter::getOrientati
 
 const char* ParticleAssetEmitter::getOrientationTypeDescription( const ParticleOrientationType orientationType )
 {
-    // Search for Mnemonic.
-    for (U32 i = 0; i < (sizeof(particleOrientationTypeLookup) / sizeof(EnumTable::Enums)); i++)
-    {
-        if( particleOrientationTypeLookup[i].index == (S32)orientationType )
-            return particleOrientationTypeLookup[i].label;
-    }
+    if (OrientationTypeTable.isIndex(orientationType))
+        return OrientationTypeTable[orientationType].c_str();
 
     // Warn.
     Con::warnf( "ParticleAssetEmitter::getOrientationTypeDescription() - Invalid orientation-type" );

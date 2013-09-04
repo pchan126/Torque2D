@@ -9,21 +9,17 @@
 IMPLEMENT_CONOBJECT(GuiMoveCtrl);
 
 
-static EnumTable::Enums interpolationModeLookup[] =
+static EnumTable interpolationModeTable =
         {
                 { GuiMoveCtrl::LINEAR,   "LINEAR" },
                 { GuiMoveCtrl::SIGMOID,  "SIGMOID" },
         };
 
-static EnumTable interpolationModeTable(sizeof(interpolationModeLookup) / sizeof(EnumTable::Enums), &interpolationModeLookup[0]);
-
 
 GuiMoveCtrl::InterpolationMode GuiMoveCtrl::getInterpolationModeEnum(const char* label)
 {
-    // Search for Mnemonic.
-    for(U32 i = 0; i < (sizeof(interpolationModeLookup) / sizeof(EnumTable::Enums)); i++)
-        if( dStricmp(interpolationModeLookup[i].label, label) == 0)
-            return((InterpolationMode)interpolationModeLookup[i].index);
+    if (interpolationModeTable.isLabel(label))
+        return (InterpolationMode)interpolationModeTable[label];
 
     // Warn.
     Con::warnf( "GuiMoveCtrl::getInterpolationModeEnum() - Invalid interpolation mode '%s'.", label );
@@ -366,7 +362,7 @@ ConsoleMethod(GuiMoveCtrl, setTargetArea, void, 3, 6, "(x / y / width / height) 
 ConsoleMethod(GuiMoveCtrl, getTargetArea, const char*, 2, 2, "() Get the target camera Area.\n"
         "@return The camera area formatted as \"x1 y1 x2 y2\"")
 {
-    // Fetch Camera Window.
+    // Fetch GuiMoveCtrl Window.
     const RectI cameraWindow = object->getTargetArea();
 
     // Create Returnable Buffer.
@@ -385,7 +381,7 @@ ConsoleMethod(GuiMoveCtrl, getTargetArea, const char*, 2, 2, "() Get the target 
 ConsoleMethod(GuiMoveCtrl, setInterpolationTime, void, 3, 3, "(interpolationTime) - Set camera interpolation time."
         "@return No return value")
 {
-    // Set Camera Interpolation Time.
+    // Set GuiMoveCtrl Interpolation Time.
     object->setInterpolationTime( dAtof(argv[2]) );
 }
 
@@ -394,7 +390,7 @@ ConsoleMethod(GuiMoveCtrl, setInterpolationTime, void, 3, 3, "(interpolationTime
 ConsoleMethod(GuiMoveCtrl, setInterpolationMode, void, 3, 3, "(interpolationMode) - Set camera interpolation mode."
         "@return No return value.")
 {
-    // Set Camera Interpolation Mode.
+    // Set GuiMoveCtrl Interpolation Mode.
     object->setInterpolationMode( GuiMoveCtrl::getInterpolationModeEnum(argv[2]) );
 }
 
@@ -411,7 +407,7 @@ ConsoleMethod(GuiMoveCtrl, startMove, void, 2, 3, "([interpolationTime]) - Start
     else
         interpolationTime = object->getInterpolationTime();
 
-    // Start Camera Move.
+    // Start GuiMoveCtrl Move.
     object->startMove( interpolationTime );
 }
 
@@ -420,7 +416,7 @@ ConsoleMethod(GuiMoveCtrl, startMove, void, 2, 3, "([interpolationTime]) - Start
 ConsoleMethod(GuiMoveCtrl, stopMove, void, 2, 2, "() Stops current movement"
         "@return No return value.")
 {
-    // Stop Camera Move.
+    // Stop GuiMoveCtrl Move.
     object->stopMove();
 }
 
@@ -429,6 +425,6 @@ ConsoleMethod(GuiMoveCtrl, stopMove, void, 2, 2, "() Stops current movement"
 ConsoleMethod(GuiMoveCtrl, completeMove, void, 2, 2, "() Moves directly to target.\n"
         "@return No return value.")
 {
-    // Complete Camera Move.
+    // Complete GuiMoveCtrl Move.
     object->completeMove();
 }

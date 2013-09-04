@@ -35,25 +35,19 @@
 
 //------------------------------------------------------------------------------
 
-static EnumTable::Enums textAlignmentEnums[] = 
+static EnumTable gTextAlignmentTable =
 {
     { ImageFont::ALIGN_LEFT,      "Left" },
     { ImageFont::ALIGN_CENTER,    "Center" },
     { ImageFont::ALIGN_RIGHT,     "Right" },
 };
 
-static EnumTable gTextAlignmentTable(3, &textAlignmentEnums[0]); 
-
 //-----------------------------------------------------------------------------
 
 ImageFont::TextAlignment ImageFont::getTextAlignmentEnum(const char* label)
 {
-    // Search for Mnemonic.
-    for (U32 i = 0; i < (sizeof(textAlignmentEnums) / sizeof(EnumTable::Enums)); i++)
-    {
-        if( dStricmp(textAlignmentEnums[i].label, label) == 0)
-            return (TextAlignment)textAlignmentEnums[i].index;
-    }
+    if (gTextAlignmentTable.isLabel(label))
+        return (TextAlignment)gTextAlignmentTable[label];
 
     // Warn.
     Con::warnf("ImageFont::getTextAlignmentEnum() - Invalid text alignment of '%s'", label );
@@ -65,12 +59,8 @@ ImageFont::TextAlignment ImageFont::getTextAlignmentEnum(const char* label)
 
 const char* ImageFont::getTextAlignmentDescription(const ImageFont::TextAlignment alignment)
 {
-    // Search for Mnemonic.
-    for (U32 i = 0; i < (sizeof(textAlignmentEnums) / sizeof(EnumTable::Enums)); i++)
-    {
-        if( textAlignmentEnums[i].index == alignment )
-            return textAlignmentEnums[i].label;
-    }
+    if (gTextAlignmentTable.isIndex(alignment))
+        return gTextAlignmentTable[alignment].c_str();
 
     // Warn.
     Con::warnf( "ImageFont::getTextAlignmentDescription() - Invalid text alignment.");

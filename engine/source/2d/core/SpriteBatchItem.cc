@@ -664,12 +664,11 @@ void SpriteBatchItem::WriteCustomTamlSchema( const AbstractClassRep* pClassRep, 
     TiXmlElement* pBatchItemSrcBlendFactorTypeRestriction = new TiXmlElement( "xs:restriction" );
     pBatchItemSrcBlendFactorTypeRestriction->SetAttribute( "base", "xs:string" );
     pBatchItemSrcBlendFactorType->LinkEndChild( pBatchItemSrcBlendFactorTypeRestriction );
-    const S32 srcBlendFactorEnumsCount = srcBlendFactorTable.size;
-    for( S32 index = 0; index < srcBlendFactorEnumsCount; ++index )
+    for (auto itr: srcBlendFactorTable)
     {
         // Add enumeration element.
         TiXmlElement* pSrcBlendFactorEnumeration = new TiXmlElement( "xs:enumeration" );
-        pSrcBlendFactorEnumeration->SetAttribute( "value", srcBlendFactorTable.table[index].label );
+        pSrcBlendFactorEnumeration->SetAttribute( "value", itr.second.c_str() );
         pBatchItemSrcBlendFactorTypeRestriction->LinkEndChild( pSrcBlendFactorEnumeration );
     }
 
@@ -682,12 +681,11 @@ void SpriteBatchItem::WriteCustomTamlSchema( const AbstractClassRep* pClassRep, 
     TiXmlElement* pBatchItemDstBlendFactorTypeRestriction = new TiXmlElement( "xs:restriction" );
     pBatchItemDstBlendFactorTypeRestriction->SetAttribute( "base", "xs:string" );
     pBatchItemDstBlendFactorType->LinkEndChild( pBatchItemDstBlendFactorTypeRestriction );
-    const S32 dstBlendFactorEnumsCount = dstBlendFactorTable.size;
-    for( S32 index = 0; index < dstBlendFactorEnumsCount; ++index )
+    for (auto itr: dstBlendFactorTable)
     {
         // Add enumeration element.
         TiXmlElement* pDstBlendFactorEnumeration = new TiXmlElement( "xs:enumeration" );
-        pDstBlendFactorEnumeration->SetAttribute( "value", dstBlendFactorTable.table[index].label );
+        pDstBlendFactorEnumeration->SetAttribute( "value", itr.second.c_str() );
         pBatchItemDstBlendFactorTypeRestriction->LinkEndChild( pDstBlendFactorEnumeration );
     }
 

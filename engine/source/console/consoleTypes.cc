@@ -435,16 +435,11 @@ ConsoleGetType( TypeEnum )
 {
    AssertFatal(tbl, "Null enum table passed to getDataTypeEnum()");
    S32 dptrVal = *(S32*)dptr;
-   for (S32 i = 0; i < tbl->size; i++)
-   {
-      if (dptrVal == tbl->table[i].index)
-      {
-         return tbl->table[i].label;
-      }
-   }
+   if (tbl->isIndex(dptrVal) )
+       return ((*tbl)[dptrVal]).c_str();
 
    //not found
-   return "";
+   return StringTable->EmptyString;
 }
 
 ConsoleSetType( TypeEnum )
@@ -453,14 +448,10 @@ ConsoleSetType( TypeEnum )
    if (argc != 1) return;
 
    S32 val = 0;
-   for (S32 i = 0; i < tbl->size; i++)
-   {
-      if (! dStricmp(argv[0], tbl->table[i].label))
-      {
-         val = tbl->table[i].index;
-         break;
-      }
-   }
+
+    if (tbl->isLabel(argv[0]) )
+        val =  ((*tbl)[argv[0]]);
+
    *((S32 *) dptr) = val;
 }
 

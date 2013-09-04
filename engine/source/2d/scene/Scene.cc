@@ -5038,7 +5038,7 @@ void Scene::addTamlChild( SimObject* pSimObject )
 
 //-----------------------------------------------------------------------------
 
-static EnumTable::Enums DebugOptionsLookup[] =
+static EnumTable DebugOptionsLookupTable =
                 {
                 { Scene::SCENE_DEBUG_METRICS,           "metrics" },
                 { Scene::SCENE_DEBUG_FPS_METRICS,       "fps" },
@@ -5058,10 +5058,8 @@ static EnumTable::Enums DebugOptionsLookup[] =
 
 Scene::DebugOption Scene::getDebugOptionEnum(const char* label)
 {
-    // Search for Mnemonic.
-    for(U32 i = 0; i < (sizeof(DebugOptionsLookup) / sizeof(EnumTable::Enums)); i++)
-        if( dStricmp(DebugOptionsLookup[i].label, label) == 0)
-            return((Scene::DebugOption)DebugOptionsLookup[i].index);
+    if (DebugOptionsLookupTable.isLabel(label))
+        return ((Scene::DebugOption)DebugOptionsLookupTable[label]);
 
     // Warn.
     Con::warnf( "Scene::getDebugOptionEnum() - Invalid debug option '%s'.", label );
@@ -5073,12 +5071,8 @@ Scene::DebugOption Scene::getDebugOptionEnum(const char* label)
 
 const char* Scene::getDebugOptionDescription( Scene::DebugOption debugOption )
 {
-    // Search for Mnemonic.
-    for (U32 i = 0; i < (sizeof(DebugOptionsLookup) / sizeof(EnumTable::Enums)); i++)
-    {
-        if( DebugOptionsLookup[i].index == debugOption )
-            return DebugOptionsLookup[i].label;
-    }
+    if (DebugOptionsLookupTable.isIndex(debugOption))
+        return DebugOptionsLookupTable[debugOption].c_str();
 
     // Warn.
     Con::warnf( "Scene::getDebugOptionDescription() - Invalid debug option." );
@@ -5088,7 +5082,7 @@ const char* Scene::getDebugOptionDescription( Scene::DebugOption debugOption )
 
 //-----------------------------------------------------------------------------
 
-static EnumTable::Enums jointTypeLookup[] =
+EnumTable jointTypeTable =
                 {
                 { e_distanceJoint,  "distance"  },
                 { e_ropeJoint,      "rope"      },
@@ -5102,18 +5096,12 @@ static EnumTable::Enums jointTypeLookup[] =
                 { e_motorJoint,     "motor"     },
                 };
 
-EnumTable jointTypeTable(sizeof(jointTypeLookup) / sizeof(EnumTable::Enums), &jointTypeLookup[0]);
-
 //-----------------------------------------------------------------------------
 
 const char* Scene::getJointTypeDescription( b2JointType jointType )
 {
-    // Search for Mnemonic.
-    for (U32 i = 0; i < (sizeof(jointTypeLookup) / sizeof(EnumTable::Enums)); i++)
-    {
-        if( jointTypeLookup[i].index == jointType )
-            return jointTypeLookup[i].label;
-    }
+    if (jointTypeTable.isIndex(jointType))
+        return jointTypeTable[jointType].c_str();
 
     // Warn.
     Con::warnf( "Scene::getJointTypeDescription() - Invalid joint type." );
@@ -5125,12 +5113,8 @@ const char* Scene::getJointTypeDescription( b2JointType jointType )
 
 b2JointType Scene::getJointTypeEnum(const char* label)
 {
-    // Search for Mnemonic.
-    for (U32 i = 0; i < (sizeof(jointTypeLookup) / sizeof(EnumTable::Enums)); i++)
-    {
-        if( dStricmp(jointTypeLookup[i].label, label) == 0)
-            return (b2JointType)jointTypeLookup[i].index;
-    }
+    if (jointTypeTable.isLabel(label))
+        return (b2JointType)jointTypeTable[label];
 
     // Warn.
     Con::warnf( "Scene::getJointTypeEnum() - Invalid joint of '%s'", label );
@@ -5140,7 +5124,7 @@ b2JointType Scene::getJointTypeEnum(const char* label)
 
 //-----------------------------------------------------------------------------
 
-static EnumTable::Enums pickModeLookup[] =
+static EnumTable pickModeLookupTable =
                 {
                 { Scene::PICK_ANY,          "Any" },
                 { Scene::PICK_AABB,         "AABB" },
@@ -5152,10 +5136,8 @@ static EnumTable::Enums pickModeLookup[] =
 
 Scene::PickMode Scene::getPickModeEnum(const char* label)
 {
-    // Search for Mnemonic.
-    for(U32 i = 0; i < (sizeof(pickModeLookup) / sizeof(EnumTable::Enums)); i++)
-        if( dStricmp(pickModeLookup[i].label, label) == 0)
-            return((Scene::PickMode)pickModeLookup[i].index);
+    if (pickModeLookupTable.isLabel(label))
+        return (Scene::PickMode)pickModeLookupTable[label];
 
     // Warn.
     Con::warnf( "Scene::getPickModeEnum() - Invalid pick mode '%s'.", label );
@@ -5167,12 +5149,8 @@ Scene::PickMode Scene::getPickModeEnum(const char* label)
 
 const char* Scene::getPickModeDescription( Scene::PickMode pickMode )
 {
-    // Search for Mnemonic.
-    for (U32 i = 0; i < (sizeof(pickModeLookup) / sizeof(EnumTable::Enums)); i++)
-    {
-        if( pickModeLookup[i].index == pickMode )
-            return pickModeLookup[i].label;
-    }
+    if (pickModeLookupTable.isIndex(pickMode))
+        return pickModeLookupTable[pickMode].c_str();
 
     // Warn.
     Con::warnf( "Scene::getPickModeDescription() - Invalid pick mode.");

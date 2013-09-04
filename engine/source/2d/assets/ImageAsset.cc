@@ -121,22 +121,18 @@ static StringTableEntry cellHeightName              = StringTable->insert( "Heig
 
 //------------------------------------------------------------------------------
 
-static EnumTable::Enums textureFilterLookup[] =
+EnumTable textureFilterTable =
                 {
                 { ImageAsset::FILTER_NEAREST,     "NEAREST"     },
                 { ImageAsset::FILTER_BILINEAR,    "BILINEAR"    },
                 };
 
-EnumTable textureFilterTable(sizeof(textureFilterLookup) / sizeof(EnumTable::Enums), &textureFilterLookup[0]);
-
 //------------------------------------------------------------------------------
 
 ImageAsset::TextureFilterMode ImageAsset::getFilterModeEnum(const char* label)
 {
-    // Search for Mnemonic.
-    for(U32 i = 0; i < (sizeof(textureFilterLookup) / sizeof(EnumTable::Enums)); i++)
-        if( dStricmp(textureFilterLookup[i].label, label) == 0)
-            return((ImageAsset::TextureFilterMode)textureFilterLookup[i].index);
+    if (textureFilterTable.isLabel(label))
+        return ((ImageAsset::TextureFilterMode)textureFilterTable[label]);
 
     // Warn.
     Con::warnf("ImageAsset::getFilterModeEnum() - Invalid filter-mode '%s'", label );
@@ -148,10 +144,8 @@ ImageAsset::TextureFilterMode ImageAsset::getFilterModeEnum(const char* label)
 
 const char* ImageAsset::getFilterModeDescription( ImageAsset::TextureFilterMode filterMode )
 {
-    // Search for Mode.
-    for(U32 i = 0; i < (sizeof(textureFilterLookup) / sizeof(EnumTable::Enums)); i++)
-        if( textureFilterLookup[i].index == filterMode )
-            return textureFilterLookup[i].label;
+    if (textureFilterTable.isIndex(filterMode))
+        return textureFilterTable[filterMode].c_str();
 
     // Warn.
     Con::warnf("ImageAsset::getFilterModeDescription() - Invalid filter-mode." );
@@ -176,7 +170,7 @@ ImageAsset::ImageAsset() :  mImageFile(StringTable->EmptyString),
                             mCellWidth(0),
                             mCellHeight(0),
 
-                            mImageTextureHandle(NULL)
+                            mImageTextureHandle(nullptr)
 {
     // Set Vector Associations.
     VECTOR_SET_ASSOCIATION( mFrames );
