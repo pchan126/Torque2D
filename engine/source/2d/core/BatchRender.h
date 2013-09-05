@@ -246,7 +246,11 @@ public:
 
     void SubmitTriangleStrip( const Vector<GFXVertexPCT> verts, GFXTexHandle& texture);
 
-    /// Submit a quad for batching.
+    void SubmitIndexedTriangleStrip(const Vector<GFXVertexPCT> &verts,
+                                   GFXTexHandle &texture,
+                                   const Vector<U16> &indices);
+
+   /// Submit a quad for batching.
     /// Vertex and textures are indexed as:
     ///  3 ___ 2
     ///   |\  |
@@ -254,7 +258,7 @@ public:
     ///  0| _\|1
     void SubmitQuad( const GFXVertexPCT* vertex,
                      GFXTexHandle& texture );
-    
+   
     void SubmitQuad(
             const Vector2& vertexPos0,
             const Vector2& vertexPos1,

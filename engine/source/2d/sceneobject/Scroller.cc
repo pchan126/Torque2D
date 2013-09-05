@@ -290,6 +290,9 @@ void Scroller::sceneRender( const SceneRenderState* pSceneRenderState, const Sce
     F32 texX2;
     F32 texY2;
     
+   Vector<GFXVertexPCT> verts;
+   Vector<U16> index;
+   
    for ( auto yitr = yDivisions.begin(); yitr != yDivisions.end(); yitr++)
     {
        baseY = mRenderOOBB[0].y + (*yitr * regionHeight);
@@ -335,38 +338,34 @@ void Scroller::sceneRender( const SceneRenderState* pSceneRenderState, const Sce
           }
           
           
-             for (U32 j = 1; j <= mRows; j++)
-             {
-                for (U32 i = 1; i <= mColumns; i++ )
-                {
-                   F32 qwX1 = mLerp(baseX, nextX, ((F32)(i-1)/(F32)mColumns));
-                   F32 qwX2 = mLerp(baseX, nextX, ((F32)i)/(F32)mColumns);
-                   F32 qwY1 = mLerp(baseY, nextY, ((F32)(j-1)/(F32)mRows));
-                   F32 qwY2 = mLerp(baseY, nextY, ((F32)j)/(F32)mRows);
-                   F32 qtX1 = mLerp(texX1, texX2, ((F32)(i-1)/(F32)mColumns));
-                   F32 qtX2 = mLerp(texX1, texX2, ((F32)i)/(F32)mColumns);
-                   F32 qtY1 = mLerp(texY1, texY2, ((F32)(j-1)/(F32)mRows));
-                   F32 qtY2 = mLerp(texY1, texY2, ((F32)j)/(F32)mRows);
-                   
-                  pBatchRenderer->SubmitQuad(
-                                             Vector2( qwX1, qwY1 ),
-                                             Vector2( qwX2, qwY1 ),
-                                             Vector2( qwX2, qwY2 ),
-                                             Vector2( qwX1, qwY2 ),
-                                             Vector2( qtX1, qtY1 ),
-                                             Vector2( qtX2, qtY1 ),
-                                             Vector2( qtX2, qtY2 ),
-                                             Vector2( qtX1, qtY2 ),
-                                             texture, mBlendColor*getSceneLayerObj()->getLight() );
-                   }
-                }
-            baseX = nextX;
-        }
+         for (U32 j = 0; j <= mRows; j++)
+         {
+            for (U32 i = 0; i <= mColumns; i++ )
+            {
+               F32 qwX2 = mLerp(baseX, nextX, ((F32)i)/(F32)mColumns);
+               F32 qwY2 = mLerp(baseY, nextY, ((F32)j)/(F32)mRows);
+               F32 qtX2 = mLerp(texX1, texX2, ((F32)i)/(F32)mColumns);
+               F32 qtY2 = mLerp(texY1, texY2, ((F32)j)/(F32)mRows);
 
-     baseY = nextY;
+               GFXVertexPCT temp;
+               temp.point.set(qwX2, qwY2, 0.0);
+               temp.color.set(mBlendColor*getSceneLayerObj()->getLight());
+               temp.texCoord.set(qtX2, qtY2);
+               verts.push_back(temp);
+            }
+         }
+
+       
+          for (U32 j = 1; j <= mRows; j++)
+          {
+             for (U32 i = 1; i <= mColumns; i++ )
+             {
+             }
+          }
+       }
     }
     
-    
+    pBatchRenderer->SubmitIndexedTriangleStrip(verts, texture, index);
     // Flush the scroller batches.
     pBatchRenderer->flush();
     
