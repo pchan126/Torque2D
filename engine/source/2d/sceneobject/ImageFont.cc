@@ -35,12 +35,14 @@
 
 //------------------------------------------------------------------------------
 
-static EnumTable gTextAlignmentTable =
-{
+static std::array<EnumTable::Enums, 3> gTextAlignmentEntries =
+        {{
     { ImageFont::ALIGN_LEFT,      "Left" },
     { ImageFont::ALIGN_CENTER,    "Center" },
     { ImageFont::ALIGN_RIGHT,     "Right" },
-};
+}};
+
+static EnumTable gTextAlignmentTable = EnumTable(gTextAlignmentEntries.begin(), gTextAlignmentEntries.end());
 
 //-----------------------------------------------------------------------------
 

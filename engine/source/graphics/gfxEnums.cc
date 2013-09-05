@@ -5,8 +5,8 @@
 
 //-----------------------------------------------------------------------------
 
-EnumTable srcBlendFactorTable =
-        {
+static std::array<EnumTable::Enums, 9> srcBlendFactorEntries =
+        {{
                 { GFXBlendZero,                  "ZERO"                  },
                 { GFXBlendOne,                   "ONE"                   },
                 { GFXBlendDestColor,             "DST_COLOR"             },
@@ -16,12 +16,14 @@ EnumTable srcBlendFactorTable =
                 { GFXBlendDestAlpha,             "DST_ALPHA"             },
                 { GFXBlendInvDestAlpha,   "ONE_MINUS_DST_ALPHA"   },
                 { GFXBlendSrcAlphaSat,    "SRC_ALPHA_SATURATE"    },
-        };
+        }};
+
+EnumTable srcBlendFactorTable = EnumTable(srcBlendFactorEntries.begin(), srcBlendFactorEntries.end());
 
 //-----------------------------------------------------------------------------
 
-EnumTable dstBlendFactorTable =
-        {
+static std::array<EnumTable::Enums, 8> dstBlendFactorEntries =
+        {{
                 { GFXBlendZero,                  "ZERO" },
                 { GFXBlendOne,                   "ONE" },
                 { GFXBlendSrcColor,             "SRC_COLOR" },
@@ -30,19 +32,22 @@ EnumTable dstBlendFactorTable =
                 { GFXBlendInvSrcAlpha,   "ONE_MINUS_SRC_ALPHA" },
                 { GFXBlendDestAlpha,             "DST_ALPHA" },
                 { GFXBlendInvDestAlpha,   "ONE_MINUS_DST_ALPHA" },
-        };
+        }};
 
-EnumTable blendOpFactorTable =
-{
+EnumTable dstBlendFactorTable = EnumTable(dstBlendFactorEntries.begin(), dstBlendFactorEntries.end());
+
+static std::array<EnumTable::Enums, 5> blendOpFactorEntries =
+        {{
    { GFXBlendOpAdd,                  "ADD" },
    { GFXBlendOpSubtract,                   "SUBTRACT" },
    { GFXBlendOpRevSubtract,             "REV_SUBTRACT" },
    { GFXBlendOpMin,   "MIN" },
    { GFXBlendOpMax,             "MAX" },
-};
+}};
+EnumTable blendOpFactorTable = EnumTable(blendOpFactorEntries.begin(), blendOpFactorEntries.end());
 
-EnumTable cmpFactorTable =
-{
+static std::array<EnumTable::Enums, 8> cmpFactorEntries =
+        {{
    { GFXCmpNever,                  "NEVER" },
    { GFXCmpLess,                   "LESS" },
    { GFXCmpEqual,             "EQUAL" },
@@ -51,17 +56,19 @@ EnumTable cmpFactorTable =
    { GFXCmpNotEqual,             "NOT_EQUAL" },
    { GFXCmpGreaterEqual,             "GREATER_EQUAL" },
    { GFXCmpAlways,             "ALWAYS" },
-};
+}};
+EnumTable cmpFactorTable = EnumTable(cmpFactorEntries.begin(), cmpFactorEntries.end());
 
-EnumTable cullModeTable =
-{
+static std::array<EnumTable::Enums, 3> cullModeEntries =
+        {{
    { GFXCullNone,                 "NONE" },
    { GFXCullCW,                   "CW" },
    { GFXCullCCW,                  "CWW" },
-};
+}};
+EnumTable cullModeTable = EnumTable(cullModeEntries.begin(), cullModeEntries.end());
 
-EnumTable stencilOpTable =
-{
+static std::array<EnumTable::Enums, 8> stencilOpEntries =
+{{
    { GFXStencilOpKeep,              "KEEP" },
    { GFXStencilOpZero,              "ZERO" },
    { GFXStencilOpReplace,           "REPLACE" },
@@ -70,11 +77,12 @@ EnumTable stencilOpTable =
    { GFXStencilOpInvert,            "INVERT" },
    { GFXStencilOpIncr,              "INCR" },
    { GFXStencilOpDecr,              "DECR" },
-};
+}};
+EnumTable stencilOpTable = EnumTable(stencilOpEntries.begin(), stencilOpEntries.end());
 
 
-EnumTable GFXTextureOpTable =
-{
+static std::array<EnumTable::Enums, 25> GFXTextureOpEntries =
+{{
    { GFXTOPDisable,                 "DISABLE" },
    { GFXTOPSelectARG1,              "SELECTARG1" },
    { GFXTOPSelectARG2,              "SELECTARG2" },
@@ -100,10 +108,11 @@ EnumTable GFXTextureOpTable =
    { GFXTOPBumpEnvMapLuminance,     "BUMPENVMAPLUMINANCE" },
    { GFXTOPDotProduct3,             "DOTPRODUCT3" },
    { GFXTOPLERP,                    "LERP" },
-};
+}};
+EnumTable GFXTextureOpTable = EnumTable(GFXTextureOpEntries.begin(), GFXTextureOpEntries.end());
 
-EnumTable GFXTextureArgumentTable =
-{
+static std::array<EnumTable::Enums, 7> GFXTextureArgumentEntries =
+        {{
    { GFXTADiffuse,                  "DIFFUSE" },
    { GFXTACurrent,                  "CURRENT" },
    { GFXTATexture,                  "TEXTURE" },
@@ -111,34 +120,38 @@ EnumTable GFXTextureArgumentTable =
    { GFXTASpecular,                 "SPECULAR" },
    { GFXTATemp,                     "TEMP" },
    { GFXTAConstant,                 "CONSTANT" },
-};
+}};
+EnumTable GFXTextureArgumentTable = EnumTable(GFXTextureArgumentEntries.begin(), GFXTextureArgumentEntries.end());
 
-EnumTable GFXTextureAddressModeTable =
-{
+static std::array<EnumTable::Enums, 5> GFXTextureAddressModeEntries =
+        {{
    { GFXAddressWrap,                "WRAP" },
    { GFXAddressMirror,              "MIRROR" },
    { GFXAddressClamp,               "CLAMP" },
    { GFXAddressBorder,              "BORDER" },
    { GFXAddressMirrorOnce,          "MIRRORONCE" },
-};
+}};
+EnumTable GFXTextureAddressModeTable = EnumTable(GFXTextureAddressModeEntries.begin(), GFXTextureAddressModeEntries.end());
 
-EnumTable GFXTextureFilterTypeTable =
-{
+static std::array<EnumTable::Enums, 6> GFXTextureFilterTypeEntries =
+{{
    { GFXTextureFilterNone,          "NONE" },
    { GFXTextureFilterPoint,         "POINT" },
    { GFXTextureFilterLinear,        "LINEAR" },
    { GFXTextureFilterAnisotropic,   "ANISOTROPIC" },
    { GFXTextureFilterPyramidalQuad, "PYRAMIDALQUAD" },
    { GFXTextureFilterGaussianQuad,  "GAUSSIANQUAD" },
-};
+}};
+EnumTable GFXTextureFilterTypeTable = EnumTable(GFXTextureFilterTypeEntries.begin(), GFXTextureFilterTypeEntries.end());
 
-EnumTable GFXTextureTransformFlagsTable =
-{
+static std::array<EnumTable::Enums, 6> GFXTextureTransformFlagsEntries =
+{{
    { GFXTTFFDisable,                "DISABLE" },
    { GFXTTFFCoord1D,                "COORD1D" },
    { GFXTTFFCoord2D,                "COORD2D" },
    { GFXTTFFCoord3D,                "COORD3D" },
    { GFXTTFFCoord4D,                "COORD4D" },
    { GFXTTFFProjected,              "PROJECTED" },
-};
+}};
+EnumTable GFXTextureTransformFlagsTable = EnumTable(GFXTextureTransformFlagsEntries.begin(), GFXTextureTransformFlagsEntries.end());
 

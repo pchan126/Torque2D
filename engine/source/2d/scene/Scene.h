@@ -169,7 +169,7 @@ public:
         ///
         SCENE_DEBUG_METRICS            = BIT(0),
         SCENE_DEBUG_FPS_METRICS        = BIT(1),
-        SCENE_DEBUG_CONTROLLERS        = BIT(2), 
+        SCENE_DEBUG_CONTROLLERS        = BIT(2),
         SCENE_DEBUG_JOINTS             = BIT(3),
         SCENE_DEBUG_WIREFRAME_RENDER   = BIT(4),
         ///

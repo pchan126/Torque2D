@@ -35,16 +35,17 @@
 
 //------------------------------------------------------------------------------
 
-static EnumTable EmitterTypeTable =
-                {
+static std::array<EnumTable::Enums, 6> EmitterTypeEntries =
+                {{
                 { ParticleAssetEmitter::POINT_EMITTER,      "POINT" },
                 { ParticleAssetEmitter::LINE_EMITTER,       "LINE" },
                 { ParticleAssetEmitter::BOX_EMITTER,        "BOX" },
                 { ParticleAssetEmitter::DISK_EMITTER,       "DISK" },
                 { ParticleAssetEmitter::ELLIPSE_EMITTER,    "ELLIPSE" },
                 { ParticleAssetEmitter::TORUS_EMITTER,      "TORUS" },
-                };
+                }};
 
+static EnumTable EmitterTypeTable = EnumTable(EmitterTypeEntries.begin(), EmitterTypeEntries.end());
 //------------------------------------------------------------------------------
 
 ParticleAssetEmitter::EmitterType ParticleAssetEmitter::getEmitterTypeEnum(const char* label)
@@ -73,13 +74,14 @@ const char* ParticleAssetEmitter::getEmitterTypeDescription( const EmitterType e
 
 //------------------------------------------------------------------------------
 
-static EnumTable OrientationTypeTable =
-                {
+static std::array<EnumTable::Enums, 3> OrientationTypeEntries =
+                {{
                 { ParticleAssetEmitter::FIXED_ORIENTATION,    "FIXED" },
                 { ParticleAssetEmitter::ALIGNED_ORIENTATION,  "ALIGNED" },
                 { ParticleAssetEmitter::RANDOM_ORIENTATION,   "RANDOM" },
-                };
+                }};
 
+static EnumTable OrientationTypeTable = EnumTable(OrientationTypeEntries.begin(), OrientationTypeEntries.end());
 //------------------------------------------------------------------------------
 
 ParticleAssetEmitter::ParticleOrientationType ParticleAssetEmitter::getOrientationTypeEnum(const char* label)

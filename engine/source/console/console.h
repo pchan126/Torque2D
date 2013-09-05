@@ -29,7 +29,8 @@
 #include "platform/rawData.h"
 #include "delegates/delegateSignal.h"
 #include <unordered_map>
-#include <initializer_list>
+// VS2012 doesn't support std::initializer_list
+//#include <initializer_list>
 #include <array>
 
 class SimObject;
@@ -106,6 +107,12 @@ class EnumTable
    std::unordered_map<S32, std::string> table;
    std::unordered_map<std::string, S32> rev_table;
 
+    std::string makeLower(std::string inString)
+    {
+        std::transform(inString.begin(), inString.end(), inString.begin(), tolower);
+        return inString;
+    }
+
     public:
     /// This represents a specific item in the enumeration.
     typedef std::pair<S32, std::string> Enums;
@@ -116,33 +123,47 @@ class EnumTable
    ///
    /// @param sSize  Size of the table.
    /// @param sTable Pointer to table of Enums.
+
+   // legacy constructor
    EnumTable(S32 sSize, EnumTable::Enums* sTable)
    {
        for ( S32 i = 0; i < sSize; i++)
        {
            Enums itr = sTable[i];
-           table[itr.first] = itr.second;
-           rev_table[itr.second] = itr.first;
+           table[itr.first] = makeLower(itr.second);
+           rev_table[makeLower(itr.second)] = itr.first;
        }
    }
 
-   EnumTable(std::initializer_list<Enums> list)
+   template<class InputIterator>
+   EnumTable(InputIterator first, InputIterator last)
    {
-       for (auto itr: list)
+       for (auto itr = first; itr != last; itr++)
        {
-           table[itr.first] = itr.second;
-           rev_table[itr.second] = itr.first;
+           table[itr->first] = makeLower(itr->second);
+           rev_table[makeLower(itr->second)] = itr->first;
        }
    }
+
+
+// VS2012 doesn't support std::initializer_list
+//   EnumTable(std::initializer_list<Enums> list)
+//   {
+//       for (auto itr: list)
+//       {
+//           table[itr.first] = itr.second;
+//           rev_table[itr.second] = itr.first;
+//       }
+//   }
 
 
    SizeType getSize(void) { return table.size(); }
 
     std::string operator[](S32 i)               { return table[i]; }
-    S32 operator[](std::string i)               { return rev_table[i]; }
+    S32 operator[](std::string i)               { return rev_table[makeLower(i)]; }
 
     bool isIndex (S32 i)                         { return table.find(i) != table.end(); }
-    bool isLabel (std::string label)             { return rev_table.find(label) != rev_table.end(); }
+    bool isLabel (std::string label)             { return rev_table.find(makeLower(label)) != rev_table.end(); }
 
     std::unordered_map<S32, std::string>::iterator begin() { return table.begin(); };
     std::unordered_map<S32, std::string>::iterator end() { return table.end(); };

@@ -79,11 +79,13 @@ GFX_ImplementTextureProfile(GFXSceneWindowTextureProfile,
                               GFXTextureProfile::None);
 
 
-static EnumTable interpolationModeTable =
-                {
+static std::array<EnumTable::Enums, 2> interpolationModeEntries =
+                {{
                 { SceneWindow::LINEAR,   "LINEAR" },
                 { SceneWindow::SIGMOID,  "SIGMOID" },
-                };
+                }};
+
+static EnumTable interpolationModeTable = EnumTable(interpolationModeEntries.begin(), interpolationModeEntries.end());
 
 //-----------------------------------------------------------------------------
 

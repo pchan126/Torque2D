@@ -5038,8 +5038,8 @@ void Scene::addTamlChild( SimObject* pSimObject )
 
 //-----------------------------------------------------------------------------
 
-static EnumTable DebugOptionsLookupTable =
-                {
+static std::array<EnumTable::Enums, 11> DebugOptionsLookupEntries =
+                {{
                 { Scene::SCENE_DEBUG_METRICS,           "metrics" },
                 { Scene::SCENE_DEBUG_FPS_METRICS,       "fps" },
                 { Scene::SCENE_DEBUG_CONTROLLERS,       "controllers" },
@@ -5052,7 +5052,9 @@ static EnumTable DebugOptionsLookupTable =
                 { Scene::SCENE_DEBUG_COLLISION_SHAPES,  "collision" },
                 { Scene::SCENE_DEBUG_POSITION_AND_COM,  "position" },
                 { Scene::SCENE_DEBUG_SORT_POINTS,       "sort" },
-                };
+                }};
+
+static EnumTable DebugOptionsLookupTable = EnumTable(DebugOptionsLookupEntries.begin(), DebugOptionsLookupEntries.end());
 
 //-----------------------------------------------------------------------------
 
@@ -5082,8 +5084,8 @@ const char* Scene::getDebugOptionDescription( Scene::DebugOption debugOption )
 
 //-----------------------------------------------------------------------------
 
-EnumTable jointTypeTable =
-                {
+static std::array<EnumTable::Enums, 10> jointTypeEntries =
+                {{
                 { e_distanceJoint,  "distance"  },
                 { e_ropeJoint,      "rope"      },
                 { e_revoluteJoint,  "revolute"  },
@@ -5094,8 +5096,9 @@ EnumTable jointTypeTable =
                 { e_pulleyJoint,    "pulley"    },
                 { e_mouseJoint,     "target"    },
                 { e_motorJoint,     "motor"     },
-                };
+                }};
 
+EnumTable jointTypeTable = EnumTable(jointTypeEntries.begin(), jointTypeEntries.end());
 //-----------------------------------------------------------------------------
 
 const char* Scene::getJointTypeDescription( b2JointType jointType )
@@ -5124,14 +5127,15 @@ b2JointType Scene::getJointTypeEnum(const char* label)
 
 //-----------------------------------------------------------------------------
 
-static EnumTable pickModeLookupTable =
-                {
+static std::array<EnumTable::Enums, 4> pickModeLookupEntries =
+                {{
                 { Scene::PICK_ANY,          "Any" },
                 { Scene::PICK_AABB,         "AABB" },
                 { Scene::PICK_OOBB,         "OOBB" },
                 { Scene::PICK_COLLISION,    "Collision" },
-                };
+                }};
 
+static EnumTable pickModeLookupTable = EnumTable(pickModeLookupEntries.begin(), pickModeLookupEntries.end());
 //-----------------------------------------------------------------------------
 
 Scene::PickMode Scene::getPickModeEnum(const char* label)
