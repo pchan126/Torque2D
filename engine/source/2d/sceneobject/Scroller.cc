@@ -337,7 +337,8 @@ void Scroller::sceneRender( const SceneRenderState* pSceneRenderState, const Sce
                 texX2 = mClampF(texX2, 0.0, 1.0);
           }
           
-          
+         verts.setSize((mRows+1)*(mColumns+1));
+         U32 count = 0;
          for (U32 j = 0; j <= mRows; j++)
          {
             for (U32 i = 0; i <= mColumns; i++ )
@@ -347,20 +348,31 @@ void Scroller::sceneRender( const SceneRenderState* pSceneRenderState, const Sce
                F32 qtX2 = mLerp(texX1, texX2, ((F32)i)/(F32)mColumns);
                F32 qtY2 = mLerp(texY1, texY2, ((F32)j)/(F32)mRows);
 
-               GFXVertexPCT temp;
-               temp.point.set(qwX2, qwY2, 0.0);
-               temp.color.set(mBlendColor*getSceneLayerObj()->getLight());
-               temp.texCoord.set(qtX2, qtY2);
-               verts.push_back(temp);
+               verts[count].point.set(qwX2, qwY2, 0.0);
+               verts[count].color.set(mBlendColor*getSceneLayerObj()->getLight());
+               verts[count].texCoord.set(qtX2, qtY2);
+               count++;
             }
          }
 
-       
-          for (U32 j = 1; j <= mRows; j++)
+          index.setSize((mRows*mColumns*4) + mRows*2);
+           count = 0;
+          for (U16 j = 0; j < mRows; j++)
           {
-             for (U32 i = 1; i <= mColumns; i++ )
+             for (U16 i = 0; i <= mColumns; i++ )
              {
+                 index[count]   = ((U16)((j*(mColumns+1))+i) );
+                 index[count+1] = ((U16)((j+1*(mColumns+1))+i) );
+                 count += 2;
              }
+
+             if (j+1 != mRows )  // degenerate triangles between rows.
+             {
+                 index[count] = index[count-1];
+                 index[count+1] = ((U16)(j+1)*(mColumns+1));
+                 count += 2;
+             }
+
           }
        }
     }

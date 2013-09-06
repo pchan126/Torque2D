@@ -319,12 +319,12 @@ void BatchRender::SubmitIndexedTriangleStrip(const Vector<GFXVertexPCT> &verts, 
    if (vertBuffer->size() > 0)
    {
       indexBuffer->push_back(indexBuffer->back());
-      indexBuffer->push_back(in_indexBuffer.front()+indexOffset);
+      indexBuffer->push_back(in_indexBuffer.front());
    }
    
    // Add textured vertices.
-   // NOTE: We swap #2/#3 here.
    vertBuffer->merge(verts);
+
    for (auto i:in_indexBuffer )
       indexBuffer->push_back(i+indexOffset);
    
