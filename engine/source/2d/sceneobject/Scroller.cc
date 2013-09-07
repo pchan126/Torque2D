@@ -293,52 +293,57 @@ void Scroller::sceneRender( const SceneRenderState* pSceneRenderState, const Sce
    Vector<GFXVertexPCT> verts;
    Vector<U16> index;
    
+   U32 count = 0;
+   U32 indexCount = 0;
    for ( auto yitr = yDivisions.begin(); yitr != yDivisions.end(); yitr++)
-    {
-       baseY = mRenderOOBB[0].y + (*yitr * regionHeight);
-       texY1 = frameTexelArea.mTexelUpper.y - frameTexelArea.mTexelHeight*(F32)mFmod((*yitr+renderOffsetY), 1.0f);
+   {
+      baseY = mRenderOOBB[0].y + (*yitr * regionHeight);
+      texY1 = frameTexelArea.mTexelUpper.y - frameTexelArea.mTexelHeight*(F32)mFmod((*yitr+renderOffsetY), 1.0f);
 
-       if (yitr+1 == yDivisions.end())
-       {
-          nextY = mRenderOOBB[2].y;
-          texY2 = texY1 - frameTexelArea.mTexelHeight*(F32)mFmod(((mRepeatY)-(*yitr)), 1.0f);
-       }
-       else
-       {
-          nextY = mRenderOOBB[0].y + (*(yitr+1) * regionHeight);
-          texY2 = texY1 - frameTexelArea.mTexelHeight*(F32)mFmod((*(yitr+1)-(*yitr)), 1.0f);
-       }
-       if (texY2 == texY1)
-       {
-          texY2 -= frameTexelArea.mTexelHeight;
-          if (texY2 < 0.0 || texY2 > 1.0)
-             texY2 = mClampF(texY2, 0.0, 1.0);
-       }
-       
-       for ( auto xitr = xDivisions.begin(); xitr != xDivisions.end(); xitr++)
-       {
-          baseX = mRenderOOBB[0].x + (*xitr * regionWidth);
-          texX1 = frameTexelArea.mTexelLower.x + frameTexelArea.mTexelWidth*(F32)mFmod((*xitr+renderOffsetX), 1.0f);
+      if (yitr+1 == yDivisions.end())
+      {
+         nextY = mRenderOOBB[2].y;
+         texY2 = texY1 - frameTexelArea.mTexelHeight*(F32)mFmod(((mRepeatY)-(*yitr)), 1.0f);
+      }
+      else
+      {
+         nextY = mRenderOOBB[0].y + (*(yitr+1) * regionHeight);
+         texY2 = texY1 - frameTexelArea.mTexelHeight*(F32)mFmod((*(yitr+1)-(*yitr)), 1.0f);
+      }
+      if (texY2 == texY1)
+      {
+         texY2 -= frameTexelArea.mTexelHeight;
+         if (texY2 < 0.0 || texY2 > 1.0)
+            texY2 = mClampF(texY2, 0.0, 1.0);
+      }
 
-          if (xitr+1 == xDivisions.end())
-          {
-             nextX = mRenderOOBB[2].x;
-             texX2 = texX1 + frameTexelArea.mTexelWidth*(F32)mFmod(((mRepeatX)-(*xitr)), 1.0f);
-          }
-          else
-          {
-             nextX = mRenderOOBB[0].x + (*(xitr+1) * regionWidth);
-             texX2 = texX1 + frameTexelArea.mTexelWidth*(F32)mFmod((*(xitr+1)-(*xitr)), 1.0f);
-          }
-          if (texX2 == texX1)
-          {
-             texX2 += frameTexelArea.mTexelWidth;
-             if (texX2 < 0.0 || texX2 > 1.0)
-                texX2 = mClampF(texX2, 0.0, 1.0);
-          }
-          
-         verts.setSize((mRows+1)*(mColumns+1));
-         U32 count = 0;
+      for ( auto xitr = xDivisions.begin(); xitr != xDivisions.end(); xitr++)
+      {
+         baseX = mRenderOOBB[0].x + (*xitr * regionWidth);
+         texX1 = frameTexelArea.mTexelLower.x + frameTexelArea.mTexelWidth*(F32)mFmod((*xitr+renderOffsetX), 1.0f);
+
+         if (xitr+1 == xDivisions.end())
+         {
+            nextX = mRenderOOBB[2].x;
+            texX2 = texX1 + frameTexelArea.mTexelWidth*(F32)mFmod(((mRepeatX)-(*xitr)), 1.0f);
+         }
+         else
+         {
+            nextX = mRenderOOBB[0].x + (*(xitr+1) * regionWidth);
+            texX2 = texX1 + frameTexelArea.mTexelWidth*(F32)mFmod((*(xitr+1)-(*xitr)), 1.0f);
+         }
+         if (texX2 == texX1)
+         {
+            texX2 += frameTexelArea.mTexelWidth;
+            if (texX2 < 0.0 || texX2 > 1.0)
+               texX2 = mClampF(texX2, 0.0, 1.0);
+         }
+
+         verts.setSize((mRows+1)*(mColumns+1)*xDivisions.size()*yDivisions.size());
+         index.setSize(((mRows*mColumns*4) + mRows*2)*xDivisions.size()*yDivisions.size());
+         
+         U16 vert_offset = count;
+         
          for (U32 j = 0; j <= mRows; j++)
          {
             for (U32 i = 0; i <= mColumns; i++ )
@@ -355,28 +360,42 @@ void Scroller::sceneRender( const SceneRenderState* pSceneRenderState, const Sce
             }
          }
 
-          index.setSize((mRows*mColumns*4) + mRows*2);
-           count = 0;
-          for (U16 j = 0; j < mRows; j++)
-          {
-             for (U16 i = 0; i <= mColumns; i++ )
-             {
-                 index[count]   = ((U16)((j*(mColumns+1))+i) );
-                 index[count+1] = ((U16)((j+1*(mColumns+1))+i) );
-                 count += 2;
-             }
 
-             if (j+1 != mRows )  // degenerate triangles between rows.
-             {
-                 index[count] = index[count-1];
-                 index[count+1] = ((U16)(j+1)*(mColumns+1));
-                 count += 2;
-             }
+         for (U16 j = 0; j < mRows; j++)
+         {
+            for (U16 i = 0; i <= mColumns; i++ )
+            {
+               index[indexCount]   = vert_offset+((U16)((j*(mColumns+1))+i) );
+               index[indexCount+1] = vert_offset+((U16)(((j+1)*(mColumns+1))+i) );
+               indexCount += 2;
+            }
 
-          }
-       }
-    }
-    
+            if (j+1 != mRows )  // degenerate triangles between rows.
+            {
+               index[indexCount] = index[indexCount-1];
+               index[indexCount+1] = vert_offset+ ((U16)(j+1)*(mColumns+1));
+               indexCount += 2;
+            }
+         }
+         
+         if (xitr+1 != xDivisions.end())
+         {
+            index.setSize(index.size()+2);
+            index[indexCount] = index[indexCount-1];
+            index[indexCount+1] = count;
+            indexCount += 2;
+         }
+      }
+
+      if (yitr+1 != yDivisions.end())
+      {
+         index.setSize(index.size()+2);
+         index[indexCount] = index[indexCount-1];
+         index[indexCount+1] = count;
+         indexCount += 2;
+      }
+   }
+   
     pBatchRenderer->SubmitIndexedTriangleStrip(verts, texture, index);
     // Flush the scroller batches.
     pBatchRenderer->flush();
