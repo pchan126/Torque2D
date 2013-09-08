@@ -171,8 +171,10 @@ class Vector
    /// @return Returns true if a match is found.
    bool remove( const T& );
    void merge(const Vector& p)     { _vector.insert(_vector.end(), p._vector.begin(), p._vector.end()); };
+//   void merge(const )
 
-   /// @}
+   template<class InputIterator>
+   void merge(InputIterator first, InputIterator last) { _vector.insert(_vector.end(), first, last); };
 };
 
 template<class T> inline Vector<T>::~Vector()

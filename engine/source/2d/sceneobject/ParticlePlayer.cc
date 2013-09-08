@@ -37,10 +37,10 @@ ParticleSystem::ParticleNode* ParticlePlayer::EmitterNode::createParticle( void 
     ParticleSystem::ParticleNode* pFreeParticleNode = ParticleSystem::Instance->createParticle();
 
     // Insert node into emitter chain.
-    pFreeParticleNode->mNextNode        = mParticleNodeHead.mNextNode;
-    pFreeParticleNode->mPreviousNode    = &mParticleNodeHead;
-    mParticleNodeHead.mNextNode         = pFreeParticleNode;
-    pFreeParticleNode->mNextNode->mPreviousNode = pFreeParticleNode;
+//    pFreeParticleNode->mNextNode        = mParticleNodeHead.mNextNode;
+//    pFreeParticleNode->mPreviousNode    = &mParticleNodeHead;
+//    mParticleNodeHead.mNextNode         = pFreeParticleNode;
+//    pFreeParticleNode->mNextNode->mPreviousNode = pFreeParticleNode;
 
     // Configure the node.
     mOwner->configureParticle( this, pFreeParticleNode );
@@ -59,8 +59,8 @@ void ParticlePlayer::EmitterNode::freeParticle( ParticleSystem::ParticleNode* pP
     pParticleNode->mFrameProvider.deallocateAssets();
 
     // Remove the node from the emitter chain.
-    pParticleNode->mPreviousNode->mNextNode = pParticleNode->mNextNode;
-    pParticleNode->mNextNode->mPreviousNode = pParticleNode->mPreviousNode;
+//    pParticleNode->mPreviousNode->mNextNode = pParticleNode->mNextNode;
+//    pParticleNode->mNextNode->mPreviousNode = pParticleNode->mPreviousNode;
    
     // Free the node.
     ParticleSystem::Instance->freeParticle( pParticleNode );
@@ -73,11 +73,11 @@ void ParticlePlayer::EmitterNode::freeAllParticles( void )
     // Sanity!
     AssertFatal( mOwner != nullptr, "ParticlePlayer::EmitterNode::freeAllParticles() - Cannot free all particles with a NULL owner." );
 
-    // Free all the nodes,
-    while( mParticleNodeHead.mNextNode != &mParticleNodeHead )
-    {
-        freeParticle( mParticleNodeHead.mNextNode );
-    }
+//    // Free all the nodes,
+//    while( mParticleNodeHead.mNextNode != &mParticleNodeHead )
+//    {
+//        freeParticle( mParticleNodeHead.mNextNode );
+//    }
 }
 
 //------------------------------------------------------------------------------
@@ -294,14 +294,8 @@ void ParticlePlayer::integrateObject( const F32 totalTime, const F32 elapsedTime
             // Fetch the asset emitter.
             ParticleAssetEmitter* pParticleAssetEmitter = pEmitterNode->getAssetEmitter();
 
-            // Fetch the first particle node.
-            ParticleSystem::ParticleNode* pParticleNode = pEmitterNode->getFirstParticle();
-
-            // Fetch the particle node head.
-            ParticleSystem::ParticleNode* pParticleNodeHead = pEmitterNode->getParticleNodeHead();
-
             // Process All particle nodes.
-            while ( pParticleNode != pParticleNodeHead )
+            for (auto pParticleNode: pEmitterNode->getParticleNodeList() )
             {
                 // Update the particle age.
                 pParticleNode->mParticleAge += scaledTime;
@@ -311,20 +305,14 @@ void ParticlePlayer::integrateObject( const F32 totalTime, const F32 elapsedTime
                 if (    ( !pParticleAssetEmitter->getSingleParticle() && pParticleNode->mParticleAge > pParticleNode->mParticleLifetime ) ||
                         ( mIsZero(pParticleNode->mParticleLifetime) ) )
                 {
-                    // Yes, so fetch next particle before we kill it.
-                    pParticleNode = pParticleNode->mNextNode;
-
                     // Kill the particle.
                     // NOTE:-   Because we move to the next particle the particle to kill is now the previous!
-                    pEmitterNode->freeParticle( pParticleNode->mPreviousNode );
+                    pEmitterNode->freeParticle( pParticleNode );
                 }
                 else
                 {
                     // No, so integrate the particle.
                     integrateParticle( pEmitterNode, pParticleNode, pParticleNode->mParticleAge / pParticleNode->mParticleLifetime, scaledTime );
-
-                    // Move to the next particle node.
-                    pParticleNode = pParticleNode->mNextNode;
 
                     // Only count particles when not in single-particle mode.
                     activeParticleCount++;
@@ -338,12 +326,12 @@ void ParticlePlayer::integrateObject( const F32 totalTime, const F32 elapsedTime
             // Are we in single-particle mode?
             if ( pParticleAssetEmitter->getSingleParticle() )
             {
-                // Yes, so do we have a single particle yet?
-                if ( pParticleNodeHead->mNextNode == pParticleNodeHead )
-                {
-                    // No, so generate a single particle.
-                    pEmitterNode->createParticle();
-                }
+//                // Yes, so do we have a single particle yet?
+//                if ( pParticleNodeHead->mNextNode == pParticleNodeHead )
+//                {
+//                    // No, so generate a single particle.
+//                    pEmitterNode->createParticle();
+//                }
             }
             else
             {
@@ -467,12 +455,6 @@ void ParticlePlayer::interpolateObject( const F32 timeDelta )
     // Iterate the emitters.
     for( EmitterNode* pEmitterNode:mEmitters )
     {
-        // Fetch First Particle Node.
-        ParticleSystem::ParticleNode* pParticleNode = pEmitterNode->getFirstParticle();
-
-        // Fetch the particle node head.
-        ParticleSystem::ParticleNode* pParticleNodeHead = pEmitterNode->getParticleNodeHead();
-
         // Fetch the asset emitter.
         ParticleAssetEmitter* pParticleAssetEmitter = pEmitterNode->getAssetEmitter();
 
@@ -483,10 +465,10 @@ void ParticlePlayer::interpolateObject( const F32 timeDelta )
         const Vector2& localAABB3 = pParticleAssetEmitter->getLocalPivotAABB3();
 
         // Process All particle nodes.
-        while ( pParticleNode != pParticleNodeHead )
+       for (ParticleSystem::ParticleNode* pParticleNode: pEmitterNode->getParticleNodeList())
         {
             // Interpolate the position.
-            pParticleNode->mRenderTickPosition = (timeDelta * pParticleNode->mPreTickPosition) + ((1.0f-timeDelta) * pParticleNode->mPostTickPosition);
+            pParticleNode->mRenderTickPosition = mLerp(pParticleNode->mPreTickPosition, pParticleNode->mPostTickPosition, timeDelta);
 
             // Set the transform.
             pParticleNode->mTransform.p = pParticleNode->mRenderTickPosition;
@@ -503,9 +485,6 @@ void ParticlePlayer::interpolateObject( const F32 timeDelta )
 
             // Calculate the world OOBB..
             CoreMath::mCalculateOOBB( scaledAABB, pParticleNode->mTransform, pParticleNode->mRenderOOBB );
-
-            // Move to the next particle.
-            pParticleNode = pParticleNode->mNextNode;
         }
     }
 }
@@ -521,15 +500,9 @@ void ParticlePlayer::sceneRender( const SceneRenderState* pSceneRenderState, con
     // Flush.
     pBatchRenderer->flush( getScene()->getDebugStats().batchIsolatedFlush );
 
-    // Fetch emitter count.
-    const U32 emitterCount = mEmitters.size();
-
     // Render all the emitters.
-    for ( U32 emitterIndex = 0; emitterIndex < emitterCount; ++emitterIndex )
+    for (EmitterNode* pEmitterNode: mEmitters)
     {
-        // Fetch the emitter node.
-        EmitterNode* pEmitterNode = mEmitters[emitterIndex];
-
         // Fetch the particle emitter.
         ParticleAssetEmitter* pParticleAssetEmitter = pEmitterNode->getAssetEmitter();
 
@@ -537,9 +510,9 @@ void ParticlePlayer::sceneRender( const SceneRenderState* pSceneRenderState, con
         if ( !pEmitterNode->getVisible() )
             continue;
 
-        // Skip if there are no active particles.
-        if ( !pEmitterNode->getActiveParticles() )
-            continue;       
+//        // Skip if there are no active particles.
+//        if ( !pEmitterNode->getActiveParticles() )
+//            continue;       
 
         // Fetch both image and animation assets.
         const AssetPtr<ImageAsset>& imageAsset = pParticleAssetEmitter->getImageAsset();
@@ -614,14 +587,14 @@ void ParticlePlayer::sceneRender( const SceneRenderState* pSceneRenderState, con
         // Fetch the oldest-in-front flag.
         const bool oldestInFront = pParticleAssetEmitter->getOldestInFront();
 
-        // Fetch the starting particle (using appropriate particle order).
-        ParticleSystem::ParticleNode* pParticleNode = oldestInFront ? pEmitterNode->getFirstParticle() : pEmitterNode->getLastParticle();
-
-        // Fetch the particle node head.
-        ParticleSystem::ParticleNode* pParticleNodeHead = pEmitterNode->getParticleNodeHead();
+//        // Fetch the starting particle (using appropriate particle order).
+//        ParticleSystem::ParticleNode pParticleNode = oldestInFront ? pEmitterNode->getFirstParticle() : pEmitterNode->getLastParticle();
+//
+//        // Fetch the particle node head.
+//        ParticleSystem::ParticleNode* pParticleNodeHead = pEmitterNode->getParticleNodeHead();
 
         // Process all particle nodes.
-        while ( pParticleNode != pParticleNodeHead )
+       for ( ParticleSystem::ParticleNode* pParticleNode: pEmitterNode->getParticleNodeList() )
         {
             // Fetch the frame provider.
             const ImageFrameProviderCore& frameProvider = pParticleNode->mFrameProvider;
@@ -651,9 +624,6 @@ void ParticlePlayer::sceneRender( const SceneRenderState* pSceneRenderState, con
                 Vector2( texLower.x, texLower.y ),
                 frameTexture,
                 pParticleNode->mColor*getScene()->getSceneLight() );
-
-            // Move to next Particle ( using appropriate sort-order ).
-            pParticleNode = oldestInFront ? pParticleNode->mNextNode : pParticleNode->mPreviousNode;
         };
         
         // Flush.
@@ -816,18 +786,12 @@ void ParticlePlayer::stop( const bool waitForParticles, const bool killEffect )
     if ( !mPlaying && !killEffect )
         return;
 
-    // Fetch emitter count.
-    const U32 emitterCount = mEmitters.size();
-
     // Are we waiting for particles to end?
     if ( waitForParticles )
     {
         // Yes, so pause all the emitters.
-        for ( U32 emitterIndex = 0; emitterIndex < emitterCount; ++emitterIndex )
-        {
-            // Fetch the emitter.
-            mEmitters[emitterIndex]->setPaused( true );
-        }
+        for (auto emitter: mEmitters)
+            emitter->setPaused( true );
 
         // Set waiting for particles.
         mWaitingForParticles = true;
@@ -840,10 +804,8 @@ void ParticlePlayer::stop( const bool waitForParticles, const bool killEffect )
     }
 
     // No, so free all particles.
-    for ( U32 emitterIndex = 0; emitterIndex < emitterCount; ++emitterIndex )
-    {
-        mEmitters[emitterIndex]->freeAllParticles();
-    }
+    for (auto emitter: mEmitters)
+        emitter->freeAllParticles();
 
     // Reset the age.
     mAge = 0.0f;
@@ -1507,19 +1469,13 @@ void ParticlePlayer::initializeParticleAsset( void )
     // Fetch the particle asset.
     ParticleAsset* pParticleAsset = mParticleAsset;
 
-    // Fetch the emitter count.
-    const U32 emitterCount = pParticleAsset->getEmitterCount();
-
     // Finish if no emitters found.
-    if ( emitterCount == 0 )
+    if ( pParticleAsset->getEmitterCount() == 0 )
         return;
 
     // Add each emitter reference.
-    for( U32 emitterIndex = 0; emitterIndex < emitterCount; ++emitterIndex )
+   for( ParticleAssetEmitter* pParticleAssetEmitter: pParticleAsset->getEmitters() )
     {
-        // Fetch the asset emitter.
-        ParticleAssetEmitter* pParticleAssetEmitter = pParticleAsset->getEmitter( emitterIndex );
-
         // Fetch both image and animation assets.
         const AssetPtr<ImageAsset>& imageAsset = pParticleAssetEmitter->getImageAsset();
         const AssetPtr<AnimationAsset>& animationAsset = pParticleAssetEmitter->getAnimationAsset();

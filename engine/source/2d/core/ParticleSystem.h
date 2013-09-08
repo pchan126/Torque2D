@@ -35,10 +35,6 @@ public:
     /// Particle node.
     struct ParticleNode : public IFactoryObjectReset
     {
-        /// Particle Node Linkages.
-        ParticleNode*           mPreviousNode;
-        ParticleNode*           mNextNode;
-
         /// Suppress Movement.
         bool                    mSuppressMovement;
 

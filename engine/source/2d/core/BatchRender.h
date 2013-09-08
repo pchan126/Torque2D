@@ -256,7 +256,7 @@ public:
     ///   |\  |
     ///   | \ |
     ///  0| _\|1
-    void SubmitQuad( const GFXVertexPCT* vertex,
+    void SubmitQuad( const std::array< GFXVertexPCT, 4>,
                      GFXTexHandle& texture );
    
     void SubmitQuad(

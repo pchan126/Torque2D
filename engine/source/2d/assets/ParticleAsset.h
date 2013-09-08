@@ -114,6 +114,8 @@ public:
     ParticleAssetEmitter* getEmitter( const U32 emitterIndex ) const;
     ParticleAssetEmitter* findEmitter( const char* pEmitterName ) const;
     void moveEmitter( S32 fromIndex, S32 toIndex );
+   
+    typeEmitterVector getEmitters(void) { return mEmitters; };
 
     virtual U32 getTamlChildCount( void ) const
     {

@@ -168,18 +168,15 @@ void ParticleAsset::copyTo(SimObject* object)
 
    // Copy the emitters.
    pParticleAsset->clearEmitters();
-   const U32 emitterCount = getEmitterCount();
-   for ( U32 index = 0; index < emitterCount; ++index )
-   {
-       // Fetch emitter.
-       ParticleAssetEmitter* pParticleAssetEmitter = getEmitter( index );
 
+   for (auto pEmitter: mEmitters)
+   {
        // Create a new emitter.
        ParticleAssetEmitter* pNewEmitter = new ParticleAssetEmitter();
        pParticleAsset->addEmitter( pNewEmitter );
 
        // Copy emitter.
-       pParticleAssetEmitter->copyTo( pNewEmitter );
+       pEmitter->copyTo( pNewEmitter );
    }
 }
 

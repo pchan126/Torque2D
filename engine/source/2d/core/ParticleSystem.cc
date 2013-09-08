@@ -74,61 +74,63 @@ ParticleSystem::~ParticleSystem()
 
 ParticleSystem::ParticleNode* ParticleSystem::createParticle( void )
 {
-    // Have we got any free particle nodes?
-    if ( mpFreeParticleNodes == NULL )
-    {
-        // No, so generate a new free pool block.
-        ParticleNode* pFreePoolBlock = new ParticleNode[mParticlePoolBlockSize];
+//    // Have we got any free particle nodes?
+//    if ( mpFreeParticleNodes == NULL )
+//    {
+//        // No, so generate a new free pool block.
+//        ParticleNode* pFreePoolBlock = new ParticleNode[mParticlePoolBlockSize];
+//
+//        // Store new free pool block.
+//        mParticlePool.push_back( pFreePoolBlock );
+//
+//        // Initialise Free Pool Block.
+//        for ( U32 n = 0; n < (mParticlePoolBlockSize-1); n++ )
+//        {
+//            pFreePoolBlock[n].mPreviousNode = NULL;
+//            pFreePoolBlock[n].mNextNode     = pFreePoolBlock+n+1;
+//        }
+//
+//        // Insert Last Node Preceding any existing free nodes.
+//        pFreePoolBlock[mParticlePoolBlockSize-1].mPreviousNode = NULL;
+//        pFreePoolBlock[mParticlePoolBlockSize-1].mNextNode = mpFreeParticleNodes;
+//
+//        // Set Free References.
+//        mpFreeParticleNodes = pFreePoolBlock;
+//    }
+//
+//    // Fetch a free node,
+//    ParticleNode* pFreeParticleNode = mpFreeParticleNodes;
+//
+//    // Set the new free node reference.
+//    mpFreeParticleNodes = mpFreeParticleNodes->mNextNode;
+//
+//    // Reset any previous or next node references.
+//    pFreeParticleNode->mNextNode        = NULL;
+//    pFreeParticleNode->mPreviousNode    = NULL;
+//
+//    // Increase the active particle count.
+//    mActiveParticleCount++;
 
-        // Store new free pool block.
-        mParticlePool.push_back( pFreePoolBlock );
-
-        // Initialise Free Pool Block.
-        for ( U32 n = 0; n < (mParticlePoolBlockSize-1); n++ )
-        {
-            pFreePoolBlock[n].mPreviousNode = NULL;
-            pFreePoolBlock[n].mNextNode     = pFreePoolBlock+n+1;
-        }
-
-        // Insert Last Node Preceding any existing free nodes.
-        pFreePoolBlock[mParticlePoolBlockSize-1].mPreviousNode = NULL;
-        pFreePoolBlock[mParticlePoolBlockSize-1].mNextNode = mpFreeParticleNodes;
-
-        // Set Free References.
-        mpFreeParticleNodes = pFreePoolBlock;
-    }
-
-    // Fetch a free node,
-    ParticleNode* pFreeParticleNode = mpFreeParticleNodes;
-
-    // Set the new free node reference.
-    mpFreeParticleNodes = mpFreeParticleNodes->mNextNode;
-
-    // Reset any previous or next node references.
-    pFreeParticleNode->mNextNode        = NULL;
-    pFreeParticleNode->mPreviousNode    = NULL;
-
-    // Increase the active particle count.
-    mActiveParticleCount++;
-
-    return pFreeParticleNode;
+//    return pFreeParticleNode;
+   
+   return NULL;
 }
 
 //------------------------------------------------------------------------------
 
 void ParticleSystem::freeParticle( ParticleNode* pParticleNode )
 {
-    // Reset the particle.
-    pParticleNode->resetState();
-
-    // Remove the previous node reference.
-    pParticleNode->mPreviousNode = NULL;
-    
-    // Insert the node into the free pool.
-    pParticleNode->mNextNode = mpFreeParticleNodes;
-    mpFreeParticleNodes = pParticleNode;
-
-    // Decrease the active particle count.
-    mActiveParticleCount--;
+//    // Reset the particle.
+//    pParticleNode->resetState();
+//
+//    // Remove the previous node reference.
+//    pParticleNode->mPreviousNode = NULL;
+//    
+//    // Insert the node into the free pool.
+//    pParticleNode->mNextNode = mpFreeParticleNodes;
+//    mpFreeParticleNodes = pParticleNode;
+//
+//    // Decrease the active particle count.
+//    mActiveParticleCount--;
 }
 

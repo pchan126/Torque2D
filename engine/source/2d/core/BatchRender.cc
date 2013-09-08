@@ -21,10 +21,8 @@
 //-----------------------------------------------------------------------------
 
 #include "BatchRender.h"
-
-#ifndef _SCENE_OBJECT_H_
 #include "2d/sceneobject/SceneObject.h"
-#endif
+#include <array>
 
 // Debug Profiling.
 #include "debug/profiler.h"
@@ -90,6 +88,7 @@ void BatchRender::setAlphaTestMode( const SceneRenderRequest* pSceneRenderReques
 
 //-----------------------------------------------------------------------------
 
+// OMG this is slow - use SubmitIndexedTriangleStrip instead!
 void BatchRender::SubmitTriangles(
         const U32 vertexCount,
         const Vector2* pVertexArray,
@@ -350,7 +349,7 @@ void BatchRender::SubmitIndexedTriangleStrip(const Vector<GFXVertexPCT> &verts, 
    }
 }
 
-void BatchRender::SubmitQuad(const GFXVertexPCT* vertex,
+void BatchRender::SubmitQuad(const std::array< GFXVertexPCT, 4> verts,
                              GFXTexHandle& texture)
 {
     // Sanity!
@@ -390,20 +389,22 @@ void BatchRender::SubmitQuad(const GFXVertexPCT* vertex,
         indexBuffer = findTextureBatch(texture)->index;
     }
     
-    // degenerate linking triangle
-    if (vertBuffer->size() > 0)
-    {
-        indexBuffer->push_back(vertBuffer->push_back_unique(vertBuffer->back()));
-        indexBuffer->push_back(vertBuffer->push_back_unique(vertex[0]));
-    }
-    
-    // Add textured vertices.
-    // NOTE: We swap #2/#3 here.
-    indexBuffer->push_back(vertBuffer->push_back_unique(vertex[0]));
-    indexBuffer->push_back(vertBuffer->push_back_unique(vertex[1]));
-    indexBuffer->push_back(vertBuffer->push_back_unique(vertex[3]));
-    indexBuffer->push_back(vertBuffer->push_back_unique(vertex[2]));
-    
+   U16 indexOffset = vertBuffer->size();
+   std::array< U16 , 4> in_indexBuffer = {0, 1, 3, 2};
+   
+   // degenerate linking triangle
+   if (vertBuffer->size() > 0)
+   {
+      indexBuffer->push_back(indexBuffer->back());
+      indexBuffer->push_back(in_indexBuffer.front());
+   }
+   
+   // Add textured vertices.
+   vertBuffer->merge(verts.begin(), verts.end());
+   
+   for (auto i:in_indexBuffer )
+      indexBuffer->push_back(i+indexOffset);
+
     // Stats.
     mpDebugStats->batchTrianglesSubmitted+=2;
     
@@ -447,8 +448,8 @@ void BatchRender::SubmitQuad(
     // Debug Profiling.
     PROFILE_SCOPE(BatchRender_SubmitQuad);
     
-    GFXVertexPCT verts[4];
-    
+    std::array< GFXVertexPCT, 4> verts;
+   
     verts[0].point.set(vertexPos0.x, vertexPos0.y, 0.0f);
     verts[0].texCoord.set(texturePos0.x, texturePos0.y);
     verts[0].color = color;

@@ -23,13 +23,9 @@
 #ifndef _PARTICLE_PLAYER_H_
 #define _PARTICLE_PLAYER_H_
 
-#ifndef _PARTICLE_ASSET_H_
 #include "2d/assets/particleAsset.h"
-#endif
-
-#ifndef _PARTICLE_SYSTEM_H_
 #include "2d/core/particleSystem.h"
-#endif
+#include <list>
 
 //-----------------------------------------------------------------------------
 
@@ -51,7 +47,8 @@ private:
     private:
         ParticlePlayer*                 mOwner;
         ParticleAssetEmitter*           mpAssetEmitter;
-        ParticleSystem::ParticleNode    mParticleNodeHead;
+        std::list<ParticleSystem::ParticleNode*> mParticleNodeList;
+//        ParticleSystem::ParticleNode    mParticleNodeHead;
         F32                             mTimeSinceLastGeneration;
         bool                            mPaused;
         bool                            mVisible;
@@ -78,8 +75,8 @@ private:
             // Reset time since last generation.
             mTimeSinceLastGeneration = 0.0f;
 
-            // Reset the node head.
-            mParticleNodeHead.mNextNode = mParticleNodeHead.mPreviousNode = &mParticleNodeHead;
+//            // Reset the node head.
+//            mParticleNodeHead.mNextNode = mParticleNodeHead.mPreviousNode = &mParticleNodeHead;
         }
 
         ~EmitterNode()
@@ -90,11 +87,12 @@ private:
         inline ParticlePlayer* getOwner( void ) const { return mOwner; }
         inline ParticleAssetEmitter* getAssetEmitter( void ) const { return mpAssetEmitter; }
 
-        inline bool getActiveParticles( void ) const { return mParticleNodeHead.mNextNode != &mParticleNodeHead; }
+//        inline bool getActiveParticles( void ) const { return mParticleNodeHead.mNextNode != &mParticleNodeHead; }
 
-        inline ParticleSystem::ParticleNode* getFirstParticle( void ) const { return mParticleNodeHead.mNextNode; }
-        inline ParticleSystem::ParticleNode* getLastParticle( void ) const { return mParticleNodeHead.mPreviousNode; }
-        inline ParticleSystem::ParticleNode* getParticleNodeHead( void ) { return &mParticleNodeHead; }
+       inline std::list<ParticleSystem::ParticleNode*> getParticleNodeList(void) { return mParticleNodeList; };
+        inline ParticleSystem::ParticleNode* getFirstParticle( void ) const { return mParticleNodeList.front(); }
+        inline ParticleSystem::ParticleNode* getLastParticle( void ) const { return mParticleNodeList.back(); }
+//        inline ParticleSystem::ParticleNode* getParticleNodeHead( void ) { return &mParticleNodeHead; }
 
         inline void setTimeSinceLastGeneration( const F32 timeSinceLastGeneration ) { mTimeSinceLastGeneration = timeSinceLastGeneration; }
         inline F32 getTimeSinceLastGeneration( void ) const { return mTimeSinceLastGeneration; }
