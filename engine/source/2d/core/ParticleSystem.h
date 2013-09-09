@@ -23,9 +23,8 @@
 #ifndef _PARTICLE_SYSTEM_H_
 #define _PARTICLE_SYSTEM_H_
 
-#ifndef _IMAGE_FRAME_PROVIDER_H
 #include "2d/core/imageFrameProvider.h"
-#endif
+#include <list>
 
 //-----------------------------------------------------------------------------
 
@@ -77,10 +76,10 @@ public:
     };
 
 private:
-    const U32               mParticlePoolBlockSize;
-    Vector<ParticleNode*>   mParticlePool;
-    ParticleNode*           mpFreeParticleNodes;
-    U32                     mActiveParticleCount;
+    const U32                mParticlePoolBlockSize;
+    Vector<ParticleNode>     mParticlePool;
+    std::list<ParticleNode*> mpFreeParticleNodes;
+    U32                      mActiveParticleCount;
 
 public:
     static void Init( void );
