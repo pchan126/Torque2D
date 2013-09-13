@@ -37,10 +37,7 @@ ParticleSystem::ParticleNode* ParticlePlayer::EmitterNode::createParticle( void 
     ParticleSystem::ParticleNode* pFreeParticleNode = ParticleSystem::Instance->createParticle();
 
     // Insert node into emitter chain.
-//    pFreeParticleNode->mNextNode        = mParticleNodeHead.mNextNode;
-//    pFreeParticleNode->mPreviousNode    = &mParticleNodeHead;
-//    mParticleNodeHead.mNextNode         = pFreeParticleNode;
-//    pFreeParticleNode->mNextNode->mPreviousNode = pFreeParticleNode;
+    mParticleNodeList.push_back(pFreeParticleNode);
 
     // Configure the node.
     mOwner->configureParticle( this, pFreeParticleNode );
@@ -58,10 +55,8 @@ void ParticlePlayer::EmitterNode::freeParticle( ParticleSystem::ParticleNode* pP
     // Deallocate the assets.
     pParticleNode->mFrameProvider.deallocateAssets();
 
-    // Remove the node from the emitter chain.
-//    pParticleNode->mPreviousNode->mNextNode = pParticleNode->mNextNode;
-//    pParticleNode->mNextNode->mPreviousNode = pParticleNode->mPreviousNode;
-   
+    mParticleNodeList.remove(pParticleNode);
+
     // Free the node.
     ParticleSystem::Instance->freeParticle( pParticleNode );
 }
@@ -73,11 +68,8 @@ void ParticlePlayer::EmitterNode::freeAllParticles( void )
     // Sanity!
     AssertFatal( mOwner != nullptr, "ParticlePlayer::EmitterNode::freeAllParticles() - Cannot free all particles with a NULL owner." );
 
-//    // Free all the nodes,
-//    while( mParticleNodeHead.mNextNode != &mParticleNodeHead )
-//    {
-//        freeParticle( mParticleNodeHead.mNextNode );
-//    }
+    while (mParticleNodeList.size() > 0)
+        freeParticle(mParticleNodeList.front());
 }
 
 //------------------------------------------------------------------------------
@@ -326,12 +318,12 @@ void ParticlePlayer::integrateObject( const F32 totalTime, const F32 elapsedTime
             // Are we in single-particle mode?
             if ( pParticleAssetEmitter->getSingleParticle() )
             {
-//                // Yes, so do we have a single particle yet?
-//                if ( pParticleNodeHead->mNextNode == pParticleNodeHead )
-//                {
-//                    // No, so generate a single particle.
-//                    pEmitterNode->createParticle();
-//                }
+                // Yes, so do we have a single particle yet?
+                if (pEmitterNode->getParticleNodeList().size() == 0)
+                {
+                    // No, so generate a single particle.
+                    pEmitterNode->createParticle();
+                }
             }
             else
             {
@@ -510,9 +502,9 @@ void ParticlePlayer::sceneRender( const SceneRenderState* pSceneRenderState, con
         if ( !pEmitterNode->getVisible() )
             continue;
 
-//        // Skip if there are no active particles.
-//        if ( !pEmitterNode->getActiveParticles() )
-//            continue;       
+        // Skip if there are no active particles.
+        if ( !pEmitterNode->getActiveParticles() )
+            continue;
 
         // Fetch both image and animation assets.
         const AssetPtr<ImageAsset>& imageAsset = pParticleAssetEmitter->getImageAsset();

@@ -87,7 +87,7 @@ private:
         inline ParticlePlayer* getOwner( void ) const { return mOwner; }
         inline ParticleAssetEmitter* getAssetEmitter( void ) const { return mpAssetEmitter; }
 
-//        inline bool getActiveParticles( void ) const { return mParticleNodeHead.mNextNode != &mParticleNodeHead; }
+        inline bool getActiveParticles( void ) const { return mParticleNodeList.size() > 0; }
 
        inline std::list<ParticleSystem::ParticleNode*> getParticleNodeList(void) { return mParticleNodeList; };
         inline ParticleSystem::ParticleNode* getFirstParticle( void ) const { return mParticleNodeList.front(); }

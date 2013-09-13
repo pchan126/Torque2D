@@ -68,6 +68,7 @@ public:
         Vector2                 mRenderTickPosition;
 
         ParticleNode() { constructInPlace<ImageFrameProviderCore>(&mFrameProvider); resetState(); }
+//        ParticleNode() {};
 
         virtual void resetState( void )
         {

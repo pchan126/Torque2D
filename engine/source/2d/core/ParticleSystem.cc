@@ -65,10 +65,12 @@ ParticleSystem::~ParticleSystem()
 ParticleSystem::ParticleNode* ParticleSystem::createParticle( void )
 {
     // Have we got any free particle nodes?
-    if ( mpFreeParticleNodes.size() > 0 )
+    if ( mpFreeParticleNodes.front() == nullptr )
     {
         auto oldSize = mParticlePool.size();
-        mParticlePool.setSize(mParticlePool.size() + mParticlePoolBlockSize, new ParticleNode);
+        for (int i = 0; i < mParticlePoolBlockSize; i++)
+            mParticlePool.push_back(new ParticleNode());
+
         for (auto itr = mParticlePool.begin()+oldSize; itr != mParticlePool.end(); itr++)
         {
             mpFreeParticleNodes.push_back(*itr);
