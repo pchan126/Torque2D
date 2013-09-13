@@ -24,7 +24,7 @@
 
 //------------------------------------------------------------------------------
 
-ParticleSystem* ParticleSystem::Instance = NULL;
+ParticleSystem* ParticleSystem::Instance = nullptr;
 
 //------------------------------------------------------------------------------
 
@@ -40,7 +40,7 @@ void ParticleSystem::destroy( void )
 {
     // Delete the particle system.
     delete Instance;
-    Instance = NULL;
+    Instance = nullptr;
 }
 
 //------------------------------------------------------------------------------

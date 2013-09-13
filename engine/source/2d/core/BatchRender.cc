@@ -395,15 +395,20 @@ void BatchRender::SubmitQuad(const std::array< GFXVertexPCT, 4> verts,
    // degenerate linking triangle
    if (vertBuffer->size() > 0)
    {
+//       Con::printf("indexBuffer->pushback %d %d", indexBuffer->back(), in_indexBuffer.front());
+
       indexBuffer->push_back(indexBuffer->back());
-      indexBuffer->push_back(in_indexBuffer.front());
+      indexBuffer->push_back(in_indexBuffer.front()+indexOffset);
    }
    
    // Add textured vertices.
    vertBuffer->merge(verts.begin(), verts.end());
    
    for (auto i:in_indexBuffer )
+   {
       indexBuffer->push_back(i+indexOffset);
+//      Con::printf("indexBuffer->pushback %d", i+indexOffset);
+   }
 
     // Stats.
     mpDebugStats->batchTrianglesSubmitted+=2;
