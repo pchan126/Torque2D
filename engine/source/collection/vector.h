@@ -156,6 +156,7 @@ class Vector
    T*   address() {     return _vector.data();   };
    const T*   address() const {     return _vector.data();   };
    SizeType  setSize(SizeType size)     { _vector.resize(size); return _vector.size(); };
+   SizeType  setSize(SizeType size, const T& val)     { _vector.resize(size, val); return _vector.size(); };
    void increment( U32 = 1);
    void decrement(U32 = 1);
    void insert(SizeType index)             { _vector.insert(_vector.begin()+index, T()); };

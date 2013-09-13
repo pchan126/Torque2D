@@ -56,6 +56,8 @@ ParticleSystem::ParticleSystem() :
 
 ParticleSystem::~ParticleSystem()
 {
+   for (auto particle:mParticlePool)
+      delete particle;
 }
 
 //------------------------------------------------------------------------------
@@ -66,11 +68,10 @@ ParticleSystem::ParticleNode* ParticleSystem::createParticle( void )
     if ( mpFreeParticleNodes.size() > 0 )
     {
         auto oldSize = mParticlePool.size();
-        mParticlePool.setSize(mParticlePool.size() + mParticlePoolBlockSize);
-
+        mParticlePool.setSize(mParticlePool.size() + mParticlePoolBlockSize, new ParticleNode);
         for (auto itr = mParticlePool.begin()+oldSize; itr != mParticlePool.end(); itr++)
         {
-            mpFreeParticleNodes.push_back(&(*itr));
+            mpFreeParticleNodes.push_back(*itr);
         }
     }
 

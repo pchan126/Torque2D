@@ -77,7 +77,7 @@ public:
 
 private:
     const U32                mParticlePoolBlockSize;
-    Vector<ParticleNode>     mParticlePool;
+    Vector<ParticleNode*>    mParticlePool;
     std::list<ParticleNode*> mpFreeParticleNodes;
     U32                      mActiveParticleCount;
 
