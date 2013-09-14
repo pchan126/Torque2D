@@ -68,6 +68,7 @@ public:
         Vector2                 mRenderTickPosition;
 
         ParticleNode() { constructInPlace<ImageFrameProviderCore>(&mFrameProvider); resetState(); }
+//        ~ParticleNode() {Con::printf("delete ParticleNode %p", this);};
 //        ParticleNode() {};
 
         virtual void resetState( void )

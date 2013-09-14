@@ -121,15 +121,15 @@ static StringTableEntry cellHeightName              = StringTable->insert( "Heig
 
 //------------------------------------------------------------------------------
 
-std::array<EnumTable::Enums, 2> textureFilters =
-                {{
+EnumTable::Enums textureFilters[2] =
+                {
                 { ImageAsset::FILTER_NEAREST,     "NEAREST"     },
                 { ImageAsset::FILTER_BILINEAR,    "BILINEAR"    },
-                }};
+                };
 
 //------------------------------------------------------------------------------
 
-EnumTable textureFilterTable = EnumTable(textureFilters.begin(), textureFilters.end());
+EnumTable textureFilterTable = EnumTable(2, textureFilters);
 
 
 ImageAsset::TextureFilterMode ImageAsset::getFilterModeEnum(const char* label)

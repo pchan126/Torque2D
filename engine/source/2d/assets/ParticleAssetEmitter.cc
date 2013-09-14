@@ -35,17 +35,17 @@
 
 //------------------------------------------------------------------------------
 
-static std::array<EnumTable::Enums, 6> EmitterTypeEntries =
-                {{
+static EnumTable::Enums EmitterTypeEntries[6] =
+                {
                 { ParticleAssetEmitter::POINT_EMITTER,      "POINT" },
                 { ParticleAssetEmitter::LINE_EMITTER,       "LINE" },
                 { ParticleAssetEmitter::BOX_EMITTER,        "BOX" },
                 { ParticleAssetEmitter::DISK_EMITTER,       "DISK" },
                 { ParticleAssetEmitter::ELLIPSE_EMITTER,    "ELLIPSE" },
                 { ParticleAssetEmitter::TORUS_EMITTER,      "TORUS" },
-                }};
+                };
 
-static EnumTable EmitterTypeTable = EnumTable(EmitterTypeEntries.begin(), EmitterTypeEntries.end());
+static EnumTable EmitterTypeTable = EnumTable(6, EmitterTypeEntries);
 //------------------------------------------------------------------------------
 
 ParticleAssetEmitter::EmitterType ParticleAssetEmitter::getEmitterTypeEnum(const char* label)
@@ -74,14 +74,14 @@ const char* ParticleAssetEmitter::getEmitterTypeDescription( const EmitterType e
 
 //------------------------------------------------------------------------------
 
-static std::array<EnumTable::Enums, 3> OrientationTypeEntries =
-                {{
+static EnumTable::Enums OrientationTypeEntries[3] =
+                {
                 { ParticleAssetEmitter::FIXED_ORIENTATION,    "FIXED" },
                 { ParticleAssetEmitter::ALIGNED_ORIENTATION,  "ALIGNED" },
                 { ParticleAssetEmitter::RANDOM_ORIENTATION,   "RANDOM" },
-                }};
+                };
 
-static EnumTable OrientationTypeTable = EnumTable(OrientationTypeEntries.begin(), OrientationTypeEntries.end());
+static EnumTable OrientationTypeTable = EnumTable(3, OrientationTypeEntries);
 //------------------------------------------------------------------------------
 
 ParticleAssetEmitter::ParticleOrientationType ParticleAssetEmitter::getOrientationTypeEnum(const char* label)

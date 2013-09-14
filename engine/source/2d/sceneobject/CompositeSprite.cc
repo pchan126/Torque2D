@@ -37,15 +37,15 @@
 
 //------------------------------------------------------------------------------
 
-static std::array<EnumTable::Enums, 4> batchLayoutTypeEntries
-                {{
+static EnumTable::Enums batchLayoutTypeEntries[4]
+                {
                     { CompositeSprite::NO_LAYOUT,           "off"    },
                     { CompositeSprite::RECTILINEAR_LAYOUT,  "rect" },
                     { CompositeSprite::ISOMETRIC_LAYOUT,    "iso"   },
                     { CompositeSprite::CUSTOM_LAYOUT,       "custom"   },
-                }};
+                };
 
-EnumTable batchLayoutTypeTable = EnumTable(batchLayoutTypeEntries.begin(), batchLayoutTypeEntries.end());
+EnumTable batchLayoutTypeTable = EnumTable(4, batchLayoutTypeEntries);
 
 //-----------------------------------------------------------------------------
 

@@ -27,15 +27,15 @@
 
 //------------------------------------------------------------------------------
 
-static std::array<EnumTable::Enums, 4> LifeModeEntries =
-        {{
+static EnumTable::Enums LifeModeEntries[4] =
+    {
     { ParticleAsset::INFINITE_LIFEMODE,  "INFINITE" },
     { ParticleAsset::CYCLE,     "CYCLE" },
     { ParticleAsset::STOP,      "STOP" },
     { ParticleAsset::KILL,      "KILL" },
-}};
+    };
 
-static EnumTable LifeModeTable = EnumTable(LifeModeEntries.begin(), LifeModeEntries.end());
+static EnumTable LifeModeTable = EnumTable(4, LifeModeEntries);
 //-----------------------------------------------------------------------------
 
 ParticleAsset::LifeMode ParticleAsset::getParticleAssetLifeModeEnum( const char* label )

@@ -781,21 +781,18 @@ void Scene::processTick( void )
         // Debug Status Reference.
         DebugStats* pDebugStats = &mDebugStats;
 
-        // Fetch ticked scene object count.
-        const S32 tickedSceneObjectCount = mTickedSceneObjects.size();
-
         // ****************************************************
         // Pre-integrate objects.
         // ****************************************************
 
         // Iterate ticked scene objects.
-        for ( S32 i = 0; i < tickedSceneObjectCount; ++i )
+        for ( auto tickedSceneObject: mTickedSceneObjects )
         {
             // Debug Profiling.
             PROFILE_SCOPE(Scene_PreIntegrate);
 
             // Pre-integrate.
-            mTickedSceneObjects[i]->preIntegrate( mSceneTime, Tickable::smTickSec, pDebugStats );
+            tickedSceneObject->preIntegrate( mSceneTime, Tickable::smTickSec, pDebugStats );
         }
 
         // ****************************************************
@@ -854,13 +851,13 @@ void Scene::processTick( void )
         // ****************************************************
 
         // Iterate ticked scene objects.
-        for ( S32 i = 0; i < tickedSceneObjectCount; ++i )
+        for ( auto tickedSceneObject: mTickedSceneObjects )
         {
             // Debug Profiling.
             PROFILE_SCOPE(Scene_IntegrateObject);
 
             // Integrate.
-            mTickedSceneObjects[i]->integrateObject( mSceneTime, Tickable::smTickSec, pDebugStats );
+            tickedSceneObject->integrateObject( mSceneTime, Tickable::smTickSec, pDebugStats );
         }
 
         // ****************************************************
@@ -868,13 +865,13 @@ void Scene::processTick( void )
         // ****************************************************
 
         // Iterate ticked scene objects.
-        for ( S32 i = 0; i < tickedSceneObjectCount; ++i )
+        for ( auto tickedSceneObject: mTickedSceneObjects )
         {
             // Debug Profiling.
             PROFILE_SCOPE(Scene_PostIntegrate);
 
             // Post-integrate.
-            mTickedSceneObjects[i]->postIntegrate( mSceneTime, Tickable::smTickSec, pDebugStats );
+            tickedSceneObject->postIntegrate( mSceneTime, Tickable::smTickSec, pDebugStats );
         }
 
         // Scene update callback.
@@ -916,15 +913,9 @@ void Scene::interpolateTick( F32 timeDelta )
     // Interpolate scene objects.
     // ****************************************************
 
-    // Fetch the scene object count.
-    const S32 sceneObjectCount = mSceneObjects.size();
-
     // Iterate scene objects.
-    for( S32 n = 0; n < sceneObjectCount; ++n )
+    for( auto pSceneObject: mSceneObjects )
     {
-        // Fetch scene object.
-        SceneObject* pSceneObject = mSceneObjects[n];
-
         // Skip interpolation of scene object if it's not eligible.
         if ( !pSceneObject->isEnabled() || pSceneObject->isBeingDeleted() )
             continue;
@@ -1071,7 +1062,7 @@ void Scene::renderScene(SceneRenderState *renderState)
     if( mRenderCallback )
     {
         // Debug Profiling.
-        PROFILE_SCOPE(Scene_OnSceneRendertCallback);
+        PROFILE_SCOPE(Scene_OnSceneRenderCallback);
 
         // Yes, so perform callback.
         Con::executef( this, 1, "onSceneRender" );
@@ -5038,8 +5029,8 @@ void Scene::addTamlChild( SimObject* pSimObject )
 
 //-----------------------------------------------------------------------------
 
-static std::array<EnumTable::Enums, 11> DebugOptionsLookupEntries =
-                {{
+static EnumTable::Enums DebugOptionsLookupEntries[11] =
+                {
                 { Scene::SCENE_DEBUG_METRICS,           "metrics" },
                 { Scene::SCENE_DEBUG_FPS_METRICS,       "fps" },
                 { Scene::SCENE_DEBUG_CONTROLLERS,       "controllers" },
@@ -5052,9 +5043,9 @@ static std::array<EnumTable::Enums, 11> DebugOptionsLookupEntries =
                 { Scene::SCENE_DEBUG_COLLISION_SHAPES,  "collision" },
                 { Scene::SCENE_DEBUG_POSITION_AND_COM,  "position" },
                 { Scene::SCENE_DEBUG_SORT_POINTS,       "sort" },
-                }};
+                };
 
-static EnumTable DebugOptionsLookupTable = EnumTable(DebugOptionsLookupEntries.begin(), DebugOptionsLookupEntries.end());
+static EnumTable DebugOptionsLookupTable = EnumTable(11, DebugOptionsLookupEntries);
 
 //-----------------------------------------------------------------------------
 
@@ -5084,8 +5075,8 @@ const char* Scene::getDebugOptionDescription( Scene::DebugOption debugOption )
 
 //-----------------------------------------------------------------------------
 
-static std::array<EnumTable::Enums, 10> jointTypeEntries =
-                {{
+static EnumTable::Enums jointTypeEntries[10] =
+                {
                 { e_distanceJoint,  "distance"  },
                 { e_ropeJoint,      "rope"      },
                 { e_revoluteJoint,  "revolute"  },
@@ -5096,9 +5087,9 @@ static std::array<EnumTable::Enums, 10> jointTypeEntries =
                 { e_pulleyJoint,    "pulley"    },
                 { e_mouseJoint,     "target"    },
                 { e_motorJoint,     "motor"     },
-                }};
+                };
 
-EnumTable jointTypeTable = EnumTable(jointTypeEntries.begin(), jointTypeEntries.end());
+EnumTable jointTypeTable = EnumTable(10, jointTypeEntries);
 //-----------------------------------------------------------------------------
 
 const char* Scene::getJointTypeDescription( b2JointType jointType )
@@ -5127,15 +5118,15 @@ b2JointType Scene::getJointTypeEnum(const char* label)
 
 //-----------------------------------------------------------------------------
 
-static std::array<EnumTable::Enums, 4> pickModeLookupEntries =
-                {{
+static EnumTable::Enums pickModeLookupEntries[4] =
+                {
                 { Scene::PICK_ANY,          "Any" },
                 { Scene::PICK_AABB,         "AABB" },
                 { Scene::PICK_OOBB,         "OOBB" },
                 { Scene::PICK_COLLISION,    "Collision" },
-                }};
+                };
 
-static EnumTable pickModeLookupTable = EnumTable(pickModeLookupEntries.begin(), pickModeLookupEntries.end());
+static EnumTable pickModeLookupTable = EnumTable(4, pickModeLookupEntries);
 //-----------------------------------------------------------------------------
 
 Scene::PickMode Scene::getPickModeEnum(const char* label)

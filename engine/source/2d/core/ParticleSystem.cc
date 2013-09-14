@@ -69,7 +69,10 @@ ParticleSystem::ParticleNode* ParticleSystem::createParticle( void )
     {
         auto oldSize = mParticlePool.size();
         for (int i = 0; i < mParticlePoolBlockSize; i++)
-            mParticlePool.push_back(new ParticleNode());
+        {
+            ParticleNode* temp = new ParticleNode();
+            mParticlePool.push_back(temp);
+        }
 
         for (auto itr = mParticlePool.begin()+oldSize; itr != mParticlePool.end(); itr++)
         {

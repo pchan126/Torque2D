@@ -42,6 +42,8 @@ ParticleSystem::ParticleNode* ParticlePlayer::EmitterNode::createParticle( void 
     // Configure the node.
     mOwner->configureParticle( this, pFreeParticleNode );
 
+    assert(mParticleNodeList.size() == 0 || *(mParticleNodeList.rbegin()));
+
     return pFreeParticleNode;
 }
 
@@ -59,6 +61,8 @@ void ParticlePlayer::EmitterNode::freeParticle( ParticleSystem::ParticleNode* pP
 
     // Free the node.
     ParticleSystem::Instance->freeParticle( pParticleNode );
+
+    assert(mParticleNodeList.size() == 0 || *(mParticleNodeList.rbegin()));
 }
 
 //------------------------------------------------------------------------------
@@ -70,6 +74,8 @@ void ParticlePlayer::EmitterNode::freeAllParticles( void )
 
     while (mParticleNodeList.size() > 0)
         freeParticle(mParticleNodeList.front());
+
+    assert(mParticleNodeList.size() == 0);
 }
 
 //------------------------------------------------------------------------------
@@ -298,7 +304,6 @@ void ParticlePlayer::integrateObject( const F32 totalTime, const F32 elapsedTime
                         ( mIsZero(pParticleNode->mParticleLifetime) ) )
                 {
                     // Kill the particle.
-                    // NOTE:-   Because we move to the next particle the particle to kill is now the previous!
                     pEmitterNode->freeParticle( pParticleNode );
                 }
                 else
@@ -310,6 +315,8 @@ void ParticlePlayer::integrateObject( const F32 totalTime, const F32 elapsedTime
                     activeParticleCount++;
                 }
             };
+
+            assert(pEmitterNode->getParticleNodeList().size() == 0 || *(pEmitterNode->getParticleNodeList().rbegin()));
 
             // Skip generating new particles if the emitter is paused.
             if ( pEmitterNode->getPaused() )
@@ -367,7 +374,9 @@ void ParticlePlayer::integrateObject( const F32 totalTime, const F32 elapsedTime
 
                     // Generate the required emission.
                     for ( U32 n = 0; n < emissionCount; n++ )
+                    {
                         pEmitterNode->createParticle();
+                    }
                 }
             }
         }
@@ -478,6 +487,12 @@ void ParticlePlayer::interpolateObject( const F32 timeDelta )
             // Calculate the world OOBB..
             CoreMath::mCalculateOOBB( scaledAABB, pParticleNode->mTransform, pParticleNode->mRenderOOBB );
         }
+        auto temp = *(pEmitterNode->getParticleNodeList().rbegin());
+        if (pEmitterNode->getParticleNodeList().size() > 0)
+        {
+            auto temp2 = pEmitterNode->getParticleNodeList();
+            assert(pEmitterNode->getParticleNodeList().size() == 0 || temp);
+        }
     }
 }
 
@@ -495,7 +510,19 @@ void ParticlePlayer::sceneRender( const SceneRenderState* pSceneRenderState, con
     // Render all the emitters.
     for (EmitterNode* pEmitterNode: mEmitters)
     {
-        // Fetch the particle emitter.
+        auto temp = *(pEmitterNode->getParticleNodeList().rbegin());
+        assert(pEmitterNode->getParticleNodeList().size() == 0 || temp);
+
+        if (pEmitterNode->getParticleNodeList().size() > 0)
+        {
+            ParticleSystem::ParticleNode* pParticleNode = *(pEmitterNode->getParticleNodeList().rbegin());
+//            std::list<ParticleSystem::ParticleNode*>::iterator f_end = pEmitterNode->getParticleNodeList().end();
+//            --f_end;
+//            ParticleSystem::ParticleNode* temp = *(f_end);
+            assert (pParticleNode);
+        }
+
+         // Fetch the particle emitter.
         ParticleAssetEmitter* pParticleAssetEmitter = pEmitterNode->getAssetEmitter();
 
         // Skip if the emitter is not visible.
@@ -503,8 +530,14 @@ void ParticlePlayer::sceneRender( const SceneRenderState* pSceneRenderState, con
             continue;
 
         // Skip if there are no active particles.
-        if ( !pEmitterNode->getActiveParticles() )
+        if ( !pEmitterNode->hasActiveParticles() )
             continue;
+
+        if (pEmitterNode->getParticleNodeList().size() > 0)
+        {
+            ParticleSystem::ParticleNode* pParticleNode = *(pEmitterNode->getParticleNodeList().rbegin());
+            assert (pParticleNode && temp);
+        }
 
         // Fetch both image and animation assets.
         const AssetPtr<ImageAsset>& imageAsset = pParticleAssetEmitter->getImageAsset();
@@ -577,52 +610,100 @@ void ParticlePlayer::sceneRender( const SceneRenderState* pSceneRenderState, con
 
         
         // Fetch the oldest-in-front flag.
-        const bool oldestInFront = pParticleAssetEmitter->getOldestInFront();
-
-//        // Fetch the starting particle (using appropriate particle order).
-//        ParticleSystem::ParticleNode pParticleNode = oldestInFront ? pEmitterNode->getFirstParticle() : pEmitterNode->getLastParticle();
-//
-//        // Fetch the particle node head.
-//        ParticleSystem::ParticleNode* pParticleNodeHead = pEmitterNode->getParticleNodeHead();
+        std::list<ParticleSystem::ParticleNode*> nodeList = pEmitterNode->getParticleNodeList();
 
         // Process all particle nodes.
-       for ( ParticleSystem::ParticleNode* pParticleNode: pEmitterNode->getParticleNodeList() )
+       if (pParticleAssetEmitter->getOldestInFront())
+       {
+           std::list<ParticleSystem::ParticleNode*>::reverse_iterator r_itr = nodeList.rbegin();
+           std::list<ParticleSystem::ParticleNode*>::reverse_iterator r_end = nodeList.rend();
+           for ( ; r_itr != r_end; ++r_itr)
+            {
+                ParticleSystem::ParticleNode* pParticleNode = *r_itr;
+                assert(pParticleNode != nullptr);
+
+                // Fetch the frame provider.
+                const ImageFrameProviderCore& frameProvider = pParticleNode->mFrameProvider;
+
+                // Fetch the frame area.
+                const ImageAsset::FrameArea::TexelArea& texelFrameArea = frameProvider.getProviderImageFrameArea().mTexelArea;
+
+                // Frame texture.
+                GFXTexHandle& frameTexture = frameProvider.getProviderTexture();
+
+                // Fetch the particle render OOBB.
+                Vector2* renderOOBB = pParticleNode->mRenderOOBB;
+
+                // Fetch lower/upper texture coordinates.
+                const Vector2& texLower = texelFrameArea.mTexelLower;
+                const Vector2& texUpper = texelFrameArea.mTexelUpper;
+
+                // Submit batched quad.
+                pBatchRenderer->SubmitQuad(
+                    renderOOBB[0],
+                    renderOOBB[1],
+                    renderOOBB[2],
+                    renderOOBB[3],
+                    Vector2( texLower.x, texUpper.y ),
+                    Vector2( texUpper.x, texUpper.y ),
+                    Vector2( texUpper.x, texLower.y ),
+                    Vector2( texLower.x, texLower.y ),
+                    frameTexture,
+                    pParticleNode->mColor*getScene()->getSceneLight() );
+            };
+
+            // Flush.
+            pBatchRenderer->flush( getScene()->getDebugStats().batchIsolatedFlush );
+
+            // Restore the transformation.
+            GFX->popWorldMatrix();
+        }
+        else
         {
-            // Fetch the frame provider.
-            const ImageFrameProviderCore& frameProvider = pParticleNode->mFrameProvider;
+           std::list<ParticleSystem::ParticleNode*>::iterator r_itr = nodeList.begin();
+           std::list<ParticleSystem::ParticleNode*>::iterator r_end = nodeList.end();
+            for ( ; r_itr != r_end; ++r_itr)
+            {
+                ParticleSystem::ParticleNode* pParticleNode = *r_itr;
 
-            // Fetch the frame area.
-            const ImageAsset::FrameArea::TexelArea& texelFrameArea = frameProvider.getProviderImageFrameArea().mTexelArea;
+                assert(pParticleNode);
 
-            // Frame texture.
-            GFXTexHandle& frameTexture = frameProvider.getProviderTexture();
+                // Fetch the frame provider.
+                const ImageFrameProviderCore& frameProvider = pParticleNode->mFrameProvider;
 
-            // Fetch the particle render OOBB.
-            Vector2* renderOOBB = pParticleNode->mRenderOOBB;
+                // Fetch the frame area.
+                const ImageAsset::FrameArea::TexelArea& texelFrameArea = frameProvider.getProviderImageFrameArea().mTexelArea;
 
-            // Fetch lower/upper texture coordinates.
-            const Vector2& texLower = texelFrameArea.mTexelLower;
-            const Vector2& texUpper = texelFrameArea.mTexelUpper;
+                // Frame texture.
+                GFXTexHandle& frameTexture = frameProvider.getProviderTexture();
 
-            // Submit batched quad.
-            pBatchRenderer->SubmitQuad(
-                renderOOBB[0],
-                renderOOBB[1],
-                renderOOBB[2],
-                renderOOBB[3],
-                Vector2( texLower.x, texUpper.y ),
-                Vector2( texUpper.x, texUpper.y ),
-                Vector2( texUpper.x, texLower.y ),
-                Vector2( texLower.x, texLower.y ),
-                frameTexture,
-                pParticleNode->mColor*getScene()->getSceneLight() );
-        };
-        
-        // Flush.
-        pBatchRenderer->flush( getScene()->getDebugStats().batchIsolatedFlush );
+                // Fetch the particle render OOBB.
+                Vector2* renderOOBB = pParticleNode->mRenderOOBB;
 
-        // Restore the transformation.
-        GFX->popWorldMatrix();
+                // Fetch lower/upper texture coordinates.
+                const Vector2& texLower = texelFrameArea.mTexelLower;
+                const Vector2& texUpper = texelFrameArea.mTexelUpper;
+
+                // Submit batched quad.
+                pBatchRenderer->SubmitQuad(
+                        renderOOBB[0],
+                        renderOOBB[1],
+                        renderOOBB[2],
+                        renderOOBB[3],
+                        Vector2( texLower.x, texUpper.y ),
+                        Vector2( texUpper.x, texUpper.y ),
+                        Vector2( texUpper.x, texLower.y ),
+                        Vector2( texLower.x, texLower.y ),
+                        frameTexture,
+                        pParticleNode->mColor*getScene()->getSceneLight() );
+            };
+
+            // Flush.
+            pBatchRenderer->flush( getScene()->getDebugStats().batchIsolatedFlush );
+
+            // Restore the transformation.
+            GFX->popWorldMatrix();
+        }
     }
 }
 

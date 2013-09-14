@@ -48,7 +48,7 @@ private:
         ParticlePlayer*                 mOwner;
         ParticleAssetEmitter*           mpAssetEmitter;
         std::list<ParticleSystem::ParticleNode*> mParticleNodeList;
-//        ParticleSystem::ParticleNode    mParticleNodeHead;
+
         F32                             mTimeSinceLastGeneration;
         bool                            mPaused;
         bool                            mVisible;
@@ -74,9 +74,6 @@ private:
 
             // Reset time since last generation.
             mTimeSinceLastGeneration = 0.0f;
-
-//            // Reset the node head.
-//            mParticleNodeHead.mNextNode = mParticleNodeHead.mPreviousNode = &mParticleNodeHead;
         }
 
         ~EmitterNode()
@@ -87,12 +84,9 @@ private:
         inline ParticlePlayer* getOwner( void ) const { return mOwner; }
         inline ParticleAssetEmitter* getAssetEmitter( void ) const { return mpAssetEmitter; }
 
-        inline bool getActiveParticles( void ) const { return mParticleNodeList.size() > 0; }
+        inline bool hasActiveParticles( void ) const { return mParticleNodeList.size() > 0; }
 
-       inline std::list<ParticleSystem::ParticleNode*> getParticleNodeList(void) { return mParticleNodeList; };
-        inline ParticleSystem::ParticleNode* getFirstParticle( void ) const { return mParticleNodeList.front(); }
-        inline ParticleSystem::ParticleNode* getLastParticle( void ) const { return mParticleNodeList.back(); }
-//        inline ParticleSystem::ParticleNode* getParticleNodeHead( void ) { return &mParticleNodeHead; }
+        inline std::list<ParticleSystem::ParticleNode*> getParticleNodeList(void) { return mParticleNodeList; };
 
         inline void setTimeSinceLastGeneration( const F32 timeSinceLastGeneration ) { mTimeSinceLastGeneration = timeSinceLastGeneration; }
         inline F32 getTimeSinceLastGeneration( void ) const { return mTimeSinceLastGeneration; }

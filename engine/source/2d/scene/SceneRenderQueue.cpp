@@ -29,8 +29,8 @@
 #endif
 
 //-----------------------------------------------------------------------------
-std::array<EnumTable::Enums, 11> SceneRenderQueue::renderSorts
-               = {{
+EnumTable::Enums SceneRenderQueue::renderSorts[11]
+               = {
                 { SceneRenderQueue::RENDER_SORT_OFF,            "Off" },
                 { SceneRenderQueue::RENDER_SORT_NEWEST,         "New" },
                 { SceneRenderQueue::RENDER_SORT_OLDEST,         "Old" },
@@ -42,10 +42,10 @@ std::array<EnumTable::Enums, 11> SceneRenderQueue::renderSorts
                 { SceneRenderQueue::RENDER_SORT_INVERSE_XAXIS,  "-X" },
                 { SceneRenderQueue::RENDER_SORT_INVERSE_YAXIS,  "-Y" },
                 { SceneRenderQueue::RENDER_SORT_INVERSE_ZAXIS,  "-Z" },
-                }};
+                };
 
 
-EnumTable SceneRenderQueue::renderSortTable = EnumTable(renderSorts.begin(), renderSorts.end());
+EnumTable SceneRenderQueue::renderSortTable = EnumTable(11, renderSorts );
 
 //-----------------------------------------------------------------------------
 

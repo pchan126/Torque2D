@@ -223,7 +223,7 @@ public:
 
     static RenderSort getRenderSortEnum(const char* label);
     static const char* getRenderSortDescription( const RenderSort& sortMode );
-    static std::array<EnumTable::Enums, 11> renderSorts;
+    static EnumTable::Enums renderSorts[11];
     static EnumTable renderSortTable;
 };
 

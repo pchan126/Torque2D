@@ -3866,37 +3866,37 @@ bool SceneObject::sceneObjectLayerDepthSort(const SceneObject* a, const SceneObj
 
 //-----------------------------------------------------------------------------
 
-static std::array<EnumTable::Enums, 3> bodyTypeEntries =
-                {{
+static EnumTable::Enums bodyTypeEntries[3] =
+                {
                 { b2_staticBody,    "Static"    },
                 { b2_kinematicBody, "Kinematic" },
                 { b2_dynamicBody,   "Dynamic"   },
-                }};
+                };
 
-EnumTable bodyTypeTable = EnumTable(bodyTypeEntries.begin(), bodyTypeEntries.end());
+EnumTable bodyTypeTable = EnumTable(3, bodyTypeEntries);
 
 //-----------------------------------------------------------------------------
 
-static std::array<EnumTable::Enums, 4> collisionShapeTypeEntries =
-                {{
+static EnumTable::Enums collisionShapeTypeEntries[4] =
+                {
                 { b2Shape::e_circle,             "Circle"   },
                 { b2Shape::e_edge,               "Edge"     },
                 { b2Shape::e_polygon,            "Polygon"  },
                 { b2Shape::e_chain,              "Chain"    },
-                }};
+                };
 
-EnumTable collisionShapeTypeTable = EnumTable(collisionShapeTypeEntries.begin(), collisionShapeTypeEntries.end());
+EnumTable collisionShapeTypeTable = EnumTable(4, collisionShapeTypeEntries);
 
 //-----------------------------------------------------------------------------
 
-static std::array<EnumTable::Enums, 3> lightTypeEntries =
-{{
+static EnumTable::Enums lightTypeEntries[3] =
+{
     { SceneObject::NoLight,                  "NOLIGHT" },
     { SceneObject::ConstantLight,            "CONSTLIGHT" },
     { SceneObject::PulsingLight,             "PULSELIGHT" }
-}};
+};
 
-EnumTable lightTypeTable = EnumTable(lightTypeEntries.begin(), lightTypeEntries.end());
+EnumTable lightTypeTable = EnumTable(3, lightTypeEntries);
 
 //-----------------------------------------------------------------------------
 
