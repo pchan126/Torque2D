@@ -42,7 +42,7 @@ bool TamlXmlWriter::write( FileStream& stream, const TamlWriteNode* pTamlWriteNo
     const char* pTamlSchemaFile = Con::getVariable( TAML_SCHEMA_VARIABLE );
 
     // Do we have a schema file reference?
-    if ( pTamlSchemaFile != NULL && *pTamlSchemaFile != 0 )
+    if ( pTamlSchemaFile != nullptr && *pTamlSchemaFile != 0 )
     {
         // Yes, so add namespace attribute to root.
         pRootElement->SetAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
@@ -55,7 +55,7 @@ bool TamlXmlWriter::write( FileStream& stream, const TamlWriteNode* pTamlWriteNo
         char outputFileBuffer[1024];
         dSprintf( outputFileBuffer, sizeof(outputFileBuffer), "%s", mpTaml->getFilePathBuffer() );
         char* pFileStart = dStrrchr( outputFileBuffer, '/' );
-        if ( pFileStart == NULL )
+        if ( pFileStart == nullptr )
             *outputFileBuffer = 0;
         else
             *pFileStart = 0;
@@ -101,7 +101,7 @@ TiXmlElement* TamlXmlWriter::compileElement( const TamlWriteNode* pTamlWriteNode
     }
 
     // Do we have a reference to node?
-    else if ( pTamlWriteNode->mRefToNode != NULL )
+    else if ( pTamlWriteNode->mRefToNode != nullptr )
     {
         // Yes, so fetch reference to Id.
         const U32 referenceToId = pTamlWriteNode->mRefToNode->mRefId;
@@ -223,7 +223,7 @@ void TamlXmlWriter::compileCustomElements( TiXmlElement* pXmlElement, const Taml
         {
             // Yes, so delete the extended element.
             delete pExtendedPropertyElement;
-            pExtendedPropertyElement = NULL;
+            pExtendedPropertyElement = nullptr;
         }
         else
         {
@@ -290,7 +290,7 @@ void TamlXmlWriter::compileCustomNode( TiXmlElement* pXmlElement, const TamlCust
     {
         // Yes, so delete the extended element.
         delete pNodeElement;
-        pNodeElement = NULL;
+        pNodeElement = nullptr;
     }
     else
     {

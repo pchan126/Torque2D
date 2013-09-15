@@ -23,37 +23,11 @@
 #ifndef _TAML_H_
 #define _TAML_H_
 
-#ifndef _TAML_CALLBACKS_H_
 #include "persistence/taml/tamlCallbacks.h"
-#endif
-
-#ifndef _TAML_CUSTOM_H_
 #include "persistence/taml/tamlCustom.h"
-#endif
-
-#ifndef _TAML_CHILDREN_H_
-#include "persistence/taml/tamlChildren.h"
-#endif
-
-#ifndef _TAML_WRITE_NODE_H_
 #include "persistence/taml/tamlWriteNode.h"
-#endif
-
-#ifndef _TAML_VISITOR_H_
 #include "persistence/taml/tamlVisitor.h"
-#endif
-
-#ifndef _SIMBASE_H_
-#include "sim/simBase.h"
-#endif
-
-#ifndef _HASHTABLE_H
 #include "collection/hashTable.h"
-#endif
-
-#ifndef _FILESTREAM_H_
-#include "io/fileStream.h"
-#endif
 
 //-----------------------------------------------------------------------------
 
@@ -114,7 +88,7 @@ private:
     template<typename T> inline T* read( FileStream& stream, const TamlFormatMode formatMode )
     {
         SimObject* pSimObject = read( stream, formatMode );
-        if ( pSimObject == NULL )
+        if ( pSimObject == nullptr )
             return NULL;
         T* pObj = dynamic_cast<T*>( pSimObject );
         if ( pObj != NULL )
@@ -172,13 +146,13 @@ public:
     template<typename T> inline T* read( const char* pFilename )
     {
         SimObject* pSimObject = read( pFilename );
-        if ( pSimObject == NULL )
-            return NULL;
+        if ( pSimObject == nullptr )
+            return nullptr;
         T* pObj = dynamic_cast<T*>( pSimObject );
-        if ( pObj != NULL )
+        if ( pObj != nullptr )
             return pObj;
         pSimObject->deleteObject();
-        return NULL;
+        return nullptr;
     }
     SimObject* read( const char* pFilename );
 
@@ -186,7 +160,7 @@ public:
     bool parse( const char* pFilename, TamlVisitor& visitor );
 
     /// Create type.
-    static SimObject* createType( StringTableEntry typeName, const Taml* pTaml, const char* pProgenitorSuffix = NULL );
+    static SimObject* createType( StringTableEntry typeName, const Taml* pTaml, const char* pProgenitorSuffix = nullptr );
 
     /// Schema generation.
     static bool generateTamlSchema();

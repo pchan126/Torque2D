@@ -22,75 +22,23 @@
 
 #include "taml.h"
 
-#ifndef _TAML_XMLWRITER_H_
 #include "persistence/taml/xml/tamlXmlWriter.h"
-#endif
-
-#ifndef _TAML_XMLREADER_H_
 #include "persistence/taml/xml/tamlXmlReader.h"
-#endif
-
-#ifndef _TAML_XMLPARSER_H_
 #include "persistence/taml/xml/tamlXmlParser.h"
-#endif
-
-#ifndef _TAML_BINARYWRITER_H_
 #include "persistence/taml/binary/tamlBinaryWriter.h"
-#endif
-
-#ifndef _TAML_BINARYREADER_H_
 #include "persistence/taml/binary/tamlBinaryReader.h"
-#endif
-
-#ifndef _TAML_JSONWRITER_H_
 #include "persistence/taml/json/tamlJSONWriter.h"
-#endif
-
-#ifndef _TAML_JSONREADER_H_
 #include "persistence/taml/json/tamlJSONReader.h"
-#endif
-
-#ifndef _TAML_JSONPARSER_H_
 #include "persistence/taml/json/tamlJSONParser.h"
-#endif
-
-#ifndef _FRAMEALLOCATOR_H_
 #include "memory/frameAllocator.h"
-#endif
-
-#ifndef _CONSOLETYPES_H_
 #include "console/consoleTypes.h"
-#endif
-
-#ifndef _CONSOLEINTERNAL_H_
 #include "console/consoleInternal.h"
-#endif
-
-#ifndef _ASSET_FIELD_TYPES_H_
 #include "assets/assetFieldTypes.h"
-#endif
-
-#ifndef _MATHTYPES_H_
 #include "math/mathTypes.h"
-#endif
-
-#ifndef _VECTOR2_H_
 #include "2d/core/vector2.h"
-#endif
-
-#ifndef _IMAGE_ASSET_H_
 #include "2d/assets/imageAsset.h"
-#endif
-
-#ifndef _ANIMATION_ASSET_H_
 #include "2d/assets/animationAsset.h"
-#endif
-
-#ifndef _AUDIO_ASSET_H_
 #include "audio/audioAsset.h"
-#endif
-
-// Script bindings.
 #include "taml_ScriptBinding.h"
 
 // Debug Profiling.
@@ -215,8 +163,8 @@ bool Taml::write( SimObject* pSimObject, const char* pFilename )
     PROFILE_SCOPE(Taml_Write);
 
     // Sanity!
-    AssertFatal( pSimObject != NULL, "Cannot write a NULL object." );
-    AssertFatal( pFilename != NULL, "Cannot write to a NULL filename." );
+    AssertFatal( pSimObject != nullptr, "Cannot write a NULL object." );
+    AssertFatal( pFilename != nullptr, "Cannot write to a NULL filename." );
 
     // Expand the file-name into the file-path buffer.
     Con::expandPath( mFilePathBuffer, sizeof(mFilePathBuffer), pFilename );
@@ -257,7 +205,7 @@ SimObject* Taml::read( const char* pFilename )
     PROFILE_SCOPE(Taml_Read);
 
     // Sanity!
-    AssertFatal( pFilename != NULL, "Cannot read from a NULL filename." );
+    AssertFatal( pFilename != nullptr, "Cannot read from a NULL filename." );
 
     // Expand the file-name into the file-path buffer.
     Con::expandPath( mFilePathBuffer, sizeof(mFilePathBuffer), pFilename );
@@ -288,7 +236,7 @@ SimObject* Taml::read( const char* pFilename )
     resetCompilation();
 
     // Did we generate an object?
-    if ( pSimObject == NULL )
+    if ( pSimObject == nullptr )
     {
         // No, so warn.
         Con::warnf( "Taml::read() - Failed to load an object from the file '%s'.", mFilePathBuffer );
@@ -302,7 +250,7 @@ SimObject* Taml::read( const char* pFilename )
 bool Taml::write( FileStream& stream, SimObject* pSimObject, const TamlFormatMode formatMode )
 {
     // Sanity!
-    AssertFatal( pSimObject != NULL, "Cannot write a NULL object." );
+    AssertFatal( pSimObject != nullptr, "Cannot write a NULL object." );
 
     // Compile nodes.
     TamlWriteNode* pRootNode = compileObject( pSimObject );

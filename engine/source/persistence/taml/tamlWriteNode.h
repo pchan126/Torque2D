@@ -23,17 +23,9 @@
 #ifndef _TAML_WRITE_NODE_H_
 #define _TAML_WRITE_NODE_H_
 
-#ifndef _TAML_CUSTOM_H_
 #include "persistence/taml/tamlCustom.h"
-#endif
-
-#ifndef _SIMBASE_H_
 #include "sim/simBase.h"
-#endif
-
-#ifndef _VECTOR_H_
 #include "collection/vector.h"
-#endif
 
 //-----------------------------------------------------------------------------
 
@@ -66,11 +58,11 @@ public:
     TamlWriteNode()
     {
         // NOTE: This MUST be done before the state is reset otherwise we'll be touching uninitialized stuff.
-        mRefToNode = NULL;
-        mpSimObject = NULL;
-        mpTamlCallbacks = NULL;
-        mpObjectName = NULL;
-        mChildren = NULL;
+        mRefToNode = nullptr;
+        mpSimObject = nullptr;
+        mpTamlCallbacks = nullptr;
+        mpObjectName = nullptr;
+        mChildren = nullptr;
 
         resetNode();
     }
@@ -78,7 +70,7 @@ public:
     void set( SimObject* pSimObject )
     {
         // Sanity!
-        AssertFatal( pSimObject != NULL, "Cannot set a write node with a NULL sim object." );
+        AssertFatal( pSimObject != nullptr, "Cannot set a write node with a NULL sim object." );
 
         // Reset the node.
         resetNode();

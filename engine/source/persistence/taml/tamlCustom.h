@@ -23,30 +23,11 @@
 #ifndef _TAML_CUSTOM_H_
 #define _TAML_CUSTOM_H_
 
-#ifndef _FACTORY_CACHE_H_
 #include "memory/factoryCache.h"
-#endif
-
-#ifndef _STRINGTABLE_H_
 #include "string/stringTable.h"
-#endif
-
-#ifndef _CONSOLE_H_
 #include "console/console.h"
-#endif
-
-#ifndef B2_MATH_H
 #include "box2d/Common/b2Math.h"
-#endif
-
-#ifndef _COLOR_H_
 #include "graphics/color.h"
-#endif
-
-#ifndef _SIMBASE_H_
-#include "sim/simBase.h"
-#endif
-
 #include "memory/safeDelete.h"
 
 //-----------------------------------------------------------------------------
@@ -95,7 +76,7 @@ public:
         const char* pFieldValue = Con::getData( TypeColorI, &const_cast<ColorI&>(fieldValue), 0 );
 
         // Did we get a field value?
-        if ( pFieldValue == NULL )
+        if ( pFieldValue == nullptr )
         {
             // No, so warn.
             Con::warnf( "Taml: Failed to add node field name '%s' with ColorI value.", pFieldName );
@@ -111,7 +92,7 @@ public:
         const char* pFieldValue = Con::getData( TypeColorF, &const_cast<ColorF&>(fieldValue), 0 );
 
         // Did we get a field value?
-        if ( pFieldValue == NULL )
+        if ( pFieldValue == nullptr )
         {
             // No, so warn.
             Con::warnf( "Taml: Failed to add node field name '%s' with ColorF value.", pFieldName );
@@ -386,7 +367,7 @@ public:
     inline const TamlCustomNode* findNode( const char* pNodeName ) const
     {
         // Sanity!
-        AssertFatal( pNodeName != NULL, "Cannot find Taml node name that is NULL." );
+        AssertFatal( pNodeName != nullptr, "Cannot find Taml node name that is NULL." );
 
         // Fetch node name.
         StringTableEntry nodeName = StringTable->insert( pNodeName );

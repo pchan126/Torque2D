@@ -33,33 +33,33 @@ void TamlWriteNode::resetNode( void )
     PROFILE_SCOPE(TamlWriteNode_ResetNode);
 
     // Clear fields.
-    for( Vector<TamlWriteNode::FieldValuePair*>::iterator itr = mFields.begin(); itr != mFields.end(); ++itr )
+    for( auto itr: mFields )
     {
-        delete (*itr)->mpValue;
+        delete itr->mpValue;
     }
     mFields.clear();
 
     // Clear children.
-    if ( mChildren != NULL )
+    if ( mChildren != nullptr )
     {
-        for( Vector<TamlWriteNode*>::iterator itr = mChildren->begin(); itr != mChildren->end(); ++itr )
+        for( auto itr: *mChildren )
         {
-            (*itr)->resetNode();
+            itr->resetNode();
         }
 
         mChildren->clear();
         delete mChildren;
-        mChildren = NULL;
+        mChildren = nullptr;
     }
 
     mRefId = 0;
-    mRefToNode = NULL;
-    mChildren = NULL;
-    mpObjectName = NULL;
-    mpSimObject = NULL;
+    mRefToNode = nullptr;
+    mChildren = nullptr;
+    mpObjectName = nullptr;
+    mpSimObject = nullptr;
 
     // Reset callbacks.
-    mpTamlCallbacks = NULL;
+    mpTamlCallbacks = nullptr;
 
     // Reset custom nodes.
     mCustomNodes.resetState();
