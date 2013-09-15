@@ -27,17 +27,9 @@
 #ifndef _XMLDOC_H_
 #define _XMLDOC_H_
 
-#ifndef _SIMBASE_H_
 #include "sim/simBase.h"
-#endif
-
-#ifndef _VECTOR_H_
 #include "collection/vector.h"
-#endif // _VECTOR_H_
-
-#ifndef TINYXML_INCLUDED
 #include "persistence/tinyXML/tinyxml.h"
-#endif
 
 class SimXMLDocument: public SimObject
 {
