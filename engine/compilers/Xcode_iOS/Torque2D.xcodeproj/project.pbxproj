@@ -1651,6 +1651,7 @@
 		D1AF776B1760987A005463CC /* mPoint2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mPoint2.h; sourceTree = "<group>"; };
 		D1AF776C1760987A005463CC /* mPoint3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mPoint3.h; sourceTree = "<group>"; };
 		D1AF776D1760987A005463CC /* mPoint4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mPoint4.h; sourceTree = "<group>"; };
+		D1B083C917E5C1D2002739CE /* SimXMLDocument_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimXMLDocument_ScriptBinding.h; sourceTree = "<group>"; };
 		D1C75BD716F31D6C0019C495 /* str.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = str.cpp; sourceTree = "<group>"; };
 		D1C75BD816F31D6C0019C495 /* str.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = str.h; sourceTree = "<group>"; };
 		D1C7B2CD17659888009C9BBA /* renderPassManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = renderPassManager.cpp; sourceTree = "<group>"; };
@@ -2719,6 +2720,7 @@
 		867BAF5316AEC9050033868F /* persistence */ = {
 			isa = PBXGroup;
 			children = (
+				D1B083C917E5C1D2002739CE /* SimXMLDocument_ScriptBinding.h */,
 				2AD42168170434F9005BB8AD /* rapidjson */,
 				867BAF5416AEC9050033868F /* SimXMLDocument.cpp */,
 				867BAF5516AEC9050033868F /* SimXMLDocument.h */,
