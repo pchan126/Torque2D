@@ -34,9 +34,9 @@ IMPLEMENT_CONOBJECT(GuiFrameSetCtrl);
 
 static EnumTable::Enums borderStateEnums[] =
 {
-   { GuiFrameSetCtrl::FRAME_STATE_ON,    "alwaysOn"  },
-   { GuiFrameSetCtrl::FRAME_STATE_OFF,   "alwaysOff" },
-   { GuiFrameSetCtrl::FRAME_STATE_AUTO,  "dynamic"   }
+   EnumTable::Enums( GuiFrameSetCtrl::FRAME_STATE_ON,    "alwaysOn"  ),
+   EnumTable::Enums( GuiFrameSetCtrl::FRAME_STATE_OFF,   "alwaysOff" ),
+   EnumTable::Enums( GuiFrameSetCtrl::FRAME_STATE_AUTO,  "dynamic"   )
 };
 static EnumTable gBorderStateTable(3, &borderStateEnums[0]);
 

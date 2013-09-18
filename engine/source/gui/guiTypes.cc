@@ -110,33 +110,33 @@ IMPLEMENT_CONOBJECT(GuiControlProfile);
 
 static EnumTable::Enums alignEnums[] =
 {
-   { GuiControlProfile::LeftJustify,          "left"      },
-   { GuiControlProfile::CenterJustify,        "center"    },
-   { GuiControlProfile::RightJustify,         "right"     }
+   EnumTable::Enums( GuiControlProfile::LeftJustify,          "left"      ),
+   EnumTable::Enums( GuiControlProfile::CenterJustify,        "center"    ),
+   EnumTable::Enums( GuiControlProfile::RightJustify,         "right"     )
 };
 static EnumTable gAlignTable(3, &alignEnums[0]);
 
 static EnumTable::Enums charsetEnums[]=
 {
-    { TGE_ANSI_CHARSET,         "ANSI" },
-    { TGE_SYMBOL_CHARSET,       "SYMBOL" },
-    { TGE_SHIFTJIS_CHARSET,     "SHIFTJIS" },
-    { TGE_HANGEUL_CHARSET,      "HANGEUL" },
-    { TGE_HANGUL_CHARSET,       "HANGUL" },
-    { TGE_GB2312_CHARSET,       "GB2312" },
-    { TGE_CHINESEBIG5_CHARSET,  "CHINESEBIG5" },
-    { TGE_OEM_CHARSET,          "OEM" },
-    { TGE_JOHAB_CHARSET,        "JOHAB" },
-    { TGE_HEBREW_CHARSET,       "HEBREW" },
-    { TGE_ARABIC_CHARSET,       "ARABIC" },
-    { TGE_GREEK_CHARSET,        "GREEK" },
-    { TGE_TURKISH_CHARSET,      "TURKISH" },
-    { TGE_VIETNAMESE_CHARSET,   "VIETNAMESE" },
-    { TGE_THAI_CHARSET,         "THAI" },
-    { TGE_EASTEUROPE_CHARSET,   "EASTEUROPE" },
-    { TGE_RUSSIAN_CHARSET,      "RUSSIAN" },
-    { TGE_MAC_CHARSET,          "MAC" },
-    { TGE_BALTIC_CHARSET,       "BALTIC" },
+    EnumTable::Enums( TGE_ANSI_CHARSET,         "ANSI" ),
+    EnumTable::Enums( TGE_SYMBOL_CHARSET,       "SYMBOL" ),
+    EnumTable::Enums( TGE_SHIFTJIS_CHARSET,     "SHIFTJIS" ),
+    EnumTable::Enums( TGE_HANGEUL_CHARSET,      "HANGEUL" ),
+    EnumTable::Enums( TGE_HANGUL_CHARSET,       "HANGUL" ),
+    EnumTable::Enums( TGE_GB2312_CHARSET,       "GB2312" ),
+    EnumTable::Enums( TGE_CHINESEBIG5_CHARSET,  "CHINESEBIG5" ),
+    EnumTable::Enums( TGE_OEM_CHARSET,          "OEM" ),
+    EnumTable::Enums( TGE_JOHAB_CHARSET,        "JOHAB" ),
+    EnumTable::Enums( TGE_HEBREW_CHARSET,       "HEBREW" ),
+    EnumTable::Enums( TGE_ARABIC_CHARSET,       "ARABIC" ),
+    EnumTable::Enums( TGE_GREEK_CHARSET,        "GREEK" ),
+    EnumTable::Enums( TGE_TURKISH_CHARSET,      "TURKISH" ),
+    EnumTable::Enums( TGE_VIETNAMESE_CHARSET,   "VIETNAMESE" ),
+    EnumTable::Enums( TGE_THAI_CHARSET,         "THAI" ),
+    EnumTable::Enums( TGE_EASTEUROPE_CHARSET,   "EASTEUROPE" ),
+    EnumTable::Enums( TGE_RUSSIAN_CHARSET,      "RUSSIAN" ),
+    EnumTable::Enums( TGE_MAC_CHARSET,          "MAC" ),
+    EnumTable::Enums( TGE_BALTIC_CHARSET,       "BALTIC" ),
 };
 
 #define NUMCHARSETENUMS     (sizeof(charsetEnums) / sizeof(EnumTable::Enums))

@@ -29,10 +29,10 @@
 
 static EnumTable::Enums LifeModeEntries[4] =
     {
-    { ParticleAsset::INFINITE_LIFEMODE,  "INFINITE" },
-    { ParticleAsset::CYCLE,     "CYCLE" },
-    { ParticleAsset::STOP,      "STOP" },
-    { ParticleAsset::KILL,      "KILL" },
+    EnumTable::Enums( ParticleAsset::INFINITE_LIFEMODE,  "INFINITE" ),
+    EnumTable::Enums( ParticleAsset::CYCLE,     "CYCLE" ),
+    EnumTable::Enums( ParticleAsset::STOP,      "STOP" ),
+    EnumTable::Enums( ParticleAsset::KILL,      "KILL" ),
     };
 
 static EnumTable LifeModeTable = EnumTable(4, LifeModeEntries);

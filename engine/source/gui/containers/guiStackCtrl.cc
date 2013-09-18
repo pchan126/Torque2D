@@ -26,23 +26,23 @@ IMPLEMENT_CONOBJECT(GuiStackControl);
 
 static EnumTable::Enums stackTypeEnum[] =
 {
-   { GuiStackControl::stackingTypeVert, "Vertical"  },
-   { GuiStackControl::stackingTypeHoriz,"Horizontal" },
-   { GuiStackControl::stackingTypeDyn,"Dynamic" }
+   EnumTable::Enums( GuiStackControl::stackingTypeVert, "Vertical"  ),
+   EnumTable::Enums( GuiStackControl::stackingTypeHoriz,"Horizontal" ),
+   EnumTable::Enums( GuiStackControl::stackingTypeDyn,"Dynamic" )
 };
 static EnumTable gStackTypeTable(3, &stackTypeEnum[0]);
 
 static EnumTable::Enums stackHorizEnum[] =
 {
-   { GuiStackControl::horizStackLeft, "Left to Right"  },
-   { GuiStackControl::horizStackRight,"Right to Left" }
+   EnumTable::Enums( GuiStackControl::horizStackLeft, "Left to Right"  ),
+   EnumTable::Enums( GuiStackControl::horizStackRight,"Right to Left" )
 };
 static EnumTable gStackHorizSizingTable(2, &stackHorizEnum[0]);
 
 static EnumTable::Enums stackVertEnum[] =
 {
-   { GuiStackControl::vertStackTop, "Top to Bottom"  },
-   { GuiStackControl::vertStackBottom,"Bottom to Top" }
+   EnumTable::Enums( GuiStackControl::vertStackTop, "Top to Bottom"  ),
+   EnumTable::Enums( GuiStackControl::vertStackBottom,"Bottom to Top" )
 };
 static EnumTable gStackVertSizingTable(2, &stackVertEnum[0]);
 

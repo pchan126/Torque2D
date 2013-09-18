@@ -23,7 +23,7 @@
 #include "platform/platform.h"
 #include "console/console.h"
 #include "platform/nativeDialogs/msgBox.h"
-#include "stringTable.h"
+#include "string/stringTable.h"
 
 // these are the return values for message box dialog buttons
 void initMessageBoxVars()
@@ -38,21 +38,21 @@ void initMessageBoxVars()
 
 static EnumTable::Enums sgButtonEnums[] =
 {
-   { MBOk,                 "Ok" },
-   { MBOkCancel,           "OkCancel" },
-   { MBRetryCancel,        "RetryCancel" },
-   { MBSaveDontSave,       "SaveDontSave" }, // maps to yes/no on win, to save/discard on mac.
-   { MBSaveDontSaveCancel, "SaveDontSaveCancel" }, // maps to yes/no/cancel on win, to save/cancel/don'tsave on mac.
-   { 0, StringTable->EmptyString }
+   EnumTable::Enums( MBOk,                 "Ok" ),
+   EnumTable::Enums( MBOkCancel,           "OkCancel" ),
+   EnumTable::Enums( MBRetryCancel,        "RetryCancel" ),
+   EnumTable::Enums( MBSaveDontSave,       "SaveDontSave" ), // maps to yes/no on win, to save/discard on mac.
+   EnumTable::Enums( MBSaveDontSaveCancel, "SaveDontSaveCancel" ), // maps to yes/no/cancel on win, to save/cancel/don'tsave on mac.
+   EnumTable::Enums( 0, StringTable->EmptyString )
 };
 
 static EnumTable::Enums sgIconEnums[] =
 {
-   { MIInformation,        "Information" },// win: blue i, mac: app icon or talking head
-   { MIWarning,            "Warning" },    // win & mac: yellow triangle with exclamation pt
-   { MIStop,               "Stop" },       // win: red x, mac: app icon or stop icon, depending on version
-   { MIQuestion,           "Question" },   // win: blue ?, mac: app icon
-   { 0, StringTable->EmptyString }
+   EnumTable::Enums( MIInformation,        "Information" ),// win: blue i, mac: app icon or talking head
+   EnumTable::Enums( MIWarning,            "Warning" ),    // win & mac: yellow triangle with exclamation pt
+   EnumTable::Enums( MIStop,               "Stop" ),       // win: red x, mac: app icon or stop icon, depending on version
+   EnumTable::Enums( MIQuestion,           "Question" ),   // win: blue ?, mac: app icon
+   EnumTable::Enums( 0, StringTable->EmptyString )
 };
 
 //////////////////////////////////////////////////////////////////////////

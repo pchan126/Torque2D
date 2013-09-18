@@ -26,12 +26,12 @@ IMPLEMENT_CONOBJECT( GuiContainer );
 
 static EnumTable::Enums DockingEnums[] =
 {
-   { Docking::dockNone,         "None"   },
-   { Docking::dockClient,       "Client" },
-   { Docking::dockTop,          "Top"    },
-   { Docking::dockBottom,       "Bottom" },
-   { Docking::dockLeft,         "Left"   },
-   { Docking::dockRight,        "Right"  }
+   EnumTable::Enums( Docking::dockNone,         "None"   ),
+   EnumTable::Enums( Docking::dockClient,       "Client" ),
+   EnumTable::Enums( Docking::dockTop,          "Top"    ),
+   EnumTable::Enums( Docking::dockBottom,       "Bottom" ),
+   EnumTable::Enums( Docking::dockLeft,         "Left"   ),
+   EnumTable::Enums( Docking::dockRight,        "Right"  )
 };
 static EnumTable gDockingTypes(sizeof(DockingEnums) / sizeof(DockingEnums[0]), &DockingEnums[0]);
 

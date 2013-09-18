@@ -55,9 +55,9 @@ ConsoleLogger::ConsoleLogger( const char *fileName, bool append )
 
 static EnumTable::Enums logLevelEnums[] =
 {
-	{ ConsoleLogEntry::Normal,     "normal"  },
-   { ConsoleLogEntry::Warning,    "warning" },
-	{ ConsoleLogEntry::Error,      "error"   },
+	EnumTable::Enums( ConsoleLogEntry::Normal,     "normal"  ),
+    EnumTable::Enums( ConsoleLogEntry::Warning,    "warning" ),
+	EnumTable::Enums( ConsoleLogEntry::Error,      "error"   ),
 };
 
 static EnumTable gLogLevelTable( 3, &logLevelEnums[0] );

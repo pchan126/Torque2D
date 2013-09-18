@@ -81,32 +81,32 @@ AudioEnvironment::AudioEnvironment()
 #if !defined(TORQUE_OS_IOS)
 static EnumTable::Enums roomEnums[] =
 {
-   { EAX_ENVIRONMENT_GENERIC,           "GENERIC" },               // 0
-   { EAX_ENVIRONMENT_PADDEDCELL,        "PADDEDCELL" },
-   { EAX_ENVIRONMENT_ROOM,              "ROOM" },
-   { EAX_ENVIRONMENT_BATHROOM,          "BATHROOM" },
-   { EAX_ENVIRONMENT_LIVINGROOM,        "LIVINGROOM" },
-   { EAX_ENVIRONMENT_STONEROOM,         "STONEROOM" },             // 5
-   { EAX_ENVIRONMENT_AUDITORIUM,        "AUDITORIUM" },
-   { EAX_ENVIRONMENT_CONCERTHALL,       "CONCERTHALL" },
-   { EAX_ENVIRONMENT_CAVE,              "CAVE" },
-   { EAX_ENVIRONMENT_ARENA,             "ARENA" },
-   { EAX_ENVIRONMENT_HANGAR,            "HANGAR" },                // 10
-   { EAX_ENVIRONMENT_CARPETEDHALLWAY,   "CARPETEDHALLWAY" },
-   { EAX_ENVIRONMENT_HALLWAY,           "HALLWAY" },
-   { EAX_ENVIRONMENT_STONECORRIDOR,     "STONECORRIDOR" },
-   { EAX_ENVIRONMENT_ALLEY,             "ALLEY" },
-   { EAX_ENVIRONMENT_FOREST,            "FOREST" },                // 15
-   { EAX_ENVIRONMENT_CITY,              "CITY" },
-   { EAX_ENVIRONMENT_MOUNTAINS,         "MOUNTAINS" },
-   { EAX_ENVIRONMENT_QUARRY,            "QUARRY" },
-   { EAX_ENVIRONMENT_PLAIN,             "PLAIN" },
-   { EAX_ENVIRONMENT_PARKINGLOT,        "PARKINGLOT" },            // 20
-   { EAX_ENVIRONMENT_SEWERPIPE,         "SEWERPIPE" },
-   { EAX_ENVIRONMENT_UNDERWATER,        "UNDERWATER" },
-   { EAX_ENVIRONMENT_DRUGGED,           "DRUGGED" },
-   { EAX_ENVIRONMENT_DIZZY,             "DIZZY" },
-   { EAX_ENVIRONMENT_PSYCHOTIC,         "PSYCHOTIC" }              // 25
+   EnumTable::Enums( EAX_ENVIRONMENT_GENERIC,           "GENERIC" ),               // 0
+   EnumTable::Enums( EAX_ENVIRONMENT_PADDEDCELL,        "PADDEDCELL" ),
+   EnumTable::Enums( EAX_ENVIRONMENT_ROOM,              "ROOM" ),
+   EnumTable::Enums( EAX_ENVIRONMENT_BATHROOM,          "BATHROOM" ),
+   EnumTable::Enums( EAX_ENVIRONMENT_LIVINGROOM,        "LIVINGROOM" ),
+   EnumTable::Enums( EAX_ENVIRONMENT_STONEROOM,         "STONEROOM" ),             // 5
+   EnumTable::Enums( EAX_ENVIRONMENT_AUDITORIUM,        "AUDITORIUM" ),
+   EnumTable::Enums( EAX_ENVIRONMENT_CONCERTHALL,       "CONCERTHALL" ),
+   EnumTable::Enums( EAX_ENVIRONMENT_CAVE,              "CAVE" ),
+   EnumTable::Enums( EAX_ENVIRONMENT_ARENA,             "ARENA" ),
+   EnumTable::Enums( EAX_ENVIRONMENT_HANGAR,            "HANGAR" ),                // 10
+   EnumTable::Enums( EAX_ENVIRONMENT_CARPETEDHALLWAY,   "CARPETEDHALLWAY" ),
+   EnumTable::Enums( EAX_ENVIRONMENT_HALLWAY,           "HALLWAY" ),
+   EnumTable::Enums( EAX_ENVIRONMENT_STONECORRIDOR,     "STONECORRIDOR" ),
+   EnumTable::Enums( EAX_ENVIRONMENT_ALLEY,             "ALLEY" ),
+   EnumTable::Enums( EAX_ENVIRONMENT_FOREST,            "FOREST" ),                // 15
+   EnumTable::Enums( EAX_ENVIRONMENT_CITY,              "CITY" ),
+   EnumTable::Enums( EAX_ENVIRONMENT_MOUNTAINS,         "MOUNTAINS" ),
+   EnumTable::Enums( EAX_ENVIRONMENT_QUARRY,            "QUARRY" ),
+   EnumTable::Enums( EAX_ENVIRONMENT_PLAIN,             "PLAIN" ),
+   EnumTable::Enums( EAX_ENVIRONMENT_PARKINGLOT,        "PARKINGLOT" ),            // 20
+   EnumTable::Enums( EAX_ENVIRONMENT_SEWERPIPE,         "SEWERPIPE" ),
+   EnumTable::Enums( EAX_ENVIRONMENT_UNDERWATER,        "UNDERWATER" ),
+   EnumTable::Enums( EAX_ENVIRONMENT_DRUGGED,           "DRUGGED" ),
+   EnumTable::Enums( EAX_ENVIRONMENT_DIZZY,             "DIZZY" ),
+   EnumTable::Enums( EAX_ENVIRONMENT_PSYCHOTIC,         "PSYCHOTIC" )              // 25
 };
 static EnumTable gAudioEnvironmentRoomTypes(sizeof(roomEnums) / sizeof(roomEnums[0]), &roomEnums[0]);
 #endif

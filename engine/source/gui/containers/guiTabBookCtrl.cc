@@ -35,11 +35,11 @@
 
 
 // So we can set tab alignment via gui editor
-static std::array<EnumTable::Enums, 2> tabAlignEnums
-{{
-   { GuiTabBookCtrl::AlignTop,   "Top"    },
-   { GuiTabBookCtrl::AlignBottom,"Bottom" },
-}};
+static std::array<EnumTable::Enums, 2> tabAlignEnums =
+{
+   EnumTable::Enums( GuiTabBookCtrl::AlignTop,   "Top"    ),
+   EnumTable::Enums( GuiTabBookCtrl::AlignBottom,"Bottom" ),
+};
 
 EnumTable gTabAlignEnums = EnumTable(tabAlignEnums.begin(), tabAlignEnums.end());
 

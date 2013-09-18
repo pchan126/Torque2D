@@ -31,17 +31,17 @@
 //-----------------------------------------------------------------------------
 EnumTable::Enums SceneRenderQueue::renderSorts[11]
                = {
-                { SceneRenderQueue::RENDER_SORT_OFF,            "Off" },
-                { SceneRenderQueue::RENDER_SORT_NEWEST,         "New" },
-                { SceneRenderQueue::RENDER_SORT_OLDEST,         "Old" },
-                { SceneRenderQueue::RENDER_SORT_BATCH,          "Batch" },
-                { SceneRenderQueue::RENDER_SORT_GROUP,          "Group" },
-                { SceneRenderQueue::RENDER_SORT_XAXIS,          "X" },
-                { SceneRenderQueue::RENDER_SORT_YAXIS,          "Y" },
-                { SceneRenderQueue::RENDER_SORT_ZAXIS,          "Z" },
-                { SceneRenderQueue::RENDER_SORT_INVERSE_XAXIS,  "-X" },
-                { SceneRenderQueue::RENDER_SORT_INVERSE_YAXIS,  "-Y" },
-                { SceneRenderQueue::RENDER_SORT_INVERSE_ZAXIS,  "-Z" },
+                EnumTable::Enums( SceneRenderQueue::RENDER_SORT_OFF,            "Off" ),
+                EnumTable::Enums( SceneRenderQueue::RENDER_SORT_NEWEST,         "New" ),
+                EnumTable::Enums( SceneRenderQueue::RENDER_SORT_OLDEST,         "Old" ),
+                EnumTable::Enums( SceneRenderQueue::RENDER_SORT_BATCH,          "Batch" ),
+                EnumTable::Enums( SceneRenderQueue::RENDER_SORT_GROUP,          "Group" ),
+                EnumTable::Enums( SceneRenderQueue::RENDER_SORT_XAXIS,          "X" ),
+                EnumTable::Enums( SceneRenderQueue::RENDER_SORT_YAXIS,          "Y" ),
+                EnumTable::Enums( SceneRenderQueue::RENDER_SORT_ZAXIS,          "Z" ),
+                EnumTable::Enums( SceneRenderQueue::RENDER_SORT_INVERSE_XAXIS,  "-X" ),
+                EnumTable::Enums( SceneRenderQueue::RENDER_SORT_INVERSE_YAXIS,  "-Y" ),
+                EnumTable::Enums( SceneRenderQueue::RENDER_SORT_INVERSE_ZAXIS,  "-Z" ),
                 };
 
 

@@ -5031,18 +5031,18 @@ void Scene::addTamlChild( SimObject* pSimObject )
 
 static EnumTable::Enums DebugOptionsLookupEntries[11] =
                 {
-                { Scene::SCENE_DEBUG_METRICS,           "metrics" },
-                { Scene::SCENE_DEBUG_FPS_METRICS,       "fps" },
-                { Scene::SCENE_DEBUG_CONTROLLERS,       "controllers" },
-                { Scene::SCENE_DEBUG_JOINTS,            "joints" },
-                { Scene::SCENE_DEBUG_WIREFRAME_RENDER,  "wireframe" },
+                EnumTable::Enums( Scene::SCENE_DEBUG_METRICS,           "metrics" ),
+                EnumTable::Enums( Scene::SCENE_DEBUG_FPS_METRICS,       "fps" ),
+                EnumTable::Enums( Scene::SCENE_DEBUG_CONTROLLERS,       "controllers" ),
+                EnumTable::Enums( Scene::SCENE_DEBUG_JOINTS,            "joints" ),
+                EnumTable::Enums( Scene::SCENE_DEBUG_WIREFRAME_RENDER,  "wireframe" ),
                 ///
-                { Scene::SCENE_DEBUG_AABB,              "aabb" },
-                { Scene::SCENE_DEBUG_OOBB,              "oobb" },
-                { Scene::SCENE_DEBUG_SLEEP,             "sleep" },
-                { Scene::SCENE_DEBUG_COLLISION_SHAPES,  "collision" },
-                { Scene::SCENE_DEBUG_POSITION_AND_COM,  "position" },
-                { Scene::SCENE_DEBUG_SORT_POINTS,       "sort" },
+                EnumTable::Enums( Scene::SCENE_DEBUG_AABB,              "aabb" ),
+                EnumTable::Enums( Scene::SCENE_DEBUG_OOBB,              "oobb" ),
+                EnumTable::Enums( Scene::SCENE_DEBUG_SLEEP,             "sleep" ),
+                EnumTable::Enums( Scene::SCENE_DEBUG_COLLISION_SHAPES,  "collision" ),
+                EnumTable::Enums( Scene::SCENE_DEBUG_POSITION_AND_COM,  "position" ),
+                EnumTable::Enums( Scene::SCENE_DEBUG_SORT_POINTS,       "sort" ),
                 };
 
 static EnumTable DebugOptionsLookupTable = EnumTable(11, DebugOptionsLookupEntries);
@@ -5077,16 +5077,16 @@ const char* Scene::getDebugOptionDescription( Scene::DebugOption debugOption )
 
 static EnumTable::Enums jointTypeEntries[10] =
                 {
-                { e_distanceJoint,  "distance"  },
-                { e_ropeJoint,      "rope"      },
-                { e_revoluteJoint,  "revolute"  },
-                { e_weldJoint,      "weld"      },
-                { e_wheelJoint,     "wheel"     },
-                { e_frictionJoint,  "friction"  },
-                { e_prismaticJoint, "prismatic" },
-                { e_pulleyJoint,    "pulley"    },
-                { e_mouseJoint,     "target"    },
-                { e_motorJoint,     "motor"     },
+                EnumTable::Enums( e_distanceJoint,  "distance"  ),
+                EnumTable::Enums( e_ropeJoint,      "rope"      ),
+                EnumTable::Enums( e_revoluteJoint,  "revolute"  ),
+                EnumTable::Enums( e_weldJoint,      "weld"      ),
+                EnumTable::Enums( e_wheelJoint,     "wheel"     ),
+                EnumTable::Enums( e_frictionJoint,  "friction"  ),
+                EnumTable::Enums( e_prismaticJoint, "prismatic" ),
+                EnumTable::Enums( e_pulleyJoint,    "pulley"    ),
+                EnumTable::Enums( e_mouseJoint,     "target"    ),
+                EnumTable::Enums( e_motorJoint,     "motor"     ),
                 };
 
 EnumTable jointTypeTable = EnumTable(10, jointTypeEntries);
@@ -5120,10 +5120,10 @@ b2JointType Scene::getJointTypeEnum(const char* label)
 
 static EnumTable::Enums pickModeLookupEntries[4] =
                 {
-                { Scene::PICK_ANY,          "Any" },
-                { Scene::PICK_AABB,         "AABB" },
-                { Scene::PICK_OOBB,         "OOBB" },
-                { Scene::PICK_COLLISION,    "Collision" },
+                EnumTable::Enums( Scene::PICK_ANY,          "Any" ),
+                EnumTable::Enums( Scene::PICK_AABB,         "AABB" ),
+                EnumTable::Enums( Scene::PICK_OOBB,         "OOBB" ),
+                EnumTable::Enums( Scene::PICK_COLLISION,    "Collision" ),
                 };
 
 static EnumTable pickModeLookupTable = EnumTable(4, pickModeLookupEntries);

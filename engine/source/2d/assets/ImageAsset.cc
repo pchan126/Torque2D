@@ -123,8 +123,8 @@ static StringTableEntry cellHeightName              = StringTable->insert( "Heig
 
 EnumTable::Enums textureFilters[2] =
                 {
-                { ImageAsset::FILTER_NEAREST,     "NEAREST"     },
-                { ImageAsset::FILTER_BILINEAR,    "BILINEAR"    },
+                EnumTable::Enums( ImageAsset::FILTER_NEAREST,     "NEAREST"     ),
+                EnumTable::Enums( ImageAsset::FILTER_BILINEAR,    "BILINEAR"    ),
                 };
 
 //------------------------------------------------------------------------------

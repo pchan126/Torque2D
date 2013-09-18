@@ -56,14 +56,14 @@ StringTableEntry tamlNamedObjectName    = StringTable->insert( "Name" );
 
 //-----------------------------------------------------------------------------
 
-static EnumTable::Enums tamlFormatModeLookup[] =
+static std::array<EnumTable::Enums, 3> tamlFormatModeLookup =
                 {
-                { Taml::XmlFormat, "xml" },
-                { Taml::BinaryFormat, "binary" },
-                { Taml::JSONFormat, "json" },
+                EnumTable::Enums( Taml::XmlFormat, "xml" ),
+                EnumTable::Enums( Taml::BinaryFormat, "binary" ),
+                EnumTable::Enums( Taml::JSONFormat, "json" ),
                 };
 
-EnumTable tamlFormatModeTable(sizeof(tamlFormatModeLookup) / sizeof(EnumTable::Enums), &tamlFormatModeLookup[0]);
+EnumTable tamlFormatModeTable(tamlFormatModeLookup.begin(), tamlFormatModeLookup.end());
 
 //-----------------------------------------------------------------------------
 

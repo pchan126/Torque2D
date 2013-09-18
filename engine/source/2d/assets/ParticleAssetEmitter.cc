@@ -37,12 +37,12 @@
 
 static EnumTable::Enums EmitterTypeEntries[6] =
                 {
-                { ParticleAssetEmitter::POINT_EMITTER,      "POINT" },
-                { ParticleAssetEmitter::LINE_EMITTER,       "LINE" },
-                { ParticleAssetEmitter::BOX_EMITTER,        "BOX" },
-                { ParticleAssetEmitter::DISK_EMITTER,       "DISK" },
-                { ParticleAssetEmitter::ELLIPSE_EMITTER,    "ELLIPSE" },
-                { ParticleAssetEmitter::TORUS_EMITTER,      "TORUS" },
+                EnumTable::Enums( ParticleAssetEmitter::POINT_EMITTER,      "POINT" ),
+                EnumTable::Enums( ParticleAssetEmitter::LINE_EMITTER,       "LINE" ),
+                EnumTable::Enums( ParticleAssetEmitter::BOX_EMITTER,        "BOX" ),
+                EnumTable::Enums( ParticleAssetEmitter::DISK_EMITTER,       "DISK" ),
+                EnumTable::Enums( ParticleAssetEmitter::ELLIPSE_EMITTER,    "ELLIPSE" ),
+                EnumTable::Enums( ParticleAssetEmitter::TORUS_EMITTER,      "TORUS" ),
                 };
 
 static EnumTable EmitterTypeTable = EnumTable(6, EmitterTypeEntries);
@@ -76,9 +76,9 @@ const char* ParticleAssetEmitter::getEmitterTypeDescription( const EmitterType e
 
 static EnumTable::Enums OrientationTypeEntries[3] =
                 {
-                { ParticleAssetEmitter::FIXED_ORIENTATION,    "FIXED" },
-                { ParticleAssetEmitter::ALIGNED_ORIENTATION,  "ALIGNED" },
-                { ParticleAssetEmitter::RANDOM_ORIENTATION,   "RANDOM" },
+                EnumTable::Enums( ParticleAssetEmitter::FIXED_ORIENTATION,    "FIXED" ),
+                EnumTable::Enums( ParticleAssetEmitter::ALIGNED_ORIENTATION,  "ALIGNED" ),
+                EnumTable::Enums( ParticleAssetEmitter::RANDOM_ORIENTATION,   "RANDOM" ),
                 };
 
 static EnumTable OrientationTypeTable = EnumTable(3, OrientationTypeEntries);

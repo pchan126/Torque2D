@@ -89,9 +89,9 @@ ConsoleMethod(GuiButtonBaseCtrl, getStateOn, bool, 2, 2, "(bool getStateOn) - ge
 
 static EnumTable::Enums buttonTypeEnums[] = 
 {
-   { GuiButtonBaseCtrl::ButtonTypePush, "PushButton" },
-   { GuiButtonBaseCtrl::ButtonTypeCheck, "ToggleButton" },
-   { GuiButtonBaseCtrl::ButtonTypeRadio, "RadioButton" },
+   EnumTable::Enums( GuiButtonBaseCtrl::ButtonTypePush, "PushButton" ),
+   EnumTable::Enums( GuiButtonBaseCtrl::ButtonTypeCheck, "ToggleButton" ),
+   EnumTable::Enums( GuiButtonBaseCtrl::ButtonTypeRadio, "RadioButton" ),
 };
       
 static EnumTable gButtonTypeTable(3, &buttonTypeEnums[0]); 

@@ -10,10 +10,10 @@ IMPLEMENT_CONOBJECT(GuiMoveCtrl);
 
 
 static std::array<EnumTable::Enums, 2> interpolationModeEntries =
-        {{
-                { GuiMoveCtrl::LINEAR,   "LINEAR" },
-                { GuiMoveCtrl::SIGMOID,  "SIGMOID" },
-        }};
+        {
+                EnumTable::Enums( GuiMoveCtrl::LINEAR,   "LINEAR" ),
+                EnumTable::Enums( GuiMoveCtrl::SIGMOID,  "SIGMOID" ),
+        };
 static EnumTable interpolationModeTable = EnumTable(interpolationModeEntries.begin(), interpolationModeEntries.end());
 
 

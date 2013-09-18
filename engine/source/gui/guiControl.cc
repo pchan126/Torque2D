@@ -131,21 +131,21 @@ void GuiControl::onChildAdded( GuiControl *child )
 
 static EnumTable::Enums horzEnums[] =
 {
-    { GuiControl::horizResizeRight,      "right"     },
-    { GuiControl::horizResizeWidth,      "width"     },
-    { GuiControl::horizResizeLeft,       "left"      },
-   { GuiControl::horizResizeCenter,     "center"    },
-   { GuiControl::horizResizeRelative,   "relative"  }
+    EnumTable::Enums ( GuiControl::horizResizeRight,      "right"     ),
+    EnumTable::Enums ( GuiControl::horizResizeWidth,      "width"     ),
+    EnumTable::Enums ( GuiControl::horizResizeLeft,       "left"      ),
+   EnumTable::Enums ( GuiControl::horizResizeCenter,     "center"    ),
+   EnumTable::Enums ( GuiControl::horizResizeRelative,   "relative"  )
 };
 static EnumTable gHorizSizingTable(5, &horzEnums[0]);
 
 static EnumTable::Enums vertEnums[] =
 {
-    { GuiControl::vertResizeBottom,      "bottom"     },
-    { GuiControl::vertResizeHeight,      "height"     },
-    { GuiControl::vertResizeTop,         "top"        },
-   { GuiControl::vertResizeCenter,      "center"     },
-   { GuiControl::vertResizeRelative,    "relative"   }
+    EnumTable::Enums ( GuiControl::vertResizeBottom,      "bottom"     ),
+    EnumTable::Enums ( GuiControl::vertResizeHeight,      "height"     ),
+    EnumTable::Enums ( GuiControl::vertResizeTop,         "top"        ),
+    EnumTable::Enums ( GuiControl::vertResizeCenter,      "center"     ),
+    EnumTable::Enums ( GuiControl::vertResizeRelative,    "relative"   )
 };
 static EnumTable gVertSizingTable(5, &vertEnums[0]);
 

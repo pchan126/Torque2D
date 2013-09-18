@@ -37,12 +37,12 @@
 
 //------------------------------------------------------------------------------
 
-static EnumTable::Enums batchLayoutTypeEntries[4]
+static EnumTable::Enums batchLayoutTypeEntries[4] =
                 {
-                    { CompositeSprite::NO_LAYOUT,           "off"    },
-                    { CompositeSprite::RECTILINEAR_LAYOUT,  "rect" },
-                    { CompositeSprite::ISOMETRIC_LAYOUT,    "iso"   },
-                    { CompositeSprite::CUSTOM_LAYOUT,       "custom"   },
+                    EnumTable::Enums( CompositeSprite::NO_LAYOUT,           "off"    ),
+                    EnumTable::Enums( CompositeSprite::RECTILINEAR_LAYOUT,  "rect" ),
+                    EnumTable::Enums( CompositeSprite::ISOMETRIC_LAYOUT,    "iso"   ),
+                    EnumTable::Enums( CompositeSprite::CUSTOM_LAYOUT,       "custom"   ),
                 };
 
 EnumTable batchLayoutTypeTable = EnumTable(4, batchLayoutTypeEntries);

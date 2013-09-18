@@ -53,10 +53,10 @@ GuiGraphCtrl::GuiGraphCtrl()
 }
 
 static EnumTable::Enums enumGraphTypes[] = {
-   { GuiGraphCtrl::Bar,        "bar"      },
-   { GuiGraphCtrl::Filled,     "filled"   },
-   { GuiGraphCtrl::Point,      "point"    },
-   { GuiGraphCtrl::Polyline ,  "polyline" },
+   EnumTable::Enums( GuiGraphCtrl::Bar,        "bar"      ),
+   EnumTable::Enums( GuiGraphCtrl::Filled,     "filled"   ),
+   EnumTable::Enums( GuiGraphCtrl::Point,      "point"    ),
+   EnumTable::Enums( GuiGraphCtrl::Polyline ,  "polyline" ),
 };
 
 static EnumTable gGraphTypeTable( 4, &enumGraphTypes[0] );

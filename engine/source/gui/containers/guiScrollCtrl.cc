@@ -57,9 +57,9 @@ GuiScrollCtrl::GuiScrollCtrl()
 
 static EnumTable::Enums scrollBarEnums[] =
 {
-   { GuiScrollCtrl::ScrollBarAlwaysOn,     "alwaysOn"     },
-   { GuiScrollCtrl::ScrollBarAlwaysOff,    "alwaysOff"    },
-   { GuiScrollCtrl::ScrollBarDynamic,      "dynamic"      },
+   EnumTable::Enums( GuiScrollCtrl::ScrollBarAlwaysOn,     "alwaysOn"     ),
+   EnumTable::Enums( GuiScrollCtrl::ScrollBarAlwaysOff,    "alwaysOff"    ),
+   EnumTable::Enums( GuiScrollCtrl::ScrollBarDynamic,      "dynamic"      ),
 };
 static EnumTable gScrollBarTable(3, &scrollBarEnums[0]);
 

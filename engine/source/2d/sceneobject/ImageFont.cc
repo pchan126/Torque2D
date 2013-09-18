@@ -37,9 +37,9 @@
 
 static EnumTable::Enums gTextAlignmentEntries[3] =
         {
-    { ImageFont::ALIGN_LEFT,      "Left" },
-    { ImageFont::ALIGN_CENTER,    "Center" },
-    { ImageFont::ALIGN_RIGHT,     "Right" },
+    EnumTable::Enums( ImageFont::ALIGN_LEFT,      "Left" ),
+    EnumTable::Enums( ImageFont::ALIGN_CENTER,    "Center" ),
+    EnumTable::Enums( ImageFont::ALIGN_RIGHT,     "Right" ),
 };
 
 static EnumTable gTextAlignmentTable = EnumTable(3, gTextAlignmentEntries );

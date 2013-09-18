@@ -73,12 +73,12 @@ GuiIconButtonCtrl::GuiIconButtonCtrl()
 
 static EnumTable::Enums textLocEnums[] = 
 {
-   { GuiIconButtonCtrl::TextLocNone, "None" },
-   { GuiIconButtonCtrl::TextLocBottom, "Bottom" },
-   { GuiIconButtonCtrl::TextLocRight, "Right" },
-   { GuiIconButtonCtrl::TextLocTop, "Top" },
-   { GuiIconButtonCtrl::TextLocLeft, "Left" },
-   { GuiIconButtonCtrl::TextLocCenter, "Center" },
+   EnumTable::Enums( GuiIconButtonCtrl::TextLocNone, "None" ),
+   EnumTable::Enums( GuiIconButtonCtrl::TextLocBottom, "Bottom" ),
+   EnumTable::Enums( GuiIconButtonCtrl::TextLocRight, "Right" ),
+   EnumTable::Enums( GuiIconButtonCtrl::TextLocTop, "Top" ),
+   EnumTable::Enums( GuiIconButtonCtrl::TextLocLeft, "Left" ),
+   EnumTable::Enums( GuiIconButtonCtrl::TextLocCenter, "Center" ),
 };
 
 static EnumTable gTextLocTable(6, &textLocEnums[0]); 
@@ -86,9 +86,9 @@ static EnumTable gTextLocTable(6, &textLocEnums[0]);
 
 static EnumTable::Enums iconLocEnums[] = 
 {
-   { GuiIconButtonCtrl::IconLocLeft, "Left" },
-   { GuiIconButtonCtrl::IconLocRight, "Right" },
-   { GuiIconButtonCtrl::IconLocNone, "None" },
+   EnumTable::Enums( GuiIconButtonCtrl::IconLocLeft, "Left" ),
+   EnumTable::Enums( GuiIconButtonCtrl::IconLocRight, "Right" ),
+   EnumTable::Enums( GuiIconButtonCtrl::IconLocNone, "None" ),
 };
 static EnumTable gIconLocTable(3, &iconLocEnums[0]); 
 

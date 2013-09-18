@@ -20,57 +20,19 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#ifndef _SCENE_OBJECT_H_
 #include "2d/sceneobject/SceneObject.h"
-#endif
-
 #include "graphics/gfxDevice.h"
-
-
-#ifndef _COLOR_H_
 #include "graphics/color.h"
-#endif
-
-#ifndef _BITSTREAM_H_
 #include "io/bitStream.h"
-#endif
-
-#ifndef _MMATHFN_H_
 #include "math/mMathFn.h"
-#endif
-
-#ifndef _CONSOLETYPES_H_
 #include "console/consoleTypes.h"
-#endif
-
-#ifndef _SIMBASE_H_
 #include "sim/simBase.h"
-#endif
-
-#ifndef _BEHAVIORTEMPLATE_H_
 #include "component/behaviors/behaviorTemplate.h"
-#endif
-
-#ifndef _SCENE_OBJECT_MOVE_TO_EVENT_H_
 #include "2d/sceneobject/SceneObjectMoveToEvent.h"
-#endif
-
-#ifndef _SCENE_OBJECT_ROTATE_TO_EVENT_H_
 #include "2d/sceneobject/SceneObjectRotateToEvent.h"
-#endif
-
-#ifndef _RENDER_PROXY_H_
 #include "2d/core/RenderProxy.h"
-#endif
-
-#ifndef _STRINGUNIT_H_
 #include "string/stringUnit.h"
-#endif
-
-// Script bindings.
 #include "SceneObject_ScriptBinding.h"
-
-// Debug Profiling.
 #include "debug/profiler.h"
 
 //-----------------------------------------------------------------------------
@@ -3868,9 +3830,9 @@ bool SceneObject::sceneObjectLayerDepthSort(const SceneObject* a, const SceneObj
 
 static EnumTable::Enums bodyTypeEntries[3] =
                 {
-                { b2_staticBody,    "Static"    },
-                { b2_kinematicBody, "Kinematic" },
-                { b2_dynamicBody,   "Dynamic"   },
+                EnumTable::Enums( b2_staticBody,    "Static"    ),
+                EnumTable::Enums( b2_kinematicBody, "Kinematic" ),
+                EnumTable::Enums( b2_dynamicBody,   "Dynamic"   ),
                 };
 
 EnumTable bodyTypeTable = EnumTable(3, bodyTypeEntries);
@@ -3879,10 +3841,10 @@ EnumTable bodyTypeTable = EnumTable(3, bodyTypeEntries);
 
 static EnumTable::Enums collisionShapeTypeEntries[4] =
                 {
-                { b2Shape::e_circle,             "Circle"   },
-                { b2Shape::e_edge,               "Edge"     },
-                { b2Shape::e_polygon,            "Polygon"  },
-                { b2Shape::e_chain,              "Chain"    },
+                EnumTable::Enums( b2Shape::e_circle,             "Circle"   ),
+                EnumTable::Enums( b2Shape::e_edge,               "Edge"     ),
+                EnumTable::Enums( b2Shape::e_polygon,            "Polygon"  ),
+                EnumTable::Enums( b2Shape::e_chain,              "Chain"    ),
                 };
 
 EnumTable collisionShapeTypeTable = EnumTable(4, collisionShapeTypeEntries);
@@ -3891,9 +3853,9 @@ EnumTable collisionShapeTypeTable = EnumTable(4, collisionShapeTypeEntries);
 
 static EnumTable::Enums lightTypeEntries[3] =
 {
-    { SceneObject::NoLight,                  "NOLIGHT" },
-    { SceneObject::ConstantLight,            "CONSTLIGHT" },
-    { SceneObject::PulsingLight,             "PULSELIGHT" }
+    EnumTable::Enums( SceneObject::NoLight,                  "NOLIGHT" ),
+    EnumTable::Enums( SceneObject::ConstantLight,            "CONSTLIGHT" ),
+    EnumTable::Enums( SceneObject::PulsingLight,             "PULSELIGHT" )
 };
 
 EnumTable lightTypeTable = EnumTable(3, lightTypeEntries);

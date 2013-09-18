@@ -70,15 +70,15 @@ GuiColorPickerCtrl::GuiColorPickerCtrl()
 //--------------------------------------------------------------------------
 static EnumTable::Enums gColorPickerModeEnums[] =
 {
-   { GuiColorPickerCtrl::pPallet,		"Pallet"   },
-   { GuiColorPickerCtrl::pHorizColorRange,	"HorizColor"},
-   { GuiColorPickerCtrl::pVertColorRange,	"VertColor" },
-   { GuiColorPickerCtrl::pHorizColorBrightnessRange,	"HorizBrightnessColor"},
-   { GuiColorPickerCtrl::pVertColorBrightnessRange,	"VertBrightnessColor" },
-   { GuiColorPickerCtrl::pBlendColorRange,	"BlendColor"},
-   { GuiColorPickerCtrl::pHorizAlphaRange,	"HorizAlpha"},
-   { GuiColorPickerCtrl::pVertAlphaRange,	"VertAlpha" },
-   { GuiColorPickerCtrl::pDropperBackground,	"Dropper" },
+   EnumTable::Enums ( GuiColorPickerCtrl::pPallet,		"Pallet"   ),
+   EnumTable::Enums (  GuiColorPickerCtrl::pHorizColorRange,	"HorizColor"),
+   EnumTable::Enums (  GuiColorPickerCtrl::pVertColorRange,	"VertColor" ),
+   EnumTable::Enums (  GuiColorPickerCtrl::pHorizColorBrightnessRange,	"HorizBrightnessColor"),
+   EnumTable::Enums (  GuiColorPickerCtrl::pVertColorBrightnessRange,	"VertBrightnessColor" ),
+   EnumTable::Enums (  GuiColorPickerCtrl::pBlendColorRange,	"BlendColor"),
+   EnumTable::Enums ( GuiColorPickerCtrl::pHorizAlphaRange,	"HorizAlpha"),
+   EnumTable::Enums ( GuiColorPickerCtrl::pVertAlphaRange,	"VertAlpha" ),
+   EnumTable::Enums ( GuiColorPickerCtrl::pDropperBackground,	"Dropper" ),
 };
 
 static EnumTable gColorPickerModeTable( 9, gColorPickerModeEnums );

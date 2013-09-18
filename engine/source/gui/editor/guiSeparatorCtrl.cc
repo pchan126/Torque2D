@@ -32,8 +32,8 @@ IMPLEMENT_CONOBJECT(GuiSeparatorCtrl);
 
 static EnumTable::Enums separatorTypeEnum[] =
 {
-   { GuiSeparatorCtrl::separatorTypeVertical, "Vertical"  },
-   { GuiSeparatorCtrl::separatorTypeHorizontal,"Horizontal" }
+   EnumTable::Enums( GuiSeparatorCtrl::separatorTypeVertical, "Vertical"  ),
+   EnumTable::Enums( GuiSeparatorCtrl::separatorTypeHorizontal,"Horizontal" )
 };
 static EnumTable gSeparatorTypeTable(2, &separatorTypeEnum[0]);
 
