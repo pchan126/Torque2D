@@ -401,6 +401,7 @@ if (!isObject(BlueButtonProfile)) new GuiControlProfile (BlueButtonProfile : Gui
     fontColor = "255 255 255 255";
     fontColorHL = "255 255 255 255";
     bitmap = "^Sandbox/gui/images/blueButton.png";
+  justify = "center";
 };
 
 //-----------------------------------------------------------------------------

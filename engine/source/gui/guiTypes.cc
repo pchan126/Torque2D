@@ -108,13 +108,13 @@ void GuiCursor::render(const Point2I &pos)
 //------------------------------------------------------------------------------
 IMPLEMENT_CONOBJECT(GuiControlProfile);
 
-static EnumTable::Enums alignEnums[] =
+static std::array<EnumTable::Enums,3> alignEnums =
 {
    EnumTable::Enums( GuiControlProfile::LeftJustify,          "left"      ),
    EnumTable::Enums( GuiControlProfile::CenterJustify,        "center"    ),
    EnumTable::Enums( GuiControlProfile::RightJustify,         "right"     )
 };
-static EnumTable gAlignTable(3, &alignEnums[0]);
+static EnumTable gAlignTable( alignEnums.begin(), alignEnums.end());
 
 static EnumTable::Enums charsetEnums[]=
 {
