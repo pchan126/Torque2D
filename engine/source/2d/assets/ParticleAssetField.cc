@@ -502,7 +502,7 @@ void ParticleAssetField::onTamlCustomWrite( TamlCustomNode* pCustomNode )
     TamlCustomNode* pAssetField = pCustomNode->addNode( getFieldName(), true );
 
     // Sanity!
-    AssertFatal( pAssetField != NULL, "ParticleAssetField::onTamlCustomWrite() - Could not create field." );
+    AssertFatal( pAssetField != nullptr, "ParticleAssetField::onTamlCustomWrite() - Could not create field." );
 
     if ( mValueBoundsDirty && (mNotEqual( getMinValue(), 0.0f ) || mNotEqual( getMaxValue(), 0.0f )) )
     {
@@ -534,10 +534,10 @@ void ParticleAssetField::onTamlCustomWrite( TamlCustomNode* pCustomNode )
         return;
 
     // Iterate the keys.
-    for( U32 index = 0; index < keyCount; ++index )
+    for( auto dataKey: mDataKeys) // U32 index = 0; index < keyCount; ++index )
     {
-        // Fetch the data key.
-        const DataKey& dataKey = mDataKeys[index];
+//        // Fetch the data key.
+//        const DataKey& dataKey = mDataKeys[index];
 
         // Add a key node.
         TamlCustomNode* pKeyNode = pAssetField->addNode( particleAssetFieldDataKeyName );
@@ -644,7 +644,7 @@ void ParticleAssetField::onTamlCustomRead( const TamlCustomNode* pCustomNode )
         const TamlCustomField* pValueField = pKeyNode->findField( particleAssetFieldDataKeyValueName );
 
         // Did we find the fields?
-        if ( pTimeField == NULL || pValueField == NULL )
+        if ( pTimeField == nullptr || pValueField == nullptr )
         {
             // No, so warn.
             Con::warnf("ParticleAssetField::onTamlCustomRead() - Found a key but it did not have a time and value field." );
@@ -677,8 +677,8 @@ void ParticleAssetField::onTamlCustomRead( const TamlCustomNode* pCustomNode )
 void ParticleAssetField::WriteCustomTamlSchema( const AbstractClassRep* pClassRep, TiXmlElement* pParentElement )
 {
     // Sanity!
-    AssertFatal( pClassRep != NULL,  "ParticleAssetField::WriteCustomTamlSchema() - ClassRep cannot be NULL." );
-    AssertFatal( pParentElement != NULL,  "ParticleAssetField::WriteCustomTamlSchema() - Parent Element cannot be NULL." );
+    AssertFatal( pClassRep != nullptr,  "ParticleAssetField::WriteCustomTamlSchema() - ClassRep cannot be NULL." );
+    AssertFatal( pParentElement != nullptr,  "ParticleAssetField::WriteCustomTamlSchema() - Parent Element cannot be NULL." );
 
     // Create Field element.
     TiXmlElement* pFieldElement = new TiXmlElement( "xs:element" );

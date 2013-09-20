@@ -85,7 +85,7 @@ void AssetQuery::onTamlCustomRead( const TamlCustomNodes& customNodes )
     const TamlCustomNode* pResultsNode = customNodes.findNode( ASSETQUERY_RESULTS_NODE_NAME );
 
     // Finish if we don't have a results name.
-    if ( pResultsNode == NULL )
+    if ( pResultsNode == nullptr )
         return;
 
     // Fetch node name.
@@ -102,7 +102,7 @@ void AssetQuery::onTamlCustomRead( const TamlCustomNodes& customNodes )
         const TamlCustomField* pField = pAssetNode->findField( ASSETQUERY_ASSETID_FIELD_NAME );
 
         // Do we find the field?
-        if ( pField == NULL )
+        if ( pField == nullptr )
         {
             // No, so warn.
             Con::warnf( "AssetQuery::onTamlCustomRead() - Could not find '%s' field.", ASSETQUERY_ASSETID_FIELD_NAME );

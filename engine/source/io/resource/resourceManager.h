@@ -107,7 +107,7 @@ public:
    /// Pointer to the ResourceObject that stores all our book-keeping data.
    ResourceObject *mSourceResource;
 
-   ResourceInstance() { mSourceResource = NULL; }
+   ResourceInstance() { mSourceResource = nullptr; }
    virtual ~ResourceInstance() {}
 };
 
@@ -270,8 +270,6 @@ public:
    void unlock();
    void purge();
 };
-
-#define INVALID_ID ((U32)(~0))
 
 //----------------------------------------------------------------------------
 /// Resource Dictionary.

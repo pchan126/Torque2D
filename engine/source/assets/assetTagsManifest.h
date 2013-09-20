@@ -23,21 +23,10 @@
 #ifndef _ASSET_TAGS_MANIFEST_H_
 #define _ASSET_TAGS_MANIFEST_H_
 
-#ifndef _SIMBASE_H_
 #include "sim/simBase.h"
-#endif
-
-#ifndef _HASHTABLE_H
 #include "collection/hashTable.h"
-#endif
-
-#ifndef _VECTOR_H_
 #include "collection/vector.h"
-#endif
-
-#ifndef _STRINGUNIT_H_
 #include "string/stringUnit.h"
-#endif
 
 //-----------------------------------------------------------------------------
 
@@ -73,7 +62,7 @@ public:
         AssetTag( StringTableEntry tagName )
         {
             // Sanity!
-            AssertFatal( tagName != NULL, "Cannot use a NULL tag name." );
+            AssertFatal( tagName != nullptr, "Cannot use a NULL tag name." );
 
             // Case sensitive tag name.
             mTagName = tagName;

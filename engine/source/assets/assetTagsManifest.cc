@@ -63,7 +63,7 @@ AssetTagsManifest::~AssetTagsManifest()
 StringTableEntry AssetTagsManifest::fetchTagName( const char* pTagName )
 {
     // Sanity!
-    AssertFatal( pTagName != NULL, "Cannot use a NULL tag name." );
+    AssertFatal( pTagName != nullptr, "Cannot use a NULL tag name." );
 
     return StringTable->insert( pTagName, true );
 }
@@ -163,7 +163,7 @@ void AssetTagsManifest::onTamlCustomRead( const TamlCustomNodes& customNodes )
     const TamlCustomNode* pTagProperty = customNodes.findNode( ASSETTAGS_TAGS_NODE_NAME );
 
     // Finish if we don't have a tags node name.
-    if ( pTagProperty == NULL )
+    if ( pTagProperty == nullptr )
         return;
 
     // Fetch node name.
@@ -180,7 +180,7 @@ void AssetTagsManifest::onTamlCustomRead( const TamlCustomNodes& customNodes )
         const TamlCustomField* pTagNameField = pTagNode->findField( ASSETTAGS_TAGS_NAME_FIELD );
 
         // Do we find the field?
-        if ( pTagNameField == NULL )
+        if ( pTagNameField == nullptr )
         {
             // No, so warn.
             Con::warnf( "AssetTagsManifest::onTamlCustomRead() - Could not find '%s' field.", ASSETTAGS_TAGS_NAME_FIELD );
@@ -195,7 +195,7 @@ void AssetTagsManifest::onTamlCustomRead( const TamlCustomNodes& customNodes )
     const TamlCustomNode* pAssetTagProperty = customNodes.findNode( ASSETTAGS_ASSETS_NODE_NAME );
 
     // Finish if we don't have an asset tags node name.
-    if ( pAssetTagProperty == NULL )
+    if ( pAssetTagProperty == nullptr )
         return;
 
     // Fetch node name.
@@ -212,7 +212,7 @@ void AssetTagsManifest::onTamlCustomRead( const TamlCustomNodes& customNodes )
         const TamlCustomField* pAssetIdField = pAssetTagNode->findField( ASSETTAGS_ASSETS_ASSETID_FIELD );
 
         // Do we find the field?
-        if ( pAssetIdField == NULL )
+        if ( pAssetIdField == nullptr )
         {
             // No, so warn.
             Con::warnf( "AssetTagsManifest::onTamlCustomRead() - Could not find '%s' field.", ASSETTAGS_ASSETS_ASSETID_FIELD );
@@ -223,7 +223,7 @@ void AssetTagsManifest::onTamlCustomRead( const TamlCustomNodes& customNodes )
         const TamlCustomField* pTagField = pAssetTagNode->findField( ASSETTAGS_ASSETS_TAG_FIELD );
 
         // Do we find the field?
-        if ( pTagField == NULL )
+        if ( pTagField == nullptr )
         {
             // No, so warn.
             Con::warnf( "AssetTagsManifest::onTamlCustomRead() - Could not find '%s' field.", ASSETTAGS_ASSETS_TAG_FIELD );
@@ -240,13 +240,13 @@ void AssetTagsManifest::onTamlCustomRead( const TamlCustomNodes& customNodes )
 const AssetTagsManifest::AssetTag* AssetTagsManifest::createTag( const char* pTagName )
 {
     // Sanity!
-    AssertFatal( pTagName != NULL, "Cannot use a NULL tag name." );
+    AssertFatal( pTagName != nullptr, "Cannot use a NULL tag name." );
 
     // Finish if the tag already exists.
     AssetTag* pAssetTag = findAssetTag( pTagName );
 
     // Return asset tag if already created.
-    if ( pAssetTag != NULL )
+    if ( pAssetTag != nullptr )
         return pAssetTag;
 
     // Fetch tag name.
@@ -266,14 +266,14 @@ const AssetTagsManifest::AssetTag* AssetTagsManifest::createTag( const char* pTa
 bool AssetTagsManifest::renameTag( const char* pOldTagName, const char* pNewTagName )
 {
     // Sanity!
-    AssertFatal( pOldTagName != NULL, "Cannot use a NULL tag name." );
-    AssertFatal( pNewTagName != NULL, "Cannot use a NULL tag name." );
+    AssertFatal( pOldTagName != nullptr, "Cannot use a NULL tag name." );
+    AssertFatal( pNewTagName != nullptr, "Cannot use a NULL tag name." );
 
     // Find old asset tags.
     AssetTag* pOldAssetTag = findAssetTag( pOldTagName );
 
     // Did we find the asset tag?
-    if ( pOldAssetTag == NULL )
+    if ( pOldAssetTag == nullptr )
     {
         // No, so warn.
         Con::warnf( "AssetTagsManifest: Cannot rename tag '%s' as it does not exist.", pOldTagName );
@@ -306,13 +306,13 @@ bool AssetTagsManifest::renameTag( const char* pOldTagName, const char* pNewTagN
 bool AssetTagsManifest::deleteTag( const char* pTagName )
 {
     // Sanity!
-    AssertFatal( pTagName != NULL, "Cannot use a NULL tag name." );
+    AssertFatal( pTagName != nullptr, "Cannot use a NULL tag name." );
 
     // Find asset tag.
     AssetTag* pAssetTag = findAssetTag( pTagName );
 
     // Did we find the asset tag?
-    if ( pAssetTag == NULL )
+    if ( pAssetTag == nullptr )
     {
         // No, so warn.
         Con::warnf( "AssetTagsManifest: Cannot delete tag '%s' as it does not exist.", pTagName );
@@ -355,10 +355,10 @@ bool AssetTagsManifest::deleteTag( const char* pTagName )
 bool AssetTagsManifest::isTag( const char* pTagName )
 {
     // Sanity!
-    AssertFatal( pTagName != NULL, "Cannot use a NULL tag name." );
+    AssertFatal( pTagName != nullptr, "Cannot use a NULL tag name." );
 
     // Check whether tag exists or not.
-    return findAssetTag( pTagName ) != NULL;
+    return findAssetTag( pTagName ) != nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -384,7 +384,7 @@ StringTableEntry AssetTagsManifest::getTag( const U32 tagIndex )
 U32 AssetTagsManifest::getAssetTagCount( const char* pAssetId )
 {
     // Sanity!
-    AssertFatal( pAssetId != NULL, "Cannot use a NULL asset Id." );
+    AssertFatal( pAssetId != nullptr, "Cannot use a NULL asset Id." );
 
     // Fetch asset Id.
     StringTableEntry assetId = StringTable->insert( pAssetId );
@@ -397,7 +397,7 @@ U32 AssetTagsManifest::getAssetTagCount( const char* pAssetId )
 StringTableEntry AssetTagsManifest::getAssetTag( const char* pAssetId, const U32 tagIndex )
 {
     // Sanity!
-    AssertFatal( pAssetId != NULL, "Cannot use a NULL asset Id." );
+    AssertFatal( pAssetId != nullptr, "Cannot use a NULL asset Id." );
 
     // Fetch asset Id.
     StringTableEntry assetId = StringTable->insert( pAssetId );
@@ -421,14 +421,14 @@ StringTableEntry AssetTagsManifest::getAssetTag( const char* pAssetId, const U32
 bool AssetTagsManifest::tag( const char* pAssetId, const char* pTagName )
 {
     // Sanity!
-    AssertFatal( pAssetId != NULL, "Cannot use a NULL asset Id." );
-    AssertFatal( pTagName != NULL, "Cannot use a NULL tag name." );
+    AssertFatal( pAssetId != nullptr, "Cannot use a NULL asset Id." );
+    AssertFatal( pTagName != nullptr, "Cannot use a NULL tag name." );
 
     // Find asset tag.
     AssetTag* pAssetTag = findAssetTag( pTagName );
 
     // Does the tag exist?
-    if ( pAssetTag == NULL )
+    if ( pAssetTag == nullptr )
     {
         // No, so warn.
         Con::warnf("AssetTagsManifest: Cannot tag asset Id '%s' with tag name '%s' as tag name does not exist.", pAssetId, pTagName );
@@ -474,8 +474,8 @@ bool AssetTagsManifest::tag( const char* pAssetId, const char* pTagName )
 bool AssetTagsManifest::untag( const char* pAssetId, const char* pTagName )
 {
     // Sanity!
-    AssertFatal( pAssetId != NULL, "Cannot use a NULL asset Id." );
-    AssertFatal( pTagName != NULL, "Cannot use a NULL tag name." );
+    AssertFatal( pAssetId != nullptr, "Cannot use a NULL asset Id." );
+    AssertFatal( pTagName != nullptr, "Cannot use a NULL tag name." );
 
     // Find asset tag.
     AssetTag* pAssetTag = findAssetTag( pTagName );
@@ -528,14 +528,14 @@ bool AssetTagsManifest::untag( const char* pAssetId, const char* pTagName )
 bool AssetTagsManifest::hasTag( const char* pAssetId, const char* pTagName )
 {
     // Sanity!
-    AssertFatal( pAssetId != NULL, "Cannot use a NULL asset Id." );
-    AssertFatal( pTagName != NULL, "Cannot use a NULL tag name." );
+    AssertFatal( pAssetId != nullptr, "Cannot use a NULL asset Id." );
+    AssertFatal( pTagName != nullptr, "Cannot use a NULL tag name." );
 
     // Find asset tag.
     AssetTag* pAssetTag = findAssetTag( pTagName );
 
     // Does the tag exist?
-    if ( pAssetTag == NULL )
+    if ( pAssetTag == nullptr )
     {
         // No, so warn.
         Con::warnf("AssetTagsManifest: Cannot check if asset Id '%s' has tag name '%s' as tag name does not exist.", pAssetId, pTagName );

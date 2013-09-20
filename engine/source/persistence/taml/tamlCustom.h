@@ -266,8 +266,8 @@ public:
     {
         // Reset proxy object.
         // NOTE: This MUST be done before the state is reset otherwise we'll be touching uninitialized stuff.
-        mpProxyWriteNode = NULL;
-        mpProxyObject = NULL;
+        mpProxyWriteNode = nullptr;
+        mpProxyObject = nullptr;
 
         resetState();
     }
@@ -283,8 +283,8 @@ public:
     virtual void resetState( void )
     {
         // We don't need to delete the write node as it'll get destroyed when the compilation is reset!
-        mpProxyWriteNode = NULL;
-        mpProxyObject = NULL;
+        mpProxyWriteNode = nullptr;
+        mpProxyObject = nullptr;
 
         // Cache the children.
         while ( mChildren.size() > 0 )
@@ -313,8 +313,8 @@ public:
     inline TamlCustomNode* addNode( SimObject* pProxyObject )
     {
         // Sanity!
-        AssertFatal( pProxyObject != NULL, "Field object cannot be NULL." );
-        AssertFatal( mpProxyWriteNode == NULL, "Field write node must be NULL." );
+        AssertFatal( pProxyObject != nullptr, "Field object cannot be NULL." );
+        AssertFatal( mpProxyWriteNode == nullptr, "Field write node must be NULL." );
         AssertFatal( *mNodeText.getFieldValue() == 0, "Cannot add node that has node text." );
 
         // Create a custom node.
@@ -373,13 +373,13 @@ public:
         StringTableEntry nodeName = StringTable->insert( pNodeName );
 
         // Find node.
-        for( Vector<TamlCustomNode*>::const_iterator nodeItr = mChildren.begin(); nodeItr != mChildren.end(); ++nodeItr )
+        for( TamlCustomNode* nodeItr:mChildren )
         {
-            if ( (*nodeItr)->getNodeName() == nodeName )
-                return (*nodeItr);
+            if ( nodeItr->getNodeName() == nodeName )
+                return nodeItr;
         }
 
-        return NULL;
+        return nullptr;
     }
 
     inline TamlCustomField* addField( const char* pFieldName, const ColorI& fieldValue )
@@ -456,25 +456,25 @@ public:
     inline const TamlCustomField* findField( const char* pFieldName ) const
     {
         // Sanity!
-        AssertFatal( pFieldName != NULL, "Cannot find Taml field name that is NULL." );
+        AssertFatal( pFieldName != nullptr, "Cannot find Taml field name that is NULL." );
 
         // Fetch field name.
         StringTableEntry fieldName = StringTable->insert( pFieldName );
 
         // Find node field.
-        for( TamlCustomFieldVector::const_iterator fieldItr = mFields.begin(); fieldItr != mFields.end(); ++fieldItr )
+        for( auto field:mFields )
         {
-            if ( (*fieldItr)->getFieldName() == fieldName )
-                return (*fieldItr);
+            if ( field->getFieldName() == fieldName )
+                return field;
         }
 
-        return NULL;
+        return nullptr;
     }
 
     inline void setNodeName( const char* pNodeName )
     {
         // Sanity!
-        AssertFatal( pNodeName != NULL, "Cannot add a NULL node name." );
+        AssertFatal( pNodeName != nullptr, "Cannot add a NULL node name." );
 
         mNodeName = StringTable->insert( pNodeName );
     }
@@ -497,18 +497,18 @@ public:
     inline const Vector<TamlCustomNode*>& getChildren( void ) const { return mChildren; }
     inline const TamlCustomFieldVector& getFields( void ) const { return mFields; }
 
-    inline bool isProxyObject( void ) const { return mpProxyObject != NULL; }
+    inline bool isProxyObject( void ) const { return mpProxyObject != nullptr; }
     template<typename T> T* getProxyObject( const bool deleteIfNotType ) const
     {
         // Return nothing if no proxy object.
-        if ( mpProxyObject == NULL )
-            return NULL;
+        if ( mpProxyObject == nullptr )
+            return nullptr;
 
         // Cast object to specified type.
         T* pTypeCast = dynamic_cast<T*>( mpProxyObject );
 
         // Destroy the object if not the specified type and requested to do so.
-        if ( deleteIfNotType && pTypeCast == NULL )
+        if ( deleteIfNotType && pTypeCast == nullptr )
         {
             mpProxyObject->deleteObject();
             return NULL;
@@ -531,10 +531,10 @@ private:
 
 #if TORQUE_DEBUG
         // Ensure a field name conflict does not exist.
-        for( Vector<TamlCustomField*>::iterator nodeFieldItr = mFields.begin(); nodeFieldItr != mFields.end(); ++nodeFieldItr )
+        for( auto nodeFieldPtr :mFields )
         {
             // Skip if field name is not the same.
-            if ( pCustomField->getFieldName() != (*nodeFieldItr)->getFieldName() )
+            if ( pCustomField->getFieldName() != nodeFieldPtr->getFieldName() )
                 continue;
 
             // Warn!
@@ -615,10 +615,10 @@ public:
 
 #if TORQUE_DEBUG
         // Ensure a node name conflict does not exist.
-        for( TamlCustomNodeVector::iterator nodeItr = mNodes.begin(); nodeItr != mNodes.end(); ++nodeItr )
+        for( TamlCustomNode* nodePtr:mNodes )
         {
             // Skip if node name is not the same.
-            if ( pCustomNode->getNodeName() != (*nodeItr)->getNodeName() )
+            if ( pCustomNode->getNodeName() != nodePtr->getNodeName() )
                 continue;
 
             // Warn!
@@ -626,7 +626,7 @@ public:
 
             // Cache node.
             TamlCustomNodeFactory.cacheObject( pCustomNode );
-            return NULL;
+            return nullptr;
         }
 #endif
         // Store node.
@@ -650,19 +650,19 @@ public:
     inline const TamlCustomNode* findNode( const char* pNodeName ) const
     {
         // Sanity!
-        AssertFatal( pNodeName != NULL, "Cannot find Taml node name that is NULL." );
+        AssertFatal( pNodeName != nullptr, "Cannot find Taml node name that is NULL." );
 
         // Fetch node name.
         StringTableEntry nodeName = StringTable->insert( pNodeName );
 
         // Find node.
-        for( Vector<TamlCustomNode*>::const_iterator nodeItr = mNodes.begin(); nodeItr != mNodes.end(); ++nodeItr )
+        for( TamlCustomNode* nodePtr: mNodes )
         {
-            if ( (*nodeItr)->getNodeName() == nodeName )
-                return (*nodeItr);
+            if ( nodePtr->getNodeName() == nodeName )
+                return nodePtr;
         }
 
-        return NULL;
+        return nullptr;
     }
 
     inline const TamlCustomNodeVector& getNodes( void ) const { return mNodes; }
