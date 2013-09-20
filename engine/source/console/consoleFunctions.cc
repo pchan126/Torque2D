@@ -921,17 +921,17 @@ ConsoleFunction(compile, bool, 2, 2, "( fileName ) Use the compile function to p
       filenameOnly = pathBuffer;
 
    if( isEditorScript )
-      dStrcpyl(nameBuffer, sizeof(nameBuffer), dsoPath, "/", filenameOnly, ".edso", NULL);
+      dStrcpyl(nameBuffer, sizeof(nameBuffer), dsoPath, "/", filenameOnly, ".edso", nullptr);
    else
-      dStrcpyl(nameBuffer, sizeof(nameBuffer), dsoPath, "/", filenameOnly, ".dso", NULL);
+      dStrcpyl(nameBuffer, sizeof(nameBuffer), dsoPath, "/", filenameOnly, ".dso", nullptr);
    
    ResourceObject *rScr = ResourceManager->find(pathBuffer);
    ResourceObject *rCom = ResourceManager->find(nameBuffer);
 
    if(rCom)
-      rCom->getFileTimes(NULL, &comModifyTime);
+      rCom->getFileTimes(nullptr, &comModifyTime);
    if(rScr)
-      rScr->getFileTimes(NULL, &scrModifyTime);
+      rScr->getFileTimes(nullptr, &scrModifyTime);
 
    Stream *s = ResourceManager->openStream(pathBuffer);
    if(s)
@@ -968,7 +968,7 @@ ConsoleFunction(compilePath, const char*, 2, 2, "compilePath( path )")
     if ( !Con::expandPath(pathBuffer, sizeof(pathBuffer), argv[1]) )
         return "-1 0";
     
-    const char *compileArgs[2] = { "compile", NULL };
+    const char *compileArgs[2] = { "compile", nullptr };
     
     S32 failedScripts = 0;
     S32 totalScripts = 0;
@@ -976,7 +976,7 @@ ConsoleFunction(compilePath, const char*, 2, 2, "compilePath( path )")
     
     while ( (match = ResourceManager->findMatch( pathBuffer, &compileArgs[1], match )) )
     {
-        if ( !ccompile( NULL, 1, compileArgs ) )
+        if ( !ccompile( nullptr, 1, compileArgs ) )
             failedScripts++;
         
         totalScripts++;
@@ -1215,16 +1215,16 @@ ConsoleFunction(exec, bool, 2, 4, "( fileName [ , nocalls [ , journalScript ] ] 
       Platform::makeFullPathName(filenameOnly, pathAndFilename, sizeof(pathAndFilename), dsoPath);
 
       if( isEditorScript )
-         dStrcpyl(nameBuffer, sizeof(nameBuffer), pathAndFilename, ".edso", NULL);
+         dStrcpyl(nameBuffer, sizeof(nameBuffer), pathAndFilename, ".edso", nullptr);
       else
-         dStrcpyl(nameBuffer, sizeof(nameBuffer), pathAndFilename, ".dso", NULL);
+         dStrcpyl(nameBuffer, sizeof(nameBuffer), pathAndFilename, ".dso", nullptr);
 
       rCom = ResourceManager->find(nameBuffer);
 
       if(rCom)
-         rCom->getFileTimes(NULL, &comModifyTime);
+         rCom->getFileTimes(nullptr, &comModifyTime);
       if(rScr)
-         rScr->getFileTimes(NULL, &scrModifyTime);
+         rScr->getFileTimes(nullptr, &scrModifyTime);
    }
 
    // Let's do a sanity check to complain about DSOs in the future.

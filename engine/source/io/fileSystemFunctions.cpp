@@ -61,17 +61,17 @@ static void backslash(char *str)
 //----------------------------------------------------------------
 ConsoleFunctionGroupBegin( FileSystem, "Functions allowing you to search for files, read them, write them, and access their properties.");
 
-static ResourceObject *firstMatch = NULL;
+static ResourceObject *firstMatch = nullptr;
 
 ConsoleFunction(findFirstFile, const char *, 2, 2, "( strPattern )\n"
                 "@param strPattern The string pattern to search for.\n"
                 "@return Returns a string representing the first file in the directory system matching the given pattern.")
 {
    TORQUE_UNUSED( argc );
-   const char *fn = NULL;
-   firstMatch = NULL;
+   const char *fn = nullptr;
+   firstMatch = nullptr;
    if(Con::expandPath(scriptFilenameBuffer, sizeof(scriptFilenameBuffer), argv[1]))
-      firstMatch = ResourceManager->findMatch(scriptFilenameBuffer, &fn, NULL);
+      firstMatch = ResourceManager->findMatch(scriptFilenameBuffer, &fn, nullptr);
 
    if(firstMatch)
       return fn;
@@ -84,11 +84,11 @@ ConsoleFunction(findNextFile, const char *, 2, 2, "( strPattern )\n"
                 "@return Returns the next file matching a search begun in findFirstFile.")
 {
    TORQUE_UNUSED( argc );
-   const char *fn = NULL;
+   const char *fn = nullptr;
    if(Con::expandPath(scriptFilenameBuffer, sizeof(scriptFilenameBuffer), argv[1]))
       firstMatch = ResourceManager->findMatch(scriptFilenameBuffer, &fn, firstMatch);
    else
-      firstMatch = NULL;
+      firstMatch = nullptr;
 
    if(firstMatch)
       return fn;
@@ -103,7 +103,7 @@ ConsoleFunction(getFileCount, S32, 2, 2, "(strPattern) \n"
    TORQUE_UNUSED( argc );
    const char* fn;
    U32 count = 0;
-   firstMatch = ResourceManager->findMatch(argv[1], &fn, NULL);
+   firstMatch = ResourceManager->findMatch(argv[1], &fn, nullptr);
    if ( firstMatch )
    {
       count++;
@@ -125,10 +125,10 @@ ConsoleFunction(findFirstFileMultiExpr, const char *, 2, 2, "(strPattern)\n"
                 "@return Returns the first file in the directory system matching the given pattern.")
 {
    TORQUE_UNUSED( argc );
-   const char *fn = NULL;
-   firstMatch = NULL;
+   const char *fn = nullptr;
+   firstMatch = nullptr;
    if(Con::expandPath(scriptFilenameBuffer, sizeof(scriptFilenameBuffer), argv[1]))
-      firstMatch = ResourceManager->findMatchMultiExprs(scriptFilenameBuffer, &fn, NULL);
+      firstMatch = ResourceManager->findMatchMultiExprs(scriptFilenameBuffer, &fn, nullptr);
 
    if(firstMatch)
       return fn;
@@ -139,11 +139,11 @@ ConsoleFunction(findFirstFileMultiExpr, const char *, 2, 2, "(strPattern)\n"
 ConsoleFunction(findNextFileMultiExpr, const char *, 2, 2, "(string pattern) Returns the next file matching a search begun in findFirstFile.")
 {
    TORQUE_UNUSED( argc );
-   const char *fn = NULL;
+   const char *fn = nullptr;
    if(Con::expandPath(scriptFilenameBuffer, sizeof(scriptFilenameBuffer), argv[1]))
       firstMatch = ResourceManager->findMatchMultiExprs(scriptFilenameBuffer, &fn, firstMatch);
    else
-      firstMatch = NULL;
+      firstMatch = nullptr;
 
    if(firstMatch)
       return fn;
@@ -158,7 +158,7 @@ ConsoleFunction(getFileCountMultiExpr, S32, 2, 2, "(strPattern) \n"
    TORQUE_UNUSED( argc );
    const char* fn;
    U32 count = 0;
-   firstMatch = ResourceManager->findMatchMultiExprs(argv[1], &fn, NULL);
+   firstMatch = ResourceManager->findMatchMultiExprs(argv[1], &fn, nullptr);
    if ( firstMatch )
    {
       count++;
@@ -214,7 +214,7 @@ ConsoleFunction(isWriteableFileName, bool, 2, 2, "(fileName)\n"
    char filename[1024];
    Con::expandPath(filename, sizeof(filename), argv[1]);
 
-   if (filename == NULL || *filename == 0)
+   if (filename == nullptr || *filename == 0)
       return false;
 
    // in a writeable directory?
@@ -383,7 +383,7 @@ ConsoleFunction(isValidImageFile, bool, 2, 2, "(string filePath)\n"
         return false;	// no extension
 
     Stream *stream = ResourceManager->openStream(scriptFilenameBuffer);
-    if(stream == NULL)
+    if(stream == nullptr)
         return false;
 
     bool ret = false;
@@ -551,7 +551,7 @@ ConsoleFunction(getMainDotCsDir, const char *, 1, 1, "getMainDotCsDir()")
 ConsoleFunction(makeFullPath, const char *, 2, 3, "(string path, [string currentWorkingDir])")
 {
    char *buf = Con::getReturnBuffer(512);
-   Platform::makeFullPathName(argv[1], buf, 512, argc > 2 ? argv[2] : NULL);
+   Platform::makeFullPathName(argv[1], buf, 512, argc > 2 ? argv[2] : nullptr);
    return buf;
 }
 

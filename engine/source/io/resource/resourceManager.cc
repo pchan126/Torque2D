@@ -39,19 +39,19 @@
 
 #include "memory/safeDelete.h"
 
-ResManager *ResourceManager = NULL;
+ResManager *ResourceManager = nullptr;
 
 const char *ResManager::smExcludedDirectories = ".svn;CVS";
 
 //------------------------------------------------------------------------------
 ResourceObject::ResourceObject ()
 {
-  next = NULL;
-  prev = NULL;
+//  next = NULL;
+//  prev = NULL;
   lockCount = 0;
-  mInstance = NULL;
-  mZipArchive = NULL;
-  mCentralDir = NULL;
+  mInstance = nullptr;
+  mZipArchive = nullptr;
+  mCentralDir = nullptr;
 }
 
 void ResourceObject::destruct ()
@@ -78,14 +78,14 @@ ResManager::ResManager ()
    echoFileNames = false;
    primaryPath[0] = 0;
    writeablePath[0] = 0;
-   pathList = NULL;
-   resourceList.nextResource = NULL;
-   resourceList.next = NULL;
-   resourceList.prev = NULL;
-   timeoutList.nextResource = NULL;
-   timeoutList.next = NULL;
-   timeoutList.prev = NULL;
-   registeredList = NULL;
+   pathList = nullptr;
+//   resourceList.nextResource = NULL;
+//   resourceList.next = NULL;
+//   resourceList.prev = NULL;
+//   timeoutList.nextResource = NULL;
+//   timeoutList.next = NULL;
+//   timeoutList.prev = NULL;
+//   registeredList = NULL;
    mLoggingMissingFiles = false;
    usingVFS = false;
 }
@@ -128,7 +128,7 @@ bool ResManager::getMissingFileList(std::deque<char *> &list)
          if(!dStrcmp(list[j], mMissingFileList[i]))
          {
             dFree(mMissingFileList[i]);
-            mMissingFileList[i] = NULL;
+            mMissingFileList[i] = nullptr;
             break;
          }
       }
@@ -146,7 +146,7 @@ void ResourceObject::getFileTimes (FileTime * createTime, FileTime * modifyTime)
 
    if( !path || !name )
    {
-      createTime = modifyTime = NULL;
+      createTime = modifyTime = nullptr;
       return;
    }
       
@@ -168,34 +168,25 @@ ResManager::~ResManager ()
    if (pathList)
       dFree (pathList);
 
-   for (ResourceObject * walk = resourceList.nextResource; walk;
-         walk = walk->nextResource)
+   for (auto walk :resourceList )
       walk->destruct ();
 
-   while (resourceList.nextResource)
-      freeResource (resourceList.nextResource);
+   while (resourceList.size() > 0)
+      freeResource (resourceList.front());
 
-   while (registeredList)
-   {
-      RegisteredExtension *temp = registeredList->next;
-      delete registeredList;
-      registeredList = temp;
-   }
+   for (RegisteredExtension *temp: registeredList)
+      delete temp;
+   
+   registeredList.clear();
 }
 
 #ifdef TORQUE_DEBUG
 void ResManager::dumpResources (const bool onlyLoaded)
 {
-   ResourceObject *walk = resourceList.nextResource;
-   while (walk != NULL)
-   {
-      if ( !onlyLoaded || walk->mInstance != NULL)
-      {
+   for (auto walk: resourceList)
+      if ( !onlyLoaded || walk->mInstance != nullptr)
          Con::errorf ("Resource: %s/%s (%d)", walk->path, walk->name,
              walk->lockCount);
-      }
-      walk = walk->nextResource;
-   }
 }
 
 ConsoleFunction(dumpResources, void, 2, 2, "(onlyLoaded?) Use the dumpLoadedResources function to dump a listing of the currently in-use resources to the console. This will include such things as sound files, font files, etc.\n"
@@ -213,7 +204,7 @@ ConsoleFunction(dumpResources, void, 2, 2, "(onlyLoaded?) Use the dumpLoadedReso
 
 void ResManager::create ()
 {
-   AssertFatal (ResourceManager == NULL,
+   AssertFatal (ResourceManager == nullptr,
           "ResourceManager::create: manager already exists.");
    ResourceManager = new ResManager;
 
@@ -225,10 +216,10 @@ void ResManager::create ()
 
 void ResManager::destroy ()
 {
-   AssertFatal (ResourceManager != NULL,
+   AssertFatal (ResourceManager != nullptr,
            "ResourceManager::destroy: manager does not exist.");
    delete ResourceManager;
-   ResourceManager = NULL;
+   ResourceManager = nullptr;
 }
 
 //------------------------------------------------------------------------------
@@ -426,7 +417,7 @@ bool ResManager::scanZip (ResourceObject * zipObject)
 
 void ResManager::searchPath (const char *path, bool noDups /* = false */, bool ignoreZips /* = false */ )
 {
-   AssertFatal (path != NULL, "No path to dump?");
+   AssertFatal (path != nullptr, "No path to dump?");
 
    // Set up exclusions.
    initExcludedDirectories();
@@ -551,20 +542,19 @@ ConsoleFunction(addResPath, void, 2, 3, "(path, [ignoreZips=false]) Add a path t
 
 void ResManager::removePath(const char *path)
 {
-   ResourceObject *rwalk = resourceList.nextResource, *rtemp;
-   while (rwalk != NULL)
+   auto rwalk = resourceList.begin();
+   while (rwalk != resourceList.end())
    {
-      const char *fname = buildPath(rwalk->path, rwalk->name);
-      if(!rwalk->mInstance && FindMatch::isMatch(path, fname, false))
+      const char *fname = buildPath((*rwalk)->path, (*rwalk)->name);
+      if(!(*rwalk)->mInstance && FindMatch::isMatch(path, fname, false))
       {
-         rwalk->unlink ();
-         dictionary.remove (rwalk);
-         rtemp = rwalk->nextResource;
-         freeResource (rwalk);
-         rwalk = rtemp;
+         dictionary.remove (*rwalk);
+         auto rtemp = *rwalk;
+         rwalk++;
+         freeResource (rtemp);
       }
       else
-         rwalk = rwalk->nextResource;
+         rwalk++;
    }
 }
 
@@ -579,8 +569,9 @@ void ResManager::setModPaths (U32 numPaths, const char **paths)
    // since it'll remove all the stuff we've already added.
    if(usingVFS)
       return;
+
    // detach all the files.
-   for(ResourceObject * pwalk = resourceList.nextResource; pwalk; pwalk = pwalk->nextResource)
+   for(ResourceObject * pwalk: resourceList)
       pwalk->flags |= ResourceObject::Added;
 
    U32 pathLen = 0;
@@ -620,19 +611,18 @@ void ResManager::setModPaths (U32 numPaths, const char **paths)
    }
 
    // Unlink all 'added' that aren't loaded.
-   ResourceObject *rwalk = resourceList.nextResource, *rtemp;
-   while (rwalk != NULL)
+   auto rwalk = resourceList.begin();
+   while (rwalk != resourceList.end())
    {
-      if ((rwalk->flags & ResourceObject::Added) && !rwalk->mInstance)
+      if (((*rwalk)->flags & ResourceObject::Added) && !(*rwalk)->mInstance)
       {
-         rwalk->unlink ();
-         dictionary.remove (rwalk);
-         rtemp = rwalk->nextResource;
-         freeResource (rwalk);
-         rwalk = rtemp;
+         dictionary.remove (*rwalk);
+         auto rtemp = *rwalk;
+         rwalk++;
+         freeResource (rtemp);
       }
       else
-         rwalk = rwalk->nextResource;
+         rwalk++;
    }
 }
 
@@ -774,8 +764,8 @@ void ResManager::registerExtension (const char *name, RESOURCE_CREATE_FN create_
    RegisteredExtension *add = new RegisteredExtension;
    add->mExtension = StringTable->insert (extension);
    add->mCreateFn = create_fn;
-   add->next = registeredList;
-   registeredList = add;
+   
+   registeredList.push_front(add);
 }
 
 //------------------------------------------------------------------------------
@@ -784,16 +774,14 @@ RESOURCE_CREATE_FN ResManager::getCreateFunction (const char *name)
 {
    const char * s = dStrrchr (name, '.');
    if (!s)
-      return (NULL);
+      return (nullptr);
 
-   RegisteredExtension * itr = registeredList;
-   while (itr)
+   for (auto ptr: registeredList)
    {
-      if (dStricmp (s, itr->mExtension) == 0)
-         return (itr->mCreateFn);
-      itr = itr->next;
+      if (dStricmp (s, ptr->mExtension) == 0)
+         return (ptr->mCreateFn);
    }
-   return (NULL);
+   return (nullptr);
 }
 
 
@@ -808,9 +796,8 @@ void ResManager::unlock (ResourceObject * obj)
           "ResourceManager::unlock: lock count is zero.");
 
    //set the timeout to the max requested
-
    if (--obj->lockCount == 0)
-      obj->linkAfter (&timeoutList);
+      timeoutList.push_back(obj);
 }
 
 //------------------------------------------------------------------------------
@@ -833,7 +820,7 @@ bool ResManager::getCrc (const char *fileName, U32 & crcVal,
       // get rid of the resource
       // have to make sure user can't have it sitting around in the resource cache
 
-      obj->unlink ();
+//      obj->unlink ();
       obj->destruct ();
 
       Stream *stream = openStream (obj);
@@ -873,7 +860,7 @@ ResourceObject *ResManager::load (const char *fileName, bool computeCRC)
    // if filename is not known, exit now
    ResourceObject *obj = find (fileName);
    if (!obj)
-      return NULL;
+      return nullptr;
 
    // if no one has a lock on this, but it's loaded and it needs to
    // be CRC'd, delete it and reload it.
@@ -881,7 +868,7 @@ ResourceObject *ResManager::load (const char *fileName, bool computeCRC)
       obj->destruct ();
 
    obj->lockCount++;
-   obj->unlink ();      // remove from purge list
+//   obj->unlink ();      // remove from purge list
 
    if (!obj->mInstance)
    {
@@ -889,7 +876,7 @@ ResourceObject *ResManager::load (const char *fileName, bool computeCRC)
       if (!obj->mInstance)
       {
          obj->lockCount--;
-         return NULL;
+         return nullptr;
       }
    }
    return obj;
@@ -967,7 +954,7 @@ Stream * ResManager::openStream (ResourceObject * obj)
       Con::printf ("FILE ACCESS: %s/%s", obj->path, obj->name);
 
    // used for openStream stream access
-   FileStream *diskStream = NULL;
+   FileStream *diskStream = nullptr;
 
    // if disk file
    if (obj->flags & (ResourceObject::File))
@@ -976,7 +963,7 @@ Stream * ResManager::openStream (ResourceObject * obj)
       if( !diskStream->open (buildPath (obj->path, obj->name), FileStream::Read) )
       {
          delete diskStream;
-         return NULL;
+         return nullptr;
       }
       obj->fileSize = diskStream->getStreamSize ();
       return diskStream;
@@ -1008,7 +995,7 @@ void ResManager::closeStream(Stream* stream)
 
    // Try to cast the stream to a FilterStream
    nextStream = dynamic_cast<FilterStream*>(stream);
-   bool isFilter = nextStream != NULL;
+   bool isFilter = nextStream != nullptr;
 
    // While the nextStream is valid (meaning it was successfully cast to a FilterStream)
    while (nextStream)
@@ -1034,7 +1021,7 @@ void ResManager::closeStream(Stream* stream)
 ResourceObject *ResManager::find (const char *fileName)
 {
    if (!fileName)
-      return NULL;
+      return nullptr;
    StringTableEntry path, file;
    getPaths (fileName, path, file);
    ResourceObject *ret = dictionary.find (path, file);
@@ -1045,7 +1032,8 @@ ResourceObject *ResManager::find (const char *fileName)
       if (Platform::isFile(fileName))
       {
          ret = createResource (path, file);
-         dictionary.pushBehind (ret, ResourceObject::File);
+         dictionary.insert(ret, path, file);
+//         dictionary.pushBehind (ret, ResourceObject::File);
 
          ret->flags = ResourceObject::File;
          ret->fileOffset = 0;
@@ -1067,7 +1055,7 @@ ResourceObject *ResManager::find (const char *fileName)
 ResourceObject *ResManager::find (const char *fileName, U32 flags)
 {
    if (!fileName)
-      return NULL;
+      return nullptr;
    StringTableEntry path, file;
    getPaths (fileName, path, file);
    return dictionary.find (path, file, flags);
@@ -1107,14 +1095,14 @@ void ResManager::purge ()
    bool found;
    do
    {
-      ResourceObject *obj = timeoutList.getNext ();
+      auto itr = timeoutList.begin();
       found = false;
-      while (obj)
+      while (timeoutList.size())
       {
-         ResourceObject *temp = obj;
-         obj = obj->next;
-         temp->unlink ();
-         temp->destruct ();
+         ResourceObject *temp = *itr;
+         itr++;
+//         temp->unlink ();
+         temp->destruct();
          found = true;
          if (temp->flags & ResourceObject::Added)
             freeResource (temp);
@@ -1135,8 +1123,9 @@ ConsoleFunction( purgeResources, void, 1, 1, "() Use the purgeResources function
 void ResManager::purge (ResourceObject * obj)
 {
    AssertFatal (obj->lockCount == 0,
-          "ResourceManager::purge: handle lock count is not ZERO.") obj->
-   unlink ();
+                "ResourceManager::purge: handle lock count is not ZERO.");
+
+//   obj->unlink ();
    obj->destruct ();
 }
 
@@ -1189,57 +1178,65 @@ void ResManager::serialize (Vector < const char *>&filenames)
 
 //------------------------------------------------------------------------------
 
-ResourceObject * ResManager::findMatch (const char *expression, const char **fn,
-      ResourceObject * start)
+ResourceObject * ResManager::findMatch (const char *expression, const char **fn, ResourceObject* start)
 {
-   if (!start)
-      start = resourceList.nextResource;
-   else
-      start = start->nextResource;
-   while (start)
+   std::list<ResourceObject*>::iterator startItr = resourceList.begin();
+
+   if (start)
    {
-       const char *fname = buildPath (start->path, start->name);
+      startItr = std::find(resourceList.begin(), resourceList.end(), start);
+      if (startItr == resourceList.end())
+         return nullptr;
+   }
+
+   while (startItr != resourceList.end())
+   {
+       const char *fname = buildPath ((*startItr)->path, (*startItr)->name);
 
       if (FindMatch::isMatch (expression, fname, false))
       {
          *fn = fname;
-         return start;
+         return *startItr;
       }
-      start = start->nextResource;
+      startItr++;
    }
-   return NULL;
+   return nullptr;
 }
 
 ResourceObject * ResManager::findMatchMultiExprs (const char *multiExpression, const char **fn,
       ResourceObject * start)
 {
-   if (!start)
-      start = resourceList.nextResource;
-   else
-      start = start->nextResource;
-   while (start)
+   std::list<ResourceObject*>::iterator startItr = resourceList.begin();
+   
+   if (start)
    {
-      const char *fname = buildPath (start->path, start->name);
+      startItr = std::find(resourceList.begin(), resourceList.end(), start);
+      if (startItr == resourceList.end())
+         return nullptr;
+   }
+   
+   while (startItr != resourceList.end())
+   {
+      const char *fname = buildPath ((*startItr)->path, (*startItr)->name);
 
       if (FindMatch::isMatchMultipleExprs(multiExpression, fname, false))
       {
          *fn = fname;
-         return start;
+         return *(startItr);
       }
-      start = start->nextResource;
+      startItr++;
    }
-   return NULL;
+   return nullptr;
 }
 
 S32 ResManager::findMatches (FindMatch * pFM)
 {
    static char buffer[16384];
    S32 bufl = 0;
-   ResourceObject * walk;
-   for (walk = resourceList.nextResource; walk && !pFM->isFull (); walk = walk->nextResource)
+   for (auto walk = resourceList.begin(); walk != resourceList.end() && !pFM->isFull (); walk++)
    {
       const char * fpath =
-      buildPath (walk->path, walk->name);
+      buildPath ((*walk)->path, (*walk)->name);
       if (bufl + dStrlen (fpath) >= 16380)
          return pFM->numMatches ();
       dStrcpy (buffer + bufl, fpath);
@@ -1268,18 +1265,18 @@ ResourceObject * ResManager::createResource (StringTableEntry path, StringTableE
    newRO->path = path;
    newRO->name = file;
    newRO->lockCount = 0;
-   newRO->mInstance = NULL;
+   newRO->mInstance = nullptr;
    newRO->flags = ResourceObject::Added;
-   newRO->next = newRO->prev = NULL;
-   newRO->nextResource = resourceList.nextResource;
-   resourceList.nextResource = newRO;
-   newRO->prevResource = &resourceList;
-   if (newRO->nextResource)
-      newRO->nextResource->prevResource = newRO;
+//   newRO->next = newRO->prev = NULL;
+//   newRO->nextResource = resourceList.nextResource;
+//   resourceList.nextResource = newRO;
+//   newRO->prevResource = &resourceList;
+//   if (newRO->nextResource)
+//      newRO->nextResource->prevResource = newRO;
    dictionary.insert (newRO, path, file);
    newRO->fileSize = newRO->fileOffset = newRO->compressedFileSize = 0;
-   newRO->zipPath = NULL;
-   newRO->zipName = NULL;
+   newRO->zipPath = nullptr;
+   newRO->zipName = nullptr;
    newRO->crc = InvalidCRC;
 
    return newRO;
@@ -1299,21 +1296,21 @@ ResourceObject * ResManager::createZipResource (StringTableEntry path, StringTab
    newRO->path = path;
    newRO->name = file;
    newRO->lockCount = 0;
-   newRO->mInstance = NULL;
+   newRO->mInstance = nullptr;
    newRO->flags = ResourceObject::Added;
-   newRO->next = newRO->prev = NULL;
-   newRO->nextResource = resourceList.nextResource;
-   resourceList.nextResource = newRO;
-   newRO->prevResource = &resourceList;
-   if (newRO->nextResource)
-      newRO->nextResource->prevResource = newRO;
+//   newRO->next = newRO->prev = NULL;
+//   newRO->nextResource = resourceList.nextResource;
+//   resourceList.nextResource = newRO;
+//   newRO->prevResource = &resourceList;
+//   if (newRO->nextResource)
+//      newRO->nextResource->prevResource = newRO;
    dictionary.insert (newRO, path, file);
    newRO->fileSize = newRO->fileOffset = newRO->compressedFileSize = 0;
    newRO->zipPath = zipPath;
    newRO->zipName = zipName;
    newRO->crc = InvalidCRC;
-   newRO->mZipArchive = NULL;
-   newRO->mCentralDir = NULL;
+   newRO->mZipArchive = nullptr;
+   newRO->mCentralDir = nullptr;
 
    return newRO;
 }
@@ -1323,16 +1320,17 @@ ResourceObject * ResManager::createZipResource (StringTableEntry path, StringTab
 void ResManager::freeResource (ResourceObject * ro)
 {
    ro->destruct ();
-   ro->unlink ();
+//   ro->unlink ();
 
 //   if((ro->flags & ResourceObject::File) && ro->lockedData)
 //      delete[] ro->lockedData;
 
-   if (ro->prevResource)
-      ro->prevResource->nextResource = ro->nextResource;
-   if (ro->nextResource)
-      ro->nextResource->prevResource = ro->prevResource;
+//   if (ro->prevResource)
+//      ro->prevResource->nextResource = ro->nextResource;
+//   if (ro->nextResource)
+//      ro->nextResource->prevResource = ro->prevResource;
    dictionary.remove (ro);
+   resourceList.remove(ro);
    delete ro;
 }
 

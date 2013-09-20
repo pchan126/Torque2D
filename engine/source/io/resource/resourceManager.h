@@ -23,23 +23,14 @@
 #ifndef _RESMANAGER_H_
 #define _RESMANAGER_H_
 
-#ifndef _PLATFORM_H_
 #include "platform/platform.h"
-#endif
-#ifndef _VECTOR_H_
 #include "collection/vector.h"
-#endif
-#ifndef _STRINGTABLE_H_
 #include "string/stringTable.h"
-#endif
-
-#ifndef _FILESTREAM_H_
 #include "io/fileStream.h"
-#endif
-#ifndef _CRC_H_
 #include "algorithm/crc.h"
-#endif
 #include <deque>
+#include <unordered_map>
+#include <list>
 
 class Stream;
 class FileStream;
@@ -128,17 +119,17 @@ class ResourceObject
    friend class ResDictionary;
    friend class ResManager;
 
-   /// @name List Book-keeping
-   /// @{
-
-   ///
-   ResourceObject *prev, *next;
-
-   ResourceObject *nextEntry;    ///< This is used by ResDictionary for its hash table.
-
-   ResourceObject *nextResource;
-   ResourceObject *prevResource;
-   /// @}
+//   /// @name List Book-keeping
+//   /// @{
+//
+//   ///
+//   ResourceObject *prev, *next;
+//
+//   ResourceObject *nextEntry;    ///< This is used by ResDictionary for its hash table.
+//
+//   ResourceObject *nextResource;
+//   ResourceObject *prevResource;
+//   /// @}
 
 public:
    enum Flags
@@ -174,18 +165,9 @@ public:
    const Zip::CentralDir *mCentralDir; ///< The central directory for this file in the zip
 
    ResourceObject();
-   ~ResourceObject() { unlink(); }
+   ~ResourceObject() {}
 
    void destruct();
-
-   /// @name List Management
-   /// @{
-
-   ///
-   ResourceObject* getNext() const { return next; }
-   void unlink();
-   void linkAfter(ResourceObject* res);
-   /// @}
 
    /// Get some information about file times.
    ///
@@ -195,26 +177,6 @@ public:
    ///                     modified.
    void getFileTimes(FileTime *createTime, FileTime *modifyTime);
 };
-
-
-inline void ResourceObject::unlink()
-{
-   if (next)
-      next->prev = prev;
-   if (prev)
-      prev->next = next;
-   next = prev = 0;
-}
-
-inline void ResourceObject::linkAfter(ResourceObject* res)
-{
-   unlink();
-   prev = res;
-   if ((next = res->next) != 0)
-      next->prev = this;
-   res->next = this;
-}
-
 
 //------------------------------------------------------------------------------
 /// Wrapper class around a ResourceInstance subclass.
@@ -252,21 +214,21 @@ public:
    ~Resource() { unlock(); }  ///< Decrements the lock count on this object, and if the lock count is 0 afterwards,
                               ///< adds the object to the timeoutList for deletion on execution of purge().
 
-   const char *getFilePath() const { return (obj ? obj->path : NULL); } ///< Returns the path of the file (without the actual name)
-   const char *getFileName() const { return (obj ? obj->name : NULL); } ///< Returns the actual file name (without the path)
+   const char *getFilePath() const { return (obj ? obj->path : nullptr); } ///< Returns the path of the file (without the actual name)
+   const char *getFileName() const { return (obj ? obj->name : nullptr); } ///< Returns the actual file name (without the path)
 
    Resource& operator= (ResourceObject *p) { _unlock(); obj = p; return *this; }
    Resource& operator= (const Resource &r) { _unlock(); obj = r.obj; _lock(); return *this; }
 
    U32 getCRC() { return (obj ? obj->crc : 0); }
-   bool isNull()   const { return ((obj == NULL) || (obj->mInstance == NULL)); }
-   operator bool() const { return ((obj != NULL) && (obj->mInstance != NULL)); }
+   bool isNull()   const { return ((obj == nullptr) || (obj->mInstance == nullptr)); }
+   operator bool() const { return ((obj != nullptr) && (obj->mInstance != nullptr)); }
    T* operator->()   { return (T*)obj->mInstance; }
    T& operator*()    { return *((T*)obj->mInstance); }
-   operator T*() const    { return (obj) ? (T*)obj->mInstance : (T*)NULL; }
+   operator T*() const    { return (obj) ? (T*)obj->mInstance : (T*)nullptr; }
    const T* operator->() const  { return (const T*)obj->mInstance; }
    const T& operator*() const   { return *((const T*)obj->mInstance); }
-   operator const T*() const    { return (obj) ? (const T*)obj->mInstance :  (const T*)NULL; }
+   operator const T*() const    { return (obj) ? (const T*)obj->mInstance :  (const T*)nullptr; }
    void unlock();
    void purge();
 };
@@ -285,14 +247,9 @@ class ResDictionary
    /// @name Hash Table
    /// @{
 
-   enum { DefaultTableSize = 1029 };
+   typedef std::pair<std::string, ResourceObject*> ResEntry;
+   std::unordered_multimap<std::string, ResourceObject*> hashTable;
 
-   ResourceObject **hashTable;
-   S32 entryCount;
-   S32 hashTableSize;
-   DataChunker memPool;
-   S32 hash(StringTableEntry path, StringTableEntry name);
-   S32 hash(ResourceObject *obj) { return hash(obj->path, obj->name); }
    /// @}
 
 public:
@@ -351,8 +308,8 @@ private:
    /// List of secondary paths to search.
    char* pathList;
 
-   ResourceObject timeoutList;
-   ResourceObject resourceList;
+   std::list<ResourceObject*> timeoutList;
+   std::list<ResourceObject*> resourceList;
 
    ResDictionary dictionary;
 
@@ -378,14 +335,13 @@ private:
    {
       StringTableEntry     mExtension;
       RESOURCE_CREATE_FN   mCreateFn;
-      RegisteredExtension  *next;
    };
 
    std::deque<char *> mMissingFileList;                ///< List of missing files.
    bool mLoggingMissingFiles;                      ///< Are there any missing files?
    void fileIsMissing(const char *fileName);       ///< Called when a file is missing.
 
-   RegisteredExtension *registeredList;
+   std::list<RegisteredExtension *> registeredList;
 
    static const char *smExcludedDirectories;
    ResManager();
@@ -449,10 +405,10 @@ public:
    ResourceObject* find(const char * fileName, U32 flags);
 
    /// Finds a resource object with given expression
-   ResourceObject* findMatch(const char *expression, const char **fn, ResourceObject *start = NULL);
+   ResourceObject* findMatch(const char *expression, const char **fn, ResourceObject *start = nullptr);
 
    /// Finds a resource object with given expressions, seperated by " "
-   ResourceObject* findMatchMultiExprs(const char *multiExpression, const char **fn, ResourceObject *start = NULL);
+   ResourceObject* findMatchMultiExprs(const char *multiExpression, const char **fn, ResourceObject *start = nullptr);
 
    void purge();                                      ///< Goes through the timeoutList and deletes it all.  BURN!!!
    void purge( ResourceObject *obj );                 ///< Deletes one resource object.
@@ -485,7 +441,7 @@ template<class T> inline void Resource<T>::unlock()
 {
    if (obj) {
       ResourceManager->unlock( obj );
-      obj=NULL;
+      obj=nullptr;
    }
 }
 
@@ -495,7 +451,7 @@ template<class T> inline void Resource<T>::purge()
       ResourceManager->unlock( obj );
       if (obj->lockCount == 0)
          ResourceManager->purge(obj);
-      obj = NULL;
+      obj = nullptr;
    }
 }
 template <class T> inline void Resource<T>::_lock()

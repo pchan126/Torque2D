@@ -28,26 +28,26 @@
 
 ResDictionary::ResDictionary()
 {
-   entryCount = 0;
-   hashTableSize = 1023; //DefaultTableSize;
-   hashTable = new ResourceObject *[hashTableSize];
-   S32 i;
-   for(i = 0; i < hashTableSize; i++)
-      hashTable[i] = NULL;
+//   entryCount = 0;
+//   hashTableSize = 1023; //DefaultTableSize;
+//   hashTable = new ResourceObject *[hashTableSize];
+//   S32 i;
+//   for(i = 0; i < hashTableSize; i++)
+//      hashTable[i] = NULL;
 }
 
 ResDictionary::~ResDictionary()
 {
-   // we assume the resources are purged before we destroy
-   // the dictionary
-
-   delete[] hashTable;
+//   // we assume the resources are purged before we destroy
+//   // the dictionary
+//
+//   delete[] hashTable;
 }
 
-S32 ResDictionary::hash(StringTableEntry path, StringTableEntry file)
-{
-   return ((S32)((((dsize_t)path) >> 2) + (((dsize_t)file) >> 2) )) % hashTableSize;
-}
+//S32 ResDictionary::hash(StringTableEntry path, StringTableEntry file)
+//{
+//   return ((S32)((((dsize_t)path) >> 2) + (((dsize_t)file) >> 2) )) % hashTableSize;
+//}
 
 void ResDictionary::insert(ResourceObject *obj, StringTableEntry path, StringTableEntry file)
 {
@@ -61,38 +61,44 @@ void ResDictionary::insert(ResourceObject *obj, StringTableEntry path, StringTab
    obj->name = file;
    obj->path = path;
 
-   S32 idx = hash(path, file);
-   obj->nextEntry = hashTable[idx];
-   hashTable[idx] = obj;
-   entryCount++;
+   std::string path_and_file(path);
+   path_and_file.append(file);
 
-   if(entryCount > hashTableSize) {
-      ResourceObject *head = NULL, *temp, *walk;
-      for(idx = 0; idx < hashTableSize;idx++) {
-         walk = hashTable[idx];
-         while(walk)
-         {
-            temp = walk->nextEntry;
-            walk->nextEntry = head;
-            head = walk;
-            walk = temp;
-         }
-      }
-      delete[] hashTable;
-      hashTableSize = 2 * hashTableSize - 1;
-      hashTable = new ResourceObject *[hashTableSize];
-      for(idx = 0; idx < hashTableSize; idx++)
-         hashTable[idx] = NULL;
-      walk = head;
-      while(walk)
-      {
-         temp = walk->nextEntry;
-         idx = hash(walk);
-         walk->nextEntry = hashTable[idx];
-         hashTable[idx] = walk;
-         walk = temp;
-      }
-   }
+//    hashTable.emplace(path_and_file, obj);
+    ResEntry newEntry(path_and_file, obj);
+    hashTable.insert(newEntry);
+//    S32 idx = hash(path, file);
+//   obj->nextEntry = hashTable[idx];
+//   hashTable[idx] = obj;
+//   entryCount++;
+//
+//   if(entryCount > hashTableSize) {
+//      ResourceObject *head = NULL, *temp, *walk;
+//      for(idx = 0; idx < hashTableSize;idx++) {
+//         walk = hashTable[idx];
+//         while(walk)
+//         {
+//            temp = walk->nextEntry;
+//            walk->nextEntry = head;
+//            head = walk;
+//            walk = temp;
+//         }
+//      }
+//      delete[] hashTable;
+//      hashTableSize = 2 * hashTableSize - 1;
+//      hashTable = new ResourceObject *[hashTableSize];
+//      for(idx = 0; idx < hashTableSize; idx++)
+//         hashTable[idx] = NULL;
+//      walk = head;
+//      while(walk)
+//      {
+//         temp = walk->nextEntry;
+//         idx = hash(walk);
+//         walk->nextEntry = hashTable[idx];
+//         hashTable[idx] = walk;
+//         walk = temp;
+//      }
+//   }
 }
 
 ResourceObject* ResDictionary::find(StringTableEntry path, StringTableEntry name)
@@ -104,10 +110,18 @@ ResourceObject* ResDictionary::find(StringTableEntry path, StringTableEntry name
       path = StringTable->insert(fullPath);
    }
 
-   for(ResourceObject *walk = hashTable[hash(path, name)]; walk; walk = walk->nextEntry)
-      if(walk->name == name && walk->path == path)
-         return walk;
-   return NULL;
+    std::string path_and_file(path);
+    path_and_file.append(name);
+
+    auto itr = hashTable.find(path_and_file);
+    if (itr != hashTable.end())
+        return (itr->second);
+
+//   for(ResourceObject *walk = hashTable[hash(path, name)]; walk; walk = walk->nextEntry)
+//      if(walk->name == name && walk->path == path)
+//         return walk;
+
+   return nullptr;
 }
 
 ResourceObject* ResDictionary::find(StringTableEntry path, StringTableEntry name, StringTableEntry zipPath, StringTableEntry zipName)
@@ -119,10 +133,21 @@ ResourceObject* ResDictionary::find(StringTableEntry path, StringTableEntry name
       path = StringTable->insert(fullPath);
    }
 
-   for(ResourceObject *walk = hashTable[hash(path, name)]; walk; walk = walk->nextEntry)
-      if(walk->name == name && walk->path == path && walk->zipName == zipName && walk->zipPath == zipPath)
-         return walk;
-   return NULL;
+    std::string path_and_file(path);
+    path_and_file.append(name);
+
+    auto range = hashTable.equal_range(path_and_file);
+    for (auto itr = range.first; itr != range.second; ++itr )
+    {
+        ResourceObject* walk = itr->second;
+        if(walk->name == name && walk->path == path && walk->zipName == zipName && walk->zipPath == zipPath)
+             return walk;
+    }
+
+//   for(ResourceObject *walk = hashTable[hash(path, name)]; walk; walk = walk->nextEntry)
+//      if(walk->name == name && walk->path == path && walk->zipName == zipName && walk->zipPath == zipPath)
+//         return walk;
+   return nullptr;
 }
 
 ResourceObject* ResDictionary::find(StringTableEntry path, StringTableEntry name, U32 flags)
@@ -134,38 +159,54 @@ ResourceObject* ResDictionary::find(StringTableEntry path, StringTableEntry name
       path = StringTable->insert(fullPath);
    }
 
-   for(ResourceObject *walk = hashTable[hash(path, name)]; walk; walk = walk->nextEntry)
-      if(walk->name == name && walk->path == path && U32(walk->flags) == flags)
-         return walk;
-   return NULL;
+    std::string path_and_file(path);
+    path_and_file.append(name);
+
+    auto range = hashTable.equal_range(path_and_file);
+    for (auto itr = range.first; itr != range.second; ++itr )
+    {
+        ResourceObject* walk = itr->second;
+        if(walk->name == name && walk->path == path && U32(walk->flags) == flags)
+            return walk;
+    }
+
+//   for(ResourceObject *walk = hashTable[hash(path, name)]; walk; walk = walk->nextEntry)
+//      if(walk->name == name && walk->path == path && U32(walk->flags) == flags)
+//         return walk;
+   return nullptr;
 }
 
 void ResDictionary::pushBehind(ResourceObject *resObj, S32 flagMask)
 {
    remove(resObj);
-   entryCount++;
-   ResourceObject **walk = &hashTable[hash(resObj)];
-   for(; *walk; walk = &(*walk)->nextEntry)
-   {
-      if(!((*walk)->flags & flagMask))
-      {
-         resObj->nextEntry = *walk;
-         *walk = resObj;
-         return;
-      }
-   }
-   resObj->nextEntry = NULL;
-   *walk = resObj;
+   insert(resObj, resObj->path, resObj->name);
+   //   entryCount++;
+//   ResourceObject **walk = &hashTable[hash(resObj)];
+//   for(; *walk; walk = &(*walk)->nextEntry)
+//   {
+//      if(!((*walk)->flags & flagMask))
+//      {
+//         resObj->nextEntry = *walk;
+//         *walk = resObj;
+//         return;
+//      }
+//   }
+//   resObj->nextEntry = NULL;
+//   *walk = resObj;
 }
 
 void ResDictionary::remove(ResourceObject *resObj)
 {
-   for(ResourceObject **walk = &hashTable[hash(resObj)]; *walk; walk = &(*walk)->nextEntry)
+   std::string path_and_file(resObj->path);
+   path_and_file.append(resObj->name);
+
+   auto range = hashTable.equal_range(path_and_file);
+   for (auto itr = range.first; itr != range.second; ++itr )
    {
-      if(*walk == resObj)
+      ResourceObject* walk = itr->second;
+      if(walk == resObj)
       {
-         entryCount--;
-         *walk = resObj->nextEntry;
+         hashTable.erase(itr);
          return;
       }
    }
