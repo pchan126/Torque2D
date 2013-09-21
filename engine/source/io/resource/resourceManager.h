@@ -44,7 +44,8 @@ namespace Zip
    class CentralDir;
 }
 
-extern ResManager *ResourceManager;
+// Global macro
+#define ResourceManager ResManager::get()
 
 //------------------------------------------------------------------------------
 class ResourceObject;
@@ -208,7 +209,7 @@ public:
    /// If assigned a ResourceObject, it's assumed to already have
    /// been locked, lock count is incremented only for copies or
    /// assignment from another Resource.
-   Resource() : obj(NULL) { ; }
+   Resource() : obj(nullptr) { ; }
    Resource(ResourceObject *p) : obj(p) { ; }
    Resource(const Resource &res) : obj(res.obj) { _lock(); }
    ~Resource() { unlock(); }  ///< Decrements the lock count on this object, and if the lock count is 0 afterwards,
@@ -297,6 +298,11 @@ public:
 class ResManager
 {
 private:
+    /// @name Device management variables
+    /// @{
+   static ResManager * smResManager; ///< singleton
+
+    /// @}
    /// Path to which we will write data.
    ///
    /// This is used when, for instance, we download files from a server.
@@ -352,6 +358,7 @@ public:
    /// @name Global Control
    /// These are called to initialize/destroy the resource manager at runtime.
    /// @{
+   static ResManager *get() { return smResManager; }
 
    static void create();
    static void destroy();

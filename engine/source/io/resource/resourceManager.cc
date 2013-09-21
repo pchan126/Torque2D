@@ -22,24 +22,17 @@
 
 #include "platform/platform.h"
 #include "console/console.h"
-#include "collection/vector.h"
 #include "io/stream.h"
-
 #include "io/fileStream.h"
 #include "io/resizeStream.h"
 #include "memory/frameAllocator.h"
-
 #include "io/zip/zipArchive.h"
-
 #include "io/resource/resourceManager.h"
 #include "string/findMatch.h"
-
 #include "console/console.h"
 #include "console/consoleTypes.h"
 
-#include "memory/safeDelete.h"
-
-ResManager *ResourceManager = nullptr;
+ResManager * ResManager::smResManager = nullptr;
 
 const char *ResManager::smExcludedDirectories = ".svn;CVS";
 
@@ -206,7 +199,7 @@ void ResManager::create ()
 {
    AssertFatal (ResourceManager == nullptr,
           "ResourceManager::create: manager already exists.");
-   ResourceManager = new ResManager;
+   smResManager = new ResManager;
 
    Con::addVariable("Pref::ResourceManager::excludedDirectories", TypeString, &smExcludedDirectories);
 }
@@ -218,8 +211,8 @@ void ResManager::destroy ()
 {
    AssertFatal (ResourceManager != nullptr,
            "ResourceManager::destroy: manager does not exist.");
-   delete ResourceManager;
-   ResourceManager = nullptr;
+   delete smResManager;
+   smResManager = nullptr;
 }
 
 //------------------------------------------------------------------------------
