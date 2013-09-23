@@ -56,11 +56,9 @@ public:
 
    // Management
    U32  size() const       { return mTable.size(); };                  ///< Return the number of elements
-   U32  tableSize() const;             ///< Return the size of the hash bucket table
    void clear()            { return mTable.clear(); };                       ///< Empty the HashTable
    void resize(U32 size);
    bool isEmpty() const    { return mTable.empty(); };               ///< Returns true if the table is empty
-//   F32 collisions() const;             ///< Returns the average number of nodes per bucket
 
    // Insert & erase elements
    void insertEqual(const Key& key, const Value&);

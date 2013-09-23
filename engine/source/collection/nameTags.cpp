@@ -63,14 +63,14 @@ bool NameTags::onAdd()
 
     // Fetch tag count.
     StringTableEntry tagCountFieldName = StringTable->insert("TagCount");
-    const U32 tagCount = dAtoi( getDataField( tagCountFieldName, NULL ) );
+    const U32 tagCount = dAtoi( getDataField( tagCountFieldName, nullptr ) );
 
     // Finish if not tags to add.
     if ( tagCount == 0 )
         return true;
 
     // Clear tag count field.
-    setDataField( tagCountFieldName, NULL, "" );
+    setDataField( tagCountFieldName, nullptr, "" );
 
     // Read tags.
     StringTableEntry tagFieldName = StringTable->insert("Tag");
@@ -112,7 +112,7 @@ bool NameTags::onAdd()
 NameTags::TagId NameTags::createTag( const char* pTagName )
 {
     // Sanity!
-    AssertFatal( pTagName != NULL, "Tag cannot be null." );
+    AssertFatal( pTagName != nullptr, "Tag cannot be null." );
     AssertFatal( mMasterTagId != 0, "Tag system is full." );
 
     // Fetch hash Id.
@@ -146,7 +146,7 @@ NameTags::TagId NameTags::renameTag( const NameTags::TagId tagId, const char* pN
 {
     // Sanity!
     AssertFatal( tagId > 0, "Invalid Tag Id." );
-    AssertFatal( pNewTagName != NULL, "Tag cannot be null." );
+    AssertFatal( pNewTagName != nullptr, "Tag cannot be null." );
 
     // Find tag.
     tagNameMapType::iterator itr = mTagNameMap.find( tagId );
@@ -222,7 +222,7 @@ StringTableEntry NameTags::getTagName( const NameTags::TagId tagId )
 NameTags::TagId NameTags::getTagId( const char* pTagName )
 {
     // Sanity!
-    AssertFatal( pTagName != NULL, "Tag cannot be null." );
+    AssertFatal( pTagName != nullptr, "Tag cannot be null." );
 
     // Fetch hash Id.
     const NameTags::HashId hashId = StringTable->hashString( pTagName );
@@ -251,7 +251,7 @@ bool NameTags::tag( const SimObjectId objId, const TagId tagId )
     SimObject* pSimObject = Sim::findObject( objId );
 
     // Sanity!
-    if ( pSimObject == NULL )
+    if ( pSimObject == nullptr )
     {
         // Warn.
         Con::warnf( "Could not find object '%d' to tag Id '%d'.", objId, tagId );
@@ -261,7 +261,7 @@ bool NameTags::tag( const SimObjectId objId, const TagId tagId )
     char newTagsBuffer[4096];
 
     // Fetch tags.
-    const char* pOldTags = pSimObject->getDataField( mNameTagsFieldEntry, NULL );
+    const char* pOldTags = pSimObject->getDataField( mNameTagsFieldEntry, nullptr );
 
     // Check if already tagged.
     if ( dStrlen( pOldTags ) != 0 )
@@ -290,7 +290,7 @@ bool NameTags::tag( const SimObjectId objId, const TagId tagId )
     }
 
     // Update field.
-    pSimObject->setDataField( mNameTagsFieldEntry, NULL, newTagsBuffer );
+    pSimObject->setDataField( mNameTagsFieldEntry, nullptr, newTagsBuffer );
 
     return true;
 }
@@ -306,7 +306,7 @@ bool NameTags::untag( const SimObjectId objId, const TagId tagId )
     SimObject* pSimObject = Sim::findObject( objId );
 
     // Sanity!
-    if ( pSimObject == NULL )
+    if ( pSimObject == nullptr )
     {
         // Warn.
         Con::warnf( "Could not find object '%d' to un-tag Id '%d'.", objId, tagId );
@@ -314,7 +314,7 @@ bool NameTags::untag( const SimObjectId objId, const TagId tagId )
     }
 
     // Fetch tags.
-    const char* pOldTags = pSimObject->getDataField( mNameTagsFieldEntry, NULL );
+    const char* pOldTags = pSimObject->getDataField( mNameTagsFieldEntry, nullptr );
 
     // Finish if no tags.
     if ( dStrlen( pOldTags ) == 0 )
@@ -336,7 +336,7 @@ bool NameTags::untag( const SimObjectId objId, const TagId tagId )
             const char* pNewTags = StringUnit::removeUnit( pOldTags, index, " \t\n" );
 
             // Update field.
-            pSimObject->setDataField( mNameTagsFieldEntry, NULL, pNewTags );
+            pSimObject->setDataField( mNameTagsFieldEntry, nullptr, pNewTags );
 
             // Done.
             return true;
@@ -357,7 +357,7 @@ bool NameTags::hasTag( const SimObjectId objId, const TagId tagId ) const
     SimObject* pSimObject = Sim::findObject( objId );
 
     // Sanity!
-    if ( pSimObject == NULL )
+    if ( pSimObject == nullptr )
     {
         // Warn.
         Con::warnf( "Could not find object '%d' to check tag Id '%d'.", objId, tagId );
@@ -365,7 +365,7 @@ bool NameTags::hasTag( const SimObjectId objId, const TagId tagId ) const
     }
 
     // Fetch tags.
-    const char* pTags = pSimObject->getDataField( mNameTagsFieldEntry, NULL );
+    const char* pTags = pSimObject->getDataField( mNameTagsFieldEntry, nullptr );
 
     // Finish if no tags.
     if ( dStrlen( pTags ) == 0 )
@@ -444,7 +444,7 @@ void NameTags::queryTags( const char* pTags )
             SimObject* pSimObject = itr.second;
 
             // Fetch tags.
-            const char* pFieldTags = pSimObject->getDataField( mNameTagsFieldEntry, NULL );
+            const char* pFieldTags = pSimObject->getDataField( mNameTagsFieldEntry, nullptr );
 
             // Any field tags?
             if ( dStrlen( pFieldTags ) > 0 )
@@ -486,7 +486,7 @@ void NameTags::queryTags( const char* pTags )
 S32 NameTags::formatTags( char* pBuffer, U32 bufferLength )
 {
     // Sanity!
-    AssertFatal( pBuffer != NULL, "Invalid buffer" );
+    AssertFatal( pBuffer != nullptr, "Invalid buffer" );
     AssertFatal( bufferLength > 0, "Invalid buffer length" );
 
     S32 totalBufferUsed = 0;
@@ -532,7 +532,7 @@ void NameTags::writeFields(Stream& stream, U32 tabStop)
 
         // Tag count.
         dSprintf( tempBuffer, 16, "%d", tagCount );
-        setDataField( StringTable->insert("TagCount"), NULL, tempBuffer );
+        setDataField( StringTable->insert("TagCount"), nullptr, tempBuffer );
 
         // Write tags.
         StringTableEntry tagFieldName = StringTable->insert("Tag");

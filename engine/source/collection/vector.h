@@ -91,7 +91,6 @@ class Vector
 
    typedef T        value_type;
    typedef T&       reference;
-   typedef const T& const_reference;
 
    typedef typename std::vector<T>::iterator               iterator;
    typedef typename std::vector<T>::const_iterator         const_iterator;

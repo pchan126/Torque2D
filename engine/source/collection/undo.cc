@@ -34,7 +34,7 @@ IMPLEMENT_CONOBJECT(UndoScriptAction);
 UndoAction::UndoAction( const UTF8* actionName)
 {
    mActionName = StringTable->insert(actionName);
-   mUndoManager = NULL;
+   mUndoManager = nullptr;
 }
 
 // Modified to clean up quiet sub actions [KNM | 08/10/11 | ITGB-152]
@@ -128,7 +128,7 @@ void UndoManager::initPersistFields()
 UndoManager& UndoManager::getDefaultManager()
 {
    // the default manager is created the front time it is asked for.
-   static UndoManager *defaultMan = NULL;
+   static UndoManager *defaultMan = nullptr;
    if(!defaultMan)
    {
       defaultMan = new UndoManager();
@@ -282,7 +282,7 @@ StringTableEntry UndoManager::getUndoName(S32 index)
    if ((index < getUndoCount()) && (index >= 0))
       return mUndoStack[index]->mActionName;
 
-   return NULL;
+   return nullptr;
 }
 
 ConsoleMethod(UndoManager, getRedoCount, S32, 2, 2, "() \n @return Returns the number of redo Actions stored as an integer")
@@ -307,14 +307,14 @@ StringTableEntry UndoManager::getRedoName(S32 index)
    if ((index < getRedoCount()) && (index >= 0))
       return mRedoStack[getRedoCount() - index - 1]->mActionName;
 
-   return NULL;
+   return nullptr;
 }
 
 //-----------------------------------------------------------------------------
 StringTableEntry UndoManager::getNextUndoName()
 {
    if(mUndoStack.size() < 1)
-      return NULL;
+      return nullptr;
       
    UndoAction *act = mUndoStack.back();
    return (*act).mActionName;
@@ -324,7 +324,7 @@ StringTableEntry UndoManager::getNextUndoName()
 StringTableEntry UndoManager::getNextRedoName()
 {
    if(mRedoStack.size() < 1)
-      return NULL;
+      return nullptr;
 
    UndoAction *act = mRedoStack.back();
    return (*act).mActionName;
@@ -346,10 +346,10 @@ void UndoManager::addAction(UndoAction* action)
 
 //-----------------------------------------------------------------------------
 ConsoleMethod(UndoAction, addToManager, void, 2, 3, "action.addToManager([undoManager]) Adds an UndoAction to the manager"
-              "@param undoManager The manager to add the object to (default NULL)\n"
+              "@param undoManager The manager to add the object to (default nullptr)\n"
               "@return No Return Value")
 {
-   UndoManager *theMan = NULL;
+   UndoManager *theMan = nullptr;
    if(argc == 3)
    {
       SimObject *obj = Sim::findObject(argv[2]);
@@ -379,7 +379,7 @@ ConsoleMethod(UndoManager, getNextUndoName, const char *, 2, 2, "UndoManager.get
 {
    StringTableEntry name = object->getNextUndoName();
    if(!name)
-      return NULL;
+      return nullptr;
    char *ret = Con::getReturnBuffer(dStrlen(name) + 1);
    dStrcpy(ret, name);
    return ret;
@@ -391,7 +391,7 @@ ConsoleMethod(UndoManager, getNextRedoName, const char *, 2, 2, "UndoManager.get
 {
    StringTableEntry name = object->getNextRedoName();
    if(!name)
-      return NULL;
+      return nullptr;
    char *ret = Con::getReturnBuffer(dStrlen(name) + 1);
    dStrcpy(ret, name);
    return ret;
