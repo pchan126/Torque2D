@@ -323,8 +323,6 @@ private:
 
    bool usingVFS;
 
-   bool isIgnoredSubdirectoryName(const char *name) const;
-
    /// Scan a zip file for resources.
    bool scanZip(ResourceObject *zipObject);
 

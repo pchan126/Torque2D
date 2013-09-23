@@ -84,7 +84,7 @@ bool ActionMap::onAdd()
 //--------------------------------------------------------------------------
 void ActionMap::dumpActionMap(const char* fileName, const bool append) const
 {
-   if (fileName != NULL) {
+   if (fileName != nullptr) {
       // Dump the deletion, and creation script commands, followed by all the binds
       //  to a script.
 
@@ -284,7 +284,7 @@ bool ActionMap::createEventDescriptor(const char* pEventString, EventDescriptor*
    // Do we have modifiers?
    char* pSpace = dStrchr(copyBuffer, ' ');
    char* pObjectString;
-   if (pSpace != NULL) {
+   if (pSpace != nullptr) {
       // Yes.  Parse them out...
       //
       pDescriptor->flags = 0;
@@ -292,7 +292,7 @@ bool ActionMap::createEventDescriptor(const char* pEventString, EventDescriptor*
       pSpace[0]          = '\0';
 
       char* pModifier = dStrtok(copyBuffer, "-");
-      while (pModifier != NULL) {
+      while (pModifier != nullptr) {
          if (dStricmp(pModifier, "shift") == 0) {
             pDescriptor->flags |= SI_SHIFT;
          } else if (dStricmp(pModifier, "ctrl") == 0) {
@@ -305,7 +305,7 @@ bool ActionMap::createEventDescriptor(const char* pEventString, EventDescriptor*
             pDescriptor->flags |= SI_MAC_OPT;
          }
 
-         pModifier = dStrtok(NULL, "-");
+         pModifier = dStrtok(nullptr, "-");
       }
    } else {
       // No.
@@ -385,11 +385,11 @@ bool ActionMap::createEventDescriptor(const char* pEventString, EventDescriptor*
 
 //------------------------------------------------------------------------------
 ActionMap::Node* ActionMap::getNode(const U32 inDeviceType, const U32 inDeviceInst,
-                   const U32 inModifiers,  const U32 inAction,SimObject* object /*= NULL*/)
+                   const U32 inModifiers,  const U32 inAction,SimObject* object /*= nullptr*/)
 {
    // DMMTODO - Slow INITIAL implementation.  Replace with a faster version...
    //
-   DeviceMap* pDeviceMap = NULL;
+   DeviceMap* pDeviceMap = nullptr;
    U32 i;
    for (i = 0; i < (U32)mDeviceMaps.size(); i++) 
    {
@@ -399,7 +399,7 @@ ActionMap::Node* ActionMap::getNode(const U32 inDeviceType, const U32 inDeviceIn
          break;
       }
    }
-   if (pDeviceMap == NULL) 
+   if (pDeviceMap == nullptr) 
    {
       mDeviceMaps.increment();
       mDeviceMaps.back() = new DeviceMap;
@@ -413,7 +413,7 @@ ActionMap::Node* ActionMap::getNode(const U32 inDeviceType, const U32 inDeviceIn
    {
       if (pDeviceMap->nodeMap[i].modifiers == inModifiers &&
           pDeviceMap->nodeMap[i].action    == inAction &&
-          ( (object != NULL) ? object == pDeviceMap->nodeMap[i].object : true )) // Check for an object match if the object exists 
+          ( (object != nullptr) ? object == pDeviceMap->nodeMap[i].object : true )) // Check for an object match if the object exists 
       {
          return &pDeviceMap->nodeMap[i];
       }
@@ -431,9 +431,9 @@ ActionMap::Node* ActionMap::getNode(const U32 inDeviceType, const U32 inDeviceIn
    pRetNode->deadZoneEnd   = 0.0;
    pRetNode->scaleFactor   = 1.0;
 
-   pRetNode->consoleFunction = NULL;
-   pRetNode->makeConsoleCommand = NULL;
-   pRetNode->breakConsoleCommand = NULL;
+   pRetNode->consoleFunction = nullptr;
+   pRetNode->makeConsoleCommand = nullptr;
+   pRetNode->breakConsoleCommand = nullptr;
 
    //[neob, 5/7/2007 - #2975]
    pRetNode->object = 0;
@@ -442,11 +442,11 @@ ActionMap::Node* ActionMap::getNode(const U32 inDeviceType, const U32 inDeviceIn
 }
 
 //------------------------------------------------------------------------------
-void ActionMap::removeNode(const U32 inDeviceType, const U32 inDeviceInst, const U32 inModifiers, const U32 inAction, SimObject* object /*= NULL*/)
+void ActionMap::removeNode(const U32 inDeviceType, const U32 inDeviceInst, const U32 inModifiers, const U32 inAction, SimObject* object /*= nullptr*/)
 {
    // DMMTODO - Slow INITIAL implementation.  Replace with a faster version...
    //
-   DeviceMap* pDeviceMap = NULL;
+   DeviceMap* pDeviceMap = nullptr;
    U32 i;
    for (i = 0; i < (U32)mDeviceMaps.size(); i++) {
       if (mDeviceMaps[i]->deviceType == inDeviceType &&
@@ -456,7 +456,7 @@ void ActionMap::removeNode(const U32 inDeviceType, const U32 inDeviceInst, const
       }
    }
 
-   if (pDeviceMap == NULL)
+   if (pDeviceMap == nullptr)
       return;
 
    U32 realMods = inModifiers;
@@ -472,7 +472,7 @@ void ActionMap::removeNode(const U32 inDeviceType, const U32 inDeviceInst, const
    for (i = 0; i < (U32)pDeviceMap->nodeMap.size(); i++) {
       if (pDeviceMap->nodeMap[i].modifiers == realMods &&
           pDeviceMap->nodeMap[i].action    == inAction &&
-          ( (object != NULL) ? object == pDeviceMap->nodeMap[i].object : true )) 
+          ( (object != nullptr) ? object == pDeviceMap->nodeMap[i].object : true )) 
       {
           dFree(pDeviceMap->nodeMap[i].makeConsoleCommand);
           dFree(pDeviceMap->nodeMap[i].breakConsoleCommand);
@@ -487,7 +487,7 @@ const ActionMap::Node* ActionMap::findNode(const U32 inDeviceType, const U32 inD
 {
    // DMMTODO - Slow INITIAL implementation.  Replace with a faster version...
    //
-   DeviceMap* pDeviceMap = NULL;
+   DeviceMap* pDeviceMap = nullptr;
    U32 i;
    for (i = 0; i < (U32)mDeviceMaps.size(); i++)
    {
@@ -498,8 +498,8 @@ const ActionMap::Node* ActionMap::findNode(const U32 inDeviceType, const U32 inD
       }
    }
 
-   if (pDeviceMap == NULL)
-      return NULL;
+   if (pDeviceMap == nullptr)
+      return nullptr;
 
    U32 realMods = inModifiers;
    if (realMods & SI_SHIFT)
@@ -519,7 +519,7 @@ const ActionMap::Node* ActionMap::findNode(const U32 inDeviceType, const U32 inD
          return &pDeviceMap->nodeMap[i];
    }
 
-   return NULL;
+   return nullptr;
 }
 
 //------------------------------------------------------------------------------
@@ -556,7 +556,7 @@ bool ActionMap::nextBoundNode( const char* function, U32 &devMapIndex, U32 &node
 }
 
 //------------------------------------------------------------------------------
-bool ActionMap::processUnbind(const char *device, const char *action, SimObject* object /*= NULL*/)
+bool ActionMap::processUnbind(const char *device, const char *action, SimObject* object /*= nullptr*/)
 {
    U32 deviceType;
    U32 deviceInst;
@@ -614,7 +614,7 @@ const char* ActionMap::getBinding( const char* command )
 // This function is for the use of the control remapper.
 // The intent of this function is to determine if the given event descriptor is already
 // bound in this action map.  If so, this function returns the command it is bound to.
-// If not, it returns NULL.
+// If not, it returns nullptr.
 //
 const char* ActionMap::getCommand( const char* device, const char* action )
 {
@@ -1149,13 +1149,13 @@ bool ActionMap::processAction(const InputEventInfo* pEvent)
    {
       const Node* pNode = findNode(pEvent->deviceType, pEvent->deviceInst, pEvent->modifier, pEvent->objInst);
 
-      if (pNode == NULL) 
+      if (pNode == nullptr) 
       {
          // Check to see if we clear the modifiers, do we find an action?
          if (pEvent->modifier != 0)
             pNode = findNode(pEvent->deviceType, pEvent->deviceInst, 0, pEvent->objInst);
 
-         if (pNode == NULL)
+         if (pNode == nullptr)
             return false;
       }
 
@@ -1210,7 +1210,7 @@ bool ActionMap::processAction(const InputEventInfo* pEvent)
       // after the execs and don't use pNode again.
       pNode = findNode( pEvent->deviceType, pEvent->deviceInst, pEvent->modifier, pEvent->objInst );
 
-      if( pNode == NULL )
+      if( pNode == nullptr )
          return true; // We already called any bound methods/functions so our job is done
 
       //
@@ -1225,14 +1225,14 @@ bool ActionMap::processAction(const InputEventInfo* pEvent)
       {
          const Node* pNode = findNode(pEvent->deviceType, pEvent->deviceInst, pEvent->modifier, pEvent->objType);
 
-         if (pNode == NULL)
+         if (pNode == nullptr)
          {
             // Check to see if we clear the modifiers, do we find an action?
             if (pEvent->modifier != 0)
                pNode = findNode(pEvent->deviceType, pEvent->deviceInst,
                                 0,                  pEvent->objType);
 
-            if (pNode == NULL)
+            if (pNode == nullptr)
                return false;
          }
 
@@ -1268,13 +1268,13 @@ bool ActionMap::processAction(const InputEventInfo* pEvent)
          const Node* pNode = findNode( pEvent->deviceType, pEvent->deviceInst,
                                        pEvent->modifier,   pEvent->objType );
 
-         if ( pNode == NULL )
+         if ( pNode == nullptr )
          {
             // Check to see if we clear the modifiers, do we find an action?
             if (pEvent->modifier != 0)
                pNode = findNode( pEvent->deviceType, pEvent->deviceInst, 0, pEvent->objType );
 
-               if ( pNode == NULL )
+               if ( pNode == nullptr )
                   return false;
          }
 
@@ -1320,13 +1320,13 @@ bool ActionMap::processAction(const InputEventInfo* pEvent)
        // devices. No point in trying to mangle joystick code any further
        const Node* pNode = findNode( pEvent->deviceType, pEvent->deviceInst, pEvent->modifier,   pEvent->objType );
        
-       if ( pNode == NULL )
+       if ( pNode == nullptr )
        {
            // Check to see if we clear the modifiers, do we find an action?
            if (pEvent->modifier != 0)
                pNode = findNode( pEvent->deviceType, pEvent->deviceInst, 0, pEvent->objType );
            
-           if ( pNode == NULL )
+           if ( pNode == nullptr )
                return false;
        }
        
@@ -1368,7 +1368,7 @@ bool ActionMap::processAction(const InputEventInfo* pEvent)
 //------------------------------------------------------------------------------
 bool ActionMap::isAction( U32 deviceType, U32 deviceInst, U32 modifiers, U32 action )
 {
-   return ( findNode( deviceType, deviceInst, modifiers, action ) != NULL );
+   return ( findNode( deviceType, deviceInst, modifiers, action ) != nullptr );
 }
 
 //------------------------------------------------------------------------------
@@ -1423,7 +1423,7 @@ void ActionMap::enterBreakEvent(const InputEventInfo* pEvent, const Node* pNode)
    if(pNode->breakConsoleCommand)
       smBreakTable[entry].breakConsoleCommand = dStrdup(pNode->breakConsoleCommand);
    else
-      smBreakTable[entry].breakConsoleCommand = NULL;
+      smBreakTable[entry].breakConsoleCommand = nullptr;
 
    smBreakTable[entry].flags         = pNode->flags;
    smBreakTable[entry].deadZoneBegin = pNode->deadZoneBegin;
@@ -1539,7 +1539,7 @@ ConsoleMethod( ActionMap, bind, void, 5, 10, "( device , action , [ modifier , m
                                                                 "@return No return value.\n"
                                                                 "@sa bindCmd, getBinding, unbind")
 {
-   object->processBind( argc - 2, argv + 2, NULL );
+   object->processBind( argc - 2, argv + 2, nullptr );
 }
 
 ConsoleMethod( ActionMap, bindObj, void, 6, 11, "(device, action, [modifier spec, mod...], command, object) Use the bindObj method to associate a function to a keystroke or other device input.\n"
@@ -1548,7 +1548,7 @@ ConsoleMethod( ActionMap, bindObj, void, 6, 11, "(device, action, [modifier spec
                                                                 "@param action Name of the action to watch for.\n"
                                                                 "@param modifier Special modifiers (mouse only), such as dead spot, etc.\n"
                                                                 "@param command The function to be called on make and break.\n"
-                                                                "@param object The explicit object (it defaults to NULL when you call bind() )\n"
+                                                                "@param object The explicit object (it defaults to nullptr when you call bind() )\n"
                                                                 "@return No return value.\n"
                                                                 "@sa bindCmd, getBinding, unbind")
 {
@@ -1558,7 +1558,7 @@ ConsoleMethod( ActionMap, bindObj, void, 6, 11, "(device, action, [modifier spec
 
 //------------------------------------------------------------------------------
 ConsoleMethod( ActionMap, bindCmd, void, 6, 6, "( device , action , makeCmd , breakCmd ) Use the bindCmd method to associate up to two functions to a keystroke or other device input.\n"
-                                                                "The makeCmd is bound to the make event and the breakCmd is bound to the break event and in both cases, the commands are specified as complete scripts, with all arguments, elipses, and the terminating semi-colon. Either of these commands may be non-specified (NULL strings). For clarification, see 'Bind Sample' example below.\n"
+                                                                "The makeCmd is bound to the make event and the breakCmd is bound to the break event and in both cases, the commands are specified as complete scripts, with all arguments, elipses, and the terminating semi-colon. Either of these commands may be non-specified (nullptr strings). For clarification, see 'Bind Sample' example below.\n"
                                                                 "@param device Name of the device to bind the command to (see 'Device Table' below).\n"
                                                                 "@param action Name of the action to watch for(see 'Action Table' below).\n"
                                                                 "@param makeCmd The function to be called on make event.\n"
@@ -1581,7 +1581,7 @@ ConsoleMethod( ActionMap, unbind, void, 4, 4, "( device , action ) Use the unbin
 ConsoleMethod( ActionMap, unbindObj, void, 5, 5, "(device, action, object) Use the unbind method to remove a previosly specified device + action pair from the action map.\n"
                                                                 "@param device Name of the device to bound to a command (see 'Device Table' below).\n"
                                                                 "@param action Name of the action to watch for (see 'Action Table' below).\n"
-                                                                "@param object Explicit object (it defaults to NULL when you call unbind() )."
+                                                                "@param object Explicit object (it defaults to nullptr when you call unbind() )."
                                                                 "@return No return value.\n"
                                                                 "@sa bind, bindCmd")
 {
@@ -1596,7 +1596,7 @@ ConsoleMethod( ActionMap, save, void, 2, 4, "( [ fileName ] [ , append ] ) Use t
                                                                 "@param append If true, do not overwrite the file, else start from scratch.\n"
                                                                 "@return No return value")
 {
-   const char* fileName = argc > 2 ? argv[2]        : NULL;
+   const char* fileName = argc > 2 ? argv[2]        : nullptr;
    bool append          = argc > 3 ? dAtob(argv[3]) : false;
 
    char buffer[1024];
@@ -1631,7 +1631,7 @@ ConsoleMethod( ActionMap, pop, void, 2, 2, "() Use the pop method to de-activate
 //------------------------------------------------------------------------------
 ConsoleMethod( ActionMap, getBinding, const char*, 3, 3, "( command ) Use the getBinding method to get the binding for a specified command.\n"
                                                                 "@param command The function to seek a binding for.\n"
-                                                                "@return Returns a string containing the binding as a field (TAB separated string), or a NULL string meaning 'no binding found'.\n"
+                                                                "@return Returns a string containing the binding as a field (TAB separated string), or a nullptr string meaning 'no binding found'.\n"
                                                                 "@sa bind, bindCmd")
 {
     return( object->getBinding( argv[2] ) );	
@@ -1641,7 +1641,7 @@ ConsoleMethod( ActionMap, getBinding, const char*, 3, 3, "( command ) Use the ge
 ConsoleMethod( ActionMap, getCommand, const char*, 4, 4, "( device , action ) Use the getCommand method to get the function associated with a specific device + action pair.\n"
                                                                 "@param device Name of the device to bound to a command (see 'Device Table' below).\n"
                                                                 "@param action Name of the action to watch for (see 'Action Table' below).\n"
-                                                                "@return Returns the function name or specification associated with the specified device + action pair, or a NULL-string meaning 'no binding found'.\n"
+                                                                "@return Returns the function name or specification associated with the specified device + action pair, or a nullptr-string meaning 'no binding found'.\n"
                                                                 "@sa bind, bindCmd, getBinding")
 {
     return( object->getCommand( argv[2], argv[3] ) );	
@@ -1672,7 +1672,7 @@ ConsoleMethod( ActionMap, getScale, F32, 4, 4, "( device , action ) Use the getS
 ConsoleMethod( ActionMap, getDeadZone, const char*, 4, 4, "( device , action ) Use the getDeadZone method to get the dead-zone associated with a specific device + action pair.\n"
                                                                 "@param device Name of the device to bound to a command (see 'Device Table' below).\n"
                                                                 "@param action Name of the action to watch for (see 'Action Table' below).\n"
-                                                                "@return Returns a dead-zone specification, or \"0 0\" meaning that there is no dead-zone, or a NULL string meaning the mapping was not found.\n"
+                                                                "@return Returns a dead-zone specification, or \"0 0\" meaning that there is no dead-zone, or a nullptr string meaning the mapping was not found.\n"
                                                                 "@sa bind, bindCmd")
 {
     return( object->getDeadZone( argv[2], argv[3] ) );

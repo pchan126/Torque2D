@@ -129,7 +129,7 @@ class ActionMap : public SimObject
    Vector<DeviceMap*>        mDeviceMaps;
    static Vector<BreakEntry> smBreakTable;
 
-   // Find: return NULL if not found in current map, Get: create if not
+   // Find: return nullptr if not found in current map, Get: create if not
    //  found.
    const Node* findNode(const U32 inDeviceType, const U32 inDeviceInst,
                         const U32 inModifiers,  const U32 inAction);
@@ -137,11 +137,11 @@ class ActionMap : public SimObject
    bool nextBoundNode( const char* function, U32 &devMapIndex, U32 &nodeIndex );
    Node* getNode(const U32 inDeviceType, const U32 inDeviceInst,
                  const U32 inModifiers,  const U32 inAction,
-                 SimObject* object = NULL);
+                 SimObject* object = nullptr);
 
    void removeNode(const U32 inDeviceType, const U32 inDeviceInst,
                  const U32 inModifiers,  const U32 inAction,
-                 SimObject* object = NULL);
+                 SimObject* object = nullptr);
 
    void enterBreakEvent(const InputEventInfo* pEvent, const Node* pNode);
 
@@ -155,9 +155,9 @@ class ActionMap : public SimObject
 
    static bool createEventDescriptor(const char* pEventString, EventDescriptor* pDescriptor);
 
-   bool processBind(const U32 argc, const char** argv, SimObject* object = NULL);
+   bool processBind(const U32 argc, const char** argv, SimObject* object = nullptr);
    bool processBindCmd(const char *device, const char *action, const char *makeCmd, const char *breakCmd);
-   bool processUnbind(const char *device, const char *action, SimObject* object = NULL);
+   bool processUnbind(const char *device, const char *action, SimObject* object = nullptr);
 
    /// @name Console Interface Functions
    /// @{

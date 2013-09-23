@@ -48,7 +48,7 @@ ResourceObject::ResourceObject ()
 void ResourceObject::destruct ()
 {
    // If the resource was not loaded because of an error, the resource
-   // pointer will be NULL
+   // pointer will be nullptr
    SAFE_DELETE(mInstance);
 
    // Free if it is ResourceObject::File and is NOT ResourceObject::VolumeBlock
@@ -291,7 +291,7 @@ static void getPaths (const char *fullPath, StringTableEntry & path,
    char *ptr = (char *) dStrrchr (fullPath, '/');
    if (!ptr)
    {
-      path = NULL;
+      path = nullptr;
       fileName = StringTable->insert (fullPath);
    }
    else
@@ -329,7 +329,7 @@ bool ResManager::addVFSRoot(Zip::ZipArchive *vfs)
 bool ResManager::scanZip (ResourceObject * zipObject)
 {
    const char *zipPath = buildPath(zipObject->zipPath, zipObject->zipName);
-   if(zipObject->mZipArchive == NULL)
+   if(zipObject->mZipArchive == nullptr)
    {
       zipObject->mZipArchive = new Zip::ZipArchive;
       if(! zipObject->mZipArchive->openArchive(zipPath))
@@ -375,7 +375,7 @@ bool ResManager::scanZip (ResourceObject * zipObject)
 
       // Create file base name
       char* pPathEnd = dStrrchr(zipPath, '/');
-      if(pPathEnd == NULL)
+      if(pPathEnd == nullptr)
          continue;
 
       pPathEnd[0] = '\0';
@@ -505,7 +505,7 @@ void ResManager::initExcludedDirectories()
    while ( temp )
    {
       Platform::addExcludedDirectory(temp);
-      temp = dStrtok( NULL, ";" );
+      temp = dStrtok( nullptr, ";" );
    }
 
    dFree(working);
@@ -636,7 +636,7 @@ ConsoleFunction( setModPaths, void, 2, 2, "( path ) Use the setModPaths function
       if ( temp[0] )
          paths.push_back(temp);
       
-      temp = dStrtok( NULL, ";" );
+      temp = dStrtok( nullptr, ";" );
    }
 
    ResourceManager->setModPaths( paths.size(), (const char**) paths.address() );
@@ -664,8 +664,8 @@ S32 ResManager::getSize (const char *fileName)
 
 const char * ResManager::getFullPath (const char *fileName, char *path, U32 pathlen)
 {
-   AssertFatal (fileName, "ResourceManager::getFullPath: fileName is NULL");
-   AssertFatal (path, "ResourceManager::getFullPath: path is NULL");
+   AssertFatal (fileName, "ResourceManager::getFullPath: fileName is nullptr");
+   AssertFatal (path, "ResourceManager::getFullPath: path is nullptr");
    ResourceObject *obj = find (fileName);
    if (!obj)
       dStrcpy (path, fileName);
@@ -678,10 +678,10 @@ const char * ResManager::getFullPath (const char *fileName, char *path, U32 path
 
 const char *ResManager::getPathOf (const char *fileName)
 {
-   AssertFatal (fileName, "ResourceManager::getPathOf: fileName is NULL");
+   AssertFatal (fileName, "ResourceManager::getPathOf: fileName is nullptr");
    ResourceObject *obj = find (fileName);
    if (!obj)
-      return NULL;
+      return nullptr;
    else
       return obj->path;
 }
@@ -690,14 +690,14 @@ const char *ResManager::getPathOf (const char *fileName)
 
 const char * ResManager::getModPathOf (const char *fileName)
 {
-   AssertFatal (fileName, "ResourceManager::getModPathOf: fileName is NULL");
+   AssertFatal (fileName, "ResourceManager::getModPathOf: fileName is nullptr");
 
    if (!pathList)
-      return NULL;
+      return nullptr;
 
    ResourceObject *obj = find (fileName);
    if (!obj)
-      return NULL;
+      return nullptr;
 
    char buffer[256];
    char *base;
@@ -720,7 +720,7 @@ const char * ResManager::getModPathOf (const char *fileName)
    }
    while (*list);
 
-   return NULL;
+   return nullptr;
 }
 
 //------------------------------------------------------------------------------
@@ -728,7 +728,7 @@ const char * ResManager::getModPathOf (const char *fileName)
 const char *ResManager::getBasePath ()
 {
    if (!pathList)
-      return NULL;
+      return nullptr;
    const char *base = dStrrchr (pathList, ';');
    return base ? (base + 1) : pathList;
 }
@@ -876,7 +876,7 @@ ResourceInstance * ResManager::loadInstance (const char *fileName, bool computeC
    // if filename is not known, exit now
    ResourceObject *obj = find (fileName);
    if (!obj)
-      return NULL;
+      return nullptr;
 
    return loadInstance (obj, computeCRC);
 }
@@ -889,7 +889,7 @@ ResourceInstance * ResManager::loadInstance (ResourceObject * obj, bool computeC
 {
    Stream *stream = openStream (obj);
    if (!stream)
-      return NULL;
+      return nullptr;
 
    if (!computeCRC)
    {
@@ -907,9 +907,9 @@ ResourceInstance * ResManager::loadInstance (ResourceObject * obj, bool computeC
 
    if(!createFunction)
    {
-       AssertWarn( false, "ResourceObject::construct: NULL resource create function.");
-       Con::errorf("ResourceObject::construct: NULL resource create function for '%s'.", obj->name);
-       return NULL;
+       AssertWarn( false, "ResourceObject::construct: nullptr resource create function.");
+       Con::errorf("ResourceObject::construct: nullptr resource create function for '%s'.", obj->name);
+       return nullptr;
    }
 
    ResourceInstance *ret = createFunction (*stream);
@@ -925,7 +925,7 @@ Stream * ResManager::openStream (const char *fileName)
 {
    ResourceObject *obj = find (fileName);
    if (!obj)
-      return NULL;
+      return nullptr;
    return openStream (obj);
 }
 
@@ -935,7 +935,7 @@ Stream * ResManager::openStream (ResourceObject * obj)
 {
    // if filename is not known, exit now
    if (!obj)
-      return NULL;
+      return nullptr;
 
    if (echoFileNames)
       Con::printf ("FILE ACCESS: %s/%s", obj->path, obj->name);
@@ -960,14 +960,14 @@ Stream * ResManager::openStream (ResourceObject * obj)
 
    if (obj->flags & ResourceObject::VolumeBlock)
    {
-      AssertFatal(obj->mZipArchive, "mZipArchive is NULL");
-      AssertFatal(obj->mCentralDir, "mCentralDir is NULL");
+      AssertFatal(obj->mZipArchive, "mZipArchive is nullptr");
+      AssertFatal(obj->mCentralDir, "mCentralDir is nullptr");
 
       return obj->mZipArchive->openFileForRead(obj->mCentralDir);
    }
 
    // unknown type
-   return NULL;
+   return nullptr;
 }
 
 //------------------------------------------------------------------------------
@@ -1245,12 +1245,6 @@ ResourceObject * ResManager::createResource (StringTableEntry path, StringTableE
    newRO->lockCount = 0;
    newRO->mInstance = nullptr;
    newRO->flags = ResourceObject::Added;
-//   newRO->next = newRO->prev = NULL;
-//   newRO->nextResource = resourceList.nextResource;
-//   resourceList.nextResource = newRO;
-//   newRO->prevResource = &resourceList;
-//   if (newRO->nextResource)
-//      newRO->nextResource->prevResource = newRO;
    dictionary.insert (newRO, path, file);
    newRO->fileSize = newRO->fileOffset = newRO->compressedFileSize = 0;
    newRO->zipPath = nullptr;
@@ -1276,12 +1270,6 @@ ResourceObject * ResManager::createZipResource (StringTableEntry path, StringTab
    newRO->lockCount = 0;
    newRO->mInstance = nullptr;
    newRO->flags = ResourceObject::Added;
-//   newRO->next = newRO->prev = NULL;
-//   newRO->nextResource = resourceList.nextResource;
-//   resourceList.nextResource = newRO;
-//   newRO->prevResource = &resourceList;
-//   if (newRO->nextResource)
-//      newRO->nextResource->prevResource = newRO;
    dictionary.insert (newRO, path, file);
    newRO->fileSize = newRO->fileOffset = newRO->compressedFileSize = 0;
    newRO->zipPath = zipPath;

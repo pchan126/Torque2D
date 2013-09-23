@@ -69,10 +69,6 @@ ResourceObject* ResDictionary::find(StringTableEntry path, StringTableEntry name
     if (itr != hashTable.end())
         return (itr->second);
 
-//   for(ResourceObject *walk = hashTable[hash(path, name)]; walk; walk = walk->nextEntry)
-//      if(walk->name == name && walk->path == path)
-//         return walk;
-
    return nullptr;
 }
 
@@ -96,9 +92,6 @@ ResourceObject* ResDictionary::find(StringTableEntry path, StringTableEntry name
              return walk;
     }
 
-//   for(ResourceObject *walk = hashTable[hash(path, name)]; walk; walk = walk->nextEntry)
-//      if(walk->name == name && walk->path == path && walk->zipName == zipName && walk->zipPath == zipPath)
-//         return walk;
    return nullptr;
 }
 
@@ -121,10 +114,6 @@ ResourceObject* ResDictionary::find(StringTableEntry path, StringTableEntry name
         if(walk->name == name && walk->path == path && U32(walk->flags) == flags)
             return walk;
     }
-
-//   for(ResourceObject *walk = hashTable[hash(path, name)]; walk; walk = walk->nextEntry)
-//      if(walk->name == name && walk->path == path && U32(walk->flags) == flags)
-//         return walk;
    return nullptr;
 }
 
@@ -132,19 +121,6 @@ void ResDictionary::pushBehind(ResourceObject *resObj, S32 flagMask)
 {
    remove(resObj);
    insert(resObj, resObj->path, resObj->name);
-   //   entryCount++;
-//   ResourceObject **walk = &hashTable[hash(resObj)];
-//   for(; *walk; walk = &(*walk)->nextEntry)
-//   {
-//      if(!((*walk)->flags & flagMask))
-//      {
-//         resObj->nextEntry = *walk;
-//         *walk = resObj;
-//         return;
-//      }
-//   }
-//   resObj->nextEntry = NULL;
-//   *walk = resObj;
 }
 
 void ResDictionary::remove(ResourceObject *resObj)
