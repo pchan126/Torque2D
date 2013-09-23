@@ -99,7 +99,7 @@ void printClassHeader(const char* usage, const char * className, const char * su
       Con::printf("///       information was available for this class.");
    }
 
-   if( usage != NULL )
+   if( usage != nullptr )
    {
       // Copy Usage Document
       S32 usageLen = dStrlen( usage );
@@ -124,7 +124,7 @@ void printClassHeader(const char* usage, const char * className, const char * su
          S32 lineLen = 0;
 
          // If not the last line, increment pointer
-         if( newLine != NULL )
+         if( newLine != nullptr )
          {
             *newLine = '\0';
             newLine ++;
@@ -132,7 +132,7 @@ void printClassHeader(const char* usage, const char * className, const char * su
          
          // Copy line and update usagePtr
          dStrcpy( lineStr, usagePtr );
-         usagePtr = (newLine != NULL ) ? newLine : usagePtr;
+         usagePtr = (newLine != nullptr ) ? newLine : usagePtr;
          lineLen = dStrlen( lineStr );
 
          // Get the keyword. This is the first word after an '@' or '\'.
@@ -155,7 +155,7 @@ void printClassHeader(const char* usage, const char * className, const char * su
 
          // Fetch next line ending
          newLine = dStrchr( usagePtr, '\n' );
-      } while( newLine != NULL );
+      } while( newLine != nullptr );
 
       // DocBlock Footer
       Con::printf( " */" );
@@ -232,7 +232,7 @@ void Namespace::printNamespaceEntries(Namespace * g, bool dumpScript, bool dumpE
 
    // Go through all the entries.
    // Iterate through the methods of the namespace...
-   for(Entry *ewalk = g->mEntryList; ewalk; ewalk = ewalk->mNext)
+   for(Entry *ewalk: *g->mEntryList)
    {
       char buffer[1024]; //< This will bite you in the butt someday.
       int eType = ewalk->mType;
@@ -254,7 +254,7 @@ void Namespace::printNamespaceEntries(Namespace * g, bool dumpScript, bool dumpE
 
             // Find the original
             eType = 8;
-            for(Entry *eseek = g->mEntryList; eseek; eseek = eseek->mNext)
+            for(Entry *eseek : *g->mEntryList)
             {
                if(!dStrcmp(eseek->mFunctionName, ewalk->cb.mGroupName))
                {
@@ -391,7 +391,7 @@ void Namespace::dumpClasses( bool dumpScript, bool dumpEngine )
    for(i = 0; i < (U32)vec.size(); i++)
    {
       const char *className = vec[i]->mName;
-      const char *superClassName = vec[i]->mParent ? vec[i]->mParent->mName : NULL;
+      const char *superClassName = vec[i]->mParent ? vec[i]->mParent->mName : nullptr;
 
       // Skip the global namespace, that gets dealt with in dumpFunctions
       if(!className) continue;
@@ -402,7 +402,7 @@ void Namespace::dumpClasses( bool dumpScript, bool dumpEngine )
       if( !dumpScript )
       {
          bool found = false;
-         for(Entry *ewalk = vec[i]->mEntryList; ewalk; ewalk = ewalk->mNext)
+         for(Entry *ewalk : *vec[i]->mEntryList)
          {
             if( ewalk->mType != Entry::ScriptFunctionType )
             {
@@ -418,7 +418,7 @@ void Namespace::dumpClasses( bool dumpScript, bool dumpEngine )
       if( !dumpEngine )
       {
          bool found = false;
-         for(Entry *ewalk = vec[i]->mEntryList; ewalk; ewalk = ewalk->mNext)
+         for(Entry *ewalk : *vec[i]->mEntryList)
          {
             if( ewalk->mType == Entry::ScriptFunctionType )
             {
@@ -431,11 +431,11 @@ void Namespace::dumpClasses( bool dumpScript, bool dumpEngine )
       }
 
       // If we hit a class with no members and no classRep, do clever filtering.
-      if(vec[i]->mEntryList == NULL && vec[i]->mClassRep == NULL)
+      if(vec[i]->mEntryList->empty() && vec[i]->mClassRep == nullptr)
       {
          // Print out a short stub so we get a proper class hierarchy.
          if(superClassName) { // Filter hack; we don't want non-inheriting classes...
-            printClassHeader( NULL, className,superClassName, true);
+            printClassHeader( nullptr, className,superClassName, true);
             printClassFooter();
          }
          continue;
@@ -458,7 +458,7 @@ void Namespace::dumpClasses( bool dumpScript, bool dumpEngine )
       if(dumpEngine && rep)
       {
          // Get information about the parent's fields...
-         AbstractClassRep *parentRep = vec[i]->mParent ? vec[i]->mParent->mClassRep : NULL;
+         AbstractClassRep *parentRep = vec[i]->mParent ? vec[i]->mParent->mClassRep : nullptr;
          if(parentRep)
             parentList = &(parentRep->mFieldList);
 
@@ -600,9 +600,9 @@ void Namespace::dumpClasses( bool dumpScript, bool dumpEngine )
 void Namespace::dumpFunctions( bool dumpScript, bool dumpEngine )
 {
    // Get the global namespace.
-   Namespace* g = find(NULL); //->mParent;
+   Namespace* g = find(nullptr); //->mParent;
 
-   printClassHeader(NULL, NULL,NULL, false);
+   printClassHeader(nullptr, nullptr,nullptr, false);
 
    while(g) 
    {

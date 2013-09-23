@@ -23,15 +23,10 @@
 #ifndef _CONSOLE_DICTIONARY_H_
 #define _CONSOLE_DICTIONARY_H_
 
-#ifndef _STRINGTABLE_H_
 #include "string/stringTable.h"
-#endif
-#ifndef _VECTOR_H_
 #include "collection/vector.h"
-#endif
-#ifndef _CONSOLETYPES_H_
 #include "console/consoleTypes.h"
-#endif
+#include <unordered_map>
 
 //-----------------------------------------------------------------------------
 
@@ -55,7 +50,7 @@ public:
         };
 
         StringTableEntry name;
-        Entry *nextEntry;
+//        Entry *nextEntry;
         S32 type;
         char *sval;
         U32 ival;  // doubles as strlen when type = -1
@@ -140,7 +135,7 @@ private:
         Dictionary* owner;
         S32 size;
         S32 count;
-        Entry **data;
+        std::unordered_map<std::string, Entry*>* data;
     };
 
     HashTableData *hashTable;
@@ -153,11 +148,11 @@ public:
     U32 ip;
 
     Dictionary();
-    Dictionary(ExprEvalState *state, Dictionary* ref=NULL);
+    Dictionary(ExprEvalState *state, Dictionary* ref=nullptr);
     ~Dictionary();
     Entry *lookup(StringTableEntry name);
     Entry *add(StringTableEntry name);
-    void setState(ExprEvalState *state, Dictionary* ref=NULL);
+    void setState(ExprEvalState *state, Dictionary* ref=nullptr);
     void remove(Entry *);
     void reset();
 
@@ -165,7 +160,7 @@ public:
     void deleteVariables(const char *varString);
 
     void setVariable(StringTableEntry name, const char *value);
-    const char *getVariable(StringTableEntry name, bool *valid = NULL);
+    const char *getVariable(StringTableEntry name, bool *valid = nullptr);
 
     void addVariable(const char *name, S32 type, void *dataPtr);
     bool removeVariable(StringTableEntry name);

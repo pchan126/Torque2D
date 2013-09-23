@@ -27,19 +27,19 @@
 
 //-----------------------------------------------------------------------------
 
-SimFieldDictionary::Entry *SimFieldDictionary::mFreeList = NULL;
+SimFieldDictionary::Entry *SimFieldDictionary::mFreeList = nullptr;
 
 static Chunker<SimFieldDictionary::Entry> fieldChunker;
 
-U32 SimFieldDictionary::getHashValue( StringTableEntry slotName )
-{
-   return HashPointer( slotName ) % HashTableSize;
-}
-
-U32 SimFieldDictionary::getHashValue( const String& fieldName )
-{
-   return getHashValue( StringTable->insert( fieldName ) );
-}
+//U32 SimFieldDictionary::getHashValue( StringTableEntry slotName )
+//{
+//   return HashPointer( slotName ) % HashTableSize;
+//}
+//
+//U32 SimFieldDictionary::getHashValue( const String& fieldName )
+//{
+//   return getHashValue( StringTable->insert( fieldName ) );
+//}
 
 SimFieldDictionary::Entry *SimFieldDictionary::allocEntry()
 {
@@ -115,7 +115,7 @@ void SimFieldDictionary::setFieldValue(StringTableEntry slotName, const char *va
          field = allocEntry();
          field->value = dStrdup(value);
          field->slotName = slotName;
-         field->next = NULL;
+         field->next = nullptr;
          *walk = field;
       }
    }
@@ -129,7 +129,7 @@ const char *SimFieldDictionary::getFieldValue(StringTableEntry slotName)
       if(walk->slotName == slotName)
          return walk->value;
 
-   return NULL;
+   return nullptr;
 }
 
 SimFieldDictionary::Entry  *SimFieldDictionary::findDynamicField(const String &fieldName) const
@@ -142,7 +142,7 @@ SimFieldDictionary::Entry  *SimFieldDictionary::findDynamicField(const String &f
          return walk;
    }
    
-   return NULL;
+   return nullptr;
 }
 
 void SimFieldDictionary::assignFrom(SimFieldDictionary *dict)

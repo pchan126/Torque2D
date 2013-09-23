@@ -1640,24 +1640,22 @@
 		4B8AA53051B8E3AE8D1EFE69 /* platformOSX */ = {
 			isa = PBXGroup;
 			children = (
-				4B8AA6033D1CCDDA094808F4 /* JoystickManager */,
-				4B8AA136A3BEA42B552ECF0F /* 2d */,
-				4B8AA5A7945B17E2A01E032B /* windowManager */,
-				4B8AA4104F0D970B71996F6C /* graphics */,
-				4B8AA9214E108BD3443695FC /* osxCocoaUtilities.h */,
-				4B8AA5FC4546D3233A02A56C /* osxCocoaUtilities.mm */,
 				4B8AAC8E2EA83E967594EE44 /* AppDelegate.h */,
+				4B8AA9214E108BD3443695FC /* osxCocoaUtilities.h */,
+				4B8AA75C6986C5E3952EA7A1 /* osxFont.h */,
+				4B8AA46016B746A61CE97966 /* osxMath_ScriptBinding.h */,
+				4B8AAD2BF8FB395E3AE34477 /* platformGL.h */,
+				4B8AA6CE573B26A7A2598E15 /* platformOSX.h */,
 				4B8AAA1340591455828BFB00 /* AppDelegate.mm */,
 				4B8AAAFF68BBF4EF6BD5378B /* main.mm */,
 				4B8AA3FABCB53401B420F689 /* osxAudio.mm */,
+				4B8AA5FC4546D3233A02A56C /* osxCocoaUtilities.mm */,
 				4B8AAEE8C36DC12BC8F878AB /* osxCPU.mm */,
 				4B8AAA51BB16FFB1EC572E6F /* osxFileDialogs.mm */,
 				4B8AA0B11DDA96BD47186F76 /* osxFileIO.mm */,
 				4B8AA960CF6C1D3EF472151C /* osxFont.mm */,
-				4B8AA75C6986C5E3952EA7A1 /* osxFont.h */,
 				4B8AAE22F6048FE09CDC7D07 /* osxInput.mm */,
 				4B8AAE8DB9D7EEE678826797 /* osxMath.mm */,
-				4B8AA46016B746A61CE97966 /* osxMath_ScriptBinding.h */,
 				4B8AA984E295A563F26E3D27 /* osxMemory.mm */,
 				4B8AA880AFA0FE58E4348849 /* osxMutex.mm */,
 				4B8AA120421D765D4A1A32AF /* osxNetwork.mm */,
@@ -1666,10 +1664,12 @@
 				4B8AA9949541404C1292B9F9 /* osxThread.mm */,
 				4B8AA50774EF4F2173E712A7 /* osxTime.mm */,
 				4B8AABB873B432C0D5A9F6DA /* osxTimer.mm */,
-				4B8AAD2BF8FB395E3AE34477 /* platformGL.h */,
-				4B8AA6CE573B26A7A2598E15 /* platformOSX.h */,
 				4B8AA4FF586EA294D9F1772F /* platformOSX.mm */,
+				4B8AA136A3BEA42B552ECF0F /* 2d */,
+				4B8AA4104F0D970B71996F6C /* graphics */,
+				4B8AA6033D1CCDDA094808F4 /* JoystickManager */,
 				4B8AAACA87922A4BEA9C7E9D /* Supporting Files */,
+				4B8AA5A7945B17E2A01E032B /* windowManager */,
 			);
 			name = platformOSX;
 			path = ../../source/platformOSX;
@@ -1729,7 +1729,6 @@
 			isa = PBXGroup;
 			children = (
 				865A20BE165158CA00527C44 /* torque2d.icns */,
-				C54199EE3821F7DE505CF244 /* Torque2D */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -2005,6 +2004,7 @@
 				869FF8BB1651518C002FE082 /* Frameworks */,
 				869FF8B91651518C002FE082 /* Products */,
 				865A20B01651530B00527C44 /* Config.xcconfig */,
+				C54199EE3821F7DE505CF244 /* Torque2D */,
 				4B8AA53051B8E3AE8D1EFE69 /* platformOSX */,
 			);
 			sourceTree = "<group>";
@@ -2845,10 +2845,6 @@
 		C54199EE3821F7DE505CF244 /* Torque2D */ = {
 			isa = PBXGroup;
 			children = (
-				C541995813B0B41A0A0DE3B0 /* shaderGen */,
-				C54195904BCD59B5039715B8 /* materials */,
-				C5419D452A4224DB4AD61F0D /* renderInstance */,
-				C5419150E816DD170379262A /* lighting */,
 				C5419DF3AE25CB8D03763A2F /* 2d */,
 				C54194832154880AE1537986 /* algorithm */,
 				C5419C6FC37F004BD72D1846 /* assets */,
@@ -2863,6 +2859,8 @@
 				C54191762736B22CFFB74FF2 /* gui */,
 				C541907DA3E63E918B429506 /* input */,
 				C54196DA39A3DC92EF7B38FC /* io */,
+				C5419150E816DD170379262A /* lighting */,
+				C54195904BCD59B5039715B8 /* materials */,
 				C54190E5831EE785B4B4EA03 /* math */,
 				C5419E1D56F36A39A90BAFD8 /* memory */,
 				C5419B2A78B1678ED8B2B6D2 /* messaging */,
@@ -2870,6 +2868,8 @@
 				C54196F8EA99C43807DFA05B /* network */,
 				C54191AA6CEEB844A3216155 /* persistence */,
 				C54198D36200519F85F186FD /* platform */,
+				C5419D452A4224DB4AD61F0D /* renderInstance */,
+				C541995813B0B41A0A0DE3B0 /* shaderGen */,
 				C5419DF87172823A66B1A4A7 /* sim */,
 				C5419188669EA8BF79FF297B /* string */,
 				C5419BF42C8478E465EF71E1 /* testing */,

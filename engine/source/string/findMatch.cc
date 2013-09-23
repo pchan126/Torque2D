@@ -45,7 +45,7 @@ FindMatch::FindMatch( U32 _maxMatches )
 {
    VECTOR_SET_ASSOCIATION(matchList);
 
-   expression = NULL;
+   expression = nullptr;
    maxMatches = _maxMatches;
    matchList.reserve( maxMatches );
 }
@@ -54,7 +54,7 @@ FindMatch::FindMatch( const char *_expression, U32 _maxMatches )
 {
    VECTOR_SET_ASSOCIATION(matchList);
 
-   expression = NULL;
+   expression = nullptr;
    setExpression( _expression );
    maxMatches = _maxMatches;
    matchList.reserve( maxMatches );
@@ -104,7 +104,7 @@ bool FindMatch::isMatch( const char *exp, const char *str, bool caseSensitive )
          case '*':
                e++;
                match = false;
-               while( ((s=dStrchr(s,*e)) !=NULL) && !match )
+               while( ((s=dStrchr(s,*e)) !=nullptr) && !match )
                {
                   match = isMatch( e, s, caseSensitive );
                   s++;
@@ -141,7 +141,7 @@ bool FindMatch::isMatchMultipleExprs( const char *exps, const char *str, bool ca
    // they don't work when the paths have spaces in.
 
    // search for each expression. return true soon as we see one.
-   for( tok = dStrtok(e,"\t"); tok != NULL; tok = dStrtok(NULL,"\t"))
+   for( tok = dStrtok(e,"\t"); tok != nullptr; tok = dStrtok(nullptr,"\t"))
    {
       if( isMatch( tok, str, caseSensitive) )
       {

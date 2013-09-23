@@ -45,7 +45,7 @@ struct StringValue
    operator char *() { return val; }
    StringValue &operator=(const char *string);
 
-   StringValue() { size = 0; val = NULL; }
+   StringValue() { size = 0; val = nullptr; }
    ~StringValue() { dFree(val); }
 };
 
@@ -82,16 +82,11 @@ void Dictionary::exportVariables(const char *varString, const char *fileName, bo
    const char *searchStr = varString;
    Vector<Entry *> sortList(__FILE__, __LINE__);
 
-   for(S32 i = 0; i < hashTable->size;i ++)
+   for (auto itr: *hashTable->data)
    {
-      Entry *walk = hashTable->data[i];
-      while(walk)
-      {
-         if(FindMatch::isMatch((char *) searchStr, (char *) walk->name))
-            sortList.push_back(walk);
-
-         walk = walk->nextEntry;
-      }
+      Entry *walk = itr.second;
+      if (FindMatch::isMatch((char *) searchStr, (char *) walk->name))
+         sortList.push_back(walk);
    }
 
    if(!sortList.size())
@@ -117,19 +112,19 @@ void Dictionary::exportVariables(const char *varString, const char *fileName, bo
    char buffer[1024];
    const char *cat = fileName ? "\r\n" : "";
 
-   for(s = sortList.begin(); s != sortList.end(); s++)
+   for(auto s:sortList)
    {
-      switch((*s)->type)
+      switch(s->type)
       {
          case Entry::TypeInternalInt:
-            dSprintf(buffer, sizeof(buffer), "%s = %d;%s", (*s)->name, (*s)->ival, cat);
+            dSprintf(buffer, sizeof(buffer), "%s = %d;%s", s->name, s->ival, cat);
             break;
          case Entry::TypeInternalFloat:
-            dSprintf(buffer, sizeof(buffer), "%s = %g;%s", (*s)->name, (*s)->fval, cat);
+            dSprintf(buffer, sizeof(buffer), "%s = %g;%s", s->name, s->fval, cat);
             break;
          default:
-            expandEscape(expandBuffer, (*s)->getStringValue());
-            dSprintf(buffer, sizeof(buffer), "%s = \"%s\";%s", (*s)->name, expandBuffer, cat);
+            expandEscape(expandBuffer, s->getStringValue());
+            dSprintf(buffer, sizeof(buffer), "%s = \"%s\";%s", s->name, expandBuffer, cat);
             break;
       }
       if(fileName)
@@ -145,114 +140,106 @@ void Dictionary::deleteVariables(const char *varString)
 {
    const char *searchStr = varString;
 
-   for(S32 i = 0; i < hashTable->size; i++)
-   {
-      Entry *walk = hashTable->data[i];
-      while(walk)
-      {
-         Entry *matchedEntry = (FindMatch::isMatch((char *) searchStr, (char *) walk->name)) ? walk : NULL;
-         walk = walk->nextEntry;
-         if (matchedEntry)
-            remove(matchedEntry); // assumes remove() is a stable remove (will not reorder entries on remove)
-      }
-   }
-}
+    for (auto itr: *hashTable->data)
+    {
+        Entry *walk = itr.second;
+        Entry *matchedEntry = (FindMatch::isMatch((char *) searchStr, (char *) walk->name)) ? walk : nullptr;
 
-S32 HashPointer(StringTableEntry ptr)
-{
-   return (S32)(((dsize_t)ptr) >> 2);
+        if (matchedEntry)
+            remove(matchedEntry); // assumes remove() is a stable remove (will not reorder entries on remove)
+   }
 }
 
 Dictionary::Entry *Dictionary::lookup(StringTableEntry name)
 {
-   Entry *walk = hashTable->data[HashPointer(name) % hashTable->size];
-   while(walk)
-   {
-      if(walk->name == name)
-         return walk;
-      else
-         walk = walk->nextEntry;
-   }
+    if (hashTable->data->count(std::string(name)) > 0)
+        return hashTable->data->at(std::string(name));
 
-   return NULL;
+   return nullptr;
 }
 
 Dictionary::Entry *Dictionary::add(StringTableEntry name)
 {
-   Entry *walk = hashTable->data[HashPointer(name) % hashTable->size];
-   while(walk)
-   {
-      if(walk->name == name)
-         return walk;
-      else
-         walk = walk->nextEntry;
-   }
+//   Entry *walk = hashTable->data[HashPointer(name) % hashTable->size];
+//   while(walk)
+//   {
+//      if(walk->name == name)
+//         return walk;
+//      else
+//         walk = walk->nextEntry;
+//   }
    Entry *ret;
-   hashTable->count++;
-
-   if(hashTable->count > hashTable->size * 2)
-   {
-    Entry head(NULL), *walk;
-    S32 i;
-    walk = &head;
-    walk->nextEntry = 0;
-    for(i = 0; i < hashTable->size; i++) {
-        while(walk->nextEntry) {
-            walk = walk->nextEntry;
-        }
-        walk->nextEntry = hashTable->data[i];
-    }
-      delete[] hashTable->data;
-      hashTable->size = hashTable->size * 4 - 1;
-      hashTable->data = new Entry *[hashTable->size];
-      for(i = 0; i < hashTable->size; i++)
-         hashTable->data[i] = NULL;
-      walk = head.nextEntry;
-      while(walk)
-      {
-         Entry *temp = walk->nextEntry;
-         S32 idx = HashPointer(walk->name) % hashTable->size;
-         walk->nextEntry = hashTable->data[idx];
-         hashTable->data[idx] = walk;
-         walk = temp;
-      }
-   }
+//   hashTable->count++;
+//
+//   if(hashTable->count > hashTable->size * 2)
+//   {
+//    Entry head(nullptr), *walk;
+//    S32 i;
+//    walk = &head;
+//    walk->nextEntry = 0;
+//    for(i = 0; i < hashTable->size; i++) {
+//        while(walk->nextEntry) {
+//            walk = walk->nextEntry;
+//        }
+//        walk->nextEntry = hashTable->data[i];
+//    }
+//      delete[] hashTable->data;
+//      hashTable->size = hashTable->size * 4 - 1;
+//      hashTable->data = new Entry *[hashTable->size];
+//      for(i = 0; i < hashTable->size; i++)
+//         hashTable->data[i] = nullptr;
+//      walk = head.nextEntry;
+//      while(walk)
+//      {
+//         Entry *temp = walk->nextEntry;
+//         S32 idx = HashPointer(walk->name) % hashTable->size;
+//         walk->nextEntry = hashTable->data[idx];
+//         hashTable->data[idx] = walk;
+//         walk = temp;
+//      }
+//   }
+   Entry* temp = lookup(name);
+   if (temp != nullptr)
+       delete temp;
 
    ret = new Entry(name);
-   S32 idx = HashPointer(name) % hashTable->size;
-   ret->nextEntry = hashTable->data[idx];
-   hashTable->data[idx] = ret;
+   hashTable->data->at(std::string(name)) = ret;
    return ret;
 }
 
 // deleteVariables() assumes remove() is a stable remove (will not reorder entries on remove)
 void Dictionary::remove(Dictionary::Entry *ent)
 {
-   Entry **walk = &hashTable->data[HashPointer(ent->name) % hashTable->size];
-   while(*walk != ent)
-      walk = &((*walk)->nextEntry);
+//   Entry **walk = &hashTable->data[HashPointer(ent->name) % hashTable->size];
+//   while(*walk != ent)
+//      walk = &((*walk)->nextEntry);
+//
+//   *walk = (ent->nextEntry);
 
-   *walk = (ent->nextEntry);
+    Entry* temp = lookup(ent->name);
+    if (temp != nullptr)
+        delete temp;
+
    delete ent;
    hashTable->count--;
 }
 
 Dictionary::Dictionary()
-   :  hashTable( NULL ),
-      exprState( NULL ),
-      scopeName( NULL ),
-      scopeNamespace( NULL ),
-      code( NULL ),
+   :  hashTable( nullptr ),
+      exprState( nullptr ),
+      scopeName( nullptr ),
+      scopeNamespace( nullptr ),
+      code( nullptr ),
       ip( 0 )
 {
 }
 
 Dictionary::Dictionary(ExprEvalState *state, Dictionary* ref)
-   :  hashTable( NULL ),
-      exprState( NULL ),
-      scopeName( NULL ),
-      scopeNamespace( NULL ),
-      code( NULL ),
+   :  hashTable( nullptr ),
+      exprState( nullptr ),
+      scopeName( nullptr ),
+      scopeNamespace( nullptr ),
+      code( nullptr ),
       ip( 0 )
 {
    setState(state,ref);
@@ -268,12 +255,8 @@ void Dictionary::setState(ExprEvalState *state, Dictionary* ref)
    {
       hashTable = new HashTableData;
       hashTable->owner = this;
-      hashTable->count = 0;
-      hashTable->size = ST_INIT_SIZE;
-      hashTable->data = new Entry *[hashTable->size];
-   
-      for(S32 i = 0; i < hashTable->size; i++)
-         hashTable->data[i] = NULL;
+//      hashTable->count = 0;
+//      hashTable->size = ST_INIT_SIZE;
    }
 }
 
@@ -289,22 +272,26 @@ Dictionary::~Dictionary()
 
 void Dictionary::reset()
 {
-   S32 i;
-   Entry *walk, *temp;
+    for (auto itr:*hashTable->data)
+        delete itr.second;
 
-   for(i = 0; i < hashTable->size; i++)
-   {
-      walk = hashTable->data[i];
-      while(walk)
-      {
-         temp = walk->nextEntry;
-         delete walk;
-         walk = temp;
-      }
-      hashTable->data[i] = NULL;
-   }
-   hashTable->size = ST_INIT_SIZE;
-   hashTable->count = 0;
+    hashTable->data->clear();
+//   S32 i;
+//   Entry *walk, *temp;
+//
+//   for(i = 0; i < hashTable->size; i++)
+//   {
+//      walk = hashTable->data[i];
+//      while(walk)
+//      {
+//         temp = walk->nextEntry;
+//         delete walk;
+//         walk = temp;
+//      }
+//      hashTable->data[i] = nullptr;
+//   }
+//   hashTable->size = ST_INIT_SIZE;
+//   hashTable->count = 0;
 }
 
 
@@ -312,19 +299,28 @@ void Dictionary::reset()
 
 const char *Dictionary::tabComplete(const char *prevText, S32 baseLen, bool fForward)
 {
-   S32 i;
+//   S32 i;
+//
+   const char *bestMatch = nullptr;
 
-   const char *bestMatch = NULL;
-   for(i = 0; i < hashTable->size; i++)
-   {
-      Entry *walk = hashTable->data[i];
-      while(walk)
-      {
-         if(Namespace::canTabComplete(prevText, bestMatch, walk->name, baseLen, fForward))
+
+    for (auto itr: *hashTable->data)
+    {
+        Entry *walk = itr.second;
+        if(Namespace::canTabComplete(prevText, bestMatch, walk->name, baseLen, fForward))
             bestMatch = walk->name;
-         walk = walk->nextEntry;
-      }
-   }
+    }
+
+//   for(i = 0; i < hashTable->size; i++)
+//   {
+//      Entry *walk = hashTable->data[i];
+//      while(walk)
+//      {
+//         if(Namespace::canTabComplete(prevText, bestMatch, walk->name, baseLen, fForward))
+//            bestMatch = walk->name;
+//         walk = walk->nextEntry;
+//      }
+//   }
    return bestMatch;
 }
 
@@ -333,7 +329,7 @@ char *typeValueEmpty = (char*)"";
 
 Dictionary::Entry::Entry(StringTableEntry in_name)
 {
-   dataPtr = NULL;
+   dataPtr = nullptr;
    name = in_name;
    type = -1;
    ival = 0;

@@ -23,9 +23,8 @@
 #ifndef _SIM_FIELD_DICTIONARY_H_
 #define _SIM_FIELD_DICTIONARY_H_
 
-#ifndef _STREAM_H_
 #include "io/stream.h"
-#endif
+#include <unordered_map>
 
 //-----------------------------------------------------------------------------
 
@@ -50,15 +49,17 @@ class SimFieldDictionary
    {
       HashTableSize = 19
    };
-   Entry *mHashTable[HashTableSize];
+//   Entry *mHashTable[HashTableSize];
+   std::unordered_map<std::string, Entry*> mHashTable;
+
   private:
 
    static Entry *mFreeList;
    static void freeEntry(Entry *entry);
    static Entry *allocEntry();
 
-   static U32     getHashValue( StringTableEntry slotName );
-   static U32     getHashValue( const String& fieldName );
+//   static U32     getHashValue( StringTableEntry slotName );
+//   static U32     getHashValue( const String& fieldName );
    
    U32   mNumFields;
 
@@ -81,7 +82,7 @@ public:
    void assignFrom(SimFieldDictionary *dict);
    U32   getNumFields() const { return mNumFields; }
    
-   Entry  *operator[](U32 index);
+//   Entry  *operator[](U32 index);
 };
 
 //-----------------------------------------------------------------------------

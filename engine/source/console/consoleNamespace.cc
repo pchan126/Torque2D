@@ -21,29 +21,20 @@
 //-----------------------------------------------------------------------------
 
 #include "consoleNamespace.h"
-
-#include "platform/platform.h"
-#include "console/console.h"
-
 #include "console/ast.h"
-#include "io/resource/resourceManager.h"
-
-#include "string/findMatch.h"
 #include "console/consoleInternal.h"
-#include "io/fileStream.h"
 #include "console/compiler.h"
 
 U32 Namespace::mCacheSequence = 0;
 DataChunker Namespace::mCacheAllocator;
 DataChunker Namespace::mAllocator;
-Namespace *Namespace::mNamespaceList = NULL;
-Namespace *Namespace::mGlobalNamespace = NULL;
-
+Namespace *Namespace::mNamespaceList = nullptr;
+Namespace *Namespace::mGlobalNamespace = nullptr;
 
 
 Namespace::Entry::Entry()
 {
-   mCode = NULL;
+   mCode = nullptr;
    mType = InvalidFunctionType;
 }
 
@@ -52,26 +43,26 @@ void Namespace::Entry::clear()
    if(mCode)
    {
       mCode->decRefCount();
-      mCode = NULL;
+      mCode = nullptr;
    }
 
    // Clean up usage strings generated for script functions.
    if( ( mType == Namespace::Entry::ScriptFunctionType ) && mUsage )
    {
       delete mUsage;
-      mUsage = NULL;
+      mUsage = nullptr;
    }
 }
 
 Namespace::Namespace()
 {
-   mPackage = NULL;
-   mUsage = NULL;
+   mPackage = nullptr;
+   mUsage = nullptr;
    mCleanUpUsage = false;
-   mName = NULL;
-   mParent = NULL;
-   mNext = NULL;
-   mEntryList = NULL;
+   mName = nullptr;
+   mParent = nullptr;
+   mNext = nullptr;
+   mEntryList = nullptr;
    mHashSize = 0;
    mHashTable = 0;
    mHashSequence = 0;
@@ -84,14 +75,14 @@ Namespace::~Namespace()
    if( mUsage && mCleanUpUsage )
    {
       dFree (const_cast <char *> (mUsage));
-      mUsage = NULL;
+      mUsage = nullptr;
       mCleanUpUsage = false;
    }
 }
 
 void Namespace::clearEntries()
 {
-   for(Entry *walk = mEntryList; walk; walk = walk->mNext)
+   for(Entry *walk : *mEntryList)
       walk->clear();
 }
 
@@ -162,7 +153,7 @@ bool Namespace::unlinkClass(Namespace *parent)
    AssertFatal(mRefCountToParent >= 0, "Namespace::unlinkClass - reference count to parent is less than 0");
 
    if(mRefCountToParent == 0)
-      walk->mParent = NULL;
+      walk->mParent = nullptr;
 
    trashCache();
 
@@ -207,7 +198,7 @@ void Namespace::buildHashTable()
    U32 entryCount = 0;
    Namespace * ns;
    for(ns = this; ns; ns = ns->mParent)
-      for(Entry *walk = ns->mEntryList; walk; walk = walk->mNext)
+      for(Entry *walk : *ns->mEntryList)
          if(lookupRecursive(walk->mFunctionName) == walk)
             entryCount++;
 
@@ -216,24 +207,27 @@ void Namespace::buildHashTable()
    if(!(mHashSize & 1))
       mHashSize++;
 
-   mHashTable = (Entry **) mCacheAllocator.alloc(sizeof(Entry *) * mHashSize);
-   for(U32 i = 0; i < mHashSize; i++)
-      mHashTable[i] = NULL;
+   mHashTable = new std::unordered_map<std::string, Entry*>;
+//   mHashTable = (Entry **) mCacheAllocator.alloc(sizeof(Entry *) * mHashSize);
+//   for(U32 i = 0; i < mHashSize; i++)
+//      mHashTable[i] = nullptr;
 
    for(ns = this; ns; ns = ns->mParent)
    {
-      for(Entry *walk = ns->mEntryList; walk; walk = walk->mNext)
+      for(Entry *walk : *ns->mEntryList)
       {
-         U32 index = HashPointer(walk->mFunctionName) % mHashSize;
-         while(mHashTable[index] && mHashTable[index]->mFunctionName != walk->mFunctionName)
-         {
-            index++;
-            if(index >= mHashSize)
-               index = 0;
-         }
+          mHashTable->at(std::string(walk->mFunctionName)) = walk;
 
-         if(!mHashTable[index])
-            mHashTable[index] = walk;
+//         U32 index = HashPointer(walk->mFunctionName) % mHashSize;
+//         while(mHashTable[index] && mHashTable[index]->mFunctionName != walk->mFunctionName)
+//         {
+//            index++;
+//            if(index >= mHashSize)
+//               index = 0;
+//         }
+//
+//         if(!mHashTable[index])
+//            mHashTable[index] = walk;
       }
    }
 
@@ -243,7 +237,7 @@ void Namespace::buildHashTable()
 void Namespace::init()
 {
    // create the global namespace
-   mGlobalNamespace = find(NULL);
+   mGlobalNamespace = find(nullptr);
 }
 
 Namespace *Namespace::global()
@@ -268,21 +262,29 @@ const char *Namespace::tabComplete(const char *prevText, S32 baseLen, bool fForw
    if(mHashSequence != mCacheSequence)
       buildHashTable();
 
-   const char *bestMatch = NULL;
-   for(U32 i = 0; i < mHashSize; i++)
-      if(mHashTable[i] && canTabComplete(prevText, bestMatch, mHashTable[i]->mFunctionName, baseLen, fForward))
-         bestMatch = mHashTable[i]->mFunctionName;
+   const char *bestMatch = nullptr;
+   for(auto itr: *mHashTable)
+   {
+       Entry* temp = itr.second;
+       if( temp != nullptr && canTabComplete(prevText, bestMatch, temp->mFunctionName, baseLen, fForward))
+           bestMatch = temp->mFunctionName;
+   }
+
+
+//   for(U32 i = 0; i < mHashSize; i++)
+//      if(mHashTable[i] && canTabComplete(prevText, bestMatch, mHashTable[i]->mFunctionName, baseLen, fForward))
+//         bestMatch = mHashTable[i]->mFunctionName;
    return bestMatch;
 }
 
 Namespace::Entry *Namespace::lookupRecursive(StringTableEntry name)
 {
    for(Namespace *ns = this; ns; ns = ns->mParent)
-      for(Entry *walk = ns->mEntryList; walk; walk = walk->mNext)
+      for(Entry *walk : *ns->mEntryList)
          if(walk->mFunctionName == name)
             return walk;
 
-   return NULL;
+   return nullptr;
 }
 
 Namespace::Entry *Namespace::lookup(StringTableEntry name)
@@ -290,14 +292,17 @@ Namespace::Entry *Namespace::lookup(StringTableEntry name)
    if(mHashSequence != mCacheSequence)
       buildHashTable();
 
-   U32 index = HashPointer(name) % mHashSize;
-   while(mHashTable[index] && mHashTable[index]->mFunctionName != name)
-   {
-      index++;
-      if(index >= mHashSize)
-         index = 0;
-   }
-   return mHashTable[index];
+//   U32 index = HashPointer(name) % mHashSize;
+//   while(mHashTable[index] && mHashTable[index]->mFunctionName != name)
+//   {
+//      index++;
+//      if(index >= mHashSize)
+//         index = 0;
+//   }
+   if (mHashTable->count(std::string(name)) > 0)
+       return mHashTable->at(std::string(name));
+   else
+       return nullptr;
 }
 
 static S32 QSORT_CALLBACK compareEntries(const void* a,const void* b)
@@ -313,16 +318,21 @@ void Namespace::getEntryList(Vector<Entry *> *vec)
    if(mHashSequence != mCacheSequence)
       buildHashTable();
 
-   for(U32 i = 0; i < mHashSize; i++)
-      if(mHashTable[i])
-         vec->push_back(mHashTable[i]);
+//   for(U32 i = 0; i < mHashSize; i++)
+//      if(mHashTable[i])
+
+    for (auto itr: *mHashTable)
+    {
+        Namespace::Entry *temp = itr.second;
+        vec->push_back(temp);
+    }
 
    dQsort(vec->address(),vec->size(),sizeof(Namespace::Entry *),compareEntries);
 }
 
 Namespace::Entry *Namespace::createLocalEntry(StringTableEntry name)
 {
-   for(Entry *walk = mEntryList; walk; walk = walk->mNext)
+   for(Entry *walk : *mEntryList)
    {
       if(walk->mFunctionName == name)
       {
@@ -336,9 +346,9 @@ Namespace::Entry *Namespace::createLocalEntry(StringTableEntry name)
 
    ent->mNamespace = this;
    ent->mFunctionName = name;
-   ent->mNext = mEntryList;
+//   ent->mNext = mEntryList;
    ent->mPackage = mPackage;
-   mEntryList = ent;
+   mEntryList->push_back( ent );
    return ent;
 }
 
@@ -451,7 +461,7 @@ void Namespace::markGroup(const char* name, const char* usage)
    Entry *ent = createLocalEntry(StringTable->insert( buffer ));
    trashCache();
 
-   if(usage != NULL)
+   if(usage != nullptr)
       lastUsage = (char*)(ent->mUsage = usage);
    else
       ent->mUsage = lastUsage;
@@ -548,16 +558,15 @@ void Namespace::activatePackage(StringTableEntry name)
          parent->mParent = walk;
 
          // now swap the entries:
-         Entry *ew;
-         for(ew = parent->mEntryList; ew; ew = ew->mNext)
+         for(Entry *ew : *parent->mEntryList)
             ew->mNamespace = walk;
 
-         for(ew = walk->mEntryList; ew; ew = ew->mNext)
+         for(Entry *ew : *walk->mEntryList )
             ew->mNamespace = parent;
 
-         ew = walk->mEntryList;
+         std::list<Entry*> *eList = walk->mEntryList;
          walk->mEntryList = parent->mEntryList;
-         parent->mEntryList = ew;
+         parent->mEntryList = eList;
       }
    }
    mActivePackages[mNumActivePackages++] = name;
@@ -584,19 +593,18 @@ void Namespace::deactivatePackage(StringTableEntry name)
             Namespace *parent = Namespace::find(walk->mName);
             // hook the parent
             parent->mParent = walk->mParent;
-            walk->mParent = NULL;
+            walk->mParent = nullptr;
 
             // now swap the entries:
-            Entry *ew;
-            for(ew = parent->mEntryList; ew; ew = ew->mNext)
+            for(Entry *ew : *parent->mEntryList)
                ew->mNamespace = walk;
 
-            for(ew = walk->mEntryList; ew; ew = ew->mNext)
+            for(Entry *ew : *walk->mEntryList)
                ew->mNamespace = parent;
 
-            ew = walk->mEntryList;
+             std::list<Entry*> *eList = walk->mEntryList;
             walk->mEntryList = parent->mEntryList;
-            parent->mEntryList = ew;
+            parent->mEntryList = eList;
          }
       }
    }

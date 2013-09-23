@@ -23,15 +23,11 @@
 #ifndef _CONSOLE_NAMESPACE_H
 #define _CONSOLE_NAMESPACE_H
 
-#ifndef _STRINGTABLE_H_
 #include "string/stringTable.h"
-#endif
-#ifndef _VECTOR_H_
 #include "collection/vector.h"
-#endif
-#ifndef _CONSOLETYPES_H_
 #include "console/consoleTypes.h"
-#endif
+#include <unordered_map>
+#include <list>
 
 //-----------------------------------------------------------------------------
 
@@ -78,7 +74,7 @@ public:
         };
 
         Namespace *mNamespace;
-        Entry *mNext;
+//        Entry *mNext;
         StringTableEntry mFunctionName;
         S32 mType;
         S32 mMinArgs;
@@ -102,16 +98,15 @@ public:
         const char *execute(S32 argc, const char **argv, ExprEvalState *state);
 
     };
-    Entry *mEntryList;
-
-    Entry **mHashTable;
+    std::list<Entry*>* mEntryList;
+    std::unordered_map<std::string, Entry*>* mHashTable;
     U32 mHashSize;
     U32 mHashSequence;  ///< @note The hash sequence is used by the autodoc console facility
                         ///        as a means of testing reference state.
 
     Namespace();
     ~Namespace();
-    void addFunction(StringTableEntry name, CodeBlock *cb, U32 functionOffset, const char* usage = NULL);
+    void addFunction(StringTableEntry name, CodeBlock *cb, U32 functionOffset, const char* usage = nullptr);
     void addCommand(StringTableEntry name,StringCallback, const char *usage, S32 minArgs, S32 maxArgs);
     void addCommand(StringTableEntry name,IntCallback, const char *usage, S32 minArgs, S32 maxArgs);
     void addCommand(StringTableEntry name,FloatCallback, const char *usage, S32 minArgs, S32 maxArgs);
@@ -146,7 +141,7 @@ public:
     static void shutdown();
     static Namespace *global();
 
-    static Namespace *find(StringTableEntry name, StringTableEntry package=NULL);
+    static Namespace *find(StringTableEntry name, StringTableEntry package=nullptr);
 
     static bool canTabComplete(const char *prevText, const char *bestMatch, const char *newText, S32 baseLen, bool fForward);
 
