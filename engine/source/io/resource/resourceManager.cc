@@ -39,8 +39,6 @@ const char *ResManager::smExcludedDirectories = ".svn;CVS";
 //------------------------------------------------------------------------------
 ResourceObject::ResourceObject ()
 {
-//  next = NULL;
-//  prev = NULL;
   lockCount = 0;
   mInstance = nullptr;
   mZipArchive = nullptr;
@@ -72,13 +70,6 @@ ResManager::ResManager ()
    primaryPath[0] = 0;
    writeablePath[0] = 0;
    pathList = nullptr;
-//   resourceList.nextResource = NULL;
-//   resourceList.next = NULL;
-//   resourceList.prev = NULL;
-//   timeoutList.nextResource = NULL;
-//   timeoutList.next = NULL;
-//   timeoutList.prev = NULL;
-//   registeredList = NULL;
    mLoggingMissingFiles = false;
    usingVFS = false;
 }
@@ -790,7 +781,10 @@ void ResManager::unlock (ResourceObject * obj)
 
    //set the timeout to the max requested
    if (--obj->lockCount == 0)
+   {
+      resourceList.remove(obj);
       timeoutList.push_back(obj);
+   }
 }
 
 //------------------------------------------------------------------------------
@@ -1085,23 +1079,14 @@ bool ResManager::add (const char *name, ResourceInstance * addInstance,
 
 void ResManager::purge ()
 {
-   bool found;
-   do
-   {
-      auto itr = timeoutList.begin();
-      found = false;
-      while (timeoutList.size())
-      {
-         ResourceObject *temp = *itr;
-         itr++;
-//         temp->unlink ();
-         temp->destruct();
-         found = true;
-         if (temp->flags & ResourceObject::Added)
+    while (timeoutList.size() > 0)
+    {
+        ResourceObject *temp = timeoutList.front();
+        resourceList.remove(temp);
+        timeoutList.remove(temp);
+        if (temp->flags & ResourceObject::Added)
             freeResource (temp);
-      }
-   }
-   while (found);
+    }
 }
 
 ConsoleFunction( purgeResources, void, 1, 1, "() Use the purgeResources function to purge all game resources.\n"
@@ -1312,18 +1297,11 @@ ResourceObject * ResManager::createZipResource (StringTableEntry path, StringTab
 
 void ResManager::freeResource (ResourceObject * ro)
 {
+   Con::printf("ResManager::freeResource %s %s", ro->path, ro->name);
    ro->destruct ();
-//   ro->unlink ();
-
-//   if((ro->flags & ResourceObject::File) && ro->lockedData)
-//      delete[] ro->lockedData;
-
-//   if (ro->prevResource)
-//      ro->prevResource->nextResource = ro->nextResource;
-//   if (ro->nextResource)
-//      ro->nextResource->prevResource = ro->prevResource;
    dictionary.remove (ro);
    resourceList.remove(ro);
+   timeoutList.remove(ro);
    delete ro;
 }
 
