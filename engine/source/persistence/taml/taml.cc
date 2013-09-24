@@ -163,8 +163,8 @@ bool Taml::write( SimObject* pSimObject, const char* pFilename )
     PROFILE_SCOPE(Taml_Write);
 
     // Sanity!
-    AssertFatal( pSimObject != nullptr, "Cannot write a NULL object." );
-    AssertFatal( pFilename != nullptr, "Cannot write to a NULL filename." );
+    AssertFatal( pSimObject != nullptr, "Cannot write a nullptr object." );
+    AssertFatal( pFilename != nullptr, "Cannot write to a nullptr filename." );
 
     // Expand the file-name into the file-path buffer.
     Con::expandPath( mFilePathBuffer, sizeof(mFilePathBuffer), pFilename );
@@ -205,7 +205,7 @@ SimObject* Taml::read( const char* pFilename )
     PROFILE_SCOPE(Taml_Read);
 
     // Sanity!
-    AssertFatal( pFilename != nullptr, "Cannot read from a NULL filename." );
+    AssertFatal( pFilename != nullptr, "Cannot read from a nullptr filename." );
 
     // Expand the file-name into the file-path buffer.
     Con::expandPath( mFilePathBuffer, sizeof(mFilePathBuffer), pFilename );
@@ -217,7 +217,7 @@ SimObject* Taml::read( const char* pFilename )
     {
         // No, so warn.
         Con::warnf("Taml::read() - Could not open filename '%s' for read.", mFilePathBuffer );
-        return NULL;
+        return nullptr;
     }
 
     // Get the file auto-format mode.
@@ -250,7 +250,7 @@ SimObject* Taml::read( const char* pFilename )
 bool Taml::write( FileStream& stream, SimObject* pSimObject, const TamlFormatMode formatMode )
 {
     // Sanity!
-    AssertFatal( pSimObject != nullptr, "Cannot write a NULL object." );
+    AssertFatal( pSimObject != nullptr, "Cannot write a nullptr object." );
 
     // Compile nodes.
     TamlWriteNode* pRootNode = compileObject( pSimObject );
@@ -344,13 +344,13 @@ SimObject* Taml::read( FileStream& stream, const TamlFormatMode formatMode )
         {
             // Warn.
             Con::warnf("Taml::read() - Cannot read, invalid format.");
-            return NULL;
+            return nullptr;
         }
     }
 
     // Warn.
     Con::warnf("Taml::read() - Unknown format.");
-    return NULL;
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -361,7 +361,7 @@ bool Taml::parse( const char* pFilename, TamlVisitor& visitor )
     PROFILE_SCOPE(Taml_Parse);
 
     // Sanity!
-    AssertFatal( pFilename != NULL, "Taml::parse() - Cannot parse a NULL filename." );
+    AssertFatal( pFilename != nullptr, "Taml::parse() - Cannot parse a nullptr filename." );
 
     // Fetch format mode.
     const TamlFormatMode formatMode = getFileAutoFormatMode( pFilename );
@@ -444,7 +444,7 @@ void Taml::resetCompilation( void )
 Taml::TamlFormatMode Taml::getFileAutoFormatMode( const char* pFilename )
 {
     // Sanity!
-    AssertFatal( pFilename != NULL, "Taml::getFileAutoFormatMode() - Cannot auto-format using a NULL filename." );
+    AssertFatal( pFilename != nullptr, "Taml::getFileAutoFormatMode() - Cannot auto-format using a nullptr filename." );
 
     // Is auto-format active?
     if ( mAutoFormat )
@@ -485,7 +485,7 @@ TamlWriteNode* Taml::compileObject( SimObject* pSimObject, const bool forceId )
     PROFILE_SCOPE(Taml_CompileObject);
 
     // Sanity!
-    AssertFatal( pSimObject != NULL, "Taml::compileObject() - Cannot compile a NULL object." );
+    AssertFatal( pSimObject != nullptr, "Taml::compileObject() - Cannot compile a nullptr object." );
 
     // Fetch object Id.
     const SimObjectId objectId = pSimObject->getId();
@@ -540,7 +540,7 @@ TamlWriteNode* Taml::compileObject( SimObject* pSimObject, const bool forceId )
     mCompiledObjects.insert( objectId, pNewNode );
 
     // Are there any Taml callbacks?
-    if ( pNewNode->mpTamlCallbacks != NULL )
+    if ( pNewNode->mpTamlCallbacks != nullptr )
     {
         // Yes, so call it.
         tamlPreWrite( pNewNode->mpTamlCallbacks );
@@ -557,7 +557,7 @@ TamlWriteNode* Taml::compileObject( SimObject* pSimObject, const bool forceId )
     compileCustomState( pNewNode );
 
     // Are there any Taml callbacks?
-    if ( pNewNode->mpTamlCallbacks != NULL )
+    if ( pNewNode->mpTamlCallbacks != nullptr )
     {
         // Yes, so call it.
         tamlPostWrite( pNewNode->mpTamlCallbacks );
@@ -574,8 +574,8 @@ void Taml::compileStaticFields( TamlWriteNode* pTamlWriteNode )
     PROFILE_SCOPE(Taml_CompileStaticFields);
 
     // Sanity!
-    AssertFatal( pTamlWriteNode != NULL, "Cannot compile static fields on a NULL node." );
-    AssertFatal( pTamlWriteNode->mpSimObject != NULL, "Cannot compile static fields on a node with no object." );
+    AssertFatal( pTamlWriteNode != nullptr, "Cannot compile static fields on a nullptr node." );
+    AssertFatal( pTamlWriteNode->mpSimObject != nullptr, "Cannot compile static fields on a node with no object." );
 
     // Fetch object.
     SimObject* pSimObject = pTamlWriteNode->mpSimObject;
@@ -607,7 +607,7 @@ void Taml::compileStaticFields( TamlWriteNode* pTamlWriteNode )
         // Skip if the field should not be written.
         // For now, we only deal with non-array fields.
         if ( elementCount == 1 &&
-            pField->writeDataFn != NULL &&
+            pField->writeDataFn != nullptr &&
             ( !getWriteDefaults() && pField->writeDataFn( pSimObject, fieldName ) == false) )
             continue;
 
@@ -666,8 +666,8 @@ void Taml::compileDynamicFields( TamlWriteNode* pTamlWriteNode )
     PROFILE_SCOPE(Taml_CompileDynamicFields);
 
      // Sanity!
-    AssertFatal( pTamlWriteNode != NULL, "Cannot compile dynamic fields on a NULL node." );
-    AssertFatal( pTamlWriteNode->mpSimObject != NULL, "Cannot compile dynamic fields on a node with no object." );
+    AssertFatal( pTamlWriteNode != nullptr, "Cannot compile dynamic fields on a nullptr node." );
+    AssertFatal( pTamlWriteNode->mpSimObject != nullptr, "Cannot compile dynamic fields on a node with no object." );
 
     // Fetch object.
     SimObject* pSimObject = pTamlWriteNode->mpSimObject;
@@ -688,40 +688,56 @@ void Taml::compileDynamicFields( TamlWriteNode* pTamlWriteNode )
     Vector<SimFieldDictionary::Entry*> dynamicFieldList(__FILE__, __LINE__);
 
     // Ensure the dynamic field doesn't conflict with static field.
-    for( U32 hashIndex = 0; hashIndex < SimFieldDictionary::HashTableSize; ++hashIndex )
+
+    for (auto itr: pFieldDictionary->mHashTable)
     {
-        for( SimFieldDictionary::Entry* pEntry = pFieldDictionary->mHashTable[hashIndex]; pEntry; pEntry = pEntry->next )
+        SimFieldDictionary::Entry* pEntry = itr.second;
+        // Iterate static fields.
+        U32 fieldIndex = 0;
+        for( auto field: fieldList) // fieldIndex = 0; fieldIndex < fieldCount; ++fieldIndex )
         {
-            // Iterate static fields.
-            U32 fieldIndex;
-            for( fieldIndex = 0; fieldIndex < fieldCount; ++fieldIndex )
-            {
-                if( fieldList[fieldIndex].pFieldname == pEntry->slotName)
-                    break;
-            }
-
-            // Skip if found.
-            if( fieldIndex != (U32)fieldList.size() )
-                continue;
-
-            // Skip if not writing field.
-            if ( !pSimObject->writeField( pEntry->slotName, pEntry->value) )
-                continue;
-
-            dynamicFieldList.push_back( pEntry );
+            if( field.pFieldname == pEntry->slotName)
+                break;                                                           // break if found.
+            fieldIndex++;
         }
+
+        if( fieldIndex == (U32)fieldList.size() )                                 // Skip if found.
+            if ( pSimObject->writeField( pEntry->slotName, pEntry->value) )       // Skip if not writing field.
+                dynamicFieldList.push_back( pEntry );
     }
+    
+    
+//    for( U32 hashIndex = 0; hashIndex < SimFieldDictionary::HashTableSize; ++hashIndex )
+//    {
+//        for( SimFieldDictionary::Entry* pEntry = pFieldDictionary->mHashTable[hashIndex]; pEntry; pEntry = pEntry->next )
+//        {
+//            // Iterate static fields.
+//            U32 fieldIndex;
+//            for( fieldIndex = 0; fieldIndex < fieldCount; ++fieldIndex )
+//            {
+//                if( fieldList[fieldIndex].pFieldname == pEntry->slotName)
+//                    break;
+//            }
+//
+//            // Skip if found.
+//            if( fieldIndex != (U32)fieldList.size() )
+//                continue;
+//
+//            // Skip if not writing field.
+//            if ( !pSimObject->writeField( pEntry->slotName, pEntry->value) )
+//                continue;
+//
+//            dynamicFieldList.push_back( pEntry );
+//        }
+//    }
 
     // Sort Entries to prevent version control conflicts
     if ( dynamicFieldList.size() > 1 )
         dQsort(dynamicFieldList.address(), dynamicFieldList.size(), sizeof(SimFieldDictionary::Entry*), compareFieldEntries);
 
     // Save the fields.
-    for( Vector<SimFieldDictionary::Entry*>::iterator entryItr = dynamicFieldList.begin(); entryItr != dynamicFieldList.end(); ++entryItr )
+    for( SimFieldDictionary::Entry* pEntry : dynamicFieldList )
     {
-        // Fetch entry.
-        SimFieldDictionary::Entry* pEntry = *entryItr;
-
         // Save field/value.
         TamlWriteNode::FieldValuePair*  pFieldValuePair = new TamlWriteNode::FieldValuePair( pEntry->slotName, pEntry->value );
         pTamlWriteNode->mFields.push_back( pFieldValuePair );
@@ -736,8 +752,8 @@ void Taml::compileChildren( TamlWriteNode* pTamlWriteNode )
     PROFILE_SCOPE(Taml_CompileChildren);
 
     // Sanity!
-    AssertFatal( pTamlWriteNode != NULL, "Cannot compile children on a NULL node." );
-    AssertFatal( pTamlWriteNode->mpSimObject != NULL, "Cannot compile children on a node with no object." );
+    AssertFatal( pTamlWriteNode != nullptr, "Cannot compile children on a nullptr node." );
+    AssertFatal( pTamlWriteNode->mpSimObject != nullptr, "Cannot compile children on a node with no object." );
 
     // Fetch object.
     SimObject* pSimObject = pTamlWriteNode->mpSimObject;
@@ -746,7 +762,7 @@ void Taml::compileChildren( TamlWriteNode* pTamlWriteNode )
     TamlChildren* pChildren = dynamic_cast<TamlChildren*>( pSimObject );
 
     // Finish if object does not contain Taml children.
-    if ( pChildren == NULL || pChildren->getTamlChildCount() == 0 )
+    if ( pChildren == nullptr || pChildren->getTamlChildCount() == 0 )
         return;
 
     // Create children vector.
@@ -774,14 +790,14 @@ void Taml::compileCustomState( TamlWriteNode* pTamlWriteNode )
     PROFILE_SCOPE(Taml_CompileCustomProperties);
 
     // Sanity!
-    AssertFatal( pTamlWriteNode != NULL, "Cannot compile custom state on a NULL node." );
-    AssertFatal( pTamlWriteNode->mpSimObject != NULL, "Cannot compile custom state on a node with no object." );
+    AssertFatal( pTamlWriteNode != nullptr, "Cannot compile custom state on a nullptr node." );
+    AssertFatal( pTamlWriteNode->mpSimObject != nullptr, "Cannot compile custom state on a node with no object." );
 
     // Fetch the custom node on the write node.
     TamlCustomNodes& customNodes = pTamlWriteNode->mCustomNodes;
 
     // Are there any Taml callbacks?
-    if ( pTamlWriteNode->mpTamlCallbacks != NULL )
+    if ( pTamlWriteNode->mpTamlCallbacks != nullptr )
     {
         // Yes, so call it.
         tamlCustomWrite( pTamlWriteNode->mpTamlCallbacks, customNodes );
@@ -790,19 +806,10 @@ void Taml::compileCustomState( TamlWriteNode* pTamlWriteNode )
     // Fetch custom nodes.
     const TamlCustomNodeVector& nodes = customNodes.getNodes();
 
-    // Finish if no custom nodes to process.
-    if ( nodes.size() == 0 )
-        return;
-    
+    // Compile custom node state.
     // Iterate custom properties.
-    for( TamlCustomNodeVector::const_iterator customNodesItr = nodes.begin(); customNodesItr != nodes.end(); ++customNodesItr )
-    {
-        // Fetch the custom node.
-        TamlCustomNode* pCustomNode = *customNodesItr;
-
-        // Compile custom node state.
+    for( TamlCustomNode* pCustomNode : nodes )
         compileCustomNodeState( pCustomNode );
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -810,7 +817,7 @@ void Taml::compileCustomState( TamlWriteNode* pTamlWriteNode )
 void Taml::compileCustomNodeState( TamlCustomNode* pCustomNode )
 {
     // Sanity!
-    AssertFatal( pCustomNode != NULL, "Taml: Cannot compile NULL custom node state." );
+    AssertFatal( pCustomNode != nullptr, "Taml: Cannot compile nullptr custom node state." );
 
     // Fetch children.
     const TamlCustomNodeVector& children = pCustomNode->getChildren();
@@ -819,7 +826,7 @@ void Taml::compileCustomNodeState( TamlCustomNode* pCustomNode )
     SimObject* pProxyObject = pCustomNode->getProxyObject<SimObject>(false);
 
     // Do we have a proxy object?
-    if ( pProxyObject != NULL )
+    if ( pProxyObject != nullptr )
     {
         // Yes, so sanity!
         AssertFatal( children.size() == 0, "Taml: Cannot compile a proxy object on a custom node that has children." );
@@ -832,19 +839,9 @@ void Taml::compileCustomNodeState( TamlCustomNode* pCustomNode )
         return;
     }
 
-    // Finish if no children.
-    if ( children.size() == 0 )
-        return;
-
-    // Iterate children.
-    for( TamlCustomNodeVector::const_iterator childItr = children.begin(); childItr != children.end(); ++childItr )
-    {
-        // Fetch shape node.
-        TamlCustomNode* pChildNode = *childItr;
-
-        // Compile the child.
+    // Compile the children.
+    for(  TamlCustomNode* pChildNode: children )
         compileCustomNodeState( pChildNode );
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -858,7 +855,7 @@ SimObject* Taml::createType( StringTableEntry typeName, const Taml* pTaml, const
     static typeClassHash mClassMap;
 
     // Sanity!
-    AssertFatal( typeName != NULL, "Taml: Type cannot be NULL" );
+    AssertFatal( typeName != nullptr, "Taml: Type cannot be nullptr" );
 
     // Find type.
     typeClassHash::iterator typeItr = mClassMap.find( typeName );
@@ -887,7 +884,7 @@ SimObject* Taml::createType( StringTableEntry typeName, const Taml* pTaml, const
         {
             // No, so warn and fail.
             Con::warnf( "Taml: Failed to create type '%s' as such a registered type could not be found.", typeName );
-            return NULL;
+            return nullptr;
         }
     }
 
@@ -901,21 +898,21 @@ SimObject* Taml::createType( StringTableEntry typeName, const Taml* pTaml, const
     SimObject* pSimObject = dynamic_cast<SimObject*>( pConsoleObject );
 
     // Was it a SimObject?
-    if ( pSimObject == NULL )
+    if ( pSimObject == nullptr )
     {
         // No, so warn.
         Con::warnf( "Taml: Failed to create type '%s' as it is not a SimObject.", typeName );
 
         // Destroy object and fail.
         delete pConsoleObject;
-        return NULL;
+        return nullptr;
     }
 
     // Are we updating the file-progenitor?
     if ( pTaml->getProgenitorUpdate() )
     {
         // Yes, so do we have a progenitor suffix?
-        if ( pProgenitorSuffix == NULL )
+        if ( pProgenitorSuffix == nullptr )
         {
             // No, so just set it to the progenitor file.
             pSimObject->setProgenitorFile( pTaml->getFilePathBuffer() );
@@ -942,7 +939,7 @@ bool Taml::generateTamlSchema()
     const char* pTamlSchemaFile = Con::getVariable( TAML_SCHEMA_VARIABLE );
 
     // Do we have a schema file reference?
-    if ( pTamlSchemaFile == NULL || *pTamlSchemaFile == 0 )
+    if ( pTamlSchemaFile == nullptr || *pTamlSchemaFile == 0 )
     {
         // No, so warn.
         Con::warnf( "Taml::generateTamlSchema() - Cannot write a TAML schema as no schema variable is set ('%s').", TAML_SCHEMA_VARIABLE );
@@ -981,7 +978,7 @@ bool Taml::generateTamlSchema()
     // Fetch SimObject class rep.
     AbstractClassRep* pSimObjectType = AbstractClassRep::findClassRep( "SimObject" );
     // Sanity!
-    AssertFatal( pSimObjectType != NULL, "Taml::GenerateTamlSchema() - Could not find SimObject class rep." );
+    AssertFatal( pSimObjectType != nullptr, "Taml::GenerateTamlSchema() - Could not find SimObject class rep." );
 
     // Reset scratch state.
     char buffer[1024];
@@ -1152,7 +1149,7 @@ bool Taml::generateTamlSchema()
     // Generate the engine type elements.
     TiXmlComment* pComment = new TiXmlComment( "Type Elements" );
     pSchemaElement->LinkEndChild( pComment );
-    for ( AbstractClassRep* pType = pRootType; pType != NULL; pType = pType->getNextClass() )
+    for ( AbstractClassRep* pType = pRootType; pType != nullptr; pType = pType->getNextClass() )
     {
         // Add type.
         TiXmlElement* pTypeElement = new TiXmlElement( "xs:element" );
@@ -1165,7 +1162,7 @@ bool Taml::generateTamlSchema()
     // *************************************************************
     // Generate the engine complex types.
     // *************************************************************
-    for ( AbstractClassRep* pType = pRootType; pType != NULL; pType = pType->getNextClass() )
+    for ( AbstractClassRep* pType = pRootType; pType != nullptr; pType = pType->getNextClass() )
     {
         // Add complex type comment.
         dSprintf( buffer, sizeof(buffer), " %s Type ", pType->getClassName() );
@@ -1186,7 +1183,7 @@ bool Taml::generateTamlSchema()
         AbstractClassRep* pContainerChildClass = pType->getContainerChildClass( true );
 
         // Is the type allowed children?
-        if ( pContainerChildClass != NULL )
+        if ( pContainerChildClass != nullptr )
         {
             // Yes, so add choice element.
             TiXmlElement* pChoiceElement = new TiXmlElement( "xs:choice" );
@@ -1216,7 +1213,7 @@ bool Taml::generateTamlSchema()
                 pChildrenGroupElement->LinkEndChild( pChildreGroupChoiceElement );
 
                 // Add choice members.
-                for ( AbstractClassRep* pChoiceType = pRootType; pChoiceType != NULL; pChoiceType = pChoiceType->getNextClass() )
+                for ( AbstractClassRep* pChoiceType = pRootType; pChoiceType != nullptr; pChoiceType = pChoiceType->getNextClass() )
                 {
                     // Skip if not derived from the container child class.
                     if ( !pChoiceType->isClass( pContainerChildClass ) )
@@ -1240,13 +1237,13 @@ bool Taml::generateTamlSchema()
         }
 
         // Generate the custom Taml schema.
-        for ( AbstractClassRep* pCustomSchemaType = pType; pCustomSchemaType != NULL; pCustomSchemaType = pCustomSchemaType->getParentClass() )
+        for ( AbstractClassRep* pCustomSchemaType = pType; pCustomSchemaType != nullptr; pCustomSchemaType = pCustomSchemaType->getParentClass() )
         {
             // Fetch the types custom TAML schema function.
             AbstractClassRep::WriteCustomTamlSchema customSchemaFn = pCustomSchemaType->getCustomTamlSchema();
 
             // Skip if no function avilable.
-            if ( customSchemaFn == NULL )
+            if ( customSchemaFn == nullptr )
                 continue;
 
             // Call schema generation function.
@@ -1401,7 +1398,7 @@ bool Taml::generateTamlSchema()
         }
 
         // Add attribute group types.
-        for ( AbstractClassRep* pAttributeGroupsType = pType; pAttributeGroupsType != NULL; pAttributeGroupsType = pAttributeGroupsType->getParentClass() )
+        for ( AbstractClassRep* pAttributeGroupsType = pType; pAttributeGroupsType != nullptr; pAttributeGroupsType = pAttributeGroupsType->getParentClass() )
         {
             TiXmlElement* pFieldAttributeGroupRefElement = new TiXmlElement( "xs:attributeGroup" );
             dSprintf( buffer, sizeof(buffer), "%s_Fields", pAttributeGroupsType->getClassName() );
@@ -1429,9 +1426,9 @@ bool Taml::generateTamlSchema()
 void Taml::WriteUnrestrictedCustomTamlSchema( const char* pCustomNodeName, const AbstractClassRep* pClassRep, TiXmlElement* pParentElement )
 {
     // Sanity!
-    AssertFatal( pCustomNodeName != NULL, "Taml::WriteDefaultCustomTamlSchema() - Node name cannot be NULL." );
-    AssertFatal( pClassRep != NULL,  "Taml::WriteDefaultCustomTamlSchema() - ClassRep cannot be NULL." );
-    AssertFatal( pParentElement != NULL,  "Taml::WriteDefaultCustomTamlSchema() - Parent Element cannot be NULL." );
+    AssertFatal( pCustomNodeName != nullptr, "Taml::WriteDefaultCustomTamlSchema() - Node name cannot be nullptr." );
+    AssertFatal( pClassRep != nullptr,  "Taml::WriteDefaultCustomTamlSchema() - ClassRep cannot be nullptr." );
+    AssertFatal( pParentElement != nullptr,  "Taml::WriteDefaultCustomTamlSchema() - Parent Element cannot be nullptr." );
 
     char buffer[1024];
 

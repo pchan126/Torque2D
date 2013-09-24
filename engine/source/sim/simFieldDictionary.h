@@ -25,6 +25,7 @@
 
 #include "io/stream.h"
 #include <unordered_map>
+#include <list>
 
 //-----------------------------------------------------------------------------
 
@@ -36,14 +37,14 @@ class SimObject;
 
 class SimFieldDictionary
 {
-   friend class SimFieldDictionaryIterator;
+//   friend class SimFieldDictionaryIterator;
 
   public:
    struct Entry
    {
       StringTableEntry slotName;
       char *value;
-      Entry *next;
+//      Entry *next;
    };
    enum
    {
@@ -54,9 +55,9 @@ class SimFieldDictionary
 
   private:
 
-   static Entry *mFreeList;
-   static void freeEntry(Entry *entry);
-   static Entry *allocEntry();
+   static std::list<Entry *>* mFreeList;
+//   static void freeEntry(Entry *entry);
+//   static Entry *allocEntry();
 
 //   static U32     getHashValue( StringTableEntry slotName );
 //   static U32     getHashValue( const String& fieldName );
@@ -77,26 +78,31 @@ public:
    const char *getFieldValue(StringTableEntry slotName);
    Entry  *findDynamicField(const String &fieldName) const;
    Entry  *findDynamicField( StringTableEntry fieldName) const {return findDynamicField(String(fieldName)); };
-   void writeFields(SimObject *obj, Stream &strem, U32 tabStop);
+   void writeFields(SimObject *obj, Stream &stream, U32 tabStop);
    void printFields(SimObject *obj);
    void assignFrom(SimFieldDictionary *dict);
    U32   getNumFields() const { return mNumFields; }
-   
+
+   std::unordered_map<std::string, Entry*>::iterator begin() { return mHashTable.begin(); };
+   std::unordered_map<std::string, Entry*>::iterator end() { return mHashTable.end(); };
+   size_t size() {return mHashTable.size(); };
+
+   typedef std::unordered_map<std::string, Entry*>::iterator Iterator;
 //   Entry  *operator[](U32 index);
 };
 
 //-----------------------------------------------------------------------------
 
-class SimFieldDictionaryIterator
-{
-   SimFieldDictionary *          mDictionary;
-   S32                           mHashIndex;
-   SimFieldDictionary::Entry *   mEntry;
-
-  public:
-   SimFieldDictionaryIterator(SimFieldDictionary*);
-   SimFieldDictionary::Entry* operator++();
-   SimFieldDictionary::Entry* operator*();
-};
+//class SimFieldDictionaryIterator
+//{
+//   SimFieldDictionary *          mDictionary;
+//   S32                           mHashIndex;
+//   SimFieldDictionary::Entry *   mEntry;
+//
+//  public:
+//   SimFieldDictionaryIterator(SimFieldDictionary*);
+//   SimFieldDictionary::Entry* operator++();
+//   SimFieldDictionary::Entry* operator*();
+//};
 
 #endif // _SIM_FIELD_DICTIONARY_H_

@@ -53,8 +53,8 @@ bool SimObject::writeObject(Stream *stream)
          continue;
       }
 
-      const char *field = getDataField(itr.pFieldname, NULL);
-      if(field == NULL)
+      const char *field = getDataField(itr.pFieldname, nullptr);
+      if(field == nullptr)
          field = "";
 
       stream->writeString(itr.pFieldname);
@@ -65,9 +65,9 @@ bool SimObject::writeObject(Stream *stream)
    if(mCanSaveFieldDictionary)
    {
       SimFieldDictionary * fieldDictionary = getFieldDictionary();
-      for(SimFieldDictionaryIterator ditr(fieldDictionary); *ditr; ++ditr)
+      for(SimFieldDictionary::Iterator ditr = fieldDictionary->begin(); ditr != fieldDictionary->end(); ++ditr)
       {
-         SimFieldDictionary::Entry * entry = (*ditr);
+         SimFieldDictionary::Entry * entry = ditr->second;
 
          if(isFiltered(entry->slotName))
             continue;
@@ -101,7 +101,7 @@ bool SimObject::readObject(Stream *stream)
       const char *fieldName = stream->readSTString();
       const char *data = stream->readSTString();
 
-      setDataField(fieldName, NULL, data);
+      setDataField(fieldName, nullptr, data);
    }
    return true;
 }
@@ -188,7 +188,7 @@ bool SimSet::readObject( Stream *stream )
    for(U32 i = 0;i < numObj;i++)
    {
       SimObject *obj = Sim::loadObjectStream(stream);
-      if(obj == NULL)
+      if(obj == nullptr)
          return false;
 
       addObject(obj);
@@ -236,25 +236,25 @@ SimObject *loadObjectStream(const char *filename)
       return ret;
    }
 
-   return NULL;
+   return nullptr;
 }
 
 SimObject *loadObjectStream(Stream *stream)
 {
    const char *className = stream->readSTString(true);
    ConsoleObject *conObj = ConsoleObject::create(className);
-   if(conObj == NULL)
+   if(conObj == nullptr)
    {
       Con::errorf("Sim::restoreObjectStream - Could not create object of class \"%s\"", className);
-      return NULL;
+      return nullptr;
    }
 
    SimObject *simObj = dynamic_cast<SimObject *>(conObj);
-   if(simObj == NULL)
+   if(simObj == nullptr)
    {
       Con::errorf("Sim::restoreObjectStream - Object of class \"%s\" is not a SimObject", className);
       delete simObj;
-      return NULL;
+      return nullptr;
    }
 
    if(simObj->readObject(stream))
@@ -264,7 +264,7 @@ SimObject *loadObjectStream(Stream *stream)
    }
 
    delete simObj;
-   return NULL;
+   return nullptr;
 }
 
 } // end namespace Sim
@@ -298,7 +298,7 @@ ConsoleFunction(saveObject, bool, 3, 3, "(object, filename) Saves the given obje
                 "@return Returns true on success and flase on failure")
 {
    SimObject *obj = dynamic_cast<SimObject *>(Sim::findObject(argv[1]));
-   if(obj == NULL)
+   if(obj == nullptr)
       return false;
    
    return Sim::saveObject(obj, argv[2]);

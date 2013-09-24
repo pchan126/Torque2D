@@ -462,10 +462,8 @@ bool ResManager::setModZip(const char* path)
    const char *basePath = Platform::getCurrentDirectory();
    Vector < Platform::FileInfo > pathInfo;
    Platform::dumpPath (basePath, pathInfo);
-   for(U32 i = 0; i < (U32)pathInfo.size(); i++)
+   for(Platform::FileInfo file: pathInfo)
    {
-      Platform::FileInfo &file = pathInfo[i];
-
       if(!dStricmp(file.pFileName, modPath))
       {
          // Setup the resource to the zip file itself
@@ -1213,8 +1211,7 @@ S32 ResManager::findMatches (FindMatch * pFM)
    S32 bufl = 0;
    for (auto walk = resourceList.begin(); walk != resourceList.end() && !pFM->isFull (); walk++)
    {
-      const char * fpath =
-      buildPath ((*walk)->path, (*walk)->name);
+      const char * fpath = buildPath ((*walk)->path, (*walk)->name);
       if (bufl + dStrlen (fpath) >= 16380)
          return pFM->numMatches ();
       dStrcpy (buffer + bufl, fpath);

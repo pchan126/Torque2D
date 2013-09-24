@@ -22,16 +22,11 @@
 
 #ifndef _SIMDICTIONARY_H_
 #define _SIMDICTIONARY_H_
-#ifndef _PLATFORM_H_
-#include "platform/platform.h"
-#endif
-#ifndef _STRINGTABLE_H_
-#include "string/stringTable.h"
-#endif
 
-#ifndef _PLATFORMMUTEX_H_
+#include "platform/platform.h"
+#include "string/stringTable.h"
 #include "platform/threads/mutex.h"
-#endif
+#include <unordered_map>
 
 class SimObject;
 
@@ -47,9 +42,9 @@ class SimNameDictionary
       DefaultTableSize = 29
    };
 
-   SimObject **hashTable;  // hash the pointers of the names...
-   S32 hashTableSize;
-   S32 hashEntryCount;
+   std::unordered_map<std::string, SimObject *> hashTable;  // hash the pointers of the names...
+//   S32 hashTableSize;
+//   S32 hashEntryCount;
 
    void *mutex;
 
@@ -69,7 +64,7 @@ class SimManagerNameDictionary
       DefaultTableSize = 29
    };
 
-   SimObject **hashTable;  // hash the pointers of the names...
+   std::unordered_map<std::string, SimObject*> hashTable;  // hash the pointers of the names...
    S32 hashTableSize;
    S32 hashEntryCount;
 
@@ -96,6 +91,7 @@ class SimIdDictionary
       DefaultTableSize = 4096,
       TableBitMask = 4095
    };
+
    SimObject *table[DefaultTableSize];
 
    void *mutex;

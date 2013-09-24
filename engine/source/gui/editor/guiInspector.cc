@@ -37,7 +37,7 @@ IMPLEMENT_CONOBJECT(GuiInspector);
 GuiInspector::GuiInspector()
 {
    mGroups.clear();
-   mTarget = NULL;
+   mTarget = nullptr;
    mPadding = 1;
 }
 
@@ -60,7 +60,7 @@ bool GuiInspector::onAdd()
 void GuiInspector::parentResized(const RectI &oldParentRect, const RectI &newParentRect)
 {
    GuiControl *parent = getParent();
-   if( parent && dynamic_cast<GuiScrollCtrl*>(parent) != NULL )
+   if( parent && dynamic_cast<GuiScrollCtrl*>(parent) != nullptr )
    {
       GuiScrollCtrl *scroll = dynamic_cast<GuiScrollCtrl*>(parent);
       setWidth( ( newParentRect.extent.x - ( scroll->scrollBarThickness() + 4  ) ) );
@@ -88,7 +88,7 @@ bool GuiInspector::findExistentGroup( StringTableEntry groupName )
 void GuiInspector::clearGroups()
 {
    // If we're clearing the groups, we want to clear our target too.
-   mTarget = NULL;
+   mTarget = nullptr;
 
    // If we have no groups, there's nothing to clear!
    if( mGroups.empty() )
@@ -131,7 +131,7 @@ void GuiInspector::inspectObject( SimObject *object )
 
    // Always create the 'general' group (for un-grouped fields)
    GuiInspectorGroup* general = new GuiInspectorGroup( mTarget, "General", this );
-   if( general != NULL )
+   if( general != nullptr )
    {
       general->registerObject();
       mGroups.push_back( general );
@@ -148,7 +148,7 @@ void GuiInspector::inspectObject( SimObject *object )
       if(itr->type == AbstractClassRep::StartGroupFieldType && !findExistentGroup( itr->pGroupname ) )
       {
          GuiInspectorGroup *group = new GuiInspectorGroup( mTarget, itr->pGroupname, this );
-         if( group != NULL )
+         if( group != nullptr )
          {
             group->registerObject();
             mGroups.push_back( group );
@@ -159,7 +159,7 @@ void GuiInspector::inspectObject( SimObject *object )
 
    // Deal with dynamic fields
    GuiInspectorGroup *dynGroup = new GuiInspectorDynamicGroup( mTarget, "Dynamic Fields", this);
-   if( dynGroup != NULL )
+   if( dynGroup != nullptr )
    {
       dynGroup->registerObject();
       mGroups.push_back( dynGroup );
@@ -204,7 +204,7 @@ ConsoleMethod( GuiInspector, getInspectObject, const char*, 2, 2, "() - Returns 
               "@return The Object's ID as a string.")
 {
    SimObject *pSimObject = object->getInspectObject();
-   if( pSimObject != NULL )
+   if( pSimObject != nullptr )
       return pSimObject->getIdString();
    
    return "";
@@ -212,7 +212,7 @@ ConsoleMethod( GuiInspector, getInspectObject, const char*, 2, 2, "() - Returns 
 
 void GuiInspector::setName( const char* newName )
 {
-   if( mTarget == NULL )
+   if( mTarget == nullptr )
       return;
 
    // Only assign a new name if we provide one
@@ -247,7 +247,7 @@ S32 GuiInspectorField::smCaptionWidth = 50;
 
 GuiInspectorField::GuiInspectorField( GuiInspectorGroup* parent, SimObjectPtr<SimObject> target, AbstractClassRep::Field* field )
 {
-   if( field != NULL )
+   if( field != nullptr )
       mCaption    = StringTable->insert( field->pFieldname );
    else
       mCaption    = StringTable->EmptyString;
@@ -255,7 +255,7 @@ GuiInspectorField::GuiInspectorField( GuiInspectorGroup* parent, SimObjectPtr<Si
    mParent     = parent;
    mTarget     = target;
    mField      = field;
-   mFieldArrayIndex = NULL;
+   mFieldArrayIndex = nullptr;
    setBounds(0,0,100,18);
 
 }
@@ -263,10 +263,10 @@ GuiInspectorField::GuiInspectorField( GuiInspectorGroup* parent, SimObjectPtr<Si
 GuiInspectorField::GuiInspectorField()
 {
    mCaption       = StringTable->EmptyString;
-   mParent        = NULL;
-   mTarget        = NULL;
-   mField         = NULL;
-   mFieldArrayIndex = NULL;
+   mParent        = nullptr;
+   mTarget        = nullptr;
+   mField         = nullptr;
+   mFieldArrayIndex = nullptr;
    setBounds(0,0,100,18);
 }
 
@@ -279,7 +279,7 @@ GuiInspectorField::~GuiInspectorField()
 //////////////////////////////////////////////////////////////////////////
 void GuiInspectorField::setData( const char* data )
 {
-   if( mField == NULL || mTarget == NULL )
+   if( mField == nullptr || mTarget == nullptr )
       return;
 
    mTarget->inspectPreApply();
@@ -294,7 +294,7 @@ void GuiInspectorField::setData( const char* data )
 
 const char* GuiInspectorField::getData()
 {
-   if( mField == NULL || mTarget == NULL )
+   if( mField == nullptr || mTarget == nullptr )
       return "";
 
    return mTarget->getDataField( mField->pFieldname, mFieldArrayIndex );
@@ -304,7 +304,7 @@ void GuiInspectorField::setInspectorField( AbstractClassRep::Field *field, const
 {
    mField = field; 
 
-   if( arrayIndex != NULL )
+   if( arrayIndex != nullptr )
    {
       mFieldArrayIndex = StringTable->insert( arrayIndex );
 
@@ -322,11 +322,11 @@ void GuiInspectorField::setInspectorField( AbstractClassRep::Field *field, const
 StringTableEntry GuiInspectorField::getFieldName() 
 { 
    // Sanity
-   if ( mField == NULL )
+   if ( mField == nullptr )
       return StringTable->EmptyString;
 
    // Array element?
-   if( mFieldArrayIndex != NULL )
+   if( mFieldArrayIndex != nullptr )
    {
       S32 frameTempSize = dStrlen( mField->pFieldname ) + 32;
       FrameTemp<char> valCopy( frameTempSize );
@@ -347,7 +347,7 @@ GuiControl* GuiInspectorField::constructEditControl()
    GuiControl* retCtrl = new GuiTextEditCtrl();
    
    // If we couldn't construct the control, bail!
-   if( retCtrl == NULL )
+   if( retCtrl == nullptr )
       return retCtrl;
 
    // Let's make it look pretty.
@@ -423,7 +423,7 @@ bool GuiInspectorField::onAdd()
 
    mEdit = constructEditControl();
 
-   if( mEdit == NULL )
+   if( mEdit == nullptr )
       return false;
 
    // Add our edit as a child
@@ -450,7 +450,7 @@ bool GuiInspectorField::onAdd()
 void GuiInspectorField::updateValue( const char* newValue )
 {
    GuiTextEditCtrl *ctrl = dynamic_cast<GuiTextEditCtrl*>( mEdit );
-   if( ctrl != NULL )
+   if( ctrl != nullptr )
       ctrl->setText( newValue );
 }
 
@@ -465,7 +465,7 @@ bool GuiInspectorField::resize( const Point2I &newPosition, const Point2I &newEx
    if (!Parent::resize( newPosition, newExtent ))
        return false;
 
-   if( mEdit != NULL )
+   if( mEdit != nullptr )
    {
       // Calculate Caption Rect
       RectI captionRect( getPosition() , Point2I( (S32)mFloor( getWidth() * (F32)( (F32)GuiInspectorField::smCaptionWidth / 100.0f ) ), (S32)getHeight() ) );
@@ -497,8 +497,8 @@ GuiInspectorGroup::GuiInspectorGroup()
 
    mChildren.clear();
 
-   mTarget              = NULL;
-   mParent              = NULL;
+   mTarget              = nullptr;
+   mParent              = nullptr;
     setCanSave(false);
    // Make sure we receive our ticks.
    setProcessTicks();
@@ -584,7 +584,7 @@ GuiInspectorField* GuiInspectorGroup::constructField( S32 fieldType )
    {
       // This is fairly straightforward to deal with.
       GuiInspectorDatablockField *dbFieldClass = new GuiInspectorDatablockField( cbt->getTypeClassName() );
-      if( dbFieldClass != NULL )
+      if( dbFieldClass != nullptr )
       {
          // return our new datablock field with correct datablock type enumeration info
          return dbFieldClass;
@@ -594,7 +594,7 @@ GuiInspectorField* GuiInspectorGroup::constructField( S32 fieldType )
    // Nope, not a datablock. So maybe it has a valid inspector field override we can use?
    if(!cbt->getInspectorFieldType())
       // Nothing, so bail.
-      return NULL;
+      return nullptr;
 
    // Otherwise try to make it!
    ConsoleObject *co = create(cbt->getInspectorFieldType());
@@ -604,7 +604,7 @@ GuiInspectorField* GuiInspectorGroup::constructField( S32 fieldType )
    {
       // Wasn't appropriate type, bail.
       delete co;
-      return NULL;
+      return nullptr;
    }
 
    return gif;
@@ -614,15 +614,15 @@ GuiInspectorField *GuiInspectorGroup::findField( StringTableEntry fieldName )
 {
    // If we don't have any field children we can't very well find one then can we?
    if( mChildren.empty() )
-      return NULL;
+      return nullptr;
 
    for( GuiInspectorField* i:mChildren )
    {
-      if( i->getFieldName() != NULL && dStricmp( i->getFieldName(), fieldName ) == 0 )
+      if( i->getFieldName() != nullptr && dStricmp( i->getFieldName(), fieldName ) == 0 )
          return i;
    }
 
-   return NULL;
+   return nullptr;
 }
 
 bool GuiInspectorGroup::inspectGroup()
@@ -653,7 +653,7 @@ bool GuiInspectorGroup::inspectGroup()
          // If we're dealing with general fields, always set grabItems to true (to skip them)
          if( bNoGroup == true )
             bGrabItems = true;
-         else if( itr->pGroupname != NULL && dStricmp( itr->pGroupname, mCaption ) == 0 )
+         else if( itr->pGroupname != nullptr && dStricmp( itr->pGroupname, mCaption ) == 0 )
             bGrabItems = true;
          continue;
       }
@@ -662,7 +662,7 @@ bool GuiInspectorGroup::inspectGroup()
          // If we're dealing with general fields, always set grabItems to false (to grab them)
          if( bNoGroup == true )
             bGrabItems = false;
-         else if( itr->pGroupname != NULL && dStricmp( itr->pGroupname, mCaption ) == 0 )
+         else if( itr->pGroupname != nullptr && dStricmp( itr->pGroupname, mCaption ) == 0 )
             bGrabItems = false;
          continue;
       }
@@ -694,7 +694,7 @@ bool GuiInspectorGroup::inspectGroup()
 
                // If the field already exists, just update it
                GuiInspectorField *field = findField( valCopy );
-               if( field != NULL )
+               if( field != nullptr )
                {
                   field->updateValue( field->getData() );
                   continue;
@@ -703,7 +703,7 @@ bool GuiInspectorGroup::inspectGroup()
                bNewItems = true;
 
                field = constructField( itr->type );
-               if( field == NULL )
+               if( field == nullptr )
                {
                   field = new GuiInspectorField( this, mTarget, &(*itr) );
                   field->setInspectorField( &(*itr), intToStr );
@@ -724,7 +724,7 @@ bool GuiInspectorGroup::inspectGroup()
          {
             // If the field already exists, just update it
             GuiInspectorField *field = findField( itr->pFieldname );
-            if( field != NULL )
+            if( field != nullptr )
             {
                field->updateValue( field->getData() );
                continue;
@@ -733,7 +733,7 @@ bool GuiInspectorGroup::inspectGroup()
             bNewItems = true;
 
             field = constructField( itr->type );
-            if( field == NULL )
+            if( field == nullptr )
                field = new GuiInspectorField( this, mTarget, &(*itr) );
             else
             {
@@ -780,7 +780,7 @@ bool GuiInspectorDynamicGroup::createContent()
       addFieldBtn->setBitmap("tools/gui/images/iconAdd");
 
       SimObject* profilePtr = Sim::findObject("EditorButton");
-      if( profilePtr != NULL )
+      if( profilePtr != nullptr )
          addFieldBtn->setControlProfile( dynamic_cast<GuiControlProfile*>(profilePtr) );
 
       char commandBuf[64];
@@ -833,9 +833,9 @@ bool GuiInspectorDynamicGroup::inspectGroup()
 
    // Then populate with fields
    SimFieldDictionary * fieldDictionary = mTarget->getFieldDictionary();
-   for(SimFieldDictionaryIterator ditr(fieldDictionary); *ditr; ++ditr)
+   for(SimFieldDictionary::Iterator ditr = fieldDictionary->begin(); ditr != fieldDictionary->end(); ++ditr)
    {
-      flist.push_back(*ditr);
+      flist.push_back(ditr->second);
    }
    dQsort(flist.address(),flist.size(),sizeof(SimFieldDictionary::Entry *),compareEntries);
    
@@ -843,7 +843,7 @@ bool GuiInspectorDynamicGroup::inspectGroup()
    {
       SimFieldDictionary::Entry * entry = flist[i];
       GuiInspectorField *field = new GuiInspectorDynamicField( this, mTarget, entry );
-      if( field != NULL )
+      if( field != nullptr )
       {
          field->registerObject();
          mChildren.push_back( field );
@@ -882,15 +882,15 @@ SimFieldDictionary::Entry* GuiInspectorDynamicGroup::findDynamicFieldInDictionar
 
    SimFieldDictionary * fieldDictionary = mTarget->getFieldDictionary();
 
-   for(SimFieldDictionaryIterator ditr(fieldDictionary); *ditr; ++ditr)
+   for(SimFieldDictionary::Iterator ditr = fieldDictionary->begin(); ditr != fieldDictionary->end(); ++ditr)
    {
-      SimFieldDictionary::Entry * entry = (*ditr);
+      SimFieldDictionary::Entry * entry = ditr->second;
       
       if( dStricmp( entry->slotName, fieldName ) == 0 )
          return entry;
    }
 
-   return NULL;
+   return nullptr;
 }
 
 void GuiInspectorDynamicGroup::addDynamicField()
@@ -907,14 +907,14 @@ void GuiInspectorDynamicGroup::addDynamicField()
    U32 uid = 1;
    char buf[64] = "dynamicField";
    SimFieldDictionary::Entry* entry = findDynamicFieldInDictionary(buf);
-   while(entry != NULL && uid < 100)
+   while(entry != nullptr && uid < 100)
    {
       dSprintf(buf, sizeof(buf), "dynamicField%03d", uid++);
       entry = findDynamicFieldInDictionary(buf);
    }
 
    //Con::evaluatef( "%d.%s = \"defaultValue\";", mTarget->getId(), buf );
-   mTarget->setDataField(StringTable->insert(buf), NULL, "defaultValue");
+   mTarget->setDataField(StringTable->insert(buf), nullptr, "defaultValue");
 
    // now we simply re-inspect the object, to see the new field.
    this->inspectGroup();
@@ -933,18 +933,18 @@ IMPLEMENT_CONOBJECT(GuiInspectorDynamicField);
 
 GuiInspectorDynamicField::GuiInspectorDynamicField( GuiInspectorGroup* parent, SimObjectPtr<SimObject> target, SimFieldDictionary::Entry* field )
 {
-   mCaption    = NULL;
+   mCaption    = nullptr;
 
    mParent     = parent;
    mTarget     = target;
    mDynField   = field;
    setBounds(0,0,100,20);
-   mRenameCtrl = NULL;
+   mRenameCtrl = nullptr;
 }
 
 void GuiInspectorDynamicField::setData( const char* data )
 {
-   if( mTarget == NULL || mDynField == NULL )
+   if( mTarget == nullptr || mDynField == nullptr )
       return;
 
    char buf[1024];
@@ -961,7 +961,7 @@ void GuiInspectorDynamicField::setData( const char* data )
 
 const char* GuiInspectorDynamicField::getData()
 {
-   if( mTarget == NULL || mDynField == NULL )
+   if( mTarget == nullptr || mDynField == nullptr )
       return "";
 
    return mTarget->getFieldDictionary()->getFieldValue( mDynField->slotName );
@@ -969,7 +969,7 @@ const char* GuiInspectorDynamicField::getData()
 
 void GuiInspectorDynamicField::renameField( StringTableEntry newFieldName )
 {
-   if( mTarget == NULL || mDynField == NULL || mParent == NULL || mEdit == NULL )
+   if( mTarget == nullptr || mDynField == nullptr || mParent == nullptr || mEdit == nullptr )
    {
       Con::warnf("GuiInspectorDynamicField::renameField - No target object or dynamic field data found!" );
       return;
@@ -988,7 +988,7 @@ void GuiInspectorDynamicField::renameField( StringTableEntry newFieldName )
    // Grab a pointer to our parent and cast it to GuiInspectorDynamicGroup
    GuiInspectorDynamicGroup *group = dynamic_cast<GuiInspectorDynamicGroup*>(mParent);
 
-   if( group == NULL )
+   if( group == nullptr )
    {
       Con::warnf("GuiInspectorDynamicField::renameField - Unable to locate GuiInspectorDynamicGroup parent!" );
       return;
@@ -998,19 +998,19 @@ void GuiInspectorDynamicField::renameField( StringTableEntry newFieldName )
    const char* currentValue = getData();
 
    // Create our new field with the value of our old field and the new fields name!
-   mTarget->setDataField( newFieldName, NULL, currentValue );
+   mTarget->setDataField( newFieldName, nullptr, currentValue );
 
    // Configure our field to grab data from the new dynamic field
    SimFieldDictionary::Entry *newEntry = group->findDynamicFieldInDictionary( newFieldName );
 
-   if( newEntry == NULL )
+   if( newEntry == nullptr )
    {
       Con::warnf("GuiInspectorDynamicField::renameField - Unable to find new field!" );
       return;
    }
 
    // Set our old fields data to "" (which will effectively erase the field)
-   mTarget->setDataField( getFieldName(), NULL, "" );
+   mTarget->setDataField( getFieldName(), nullptr, "" );
    
    // Assign our dynamic field pointer (where we retrieve field information from) to our new field pointer
    mDynField = newEntry;
@@ -1044,7 +1044,7 @@ GuiControl* GuiInspectorDynamicField::constructRenameControl()
    GuiControl* retCtrl = new GuiTextEditCtrl();
 
    // If we couldn't construct the control, bail!
-   if( retCtrl == NULL )
+   if( retCtrl == nullptr )
       return retCtrl;
 
    // Let's make it look pretty.
@@ -1080,7 +1080,7 @@ GuiControl* GuiInspectorDynamicField::constructRenameControl()
 
    // Finally, add a delete button for this field
    GuiIconButtonCtrl * delButt = new GuiIconButtonCtrl();
-   if( delButt != NULL )
+   if( delButt != nullptr )
    {
       dSprintf(szBuffer, 512, "%d.%s = \"\";%d.inspectGroup();", mTarget->getId(), getFieldName(), mParent->getId());
 
@@ -1104,7 +1104,7 @@ bool GuiInspectorDynamicField::resize( const Point2I &newPosition, const Point2I
        return false;
 
    // If we don't have a field rename control, bail!
-   if( mRenameCtrl == NULL )
+   if( mRenameCtrl == nullptr )
       return true;
 
    // Calculate Caption Rect
@@ -1161,7 +1161,7 @@ GuiControl* GuiInspectorDatablockField::constructEditControl()
    GuiControl* retCtrl = new GuiPopUpMenuCtrl();
 
    // If we couldn't construct the control, bail!
-   if( retCtrl == NULL )
+   if( retCtrl == nullptr )
       return retCtrl;
 
    GuiPopUpMenuCtrl *menu = dynamic_cast<GuiPopUpMenuCtrl*>(retCtrl);
