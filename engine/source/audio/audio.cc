@@ -573,6 +573,8 @@ static void alxSourcePlay(AudioStreamSource *streamSource)
    ALuint source = streamSource->mSource;
    Audio::Description& desc = streamSource->mDescription;
 
+   bool ret = streamSource->initStream();
+
    alSourcef(source, AL_GAIN, Audio::linearToDB(desc.mVolume * mAudioChannelVolumes[desc.mVolumeChannel] * mMasterVolume));
 //   alSourcei(source, AL_LOOPING, AL_FALSE);
    alSourcef(source, AL_PITCH, 1.f);
@@ -958,30 +960,17 @@ bool alxPause( AUDIOHANDLE handle )
 
     alSourcePause( mSource[index] );
 
-    ALenum error = 0;
-    if ( (error = alGetError()) == AL_NO_ERROR)
-        return true;
-    switch (error)
-    {
-        case AL_INVALID_NAME:
-            Con::errorf("alxPause - OpenAL AL_INVALID_NAME error code returned");
-            break;
-        case AL_INVALID_ENUM:
-            Con::errorf("alxPause - OpenAL AL_INVALID_ENUM error code returned");
-            break;
-        case AL_INVALID_VALUE:
-            Con::errorf("alxPause - OpenAL AL_INVALID_VALUE error code returned");
-            break;
-        case AL_INVALID_OPERATION:
-            Con::errorf("alxPause - OpenAL AL_INVALID_OPERATION error code returned");
-            break;
-        case AL_OUT_OF_MEMORY:
-            Con::errorf("alxPause - OpenAL AL_OUT_OF_MEMORY error code returned");
-            break;
-        default:
-            Con::errorf("alxPause - OpenAL has encountered a problem and won't tell us what it is.");
-    };
-    return false;
+    ALint state;
+	alGetSourcei(mSource[index], AL_SOURCE_STATE, &state);
+
+	if( state==AL_PAUSED)
+	{
+		mResumePosition[index] = -1;
+		return true;
+	}
+
+	alGetSourcei(mSource[index], AL_SAMPLE_OFFSET, &mResumePosition[index]);
+	return alxCheckError("alxPause()","alGetSourcei");
 }
 
 void alxUnPause( AUDIOHANDLE handle )
@@ -989,7 +978,18 @@ void alxUnPause( AUDIOHANDLE handle )
     if(handle == NULL_AUDIOHANDLE)
         return;
     
-    alxPlay( handle );
+	U32 index = alxFindIndex(handle);
+	ALuint source = mSource[index];
+
+	if( mResumePosition[index] != -1 )
+	{
+		alSourcei( source, AL_SAMPLE_OFFSET, mResumePosition[index]);
+		mResumePosition[index] = -1;
+	}
+	alxCheckError("alxUnPause()","alSourcei");
+
+	alSourcePlay( source );
+	alxCheckError("alxUnPause()","alSourcePlay");
 }
 //--------------------------------------------------------------------------
 void alxStop(AUDIOHANDLE handle)
@@ -1913,7 +1913,7 @@ void alxCloseHandles()
 
       ALint state = 0;
       alGetSourcei(mSource[i], AL_SOURCE_STATE, &state);
-      if(state == AL_PLAYING)
+      if(state == AL_PLAYING || state == AL_PAUSED)
          continue;
 
       if(!(mHandle[i] & AUDIOHANDLE_INACTIVE_BIT))
@@ -1972,6 +1972,11 @@ void alxUpdateScores(bool sourcesOnly)
          mScore[i] = 0.f;
          continue;
       }
+
+	  ALint state = 0;
+	  alGetSourcei(mSource[i], AL_SOURCE_STATE, &state);
+	  if(state==AL_PAUSED)
+		  continue;
 
       // grab the volume.. (not attenuated by master for score)
       F32 volume = mSourceVolume[i] * mAudioChannelVolumes[mType[i]];
@@ -2525,9 +2530,22 @@ void OpenALShutdown()
       delete mLoopingFreeList.back();
       mLoopingFreeList.pop_back();
    }
+   
+   //clear error buffer
+   alGetError();
 
    for(U32 i = 0; i < MAX_AUDIOSOURCES; i++)
-      mBuffer[i] = 0;
+   {
+	   ALint tempbuff = 0;
+	   alGetSourcei( mSource[i], AL_BUFFER, &tempbuff);
+
+	   if (alIsBuffer(tempbuff) && tempbuff !=0)
+	   {
+		   ALuint buffer = tempbuff;
+		   alSourceUnqueueBuffers( mSource[i], 1, &buffer);
+		   alxCheckError("OpenALShutdown()","alSourceUnqueueBuffers");
+	   }
+   }
 
    alDeleteSources(mNumSources, mSource);
 

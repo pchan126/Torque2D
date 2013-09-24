@@ -318,7 +318,7 @@ void ImageFont::setFontSize( const Vector2& size )
 
 //-----------------------------------------------------------------------------
 
-void ImageFont::setFontPadding( const U32 padding )
+void ImageFont::setFontPadding( const F32 padding )
 {
     mFontPadding = padding;
     calculateSpatials();
@@ -339,7 +339,7 @@ void ImageFont::calculateSpatials( void )
     }
 
     // Calculate total font padding.
-    const U32 totalFontPadding = (renderCharacters * mFontPadding) - mFontPadding;
+    const F32 totalFontPadding = (renderCharacters * mFontPadding) - mFontPadding;
 
     // Calculate total character size.
     const Vector2 totalFontSize( renderCharacters * mFontSize.x, mFontSize.y );
@@ -357,7 +357,7 @@ void ImageFont::calculateSpatials( void )
         case ALIGN_RIGHT:
             {
                 // Size is twice the padded text width as we're aligning to the left from the position expanding rightwards.
-                setSize( totalPaddedTextSize * 2.0f );
+                setSize( totalPaddedTextSize.x * 2.0f, totalPaddedTextSize.y );
             }
             break;
 

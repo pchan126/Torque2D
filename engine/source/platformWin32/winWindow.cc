@@ -940,7 +940,8 @@ void Platform::init()
 //--------------------------------------
 void Platform::shutdown()
 {
-	sgQueueEvents = false;
+   sgQueueEvents = false;
+   Audio::OpenALShutdown();
 
    //if(gMutexHandle)
    //   CloseHandle(gMutexHandle);
