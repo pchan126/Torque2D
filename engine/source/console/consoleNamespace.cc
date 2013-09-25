@@ -62,7 +62,6 @@ Namespace::Namespace()
    mName = nullptr;
    mParent = nullptr;
    mNext = nullptr;
-   mEntryList = nullptr;
    mHashSize = 0;
    mHashTable = 0;
    mHashSequence = 0;
@@ -82,7 +81,7 @@ Namespace::~Namespace()
 
 void Namespace::clearEntries()
 {
-   for(Entry *walk : *mEntryList)
+   for(Entry *walk : mEntryList)
       walk->clear();
 }
 
@@ -186,7 +185,7 @@ void Namespace::buildHashTable()
    if(mHashSequence == mCacheSequence)
       return;
 
-   if(!mEntryList && mParent)
+   if(mEntryList.empty() && mParent)
    {
       mParent->buildHashTable();
       mHashTable = mParent->mHashTable;
@@ -198,7 +197,7 @@ void Namespace::buildHashTable()
    U32 entryCount = 0;
    Namespace * ns;
    for(ns = this; ns; ns = ns->mParent)
-      for(Entry *walk : *ns->mEntryList)
+      for(Entry *walk : ns->mEntryList)
          if(lookupRecursive(walk->mFunctionName) == walk)
             entryCount++;
 
@@ -214,9 +213,9 @@ void Namespace::buildHashTable()
 
    for(ns = this; ns; ns = ns->mParent)
    {
-      for(Entry *walk : *ns->mEntryList)
+      for(Entry *walk : ns->mEntryList)
       {
-          mHashTable->at(std::string(walk->mFunctionName)) = walk;
+          (*mHashTable)[std::string(walk->mFunctionName)] = walk;
 
 //         U32 index = HashPointer(walk->mFunctionName) % mHashSize;
 //         while(mHashTable[index] && mHashTable[index]->mFunctionName != walk->mFunctionName)
@@ -280,7 +279,7 @@ const char *Namespace::tabComplete(const char *prevText, S32 baseLen, bool fForw
 Namespace::Entry *Namespace::lookupRecursive(StringTableEntry name)
 {
    for(Namespace *ns = this; ns; ns = ns->mParent)
-      for(Entry *walk : *ns->mEntryList)
+      for(Entry *walk : ns->mEntryList)
          if(walk->mFunctionName == name)
             return walk;
 
@@ -332,7 +331,7 @@ void Namespace::getEntryList(Vector<Entry *> *vec)
 
 Namespace::Entry *Namespace::createLocalEntry(StringTableEntry name)
 {
-   for(Entry *walk : *mEntryList)
+   for(Entry *walk : mEntryList)
    {
       if(walk->mFunctionName == name)
       {
@@ -348,7 +347,7 @@ Namespace::Entry *Namespace::createLocalEntry(StringTableEntry name)
    ent->mFunctionName = name;
 //   ent->mNext = mEntryList;
    ent->mPackage = mPackage;
-   mEntryList->push_back( ent );
+   mEntryList.push_back( ent );
    return ent;
 }
 
@@ -558,15 +557,13 @@ void Namespace::activatePackage(StringTableEntry name)
          parent->mParent = walk;
 
          // now swap the entries:
-         for(Entry *ew : *parent->mEntryList)
+         for(Entry *ew : parent->mEntryList)
             ew->mNamespace = walk;
 
-         for(Entry *ew : *walk->mEntryList )
+         for(Entry *ew : walk->mEntryList )
             ew->mNamespace = parent;
 
-         std::list<Entry*> *eList = walk->mEntryList;
-         walk->mEntryList = parent->mEntryList;
-         parent->mEntryList = eList;
+         walk->mEntryList.swap( parent->mEntryList );
       }
    }
    mActivePackages[mNumActivePackages++] = name;
@@ -596,15 +593,13 @@ void Namespace::deactivatePackage(StringTableEntry name)
             walk->mParent = nullptr;
 
             // now swap the entries:
-            for(Entry *ew : *parent->mEntryList)
+            for(Entry *ew : parent->mEntryList)
                ew->mNamespace = walk;
 
-            for(Entry *ew : *walk->mEntryList)
+            for(Entry *ew : walk->mEntryList)
                ew->mNamespace = parent;
 
-             std::list<Entry*> *eList = walk->mEntryList;
-            walk->mEntryList = parent->mEntryList;
-            parent->mEntryList = eList;
+            walk->mEntryList.swap( parent->mEntryList );
          }
       }
    }

@@ -82,7 +82,7 @@ void Dictionary::exportVariables(const char *varString, const char *fileName, bo
    const char *searchStr = varString;
    Vector<Entry *> sortList(__FILE__, __LINE__);
 
-   for (auto itr: *hashTable->data)
+   for (auto itr: hashTable->data)
    {
       Entry *walk = itr.second;
       if (FindMatch::isMatch((char *) searchStr, (char *) walk->name))
@@ -140,7 +140,7 @@ void Dictionary::deleteVariables(const char *varString)
 {
    const char *searchStr = varString;
 
-    for (auto itr: *hashTable->data)
+    for (auto itr: hashTable->data)
     {
         Entry *walk = itr.second;
         Entry *matchedEntry = (FindMatch::isMatch((char *) searchStr, (char *) walk->name)) ? walk : nullptr;
@@ -152,14 +152,19 @@ void Dictionary::deleteVariables(const char *varString)
 
 Dictionary::Entry *Dictionary::lookup(StringTableEntry name)
 {
-    if (hashTable->data->count(std::string(name)) > 0)
-        return hashTable->data->at(std::string(name));
+    if (hashTable->data.count(name) > 0)
+    {
+        Con::printf("Dictionary::lookup %s - found", name );
+        return hashTable->data.at(name);
+    }
 
+    Con::printf("Dictionary::lookup %s - not found", name );
    return nullptr;
 }
 
 Dictionary::Entry *Dictionary::add(StringTableEntry name)
 {
+    Con::printf("Dictionary::add %s", name);
 //   Entry *walk = hashTable->data[HashPointer(name) % hashTable->size];
 //   while(walk)
 //   {
@@ -203,7 +208,7 @@ Dictionary::Entry *Dictionary::add(StringTableEntry name)
        delete temp;
 
    ret = new Entry(name);
-   hashTable->data->at(std::string(name)) = ret;
+   hashTable->data[name] = ret;
    return ret;
 }
 
@@ -248,15 +253,12 @@ Dictionary::Dictionary(ExprEvalState *state, Dictionary* ref)
 void Dictionary::setState(ExprEvalState *state, Dictionary* ref)
 {
    exprState = state;
-
    if (ref)
       hashTable = ref->hashTable;
    else
    {
       hashTable = new HashTableData;
       hashTable->owner = this;
-//      hashTable->count = 0;
-//      hashTable->size = ST_INIT_SIZE;
    }
 }
 
@@ -265,17 +267,16 @@ Dictionary::~Dictionary()
    if ( hashTable->owner == this ) 
    {
       reset();
-      delete [] hashTable->data;
       delete hashTable;
    }
 }
 
 void Dictionary::reset()
 {
-    for (auto itr:*hashTable->data)
+    for (auto itr: hashTable->data)
         delete itr.second;
 
-    hashTable->data->clear();
+    hashTable->data.clear();
 //   S32 i;
 //   Entry *walk, *temp;
 //
@@ -304,7 +305,7 @@ const char *Dictionary::tabComplete(const char *prevText, S32 baseLen, bool fFor
    const char *bestMatch = nullptr;
 
 
-    for (auto itr: *hashTable->data)
+    for (auto itr: hashTable->data)
     {
         Entry *walk = itr.second;
         if(Namespace::canTabComplete(prevText, bestMatch, walk->name, baseLen, fForward))

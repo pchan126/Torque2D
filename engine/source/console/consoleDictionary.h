@@ -135,7 +135,7 @@ private:
         Dictionary* owner;
         S32 size;
         S32 count;
-        std::unordered_map<std::string, Entry*>* data;
+        std::unordered_map<StringTableEntry, Entry*> data;
     };
 
     HashTableData *hashTable;

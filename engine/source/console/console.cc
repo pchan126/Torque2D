@@ -47,7 +47,7 @@ extern StringStack STR;
 
 ExprEvalState gEvalState;
 StmtNode *statementList;
-ConsoleConstructor *ConsoleConstructor::first = NULL;
+ConsoleConstructor *ConsoleConstructor::first = nullptr;
 bool gWarnUndefinedScriptVariables;
 
 static char scratchBuffer[4096];
@@ -171,7 +171,7 @@ ConsoleConstructor::ConsoleConstructor(const char* className, const char* groupN
    // is properly populated.
 
    // This is probably redundant.
-   static char * lastUsage = NULL;
+   static char * lastUsage = nullptr;
    if(aUsage)
       lastUsage = (char *)aUsage;
 
@@ -180,7 +180,7 @@ ConsoleConstructor::ConsoleConstructor(const char* className, const char* groupN
 
 ConsoleConstructor::ConsoleConstructor(const char* className, const char* usage)
 {
-   init(className, NULL, usage, -1, -2);
+   init(className, nullptr, usage, -1, -2);
    ns = true;
 }
 
@@ -242,7 +242,7 @@ ConsoleFunction( cls, void, 1, 1, "() Use the cls function to clear the console 
 };
 
 ConsoleFunction( getClipboard, const char*, 1, 1, "() Use the getClipboard function to get the contents of the GUI clipboard.\n"
-                                                                "@return Returns a string equal to the current contents of the copy the clipboard, or a NULL strain if the copy clipboard is empty.\n"
+                                                                "@return Returns a string equal to the current contents of the copy the clipboard, or a nullptr strain if the copy clipboard is empty.\n"
                                                                 "@sa setClipboard")
 {
     return Platform::getClipboard();
@@ -266,7 +266,7 @@ void init()
 
    // Set up general init values.
    active                        = true;
-   logFileName                   = NULL;
+   logFileName                   = nullptr;
    newLogFile                    = true;
    gWarnUndefinedScriptVariables = false;
    sLogMutex                     = new Mutex;
@@ -561,7 +561,7 @@ static void _outputDebugString(char* pString)
     dMemset( wstr, 0, stringLength );
 
     // Convert to wide string.
-    Con::MultiByteToWideChar( CP_ACP, NULL, pString, -1, wstr, stringLength );  
+    Con::MultiByteToWideChar( CP_ACP, nullptr, pString, -1, wstr, stringLength );  
 
     // Output string.
     Con::OutputDebugStringW( wstr );
@@ -638,7 +638,7 @@ class ConPrinfThreadedEvent : public SimEvent
    ConsoleLogEntry::Type mType;
    char *mBuf;
 public:
-   ConPrinfThreadedEvent(ConsoleLogEntry::Level level = ConsoleLogEntry::Normal, ConsoleLogEntry::Type type = ConsoleLogEntry::General, const char *buf = NULL)
+   ConPrinfThreadedEvent(ConsoleLogEntry::Level level = ConsoleLogEntry::Normal, ConsoleLogEntry::Type type = ConsoleLogEntry::General, const char *buf = nullptr)
    {
       mLevel = level;
       mType = type;
@@ -649,7 +649,7 @@ public:
          mBuf[dStrlen(buf)] = 0;
       }
       else
-         mBuf = NULL;
+         mBuf = nullptr;
    }
    ~ConPrinfThreadedEvent()
    {
@@ -749,12 +749,14 @@ void errorf(const char* fmt,...)
 
 void setVariable(const char *name, const char *value)
 {
+    Con::printf("setVariable %s %s", name, value);
    name = prependDollar(name);
    gEvalState.globalVars.setVariable(StringTable->insert(name), value);
 }
 
 void setLocalVariable(const char *name, const char *value)
 {
+    Con::printf("setLocalVariable %s %s", name, value);
    name = prependPercent(name);
    gEvalState.stack.back()->setVariable(StringTable->insert(name), value);
 }
@@ -841,7 +843,7 @@ const char *getVariable(const char *name)
       if(!token)
          return("");
 
-      while(token != NULL)
+      while(token != nullptr)
       {
          const char * val = obj->getDataField(StringTable->insert(token), 0);
          if(!val)
@@ -947,7 +949,7 @@ void beginCommandGroup(const char * nsName, const char *name, const char* usage)
 
 void endCommandGroup(const char * nsName, const char *name)
 {
-   markCommandGroup(nsName, name, NULL);
+   markCommandGroup(nsName, name, nullptr);
 }
 
 void addOverload(const char * nsName, const char * name, const char * altUsage)
@@ -996,9 +998,9 @@ const char *evaluate(const char* string, bool echo, const char *fileName)
 //------------------------------------------------------------------------------
 const char *evaluatef(const char* string, ...)
 {
-   const char * result = NULL;
+   const char * result = nullptr;
    char * buffer = new char[4096];
-   if (buffer != NULL)
+   if (buffer != nullptr)
    {
       va_list args;
       va_start(args, string);
@@ -1006,10 +1008,10 @@ const char *evaluatef(const char* string, ...)
       va_end (args);
 
       CodeBlock *newCodeBlock = new CodeBlock();
-      result = newCodeBlock->compileExec(NULL, buffer, false, 0);
+      result = newCodeBlock->compileExec(nullptr, buffer, false, 0);
 
       delete [] buffer;
-      buffer = NULL;
+      buffer = nullptr;
    }
 
    return result;
@@ -1077,7 +1079,7 @@ const char *execute(SimObject *object, S32 argc, const char *argv[],bool thisCal
       StringTableEntry funcName = StringTable->insert(argv[0]);
       Namespace::Entry *ent = object->getNamespace()->lookup(funcName);
 
-      if(ent == NULL)
+      if(ent == nullptr)
       {
          //warnf(ConsoleLogEntry::Script, "%s: undefined for object '%s' - id %d", funcName, object->getName(), object->getId());
 
@@ -1147,7 +1149,7 @@ bool isFunction(const char *fn)
    if(!string)
       return false;
    else
-      return Namespace::global()->lookup(string) != NULL;
+      return Namespace::global()->lookup(string) != nullptr;
 }
 
 //------------------------------------------------------------------------------
@@ -1225,8 +1227,8 @@ const char *getData(S32 type, void *dptr, S32 index, EnumTable *tbl, BitSet32 fl
 
 StringTableEntry getModNameFromPath(const char *path)
 {
-   if(path == NULL || *path == 0)
-      return NULL;
+   if(path == nullptr || *path == 0)
+      return nullptr;
 
    char buf[1024];
    buf[0] = 0;
@@ -1246,10 +1248,10 @@ StringTableEntry getModNameFromPath(const char *path)
             buf[slash - ptr] = 0;
          }
          else
-            return NULL;
+            return nullptr;
       }
       else
-         return NULL;
+         return nullptr;
    }
    else
    {
@@ -1260,7 +1262,7 @@ StringTableEntry getModNameFromPath(const char *path)
          buf[slash - path] = 0;
       }
       else
-         return NULL;
+         return nullptr;
    }
 
    return StringTable->insert(buf);
@@ -1285,8 +1287,8 @@ static typePathExpandoMap PathExpandos;
 void addPathExpando( const char* pExpandoName, const char* pPath )
 {
     // Sanity!
-    AssertFatal( pExpandoName != NULL, "Expando name cannot be NULL." );
-    AssertFatal( pPath != NULL, "Expando path cannot be NULL." );
+    AssertFatal( pExpandoName != nullptr, "Expando name cannot be nullptr." );
+    AssertFatal( pPath != nullptr, "Expando path cannot be nullptr." );
 
     // Fetch expando name.
     StringTableEntry expandoName = StringTable->insert( pExpandoName );
@@ -1352,7 +1354,7 @@ void addPathExpando( const char* pExpandoName, const char* pPath )
 StringTableEntry getPathExpando( const char* pExpandoName )
 {
     // Sanity!
-    AssertFatal( pExpandoName != NULL, "Expando name cannot be NULL." );
+    AssertFatal( pExpandoName != nullptr, "Expando name cannot be nullptr." );
 
     // Fetch expando name.
     StringTableEntry expandoName = StringTable->insert( pExpandoName );
@@ -1368,7 +1370,7 @@ StringTableEntry getPathExpando( const char* pExpandoName )
     }
 
     // Not found.
-    return NULL;
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -1376,7 +1378,7 @@ StringTableEntry getPathExpando( const char* pExpandoName )
 void removePathExpando( const char* pExpandoName )
 {    
     // Sanity!
-    AssertFatal( pExpandoName != NULL, "Expando name cannot be NULL." );
+    AssertFatal( pExpandoName != nullptr, "Expando name cannot be nullptr." );
 
     // Fetch expando name.
     StringTableEntry expandoName = StringTable->insert( pExpandoName );
@@ -1407,7 +1409,7 @@ void removePathExpando( const char* pExpandoName )
 bool isPathExpando( const char* pExpandoName )
 {
     // Sanity!
-    AssertFatal( pExpandoName != NULL, "Expando name cannot be NULL." );
+    AssertFatal( pExpandoName != nullptr, "Expando name cannot be nullptr." );
 
     // Fetch expando name.
     StringTableEntry expandoName = StringTable->insert( pExpandoName );
@@ -1428,7 +1430,7 @@ StringTableEntry getPathExpandoKey( U32 expandoIndex )
 {
     // Finish if index is out of range.
     if ( expandoIndex >= PathExpandos.size() )
-        return NULL;
+        return nullptr;
 
     // Find indexed iterator.
     typePathExpandoMap::iterator expandoItr = PathExpandos.begin();
@@ -1443,7 +1445,7 @@ StringTableEntry getPathExpandoValue( U32 expandoIndex )
 {
     // Finish if index is out of range.
     if ( expandoIndex >= PathExpandos.size() )
-        return NULL;
+        return nullptr;
 
     // Find indexed iterator.
     typePathExpandoMap::iterator expandoItr = PathExpandos.begin();
@@ -1487,7 +1489,7 @@ bool expandPath( char* pDstPath, U32 size, const char* pSrcPath, const char* pWo
         StringTableEntry expandoPath = getPathExpando(pathBuffer);
                
         // Does the expando exist?
-        if( expandoPath == NULL )
+        if( expandoPath == nullptr )
         {
             // No, so error.
             Con::errorf("expandPath() : Could not find path expando '%s' for path '%s'.", pathBuffer, pSrcPath );
@@ -1533,7 +1535,7 @@ bool expandPath( char* pDstPath, U32 size, const char* pSrcPath, const char* pWo
         const StringTableEntry codeblockFullPath = CodeBlock::getCurrentCodeBlockFullPath();
 
         // Do we have a code block full path?
-        if( codeblockFullPath == NULL )
+        if( codeblockFullPath == nullptr )
         {
             // No, so error.
             Con::errorf("expandPath() : Could not find relative path from code-block for path '%s'.", pSrcPath );
@@ -1672,7 +1674,7 @@ void collapsePath( char* pDstPath, U32 size, const char* pSrcPath, const char* p
     }
 
     // Fetch the working directory.
-    StringTableEntry workingDirectory = pWorkingDirectoryHint != NULL ? pWorkingDirectoryHint : Platform::getCurrentDirectory();
+    StringTableEntry workingDirectory = pWorkingDirectoryHint != nullptr ? pWorkingDirectoryHint : Platform::getCurrentDirectory();
 
     // Fetch path relative to current directory.
     StringTableEntry relativePath = Platform::makeRelativePathName( pSrcPath, workingDirectory );

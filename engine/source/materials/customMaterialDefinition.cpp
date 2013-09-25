@@ -48,14 +48,14 @@ IMPLEMENT_CONOBJECT(CustomMaterial);
 //----------------------------------------------------------------------------
 CustomMaterial::CustomMaterial()
 {  
-   mFallback = NULL;
+   mFallback = nullptr;
    mMaxTex = 0;
    mVersion = 1.1f;
    mTranslucent = false;
    dMemset( mFlags, 0, sizeof( mFlags ) );   
-   mShaderData = NULL;
+   mShaderData = nullptr;
    mRefract = false;
-   mStateBlockData = NULL;
+   mStateBlockData = nullptr;
    mForwardLit = false;
 }
 
@@ -96,7 +96,7 @@ bool CustomMaterial::onAdd()
       return false;
 
    mShaderData = dynamic_cast<ShaderData*>(Sim::findObject( mShaderDataName ) );
-   if(mShaderDataName.isNotEmpty() && mShaderData == NULL)
+   if(mShaderDataName.isNotEmpty() && mShaderData == nullptr)
    {
       Con::errorf("Failed to find ShaderData %s", mShaderDataName.c_str());
       return false;
@@ -104,9 +104,9 @@ bool CustomMaterial::onAdd()
    
    const char* samplerDecl = "sampler";
    S32 i = 0;
-   for (SimFieldDictionaryIterator itr(getFieldDictionary()); *itr; ++itr)
+   for (SimFieldDictionary::Iterator itr = getFieldDictionary()->begin(); itr != getFieldDictionary()->end(); ++itr)
    {
-   	SimFieldDictionary::Entry* entry = *itr;
+   	SimFieldDictionary::Entry* entry = itr->second;
       if (dStrStartsWith(entry->slotName, samplerDecl))
       {
       	if (i >= MAX_TEX_PER_PASS)

@@ -187,13 +187,14 @@ inline void ExprEvalState::setCurVarName(StringTableEntry name)
 
 inline void ExprEvalState::setCurVarNameCreate(StringTableEntry name)
 {
+    Con::printf("ExprEvalState::setCurVarNameCreate %s", name);
    if(name[0] == '$')
       currentVariable = globalVars.add(name);
    else if(stack.size())
       currentVariable = stack.back()->add(name);
    else
    {
-      currentVariable = NULL;
+      currentVariable = nullptr;
       Con::warnf(ConsoleLogEntry::Script, "Accessing local variable in global scope... failed: %s", name);
    }
 }
@@ -219,19 +220,19 @@ inline const char *ExprEvalState::getStringVariable()
 
 inline void ExprEvalState::setIntVariable(S32 val)
 {
-   AssertFatal(currentVariable != NULL, "Invalid evaluator state - trying to set null variable!");
+   AssertFatal(currentVariable != nullptr, "Invalid evaluator state - trying to set null variable!");
    currentVariable->setIntValue(val);
 }
 
 inline void ExprEvalState::setFloatVariable(F64 val)
 {
-   AssertFatal(currentVariable != NULL, "Invalid evaluator state - trying to set null variable!");
+   AssertFatal(currentVariable != nullptr, "Invalid evaluator state - trying to set null variable!");
    currentVariable->setFloatValue((F32)val);
 }
 
 inline void ExprEvalState::setStringVariable(const char *val)
 {
-   AssertFatal(currentVariable != NULL, "Invalid evaluator state - trying to set null variable!");
+   AssertFatal(currentVariable != nullptr, "Invalid evaluator state - trying to set null variable!");
    currentVariable->setStringValue(val);
 }
 
@@ -331,7 +332,7 @@ static void setUnit(const char *string, U32 index, const char *replace, const ch
 static bool isDigitsOnly( const char* pString )
 {
     // Sanity.
-    AssertFatal( pString != NULL, "isDigits() - Cannot check a NULL string." );
+    AssertFatal( pString != nullptr, "isDigits() - Cannot check a nullptr string." );
 
     const char* pDigitCursor = pString;
     if ( *pDigitCursor == 0 )
@@ -381,7 +382,7 @@ static const StringTableEntry _count = StringTable->insert( "count" );
 // Gets a component of an object's field value or a variable and returns it in val.
 static void getFieldComponent( SimObject* object, StringTableEntry field, const char* array, StringTableEntry subField, char* val, const U32 bufferSize )
 {
-    const char* prevVal = NULL;
+    const char* prevVal = nullptr;
    
     // Grab value from object.
     if( object && field )
@@ -432,7 +433,7 @@ static void setFieldComponent( SimObject* object, StringTableEntry field, const 
 
     char val[1024] = "";
     const U32 bufferSize = sizeof(val);
-    const char* prevVal = NULL;
+    const char* prevVal = nullptr;
 
     // Set the value on an object field.
     if( object && field )
@@ -484,7 +485,7 @@ const char *CodeBlock::exec(U32 ip, const char *functionName, Namespace *thisNam
    F64 *curFloatTable;
    char *curStringTable;
    STR.clearFunctionOffset();
-   StringTableEntry thisFunctionName = NULL;
+   StringTableEntry thisFunctionName = nullptr;
    bool popFrame = false;
    if(argv)
    {
@@ -541,7 +542,7 @@ const char *CodeBlock::exec(U32 ip, const char *functionName, Namespace *thisNam
       // Do we want this code to execute using a new stack frame?
       if (setFrame < 0)
       {
-         gEvalState.pushFrame(NULL, NULL);
+         gEvalState.pushFrame(nullptr, nullptr);
          popFrame = true;
       }
       else if (!gEvalState.stack.empty())
@@ -564,7 +565,7 @@ const char *CodeBlock::exec(U32 ip, const char *functionName, Namespace *thisNam
 
    // Notify the remote debugger.
    RemoteDebuggerBase* pRemoteDebugger = RemoteDebuggerBase::getRemoteDebugger();
-   if ( pRemoteDebugger != NULL && setFrame < 0 )
+   if ( pRemoteDebugger != nullptr && setFrame < 0 )
        pRemoteDebugger->pushStackFrame();
 
    StringTableEntry var, objParent;
@@ -572,15 +573,15 @@ const char *CodeBlock::exec(U32 ip, const char *functionName, Namespace *thisNam
    StringTableEntry fnName;
    StringTableEntry fnNamespace, fnPackage;
    SimObject *currentNewObject = 0;
-   StringTableEntry prevField = NULL;
-   StringTableEntry curField = NULL;
-   SimObject *prevObject = NULL;
-   SimObject *curObject = NULL;
-   SimObject *saveObject=NULL;
+   StringTableEntry prevField = nullptr;
+   StringTableEntry curField = nullptr;
+   SimObject *prevObject = nullptr;
+   SimObject *curObject = nullptr;
+   SimObject *saveObject=nullptr;
    Namespace::Entry *nsEntry;
    Namespace *ns;
-   const char* curFNDocBlock = NULL;
-   const char* curNSDocBlock = NULL;
+   const char* curFNDocBlock = nullptr;
+   const char* curNSDocBlock = nullptr;
    const S32 nsDocLength = 128;
    char nsDocBlockClass[nsDocLength];
 
@@ -620,7 +621,7 @@ breakContinue:
                
                Namespace::unlinkPackages();
                ns = Namespace::find(fnNamespace, fnPackage);
-               ns->addFunction(fnName, this, hasBody ? ip : 0, curFNDocBlock ? dStrdup( curFNDocBlock ) : NULL );// if no body, set the IP to 0
+               ns->addFunction(fnName, this, hasBody ? ip : 0, curFNDocBlock ? dStrdup( curFNDocBlock ) : nullptr );// if no body, set the IP to 0
                if( curNSDocBlock )
                {
                   if( fnNamespace == StringTable->lookup( nsDocBlockClass ) )
@@ -629,13 +630,13 @@ breakContinue:
                      usageStr[dStrlen(usageStr)] = '\0';
                      ns->mUsage = usageStr;
                      ns->mCleanUpUsage = true;
-                     curNSDocBlock = NULL;
+                     curNSDocBlock = nullptr;
                   }
                }
                Namespace::relinkPackages();
 
                // If we had a docblock, it's definitely not valid anymore, so clear it out.
-               curFNDocBlock = NULL;
+               curFNDocBlock = nullptr;
 
                //Con::printf("Adding function %s::%s (%d)", fnNamespace, fnName, ip);
             }
@@ -662,12 +663,12 @@ breakContinue:
             }
 
             // Get the constructor information off the stack.
-            STR.getArgcArgv(NULL, &callArgc, &callArgv, true);
+            STR.getArgcArgv(nullptr, &callArgc, &callArgv, true);
 
             // Con::printf("Creating object...");
 
             // objectName = argv[1]...
-            currentNewObject = NULL;
+            currentNewObject = nullptr;
 
             // Are we creating a datablock? If so, deal with case where we override
             // an old one.
@@ -777,7 +778,7 @@ breakContinue:
                      {
                         Con::errorf(ConsoleLogEntry::General, "%s: Attempting to use newmsg on non-message type %s", getFileLine(ip-1), callArgv[1]);
                         delete currentNewObject;
-                        currentNewObject = NULL;
+                        currentNewObject = nullptr;
                         ip = failJump;
                         break;
                      }
@@ -788,7 +789,7 @@ breakContinue:
                if(!currentNewObject->processArguments(callArgc-3, callArgv+3))
                {
                   delete currentNewObject;
-                  currentNewObject = NULL;
+                  currentNewObject = nullptr;
                   ip = failJump;
                   break;
                }
@@ -809,8 +810,8 @@ breakContinue:
          case OP_ADD_OBJECT:
          {
             // See OP_SETCURVAR for why we do this.
-            curFNDocBlock = NULL;
-            curNSDocBlock = NULL;
+            curFNDocBlock = nullptr;
+            curNSDocBlock = nullptr;
             
             // Do we place this object at the root?
             bool placeAtRoot = code[ip++];
@@ -818,7 +819,7 @@ breakContinue:
             // Con::printf("Adding object %s", currentNewObject->getName());
 
             // Make sure it wasn't already added, then add it.
-            if (currentNewObject == NULL)
+            if (currentNewObject == nullptr)
             {
                break;
             }
@@ -865,10 +866,10 @@ breakContinue:
 
             // What group will we be added to, if any?
             U32 groupAddId = (U32)intStack[UINT];
-            SimGroup *grp = NULL;
-            SimSet   *set = NULL;
-            SimComponent *comp = NULL;
-            bool isMessage = dynamic_cast<Message *>(currentNewObject) != NULL;
+            SimGroup *grp = nullptr;
+            SimSet   *set = nullptr;
+            SimComponent *comp = nullptr;
+            bool isMessage = dynamic_cast<Message *>(currentNewObject) != nullptr;
 
             if(!placeAtRoot || !currentNewObject->getGroup())
             {
@@ -882,7 +883,7 @@ breakContinue:
                            Sim::findObject(groupAddId, set);
                   }
                   
-                  if(placeAtRoot || comp != NULL)
+                  if(placeAtRoot || comp != nullptr)
                   {
                      // Deal with the instantGroup if we're being put at the root or we're adding to a component.
                      const char *addGroupName = Con::getVariable("instantGroup");
@@ -1108,20 +1109,20 @@ breakContinue:
             var = U32toSTE(code[ip]);
             ip++;
 
-            // If a variable is set, then these must be NULL. It is necessary
+            // If a variable is set, then these must be nullptr. It is necessary
             // to set this here so that the vector parser can appropriately
             // identify whether it's dealing with a vector.
-            prevField = NULL;
-            prevObject = NULL;
-            curObject = NULL;
+            prevField = nullptr;
+            prevObject = nullptr;
+            curObject = nullptr;
 
             gEvalState.setCurVarName(var);
 
             // In order to let docblocks work properly with variables, we have
             // clear the current docblock when we do an assign. This way it 
             // won't inappropriately carry forward to following function decls.
-            curFNDocBlock = NULL;
-            curNSDocBlock = NULL;
+            curFNDocBlock = nullptr;
+            curNSDocBlock = nullptr;
             break;
 
          case OP_SETCURVAR_CREATE:
@@ -1129,45 +1130,45 @@ breakContinue:
             ip++;
 
             // See OP_SETCURVAR
-            prevField = NULL;
-            prevObject = NULL;
-            curObject = NULL;
+            prevField = nullptr;
+            prevObject = nullptr;
+            curObject = nullptr;
 
             gEvalState.setCurVarNameCreate(var);
 
             // See OP_SETCURVAR for why we do this.
-            curFNDocBlock = NULL;
-            curNSDocBlock = NULL;
+            curFNDocBlock = nullptr;
+            curNSDocBlock = nullptr;
             break;
 
          case OP_SETCURVAR_ARRAY:
             var = STR.getSTValue();
 
             // See OP_SETCURVAR
-            prevField = NULL;
-            prevObject = NULL;
-            curObject = NULL;
+            prevField = nullptr;
+            prevObject = nullptr;
+            curObject = nullptr;
 
             gEvalState.setCurVarName(var);
 
             // See OP_SETCURVAR for why we do this.
-            curFNDocBlock = NULL;
-            curNSDocBlock = NULL;
+            curFNDocBlock = nullptr;
+            curNSDocBlock = nullptr;
             break;
 
          case OP_SETCURVAR_ARRAY_CREATE:
             var = STR.getSTValue();
 
             // See OP_SETCURVAR
-            prevField = NULL;
-            prevObject = NULL;
-            curObject = NULL;
+            prevField = nullptr;
+            prevObject = nullptr;
+            curObject = nullptr;
 
             gEvalState.setCurVarNameCreate(var);
 
             // See OP_SETCURVAR for why we do this.
-            curFNDocBlock = NULL;
-            curNSDocBlock = NULL;
+            curFNDocBlock = nullptr;
+            curNSDocBlock = nullptr;
             break;
 
          case OP_LOADVAR_UINT:
@@ -1306,7 +1307,7 @@ breakContinue:
                // The field is not being set on an object. Maybe it's
                // a special accessor?
                setFieldComponent( prevObject, prevField, prevFieldArray, curField );
-               prevObject = NULL;
+               prevObject = nullptr;
             }
             break;
 
@@ -1319,7 +1320,7 @@ breakContinue:
                // The field is not being set on an object. Maybe it's
                // a special accessor?
                setFieldComponent( prevObject, prevField, prevFieldArray, curField );
-               prevObject = NULL;
+               prevObject = nullptr;
             }
             break;
 
@@ -1331,7 +1332,7 @@ breakContinue:
                // The field is not being set on an object. Maybe it's
                // a special accessor?
                setFieldComponent( prevObject, prevField, prevFieldArray, curField );
-               prevObject = NULL;
+               prevObject = nullptr;
             }
             break;
 
@@ -1485,7 +1486,7 @@ breakContinue:
             if(callType == FuncCallExprNode::FunctionCall) 
             {
                nsEntry = *((Namespace::Entry **) &code[ip-2]);
-               ns = NULL;
+               ns = nullptr;
             }
             else if(callType == FuncCallExprNode::MethodCall)
             {
@@ -1513,7 +1514,7 @@ breakContinue:
                if(ns)
                   nsEntry = ns->lookup(fnName);
                else
-                  nsEntry = NULL;
+                  nsEntry = nullptr;
             }
             else // it's a ParentCall
             {
@@ -1523,21 +1524,21 @@ breakContinue:
                   if(ns)
                      nsEntry = ns->lookup(fnName);
                   else
-                     nsEntry = NULL;
+                     nsEntry = nullptr;
                }
                else
                {
-                  ns = NULL;
-                  nsEntry = NULL;
+                  ns = nullptr;
+                  nsEntry = nullptr;
                }
             }
 
             S32 nsType = -1;
             S32 nsMinArgs = 0;
             S32 nsMaxArgs = 0;
-            Namespace::Entry::CallbackUnion * nsCb = NULL;
+            Namespace::Entry::CallbackUnion * nsCb = nullptr;
             //Namespace::Entry::CallbackUnion cbu;
-            const char * nsUsage = NULL;
+            const char * nsUsage = nullptr;
             if (nsEntry)
             {
                nsType = nsEntry->mType;
@@ -1724,7 +1725,7 @@ breakContinue:
             TelDebugger->executionStopped(this, breakLine);
 
             // Notify the remote debugger.
-            if ( pRemoteDebugger != NULL )
+            if ( pRemoteDebugger != nullptr )
                 pRemoteDebugger->executionStopped(this, breakLine);
 
             goto breakContinue;
@@ -1742,7 +1743,7 @@ execFinished:
       TelDebugger->popStackFrame();
 
    // Notify the remote debugger.
-   if ( pRemoteDebugger != NULL && setFrame < 0 )
+   if ( pRemoteDebugger != nullptr && setFrame < 0 )
        pRemoteDebugger->popStackFrame();
 
    if ( popFrame )
@@ -1778,8 +1779,8 @@ execFinished:
    {
       delete[] const_cast<char*>(globalStrings);
       delete[] globalFloats;
-      globalStrings = NULL;
-      globalFloats = NULL;
+      globalStrings = nullptr;
+      globalFloats = nullptr;
    }
    smCurrentCodeBlock = saveCodeBlock;
    if(saveCodeBlock && saveCodeBlock->name)

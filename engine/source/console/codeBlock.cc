@@ -35,27 +35,27 @@ using namespace Compiler;
 
 bool           CodeBlock::smInFunction = false;
 U32            CodeBlock::smBreakLineCount = 0;
-CodeBlock *    CodeBlock::smCodeBlockList = NULL;
-CodeBlock *    CodeBlock::smCurrentCodeBlock = NULL;
-ConsoleParser *CodeBlock::smCurrentParser = NULL;
+CodeBlock *    CodeBlock::smCodeBlockList = nullptr;
+CodeBlock *    CodeBlock::smCurrentCodeBlock = nullptr;
+ConsoleParser *CodeBlock::smCurrentParser = nullptr;
 
 //-------------------------------------------------------------------------
 
 CodeBlock::CodeBlock()
 {
-   globalStrings = NULL;
-   functionStrings = NULL;
-   globalFloats = NULL;
-   functionFloats = NULL;
-   lineBreakPairs = NULL;
-   breakList = NULL;
+   globalStrings = nullptr;
+   functionStrings = nullptr;
+   globalFloats = nullptr;
+   functionFloats = nullptr;
+   lineBreakPairs = nullptr;
+   breakList = nullptr;
    breakListSize = 0;
 
    refCount = 0;
-   code = NULL;
-   name = NULL;
-   fullPath = NULL;
-   modPath = NULL;
+   code = nullptr;
+   name = nullptr;
+   fullPath = nullptr;
+   modPath = nullptr;
    mRoot = StringTable->EmptyString;
 }
 
@@ -81,7 +81,7 @@ StringTableEntry CodeBlock::getCurrentCodeBlockName()
    if (CodeBlock::getCurrentBlock())
       return CodeBlock::getCurrentBlock()->name;
    else
-      return NULL;
+      return nullptr;
 }   
 
 StringTableEntry CodeBlock::getCurrentCodeBlockFullPath()
@@ -89,7 +89,7 @@ StringTableEntry CodeBlock::getCurrentCodeBlockFullPath()
    if (CodeBlock::getCurrentBlock())
       return CodeBlock::getCurrentBlock()->fullPath;
    else
-      return NULL;
+      return nullptr;
 }
 
 StringTableEntry CodeBlock::getCurrentCodeBlockModName()
@@ -97,7 +97,7 @@ StringTableEntry CodeBlock::getCurrentCodeBlockModName()
    if (CodeBlock::getCurrentBlock())
       return CodeBlock::getCurrentBlock()->modPath;
    else
-      return NULL;
+      return nullptr;
 }
 
 CodeBlock *CodeBlock::find(StringTableEntry name)
@@ -105,7 +105,7 @@ CodeBlock *CodeBlock::find(StringTableEntry name)
    for(CodeBlock *walk = CodeBlock::getCodeBlockList(); walk; walk = walk->nextFile)
       if(walk->name == name)
          return walk;
-   return NULL;
+   return nullptr;
 }
 
 //-------------------------------------------------------------------------
@@ -277,7 +277,7 @@ void CodeBlock::removeFromCodeList()
 
    // Notify the remote debugger.
    RemoteDebuggerBase* pRemoteDebugger = RemoteDebuggerBase::getRemoteDebugger();
-   if ( pRemoteDebugger != NULL )
+   if ( pRemoteDebugger != nullptr )
        pRemoteDebugger->removeCodeBlock( this );
 }
 
@@ -344,7 +344,7 @@ void CodeBlock::calcBreakList()
 
    // Notify the remote debugger.
    RemoteDebuggerBase* pRemoteDebugger = RemoteDebuggerBase::getRemoteDebugger();
-   if ( pRemoteDebugger != NULL )
+   if ( pRemoteDebugger != nullptr )
        pRemoteDebugger->addCodeBlock( this );
 }
 
@@ -357,7 +357,7 @@ bool CodeBlock::read(StringTableEntry fileName, Stream &st)
 
    if(fileName)
    {
-      fullPath = NULL;
+      fullPath = nullptr;
 
       if(Platform::isFullPath(fileName))
          fullPath = fileName;
@@ -367,7 +367,7 @@ bool CodeBlock::read(StringTableEntry fileName, Stream &st)
       else if(dStrnicmp(cwd, fileName, dStrlen(cwd)) == 0)
          name = StringTable->insert(fileName + dStrlen(cwd) + 1, true);
 
-      if(fullPath == NULL)
+      if(fullPath == nullptr)
       {
          char buf[1024];
          fullPath = StringTable->insert(Platform::makeFullPathName(fileName, buf, sizeof(buf)), true);
@@ -478,7 +478,7 @@ bool CodeBlock::compile(const char *codeFileName, StringTableEntry fileName, con
 
    STEtoU32 = compileSTEtoU32;
 
-   statementList = NULL;
+   statementList = nullptr;
 
    // Set up the parser.
    smCurrentParser = getParserForFile(fileName);
@@ -486,7 +486,7 @@ bool CodeBlock::compile(const char *codeFileName, StringTableEntry fileName, con
 
    // Now do some parsing.
    smCurrentParser->setScanBuffer(script, fileName);
-   smCurrentParser->restart(NULL);
+   smCurrentParser->restart(nullptr);
    smCurrentParser->parse();
 
    if(gSyntaxError)
@@ -576,7 +576,7 @@ const char *CodeBlock::compileExec(StringTableEntry fileName, const char *string
       const StringTableEntry exePath = Platform::getMainDotCsDir();
       const StringTableEntry cwd = Platform::getCurrentDirectory();
 
-      fullPath = NULL;
+      fullPath = nullptr;
       
       if(Platform::isFullPath(fileName))
          fullPath = fileName;
@@ -586,7 +586,7 @@ const char *CodeBlock::compileExec(StringTableEntry fileName, const char *string
       else if(dStrnicmp(cwd, fileName, dStrlen(cwd)) == 0)
          name = StringTable->insert(fileName + dStrlen(cwd) + 1, true);
 
-      if(fullPath == NULL)
+      if(fullPath == nullptr)
       {
          char buf[1024];
          fullPath = StringTable->insert(Platform::makeFullPathName(fileName, buf, sizeof(buf)), true);
@@ -598,7 +598,7 @@ const char *CodeBlock::compileExec(StringTableEntry fileName, const char *string
    if(name)
       addToCodeList();
    
-   statementList = NULL;
+   statementList = nullptr;
 
    // Set up the parser.
    smCurrentParser = getParserForFile(fileName);
@@ -606,7 +606,7 @@ const char *CodeBlock::compileExec(StringTableEntry fileName, const char *string
 
    // Now do some parsing.
    smCurrentParser->setScanBuffer(string, fileName);
-   smCurrentParser->restart(NULL);
+   smCurrentParser->restart(nullptr);
    smCurrentParser->parse();
 
    if(!statementList)
@@ -645,7 +645,7 @@ const char *CodeBlock::compileExec(StringTableEntry fileName, const char *string
    if(lastIp != codeSize)
       Con::warnf(ConsoleLogEntry::General, "precompile size mismatch");
 
-   return exec(0, fileName, NULL, 0, 0, noCalls, NULL, setFrame);
+   return exec(0, fileName, nullptr, 0, 0, noCalls, nullptr, setFrame);
 }
 
 //-------------------------------------------------------------------------

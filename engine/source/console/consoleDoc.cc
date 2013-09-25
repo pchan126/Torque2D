@@ -232,7 +232,7 @@ void Namespace::printNamespaceEntries(Namespace * g, bool dumpScript, bool dumpE
 
    // Go through all the entries.
    // Iterate through the methods of the namespace...
-   for(Entry *ewalk: *g->mEntryList)
+   for(Entry *ewalk: g->mEntryList)
    {
       char buffer[1024]; //< This will bite you in the butt someday.
       int eType = ewalk->mType;
@@ -254,7 +254,7 @@ void Namespace::printNamespaceEntries(Namespace * g, bool dumpScript, bool dumpE
 
             // Find the original
             eType = 8;
-            for(Entry *eseek : *g->mEntryList)
+            for(Entry *eseek : g->mEntryList)
             {
                if(!dStrcmp(eseek->mFunctionName, ewalk->cb.mGroupName))
                {
@@ -402,7 +402,7 @@ void Namespace::dumpClasses( bool dumpScript, bool dumpEngine )
       if( !dumpScript )
       {
          bool found = false;
-         for(Entry *ewalk : *vec[i]->mEntryList)
+         for(Entry *ewalk : vec[i]->mEntryList)
          {
             if( ewalk->mType != Entry::ScriptFunctionType )
             {
@@ -418,7 +418,7 @@ void Namespace::dumpClasses( bool dumpScript, bool dumpEngine )
       if( !dumpEngine )
       {
          bool found = false;
-         for(Entry *ewalk : *vec[i]->mEntryList)
+         for(Entry *ewalk : vec[i]->mEntryList)
          {
             if( ewalk->mType == Entry::ScriptFunctionType )
             {
@@ -431,7 +431,7 @@ void Namespace::dumpClasses( bool dumpScript, bool dumpEngine )
       }
 
       // If we hit a class with no members and no classRep, do clever filtering.
-      if(vec[i]->mEntryList->empty() && vec[i]->mClassRep == nullptr)
+      if(vec[i]->mEntryList.empty() && vec[i]->mClassRep == nullptr)
       {
          // Print out a short stub so we get a proper class hierarchy.
          if(superClassName) { // Filter hack; we don't want non-inheriting classes...

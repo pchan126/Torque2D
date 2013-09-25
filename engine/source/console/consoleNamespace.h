@@ -98,7 +98,7 @@ public:
         const char *execute(S32 argc, const char **argv, ExprEvalState *state);
 
     };
-    std::list<Entry*>* mEntryList;
+    std::list<Entry*> mEntryList;
     std::unordered_map<std::string, Entry*>* mHashTable;
     U32 mHashSize;
     U32 mHashSequence;  ///< @note The hash sequence is used by the autodoc console facility
