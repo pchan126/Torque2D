@@ -102,6 +102,7 @@ struct LoopingImage
 static F32 mMasterVolume = 1.f;           // traped from AL_LISTENER gain (miles has difficulties with 3d sources)
 
 static ALuint                 mSource[MAX_AUDIOSOURCES];                   // ALSources
+static ALint                  mResumePosition[MAX_AUDIOSOURCES];           // Ensures Pause resumes from the correct position
 static AUDIOHANDLE            mHandle[MAX_AUDIOSOURCES];                   // unique handles
 static Resource<AudioBuffer>  mBuffer[MAX_AUDIOSOURCES];                   // each of the playing buffers (needed for AudioThread)
 static F32                    mScore[MAX_AUDIOSOURCES];                    // for figuring out which sources to cull/uncull
@@ -2158,6 +2159,36 @@ ALuint alxGetWaveLen(ALuint buffer)
    return(len);
 }
 
+bool alxCheckError(const char* sourceFuncName, const char* alFuncName)
+{
+  ALenum errorVal = alGetError();
+  switch (errorVal)
+  {
+    case AL_NO_ERROR:
+      break;
+    case AL_INVALID_NAME:
+      Con::errorf("%s - %s OpenAL AL_INVALID_NAME error code returned", sourceFuncName, alFuncName);
+      break;
+    case AL_INVALID_ENUM:
+      Con::errorf("%s - %s OpenAL AL_INVALID_ENUM error code returned", sourceFuncName, alFuncName);
+      break;
+    case AL_INVALID_VALUE:
+      Con::errorf("%s - %s OpenAL AL_INVALID_VALUE error code returned", sourceFuncName, alFuncName);
+      break;
+    case AL_INVALID_OPERATION:
+      Con::errorf("%s - %s OpenAL AL_INVALID_OPERATION error code returned", sourceFuncName, alFuncName);
+      break;
+    case AL_OUT_OF_MEMORY:
+      Con::errorf("%s - %s OpenAL AL_OUT_OF_MEMORY error code returned", sourceFuncName, alFuncName);
+      break;
+    default:
+      Con::errorf("%s - %s OpenAL has encountered a problem and won't tell us what it is. %d", errorVal, sourceFuncName, alFuncName);
+  };
+  if (errorVal == AL_NO_ERROR)
+    return true;
+  else
+    return false;
+}
 
 //--------------------------------------------------------------------------
 // Environment:
