@@ -173,6 +173,10 @@ Dictionary::Entry *Dictionary::add(StringTableEntry name)
 //      else
 //         walk = walk->nextEntry;
 //   }
+    Entry* walk = lookup(name);
+    if (walk != nullptr)
+        return walk;
+
    Entry *ret;
 //   hashTable->count++;
 //
