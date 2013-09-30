@@ -53,11 +53,10 @@ std::list<SimFieldDictionary::Entry*> *SimFieldDictionary::mFreeList = new std::
 //      return fieldChunker.alloc();
 //}
 
-//void SimFieldDictionary::freeEntry(SimFieldDictionary::Entry *ent)
-//{
-////   ent->next = mFreeList;
-////   mFreeList = ent;
-//}
+void SimFieldDictionary::freeEntry(SimFieldDictionary::Entry *ent)
+{
+   mFreeList->push_back(ent);
+}
 
 SimFieldDictionary::SimFieldDictionary()
 {
@@ -67,13 +66,13 @@ SimFieldDictionary::SimFieldDictionary()
 
 SimFieldDictionary::~SimFieldDictionary()
 {
-   for (auto itr:mHashTable)
+   for (auto itr: mHashTable )
    {
        Entry *walk = itr.second;
        dFree(walk->value);
        mFreeList->push_back(walk);
-//       freeEntry(temp);
    }
+   mHashTable.clear();
 
 //   for(U32 i = 0; i < HashTableSize; i++)
 //   {
@@ -96,7 +95,7 @@ void SimFieldDictionary::setFieldValue(StringTableEntry slotName, const char *va
 //      walk = &((*walk)->next);
 
 //   Entry *field = *walk;
-   auto itr = mHashTable.find(std::string(slotName));
+   auto itr = mHashTable.find(slotName);
    if(!*value)
    {
         if(itr != mHashTable.end())
@@ -116,6 +115,7 @@ void SimFieldDictionary::setFieldValue(StringTableEntry slotName, const char *va
          Entry *field = itr->second;
          dFree(field->value);
          field->value = dStrdup(value);
+         Con::printf("set Entry, value = %p", field->value);
       }
       else
       {
@@ -125,9 +125,11 @@ void SimFieldDictionary::setFieldValue(StringTableEntry slotName, const char *va
 //         field = allocEntry();
          field->value = dStrdup(value);
          field->slotName = slotName;
+         
+         Con::printf("new Entry, value = %p", field->value);
 //         field->next = nullptr;
 //         *walk = field;
-          mHashTable[std::string(slotName)] = field;
+          mHashTable[slotName] = field;
       }
    }
 }
@@ -140,7 +142,7 @@ const char *SimFieldDictionary::getFieldValue(StringTableEntry slotName)
 //      if(walk->slotName == slotName)
 //         return walk->value;
 
-    auto itr = mHashTable.find(std::string(slotName));
+    auto itr = mHashTable.find(slotName);
     if (itr != mHashTable.end())
         return itr->second->value;
 
@@ -156,7 +158,7 @@ SimFieldDictionary::Entry  *SimFieldDictionary::findDynamicField(const String &f
 //      if( fieldName.equal(walk->slotName, String::NoCase) )
 //         return walk;
 //   }
-    auto itr = mHashTable.find(std::string(fieldName));
+    auto itr = mHashTable.find(fieldName);
     if (itr != mHashTable.end())
         return itr->second;
 
@@ -166,8 +168,12 @@ SimFieldDictionary::Entry  *SimFieldDictionary::findDynamicField(const String &f
 void SimFieldDictionary::assignFrom(SimFieldDictionary *dict)
 {
    mVersion++;
+   
+   for (auto walk: dict->mHashTable) {
+      setFieldValue(walk.second->slotName, walk.second->value);
+   }
 
-   mHashTable.insert(dict->mHashTable.begin(), dict->mHashTable.end());
+//   mHashTable.insert(dict->mHashTable.begin(), dict->mHashTable.end());
 //   for(U32 i = 0; i < HashTableSize; i++)
 //      for(Entry *walk = dict->mHashTable[i];walk; walk = walk->next)
 //         setFieldValue(walk->slotName, walk->value);

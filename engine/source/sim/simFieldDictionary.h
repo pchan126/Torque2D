@@ -51,12 +51,12 @@ class SimFieldDictionary
       HashTableSize = 19
    };
 //   Entry *mHashTable[HashTableSize];
-   std::unordered_map<std::string, Entry*> mHashTable;
+   std::unordered_map<StringTableEntry, Entry*> mHashTable;
 
   private:
 
    static std::list<Entry *>* mFreeList;
-//   static void freeEntry(Entry *entry);
+   static void freeEntry(Entry *entry);
 //   static Entry *allocEntry();
 
 //   static U32     getHashValue( StringTableEntry slotName );
@@ -83,11 +83,11 @@ public:
    void assignFrom(SimFieldDictionary *dict);
    U32   getNumFields() const { return mNumFields; }
 
-   std::unordered_map<std::string, Entry*>::iterator begin() { return mHashTable.begin(); };
-   std::unordered_map<std::string, Entry*>::iterator end() { return mHashTable.end(); };
+   std::unordered_map<StringTableEntry, Entry*>::iterator begin() { return mHashTable.begin(); };
+   std::unordered_map<StringTableEntry, Entry*>::iterator end() { return mHashTable.end(); };
    size_t size() {return mHashTable.size(); };
 
-   typedef std::unordered_map<std::string, Entry*>::iterator Iterator;
+   typedef std::unordered_map<StringTableEntry, Entry*>::iterator Iterator;
 //   Entry  *operator[](U32 index);
 };
 
