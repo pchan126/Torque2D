@@ -187,7 +187,6 @@ inline void ExprEvalState::setCurVarName(StringTableEntry name)
 
 inline void ExprEvalState::setCurVarNameCreate(StringTableEntry name)
 {
-    Con::printf("ExprEvalState::setCurVarNameCreate %s", name);
    if(name[0] == '$')
       currentVariable = globalVars.add(name);
    else if(stack.size())

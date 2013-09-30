@@ -154,17 +154,14 @@ Dictionary::Entry *Dictionary::lookup(StringTableEntry name)
 {
     if (hashTable->data.count(name) > 0)
     {
-        Con::printf("Dictionary::lookup %s - found", name );
         return hashTable->data.at(name);
     }
-
-    Con::printf("Dictionary::lookup %s - not found", name );
    return nullptr;
 }
 
+
 Dictionary::Entry *Dictionary::add(StringTableEntry name)
 {
-    Con::printf("Dictionary::add %s", name);
 //   Entry *walk = hashTable->data[HashPointer(name) % hashTable->size];
 //   while(walk)
 //   {

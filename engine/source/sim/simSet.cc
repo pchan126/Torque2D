@@ -232,8 +232,7 @@ SimObject* SimSet::findObjectByInternalName(const char* internalName, bool searc
          }
       }
    }
-
-   return NULL;
+   return nullptr;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -387,7 +386,7 @@ void SimGroup::onRemove()
           if ( (*ptr)->isProperlyAdded() )
           {
              (*ptr)->onGroupRemove();
-             (*ptr)->mGroup = NULL;
+             (*ptr)->mGroup = nullptr;
              (*ptr)->unregisterObject();
              (*ptr)->mGroup = this;
           }
@@ -408,12 +407,12 @@ SimObject *SimGroup::findObject(const char *namePath)
 
    StringTableEntry stName = StringTable->lookupn(namePath, len);
    if(!stName)
-      return NULL;
+      return nullptr;
 
    SimObject *root = nameDictionary.find(stName);
 
    if(!root)
-      return NULL;
+      return nullptr;
 
    if(namePath[len] == 0)
       return root;
@@ -430,7 +429,7 @@ SimObject *SimSet::findObject(const char *namePath)
 
    StringTableEntry stName = StringTable->lookupn(namePath, len);
    if(!stName)
-      return NULL;
+      return nullptr;
 
    lock();
    for(auto i:*this)
@@ -444,12 +443,12 @@ SimObject *SimSet::findObject(const char *namePath)
       }
    }
    unlock();
-   return NULL;
+   return nullptr;
 }
 
 SimObject* SimObject::findObject(const char* )
 {
-   return NULL;
+   return nullptr;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -487,22 +486,26 @@ ConsoleMethod(SimSet, listObjects, void, 2, 2, "() Prints the object data within
    object->unlock();
 }
 
-ConsoleMethod(SimSet, add, void, 3, 0, "(obj1,...) Adds given listy of objects to the SimSet.\n"
-              "@param obj_i (i is unilimited) Variable list of objects to add\n"
+ConsoleMethod(SimSet, add, void, 3, 0, "(obj1,...) Adds given list of objects to the SimSet.\n"
+              "@param obj_i (i is unlimited) Variable list of objects to add\n"
               "@return No return value")
 {
    for(S32 i = 2; i < argc; i++)
    {
+       Con::printf("SimSet:Add %s", argv[i]);
       SimObject *obj = Sim::findObject(argv[i]);
       if(obj)
          object->addObject(obj);
       else
+      {
          Con::printf("Set::add: Object \"%s\" doesn't exist", argv[i]);
+          SimObject *obj2 = Sim::findObject(argv[i]);
+      }
    }
 }
 
-ConsoleMethod(SimSet, remove, void, 3, 0, "(obj1,...) Removes given listy of objects from the SimSet.\n"
-              "@param obj_i (i is unilimited) Variable list of objects to remove\n"
+ConsoleMethod(SimSet, remove, void, 3, 0, "(obj1,...) Removes given list of objects from the SimSet.\n"
+              "@param obj_i (i is unlimited) Variable list of objects to remove\n"
               "@return No return value")
 {
    for(S32 i = 2; i < argc; i++)

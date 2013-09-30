@@ -25,6 +25,8 @@
 
 void StringStack::getArgcArgv(StringTableEntry name, U32 *argc, const char ***in_argv, bool popStackFrame /* = false */)
 {
+//    if (name)
+//        Con::printf ("StringStack::getArgcArgv %s", name);
    U32 startStack = mFrameOffsets[mNumFrames-1] + 1;
    U32 argCount   = std::min(mStartStackSize - startStack, (U32)MaxArgs);
 
@@ -32,7 +34,12 @@ void StringStack::getArgcArgv(StringTableEntry name, U32 *argc, const char ***in
    mArgV[0] = name;
    
    for(U32 i = 0; i < argCount; i++)
+   {
       mArgV[i+1] = mBuffer + mStartOffsets[startStack + i];
+//       Con::printf ("    mArgv %s", mArgV[i+1]);
+//       if (std::string("InvisibleBlack") == std::string(mArgV[i+1]))
+//           int i = 1;
+   }
    argCount++;
    
    *argc = argCount;

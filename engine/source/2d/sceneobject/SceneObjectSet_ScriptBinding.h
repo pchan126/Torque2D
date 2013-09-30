@@ -39,7 +39,7 @@ ConsoleMethod(SceneObjectSet, dumpObjects, void, 2, 2, "() Dumps the object data
 }
 
 ConsoleMethod(SceneObjectSet, add, void, 3, 0, "(obj1,...) Adds given list of objects to the SceneObjectSet.\n"
-              "@param obj_i (i is unilimited) Variable list of objects to add\n"
+              "@param obj_i (i is unlimited) Variable list of objects to add\n"
               "@return No return value")
 {
    for(S32 i = 2; i < argc; i++)

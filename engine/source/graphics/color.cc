@@ -250,7 +250,7 @@ void StockColor::destroy( void )
 bool StockColor::isColor( const char* pStockColorName )
 {
     // Sanity!
-    AssertFatal( pStockColorName != NULL, "Cannot fetch a NULL stock color name." );
+    AssertFatal( pStockColorName != nullptr, "Cannot fetch a nullptr stock color name." );
 
     // Fetch color name.
     StringTableEntry colorName = StringTable->insert( pStockColorName );
@@ -264,7 +264,7 @@ bool StockColor::isColor( const char* pStockColorName )
 const ColorF& StockColor::colorF( const char* pStockColorName )
 {
     // Sanity!
-    AssertFatal( pStockColorName != NULL, "Cannot fetch a NULL stock color name." );
+    AssertFatal( pStockColorName != nullptr, "Cannot fetch a nullptr stock color name." );
 
     // Fetch color name.
     StringTableEntry colorName = StringTable->insert( pStockColorName );
@@ -288,7 +288,7 @@ const ColorF& StockColor::colorF( const char* pStockColorName )
 const ColorI& StockColor::colorI( const char* pStockColorName )
 {
     // Sanity!
-    AssertFatal( pStockColorName != NULL, "Cannot fetch a NULL stock color name." );
+    AssertFatal( pStockColorName != nullptr, "Cannot fetch a nullptr stock color name." );
 
     // Fetch color name.
     StringTableEntry colorName = StringTable->insert( pStockColorName );
@@ -356,7 +356,7 @@ const StockColorItem* StockColor::getColorItem( const S32 index )
     {
         // No, so warn.
         Con::warnf("StockColor::getName() - Specified color index '%d' is out of range.  Range is 0 to %d.", index, stockColorCount-1 );
-        return NULL;
+        return nullptr;
     }
 
     // Return color name.
@@ -594,7 +594,7 @@ ConsoleFunction( getStockColorName, const char*, 2, 2,  "(stockColorIndex) - Get
     // Fetch the color item.
     const StockColorItem* pColorItem = StockColor::getColorItem( stockColorIndex );
 
-    return pColorItem == NULL ? NULL : pColorItem->getColorName();
+    return pColorItem == nullptr ? nullptr : pColorItem->getColorName();
 }
 
 //-----------------------------------------------------------------------------

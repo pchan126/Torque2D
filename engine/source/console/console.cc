@@ -749,14 +749,12 @@ void errorf(const char* fmt,...)
 
 void setVariable(const char *name, const char *value)
 {
-    Con::printf("setVariable %s %s", name, value);
    name = prependDollar(name);
    gEvalState.globalVars.setVariable(StringTable->insert(name), value);
 }
 
 void setLocalVariable(const char *name, const char *value)
 {
-    Con::printf("setLocalVariable %s %s", name, value);
    name = prependPercent(name);
    gEvalState.stack.back()->setVariable(StringTable->insert(name), value);
 }

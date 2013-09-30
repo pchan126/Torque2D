@@ -214,7 +214,6 @@ void SimManagerNameDictionary::insert(SimObject* obj)
 
 SimObject* SimManagerNameDictionary::find(StringTableEntry name)
 {
-   Con::printf("SimManagerNameDictionary::find %s", name);
    // nullptr is a valid lookup - it will always return nullptr
    SimObject* ret = nullptr;
    Mutex::lockMutex(mutex);

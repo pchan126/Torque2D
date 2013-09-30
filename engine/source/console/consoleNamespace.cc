@@ -206,7 +206,7 @@ void Namespace::buildHashTable()
    if(!(mHashSize & 1))
       mHashSize++;
 
-   mHashTable = new std::unordered_map<std::string, Entry*>;
+   mHashTable = new std::unordered_map<StringTableEntry, Entry*>;
 //   mHashTable = (Entry **) mCacheAllocator.alloc(sizeof(Entry *) * mHashSize);
 //   for(U32 i = 0; i < mHashSize; i++)
 //      mHashTable[i] = nullptr;
@@ -215,7 +215,8 @@ void Namespace::buildHashTable()
    {
       for(Entry *walk : ns->mEntryList)
       {
-          (*mHashTable)[std::string(walk->mFunctionName)] = walk;
+         if ((*mHashTable).count(walk->mFunctionName) == 0)
+            (*mHashTable)[walk->mFunctionName] = walk;
 
 //         U32 index = HashPointer(walk->mFunctionName) % mHashSize;
 //         while(mHashTable[index] && mHashTable[index]->mFunctionName != walk->mFunctionName)
@@ -298,8 +299,8 @@ Namespace::Entry *Namespace::lookup(StringTableEntry name)
 //      if(index >= mHashSize)
 //         index = 0;
 //   }
-   if (mHashTable->count(std::string(name)) > 0)
-       return mHashTable->at(std::string(name));
+   if (mHashTable->count(name) > 0)
+       return mHashTable->at(name);
    else
        return nullptr;
 }
@@ -345,7 +346,6 @@ Namespace::Entry *Namespace::createLocalEntry(StringTableEntry name)
 
    ent->mNamespace = this;
    ent->mFunctionName = name;
-//   ent->mNext = mEntryList;
    ent->mPackage = mPackage;
    mEntryList.push_back( ent );
    return ent;
