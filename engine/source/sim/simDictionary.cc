@@ -98,7 +98,10 @@ SimObject* SimNameDictionary::find(StringTableEntry name)
    Mutex::lockMutex(mutex);
 
    if (hashTable.count(std::string(name))>0)
+   {
+      Mutex::unlockMutex(mutex);
        return hashTable.at(std::string(name));
+   }
 
 //   S32 idx = HashPointer(name) % hashTableSize;
 //   SimObject *walk = hashTable[idx];
@@ -166,9 +169,11 @@ void SimManagerNameDictionary::insert(SimObject* obj)
    if(!obj->objectName)
       return;
 
+   Con::printf("SimManagerNameDictionary::insert %s", obj->objectName);
+   
    Mutex::lockMutex(mutex);
 
-   hashTable[std::string(obj->objectName)] = obj;
+   hashTable[obj->objectName] = obj;
 //   S32 idx = HashPointer(obj->objectName) % hashTableSize;
 //   obj->nextManagerNameObject = hashTable[idx];
 //   hashTable[idx] = obj;
@@ -209,23 +214,13 @@ void SimManagerNameDictionary::insert(SimObject* obj)
 
 SimObject* SimManagerNameDictionary::find(StringTableEntry name)
 {
+   Con::printf("SimManagerNameDictionary::find %s", name);
    // nullptr is a valid lookup - it will always return nullptr
    SimObject* ret = nullptr;
    Mutex::lockMutex(mutex);
 
-   if (hashTable.count(std::string(name))>0)
-       ret = hashTable.at(std::string(name));
-//   S32 idx = HashPointer(name) % hashTableSize;
-//   SimObject *walk = hashTable[idx];
-//   while(walk)
-//   {
-//      if(walk->objectName == name)
-//      {
-//         Mutex::unlockMutex(mutex);
-//         return walk;
-//      }
-//      walk = walk->nextManagerNameObject;
-//   }
+   if (hashTable.count(name)>0)
+       ret = hashTable.at(name);
 
    Mutex::unlockMutex(mutex);
    return ret;
@@ -237,7 +232,7 @@ void SimManagerNameDictionary::remove(SimObject* obj)
       return;
 
    Mutex::lockMutex(mutex);
-   hashTable.erase(std::string(obj->objectName));
+   hashTable.erase(obj->objectName);
 
 //   SimObject **walk = &hashTable[HashPointer(obj->objectName) % hashTableSize];
 //   while(*walk)

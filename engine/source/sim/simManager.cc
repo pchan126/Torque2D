@@ -59,7 +59,7 @@ void initEventQueue()
    gCurrentTime = 0;
    gTargetTime = 0;
    gEventSequence = 1;
-   gEventQueue = NULL;
+   gEventQueue = nullptr;
    gEventQueueMutex = Mutex::createMutex();
 }
 
@@ -108,12 +108,12 @@ U32 postEvent(SimObject *destObject, SimEvent* event,U32 time)
    SimEvent **walk = &gEventQueue;
    SimEvent *current;
    
-   while((current = *walk) != NULL && (current->time < event->time))
+   while((current = *walk) != nullptr && (current->time < event->time))
       walk = &(current->nextEvent);
    
    // [tom, 6/24/2005] This ensures that SimEvents are dispatched in the same order that they are posted.
    // This is needed to ensure Con::threadSafeExecute() executes script code in the correct order.
-   while((current = *walk) != NULL && (current->time == event->time))
+   while((current = *walk) != nullptr && (current->time == event->time))
       walk = &(current->nextEvent);
    
    event->nextEvent = current;
@@ -136,7 +136,7 @@ void cancelEvent(U32 eventSequence)
    SimEvent **walk = &gEventQueue;
    SimEvent *current;
    
-   while((current = *walk) != NULL)
+   while((current = *walk) != nullptr)
    {
       if(current->sequenceCount == eventSequence)
       {
@@ -159,7 +159,7 @@ void cancelPendingEvents(SimObject *obj)
    SimEvent **walk = &gEventQueue;
    SimEvent *current;
    
-   while((current = *walk) != NULL)
+   while((current = *walk) != nullptr)
    {
       if(current->destObject == obj)
       {
@@ -274,8 +274,8 @@ U32 getTargetTime()
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 
-SimGroup *gRootGroup = NULL;
-SimManagerNameDictionary *gNameDictionary;
+SimGroup *gRootGroup = nullptr;
+SimManagerNameDictionary *gNameDictionary = nullptr;
 SimIdDictionary *gIdDictionary;
 U32 gNextObjectId;
 
@@ -306,7 +306,7 @@ SimObject* findObject(const char* name)
 {
    // Play nice with bad code - JDD
    if( !name )
-      return NULL;
+      return nullptr;
 
    SimObject *obj;
    char c = *name;
@@ -325,24 +325,24 @@ SimObject* findObject(const char* name)
          {
             obj = findObject(dAtoi(name));
             if(!obj)
-               return NULL;
+               return nullptr;
             return obj->findObject(temp);
          }
       }
    }
    S32 len;
 
-   //-Mat ensure > 0, instead of just != 0 (prevent running through bogus memory on non-NULL-terminated strings)
+   //-Mat ensure > 0, instead of just != 0 (prevent running through bogus memory on non-nullptr-terminated strings)
    for(len = 0; name[len] > 0 && name[len] != '/'; len++)
       ;
    StringTableEntry stName = StringTable->lookupn(name, len);
    if(!stName)
-      return NULL;
+      return nullptr;
    obj = gNameDictionary->find(stName);
    if(!name[len])
       return obj;
    if(!obj)
-      return NULL;
+      return nullptr;
    return obj->findObject(name + len + 1);
 }
 

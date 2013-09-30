@@ -86,7 +86,7 @@ bool SimObject::registerObject()
         mIdString = StringTable->insert( idBuffer );
     }
 
-   AssertFatal(Sim::gIdDictionary && Sim::gNameDictionary, 
+   AssertFatal(Sim::gIdDictionary != nullptr && Sim::gNameDictionary != nullptr,
       "SimObject::registerObject - tried to register an object before Sim::init()!");
 
    Sim::gIdDictionary->insert(this);	

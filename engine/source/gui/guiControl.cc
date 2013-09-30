@@ -46,30 +46,31 @@ IMPLEMENT_CONOBJECT( GuiControl );
 
 
 //used to locate the next/prev responder when tab is pressed
-GuiControl *GuiControl::smPrevResponder = NULL;
-GuiControl *GuiControl::smCurResponder = NULL;
+GuiControl *GuiControl::smPrevResponder = nullptr;
+GuiControl *GuiControl::smCurResponder = nullptr;
 
-GuiEditCtrl *GuiControl::smEditorHandle = NULL;
+GuiEditCtrl *GuiControl::smEditorHandle = nullptr;
 
 bool GuiControl::smDesignTime = false;
 
-GuiControl::GuiControl() : mAddGroup( NULL ),
+GuiControl::GuiControl() : mAddGroup( nullptr ),
                             mLayer(0),
                             mBounds(0,0,64,64),
                             mMinExtent(8,2),
-                            mProfile(NULL),
-                            mLangTable(NULL),
-                            mFirstResponder(NULL),
+                            mProfile(nullptr),
+                            mLangTable(nullptr),
+                            mFirstResponder(nullptr),
                             mVisible(true),
                             mActive(true),
                             mAwake(false),
                             mHorizSizing(horizResizeRight),
                             mVertSizing(vertResizeBottom),
-                            mTooltipProfile(NULL),
+                            mTooltipProfile(nullptr),
                             mTipHoverTime(1000),
                             mIsContainer(false),
                             mCanResize(true),
-                            mCanHit( true )
+                            mCanHit( true ),
+                            mDefaultGuiSB(nullptr)
 {
     mConsoleVariable     = StringTable->EmptyString;
     mAcceleratorKey      = StringTable->EmptyString;
@@ -80,6 +81,8 @@ GuiControl::GuiControl() : mAddGroup( NULL ),
     
     mCanSaveFieldDictionary = false;
     mNotifyChildrenResized = true;
+   
+   mDefaultGuiSB = nullptr;
 }
 
 GuiControl::~GuiControl()
@@ -210,7 +213,7 @@ LangTable * GuiControl::getGUILangTable()
     if(parent)
         return parent->getGUILangTable();
 
-    return NULL;
+    return nullptr;
 }
 
 const UTF8 * GuiControl::getGUIString(S32 id)
@@ -219,7 +222,7 @@ const UTF8 * GuiControl::getGUIString(S32 id)
     if(lt)
         return lt->getString(id);
 
-    return NULL;
+    return nullptr;
 }
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- //
@@ -269,7 +272,7 @@ GuiControl *GuiControl::getParent()
 
 GuiCanvas *GuiControl::getRoot()
 {
-   GuiControl *root = NULL;
+   GuiControl *root = nullptr;
     GuiControl *parent = getParent();
    while (parent)
    {
@@ -279,7 +282,7 @@ GuiCanvas *GuiControl::getRoot()
    if (root)
       return dynamic_cast<GuiCanvas*>(root);
    else
-      return NULL;
+      return nullptr;
 }
 
 void GuiControl::inspectPreApply()
@@ -288,7 +291,7 @@ void GuiControl::inspectPreApply()
       smEditorHandle->controlInspectPreApply(this);
    
    // The canvas never sleeps
-   if(mAwake && dynamic_cast<GuiCanvas*>(this) == NULL )
+   if(mAwake && dynamic_cast<GuiCanvas*>(this) == nullptr )
    {
       onSleep(); // release all our resources.
       mAwake = true;
@@ -298,7 +301,7 @@ void GuiControl::inspectPreApply()
 void GuiControl::inspectPostApply()
 {
    // Shhhhhhh, you don't want to wake the canvas!
-   if(mAwake && dynamic_cast<GuiCanvas*>(this) == NULL )
+   if(mAwake && dynamic_cast<GuiCanvas*>(this) == nullptr )
    {
       mAwake = false;
       onWake();
@@ -525,11 +528,11 @@ bool GuiControl::defaultTooltipRender( const Point2I &hoverPos, const Point2I &c
     if (!mAwake)
         return false;
     
-    if ( dStrlen( mTooltip ) == 0 && ( tipText == NULL || dStrlen( tipText ) == 0 ) )
+    if ( dStrlen( mTooltip ) == 0 && ( tipText == nullptr || dStrlen( tipText ) == 0 ) )
         return false;
     
     String renderTip( mTooltip );
-    if ( tipText != NULL )
+    if ( tipText != nullptr )
         renderTip = tipText;
     
     // Need to have root.
@@ -630,8 +633,8 @@ void GuiControl::renderChildControls(Point2I offset, const RectI &updateRect)
    for( S32 count = 0; count < objectList.size(); count++ )
    {
       GuiControl *ctrl = (GuiControl *)objectList[count];
-      if( ctrl == NULL ) {
-          Con::errorf( "GuiControl::renderChildControls() object %i is NULL", count );
+      if( ctrl == nullptr ) {
+          Con::errorf( "GuiControl::renderChildControls() object %i is nullptr", count );
         continue;
       }
       if (ctrl->mVisible)
@@ -743,7 +746,7 @@ void GuiControl::onDeleteNotify(SimObject *object)
         Sim::findObject( "GuiDefaultProfile", profile );
         
         if ( profile == mProfile )
-            mProfile = NULL;
+            mProfile = nullptr;
         else
             setControlProfile( profile );
     }
@@ -753,7 +756,7 @@ void GuiControl::onDeleteNotify(SimObject *object)
         Sim::findObject( "GuiDefaultProfile", profile );
         
         if ( profile == mTooltipProfile )
-            mTooltipProfile = NULL;
+            mTooltipProfile = nullptr;
         else
             setTooltipProfile( profile );
     }
@@ -768,7 +771,7 @@ bool GuiControl::onWake()
       return false;
 
    // [tom, 4/18/2005] Cause mLangTable to be refreshed in case it was changed
-   mLangTable = NULL;
+   mLangTable = nullptr;
 
    // Grab the classname of this object
    const char *cName = getClassName();
@@ -845,7 +848,7 @@ void GuiControl::onSleep()
       return;
 
    //decrement the profile referrence
-   if( mProfile != NULL )
+   if( mProfile != nullptr )
       mProfile->decRefCount();
    clearFirstResponder();
    mouseUnlock();
@@ -963,7 +966,7 @@ void GuiControl::onChildRemoved( GuiControl *child )
 
 const char *GuiControl::getScriptValue()
 {
-   return NULL;
+   return nullptr;
 }
 
 void GuiControl::setScriptValue(const char *value)
@@ -1026,7 +1029,7 @@ const char * GuiControl::getVariable()
 {
    if (mConsoleVariable[0])
       return Con::getVariable(mConsoleVariable);
-   else return NULL;
+   else return nullptr;
 }
 
 S32 GuiControl::getIntVariable()
@@ -1081,12 +1084,12 @@ void GuiControl::setTooltipProfile( GuiControlProfile *prof )
 {
     AssertFatal( prof, "GuiControl::setTooltipProfile: invalid profile" );
     
-    if ( prof == mTooltipProfile || prof == NULL)
+    if ( prof == mTooltipProfile || prof == nullptr)
         return;
     
 //    bool skipAwaken = false;
    
-//    if ( mTooltipProfile == NULL )
+//    if ( mTooltipProfile == nullptr )
 //        skipAwaken = true;
     
 //    if( mTooltipProfile )
@@ -1245,7 +1248,7 @@ void GuiControl::onMiddleMouseDragged(const GuiEvent &)
 
 bool GuiControl::acceptsAsChild( SimObject* object ) const
 {
-    return ( dynamic_cast< GuiControl* >( object ) != NULL );
+    return ( dynamic_cast< GuiControl* >( object ) != nullptr );
 }
 
 //-----------------------------------------------------------------------------
@@ -1275,7 +1278,7 @@ GuiControl* GuiControl::findHitControl(const Point2I &pt, S32 initialLayer)
     
     if( mCanHit )
         return this;
-    return NULL;
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -1346,7 +1349,7 @@ bool GuiControl::findHitControls( const RectI& rect, Vector< GuiControl* >& outR
 
 GuiControl* GuiControl::findFirstTabable()
 {
-   GuiControl *tabCtrl = NULL;
+   GuiControl *tabCtrl = nullptr;
    for (auto i:*this)
    {
       GuiControl *ctrl = static_cast<GuiControl *>(i);
@@ -1359,14 +1362,14 @@ GuiControl* GuiControl::findFirstTabable()
    }
 
    //nothing was found, therefore, see if this ctrl is tabable
-   return ( mProfile != NULL ) ? ( ( mProfile->mTabable && mAwake && mVisible ) ? this : NULL ) : NULL;
+   return ( mProfile != nullptr ) ? ( ( mProfile->mTabable && mAwake && mVisible ) ? this : nullptr ) : nullptr;
 }
 
 GuiControl* GuiControl::findLastTabable(bool firstCall)
 {
    //if this is the first call, clear the global
    if (firstCall)
-      smPrevResponder = NULL;
+      smPrevResponder = nullptr;
 
    //if this control is tabable, set the global
    if (mProfile->mTabable)
@@ -1388,7 +1391,7 @@ GuiControl *GuiControl::findNextTabable(GuiControl *curResponder, bool firstCall
 {
    //if this is the first call, clear the global
    if (firstCall)
-      smCurResponder = NULL;
+      smCurResponder = nullptr;
 
    //first find the current responder
    if (curResponder == this)
@@ -1399,7 +1402,7 @@ GuiControl *GuiControl::findNextTabable(GuiControl *curResponder, bool firstCall
       return( this );
 
    //loop through, checking each child to see if it is the one that follows the firstResponder
-   GuiControl *tabCtrl = NULL;
+   GuiControl *tabCtrl = nullptr;
 
    for (auto i:*this)
    {
@@ -1414,7 +1417,7 @@ GuiControl *GuiControl::findNextTabable(GuiControl *curResponder, bool firstCall
 GuiControl *GuiControl::findPrevTabable(GuiControl *curResponder, bool firstCall)
 {
    if (firstCall)
-      smPrevResponder = NULL;
+      smPrevResponder = nullptr;
 
    //if this is the current reponder, return the previous one
    if (curResponder == this)
@@ -1425,7 +1428,7 @@ GuiControl *GuiControl::findPrevTabable(GuiControl *curResponder, bool firstCall
       smPrevResponder = this;
 
    //loop through, checking each child to see if it is the one that follows the firstResponder
-   GuiControl *tabCtrl = NULL;
+   GuiControl *tabCtrl = nullptr;
 
    for (auto i:*this)
    {
@@ -1501,7 +1504,7 @@ void GuiControl::setFirstResponder()
     if ( mAwake && mVisible )
     {
        GuiControl *parent = getParent();
-       if (mProfile->mCanKeyFocus == true && parent != NULL )
+       if (mProfile->mCanKeyFocus == true && parent != nullptr )
       {
          parent->setFirstResponder(this);
 
@@ -1515,10 +1518,10 @@ void GuiControl::setFirstResponder()
 void GuiControl::clearFirstResponder()
 {
    GuiControl *parent = this;
-   while((parent = parent->getParent()) != NULL)
+   while((parent = parent->getParent()) != nullptr)
    {
       if(parent->mFirstResponder == this)
-         parent->mFirstResponder = NULL;
+         parent->mFirstResponder = nullptr;
       else
          break;
    }
@@ -1735,9 +1738,9 @@ void GuiControl::getCursor(GuiCursor *&cursor, bool &showCursor, const GuiEvent 
         // so set it back before we change it again.
         
         PlatformWindow *pWindow = static_cast<GuiCanvas*>(getRoot())->getPlatformWindow();
-        AssertFatal(pWindow != NULL,"GuiControl without owning platform window!  This should not be possible.");
+        AssertFatal(pWindow != nullptr,"GuiControl without owning platform window!  This should not be possible.");
         PlatformCursorController *pController = pWindow->getCursorController();
-        AssertFatal(pController != NULL,"PlatformWindow without an owned CursorController!");
+        AssertFatal(pController != nullptr,"PlatformWindow without an owned CursorController!");
         
         pController->popCursor();
         

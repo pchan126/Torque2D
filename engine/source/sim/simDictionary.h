@@ -43,8 +43,6 @@ class SimNameDictionary
    };
 
    std::unordered_map<std::string, SimObject *> hashTable;  // hash the pointers of the names...
-//   S32 hashTableSize;
-//   S32 hashEntryCount;
 
    void *mutex;
 
@@ -64,9 +62,7 @@ class SimManagerNameDictionary
       DefaultTableSize = 29
    };
 
-   std::unordered_map<std::string, SimObject*> hashTable;  // hash the pointers of the names...
-   S32 hashTableSize;
-   S32 hashEntryCount;
+   std::unordered_map<StringTableEntry, SimObject*> hashTable;  // hash the pointers of the names...
 
    void *mutex;
 
