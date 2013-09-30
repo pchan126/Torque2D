@@ -48,7 +48,6 @@ SimObject::SimObject( const U8 namespaceLinkMask ) :
     mNSLinkMask( namespaceLinkMask ),
     objectName(nullptr),
     mInternalName(nullptr),
-    nextIdObject(nullptr),
     mId(0),
     mIdString(StringTable->EmptyString),
     mGroup(0),

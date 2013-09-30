@@ -283,7 +283,6 @@ private:
     StringTableEntry objectName;
     SimObject*       nextNameObject;
     SimObject*       nextManagerNameObject;
-    SimObject*       nextIdObject;
 
     SimGroup*   mGroup;  ///< SimGroup we're contained in, if any.
     BitSet32    mFlags;

@@ -62,8 +62,7 @@ Namespace::Namespace()
    mName = nullptr;
    mParent = nullptr;
    mNext = nullptr;
-   mHashSize = 0;
-   mHashTable = 0;
+   mHashTable = nullptr;
    mHashSequence = 0;
    mRefCountToParent = 0;
    mClassRep = 0;
@@ -77,6 +76,7 @@ Namespace::~Namespace()
       mUsage = nullptr;
       mCleanUpUsage = false;
    }
+   SAFE_DELETE(mHashTable);
 }
 
 void Namespace::clearEntries()
@@ -188,8 +188,6 @@ void Namespace::buildHashTable()
    if(mEntryList.empty() && mParent)
    {
       mParent->buildHashTable();
-      mHashTable = mParent->mHashTable;
-      mHashSize = mParent->mHashSize;
       mHashSequence = mCacheSequence;
       return;
    }
@@ -201,15 +199,7 @@ void Namespace::buildHashTable()
          if(lookupRecursive(walk->mFunctionName) == walk)
             entryCount++;
 
-   mHashSize = entryCount + (entryCount >> 1) + 1;
-
-   if(!(mHashSize & 1))
-      mHashSize++;
-
    mHashTable = new std::unordered_map<StringTableEntry, Entry*>;
-//   mHashTable = (Entry **) mCacheAllocator.alloc(sizeof(Entry *) * mHashSize);
-//   for(U32 i = 0; i < mHashSize; i++)
-//      mHashTable[i] = nullptr;
 
    for(ns = this; ns; ns = ns->mParent)
    {
@@ -217,20 +207,8 @@ void Namespace::buildHashTable()
       {
          if ((*mHashTable).count(walk->mFunctionName) == 0)
             (*mHashTable)[walk->mFunctionName] = walk;
-
-//         U32 index = HashPointer(walk->mFunctionName) % mHashSize;
-//         while(mHashTable[index] && mHashTable[index]->mFunctionName != walk->mFunctionName)
-//         {
-//            index++;
-//            if(index >= mHashSize)
-//               index = 0;
-//         }
-//
-//         if(!mHashTable[index])
-//            mHashTable[index] = walk;
       }
    }
-
    mHashSequence = mCacheSequence;
 }
 
@@ -270,10 +248,6 @@ const char *Namespace::tabComplete(const char *prevText, S32 baseLen, bool fForw
            bestMatch = temp->mFunctionName;
    }
 
-
-//   for(U32 i = 0; i < mHashSize; i++)
-//      if(mHashTable[i] && canTabComplete(prevText, bestMatch, mHashTable[i]->mFunctionName, baseLen, fForward))
-//         bestMatch = mHashTable[i]->mFunctionName;
    return bestMatch;
 }
 
@@ -292,13 +266,6 @@ Namespace::Entry *Namespace::lookup(StringTableEntry name)
    if(mHashSequence != mCacheSequence)
       buildHashTable();
 
-//   U32 index = HashPointer(name) % mHashSize;
-//   while(mHashTable[index] && mHashTable[index]->mFunctionName != name)
-//   {
-//      index++;
-//      if(index >= mHashSize)
-//         index = 0;
-//   }
    if (mHashTable->count(name) > 0)
        return mHashTable->at(name);
    else
@@ -313,13 +280,11 @@ static S32 QSORT_CALLBACK compareEntries(const void* a,const void* b)
    return dStricmp(fa->mFunctionName, fb->mFunctionName);
 }
 
+
 void Namespace::getEntryList(Vector<Entry *> *vec)
 {
    if(mHashSequence != mCacheSequence)
       buildHashTable();
-
-//   for(U32 i = 0; i < mHashSize; i++)
-//      if(mHashTable[i])
 
     for (auto itr: *mHashTable)
     {

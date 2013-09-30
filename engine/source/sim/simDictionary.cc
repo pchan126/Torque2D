@@ -169,7 +169,7 @@ void SimManagerNameDictionary::insert(SimObject* obj)
    if(!obj->objectName)
       return;
 
-   Con::printf("SimManagerNameDictionary::insert %s", obj->objectName);
+//   Con::printf("SimManagerNameDictionary::insert %s", obj->objectName);
    
    Mutex::lockMutex(mutex);
 
@@ -256,8 +256,6 @@ void SimManagerNameDictionary::remove(SimObject* obj)
 
 SimIdDictionary::SimIdDictionary()
 {
-   for(S32 i = 0; i < DefaultTableSize; i++)
-      table[i] = nullptr;
    mutex = Mutex::createMutex();
 }
 
@@ -270,29 +268,17 @@ void SimIdDictionary::insert(SimObject* obj)
 {
    Mutex::lockMutex(mutex);
 
-   S32 idx = obj->getId() & TableBitMask;
-   obj->nextIdObject = table[idx];
-   AssertFatal( obj->nextIdObject != obj, "SimIdDictionary::insert - Creating Infinite Loop linking to self!" );
-   table[idx] = obj;
+   table[obj->getId()] = obj;
 
    Mutex::unlockMutex(mutex);
 }
 
-SimObject* SimIdDictionary::find(S32 id)
+SimObject* SimIdDictionary::find(SimObjectId id)
 {
    Mutex::lockMutex(mutex);
 
-   S32 idx = id & TableBitMask;
-   SimObject *walk = table[idx];
-   while(walk)
-   {
-      if(walk->getId() == U32(id))
-      {
-         Mutex::unlockMutex(mutex);
-         return walk;
-      }
-      walk = walk->nextIdObject;
-   }
+   if (table.count(id) > 0)
+      return table[id];
 
    Mutex::unlockMutex(mutex);
 
@@ -303,11 +289,7 @@ void SimIdDictionary::remove(SimObject* obj)
 {
    Mutex::lockMutex(mutex);
 
-   SimObject **walk = &table[obj->getId() & TableBitMask];
-   while(*walk && *walk != obj)
-      walk = &((*walk)->nextIdObject);
-   if(*walk)
-      *walk = obj->nextIdObject;
+   table.erase(obj->getId());
 
    Mutex::unlockMutex(mutex);
 }

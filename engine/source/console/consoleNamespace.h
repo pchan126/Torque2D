@@ -99,7 +99,7 @@ public:
     };
     std::list<Entry*> mEntryList;
     std::unordered_map<StringTableEntry, Entry*>* mHashTable;
-    U32 mHashSize;
+
     U32 mHashSequence;  ///< @note The hash sequence is used by the autodoc console facility
                         ///        as a means of testing reference state.
 

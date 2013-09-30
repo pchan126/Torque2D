@@ -27,8 +27,8 @@
 #include "string/stringTable.h"
 #include "platform/threads/mutex.h"
 #include <unordered_map>
+#include "simObject.h"
 
-class SimObject;
 
 //----------------------------------------------------------------------------
 /// Map of names to SimObjects
@@ -82,20 +82,14 @@ public:
 /// for fast removal of an object given object*
 class SimIdDictionary
 {
-   enum
-   {
-      DefaultTableSize = 4096,
-      TableBitMask = 4095
-   };
-
-   SimObject *table[DefaultTableSize];
+   std::unordered_map<SimObjectId, SimObject*> table;
 
    void *mutex;
 
 public:
    void insert(SimObject* obj);
    void remove(SimObject* obj);
-   SimObject* find(S32 id);
+   SimObject* find(SimObjectId id);
 
    SimIdDictionary();
    ~SimIdDictionary();
