@@ -66,7 +66,7 @@ Mutex::Mutex()
 Mutex::~Mutex()
 {
     // Destroy the system mutex.
-    const bool ok = pthread_mutex_destroy( &(mData->mMutex) );
+    const int ok = pthread_mutex_destroy( &(mData->mMutex) );
     
     // Sanity!
     AssertFatal(ok == 0, "~Mutex() failed: pthread_mutex_destroy() failed.");

@@ -188,6 +188,7 @@ void Namespace::buildHashTable()
    if(mEntryList.empty() && mParent)
    {
       mParent->buildHashTable();
+      mHashTable = mParent->mHashTable;
       mHashSequence = mCacheSequence;
       return;
    }
@@ -266,6 +267,8 @@ Namespace::Entry *Namespace::lookup(StringTableEntry name)
    if(mHashSequence != mCacheSequence)
       buildHashTable();
 
+   assert(mHashTable != nullptr);
+   
    if (mHashTable->count(name) > 0)
        return mHashTable->at(name);
    else
