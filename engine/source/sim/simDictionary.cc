@@ -278,7 +278,10 @@ SimObject* SimIdDictionary::find(SimObjectId id)
    Mutex::lockMutex(mutex);
 
    if (table.count(id) > 0)
+   {
+      Mutex::unlockMutex(mutex);
       return table[id];
+   }
 
    Mutex::unlockMutex(mutex);
 

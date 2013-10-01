@@ -509,27 +509,10 @@
 		C5419FF85FD226FCBD5504D0 /* render2DObjectMgr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C5419B168FBA96C960B46003 /* render2DObjectMgr.cpp */; };
 		C5419FFE32E634CD2BA4CA4E /* consoleExprEvalState.cc in Sources */ = {isa = PBXBuildFile; fileRef = C541946BFB6F566363E9F0A3 /* consoleExprEvalState.cc */; };
 		C5419FFEE5B51D3BA4FBF881 /* guiGraphCtrl.cc in Sources */ = {isa = PBXBuildFile; fileRef = C54192C6CB81444F595E6524 /* guiGraphCtrl.cc */; };
+		D11D295517FA67E7007C51DB /* libglfw3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D11D295417FA67E7007C51DB /* libglfw3.a */; };
 		D16C4CF7176EB524006936B5 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D16C4CF6176EB524006936B5 /* IOKit.framework */; };
-		D17F039C17815D0200C6FCA4 /* libglfw.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D17F039917815CDD00C6FCA4 /* libglfw.a */; };
 		DA4645FF16C3A7C500EF1922 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA4645FE16C3A7C400EF1922 /* QuartzCore.framework */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		D17F039817815CDD00C6FCA4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D17F039417815CDC00C6FCA4 /* glfw.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D17F02CB17814F5800C6FCA4;
-			remoteInfo = glfw;
-		};
-		D17F039A17815CFC00C6FCA4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D17F039417815CDC00C6FCA4 /* glfw.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = D17F02CA17814F5800C6FCA4;
-			remoteInfo = glfw;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		4B8AA0B11DDA96BD47186F76 /* osxFileIO.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxFileIO.mm; sourceTree = "<group>"; };
@@ -1571,11 +1554,10 @@
 		C5419FEFB38E63F00038B5C9 /* ShapeVector_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShapeVector_ScriptBinding.h; sourceTree = "<group>"; };
 		C5419FFB21FE9E5024FFD6E8 /* guiCanvas_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiCanvas_ScriptBinding.h; sourceTree = "<group>"; };
 		C5419FFBFBE7A870C701504F /* ParticleAssetFieldCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticleAssetFieldCollection.h; sourceTree = "<group>"; };
-		D16C4CC8176EAB3B006936B5 /* libglfw3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libglfw3.a; path = ../../lib/glfw/maclib/libglfw3.a; sourceTree = "<group>"; };
+		D11D295417FA67E7007C51DB /* libglfw3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libglfw3.a; path = ../../lib/glfw/maclib/Release/libglfw3.a; sourceTree = "<group>"; };
 		D16C4CF6176EB524006936B5 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		D17F0381178151FA00C6FCA4 /* glfw3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glfw3.h; path = ../../lib/glfw/include/GLFW/glfw3.h; sourceTree = "<group>"; };
 		D17F0382178151FA00C6FCA4 /* glfw3native.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glfw3native.h; path = ../../lib/glfw/include/GLFW/glfw3native.h; sourceTree = "<group>"; };
-		D17F039417815CDC00C6FCA4 /* glfw.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = glfw.xcodeproj; path = glfw/glfw.xcodeproj; sourceTree = "<group>"; };
 		DA4645FE16C3A7C400EF1922 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -1584,7 +1566,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D17F039C17815D0200C6FCA4 /* libglfw.a in Frameworks */,
+				D11D295517FA67E7007C51DB /* libglfw3.a in Frameworks */,
 				D16C4CF7176EB524006936B5 /* IOKit.framework in Frameworks */,
 				DA4645FF16C3A7C500EF1922 /* QuartzCore.framework in Frameworks */,
 				865A20CA16515B1E00527C44 /* AppKit.framework in Frameworks */,
@@ -1736,8 +1718,8 @@
 		865A20C916515AEF00527C44 /* System */ = {
 			isa = PBXGroup;
 			children = (
+				D11D295417FA67E7007C51DB /* libglfw3.a */,
 				D16C4CF6176EB524006936B5 /* IOKit.framework */,
-				D16C4CC8176EAB3B006936B5 /* libglfw3.a */,
 				869FF8BF1651518C002FE082 /* AppKit.framework */,
 				865A20C116515ACE00527C44 /* AVFoundation.framework */,
 				869FF8BC1651518C002FE082 /* Cocoa.framework */,
@@ -1997,7 +1979,6 @@
 		869FF8AD1651518C002FE082 = {
 			isa = PBXGroup;
 			children = (
-				D17F039417815CDC00C6FCA4 /* glfw.xcodeproj */,
 				8652F29F16C146CF00639EFE /* torque2d.icns */,
 				865A21E71651875E00527C44 /* Support_Libraries */,
 				865A20BD1651589F00527C44 /* Resources */,
@@ -3361,14 +3342,6 @@
 			name = glfw;
 			sourceTree = "<group>";
 		};
-		D17F039517815CDC00C6FCA4 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				D17F039917815CDD00C6FCA4 /* libglfw.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -3383,7 +3356,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				D17F039B17815CFC00C6FCA4 /* PBXTargetDependency */,
 			);
 			name = Torque2D;
 			productName = Torque2D;
@@ -3409,28 +3381,12 @@
 			mainGroup = 869FF8AD1651518C002FE082;
 			productRefGroup = 869FF8B91651518C002FE082 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = D17F039517815CDC00C6FCA4 /* Products */;
-					ProjectRef = D17F039417815CDC00C6FCA4 /* glfw.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				869FF8B71651518C002FE082 /* Torque2D */,
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		D17F039917815CDD00C6FCA4 /* libglfw.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libglfw.a;
-			remoteRef = D17F039817815CDD00C6FCA4 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		869FF8B61651518C002FE082 /* Resources */ = {
@@ -3946,14 +3902,6 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
-/* Begin PBXTargetDependency section */
-		D17F039B17815CFC00C6FCA4 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = glfw;
-			targetProxy = D17F039A17815CFC00C6FCA4 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
-
 /* Begin PBXVariantGroup section */
 		4B8AA2F1832A8038C6967D88 /* MainMenu.xib */ = {
 			isa = PBXVariantGroup;
@@ -4023,6 +3971,7 @@
 					"\"$(SRCROOT)/../../lib/glfw/src/Debug\"",
 					"\"$(SRCROOT)/../../lib/glfw/src/GLFW.build/Debug/glfw.build/Objects-normal/i386\"",
 					"\"$(SRCROOT)/../../lib/glfw/src/GLFW.build/Debug/glfw.build/Objects-normal/x86_64\"",
+					"\"$(SRCROOT)/../../lib/glfw/maclib/Release\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = /usr/lib/libz.dylib;
@@ -4127,6 +4076,7 @@
 					"\"$(SRCROOT)/../../lib/glfw/src/Debug\"",
 					"\"$(SRCROOT)/../../lib/glfw/src/GLFW.build/Debug/glfw.build/Objects-normal/i386\"",
 					"\"$(SRCROOT)/../../lib/glfw/src/GLFW.build/Debug/glfw.build/Objects-normal/x86_64\"",
+					"\"$(SRCROOT)/../../lib/glfw/maclib/Release\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = /usr/lib/libz.dylib;
@@ -4168,6 +4118,7 @@
 					"\"$(SRCROOT)/../../lib/glfw/src/Debug\"",
 					"\"$(SRCROOT)/../../lib/glfw/src/GLFW.build/Debug/glfw.build/Objects-normal/i386\"",
 					"\"$(SRCROOT)/../../lib/glfw/src/GLFW.build/Debug/glfw.build/Objects-normal/x86_64\"",
+					"\"$(SRCROOT)/../../lib/glfw/maclib/Release\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = /usr/lib/libz.dylib;
