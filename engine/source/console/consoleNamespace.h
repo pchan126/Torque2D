@@ -51,7 +51,7 @@ public:
     StringTableEntry mPackage;
 
     Namespace *mParent;
-    Namespace *mNext;
+//    Namespace *mNext;
     AbstractClassRep *mClassRep;
     U32 mRefCountToParent;
     const char* mUsage;
@@ -133,7 +133,7 @@ public:
     static DataChunker mCacheAllocator;
     static DataChunker mAllocator;
     static void trashCache();
-    static Namespace *mNamespaceList;
+    static std::list<Namespace*> mNamespaceList;
     static Namespace *mGlobalNamespace;
 
     static void init();
@@ -153,5 +153,10 @@ public:
     static void relinkPackages();
     static bool isPackage(StringTableEntry name);
 };
+
+inline Namespace::Entry* U32toNSpE(U32 u)
+{
+   return nullptr;
+}
 
 #endif // _CONSOLE_NAMESPACE_H

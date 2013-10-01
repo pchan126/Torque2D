@@ -356,10 +356,10 @@ void Namespace::dumpClasses( bool dumpScript, bool dumpEngine )
 
    // We use mHashSequence to mark if we have traversed...
    // so mark all as zero to start.
-   for(Namespace *walk = mNamespaceList; walk; walk = walk->mNext)
+   for(Namespace *walk : mNamespaceList )
       walk->mHashSequence = 0;
 
-   for(Namespace *walk = mNamespaceList; walk; walk = walk->mNext)
+   for(Namespace *walk : mNamespaceList )
    {
       Vector<Namespace*> stack;
       stack.reserve( 1024 );

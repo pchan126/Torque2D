@@ -28,7 +28,7 @@
 U32 Namespace::mCacheSequence = 0;
 DataChunker Namespace::mCacheAllocator;
 DataChunker Namespace::mAllocator;
-Namespace *Namespace::mNamespaceList = nullptr;
+std::list<Namespace*> Namespace::mNamespaceList;
 Namespace *Namespace::mGlobalNamespace = nullptr;
 
 
@@ -61,7 +61,6 @@ Namespace::Namespace()
    mCleanUpUsage = false;
    mName = nullptr;
    mParent = nullptr;
-   mNext = nullptr;
    mHashTable = nullptr;
    mHashSequence = 0;
    mRefCountToParent = 0;
@@ -87,16 +86,16 @@ void Namespace::clearEntries()
 
 Namespace *Namespace::find(StringTableEntry name, StringTableEntry package)
 {
-   for(Namespace *walk = mNamespaceList; walk; walk = walk->mNext)
+   for(Namespace* walk : mNamespaceList)
       if(walk->mName == name && walk->mPackage == package)
          return walk;
 
-   Namespace *ret = (Namespace *) mAllocator.alloc(sizeof(Namespace));
-   constructInPlace(ret);
+//   Namespace *ret = (Namespace *) mAllocator.alloc(sizeof(Namespace));
+//   constructInPlace(ret);
+   Namespace *ret = new Namespace;
    ret->mPackage = package;
    ret->mName = name;
-   ret->mNext = mNamespaceList;
-   mNamespaceList = ret;
+   mNamespaceList.push_front(ret);
    return ret;
 }
 
@@ -226,7 +225,7 @@ Namespace *Namespace::global()
 
 void Namespace::shutdown()
 {
-   for(Namespace *walk = mNamespaceList; walk; walk = walk->mNext)
+   for(Namespace* walk : mNamespaceList)
       walk->clearEntries();
 }
 
@@ -490,7 +489,7 @@ U32 Namespace::mOldNumActivePackages = 0;
 
 bool Namespace::isPackage(StringTableEntry name)
 {
-   for(Namespace *walk = mNamespaceList; walk; walk = walk->mNext)
+   for(Namespace *walk : mNamespaceList) 
       if(walk->mPackage == name)
          return true;
    return false;
@@ -515,7 +514,7 @@ void Namespace::activatePackage(StringTableEntry name)
    trashCache();
 
    // find all the package namespaces...
-   for(Namespace *walk = mNamespaceList; walk; walk = walk->mNext)
+   for(Namespace *walk :mNamespaceList)
    {
       if(walk->mPackage == name)
       {
@@ -551,7 +550,7 @@ void Namespace::deactivatePackage(StringTableEntry name)
    for(j = mNumActivePackages - 1; j >= i; j--)
    {
       // gotta unlink em in reverse order...
-      for(Namespace *walk = mNamespaceList; walk; walk = walk->mNext)
+      for(Namespace *walk : mNamespaceList)
       {
          if(walk->mPackage == mActivePackages[j])
          {
