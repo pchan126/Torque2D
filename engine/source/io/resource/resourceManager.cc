@@ -43,6 +43,8 @@ ResourceObject::ResourceObject ()
   mInstance = nullptr;
   mZipArchive = nullptr;
   mCentralDir = nullptr;
+  path = StringTable->EmptyString;     ///< Resource path.
+  name = StringTable->EmptyString;     ///< Resource name.
 }
 
 void ResourceObject::destruct ()
@@ -781,6 +783,8 @@ void ResManager::unlock (ResourceObject * obj)
    if (--obj->lockCount == 0)
    {
       resourceList.remove(obj);
+      
+      Con::printf("ResManager unlock %p", obj);
       timeoutList.push_back(obj);
    }
 }
@@ -1148,6 +1152,7 @@ void ResManager::serialize (Vector < const char *>&filenames)
 
    dQsort ((void *)sortVector.address(), sortVector.size (),
       sizeof (ResourceObjectIndex), ResourceObjectIndex::compare);
+
    for (i = 0; i < (U32)filenames.size (); i++)
       filenames[i] = sortVector[i].fileName;
 }
@@ -1282,7 +1287,7 @@ ResourceObject * ResManager::createZipResource (StringTableEntry path, StringTab
 
 void ResManager::freeResource (ResourceObject * ro)
 {
-   Con::printf("ResManager::freeResource %s %s", ro->path, ro->name);
+   Con::printf("ResManager::freeResource %p", ro);
    ro->destruct ();
    dictionary.remove (ro);
    resourceList.remove(ro);

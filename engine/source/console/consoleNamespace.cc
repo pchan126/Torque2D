@@ -29,6 +29,7 @@ U32 Namespace::mCacheSequence = 0;
 DataChunker Namespace::mCacheAllocator;
 DataChunker Namespace::mAllocator;
 std::list<Namespace*> Namespace::mNamespaceList;
+std::vector<Namespace::Entry*> Namespace::mNamespaceEntryList;
 Namespace *Namespace::mGlobalNamespace = nullptr;
 
 
@@ -90,8 +91,6 @@ Namespace *Namespace::find(StringTableEntry name, StringTableEntry package)
       if(walk->mName == name && walk->mPackage == package)
          return walk;
 
-//   Namespace *ret = (Namespace *) mAllocator.alloc(sizeof(Namespace));
-//   constructInPlace(ret);
    Namespace *ret = new Namespace;
    ret->mPackage = package;
    ret->mName = name;
@@ -315,6 +314,10 @@ Namespace::Entry *Namespace::createLocalEntry(StringTableEntry name)
    ent->mFunctionName = name;
    ent->mPackage = mPackage;
    mEntryList.push_back( ent );
+
+   mNamespaceEntryList.push_back(ent);
+   ent->mID = (U32)mNamespaceEntryList.size();
+
    return ent;
 }
 

@@ -1457,7 +1457,7 @@ breakContinue:
             }
             // Now, rewrite our code a bit (ie, avoid future lookups) and fall
             // through to OP_CALLFUNC
-            code[ip+1] = NameSpaceEntrytoU32(&nsEntry);
+            code[ip+1] = nsEntry->mID;
             code[ip-1] = OP_CALLFUNC;
 
          case OP_CALLFUNC:
@@ -1484,7 +1484,7 @@ breakContinue:
 
             if(callType == FuncCallExprNode::FunctionCall) 
             {
-               nsEntry = U32toNamespaceEntry(code[ip-2]));  // U32toNamespaceEntry
+               nsEntry = U32toNamespaceEntry(code[ip-2]);
                ns = nullptr;
             }
             else if(callType == FuncCallExprNode::MethodCall)

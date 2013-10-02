@@ -44,23 +44,17 @@ class SimFieldDictionary
    {
       StringTableEntry slotName;
       char *value;
-//      Entry *next;
    };
    enum
    {
       HashTableSize = 19
    };
-//   Entry *mHashTable[HashTableSize];
    std::unordered_map<StringTableEntry, Entry*> mHashTable;
 
   private:
 
    static std::list<Entry *>* mFreeList;
    static void freeEntry(Entry *entry);
-//   static Entry *allocEntry();
-
-//   static U32     getHashValue( StringTableEntry slotName );
-//   static U32     getHashValue( const String& fieldName );
    
    U32   mNumFields;
 
@@ -88,21 +82,8 @@ public:
    size_t size() {return mHashTable.size(); };
 
    typedef std::unordered_map<StringTableEntry, Entry*>::iterator Iterator;
-//   Entry  *operator[](U32 index);
 };
 
 //-----------------------------------------------------------------------------
-
-//class SimFieldDictionaryIterator
-//{
-//   SimFieldDictionary *          mDictionary;
-//   S32                           mHashIndex;
-//   SimFieldDictionary::Entry *   mEntry;
-//
-//  public:
-//   SimFieldDictionaryIterator(SimFieldDictionary*);
-//   SimFieldDictionary::Entry* operator++();
-//   SimFieldDictionary::Entry* operator*();
-//};
 
 #endif // _SIM_FIELD_DICTIONARY_H_

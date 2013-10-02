@@ -51,7 +51,7 @@ public:
     StringTableEntry mPackage;
 
     Namespace *mParent;
-//    Namespace *mNext;
+
     AbstractClassRep *mClassRep;
     U32 mRefCountToParent;
     const char* mUsage;
@@ -95,8 +95,9 @@ public:
         void clear();
 
         const char *execute(S32 argc, const char **argv, ExprEvalState *state);
-
+        U32 mID;
     };
+
     std::list<Entry*> mEntryList;
     std::unordered_map<StringTableEntry, Entry*>* mHashTable;
 
@@ -134,6 +135,7 @@ public:
     static DataChunker mAllocator;
     static void trashCache();
     static std::list<Namespace*> mNamespaceList;
+    static std::vector<Namespace::Entry*> mNamespaceEntryList;
     static Namespace *mGlobalNamespace;
 
     static void init();
@@ -154,9 +156,9 @@ public:
     static bool isPackage(StringTableEntry name);
 };
 
-inline Namespace::Entry* U32toNSpE(U32 u)
+inline Namespace::Entry* U32toNamespaceEntry(U32 u)
 {
-   return nullptr;
+    return Namespace::mNamespaceEntryList[u-1];
 }
 
 #endif // _CONSOLE_NAMESPACE_H
