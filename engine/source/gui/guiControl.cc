@@ -230,7 +230,6 @@ const UTF8 * GuiControl::getGUIString(S32 id)
 
 void GuiControl::addObject(SimObject *object)
 {
-    Con::printf("GuiControl::addObject %p", object);
    GuiControl *ctrl = dynamic_cast<GuiControl *>(object);
    if(!ctrl)
    {

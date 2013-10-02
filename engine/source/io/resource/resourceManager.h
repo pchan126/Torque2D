@@ -166,7 +166,7 @@ public:
    const Zip::CentralDir *mCentralDir; ///< The central directory for this file in the zip
 
    ResourceObject();
-   ~ResourceObject() {}
+   ~ResourceObject();
 
    void destruct();
 
@@ -395,6 +395,7 @@ public:
    /// Decrements the lock count of an object.  If the lock count is zero post-decrement,
    /// the object is added to the timeoutList for deletion upon call of flush.
    void unlock( ResourceObject* );
+   void unlink( ResourceObject* );
 
    /// Add a new resource instance
    bool add(const char* name, ResourceInstance *addInstance, bool extraLock = false);

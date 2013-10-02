@@ -492,14 +492,12 @@ ConsoleMethod(SimSet, add, void, 3, 0, "(obj1,...) Adds given list of objects to
 {
    for(S32 i = 2; i < argc; i++)
    {
-       Con::printf("SimSet:Add %s", argv[i]);
       SimObject *obj = Sim::findObject(argv[i]);
       if(obj)
          object->addObject(obj);
       else
       {
          Con::printf("Set::add: Object \"%s\" doesn't exist", argv[i]);
-          SimObject *obj2 = Sim::findObject(argv[i]);
       }
    }
 }

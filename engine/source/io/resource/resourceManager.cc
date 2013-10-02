@@ -47,6 +47,11 @@ ResourceObject::ResourceObject ()
   name = StringTable->EmptyString;     ///< Resource name.
 }
 
+ResourceObject::~ResourceObject()
+{
+   ResourceManager->unlink(this);
+}
+
 void ResourceObject::destruct ()
 {
    // If the resource was not loaded because of an error, the resource
@@ -61,7 +66,6 @@ void ResourceObject::destruct ()
       SAFE_DELETE(mZipArchive);
    }
 }
-
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -532,6 +536,7 @@ void ResManager::removePath(const char *path)
       const char *fname = buildPath((*rwalk)->path, (*rwalk)->name);
       if(!(*rwalk)->mInstance && FindMatch::isMatch(path, fname, false))
       {
+         unlink(*rwalk);
          dictionary.remove (*rwalk);
          auto rtemp = *rwalk;
          rwalk++;
@@ -600,6 +605,7 @@ void ResManager::setModPaths (U32 numPaths, const char **paths)
    {
       if (((*rwalk)->flags & ResourceObject::Added) && !(*rwalk)->mInstance)
       {
+         unlink(*rwalk);
          dictionary.remove (*rwalk);
          auto rtemp = *rwalk;
          rwalk++;
@@ -783,10 +789,14 @@ void ResManager::unlock (ResourceObject * obj)
    if (--obj->lockCount == 0)
    {
       resourceList.remove(obj);
-      
-      Con::printf("ResManager unlock %p", obj);
       timeoutList.push_back(obj);
    }
+}
+
+void ResManager::unlink (ResourceObject * obj)
+{
+   resourceList.remove(obj);
+   timeoutList.remove(obj);
 }
 
 //------------------------------------------------------------------------------
@@ -809,7 +819,7 @@ bool ResManager::getCrc (const char *fileName, U32 & crcVal,
       // get rid of the resource
       // have to make sure user can't have it sitting around in the resource cache
 
-//      obj->unlink ();
+      unlink (obj);
       obj->destruct ();
 
       Stream *stream = openStream (obj);
@@ -857,7 +867,7 @@ ResourceObject *ResManager::load (const char *fileName, bool computeCRC)
       obj->destruct ();
 
    obj->lockCount++;
-//   obj->unlink ();      // remove from purge list
+   unlink (obj);      // remove from purge list
 
    if (!obj->mInstance)
    {
@@ -1084,8 +1094,7 @@ void ResManager::purge ()
     while (timeoutList.size() > 0)
     {
         ResourceObject *temp = timeoutList.front();
-        resourceList.remove(temp);
-        timeoutList.remove(temp);
+        unlink(temp);
         if (temp->flags & ResourceObject::Added)
             freeResource (temp);
     }
@@ -1287,11 +1296,9 @@ ResourceObject * ResManager::createZipResource (StringTableEntry path, StringTab
 
 void ResManager::freeResource (ResourceObject * ro)
 {
-   Con::printf("ResManager::freeResource %p", ro);
+   unlink(ro);
    ro->destruct ();
    dictionary.remove (ro);
-   resourceList.remove(ro);
-   timeoutList.remove(ro);
    delete ro;
 }
 
