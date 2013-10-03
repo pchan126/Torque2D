@@ -50,7 +50,6 @@ public:
       Right = 2,        ///< Start at right end of string
    };
 
-   typedef U32 SizeType;
    typedef StringChar ValueType;
 
    static const SizeType NPos;   ///< Indicates 'not found' when using find() functions

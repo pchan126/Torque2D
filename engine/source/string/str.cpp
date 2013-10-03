@@ -31,7 +31,7 @@
 #include "memory/autoPtr.h"
 #include "console/console.h"
 
-const String::SizeType String::NPos = U32(~0);
+const SizeType String::NPos = U32(~0);
 const String String::EmptyString;
 
 /// A delete policy for the AutoPtr class
@@ -253,7 +253,7 @@ String::~String()
 
 //-----------------------------------------------------------------------------
 
-String::SizeType String::find(const String &str, SizeType pos, U32 mode) const
+SizeType String::find(const String &str, SizeType pos, U32 mode) const
 {
    return find(str._string.c_str(), pos, mode);
 }
@@ -421,14 +421,14 @@ bool String::equal(const String &str, U32 mode) const
 
 //-----------------------------------------------------------------------------
 
-String::SizeType String::find(StringChar c, SizeType pos, U32 mode) const
+SizeType String::find(StringChar c, SizeType pos, U32 mode) const
 {
    const StringChar* ptr = StrFind(_string.c_str(),c,pos,mode);
 
    return ptr? SizeType(ptr - _string.c_str()): NPos;
 }
 
-String::SizeType String::find(const StringChar *str, SizeType pos, U32 mode)  const
+SizeType String::find(const StringChar *str, SizeType pos, U32 mode)  const
 {
    AssertFatal(str,"String:: Invalid null ptr argument");
 
