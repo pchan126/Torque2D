@@ -685,10 +685,9 @@ void dQsort(void *base, SizeType nelem, SizeType width, int (QSORT_CALLBACK *fcm
 StringTableEntry Platform::createUUID( void )
 {
     CFUUIDRef ref = CFUUIDCreate(nil);
-    NSString* uuid = (NSString *)CFUUIDCreateString(nil,ref);
+    NSString* uuid = (__bridge_transfer NSString *)CFUUIDCreateString(nil,ref);
     CFRelease(ref);
     
     StringTableEntry uuidString = StringTable->insert([uuid UTF8String]);
-    [uuid release];
     return uuidString;
 }

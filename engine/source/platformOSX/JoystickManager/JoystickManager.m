@@ -7,6 +7,7 @@
 //
 
 #import "JoystickManager.h"
+#import "JoystickNotificationDelegate.h"
 
 @implementation JoystickManager
 
@@ -47,7 +48,7 @@ static JoystickManager *instance;
 - (int)deviceIDByReference:(IOHIDDeviceRef)deviceRef {
   //  NSLog(@"Searching for device id by pointer: %p",deviceRef);
     for (id key in joysticks) {
-        Joystick *thisJoystick = [joysticks objectForKey:key];
+        Joystick *thisJoystick = joysticks[key];
     //    NSLog(@"Comparing to joystick id: %d with device: %p",[(NSNumber *)key intValue],[thisJoystick device]);
         
         if ([thisJoystick device] == deviceRef) {
@@ -60,13 +61,13 @@ static JoystickManager *instance;
 }
 
 - (Joystick *)joystickByID:(int)joystickID {
-    return [joysticks objectForKey:[NSNumber numberWithInt:joystickID]];
+    return joysticks[@(joystickID)];
 }
 
 - (void)registerNewJoystick:(Joystick *)joystick {
-    [joysticks setObject:joystick forKey:[NSNumber numberWithInt:joystickIDIndex++]];
+    joysticks[@(joystickIDIndex++)] = joystick;
     NSLog(@"Gamepad was plugged in");
-    NSLog(@"Gamepads registered: %i", joysticks.count);
+    NSLog(@"Gamepads registered: %li", (unsigned long)joysticks.count);
     [joystickAddedDelegate joystickAdded:joystick];
 }
 
@@ -110,7 +111,6 @@ void gamepadWasAdded(void* inContext, IOReturn inResult, void* inSender, IOHIDDe
     Joystick *newJoystick = [[Joystick alloc] initWithDevice:device];
     [[JoystickManager sharedInstance] registerNewJoystick:newJoystick];
     
-    [newJoystick release];
 }
 
 
@@ -126,16 +126,15 @@ void gamepadWasAdded(void* inContext, IOReturn inResult, void* inSender, IOHIDDe
     for (i=0; i<3; ++i) {
         int usageKeyConstant = usageKeys[i];
         NSMutableDictionary* criterion = [[NSMutableDictionary alloc] init];
-        [criterion setObject: [NSNumber numberWithInt: kHIDPage_GenericDesktop] forKey: (NSString*)CFSTR(kIOHIDDeviceUsagePageKey)];
-        [criterion setObject: [NSNumber numberWithInt: usageKeyConstant] forKey: (NSString*)CFSTR(kIOHIDDeviceUsageKey)];
+        criterion[(NSString*)CFSTR(kIOHIDDeviceUsagePageKey)] = @(kHIDPage_GenericDesktop);
+        criterion[(NSString*)CFSTR(kIOHIDDeviceUsageKey)] = @(usageKeyConstant);
         [criterionSets addObject:criterion];
-        [criterion release];
     }
     
-	IOHIDManagerSetDeviceMatchingMultiple(hidManager, (CFArrayRef)criterionSets);
+	IOHIDManagerSetDeviceMatchingMultiple(hidManager, (CFArrayRef)CFBridgingRetain(criterionSets));
     //IOHIDManagerSetDeviceMatching(hidManager, (CFDictionaryRef)criterion);
-    IOHIDManagerRegisterDeviceMatchingCallback(hidManager, gamepadWasAdded, (void*)self);
-    IOHIDManagerRegisterDeviceRemovalCallback(hidManager, gamepadWasRemoved, (void*)self);
+    IOHIDManagerRegisterDeviceMatchingCallback(hidManager, gamepadWasAdded, (__bridge void*)self);
+    IOHIDManagerRegisterDeviceRemovalCallback(hidManager, gamepadWasRemoved, (__bridge void*)self);
     IOHIDManagerScheduleWithRunLoop(hidManager, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
     IOReturn tIOReturn = IOHIDManagerOpen(hidManager, kIOHIDOptionsTypeNone);
     (void)tIOReturn; // to suppress warnings

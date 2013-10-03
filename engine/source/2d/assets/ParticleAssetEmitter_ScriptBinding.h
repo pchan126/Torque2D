@@ -30,7 +30,7 @@ ConsoleMethod(ParticleAssetEmitter, getOwner, const char*, 2, 2,    "() Gets the
     // Fetch the owner.
     ParticleAsset* pParticleAsset = object->getOwner();
 
-    return pParticleAsset == NULL ? StringTable->EmptyString : pParticleAsset->getIdString();
+    return pParticleAsset == nullptr ? StringTable->EmptyString : pParticleAsset->getIdString();
 }
 
 //-----------------------------------------------------------------------------
@@ -620,7 +620,7 @@ ConsoleMethod(ParticleAssetEmitter, selectField, bool, 3, 3,   "(fieldName) Sele
                                                                 "@param fieldName The field name to use for the selection.  Use an empty name to deselect to stop accidental changes.\n"
                                                             "@return Whether the field was successfully selected or not.")
 {
-    return object->getParticleFields().selectField( argv[2] ) != NULL;
+    return object->getParticleFields().selectField( argv[2] ) != nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -639,7 +639,7 @@ ConsoleMethod(ParticleAssetEmitter, getSelectedField, bool, 2, 2,   "() Gets the
     // Get the selected field.
     const ParticleAssetField* pParticleAssetField = object->getParticleFields().getSelectedField();
 
-    return pParticleAssetField == NULL ? StringTable->EmptyString : pParticleAssetField->getFieldName();
+    return pParticleAssetField == nullptr ? StringTable->EmptyString : pParticleAssetField->getFieldName();
 }
 
 //-----------------------------------------------------------------------------

@@ -57,9 +57,9 @@ static void *ThreadRunHandler( void* arg )
     ThreadManager::addThread(thread);
     
     // Run the thread against a pool.
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    thread->run(mData->mRunArg);
-    [pool drain];
+    @autoreleasepool {
+        thread->run(mData->mRunArg);
+    }
     
     // Release the thread.
     mData->mGateway.release();
@@ -252,7 +252,6 @@ U32 ExecuteThread::runNoThread( const char* executable, const char* zargs, const
     [aTask launch];
     [aTask waitUntilExit];
     U32 ret = [aTask terminationStatus];
-   [aTask release];
     return ret;
 }
 

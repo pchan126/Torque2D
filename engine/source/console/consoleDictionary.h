@@ -50,7 +50,6 @@ public:
         };
 
         StringTableEntry name;
-//        Entry *nextEntry;
         S32 type;
         char *sval;
         U32 ival;  // doubles as strlen when type = -1

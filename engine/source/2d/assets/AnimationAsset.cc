@@ -56,7 +56,7 @@ ConsoleSetType( TypeAnimationAssetPtr )
         AssetPtr<AnimationAsset>* pAssetPtr = dynamic_cast<AssetPtr<AnimationAsset>*>((AssetPtrBase*)(dptr));
 
         // Is the asset pointer the correct type?
-        if ( pAssetPtr == NULL )
+        if ( pAssetPtr == nullptr )
         {
             // No, so fail.
             Con::warnf( "(TypeAnimationAssetPtr) - Failed to set asset Id '%d'.", pFieldValue );
@@ -152,7 +152,7 @@ void AnimationAsset::copyTo(SimObject* object)
     AnimationAsset* pAsset = static_cast<AnimationAsset*>(object);
 
     // Sanity!
-    AssertFatal(pAsset != NULL, "AnimationAsset::copyTo() - Object is not the correct type.");
+    AssertFatal(pAsset != nullptr, "AnimationAsset::copyTo() - Object is not the correct type.");
 
     // Copy state.
     pAsset->setImage( getImage().getAssetId() );

@@ -240,7 +240,7 @@ void ParticleAssetEmitter::copyTo(SimObject* object)
    ParticleAssetEmitter* pParticleAssetEmitter = static_cast<ParticleAssetEmitter*>( object );
 
    // Sanity!
-   AssertFatal( pParticleAssetEmitter != NULL, "ParticleAssetEmitter::copyTo() - Object is not the correct type.");
+   AssertFatal( pParticleAssetEmitter != nullptr, "ParticleAssetEmitter::copyTo() - Object is not the correct type.");
 
    // Copy parent.
    Parent::copyTo( object );
@@ -292,7 +292,7 @@ void ParticleAssetEmitter::copyTo(SimObject* object)
 void ParticleAssetEmitter::setEmitterName( const char* pEmitterName )
 {
     // Sanity!
-    AssertFatal( mEmitterName != nullptr, "ParticleAssetEmitter::setEmitterName() - Cannot set a NULL particle asset emitter name." );
+    AssertFatal( mEmitterName != nullptr, "ParticleAssetEmitter::setEmitterName() - Cannot set a nullptr particle asset emitter name." );
 
     // Set the emitter name.
     mEmitterName = StringTable->insert( pEmitterName );
@@ -350,7 +350,7 @@ void ParticleAssetEmitter::setFixedForceAngle( F32 fixedForceAngle )
 bool ParticleAssetEmitter::setImage( const char* pAssetId, U32 frame )
 {
     // Sanity!
-    AssertFatal( pAssetId != nullptr, "ParticleAssetEmitter::setImage() - Cannot use a NULL asset Id." );
+    AssertFatal( pAssetId != nullptr, "ParticleAssetEmitter::setImage() - Cannot use a nullptr asset Id." );
 
     // Set static mode.
     mStaticMode = true;
@@ -427,7 +427,7 @@ bool ParticleAssetEmitter::setImageFrame( const U32 frame )
 bool ParticleAssetEmitter::setAnimation( const char* pAnimationAssetId )
 {
     // Sanity!
-    AssertFatal( pAnimationAssetId != nullptr, "ParticleAssetEmitter::setAnimation() - Cannot use NULL asset Id." );
+    AssertFatal( pAnimationAssetId != nullptr, "ParticleAssetEmitter::setAnimation() - Cannot use nullptr asset Id." );
 
     // Set animated mode.
     mStaticMode = false;
@@ -493,8 +493,8 @@ void ParticleAssetEmitter::onTamlCustomRead( const TamlCustomNodes& customNodes 
 static void WriteCustomTamlSchema( const AbstractClassRep* pClassRep, TiXmlElement* pParentElement )
 {
     // Sanity!
-    AssertFatal( pClassRep != nullptr,  "ParticleAssetEmitter::WriteCustomTamlSchema() - ClassRep cannot be NULL." );
-    AssertFatal( pParentElement != nullptr,  "ParticleAssetEmitter::WriteCustomTamlSchema() - Parent Element cannot be NULL." );
+    AssertFatal( pClassRep != nullptr,  "ParticleAssetEmitter::WriteCustomTamlSchema() - ClassRep cannot be nullptr." );
+    AssertFatal( pParentElement != nullptr,  "ParticleAssetEmitter::WriteCustomTamlSchema() - Parent Element cannot be nullptr." );
 
     // Write the particle asset emitter fields.
     ParticleAssetEmitter particleAssetEmitter;

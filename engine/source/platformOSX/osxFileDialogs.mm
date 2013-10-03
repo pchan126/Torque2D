@@ -53,7 +53,7 @@ bool FileDialog::Execute()
     {
         for(U32 i = 0; i < [nsFileArray count]; i++)
         {
-            NSURL* fileURL = [nsFileArray objectAtIndex:i];
+            NSURL* fileURL = nsFileArray[i];
 
             const UTF8* file = [[fileURL path] UTF8String];
             setDataField(StringTable->insert("files"), Con::getIntArg(i), StringTable->insert(file));
@@ -63,7 +63,7 @@ bool FileDialog::Execute()
     }
     else
     {
-        NSURL* fileURL = [nsFileArray objectAtIndex:0];
+        NSURL* fileURL = nsFileArray[0];
 
         const UTF8* file = [[fileURL path] UTF8String];
 
@@ -196,10 +196,10 @@ S32 Platform::messageBox(const UTF8 *title, const UTF8 *message, MBButtons butto
         Con::errorf("Unknown message box button set requested. Mac Platform::messageBox() probably needs to be updated.");
 
     // convert title and message to NSStrings
-    NSString *nsTitle = [NSString stringWithUTF8String:title];
-    NSString *nsMessage = [NSString stringWithUTF8String:message];
+    NSString *nsTitle = @(title);
+    NSString *nsMessage = @(message);
 
-    NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+    NSAlert *alert = [[NSAlert alloc] init];
     [alert setAlertStyle:NSWarningAlertStyle];
     [alert addButtonWithTitle:okBtn];
     [alert addButtonWithTitle:cancelBtn];

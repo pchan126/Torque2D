@@ -53,9 +53,6 @@ void PlatformFont::enumeratePlatformFonts( Vector<StringTableEntry>& fonts )
     {
         fonts.push_back( StringTable->insert( [fontName UTF8String] ) );
     }
-
-    // Release font name.
-    [availableFonts release];
 }
 
 //------------------------------------------------------------------------------

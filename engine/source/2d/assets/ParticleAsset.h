@@ -129,7 +129,7 @@ public:
 
         // For when the assert is not used.
         if ( childIndex >= (U32)mEmitters.size() )
-            return NULL;
+            return nullptr;
 
         return mEmitters[ childIndex ];
     }
@@ -137,13 +137,13 @@ public:
     virtual void addTamlChild( SimObject* pSimObject )
     {
         // Sanity!
-        AssertFatal( pSimObject != NULL, "ParticleAsset::addTamlChild() - Cannot add a NULL child object." );
+        AssertFatal( pSimObject != nullptr, "ParticleAsset::addTamlChild() - Cannot add a nullptr child object." );
 
         // Fetch as particle emitter.
         ParticleAssetEmitter* pParticleAssetEmitter = dynamic_cast<ParticleAssetEmitter*>( pSimObject );
 
         // Is it a particle emitter?
-        if ( pParticleAssetEmitter == NULL )
+        if ( pParticleAssetEmitter == nullptr )
         {
             // No, so warn.
             Con::warnf( "ParticleAsset::addTamlChild() - Cannot add a child object that isn't a particle emitter." );

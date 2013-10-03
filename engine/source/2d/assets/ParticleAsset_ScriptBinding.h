@@ -108,7 +108,7 @@ ConsoleMethod(ParticleAsset, selectField, bool, 3, 3,   "(fieldName) Select the 
                                                         "@param fieldName The field name to use for the selection.  Use an empty name to deselect to stop accidental changes.\n"
                                                         "@return Whether the field was successfully selected or not.")
 {
-    return object->getParticleFields().selectField( argv[2] ) != NULL;
+    return object->getParticleFields().selectField( argv[2] ) != nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -127,7 +127,7 @@ ConsoleMethod(ParticleAsset, getSelectedField, const char*, 2, 2,  "() Gets the 
     // Get the selected field.
     const ParticleAssetField* pParticleAssetField = object->getParticleFields().getSelectedField();
 
-    return pParticleAssetField == NULL ? StringTable->EmptyString : pParticleAssetField->getFieldName();
+    return pParticleAssetField == nullptr ? StringTable->EmptyString : pParticleAssetField->getFieldName();
 }
 
 //-----------------------------------------------------------------------------
@@ -296,7 +296,7 @@ ConsoleMethod(ParticleAsset, createEmitter, const char*, 2, 2,  "() - Creates an
     // Find the emitter.
     ParticleAssetEmitter* pEmitter = object->createEmitter();
 
-    return pEmitter == NULL ? StringTable->EmptyString : pEmitter->getIdString();
+    return pEmitter == nullptr ? StringTable->EmptyString : pEmitter->getIdString();
 }
 
 //-----------------------------------------------------------------------------
@@ -309,7 +309,7 @@ ConsoleMethod(ParticleAsset, addEmitter, bool, 3, 3,    "(emitterId) - Adds an e
     ParticleAssetEmitter* pEmitter = Sim::findObject<ParticleAssetEmitter>( argv[2] );
 
     // Did we find the emitter?
-    if ( pEmitter == NULL )
+    if ( pEmitter == nullptr )
     {
         // No, so warn.
         Con::warnf( "ParticleAsset::addEmitter() - Could not find the emitter '%s'.", argv[2] );
@@ -329,7 +329,7 @@ ConsoleMethod(ParticleAsset, removeEmitter, bool, 3, 4, "(emitterId, [bool delet
     ParticleAssetEmitter* pEmitter = Sim::findObject<ParticleAssetEmitter>( argv[2] );
 
     // Did we find the emitter?
-    if ( pEmitter == NULL )
+    if ( pEmitter == nullptr )
     {
         // No, so warn.
         Con::warnf( "ParticleAsset::removeEmitter() - Could not find the emitter '%s'.", argv[2] );
@@ -373,7 +373,7 @@ ConsoleMethod(ParticleAsset, getEmitter, S32, 3, 3,     "(emitterIndex) Gets the
    // Get the emitter.
    ParticleAssetEmitter* pEmitter = object->getEmitter( dAtoi(argv[2]) );
 
-   return pEmitter == NULL ? 0 : pEmitter->getId();
+   return pEmitter == nullptr ? 0 : pEmitter->getId();
 }
 
 //-----------------------------------------------------------------------------
@@ -385,7 +385,7 @@ ConsoleMethod(ParticleAsset, findEmitter, S32, 3, 3,    "(emitterName) Finds the
    // Find the emitter.
    ParticleAssetEmitter* pEmitter = object->findEmitter( argv[2] );
 
-   return pEmitter == NULL ? 0 : pEmitter->getId();
+   return pEmitter == nullptr ? 0 : pEmitter->getId();
 }
 
 //-----------------------------------------------------------------------------

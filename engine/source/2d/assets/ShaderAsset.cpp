@@ -111,7 +111,7 @@ void ShaderAsset::copyTo(SimObject* object)
     ShaderAsset* pAsset = static_cast<ShaderAsset*>(object);
 
     // Sanity!
-    AssertFatal(pAsset != NULL, "ShaderAsset::copyTo() - Object is not the correct type.");
+    AssertFatal(pAsset != nullptr, "ShaderAsset::copyTo() - Object is not the correct type.");
 
     // Copy state.
     pAsset->setVertexShaderFile(getVertexShaderFile() );

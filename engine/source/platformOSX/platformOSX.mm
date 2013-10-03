@@ -75,7 +75,7 @@ static osxPlatState * tempSharedPlatState = nil;
         _desktopWidth = 1024;
         _desktopHeight = 768;
         
-        _windowTitle = [[NSString alloc] initWithString:@"Torque 2D OS X"];
+        _windowTitle = @"Torque 2D OS X";
         
         // Default system variables
         _currentSimTime = 0;
@@ -93,16 +93,11 @@ static osxPlatState * tempSharedPlatState = nil;
 
 - (void)dealloc
 {
-    if (_windowTitle)
-        [_windowTitle release];
     
-    if (_mainCSDirectory)
-        [_mainCSDirectory release];
     
     if (_platformRandom)
         delete _platformRandom;
     
-    [super dealloc];
 }
 
 
@@ -115,7 +110,7 @@ static osxPlatState * tempSharedPlatState = nil;
     @synchronized(self)
     {
         if (tempSharedPlatState == nil)
-            tempSharedPlatState = (osxPlatState *) [[super allocWithZone:NULL] init];
+            tempSharedPlatState = (osxPlatState *) [[super allocWithZone:nullptr] init];
     }
     
     return tempSharedPlatState;
@@ -125,41 +120,12 @@ static osxPlatState * tempSharedPlatState = nil;
 
 + (id)allocWithZone:(NSZone *)zone
 {
-    return [[self sharedPlatState] retain];
+    return [self sharedPlatState];
 }
 
 //-----------------------------------------------------------------------------
 
 - (id)copyWithZone:(NSZone *)zone
-{
-    return self;
-}
-
-//-----------------------------------------------------------------------------
-
-- (id)retain
-{
-    return self;
-}
-
-//-----------------------------------------------------------------------------
-
-- (unsigned)retainCount
-{
-    // Denotes an object that cannot be released
-    return UINT_MAX;
-}
-
-//-----------------------------------------------------------------------------
-
-- (oneway void)release
-{
-    // never release
-}
-
-//-----------------------------------------------------------------------------
-
-- (id)autorelease
 {
     return self;
 }
@@ -180,7 +146,6 @@ static osxPlatState * tempSharedPlatState = nil;
     if(Game->isRunning())
     {
         Game->mainLoop();
-//       glfwPollEvents();
        if(WindowManager->getFirstWindow())
        {
             WindowManager->getFirstWindow()->displayEvent.trigger(WindowManager->getFirstWindow()->getWindowId());
@@ -259,7 +224,7 @@ void Platform::restartInstance()
     NSString* execString = [mainAppBundle executablePath];
     
     // Create a mutable string we can build into an executable command
-    NSMutableString* mut = [[[NSMutableString alloc] init] autorelease];
+    NSMutableString* mut = [[NSMutableString alloc] init];
     
     // Base string is the executable path
     [mut appendString:execString];
@@ -305,7 +270,7 @@ void Platform::debugBreak()
 
 void Platform::outputDebugString(const char *string)
 {
-    fprintf(stderr, string, NULL );
+    fprintf(stderr, string, nullptr );
     fprintf(stderr, "\n" );
     fflush(stderr);
 }

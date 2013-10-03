@@ -99,8 +99,8 @@
 @property U32 currentSimTime;
 @property U32 lastTimeTick;
 @property U32 sleepTicks;
-@property (nonatomic,retain) NSString* mainCSDirectory;
-@property (nonatomic,retain) NSString* windowTitle;
+@property (nonatomic,strong) NSString* mainCSDirectory;
+@property (nonatomic,strong) NSString* windowTitle;
 @property BOOL mouseLocked;
 @property BOOL backgrounded;
 @property BOOL minimized;

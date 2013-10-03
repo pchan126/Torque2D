@@ -57,7 +57,7 @@ static bool isMainDotCsPresent(char *dir)
     // Create the full path using the dir and pre-determined script name of "main.cs"
     char maincsbuf[MAX_MAC_PATH_LONG];
     const char *maincsname = "/main.cs";
-    U32 len = dStrlen(dir) + dStrlen(maincsname);
+    SizeType len = dStrlen(dir) + dStrlen(maincsname);
     
     // The length of the above file path is too long. Error out
     AssertISV(len < MAX_MAC_PATH_LONG, "Sorry, path is too long, I can't run from this folder.");
@@ -92,7 +92,7 @@ void recurseDumpDirectories(const char* basePath, const char* subPath, Vector<St
     
     // Fetch the contents of the directory.
     NSArray* directoryContents = [fileManager   contentsOfDirectoryAtURL:directoryToScan
-                                                includingPropertiesForKeys:[NSArray arrayWithObjects:NSURLNameKey, NSURLIsDirectoryKey, NSURLIsPackageKey, nil]
+                                                includingPropertiesForKeys:@[NSURLNameKey, NSURLIsDirectoryKey, NSURLIsPackageKey]
                                                                  options:NSDirectoryEnumerationSkipsHiddenFiles
                                                                    error:nil];
     
@@ -158,13 +158,13 @@ static void recurseDumpPath(const char* curPath, Vector<Platform::FileInfo>& fil
     NSFileManager* fileManager = [NSFileManager defaultManager];
     
     // Convert the path to a NSString, then to a URL
-    NSString* directoryPath = [[NSString stringWithUTF8String:curPath] stringByStandardizingPath];
+    NSString* directoryPath = [@(curPath) stringByStandardizingPath];
     NSURL* directoryToScan = [NSURL fileURLWithPath:directoryPath];
     const char* pDirectoryPath = [directoryPath UTF8String];
 
     // Fetch the contents of the directory.
     NSArray* directoryContents = [fileManager   contentsOfDirectoryAtURL:directoryToScan
-                                                includingPropertiesForKeys:[NSArray arrayWithObjects:NSURLNameKey, NSURLIsDirectoryKey, NSURLIsPackageKey, NSURLFileSizeKey, nil]
+                                                includingPropertiesForKeys:@[NSURLNameKey, NSURLIsDirectoryKey, NSURLIsPackageKey, NSURLFileSizeKey]
                                                                  options:NSDirectoryEnumerationSkipsHiddenFiles
                                                                    error:nil];
     
@@ -555,33 +555,33 @@ bool Platform::fileDelete(const char * name)
         Con::warnf("Platform::fileDelete() - Filename length is pretty long...");
     
     // Atandard auto-release pool
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    @autoreleasepool {
     
     // Get the default NSFileManager
-    NSFileManager* fileManager = [NSFileManager defaultManager];
-    
-    // Convert the name char* to a NSString
-    NSString* filePath = [[NSString stringWithUTF8String:name] stringByStandardizingPath];
-    
-    // Delete the file
-    // Returns YES if the item was removed successfully or if path was nil.
-    // Returns NO if an error occurred. If the delegate aborts the operation for a file, this method returns YES.
-    // However, if the delegate aborts the operation for a directory, this method returns NO.
-    NSError* errorResponse = nil;
-    
-    BOOL result = [fileManager removeItemAtPath:filePath error:&errorResponse];
-    
-    // Could not delete the file, so print the error
-    if (!result)
-    {
-        Con::errorf("Platform::fileDelete: %s", [[errorResponse localizedDescription] UTF8String]);
+        NSFileManager* fileManager = [NSFileManager defaultManager];
+        
+        // Convert the name char* to a NSString
+        NSString* filePath = [@(name) stringByStandardizingPath];
+        
+        // Delete the file
+        // Returns YES if the item was removed successfully or if path was nil.
+        // Returns NO if an error occurred. If the delegate aborts the operation for a file, this method returns YES.
+        // However, if the delegate aborts the operation for a directory, this method returns NO.
+        NSError* errorResponse = nil;
+        
+        BOOL result = [fileManager removeItemAtPath:filePath error:&errorResponse];
+        
+        // Could not delete the file, so print the error
+        if (!result)
+        {
+            Con::errorf("Platform::fileDelete: %s", [[errorResponse localizedDescription] UTF8String]);
+        }
+        
+        // Drain the memory and release the pool
+        
+        // Return results of the deletion
+        return result;
     }
-    
-    // Drain the memory and release the pool
-    [pool drain];
-    
-    // Return results of the deletion
-    return result;
 }
 
 //-----------------------------------------------------------------------------
@@ -693,11 +693,11 @@ bool Platform::createPath(const char *file)
     }
     file = pathBuffer;
     
-    // Standard auto-release pool
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    
+//    // Standard auto-release pool
+//    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+   
     // Conver the file path to a NSString
-    NSString* convertedPath = [[NSString stringWithUTF8String:file] stringByStandardizingPath];
+    NSString* convertedPath = [@(file) stringByStandardizingPath];
 
     // Get the shared file manager
     NSFileManager* fileManager = [NSFileManager defaultManager];
@@ -712,13 +712,13 @@ bool Platform::createPath(const char *file)
     if (!result)
     {
         Con::errorf("Platform::createPath error: %s", [[createError localizedDescription] UTF8String]);
-        [pool drain];
+//        [pool drain];
         return false;
     }
     
     // Auto-release memory
-    [pool drain];
-    
+//    [pool drain];
+   
     // Success
     return true;
 }
@@ -736,40 +736,40 @@ StringTableEntry Platform::getCurrentDirectory()
 bool Platform::setCurrentDirectory(StringTableEntry newDir)
 {
     // Standard auto-release pool
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    @autoreleasepool {
     
     // Get the shared file manager
-    NSFileManager* fileManager = [NSFileManager defaultManager];
-    
-    // Convert the newDir to a NSString
-    NSString* convertedString = [[NSString stringWithUTF8String:newDir] stringByStandardizingPath];
-    
-    // Attempt to set the current directory to what was passed
-    BOOL result = [fileManager changeCurrentDirectoryPath:convertedString];
-    
-    // Auto-release memory
-    [pool drain];
-    
-    // Return the result
-    return result;
+        NSFileManager* fileManager = [NSFileManager defaultManager];
+        
+        // Convert the newDir to a NSString
+        NSString* convertedString = [@(newDir) stringByStandardizingPath];
+        
+        // Attempt to set the current directory to what was passed
+        BOOL result = [fileManager changeCurrentDirectoryPath:convertedString];
+        
+        // Auto-release memory
+        
+        // Return the result
+        return result;
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void Platform::openFolder(const char* path )
 {
-    // Standard auto-release pool
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    
+//    // Standard auto-release pool
+//    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+   
     // Convert the path to a NSString
-    NSString* convertedPath = [[NSString stringWithUTF8String:path] stringByStandardizingPath];
+    NSString* convertedPath = [@(path) stringByStandardizingPath];
     
     // Try to open the folder
     BOOL result = [[NSWorkspace sharedWorkspace] openFile:convertedPath];
     
-    // Auto-release the memory
-    [pool drain];
-    
+//    // Auto-release the memory
+//    [pool drain];
+   
     // If the operation failed, print an error
     if (!result)
         Con::errorf("Platform::openFolder: Failed to open folder %s", path);
@@ -849,7 +849,7 @@ StringTableEntry Platform::getExecutablePath()
     char* ret = NULL;
     
     if (StringTable)
-        platState.mainCSDirectory = [NSString stringWithUTF8String: StringTable->insert(cwd_buf)];
+        platState.mainCSDirectory = @(StringTable->insert(cwd_buf));
     else
         ret = dStrdup(cwd_buf);
     
@@ -887,10 +887,10 @@ bool Platform::isFile(const char *path)
     if (!path || !*path)
         return false;
     
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    
+//    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+   
     // Convert the path to a temp NSString
-    NSString* filePath = [[NSString stringWithUTF8String:path] stringByStandardizingPath];
+    NSString* filePath = [@(path) stringByStandardizingPath];
     
     // This is required to explicitly tell the file manager to determine if the file
     // in question is a directory
@@ -899,9 +899,9 @@ bool Platform::isFile(const char *path)
     // Scan the path location
     bool exists = [[NSFileManager defaultManager] fileExistsAtPath:filePath isDirectory:&isDirectory];
     
-    // Clean up the temp string
-    [pool drain];
-    
+//    // Clean up the temp string
+//    [pool drain];
+   
     // Return the results of the scan
     return !isDirectory && exists;
     
@@ -915,10 +915,10 @@ bool Platform::isDirectory(const char *path)
     if (!path || !*path)
         return false;
     
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    
+//    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+   
     // Convert the path to a temp NSString
-    NSString* folderPath = [[NSString stringWithUTF8String:path] stringByStandardizingPath];
+    NSString* folderPath = [@(path) stringByStandardizingPath];
     
     // This is required to explicitly tell the file manager to determine if the file
     // in question is a directory
@@ -927,9 +927,9 @@ bool Platform::isDirectory(const char *path)
     // Scan the path location
     bool exists = [[NSFileManager defaultManager] fileExistsAtPath:folderPath isDirectory:&isDirectory];
     
-    // Clean up the temp string
-    [pool drain];
-    
+//    // Clean up the temp string
+//    [pool drain];
+   
     // Return the results of the scan
     return isDirectory && exists;
 }
@@ -942,42 +942,42 @@ S32 Platform::getFileSize(const char* pFilePath)
     if (!pFilePath || !*pFilePath)
         return 0;
     
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    @autoreleasepool {
     
     // This will catch an error if the file manager fails to gather attributes
-    NSError* fileError = nil;
-    
-    // Convert pFilePath to a NSString
-    NSString* path = [[NSString stringWithUTF8String:pFilePath] stringByStandardizingPath];
+        NSError* fileError = nil;
+        
+        // Convert pFilePath to a NSString
+        NSString* path = [@(pFilePath) stringByStandardizingPath];
 
-    NSDirectoryEnumerator *dirEnum = [[NSFileManager defaultManager] enumeratorAtPath:path];
-    if (dirEnum == nil)
-        return 0;
+        NSDirectoryEnumerator *dirEnum = [[NSFileManager defaultManager] enumeratorAtPath:path];
+        if (dirEnum == nil)
+            return 0;
 
-    U32 fileLength = [[dirEnum fileAttributes] fileSize];
+        U32 fileLength = [[dirEnum fileAttributes] fileSize];
 
-    // Clean up temp string
-    [pool drain];
-    
-    // Return the result
-    return fileLength;
+        // Clean up temp string
+        
+        // Return the result
+        return fileLength;
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 bool Platform::deleteDirectoryRecursive( const char* pPath )
 {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    @autoreleasepool {
 
-    NSString *npath = [[NSString alloc] initWithUTF8String:pPath];
-    NSError *error;
-    bool result = [[NSFileManager defaultManager] removeItemAtPath:npath error:&error];
+        NSString *npath = [[NSString alloc] initWithUTF8String:pPath];
+        NSError *error;
+        bool result = [[NSFileManager defaultManager] removeItemAtPath:npath error:&error];
 
-    // Clean up temp string
-    [pool drain];
+        // Clean up temp string
 
-    // Return the result
-    return result;
+        // Return the result
+        return result;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1001,10 +1001,10 @@ bool Platform::isSubDirectory(const char *pathParent, const char *pathSub)
 // This approach is used in other functions where directories are dumped recursively
 bool Platform::hasSubDirectory(const char *path)
 {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    
+//    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+   
     // Convert the path to a NSString
-    NSString* filePath = [[NSString stringWithUTF8String:path] stringByStandardizingPath];
+    NSString* filePath = [@(path) stringByStandardizingPath];
     
     // Check to make sure we are scannning a directory
     if (Platform::isDirectory(path))
@@ -1037,8 +1037,8 @@ bool Platform::hasSubDirectory(const char *path)
         }
         
         // Clean up the temp string
-        [pool drain];
-        
+//        [pool drain];
+       
         // Return the result of the scan
         return foundDirectory;
     }
@@ -1048,15 +1048,15 @@ bool Platform::hasSubDirectory(const char *path)
         Con::errorf("Platform::hasSubDirectory: path is not a directory");
         
         // Clean up the temp string
-        [pool drain];
-        
+//        [pool drain];
+       
         // Return false
         return false;
     }
     
     // Clean up temp string
-    [pool drain];
-    
+//    [pool drain];
+   
     // Something went wrong, so return false
     return false;
 }
@@ -1087,13 +1087,13 @@ bool Platform::dumpDirectories(const char *path, Vector<StringTableEntry> &direc
         directoryVector.push_back(StringTable->insert(newpath));
     
     // Standard auto-release pool
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    @autoreleasepool {
     
     // Recursively dump the directories
-    recurseDumpDirectories(newpath, "", directoryVector, depth, noBasePath);
+        recurseDumpDirectories(newpath, "", directoryVector, depth, noBasePath);
     
     // Drain the pool.
-    [pool drain];
+    }
     
     // End profiling
     PROFILE_END();
@@ -1133,13 +1133,13 @@ bool Platform::dumpPath(const char *path, Vector<Platform::FileInfo>& fileVector
     }
     
     // Standard auto-release pool
-    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+    @autoreleasepool {
     
     // Recursively dump the contents of the path
-    recurseDumpPath(newpath, fileVector, depth);
+        recurseDumpPath(newpath, fileVector, depth);
     
     // Drain the pool.
-    [pool drain];
+    }
     
     // Stop profiling
     PROFILE_END();
@@ -1192,68 +1192,68 @@ bool Platform::fileRename(const char *source, const char *dest)
 bool Platform::pathCopy(const char* source, const char* dest, bool nooverwrite)
 {
     // Standard auto-release pool
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    @autoreleasepool {
     
     // Get the shared file manager
-    NSFileManager *manager = [NSFileManager defaultManager];
-    
-    // Convert the char pointers to NSString
-    NSString *nsource = [[NSString stringWithUTF8String:source] stringByStandardizingPath];
-    NSString *ndest = [[NSString stringWithUTF8String:dest] stringByStandardizingPath];
-    NSString *ndestFolder = [ndest stringByDeletingLastPathComponent];
-    
-    // If the source file does not exist, error out
-    if (![manager fileExistsAtPath:nsource])
-    {
-        Con::errorf("Platform::pathCopy: no file exists at %s",source);
-        return false;
-    }
-    
-    // If the destination file already exists
-    if ([manager fileExistsAtPath:ndest])
-    {
-        // If we can't overwrite, error out
-        if(nooverwrite)
+        NSFileManager *manager = [NSFileManager defaultManager];
+        
+        // Convert the char pointers to NSString
+        NSString *nsource = [@(source) stringByStandardizingPath];
+        NSString *ndest = [@(dest) stringByStandardizingPath];
+        NSString *ndestFolder = [ndest stringByDeletingLastPathComponent];
+        
+        // If the source file does not exist, error out
+        if (![manager fileExistsAtPath:nsource])
         {
-            Con::errorf("Platform::pathCopy: file already exists at %s",dest);
+            Con::errorf("Platform::pathCopy: no file exists at %s",source);
             return false;
         }
         
-        // Warn that we are about to overwrite the file
-        Con::warnf("Deleting files at path: %s", dest);
+        // If the destination file already exists
+        if ([manager fileExistsAtPath:ndest])
+        {
+            // If we can't overwrite, error out
+            if(nooverwrite)
+            {
+                Con::errorf("Platform::pathCopy: file already exists at %s",dest);
+                return false;
+            }
+            
+            // Warn that we are about to overwrite the file
+            Con::warnf("Deleting files at path: %s", dest);
+            
+            // Error catcher
+            NSError* errorResponse = nil;
+            
+            // Try to delete the item
+            bool deleted = [manager removeItemAtPath:ndest error:&errorResponse];
+            
+            // Failed to delete, so print the error and return
+            if(!deleted)
+            {
+                Con::errorf("Platform::pathCopy failed at %s. %s", dest, [[errorResponse localizedDescription] UTF8String]);
+                return false;
+            }
+        }
         
-        // Error catcher
+        if ([manager fileExistsAtPath:ndestFolder] == NO)
+        {
+            ndestFolder = [ndestFolder stringByAppendingString:@"/"]; // createpath requires a trailing slash
+            Platform::createPath([ndestFolder UTF8String]);
+        }
+        
         NSError* errorResponse = nil;
         
-        // Try to delete the item
-        bool deleted = [manager removeItemAtPath:ndest error:&errorResponse];
+        bool ret = [manager copyItemAtPath:nsource toPath:ndest error:&errorResponse];
         
-        // Failed to delete, so print the error and return
-        if(!deleted)
+        if (errorResponse != nil)
         {
-            Con::errorf("Platform::pathCopy failed at %s. %s", dest, [[errorResponse localizedDescription] UTF8String]);
-            return false;
+            Con::errorf("Platform::pathCopy: %s", [[errorResponse localizedDescription] UTF8String]);
         }
+        
+        
+        return ret;
     }
-    
-    if ([manager fileExistsAtPath:ndestFolder] == NO)
-    {
-        ndestFolder = [ndestFolder stringByAppendingString:@"/"]; // createpath requires a trailing slash
-        Platform::createPath([ndestFolder UTF8String]);
-    }
-    
-    NSError* errorResponse = nil;
-    
-    bool ret = [manager copyItemAtPath:nsource toPath:ndest error:&errorResponse];
-    
-    if (errorResponse != nil)
-    {
-        Con::errorf("Platform::pathCopy: %s", [[errorResponse localizedDescription] UTF8String]);
-    }
-    
-    [pool drain];
-    
-    return ret;
 }
 
 StringTableEntry Platform::getUserHomeDirectory()
@@ -1272,7 +1272,7 @@ const char* Platform::getUserDataDirectory()
 		return NULL;
 	}
     
-	NSString* fullPath = [paths objectAtIndex:0];
+	NSString* fullPath = paths[0];
     
 	BOOL exists;
 	BOOL isDir;

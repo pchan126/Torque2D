@@ -278,7 +278,7 @@ ParticleAssetEmitter* ParticleAsset::createEmitter( void )
 bool ParticleAsset::addEmitter( ParticleAssetEmitter* pParticleAssetEmitter )
 {
     // Sanity!
-    AssertFatal( pParticleAssetEmitter != nullptr, "Cannot add a NULL particle asset emitter." );
+    AssertFatal( pParticleAssetEmitter != nullptr, "Cannot add a nullptr particle asset emitter." );
 
     // Does the particle already have an owner?
     if ( pParticleAssetEmitter->getOwner() != nullptr )
@@ -316,7 +316,7 @@ bool ParticleAsset::addEmitter( ParticleAssetEmitter* pParticleAssetEmitter )
 void ParticleAsset::removeEmitter( ParticleAssetEmitter* pParticleAssetEmitter, const bool deleteEmitter )
 {
     // Sanity!
-    AssertFatal( pParticleAssetEmitter != nullptr, "Cannot remove a NULL particle asset emitter." );
+    AssertFatal( pParticleAssetEmitter != nullptr, "Cannot remove a nullptr particle asset emitter." );
 
     // Is this emitter owned by this asset?
     if ( pParticleAssetEmitter->getOwner() != this )
@@ -384,11 +384,11 @@ ParticleAssetEmitter* ParticleAsset::getEmitter( const U32 emitterIndex ) const
 ParticleAssetEmitter* ParticleAsset::findEmitter( const char* pEmitterName ) const
 {
     // Sanity!
-    AssertFatal( pEmitterName != nullptr, "ParticleAsset::findEmitter() - Cannot find a NULL emitter name." );
+    AssertFatal( pEmitterName != nullptr, "ParticleAsset::findEmitter() - Cannot find a nullptr emitter name." );
 
    // Finish if there are no emitters.
    if ( getEmitterCount() == 0 )
-       return NULL;
+       return nullptr;
 
     // Fetch emitter name.
     StringTableEntry emitterName = StringTable->insert( pEmitterName );
@@ -470,8 +470,8 @@ void ParticleAsset::onTamlCustomRead( const TamlCustomNodes& customNodes )
 static void WriteCustomTamlSchema( const AbstractClassRep* pClassRep, TiXmlElement* pParentElement )
 {
     // Sanity!
-    AssertFatal( pClassRep != nullptr,  "ParticleAsset::WriteCustomTamlSchema() - ClassRep cannot be NULL." );
-    AssertFatal( pParentElement != nullptr,  "ParticleAsset::WriteCustomTamlSchema() - Parent Element cannot be NULL." );
+    AssertFatal( pClassRep != nullptr,  "ParticleAsset::WriteCustomTamlSchema() - ClassRep cannot be nullptr." );
+    AssertFatal( pParentElement != nullptr,  "ParticleAsset::WriteCustomTamlSchema() - Parent Element cannot be nullptr." );
 
     // Write the particle asset fields.
     ParticleAsset particleAsset;

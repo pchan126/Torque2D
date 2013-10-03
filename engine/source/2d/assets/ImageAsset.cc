@@ -94,7 +94,7 @@ ConsoleSetType( TypeImageAssetPtr )
         AssetPtr<ImageAsset>* pAssetPtr = dynamic_cast<AssetPtr<ImageAsset>*>((AssetPtrBase*)(dptr));
 
         // Is the asset pointer the correct type?
-        if ( pAssetPtr == NULL )
+        if ( pAssetPtr == nullptr )
         {
             // No, so fail.
             Con::warnf( "(TypeImageAssetPtr) - Failed to set asset Id '%d'.", pFieldValue );
@@ -234,7 +234,7 @@ void ImageAsset::onRemove()
 void ImageAsset::setImageFile( const char* pImageFile )
 {
     // Sanity!
-    AssertFatal( pImageFile != NULL, "Cannot use a NULL image file." );
+    AssertFatal( pImageFile != nullptr, "Cannot use a nullptr image file." );
 
     // Fetch image file.
     pImageFile = StringTable->insert( pImageFile );
@@ -261,7 +261,7 @@ void ImageAsset::copyTo(SimObject* object)
     ImageAsset* pAsset = static_cast<ImageAsset*>(object);
 
     // Sanity!
-    AssertFatal(pAsset != NULL, "ImageAsset::copyTo() - Object is not the correct type.");
+    AssertFatal(pAsset != nullptr, "ImageAsset::copyTo() - Object is not the correct type.");
 
     // Copy state.
     pAsset->setImageFile( getImageFile() );
@@ -973,7 +973,7 @@ void ImageAsset::calculateImage( void )
         const char* pGlobalFilter = Con::getVariable( "$pref::T2D::imageAssetGlobalFilterMode" );
 
         // Fetch the global filter mode.
-        if ( pGlobalFilter != NULL && dStrlen(pGlobalFilter) > 0 )
+        if ( pGlobalFilter != nullptr && dStrlen(pGlobalFilter) > 0 )
             filterMode = getFilterModeEnum( pGlobalFilter );
 
         // If global filter mode is invalid then use local filter mode.
@@ -1244,7 +1244,7 @@ void ImageAsset::onTamlCustomRead( const TamlCustomNodes& customNodes )
     const TamlCustomNode* pCustomCellNodes = customNodes.findNode( cellCustomNodeName );
 
     // Finish if we don't have explicit cells.
-    if ( pCustomCellNodes == NULL )
+    if ( pCustomCellNodes == nullptr )
         return;
 
     // Set explicit mode.
@@ -1336,8 +1336,8 @@ void ImageAsset::onTamlCustomRead( const TamlCustomNodes& customNodes )
 static void WriteCustomTamlSchema( const AbstractClassRep* pClassRep, TiXmlElement* pParentElement )
 {
     // Sanity!
-    AssertFatal( pClassRep != NULL,  "ImageAsset::WriteCustomTamlSchema() - ClassRep cannot be NULL." );
-    AssertFatal( pParentElement != NULL,  "ImageAsset::WriteCustomTamlSchema() - Parent Element cannot be NULL." );
+    AssertFatal( pClassRep != nullptr,  "ImageAsset::WriteCustomTamlSchema() - ClassRep cannot be nullptr." );
+    AssertFatal( pParentElement != nullptr,  "ImageAsset::WriteCustomTamlSchema() - Parent Element cannot be nullptr." );
 
     char buffer[1024];
 

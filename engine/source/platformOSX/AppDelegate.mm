@@ -31,10 +31,6 @@
 
 //-----------------------------------------------------------------------------
 
-- (void)dealloc
-{
-    [super dealloc];
-}
 
 //-----------------------------------------------------------------------------
 
@@ -50,7 +46,7 @@
     
     for (NSUInteger i = 0; i < platState.argc; i++)
     {
-        const char* pArg = [[arguments objectAtIndex:i] UTF8String];
+        const char* pArg = [arguments[i] UTF8String];
         newArgv[i] = pArg;
     }
     

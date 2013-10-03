@@ -46,7 +46,7 @@
 
 //-----------------------------------------------------------------------------
 
-ImageFrameProviderCore::ImageFrameProviderCore() : mpImageAsset(NULL), mpAnimationAsset(NULL)
+ImageFrameProviderCore::ImageFrameProviderCore() : mpImageAsset(nullptr), mpAnimationAsset(nullptr)
 {
 }
 
@@ -63,9 +63,9 @@ ImageFrameProviderCore::~ImageFrameProviderCore()
 void ImageFrameProviderCore::allocateAssets( AssetPtr<ImageAsset>* pImageAssetPtr, AssetPtr<AnimationAsset>* pAnimationAssetPtr )
 {
     // Sanity!
-    AssertFatal( mpImageAsset == NULL && mpAnimationAsset == NULL, "ImageFrameProviderCore: Assets already allocated." );
-    AssertFatal( pImageAssetPtr != NULL, "ImageFrameProviderCore: Image-Asset pointer cannot be NULL." );
-    AssertFatal( pAnimationAssetPtr != NULL, "ImageFrameProviderCore: Animation-Asset pointer cannot be NULL." );
+    AssertFatal( mpImageAsset == nullptr && mpAnimationAsset == nullptr, "ImageFrameProviderCore: Assets already allocated." );
+    AssertFatal( pImageAssetPtr != nullptr, "ImageFrameProviderCore: Image-Asset pointer cannot be nullptr." );
+    AssertFatal( pAnimationAssetPtr != nullptr, "ImageFrameProviderCore: Animation-Asset pointer cannot be nullptr." );
 
     // Reset the state.
     resetState();
@@ -103,7 +103,7 @@ void ImageFrameProviderCore::resetState( void )
 void ImageFrameProviderCore::copyTo( ImageFrameProviderCore* pImageFrameProviderCore ) const
 {
     // Sanity!
-    AssertFatal(pImageFrameProviderCore != NULL, "ImageFrameProviderCore::copyTo - Copy object cannot be NULL.");
+    AssertFatal(pImageFrameProviderCore != nullptr, "ImageFrameProviderCore::copyTo - Copy object cannot be nullptr.");
 
     // Set self ticking.
     pImageFrameProviderCore->mSelfTick = mSelfTick;
@@ -258,7 +258,7 @@ void ImageFrameProviderCore::renderGui( GuiControl& owner, Point2I offset, const
         RenderProxy* pNoImageRenderProxy = Sim::findObject<RenderProxy>( CANNOT_RENDER_PROXY_NAME );
 
         // Check that the render proxy can render.
-        if ( pNoImageRenderProxy != NULL && pNoImageRenderProxy->validRender() )
+        if ( pNoImageRenderProxy != nullptr && pNoImageRenderProxy->validRender() )
         {
             // Render using render-proxy.
             pNoImageRenderProxy->renderGui( owner, offset, updateRect );
@@ -584,10 +584,10 @@ void ImageFrameProviderCore::setAnimationFrame( const U32 frameIndex )
 void ImageFrameProviderCore::clearAssets( void )
 {
     // Clear assets.
-    if ( mpAnimationAsset != NULL )
+    if ( mpAnimationAsset != nullptr )
         mpAnimationAsset->clear();
 
-    if ( mpImageAsset != NULL )
+    if ( mpImageAsset != nullptr )
         mpImageAsset->clear();
 
     // Reset remaining state.

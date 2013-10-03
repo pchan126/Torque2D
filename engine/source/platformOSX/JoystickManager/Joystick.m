@@ -21,7 +21,7 @@
         
         delegates = [[NSMutableArray alloc] initWithCapacity:0];
         
-        elements = (NSArray *)IOHIDDeviceCopyMatchingElements(theDevice, NULL, kIOHIDOptionsTypeNone);
+        elements = (NSArray *)CFBridgingRelease(IOHIDDeviceCopyMatchingElements(theDevice, NULL, kIOHIDOptionsTypeNone));
         
         NSMutableArray *tempButtons = [NSMutableArray array];
         NSMutableArray *tempAxes = [NSMutableArray array];
@@ -30,7 +30,7 @@
         
         int i;
         for (i=0; i<elements.count; ++i) {
-            IOHIDElementRef thisElement = (IOHIDElementRef)[elements objectAtIndex:i];
+            IOHIDElementRef thisElement = (__bridge IOHIDElementRef)elements[i];
             
             int elementType = IOHIDElementGetType(thisElement);
             int elementUsage = IOHIDElementGetUsage(thisElement);
@@ -38,22 +38,21 @@
             if (elementUsage == kHIDUsage_GD_Hatswitch) {
                 JoystickHatswitch *hatSwitch = [[JoystickHatswitch alloc] initWithElement:thisElement andOwner:self];
                 [tempHats addObject:hatSwitch];
-                [hatSwitch release];
             } else if (elementUsage >= kHIDUsage_GD_X && elementUsage <= kHIDUsage_GD_Slider ) {
-                [tempAxes addObject:thisElement];
+                [tempAxes addObject:CFBridgingRelease(thisElement)];
             } else if (elementType == kIOHIDElementTypeInput_Button) {
-                [tempButtons addObject:thisElement];
+                [tempButtons addObject:CFBridgingRelease(thisElement)];
             } else if ( elementType == kIOHIDElementTypeInput_Misc) {
-                [tempMisc addObject:thisElement];
+                [tempMisc addObject:CFBridgingRelease(thisElement)];
             }
 //            else
 //                NSLog(@"unidentified element");
 
         }
-        buttons = [[NSArray arrayWithArray:tempButtons] retain];
-        axes = [[NSArray arrayWithArray:tempAxes] retain];
-        hats = [[NSArray arrayWithArray:tempHats] retain];
-        misc = [[NSArray arrayWithArray:tempMisc] retain];
+        buttons = [NSArray arrayWithArray:tempButtons];
+        axes = [NSArray arrayWithArray:tempAxes];
+        hats = [NSArray arrayWithArray:tempHats];
+        misc = [NSArray arrayWithArray:tempMisc];
         
         NSLog(@"New device address: %p from %p",device,theDevice);
         NSLog(@"found %lu buttons, %lu axes, %lu hats, %lu misc",tempButtons.count,tempAxes.count,tempHats.count, tempMisc.count);
@@ -85,7 +84,7 @@
         JoystickHatswitch *hatswitch = nil;
 
         for (i=0; i<hats.count; ++i) {
-            hatswitch = [hats objectAtIndex:i];
+            hatswitch = hats[i];
             
             if ([hatswitch element] == theElement) {
                 offset += i*5;
@@ -96,7 +95,7 @@
         if (hatswitch)
         {
             for (i=0; i<delegates.count; ++i) {
-                id <JoystickNotificationDelegate> delegate = [delegates objectAtIndex:i];
+                id <JoystickNotificationDelegate> delegate = delegates[i];
                 [hatswitch checkValue:value andDispatchButtonPressesWithIndexOffset:offset toDelegate:delegate];
             }
         }
@@ -107,23 +106,23 @@
     if (elementType == kIOHIDElementTypeInput_Button)
     {
         for (i=0; i<delegates.count; ++i) {
-            id <JoystickNotificationDelegate> delegate = [delegates objectAtIndex:i];
+            id <JoystickNotificationDelegate> delegate = delegates[i];
 
             if (value==1)
-                [delegate joystickButtonPushed:[buttons indexOfObject:theElement] onJoystick:self];
+                [delegate joystickButtonPushed:[buttons indexOfObject:CFBridgingRelease(theElement)] onJoystick:self];
             else
-                [delegate joystickButtonReleased:[buttons indexOfObject:theElement] onJoystick:self];
+                [delegate joystickButtonReleased:[buttons indexOfObject:CFBridgingRelease(theElement)] onJoystick:self];
                  
         }
-        NSLog(@"button #%i reported value of %d", [buttons indexOfObject:theElement], value);
+        NSLog(@"button #%i reported value of %d", [buttons indexOfObject:CFBridgingRelease(theElement)], value);
         return;
     }
 
     if (elementUsage >= kHIDUsage_GD_X && elementUsage <= kHIDUsage_GD_Slider ) {
         for (i=0; i<delegates.count; ++i) {
-            id <JoystickNotificationDelegate> delegate = [delegates objectAtIndex:i];
+            id <JoystickNotificationDelegate> delegate = delegates[i];
 
-            [delegate joystickAxisChanged:[axes indexOfObject:theElement] ofType:elementUsage onJoystick:self];
+            [delegate joystickAxisChanged:[axes indexOfObject:CFBridgingRelease(theElement)] ofType:elementUsage onJoystick:self];
         }
 
 //        CFIndex lmin = IOHIDElementGetLogicalMin(theElement);
@@ -170,7 +169,7 @@
     int i;
     
     for (i=0; i<searchArray.count; ++i) {
-        if ([searchArray objectAtIndex:i] == theElement)
+        if (searchArray[i] == CFBridgingRelease(theElement))
             return i;
             //  returnString = [NSString stringWithFormat:@"%@_%d",returnString,i];
     }
@@ -179,7 +178,7 @@
 }
 
 - (double)getRelativeValueOfAxesIndex:(int)index {
-    IOHIDElementRef theElement = [axes objectAtIndex:index];
+    IOHIDElementRef theElement = (__bridge IOHIDElementRef)(axes[index]);
     
     double value;
     double min = IOHIDElementGetPhysicalMin(theElement);
@@ -205,17 +204,5 @@
     return (unsigned int)[hats count];
 }
 
-- (void)dealloc
-{
-    [delegates release];
-    
-    [axes release];
-    [hats release];
-    [buttons release];
-    
-    [elements release];
-    
-    [super dealloc];
-}
 
 @end

@@ -303,7 +303,7 @@ ConsoleMethod(ImageAsset, getFrameSize, const char*, 3, 3,    "(int frame) - Get
         // Warn.
         Con::warnf("ImageAsset::getFrameSize() - Invalid Frame; Allowed range is 0 to %d", object->getFrameCount()-1 );
         // Finish Here.
-        return NULL;
+        return nullptr;
     }
 
     // Fetch Selected Frame Pixel Area.

@@ -11,7 +11,7 @@
 #import "Joystick.h"
 
 @interface JoystickManager : NSObject {
-    id      joystickAddedDelegate;
+    id      __unsafe_unretained joystickAddedDelegate;
     
 @private
     IOHIDManagerRef hidManager;
@@ -21,7 +21,7 @@
     int                 joystickIDIndex;
 }
 
-@property(assign) id joystickAddedDelegate;
+@property(unsafe_unretained) id joystickAddedDelegate;
 
 + (JoystickManager *)sharedInstance;
 - (unsigned long)connectedJoysticks;
