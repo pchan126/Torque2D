@@ -187,9 +187,9 @@ Resource<AudioBuffer> AudioBuffer::find(const char *filename)
    return buffer;
 }
 
-ResourceInstance* AudioBuffer::construct(Stream &)
+ResourceInstance* AudioBuffer::construct(std::iostream &)
 {
-   return NULL;
+   return nullptr;
 }
 
 //-----------------------------------------------------------------
@@ -261,32 +261,32 @@ bool AudioBuffer::readWAV(ResourceObject *obj)
    ALsizei freq   = 22050;
    ALboolean loop = AL_FALSE;
 
-   Stream *stream = ResourceManager->openStream(obj);
-   if (!stream)
+   std::iostream *stream = ResourceManager->openStream(obj);
+   if (stream->bad())
       return false;
 
-   stream->read(4, &fileHdr.id[0]);
-   stream->read(&fileHdr.size);
-   stream->read(4, &fileHdr.type[0]);
+   stream->read((char *)&fileHdr.id[0], 4);
+   *stream >> fileHdr.size;
+   stream->read((char *)&fileHdr.type[0], 4);
 
    fileHdr.size=((fileHdr.size+1)&~1)-4;
 
-   stream->read(4, &chunkHdr.id[0]);
-   stream->read(&chunkHdr.size);
+   stream->read((char *)&chunkHdr.id[0], 4);
+   *stream >> chunkHdr.size;
    // unread chunk data rounded up to nearest WORD
    S32 chunkRemaining = chunkHdr.size + (chunkHdr.size&1);
 
-   while ((fileHdr.size!=0) && (stream->getStatus() != Stream::EOS))
+   while ((fileHdr.size!=0) && (stream->good()))
    {
       // WAV Format header
       if (!dStrncmp((const char*)chunkHdr.id,"fmt ",4))
       {
-         stream->read(&fmtHdr.format);
-         stream->read(&fmtHdr.channels);
-         stream->read(&fmtHdr.samplesPerSec);
-         stream->read(&fmtHdr.bytesPerSec);
-         stream->read(&fmtHdr.blockAlign);
-         stream->read(&fmtHdr.bitsPerSample);
+         *stream >> (unsigned short&)(fmtHdr.format);
+         *stream >> (unsigned short&)(fmtHdr.channels);
+         *stream >> (unsigned int&)(fmtHdr.samplesPerSec);
+         *stream >> (unsigned int&)(fmtHdr.bytesPerSec);
+         *stream >> (unsigned short&)(fmtHdr.blockAlign);
+         *stream >> (unsigned short&)(fmtHdr.bitsPerSample);
 
          if (fmtHdr.format==0x0001)
          {
@@ -298,7 +298,7 @@ bool AudioBuffer::readWAV(ResourceObject *obj)
          }
          else
          {
-            stream->read(sizeof(WAVFmtExHdr), &fmtExHdr);
+            stream->read( (char*)&fmtExHdr, sizeof(WAVFmtExHdr));
             chunkRemaining -= sizeof(WAVFmtExHdr);
          }
       }
@@ -311,7 +311,7 @@ bool AudioBuffer::readWAV(ResourceObject *obj)
             data=new char[chunkHdr.size];
             if (data)
             {
-               stream->read(chunkHdr.size, data);
+               stream->read( data, chunkHdr.size);
 #if defined(TORQUE_BIG_ENDIAN)
                // need to endian-flip the 16-bit data.
                if (fmtHdr.bitsPerSample==16) // !!!TBD we don't handle stereo, so may be RL flipped.
@@ -348,7 +348,7 @@ bool AudioBuffer::readWAV(ResourceObject *obj)
       {
          // this struct read is NOT endian safe but it is ok because
          // we are only testing the loops field against ZERO
-         stream->read(sizeof(WAVSmplHdr), &smplHdr);
+         stream->read( (char*)&smplHdr, sizeof(WAVSmplHdr));
          loop = (smplHdr.loops ? AL_TRUE : AL_FALSE);
          chunkRemaining -= sizeof(WAVSmplHdr);
       }
@@ -361,15 +361,15 @@ bool AudioBuffer::readWAV(ResourceObject *obj)
       while (chunkRemaining > 0)
       {
          S32 readSize = std::min(1024, chunkRemaining);
-         stream->read(readSize, buffer);
+         stream->read( buffer, readSize);
          chunkRemaining -= readSize;
       }
 
       fileHdr.size-=(((chunkHdr.size+1)&~1)+8);
 
       // read next chunk header...
-      stream->read(4, &chunkHdr.id[0]);
-      stream->read(&chunkHdr.size);
+      stream->read( (char*)&chunkHdr.id[0], 4);
+      *stream >> (unsigned int&)(chunkHdr.size);
       // unread chunk data rounded up to nearest WORD
       chunkRemaining = chunkHdr.size + (chunkHdr.size&1);
    }

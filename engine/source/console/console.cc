@@ -25,7 +25,6 @@
 #include "console/console.h"
 #include "console/consoleInternal.h"
 #include "console/consoleObject.h"
-#include "io/fileStream.h"
 #include "io/resource/resourceManager.h"
 #include "console/ast.h"
 #include "console/consoleTypes.h"
@@ -36,6 +35,7 @@
 #include "component/dynamicConsoleMethodComponent.h"
 #include "memory/safeDelete.h"
 #include <stdarg.h>
+#include <fstream>
 
 #ifndef _HASHTABLE_H
 #include "collection/hashTable.h"
@@ -197,7 +197,7 @@ static Vector<ConsoleLogEntry> consoleLog(__FILE__, __LINE__);
 static bool consoleLogLocked;
 static bool logBufferEnabled=true;
 static S32 printLevel = 10;
-static FileStream consoleLogFile;
+static std::fstream consoleLogFile;
 static const char *defLogFileName = "console.log";
 static S32 consoleLogMode = 0;
 static bool active = false;
@@ -493,13 +493,12 @@ static void log(const char *string)
    // In mode 1, we open, append, close on each log write.
    if ((consoleLogMode & 0x3) == 1) 
    {
-      consoleLogFile.open(defLogFileName, FileStream::ReadWrite);
+      consoleLogFile.open(defLogFileName);
    }
 
    // Write to the log if its status is hunky-dory.
-   if ((consoleLogFile.getStatus() == Stream::Ok) || (consoleLogFile.getStatus() == Stream::EOS)) 
+   if (consoleLogFile.good())
    {
-      consoleLogFile.setPosition(consoleLogFile.getStreamSize());
       // If this is the first write...
       if (newLogFile) 
       {
@@ -514,7 +513,7 @@ static void log(const char *string)
                lt.hour,
                lt.min,
                lt.sec);
-         consoleLogFile.write(dStrlen(buffer), buffer);
+         consoleLogFile.write( buffer, dStrlen(buffer));
          newLogFile = false;
          if (consoleLogMode & 0x4) 
          {
@@ -525,15 +524,15 @@ static void log(const char *string)
             getLockLog(log, size);
             for (line = 0; line < size; line++) 
             {
-               consoleLogFile.write(dStrlen(log[line].mString), log[line].mString);
-               consoleLogFile.write(2, "\r\n");
+               consoleLogFile.write( log[line].mString, dStrlen(log[line].mString));
+               consoleLogFile.write( "\r\n", 2);
             }
             unlockLog();
          }
       }
       // Now write what we came here to write.
-      consoleLogFile.write(dStrlen(string), string);
-      consoleLogFile.write(2, "\r\n");
+      consoleLogFile.write( string, dStrlen(string));
+      consoleLogFile.write( "\r\n", 2);
    }
 
    if ((consoleLogMode & 0x3) == 1) 
@@ -1169,7 +1168,7 @@ void setLogMode(S32 newMode)
       else if ((newMode & 0x3) == 2)
       {
          // Starting mode 2, must open logfile.
-         consoleLogFile.open(defLogFileName, FileStream::Write);
+         consoleLogFile.open(defLogFileName, std::fstream::out);
       }
       consoleLogMode = newMode;
    }

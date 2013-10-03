@@ -72,7 +72,7 @@ ConsoleFunction(stricmp, S32, 3, 3, "( string1 , string2 ) Use the stricmp funct
 
 ConsoleFunction(strlen, S32, 2, 2, "( string ) Use the strlen function to determine how many characters there are in string.\n"
                                                                 "@param string The string to count characters for.\n"
-                                                                "@return Returns the number of characters in string, or 0 if string is invalid or a NULL string")
+                                                                "@return Returns the number of characters in string, or 0 if string is invalid or a nullptr string")
 {
    TORQUE_UNUSED( argc );
    return dStrlen(argv[1]);
@@ -117,7 +117,7 @@ ConsoleFunction(strpos, S32, 3, 4, "( sourceString , searchString [ , offset ] )
 }
 
 ConsoleFunction(ltrim, const char *,2,2,"( sourceString ) Use the ltrim function to strip the leading white space from sourceString.\n"
-                                                                "White space is any character in this set: spaces, TABs, and NULL strings.\n"
+                                                                "White space is any character in this set: spaces, TABs, and nullptr strings.\n"
                                                                 "@param sourceString The string to be trimmed.\n"
                                                                 "@return Returns sourceString with all the leading white spaces removed.\n"
                                                                 "@sa stripChars, stripMLControlChars, stripTrailingSpaces, rtrim, trim")
@@ -130,7 +130,7 @@ ConsoleFunction(ltrim, const char *,2,2,"( sourceString ) Use the ltrim function
 }
 
 ConsoleFunction(rtrim, const char *,2,2, "( sourceString ) Use the rtrim function to strip the trailing white space from sourceString.\n"
-                                                                "White space is any character in this set: spaces, TABs, and NULL strings.\n"
+                                                                "White space is any character in this set: spaces, TABs, and nullptr strings.\n"
                                                                 "@param sourceString The string to be trimmed.\n"
                                                                 "@return Returns sourceString with all the trailing white spaces removed.\n"
                                                                 "@sa stripChars, stripMLControlChars, stripTrailingSpaces, ltrim, trim")
@@ -152,7 +152,7 @@ ConsoleFunction(rtrim, const char *,2,2, "( sourceString ) Use the rtrim functio
 }
 
 ConsoleFunction(trim, const char *,2,2,"( sourceString ) Use the trim function to strip the leading and trailing white space from sourceString.\n"
-                                                                "White space is any character in this set: spaces, TABs, and NULL strings.\n"
+                                                                "White space is any character in this set: spaces, TABs, and nullptr strings.\n"
                                                                 "@param sourceString The string to be trimmed.\n"
                                                                 "@return Returns sourceString with all the leading and trailing white spaces removed.\n"
                                                                 "@sa stripChars, stripMLControlChars, stripTrailingSpaces, ltrim, rtrim")
@@ -230,7 +230,7 @@ ConsoleFunction(strupr,const char *,2,2, "( sourceString ) Use the strupr functi
 ConsoleFunction(strchr,const char *,3,3,"( sourceString , char ) Use the strchr function to extract a sub-string of sourceString, where the sub-string is equal to the first occurence of char in sourceString followed by the remainder of sourceString.\n"
                                                                 "@param sourceString The string from which to extract a sub-string.\n"
                                                                 "@param char The character to search for in sourceString.\n"
-                                                                "@return Returns a string composed of first instance of char in sourceString, and all of the characters after it. If char is not found, a NULL string is returned.\n"
+                                                                "@return Returns a string composed of first instance of char in sourceString, and all of the characters after it. If char is not found, a nullptr string is returned.\n"
                                                                 "@sa getSubStr")
 {
    TORQUE_UNUSED( argc );
@@ -497,7 +497,7 @@ ConsoleFunction(getFieldCount, S32, 2, 2, "( sourceString ) Use the getFieldCoun
 //--------------------------------------
 ConsoleFunction(getRecord, const char *, 3, 3, "( sourceString , index ) Use the getRecord function to get the record at index in sourceString.\n"
                                                                 "@param sourceString A string containing one or more records.\n"
-                                                                "@return Returns record at index in sourceString, or NULL string if no record exists at that index.\n"
+                                                                "@return Returns record at index in sourceString, or nullptr string if no record exists at that index.\n"
                                                                 "@sa getRecords, setRecord")
 {
    TORQUE_UNUSED( argc );
@@ -550,13 +550,13 @@ ConsoleFunction(getRecordCount, S32, 2, 2, "( sourceString ) Use the getRecordCo
 //--------------------------------------
 ConsoleFunction(firstWord, const char *, 2, 2, "( sourceString ) Use the firstWord function to retrieve the first word found in sourceString.\n"
                                                                 "@param sourceString A string containing one or more words.\n"
-                                                                "@return Returns the first word found in sourceString, or a NULL string, if no words are found.\n"
+                                                                "@return Returns the first word found in sourceString, or a nullptr string, if no words are found.\n"
                                                                 "@sa restWords")
 {
    TORQUE_UNUSED( argc );
    const char *word = dStrchr(argv[1], ' ');
    U32 len;
-   if(word == NULL)
+   if(word == nullptr)
       len = dStrlen(argv[1]);
    else
       len = word - argv[1];
@@ -568,12 +568,12 @@ ConsoleFunction(firstWord, const char *, 2, 2, "( sourceString ) Use the firstWo
 
 ConsoleFunction(restWords, const char *, 2, 2, "( sourceString ) Use the restWords function to retrieve all words after the first word in sourceString.\n"
                                                                 "@param sourceString A string containing one or more words.\n"
-                                                                "@return Returns a string containing all the words after the first word found in sourceString, or a NULL string if no words remain after the first word (or if no words at all remain).\n"
+                                                                "@return Returns a string containing all the words after the first word found in sourceString, or a nullptr string if no words remain after the first word (or if no words at all remain).\n"
                                                                 "@sa firstWord")
 {
    TORQUE_UNUSED( argc );
    const char *word = dStrchr(argv[1], ' ');
-   if(word == NULL)
+   if(word == nullptr)
       return "";
    char *ret = Con::getReturnBuffer(dStrlen(word + 1) + 1);
    dStrcpy(ret, word + 1);
@@ -595,7 +595,7 @@ ConsoleFunction(NextToken,const char *,4,4,"( tokenList , tokenVar , delimeter )
                                                                 "@param tokenList The string containing token(s).\n"
                                                                 "@param tokenVar The 'name' of the variable to store the token in.\n"
                                                                 "@param delimeter The character(s) to use as a delimeter. A delimeter may be a single character, or a sequence of characters.\n"
-                                                                "@return Returns a copy of tokenList, less the first token and the first delimiter. If there are no more tokens, a NULL string is returned.")
+                                                                "@return Returns a copy of tokenList, less the first token and the first delimiter. If there are no more tokens, a nullptr string is returned.")
 {
    TORQUE_UNUSED( argc );
 
@@ -649,7 +649,7 @@ ConsoleFunction(detag, const char *, 2, 2, "( tagID ) Use the detag function to 
    if(argv[1][0] == StringTagPrefixByte)
    {
       const char *word = dStrchr(argv[1], ' ');
-      if(word == NULL)
+      if(word == nullptr)
          return "";
       char *ret = Con::getReturnBuffer(dStrlen(word + 1) + 1);
       dStrcpy(ret, word + 1);
@@ -825,7 +825,7 @@ ConsoleFunction( gotoWebPage, void, 2, 2, "( address ) - Open a URL in the user'
    TORQUE_UNUSED( argc );
    char* protocolSep = dStrstr(argv[1],"://");
 
-   if( protocolSep != NULL )
+   if( protocolSep != nullptr )
    {
       Platform::openWebBrowser(argv[1]);
       return;
@@ -875,7 +875,7 @@ ConsoleFunction(getDSOPath, const char *, 2, 2, "(scriptFileName) Returns the DS
    Con::expandPath(pathBuffer, sizeof(pathBuffer), argv[1]);  
 
    const char *filename = getDSOPath(pathBuffer);
-   if(filename == NULL || *filename == 0)
+   if(filename == nullptr || *filename == 0)
       return "";
 
    return filename;
@@ -888,7 +888,7 @@ ConsoleFunction(compile, bool, 2, 2, "( fileName ) Use the compile function to p
 {
    TORQUE_UNUSED( argc );
    char nameBuffer[512];
-   char* script = NULL;
+   char* script = nullptr;
    U32 scriptSize = 0;
 
    FileTime comModifyTime, scrModifyTime;
@@ -933,12 +933,12 @@ ConsoleFunction(compile, bool, 2, 2, "( fileName ) Use the compile function to p
    if(rScr)
       rScr->getFileTimes(nullptr, &scrModifyTime);
 
-   Stream *s = ResourceManager->openStream(pathBuffer);
-   if(s)
+   std::iostream *s = ResourceManager->openStream(pathBuffer);
+   if(s != nullptr)
    {
       scriptSize = ResourceManager->getSize(pathBuffer);
       script = new char [scriptSize+1];
-      s->read(scriptSize, script);
+      s->read( script, scriptSize);
       ResourceManager->closeStream(s);
       script[scriptSize] = 0;
    }
@@ -957,7 +957,7 @@ ConsoleFunction(compile, bool, 2, 2, "( fileName ) Use the compile function to p
    CodeBlock *code = new CodeBlock();
    code->compile(nameBuffer, pathBuffer, script);
    delete code;
-   code = NULL;
+   code = nullptr;
 
    delete[] script;
    return true;
@@ -972,7 +972,7 @@ ConsoleFunction(compilePath, const char*, 2, 2, "compilePath( path )")
     
     S32 failedScripts = 0;
     S32 totalScripts = 0;
-    ResourceObject *match = NULL;
+    ResourceObject *match = nullptr;
     
     while ( (match = ResourceManager->findMatch( pathBuffer, &compileArgs[1], match )) )
     {
@@ -1098,9 +1098,9 @@ ConsoleFunction(exec, bool, 2, 4, "( fileName [ , nocalls [ , journalScript ] ] 
 
       char nameBuffer[1024];
       if( isEditorScript ) // this should never be the case since we are a PLAYER not a TOOL, but you never know
-         dStrcpyl(nameBuffer, sizeof(nameBuffer), pathAndFilename, ".edso", NULL);
+         dStrcpyl(nameBuffer, sizeof(nameBuffer), pathAndFilename, ".edso", nullptr);
       else
-         dStrcpyl(nameBuffer, sizeof(nameBuffer), pathAndFilename, ".dso", NULL);
+         dStrcpyl(nameBuffer, sizeof(nameBuffer), pathAndFilename, ".dso", nullptr);
 
       if(!ResourceManager->find(nameBuffer))
          scriptFileName = Platform::getPrefsPath(Platform::stripBasePath(pathBuffer));
@@ -1117,7 +1117,7 @@ ConsoleFunction(exec, bool, 2, 4, "( fileName [ , nocalls [ , journalScript ] ] 
 #endif //TORQUE_ALLOW_DSO_GENERATION
 
     //Luma : Something screwed up so get out early
-   if(scriptFileName == NULL || *scriptFileName == 0)
+   if(scriptFileName == nullptr || *scriptFileName == 0)
    {
       execDepth--;
       return false;
@@ -1180,14 +1180,14 @@ ConsoleFunction(exec, bool, 2, 4, "( fileName [ , nocalls [ , journalScript ] ] 
 
    // Ok, we let's try to load and compile the script.
    ResourceObject *rScr = ResourceManager->find(scriptFileName);
-   ResourceObject *rCom = NULL;
+   ResourceObject *rCom = nullptr;
 
    char nameBuffer[512];
-   char* script = NULL;
+   char* script = nullptr;
    U32 scriptSize = 0;
    U32 version;
 
-   Stream *compiledStream = NULL;
+    std::iostream *compiledStream = nullptr;
    FileTime comModifyTime, scrModifyTime;
 
    // Check here for .edso
@@ -1196,9 +1196,9 @@ ConsoleFunction(exec, bool, 2, 4, "( fileName [ , nocalls [ , journalScript ] ] 
    //{
    //   edso = true;
    //   rCom = rScr;
-   //   rScr = NULL;
+   //   rScr = nullptr;
 
-   //   rCom->getFileTimes( NULL, &comModifyTime );
+   //   rCom->getFileTimes( nullptr, &comModifyTime );
    //   dStrcpy( nameBuffer, scriptFileName );
    //}
 
@@ -1244,12 +1244,12 @@ ConsoleFunction(exec, bool, 2, 4, "( fileName [ , nocalls [ , journalScript ] ] 
       if (compiledStream)
       {
          // Check the version!
-         compiledStream->read(&version);
+         *compiledStream >> version;
          if(version != DSO_VERSION)
          {
             Con::warnf("exec: Found an old DSO (%s, ver %d < %d), ignoring.", nameBuffer, version, DSO_VERSION);
             ResourceManager->closeStream(compiledStream);
-            compiledStream = NULL;
+            compiledStream = nullptr;
          }
       }
     }
@@ -1267,18 +1267,18 @@ ConsoleFunction(exec, bool, 2, 4, "( fileName [ , nocalls [ , journalScript ] ] 
 
        //Con::errorf( "No DSO found! : %s", scriptFileName );
        
-      Stream *s = ResourceManager->openStream(scriptFileName);
+       std::iostream *s = ResourceManager->openStream(scriptFileName);
        
 #ifdef	TORQUE_ALLOW_JOURNALING
       if(journal && Game->isJournalWriting())
-         Game->getJournalStream()->write(bool(s != NULL));
+         Game->getJournalStream()->write(bool(s != nullptr));
 #endif	//TORQUE_ALLOW_JOURNALING
 
       if(s)
       {
          scriptSize = ResourceManager->getSize(scriptFileName);
          script = new char [scriptSize+1];
-         s->read(scriptSize, script);
+         s->read( script, scriptSize);
 
 #ifdef	TORQUE_ALLOW_JOURNALING
          if(journal && Game->isJournalWriting())
@@ -1317,12 +1317,12 @@ ConsoleFunction(exec, bool, 2, 4, "( fileName [ , nocalls [ , journalScript ] ] 
          CodeBlock *code = new CodeBlock();
          code->compile(nameBuffer, scriptFileName, script);
          delete code;
-         code = NULL;
+         code = nullptr;
 
          compiledStream = ResourceManager->openStream(nameBuffer);
          if(compiledStream)
          {
-            compiledStream->read(&version);
+            *compiledStream >> version;
          }
          else
          {
@@ -1357,7 +1357,7 @@ ConsoleFunction(exec, bool, 2, 4, "( fileName [ , nocalls [ , journalScript ] ] 
       CodeBlock *code = new CodeBlock;
       code->read(scriptFileName, *compiledStream);
       ResourceManager->closeStream(compiledStream);
-      code->exec(0, scriptFileName, NULL, 0, NULL, noCalls, NULL, 0);
+      code->exec(0, scriptFileName, nullptr, 0, nullptr, noCalls, nullptr, 0);
 
         F32 et1 = (F32)Platform::getRealMilliseconds();
         
@@ -1411,7 +1411,7 @@ ConsoleFunction(eval, const char *, 2, 2, "( script ) Use the eval function to e
                                                                 "@sa call")
 {
    TORQUE_UNUSED( argc );
-   return Con::evaluate(argv[1], false, NULL);
+   return Con::evaluate(argv[1], false, nullptr);
 }
 
 ConsoleFunction(getVariable, const char *, 2, 2, "(string varName) Grabs the relevant data for the variable represented by the given string\n"
@@ -1451,8 +1451,8 @@ ConsoleFunction(getModNameFromPath, const char *, 2, 2, "(string path) Attempts 
 
 ConsoleFunction(getPrefsPath, const char *, 1, 2, "([fileName])")
 {
-   const char *filename = Platform::getPrefsPath(argc > 1 ? argv[1] : NULL);
-   if(filename == NULL || *filename == 0)
+   const char *filename = Platform::getPrefsPath(argc > 1 ? argv[1] : nullptr);
+   if(filename == nullptr || *filename == 0)
       return "";
      
    return filename;
@@ -1461,7 +1461,7 @@ ConsoleFunction(getPrefsPath, const char *, 1, 2, "([fileName])")
 ConsoleFunction(execPrefs, bool, 2, 4, "execPrefs(fileName [, nocalls [,journalScript]])")
 {
    const char *filename = Platform::getPrefsPath(argv[1]);
-   if (filename == NULL || *filename == 0)
+   if (filename == nullptr || *filename == 0)
       return false;
 
    if ( !Platform::isFile(filename) )
@@ -1482,7 +1482,7 @@ ConsoleFunction(export, void, 2, 4, "( wildCard [ ,fileName [ , append  ] ]) Use
     const char* pWildcard = argv[1];
 
     // Fetch the filename.
-    const char* pFilename = NULL;
+    const char* pFilename = nullptr;
     if ( argc >= 3 )
     {
         Con::expandPath( pathBuffer, sizeof(pathBuffer), argv[2] );
@@ -1536,8 +1536,8 @@ ConsoleFunction(getAppleDeviceIPAddress, const char*, 1, 1, "Gets the Apple hard
 {
     char *address = Con::getReturnBuffer(32);
     dStrcpy(address, "error");
-    struct ifaddrs *interfaces = NULL;
-    struct ifaddrs *temp_addr = NULL;
+    struct ifaddrs *interfaces = nullptr;
+    struct ifaddrs *temp_addr = nullptr;
     int success = 0;
 
     // retrieve the current interfaces - returns 0 on success
@@ -1546,7 +1546,7 @@ ConsoleFunction(getAppleDeviceIPAddress, const char*, 1, 1, "Gets the Apple hard
     {
         // Loop through linked list of interfaces
         temp_addr = interfaces;
-        while(temp_addr != NULL)
+        while(temp_addr != nullptr)
         {
             if(temp_addr->ifa_addr->sa_family == AF_INET)
             {

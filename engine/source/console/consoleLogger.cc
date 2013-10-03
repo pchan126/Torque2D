@@ -139,7 +139,7 @@ bool ConsoleLogger::attach()
       return false;
 
    // Open the filestream
-   mStream.open( mFilename, ( mAppend ? FileStream::WriteAppend : FileStream::Write ) );
+   mStream.open( mFilename,  ( mAppend ? std::fstream::out |std::fstream::app : std::fstream::out ) );
 
    // Add this to list of active loggers
    mActiveLoggers.push_back( this );
@@ -202,7 +202,7 @@ void ConsoleLogger::logCallback( ConsoleLogEntry::Level level, const char *conso
 
 //-----------------------------------------------------------------------------
 
-void ConsoleLogger::log( const char *consoleLine )
+void ConsoleLogger::log( std::string consoleLine )
 {
    // Check to see if this is intalized before using it
    if( !smInitialized ) 
@@ -214,7 +214,8 @@ void ConsoleLogger::log( const char *consoleLine )
       }
    }
 
-   mStream.writeLine( (U8 *)consoleLine );
+   mStream.write( consoleLine.c_str(), consoleLine.size());
+   mStream.write( "\r\n", 2);
 }
 
 //-----------------------------------------------------------------------------

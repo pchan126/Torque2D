@@ -44,7 +44,7 @@ private:
    bool              mLoading;
    ALuint            malBuffer;
 
-   bool readRIFFchunk(Stream &s, const char *seekLabel, U32 *size);
+   bool readRIFFchunk(std::iostream &s, const char *seekLabel, U32 *size);
    bool readWAV(ResourceObject *obj);
 
 public:
@@ -54,7 +54,7 @@ public:
    bool isLoading() {return(mLoading);}
 
    static Resource<AudioBuffer> find(const char *filename);
-   static ResourceInstance* construct(Stream& stream);
+   static ResourceInstance* construct(std::iostream& stream);
 
 };
 

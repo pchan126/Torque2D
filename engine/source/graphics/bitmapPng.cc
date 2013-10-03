@@ -54,7 +54,7 @@ static png_bytep sRowPointers[csgMaxRowPointers];
 //                                        at once may be using the variable.
 //                                       NOTE: Removed mutex for g_varAccess.
 //                                        may have to re-thread safe this.
-static Stream* sg_pStream = NULL;
+static std::iostream* sg_pStream = nullptr;
 
 //-------------------------------------- Replacement I/O for standard LIBPng
 //                                        functions.  we don't wanna use
@@ -63,11 +63,11 @@ static void pngReadDataFn(png_structp  /*png_ptr*/,
                           png_bytep   data,
                           png_size_t  length)
 {
-   AssertFatal(sg_pStream != NULL, "No stream?");
+   AssertFatal(sg_pStream != nullptr, "No stream?");
 
-   bool success;
-   success = sg_pStream->read(length, data);
-    
+   sg_pStream->read( (char*)data, length);
+   bool success = (sg_pStream);
+
    AssertFatal(success, "PNG read catastrophic error!");
 }
 
@@ -77,9 +77,9 @@ static void pngWriteDataFn(png_structp /*png_ptr*/,
                            png_bytep   data,
                            png_size_t  length)
 {
-   AssertFatal(sg_pStream != NULL, "No stream?");
+   AssertFatal(sg_pStream != nullptr, "No stream?");
 
-   sg_pStream->write(length, data);
+   sg_pStream->write( (char*)data, length);
 }
 
 
@@ -117,12 +117,12 @@ static void pngWarningFn(png_structp, png_const_charp pMessage)
 
 
 //--------------------------------------
-bool GBitmap::readPNG(Stream& io_rStream)
+bool GBitmap::readPNG(std::iostream &io_rStream)
 {
    static const U32 cs_headerBytesChecked = 8;
 
    U8 header[cs_headerBytesChecked];
-   io_rStream.read(cs_headerBytesChecked, header);
+   io_rStream.read( (char*)header, cs_headerBytesChecked);
 
    bool isPng = png_check_sig(header, cs_headerBytesChecked) != 0;
    if (isPng == false) 
@@ -303,10 +303,10 @@ bool GBitmap::readPNG(Stream& io_rStream)
 
 
 //--------------------------------------------------------------------------
-bool GBitmap::_writePNG(Stream&   stream,
-                        const U32 compressionLevel,
-                        const U32 strategy,
-                        const U32 filter) const
+bool GBitmap::_writePNG(std::iostream   &stream,
+        U32 const compressionLevel,
+        U32 const strategy,
+        U32 const filter) const
 {
    // ONLY gfxFormatR8G8B8 bitmap writing supported at this time!
    AssertFatal(getFormat() == GFXFormatR8G8B8 || getFormat() == GFXFormatR8G8B8A8 || getFormat() == GFXFormatA8, "GBitmap::writePNG: ONLY gfxFormatR8G8B8 bitmap writing supported at this time.");
@@ -403,7 +403,7 @@ bool GBitmap::_writePNG(Stream&   stream,
 
 
 //--------------------------------------------------------------------------
-bool GBitmap::writePNG(Stream& stream, const bool compressHard) const
+bool GBitmap::writePNG(std::iostream &stream, bool compressHard) const
 {
    U32 waterMark = FrameAllocator::getWaterMark();
 

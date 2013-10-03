@@ -26,14 +26,12 @@
 #include "platform/platform.h"
 #include "collection/vector.h"
 #include "string/stringTable.h"
-#include "io/fileStream.h"
 #include "algorithm/crc.h"
 #include <deque>
 #include <unordered_map>
 #include <list>
+#include <fstream>
 
-class Stream;
-class FileStream;
 class ZipSubRStream;
 class ResManager;
 class FindMatch;
@@ -104,7 +102,7 @@ public:
 };
 
 
-typedef ResourceInstance* (*RESOURCE_CREATE_FN)(Stream &stream);
+typedef ResourceInstance* (*RESOURCE_CREATE_FN)(std::iostream &stream);
 
 
 //------------------------------------------------------------------------------
@@ -388,9 +386,9 @@ public:
    const char* getBasePath();                         ///< Gets the base path
 
    ResourceObject* load(const char * fileName, bool computeCRC = false);   ///< loads an instance of an object
-   Stream*  openStream(const char * fileName);        ///< Opens a stream for an object
-   Stream*  openStream(ResourceObject *object);       ///< Opens a stream for an object
-   void     closeStream(Stream *stream);              ///< Closes the stream
+   std::iostream *  openStream(const char *fileName);        ///< Opens a stream for an object
+   std::iostream *  openStream(ResourceObject *object);       ///< Opens a stream for an object
+   void     closeStream(std::iostream *stream);              ///< Closes the stream
 
    /// Decrements the lock count of an object.  If the lock count is zero post-decrement,
    /// the object is added to the timeoutList for deletion upon call of flush.
@@ -436,7 +434,7 @@ public:
    bool isValidWriteFileName(const char *fn);         ///< Checks to see if the given path is valid for writing.
 
    /// Opens a file for writing!
-   bool openFileForWrite(FileStream &fs, const char *fileName, U32 accessMode = File::Write);
+   bool openFileForWrite(std::fstream &fs, const char *fileName, std::fstream::openmode accessMode = std::fstream::out);
 
 #ifdef TORQUE_DEBUG
    void dumpResources(const bool onlyLoaded = true);                        ///< Dumps all loaded resources to the console.

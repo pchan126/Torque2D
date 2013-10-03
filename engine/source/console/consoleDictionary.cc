@@ -96,17 +96,17 @@ void Dictionary::exportVariables(const char *varString, const char *fileName, bo
 
    Vector<Entry *>::iterator s;
    char expandBuffer[1024];
-   FileStream strm;
+   std::fstream strm;
 
    if(fileName)
    {
-      if(!ResourceManager->openFileForWrite(strm, fileName, append ? FileStream::ReadWrite : FileStream::Write))
+      if(!ResourceManager->openFileForWrite(strm, fileName, append ? (std::fstream::out | std::fstream::app) : std::fstream::out))
       {
          Con::errorf(ConsoleLogEntry::General, "Unable to open file '%s for writing.", fileName);
          return;
       }
-      if(append)
-         strm.setPosition(strm.getStreamSize());
+//      if(append)
+//         strm.setPosition(strm.getStreamSize());
    }
 
    char buffer[1024];
@@ -128,7 +128,7 @@ void Dictionary::exportVariables(const char *varString, const char *fileName, bo
             break;
       }
       if(fileName)
-         strm.write(dStrlen(buffer), buffer);
+         strm.write( buffer, dStrlen(buffer));
       else
          Con::printf("%s", buffer);
    }

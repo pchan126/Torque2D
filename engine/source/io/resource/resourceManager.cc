@@ -933,7 +933,7 @@ ResourceInstance * ResManager::loadInstance (ResourceObject * obj, bool computeC
 
 //------------------------------------------------------------------------------
 
-Stream * ResManager::openStream (const char *fileName)
+std::iostream * ResManager::openStream(const char *fileName)
 {
    ResourceObject *obj = find (fileName);
    if (!obj)
@@ -943,7 +943,7 @@ Stream * ResManager::openStream (const char *fileName)
 
 //------------------------------------------------------------------------------
 
-Stream * ResManager::openStream (ResourceObject * obj)
+std::iostream * ResManager::openStream(ResourceObject *obj)
 {
    // if filename is not known, exit now
    if (!obj)
@@ -953,18 +953,20 @@ Stream * ResManager::openStream (ResourceObject * obj)
       Con::printf ("FILE ACCESS: %s/%s", obj->path, obj->name);
 
    // used for openStream stream access
-   FileStream *diskStream = nullptr;
+   std::fstream *diskStream = nullptr;
 
    // if disk file
    if (obj->flags & (ResourceObject::File))
    {
-      diskStream = new FileStream;
-      if( !diskStream->open (buildPath (obj->path, obj->name), FileStream::Read) )
-      {
-         delete diskStream;
+      diskStream = new std::fstream(buildPath (obj->path, obj->name), std::fstream::in);
+      if( !diskStream  )
          return nullptr;
-      }
-      obj->fileSize = diskStream->getStreamSize ();
+
+       diskStream->seekg (0, diskStream->end);
+       int length = diskStream->tellg();
+       diskStream->seekg (0, diskStream->beg);
+
+       obj->fileSize = length;
       return diskStream;
    }
 
@@ -984,7 +986,7 @@ Stream * ResManager::openStream (ResourceObject * obj)
 
 //------------------------------------------------------------------------------
 
-void ResManager::closeStream(Stream* stream)
+void ResManager::closeStream(std::iostream *stream)
 {
    // FIXME [tom, 10/26/2006] Note that this should really hand off to ZipArchive if it's
    // a zip stream, but there's currently no way to get the ZipArchive pointer from
@@ -1304,7 +1306,7 @@ void ResManager::freeResource (ResourceObject * ro)
 
 //------------------------------------------------------------------------------
 
-bool ResManager::openFileForWrite (FileStream & stream, const char *fileName, U32 accessMode)
+bool ResManager::openFileForWrite(std::fstream &stream, const char *fileName, std::fstream::openmode accessMode)
 {
    //if (!isValidWriteFileName (fileName))
       //return false;
@@ -1319,7 +1321,8 @@ bool ResManager::openFileForWrite (FileStream & stream, const char *fileName, U3
 
    if (!Platform::createPath (fileName))   // create directory tree
       return false;
-   if (!stream.open (fileName, (FileStream::AccessMode) accessMode))
+   stream.open (fileName, accessMode);
+   if (stream.bad())
       return false;
 
    // create a resource for the file.

@@ -36,15 +36,15 @@
 
 GFX_DeclareTextureProfile(GFXFontTextureProfile);
 
-extern ResourceInstance* constructNewFont(Stream& stream);
-extern ResourceInstance* constructBMFont(Stream& stream);
+extern ResourceInstance* constructNewFont(std::iostream &stream);
+extern ResourceInstance* constructBMFont(std::iostream &stream);
 
 class GFXTexHandle;
 
 class GFont : public ResourceInstance
 {
-   friend ResourceInstance* constructNewFont(Stream& stream);
-   friend ResourceInstance* constructBMFont(Stream& stream);
+   friend ResourceInstance* constructNewFont(std::iostream &stream);
+   friend ResourceInstance* constructBMFont(std::iostream &stream);
 
    static const U32 csm_fileVersion;
    static S32 smSheetIdCount;
@@ -161,10 +161,10 @@ public:
    /// Get the face name of the font.
    StringTableEntry getFontFaceName() const { return mFaceName; };
 
-   bool readBMFont(Stream& io_rStream);
+   bool readBMFont(std::iostream &io_rStream);
 
-   bool read(Stream& io_rStream);
-   bool write(Stream& io_rStream);
+   bool read(std::iostream &io_rStream);
+   bool write(std::iostream &io_rStream);
 
    /// Override existing platform font if any with a new one from an external
    /// source. This is primarily used in font processing tools to enable

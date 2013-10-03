@@ -28,9 +28,7 @@
 #include "platform/platform.h"
 #endif
 
-#ifndef _FILESTREAM_H_
-#include "io/fileStream.h"
-#endif
+#include <fstream>
 
 #ifndef _CONSOLE_H_
 #include "console/console.h"
@@ -343,31 +341,22 @@ public:
   char* digestFile( char *filename )
   {
     Init() ;
-
-    FileStream stream;
+    std::fstream stream;
     
     U8 buffer[1024] ;
 
-    if ( !stream.open( filename, FileStream::Read ) )
+    if ( !stream.open( filename, std::fstream::in ) )
     {
         Con::warnf( "MD5: Cannot open file '%s'.", filename );
     }
     else
     {
-        const U32 streamSize = stream.getStreamSize();
-
-        while( stream.getStatus() != Stream::EOS )
+        while( stream.good() )
         {
-            const U32 streamPosition = stream.getPosition();
-            const S32 streamRemaining = streamSize-streamPosition;
-
-            const S32 readLength = streamRemaining >= sizeof(buffer) ? sizeof(buffer) : streamRemaining;
-            stream.read( readLength, buffer );
-            Update( buffer, readLength ) ;
+            stream.read( buffer, sizeof(buffer) );
+            Update( buffer, stream.gcount()) ;
         }
-
         Final();
-
         stream.close();
     }
 

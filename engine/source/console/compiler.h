@@ -165,7 +165,7 @@ namespace Compiler
       Entry *list;
       void add(StringTableEntry ste, U32 ip);
       void reset();
-      void write(Stream &st);
+      void write(std::iostream &st);
    };
 
    //------------------------------------------------------------
@@ -190,7 +190,7 @@ namespace Compiler
       U32 addFloatString(F64 value);
       void reset();
       char *build();
-      void write(Stream &st);
+      void write(std::iostream &st);
    };
 
    //------------------------------------------------------------
@@ -208,7 +208,7 @@ namespace Compiler
       U32 add(F64 value);
       void reset();
       F64 *build();
-      void write(Stream &st);
+      void write(std::iostream &st);
    };
 
    //------------------------------------------------------------

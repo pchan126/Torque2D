@@ -43,7 +43,7 @@ class WavStreamSource: public AudioStreamSource
         ALuint				    mBufferList[NUMBUFFERS];
         S32						mNumBuffers;
         S32						mBufferSize;
-        Stream				   *stream;
+        std::iostream	        *stream;
 
         bool					bReady;
         bool					bFinished;
@@ -52,12 +52,12 @@ class WavStreamSource: public AudioStreamSource
         ALsizei size;
         ALsizei freq;
 
-        ALuint			DataSize;
-        ALuint			DataLeft;
-        ALuint			dataStart;
-        ALuint			buffersinqueue;
+        ALuint			            DataSize;
+        ALuint			            DataLeft;
+        std::iostream::streampos    dataStart;
+        ALuint			            buffersinqueue;
 
-        bool			bBuffersAllocated;
+        bool			            bBuffersAllocated;
 
         void clear();
         void resetStream();

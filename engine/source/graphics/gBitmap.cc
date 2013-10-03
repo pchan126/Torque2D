@@ -43,13 +43,13 @@ U32       GBitmap::sBitmapIdSource = 0;
 
 GBitmap::GBitmap()
  : mInternalFormat(GFXFormatR8G8B8),
-   mBits(NULL),
+   mBits(nullptr),
    mByteSize(0),
    mWidth(0),
    mHeight(0),
    mNumMipLevels(0),
    mBytesPerPixel(0),
-   pPalette(NULL),
+   pPalette(nullptr),
    mForce16Bit(false)
 {
    for (U32 i = 0; i < c_maxMipLevels; i++)
@@ -66,7 +66,7 @@ GBitmap::GBitmap(const GBitmap& rCopy)
       dMemcpy(rCopy.pPalette->getColors(), pPalette->getColors(), sizeof(ColorI)*256);
    }
    else
-      pPalette = NULL;
+      pPalette = nullptr;
 
    mInternalFormat = rCopy.mInternalFormat;
 
@@ -89,9 +89,9 @@ GBitmap::GBitmap(const U32  in_width,
                  const U32  in_height,
                  const bool in_extrudeMipLevels,
                  const GFXFormat in_format)
- : mBits(NULL),
+ : mBits(nullptr),
    mByteSize(0),
-   pPalette(NULL),
+   pPalette(nullptr),
    mForce16Bit(false)
 {
    for (U32 i = 0; i < c_maxMipLevels; i++)
@@ -112,7 +112,7 @@ GBitmap::~GBitmap()
 void GBitmap::deleteImage()
 {
    delete [] mBits;
-   mBits    = NULL;
+   mBits    = nullptr;
    mByteSize = 0;
 
    mWidth        = 0;
@@ -225,7 +225,7 @@ void GBitmap::allocateBitmap(const U32 in_width, const U32 in_height, const bool
    mBits    = new U8[mByteSize];
     dMemset(mBits, 0xFF, mByteSize);
     
-   if(svBits != NULL)
+   if(svBits != nullptr)
    {
       dMemcpy(mBits, svBits, std::min(mByteSize, svByteSize));
       delete[] svBits;
@@ -683,7 +683,7 @@ ResourceObject * GBitmap::findBmpResource(const char * path)
       if (ret)
          return ret;
    }
-   return NULL;
+   return nullptr;
 }
 
 GBitmap *GBitmap::load(const char *path)
@@ -714,7 +714,7 @@ GBitmap *GBitmap::load(const char *path)
       }
    }
 
-   return NULL;
+   return nullptr;
 }
 
 bool GBitmap::read(Stream& io_rStream)
@@ -784,7 +784,7 @@ bool GBitmap::write(Stream& io_rStream) const
       io_rStream.write(mMipLevelOffsets[i]);
 
 //   if (mInternalFormat == Palettized) {
-//      AssertFatal(pPalette != NULL,
+//      AssertFatal(pPalette != nullptr,
 //                  "GBitmap::write: cannot write a palettized bitmap wo/ a palette");
 //      pPalette->write(io_rStream);
 //   }
@@ -794,7 +794,7 @@ bool GBitmap::write(Stream& io_rStream) const
 
 
 //-------------------------------------- GFXBitmap
-ResourceInstance* constructBitmapJPEG(Stream &stream)
+ResourceInstance* constructBitmapJPEG(std::iostream &stream)
 {
    GBitmap* bmp = new GBitmap;
    if (bmp->readJPEG(stream))
@@ -802,11 +802,11 @@ ResourceInstance* constructBitmapJPEG(Stream &stream)
     else
     {
       delete bmp;
-      return NULL;
+      return nullptr;
    }
 }
 
-ResourceInstance* constructBitmapPNG(Stream &stream)
+ResourceInstance* constructBitmapPNG(std::iostream &stream)
 {
    GBitmap* bmp = new GBitmap;
 
@@ -822,11 +822,11 @@ ResourceInstance* constructBitmapPNG(Stream &stream)
     else
     {
       delete bmp;
-      return NULL;
+      return nullptr;
     }
 }
 
-ResourceInstance* constructBitmapBMP(Stream &stream)
+ResourceInstance* constructBitmapBMP(std::iostream &stream)
 {
    GBitmap *bmp = new GBitmap;
    if(bmp->readMSBmp(stream))
@@ -834,12 +834,12 @@ ResourceInstance* constructBitmapBMP(Stream &stream)
    else
    {
       delete bmp;
-      return NULL;
+      return nullptr;
    }
 }
 
 #ifdef TORQUE_OS_IOS
-ResourceInstance* constructBitmapPVR(Stream &stream)
+ResourceInstance* constructBitmapPVR(std::iostream &stream)
 {
     GBitmap *bmp = new GBitmap;
     if(bmp->readPvr(stream))
@@ -847,7 +847,7 @@ ResourceInstance* constructBitmapPVR(Stream &stream)
     else
     {
         delete bmp;
-        return NULL;
+        return nullptr;
     }
 }
 #endif

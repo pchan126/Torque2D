@@ -348,7 +348,7 @@ void CodeBlock::calcBreakList()
        pRemoteDebugger->addCodeBlock( this );
 }
 
-bool CodeBlock::read(StringTableEntry fileName, Stream &st)
+bool CodeBlock::read(StringTableEntry fileName, std::iostream &st)
 {
    const StringTableEntry exePath = Platform::getMainDotCsDir();
    const StringTableEntry cwd = Platform::getCurrentDirectory();
@@ -392,36 +392,36 @@ bool CodeBlock::read(StringTableEntry fileName, Stream &st)
    addToCodeList();
 
    U32 globalSize,size,i;
-   st.read(&size);
+   st >> size;
    if(size)
    {
       globalSize = size;
       globalStrings = new char[size];
-      st.read(size, globalStrings);
+      st.read(globalStrings, size);
    }
-   st.read(&size);
+   st >> size;
    if(size)
    {
       functionStrings = new char[size];
-      st.read(size, functionStrings);
+      st.read(functionStrings, size);
    }
-   st.read(&size);
+   st >> size;
    if(size)
    {
       globalFloats = new F64[size];
       for(U32 i = 0; i < size; i++)
-         st.read(&globalFloats[i]);
+         st >> globalFloats[i];
    }
-   st.read(&size);
+   st >> size;
    if(size)
    {
       functionFloats = new F64[size];
       for(U32 i = 0; i < size; i++)
-         st.read(&functionFloats[i]);
+         st >> functionFloats[i];
    }
    U32 codeSize;
-   st.read(&codeSize);
-   st.read(&lineBreakPairCount);
+   st >> codeSize;
+   st >> lineBreakPairCount;
 
    U32 totSize = codeSize + lineBreakPairCount * 2;
    code = new U32[totSize];
@@ -429,36 +429,36 @@ bool CodeBlock::read(StringTableEntry fileName, Stream &st)
    for(i = 0; i < codeSize; i++)
    {
       U8 b;
-      st.read(&b);
+      st >> b;
       if(b == 0xFF)
-         st.read(&code[i]);
+         st >> code[i];
       else
          code[i] = b;
    }
 
    for(i = codeSize; i < totSize; i++)
-      st.read(&code[i]);
+      st >> code[i];
 
    lineBreakPairs = code + codeSize;
 
    // StringTable-ize our identifiers.
    U32 identCount;
-   st.read(&identCount);
+   st >> identCount;
    while(identCount--)
    {
       U32 offset;
-      st.read(&offset);
+      st >> offset;
       StringTableEntry ste;
       if(offset < globalSize)
          ste = StringTable->insert(globalStrings + offset);
       else
          ste = StringTable->EmptyString;
       U32 count;
-      st.read(&count);
+      st >> count;
       while(count--)
       {
          U32 ip;
-         st.read(&ip);
+         st >> ip;
          code[ip] = *((U32 *) &ste);
       }
    }
@@ -495,10 +495,10 @@ bool CodeBlock::compile(const char *codeFileName, StringTableEntry fileName, con
       return false;
    }
 
-   FileStream st;
+   std::fstream st;
    if(!ResourceManager->openFileForWrite(st, codeFileName)) 
       return false;
-   st.write(DSO_VERSION);
+   st << DSO_VERSION;
 
    // Reset all our value tables...
    resetTables();
@@ -536,25 +536,25 @@ bool CodeBlock::compile(const char *codeFileName, StringTableEntry fileName, con
 
    code[lastIp++] = OP_RETURN;
    U32 totSize = codeSize + smBreakLineCount * 2;
-   st.write(codeSize);
-   st.write(lineBreakPairCount);
+   st << codeSize;
+   st << lineBreakPairCount;
 
    // Write out our bytecode, doing a bit of compression for low numbers.
    U32 i;   
    for(i = 0; i < codeSize; i++)
    {
       if(code[i] < 0xFF)
-         st.write(U8(code[i]));
+         st << (U8(code[i]));
       else
       {
-         st.write(U8(0xFF));
-         st.write(code[i]);
+         st << (U8(0xFF));
+         st << (code[i]);
       }
    }
 
    // Write the break info...
    for(i = codeSize; i < totSize; i++)
-      st.write(code[i]);
+      st << (code[i]);
 
    getIdentTable().write(st);
 

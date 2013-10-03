@@ -41,9 +41,9 @@ class Stream;
 class GPalette;
 class RectI;
 
-extern ResourceInstance* constructBitmapBMP(Stream& stream);
-extern ResourceInstance* constructBitmapPNG(Stream& stream);
-extern ResourceInstance* constructBitmapJPEG(Stream& stream);
+extern ResourceInstance* constructBitmapBMP(std::iostream &stream);
+extern ResourceInstance* constructBitmapPNG(std::iostream &stream);
+extern ResourceInstance* constructBitmapJPEG(std::iostream &stream);
 
 #ifdef TORQUE_OS_IOS
 extern ResourceInstance* constructBitmapPVR(Stream& stream);
@@ -156,11 +156,11 @@ class GBitmap: public ResourceInstance
 
    //-------------------------------------- Input/Output interface
   public:
-   bool readJPEG(Stream& io_rStream);              // located in bitmapJpeg.cc
-   bool writeJPEG(Stream& io_rStream) const;
+   bool readJPEG(std::iostream &io_rStream);              // located in bitmapJpeg.cc
+   bool writeJPEG(std::iostream &io_rStream) const;
 
-   bool readPNG(Stream& io_rStream);               // located in bitmapPng.cc
-   bool writePNG(Stream& io_rStream, const bool compressHard = false) const;
+   bool readPNG(std::iostream &io_rStream);               // located in bitmapPng.cc
+   bool writePNG(std::iostream &io_rStream, bool compressHard = false) const;
    bool writePNGUncompressed(Stream& io_rStream) const;
 
    bool readMSBmp(Stream& io_rStream);             // located in bitmapMS.cc
@@ -176,7 +176,7 @@ class GBitmap: public ResourceInstance
    bool write(Stream& io_rStream) const;
 
   private:
-   bool _writePNG(Stream&   stream, const U32, const U32, const U32) const;
+   bool _writePNG(std::iostream   &stream, U32 const, U32 const, U32 const) const;
 
    static const U32 csFileVersion;
 };

@@ -36,15 +36,15 @@ U32 gJpegQuality = 90;
 //                                        FILE*'s...
 static int jpegReadDataFn(void *client_data, unsigned char *data, int length)
 {
-   Stream *stream = (Stream*)client_data;
-   AssertFatal(stream != NULL, "jpegReadDataFn::No stream.");
-   int pos = stream->getPosition();
-   if (stream->read(length, data))
+    std::iostream *stream = (std::iostream*)client_data;
+   AssertFatal(stream != nullptr, "jpegReadDataFn::No stream.");
+//   int pos = stream->getPosition();
+   if (stream->read( data, length))
       return length;
 
-   if (stream->getStatus() == Stream::EOS)
-      return (stream->getPosition()-pos);
-   else
+//   if (stream->getStatus() == Stream::EOS)
+//      return (stream->getPosition()-pos);
+//   else
       return 0;
 }
 
@@ -53,7 +53,7 @@ static int jpegReadDataFn(void *client_data, unsigned char *data, int length)
 static int jpegWriteDataFn(void *client_data, unsigned char *data, int length)
 {
    Stream *stream = (Stream*)client_data;
-   AssertFatal(stream != NULL, "jpegWriteDataFn::No stream.");
+   AssertFatal(stream != nullptr, "jpegWriteDataFn::No stream.");
    if (stream->write(length, data))
       return length;
    else
@@ -72,14 +72,14 @@ static int jpegFlushDataFn(void *)
 //--------------------------------------
 static int jpegErrorFn(void *client_data)
 {
-   Stream *stream = (Stream*)client_data;
-   AssertFatal(stream != NULL, "jpegErrorFn::No stream.");
-   return (stream->getStatus() != Stream::Ok);
+    std::iostream *stream = (std::iostream*)client_data;
+   AssertFatal(stream != nullptr, "jpegErrorFn::No stream.");
+   return (stream->good() != true);
 }
 
 
 //--------------------------------------
-bool GBitmap::readJPEG(Stream &stream)
+bool GBitmap::readJPEG(std::iostream &stream)
 {
    JFREAD  = jpegReadDataFn;
    JFERROR = jpegErrorFn;
@@ -149,7 +149,7 @@ bool GBitmap::readJPEG(Stream &stream)
 
 
 //--------------------------------------------------------------------------
-bool GBitmap::writeJPEG(Stream& stream) const
+bool GBitmap::writeJPEG(std::iostream &stream) const
 {
    // JPEG format has no support for transparancy so any image
    // in Alpha format should be saved as a grayscale which coincides

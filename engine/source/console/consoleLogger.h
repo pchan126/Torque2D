@@ -22,7 +22,7 @@
 
 #include "sim/simBase.h"
 #include "console/console.h"
-#include "io/fileStream.h"
+#include <fstream>
 
 #ifndef _CONSOLE_LOGGER_H_
 #define _CONSOLE_LOGGER_H_
@@ -35,7 +35,7 @@ class ConsoleLogger : public SimObject
 
    private:
       bool mLogging;                   ///< True if it is currently consuming and logging
-      FileStream mStream;              ///< File stream this object writes to
+      std::fstream mStream;              ///< File stream this object writes to
       static bool smInitialized;                ///< This is for use with the default constructor
       bool mAppend;                    ///< If false, it will clear the file before logging to it.
       StringTableEntry mFilename;      ///< The file name to log to.
@@ -45,7 +45,7 @@ class ConsoleLogger : public SimObject
 
       /// The log function called by the consumer callback
       /// @param   consoleLine   Line of text to log
-      void log( const char *consoleLine );
+      void log( std::string consoleLine );
 
       /// Utility function, sets up the object (for script interface) returns true if successful
       bool init();
