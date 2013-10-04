@@ -186,6 +186,16 @@ StringTableEntry _StringTable::lookupn(const char* src, S32 len, const bool  cas
 }
 
 
+StringTableEntry _StringTable::readStream(std::iostream* stream, bool caseSens)
+{
+    // Read Taml signature.
+    char buf[256];
+    U8 count = 0;
+    *stream >> count;
+    stream->read(buf, count);
+    return StringTable->insert(buf, caseSens);
+}
+
 U32 _StringTable::STEtoU32(StringTableEntry ste) {
 
     if ( ste == nullptr )

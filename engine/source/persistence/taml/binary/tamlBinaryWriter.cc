@@ -22,6 +22,7 @@
 
 #include "persistence/taml/binary/tamlBinaryWriter.h"
 #include <fstream>
+#include <algorithm>
 
 //#ifndef _ZIPSUBSTREAM_H_
 //#include "io/zip/zipSubStream.h"
@@ -154,7 +155,8 @@ void TamlBinaryWriter::writeAttributes(std::iostream &stream, const TamlWriteNod
 
         // Write attribute.
         stream.write( pFieldValue->mName, strlen(pFieldValue->mName));
-        stream.writeLongString( 4096, pFieldValue->mpValue );
+        U32 len = strlen(pFieldValue->mpValue);
+        stream.write( pFieldValue->mpValue, std::min(len, 4096) );
     }
 }
 
@@ -296,7 +298,8 @@ void TamlBinaryWriter::writeCustomNode(std::iostream &stream, const TamlCustomNo
 
             // Write the node field.
             stream.write( pField->getFieldName(), strlen(pField->getFieldName()));
-            stream.writeLongString( MAX_TAML_NODE_FIELDVALUE_LENGTH, pField->getFieldValue() );
+            U32 len = strlen(pField->getFieldValue());
+            stream.write( pField->getFieldValue(), min(MAX_TAML_NODE_FIELDVALUE_LENGTH,len) );
         }
     }
 }

@@ -28,6 +28,7 @@
 #include "memory/dataChunker.h"
 #include <unordered_map>
 #include <vector>
+#include <iostream>
 
 //--------------------------------------
 /// A global table for the hashing and tracking of strings.
@@ -125,6 +126,8 @@ private:
    /// @param  len      Length of string in bytes.
    /// @param  caseSens Determines whether case matters.
    StringTableEntry lookupn(const char *string, S32 len, bool caseSens = false);
+
+   StringTableEntry readStream( std::iostream* stream, bool caseSens = false);
 
    U32 STEtoU32(StringTableEntry ste);
 
