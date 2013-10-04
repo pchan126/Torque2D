@@ -46,7 +46,7 @@ class ResizeFilterStream : public FilterStream
 
    bool    attachStream(Stream* io_pSlaveStream);
    void    detachStream();
-   Stream* getStream();
+   std::iostream * getStream();
 
    bool setStreamOffset(const U32 in_startOffset,
                         const U32 in_streamLen);

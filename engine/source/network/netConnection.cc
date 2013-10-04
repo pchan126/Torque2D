@@ -92,8 +92,8 @@ void NetConnection::sendConnectionMessage(U32 message, U32 sequence, U32 ghostCo
 //--------------------------------------------------------------------
 IMPLEMENT_CONOBJECT(NetConnection);
 
-NetConnection* NetConnection::mConnectionList = NULL;
-NetConnection* NetConnection::mHashTable[NetConnection::HashTableSize] = { NULL, };
+NetConnection* NetConnection::mConnectionList = nullptr;
+NetConnection* NetConnection::mHashTable[NetConnection::HashTableSize] = { nullptr, };
 
 bool NetConnection::mFilesWereDownloaded = false;
 
@@ -108,7 +108,7 @@ NetConnection *NetConnection::lookup(const NetAddress *addr)
    for(NetConnection *walk = mHashTable[hashIndex]; walk; walk = walk->mNextTableHash)
       if(Net::compareAddresses(addr, walk->getNetAddress()))
          return walk;
-   return NULL;
+   return nullptr;
 }
 
 void NetConnection::netAddressTableInsert()
@@ -127,7 +127,7 @@ void NetConnection::netAddressTableRemove()
       if(*walk == this)
       {
          *walk = mNextTableHash;
-         mNextTableHash = NULL;
+         mNextTableHash = nullptr;
          return;
       }
       walk = &((*walk)->mNextTableHash);
@@ -225,7 +225,7 @@ NetConnection::NetConnection()
    mTranslateStrings = false;
    mConnectSequence = 0;
 
-   mStringTable = NULL;
+   mStringTable = nullptr;
    mSendingEvents = true;
    mNetClassGroup = NetClassGroupGame;
    AssertFatal(mNetClassGroup >= NetClassGroupGame && mNetClassGroup < NetClassGroupsCount,
@@ -240,18 +240,18 @@ NetConnection::NetConnection()
    mLastUpdateTime = 0;
    mRoundTripTime = 0;
    mPacketLoss = 0;
-   mNextTableHash = NULL;
+   mNextTableHash = nullptr;
    mSendDelayCredit = 0;
    mConnectionState = NotConnected;
 
-   mCurrentDownloadingFile = NULL;
-   mCurrentFileBuffer = NULL;
+   mCurrentDownloadingFile = nullptr;
+   mCurrentFileBuffer = nullptr;
 
-   mNextConnection = NULL;
-   mPrevConnection = NULL;
+   mNextConnection = nullptr;
+   mPrevConnection = nullptr;
 
-   mNotifyQueueHead = NULL;
-   mNotifyQueueTail = NULL;
+   mNotifyQueueHead = nullptr;
+   mNotifyQueueTail = nullptr;
 
    mCurRate.updateDelay = 102;
    mCurRate.packetSize = 200;
@@ -263,12 +263,12 @@ NetConnection::NetConnection()
 
    // event management data:
 
-   mNotifyEventList = NULL;
-   mSendEventQueueHead = NULL;
-   mSendEventQueueTail = NULL;
-   mUnorderedSendEventQueueHead = NULL;
-   mUnorderedSendEventQueueTail = NULL;
-   mWaitSeqEvents = NULL;
+   mNotifyEventList = nullptr;
+   mSendEventQueueHead = nullptr;
+   mSendEventQueueTail = nullptr;
+   mUnorderedSendEventQueueHead = nullptr;
+   mUnorderedSendEventQueueTail = nullptr;
+   mWaitSeqEvents = nullptr;
 
    mNextSendEventSeq = FirstValidSendEventSeq;
    mNextRecvEventSeq = FirstValidSendEventSeq;
@@ -276,27 +276,27 @@ NetConnection::NetConnection()
 
    // ghost management data:
 
-   mScopeObject = NULL;
+   mScopeObject = nullptr;
    mGhostingSequence = 0;
    mGhosting = false;
    mScoping = false;
-   mGhostArray = NULL;
-   mGhostRefs = NULL;
-   mGhostLookupTable = NULL;
-   mLocalGhosts = NULL;
+   mGhostArray = nullptr;
+   mGhostRefs = nullptr;
+   mGhostLookupTable = nullptr;
+   mLocalGhosts = nullptr;
 
    mGhostsActive = 0;
 
    mMissionPathsSent = false;
-   mDemoWriteStream = NULL;
-   mDemoReadStream = NULL;
+   mDemoWriteStream = nullptr;
+   mDemoReadStream = nullptr;
 
    mPingSendCount = 0;
    mPingRetryCount = DefaultPingRetryCount;
    mLastPingSendTime = Platform::getVirtualMilliseconds();
 
-   mCurrentDownloadingFile = NULL;
-   mCurrentFileBuffer = NULL;
+   mCurrentDownloadingFile = nullptr;
+   mCurrentFileBuffer = nullptr;
    mCurrentFileBufferSize = 0;
    mCurrentFileBufferOffset = 0;
    mNumDownloadedFiles = 0;
@@ -304,7 +304,7 @@ NetConnection::NetConnection()
 
 NetConnection::~NetConnection()
 {
-   AssertFatal(mNotifyQueueHead == NULL, "Uncleared notifies remain.");
+   AssertFatal(mNotifyQueueHead == nullptr, "Uncleared notifies remain.");
    netAddressTableRemove();
 
    dFree(mCurrentFileBuffer);
@@ -360,7 +360,7 @@ void NetConnection::handleConnectionEstablished()
 //--------------------------------------------------------------------------
 
 ConsoleMethod(NetConnection,getAddress,const char *,2,2,"() Use the getAddress method to get the address and port that this NetConnection is currently attached to.\n"
-                                                                "@return Returns the address and port that this NetConnection is currently attached to, where the addres will be of the form: A.B.C.D:Port. A .. B are standard IP numbers between 0 and 255 and Port can be between 1000 and 65536. If the connection is local, the string 'local' will be returned. If a this NetConnection is not currently connected the method will return a NULL string.\n"
+                                                                "@return Returns the address and port that this NetConnection is currently attached to, where the addres will be of the form: A.B.C.D:Port. A .. B are standard IP numbers between 0 and 255 and Port can be between 1000 and 65536. If the connection is local, the string 'local' will be returned. If a this NetConnection is not currently connected the method will return a nullptr string.\n"
                                                                 "@sa connect, connectLocal")
 {
    if(object->isLocalConnection())
@@ -472,7 +472,7 @@ void NetConnection::handleNotify(bool recvd)
 //   Con::printf("NET  %d: NOTIFY - %d %s", getId(), gPacketId, recvd ? "RECVD" : "DROPPED");
 
    PacketNotify *note = mNotifyQueueHead;
-   AssertFatal(note != NULL, "Error: got a notify with a null notify head.");
+   AssertFatal(note != nullptr, "Error: got a notify with a null notify head.");
    mNotifyQueueHead = mNotifyQueueHead->nextPacket;
 
    if(note->rateChanged && !recvd)
@@ -555,7 +555,7 @@ class NetDelayEvent : public SimEvent
    U8 buffer[MaxPacketDataSize];
    BitStream stream;
 public:
-   NetDelayEvent(BitStream *inStream) : stream(NULL, 0)
+   NetDelayEvent(BitStream *inStream) : stream(nullptr, 0)
    {
       dMemcpy(buffer, inStream->getBuffer(), inStream->getPosition());
       stream.setBuffer(buffer, inStream->getPosition());
@@ -598,7 +598,7 @@ void NetConnection::checkPacketSend(bool force)
    else
       mNotifyQueueTail->nextPacket = note;
    mNotifyQueueTail = note;
-   note->nextPacket = NULL;
+   note->nextPacket = nullptr;
    note->sendTime = curTime;
 
    note->rateChanged = mCurRate.changed;
@@ -725,7 +725,7 @@ bool NetConnection::readDemoStartBlock(BitStream* stream)
    for(U32 i = 0; i < pos; i++)
    {
       PacketNotify *note = allocNotify();
-      note->nextPacket = NULL;
+      note->nextPacket = nullptr;
       if(!mNotifyQueueHead)
          mNotifyQueueHead = note;
       else
@@ -739,7 +739,7 @@ bool NetConnection::readDemoStartBlock(BitStream* stream)
 
 bool NetConnection::startDemoRecord(const char *fileName)
 {
-   FileStream *fs = new FileStream;
+    std::fstream *fs = new std::fstream;
 
    if(!ResourceManager->openFileForWrite(*fs, fileName))
    {
@@ -748,29 +748,29 @@ bool NetConnection::startDemoRecord(const char *fileName)
    }
 
    mDemoWriteStream = fs;
-   mDemoWriteStream->write(mProtocolVersion);
+   *mDemoWriteStream << (mProtocolVersion);
    ResizeBitStream bs;
 
    // then write out the start block
    writeDemoStartBlock(&bs);
    U32 size = bs.getPosition() + 1;
-   mDemoWriteStream->write(size);
-   mDemoWriteStream->write(size, bs.getBuffer());
+   *mDemoWriteStream << size;
+   mDemoWriteStream->write((char*)bs.getBuffer(), size);
    return true;
 }
 
 bool NetConnection::replayDemoRecord(const char *fileName)
 {
-   Stream *fs = ResourceManager->openStream(fileName);
+    std::iostream *fs = ResourceManager->openStream(fileName);
    if(!fs)
       return false;
 
    mDemoReadStream = fs;
-   mDemoReadStream->read(&mProtocolVersion);
+   *mDemoReadStream >> mProtocolVersion;
    U32 size;
-   mDemoReadStream->read(&size);
+   *mDemoReadStream >> size;
    U8 *block = new U8[size];
-   mDemoReadStream->read(size, block);
+   mDemoReadStream->read( (char*)block, size);
    BitStream bs(block, size);
 
    bool res = readDemoStartBlock(&bs);
@@ -781,12 +781,12 @@ bool NetConnection::replayDemoRecord(const char *fileName)
    // prep for first block read
    // type/size stored in U16: [type:4][size:12]
    U16 typeSize;
-   mDemoReadStream->read(&typeSize);
+   *mDemoReadStream >> typeSize;
 
    mDemoNextBlockType = typeSize >> 12;
    mDemoNextBlockSize = typeSize & 0xFFF;
 
-   if(mDemoReadStream->getStatus() != Stream::Ok)
+   if(mDemoReadStream->bad())
       return false;
    return true;
 }
@@ -796,7 +796,7 @@ void NetConnection::stopRecording()
    if(mDemoWriteStream)
    {
       delete mDemoWriteStream;
-      mDemoWriteStream = NULL;
+      mDemoWriteStream = nullptr;
    }
 }
 
@@ -811,9 +811,9 @@ void NetConnection::recordBlock(U32 type, U32 size, void *data)
    {
       // store type/size in U16: [type:4][size:12]
       U16 typeSize = (type << 12) | size;
-      mDemoWriteStream->write(typeSize);
+      *mDemoWriteStream << (typeSize);
       if(size)
-         mDemoWriteStream->write(size, data);
+         mDemoWriteStream->write( (char*)data, size);
    }
 }
 
@@ -846,16 +846,16 @@ bool NetConnection::processNextBlock()
 {
    U8 buffer[MaxPacketDataSize];
    // read in and handle
-   if(mDemoReadStream->read(mDemoNextBlockSize, buffer))
+   if(mDemoReadStream->read( (char*)buffer, mDemoNextBlockSize))
       handleRecordedBlock(mDemoNextBlockType, mDemoNextBlockSize, buffer);
 
    U16 typeSize;
-   mDemoReadStream->read(&typeSize);
+   *mDemoReadStream >> typeSize;
 
    mDemoNextBlockType = typeSize >> 12;
    mDemoNextBlockSize = typeSize & 0xFFF;
 
-   if(mDemoReadStream->getStatus() != Stream::Ok)
+   if(mDemoReadStream->bad())
    {
       stopDemoPlayback();
       return false;
@@ -1153,7 +1153,7 @@ ConsoleMethod(NetConnection, connectLocal, const char *, 2, 2, "() Use the conne
    ConsoleObject *co = ConsoleObject::create(object->getClassName());
    NetConnection *client = object;
    NetConnection *server = dynamic_cast<NetConnection *>(co);
-   const char *error = NULL;
+   const char *error = nullptr;
    BitStream *stream = BitStream::getPacketStream();
 
    if(!server || !server->canRemoteCreate())

@@ -51,14 +51,14 @@ namespace Zip
 
 ZipArchive::ZipArchive()
 {
-   mStream = NULL;
+   mStream = nullptr;
    mMode = Read;
    
-   mDiskStream = NULL;
+   mDiskStream = nullptr;
 
-   mFilename = NULL;
+   mFilename = nullptr;
 
-   mRoot = NULL;
+   mRoot = nullptr;
 }
 
 ZipArchive::~ZipArchive()
@@ -130,7 +130,7 @@ void ZipArchive::insertEntry(ZipEntry *ze)
 
    ZipEntry *root = mRoot;
 
-   char *ptr = path, *slash = NULL;
+   char *ptr = path, *slash = nullptr;
    do
    {
    	slash = dStrchr(ptr, '/');
@@ -140,7 +140,7 @@ void ZipArchive::insertEntry(ZipEntry *ze)
          *slash = 0;
 
          ZipEntry *newEntry;
-         if((newEntry = root->mChildren.retrieve(ptr)) == NULL)
+         if((newEntry = root->mChildren.retrieve(ptr)) == nullptr)
          {
             newEntry = new ZipEntry;
             newEntry->mParent = root;
@@ -227,7 +227,7 @@ void ZipArchive::removeEntry(ZipEntry *ze)
 CentralDir *ZipArchive::findFileInfo(const char *filename)
 {
    ZipEntry *ze = findZipEntry(filename);
-   return ze ? &ze->mCD : NULL;
+   return ze ? &ze->mCD : nullptr;
 }
 
 ZipArchive::ZipEntry *ZipArchive::findZipEntry(const char *filename)
@@ -244,7 +244,7 @@ ZipArchive::ZipEntry *ZipArchive::findZipEntry(const char *filename)
 
    ZipEntry *root = mRoot;
 
-   char *ptr = path, *slash = NULL;
+   char *ptr = path, *slash = nullptr;
    do
    {
       slash = dStrchr(ptr, '/');
@@ -254,8 +254,8 @@ ZipArchive::ZipEntry *ZipArchive::findZipEntry(const char *filename)
          *slash = 0;
 
          ZipEntry *newEntry;
-         if((newEntry = root->mChildren.retrieve(ptr)) == NULL)
-            return NULL;
+         if((newEntry = root->mChildren.retrieve(ptr)) == nullptr)
+            return nullptr;
 
          root = newEntry;
 
@@ -265,12 +265,12 @@ ZipArchive::ZipEntry *ZipArchive::findZipEntry(const char *filename)
       {
          // Find the file
          ZipEntry *ze;
-         if((ze = root->mChildren.retrieve(ptr)) != NULL)
+         if((ze = root->mChildren.retrieve(ptr)) != nullptr)
             return ze;
       }
    } while(slash);
 
-   return NULL;
+   return nullptr;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -286,10 +286,10 @@ Stream *ZipArchive::createNewFile(const char *filename, Compressor *method)
    if(stream->open())
    {
       Stream *retStream = method->createWriteStream(&ze->mCD, stream);
-      if(retStream == NULL)
+      if(retStream == nullptr)
       {
          delete stream;
-         return NULL;
+         return nullptr;
       }
 
       ZipStatFilter *filter = new ZipStatFilter(&ze->mCD);
@@ -298,7 +298,7 @@ Stream *ZipArchive::createNewFile(const char *filename, Compressor *method)
          delete filter;
          delete retStream;
          delete stream;
-         return NULL;
+         return nullptr;
       }
 
       ze->mCD.mCompressMethod = method->getMethod();
@@ -307,7 +307,7 @@ Stream *ZipArchive::createNewFile(const char *filename, Compressor *method)
       return filter;
    }
 
-   return NULL;
+   return nullptr;
 }
 
 void ZipArchive::updateFile(ZipTempStream *stream)
@@ -361,7 +361,7 @@ bool ZipArchive::rebuildZip()
    Stream *zipFile = mStream;
 
    // FIXME [tom, 1/24/2007] Temporary for expediting testing
-   if(mFilename == NULL)
+   if(mFilename == nullptr)
       return false;
 
   if(mMode == ReadWrite)
@@ -394,7 +394,7 @@ bool ZipArchive::rebuildZip()
       writeDirtyFileToNewZip(zts, zipFile);
       zts->close();
       delete zts;
-      mTempFiles[i] = NULL;
+      mTempFiles[i] = nullptr;
    }
    mTempFiles.clear();
 
@@ -436,7 +436,7 @@ bool ZipArchive::rebuildZip()
          mDiskStream->close();
 
          delete mDiskStream;
-         mDiskStream = NULL;
+         mDiskStream = nullptr;
       }
 
       char oldRename[512];
@@ -457,7 +457,7 @@ bool ZipArchive::writeDirtyFileToNewZip(ZipTempStream *fileStream, Stream *zipSt
 {
    CentralDir *cdir = fileStream->getCentralDir();
    FileHeader fh(*cdir);
-   fh.mFilename = NULL;
+   fh.mFilename = nullptr;
    fh.setFilename(cdir->mFilename);
 
    cdir->mLocalHeadOffset = zipStream->getPosition();
@@ -477,7 +477,7 @@ bool ZipArchive::copyFileToNewZip(CentralDir *cdir, Stream *newZipStream)
    // [tom, 1/24/2007] Using the stored compressor allows us to copy the raw
    // data regardless of compression method without having to re-compress it.
    Compressor *comp = Compressor::findCompressor(Stored);
-   if(comp == NULL)
+   if(comp == nullptr)
       return false;
 
    if(! mStream->setPosition(cdir->mLocalHeadOffset))
@@ -496,7 +496,7 @@ bool ZipArchive::copyFileToNewZip(CentralDir *cdir, Stream *newZipStream)
 
    // Copy file data
    Stream *readS = comp->createReadStream(cdir, mStream);
-   if(readS == NULL)
+   if(readS == nullptr)
       return false;
 
    bool ret = newZipStream->copyFrom(readS);
@@ -590,10 +590,10 @@ void ZipArchive::closeArchive()
       mDiskStream->close();
 
       delete mDiskStream;
-      mDiskStream = NULL;
+      mDiskStream = nullptr;
    }
 
-   mStream = NULL;
+   mStream = nullptr;
 
    SAFE_FREE(mFilename);
    SAFE_DELETE(mRoot);
@@ -608,8 +608,8 @@ Stream * ZipArchive::openFile(const char *filename, AccessMode mode /* = Read */
 
    if(mode == Read)
    {
-      if(ze == NULL)
-         return NULL;
+      if(ze == nullptr)
+         return nullptr;
 
       return openFileForRead(&ze->mCD);
    }
@@ -622,12 +622,12 @@ Stream * ZipArchive::openFile(const char *filename, AccessMode mode /* = Read */
          {
             if(isVerbose())
                Con::errorf("ZipArchive::openFile - File %s is already open", filename);
-            return NULL;
+            return nullptr;
          }
          
          // Remove the old entry so we can create a new one
          removeEntry(ze);
-         ze = NULL;
+         ze = nullptr;
       }
 
       return createNewFile(filename, Compressor::findCompressor(Deflated));
@@ -636,7 +636,7 @@ Stream * ZipArchive::openFile(const char *filename, AccessMode mode /* = Read */
    if(isVerbose())
       Con::errorf("ZipArchive::openFile - Files within zips can only be opened as read or write, but not both at the same time.");
 
-   return NULL;
+   return nullptr;
 }
 
 void ZipArchive::closeFile(Stream *stream)
@@ -667,13 +667,13 @@ void ZipArchive::closeFile(Stream *stream)
 
 //////////////////////////////////////////////////////////////////////////
 
-Stream *ZipArchive::openFileForRead(const CentralDir *fileCD)
+std::iostream * ZipArchive::openFileForRead(const CentralDir *fileCD)
 {
    if(mMode != Read && mMode != ReadWrite)
-      return NULL;
+      return nullptr;
 
    if((fileCD->mInternalFlags & (CDFileDeleted | CDFileOpen)) != 0)
-      return NULL;
+      return nullptr;
 
    Stream *stream = mStream;
 
@@ -689,7 +689,7 @@ Stream *ZipArchive::openFileForRead(const CentralDir *fileCD)
             {
                if(isVerbose())
                   Con::errorf("ZipArchive::openFile - %s: %s is dirty, but could not rewind temporary file?", mFilename ? mFilename : "<no filename>", fileCD->mFilename);
-               return NULL;
+               return nullptr;
             }
 
             stream = mTempFiles[i];
@@ -701,7 +701,7 @@ Stream *ZipArchive::openFileForRead(const CentralDir *fileCD)
       {
          if(isVerbose())
             Con::errorf("ZipArchive::openFile - %s: %s is dirty, but no temporary file found?", mFilename ? mFilename : "<no filename>", fileCD->mFilename);
-         return NULL;
+         return nullptr;
       }
    }
    else
@@ -711,7 +711,7 @@ Stream *ZipArchive::openFileForRead(const CentralDir *fileCD)
       {
          if(isVerbose())
             Con::errorf("ZipArchive::openFile - %s: Could not locate local header for file %s", mFilename ? mFilename : "<no filename>", fileCD->mFilename);
-         return NULL;
+         return nullptr;
       }
 
       FileHeader fh;
@@ -719,7 +719,7 @@ Stream *ZipArchive::openFileForRead(const CentralDir *fileCD)
       {
          if(isVerbose())
             Con::errorf("ZipArchive::openFile - %s: Could not read local header for file %s", mFilename ? mFilename : "<no filename>", fileCD->mFilename);
-         return NULL;
+         return nullptr;
       }
    }
 
@@ -742,7 +742,7 @@ Stream *ZipArchive::openFileForRead(const CentralDir *fileCD)
          if(! cryptStream->attachStream(stream))
          {
             delete cryptStream;
-            return NULL;
+            return nullptr;
          }
 
          attachTo = cryptStream;
@@ -750,11 +750,11 @@ Stream *ZipArchive::openFileForRead(const CentralDir *fileCD)
    }
 
    Compressor *comp = Compressor::findCompressor(compMethod);
-   if(comp == NULL)
+   if(comp == nullptr)
    {
       if(isVerbose())
          Con::errorf("ZipArchive::openFile - %s: Unsupported compression method (%d) for file %s", mFilename ? mFilename : "<no filename>", fileCD->mCompressMethod, fileCD->mFilename);
-      return NULL;
+      return nullptr;
    }
 
    return comp->createReadStream(fileCD, attachTo);
@@ -765,7 +765,7 @@ Stream *ZipArchive::openFileForRead(const CentralDir *fileCD)
 bool ZipArchive::addFile(const char *filename, const char *pathInZip, bool replace /* = true */)
 {
    Stream *source = ResourceManager->openStream(filename);
-   if(source == NULL)
+   if(source == nullptr)
       return false;
 
    const CentralDir *cd = findFileInfo(pathInZip);
@@ -773,7 +773,7 @@ bool ZipArchive::addFile(const char *filename, const char *pathInZip, bool repla
       return false;
 
    Stream *dest = openFile(pathInZip, Write);
-   if(dest == NULL)
+   if(dest == nullptr)
    {
       ResourceManager->closeStream(source);
       return false;
@@ -787,13 +787,13 @@ bool ZipArchive::addFile(const char *filename, const char *pathInZip, bool repla
    return ret;
 }
 
-bool ZipArchive::extractFile(const char *pathInZip, const char *filename, bool *crcFail /* = NULL */)
+bool ZipArchive::extractFile(const char *pathInZip, const char *filename, bool *crcFail /* = nullptr */)
 {
    if(crcFail)
       *crcFail = false;
 
    const CentralDir *realCD = findFileInfo(pathInZip);
-   if(realCD == NULL)
+   if(realCD == nullptr)
       return false;
    
    FileStream dest;
@@ -801,7 +801,7 @@ bool ZipArchive::extractFile(const char *pathInZip, const char *filename, bool *
       return false;
 
    Stream *source = openFile(pathInZip, Read);
-   if(source == NULL)
+   if(source == nullptr)
    {
       dest.close();
       return false;
@@ -839,7 +839,7 @@ bool ZipArchive::deleteFile(const char *filename)
       return false;
 
    CentralDir *cd = findFileInfo(filename);
-   if(cd == NULL)
+   if(cd == nullptr)
       return false;
 
    cd->mInternalFlags |= CDFileDeleted;

@@ -40,6 +40,7 @@
 #include "2d/assets/animationAsset.h"
 #include "audio/audioAsset.h"
 #include "taml_ScriptBinding.h"
+#include <fstream>
 
 // Debug Profiling.
 #include "debug/profiler.h"
@@ -169,10 +170,10 @@ bool Taml::write( SimObject* pSimObject, const char* pFilename )
     // Expand the file-name into the file-path buffer.
     Con::expandPath( mFilePathBuffer, sizeof(mFilePathBuffer), pFilename );
 
-    FileStream stream;
+    std::fstream stream( mFilePathBuffer, std::fstream::out );
 
     // File opened?
-    if ( !stream.open( mFilePathBuffer, FileStream::Write ) )
+    if ( !stream )
     {
         // No, so warn.
         Con::warnf("Taml::writeFile() - Could not open filename '%s' for write.", mFilePathBuffer );
@@ -210,10 +211,10 @@ SimObject* Taml::read( const char* pFilename )
     // Expand the file-name into the file-path buffer.
     Con::expandPath( mFilePathBuffer, sizeof(mFilePathBuffer), pFilename );
 
-    FileStream stream;
+    std::fstream stream( mFilePathBuffer, std::fstream::in );
 
     // File opened?
-    if ( !stream.open( mFilePathBuffer, FileStream::Read ) )
+    if ( !stream )
     {
         // No, so warn.
         Con::warnf("Taml::read() - Could not open filename '%s' for read.", mFilePathBuffer );
@@ -247,7 +248,7 @@ SimObject* Taml::read( const char* pFilename )
 
 //-----------------------------------------------------------------------------
 
-bool Taml::write( FileStream& stream, SimObject* pSimObject, const TamlFormatMode formatMode )
+bool Taml::write( const char* filename, SimObject* pSimObject, const TamlFormatMode formatMode )
 {
     // Sanity!
     AssertFatal( pSimObject != nullptr, "Cannot write a nullptr object." );
@@ -265,7 +266,7 @@ bool Taml::write( FileStream& stream, SimObject* pSimObject, const TamlFormatMod
             TamlXmlWriter writer( this );
 
             // Write.
-            return writer.write( stream, pRootNode );
+            return writer.write( filename, pRootNode );
         }
 
         /// Binary.
@@ -274,8 +275,10 @@ bool Taml::write( FileStream& stream, SimObject* pSimObject, const TamlFormatMod
             // Create writer.
             TamlBinaryWriter writer( this );
 
+
             // Write.
-            return writer.write( stream, pRootNode, mBinaryCompression );
+            std::fstream temp(filename);
+            return writer.write( temp, pRootNode, mBinaryCompression );
         }
 
         /// JSON.
@@ -285,7 +288,8 @@ bool Taml::write( FileStream& stream, SimObject* pSimObject, const TamlFormatMod
             TamlJSONWriter writer( this );
 
             // Write.
-            return writer.write( stream, pRootNode );
+            std::fstream temp(filename);
+            return writer.write( temp, pRootNode );
         }
 
         /// Invalid.
@@ -304,7 +308,7 @@ bool Taml::write( FileStream& stream, SimObject* pSimObject, const TamlFormatMod
 
 //-----------------------------------------------------------------------------
 
-SimObject* Taml::read( FileStream& stream, const TamlFormatMode formatMode )
+SimObject* Taml::read(const char* filename, TamlFormatMode const formatMode)
 {
     // Format appropriately.
     switch( formatMode )
@@ -316,7 +320,7 @@ SimObject* Taml::read( FileStream& stream, const TamlFormatMode formatMode )
             TamlXmlReader reader( this );
 
             // Read.
-            return reader.read( stream );
+            return reader.read( filename );
         }
 
         /// Binary.
@@ -326,6 +330,7 @@ SimObject* Taml::read( FileStream& stream, const TamlFormatMode formatMode )
             TamlBinaryReader reader( this );
 
             // Read.
+            std::fstream stream(filename);
             return reader.read( stream );
         }
 
@@ -336,6 +341,7 @@ SimObject* Taml::read( FileStream& stream, const TamlFormatMode formatMode )
             TamlJSONReader reader( this );
 
             // Read.
+            std::fstream stream(filename);
             return reader.read( stream );
         }
         
@@ -950,16 +956,6 @@ bool Taml::generateTamlSchema()
     char filePathBuffer[1024];
     Con::expandPath( filePathBuffer, sizeof(filePathBuffer), pTamlSchemaFile );
 
-    FileStream stream;
-
-    // File opened?
-    if ( !stream.open( filePathBuffer, FileStream::Write ) )
-    {
-        // No, so warn.
-        Con::warnf("Taml::GenerateTamlSchema() - Could not open filename '%s' for write.", filePathBuffer );
-        return false;
-    }
-
     // Create document.
     TiXmlDocument schemaDocument;
 
@@ -1413,10 +1409,7 @@ bool Taml::generateTamlSchema()
     }
 
     // Write the schema document.
-    schemaDocument.SaveFile( stream );
-
-    // Close file.
-    stream.close();
+    schemaDocument.SaveFile( filePathBuffer );
 
     return true;
 }

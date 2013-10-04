@@ -781,7 +781,7 @@ void TiXmlElement::SetAttribute( const std::string& _name, const std::string& _v
 #endif
 
 
-void TiXmlElement::Print( FileStream& stream, int depth ) const
+void TiXmlElement::Print( std::fstream &stream, int depth ) const
 {
     int i;
     for ( i=0; i<depth; i++ ) {
@@ -1115,7 +1115,7 @@ TiXmlNode* TiXmlDocument::Clone() const
 }
 
 
-void TiXmlDocument::Print( FileStream& stream, int depth ) const
+void TiXmlDocument::Print( std::fstream &stream, int depth ) const
 {
     for ( const TiXmlNode* node=FirstChild(); node; node=node->NextSibling() )
     {
@@ -1178,7 +1178,7 @@ TiXmlAttribute* TiXmlAttribute::Previous()
 }
 */
 
-void TiXmlAttribute::Print( FileStream& stream, int depth, TIXML_STRING* str ) const
+void TiXmlAttribute::Print( std::fstream &stream, int depth, TIXML_STRING* str ) const
 {
     TIXML_STRING n, v;
 
@@ -1266,7 +1266,7 @@ TiXmlComment& TiXmlComment::operator=( const TiXmlComment& base )
 }
 
 
-void TiXmlComment::Print( FileStream& stream, int depth ) const
+void TiXmlComment::Print( std::fstream &stream, int depth ) const
 {
     for ( int i=0; i<depth; i++ )
     {
@@ -1300,7 +1300,7 @@ TiXmlNode* TiXmlComment::Clone() const
 }
 
 
-void TiXmlText::Print( FileStream& stream, int depth ) const
+void TiXmlText::Print( std::fstream &stream, int depth ) const
 {
     if ( cdata )
     {
@@ -1385,7 +1385,7 @@ TiXmlDeclaration& TiXmlDeclaration::operator=( const TiXmlDeclaration& copy )
 }
 
 
-void TiXmlDeclaration::Print( FileStream& stream, int /*depth*/, TIXML_STRING* str ) const
+void TiXmlDeclaration::Print( std::fstream &stream, int /*depth*/, TIXML_STRING* str ) const
 {
     stream.writeStringBuffer( "<?xml " );
     if ( str )	 (*str) += "<?xml ";
@@ -1435,7 +1435,7 @@ TiXmlNode* TiXmlDeclaration::Clone() const
 }
 
 
-void TiXmlUnknown::Print( FileStream& stream, int depth ) const
+void TiXmlUnknown::Print( std::fstream &stream, int depth ) const
 {
     for ( int i=0; i<depth; i++ )
         stream.writeStringBuffer( "    " );

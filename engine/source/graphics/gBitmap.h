@@ -161,9 +161,9 @@ class GBitmap: public ResourceInstance
 
    bool readPNG(std::iostream &io_rStream);               // located in bitmapPng.cc
    bool writePNG(std::iostream &io_rStream, bool compressHard = false) const;
-   bool writePNGUncompressed(Stream& io_rStream) const;
+   bool writePNGUncompressed(std::iostream &io_rStream) const;
 
-   bool readMSBmp(Stream& io_rStream);             // located in bitmapMS.cc
+   bool readMSBmp(std::iostream &io_rStream);             // located in bitmapMS.cc
    bool writeMSBmp(Stream& io_rStream) const;      // located in bitmapMS.cc
 
 #ifdef TORQUE_OS_IOS

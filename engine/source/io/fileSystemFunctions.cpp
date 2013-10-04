@@ -382,7 +382,7 @@ ConsoleFunction(isValidImageFile, bool, 2, 2, "(string filePath)\n"
     if (!ext)
         return false;	// no extension
 
-    Stream *stream = ResourceManager->openStream(scriptFilenameBuffer);
+    std::iostream *stream = ResourceManager->openStream(scriptFilenameBuffer);
     if(stream == nullptr)
         return false;
 
@@ -390,16 +390,16 @@ ConsoleFunction(isValidImageFile, bool, 2, 2, "(string filePath)\n"
 
     if (dStricmp(ext, ".jpg") == 0)
     {
-        U8 bArray[2];
-        stream->read(2, bArray);
+        char bArray[2];
+        stream->read(bArray, 2);
         // check header signature
         ret = ((bArray[0] == 0xFF) && (bArray[1] == 0xD8));
     } 
     else if (dStricmp(ext, ".png") == 0)
     {
         int i = 0;
-        U8 bArray[8];
-        stream->read(8, bArray);
+        char bArray[8];
+        stream->read(bArray, 8);
         // check header signature
         ret = ((bArray[i++] == 0x89) && (bArray[i++] == 0x50) && (bArray[i++] == 0x4E) && (bArray[i++] == 0x47));
     }

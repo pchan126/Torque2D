@@ -47,7 +47,8 @@ public:
     virtual ~TamlXmlReader() {}
 
     /// Read.
-    SimObject* read( FileStream& stream );
+//    SimObject* read( std::fstream &stream );
+    SimObject* read(char const *filename);
 
 private:
     Taml* mpTaml;

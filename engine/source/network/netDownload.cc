@@ -39,7 +39,7 @@ public:
    U32 nameCount;
    char mFileNames[MaxFileNames][256];
 
-   FileDownloadRequestEvent(std::deque<char *> *nameList = NULL)
+   FileDownloadRequestEvent(std::deque<char *> *nameList = nullptr)
    {
       nameCount = 0;
       if(nameList)
@@ -85,7 +85,7 @@ public:
          if(connection->startSendingFile(mFileNames[i]))
             break;
       if(i == nameCount)
-         connection->startSendingFile(NULL);  // none of the files were sent
+         connection->startSendingFile(nullptr);  // none of the files were sent
    }
 
    DECLARE_CONOBJECT(FileDownloadRequestEvent);
@@ -105,7 +105,7 @@ public:
    U8 chunkData[ChunkSize];
    U32 chunkLen;
    
-   FileChunkEvent(U8 *data = NULL, U32 len = 0)
+   FileChunkEvent(U8 *data = nullptr, U32 len = 0)
    {
       if(data)
          dMemcpy(chunkData, data, len);
@@ -156,12 +156,12 @@ void NetConnection::sendFileChunk()
    if(!len)
    {
       ResourceManager->closeStream(mCurrentDownloadingFile);
-      mCurrentDownloadingFile = NULL;
+      mCurrentDownloadingFile = nullptr;
       return;
    }
 
    mCurrentFileBufferOffset += len;
-   mCurrentDownloadingFile->read(len, buffer);
+   mCurrentDownloadingFile->read( (char*)buffer, len);
    postNetEvent(new FileChunkEvent(buffer, len));
 }
 
@@ -179,13 +179,16 @@ bool NetConnection::startSendingFile(const char *fileName)
    {
       // the server didn't have the file, so send a 0 byte chunk:
       Con::printf("No such file '%s'.", fileName);
-      postNetEvent(new FileChunkEvent(NULL, 0));
+      postNetEvent(new FileChunkEvent(nullptr, 0));
       return false;
    }
 
    Con::printf("Sending file '%s'.", fileName);
-   mCurrentFileBufferSize = mCurrentDownloadingFile->getStreamSize();
-   mCurrentFileBufferOffset = 0;
+    mCurrentDownloadingFile->seekg(0, mCurrentDownloadingFile->end);
+    mCurrentFileBufferSize = mCurrentDownloadingFile->tellg();
+    mCurrentDownloadingFile->seekg(0, mCurrentDownloadingFile->beg);
+
+    mCurrentFileBufferOffset = 0;
 
    // always have 32 file chunks (64 bytes each) in transit
    sendConnectionMessage(FileDownloadSizeMessage, mCurrentFileBufferSize);
@@ -220,7 +223,7 @@ void NetConnection::chunkReceived(U8 *chunkData, U32 chunkLen)
    {
       // the server didn't have the file... apparently it's one we don't need...
       dFree(mCurrentFileBuffer);
-      mCurrentFileBuffer = NULL;
+      mCurrentFileBuffer = nullptr;
       dFree(mMissingFileList[0]);
       mMissingFileList.pop_front();
       return;
@@ -236,7 +239,7 @@ void NetConnection::chunkReceived(U8 *chunkData, U32 chunkLen)
    {
       // this file's done...
       // save it to disk:
-      FileStream stream;
+       std::fstream stream;
 
       Con::printf("Saving file %s.", mMissingFileList[0]);
       if(!ResourceManager->openFileForWrite(stream, mMissingFileList[0]))
@@ -246,11 +249,11 @@ void NetConnection::chunkReceived(U8 *chunkData, U32 chunkLen)
       }
       dFree(mMissingFileList[0]);
       mMissingFileList.pop_front();
-      stream.write(mCurrentFileBufferSize, mCurrentFileBuffer);
+      stream.write( (char*)mCurrentFileBuffer, mCurrentFileBufferSize);
       stream.close();
       mNumDownloadedFiles++;
       dFree(mCurrentFileBuffer);
-      mCurrentFileBuffer = NULL;
+      mCurrentFileBuffer = nullptr;
       sendNextFileDownloadRequest();
    }
    else

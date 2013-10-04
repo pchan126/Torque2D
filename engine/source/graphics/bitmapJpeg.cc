@@ -39,7 +39,7 @@ static int jpegReadDataFn(void *client_data, unsigned char *data, int length)
     std::iostream *stream = (std::iostream*)client_data;
    AssertFatal(stream != nullptr, "jpegReadDataFn::No stream.");
 //   int pos = stream->getPosition();
-   if (stream->read( data, length))
+   if (stream->read( (char*)data, length))
       return length;
 
 //   if (stream->getStatus() == Stream::EOS)
@@ -52,9 +52,9 @@ static int jpegReadDataFn(void *client_data, unsigned char *data, int length)
 //--------------------------------------
 static int jpegWriteDataFn(void *client_data, unsigned char *data, int length)
 {
-   Stream *stream = (Stream*)client_data;
+    std::iostream *stream = (std::iostream*)client_data;
    AssertFatal(stream != nullptr, "jpegWriteDataFn::No stream.");
-   if (stream->write(length, data))
+   if (stream->write( (char*)data, length))
       return length;
    else
       return 0;

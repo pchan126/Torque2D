@@ -27,7 +27,32 @@
 
 //-----------------------------------------------------------------------------
 
-SimObject* TamlXmlReader::read( FileStream& stream )
+//SimObject* TamlXmlReader::read(std::fstream &stream)
+//{
+//    // Debug Profiling.
+//    PROFILE_SCOPE(TamlXmlReader_Read);
+//
+//    // Create document.
+//    TiXmlDocument xmlDocument;
+//
+//    // Load document from stream.
+//    if ( !xmlDocument.LoadFile( stream ) )
+//    {
+//        // Warn!
+//        Con::warnf("Taml: Could not load Taml XML file from stream.");
+//        return nullptr;
+//    }
+//
+//    // Parse root element.
+//    SimObject* pSimObject = parseElement( xmlDocument.RootElement() );
+//
+//    // Reset parse.
+//    resetParse();
+//
+//    return pSimObject;
+//}
+
+SimObject* TamlXmlReader::read(char const *filename)
 {
     // Debug Profiling.
     PROFILE_SCOPE(TamlXmlReader_Read);
@@ -36,11 +61,11 @@ SimObject* TamlXmlReader::read( FileStream& stream )
     TiXmlDocument xmlDocument;
 
     // Load document from stream.
-    if ( !xmlDocument.LoadFile( stream ) )
+    if ( !xmlDocument.LoadFile( filename ) )
     {
         // Warn!
         Con::warnf("Taml: Could not load Taml XML file from stream.");
-        return NULL;
+        return nullptr;
     }
 
     // Parse root element.
@@ -51,7 +76,6 @@ SimObject* TamlXmlReader::read( FileStream& stream )
 
     return pSimObject;
 }
-
 //-----------------------------------------------------------------------------
 
 void TamlXmlReader::resetParse( void )
@@ -70,7 +94,7 @@ SimObject* TamlXmlReader::parseElement( TiXmlElement* pXmlElement )
     // Debug Profiling.
     PROFILE_SCOPE(TamlXmlReader_ParseElement);
 
-    SimObject* pSimObject = NULL;
+    SimObject* pSimObject = nullptr;
 
     // Fetch element name.
     StringTableEntry typeName = StringTable->insert( pXmlElement->Value() );
@@ -89,7 +113,7 @@ SimObject* TamlXmlReader::parseElement( TiXmlElement* pXmlElement )
         {
             // No, so warn.
             Con::warnf( "Taml: Could not find a reference Id of '%d'", tamlRefToId );
-            return NULL;
+            return nullptr;
         }
 
         // Return object.
@@ -113,14 +137,14 @@ SimObject* TamlXmlReader::parseElement( TiXmlElement* pXmlElement )
 
 
     // Finish if we couldn't create the type.
-    if ( pSimObject == NULL )
-        return NULL;
+    if ( pSimObject == nullptr )
+        return nullptr;
 
     // Find Taml callbacks.
     TamlCallbacks* pCallbacks = dynamic_cast<TamlCallbacks*>( pSimObject );
 
     // Are there any Taml callbacks?
-    if ( pCallbacks != NULL )
+    if ( pCallbacks != nullptr )
     {
         // Yes, so call it.
         mpTaml->tamlPreRead( pCallbacks );
@@ -169,7 +193,7 @@ SimObject* TamlXmlReader::parseElement( TiXmlElement* pXmlElement )
     TamlCustomNodes customProperties;
 
     // Do we have any element children?
-    if ( pChildXmlNode != NULL )
+    if ( pChildXmlNode != nullptr )
     {
         // Fetch the Taml children.
         TamlChildren* pChildren = dynamic_cast<TamlChildren*>( pSimObject );
@@ -187,14 +211,14 @@ SimObject* TamlXmlReader::parseElement( TiXmlElement* pXmlElement )
             pChildXmlNode = pChildXmlNode->NextSibling();
 
             // Skip if this is not an element?
-            if ( pChildXmlElement == NULL )
+            if ( pChildXmlElement == nullptr )
                 continue;
 
             // Is this a standard child element?
-            if ( dStrchr( pChildXmlElement->Value(), '.' ) == NULL )
+            if ( dStrchr( pChildXmlElement->Value(), '.' ) == nullptr )
             {
                 // Is this a Taml child?
-                if ( pChildren == NULL )
+                if ( pChildren == nullptr )
                 {
                     // No, so warn.
                     Con::warnf("Taml: Child element '%s' found under parent '%s' but object cannot have children.",
@@ -209,11 +233,11 @@ SimObject* TamlXmlReader::parseElement( TiXmlElement* pXmlElement )
                 SimObject* pChildSimObject = parseElement( pChildXmlElement );
 
                 // Skip if the child was not created.
-                if ( pChildSimObject == NULL )
+                if ( pChildSimObject == nullptr )
                     continue;
 
                 // Do we have a container child class?
-                if ( pContainerChildClass != NULL )
+                if ( pContainerChildClass != nullptr )
                 {
                     // Yes, so is the child object the correctly derived type?
                     if ( !pChildSimObject->getClassRep()->isClass( pContainerChildClass ) )
@@ -225,7 +249,7 @@ SimObject* TamlXmlReader::parseElement( TiXmlElement* pXmlElement )
                             pContainerChildClass->getClassName() );
 
                         // NOTE: We can't delete the object as it may be referenced elsewhere!
-                        pChildSimObject = NULL;
+                        pChildSimObject = nullptr;
 
                         // Skip.
                         continue;
@@ -239,7 +263,7 @@ SimObject* TamlXmlReader::parseElement( TiXmlElement* pXmlElement )
                 TamlCallbacks* pChildCallbacks = dynamic_cast<TamlCallbacks*>( pChildSimObject );
 
                 // Do we have callbacks on the child?
-                if ( pChildCallbacks != NULL )
+                if ( pChildCallbacks != nullptr )
                 {
                     // Yes, so perform callback.
                     mpTaml->tamlAddParent( pChildCallbacks, pSimObject );
@@ -251,14 +275,14 @@ SimObject* TamlXmlReader::parseElement( TiXmlElement* pXmlElement )
                 parseCustomElement( pChildXmlElement, customProperties );
             }
         }
-        while( pChildXmlNode != NULL );
+        while( pChildXmlNode != nullptr );
 
         // Call custom read.
         mpTaml->tamlCustomRead( pCallbacks, customProperties );
     }
 
     // Are there any Taml callbacks?
-    if ( pCallbacks != NULL )
+    if ( pCallbacks != nullptr )
     {
         // Yes, so call it.
         mpTaml->tamlPostRead( pCallbacks, customProperties );
@@ -276,7 +300,7 @@ void TamlXmlReader::parseAttributes( TiXmlElement* pXmlElement, SimObject* pSimO
     PROFILE_SCOPE(TamlXmlReader_ParseAttributes);
 
     // Sanity!
-    AssertFatal( pSimObject != NULL, "Taml: Cannot parse attributes on a NULL object." );
+    AssertFatal( pSimObject != nullptr, "Taml: Cannot parse attributes on a nullptr object." );
 
     // Iterate attributes.
     for ( TiXmlAttribute* pAttribute = pXmlElement->FirstAttribute(); pAttribute; pAttribute = pAttribute->Next() )
@@ -291,7 +315,7 @@ void TamlXmlReader::parseAttributes( TiXmlElement* pXmlElement, SimObject* pSimO
             continue;
 
         // Set the field.
-        pSimObject->setPrefixedDataField( attributeName, NULL, pAttribute->Value() );
+        pSimObject->setPrefixedDataField( attributeName, nullptr, pAttribute->Value() );
     }
 }
 
@@ -306,13 +330,13 @@ void TamlXmlReader::parseCustomElement( TiXmlElement* pXmlElement, TamlCustomNod
     const char* pPeriod = dStrchr( pXmlElement->Value(), '.' );
 
     // Sanity!
-    AssertFatal( pPeriod != NULL, "Parsing extended element but no period character found." );
+    AssertFatal( pPeriod != nullptr, "Parsing extended element but no period character found." );
 
     // Fetch any custom XML node.
     TiXmlNode* pCustomXmlNode = pXmlElement->FirstChild();
 
     // Finish is no XML node exists.
-    if ( pCustomXmlNode == NULL )
+    if ( pCustomXmlNode == nullptr )
         return;
 
     // Yes, so add custom node.
@@ -327,13 +351,13 @@ void TamlXmlReader::parseCustomElement( TiXmlElement* pXmlElement, TamlCustomNod
         pCustomXmlNode = pCustomXmlNode->NextSibling();
 
         // Skip if this is not an element.
-        if ( pCustomXmlElement == NULL )
+        if ( pCustomXmlElement == nullptr )
             continue;
 
         // Parse custom node.
         parseCustomNode( pCustomXmlElement, pCustomNode );
     }
-    while ( pCustomXmlNode != NULL );
+    while ( pCustomXmlNode != nullptr );
 }
 
 //-----------------------------------------------------------------------------
@@ -373,7 +397,7 @@ void TamlXmlReader::parseCustomNode( TiXmlElement* pXmlElement, TamlCustomNode* 
     const char* pElementText = pXmlElement->GetText();
 
     // Do we have any element text?
-    if ( pElementText != NULL )
+    if ( pElementText != nullptr )
     {
         // Yes, so store it.
         pChildNode->setNodeText( pElementText );
@@ -383,7 +407,7 @@ void TamlXmlReader::parseCustomNode( TiXmlElement* pXmlElement, TamlCustomNode* 
     TiXmlNode* pChildXmlNode = pXmlElement->FirstChild();
 
     // Do we have any element children?
-    if ( pChildXmlNode != NULL )
+    if ( pChildXmlNode != nullptr )
     {
         do
         {
@@ -394,13 +418,13 @@ void TamlXmlReader::parseCustomNode( TiXmlElement* pXmlElement, TamlCustomNode* 
             pChildXmlNode = pChildXmlNode->NextSibling();
 
             // Skip if this is not an element.
-            if ( pChildXmlElement == NULL )
+            if ( pChildXmlElement == nullptr )
                 continue;
 
             // Parse custom node.
             parseCustomNode( pChildXmlElement, pChildNode );
         }
-        while( pChildXmlNode != NULL );
+        while( pChildXmlNode != nullptr );
     }
 }
 
@@ -476,7 +500,7 @@ const char* TamlXmlReader::getTamlObjectName( TiXmlElement* pXmlElement )
     }
 
     // Not found.
-    return NULL;
+    return nullptr;
 }
 
 

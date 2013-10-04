@@ -52,8 +52,8 @@ public:
 	bool load(const UTF8 *filename);
 	bool save(const UTF8 *filename);
 
-	bool load(Stream *s);
-	bool save(Stream *s);
+	bool load(std::iostream *s);
+	bool save(std::iostream *s);
 
 	const UTF8 * getString(U32 id);
 	U32 addString(const UTF8 *str);

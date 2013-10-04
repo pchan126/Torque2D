@@ -73,29 +73,29 @@ struct BITMAPINFOHEADER{
 //                                                          bitmapPng.cc)
 //
 
-bool GBitmap::readMSBmp(Stream& stream)
+bool GBitmap::readMSBmp(std::iostream &stream)
 {
    BITMAPINFOHEADER  bi;
    BITMAPFILEHEADER  bf;
 //   RGBQUAD           rgb[256];
 
-   stream.read(&bf.bfType);
-   stream.read(&bf.bfSize);
-   stream.read(&bf.bfReserved1);
-   stream.read(&bf.bfReserved2);
-   stream.read(&bf.bfOffBits);
+   stream >> bf.bfType;
+   stream >> bf.bfSize;
+   stream >> bf.bfReserved1;
+   stream >> bf.bfReserved2;
+   stream >> bf.bfOffBits;
 
-   stream.read(&bi.biSize);
-   stream.read(&bi.biWidth);
-   stream.read(&bi.biHeight);
-   stream.read(&bi.biPlanes);
-   stream.read(&bi.biBitCount);
-   stream.read(&bi.biCompression);
-   stream.read(&bi.biSizeImage);
-   stream.read(&bi.biXPelsPerMeter);
-   stream.read(&bi.biYPelsPerMeter);
-   stream.read(&bi.biClrUsed);
-   stream.read(&bi.biClrImportant);
+   stream >> bi.biSize;
+   stream >> bi.biWidth;
+   stream >> bi.biHeight;
+   stream >> bi.biPlanes;
+   stream >> bi.biBitCount;
+   stream >> bi.biCompression;
+   stream >> bi.biSizeImage;
+   stream >> bi.biXPelsPerMeter;
+   stream >> bi.biYPelsPerMeter;
+   stream >> bi.biClrUsed;
+   stream >> bi.biClrImportant;
 
    GFXFormat fmt = GFXFormatR8G8B8;
 //   if(bi.biBitCount == 8)
@@ -121,7 +121,7 @@ bool GBitmap::readMSBmp(Stream& stream)
    for(int i = 0; i < bi.biHeight; i++)
    {
       U8 *rowDest = getAddress(0, height - i - 1);
-      stream.read(mBytesPerPixel * width, rowDest);
+      stream.read((char*)rowDest, mBytesPerPixel * width);
    }
 
    if(mBytesPerPixel == 3) // do BGR swap

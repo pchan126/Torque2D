@@ -57,7 +57,7 @@ StringTableEntry JSON_RFC4627_NAME_MANGLING_FORMAT = StringTable->insert( "%s[%d
 
 //-----------------------------------------------------------------------------
 
-bool TamlJSONWriter::write( FileStream& stream, const TamlWriteNode* pTamlWriteNode )
+bool TamlJSONWriter::write(std::fstream &stream, const TamlWriteNode *pTamlWriteNode)
 {
     // Debug Profiling.
     PROFILE_SCOPE(TamlJSONWriter_Write);
@@ -68,7 +68,7 @@ bool TamlJSONWriter::write( FileStream& stream, const TamlWriteNode* pTamlWriteN
 
     // Compile the root type.
     rapidjson::Value rootValue(rapidjson::kObjectType);
-    compileType( document, &rootValue, NULL, pTamlWriteNode, -1 );
+    compileType( document, &rootValue, nullptr, pTamlWriteNode, -1 );
 
     // Write document to stream.
     rapidjson::PrettyWriter<FileStream> jsonStreamWriter( stream );
@@ -97,7 +97,7 @@ void TamlJSONWriter::compileType( rapidjson::Document& document, rapidjson::Valu
     StringTableEntry elementName = jsonStrict ? getManagedName( pSimObject->getClassName(), memberIndex ) : pSimObject->getClassName();
     
     // Is there a parent value?
-    if ( pParentValue == NULL )
+    if ( pParentValue == nullptr )
     {        
         // No, so add as document root value member.
         pTypeValue = &((document.AddMember( elementName, *pTypeValue, allocator ).MemberEnd()-1)->value);
@@ -120,7 +120,7 @@ void TamlJSONWriter::compileType( rapidjson::Document& document, rapidjson::Valu
         pTypeValue->AddMember( tamlRefIdName, value, allocator );
     }
     // Do we have a reference to node?
-    else if ( pTamlWriteNode->mRefToNode != NULL )
+    else if ( pTamlWriteNode->mRefToNode != nullptr )
     {
         // Yes, so fetch reference to Id.
         const U32 referenceToId = pTamlWriteNode->mRefToNode->mRefId;
@@ -141,7 +141,7 @@ void TamlJSONWriter::compileType( rapidjson::Document& document, rapidjson::Valu
     const char* pObjectName = pTamlWriteNode->mpObjectName;
 
     // Do we have a name?
-    if ( pObjectName != NULL )
+    if ( pObjectName != nullptr )
     {
         // Yes, so set name.
         rapidjson::Value value;

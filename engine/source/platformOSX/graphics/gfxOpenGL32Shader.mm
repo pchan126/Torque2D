@@ -23,8 +23,8 @@
 #include "platform/platform.h"
 #include "platform/platformGL.h"
 #include "./gfxOpenGL32Shader.h"
-
 #include "memory/frameAllocator.h"
+#include <fstream>
 
 
 class GFXOpenGL32ShaderConstHandle : public GFXShaderConstHandle
@@ -146,7 +146,7 @@ GFXOpenGL32ShaderConstBuffer::~GFXOpenGL32ShaderConstBuffer()
 template<typename ConstType>
 void GFXOpenGL32ShaderConstBuffer::internalSet(GFXShaderConstHandle* handle, const ConstType& param)
 {
-   AssertFatal(handle, "GFXOpenGL32ShaderConstBuffer::internalSet - Handle is NULL!" );
+   AssertFatal(handle, "GFXOpenGL32ShaderConstBuffer::internalSet - Handle is nullptr!" );
    AssertFatal(handle->isValid(), "GFXOpenGL32ShaderConstBuffer::internalSet - Handle is not valid!" );
    AssertFatal(dynamic_cast<GFXOpenGL32ShaderConstHandle*>(handle), "GFXOpenGL32ShaderConstBuffer::set - Incorrect const buffer type");
 
@@ -204,7 +204,7 @@ void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const Point
 //template<typename ConstType>
 //void GFXOpenGL32ShaderConstBuffer::internalSet(GFXShaderConstHandle* handle, const AlignedArray<ConstType>& fv)
 //{
-//   AssertFatal(handle, "GFXOpenGL32ShaderConstBuffer::internalSet - Handle is NULL!" );
+//   AssertFatal(handle, "GFXOpenGL32ShaderConstBuffer::internalSet - Handle is nullptr!" );
 //   AssertFatal(handle->isValid(), "GFXOpenGL32ShaderConstBuffer::internalSet - Handle is not valid!" );
 //   AssertFatal(dynamic_cast<GFXOpenGL32ShaderConstHandle*>(handle), "GFXOpenGL32ShaderConstBuffer::set - Incorrect const buffer type");
 //
@@ -260,7 +260,7 @@ void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const Point
 
 void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const MatrixF& mat, const GFXShaderConstType matType)
 {
-   AssertFatal(handle, "GFXOpenGL32ShaderConstBuffer::set - Handle is NULL!" );
+   AssertFatal(handle, "GFXOpenGL32ShaderConstBuffer::set - Handle is nullptr!" );
    AssertFatal(handle->isValid(), "GFXOpenGL32ShaderConstBuffer::set - Handle is not valid!" );
    AssertFatal(dynamic_cast<GFXOpenGL32ShaderConstHandle*>(handle), "GFXOpenGL32ShaderConstBuffer::set - Incorrect const buffer type");
 
@@ -297,7 +297,7 @@ void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const Matri
 
 void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const MatrixF* mat, const U32 arraySize, const GFXShaderConstType matrixType)
 {
-   AssertFatal(handle, "GFXOpenGL32ShaderConstBuffer::set - Handle is NULL!" );
+   AssertFatal(handle, "GFXOpenGL32ShaderConstBuffer::set - Handle is nullptr!" );
    AssertFatal(handle->isValid(), "GFXOpenGL32ShaderConstBuffer::set - Handle is not valid!" );
 
    GFXOpenGL32ShaderConstHandle* _glHandle = static_cast<GFXOpenGL32ShaderConstHandle*>(handle);
@@ -336,7 +336,7 @@ void GFXOpenGL32ShaderConstBuffer::onShaderReload( GFXOpenGL32Shader *shader )
 
 GFXOpenGL32Shader::GFXOpenGL32Shader() :
    mConstBufferSize(0),
-   mConstBuffer(NULL)
+   mConstBuffer(nullptr)
 {
     mVertexFile = StringTable->EmptyString;
     mPixelFile = StringTable->EmptyString;
@@ -404,7 +404,7 @@ bool GFXOpenGL32Shader::_init()
    {
       FrameAllocatorMarker fam;
       char* log = (char*)fam.alloc( logLength );
-      glGetProgramInfoLog( mProgram, logLength, NULL, log );
+      glGetProgramInfoLog( mProgram, logLength, nullptr, log );
 
       if ( linkStatus == GL_FALSE )
       {
@@ -452,7 +452,7 @@ void GFXOpenGL32Shader::initConstantDescs()
    {
       GLint size;
       GLenum type;
-      glGetActiveUniform(mProgram, i, maxNameLength, NULL, &size, &type, uniformName);
+      glGetActiveUniform(mProgram, i, maxNameLength, nullptr, &size, &type, uniformName);
       GFXShaderConstDesc desc;
       
       desc.name = String((char*)uniformName);
@@ -607,7 +607,7 @@ void GFXOpenGL32Shader::setConstantsFromBuffer(GFXOpenGL32ShaderConstBuffer* buf
    {
       GFXOpenGL32ShaderConstHandle* handle = *i;
       AssertFatal(handle, "GFXOpenGL32Shader::setConstantsFromBuffer - Null handle");
-      if (handle != NULL)
+      if (handle != nullptr)
       {
          // Don't set if the value has not be changed.
          if(dMemcmp(mConstBuffer + handle->mOffset, buffer->mBuffer + handle->mOffset, handle->getSize()) == 0)
@@ -671,7 +671,7 @@ void GFXOpenGL32Shader::zombify()
    dMemset(mConstBuffer, 0, mConstBufferSize);
 }
 
-char* GFXOpenGL32Shader::_handleIncludes( const StringTableEntry path, FileStream *s )
+char* GFXOpenGL32Shader::_handleIncludes(const StringTableEntry path, std::fstream *s)
 {
    // TODO:  The #line pragma on GLSL takes something called a
    // "source-string-number" which it then never explains.
@@ -681,10 +681,12 @@ char* GFXOpenGL32Shader::_handleIncludes( const StringTableEntry path, FileStrea
    //String linePragma = String::ToString( "#line 1 \r\n");
    //U32 linePragmaLen = linePragma.length();
 
-   U32 shaderLen = s->getStreamSize();
-   char* buffer = (char*)dMalloc(shaderLen + 1);
+   s->seekg(0, s->end);
+   U32 shaderLen = s->tellg();
+   s->seekg(0, s->beg);
+    char* buffer = (char*)dMalloc(shaderLen + 1);
    //dStrncpy( buffer, linePragma.c_str(), linePragmaLen );
-   s->read(shaderLen, buffer);
+   s->read( buffer, shaderLen);
    buffer[shaderLen] = 0;
    
 //   char* p = dStrstr(buffer, (const char*)"#include");
@@ -725,12 +727,12 @@ char* GFXOpenGL32Shader::_handleIncludes( const StringTableEntry path, FileStrea
 //               AssertISV(false, avar("failed to open include '%s'.", includePath.getFullPath().c_str()));
 //
 //               if ( smLogErrors )
-//                  Con::errorf( "GFXOpenGL32Shader::_handleIncludes - Failed to open include '%s'.", 
+//                  Con::errorf( "GFXOpenGL32Shader::_handleIncludes - Failed to open include '%s'.",
 //                     includePath.getFullPath().c_str() );
 //
 //               // Fail... don't return the buffer.
 //               dFree(buffer);
-//               return NULL;
+//               return nullptr;
 //            }
 //         }
 //
@@ -740,7 +742,7 @@ char* GFXOpenGL32Shader::_handleIncludes( const StringTableEntry path, FileStrea
 //         if ( !includedText )
 //         {
 //            dFree(buffer);
-//            return NULL;
+//            return nullptr;
 //         }
 //         
 //         // TODO: Disabled till this is fixed correctly.
@@ -784,10 +786,10 @@ char* GFXOpenGL32Shader::_handleIncludes( const StringTableEntry path, FileStrea
 }
 
 
-bool GFXOpenGL32Shader::_loadShaderFromStream(  GLuint shader,
-                                  const StringTableEntry path,
-                                  FileStream* s,
-                                  const Vector<GFXShaderMacro>& macros )
+bool GFXOpenGL32Shader::_loadShaderFromStream(GLuint shader,
+        const StringTableEntry path,
+        std::fstream *s,
+        const Vector<GFXShaderMacro>& macros)
 {
    Vector<char*> buffers;
    Vector<U32> lengths;
@@ -806,7 +808,9 @@ bool GFXOpenGL32Shader::_loadShaderFromStream(  GLuint shader,
    }
    
    // Now finally add the shader source.
-   U32 shaderLen = s->getStreamSize();
+   s->seekg(0, s->end);
+   U32 shaderLen = s->tellg();
+   s->seekg(0, s->beg);
    char *buffer = _handleIncludes(path, s);
    if ( !buffer )
       return false;
@@ -814,11 +818,11 @@ bool GFXOpenGL32Shader::_loadShaderFromStream(  GLuint shader,
    buffers.push_back(buffer);
    lengths.push_back(shaderLen);
    
-   glShaderSource(shader, buffers.size(), (const GLchar**)const_cast<const char**>(buffers.address()), NULL);
+   glShaderSource(shader, buffers.size(), (const GLchar**)const_cast<const char**>(buffers.address()), nullptr);
 
    // Cleanup the shader source buffer.
-   for ( U32 i=0; i < buffers.size(); i++ )
-      dFree( buffers[i] );
+   for ( auto i: buffers )
+      dFree( i );
 
    glCompileShader(shader);
 
@@ -837,8 +841,8 @@ bool GFXOpenGL32Shader::initShader( const StringTableEntry file,
    glAttachShader(mProgram, activeShader);
    
    // Ok it's not in the shader gen manager, so ask Torque for it
-   FileStream stream;
-   if ( !stream.open( file, FileStream::Read ) )
+    std::fstream stream( file, std::fstream::in );
+   if ( !stream )
    {
       AssertISV(false, avar("GFXOpenGL32Shader::initShader - failed to open shader '%s'.", file));
 
@@ -864,7 +868,7 @@ bool GFXOpenGL32Shader::initShader( const StringTableEntry file,
    {
       FrameAllocatorMarker fam;
       char* log = (char*)fam.alloc(logLength);
-      glGetShaderInfoLog(activeShader, logLength, NULL, log);
+      glGetShaderInfoLog(activeShader, logLength, nullptr, log);
 
       // Always print errors
       glGetShaderiv( activeShader, GL_COMPILE_STATUS, &compileStatus );

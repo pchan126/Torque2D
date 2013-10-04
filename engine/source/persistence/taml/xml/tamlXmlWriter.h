@@ -23,13 +23,8 @@
 #ifndef _TAML_XMLWRITER_H_
 #define _TAML_XMLWRITER_H_
 
-#ifndef _TAML_H_
 #include "persistence/taml/taml.h"
-#endif
-
-#ifndef TINYXML_INCLUDED
 #include "persistence/tinyXML/tinyxml.h"
-#endif
 
 //-----------------------------------------------------------------------------
 
@@ -42,7 +37,8 @@ public:
     virtual ~TamlXmlWriter() {}
 
     /// Write.
-    bool write( FileStream& stream, const TamlWriteNode* pTamlWriteNode );
+//    bool write( FileStream& stream, const TamlWriteNode* pTamlWriteNode );
+    bool write( const char* filename, const TamlWriteNode* pTamlWriteNode );
 
 private:
     Taml* mpTaml;

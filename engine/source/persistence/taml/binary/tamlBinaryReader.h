@@ -44,7 +44,8 @@ public:
     virtual ~TamlBinaryReader() {}
 
     /// Read.
-    SimObject* read( FileStream& stream );
+    SimObject* read( std::fstream &stream );
+//    SimObject* read( FileStream& stream );
 
 private:
     Taml* mpTaml;
@@ -56,11 +57,11 @@ private:
 private:
     void resetParse( void );
 
-    SimObject* parseElement( Stream& stream, const U32 versionId );
-    void parseAttributes( Stream& stream, SimObject* pSimObject, const U32 versionId );
-    void parseChildren( Stream& stream, TamlCallbacks* pCallbacks, SimObject* pSimObject, const U32 versionId );
-    void parseCustomElements( Stream& stream, TamlCallbacks* pCallbacks, TamlCustomNodes& customNodes, const U32 versionId );
-    void parseCustomNode( Stream& stream, TamlCustomNode* pCustomNode, const U32 versionId );
+    SimObject* parseElement(std::iostream &stream, const U32 versionId);
+    void parseAttributes(std::iostream &stream, SimObject *pSimObject, const U32 versionId);
+    void parseChildren(std::iostream &stream, TamlCallbacks *pCallbacks, SimObject *pSimObject, const U32 versionId);
+    void parseCustomElements(std::iostream &stream, TamlCallbacks *pCallbacks, TamlCustomNodes& customNodes, const U32 versionId);
+    void parseCustomNode(std::iostream &stream, TamlCustomNode *pCustomNode, const U32 versionId);
 };
 
 #endif // _TAML_BINARYREADER_H_

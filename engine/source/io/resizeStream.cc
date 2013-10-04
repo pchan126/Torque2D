@@ -57,7 +57,7 @@ void ResizeFilterStream::detachStream()
    setStatus(Closed);
 }
 
-Stream* ResizeFilterStream::getStream()
+std::iostream * ResizeFilterStream::getStream()
 {
    return m_pStream;
 }

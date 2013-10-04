@@ -53,7 +53,7 @@ public:
    // Overrides of FilterStream
    bool attachStream(Stream* io_pSlaveStream);
    void detachStream();
-   Stream *getStream()                       { return mStream; }
+   std::iostream * getStream()                       { return mStream; }
 
    U32  getPosition() const;
    bool setPosition(const U32 in_newPosition);

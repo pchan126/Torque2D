@@ -20,8 +20,8 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
+#include <istream>
 #include "platform/platform.h"
-#include "io/stream.h"
 #include "math/mMath.h"
 
 //-----------------------------------------------------------------------------
@@ -66,25 +66,26 @@ U32 calculateCRC(const void * buffer, S32 len, U32 crcVal )
    return(crcVal);
 }
 
-U32 calculateCRCStream(Stream *stream, U32 crcVal )
+U32 calculateCRCStream(std::iostream *stream, U32 crcVal)
 {
    // check if need to generate the crc table
    if(!crcTableValid)
       calculateCRCTable();
 
    // now calculate the crc
-   stream->setPosition(0);
-   S32 len = stream->getStreamSize();
-   U8 buf[4096];
+    stream->seekg(0, stream->end);
+    S32 len = stream->tellg();
+    stream->seekg(0, stream->beg);
+   char buf[4096];
 
    S32 segCount = (len + 4095) / 4096;
 
    for(S32 j = 0; j < segCount; j++)
    {
       S32 slen = std::min(4096, len - (j * 4096));
-      stream->read(slen, buf);
+      stream->read( buf, slen);
       crcVal = calculateCRC(buf, slen, crcVal);
    }
-   stream->setPosition(0);
+    stream->seekg(0, stream->beg);
    return(crcVal);
 }

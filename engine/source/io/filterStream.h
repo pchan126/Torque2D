@@ -38,7 +38,7 @@ class FilterStream : public Stream
 
    virtual bool    attachStream(Stream* io_pSlaveStream) = 0;
    virtual void    detachStream()                        = 0;
-   virtual Stream* getStream()                           = 0;
+   virtual std::iostream * getStream()                           = 0;
 
    // Mandatory overrides.  By default, these are simply passed to
    //  whatever is returned from getStream();

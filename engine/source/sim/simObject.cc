@@ -375,7 +375,7 @@ void SimObject::writeFields(Stream &stream, U32 tabStop)
       mFieldDictionary->writeFields(this, stream, tabStop);
 }
 
-void SimObject::write(Stream &stream, U32 tabStop, U32 flags)
+void SimObject::write(std::iostream &stream, U32 tabStop, U32 flags)
 {
    // Only output selected objects if they want that.
    if((flags & SelectedOnly) && !isSelected())

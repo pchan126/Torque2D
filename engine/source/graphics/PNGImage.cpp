@@ -59,7 +59,7 @@ bool PNGImage::Read(const char* filePath)
 
     /* open file and test for it being a png */
     FILE *fp = fopen(filePath, "rb");
-    if (fp == NULL)
+    if (fp == nullptr)
     {
         Con::printf("PNGImage::Read File %s could not be opened for reading.", filePath);
         return false;
@@ -77,25 +77,25 @@ bool PNGImage::Read(const char* filePath)
     }
 
     /* initialize stuff */
-    mPng = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+    mPng = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
 
-    if (mPng == NULL)
+    if (mPng == nullptr)
     {
         Con::printf("PNGImage::Read png_create_read_struct failed.");
         return false;
     }
 
     mInfo = png_create_info_struct(mPng);
-    if (mInfo == NULL)
+    if (mInfo == nullptr)
     {
-        png_destroy_read_struct(&mPng, NULL, NULL);
+        png_destroy_read_struct(&mPng, nullptr, nullptr);
         Con::printf("PNGImage::Read png_create_info_struct failed.");
         return false;
     }
 
     if (setjmp(png_jmpbuf(mPng)))
     {
-        png_destroy_read_struct(&mPng, NULL, NULL);
+        png_destroy_read_struct(&mPng, nullptr, nullptr);
         Con::printf("PNGImage::Read Error during init_io.");
         return false;
     }
@@ -171,7 +171,7 @@ bool PNGImage::Create(U32 width, U32 height, PNGImageType imageType)
 
 bool PNGImage::ClearImageData()
 {
-    if(mRowPointers == NULL)
+    if(mRowPointers == nullptr)
         return false;
 
     if(mPNGImageType == PNGTYPE_RGBA)
@@ -314,23 +314,23 @@ bool PNGImage::Write(const char* filePath)
     if(mRead == false)
         return false;
 
-    if(mPng != NULL && mInfo != NULL)
+    if(mPng != nullptr && mInfo != nullptr)
     {
-        png_destroy_read_struct(&mPng, &mInfo, NULL);
-        mPng = NULL;
-        mInfo = NULL;
+        png_destroy_read_struct(&mPng, &mInfo, nullptr);
+        mPng = nullptr;
+        mInfo = nullptr;
     }
     else
     {
-        if(mPng != NULL)
+        if(mPng != nullptr)
         {
-            png_destroy_read_struct(&mPng, NULL, NULL);
-            mPng = NULL;
+            png_destroy_read_struct(&mPng, nullptr, nullptr);
+            mPng = nullptr;
         }
-        else if(mInfo != NULL)
+        else if(mInfo != nullptr)
         {
             png_read_info(mPng, mInfo);
-            mInfo = NULL;
+            mInfo = nullptr;
         }
     }
 
@@ -342,11 +342,11 @@ bool PNGImage::Write(const char* filePath)
         return false;
     }
 
-    // png_destroy_read_struct(&mPng, NULL, NULL);
-    // png_destroy_info_struct(mPng, NULL);
+    // png_destroy_read_struct(&mPng, nullptr, nullptr);
+    // png_destroy_info_struct(mPng, nullptr);
 
     /* initialize stuff */
-    mPng = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+    mPng = png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
 
     if (!mPng)
     {
@@ -355,7 +355,7 @@ bool PNGImage::Write(const char* filePath)
     }
 
     mInfo = png_create_info_struct(mPng);
-    if (mInfo == NULL)
+    if (mInfo == nullptr)
     {
         Con::printf("PNGImage::Write png_create_info_struct failed.");
         return false;
@@ -398,7 +398,7 @@ bool PNGImage::Write(const char* filePath)
         return false;
     }
 
-    png_write_end(mPng, NULL);
+    png_write_end(mPng, nullptr);
 
     fclose(fp);
 
@@ -415,23 +415,23 @@ bool PNGImage::CleanMemoryUsage()
 
     if(mRead == true)
     {
-        if(mPng != NULL && mInfo != NULL)
+        if(mPng != nullptr && mInfo != nullptr)
         {
-            png_destroy_read_struct(&mPng, &mInfo, NULL);
-            mPng = NULL;
-            mInfo = NULL;
+            png_destroy_read_struct(&mPng, &mInfo, nullptr);
+            mPng = nullptr;
+            mInfo = nullptr;
         }
         else
         {
-            if(mPng != NULL)
+            if(mPng != nullptr)
             {
-                png_destroy_read_struct(&mPng, NULL, NULL);
-                mPng = NULL;
+                png_destroy_read_struct(&mPng, nullptr, nullptr);
+                mPng = nullptr;
             }
-            else if(mInfo != NULL)
+            else if(mInfo != nullptr)
             {
                 png_read_info(mPng, mInfo);
-                mInfo = NULL;
+                mInfo = nullptr;
             }
         }
 
@@ -439,28 +439,28 @@ bool PNGImage::CleanMemoryUsage()
             dFree(mRowPointers[y]);
 
         dFree(mRowPointers);
-        mRowPointers= NULL;
+        mRowPointers= nullptr;
     }
     else if(mWrite == true)
     {
-        if(mPng != NULL && mInfo != NULL)
+        if(mPng != nullptr && mInfo != nullptr)
         {
             png_destroy_write_struct(&mPng, &mInfo);
-            mPng = NULL;
-            mInfo = NULL;
+            mPng = nullptr;
+            mInfo = nullptr;
         }
         else
         {
-            if(mPng != NULL)
+            if(mPng != nullptr)
             {
-                png_destroy_write_struct(&mPng, NULL);
-                mPng = NULL;
+                png_destroy_write_struct(&mPng, nullptr);
+                mPng = nullptr;
             }
 
-            if(mInfo != NULL)
+            if(mInfo != nullptr)
             {
                 png_read_info(mPng, mInfo);
-                mInfo = NULL;
+                mInfo = nullptr;
             }
         }
         for (unsigned int y = 0; y < mHeight; y++)
@@ -468,7 +468,7 @@ bool PNGImage::CleanMemoryUsage()
 
         dFree(mRowPointers);
 
-        mRowPointers = NULL;
+        mRowPointers = nullptr;
     }
 
     return true;
@@ -534,9 +534,9 @@ ConsoleMethod(PNGImage, MergeOn, bool, 5, 5, "(x, y, imageFile) Add an image to 
     U32 height = dAtoi(argv[3]);
 
     // File name is argv[4]
-    FileStream fStream;
+    std::fstream fStream(argv[4], std::fstream::in);
 
-    if(!fStream.open(argv[4], FileStream::Read))
+    if(!fStream)
     { 
         Con::printf("Failed to open file '%s'.", argv[4]);
         return false;
@@ -566,9 +566,9 @@ ConsoleMethod(PNGImage, MergeOn, bool, 5, 5, "(x, y, imageFile) Add an image to 
 
 ConsoleMethod(PNGImage, SaveImage, bool, 3, 3, "(fileName) Save the new spritesheet to a file")
 {
-    FileStream fStream;
+    std::fstream fStream(argv[2], std::fstream::out);
 
-    if(!fStream.open(argv[2], FileStream::Write))
+    if(!fStream)
     { 
         Con::printf("Failed to open file '%s'.", argv[2]);
         return false;

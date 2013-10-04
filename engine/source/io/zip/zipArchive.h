@@ -295,8 +295,8 @@ protected:
       }
    };
 
-   Stream *mStream;
-   FileStream *mDiskStream;
+   std::iostream *mStream;
+   std::fstream *mDiskStream;
    AccessMode mMode;
 
    EndOfCentralDir mEOCD;
@@ -476,7 +476,7 @@ public:
    /// @return Pointer to stream or NULL for failure
    /// @see ZipArchive::openFile(const char *, AccessMode), ZipArchive::closeFile()
    //////////////////////////////////////////////////////////////////////////
-   Stream *openFileForRead(const CentralDir *fileCD);
+   std::iostream * openFileForRead(const CentralDir *fileCD);
    // @}
 
    /// @name Archiver Style File Access Methods

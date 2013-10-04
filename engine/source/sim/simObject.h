@@ -672,7 +672,7 @@ public:
     /// @param   flags   If SelectedOnly is passed here, then
     ///                  only objects marked as selected (using setSelected)
     ///                  will output themselves.
-    virtual void write(Stream &stream, U32 tabStop, U32 flags = 0);
+    virtual void write(std::iostream &stream, U32 tabStop, U32 flags = 0);
 
     /// Write the fields of this object in TorqueScript.
     ///

@@ -884,7 +884,7 @@ const BehaviorComponent::typePortConnectionVector* BehaviorComponent::getBehavio
 
 //-----------------------------------------------------------------------------
 
-void BehaviorComponent::write( Stream &stream, U32 tabStop, U32 flags /* = 0 */ )
+void BehaviorComponent::write(std::iostream &stream, U32 tabStop, U32 flags /* = 0 */ )
 {
     // Export selected only?
     if( ( flags & SelectedOnly ) && !isSelected() )

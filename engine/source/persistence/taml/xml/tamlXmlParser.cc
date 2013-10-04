@@ -23,6 +23,7 @@
 #include "persistence/taml/xml/tamlXmlParser.h"
 #include "persistence/taml/tamlVisitor.h"
 #include "console/console.h"
+#include <fstream>
 
 // Debug Profiling.
 #include "debug/profiler.h"
@@ -35,34 +36,34 @@ bool TamlXmlParser::accept( const char* pFilename, TamlVisitor& visitor )
     PROFILE_SCOPE(TamlXmlParser_Accept);
 
     // Sanity!
-    AssertFatal( pFilename != NULL, "Cannot parse a NULL filename." );
+    AssertFatal( pFilename != nullptr, "Cannot parse a nullptr filename." );
 
     // Expand the file-path.
     char filenameBuffer[1024];
     Con::expandPath( filenameBuffer, sizeof(filenameBuffer), pFilename );
 
-    FileStream stream;
-
-    // File open for read?
-    if ( !stream.open( filenameBuffer, FileStream::Read ) )
-    {
-        // No, so warn.
-        Con::warnf("TamlXmlParser::parse() - Could not open filename '%s' for parse.", filenameBuffer );
-        return false;
-    }
+//    std::fstream stream( filenameBuffer, std::fstream::in );
+//
+//    // File open for read?
+//    if ( !stream )
+//    {
+//        // No, so warn.
+//        Con::warnf("TamlXmlParser::parse() - Could not open filename '%s' for parse.", filenameBuffer );
+//        return false;
+//    }
 
     TiXmlDocument xmlDocument;
 
     // Load document from stream.
-    if ( !xmlDocument.LoadFile( stream ) )
+    if ( !xmlDocument.LoadFile( filenameBuffer ) )
     {
         // Warn!
         Con::warnf("TamlXmlParser: Could not load Taml XML file from stream.");
         return false;
     }
 
-    // Close the stream.
-    stream.close();
+//    // Close the stream.
+//    stream.close();
 
     // Set parsing filename.
     setParsingFilename( filenameBuffer );
@@ -80,24 +81,25 @@ bool TamlXmlParser::accept( const char* pFilename, TamlVisitor& visitor )
     if ( !mDocumentDirty )
         return true;
 
-    // Open for write?
-    if ( !stream.open( filenameBuffer, FileStream::Write ) )
-    {
-        // No, so warn.
-        Con::warnf("TamlXmlParser::parse() - Could not open filename '%s' for write.", filenameBuffer );
-        return false;
-    }
+//    stream = std::fstream(filenameBuffer, std::fstream::out);
+//    // Open for write?
+//    if ( !stream )
+//    {
+//        // No, so warn.
+//        Con::warnf("TamlXmlParser::parse() - Could not open filename '%s' for write.", filenameBuffer );
+//        return false;
+//    }
 
     // Yes, so save the document.
-    if ( !xmlDocument.SaveFile( stream ) )
+    if ( !xmlDocument.SaveFile( filenameBuffer ) )
     {
         // Warn!
         Con::warnf("TamlXmlParser: Could not save Taml XML document.");
         return false;
     }
 
-    // Close the stream.
-    stream.close();
+//    // Close the stream.
+//    stream.close();
 
     return true;
 }
@@ -121,7 +123,7 @@ inline bool TamlXmlParser::parseElement( TiXmlElement* pXmlElement, TamlVisitor&
     TiXmlNode* pChildXmlNode = pXmlElement->FirstChild();
 
     // Do we have any element children?
-    if ( pChildXmlNode != NULL && pChildXmlNode->Type() == TiXmlNode::TINYXML_ELEMENT )
+    if ( pChildXmlNode != nullptr && pChildXmlNode->Type() == TiXmlNode::TINYXML_ELEMENT )
     {
         // Iterate children.
         for ( TiXmlElement* pChildXmlElement = dynamic_cast<TiXmlElement*>( pChildXmlNode ); pChildXmlElement; pChildXmlElement = pChildXmlElement->NextSiblingElement() )
@@ -172,6 +174,5 @@ inline bool TamlXmlParser::parseAttributes( TiXmlElement* pXmlElement, TamlVisit
         if ( !visitStatus )
             return false;
     }
-
     return true;
 }

@@ -374,7 +374,7 @@ static PlatformFont* createSafePlatformFont(const char *name, U32 size, U32 char
       if(dStricmp(name, fallback) == 0)
       {
          Con::errorf("Font fallback utterly failed.");
-         return NULL;
+         return nullptr;
       }
       else if (dStricmp(name, "arial") == 0)
          fallback = "Helvetica";
@@ -465,9 +465,9 @@ GFont::GFont()
 
    mCurX = mCurY = mCurSheet = -1;
 
-   mPlatformFont = NULL;
-   mGFTFile = NULL;
-   mFaceName = NULL;
+   mPlatformFont = nullptr;
+   mGFTFile = nullptr;
+   mFaceName = nullptr;
    mSize = 0;
    mCharSet = 0;
    mNeedSave = false;
@@ -482,7 +482,7 @@ GFont::~GFont()
    mNeedSave = false; 
    if(mNeedSave)
    {
-      FileStream stream;
+      std::fstream stream;
       if(ResourceManager->openFileForWrite(stream, mGFTFile)) 
       {
          write(stream);
@@ -700,7 +700,7 @@ const PlatformFont::CharInfo &GFont::getDefaultCharInfo()
 
 U32 GFont::getStrWidth(const UTF8* in_pString)
 {
-   AssertFatal(in_pString != nullptr, "GFont::getStrWidth: String is NULL, width is undefined");
+   AssertFatal(in_pString != nullptr, "GFont::getStrWidth: String is nullptr, width is undefined");
    // If we ain't running debug...
    if (in_pString == nullptr || *in_pString == '\0')
       return 0;
@@ -710,7 +710,7 @@ U32 GFont::getStrWidth(const UTF8* in_pString)
 
 U32 GFont::getStrWidthPrecise(const UTF8* in_pString)
 {
-   AssertFatal(in_pString != nullptr, "GFont::getStrWidth: String is NULL, height is undefined");
+   AssertFatal(in_pString != nullptr, "GFont::getStrWidth: String is nullptr, height is undefined");
    // If we ain't running debug...
    if (in_pString == nullptr)
       return 0;
@@ -729,9 +729,9 @@ U32 GFont::getStrNWidth(const UTF8 *str, SizeType n)
 
 U32 GFont::getStrNWidth(const UTF16 *str, SizeType n)
 {
-   AssertFatal(str != NULL, "GFont::getStrNWidth: String is NULL");
+   AssertFatal(str != nullptr, "GFont::getStrNWidth: String is nullptr");
 
-   if (str == NULL || str[0] == '\0' || n == 0)   
+   if (str == nullptr || str[0] == '\0' || n == 0)   
       return 0;
       
    U32 totWidth = 0;
@@ -768,7 +768,7 @@ U32 GFont::getStrNWidthPrecise(const UTF8 *str, SizeType n)
 
 U32 GFont::getStrNWidthPrecise(const UTF16 *str, SizeType n)
 {
-   AssertFatal(str != nullptr, "GFont::getStrNWidth: String is NULL");
+   AssertFatal(str != nullptr, "GFont::getStrNWidth: String is nullptr");
 
    if (str == nullptr || str[0] == '\0' || n == 0)
       return(0);
@@ -929,7 +929,9 @@ bool GFont::read(std::iostream &io_rStream)
         return false;
 
     char buf[256];
-    io_rStream.readString(buf);
+    U8 count;
+    io_rStream >> count;
+    io_rStream.read(buf, count);
     mFaceName = StringTable->insert(buf);
 
     io_rStream >> mSize;
@@ -980,24 +982,24 @@ bool GFont::read(std::iostream &io_rStream)
    }
    
    // Read last position info
-   io_rStream.read(&mCurX);
-   io_rStream.read(&mCurY);
-   io_rStream.read(&mCurSheet);
+   io_rStream >> mCurX;
+   io_rStream >> mCurY;
+   io_rStream >> mCurSheet;
 
    // Read the remap table.
    U32 minGlyph, maxGlyph;
-   io_rStream.read(&minGlyph);
-   io_rStream.read(&maxGlyph);
+   io_rStream >> minGlyph;
+   io_rStream >> maxGlyph;
 
    if(maxGlyph >= minGlyph)
    {
       // Length of buffer..
       U32 buffLen;
-      io_rStream.read(&buffLen);
+      io_rStream >> buffLen;
 
       // Read the buffer.
       FrameTemp<S32> inBuff(buffLen);
-      io_rStream.read(buffLen, inBuff);
+      io_rStream.read( (char*)*inBuff, buffLen*sizeof(S32));
 
       // Decompress.
       uLongf destLen = (maxGlyph-minGlyph+1)*sizeof(S32);
@@ -1023,7 +1025,7 @@ bool GFont::write(std::iostream &stream)
     stream << csm_fileVersion;
 
     // Write font info
-    stream.writeString(mFaceName);
+    stream.write(mFaceName, strlen(mFaceName));
     stream << mSize;
     stream << mCharSet;
    
@@ -1101,7 +1103,7 @@ bool GFont::write(std::iostream &stream)
 
          // Write out.
          stream << (U32)destLen;
-         stream.write(outBuff, destLen);
+         stream.write((char*)*outBuff, destLen*sizeof(S32));
       }
 
       // Put us back to normal.
@@ -1160,7 +1162,7 @@ void GFont::exportStrip(const char *fileName, U32 padding, U32 kerning)
    }
 
    // Write the image!
-   FileStream fs;
+    std::fstream fs;
    
    if(!ResourceManager->openFileForWrite(fs, fileName))
    {
@@ -1361,14 +1363,15 @@ bool GFont::readBMFont(std::iostream &io_rStream)
     U32 numSheets = 0;
     U32 currentPage = 0;
     StringTableEntry fileName = StringTable->insert("");
-    
-    U32 numBytes = io_rStream.getStreamSize() - io_rStream.getPosition();
-    while(io_rStream.good() && numBytes > 0)
+
+//    std::fstream::streampos = io_rStream.g
+//    U32 numBytes = io_rStream.getStreamSize() - io_rStream.getPosition();
+    while(io_rStream.good())
     {
         char Read[256];
         char Token[256];
         char *buffer = Con::getReturnBuffer(256);
-        io_rStream.readLine((U8 *)buffer, 256);
+        io_rStream.getline(buffer, 256);
         
         char temp[256];
         U32 tokenCount = StringUnit::getUnitCount(buffer, "\"");
@@ -1478,7 +1481,7 @@ bool GFont::readBMFont(std::iostream &io_rStream)
         else if( dStrcmp( Read, "char" ) == 0 )
         {
             PlatformFont::CharInfo ci; //  = &mCharInfoList[charIndex];
-            ci.bitmapData = NULL;
+            ci.bitmapData = nullptr;
             ci.bitmapIndex = currentPage;
             //this is data for a character set
             U16 CharID = 0;
@@ -1532,7 +1535,7 @@ bool GFont::readBMFont(std::iostream &io_rStream)
         
 //        GBitmap *bmp = dynamic_cast<GBitmap*>(ResourceManager->loadInstance(buf));
         
-//        if(bmp == NULL)
+//        if(bmp == nullptr)
 //        {
 //            return false;
 //        }

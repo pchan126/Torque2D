@@ -22,11 +22,8 @@
 
 #include "platform/platform.h"
 #include "console/console.h"
-#include "io/stream.h"
-#include "io/fileStream.h"
-#include "io/resizeStream.h"
 #include "memory/frameAllocator.h"
-#include "io/zip/zipArchive.h"
+//#include "io/zip/zipArchive.h"
 #include "io/resource/resourceManager.h"
 #include "string/findMatch.h"
 #include "console/console.h"
@@ -77,7 +74,7 @@ ResManager::ResManager ()
    writeablePath[0] = 0;
    pathList = nullptr;
    mLoggingMissingFiles = false;
-   usingVFS = false;
+//   usingVFS = false;
 }
 
 void ResManager::fileIsMissing(const char *fileName)
@@ -223,8 +220,8 @@ void ResManager::setFileNameEcho (bool on)
 
 bool ResManager::isValidWriteFileName (const char *fn)
 {
-   if(isUsingVFS())
-      return false;
+//   if(isUsingVFS())
+//      return false;
 
    return true;
 
@@ -312,96 +309,96 @@ static void getPaths (const char *fullPath, StringTableEntry & path,
 
 //------------------------------------------------------------------------------
 
-bool ResManager::addVFSRoot(Zip::ZipArchive *vfs)
-{
-   ResourceObject *ro = createResource (StringTable->EmptyString, StringTable->EmptyString);
-   dictionary.pushBehind (ro, ResourceObject::File);
+//bool ResManager::addVFSRoot(Zip::ZipArchive *vfs)
+//{
+//   ResourceObject *ro = createResource (StringTable->EmptyString, StringTable->EmptyString);
+//   dictionary.pushBehind (ro, ResourceObject::File);
+//
+//   // [tom, 10/28/2006] Using VolumeBlock here so that destruct() doesnt try and
+//   // delete the archive.
+//   ro->flags = ResourceObject::VolumeBlock;
+//   ro->fileOffset = 0;
+//   ro->fileSize = 0;
+//   ro->compressedFileSize = 0;
+//   ro->mZipArchive = vfs;
+//   ro->zipPath = StringTable->EmptyString;
+//   ro->zipName = StringTable->EmptyString;
+//
+//   usingVFS = true;
+//
+//   return scanZip(ro);
+//}
 
-   // [tom, 10/28/2006] Using VolumeBlock here so that destruct() doesnt try and
-   // delete the archive.
-   ro->flags = ResourceObject::VolumeBlock;
-   ro->fileOffset = 0;
-   ro->fileSize = 0;
-   ro->compressedFileSize = 0;
-   ro->mZipArchive = vfs;
-   ro->zipPath = StringTable->EmptyString;
-   ro->zipName = StringTable->EmptyString;
-
-   usingVFS = true;
-
-   return scanZip(ro);
-}
-
-bool ResManager::scanZip (ResourceObject * zipObject)
-{
-   const char *zipPath = buildPath(zipObject->zipPath, zipObject->zipName);
-   if(zipObject->mZipArchive == nullptr)
-   {
-      zipObject->mZipArchive = new Zip::ZipArchive;
-      if(! zipObject->mZipArchive->openArchive(zipPath))
-      {
-         SAFE_DELETE(zipObject->mZipArchive);
-         return false;
-      }
-   }
-
-   for(U32 i = 0;i < zipObject->mZipArchive->numEntries();++i)
-   {
-      const Zip::CentralDir &dir = (*zipObject->mZipArchive)[i];
-
-      // FIXME [tom, 10/26/2006] This is pretty lame
-      char buf[1024];
-      dStrncpy(buf, dir.mFilename, sizeof(buf));
-      buf[sizeof(buf)-1] = 0;
-
-      // Iterate through the string and change any
-      // characters with \\ to /
-      char* scan = buf;
-      while (*scan != '\0')
-      {
-         if (*scan == '\\')
-            *scan = '/';
-         scan++;
-      }
-
-      const char *zipFN = zipObject->mZipArchive->getFilename() ? zipObject->mZipArchive->getFilename() : "";
-
-      FrameTemp<char> zipPath(dStrlen(zipFN) + dStrlen(buf) + 2);
-      dStrcpy(zipPath, zipFN);
-
-      char* dot = dStrrchr(zipPath, '.');
-      if(dot)
-      {
-         dot -= 2;
-         dot[2] = '\0';
-         dStrcat(zipPath, "/");
-      }
-
-      dStrcat(zipPath, buf);
-
-      // Create file base name
-      char* pPathEnd = dStrrchr(zipPath, '/');
-      if(pPathEnd == nullptr)
-         continue;
-
-      pPathEnd[0] = '\0';
-      const char * path = StringTable->insert(zipPath);
-      const char * file = StringTable->insert(pPathEnd + 1);
-   
-      ResourceObject *ro = createZipResource(path, file, zipObject->zipPath, zipObject->zipName);
-
-      ro->flags = ResourceObject::VolumeBlock;
-      ro->fileSize = dir.mUncompressedSize;
-      ro->compressedFileSize = dir.mCompressedSize;
-      ro->fileOffset = dir.mLocalHeadOffset;
-      ro->mZipArchive = zipObject->mZipArchive;
-      ro->mCentralDir = &dir;
-
-      dictionary.pushBehind (ro, ResourceObject::File);
-   }
-
-   return true;
-}
+//bool ResManager::scanZip (ResourceObject * zipObject)
+//{
+//   const char *zipPath = buildPath(zipObject->zipPath, zipObject->zipName);
+//   if(zipObject->mZipArchive == nullptr)
+//   {
+//      zipObject->mZipArchive = new Zip::ZipArchive;
+//      if(! zipObject->mZipArchive->openArchive(zipPath))
+//      {
+//         SAFE_DELETE(zipObject->mZipArchive);
+//         return false;
+//      }
+//   }
+//
+//   for(U32 i = 0;i < zipObject->mZipArchive->numEntries();++i)
+//   {
+//      const Zip::CentralDir &dir = (*zipObject->mZipArchive)[i];
+//
+//      // FIXME [tom, 10/26/2006] This is pretty lame
+//      char buf[1024];
+//      dStrncpy(buf, dir.mFilename, sizeof(buf));
+//      buf[sizeof(buf)-1] = 0;
+//
+//      // Iterate through the string and change any
+//      // characters with \\ to /
+//      char* scan = buf;
+//      while (*scan != '\0')
+//      {
+//         if (*scan == '\\')
+//            *scan = '/';
+//         scan++;
+//      }
+//
+//      const char *zipFN = zipObject->mZipArchive->getFilename() ? zipObject->mZipArchive->getFilename() : "";
+//
+//      FrameTemp<char> zipPath(dStrlen(zipFN) + dStrlen(buf) + 2);
+//      dStrcpy(zipPath, zipFN);
+//
+//      char* dot = dStrrchr(zipPath, '.');
+//      if(dot)
+//      {
+//         dot -= 2;
+//         dot[2] = '\0';
+//         dStrcat(zipPath, "/");
+//      }
+//
+//      dStrcat(zipPath, buf);
+//
+//      // Create file base name
+//      char* pPathEnd = dStrrchr(zipPath, '/');
+//      if(pPathEnd == nullptr)
+//         continue;
+//
+//      pPathEnd[0] = '\0';
+//      const char * path = StringTable->insert(zipPath);
+//      const char * file = StringTable->insert(pPathEnd + 1);
+//
+//      ResourceObject *ro = createZipResource(path, file, zipObject->zipPath, zipObject->zipName);
+//
+//      ro->flags = ResourceObject::VolumeBlock;
+//      ro->fileSize = dir.mUncompressedSize;
+//      ro->compressedFileSize = dir.mCompressedSize;
+//      ro->fileOffset = dir.mLocalHeadOffset;
+//      ro->mZipArchive = zipObject->mZipArchive;
+//      ro->mCentralDir = &dir;
+//
+//      dictionary.pushBehind (ro, ResourceObject::File);
+//   }
+//
+//   return true;
+//}
 
 //------------------------------------------------------------------------------
 
@@ -434,16 +431,16 @@ void ResManager::searchPath (const char *path, bool noDups /* = false */, bool i
       ro->fileSize = rInfo.fileSize;
       ro->compressedFileSize = rInfo.fileSize;
 
-      // see if it's a zip
-      const char *extension = dStrrchr (ro->name, '.');
-
-      if (extension && !dStricmp (extension, ".zip") && !ignoreZips )
-      {
-         // Copy the path and files names to the zips resource object
-         ro->zipName = rInfo.pFileName;
-         ro->zipPath = rInfo.pFullPath;
-         scanZip(ro);
-      }
+//      // see if it's a zip
+//      const char *extension = dStrrchr (ro->name, '.');
+//
+//      if (extension && !dStricmp (extension, ".zip") && !ignoreZips )
+//      {
+//         // Copy the path and files names to the zips resource object
+//         ro->zipName = rInfo.pFileName;
+//         ro->zipPath = rInfo.pFullPath;
+//         scanZip(ro);
+//      }
    }
 
    // Clear Exclusion list
@@ -453,48 +450,48 @@ void ResManager::searchPath (const char *path, bool noDups /* = false */, bool i
 
 //------------------------------------------------------------------------------
 
-bool ResManager::setModZip(const char* path)
-{
-   // Get the path and add .zip to the end of the dir
-   const char* ext =  ".zip";
-   char* modPath = new char[dStrlen(path) + dStrlen(ext) + 1]; // make enough room.
-   dStrcpy(modPath, path);
-   dStrcat(modPath, ext);
-
-   // Now we have to go through the root and look for our zipped up mod
-   // this is unfortunately necessary because there is no means to get
-   // a individual files properties -- we can only do it in one
-   // big dump
-   const char *basePath = Platform::getCurrentDirectory();
-   Vector < Platform::FileInfo > pathInfo;
-   Platform::dumpPath (basePath, pathInfo);
-   for(Platform::FileInfo file: pathInfo)
-   {
-      if(!dStricmp(file.pFileName, modPath))
-      {
-         // Setup the resource to the zip file itself
-         ResourceObject *zip = createResource(basePath, file.pFileName);
-         dictionary.pushBehind(zip, ResourceObject::File);
-         zip->flags = ResourceObject::File;
-         zip->fileOffset = 0;
-         zip->fileSize = file.fileSize;
-         zip->compressedFileSize = file.fileSize;
-         zip->zipName = file.pFileName;
-         zip->zipPath = basePath;
-
-         // Setup the resource for the zip contents
-         // ..now open the volume and add all its resources to the dictionary
-         scanZip(zip);
-
-         // Break from the loop since we got our one file
-         delete [] modPath;
-         return true;
-      }
-   }
-
-   delete [] modPath;
-   return false;
-}
+//bool ResManager::setModZip(const char* path)
+//{
+//   // Get the path and add .zip to the end of the dir
+//   const char* ext =  ".zip";
+//   char* modPath = new char[dStrlen(path) + dStrlen(ext) + 1]; // make enough room.
+//   dStrcpy(modPath, path);
+//   dStrcat(modPath, ext);
+//
+//   // Now we have to go through the root and look for our zipped up mod
+//   // this is unfortunately necessary because there is no means to get
+//   // a individual files properties -- we can only do it in one
+//   // big dump
+//   const char *basePath = Platform::getCurrentDirectory();
+//   Vector < Platform::FileInfo > pathInfo;
+//   Platform::dumpPath (basePath, pathInfo);
+//   for(Platform::FileInfo file: pathInfo)
+//   {
+//      if(!dStricmp(file.pFileName, modPath))
+//      {
+//         // Setup the resource to the zip file itself
+//         ResourceObject *zip = createResource(basePath, file.pFileName);
+//         dictionary.pushBehind(zip, ResourceObject::File);
+//         zip->flags = ResourceObject::File;
+//         zip->fileOffset = 0;
+//         zip->fileSize = file.fileSize;
+//         zip->compressedFileSize = file.fileSize;
+//         zip->zipName = file.pFileName;
+//         zip->zipPath = basePath;
+//
+//         // Setup the resource for the zip contents
+//         // ..now open the volume and add all its resources to the dictionary
+//         scanZip(zip);
+//
+//         // Break from the loop since we got our one file
+//         delete [] modPath;
+//         return true;
+//      }
+//   }
+//
+//   delete [] modPath;
+//   return false;
+//}
 
 //------------------------------------------------------------------------------
 
@@ -556,8 +553,8 @@ void ResManager::setModPaths (U32 numPaths, const char **paths)
 {
    // [tom, 10/28/2006] If we're using a VFS, we don't want to do this
    // since it'll remove all the stuff we've already added.
-   if(usingVFS)
-      return;
+//   if(usingVFS)
+//      return;
 
    // detach all the files.
    for(ResourceObject * pwalk: resourceList)
@@ -577,7 +574,7 @@ void ResManager::setModPaths (U32 numPaths, const char **paths)
       pathLen += (dStrlen (paths[i]) + 1);
 
       // Load zip first so that local files override
-      setModZip(paths[i]);
+//      setModZip(paths[i]);
       searchPath (paths[i]);
 
       // Copy this path to the validPaths list
@@ -822,7 +819,7 @@ bool ResManager::getCrc (const char *fileName, U32 & crcVal,
       unlink (obj);
       obj->destruct ();
 
-      Stream *stream = openStream (obj);
+       std::iostream *stream = openStream (obj);
 
       U32 waterMark = 0xFFFFFFFF;
 
@@ -836,7 +833,7 @@ bool ResManager::getCrc (const char *fileName, U32 & crcVal,
          buffer = (U8 *) FrameAllocator::alloc (obj->fileSize);
       }
 
-      stream->read (obj->fileSize, buffer);
+      stream->read ((char*)buffer, obj->fileSize);
 
       // get the crc value
       crcVal = calculateCRC (buffer, obj->fileSize, crcInitialVal);
@@ -899,7 +896,7 @@ static const char *alwaysCRCList = ".ter.dif.dts";
 
 ResourceInstance * ResManager::loadInstance (ResourceObject * obj, bool computeCRC)
 {
-   Stream *stream = openStream (obj);
+    std::iostream *stream = openStream (obj);
    if (!stream)
       return nullptr;
 
@@ -972,13 +969,13 @@ std::iostream * ResManager::openStream(ResourceObject *obj)
 
    // if zip file
 
-   if (obj->flags & ResourceObject::VolumeBlock)
-   {
-      AssertFatal(obj->mZipArchive, "mZipArchive is nullptr");
-      AssertFatal(obj->mCentralDir, "mCentralDir is nullptr");
-
-      return obj->mZipArchive->openFileForRead(obj->mCentralDir);
-   }
+//   if (obj->flags & ResourceObject::VolumeBlock)
+//   {
+//      AssertFatal(obj->mZipArchive, "mZipArchive is nullptr");
+//      AssertFatal(obj->mCentralDir, "mCentralDir is nullptr");
+//
+//      return obj->mZipArchive->openFileForRead(obj->mCentralDir);
+//   }
 
    // unknown type
    return nullptr;
@@ -992,28 +989,28 @@ void ResManager::closeStream(std::iostream *stream)
    // a zip stream, but there's currently no way to get the ZipArchive pointer from
    // here so we just repeat the relevant code. This is pretty lame.
 
-   FilterStream *currentStream, *nextStream;
-
-   // Try to cast the stream to a FilterStream
-   nextStream = dynamic_cast<FilterStream*>(stream);
-   bool isFilter = nextStream != nullptr;
-
-   // While the nextStream is valid (meaning it was successfully cast to a FilterStream)
-   while (nextStream)
-   {
-      // Point currentStream to nextStream
-      currentStream = nextStream;
-      // Point stream to the Stream contained within the current FilterStream
-      stream = currentStream->getStream();
-      // Detach the current FilterStream from the Stream contained within it
-      currentStream->detachStream();
-      // Try to cast the stream (which was already contained within a FilterStream) to a FilterStream
-      nextStream = dynamic_cast<FilterStream*>(stream);
-      // Delete the FilterStream that was wrapping stream
-      delete currentStream;
-   }
-
-   if(! isFilter)
+//   FilterStream *currentStream, *nextStream;
+//
+//   // Try to cast the stream to a FilterStream
+//   nextStream = dynamic_cast<FilterStream*>(stream);
+//   bool isFilter = nextStream != nullptr;
+//
+//   // While the nextStream is valid (meaning it was successfully cast to a FilterStream)
+//   while (nextStream)
+//   {
+//      // Point currentStream to nextStream
+//      currentStream = nextStream;
+//      // Point stream to the Stream contained within the current FilterStream
+//      stream = currentStream->getStream();
+//      // Detach the current FilterStream from the Stream contained within it
+//      currentStream->detachStream();
+//      // Try to cast the stream (which was already contained within a FilterStream) to a FilterStream
+//      nextStream = dynamic_cast<FilterStream*>(stream);
+//      // Delete the FilterStream that was wrapping stream
+//      delete currentStream;
+//   }
+//
+//   if(! isFilter)
       delete stream;
 }
 
@@ -1269,30 +1266,30 @@ ResourceObject * ResManager::createResource (StringTableEntry path, StringTableE
 
 //------------------------------------------------------------------------------
 
-ResourceObject * ResManager::createZipResource (StringTableEntry path, StringTableEntry file,
-   StringTableEntry zipPath,
-   StringTableEntry zipName)
-{
-   ResourceObject *newRO = dictionary.find (path, file, zipPath, zipName);
-   if (newRO)
-      return newRO;
-
-   newRO = new ResourceObject;
-   newRO->path = path;
-   newRO->name = file;
-   newRO->lockCount = 0;
-   newRO->mInstance = nullptr;
-   newRO->flags = ResourceObject::Added;
-   dictionary.insert (newRO, path, file);
-   newRO->fileSize = newRO->fileOffset = newRO->compressedFileSize = 0;
-   newRO->zipPath = zipPath;
-   newRO->zipName = zipName;
-   newRO->crc = InvalidCRC;
-   newRO->mZipArchive = nullptr;
-   newRO->mCentralDir = nullptr;
-
-   return newRO;
-}
+//ResourceObject * ResManager::createZipResource (StringTableEntry path, StringTableEntry file,
+//   StringTableEntry zipPath,
+//   StringTableEntry zipName)
+//{
+//   ResourceObject *newRO = dictionary.find (path, file, zipPath, zipName);
+//   if (newRO)
+//      return newRO;
+//
+//   newRO = new ResourceObject;
+//   newRO->path = path;
+//   newRO->name = file;
+//   newRO->lockCount = 0;
+//   newRO->mInstance = nullptr;
+//   newRO->flags = ResourceObject::Added;
+//   dictionary.insert (newRO, path, file);
+//   newRO->fileSize = newRO->fileOffset = newRO->compressedFileSize = 0;
+//   newRO->zipPath = zipPath;
+//   newRO->zipName = zipName;
+//   newRO->crc = InvalidCRC;
+//   newRO->mZipArchive = nullptr;
+//   newRO->mCentralDir = nullptr;
+//
+//   return newRO;
+//}
 
 //------------------------------------------------------------------------------
 
@@ -1334,8 +1331,8 @@ bool ResManager::openFileForWrite(std::fstream &stream, const char *fileName, st
    return true;
 }
 
-ConsoleFunction(isUsingVFS, bool, 1, 1, "()\n"
-                "@return Returns true if using Virtual File System")
-{
-   return ResourceManager->isUsingVFS();
-}
+//ConsoleFunction(isUsingVFS, bool, 1, 1, "()\n"
+//                "@return Returns true if using Virtual File System")
+//{
+//   return ResourceManager->isUsingVFS();
+//}

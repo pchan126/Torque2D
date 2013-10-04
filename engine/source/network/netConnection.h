@@ -23,25 +23,12 @@
 #ifndef _NETCONNECTION_H_
 #define _NETCONNECTION_H_
 
-#ifndef _MPOINT_H_
 #include "math/mPoint.h"
-#endif
-#ifndef _NETOBJECT_H_
 #include "network/netObject.h"
-#endif
-#ifndef _NETSTRINGTABLE_H_
 #include "network/netStringTable.h"
-#endif
-#ifndef _EVENT_H_
 #include "platform/event.h"
-#endif
-#ifndef _CONNECTION_PROTOCOL_H_
 #include "network/connectionProtocol.h"
-#endif
-
-#ifndef _H_CONNECTIONSTRINGTABLE
 #include "network/connectionStringTable.h"
-#endif
 #include <deque>
 
 //----------------------------------------------------------------------------
@@ -923,7 +910,7 @@ protected:
     std::deque<char *> mMissingFileList;
 
     /// Stream for currently uploading file (if any).
-    Stream *mCurrentDownloadingFile;
+    std::iostream *mCurrentDownloadingFile;
 
     /// Storage for currently downloading file.
     void *mCurrentFileBuffer;
@@ -977,8 +964,8 @@ public:
     /// @{
 
 private:
-    Stream *mDemoWriteStream;
-    Stream *mDemoReadStream;
+    std::iostream *mDemoWriteStream;
+    std::iostream *mDemoReadStream;
     U32 mDemoNextBlockType;
     U32 mDemoNextBlockSize;
 

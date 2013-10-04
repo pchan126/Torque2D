@@ -72,12 +72,12 @@ protected:
    void initHandles();
    void setConstantsFromBuffer(GFXOpenGL32ShaderConstBuffer* buffer);
    
-   static char* _handleIncludes( const StringTableEntry path, FileStream *s );
+   static char* _handleIncludes(const StringTableEntry path, std::fstream *s);
 
-   static bool _loadShaderFromStream(  GLuint shader, 
-                                       const StringTableEntry path,
-                                       FileStream* s, 
-                                       const Vector<GFXShaderMacro>& macros );
+   static bool _loadShaderFromStream(GLuint shader,
+           const StringTableEntry path,
+           std::fstream *s,
+           const Vector<GFXShaderMacro>& macros);
 
    Vector<GFXShaderConstDesc> mConstants;
    U32 mConstBufferSize;

@@ -21,14 +21,14 @@ must not be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source
 distribution.
 */
-
+#define TIXML_USE_STL
 
 #ifndef TINYXML_INCLUDED
 #define TINYXML_INCLUDED
 
-#ifndef _FILESTREAM_H_
-#include "io/fileStream.h"
-#endif
+//#ifndef _FILESTREAM_H_
+//#include "io/fileStream.h"
+//#endif
 
 #ifdef _MSC_VER
 #pragma warning( push )
@@ -214,7 +214,7 @@ public:
         
         (For an unformatted stream, use the << operator.)
     */
-    virtual void Print( FileStream& stream, int depth ) const = 0;
+    virtual void Print(std::fstream &stream, int depth) const = 0;
 
     /**	The world does not agree on whether white space should be kept or
         not. In order to make everyone happy, these global, static functions
@@ -871,10 +871,10 @@ public:
     virtual const char* Parse( const char* p, TiXmlParsingData* data, TiXmlEncoding encoding );
 
     // Prints this Attribute to a FILE stream.
-    virtual void Print( FileStream& stream, int depth ) const {
+    virtual void Print(std::fstream &stream, int depth) const {
         Print( stream, depth, 0 );
     }
-    void Print( FileStream& stream, int depth, TIXML_STRING* str ) const;
+    void Print(std::fstream &stream, int depth, TIXML_STRING*str) const;
 
     // [internal use]
     // Set the document pointer so the attribute can report errors.
@@ -1127,7 +1127,7 @@ public:
     /// Creates a new Element and returns it - the returned element is a copy.
     virtual TiXmlNode* Clone() const;
     // Print the Element to a FILE stream.
-    virtual void Print( FileStream& stream, int depth ) const;
+    virtual void Print(std::fstream &stream, int depth) const;
 
     /*	Attribtue parsing starts: next char past '<'
                          returns: next char past '>'
@@ -1180,7 +1180,7 @@ public:
     /// Returns a copy of this Comment.
     virtual TiXmlNode* Clone() const;
     // Write this Comment to a FILE stream.
-    virtual void Print( FileStream& stream, int depth ) const;
+    virtual void Print(std::fstream &stream, int depth) const;
 
     /*	Attribtue parsing starts: at the ! of the !--
                          returns: next char past '>'
@@ -1241,7 +1241,7 @@ public:
     TiXmlText& operator=( const TiXmlText& base )							 	{ base.CopyTo( this ); return *this; }
 
     // Write this text object to a FILE stream.
-    virtual void Print( FileStream& stream, int depth ) const;
+    virtual void Print(std::fstream &stream, int depth) const;
 
     /// Queries whether this represents text using a CDATA section.
     bool CDATA() const				{ return cdata; }
@@ -1319,8 +1319,8 @@ public:
     /// Creates a copy of this Declaration and returns it.
     virtual TiXmlNode* Clone() const;
     // Print this declaration to a FILE stream.
-    virtual void Print( FileStream& stream, int depth, TIXML_STRING* str ) const;
-    virtual void Print( FileStream& stream, int depth ) const {
+    virtual void Print(std::fstream &stream, int depth, TIXML_STRING*str) const;
+    virtual void Print(std::fstream &stream, int depth) const {
         Print( stream, depth, 0 );
     }
 
@@ -1367,7 +1367,7 @@ public:
     /// Creates a copy of this Unknown and returns it.
     virtual TiXmlNode* Clone() const;
     // Print this Unknown to a FILE stream.
-    virtual void Print( FileStream& stream, int depth ) const;
+    virtual void Print(std::fstream &stream, int depth) const;
 
     virtual const char* Parse( const char* p, TiXmlParsingData* data, TiXmlEncoding encoding );
 
@@ -1428,9 +1428,6 @@ public:
         will be interpreted as an XML file. TinyXML doesn't stream in XML from the current
         file location. Streaming may be added in the future.
     */
-    bool LoadFile( FileStream& stream, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING );
-    /// Save a file using the given FILE*. Returns true if successful.
-    bool SaveFile( FileStream& stream ) const;
 
     #ifdef TIXML_USE_STL
     bool LoadFile( const std::string& filename, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING )			///< STL std::string version.
@@ -1441,6 +1438,10 @@ public:
     {
         return SaveFile( filename.c_str() );
     }
+    #else
+        bool LoadFile( FileStream& stream, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING );
+        /// Save a file using the given FILE*. Returns true if successful.
+        bool SaveFile( FileStream& stream ) const;
     #endif
 
     /** Parse the given null terminated block of xml data. Passing in an encoding to this
@@ -1526,7 +1527,7 @@ public:
     //char* PrintToMemory() const; 
 
     /// Print this Document to a FILE stream.
-    virtual void Print( FileStream& stream, int depth = 0 ) const;
+    virtual void Print(std::fstream &stream, int depth = 0) const;
 
     // [internal use]
     void SetError( int err, const char* errorLocation, TiXmlParsingData* prevData, TiXmlEncoding encoding );

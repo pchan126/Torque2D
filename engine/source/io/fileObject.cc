@@ -31,7 +31,7 @@ bool FileObject::isEOF()
 
 FileObject::FileObject()
 {
-   mFileBuffer = NULL;
+   mFileBuffer = nullptr;
    mBufferSize = 0;
    mCurPos = 0;
 }
@@ -45,7 +45,7 @@ void FileObject::close()
 {
    stream.close();
    dFree(mFileBuffer);
-   mFileBuffer = NULL;
+   mFileBuffer = nullptr;
    mBufferSize = mCurPos = 0;
 }
 
@@ -56,17 +56,16 @@ bool FileObject::openForWrite(const char *fileName, const bool append)
 
    close();
 
-   if(buffer == NULL || *buffer == 0)
+   if(buffer == nullptr || *buffer == 0)
       return false;
 
    if ( !append )
       return( ResourceManager->openFileForWrite(stream, buffer) );
 
    // Use the WriteAppend flag so it doesn't clobber the existing file:
-   if ( !ResourceManager->openFileForWrite(stream, buffer, File::WriteAppend) )
+   if ( !ResourceManager->openFileForWrite(stream, buffer, (std::fstream::out | std::fstream::app)) )
       return( false );
 
-   stream.setPosition( stream.getStreamSize() );
    return( true );
 }
 
@@ -78,7 +77,7 @@ bool FileObject::openForRead(const char* /*fileName*/)
 
 bool FileObject::readMemory(const char *fileName)
 {
-   StringTableEntry fileToOpen = NULL;
+   StringTableEntry fileToOpen = nullptr;
 
    char buffer[1024];
     
@@ -87,13 +86,13 @@ bool FileObject::readMemory(const char *fileName)
    fileToOpen = StringTable->insert(buffer);
 
    close();
-   Stream *s = ResourceManager->openStream(fileToOpen);
+   std::iostream *s = ResourceManager->openStream(fileToOpen);
    if(!s)
       return false;
    mBufferSize = ResourceManager->getSize(fileToOpen);
    mFileBuffer = (U8 *) dMalloc(mBufferSize + 1);
    mFileBuffer[mBufferSize] = 0;
-   s->read(mBufferSize, mFileBuffer);
+   s->read((char*)mFileBuffer, mBufferSize);
    ResourceManager->closeStream(s);
    mCurPos = 0;
 
@@ -155,16 +154,16 @@ void FileObject::peekLine( U8* line, S32 length )
 
 void FileObject::writeLine(const U8 *line)
 {
-   stream.write(dStrlen((const char *) line), line);
-   stream.write(2, "\r\n");
+   stream.write( (char*)line, dStrlen((const char *) line));
+   stream.write( "\r\n", 2);
 }
 
 void FileObject::writeObject( SimObject* object, const U8* objectPrepend )
 {
-   if( objectPrepend == NULL )
-      stream.write(2, "\r\n");
+   if( objectPrepend == nullptr )
+      stream.write( "\r\n", 2);
    else
-      stream.write(dStrlen((const char *) objectPrepend), objectPrepend );
+      stream.write( (char*)objectPrepend, dStrlen((const char *) objectPrepend) );
    object->write( stream, 0 );
 }
 
@@ -201,7 +200,7 @@ ConsoleMethod( FileObject, isEOF, bool, 2, 2, "() Use the isEOF method to check 
 
 ConsoleMethod( FileObject, readLine, const char*, 2, 2, "() Use the readLine method to read a single line from a file previously opened for reading.\n"
                                                                 "Use isEOF to check for end of file while reading.\n"
-                                                                "@return Returns the next line in the file, or a NULL string if the end-of-file has been reached.\n"
+                                                                "@return Returns the next line in the file, or a nullptr string if the end-of-file has been reached.\n"
                                                                 "@sa isEOF, openForRead")
 {
    return (const char *) object->readLine();
@@ -238,7 +237,7 @@ ConsoleMethod( FileObject, writeObject, void, 3, 4, "FileObject.writeObject(SimO
       return;
    }
 
-   char *objName = NULL;
+   char *objName = nullptr;
    if( argc == 4 )
       objName = (char*)argv[3];
 

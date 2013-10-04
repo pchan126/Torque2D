@@ -123,7 +123,7 @@ public:
     virtual const char* callOnBehaviors( U32 argc, const char *argv[] );
 
     /// SimComponent overrides
-    virtual void write( Stream &stream, U32 tabStop, U32 flags = 0 );
+    virtual void write(std::iostream &stream, U32 tabStop, U32 flags = 0);
 
     DECLARE_CONOBJECT( BehaviorComponent );
 };

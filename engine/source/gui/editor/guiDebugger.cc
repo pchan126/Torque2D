@@ -52,8 +52,8 @@ DbgFileView::DbgFileView()
 {
    VECTOR_SET_ASSOCIATION(mFileView);
 
-   mFileName = NULL;
-   mPCFileName = NULL;
+   mFileName = nullptr;
+   mPCFileName = nullptr;
    mPCCurrentLine = -1;
 
    mBlockStart = -1;
@@ -196,7 +196,7 @@ void DbgFileView::addLine(const char *string, U32 strLen)
       fl.text[dstIndex] = 0;
    }
    else
-      fl.text = NULL;
+      fl.text = nullptr;
    mFileView.push_back(fl);
 }
 
@@ -238,7 +238,7 @@ bool DbgFileView::findString(const char *text)
 			curText = &mFileView[curLine].text[0];
 
 		//search for the string (the hard way... - apparently dStrupr is broken...
-		char *found = NULL;
+		char *found = nullptr;
 		char *curTextPtr = curText;
 		while (*curTextPtr != '\0')
 		{
@@ -315,17 +315,17 @@ bool DbgFileView::openFile(const char *fileName)
    if (fileSize)
    {
       fileBuf = new char [fileSize+1];
-      Stream *s = ResourceManager->openStream(fileName);
+      std::iostream *s = ResourceManager->openStream(fileName);
       if (s)
       {
-         s->read(fileSize, fileBuf);
+         s->read( fileBuf, fileSize);
          ResourceManager->closeStream(s);
          fileBuf[fileSize] = '\0';
       }
       else
       {
          delete [] fileBuf;
-         fileBuf = NULL;
+         fileBuf = nullptr;
       }
    }
    if (!fileSize || !fileBuf)

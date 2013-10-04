@@ -40,18 +40,18 @@ public:
     virtual ~TamlBinaryWriter() {}
 
     /// Write.
-    bool write( FileStream& stream, const TamlWriteNode* pTamlWriteNode, const bool compressed );
+    bool write(std::fstream &stream, const TamlWriteNode *pTamlWriteNode, const bool compressed);
 
 private:
     Taml* mpTaml;
     const U32 mVersionId;
 
 private:
-    void writeElement( Stream& stream, const TamlWriteNode* pTamlWriteNode );
-    void writeAttributes( Stream& stream, const TamlWriteNode* pTamlWriteNode );
-    void writeChildren( Stream& stream, const TamlWriteNode* pTamlWriteNode );
-    void writeCustomElements( Stream& stream, const TamlWriteNode* pTamlWriteNode );
-    void writeCustomNode( Stream& stream, const TamlCustomNode* pCustomNode );
+    void writeElement(std::iostream &stream, const TamlWriteNode *pTamlWriteNode);
+    void writeAttributes(std::iostream &stream, const TamlWriteNode *pTamlWriteNode);
+    void writeChildren(std::iostream &stream, const TamlWriteNode *pTamlWriteNode);
+    void writeCustomElements(std::iostream &stream, const TamlWriteNode *pTamlWriteNode);
+    void writeCustomNode(std::iostream &stream, const TamlCustomNode *pCustomNode);
 };
 
 #endif // _TAML_BINARYWRITER_H_

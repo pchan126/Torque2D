@@ -319,19 +319,19 @@ private:
 
    bool echoFileNames;
 
-   bool usingVFS;
+//   bool usingVFS;
 
-   /// Scan a zip file for resources.
-   bool scanZip(ResourceObject *zipObject);
+//   /// Scan a zip file for resources.
+//   bool scanZip(ResourceObject *zipObject);
 
    /// Create a ResourceObject from the given file.
    ResourceObject* createResource(StringTableEntry path, StringTableEntry file);
 
-   /// Create a ResourceObject from the given file in a zip file.
-   ResourceObject* createZipResource(StringTableEntry path, StringTableEntry file, StringTableEntry zipPath, StringTableEntry zipFle);
+//   /// Create a ResourceObject from the given file in a zip file.
+//   ResourceObject* createZipResource(StringTableEntry path, StringTableEntry file, StringTableEntry zipPath, StringTableEntry zipFle);
 
    void searchPath(const char *pathStart, bool noDups = false, bool ignoreZips = false);
-   bool setModZip(const char* path);
+//   bool setModZip(const char* path);
 
    struct RegisteredExtension
    {
@@ -422,8 +422,8 @@ public:
    S32  findMatches( FindMatch *pFM );                ///< Finds multiple matches to an expression.
    bool findFile( const char *name );                 ///< Checks to see if a file exists.
 
-   bool addVFSRoot(Zip::ZipArchive *vfs);
-   bool isUsingVFS() { return usingVFS; }
+//   bool addVFSRoot(Zip::ZipArchive *vfs);
+//   bool isUsingVFS() { return usingVFS; }
 
    /// Computes the CRC of a file.
    ///

@@ -40,6 +40,7 @@ bool sgForcePalletedPNGsTo16Bit= false;
 #define PNG_NO_WRITE_TIME
 
 #include <time.h>
+#include <sstream>
 #include "png.h"
 #include "zlib.h"
 
@@ -413,7 +414,8 @@ bool GBitmap::writePNG(std::iostream &stream, bool compressHard) const
       return retVal;
    } else {
       U8* buffer = new U8[1 << 22]; // 4 Megs.  Should be enough...
-      MemStream* pMemStream = new MemStream(1 << 22, buffer, false, true);
+//      MemStream* pMemStream = new MemStream(1 << 22, buffer, false, true);
+       std::stringstream pMemStream;
 
       // We have to try the potentially useful compression methods here.
 
@@ -437,14 +439,15 @@ bool GBitmap::writePNG(std::iostream &stream, bool compressHard) const
          {
             for (U32 pf = 0; pf < 6; pf++) 
             {
-               pMemStream->setPosition(0);
+//               pMemStream->setPosition(0);
+                pMemStream.seekg(0, pMemStream.beg);
 
-               if (_writePNG(*pMemStream, cl, zStrategies[zs], pngFilters[pf]) == false)
+               if (_writePNG(pMemStream, cl, zStrategies[zs], pngFilters[pf]) == false)
                   AssertFatal(false, "PNG output failed!");
 
-               if (pMemStream->getPosition() < minSize) 
+               if (pMemStream.tellg() < minSize)
                {
-                  minSize = pMemStream->getPosition();
+                  minSize = pMemStream.tellg();
                   bestStrategy = zs;
                   bestFilter   = pf;
                   bestCLevel   = cl;
@@ -453,10 +456,6 @@ bool GBitmap::writePNG(std::iostream &stream, bool compressHard) const
          }
       }
       AssertFatal(minSize != 0xFFFFFFFF, "Error, no best found?");
-
-      delete pMemStream;
-      delete [] buffer;
-
 
       bool retVal = _writePNG(stream,
                               bestCLevel,
@@ -468,7 +467,7 @@ bool GBitmap::writePNG(std::iostream &stream, bool compressHard) const
 }
 
 //--------------------------------------------------------------------------
-bool GBitmap::writePNGUncompressed(Stream& stream) const
+bool GBitmap::writePNGUncompressed(std::iostream &stream) const
 {
    U32 waterMark = FrameAllocator::getWaterMark();
 

@@ -27,7 +27,54 @@
 
 //-----------------------------------------------------------------------------
 
-bool TamlXmlWriter::write( FileStream& stream, const TamlWriteNode* pTamlWriteNode )
+//bool TamlXmlWriter::write( FileStream& stream, const TamlWriteNode* pTamlWriteNode )
+//{
+//    // Debug Profiling.
+//    PROFILE_SCOPE(TamlXmlWriter_Write);
+//
+//    // Create document.
+//    TiXmlDocument xmlDocument;
+//
+//    // Compile the root element.
+//    TiXmlElement* pRootElement = compileElement( pTamlWriteNode );
+//
+//    // Fetch any TAML Schema file reference.
+//    const char* pTamlSchemaFile = Con::getVariable( TAML_SCHEMA_VARIABLE );
+//
+//    // Do we have a schema file reference?
+//    if ( pTamlSchemaFile != nullptr && *pTamlSchemaFile != 0 )
+//    {
+//        // Yes, so add namespace attribute to root.
+//        pRootElement->SetAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
+//
+//        // Expand the file-path reference.
+//        char schemaFilePathBuffer[1024];
+//        Con::expandPath( schemaFilePathBuffer, sizeof(schemaFilePathBuffer), pTamlSchemaFile );
+//
+//        // Fetch the output path for the Taml file.
+//        char outputFileBuffer[1024];
+//        dSprintf( outputFileBuffer, sizeof(outputFileBuffer), "%s", mpTaml->getFilePathBuffer() );
+//        char* pFileStart = dStrrchr( outputFileBuffer, '/' );
+//        if ( pFileStart == nullptr )
+//            *outputFileBuffer = 0;
+//        else
+//            *pFileStart = 0;
+//
+//        // Fetch the schema file-path relative to the output file.
+//        StringTableEntry relativeSchemaFilePath = Platform::makeRelativePathName( schemaFilePathBuffer, outputFileBuffer );
+//
+//        // Add schema location attribute to root.
+//        pRootElement->SetAttribute( "xsi:noNamespaceSchemaLocation", relativeSchemaFilePath );
+//    }
+//
+//    // Link the root element.
+//    xmlDocument.LinkEndChild( pRootElement );
+//
+//    // Save document to stream.
+//    return xmlDocument.SaveFile( stream );
+//}
+
+bool TamlXmlWriter::write( const char* filename, const TamlWriteNode* pTamlWriteNode )
 {
     // Debug Profiling.
     PROFILE_SCOPE(TamlXmlWriter_Write);
@@ -71,8 +118,9 @@ bool TamlXmlWriter::write( FileStream& stream, const TamlWriteNode* pTamlWriteNo
     xmlDocument.LinkEndChild( pRootElement );
 
     // Save document to stream.
-    return xmlDocument.SaveFile( stream );
+    return xmlDocument.SaveFile( filename );
 }
+
 
 //-----------------------------------------------------------------------------
 

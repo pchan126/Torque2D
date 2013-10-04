@@ -105,7 +105,7 @@ void ZipSubRStream::detachStream()
 }
 
 //--------------------------------------
-Stream* ZipSubRStream::getStream()
+std::iostream * ZipSubRStream::getStream()
 {
    return m_pStream;
 }
@@ -386,7 +386,7 @@ void ZipSubWStream::detachStream()
 }
 
 //--------------------------------------
-Stream* ZipSubWStream::getStream()
+std::iostream * ZipSubWStream::getStream()
 {
    return m_pStream;
 }

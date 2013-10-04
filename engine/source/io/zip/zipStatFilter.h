@@ -160,7 +160,7 @@ public:
       mStream = NULL;
    }
 
-   virtual Stream *getStream()                     { return mStream; }
+   virtual std::iostream * getStream()                     { return mStream; }
 
    void setCentralDir(CentralDir *cd)              { mCD = cd; }
    CentralDir *getCentralDir()                     { return mCD; }

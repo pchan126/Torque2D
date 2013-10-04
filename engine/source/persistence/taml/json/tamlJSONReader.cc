@@ -22,28 +22,31 @@
 
 #include "persistence/taml/json/tamlJSONReader.h"
 #include "persistence/taml/json/tamlJSONWriter.h"
-#include "io/fileStream.h"
 #include "string/stringUnit.h"
 #include "memory/frameAllocator.h"
+#include <fstream>
 
 // Debug Profiling.
 #include "debug/profiler.h"
 
 //-----------------------------------------------------------------------------
 
-SimObject* TamlJSONReader::read( FileStream& stream )
+SimObject* TamlJSONReader::read(std::fstream &stream)
 {
     // Debug Profiling.
     PROFILE_SCOPE(TamlJSONReader_Read);
    
     // Read JSON file.
-    const U32 streamSize = stream.getStreamSize();
+    stream.seekg(0, stream.end);
+    const U32 streamSize = stream.tellg();
+    stream.seekg(0, stream.beg);
+
     FrameTemp<char> jsonText( streamSize + 1 );
-    if ( !stream.read( streamSize, jsonText ) )
+    if ( !stream.read( jsonText, streamSize ) )
     {
         // Warn!
         Con::warnf("TamlJSONReader::read() -  Could not load Taml JSON file from stream.");
-        return NULL;
+        return nullptr;
     }
 
     // Create JSON document.
@@ -55,7 +58,7 @@ SimObject* TamlJSONReader::read( FileStream& stream )
     {
         // Warn!
         Con::warnf("TamlJSONReader::read() -  Load Taml JSON file from stream but was invalid.");
-        return NULL;
+        return nullptr;
     }
     
     // Parse root value.
@@ -94,7 +97,7 @@ SimObject* TamlJSONReader::parseType( const rapidjson::Value::ConstMemberIterato
     {
         // No, so warn.
         Con::warnf( "TamlJSONReader::parseType() -  Cannot process type '%s' as it is not an object.", typeName.GetString() );
-        return NULL;
+        return nullptr;
     }
 
     // Fetch engine type name (demangled).
@@ -114,7 +117,7 @@ SimObject* TamlJSONReader::parseType( const rapidjson::Value::ConstMemberIterato
         {
             // No, so warn.
             Con::warnf( "TamlJSONReader::parseType() -  Could not find a reference Id of '%d'", tamlRefToId );
-            return NULL;
+            return nullptr;
         }
 
         // Return object.
@@ -128,8 +131,8 @@ SimObject* TamlJSONReader::parseType( const rapidjson::Value::ConstMemberIterato
     SimObject* pSimObject = Taml::createType( engineTypeName, mpTaml );
 
     // Finish if we couldn't create the type.
-    if ( pSimObject == NULL )
-        return NULL;
+    if ( pSimObject == nullptr )
+        return nullptr;
 
     // Find Taml callbacks.
     TamlCallbacks* pCallbacks = dynamic_cast<TamlCallbacks*>( pSimObject );
@@ -137,7 +140,7 @@ SimObject* TamlJSONReader::parseType( const rapidjson::Value::ConstMemberIterato
     TamlCustomNodes customNodes;
 
     // Are there any Taml callbacks?
-    if ( pCallbacks != NULL )
+    if ( pCallbacks != nullptr )
     {
         // Yes, so call it.
         mpTaml->tamlPreRead( pCallbacks );
@@ -202,7 +205,7 @@ SimObject* TamlJSONReader::parseType( const rapidjson::Value::ConstMemberIterato
         const char* pPeriod = dStrchr( objectName.GetString(), '.' );
 
         // Did we find the period?
-        if ( pPeriod == NULL )
+        if ( pPeriod == nullptr )
         {
             // No, so parse child object.
             parseChild( objectMemberItr, pSimObject );
@@ -254,7 +257,7 @@ inline void TamlJSONReader::parseField( rapidjson::Value::ConstMemberIterator& m
     }
 
     // Set field.
-    pSimObject->setPrefixedDataField( fieldName, NULL, valueBuffer );
+    pSimObject->setPrefixedDataField( fieldName, nullptr, valueBuffer );
 }
 
 //-----------------------------------------------------------------------------
@@ -271,7 +274,7 @@ inline void TamlJSONReader::parseChild( rapidjson::Value::ConstMemberIterator& m
     TamlChildren* pChildren = dynamic_cast<TamlChildren*>( pSimObject );
 
     // Is this a Taml child?
-    if ( pChildren == NULL )
+    if ( pChildren == nullptr )
     {
         // No, so warn.
         Con::warnf("Taml::parseChild() - Child member '%s' found under parent '%s' but object cannot have children.",
@@ -288,11 +291,11 @@ inline void TamlJSONReader::parseChild( rapidjson::Value::ConstMemberIterator& m
     SimObject* pChildSimObject = parseType( memberItr );
 
     // Finish if the child was not created.
-    if ( pChildSimObject == NULL )
+    if ( pChildSimObject == nullptr )
         return;
 
     // Do we have a container child class?
-    if ( pContainerChildClass != NULL )
+    if ( pContainerChildClass != nullptr )
     {
         // Yes, so is the child object the correctly derived type?
         if ( !pChildSimObject->getClassRep()->isClass( pContainerChildClass ) )
@@ -304,7 +307,7 @@ inline void TamlJSONReader::parseChild( rapidjson::Value::ConstMemberIterator& m
                 pContainerChildClass->getClassName() );
 
             // NOTE: We can't delete the object as it may be referenced elsewhere!
-            pChildSimObject = NULL;
+            pChildSimObject = nullptr;
 
             return;
         }
@@ -317,7 +320,7 @@ inline void TamlJSONReader::parseChild( rapidjson::Value::ConstMemberIterator& m
     TamlCallbacks* pChildCallbacks = dynamic_cast<TamlCallbacks*>( pChildSimObject );
 
     // Do we have callbacks on the child?
-    if ( pChildCallbacks != NULL )
+    if ( pChildCallbacks != nullptr )
     {
         // Yes, so perform callback.
         mpTaml->tamlAddParent( pChildCallbacks, pSimObject );
@@ -670,7 +673,7 @@ inline const char* TamlJSONReader::getTamlObjectName( const rapidjson::Value& va
         {
             // No, so warn.
             Con::warnf( "Taml::getTamlObjectName() - Found '%s' member but it is not a string.", tamlNamedObjectName );
-            return NULL;
+            return nullptr;
         }
 
         // Return it.
@@ -678,7 +681,7 @@ inline const char* TamlJSONReader::getTamlObjectName( const rapidjson::Value& va
     }
 
     // Not found.
-    return NULL;
+    return nullptr;
 }
 
 

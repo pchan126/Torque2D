@@ -47,7 +47,7 @@ public:
     virtual ~TamlJSONWriter() {}
 
     /// Write.
-    bool write( FileStream& stream, const TamlWriteNode* pTamlWriteNode );
+    bool write(std::fstream &stream, const TamlWriteNode *pTamlWriteNode);
 
 private:
     Taml* mpTaml;

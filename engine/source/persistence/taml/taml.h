@@ -83,18 +83,18 @@ private:
     void compileCustomState( TamlWriteNode* pTamlWriteNode );
     void compileCustomNodeState( TamlCustomNode* pCustomNode );
 
-    bool write( FileStream& stream, SimObject* pSimObject, const TamlFormatMode formatMode );
-    SimObject* read( FileStream& stream, const TamlFormatMode formatMode );
-    template<typename T> inline T* read( FileStream& stream, const TamlFormatMode formatMode )
+    bool write(const char* filename, SimObject *pSimObject, const TamlFormatMode formatMode);
+    SimObject* read(const char* filename, TamlFormatMode const formatMode);
+    template<typename T> inline T* read( const char* filename, const TamlFormatMode formatMode )
     {
-        SimObject* pSimObject = read( stream, formatMode );
+        SimObject* pSimObject = read( filename, formatMode );
         if ( pSimObject == nullptr )
-            return NULL;
+            return nullptr;
         T* pObj = dynamic_cast<T*>( pSimObject );
-        if ( pObj != NULL )
+        if ( pObj != nullptr )
             return pObj;
         pSimObject->deleteObject();
-        return NULL;
+        return nullptr;
     }
 
 public:

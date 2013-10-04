@@ -269,7 +269,7 @@ public:
     void setSizing(S32 horz, S32 vert);
   
     ///   Overrides Parent Serialization to allow specific controls to not be saved (Dynamic Controls, etc)
-    void write(Stream &stream, U32 tabStop, U32 flags);
+    void write(std::iostream &stream, U32 tabStop, U32 flags);
     /// Returns boolean as to whether any parent of this control has the 'no serialization' flag set.
     bool getCanSaveParent();
 

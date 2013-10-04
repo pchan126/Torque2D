@@ -56,7 +56,7 @@ class ZipSubRStream : public FilterStream
   public:
    bool    attachStream(Stream* io_pSlaveStream);
    void    detachStream();
-   Stream* getStream();
+   std::iostream * getStream();
 
    void setUncompressedSize(const U32);
 
@@ -95,7 +95,7 @@ class ZipSubWStream : public FilterStream
   public:
    bool    attachStream(Stream* io_pSlaveStream);
    void    detachStream();
-   Stream* getStream();
+   std::iostream * getStream();
 
    // Mandatory overrides.  By default, these are simply passed to
    //  whatever is returned from getStream();

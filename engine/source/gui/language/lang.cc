@@ -21,8 +21,7 @@
 //-----------------------------------------------------------------------------
 
 #include "platform/platform.h"
-#include "io/stream.h"
-#include "io/fileStream.h"
+#include <fstream>
 #include "io/resource/resourceManager.h"
 #include "console/console.h"
 #include "console/consoleInternal.h"
@@ -36,7 +35,7 @@
 // LangFile Class
 //////////////////////////////////////////////////////////////////////////
 
-LangFile::LangFile(const UTF8 *langName /* = NULL */)
+LangFile::LangFile(const UTF8 *langName /* = nullptr */)
 {
 	if(langName)
 	{
@@ -44,9 +43,9 @@ LangFile::LangFile(const UTF8 *langName /* = NULL */)
 		dStrcpy(mLangName, langName);
 	}
 	else
-		mLangName = NULL;
+		mLangName = nullptr;
 
-	mLangFile = NULL;
+	mLangFile = nullptr;
 }
 
 LangFile::~LangFile()
@@ -73,7 +72,7 @@ void LangFile::freeTable()
 
 bool LangFile::load(const UTF8 *filename)
 {
-	Stream *pS;
+    std::iostream *pS;
 	bool bRet = false;
 
 	if((pS = ResourceManager->openStream((const char*)filename)))
@@ -84,14 +83,16 @@ bool LangFile::load(const UTF8 *filename)
 	return bRet;
 }
 
-bool LangFile::load(Stream *s)
+bool LangFile::load(std::iostream *s)
 {
 	freeTable();
 	
-	while(s->getStatus() != Stream::EOS)
+	while(s->good())
 	{
 		char buf[256];
-		s->readString(buf);
+        U8 count;
+        *s >> count;
+		s->read(buf, count);
 		addString((const UTF8*)buf);
 	}
 	return true;
@@ -99,7 +100,7 @@ bool LangFile::load(Stream *s)
 
 bool LangFile::save(const UTF8 *filename)
 {
-	FileStream fs;
+    std::fstream fs;
 	bool bRet = false;
 
 	if(!isLoaded())
@@ -113,7 +114,7 @@ bool LangFile::save(const UTF8 *filename)
 	return bRet;
 }
 
-bool LangFile::save(Stream *s)
+bool LangFile::save(std::iostream *s)
 {
 	if(!isLoaded())
 		return false;
@@ -121,7 +122,7 @@ bool LangFile::save(Stream *s)
 	U32 i;
 	for(i = 0;i < (U32)mStringTable.size();i++)
 	{
-		s->writeString((char*)mStringTable[i]);
+		s->write((char*)mStringTable[i], strlen(mStringTable[i]));
 	}
 	return true;
 }
@@ -129,7 +130,7 @@ bool LangFile::save(Stream *s)
 const UTF8 * LangFile::getString(U32 id)
 {
 	if(id == LANG_INVALID_ID || id >= (U32)mStringTable.size())
-		return NULL;
+		return nullptr;
 	return mStringTable[id];
 }
 
@@ -209,7 +210,7 @@ LangTable::~LangTable()
 	mLangTable.clear();
 }
 
-S32 LangTable::addLanguage(LangFile *lang, const UTF8 *name /* = NULL */)
+S32 LangTable::addLanguage(LangFile *lang, const UTF8 *name /* = nullptr */)
 {
 	if(name)
 		lang->setLangName(name);
@@ -224,7 +225,7 @@ S32 LangTable::addLanguage(LangFile *lang, const UTF8 *name /* = NULL */)
 	return mLangTable.size() - 1;
 }
 
-S32 LangTable::addLanguage(const UTF8 *filename, const UTF8 *name /* = NULL */)
+S32 LangTable::addLanguage(const UTF8 *filename, const UTF8 *name /* = nullptr */)
 {
 	LangFile *pLang;
 	S32 ret = -1;
@@ -246,11 +247,11 @@ S32 LangTable::addLanguage(const UTF8 *filename, const UTF8 *name /* = NULL */)
 
 const UTF8 *LangTable::getString(const U32 id) const
 {
-	const UTF8 *s = NULL;
+	const UTF8 *s = nullptr;
 
 	if(mCurrentLang >= 0)
 		s = mLangTable[mCurrentLang]->getString(id);
-	if(s == NULL && mDefaultLang >= 0 && mDefaultLang != mCurrentLang)
+	if(s == nullptr && mDefaultLang >= 0 && mDefaultLang != mCurrentLang)
 		s = mLangTable[mDefaultLang]->getString(id);
 
 	return s;
@@ -309,7 +310,7 @@ ConsoleMethod(LangTable, addLanguage, S32, 3, 4, "(string filename, [string lang
 	UTF8 scriptFilenameBuffer[1024];
 	
 	Con::expandPath((char*)scriptFilenameBuffer, sizeof(scriptFilenameBuffer), argv[2]);
-	return object->addLanguage(scriptFilenameBuffer, argc == 4 ? (const UTF8*)argv[3] : NULL);
+	return object->addLanguage(scriptFilenameBuffer, argc == 4 ? (const UTF8*)argv[3] : nullptr);
 }
 
 ConsoleMethod(LangTable, getString, const char *, 3, 3, "(string) ")
@@ -378,7 +379,7 @@ UTF8 *sanitiseVarName(const UTF8 *varName, UTF8 *buffer, U32 bufsize)
 	if(! varName || bufsize < 10)	// [tom, 3/3/2005] bufsize check gives room to be lazy below
 	{
 		*buffer = 0;
-		return NULL;
+		return nullptr;
 	}
 	
 	dStrcpy(buffer, (const UTF8*)"I18N::");
@@ -410,10 +411,10 @@ UTF8 *getCurrentModVarName(UTF8 *buffer, U32 bufsize)
 	StringTableEntry cbName = CodeBlock::getCurrentCodeBlockName();
 	
 	const UTF8 *slash = (const UTF8*)dStrchr(cbName, '/');
-	if (slash == NULL)
+	if (slash == nullptr)
 	{
 		Con::errorf("Illegal CodeBlock path detected in sanitiseVarName() (no mod directory): %s", cbName);
-		return NULL;
+		return nullptr;
 	}
 	
 	dStrncpy(varName, cbName, slash - (const UTF8*)cbName);
@@ -431,7 +432,7 @@ const LangTable *getCurrentModLangTable()
 		const LangTable *lt = dynamic_cast<LangTable *>(Sim::findObject(Con::getIntVariable((const char*)saneVarName)));
 		return lt;
 	}
-	return NULL;
+	return nullptr;
 }
 
 const LangTable *getModLangTable(const UTF8 *mod)
@@ -443,5 +444,5 @@ const LangTable *getModLangTable(const UTF8 *mod)
 		const LangTable *lt = dynamic_cast<LangTable *>(Sim::findObject(Con::getIntVariable((const char*)saneVarName)));
 		return lt;
 	}
-	return NULL;
+	return nullptr;
 }

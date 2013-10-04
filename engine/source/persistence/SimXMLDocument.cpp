@@ -129,20 +129,20 @@ S32 SimXMLDocument::saveFile(const char* rFileName)
    char buffer[1024];
    Con::expandPath(buffer, sizeof(buffer), rFileName);
 
-   if(buffer == NULL || *buffer == 0)
+   if(buffer == nullptr || *buffer == 0)
       return false;
 
-   FileStream strm;
-   if(!ResourceManager->openFileForWrite(strm, buffer, FileStream::Write))
-   {
-      Con::errorf(ConsoleLogEntry::General, "Unable to open file '%s for writing.", buffer);
-      return false;
-   }
+//    std::fstream strm;
+//   if(!ResourceManager->openFileForWrite(strm, buffer, std::fstream::out))
+//   {
+//      Con::errorf(ConsoleLogEntry::General, "Unable to open file '%s for writing.", buffer);
+//      return false;
+//   }
 
-   bool retVal = m_qDocument->SaveFile(strm);//m_qDocument->SaveFile( buffer );
+   bool retVal = m_qDocument->SaveFile(buffer);//m_qDocument->SaveFile( buffer );
 
-   // close the stream
-   strm.close();
+//   // close the stream
+//   strm.close();
 
    return retVal;
 }
@@ -506,7 +506,7 @@ void SimXMLDocument::setObjectAttributes(const char* objectID)
 
    SimObject *pObject = Sim::findObject( objectID );
 
-   if( pObject == NULL )
+   if( pObject == nullptr )
       return;
 
    const int iLastElement = m_paNode.size() - 1;
@@ -558,7 +558,7 @@ void SimXMLDocument::setObjectAttributes(const char* objectID)
 
             field.SetValue( "Property" );
             field.SetAttribute( "name",  itr->pFieldname );
-            if( cbt != NULL )
+            if( cbt != nullptr )
                field.SetAttribute( "type", cbt->getTypeName() );
             else
                field.SetAttribute( "type", "TypeString" );
@@ -603,7 +603,7 @@ void SimXMLDocument::setObjectAttributes(const char* objectID)
 
       //      field.SetValue( "Property" );
       //      field.SetAttribute( "name",  itr->pFieldname );
-      //      if( cbt != NULL )
+      //      if( cbt != nullptr )
       //         field.SetAttribute( "type", cbt->getTypeName() );
       //      else
       //         field.SetAttribute( "type", "TypeString" );

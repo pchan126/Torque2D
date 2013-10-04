@@ -165,7 +165,7 @@ void SimSet::onRemove()
     Parent::onRemove();
 }
 
-void SimSet::write(Stream &stream, U32 tabStop, U32 flags)
+void SimSet::write(std::iostream &stream, U32 tabStop, U32 flags)
 {
    MutexHandle handle;
    handle.lock(mMutex);

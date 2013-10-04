@@ -230,7 +230,7 @@ bool SimComponent::writeField(StringTableEntry fieldname, const char* value)
    return true;
 }
 
-void SimComponent::write(Stream &stream, U32 tabStop, U32 flags /* = 0 */)
+void SimComponent::write(std::iostream &stream, U32 tabStop, U32 flags /* = 0 */)
 {
 #if 1
     Parent::write( stream, tabStop, flags );

@@ -21,17 +21,18 @@
 //-----------------------------------------------------------------------------
 
 #include "persistence/taml/binary/tamlBinaryReader.h"
+#include <fstream>
 
-#ifndef _ZIPSUBSTREAM_H_
-#include "io/zip/zipSubStream.h"
-#endif
+//#ifndef _ZIPSUBSTREAM_H_
+//#include "io/zip/zipSubStream.h"
+//#endif
 
 // Debug Profiling.
 #include "debug/profiler.h"
 
 //-----------------------------------------------------------------------------
 
-SimObject* TamlBinaryReader::read( FileStream& stream )
+SimObject* TamlBinaryReader::read(std::fstream &stream)
 {
     // Debug Profiling.
     PROFILE_SCOPE(TamlBinaryReader_Read);
@@ -44,33 +45,33 @@ SimObject* TamlBinaryReader::read( FileStream& stream )
     {
         // Warn.
         Con::warnf("Taml: Cannot read binary file as signature is incorrect '%s'.", tamlSignature );
-        return NULL;
+        return nullptr;
     }
 
     // Read version Id.
-    U32 versionId;
-    stream.read( &versionId );
+    U32 versionId = 0;
+    stream >> versionId;
 
     // Read compressed flag.
-    bool compressed;
-    stream.read( &compressed );
+    bool compressed = false;
+    stream >> compressed;
 
-    SimObject* pSimObject = NULL;
+    SimObject* pSimObject = nullptr;
 
-    // Is the stream compressed?
-    if ( compressed )
-    {
-        // Yes, so attach zip stream.
-        ZipSubRStream zipStream;
-        zipStream.attachStream( &stream );
-
-        // Parse element.
-        pSimObject = parseElement( zipStream, versionId );
-
-        // Detach zip stream.
-        zipStream.detachStream();
-    }
-    else
+//    // Is the stream compressed?
+//    if ( compressed )
+//    {
+//        // Yes, so attach zip stream.
+//        ZipSubRStream zipStream;
+//        zipStream.attachStream( &stream );
+//
+//        // Parse element.
+//        pSimObject = parseElement( zipStream, versionId );
+//
+//        // Detach zip stream.
+//        zipStream.detachStream();
+//    }
+//    else
     {
         // No, so parse element.
         pSimObject = parseElement( stream, versionId );
@@ -92,17 +93,17 @@ void TamlBinaryReader::resetParse( void )
 
 //-----------------------------------------------------------------------------
 
-SimObject* TamlBinaryReader::parseElement( Stream& stream, const U32 versionId )
+SimObject* TamlBinaryReader::parseElement(std::iostream &stream, const U32 versionId)
 {
     // Debug Profiling.
     PROFILE_SCOPE(TamlBinaryReader_ParseElement);
 
-    SimObject* pSimObject = NULL;
+    SimObject* pSimObject = nullptr;
 
 #ifdef TORQUE_DEBUG
     // Format the type location.
     char typeLocationBuffer[64];
-    dSprintf( typeLocationBuffer, sizeof(typeLocationBuffer), "Taml [format='binary' offset=%u]", stream.getPosition() );
+    dSprintf( typeLocationBuffer, sizeof(typeLocationBuffer), "Taml [format='binary' offset=%u]", stream.tellg());
 #endif
 
     // Fetch element name.    
@@ -112,10 +113,10 @@ SimObject* TamlBinaryReader::parseElement( Stream& stream, const U32 versionId )
     StringTableEntry objectName = stream.readSTString();
 
     // Read references.
-    U32 tamlRefId;
-    U32 tamlRefToId;
-    stream.read( &tamlRefId );
-    stream.read( &tamlRefToId );
+    U32 tamlRefId = 0;
+    U32 tamlRefToId = 0;
+    stream >> tamlRefId;
+    stream >> tamlRefToId;
 
     // Do we have a reference to Id?
     if ( tamlRefToId != 0 )
@@ -128,7 +129,7 @@ SimObject* TamlBinaryReader::parseElement( Stream& stream, const U32 versionId )
         {
             // No, so warn.
             Con::warnf( "Taml: Could not find a reference Id of '%d'", tamlRefToId );
-            return NULL;
+            return nullptr;
         }
 
         // Return object.
@@ -144,14 +145,14 @@ SimObject* TamlBinaryReader::parseElement( Stream& stream, const U32 versionId )
 #endif
 
     // Finish if we couldn't create the type.
-    if ( pSimObject == NULL )
-        return NULL;
+    if ( pSimObject == nullptr )
+        return nullptr;
 
     // Find Taml callbacks.
     TamlCallbacks* pCallbacks = dynamic_cast<TamlCallbacks*>( pSimObject );
 
     // Are there any Taml callbacks?
-    if ( pCallbacks != NULL )
+    if ( pCallbacks != nullptr )
     {
         // Yes, so call it.
         mpTaml->tamlPreRead( pCallbacks );
@@ -200,7 +201,7 @@ SimObject* TamlBinaryReader::parseElement( Stream& stream, const U32 versionId )
     parseCustomElements( stream, pCallbacks, customProperties, versionId );
 
     // Are there any Taml callbacks?
-    if ( pCallbacks != NULL )
+    if ( pCallbacks != nullptr )
     {
         // Yes, so call it.
         mpTaml->tamlPostRead( pCallbacks, customProperties );
@@ -212,17 +213,17 @@ SimObject* TamlBinaryReader::parseElement( Stream& stream, const U32 versionId )
 
 //-----------------------------------------------------------------------------
 
-void TamlBinaryReader::parseAttributes( Stream& stream, SimObject* pSimObject, const U32 versionId )
+void TamlBinaryReader::parseAttributes(std::iostream &stream, SimObject *pSimObject, const U32 versionId)
 {
     // Debug Profiling.
     PROFILE_SCOPE(TamlBinaryReader_ParseAttributes);
 
     // Sanity!
-    AssertFatal( pSimObject != NULL, "Taml: Cannot parse attributes on a NULL object." );
+    AssertFatal( pSimObject != nullptr, "Taml: Cannot parse attributes on a nullptr object." );
 
     // Fetch attribute count.
-    U32 attributeCount;
-    stream.read( &attributeCount );
+    U32 attributeCount = 0;
+    stream >> attributeCount;
 
     // Finish if no attributes.
     if ( attributeCount == 0 )
@@ -238,23 +239,23 @@ void TamlBinaryReader::parseAttributes( Stream& stream, SimObject* pSimObject, c
         stream.readLongString( 4096, valueBuffer );
 
         // We can assume this is a field for now.
-        pSimObject->setPrefixedDataField( attributeName, NULL, valueBuffer );
+        pSimObject->setPrefixedDataField( attributeName, nullptr, valueBuffer );
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void TamlBinaryReader::parseChildren( Stream& stream, TamlCallbacks* pCallbacks, SimObject* pSimObject, const U32 versionId )
+void TamlBinaryReader::parseChildren(std::iostream &stream, TamlCallbacks *pCallbacks, SimObject *pSimObject, const U32 versionId)
 {
     // Debug Profiling.
     PROFILE_SCOPE(TamlBinaryReader_ParseChildren);
 
     // Sanity!
-    AssertFatal( pSimObject != NULL, "Taml: Cannot parse children on a NULL object." );
+    AssertFatal( pSimObject != nullptr, "Taml: Cannot parse children on a nullptr object." );
 
     // Fetch children count.
-    U32 childrenCount;
-    stream.read( &childrenCount );
+    U32 childrenCount = 0;
+    stream >> childrenCount ;
 
     // Finish if no children.
     if ( childrenCount == 0 )
@@ -264,7 +265,7 @@ void TamlBinaryReader::parseChildren( Stream& stream, TamlCallbacks* pCallbacks,
     TamlChildren* pChildren = dynamic_cast<TamlChildren*>( pSimObject );
 
     // Is this a sim set?
-    if ( pChildren == NULL )
+    if ( pChildren == nullptr )
     {
         // No, so warn.
         Con::warnf("Taml: Child element found under parent but object cannot have children." );
@@ -281,11 +282,11 @@ void TamlBinaryReader::parseChildren( Stream& stream, TamlCallbacks* pCallbacks,
         SimObject* pChildSimObject = parseElement( stream, versionId );
 
         // Finish if child failed.
-        if ( pChildSimObject == NULL )
+        if ( pChildSimObject == nullptr )
             return;
 
         // Do we have a container child class?
-        if ( pContainerChildClass != NULL )
+        if ( pContainerChildClass != nullptr )
         {
             // Yes, so is the child object the correctly derived type?
             if ( !pChildSimObject->getClassRep()->isClass( pContainerChildClass ) )
@@ -297,7 +298,7 @@ void TamlBinaryReader::parseChildren( Stream& stream, TamlCallbacks* pCallbacks,
                     pContainerChildClass->getClassName() );
 
                 // NOTE: We can't delete the object as it may be referenced elsewhere!
-                pChildSimObject = NULL;
+                pChildSimObject = nullptr;
 
                 // Skip.
                 continue;
@@ -311,7 +312,7 @@ void TamlBinaryReader::parseChildren( Stream& stream, TamlCallbacks* pCallbacks,
         TamlCallbacks* pChildCallbacks = dynamic_cast<TamlCallbacks*>( pChildSimObject );
 
         // Do we have callbacks on the child?
-        if ( pChildCallbacks != NULL )
+        if ( pChildCallbacks != nullptr )
         {
             // Yes, so perform callback.
             mpTaml->tamlAddParent( pChildCallbacks, pSimObject );
@@ -321,14 +322,14 @@ void TamlBinaryReader::parseChildren( Stream& stream, TamlCallbacks* pCallbacks,
 
 //-----------------------------------------------------------------------------
 
-void TamlBinaryReader::parseCustomElements( Stream& stream, TamlCallbacks* pCallbacks, TamlCustomNodes& customNodes, const U32 versionId )
+void TamlBinaryReader::parseCustomElements(std::iostream &stream, TamlCallbacks *pCallbacks, TamlCustomNodes& customNodes, const U32 versionId)
 {
     // Debug Profiling.
     PROFILE_SCOPE(TamlBinaryReader_ParseCustomElement);
 
     // Read custom node count.
-    U32 customNodeCount;
-    stream.read( &customNodeCount );
+    U32 customNodeCount = 0;
+    stream >> customNodeCount;
 
     // Finish if no custom nodes.
     if ( customNodeCount == 0 )
@@ -348,7 +349,7 @@ void TamlBinaryReader::parseCustomElements( Stream& stream, TamlCallbacks* pCall
     }
 
     // Do we have callbacks?
-    if ( pCallbacks == NULL )
+    if ( pCallbacks == nullptr )
     {
         // No, so warn.
         Con::warnf( "Taml: Encountered custom data but object does not support custom data." );
@@ -361,11 +362,11 @@ void TamlBinaryReader::parseCustomElements( Stream& stream, TamlCallbacks* pCall
 
 //-----------------------------------------------------------------------------
 
-void TamlBinaryReader::parseCustomNode( Stream& stream, TamlCustomNode* pCustomNode, const U32 versionId )
+void TamlBinaryReader::parseCustomNode(std::iostream &stream, TamlCustomNode *pCustomNode, const U32 versionId)
 {
     // Fetch if a proxy object.
     bool isProxyObject;
-    stream.read( &isProxyObject );
+    stream >> isProxyObject;
 
     // Is this a proxy object?
     if ( isProxyObject )
@@ -391,8 +392,8 @@ void TamlBinaryReader::parseCustomNode( Stream& stream, TamlCustomNode* pCustomN
     pChildNode->setNodeText( childNodeTextBuffer );
 
     // Read child node count.
-    U32 childNodeCount;
-    stream.read( &childNodeCount );
+    U32 childNodeCount = 0;
+    stream >> childNodeCount;
 
     // Do we have any children nodes?
     if ( childNodeCount > 0 )
@@ -406,8 +407,8 @@ void TamlBinaryReader::parseCustomNode( Stream& stream, TamlCustomNode* pCustomN
     }
 
     // Read child field count.
-    U32 childFieldCount;
-    stream.read( &childFieldCount );
+    U32 childFieldCount = 0;
+    stream >> childFieldCount;
 
     // Do we have any child fields?
     if ( childFieldCount > 0 )

@@ -29,7 +29,7 @@
 // Constructor/Destructor
 //////////////////////////////////////////////////////////////////////////
 
-ZipCryptRStream::ZipCryptRStream() : mStream(NULL), mFileEndPos(0), mPassword(NULL)
+ZipCryptRStream::ZipCryptRStream() : mStream(nullptr), mFileEndPos(0), mPassword(nullptr)
 {
 }
 
@@ -43,7 +43,7 @@ ZipCryptRStream::~ZipCryptRStream()
 
 U32 ZipCryptRStream::fillBuffer(const U32 in_attemptSize, void *pBuffer)
 {
-   AssertFatal(mStream != NULL, "No stream to fill from?");
+   AssertFatal(mStream != nullptr, "No stream to fill from?");
    AssertFatal(mStream->getStatus() != Stream::Closed,
       "Fill from a closed stream?");
 
@@ -111,7 +111,7 @@ bool ZipCryptRStream::attachStream(Stream* io_pSlaveStream)
 
 void ZipCryptRStream::detachStream()
 {
-   mStream = NULL;
+   mStream = nullptr;
 
    // Clear keys, just in case
    dMemset(&mKeys, 0, sizeof(mKeys));
@@ -136,12 +136,12 @@ bool ZipCryptRStream::setPosition(const U32 in_newPosition)
    if(in_newPosition < curPos)
    {
       // Reposition to start of stream
-      Stream *stream = getStream();
+      std::iostream *stream = getStream();
       U32 startPos = mStreamStartPos;
       const char *password = mPassword;
       detachStream();
       setPassword(password);
-      stream->setPosition(startPos);
+      stream->seekg(startPos);
       ret = attachStream(stream);
 
       if(in_newPosition == mFileStartPos)
