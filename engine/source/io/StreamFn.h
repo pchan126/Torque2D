@@ -30,4 +30,12 @@ namespace StreamFn {
         while(count--)
             stream.write(tab, 3);
     }
+
+    inline int getStreamSize(std::istream& is)
+    {
+        is.seekg (0, is.end);
+        int length = is.tellg();
+        is.seekg (0, is.beg);
+        return length;
+    }
 }

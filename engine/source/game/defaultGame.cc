@@ -89,6 +89,7 @@
 #include "platform/platform_ScriptBinding.h"
 
 #include "platform/platformTimer.h"
+#include "StreamFn.h"
 
 //-----------------------------------------------------------------------------
 
@@ -299,7 +300,7 @@ bool initializeGame(int argc, const char **argv)
     }
 
     // Create a script buffer.
-    const U32 size = scriptStream->getStreamSize();
+    const U32 size = StreamFn::getStreamSize(*scriptStream);
     char* pScriptBuffer = new char[size + 1];
 
     // Read script.

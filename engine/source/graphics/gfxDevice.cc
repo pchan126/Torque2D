@@ -467,7 +467,7 @@ class DescriptionOutputter
    bool mWriteToFile;
 
    /// File if we are writing to a file
-   FileStream mFile;
+   std::fstream mFile;
 public:
    DescriptionOutputter(const char* file)
    {
@@ -475,7 +475,8 @@ public:
       // If we've been given what could be a valid file path, open it.
       if(file && file[0] != '\0')
       {
-         mWriteToFile = mFile.open(file, FileStream::Write);
+         mFile.open(file, std::fstream::out);
+         mWriteToFile = mFile ? true : false;
 
          // Note that it is safe to retry.  If this is hit, we'll just write to the console instead of to the file.
          AssertFatal(mWriteToFile, avar("DescriptionOutputter::DescriptionOutputter - could not open file %s", file));
