@@ -38,4 +38,11 @@ namespace StreamFn {
         is.seekg (0, is.beg);
         return length;
     }
+
+    inline void writeLine(std::ostream& os, const char *line)
+    {
+        os.write(line, dStrlen(line));
+        os.write("\r\n", 2);
+    }
+
 }

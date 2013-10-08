@@ -25,6 +25,7 @@
 #include "console/consoleTypes.h"
 #include "console/console.h"
 #include "game/version.h"
+#include "StreamFn.h"
 
 GFXDevice * GFXDevice::smGFXDevice = nullptr;
 bool GFXDevice::smWireframe = false;
@@ -95,7 +96,7 @@ GFXDevice::GFXDevice():
    mGlobalAmbientColor = ColorF(0.0f, 0.0f, 0.0f, 1.0f);
 
    mLightMaterialDirty = false;
-   dMemset(&mCurrentLightMaterial, nullptr, sizeof(GFXLightMaterial));
+   dMemset(&mCurrentLightMaterial, 0, sizeof(GFXLightMaterial));
 
    // State block 
    mStateBlockDirty = false;
@@ -494,7 +495,7 @@ public:
    void write(const char* line)
    {
       if(mWriteToFile)
-         mFile.writeLine((U8*)line);
+          StreamFn::writeLine(mFile, line);
       else
          Con::printf(line);
    }

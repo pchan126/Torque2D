@@ -221,13 +221,14 @@ ConsoleFunction(isWriteableFileName, bool, 2, 2, "(fileName)\n"
       return(false);
 
    // exists?
-   FileStream fs;
-   if(!fs.open(filename, FileStream::Read))
+    std::fstream fs(filename, std::fstream::in);
+   if(!fs)
       return(true);
 
    // writeable? (ReadWrite will create file if it does not exist)
    fs.close();
-   if(!fs.open(filename, FileStream::ReadWrite))
+   fs.open(filename, (std::fstream::in || std::fstream::out))
+   if(!fs)
       return(false);
 
    return(true);

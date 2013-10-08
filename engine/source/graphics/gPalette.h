@@ -63,15 +63,15 @@ class GPalette
 
    //-------------------------------------- Supplimentary output members
   public:
-   bool readMSPalette(Stream& io_rStream);
+   bool readMSPalette(std::iostream &io_rStream);
    bool readMSPalette(const char* in_pFileName);
-   bool writeMSPalette(Stream& io_rStream) const;
+   bool writeMSPalette(std::iostream &io_rStream) const;
    bool writeMSPalette(const char* in_pFileName) const;
 
    //-------------------------------------- Persistent members
   public:
-   bool read(Stream& io_rStream);
-   bool write(Stream& io_rStream) const;
+   bool read(std::iostream &io_rStream);
+   bool write(std::iostream &io_rStream) const;
   private:
    static const U32 csm_fileVersion;
 };

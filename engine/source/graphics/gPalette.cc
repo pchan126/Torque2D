@@ -70,28 +70,28 @@ GPalette::writeMSPalette(const char* in_pFileName) const
 }
 
 bool
-GPalette::readMSPalette(Stream& io_rStream)
+GPalette::readMSPalette(std::iostream &io_rStream)
 {
-   AssertFatal(io_rStream.getStatus() != Stream::Closed,
+   AssertFatal(io_rStream.good(),
                "GPalette::writeMSPalette: can't write to a closed stream!");
 
    U32 data;
    U32 size;
 
-   io_rStream.read(&data);
-   io_rStream.read(&size);
+   io_rStream >> data;
+   io_rStream >> size;
 
    if (data == makeFourCCTag('R', 'I', 'F', 'F')) {
-      io_rStream.read(&data);
-      io_rStream.read(&size);
+      io_rStream >> data;
+      io_rStream >> size;
    }
 
    if (data == makeFourCCTag('P', 'A', 'L', ' ')) {
-      io_rStream.read(&data);    // get number of colors (ignored)
-      io_rStream.read(&data);    // skip the version number.
+      io_rStream >> data;    // get number of colors (ignored)
+      io_rStream >> data;    // skip the version number.
 
       // Read the colors...
-      io_rStream.read(256 * sizeof(ColorI), m_pColors);
+      io_rStream.read( (char*)m_pColors, 256 * sizeof(ColorI));
 
       // With MS Pals, we assume that the type is RGB, clear out all the alpha
       //  members so the palette keys are consistent across multiple palettes
@@ -101,7 +101,7 @@ GPalette::readMSPalette(Stream& io_rStream)
 
       m_paletteType = RGB;
 
-      return (io_rStream.getStatus() == Stream::Ok);
+      return (io_rStream.good());
    }
 
    AssertWarn(false, "GPalette::readMSPalette: not a MS Palette");
@@ -109,54 +109,54 @@ GPalette::readMSPalette(Stream& io_rStream)
 }
 
 bool
-GPalette::writeMSPalette(Stream& io_rStream) const
+GPalette::writeMSPalette(std::iostream &io_rStream) const
 {
-   AssertFatal(io_rStream.getStatus() != Stream::Closed,
+   AssertFatal(io_rStream.good(),
                "GPalette::writeMSPalette: can't write to a closed stream!");
 
-   io_rStream.write(U32(makeFourCCTag('R', 'I', 'F', 'F')));
-   io_rStream.write(U32((256 * sizeof(ColorI)) + 8 + 4 + 4));
+   io_rStream << (U32(makeFourCCTag('R', 'I', 'F', 'F')));
+   io_rStream << (U32((256 * sizeof(ColorI)) + 8 + 4 + 4));
 
-   io_rStream.write(U32(makeFourCCTag('P', 'A', 'L', ' ')));
-   io_rStream.write(U32(makeFourCCTag('d', 'a', 't', 'a')));
+   io_rStream << (U32(makeFourCCTag('P', 'A', 'L', ' ')));
+   io_rStream << (U32(makeFourCCTag('d', 'a', 't', 'a')));
 
-   io_rStream.write(U32(0x0404));   // Number of colors + 4
+   io_rStream << (U32(0x0404));   // Number of colors + 4
 
-   io_rStream.write(U16(0x300));    // version
-   io_rStream.write(U16(256));      // num colors...
+   io_rStream << (U16(0x300));    // version
+   io_rStream << (U16(256));      // num colors...
 
-   io_rStream.write(256 * sizeof(ColorI), m_pColors);
+   io_rStream << (m_pColors, 256 * sizeof(ColorI));
 
-   return (io_rStream.getStatus() == Stream::Ok);
+   return (io_rStream.good());
 }
 
 //------------------------------------------------------------------------------
 //-------------------------------------- Persistent I/O
 //
 bool
-GPalette::read(Stream& io_rStream)
+GPalette::read(std::iostream &io_rStream)
 {
    // Handle versioning
    U32 version;
-   io_rStream.read(&version);
+   io_rStream >> version;
    AssertFatal(version == csm_fileVersion, "Palette::read: wrong file version...");
 
    U32 type;
-   io_rStream.read(&type);
+   io_rStream >> type;
    m_paletteType = PaletteType(type);
-   io_rStream.read(256 * sizeof(ColorI), m_pColors);
+   io_rStream.read((char*)m_pColors, 256 * sizeof(ColorI));
 
-   return (io_rStream.getStatus() == Stream::Ok);
+   return (io_rStream.good());
 }
 
 bool
-GPalette::write(Stream& io_rStream) const
+GPalette::write(std::iostream &io_rStream) const
 {
    // Handle versioning...
-   io_rStream.write(csm_fileVersion);
+   io_rStream << csm_fileVersion;
 
-   io_rStream.write(U32(m_paletteType));
-   io_rStream.write(256 * sizeof(ColorI), m_pColors);
+   io_rStream << (U32(m_paletteType));
+   io_rStream.write((char*)m_pColors, 256 * sizeof(ColorI));
 
-   return (io_rStream.getStatus() == Stream::Ok);
+   return (io_rStream.good());
 }
