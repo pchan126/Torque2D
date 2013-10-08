@@ -26,8 +26,6 @@
 #include "platform/event.h"
 #include "collection/vector.h"
 
-class FileStream;
-
 class GameInterface
 {
 private:
@@ -140,12 +138,12 @@ public:
    /// Are we writing to the journal?
    inline bool isJournalWriting( void ) const { return mJournalMode == JournalSave; }
 
-   void journalRead(U32 *val);                     ///< Read a U32 from the journal.
+   void journalRead(U32 &val);                     ///< Read a U32 from the journal.
    void journalWrite(U32 val);                     ///< Write a U32 to the journal.
-   void journalRead(U32 size, void *buffer);       ///< Read a block of data from the journal.
-   void journalWrite(U32 size, const void *buffer);///< Write a block of data to the journal.
+   void journalRead(U32 size, char *buffer);       ///< Read a block of data from the journal.
+   void journalWrite(U32 size, char const *buffer);///< Write a block of data to the journal.
 
-   FileStream *getJournalStream( void );
+   std::fstream *getJournalStream();
    /// @}
 };
 

@@ -19,7 +19,6 @@
 #include "graphics/gfxTextureManager.h"
 
 #include "memory/frameAllocator.h"
-#include "io/fileStream.h"
 #include "string/unicode.h"
 #include "delegates/process.h"
 #include "memory/safeDelete.h"
@@ -27,7 +26,7 @@
 #include "console/console.h"
 #include "game/version.h"
 
-GFXDevice * GFXDevice::smGFXDevice = NULL;
+GFXDevice * GFXDevice::smGFXDevice = nullptr;
 bool GFXDevice::smWireframe = false;
 bool GFXDevice::smDisableVSync = true;
 F32 GFXDevice::smForcedPixVersion = -1.0f;
@@ -55,12 +54,12 @@ GFXDevice::GFXDevice():
 
     mStateDirty = false;
 
-    AssertFatal(smGFXDevice == NULL, "Already a GFXDevice created! Bad!");
+    AssertFatal(smGFXDevice == nullptr, "Already a GFXDevice created! Bad!");
     smGFXDevice = this;
 
       
    // Vertex buffer cache
-   mCurrVertexDecl = NULL;
+   mCurrVertexDecl = nullptr;
    mVertexDeclDirty = false;
    for ( U32 i=0; i < VERTEX_STREAM_COUNT; i++ )
    {
@@ -75,10 +74,10 @@ GFXDevice::GFXDevice():
    for(U32 i = 0; i < TEXTURE_STAGE_COUNT; i++)
    {
       mTextureDirty[i] = false;
-      mCurrentTexture[i] = NULL;
-      mNewTexture[i] = NULL;
-      mCurrentCubemap[i] = NULL;
-      mNewCubemap[i] = NULL;
+      mCurrentTexture[i] = nullptr;
+      mNewTexture[i] = nullptr;
+      mCurrentCubemap[i] = nullptr;
+      mNewCubemap[i] = nullptr;
       mTexType[i] = GFXTDT_Normal;
 
 //      mTextureMatrix[i].identity();
@@ -96,14 +95,14 @@ GFXDevice::GFXDevice():
    mGlobalAmbientColor = ColorF(0.0f, 0.0f, 0.0f, 1.0f);
 
    mLightMaterialDirty = false;
-   dMemset(&mCurrentLightMaterial, NULL, sizeof(GFXLightMaterial));
+   dMemset(&mCurrentLightMaterial, nullptr, sizeof(GFXLightMaterial));
 
    // State block 
    mStateBlockDirty = false;
-   mCurrentStateBlock = NULL;
-   mNewStateBlock = NULL;
+   mCurrentStateBlock = nullptr;
+   mNewStateBlock = nullptr;
 
-   mCurrentShaderConstBuffer = NULL;
+   mCurrentShaderConstBuffer = nullptr;
 
    // misc
    mAllowRender = true;
@@ -111,14 +110,14 @@ GFXDevice::GFXDevice():
    mInitialized = false;
 
    mRTDirty = false;
-   mCurrentRT = NULL;
+   mCurrentRT = nullptr;
 
-    mResourceListHead = NULL;
+    mResourceListHead = nullptr;
 
-   mCardProfiler = NULL;
+   mCardProfiler = nullptr;
 
    // Initialize our drawing utility.
-   mDrawer = NULL;
+   mDrawer = nullptr;
 
 //   // Add a few system wide shader macros.
 //   GFXShader::addGlobalMacro( "TORQUE", "1" );
@@ -188,15 +187,15 @@ void GFXDevice::preDestroy()
 
 GFXDevice::~GFXDevice()
 { 
-   smGFXDevice = NULL;
+   smGFXDevice = nullptr;
 
    // Clear out our current texture references
    for (U32 i = 0; i < TEXTURE_STAGE_COUNT; i++)
    {
-      mCurrentTexture[i] = NULL;
-      mNewTexture[i] = NULL;
-//      mCurrentCubemap[i] = NULL;
-//      mNewCubemap[i] = NULL;
+      mCurrentTexture[i] = nullptr;
+      mNewTexture[i] = nullptr;
+//      mCurrentCubemap[i] = nullptr;
+//      mNewCubemap[i] = nullptr;
    }
 
    // Release all the unreferenced textures in the cache.
@@ -212,10 +211,10 @@ GFXDevice::~GFXDevice()
 //
 //   // Clear out our state block references
 //   mCurrentStateBlocks.clear();
-//   mNewStateBlock = NULL;
-//   mCurrentStateBlock = NULL;
+//   mNewStateBlock = nullptr;
+//   mCurrentStateBlock = nullptr;
 //
-   mCurrentShaderConstBuffer = NULL;
+   mCurrentShaderConstBuffer = nullptr;
    /// End Block above BTR
 
    // -- Clear out resource list
@@ -227,9 +226,9 @@ GFXDevice::~GFXDevice()
       GFXResource * head = mResourceListHead;
       mResourceListHead = head->mNextResource;
       
-      head->mPrevResource = NULL;
-      head->mNextResource = NULL;
-      head->mOwningDevice = NULL;
+      head->mPrevResource = nullptr;
+      head->mNextResource = nullptr;
+      head->mOwningDevice = nullptr;
    }
 }
 
@@ -249,7 +248,7 @@ GFXStateBlockRef GFXDevice::createStateBlock(const GFXStateBlockDesc& desc)
 
 void GFXDevice::setStateBlock(GFXStateBlock* block)
 {
-   AssertFatal(block, "NULL state block!");
+   AssertFatal(block, "nullptr state block!");
    AssertFatal(block->getOwningDevice() == this, "This state doesn't apply to this device!");
 
    if (block != mCurrentStateBlock)
@@ -302,7 +301,7 @@ void GFXDevice::setLight(U32 stage, GFXLightInfo* light)
 //      mLightsDirty = true;
 //      mLightDirty[stage] = true;
 //   }
-//   mCurrentLightEnable[stage] = (light != NULL);
+//   mCurrentLightEnable[stage] = (light != nullptr);
 //   if(mCurrentLightEnable[stage])
 //      mCurrentLight[stage] = *light;
 }
@@ -350,8 +349,8 @@ void GFXDevice::setTexture( U32 stage, GFXTextureObject *texture )
    mTexType[stage] = GFXTDT_Normal;
 
 //   // Clear out the cubemaps
-//   mNewCubemap[stage] = NULL;
-//   mCurrentCubemap[stage] = NULL;
+//   mNewCubemap[stage] = nullptr;
+//   mCurrentCubemap[stage] = nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -374,8 +373,8 @@ void GFXDevice::setCubeTexture( U32 stage, GFXCubemap *texture )
    mTexType[stage] = GFXTDT_Cube;
 
    // Clear out the normal textures
-   mNewTexture[stage] = NULL;
-   mCurrentTexture[stage] = NULL;
+   mNewTexture[stage] = nullptr;
+   mCurrentTexture[stage] = nullptr;
 }
 
 inline bool GFXDevice::beginScene()
@@ -566,15 +565,15 @@ void GFXDevice::fillResourceVectors(const char* resNames, bool unflaggedOnly, Ve
 //   if(resNames && resNames[0] != '\0')
 //   {
 //      // If we did specify a string of names, determine which names
-//      describeTexture =          (dStrstr(resNames, "GFXTextureObject")    != NULL);
-//      describeTextureTarget =    (dStrstr(resNames, "GFXTextureTarget")    != NULL);
-//      describeWindowTarget =     (dStrstr(resNames, "GFXWindowTarget")     != NULL);
-//      describeVertexBuffer =     (dStrstr(resNames, "GFXVertexBuffer")     != NULL);
-//      describePrimitiveBuffer =  (dStrstr(resNames, "GFXPrimitiveBuffer")   != NULL);
-//      describeFence =            (dStrstr(resNames, "GFXFence")            != NULL);
-////      describeCubemap =          (dStrstr(resNames, "GFXCubemap")          != NULL);
-//      describeShader =           (dStrstr(resNames, "GFXShader")           != NULL);
-//      describeStateBlock =       (dStrstr(resNames, "GFXStateBlock")           != NULL);
+//      describeTexture =          (dStrstr(resNames, "GFXTextureObject")    != nullptr);
+//      describeTextureTarget =    (dStrstr(resNames, "GFXTextureTarget")    != nullptr);
+//      describeWindowTarget =     (dStrstr(resNames, "GFXWindowTarget")     != nullptr);
+//      describeVertexBuffer =     (dStrstr(resNames, "GFXVertexBuffer")     != nullptr);
+//      describePrimitiveBuffer =  (dStrstr(resNames, "GFXPrimitiveBuffer")   != nullptr);
+//      describeFence =            (dStrstr(resNames, "GFXFence")            != nullptr);
+////      describeCubemap =          (dStrstr(resNames, "GFXCubemap")          != nullptr);
+//      describeShader =           (dStrstr(resNames, "GFXShader")           != nullptr);
+//      describeStateBlock =       (dStrstr(resNames, "GFXStateBlock")           != nullptr);
 //   }
 //
 //   // Start going through the list
@@ -915,7 +914,7 @@ void GFXDevice::clearResourceFlags()
 //        return returnString;
 //    }
 //    
-//    return NULL;
+//    return nullptr;
 //}
 
 

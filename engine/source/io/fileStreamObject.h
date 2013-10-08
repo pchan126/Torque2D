@@ -21,7 +21,6 @@
 //-----------------------------------------------------------------------------
 
 #include "streamObject.h"
-#include "io/fileStream.h"
 
 #ifndef _FILESTREAMOBJECT_H_
 #define _FILESTREAMOBJECT_H_

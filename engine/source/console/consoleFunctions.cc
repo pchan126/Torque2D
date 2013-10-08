@@ -25,7 +25,6 @@
 #include "console/consoleInternal.h"
 #include "console/ast.h"
 #include "io/resource/resourceManager.h"
-#include "io/fileStream.h"
 #include "console/compiler.h"
 #include "platform/event.h"
 #include "game/gameInterface.h"

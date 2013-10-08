@@ -29,7 +29,6 @@
 #include "platform/platformGL.h"
 
 class GFXOpenGLShaderConstHandle;
-class FileStream;
 class GFXOpenGLShaderConstBuffer;
 
 class GFXOpenGLShader : public GFXShader

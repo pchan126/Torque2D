@@ -22,7 +22,6 @@
 
 #include "platform/platformAL.h"
 #include "audio/audioBuffer.h"
-#include "io/stream.h"
 #include "console/console.h"
 #include "memory/frameAllocator.h"
 
@@ -147,7 +146,7 @@ AudioBuffer::~AudioBuffer()
 Resource<AudioBuffer> AudioBuffer::find(const char *filename)
 {
    U32 mark = FrameAllocator::getWaterMark();
-   char * f2 = NULL;
+   char * f2 = nullptr;
 
    Resource<AudioBuffer> buffer = ResourceManager->load(filename);
    if (bool(buffer) == false)
@@ -256,7 +255,7 @@ bool AudioBuffer::readWAV(ResourceObject *obj)
    WAVFmtHdr   fmtHdr;
 
    ALenum  format = AL_FORMAT_MONO16;
-   char   *data   = NULL;
+   char   *data   = nullptr;
    ALsizei size   = 0;
    ALsizei freq   = 22050;
    ALboolean loop = AL_FALSE;

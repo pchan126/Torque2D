@@ -26,7 +26,6 @@
 #include "console/console.h"
 #include "console/consoleTypes.h"
 #include "game/gameConnection.h"
-#include "io/fileStream.h"
 #include "audio/audioStreamSourceFactory.h"
 
 #ifdef TORQUE_OS_IOS

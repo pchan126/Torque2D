@@ -26,7 +26,6 @@
 #include "gui/guiCanvas.h"
 #include "gui/containers/guiTabBookCtrl.h"
 #include "platform/event.h"
-#include "io/fileStream.h"
 #include "gui/containers/guiScrollCtrl.h"
 #include "gui/editor/guiEditCtrl.h"
 #include "gui/guiPopUpCtrl.h"
@@ -51,10 +50,10 @@ GuiTabBookCtrl::GuiTabBookCtrl()
    VECTOR_SET_ASSOCIATION(mPages);
    mTabHeight = 24;
    mTabPosition = AlignTop;
-   mActivePage = NULL;
-   mHoverTab = NULL;
+   mActivePage = nullptr;
+   mHoverTab = nullptr;
    mHasTexture = false;
-   mBitmapBounds = NULL;
+   mBitmapBounds = nullptr;
    setExtent( 400, 300 );
    mPageRect = RectI(0,0,0,0);
    mTabRect = RectI(0,0,0,0);
@@ -106,15 +105,15 @@ void GuiTabBookCtrl::onChildRemoved( GuiControl* child )
       if( tab == child )
       {
          if( tab == mActivePage )
-            mActivePage = NULL;
+            mActivePage = nullptr;
          mPages.erase( i );
          break;
       }
    }
 
    if( mPages.empty() )
-      mActivePage = NULL;
-   else if (mActivePage == NULL )
+      mActivePage = nullptr;
+   else if (mActivePage == nullptr )
       mActivePage = static_cast<GuiTabPageCtrl*>(mPages[0].Page);
 
 }
@@ -169,7 +168,7 @@ bool GuiTabBookCtrl::reOrder(SimObject* obj, SimObject* target)
         return false;
     
     // Store the Selected Page.
-    GuiTabPageCtrl *selectedPage = NULL;
+    GuiTabPageCtrl *selectedPage = nullptr;
     if ( mSelectedPageNum != -1 )
         selectedPage = mPages[mSelectedPageNum].Page;
     
@@ -221,7 +220,7 @@ bool GuiTabBookCtrl::reOrder(SimObject* obj, SimObject* target)
 bool GuiTabBookCtrl::acceptsAsChild( SimObject* object ) const
 {
     // Only accept tab pages.
-    return ( dynamic_cast< GuiTabPageCtrl* >( object ) != NULL );
+    return ( dynamic_cast< GuiTabPageCtrl* >( object ) != nullptr );
 }
 
 //-----------------------------------------------------------------------------
@@ -275,7 +274,7 @@ void GuiTabBookCtrl::onMouseDown(const GuiEvent &event)
     if( mTabRect.pointInRect( localMouse ) )
     {
         GuiTabPageCtrl *tab = findHitTab( localMouse );
-        if( tab != NULL && tab->isActive() )
+        if( tab != nullptr && tab->isActive() )
             selectPage( tab );
     }
 }
@@ -299,7 +298,7 @@ void GuiTabBookCtrl::onMouseDragged(const GuiEvent &event)
     if ( !mDraggingTab )
         return;
     
-    GuiTabPageCtrl *selectedPage = NULL;
+    GuiTabPageCtrl *selectedPage = nullptr;
     if ( mSelectedPageNum != -1 )
         selectedPage = mPages[mSelectedPageNum].Page;
     
@@ -310,7 +309,7 @@ void GuiTabBookCtrl::onMouseDragged(const GuiEvent &event)
     if( mTabRect.pointInRect( localMouse ) )
     {
         GuiTabPageCtrl *tab = findHitTab( localMouse );
-        if( tab != NULL && tab != selectedPage )
+        if( tab != nullptr && tab != selectedPage )
         {
             S32 targetIndex = -1;
             for( S32 i = 0; i < mPages.size(); i++ )
@@ -344,17 +343,17 @@ void GuiTabBookCtrl::onMouseMove(const GuiEvent &event)
    {
 
       GuiTabPageCtrl *tab = findHitTab( localMouse );
-      if( tab != NULL && mHoverTab != tab )
+      if( tab != nullptr && mHoverTab != tab )
          mHoverTab = tab;
       else if ( !tab )
-         mHoverTab = NULL;
+         mHoverTab = nullptr;
    }
    Parent::onMouseMove( event );
 }
 
 void GuiTabBookCtrl::onMouseLeave( const GuiEvent &event )
 {
-   mHoverTab = NULL;
+   mHoverTab = nullptr;
 }
 
 bool GuiTabBookCtrl::onMouseDownEditor(const GuiEvent &event, Point2I offset)
@@ -365,7 +364,7 @@ bool GuiTabBookCtrl::onMouseDownEditor(const GuiEvent &event, Point2I offset)
    if( mTabRect.pointInRect( localMouse ) )
    {
       GuiTabPageCtrl *tab = findHitTab( localMouse );
-      if( tab != NULL )
+      if( tab != nullptr )
       {
          selectPage( tab );
          handled = true;
@@ -378,7 +377,7 @@ bool GuiTabBookCtrl::onMouseDownEditor(const GuiEvent &event, Point2I offset)
       // If we clicked in the editor and our addset is the tab book
       // ctrl, select the child ctrl so we can edit it's properties
       GuiEditCtrl* edit = GuiControl::smEditorHandle;
-      if( edit  && ( edit->getAddSet() == this ) && mActivePage != NULL )
+      if( edit  && ( edit->getAddSet() == this ) && mActivePage != nullptr )
          edit->select( mActivePage );
    }
 
@@ -449,7 +448,7 @@ void GuiTabBookCtrl::renderTabs( const Point2I &offset, const RectI &tabRect )
         RectI tabBounds = mPages[i].TabRect;
         tabBounds.point += offset;
         GuiTabPageCtrl *tab = mPages[i].Page;
-        if( tab != NULL )
+        if( tab != nullptr )
             renderTab( tabBounds, tab );
         
         // If we're on the last tab, draw the nice end piece
@@ -753,14 +752,14 @@ GuiTabPageCtrl *GuiTabBookCtrl::findHitTab( Point2I hitPoint )
    // If the tab size is zero, don't render tabs,
    //  and assume it's a tab-less tab-book - JDD
    if( mPages.empty() || mTabHeight <= 0 )
-      return NULL;
+      return nullptr;
 
    for( S32 i = 0; i < mPages.size(); i++ )
    {
       if( mPages[i].TabRect.pointInRect( hitPoint ) )
          return mPages[i].Page;
    }
-   return NULL;
+   return nullptr;
 }
 
 void GuiTabBookCtrl::selectPage( S32 index )
@@ -838,7 +837,7 @@ void GuiTabBookCtrl::selectNextPage()
    if( mPages.empty() )
       return;
 
-   if( mActivePage == NULL )
+   if( mActivePage == nullptr )
       mActivePage = mPages[0].Page;
 
    S32 nI = 0;
@@ -872,7 +871,7 @@ void GuiTabBookCtrl::selectPrevPage()
    if( mPages.empty() )
       return;
 
-   if( mActivePage == NULL )
+   if( mActivePage == nullptr )
       mActivePage = mPages[0].Page;
 
    S32 nI = 0;

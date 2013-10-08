@@ -20,8 +20,7 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#include "io/stream.h"
-#include "io/fileStream.h"
+#include <fstream>
 #include "graphics/gPalette.h"
 
 const U32 GPalette::csm_fileVersion       = 1;
@@ -41,33 +40,33 @@ GPalette::~GPalette()
 bool
 GPalette::readMSPalette(const char* in_pFileName)
 {
-   AssertFatal(in_pFileName != NULL, "GPalette::readMSPalette: NULL FileName");
+   AssertFatal(in_pFileName != nullptr, "GPalette::readMSPalette: nullptr FileName");
 
-   FileStream frs;
-   if (frs.open(in_pFileName, FileStream::Read) == false) {
-      return false;
-   } else {
+    std::fstream frs(in_pFileName, std::fstream::in);
+   if (frs) {
       bool success = readMSPalette(frs);
       frs.close();
 
       return success;
    }
+   return false;
 }
 
 bool
 GPalette::writeMSPalette(const char* in_pFileName) const
 {
-   AssertFatal(in_pFileName != NULL, "GPalette::writeMSPalette: NULL FileName");
+   AssertFatal(in_pFileName != nullptr, "GPalette::writeMSPalette: nullptr FileName");
 
-   FileStream fws;
-   if (fws.open(in_pFileName, FileStream::Write) == false) {
-      return false;
-   } else {
+    std::fstream fws(in_pFileName, std::fstream::out);
+
+    if (fws)
+    {
       bool success = writeMSPalette(fws);
       fws.close();
 
       return success;
    }
+    return false;
 }
 
 bool

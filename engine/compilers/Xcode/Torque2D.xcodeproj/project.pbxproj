@@ -514,6 +514,7 @@
 		4B8AA3FABCB53401B420F689 /* osxAudio.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxAudio.mm; sourceTree = "<group>"; };
 		4B8AA46016B746A61CE97966 /* osxMath_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxMath_ScriptBinding.h; sourceTree = "<group>"; };
 		4B8AA46D739FCCB4F83D86AE /* JoystickManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JoystickManager.m; sourceTree = "<group>"; };
+		4B8AA4F07FFBB264D20BCCDE /* StreamFn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamFn.h; sourceTree = "<group>"; };
 		4B8AA4FF586EA294D9F1772F /* platformOSX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = platformOSX.mm; sourceTree = "<group>"; };
 		4B8AA501B0B2721A33615F0A /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = Torque2D/en.lproj/MainMenu.xib; sourceTree = SOURCE_ROOT; };
 		4B8AA5060D2438316645F09E /* GLFWWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLFWWindow.h; sourceTree = "<group>"; };
@@ -526,6 +527,7 @@
 		4B8AA6CE573B26A7A2598E15 /* platformOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformOSX.h; sourceTree = "<group>"; };
 		4B8AA72B371610384CA2A574 /* gfxOpenGL32VertexBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGL32VertexBuffer.mm; sourceTree = "<group>"; };
 		4B8AA75C6986C5E3952EA7A1 /* osxFont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxFont.h; sourceTree = "<group>"; };
+		4B8AA75CB010C533738A3DBF /* simComponent_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = simComponent_ScriptBinding.h; sourceTree = "<group>"; };
 		4B8AA7D746C0B226894D6D92 /* GLFWWindowInputGenerator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GLFWWindowInputGenerator.mm; sourceTree = "<group>"; };
 		4B8AA80FD83636B8BF425CD5 /* GLFWWindowManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GLFWWindowManager.mm; sourceTree = "<group>"; };
 		4B8AA832114B3E6EC56E1A20 /* gfxOpenGL32CardProfiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGL32CardProfiler.h; sourceTree = "<group>"; };
@@ -2282,6 +2284,7 @@
 				C541952DD34B4F4A167BDCC1 /* dynamicConsoleMethodComponent.h */,
 				C54190E2C496E2F6E8A17164 /* simComponent.cpp */,
 				C541954F0DD3D8DC9FDB7883 /* simComponent.h */,
+				4B8AA75CB010C533738A3DBF /* simComponent_ScriptBinding.h */,
 			);
 			name = component;
 			path = ../../../source/component;
@@ -2481,6 +2484,7 @@
 				C5419CED027967F6D47AF7CF /* fileObject.h */,
 				C5419558485DABDD81190A21 /* fileSystemFunctions.cpp */,
 				C5419C74E974ED6D72CD21CE /* resource */,
+				4B8AA4F07FFBB264D20BCCDE /* StreamFn.h */,
 			);
 			name = io;
 			path = ../../../source/io;

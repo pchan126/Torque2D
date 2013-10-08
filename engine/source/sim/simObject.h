@@ -678,10 +678,10 @@ public:
     ///
     /// @param   stream  Stream for output.
     /// @param   tabStop Indentation level for the fields.
-    virtual void writeFields(Stream &stream, U32 tabStop);
+    virtual void writeFields(std::iostream &stream, U32 tabStop);
 
-    virtual bool writeObject(Stream *stream);
-    virtual bool readObject(Stream *stream);
+    virtual bool writeObject(std::iostream &stream);
+    virtual bool readObject(std::iostream &stream);
     virtual void buildFilterList();
 
     void addFieldFilter(const char *fieldName);

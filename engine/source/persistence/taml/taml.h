@@ -84,9 +84,10 @@ private:
     void compileCustomState( TamlWriteNode* pTamlWriteNode );
     void compileCustomNodeState( TamlCustomNode* pCustomNode );
 
-    bool write(const char* filename, SimObject *pSimObject, const TamlFormatMode formatMode);
-    bool write( std::fstream stream, SimObject* pSimObject, const TamlFormatMode formatMode );
+    /// Read.
+    SimObject* read( std::fstream& stream, const TamlFormatMode formatMode );
     SimObject* read(const char* filename, TamlFormatMode const formatMode);
+
     template<typename T> inline T* read( const char* filename, const TamlFormatMode formatMode )
     {
         SimObject* pSimObject = read( filename, formatMode );
@@ -98,6 +99,9 @@ private:
         pSimObject->deleteObject();
         return nullptr;
     }
+
+    bool write(const char* filename, SimObject *pSimObject, const TamlFormatMode formatMode);
+    bool write( std::fstream& stream, SimObject* pSimObject, const TamlFormatMode formatMode );
 
 public:
     Taml();
@@ -144,7 +148,6 @@ public:
     /// Write.
     bool write( SimObject* pSimObject, const char* pFilename );
 
-    /// Read.
     template<typename T> inline T* read( const char* pFilename )
     {
         SimObject* pSimObject = read( pFilename );

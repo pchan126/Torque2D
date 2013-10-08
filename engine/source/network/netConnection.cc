@@ -25,7 +25,6 @@
 #include "sim/simBase.h"
 #include "network/netConnection.h"
 #include "io/bitStream.h"
-#include "io/fileStream.h"
 #include "io/resource/resourceManager.h"
 #include "console/consoleTypes.h"
 #include "netInterface.h"

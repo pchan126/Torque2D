@@ -27,13 +27,12 @@
 #include "gui/guiCanvas.h"
 #include "gui/editor/guiEditCtrl.h"
 #include "platform/event.h"
-#include "io/fileStream.h"
 #include "gui/containers/guiScrollCtrl.h"
 
 IMPLEMENT_CONOBJECT(GuiEditCtrl);
 
-GuiEditCtrl::GuiEditCtrl(): mCurrentAddSet(NULL),
-                            mContentControl(NULL),
+GuiEditCtrl::GuiEditCtrl(): mCurrentAddSet(nullptr),
+                            mContentControl(nullptr),
                             mGridSnap(0,0),
                             mDragBeginPoint(-1,-1)                            
 {
@@ -44,12 +43,12 @@ GuiEditCtrl::GuiEditCtrl(): mCurrentAddSet(NULL),
    mDragBeginPoints.clear();
    mSelectedControls.clear();
 
-   mDefaultCursor    = NULL;
-   mLeftRightCursor  = NULL;
-   mUpDownCursor     = NULL;
-   mNWSECursor       = NULL;
-   mNESWCursor       = NULL;
-   mMoveCursor       = NULL;
+   mDefaultCursor    = nullptr;
+   mLeftRightCursor  = nullptr;
+   mUpDownCursor     = nullptr;
+   mNWSECursor       = nullptr;
+   mNESWCursor       = nullptr;
+   mMoveCursor       = nullptr;
 }
 
 bool GuiEditCtrl::onAdd()
@@ -239,14 +238,14 @@ void GuiEditCtrl::onSleep()
 {
    // Set GUI Controls to run time mode
    GuiControl::smDesignTime = false;
-   GuiControl::smEditorHandle = NULL;
+   GuiControl::smEditorHandle = nullptr;
 
    Parent::onSleep();
 }
 void GuiEditCtrl::setRoot(GuiControl *root)
 {
    mContentControl = root;
-   if( root != NULL ) root->mIsContainer = true;
+   if( root != nullptr ) root->mIsContainer = true;
     mCurrentAddSet = mContentControl;
    Con::executef(this, 1, "onClearSelected");
     mSelectedControls.clear();
@@ -261,7 +260,7 @@ enum GuiEditConstants {
 // Sizing Cursors
 bool GuiEditCtrl::initCursors()
 {
-   if (mMoveCursor == NULL || mUpDownCursor == NULL || mLeftRightCursor == NULL || mDefaultCursor == NULL || mNWSECursor == NULL || mNESWCursor == NULL)
+   if (mMoveCursor == nullptr || mUpDownCursor == nullptr || mLeftRightCursor == nullptr || mDefaultCursor == nullptr || mNWSECursor == nullptr || mNESWCursor == nullptr)
    {
       SimObject *obj;
       obj = Sim::findObject("MoveCursor");
@@ -279,7 +278,7 @@ bool GuiEditCtrl::initCursors()
       obj = Sim::findObject("MoveCursor");
       mMoveCursor = dynamic_cast<GuiCursor*>(obj);
 
-      return(mMoveCursor != NULL && mUpDownCursor != NULL && mLeftRightCursor != NULL && mDefaultCursor != NULL && mNWSECursor != NULL && mNESWCursor != NULL && mMoveCursor != NULL);
+      return(mMoveCursor != nullptr && mUpDownCursor != nullptr && mLeftRightCursor != nullptr && mDefaultCursor != nullptr && mNWSECursor != nullptr && mNESWCursor != nullptr && mMoveCursor != nullptr);
    }
    else
       return(true);
@@ -292,7 +291,7 @@ void GuiEditCtrl::setEditMode(bool value)
    Con::executef(this, 1, "onClearSelected");
    mSelectedControls.clear();
    if (mActive && mAwake)
-      mCurrentAddSet = NULL;
+      mCurrentAddSet = nullptr;
 }
 
 void GuiEditCtrl::setCurrentAddSet(GuiControl *ctrl, bool clearSelection)
@@ -694,7 +693,7 @@ void GuiEditCtrl::getCursor(GuiCursor *&cursor, bool &showCursor, const GuiEvent
          else if (mSizingMode == sizingTop || mSizingMode == sizingBottom )
             cursor = mUpDownCursor;
          else
-            cursor = NULL;
+            cursor = nullptr;
       }
       else
       {
@@ -710,11 +709,11 @@ void GuiEditCtrl::getCursor(GuiCursor *&cursor, bool &showCursor, const GuiEvent
          else if (sizeMode == sizingTop || sizeMode == sizingBottom )
             cursor = mUpDownCursor;
          else
-            cursor = NULL;
+            cursor = nullptr;
       }
    }
    
-   if( mMouseDownMode == MovingSelection && cursor == NULL )
+   if( mMouseDownMode == MovingSelection && cursor == nullptr )
        cursor = mMoveCursor;
 }
 

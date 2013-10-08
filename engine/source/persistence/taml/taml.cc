@@ -191,7 +191,7 @@ bool Taml::write( SimObject* pSimObject, const char* pFilename )
     if (formatMode != BinaryFormat)
        status = write( mFilePathBuffer, pSimObject, formatMode );
     else
-       status = write( &stream, pSimObject, formatMode );
+       status = write( stream, pSimObject, formatMode );
 
 
     // Close file.
@@ -233,7 +233,12 @@ SimObject* Taml::read( const char* pFilename )
     resetCompilation();
 
     // Write object.
-    SimObject* pSimObject = read( stream, formatMode );
+    SimObject* pSimObject = nullptr;
+
+    if ( formatMode == XmlFormat)
+        pSimObject = read( mFilePathBuffer, formatMode );
+    else
+        pSimObject = read( stream, formatMode );
 
     // Close file.
     stream.close();
@@ -300,7 +305,7 @@ bool Taml::write( const char* filename, SimObject* pSimObject, const TamlFormatM
 
 //-----------------------------------------------------------------------------
 
-bool Taml::write( std::fstream stream, SimObject* pSimObject, const TamlFormatMode formatMode )
+bool Taml::write( std::fstream& stream, SimObject* pSimObject, const TamlFormatMode formatMode )
 {
     // Sanity!
     AssertFatal( pSimObject != nullptr, "Cannot write a nullptr object." );
@@ -336,8 +341,7 @@ bool Taml::write( std::fstream stream, SimObject* pSimObject, const TamlFormatMo
 }
 
 //-----------------------------------------------------------------------------
-
-SimObject* Taml::read(const char* filename, TamlFormatMode const formatMode)
+SimObject* Taml::read( const char* filename, TamlFormatMode const formatMode)
 {
     // Format appropriately.
     switch( formatMode )
@@ -352,6 +356,23 @@ SimObject* Taml::read(const char* filename, TamlFormatMode const formatMode)
             return reader.read( filename );
         }
 
+            /// Invalid.
+        case InvalidFormat:
+        default:
+        {
+            // Warn.
+            Con::warnf("Taml::read() - Cannot read, invalid format.");
+            return nullptr;
+        }
+    }
+}
+
+
+SimObject* Taml::read( std::fstream& stream, TamlFormatMode const formatMode)
+{
+    // Format appropriately.
+    switch( formatMode )
+    {
         /// Binary.
         case BinaryFormat:
         {
@@ -359,7 +380,6 @@ SimObject* Taml::read(const char* filename, TamlFormatMode const formatMode)
             TamlBinaryReader reader( this );
 
             // Read.
-            std::fstream stream(filename);
             return reader.read( stream );
         }
 
@@ -370,12 +390,12 @@ SimObject* Taml::read(const char* filename, TamlFormatMode const formatMode)
             TamlJSONReader reader( this );
 
             // Read.
-            std::fstream stream(filename);
-            return reader.read( filename );
+            return reader.read( stream );
         }
         
         /// Invalid.
         case InvalidFormat:
+        default:
         {
             // Warn.
             Con::warnf("Taml::read() - Cannot read, invalid format.");

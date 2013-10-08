@@ -23,6 +23,7 @@
 #include "sim/simFieldDictionary.h"
 #include "console/consoleInternal.h"
 #include "memory/frameAllocator.h"
+#include "StreamFn.h"
 
 //-----------------------------------------------------------------------------
 
@@ -122,7 +123,7 @@ static S32 QSORT_CALLBACK compareEntries(const void* a,const void* b)
 }
 
 
-void SimFieldDictionary::writeFields(SimObject *obj, Stream &stream, U32 tabStop)
+void SimFieldDictionary::writeFields(SimObject *obj, std::iostream &stream, U32 tabStop)
 {
    const AbstractClassRep::FieldList &list = obj->getFieldList();
    Vector<Entry *> flist(__FILE__, __LINE__);
@@ -155,7 +156,7 @@ void SimFieldDictionary::writeFields(SimObject *obj, Stream &stream, U32 tabStop
       U32 nBufferSize = (dStrlen( (itr)->value ) * 2) + dStrlen( (itr)->slotName ) + 16;
       FrameTemp<char> expandedBuffer( nBufferSize );
 
-      stream.writeTabs(tabStop+1);
+       StreamFn::writeTabs(stream, tabStop+1);
 
       dSprintf(expandedBuffer, nBufferSize, "%s = \"", (itr)->slotName);
       expandEscape((char*)expandedBuffer + dStrlen(expandedBuffer), (itr)->value);

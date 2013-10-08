@@ -9,7 +9,6 @@
 #include "graphics/OpenGL/gfxOpenGLShader.h"
 
 class GFXOpenGLES20ShaderConstHandle;
-class FileStream;
 class GFXOpenGLES20ShaderConstBuffer;
 
 class GFXOpenGLES20Shader : public GFXOpenGLShader

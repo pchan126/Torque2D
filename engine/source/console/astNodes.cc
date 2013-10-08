@@ -29,7 +29,6 @@
 
 #include "string/findMatch.h"
 #include "console/consoleInternal.h"
-#include "io/fileStream.h"
 #include "console/compiler.h"
 
 #include "sim/simBase.h"

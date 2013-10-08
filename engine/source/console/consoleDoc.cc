@@ -29,7 +29,6 @@
 #include "string/findMatch.h"
 #include "console/consoleInternal.h"
 #include "console/consoleObject.h"
-#include "io/fileStream.h"
 #include "console/compiler.h"
 #include "memory/frameAllocator.h"
 

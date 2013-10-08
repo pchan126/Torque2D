@@ -520,7 +520,7 @@ void NameTags::write(std::iostream &stream, U32 tabStop, U32 flags)
 
 //-----------------------------------------------------------------------------
 
-void NameTags::writeFields(Stream& stream, U32 tabStop)
+void NameTags::writeFields(std::iostream &stream, U32 tabStop)
 {
     // Fetch tag count.
     const U32 tagCount = getTagCount();

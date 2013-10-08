@@ -24,10 +24,12 @@
 #include "sim/simBase.h"
 #include "console/consoleTypes.h"
 #include "component/simComponent.h"
-#include "io/stream.h"
 #include "behaviors/behaviorTemplate.h"
 
-SimComponent::SimComponent() : mOwner( NULL )
+// Script bindings.
+#include "component/simComponent_ScriptBinding.h"
+
+SimComponent::SimComponent() : mOwner( nullptr )
 {
    mComponentList.clear();
    mMutex = Mutex::createMutex();
@@ -38,7 +40,7 @@ SimComponent::SimComponent() : mOwner( NULL )
 SimComponent::~SimComponent()
 {
    Mutex::destroyMutex( mMutex );
-   mMutex = NULL;
+   mMutex = nullptr;
 }
 
 IMPLEMENT_CONOBJECT(SimComponent);
@@ -99,7 +101,7 @@ void SimComponent::_unregisterComponents()
    {
       (*i)->onComponentUnRegister();
 
-      AssertFatal( (*i)->mOwner == NULL, "Component failed to call parent onUnRegister" );
+      AssertFatal( (*i)->mOwner == nullptr, "Component failed to call parent onUnRegister" );
 
       // Recurse
       (*i)->_unregisterComponents();
@@ -165,7 +167,7 @@ bool SimComponent::addComponent( SimComponent *component )
       for( SimComponentiterator nItr = mComponentList.begin(); nItr != mComponentList.end(); nItr++ )
       {
          SimComponent *pComponent = dynamic_cast<SimComponent*>(*nItr);
-         AssertFatal( pComponent, "SimComponent::addComponent - NULL component in list!" );
+         AssertFatal( pComponent, "SimComponent::addComponent - nullptr component in list!" );
          if( pComponent == component )
             return true;
       }
@@ -190,12 +192,12 @@ bool SimComponent::removeComponent( SimComponent *component )
       for( SimComponentiterator nItr = mComponentList.begin(); nItr != mComponentList.end(); nItr++ )
       {
          SimComponent *pComponent = dynamic_cast<SimComponent*>(*nItr);
-         AssertFatal( pComponent, "SimComponent::removeComponent - NULL component in list!" );
+         AssertFatal( pComponent, "SimComponent::removeComponent - nullptr component in list!" );
          if( pComponent == component )
          {
             AssertFatal( component->mOwner == this, "Somehow we contain a component who doesn't think we are it's owner." );
             (*nItr)->onComponentRemove(this);
-            component->mOwner = NULL;
+            component->mOwner = nullptr;
             mComponentList.erase( nItr );
             return true;
          }
@@ -293,7 +295,7 @@ bool SimComponent::callMethodOnComponents( U32 argc, const char* argv[], const c
             argv[0] = cbName;
 
             SimComponent *pComponent = (*nItr);
-            AssertFatal( pComponent, "SimComponent::callMethodOnComponents - NULL component in list!" );
+            AssertFatal( pComponent, "SimComponent::callMethodOnComponents - nullptr component in list!" );
 
             // Call on children
             handled = pComponent->callMethodOnComponents( argc, argv, result );
@@ -310,75 +312,4 @@ bool SimComponent::callMethodOnComponents( U32 argc, const char* argv[], const c
 
    return false;
 }
-
-//////////////////////////////////////////////////////////////////////////
-// Console Methods
-//////////////////////////////////////////////////////////////////////////
-
-ConsoleMethod( SimComponent, addComponents, bool, 3, 64, "%obj.addComponents( %compObjName, %compObjName2, ... );\n"
-              "Adds additional components to current list.\n"
-              "@param Up to 62 component names\n"
-              "@return Returns true on success, false otherwise.")
-{
-   for(S32 i = 2; i < argc; i++)
-   {
-      SimComponent *obj = dynamic_cast<SimComponent*> (Sim::findObject(argv[i]) );
-      if(obj)
-         object->addComponent(obj);
-      else
-         Con::printf("SimComponent::addComponents - Invalid Component Object \"%s\"", argv[i]);
-   }
-   return true;
-}
-
-ConsoleMethod( SimComponent, removeComponents, bool, 3, 64, "%obj.removeComponents( %compObjName, %compObjName2, ... );\n"
-              "Removes components by name from current list.\n"
-              "@param objNamex Up to 62 component names\n"
-              "@return Returns true on success, false otherwise.")
-{
-   for(S32 i = 2; i < argc; i++)
-   {
-      SimComponent *obj = dynamic_cast<SimComponent*> (Sim::findObject(argv[i]) );
-      if(obj)
-         object->removeComponent(obj);
-      else
-         Con::printf("SimComponent::removeComponents - Invalid Component Object \"%s\"", argv[i]);
-   }
-   return true;
-}
-
-ConsoleMethod( SimComponent, getComponentCount, S32, 2, 2, "() Get the current component count\n"
-              "@return The number of components in the list as an integer")
-{
-   return object->getComponentCount();
-}
-
-ConsoleMethod( SimComponent, getComponent, S32, 3, 3, "(idx) Get the component corresponding to the given index.\n"
-              "@param idx An integer index value corresponding to the desired component.\n"
-              "@return The id of the component at the given index as an integer")
-{
-   S32 idx = dAtoi(argv[2]);
-   if(idx < 0 || idx >= (S32)object->getComponentCount())
-   {
-      Con::errorf("SimComponent::getComponent - Invalid index %d", idx);
-      return 0;
-   }
-
-   SimComponent *c = object->getComponent(idx);
-   return c ? c->getId() : 0;
-}
-
-ConsoleMethod(SimComponent, setEnabled, void, 3, 3, "(enabled) Sets or unsets the enabled flag\n"
-              "@param enabled Boolean value\n"
-              "@return No return value")
-{
-   object->setEnabled(dAtob(argv[2]));
-}
-
-ConsoleMethod(SimComponent, isEnabled, bool, 2, 2, "() Check whether SimComponent is currently enabled\n"
-              "@return true if enabled and false if not")
-{
-   return object->isEnabled();
-}
-
 

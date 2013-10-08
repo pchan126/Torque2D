@@ -127,7 +127,7 @@ private:
    /// @param  caseSens Determines whether case matters.
    StringTableEntry lookupn(const char *string, S32 len, bool caseSens = false);
 
-   StringTableEntry readStream( std::iostream* stream, bool caseSens = false);
+   StringTableEntry readStream(std::iostream &stream, bool caseSens = false);
 
    U32 STEtoU32(StringTableEntry ste);
 

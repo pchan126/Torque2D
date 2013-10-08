@@ -26,9 +26,9 @@
 #include "console/codeBlock.h"
 #include "console/consoleInternal.h"
 #include "memory/frameAllocator.h"
-#include "io/fileStream.h"
 #include "io/fileObject.h"
 #include "console/consoleTypeValidators.h"
+#include "io/StreamFn.h"
 
 //-----------------------------------------------------------------------------
 
@@ -304,7 +304,7 @@ bool SimObject::writeField(StringTableEntry fieldname, const char* value)
    return true;
 }
 
-void SimObject::writeFields(Stream &stream, U32 tabStop)
+void SimObject::writeFields(std::iostream &stream, U32 tabStop)
 {
    const AbstractClassRep::FieldList &list = getFieldList();
 
@@ -367,8 +367,8 @@ void SimObject::writeFields(Stream &stream, U32 tabStop)
          expandEscape((char*)expandedBuffer + dStrlen(expandedBuffer), val);
          dStrcat(expandedBuffer, "\";\r\n");
 
-         stream.writeTabs(tabStop);
-         stream.write(dStrlen(expandedBuffer),expandedBuffer);
+         StreamFn::writeTabs(stream, tabStop);
+         stream.write(expandedBuffer, dStrlen(expandedBuffer));
       }
    }    
    if(mFieldDictionary && mCanSaveFieldDictionary)
@@ -381,20 +381,20 @@ void SimObject::write(std::iostream &stream, U32 tabStop, U32 flags)
    if((flags & SelectedOnly) && !isSelected())
       return;
 
-   stream.writeTabs(tabStop);
+   StreamFn::writeTabs(stream, tabStop);
    char buffer[1024];
    dSprintf(buffer, sizeof(buffer), "new %s(%s) {\r\n", getClassName(), getName() ? getName() : "");
-   stream.write(dStrlen(buffer), buffer);
+   stream.write(buffer, dStrlen(buffer));
    writeFields(stream, tabStop + 1);
-   stream.writeTabs(tabStop);
-   stream.write(4, "};\r\n");
+   StreamFn::writeTabs(stream, tabStop);
+   stream.write("};\r\n", 4);
 }
 
 bool SimObject::save(const char* pcFileName, bool bOnlySelected)
 {
    static const char *beginMessage = "//--- OBJECT WRITE BEGIN ---";
    static const char *endMessage = "//--- OBJECT WRITE END ---";
-   FileStream stream;
+   std::fstream stream;
    FileObject f;
    f.readMemory(pcFileName);
 
@@ -428,14 +428,14 @@ bool SimObject::save(const char* pcFileName, bool bOnlySelected)
       buffer = (const char *) f.readLine();
       if(!dStrcmp(buffer, beginMessage))
          break;
-      stream.write(dStrlen(buffer), buffer);
-      stream.write(2, "\r\n");
+      stream.write(buffer, dStrlen(buffer));
+      stream.write("\r\n", 2);
    }
-   stream.write(dStrlen(beginMessage), beginMessage);
-   stream.write(2, "\r\n");
+   stream.write(beginMessage, dStrlen(beginMessage));
+   stream.write("\r\n", 2);
    write(stream, 0, writeFlags);
-   stream.write(dStrlen(endMessage), endMessage);
-   stream.write(2, "\r\n");
+   stream.write(endMessage, dStrlen(endMessage));
+   stream.write("\r\n", 2);
    while(!f.isEOF())
    {
       buffer = (const char *) f.readLine();
@@ -445,8 +445,8 @@ bool SimObject::save(const char* pcFileName, bool bOnlySelected)
    while(!f.isEOF())
    {
       buffer = (const char *) f.readLine();
-      stream.write(dStrlen(buffer), buffer);
-      stream.write(2, "\r\n");
+      stream.write(buffer, dStrlen(buffer));
+      stream.write("\r\n", 2);
    }
 
    Con::setVariable("$DocRoot", nullptr);

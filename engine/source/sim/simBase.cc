@@ -22,16 +22,6 @@
 
 #include "platform/platform.h"
 #include "sim/simBase.h"
-#include "string/stringTable.h"
-#include "console/console.h"
-#include "io/fileStream.h"
-#include "input/actionMap.h"
-#include "io/resource/resourceManager.h"
-#include "io/fileObject.h"
-#include "console/consoleInternal.h"
-#include "debug/profiler.h"
-#include "console/consoleTypeValidators.h"
-#include "memory/frameAllocator.h"
 
 namespace Sim
 {

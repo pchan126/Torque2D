@@ -38,7 +38,7 @@ SimObject* TamlBinaryReader::read(std::fstream &stream)
     PROFILE_SCOPE(TamlBinaryReader_Read);
 
     // Read Taml signature.
-    StringTableEntry tamlSignature = StringTable->readStream(&stream);
+    StringTableEntry tamlSignature = StringTable->readStream(stream);
 
     // Is the signature correct?
     if ( tamlSignature != StringTable->insert( TAML_SIGNATURE ) )
@@ -107,10 +107,10 @@ SimObject* TamlBinaryReader::parseElement(std::iostream &stream, const U32 versi
 #endif
 
     // Fetch element name.    
-    StringTableEntry typeName = StringTable->readStream(&stream);
+    StringTableEntry typeName = StringTable->readStream(stream);
 
     // Fetch object name.
-    StringTableEntry objectName = StringTable->readStream(&stream);
+    StringTableEntry objectName = StringTable->readStream(stream);
 
     // Read references.
     U32 tamlRefId = 0;
@@ -235,7 +235,7 @@ void TamlBinaryReader::parseAttributes(std::iostream &stream, SimObject *pSimObj
     for ( U32 index = 0; index < attributeCount; ++index )
     {
         // Fetch attribute.
-        StringTableEntry attributeName = StringTable->readStream(&stream);
+        StringTableEntry attributeName = StringTable->readStream(stream);
         U32 len = 0;
         stream >> len;
         if (len <= 4096)
@@ -343,7 +343,7 @@ void TamlBinaryReader::parseCustomElements(std::iostream &stream, TamlCallbacks 
     for ( U32 nodeIndex = 0; nodeIndex < customNodeCount; ++nodeIndex )
     {
         //Read custom node name.
-        StringTableEntry nodeName = StringTable->readStream(&stream);
+        StringTableEntry nodeName = StringTable->readStream(stream);
 
         // Add custom node.
         TamlCustomNode* pCustomNode = customNodes.addNode( nodeName );
@@ -385,7 +385,7 @@ void TamlBinaryReader::parseCustomNode(std::iostream &stream, TamlCustomNode *pC
     }
 
     // No, so read custom node name.
-    StringTableEntry nodeName = StringTable->readStream(&stream);
+    StringTableEntry nodeName = StringTable->readStream(stream);
 
     // Add child node.
     TamlCustomNode* pChildNode = pCustomNode->addNode( nodeName );
@@ -425,7 +425,7 @@ void TamlBinaryReader::parseCustomNode(std::iostream &stream, TamlCustomNode *pC
         for( U32 childFieldIndex = 0; childFieldIndex < childFieldCount; ++childFieldIndex )
         {
             // Read field name.
-            StringTableEntry fieldName = StringTable->readStream(&stream);
+            StringTableEntry fieldName = StringTable->readStream(stream);
 
             // Read field value.
             char valueBuffer[MAX_TAML_NODE_FIELDVALUE_LENGTH];

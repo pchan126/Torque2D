@@ -57,9 +57,9 @@ public:
    /// A predefined empty string.
    static const String EmptyString;
 
-   String():_intern(NULL) {};
-   String(const String &str):_intern(NULL)                     { _string = str._string;};
-   String(const StringChar *str):_intern(NULL)                 { _string = std::string(str); }
+   String():_intern(nullptr) {};
+   String(const String &str):_intern(nullptr)                     { _string = str._string;};
+   String(const StringChar *str):_intern(nullptr)                 { _string = std::string(str); }
    String(const StringChar *str, SizeType size);
    String(const UTF16 *str);
    ~String();
@@ -69,13 +69,13 @@ public:
    const UTF8* utf8() const    { return c_str(); }
 
    SizeType length() const     { return _string.length();}   ///< Returns the length of the string in bytes.
-   SizeType size() const       { return _string.size();}    ///< Returns the length of the string in bytes including the NULL terminator.
+   SizeType size() const       { return _string.size();}    ///< Returns the length of the string in bytes including the nullptr terminator.
    SizeType numChars() const; ///< Returns the length of the string in characters.
    bool     isEmpty() const    { return ( _string.empty()); }///< Is this an empty string [""]?
    bool     isNotEmpty() const { return !isEmpty(); }  ///< Is this not an empty string [""]?
 
    void     intern();                /// converts the string into an interned string.
-   bool     isInterned() const { return _intern != NULL; }
+   bool     isInterned() const { return _intern != nullptr; }
 
    /// Erases all characters in a string.
    void clear() { _string.clear();  }
@@ -214,7 +214,7 @@ public:
    {
    public:
       StrFormat()
-         :  _dynamicBuffer( NULL ),
+         :  _dynamicBuffer( nullptr ),
             _dynamicSize( 0 ),
             _len( 0 )
       {
@@ -222,7 +222,7 @@ public:
       }
 
       StrFormat(const char *formatStr, va_list args)
-         :  _dynamicBuffer( NULL ),
+         :  _dynamicBuffer( nullptr ),
             _dynamicSize( 0 ),
             _len( 0 )
       {

@@ -30,7 +30,6 @@
 #include "io/resource/resourceManager.h"
 
 #include "string/findMatch.h"
-#include "io/fileStream.h"
 #include "console/compiler.h"
 
 extern ExprEvalState gEvalState;

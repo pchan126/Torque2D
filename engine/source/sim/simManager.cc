@@ -25,7 +25,6 @@
 #include "sim/simBase.h"
 #include "string/stringTable.h"
 #include "console/console.h"
-#include "io/fileStream.h"
 #include "io/resource/resourceManager.h"
 #include "io/fileObject.h"
 #include "console/consoleInternal.h"

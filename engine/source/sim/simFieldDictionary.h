@@ -72,7 +72,7 @@ public:
    const char *getFieldValue(StringTableEntry slotName);
    Entry  *findDynamicField(const String &fieldName) const;
    Entry  *findDynamicField( StringTableEntry fieldName) const {return findDynamicField(String(fieldName)); };
-   void writeFields(SimObject *obj, Stream &stream, U32 tabStop);
+   void writeFields(SimObject *obj, std::iostream &stream, U32 tabStop);
    void printFields(SimObject *obj);
    void assignFrom(SimFieldDictionary *dict);
    U32   getNumFields() const { return mNumFields; }

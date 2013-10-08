@@ -27,7 +27,6 @@
 #include "graphics/gfxTextureManager.h"
 #include "memory/safeDelete.h"
 #include "platform/platformString.h"
-#include "io/fileStream.h"
 #include "console/console.h"
 
 // TODO: Change this to be in non-shipping builds maybe?

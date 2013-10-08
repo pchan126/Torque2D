@@ -24,7 +24,6 @@
 
 #include "platform/platform.h"
 #include "platform/event.h"
-#include "io/fileStream.h"
 #include "sim/simBase.h"
 #include "console/consoleInternal.h"
 

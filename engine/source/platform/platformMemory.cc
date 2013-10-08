@@ -21,7 +21,6 @@
 //-----------------------------------------------------------------------------
 
 #include "platform/platform.h"
-#include "io/fileStream.h"
 #include "console/console.h"
 #include "debug/profiler.h"
 #include "platform/threads/mutex.h"

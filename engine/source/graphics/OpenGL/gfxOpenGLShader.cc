@@ -25,7 +25,6 @@
 #include "./gfxOpenGLShader.h"
 
 #include "memory/frameAllocator.h"
-#include "io/fileStream.h"
 #include "platform/platformString.h"
 #include "math/mPoint.h"
 #include "graphics/gfxStructs.h"

@@ -20,25 +20,25 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
+#include <fstream>
 #include "platform/platform.h"
 #include "platform/event.h"
 #include "game/gameInterface.h"
-#include "io/fileStream.h"
 #include "console/console.h"
 #include "platform/threads/mutex.h"
 
 // Script binding.
 #include "game/gameInterface_ScriptBinding.h"
 
-GameInterface *Game = NULL;
-void *gGameEventQueueMutex = NULL;
-FileStream gJournalStream;
+GameInterface *Game = nullptr;
+void *gGameEventQueueMutex = nullptr;
+std::fstream gJournalStream;
 
 //-----------------------------------------------------------------------------
 
 GameInterface::GameInterface()
 {
-   AssertFatal(Game == NULL, "ERROR: Multiple games declared.");
+   AssertFatal(Game == nullptr, "ERROR: Multiple games declared.");
    Game = this;
    mJournalMode = JournalOff;
    mRunning = true;
@@ -80,38 +80,38 @@ void GameInterface::journalProcess()
 void GameInterface::saveJournal(const char *fileName)
 {
    mJournalMode = JournalSave;
-   gJournalStream.open(fileName, FileStream::Write);
+   gJournalStream.open(fileName, std::fstream::out);
 }
 
 void GameInterface::playJournal(const char *fileName,bool journalBreak)
 {
    mJournalMode = JournalPlay;
    mJournalBreak = journalBreak;
-   gJournalStream.open(fileName, FileStream::Read);
+   gJournalStream.open(fileName, std::fstream::in);
 }
 
-FileStream *GameInterface::getJournalStream( void )
+std::fstream *GameInterface::getJournalStream()
 {
    return &gJournalStream;
 }
 
-void GameInterface::journalRead(U32 *val)
+void GameInterface::journalRead(U32 &val)
 {
-   gJournalStream.read(val);
+   gJournalStream >> val;
 }
 
 void GameInterface::journalWrite(U32 val)
 {
-   gJournalStream.write(val);
+   gJournalStream << (val);
 }
 
-void GameInterface::journalRead(U32 size, void *buffer)
+void GameInterface::journalRead(U32 size, char *buffer)
 {
-   gJournalStream.read(size, buffer);
+   gJournalStream.read(buffer, size);
 }
 
-void GameInterface::journalWrite(U32 size, const void *buffer)
+void GameInterface::journalWrite(U32 size, char const *buffer)
 {
-   gJournalStream.write(size, buffer);
+   gJournalStream.write(buffer, size);
 }
 

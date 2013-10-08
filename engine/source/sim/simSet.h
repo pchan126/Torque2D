@@ -208,8 +208,8 @@ public:
    virtual SimObject *findObject(const char *name);
    SimObject*	findObjectByInternalName(const char* internalName, bool searchChildren = false);
 
-   virtual bool writeObject(Stream *stream);
-   virtual bool readObject(Stream *stream);
+   virtual bool writeObject(std::iostream &stream);
+   virtual bool readObject(std::iostream &stream);
 
    inline void lock()
    {

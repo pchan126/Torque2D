@@ -55,12 +55,6 @@ struct sockaddr_ipx
 };
 // end wtaysom changes (May 26, 2004)
 
-#include <stdlib.h>
-
-#include "console/console.h"
-#include "game/gameInterface.h"
-#include "io/fileStream.h"
-#include "collection/vector.h"
 
 static Net::Error getLastError();
 static S32 defaultPort = 28000;

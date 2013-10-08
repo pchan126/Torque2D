@@ -27,7 +27,6 @@
 #include <string.h>
 #include "console/console.h"
 #include "collection/vector.h"
-#include "io/fileStream.h"
 #include "platform/threads/thread.h"
 
 #ifdef TORQUE_ENABLE_PROFILER

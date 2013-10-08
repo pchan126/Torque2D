@@ -24,7 +24,6 @@
 #include "sim/simBase.h"
 #include "string/stringTable.h"
 #include "console/console.h"
-#include "io/fileStream.h"
 #include "input/actionMap.h"
 #include "io/resource/resourceManager.h"
 #include "io/fileObject.h"
@@ -32,6 +31,7 @@
 #include "debug/profiler.h"
 #include "console/consoleTypeValidators.h"
 #include "memory/frameAllocator.h"
+#include "StreamFn.h"
 
 //////////////////////////////////////////////////////////////////////////
 // Sim Set
@@ -180,21 +180,21 @@ void SimSet::write(std::iostream &stream, U32 tabStop, U32 flags)
 
    }
 
-   stream.writeTabs(tabStop);
+   StreamFn::writeTabs(stream, tabStop);
    char buffer[1024];
    dSprintf(buffer, sizeof(buffer), "new %s(%s) {\r\n", getClassName(), getName() ? getName() : "");
-   stream.write(dStrlen(buffer), buffer);
+   stream.write(buffer, dStrlen(buffer));
    writeFields(stream, tabStop + 1);
 
    if(size())
    {
-      stream.write(2, "\r\n");
+      stream.write("\r\n", 2);
       for(U32 i = 0; i < (U32)size(); i++)
          (*this)[i]->write(stream, tabStop + 1, flags);
    }
 
-   stream.writeTabs(tabStop);
-   stream.write(4, "};\r\n");
+    StreamFn::writeTabs(stream, tabStop);
+   stream.write("};\r\n", 4);
 }
 
 void SimSet::deleteObjects( void )

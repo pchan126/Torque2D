@@ -22,28 +22,32 @@
 
 #include "console/console.h"
 #include "sim/simBase.h"
-#include "io/bitStream.h"
-#include "io/fileStream.h"
 #include "io/resource/resourceManager.h"
+#include "StreamFn.h"
 
 //////////////////////////////////////////////////////////////////////////
 // SimObject Methods
 //////////////////////////////////////////////////////////////////////////
 
-bool SimObject::writeObject(Stream *stream)
+bool SimObject::writeObject(std::iostream &stream)
 {
    clearFieldFilters();
    buildFilterList();
 
-   stream->writeString(getName() ? getName() : "");
+    if (getName())
+    {
+        S32 len = dStrlen(getName());
+
+    }
+    StreamFn::writeString(stream, getName() ? getName() : "");
 
    // Static fields
    AbstractClassRep *rep = getClassRep();
    AbstractClassRep::FieldList &fieldList = rep->mFieldList;
 
-   U32 savePos = stream->getPosition();
+   U32 savePos = stream.tellp();
    U32 numFields = fieldList.size();
-   stream->write(numFields);
+   stream << numFields;
 
    for(auto itr : fieldList )
    {
@@ -57,8 +61,8 @@ bool SimObject::writeObject(Stream *stream)
       if(field == nullptr)
          field = "";
 
-      stream->writeString(itr.pFieldname);
-      stream->writeString(field);
+       StreamFn::writeString(stream, itr.pFieldname);
+       StreamFn::writeString(stream, field);
    }
 
    // Dynamic Fields
@@ -72,34 +76,34 @@ bool SimObject::writeObject(Stream *stream)
          if(isFiltered(entry->slotName))
             continue;
 
-         stream->writeString(entry->slotName);
-         stream->writeString(entry->value);
+          StreamFn::writeString(stream, entry->slotName);
+          StreamFn::writeString(stream, entry->value);
          numFields++;
       }
    }
 
    // Overwrite the number of fields with the correct value
-   U32 savePos2 = stream->getPosition();
-   stream->setPosition(savePos);
-   stream->write(numFields);
-   stream->setPosition(savePos2);
+   U32 savePos2 = stream.tellp();
+   stream.seekp(savePos);
+   stream << (numFields);
+   stream.seekp(savePos2);
 
    return true;
 }
 
-bool SimObject::readObject(Stream *stream)
+bool SimObject::readObject(std::iostream &stream)
 {
-   const char *name = stream->readSTString(true);
+   const char *name = StringTable->readStream(stream, true);
    if(name && *name)
       assignName(name);
 
    U32 numFields;
-   stream->read(&numFields);
+   stream >> numFields;
 
    for(U32 i = 0;i < numFields;i++)
    {
-      const char *fieldName = stream->readSTString();
-      const char *data = stream->readSTString();
+      const char *fieldName = StringTable->readStream(stream);
+      const char *data = StringTable->readStream(stream);
 
       setDataField(fieldName, nullptr, data);
    }
@@ -163,12 +167,12 @@ bool SimObject::isFiltered( const char *fieldName )
 // SimSet Methods
 //////////////////////////////////////////////////////////////////////////
 
-bool SimSet::writeObject( Stream *stream )
+bool SimSet::writeObject(std::iostream &stream)
 {
    if(! Parent::writeObject(stream))
       return false;
 
-   stream->write(size());
+   stream << (U32)(size());
    for(auto i:*this)
    {
       if(! Sim::saveObject(i, stream))
@@ -177,13 +181,13 @@ bool SimSet::writeObject( Stream *stream )
    return true;
 }
 
-bool SimSet::readObject( Stream *stream )
+bool SimSet::readObject(std::iostream &stream)
 {
    if(! Parent::readObject(stream))
       return false;
 
    U32 numObj;
-   stream->read(&numObj);
+   stream >> numObj;
 
    for(U32 i = 0;i < numObj;i++)
    {
@@ -206,10 +210,10 @@ namespace Sim
 
 bool saveObject(SimObject *obj, const char *filename)
 {
-   FileStream fs;
-   if(ResourceManager->openFileForWrite(fs, filename, FileStream::Write))
+    std::fstream fs;
+   if(ResourceManager->openFileForWrite(fs, filename, std::fstream::out))
    {
-      bool ret = saveObject(obj, &fs);
+      bool ret = saveObject(obj, fs);
       fs.close();
 
       return ret;
@@ -217,9 +221,9 @@ bool saveObject(SimObject *obj, const char *filename)
    return false;
 }
 
-bool saveObject(SimObject *obj, Stream *stream)
+bool saveObject(SimObject *obj, std::iostream &stream)
 {
-   stream->writeString(obj->getClassName());
+   stream.write(obj->getClassName(), strlen(obj->getClassName()));
    return obj->writeObject(stream);
 }
 
@@ -227,11 +231,11 @@ bool saveObject(SimObject *obj, Stream *stream)
 
 SimObject *loadObjectStream(const char *filename)
 {
-   Stream * stream = ResourceManager->openStream(filename);
+    std::iostream * stream = ResourceManager->openStream(filename);
    
    if (stream)
    {
-      SimObject *ret = loadObjectStream(stream);
+      SimObject *ret = loadObjectStream(*stream);
       ResourceManager->closeStream(stream);
       return ret;
    }
@@ -239,9 +243,9 @@ SimObject *loadObjectStream(const char *filename)
    return nullptr;
 }
 
-SimObject *loadObjectStream(Stream *stream)
+SimObject *loadObjectStream(std::iostream& stream)
 {
-   const char *className = stream->readSTString(true);
+   const char *className = StringTable->readStream(stream, true);
    ConsoleObject *conObj = ConsoleObject::create(className);
    if(conObj == nullptr)
    {

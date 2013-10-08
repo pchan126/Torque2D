@@ -23,7 +23,6 @@
 #include "persistence/taml/json/TamlJSONParser.h"
 #include "persistence/taml/tamlVisitor.h"
 #include "console/console.h"
-#include "io/fileStream.h"
 #include "memory/frameAllocator.h"
 
 // Debug Profiling.

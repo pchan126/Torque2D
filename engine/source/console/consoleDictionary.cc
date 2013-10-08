@@ -30,7 +30,6 @@
 #include "io/resource/resourceManager.h"
 
 #include "string/findMatch.h"
-#include "io/fileStream.h"
 #include "console/compiler.h"
 
 static char scratchBuffer[1024];

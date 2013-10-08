@@ -34,7 +34,6 @@
 #include "graphics/gBitmap.h"
 //#include "ts/tsShape.h"
 #include "io/resource/resourceManager.h"
-#include "io/fileStream.h"
 #include "graphics/gfxInit.h"
 #include "graphics/gfxTextureManager.h"
 #include "console/console.h"
@@ -267,14 +266,15 @@ bool initializeGame(int argc, const char **argv)
     ResourceManager->setWriteablePath(Platform::getCurrentDirectory());
     ResourceManager->addPath( Platform::getCurrentDirectory() );
 
-    FileStream scriptFileStream; 
-    Stream* scriptStream;
+    std::fstream scriptFileStream;
+    std::iostream* scriptStream;
 
     // Check if any command-line parameters were passed (the first is just the app name).
     if (argc > 1)
     {
         // If so, check if the first parameter is a file to open.
-        if ( (scriptFileStream.open(argv[1], FileStream::Read)) && dStrncmp(argv[1], "", 1) )
+        scriptFileStream.open(argv[1], std::fstream::in);
+        if (scriptFileStream && dStrncmp(argv[1], "", 1) )
         {
             // If it opens, we assume it is the script to run.
             useDefaultScript = false;
@@ -284,8 +284,8 @@ bool initializeGame(int argc, const char **argv)
 
     if (useDefaultScript)
     {
-        bool success = false;
-            success = scriptFileStream.open(defaultScriptName, FileStream::Read);
+        scriptFileStream.open(defaultScriptName, std::fstream::in);
+        bool success = scriptFileStream ? true : false;
 
         if( !success )
         {
@@ -303,7 +303,7 @@ bool initializeGame(int argc, const char **argv)
     char* pScriptBuffer = new char[size + 1];
 
     // Read script.
-    scriptStream->read(size, pScriptBuffer);
+    scriptStream->read(pScriptBuffer, size);
 
     scriptFileStream.close();
 

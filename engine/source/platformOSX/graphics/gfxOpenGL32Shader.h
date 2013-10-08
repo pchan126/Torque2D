@@ -26,7 +26,6 @@
 #include "graphics/OpenGL/gfxOpenGLShader.h"
 
 class GFXOpenGL32ShaderConstHandle;
-class FileStream;
 class GFXOpenGL32ShaderConstBuffer;
 
 class GFXOpenGL32Shader : public GFXOpenGLShader

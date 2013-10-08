@@ -224,8 +224,8 @@ namespace Sim
    /// Empty strings and NULL are also treated as valid names (anonymous objects).
    bool isValidObjectName( const char* name );
 
-   bool saveObject(SimObject *obj, Stream *stream);
-   SimObject *loadObjectStream(Stream *stream);
+   bool saveObject(SimObject *obj, std::iostream &stream);
+   SimObject *loadObjectStream(std::iostream& stream);
 
    bool saveObject(SimObject *obj, const char *filename);
    SimObject *loadObjectStream(const char *filename);
