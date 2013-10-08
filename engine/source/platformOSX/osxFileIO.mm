@@ -101,7 +101,7 @@ void recurseDumpDirectories(const char* basePath, const char* subPath, Vector<St
     {
         // Is the item a directory?
         NSNumber* isDirectory;
-        [itemURL getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:NULL];
+        [itemURL getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:nullptr];
         
         // Skip if this is NOT a directory.
         if ( [isDirectory boolValue] == false )
@@ -109,7 +109,7 @@ void recurseDumpDirectories(const char* basePath, const char* subPath, Vector<St
         
         // Is the sub-directory a package directory?
         NSNumber* isPackageDirectory;
-        [itemURL getResourceValue:&isPackageDirectory forKey:NSURLIsPackageKey error:NULL];
+        [itemURL getResourceValue:&isPackageDirectory forKey:NSURLIsPackageKey error:nullptr];
         
         // Skip if this is a package directory.
         if  ( [isPackageDirectory boolValue] == true )
@@ -117,7 +117,7 @@ void recurseDumpDirectories(const char* basePath, const char* subPath, Vector<St
         
         // Fetch the sub-directory name.
         NSString* subDirectoryName;
-        [itemURL getResourceValue:&subDirectoryName forKey:NSURLNameKey error:NULL];
+        [itemURL getResourceValue:&subDirectoryName forKey:NSURLNameKey error:nullptr];
         
         // Fetch UTF8 sub-directory name.
         const char* pSubDirectoryName = [subDirectoryName UTF8String];
@@ -173,7 +173,7 @@ static void recurseDumpPath(const char* curPath, Vector<Platform::FileInfo>& fil
     {
         // Is the item a directory?
         NSNumber* isDirectory;
-        [itemURL getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:NULL];
+        [itemURL getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:nullptr];
         
         // Skip if this is a directory.
         if ( [isDirectory boolValue] == true )
@@ -181,11 +181,11 @@ static void recurseDumpPath(const char* curPath, Vector<Platform::FileInfo>& fil
         
         // Fetch the file-name.
         NSString* fileName;
-        [itemURL getResourceValue:&fileName forKey:NSURLNameKey error:NULL];
+        [itemURL getResourceValue:&fileName forKey:NSURLNameKey error:nullptr];
 
         // Fetch the file size.
         NSNumber* fileSize;
-        [itemURL getResourceValue:&fileSize forKey:NSURLFileSizeKey error:NULL];
+        [itemURL getResourceValue:&fileSize forKey:NSURLFileSizeKey error:nullptr];
         
         // Allocate a file entry.
         fileVector.increment();
@@ -206,7 +206,7 @@ static void recurseDumpPath(const char* curPath, Vector<Platform::FileInfo>& fil
     {
         // Is the item a directory?
         NSNumber* isDirectory;
-        [itemURL getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:NULL];
+        [itemURL getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:nullptr];
         
         // Skip if this is NOT a directory.
         if ( [isDirectory boolValue] == false )
@@ -214,7 +214,7 @@ static void recurseDumpPath(const char* curPath, Vector<Platform::FileInfo>& fil
         
         // Is the sub-directory a package directory?
         NSNumber* isPackageDirectory;
-        [itemURL getResourceValue:&isPackageDirectory forKey:NSURLIsPackageKey error:NULL];
+        [itemURL getResourceValue:&isPackageDirectory forKey:NSURLIsPackageKey error:nullptr];
         
         // Skip if this is a package directory.
         if  ( [isPackageDirectory boolValue] == true )
@@ -222,7 +222,7 @@ static void recurseDumpPath(const char* curPath, Vector<Platform::FileInfo>& fil
         
         // Fetch the sub-directory name.
         NSString* subDirectoryName;
-        [itemURL getResourceValue:&subDirectoryName forKey:NSURLNameKey error:NULL];
+        [itemURL getResourceValue:&subDirectoryName forKey:NSURLNameKey error:nullptr];
         
         // Skip if this is an excluded directory.
         if ( Platform::isExcludedDirectory([subDirectoryName UTF8String]) )
@@ -241,7 +241,7 @@ static void recurseDumpPath(const char* curPath, Vector<Platform::FileInfo>& fil
 
 File::File() : currentStatus(Closed), capability(0)
 {
-    handle = NULL;
+    handle = nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -249,7 +249,7 @@ File::File() : currentStatus(Closed), capability(0)
 File::~File()
 {
     close();
-    handle = NULL;
+    handle = nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -283,7 +283,7 @@ File::Status File::open(const char *filename, const AccessMode openMode)
     }
     
     // handle not created successfully
-    if (handle == NULL)
+    if (handle == nullptr)
         return setStatus();
     
     // successfully created file, so set the file capabilities...
@@ -319,7 +319,7 @@ U32 File::getPosition() const
 {
     // Before proceeding, make sure the file is open and the handle is valid
     AssertFatal(currentStatus != Closed , "File::getPosition: file closed");
-    AssertFatal(handle != NULL, "File::getPosition: invalid file handle");
+    AssertFatal(handle != nullptr, "File::getPosition: invalid file handle");
         
     // Return the position (aka, offset)
     return ftell((FILE*)handle);
@@ -331,7 +331,7 @@ File::Status File::setPosition( S32 position, bool absolutePos )
 {
     // Before proceeding, make sure the file is open and the handle is valid
     AssertFatal(Closed != currentStatus, "File::setPosition: file closed");
-    AssertFatal(handle != NULL, "File::setPosition: invalid file handle");
+    AssertFatal(handle != nullptr, "File::setPosition: invalid file handle");
     
     // Check for valid status and not end of the file stream
     if (currentStatus != Ok && currentStatus != EOS )
@@ -384,7 +384,7 @@ U32 File::getSize() const
 {
     // Before proceeding, make sure the file is open and the handle is valid
     AssertWarn(Closed != currentStatus, "File::getSize: file closed");
-    AssertFatal(handle != NULL, "File::getSize: invalid file handle");
+    AssertFatal(handle != nullptr, "File::getSize: invalid file handle");
     
     if ( Ok == currentStatus || EOS == currentStatus )
     {
@@ -407,7 +407,7 @@ File::Status File::flush()
     // Before proceeding, make sure the file is open, the handle is valid, and the file can
     // be written to.
     AssertFatal(Closed != currentStatus, "File::flush: file closed");
-    AssertFatal(handle != NULL, "File::flush: invalid file handle");
+    AssertFatal(handle != nullptr, "File::flush: invalid file handle");
     AssertFatal(true == hasCapability(FileWrite), "File::flush: cannot flush a read-only file");
     
     if (fflush((FILE*)handle) != 0)
@@ -425,12 +425,12 @@ File::Status File::close()
         return currentStatus;
     
     // it's not, so close it...
-    if (handle != NULL)
+    if (handle != nullptr)
     {
         if (fclose((FILE*)handle) != 0)
             return setStatus();
     }
-    handle = NULL;
+    handle = nullptr;
     return currentStatus = Closed;
 }
 
@@ -478,8 +478,8 @@ File::Status File::read(U32 size, char *dst, U32 *bytesRead)
     // the destination is not null, the file can be read, and the read size is
     // greater than 0.
     AssertFatal(Closed != currentStatus, "File::read: file closed");
-    AssertFatal(handle != NULL, "File::read: invalid file handle");
-    AssertFatal(NULL != dst, "File::read: NULL destination pointer");
+    AssertFatal(handle != nullptr, "File::read: invalid file handle");
+    AssertFatal(nullptr != dst, "File::read: nullptr destination pointer");
     AssertFatal(true == hasCapability(FileRead), "File::read: file lacks capability");
     AssertWarn(0 != size, "File::read: size of zero");
     
@@ -509,8 +509,8 @@ File::Status File::write(U32 size, const char *src, U32 *bytesWritten)
     // the source is not null, the file can be written to, and the write size is
     // greater than 0.    
     AssertFatal(Closed != currentStatus, "File::write: file closed");
-    AssertFatal(handle != NULL, "File::write: invalid file handle");
-    AssertFatal(NULL != src, "File::write: NULL source pointer");
+    AssertFatal(handle != nullptr, "File::write: invalid file handle");
+    AssertFatal(nullptr != src, "File::write: nullptr source pointer");
     AssertFatal(true == hasCapability(FileWrite), "File::write: file lacks capability");
     AssertWarn(0 != size, "File::write: size of zero");
     
@@ -592,7 +592,7 @@ bool Platform::fileTouch(const char *path)
         return false;
     
     // set file at path's modification and access times to now.
-    return( utimes( path, NULL) == 0); // utimes returns 0 on success.
+    return( utimes( path, nullptr) == 0); // utimes returns 0 on success.
 }
 
 //-----------------------------------------------------------------------------
@@ -825,7 +825,7 @@ StringTableEntry Platform::getExecutablePath()
         }
         
         CFStringRef workingString = CFURLCopyFileSystemPath(workingUrl, kCFURLPOSIXPathStyle);
-        CFMutableStringRef normalizedString = CFStringCreateMutableCopy(NULL, 0, workingString);
+        CFMutableStringRef normalizedString = CFStringCreateMutableCopy(nullptr, 0, workingString);
         CFStringNormalize(normalizedString,kCFStringNormalizationFormC);
         CFStringGetCString(normalizedString, cwd_buf, sizeof(cwd_buf)-1, kCFStringEncodingUTF8);
         
@@ -846,7 +846,7 @@ StringTableEntry Platform::getExecutablePath()
     
     CFRelease(bundleUrl);
     
-    char* ret = NULL;
+    char* ret = nullptr;
     
     if (StringTable)
         platState.mainCSDirectory = @(StringTable->insert(cwd_buf));
@@ -868,7 +868,7 @@ StringTableEntry Platform::getExecutableName()
     
     // get a cfstring of just the app name
     CFStringRef workingString = CFURLCopyLastPathComponent(bundleUrl);
-    CFMutableStringRef normalizedString = CFStringCreateMutableCopy(NULL, 0, workingString);
+    CFMutableStringRef normalizedString = CFStringCreateMutableCopy(nullptr, 0, workingString);
     CFStringNormalize(normalizedString,kCFStringNormalizationFormC);
     CFStringGetCString(normalizedString, path_buf, sizeof(path_buf)-1, kCFStringEncodingUTF8);
     
@@ -986,7 +986,7 @@ bool Platform::isSubDirectory(const char *pathParent, const char *pathSub)
 {
     // Concatenate the parent and sub directories
     char fullpath[MAX_MAC_PATH_LONG];
-    dStrcpyl(fullpath, MAX_MAC_PATH_LONG, pathParent, "/", pathSub, NULL);
+    dStrcpyl(fullpath, MAX_MAC_PATH_LONG, pathParent, "/", pathSub, nullptr);
     
     // Return the isDirectory check
     return isDirectory((const char *)fullpath);
@@ -1152,7 +1152,7 @@ bool Platform::dumpPath(const char *path, Vector<Platform::FileInfo>& fileVector
 bool Platform::fileRename(const char *source, const char *dest)
 {
     // Make sure the pointers are valid
-    if (source == NULL || dest == NULL)
+    if (source == nullptr || dest == nullptr)
         return false;
     
     // Get the shared file manager
@@ -1269,7 +1269,7 @@ const char* Platform::getUserDataDirectory()
 	if ([paths count] == 0)
 	{
 		// orb: This is a catastrophic failure - the system doesn't know where ~/Library/Application Support is!
-		return NULL;
+		return nullptr;
 	}
     
 	NSString* fullPath = paths[0];
@@ -1304,7 +1304,7 @@ const char* Platform::getUserDataDirectory()
 		if (!success)
         {
             Con::errorf("Platform::getUserDataDirectory: %s", [[errorResponse localizedDescription] UTF8String]);
-            return NULL;
+            return nullptr;
         }
     }
     

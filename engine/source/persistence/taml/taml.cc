@@ -187,7 +187,12 @@ bool Taml::write( SimObject* pSimObject, const char* pFilename )
     resetCompilation();
 
     // Write object.
-    const bool status = write( stream, pSimObject, formatMode );
+    bool status = false;
+    if (formatMode != BinaryFormat)
+       status = write( mFilePathBuffer, pSimObject, formatMode );
+    else
+       status = write( &stream, pSimObject, formatMode );
+
 
     // Close file.
     stream.close();
@@ -269,31 +274,55 @@ bool Taml::write( const char* filename, SimObject* pSimObject, const TamlFormatM
             return writer.write( filename, pRootNode );
         }
 
-        /// Binary.
-        case BinaryFormat:
-        {
-            // Create writer.
-            TamlBinaryWriter writer( this );
-
-
-            // Write.
-            std::fstream temp(filename);
-            return writer.write( temp, pRootNode, mBinaryCompression );
-        }
-
-        /// JSON.
+            /// JSON.
         case JSONFormat:
         {
             // Create writer.
             TamlJSONWriter writer( this );
 
             // Write.
-            std::fstream temp(filename);
-            return writer.write( temp, pRootNode );
+            return writer.write( filename, pRootNode );
         }
 
         /// Invalid.
-        case InvalidFormat:
+        default:
+        {
+            // Warn.
+            Con::warnf("Taml::write() - Cannot write, invalid format.");
+            return false;
+        }
+    }
+
+    // Warn.
+    Con::warnf("Taml::write() - Unknown format.");
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+
+bool Taml::write( std::fstream stream, SimObject* pSimObject, const TamlFormatMode formatMode )
+{
+    // Sanity!
+    AssertFatal( pSimObject != nullptr, "Cannot write a nullptr object." );
+
+    // Compile nodes.
+    TamlWriteNode* pRootNode = compileObject( pSimObject );
+
+    // Format appropriately.
+    switch( formatMode )
+    {
+            /// Binary.
+        case BinaryFormat:
+        {
+            // Create writer.
+            TamlBinaryWriter writer( this );
+
+            // Write.
+            return writer.write( stream, pRootNode, mBinaryCompression );
+        }
+
+            /// Invalid.
+        default:
         {
             // Warn.
             Con::warnf("Taml::write() - Cannot write, invalid format.");
@@ -342,7 +371,7 @@ SimObject* Taml::read(const char* filename, TamlFormatMode const formatMode)
 
             // Read.
             std::fstream stream(filename);
-            return reader.read( stream );
+            return reader.read( filename );
         }
         
         /// Invalid.

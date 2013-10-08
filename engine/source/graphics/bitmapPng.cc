@@ -439,7 +439,6 @@ bool GBitmap::writePNG(std::iostream &stream, bool compressHard) const
          {
             for (U32 pf = 0; pf < 6; pf++) 
             {
-//               pMemStream->setPosition(0);
                 pMemStream.seekg(0, pMemStream.beg);
 
                if (_writePNG(pMemStream, cl, zStrategies[zs], pngFilters[pf]) == false)

@@ -23,6 +23,7 @@
 #ifndef _TAML_H_
 #define _TAML_H_
 
+#include <fstream>
 #include "persistence/taml/tamlCallbacks.h"
 #include "persistence/taml/tamlCustom.h"
 #include "persistence/taml/tamlWriteNode.h"
@@ -84,6 +85,7 @@ private:
     void compileCustomNodeState( TamlCustomNode* pCustomNode );
 
     bool write(const char* filename, SimObject *pSimObject, const TamlFormatMode formatMode);
+    bool write( std::fstream stream, SimObject* pSimObject, const TamlFormatMode formatMode );
     SimObject* read(const char* filename, TamlFormatMode const formatMode);
     template<typename T> inline T* read( const char* filename, const TamlFormatMode formatMode )
     {

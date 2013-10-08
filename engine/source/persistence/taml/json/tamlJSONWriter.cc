@@ -21,9 +21,8 @@
 //-----------------------------------------------------------------------------
 
 #include "persistence/taml/json/tamlJSONWriter.h"
-
-#include "string/stringTable.h"
-#include "io/fileStream.h"
+#include "rapidjson/filestream.h"
+#include <fstream>
 
 // Debug Profiling.
 #include "debug/profiler.h"
@@ -57,7 +56,7 @@ StringTableEntry JSON_RFC4627_NAME_MANGLING_FORMAT = StringTable->insert( "%s[%d
 
 //-----------------------------------------------------------------------------
 
-bool TamlJSONWriter::write(std::fstream &stream, const TamlWriteNode *pTamlWriteNode)
+bool TamlJSONWriter::write(const char* filename, const TamlWriteNode *pTamlWriteNode)
 {
     // Debug Profiling.
     PROFILE_SCOPE(TamlJSONWriter_Write);
@@ -70,8 +69,11 @@ bool TamlJSONWriter::write(std::fstream &stream, const TamlWriteNode *pTamlWrite
     rapidjson::Value rootValue(rapidjson::kObjectType);
     compileType( document, &rootValue, nullptr, pTamlWriteNode, -1 );
 
+    FILE * pFile = fopen(filename, "wb");
+
     // Write document to stream.
-    rapidjson::PrettyWriter<FileStream> jsonStreamWriter( stream );
+    rapidjson::FileStream is(pFile);
+    rapidjson::PrettyWriter<rapidjson::FileStream> jsonStreamWriter( is );
     document.Accept( jsonStreamWriter );
 
     return true;

@@ -155,8 +155,8 @@ void TamlBinaryWriter::writeAttributes(std::iostream &stream, const TamlWriteNod
 
         // Write attribute.
         stream.write( pFieldValue->mName, strlen(pFieldValue->mName));
-        U32 len = strlen(pFieldValue->mpValue);
-        stream.write( pFieldValue->mpValue, std::min(len, 4096) );
+        SizeType len = std::min(strlen(pFieldValue->mpValue), (SizeType)4096);
+        stream.write( pFieldValue->mpValue, len );
     }
 }
 
@@ -298,8 +298,8 @@ void TamlBinaryWriter::writeCustomNode(std::iostream &stream, const TamlCustomNo
 
             // Write the node field.
             stream.write( pField->getFieldName(), strlen(pField->getFieldName()));
-            U32 len = strlen(pField->getFieldValue());
-            stream.write( pField->getFieldValue(), min(MAX_TAML_NODE_FIELDVALUE_LENGTH,len) );
+            SizeType len = strlen(pField->getFieldValue());
+            stream.write( pField->getFieldValue(), std::min((SizeType)MAX_TAML_NODE_FIELDVALUE_LENGTH,len) );
         }
     }
 }
