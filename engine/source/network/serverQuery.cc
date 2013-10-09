@@ -100,11 +100,11 @@
 #include "network/connectionProtocol.h"
 #include "collection/vector.h"
 #include "io/resource/resourceManager.h"
-#include "io/bitStream.h"
 #include "console/console.h"
 #include "sim/simBase.h"
 #include "game/version.h"
 #include "game/gameConnection.h"
+#include "StreamFn.h"
 
 // This is basically the server query protocol version now:
 static const char* versionString = "VER1";
@@ -223,8 +223,8 @@ struct ServerFilter
    ServerFilter()
    {
       queryFlags = 0;
-      gameType = NULL;
-      missionType = NULL;
+      gameType = nullptr;
+      missionType = nullptr;
       minPlayers = 0;
       maxPlayers = 255;
       maxBots = 16;
@@ -233,7 +233,7 @@ struct ServerFilter
       filterFlags = 0;
       minCPU = 0;
       buddyCount = 0;
-      buddyList = NULL;
+      buddyList = nullptr;
    }
 
    ~ServerFilter()
@@ -395,8 +395,8 @@ void queryLanServers(U32 port, U8 flags, const char* gameType, const char* missi
 ConsoleFunction( queryLanServers, void, 12, 12, "( port , flags , gametype , missiontype , minplayers , maxplayers , maxbots , regionmask , maxping , mincpu , filterflags ) Use the queryLANServers function to establish whether any game servers of the required specification(s) are available on the local area network (LAN).\n"
                                                                 "@param port Look for any game servers advertising at this port. Set to 0 if you don't care what port the game server is using.\n"
                                                                 "@param flags Look for any game servers with these special flags set. Set to 0 for no flags.\n"
-                                                                "@param gametype Look for any game servers playing a game type that matches this string. Set to the NULL string to look for any game type.\n"
-                                                                "@param missiontype Look for any game servers playing a mission type that matches this string. Set to the NULL string to look for any mission type.\n"
+                                                                "@param gametype Look for any game servers playing a game type that matches this string. Set to the nullptr string to look for any game type.\n"
+                                                                "@param missiontype Look for any game servers playing a mission type that matches this string. Set to the nullptr string to look for any mission type.\n"
                                                                 "@param minplayers Look for any game servers with this number of players or more. Set to 0 for no lower limit.\n"
                                                                 "@param maxplayers Look for any game servers with this number of players or fewer. Set to 0 for no upper limit.\n"
                                                                 "@param maxbots Look for any game servers with this number of AI controlled players or fewer. Set to 0 for no limit.\n"
@@ -484,7 +484,7 @@ void queryMasterServer(U8 flags, const char* gameType, const char* missionType,
       sActiveFilter.filterFlags  = filterFlags;
       sActiveFilter.buddyCount   = buddyCount;
       dFree( sActiveFilter.buddyList );
-      sActiveFilter.buddyList = NULL;
+      sActiveFilter.buddyList = nullptr;
    }
    else
    {
@@ -518,8 +518,8 @@ void queryMasterServer(U8 flags, const char* gameType, const char* missionType,
 ConsoleFunction( queryMasterServer, void, 11, 11, "( flags , gametype , missiontype , minplayers , maxplayers , maxbots , regionmask , maxping , mincpu , filterflags ) Use the queryMasterServer function to query all master servers in the master server list and to establish if they are aware of any game servers that meet the specified requirements, as established by the arguments passed to this function.\n"
                                                                 "In order for this function to do anything, a list of master servers must have been previously specified. This list may contain one or more server addresses. A call to this function will search all servers in the list. To specify a list, simply create a set of array entries like this:\n$pref::Master[0] = \"2:192.168.123.15:28002\";\n$pref::Master[1] = \"2:192.168.123.2:28002\";\nThe format of these values is ==> Region Number : IP Address : Port Number\nThese values should be specified in either the client's or the server's preferences file (prefs.cs). You may specifiy it elsewhere, however be sure that it is specified prior to this function being called and before any other functions that rely on it.\n"
                                                                 "@param flags Look for any game servers with these special flags set. Set to 0 for no flags.\n"
-                                                                "@param gametype Look for any game servers playing a game type that matches this string. Set to the NULL string to look for any game type.\n"
-                                                                "@param missiontype Look for any game servers playing a mission type that matches this string. Set to the NULL string to look for any mission type.\n"
+                                                                "@param gametype Look for any game servers playing a game type that matches this string. Set to the nullptr string to look for any game type.\n"
+                                                                "@param missiontype Look for any game servers playing a mission type that matches this string. Set to the nullptr string to look for any mission type.\n"
                                                                 "@param minplayers Look for any game servers with this number of players or more. Set to 0 for no lower limit.\n"
                                                                 "@param maxplayers Look for any game servers with this number of players or fewer. Set to 0 for no upper limit.\n"
                                                                 "@param maxbots Look for any game servers with this number of AI controlled players or fewer. Set to 0 for no limit.\n"
@@ -948,7 +948,7 @@ static void pushServerFavorites()
    }
 
    NetAddress addr;
-   const char* server = NULL;
+   const char* server = nullptr;
    char buf[256], serverName[25], addrString[256];
    U32 sz, len;
    for ( S32 i = 0; i < count; i++ )
@@ -1005,7 +1005,7 @@ static ServerInfo* findServerInfo( const NetAddress* addr )
    for ( U32 i = 0; i < (U32)gServerList.size(); i++ )
       if ( Net::compareAddresses( addr, &gServerList[i].address ) )
          return &gServerList[i];
-   return NULL;
+   return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -1090,7 +1090,7 @@ static void sendPacket( U8 pType, const NetAddress* addr, U32 key, U32 session, 
 
 static void writeCString( BitStream* stream, const char* string )
 {
-   U8 strLen = ( string != NULL ) ? dStrlen( string ) : 0;
+   U8 strLen = ( string != nullptr ) ? dStrlen( string ) : 0;
    stream->write( strLen );
    for ( U32 i = 0; i < strLen; i++ )
       stream->write( U8( string[i] ) );
@@ -1115,7 +1115,7 @@ static void readCString( BitStream* stream, char* buffer )
 
 static void writeLongCString( BitStream* stream, const char* string )
 {
-   U16 strLen = ( string != NULL ) ? dStrlen( string ) : 0;
+   U16 strLen = ( string != nullptr ) ? dStrlen( string ) : 0;
    stream->write( strLen );
    for ( U32 i = 0; i < strLen; i++ )
       stream->write( U8( string[i] ) );
@@ -1648,7 +1648,7 @@ static void handleGameMasterInfoRequest( const NetAddress* address, U32 key, U8 
       for ( ; temp && temp8 < playerCount; temp8++ )
       {
          out->write( U32( dAtoi( temp ) ) );
-         temp = dStrtok( NULL, "\t" );
+         temp = dStrtok( nullptr, "\t" );
          temp8++;
       }
 
@@ -1706,7 +1706,7 @@ static void handleGamePingRequest( const NetAddress* address, U32 key, U8 flags 
 
 //-----------------------------------------------------------------------------
 
-static void handleGamePingResponse( const NetAddress* address, BitStream* stream, U32 key, U8 /*flags*/ )
+static void handleGamePingResponse(const NetAddress *address, std::iostream &stream, U32 key, U8 flags)
 {
    // Broadcast has timed out or query has been cancelled:
    if( !gPingList.size() )
@@ -1738,7 +1738,7 @@ static void handleGamePingResponse( const NetAddress* address, BitStream* stream
 
    // Verify the version:
    char buf[256];
-   stream->readString( buf );
+   StreamFn::readString(stream,  buf );
    if ( dStrcmp( buf, versionString ) != 0 )
    {
       // Version is different, so remove it from consideration:
@@ -1757,7 +1757,7 @@ static void handleGamePingResponse( const NetAddress* address, BitStream* stream
 
    // See if the server meets our minimum protocol:
    U32 temp32;
-   stream->read( &temp32 );
+   stream >> ( temp32 );
    if ( temp32 < GameConnection::MinRequiredProtocolVersion )
    {
       Con::printf( "Protocol for server %s does not meet minimum protocol.", addrString );
@@ -1831,7 +1831,7 @@ static void handleGamePingResponse( const NetAddress* address, BitStream* stream
    si->version = temp32;
 
    // Get the server name:
-   stream->readString( buf );
+   StreamFn::readString(stream,  buf );
    if ( !si->name )
    {
       si->name = (char*) dMalloc( dStrlen( buf ) + 1 );
@@ -1931,7 +1931,7 @@ static void handleGameInfoResponse( const NetAddress* address, BitStream* stream
 
    // Get the rules set:
    char stringBuf[2048];   // Who knows how big this should be?
-   stream->readString( stringBuf );
+   StreamFn::readString(stream,  stringBuf );
    if ( !si->gameType || dStricmp( si->gameType, stringBuf ) != 0 )
    {
       si->gameType = (char*) dRealloc( (void*) si->gameType, dStrlen( stringBuf ) + 1 );
@@ -1948,7 +1948,7 @@ static void handleGameInfoResponse( const NetAddress* address, BitStream* stream
    }
 
    // Get the mission type:
-   stream->readString( stringBuf );
+   StreamFn::readString(stream,  stringBuf );
    if ( !si->missionType || dStrcmp( si->missionType, stringBuf ) != 0 )
    {
       si->missionType = (char*) dRealloc( (void*) si->missionType, dStrlen( stringBuf ) + 1 );
@@ -1965,7 +1965,7 @@ static void handleGameInfoResponse( const NetAddress* address, BitStream* stream
    }
 
    // Get the mission name:
-   stream->readString( stringBuf );
+   StreamFn::readString(stream,  stringBuf );
    // Clip the file extension off:
    char* temp = dStrstr( static_cast<char*>( stringBuf ), const_cast<char*>( ".mis" ) );
    if ( temp )
@@ -2037,7 +2037,7 @@ static void handleGameInfoResponse( const NetAddress* address, BitStream* stream
    }
 
    // Get the server info:
-   stream->readString( stringBuf );
+   StreamFn::readString(stream,  stringBuf );
    if ( !si->statusString || ( isUpdate && dStrcmp( si->statusString, stringBuf ) != 0 ) )
    {
       si->infoString = (char*) dRealloc( (void*) si->infoString, dStrlen( stringBuf ) + 1 );

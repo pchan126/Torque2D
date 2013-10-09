@@ -24,7 +24,6 @@
 #include "graphics/gfxDevice.h"
 #include "math/mMathFn.h"
 #include "console/consoleTypes.h"
-#include "io/bitStream.h"
 #include "Scroller_ScriptBinding.h"
 #include "2d/scene/Layer.h"
 

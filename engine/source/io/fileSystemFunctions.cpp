@@ -25,11 +25,7 @@
 #include "console/consoleInternal.h"
 #include "console/ast.h"
 #include "io/resource/resourceManager.h"
-#include "console/compiler.h"
-#include "platform/event.h"
 #include "game/gameInterface.h"
-#include "platform/platformInput.h"
-#include "torqueConfig.h"
 #include "memory/frameAllocator.h"
 
 // Buffer for expanding script filenames.
@@ -227,7 +223,7 @@ ConsoleFunction(isWriteableFileName, bool, 2, 2, "(fileName)\n"
 
    // writeable? (ReadWrite will create file if it does not exist)
    fs.close();
-   fs.open(filename, (std::fstream::in || std::fstream::out))
+   fs.open(filename, (std::fstream::in || std::fstream::out));
    if(!fs)
       return(false);
 

@@ -23,28 +23,11 @@
 #ifndef _AUDIO_ASSET_H_
 #define _AUDIO_ASSET_H_
 
-#ifndef _PLATFORMAUDIO_H_
 #include "platform/platformAudio.h"
-#endif
-
-#ifndef _AUDIOBUFFER_H_
 #include "audio/audioBuffer.h"
-#endif
-
-#ifndef _BITSTREAM_H_
-#include "io/bitStream.h"
-#endif
-#ifndef _SIMBASE_H_
 #include "sim/simBase.h"
-#endif
-
-#ifndef _ASSET_BASE_H_
 #include "assets/assetBase.h"
-#endif
-
-#ifndef _UTILITY_H_
 #include "2d/core/Utility.h"
-#endif
 
 //----------------------------------------------------------------------------
 

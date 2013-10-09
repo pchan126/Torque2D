@@ -77,7 +77,7 @@ public:
          mEntryTable[index].receiveConfirmed = true;
    }
 
-   U32 checkString(NetStringHandle &stringTableId, bool *stringOnOtherSide = NULL);  ///< Checks if the global string ID is
+   U32 checkString(NetStringHandle &stringTableId, bool *stringOnOtherSide = nullptr);  ///< Checks if the global string ID is
                                                                                   ///  currently valid for this connection
                                                                                   ///  and returns the table ID.
                                                                                   ///  Sends a string event to the other side
@@ -100,8 +100,8 @@ public:
    /// @name Demo functionality
    /// @{
 
-   void readDemoStartBlock(BitStream *stream);
-   void writeDemoStartBlock(ResizeBitStream *stream);
+   void readDemoStartBlock(std::iostream &stream);
+   void writeDemoStartBlock(std::iostream &stream);
    /// @}
 };
 

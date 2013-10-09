@@ -75,8 +75,8 @@ void HTTPObject::get(const char *host, const char *path, const char *query)
    if(query)
       mQuery = dStrdup(query);
    else
-      mQuery = NULL;
-   mPost = NULL;
+      mQuery = nullptr;
+   mPost = nullptr;
 
    connect(host);
 }
@@ -100,7 +100,7 @@ void HTTPObject::post(const char *host, const char *path, const char *query, con
    if(query && query[0])
       mQuery = dStrdup(query);
    else
-      mQuery = NULL;
+      mQuery = nullptr;
    mPost = dStrdup(post);
    connect(host);
 }
@@ -314,9 +314,9 @@ U32 HTTPObject::onReceive(U8 *buffer, U32 bufferLen)
 }
 
 //--------------------------------------
-ConsoleMethod( HTTPObject, get, void, 4, 5, "(TransportAddress addr, string requirstURI, string query=NULL)")
+ConsoleMethod( HTTPObject, get, void, 4, 5, "(TransportAddress addr, string requirstURI, string query=nullptr)")
 {
-   object->get(argv[2], argv[3], argc == 4 ? NULL : argv[4]);
+   object->get(argv[2], argv[3], argc == 4 ? nullptr : argv[4]);
 }
 
 ConsoleMethod( HTTPObject, post, void, 6, 6, "(TransportAddress addr, string requestURI, string query, string post)")

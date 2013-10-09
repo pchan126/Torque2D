@@ -24,30 +24,30 @@
 #include "sim/simBase.h"
 #include "platform/event.h"
 #include "network/netConnection.h"
-#include "io/bitStream.h"
 #include "network/netObject.h"
+#include "StreamFn.h"
 
 class SimpleMessageEvent : public NetEvent
 {
    typedef NetEvent Parent;
    char *msg;
 public:
-   SimpleMessageEvent(const char *message = NULL)
+   SimpleMessageEvent(const char *message = nullptr)
       {
          if(message)
             msg = dStrdup(message);
          else
-            msg = NULL;
+            msg = nullptr;
       }
    ~SimpleMessageEvent()
       { dFree(msg); }
 
-   virtual void pack(NetConnection* /*ps*/, BitStream *bstream)
-      { bstream->writeString(msg); }
-   virtual void write(NetConnection*, BitStream *bstream)
-      { bstream->writeString(msg); }
-   virtual void unpack(NetConnection* /*ps*/, BitStream *bstream)
-      { char buf[256]; bstream->readString(buf); msg = dStrdup(buf); }
+   virtual void pack(NetConnection * /*ps*/, std::iostream &bstream)
+      { StreamFn::writeString(bstream, msg); }
+   virtual void write(NetConnection *, std::iostream &bstream)
+      { StreamFn::writeString(bstream, msg); }
+   virtual void unpack(NetConnection * /*ps*/, std::iostream &bstream)
+      { char buf[256]; StreamFn::readString(bstream, buf); msg = dStrdup(buf); }
    virtual void process(NetConnection *)
       { Con::printf("RMSG %d  %s", mSourceId, msg); }
 
@@ -67,14 +67,14 @@ public:
       mNetFlags.set(Ghostable);
       dStrcpy(message, "Hello World!");
    }
-   U32 packUpdate(NetConnection *conn, U32 mask, BitStream *stream)
+   U32 packUpdate(NetConnection *conn, U32 mask, std::iostream &stream)
    {
       stream->writeString(message);
       return 0;
    }
-   void unpackUpdate(NetConnection *conn, BitStream *stream)
+   void unpackUpdate(NetConnection *conn, std::iostream &stream)
    {
-      stream->readString(message);
+      StreamFn::readString(stream, message);
       Con::printf("Got message: %s", message);
    }
    void setMessage(const char *msg)

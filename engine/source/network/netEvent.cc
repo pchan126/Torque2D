@@ -24,7 +24,6 @@
 #include "network/connectionProtocol.h"
 #include "sim/simBase.h"
 #include "network/netConnection.h"
-#include "io/bitStream.h"
 
 #define DebugChecksum 0xF00DBAAD
 
@@ -172,7 +171,7 @@ void NetConnection::eventPacketReceived(PacketNotify *notify)
    }
 }
 
-void NetConnection::eventWritePacket(BitStream *bstream, PacketNotify *notify)
+void NetConnection::eventWritePacket(std::iostream &bstream, PacketNotify *notify)
 {
 #ifdef TORQUE_DEBUG_NET
    bstream->writeInt(DebugChecksum, 32);
@@ -253,7 +252,7 @@ void NetConnection::eventWritePacket(BitStream *bstream, PacketNotify *notify)
    bstream->writeFlag(0);
 }
 
-void NetConnection::eventReadPacket(BitStream *bstream)
+void NetConnection::eventReadPacket(std::iostream &bstream)
 {
 #ifdef TORQUE_DEBUG_NET
    U32 sum = bstream->readInt(32);
@@ -266,11 +265,11 @@ void NetConnection::eventReadPacket(BitStream *bstream)
 
    while(true)
    {
-      bool bit = bstream->readFlag();
+      bool bit = StreamFn::readFlag(bstream)();
       if(unguaranteedPhase && !bit)
       {
          unguaranteedPhase = false;
-         bit = bstream->readFlag();
+         bit = StreamFn::readFlag(bstream)();
       }
       if(!unguaranteedPhase && !bit)
          break;
@@ -279,7 +278,7 @@ void NetConnection::eventReadPacket(BitStream *bstream)
 
       if(!unguaranteedPhase) // get the sequence
       {
-         if(bstream->readFlag())
+         if(StreamFn::readFlag(bstream)())
             seq = (prevSeq + 1) & 0x7f;
          else
             seq = bstream->readInt(7);
@@ -390,7 +389,7 @@ bool NetConnection::postNetEvent(NetEvent *theEvent)
 }
 
 
-void NetConnection::eventWriteStartBlock(ResizeBitStream *stream)
+void NetConnection::eventWriteStartBlock(std::iostream &stream)
 {
    stream->write(mNextRecvEventSeq);
    for(NetEventNote *walk = mWaitSeqEvents; walk; walk = walk->mNextEvent)
@@ -404,7 +403,7 @@ void NetConnection::eventWriteStartBlock(ResizeBitStream *stream)
    stream->writeFlag(false);
 }
 
-void NetConnection::eventReadStartBlock(BitStream *stream)
+void NetConnection::eventReadStartBlock(std::iostream &stream)
 {
    stream->read(&mNextRecvEventSeq);
 

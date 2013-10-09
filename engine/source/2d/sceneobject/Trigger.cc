@@ -22,7 +22,6 @@
 
 #include "graphics/gfxDevice.h"
 #include "console/consoleTypes.h"
-#include "io/bitStream.h"
 #include "Trigger.h"
 
 // Script bindings.

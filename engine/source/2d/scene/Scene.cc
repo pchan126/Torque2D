@@ -20,40 +20,14 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#ifndef _SCENE_H_
 #include "Scene.h"
-#endif
-
 #include "graphics/gfxDevice.h"
-
-#ifndef _CONSOLETYPES_H_
 #include "console/consoleTypes.h"
-#endif
-
-#ifndef _BITSTREAM_H_
-#include "io/bitStream.h"
-#endif
-
-#ifndef _SCENE_OBJECT_H_
 #include "2d/sceneobject/SceneObject.h"
-#endif
-
-#ifndef _CONTACT_FILTER_H_
 #include "ContactFilter.h"
-#endif
-
-#ifndef _SCENE_RENDER_OBJECT_H_
-#include "2d/SceneRenderObject.h"
-#endif
-
-#ifndef _SCENE_CONTROLLER_H_
+#include "2d/scene/SceneRenderObject.h"
 #include "2d/controllers/core/SceneController.h"
-#endif
-
-#ifndef _PARTICLE_SYSTEM_H_
 #include "2d/core/particleSystem.h"
-#endif
-
 #include "Layer.h"
 #include "2d/scene/SceneRenderState.h"
 

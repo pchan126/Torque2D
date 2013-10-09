@@ -24,53 +24,18 @@
 #define _PLATFORM_H_
 
 #include <stdlib.h>
-
-#ifndef _TORQUECONFIG_H_
 #include "torqueConfig.h"
-#endif
-
-#ifndef _TORQUE_TYPES_H_
 #include "platform/types.h"
-#endif
-
-#ifndef _PLATFORMASSERT_H_
 #include "platform/platformAssert.h"
-#endif
-
-#ifndef _MSGBOX_H_
 #include "platform/nativeDialogs/msgBox.h"
-#endif
-
-#ifndef _PLATFORM_ENDIAN_H_
 #include "platform/platformEndian.h"
-#endif
-
-#ifndef _PLATFORM_CPU_H_
 #include "platform/platformCPU.h"
-#endif
-
-#ifndef _PLATFORM_STRING_H_
 #include "platform/platformString.h"
-#endif
-
-#ifndef _PLATFORM_NETWORK_H_
 #include "platform/platformNetwork.h"
-#endif
-
-#ifndef _PLATFORM_MEMORY_H_
 #include "platform/platformMemory.h"
-#endif
-
-#ifndef _PLATFORMFONT_H_
 #include "platform/platformFont.h"
-#endif
-
-#ifndef _PLATFORM_MATH_H_
 #include "platform/platformMath.h"
-#endif
-
 #include "string/str.h"
-
 #include "memory/safeDelete.h"
 
 //------------------------------------------------------------------------------

@@ -128,10 +128,10 @@ public:
    /// @name Packet I/O
    /// @{
 
-   virtual void writeConnectRequest(BitStream *stream);
-   virtual bool readConnectRequest(BitStream *stream, const char **errorString);
-   virtual void writeConnectAccept(BitStream *stream);
-   virtual bool readConnectAccept(BitStream *stream, const char **errorString);
+   virtual void writeConnectRequest(std::iostream &stream);
+   virtual bool readConnectRequest(std::iostream &stream, const char **errorString);
+   virtual void writeConnectAccept(std::iostream &stream);
+   virtual bool readConnectAccept(std::iostream &stream, const char **errorString);
    /// @}
 
    bool canRemoteCreate();
@@ -165,8 +165,8 @@ protected:
    /// @name Packet I/O
    /// @{
 
-   void readPacket      (BitStream *bstream);
-   void writePacket     (BitStream *bstream, PacketNotify *note);
+   void readPacket(std::iostream &bstream);
+   void writePacket(std::iostream &bstream, PacketNotify *note);
    void packetReceived  (PacketNotify *note);
    void packetDropped   (PacketNotify *note);
    void connectionError (const char *errorString);

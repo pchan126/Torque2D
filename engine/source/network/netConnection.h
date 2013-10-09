@@ -37,9 +37,6 @@
 
 class NetConnection;
 class NetObject;
-class BitStream;
-class ResizeBitStream;
-class Stream;
 class Point3F;
 
 struct GhostInfo;
@@ -95,7 +92,7 @@ struct NetEventNote
 ///    typedef NetEvent Parent;
 ///    char *msg;
 /// public:
-///    SimpleMessageEvent(const char *message = NULL);
+///    SimpleMessageEvent(const char *message = nullptr);
 ///    ~SimpleMessageEvent();
 ///
 ///    virtual void pack   (NetConnection *conn, BitStream *bstream);
@@ -134,7 +131,7 @@ struct NetEventNote
 /// just need to allocate/deallocate the space for our string:
 ///
 /// @code
-///    SimpleMessageEvent::SimpleMessageEvent(const char *message = NULL)
+///    SimpleMessageEvent::SimpleMessageEvent(const char *message = nullptr)
 ///    {
 ///       // If we wanted to make this not be a GuaranteedOrdered event, we'd
 ///       // put a line like this in the constructor:
@@ -143,7 +140,7 @@ struct NetEventNote
 ///       if(message)
 ///          msg = dStrdup(message);
 ///       else
-///          msg = NULL;
+///          msg = nullptr;
 ///    }
 ///
 ///    SimpleMessageEvent::~SimpleMessageEvent()
@@ -159,7 +156,7 @@ struct NetEventNote
 /// @code
 /// void SimpleMessageEvent::pack(NetConnection* conn, BitStream *bstream)
 /// {
-///   bstream->writeString(msg);
+///   StreamFn::writeString(bstream, msg);
 /// }
 /// @endcode
 ///
@@ -171,7 +168,7 @@ struct NetEventNote
 /// void SimpleMessageEvent::unpack(NetConnection *conn, BitStream *bstream)
 /// {
 ///   char buf[256];
-///   bstream->readString(buf);
+///   StreamFn::readString(bstream, buf);
 ///   msg = dStrdup(buf);
 /// }
 /// @endcode
@@ -201,7 +198,7 @@ struct NetEventNote
 /// @code
 /// virtual void write(NetConnection*, BitStream *bstream)
 /// {
-///   bstream->writeString(msg);
+///   StreamFn::writeString(bstream, msg);
 /// }
 /// @endcode
 ///
@@ -263,9 +260,9 @@ public:
     NetEvent() { mGuaranteeType = GuaranteedOrdered; mRefCount = 0; }
     virtual ~NetEvent();
 
-    virtual void write(NetConnection *ps, BitStream *bstream) = 0;
-    virtual void pack(NetConnection *ps, BitStream *bstream) = 0;
-    virtual void unpack(NetConnection *ps, BitStream *bstream) = 0;
+    virtual void write(NetConnection *ps, std::iostream &bstream) = 0;
+    virtual void pack(NetConnection *ps, std::iostream &bstream) = 0;
+    virtual void unpack(NetConnection *ps, std::iostream &bstream) = 0;
     virtual void process(NetConnection *ps) = 0;
     virtual void notifySent(NetConnection *ps);
     virtual void notifyDelivered(NetConnection *ps, bool madeit);
@@ -276,48 +273,48 @@ public:
     AbstractClassRep* className::getClassRep() const { return &className::dynClassRep; } \
     AbstractClassRep* className::getStaticClassRep() { return &dynClassRep; } \
     AbstractClassRep* className::getParentStaticClassRep() { return Parent::getStaticClassRep(); } \
-    AbstractClassRep* className::getContainerChildStaticClassRep() { return NULL; } \
-    AbstractClassRep::WriteCustomTamlSchema className::getStaticWriteCustomTamlSchema() { return NULL; } \
+    AbstractClassRep* className::getContainerChildStaticClassRep() { return nullptr; } \
+    AbstractClassRep::WriteCustomTamlSchema className::getStaticWriteCustomTamlSchema() { return nullptr; } \
     ConcreteClassRep<className> className::dynClassRep(#className,NetClassGroupGameMask, NetClassTypeEvent, NetEventDirAny, className::getParentStaticClassRep())
 
 #define IMPLEMENT_CO_CLIENTEVENT_V1(className)                    \
     AbstractClassRep* className::getClassRep() const { return &className::dynClassRep; } \
     AbstractClassRep* className::getStaticClassRep() { return &dynClassRep; } \
     AbstractClassRep* className::getParentStaticClassRep() { return Parent::getStaticClassRep(); } \
-    AbstractClassRep* className::getContainerChildStaticClassRep() { return NULL; } \
-    AbstractClassRep::WriteCustomTamlSchema className::getStaticWriteCustomTamlSchema() { return NULL; } \
+    AbstractClassRep* className::getContainerChildStaticClassRep() { return nullptr; } \
+    AbstractClassRep::WriteCustomTamlSchema className::getStaticWriteCustomTamlSchema() { return nullptr; } \
     ConcreteClassRep<className> className::dynClassRep(#className,NetClassGroupGameMask, NetClassTypeEvent, NetEventDirServerToClient, className::getParentStaticClassRep())
 
 #define IMPLEMENT_CO_SERVEREVENT_V1(className)                    \
     AbstractClassRep* className::getClassRep() const { return &className::dynClassRep; } \
     AbstractClassRep* className::getStaticClassRep() { return &dynClassRep; } \
     AbstractClassRep* className::getParentStaticClassRep() { return Parent::getStaticClassRep(); } \
-    AbstractClassRep* className::getContainerChildStaticClassRep() { return NULL; } \
-    AbstractClassRep::WriteCustomTamlSchema className::getStaticWriteCustomTamlSchema() { return NULL; } \
+    AbstractClassRep* className::getContainerChildStaticClassRep() { return nullptr; } \
+    AbstractClassRep::WriteCustomTamlSchema className::getStaticWriteCustomTamlSchema() { return nullptr; } \
     ConcreteClassRep<className> className::dynClassRep(#className,NetClassGroupGameMask, NetClassTypeEvent, NetEventDirClientToServer, className::getParentStaticClassRep())
 
 #define IMPLEMENT_CO_NETEVENT(className,groupMask)                    \
     AbstractClassRep* className::getClassRep() const { return &className::dynClassRep; } \
     AbstractClassRep* className::getStaticClassRep() { return &dynClassRep; } \
     AbstractClassRep* className::getParentStaticClassRep() { return Parent::getStaticClassRep(); } \
-    AbstractClassRep* className::getContainerChildStaticClassRep() { return NULL; } \
-    AbstractClassRep::WriteCustomTamlSchema className::getStaticWriteCustomTamlSchema() { return NULL; } \
+    AbstractClassRep* className::getContainerChildStaticClassRep() { return nullptr; } \
+    AbstractClassRep::WriteCustomTamlSchema className::getStaticWriteCustomTamlSchema() { return nullptr; } \
     ConcreteClassRep<className> className::dynClassRep(#className,groupMask, NetClassTypeEvent, NetEventDirAny, className::getParentStaticClassRep())
 
 #define IMPLEMENT_CO_CLIENTEVENT(className,groupMask)                    \
     AbstractClassRep* className::getClassRep() const { return &className::dynClassRep; } \
     AbstractClassRep* className::getStaticClassRep() { return &dynClassRep; } \
     AbstractClassRep* className::getParentStaticClassRep() { return Parent::getStaticClassRep(); } \
-    AbstractClassRep* className::getContainerChildStaticClassRep() { return NULL; } \
-    AbstractClassRep::WriteCustomTamlSchema className::getStaticWriteCustomTamlSchema() { return NULL; } \
+    AbstractClassRep* className::getContainerChildStaticClassRep() { return nullptr; } \
+    AbstractClassRep::WriteCustomTamlSchema className::getStaticWriteCustomTamlSchema() { return nullptr; } \
     ConcreteClassRep<className> className::dynClassRep(#className,groupMask, NetClassTypeEvent, NetEventDirServerToClient, className::getParentStaticClassRep())
 
 #define IMPLEMENT_CO_SERVEREVENT(className,groupMask)                    \
     AbstractClassRep* className::getClassRep() const { return &className::dynClassRep; } \
     AbstractClassRep* className::getStaticClassRep() { return &dynClassRep; } \
     AbstractClassRep* className::getParentStaticClassRep() { return Parent::getStaticClassRep(); } \
-    AbstractClassRep* className::getContainerChildStaticClassRep() { return NULL; } \
-    AbstractClassRep::WriteCustomTamlSchema className::getStaticWriteCustomTamlSchema() { return NULL; } \
+    AbstractClassRep* className::getContainerChildStaticClassRep() { return nullptr; } \
+    AbstractClassRep::WriteCustomTamlSchema className::getStaticWriteCustomTamlSchema() { return nullptr; } \
     ConcreteClassRep<className> className::dynClassRep(#className,groupMask, NetClassTypeEvent, NetEventDirClientToServer, className::getParentStaticClassRep())
 
 
@@ -428,11 +425,11 @@ public:
     virtual void onConnectionEstablished(bool isInitiator);
     virtual void handleStartupError(const char *errorString);
 
-    virtual void writeConnectRequest(BitStream *stream);
-    virtual bool  readConnectRequest(BitStream *stream, const char **errorString);
+    virtual void writeConnectRequest(std::iostream &stream);
+    virtual bool  readConnectRequest(std::iostream &stream, const char **errorString);
 
-    virtual void writeConnectAccept(BitStream *stream);
-    virtual bool  readConnectAccept(BitStream *stream, const char **errorString);
+    virtual void writeConnectAccept(std::iostream &stream);
+    virtual bool  readConnectAccept(std::iostream &stream, const char **errorString);
 
     void connect(const NetAddress *address);
 
@@ -580,15 +577,15 @@ public:
     static void setLastError(const char *fmt,...);
 
     void checkMaxRate();
-    void handlePacket(BitStream *stream);
-    void processRawPacket(BitStream *stream);
+    void handlePacket(std::iostream &stream);
+    void processRawPacket(std::iostream &stream);
     void handleNotify(bool recvd);
     void handleConnectionEstablished();
     void keepAlive();
 
     const NetAddress *getNetAddress();
     void setNetAddress(const NetAddress *address);
-    Net::Error sendPacket(BitStream *stream);
+    Net::Error sendPacket(std::iostream &stream);
 
 private:
     void netAddressTableInsert();
@@ -661,8 +658,8 @@ public:
     PacketNotify *mNotifyQueueTail;  ///< Tail of packet notify list.
 
 protected:
-    virtual void readPacket(BitStream *bstream);
-    virtual void writePacket(BitStream *bstream, PacketNotify *note);
+    virtual void readPacket(std::iostream &bstream);
+    virtual void writePacket(std::iostream &bstream, PacketNotify *note);
     virtual void packetReceived(PacketNotify *note);
     virtual void packetDropped(PacketNotify *note);
     virtual void connectionError(const char *errorString);
@@ -697,11 +694,11 @@ private:
     void eventPacketDropped(PacketNotify *notify);
     void eventPacketReceived(PacketNotify *notify);
 
-    void eventWritePacket(BitStream *bstream, PacketNotify *notify);
-    void eventReadPacket(BitStream *bstream);
+    void eventWritePacket(std::iostream &bstream, PacketNotify *notify);
+    void eventReadPacket(std::iostream &bstream);
 
-    void eventWriteStartBlock(ResizeBitStream *stream);
-    void eventReadStartBlock(BitStream *stream);
+    void eventWriteStartBlock(std::iostream &stream);
+    void eventReadStartBlock(std::iostream &stream);
 public:
     /// Post an event to this connection.
     bool postNetEvent(NetEvent *event);
@@ -718,7 +715,7 @@ private:
 public:
     void mapString(U32 netId, NetStringHandle &string)
     { mStringTable->mapString(netId, string); }
-    U32  checkString(NetStringHandle &string, bool *isOnOtherSide = NULL)
+    U32  checkString(NetStringHandle &string, bool *isOnOtherSide = nullptr)
     { if(mStringTable) return mStringTable->checkString(string, isOnOtherSide); else return 0; }
     U32  getNetSendId(NetStringHandle &string)
     { if(mStringTable) return mStringTable->getNetSendId(string); else return 0;}
@@ -728,11 +725,11 @@ public:
     NetStringHandle translateRemoteStringId(U32 id) { return mStringTable->lookupString(id); }
     void         validateSendString(const char *str);
 
-    void   packString(BitStream *stream, const char *str);
-    void unpackString(BitStream *stream, char readBuffer[1024]);
+    void   packString(std::iostream &stream, const char *str);
+    void unpackString(std::iostream &stream, char readBuffer[1024]);
 
-    void           packNetStringHandleU(BitStream *stream, NetStringHandle &h);
-    NetStringHandle unpackNetStringHandleU(BitStream *stream);
+    void           packNetStringHandleU(std::iostream &stream, NetStringHandle &h);
+    NetStringHandle unpackNetStringHandleU(std::iostream &stream);
     /// @}
 
     //----------------------------------------------------------------
@@ -763,7 +760,7 @@ protected:
 
     NetObject **mLocalGhosts;  ///< Local ghost for remote object.
     ///
-    /// mLocalGhosts pointer is NULL if mGhostTo is false
+    /// mLocalGhosts pointer is nullptr if mGhostTo is false
 
     GhostInfo *mGhostRefs;           ///< Allocated array of ghostInfos. Null if ghostFrom is false.
     GhostInfo **mGhostLookupTable;   ///< Table indexed by object id to GhostInfo. Null if ghostFrom is false.
@@ -780,12 +777,12 @@ protected:
     void ghostPacketDropped(PacketNotify *notify);
     void ghostPacketReceived(PacketNotify *notify);
 
-    void ghostWritePacket(BitStream *bstream, PacketNotify *notify);
-    void ghostReadPacket(BitStream *bstream);
+    void ghostWritePacket(std::iostream &bstream, PacketNotify *notify);
+    void ghostReadPacket(std::iostream &bstream);
     void freeGhostInfo(GhostInfo *);
 
-    void ghostWriteStartBlock(ResizeBitStream *stream);
-    void ghostReadStartBlock(BitStream *stream);
+    void ghostWriteStartBlock(std::iostream &stream);
+    void ghostReadStartBlock(std::iostream &stream);
 
 public:
     /// Some configuration values.
@@ -800,10 +797,10 @@ public:
     U32 getGhostsActive() { return mGhostsActive;};
 
     /// Are we ghosting to someone?
-    bool isGhostingTo() { return mLocalGhosts != NULL; };
+    bool isGhostingTo() { return mLocalGhosts != nullptr; };
 
     /// Are we ghosting from someone?
-    bool isGhostingFrom() { return mGhostArray != NULL; };
+    bool isGhostingFrom() { return mGhostArray != nullptr; };
 
     /// Called by onRemove, to shut down the ghost subsystem.
     void ghostOnRemove();
@@ -988,9 +985,9 @@ public:
     };
 
     bool isRecording()
-    { return mDemoWriteStream != NULL; }
+    { return mDemoWriteStream != nullptr; }
     bool isPlayingBack()
-    { return mDemoReadStream != NULL; }
+    { return mDemoReadStream != nullptr; }
 
     U32 getNextBlockType() { return mDemoNextBlockType; }
     void recordBlock(U32 type, U32 size, void *data);
@@ -1003,8 +1000,8 @@ public:
     void stopRecording();
     void stopDemoPlayback();
 
-    virtual void writeDemoStartBlock(ResizeBitStream *stream);
-    virtual bool readDemoStartBlock(BitStream *stream);
+    virtual void writeDemoStartBlock(std::ostream &stream);
+    virtual bool readDemoStartBlock(std::istream &stream);
     virtual void demoPlaybackComplete();
     /// @}
 };

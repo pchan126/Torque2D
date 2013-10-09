@@ -21,13 +21,8 @@
 //-----------------------------------------------------------------------------
 
 #include "graphics/gfxDevice.h"
-
 #include "console/consoleTypes.h"
-
-#include "io/bitStream.h"
-
 #include "string/stringBuffer.h"
-
 #include "ImageFont.h"
 
 // Script bindings.

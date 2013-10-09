@@ -23,18 +23,9 @@
 #ifndef _AUDIODATABLOCK_H_
 #define _AUDIODATABLOCK_H_
 
-#ifndef _PLATFORMAUDIO_H_
 #include "platform/platformAudio.h"
-#endif
-#ifndef _AUDIOBUFFER_H_
 #include "audio/audioBuffer.h"
-#endif
-#ifndef _BITSTREAM_H_
-#include "io/bitStream.h"
-#endif
-#ifndef _SIMBASE_H_
 #include "sim/simBase.h"
-#endif
 
 //--------------------------------------------------------------------------
 
@@ -65,8 +56,8 @@ class AudioEnvironment : public SimDataBlock
       AudioEnvironment();
 
       static void initPersistFields();
-      void packData(BitStream* stream);
-      void unpackData(BitStream* stream);
+      void packData(std::stringstream &stream);
+      void unpackData(std::stringstream &stream);
 
       DECLARE_CONOBJECT(AudioEnvironment);
 };
@@ -96,8 +87,8 @@ class AudioSampleEnvironment : public SimDataBlock
       AudioSampleEnvironment();
       static void initPersistFields();
 
-      void packData(BitStream* stream);
-      void unpackData(BitStream* stream);
+      void packData(std::stringstream &stream);
+      void unpackData(std::stringstream &stream);
 
       DECLARE_CONOBJECT(AudioSampleEnvironment);
 };

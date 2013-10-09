@@ -22,7 +22,6 @@
 
 #include "platform/platform.h"
 #include "network/connectionProtocol.h"
-#include "io/bitStream.h"
 #include "sim/simBase.h"
 #include "console/console.h"
 #include "console/consoleTypes.h"
@@ -85,7 +84,7 @@ public:
          dFree(mArgv[i+1]);
    }
 
-   virtual void pack(NetConnection* conn, BitStream *bstream)
+   virtual void pack(NetConnection *conn, std::stringstream &bstream)
    {
       bstream->writeInt(mArgc, CommandArgsBits);
       // write it out reversed... why?
@@ -96,12 +95,12 @@ public:
          conn->packString(bstream, mArgv[i+1]);
    }
 
-   virtual void write(NetConnection* conn, BitStream *bstream)
+   virtual void write(NetConnection *conn, std::stringstream &bstream)
    {
       pack(conn, bstream);
    }
 
-   virtual void unpack(NetConnection* conn, BitStream *bstream)
+   virtual void unpack(NetConnection *conn, std::stringstream &bstream)
    {
 
       mArgc = bstream->readInt(CommandArgsBits);

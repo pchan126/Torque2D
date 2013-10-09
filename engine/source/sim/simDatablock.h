@@ -24,18 +24,8 @@
 #define _SIM_DATABLOCK_H_
 
 #include "platform/platform.h"
-
-#ifndef _SIM_OBJECT_H_
 #include "simObject.h"
-#endif
-
-#ifndef _BITSTREAM_H_
-#include "io/bitStream.h"
-#endif
-
-#ifndef _SIMSET_H_
 #include "sim/simSet.h"
-#endif
 
 //---------------------------------------------------------------------------
 
@@ -151,8 +141,8 @@ protected:
    /// @{
 
    ///
-   virtual void packData(BitStream* stream);
-   virtual void unpackData(BitStream* stream);
+   virtual void packData(std::stringstream &stream);
+   virtual void unpackData(std::stringstream &stream);
 
    /// Called to prepare the datablock for use, after it has been unpacked.
    ///

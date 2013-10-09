@@ -41,7 +41,6 @@
 #include "gui/guiCanvas.h"
 #include "input/actionMap.h"
 #include "network/connectionProtocol.h"
-#include "io/bitStream.h"
 #include "network/telnetConsole.h"
 #include "debug/telnetDebugger.h"
 #include "console/consoleTypes.h"

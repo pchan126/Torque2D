@@ -24,8 +24,8 @@
 #include "network/connectionProtocol.h"
 #include "sim/simBase.h"
 #include "network/netConnection.h"
-#include "io/bitStream.h"
 #include "console/consoleTypes.h"
+#include "StreamFn.h"
 
 class NetStringEvent : public NetEvent
 {
@@ -37,21 +37,21 @@ public:
       mIndex = index;
       mString = string;
    }
-   virtual void pack(NetConnection* /*ps*/, BitStream *bstream)
+   virtual void pack(NetConnection * /*ps*/, std::iostream &bstream)
    {
       bstream->writeInt(mIndex, ConnectionStringTable::EntryBitSize);
-      bstream->writeString(mString.getString());
+      StreamFn::writeString(bstream, mString.getString());
    }
-   virtual void write(NetConnection* /*ps*/, BitStream *bstream)
+   virtual void write(NetConnection * /*ps*/, std::iostream &bstream)
    {
       bstream->writeInt(mIndex, ConnectionStringTable::EntryBitSize);
-      bstream->writeString(mString.getString());
+      StreamFn::writeString(bstream, mString.getString());
    }
-   virtual void unpack(NetConnection* /*con*/, BitStream *bstream)
+   virtual void unpack(NetConnection * /*con*/, std::iostream &bstream)
    {
       char buf[256];
       mIndex = bstream->readInt(ConnectionStringTable::EntryBitSize);
-      bstream->readString(buf);
+      StreamFn::readString(bstream, buf);
       mString = NetStringHandle(buf);
    }
    virtual void notifyDelivered(NetConnection *ps, bool madeit)
@@ -87,12 +87,12 @@ ConnectionStringTable::ConnectionStringTable(NetConnection *parent)
    mParent = parent;
    for(U32 i = 0; i < EntryCount; i++)
    {
-      mEntryTable[i].nextHash = NULL;
+      mEntryTable[i].nextHash = nullptr;
       mEntryTable[i].nextLink = &mEntryTable[i+1];
       mEntryTable[i].prevLink = &mEntryTable[i-1];
       mEntryTable[i].index = i;
 
-      mHashTable[i] = NULL;
+      mHashTable[i] = nullptr;
    }
    mLRUHead.nextLink = &mEntryTable[0];
    mEntryTable[0].prevLink = &mLRUHead;
@@ -161,28 +161,28 @@ void ConnectionStringTable::mapString(U32 netId, NetStringHandle &string)
    mRemoteStringTable[netId] = string;
 }
 
-void ConnectionStringTable::readDemoStartBlock(BitStream *stream)
+void ConnectionStringTable::readDemoStartBlock(std::iostream &stream)
 {
    // ok, reading the demo start block
    for(U32 i = 0; i < EntryCount; i++)
    {
-      if(stream->readFlag())
+      if(StreamFn::readFlag(stream))
       {
          char buffer[256];
-         stream->readString(buffer);
+          StreamFn::readString(stream, buffer);
          mRemoteStringTable[i] = NetStringHandle(buffer);
       }
    }
 }
 
-void ConnectionStringTable::writeDemoStartBlock(ResizeBitStream *stream)
+void ConnectionStringTable::writeDemoStartBlock(std::iostream &stream)
 {
    // ok, writing the demo start block
    for(U32 i = 0; i < EntryCount; i++)
    {
-      if(stream->writeFlag(mRemoteStringTable[i].isValidString()))
+      if(stream << (mRemoteStringTable[i].isValidString()))
       {
-         stream->writeString(mRemoteStringTable[i].getString());
+          StreamFn::writeString(stream, mRemoteStringTable[i].getString());
          stream->validate();
       }
    }

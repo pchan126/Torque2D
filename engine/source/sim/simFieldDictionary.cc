@@ -162,7 +162,7 @@ void SimFieldDictionary::writeFields(SimObject *obj, std::iostream &stream, U32 
       expandEscape((char*)expandedBuffer + dStrlen(expandedBuffer), (itr)->value);
       dStrcat(expandedBuffer, "\";\r\n");
 
-      stream.write(dStrlen(expandedBuffer),expandedBuffer);
+      stream.write(expandedBuffer, dStrlen(expandedBuffer));
    }
 }
 

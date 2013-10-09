@@ -24,15 +24,14 @@
 #include "platform/event.h"
 #include "network/netConnection.h"
 #include "network/netInterface.h"
-#include "io/bitStream.h"
 #include "math/mRandom.h"
 #include "game/gameInterface.h"
 
-NetInterface *GNet = NULL;
+NetInterface *GNet = nullptr;
 
 NetInterface::NetInterface()
 {
-   AssertFatal(GNet == NULL, "ERROR: Multiple net interfaces declared.");
+   AssertFatal(GNet == nullptr, "ERROR: Multiple net interfaces declared.");
    GNet = this;
 
    mLastTimeoutCheckTime = 0;
@@ -76,7 +75,7 @@ NetConnection *NetInterface::findPendingConnection(const NetAddress *address, U3
       if(Net::compareAddresses(address, mPendingConnections[i]->getNetAddress()) &&
             connectSequence == mPendingConnections[i]->getSequence())
          return mPendingConnections[i];
-   return NULL;
+   return nullptr;
 }
 
 //void NetInterface::processPacketReceiveEvent(PacketReceiveEvent *prEvent)
@@ -297,7 +296,7 @@ void NetInterface::handleConnectRequest(const NetAddress *address, BitStream *st
    }
 
    char connectionClass[255];
-   stream->readString(connectionClass);
+   StreamFn::readString(stream, connectionClass);
 
    ConsoleObject *co = ConsoleObject::create(connectionClass);
    NetConnection *conn = dynamic_cast<NetConnection *>(co);
@@ -311,7 +310,7 @@ void NetInterface::handleConnectRequest(const NetAddress *address, BitStream *st
    conn->setNetworkConnection(true);
    conn->setSequence(connectSequence);
 
-   const char *errorString = NULL;
+   const char *errorString = nullptr;
    if(!conn->readConnectRequest(stream, &errorString))
    {
       sendConnectReject(conn, errorString);
@@ -343,7 +342,7 @@ void NetInterface::handleConnectAccept(const NetAddress *address, BitStream *str
    NetConnection *conn = findPendingConnection(address, connectSequence);
    if(!conn || conn->getConnectionState() != NetConnection::AwaitingConnectResponse)
       return;
-   const char *errorString = NULL;
+   const char *errorString = nullptr;
    if(!conn->readConnectAccept(stream, &errorString))
    {
       conn->handleStartupError(errorString);
@@ -362,7 +361,7 @@ void NetInterface::handleConnectAccept(const NetAddress *address, BitStream *str
 void NetInterface::sendConnectReject(NetConnection *conn, const char *reason)
 {
    if(!reason)
-      return; // if the stream is NULL, we reject silently
+      return; // if the stream is nullptr, we reject silently
 
    BitStream *out = BitStream::getPacketStream();
    out->write(U8(ConnectReject));
@@ -381,7 +380,7 @@ void NetInterface::handleConnectReject(const NetAddress *address, BitStream *str
       return;
    removePendingConnection(conn);
    char reason[256];
-   stream->readString(reason);
+   StreamFn::readString(stream, reason);
    conn->onConnectionRejected(reason);
    conn->deleteObject();
 }
@@ -396,7 +395,7 @@ void NetInterface::handleDisconnect(const NetAddress *address, BitStream *stream
    char reason[256];
 
    stream->read(&connectSequence);
-   stream->readString(reason);
+   StreamFn::readString(stream, reason);
 
    if(conn->getSequence() != connectSequence)
       return;

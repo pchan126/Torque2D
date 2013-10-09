@@ -20,6 +20,7 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
+#include <fstream>
 #include "persistence/taml/json/TamlJSONParser.h"
 #include "persistence/taml/tamlVisitor.h"
 #include "console/console.h"
@@ -27,6 +28,12 @@
 
 // Debug Profiling.
 #include "debug/profiler.h"
+#include "StreamFn.h"
+#include "rapidjson/reader.h"
+#include "rapidjson/prettywriter.h"
+#include "rapidjson/filestream.h"
+
+using namespace rapidjson;
 
 //-----------------------------------------------------------------------------
 
@@ -36,16 +43,16 @@ bool TamlJSONParser::accept( const char* pFilename, TamlVisitor& visitor )
     PROFILE_SCOPE(TamlJSONParser_Accept);
 
     // Sanity!
-    AssertFatal( pFilename != NULL, "Cannot parse a NULL filename." );
+    AssertFatal( pFilename != nullptr, "Cannot parse a nullptr filename." );
 
     // Expand the file-path.
     char filenameBuffer[1024];
     Con::expandPath( filenameBuffer, sizeof(filenameBuffer), pFilename );
 
-    FileStream stream;
+    std::fstream stream( filenameBuffer, std::fstream::in);
 
     // File open for read?
-    if ( !stream.open( filenameBuffer, FileStream::Read ) )
+    if ( !stream )
     {
         // No, so warn.
         Con::warnf("TamlJSONParser::parse() - Could not open filename '%s' for parse.", filenameBuffer );
@@ -53,9 +60,9 @@ bool TamlJSONParser::accept( const char* pFilename, TamlVisitor& visitor )
     }
 
     // Read JSON file.
-    const U32 streamSize = stream.getStreamSize();
+    const U32 streamSize = StreamFn::getStreamSize(stream);
     FrameTemp<char> jsonText( streamSize + 1 );
-    if ( !stream.read( streamSize, jsonText ) )
+    if ( !stream.read( jsonText, streamSize ) )
     {
         // Warn!
         Con::warnf("TamlJSONParser::parse() - Could not load Taml JSON file from stream.");
@@ -63,14 +70,14 @@ bool TamlJSONParser::accept( const char* pFilename, TamlVisitor& visitor )
     }
 
     // Create JSON document.
-    rapidjson::Document inputDocument;
+    Document inputDocument;
     inputDocument.Parse<0>( jsonText );
 
     // Close the stream.
     stream.close();
 
     // Check the document is valid.
-    if ( inputDocument.GetType() != rapidjson::kObjectType )
+    if ( inputDocument.GetType() != kObjectType )
     {
         // Warn!
         Con::warnf("TamlJSONParser::parse() - Load Taml JSON file from stream but was invalid.");
@@ -84,7 +91,7 @@ bool TamlJSONParser::accept( const char* pFilename, TamlVisitor& visitor )
     mDocumentDirty = false;
 
     // Fetch the root.
-    rapidjson::Value::MemberIterator rootItr = inputDocument.MemberBegin();
+    Value::MemberIterator rootItr = inputDocument.MemberBegin();
 
     // Parse root value.
     parseType( rootItr, visitor, true );
@@ -97,7 +104,8 @@ bool TamlJSONParser::accept( const char* pFilename, TamlVisitor& visitor )
         return true;
 
     // Open for write?
-    if ( !stream.open( filenameBuffer, FileStream::Write ) )
+    stream.open(filenameBuffer, std::fstream::out);
+    if ( !stream )
     {
         // No, so warn.
         Con::warnf("TamlJSONParser::parse() - Could not open filename '%s' for write.", filenameBuffer );
@@ -105,40 +113,41 @@ bool TamlJSONParser::accept( const char* pFilename, TamlVisitor& visitor )
     }
 
     // Create output document.
-    rapidjson::Document outputDocument;
+    Document outputDocument;
     outputDocument.AddMember( rootItr->name, rootItr->value, outputDocument.GetAllocator() );
-
-    // Write document to stream.
-    rapidjson::PrettyWriter<FileStream> jsonStreamWriter( stream );
-    outputDocument.Accept( jsonStreamWriter );
-
     // Close the stream.
     stream.close();
+
+    FILE * pFile = fopen(filenameBuffer, "wb");
+    // Write document to stream.
+    FileStream is(pFile);
+    PrettyWriter<FileStream> jsonStreamWriter( is );
+    outputDocument.Accept( jsonStreamWriter );
 
     return true;
 }
 
 //-----------------------------------------------------------------------------
 
-inline bool TamlJSONParser::parseType( rapidjson::Value::MemberIterator& memberItr, TamlVisitor& visitor, const bool isRoot )
+inline bool TamlJSONParser::parseType( Value::MemberIterator& memberItr, TamlVisitor& visitor, const bool isRoot )
 {
     // Debug Profiling.
     PROFILE_SCOPE(TamlJSONParser_ParseType);
 
     // Fetch name and value.
-    const rapidjson::Value& typeName = memberItr->name;
-    rapidjson::Value& typeValue = memberItr->value;
+    const Value& typeName = memberItr->name;
+    Value& typeValue = memberItr->value;
 
     // Create a visitor property state.
     TamlVisitor::PropertyState propertyState;
     propertyState.setObjectName( typeName.GetString(), isRoot );
 
     // Parse field members.
-    for( rapidjson::Value::MemberIterator fieldMemberItr = typeValue.MemberBegin(); fieldMemberItr != typeValue.MemberEnd(); ++fieldMemberItr )
+    for( Value::MemberIterator fieldMemberItr = typeValue.MemberBegin(); fieldMemberItr != typeValue.MemberEnd(); ++fieldMemberItr )
     {
         // Fetch value.
-        const rapidjson::Value& fieldName = fieldMemberItr->name;
-        rapidjson::Value& fieldValue = fieldMemberItr->value;
+        const Value& fieldName = fieldMemberItr->name;
+        Value& fieldValue = fieldMemberItr->value;
         
         // Skip if not a field.
         if ( fieldValue.IsObject() )
@@ -178,10 +187,10 @@ inline bool TamlJSONParser::parseType( rapidjson::Value::MemberIterator& memberI
         return false;
 
     // Parse children and custom node members.
-    for( rapidjson::Value::MemberIterator objectMemberItr = typeValue.MemberBegin(); objectMemberItr != typeValue.MemberEnd(); ++objectMemberItr )
+    for( Value::MemberIterator objectMemberItr = typeValue.MemberBegin(); objectMemberItr != typeValue.MemberEnd(); ++objectMemberItr )
     {
         // Fetch name and value.
-        const rapidjson::Value& objectValue = objectMemberItr->value;
+        const Value& objectValue = objectMemberItr->value;
         
         // Skip if not an object.
         if ( !objectValue.IsObject() )
@@ -197,7 +206,7 @@ inline bool TamlJSONParser::parseType( rapidjson::Value::MemberIterator& memberI
 
 //-----------------------------------------------------------------------------
 
-inline bool TamlJSONParser::parseStringValue( char* pBuffer, const S32 bufferSize, const rapidjson::Value& value, const char* pName )
+inline bool TamlJSONParser::parseStringValue( char* pBuffer, const S32 bufferSize, const Value& value, const char* pName )
 {
     // Debug Profiling.
     PROFILE_SCOPE(TamlJSONParser_ParseStringValue);

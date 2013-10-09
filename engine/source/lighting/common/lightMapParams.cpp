@@ -21,7 +21,7 @@
 //-----------------------------------------------------------------------------
 
 #include "lighting/common/lightMapParams.h"
-#include "io/bitStream.h"
+#include <sstream>
 
 //MODULE_BEGIN( LightMapParams )
 //MODULE_INIT_AFTER( ShadowMapParams )
@@ -51,18 +51,18 @@ void LightMapParams::set( const LightInfoEx *ex )
    // TODO: Do we even need this?
 }
 
-void LightMapParams::packUpdate( BitStream *stream ) const
+void LightMapParams::packUpdate(std::stringstream &stream)
 {
-   stream->writeFlag(representedInLightmap);
-   stream->writeFlag(includeLightmappedGeometryInShadow);
-   stream->write(shadowDarkenColor);
+   stream << representedInLightmap;
+   stream << includeLightmappedGeometryInShadow;
+   stream.write( (char*)&shadowDarkenColor, sizeof(shadowDarkenColor));
 }
 
-void LightMapParams::unpackUpdate( BitStream *stream )
+void LightMapParams::unpackUpdate(std::stringstream &stream)
 {
-   representedInLightmap = stream->readFlag();
-   includeLightmappedGeometryInShadow = stream->readFlag();
-   stream->read(&shadowDarkenColor);
+   stream >> representedInLightmap;
+   stream >> includeLightmappedGeometryInShadow;
+   stream.read( (char*)&shadowDarkenColor, sizeof(shadowDarkenColor));
 
    // Always make sure that the alpha value of the shadowDarkenColor is -1.0
    shadowDarkenColor.alpha = -1.0f;

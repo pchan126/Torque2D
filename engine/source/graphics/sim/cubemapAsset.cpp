@@ -23,7 +23,6 @@
 #include "platform/platform.h"
 #include "graphics/sim/cubemapAsset.h"
 
-#include "io/bitStream.h"
 #include "console/consoleTypes.h"
 #include "graphics/gfxCubemap.h"
 #include "graphics/gfxDevice.h"
@@ -65,7 +64,7 @@ ConsoleSetType( TypeCubemapAssetPtr )
       AssetPtr<CubemapAsset>* pAssetPtr = dynamic_cast<AssetPtr<CubemapAsset>*>((AssetPtrBase*)(dptr));
       
       // Is the asset pointer the correct type?
-      if ( pAssetPtr == NULL )
+      if ( pAssetPtr == nullptr )
       {
          // No, so fail.
          Con::warnf( "(TypeCubemapAssetPtr) - Failed to set asset Id '%d'.", pFieldValue );
@@ -85,7 +84,7 @@ ConsoleSetType( TypeCubemapAssetPtr )
 
 CubemapAsset::CubemapAsset()
 {
-   mCubemap = NULL;
+   mCubemap = nullptr;
    mDynamic = false;
    mDynamicSize = 512;
    mDynamicNearDist = 0.1f;
@@ -98,7 +97,7 @@ CubemapAsset::CubemapAsset()
 
 CubemapAsset::~CubemapAsset()
 {
-   mCubemap = NULL;
+   mCubemap = nullptr;
 }
 
 //ConsoleDocClass( CubemapAsset, 
@@ -122,7 +121,7 @@ CubemapAsset::~CubemapAsset()
 
 void CubemapAsset::initPersistFields()
 {
-   addField( "cubeFace", TypeAssetLooseFilePath, Offset(mCubeFaceFile, CubemapAsset), 6, NULL,
+   addField( "cubeFace", TypeAssetLooseFilePath, Offset(mCubeFaceFile, CubemapAsset), 6, nullptr,
       "@brief The 6 cubemap face textures for a static cubemap.\n\n"
       "They are in the following order:\n"
       "  - cubeFace[0] is -X\n"
@@ -291,7 +290,7 @@ void CubemapAsset::createMap()
 //   // restore render surface and depth buffer
 //   GFX->popActiveRenderTarget();
 //
-//   mRenderTarget->attachTexture(GFXTextureTarget::Color0, NULL);
+//   mRenderTarget->attachTexture(GFXTextureTarget::Color0, nullptr);
 //   sm->setVisibleDistance(oldVisibleDist);
 //}
 
@@ -313,7 +312,7 @@ void CubemapAsset::updateFaces()
 
 	if( initSuccess )
 	{
-		mCubemap = NULL;
+		mCubemap = nullptr;
 		mCubemap = GFX->createCubemap();
 
 		mCubemap->initStatic( mCubeFace );

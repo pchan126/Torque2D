@@ -24,11 +24,8 @@
 #include "network/connectionProtocol.h"
 #include "sim/simBase.h"
 #include "network/netConnection.h"
-#include "io/bitStream.h"
-#include "network/netObject.h"
 #include "io/resource/resourceManager.h"
-#include "console/console.h"
-#include "console/consoleTypes.h"
+#include "StreamFn.h"
 
 #define DebugChecksum 0xF00DBAAD
 
@@ -41,31 +38,31 @@ class GhostAlwaysObjectEvent : public NetEvent
    NetObject *object;
    bool validObject;
 public:
-   GhostAlwaysObjectEvent(NetObject *obj = NULL, U32 index = 0)
+   GhostAlwaysObjectEvent(NetObject *obj = nullptr, U32 index = 0)
    {
       if(obj)
       {
          objectId = obj->getId();
          ghostIndex = index;
       }
-      object = NULL;
+      object = nullptr;
    }
    ~GhostAlwaysObjectEvent()
       { delete object; }
 
-   void pack(NetConnection *ps, BitStream *bstream)
+   void pack(NetConnection *ps, std::iostream &bstream)
    {
       bstream->writeInt(ghostIndex, NetConnection::GhostIdBitSize);
 
       NetObject *obj = (NetObject *) Sim::findObject(objectId);
-      if(bstream->writeFlag(obj != NULL))
+      if(bstream->writeFlag(obj != nullptr))
       {
          S32 classId = obj->getClassId(ps->getNetClassGroup());
          bstream->writeClassId(classId, NetClassTypeObject, ps->getNetClassGroup());
          obj->packUpdate(ps, 0xFFFFFFFF, bstream);
       }
    }
-   void write(NetConnection *ps, BitStream *bstream)
+   void write(NetConnection *ps, std::iostream &bstream)
    {
       bstream->writeInt(ghostIndex, NetConnection::GhostIdBitSize);
       if(bstream->writeFlag(validObject))
@@ -75,11 +72,11 @@ public:
          object->packUpdate(ps, 0xFFFFFFFF, bstream);
       }
    }
-   void unpack(NetConnection *ps, BitStream *bstream)
+   void unpack(NetConnection *ps, std::iostream &bstream)
    {
       ghostIndex = bstream->readInt(NetConnection::GhostIdBitSize);
 
-      if(bstream->readFlag())
+      if(StreamFn::readFlag(bstream))
       {
          S32 classId = bstream->readClassId(NetClassTypeObject, ps->getNetClassGroup());
          if(classId == -1)
@@ -109,7 +106,7 @@ public:
       Con::executef(1, "onGhostAlwaysObjectReceived");
 
       ps->setGhostAlwaysObject(object, ghostIndex);
-      object = NULL;
+      object = nullptr;
    }
    DECLARE_CONOBJECT(GhostAlwaysObjectEvent);
 };
@@ -131,7 +128,7 @@ void NetConnection::setGhostTo(bool ghostTo)
    {
       mLocalGhosts = new NetObject *[MaxGhostCount];
       for(S32 i = 0; i < MaxGhostCount; i++)
-         mLocalGhosts[i] = NULL;
+         mLocalGhosts[i] = nullptr;
    }
 }
 
@@ -148,7 +145,7 @@ void NetConnection::setGhostFrom(bool ghostFrom)
       S32 i;
       for(i = 0; i < MaxGhostCount; i++)
       {
-         mGhostRefs[i].obj = NULL;
+         mGhostRefs[i].obj = nullptr;
          mGhostRefs[i].index = i;
          mGhostRefs[i].updateMask = 0;
       }
@@ -174,7 +171,7 @@ void NetConnection::ghostPacketDropped(PacketNotify *notify)
       GhostRef *temp = packRef->nextRef;
 
       U32 orFlags = 0;
-      AssertFatal(packRef->nextUpdateChain == NULL, "Out of order notify!!");
+      AssertFatal(packRef->nextUpdateChain == nullptr, "Out of order notify!!");
 
       // clear out the ref for this object, plus or together all
       // flags from updates after this
@@ -236,7 +233,7 @@ void NetConnection::ghostPacketReceived(PacketNotify *notify)
    {
       GhostRef *temp = packRef->nextRef;
 
-      AssertFatal(packRef->nextUpdateChain == NULL, "Out of order notify!!");
+      AssertFatal(packRef->nextUpdateChain == nullptr, "Out of order notify!!");
 
       // clear this notify from the end of the object's notify
       // chain
@@ -280,13 +277,13 @@ static S32 QSORT_CALLBACK UQECompare(const void *a,const void *b)
    return (ret < 0) ? -1 : ((ret > 0) ? 1 : 0);
 }
 
-void NetConnection::ghostWritePacket(BitStream *bstream, PacketNotify *notify)
+void NetConnection::ghostWritePacket(std::iostream &bstream, PacketNotify *notify)
 {
 #ifdef    TORQUE_DEBUG_NET
    bstream->writeInt(DebugChecksum, 32);
 #endif
 
-   notify->ghostList = NULL;
+   notify->ghostList = nullptr;
 
    if(!isGhostingFrom())
       return;
@@ -307,7 +304,7 @@ void NetConnection::ghostWritePacket(BitStream *bstream, PacketNotify *notify)
 
    CameraScopeQuery camInfo;
 
-   camInfo.camera = NULL;
+   camInfo.camera = nullptr;
    camInfo.pos.set(0,0,0);
    camInfo.orientation.set(0,1,0);
    camInfo.visibleDistance = 1;
@@ -362,7 +359,7 @@ void NetConnection::ghostWritePacket(BitStream *bstream, PacketNotify *notify)
       else
          walk->priority = 0;
    }
-   GhostRef *updateList = NULL;
+   GhostRef *updateList = nullptr;
    dQsort(mGhostArray, mGhostZeroUpdateIndex, sizeof(GhostInfo *), UQECompare);
 
    // reset the array indices...
@@ -459,7 +456,7 @@ void NetConnection::ghostWritePacket(BitStream *bstream, PacketNotify *notify)
    notify->ghostList = updateList;
 }
 
-void NetConnection::ghostReadPacket(BitStream *bstream)
+void NetConnection::ghostReadPacket(std::iostream &bstream)
 {
 #ifdef    TORQUE_DEBUG_NET
    U32 sum = bstream->readInt(32);
@@ -468,7 +465,7 @@ void NetConnection::ghostReadPacket(BitStream *bstream)
 
    if(!isGhostingTo())
       return;
-   if(!bstream->readFlag())
+   if(!StreamFn::readFlag(bstream)())
       return;
 
    S32 idSize;
@@ -477,7 +474,7 @@ void NetConnection::ghostReadPacket(BitStream *bstream)
 
    // while there's an object waiting...
 
-   while(bstream->readFlag())
+   while(StreamFn::readFlag(bstream)())
    {
 
       gGhostUpdates++;
@@ -485,12 +482,12 @@ void NetConnection::ghostReadPacket(BitStream *bstream)
       U32 index;
       //S32 startPos = bstream->getCurPos();
       index = (U32) bstream->readInt(idSize);
-      if(bstream->readFlag()) // is this ghost being deleted?
+      if(StreamFn::readFlag(bstream)()) // is this ghost being deleted?
       {
          mGhostsActive--;
-         AssertFatal(mLocalGhosts[index] != NULL, "Error, NULL ghost encountered.");
+         AssertFatal(mLocalGhosts[index] != nullptr, "Error, nullptr ghost encountered.");
          mLocalGhosts[index]->deleteObject();
-         mLocalGhosts[index] = NULL;
+         mLocalGhosts[index] = nullptr;
       }
       else
       {
@@ -519,7 +516,7 @@ void NetConnection::ghostReadPacket(BitStream *bstream)
 #ifdef TORQUE_DEBUG_NET
             U32 checksum = bstream->readInt(32);
             S32 origId = checksum ^ DebugChecksum;
-            AssertISV(mLocalGhosts[index] != NULL, "Invalid dest ghost.");
+            AssertISV(mLocalGhosts[index] != nullptr, "Invalid dest ghost.");
             AssertISV(origId == mLocalGhosts[index]->getClassId(getNetClassGroup()),
                avar("class id mismatch for dest class %s.",
                   mLocalGhosts[index]->getClassName()) );
@@ -543,7 +540,7 @@ void NetConnection::ghostReadPacket(BitStream *bstream)
             S32 classId = bstream->readClassId(NetClassTypeObject, getNetClassGroup());
             U32 checksum = bstream->readInt(32);
             S32 origId = checksum ^ DebugChecksum;
-            AssertISV(mLocalGhosts[index] != NULL, "Invalid dest ghost.");
+            AssertISV(mLocalGhosts[index] != nullptr, "Invalid dest ghost.");
             AssertISV(origId == mLocalGhosts[index]->getClassId(getNetClassGroup()),
                avar("class id mismatch for dest class %s.",
                   mLocalGhosts[index]->getClassName()) );
@@ -607,8 +604,8 @@ void NetConnection::detachObject(GhostInfo *info)
             break;
          }
       }
-      info->prevObjectRef = info->nextObjectRef = NULL;
-      info->obj = NULL;
+      info->prevObjectRef = info->nextObjectRef = nullptr;
+      info->obj = nullptr;
    }
 }
 
@@ -622,7 +619,7 @@ void NetConnection::freeGhostInfo(GhostInfo *ghost)
       ghostPushToZero(ghost);
    }
    ghostPushZeroToFree(ghost);
-   AssertFatal(ghost->updateChain == NULL, "Ack!");
+   AssertFatal(ghost->updateChain == nullptr, "Ack!");
 }
 
 //-----------------------------------------------------------------------------
@@ -714,7 +711,7 @@ void NetConnection::objectInScope(NetObject *obj)
       giptr->flags |= GhostInfo::ScopeAlways;
 
    giptr->obj = obj;
-   giptr->updateChain = NULL;
+   giptr->updateChain = nullptr;
    giptr->updateSkipCount = 0;
 
    giptr->connection = this;
@@ -722,7 +719,7 @@ void NetConnection::objectInScope(NetObject *obj)
    giptr->nextObjectRef = obj->mFirstObjectRef;
    if(obj->mFirstObjectRef)
       obj->mFirstObjectRef->prevObjectRef = giptr;
-   giptr->prevObjectRef = NULL;
+   giptr->prevObjectRef = nullptr;
    obj->mFirstObjectRef = giptr;
 
    giptr->nextLookupInfo = mGhostLookupTable[index];
@@ -754,7 +751,7 @@ void NetConnection::handleConnectionMessage(U32 message, U32 sequence, U32 ghost
          // it's possible that there were some file load errors...
          // if so, we need to indicate to the server to restart ghosting, after
          // we download all the files...
-         sv.ghost = NULL;
+         sv.ghost = nullptr;
          mGhostAlwaysSaveList.push_back(sv);
          if(mGhostAlwaysSaveList.size() == 1)
             loadNextGhostAlwaysObject(true);
@@ -779,7 +776,7 @@ void NetConnection::handleConnectionMessage(U32 message, U32 sequence, U32 ghost
             if(mLocalGhosts[i])
             {
                mLocalGhosts[i]->deleteObject();
-               mLocalGhosts[i] = NULL;
+               mLocalGhosts[i] = nullptr;
             }
          }
          while(mGhostAlwaysSaveList.size())
@@ -834,7 +831,7 @@ void NetConnection::activateGhosting()
    mScoping = true; // so that objectInScope will work
    for(auto i:*ghostAlwaysSet)
    {
-      AssertFatal(dynamic_cast<NetObject *>(i) != NULL, avar("Non NetObject in GhostAlwaysSet: %s", (i)->getClassName()));
+      AssertFatal(dynamic_cast<NetObject *>(i) != nullptr, avar("Non NetObject in GhostAlwaysSet: %s", (i)->getClassName()));
       NetObject *obj = (NetObject *)(i);
       if(obj->mNetFlags.test(NetObject::Ghostable))
          objectInScope(obj);
@@ -863,7 +860,7 @@ void NetConnection::clearGhostInfo()
    for(PacketNotify *walk = mNotifyQueueHead; walk; walk = walk->nextPacket)
    {
       ghostPacketReceived(walk);
-      walk->ghostList = NULL;
+      walk->ghostList = nullptr;
    }
    for(S32 i = 0; i < MaxGhostCount; i++)
    {
@@ -993,7 +990,7 @@ void NetConnection::loadNextGhostAlwaysObject(bool hadNewFiles)
       addObject(object);
       mGhostAlwaysSaveList.pop_front();
 
-      AssertFatal(mLocalGhosts[index] == NULL, "Ghost already in table!");
+      AssertFatal(mLocalGhosts[index] == nullptr, "Ghost already in table!");
       mLocalGhosts[index] = object;
       hadNewFiles = true;
    }
@@ -1029,7 +1026,7 @@ S32 NetConnection::getGhostIndex(NetObject *obj)
 
 //-----------------------------------------------------------------------------
 
-void NetConnection::ghostWriteStartBlock(ResizeBitStream *stream)
+void NetConnection::ghostWriteStartBlock(std::iostream &stream)
 {
    // Ok, writing the start block for the ghosts:
    // here's how it goes.
@@ -1047,7 +1044,7 @@ void NetConnection::ghostWriteStartBlock(ResizeBitStream *stream)
    {
       if(mLocalGhosts[i])
       {
-         stream->writeFlag(true);
+         stream << (true);
          stream->writeInt(i, GhostIdBitSize);
          stream->writeClassId(mLocalGhosts[i]->getClassId(getNetClassGroup()), NetClassTypeObject, getNetClassGroup());
          stream->validate();
@@ -1072,14 +1069,14 @@ void NetConnection::ghostWriteStartBlock(ResizeBitStream *stream)
    }
 }
 
-void NetConnection::ghostReadStartBlock(BitStream *stream)
+void NetConnection::ghostReadStartBlock(std::iostream &stream)
 {
    stream->read(&mGhostingSequence);
 
    // read em back in.
    // first, read in the index/class id, construct the object, and place it in mLocalGhosts[i]
 
-   while(stream->readFlag())
+   while(StreamFn::readFlag(stream))
    {
       U32 index = stream->readInt(GhostIdBitSize);
       S32 tag = stream->readClassId(NetClassTypeObject, getNetClassGroup());

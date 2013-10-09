@@ -39,7 +39,6 @@
 #include "math/mathUtils.h"
 #include "shaderGen/shaderGenVars.h"
 #include "core/util/safeDelete.h"
-#include "io/bitStream.h"
 #include "math/mathIO.h"
 #include "materials/shaderData.h"
 #include "core/module.h"
@@ -85,11 +84,11 @@ LightShadowMap::LightShadowMap( LightInfo *light )
    :  mWorldToLightProj( true ),
       mLight( light ),
       mTexSize( 0 ),
-      mLastShader( NULL ),
+      mLastShader( nullptr ),
       mLastUpdate( 0 ),
       mLastCull( 0 ),
       mIsViewDependent( false ),
-      mVizQuery( NULL ),
+      mVizQuery( nullptr ),
       mWasOccluded( false ),
       mLastScreenSize( 0.0f ),
       mLastPriority( 0.0f )
@@ -104,7 +103,7 @@ LightShadowMap::LightShadowMap( LightInfo *light )
 
 LightShadowMap::~LightShadowMap()
 {
-   mTarget = NULL;
+   mTarget = nullptr;
    SAFE_DELETE( mVizQuery );   
    
    releaseTextures();
@@ -244,8 +243,8 @@ void LightShadowMap::calcLightMatrices( MatrixF &outLightMatrix, const Frustum &
 
 void LightShadowMap::releaseTextures()
 {
-   mShadowMapTex = NULL;
-   mDebugTarget.setTexture( NULL );
+   mShadowMapTex = nullptr;
+   mDebugTarget.setTexture( nullptr );
    mLastUpdate = 0;
    smUsedShadowMaps.remove( this );
 }
@@ -298,7 +297,7 @@ bool LightShadowMap::setTextureStage( U32 currTexFlag, LightingShaderConstants* 
 void LightShadowMap::render(  RenderPassManager* renderPass,
                               const SceneRenderState *diffuseState )
 {
-   mDebugTarget.setTexture( NULL );
+   mDebugTarget.setTexture( nullptr );
    _render( renderPass, diffuseState );
    mDebugTarget.setTexture( mShadowMapTex );
 
@@ -447,34 +446,34 @@ void LightShadowMap::_debugRender( SceneRenderState* shadowRenderState )
 
 LightingShaderConstants::LightingShaderConstants() 
    :  mInit( false ),
-      mShader( NULL ),
-      mLightParamsSC(NULL), 
-      mLightSpotParamsSC(NULL), 
-      mLightPositionSC(NULL),
-      mLightDiffuseSC(NULL), 
-      mLightAmbientSC(NULL), 
-      mLightInvRadiusSqSC(NULL),
-      mLightSpotDirSC(NULL),
-      mLightSpotAngleSC(NULL),
-	  mLightSpotFalloffSC(NULL),
-      mShadowMapSC(NULL), 
-      mShadowMapSizeSC(NULL), 
-      mCookieMapSC(NULL),
-      mRandomDirsConst(NULL),
-      mShadowSoftnessConst(NULL), 
-      mWorldToLightProjSC(NULL), 
-      mViewToLightProjSC(NULL),
-      mScaleXSC(NULL), 
-      mScaleYSC(NULL),
-      mOffsetXSC(NULL), 
-      mOffsetYSC(NULL), 
-      mAtlasXOffsetSC(NULL), 
-      mAtlasYOffsetSC(NULL),
-      mAtlasScaleSC(NULL), 
-      mFadeStartLength(NULL), 
-      mFarPlaneScalePSSM(NULL),
-      mOverDarkFactorPSSM(NULL), 
-      mTapRotationTexSC(NULL)
+      mShader( nullptr ),
+      mLightParamsSC(nullptr), 
+      mLightSpotParamsSC(nullptr), 
+      mLightPositionSC(nullptr),
+      mLightDiffuseSC(nullptr), 
+      mLightAmbientSC(nullptr), 
+      mLightInvRadiusSqSC(nullptr),
+      mLightSpotDirSC(nullptr),
+      mLightSpotAngleSC(nullptr),
+	  mLightSpotFalloffSC(nullptr),
+      mShadowMapSC(nullptr), 
+      mShadowMapSizeSC(nullptr), 
+      mCookieMapSC(nullptr),
+      mRandomDirsConst(nullptr),
+      mShadowSoftnessConst(nullptr), 
+      mWorldToLightProjSC(nullptr), 
+      mViewToLightProjSC(nullptr),
+      mScaleXSC(nullptr), 
+      mScaleYSC(nullptr),
+      mOffsetXSC(nullptr), 
+      mOffsetYSC(nullptr), 
+      mAtlasXOffsetSC(nullptr), 
+      mAtlasYOffsetSC(nullptr),
+      mAtlasScaleSC(nullptr), 
+      mFadeStartLength(nullptr), 
+      mFarPlaneScalePSSM(nullptr),
+      mOverDarkFactorPSSM(nullptr), 
+      mTapRotationTexSC(nullptr)
 {
 }
 
@@ -483,7 +482,7 @@ LightingShaderConstants::~LightingShaderConstants()
    if (mShader.isValid())
    {
       mShader->getReloadSignal().remove( this, &LightingShaderConstants::_onShaderReload );
-      mShader = NULL;
+      mShader = nullptr;
    }
 }
 
@@ -558,7 +557,7 @@ LightInfoExType ShadowMapParams::Type( "" );
 
 ShadowMapParams::ShadowMapParams( LightInfo *light ) 
    :  mLight( light ),
-      mShadowMap( NULL )
+      mShadowMap( nullptr )
 {
    attenuationRatio.set( 0.0f, 1.0f, 1.0f );
    shadowType = ShadowType_Spot;
@@ -638,7 +637,7 @@ LightShadowMap* ShadowMapParams::getOrCreateShadowMap()
       return mShadowMap;
 
    if ( !mLight->getCastShadows() )
-      return NULL;
+      return nullptr;
 
    switch ( mLight->getType() )
    {
@@ -678,7 +677,7 @@ GFXTextureObject* ShadowMapParams::getCookieTex()
                         "ShadowMapParams::getCookieTex()" );
    }
    else if ( cookie.isEmpty() )
-      mCookieTex = NULL;
+      mCookieTex = nullptr;
 
    return mCookieTex.getPointer();
 }
@@ -692,7 +691,7 @@ GFXCubemap* ShadowMapParams::getCookieCubeTex()
       mCookieCubeTex.set( cookie );
    }
    else if ( cookie.isEmpty() )
-      mCookieCubeTex = NULL;
+      mCookieCubeTex = nullptr;
 
    return mCookieCubeTex.getPointer();
 }

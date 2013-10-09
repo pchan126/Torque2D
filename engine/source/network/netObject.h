@@ -162,12 +162,12 @@ struct GhostInfo;
 ///       // the unpackUpdate function must be symmetrical to packUpdate
 ///       if(stream->readFlag())
 ///       {
-///          stream->readString(message1);
+///          StreamFn::readString(stream, message1);
 ///          Con::printf("Got message1: %s", message1);
 ///       }
 ///       if(stream->readFlag())
 ///       {
-///          stream->readString(message2);
+///          StreamFn::readString(stream, message2);
 ///          Con::printf("Got message2: %s", message2);
 ///       }
 ///    }
@@ -343,13 +343,13 @@ public:
    ///
    /// @returns Any bits which were not dealt with. The value is stored by the networking
    ///          system. Don't set bits you weren't passed.
-   virtual U32  packUpdate(NetConnection * conn, U32 mask, BitStream *stream);
+   virtual U32  packUpdate(NetConnection *conn, U32 mask, std::iostream &stream);
 
    /// Instructs this object to read state data previously packed with packUpdate.
    ///
    /// @param   conn    Net connection being used
    /// @param   stream  stream to read from
-   virtual void unpackUpdate(NetConnection * conn, BitStream *stream);
+   virtual void unpackUpdate(NetConnection *conn, std::iostream &stream);
 
    /// Queries the object about information used to determine scope.
    ///

@@ -38,6 +38,8 @@ extern StringTableEntry JSON_RFC4627_NAME_MANGLING_FORMAT;
 
 //-----------------------------------------------------------------------------
 
+using namespace rapidjson;
+
 class TamlJSONWriter
 {
 public:
@@ -53,10 +55,10 @@ private:
     Taml* mpTaml;
 
 private:
-    void compileType( rapidjson::Document& document, rapidjson::Value* pTypeValue, rapidjson::Value* pParentValue, const TamlWriteNode* pTamlWriteNode, const S32 memberIndex );
-    void compileFields( rapidjson::Document& document, rapidjson::Value* pTypeValue, const TamlWriteNode* pTamlWriteNode );
-    void compileCustom( rapidjson::Document& document, rapidjson::Value* pTypeValue, const TamlWriteNode* pTamlWriteNode );
-    void compileCustomNode( rapidjson::Document& document, rapidjson::Value* pParentValue, const TamlCustomNode* pCustomNode, const S32 memberIndex );
+    void compileType( Document& document, Value* pTypeValue, Value* pParentValue, const TamlWriteNode* pTamlWriteNode, const S32 memberIndex );
+    void compileFields( Document& document, Value* pTypeValue, const TamlWriteNode* pTamlWriteNode );
+    void compileCustom( Document& document, Value* pTypeValue, const TamlWriteNode* pTamlWriteNode );
+    void compileCustomNode( Document& document, Value* pParentValue, const TamlCustomNode* pCustomNode, const S32 memberIndex );
 
     inline StringTableEntry getManagedName(const char* pName, const S32 memberIndex );
 };

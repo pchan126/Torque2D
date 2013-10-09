@@ -24,9 +24,9 @@
 #include "network/connectionProtocol.h"
 #include "console/consoleTypes.h"
 #include "sim/simBase.h"
-#include "io/bitStream.h"
 #include "game/gameConnection.h"
 #include "io/resource/resourceManager.h"
+#include "StreamFn.h"
 
 //----------------------------------------------------------------------------
 #define MAX_MOVE_PACKET_SENDS 4
@@ -45,12 +45,12 @@ S32 GameConnection::mLagThresholdMS = 0;
 GameConnection::GameConnection()
 {
    mLagging = false;
-   mAuthInfo = NULL;
+   mAuthInfo = nullptr;
    mConnectArgc = 0;
    for(U32 i = 0; i < MaxConnectArgs; i++)
       mConnectArgv[i] = 0;
 
-   mJoinPassword = NULL;
+   mJoinPassword = nullptr;
 
    mDisconnectReason[0] = 0;
    
@@ -87,7 +87,7 @@ void GameConnection::setJoinPassword(const char *password)
 }
 
 ConsoleMethod(GameConnection, setJoinPassword, void, 3, 3, "( password ) Use the setJoinPassword method to set the password required to connect to this server-side GameConnection.\n"
-                                                                "Pass a NULL string to clear the password.\n"
+                                                                "Pass a nullptr string to clear the password.\n"
                                                                 "@param password A string representing the case insensitive password to use for this server-side GameConnection.\n"
                                                                 "@return No return value.\n"
                                                                 "@sa setConnectArgs")
@@ -177,19 +177,19 @@ void GameConnection::handleStartupError(const char *errorString)
    Con::executef(this, 2, "onConnectRequestRejected", errorString);
 }
 
-void GameConnection::writeConnectAccept(BitStream *stream)
+void GameConnection::writeConnectAccept(std::iostream &stream)
 {
    Parent::writeConnectAccept(stream);
-   stream->write(getProtocolVersion());
+   stream << (getProtocolVersion());
 }
 
-bool GameConnection::readConnectAccept(BitStream *stream, const char **errorString)
+bool GameConnection::readConnectAccept(std::iostream &stream, const char **errorString)
 {
    if(!Parent::readConnectAccept(stream, errorString))
       return false;
 
    U32 protocolVersion;
-   stream->read(&protocolVersion);
+   stream >> (protocolVersion);
    if(protocolVersion < MinRequiredProtocolVersion || protocolVersion > CurrentProtocolVersion)
    {
       *errorString = "CHR_PROTOCOL"; // this should never happen unless someone is faking us out.
@@ -198,37 +198,37 @@ bool GameConnection::readConnectAccept(BitStream *stream, const char **errorStri
    return true;
 }
 
-void GameConnection::writeConnectRequest(BitStream *stream)
+void GameConnection::writeConnectRequest(std::iostream &stream)
 {
    Parent::writeConnectRequest(stream);
-   stream->writeString(GameString);
-   stream->write(CurrentProtocolVersion);
-   stream->write(MinRequiredProtocolVersion);
-   stream->writeString(mJoinPassword);
+   StreamFn::writeString(stream, GameString);
+   stream << (CurrentProtocolVersion);
+   stream << (MinRequiredProtocolVersion);
+   StreamFn::writeString(stream, mJoinPassword);
 
-   stream->write(mConnectArgc);
+   stream << (mConnectArgc);
    for(U32 i = 0; i < mConnectArgc; i++)
-      stream->writeString(mConnectArgv[i]);
+      StreamFn::writeString(stream, mConnectArgv[i]);
 }
 
-bool GameConnection::readConnectRequest(BitStream *stream, const char **errorString)
+bool GameConnection::readConnectRequest(std::iostream &stream, const char **errorString)
 {
    if(!Parent::readConnectRequest(stream, errorString))
       return false;
    U32 currentProtocol, minProtocol;
    char gameString[256];
-   stream->readString(gameString);
+   StreamFn::readString(stream, gameString);
    if(dStrcmp(gameString, GameString))
    {
       *errorString = "CHR_GAME";
       return false;
    }
 
-   stream->read(&currentProtocol);
-   stream->read(&minProtocol);
+   stream >> (currentProtocol);
+   stream >> (minProtocol);
 
    char joinPassword[256];
-   stream->readString(joinPassword);
+   StreamFn::readString(stream, joinPassword);
 
    if(currentProtocol < MinRequiredProtocolVersion)
    {
@@ -252,7 +252,7 @@ bool GameConnection::readConnectRequest(BitStream *stream, const char **errorStr
       }
    }
 
-   stream->read(&mConnectArgc);
+   stream >> (mConnectArgc);
    if(mConnectArgc > MaxConnectArgs)
    {
       *errorString = "CR_INVALID_ARGS";
@@ -262,7 +262,7 @@ bool GameConnection::readConnectRequest(BitStream *stream, const char **errorStr
    for(U32 i = 0; i < mConnectArgc; i++)
    {
       char argString[256];
-      stream->readString(argString);
+      StreamFn::readString(stream, argString);
       mConnectArgv[i] = dStrdup(argString);
       connectArgv[i + 3] = mConnectArgv[i];
    }
@@ -341,7 +341,7 @@ void GameConnection::setDisconnectReason(const char *str)
 //----------------------------------------------------------------------------
 
 
-void GameConnection::readPacket(BitStream *bstream)
+void GameConnection::readPacket(std::iostream &bstream)
 {
     //Con::printf("GameConnection::handlePacket - readPacket ---");
    char stringBuf[256];
@@ -352,10 +352,10 @@ void GameConnection::readPacket(BitStream *bstream)
    
    Parent::readPacket(bstream);
    bstream->clearCompressionPoint();
-   bstream->setStringBuffer(NULL);
+   bstream->setStringBuffer(nullptr);
 }
 
-void GameConnection::writePacket(BitStream *bstream, PacketNotify *note)
+void GameConnection::writePacket(std::iostream &bstream, PacketNotify *note)
 {
    char stringBuf[256];
    bstream->clearCompressionPoint();
@@ -364,7 +364,7 @@ void GameConnection::writePacket(BitStream *bstream, PacketNotify *note)
                                                    
    Parent::writePacket(bstream, note);
    bstream->clearCompressionPoint();
-   bstream->setStringBuffer(NULL);
+   bstream->setStringBuffer(nullptr);
 }
 
 

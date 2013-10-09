@@ -23,7 +23,6 @@
 #include "2d/sceneobject/SceneObject.h"
 #include "graphics/gfxDevice.h"
 #include "graphics/color.h"
-#include "io/bitStream.h"
 #include "math/mMathFn.h"
 #include "console/consoleTypes.h"
 #include "sim/simBase.h"

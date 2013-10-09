@@ -24,7 +24,6 @@
 #include "network/connectionProtocol.h"
 #include "sim/simBase.h"
 #include "network/netConnection.h"
-#include "io/bitStream.h"
 #include "network/netObject.h"
 #include "io/resource/resourceManager.h"
 
@@ -57,25 +56,25 @@ public:
       }
    }
 
-   virtual void pack(NetConnection *, BitStream *bstream)
+   virtual void pack(NetConnection *, std::iostream &bstream)
    {
       bstream->writeRangedU32(nameCount, 0, MaxFileNames);
       for(U32 i = 0; i < nameCount; i++)
-         bstream->writeString(mFileNames[i]);
+         StreamFn::writeString(bstream, mFileNames[i]);
    }
 
-   virtual void write(NetConnection *, BitStream *bstream)
+   virtual void write(NetConnection *, std::iostream &bstream)
    {
       bstream->writeRangedU32(nameCount, 0, MaxFileNames);
       for(U32 i = 0; i < nameCount; i++)
-         bstream->writeString(mFileNames[i]);
+         StreamFn::writeString(bstream, mFileNames[i]);
    }
 
-   virtual void unpack(NetConnection *, BitStream *bstream)
+   virtual void unpack(NetConnection *, std::iostream &bstream)
    {
       nameCount = bstream->readRangedU32(0, MaxFileNames);
       for(U32 i = 0; i < nameCount; i++)
-         bstream->readString(mFileNames[i]);
+         StreamFn::readString(bstream, mFileNames[i]);
    }
 
    virtual void process(NetConnection *connection)
@@ -112,19 +111,19 @@ public:
       chunkLen = len;
    }
    
-   virtual void pack(NetConnection *, BitStream *bstream)
+   virtual void pack(NetConnection *, std::iostream &bstream)
    {
       bstream->writeRangedU32(chunkLen, 0, ChunkSize);
       bstream->write(chunkLen, chunkData);
    }
    
-   virtual void write(NetConnection *, BitStream *bstream)
+   virtual void write(NetConnection *, std::iostream &bstream)
    {
       bstream->writeRangedU32(chunkLen, 0, ChunkSize);
       bstream->write(chunkLen, chunkData);
    }
    
-   virtual void unpack(NetConnection *, BitStream *bstream)
+   virtual void unpack(NetConnection *, std::iostream &bstream)
    {
       chunkLen = bstream->readRangedU32(0, ChunkSize);
       bstream->read(chunkLen, chunkData);

@@ -23,15 +23,8 @@
 #ifndef _CONNECTION_PROTOCOL_H_
 #define _CONNECTION_PROTOCOL_H_
 
-#ifndef _PLATFORM_H_
 #include "platform/platform.h"
-#endif
-#ifndef _EVENT_H_
 #include "platform/event.h"
-#endif
-
-class BitStream;
-class ResizeBitStream;
 
 /// The base class for Torque's networking protocol.
 ///
@@ -57,7 +50,7 @@ protected:
 public:
    ConnectionProtocol();
 
-   void buildSendPacketHeader(BitStream *bstream, S32 packetType = 0);
+   void buildSendPacketHeader(std::iostream &bstream, S32 packetType = 0);
 
    void sendPingPacket();
    void sendAckPacket();
@@ -67,15 +60,15 @@ public:
    bool connectionEstablished();
    void setConnectSequence(U32 connectSeq) { mConnectSequence = connectSeq; }
 
-   virtual void writeDemoStartBlock(ResizeBitStream *stream);
-   virtual bool readDemoStartBlock(BitStream *stream);
+   virtual void writeDemoStartBlock(std::ostream &stream);
+   virtual bool readDemoStartBlock(std::istream &stream);
 
-   virtual void processRawPacket(BitStream *bstream);
-   virtual Net::Error sendPacket(BitStream *bstream) = 0;
+   virtual void processRawPacket(std::iostream &bstream);
+   virtual Net::Error sendPacket(std::iostream &bstream) = 0;
    virtual void keepAlive() = 0;
    virtual void handleConnectionEstablished() = 0;
    virtual void handleNotify(bool recvd) = 0;
-   virtual void handlePacket(BitStream *bstream) = 0;
+   virtual void handlePacket(std::iostream &bstream) = 0;
 };
 
 #endif

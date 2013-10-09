@@ -101,7 +101,7 @@ const char * StreamObject::readString()
       return NULL;
 
    char *buffer = Con::getReturnBuffer(256);
-   mStream->readString(buffer);
+   mStreamFn::readString(stream, buffer);
    return buffer;
 }
 

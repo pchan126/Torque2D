@@ -23,13 +23,9 @@
 #ifndef _COLOR_H_
 #define _COLOR_H_
 
-#ifndef _PLATFORM_H_
 #include "platform/platform.h"
-#endif
-
-#ifndef _CONSOLE_BASE_TYPE_H_
 #include "console/consoleBaseType.h"
-#endif
+#include "math/mPoint.h"
 
 #ifdef TORQUE_OS_IOS
 #import <GLKit/GLKMath.h>

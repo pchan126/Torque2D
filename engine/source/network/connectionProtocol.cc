@@ -22,8 +22,9 @@
 
 #include "connectionProtocol.h"
 #include "console/console.h"
-#include "io/bitStream.h"
 #include "console/consoleTypes.h"
+#include "StreamFn.h"
+#include <iostream>
 
 bool gLogToConsole = false;
 
@@ -60,7 +61,7 @@ ConnectionProtocol::ConnectionProtocol()
    mAckMask = 0;
    mLastRecvAckAck = 0;
 }
-void ConnectionProtocol::buildSendPacketHeader(BitStream *stream, S32 packetType)
+void ConnectionProtocol::buildSendPacketHeader(std::iostream &stream, S32 packetType)
 {
    S32 ackByteCount = ((mLastSeqRecvd - mLastRecvAckAck + 7) >> 3);
    AssertFatal(ackByteCount <= 4, "Too few ack bytes!");
@@ -68,7 +69,7 @@ void ConnectionProtocol::buildSendPacketHeader(BitStream *stream, S32 packetType
    if(packetType == DataPacket)
       mLastSendSeq++;
 
-   stream->writeFlag(true);
+   stream << true;
    stream->writeInt(mConnectSequence & 1, 1);
    stream->writeInt(mLastSendSeq, 9);
    stream->writeInt(mLastSeqRecvd, 9);
@@ -113,7 +114,7 @@ void ConnectionProtocol::sendAckPacket()
 // connection notify packets... makes the events easier to post into
 // the system.
 
-void ConnectionProtocol::processRawPacket(BitStream *pstream)
+void ConnectionProtocol::processRawPacket(std::iostream &pstream)
 {
    // read in the packet header:
 
@@ -136,9 +137,10 @@ void ConnectionProtocol::processRawPacket(BitStream *pstream)
    //   header len is 4-9 bytes
    //   average case 4 byte header
 
-   gNetBitsReceived = pstream->getStreamSize();
+   gNetBitsReceived = StreamFn::getStreamSize(pstream);
 
-   pstream->readFlag(); // get rid of the game info packet bit
+   bool flag;
+   pstream >> flag; // get rid of the game info packet bit
    U32 pkConnectSeqBit  = pstream->readInt(1);
    U32 pkSequenceNumber = pstream->readInt(9);
    U32 pkHighestAck     = pstream->readInt(9);
@@ -251,29 +253,29 @@ bool ConnectionProtocol::windowFull()
    return mLastSendSeq - mHighestAckedSeq >= 30;
 }
 
-void ConnectionProtocol::writeDemoStartBlock(ResizeBitStream *stream)
+void ConnectionProtocol::writeDemoStartBlock(std::ostream &stream)
 {
    for(U32 i = 0; i < 32; i++)
-      stream->write(mLastSeqRecvdAtSend[i]);
-   stream->write(mLastSeqRecvd);
-   stream->write(mHighestAckedSeq);
-   stream->write(mLastSendSeq);
-   stream->write(mAckMask);
-   stream->write(mConnectSequence);
-   stream->write(mLastRecvAckAck);
-   stream->write(mConnectionEstablished);
+      stream << mLastSeqRecvdAtSend[i];
+   stream << mLastSeqRecvd;
+   stream << mHighestAckedSeq;
+   stream << mLastSendSeq;
+   stream << mAckMask;
+   stream << mConnectSequence;
+   stream << mLastRecvAckAck;
+   stream << mConnectionEstablished;
 }
 
-bool ConnectionProtocol::readDemoStartBlock(BitStream *stream)
+bool ConnectionProtocol::readDemoStartBlock(std::istream &stream)
 {
    for(U32 i = 0; i < 32; i++)
-      stream->read(&mLastSeqRecvdAtSend[i]);
-   stream->read(&mLastSeqRecvd);
-   stream->read(&mHighestAckedSeq);
-   stream->read(&mLastSendSeq);
-   stream->read(&mAckMask);
-   stream->read(&mConnectSequence);
-   stream->read(&mLastRecvAckAck);
-   stream->read(&mConnectionEstablished);
+      stream >> mLastSeqRecvdAtSend[i];
+   stream >> mLastSeqRecvd;
+   stream >> mHighestAckedSeq;
+   stream >> mLastSendSeq;
+   stream >> mAckMask;
+   stream >> mConnectSequence;
+   stream >> mLastRecvAckAck;
+   stream >> mConnectionEstablished;
    return true;
 }

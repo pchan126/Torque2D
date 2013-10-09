@@ -37,7 +37,6 @@
 #include "console/consoleTypes.h"
 #include "messaging/message.h"
 #include "memory/safeDelete.h"
-#include "io/bitStream.h"
 
 //////////////////////////////////////////////////////////////////////////
 

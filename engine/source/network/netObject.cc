@@ -30,15 +30,15 @@
 IMPLEMENT_CONOBJECT(NetObject);
 
 //----------------------------------------------------------------------------
-NetObject *NetObject::mDirtyList = NULL;
+NetObject *NetObject::mDirtyList = nullptr;
 
 NetObject::NetObject()
 {
     // netFlags will clear itself to 0
     mNetIndex = U32(-1);
-   mFirstObjectRef = NULL;
-   mPrevDirtyList = NULL;
-   mNextDirtyList = NULL;
+   mFirstObjectRef = nullptr;
+   mPrevDirtyList = nullptr;
+   mNextDirtyList = nullptr;
    mDirtyMaskBits = 0;
 }
 
@@ -58,10 +58,10 @@ NetObject::~NetObject()
 void NetObject::setMaskBits(U32 orMask)
 {
    AssertFatal(orMask != 0, "Invalid net mask bits set.");
-   AssertFatal(mDirtyMaskBits == 0 || (mPrevDirtyList != NULL || mNextDirtyList != NULL || mDirtyList == this), "Invalid dirty list state.");
+   AssertFatal(mDirtyMaskBits == 0 || (mPrevDirtyList != nullptr || mNextDirtyList != nullptr || mDirtyList == this), "Invalid dirty list state.");
    if(!mDirtyMaskBits)
    {
-      AssertFatal(mNextDirtyList == NULL && mPrevDirtyList == NULL, "Object with zero mask already in list.");
+      AssertFatal(mNextDirtyList == nullptr && mPrevDirtyList == nullptr, "Object with zero mask already in list.");
       if(mDirtyList)
       {
          mNextDirtyList = mDirtyList;
@@ -70,7 +70,7 @@ void NetObject::setMaskBits(U32 orMask)
       mDirtyList = this;
    }
    mDirtyMaskBits |= orMask;
-   AssertFatal(mDirtyMaskBits == 0 || (mPrevDirtyList != NULL || mNextDirtyList != NULL || mDirtyList == this), "Invalid dirty list state.");
+   AssertFatal(mDirtyMaskBits == 0 || (mPrevDirtyList != nullptr || mNextDirtyList != nullptr || mDirtyList == this), "Invalid dirty list state.");
 }
 
 void NetObject::clearMaskBits(U32 orMask)
@@ -88,7 +88,7 @@ void NetObject::clearMaskBits(U32 orMask)
             mDirtyList = mNextDirtyList;
          if(mNextDirtyList)
             mNextDirtyList->mPrevDirtyList = mPrevDirtyList;
-         mNextDirtyList = mPrevDirtyList = NULL;
+         mNextDirtyList = mPrevDirtyList = nullptr;
       }
    }
 
@@ -115,8 +115,8 @@ void NetObject::collapseDirtyList()
       NetObject *next = obj->mNextDirtyList;
       U32 orMask = obj->mDirtyMaskBits;
 
-      obj->mNextDirtyList = NULL;
-      obj->mPrevDirtyList = NULL;
+      obj->mNextDirtyList = nullptr;
+      obj->mPrevDirtyList = nullptr;
       obj->mDirtyMaskBits = 0;
 
       if(!obj->isDeleted() && orMask)
@@ -134,10 +134,10 @@ void NetObject::collapseDirtyList()
       }
       obj = next;
    }
-   mDirtyList = NULL;
+   mDirtyList = nullptr;
    for(U32 i = 0; i < (U32)tempV.size(); i++)
    {
-      AssertFatal(tempV[i]->mNextDirtyList == NULL && tempV[i]->mPrevDirtyList == NULL && tempV[i]->mDirtyMaskBits == 0, "Error in collapse");
+      AssertFatal(tempV[i]->mNextDirtyList == nullptr && tempV[i]->mPrevDirtyList == nullptr && tempV[i]->mDirtyMaskBits == 0, "Error in collapse");
    }
 }
 
@@ -240,12 +240,12 @@ F32 NetObject::getUpdatePriority(CameraScopeQuery*, U32, S32 updateSkips)
    return F32(updateSkips) * 0.1f;
 }
 
-U32 NetObject::packUpdate(NetConnection* conn, U32 mask, BitStream* stream)
+U32 NetObject::packUpdate(NetConnection *conn, U32 mask, std::iostream &stream)
 {
    return 0;
 }
 
-void NetObject::unpackUpdate(NetConnection*, BitStream*)
+void NetObject::unpackUpdate(NetConnection *, std::iostream& stream)
 {
 }
 

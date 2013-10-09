@@ -24,29 +24,35 @@
 #include "console/consoleTypes.h"
 #include "platform/platformAL.h"
 #include "network/netConnection.h"
+#include <sstream>
+#include "io/StreamFn.h"
 
 //--------------------------------------------------------------------------
 namespace
 {
-   void writeRangedF32(BitStream * bstream, F32 val, F32 min, F32 max, U32 numBits)
+   void writeRangedF32(std::stringstream& bstream, F32 val, F32 min, F32 max, U32 numBits)
    {
       val = (mClampF(val, min, max) - min) / (max - min);
-      bstream->writeInt((S32)(val * ((1 << numBits) - 1)), numBits);
+      bstream << val;
    }
 
-   F32 readRangedF32(BitStream * bstream, F32 min, F32 max, U32 numBits)
+   F32 readRangedF32(std::stringstream& bstream, F32 min, F32 max, U32 numBits)
    {
-      return(min + (F32(bstream->readInt(numBits)) / F32((1 << numBits) - 1)) * (max - min));
+      F32 val;
+      bstream >> val;
+      return val;
    }
 
-   void writeRangedS32(BitStream * bstream, S32 val, S32 min, S32 max)
+   void writeRangedS32(std::stringstream& bstream, S32 val, S32 min, S32 max)
    {
-      bstream->writeRangedU32((val - min), 0, (max - min));
+      bstream << (mClamp(val, min, max));
    }
 
-   S32 readRangedS32(BitStream * bstream, S32 min, S32 max)
+   S32 readRangedS32(std::stringstream& bstream, S32 min, S32 max)
    {
-      return(bstream->readRangedU32(0, (max - min)) + min);
+      S32 val;
+      bstream >> val;
+      return val;
    }
 }
 
@@ -142,12 +148,12 @@ void AudioEnvironment::initPersistFields()
 }
 
 
-void AudioEnvironment::packData(BitStream* stream)
+void AudioEnvironment::packData(std::stringstream &stream)
 {
    Parent::packData(stream);
 #if !defined(TORQUE_OS_IOS)
-   if(stream->writeFlag(mUseRoom))
-      stream->writeRangedU32(mRoom, EAX_ENVIRONMENT_GENERIC, EAX_ENVIRONMENT_COUNT);
+   if (stream << (mUseRoom))
+      stream << mClamp(mRoom, EAX_ENVIRONMENT_GENERIC, EAX_ENVIRONMENT_COUNT);
    else
 #endif
    {
@@ -165,17 +171,17 @@ void AudioEnvironment::packData(BitStream* stream)
       writeRangedF32(stream, mEnvironmentSize, 1.f, 100.f, 10);
       writeRangedF32(stream, mEnvironmentDiffusion, 0.f, 1.f, 8);
       writeRangedF32(stream, mAirAbsorption, -100.f, 0.f, 10);
-      stream->writeInt(mFlags, 6);
+      stream >> mFlags;
    }
 }
 
-void AudioEnvironment::unpackData(BitStream* stream)
+void AudioEnvironment::unpackData(std::stringstream &stream)
 {
    Parent::unpackData(stream);
-   mUseRoom = stream->readFlag();
+   stream >> mUseRoom;
 #if !defined(TORQUE_OS_IOS)
    if(mUseRoom)
-      mRoom = stream->readRangedU32(EAX_ENVIRONMENT_GENERIC, EAX_ENVIRONMENT_COUNT);
+      mRoom = StreamFn::readRangedU32(stream, EAX_ENVIRONMENT_GENERIC, EAX_ENVIRONMENT_COUNT);
    else
 #endif
    {
@@ -193,7 +199,7 @@ void AudioEnvironment::unpackData(BitStream* stream)
       mEnvironmentSize = readRangedF32(stream, 1.f, 100.f, 10);
       mEnvironmentDiffusion = readRangedF32(stream, 0.f, 1.f, 8);
       mAirAbsorption = readRangedF32(stream, -100.f, 0.f, 10);
-      mFlags = stream->readInt(6);
+      stream >> mFlags;
    }
 }
 
@@ -242,7 +248,7 @@ void AudioSampleEnvironment::initPersistFields()
    addField("flags",               TypeS32,    Offset(mFlags, AudioSampleEnvironment));
 }
 
-void AudioSampleEnvironment::packData(BitStream* stream)
+void AudioSampleEnvironment::packData(std::stringstream &stream)
 {
    Parent::packData(stream);
    writeRangedS32(stream, mDirect, -10000, 1000);
@@ -257,10 +263,10 @@ void AudioSampleEnvironment::packData(BitStream* stream)
    writeRangedF32(stream, mRoomRolloff, 0.f, 10.f, 9);
    writeRangedF32(stream, mAirAbsorption, 0.f, 10.f, 9);
    writeRangedS32(stream, mOutsideVolumeHF, -10000, 0);
-   stream->writeInt(mFlags, 3);
+   stream << mFlags;
 }
 
-void AudioSampleEnvironment::unpackData(BitStream* stream)
+void AudioSampleEnvironment::unpackData(std::stringstream &stream)
 {
    Parent::unpackData(stream);
    mDirect = readRangedS32(stream, -10000, 1000);
@@ -275,6 +281,6 @@ void AudioSampleEnvironment::unpackData(BitStream* stream)
    mRoomRolloff = readRangedF32(stream, 0.f, 10.f, 9);
    mAirAbsorption = readRangedF32(stream, 0.f, 10.f, 9);
    mOutsideVolumeHF = readRangedS32(stream, -10000, 0);
-   mFlags = stream->readInt(3);
+   stream >> mFlags;
 }
 

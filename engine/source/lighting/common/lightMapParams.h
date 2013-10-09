@@ -39,8 +39,8 @@ public:
    // LightInfoEx
    virtual void set( const LightInfoEx *ex );
    virtual const LightInfoExType& getType() const { return Type; }
-   virtual void packUpdate( BitStream *stream ) const;
-   virtual void unpackUpdate( BitStream *stream );
+   virtual void packUpdate(std::stringstream &stream);
+   virtual void unpackUpdate(std::stringstream &stream);
 
 public:
    // We're leaving these public for easy access 
