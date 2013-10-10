@@ -593,7 +593,7 @@ void NetConnection::checkPacketSend(bool force)
    if(windowFull())
       return;
 
-    std::stringstream *stream; // = BitStream::getPacketStream(mCurRate.packetSize);
+   std::stringstream *stream = new std::stringstream(); // = BitStream::getPacketStream(mCurRate.packetSize);
    buildSendPacketHeader(*stream);
 
    mLastUpdateTime = curTime;

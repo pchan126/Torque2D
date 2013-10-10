@@ -36,7 +36,7 @@ class RawDataT
       U32 size;
 
       RawDataT()
-         : ownMemory(false), data(NULL), size(0)
+         : ownMemory(false), data(nullptr), size(0)
       {
       }
 
@@ -60,7 +60,7 @@ class RawDataT
          if (ownMemory)
             delete [] data;
 
-         data      = NULL;
+         data      = nullptr;
          ownMemory = false;
          size      = 0;
       }

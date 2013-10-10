@@ -23,10 +23,8 @@
 #ifndef _TYPETRAITS_H_
 #define _TYPETRAITS_H_
 
-#ifndef _PLATFORM_H_
-#  include "platform/platform.h"
-#endif
-
+#include "platform/platform.h"
+#include <cstdint>
 
 /// @file
 /// Template definitions for introspecting type properties.
@@ -269,8 +267,8 @@ struct TypeTraits< bool > : public _TypeTraits< bool >
 template<>
 struct TypeTraits< S8 > : public _TypeTraits< S8 >
 {
-   static const S8 MIN = S8_MIN;
-   static const S8 MAX = S8_MAX;
+   static const S8 MIN = INT8_MIN;
+   static const S8 MAX = INT8_MAX;
    static const S8 ZERO = 0;
    typedef _ConstructPrim Construct;
    typedef _DestructPrim Destruct;
@@ -279,7 +277,7 @@ template<>
 struct TypeTraits< U8 > : public _TypeTraits< U8 >
 {
    static const U8 MIN = 0;
-   static const U8 MAX = U8_MAX;
+   static const U8 MAX = UINT8_MAX;
    static const U8 ZERO = 0;
    typedef _ConstructPrim Construct;
    typedef _DestructPrim Destruct;
@@ -287,8 +285,8 @@ struct TypeTraits< U8 > : public _TypeTraits< U8 >
 template<>
 struct TypeTraits< S16 > : public _TypeTraits< S16 >
 {
-   static const S16 MIN = S16_MIN;
-   static const S16 MAX = S16_MAX;
+   static const S16 MIN = INT16_MIN;
+   static const S16 MAX = INT16_MAX;
    static const S16 ZERO = 0;
    typedef _ConstructPrim Construct;
    typedef _DestructPrim Destruct;
@@ -297,7 +295,7 @@ template<>
 struct TypeTraits< U16 > : public _TypeTraits< U16 >
 {
    static const U16 MIN = 0;
-   static const U16 MAX = U16_MAX;
+   static const U16 MAX = UINT16_MAX;
    static const U16 ZERO = 0;
    typedef _ConstructPrim Construct;
    typedef _DestructPrim Destruct;
@@ -305,8 +303,8 @@ struct TypeTraits< U16 > : public _TypeTraits< U16 >
 template<>
 struct TypeTraits< S32 > : public _TypeTraits< S32 >
 {
-   static const S32 MIN = S32_MIN;
-   static const S32 MAX = S32_MAX;
+   static const S32 MIN = INT32_MIN;
+   static const S32 MAX = INT32_MAX;
    static const S32 ZERO = 0;
    typedef _ConstructPrim Construct;
    typedef _DestructPrim Destruct;
@@ -315,7 +313,7 @@ template<>
 struct TypeTraits< U32 > : public _TypeTraits< U32 >
 {
    static const U32 MIN = 0;
-   static const U32 MAX = U32_MAX;
+   static const U32 MAX = UINT32_MAX;
    static const U32 ZERO = 0;
    typedef _ConstructPrim Construct;
    typedef _DestructPrim Destruct;

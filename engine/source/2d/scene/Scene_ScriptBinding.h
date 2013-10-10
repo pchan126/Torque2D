@@ -286,7 +286,7 @@ ConsoleMethod(Scene, getObject, S32, 3, 3,  "(sceneObjectIndex) Gets the scene o
     const SceneObject* pSceneObject = object->getSceneObject( objectIndex );
 
     // Check Object.
-    if ( pSceneObject != NULL )
+    if ( pSceneObject != nullptr )
     {
         // No error so return object id.
         return pSceneObject->getId();
@@ -311,7 +311,7 @@ ConsoleMethod(Scene, getSceneObjectList, const char*, 2, 2, "() Gets the Scene O
     // Finish here if there are no scene objects.
     U32 objCount = object->getSceneObjects( objList );
     if( objCount == 0 )
-        return NULL;
+        return nullptr;
 
     // Our return buffer will be 6 times the size of our object list (4 for Id (+1 for future size?) + 1 for space).
     U32 maxBufferSize = objCount * 12;
@@ -361,7 +361,7 @@ ConsoleMethod(Scene, getAssetPreload, const char*, 3, 3,    "(index) Gets the as
     // Fetch the asset pointer.
     const AssetPtr<AssetBase>* pAssetPtr = object->getAssetPreload( index );
 
-    return pAssetPtr == NULL ? NULL : pAssetPtr->getAssetId();
+    return pAssetPtr == nullptr ? nullptr : pAssetPtr->getAssetId();
 }
 
 //-----------------------------------------------------------------------------
@@ -409,7 +409,7 @@ ConsoleMethod(Scene, mergeScene, void, 3, 3,    "(scene) Merges the specified sc
     Scene* pScene = Sim::findObject<Scene>( argv[2] );
 
     // Did we find the scene?
-    if ( pScene == NULL )
+    if ( pScene == nullptr )
     {
         // No, so warn.
         Con::warnf( "Scene::mergeScene() - Could not find the specified scene '%s'.", argv[2] );
@@ -427,7 +427,7 @@ ConsoleMethod(Scene, getControllers, const char*, 2, 2,	"() Gets the Scene Contr
     // Fetch the scene controllers.
     SimSet* pControllerSet = object->getControllers();
 
-    return ( pControllerSet == NULL ) ? StringTable->EmptyString : pControllerSet->getIdString();
+    return ( pControllerSet == nullptr ) ? StringTable->EmptyString : pControllerSet->getIdString();
 }
 
 //-----------------------------------------------------------------------------
@@ -474,7 +474,7 @@ ConsoleMethod(Scene, isJoint, bool, 3, 3,   "(int jointId) Gets whether the join
     // Fetch joint Id.
     const S32 jointId = dAtoi( argv[2] );
 
-    return object->findJoint( jointId ) != NULL;
+    return object->findJoint( jointId ) != nullptr;
 }                                                                  
 
 
@@ -526,8 +526,8 @@ ConsoleMethod(Scene, createDistanceJoint, S32, 4, 12,   "(sceneObjectA, sceneObj
     const char* sceneObjectA = argv[2];
     const char* sceneObjectB = argv[3];
 
-    SceneObject* pSceneObjectA = NULL;
-    SceneObject* pSceneObjectB = NULL;
+    SceneObject* pSceneObjectA = nullptr;
+    SceneObject* pSceneObjectB = nullptr;
 
     // Fetch scene object.
     if ( *sceneObjectA != 0 )
@@ -740,8 +740,8 @@ ConsoleMethod(Scene, createRopeJoint, S32, 4, 10,       "(sceneObjectA, sceneObj
     const char* sceneObjectA = argv[2];
     const char* sceneObjectB = argv[3];
 
-    SceneObject* pSceneObjectA = NULL;
-    SceneObject* pSceneObjectB = NULL;
+    SceneObject* pSceneObjectA = nullptr;
+    SceneObject* pSceneObjectB = nullptr;
 
     // Fetch scene object.
     if ( *sceneObjectA != 0 )
@@ -877,8 +877,8 @@ ConsoleMethod(Scene, createRevoluteJoint, S32, 4, 9,    "(sceneObjectA, sceneObj
     const char* sceneObjectA = argv[2];
     const char* sceneObjectB = argv[3];
 
-    SceneObject* pSceneObjectA = NULL;
-    SceneObject* pSceneObjectB = NULL;
+    SceneObject* pSceneObjectA = nullptr;
+    SceneObject* pSceneObjectB = nullptr;
 
     // Fetch scene object.
     if ( *sceneObjectA != 0 )
@@ -1007,7 +1007,7 @@ ConsoleMethod(Scene, getRevoluteJointLimit, const char*, 3, 3,  "(jointId) Gets 
     // Access joint.
     if ( !object->getRevoluteJointLimit( jointId, enableLimit, lowerAngle, upperAngle ) )
     {
-        return NULL;
+        return nullptr;
     }
 
     // Format output.
@@ -1054,7 +1054,7 @@ ConsoleMethod(Scene, getRevoluteJointMotor, const char*, 3, 3,  "(jointId) Gets 
     // Access joint.
     if ( !object->getRevoluteJointMotor( jointId, enableMotor, motorSpeed, maxMotorTorque ) )
     {
-        return NULL;
+        return nullptr;
     }
 
     // Format output.
@@ -1105,8 +1105,8 @@ ConsoleMethod(Scene, createWeldJoint, S32, 4, 11,       "(sceneObjectA, sceneObj
     const char* sceneObjectA = argv[2];
     const char* sceneObjectB = argv[3];
 
-    SceneObject* pSceneObjectA = NULL;
-    SceneObject* pSceneObjectB = NULL;
+    SceneObject* pSceneObjectA = nullptr;
+    SceneObject* pSceneObjectB = nullptr;
 
     // Fetch scene object.
     if ( *sceneObjectA != 0 )
@@ -1281,8 +1281,8 @@ ConsoleMethod(Scene, createWheelJoint, S32, 7, 11,      "(sceneObjectA, sceneObj
     const char* sceneObjectA = argv[2];
     const char* sceneObjectB = argv[3];
 
-    SceneObject* pSceneObjectA = NULL;
-    SceneObject* pSceneObjectB = NULL;
+    SceneObject* pSceneObjectA = nullptr;
+    SceneObject* pSceneObjectB = nullptr;
 
     // Fetch scene object.
     if ( *sceneObjectA != 0 )
@@ -1415,7 +1415,7 @@ ConsoleMethod(Scene, getWheelJointMotor, const char*, 3, 3, "(jointId) Gets whet
     // Access joint.
     if ( !object->getWheelJointMotor( jointId, enableMotor, motorSpeed, maxMotorTorque ) )
     {
-        return NULL;
+        return nullptr;
     }
 
     // Format output.
@@ -1500,8 +1500,8 @@ ConsoleMethod(Scene, createFrictionJoint, S32, 4, 11,   "(sceneObjectA, sceneObj
     const char* sceneObjectA = argv[2];
     const char* sceneObjectB = argv[3];
 
-    SceneObject* pSceneObjectA = NULL;
-    SceneObject* pSceneObjectB = NULL;
+    SceneObject* pSceneObjectA = nullptr;
+    SceneObject* pSceneObjectB = nullptr;
 
     // Fetch scene object.
     if ( *sceneObjectA != 0 )
@@ -1671,8 +1671,8 @@ ConsoleMethod(Scene, createPrismaticJoint, S32, 7, 11,  "(sceneObjectA, sceneObj
     const char* sceneObjectA = argv[2];
     const char* sceneObjectB = argv[3];
 
-    SceneObject* pSceneObjectA = NULL;
-    SceneObject* pSceneObjectB = NULL;
+    SceneObject* pSceneObjectA = nullptr;
+    SceneObject* pSceneObjectB = nullptr;
 
     // Fetch scene object.
     if ( *sceneObjectA != 0 )
@@ -1804,7 +1804,7 @@ ConsoleMethod(Scene, getPrismaticJointLimit, const char*, 3, 3, "(jointId) Gets 
     // Access joint.
     if ( !object->getPrismaticJointLimit( jointId, enableLimit, lowerTranslation, upperTranslation ) )
     {
-        return NULL;
+        return nullptr;
     }
 
     // Format output.
@@ -1850,7 +1850,7 @@ ConsoleMethod(Scene, getPrismaticJointMotor, const char*, 3, 3,    "(jointId) Ge
     // Access joint.
     if ( !object->getPrismaticJointMotor( jointId, enableMotor, motorSpeed, maxMotorForce ) )
     {
-        return NULL;
+        return nullptr;
     }
 
     // Format output.
@@ -1878,8 +1878,8 @@ ConsoleMethod(Scene, createPulleyJoint, S32, 9, 16,     "(sceneObjectA, sceneObj
     const char* sceneObjectA = argv[2];
     const char* sceneObjectB = argv[3];
 
-    SceneObject* pSceneObjectA = NULL;
-    SceneObject* pSceneObjectB = NULL;
+    SceneObject* pSceneObjectA = nullptr;
+    SceneObject* pSceneObjectB = nullptr;
 
     // Fetch scene object.
     if ( *sceneObjectA != 0 )
@@ -2205,8 +2205,8 @@ ConsoleMethod(Scene, createMotorJoint, S32, 4, 11,      "(sceneObjectA, sceneObj
     const char* sceneObjectA = argv[2];
     const char* sceneObjectB = argv[3];
 
-    SceneObject* pSceneObjectA = NULL;
-    SceneObject* pSceneObjectB = NULL;
+    SceneObject* pSceneObjectA = nullptr;
+    SceneObject* pSceneObjectB = nullptr;
 
     // Fetch scene object.
     if ( *sceneObjectA != 0 )
@@ -2476,7 +2476,7 @@ ConsoleMethod(Scene, pickArea, const char*, 4, 9, "(startx/y, endx/y, [sceneGrou
     else
     {
         Con::warnf("Scene::pickArea() - Invalid number of parameters!");
-        return NULL;
+        return nullptr;
     }
 
     // Calculate scene group mask.
@@ -2549,7 +2549,7 @@ ConsoleMethod(Scene, pickArea, const char*, 4, 9, "(startx/y, endx/y, [sceneGrou
 
     // Finish if no results.
     if ( resultCount == 0 )
-        return NULL;
+        return nullptr;
 
     // Fetch results.
     typeWorldQueryResultVector& queryResults = pWorldQuery->getQueryResults();
@@ -2634,7 +2634,7 @@ ConsoleMethod(Scene, pickRay, const char*, 4, 9, "(startx/y, endx/y, [sceneGroup
     else
     {
         Con::warnf("Scene::pickRay() - Invalid number of parameters!");
-        return NULL;
+        return nullptr;
     }
 
     // Calculate scene group mask.
@@ -2695,7 +2695,7 @@ ConsoleMethod(Scene, pickRay, const char*, 4, 9, "(startx/y, endx/y, [sceneGroup
 
     // Finish if no results.
     if ( resultCount == 0 )
-        return NULL;
+        return nullptr;
 
     // Sort ray-cast result.
     pWorldQuery->sortRaycastQueryResult();
@@ -2830,7 +2830,7 @@ ConsoleMethod(Scene, pickPoint, const char*, 3, 7, "(x / y, [sceneGroupMask], [p
     else
     {
         Con::warnf("Scene::pickPoint() - Invalid number of parameters!");
-        return NULL;
+        return nullptr;
     }
 
     // Calculate scene group mask.
@@ -2888,7 +2888,7 @@ ConsoleMethod(Scene, pickPoint, const char*, 3, 7, "(x / y, [sceneGroupMask], [p
 
     // Finish if no results.
     if ( resultCount == 0 )
-        return NULL;
+        return nullptr;
 
     // Fetch results.
     typeWorldQueryResultVector& queryResults = pWorldQuery->getQueryResults();
@@ -2961,7 +2961,7 @@ ConsoleMethod(Scene, pickCircle, const char*, 4, 8, "(x / y, radius, [sceneGroup
     else
     {
         Con::warnf("Scene::pickPoint() - Invalid number of parameters!");
-        return NULL;
+        return nullptr;
     }
 
     // Fetch radius.
@@ -3037,7 +3037,7 @@ ConsoleMethod(Scene, pickCircle, const char*, 4, 8, "(x / y, radius, [sceneGroup
 
     // Finish if no results.
     if ( resultCount == 0 )
-        return NULL;
+        return nullptr;
 
     // Fetch results.
     typeWorldQueryResultVector& queryResults = pWorldQuery->getQueryResults();
@@ -3125,7 +3125,7 @@ ConsoleMethod(Scene, pickRayCollision, const char*, 4, 8, "(startx/y, endx/y, [s
     else
     {
         Con::warnf("Scene::pickRayCollision() - Invalid number of parameters!");
-        return NULL;
+        return nullptr;
     }
 
     // Calculate scene group mask.
@@ -3162,7 +3162,7 @@ ConsoleMethod(Scene, pickRayCollision, const char*, 4, 8, "(startx/y, endx/y, [s
 
     // Finish if no results.
     if ( resultCount == 0 )
-        return NULL;
+        return nullptr;
 
     // Sort ray-cast result.
     pWorldQuery->sortRaycastQueryResult();
@@ -3406,7 +3406,7 @@ ConsoleMethod(Scene, getDebugSceneObject, S32, 2, 2,   "( Gets the scene object 
     // Fetch scene object.
     SceneObject* pSceneObject = object->getDebugSceneObject();
 
-    if ( pSceneObject == NULL )
+    if ( pSceneObject == nullptr )
         return 0;
 
     return pSceneObject->getId();
@@ -3514,11 +3514,11 @@ ConsoleMethod(Scene, setIsEditorScene, void, 3, 3, "() Sets whether this is an e
 //-----------------------------------------------------------------------------
 
 ConsoleMethod(Scene, create, const char*, 3, 3, "(type) Creates the specified scene-object derived type and adds it to the scene.\n"
-                                                "@return The scene-object or NULL if not created.")
+                                                "@return The scene-object or nullptr if not created.")
 {
     // Create the scene object.
     SceneObject* pSceneObject = object->create( argv[2] );
 
-    return pSceneObject == NULL ? NULL : pSceneObject->getIdString();
+    return pSceneObject == nullptr ? nullptr : pSceneObject->getIdString();
 }
 

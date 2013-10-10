@@ -1037,7 +1037,7 @@ void GuiEditCtrl::onMouseDragged(const GuiEvent &event)
    }
    else if (mMouseDownMode == MovingSelection && mSelectedControls.size())
    {
-      Point2I minPos (S32_MAX, S32_MAX);
+      Point2I minPos (INT32_MAX, INT32_MAX);
 
       for(GuiControl *i:mSelectedControls)
       {

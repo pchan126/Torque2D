@@ -545,7 +545,7 @@ bool GuiControl::defaultTooltipRender( const Point2I &hoverPos, const Point2I &c
     
     Vector<U32> startLineOffsets, lineLengths;
     
-    font->wrapString( renderTip, U32_MAX, startLineOffsets, lineLengths );
+    font->wrapString( renderTip, UINT32_MAX, startLineOffsets, lineLengths );
     
     // The width is the longest line.
     U32 tipWidth = 0;

@@ -32,22 +32,26 @@
 
 #define FN_CDECL
 
-typedef signed char     	S8;
-typedef unsigned char   	U8;
+//------------------------------------------------------------------------------
+//-------------------------------------- Basic Types...
 
-typedef signed short    	S16;
-typedef unsigned short  	U16;
+typedef std::int8_t        S8;      ///< Compiler independent Signed Char
+typedef std::uint8_t       U8;      ///< Compiler independent Unsigned Char
 
-typedef signed int      	S32;
-typedef unsigned int    	U32;
+typedef std::int16_t       S16;     ///< Compiler independent Signed 16-bit short
+typedef std::uint16_t      U16;     ///< Compiler independent Unsigned 16-bit short
 
-typedef signed long long        S64;
-typedef unsigned long long      U64;
+typedef std::int32_t       S32;     ///< Compiler independent Signed 32-bit integer
+typedef std::uint32_t      U32;     ///< Compiler independent Unsigned 32-bit integer
 
-typedef float           	F32;
-typedef double          	F64;
+typedef std::int64_t       S64;     ///< Compiler independent Signed 64-bit integer
+typedef std::uint64_t      U64;     ///< Compiler independent Unsigned 64-bit integer
 
-typedef unsigned int dsize_t;
+typedef float              F32;     ///< Compiler independent 32-bit float
+typedef double             F64;     ///< Compiler independent 64-bit float
+
+typedef size_t             SizeType;  /// < Compiler dependant 32 or 64 bit>
+typedef ptrdiff_t          PTR;       /// < Compiler dependant integer, same size as pointer>
 
 typedef const char* StringTableEntry;
 
@@ -60,18 +64,6 @@ static const F32 Float_Half = F32(0.5);
 static const F32 Float_Zero = F32(0.0);
 static const F32 Float_Pi   = F32(3.14159265358979323846);
 static const F32 Float_2Pi  = F32(2.0 * 3.14159265358979323846);
-
-static const S8  S8_MIN  = S8(-128);
-static const S8  S8_MAX  = S8(127);
-static const U8  U8_MAX  = U8(255);
-
-static const S16 S16_MIN = S16(-32768);
-static const S16 S16_MAX = S16(32767);
-static const U16 U16_MAX = U16(65535);
-
-static const S32 S32_MIN = S32(-2147483647 - 1);
-static const S32 S32_MAX = S32(2147483647);
-static const U32 U32_MAX = U32(0xffffffff);
 
 static const F32 F32_MAX = F32(3.402823466e+38F);
 static const F32 F32_MIN = F32(1.175494351e-38F);

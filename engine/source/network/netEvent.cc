@@ -276,7 +276,7 @@ void NetConnection::eventReadPacket(std::iostream &bstream)
       if(!unguaranteedPhase && !bit)
          break;
 
-      U32 seq = U32_MAX;
+      U32 seq = UINT32_MAX;
 
       if(!unguaranteedPhase) // get the sequence
       {
