@@ -226,7 +226,7 @@ public:
     bool                    insertExplicitCell( const S32 cellIndex, const S32 cellOffsetX, const S32 cellOffsetY, const S32 cellWidth, const S32 cellHeight );
     bool                    removeExplicitCell( const S32 cellIndex );
     bool                    setExplicitCell( const S32 cellIndex, const S32 cellOffsetX, const S32 cellOffsetY, const S32 cellWidth, const S32 cellHeight );
-    inline S32              getExplicitCellCount( void ) const              { return mExplicitFrames.size(); }
+    inline size_t           getExplicitCellCount( void ) const              { return mExplicitFrames.size(); }
     
     static TextureFilterMode getFilterModeEnum(const char* label);
     static const char* getFilterModeDescription( TextureFilterMode filterMode );

@@ -22,7 +22,6 @@
 
 #include "graphics/gBitmap.h"
 #include "graphics/gPalette.h"
-#include "io/stream.h"
 #include "platform/platform.h"
 
 //-Mat used when checking for palleted textures
@@ -145,7 +144,7 @@ bool GBitmap::readMSBmp(std::iostream &stream)
    return true;
 }
 
-bool GBitmap::writeMSBmp(Stream& io_rStream) const
+bool GBitmap::writeMSBmp(std::iostream &io_rStream) const
 {
 
 //   RGBQUAD           rgb[256];
@@ -187,23 +186,23 @@ bool GBitmap::writeMSBmp(Stream& io_rStream) const
    bf.bfReserved1       = 0;
    bf.bfReserved2       = 0;
 
-   io_rStream.write(bf.bfType);
-   io_rStream.write(bf.bfSize);
-   io_rStream.write(bf.bfReserved1);
-   io_rStream.write(bf.bfReserved2);
-   io_rStream.write(bf.bfOffBits);
+   io_rStream << bf.bfType;
+   io_rStream << bf.bfSize;
+   io_rStream << bf.bfReserved1;
+   io_rStream << bf.bfReserved2;
+   io_rStream << bf.bfOffBits;
 
-   io_rStream.write(bi.biSize);
-   io_rStream.write(bi.biWidth);
-   io_rStream.write(bi.biHeight);
-   io_rStream.write(bi.biPlanes);
-   io_rStream.write(bi.biBitCount);
-   io_rStream.write(bi.biCompression);
-   io_rStream.write(bi.biSizeImage);
-   io_rStream.write(bi.biXPelsPerMeter);
-   io_rStream.write(bi.biYPelsPerMeter);
-   io_rStream.write(bi.biClrUsed);
-   io_rStream.write(bi.biClrImportant);
+   io_rStream << bi.biSize;
+   io_rStream << bi.biWidth;
+   io_rStream << bi.biHeight;
+   io_rStream << bi.biPlanes;
+   io_rStream << bi.biBitCount;
+   io_rStream << bi.biCompression;
+   io_rStream << bi.biSizeImage;
+   io_rStream << bi.biXPelsPerMeter;
+   io_rStream << bi.biYPelsPerMeter;
+   io_rStream << bi.biClrUsed;
+   io_rStream << bi.biClrImportant;
 
 //   if(getFormat() == Palettized)
 //   {
@@ -225,8 +224,8 @@ bool GBitmap::writeMSBmp(Stream& io_rStream) const
 
       dMemcpy(pDst, pSrc, getWidth() * bytesPP);
    }
-   io_rStream.write(bi.biSizeImage, pMSUpsideDownBits);
+   io_rStream.write((char*)pMSUpsideDownBits, bi.biSizeImage);
    delete [] pMSUpsideDownBits;
 
-   return io_rStream.getStatus() == Stream::Ok;
+   return io_rStream.good();
 }

@@ -23,50 +23,17 @@
 #ifndef _SCENE_OBJECT_H_
 #define _SCENE_OBJECT_H_
 
-#ifndef _SCENE_H_
 #include "2d/scene/Scene.h"
-#endif
-
-#ifndef _DEBUG_STATS_H_
 #include "2d/scene/DebugStats.h"
-#endif
-
-#ifndef _SIMBASE_H_
 #include "sim/simBase.h"
-#endif
-
-#ifndef _MMATH_H_
 #include "math/mMath.h"
-#endif
-
-#ifndef _SCENE_WINDOW_H_
 #include "2d/gui/SceneWindow.h"
-#endif
-
-#ifndef _BATCH_RENDER_H_
 #include "2d/core/BatchRender.h"
-#endif
-
-#ifndef _UTILITY_H_
 #include "2d/core/Utility.h"
-#endif
-
-#ifndef _PHYSICS_PROXY_H_
 #include "2d/scene/PhysicsProxy.h"
-#endif
-
-#ifndef _SCENE_RENDER_OBJECT_H_
 #include "2d/scene/SceneRenderObject.h"
-#endif
-
-#ifndef _BEHAVIOR_COMPONENT_H_
 #include "component/behaviors/behaviorComponent.h"
-#endif
-
-#ifndef _BEHAVIORINSTANCE_H_
 #include "component/behaviors/behaviorInstance.h"
-#endif
-
 #include "2d/assets/ShaderAsset.h"
 #include "graphics/gfxDevice.h"
 #include "graphics/gfxEnums.h"
@@ -302,7 +269,7 @@ public:
 //    virtual void            registerLights(LightManager * lightManager, bool lightingScene);
     // ISceneLight
     virtual void submitLights( LightManager *lm, bool staticLighting );
-    virtual LightInfo* getLight() { return NULL; }
+    virtual LightInfo* getLight() { return nullptr; }
 
     /// Networking.
     virtual U32             packUpdate(NetConnection * conn, U32 mask, BitStream *stream);
@@ -402,7 +369,7 @@ public:
     inline void             setCollisionSuppress( const bool status )   { mCollisionSuppress = status; }
     inline bool             getCollisionSuppress(void) const            { return mCollisionSuppress; }
     inline const Scene::typeContactVector* getCurrentContacts( void ) const    { return mpCurrentContacts; }
-    inline U32              getCurrentContactCount( void ) const        { if ( mpCurrentContacts != NULL ) return mpCurrentContacts->size(); else return 0; }
+    inline SizeType         getCurrentContactCount( void ) const        { if ( mpCurrentContacts != nullptr ) return mpCurrentContacts->size(); else return 0; }
     virtual void            setGatherContacts( const bool gatherContacts ) { mGatherContacts = gatherContacts; initializeContactGathering(); }
     inline bool             getGatherContacts( void ) const             { return mGatherContacts; }
     virtual void            onBeginCollision( const TickContact& tickContact );
@@ -443,7 +410,7 @@ public:
     /// General collision shape access.
     void                    deleteCollisionShape( const U32 shapeIndex );
     void                    clearCollisionShapes( void );
-    inline U32              getCollisionShapeCount( void ) const        { if ( mpScene ) return mCollisionFixtures.size(); else return mCollisionFixtureDefs.size(); }
+    inline SizeType         getCollisionShapeCount( void ) const        { if ( mpScene ) return mCollisionFixtures.size(); else return mCollisionFixtureDefs.size(); }
     b2Shape::Type           getCollisionShapeType( const U32 shapeIndex ) const;
     S32                     getCollisionShapeIndex( const b2Fixture* pFixture ) const;
     void                    setCollisionShapeDefinition( const U32 shapeIndex, const b2FixtureDef& fixtureDef );
@@ -562,7 +529,7 @@ public:
 
     /// Camera mounting.
     inline void             addCameraMountReference( SceneWindow* pAttachedCamera ) { mpAttachedCamera = pAttachedCamera; }
-    inline void             removeCameraMountReference( void )          { mpAttachedCamera = NULL; }
+    inline void             removeCameraMountReference( void )          { mpAttachedCamera = nullptr; }
     inline void             dismountCamera( void )                      { if ( mpAttachedCamera ) mpAttachedCamera->dismountMe( this ); }
 
     // GUI attachment.

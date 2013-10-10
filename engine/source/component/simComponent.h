@@ -23,13 +23,7 @@
 #ifndef _SIMCOMPONENT_H_
 #define _SIMCOMPONENT_H_
 
-#ifndef _SIMBASE_H_
 #include "sim/simBase.h"
-#endif
-
-#ifndef _STREAM_H_
-#include "io/stream.h"
-#endif
 
 //-----------------------------------------------------------------------------
 
@@ -142,7 +136,7 @@ public:
    virtual bool onComponentAdd(SimComponent *target);
    virtual void onComponentRemove(SimComponent *target);
 
-   inline U32 getComponentCount() { return mComponentList.size(); }
+   inline SizeType getComponentCount() { return mComponentList.size(); }
    inline SimComponent *getComponent( const U32 index ) { return mComponentList[index]; }
 
    static bool setEnabled( void* obj, const char* data ) { static_cast<SimComponent*>(obj)->setEnabled( dAtob( data ) ); return false; };

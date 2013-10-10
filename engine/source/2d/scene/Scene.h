@@ -356,7 +356,7 @@ public:
     void                    removeFromScene( SceneObject* pSceneObject );
 
     inline typeSceneObjectVectorConstRef getSceneObjects( void ) const  { return mSceneObjects; }
-    inline U32              getSceneObjectCount( void ) const           { return mSceneObjects.size(); }
+    inline SizeType         getSceneObjectCount( void ) const           { return mSceneObjects.size(); }
     SceneObject*            getSceneObject( const U32 objectIndex ) const;
     U32                     getSceneObjects( typeSceneObjectVector& objects ) const;
     U32                     getSceneObjects( typeSceneObjectVector& objects, const U32 sceneLayer ) const;
@@ -365,7 +365,7 @@ public:
 
     inline SimSet*			getControllers( void )						{ return mControllers; }
 
-    inline S32              getAssetPreloadCount( void ) const          { return mAssetPreloads.size(); }
+    inline SizeType         getAssetPreloadCount( void ) const          { return mAssetPreloads.size(); }
     const AssetPtr<AssetBase>* getAssetPreload( const S32 index ) const;
     void                    addAssetPreload( const char* pAssetId );
     void                    removeAssetPreload( const char* pAssetId );
@@ -386,7 +386,7 @@ public:
    void                   setAllRenderLayers(bool flag);
    
     /// Joint access.
-    inline U32              getJointCount( void ) const                 { return mJoints.size(); }
+    inline SizeType         getJointCount( void ) const                 { return mJoints.size(); }
     b2JointType             getJointType( const S32 jointId );
     b2Joint*                findJoint( const S32 jointId );
     S32                     findJointId( b2Joint* pJoint );
@@ -652,7 +652,7 @@ public:
     inline SceneObject*     getDebugSceneObject( void ) const           { return mpDebugSceneObject; }
 
     /// Layer sorting.
-    U32 getLayerCount(void)            { return mLayers.size(); };
+    SizeType getLayerCount(void)            { return mLayers.size(); };
     void setLayerSortMode( const U32 layer, const SceneRenderQueue::RenderSort sortMode );
     SceneRenderQueue::RenderSort getLayerSortMode( const U32 layer );
 

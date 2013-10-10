@@ -346,25 +346,25 @@ void GameConnection::readPacket(std::iostream &bstream)
     //Con::printf("GameConnection::handlePacket - readPacket ---");
    char stringBuf[256];
    stringBuf[0] = 0;
-   bstream->setStringBuffer(stringBuf);
-
-   bstream->clearCompressionPoint();
-   
+//   bstream->setStringBuffer(stringBuf);
+//
+//   bstream->clearCompressionPoint();
+//
    Parent::readPacket(bstream);
-   bstream->clearCompressionPoint();
-   bstream->setStringBuffer(nullptr);
+//   bstream->clearCompressionPoint();
+//   bstream->setStringBuffer(nullptr);
 }
 
 void GameConnection::writePacket(std::iostream &bstream, PacketNotify *note)
 {
    char stringBuf[256];
-   bstream->clearCompressionPoint();
-   stringBuf[0] = 0;
-   bstream->setStringBuffer(stringBuf);
-                                                   
+//   bstream->clearCompressionPoint();
+//   stringBuf[0] = 0;
+//   bstream->setStringBuffer(stringBuf);
+//
    Parent::writePacket(bstream, note);
-   bstream->clearCompressionPoint();
-   bstream->setStringBuffer(nullptr);
+//   bstream->clearCompressionPoint();
+//   bstream->setStringBuffer(nullptr);
 }
 
 

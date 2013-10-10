@@ -63,12 +63,12 @@ public:
    bool empty() const { return mMaterialNames.empty();   }
    U32  size() const { return (U32)mMaterialNames.size(); }
 
-   bool read(Stream &stream);
-   bool write(Stream &stream);
+   bool read(std::istream &stream);
+   bool write(std::ostream &stream);
 
-   bool readText(Stream &stream, U8 firstByte);
-   bool readText(Stream &stream);
-   bool writeText(Stream &stream);
+   bool readText(std::istream &stream, U8 firstByte);
+   bool readText(std::istream &stream);
+   bool writeText(std::ostream &stream);
 
    void mapMaterials();
 

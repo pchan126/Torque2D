@@ -82,11 +82,11 @@ void SimDataBlock::onStaticModified(const char* slotName, const char* newValue)
 {
 } */
 
-void SimDataBlock::packData(std::stringstream)
+void SimDataBlock::packData(std::ostream& stream)
 {
 }
 
-void SimDataBlock::unpackData(std::stringstream)
+void SimDataBlock::unpackData(std::istream& stream)
 {
 }
 

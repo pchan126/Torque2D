@@ -46,7 +46,7 @@ extern ResourceInstance* constructBitmapPNG(std::iostream &stream);
 extern ResourceInstance* constructBitmapJPEG(std::iostream &stream);
 
 #ifdef TORQUE_OS_IOS
-extern ResourceInstance* constructBitmapPVR(Stream& stream);
+extern ResourceInstance* constructBitmapPVR(std::iostream &stream);
 #endif
 
 //------------------------------------------------------------------------------
@@ -164,16 +164,16 @@ class GBitmap: public ResourceInstance
    bool writePNGUncompressed(std::iostream &io_rStream) const;
 
    bool readMSBmp(std::iostream &io_rStream);             // located in bitmapMS.cc
-   bool writeMSBmp(Stream& io_rStream) const;      // located in bitmapMS.cc
+   bool writeMSBmp(std::iostream &io_rStream) const;      // located in bitmapMS.cc
 
 #ifdef TORQUE_OS_IOS
-    bool readPNGiPhone(Stream& io_rStream);               // located in iPhoneUtil.mm
-    bool readPvr(Stream& io_rStream);		// located in bitmapPvr.cc for IPHONE
-    bool writePvr(Stream& io_rStreeam) const;
+    bool readPNGiPhone(std::istream &io_rStream);               // located in iPhoneUtil.mm
+    bool readPvr(std::iostream &io_rStream);		// located in bitmapPvr.cc for IPHONE
+    bool writePvr(Stream& io_rStream) const;
 #endif
     
-   bool read(Stream& io_rStream);
-   bool write(Stream& io_rStream) const;
+   bool read(std::iostream &io_rStream);
+   bool write(std::iostream &io_rStream) const;
 
   private:
    bool _writePNG(std::iostream   &stream, U32 const, U32 const, U32 const) const;

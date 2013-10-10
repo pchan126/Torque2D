@@ -125,7 +125,7 @@ bool AssetManager::compileReferencedAssets( ModuleDefinition* pModuleDefinition 
     PROFILE_SCOPE(AssetManager_CompileReferencedAsset);
 
     // Sanity!
-    AssertFatal( pModuleDefinition != NULL, "Cannot add declared assets using a NULL module definition" );
+    AssertFatal( pModuleDefinition != nullptr, "Cannot add declared assets using a nullptr module definition" );
 
     // Clear referenced assets.
     mReferencedAssets.clear();
@@ -137,7 +137,7 @@ bool AssetManager::compileReferencedAssets( ModuleDefinition* pModuleDefinition 
         ReferencedAssets* pReferencedAssets = dynamic_cast<ReferencedAssets*>( itr );
 
         // Skip if it's not a referenced assets location.
-        if ( pReferencedAssets == NULL )
+        if ( pReferencedAssets == nullptr )
             continue;
 
         // Expand asset manifest location.
@@ -163,7 +163,7 @@ bool AssetManager::addModuleDeclaredAssets( ModuleDefinition* pModuleDefinition 
     PROFILE_SCOPE(AssetManager_AddDeclaredAssets);
 
     // Sanity!
-    AssertFatal( pModuleDefinition != NULL, "Cannot add declared assets using a NULL module definition" );
+    AssertFatal( pModuleDefinition != nullptr, "Cannot add declared assets using a nullptr module definition" );
 
     // Does the module have any assets associated with it?
     if ( pModuleDefinition->getModuleAssets().size() > 0 )
@@ -180,7 +180,7 @@ bool AssetManager::addModuleDeclaredAssets( ModuleDefinition* pModuleDefinition 
         DeclaredAssets* pDeclaredAssets = dynamic_cast<DeclaredAssets*>( itr );
 
         // Skip if it's not a declared assets location.
-        if ( pDeclaredAssets == NULL )
+        if ( pDeclaredAssets == nullptr )
             continue;
 
         // Expand asset manifest location.
@@ -206,8 +206,8 @@ bool AssetManager::addDeclaredAsset( ModuleDefinition* pModuleDefinition, const 
     PROFILE_SCOPE(AssetManager_AddSingleDeclaredAsset);
 
     // Sanity!
-    AssertFatal( pModuleDefinition != NULL, "Cannot add single declared asset using a NULL module definition" );
-    AssertFatal( pAssetFilePath != NULL, "Cannot add single declared asset using a NULL asset file-path." );
+    AssertFatal( pModuleDefinition != nullptr, "Cannot add single declared asset using a nullptr module definition" );
+    AssertFatal( pAssetFilePath != nullptr, "Cannot add single declared asset using a nullptr asset file-path." );
 
     // Expand asset file-path.
     char assetFilePathBuffer[1024];
@@ -217,7 +217,7 @@ bool AssetManager::addDeclaredAsset( ModuleDefinition* pModuleDefinition, const 
     char* pFileStart = dStrrchr( assetFilePathBuffer, '/' );
 
     // Did we find the final slash?
-    if ( pFileStart == NULL )
+    if ( pFileStart == nullptr )
     {
         // No, so warn.
         Con::warnf( "AssetManager::addDeclaredAsset() - Could not add single declared asset file '%s' as file-path '%s' is not valid.",
@@ -251,7 +251,7 @@ StringTableEntry AssetManager::addPrivateAsset( AssetBase* pAssetBase )
     PROFILE_SCOPE(AssetManager_AddPrivateAsset);
 
     // Sanity!
-    AssertFatal( pAssetBase != NULL, "Cannot add a NULL private asset." );
+    AssertFatal( pAssetBase != nullptr, "Cannot add a nullptr private asset." );
 
     // Is the asset already added?
     if ( pAssetBase->mpAssetDefinition->mAssetId != StringTable->EmptyString )
@@ -314,7 +314,7 @@ bool AssetManager::removeDeclaredAssets( ModuleDefinition* pModuleDefinition )
     PROFILE_SCOPE(AssetManager_RemoveDeclaredAssets);
 
     // Sanity!
-    AssertFatal( pModuleDefinition != NULL, "Cannot remove declared assets using a NULL module definition" );
+    AssertFatal( pModuleDefinition != nullptr, "Cannot remove declared assets using a nullptr module definition" );
 
     // Fetch module assets.
     ModuleDefinition::typeModuleAssetsVector& moduleAssets = pModuleDefinition->getModuleAssets();
@@ -344,7 +344,7 @@ bool AssetManager::removeDeclaredAsset( const char* pAssetId )
     PROFILE_SCOPE(AssetManager_RemoveSingleDeclaredAsset);
 
     // Sanity!
-    AssertFatal( pAssetId != NULL, "Cannot remove single declared asset using NULL asset Id." );
+    AssertFatal( pAssetId != nullptr, "Cannot remove single declared asset using nullptr asset Id." );
 
     // Fetch asset Id.
     StringTableEntry assetId = StringTable->insert( pAssetId );
@@ -412,11 +412,11 @@ StringTableEntry AssetManager::getAssetName( const char* pAssetId )
     AssetDefinition* pAssetDefinition = findAsset( pAssetId );
 
     // Did we find the asset?
-    if ( pAssetDefinition == NULL )
+    if ( pAssetDefinition == nullptr )
     {
         // No, so warn.
         Con::warnf( "Asset Manager: Cannot find asset Id '%s'.", pAssetId );
-        return NULL;
+        return nullptr;
     }
 
     return pAssetDefinition->mAssetName;
@@ -430,11 +430,11 @@ StringTableEntry AssetManager::getAssetDescription( const char* pAssetId )
     AssetDefinition* pAssetDefinition = findAsset( pAssetId );
 
     // Did we find the asset?
-    if ( pAssetDefinition == NULL )
+    if ( pAssetDefinition == nullptr )
     {
         // No, so warn.
         Con::warnf( "Asset Manager: Cannot find asset Id '%s'.", pAssetId );
-        return NULL;
+        return nullptr;
     }
 
     return pAssetDefinition->mAssetDescription;
@@ -448,11 +448,11 @@ StringTableEntry AssetManager::getAssetCategory( const char* pAssetId )
     AssetDefinition* pAssetDefinition = findAsset( pAssetId );
 
     // Did we find the asset?
-    if ( pAssetDefinition == NULL )
+    if ( pAssetDefinition == nullptr )
     {
         // No, so warn.
         Con::warnf( "Asset Manager: Cannot find asset Id '%s'.", pAssetId );
-        return NULL;
+        return nullptr;
     }
 
     return pAssetDefinition->mAssetCategory;
@@ -466,11 +466,11 @@ StringTableEntry AssetManager::getAssetType( const char* pAssetId )
     AssetDefinition* pAssetDefinition = findAsset( pAssetId );
 
     // Did we find the asset?
-    if ( pAssetDefinition == NULL )
+    if ( pAssetDefinition == nullptr )
     {
         // No, so warn.
         Con::warnf( "Asset Manager: Cannot find asset Id '%s'.", pAssetId );
-        return NULL;
+        return nullptr;
     }
 
     return pAssetDefinition->mAssetType;
@@ -484,7 +484,7 @@ StringTableEntry AssetManager::getAssetFilePath( const char* pAssetId )
     AssetDefinition* pAssetDefinition = findAsset( pAssetId );
 
     // Did we find the asset?
-    if ( pAssetDefinition == NULL )
+    if ( pAssetDefinition == nullptr )
     {
         // No, so warn.
         Con::warnf( "Asset Manager: Cannot find asset Id '%s'.", pAssetId );
@@ -512,7 +512,7 @@ StringTableEntry AssetManager::getAssetPath( const char* pAssetId )
     const char* pFinalSlash = dStrrchr( assetFilePath, '/' );
 
     // Sanity!
-    AssertFatal( pFinalSlash != NULL, "Should always be able to find final slash in the asset file-path." );
+    AssertFatal( pFinalSlash != nullptr, "Should always be able to find final slash in the asset file-path." );
 
     // Fetch asset path.
     return StringTable->insertn( assetFilePath, pFinalSlash - assetFilePath );
@@ -526,11 +526,11 @@ ModuleDefinition* AssetManager::getAssetModuleDefinition( const char* pAssetId )
     AssetDefinition* pAssetDefinition = findAsset( pAssetId );
 
     // Did we find the asset?
-    if ( pAssetDefinition == NULL )
+    if ( pAssetDefinition == nullptr )
     {
         // No, so warn.
         Con::warnf( "Asset Manager: Cannot find asset Id '%s'.", pAssetId );
-        return NULL;
+        return nullptr;
     }
 
     return pAssetDefinition->mpModuleDefinition;
@@ -544,7 +544,7 @@ bool AssetManager::isAssetInternal( const char* pAssetId )
     AssetDefinition* pAssetDefinition = findAsset( pAssetId );
 
     // Did we find the asset?
-    if ( pAssetDefinition == NULL )
+    if ( pAssetDefinition == nullptr )
     {
         // No, so warn.
         Con::warnf( "Asset Manager: Cannot find asset Id '%s'.", pAssetId );
@@ -562,7 +562,7 @@ bool AssetManager::isAssetPrivate( const char* pAssetId )
     AssetDefinition* pAssetDefinition = findAsset( pAssetId );
 
     // Did we find the asset?
-    if ( pAssetDefinition == NULL )
+    if ( pAssetDefinition == nullptr )
     {
         // No, so warn.
         Con::warnf( "Asset Manager: Cannot find asset Id '%s'.", pAssetId );
@@ -580,7 +580,7 @@ bool AssetManager::isAssetAutoUnload( const char* pAssetId )
     AssetDefinition* pAssetDefinition = findAsset( pAssetId );
 
     // Did we find the asset?
-    if ( pAssetDefinition == NULL )
+    if ( pAssetDefinition == nullptr )
     {
         // No, so warn.
         Con::warnf( "Asset Manager: Cannot find asset Id '%s'.", pAssetId );
@@ -598,14 +598,14 @@ bool AssetManager::isAssetLoaded( const char* pAssetId )
     AssetDefinition* pAssetDefinition = findAsset( pAssetId );
 
     // Did we find the asset?
-    if ( pAssetDefinition == NULL )
+    if ( pAssetDefinition == nullptr )
     {
         // No, so warn.
         Con::warnf( "Asset Manager: Cannot find asset Id '%s'.", pAssetId );
         return false;
     }
 
-    return pAssetDefinition->mpAssetBase != NULL;
+    return pAssetDefinition->mpAssetBase != nullptr;
 }
 
 
@@ -613,7 +613,7 @@ bool AssetManager::isAssetLoaded( const char* pAssetId )
 
 bool AssetManager::isDeclaredAsset( const char* pAssetId )
 {
-    return findAsset( pAssetId ) != NULL;
+    return findAsset( pAssetId ) != nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -624,8 +624,8 @@ bool AssetManager::doesAssetDependOn( const char* pAssetId, const char* pDepends
     PROFILE_SCOPE(AssetManager_DoesAssetDependOn);
 
     // Sanity!
-    AssertFatal( pAssetId != NULL, "Cannot use NULL asset Id." );
-    AssertFatal( pDependsOnAssetId != NULL, "Cannot use NULL depends-on asset Id." );
+    AssertFatal( pAssetId != nullptr, "Cannot use nullptr asset Id." );
+    AssertFatal( pDependsOnAssetId != nullptr, "Cannot use nullptr depends-on asset Id." );
 
     // Fetch asset Id.
     StringTableEntry assetId = StringTable->insert( pAssetId );
@@ -658,8 +658,8 @@ bool AssetManager::isAssetDependedOn( const char* pAssetId, const char* pDepende
     PROFILE_SCOPE(AssetManager_IsAssetDependedOn);
 
     // Sanity!
-    AssertFatal( pAssetId != NULL, "Cannot use NULL asset Id." );
-    AssertFatal( pDependedOnByAssetId != NULL, "Cannot use NULL depended-on-by asset Id." );
+    AssertFatal( pAssetId != nullptr, "Cannot use nullptr asset Id." );
+    AssertFatal( pDependedOnByAssetId != nullptr, "Cannot use nullptr depended-on-by asset Id." );
 
     // Fetch asset Id.
     StringTableEntry assetId = StringTable->insert( pAssetId );
@@ -692,7 +692,7 @@ bool AssetManager::isReferencedAsset( const char* pAssetId )
     PROFILE_SCOPE(AssetManager_IsReferencedAsset);
 
     // Sanity!
-    AssertFatal( pAssetId != NULL, "Cannot check if NULL asset Id is referenced." );
+    AssertFatal( pAssetId != nullptr, "Cannot check if nullptr asset Id is referenced." );
 
     // Fetch asset Id.
     StringTableEntry assetId = StringTable->insert( pAssetId );
@@ -716,8 +716,8 @@ bool AssetManager::renameDeclaredAsset( const char* pAssetIdFrom, const char* pA
     PROFILE_SCOPE(AssetManager_RenameDeclaredAsset);
 
     // Sanity!
-    AssertFatal( pAssetIdFrom != NULL, "Cannot rename from NULL asset Id." );
-    AssertFatal( pAssetIdTo != NULL, "Cannot rename to NULL asset Id." );
+    AssertFatal( pAssetIdFrom != nullptr, "Cannot rename from nullptr asset Id." );
+    AssertFatal( pAssetIdTo != nullptr, "Cannot rename to nullptr asset Id." );
 
     // Fetch asset Ids.
     StringTableEntry assetIdFrom = StringTable->insert( pAssetIdFrom );
@@ -837,8 +837,8 @@ bool AssetManager::renameReferencedAsset( const char* pAssetIdFrom, const char* 
     PROFILE_SCOPE(AssetManager_RenameReferencedAsset);
 
     // Sanity!
-    AssertFatal( pAssetIdFrom != NULL, "Cannot rename from NULL asset Id." );
-    AssertFatal( pAssetIdTo != NULL, "Cannot rename to NULL asset Id." );
+    AssertFatal( pAssetIdFrom != nullptr, "Cannot rename from nullptr asset Id." );
+    AssertFatal( pAssetIdTo != nullptr, "Cannot rename to nullptr asset Id." );
 
     // Fetch asset Ids.
     StringTableEntry assetIdFrom = StringTable->insert( pAssetIdFrom );
@@ -886,13 +886,13 @@ bool AssetManager::releaseAsset( const char* pAssetId )
     PROFILE_SCOPE(AssetManager_ReleaseAsset);
 
     // Sanity!
-    AssertFatal( pAssetId != NULL, "Cannot release NULL asset Id." );
+    AssertFatal( pAssetId != nullptr, "Cannot release nullptr asset Id." );
 
     // Find asset.
     AssetDefinition* pAssetDefinition = findAsset( pAssetId );
 
     // Did we find the asset?
-    if ( pAssetDefinition == NULL )
+    if ( pAssetDefinition == nullptr )
     {
         // No, so warn.
         Con::warnf( "Asset Manager: Failed to release asset Id '%s' as it does not exist.", pAssetId );
@@ -900,7 +900,7 @@ bool AssetManager::releaseAsset( const char* pAssetId )
     }
 
     // Is the asset loaded?
-    if ( pAssetDefinition->mpAssetBase == NULL )
+    if ( pAssetDefinition->mpAssetBase == nullptr )
     {
         // No, so warn.
         Con::warnf( "Asset Manager: Failed to release asset Id '%s' as it is not acquired.", pAssetId );
@@ -975,7 +975,7 @@ void AssetManager::purgeAssets( void )
 
         // Skip asset if private, not loaded or referenced.
         if (    pAssetDefinition->mAssetPrivate ||
-                pAssetDefinition->mpAssetBase == NULL ||
+                pAssetDefinition->mpAssetBase == nullptr ||
                 pAssetDefinition->mpAssetBase->getAcquiredReferenceCount() > 0 )
             continue;
 
@@ -1004,13 +1004,13 @@ bool AssetManager::deleteAsset( const char* pAssetId, const bool deleteLooseFile
     PROFILE_SCOPE(AssetManager_DeleteAsset);
 
     // Sanity!
-    AssertFatal( pAssetId != NULL, "Cannot delete NULL asset Id." );
+    AssertFatal( pAssetId != nullptr, "Cannot delete nullptr asset Id." );
 
     // Find asset.
     AssetDefinition* pAssetDefinition = findAsset( pAssetId );
 
     // Did we find the asset?
-    if ( pAssetDefinition == NULL )
+    if ( pAssetDefinition == nullptr )
     {
         // No, so warn.
         Con::warnf( "Asset Manager: Failed to delete asset Id '%s' as it does not exist.", pAssetId );
@@ -1086,7 +1086,7 @@ bool AssetManager::deleteAsset( const char* pAssetId, const bool deleteLooseFile
     StringTableEntry assetDefinitionFile = pAssetDefinition->mAssetBaseFilePath;
 
     // Remove reference here as we're about to remove the declared asset.
-    pAssetDefinition = NULL;
+    pAssetDefinition = nullptr;
 
     // Remove asset.
     removeDeclaredAsset( pAssetId );
@@ -1116,13 +1116,13 @@ bool AssetManager::refreshAsset( const char* pAssetId )
     PROFILE_SCOPE(AssetManager_RefreshAsset);
 
     // Sanity!
-    AssertFatal( pAssetId != NULL, "Cannot refresh NULL asset Id." );
+    AssertFatal( pAssetId != nullptr, "Cannot refresh nullptr asset Id." );
 
     // Find asset.
     AssetDefinition* pAssetDefinition = findAsset( pAssetId );
 
     // Did we find the asset?
-    if ( pAssetDefinition == NULL )
+    if ( pAssetDefinition == nullptr )
     {
         // No, so warn.
         Con::warnf( "Asset Manager: Failed to refresh asset Id '%s' as it does not exist.", pAssetId );
@@ -1166,7 +1166,7 @@ bool AssetManager::refreshAsset( const char* pAssetId )
         AssetBase* pAssetBase = pAssetDefinition->mpAssetBase;
 
         // Is the asset loaded?
-        if ( pAssetBase != NULL )
+        if ( pAssetBase != nullptr )
         {
             // Yes, so notify asset of asset refresh.
             pAssetBase->onAssetRefresh();
@@ -1300,7 +1300,7 @@ void AssetManager::refreshAllAssets( const bool includeUnloaded )
             typeAssetId assetId = assetItr.first;
 
             // Skip if asset is loaded.
-            if ( assetItr.second->mpAssetBase != NULL )
+            if ( assetItr.second->mpAssetBase != nullptr )
                 continue;
 
             // Note asset as needing a release.
@@ -1372,7 +1372,7 @@ void AssetManager::unregisterAssetPtrRefreshNotify( AssetPtrBase* pAssetPtrBase 
 bool AssetManager::loadAssetTags( ModuleDefinition* pModuleDefinition )
 {
     // Sanity!
-    AssertFatal( pModuleDefinition != NULL, "Cannot load asset tags manifest using a NULL module definition" );
+    AssertFatal( pModuleDefinition != nullptr, "Cannot load asset tags manifest using a nullptr module definition" );
 
     // Expand manifest location.
     char assetTagsManifestFilePathBuffer[1024];
@@ -1459,7 +1459,7 @@ bool AssetManager::restoreAssetTags( void )
     }
 
     // Sanity!
-    AssertFatal( mAssetTagsModuleDefinition != NULL, "Cannot restore asset tags manifest as module definition is NULL." );
+    AssertFatal( mAssetTagsModuleDefinition != nullptr, "Cannot restore asset tags manifest as module definition is nullptr." );
 
     // Delete existing asset tags manifest.
     mAssetTagsManifest->deleteObject();
@@ -1505,11 +1505,11 @@ void AssetManager::dumpDeclaredAssets( void ) const
         // Info.
         Con::printf( "AssetId:'%s', RefCount:%d, LoadCount:%d, UnloadCount:%d, AutoUnload:%d, Loaded:%d, Internal:%d, Private: %d, Type:'%s', Module/Version:'%s'/'%d', File:'%s'",
             pAssetDefinition->mAssetId,
-            pAssetDefinition->mpAssetBase == NULL ? 0 : pAssetDefinition->mpAssetBase->getAcquiredReferenceCount(),
+            pAssetDefinition->mpAssetBase == nullptr ? 0 : pAssetDefinition->mpAssetBase->getAcquiredReferenceCount(),
             pAssetDefinition->mAssetLoadedCount,
             pAssetDefinition->mAssetUnloadedCount,
             pAssetDefinition->mAssetAutoUnload,
-            pAssetDefinition->mpAssetBase != NULL,
+            pAssetDefinition->mpAssetBase != nullptr,
             pAssetDefinition->mAssetInternal,
             pAssetDefinition->mAssetPrivate,
             pAssetDefinition->mAssetType,
@@ -1531,7 +1531,7 @@ S32 AssetManager::findAllAssets( AssetQuery* pAssetQuery, const bool ignoreInter
     PROFILE_SCOPE(AssetManager_FindAllAssets);
 
     // Sanity!
-    AssertFatal( pAssetQuery != NULL, "Cannot use NULL asset query." );
+    AssertFatal( pAssetQuery != nullptr, "Cannot use nullptr asset query." );
 
     // Reset result count.
     S32 resultCount = 0;
@@ -1568,11 +1568,11 @@ S32 AssetManager::findAssetName( AssetQuery* pAssetQuery, const char* pAssetName
     PROFILE_SCOPE(AssetManager_FindAssetName);
 
     // Sanity!
-    AssertFatal( pAssetQuery != NULL, "Cannot use NULL asset query." );
-    AssertFatal( pAssetName != NULL, "Cannot use NULL asset name." );
+    AssertFatal( pAssetQuery != nullptr, "Cannot use nullptr asset query." );
+    AssertFatal( pAssetName != nullptr, "Cannot use nullptr asset name." );
 
     // Reset asset name.
-    StringTableEntry assetName = NULL;
+    StringTableEntry assetName = nullptr;
     S32 partialAssetNameLength = 0;
         
     // Are we doing partial name search?
@@ -1635,8 +1635,8 @@ S32 AssetManager::findAssetCategory( AssetQuery* pAssetQuery, const char* pAsset
     PROFILE_SCOPE(AssetManager_FindAssetCategory);
 
     // Sanity!
-    AssertFatal( pAssetQuery != NULL, "Cannot use NULL asset query." );
-    AssertFatal( pAssetCategory != NULL, "Cannot use NULL asset category." );
+    AssertFatal( pAssetQuery != nullptr, "Cannot use nullptr asset query." );
+    AssertFatal( pAssetCategory != nullptr, "Cannot use nullptr asset category." );
 
     // Fetch asset category.
     StringTableEntry assetCategory = StringTable->insert( pAssetCategory );
@@ -1656,7 +1656,7 @@ S32 AssetManager::findAssetCategory( AssetQuery* pAssetQuery, const char* pAsset
             AssetDefinition* pAssetDefinition = findAsset( assetItr );
 
             // Skip if this is not the asset we want.
-            if (    pAssetDefinition == NULL ||
+            if (    pAssetDefinition == nullptr ||
                     pAssetDefinition->mAssetCategory != assetCategory )
                         continue;
 
@@ -1699,7 +1699,7 @@ S32 AssetManager::findAssetAutoUnload( AssetQuery* pAssetQuery, const bool asset
     PROFILE_SCOPE(AssetManager_FindAssetAutoUnload);
 
     // Sanity!
-    AssertFatal( pAssetQuery != NULL, "Cannot use NULL asset query." );
+    AssertFatal( pAssetQuery != nullptr, "Cannot use nullptr asset query." );
 
     // Reset result count.
     S32 resultCount = 0;
@@ -1716,7 +1716,7 @@ S32 AssetManager::findAssetAutoUnload( AssetQuery* pAssetQuery, const bool asset
             AssetDefinition* pAssetDefinition = findAsset( assetItr );
 
             // Skip if this is not the asset we want.
-            if (    pAssetDefinition == NULL ||
+            if (    pAssetDefinition == nullptr ||
                     pAssetDefinition->mAssetAutoUnload != assetAutoUnload )
                         continue;
 
@@ -1761,7 +1761,7 @@ S32 AssetManager::findAssetInternal( AssetQuery* pAssetQuery, const bool assetIn
     PROFILE_SCOPE(AssetManager_FindAssetInternal);
 
     // Sanity!
-    AssertFatal( pAssetQuery != NULL, "Cannot use NULL asset query." );
+    AssertFatal( pAssetQuery != nullptr, "Cannot use nullptr asset query." );
 
     // Reset result count.
     S32 resultCount = 0;
@@ -1778,7 +1778,7 @@ S32 AssetManager::findAssetInternal( AssetQuery* pAssetQuery, const bool assetIn
             AssetDefinition* pAssetDefinition = findAsset( assetItr );
 
             // Skip if this is not the asset we want.
-            if (    pAssetDefinition == NULL ||
+            if (    pAssetDefinition == nullptr ||
                     pAssetDefinition->mAssetInternal != assetInternal )
                         continue;
 
@@ -1823,7 +1823,7 @@ S32 AssetManager::findAssetPrivate( AssetQuery* pAssetQuery, const bool assetPri
     PROFILE_SCOPE(AssetManager_FindAssetPrivate);
 
     // Sanity!
-    AssertFatal( pAssetQuery != NULL, "Cannot use NULL asset query." );
+    AssertFatal( pAssetQuery != nullptr, "Cannot use nullptr asset query." );
 
     // Reset result count.
     S32 resultCount = 0;
@@ -1840,7 +1840,7 @@ S32 AssetManager::findAssetPrivate( AssetQuery* pAssetQuery, const bool assetPri
             AssetDefinition* pAssetDefinition = findAsset( assetItr );
 
             // Skip if this is not the asset we want.
-            if (    pAssetDefinition == NULL ||
+            if (    pAssetDefinition == nullptr ||
                     pAssetDefinition->mAssetPrivate != assetPrivate )
                         continue;
 
@@ -1885,8 +1885,8 @@ S32 AssetManager::findAssetType( AssetQuery* pAssetQuery, const char* pAssetType
     PROFILE_SCOPE(AssetManager_FindAssetType);
 
     // Sanity!
-    AssertFatal( pAssetQuery != NULL, "Cannot use NULL asset query." );
-    AssertFatal( pAssetType != NULL, "Cannot use NULL asset type." );
+    AssertFatal( pAssetQuery != nullptr, "Cannot use nullptr asset query." );
+    AssertFatal( pAssetType != nullptr, "Cannot use nullptr asset type." );
 
     // Fetch asset type.
     StringTableEntry assetType = StringTable->insert( pAssetType );
@@ -1906,7 +1906,7 @@ S32 AssetManager::findAssetType( AssetQuery* pAssetQuery, const char* pAssetType
             AssetDefinition* pAssetDefinition = findAsset( assetItr );
 
             // Skip if this is not the asset we want.
-            if (    pAssetDefinition == NULL ||
+            if (    pAssetDefinition == nullptr ||
                     pAssetDefinition->mAssetType != assetType )
                         continue;
 
@@ -1951,8 +1951,8 @@ S32 AssetManager::findAssetDependsOn( AssetQuery* pAssetQuery, const char* pAsse
     PROFILE_SCOPE(AssetManager_FindAssetDependsOn);
 
     // Sanity!
-    AssertFatal( pAssetQuery != NULL, "Cannot use NULL asset query." );
-    AssertFatal( pAssetId != NULL, "Cannot use NULL asset Id." );
+    AssertFatal( pAssetQuery != nullptr, "Cannot use nullptr asset query." );
+    AssertFatal( pAssetId != nullptr, "Cannot use nullptr asset Id." );
 
     // Fetch asset Id.
     StringTableEntry assetId = StringTable->insert( pAssetId );
@@ -1987,8 +1987,8 @@ S32 AssetManager::findAssetIsDependedOn( AssetQuery* pAssetQuery, const char* pA
     PROFILE_SCOPE(AssetManager_FindAssetIsDependedOn);
 
     // Sanity!
-    AssertFatal( pAssetQuery != NULL, "Cannot use NULL asset query." );
-    AssertFatal( pAssetId != NULL, "Cannot use NULL asset Id." );
+    AssertFatal( pAssetQuery != nullptr, "Cannot use nullptr asset query." );
+    AssertFatal( pAssetId != nullptr, "Cannot use nullptr asset Id." );
 
     // Fetch asset Id.
     StringTableEntry assetId = StringTable->insert( pAssetId );
@@ -2023,7 +2023,7 @@ S32 AssetManager::findInvalidAssetReferences( AssetQuery* pAssetQuery )
     PROFILE_SCOPE(AssetManager_FindInvalidAssetReferences);
 
     // Sanity!
-    AssertFatal( pAssetQuery != NULL, "Cannot use NULL asset query." );
+    AssertFatal( pAssetQuery != nullptr, "Cannot use nullptr asset query." );
 
     // Reset result count.
     S32 resultCount = 0;
@@ -2035,7 +2035,7 @@ S32 AssetManager::findInvalidAssetReferences( AssetQuery* pAssetQuery )
         AssetDefinition* pAssetDefinition = findAsset( assetItr.first );
 
         // Skip if the asset definition was found.
-        if ( pAssetDefinition != NULL )
+        if ( pAssetDefinition != nullptr )
             continue;
 
         // Store as result.
@@ -2056,8 +2056,8 @@ S32 AssetManager::findTaggedAssets( AssetQuery* pAssetQuery, const char* pAssetT
     PROFILE_SCOPE(AssetManager_FindTaggedAssets);
 
     // Sanity!
-    AssertFatal( pAssetQuery != NULL, "Cannot use NULL asset query." );
-    AssertFatal( pAssetTagNames != NULL, "Cannot use NULL asset tag name(s)." );
+    AssertFatal( pAssetQuery != nullptr, "Cannot use nullptr asset query." );
+    AssertFatal( pAssetTagNames != nullptr, "Cannot use nullptr asset tag name(s)." );
 
     // Do we have an asset tag manifest?
     if ( mAssetTagsManifest.isNull() )
@@ -2086,7 +2086,7 @@ S32 AssetManager::findTaggedAssets( AssetQuery* pAssetQuery, const char* pAssetT
         AssetTagsManifest::AssetTag* pAssetTag = mAssetTagsManifest->findAssetTag( pTagName );
 
         // Did we find the asset tag?
-        if ( pAssetTag == NULL )
+        if ( pAssetTag == nullptr )
         {
             // No, so warn.
             Con::warnf( "AssetTagsManifest: Asset Manager: Cannot find tagged assets of '%s' as it does not exist.  Ignoring tag.", pTagName );
@@ -2184,8 +2184,8 @@ S32 AssetManager::findAssetLooseFile( AssetQuery* pAssetQuery, const char* pLoos
     PROFILE_SCOPE(AssetManager_FindAssetLooseFile);
 
     // Sanity!
-    AssertFatal( pAssetQuery != NULL, "Cannot use NULL asset query." );
-    AssertFatal( pLooseFile != NULL, "Cannot use NULL loose file." );
+    AssertFatal( pAssetQuery != nullptr, "Cannot use nullptr asset query." );
+    AssertFatal( pLooseFile != nullptr, "Cannot use nullptr loose file." );
 
     // Expand loose file.
     char looseFileBuffer[1024];
@@ -2279,8 +2279,8 @@ bool AssetManager::scanDeclaredAssets( const char* pPath, const char* pExtension
     PROFILE_SCOPE(AssetManager_ScanDeclaredAssets);
 
     // Sanity!
-    AssertFatal( pPath != NULL, "Cannot scan declared assets with NULL path." );
-    AssertFatal( pExtension != NULL, "Cannot scan declared assets with NULL extension." );
+    AssertFatal( pPath != nullptr, "Cannot scan declared assets with nullptr path." );
+    AssertFatal( pExtension != nullptr, "Cannot scan declared assets with nullptr extension." );
 
     // Expand path location.
     char pathBuffer[1024];
@@ -2313,7 +2313,7 @@ bool AssetManager::scanDeclaredAssets( const char* pPath, const char* pExtension
     }
 
     // Fetch extension length.
-    const U32 extensionLength = dStrlen( pExtension );
+    const SizeType extensionLength = dStrlen( pExtension );
 
     // Fetch module assets.
     ModuleDefinition::typeModuleAssetsVector& moduleAssets = pModuleDefinition->getModuleAssets();
@@ -2327,7 +2327,7 @@ bool AssetManager::scanDeclaredAssets( const char* pPath, const char* pExtension
         const char* pFilename = fileInfo.pFileName;
 
         // Find filename length.
-        const U32 filenameLength = dStrlen( pFilename );
+        const SizeType filenameLength = dStrlen( pFilename );
 
         // Skip if extension is longer than filename.
         if ( extensionLength > filenameLength )
@@ -2474,8 +2474,8 @@ bool AssetManager::scanReferencedAssets( const char* pPath, const char* pExtensi
     PROFILE_SCOPE(AssetManager_ScanReferencedAssets);
 
     // Sanity!
-    AssertFatal( pPath != NULL, "Cannot scan referenced assets with NULL path." );
-    AssertFatal( pExtension != NULL, "Cannot scan referenced assets with NULL extension." );
+    AssertFatal( pPath != nullptr, "Cannot scan referenced assets with nullptr path." );
+    AssertFatal( pExtension != nullptr, "Cannot scan referenced assets with nullptr extension." );
 
     // Expand path location.
     char pathBuffer[1024];
@@ -2586,7 +2586,7 @@ AssetDefinition* AssetManager::findAsset( const char* pAssetId )
     PROFILE_SCOPE(AssetManager_FindAsset);
 
     // Sanity!
-    AssertFatal( pAssetId != NULL, "Cannot find NULL asset Id." );
+    AssertFatal( pAssetId != nullptr, "Cannot find nullptr asset Id." );
 
     // Fetch asset Id.
     StringTableEntry assetId = StringTable->insert( pAssetId );
@@ -2596,7 +2596,7 @@ AssetDefinition* AssetManager::findAsset( const char* pAssetId )
 
     // Find if we didn't find a declared asset Id.
     if ( declaredAssetItr == mDeclaredAssets.end() )
-        return NULL;
+        return nullptr;
 
     return declaredAssetItr->second;
 }
@@ -2609,8 +2609,8 @@ void AssetManager::addReferencedAsset( StringTableEntry assetId, StringTableEntr
     PROFILE_SCOPE(AssetManager_AddReferencedAsset);
 
     // Sanity!
-    AssertFatal( assetId != NULL, "Cannot add referenced asset with NULL asset Id." );
-    AssertFatal( referenceFilePath != NULL, "Cannot add referenced asset with NULL reference file-path." );
+    AssertFatal( assetId != nullptr, "Cannot add referenced asset with nullptr asset Id." );
+    AssertFatal( referenceFilePath != nullptr, "Cannot add referenced asset with nullptr reference file-path." );
 
     // Find referenced asset.
     typeReferencedAssetsHash::iterator referencedAssetItr = mReferencedAssets.find( assetId );
@@ -2653,8 +2653,8 @@ void AssetManager::renameAssetReferences( StringTableEntry assetIdFrom, StringTa
     PROFILE_SCOPE(AssetManager_RenameAssetReferences);
 
     // Sanity!
-    AssertFatal( assetIdFrom != NULL, "Cannot rename asset references using NULL asset Id from." );
-    AssertFatal( assetIdTo != NULL, "Cannot rename asset references using NULL asset Id to." );
+    AssertFatal( assetIdFrom != nullptr, "Cannot rename asset references using nullptr asset Id from." );
+    AssertFatal( assetIdTo != nullptr, "Cannot rename asset references using nullptr asset Id to." );
 
     // Finish if the asset is not referenced.
     if ( !mReferencedAssets.count( assetIdFrom ) )
@@ -2705,7 +2705,7 @@ void AssetManager::removeAssetReferences( StringTableEntry assetId )
     PROFILE_SCOPE(AssetManager_RemoveAssetReferences);
 
     // Sanity!
-    AssertFatal( assetId != NULL, "Cannot rename asset references using NULL asset Id." );
+    AssertFatal( assetId != nullptr, "Cannot rename asset references using nullptr asset Id." );
 
     // Finish if the asset is not referenced.
     if ( !mReferencedAssets.count( assetId ) )
@@ -2759,8 +2759,8 @@ void AssetManager::renameAssetDependencies( StringTableEntry assetIdFrom, String
     PROFILE_SCOPE(AssetManager_RenameAssetDependencies);
 
     // Sanity!
-    AssertFatal( assetIdFrom != NULL, "Cannot rename asset dependencies using NULL asset Id from." );
-    AssertFatal( assetIdTo != NULL, "Cannot rename asset dependencies using NULL asset Id to." );
+    AssertFatal( assetIdFrom != nullptr, "Cannot rename asset dependencies using nullptr asset Id from." );
+    AssertFatal( assetIdTo != nullptr, "Cannot rename asset dependencies using nullptr asset Id to." );
 
     // Rename via depends-on...
     while( mAssetDependsOn.count( assetIdFrom ) > 0 )
@@ -2843,7 +2843,7 @@ void AssetManager::removeAssetDependencies( const char* pAssetId )
     PROFILE_SCOPE(AssetManager_RemvoeAsetDependencies);
 
     // Sanity!
-    AssertFatal( pAssetId != NULL, "Cannot remove asset dependencies using NULL asset Id." );
+    AssertFatal( pAssetId != nullptr, "Cannot remove asset dependencies using nullptr asset Id." );
 
     // Fetch asset Id.
     StringTableEntry assetId = StringTable->insert( pAssetId );
@@ -2948,7 +2948,7 @@ void AssetManager::onModulePreUnload( ModuleDefinition* pModuleDefinition )
         {
             // Yes, so remove it.
             mAssetTagsManifest->deleteObject();
-            mAssetTagsModuleDefinition = NULL;
+            mAssetTagsModuleDefinition = nullptr;
         }
     }
 }

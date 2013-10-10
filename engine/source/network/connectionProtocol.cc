@@ -24,7 +24,7 @@
 #include "console/console.h"
 #include "console/consoleTypes.h"
 #include "StreamFn.h"
-#include <iostream>
+#include <sstream>
 
 bool gLogToConsole = false;
 
@@ -70,12 +70,12 @@ void ConnectionProtocol::buildSendPacketHeader(std::iostream &stream, S32 packet
       mLastSendSeq++;
 
    stream << true;
-   stream->writeInt(mConnectSequence & 1, 1);
-   stream->writeInt(mLastSendSeq, 9);
-   stream->writeInt(mLastSeqRecvd, 9);
-   stream->writeInt(packetType, 2);
-   stream->writeInt(ackByteCount, 3);
-   stream->writeInt(mAckMask, ackByteCount * 8);
+   StreamFn::writeInt(stream, mConnectSequence & 1, 1);
+   StreamFn::writeInt(stream, mLastSendSeq, 9);
+   StreamFn::writeInt(stream, mLastSeqRecvd, 9);
+    StreamFn::writeInt(stream, packetType, 2);
+    StreamFn::writeInt(stream, ackByteCount, 3);
+    StreamFn::writeInt(stream, mAckMask, ackByteCount * 8);
 
    // if we're resending this header, we can't advance the
    // sequence received (in case this packet drops and the prev one
@@ -90,24 +90,26 @@ void ConnectionProtocol::buildSendPacketHeader(std::iostream &stream, S32 packet
 
 void ConnectionProtocol::sendPingPacket()
 {
-   U8 buffer[16];
-   BitStream bs(buffer, 16);
-   buildSendPacketHeader(&bs, PingPacket);
-   if(gLogToConsole)
-      Con::printf("send ping %d", mLastSendSeq);
+//   U8 buffer[16];
+//    std::stringstream bs(buffer, 16);
+    std::stringstream bs;
+    buildSendPacketHeader(bs, PingPacket);
+    if(gLogToConsole)
+        Con::printf("send ping %d", mLastSendSeq);
 
-   sendPacket(&bs);
+    sendPacket(bs);
 }
 
 void ConnectionProtocol::sendAckPacket()
 {
-   U8 buffer[16];
-   BitStream bs(buffer, 16);
-   buildSendPacketHeader(&bs, AckPacket);
+//   U8 buffer[16];
+//    std::stringstream bs(buffer, 16);
+    std::stringstream bs;
+   buildSendPacketHeader(bs, AckPacket);
    if(gLogToConsole)
       Con::printf("send ack %d", mLastSendSeq);
 
-   sendPacket(&bs);
+   sendPacket(bs);
 }
 
 // packets are read directly into the data portion of
@@ -141,11 +143,11 @@ void ConnectionProtocol::processRawPacket(std::iostream &pstream)
 
    bool flag;
    pstream >> flag; // get rid of the game info packet bit
-   U32 pkConnectSeqBit  = pstream->readInt(1);
-   U32 pkSequenceNumber = pstream->readInt(9);
-   U32 pkHighestAck     = pstream->readInt(9);
-   U32 pkPacketType     = pstream->readInt(2);
-   S32 pkAckByteCount   = pstream->readInt(3);
+   U32 pkConnectSeqBit  = StreamFn::readInt(pstream, 1);
+   U32 pkSequenceNumber = StreamFn::readInt(pstream, 9);
+   U32 pkHighestAck     = StreamFn::readInt(pstream, 9);
+   U32 pkPacketType     = StreamFn::readInt(pstream, 2);
+   S32 pkAckByteCount   = StreamFn::readInt(pstream, 3);
 
    // check connection sequence bit
    if(pkConnectSeqBit != (mConnectSequence & 1))
@@ -154,7 +156,7 @@ void ConnectionProtocol::processRawPacket(std::iostream &pstream)
    if(pkAckByteCount > 4 || pkPacketType >= InvalidPacketType)
       return;
 
-   S32 pkAckMask = pstream->readInt(8 * pkAckByteCount);
+   S32 pkAckMask = StreamFn::readInt(pstream, 8 * pkAckByteCount);
 
    // verify packet ordering and acking and stuff
    // check if the 9-bit sequence is within the packet window

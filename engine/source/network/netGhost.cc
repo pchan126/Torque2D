@@ -50,35 +50,35 @@ public:
    ~GhostAlwaysObjectEvent()
       { delete object; }
 
-   void pack(NetConnection *ps, std::iostream &bstream)
+   void pack(NetConnection *ps, std::ostream &bstream)
    {
-      bstream->writeInt(ghostIndex, NetConnection::GhostIdBitSize);
+      StreamFn::writeInt(bstream,ghostIndex, NetConnection::GhostIdBitSize);
 
       NetObject *obj = (NetObject *) Sim::findObject(objectId);
-      if(bstream->writeFlag(obj != nullptr))
+      if(bstream << (obj != nullptr))
       {
          S32 classId = obj->getClassId(ps->getNetClassGroup());
-         bstream->writeClassId(classId, NetClassTypeObject, ps->getNetClassGroup());
+         StreamFn::writeClassId( bstream,classId, NetClassTypeObject, ps->getNetClassGroup());
          obj->packUpdate(ps, 0xFFFFFFFF, bstream);
       }
    }
-   void write(NetConnection *ps, std::iostream &bstream)
+   void write(NetConnection *ps, std::ostream &bstream)
    {
-      bstream->writeInt(ghostIndex, NetConnection::GhostIdBitSize);
-      if(bstream->writeFlag(validObject))
+      StreamFn::writeInt(bstream,ghostIndex, NetConnection::GhostIdBitSize);
+      if(bstream << (validObject))
       {
          S32 classId = object->getClassId(ps->getNetClassGroup());
-         bstream->writeClassId(classId, NetClassTypeObject, ps->getNetClassGroup());
+         StreamFn::writeClassId( bstream,classId, NetClassTypeObject, ps->getNetClassGroup());
          object->packUpdate(ps, 0xFFFFFFFF, bstream);
       }
    }
-   void unpack(NetConnection *ps, std::iostream &bstream)
+   void unpack(NetConnection *ps, std::istream &bstream)
    {
-      ghostIndex = bstream->readInt(NetConnection::GhostIdBitSize);
+      ghostIndex = StreamFn::readInt( bstream,NetConnection::GhostIdBitSize);
 
       if(StreamFn::readFlag(bstream))
       {
-         S32 classId = bstream->readClassId(NetClassTypeObject, ps->getNetClassGroup());
+         S32 classId = StreamFn::readClassId( bstream,NetClassTypeObject, ps->getNetClassGroup());
          if(classId == -1)
          {
             ps->setLastError("Invalid packet.");
@@ -280,7 +280,7 @@ static S32 QSORT_CALLBACK UQECompare(const void *a,const void *b)
 void NetConnection::ghostWritePacket(std::iostream &bstream, PacketNotify *notify)
 {
 #ifdef    TORQUE_DEBUG_NET
-   bstream->writeInt(DebugChecksum, 32);
+   StreamFn::writeInt(bstream,DebugChecksum, 32);
 #endif
 
    notify->ghostList = nullptr;
@@ -288,7 +288,7 @@ void NetConnection::ghostWritePacket(std::iostream &bstream, PacketNotify *notif
    if(!isGhostingFrom())
       return;
 
-   if(!bstream->writeFlag(mGhosting))
+   if(!bstream << (mGhosting))
       return;
 
    // fill a packet (or two) with ghosting data
@@ -373,19 +373,19 @@ void NetConnection::ghostWritePacket(std::iostream &bstream, PacketNotify *notif
    if(sendSize < 3)
       sendSize = 3;
 
-   bstream->writeInt(sendSize - 3, GhostIndexBitSize);
+   StreamFn::writeInt(bstream,sendSize - 3, GhostIndexBitSize);
 
    U32 count = 0;
    //
-   for(i = mGhostZeroUpdateIndex - 1; i >= 0 && !bstream->isFull(); i--)
+   for(i = mGhostZeroUpdateIndex - 1; i >= 0 && !bstream.bad(); i--)
    {
       GhostInfo *walk = mGhostArray[i];
         if(walk->flags & (GhostInfo::KillingGhost | GhostInfo::Ghosting))
            continue;
         
-      bstream->writeFlag(true);
+      bstream << (true);
 
-      bstream->writeInt(walk->index, sendSize);
+      StreamFn::writeInt(bstream,walk->index, sendSize);
       U32 updateMask = walk->updateMask;
 
       GhostRef *upd = new GhostRef;
@@ -406,17 +406,17 @@ void NetConnection::ghostWritePacket(std::iostream &bstream, PacketNotify *notif
          upd->mask = updateMask;
          ghostPushToZero(walk);
          upd->ghostInfoFlags = GhostInfo::KillingGhost;
-         bstream->writeFlag(true); // killing ghost
+         bstream << (true); // killing ghost
       }
       else
       {
-         bstream->writeFlag(false);
+         bstream << (false);
          if(walk->flags & GhostInfo::NotYetGhosted)
          {
             S32 classId = walk->obj->getClassId(getNetClassGroup());
-            bstream->writeClassId(classId, NetClassTypeObject, getNetClassGroup());
+            StreamFn::writeClassId( bstream,classId, NetClassTypeObject, getNetClassGroup());
 #ifdef TORQUE_DEBUG_NET
-            bstream->writeInt(classId ^ DebugChecksum, 32);
+            StreamFn::writeInt(bstream,classId ^ DebugChecksum, 32);
 #endif
 
             walk->flags &= ~GhostInfo::NotYetGhosted;
@@ -426,8 +426,8 @@ void NetConnection::ghostWritePacket(std::iostream &bstream, PacketNotify *notif
 #ifdef TORQUE_DEBUG_NET
          else {
             S32 classId = walk->obj->getClassId(getNetClassGroup());
-            bstream->writeClassId(classId, NetClassTypeObject, getNetClassGroup());
-            bstream->writeInt(classId ^ DebugChecksum, 32);
+            StreamFn::writeClassId( bstream,classId, NetClassTypeObject, getNetClassGroup());
+            StreamFn::writeInt(bstream,classId ^ DebugChecksum, 32);
          }
 #endif
          // update the object
@@ -444,7 +444,7 @@ void NetConnection::ghostWritePacket(std::iostream &bstream, PacketNotify *notif
 
          //PacketStream::getStats()->addBits(PacketStats::Send, bstream->getCurPos() - startPos, walk->obj->getPersistTag());
 #ifdef TORQUE_DEBUG_NET
-         bstream->writeInt(walk->index ^ DebugChecksum, 32);
+         StreamFn::writeInt(bstream,walk->index ^ DebugChecksum, 32);
 #endif
       }
       walk->updateSkipCount = 0;
@@ -452,37 +452,37 @@ void NetConnection::ghostWritePacket(std::iostream &bstream, PacketNotify *notif
    }
    //Con::printf("Ghosts updated: %d (%d remain)", count, mGhostZeroUpdateIndex);
    // no more objects...
-   bstream->writeFlag(false);
+   bstream << (false);
    notify->ghostList = updateList;
 }
 
 void NetConnection::ghostReadPacket(std::iostream &bstream)
 {
 #ifdef    TORQUE_DEBUG_NET
-   U32 sum = bstream->readInt(32);
+   U32 sum = StreamFn::readInt( bstream,32);
    AssertISV(sum == DebugChecksum, "Invalid checksum.");
 #endif
 
    if(!isGhostingTo())
       return;
-   if(!StreamFn::readFlag(bstream)())
+   if(!StreamFn::readFlag(bstream))
       return;
 
    S32 idSize;
-   idSize = bstream->readInt( GhostIndexBitSize);
+   idSize = StreamFn::readInt( bstream, GhostIndexBitSize);
    idSize += 3;
 
    // while there's an object waiting...
 
-   while(StreamFn::readFlag(bstream)())
+   while(StreamFn::readFlag(bstream))
    {
 
       gGhostUpdates++;
 
       U32 index;
       //S32 startPos = bstream->getCurPos();
-      index = (U32) bstream->readInt(idSize);
-      if(StreamFn::readFlag(bstream)()) // is this ghost being deleted?
+      index = (U32) StreamFn::readInt( bstream,idSize);
+      if(StreamFn::readFlag(bstream)) // is this ghost being deleted?
       {
          mGhostsActive--;
          AssertFatal(mLocalGhosts[index] != nullptr, "Error, nullptr ghost encountered.");
@@ -494,7 +494,7 @@ void NetConnection::ghostReadPacket(std::iostream &bstream)
          if(!mLocalGhosts[index]) // it's a new ghost... cool
          {
             mGhostsActive++;
-            S32 classId = bstream->readClassId(NetClassTypeObject, getNetClassGroup());
+            S32 classId = StreamFn::readClassId( bstream,NetClassTypeObject, getNetClassGroup());
             if(classId == -1)
             {
                setLastError("Invalid packet.");
@@ -514,7 +514,7 @@ void NetConnection::ghostReadPacket(std::iostream &bstream)
             obj->mNetIndex = index;
             mLocalGhosts[index] = obj;
 #ifdef TORQUE_DEBUG_NET
-            U32 checksum = bstream->readInt(32);
+            U32 checksum = StreamFn::readInt( bstream,32);
             S32 origId = checksum ^ DebugChecksum;
             AssertISV(mLocalGhosts[index] != nullptr, "Invalid dest ghost.");
             AssertISV(origId == mLocalGhosts[index]->getClassId(getNetClassGroup()),
@@ -537,8 +537,8 @@ void NetConnection::ghostReadPacket(std::iostream &bstream)
          else
          {
 #ifdef TORQUE_DEBUG_NET
-            S32 classId = bstream->readClassId(NetClassTypeObject, getNetClassGroup());
-            U32 checksum = bstream->readInt(32);
+            S32 classId = StreamFn::readClassId( bstream,NetClassTypeObject, getNetClassGroup());
+            U32 checksum = StreamFn::readInt( bstream,32);
             S32 origId = checksum ^ DebugChecksum;
             AssertISV(mLocalGhosts[index] != nullptr, "Invalid dest ghost.");
             AssertISV(origId == mLocalGhosts[index]->getClassId(getNetClassGroup()),
@@ -549,7 +549,7 @@ void NetConnection::ghostReadPacket(std::iostream &bstream)
          }
          //PacketStream::getStats()->addBits(PacketStats::Receive, bstream->getCurPos() - startPos, ghostRefs[index].localGhost->getPersistTag());
 #ifdef TORQUE_DEBUG_NET
-         U32 checksum = bstream->readInt(32);
+         U32 checksum = StreamFn::readInt( bstream,32);
          S32 origIndex = checksum ^ DebugChecksum;
          AssertISV(origIndex == index,
             avar("unpackUpdate did not match packUpdate for object of class %s.",
@@ -1026,7 +1026,7 @@ S32 NetConnection::getGhostIndex(NetObject *obj)
 
 //-----------------------------------------------------------------------------
 
-void NetConnection::ghostWriteStartBlock(std::iostream &stream)
+void NetConnection::ghostWriteStartBlock(std::ostream &stream)
 {
    // Ok, writing the start block for the ghosts:
    // here's how it goes.
@@ -1037,7 +1037,7 @@ void NetConnection::ghostWriteStartBlock(std::iostream &stream)
    // existing ghosts, so we want to make sure that all the ghosts are in the
    // table with the correct pointers before any of the unpacks are called.
 
-   stream->write(mGhostingSequence);
+   stream << (mGhostingSequence);
 
    // first write out the indices and ids:
    for(U32 i = 0; i < MaxGhostCount; i++)
@@ -1045,16 +1045,16 @@ void NetConnection::ghostWriteStartBlock(std::iostream &stream)
       if(mLocalGhosts[i])
       {
          stream << (true);
-         stream->writeInt(i, GhostIdBitSize);
-         stream->writeClassId(mLocalGhosts[i]->getClassId(getNetClassGroup()), NetClassTypeObject, getNetClassGroup());
-         stream->validate();
+         StreamFn::writeInt( stream,i, GhostIdBitSize);
+         StreamFn::writeClassId( stream,mLocalGhosts[i]->getClassId(getNetClassGroup()), NetClassTypeObject, getNetClassGroup());
+//         stream->validate();
       }
    }
    // mark off the end of the ghost list:
    // it would be more space efficient to write out a count of active ghosts followed
    // by index run lengths, but hey, what's a few bits here and there?
 
-   stream->writeFlag(false);
+   stream << (false);
 
    // then, for each ghost written into the start block, write the full pack update
    // into the start block.  For demos to work properly, packUpdate must
@@ -1064,22 +1064,22 @@ void NetConnection::ghostWriteStartBlock(std::iostream &stream)
       if(mLocalGhosts[i])
       {
          mLocalGhosts[i]->packUpdate(this, 0xFFFFFFFF, stream);
-         stream->validate();
+//         stream->validate();
       }
    }
 }
 
-void NetConnection::ghostReadStartBlock(std::iostream &stream)
+void NetConnection::ghostReadStartBlock(std::istream &stream)
 {
-   stream->read(&mGhostingSequence);
+   stream >> mGhostingSequence;
 
    // read em back in.
    // first, read in the index/class id, construct the object, and place it in mLocalGhosts[i]
 
    while(StreamFn::readFlag(stream))
    {
-      U32 index = stream->readInt(GhostIdBitSize);
-      S32 tag = stream->readClassId(NetClassTypeObject, getNetClassGroup());
+      U32 index = StreamFn::readInt( stream,GhostIdBitSize);
+      S32 tag = StreamFn::readClassId( stream,NetClassTypeObject, getNetClassGroup());
       NetObject *obj = (NetObject *) ConsoleObject::create(getNetClassGroup(), NetClassTypeObject, tag);
       if(!obj)
       {

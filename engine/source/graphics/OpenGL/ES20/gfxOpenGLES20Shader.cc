@@ -20,6 +20,7 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
+#include <fstream>
 #include "platform/platform.h"
 #include "gfxOpenGLES20Shader.h"
 
@@ -29,7 +30,7 @@
 #include "graphics/gfxStructs.h"
 #include "console/console.h"
 #include "gfxOpenGLES20EnumTranslate.h"
-
+#include "StreamFn.h"
 
 
 class GFXOpenGLES20ShaderConstHandle : public GFXShaderConstHandle
@@ -190,7 +191,7 @@ bool GFXOpenGLES20Shader::_init()
    {
       FrameAllocatorMarker fam;
       char* log = (char*)fam.alloc( logLength );
-      glGetProgramInfoLog( mProgram, logLength, NULL, log );
+      glGetProgramInfoLog( mProgram, logLength, nullptr, log );
 
       if ( linkStatus == GL_FALSE )
       {
@@ -226,7 +227,7 @@ bool GFXOpenGLES20Shader::_init()
 
 bool GFXOpenGLES20Shader::_loadShaderFromStream(  GLuint shader,
                                             const StringTableEntry path,
-                                            FileStream* s,
+                                            std::iostream &s,
                                             const Vector<GFXShaderMacro>& macros )
 {
     Vector<char*> buffers;
@@ -241,9 +242,9 @@ bool GFXOpenGLES20Shader::_loadShaderFromStream(  GLuint shader,
 //    }
     
     // Now finally add the shader source.
-    U32 shaderLen = s->getStreamSize();
+    U32 shaderLen = StreamFn::getStreamSize(s);
     char* buffer = (char*)dMalloc(shaderLen + 1);
-    s->read(shaderLen, buffer);
+    s.read(buffer, shaderLen);
     buffer[shaderLen] = 0;
     
     if ( !buffer )
@@ -258,7 +259,7 @@ bool GFXOpenGLES20Shader::_loadShaderFromStream(  GLuint shader,
     buffers.push_back(buffer);
     lengths.push_back(shaderLen);
 
-    glShaderSource(shader, buffers.size(), (const GLchar**)const_cast<const char**>(buffers.address()), NULL);
+    glShaderSource(shader, buffers.size(), (const GLchar**)const_cast<const char**>(buffers.address()), nullptr);
 
     // Cleanup the shader source buffer.
     for ( U32 i=0; i < buffers.size(); i++ )
@@ -285,8 +286,8 @@ bool GFXOpenGLES20Shader::initShader( const StringTableEntry file,
     //    Con::expandScriptFilename( szFullPathBuffer, sizeof(szFullPathBuffer), file );
     
     // Ok it's not in the shader gen manager, so ask Torque for it
-    FileStream stream;
-    if ( !stream.open( file, FileStream::Read ) )
+    std::fstream stream(file, std::fstream::in);
+    if ( !stream )
     {
         AssertISV(false, avar("GFXOpenGLShader::initShader - failed to open shader '%s'.", file));
         
@@ -297,7 +298,7 @@ bool GFXOpenGLES20Shader::initShader( const StringTableEntry file,
         return false;
     }
     
-    if ( !_loadShaderFromStream( activeShader, file, &stream, macros ) )
+    if ( !_loadShaderFromStream( activeShader, file, stream, macros ) )
         return false;
     
     GLint compile;
@@ -312,7 +313,7 @@ bool GFXOpenGLES20Shader::initShader( const StringTableEntry file,
     {
         FrameAllocatorMarker fam;
         char* log = (char*)fam.alloc(logLength);
-        glGetShaderInfoLog(activeShader, logLength, NULL, log);
+        glGetShaderInfoLog(activeShader, logLength, nullptr, log);
         
         // Always print errors
         glGetShaderiv( activeShader, GL_COMPILE_STATUS, &compileStatus );

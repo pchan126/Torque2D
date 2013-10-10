@@ -128,7 +128,7 @@ public:
    SimObject* first() { return objectList.front(); }
    SimObject* last()  { return objectList.back(); }
    bool       empty() { return objectList.empty();   }
-   S32        size() const  { return objectList.size(); }
+   SizeType        size() const  { return objectList.size(); }
    iterator   begin() { return objectList.begin(); }
    iterator   end()   { return objectList.end(); }
    value operator[] (S32 index) { return objectList[U32(index)]; }

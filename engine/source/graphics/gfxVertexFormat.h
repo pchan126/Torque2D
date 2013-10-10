@@ -183,7 +183,7 @@ public:
    inline bool isEqual( const GFXVertexFormat &format ) const;
 
    /// Returns the total elements in this format.
-   U32 getElementCount() const { return mElements.size(); }
+   size_t getElementCount() const { return mElements.size(); }
 
    /// Returns the vertex element by index.
    const GFXVertexElement& getElement( U32 index ) const { return mElements[index]; }

@@ -55,7 +55,7 @@ public:
    HashTable(const HashTable& p);
 
    // Management
-   U32  size() const       { return mTable.size(); };                  ///< Return the number of elements
+   SizeType  size() const       { return mTable.size(); };                  ///< Return the number of elements
    void clear()            { return mTable.clear(); };                       ///< Empty the HashTable
    void resize(U32 size);
    bool isEmpty() const    { return mTable.empty(); };               ///< Returns true if the table is empty
@@ -165,7 +165,7 @@ public:
    HashMap(const HashMap& p);
 
    // management
-   U32  size() const                       { return mHashMap.size(); } ///< Return the number of elements
+   SizeType  size() const                  { return mHashMap.size(); } ///< Return the number of elements
    void clear()                            { mHashMap.clear(); }; ///< Empty the HashMap
    bool isEmpty() const                    { return mHashMap.isEmpty(); };               ///< Returns true if the map is empty
 

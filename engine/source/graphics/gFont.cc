@@ -23,7 +23,6 @@
 #include "platform/platform.h"
 #include "platform/threads/mutex.h"
 #include "console/console.h"
-#include "io/stream.h"
 #include "graphics/gBitmap.h"
 #include "string/findMatch.h"
 #include "graphics/gfxTextureManager.h"

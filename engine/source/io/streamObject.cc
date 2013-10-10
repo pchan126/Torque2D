@@ -21,6 +21,7 @@
 //-----------------------------------------------------------------------------
 
 #include "streamObject.h"
+#include "io/StreamFn.h"
 
 //////////////////////////////////////////////////////////////////////////
 // Constructor/Destructor
@@ -28,10 +29,10 @@
 
 StreamObject::StreamObject()
 {
-   mStream = NULL;
+   mStream = nullptr;
 }
 
-StreamObject::StreamObject(Stream *stream)
+StreamObject::StreamObject(std::iostream *stream)
 {
    mStream = stream;
 }
@@ -46,7 +47,7 @@ IMPLEMENT_CONOBJECT(StreamObject);
 
 bool StreamObject::onAdd()
 {
-   if(mStream == NULL)
+   if(mStream == nullptr)
    {
       Con::errorf("StreamObject::onAdd - StreamObject can not be instantiated from script.");
       return false;
@@ -60,58 +61,58 @@ bool StreamObject::onAdd()
 
 const char * StreamObject::getStatus()
 {
-   if(mStream == NULL)
+//   if(mStream == nullptr)
       return "";
 
-   switch(mStream->getStatus())
-   {
-      case Stream::Ok:
-         return "Ok";
-      case Stream::IOError:
-         return "IOError";
-      case Stream::EOS:
-         return "EOS";
-      case Stream::IllegalCall:
-         return "IllegalCall";
-      case Stream::Closed:
-         return "Closed";
-      case Stream::UnknownError:
-         return "UnknownError";
-
-      default:
-         return "Invalid";
-   }
+//   switch(mStream->getStatus())
+//   {
+//      case Stream::Ok:
+//         return "Ok";
+//      case Stream::IOError:
+//         return "IOError";
+//      case Stream::EOS:
+//         return "EOS";
+//      case Stream::IllegalCall:
+//         return "IllegalCall";
+//      case Stream::Closed:
+//         return "Closed";
+//      case Stream::UnknownError:
+//         return "UnknownError";
+//
+//      default:
+//         return "Invalid";
+//   }
 }
 
 //////////////////////////////////////////////////////////////////////////
 
 const char * StreamObject::readLine()
 {
-   if(mStream == NULL)
-      return NULL;
+   if(mStream == nullptr)
+      return nullptr;
 
    char *buffer = Con::getReturnBuffer(256);
-   mStream->readLine((U8 *)buffer, 256);
+   mStream->getline(buffer, 256);
    return buffer;
 }
 
 const char * StreamObject::readString()
 {
-   if(mStream == NULL)
-      return NULL;
+   if(mStream == nullptr)
+      return nullptr;
 
    char *buffer = Con::getReturnBuffer(256);
-   mStreamFn::readString(stream, buffer);
+   StreamFn::readString(*mStream, buffer);
    return buffer;
 }
 
 const char *StreamObject::readLongString(U32 maxStringLen)
 {
-   if(mStream == NULL)
-      return NULL;
+   if(mStream == nullptr)
+      return nullptr;
 
    char *buffer = Con::getReturnBuffer(maxStringLen + 1);
-   mStream->readLongString(maxStringLen, buffer);
+    StreamFn::readLongString(*mStream, maxStringLen, buffer);
    return buffer;
 }
 
@@ -223,7 +224,7 @@ ConsoleMethod(StreamObject, copyFrom, bool, 3, 3, "(StreamObject other) Copies s
               "@return Returns true on success, and false otherwise.")
 {
    StreamObject *other = dynamic_cast<StreamObject *>(Sim::findObject(argv[2]));
-   if(other == NULL)
+   if(other == nullptr)
       return false;
 
    return object->copyFrom(other);

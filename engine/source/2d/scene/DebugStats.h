@@ -237,8 +237,8 @@ public:
     U32     batchTrianglesSubmitted;
     U32     maxBatchTrianglesSubmitted;
 
-    U32     batchMaxVertexBuffer;
-    U32     batchMaxTriangleDrawn;
+    SizeType batchMaxVertexBuffer;
+    SizeType batchMaxTriangleDrawn;
 
     U32     batchDrawCallsStrict;
     U32     maxBatchDrawCallsStrict;

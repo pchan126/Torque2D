@@ -264,10 +264,10 @@ static ServerInfo* findServerInfo( const NetAddress* addr );
 static ServerInfo* findOrCreateServerInfo( const NetAddress* addr );
 static void removeServerInfo( const NetAddress* addr );
 static void sendPacket( U8 pType, const NetAddress* addr, U32 key, U32 session, U8 flags );
-static void writeCString( BitStream* stream, const char* string );
-static void readCString( BitStream* stream, char* buffer );
-static void writeLongCString( BitStream* stream, const char* string );
-static void readLongCString( BitStream* stream, char* buffer );
+static void writeCString(std::iostream &stream, const char *string);
+static void readCString(std::istream &stream, char *buffer);
+static void writeLongCString(std::ostream &stream, const char *string);
+static void readLongCString(std::istream &stream, char *buffer);
 static void processMasterServerQuery( U32 session );
 static void processPingsAndQueries( U32 session, bool schedule = true);
 static void processServerListPackets( U32 session );
@@ -1078,62 +1078,57 @@ void addFakeServers( S32 howMany )
 
 static void sendPacket( U8 pType, const NetAddress* addr, U32 key, U32 session, U8 flags )
 {
-   BitStream *out = BitStream::getPacketStream();
-   out->write( pType );
-   out->write( flags );
-   out->write( U32( ( session << 16 ) | ( key & 0xFFFF ) ) );
-
-   BitStream::sendPacketStream(addr);
+//   BitStream *out = BitStream::getPacketStream();
+//   out->write( pType );
+//   out->write( flags );
+//   out->write( U32( ( session << 16 ) | ( key & 0xFFFF ) ) );
+//
+//   BitStream::sendPacketStream(addr);
 }
 
 //-----------------------------------------------------------------------------
 
-static void writeCString( BitStream* stream, const char* string )
+static void writeCString(std::iostream &stream, const char *string)
 {
    U8 strLen = ( string != nullptr ) ? dStrlen( string ) : 0;
-   stream->write( strLen );
+   stream << ( strLen );
    for ( U32 i = 0; i < strLen; i++ )
-      stream->write( U8( string[i] ) );
+      stream << ( U8( string[i] ) );
 }
 
 //-----------------------------------------------------------------------------
 
-static void readCString( BitStream* stream, char* buffer )
+static void readCString(std::istream &stream, char *buffer)
 {
    U32 i;
    U8 strLen;
-   stream->read( &strLen );
+   stream >> strLen;
    for ( i = 0; i < strLen; i++ )
    {
       U8* ptr = (U8*) buffer;
-      stream->read( &ptr[i] );
+      stream >> ( ptr[i] );
    }
    buffer[i] = 0;
 }
 
 //-----------------------------------------------------------------------------
 
-static void writeLongCString( BitStream* stream, const char* string )
+static void writeLongCString(std::ostream &stream, const char *string)
 {
    U16 strLen = ( string != nullptr ) ? dStrlen( string ) : 0;
-   stream->write( strLen );
-   for ( U32 i = 0; i < strLen; i++ )
-      stream->write( U8( string[i] ) );
+   stream << ( strLen );
+   stream.write( string, strLen );
 }
 
 //-----------------------------------------------------------------------------
 
-static void readLongCString( BitStream* stream, char* buffer )
+static void readLongCString(std::istream &stream, char *buffer)
 {
    U32 i;
    U16 strLen;
-   stream->read( &strLen );
-   for ( i = 0; i < strLen; i++ )
-   {
-      U8* ptr = (U8*) buffer;
-      stream->read( &ptr[i] );
-   }
-   buffer[i] = 0;
+   stream >> strLen;
+   stream.read(buffer, strLen);
+   buffer[strLen] = 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -1186,27 +1181,27 @@ static void processMasterServerQuery( U32 session )
             gMasterServerPing.time = time;
             gMasterServerPing.key = gKey++;
 
-            // Send a request to the master server for the server list:
-            BitStream *out = BitStream::getPacketStream();
-            out->write( U8( NetInterface::MasterServerListRequest ) );
-            out->write( U8( sActiveFilter.queryFlags) );
-            out->write( ( gMasterServerPing.session << 16 ) | ( gMasterServerPing.key & 0xFFFF ) );
-            out->write( U8( 255 ) );
-            writeCString( out, sActiveFilter.gameType );
-            writeCString( out, sActiveFilter.missionType );
-            out->write( sActiveFilter.minPlayers );
-            out->write( sActiveFilter.maxPlayers );
-            out->write( sActiveFilter.regionMask );
-            U32 version = ( sActiveFilter.filterFlags & ServerFilter::CurrentVersion ) ? getVersionNumber() : 0;
-            out->write( version );
-            out->write( sActiveFilter.filterFlags );
-            out->write( sActiveFilter.maxBots );
-            out->write( sActiveFilter.minCPU );
-            out->write( sActiveFilter.buddyCount );
-            for ( U32 i = 0; i < sActiveFilter.buddyCount; i++ )
-               out->write( sActiveFilter.buddyList[i] );
-
-            BitStream::sendPacketStream( &gMasterServerPing.address );
+//            // Send a request to the master server for the server list:
+//            BitStream *out = BitStream::getPacketStream();
+//            out->write( U8( NetInterface::MasterServerListRequest ) );
+//            out->write( U8( sActiveFilter.queryFlags) );
+//            out->write( ( gMasterServerPing.session << 16 ) | ( gMasterServerPing.key & 0xFFFF ) );
+//            out->write( U8( 255 ) );
+//            writeCString( out, sActiveFilter.gameType );
+//            writeCString( out, sActiveFilter.missionType );
+//            out->write( sActiveFilter.minPlayers );
+//            out->write( sActiveFilter.maxPlayers );
+//            out->write( sActiveFilter.regionMask );
+//            U32 version = ( sActiveFilter.filterFlags & ServerFilter::CurrentVersion ) ? getVersionNumber() : 0;
+//            out->write( version );
+//            out->write( sActiveFilter.filterFlags );
+//            out->write( sActiveFilter.maxBots );
+//            out->write( sActiveFilter.minCPU );
+//            out->write( sActiveFilter.buddyCount );
+//            for ( U32 i = 0; i < sActiveFilter.buddyCount; i++ )
+//               out->write( sActiveFilter.buddyList[i] );
+//
+//            BitStream::sendPacketStream( &gMasterServerPing.address );
 
             Con::printf( "Requesting the server list from master server %s (%d tries left)...", addressString, gMasterServerPing.tryCount );
             if ( gMasterServerPing.tryCount < gMasterServerRetryCount - 1 )
@@ -1387,23 +1382,23 @@ static void processServerListPackets( U32 session )
             p.time = currentTime;
             p.key = gKey++;
 
-            BitStream *out = BitStream::getPacketStream();
-            out->write( U8( NetInterface::MasterServerListRequest ) );
-            out->write( U8( sActiveFilter.queryFlags ) );   // flags
-            out->write( ( session << 16) | ( p.key & 0xFFFF ) );
-            out->write( p.index );  // packet index
-            out->write( U8( 0 ) );  // game type
-            out->write( U8( 0 ) );  // mission type
-            out->write( U8( 0 ) );  // minPlayers
-            out->write( U8( 0 ) );  // maxPlayers
-            out->write( U32( 0 ) ); // region mask
-            out->write( U32( 0 ) ); // version
-            out->write( U8( 0 ) );  // filter flags
-            out->write( U8( 0 ) );  // max bots
-            out->write( U16( 0 ) ); // min CPU
-            out->write( U8( 0 ) );  // buddy count
-
-            BitStream::sendPacketStream(&gMasterServerQueryAddress);
+//            BitStream *out = BitStream::getPacketStream();
+//            out->write( U8( NetInterface::MasterServerListRequest ) );
+//            out->write( U8( sActiveFilter.queryFlags ) );   // flags
+//            out->write( ( session << 16) | ( p.key & 0xFFFF ) );
+//            out->write( p.index );  // packet index
+//            out->write( U8( 0 ) );  // game type
+//            out->write( U8( 0 ) );  // mission type
+//            out->write( U8( 0 ) );  // minPlayers
+//            out->write( U8( 0 ) );  // maxPlayers
+//            out->write( U32( 0 ) ); // region mask
+//            out->write( U32( 0 ) ); // version
+//            out->write( U8( 0 ) );  // filter flags
+//            out->write( U8( 0 ) );  // max bots
+//            out->write( U16( 0 ) ); // min CPU
+//            out->write( U8( 0 ) );  // buddy count
+//
+//            BitStream::sendPacketStream(&gMasterServerQueryAddress);
          }
       }
    }
@@ -1478,14 +1473,14 @@ static void updateQueryProgress()
 
 //-----------------------------------------------------------------------------
 
-static void handleMasterServerGameTypesResponse( BitStream* stream, U32 /*key*/, U8 /*flags*/ )
+static void handleMasterServerGameTypesResponse(std::iostream &stream, U32 /*key*/, U8 /*flags*/)
 {
    Con::printf( "Received game type list from the master server." );
 
    U32 i;
    U8 temp;
    char stringBuf[256];
-   stream->read( &temp );
+   stream >> temp;
    Con::executef(1, "onClearGameTypes");
    for ( i = 0; i < U32( temp ); i++ )
    {
@@ -1493,7 +1488,7 @@ static void handleMasterServerGameTypesResponse( BitStream* stream, U32 /*key*/,
       Con::executef(2, "onAddGameType", stringBuf);
    }
 
-   stream->read( &temp );
+   stream >> temp;
    Con::executef(1, "onClearMissionTypes");
    for ( i = 0; i < U32( temp ); i++ )
    {
@@ -1504,7 +1499,7 @@ static void handleMasterServerGameTypesResponse( BitStream* stream, U32 /*key*/,
 
 //-----------------------------------------------------------------------------
 
-static void handleMasterServerListResponse( BitStream* stream, U32 key, U8 /*flags*/ )
+static void handleMasterServerListResponse(std::iostream &stream, U32 key, U8 /*flags*/)
 {
    U8 packetIndex, packetTotal;
    U32 i;
@@ -1513,7 +1508,7 @@ static void handleMasterServerListResponse( BitStream* stream, U32 key, U8 /*fla
    char addressBuffer[256];
    NetAddress addr;
 
-   stream->read( &packetIndex );
+   stream >> packetIndex;
    // Validate the packet key:
    U32 packetKey = gMasterServerPing.key;
    if ( gGotFirstListPacket )
@@ -1532,19 +1527,19 @@ static void handleMasterServerListResponse( BitStream* stream, U32 key, U8 /*fla
    if ( testKey != key )
       return;
 
-   stream->read( &packetTotal );
-   stream->read( &serverCount );
+   stream >> packetTotal;
+   stream >> serverCount;
 
    Con::printf( "Received server list packet %d of %d from the master server (%d servers).", ( packetIndex + 1 ), packetTotal, serverCount );
 
    // Enter all of the servers in this packet into the ping list:
    for ( i = 0; i < serverCount; i++ )
    {
-      stream->read( &netNum[0] );
-      stream->read( &netNum[1] );
-      stream->read( &netNum[2] );
-      stream->read( &netNum[3] );
-      stream->read( &port );
+      stream >> netNum[0];
+      stream >> netNum[1];
+      stream >> netNum[2];
+      stream >> netNum[3];
+      stream >> port;
 
       dSprintf( addressBuffer, sizeof( addressBuffer ), "IP:%d.%d.%d.%d:%d", netNum[0], netNum[1], netNum[2], netNum[3], port );
       Net::stringToAddress( addressBuffer, &addr );
@@ -1610,54 +1605,54 @@ static void handleGameMasterInfoRequest( const NetAddress* address, U32 key, U8 
 
       Con::printf( "Received info request from %s [%s].", fromMaster?"a master server":"a machine", netString);
 
-      BitStream *out = BitStream::getPacketStream();
-
-      out->write( U8( NetInterface::GameMasterInfoResponse ) );
-      out->write( U8( flags ) );
-      out->write( key );
-
-      writeCString( out, Con::getVariable( "Server::GameType" ) );
-      writeCString( out, Con::getVariable( "Server::MissionType" ) );
-      temp8 = U8( Con::getIntVariable( "Pref::Server::MaxPlayers" ) );
-      out->write( temp8 );
-      temp32 = Con::getIntVariable( "Pref::Server::RegionMask" );
-      out->write( temp32 );
-      temp32 = getVersionNumber();
-      out->write( temp32 );
-      temp8 = 0;
-#if defined(TORQUE_OS_LINUX) || defined(TORQUE_OS_OPENBSD)
-      temp8 |= ServerInfo::Status_Linux;
-#endif
-      if ( Con::getBoolVariable( "Server::Dedicated" ) )
-         temp8 |= ServerInfo::Status_Dedicated;
-      if ( dStrlen( Con::getVariable( "Pref::Server::Password" ) ) > 0 )
-         temp8 |= ServerInfo::Status_Passworded;
-      out->write( temp8 );
-      temp8 = U8( Con::getIntVariable( "Server::BotCount" ) );
-      out->write( temp8 );
-      out->write( PlatformSystemInfo.processor.mhz );
-
-      U8 playerCount = U8( Con::getIntVariable( "Server::PlayerCount" ) );
-      out->write( playerCount );
-
-      const char* guidList = Con::getVariable( "Server::GuidList" );
-      char* buf = new char[dStrlen( guidList ) + 1];
-      dStrcpy( buf, guidList );
-      char* temp = dStrtok( buf, "\t" );
-      temp8 = 0;
-      for ( ; temp && temp8 < playerCount; temp8++ )
-      {
-         out->write( U32( dAtoi( temp ) ) );
-         temp = dStrtok( nullptr, "\t" );
-         temp8++;
-      }
-
-      for ( ; temp8 < playerCount; temp8++ )
-         out->write( U32( 0 ) );
-
-      delete [] buf;
-
-      BitStream::sendPacketStream(address);
+//      BitStream *out = BitStream::getPacketStream();
+//
+//      out->write( U8( NetInterface::GameMasterInfoResponse ) );
+//      out->write( U8( flags ) );
+//      out->write( key );
+//
+//      writeCString( out, Con::getVariable( "Server::GameType" ) );
+//      writeCString( out, Con::getVariable( "Server::MissionType" ) );
+//      temp8 = U8( Con::getIntVariable( "Pref::Server::MaxPlayers" ) );
+//      out->write( temp8 );
+//      temp32 = Con::getIntVariable( "Pref::Server::RegionMask" );
+//      out->write( temp32 );
+//      temp32 = getVersionNumber();
+//      out->write( temp32 );
+//      temp8 = 0;
+//#if defined(TORQUE_OS_LINUX) || defined(TORQUE_OS_OPENBSD)
+//      temp8 |= ServerInfo::Status_Linux;
+//#endif
+//      if ( Con::getBoolVariable( "Server::Dedicated" ) )
+//         temp8 |= ServerInfo::Status_Dedicated;
+//      if ( dStrlen( Con::getVariable( "Pref::Server::Password" ) ) > 0 )
+//         temp8 |= ServerInfo::Status_Passworded;
+//      out->write( temp8 );
+//      temp8 = U8( Con::getIntVariable( "Server::BotCount" ) );
+//      out->write( temp8 );
+//      out->write( PlatformSystemInfo.processor.mhz );
+//
+//      U8 playerCount = U8( Con::getIntVariable( "Server::PlayerCount" ) );
+//      out->write( playerCount );
+//
+//      const char* guidList = Con::getVariable( "Server::GuidList" );
+//      char* buf = new char[dStrlen( guidList ) + 1];
+//      dStrcpy( buf, guidList );
+//      char* temp = dStrtok( buf, "\t" );
+//      temp8 = 0;
+//      for ( ; temp && temp8 < playerCount; temp8++ )
+//      {
+//         out->write( U32( dAtoi( temp ) ) );
+//         temp = dStrtok( nullptr, "\t" );
+//         temp8++;
+//      }
+//
+//      for ( ; temp8 < playerCount; temp8++ )
+//         out->write( U32( 0 ) );
+//
+//      delete [] buf;
+//
+//      BitStream::sendPacketStream(address);
    }
 }
 
@@ -1678,29 +1673,29 @@ static void handleGamePingRequest( const NetAddress* address, U32 key, U8 flags 
 
       // some banning code here (?)
 
-      BitStream *out = BitStream::getPacketStream();
-
-      out->write( U8( NetInterface::GamePingResponse ) );
-      out->write( flags );
-      out->write( key );
-      if ( flags & ServerFilter::NoStringCompress )
-         writeCString( out, versionString );
-      else
-         out->writeString( versionString );
-      out->write( GameConnection::CurrentProtocolVersion );
-      out->write( GameConnection::MinRequiredProtocolVersion );
-      out->write( getVersionNumber() );
-
-      // Enforce a 24-character limit on the server name:
-      char serverName[25];
-      dStrncpy( serverName, Con::getVariable( "Pref::Server::Name" ), 24 );
-      serverName[24] = 0;
-      if ( flags & ServerFilter::NoStringCompress )
-         writeCString( out, serverName );
-      else
-         out->writeString( serverName );
-
-      BitStream::sendPacketStream(address);
+//      BitStream *out = BitStream::getPacketStream();
+//
+//      out->write( U8( NetInterface::GamePingResponse ) );
+//      out->write( flags );
+//      out->write( key );
+//      if ( flags & ServerFilter::NoStringCompress )
+//         writeCString( out, versionString );
+//      else
+//         out->writeString( versionString );
+//      out->write( GameConnection::CurrentProtocolVersion );
+//      out->write( GameConnection::MinRequiredProtocolVersion );
+//      out->write( getVersionNumber() );
+//
+//      // Enforce a 24-character limit on the server name:
+//      char serverName[25];
+//      dStrncpy( serverName, Con::getVariable( "Pref::Server::Name" ), 24 );
+//      serverName[24] = 0;
+//      if ( flags & ServerFilter::NoStringCompress )
+//         writeCString( out, serverName );
+//      else
+//         out->writeString( serverName );
+//
+//      BitStream::sendPacketStream(address);
    }
 }
 
@@ -1757,7 +1752,7 @@ static void handleGamePingResponse(const NetAddress *address, std::iostream &str
 
    // See if the server meets our minimum protocol:
    U32 temp32;
-   stream >> ( temp32 );
+   stream >> temp32;
    if ( temp32 < GameConnection::MinRequiredProtocolVersion )
    {
       Con::printf( "Protocol for server %s does not meet minimum protocol.", addrString );
@@ -1774,7 +1769,7 @@ static void handleGamePingResponse(const NetAddress *address, std::iostream &str
    }
 
    // See if we meet the server's minimum protocol:
-   stream->read( &temp32 );
+   stream << temp32;
    if ( GameConnection::CurrentProtocolVersion < temp32 )
    {
       Con::printf( "You do not meet the minimum protocol for server %s.", addrString );
@@ -1809,7 +1804,7 @@ static void handleGamePingResponse(const NetAddress *address, std::iostream &str
    }
 
    // Get the server build version:
-   stream->read( &temp32 );
+   stream << temp32;
    if ( applyFilter
      && ( sActiveFilter.filterFlags & ServerFilter::CurrentVersion )
      && ( temp32 != getVersionNumber() ) )
@@ -1865,50 +1860,50 @@ static void handleGameInfoRequest( const NetAddress* address, U32 key, U8 flags 
          return;
 
       bool compressStrings = !( flags & ServerFilter::NoStringCompress );
-      BitStream *out = BitStream::getPacketStream();
-
-      out->write( U8( NetInterface::GameInfoResponse ) );
-      out->write( flags );
-      out->write( key );
-
-      if ( compressStrings ) {
-         out->writeString( Con::getVariable( "Server::GameType" ) );
-         out->writeString( Con::getVariable( "Server::MissionType" ) );
-         out->writeString( Con::getVariable( "Server::MissionName" ) );
-      }
-      else {
-         writeCString( out, Con::getVariable( "Server::GameType" ) );
-         writeCString( out, Con::getVariable( "Server::MissionType" ) );
-         writeCString( out, Con::getVariable( "Server::MissionName" ) );
-      }
-
-      U8 status = 0;
-#if defined(TORQUE_OS_LINUX) || defined(TORQUE_OS_OPENBSD)
-      status |= ServerInfo::Status_Linux;
-#endif
-      if ( Con::getBoolVariable( "Server::Dedicated" ) )
-         status |= ServerInfo::Status_Dedicated;
-      if ( dStrlen( Con::getVariable( "Pref::Server::Password" ) ) )
-         status |= ServerInfo::Status_Passworded;
-      out->write( status );
-
-      out->write( U8( Con::getIntVariable( "Server::PlayerCount" ) ) );
-      out->write( U8( Con::getIntVariable( "Pref::Server::MaxPlayers" ) ) );
-      out->write( U8( Con::getIntVariable( "Server::BotCount" ) ) );
-      out->write( U16( PlatformSystemInfo.processor.mhz ) );
-      if ( compressStrings )
-         out->writeString( Con::getVariable( "Pref::Server::Info" ) );
-      else
-         writeCString( out, Con::getVariable( "Pref::Server::Info" ) );
-      writeLongCString( out, Con::evaluate( "onServerInfoQuery();" ) );
-
-      BitStream::sendPacketStream(address);
+//      BitStream *out = BitStream::getPacketStream();
+//
+//      out->write( U8( NetInterface::GameInfoResponse ) );
+//      out->write( flags );
+//      out->write( key );
+//
+//      if ( compressStrings ) {
+//         out->writeString( Con::getVariable( "Server::GameType" ) );
+//         out->writeString( Con::getVariable( "Server::MissionType" ) );
+//         out->writeString( Con::getVariable( "Server::MissionName" ) );
+//      }
+//      else {
+//         writeCString( out, Con::getVariable( "Server::GameType" ) );
+//         writeCString( out, Con::getVariable( "Server::MissionType" ) );
+//         writeCString( out, Con::getVariable( "Server::MissionName" ) );
+//      }
+//
+//      U8 status = 0;
+//#if defined(TORQUE_OS_LINUX) || defined(TORQUE_OS_OPENBSD)
+//      status |= ServerInfo::Status_Linux;
+//#endif
+//      if ( Con::getBoolVariable( "Server::Dedicated" ) )
+//         status |= ServerInfo::Status_Dedicated;
+//      if ( dStrlen( Con::getVariable( "Pref::Server::Password" ) ) )
+//         status |= ServerInfo::Status_Passworded;
+//      out->write( status );
+//
+//      out->write( U8( Con::getIntVariable( "Server::PlayerCount" ) ) );
+//      out->write( U8( Con::getIntVariable( "Pref::Server::MaxPlayers" ) ) );
+//      out->write( U8( Con::getIntVariable( "Server::BotCount" ) ) );
+//      out->write( U16( PlatformSystemInfo.processor.mhz ) );
+//      if ( compressStrings )
+//         out->writeString( Con::getVariable( "Pref::Server::Info" ) );
+//      else
+//         writeCString( out, Con::getVariable( "Pref::Server::Info" ) );
+//      writeLongCString( out, Con::evaluate( "onServerInfoQuery();" ) );
+//
+//      BitStream::sendPacketStream(address);
    }
 }
 
 //-----------------------------------------------------------------------------
 
-static void handleGameInfoResponse( const NetAddress* address, BitStream* stream, U32 /*key*/, U8 /*flags*/ )
+static void handleGameInfoResponse(const NetAddress *address, std::iostream &stream, U32 /*key*/, U8 /*flags*/)
 {
    if ( !gQueryList.size() )
       return;
@@ -1978,7 +1973,7 @@ static void handleGameInfoResponse( const NetAddress* address, BitStream* stream
 
    // Get the server status:
    U8 temp_U8;
-   stream->read( &temp_U8 );
+   stream >> temp_U8;
    si->status = temp_U8;
 
    // Filter by the flags:
@@ -2001,7 +1996,7 @@ static void handleGameInfoResponse( const NetAddress* address, BitStream* stream
    si->status.set( ServerInfo::Status_Responded );
 
    // Get the player count:
-   stream->read( &si->numPlayers );
+   stream >> si->numPlayers;
 
    // Test player count against active filter:
    if ( applyFilter && ( si->numPlayers < sActiveFilter.minPlayers || si->numPlayers > sActiveFilter.maxPlayers ) )
@@ -2012,8 +2007,8 @@ static void handleGameInfoResponse( const NetAddress* address, BitStream* stream
    }
 
    // Get the max players and bot count:
-   stream->read( &si->maxPlayers );
-   stream->read( &si->numBots );
+   stream >> si->maxPlayers;
+   stream >> si->numBots;
 
    // Test bot count against active filter:
    if ( applyFilter && ( si->numBots > sActiveFilter.maxBots ) )
@@ -2025,7 +2020,7 @@ static void handleGameInfoResponse( const NetAddress* address, BitStream* stream
 
    // Get the CPU speed;
    U16 temp_U16;
-   stream->read( &temp_U16 );
+   stream >> temp_U16;
    si->cpuSpeed = temp_U16;
 
    // Test CPU speed against active filter:
@@ -2059,13 +2054,13 @@ static void handleGameInfoResponse( const NetAddress* address, BitStream* stream
 //-----------------------------------------------------------------------------
 // Packet Dispatch
 
-void DemoNetInterface::handleInfoPacket( const NetAddress* address, U8 packetType, BitStream* stream )
+void DemoNetInterface::handleInfoPacket(const NetAddress *address, U8 packetType, std::iostream &stream)
 {
    U8 flags;
    U32 key;
 
-   stream->read( &flags );
-   stream->read( &key );
+   stream >> flags;
+   stream >> key;
 
    switch( packetType )
    {

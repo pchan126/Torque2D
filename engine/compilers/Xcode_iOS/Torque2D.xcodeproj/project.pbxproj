@@ -234,30 +234,11 @@
 		867BB09816AEC9050033868F /* lang.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAEB716AEC9050033868F /* lang.cc */; };
 		867BB09916AEC9050033868F /* messageVector.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAEB916AEC9050033868F /* messageVector.cc */; };
 		867BB09A16AEC9050033868F /* actionMap.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAEBC16AEC9050033868F /* actionMap.cc */; };
-		867BB09B16AEC9050033868F /* bitStream.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAEBF16AEC9050033868F /* bitStream.cc */; };
-		867BB09C16AEC9050033868F /* bufferStream.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAEC116AEC9050033868F /* bufferStream.cc */; };
 		867BB09D16AEC9050033868F /* fileObject.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAEC316AEC9050033868F /* fileObject.cc */; };
-		867BB09E16AEC9050033868F /* fileStream.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAEC516AEC9050033868F /* fileStream.cc */; };
-		867BB09F16AEC9050033868F /* fileStreamObject.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAEC716AEC9050033868F /* fileStreamObject.cc */; };
 		867BB0A016AEC9050033868F /* fileSystemFunctions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 867BAEC916AEC9050033868F /* fileSystemFunctions.cpp */; };
-		867BB0A116AEC9050033868F /* filterStream.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAECA16AEC9050033868F /* filterStream.cc */; };
-		867BB0A216AEC9050033868F /* memStream.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAECC16AEC9050033868F /* memStream.cc */; };
-		867BB0A316AEC9050033868F /* nStream.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAECE16AEC9050033868F /* nStream.cc */; };
-		867BB0A416AEC9050033868F /* resizeStream.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAECF16AEC9050033868F /* resizeStream.cc */; };
 		867BB0A516AEC9050033868F /* resourceDictionary.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAED216AEC9050033868F /* resourceDictionary.cc */; };
 		867BB0A616AEC9050033868F /* resourceManager.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAED316AEC9050033868F /* resourceManager.cc */; };
 		867BB0A716AEC9050033868F /* streamObject.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAED616AEC9050033868F /* streamObject.cc */; };
-		867BB0A816AEC9050033868F /* centralDir.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAED916AEC9050033868F /* centralDir.cc */; };
-		867BB0A916AEC9050033868F /* compressor.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAEDB16AEC9050033868F /* compressor.cc */; };
-		867BB0AA16AEC9050033868F /* deflate.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAEDD16AEC9050033868F /* deflate.cc */; };
-		867BB0AB16AEC9050033868F /* extraField.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAEDE16AEC9050033868F /* extraField.cc */; };
-		867BB0AC16AEC9050033868F /* fileHeader.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAEE016AEC9050033868F /* fileHeader.cc */; };
-		867BB0AD16AEC9050033868F /* stored.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAEE216AEC9050033868F /* stored.cc */; };
-		867BB0B116AEC9050033868F /* zipArchive.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAEE816AEC9050033868F /* zipArchive.cc */; };
-		867BB0B216AEC9050033868F /* zipCryptStream.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAEEA16AEC9050033868F /* zipCryptStream.cc */; };
-		867BB0B316AEC9050033868F /* zipObject.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAEEC16AEC9050033868F /* zipObject.cc */; };
-		867BB0B416AEC9050033868F /* zipSubStream.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAEEF16AEC9050033868F /* zipSubStream.cc */; };
-		867BB0B516AEC9050033868F /* zipTempStream.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAEF116AEC9050033868F /* zipTempStream.cc */; };
 		867BB0B616AEC9050033868F /* mathTypes.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAEF516AEC9050033868F /* mathTypes.cc */; };
 		867BB0B716AEC9050033868F /* mathUtils.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAEF716AEC9050033868F /* mathUtils.cc */; };
 		867BB0B816AEC9050033868F /* mBox.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAEF916AEC9050033868F /* mBox.cc */; };
@@ -624,6 +605,7 @@
 		2AF1C54816B439D900C1CF3A /* declaredAssets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = declaredAssets.h; sourceTree = "<group>"; };
 		2AF1C54916B439D900C1CF3A /* referencedAssets.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = referencedAssets.cc; sourceTree = "<group>"; };
 		2AF1C54A16B439D900C1CF3A /* referencedAssets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = referencedAssets.h; sourceTree = "<group>"; };
+		301FE64B1807111B004DB733 /* StreamFn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamFn.h; sourceTree = "<group>"; };
 		303FE31C1711B1B7002124CC /* autoPtr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = autoPtr.h; sourceTree = "<group>"; };
 		303FE31D1711B1E2002124CC /* process.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = process.cpp; sourceTree = "<group>"; };
 		303FE31E1711B1E2002124CC /* process.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = process.h; sourceTree = "<group>"; };
@@ -1056,51 +1038,14 @@
 		867BAEBA16AEC9050033868F /* messageVector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = messageVector.h; sourceTree = "<group>"; };
 		867BAEBC16AEC9050033868F /* actionMap.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = actionMap.cc; sourceTree = "<group>"; };
 		867BAEBD16AEC9050033868F /* actionMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = actionMap.h; sourceTree = "<group>"; };
-		867BAEBF16AEC9050033868F /* bitStream.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bitStream.cc; sourceTree = "<group>"; };
-		867BAEC016AEC9050033868F /* bitStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bitStream.h; sourceTree = "<group>"; };
-		867BAEC116AEC9050033868F /* bufferStream.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bufferStream.cc; sourceTree = "<group>"; };
-		867BAEC216AEC9050033868F /* bufferStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bufferStream.h; sourceTree = "<group>"; };
 		867BAEC316AEC9050033868F /* fileObject.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fileObject.cc; sourceTree = "<group>"; };
 		867BAEC416AEC9050033868F /* fileObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fileObject.h; sourceTree = "<group>"; };
-		867BAEC516AEC9050033868F /* fileStream.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fileStream.cc; sourceTree = "<group>"; };
-		867BAEC616AEC9050033868F /* fileStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fileStream.h; sourceTree = "<group>"; };
-		867BAEC716AEC9050033868F /* fileStreamObject.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fileStreamObject.cc; sourceTree = "<group>"; };
-		867BAEC816AEC9050033868F /* fileStreamObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fileStreamObject.h; sourceTree = "<group>"; };
 		867BAEC916AEC9050033868F /* fileSystemFunctions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fileSystemFunctions.cpp; sourceTree = "<group>"; };
-		867BAECA16AEC9050033868F /* filterStream.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = filterStream.cc; sourceTree = "<group>"; };
-		867BAECB16AEC9050033868F /* filterStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = filterStream.h; sourceTree = "<group>"; };
-		867BAECC16AEC9050033868F /* memStream.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = memStream.cc; sourceTree = "<group>"; };
-		867BAECD16AEC9050033868F /* memstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = memstream.h; sourceTree = "<group>"; };
-		867BAECE16AEC9050033868F /* nStream.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = nStream.cc; sourceTree = "<group>"; };
-		867BAECF16AEC9050033868F /* resizeStream.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = resizeStream.cc; sourceTree = "<group>"; };
-		867BAED016AEC9050033868F /* resizeStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = resizeStream.h; sourceTree = "<group>"; };
 		867BAED216AEC9050033868F /* resourceDictionary.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = resourceDictionary.cc; sourceTree = "<group>"; };
 		867BAED316AEC9050033868F /* resourceManager.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = resourceManager.cc; sourceTree = "<group>"; };
 		867BAED416AEC9050033868F /* resourceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = resourceManager.h; sourceTree = "<group>"; };
-		867BAED516AEC9050033868F /* stream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream.h; sourceTree = "<group>"; };
 		867BAED616AEC9050033868F /* streamObject.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = streamObject.cc; sourceTree = "<group>"; };
 		867BAED716AEC9050033868F /* streamObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = streamObject.h; sourceTree = "<group>"; };
-		867BAED916AEC9050033868F /* centralDir.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = centralDir.cc; sourceTree = "<group>"; };
-		867BAEDA16AEC9050033868F /* centralDir.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = centralDir.h; sourceTree = "<group>"; };
-		867BAEDB16AEC9050033868F /* compressor.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = compressor.cc; sourceTree = "<group>"; };
-		867BAEDC16AEC9050033868F /* compressor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = compressor.h; sourceTree = "<group>"; };
-		867BAEDD16AEC9050033868F /* deflate.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = deflate.cc; sourceTree = "<group>"; };
-		867BAEDE16AEC9050033868F /* extraField.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = extraField.cc; sourceTree = "<group>"; };
-		867BAEDF16AEC9050033868F /* extraField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = extraField.h; sourceTree = "<group>"; };
-		867BAEE016AEC9050033868F /* fileHeader.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fileHeader.cc; sourceTree = "<group>"; };
-		867BAEE116AEC9050033868F /* fileHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fileHeader.h; sourceTree = "<group>"; };
-		867BAEE216AEC9050033868F /* stored.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stored.cc; sourceTree = "<group>"; };
-		867BAEE816AEC9050033868F /* zipArchive.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zipArchive.cc; sourceTree = "<group>"; };
-		867BAEE916AEC9050033868F /* zipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zipArchive.h; sourceTree = "<group>"; };
-		867BAEEA16AEC9050033868F /* zipCryptStream.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zipCryptStream.cc; sourceTree = "<group>"; };
-		867BAEEB16AEC9050033868F /* zipCryptStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zipCryptStream.h; sourceTree = "<group>"; };
-		867BAEEC16AEC9050033868F /* zipObject.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zipObject.cc; sourceTree = "<group>"; };
-		867BAEED16AEC9050033868F /* zipObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zipObject.h; sourceTree = "<group>"; };
-		867BAEEE16AEC9050033868F /* zipStatFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zipStatFilter.h; sourceTree = "<group>"; };
-		867BAEEF16AEC9050033868F /* zipSubStream.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zipSubStream.cc; sourceTree = "<group>"; };
-		867BAEF016AEC9050033868F /* zipSubStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zipSubStream.h; sourceTree = "<group>"; };
-		867BAEF116AEC9050033868F /* zipTempStream.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zipTempStream.cc; sourceTree = "<group>"; };
-		867BAEF216AEC9050033868F /* zipTempStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zipTempStream.h; sourceTree = "<group>"; };
 		867BAEF416AEC9050033868F /* mathIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mathIO.h; sourceTree = "<group>"; };
 		867BAEF516AEC9050033868F /* mathTypes.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mathTypes.cc; sourceTree = "<group>"; };
 		867BAEF616AEC9050033868F /* mathTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mathTypes.h; sourceTree = "<group>"; };
@@ -2516,29 +2461,13 @@
 		867BAEBE16AEC9050033868F /* io */ = {
 			isa = PBXGroup;
 			children = (
-				867BAEBF16AEC9050033868F /* bitStream.cc */,
-				867BAEC016AEC9050033868F /* bitStream.h */,
-				867BAEC116AEC9050033868F /* bufferStream.cc */,
-				867BAEC216AEC9050033868F /* bufferStream.h */,
+				301FE64B1807111B004DB733 /* StreamFn.h */,
 				867BAEC316AEC9050033868F /* fileObject.cc */,
 				867BAEC416AEC9050033868F /* fileObject.h */,
-				867BAEC516AEC9050033868F /* fileStream.cc */,
-				867BAEC616AEC9050033868F /* fileStream.h */,
-				867BAEC716AEC9050033868F /* fileStreamObject.cc */,
-				867BAEC816AEC9050033868F /* fileStreamObject.h */,
 				867BAEC916AEC9050033868F /* fileSystemFunctions.cpp */,
-				867BAECA16AEC9050033868F /* filterStream.cc */,
-				867BAECB16AEC9050033868F /* filterStream.h */,
-				867BAECC16AEC9050033868F /* memStream.cc */,
-				867BAECD16AEC9050033868F /* memstream.h */,
-				867BAECE16AEC9050033868F /* nStream.cc */,
-				867BAECF16AEC9050033868F /* resizeStream.cc */,
-				867BAED016AEC9050033868F /* resizeStream.h */,
 				867BAED116AEC9050033868F /* resource */,
-				867BAED516AEC9050033868F /* stream.h */,
 				867BAED616AEC9050033868F /* streamObject.cc */,
 				867BAED716AEC9050033868F /* streamObject.h */,
-				867BAED816AEC9050033868F /* zip */,
 			);
 			name = io;
 			path = ../../../source/io;
@@ -2552,34 +2481,6 @@
 				867BAED416AEC9050033868F /* resourceManager.h */,
 			);
 			path = resource;
-			sourceTree = "<group>";
-		};
-		867BAED816AEC9050033868F /* zip */ = {
-			isa = PBXGroup;
-			children = (
-				867BAED916AEC9050033868F /* centralDir.cc */,
-				867BAEDA16AEC9050033868F /* centralDir.h */,
-				867BAEDB16AEC9050033868F /* compressor.cc */,
-				867BAEDC16AEC9050033868F /* compressor.h */,
-				867BAEDD16AEC9050033868F /* deflate.cc */,
-				867BAEDE16AEC9050033868F /* extraField.cc */,
-				867BAEDF16AEC9050033868F /* extraField.h */,
-				867BAEE016AEC9050033868F /* fileHeader.cc */,
-				867BAEE116AEC9050033868F /* fileHeader.h */,
-				867BAEE216AEC9050033868F /* stored.cc */,
-				867BAEE816AEC9050033868F /* zipArchive.cc */,
-				867BAEE916AEC9050033868F /* zipArchive.h */,
-				867BAEEA16AEC9050033868F /* zipCryptStream.cc */,
-				867BAEEB16AEC9050033868F /* zipCryptStream.h */,
-				867BAEEC16AEC9050033868F /* zipObject.cc */,
-				867BAEED16AEC9050033868F /* zipObject.h */,
-				867BAEEE16AEC9050033868F /* zipStatFilter.h */,
-				867BAEEF16AEC9050033868F /* zipSubStream.cc */,
-				867BAEF016AEC9050033868F /* zipSubStream.h */,
-				867BAEF116AEC9050033868F /* zipTempStream.cc */,
-				867BAEF216AEC9050033868F /* zipTempStream.h */,
-			);
-			path = zip;
 			sourceTree = "<group>";
 		};
 		867BAEF316AEC9050033868F /* math */ = {
@@ -3746,30 +3647,11 @@
 				867BB09816AEC9050033868F /* lang.cc in Sources */,
 				867BB09916AEC9050033868F /* messageVector.cc in Sources */,
 				867BB09A16AEC9050033868F /* actionMap.cc in Sources */,
-				867BB09B16AEC9050033868F /* bitStream.cc in Sources */,
-				867BB09C16AEC9050033868F /* bufferStream.cc in Sources */,
 				867BB09D16AEC9050033868F /* fileObject.cc in Sources */,
-				867BB09E16AEC9050033868F /* fileStream.cc in Sources */,
-				867BB09F16AEC9050033868F /* fileStreamObject.cc in Sources */,
 				867BB0A016AEC9050033868F /* fileSystemFunctions.cpp in Sources */,
-				867BB0A116AEC9050033868F /* filterStream.cc in Sources */,
-				867BB0A216AEC9050033868F /* memStream.cc in Sources */,
-				867BB0A316AEC9050033868F /* nStream.cc in Sources */,
-				867BB0A416AEC9050033868F /* resizeStream.cc in Sources */,
 				867BB0A516AEC9050033868F /* resourceDictionary.cc in Sources */,
 				867BB0A616AEC9050033868F /* resourceManager.cc in Sources */,
 				867BB0A716AEC9050033868F /* streamObject.cc in Sources */,
-				867BB0A816AEC9050033868F /* centralDir.cc in Sources */,
-				867BB0A916AEC9050033868F /* compressor.cc in Sources */,
-				867BB0AA16AEC9050033868F /* deflate.cc in Sources */,
-				867BB0AB16AEC9050033868F /* extraField.cc in Sources */,
-				867BB0AC16AEC9050033868F /* fileHeader.cc in Sources */,
-				867BB0AD16AEC9050033868F /* stored.cc in Sources */,
-				867BB0B116AEC9050033868F /* zipArchive.cc in Sources */,
-				867BB0B216AEC9050033868F /* zipCryptStream.cc in Sources */,
-				867BB0B316AEC9050033868F /* zipObject.cc in Sources */,
-				867BB0B416AEC9050033868F /* zipSubStream.cc in Sources */,
-				867BB0B516AEC9050033868F /* zipTempStream.cc in Sources */,
 				867BB0B616AEC9050033868F /* mathTypes.cc in Sources */,
 				867BB0B716AEC9050033868F /* mathUtils.cc in Sources */,
 				867BB0B816AEC9050033868F /* mBox.cc in Sources */,

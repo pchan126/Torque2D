@@ -21,7 +21,7 @@
 //-----------------------------------------------------------------------------
 
 #include "sim/simBase.h"
-#include "io/stream.h"
+#include "StreamFn.h"
 
 #ifndef _STREAMOBJECT_H_
 #define _STREAMOBJECT_H_
@@ -43,11 +43,11 @@ class StreamObject : public SimObject
    typedef SimObject Parent;
 
 protected:
-   Stream *mStream;
+   std::iostream *mStream;
 
 public:
    StreamObject();
-   StreamObject(Stream *stream);
+   StreamObject(std::iostream *stream);
    virtual ~StreamObject();
 
    DECLARE_CONOBJECT(StreamObject);
@@ -55,32 +55,41 @@ public:
    virtual bool onAdd();
 
    /// Set the stream to allow reuse of the object
-   void setStream(Stream *stream)      { mStream = stream; }
+   void setStream(std::iostream *stream)      { mStream = stream; }
 
    /// Get the underlying stream. Used with setStream() to support object reuse
-   Stream *getStream()           { return mStream; }
+   std::iostream * getStream()           { return mStream; }
 
    /// Gets a printable string form of the status
    const char* getStatus();
 
-   bool isEOS()                  { return mStream ? mStream->getStatus() == Stream::EOS : true; }
+   bool isEOS()                  { return mStream ? mStream->eof() : true; }
 
    /// Gets the position in the stream
    U32  getPosition() const
    {
-      return mStream ? mStream->getPosition() : 0;
+       if (mStream)
+           return mStream->tellg();
+       return 0;
    }
 
    /// Sets the position of the stream.  Returns if the new position is valid or not
    bool setPosition(const U32 in_newPosition)
    {
-      return mStream ? mStream->setPosition(in_newPosition) : false;
+       if (mStream)
+       {
+          mStream->seekg(in_newPosition);
+          return mStream;
+       }
+       return mStream;
    }
 
    /// Gets the size of the stream
    U32  getStreamSize()
    {
-      return mStream ? mStream->getStreamSize() : 0;
+      if (mStream)
+          return StreamFn::getStreamSize(*mStream);
+       return 0;
    }
 
    /// Reads a line from the stream.
@@ -90,14 +99,16 @@ public:
    void writeLine(U8 *buffer)
    {
       if(mStream)
-         mStream->writeLine(buffer);
+         StreamFn::writeLine(*mStream, (char*)buffer);
    }
 
    /// Reads a string and inserts it into the StringTable
    /// @see StringTable
    const char *readSTString(bool casesens = false)
    {
-      return mStream ? mStream->readSTString(casesens) : NULL;
+       if (mStream)
+           return StringTable->readStream(*mStream, casesens);
+       return nullptr;
    }
 
    /// Reads a string of maximum 255 characters long
@@ -112,21 +123,21 @@ public:
    void writeLongString(U32 maxStringLen, const char *string)
    {
       if(mStream)
-         mStream->writeLongString(maxStringLen, string);
+          StreamFn::writeLongString(*mStream, maxStringLen, string);
    }
 
    /// Writes a string to the stream.
    void writeString(const char *stringBuf, S32 maxLen=255)
    {
       if(mStream)
-         mStream->writeString(stringBuf, maxLen);
+          StreamFn::writeString(*mStream, stringBuf, maxLen);
    }
 
    /// Copy the contents of another stream into this one
    bool copyFrom(StreamObject *other)
    {
       if(mStream)
-         return mStream->copyFrom(other->getStream());
+         return StreamFn::streamCopy(*mStream, *(other->getStream()));
 
       return false;
    }

@@ -343,13 +343,13 @@ public:
    ///
    /// @returns Any bits which were not dealt with. The value is stored by the networking
    ///          system. Don't set bits you weren't passed.
-   virtual U32  packUpdate(NetConnection *conn, U32 mask, std::iostream &stream);
+   virtual U32  packUpdate(NetConnection *conn, U32 mask, std::ostream &stream);
 
    /// Instructs this object to read state data previously packed with packUpdate.
    ///
    /// @param   conn    Net connection being used
    /// @param   stream  stream to read from
-   virtual void unpackUpdate(NetConnection *conn, std::iostream &stream);
+   virtual void unpackUpdate(NetConnection *conn, std::istream &stream);
 
    /// Queries the object about information used to determine scope.
    ///

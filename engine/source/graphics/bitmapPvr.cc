@@ -22,7 +22,6 @@
 
 #include "graphics/gBitmap.h"
 #include "graphics/gPalette.h"
-#include "io/stream.h"
 #include "platform/platform.h"
 
 // PVR definitions stolen from CPVRTextureHeader.h, which is distributed as part of the PowerVR SDK.
@@ -267,15 +266,15 @@ const static unsigned int PVRTEX_IDENTIFIER		= 0x21525650;	// 'P''V''R''!'
 const static unsigned int PVRTEX_PIXELTYPE		= 0xff;			// pixel type is always in the last 16bits of the flags
 // ---------------------------------------------------------------------------------------------
 
-bool GBitmap::readPvr(Stream& stream)
+bool GBitmap::readPvr(std::iostream &stream)
 {
 	PVRTextureHeaderV2  bi;
 
-	stream.read( sizeof(PVRTextureHeaderV2), &bi );
+	stream.read( (char*)&bi, sizeof(PVRTextureHeaderV2) );
 
 	mByteSize = bi.dwDataSize;
 	mBits = new U8[mByteSize];
-	stream.read( mByteSize, mBits );
+	stream.read( (char*)mBits, mByteSize );
 	
 	mWidth = bi.dwHeight;
 	mHeight = bi.dwWidth;

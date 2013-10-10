@@ -57,7 +57,7 @@ class NetEvent;
 struct NetEventNote
 {
     NetEvent *mEvent;
-    S32 mSeqCount;
+    U32 mSeqCount;
     NetEventNote *mNextEvent;
 };
 
@@ -260,9 +260,9 @@ public:
     NetEvent() { mGuaranteeType = GuaranteedOrdered; mRefCount = 0; }
     virtual ~NetEvent();
 
-    virtual void write(NetConnection *ps, std::iostream &bstream) = 0;
-    virtual void pack(NetConnection *ps, std::iostream &bstream) = 0;
-    virtual void unpack(NetConnection *ps, std::iostream &bstream) = 0;
+    virtual void write(NetConnection *ps, std::ostream &bstream) = 0;
+    virtual void pack(NetConnection *ps, std::ostream &bstream) = 0;
+    virtual void unpack(NetConnection *ps, std::istream &bstream) = 0;
     virtual void process(NetConnection *ps) = 0;
     virtual void notifySent(NetConnection *ps);
     virtual void notifyDelivered(NetConnection *ps, bool madeit);
@@ -697,8 +697,8 @@ private:
     void eventWritePacket(std::iostream &bstream, PacketNotify *notify);
     void eventReadPacket(std::iostream &bstream);
 
-    void eventWriteStartBlock(std::iostream &stream);
-    void eventReadStartBlock(std::iostream &stream);
+    void eventWriteStartBlock(std::ostream &stream);
+    void eventReadStartBlock(std::istream &stream);
 public:
     /// Post an event to this connection.
     bool postNetEvent(NetEvent *event);
@@ -725,8 +725,8 @@ public:
     NetStringHandle translateRemoteStringId(U32 id) { return mStringTable->lookupString(id); }
     void         validateSendString(const char *str);
 
-    void   packString(std::iostream &stream, const char *str);
-    void unpackString(std::iostream &stream, char readBuffer[1024]);
+    void   packString(std::ostream &stream, const char *str);
+    void unpackString(std::istream &stream, char readBuffer[1024]);
 
     void           packNetStringHandleU(std::iostream &stream, NetStringHandle &h);
     NetStringHandle unpackNetStringHandleU(std::iostream &stream);
@@ -781,8 +781,8 @@ protected:
     void ghostReadPacket(std::iostream &bstream);
     void freeGhostInfo(GhostInfo *);
 
-    void ghostWriteStartBlock(std::iostream &stream);
-    void ghostReadStartBlock(std::iostream &stream);
+    void ghostWriteStartBlock(std::ostream &stream);
+    void ghostReadStartBlock(std::istream &stream);
 
 public:
     /// Some configuration values.

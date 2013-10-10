@@ -60,7 +60,6 @@ struct sockaddr_ipx
 
 #include "console/console.h"
 #include "game/gameInterface.h"
-#include "io/fileStream.h"
 #include "collection/vector.h"
 
 static Net::Error getLastError();
@@ -101,7 +100,7 @@ struct Socket
 static Vector<Socket*> gPolledSockets;
 
 static Socket* addPolledSocket(NetSocket& fd, S32 state,
-                               char* remoteAddr = NULL, S32 port = -1)
+                               char* remoteAddr = nullptr, S32 port = -1)
 {
    Socket* sock = new Socket();
    sock->fd = fd;
@@ -130,7 +129,7 @@ bool netSocketWaitForWritable(NetSocket fd, S32 timeoutMs)
    timeout.tv_sec = timeoutMs / 1000;
    timeout.tv_usec = ( timeoutMs % 1000 ) * 1000;
    
-   if( select(fd + 1, NULL, &writefds, NULL, &timeout) > 0 )
+   if( select(fd + 1, nullptr, &writefds, nullptr, &timeout) > 0 )
       return true;
    
    return false;
@@ -158,7 +157,7 @@ static void netToIPSocketAddress(const NetAddress *address, struct sockaddr_in *
    sockAddr->sin_port = htons(address->port);
    char tAddr[20];
    dSprintf(tAddr, 20, "%d.%d.%d.%d\n", address->netNum[0],  address->netNum[1], address->netNum[2], address->netNum[3]);
-//fprintf(stdout,"netToIPSocketAddress(): %s\n",tAddr);fflush(NULL);
+//fprintf(stdout,"netToIPSocketAddress(): %s\n",tAddr);fflush(nullptr);
    sockAddr->sin_addr.s_addr = inet_addr(tAddr);
 }
 
@@ -168,12 +167,12 @@ static void IPSocketToNetAddress(const struct sockaddr_in *sockAddr,  NetAddress
    address->port = htons(sockAddr->sin_port);
    char *tAddr;
    tAddr = inet_ntoa(sockAddr->sin_addr);
-//fprintf(stdout,"IPSocketToNetAddress(): %s\n",tAddr);fflush(NULL);
+//fprintf(stdout,"IPSocketToNetAddress(): %s\n",tAddr);fflush(nullptr);
    U8 nets[4];
    nets[0] = atoi(strtok(tAddr, "."));
-   nets[1] = atoi(strtok(NULL, "."));
-   nets[2] = atoi(strtok(NULL, "."));
-   nets[3] = atoi(strtok(NULL, "."));
+   nets[1] = atoi(strtok(nullptr, "."));
+   nets[2] = atoi(strtok(nullptr, "."));
+   nets[3] = atoi(strtok(nullptr, "."));
 //fprintf(stdout,"0 = %d, 1 = %d, 2 = %d, 3 = %d\n", nets[0], nets[1],  nets[2], nets[3]);
    address->netNum[0] = nets[0];
    address->netNum[1] = nets[1];
@@ -485,7 +484,7 @@ void Net::process()
 //   S32 bytesRead;
 //   Net::Error err;
 //   bool removeSock = false;
-//   Socket *currentSock = NULL;
+//   Socket *currentSock = nullptr;
 //   sockaddr_in ipAddr;
 //   NetSocket incoming = InvalidSocket;
 //   char out_h_addr[1024];
@@ -720,7 +719,7 @@ Net::Error Net::bind(NetSocket socket, U16 port)
    // thanks to [TPG]P1aGu3 for the name
    const char* serverIP = Con::getVariable( "Pref::Net::BindAddress" );
    // serverIP is guaranteed to be non-0.
-   AssertFatal( serverIP, "serverIP is NULL!" );
+   AssertFatal( serverIP, "serverIP is nullptr!" );
 
    if( serverIP[0] != '\0' ) {
       // we're not empty

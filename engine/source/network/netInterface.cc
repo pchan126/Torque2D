@@ -26,6 +26,7 @@
 #include "network/netInterface.h"
 #include "math/mRandom.h"
 #include "game/gameInterface.h"
+#include "StreamFn.h"
 
 NetInterface *GNet = nullptr;
 
@@ -168,61 +169,57 @@ NetConnection *NetInterface::findPendingConnection(const NetAddress *address, U3
 
 void NetInterface::sendConnectChallengeRequest(NetConnection *conn)
 {
-
-   Con::printf("Sending Connect challenge Request");
-   BitStream *out = BitStream::getPacketStream();
-   out->write(U8(ConnectChallengeRequest));
-   out->write(conn->getSequence());
-   conn->mConnectSendCount++;
-   conn->mConnectLastSendTime = Platform::getVirtualMilliseconds();
-   BitStream::sendPacketStream(conn->getNetAddress());
+//   Con::printf("Sending Connect challenge Request");
+//   BitStream *out = BitStream::getPacketStream();
+//   out->write(U8(ConnectChallengeRequest));
+//   out->write(conn->getSequence());
+//   conn->mConnectSendCount++;
+//   conn->mConnectLastSendTime = Platform::getVirtualMilliseconds();
+//   BitStream::sendPacketStream(conn->getNetAddress());
 }
 
-void NetInterface::handleConnectChallengeRequest(const NetAddress *addr, BitStream *stream)
+void NetInterface::handleConnectChallengeRequest(const NetAddress *addr, std::iostream& stream)
 {
-   char buf[256];
-   Net::addressToString(addr, buf);
-   Con::printf("Got Connect challenge Request from %s", buf);
-   if(!mAllowConnections)
-      return;
-
-   U32 connectSequence;
-   stream->read(&connectSequence);
-
-   if(!mRandomDataInitialized)
-      initRandomData();
-
-   U32 addressDigest[4];
-   computeNetMD5(addr, connectSequence, addressDigest);
-
-   BitStream *out = BitStream::getPacketStream();
-   out->write(U8(ConnectChallengeResponse));
-   out->write(connectSequence);
-   out->write(addressDigest[0]);
-   out->write(addressDigest[1]);
-   out->write(addressDigest[2]);
-   out->write(addressDigest[3]);
-
-   BitStream::sendPacketStream(addr);
+//   char buf[256];
+//   Net::addressToString(addr, buf);
+//   Con::printf("Got Connect challenge Request from %s", buf);
+//   if(!mAllowConnections)
+//      return;
+//
+//   U32 connectSequence;
+//   stream->read(&connectSequence);
+//
+//   if(!mRandomDataInitialized)
+//      initRandomData();
+//
+//   U32 addressDigest[4];
+//   computeNetMD5(addr, connectSequence, addressDigest);
+//
+//   BitStream *out = BitStream::getPacketStream();
+//   out->write(U8(ConnectChallengeResponse));
+//   out->write(connectSequence);
+//   out->write(addressDigest[0]);
+//   out->write(addressDigest[1]);
+//   out->write(addressDigest[2]);
+//   out->write(addressDigest[3]);
+//
+//   BitStream::sendPacketStream(addr);
 }
 
 //-----------------------------------------------------------------------------
 
-void NetInterface::handleConnectChallengeResponse(const NetAddress *address, BitStream *stream)
+void NetInterface::handleConnectChallengeResponse(const NetAddress *address, std::iostream &stream)
 {
    Con::printf("Got Connect challenge Response");
    U32 connectSequence;
-   stream->read(&connectSequence);
+   stream >> connectSequence;
 
    NetConnection *conn = findPendingConnection(address, connectSequence);
    if(!conn || conn->getConnectionState() != NetConnection::AwaitingChallengeResponse)
       return;
 
    U32 addressDigest[4];
-   stream->read(&addressDigest[0]);
-   stream->read(&addressDigest[1]);
-   stream->read(&addressDigest[2]);
-   stream->read(&addressDigest[3]);
+   stream.read((char*)addressDigest, sizeof(U32)*4);
    conn->setAddressDigest(addressDigest);
 
    conn->setConnectionState(NetConnection::AwaitingConnectResponse);
@@ -235,145 +232,142 @@ void NetInterface::handleConnectChallengeResponse(const NetAddress *address, Bit
 
 void NetInterface::sendConnectRequest(NetConnection *conn)
 {
-   BitStream *out = BitStream::getPacketStream();
-   out->write(U8(ConnectRequest));
-   out->write(conn->getSequence());
-
-   U32 addressDigest[4];
-   conn->getAddressDigest(addressDigest);
-   out->write(addressDigest[0]);
-   out->write(addressDigest[1]);
-   out->write(addressDigest[2]);
-   out->write(addressDigest[3]);
-
-   out->writeString(conn->getClassName());
-   conn->writeConnectRequest(out);
-   conn->mConnectSendCount++;
-   conn->mConnectLastSendTime = Platform::getVirtualMilliseconds();
-
-   BitStream::sendPacketStream(conn->getNetAddress());
+//   BitStream *out = BitStream::getPacketStream();
+//   out->write(U8(ConnectRequest));
+//   out->write(conn->getSequence());
+//
+//   U32 addressDigest[4];
+//   conn->getAddressDigest(addressDigest);
+//   out->write(addressDigest[0]);
+//   out->write(addressDigest[1]);
+//   out->write(addressDigest[2]);
+//   out->write(addressDigest[3]);
+//
+//   out->writeString(conn->getClassName());
+//   conn->writeConnectRequest(out);
+//   conn->mConnectSendCount++;
+//   conn->mConnectLastSendTime = Platform::getVirtualMilliseconds();
+//
+//   BitStream::sendPacketStream(conn->getNetAddress());
 }
 
 //-----------------------------------------------------------------------------
 
-void NetInterface::handleConnectRequest(const NetAddress *address, BitStream *stream)
+void NetInterface::handleConnectRequest(const NetAddress *address, std::iostream &stream)
 {
-   if(!mAllowConnections)
-      return;
-   Con::printf("Got Connect Request");
-   U32 connectSequence;
-   stream->read(&connectSequence);
-
-   // see if the connection is in the main connection table:
-
-   NetConnection *connect = NetConnection::lookup(address);
-   if(connect && connect->getSequence() == connectSequence)
-   {
-      sendConnectAccept(connect);
-      return;
-   }
-   U32 addressDigest[4];
-   U32 computedAddressDigest[4];
-
-   stream->read(&addressDigest[0]);
-   stream->read(&addressDigest[1]);
-   stream->read(&addressDigest[2]);
-   stream->read(&addressDigest[3]);
-
-   computeNetMD5(address, connectSequence, computedAddressDigest);
-   if(addressDigest[0] != computedAddressDigest[0] ||
-      addressDigest[1] != computedAddressDigest[1] ||
-      addressDigest[2] != computedAddressDigest[2] ||
-      addressDigest[3] != computedAddressDigest[3])
-      return; // bogus connection attempt
-
-   if(connect)
-   {
-      if(connect->getSequence() > connectSequence)
-         return; // the existing connection should be kept - the incoming request is stale.
-      else
-         connect->deleteObject(); // disconnect this one, and allow the new one to be created.
-   }
-
-   char connectionClass[255];
-   StreamFn::readString(stream, connectionClass);
-
-   ConsoleObject *co = ConsoleObject::create(connectionClass);
-   NetConnection *conn = dynamic_cast<NetConnection *>(co);
-   if(!conn || !conn->canRemoteCreate())
-   {
-      delete co;
-      return;
-   }
-   conn->registerObject();
-   conn->setNetAddress(address);
-   conn->setNetworkConnection(true);
-   conn->setSequence(connectSequence);
-
-   const char *errorString = nullptr;
-   if(!conn->readConnectRequest(stream, &errorString))
-   {
-      sendConnectReject(conn, errorString);
-      conn->deleteObject();
-      return;
-   }
-   conn->setNetworkConnection(true);
-   conn->onConnectionEstablished(false);
-   conn->setEstablished();
-   conn->setConnectSequence(connectSequence);
-   sendConnectAccept(conn);
+//   if(!mAllowConnections)
+//      return;
+//   Con::printf("Got Connect Request");
+//   U32 connectSequence;
+//   stream >> connectSequence;
+//
+//   // see if the connection is in the main connection table:
+//
+//   NetConnection *connect = NetConnection::lookup(address);
+//   if(connect && connect->getSequence() == connectSequence)
+//   {
+//      sendConnectAccept(connect);
+//      return;
+//   }
+//   U32 addressDigest[4];
+//   U32 computedAddressDigest[4];
+//
+//   stream.read( (char*)addressDigest, 4* sizeof(U32));
+//
+//   computeNetMD5(address, connectSequence, computedAddressDigest);
+//   if(addressDigest[0] != computedAddressDigest[0] ||
+//      addressDigest[1] != computedAddressDigest[1] ||
+//      addressDigest[2] != computedAddressDigest[2] ||
+//      addressDigest[3] != computedAddressDigest[3])
+//      return; // bogus connection attempt
+//
+//   if(connect)
+//   {
+//      if(connect->getSequence() > connectSequence)
+//         return; // the existing connection should be kept - the incoming request is stale.
+//      else
+//         connect->deleteObject(); // disconnect this one, and allow the new one to be created.
+//   }
+//
+//   char connectionClass[255];
+//   StreamFn::readString(stream, connectionClass);
+//
+//   ConsoleObject *co = ConsoleObject::create(connectionClass);
+//   NetConnection *conn = dynamic_cast<NetConnection *>(co);
+//   if(!conn || !conn->canRemoteCreate())
+//   {
+//      delete co;
+//      return;
+//   }
+//   conn->registerObject();
+//   conn->setNetAddress(address);
+//   conn->setNetworkConnection(true);
+//   conn->setSequence(connectSequence);
+//
+//   const char *errorString = nullptr;
+//   if(!conn->readConnectRequest(stream, &errorString))
+//   {
+//      sendConnectReject(conn, errorString);
+//      conn->deleteObject();
+//      return;
+//   }
+//   conn->setNetworkConnection(true);
+//   conn->onConnectionEstablished(false);
+//   conn->setEstablished();
+//   conn->setConnectSequence(connectSequence);
+//   sendConnectAccept(conn);
 }
 
 //-----------------------------------------------------------------------------
 
 void NetInterface::sendConnectAccept(NetConnection *conn)
 {
-   BitStream *out = BitStream::getPacketStream();
-   out->write(U8(ConnectAccept));
-   out->write(conn->getSequence());
-   conn->writeConnectAccept(out);
-   BitStream::sendPacketStream(conn->getNetAddress());
+//   BitStream *out = BitStream::getPacketStream();
+//   out->write(U8(ConnectAccept));
+//   out->write(conn->getSequence());
+//   conn->writeConnectAccept(out);
+//   BitStream::sendPacketStream(conn->getNetAddress());
 }
 
-void NetInterface::handleConnectAccept(const NetAddress *address, BitStream *stream)
+void NetInterface::handleConnectAccept(const NetAddress *address, std::iostream &stream)
 {
-   U32 connectSequence;
-   stream->read(&connectSequence);
-   NetConnection *conn = findPendingConnection(address, connectSequence);
-   if(!conn || conn->getConnectionState() != NetConnection::AwaitingConnectResponse)
-      return;
-   const char *errorString = nullptr;
-   if(!conn->readConnectAccept(stream, &errorString))
-   {
-      conn->handleStartupError(errorString);
-      removePendingConnection(conn);
-      conn->deleteObject();
-      return;
-   }
-
-   removePendingConnection(conn); // remove from the pending connection list
-   conn->setNetworkConnection(true);
-   conn->onConnectionEstablished(true); // notify the connection that it has been established
-   conn->setEstablished(); // installs the connection in the connection table, and causes pings/timeouts to happen
-   conn->setConnectSequence(connectSequence);
+//   U32 connectSequence;
+//   stream >> connectSequence;
+//   NetConnection *conn = findPendingConnection(address, connectSequence);
+//   if(!conn || conn->getConnectionState() != NetConnection::AwaitingConnectResponse)
+//      return;
+//   const char *errorString = nullptr;
+//   if(!conn->readConnectAccept(stream, &errorString))
+//   {
+//      conn->handleStartupError(errorString);
+//      removePendingConnection(conn);
+//      conn->deleteObject();
+//      return;
+//   }
+//
+//   removePendingConnection(conn); // remove from the pending connection list
+//   conn->setNetworkConnection(true);
+//   conn->onConnectionEstablished(true); // notify the connection that it has been established
+//   conn->setEstablished(); // installs the connection in the connection table, and causes pings/timeouts to happen
+//   conn->setConnectSequence(connectSequence);
 }
 
 void NetInterface::sendConnectReject(NetConnection *conn, const char *reason)
 {
-   if(!reason)
-      return; // if the stream is nullptr, we reject silently
-
-   BitStream *out = BitStream::getPacketStream();
-   out->write(U8(ConnectReject));
-   out->write(conn->getSequence());
-   out->writeString(reason);
-   BitStream::sendPacketStream(conn->getNetAddress());
+//   if(!reason)
+//      return; // if the stream is nullptr, we reject silently
+//
+//   BitStream *out = BitStream::getPacketStream();
+//   out->write(U8(ConnectReject));
+//   out->write(conn->getSequence());
+//   out->writeString(reason);
+//   BitStream::sendPacketStream(conn->getNetAddress());
 }
 
-void NetInterface::handleConnectReject(const NetAddress *address, BitStream *stream)
+void NetInterface::handleConnectReject(const NetAddress *address, std::iostream &stream)
 {
    U32 connectSequence;
-   stream->read(&connectSequence);
+   stream >> connectSequence;
    NetConnection *conn = findPendingConnection(address, connectSequence);
    if(!conn || (conn->getConnectionState() != NetConnection::AwaitingChallengeResponse &&
                 conn->getConnectionState() != NetConnection::AwaitingConnectResponse))
@@ -385,7 +379,7 @@ void NetInterface::handleConnectReject(const NetAddress *address, BitStream *str
    conn->deleteObject();
 }
 
-void NetInterface::handleDisconnect(const NetAddress *address, BitStream *stream)
+void NetInterface::handleDisconnect(const NetAddress *address, std::iostream &stream)
 {
    NetConnection *conn = NetConnection::lookup(address);
    if(!conn)
@@ -394,7 +388,7 @@ void NetInterface::handleDisconnect(const NetAddress *address, BitStream *stream
    U32 connectSequence;
    char reason[256];
 
-   stream->read(&connectSequence);
+   stream >> connectSequence;
    StreamFn::readString(stream, reason);
 
    if(conn->getSequence() != connectSequence)
@@ -404,7 +398,7 @@ void NetInterface::handleDisconnect(const NetAddress *address, BitStream *stream
    conn->deleteObject();
 }
 
-void NetInterface::handleInfoPacket(const NetAddress *address, U8 packetType, BitStream *stream)
+void NetInterface::handleInfoPacket(const NetAddress *address, U8 packetType, std::iostream &stream)
 {
 }
 
@@ -453,12 +447,12 @@ void NetInterface::sendDisconnectPacket(NetConnection *conn, const char *reason)
    // send a disconnect packet...
    U32 connectSequence = conn->getSequence();
 
-   BitStream *out = BitStream::getPacketStream();
-   out->write(U8(Disconnect));
-   out->write(connectSequence);
-   out->writeString(reason);
-
-   BitStream::sendPacketStream(conn->getNetAddress());
+//   BitStream *out = BitStream::getPacketStream();
+//   out->write(U8(Disconnect));
+//   out->write(connectSequence);
+//   out->writeString(reason);
+//
+//   BitStream::sendPacketStream(conn->getNetAddress());
 }
 
 void NetInterface::checkTimeouts()

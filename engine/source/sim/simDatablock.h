@@ -141,8 +141,8 @@ protected:
    /// @{
 
    ///
-   virtual void packData(std::stringstream &stream);
-   virtual void unpackData(std::stringstream &stream);
+   virtual void packData(std::ostream &stream);
+   virtual void unpackData(std::istream &stream);
 
    /// Called to prepare the datablock for use, after it has been unpacked.
    ///

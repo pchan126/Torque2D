@@ -30,25 +30,25 @@
 //--------------------------------------------------------------------------
 namespace
 {
-   void writeRangedF32(std::stringstream& bstream, F32 val, F32 min, F32 max, U32 numBits)
+   void writeRangedF32(std::ostream& bstream, F32 val, F32 min, F32 max, U32 numBits)
    {
       val = (mClampF(val, min, max) - min) / (max - min);
       bstream << val;
    }
 
-   F32 readRangedF32(std::stringstream& bstream, F32 min, F32 max, U32 numBits)
+   F32 readRangedF32(std::istream& bstream, F32 min, F32 max, U32 numBits)
    {
       F32 val;
       bstream >> val;
       return val;
    }
 
-   void writeRangedS32(std::stringstream& bstream, S32 val, S32 min, S32 max)
+   void writeRangedS32(std::ostream& bstream, S32 val, S32 min, S32 max)
    {
       bstream << (mClamp(val, min, max));
    }
 
-   S32 readRangedS32(std::stringstream& bstream, S32 min, S32 max)
+   S32 readRangedS32(std::istream& bstream, S32 min, S32 max)
    {
       S32 val;
       bstream >> val;
@@ -148,7 +148,7 @@ void AudioEnvironment::initPersistFields()
 }
 
 
-void AudioEnvironment::packData(std::stringstream &stream)
+void AudioEnvironment::packData(std::ostream &stream)
 {
    Parent::packData(stream);
 #if !defined(TORQUE_OS_IOS)
@@ -171,11 +171,11 @@ void AudioEnvironment::packData(std::stringstream &stream)
       writeRangedF32(stream, mEnvironmentSize, 1.f, 100.f, 10);
       writeRangedF32(stream, mEnvironmentDiffusion, 0.f, 1.f, 8);
       writeRangedF32(stream, mAirAbsorption, -100.f, 0.f, 10);
-      stream >> mFlags;
+      stream << mFlags;
    }
 }
 
-void AudioEnvironment::unpackData(std::stringstream &stream)
+void AudioEnvironment::unpackData(std::istream &stream)
 {
    Parent::unpackData(stream);
    stream >> mUseRoom;
@@ -248,7 +248,7 @@ void AudioSampleEnvironment::initPersistFields()
    addField("flags",               TypeS32,    Offset(mFlags, AudioSampleEnvironment));
 }
 
-void AudioSampleEnvironment::packData(std::stringstream &stream)
+void AudioSampleEnvironment::packData(std::ostream &stream)
 {
    Parent::packData(stream);
    writeRangedS32(stream, mDirect, -10000, 1000);
@@ -266,7 +266,7 @@ void AudioSampleEnvironment::packData(std::stringstream &stream)
    stream << mFlags;
 }
 
-void AudioSampleEnvironment::unpackData(std::stringstream &stream)
+void AudioSampleEnvironment::unpackData(std::istream &stream)
 {
    Parent::unpackData(stream);
    mDirect = readRangedS32(stream, -10000, 1000);

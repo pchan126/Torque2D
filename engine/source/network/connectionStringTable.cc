@@ -37,20 +37,20 @@ public:
       mIndex = index;
       mString = string;
    }
-   virtual void pack(NetConnection * /*ps*/, std::iostream &bstream)
+   virtual void pack(NetConnection * /*ps*/, std::ostream &bstream)
    {
-      bstream->writeInt(mIndex, ConnectionStringTable::EntryBitSize);
+       StreamFn::writeInt(bstream, mIndex, ConnectionStringTable::EntryBitSize);
+       StreamFn::writeString(bstream, mString.getString());
+   }
+   virtual void write(NetConnection * /*ps*/, std::ostream &bstream)
+   {
+       StreamFn::writeInt(bstream, mIndex, ConnectionStringTable::EntryBitSize);
       StreamFn::writeString(bstream, mString.getString());
    }
-   virtual void write(NetConnection * /*ps*/, std::iostream &bstream)
-   {
-      bstream->writeInt(mIndex, ConnectionStringTable::EntryBitSize);
-      StreamFn::writeString(bstream, mString.getString());
-   }
-   virtual void unpack(NetConnection * /*con*/, std::iostream &bstream)
+   virtual void unpack(NetConnection * /*con*/, std::istream &bstream)
    {
       char buf[256];
-      mIndex = bstream->readInt(ConnectionStringTable::EntryBitSize);
+      mIndex = StreamFn::readInt(bstream, ConnectionStringTable::EntryBitSize);
       StreamFn::readString(bstream, buf);
       mString = NetStringHandle(buf);
    }
@@ -161,7 +161,7 @@ void ConnectionStringTable::mapString(U32 netId, NetStringHandle &string)
    mRemoteStringTable[netId] = string;
 }
 
-void ConnectionStringTable::readDemoStartBlock(std::iostream &stream)
+void ConnectionStringTable::readDemoStartBlock(std::istream &stream)
 {
    // ok, reading the demo start block
    for(U32 i = 0; i < EntryCount; i++)
@@ -175,7 +175,7 @@ void ConnectionStringTable::readDemoStartBlock(std::iostream &stream)
    }
 }
 
-void ConnectionStringTable::writeDemoStartBlock(std::iostream &stream)
+void ConnectionStringTable::writeDemoStartBlock(std::ostream &stream)
 {
    // ok, writing the demo start block
    for(U32 i = 0; i < EntryCount; i++)
@@ -183,7 +183,7 @@ void ConnectionStringTable::writeDemoStartBlock(std::iostream &stream)
       if(stream << (mRemoteStringTable[i].isValidString()))
       {
           StreamFn::writeString(stream, mRemoteStringTable[i].getString());
-         stream->validate();
+//         stream->validate();
       }
    }
 }

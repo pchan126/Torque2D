@@ -21,6 +21,7 @@
 //-----------------------------------------------------------------------------
 
 #include "platform/platform.h"
+#include "platform/platformFileIO.h"
 #include "platformiOS/platformiOS.h"
 #include "io/resource/resourceManager.h"
 
@@ -53,7 +54,7 @@ bool dFileTouch(const char *path)
       return false;
    
    // set file at path's modification and access times to now.
-   return( utimes( path, NULL) == 0); // utimes returns 0 on success.
+   return( utimes( path, nullptr) == 0); // utimes returns 0 on success.
 }
 
 //-----------------------------------------------------------------------------
@@ -67,7 +68,7 @@ bool dFileTouch(const char *path)
 File::File()
 : currentStatus(Closed), capability(0)
 {
-   handle = NULL;
+   handle = nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -80,7 +81,7 @@ File::File()
 File::~File()
 {
    close();
-   handle = NULL;
+   handle = nullptr;
 }
 
 
@@ -121,7 +122,7 @@ File::Status File::open(const char *filename, const AccessMode openMode)
    }
    
    // handle not created successfully
-   if (handle == NULL)                
+   if (handle == nullptr)                
       return setStatus();
    
    // successfully created file, so set the file capabilities...
@@ -157,7 +158,7 @@ File::Status File::open(const char *filename, const AccessMode openMode)
 U32 File::getPosition() const
 {
    AssertFatal(currentStatus != Closed , "File::getPosition: file closed");
-   AssertFatal(handle != NULL, "File::getPosition: invalid file handle");
+   AssertFatal(handle != nullptr, "File::getPosition: invalid file handle");
    
    return ftell((FILE*)handle);
 }
@@ -177,7 +178,7 @@ U32 File::getPosition() const
 File::Status File::setPosition(S32 position, bool absolutePos)
 {
    AssertFatal(Closed != currentStatus, "File::setPosition: file closed");
-   AssertFatal(handle != NULL, "File::setPosition: invalid file handle");
+   AssertFatal(handle != nullptr, "File::setPosition: invalid file handle");
    
    if (currentStatus != Ok && currentStatus != EOS )
       return currentStatus;
@@ -221,7 +222,7 @@ File::Status File::setPosition(S32 position, bool absolutePos)
 U32 File::getSize() const
 {
    AssertWarn(Closed != currentStatus, "File::getSize: file closed");
-   AssertFatal(handle != NULL, "File::getSize: invalid file handle");
+   AssertFatal(handle != nullptr, "File::getSize: invalid file handle");
    
    if (Ok == currentStatus || EOS == currentStatus)
    {
@@ -245,7 +246,7 @@ U32 File::getSize() const
 File::Status File::flush()
 {
    AssertFatal(Closed != currentStatus, "File::flush: file closed");
-   AssertFatal(handle != NULL, "File::flush: invalid file handle");
+   AssertFatal(handle != nullptr, "File::flush: invalid file handle");
    AssertFatal(true == hasCapability(FileWrite), "File::flush: cannot flush a read-only file");
    
    if (fflush((FILE*)handle) != 0)
@@ -266,12 +267,12 @@ File::Status File::close()
       return currentStatus;
    
    // it's not, so close it...
-   if (handle != NULL)
+   if (handle != nullptr)
    {
       if (fclose((FILE*)handle) != 0)
          return setStatus();
    }
-   handle = NULL;
+   handle = nullptr;
    return currentStatus = Closed;
 }
 
@@ -321,8 +322,8 @@ File::Status File::setStatus(File::Status status)
 File::Status File::read(U32 size, char *dst, U32 *bytesRead)
 {
    AssertFatal(Closed != currentStatus, "File::read: file closed");
-   AssertFatal(handle != NULL, "File::read: invalid file handle");
-   AssertFatal(NULL != dst, "File::read: NULL destination pointer");
+   AssertFatal(handle != nullptr, "File::read: invalid file handle");
+   AssertFatal(nullptr != dst, "File::read: nullptr destination pointer");
    AssertFatal(true == hasCapability(FileRead), "File::read: file lacks capability");
    AssertWarn(0 != size, "File::read: size of zero");
    
@@ -353,8 +354,8 @@ File::Status File::read(U32 size, char *dst, U32 *bytesRead)
 File::Status File::write(U32 size, const char *src, U32 *bytesWritten)
 {
    AssertFatal(Closed != currentStatus, "File::write: file closed");
-   AssertFatal(handle != NULL, "File::write: invalid file handle");
-   AssertFatal(NULL != src, "File::write: NULL source pointer");
+   AssertFatal(handle != nullptr, "File::write: invalid file handle");
+   AssertFatal(nullptr != src, "File::write: nullptr source pointer");
    AssertFatal(true == hasCapability(FileWrite), "File::write: file lacks capability");
    AssertWarn(0 != size, "File::write: size of zero");
    
@@ -479,7 +480,7 @@ bool Platform::createPath(const char *file)
 StringTableEntry Platform::getCurrentDirectory()
 {
    // get the current directory, the one that would be opened if we did a fopen(".")
-   char* cwd = getcwd(NULL, 0);
+   char* cwd = getcwd(nullptr, 0);
    StringTableEntry ret = StringTable->insert(cwd);
    free(cwd);
    return ret;
@@ -567,7 +568,7 @@ StringTableEntry Platform::getExecutablePath()
       }
       
       CFStringRef workingString = CFURLCopyFileSystemPath(workingUrl, kCFURLPOSIXPathStyle);
-      CFMutableStringRef normalizedString = CFStringCreateMutableCopy(NULL, 0, workingString);
+      CFMutableStringRef normalizedString = CFStringCreateMutableCopy(nullptr, 0, workingString);
       CFStringNormalize(normalizedString,kCFStringNormalizationFormC);
       CFStringGetCString(normalizedString, cwd_buf, sizeof(cwd_buf)-1, kCFStringEncodingUTF8);
       
@@ -588,7 +589,7 @@ StringTableEntry Platform::getExecutablePath()
    
    CFRelease(bundleUrl);
 
-    char* ret = NULL;
+    char* ret = nullptr;
     
     if (StringTable)
         platState.mainCSDirectory = @(StringTable->insert(cwd_buf));
@@ -608,7 +609,7 @@ StringTableEntry Platform::getExecutableName()
 
    // get a cfstring of just the app name
    CFStringRef workingString = CFURLCopyLastPathComponent(bundleUrl);
-   CFMutableStringRef normalizedString = CFStringCreateMutableCopy(NULL, 0, workingString);
+   CFMutableStringRef normalizedString = CFStringCreateMutableCopy(nullptr, 0, workingString);
    CFStringNormalize(normalizedString,kCFStringNormalizationFormC);
    CFStringGetCString(normalizedString, path_buf, sizeof(path_buf)-1, kCFStringEncodingUTF8);
    
@@ -655,7 +656,7 @@ bool Platform::deleteDirectoryRecursive( const char* pPath )
 bool Platform::isSubDirectory(const char *pathParent, const char *pathSub)
 {
    char fullpath[MAX_MAC_PATH_LONG];
-   dStrcpyl(fullpath, MAX_MAC_PATH_LONG, pathParent, "/", pathSub, NULL);
+   dStrcpyl(fullpath, MAX_MAC_PATH_LONG, pathParent, "/", pathSub, nullptr);
    return isDirectory((const char *)fullpath);
 }
 
@@ -683,7 +684,7 @@ bool Platform::hasSubDirectory(const char *path)
    while( true )
    {
        entry = readdir(dir);
-       if ( entry == NULL )
+       if ( entry == nullptr )
            break;
        
       if(isGoodDirectory(entry) ) 
@@ -717,7 +718,7 @@ bool recurseDumpDirectories(const char *basePath, const char *path, Vector<Strin
    while( true )
    {
        entry = readdir(dir);
-       if ( entry == NULL )
+       if ( entry == nullptr )
            break;
        
       // we just want directories.
@@ -729,14 +730,14 @@ bool recurseDumpDirectories(const char *basePath, const char *path, Vector<Strin
       //      // ATSUI will not reliably draw out just the accent character by itself,
       //      // so our text renderer has no chance of rendering decomposed form unicode.
       //      // We have to convert the entry name to precomposed normalized form.
-      //      CFStringRef cfdname = CFStringCreateWithCString(NULL,entry->d_name,kCFStringEncodingUTF8);
-      //      CFMutableStringRef cfentryName = CFStringCreateMutableCopy(NULL,0,cfdname);
+      //      CFStringRef cfdname = CFStringCreateWithCString(nullptr,entry->d_name,kCFStringEncodingUTF8);
+      //      CFMutableStringRef cfentryName = CFStringCreateMutableCopy(nullptr,0,cfdname);
       //      CFStringNormalize(cfentryName,kCFStringNormalizationFormC);
       //      
       //      U32 entryNameLen = CFStringGetLength(cfentryName) * 4 + 1;
       //      char entryName[entryNameLen];
       //      CFStringGetCString(cfentryName, entryName, entryNameLen, kCFStringEncodingUTF8);
-      //      entryName[entryNameLen-1] = NULL; // sometimes, CFStringGetCString() doesn't null terminate.
+      //      entryName[entryNameLen-1] = nullptr; // sometimes, CFStringGetCString() doesn't null terminate.
       //      CFRelease(cfentryName);
       //      CFRelease(cfdname);
       
@@ -811,7 +812,7 @@ static bool recurseDumpPath(const char* curPath, Vector<Platform::FileInfo>& fil
    while( true )
    {
        entry = readdir(dir);
-       if ( entry == NULL )
+       if ( entry == nullptr )
            break;
        
       // construct the full file path. we need this to get the file size and to recurse

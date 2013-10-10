@@ -173,7 +173,7 @@ public:
     inline StringTableEntry getModuleScriptFilePath( void ) const               { return mModuleScriptFilePath; }
 
     /// Specialized dependency control.
-    inline U32              getDependencyCount( void ) const                    { return mDependencies.size(); }
+    inline size_t           getDependencyCount( void ) const                    { return mDependencies.size(); }
     bool                    getDependency( const U32 dependencyIndex, ModuleDependency& dependency ) const;
     bool                    addDependency( const char* pModuleId, const U32 versionId );
     bool                    removeDependency( const char* pModuleId );

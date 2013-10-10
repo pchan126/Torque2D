@@ -111,7 +111,7 @@ public:
 
     /// Fields.
     bool addBehaviorField( const char* fieldName, const char* description, const char* type, const char* defaultValue = NULL, const char* userData = NULL );
-    inline U32 getBehaviorFieldCount( void ) const { return mFields.size(); };
+    inline SizeType getBehaviorFieldCount( void ) const { return mFields.size(); };
     inline BehaviorField* getBehaviorField( const U32 index ) { return index < (U32)mFields.size() ? &mFields[index] : NULL; }
     inline BehaviorField* getBehaviorField( const char* fieldName )
     {
@@ -137,7 +137,7 @@ public:
     }
     /// Outputs.
     bool addBehaviorOutput( const char* portName, const char* label, const char* description );
-    inline U32 getBehaviorOutputCount( void ) const { return mPortOutputs.size(); }
+    inline SizeType getBehaviorOutputCount( void ) const { return mPortOutputs.size(); }
     inline BehaviorPortOutput* getBehaviourOutput( const U32 index ) { return index < (U32)mPortOutputs.size() ? &mPortOutputs[index] : NULL; }
     inline bool hasBehaviorOutput( const char* portName )
     {
@@ -153,7 +153,7 @@ public:
 
     /// Inputs.
     bool addBehaviorInput( const char* portName, const char* label, const char* description );
-    inline U32 getBehaviorInputCount( void ) const { return mPortInputs.size(); }
+    inline SizeType getBehaviorInputCount( void ) const { return mPortInputs.size(); }
     inline BehaviorPortInput* getBehaviourInput( const U32 index ) { return index < (U32)mPortInputs.size() ? &mPortInputs[index] : NULL; }
     inline bool hasBehaviorInput( const char* portName )
     {

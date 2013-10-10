@@ -29,6 +29,7 @@
 #include "network/netObject.h"
 #include "game/gameConnection.h"
 #include "network/serverQuery.h"
+#include "StreamFn.h"
 
 //----------------------------------------------------------------
 // remote procedure call console functions
@@ -43,12 +44,12 @@ public:
    };
 
 private:
-   S32 mArgc;
+   U32 mArgc;
    char *mArgv[MaxRemoteCommandArgs + 1];
    NetStringHandle mTagv[MaxRemoteCommandArgs + 1];
    static char mBuf[1024];
 public:
-   RemoteCommandEvent(S32 argc=0, const char **argv=NULL, NetConnection *conn = NULL)
+   RemoteCommandEvent(S32 argc=0, const char **argv=nullptr, NetConnection *conn = nullptr)
    {
       mArgc = argc;
       for(S32 i = 0; i < argc; i++)
@@ -84,9 +85,9 @@ public:
          dFree(mArgv[i+1]);
    }
 
-   virtual void pack(NetConnection *conn, std::stringstream &bstream)
+   virtual void pack(NetConnection *conn, std::ostream &bstream)
    {
-      bstream->writeInt(mArgc, CommandArgsBits);
+      StreamFn::writeInt( bstream, mArgc, CommandArgsBits);
       // write it out reversed... why?
       // automatic string substitution with later arguments -
       // handled automatically by the system.
@@ -95,15 +96,15 @@ public:
          conn->packString(bstream, mArgv[i+1]);
    }
 
-   virtual void write(NetConnection *conn, std::stringstream &bstream)
+   virtual void write(NetConnection *conn, std::ostream &bstream)
    {
       pack(conn, bstream);
    }
 
-   virtual void unpack(NetConnection *conn, std::stringstream &bstream)
+   virtual void unpack(NetConnection *conn, std::istream &bstream)
    {
 
-      mArgc = bstream->readInt(CommandArgsBits);
+      mArgc = StreamFn::readInt( bstream, CommandArgsBits);
       // read it out backwards
       for(S32 i = 0; i < mArgc; i++)
       {

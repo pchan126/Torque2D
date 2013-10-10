@@ -26,6 +26,7 @@
 #include "network/netConnection.h"
 #include "network/netObject.h"
 #include "io/resource/resourceManager.h"
+#include "StreamFn.h"
 
 class FileDownloadRequestEvent : public NetEvent
 {
@@ -56,23 +57,23 @@ public:
       }
    }
 
-   virtual void pack(NetConnection *, std::iostream &bstream)
+   virtual void pack(NetConnection *connection, std::ostream &bstream)
    {
-      bstream->writeRangedU32(nameCount, 0, MaxFileNames);
+      StreamFn::writeRangedU32(bstream, nameCount, 0, MaxFileNames);
       for(U32 i = 0; i < nameCount; i++)
          StreamFn::writeString(bstream, mFileNames[i]);
    }
 
-   virtual void write(NetConnection *, std::iostream &bstream)
+   virtual void write(NetConnection *connection, std::ostream &bstream)
    {
-      bstream->writeRangedU32(nameCount, 0, MaxFileNames);
+       StreamFn::writeRangedU32(bstream, nameCount, 0, MaxFileNames);
       for(U32 i = 0; i < nameCount; i++)
          StreamFn::writeString(bstream, mFileNames[i]);
    }
 
-   virtual void unpack(NetConnection *, std::iostream &bstream)
+   virtual void unpack(NetConnection *connection, std::istream &bstream)
    {
-      nameCount = bstream->readRangedU32(0, MaxFileNames);
+      nameCount = StreamFn::readRangedU32(bstream, 0, MaxFileNames);
       for(U32 i = 0; i < nameCount; i++)
          StreamFn::readString(bstream, mFileNames[i]);
    }
@@ -111,22 +112,22 @@ public:
       chunkLen = len;
    }
    
-   virtual void pack(NetConnection *, std::iostream &bstream)
+   virtual void pack(NetConnection *connection, std::ostream &bstream)
    {
-      bstream->writeRangedU32(chunkLen, 0, ChunkSize);
-      bstream->write(chunkLen, chunkData);
+      StreamFn::writeRangedU32(bstream, chunkLen, 0, ChunkSize);
+      bstream.write ((char*)chunkData, chunkLen*sizeof(U32));
    }
    
-   virtual void write(NetConnection *, std::iostream &bstream)
+   virtual void write(NetConnection *connection, std::ostream &bstream)
    {
-      bstream->writeRangedU32(chunkLen, 0, ChunkSize);
-      bstream->write(chunkLen, chunkData);
+       StreamFn::writeRangedU32(bstream, chunkLen, 0, ChunkSize);
+      bstream.write ((char*)chunkData, chunkLen*sizeof(U32));
    }
    
-   virtual void unpack(NetConnection *, std::iostream &bstream)
+   virtual void unpack(NetConnection *connection, std::istream &bstream)
    {
-      chunkLen = bstream->readRangedU32(0, ChunkSize);
-      bstream->read(chunkLen, chunkData);
+      chunkLen = StreamFn::readRangedU32(bstream, 0, ChunkSize);
+      bstream.read ((char*)chunkData, chunkLen*sizeof(U32));
    }
    
    virtual void process(NetConnection *connection)

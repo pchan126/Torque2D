@@ -42,7 +42,7 @@
 class DemoNetInterface : public NetInterface
 {
 public:
-   void handleInfoPacket(const NetAddress *address, U8 packetType, BitStream *stream);
+   void handleInfoPacket(const NetAddress *address, U8 packetType, std::iostream &stream);
 };
 
 struct MasterInfo

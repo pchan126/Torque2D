@@ -36,7 +36,7 @@ LightInfoExType::LightInfoExType( const char *type )
    TypeMap::iterator iter = getTypeMap().find( type );
    if ( iter == getTypeMap().end() )
    {
-      getTypeMap().insertUnique( type , getTypeMap().size()) ;
+      getTypeMap().insertUnique( type , (U32)getTypeMap().size()) ;
    }
    iter = getTypeMap().find( type );
    mTypeIndex = iter->second;

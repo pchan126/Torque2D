@@ -153,7 +153,7 @@ public:
       
       singleton()->poolLock.lock();
       Vector<Thread*> &pool = singleton()->threadPool;
-      for( S32 i = pool.size() - 1; i >= 0; i--)
+      for( S32 i = (S32)pool.size() - 1; i >= 0; i--)
       {
          Thread* p = pool[i];
          if(compare(p->getId(), threadid))
@@ -174,7 +174,7 @@ public:
 
 inline bool ThreadManager::isCurrentThread(PTR threadId)
 {
-   U32 current = getCurrentThreadId();
+   U32 current = (U32)getCurrentThreadId();
    return compare(current, threadId);
 }
 

@@ -23,10 +23,10 @@ protected:
    friend class GFXOpenGLES20ShaderConstBuffer;
    friend class GFXOpenGLES20ShaderConstHandle;
    
-    bool _loadShaderFromStream(  GLuint shader,
-                                      const StringTableEntry path,
-                                      FileStream* s,
-                                      const Vector<GFXShaderMacro>& macros );
+    bool _loadShaderFromStream(GLuint shader,
+            const StringTableEntry path,
+            std::iostream &s,
+            const Vector<GFXShaderMacro>& macros);
 
     virtual bool _init();
 

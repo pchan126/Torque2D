@@ -32,57 +32,57 @@
 //
 inline bool mathRead(std::istream &stream, Point2I *p)
 {
-   stream >> (p->x);
-   stream >> (p->y);
+   stream >> p->x;
+   stream >> p->y;
    return stream.good();
 }
 
 inline bool mathRead(std::istream &stream, Point3I *p)
 {
-   stream >> (p->x);
-   stream >> (p->y);
-   stream >> (p->z);
+   stream >> p->x;
+   stream >> p->y;
+   stream >> p->z;
    return stream.good();
 }
 
 inline bool mathRead(std::istream &stream, Point2F *p)
 {
-   stream >> (p->x);
-   stream >> (p->y);
+   stream >> p->x;
+   stream >> p->y;
    return stream.good();
 }
 
 inline bool mathRead(std::istream &stream, Point3F *p)
 {
-   stream >> (p->x);
-   stream >> (p->y);
-   stream >> (p->z);
+   stream >> p->x;
+   stream >> p->y;
+   stream >> p->z;
    return stream.good();
 }
 
 inline bool mathRead(std::istream &stream, Point4F *p)
 {
-   stream >> (p->x);
-   stream >> (p->y);
-   stream >> (p->z);
+   stream >> p->x;
+   stream >> p->y;
+   stream >> p->z;
    stream >> (p->w);
    return stream.good();
 }
 
 inline bool mathRead(std::istream &stream, Point3D *p)
 {
-   stream >> (p->x);
-   stream >> (p->y);
-   stream >> (p->z);
+   stream >> p->x;
+   stream >> p->y;
+   stream >> p->z;
    return stream.good();
 }
 
 inline bool mathRead(std::istream &stream, PlaneF *p)
 {
-   stream >> (p->x);
-   stream >> (p->y);
-   stream >> (p->z);
-   stream >> (p->d);
+   stream >> p->x;
+   stream >> p->y;
+   stream >> p->z;
+   stream >> p->d;
    return stream.good();
 }
 
@@ -118,16 +118,16 @@ inline bool mathRead(std::istream &stream, MatrixF *m)
 {
    bool success = true;
    F32* pm    = *m;
-   stream.read( pm, 16*sizeof(U32));
+   stream.read( (char*)pm, 16*sizeof(U32));
    return success;
 }
 
 inline bool mathRead(std::istream &stream, QuatF *q)
 {
-   stream >> (q->x);
-   stream >> (q->y);
-   stream >> (q->z);
-   stream >> (q->w);
+   stream >> q->x;
+   stream >> q->y;
+   stream >> q->z;
+   stream >> q->w;
    return stream.good();
 }
 
@@ -136,57 +136,57 @@ inline bool mathRead(std::istream &stream, QuatF *q)
 //
 inline bool mathWrite(std::ostream &stream, const Point2I& p)
 {
-   stream << (p.x);
-   stream << (p.y);
+   stream << p.x;
+   stream << p.y;
    return stream.good();
 }
 
 inline bool mathWrite(std::ostream& stream, const Point3I& p)
 {
-   stream << (p.x);
-   stream << (p.y);
-   stream << (p.z);
+   stream << p.x;
+   stream << p.y;
+   stream << p.z;
    return stream.good();
 }
 
-inline bool mathWrite(std::iostream &stream, const Point2F& p)
+inline bool mathWrite(std::ostream &stream, const Point2F& p)
 {
-   stream << (p.x);
-   stream << (p.y);
+   stream << p.x;
+   stream << p.y;
    return stream.good();
 }
 
-inline bool mathWrite(std::iostream &stream, const Point3F& p)
+inline bool mathWrite(std::ostream &stream, const Point3F& p)
 {
-   stream << (p.x);
-   stream << (p.y);
-   stream << (p.z);
+   stream << p.x;
+   stream << p.y;
+   stream << p.z;
    return stream.good();
 }
 
-inline bool mathWrite(std::iostream &stream, const Point4F& p)
+inline bool mathWrite(std::ostream &stream, const Point4F& p)
 {
-   stream << (p.x);
-   stream << (p.y);
-   stream << (p.z);
-   stream << (p.w);
+   stream << p.x;
+   stream << p.y;
+   stream << p.z;
+   stream << p.w;
    return stream.good();
 }
 
 inline bool mathWrite(std::ostream &stream, const Point3D& p)
 {
-   stream << (p.x);
-   stream << (p.y);
-   stream << (p.z);
+   stream << p.x;
+   stream << p.y;
+   stream << p.z;
    return stream.good();
 }
 
 inline bool mathWrite(std::ostream &stream, const PlaneF& p)
 {
-   stream << (p.x);
-   stream << (p.y);
-   stream << (p.z);
-   stream << (p.d);
+   stream << p.x;
+   stream << p.y;
+   stream << p.z;
+   stream << p.d;
    return stream.good();
 }
 
@@ -199,8 +199,8 @@ inline bool mathWrite(std::ostream& stream, const Box3F& b)
 
 inline bool mathWrite(std::ostream& stream, const SphereF& s)
 {
-   bool success = mathWrite(stream, s.center);
-   stream << (s.radius);
+    mathWrite(stream, s.center);
+    stream << (s.radius);
     return stream.good();
 }
 
@@ -220,9 +220,8 @@ inline bool mathWrite(std::ostream& stream, const RectF& r)
 
 inline bool mathWrite(std::ostream& stream, const MatrixF& m)
 {
-   bool success    = true;
    const F32* pm = m;
-   stream.write(pm, sizeof(F32)*16);
+   stream.write( (char*)pm, sizeof(F32)*16);
    return stream.good();
 }
 

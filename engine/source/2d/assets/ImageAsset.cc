@@ -676,7 +676,7 @@ bool ImageAsset::insertExplicitCell( const S32 cellIndex, const S32 cellOffsetX,
     const S32 imageHeight = getImageHeight();
 
     // Fetch the explicit frame count.
-    const S32 explicitFramelCount = mExplicitFrames.size();
+    const SizeType explicitFramelCount = mExplicitFrames.size();
 
     // The cell index needs to be in range.
     if ( cellIndex < 0 )

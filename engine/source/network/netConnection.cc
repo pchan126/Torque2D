@@ -29,6 +29,7 @@
 #include "netInterface.h"
 #include "StreamFn.h"
 #include <stdarg.h>
+#include <sstream>
 
 S32 gNetBitsSent = 0;
 extern S32 gNetBitsReceived;
@@ -56,28 +57,33 @@ class ConnectionMessageEvent : public NetEvent
 public:
    ConnectionMessageEvent(U32 msg=0, U32 seq=0, U32 gc=0)
       { message = msg; sequence = seq; ghostCount = gc;}
-   void pack(NetConnection *, std::iostream &bstream)
+
+   void pack(NetConnection *, std::ostream &bstream)
+   {
+       bstream << sequence;
+       StreamFn::writeInt(bstream, message, 3);
+       StreamFn::writeInt(bstream, ghostCount, NetConnection::GhostIdBitSize + 1);
+   }
+
+   void write(NetConnection *, std::ostream &bstream)
    {
       bstream << (sequence);
-      bstream->writeInt(message, 3);
-      bstream->writeInt(ghostCount, NetConnection::GhostIdBitSize + 1);
+      StreamFn::writeInt(bstream, message, 3);
+      StreamFn::writeInt(bstream, ghostCount, NetConnection::GhostIdBitSize + 1);
    }
-   void write(NetConnection *, std::iostream &bstream)
-   {
-      bstream << (sequence);
-      bstream->writeInt(message, 3);
-      bstream->writeInt(ghostCount, NetConnection::GhostIdBitSize + 1);
-   }
-   void unpack(NetConnection *, std::iostream &bstream)
+
+   void unpack(NetConnection *, std::istream &bstream)
    {
       bstream >> (sequence);
-      message = bstream->readInt(3);
-      ghostCount = bstream->readInt(NetConnection::GhostIdBitSize + 1);
+      message = StreamFn::readInt(bstream, 3);
+      ghostCount = StreamFn::readInt(bstream, NetConnection::GhostIdBitSize + 1);
    }
+
    void process(NetConnection *ps)
    {
       ps->handleConnectionMessage(message, sequence, ghostCount);
    }
+
    DECLARE_CONOBJECT(ConnectionMessageEvent);
 };
 
@@ -494,8 +500,8 @@ void NetConnection::handleNotify(bool recvd)
 
 void NetConnection::processRawPacket(std::iostream &bstream)
 {
-   if(mDemoWriteStream)
-      recordBlock(BlockTypePacket, bstream->getReadByteSize(), bstream->getBuffer());
+//   if(mDemoWriteStream)
+//      recordBlock(BlockTypePacket, StreamFn::getReadByteSize(bstream), bstream->getBuffer());
 
    ConnectionProtocol::processRawPacket(bstream);
 }
@@ -509,14 +515,14 @@ void NetConnection::handlePacket(std::iostream &bstream)
 
    if(StreamFn::readFlag(bstream))
    {
-      mCurRate.updateDelay = bstream->readInt(10);
-      mCurRate.packetSize = bstream->readInt(10);
+      mCurRate.updateDelay = StreamFn::readInt(bstream, 10);
+      mCurRate.packetSize = StreamFn::readInt(bstream, 10);
    }
 
-   if(StreamFn::readFlag(bstream)())
+   if(StreamFn::readFlag(bstream))
    {
-      U32 omaxDelay = bstream->readInt(10);
-      S32 omaxSize = bstream->readInt(10);
+      U32 omaxDelay = StreamFn::readInt(bstream, 10);
+      S32 omaxSize = StreamFn::readInt(bstream, 10);
       if(omaxDelay < mMaxRate.updateDelay)
          omaxDelay = mMaxRate.updateDelay;
       if(omaxSize > mMaxRate.packetSize)
@@ -552,17 +558,18 @@ NetConnection::PacketNotify *NetConnection::allocNotify()
 class NetDelayEvent : public SimEvent
 {
    U8 buffer[MaxPacketDataSize];
-   BitStream stream;
+   std::stringstream stream;
 public:
-   NetDelayEvent(BitStream *inStream) : stream(nullptr, 0)
+   NetDelayEvent(std::stringstream& inStream) : stream(nullptr, 0)
    {
-      dMemcpy(buffer, inStream->getBuffer(), inStream->getPosition());
-      stream.setBuffer(buffer, inStream->getPosition());
-      stream.setPosition(inStream->getPosition());
+//      dMemcpy(buffer, inStream->getBuffer(), inStream->getPosition());
+//      stream.setBuffer(buffer, inStream->getPosition());
+//      stream.setPosition(inStream->getPosition());
    }
+
    void process(SimObject *object)
    {
-      ((NetConnection *) object)->sendPacket(&stream);
+      ((NetConnection *) object)->sendPacket(stream);
    }
 };
 
@@ -586,8 +593,8 @@ void NetConnection::checkPacketSend(bool force)
    if(windowFull())
       return;
 
-   BitStream *stream = BitStream::getPacketStream(mCurRate.packetSize);
-   buildSendPacketHeader(stream);
+    std::stringstream *stream; // = BitStream::getPacketStream(mCurRate.packetSize);
+   buildSendPacketHeader(*stream);
 
    mLastUpdateTime = curTime;
 
@@ -603,20 +610,21 @@ void NetConnection::checkPacketSend(bool force)
    note->rateChanged = mCurRate.changed;
    note->maxRateChanged = mMaxRate.changed;
 
-   if(stream->writeFlag(mCurRate.changed))
+   if(*stream << mCurRate.changed)
    {
-      stream->writeInt(mCurRate.updateDelay, 10);
-      stream->writeInt(mCurRate.packetSize, 10);
+      StreamFn::writeInt(*stream, mCurRate.updateDelay, 10);
+      StreamFn::writeInt(*stream, mCurRate.packetSize, 10);
       mCurRate.changed = false;
    }
-   if(stream->writeFlag(mMaxRate.changed))
+   *stream << mMaxRate.changed;
+   if(mMaxRate.changed)
    {
-      stream->writeInt(mMaxRate.updateDelay, 10);
-      stream->writeInt(mMaxRate.packetSize, 10);
+      StreamFn::writeInt(*stream, mMaxRate.updateDelay, 10);
+      StreamFn::writeInt(*stream, mMaxRate.packetSize, 10);
       mMaxRate.changed = false;
    }
    DEBUG_LOG(("PKLOG %d START", getId()) );
-   writePacket(stream, note);
+   writePacket(*stream, note);
    DEBUG_LOG(("PKLOG %d END - %d", getId(), stream->getCurPos() - start) );
    if(mSimulatedPacketLoss && Platform::getRandom() < mSimulatedPacketLoss)
    {
@@ -625,10 +633,10 @@ void NetConnection::checkPacketSend(bool force)
    }
    if(mSimulatedPing)
    {
-      Sim::postEvent(getId(), new NetDelayEvent(stream), Sim::getCurrentTime() + mSimulatedPing);
+      Sim::postEvent(getId(), new NetDelayEvent(*stream), Sim::getCurrentTime() + mSimulatedPing);
       return;
    }
-   sendPacket(stream);
+   sendPacket(*stream);
 }
 
 Net::Error NetConnection::sendPacket(std::iostream &stream)
@@ -638,21 +646,21 @@ Net::Error NetConnection::sendPacket(std::iostream &stream)
    if(mDemoReadStream)
       return Net::NoError;
 
-   gNetBitsSent = stream->getStreamSize();
+   gNetBitsSent = StreamFn::getStreamSize(stream);
 
-   if(isLocalConnection())
-   {
-      // short circuit connection to the other side.
-      // handle the packet, then force a notify.
-      stream->setBuffer(stream->getBuffer(), stream->getPosition(), stream->getPosition());
-      mRemoteConnection->processRawPacket(stream);
-
-      return Net::NoError;
-   }
-   else
-   {
-      return Net::sendto(getNetAddress(), stream->getBuffer(), stream->getPosition());
-   }
+//   if(isLocalConnection())
+//   {
+//      // short circuit connection to the other side.
+//      // handle the packet, then force a notify.
+//      stream->setBuffer(stream->getBuffer(), stream->getPosition(), stream->getPosition());
+//      mRemoteConnection->processRawPacket(stream);
+//
+//      return Net::NoError;
+//   }
+//   else
+//   {
+//      return Net::sendto(getNetAddress(), stream->getBuffer(), stream->getPosition());
+//   }
 }
 
 //--------------------------------------------------------------------
@@ -694,7 +702,7 @@ void NetConnection::writeDemoStartBlock(std::ostream &stream)
 
    stream << (mRoundTripTime);
    stream << (mPacketLoss);
-   stream->validate();
+//   stream->validate();
    mStringTable->writeDemoStartBlock(stream);
 
    U32 start = 0;
@@ -704,7 +712,7 @@ void NetConnection::writeDemoStartBlock(std::ostream &stream)
       start++;
       note = note->nextPacket;
    }
-   stream->write(start);
+   stream << start;
 
    eventWriteStartBlock(stream);
    ghostWriteStartBlock(stream);
@@ -714,13 +722,13 @@ bool NetConnection::readDemoStartBlock(std::istream &stream)
 {
    ConnectionProtocol::readDemoStartBlock(stream);
    
-   stream->read(&mRoundTripTime);
-   stream->read(&mPacketLoss);
+   stream >> mRoundTripTime;
+   stream >> mPacketLoss;
 
    // Read
    mStringTable->readDemoStartBlock(stream);
    U32 pos;
-   stream->read(&pos); // notify count
+   stream >> pos; // notify count
    for(U32 i = 0; i < pos; i++)
    {
       PacketNotify *note = allocNotify();
@@ -746,47 +754,47 @@ bool NetConnection::startDemoRecord(const char *fileName)
       return false;
    }
 
-   mDemoWriteStream = fs;
-   *mDemoWriteStream << (mProtocolVersion);
-   std::stringstream bs;
-
-   // then write out the start block
-   writeDemoStartBlock(&bs);
-   U32 size = bs.getPosition() + 1;
-   *mDemoWriteStream << size;
-   mDemoWriteStream->write((char*)bs.getBuffer(), size);
+//   mDemoWriteStream = fs;
+//   *mDemoWriteStream << (mProtocolVersion);
+//   std::stringstream bs;
+//
+//   // then write out the start block
+//   writeDemoStartBlock(bs);
+//   U32 size = bs.getPosition() + 1;
+//   *mDemoWriteStream << size;
+//   mDemoWriteStream->write((char*)bs.getBuffer(), size);
    return true;
 }
 
 bool NetConnection::replayDemoRecord(const char *fileName)
 {
-    std::iostream *fs = ResourceManager->openStream(fileName);
-   if(!fs)
-      return false;
-
-   mDemoReadStream = fs;
-   *mDemoReadStream >> mProtocolVersion;
-   U32 size;
-   *mDemoReadStream >> size;
-   U8 *block = new U8[size];
-   mDemoReadStream->read( (char*)block, size);
-   BitStream bs(block, size);
-
-   bool res = readDemoStartBlock(&bs);
-   delete[] block;
-   if(!res)
-      return false;
-
-   // prep for first block read
-   // type/size stored in U16: [type:4][size:12]
-   U16 typeSize;
-   *mDemoReadStream >> typeSize;
-
-   mDemoNextBlockType = typeSize >> 12;
-   mDemoNextBlockSize = typeSize & 0xFFF;
-
-   if(mDemoReadStream->bad())
-      return false;
+//    std::iostream *fs = ResourceManager->openStream(fileName);
+//   if(!fs)
+//      return false;
+//
+//   mDemoReadStream = fs;
+//   *mDemoReadStream >> mProtocolVersion;
+//   U32 size;
+//   *mDemoReadStream >> size;
+//   U8 *block = new U8[size];
+//   mDemoReadStream->read( (char*)block, size);
+//   BitStream bs(block, size);
+//
+//   bool res = readDemoStartBlock(&bs);
+//   delete[] block;
+//   if(!res)
+//      return false;
+//
+//   // prep for first block read
+//   // type/size stored in U16: [type:4][size:12]
+//   U16 typeSize;
+//   *mDemoReadStream >> typeSize;
+//
+//   mDemoNextBlockType = typeSize >> 12;
+//   mDemoNextBlockSize = typeSize & 0xFFF;
+//
+//   if(mDemoReadStream->bad())
+//      return false;
    return true;
 }
 
@@ -818,17 +826,17 @@ void NetConnection::recordBlock(U32 type, U32 size, void *data)
 
 void NetConnection::handleRecordedBlock(U32 type, U32 size, void *data)
 {
-   switch(type)
-   {
-      case BlockTypePacket: {
-         BitStream bs(data, size);
-         processRawPacket(&bs);
-         break;
-      }
-      case BlockTypeSendPacket:
-         checkPacketSend(true);
-         break;
-   }
+//   switch(type)
+//   {
+//      case BlockTypePacket: {
+//         BitStream bs(data, size);
+//         processRawPacket(&bs);
+//         break;
+//      }
+//      case BlockTypeSendPacket:
+//         checkPacketSend(true);
+//         break;
+//   }
 }
 
 void NetConnection::demoPlaybackComplete()
@@ -883,18 +891,18 @@ void NetConnection::validateSendString(const char *str)
    }
 }
 
-void NetConnection::packString(std::iostream &stream, const char *str)
+void NetConnection::packString(std::ostream &stream, const char *str)
 {
    char buf[16];
    if(!*str)
    {
-      stream->writeInt(NullString, 2);
+      StreamFn::writeInt(stream, NullString, 2);
       return;
    }
    if(U8(str[0]) == StringTagPrefixByte)
    {
-      stream->writeInt(TagString, 2);
-      stream->writeInt(dAtoi(str + 1), ConnectionStringTable::EntryBitSize);
+      StreamFn::writeInt(stream, TagString, 2);
+      StreamFn::writeInt(stream, dAtoi(str + 1), ConnectionStringTable::EntryBitSize);
       return;
    }
    if(str[0] == '-' || (str[0] >= '0' && str[0] <= '9'))
@@ -903,33 +911,33 @@ void NetConnection::packString(std::iostream &stream, const char *str)
       dSprintf(buf, sizeof(buf), "%d", num);
       if(!dStrcmp(buf, str))
       {
-         stream->writeInt(Integer, 2);
-         if(stream->writeFlag(num < 0))
+         StreamFn::writeInt(stream, Integer, 2);
+         if(StreamFn::writeFlag(stream, num < 0))
             num = -num;
-         if(stream->writeFlag(num < 128))
+         if(StreamFn::writeFlag(stream, num < 128))
          {
-            stream->writeInt(num, 7);
+            StreamFn::writeInt(stream, num, 7);
             return;
          }
-         if(stream->writeFlag(num < 32768))
+         if(StreamFn::writeFlag(stream, num < 32768))
          {
-            stream->writeInt(num, 15);
+            StreamFn::writeInt(stream, num, 15);
             return;
          }
          else
          {
-            stream->writeInt(num, 31);
+            StreamFn::writeInt(stream, num, 31);
             return;
          }
       }
    }
-   stream->writeInt(CString, 2);
-   stream->writeString(str);
+   StreamFn::writeInt(stream, CString, 2);
+   StreamFn::writeString(stream, str);
 }
 
-void NetConnection::unpackString(std::iostream &stream, char readBuffer[1024])
+void NetConnection::unpackString(std::istream &stream, char readBuffer[1024])
 {
-   U32 code = stream->readInt(2);
+   U32 code = StreamFn::readInt(stream, 2);
    switch(code)
    {
       case NullString:
@@ -940,20 +948,20 @@ void NetConnection::unpackString(std::iostream &stream, char readBuffer[1024])
          return;
       case TagString:
          U32 tag;
-         tag = stream->readInt(ConnectionStringTable::EntryBitSize);
+         tag = StreamFn::readInt(stream, ConnectionStringTable::EntryBitSize);
          readBuffer[0] = StringTagPrefixByte;
          dSprintf(readBuffer+1, 1023, "%d", tag);
          return;
       case Integer:
          bool neg;
-         neg = stream->readFlag();
+         neg = StreamFn::readFlag(stream);
          S32 num;
-         if(stream->readFlag())
-            num = stream->readInt(7);
-         else if(stream->readFlag())
-            num = stream->readInt(15);
+         if(StreamFn::readFlag(stream))
+            num = StreamFn::readInt(stream, 7);
+         else if(StreamFn::readFlag(stream))
+            num = StreamFn::readInt(stream, 15);
          else
-            num = stream->readInt(31);
+            num = StreamFn::readInt(stream, 31);
          if(neg)
             num = -num;
          dSprintf(readBuffer, 1024, "%d", num);
@@ -962,24 +970,24 @@ void NetConnection::unpackString(std::iostream &stream, char readBuffer[1024])
 
 void NetConnection::packNetStringHandleU(std::iostream &stream, NetStringHandle &h)
 {
-   if(stream->writeFlag(h.isValidString() ))
+   if(StreamFn::writeFlag(stream, h.isValidString() ))
    {
       bool isReceived;
       U32 netIndex = checkString(h, &isReceived);
-      if(stream->writeFlag(isReceived))
-         stream->writeInt(netIndex, ConnectionStringTable::EntryBitSize);
+      if(StreamFn::writeFlag(stream, isReceived))
+         StreamFn::writeInt(stream, netIndex, ConnectionStringTable::EntryBitSize);
       else
-         stream->writeString(h.getString());
+         StreamFn::writeString(stream, h.getString());
    }
 }
 
 NetStringHandle NetConnection::unpackNetStringHandleU(std::iostream &stream)
 {
    NetStringHandle ret;
-   if(stream->readFlag())
+   if(StreamFn::readFlag(stream))
    {
-      if(stream->readFlag())
-         ret = mStringTable->lookupString(stream->readInt(ConnectionStringTable::EntryBitSize));
+      if(StreamFn::readFlag(stream))
+         ret = mStringTable->lookupString(StreamFn::readInt(stream, ConnectionStringTable::EntryBitSize));
       else
       {
          char buf[256];
@@ -1057,15 +1065,15 @@ void NetConnection::handleStartupError(const char *errorString)
 
 void NetConnection::writeConnectRequest(std::iostream &stream)
 {
-   stream->write(mNetClassGroup);
-   stream->write(U32(AbstractClassRep::getClassCRC(mNetClassGroup)));
+   stream << mNetClassGroup;
+   stream << (U32(AbstractClassRep::getClassCRC(mNetClassGroup)));
 }
 
 bool NetConnection::readConnectRequest(std::iostream &stream, const char **errorString)
 {
    U32 classGroup, classCRC;
-   stream->read(&classGroup);
-   stream->read(&classCRC);
+   stream >> classGroup;
+   stream >> classCRC;
 
    if(classGroup == mNetClassGroup && classCRC == AbstractClassRep::getClassCRC(mNetClassGroup))
       return true;
@@ -1149,49 +1157,49 @@ ConsoleMethod(NetConnection, connectLocal, const char *, 2, 2, "() Use the conne
                                                                 "@return No return value.\n"
                                                                 "@sa connect, getAddress")
 {
-   ConsoleObject *co = ConsoleObject::create(object->getClassName());
-   NetConnection *client = object;
-   NetConnection *server = dynamic_cast<NetConnection *>(co);
-   const char *error = nullptr;
-   BitStream *stream = BitStream::getPacketStream();
-
-   if(!server || !server->canRemoteCreate())
-       goto errorOut;
-   server->registerObject();
-   server->setIsLocalClientConnection();
-
-   server->setSequence(0);
-   client->setSequence(0);
-   client->setRemoteConnectionObject(server);
-   server->setRemoteConnectionObject(client);
-
-   stream->setPosition(0);
-   client->writeConnectRequest(stream);
-   stream->setPosition(0);
-   if(!server->readConnectRequest(stream, &error))
-      goto errorOut;
-
-   stream->setPosition(0);
-   server->writeConnectAccept(stream);
-   stream->setPosition(0);
-
-   if(!client->readConnectAccept(stream, &error))
-      goto errorOut;
-
-   client->onConnectionEstablished(true);
-   server->onConnectionEstablished(false);
-   client->setEstablished();
-   server->setEstablished();
-   client->setConnectSequence(0);
-   server->setConnectSequence(0);
-   NetConnection::setLocalClientConnection(server);
-   server->assignName("LocalClientConnection");
+//   ConsoleObject *co = ConsoleObject::create(object->getClassName());
+//   NetConnection *client = object;
+//   NetConnection *server = dynamic_cast<NetConnection *>(co);
+//   const char *error = nullptr;
+//   BitStream *stream = BitStream::getPacketStream();
+//
+//   if(!server || !server->canRemoteCreate())
+//       goto errorOut;
+//   server->registerObject();
+//   server->setIsLocalClientConnection();
+//
+//   server->setSequence(0);
+//   client->setSequence(0);
+//   client->setRemoteConnectionObject(server);
+//   server->setRemoteConnectionObject(client);
+//
+//   stream->setPosition(0);
+//   client->writeConnectRequest(stream);
+//   stream->setPosition(0);
+//   if(!server->readConnectRequest(stream, &error))
+//      goto errorOut;
+//
+//   stream->setPosition(0);
+//   server->writeConnectAccept(stream);
+//   stream->setPosition(0);
+//
+//   if(!client->readConnectAccept(stream, &error))
+//      goto errorOut;
+//
+//   client->onConnectionEstablished(true);
+//   server->onConnectionEstablished(false);
+//   client->setEstablished();
+//   server->setEstablished();
+//   client->setConnectSequence(0);
+//   server->setConnectSequence(0);
+//   NetConnection::setLocalClientConnection(server);
+//   server->assignName("LocalClientConnection");
    return "";
-
-errorOut:
-   server->deleteObject();
-   client->deleteObject();
-   if(!error)
-      error = "Unknown Error";
-   return error;
+//
+//errorOut:
+//   server->deleteObject();
+//   client->deleteObject();
+//   if(!error)
+//      error = "Unknown Error";
+//   return error;
 }

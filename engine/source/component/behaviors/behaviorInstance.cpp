@@ -24,7 +24,6 @@
 #include "component/behaviors/behaviorTemplate.h"
 #include "console/consoleTypes.h"
 #include "console/consoleInternal.h"
-#include "io/stream.h"
 
 // Script bindings.
 #include "behaviorInstance_ScriptBinding.h"
@@ -37,10 +36,10 @@ IMPLEMENT_CONOBJECT(BehaviorInstance);
 
 BehaviorInstance::BehaviorInstance( BehaviorTemplate* pTemplate ) :
     mTemplate( pTemplate ),
-    mBehaviorOwner( NULL ),
+    mBehaviorOwner( nullptr ),
     mBehaviorId( 0 )
 {
-    if ( pTemplate != NULL )
+    if ( pTemplate != nullptr )
     {
         // Fetch field prototype count.
         const U32 fieldCount = pTemplate->getBehaviorFieldCount();
@@ -52,7 +51,7 @@ BehaviorInstance::BehaviorInstance( BehaviorTemplate* pTemplate ) :
             BehaviorTemplate::BehaviorField* pField = pTemplate->getBehaviorField( index );
 
             // Set cloned field.
-            setDataField( pField->mName, NULL, pField->mDefaultValue );
+            setDataField( pField->mName, nullptr, pField->mDefaultValue );
         }
     }
 }
@@ -93,7 +92,7 @@ void BehaviorInstance::initPersistFields()
 
 const char* BehaviorInstance::getTemplateName( void )
 {
-    return mTemplate ? mTemplate->getName() : NULL;
+    return mTemplate ? mTemplate->getName() : nullptr;
 }
 
 // Get template.

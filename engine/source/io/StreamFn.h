@@ -1,4 +1,8 @@
+#ifndef __streamfn_h__
+#define __streamfn_h__
+
 #include "platform/platform.h"
+#include "consoleObject.h"
 #include <iostream>
 
 namespace StreamFn {
@@ -10,6 +14,12 @@ namespace StreamFn {
        return val;
    }
 
+   inline bool writeFlag(std::ostream& os, bool val)
+   {
+      os << val;
+      return val;
+   }
+
    inline void readString(std::istream& is, char buf[256])
    {
       U8 len;
@@ -17,8 +27,16 @@ namespace StreamFn {
       is.read(buf, len);
       buf[len] = 0;
    }
-   
-    inline void writeString (std::iostream& stream, const char* string, S32 maxLen=255)
+
+    inline U32 getReadByteSize(std::istream& is)
+    {
+        is.seekg(0, is.end);
+        U32 ret = (U32)is.tellg();
+        is.seekg(0, is.beg);
+        return ret;
+    }
+
+    inline void writeString (std::ostream& stream, const char* string, S32 maxLen=255)
     {
         size_t len = string ? dStrlen(string) : 0;
         if(len > maxLen)
@@ -29,9 +47,22 @@ namespace StreamFn {
             stream.write(string, len);
     }
 
-    inline void writeLongString(std::iostream& stream, size_t maxStringLen, const char *string)
+
+    inline void readLongString(std::istream& stream, size_t maxStringLen, char *stringBuf)
     {
-        size_t len = dStrlen(string);
+        U32 len;
+        stream >> len;
+        if (len > maxStringLen)
+        {
+            return;
+        }
+        stream.read(stringBuf, len);
+        stringBuf[len] = 0;
+    }
+
+    inline void writeLongString(std::ostream& stream, size_t maxStringLen, const char *string)
+    {
+        U32 len = (U32)dStrlen(string);
         if(len > maxStringLen)
             len = maxStringLen;
         stream << (len);
@@ -39,7 +70,7 @@ namespace StreamFn {
     }
 
     /// Write a number of tabs to this stream
-    inline void writeTabs(std::iostream& stream, U32 count)
+    inline void writeTabs(std::ostream& stream, U32 count)
     {
         char tab[] = "   ";
         while(count--)
@@ -60,10 +91,71 @@ namespace StreamFn {
         os.write("\r\n", 2);
     }
 
-   inline U32 readRangedU32(std::istream& is, U32 min, U32 max)
+    inline U32 readInt(std::istream& is, U32 size)
+    {
+        std::bitset<32> bitset;
+        for (U32 i = 0; i < size; i++)
+        {
+            bool bit;
+            is >> bit;
+            bitset[i] = bit;
+        }
+        return (U32)bitset.to_ulong();
+    }
+
+    inline void writeInt(std::ostream& os, U32 val, U32 bitcount)
+    {
+        std::bitset<32> bitset(val);
+        for (U32 i = 0; i < bitcount; i++)
+            os << bitset[i];
+    }
+
+   inline U32 readRangedU32(std::istream& is, U32 rangeStart, U32 rangeEnd)
    {
-      U32 val;
-      is >> val;
-      return ( std::min(std::max(val, min), max) );
+       AssertFatal(rangeEnd >= rangeStart, "error, end of range less than start");
+
+       U32 rangeSize = rangeEnd - rangeStart + 1;
+       U32 rangeBits = getBinLog2(getNextPow2(rangeSize));
+
+       U32 val = U32(readInt(is, rangeBits));
+       return val + rangeStart;
    }
+
+    inline void writeRangedU32(std::ostream& os, U32 value, U32 rangeStart, U32 rangeEnd)
+    {
+        AssertFatal(value >= rangeStart && value <= rangeEnd, "Out of bounds value!" );
+        AssertFatal(rangeEnd >= rangeStart, "error, end of range less than start");
+
+        U32 rangeSize = rangeEnd - rangeStart + 1;
+        U32 rangeBits = getBinLog2(getNextPow2(rangeSize));
+
+        writeInt(os, value - rangeStart, rangeBits);
+    }
+
+    inline S32 readClassId(std::istream& is, U32 classType, U32 classGroup)
+    {
+        AssertFatal(classType < NetClassTypesCount, "Out of range class type.");
+        S32 ret = readInt(is, AbstractClassRep::NetClassBitSize[classGroup][classType]);
+        if (ret > AbstractClassRep::NetClassCount[classGroup][classType])
+            return -1;
+        return ret;
+    }
+
+    inline void writeClassId(std::ostream& os, U32 classId, U32 classType, U32 classGroup)
+    {
+        AssertFatal(classType < NetClassTypesCount, "Out of range class type.");
+        AssertFatal(classId < AbstractClassRep::NetClassCount[classGroup][classType], "Out of range class id.");
+        writeInt(os, classId, AbstractClassRep::NetClassBitSize[classGroup][classType]);
+    }
+
+    inline bool streamCopy(std::iostream& toStream, std::iostream& fromStream)
+    {
+        U32 buffSize = getStreamSize(fromStream);
+        char buffer[buffSize];
+        fromStream.read(buffer, buffSize);
+        toStream.write(buffer, buffSize);
+        return (toStream.good());
+    }
 }
+
+#endif

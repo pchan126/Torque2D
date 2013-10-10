@@ -24,6 +24,7 @@
 #include "network/connectionProtocol.h"
 #include "sim/simBase.h"
 #include "network/netConnection.h"
+#include "StreamFn.h"
 
 #define DebugChecksum 0xF00DBAAD
 
@@ -177,28 +178,28 @@ void NetConnection::eventWritePacket(std::iostream &bstream, PacketNotify *notif
    bstream->writeInt(DebugChecksum, 32);
 #endif
 
-   NetEventNote *packQueueHead = NULL, *packQueueTail = NULL;
+   NetEventNote *packQueueHead = nullptr, *packQueueTail = nullptr;
 
    while(mUnorderedSendEventQueueHead)
    {
-      if(bstream->isFull())
+      if(bstream.bad())
          break;
       // dequeue the first event
       NetEventNote *ev = mUnorderedSendEventQueueHead;
       mUnorderedSendEventQueueHead = ev->mNextEvent;
 
-      bstream->writeFlag(true);
+      bstream << true;
       S32 classId = ev->mEvent->getClassId(getNetClassGroup());
-      bstream->writeClassId(classId, NetClassTypeEvent, getNetClassGroup());
+      StreamFn::writeClassId(bstream, classId, NetClassTypeEvent, getNetClassGroup());
 
       ev->mEvent->pack(this, bstream);
       DEBUG_LOG(("PKLOG %d EVENT %d: %s", getId(), bstream->getCurPos() - start, ev->mEvent->getDebugName()) );
 
 #ifdef TORQUE_DEBUG_NET
-      bstream->writeInt(classId ^ DebugChecksum, 32);
+      StreamFn::writeInt(bstream, classId ^ DebugChecksum, 32);
 #endif
       // add this event onto the packet queue
-      ev->mNextEvent = NULL;
+      ev->mNextEvent = nullptr;
       if(!packQueueHead)
          packQueueHead = ev;
       else
@@ -206,12 +207,12 @@ void NetConnection::eventWritePacket(std::iostream &bstream, PacketNotify *notif
       packQueueTail = ev;
    }
 
-   bstream->writeFlag(false);
+   bstream << false;
    S32 prevSeq = -2;
 
    while(mSendEventQueueHead)
    {
-      if(bstream->isFull())
+      if(bstream.bad())
          break;
 
       // if the event window is full, stop processing
@@ -224,21 +225,22 @@ void NetConnection::eventWritePacket(std::iostream &bstream, PacketNotify *notif
 
       //Con::printf("EVT  %d: SEND - %d", getId(), ev->mSeqCount);
 
-      bstream->writeFlag(true);
+      bstream << true;
 
-      ev->mNextEvent = NULL;
+      ev->mNextEvent = nullptr;
       if(!packQueueHead)
          packQueueHead = ev;
       else
          packQueueTail->mNextEvent = ev;
       packQueueTail = ev;
-      if(!bstream->writeFlag(ev->mSeqCount == prevSeq + 1))
-         bstream->writeInt(ev->mSeqCount, 7);
+      bstream << (ev->mSeqCount == prevSeq + 1);
+      if(!bstream)
+         StreamFn::writeInt(bstream, ev->mSeqCount, 7);
 
       prevSeq = ev->mSeqCount;
 
       S32 classId = ev->mEvent->getClassId(getNetClassGroup());
-      bstream->writeClassId(classId, NetClassTypeEvent, getNetClassGroup());
+      StreamFn::writeClassId(bstream, classId, NetClassTypeEvent, getNetClassGroup());
       ev->mEvent->pack(this, bstream);
       DEBUG_LOG(("PKLOG %d EVENT %d: %s", getId(), bstream->getCurPos() - start, ev->mEvent->getDebugName()) );
 #ifdef TORQUE_DEBUG_NET
@@ -249,13 +251,13 @@ void NetConnection::eventWritePacket(std::iostream &bstream, PacketNotify *notif
       ev->mEvent->notifySent(this);
 
    notify->eventList = packQueueHead;
-   bstream->writeFlag(0);
+   bstream << false;
 }
 
 void NetConnection::eventReadPacket(std::iostream &bstream)
 {
 #ifdef TORQUE_DEBUG_NET
-   U32 sum = bstream->readInt(32);
+   U32 sum = StreamFn::readInt(bstream, 32);
    AssertISV(sum == DebugChecksum, "Invalid checksum.");
 #endif
 
@@ -265,26 +267,26 @@ void NetConnection::eventReadPacket(std::iostream &bstream)
 
    while(true)
    {
-      bool bit = StreamFn::readFlag(bstream)();
+      bool bit = StreamFn::readFlag(bstream);
       if(unguaranteedPhase && !bit)
       {
          unguaranteedPhase = false;
-         bit = StreamFn::readFlag(bstream)();
+         bit = StreamFn::readFlag(bstream);
       }
       if(!unguaranteedPhase && !bit)
          break;
 
-      S32 seq = -1;
+      U32 seq = U32_MAX;
 
       if(!unguaranteedPhase) // get the sequence
       {
-         if(StreamFn::readFlag(bstream)())
+         if(StreamFn::readFlag(bstream))
             seq = (prevSeq + 1) & 0x7f;
          else
-            seq = bstream->readInt(7);
+            seq = StreamFn::readInt(bstream, 7);
          prevSeq = seq;
       }
-      S32 classId = bstream->readClassId(NetClassTypeEvent, getNetClassGroup());
+      S32 classId = StreamFn::readClassId(bstream, NetClassTypeEvent, getNetClassGroup());
       if(classId == -1)
       {
          setLastError("Invalid packet.");
@@ -310,7 +312,7 @@ void NetConnection::eventReadPacket(std::iostream &bstream)
       if(mErrorBuffer[0])
          return;
 #ifdef TORQUE_DEBUG_NET
-      U32 checksum = bstream->readInt(32);
+      U32 checksum = StreamFn::readInt(bstream, 32);
       AssertISV( (checksum ^ DebugChecksum) == (U32)classId,
          avar("unpack did not match pack for event of class %s.",
             evt->getClassName()) );
@@ -366,7 +368,7 @@ bool NetConnection::postNetEvent(NetEvent *theEvent)
    event->mEvent = theEvent;
    theEvent->incRef();
 
-   event->mNextEvent = NULL;
+   event->mNextEvent = nullptr;
    if(theEvent->mGuaranteeType == NetEvent::GuaranteedOrdered)
    {
       event->mSeqCount = mNextSendEventSeq++;
@@ -389,34 +391,34 @@ bool NetConnection::postNetEvent(NetEvent *theEvent)
 }
 
 
-void NetConnection::eventWriteStartBlock(std::iostream &stream)
+void NetConnection::eventWriteStartBlock(std::ostream &stream)
 {
-   stream->write(mNextRecvEventSeq);
+   stream << mNextRecvEventSeq;
    for(NetEventNote *walk = mWaitSeqEvents; walk; walk = walk->mNextEvent)
    {
-      stream->writeFlag(true);
+      stream << true;
       S32 classId = walk->mEvent->getClassId(getNetClassGroup());
-      stream->writeClassId(classId, NetClassTypeEvent, getNetClassGroup());
+      StreamFn::writeClassId(stream, classId, NetClassTypeEvent, getNetClassGroup());
       walk->mEvent->write(this, stream);
-      stream->validate();
+//      stream->validate();
    }
-   stream->writeFlag(false);
+   stream << false;
 }
 
-void NetConnection::eventReadStartBlock(std::iostream &stream)
+void NetConnection::eventReadStartBlock(std::istream &stream)
 {
-   stream->read(&mNextRecvEventSeq);
+   stream >> mNextRecvEventSeq;
 
-   NetEventNote *lastEvent = NULL;
-   while(stream->readFlag())
+   NetEventNote *lastEvent = nullptr;
+   while(StreamFn::readFlag(stream))
    {
-      S32 classTag = stream->readClassId(NetClassTypeEvent, getNetClassGroup());
+      S32 classTag = StreamFn::readClassId(stream, NetClassTypeEvent, getNetClassGroup());
       NetEvent *evt = (NetEvent *) ConsoleObject::create(getNetClassGroup(), NetClassTypeEvent, classTag);
       evt->unpack(this, stream);
       NetEventNote *add = mEventNoteChunker.alloc();
       add->mEvent = evt;
       evt->incRef();
-      add->mNextEvent = NULL;
+      add->mNextEvent = nullptr;
 
       if(!lastEvent)
          mWaitSeqEvents = add;

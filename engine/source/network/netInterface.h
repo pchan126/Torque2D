@@ -86,20 +86,20 @@ protected:
    void         removePendingConnection(NetConnection *conn);
 
    void   sendConnectChallengeRequest(NetConnection *conn);
-   void handleConnectChallengeRequest(const NetAddress *addr, BitStream *stream);
+   void handleConnectChallengeRequest(const NetAddress *addr, std::iostream& stream);
 
-   void handleConnectChallengeResponse(const NetAddress *address, BitStream *stream);
+   void handleConnectChallengeResponse(const NetAddress *address, std::iostream &stream);
 
    void   sendConnectRequest(NetConnection *conn);
-   void handleConnectRequest(const NetAddress *address, BitStream *stream);
+   void handleConnectRequest(const NetAddress *address, std::iostream &stream);
 
    void   sendConnectAccept(NetConnection *conn);
-   void handleConnectAccept(const NetAddress *address, BitStream *stream);
+   void handleConnectAccept(const NetAddress *address, std::iostream &stream);
 
    void   sendConnectReject(NetConnection *conn, const char *reason);
-   void handleConnectReject(const NetAddress *address, BitStream *stream);
+   void handleConnectReject(const NetAddress *address, std::iostream &stream);
 
-   void handleDisconnect(const NetAddress *address, BitStream *stream);
+   void handleDisconnect(const NetAddress *address, std::iostream &stream);
 
    /// @}
 
@@ -119,7 +119,7 @@ public:
 //   virtual void processPacketReceiveEvent(NetAddress srcAddress, RawData packetData);
 
    /// Handles all packets that don't fall into the category of connection handshake or game data.
-   virtual void handleInfoPacket(const NetAddress *address, U8 packetType, BitStream *stream);
+   virtual void handleInfoPacket(const NetAddress *address, U8 packetType, std::iostream &stream);
 
    /// Checks all connections marked as client to server for packet sends.
    void processClient();

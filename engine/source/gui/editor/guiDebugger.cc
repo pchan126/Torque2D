@@ -24,7 +24,6 @@
 #include "graphics/gfxDevice.h"
 #include "gui/guiCanvas.h"
 #include "gui/editor/guiDebugger.h"
-#include "io/stream.h"
 #include "graphics/gfxDrawUtil.h"
 
 IMPLEMENT_CONOBJECT(DbgFileView);
@@ -226,7 +225,7 @@ bool DbgFileView::findString(const char *text)
 
 	//copy the search text
 	dStrncpy(mFindString, text, 255);
-	S32 length = dStrlen(mFindString);
+	SizeType length = dStrlen(mFindString);
 
 	//loop through looking for the next instance
 	while (curLine < mFileView.size())

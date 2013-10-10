@@ -23,7 +23,7 @@
 #ifndef _SIM_FIELD_DICTIONARY_H_
 #define _SIM_FIELD_DICTIONARY_H_
 
-#include "io/stream.h"
+#include "console/console.h"
 #include <unordered_map>
 #include <list>
 
@@ -37,17 +37,11 @@ class SimObject;
 
 class SimFieldDictionary
 {
-//   friend class SimFieldDictionaryIterator;
-
   public:
    struct Entry
    {
       StringTableEntry slotName;
       char *value;
-   };
-   enum
-   {
-      HashTableSize = 19
    };
    std::unordered_map<StringTableEntry, Entry*> mHashTable;
 

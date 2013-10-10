@@ -55,13 +55,13 @@ void ResourceObject::destruct ()
    // pointer will be nullptr
    SAFE_DELETE(mInstance);
 
-   // Free if it is ResourceObject::File and is NOT ResourceObject::VolumeBlock
-   if((flags & ResourceObject::File) && !(flags & ResourceObject::VolumeBlock) )
-   {
-      // [tom, 10/26/2006] We don't want to delete if it's a volume block since
-      // the archive will be freed when the zip file resource object is freed.
-      SAFE_DELETE(mZipArchive);
-   }
+//   // Free if it is ResourceObject::File and is NOT ResourceObject::VolumeBlock
+//   if((flags & ResourceObject::File) && !(flags & ResourceObject::VolumeBlock) )
+//   {
+//      // [tom, 10/26/2006] We don't want to delete if it's a volume block since
+//      // the archive will be freed when the zip file resource object is freed.
+//      SAFE_DELETE(mZipArchive);
+//   }
 }
 
 //------------------------------------------------------------------------------

@@ -21,9 +21,7 @@
 //-----------------------------------------------------------------------------
 
 #include "iOSUtil.h"
-#include "io/stream.h"
-#include "io/fileStream.h"
-#include "io/memstream.h"
+#include "io/StreamFn.h"
 #include "graphics/gPalette.h"
 #include "graphics/gBitmap.h"
 #include "memory/frameAllocator.h"
@@ -45,13 +43,13 @@
 
 //Luma:	Orientation support
 int giOSGameCurrentOrientation = UIDeviceOrientationLandscapeRight;
-TCPObject* gpTCPObject = NULL;
+TCPObject* gpTCPObject = nullptr;
 char gszTCPAddress[256];
 
 //--------------------------------------
-bool GBitmap::readPNGiPhone(Stream& io_rStream)
+bool GBitmap::readPNGiPhone(std::istream &io_rStream)
 {
-    int filesize = io_rStream.getStreamSize();
+    size_t filesize = StreamFn::getStreamSize(io_rStream);
     U8 *buff = new U8[filesize+1024];
     
     CGDataProviderRef data_provider = CGDataProviderCreateWithData(nil, buff, filesize, nil);
@@ -93,12 +91,12 @@ void _iOSGetLocalIP(unsigned char *pcIPString)
 {
     int a,b,c,d ; 
     struct ifaddrs* interface;
-    char* addr = NULL;
+    char* addr = nullptr;
     
     if (getifaddrs(&interface) == 0) 
     {
         struct ifaddrs* allInterfaces = interface;
-        while (interface != NULL) 
+        while (interface != nullptr) 
         {
             const struct sockaddr_in* address = (const struct sockaddr_in*) interface->ifa_addr;
             addr = inet_ntoa(address->sin_addr);
@@ -146,7 +144,7 @@ static void TCPObjectConnectCallback(CFSocketRef s, CFSocketCallBackType type, C
     if(gpTCPObject)
     {
         gpTCPObject->connect(gszTCPAddress);
-        gpTCPObject = NULL;
+        gpTCPObject = nullptr;
     }
 }
  
@@ -156,10 +154,10 @@ CFSocketRef CreateCFSocketToURLAndPort(const char *ipAddress, U16 port)
 {
     CFSocketContext context;
     context.version = 0;
-    context.info = NULL;
-    context.retain = NULL;
-    context.release = NULL;
-    context.copyDescription = NULL;
+    context.info = nullptr;
+    context.retain = nullptr;
+    context.release = nullptr;
+    context.copyDescription = nullptr;
                                     
     CFSocketRef socket = CFSocketCreate(kCFAllocatorDefault,
                                         PF_INET,
@@ -181,7 +179,7 @@ CFSocketRef CreateCFSocketToURLAndPort(const char *ipAddress, U16 port)
     CFSocketConnectToAddress(socket, (__bridge CFDataRef)address, -1);
 
     CFRunLoopSourceRef source;
-    source = CFSocketCreateRunLoopSource(NULL, socket, 1);
+    source = CFSocketCreateRunLoopSource(nullptr, socket, 1);
     CFRunLoopAddSource(CFRunLoopGetCurrent(), source, kCFRunLoopDefaultMode);
     CFRelease(source);
     
@@ -246,7 +244,7 @@ ConsoleFunction(OpeniOSRadio, void, 2, 2, "Forces open the iOS radio if given a 
         //don't do anything if we are already doing it with a valid TCPObject (we don't want to overwrite it, and if it is already occurring, then we don't need to do it anyways!)
         if(!gpTCPObject)
         {
-            OpeniOSNetworkingAndConnectToTCPObject(NULL, argv[1]);
+            OpeniOSNetworkingAndConnectToTCPObject(nullptr, argv[1]);
         }
     }
 }

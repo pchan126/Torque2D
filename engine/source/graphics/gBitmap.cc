@@ -673,7 +673,7 @@ ResourceObject * GBitmap::findBmpResource(const char * path)
    dStrcpy( fileNameBuffer, path );
 
    // Try some different possible filenames.
-   U32 len = dStrlen( fileNameBuffer );
+   SizeType len = dStrlen( fileNameBuffer );
    for( U32 i = 0; i < EXT_ARRAY_SIZE; i++ ) 
    {
       dStrcpy( fileNameBuffer + len, extArray[i] );
@@ -715,16 +715,16 @@ GBitmap *GBitmap::load(const char *path)
    return nullptr;
 }
 
-bool GBitmap::read(Stream& io_rStream)
+bool GBitmap::read(std::iostream &io_rStream)
 {
    // Handle versioning
    U32 version;
-   io_rStream.read(&version);
+   io_rStream >> version;
    AssertFatal(version == csFileVersion, "Bitmap::read: incorrect file version");
 
    //-------------------------------------- Read the object
    U32 fmt;
-   io_rStream.read(&fmt);
+   io_rStream >> fmt;
    mInternalFormat = GFXFormat(fmt);
    mBytesPerPixel = 1;
     switch (mInternalFormat) {
@@ -743,43 +743,43 @@ bool GBitmap::read(Stream& io_rStream)
             break;
     }
 
-   io_rStream.read(&mByteSize);
+   io_rStream>> mByteSize;
 
    mBits = new U8[mByteSize];
-   io_rStream.read(mByteSize, mBits);
+   io_rStream.read((char*)mBits, mByteSize);
 
-   io_rStream.read(&mWidth);
-   io_rStream.read(&mHeight);
+   io_rStream >> mWidth;
+   io_rStream >> mHeight;
 
-   io_rStream.read(&mNumMipLevels);
+   io_rStream >> mNumMipLevels;
    for (U32 i = 0; i < c_maxMipLevels; i++)
-      io_rStream.read(&mMipLevelOffsets[i]);
+      io_rStream >> mMipLevelOffsets[i];
 
 //   if (mInternalFormat == Palettized) {
 //      pPalette = new GPalette;
 //      pPalette->read(io_rStream);
 //   }
 
-   return (io_rStream.getStatus() == Stream::Ok);
+   return io_rStream.good();
 }
 
-bool GBitmap::write(Stream& io_rStream) const
+bool GBitmap::write(std::iostream &io_rStream) const
 {
    // Handle versioning
-   io_rStream.write(csFileVersion);
+   io_rStream << csFileVersion;
 
    //-------------------------------------- Write the object
-   io_rStream.write(U32(mInternalFormat));
+   io_rStream << U32(mInternalFormat);
 
-   io_rStream.write(mByteSize);
-   io_rStream.write(mByteSize, mBits);
+   io_rStream << mByteSize;
+   io_rStream.write( (char*)mBits, mByteSize);
 
-   io_rStream.write(mWidth);
-   io_rStream.write(mHeight);
+   io_rStream << mWidth;
+   io_rStream << mHeight;
 
-   io_rStream.write(mNumMipLevels);
+   io_rStream << mNumMipLevels;
    for (U32 i = 0; i < c_maxMipLevels; i++)
-      io_rStream.write(mMipLevelOffsets[i]);
+      io_rStream << mMipLevelOffsets[i];
 
 //   if (mInternalFormat == Palettized) {
 //      AssertFatal(pPalette != nullptr,

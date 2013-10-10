@@ -154,7 +154,7 @@ void iOSWindowManager::_processCmdLineArgs(const S32 argc, const char **argv)
 void iOSWindowManager::updateWindows()
 {
     NSArray	*screens = [UIScreen screens];
-    NSUInteger screenCount = [screens count];
+//    NSUInteger screenCount = [screens count];
 
     // Create a device.
     GFXAdapter *a = GFXInit::getBestAdapterChoice();

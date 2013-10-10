@@ -100,8 +100,8 @@ public:
    /// @name Demo functionality
    /// @{
 
-   void readDemoStartBlock(std::iostream &stream);
-   void writeDemoStartBlock(std::iostream &stream);
+   void readDemoStartBlock(std::istream &stream);
+   void writeDemoStartBlock(std::ostream &stream);
    /// @}
 };
 

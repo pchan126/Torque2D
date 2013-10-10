@@ -29,6 +29,7 @@
 #include "materials/processedMaterial.h"
 //#include "core/volume.h"
 #include "sim/simSet.h"
+#include "StreamFn.h"
 
 
 MaterialList::MaterialList()
@@ -59,7 +60,7 @@ MaterialList::MaterialList(const MaterialList* pCopy)
       }
       else
       {
-         mMatInstList[i] = NULL;
+         mMatInstList[i] = nullptr;
       }
    }
 }
@@ -84,7 +85,7 @@ void MaterialList::set(U32 materialCount, const char **materialNames)
    for(U32 i = 0; i < materialCount; i++)
    {
       mMaterialNames[i] = materialNames[i];
-      mMatInstList[i] = NULL;
+      mMatInstList[i] = nullptr;
    }
 }
 
@@ -111,7 +112,7 @@ GFXTextureObject *MaterialList::getDiffuseTexture(U32 index)
 //   if (matInst && matInst->getProcessedMaterial())
 //      return matInst->getProcessedMaterial()->getStageTexture(0, MFT_DiffuseMap);
 //   else
-      return NULL;
+      return nullptr;
 }
 
 //--------------------------------------
@@ -127,25 +128,27 @@ void MaterialList::free()
 U32 MaterialList::push_back(const String &filename, Material* material)
 {
    mMaterialNames.push_back(filename);
-   mMatInstList.push_back(material ? material->createMatInstance() : NULL);
+   mMatInstList.push_back(material ? material->createMatInstance() : nullptr);
 
    // return the index
-   return mMaterialNames.size()-1;
+   return (U32)mMaterialNames.size()-1;
 }
 
 //--------------------------------------
-bool MaterialList::read(Stream &stream)
+bool MaterialList::read(std::istream &stream)
 {
    free();
 
    // check the stream version
    U8 version;
-   if ( stream.read(&version) && version != BINARY_FILE_VERSION)
+    stream >> version;
+    if ( version != BINARY_FILE_VERSION)
       return readText(stream,version);
 
    // how many materials?
    U32 count;
-   if ( !stream.read(&count) )
+   stream >> count;
+   if ( !stream )
       return false;
 
    // pre-size the vectors for efficiency
@@ -156,7 +159,7 @@ bool MaterialList::read(Stream &stream)
    {
       // Load the bitmap name
       char buffer[256];
-      stream.readString(buffer);
+       StreamFn::readString(stream, buffer);
       if( !buffer[0] )
       {
          AssertWarn(0, "MaterialList::read: error reading stream");
@@ -171,31 +174,31 @@ bool MaterialList::read(Stream &stream)
 
       // Add it to the list
       mMaterialNames.push_back(name);
-      mMatInstList.push_back(NULL);
+      mMatInstList.push_back(nullptr);
    }
 
-   return (stream.getStatus() == Stream::Ok);
+   return stream.good();
 }
 
 //--------------------------------------
-bool MaterialList::write(Stream &stream)
+bool MaterialList::write(std::ostream &stream)
 {
-   stream.write((U8)BINARY_FILE_VERSION);          // version
-   stream.write((U32)mMaterialNames.size());       // material count
+   stream << ((U8)BINARY_FILE_VERSION);          // version
+   stream << ((U32)mMaterialNames.size());       // material count
 
    for(S32 i=0; i < mMaterialNames.size(); i++)    // material names
-      stream.writeString(mMaterialNames[i]);
+       StreamFn::writeString(stream, mMaterialNames[i]);
 
-   return (stream.getStatus() == Stream::Ok);
+   return stream.good();
 }
 
 //--------------------------------------
-bool MaterialList::readText(Stream &stream, U8 firstByte)
+bool MaterialList::readText(std::istream &stream, U8 firstByte)
 {
    free();
 
    if (!firstByte)
-      return (stream.getStatus() == Stream::Ok || stream.getStatus() == Stream::EOS);
+      return (stream.good());
 
    char buf[1024];
    buf[0] = firstByte;
@@ -203,7 +206,7 @@ bool MaterialList::readText(Stream &stream, U8 firstByte)
 
    for(;;)
    {
-      stream.readLine((U8*)(buf+offset), sizeof(buf)-offset);
+      stream.getline((buf+offset), sizeof(buf)-offset);
       if(!buf[0])
          break;
       offset = 0;
@@ -216,27 +219,27 @@ bool MaterialList::readText(Stream &stream, U8 firstByte)
 
       // Add it to the list
       mMaterialNames.push_back(name);
-      mMatInstList.push_back(NULL);
+      mMatInstList.push_back(nullptr);
    }
 
-   return (stream.getStatus() == Stream::Ok || stream.getStatus() == Stream::EOS);
+   return stream.good();
 }
 
-bool MaterialList::readText(Stream &stream)
+bool MaterialList::readText(std::istream &stream)
 {
    U8 firstByte;
-   stream.read(&firstByte);
+   stream >> firstByte;
    return readText(stream,firstByte);
 }
 
 //--------------------------------------
-bool MaterialList::writeText(Stream &stream)
+bool MaterialList::writeText(std::ostream &stream)
 {
    for(S32 i=0; i < mMaterialNames.size(); i++)
-      stream.writeLine((U8*)(mMaterialNames[i].c_str()));
-   stream.writeLine((U8*)"");
+      StreamFn::writeLine(stream, mMaterialNames[i].c_str());
+   StreamFn::writeLine(stream, "");
 
-   return (stream.getStatus() == Stream::Ok);
+   return stream.good();
 }
 
 //--------------------------------------------------------------------------
@@ -253,14 +256,14 @@ void MaterialList::clearMatInstList()
       {
          BaseMatInstance* current = mMatInstList[i];
          delete current;
-         mMatInstList[i] = NULL;
+         mMatInstList[i] = nullptr;
 
          // ok, since ts material lists can remap difference indexes to the same object 
          // we need to make sure that we don't delete the same memory twice.  walk the 
          // rest of the list and null out any pointers that match the one we deleted.
          for (U32 j=0; j<mMatInstList.size(); j++)
             if (mMatInstList[j] == current)
-               mMatInstList[j] = NULL;
+               mMatInstList[j] = nullptr;
       }
    }
 }
@@ -284,7 +287,7 @@ void MaterialList::mapMaterial( U32 i )
 {
    AssertFatal( i < size(), "MaterialList::mapMaterialList - index out of bounds" );
 
-   if( mMatInstList[i] != NULL )
+   if( mMatInstList[i] != nullptr )
       return;
 
    // lookup a material property entry
@@ -293,7 +296,7 @@ void MaterialList::mapMaterial( U32 i )
    // JMQ: this code assumes that all materials have names.
    if( matName.isEmpty() )
    {
-      mMatInstList[i] = NULL;
+      mMatInstList[i] = nullptr;
       return;
    }
 

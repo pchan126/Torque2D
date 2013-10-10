@@ -555,7 +555,7 @@ void BatchRender::flushInternal( void )
         mpDebugStats->batchDrawCallsStrict++;
 
         // Stats.
-        const U32 trianglesDrawn = mVertexBuffer.size()-2;
+        const SizeType trianglesDrawn = mVertexBuffer.size()-2;
         if ( trianglesDrawn > mpDebugStats->batchMaxTriangleDrawn )
             mpDebugStats->batchMaxTriangleDrawn = trianglesDrawn;
 
@@ -576,7 +576,7 @@ void BatchRender::flushInternal( void )
             mpDebugStats->batchDrawCallsSorted++;
 
             // Stats.
-            const U32 trianglesDrawn = indexPrim->verts->size()-2;
+            const SizeType trianglesDrawn = indexPrim->verts->size()-2;
             if ( trianglesDrawn > mpDebugStats->batchMaxTriangleDrawn )
                 mpDebugStats->batchMaxTriangleDrawn = trianglesDrawn;
 
@@ -629,7 +629,7 @@ void BatchRender::_lightAndDraw( Vector<GFXVertexPCT>* pVertexVector, Vector<U16
 //      }
 //   }
    
-   mTempVertBuffHandle.set(GFX, pVertexVector->size(), GFXBufferTypeVolatile, pVertexVector->address(), pIndex->size(), pIndex->address() );
+   mTempVertBuffHandle.set(GFX, (U32)pVertexVector->size(), GFXBufferTypeVolatile, pVertexVector->address(), (U32)pIndex->size(), pIndex->address() );
    GFX->setVertexBuffer( mTempVertBuffHandle );
    
    // Draw the triangles.
@@ -649,7 +649,7 @@ void BatchRender::_lightAndDraw( Vector<GFXVertexPCT>* pVertexVector, Vector<U16
        mShaderConstBuffer->setSafe( mShader->getShaderConstHandle("$sampler2d_0"), 0);
    }
 
-    GFX->drawIndexedPrimitive(GFXTriangleStrip, 0, 0, pVertexVector->size(), pIndex->size(), pIndex->size()-2);
+    GFX->drawIndexedPrimitive(GFXTriangleStrip, 0, 0, (U32)pVertexVector->size(), (U32)pIndex->size(), (U32)pIndex->size()-2);
 }
 
 
@@ -667,7 +667,7 @@ BatchRender::indexedPrim* BatchRender::findTextureBatch( GFXTexHandle& handle )
     if ( itr == mTextureBatchMap.end() )
     {
         // No, so fetch index vector pool count.
-        const U32 indexVectorPoolCount = mIndexVectorPool.size();
+        const SizeType indexVectorPoolCount = mIndexVectorPool.size();
 
         // Do we have any in the index vector pool?
         if ( indexVectorPoolCount > 0 )

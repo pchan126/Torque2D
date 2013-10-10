@@ -39,7 +39,7 @@ public:
    /// @{
    
    /// Get the number of Window's in this system
-   virtual S32 getWindowCount() { return mWindowList.size(); };
+   virtual SizeType getWindowCount() { return mWindowList.size(); };
    
    /// Populate a list with references to all the windows created from this manager.
    virtual void getWindows(Vector<PlatformWindow*> &windows);

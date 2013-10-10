@@ -20,24 +20,14 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#include "io/stream.h"
 #include "string/stringUnit.h"
 #include "memory/frameAllocator.h"
 
 #include "component/behaviors/behaviorComponent.h"
 #include "component/behaviors/behaviorTemplate.h"
-
-#ifndef _ASSET_FIELD_TYPES_H_
 #include "assets/assetFieldTypes.h"
-#endif
-
-#ifndef _TAML_CUSTOM_H_
 #include "persistence/taml/tamlCustom.h"
-#endif
-
-#ifndef _TAML_H_
 #include "persistence/Taml/taml.h"
-#endif
 
 // Script bindings.
 #include "behaviorComponent_ScriptBinding.h"
@@ -52,7 +42,7 @@
 
 BehaviorComponent::BehaviorComponent() :
     mMasterBehaviorId( 1 ),
-    mpBehaviorFieldNames( NULL )
+    mpBehaviorFieldNames( nullptr )
 {
     SIMSET_SET_ASSOCIATION( mBehaviors );
 }
@@ -86,7 +76,7 @@ void BehaviorComponent::onDeleteNotify( SimObject *object )
     BehaviorInstance* pInstance = dynamic_cast<BehaviorInstance*>( object );
 
     // Ignore if not appropriate.
-    if ( pInstance == NULL )
+    if ( pInstance == nullptr )
         return;
 
     // Is the behavior instance owned by this component?
@@ -111,7 +101,7 @@ void BehaviorComponent::copyTo(SimObject* obj)
     BehaviorComponent* pObject = dynamic_cast<BehaviorComponent*>(obj);
 
     // Sanity!
-    AssertFatal(pObject != NULL, "BehaviorComponent::copyTo() - Object is not the correct type.");
+    AssertFatal(pObject != nullptr, "BehaviorComponent::copyTo() - Object is not the correct type.");
 
     // Clear behaviors.
     pObject->clearBehaviors();
@@ -183,7 +173,7 @@ void BehaviorComponent::copyTo(SimObject* obj)
 
 bool BehaviorComponent::addBehavior( BehaviorInstance* bi )
 {
-    if( bi == NULL || !bi->isProperlyAdded() )
+    if( bi == nullptr || !bi->isProperlyAdded() )
         return false;
 
     // Store behavior.
@@ -227,7 +217,7 @@ bool BehaviorComponent::removeBehavior( BehaviorInstance *bi, bool deleteBehavio
             }
             else
             {
-                bi->setBehaviorOwner( NULL );
+                bi->setBehaviorOwner( nullptr );
                 bi->setBehaviorId( 0 );
 
                 // Remove delete notification.
@@ -267,7 +257,7 @@ BehaviorInstance *BehaviorComponent::getBehavior( StringTableEntry behaviorTempl
         return pBehaviorInstance;
     }
 
-    return NULL;
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -286,7 +276,7 @@ bool BehaviorComponent::reOrder( BehaviorInstance *obj, U32 desiredIndex /* = 0 
 void BehaviorComponent::destroyBehaviorOutputConnections( BehaviorInstance* pOutputBehavior )
 {
     // Sanity!
-    AssertFatal( pOutputBehavior != NULL, "Output behavior cannot be NULL." );
+    AssertFatal( pOutputBehavior != nullptr, "Output behavior cannot be nullptr." );
 
     // Is the output behavior owned by this behavior component?
     if ( pOutputBehavior->getBehaviorOwner() != this )
@@ -331,7 +321,7 @@ void BehaviorComponent::destroyBehaviorOutputConnections( BehaviorInstance* pOut
 void BehaviorComponent::destroyBehaviorInputConnections( BehaviorInstance* pInputBehavior )
 {
     // Sanity!
-    AssertFatal( pInputBehavior != NULL, "Input behavior cannot be NULL." );
+    AssertFatal( pInputBehavior != nullptr, "Input behavior cannot be nullptr." );
 
     // Iterate connections.
     for ( typeInstanceConnectionHash::iterator instanceItr = mBehaviorConnections.begin(); instanceItr != mBehaviorConnections.end(); ++instanceItr )
@@ -386,7 +376,7 @@ BehaviorInstance* BehaviorComponent::getBehaviorByInstanceId( const U32 behavior
     }
 
     // Not found.
-    return NULL;
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -394,10 +384,10 @@ BehaviorInstance* BehaviorComponent::getBehaviorByInstanceId( const U32 behavior
 bool BehaviorComponent::connect( BehaviorInstance* pOutputBehavior, BehaviorInstance* pInputBehavior, StringTableEntry pOutputName, StringTableEntry pInputName )
 {
     // Sanity!
-    AssertFatal( pOutputBehavior != NULL, "Output behavior cannot be NULL." );
-    AssertFatal( pInputBehavior != NULL, "Input behavior cannot be NULL." );
-    AssertFatal( pOutputName != NULL, "Output name cannot be NULL." );
-    AssertFatal( pInputName != NULL, "Input name cannot be NULL." );
+    AssertFatal( pOutputBehavior != nullptr, "Output behavior cannot be nullptr." );
+    AssertFatal( pInputBehavior != nullptr, "Input behavior cannot be nullptr." );
+    AssertFatal( pOutputName != nullptr, "Output name cannot be nullptr." );
+    AssertFatal( pInputName != nullptr, "Input name cannot be nullptr." );
 
     // Is the output behavior owned by this behavior component?
     if ( pOutputBehavior->getBehaviorOwner() != this )
@@ -523,10 +513,10 @@ bool BehaviorComponent::connect( BehaviorInstance* pOutputBehavior, BehaviorInst
 bool BehaviorComponent::disconnect( BehaviorInstance* pOutputBehavior, BehaviorInstance* pInputBehavior, StringTableEntry pOutputName, StringTableEntry pInputName )
 {
     // Sanity!
-    AssertFatal( pOutputBehavior != NULL, "Output behavior cannot be NULL." );
-    AssertFatal( pInputBehavior != NULL, "Input behavior cannot be NULL." );
-    AssertFatal( pOutputName != NULL, "Output name cannot be NULL." );
-    AssertFatal( pInputName != NULL, "Input name cannot be NULL." );
+    AssertFatal( pOutputBehavior != nullptr, "Output behavior cannot be nullptr." );
+    AssertFatal( pInputBehavior != nullptr, "Input behavior cannot be nullptr." );
+    AssertFatal( pOutputName != nullptr, "Output name cannot be nullptr." );
+    AssertFatal( pInputName != nullptr, "Input name cannot be nullptr." );
 
     // Is the output behavior owned by this behavior component?
     if ( pOutputBehavior->getBehaviorOwner() != this )
@@ -654,9 +644,9 @@ bool BehaviorComponent::disconnect( BehaviorInstance* pOutputBehavior, BehaviorI
 bool BehaviorComponent::raise( BehaviorInstance* pOutputBehavior, StringTableEntry pOutputName )
 {
     // Sanity!
-    AssertFatal( pOutputBehavior != NULL, "Output behavior cannot be NULL." );
+    AssertFatal( pOutputBehavior != nullptr, "Output behavior cannot be nullptr." );
     AssertFatal( pOutputBehavior->isProperlyAdded(), "Output behavior is not registered." );
-    AssertFatal( pOutputName != NULL, "Output name cannot be NULL." );
+    AssertFatal( pOutputName != nullptr, "Output name cannot be nullptr." );
 
     // Is the output behavior owned by this behavior component?
     if ( pOutputBehavior->getBehaviorOwner() != this )
@@ -742,8 +732,8 @@ bool BehaviorComponent::raise( BehaviorInstance* pOutputBehavior, StringTableEnt
 U32 BehaviorComponent::getBehaviorConnectionCount( BehaviorInstance* pOutputBehavior, StringTableEntry pOutputName )
 {
     // Sanity!
-    AssertFatal( pOutputBehavior != NULL, "Output behavior cannot be NULL." );
-    AssertFatal( pOutputName != NULL, "Output name cannot be NULL." );
+    AssertFatal( pOutputBehavior != nullptr, "Output behavior cannot be nullptr." );
+    AssertFatal( pOutputName != nullptr, "Output name cannot be nullptr." );
 
     // Is the output behavior owned by this behavior component?
     if ( pOutputBehavior->getBehaviorOwner() != this )
@@ -795,15 +785,15 @@ U32 BehaviorComponent::getBehaviorConnectionCount( BehaviorInstance* pOutputBeha
 const BehaviorComponent::BehaviorPortConnection* BehaviorComponent::getBehaviorConnection( BehaviorInstance* pOutputBehavior, StringTableEntry pOutputName, const U32 connectionIndex  )
 {
     // Sanity!
-    AssertFatal( pOutputBehavior != NULL, "Output behavior cannot be NULL." );
-    AssertFatal( pOutputName != NULL, "Output name cannot be NULL." );
+    AssertFatal( pOutputBehavior != nullptr, "Output behavior cannot be nullptr." );
+    AssertFatal( pOutputName != nullptr, "Output name cannot be nullptr." );
 
     // Fetch behavior connection count.
     const U32 behaviorConnectionCount = getBehaviorConnectionCount( pOutputBehavior, pOutputName );
 
     // Finish if there are no connections.
     if ( behaviorConnectionCount == 0 )
-        return NULL;
+        return nullptr;
 
     // Is the connection index valid?
     if ( connectionIndex >= behaviorConnectionCount )
@@ -816,7 +806,7 @@ const BehaviorComponent::BehaviorPortConnection* BehaviorComponent::getBehaviorC
             pOutputBehavior->getTemplateName(),
             behaviorConnectionCount
             );
-        return NULL;
+        return nullptr;
     }
 
     // Fetch behavior connections.
@@ -834,8 +824,8 @@ const BehaviorComponent::BehaviorPortConnection* BehaviorComponent::getBehaviorC
 const BehaviorComponent::typePortConnectionVector* BehaviorComponent::getBehaviorConnections( BehaviorInstance* pOutputBehavior, StringTableEntry pOutputName )
 {
     // Sanity!
-    AssertFatal( pOutputBehavior != NULL, "Output behavior cannot be NULL." );
-    AssertFatal( pOutputName != NULL, "Output name cannot be NULL." );
+    AssertFatal( pOutputBehavior != nullptr, "Output behavior cannot be nullptr." );
+    AssertFatal( pOutputName != nullptr, "Output name cannot be nullptr." );
 
     // Is the output behavior owned by this behavior component?
     if ( pOutputBehavior->getBehaviorOwner() != this )
@@ -846,7 +836,7 @@ const BehaviorComponent::typePortConnectionVector* BehaviorComponent::getBehavio
             pOutputName,
             pOutputBehavior->getTemplateName()
             );
-        return NULL;
+        return nullptr;
     }
 
     // Does the behavior have the specified output?
@@ -858,7 +848,7 @@ const BehaviorComponent::typePortConnectionVector* BehaviorComponent::getBehavio
             pOutputName,
             pOutputBehavior->getTemplateName()
             );
-        return NULL;
+        return nullptr;
     }
 
     // Find behavior instance connections.
@@ -866,14 +856,14 @@ const BehaviorComponent::typePortConnectionVector* BehaviorComponent::getBehavio
 
     // Finish if there are no outbound connections for this output behavior.
     if ( instanceItr == mBehaviorConnections.end() )
-        return NULL;
+        return nullptr;
 
     // Find instance output connection.
     typeOutputNameConnectionHash::iterator outputItr = instanceItr->second->find( pOutputName );
 
     // Finish if there are no outbound connections for this output.
     if ( outputItr == instanceItr->second->end() )
-        return NULL;
+        return nullptr;
 
     // Fetch port connection(s).
     typePortConnectionVector* pPortConnections = outputItr->second;
@@ -925,7 +915,7 @@ bool BehaviorComponent::handlesConsoleMethod( const char *fname, S32 *routingId 
    for( SimSet::iterator nItr = mBehaviors.begin(); nItr != mBehaviors.end(); nItr++ )
    {
       SimObject *pComponent = dynamic_cast<SimObject *>(*nItr);
-      if( pComponent != NULL && pComponent->isMethod( fname ) )
+      if( pComponent != nullptr && pComponent->isMethod( fname ) )
       {
          *routingId = -2; // -2 denotes method on component
          return true;
@@ -1107,14 +1097,14 @@ void BehaviorComponent::onTamlCustomWrite( TamlCustomNodes& customNodes )
             S32 fieldType = -1;
 
             // Is this an asset field type?
-            if ( pBehaviorField != NULL && pBehaviorField->mType == behaviorTemplateAssetFieldType )
+            if ( pBehaviorField != nullptr && pBehaviorField->mType == behaviorTemplateAssetFieldType )
             {
                 // Yes, so update field type.
                 fieldType = TypeAssetId;
             }
 
             // Fetch field value.
-            const char* pFieldValue = pBehaviorInstance->getPrefixedDynamicDataField( pBehaviorField->mName, NULL, fieldType );
+            const char* pFieldValue = pBehaviorInstance->getPrefixedDynamicDataField( pBehaviorField->mName, nullptr, fieldType );
 
             // Add behavior field.
             pBehaviorNode->addField( pBehaviorField->mName, pFieldValue );
@@ -1165,7 +1155,7 @@ void BehaviorComponent::onTamlCustomRead( const TamlCustomNodes& customNodes )
     const TamlCustomNode* pCustomBehaviorNode = customNodes.findNode( BEHAVIOR_NODE_NAME );
 
     // Do we have the property?
-    if ( pCustomBehaviorNode != NULL )
+    if ( pCustomBehaviorNode != nullptr )
     {
         // Yes, so reset maximum behavior Id.
         S32 maximumBehaviorId = 0;
@@ -1206,7 +1196,7 @@ void BehaviorComponent::onTamlCustomRead( const TamlCustomNodes& customNodes )
                 BehaviorInstance* pBehaviorInstance1 = getBehaviorByInstanceId( dAtoi( pPropertyField1->getFieldValue() ) );
 
                 // Did we find the behavior?
-                if ( pBehaviorInstance1 == NULL )
+                if ( pBehaviorInstance1 == nullptr )
                 {
                     // No, so warn.
                     Con::warnf( "BehaviorComponent::onTamlCustomRead() - Could not find a behavior instance Id '%s=%s'.",
@@ -1218,7 +1208,7 @@ void BehaviorComponent::onTamlCustomRead( const TamlCustomNodes& customNodes )
                 BehaviorInstance* pBehaviorInstance2 = getBehaviorByInstanceId( dAtoi( pPropertyField2->getFieldValue() ) );
 
                 // Did we find the behavior?
-                if ( pBehaviorInstance2 == NULL )
+                if ( pBehaviorInstance2 == nullptr )
                 {
                     // No, so warn.
                     Con::warnf( "BehaviorComponent::onTamlCustomRead() - Could not find a behavior instance Id '%s=%s'.",
@@ -1296,7 +1286,7 @@ void BehaviorComponent::onTamlCustomRead( const TamlCustomNodes& customNodes )
                 BehaviorTemplate* pTemplate = dynamic_cast<BehaviorTemplate *>( Sim::findObject( pBehaviorNode->getNodeName() ) );
 
                 // Find template?
-                if( pTemplate == NULL )
+                if( pTemplate == nullptr )
                 {
                     // No, so warn appropriately.
                     Con::warnf( "BehaviorComponent::onTamlCustomRead() - Missing Behavior '%s'", pBehaviorNode->getNodeName() );
@@ -1312,7 +1302,7 @@ void BehaviorComponent::onTamlCustomRead( const TamlCustomNodes& customNodes )
                 BehaviorInstance* pBehaviorInstance = pTemplate->createInstance();
 
                 // Did we create a behavior instance?
-                if ( pBehaviorInstance == NULL )
+                if ( pBehaviorInstance == nullptr )
                 {
                     // No, so warn appropriately.
                     Con::warnf( "BehaviorComponent::onTamlCustomRead() - Found behavior could not create an instance '%s'", pBehaviorNode->getNodeName() );
@@ -1371,14 +1361,14 @@ void BehaviorComponent::onTamlCustomRead( const TamlCustomNodes& customNodes )
                     S32 fieldType = -1;
 
                     // Is this an asset field type?
-                    if ( pBehaviorField != NULL && pBehaviorField->mType == behaviorTemplateAssetFieldType )
+                    if ( pBehaviorField != nullptr && pBehaviorField->mType == behaviorTemplateAssetFieldType )
                     {
                         // Yes, so update field type.
                         fieldType = TypeAssetId;
                     }
 
                     // Set field.
-                    pBehaviorInstance->setPrefixedDynamicDataField( pField->getFieldName(), NULL, pField->getFieldValue(), fieldType );
+                    pBehaviorInstance->setPrefixedDynamicDataField( pField->getFieldName(), nullptr, pField->getFieldValue(), fieldType );
                 }
 
                 // Add behavior.
@@ -1400,8 +1390,8 @@ void BehaviorComponent::onTamlCustomRead( const TamlCustomNodes& customNodes )
 static void WriteCustomTamlSchema( const AbstractClassRep* pClassRep, TiXmlElement* pParentElement )
 {
     // Sanity!
-    AssertFatal( pClassRep != NULL,  "BehaviorComponent::WriteCustomTamlSchema() - ClassRep cannot be NULL." );
-    AssertFatal( pParentElement != NULL,  "BehaviorComponent::WriteCustomTamlSchema() - Parent Element cannot be NULL." );
+    AssertFatal( pClassRep != nullptr,  "BehaviorComponent::WriteCustomTamlSchema() - ClassRep cannot be nullptr." );
+    AssertFatal( pParentElement != nullptr,  "BehaviorComponent::WriteCustomTamlSchema() - Parent Element cannot be nullptr." );
 
     // Write an unrestricted custom Taml schema.
     Taml::WriteUnrestrictedCustomTamlSchema( BEHAVIOR_NODE_NAME, pClassRep, pParentElement );

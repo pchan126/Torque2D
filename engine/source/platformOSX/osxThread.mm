@@ -51,7 +51,7 @@ static void *ThreadRunHandler( void* arg )
     
     // Fetch the thread.
     Thread* thread = mData->mThread;
-    mData->mThreadID = ThreadManager::getCurrentThreadId();
+    mData->mThreadID = (U32)ThreadManager::getCurrentThreadId();
     
     // Add the thread.
     ThreadManager::addThread(thread);
@@ -75,7 +75,7 @@ static void *ThreadRunHandler( void* arg )
     }
     
     // This is for pthread.
-    return NULL;
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -117,7 +117,7 @@ void Thread::start()
     // reset the shouldStop flag, so we'll know when someone asks us to stop.
     shouldStop = false;
     
-    pthread_create((pthread_t*)(&mData->mThreadID), NULL, ThreadRunHandler, mData);
+    pthread_create((pthread_t*)(&mData->mThreadID), nullptr, ThreadRunHandler, mData);
 }
 
 //-----------------------------------------------------------------------------
@@ -187,20 +187,20 @@ class ExecuteThread : public Thread
     const char* directory;
     const char* executable;
 public:
-    ExecuteThread(const char *_executable, const char *_args /* = NULL */, const char *_directory /* = NULL */) : Thread(0, NULL, false, true)
+    ExecuteThread(const char *_executable, const char *_args /* = nullptr */, const char *_directory /* = nullptr */) : Thread(0, nullptr, false, true)
     {
         zargs = dStrdup(_args);
         directory = dStrdup(_directory);
         executable = dStrdup(_executable);
         start();
     }
-    static U32 runNoThread(const char *_executable, const char *_args /* = NULL */, const char *_directory /* = NULL */);
+    static U32 runNoThread(const char *_executable, const char *_args /* = nullptr */, const char *_directory /* = nullptr */);
     virtual void run(void* arg);
 };
 
 static char* _unDoubleQuote(char* arg)
 {
-    U32 len = dStrlen(arg);
+    SizeType len = dStrlen(arg);
     if(!len)
         return arg;
     
@@ -220,7 +220,7 @@ U32 ExecuteThread::runNoThread( const char* executable, const char* zargs, const
     NSMutableArray *array = [NSMutableArray array];
     
     // scan the args list, breaking it up, space delimited, backslash escaped.
-    U32 len = dStrlen(zargs);
+    SizeType len = dStrlen(zargs);
     char args[len+1];
     dStrncpy(args, zargs, len+1);
     char *lastarg = args;
@@ -266,11 +266,11 @@ void ExecuteThread::run(void* arg)
 ConsoleFunction(shellExecute, bool, 2, 4, "(executable, [args], [directory])")
 {
     ExecuteThread *et;
-    et = new ExecuteThread(argv[1], argc > 2 ? argv[2] : NULL, argc > 3 ? argv[3] : NULL);
+    et = new ExecuteThread(argv[1], argc > 2 ? argv[2] : nullptr, argc > 3 ? argv[3] : nullptr);
     return true; // Bug: BPNC error: need feedback on whether the command was sucessful
 }
 
 ConsoleFunction(shellExecuteBlocking, int, 2, 4, "(executable, [args], [directory])")
 {
-    return (int)ExecuteThread::runNoThread( argv[1], argc > 2 ? argv[2] : NULL, argc > 3 ? argv[3] : NULL );
+    return (int)ExecuteThread::runNoThread( argv[1], argc > 2 ? argv[2] : nullptr, argc > 3 ? argv[3] : nullptr );
 }

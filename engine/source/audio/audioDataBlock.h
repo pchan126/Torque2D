@@ -56,8 +56,8 @@ class AudioEnvironment : public SimDataBlock
       AudioEnvironment();
 
       static void initPersistFields();
-      void packData(std::stringstream &stream);
-      void unpackData(std::stringstream &stream);
+      void packData(std::ostream &stream);
+      void unpackData(std::istream &stream);
 
       DECLARE_CONOBJECT(AudioEnvironment);
 };
@@ -87,8 +87,8 @@ class AudioSampleEnvironment : public SimDataBlock
       AudioSampleEnvironment();
       static void initPersistFields();
 
-      void packData(std::stringstream &stream);
-      void unpackData(std::stringstream &stream);
+      void packData(std::ostream &stream);
+      void unpackData(std::istream &stream);
 
       DECLARE_CONOBJECT(AudioSampleEnvironment);
 };

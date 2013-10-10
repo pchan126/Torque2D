@@ -42,11 +42,11 @@ public:
    ~SimpleMessageEvent()
       { dFree(msg); }
 
-   virtual void pack(NetConnection * /*ps*/, std::iostream &bstream)
+   virtual void pack(NetConnection * /*ps*/, std::ostream &bstream)
       { StreamFn::writeString(bstream, msg); }
-   virtual void write(NetConnection *, std::iostream &bstream)
+   virtual void write(NetConnection *, std::ostream &bstream)
       { StreamFn::writeString(bstream, msg); }
-   virtual void unpack(NetConnection * /*ps*/, std::iostream &bstream)
+   virtual void unpack(NetConnection * /*ps*/, std::istream &bstream)
       { char buf[256]; StreamFn::readString(bstream, buf); msg = dStrdup(buf); }
    virtual void process(NetConnection *)
       { Con::printf("RMSG %d  %s", mSourceId, msg); }
@@ -67,12 +67,12 @@ public:
       mNetFlags.set(Ghostable);
       dStrcpy(message, "Hello World!");
    }
-   U32 packUpdate(NetConnection *conn, U32 mask, std::iostream &stream)
+   U32 packUpdate(NetConnection *conn, U32 mask, std::ostream &stream)
    {
-      stream->writeString(message);
+      StreamFn::writeString(stream, message);
       return 0;
    }
-   void unpackUpdate(NetConnection *conn, std::iostream &stream)
+   void unpackUpdate(NetConnection *conn, std::istream &stream)
    {
       StreamFn::readString(stream, message);
       Con::printf("Got message: %s", message);
