@@ -38,7 +38,6 @@
 
 #include "console/console.h"
 #include "game/gameInterface.h"
-#include "io/fileStream.h"
 
 struct NameLookup
 {

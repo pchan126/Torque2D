@@ -25,13 +25,13 @@
 #include "./gfxOpenGL33WinShader.h"
 
 #include "memory/frameAllocator.h"
-#include "io/fileStream.h"
 #include "platform/platformString.h"
 #include "math/mPoint.h"
 #include "graphics/gfxStructs.h"
 #include "console/console.h"
 #include "./gfxOpenGL33WinEnumTranslate.h"
-
+#include "io/StreamFn.h"
+#include <fstream>
 
 class GFXOpenGL33WinShaderConstHandle : public GFXShaderConstHandle
 {
@@ -700,7 +700,7 @@ void GFXOpenGL33WinShader::zombify()
    dMemset(mConstBuffer, 0, mConstBufferSize);
 }
 
-char* GFXOpenGL33WinShader::_handleIncludes( const StringTableEntry path, FileStream *s )
+char* GFXOpenGL33WinShader::_handleIncludes( const StringTableEntry path, std::iostream& s )
 {
    // TODO:  The #line pragma on GLSL takes something called a
    // "source-string-number" which it then never explains.
@@ -710,10 +710,10 @@ char* GFXOpenGL33WinShader::_handleIncludes( const StringTableEntry path, FileSt
    //String linePragma = String::ToString( "#line 1 \r\n");
    //U32 linePragmaLen = linePragma.length();
 
-   U32 shaderLen = s->getStreamSize();
+   U32 shaderLen = StreamFn::getStreamSize(s);
    char* buffer = (char*)dMalloc(shaderLen + 1);
    //dStrncpy( buffer, linePragma.c_str(), linePragmaLen );
-   s->read(shaderLen, buffer);
+   s.read(buffer, shaderLen);
    buffer[shaderLen] = 0;
    
 //   char* p = dStrstr(buffer, (const char*)"#include");
@@ -815,7 +815,7 @@ char* GFXOpenGL33WinShader::_handleIncludes( const StringTableEntry path, FileSt
 
 bool GFXOpenGL33WinShader::_loadShaderFromStream(  GLuint shader,
                                   const StringTableEntry path,
-                                  FileStream* s,
+                                  std::iostream& s,
                                   const Vector<GFXShaderMacro>& macros )
 {
    Vector<char*> buffers;
@@ -835,7 +835,7 @@ bool GFXOpenGL33WinShader::_loadShaderFromStream(  GLuint shader,
    //}
    
    // Now finally add the shader source.
-   U32 shaderLen = s->getStreamSize();
+   U32 shaderLen = StreamFn::getStreamSize(s);
    char *buffer = _handleIncludes(path, s);
    if ( !buffer )
       return false;
@@ -873,8 +873,8 @@ bool GFXOpenGL33WinShader::initShader( const StringTableEntry file,
 //    Con::expandScriptFilename( szFullPathBuffer, sizeof(szFullPathBuffer), file );
    
    // Ok it's not in the shader gen manager, so ask Torque for it
-   FileStream stream;
-   if ( !stream.open( file, FileStream::Read ) )
+   std::fstream stream(file, std::fstream::in);
+   if ( !stream )
    {
       AssertISV(false, avar("GFXOpenGL33WinShader::initShader - failed to open shader '%s'.", file));
 
@@ -885,7 +885,7 @@ bool GFXOpenGL33WinShader::initShader( const StringTableEntry file,
       return false;
    }
    
-   if ( !_loadShaderFromStream( activeShader, file, &stream, macros ) )
+   if ( !_loadShaderFromStream( activeShader, file, stream, macros ) )
       return false;
    
    GLint compile;
@@ -900,7 +900,7 @@ bool GFXOpenGL33WinShader::initShader( const StringTableEntry file,
    {
       FrameAllocatorMarker fam;
       char* log = (char*)fam.alloc(logLength);
-      glGetShaderInfoLog(activeShader, logLength, NULL, log);
+      glGetShaderInfoLog(activeShader, logLength, nullptr, log);
 
       // Always print errors
       glGetShaderiv( activeShader, GL_COMPILE_STATUS, &compileStatus );

@@ -21,7 +21,6 @@
 //-----------------------------------------------------------------------------
 
 #include "platform/platform.h"
-#include "io/stream.h"
 
 #include "io/zip/centralDir.h"
 #include "io/zip/compressor.h"

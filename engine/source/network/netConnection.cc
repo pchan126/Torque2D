@@ -27,7 +27,7 @@
 #include "io/resource/resourceManager.h"
 #include "console/consoleTypes.h"
 #include "netInterface.h"
-#include "StreamFn.h"
+#include "io/StreamFn.h"
 #include <stdarg.h>
 #include <sstream>
 

@@ -76,11 +76,11 @@ protected:
    void initHandles();
    void setConstantsFromBuffer(GFXOpenGL33WinShaderConstBuffer* buffer);
    
-   static char* _handleIncludes( const StringTableEntry path, FileStream *s );
+   static char* _handleIncludes( const StringTableEntry path, std::iostream& s );
 
    static bool _loadShaderFromStream(  GLuint shader, 
                                        const StringTableEntry path,
-                                       FileStream* s, 
+                                       std::iostream& s, 
                                        const Vector<GFXShaderMacro>& macros );
 
    /// @name Internal GL handles

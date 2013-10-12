@@ -25,7 +25,7 @@
 #include "platform/event.h"
 #include "network/netConnection.h"
 #include "network/netObject.h"
-#include "StreamFn.h"
+#include "io/StreamFn.h"
 
 class SimpleMessageEvent : public NetEvent
 {

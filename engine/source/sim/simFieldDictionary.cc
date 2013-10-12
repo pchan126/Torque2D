@@ -23,7 +23,7 @@
 #include "sim/simFieldDictionary.h"
 #include "console/consoleInternal.h"
 #include "memory/frameAllocator.h"
-#include "StreamFn.h"
+#include "io/StreamFn.h"
 
 //-----------------------------------------------------------------------------
 

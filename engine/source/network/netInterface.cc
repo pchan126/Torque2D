@@ -26,7 +26,7 @@
 #include "network/netInterface.h"
 #include "math/mRandom.h"
 #include "game/gameInterface.h"
-#include "StreamFn.h"
+#include "io/StreamFn.h"
 
 NetInterface *GNet = nullptr;
 

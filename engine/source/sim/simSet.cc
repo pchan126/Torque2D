@@ -31,7 +31,7 @@
 #include "debug/profiler.h"
 #include "console/consoleTypeValidators.h"
 #include "memory/frameAllocator.h"
-#include "StreamFn.h"
+#include "io/StreamFn.h"
 
 //////////////////////////////////////////////////////////////////////////
 // Sim Set

@@ -88,7 +88,7 @@
 #include "platform/platform_ScriptBinding.h"
 
 #include "platform/platformTimer.h"
-#include "StreamFn.h"
+#include "io/StreamFn.h"
 
 //-----------------------------------------------------------------------------
 
@@ -96,7 +96,7 @@ DefaultGame GameObject;
 DemoNetInterface GameNetInterface;
 NetworkProcessList gServerProcessList(true);
 StringTableEntry gMasterAddress;
-TimeManager* tm = NULL;
+TimeManager* tm = nullptr;
 
 static F32 gTimeScale = 1.0;
 static U32 gTimeAdvance = 0;

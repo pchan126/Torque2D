@@ -21,7 +21,7 @@
 //-----------------------------------------------------------------------------
 
 #include "sim/simBase.h"
-#include "StreamFn.h"
+#include "io/StreamFn.h"
 
 #ifndef _STREAMOBJECT_H_
 #define _STREAMOBJECT_H_

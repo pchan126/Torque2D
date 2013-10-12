@@ -26,7 +26,7 @@
 #include "sim/simBase.h"
 #include "game/gameConnection.h"
 #include "io/resource/resourceManager.h"
-#include "StreamFn.h"
+#include "io/StreamFn.h"
 
 //----------------------------------------------------------------------------
 #define MAX_MOVE_PACKET_SENDS 4

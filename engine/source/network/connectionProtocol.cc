@@ -23,7 +23,7 @@
 #include "connectionProtocol.h"
 #include "console/console.h"
 #include "console/consoleTypes.h"
-#include "StreamFn.h"
+#include "io/StreamFn.h"
 #include <sstream>
 
 bool gLogToConsole = false;

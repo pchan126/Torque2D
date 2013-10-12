@@ -25,7 +25,7 @@
 #include "console/consoleTypes.h"
 #include "console/console.h"
 #include "game/version.h"
-#include "StreamFn.h"
+#include "io/StreamFn.h"
 
 GFXDevice * GFXDevice::smGFXDevice = nullptr;
 bool GFXDevice::smWireframe = false;

@@ -29,7 +29,7 @@
 #include "network/netObject.h"
 #include "game/gameConnection.h"
 #include "network/serverQuery.h"
-#include "StreamFn.h"
+#include "io/StreamFn.h"
 
 //----------------------------------------------------------------
 // remote procedure call console functions

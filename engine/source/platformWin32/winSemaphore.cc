@@ -30,7 +30,7 @@ struct PlatformSemaphore
    PlatformSemaphore(S32 initialCount)
    {
       semaphore = new HANDLE;
-      *semaphore = CreateSemaphore(0, initialCount, S32_MAX, 0);
+      *semaphore = CreateSemaphore(0, initialCount, INT32_MAX, 0);
    }
 
    ~PlatformSemaphore()

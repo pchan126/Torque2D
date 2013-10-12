@@ -28,7 +28,7 @@
 
 // Debug Profiling.
 #include "debug/profiler.h"
-#include "StreamFn.h"
+#include "io/StreamFn.h"
 #include "rapidjson/reader.h"
 #include "rapidjson/prettywriter.h"
 #include "rapidjson/filestream.h"

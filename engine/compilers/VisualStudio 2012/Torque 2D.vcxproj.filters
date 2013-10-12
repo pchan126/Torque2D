@@ -100,12 +100,6 @@
     <Filter Include="io">
       <UniqueIdentifier>{fa588b4f-a8dd-4615-beee-dab4db372118}</UniqueIdentifier>
     </Filter>
-    <Filter Include="io\zip">
-      <UniqueIdentifier>{27eea104-6e41-4cfb-bc50-56f9157081ce}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="io\resource">
-      <UniqueIdentifier>{0688e2d7-d313-4a35-b90d-1df191825361}</UniqueIdentifier>
-    </Filter>
     <Filter Include="math">
       <UniqueIdentifier>{04e382a2-a0a9-40c9-b227-a46e345fb032}</UniqueIdentifier>
     </Filter>
@@ -222,6 +216,9 @@
     </Filter>
     <Filter Include="math\util">
       <UniqueIdentifier>{e6e361a1-b57c-4000-8e59-845d3fa4d9d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="io\resource">
+      <UniqueIdentifier>{ac23c8ed-f9f4-413f-847d-cb2916dcf42a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -430,9 +427,6 @@
       <Filter>platformWin32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\platformWin32\winUser.cc">
-      <Filter>platformWin32</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\platformWin32\winVFS.cc">
       <Filter>platformWin32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\platformWin32\winWindow.cc">
@@ -864,69 +858,6 @@
     <ClCompile Include="..\..\source\graphics\PNGImage.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\io\bitStream.cc">
-      <Filter>io</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\io\bufferStream.cc">
-      <Filter>io</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\io\fileObject.cc">
-      <Filter>io</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\io\fileStream.cc">
-      <Filter>io</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\io\fileStreamObject.cc">
-      <Filter>io</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\io\filterStream.cc">
-      <Filter>io</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\io\memStream.cc">
-      <Filter>io</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\io\nStream.cc">
-      <Filter>io</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\io\resizeStream.cc">
-      <Filter>io</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\io\streamObject.cc">
-      <Filter>io</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\io\zip\centralDir.cc">
-      <Filter>io\zip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\io\zip\compressor.cc">
-      <Filter>io\zip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\io\zip\extraField.cc">
-      <Filter>io\zip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\io\zip\fileHeader.cc">
-      <Filter>io\zip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\io\zip\zipArchive.cc">
-      <Filter>io\zip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\io\zip\zipCryptStream.cc">
-      <Filter>io\zip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\io\zip\zipObject.cc">
-      <Filter>io\zip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\io\zip\zipSubStream.cc">
-      <Filter>io\zip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\io\zip\zipTempStream.cc">
-      <Filter>io\zip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\io\zip\deflate.cc">
-      <Filter>io\zip</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\io\zip\stored.cc">
-      <Filter>io\zip</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\source\memory\dataChunker.cc">
       <Filter>memory</Filter>
     </ClCompile>
@@ -990,9 +921,6 @@
     <ClCompile Include="..\..\source\network\tcpObject.cc">
       <Filter>network</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\io\fileSystemFunctions.cpp">
-      <Filter>io</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\source\string\stringBuffer.cc">
       <Filter>string</Filter>
     </ClCompile>
@@ -1007,12 +935,6 @@
     </ClCompile>
     <ClCompile Include="..\..\source\string\stringUnit.cpp">
       <Filter>string</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\io\resource\resourceDictionary.cc">
-      <Filter>io\resource</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\io\resource\resourceManager.cc">
-      <Filter>io\resource</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\collection\nameTags.cpp">
       <Filter>collection</Filter>
@@ -1496,6 +1418,21 @@
     </ClCompile>
     <ClCompile Include="..\..\source\graphics\OpenGL\gfxOpenGLCardProfiler.cc">
       <Filter>graphics\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\io\fileObject.cc">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\io\fileSystemFunctions.cpp">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\io\streamObject.cc">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\io\resource\resourceDictionary.cc">
+      <Filter>io\resource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\io\resource\resourceManager.cc">
+      <Filter>io\resource</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2198,69 +2135,6 @@
     <ClInclude Include="..\..\source\collection\vector.h">
       <Filter>collection</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\io\bitStream.h">
-      <Filter>io</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\io\bufferStream.h">
-      <Filter>io</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\io\fileio.h">
-      <Filter>io</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\io\fileObject.h">
-      <Filter>io</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\io\fileStream.h">
-      <Filter>io</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\io\fileStreamObject.h">
-      <Filter>io</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\io\filterStream.h">
-      <Filter>io</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\io\memstream.h">
-      <Filter>io</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\io\resizeStream.h">
-      <Filter>io</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\io\stream.h">
-      <Filter>io</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\io\streamObject.h">
-      <Filter>io</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\io\zip\centralDir.h">
-      <Filter>io\zip</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\io\zip\compressor.h">
-      <Filter>io\zip</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\io\zip\extraField.h">
-      <Filter>io\zip</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\io\zip\fileHeader.h">
-      <Filter>io\zip</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\io\zip\zipArchive.h">
-      <Filter>io\zip</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\io\zip\zipCryptStream.h">
-      <Filter>io\zip</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\io\zip\zipObject.h">
-      <Filter>io\zip</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\io\zip\zipStatFilter.h">
-      <Filter>io\zip</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\io\zip\zipSubStream.h">
-      <Filter>io\zip</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\io\zip\zipTempStream.h">
-      <Filter>io\zip</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\memory\dataChunker.h">
       <Filter>memory</Filter>
     </ClInclude>
@@ -2332,9 +2206,6 @@
     </ClInclude>
     <ClInclude Include="..\..\source\memory\safeDelete.h">
       <Filter>memory</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\io\resource\resourceManager.h">
-      <Filter>io\resource</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\memory\factoryCache.h">
       <Filter>memory</Filter>
@@ -3056,6 +2927,18 @@
     </ClInclude>
     <ClInclude Include="..\..\source\math\util\sphereMesh.h">
       <Filter>math\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\io\fileObject.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\io\StreamFn.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\io\streamObject.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\io\resource\resourceManager.h">
+      <Filter>io\resource</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

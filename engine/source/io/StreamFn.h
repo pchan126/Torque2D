@@ -2,7 +2,7 @@
 #define __streamfn_h__
 
 #include "platform/platform.h"
-#include "consoleObject.h"
+#include "console/consoleObject.h"
 #include <iostream>
 
 namespace StreamFn {
@@ -151,9 +151,9 @@ namespace StreamFn {
     inline bool streamCopy(std::iostream& toStream, std::iostream& fromStream)
     {
         U32 buffSize = getStreamSize(fromStream);
-        char buffer[buffSize];
-        fromStream.read(buffer, buffSize);
-        toStream.write(buffer, buffSize);
+        std::vector<char> buffer(buffSize);
+        fromStream.read(buffer.data(), buffSize);
+        toStream.write(buffer.data(), buffSize);
         return (toStream.good());
     }
 }

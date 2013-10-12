@@ -36,7 +36,6 @@
 #include "platformWin32/winDirectInput.h"
 #include "game/gameInterface.h"
 #include "math/mRandom.h"
-#include "io/fileStream.h"
 #include "game/resource.h"
 #include "string/unicode.h"
 #include "gui/guiCanvas.h"
@@ -106,16 +105,16 @@ extern "C" {
 //--------------------------------------
 Win32PlatState::Win32PlatState()
 {
-   log_fp      = NULL;
-   hinstOpenGL = NULL;
-   hinstGLU    = NULL;
-   hinstOpenAL = NULL;
-   appWindow   = NULL;
-   appDC       = NULL;
-   appInstance = NULL;
+   log_fp      = nullptr;
+   hinstOpenGL = nullptr;
+   hinstGLU    = nullptr;
+   hinstOpenAL = nullptr;
+   appWindow   = nullptr;
+   appDC       = nullptr;
+   appInstance = nullptr;
    currentTime = 0;
    processId   = 0;
-   appMenu     = NULL;
+   appMenu     = nullptr;
    nMessagesPerFrame = 10; 
 }
 
@@ -281,7 +280,7 @@ static void InitInput()
 //--------------------------------------
 static void setMouseClipping()
 {
-   ClipCursor(NULL);
+   ClipCursor(nullptr);
    if(windowActive)
    {
       RECT r;

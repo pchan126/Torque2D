@@ -23,7 +23,7 @@
 #include "console/console.h"
 #include "sim/simBase.h"
 #include "io/resource/resourceManager.h"
-#include "StreamFn.h"
+#include "io/StreamFn.h"
 
 //////////////////////////////////////////////////////////////////////////
 // SimObject Methods

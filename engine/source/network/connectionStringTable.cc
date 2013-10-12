@@ -25,7 +25,7 @@
 #include "sim/simBase.h"
 #include "network/netConnection.h"
 #include "console/consoleTypes.h"
-#include "StreamFn.h"
+#include "io/StreamFn.h"
 
 class NetStringEvent : public NetEvent
 {

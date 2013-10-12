@@ -25,7 +25,7 @@
 #include "sim/simBase.h"
 #include "network/netConnection.h"
 #include "io/resource/resourceManager.h"
-#include "StreamFn.h"
+#include "io/StreamFn.h"
 
 #define DebugChecksum 0xF00DBAAD
 

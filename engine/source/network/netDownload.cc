@@ -26,7 +26,7 @@
 #include "network/netConnection.h"
 #include "network/netObject.h"
 #include "io/resource/resourceManager.h"
-#include "StreamFn.h"
+#include "io/StreamFn.h"
 
 class FileDownloadRequestEvent : public NetEvent
 {
