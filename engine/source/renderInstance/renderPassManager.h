@@ -182,7 +182,7 @@ public:
    void removeManager(RenderBinManager* mgr);
 
    /// How many render bin managers do we have?
-   SizeType getManagerCount() const { return mRenderBins.size(); }
+   size_t getManagerCount() const { return mRenderBins.size(); }
 
    /// Get the render manager at i
    RenderBinManager* getManager( S32 i ) const;

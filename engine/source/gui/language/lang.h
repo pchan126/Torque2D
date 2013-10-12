@@ -71,7 +71,7 @@ public:
 
 	bool isLoaded(void)						{ return mStringTable.size() > 0; }
 	
-	SizeType getNumStrings(void)					{ return mStringTable.size(); }
+	size_t getNumStrings(void)					{ return mStringTable.size(); }
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -106,7 +106,7 @@ public:
 		return mLangTable[langid]->getLangName();
 	}
 
-	const SizeType getNumLang(void) const					{ return mLangTable.size(); }
+	const size_t getNumLang(void) const					{ return mLangTable.size(); }
 
 	const UTF8 * getString(const U32 id) const;
 	const U32 getStringLength(const U32 id) const;

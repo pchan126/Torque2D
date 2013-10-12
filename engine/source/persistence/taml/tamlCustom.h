@@ -230,8 +230,8 @@ public:
 
     bool fieldNameBeginsWith( const char* pComparison ) const
     {
-        const SizeType comparisonLength = dStrlen( pComparison );
-        const SizeType fieldNameLength = dStrlen( mFieldName );
+        const size_t comparisonLength = dStrlen( pComparison );
+        const size_t fieldNameLength = dStrlen( mFieldName );
 
         if ( comparisonLength == 0 || fieldNameLength == 0 || comparisonLength > fieldNameLength )
             return false;

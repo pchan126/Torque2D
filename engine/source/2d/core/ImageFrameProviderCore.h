@@ -49,7 +49,7 @@ protected:
 
     S32                                     mLastFrameIndex;
     S32                                     mCurrentFrameIndex;
-    SizeType                                mMaxFrameIndex;
+    size_t                                mMaxFrameIndex;
     F32                                     mCurrentTime;
     F32                                     mPausedTime;
     F32                                     mCurrentModTime;

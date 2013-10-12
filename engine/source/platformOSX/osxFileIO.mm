@@ -57,7 +57,7 @@ static bool isMainDotCsPresent(char *dir)
     // Create the full path using the dir and pre-determined script name of "main.cs"
     char maincsbuf[MAX_MAC_PATH_LONG];
     const char *maincsname = "/main.cs";
-    SizeType len = dStrlen(dir) + dStrlen(maincsname);
+    size_t len = dStrlen(dir) + dStrlen(maincsname);
     
     // The length of the above file path is too long. Error out
     AssertISV(len < MAX_MAC_PATH_LONG, "Sorry, path is too long, I can't run from this folder.");

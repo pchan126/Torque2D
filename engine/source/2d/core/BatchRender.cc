@@ -555,7 +555,7 @@ void BatchRender::flushInternal( void )
         mpDebugStats->batchDrawCallsStrict++;
 
         // Stats.
-        const SizeType trianglesDrawn = mVertexBuffer.size()-2;
+        const size_t trianglesDrawn = mVertexBuffer.size()-2;
         if ( trianglesDrawn > mpDebugStats->batchMaxTriangleDrawn )
             mpDebugStats->batchMaxTriangleDrawn = trianglesDrawn;
 
@@ -576,7 +576,7 @@ void BatchRender::flushInternal( void )
             mpDebugStats->batchDrawCallsSorted++;
 
             // Stats.
-            const SizeType trianglesDrawn = indexPrim->verts->size()-2;
+            const size_t trianglesDrawn = indexPrim->verts->size()-2;
             if ( trianglesDrawn > mpDebugStats->batchMaxTriangleDrawn )
                 mpDebugStats->batchMaxTriangleDrawn = trianglesDrawn;
 
@@ -667,7 +667,7 @@ BatchRender::indexedPrim* BatchRender::findTextureBatch( GFXTexHandle& handle )
     if ( itr == mTextureBatchMap.end() )
     {
         // No, so fetch index vector pool count.
-        const SizeType indexVectorPoolCount = mIndexVectorPool.size();
+        const size_t indexVectorPoolCount = mIndexVectorPool.size();
 
         // Do we have any in the index vector pool?
         if ( indexVectorPoolCount > 0 )

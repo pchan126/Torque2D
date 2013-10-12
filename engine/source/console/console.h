@@ -157,7 +157,7 @@ class EnumTable
 //   }
 
 
-   SizeType getSize(void) { return table.size(); }
+   size_t getSize(void) { return table.size(); }
 
     std::string operator[](S32 i)               { return table[i]; }
     S32 operator[](std::string i)               { return rev_table[makeLower(i)]; }

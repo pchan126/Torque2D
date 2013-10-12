@@ -225,7 +225,7 @@ bool DbgFileView::findString(const char *text)
 
 	//copy the search text
 	dStrncpy(mFindString, text, 255);
-	SizeType length = dStrlen(mFindString);
+	size_t length = dStrlen(mFindString);
 
 	//loop through looking for the next instance
 	while (curLine < mFileView.size())

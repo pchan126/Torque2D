@@ -82,7 +82,7 @@ private:
    Vector<PlatformFont::CharInfo>  mCharInfoList;       // - List of character info structures, must
                                           //    be accessed through the getCharInfo(U32)
                                           //    function to account for remapping...
-   std::array<SizeType, 65536>     mRemapTable;    // - Index remapping
+   std::array<size_t, 65536>     mRemapTable;    // - Index remapping
 public:
    GFont();
    virtual ~GFont();
@@ -120,15 +120,15 @@ public:
    U32 getBreakPos(const UTF16 *string, U32 strlen, U32 width, bool breakOnWhitespace);
 
    /// These are the preferred width functions.
-   U32 getStrNWidth(const UTF16*, SizeType n);
-   U32 getStrNWidthPrecise(const UTF16*, SizeType n);
+   U32 getStrNWidth(const UTF16*, size_t n);
+   U32 getStrNWidthPrecise(const UTF16*, size_t n);
    
    /// These UTF8 versions of the width functions will be deprecated, please avoid them.
    U32 getStrWidth(const UTF8*);   // Note: ignores c/r
-   U32 getStrNWidth(const UTF8*, SizeType n);
+   U32 getStrNWidth(const UTF8*, size_t n);
 
    U32 getStrWidthPrecise(const UTF8*);   // Note: ignores c/r
-   U32 getStrNWidthPrecise(const UTF8*, SizeType n);
+   U32 getStrNWidthPrecise(const UTF8*, size_t n);
    
    void wrapString(const UTF8 *string, U32 width, Vector<U32> &startLineOffset, Vector<U32> &lineLen);
 

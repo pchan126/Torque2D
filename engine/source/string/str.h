@@ -52,7 +52,7 @@ public:
 
    typedef StringChar ValueType;
 
-   static const SizeType NPos;   ///< Indicates 'not found' when using find() functions
+   static const size_t NPos;   ///< Indicates 'not found' when using find() functions
 
    /// A predefined empty string.
    static const String EmptyString;
@@ -60,7 +60,7 @@ public:
    String():_intern(nullptr) {};
    String(const String &str):_intern(nullptr)                     { _string = str._string;};
    String(const StringChar *str):_intern(nullptr)                 { _string = std::string(str); }
-   String(const StringChar *str, SizeType size);
+   String(const StringChar *str, size_t size);
    String(const UTF16 *str);
    ~String();
 
@@ -68,9 +68,9 @@ public:
    const UTF16 *utf16() const;
    const UTF8* utf8() const    { return c_str(); }
 
-   SizeType length() const     { return _string.length();}   ///< Returns the length of the string in bytes.
-   SizeType size() const       { return _string.size();}    ///< Returns the length of the string in bytes including the nullptr terminator.
-   SizeType numChars() const; ///< Returns the length of the string in characters.
+   size_t length() const     { return _string.length();}   ///< Returns the length of the string in bytes.
+   size_t size() const       { return _string.size();}    ///< Returns the length of the string in bytes including the nullptr terminator.
+   size_t numChars() const; ///< Returns the length of the string in characters.
    bool     isEmpty() const    { return ( _string.empty()); }///< Is this an empty string [""]?
    bool     isNotEmpty() const { return !isEmpty(); }  ///< Is this not an empty string [""]?
 
@@ -97,8 +97,8 @@ public:
       @param mode Comparison mode.
       @return Difference between the first two characters that don't match.
    */
-   S32 compare(const StringChar *str, SizeType len = 0, U32 mode = Case|Left) const;
-   S32 compare(const String &str, SizeType len = 0, U32 mode = Case|Left) const; ///< @see compare(const StringChar *, SizeType, U32) const
+   S32 compare(const StringChar *str, size_t len = 0, U32 mode = Case|Left) const;
+   S32 compare(const String &str, size_t len = 0, U32 mode = Case|Left) const; ///< @see compare(const StringChar *, size_t, U32) const
 
    /**
       Compare two strings for equality.
@@ -108,19 +108,19 @@ public:
    */
    bool equal(const String &str, U32 mode = Case) const;
 
-   SizeType find(StringChar c, SizeType pos = 0, U32 mode = Case|Left) const;
-   SizeType find(const StringChar *str, SizeType pos = 0, U32 mode = Case|Left) const;
-   SizeType find(const String &str, SizeType pos = 0, U32 mode = Case|Left) const;
+   size_t find(StringChar c, size_t pos = 0, U32 mode = Case|Left) const;
+   size_t find(const StringChar *str, size_t pos = 0, U32 mode = Case|Left) const;
+   size_t find(const String &str, size_t pos = 0, U32 mode = Case|Left) const;
    
-   String   &insert(SizeType pos, const StringChar c) { return insert(pos,&c,1); }
-   String   &insert(SizeType pos, const StringChar *str);
-   String   &insert(SizeType pos, const String &str);
-   String   &insert(SizeType pos, const StringChar *str, SizeType len);
+   String   &insert(size_t pos, const StringChar c) { return insert(pos,&c,1); }
+   String   &insert(size_t pos, const StringChar *str);
+   String   &insert(size_t pos, const String &str);
+   String   &insert(size_t pos, const StringChar *str, size_t len);
 
-   String   &erase(SizeType pos, SizeType len);
+   String   &erase(size_t pos, size_t len);
 
-   String   &replace(SizeType pos, SizeType len, const StringChar *str);
-   String   &replace(SizeType pos, SizeType len, const String &str);
+   String   &replace(size_t pos, size_t len, const StringChar *str);
+   String   &replace(size_t pos, size_t len, const String &str);
    
    /// Replace all occurrences of character 'c1' with 'c2'
    String &replace( StringChar c1, StringChar c2 );
@@ -128,7 +128,7 @@ public:
    /// Replace all occurrences of StringData 's1' with StringData 's2'
    String &replace(const String &s1, const String &s2);
 
-   String substr( SizeType pos, SizeType len = -1 ) const   { return String(_string.substr(pos, len));};
+   String substr( size_t pos, size_t len = -1 ) const   { return String(_string.substr(pos, len));};
    
    /// Remove leading and trailing whitespace.
    String trim() const;

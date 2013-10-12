@@ -675,7 +675,7 @@ int dFflushStderr()
 
 //-----------------------------------------------------------------------------
 
-void dQsort(void *base, SizeType nelem, SizeType width, int (QSORT_CALLBACK *fcmp)(const void *, const void *))
+void dQsort(void *base, size_t nelem, size_t width, int (QSORT_CALLBACK *fcmp)(const void *, const void *))
 {
     qsort(base, nelem, width, fcmp);
 }

@@ -200,7 +200,7 @@ public:
 
 static char* _unDoubleQuote(char* arg)
 {
-    SizeType len = dStrlen(arg);
+    size_t len = dStrlen(arg);
     if(!len)
         return arg;
     
@@ -220,7 +220,7 @@ U32 ExecuteThread::runNoThread( const char* executable, const char* zargs, const
     NSMutableArray *array = [NSMutableArray array];
     
     // scan the args list, breaking it up, space delimited, backslash escaped.
-    SizeType len = dStrlen(zargs);
+    size_t len = dStrlen(zargs);
     char args[len+1];
     dStrncpy(args, zargs, len+1);
     char *lastarg = args;

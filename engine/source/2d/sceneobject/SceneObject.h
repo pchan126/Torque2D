@@ -369,7 +369,7 @@ public:
     inline void             setCollisionSuppress( const bool status )   { mCollisionSuppress = status; }
     inline bool             getCollisionSuppress(void) const            { return mCollisionSuppress; }
     inline const Scene::typeContactVector* getCurrentContacts( void ) const    { return mpCurrentContacts; }
-    inline SizeType         getCurrentContactCount( void ) const        { if ( mpCurrentContacts != nullptr ) return mpCurrentContacts->size(); else return 0; }
+    inline size_t         getCurrentContactCount( void ) const        { if ( mpCurrentContacts != nullptr ) return mpCurrentContacts->size(); else return 0; }
     virtual void            setGatherContacts( const bool gatherContacts ) { mGatherContacts = gatherContacts; initializeContactGathering(); }
     inline bool             getGatherContacts( void ) const             { return mGatherContacts; }
     virtual void            onBeginCollision( const TickContact& tickContact );
@@ -410,7 +410,7 @@ public:
     /// General collision shape access.
     void                    deleteCollisionShape( const U32 shapeIndex );
     void                    clearCollisionShapes( void );
-    inline SizeType         getCollisionShapeCount( void ) const        { if ( mpScene ) return mCollisionFixtures.size(); else return mCollisionFixtureDefs.size(); }
+    inline size_t         getCollisionShapeCount( void ) const        { if ( mpScene ) return mCollisionFixtures.size(); else return mCollisionFixtureDefs.size(); }
     b2Shape::Type           getCollisionShapeType( const U32 shapeIndex ) const;
     S32                     getCollisionShapeIndex( const b2Fixture* pFixture ) const;
     void                    setCollisionShapeDefinition( const U32 shapeIndex, const b2FixtureDef& fixtureDef );

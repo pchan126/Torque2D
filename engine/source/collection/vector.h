@@ -112,7 +112,7 @@ class Vector
    reverse_iterator       rend()               { return _vector.rend(); };
    const_reverse_iterator rend() const         { return _vector.rend(); };
 
-   SizeType size() const                   { return _vector.size(); };
+   size_t size() const                   { return _vector.size(); };
    bool empty() const                      { return _vector.empty(); };
    bool contains(const T& x) const         { return std::count(_vector.begin(), _vector.end(), x) > 0; };
 
@@ -137,14 +137,14 @@ class Vector
 
    void pop_back();
 
-   T& operator[](SizeType i)              { return _vector[i]; }
-   const T& operator[](SizeType i ) const { return _vector[i]; }
+   T& operator[](size_t i)              { return _vector[i]; }
+   const T& operator[](size_t i ) const { return _vector[i]; }
 
-   T& at(SizeType);
-   const T& at(SizeType) const;
+   T& at(size_t);
+   const T& at(size_t) const;
 
-   void reserve(SizeType i)                 { return _vector.reserve(i);  };
-   SizeType capacity() const              { return _vector.capacity(); };
+   void reserve(size_t i)                 { return _vector.reserve(i);  };
+   size_t capacity() const              { return _vector.capacity(); };
 
    /// @}
 
@@ -154,12 +154,12 @@ class Vector
    U32  memSize() const       { return capacity() * sizeof(T); };
    T*   address() {     return _vector.data();   };
    const T*   address() const {     return _vector.data();   };
-   SizeType  setSize(SizeType size)     { _vector.resize(size); return _vector.size(); };
-   SizeType  setSize(SizeType size, const T& val)     { _vector.resize(size, val); return _vector.size(); };
+   size_t  setSize(size_t size)     { _vector.resize(size); return _vector.size(); };
+   size_t  setSize(size_t size, const T& val)     { _vector.resize(size, val); return _vector.size(); };
    void increment( U32 = 1);
    void decrement(U32 = 1);
-   void insert(SizeType index)             { _vector.insert(_vector.begin()+index, T()); };
-   void insert(SizeType index, const T& x) { _vector.insert(_vector.begin()+index, x); };
+   void insert(size_t index)             { _vector.insert(_vector.begin()+index, T()); };
+   void insert(size_t index, const T& x) { _vector.insert(_vector.begin()+index, x); };
    void erase(U32 index)      { _vector.erase(_vector.begin()+index); };
    void clear()               { return _vector.clear(); };
    void compact()             { return _vector.shrink_to_fit(); };
@@ -347,13 +347,13 @@ template<class T> inline void Vector<T>::pop_back()
    _vector.pop_back();
 }
 
-template<class T> inline T& Vector<T>::at(SizeType index)
+template<class T> inline T& Vector<T>::at(size_t index)
 {
    AssertFatal(index < _vector.size(), "Vector<T>::at - out of bounds array access!");
    return _vector[index];
 }
 
-template<class T> inline const T& Vector<T>::at(SizeType index) const
+template<class T> inline const T& Vector<T>::at(size_t index) const
 {
    AssertFatal(index < _vector.size(), "Vector<T>::at - out of bounds array access!");
    return _vector[index];

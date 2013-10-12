@@ -35,7 +35,7 @@ namespace StringUnit
 
    const char* getUnit(const char* string, U32 index, const char* set)
    {
-      SizeType sz;
+      size_t sz;
       while(index--)
       {
          if(!*string)
@@ -64,7 +64,7 @@ namespace StringUnit
       if( startIndex > endIndex )
          return "";
 
-      SizeType sz;
+      size_t sz;
       S32 index = startIndex;
       while(index--)
       {
@@ -133,7 +133,7 @@ namespace StringUnit
 
    const char* setUnit(const char *string, U32 index, const char *replace, const char *set)
    {
-      SizeType sz;
+      size_t sz;
       const char *start = string;
 
       AssertFatal( dStrlen(string) + dStrlen(replace) + 1 < sizeof( _returnBuffer ), "Size of returned string too large for return buffer" );
@@ -177,7 +177,7 @@ namespace StringUnit
 
    const char* removeUnit(const char *string, U32 index, const char *set)
    {
-      SizeType sz;
+      size_t sz;
       const char *start = string;
       AssertFatal( dStrlen(string) + 1 < sizeof( _returnBuffer ), "Size of returned string too large for return buffer" );
 

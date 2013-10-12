@@ -128,7 +128,7 @@ AdvancedLightBinManager::AdvancedLightBinManager( AdvancedLightManager *lm /* = 
    mNamedTarget.registerWithName( smBufferName );
 
    // We want a full-resolution buffer
-   mTargetSizeType = RenderTexTargetBinManager::WindowSize;
+   mTargetST = RenderTexTargetBinManager::WindowSize;
 
    mMRTLightmapsDuringPrePass = false;
 

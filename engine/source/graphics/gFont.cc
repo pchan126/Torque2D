@@ -718,7 +718,7 @@ U32 GFont::getStrWidthPrecise(const UTF8* in_pString)
 }
 
 //////////////////////////////////////////////////////////////////////////
-U32 GFont::getStrNWidth(const UTF8 *str, SizeType n)
+U32 GFont::getStrNWidth(const UTF8 *str, size_t n)
 {
    // UTF8 conversion is expensive. Avoid converting in a tight loop.
    FrameTemp<UTF16> str16(n + 1);
@@ -726,7 +726,7 @@ U32 GFont::getStrNWidth(const UTF8 *str, SizeType n)
    return getStrNWidth(str16, dStrlen(str16));
 }
 
-U32 GFont::getStrNWidth(const UTF16 *str, SizeType n)
+U32 GFont::getStrNWidth(const UTF16 *str, size_t n)
 {
    AssertFatal(str != nullptr, "GFont::getStrNWidth: String is nullptr");
 
@@ -758,14 +758,14 @@ U32 GFont::getStrNWidth(const UTF16 *str, SizeType n)
    return(totWidth);
 }
 
-U32 GFont::getStrNWidthPrecise(const UTF8 *str, SizeType n)
+U32 GFont::getStrNWidthPrecise(const UTF8 *str, size_t n)
 {
    FrameTemp<UTF16> str16(n + 1);
    convertUTF8toUTF16(str, str16, n);
    return getStrNWidthPrecise(str16, n);
 }
 
-U32 GFont::getStrNWidthPrecise(const UTF16 *str, SizeType n)
+U32 GFont::getStrNWidthPrecise(const UTF16 *str, size_t n)
 {
    AssertFatal(str != nullptr, "GFont::getStrNWidth: String is nullptr");
 
@@ -774,7 +774,7 @@ U32 GFont::getStrNWidthPrecise(const UTF16 *str, SizeType n)
       
    U32 totWidth = 0;
    UTF16 curChar;
-   SizeType charCount = 0;
+   size_t charCount = 0;
    
    for(charCount = 0; charCount < n; charCount++)
    {
@@ -856,7 +856,7 @@ void GFont::wrapString(const UTF8 *txt, U32 lineWidth, Vector<U32> &startLineOff
    if (!txt || !txt[0] || lineWidth < getCharWidth('W')) //make sure the line width is greater then a single character
       return;
 
-   SizeType len = dStrlen(txt);
+   size_t len = dStrlen(txt);
 
    U32 startLine; 
 

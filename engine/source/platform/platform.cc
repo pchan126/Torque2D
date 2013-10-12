@@ -56,10 +56,10 @@ bool Platform::hasExtension(const char* pFilename, const char* pExtension)
     AssertFatal( pExtension != NULL, "Extension cannot be NULL." );
 
     // Find filename length.
-    const SizeType filenameLength = dStrlen( pFilename );
+    const size_t filenameLength = dStrlen( pFilename );
 
     // Find extension length.
-    const SizeType extensionLength = dStrlen( pExtension );
+    const size_t extensionLength = dStrlen( pExtension );
 
     // Skip if extension is longer than filename.
     if ( extensionLength >= filenameLength )

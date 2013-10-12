@@ -87,7 +87,7 @@ public:
     void            clearQuery( void );
     typeWorldQueryResultVector& getLayeredQueryResults( const U32 layer );
     typeWorldQueryResultVector& getQueryResults( void ) { return mQueryResults; }
-    inline SizeType getQueryResultsCount( void ) const { return mQueryResults.size(); }
+    inline size_t getQueryResultsCount( void ) const { return mQueryResults.size(); }
     inline bool     getIsRaycastQueryResult( void ) const { return mIsRaycastQueryResult; }
     void            sortRaycastQueryResult( void );
 

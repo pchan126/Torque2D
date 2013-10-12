@@ -68,7 +68,7 @@ public:
     inline SceneObject* front( void )    { return mObjectList.front(); }
     inline SceneObject* back( void )    { return mObjectList.back(); }
     inline bool empty( void )			{ return mObjectList.empty();   }
-    inline SizeType size( void ) const		{ return mObjectList.size(); }
+    inline size_t size( void ) const		{ return mObjectList.size(); }
     inline iterator begin( void )		{ return mObjectList.begin(); }
     inline iterator end( void )			{ return mObjectList.end(); }
     value operator[] (S32 index)         { return mObjectList[U32(index)]; }

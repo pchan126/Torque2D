@@ -426,7 +426,7 @@ bool Material::onAdd()
    // save the current script path for texture lookup later
    const String  scriptFile = Con::getVariable("$Con::File");  // current script file - local materials.cs
 
-   SizeType  slash = scriptFile.find( '/', scriptFile.length(), String::Right );
+   size_t  slash = scriptFile.find( '/', scriptFile.length(), String::Right );
    if ( slash != String::NPos )
       mPath = scriptFile.substr( 0, slash + 1 );
 

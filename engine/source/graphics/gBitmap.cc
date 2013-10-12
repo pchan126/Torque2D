@@ -673,7 +673,7 @@ ResourceObject * GBitmap::findBmpResource(const char * path)
    dStrcpy( fileNameBuffer, path );
 
    // Try some different possible filenames.
-   SizeType len = dStrlen( fileNameBuffer );
+   size_t len = dStrlen( fileNameBuffer );
    for( U32 i = 0; i < EXT_ARRAY_SIZE; i++ ) 
    {
       dStrcpy( fileNameBuffer + len, extArray[i] );

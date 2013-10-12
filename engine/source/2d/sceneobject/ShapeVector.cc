@@ -120,7 +120,7 @@ void ShapeVector::onRemove()
 void ShapeVector::sceneRender( const SceneRenderState* pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer )
 {
     // Fetch Vertex Count.
-    const SizeType vertexCount = mPolygonLocalList.size();
+    const size_t vertexCount = mPolygonLocalList.size();
 
     // Finish if not vertices.
     if ( vertexCount == 0  && !mIsCircle)

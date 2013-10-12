@@ -31,7 +31,7 @@
 #include "memory/autoPtr.h"
 #include "console/console.h"
 
-const SizeType String::NPos = U32(~0);
+const size_t String::NPos = U32(~0);
 const String String::EmptyString;
 
 /// A delete policy for the AutoPtr class
@@ -226,7 +226,7 @@ ConsoleFunction( dumpStringMemStats, void, 1, 1, "()"
 #endif
 
 
-String::String(const StringChar *str, SizeType len):_intern(NULL)
+String::String(const StringChar *str, size_t len):_intern(NULL)
 {
     _string = str;
     _string.resize(len);
@@ -253,17 +253,17 @@ String::~String()
 
 //-----------------------------------------------------------------------------
 
-SizeType String::find(const String &str, SizeType pos, U32 mode) const
+size_t String::find(const String &str, size_t pos, U32 mode) const
 {
    return find(str._string.c_str(), pos, mode);
 }
 
-String& String::insert(SizeType pos, const String &str)
+String& String::insert(size_t pos, const String &str)
 {
    return insert(pos, str._string.c_str());
 }
 
-String& String::replace(SizeType pos, SizeType len, const String &str)
+String& String::replace(size_t pos, size_t len, const String &str)
 {
    return replace(pos, len, str._string.c_str());
 }
@@ -379,7 +379,7 @@ bool String::operator>=(const String &str) const
 //-----------------------------------------------------------------------------
 // Base functions for string comparison
 
-S32 String::compare(const StringChar *str, SizeType len, U32 mode) const
+S32 String::compare(const StringChar *str, size_t len, U32 mode) const
 {
     std::string p1 = _string;
     std::string p2(str);
@@ -393,7 +393,7 @@ S32 String::compare(const StringChar *str, SizeType len, U32 mode) const
 
 }
 
-S32 String::compare(const String &str, SizeType len, U32 mode) const
+S32 String::compare(const String &str, size_t len, U32 mode) const
 {
     std::string p1 = _string;
     std::string p2 = str._string;
@@ -421,45 +421,45 @@ bool String::equal(const String &str, U32 mode) const
 
 //-----------------------------------------------------------------------------
 
-SizeType String::find(StringChar c, SizeType pos, U32 mode) const
+size_t String::find(StringChar c, size_t pos, U32 mode) const
 {
    const StringChar* ptr = StrFind(_string.c_str(),c,pos,mode);
 
-   return ptr? SizeType(ptr - _string.c_str()): NPos;
+   return ptr? size_t(ptr - _string.c_str()): NPos;
 }
 
-SizeType String::find(const StringChar *str, SizeType pos, U32 mode)  const
+size_t String::find(const StringChar *str, size_t pos, U32 mode)  const
 {
    AssertFatal(str,"String:: Invalid null ptr argument");
 
    const StringChar* ptr = StrFind(_string.c_str(),str,pos,mode);
 
-   return ptr? SizeType(ptr - _string.c_str()): NPos;
+   return ptr? size_t(ptr - _string.c_str()): NPos;
 }
 
 
 //-----------------------------------------------------------------------------
 
-String& String::insert(SizeType pos, const StringChar *str)
+String& String::insert(size_t pos, const StringChar *str)
 {
    AssertFatal(str,"String:: Invalid null ptr argument");
 
    return insert(pos,str,dStrlen(str));
 }
 
-String& String::insert(SizeType pos, const StringChar *str, SizeType len)
+String& String::insert(size_t pos, const StringChar *str, size_t len)
 {
    _string.insert(pos, str, len);
    return *this;
 }
 
-String& String::erase(SizeType pos, SizeType len)
+String& String::erase(size_t pos, size_t len)
 {
     _string.erase(pos, len);
     return *this;
 }
 
-String& String::replace(SizeType pos, SizeType len, const StringChar *str)
+String& String::replace(size_t pos, size_t len, const StringChar *str)
 {
     _string.replace(pos, len, str);
     return *this;

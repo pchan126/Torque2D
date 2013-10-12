@@ -2313,7 +2313,7 @@ bool AssetManager::scanDeclaredAssets( const char* pPath, const char* pExtension
     }
 
     // Fetch extension length.
-    const SizeType extensionLength = dStrlen( pExtension );
+    const size_t extensionLength = dStrlen( pExtension );
 
     // Fetch module assets.
     ModuleDefinition::typeModuleAssetsVector& moduleAssets = pModuleDefinition->getModuleAssets();
@@ -2327,7 +2327,7 @@ bool AssetManager::scanDeclaredAssets( const char* pPath, const char* pExtension
         const char* pFilename = fileInfo.pFileName;
 
         // Find filename length.
-        const SizeType filenameLength = dStrlen( pFilename );
+        const size_t filenameLength = dStrlen( pFilename );
 
         // Skip if extension is longer than filename.
         if ( extensionLength > filenameLength )

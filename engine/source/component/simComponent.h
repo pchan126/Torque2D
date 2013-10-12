@@ -136,7 +136,7 @@ public:
    virtual bool onComponentAdd(SimComponent *target);
    virtual void onComponentRemove(SimComponent *target);
 
-   inline SizeType getComponentCount() { return mComponentList.size(); }
+   inline size_t getComponentCount() { return mComponentList.size(); }
    inline SimComponent *getComponent( const U32 index ) { return mComponentList[index]; }
 
    static bool setEnabled( void* obj, const char* data ) { static_cast<SimComponent*>(obj)->setEnabled( dAtob( data ) ); return false; };
