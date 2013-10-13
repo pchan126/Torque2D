@@ -1598,37 +1598,13 @@
     <ClInclude Include="..\..\source\platform\platformVFS.h">
       <Filter>platform</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\platform\types.codewarrior.h">
-      <Filter>platform</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platform\types.gcc.h">
-      <Filter>platform</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\platform\types.h">
-      <Filter>platform</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platform\types.posix.h">
-      <Filter>platform</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platform\types.ppc.h">
       <Filter>platform</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\platform\types.visualc.h">
       <Filter>platform</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\platform\types.win32.h">
-      <Filter>platform</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platform\typesLinux.h">
-      <Filter>platform</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platform\typesPPC.h">
-      <Filter>platform</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platform\typesWin32.h">
-      <Filter>platform</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platform\typesX86UNIX.h">
       <Filter>platform</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\platform\nativeDialogs\fileDialog.h">

@@ -700,7 +700,7 @@ void GFXOpenGL33WinShader::zombify()
    dMemset(mConstBuffer, 0, mConstBufferSize);
 }
 
-char* GFXOpenGL33WinShader::_handleIncludes( const StringTableEntry path, std::iostream& s )
+char* GFXOpenGL33WinShader::_handleIncludes( const StringTableEntry path, std::istream& s )
 {
    // TODO:  The #line pragma on GLSL takes something called a
    // "source-string-number" which it then never explains.
@@ -815,14 +815,14 @@ char* GFXOpenGL33WinShader::_handleIncludes( const StringTableEntry path, std::i
 
 bool GFXOpenGL33WinShader::_loadShaderFromStream(  GLuint shader,
                                   const StringTableEntry path,
-                                  std::iostream& s,
+                                  std::istream& s,
                                   const Vector<GFXShaderMacro>& macros )
 {
    Vector<char*> buffers;
    Vector<S32> lengths;
    
    // The GLSL version declaration must go first!
-   const char *versionDecl = "#version 150\n";
+   const char *versionDecl = "#version 150\r\n\r\n";
    buffers.push_back( dStrdup( versionDecl ) );
    lengths.push_back( dStrlen( versionDecl ) );
 
@@ -846,11 +846,14 @@ bool GFXOpenGL33WinShader::_loadShaderFromStream(  GLuint shader,
    //for ( int i = 0; i < buffers.size(); i++)
 	  // Con::printf("%d %s", i, buffers[i]);
 
-   glShaderSource(shader, buffers.size(), (const GLchar**)const_cast<const char**>(buffers.address()), lengths.address());
+   glShaderSource(shader, buffers.size(), (const GLchar**)const_cast<const char**>(buffers.address()), NULL);
 
    // Cleanup the shader source buffer.
-   for ( U32 i=0; i < buffers.size(); i++ )
-      dFree( buffers[i] );
+   for (auto i:buffers)
+   {
+	   Con::printf("%s", i);
+	   dFree( i );
+   }
 
    glCompileShader(shader);
 
@@ -873,6 +876,7 @@ bool GFXOpenGL33WinShader::initShader( const StringTableEntry file,
 //    Con::expandScriptFilename( szFullPathBuffer, sizeof(szFullPathBuffer), file );
    
    // Ok it's not in the shader gen manager, so ask Torque for it
+
    std::fstream stream(file, std::fstream::in);
    if ( !stream )
    {
@@ -900,7 +904,7 @@ bool GFXOpenGL33WinShader::initShader( const StringTableEntry file,
    {
       FrameAllocatorMarker fam;
       char* log = (char*)fam.alloc(logLength);
-      glGetShaderInfoLog(activeShader, logLength, nullptr, log);
+      glGetShaderInfoLog(activeShader, logLength, 0, log);
 
       // Always print errors
       glGetShaderiv( activeShader, GL_COMPILE_STATUS, &compileStatus );
