@@ -8,7 +8,7 @@
 
 #include "graphics/gfxTarget.h"
 #include "platformWin32/windowManager/GLFWWindow.h"
-#include "memory/autoPtr.h"
+#include <memory>
 
 class GFXOpenGL33WinWindowTarget : public GFXWindowTarget
 {
