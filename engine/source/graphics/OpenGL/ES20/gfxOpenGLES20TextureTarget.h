@@ -7,7 +7,7 @@
 #define _GFXOpenGLES20TextureTarget_H_
 
 #include "graphics/OpenGL/gfxOpenGLTextureTarget.h"
-#include "memory/autoPtr.h"
+#include <memory>
 
 class GFXOpenGLES20TextureObject;
 

@@ -8,7 +8,7 @@
 
 #include "graphics/gfxTarget.h"
 #include "platformOSX/windowManager/GLFWWindow.h"
-#include "memory/autoPtr.h"
+#include <memory>
 
 @class NSOpenGLContext;
 

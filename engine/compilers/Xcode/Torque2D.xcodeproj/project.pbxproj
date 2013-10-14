@@ -800,7 +800,6 @@
 		C54191815605100929B7237E /* guiDebugger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiDebugger.h; sourceTree = "<group>"; };
 		C54191863582B97F4C6BE782 /* stringBuffer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stringBuffer.cc; sourceTree = "<group>"; };
 		C541918B2ED6F34078E305CD /* featureSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = featureSet.h; sourceTree = "<group>"; };
-		C541918ECD3888554BD9178B /* autoPtr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = autoPtr.h; sourceTree = "<group>"; };
 		C5419191197CA86E4162F4AE /* guiListBoxCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiListBoxCtrl.h; sourceTree = "<group>"; };
 		C54191A351B756406E58A112 /* ImageAsset.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ImageAsset.cc; sourceTree = "<group>"; };
 		C54191B5A453E1D1EA912A7D /* SpriteBase.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SpriteBase.cc; sourceTree = "<group>"; };
@@ -3062,7 +3061,6 @@
 		C5419E1D56F36A39A90BAFD8 /* memory */ = {
 			isa = PBXGroup;
 			children = (
-				C541918ECD3888554BD9178B /* autoPtr.h */,
 				C5419F76ACA689B843F2F789 /* dataChunker.cc */,
 				C5419E2FE6E516B6D797B1FD /* dataChunker.h */,
 				C5419CCABF25995AA27E0366 /* factoryCache.h */,

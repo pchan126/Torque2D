@@ -28,7 +28,7 @@
 #include "platform/platform.h"
 #include "collection/hashTable.h"
 #include "string/unicode.h"
-#include "memory/autoPtr.h"
+#include <memory>
 #include "console/console.h"
 
 const size_t String::NPos = U32(~0);
@@ -129,10 +129,10 @@ static const char* StrFind(const char* hay, const char* needle, S32 pos, U32 mod
 
       if (mode & String::NoCase)
       {
-         AutoPtr<char,DeleteString> ln(dStrlwr(dStrdup(needle)));
+          std::unique_ptr<char[]> ln(dStrlwr(dStrdup(needle)));
          for (; he >= hay; he--)
          {
-            if (dTolower(*he) == *ln)
+            if (dTolower(*he) == *ln.get())
             {
                U32 i = 0;
                while (ln[i] && ln[i] == dTolower(he[i]))
@@ -166,10 +166,10 @@ static const char* StrFind(const char* hay, const char* needle, S32 pos, U32 mod
    {
       if (mode & String::NoCase)
       {
-         AutoPtr<char,DeleteString> ln(dStrlwr(dStrdup(needle)));
+          std::unique_ptr<char[]> ln(dStrlwr(dStrdup(needle)));
          for (hay += pos; *hay; hay++)
          {
-            if (dTolower(*hay) == *ln)
+            if (dTolower(*hay) == *ln.get())
             {
                U32 i = 0;
                while (ln[i] && ln[i] == dTolower(hay[i]))
@@ -226,14 +226,14 @@ ConsoleFunction( dumpStringMemStats, void, 1, 1, "()"
 #endif
 
 
-String::String(const StringChar *str, size_t len):_intern(NULL)
+String::String(const StringChar *str, size_t len):_intern(nullptr)
 {
     _string = str;
     _string.resize(len);
 }
 
 
-String::String(const UTF16 *str):_intern(NULL)
+String::String(const UTF16 *str):_intern(nullptr)
 {
    PROFILE_SCOPE(String_UTF16_constructor);
 
@@ -599,7 +599,7 @@ S32 String::StrFormat::formatAppend( const char *format, va_list args )
 {
    // Format into the fixed buffer first.
    S32 startLen = _len;
-   if (_dynamicBuffer == NULL)
+   if (_dynamicBuffer == nullptr)
    {
       _len += vsnprintf(_fixedBuffer + _len, sizeof(_fixedBuffer) - _len, format, args);
       if ( _len < sizeof(_fixedBuffer))
@@ -628,7 +628,7 @@ S32 String::StrFormat::formatAppend( const char *format, va_list args )
 
 S32 String::StrFormat::append(const char * str, S32 len)
 {
-   if (_dynamicBuffer == NULL)
+   if (_dynamicBuffer == nullptr)
    {
       if ( _len+len < sizeof(_fixedBuffer))
       {

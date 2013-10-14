@@ -48,18 +48,18 @@ public:
    /// Populate a list with references to all the windows created from this manager.
    virtual void getWindows(Vector<PlatformWindow*> &windows) = 0;
 
-   /// Get the window that currently has the input focus or NULL.
+   /// Get the window that currently has the input focus or nullptr.
    virtual PlatformWindow* getFocusedWindow() = 0;
 
    /// Get a window from a device ID.
    ///
-   /// @return The window associated with the specified ID, or NULL if no
+   /// @return The window associated with the specified ID, or nullptr if no
    ///         match was found.
    virtual PlatformWindow *getWindowById(WindowId id)=0;
 
    /// Get the first window in the window list
    ///
-   /// @return The first window in the list, or NULL if no windows found
+   /// @return The first window in the list, or nullptr if no windows found
    virtual PlatformWindow *getFirstWindow()=0;
 
    virtual PlatformWindow* assignCanvas(GFXDevice* device, const GFXVideoMode &mode ,GuiCanvas* canvas)=0;

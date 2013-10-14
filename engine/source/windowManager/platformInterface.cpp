@@ -9,7 +9,7 @@
 #include "graphics/gfxInit.h"
 #include "graphics/gfxDevice.h"
 #include "delegates/process.h"
-#include "memory/autoPtr.h"
+#include <memory>
 
 // This file converts from the windowmanager system to the old platform and
 // event interfaces. So it's a bit hackish but hopefully will not be necessary
@@ -20,12 +20,10 @@
 // WindowManager
 //
 // PlatformWindowManager::get() wrapped in Macro WindowManager
-static AutoPtr< PlatformWindowManager > smWindowManager;
+static std::unique_ptr< PlatformWindowManager > smWindowManager(CreatePlatformWindowManager());
 PlatformWindowManager *PlatformWindowManager::get() 
 {
-   if( smWindowManager.isNull() )
-      smWindowManager = CreatePlatformWindowManager();
-   return smWindowManager.ptr();
+   return smWindowManager.get();
 }
 
 void PlatformWindowManager::processCmdLineArgs( const S32 argc, const char **argv )
@@ -38,8 +36,8 @@ void PlatformWindowManager::processCmdLineArgs( const S32 argc, const char **arg
 }
 
 
-GFXDevice *gDevice          = NULL;
-PlatformWindow *gWindow     = NULL;
+GFXDevice *gDevice          = nullptr;
+PlatformWindow *gWindow     = nullptr;
 
 // Conversion from window manager input conventions to Torque standard.
 static struct ModifierBitMap {

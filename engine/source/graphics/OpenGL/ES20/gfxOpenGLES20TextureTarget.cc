@@ -107,8 +107,8 @@ void GFXOpenGLES20TextureTarget::applyState()
 
 const String GFXOpenGLES20TextureTarget::describeSelf() const
 {
-   String ret = String::ToString("   Color0 Attachment: %i", mTargets[Color0].isValid() ? mTargets[Color0]->getHandle() : 0);
-   ret += String::ToString("   Depth Attachment: %i", mTargets[DepthStencil].isValid() ? mTargets[DepthStencil]->getHandle() : 0);
+   String ret = String::ToString("   Color0 Attachment: %i", (mTargets[Color0]) ? mTargets[Color0]->getHandle() : 0);
+   ret += String::ToString("   Depth Attachment: %i", (mTargets[DepthStencil]) ? mTargets[DepthStencil]->getHandle() : 0);
    
    return ret;
 }

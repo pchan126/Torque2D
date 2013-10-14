@@ -88,10 +88,10 @@ ConsoleGetType( TypePoint2FVector )
    S32 maxReturn = 1024;
    returnBuffer[0] = '\0';
    S32 returnLeng = 0;
-   for (Vector<Point2F>::iterator itr = vec->begin(); itr != vec->end(); itr++)
+   for (auto itr:*vec)
    {
       // concatenate the next value onto the return string
-      dSprintf(returnBuffer + returnLeng, maxReturn - returnLeng, "%.3f %.3f ", (*itr).x, (*itr).y);
+      dSprintf(returnBuffer + returnLeng, maxReturn - returnLeng, "%.3f %.3f ", itr.x, itr.y);
       // update the length of the return string (so far)
       returnLeng = dStrlen(returnBuffer);
    }

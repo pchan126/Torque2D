@@ -24,7 +24,7 @@
 #define _GFXOpenGLTextureTARGET_H_
 
 #include "graphics/gfxTarget.h"
-#include "memory/autoPtr.h"
+#include <memory>
 
 class GFXOpenGLTextureObject;
 
@@ -105,7 +105,7 @@ protected:
    virtual void _onTextureEvent( GFXTexCallbackCode code );
    
    /// Array of _GFXGLTargetDesc's, an internal struct used to keep track of texture data.
-   AutoPtr<_GFXOpenGLTargetDesc> mTargets[MaxRenderSlotId];
+   std::unique_ptr<_GFXOpenGLTargetDesc> mTargets[MaxRenderSlotId];
 
    /// These redirect to our internal implementation
    /// @{

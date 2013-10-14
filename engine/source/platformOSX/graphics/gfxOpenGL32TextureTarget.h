@@ -24,7 +24,7 @@
 #define _GFXOpenGL32TextureTARGET_H_
 
 #include "graphics/OpenGL/gfxOpenGLTextureTarget.h"
-#include "memory/autoPtr.h"
+#include <memory>
 
 class GFXOpenGL32TextureObject;
 class _GFXOpenGLTargetDesc;

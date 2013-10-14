@@ -106,9 +106,9 @@ void GFXOpenGL32TextureTarget::attachTexture( GFXCubemap *tex, U32 face, RenderS
    // We stash the texture and info into an internal struct.
    GFXOpenGL32Cubemap* glTexture = static_cast<GFXOpenGL32Cubemap*>(tex);
    if(tex)
-      mTargets[slot] = new _GFXOpenGL32CubemapTargetDesc(glTexture, face, mipLevel, 0);
+      mTargets[slot] = std::unique_ptr<_GFXOpenGLTargetDesc>(new _GFXOpenGL32CubemapTargetDesc(glTexture, face, mipLevel, 0));
    else
-      mTargets[slot] = NULL;
+      mTargets[slot] = nullptr;
 }
 
 

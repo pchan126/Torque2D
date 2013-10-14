@@ -686,8 +686,9 @@ char* GFXOpenGL32Shader::_handleIncludes(const StringTableEntry path, std::fstre
    s->seekg(0, s->beg);
     char* buffer = (char*)dMalloc(shaderLen + 1);
    //dStrncpy( buffer, linePragma.c_str(), linePragmaLen );
+   
    s->read( buffer, shaderLen);
-   buffer[shaderLen] = 0;
+   buffer[s->gcount()] = 0;
    
 //   char* p = dStrstr(buffer, (const char*)"#include");
 //   while(p)

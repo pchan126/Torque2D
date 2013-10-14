@@ -107,7 +107,7 @@ AssertFatal(false, "Something really bad happened with an FBO");\
 GFXOpenGLTextureTarget::GFXOpenGLTextureTarget()
 {
    for(U32 i=0; i<MaxRenderSlotId; i++)
-      mTargets[i] = NULL;
+      mTargets[i] = nullptr;
    
    glGenFramebuffers(1, &mFramebuffer);
 
@@ -123,7 +123,7 @@ GFXOpenGLTextureTarget::~GFXOpenGLTextureTarget()
 
 const Point2I GFXOpenGLTextureTarget::getSize()
 {
-    return mTargets[Color0].isValid() ? Point2I(mTargets[Color0]->getWidth(), mTargets[Color0]->getHeight()) : Point2I(0, 0);
+    return (mTargets[Color0]) ? Point2I(mTargets[Color0]->getWidth(), mTargets[Color0]->getHeight()) : Point2I(0, 0);
 }
 
 GFXFormat GFXOpenGLTextureTarget::getFormat()
@@ -140,9 +140,9 @@ void GFXOpenGLTextureTarget::attachTexture( GFXTextureObject *tex, RenderSlot sl
    // We stash the texture and info into an internal struct.
    GFXOpenGLTextureObject* glTexture = static_cast<GFXOpenGLTextureObject*>(tex);
    if(tex && tex != GFXTextureTarget::sDefaultDepthStencil)
-      mTargets[slot] = new _GFXOpenGLTextureTargetDesc(glTexture, mipLevel, zOffset);
+      mTargets[slot] = std::unique_ptr<_GFXOpenGLTargetDesc>(new _GFXOpenGLTextureTargetDesc(glTexture, mipLevel, zOffset));
    else
-      mTargets[slot] = NULL;
+      mTargets[slot] = nullptr;
 }
 
 //void GFXOpenGLTextureTarget::attachTexture( RenderSlot slot, GFXCubemap *tex, U32 face, U32 mipLevel/*=0*/ )
@@ -167,7 +167,7 @@ void GFXOpenGLTextureTarget::clearAttachments()
 {
    deactivate();
    for(S32 i=1; i<MaxRenderSlotId; i++)
-      attachTexture(NULL, (RenderSlot)i);
+      attachTexture(nullptr, (RenderSlot)i);
 }
 
 void GFXOpenGLTextureTarget::zombify()
@@ -184,7 +184,7 @@ void GFXOpenGLTextureTarget::resurrect()
 _GFXOpenGLTargetDesc * GFXOpenGLTextureTarget::getTargetDesc(RenderSlot slot) const
 {
    // This can only be called by our implementations, and then will not actually store the pointer so this is (almost) safe
-   return mTargets[slot].ptr();
+   return mTargets[slot].get();
 }
 
 void GFXOpenGLTextureTarget::_onTextureEvent( GFXTexCallbackCode code )
@@ -194,8 +194,8 @@ void GFXOpenGLTextureTarget::_onTextureEvent( GFXTexCallbackCode code )
 
 const String GFXOpenGLTextureTarget::describeSelf() const
 {
-   String ret = String::ToString("   Color0 Attachment: %i", mTargets[Color0].isValid() ? mTargets[Color0]->getHandle() : 0);
-   ret += String::ToString("   Depth Attachment: %i", mTargets[DepthStencil].isValid() ? mTargets[DepthStencil]->getHandle() : 0);
+   String ret = String::ToString("   Color0 Attachment: %i", (mTargets[Color0]) ? mTargets[Color0]->getHandle() : 0);
+   ret += String::ToString("   Depth Attachment: %i", (mTargets[DepthStencil]) ? mTargets[DepthStencil]->getHandle() : 0);
    
    return ret;
 }
