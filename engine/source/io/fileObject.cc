@@ -93,6 +93,7 @@ bool FileObject::readMemory(const char *fileName)
    mFileBuffer = (U8 *) dMalloc(mBufferSize + 1);
    mFileBuffer[mBufferSize] = 0;
    s->read((char*)mFileBuffer, mBufferSize);
+   mFileBuffer[s->gcount()] = 0;
    ResourceManager->closeStream(s);
    mCurPos = 0;
 

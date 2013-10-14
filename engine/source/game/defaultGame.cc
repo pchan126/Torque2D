@@ -304,10 +304,10 @@ bool initializeGame(int argc, const char **argv)
 
     // Read script.
     scriptStream->read(pScriptBuffer, size);
+	pScriptBuffer[scriptStream->gcount()] = 0;
 
     scriptFileStream.close();
 
-    pScriptBuffer[size] = 0;
 
     char buffer[1024], *ptr;
     Platform::makeFullPathName(useDefaultScript ? defaultScriptName : argv[1], buffer, sizeof(buffer), Platform::getCurrentDirectory());

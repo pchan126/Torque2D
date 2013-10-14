@@ -68,6 +68,7 @@ bool TamlJSONParser::accept( const char* pFilename, TamlVisitor& visitor )
         Con::warnf("TamlJSONParser::parse() - Could not load Taml JSON file from stream.");
         return false;
     }
+//	jsonText[stream.gcount()] = 0;
 
     // Create JSON document.
     Document inputDocument;

@@ -937,9 +937,10 @@ ConsoleFunction(compile, bool, 2, 2, "( fileName ) Use the compile function to p
    {
       scriptSize = ResourceManager->getSize(pathBuffer);
       script = new char [scriptSize+1];
+	  script[scriptSize] = 0;
       s->read( script, scriptSize);
+	  script[s->gcount()] = 0;
       ResourceManager->closeStream(s);
-      script[scriptSize] = 0;
    }
 
    if (!scriptSize || !script)
@@ -1277,6 +1278,7 @@ ConsoleFunction(exec, bool, 2, 4, "( fileName [ , nocalls [ , journalScript ] ] 
       {
          scriptSize = ResourceManager->getSize(scriptFileName);
          script = new char [scriptSize+1];
+         script[scriptSize] = 0;
          s->read( script, scriptSize);
 
 #ifdef	TORQUE_ALLOW_JOURNALING
@@ -1286,8 +1288,8 @@ ConsoleFunction(exec, bool, 2, 4, "( fileName [ , nocalls [ , journalScript ] ] 
             Game->journalWrite(scriptSize, script);
          }
 #endif	//TORQUE_ALLOW_JOURNALING
+		 script[s->gcount()] = 0;
          ResourceManager->closeStream(s);
-         script[scriptSize] = 0;
       }
 
       if (!scriptSize || !script)

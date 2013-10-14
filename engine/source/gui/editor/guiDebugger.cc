@@ -314,12 +314,13 @@ bool DbgFileView::openFile(const char *fileName)
    if (fileSize)
    {
       fileBuf = new char [fileSize+1];
+      fileBuf[fileSize] = '\0';
       std::iostream *s = ResourceManager->openStream(fileName);
       if (s)
       {
          s->read( fileBuf, fileSize);
+		 fileBuf[s->gcount()] = '\0';
          ResourceManager->closeStream(s);
-         fileBuf[fileSize] = '\0';
       }
       else
       {

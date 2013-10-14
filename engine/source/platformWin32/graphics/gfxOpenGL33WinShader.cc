@@ -32,6 +32,7 @@
 #include "./gfxOpenGL33WinEnumTranslate.h"
 #include "io/StreamFn.h"
 #include <fstream>
+#include <sstream>
 
 class GFXOpenGL33WinShaderConstHandle : public GFXShaderConstHandle
 {
@@ -713,8 +714,10 @@ char* GFXOpenGL33WinShader::_handleIncludes( const StringTableEntry path, std::i
    U32 shaderLen = StreamFn::getStreamSize(s);
    char* buffer = (char*)dMalloc(shaderLen + 1);
    //dStrncpy( buffer, linePragma.c_str(), linePragmaLen );
-   s.read(buffer, shaderLen);
    buffer[shaderLen] = 0;
+
+   s.read(buffer, shaderLen);
+   buffer[s.gcount()] = 0;
    
 //   char* p = dStrstr(buffer, (const char*)"#include");
 //   while(p)
@@ -843,19 +846,32 @@ bool GFXOpenGL33WinShader::_loadShaderFromStream(  GLuint shader,
    buffers.push_back(buffer);
    lengths.push_back(shaderLen);
 
+
+   std::stringstream temp(buffer);
+//   std::fstream temp(path, std::fstream::in);
+   U32 tlen = StreamFn::getStreamSize(temp);
+   char tbuf[255]; 
+   
+   U32 charcount = 0;
+   while (!temp.eof())
+   {
+	   temp.getline(tbuf, 255);
+	   charcount += strlen(tbuf);
+	   Con::printf("%d %s", charcount, tbuf);
+   }
+
    //for ( int i = 0; i < buffers.size(); i++)
 	  // Con::printf("%d %s", i, buffers[i]);
 
    glShaderSource(shader, buffers.size(), (const GLchar**)const_cast<const char**>(buffers.address()), NULL);
+   glCompileShader(shader);
 
    // Cleanup the shader source buffer.
    for (auto i:buffers)
    {
-	   Con::printf("%s", i);
 	   dFree( i );
    }
 
-   glCompileShader(shader);
 
    return true;
 }
@@ -905,6 +921,7 @@ bool GFXOpenGL33WinShader::initShader( const StringTableEntry file,
       FrameAllocatorMarker fam;
       char* log = (char*)fam.alloc(logLength);
       glGetShaderInfoLog(activeShader, logLength, 0, log);
+	  std::stringstream logstream(log);
 
       // Always print errors
       glGetShaderiv( activeShader, GL_COMPILE_STATUS, &compileStatus );
@@ -914,7 +931,13 @@ bool GFXOpenGL33WinShader::initShader( const StringTableEntry file,
          if ( smLogErrors )
          {
             Con::errorf( "GFXOpenGL33WinShader::initShader - Error compiling shader!" );
-            Con::errorf( "Program %s: %s", file, log );
+            Con::errorf( "Program %s", file );
+			char buf[255];
+			while(!logstream.eof())
+			{
+				logstream.getline(buf, 255);
+				Con::errorf("   %s", buf);
+			}
          }
       }
       else if ( smLogWarnings )
