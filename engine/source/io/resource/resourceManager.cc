@@ -896,7 +896,7 @@ static const char *alwaysCRCList = ".ter.dif.dts";
 
 ResourceInstance * ResManager::loadInstance (ResourceObject * obj, bool computeCRC)
 {
-    std::iostream *stream = openStream (obj);
+	std::iostream *stream = openStream (obj);
    if (!stream)
       return nullptr;
 
@@ -955,7 +955,7 @@ std::iostream * ResManager::openStream(ResourceObject *obj)
    // if disk file
    if (obj->flags & (ResourceObject::File))
    {
-      diskStream = new std::fstream(buildPath (obj->path, obj->name), std::fstream::in);
+      diskStream = new std::fstream(buildPath (obj->path, obj->name), std::fstream::in | std::ios::binary);
       if( !diskStream  )
          return nullptr;
 

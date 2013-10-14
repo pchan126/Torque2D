@@ -846,23 +846,6 @@ bool GFXOpenGL33WinShader::_loadShaderFromStream(  GLuint shader,
    buffers.push_back(buffer);
    lengths.push_back(shaderLen);
 
-
-   std::stringstream temp(buffer);
-//   std::fstream temp(path, std::fstream::in);
-   U32 tlen = StreamFn::getStreamSize(temp);
-   char tbuf[255]; 
-   
-   U32 charcount = 0;
-   while (!temp.eof())
-   {
-	   temp.getline(tbuf, 255);
-	   charcount += strlen(tbuf);
-	   Con::printf("%d %s", charcount, tbuf);
-   }
-
-   //for ( int i = 0; i < buffers.size(); i++)
-	  // Con::printf("%d %s", i, buffers[i]);
-
    glShaderSource(shader, buffers.size(), (const GLchar**)const_cast<const char**>(buffers.address()), NULL);
    glCompileShader(shader);
 
