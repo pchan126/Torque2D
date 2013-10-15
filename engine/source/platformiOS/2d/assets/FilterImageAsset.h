@@ -44,7 +44,7 @@ public:
     /// Declare Console Object.
     DECLARE_CONOBJECT(FilterImageAsset);
 
-    GFXTexHandle intTexture;
+    std::shared_ptr<GFXTextureObject> intTexture;
     CIFilter* mFilter;
    
 protected:

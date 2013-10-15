@@ -127,7 +127,7 @@ void GuiToolboxButtonCtrl::setNormalBitmap( StringTableEntry bitmapName )
       return;
 
    if ( *mNormalBitmapName )
-       mTextureNormal = GFXTexHandle( mNormalBitmapName, &GFXDefaultPersistentProfile, avar(" mTextureNormal" ));
+       mTextureNormal = std::shared_ptr<GFXTextureObject>( mNormalBitmapName, &GFXDefaultPersistentProfile, avar(" mTextureNormal" ));
 //      mTextureNormal = TextureHandle( mNormalBitmapName, TextureHandle::BitmapTexture, true );
    else
       mTextureNormal = NULL;
@@ -143,7 +143,7 @@ void GuiToolboxButtonCtrl::setLoweredBitmap( StringTableEntry bitmapName )
       return;
 
    if ( *mLoweredBitmapName )
-       mTextureLowered = GFXTexHandle( mLoweredBitmapName, &GFXDefaultPersistentProfile, avar(" mTextureLowered"));
+       mTextureLowered = std::shared_ptr<GFXTextureObject>( mLoweredBitmapName, &GFXDefaultPersistentProfile, avar(" mTextureLowered"));
 //      mTextureLowered = TextureHandle( mLoweredBitmapName, TextureHandle::BitmapTexture, true );
    else
       mTextureLowered = NULL;
@@ -159,7 +159,7 @@ void GuiToolboxButtonCtrl::setHoverBitmap( StringTableEntry bitmapName )
       return;
 
    if ( *mHoverBitmapName )
-       mTextureHover = GFXTexHandle( mHoverBitmapName, &GFXDefaultPersistentProfile, avar(" mTextureHover"));
+       mTextureHover = std::shared_ptr<GFXTextureObject>( mHoverBitmapName, &GFXDefaultPersistentProfile, avar(" mTextureHover"));
 //      mTextureHover = TextureHandle( mHoverBitmapName, TextureHandle::BitmapTexture, true );
    else
       mTextureHover = NULL;
@@ -201,7 +201,7 @@ void GuiToolboxButtonCtrl::onRender(Point2I offset, const RectI& updateRect)
 
 }
 
-void GuiToolboxButtonCtrl::renderStateRect( GFXTexHandle &texture, const RectI& rect )
+void GuiToolboxButtonCtrl::renderStateRect( std::shared_ptr<GFXTextureObject> &texture, const RectI& rect )
 {
    if (texture)
    {
@@ -212,7 +212,7 @@ void GuiToolboxButtonCtrl::renderStateRect( GFXTexHandle &texture, const RectI& 
 
 //------------------------------------------------------------------------------
 
-void GuiToolboxButtonCtrl::renderButton(GFXTexHandle &texture, Point2I &offset, const RectI& updateRect)
+void GuiToolboxButtonCtrl::renderButton(std::shared_ptr<GFXTextureObject> &texture, Point2I &offset, const RectI& updateRect)
 {
    if (texture)
    {

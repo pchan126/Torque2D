@@ -123,7 +123,7 @@ public:
    protected:
 
       ///
-      typedef HashMap<const FeatureType*,GFXTexHandle> TextureTable;
+      typedef HashMap<const FeatureType*,std::shared_ptr<GFXTextureObject>> TextureTable;
 
       /// The sparse table of textures by feature index.
       /// @see getTex

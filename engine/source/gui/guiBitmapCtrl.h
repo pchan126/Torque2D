@@ -42,7 +42,7 @@ protected:
    static const char *getBitmapName( void *obj, const char *data );
 
    String mBitmapName;
-   GFXTexHandle mTextureObject;
+   std::shared_ptr<GFXTextureObject> mTextureObject;
    Point2I startPoint;
    bool mWrap;
 
@@ -62,7 +62,7 @@ public:
    void inspectPostApply();
 
    void setBitmap(const char *name,bool resize = false);
-   void setBitmap(const GFXTexHandle &handle,bool resize = false);
+   void setBitmap(const std::shared_ptr<GFXTextureObject> &handle,bool resize = false);
 
    S32 getWidth() const       { return(mTextureObject.getWidth()); }
    S32 getHeight() const      { return(mTextureObject.getHeight()); }

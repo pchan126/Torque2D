@@ -19,7 +19,7 @@ public:
 protected:
    // should only be called by GFXDevice
    virtual void bind(U32 textureUnit); ///< Notifies our owning device that we want to be set to the given texture unit (used for GL internal state tracking)
-   virtual void fillCubeTextures(GFXTexHandle* faces); ///< Copies the textures in faces into the cubemap
+   virtual void fillCubeTextures(std::shared_ptr<GFXTextureObject>* faces); ///< Copies the textures in faces into the cubemap
 };
 
 #endif

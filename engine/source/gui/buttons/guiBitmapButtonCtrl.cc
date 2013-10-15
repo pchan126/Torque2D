@@ -146,22 +146,22 @@ void GuiBitmapButtonCtrl::setBitmap(const String& name)
        static String s_h = "_h";
        static String s_i = "_i";
        
-       mTextureNormal = GFXTexHandle( baseName, &GFXDefaultPersistentProfile, avar("mTextureNormal"));
+       mTextureNormal = std::shared_ptr<GFXTextureObject>( baseName, &GFXDefaultPersistentProfile, avar("mTextureNormal"));
       if (!mTextureNormal)
       {
-          mTextureNormal = GFXTexHandle( baseName + s_n, &GFXDefaultPersistentProfile, avar("mTextureNormal"));
+          mTextureNormal = std::shared_ptr<GFXTextureObject>( baseName + s_n, &GFXDefaultPersistentProfile, avar("mTextureNormal"));
       }
-       mTextureHilight = GFXTexHandle( baseName + s_d, &GFXDefaultPersistentProfile, avar("mTextureHilight"));
+       mTextureHilight = std::shared_ptr<GFXTextureObject>( baseName + s_d, &GFXDefaultPersistentProfile, avar("mTextureHilight"));
 
        if (!mTextureHilight)
          mTextureHilight = mTextureNormal;
 
-       mTextureDepressed = GFXTexHandle( baseName + s_h, &GFXDefaultPersistentProfile, avar("mTextureDepressed"));
+       mTextureDepressed = std::shared_ptr<GFXTextureObject>( baseName + s_h, &GFXDefaultPersistentProfile, avar("mTextureDepressed"));
 
        if (!mTextureDepressed)
          mTextureDepressed = mTextureHilight;
 
-       mTextureInactive = GFXTexHandle( baseName + s_i, &GFXDefaultPersistentProfile, avar("mTextureInactive"));
+       mTextureInactive = std::shared_ptr<GFXTextureObject>( baseName + s_i, &GFXDefaultPersistentProfile, avar("mTextureInactive"));
 
        if (!mTextureInactive)
          mTextureInactive = mTextureNormal;
@@ -214,22 +214,22 @@ void GuiBitmapButtonCtrl::setBitmap(const String& name, ButtonState state)
        {
           case NORMAL:
               mBitmapNormal = temporaryName;
-               mTextureNormal = GFXTexHandle( temporaryName, &GFXDefaultPersistentProfile, avar("mTextureNormal"));
+               mTextureNormal = std::shared_ptr<GFXTextureObject>( temporaryName, &GFXDefaultPersistentProfile, avar("mTextureNormal"));
 //              mTextureNormal = TextureHandle(buffer, TextureHandle::BitmapTexture, true);
               break;
           case HILIGHT:
               mBitmapHilight = temporaryName;
-               mTextureHilight = GFXTexHandle( temporaryName, &GFXDefaultPersistentProfile, avar("mTextureHilight"));
+               mTextureHilight = std::shared_ptr<GFXTextureObject>( temporaryName, &GFXDefaultPersistentProfile, avar("mTextureHilight"));
 //              mTextureHilight = TextureHandle(buffer, TextureHandle::BitmapTexture, true);
               break;
           case DEPRESSED:
               mBitmapDepressed = temporaryName;
-               mTextureDepressed = GFXTexHandle( temporaryName, &GFXDefaultPersistentProfile, avar("mTextureDepressed"));
+               mTextureDepressed = std::shared_ptr<GFXTextureObject>( temporaryName, &GFXDefaultPersistentProfile, avar("mTextureDepressed"));
 //              mTextureDepressed = TextureHandle(buffer, TextureHandle::BitmapTexture, true);
               break;
           case INACTIVE:
               mBitmapInactive = temporaryName;
-               mTextureInactive = GFXTexHandle( temporaryName, &GFXDefaultPersistentProfile, avar("mTextureInactive"));
+               mTextureInactive = std::shared_ptr<GFXTextureObject>( temporaryName, &GFXDefaultPersistentProfile, avar("mTextureInactive"));
 //              mTextureInactive = TextureHandle(buffer, TextureHandle::BitmapTexture, true);
               break;
        }
@@ -291,7 +291,7 @@ void GuiBitmapButtonCtrl::onRender(Point2I offset, const RectI& updateRect)
 
 //------------------------------------------------------------------------------
 
-void GuiBitmapButtonCtrl::renderButton(GFXTexHandle &texture, Point2I &offset, const RectI& updateRect)
+void GuiBitmapButtonCtrl::renderButton(std::shared_ptr<GFXTextureObject> &texture, Point2I &offset, const RectI& updateRect)
 {
    GFX->getDrawUtil()->clearBitmapModulation();
 
@@ -325,7 +325,7 @@ void GuiBitmapButtonTextCtrl::onRender(Point2I offset, const RectI& updateRect)
    else
       state = INACTIVE;
 
-   GFXTexHandle texture;
+   std::shared_ptr<GFXTextureObject> texture;
 
    switch (state)
    {

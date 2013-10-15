@@ -54,11 +54,11 @@ void GFXCubemap::initNormalize( U32 size )
    F32 start = -1.0;
 
    F32 stride = span / F32(size - 1);
-   GFXTexHandle faces[6];
+   std::shared_ptr<GFXTextureObject> faces[6];
 
    for(U32 i=0; i<6; i++)
    {
-      GFXTexHandle &tex = faces[i];
+      std::shared_ptr<GFXTextureObject> &tex = faces[i];
       GBitmap *bitmap = new GBitmap(size, size);
 
       // fill in...

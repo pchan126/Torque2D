@@ -156,7 +156,7 @@ protected:
     /// Imagery.
     typeFrameAreaVector         mFrames;
     typeExplicitFrameAreaVector mExplicitFrames;
-    GFXTexHandle               mImageTextureHandle;
+    std::shared_ptr<GFXTextureObject>               mImageTextureHandle;
 
 public:
     ImageAsset();
@@ -209,16 +209,16 @@ public:
     S32                     getCellHeight( void) const						{ return mCellHeight; }
     S32                     getExplicitCellHeight(const S32 cellIndex);
 
-    inline GFXTexHandle&    getImageTexture( void )                         { return mImageTextureHandle; }
-    inline S32              getImageWidth( void ) const                     { return mImageTextureHandle.getBitmapWidth(); }
-    inline S32              getImageHeight( void ) const                    { return mImageTextureHandle.getBitmapHeight(); }
+    inline std::shared_ptr<GFXTextureObject>&    getImageTexture( void )                         { return mImageTextureHandle; }
+    inline S32              getImageWidth( void ) const                     { return mImageTextureHandle->getBitmapWidth(); }
+    inline S32              getImageHeight( void ) const                    { return mImageTextureHandle->getBitmapHeight(); }
     inline U32              getFrameCount( void ) const                     { return (U32)mFrames.size(); };
 
     inline const FrameArea& getImageFrameArea( U32 frame ) const            { clampFrame(frame); return mFrames[frame]; };
-    inline const void       bindImageTexture( void)                         { GFX->setTexture(0, getImageTexture()); };
+    inline const void       bindImageTexture( void)                         { GFX->setTexture(0, getImageTexture().get()); };
     //glBindTexture( GL_TEXTURE_2D, getImageTexture().getGLName() ); };
     
-    virtual bool            isAssetValid( void ) const                      { return !mImageTextureHandle.isNull(); }
+    virtual bool            isAssetValid( void ) const                      { return (mImageTextureHandle) ? true: false; }
 
     /// Explicit cell control.
     bool                    clearExplicitCells( void );

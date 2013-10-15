@@ -31,7 +31,7 @@ GFXTexHandle GFXTexHandle::ZERO;
 GFXTexHandle GFXTexHandle::ONE;
 GFXTexHandle GFXTexHandle::ZUP;
 
-GFXTexHandle BadTextureHandle;
+//GFXTexHandle BadTextureHandle;
 
 GFXTexHandle::GFXTexHandle( GFXTextureObject *obj )
 {

@@ -23,23 +23,15 @@
 #define _GFXTEXTUREOBJECT_H_
 
 
-#ifndef _REFBASE_H_
-#include "sim/refBase.h"
-#endif
-
 #include "math/mPoint.h"
-#ifndef _GFXENUMS_H_
 #include "graphics/gfxEnums.h"
-#endif
-#ifndef _GFXTEXTUREPROFILE_H_
 #include "graphics/gfxTextureProfile.h"
-#endif
-#ifndef _GFXRESOURCE_H_
 #include "graphics/gfxResource.h"
-#endif
 #include "sim/simBase.h"
 #include "platform/threads/mutex.h"
 #include "delegates/delegateSignal.h"
+#include "gfxTextureManager.h"
+#include "gfxDevice.h"
 
 class Point2I;
 class GFXDevice;
@@ -71,13 +63,12 @@ struct GFXLockedRect
 };
 
 
-class GFXTextureObject : public StrongRefBase, public GFXResource
+class GFXTextureObject : public GFXResource
 {
 public:
     typedef SimObject Parent;
     friend class GFXTextureManager;
-    friend class GFXTexHandle;
-    
+
    #ifdef TORQUE_DEBUG
       // In debug builds we provide a TOC leak tracking system.
       static U32 smActiveTOCount;
@@ -241,7 +232,11 @@ public:
     inline S32 getBitmapResidentSize( void ) const { return mBitmapResidentSize; }
     
     virtual void setFilter(GFXTextureFilterType filterType) = 0 ;
+
+    void refresh( void );
     
 };
+
+extern std::shared_ptr<GFXTextureObject> BadTextureHandle;
 
 #endif // _GFXTEXTUREOBJECT_H_

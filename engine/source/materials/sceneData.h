@@ -31,7 +31,7 @@
 
 #include "graphics/gfxDevice.h"
 
-class GFXTexHandle;
+class std::shared_ptr<GFXTextureObject>;
 //class GFXCubemap;
 
 struct SceneData

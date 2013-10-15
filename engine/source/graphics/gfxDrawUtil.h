@@ -39,7 +39,7 @@ public:
    GFXDrawUtil(GFXDevice *);
    ~GFXDrawUtil();
 
-   void batchTriangleStrip( const Vector<GFXVertexPCT> verts, GFXTexHandle& texture);
+   void batchTriangleStrip( const Vector<GFXVertexPCT> verts, std::shared_ptr<GFXTextureObject>& texture);
    void flushInternal(void);
    
    /// Sets the batch enabled mode.
@@ -188,7 +188,7 @@ protected:
    
    bool mBatchEnabled;
    GFXTextureFilterType mFilter;
-   GFXTexHandle         mTextureHandle;
+   std::shared_ptr<GFXTextureObject>         mTextureHandle;
    Vector<GFXVertexPCT> mVertexBuffer;
 
     GFXVertexBufferHandle<GFXVertexPCT> mTextureVertex;

@@ -258,7 +258,7 @@ protected:
 
    GFXTextureTargetRef mTarget;
    U32 mTexSize;
-   GFXTexHandle mShadowMapTex;
+   std::shared_ptr<GFXTextureObject> mShadowMapTex;
 
    // The light we are rendering.
    LightInfo *mLight;   
@@ -317,7 +317,7 @@ protected:
 
    LightInfo *mLight;
 
-   GFXTexHandle mCookieTex;
+   std::shared_ptr<GFXTextureObject> mCookieTex;
 
    GFXCubemapHandle mCookieCubeTex;
 

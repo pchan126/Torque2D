@@ -255,7 +255,7 @@ public:
       BitSet32                mFlags;
 
 protected:
-      GFXTexHandle mIconTable[MaxIcons];
+      std::shared_ptr<GFXTextureObject> mIconTable[MaxIcons];
 
       // for debugging
       bool mDebug;
@@ -277,8 +277,8 @@ protected:
       bool              mMouseDragged;
 
       StringTableEntry  mBitmapBase;
-      GFXTexHandle	   mTexRollover;
-      GFXTexHandle	   mTexSelected;
+      std::shared_ptr<GFXTextureObject>	   mTexRollover;
+      std::shared_ptr<GFXTextureObject>	   mTexSelected;
 
       // Hack to get passed always recursively building tree EVERY TICK!
       S32               mTicksPassed;

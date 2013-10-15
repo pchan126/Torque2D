@@ -83,7 +83,7 @@ void FontRenderBatcher::render( F32 rot, const Point2F &offset )
          continue;
 
       mSheets[i]->startVertex = currentPt;
-       const GFXTexHandle tex = mFont->getTextureHandle(i);
+       const std::shared_ptr<GFXTextureObject> tex = mFont->getTextureHandle(i);
        Vector<GFXVertexPCT> verts;
        verts.setSize(mSheets[i]->numChars*6-2);
        

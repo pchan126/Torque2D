@@ -58,7 +58,7 @@ class GuiMLTextCtrl : public GuiControl
    struct Bitmap {
       const char *bitmapName;
       U32 bitmapNameLen;
-      GFXTexHandle bitmapHandle;
+      std::shared_ptr<GFXTextureObject> bitmapHandle;
       Bitmap *next;
    };
 

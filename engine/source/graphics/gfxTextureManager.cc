@@ -58,14 +58,14 @@ GFXTextureManager::GFXTextureManager()
     mTextureResidentWasteSize = 0;
     mTextureResidentCount = 0;
 
-    mListHead = mListTail = NULL;
+    mListHead = mListTail = nullptr;
    mTextureManagerState = GFXTextureManager::NotInitialized;
 
    // Set up the hash table
    mHashCount = 1023;
    mHashTable = new GFXTextureObject *[mHashCount];
    for(U32 i = 0; i < mHashCount; i++)
-      mHashTable[i] = NULL;
+      mHashTable[i] = nullptr;
 }
 
 GFXTextureManager::~GFXTextureManager()
@@ -109,7 +109,7 @@ void GFXTextureManager::kill()
    GFXTextureObject *temp;
 
    // Actually delete all the textures we know about.
-   while( curr != NULL ) 
+   while( curr != nullptr )
    {
       temp = curr->mNext;
       curr->kill();
@@ -136,7 +136,7 @@ void GFXTextureManager::zombify()
 
    // Free all the device copies of the textures.
    GFXTextureObject *temp = mListHead;
-   while( temp != NULL ) 
+   while( temp != nullptr )
    {
       freeTexture( temp, true );
       temp = temp->mNext;
@@ -151,7 +151,7 @@ void GFXTextureManager::resurrect()
    // Reupload all the device copies of the textures.
    GFXTextureObject *temp = mListHead;
 
-   while( temp != NULL ) 
+   while( temp != nullptr )
    {
       refreshTexture( temp );
       temp = temp->mNext;
@@ -177,7 +177,7 @@ void GFXTextureManager::cleanupPool()
          // now to completely remove it from the pool.
          TexturePoolMap::iterator unref = iter;
          iter++;
-         unref->second = NULL;
+         unref->second = nullptr;
          mTexturePool.erase( unref );
          continue;
       }
@@ -416,10 +416,10 @@ GFXTextureObject *GFXTextureManager::_createTexture(  GBitmap *bmp,
 GFXTextureObject *GFXTextureManager::createTexture( const String &path, GFXTextureProfile *profile )
 {
     GBitmap *bitmap;
-    GFXTextureObject *retTexObj = NULL;
+    GFXTextureObject *retTexObj = nullptr;
 
     bitmap = GBitmap::load( path );
-    if( bitmap != NULL )
+    if( bitmap != nullptr )
     {
         retTexObj = createTexture( bitmap, path, profile, false );
         retTexObj->mPath = path;
@@ -455,12 +455,12 @@ GFXTextureObject *GFXTextureManager::createTexture( U32 width, U32 height, GFXFo
     
     AssertFatal( checkFmt == format, "Anonymous texture didn't get the format it wanted." );
     
-    GFXTextureObject *outTex = NULL;
+    GFXTextureObject *outTex = nullptr;
     
     // If this is a pooled profile then look there first.
     if ( profile->isPooled() )
     {
-        outTex = _findPooledTexure(   localWidth, localHeight, checkFmt,
+        outTex = _findPooledTexture(   localWidth, localHeight, checkFmt,
                                    profile, numMips, antialiasLevel );
         
         // If we got a pooled texture then its
@@ -482,7 +482,7 @@ GFXTextureObject *GFXTextureManager::createTexture( U32 width, U32 height, GFXFo
     if ( !outTex )
     {
         Con::errorf("GFXTextureManager - failed to create anonymous texture.");
-        return NULL;
+        return nullptr;
     }
     
     // And do book-keeping...
@@ -513,14 +513,14 @@ GFXTextureObject *GFXTextureManager::createTexture(   U32 width,
     if(!ret)
     {
         Con::errorf("GFXTextureManager - failed to create anonymous texture.");
-        return NULL;
+        return nullptr;
     }
     
     // Call the internal load...
     if( !_loadTexture( ret, pixels ) )
     {
         Con::errorf("GFXTextureManager - failed to load volume texture" );
-        return NULL;
+        return nullptr;
     }
     
     
@@ -535,7 +535,7 @@ GFXTextureObject *GFXTextureManager::createTexture(   U32 width,
     return ret;
 }
 
-GFXTextureObject* GFXTextureManager::_findPooledTexure(  U32 width,
+GFXTextureObject* GFXTextureManager::_findPooledTexture(  U32 width,
                                                          U32 height, 
                                                          GFXFormat format, 
                                                          GFXTextureProfile *profile,
@@ -559,7 +559,7 @@ GFXTextureObject* GFXTextureManager::_findPooledTexure(  U32 width,
          continue;
 
       // Check for a match... if so return it.  The assignment
-      // to a GFXTexHandle will take care of incrementing the
+      // to a std::shared_ptr<GFXTextureObject> will take care of incrementing the
       // reference count and keeping it from being handed out
       // to anyone else.
       if (  outTex->getFormat() == format &&
@@ -637,10 +637,10 @@ void GFXTextureManager::_linkTexture( GFXTextureObject *obj )
    hashInsert(obj);
 
    // info for the master list
-   if( mListHead == NULL )
+   if( mListHead == nullptr )
       mListHead = obj;
 
-   if( mListTail != NULL ) 
+   if( mListTail != nullptr )
       mListTail->mNext = obj;
 
    obj->mPrev = mListTail;

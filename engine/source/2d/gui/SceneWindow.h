@@ -202,7 +202,7 @@ private:
     Scene*              mpScene;
 
    GFXTextureTargetRef  renderTarget;
-   GFXTexHandle         mImageTextureHandle;
+   std::shared_ptr<GFXTextureObject>         mImageTextureHandle;
 
    S32                 mLastRenderTime;
     bool                mLockMouse;

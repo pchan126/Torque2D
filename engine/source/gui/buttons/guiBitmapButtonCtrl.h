@@ -54,12 +54,12 @@ protected:
    StringTableEntry mBitmapInactive;
    bool mIsLegacyVersion;
 
-   GFXTexHandle mTextureNormal;
-   GFXTexHandle mTextureHilight;
-   GFXTexHandle mTextureDepressed;
-   GFXTexHandle mTextureInactive;
+   std::shared_ptr<GFXTextureObject> mTextureNormal;
+   std::shared_ptr<GFXTextureObject> mTextureHilight;
+   std::shared_ptr<GFXTextureObject> mTextureDepressed;
+   std::shared_ptr<GFXTextureObject> mTextureInactive;
 
-   void renderButton(GFXTexHandle &texture, Point2I &offset, const RectI& updateRect);
+   void renderButton(std::shared_ptr<GFXTextureObject> &texture, Point2I &offset, const RectI& updateRect);
 
 public:
    DECLARE_CONOBJECT(GuiBitmapButtonCtrl);

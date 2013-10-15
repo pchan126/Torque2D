@@ -39,8 +39,6 @@ GFX_DeclareTextureProfile(GFXFontTextureProfile);
 extern ResourceInstance* constructNewFont(std::iostream &stream);
 extern ResourceInstance* constructBMFont(std::iostream &stream);
 
-class GFXTexHandle;
-
 class GFont : public ResourceInstance
 {
    friend ResourceInstance* constructNewFont(std::iostream &stream);
@@ -62,7 +60,7 @@ public:
    // Enumerations and structures available to derived classes
 private:
    PlatformFont *mPlatformFont;
-   Vector<GFXTexHandle>mTextureSheets;
+   Vector<std::shared_ptr<GFXTextureObject>>mTextureSheets;
 
    S32 mCurX;
    S32 mCurY;
@@ -98,7 +96,7 @@ protected:
 public:
    static Resource<GFont> create(const char *faceName, U32 size, const char *cacheDirectory, U32 charset = TGE_ANSI_CHARSET);
 
-   GFXTexHandle getTextureHandle(S32 index)
+   std::shared_ptr<GFXTextureObject> getTextureHandle(S32 index)
    {
        return mTextureSheets[index];
    }

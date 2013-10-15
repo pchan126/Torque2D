@@ -45,7 +45,7 @@ class BlobShadow : public ShadowBase
    static U32 smShadowMask;
 
    static DepthSortList smDepthSortList;
-   static GFXTexHandle smGenericShadowTexture;
+   static std::shared_ptr<GFXTextureObject> smGenericShadowTexture;
    static F32 smGenericRadiusSkew;
    static S32 smGenericShadowDim;
 

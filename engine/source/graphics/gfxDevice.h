@@ -179,7 +179,6 @@ private:
    friend class GFXInit;
    friend class GFXVertexBufferHandleBase;
    friend class GFXTextureObject;
-   friend class GFXTextureObject;
    friend class GFXVertexFormat;
    friend class GFXTestFullscreenToggle;
    friend class TestGFXTextureCube;
@@ -360,8 +359,8 @@ protected:
       GFXTDT_Cube
    };
    
-   GFXTexHandle mCurrentTexture[TEXTURE_STAGE_COUNT];
-   GFXTexHandle mNewTexture[TEXTURE_STAGE_COUNT];
+   std::shared_ptr<GFXTextureObject> mCurrentTexture[TEXTURE_STAGE_COUNT];
+   std::shared_ptr<GFXTextureObject> mNewTexture[TEXTURE_STAGE_COUNT];
    GFXCubemapHandle mCurrentCubemap[TEXTURE_STAGE_COUNT];
    GFXCubemapHandle mNewCubemap[TEXTURE_STAGE_COUNT];
 
@@ -742,7 +741,7 @@ public:
    ///
    void setTexture(U32 stage, GFXTextureObject *texture);
    void setCubeTexture( U32 stage, GFXCubemap *cubemap );
-   inline GFXTextureObject* getCurrentTexture( U32 stage ) { return mCurrentTexture[stage]; }
+   inline GFXTextureObject* getCurrentTexture( U32 stage ) { return mCurrentTexture[stage].get(); }
 
    /// @}
 

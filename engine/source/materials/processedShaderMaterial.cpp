@@ -767,7 +767,7 @@ void ProcessedShaderMaterial::setTextureStages( SceneRenderState *state, const S
 //               // black texture to it.  This at least will ensure that
 //               // we get consistant behavior across GPUs and platforms.
 //               if ( !texObject )
-//                  texObject = GFXTexHandle::ZERO;
+//                  texObject = std::shared_ptr<GFXTextureObject>::ZERO;
 //
 //               if ( handles->mRTParamsSC[i]->isValid() && texObject )
 //               {

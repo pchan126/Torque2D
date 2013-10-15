@@ -199,7 +199,7 @@ protected:
    /// Returns a free texture of the requested attributes from
    /// from the shared texture pool.  It returns NULL if no match
    /// is found.
-   GFXTextureObject* _findPooledTexure(   U32 width, 
+   GFXTextureObject *_findPooledTexture(   U32 width,
                                           U32 height, 
                                           GFXFormat format, 
                                           GFXTextureProfile *profile,
@@ -300,7 +300,7 @@ protected:
 
     // Merge with T2D texture manager
 
-    friend class GFXTexHandle;
+    friend class GFXTextureObject;
         
     public:
         /// Texture manager event codes.

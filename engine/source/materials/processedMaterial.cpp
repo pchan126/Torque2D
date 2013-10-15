@@ -168,9 +168,9 @@ String ProcessedMaterial::_getTexturePath(const String& filename)
    return mMaterial->getPath() + filename;
 }
 
-GFXTexHandle ProcessedMaterial::_createTexture( const char* filename, GFXTextureProfile *profile)
+std::shared_ptr<GFXTextureObject> ProcessedMaterial::_createTexture( const char* filename, GFXTextureProfile *profile)
 {
-   return GFXTexHandle( _getTexturePath(filename), profile, avar("%s() - NA (line %d)", __FUNCTION__, __LINE__) );
+   return std::shared_ptr<GFXTextureObject>( _getTexturePath(filename), profile, avar("%s() - NA (line %d)", __FUNCTION__, __LINE__) );
 }
 
 void ProcessedMaterial::addStateBlockDesc(const GFXStateBlockDesc& sb)

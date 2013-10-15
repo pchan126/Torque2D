@@ -32,7 +32,8 @@
 // TODO: Change this to be in non-shipping builds maybe?
 #ifdef TORQUE_DEBUG
 
-GFXTextureObject *GFXTextureObject::smHead = NULL;
+std::shared_ptr<GFXTextureObject> BadTextureHandle;
+GFXTextureObject *GFXTextureObject::smHead = nullptr;
 U32 GFXTextureObject::smActiveTOCount = 0;
 
 U32 GFXTextureObject::dumpActiveTOs()
@@ -69,10 +70,10 @@ U32 GFXTextureObject::dumpActiveTOs()
 // GFXTextureObject
 //-----------------------------------------------------------------------------
 GFXTextureObject::GFXTextureObject(GFXDevice *aDevice, GFXTextureProfile *aProfile):
-    mHashNext(NULL),
-    mNext(NULL),
-    mPrev(NULL),
-    mBitmap(NULL),
+    mHashNext(nullptr),
+    mNext(nullptr),
+    mPrev(nullptr),
+    mBitmap(nullptr),
     mDevice(aDevice),
     mProfile(aProfile),
     mMipLevels(1),
@@ -92,11 +93,11 @@ GFXTextureObject::GFXTextureObject(GFXDevice *aDevice, GFXTextureProfile *aProfi
    mDebugCreationPath = gProfiler->getProfilePath();
 #endif
    mDebugNext = smHead;
-   mDebugPrev = NULL;
+   mDebugPrev = nullptr;
 
    if(smHead)
    {
-      AssertFatal(smHead->mDebugPrev == NULL, "GFXTextureObject::GFXTextureObject - found unexpected previous in current head!");
+      AssertFatal(smHead->mDebugPrev == nullptr, "GFXTextureObject::GFXTextureObject - found unexpected previous in current head!");
       smHead->mDebugPrev = this;
    }
 
@@ -121,7 +122,7 @@ GFXTextureObject::~GFXTextureObject()
    if(mDebugPrev)
       mDebugPrev->mDebugNext = mDebugNext;
 
-   mDebugPrev = mDebugNext = NULL;
+   mDebugPrev = mDebugNext = nullptr;
 
    smActiveTOCount--;
 #endif
@@ -226,4 +227,9 @@ U32 GFXTextureObject::getEstimatedSizeInBytes() const
 //
    return totalBytes;
 }
+
+void GFXTextureObject::refresh( void )
+{
+    TEXMGR->reloadTexture( this );
+};
 

@@ -47,7 +47,7 @@ protected:
 public:
 
    /// Create a static cubemap from a list of 6 face textures.
-   virtual void initStatic( GFXTexHandle *faces ) = 0;
+   virtual void initStatic( std::shared_ptr<GFXTextureObject> *faces ) = 0;
 
    ///
    virtual void initDynamic( U32 texSize, GFXFormat faceFormat = GFXFormatR8G8B8A8 ) = 0;

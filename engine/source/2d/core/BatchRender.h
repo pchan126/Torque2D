@@ -71,7 +71,7 @@ private:
         Vector<U16>* index;
     };
 
-    typedef HashMap<GFXTexHandle, indexedPrim*> textureBatchType;
+    typedef HashMap<std::shared_ptr<GFXTextureObject>, indexedPrim*> textureBatchType;
     Vector< indexedPrim* > mIndexVectorPool;
     textureBatchType    mTextureBatchMap;
 
@@ -91,7 +91,7 @@ private:
     F32                 mAlphaTestMode;
 
     bool                mStrictOrderMode;
-    GFXTexHandle       mStrictOrderTextureHandle;
+    std::shared_ptr<GFXTextureObject>       mStrictOrderTextureHandle;
     DebugStats*         mpDebugStats;
 
     bool                mWireframeMode;
@@ -241,13 +241,13 @@ public:
             const U32 vertexCount,
             const Vector2* pVertexArray,
             const Vector2* pTextureArray,
-            GFXTexHandle& texture,
+            std::shared_ptr<GFXTextureObject>& texture,
             const ColorF& color = ColorF(-1.0f, -1.0f, -1.0f) );
 
-    void SubmitTriangleStrip( const Vector<GFXVertexPCT> verts, GFXTexHandle& texture);
+    void SubmitTriangleStrip( const Vector<GFXVertexPCT> verts, std::shared_ptr<GFXTextureObject>& texture);
 
     void SubmitIndexedTriangleStrip(const Vector<GFXVertexPCT> &verts,
-                                   GFXTexHandle &texture,
+                                   std::shared_ptr<GFXTextureObject> &texture,
                                    const Vector<U16> &indices);
 
    /// Submit a quad for batching.
@@ -257,7 +257,7 @@ public:
     ///   | \ |
     ///  0| _\|1
     void SubmitQuad( const std::array< GFXVertexPCT, 4>,
-                     GFXTexHandle& texture );
+                     std::shared_ptr<GFXTextureObject>& texture );
    
     void SubmitQuad(
             const Vector2& vertexPos0,
@@ -268,7 +268,7 @@ public:
             const Vector2& texturePos1,
             const Vector2& texturePos2,
             const Vector2& texturePos3,
-            GFXTexHandle& texture,
+            std::shared_ptr<GFXTextureObject>& texture,
             const ColorF& color = ColorF(1.0f, 1.0f, 1.0f) );
 
     /// Render a quad immediately without affecting current batch.
@@ -320,10 +320,10 @@ private:
     /// Flush (render) any pending batches.
     void flushInternal( void );
 
-   void _lightAndDraw( Vector<GFXVertexPCT>* pVertexVector, Vector<U16>* pIndex, GFXTexHandle handle = NULL);
+   void _lightAndDraw( Vector<GFXVertexPCT>* pVertexVector, Vector<U16>* pIndex, std::shared_ptr<GFXTextureObject> handle = NULL);
 
    /// Find texture batch.
-    indexedPrim* findTextureBatch( GFXTexHandle& handle );
+    indexedPrim* findTextureBatch( std::shared_ptr<GFXTextureObject>& handle );
 
 };
 

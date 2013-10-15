@@ -230,7 +230,7 @@ protected:
    AddInstTable mAddInstSignals;
 
    Scene * mSceneManager;
-   GFXTexHandle mDepthBuff;
+   std::shared_ptr<GFXTextureObject> mDepthBuff;
 
    MatrixF    mProjection;
    MatrixF    mView;

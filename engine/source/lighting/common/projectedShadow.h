@@ -92,7 +92,7 @@ protected:
 
    static RenderPassManager* _getRenderPass();
 
-   GFXTexHandle mShadowTexture;
+   std::shared_ptr<GFXTextureObject> mShadowTexture;
    GFXTextureTargetRef mRenderTarget;
 
    GFXTextureObject* _getDepthTarget( U32 width, U32 height );

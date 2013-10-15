@@ -57,7 +57,7 @@ public:
       /// This is the default type of texture which 
       /// is valid with most texture types.
       /// @see mTexType
-      GFXTexHandle texObject;
+      std::shared_ptr<GFXTextureObject> texObject;
 
       /// Only valid when the texture type is set 
       /// to Material::TexTarget.
@@ -214,7 +214,7 @@ public:
    Material* getMaterial() const { return mMaterial; }
 
    /// Returns the texture used by a stage
-   GFXTexHandle getStageTexture(U32 stage, const FeatureType &type)
+   std::shared_ptr<GFXTextureObject> getStageTexture(U32 stage, const FeatureType &type)
    {
       return (stage < Material::MAX_STAGES) ? mStages[stage].getTex(type) : NULL;
    }
@@ -273,7 +273,7 @@ protected:
    String _getTexturePath(const String& filename);
 
    /// Loads the texture located at _getTexturePath(filename) and gives it the specified profile
-   GFXTexHandle _createTexture( const char *filename, GFXTextureProfile *profile );
+   std::shared_ptr<GFXTextureObject> _createTexture( const char *filename, GFXTextureProfile *profile );
 
    /// @name State blocks
    ///

@@ -462,7 +462,7 @@ bool AdvancedLightManager::setTextureStage(  const SceneData &sgData,
    {
       S32 reg = lsc->mShadowMapSC->getSamplerRegister();
    	if ( reg != -1 )
-      	GFX->setTexture( reg, GFXTexHandle::ONE );
+      	GFX->setTexture( reg, std::shared_ptr<GFXTextureObject>::ONE );
 
       return true;
    }

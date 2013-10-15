@@ -55,7 +55,7 @@ GFXOpenGLCubemap::~GFXOpenGLCubemap()
 }
 
 
-void GFXOpenGLCubemap::initStatic(GFXTexHandle* faces)
+void GFXOpenGLCubemap::initStatic(std::shared_ptr<GFXTextureObject>* faces)
 {
    if(mCubemap)
       return;

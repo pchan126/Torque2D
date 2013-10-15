@@ -45,7 +45,7 @@ U32 GuiImageList::Insert( const char* texturePath , GFXTextureProfile *profile, 
   t->TexturePath = StringTable->insert(texturePath);
   if ( *t->TexturePath ) 
   {
-    t->Handle = GFXTexHandle(t->TexturePath, profile, "");
+    t->Handle = std::shared_ptr<GFXTextureObject>(t->TexturePath, profile, "");
 
     if ( t->Handle )
     {
@@ -203,7 +203,7 @@ GFXTextureObject *GuiImageList::GetTextureObject( const char* TexturePath )
   return NULL;
 }
 
-GFXTexHandle GuiImageList::GetTextureHandle( U32 Index )
+std::shared_ptr<GFXTextureObject> GuiImageList::GetTextureHandle( U32 Index )
 {
   U32 ItemIndex = IndexFromId(Index);
   if ( ItemIndex != -1 )
@@ -213,7 +213,7 @@ GFXTexHandle GuiImageList::GetTextureHandle( U32 Index )
 
 }
 
-GFXTexHandle GuiImageList::GetTextureHandle( const char* TexturePath )
+std::shared_ptr<GFXTextureObject> GuiImageList::GetTextureHandle( const char* TexturePath )
 {
   for ( auto i:mTextures )
   {

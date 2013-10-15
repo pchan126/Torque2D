@@ -90,7 +90,7 @@ protected:
    LightShadowMap *mCurrentShadowMap;
 
    ///
-   GFXTexHandle mTapRotationTex;
+   std::shared_ptr<GFXTextureObject> mTapRotationTex;
 
    bool mIsActive;
 

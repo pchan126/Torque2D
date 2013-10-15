@@ -319,7 +319,7 @@ void MaterialList::mapMaterial( U32 i )
          // No Material found, create new "default" material with just a diffuseMap
 
          // First see if there is a valid diffuse texture
-         GFXTexHandle texHandle;
+         std::shared_ptr<GFXTextureObject> texHandle;
          if (mLookupPath.isEmpty())
          {
             texHandle.set( mMaterialNames[i], &GFXDefaultStaticDiffuseProfile, avar("%s() - handle (line %d)", __FUNCTION__, __LINE__) );

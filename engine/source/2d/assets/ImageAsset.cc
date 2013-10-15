@@ -846,39 +846,39 @@ bool ImageAsset::removeExplicitCell( const S32 cellIndex )
 void ImageAsset::setTextureFilter( const TextureFilterMode filterMode )
 {
     // Finish if no texture.
-    if ( mImageTextureHandle.isNull() )
-        return;
-
-    // Select Hardware Filter Mode.
-    GFXTextureFilterType glFilterMode;
-
-    switch( filterMode )
+    if ( mImageTextureHandle )
     {
-        // Nearest ("none").
-        case FILTER_NEAREST:
+        // Select Hardware Filter Mode.
+        GFXTextureFilterType glFilterMode;
+
+        switch( filterMode )
         {
-            glFilterMode = GFXTextureFilterPoint;
-        } break;
+            // Nearest ("none").
+            case FILTER_NEAREST:
+            {
+                glFilterMode = GFXTextureFilterPoint;
+            } break;
 
-        // Bilinear ("smooth").
-        case FILTER_BILINEAR:
-        {
-            glFilterMode = GFXTextureFilterLinear;
+            // Bilinear ("smooth").
+            case FILTER_BILINEAR:
+            {
+                glFilterMode = GFXTextureFilterLinear;
 
-        } break;
+            } break;
 
-        // Huh?
-        default:
-            // Oh well...
-            glFilterMode = GFXTextureFilterLinear;
-    };
+            // Huh?
+            default:
+                // Oh well...
+                glFilterMode = GFXTextureFilterLinear;
+        };
 
-//    GFXGLTextureFilter[GFXTextureFilterNone] = GL_NEAREST;
-//    GFXGLTextureFilter[GFXTextureFilterPoint] = GL_NEAREST;
-//    GFXGLTextureFilter[GFXTextureFilterLinear] = GL_LINEAR;
-    
-    //    // Set the texture objects filter mode.
-//    mImageTextureHandle->setFilter( glFilterMode );
+    //    GFXGLTextureFilter[GFXTextureFilterNone] = GL_NEAREST;
+    //    GFXGLTextureFilter[GFXTextureFilterPoint] = GL_NEAREST;
+    //    GFXGLTextureFilter[GFXTextureFilterLinear] = GL_LINEAR;
+
+        //    // Set the texture objects filter mode.
+    //    mImageTextureHandle->setFilter( glFilterMode );
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -944,15 +944,16 @@ void ImageAsset::calculateImage( void )
 
     // If we have an existing texture and we're setting to the same bitmap then force the texture manager
     // to refresh the texture itself.
-    if ( !mImageTextureHandle.isNull())
+    if ( mImageTextureHandle )
         if (dStricmp(mImageTextureHandle->getTextureKey(), mImageFile) == 0 )
-            mImageTextureHandle.refresh();
+            mImageTextureHandle->refresh();
 
     // Get image texture.
-    mImageTextureHandle.set( mImageFile, &GFXImageAssetTextureProfile, "mImageTextureHandle");
+    mImageTextureHandle = TEXMGR->createTexture(mImageFile, &GFXImageAssetTextureProfile);
+    mImageTextureHandle->mDebugDescription = "mImageTextureHandle";
 
     // Is the texture valid?
-    if ( mImageTextureHandle.isNull() )
+    if ( !mImageTextureHandle )
     {
         // No, so warn.
         Con::warnf( "Image '%s' could not load texture '%s'.", getAssetId(), mImageFile );

@@ -80,9 +80,9 @@ public:
 protected:
 
    FileName mCubeFaceFile[6];
-   GFXTexHandle mCubeFace[6];
+   std::shared_ptr<GFXTextureObject> mCubeFace[6];
 
-   GFXTexHandle mDepthBuff;
+   std::shared_ptr<GFXTextureObject> mDepthBuff;
    GFXTextureTargetRef mRenderTarget;
 #ifdef INIT_HACK
    bool mInit;

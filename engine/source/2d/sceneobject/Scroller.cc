@@ -241,7 +241,7 @@ void Scroller::sceneRender( const SceneRenderState* pSceneRenderState, const Sce
     
     // Fetch texture and texture area.
     const ImageAsset::FrameArea::TexelArea& frameTexelArea = getProviderImageFrameArea().mTexelArea;
-    GFXTexHandle& texture = getProviderTexture();
+    std::shared_ptr<GFXTextureObject>& texture = getProviderTexture();
     
     // Calculate render offset.
     F32 renderOffsetX = mFmod( mRenderTickTextureOffset.x, 1.0f );

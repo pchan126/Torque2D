@@ -575,7 +575,7 @@ GFXTextureObject* ProjectedShadow::_getDepthTarget( U32 width, U32 height )
 {
    // Get a depth texture target from the pooled profile
    // which is returned as a temporary.
-   GFXTexHandle depthTex( width, height, GFXFormatD24S8, &BLProjectedShadowZProfile, 
+   std::shared_ptr<GFXTextureObject> depthTex( width, height, GFXFormatD24S8, &BLProjectedShadowZProfile,
       "ProjectedShadow::_getDepthTarget()" );
 
    return depthTex;

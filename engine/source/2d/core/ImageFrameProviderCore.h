@@ -115,7 +115,7 @@ public:
 
     /// Frame provision.
     inline bool isStaticFrameProvider( void ) const { return mStaticProvider; }
-    inline GFXTexHandle& getProviderTexture( void ) const { return !validRender() ? BadTextureHandle : isStaticFrameProvider() ? (*mpImageAsset)->getImageTexture() : (*mpAnimationAsset)->getImage()->getImageTexture(); };
+    inline std::shared_ptr<GFXTextureObject>& getProviderTexture( void ) const { return !validRender() ? BadTextureHandle : isStaticFrameProvider() ? (*mpImageAsset)->getImageTexture() : (*mpAnimationAsset)->getImage()->getImageTexture(); };
     inline const ImageAsset::FrameArea& getProviderImageFrameArea( void ) const  { return !validRender() ? BadFrameArea : isStaticFrameProvider() ? (*mpImageAsset)->getImageFrameArea(mImageFrame) : (*mpAnimationAsset)->getImage()->getImageFrameArea(getCurrentAnimationFrame()); };
 
     inline const AnimationAsset* getCurrentAnimation( void ) const { return mpAnimationAsset->notNull() ? *mpAnimationAsset : nullptr; };

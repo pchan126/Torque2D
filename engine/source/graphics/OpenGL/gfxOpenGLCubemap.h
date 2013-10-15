@@ -31,7 +31,7 @@ public:
    GFXOpenGLCubemap();
    virtual ~GFXOpenGLCubemap();
 
-   virtual void initStatic( GFXTexHandle *faces );
+   virtual void initStatic( std::shared_ptr<GFXTextureObject> *faces );
    virtual void initDynamic( U32 texSize, GFXFormat faceFormat = GFXFormatR8G8B8A8 ) = 0;
    virtual U32 getSize() const { return mWidth; }
    virtual GFXFormat getFormat() const { return mFaceFormat; }
@@ -76,12 +76,12 @@ protected:
    U32 mMipLevels;
    GFXFormat mFaceFormat;
       
-   GFXTexHandle mTextures[6]; ///< Keep refs to our textures for resurrection of static cubemaps
+   std::shared_ptr<GFXTextureObject> mTextures[6]; ///< Keep refs to our textures for resurrection of static cubemaps
    
    // should only be called by GFXDevice
    virtual void setToTexUnit( U32 tuNum ); ///< Binds the cubemap to the given texture unit
    virtual void bind(U32 textureUnit) = 0; ///< Notifies our owning device that we want to be set to the given texture unit (used for GL internal state tracking)
-   virtual void fillCubeTextures(GFXTexHandle* faces) = 0; ///< Copies the textures in faces into the cubemap
+   virtual void fillCubeTextures(std::shared_ptr<GFXTextureObject>* faces) = 0; ///< Copies the textures in faces into the cubemap
    
    static GLenum faceList[6]; ///< Lookup table
 };

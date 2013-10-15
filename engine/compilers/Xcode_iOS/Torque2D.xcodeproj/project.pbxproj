@@ -450,6 +450,7 @@
 		86A9A3FE16AEC836003F01E6 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86A9A3E416AEC817003F01E6 /* OpenAL.framework */; };
 		86A9A3FF16AEC836003F01E6 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86A9A3E516AEC817003F01E6 /* OpenGLES.framework */; };
 		86A9A40016AEC836003F01E6 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86A9A3E616AEC817003F01E6 /* QuartzCore.framework */; };
+		C5419E395C72622C53C7442D /* gfxTextureHandle.cc in Sources */ = {isa = PBXBuildFile; fileRef = C5419C01CF4E092D195A91B3 /* gfxTextureHandle.cc */; };
 		D10529E8173B665100BFC4FF /* gfxOpenGLES20TextureManager.cc in Sources */ = {isa = PBXBuildFile; fileRef = D10529D7173B665100BFC4FF /* gfxOpenGLES20TextureManager.cc */; };
 		D10529E9173B665100BFC4FF /* gfxOpenGLES20TextureObject.cc in Sources */ = {isa = PBXBuildFile; fileRef = D10529D9173B665100BFC4FF /* gfxOpenGLES20TextureObject.cc */; };
 		D10529EE173B832700BFC4FF /* gfxOpenGLES20Device.cc in Sources */ = {isa = PBXBuildFile; fileRef = D10529ED173B832600BFC4FF /* gfxOpenGLES20Device.cc */; };
@@ -490,7 +491,6 @@
 		D15E7EBA16F061E200BB43B1 /* gfxStringEnumTranslate.cc in Sources */ = {isa = PBXBuildFile; fileRef = D15E7E9C16F061E200BB43B1 /* gfxStringEnumTranslate.cc */; };
 		D15E7EBB16F061E200BB43B1 /* gfxStructs.cc in Sources */ = {isa = PBXBuildFile; fileRef = D15E7E9E16F061E200BB43B1 /* gfxStructs.cc */; };
 		D15E7EBC16F061E200BB43B1 /* gfxTarget.cc in Sources */ = {isa = PBXBuildFile; fileRef = D15E7EA016F061E200BB43B1 /* gfxTarget.cc */; };
-		D15E7EBD16F061E200BB43B1 /* gfxTextureHandle.cc in Sources */ = {isa = PBXBuildFile; fileRef = D15E7EA216F061E200BB43B1 /* gfxTextureHandle.cc */; };
 		D15E7EBE16F061E200BB43B1 /* gfxTextureManager.cc in Sources */ = {isa = PBXBuildFile; fileRef = D15E7EA416F061E200BB43B1 /* gfxTextureManager.cc */; };
 		D15E7EBF16F061E200BB43B1 /* gfxTextureObject.cc in Sources */ = {isa = PBXBuildFile; fileRef = D15E7EA616F061E200BB43B1 /* gfxTextureObject.cc */; };
 		D15E7EC016F061E200BB43B1 /* gfxTextureProfile.cc in Sources */ = {isa = PBXBuildFile; fileRef = D15E7EA816F061E200BB43B1 /* gfxTextureProfile.cc */; };
@@ -1413,6 +1413,7 @@
 		86A9A3E416AEC817003F01E6 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		86A9A3E516AEC817003F01E6 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		86A9A3E616AEC817003F01E6 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		C5419C01CF4E092D195A91B3 /* gfxTextureHandle.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxTextureHandle.cc; sourceTree = "<group>"; };
 		D10529CD173B665000BFC4FF /* gfxOpenGLES20Device.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20Device.h; sourceTree = "<group>"; };
 		D10529D0173B665000BFC4FF /* gfxOpenGLES20EnumTranslate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20EnumTranslate.h; sourceTree = "<group>"; };
 		D10529D4173B665100BFC4FF /* gfxOpenGLES20Shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20Shader.h; sourceTree = "<group>"; };
@@ -1507,7 +1508,6 @@
 		D15E7E9F16F061E200BB43B1 /* gfxStructs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxStructs.h; sourceTree = "<group>"; };
 		D15E7EA016F061E200BB43B1 /* gfxTarget.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxTarget.cc; sourceTree = "<group>"; };
 		D15E7EA116F061E200BB43B1 /* gfxTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxTarget.h; sourceTree = "<group>"; };
-		D15E7EA216F061E200BB43B1 /* gfxTextureHandle.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxTextureHandle.cc; sourceTree = "<group>"; };
 		D15E7EA316F061E200BB43B1 /* gfxTextureHandle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxTextureHandle.h; sourceTree = "<group>"; };
 		D15E7EA416F061E200BB43B1 /* gfxTextureManager.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxTextureManager.cc; sourceTree = "<group>"; };
 		D15E7EA516F061E200BB43B1 /* gfxTextureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxTextureManager.h; sourceTree = "<group>"; };
@@ -2245,7 +2245,6 @@
 				D15E7E9F16F061E200BB43B1 /* gfxStructs.h */,
 				D15E7EA016F061E200BB43B1 /* gfxTarget.cc */,
 				D15E7EA116F061E200BB43B1 /* gfxTarget.h */,
-				D15E7EA216F061E200BB43B1 /* gfxTextureHandle.cc */,
 				D15E7EA316F061E200BB43B1 /* gfxTextureHandle.h */,
 				D15E7EA416F061E200BB43B1 /* gfxTextureManager.cc */,
 				D15E7EA516F061E200BB43B1 /* gfxTextureManager.h */,
@@ -2269,6 +2268,7 @@
 				D1736FCC1761A72E008D010C /* sim */,
 				867BAE3116AEC9050033868F /* splineUtil.cc */,
 				867BAE3216AEC9050033868F /* splineUtil.h */,
+				C5419C01CF4E092D195A91B3 /* gfxTextureHandle.cc */,
 			);
 			name = graphics;
 			path = ../../../source/graphics;
@@ -3848,7 +3848,6 @@
 				D15E7EBA16F061E200BB43B1 /* gfxStringEnumTranslate.cc in Sources */,
 				D15E7EBB16F061E200BB43B1 /* gfxStructs.cc in Sources */,
 				D15E7EBC16F061E200BB43B1 /* gfxTarget.cc in Sources */,
-				D15E7EBD16F061E200BB43B1 /* gfxTextureHandle.cc in Sources */,
 				D15E7EBE16F061E200BB43B1 /* gfxTextureManager.cc in Sources */,
 				D15E7EBF16F061E200BB43B1 /* gfxTextureObject.cc in Sources */,
 				D15E7EC016F061E200BB43B1 /* gfxTextureProfile.cc in Sources */,
@@ -3945,6 +3944,7 @@
 				4B8AA8989528FAA453A05720 /* ShaderAsset.cpp in Sources */,
 				4B8AA268C459D3CAC485BCFB /* shaderGenVars.cpp in Sources */,
 				4B8AAE439C5F012AC8673AE4 /* sphereMesh.cpp in Sources */,
+				C5419E395C72622C53C7442D /* gfxTextureHandle.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

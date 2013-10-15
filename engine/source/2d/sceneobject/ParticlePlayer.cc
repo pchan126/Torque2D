@@ -629,7 +629,7 @@ void ParticlePlayer::sceneRender( const SceneRenderState* pSceneRenderState, con
                 const ImageAsset::FrameArea::TexelArea& texelFrameArea = frameProvider.getProviderImageFrameArea().mTexelArea;
 
                 // Frame texture.
-                GFXTexHandle& frameTexture = frameProvider.getProviderTexture();
+                std::shared_ptr<GFXTextureObject>& frameTexture = frameProvider.getProviderTexture();
 
                 // Fetch the particle render OOBB.
                 Vector2* renderOOBB = pParticleNode->mRenderOOBB;
@@ -675,7 +675,7 @@ void ParticlePlayer::sceneRender( const SceneRenderState* pSceneRenderState, con
                 const ImageAsset::FrameArea::TexelArea& texelFrameArea = frameProvider.getProviderImageFrameArea().mTexelArea;
 
                 // Frame texture.
-                GFXTexHandle& frameTexture = frameProvider.getProviderTexture();
+                std::shared_ptr<GFXTextureObject>& frameTexture = frameProvider.getProviderTexture();
 
                 // Fetch the particle render OOBB.
                 Vector2* renderOOBB = pParticleNode->mRenderOOBB;

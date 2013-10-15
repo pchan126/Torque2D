@@ -85,7 +85,7 @@ void GFXDrawUtil::_setupStateBlocks()
    mRectFillSB = mDevice->createStateBlock(rectFill);
 }
 
-void GFXDrawUtil::batchTriangleStrip( const Vector<GFXVertexPCT> verts, GFXTexHandle& texture)
+void GFXDrawUtil::batchTriangleStrip( const Vector<GFXVertexPCT> verts, std::shared_ptr<GFXTextureObject>& texture)
 {
    if (verts.size() < 1)
       return;
@@ -439,7 +439,7 @@ void GFXDrawUtil::drawBitmapStretchSR( GFXTextureObject *texture, const RectF &d
    
    Vector<GFXVertexPCT> verts;
    verts.setSize(4);
-   GFXTexHandle texHandle(texture);
+   std::shared_ptr<GFXTextureObject> texHandle(texture);
     
    F32 texLeft   = (srcRect.point.x)                    / (texture->getWidth());
    F32 texRight  = (srcRect.point.x + srcRect.extent.x) / (texture->getWidth());

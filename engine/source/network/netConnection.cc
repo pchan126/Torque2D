@@ -643,10 +643,10 @@ Net::Error NetConnection::sendPacket(std::iostream &stream)
 {
    //Con::printf("NET  %d: SEND - %d", getId(), mLastSendSeq);
    // do nothing on send if this is a demo replay.
-   if(mDemoReadStream)
+//   if(mDemoReadStream)
       return Net::NoError;
 
-   gNetBitsSent = StreamFn::getStreamSize(stream);
+//   gNetBitsSent = StreamFn::getStreamSize(stream);
 
 //   if(isLocalConnection())
 //   {

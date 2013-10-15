@@ -119,7 +119,7 @@ protected:
    String mName;
 
    /// The held textures.
-   GFXTexHandle mTex[4];
+   std::shared_ptr<GFXTextureObject> mTex[4];
 
    ///
    TexDelegate mTexDelegate;

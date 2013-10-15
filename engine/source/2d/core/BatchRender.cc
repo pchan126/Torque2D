@@ -93,7 +93,7 @@ void BatchRender::SubmitTriangles(
         const U32 vertexCount,
         const Vector2* pVertexArray,
         const Vector2* pTextureArray,
-        GFXTexHandle& texture,
+        std::shared_ptr<GFXTextureObject>& texture,
         const ColorF& inColor )
 {
     // Debug Profiling.
@@ -199,7 +199,7 @@ void BatchRender::SubmitTriangles(
     }
 }
 
-void BatchRender::SubmitTriangleStrip( const Vector<GFXVertexPCT> verts, GFXTexHandle& texture)
+void BatchRender::SubmitTriangleStrip( const Vector<GFXVertexPCT> verts, std::shared_ptr<GFXTextureObject>& texture)
 {
     // Sanity!
     AssertFatal( mpDebugStats != nullptr, "Debug stats have not been configured." );
@@ -273,7 +273,7 @@ void BatchRender::SubmitTriangleStrip( const Vector<GFXVertexPCT> verts, GFXTexH
 }
 
 
-void BatchRender::SubmitIndexedTriangleStrip(const Vector<GFXVertexPCT> &verts, GFXTexHandle &texture, const Vector<U16> &in_indexBuffer)
+void BatchRender::SubmitIndexedTriangleStrip(const Vector<GFXVertexPCT> &verts, std::shared_ptr<GFXTextureObject> &texture, const Vector<U16> &in_indexBuffer)
 {
    // Sanity!
    AssertFatal( mpDebugStats != nullptr, "Debug stats have not been configured." );
@@ -350,7 +350,7 @@ void BatchRender::SubmitIndexedTriangleStrip(const Vector<GFXVertexPCT> &verts, 
 }
 
 void BatchRender::SubmitQuad(const std::array< GFXVertexPCT, 4> verts,
-                             GFXTexHandle& texture)
+                             std::shared_ptr<GFXTextureObject>& texture)
 {
     // Sanity!
     AssertFatal( mpDebugStats != nullptr, "Debug stats have not been configured." );
@@ -444,7 +444,7 @@ void BatchRender::SubmitQuad(
         const Vector2& texturePos1,
         const Vector2& texturePos2,
         const Vector2& texturePos3,
-        GFXTexHandle& texture,
+        std::shared_ptr<GFXTextureObject>& texture,
         const ColorF& color )
 {
     // Sanity!
@@ -599,7 +599,7 @@ void BatchRender::flushInternal( void )
     mIndexBuffer.clear();
 }
 
-void BatchRender::_lightAndDraw( Vector<GFXVertexPCT>* pVertexVector, Vector<U16>* pIndex, GFXTexHandle handle )
+void BatchRender::_lightAndDraw( Vector<GFXVertexPCT>* pVertexVector, Vector<U16>* pIndex, std::shared_ptr<GFXTextureObject> handle )
 {
    // Bind the texture if not in wireframe mode.
    if (!handle.isNull())
@@ -655,7 +655,7 @@ void BatchRender::_lightAndDraw( Vector<GFXVertexPCT>* pVertexVector, Vector<U16
 
 //-----------------------------------------------------------------------------
 
-BatchRender::indexedPrim* BatchRender::findTextureBatch( GFXTexHandle& handle )
+BatchRender::indexedPrim* BatchRender::findTextureBatch( std::shared_ptr<GFXTextureObject>& handle )
 {
 //    Vector<GFXVertexPCT> * pIndexVector = nullptr;
     indexedPrim* pIndexVector = nullptr;

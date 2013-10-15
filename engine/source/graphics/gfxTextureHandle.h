@@ -23,123 +23,120 @@
 #ifndef _GFXTEXTUREHANDLE_H_
 #define _GFXTEXTUREHANDLE_H_
 
-#ifndef _GFXTEXTUREOBJECT_H_
 #include "graphics/gfxTextureObject.h"
-#endif
-#ifndef _MPOINT2_H_
 #include "math/mPoint.h"
-#endif
-
+#include <memory>
 
 class GFXTextureProfile;
 
-/// A reference counted handle to a texture resource.
-class GFXTexHandle : public StrongRefPtr<GFXTextureObject>
-{
-public:
-   GFXTexHandle() {}
-   GFXTexHandle( GFXTextureObject* obj );
-   GFXTexHandle( const GFXTexHandle &handle, const String &desc );
+//typedef std::shared_ptr<GFXTextureObject> std::shared_ptr<GFXTextureObject>;
 
-   // load texture
-   GFXTexHandle( const String &texName, GFXTextureProfile *profile, const String &desc );
-   bool set( const String &texName, GFXTextureProfile *profile, const String &desc );
+///// A reference counted handle to a texture resource.
+//class std::shared_ptr<GFXTextureObject> : public StrongRefPtr<GFXTextureObject>
+//{
+//public:
+//   std::shared_ptr<GFXTextureObject>() {}
+//   std::shared_ptr<GFXTextureObject>( GFXTextureObject* obj );
+//   std::shared_ptr<GFXTextureObject>( const std::shared_ptr<GFXTextureObject> &handle, const String &desc );
+//
+//   // load texture
+//   std::shared_ptr<GFXTextureObject>( const String &texName, GFXTextureProfile *profile, const String &desc );
+//   bool set( const String &texName, GFXTextureProfile *profile, const String &desc );
+//
+//   // register texture
+//   std::shared_ptr<GFXTextureObject>( GBitmap *bmp, GFXTextureProfile *profile, bool deleteBmp, const String &desc );
+//   bool set( GBitmap *bmp, GFXTextureProfile *profile, bool deleteBmp, const String &desc );
+//
+//   // Sized bitmap
+//   std::shared_ptr<GFXTextureObject>( U32 width, U32 height, GFXFormat format, GFXTextureProfile *profile, const String &desc, U32 numMipLevels = 1, S32 antialiasLevel = 0);
+//   bool set( U32 width, U32 height, GFXFormat format, GFXTextureProfile *profile, const String &desc, U32 numMipLevels = 1, S32 antialiasLevel = 0);
+//   bool set( U32 width, U32 height, U32 depth, void *pixels, GFXFormat format, GFXTextureProfile *profile, const String &desc, U32 numMipLevels = 1 );
+//
+//   /// Returns the width and height as a point.
+//   Point2I getWidthHeight() const { return getPointer() ? Point2I( getPointer()->getWidth(), getPointer()->getHeight() ) : Point2I(0, 0); }
+//   
+//   U32 getWidth() const    { return getPointer() ? getPointer()->getWidth()  : 0; }
+//   U32 getHeight() const   { return getPointer() ? getPointer()->getHeight() : 0; }
+//   U32 getDepth() const    { return getPointer() ? getPointer()->getDepth()  : 0; }
+//    U32 getBitmapWidth() const    { return getPointer() ? getPointer()->getBitmapWidth()  : 0; }
+//    U32 getBitmapHeight() const   { return getPointer() ? getPointer()->getBitmapHeight() : 0; }
+//    U32 getBitmapDepth() const    { return getPointer() ? getPointer()->getBitmapDepth()  : 0; }
+//    GFXFormat getFormat() const { return getPointer() ? getPointer()->getFormat() : GFXFormat_COUNT; }
+//   
+//    void setFilter(GFXTextureFilterType filterType) { getPointer()->setFilter(filterType); };
+//    
+//   /// Reloads the texture.
+//   /// @see GFXTextureManager::reloadTexture
+//   void refresh();
+//
+//   /// Releases the texture handle.
+//   void free() { StrongObjectRef::set( NULL ); }
+//   
+//   GFXLockedRect *lock( U32 mipLevel = 0, RectI *inRect = NULL )
+//   {
+//      return getPointer()->lock(mipLevel, inRect); 
+//   }
+//
+//   void unlock( U32 mipLevel = 0) 
+//   {
+//      getPointer()->unlock(mipLevel); 
+//   }
+//
+//   // copy to bitmap.  see gfxTetureObject.h for description of what types of textures
+//   // can be copied into bitmaps.  returns true if successful, false otherwise
+//   bool copyToBmp(GBitmap* bmp) { return getPointer() ? getPointer()->copyToBmp(bmp) : false; }
+//
+//   //---------------------------------------------------------------------------
+//   // Operator overloads
+//   //---------------------------------------------------------------------------
+//   std::shared_ptr<GFXTextureObject>& operator=(const std::shared_ptr<GFXTextureObject> &t)
+//   {
+//      StrongObjectRef::set(t.getPointer());
+//      return *this;
+//   }
+//   
+//   std::shared_ptr<GFXTextureObject>& operator=( GFXTextureObject *to)
+//   {
+//      StrongObjectRef::set(to);
+//      return *this;
+//   }
+//
+//   bool operator==(const std::shared_ptr<GFXTextureObject> &t) const { return t.getPointer() == getPointer(); }
+//   bool operator!=(const std::shared_ptr<GFXTextureObject> &t) const { return t.getPointer() != getPointer(); }
+//
+//   /// Returns the texture object.
+//   operator GFXTextureObject*() const { return getPointer(); }
+//
+//   /// Returns the backing bitmap for this texture.
+//   GBitmap* getBitmap() { return getPointer() ? getPointer()->getBitmap() : NULL; }
+//   const GBitmap* getBitmap() const { return getPointer() ? getPointer()->getBitmap() : NULL; }
+//
+//
+//   /// Helper 2x2 R8G8B8A8 texture filled with 0.
+//   static std::shared_ptr<GFXTextureObject> ZERO;
+//
+//   /// Helper 2x2 R8G8B8A8 texture filled with 255.
+//   static std::shared_ptr<GFXTextureObject> ONE;
+//
+//   /// Helper 2x2 R8G8B8A8 normal map texture filled 
+//   /// with 128, 128, 255.
+//   static std::shared_ptr<GFXTextureObject> ZUP;
+//
+//};
 
-   // register texture
-   GFXTexHandle( GBitmap *bmp, GFXTextureProfile *profile, bool deleteBmp, const String &desc );
-   bool set( GBitmap *bmp, GFXTextureProfile *profile, bool deleteBmp, const String &desc );
-
-   // Sized bitmap
-   GFXTexHandle( U32 width, U32 height, GFXFormat format, GFXTextureProfile *profile, const String &desc, U32 numMipLevels = 1, S32 antialiasLevel = 0);
-   bool set( U32 width, U32 height, GFXFormat format, GFXTextureProfile *profile, const String &desc, U32 numMipLevels = 1, S32 antialiasLevel = 0);
-   bool set( U32 width, U32 height, U32 depth, void *pixels, GFXFormat format, GFXTextureProfile *profile, const String &desc, U32 numMipLevels = 1 );
-
-   /// Returns the width and height as a point.
-   Point2I getWidthHeight() const { return getPointer() ? Point2I( getPointer()->getWidth(), getPointer()->getHeight() ) : Point2I(0, 0); }
-   
-   U32 getWidth() const    { return getPointer() ? getPointer()->getWidth()  : 0; }
-   U32 getHeight() const   { return getPointer() ? getPointer()->getHeight() : 0; }
-   U32 getDepth() const    { return getPointer() ? getPointer()->getDepth()  : 0; }
-    U32 getBitmapWidth() const    { return getPointer() ? getPointer()->getBitmapWidth()  : 0; }
-    U32 getBitmapHeight() const   { return getPointer() ? getPointer()->getBitmapHeight() : 0; }
-    U32 getBitmapDepth() const    { return getPointer() ? getPointer()->getBitmapDepth()  : 0; }
-    GFXFormat getFormat() const { return getPointer() ? getPointer()->getFormat() : GFXFormat_COUNT; }
-   
-    void setFilter(GFXTextureFilterType filterType) { getPointer()->setFilter(filterType); };
-    
-   /// Reloads the texture.
-   /// @see GFXTextureManager::reloadTexture
-   void refresh();
-
-   /// Releases the texture handle.
-   void free() { StrongObjectRef::set( NULL ); }
-   
-   GFXLockedRect *lock( U32 mipLevel = 0, RectI *inRect = NULL )
-   {
-      return getPointer()->lock(mipLevel, inRect); 
-   }
-
-   void unlock( U32 mipLevel = 0) 
-   {
-      getPointer()->unlock(mipLevel); 
-   }
-
-   // copy to bitmap.  see gfxTetureObject.h for description of what types of textures
-   // can be copied into bitmaps.  returns true if successful, false otherwise
-   bool copyToBmp(GBitmap* bmp) { return getPointer() ? getPointer()->copyToBmp(bmp) : false; }
-
-   //---------------------------------------------------------------------------
-   // Operator overloads
-   //---------------------------------------------------------------------------
-   GFXTexHandle& operator=(const GFXTexHandle &t)
-   {
-      StrongObjectRef::set(t.getPointer());
-      return *this;
-   }
-   
-   GFXTexHandle& operator=( GFXTextureObject *to)
-   {
-      StrongObjectRef::set(to);
-      return *this;
-   }
-
-   bool operator==(const GFXTexHandle &t) const { return t.getPointer() == getPointer(); }
-   bool operator!=(const GFXTexHandle &t) const { return t.getPointer() != getPointer(); }
-
-   /// Returns the texture object.
-   operator GFXTextureObject*() const { return getPointer(); }
-
-   /// Returns the backing bitmap for this texture.
-   GBitmap* getBitmap() { return getPointer() ? getPointer()->getBitmap() : NULL; }
-   const GBitmap* getBitmap() const { return getPointer() ? getPointer()->getBitmap() : NULL; }
-
-
-   /// Helper 2x2 R8G8B8A8 texture filled with 0.
-   static GFXTexHandle ZERO;
-
-   /// Helper 2x2 R8G8B8A8 texture filled with 255.
-   static GFXTexHandle ONE;
-
-   /// Helper 2x2 R8G8B8A8 normal map texture filled 
-   /// with 128, 128, 255.
-   static GFXTexHandle ZUP;
-
-};
-
-namespace std
-{
-    template<>
-    struct hash<GFXTexHandle>
-    {
-        size_t operator () (const GFXTexHandle handle) const
-        {
-            return hash<GFXTexHandle>()(handle.getPointer());
-        }
-    };
-}
+//namespace std
+//{
+//    template<>
+//    struct hash<std::shared_ptr<GFXTextureObject>>
+//    {
+//        size_t operator () (const std::shared_ptr<GFXTextureObject> handle) const
+//        {
+//            return hash<std::shared_ptr<GFXTextureObject>>()(handle.getPointer());
+//        }
+//    };
+//}
 
 //-----------------------------------------------------------------------------
 
-extern GFXTexHandle BadTextureHandle;
 
 #endif // _GFXTEXTUREHANDLE_H_

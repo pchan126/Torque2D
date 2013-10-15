@@ -204,7 +204,7 @@ void GuiIconButtonCtrl::setBitmap(const char *name)
 
    if (*mBitmapName)
    {
-       mTextureNormal = GFXTexHandle( name, &GFXDefaultPersistentProfile, avar("%s() - mTextureNormal (line %d)", __FUNCTION__, __LINE__) );
+       mTextureNormal = std::shared_ptr<GFXTextureObject>( name, &GFXDefaultPersistentProfile, avar("%s() - mTextureNormal (line %d)", __FUNCTION__, __LINE__) );
 //      mTextureNormal = TextureHandle(name, TextureHandle::BitmapTexture, true);
    }
    else
@@ -291,7 +291,7 @@ void GuiIconButtonCtrl::renderButton( Point2I &offset, const RectI& updateRect )
    {
       // Render the normal bitmap
       GFX->getDrawUtil()->clearBitmapModulation();
-//      GFXTexHandle *texture = (GFXTexHandle *) mTextureNormal;
+//      std::shared_ptr<GFXTextureObject> *texture = (std::shared_ptr<GFXTextureObject> *) mTextureNormal;
 
       // Maintain the bitmap size or fill the button?
       if(!mFitBitmapToButton)

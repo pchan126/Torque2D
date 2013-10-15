@@ -331,7 +331,7 @@ private:
    Point2I mHotSpot;
    Point2F mRenderOffset;
    Point2I mExtent;
-   GFXTexHandle mTextureHandle;
+   std::shared_ptr<GFXTextureObject> mTextureHandle;
 
 public:
    Point2I getHotSpot() { return mHotSpot; }
@@ -425,7 +425,7 @@ public:
 
    // bitmap members
    StringTableEntry mBitmapName;                   ///< Bitmap file name for the bitmap of the control
-   GFXTexHandle mTextureHandle;                   ///< Texture handle for the control
+   std::shared_ptr<GFXTextureObject> mTextureHandle;                   ///< Texture handle for the control
    Vector<RectI> mBitmapArrayRects;                ///< Used for controls which use an array of bitmaps such as checkboxes
 
    // sound members

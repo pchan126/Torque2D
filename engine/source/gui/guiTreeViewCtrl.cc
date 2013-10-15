@@ -1152,7 +1152,7 @@ bool GuiTreeViewCtrl::buildIconTable(const char * icons)
    {
       dSprintf( buf, sizeof( char ) * 256, "%s", token );
 //      mIconTable[numIcons] = TextureHandle( buf, TextureHandle::BitmapKeepTexture );
-      mIconTable[numIcons] = GFXTexHandle( buf, &GFXDefaultGUIProfile, avar("%s() - mIconTable (line %d)", __FUNCTION__, __LINE__) );
+      mIconTable[numIcons] = std::shared_ptr<GFXTextureObject>( buf, &GFXDefaultGUIProfile, avar("%s() - mIconTable (line %d)", __FUNCTION__, __LINE__) );
       token = dStrtok( NULL, ":" );
       numIcons++;
    }

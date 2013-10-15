@@ -150,7 +150,7 @@ void GuiBitmapCtrl::setBitmap(const char *name, bool resize)
     setUpdate();
     
 //    if (*mBitmapName) {
-//      mTextureObject = GFXTexHandle(mBitmapName, GFXTexHandle::BitmapTexture, true);
+//      mTextureObject = std::shared_ptr<GFXTextureObject>(mBitmapName, std::shared_ptr<GFXTextureObject>::BitmapTexture, true);
 //
 //      // Resize the control to fit the bitmap
 //      if (resize) {
@@ -181,7 +181,7 @@ void GuiBitmapCtrl::updateSizing()
 }
 
 
-void GuiBitmapCtrl::setBitmap(const GFXTexHandle &handle, bool resize)
+void GuiBitmapCtrl::setBitmap(const std::shared_ptr<GFXTextureObject> &handle, bool resize)
 {
    mTextureObject = handle;
 

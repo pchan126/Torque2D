@@ -236,7 +236,7 @@ BOOL isGameCenterAvailable()
                                                                                 completion:nil];
 }
 
-//GFXTexHandle::GFXTexHandle( const String &texName, GFXTextureProfile *profile, const String &desc )
+//std::shared_ptr<GFXTextureObject>::std::shared_ptr<GFXTextureObject>( const String &texName, GFXTextureProfile *profile, const String &desc )
 //{
 //    set( texName, profile, desc );
 //}

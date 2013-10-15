@@ -72,7 +72,7 @@ void GFXOpenGLES20Cubemap::bind(U32 textureUnit)
 
 
 
-void GFXOpenGLES20Cubemap::fillCubeTextures(GFXTexHandle* faces)
+void GFXOpenGLES20Cubemap::fillCubeTextures(std::shared_ptr<GFXTextureObject>* faces)
 {
    GFXOpenGLDevice *device = dynamic_cast<GFXOpenGLDevice*>(GFX);
    device->setTextureUnit(0);

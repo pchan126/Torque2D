@@ -43,12 +43,12 @@ protected:
    StringTableEntry mLoweredBitmapName;
    StringTableEntry mHoverBitmapName;
 
-   GFXTexHandle mTextureNormal;
-   GFXTexHandle mTextureLowered;
-   GFXTexHandle mTextureHover;
+   std::shared_ptr<GFXTextureObject> mTextureNormal;
+   std::shared_ptr<GFXTextureObject> mTextureLowered;
+   std::shared_ptr<GFXTextureObject> mTextureHover;
 
-   void renderButton(GFXTexHandle &texture, Point2I &offset, const RectI& updateRect);
-   void renderStateRect( GFXTexHandle &texture, const RectI& rect );
+   void renderButton(std::shared_ptr<GFXTextureObject> &texture, Point2I &offset, const RectI& updateRect);
+   void renderStateRect( std::shared_ptr<GFXTextureObject> &texture, const RectI& rect );
 
 public:   
    DECLARE_CONOBJECT(GuiToolboxButtonCtrl);

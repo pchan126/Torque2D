@@ -86,8 +86,8 @@ void GuiCursor::render(const Point2I &pos)
 {
    if (!mTextureHandle && mBitmapName && mBitmapName[0])
    {
-//      mTextureHandle = GFXTexHandle(mBitmapName, TextureHandle::BitmapTexture);
-       mTextureHandle = GFXTexHandle( mBitmapName, &GFXDefaultPersistentProfile, avar("GuiCursor::mTextureHandle"));
+//      mTextureHandle = std::shared_ptr<GFXTextureObject>(mBitmapName, TextureHandle::BitmapTexture);
+       mTextureHandle = std::shared_ptr<GFXTextureObject>( mBitmapName, &GFXDefaultPersistentProfile, avar("GuiCursor::mTextureHandle"));
       if(!mTextureHandle)
          return;
       mExtent.set(mTextureHandle.getWidth(), mTextureHandle.getHeight());
@@ -380,7 +380,7 @@ void GuiControlProfile::incRefCount()
       {
           Con::printf("GuiControlProfile::incRefCount %s", mBitmapName);
           GBitmap *bmp = GBitmap::load(mBitmapName);
-          mTextureHandle = GFXTexHandle( bmp, &GFXDefaultPersistentProfile, true, avar("GuiControlProfile::mTextureHandle" ));
+          mTextureHandle = std::shared_ptr<GFXTextureObject>( bmp, &GFXDefaultPersistentProfile, true, avar("GuiControlProfile::mTextureHandle" ));
           if (!(bool)mTextureHandle)
              Con::errorf("Failed to load profile bitmap (%s)",mBitmapName);
 

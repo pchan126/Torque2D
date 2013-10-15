@@ -168,7 +168,7 @@ void CubemapAsset::createMap()
 //      {
 //         mCubemap = GFX->createCubemap();
 //         mCubemap->initDynamic( mDynamicSize );
-//         mDepthBuff = GFXTexHandle( mDynamicSize, mDynamicSize, GFXFormatD24S8, 
+//         mDepthBuff = std::shared_ptr<GFXTextureObject>( mDynamicSize, mDynamicSize, GFXFormatD24S8,
 //            &GFXDefaultZTargetProfile, avar("%s() - mDepthBuff (line %d)", __FUNCTION__, __LINE__));
 //         mRenderTarget = GFX->allocRenderToTextureTarget();
 //      }

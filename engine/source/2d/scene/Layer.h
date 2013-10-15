@@ -49,7 +49,7 @@ private:
    
    void makeRenderTarget(void);
    GFXTextureTargetRef texTarget;
-   GFXTexHandle texHandle;
+   std::shared_ptr<GFXTextureObject> texHandle;
 
    bool mRenderFlag;
 public:
