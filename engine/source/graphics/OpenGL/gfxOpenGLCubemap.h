@@ -76,7 +76,7 @@ protected:
    U32 mMipLevels;
    GFXFormat mFaceFormat;
       
-   std::shared_ptr<GFXTextureObject> mTextures[6]; ///< Keep refs to our textures for resurrection of static cubemaps
+   GFXTexHandle mTextures[6]; ///< Keep refs to our textures for resurrection of static cubemaps
    
    // should only be called by GFXDevice
    virtual void setToTexUnit( U32 tuNum ); ///< Binds the cubemap to the given texture unit

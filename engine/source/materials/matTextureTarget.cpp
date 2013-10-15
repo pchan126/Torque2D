@@ -80,13 +80,13 @@ NamedTexTarget* NamedTexTarget::find( const String &name )
    if ( iter != smTargets.end() )
       return iter->second;
    else
-      return NULL;
+      return nullptr;
 }
 
 NamedTexTarget::NamedTexTarget()
    :  mViewport( RectI( 0, 0, 1, 1 ) ),
       mIsRegistered( false ) //,
-//      mConditioner( NULL )
+//      mConditioner( nullptr )
 {
 }
 
@@ -95,7 +95,7 @@ NamedTexTarget::~NamedTexTarget()
    unregister();
 }
 
-void NamedTexTarget::setTexture( U32 index, GFXTextureObject *tex )
+void NamedTexTarget::setTexture(U32 index, GFXTexHandle &tex)
 {
    AssertFatal( index < 4, "NamedTexTarget::setTexture - Got invalid index!" );
    mTex[index] = tex;
@@ -103,10 +103,10 @@ void NamedTexTarget::setTexture( U32 index, GFXTextureObject *tex )
 
 void NamedTexTarget::release()
 {
-   mTex[0] = NULL;
-   mTex[1] = NULL;
-   mTex[2] = NULL;
-   mTex[3] = NULL;
+   mTex[0] = nullptr;
+   mTex[1] = nullptr;
+   mTex[2] = nullptr;
+   mTex[3] = nullptr;
 }
 
 void NamedTexTarget::getShaderMacros( Vector<GFXShaderMacro> *outMacros )

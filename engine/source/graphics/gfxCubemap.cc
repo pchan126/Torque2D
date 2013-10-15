@@ -23,6 +23,7 @@
 #include "graphics/gfxCubemap.h"
 #include "graphics/gfxDevice.h"
 #include "graphics/gBitmap.h"
+#include "graphics/gfxTextureObject.h"
 #include "graphics/gfxTextureManager.h"
 
 
@@ -54,7 +55,7 @@ void GFXCubemap::initNormalize( U32 size )
    F32 start = -1.0;
 
    F32 stride = span / F32(size - 1);
-   std::shared_ptr<GFXTextureObject> faces[6];
+   GFXTexHandle faces[6];
 
    for(U32 i=0; i<6; i++)
    {

@@ -233,3 +233,39 @@ void GFXTextureObject::refresh( void )
     TEXMGR->reloadTexture( this );
 };
 
+GFXTexHandle GFXTextureObject::create(const String &texName, GFXTextureProfile *profile, const String &desc) {
+{
+    GFXTexHandle ret = TEXMGR->createTexture( texName, profile );
+#ifdef TORQUE_DEBUG
+    if ( ret )
+        ret->mDebugDescription = desc;
+#endif
+    return ret;
+};
+
+
+GFXTexHandle GFXTextureObject::create( GBitmap *bmp, GFXTextureProfile *profile, bool deleteBmp, const String &desc  )
+{
+    GFXTexHandle ret = TEXMGR->createTexture( bmp, String(), profile, deleteBmp );
+
+#ifdef TORQUE_DEBUG
+    if ( ret )
+        ret->mDebugDescription = desc;
+#endif
+
+    return ret;
+};
+
+
+GFXTexHandle GFXTextureObject::create( U32 width, U32 height, GFXFormat format, GFXTextureProfile *profile, const String &desc, U32 numMipLevels, S32 antialiasLevel)
+{
+    // Create and set the new texture.
+    GFXTexHandle ret  = TEXMGR->createTexture( width, height, format, profile, numMipLevels, antialiasLevel );
+
+#ifdef TORQUE_DEBUG
+    if ( ret )
+        ret->mDebugDescription = desc;
+#endif
+
+    return ret;
+};

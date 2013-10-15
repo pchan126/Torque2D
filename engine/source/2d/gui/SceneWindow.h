@@ -202,9 +202,9 @@ private:
     Scene*              mpScene;
 
    GFXTextureTargetRef  renderTarget;
-   std::shared_ptr<GFXTextureObject>         mImageTextureHandle;
+   GFXTexHandle         mImageTextureHandle;
 
-   S32                 mLastRenderTime;
+    S32                 mLastRenderTime;
     bool                mLockMouse;
     bool                mWindowDirty;
 

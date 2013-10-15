@@ -22,6 +22,8 @@
 #ifndef _GFXTEXTUREOBJECT_H_
 #define _GFXTEXTUREOBJECT_H_
 
+class GFXTextureObject;
+typedef std::shared_ptr<GFXTextureObject> GFXTexHandle;
 
 #include "math/mPoint.h"
 #include "graphics/gfxEnums.h"
@@ -37,9 +39,6 @@ class GFXDevice;
 class GFXTextureProfile;
 class GBitmap;
 class RectI;
-class GFXTextureObject;
-
-typedef std::shared_ptr<GFXTextureObject> GFXTexHandle;
 
 /// Contains information on a locked region of a texture.
 ///
@@ -95,21 +94,9 @@ public:
    /// The device this texture belongs to.
    GFXDevice *mDevice;   
 
-   /// The next texture in the linked list.
-   /// @see GFXTextureManager::mListHead
-   GFXTextureObject *mNext;
-
-   /// The previous texture in the linked list.
-   /// @see GFXTextureManager::mListHead
-   GFXTextureObject *mPrev;
-
-   /// The siblings in the cache hash table.
-   /// @see GFXTextureManager::mHashTable
-   GFXTextureObject *mHashNext;
-
-   /// This is the file name or other unique string used 
+   /// This is the file name or other unique string used
    /// to hash this texture object.
-   String mTextureLookupName;
+   std::string mTextureLookupName;
 
    /// The time at which all references to this
    /// texture were removed.
@@ -133,7 +120,6 @@ public:
 
    GFXTextureProfile *mProfile;
    GFXFormat          mFormat;
-
 
    GFXTextureObject(GFXDevice * aDevice, GFXTextureProfile *profile);
    virtual ~GFXTextureObject();
@@ -234,7 +220,10 @@ public:
     virtual void setFilter(GFXTextureFilterType filterType) = 0 ;
 
     void refresh( void );
-    
+
+    static GFXTexHandle create( const String &texName, GFXTextureProfile *profile, const String &desc );
+    static GFXTexHandle create( GBitmap *bmp, GFXTextureProfile *profile, bool deleteBmp, const String &desc );
+    static GFXTexHandle create( U32 width, U32 height, GFXFormat format, GFXTextureProfile *profile, const String &desc, U32 numMipLevels = 1, S32 antialiasLevel = 0);
 };
 
 extern std::shared_ptr<GFXTextureObject> BadTextureHandle;

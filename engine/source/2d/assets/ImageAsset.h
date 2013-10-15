@@ -215,7 +215,7 @@ public:
     inline U32              getFrameCount( void ) const                     { return (U32)mFrames.size(); };
 
     inline const FrameArea& getImageFrameArea( U32 frame ) const            { clampFrame(frame); return mFrames[frame]; };
-    inline const void       bindImageTexture( void)                         { GFX->setTexture(0, getImageTexture().get()); };
+    inline const void       bindImageTexture( void)                         { GFX->setTexture(0, getImageTexture()); };
     //glBindTexture( GL_TEXTURE_2D, getImageTexture().getGLName() ); };
     
     virtual bool            isAssetValid( void ) const                      { return (mImageTextureHandle) ? true: false; }

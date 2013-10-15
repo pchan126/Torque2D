@@ -23,36 +23,17 @@
 #ifndef _GFXDEVICE_H_
 #define _GFXDEVICE_H_
 
-#include "graphics/gfxAdapter.h"
-
-#ifndef _VECTOR_H_
-#include "collection/vector.h"
-#endif
-
-#ifndef _GFXTARGET_H_
 #include "graphics/gfxTarget.h"
-#endif
+#include "graphics/gfxAdapter.h"
+#include "collection/vector.h"
 #include "gfxTextureObject.h"
-
-#ifndef _GFXVERTEXBUFFER_H_
 #include "graphics/gfxVertexBuffer.h"
-#endif
-
-#ifndef _GFXSTATEBLOCK_H_
 #include "graphics/gfxStateBlock.h"
-#endif
-#ifndef _GFXSHADER_H_
 #include "graphics/gfxShader.h"
-#endif
-#ifndef _GFXCUBEMAP_H_
 #include "graphics/gfxCubemap.h"
-#endif
-
 #include "graphics/gfxDeviceStatistics.h"
 #include "collection/hashTable.h"
-
 #include "delegates/delegateSignal.h"
-
 #include "math/mPoint.h"
 #include "math/mMatrix.h"
 #include "graphics/gfxEnums.h"
@@ -603,7 +584,7 @@ public:
    void setActiveRenderTarget( GFXTarget *target );
    
    /// Returns the current active render target.
-   inline GFXTarget* getActiveRenderTarget() { return mCurrentRT; }
+   inline GFXTarget* getActiveRenderTarget() { return mCurrentRT.get(); }
    
    ///@}
    
@@ -739,7 +720,7 @@ public:
    /// @{
 
    ///
-   void setTexture(U32 stage, GFXTextureObject *texture);
+   void setTexture(U32 stage, GFXTexHandle &texture);
    void setCubeTexture( U32 stage, GFXCubemap *cubemap );
    inline GFXTextureObject* getCurrentTexture( U32 stage ) { return mCurrentTexture[stage].get(); }
 

@@ -531,7 +531,7 @@ void Material::StageData::getFeatureSet( FeatureSet *outFeatures ) const
    TextureTable::const_iterator iter = mTextures.begin();
    for ( ; iter != mTextures.end(); iter++ )
    {
-      if ( iter->second.isValid() )
+      if ( iter->second  )
          outFeatures->addFeature( *iter->first );
    }
 }

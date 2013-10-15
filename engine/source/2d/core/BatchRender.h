@@ -91,7 +91,7 @@ private:
     F32                 mAlphaTestMode;
 
     bool                mStrictOrderMode;
-    std::shared_ptr<GFXTextureObject>       mStrictOrderTextureHandle;
+    GFXTexHandle        mStrictOrderTextureHandle;
     DebugStats*         mpDebugStats;
 
     bool                mWireframeMode;
@@ -320,10 +320,10 @@ private:
     /// Flush (render) any pending batches.
     void flushInternal( void );
 
-   void _lightAndDraw( Vector<GFXVertexPCT>* pVertexVector, Vector<U16>* pIndex, std::shared_ptr<GFXTextureObject> handle = NULL);
+   void _lightAndDraw(Vector<GFXVertexPCT> *pVertexVector, Vector<U16> *pIndex, GFXTexHandle &handle = GFXTexHandle(nullptr));
 
    /// Find texture batch.
-    indexedPrim* findTextureBatch( std::shared_ptr<GFXTextureObject>& handle );
+    indexedPrim* findTextureBatch( GFXTexHandle &handle );
 
 };
 

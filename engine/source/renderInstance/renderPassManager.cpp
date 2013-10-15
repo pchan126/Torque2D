@@ -81,7 +81,7 @@ void RenderInst::clear()
 
 void ObjectRenderInst::clear()
 {
-   userData = NULL;
+   userData = nullptr;
 
    dMemset( this, 0, sizeof( ObjectRenderInst ) );
 
@@ -126,7 +126,7 @@ RenderPassManager::RenderPassManager():
    mView(true),
    mProjection(true)
 {
-   mSceneManager = NULL;
+   mSceneManager = nullptr;
    VECTOR_SET_ASSOCIATION( mRenderBins );
 }
 
@@ -139,7 +139,7 @@ RenderPassManager::~RenderPassManager()
 
       // Clear the parent first, so that RenderBinManager::onRemove()
       // won't call removeManager() and break this loop.
-      bin->setRenderPass( NULL );
+      bin->setRenderPass( nullptr );
       bin->deleteObject();
    }
 }
@@ -167,7 +167,7 @@ void RenderPassManager::addManager(RenderBinManager* mgr)
    if ( !mgr->isProperlyAdded() )
       mgr->registerObject();
 
-   AssertFatal( mgr->getRenderPass() == NULL, "RenderPassManager::addManager() - Bin is still part of another pass manager!" );
+   AssertFatal( mgr->getRenderPass() == nullptr, "RenderPassManager::addManager() - Bin is still part of another pass manager!" );
    mgr->setRenderPass( this );
 
    _insertSort(mRenderBins, mgr, true);
@@ -177,7 +177,7 @@ void RenderPassManager::removeManager(RenderBinManager* mgr)
 {
    AssertFatal( mgr->getRenderPass() == this, "RenderPassManager::removeManager() - We do not own this bin!" );
 
-   mgr->setRenderPass( NULL );
+   mgr->setRenderPass( nullptr );
    mRenderBins.remove( mgr );
 }
 
@@ -186,14 +186,14 @@ RenderBinManager* RenderPassManager::getManager(S32 i) const
    if (i >= 0 && i < mRenderBins.size())
       return mRenderBins[i];
    else
-      return NULL;
+      return nullptr;
 }
 
 void RenderPassManager::addInst( RenderInst *inst )
 {
    PROFILE_SCOPE( RenderPassManager_addInst );
 
-   AssertFatal( inst != NULL, "RenderPassManager::addInst - Got null instance!" );
+   AssertFatal( inst != nullptr, "RenderPassManager::addInst - Got null instance!" );
 
    AddInstTable::iterator iter = mAddInstSignals.find( inst->type );
    if ( iter == mAddInstSignals.end() )
@@ -248,7 +248,7 @@ void RenderPassManager::render(SceneRenderState * state)
    // Restore a clean state for subsequent rendering.
    GFX->disableShaders();
    for(S32 i = 0; i < GFX->getNumSamplers(); ++i)
-      GFX->setTexture(i, NULL);
+      GFX->setTexture(i, nullptr);
 }
 
 void RenderPassManager::renderPass(SceneRenderState * state)
@@ -262,7 +262,7 @@ void RenderPassManager::renderPass(SceneRenderState * state)
 GFXTextureObject *RenderPassManager::getDepthTargetTexture()
 {
    // If this is OpenGL, or something else has set the depth buffer, return the pointer
-   if( mDepthBuff.isValid() )
+   if( mDepthBuff )
    {
       // If this is OpenGL, make sure the depth target matches up
       // with the active render target.  Otherwise recreate.
@@ -273,12 +273,12 @@ GFXTextureObject *RenderPassManager::getDepthTargetTexture()
          AssertFatal( activeRT, "Must be an active render target to call 'getDepthTargetTexture'" );
          
          Point2I activeRTSize = activeRT->getSize();
-         if( mDepthBuff.getWidth() == activeRTSize.x &&
-             mDepthBuff.getHeight() == activeRTSize.y )
-            return mDepthBuff.getPointer();
+         if( mDepthBuff->getWidth() == activeRTSize.x &&
+             mDepthBuff->getHeight() == activeRTSize.y )
+            return mDepthBuff.get();
       }
       else
-         return mDepthBuff.getPointer();
+         return mDepthBuff.get();
    }
 
    if(GFX->getAdapterType() == OpenGL)
@@ -286,16 +286,16 @@ GFXTextureObject *RenderPassManager::getDepthTargetTexture()
       AssertFatal(GFX->getActiveRenderTarget(), "Must be an active render target to call 'getDepthTargetTexture'");
 
       const Point2I rtSize = GFX->getActiveRenderTarget()->getSize();
-      mDepthBuff.set(rtSize.x, rtSize.y, GFXFormatD24S8, 
+      mDepthBuff = GFXTextureObject::create(rtSize.x, rtSize.y, GFXFormatD24S8,
          &GFXDefaultZTargetProfile, avar("%s() - mDepthBuff (line %d)", __FUNCTION__, __LINE__));
-      return mDepthBuff.getPointer();
+      return mDepthBuff.get();
    }
 
    // Default return value
    return GFXTextureTarget::sDefaultDepthStencil;
 }
 
-void RenderPassManager::setDepthTargetTexture( GFXTextureObject *zTarget )
+void RenderPassManager::setDepthTargetTexture(GFXTexHandle &zTarget)
 {
    mDepthBuff = zTarget;
 }
@@ -348,7 +348,7 @@ void RenderPassManager::assignSharedXform( SharedTransformType stt, const Matrix
 //   "Returns the render bin manager at the index or null if the index is out of range." )
 //{
 //   if(index < 0 || index >= object->getManagerCount())
-//      return NULL;
+//      return nullptr;
 //
 //   return object->getManager(index);
 //}

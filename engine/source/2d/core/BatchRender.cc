@@ -599,10 +599,10 @@ void BatchRender::flushInternal( void )
     mIndexBuffer.clear();
 }
 
-void BatchRender::_lightAndDraw( Vector<GFXVertexPCT>* pVertexVector, Vector<U16>* pIndex, std::shared_ptr<GFXTextureObject> handle )
+void BatchRender::_lightAndDraw(Vector<GFXVertexPCT> *pVertexVector, Vector<U16> *pIndex, GFXTexHandle &handle)
 {
    // Bind the texture if not in wireframe mode.
-   if (!handle.isNull())
+   if ( handle )
       GFX->setTexture(0, handle);
    
 //   // vertex lighting

@@ -27,8 +27,6 @@
 #include "graphics/gfxTextureManager.h"
 #include "./gfxOpenGL32TextureObject.h"
 
-@class NSOpenGLContext;
-
 class GFXOpenGL32TextureManager : public GFXTextureManager
 {   
 public:
@@ -40,10 +38,10 @@ public:
 protected:
 
    // GFXTextureManager
-    virtual GFXTextureObject *createTexture(  GBitmap *bmp,
-                                            const String &resourceName,
-                                            GFXTextureProfile *profile,
-                                            bool deleteBmp);
+    virtual GFXTexHandle createTexture(GBitmap *bmp,
+           const String &resourceName,
+           GFXTextureProfile *profile,
+           bool deleteBmp);
    
 //    virtual GFXTextureObject *createTexture(  const String &path,
 //                                            GFXTextureProfile *profile );
@@ -68,27 +66,27 @@ protected:
 //                                            U32 numMipLevels,
 //                                            S32 antialiasLevel);
    
-   GFXTextureObject *_createTextureObject(   U32 height,
-                                             U32 width,
-                                             U32 depth,
-                                             GFXFormat format,
-                                             GFXTextureProfile *profile,
-                                             U32 numMipLevels,
-                                             bool forceMips = false,
-                                             S32 antialiasLevel = 0,
-                                             GFXTextureObject *inTex = nullptr,
-                                             void* data = nullptr);
+   GFXTexHandle _createTextureObject(U32 height,
+           U32 width,
+           U32 depth,
+           GFXFormat format,
+           GFXTextureProfile *profile,
+           U32 numMipLevels,
+           bool forceMips = false,
+           S32 antialiasLevel = 0,
+           GFXTextureObject *inTex = nullptr,
+           void *data = nullptr);
 
-   GFXTextureObject *_createTexture(  GBitmap *bmp,
-                                             const String &resourceName,
-                                             GFXTextureProfile *profile,
-                                             bool deleteBmp,
-                                    GFXTextureObject *inObj );
+   GFXTexHandle _createTexture(GBitmap *bmp,
+           const String &resourceName,
+           GFXTextureProfile *profile,
+           bool deleteBmp,
+           GFXTextureObject *inObj);
 
-   bool _loadTexture(GFXTextureObject *texture, GBitmap *bmp);
-   bool _loadTexture(GFXTextureObject *texture, void *raw);
-   bool _refreshTexture(GFXTextureObject *texture);
-   bool _freeTexture(GFXTextureObject *texture, bool zombify = false);
+   bool _loadTexture(GFXTexHandle &texture, GBitmap *bmp);
+   bool _loadTexture(GFXTexHandle &texture, void *raw);
+   bool _refreshTexture(GFXTexHandle &texture);
+   bool _freeTexture(GFXTexHandle &texture, bool zombify = false);
 
 private:
    friend class GFXOpenGLTextureObject;
@@ -97,12 +95,6 @@ private:
    void innerCreateTexture(GFXOpenGL32TextureObject *obj, U32 height, U32 width, U32 depth, GFXFormat format, GFXTextureProfile *profile, U32 numMipLevels, bool forceMips = false, void* data = nullptr);
 
    void handleTextureCallback(void *textureInfo);
-    
-//    NSOpenGLContext* mContext;
-    // t2d texture mananger
-public:
-    bool mDGLRender;
-    GLenum mTextureCompressionHint;
 };
 
 #endif

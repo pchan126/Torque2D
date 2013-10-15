@@ -243,7 +243,7 @@ GFXTexHandle GFXTextureManager::_lookupTexture(const char *hashName, const GFXTe
 }
 
 
-std::shared_ptr<GFXTextureObject> GFXTextureManager::createTexture(GBitmap *bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp)
+GFXTexHandle GFXTextureManager::createTexture(GBitmap *bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp)
 {
    AssertFatal(bmp, "GFXTextureManager::createTexture() - Got NULL bitmap!");
 
@@ -424,10 +424,8 @@ GFXTexHandle GFXTextureManager::createTexture(const String &path, GFXTextureProf
         retTexObj = createTexture( bitmap, path, profile, false );
         retTexObj->mPath = path;
     }
-    
     return retTexObj;
 }
-
 
 
 GFXTexHandle GFXTextureManager::createTexture(U32 width, U32 height, void *pixels, GFXFormat format, GFXTextureProfile *profile)
@@ -575,46 +573,30 @@ GFXTexHandle GFXTextureManager::_findPooledTexture(U32 width,
 
 void GFXTextureManager::hashInsert(GFXTexHandle &object)
 {
-   if ( object->mTextureLookupName.isEmpty() )
+   if ( object->mTextureLookupName.empty() )
       return;
       
-   U32 key = object->mTextureLookupName.getHashCaseInsensitive() % mHashCount;
-   object->mHashNext = mHashTable[key];
-   mHashTable[key] = object;
+    std::string key = object->mTextureLookupName;
+    std::transform(key.begin(), key.end(), key.begin(), ::tolower);
+    mHashTable[key] = object;
 }
 
 void GFXTextureManager::hashRemove( GFXTexHandle &object )
 {
-   if ( object->mTextureLookupName.isEmpty() )
+   if ( object->mTextureLookupName.empty() )
       return;
 
-   U32 key = object->mTextureLookupName.getHashCaseInsensitive() % mHashCount;
-   std::shared_ptr<GFXTextureObject> *walk = &mHashTable[key];
-   while(*walk)
-   {
-      if(*walk == object)
-      {
-         *walk = object->mHashNext;
-         break;
-      }
-      walk = &((*walk)->mHashNext);
-   }
+    mHashTable.erase(object->mTextureLookupName);
 }
 
-std::shared_ptr<GFXTextureObject> GFXTextureManager::find(const String &name)
+std::shared_ptr<GFXTextureObject> GFXTextureManager::find(std::string name)
 {
-   if ( name.isEmpty() )
-      return NULL;
+    std::transform(name.begin(), name.end(), name.begin(), ::tolower);
 
-   U32 key = name.getHashCaseInsensitive() % mHashCount;
-   GFXTextureObject *walk = mHashTable[key];
-   for(; walk; walk = walk->mHashNext)
-   {
-      if( walk->mTextureLookupName.equal( name, String::NoCase ) )
-         break;
-   }
+    if ( name.empty() || mHashTable.count(name))
+      return nullptr;
 
-   return walk;
+    return mHashTable[name];
 }
 
 void GFXTextureManager::freeTexture(GFXTexHandle &texture, bool zombify)
@@ -628,23 +610,23 @@ void GFXTextureManager::refreshTexture(GFXTexHandle &texture)
    _refreshTexture(texture);
 }
 
-void GFXTextureManager::_linkTexture( GFXTexHandle obj )
+void GFXTextureManager::_linkTexture(GFXTexHandle &obj)
 {
    // info for the profile
    GFXTextureProfile::updateStatsForCreation(obj);
 
    // info for the cache
    hashInsert(obj);
-
-   // info for the master list
-   if( mListHead == nullptr )
-      mListHead = obj;
-
-   if( mListTail != nullptr )
-      mListTail->mNext = obj;
-
-   obj->mPrev = mListTail;
-   mListTail = obj;
+//
+//   // info for the master list
+//   if( mListHead == nullptr )
+//      mListHead = obj;
+//
+//   if( mListTail != nullptr )
+//      mListTail->mNext = obj;
+//
+//   obj->mPrev = mListTail;
+//   mListTail = obj;
 }
 
 void GFXTextureManager::deleteTexture(GFXTexHandle &texture)
@@ -658,11 +640,11 @@ void GFXTextureManager::deleteTexture(GFXTexHandle &texture)
    );
    #endif
 
-   if( mListHead == texture )
-      mListHead = texture->mNext;
-   if( mListTail == texture )
-      mListTail = texture->mPrev;
-
+//   if( mListHead == texture )
+//      mListHead = texture->mNext;
+//   if( mListTail == texture )
+//      mListTail = texture->mPrev;
+//
    hashRemove( texture );
 
    GFXTextureProfile::updateStatsForDeletion(texture);
@@ -807,10 +789,11 @@ void GFXTextureManager::releaseCubemap( GFXCubemap *cubemap )
 
 void GFXTextureManager::reloadTextures()
 {
-    GFXTexHandle tex = mListHead;
+//    GFXTexHandle tex = mListHead;
 
-   while ( tex != nullptr )
+   for (auto itr: mHashTable )
    {
+      GFXTexHandle tex = itr.second();
       const String path( tex->mPath );
       if ( !path.isEmpty() )
       {
@@ -820,8 +803,6 @@ void GFXTextureManager::reloadTextures()
         if( bmp )
            _createTexture( bmp, tex->mTextureLookupName, tex->mProfile, false, tex );
       }
-
-      tex = tex->mNext;
    }
 }
 

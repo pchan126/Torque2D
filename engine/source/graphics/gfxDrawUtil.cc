@@ -85,7 +85,7 @@ void GFXDrawUtil::_setupStateBlocks()
    mRectFillSB = mDevice->createStateBlock(rectFill);
 }
 
-void GFXDrawUtil::batchTriangleStrip( const Vector<GFXVertexPCT> verts, std::shared_ptr<GFXTextureObject>& texture)
+void GFXDrawUtil::batchTriangleStrip(const Vector<GFXVertexPCT> verts, std::shared_ptr<GFXTextureObject> &texture)
 {
    if (verts.size() < 1)
       return;
@@ -382,38 +382,38 @@ U32 GFXDrawUtil::drawTextN( GFont *font, const Point2F &ptDraw, const UTF16 *in_
 //-----------------------------------------------------------------------------
 // Draw Bitmaps
 //-----------------------------------------------------------------------------
-void GFXDrawUtil::drawBitmap( GFXTextureObject *texture, const Point2I &in_rAt, const GFXBitmapFlip in_flip, const GFXTextureFilterType filter , bool in_wrap /*= true*/ )
+void GFXDrawUtil::drawBitmap(GFXTexHandle &texture, const Point2I &in_rAt, const GFXBitmapFlip in_flip, const GFXTextureFilterType filter, bool in_wrap /*= true*/ )
 {
    drawBitmap(texture,Point2F((F32)in_rAt.x,(F32)in_rAt.y),in_flip,filter,in_wrap);
 }
 
-void GFXDrawUtil::drawBitmapStretch( GFXTextureObject *texture, const RectI &dstRect, const GFXBitmapFlip in_flip, const GFXTextureFilterType filter , bool in_wrap /*= true*/ )
+void GFXDrawUtil::drawBitmapStretch(GFXTexHandle &texture, const RectI &dstRect, const GFXBitmapFlip in_flip, const GFXTextureFilterType filter, bool in_wrap /*= true*/ )
 {
    drawBitmapStretch(texture,RectF((F32)dstRect.point.x,(F32)dstRect.point.y,(F32)dstRect.extent.x,(F32)dstRect.extent.y),in_flip,filter,in_wrap);
 }
 
-void GFXDrawUtil::drawBitmapSR( GFXTextureObject *texture, const Point2I &in_rAt, const RectI &srcRect, const GFXBitmapFlip in_flip, const GFXTextureFilterType filter , bool in_wrap /*= true*/ )
+void GFXDrawUtil::drawBitmapSR(GFXTexHandle &texture, const Point2I &in_rAt, const RectI &srcRect, const GFXBitmapFlip in_flip, const GFXTextureFilterType filter, bool in_wrap /*= true*/ )
 {
    drawBitmapSR(texture,Point2F((F32)in_rAt.x,(F32)in_rAt.y),RectF((F32)srcRect.point.x,(F32)srcRect.point.y,(F32)srcRect.extent.x,(F32)srcRect.extent.y),in_flip,filter,in_wrap);
 }
 
-void GFXDrawUtil::drawBitmapStretchSR( GFXTextureObject *texture, const RectI &dstRect, const RectI &srcRect, const GFXBitmapFlip in_flip, const GFXTextureFilterType filter , bool in_wrap /*= true*/ ) 
+void GFXDrawUtil::drawBitmapStretchSR(GFXTexHandle &texture, const RectI &dstRect, const RectI &srcRect, const GFXBitmapFlip in_flip, const GFXTextureFilterType filter, bool in_wrap /*= true*/ )
 {
    RectF dstRectF = RectF((F32)dstRect.point.x,(F32)dstRect.point.y,(F32)dstRect.extent.x,(F32)dstRect.extent.y);
    RectF srcRectF = RectF((F32)srcRect.point.x,(F32)srcRect.point.y,(F32)srcRect.extent.x,(F32)srcRect.extent.y);
    drawBitmapStretchSR(texture,dstRectF,srcRectF,in_flip,filter,in_wrap);
 }
 
-void GFXDrawUtil::drawBitmap( GFXTextureObject *texture, const Point2F &in_rAt, const GFXBitmapFlip in_flip /*= GFXBitmapFlip_None*/, const GFXTextureFilterType filter /*= GFXTextureFilterPoint */ , bool in_wrap /*= true*/ )
+void GFXDrawUtil::drawBitmap(GFXTexHandle &texture, const Point2F &in_rAt, const GFXBitmapFlip in_flip /*= GFXBitmapFlip_None*/, const GFXTextureFilterType filter /*= GFXTextureFilterPoint */ , bool in_wrap /*= true*/ )
 {
-   AssertFatal( texture != 0, "No texture specified for drawBitmap()" );
+   AssertFatal( (texture), "No texture specified for drawBitmap()" );
 
    RectI subRegion( 0, 0, texture->getBitmapWidth(), texture->getBitmapHeight() );
    RectI stretch( in_rAt.x, in_rAt.y, texture->getBitmapWidth(), texture->getBitmapHeight() );
    drawBitmapStretchSR( texture, stretch, subRegion, in_flip, filter, in_wrap );
 }
 
-void GFXDrawUtil::drawBitmapStretch( GFXTextureObject*texture, const RectF &dstRect, const GFXBitmapFlip in_flip /*= GFXBitmapFlip_None*/, const GFXTextureFilterType filter /*= GFXTextureFilterPoint */ , bool in_wrap /*= true*/ )
+void GFXDrawUtil::drawBitmapStretch(GFXTexHandle &texture, const RectF &dstRect, const GFXBitmapFlip in_flip /*= GFXBitmapFlip_None*/, const GFXTextureFilterType filter /*= GFXTextureFilterPoint */ , bool in_wrap /*= true*/ )
 {
    AssertFatal( texture != 0, "No texture specified for drawBitmapStretch()" );
 
@@ -421,7 +421,7 @@ void GFXDrawUtil::drawBitmapStretch( GFXTextureObject*texture, const RectF &dstR
    drawBitmapStretchSR( texture, dstRect, subRegion, in_flip, filter, in_wrap );
 }
 
-void GFXDrawUtil::drawBitmapSR( GFXTextureObject*texture, const Point2F &in_rAt, const RectF &srcRect, const GFXBitmapFlip in_flip /*= GFXBitmapFlip_None*/, const GFXTextureFilterType filter /*= GFXTextureFilterPoint */ , bool in_wrap /*= true*/ )
+void GFXDrawUtil::drawBitmapSR(GFXTexHandle &texture, const Point2F &in_rAt, const RectF &srcRect, const GFXBitmapFlip in_flip /*= GFXBitmapFlip_None*/, const GFXTextureFilterType filter /*= GFXTextureFilterPoint */ , bool in_wrap /*= true*/ )
 {
    AssertFatal( texture != 0, "No texture specified for drawBitmapSR()" );
 
@@ -429,7 +429,7 @@ void GFXDrawUtil::drawBitmapSR( GFXTextureObject*texture, const Point2F &in_rAt,
    drawBitmapStretchSR( texture, stretch, srcRect, in_flip, filter, in_wrap );
 }
 
-void GFXDrawUtil::drawBitmapStretchSR( GFXTextureObject *texture, const RectF &dstRect, const RectF &srcRect, const GFXBitmapFlip in_flip /*= GFXBitmapFlip_None*/, const GFXTextureFilterType filter /*= GFXTextureFilterPoint */ , bool in_wrap /*= true*/)
+void GFXDrawUtil::drawBitmapStretchSR(GFXTexHandle &texture, const RectF &dstRect, const RectF &srcRect, const GFXBitmapFlip in_flip /*= GFXBitmapFlip_None*/, const GFXTextureFilterType filter /*= GFXTextureFilterPoint */ , bool in_wrap /*= true*/)
 {
    // Sanity if no texture is specified.
    if(!texture)
@@ -439,8 +439,7 @@ void GFXDrawUtil::drawBitmapStretchSR( GFXTextureObject *texture, const RectF &d
    
    Vector<GFXVertexPCT> verts;
    verts.setSize(4);
-   std::shared_ptr<GFXTextureObject> texHandle(texture);
-    
+
    F32 texLeft   = (srcRect.point.x)                    / (texture->getWidth());
    F32 texRight  = (srcRect.point.x + srcRect.extent.x) / (texture->getWidth());
    F32 texTop    = (srcRect.point.y)                    / (texture->getHeight());
@@ -477,7 +476,7 @@ void GFXDrawUtil::drawBitmapStretchSR( GFXTextureObject *texture, const RectF &d
    verts[2].texCoord.set( texLeft,  texBottom );
    verts[3].texCoord.set( texRight, texBottom );
 
-   batchTriangleStrip(verts, texHandle);
+   batchTriangleStrip(verts, texture);
 
    switch (filter)
    {

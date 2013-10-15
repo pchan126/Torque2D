@@ -15,7 +15,7 @@
 GFXOpenGL32Cubemap::GFXOpenGL32Cubemap()
 {
    for(U32 i = 0; i < 6; i++)
-      mTextures[i] = NULL;
+      mTextures[i] = nullptr;
    
    GFXTextureManager::addEventDelegate( this, &GFXOpenGL32Cubemap::_onTextureEvent );
 }
@@ -100,7 +100,7 @@ void GFXOpenGL32Cubemap::fillCubeTextures(GFXTexHandle* faces)
       mTextures[i] = faces[i];
       GFXFormat faceFormat = faces[i]->getFormat();
       
-      GFXOpenGL32TextureObject* glTex = static_cast<GFXOpenGL32TextureObject*>(faces[i].getPointer());
+      GFXOpenGL32TextureObject* glTex = static_cast<GFXOpenGL32TextureObject*>(faces[i].get());
       U8* buf = glTex->getTextureData();
       glTexImage2D(faceList[i], 0, GFXGLTextureInternalFormat[faceFormat], faces[i]->getWidth(), faces[i]->getHeight(),
                    0, GFXGLTextureFormat[faceFormat], GFXGLTextureType[faceFormat], buf);

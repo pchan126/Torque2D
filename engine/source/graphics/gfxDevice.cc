@@ -329,7 +329,7 @@ void GFXDevice::setGlobalAmbientColor(ColorF color)
 //-----------------------------------------------------------------------------
 // Set texture
 //-----------------------------------------------------------------------------
-void GFXDevice::setTexture( U32 stage, GFXTextureObject *texture )
+void GFXDevice::setTexture(U32 stage, GFXTexHandle &texture)
 {
    AssertFatal(stage < getNumSamplers(), "GFXDevice::setTexture - out of range stage!");
 

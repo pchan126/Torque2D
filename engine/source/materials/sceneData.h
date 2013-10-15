@@ -22,16 +22,11 @@
 #ifndef _SCENEDATA_H_
 #define _SCENEDATA_H_
 
-#ifndef _SCENERENDERSTATE_H_
 #include "2d/scene/sceneRenderState.h"
-#endif
-#ifndef _LIGHTMANAGER_H_
 #include "lighting/lightManager.h"
-#endif
-
 #include "graphics/gfxDevice.h"
 
-class std::shared_ptr<GFXTextureObject>;
+class GFXTextureObject;
 //class GFXCubemap;
 
 struct SceneData

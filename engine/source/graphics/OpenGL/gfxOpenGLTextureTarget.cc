@@ -132,7 +132,7 @@ GFXFormat GFXOpenGLTextureTarget::getFormat()
    return GFXFormatR8G8B8A8;
 }
 
-void GFXOpenGLTextureTarget::attachTexture( GFXTextureObject *tex, RenderSlot slot, U32 mipLevel/*=0*/, U32 zOffset /*= 0*/ )
+void GFXOpenGLTextureTarget::attachTexture(GFXTexHandle &tex, RenderSlot slot, U32 mipLevel/*=0*/, U32 zOffset /*= 0*/ )
 {
    // Triggers an update when we next render
    invalidateState();

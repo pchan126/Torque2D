@@ -214,9 +214,9 @@ public:
    Material* getMaterial() const { return mMaterial; }
 
    /// Returns the texture used by a stage
-   std::shared_ptr<GFXTextureObject> getStageTexture(U32 stage, const FeatureType &type)
+   GFXTexHandle getStageTexture(U32 stage, const FeatureType &type)
    {
-      return (stage < Material::MAX_STAGES) ? mStages[stage].getTex(type) : NULL;
+      return (stage < Material::MAX_STAGES) ? mStages[stage].getTex(type) : nullptr;
    }
 
 protected:

@@ -157,13 +157,16 @@ protected:
    /// 
    static S32 smTextureReductionLevel;
 
-   GFXTexHandle mListHead;
-   GFXTexHandle mListTail;
+   std::unordered_map<std::string, std::shared_ptr<GFXTextureObject>> mHashTable;
 
-   // We have a hash table for fast texture lookups
-   GFXTexHandle *mHashTable;
-   U32                mHashCount;
-   GFXTexHandle find( const String &name );
+//   GFXTexHandle mListHead;
+//   GFXTexHandle mListTail;
+//
+//   // We have a hash table for fast texture lookups
+//   GFXTexHandle *mHashTable;
+//   U32                mHashCount;
+
+   GFXTexHandle      find(std::string name);
    void              hashInsert(GFXTexHandle &object);
    void              hashRemove(GFXTexHandle &object);
 
@@ -207,10 +210,10 @@ protected:
            S32 antialiasLevel);
 
     GFXTexHandle _createTexture(GBitmap *bmp,
-           const String &resourceName,
-           GFXTextureProfile *profile,
-           bool deleteBmp,
-           GFXTextureObject *inObj);
+            const String &resourceName,
+            GFXTextureProfile *profile,
+            bool deleteBmp,
+            GFXTextureObject *inObj);
 
    /// Frees the API handles to the texture, for D3D this is a release call
    ///
@@ -282,7 +285,7 @@ protected:
    /// @}
 
    /// Store texture into the hash table cache and linked list.
-   void _linkTexture( GFXTextureObject *obj );
+   void _linkTexture( GFXTexHandle &obj );
 
    /// Validate the parameters for creating a texture.
    void _validateTexParams( const U32 width, const U32 height, const GFXTextureProfile *profile, 

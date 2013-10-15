@@ -164,7 +164,7 @@ public:
    GFXTextureObject *getDepthTargetTexture();
 
    /// Assigns the value for the above method
-   void setDepthTargetTexture(GFXTextureObject *zTarget);
+   void setDepthTargetTexture(GFXTexHandle &zTarget);
 
    /// @name RenderBinManager interface
    /// @{
@@ -230,7 +230,7 @@ protected:
    AddInstTable mAddInstSignals;
 
    Scene * mSceneManager;
-   std::shared_ptr<GFXTextureObject> mDepthBuff;
+   GFXTexHandle mDepthBuff;
 
    MatrixF    mProjection;
    MatrixF    mView;

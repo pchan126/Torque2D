@@ -455,7 +455,7 @@ void GFXOpenGL32Device::_updateRenderTargets()
         // to SetRenderTarget on the actual device.
         mDeviceStatistics.mRenderTargetChanges++;
        
-        GFXOpenGL32TextureTarget *tex = dynamic_cast<GFXOpenGL32TextureTarget*>( mCurrentRT.getPointer() );
+        GFXOpenGL32TextureTarget *tex = dynamic_cast<GFXOpenGL32TextureTarget*>( mCurrentRT.get() );
         if ( tex )
         {
             tex->applyState();
@@ -463,7 +463,7 @@ void GFXOpenGL32Device::_updateRenderTargets()
         }
         else
         {
-            GFXOpenGL32WindowTarget *win = dynamic_cast<GFXOpenGL32WindowTarget*>( mCurrentRT.getPointer() );
+            GFXOpenGL32WindowTarget *win = dynamic_cast<GFXOpenGL32WindowTarget*>( mCurrentRT.get() );
             AssertFatal( win != NULL,
                         "GFXOpenGL32Device::_updateRenderTargets() - invalid target subclass passed!" );
 

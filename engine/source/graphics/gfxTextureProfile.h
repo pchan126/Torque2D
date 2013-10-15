@@ -23,14 +23,10 @@
 #ifndef _GFXTEXTUREPROFILE_H_
 #define _GFXTEXTUREPROFILE_H_
 
-#ifndef _TORQUE_STRING_H_
 #include "string/str.h"
-#endif
 #include "sim/simBase.h"
 #include "gfxTextureObject.h"
 
-
-class GFXTextureObject;
 
 /// Helper struct for gathering profile stats.
 class GFXTextureProfileStats
@@ -138,7 +134,7 @@ public:
    // And static interface...
    static void init();
    static GFXTextureProfile *find(const String &name);
-   static void updateStatsForCreation(GFXTextureObject *t);
+   static void updateStatsForCreation(GFXTexHandle &t);
    static void updateStatsForDeletion(GFXTexHandle &t);
 
    /// Collects the total stats for all the profiles which

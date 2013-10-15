@@ -46,8 +46,6 @@ static const char* extArray[EXT_ARRAY_SIZE] = { "", "jpg", "png"};
 GFXOpenGL32TextureManager::GFXOpenGL32TextureManager(NSOpenGLContext* mContext)
 {
     mContext = mContext;
-    mDGLRender = true;
-    mTextureCompressionHint = GL_FASTEST;
 }
 
 //-----------------------------------------------------------------------------
@@ -55,19 +53,18 @@ GFXOpenGL32TextureManager::GFXOpenGL32TextureManager(NSOpenGLContext* mContext)
 //-----------------------------------------------------------------------------
 GFXOpenGL32TextureManager::~GFXOpenGL32TextureManager()
 {
-   SAFE_DELETE_ARRAY( mHashTable );
 }
 
 // build texture from GBitmap
-GFXTextureObject *GFXOpenGL32TextureManager::createTexture(  GBitmap *bmp,
-                                        const String &resourceName,
-                                        GFXTextureProfile *profile,
-                                        bool deleteBmp)
+GFXTexHandle GFXOpenGL32TextureManager::createTexture(GBitmap *bmp,
+        const String &resourceName,
+        GFXTextureProfile *profile,
+        bool deleteBmp)
 {
-    AssertFatal(bmp, "GFXTextureManager::createTexture() - Got NULL bitmap!");
+    AssertFatal(bmp, "GFXTextureManager::createTexture() - Got nullptr bitmap!");
     
-    GFXTextureObject *cacheHit = _lookupTexture( resourceName, profile );
-    if( cacheHit != NULL)
+    GFXTexHandle cacheHit = _lookupTexture( resourceName, profile );
+    if( cacheHit != nullptr)
     {
         // Con::errorf("Cached texture '%s'", (resourceName.isNotEmpty() ? resourceName.c_str() : "unknown"));
         if (deleteBmp)
@@ -107,11 +104,11 @@ GFXTextureObject *GFXOpenGL32TextureManager::createTexture(  GBitmap *bmp,
 //    
 //}
 
-GFXTextureObject *GFXOpenGL32TextureManager::_createTexture(  GBitmap *bmp,
-                                                            const String &resourceName,
-                                                            GFXTextureProfile *profile,
-                                                            bool deleteBmp,
-                                                            GFXTextureObject *inObj )
+GFXTexHandle GFXOpenGL32TextureManager::_createTexture(GBitmap *bmp,
+        const String &resourceName,
+        GFXTextureProfile *profile,
+        bool deleteBmp,
+        GFXTextureObject *inObj)
 {
    PROFILE_SCOPE( GFXOpenGLESTextureManager_CreateTexture_Bitmap );
    
@@ -160,7 +157,7 @@ GFXTextureObject *GFXOpenGL32TextureManager::_createTexture(  GBitmap *bmp,
    GFXFormat realFmt = realBmp->getFormat();
    _validateTexParams( realWidth, realHeight, profile, numMips, realFmt );
    
-   GFXTextureObject *ret;
+   GFXTexHandle ret;
    if ( inObj )
    {
       // If the texture has changed in dimensions
@@ -170,10 +167,10 @@ GFXTextureObject *GFXOpenGL32TextureManager::_createTexture(  GBitmap *bmp,
           inObj->getFormat() != realFmt )
          ret = _createTextureObject( realHeight, realWidth, 0, realFmt, profile, numMips, false, 0, inObj );
       else
-         ret = inObj;
+         ret = GFXTexHandle(inObj);
    }
    else
-      ret = _createTextureObject(realHeight, realWidth, 0, realFmt, profile, numMips, false, 0, NULL, (void*)bmp->getBits() );
+      ret = _createTextureObject(realHeight, realWidth, 0, realFmt, profile, numMips, false, 0, nullptr, (void*)bmp->getBits() );
    
    if(!ret)
    {
@@ -181,7 +178,7 @@ GFXTextureObject *GFXOpenGL32TextureManager::_createTexture(  GBitmap *bmp,
       return nullptr;
    }
    
-   GFXOpenGL32TextureObject* retTex = dynamic_cast<GFXOpenGL32TextureObject*>(ret);
+   GFXOpenGL32TextureObject* retTex = dynamic_cast<GFXOpenGL32TextureObject*>(ret.get());
    
    if (realBmp != bmp && retTex)
       retTex->mIsNPoT2 = true;
@@ -201,7 +198,7 @@ GFXTextureObject *GFXOpenGL32TextureManager::_createTexture(  GBitmap *bmp,
    if (!_loadTexture( ret, realBmp ))
    {
       Con::errorf("GFXTextureManager - failed to load GBitmap for '%s'", (resourceName.isNotEmpty() ? resourceName.c_str() : "unknown"));
-      return NULL;
+      return nullptr;
    }
    
    // Do statistics and book-keeping...
@@ -258,7 +255,7 @@ GFXTextureObject *GFXOpenGL32TextureManager::_createTexture(  GBitmap *bmp,
 //    GFXOpenGL32Device *device = (GFXOpenGL32Device*)GFX;
 //    GLKTextureLoader *texLoader = (GLKTextureLoader*)device->getTextureLoader();
 //    
-//    AssertFatal((texLoader != NULL), "texture loader not initalized");
+//    AssertFatal((texLoader != nullptr), "texture loader not initalized");
 //    
 //    // Resource handles used for loading.  Hold on to them
 //    // throughout this function so that change notifications
@@ -313,7 +310,7 @@ GFXTextureObject *GFXOpenGL32TextureManager::_createTexture(  GBitmap *bmp,
 //    {
 ////       Con::printf("GFXOpenGL32TextureManager::createTexture unable to find: %s - %s", temp, path.getExtension().c_str());
 ////       [temppath release];
-//       return NULL;
+//       return nullptr;
 //    }
 ////   [temppath release];
 //   
@@ -329,7 +326,7 @@ GFXTextureObject *GFXOpenGL32TextureManager::_createTexture(  GBitmap *bmp,
 //        };
 //        
 //        Con::printf("async load %s", [npath UTF8String]);
-//        [ texLoader textureWithContentsOfFile:npath options:options queue:NULL completionHandler:[[texCallback copy]autorelease]];
+//        [ texLoader textureWithContentsOfFile:npath options:options queue:nullptr completionHandler:[[texCallback copy]autorelease]];
 //    }
 //    
 //    
@@ -348,16 +345,16 @@ GFXTextureObject *GFXOpenGL32TextureManager::_createTexture(  GBitmap *bmp,
 //}
 
 
-GFXTextureObject *GFXOpenGL32TextureManager::_createTextureObject(   U32 height,
-                                                               U32 width,
-                                                               U32 depth,
-                                                               GFXFormat format, 
-                                                               GFXTextureProfile *profile, 
-                                                               U32 numMipLevels,
-                                                               bool forceMips,
-                                                               S32 antialiasLevel,
-                                                                  GFXTextureObject *inTex,
-                                                                  void* data)
+GFXTexHandle GFXOpenGL32TextureManager::_createTextureObject(U32 height,
+        U32 width,
+        U32 depth,
+        GFXFormat format,
+        GFXTextureProfile *profile,
+        U32 numMipLevels,
+        bool forceMips,
+        S32 antialiasLevel,
+        GFXTextureObject *inTex,
+        void *data)
 {
    AssertFatal(format >= 0 && format < GFXFormat_COUNT, "GFXOpenGL32TextureManager::_createTexture - invalid format!");
 
@@ -376,7 +373,7 @@ GFXTextureObject *GFXOpenGL32TextureManager::_createTextureObject(   U32 height,
 
    innerCreateTexture(retTex, height, width, depth, format, profile, numMipLevels, forceMips, data);
 
-   return retTex;
+   return GFXTexHandle(retTex);
 }
 
 //-----------------------------------------------------------------------------
@@ -427,11 +424,11 @@ void GFXOpenGL32TextureManager::innerCreateTexture( GFXOpenGL32TextureObject *re
    AssertFatal(GFXGLTextureType[format] != GL_ZERO, "GFXOpenGL32TextureManager::innerCreateTexture - invalid type");
 
    if(binding == GL_TEXTURE_RECTANGLE)
-      glTexImage2D(binding, 0, GFXGLTextureInternalFormat[format], width, height, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], NULL);
+      glTexImage2D(binding, 0, GFXGLTextureInternalFormat[format], width, height, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], nullptr);
    else if(binding == GL_TEXTURE_2D)
-       glTexImage2D(binding, 0, GFXGLTextureInternalFormat[format], width, height, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], NULL);
+       glTexImage2D(binding, 0, GFXGLTextureInternalFormat[format], width, height, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], nullptr);
    else
-      glTexImage3D(GL_TEXTURE_3D, 0, GFXGLTextureInternalFormat[format], width, height, depth, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], NULL);
+      glTexImage3D(GL_TEXTURE_3D, 0, GFXGLTextureInternalFormat[format], width, height, depth, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], nullptr);
 
 //   switch (binding) {
 //      case GL_TEXTURE_1D:
@@ -485,9 +482,9 @@ static void _slowTextureLoad(GFXOpenGL32TextureObject* texture, GBitmap* pDL)
    glTexSubImage2D(texture->getBinding(), 0, 0, 0, pDL->getWidth(0), pDL->getHeight(0), GFXGLTextureFormat[pDL->getFormat()], GFXGLTextureType[pDL->getFormat()], pDL->getBits(0));
 }
 
-bool GFXOpenGL32TextureManager::_loadTexture(GFXTextureObject *aTexture, GBitmap *pDL)
+bool GFXOpenGL32TextureManager::_loadTexture(GFXTexHandle &aTexture, GBitmap *pDL)
 {
-   GFXOpenGL32TextureObject *texture = static_cast<GFXOpenGL32TextureObject*>(aTexture);
+   GFXOpenGL32TextureObject *texture = static_cast<GFXOpenGL32TextureObject*>(aTexture.get());
    
    AssertFatal(texture->getBinding() == GL_TEXTURE_2D, 
       "GFXOpenGL32TextureManager::_loadTexture(GBitmap) - This method can only be used with 2D textures");
@@ -511,12 +508,12 @@ bool GFXOpenGL32TextureManager::_loadTexture(GFXTextureObject *aTexture, GBitmap
 }
 
 
-bool GFXOpenGL32TextureManager::_loadTexture(GFXTextureObject *aTexture, void *raw)
+bool GFXOpenGL32TextureManager::_loadTexture(GFXTexHandle &aTexture, void *raw)
 {
    if(aTexture->getDepth() < 1)
       return false;
    
-   GFXOpenGL32TextureObject* texture = static_cast<GFXOpenGL32TextureObject*>(aTexture);
+   GFXOpenGL32TextureObject* texture = static_cast<GFXOpenGL32TextureObject*>(aTexture.get());
    
    glActiveTexture(GL_TEXTURE0);
 
@@ -527,20 +524,20 @@ bool GFXOpenGL32TextureManager::_loadTexture(GFXTextureObject *aTexture, void *r
    return true;
 }
 
-bool GFXOpenGL32TextureManager::_freeTexture(GFXTextureObject *texture, bool zombify /*= false*/)
+bool GFXOpenGL32TextureManager::_freeTexture(GFXTexHandle &texture, bool zombify /*= false*/)
 {
    if(zombify)
-      static_cast<GFXOpenGL32TextureObject*>(texture)->zombify();
+      static_cast<GFXOpenGL32TextureObject*>(texture.get())->zombify();
    else
-      static_cast<GFXOpenGL32TextureObject*>(texture)->release();
+      static_cast<GFXOpenGL32TextureObject*>(texture.get())->release();
       
    return true;
 }
 
-bool GFXOpenGL32TextureManager::_refreshTexture(GFXTextureObject *texture)
+bool GFXOpenGL32TextureManager::_refreshTexture(GFXTexHandle &texture)
 {
    U32 usedStrategies = 0;
-   GFXOpenGL32TextureObject* realTex = static_cast<GFXOpenGL32TextureObject*>(texture);
+   GFXOpenGL32TextureObject* realTex = static_cast<GFXOpenGL32TextureObject*>(texture.get());
       
    if(texture->mProfile->doStoreBitmap())
    {

@@ -23,15 +23,23 @@
 #ifndef _GFXTARGET_H_
 #define _GFXTARGET_H_
 
+class GFXTarget;
+class GFXWindowTarget;
+class GFXTextureTarget;
+
+typedef std::shared_ptr<GFXTarget> GFXTargetRef;
+typedef std::shared_ptr<GFXWindowTarget> GFXWindowTargetRef;
+typedef std::shared_ptr<GFXTextureTarget> GFXTextureTargetRef;
+
 #include "sim/refBase.h"
 #include "graphics/gfxEnums.h"
 #include "graphics/gfxResource.h"
 #include "math/mPoint.h"
 #include "windowManager/windowInputGenerator.h"
+#include "gfxTextureObject.h"
 
 class Point2I;
 class GFXCubemap;
-class GFXTextureObject;
 
 /// Base class for a target to which GFX can render.
 ///
@@ -41,7 +49,7 @@ class GFXTextureObject;
 ///
 /// This base class is used to represent a render target; it might be a context
 /// tied to a window, or a set of surfaces or textures.
-class GFXTarget : public StrongRefBase, public GFXResource
+class GFXTarget : public GFXResource
 {
 private:
    S32 mChangeToken;
@@ -109,7 +117,7 @@ class GFXWindowTarget : public GFXTarget
 protected:
    PlatformWindow *mWindow;
 public:
-   GFXWindowTarget() : mWindow(NULL){};
+   GFXWindowTarget() : mWindow(nullptr){};
    GFXWindowTarget( PlatformWindow *windowObject )
    {
       mWindow = windowObject;
@@ -168,7 +176,7 @@ public:
    /// @param mipLevel What level of this texture are we rendering to?
    /// @param zOffset  If this is a depth texture, what z level are we 
    ///                 rendering to?
-    virtual void attachTexture(GFXTextureObject *tex, RenderSlot slot = Color0, U32 mipLevel=0, U32 zOffset = 0) = 0;
+    virtual void attachTexture(GFXTexHandle &tex, RenderSlot slot = Color0, U32 mipLevel = 0, U32 zOffset = 0) = 0;
 
    /// Support binding to cubemaps.
    ///
@@ -179,9 +187,5 @@ public:
    /// @param mipLevel What level of this texture are we rendering to?
 //   virtual void attachTexture(GFXCubemap *tex, U32 face, RenderSlot slot = Color0, U32 mipLevel=0) = 0;
 };
-
-typedef StrongRefPtr<GFXTarget> GFXTargetRef;
-typedef StrongRefPtr<GFXWindowTarget> GFXWindowTargetRef;
-typedef StrongRefPtr<GFXTextureTarget> GFXTextureTargetRef;
 
 #endif // _GFXTARGET_H_

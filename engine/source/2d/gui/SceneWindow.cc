@@ -1547,7 +1547,7 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
     if (renderTarget.isNull())
        renderTarget = GFX->allocRenderToTextureTarget();
 
-    if (mImageTextureHandle.isNull())
+    if (mImageTextureHandle)
         mImageTextureHandle = TEXMGR->createTexture( getWidth(), getHeight(), GFXFormatR8G8B8A8, &GFXSceneWindowTextureProfile, 0, 0 );
 
     renderTarget->attachTexture(mImageTextureHandle);

@@ -425,7 +425,7 @@ public:
 
    // bitmap members
    StringTableEntry mBitmapName;                   ///< Bitmap file name for the bitmap of the control
-   std::shared_ptr<GFXTextureObject> mTextureHandle;                   ///< Texture handle for the control
+   GFXTexHandle mTextureHandle;                   ///< Texture handle for the control
    Vector<RectI> mBitmapArrayRects;                ///< Used for controls which use an array of bitmaps such as checkboxes
 
    // sound members

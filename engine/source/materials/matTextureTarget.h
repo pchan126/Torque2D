@@ -29,13 +29,14 @@
 #include "math/mRect.h"
 #include "graphics/gfxStateBlock.h"
 #include "delegates/delegate.h"
+#include <memory>
 
 struct GFXShaderMacro;
 //class ConditionerFeature;
 
 
 ///
-class NamedTexTarget : public WeakRefBase
+class NamedTexTarget
 {
 public:
    
@@ -63,13 +64,13 @@ public:
    // Register the passed texture with our name, unregistering "anyone"
    // priorly registered with that name.   
    // Pass NULL to only unregister.
-   void setTexture( GFXTextureObject *tex ) { setTexture( 0, tex ); }
+   void setTexture(GFXTexHandle &tex) { setTexture( 0, tex ); }
 
    ///
-   void setTexture( U32 index, GFXTextureObject *tex );   
+   void setTexture(U32 index, GFXTexHandle &tex);
 
    ///
-   GFXTextureObject* getTexture( U32 index = 0 ) const;
+   GFXTexHandle getTexture( U32 index = 0 ) const;
 
    /// The delegate used to override the getTexture method.
    /// @see getTexture
@@ -119,7 +120,7 @@ protected:
    String mName;
 
    /// The held textures.
-   std::shared_ptr<GFXTextureObject> mTex[4];
+   GFXTexHandle mTex[4];
 
    ///
    TexDelegate mTexDelegate;
@@ -135,17 +136,17 @@ protected:
 };
 
 
-inline GFXTextureObject* NamedTexTarget::getTexture( U32 index ) const
+inline GFXTexHandle NamedTexTarget::getTexture( U32 index ) const
 {
    AssertFatal( index < 4, "NamedTexTarget::getTexture - Got invalid index!" );
    if ( mTexDelegate.empty() )
       return mTex[index];
 
-   return mTexDelegate( index );
+   return GFXTexHandle(mTexDelegate( index ));
 }
 
 
 /// A weak reference to a texture target.
-typedef WeakRefPtr<NamedTexTarget> NamedTexTargetRef;
+typedef std::weak_ptr<NamedTexTarget> NamedTexTargetRef;
 
 #endif // _MATTEXTURETARGET_H_

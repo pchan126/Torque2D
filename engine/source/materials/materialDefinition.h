@@ -22,23 +22,13 @@
 #ifndef _MATERIALDEFINITION_H_
 #define _MATERIALDEFINITION_H_
 
-#ifndef _ASSET_PTR_H_
 #include "assets/assetPtr.h"
-#endif
-
 #include "materials/baseMaterialDefinition.h"
-
 #include "collection/hashTable.h"
-
 #include "graphics/gfxTextureHandle.h"
-
 #include "graphics/gfxStructs.h"
-
 #include "graphics/gfxCubemap.h"
-
 //#include "console/dynamicTypes.h"
-
-
 
 class CubemapAsset;
 //class SFXTrack;
@@ -123,7 +113,7 @@ public:
    protected:
 
       ///
-      typedef HashMap<const FeatureType*,std::shared_ptr<GFXTextureObject>> TextureTable;
+      typedef HashMap<const FeatureType*,GFXTexHandle> TextureTable;
 
       /// The sparse table of textures by feature index.
       /// @see getTex
@@ -136,23 +126,23 @@ public:
    public:
 
       StageData()
-         : mCubemap( NULL )
+         : mCubemap( nullptr )
       {
       }
 
-      /// Returns the texture object or NULL if there is no
+      /// Returns the texture object or nullptr if there is no
       /// texture entry for that feature type in the table.
-      inline GFXTextureObject* getTex( const FeatureType &type ) const
+      inline GFXTexHandle getTex( const FeatureType &type ) const
       {
          TextureTable::const_iterator iter = mTextures.find( &type );
          if ( iter == mTextures.end() )
-            return NULL;
+            return nullptr;
 
-         return iter->second.getPointer();
+         return iter->second;
       }
 
       /// Assigns a texture object by feature type.
-      inline void setTex( const FeatureType &type, GFXTextureObject *tex )
+      inline void setTex(const FeatureType &type, GFXTexHandle &tex)
       {
          if ( !tex )
          {
@@ -173,7 +163,7 @@ public:
          TextureTable::const_iterator iter = mTextures.begin();
          for ( ; iter != mTextures.end(); iter++ )
          {
-            if ( iter->second.isValid() )
+            if ( iter->second )
                return true;
          }
 

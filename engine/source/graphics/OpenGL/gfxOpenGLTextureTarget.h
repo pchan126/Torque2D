@@ -77,7 +77,7 @@ public:
 
    virtual const Point2I getSize();
    virtual GFXFormat getFormat();
-    virtual void attachTexture(GFXTextureObject *tex, RenderSlot slot = Color0, U32 mipLevel=0, U32 zOffset = 0);
+    virtual void attachTexture(GFXTexHandle &tex, RenderSlot slot = Color0, U32 mipLevel = 0, U32 zOffset = 0);
 //   virtual void attachTexture(GFXCubemap *tex, U32 face, RenderSlot slot = Color0, U32 mipLevel=0);
    virtual void clearAttachments();
 

@@ -976,7 +976,7 @@ bool GFont::read(std::iostream &io_rStream)
 
        mTextureSheets.increment();
        constructInPlace(&mTextureSheets.back());
-       std::shared_ptr<GFXTextureObject> handle = std::shared_ptr<GFXTextureObject>(bmp, &GFXFontTextureProfile, true, avar(""));
+       GFXTexHandle handle = GFXTextureObject::create(bmp, &GFXFontTextureProfile, true, avar(""));
 //       mTextureSheets.last().setFilter(GL_NEAREST);
    }
    
@@ -1311,8 +1311,8 @@ void GFont::importStrip(const char *fileName, U32 padding, U32 kerning)
       U8 *bits = bitmap->getWritableBits();
       dMemset(bits, 0, sizeof(U8) *TextureSheetSize*TextureSheetSize * strip->mBytesPerPixel);
 
-//      std::shared_ptr<GFXTextureObject> handle = std::shared_ptr<GFXTextureObject>( buf, bitmap, std::shared_ptr<GFXTextureObject>::BitmapKeepTexture );
-       std::shared_ptr<GFXTextureObject> handle = std::shared_ptr<GFXTextureObject>( bitmap, &GFXFontTextureProfile, true, avar("Font Sheet for" ));
+//      GFXTexHandle handle = GFXTexHandle( buf, bitmap, std::shared_ptr<GFXTextureObject>::BitmapKeepTexture );
+       GFXTexHandle handle = GFXTexHandle( bitmap, &GFXFontTextureProfile, true, avar("Font Sheet for" ));
 
        mTextureSheets.increment();
       constructInPlace(&mTextureSheets.back());
@@ -1361,7 +1361,7 @@ bool GFont::readBMFont(std::iostream &io_rStream)
 //    U32 bmHeight = 0;
     U32 numSheets = 0;
     U32 currentPage = 0;
-    StringTableEntry fileName = StringTable->insert("");
+    StringTableEntry fileName = StringTable->EmptyString;
 
 //    std::fstream::streampos = io_rStream.g
 //    U32 numBytes = io_rStream.getStreamSize() - io_rStream.getPosition();
@@ -1542,7 +1542,7 @@ bool GFont::readBMFont(std::iostream &io_rStream)
         char buff[30];
         dSprintf(buff, sizeof(buff), "font_%d", smSheetIdCount++);
 
-        std::shared_ptr<GFXTextureObject> handle = std::shared_ptr<GFXTextureObject>( buf, &GFXFontTextureProfile, avar("constructBMFont" ));
+        GFXTexHandle handle = GFXTexHandle( buf, &GFXFontTextureProfile, avar("constructBMFont" ));
 //        std::shared_ptr<GFXTextureObject> handle = std::shared_ptr<GFXTextureObject>( bmp, &GFXFontTextureProfile, true, avar("%s() - (line %d)", __FUNCTION__, __LINE__) );
         //    std::shared_ptr<GFXTextureObject> handle = std::shared_ptr<GFXTextureObject>(buf, bitmap, std::shared_ptr<GFXTextureObject>::BitmapKeepTexture);
         //    handle.setFilter(GL_NEAREST);
