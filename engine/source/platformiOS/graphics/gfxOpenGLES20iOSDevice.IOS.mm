@@ -328,7 +328,7 @@ void GFXOpenGLES20iOSDevice::setTextureInternal(U32 textureUnit, GFXTextureObjec
 ////------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
-GFXWindowTarget *GFXOpenGLES20iOSDevice::allocWindowTarget(PlatformWindow *window)
+GFXWindowTargetRef GFXOpenGLES20iOSDevice::allocWindowTarget(PlatformWindow *window)
 {
     // Allocate the wintarget and create a new context.
     GFXOpenGLES20iOSWindowTarget *gwt = new GFXOpenGLES20iOSWindowTarget(window, this);
@@ -339,7 +339,7 @@ GFXWindowTarget *GFXOpenGLES20iOSDevice::allocWindowTarget(PlatformWindow *windo
 }
 
 
-GFXTextureTarget * GFXOpenGLES20iOSDevice::allocRenderToTextureTarget()
+GFXTextureTargetRef GFXOpenGLES20iOSDevice::allocRenderToTextureTarget()
 {
     GFXOpenGLES20TextureTarget *targ = new GFXOpenGLES20TextureTarget();
     targ->registerResourceWithDevice(this);

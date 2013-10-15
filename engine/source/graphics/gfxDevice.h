@@ -26,7 +26,7 @@
 #include "graphics/gfxTarget.h"
 #include "graphics/gfxAdapter.h"
 #include "collection/vector.h"
-#include "gfxTextureObject.h"
+#include "graphics/gfxTextureObject.h"
 #include "graphics/gfxVertexBuffer.h"
 #include "graphics/gfxStateBlock.h"
 #include "graphics/gfxShader.h"
@@ -37,7 +37,6 @@
 #include "math/mPoint.h"
 #include "math/mMatrix.h"
 #include "graphics/gfxEnums.h"
-#include "graphics/gfxTextureHandle.h"
 
 class FontRenderBatcher;
 class GFont;
@@ -253,7 +252,7 @@ public:
 
 //   /// Initialize this GFXDevice, optionally specifying a platform window to
 //   /// bind to.
-   virtual void init( const GFXVideoMode &mode, PlatformWindow *window = NULL ) = 0;
+   virtual void init( const GFXVideoMode &mode, PlatformWindow *window = nullptr ) = 0;
 
    /// Returns true if the scene has begun and its
    /// safe to make rendering calls.
@@ -569,10 +568,10 @@ public:
 
    /// Allocate a target for doing render to texture operations, with no
    /// depth/stencil buffer.
-   virtual GFXTextureTarget *allocRenderToTextureTarget()=0;
+   virtual GFXTextureTargetRef allocRenderToTextureTarget()=0;
    
    /// Allocate a target for a given window.
-   virtual GFXWindowTarget *allocWindowTarget(PlatformWindow *window)=0;
+   virtual GFXWindowTargetRef allocWindowTarget(PlatformWindow *window)=0;
    
    /// Store the current render target to restore later.
    void pushActiveRenderTarget();
@@ -581,10 +580,10 @@ public:
    void popActiveRenderTarget();
    
    /// Assign a new active render target.
-   void setActiveRenderTarget( GFXTarget *target );
+   void setActiveRenderTarget(GFXTargetRef &target);
    
    /// Returns the current active render target.
-   inline GFXTarget* getActiveRenderTarget() { return mCurrentRT.get(); }
+   inline GFXTargetRef getActiveRenderTarget() { return mCurrentRT; }
    
    ///@}
    
@@ -720,8 +719,8 @@ public:
    /// @{
 
    ///
-   void setTexture(U32 stage, GFXTextureObject *texture);
-   void setCubeTexture( U32 stage, GFXCubemap *cubemap );
+   void setTexture(U32 stage, GFXTexHandle texture);
+   void setCubeTexture(U32 stage, GFXCubemapHandle &cubemap);
    inline GFXTextureObject* getCurrentTexture( U32 stage ) { return mCurrentTexture[stage].get(); }
 
    /// @}

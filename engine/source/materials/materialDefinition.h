@@ -25,7 +25,7 @@
 #include "assets/assetPtr.h"
 #include "materials/baseMaterialDefinition.h"
 #include "collection/hashTable.h"
-#include "graphics/gfxTextureHandle.h"
+#include "graphics/gfxTextureObject.h"
 #include "graphics/gfxStructs.h"
 #include "graphics/gfxCubemap.h"
 //#include "console/dynamicTypes.h"

@@ -329,16 +329,16 @@ void GFXDevice::setGlobalAmbientColor(ColorF color)
 //-----------------------------------------------------------------------------
 // Set texture
 //-----------------------------------------------------------------------------
-void GFXDevice::setTexture(U32 stage, GFXTextureObject *texture)
+void GFXDevice::setTexture(U32 stage, GFXTexHandle texture)
 {
    AssertFatal(stage < getNumSamplers(), "GFXDevice::setTexture - out of range stage!");
 
    if (  mTexType[stage] == GFXTDT_Normal )
    {
-      if ( mTextureDirty[stage] && mNewTexture[stage].get() == texture )
+      if ( mTextureDirty[stage] && mNewTexture[stage] == texture )
           return;
        
-      if ( !mTextureDirty[stage] && mCurrentTexture[stage].get() == texture )
+      if ( !mTextureDirty[stage] && mCurrentTexture[stage] == texture )
           return;
    }
 
@@ -357,13 +357,13 @@ void GFXDevice::setTexture(U32 stage, GFXTextureObject *texture)
 //-----------------------------------------------------------------------------
 // Set cube texture
 //-----------------------------------------------------------------------------
-void GFXDevice::setCubeTexture( U32 stage, GFXCubemap *texture )
+void GFXDevice::setCubeTexture(U32 stage, GFXCubemapHandle &texture)
 {
    AssertFatal(stage < getNumSamplers(), "GFXDevice::setTexture - out of range stage!");
 
    if (  mTexType[stage] == GFXTDT_Cube &&
-         (  ( mTextureDirty[stage] && mNewCubemap[stage].getPointer() == texture ) ||
-            ( !mTextureDirty[stage] && mCurrentCubemap[stage].getPointer() == texture ) ) )
+         (  ( mTextureDirty[stage] && mNewCubemap[stage] == texture ) ||
+            ( !mTextureDirty[stage] && mCurrentCubemap[stage] == texture ) ) )
       return;
 
    mStateDirty = true;
@@ -429,7 +429,7 @@ void GFXDevice::popActiveRenderTarget()
    mRTStack.pop_back();
 }
 
-void GFXDevice::setActiveRenderTarget( GFXTarget *target )
+void GFXDevice::setActiveRenderTarget(GFXTargetRef &target)
 {
    AssertFatal( target,
                "GFXDevice::setActiveRenderTarget - must specify a render target!" );

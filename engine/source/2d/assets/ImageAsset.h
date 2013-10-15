@@ -23,20 +23,11 @@
 #ifndef _IMAGE_ASSET_H_
 #define _IMAGE_ASSET_H_
 
-#ifndef _ASSET_BASE_H_
 #include "assets/assetBase.h"
-#endif
-
-#ifndef _VECTOR_H_
 #include "collection/vector.h"
-#endif
-
-#ifndef _VECTOR2_H_
 #include "2d/core/Vector2.h"
-#endif
-
 #include "graphics/gfxDevice.h"
-#include "graphics/gfxTextureHandle.h"
+#include "graphics/gfxTextureObject.h"
 #include "graphics/gfxTextureManager.h"
 
 //-----------------------------------------------------------------------------
@@ -215,7 +206,7 @@ public:
     inline U32              getFrameCount( void ) const                     { return (U32)mFrames.size(); };
 
     inline const FrameArea& getImageFrameArea( U32 frame ) const            { clampFrame(frame); return mFrames[frame]; };
-    inline const void       bindImageTexture( void)                         { GFX->setTexture(0, getImageTexture().get()); };
+    inline const void       bindImageTexture( void)                         { GFX->setTexture(0, getImageTexture()); };
     //glBindTexture( GL_TEXTURE_2D, getImageTexture().getGLName() ); };
     
     virtual bool            isAssetValid( void ) const                      { return (mImageTextureHandle) ? true: false; }

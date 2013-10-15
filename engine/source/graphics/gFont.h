@@ -31,7 +31,7 @@
 #include "math/mRect.h"
 #include "io/resource/resourceManager.h"
 #include "graphics/gfxTextureManager.h"
-#include "graphics/gfxTextureHandle.h"
+#include "graphics/gfxTextureObject.h"
 #include <array>
 
 GFX_DeclareTextureProfile(GFXFontTextureProfile);

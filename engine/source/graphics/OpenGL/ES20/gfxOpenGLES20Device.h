@@ -48,8 +48,8 @@ public:
     
    GFXWindowTarget *gwt;   // single window render target;
     
-   virtual GFXTextureTarget *allocRenderToTextureTarget() = 0;
-   virtual GFXWindowTarget *allocWindowTarget(PlatformWindow *window) = 0;
+   virtual GFXTextureTargetRef allocRenderToTextureTarget() = 0;
+   virtual GFXWindowTargetRef allocWindowTarget(PlatformWindow *window) = 0;
    virtual void _updateRenderTargets() = 0;
 
    ///@}

@@ -23,12 +23,12 @@
 #ifndef _GFXCUBEMAP_H_
 #define _GFXCUBEMAP_H_
 
-#include "graphics/gfxTextureHandle.h"
+#include "graphics/gfxTextureObject.h"
 
 class GFXDevice;
 
 
-class GFXCubemap : public StrongRefBase, public GFXResource
+class GFXCubemap : public GFXResource
 {
    friend class GFXDevice;
    friend class GFXTextureManager;
@@ -70,17 +70,7 @@ public:
    virtual const String describeSelf() const;
 };
 
-
-/// A reference counted handle to a cubemap resource.
-class GFXCubemapHandle : public StrongRefPtr<GFXCubemap>
-{
-public:
-   GFXCubemapHandle() {}
-   GFXCubemapHandle( GFXCubemap *cubemap ) { StrongRefPtr<GFXCubemap>::set( cubemap ); }
-
-   /// Releases the texture handle.
-   void free() { StrongObjectRef::set( NULL ); }
-};
+typedef std::shared_ptr<GFXCubemap> GFXCubemapHandle;
 
 
 #endif // GFXCUBEMAP

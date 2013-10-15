@@ -525,7 +525,7 @@ void BatchRender::flushInternal( void )
     }
     else
     {
-        GFX->setTexture(0, mStrictOrderTextureHandle.get());
+        GFX->setTexture(0, mStrictOrderTextureHandle);
     }
 
     // Set blend mode.
@@ -547,7 +547,7 @@ void BatchRender::flushInternal( void )
     {
         // Bind the texture if not in wireframe mode.
         if ( !mWireframeMode )
-           _lightAndDraw( &mVertexBuffer, &mIndexBuffer, mStrictOrderTextureHandle.get());
+           _lightAndDraw( &mVertexBuffer, &mIndexBuffer, mStrictOrderTextureHandle );
       else
          _lightAndDraw(  &mVertexBuffer, &mIndexBuffer );
 
@@ -570,7 +570,8 @@ void BatchRender::flushInternal( void )
         {
             // Fetch indexedPrim
             indexedPrim* indexPrim = batchItr.second;
-           _lightAndDraw( indexPrim->verts, indexPrim->index, batchItr.first.get());
+            GFXTexHandle temp = batchItr.first;
+           _lightAndDraw( indexPrim->verts, indexPrim->index, temp);
 
            // Stats.
             mpDebugStats->batchDrawCallsSorted++;
@@ -599,7 +600,57 @@ void BatchRender::flushInternal( void )
     mIndexBuffer.clear();
 }
 
-void BatchRender::_lightAndDraw(Vector<GFXVertexPCT> *pVertexVector, Vector<U16> *pIndex, GFXTextureObject *handle)
+void BatchRender::_lightAndDraw(Vector<GFXVertexPCT> *pVertexVector, Vector<U16> *pIndex )
+{
+
+//   // vertex lighting
+//   for (int i = 0; i < mVertexBuffer.size(); i++)
+//   {
+//      LightInfo* light = nullptr;
+//      LightQuery query;
+//      query.init( SphereF( pVertexVector->at(i).point, 500.0) );
+//      query.getLights( &light, 1 );
+//      if (light != nullptr)
+//      {
+//         F32 len = (light->getPosition()-pVertexVector->at(i).point).len();
+//         F32 rad = light->getRange().x;
+//         F32 factor = 1.0-mClampF( (len-rad)/rad, 0.0, 1.0 );
+//         if (factor > 0.0)
+//         {
+//            U8 alpha = mVertexBuffer[i].color;
+//            ColorF lightColor = light[0].getColor()*factor;
+//            ColorF lightAdd = ColorF(mVertexBuffer[i].color) + lightColor;
+//            lightAdd.clamp();
+//            mVertexBuffer[i].color = lightAdd;
+//            mVertexBuffer[i].color.alpha = alpha;
+//         }
+//      }
+//   }
+
+    mTempVertBuffHandle.set(GFX, (U32)pVertexVector->size(), GFXBufferTypeVolatile, pVertexVector->address(), (U32)pIndex->size(), pIndex->address() );
+    GFX->setVertexBuffer( mTempVertBuffHandle );
+
+    // Draw the triangles.
+    if (mShader.isNull())
+    {
+        GFX->setupGenericShaders(GFXDevice::GSTexture);
+    }
+    else
+    {
+        MatrixF xform(GFX->getWorldMatrix());
+        xform *= GFX->getViewMatrix();
+        xform *= GFX->getProjectionMatrix();
+        xform.transpose();
+        GFX->setShader(mShader);
+        GFX->setShaderConstBuffer(mShaderConstBuffer);
+        mShaderConstBuffer->setSafe( mShader->getShaderConstHandle("$mvp_matrix"), xform );
+        mShaderConstBuffer->setSafe( mShader->getShaderConstHandle("$sampler2d_0"), 0);
+    }
+
+    GFX->drawIndexedPrimitive(GFXTriangleStrip, 0, 0, (U32)pVertexVector->size(), (U32)pIndex->size(), (U32)pIndex->size()-2);
+}
+
+void BatchRender::_lightAndDraw(Vector<GFXVertexPCT> *pVertexVector, Vector<U16> *pIndex, GFXTexHandle &handle)
 {
    // Bind the texture if not in wireframe mode.
    if ( handle )

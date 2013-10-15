@@ -11,6 +11,7 @@
 #include "memory/safeDelete.h"
 #include "./platformCursorController.h"
 #include "./windowInputGenerator.h"
+#include "gfxTarget.h"
 
 //forward decl's
 class PlatformWindowManager;
@@ -124,7 +125,7 @@ public:
    ///
    /// By setting window targets from different windows, we can effect
    /// rendering to multiple windows from a single device.
-   virtual GFXWindowTarget *getGFXTarget()=0;
+   virtual GFXWindowTargetRef getGFXTarget()=0;
 
    /// Set the video mode for this window.
    virtual void setVideoMode(const GFXVideoMode &mode)=0;

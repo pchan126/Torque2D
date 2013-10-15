@@ -58,20 +58,20 @@ GFXTextureManager::GFXTextureManager()
     mTextureResidentWasteSize = 0;
     mTextureResidentCount = 0;
 
-    mListHead = mListTail = nullptr;
+//    mListHead = mListTail = nullptr;
    mTextureManagerState = GFXTextureManager::NotInitialized;
 
-   // Set up the hash table
-   mHashCount = 1023;
-   mHashTable = new GFXTextureObject *[mHashCount];
-   for(U32 i = 0; i < mHashCount; i++)
-      mHashTable[i] = nullptr;
+//   // Set up the hash table
+//   mHashCount = 1023;
+//   mHashTable = new GFXTextureObject *[mHashCount];
+//   for(U32 i = 0; i < mHashCount; i++)
+//      mHashTable[i] = nullptr;
 }
 
 GFXTextureManager::~GFXTextureManager()
 {
-   if( mHashTable )
-      SAFE_DELETE_ARRAY( mHashTable );
+//   if( mHashTable )
+//      SAFE_DELETE_ARRAY( mHashTable );
 
 //   mCubemapTable.clear();
 }

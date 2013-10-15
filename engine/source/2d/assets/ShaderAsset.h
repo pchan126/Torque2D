@@ -9,7 +9,6 @@
 #include "collection/vector.h"
 #include "2d/core/Vector2.h"
 #include "graphics/gfxDevice.h"
-#include "graphics/gfxTextureHandle.h"
 #include "graphics/gfxTextureManager.h"
 
 //-----------------------------------------------------------------------------

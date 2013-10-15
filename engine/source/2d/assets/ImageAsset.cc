@@ -949,8 +949,7 @@ void ImageAsset::calculateImage( void )
             mImageTextureHandle->refresh();
 
     // Get image texture.
-    mImageTextureHandle = TEXMGR->createTexture(mImageFile, &GFXImageAssetTextureProfile);
-    mImageTextureHandle->mDebugDescription = "mImageTextureHandle";
+    mImageTextureHandle = TEXMGR->createTexture(mImageFile, &GFXImageAssetTextureProfile );
 
     // Is the texture valid?
     if ( !mImageTextureHandle )

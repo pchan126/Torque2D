@@ -27,7 +27,7 @@
 #include "2d/core/Utility.h"
 #include "2d/scene/DebugStats.h"
 #include "graphics/gfxDevice.h"
-#include "graphics/gfxTextureHandle.h"
+#include "graphics/gfxTextureObject.h"
 #include "collection/hashTable.h"
 #include "graphics/color.h"
 #include "2d/assets/ShaderAsset.h"
@@ -320,7 +320,8 @@ private:
     /// Flush (render) any pending batches.
     void flushInternal( void );
 
-   void _lightAndDraw(Vector<GFXVertexPCT> *pVertexVector, Vector<U16> *pIndex, GFXTextureObject *handle = nullptr);
+   void _lightAndDraw(Vector<GFXVertexPCT> *pVertexVector, Vector<U16> *pIndex );
+   void _lightAndDraw(Vector<GFXVertexPCT> *pVertexVector, Vector<U16> *pIndex, GFXTexHandle &handle );
 
    /// Find texture batch.
     indexedPrim* findTextureBatch( GFXTexHandle &handle );

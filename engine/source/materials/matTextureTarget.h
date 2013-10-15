@@ -25,7 +25,7 @@
 
 #include "collection/hashTable.h"
 #include "sim/refBase.h"
-#include "graphics/gfxTextureHandle.h"
+#include "graphics/gfxTextureObject.h"
 #include "math/mRect.h"
 #include "graphics/gfxStateBlock.h"
 #include "delegates/delegate.h"
