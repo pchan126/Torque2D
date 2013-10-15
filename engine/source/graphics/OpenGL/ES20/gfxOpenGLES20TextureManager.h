@@ -25,15 +25,15 @@ protected:
 //    virtual GFXTextureObject* createTexture(  const String &path,
 //                                            GFXTextureProfile *profile ) { };
 
-    virtual GFXTextureObject* createTexture( GBitmap *bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp );
+    virtual std::shared_ptr<GFXTextureObject> createTexture(GBitmap *bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp);
 
-    virtual GFXTextureObject* createTexture(  U32 width, U32 height, void *pixels, GFXFormat format, GFXTextureProfile *profile );
+    virtual std::shared_ptr<GFXTextureObject> createTexture(U32 width, U32 height, void *pixels, GFXFormat format, GFXTextureProfile *profile);
     
-    GFXTextureObject* _createTexture(  GBitmap *bmp,
-                                      const String &resourceName,
-                                      GFXTextureProfile *profile,
-                                      bool deleteBmp,
-                                      GFXTextureObject *inObj );
+    shared_ptr<GFXTextureObject> _createTexture(GBitmap *bmp,
+            const String &resourceName,
+            GFXTextureProfile *profile,
+            bool deleteBmp,
+            GFXTextureObject *inObj);
     
    GFXTextureObject *_createTextureObject(   U32 height,
                                              U32 width,
@@ -45,10 +45,10 @@ protected:
                                              S32 antialiasLevel = 0,
                                              GFXTextureObject *inTex = NULL );
     
-   bool _loadTexture(GFXTextureObject *texture, GBitmap *bmp);
-   bool _loadTexture(GFXTextureObject *texture, void *raw);
-   bool _refreshTexture(GFXTextureObject *texture);
-   bool _freeTexture(GFXTextureObject *texture, bool zombify = false);
+   bool _loadTexture(GFXTexHandle &texture, GBitmap *bmp);
+   bool _loadTexture(GFXTexHandle &texture, void *raw);
+   bool _refreshTexture(GFXTexHandle &texture);
+   bool _freeTexture(GFXTexHandle &texture, bool zombify = false);
 
    /// Creates internal GL texture
    void innerCreateTexture(GFXOpenGLES20TextureObject *obj,

@@ -24,32 +24,32 @@ public:
 protected:
 
    // GFXTextureManager
-    virtual GFXTextureObject *createTexture(  const String &fullPath,
-                                            GFXTextureProfile *profile );
+    virtual std::shared_ptr<GFXTextureObject> createTexture(const String &fullPath,
+           GFXTextureProfile *profile);
 
-    virtual GFXTextureObject* createTexture( GBitmap *bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp );
+    virtual std::shared_ptr<GFXTextureObject> createTexture(GBitmap *bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp);
 
-   GFXTextureObject* _createTexture(  GBitmap *bmp,
-                                      const String &resourceName,
-                                      GFXTextureProfile *profile,
-                                      bool deleteBmp,
-                                      GFXTextureObject *inObj );
+   shared_ptr<GFXTextureObject> _createTexture(GBitmap *bmp,
+           const String &resourceName,
+           GFXTextureProfile *profile,
+           bool deleteBmp,
+           GFXTextureObject *inObj);
     
-   GFXTextureObject *_createTextureObject(   U32 height,
-                                             U32 width,
-                                             U32 depth,
-                                             GFXFormat format,
-                                             GFXTextureProfile *profile,
-                                             U32 numMipLevels,
-                                             bool forceMips = false,
-                                             S32 antialiasLevel = 0,
-                                             GFXTextureObject *inTex = nullptr,
-                                             void* data = nullptr);
+   GFXTexHandle _createTextureObject(U32 height,
+           U32 width,
+           U32 depth,
+           GFXFormat format,
+           GFXTextureProfile *profile,
+           U32 numMipLevels,
+           bool forceMips = false,
+           S32 antialiasLevel = 0,
+           GFXTextureObject *inTex = nullptr,
+           void *data = nullptr);
     
-   bool _loadTexture(GFXTextureObject *texture, GBitmap *bmp);
-   bool _loadTexture(GFXTextureObject *texture, void *raw);
-   bool _refreshTexture(GFXTextureObject *texture);
-   bool _freeTexture(GFXTextureObject *texture, bool zombify = false);
+   bool _loadTexture(GFXTexHandle &texture, GBitmap *bmp);
+   bool _loadTexture(GFXTexHandle &texture, void *raw);
+   bool _refreshTexture(GFXTexHandle &texture);
+   bool _freeTexture(GFXTexHandle &texture, bool zombify = false);
 
 private:
    friend class GFXOpenGLES20iOSTextureObject;

@@ -30,7 +30,6 @@
 #include "sim/simBase.h"
 #include "platform/threads/mutex.h"
 #include "delegates/delegateSignal.h"
-#include "gfxTextureManager.h"
 #include "gfxDevice.h"
 
 class Point2I;
@@ -38,6 +37,9 @@ class GFXDevice;
 class GFXTextureProfile;
 class GBitmap;
 class RectI;
+class GFXTextureObject;
+
+typedef std::shared_ptr<GFXTextureObject> GFXTexHandle;
 
 /// Contains information on a locked region of a texture.
 ///
@@ -220,9 +222,7 @@ protected:
     StringTableEntry    mTextureKey;
 
     bool                mClamp;
-    
-//    TextureHandle::TextureHandleType mHandleType;
-    
+
 public:
     
     inline StringTableEntry getTextureKey( void ) { return mTextureKey; }

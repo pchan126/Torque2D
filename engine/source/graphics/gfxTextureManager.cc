@@ -186,7 +186,7 @@ void GFXTextureManager::cleanupPool()
    }
 }
 
-void GFXTextureManager::requestDeleteTexture( GFXTextureObject *texture )
+void GFXTextureManager::requestDeleteTexture(GFXTexHandle &texture)
 {
    assert(texture != nullptr); 
 
@@ -233,7 +233,7 @@ void GFXTextureManager::cleanupCache( U32 secondsToLive )
    }
 }
 
-GFXTextureObject *GFXTextureManager::_lookupTexture( const char *hashName, const GFXTextureProfile *profile  )
+GFXTexHandle GFXTextureManager::_lookupTexture(const char *hashName, const GFXTextureProfile *profile)
 {
    GFXTextureObject *ret = find( hashName );
 
@@ -243,7 +243,7 @@ GFXTextureObject *GFXTextureManager::_lookupTexture( const char *hashName, const
 }
 
 
-GFXTextureObject *GFXTextureManager::createTexture( GBitmap *bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp )
+std::shared_ptr<GFXTextureObject> GFXTextureManager::createTexture(GBitmap *bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp)
 {
    AssertFatal(bmp, "GFXTextureManager::createTexture() - Got NULL bitmap!");
 
@@ -259,11 +259,11 @@ GFXTextureObject *GFXTextureManager::createTexture( GBitmap *bmp, const String &
    return _createTexture( bmp, resourceName, profile, deleteBmp, NULL );
 }
 
-GFXTextureObject *GFXTextureManager::_createTexture(  GBitmap *bmp, 
-                                                      const String &resourceName, 
-                                                      GFXTextureProfile *profile, 
-                                                      bool deleteBmp,
-                                                      GFXTextureObject *inObj )
+std::shared_ptr<GFXTextureObject> GFXTextureManager::_createTexture(GBitmap *bmp,
+        const String &resourceName,
+        GFXTextureProfile *profile,
+        bool deleteBmp,
+        GFXTextureObject *inObj)
 {
    PROFILE_SCOPE( GFXTextureManager_CreateTexture_Bitmap );
    
@@ -413,10 +413,10 @@ GFXTextureObject *GFXTextureManager::_createTexture(  GBitmap *bmp,
 }
 
 
-GFXTextureObject *GFXTextureManager::createTexture( const String &path, GFXTextureProfile *profile )
+GFXTexHandle GFXTextureManager::createTexture(const String &path, GFXTextureProfile *profile)
 {
     GBitmap *bitmap;
-    GFXTextureObject *retTexObj = nullptr;
+    GFXTexHandle retTexObj = nullptr;
 
     bitmap = GBitmap::load( path );
     if( bitmap != nullptr )
@@ -430,7 +430,7 @@ GFXTextureObject *GFXTextureManager::createTexture( const String &path, GFXTextu
 
 
 
-GFXTextureObject *GFXTextureManager::createTexture(  U32 width, U32 height, void *pixels, GFXFormat format, GFXTextureProfile *profile )
+GFXTexHandle GFXTextureManager::createTexture(U32 width, U32 height, void *pixels, GFXFormat format, GFXTextureProfile *profile)
 {
     // For now, stuff everything into a GBitmap and pass it off... This may need to be revisited -- BJG
     GBitmap *bmp = new GBitmap(width, height, 0, format);
@@ -439,7 +439,7 @@ GFXTextureObject *GFXTextureManager::createTexture(  U32 width, U32 height, void
     return createTexture( bmp, String::EmptyString, profile, true );
 }
 
-GFXTextureObject *GFXTextureManager::createTexture( U32 width, U32 height, GFXFormat format, GFXTextureProfile *profile, U32 numMipLevels, S32 antialiasLevel )
+GFXTexHandle GFXTextureManager::createTexture(U32 width, U32 height, GFXFormat format, GFXTextureProfile *profile, U32 numMipLevels, S32 antialiasLevel)
 {
     // Deal with sizing issues...
     U32 localWidth = width;
@@ -454,8 +454,8 @@ GFXTextureObject *GFXTextureManager::createTexture( U32 width, U32 height, GFXFo
     _validateTexParams( localWidth, localHeight, profile, numMips, checkFmt );
     
     AssertFatal( checkFmt == format, "Anonymous texture didn't get the format it wanted." );
-    
-    GFXTextureObject *outTex = nullptr;
+
+    GFXTexHandle outTex = nullptr;
     
     // If this is a pooled profile then look there first.
     if ( profile->isPooled() )
@@ -498,17 +498,17 @@ GFXTextureObject *GFXTextureManager::createTexture( U32 width, U32 height, GFXFo
     return outTex;
 }
 
-GFXTextureObject *GFXTextureManager::createTexture(   U32 width,
-                                                   U32 height,
-                                                   U32 depth,
-                                                   void *pixels,
-                                                   GFXFormat format,
-                                                   GFXTextureProfile *profile )
+GFXTexHandle GFXTextureManager::createTexture(U32 width,
+        U32 height,
+        U32 depth,
+        void *pixels,
+        GFXFormat format,
+        GFXTextureProfile *profile)
 {
     PROFILE_SCOPE( GFXTextureManager_CreateTexture_3D );
     
     // Create texture...
-    GFXTextureObject *ret = _createTextureObject( height, width, depth, format, profile, 1 );
+    GFXTexHandle ret = _createTextureObject( height, width, depth, format, profile, 1 );
     
     if(!ret)
     {
@@ -535,16 +535,16 @@ GFXTextureObject *GFXTextureManager::createTexture(   U32 width,
     return ret;
 }
 
-GFXTextureObject* GFXTextureManager::_findPooledTexture(  U32 width,
-                                                         U32 height, 
-                                                         GFXFormat format, 
-                                                         GFXTextureProfile *profile,
-                                                         U32 numMipLevels,
-                                                         S32 antialiasLevel )
+GFXTexHandle GFXTextureManager::_findPooledTexture(U32 width,
+        U32 height,
+        GFXFormat format,
+        GFXTextureProfile *profile,
+        U32 numMipLevels,
+        S32 antialiasLevel)
 {
    PROFILE_SCOPE( GFXTextureManager_FindPooledTexure );
 
-   GFXTextureObject *outTex;
+    GFXTexHandle outTex;
 
    // First see if we have a free one in the pool.
    TexturePoolMap::iterator iter = mTexturePool.find( profile );
@@ -555,7 +555,7 @@ GFXTextureObject* GFXTextureManager::_findPooledTexture(  U32 width,
       // If the reference count is 1 then we're the only
       // ones holding on to this texture and we can hand
       // it out if the size matches... else its in use.
-      if ( outTex->getRefCount() != 1 )
+      if ( outTex.unique() != 1 )
          continue;
 
       // Check for a match... if so return it.  The assignment
@@ -570,10 +570,10 @@ GFXTextureObject* GFXTextureManager::_findPooledTexture(  U32 width,
          return outTex;
    }
 
-   return NULL;
+   return nullptr;
 }
 
-void GFXTextureManager::hashInsert( GFXTextureObject *object )
+void GFXTextureManager::hashInsert(GFXTexHandle &object)
 {
    if ( object->mTextureLookupName.isEmpty() )
       return;
@@ -583,13 +583,13 @@ void GFXTextureManager::hashInsert( GFXTextureObject *object )
    mHashTable[key] = object;
 }
 
-void GFXTextureManager::hashRemove( GFXTextureObject *object )
+void GFXTextureManager::hashRemove( GFXTexHandle &object )
 {
    if ( object->mTextureLookupName.isEmpty() )
       return;
 
    U32 key = object->mTextureLookupName.getHashCaseInsensitive() % mHashCount;
-   GFXTextureObject **walk = &mHashTable[key];
+   std::shared_ptr<GFXTextureObject> *walk = &mHashTable[key];
    while(*walk)
    {
       if(*walk == object)
@@ -601,7 +601,7 @@ void GFXTextureManager::hashRemove( GFXTextureObject *object )
    }
 }
 
-GFXTextureObject* GFXTextureManager::find( const String &name )
+std::shared_ptr<GFXTextureObject> GFXTextureManager::find(const String &name)
 {
    if ( name.isEmpty() )
       return NULL;
@@ -617,18 +617,18 @@ GFXTextureObject* GFXTextureManager::find( const String &name )
    return walk;
 }
 
-void GFXTextureManager::freeTexture(GFXTextureObject *texture, bool zombify)
+void GFXTextureManager::freeTexture(GFXTexHandle &texture, bool zombify)
 {
    // Ok, let the backend deal with it.
    _freeTexture(texture, zombify);
 }
 
-void GFXTextureManager::refreshTexture(GFXTextureObject *texture)
+void GFXTextureManager::refreshTexture(GFXTexHandle &texture)
 {
    _refreshTexture(texture);
 }
 
-void GFXTextureManager::_linkTexture( GFXTextureObject *obj )
+void GFXTextureManager::_linkTexture( GFXTexHandle obj )
 {
    // info for the profile
    GFXTextureProfile::updateStatsForCreation(obj);
@@ -647,7 +647,7 @@ void GFXTextureManager::_linkTexture( GFXTextureObject *obj )
    mListTail = obj;
 }
 
-void GFXTextureManager::deleteTexture( GFXTextureObject *texture )
+void GFXTextureManager::deleteTexture(GFXTexHandle &texture)
 {
    if ( mTextureManagerState == GFXTextureManager::Dead )
       return;
@@ -807,9 +807,9 @@ void GFXTextureManager::releaseCubemap( GFXCubemap *cubemap )
 
 void GFXTextureManager::reloadTextures()
 {
-   GFXTextureObject *tex = mListHead;
+    GFXTexHandle tex = mListHead;
 
-   while ( tex != NULL ) 
+   while ( tex != nullptr )
    {
       const String path( tex->mPath );
       if ( !path.isEmpty() )

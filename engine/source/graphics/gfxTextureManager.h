@@ -29,7 +29,7 @@
 #include "collection/hashTable.h"
 #include "sim/simBase.h"
 #include "delegates/delegateSignal.h"
-#include "graphics/gfxTextureHandle.h"
+#include <memory>
 
 class GFXCubemap;
 
@@ -68,40 +68,40 @@ public:
    ///
    static U32 getTextureDownscalePower( GFXTextureProfile *profile );
 
-   virtual GFXTextureObject *createTexture(  GBitmap *bmp,
-      const String &resourceName,
-      GFXTextureProfile *profile,
-      bool deleteBmp);
+   virtual GFXTexHandle createTexture(GBitmap *bmp,
+           const String &resourceName,
+           GFXTextureProfile *profile,
+           bool deleteBmp);
 
-   virtual GFXTextureObject *createTexture(  const String &path,
-      GFXTextureProfile *profile );
+   virtual GFXTexHandle createTexture(const String &path,
+           GFXTextureProfile *profile);
 
-   virtual GFXTextureObject *createTexture(  U32 width,
-      U32 height,
-      void *pixels,
-      GFXFormat format,
-      GFXTextureProfile *profile);
+   virtual GFXTexHandle createTexture(U32 width,
+           U32 height,
+           void *pixels,
+           GFXFormat format,
+           GFXTextureProfile *profile);
 
-   virtual GFXTextureObject *createTexture(  U32 width,
-      U32 height,
-      U32 depth,
-      void *pixels,
-      GFXFormat format,
-      GFXTextureProfile *profile );
+   virtual GFXTexHandle createTexture(U32 width,
+           U32 height,
+           U32 depth,
+           void *pixels,
+           GFXFormat format,
+           GFXTextureProfile *profile);
 
-   virtual GFXTextureObject *createTexture(  U32 width,
-      U32 height,
-      GFXFormat format,
-      GFXTextureProfile *profile,
-      U32 numMipLevels,
-      S32 antialiasLevel);
+   virtual GFXTexHandle createTexture(U32 width,
+           U32 height,
+           GFXFormat format,
+           GFXTextureProfile *profile,
+           U32 numMipLevels,
+           S32 antialiasLevel);
 
-   void deleteTexture( GFXTextureObject *texture );
-   void reloadTexture( GFXTextureObject *texture );
+   void deleteTexture(GFXTexHandle &texture);
+   void reloadTexture(GFXTexHandle &texture);
 
    /// Request that the texture be deleted which will
    /// either occur immediately or delayed if its cached.
-   void requestDeleteTexture( GFXTextureObject *texture );
+   void requestDeleteTexture(GFXTexHandle &texture);
 
    /// @name Texture Necromancy
    /// 
@@ -157,22 +157,22 @@ protected:
    /// 
    static S32 smTextureReductionLevel;
 
-   GFXTextureObject *mListHead;
-   GFXTextureObject *mListTail;
+   GFXTexHandle mListHead;
+   GFXTexHandle mListTail;
 
    // We have a hash table for fast texture lookups
-   GFXTextureObject **mHashTable;
+   GFXTexHandle *mHashTable;
    U32                mHashCount;
-   GFXTextureObject *find( const String &name );
-   void              hashInsert(GFXTextureObject *object);
-   void              hashRemove(GFXTextureObject *object);
+   GFXTexHandle find( const String &name );
+   void              hashInsert(GFXTexHandle &object);
+   void              hashRemove(GFXTexHandle &object);
 
    // The cache of loaded cubemap textures.
 //   typedef HashTable<String,GFXCubemap*> CubemapTable;
 //   CubemapTable mCubemapTable;
 
    /// The textures waiting to be deleted.
-   Vector<GFXTextureObject*> mToDelete;
+   Vector<GFXTexHandle> mToDelete;
 
    enum TextureManagerState
    {
@@ -187,7 +187,7 @@ protected:
    } mTextureManagerState;
 
    /// The texture pool collection type.
-   typedef HashTable<GFXTextureProfile*,StrongRefPtr<GFXTextureObject> > TexturePoolMap;
+   typedef HashTable<GFXTextureProfile*,GFXTexHandle > TexturePoolMap;
 
    /// All the allocated texture pool textures.
    TexturePoolMap mTexturePool;
@@ -199,25 +199,25 @@ protected:
    /// Returns a free texture of the requested attributes from
    /// from the shared texture pool.  It returns NULL if no match
    /// is found.
-   GFXTextureObject *_findPooledTexture(   U32 width,
-                                          U32 height, 
-                                          GFXFormat format, 
-                                          GFXTextureProfile *profile,
-                                          U32 numMipLevels,
-                                          S32 antialiasLevel );
+   GFXTexHandle _findPooledTexture(U32 width,
+           U32 height,
+           GFXFormat format,
+           GFXTextureProfile *profile,
+           U32 numMipLevels,
+           S32 antialiasLevel);
 
-   GFXTextureObject *_createTexture(   GBitmap *bmp,
-                                       const String &resourceName,
-                                       GFXTextureProfile *profile,
-                                       bool deleteBmp,
-                                       GFXTextureObject *inObj );
+    GFXTexHandle _createTexture(GBitmap *bmp,
+           const String &resourceName,
+           GFXTextureProfile *profile,
+           bool deleteBmp,
+           GFXTextureObject *inObj);
 
    /// Frees the API handles to the texture, for D3D this is a release call
    ///
    /// @note freeTexture MUST NOT DELETE THE TEXTURE OBJECT
-   virtual void freeTexture( GFXTextureObject *texture, bool zombify = false );
+   virtual void freeTexture(GFXTexHandle &texture, bool zombify = false);
 
-   virtual void refreshTexture( GFXTextureObject *texture );
+   virtual void refreshTexture(GFXTexHandle &texture);
 
    /// @group Internal Texture Manager Interface
    ///
@@ -249,35 +249,35 @@ protected:
    ///                        If NULL create the full mip chain
    /// @param  antialiasLevel, Use GFXTextureManager::AA_MATCH_BACKBUFFER to match the backbuffer settings (for render targets that want to share
    ///                         the backbuffer z buffer.  0 for no antialiasing, > 0 for levels that match the GFXVideoMode struct.
-   virtual GFXTextureObject *_createTextureObject( U32 height, 
-                                                   U32 width, 
-                                                   U32 depth, 
-                                                   GFXFormat format, 
-                                                   GFXTextureProfile *profile, 
-                                                   U32 numMipLevels, 
-                                                   bool forceMips = false, 
-                                                   S32 antialiasLevel = 0, 
-                                                   GFXTextureObject *inTex = nullptr,
-                                                   void* data = nullptr) = 0;
+   virtual GFXTexHandle _createTextureObject(U32 height,
+           U32 width,
+           U32 depth,
+           GFXFormat format,
+           GFXTextureProfile *profile,
+           U32 numMipLevels,
+           bool forceMips = false,
+           S32 antialiasLevel = 0,
+           GFXTextureObject *inTex = nullptr,
+           void *data = nullptr) = 0;
 
    /// Load data into a texture from a GBitmap using the internal API.
-   virtual bool _loadTexture(GFXTextureObject *texture, GBitmap *bmp)=0;
+   virtual bool _loadTexture(GFXTexHandle &texture, GBitmap *bmp)=0;
 
    /// Load data into a texture from a raw buffer using the internal API.
    ///
    /// Note that the size of the buffer is assumed from the parameters used
    /// for this GFXTextureObject's _createTexture call.
-   virtual bool _loadTexture(GFXTextureObject *texture, void *raw)=0;
+   virtual bool _loadTexture(GFXTexHandle &texture, void *raw)=0;
 
    /// Refresh a texture using the internal API.
-   virtual bool _refreshTexture(GFXTextureObject *texture)=0;
+   virtual bool _refreshTexture(GFXTexHandle &texture)=0;
 
    /// Free a texture (but do not delete the GFXTextureObject) using the internal
    /// API.
    ///
    /// This is only called during zombification for textures which need it, so you
    /// don't need to do any internal safety checks.
-   virtual bool _freeTexture(GFXTextureObject *texture, bool zombify=false)=0;
+   virtual bool _freeTexture(GFXTexHandle &texture, bool zombify = false)=0;
 
    /// @}
 
@@ -289,7 +289,7 @@ protected:
       U32 &inOutNumMips, GFXFormat &inOutFormat );
 
    // New texture manager methods for the cleanup work:
-   GFXTextureObject *_lookupTexture( const char *filename, const GFXTextureProfile *profile  );
+   GFXTexHandle _lookupTexture(const char *filename, const GFXTextureProfile *profile);
 
    /// The texture event signal type.
    typedef Signal<void(GFXTexCallbackCode code)> EventSignal;
@@ -363,7 +363,7 @@ inline void GFXTextureManager::addEventDelegate( T obj, U func )
    smEventSignal.notify( d ); 
 }
 
-inline void GFXTextureManager::reloadTexture( GFXTextureObject *texture )
+inline void GFXTextureManager::reloadTexture(GFXTexHandle &texture)
 {
    refreshTexture( texture );
 }

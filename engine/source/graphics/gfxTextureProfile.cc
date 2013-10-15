@@ -126,7 +126,7 @@ void GFXTextureProfile::updateStatsForCreation(GFXTextureObject *t)
    }
 }
 
-void GFXTextureProfile::updateStatsForDeletion(GFXTextureObject *t)
+void GFXTextureProfile::updateStatsForDeletion(GFXTexHandle &t)
 {
    if(t->mProfile)
    {

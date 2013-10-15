@@ -27,6 +27,7 @@
 #include "string/str.h"
 #endif
 #include "sim/simBase.h"
+#include "gfxTextureObject.h"
 
 
 class GFXTextureObject;
@@ -138,7 +139,7 @@ public:
    static void init();
    static GFXTextureProfile *find(const String &name);
    static void updateStatsForCreation(GFXTextureObject *t);
-   static void updateStatsForDeletion(GFXTextureObject *t);
+   static void updateStatsForDeletion(GFXTexHandle &t);
 
    /// Collects the total stats for all the profiles which
    /// include any of the flag bits.
