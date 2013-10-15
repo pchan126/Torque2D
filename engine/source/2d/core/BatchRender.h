@@ -71,7 +71,7 @@ private:
         Vector<U16>* index;
     };
 
-    typedef HashMap<std::shared_ptr<GFXTextureObject>, indexedPrim*> textureBatchType;
+    typedef HashMap<GFXTexHandle, indexedPrim*> textureBatchType;
     Vector< indexedPrim* > mIndexVectorPool;
     textureBatchType    mTextureBatchMap;
 
@@ -244,10 +244,10 @@ public:
             std::shared_ptr<GFXTextureObject>& texture,
             const ColorF& color = ColorF(-1.0f, -1.0f, -1.0f) );
 
-    void SubmitTriangleStrip( const Vector<GFXVertexPCT> verts, std::shared_ptr<GFXTextureObject>& texture);
+    void SubmitTriangleStrip( const Vector<GFXVertexPCT> verts, GFXTexHandle &texture);
 
     void SubmitIndexedTriangleStrip(const Vector<GFXVertexPCT> &verts,
-                                   std::shared_ptr<GFXTextureObject> &texture,
+                                   GFXTexHandle &texture,
                                    const Vector<U16> &indices);
 
    /// Submit a quad for batching.
@@ -257,7 +257,7 @@ public:
     ///   | \ |
     ///  0| _\|1
     void SubmitQuad( const std::array< GFXVertexPCT, 4>,
-                     std::shared_ptr<GFXTextureObject>& texture );
+                     GFXTexHandle& texture );
    
     void SubmitQuad(
             const Vector2& vertexPos0,
@@ -268,7 +268,7 @@ public:
             const Vector2& texturePos1,
             const Vector2& texturePos2,
             const Vector2& texturePos3,
-            std::shared_ptr<GFXTextureObject>& texture,
+            GFXTexHandle &texture,
             const ColorF& color = ColorF(1.0f, 1.0f, 1.0f) );
 
     /// Render a quad immediately without affecting current batch.
@@ -320,7 +320,7 @@ private:
     /// Flush (render) any pending batches.
     void flushInternal( void );
 
-   void _lightAndDraw(Vector<GFXVertexPCT> *pVertexVector, Vector<U16> *pIndex, GFXTexHandle &handle = GFXTexHandle(nullptr));
+   void _lightAndDraw(Vector<GFXVertexPCT> *pVertexVector, Vector<U16> *pIndex, GFXTextureObject *handle = nullptr);
 
    /// Find texture batch.
     indexedPrim* findTextureBatch( GFXTexHandle &handle );

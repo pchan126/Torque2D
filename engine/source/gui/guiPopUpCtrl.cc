@@ -604,17 +604,17 @@ void GuiPopUpMenuCtrl::setBitmap(const char *name)
 
       dStrcpy(p, "_n");
 //      mTextureNormal = TextureHandle(buffer, TextureHandle::BitmapTexture, true);
-       mTextureNormal = std::shared_ptr<GFXTextureObject>( (StringTableEntry)buffer, &GFXDefaultGUIProfile, avar("%s() - mTextureNormal (line %d)", __FUNCTION__, __LINE__) );
+       mTextureNormal = GFXTextureObject::create( StringTable->insert(buffer), &GFXDefaultGUIProfile, avar("%s() - mTextureNormal (line %d)", __FUNCTION__, __LINE__) );
 
       dStrcpy(p, "_d");
-       mTextureDepressed = std::shared_ptr<GFXTextureObject>( (StringTableEntry)buffer, &GFXDefaultGUIProfile, avar("%s() - mTextureDepressed (line %d)", __FUNCTION__, __LINE__) );
+       mTextureDepressed = GFXTextureObject::create( StringTable->insert(buffer), &GFXDefaultGUIProfile, avar("%s() - mTextureDepressed (line %d)", __FUNCTION__, __LINE__) );
        if (!mTextureDepressed)
          mTextureDepressed = mTextureNormal;
    }
    else
    {
-      mTextureNormal = NULL;
-      mTextureDepressed = NULL;
+      mTextureNormal = nullptr;
+      mTextureDepressed = nullptr;
    }
    setUpdate();
 }   

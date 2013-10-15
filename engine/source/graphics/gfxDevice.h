@@ -339,9 +339,9 @@ protected:
       GFXTDT_Normal,
       GFXTDT_Cube
    };
-   
-   std::shared_ptr<GFXTextureObject> mCurrentTexture[TEXTURE_STAGE_COUNT];
-   std::shared_ptr<GFXTextureObject> mNewTexture[TEXTURE_STAGE_COUNT];
+
+   GFXTexHandle mCurrentTexture[TEXTURE_STAGE_COUNT];
+   GFXTexHandle mNewTexture[TEXTURE_STAGE_COUNT];
    GFXCubemapHandle mCurrentCubemap[TEXTURE_STAGE_COUNT];
    GFXCubemapHandle mNewCubemap[TEXTURE_STAGE_COUNT];
 
@@ -720,7 +720,7 @@ public:
    /// @{
 
    ///
-   void setTexture(U32 stage, GFXTexHandle &texture);
+   void setTexture(U32 stage, GFXTextureObject *texture);
    void setCubeTexture( U32 stage, GFXCubemap *cubemap );
    inline GFXTextureObject* getCurrentTexture( U32 stage ) { return mCurrentTexture[stage].get(); }
 

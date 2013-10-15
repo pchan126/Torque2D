@@ -45,13 +45,13 @@ U32 GuiImageList::Insert( const char* texturePath , GFXTextureProfile *profile, 
   t->TexturePath = StringTable->insert(texturePath);
   if ( *t->TexturePath ) 
   {
-    t->Handle = std::shared_ptr<GFXTextureObject>(t->TexturePath, profile, "");
+    t->Handle = GFXTextureObject::create(t->TexturePath, profile, "");
 
     if ( t->Handle )
     {
-      t->Object = (GFXTextureObject *) t->Handle;
+      t->Object = (GFXTextureObject *) t->Handle.get();
 
-      if(t->Object == NULL) 
+      if(t->Object == nullptr)
       { 
         return -1;
       }

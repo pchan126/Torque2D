@@ -27,11 +27,12 @@ class GFXTarget;
 class GFXWindowTarget;
 class GFXTextureTarget;
 
+#include <memory>
+
 typedef std::shared_ptr<GFXTarget> GFXTargetRef;
 typedef std::shared_ptr<GFXWindowTarget> GFXWindowTargetRef;
 typedef std::shared_ptr<GFXTextureTarget> GFXTextureTargetRef;
 
-#include "sim/refBase.h"
 #include "graphics/gfxEnums.h"
 #include "graphics/gfxResource.h"
 #include "math/mPoint.h"

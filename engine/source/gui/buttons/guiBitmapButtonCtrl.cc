@@ -146,22 +146,22 @@ void GuiBitmapButtonCtrl::setBitmap(const String& name)
        static String s_h = "_h";
        static String s_i = "_i";
        
-       mTextureNormal = std::shared_ptr<GFXTextureObject>( baseName, &GFXDefaultPersistentProfile, avar("mTextureNormal"));
+       mTextureNormal = GFXTextureObject::create( baseName, &GFXDefaultPersistentProfile, avar("mTextureNormal"));
       if (!mTextureNormal)
       {
-          mTextureNormal = std::shared_ptr<GFXTextureObject>( baseName + s_n, &GFXDefaultPersistentProfile, avar("mTextureNormal"));
+          mTextureNormal = GFXTextureObject::create( baseName + s_n, &GFXDefaultPersistentProfile, avar("mTextureNormal"));
       }
-       mTextureHilight = std::shared_ptr<GFXTextureObject>( baseName + s_d, &GFXDefaultPersistentProfile, avar("mTextureHilight"));
+       mTextureHilight = GFXTextureObject::create( baseName + s_d, &GFXDefaultPersistentProfile, avar("mTextureHilight"));
 
        if (!mTextureHilight)
          mTextureHilight = mTextureNormal;
 
-       mTextureDepressed = std::shared_ptr<GFXTextureObject>( baseName + s_h, &GFXDefaultPersistentProfile, avar("mTextureDepressed"));
+       mTextureDepressed = GFXTextureObject::create( baseName + s_h, &GFXDefaultPersistentProfile, avar("mTextureDepressed"));
 
        if (!mTextureDepressed)
          mTextureDepressed = mTextureHilight;
 
-       mTextureInactive = std::shared_ptr<GFXTextureObject>( baseName + s_i, &GFXDefaultPersistentProfile, avar("mTextureInactive"));
+       mTextureInactive = GFXTextureObject::create( baseName + s_i, &GFXDefaultPersistentProfile, avar("mTextureInactive"));
 
        if (!mTextureInactive)
          mTextureInactive = mTextureNormal;
@@ -214,22 +214,22 @@ void GuiBitmapButtonCtrl::setBitmap(const String& name, ButtonState state)
        {
           case NORMAL:
               mBitmapNormal = temporaryName;
-               mTextureNormal = std::shared_ptr<GFXTextureObject>( temporaryName, &GFXDefaultPersistentProfile, avar("mTextureNormal"));
+               mTextureNormal = GFXTextureObject::create( temporaryName, &GFXDefaultPersistentProfile, avar("mTextureNormal"));
 //              mTextureNormal = TextureHandle(buffer, TextureHandle::BitmapTexture, true);
               break;
           case HILIGHT:
               mBitmapHilight = temporaryName;
-               mTextureHilight = std::shared_ptr<GFXTextureObject>( temporaryName, &GFXDefaultPersistentProfile, avar("mTextureHilight"));
+               mTextureHilight = GFXTextureObject::create( temporaryName, &GFXDefaultPersistentProfile, avar("mTextureHilight"));
 //              mTextureHilight = TextureHandle(buffer, TextureHandle::BitmapTexture, true);
               break;
           case DEPRESSED:
               mBitmapDepressed = temporaryName;
-               mTextureDepressed = std::shared_ptr<GFXTextureObject>( temporaryName, &GFXDefaultPersistentProfile, avar("mTextureDepressed"));
+               mTextureDepressed = GFXTextureObject::create( temporaryName, &GFXDefaultPersistentProfile, avar("mTextureDepressed"));
 //              mTextureDepressed = TextureHandle(buffer, TextureHandle::BitmapTexture, true);
               break;
           case INACTIVE:
               mBitmapInactive = temporaryName;
-               mTextureInactive = std::shared_ptr<GFXTextureObject>( temporaryName, &GFXDefaultPersistentProfile, avar("mTextureInactive"));
+               mTextureInactive = GFXTextureObject::create( temporaryName, &GFXDefaultPersistentProfile, avar("mTextureInactive"));
 //              mTextureInactive = TextureHandle(buffer, TextureHandle::BitmapTexture, true);
               break;
        }
@@ -239,16 +239,16 @@ void GuiBitmapButtonCtrl::setBitmap(const String& name, ButtonState state)
        switch (state)
        {
           case NORMAL:
-              mTextureNormal = NULL;
+              mTextureNormal = nullptr;
               break;
           case HILIGHT:
-              mTextureHilight = NULL;
+              mTextureHilight = nullptr;
               break;
           case DEPRESSED:
-              mTextureDepressed = NULL;
+              mTextureDepressed = nullptr;
               break;
           case INACTIVE:
-              mTextureInactive = NULL;
+              mTextureInactive = nullptr;
               break;
        } 
    }

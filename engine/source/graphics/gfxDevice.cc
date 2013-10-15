@@ -329,16 +329,16 @@ void GFXDevice::setGlobalAmbientColor(ColorF color)
 //-----------------------------------------------------------------------------
 // Set texture
 //-----------------------------------------------------------------------------
-void GFXDevice::setTexture(U32 stage, GFXTexHandle &texture)
+void GFXDevice::setTexture(U32 stage, GFXTextureObject *texture)
 {
    AssertFatal(stage < getNumSamplers(), "GFXDevice::setTexture - out of range stage!");
 
    if (  mTexType[stage] == GFXTDT_Normal )
    {
-      if ( mTextureDirty[stage] && mNewTexture[stage].getPointer() == texture )
+      if ( mTextureDirty[stage] && mNewTexture[stage].get() == texture )
           return;
        
-      if ( !mTextureDirty[stage] && mCurrentTexture[stage].getPointer() == texture )
+      if ( !mTextureDirty[stage] && mCurrentTexture[stage].get() == texture )
           return;
    }
 

@@ -652,8 +652,8 @@ void GFont::addSheet()
     U8 *bits = bitmap->getWritableBits();
     dMemset(bits, 0, sizeof(U8) *TextureSheetSize*TextureSheetSize);
 
-    std::shared_ptr<GFXTextureObject> handle = std::shared_ptr<GFXTextureObject>( bitmap, &GFXFontTextureProfile, true, avar("%s() - (line %d)", __FUNCTION__, __LINE__) );
-    handle.setFilter(GFXTextureFilterPoint);
+    GFXTexHandle handle = GFXTextureObject::create( bitmap, &GFXFontTextureProfile, true, avar("%s() - (line %d)", __FUNCTION__, __LINE__) );
+    handle->setFilter(GFXTextureFilterPoint);
 
     mTextureSheets.increment();
     constructInPlace(&mTextureSheets.back());
@@ -1312,7 +1312,7 @@ void GFont::importStrip(const char *fileName, U32 padding, U32 kerning)
       dMemset(bits, 0, sizeof(U8) *TextureSheetSize*TextureSheetSize * strip->mBytesPerPixel);
 
 //      GFXTexHandle handle = GFXTexHandle( buf, bitmap, std::shared_ptr<GFXTextureObject>::BitmapKeepTexture );
-       GFXTexHandle handle = GFXTexHandle( bitmap, &GFXFontTextureProfile, true, avar("Font Sheet for" ));
+       GFXTexHandle handle = GFXTextureObject::create( bitmap, &GFXFontTextureProfile, true, avar("Font Sheet for" ));
 
        mTextureSheets.increment();
       constructInPlace(&mTextureSheets.back());
@@ -1542,7 +1542,7 @@ bool GFont::readBMFont(std::iostream &io_rStream)
         char buff[30];
         dSprintf(buff, sizeof(buff), "font_%d", smSheetIdCount++);
 
-        GFXTexHandle handle = GFXTexHandle( buf, &GFXFontTextureProfile, avar("constructBMFont" ));
+        GFXTexHandle handle = GFXTextureObject::create( buf, &GFXFontTextureProfile, avar("constructBMFont" ));
 //        std::shared_ptr<GFXTextureObject> handle = std::shared_ptr<GFXTextureObject>( bmp, &GFXFontTextureProfile, true, avar("%s() - (line %d)", __FUNCTION__, __LINE__) );
         //    std::shared_ptr<GFXTextureObject> handle = std::shared_ptr<GFXTextureObject>(buf, bitmap, std::shared_ptr<GFXTextureObject>::BitmapKeepTexture);
         //    handle.setFilter(GL_NEAREST);

@@ -172,8 +172,8 @@ bool GuiIconButtonCtrl::resize(const Point2I &newPosition, const Point2I &newExt
     
     if ( mIconLocation != IconLocNone )
     {
-        autoExtent.y = mTextureNormal.getHeight() + mButtonMargin.y * 2;
-        autoExtent.x = mTextureNormal.getWidth() + mButtonMargin.x * 2;
+        autoExtent.y = mTextureNormal->getHeight() + mButtonMargin.y * 2;
+        autoExtent.x = mTextureNormal->getWidth() + mButtonMargin.x * 2;
     }
     
     if ( mTextLocation != TextLocNone && mButtonText && mButtonText[0] )
@@ -204,12 +204,12 @@ void GuiIconButtonCtrl::setBitmap(const char *name)
 
    if (*mBitmapName)
    {
-       mTextureNormal = std::shared_ptr<GFXTextureObject>( name, &GFXDefaultPersistentProfile, avar("%s() - mTextureNormal (line %d)", __FUNCTION__, __LINE__) );
+       mTextureNormal = GFXTextureObject::create( name, &GFXDefaultPersistentProfile, avar("%s() - mTextureNormal (line %d)", __FUNCTION__, __LINE__) );
 //      mTextureNormal = TextureHandle(name, TextureHandle::BitmapTexture, true);
    }
    else
    {
-      mTextureNormal = NULL;
+      mTextureNormal = nullptr;
    }
    setUpdate();
 }   

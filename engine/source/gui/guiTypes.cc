@@ -87,15 +87,15 @@ void GuiCursor::render(const Point2I &pos)
    if (!mTextureHandle && mBitmapName && mBitmapName[0])
    {
 //      mTextureHandle = std::shared_ptr<GFXTextureObject>(mBitmapName, TextureHandle::BitmapTexture);
-       mTextureHandle = std::shared_ptr<GFXTextureObject>( mBitmapName, &GFXDefaultPersistentProfile, avar("GuiCursor::mTextureHandle"));
+       mTextureHandle = GFXTextureObject::create( mBitmapName, &GFXDefaultPersistentProfile, avar("GuiCursor::mTextureHandle"));
       if(!mTextureHandle)
          return;
-      mExtent.set(mTextureHandle.getWidth(), mTextureHandle.getHeight());
+      mExtent.set(mTextureHandle->getWidth(), mTextureHandle->getHeight());
    }
 
    // Render the cursor centered according to dimensions of texture
-   S32 texWidth = mTextureHandle.getWidth();
-   S32 texHeight = mTextureHandle.getWidth();
+   S32 texWidth = mTextureHandle->getWidth();
+   S32 texHeight = mTextureHandle->getWidth();
 
    Point2I renderPos = pos;
    renderPos.x -= (S32)( texWidth  * mRenderOffset.x );
@@ -170,7 +170,7 @@ GuiControlProfile::GuiControlProfile(void) :
     mFontColors[BaseColor].set(255,255,255,255);
     
     // default bitmap
-    mBitmapName    = NULL;
+    mBitmapName    = nullptr;
     mTextOffset.set(0,0);
     
     //used by GuiTextCtrl
@@ -180,7 +180,7 @@ GuiControlProfile::GuiControlProfile(void) :
     mAutoSizeHeight= false;
     mReturnTab     = false;
     mNumbersOnly   = false;
-    mProfileForChildren = NULL;
+    mProfileForChildren = nullptr;
 
    GuiControlProfile *def = dynamic_cast<GuiControlProfile*>(Sim::findObject("GuiDefaultProfile"));
    if (def)
@@ -295,7 +295,7 @@ S32 GuiControlProfile::constructBitmapArray()
    if(mBitmapArrayRects.size())
       return mBitmapArrayRects.size();
 
-   GBitmap *bmp = mTextureHandle.getBitmap();
+   GBitmap *bmp = mTextureHandle->getBitmap();
 
    // Make sure the texture exists.
    if( !bmp )
@@ -376,11 +376,11 @@ void GuiControlProfile::incRefCount()
       if (mFont.isNull())
          Con::errorf("Failed to load/create profile font (%s/%d)", mFontType, mFontSize);
        
-      if ( mBitmapName != NULL && mBitmapName != StringTable->EmptyString )
+      if ( mBitmapName != nullptr && mBitmapName != StringTable->EmptyString )
       {
           Con::printf("GuiControlProfile::incRefCount %s", mBitmapName);
           GBitmap *bmp = GBitmap::load(mBitmapName);
-          mTextureHandle = std::shared_ptr<GFXTextureObject>( bmp, &GFXDefaultPersistentProfile, true, avar("GuiControlProfile::mTextureHandle" ));
+          mTextureHandle = GFXTextureObject::create ( bmp, &GFXDefaultPersistentProfile, true, avar("GuiControlProfile::mTextureHandle" ));
           if (!(bool)mTextureHandle)
              Con::errorf("Failed to load profile bitmap (%s)",mBitmapName);
 
@@ -399,8 +399,8 @@ void GuiControlProfile::decRefCount()
 
    if(!--mRefCount)
    {
-      mFont = NULL;
-      mTextureHandle = NULL;
+      mFont = nullptr;
+      mTextureHandle = nullptr;
    }
 }
 
@@ -408,15 +408,15 @@ ConsoleType( GuiProfile, TypeGuiProfile, sizeof(GuiControlProfile*), "" )
 
 ConsoleSetType( TypeGuiProfile )
 {
-   GuiControlProfile *profile = NULL;
+   GuiControlProfile *profile = nullptr;
    if(argc == 1)
       Sim::findObject(argv[0], profile);
 
-   AssertWarn(profile != NULL, avar("GuiControlProfile: requested gui profile (%s) does not exist.", argv[0]));
+   AssertWarn(profile != nullptr, avar("GuiControlProfile: requested gui profile (%s) does not exist.", argv[0]));
    if(!profile)
       profile = dynamic_cast<GuiControlProfile*>(Sim::findObject("GuiDefaultProfile"));
 
-   AssertFatal(profile != NULL, avar("GuiControlProfile: unable to find specified profile (%s) and GuiDefaultProfile does not exist!", argv[0]));
+   AssertFatal(profile != nullptr, avar("GuiControlProfile: unable to find specified profile (%s) and GuiDefaultProfile does not exist!", argv[0]));
 
    GuiControlProfile **obj = (GuiControlProfile **)dptr;
    if((*obj) == profile)

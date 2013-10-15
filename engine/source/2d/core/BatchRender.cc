@@ -350,7 +350,7 @@ void BatchRender::SubmitIndexedTriangleStrip(const Vector<GFXVertexPCT> &verts, 
 }
 
 void BatchRender::SubmitQuad(const std::array< GFXVertexPCT, 4> verts,
-                             std::shared_ptr<GFXTextureObject>& texture)
+        GFXTexHandle& texture)
 {
     // Sanity!
     AssertFatal( mpDebugStats != nullptr, "Debug stats have not been configured." );
@@ -525,7 +525,7 @@ void BatchRender::flushInternal( void )
     }
     else
     {
-        GFX->setTexture(0, mStrictOrderTextureHandle);
+        GFX->setTexture(0, mStrictOrderTextureHandle.get());
     }
 
     // Set blend mode.
@@ -547,7 +547,7 @@ void BatchRender::flushInternal( void )
     {
         // Bind the texture if not in wireframe mode.
         if ( !mWireframeMode )
-           _lightAndDraw( &mVertexBuffer, &mIndexBuffer, mStrictOrderTextureHandle);
+           _lightAndDraw( &mVertexBuffer, &mIndexBuffer, mStrictOrderTextureHandle.get());
       else
          _lightAndDraw(  &mVertexBuffer, &mIndexBuffer );
 
@@ -570,7 +570,7 @@ void BatchRender::flushInternal( void )
         {
             // Fetch indexedPrim
             indexedPrim* indexPrim = batchItr.second;
-           _lightAndDraw( indexPrim->verts, indexPrim->index, batchItr.first);
+           _lightAndDraw( indexPrim->verts, indexPrim->index, batchItr.first.get());
 
            // Stats.
             mpDebugStats->batchDrawCallsSorted++;
@@ -599,7 +599,7 @@ void BatchRender::flushInternal( void )
     mIndexBuffer.clear();
 }
 
-void BatchRender::_lightAndDraw(Vector<GFXVertexPCT> *pVertexVector, Vector<U16> *pIndex, GFXTexHandle &handle)
+void BatchRender::_lightAndDraw(Vector<GFXVertexPCT> *pVertexVector, Vector<U16> *pIndex, GFXTextureObject *handle)
 {
    // Bind the texture if not in wireframe mode.
    if ( handle )
@@ -655,7 +655,7 @@ void BatchRender::_lightAndDraw(Vector<GFXVertexPCT> *pVertexVector, Vector<U16>
 
 //-----------------------------------------------------------------------------
 
-BatchRender::indexedPrim* BatchRender::findTextureBatch( std::shared_ptr<GFXTextureObject>& handle )
+BatchRender::indexedPrim* BatchRender::findTextureBatch( GFXTexHandle &handle )
 {
 //    Vector<GFXVertexPCT> * pIndexVector = nullptr;
     indexedPrim* pIndexVector = nullptr;

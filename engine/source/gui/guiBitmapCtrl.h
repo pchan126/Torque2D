@@ -42,7 +42,7 @@ protected:
    static const char *getBitmapName( void *obj, const char *data );
 
    String mBitmapName;
-   std::shared_ptr<GFXTextureObject> mTextureObject;
+   GFXTexHandle mTextureObject;
    Point2I startPoint;
    bool mWrap;
 
@@ -64,8 +64,8 @@ public:
    void setBitmap(const char *name,bool resize = false);
    void setBitmap(const std::shared_ptr<GFXTextureObject> &handle,bool resize = false);
 
-   S32 getWidth() const       { return(mTextureObject.getWidth()); }
-   S32 getHeight() const      { return(mTextureObject.getHeight()); }
+   S32 getWidth() const       { return(mTextureObject->getWidth()); }
+   S32 getHeight() const      { return(mTextureObject->getHeight()); }
 
    //Luma:	ability to specify source rect for image UVs
    void setSourceRect(U32 x, U32 y, U32 width, U32 height);

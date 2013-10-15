@@ -110,7 +110,7 @@ PlatformWindow * iOSWindowManager::getFirstWindow()
    if (mWindowList.size() > 0)
       return mWindowList[0];
       
-   return NULL;
+   return nullptr;
 }
 
 
@@ -122,7 +122,7 @@ PlatformWindow* iOSWindowManager::getFocusedWindow()
          return mWindowList[i];
    }
 
-   return NULL;
+   return nullptr;
 }
 
 PlatformWindow* iOSWindowManager::getWindowById(WindowId zid)
@@ -134,7 +134,7 @@ PlatformWindow* iOSWindowManager::getWindowById(WindowId zid)
       if( w->getWindowId() == zid)
          return w;
    }
-   return NULL;
+   return nullptr;
 }
 
 void iOSWindowManager::lowerCurtain()
@@ -160,7 +160,7 @@ void iOSWindowManager::updateWindows()
     GFXAdapter *a = GFXInit::getBestAdapterChoice();
 
     GFXDevice *newDevice = GFX;
-    if(newDevice == NULL)
+    if(newDevice == nullptr)
         newDevice = GFXInit::createDevice(a);
 
     GFXOpenGLES20iOSDevice *device = dynamic_cast<GFXOpenGLES20iOSDevice*>(GFX);
@@ -220,7 +220,7 @@ PlatformWindow* iOSWindowManager::assignCanvas(GFXDevice* device, const GFXVideo
    for(U32 i = 0; i < mWindowList.size(); i++)
    {
       PlatformWindow* w = mWindowList[i];
-      if (w->mBoundCanvas == NULL)
+      if (w->mBoundCanvas == nullptr)
       {
          w->setVideoMode(mode);
          w->bindCanvas(canvas);
@@ -237,7 +237,7 @@ PlatformWindow* iOSWindowManager::assignCanvas(GFXDevice* device, const GFXVideo
 PlatformWindow *iOSWindowManager::createWindow(GFXDevice *device, const GFXVideoMode &mode)
 {
    if (mWindowList.size() >= [[UIScreen screens]count])    // only one window per available screen
-       return NULL;
+       return nullptr;
     
    iOSWindow* window = new iOSWindow(mWindowList.size());
    _addWindow(window);
@@ -252,7 +252,7 @@ PlatformWindow *iOSWindowManager::createWindow(GFXDevice *device, const GFXVideo
    if(device)
    {
       window->mDevice = device;
-      window->mTarget = device->allocWindowTarget(window);
+      window->mTarget = GFXWindowTargetRef(device->allocWindowTarget(window));
       AssertISV(window->mTarget, 
          "iOSWindowManager::createWindow - failed to get a window target back from the device.");
    }
@@ -275,7 +275,7 @@ void iOSWindowManager::_addWindow(iOSWindow* window)
    if (mWindowList.size() > 0)
       window->mNextWindow = mWindowList.back();
    else
-      window->mNextWindow = NULL;
+      window->mNextWindow = nullptr;
 
    viewController.view = window->view;
 

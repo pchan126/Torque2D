@@ -24,12 +24,12 @@ public:
 protected:
 
    // GFXTextureManager
-    virtual std::shared_ptr<GFXTextureObject> createTexture(const String &fullPath,
+    virtual GFXTexHandle createTexture(const String &fullPath,
            GFXTextureProfile *profile);
 
-    virtual std::shared_ptr<GFXTextureObject> createTexture(GBitmap *bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp);
+    virtual GFXTexHandle createTexture(GBitmap *bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp);
 
-   shared_ptr<GFXTextureObject> _createTexture(GBitmap *bmp,
+   GFXTexHandle _createTexture(GBitmap *bmp,
            const String &resourceName,
            GFXTextureProfile *profile,
            bool deleteBmp,

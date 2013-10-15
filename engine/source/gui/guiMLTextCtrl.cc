@@ -972,14 +972,14 @@ GuiMLTextCtrl::Bitmap *GuiMLTextCtrl::allocBitmap(const char *bitmapName, U32 bi
    AssertFatal(sizeof(nameBuffer) >= bitmapNameLen, "GuiMLTextCtrl::allocBitmap() - bitmap name too long");
    dStrncpy(nameBuffer, bitmapName, bitmapNameLen);
    nameBuffer[bitmapNameLen] = 0;
-   ret->bitmapHandle.set(ret->bitmapName, &GFXMLTextureProfile, avar("%s() - ret->bitmapObject (line %d)", __FUNCTION__, __LINE__));
+   ret->bitmapHandle = GFXTextureObject::create(ret->bitmapName, &GFXMLTextureProfile, avar("%s() - ret->bitmapObject (line %d)", __FUNCTION__, __LINE__));
    if(bool(ret->bitmapHandle))
    {
       ret->next = mBitmapList;
       mBitmapList = ret;
       return ret;
    }
-   return NULL;
+   return nullptr;
 }
 
 //--------------------------------------------------------------------------
@@ -990,7 +990,7 @@ GuiMLTextCtrl::LineTag *GuiMLTextCtrl::allocLineTag(U32 id)
       if ( walk->id == id )
       {
          Con::warnf( ConsoleLogEntry::General, "GuiMLTextCtrl - can't add duplicate line tags!" );
-         return( NULL );
+         return( nullptr );
       }
    }
    LineTag* newTag = (LineTag*) mViewChunker.alloc( sizeof( LineTag ) );
@@ -1069,7 +1069,7 @@ void GuiMLTextCtrl::emitBitmapToken(GuiMLTextCtrl::Bitmap *bmp, U32 textStart, b
 {
    if(mCurRMargin <= mCurLMargin)
       return;
-   if(mCurRMargin - mCurLMargin < bmp->bitmapHandle.getWidth())
+   if(mCurRMargin - mCurLMargin < bmp->bitmapHandle->getWidth())
       return;
 
    BitmapRef *ref = (BitmapRef *) mViewChunker.alloc(sizeof(BitmapRef));
@@ -1078,8 +1078,8 @@ void GuiMLTextCtrl::emitBitmapToken(GuiMLTextCtrl::Bitmap *bmp, U32 textStart, b
    mBitmapRefList = ref;
 
    // now we gotta insert it into the blocker list and figure out where it's spos to go...
-   ref->extent.x = bmp->bitmapHandle.getWidth();
-   ref->extent.y = bmp->bitmapHandle.getHeight();
+   ref->extent.x = bmp->bitmapHandle->getWidth();
+   ref->extent.y = bmp->bitmapHandle->getHeight();
 
    // find the first space in the blocker list that will fit this thats > curLMargin
 

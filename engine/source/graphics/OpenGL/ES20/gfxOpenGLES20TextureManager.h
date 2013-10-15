@@ -25,11 +25,11 @@ protected:
 //    virtual GFXTextureObject* createTexture(  const String &path,
 //                                            GFXTextureProfile *profile ) { };
 
-    virtual std::shared_ptr<GFXTextureObject> createTexture(GBitmap *bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp);
+    virtual GFXTexHandle createTexture(GBitmap *bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp);
 
-    virtual std::shared_ptr<GFXTextureObject> createTexture(U32 width, U32 height, void *pixels, GFXFormat format, GFXTextureProfile *profile);
+    virtual GFXTexHandle createTexture(U32 width, U32 height, void *pixels, GFXFormat format, GFXTextureProfile *profile);
     
-    shared_ptr<GFXTextureObject> _createTexture(GBitmap *bmp,
+    GFXTexHandle _createTexture(GBitmap *bmp,
             const String &resourceName,
             GFXTextureProfile *profile,
             bool deleteBmp,
@@ -43,7 +43,7 @@ protected:
                                              U32 numMipLevels,
                                              bool forceMips = false,
                                              S32 antialiasLevel = 0,
-                                             GFXTextureObject *inTex = NULL );
+                                             GFXTextureObject *inTex = nullptr );
     
    bool _loadTexture(GFXTexHandle &texture, GBitmap *bmp);
    bool _loadTexture(GFXTexHandle &texture, void *raw);

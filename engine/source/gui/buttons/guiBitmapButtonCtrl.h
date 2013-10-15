@@ -23,15 +23,11 @@
 #ifndef _GUIBITMAPBUTTON_H_
 #define _GUIBITMAPBUTTON_H_
 
-#ifndef _GUIBUTTONCTRL_H_
 #include "gui/buttons/guiButtonCtrl.h"
-#endif
 //#ifndef _TEXTURE_MANAGER_H_
 //#include "graphics/gfxTextureManager.h"
 //#endif
-#ifndef _GFXTEXTUREMANAGER_H_
 #include "graphics/gfxTextureManager.h"
-#endif
 
 enum ButtonState
 {
@@ -54,12 +50,12 @@ protected:
    StringTableEntry mBitmapInactive;
    bool mIsLegacyVersion;
 
-   std::shared_ptr<GFXTextureObject> mTextureNormal;
-   std::shared_ptr<GFXTextureObject> mTextureHilight;
-   std::shared_ptr<GFXTextureObject> mTextureDepressed;
-   std::shared_ptr<GFXTextureObject> mTextureInactive;
+   GFXTexHandle mTextureNormal;
+   GFXTexHandle mTextureHilight;
+   GFXTexHandle mTextureDepressed;
+   GFXTexHandle mTextureInactive;
 
-   void renderButton(std::shared_ptr<GFXTextureObject> &texture, Point2I &offset, const RectI& updateRect);
+   void renderButton(GFXTexHandle &texture, Point2I &offset, const RectI& updateRect);
 
 public:
    DECLARE_CONOBJECT(GuiBitmapButtonCtrl);

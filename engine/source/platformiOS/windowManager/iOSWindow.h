@@ -24,7 +24,7 @@ public:
    virtual ~iOSWindow();
 
    virtual GFXDevice *getGFXDevice() { return mDevice; }
-   virtual GFXWindowTarget *getGFXTarget() { return mTarget; }
+   virtual GFXWindowTarget *getGFXTarget() { return mTarget.get(); }
    virtual void setVideoMode(const GFXVideoMode &mode);
    virtual const GFXVideoMode &getVideoMode() { return mCurrentMode; }
    

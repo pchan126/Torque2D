@@ -1544,15 +1544,15 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
         mCameraCurrent,
         mRenderGroupMask );
 
-    if (renderTarget.isNull())
-       renderTarget = GFX->allocRenderToTextureTarget();
+    if (renderTarget)
+       renderTarget = GFXTextureTargetRef(GFX->allocRenderToTextureTarget());
 
     if (mImageTextureHandle)
         mImageTextureHandle = TEXMGR->createTexture( getWidth(), getHeight(), GFXFormatR8G8B8A8, &GFXSceneWindowTextureProfile, 0, 0 );
 
     renderTarget->attachTexture(mImageTextureHandle);
     GFX->pushActiveRenderTarget();
-    GFX->setActiveRenderTarget(renderTarget);
+    GFX->setActiveRenderTarget(renderTarget.get());
     GFX->updateStates(true);
 
    // Clear the background color if requested.

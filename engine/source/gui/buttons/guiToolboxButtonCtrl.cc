@@ -74,9 +74,9 @@ bool GuiToolboxButtonCtrl::onWake()
 //-------------------------------------
 void GuiToolboxButtonCtrl::onSleep()
 {
-   mTextureNormal = NULL;
-   mTextureLowered = NULL;
-   mTextureHover = NULL;
+   mTextureNormal = nullptr;
+   mTextureLowered = nullptr;
+   mTextureHover = nullptr;
    Parent::onSleep();
 }
 
@@ -127,10 +127,10 @@ void GuiToolboxButtonCtrl::setNormalBitmap( StringTableEntry bitmapName )
       return;
 
    if ( *mNormalBitmapName )
-       mTextureNormal = std::shared_ptr<GFXTextureObject>( mNormalBitmapName, &GFXDefaultPersistentProfile, avar(" mTextureNormal" ));
+       mTextureNormal = GFXTextureObject::create( mNormalBitmapName, &GFXDefaultPersistentProfile, avar(" mTextureNormal" ));
 //      mTextureNormal = TextureHandle( mNormalBitmapName, TextureHandle::BitmapTexture, true );
    else
-      mTextureNormal = NULL;
+      mTextureNormal = nullptr;
    
    setUpdate();
 }   
@@ -143,10 +143,10 @@ void GuiToolboxButtonCtrl::setLoweredBitmap( StringTableEntry bitmapName )
       return;
 
    if ( *mLoweredBitmapName )
-       mTextureLowered = std::shared_ptr<GFXTextureObject>( mLoweredBitmapName, &GFXDefaultPersistentProfile, avar(" mTextureLowered"));
+       mTextureLowered = GFXTextureObject::create( mLoweredBitmapName, &GFXDefaultPersistentProfile, avar(" mTextureLowered"));
 //      mTextureLowered = TextureHandle( mLoweredBitmapName, TextureHandle::BitmapTexture, true );
    else
-      mTextureLowered = NULL;
+      mTextureLowered = nullptr;
    
    setUpdate();
 }   
@@ -159,10 +159,10 @@ void GuiToolboxButtonCtrl::setHoverBitmap( StringTableEntry bitmapName )
       return;
 
    if ( *mHoverBitmapName )
-       mTextureHover = std::shared_ptr<GFXTextureObject>( mHoverBitmapName, &GFXDefaultPersistentProfile, avar(" mTextureHover"));
+       mTextureHover = GFXTextureObject::create( mHoverBitmapName, &GFXDefaultPersistentProfile, avar(" mTextureHover"));
 //      mTextureHover = TextureHandle( mHoverBitmapName, TextureHandle::BitmapTexture, true );
    else
-      mTextureHover = NULL;
+      mTextureHover = nullptr;
 
    setUpdate();
 }   
@@ -201,7 +201,7 @@ void GuiToolboxButtonCtrl::onRender(Point2I offset, const RectI& updateRect)
 
 }
 
-void GuiToolboxButtonCtrl::renderStateRect( std::shared_ptr<GFXTextureObject> &texture, const RectI& rect )
+void GuiToolboxButtonCtrl::renderStateRect( GFXTexHandle &texture, const RectI& rect )
 {
    if (texture)
    {
@@ -212,14 +212,14 @@ void GuiToolboxButtonCtrl::renderStateRect( std::shared_ptr<GFXTextureObject> &t
 
 //------------------------------------------------------------------------------
 
-void GuiToolboxButtonCtrl::renderButton(std::shared_ptr<GFXTextureObject> &texture, Point2I &offset, const RectI& updateRect)
+void GuiToolboxButtonCtrl::renderButton(GFXTexHandle &texture, Point2I &offset, const RectI& updateRect)
 {
    if (texture)
    {
       Point2I finalOffset = offset;
 
-      finalOffset.x += ( ( getWidth() / 2 ) - ( texture.getWidth() / 2 ) );
-      finalOffset.y += ( ( getHeight() / 2 ) - ( texture.getHeight() / 2 ) );
+      finalOffset.x += ( ( getWidth() / 2 ) - ( texture->getWidth() / 2 ) );
+      finalOffset.y += ( ( getHeight() / 2 ) - ( texture->getHeight() / 2 ) );
 
       GFX->getDrawUtil()->clearBitmapModulation();
       GFX->getDrawUtil()->drawBitmap(texture, finalOffset);
