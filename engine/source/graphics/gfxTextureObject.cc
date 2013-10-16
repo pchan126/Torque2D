@@ -32,7 +32,7 @@
 // TODO: Change this to be in non-shipping builds maybe?
 #ifdef TORQUE_DEBUG
 
-std::shared_ptr<GFXTextureObject> BadTextureHandle;
+GFXTexHandle BadTextureHandle;
 GFXTextureObject *GFXTextureObject::smHead = nullptr;
 U32 GFXTextureObject::smActiveTOCount = 0;
 
@@ -70,9 +70,6 @@ U32 GFXTextureObject::dumpActiveTOs()
 // GFXTextureObject
 //-----------------------------------------------------------------------------
 GFXTextureObject::GFXTextureObject(GFXDevice *aDevice, GFXTextureProfile *aProfile):
-    mHashNext(nullptr),
-    mNext(nullptr),
-    mPrev(nullptr),
     mBitmap(nullptr),
     mDevice(aDevice),
     mProfile(aProfile),
@@ -133,7 +130,7 @@ GFXTextureObject::~GFXTextureObject()
 
 void GFXTextureObject::destroySelf()
 {
-   mDevice->mTextureManager->requestDeleteTexture(this);
+   mDevice->mTextureManager->requestDeleteTexture(shared_from_this());
 }
 
 //-----------------------------------------------------------------------------
@@ -163,16 +160,7 @@ void GFXTextureObject::kill()
    }
 
    // Remove ourselves from the texture list and hash
-   mDevice->mTextureManager->deleteTexture(this);
-
-   // Delete the stored bitmap.
-   SAFE_DELETE(mBitmap)
-
-   // Clean up linked list
-   if(mNext)
-      mNext->mPrev = mPrev;
-   if(mPrev)
-      mPrev->mNext = mNext;
+   mDevice->mTextureManager->deleteTexture(shared_from_this());
 
    mDead = true;
 }
@@ -226,11 +214,11 @@ U32 GFXTextureObject::getEstimatedSizeInBytes() const
 //   }
 //
    return totalBytes;
-}
+};
 
 void GFXTextureObject::refresh( void )
 {
-    TEXMGR->reloadTexture( this );
+    TEXMGR->reloadTexture( shared_from_this() );
 };
 
 GFXTexHandle GFXTextureObject::create(const String &texName, GFXTextureProfile *profile, const String &desc) {
@@ -244,7 +232,7 @@ GFXTexHandle GFXTextureObject::create(const String &texName, GFXTextureProfile *
 };
 
 
-GFXTexHandle GFXTextureObject::create( GBitmap *bmp, GFXTextureProfile *profile, bool deleteBmp, const String &desc  )
+GFXTexHandle GFXTextureObject::create( GBitmapPtr &bmp, GFXTextureProfile *profile, bool deleteBmp, const String &desc  )
 {
     GFXTexHandle ret = TEXMGR->createTexture( bmp, String(), profile, deleteBmp );
 

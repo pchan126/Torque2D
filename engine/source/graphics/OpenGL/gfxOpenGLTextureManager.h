@@ -74,7 +74,7 @@ protected:
            U32 numMipLevels,
            bool forceMips = false,
            S32 antialiasLevel = 0,
-           GFXTextureObject *inTex = nullptr,
+           GFXTexHandle inTex = nullptr,
            void *data = nullptr) = 0;
    
    bool _loadTexture(GFXTexHandle &texture, GBitmap *bmp);

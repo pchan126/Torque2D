@@ -27,13 +27,13 @@ protected:
     virtual GFXTexHandle createTexture(const String &fullPath,
            GFXTextureProfile *profile);
 
-    virtual GFXTexHandle createTexture(GBitmap *bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp);
+    virtual GFXTexHandle createTexture(GBitmapPtr &bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp);
 
    GFXTexHandle _createTexture(GBitmap *bmp,
            const String &resourceName,
            GFXTextureProfile *profile,
            bool deleteBmp,
-           GFXTextureObject *inObj);
+           GFXTexHandle inObj);
     
    GFXTexHandle _createTextureObject(U32 height,
            U32 width,
@@ -43,7 +43,7 @@ protected:
            U32 numMipLevels,
            bool forceMips = false,
            S32 antialiasLevel = 0,
-           GFXTextureObject *inTex = nullptr,
+           GFXTexHandle inTex = nullptr,
            void *data = nullptr);
     
    bool _loadTexture(GFXTexHandle &texture, GBitmap *bmp);

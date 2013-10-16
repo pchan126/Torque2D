@@ -295,7 +295,7 @@ S32 GuiControlProfile::constructBitmapArray()
    if(mBitmapArrayRects.size())
       return mBitmapArrayRects.size();
 
-   GBitmap *bmp = mTextureHandle->getBitmap();
+   GBitmapPtr& bmp = mTextureHandle->getBitmap();
 
    // Make sure the texture exists.
    if( !bmp )
@@ -379,7 +379,7 @@ void GuiControlProfile::incRefCount()
       if ( mBitmapName != nullptr && mBitmapName != StringTable->EmptyString )
       {
           Con::printf("GuiControlProfile::incRefCount %s", mBitmapName);
-          GBitmap *bmp = GBitmap::load(mBitmapName);
+          GBitmapPtr bmp = GBitmapPtr(GBitmap::load(mBitmapName));
           mTextureHandle = GFXTextureObject::create ( bmp, &GFXDefaultPersistentProfile, true, avar("GuiControlProfile::mTextureHandle" ));
           if (!(bool)mTextureHandle)
              Con::errorf("Failed to load profile bitmap (%s)",mBitmapName);

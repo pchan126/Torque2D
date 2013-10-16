@@ -24,16 +24,9 @@
 #define _GBITMAP_H_
 
 //Includes
-#ifndef _PLATFORM_H_
 #include "platform/platform.h"
-#endif
-#ifndef _RESMANAGER_H_
 #include "io/resource/resourceManager.h"
-#endif
-#ifndef _COLOR_H_
 #include "graphics/color.h"
-#endif
-
 #include "graphics/gfxEnums.h" // For the format
 
 //-------------------------------------- Forward decls.
@@ -49,7 +42,9 @@ extern ResourceInstance* constructBitmapJPEG(std::iostream &stream);
 extern ResourceInstance* constructBitmapPVR(std::iostream &stream);
 #endif
 
-//------------------------------------------------------------------------------
+class GBitmap;
+typedef std::unique_ptr<GBitmap> GBitmapPtr;
+
 //-------------------------------------- GBitmap
 //
 class GBitmap: public ResourceInstance
@@ -105,7 +100,7 @@ class GBitmap: public ResourceInstance
    GBitmap *createPowerOfTwoBitmap();
    U16* create16BitBitmap( GFXFormat *GLformat );
 
-   void copyRect(const GBitmap *src, const RectI &srcRect, const Point2I &dstPoint);
+   void copyRect(GBitmap *src, const RectI &srcRect, const Point2I &dstPoint);
 
    GFXFormat getFormat()       const;
    bool         setFormat(GFXFormat fmt);
@@ -260,5 +255,6 @@ extern void (*bitmapConvertRGB_to_5551)(U8 *src, U32 pixels);
 extern void (*bitmapExtrudePaletted)(const void *srcMip, void *mip, U32 height, U32 width);
 
 void bitmapExtrudeRGB_c(const void *srcMip, void *mip, U32 height, U32 width);
+
 
 #endif //_GBITMAP_H_

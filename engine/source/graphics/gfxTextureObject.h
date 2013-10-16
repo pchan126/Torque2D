@@ -33,6 +33,7 @@ typedef std::shared_ptr<GFXTextureObject> GFXTexHandle;
 #include "platform/threads/mutex.h"
 #include "delegates/delegateSignal.h"
 #include "gfxDevice.h"
+#include "gBitmap.h"
 
 class Point2I;
 class GFXDevice;
@@ -64,7 +65,7 @@ struct GFXLockedRect
 };
 
 
-class GFXTextureObject : public GFXResource
+class GFXTextureObject : public GFXResource, public std::enable_shared_from_this<GFXTextureObject>
 {
 public:
     typedef SimObject Parent;
@@ -114,7 +115,7 @@ public:
 
    // These two should be removed, and replaced by a reference to a resource
    // object, or data buffer. Something more generic. -patw
-   GBitmap           *mBitmap;   ///< GBitmap we are backed by.
+   std::unique_ptr<GBitmap>          mBitmap;   ///< GBitmap we are backed by.
     
    U32 getFormatByteSize() const { return GFXFormat_getByteSize( mFormat ); }
 
@@ -124,7 +125,7 @@ public:
    GFXTextureObject(GFXDevice * aDevice, GFXTextureProfile *profile);
    virtual ~GFXTextureObject();
 
-    virtual GBitmap *getBitmap() {return mBitmap;}
+   virtual std::unique_ptr<GBitmap> & getBitmap() {return mBitmap;}
 
    U32 getWidth() const { return mTextureSize.x; }
    U32 getHeight() const { return mTextureSize.y; }
@@ -222,7 +223,7 @@ public:
     void refresh( void );
 
     static GFXTexHandle create( const String &texName, GFXTextureProfile *profile, const String &desc );
-    static GFXTexHandle create( GBitmap *bmp, GFXTextureProfile *profile, bool deleteBmp, const String &desc );
+    static GFXTexHandle create(GBitmapPtr &bmp, GFXTextureProfile *profile, bool deleteBmp, const String &desc);
     static GFXTexHandle create( U32 width, U32 height, GFXFormat format, GFXTextureProfile *profile, const String &desc, U32 numMipLevels = 1, S32 antialiasLevel = 0);
 };
 

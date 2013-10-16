@@ -68,7 +68,7 @@ public:
    ///
    static U32 getTextureDownscalePower( GFXTextureProfile *profile );
 
-   virtual GFXTexHandle createTexture(GBitmap *bmp,
+   virtual GFXTexHandle createTexture(GBitmapPtr &bmp,
            const String &resourceName,
            GFXTextureProfile *profile,
            bool deleteBmp);
@@ -96,12 +96,12 @@ public:
            U32 numMipLevels,
            S32 antialiasLevel);
 
-   void deleteTexture(GFXTexHandle &texture);
-   void reloadTexture(GFXTexHandle &texture);
+   void deleteTexture(GFXTexHandle texture);
+   void reloadTexture(GFXTexHandle texture);
 
    /// Request that the texture be deleted which will
    /// either occur immediately or delayed if its cached.
-   void requestDeleteTexture(GFXTexHandle &texture);
+   void requestDeleteTexture(GFXTexHandle texture);
 
    /// @name Texture Necromancy
    /// 
@@ -157,7 +157,7 @@ protected:
    /// 
    static S32 smTextureReductionLevel;
 
-   std::unordered_map<std::string, std::shared_ptr<GFXTextureObject>> mHashTable;
+   std::unordered_map<std::string, GFXTexHandle> mHashTable;
 
 //   GFXTexHandle mListHead;
 //   GFXTexHandle mListTail;
@@ -190,7 +190,7 @@ protected:
    } mTextureManagerState;
 
    /// The texture pool collection type.
-   typedef HashTable<GFXTextureProfile*,GFXTexHandle > TexturePoolMap;
+   typedef HashTable<GFXTextureProfile*, GFXTexHandle > TexturePoolMap;
 
    /// All the allocated texture pool textures.
    TexturePoolMap mTexturePool;
@@ -213,7 +213,7 @@ protected:
             const String &resourceName,
             GFXTextureProfile *profile,
             bool deleteBmp,
-            GFXTextureObject *inObj);
+            GFXTexHandle inObj);
 
    /// Frees the API handles to the texture, for D3D this is a release call
    ///
@@ -260,7 +260,7 @@ protected:
            U32 numMipLevels,
            bool forceMips = false,
            S32 antialiasLevel = 0,
-           GFXTextureObject *inTex = nullptr,
+           GFXTexHandle inTex = nullptr,
            void *data = nullptr) = 0;
 
    /// Load data into a texture from a GBitmap using the internal API.
@@ -302,7 +302,6 @@ protected:
 
 
     // Merge with T2D texture manager
-
     friend class GFXTextureObject;
         
     public:
@@ -366,7 +365,7 @@ inline void GFXTextureManager::addEventDelegate( T obj, U func )
    smEventSignal.notify( d ); 
 }
 
-inline void GFXTextureManager::reloadTexture(GFXTexHandle &texture)
+inline void GFXTextureManager::reloadTexture(GFXTexHandle texture)
 {
    refreshTexture( texture );
 }

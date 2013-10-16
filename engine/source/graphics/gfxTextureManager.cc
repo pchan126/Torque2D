@@ -105,16 +105,8 @@ void GFXTextureManager::kill()
    // so we don't leak any textures.
    cleanupCache();
 
-   GFXTextureObject *curr = mListHead;
-   GFXTextureObject *temp;
-
-   // Actually delete all the textures we know about.
-   while( curr != nullptr )
-   {
-      temp = curr->mNext;
-      curr->kill();
-      curr = temp;
-   }
+   for (auto itr: mHashTable)
+       itr.second->kill();
 
 //   mCubemapTable.clear();
 
@@ -134,13 +126,8 @@ void GFXTextureManager::zombify()
    // Release everything in the cache we can.
    cleanupCache();
 
-   // Free all the device copies of the textures.
-   GFXTextureObject *temp = mListHead;
-   while( temp != nullptr )
-   {
-      freeTexture( temp, true );
-      temp = temp->mNext;
-   }
+    for (auto itr: mHashTable)
+        freeTexture(itr.second);
 
    // Finally, note our state.
    mTextureManagerState = GFXTextureManager::Dead;
@@ -148,14 +135,8 @@ void GFXTextureManager::zombify()
 
 void GFXTextureManager::resurrect()
 {
-   // Reupload all the device copies of the textures.
-   GFXTextureObject *temp = mListHead;
-
-   while( temp != nullptr )
-   {
-      refreshTexture( temp );
-      temp = temp->mNext;
-   }
+    for (auto itr: mHashTable)
+        refreshTexture(itr.second);
 
    // Notify callback registries.
    smEventSignal.trigger( GFXResurrect );
@@ -171,7 +152,7 @@ void GFXTextureManager::cleanupPool()
    TexturePoolMap::iterator iter = mTexturePool.begin();
    for ( ; iter != mTexturePool.end(); )
    {
-      if ( iter->second->getRefCount() == 1 )
+      if ( iter->second.use_count() == 1 )
       {
          // This texture is unreferenced, so take the time
          // now to completely remove it from the pool.
@@ -181,19 +162,18 @@ void GFXTextureManager::cleanupPool()
          mTexturePool.erase( unref );
          continue;
       }
-
       iter++;
    }
 }
 
-void GFXTextureManager::requestDeleteTexture(GFXTexHandle &texture)
+void GFXTextureManager::requestDeleteTexture(GFXTexHandle texture)
 {
    assert(texture != nullptr); 
 
    // If this is a non-cached texture then just really delete it.
-   if ( texture->mTextureLookupName.isEmpty() )
+   if ( texture->mTextureLookupName.empty() )
    {
-      delete texture;
+//      delete texture;
       return;
    }
 
@@ -210,11 +190,11 @@ void GFXTextureManager::cleanupCache( U32 secondsToLive )
 
    for ( U32 i=0; i < mToDelete.size(); )
    {
-      GFXTextureObject *tex = mToDelete[i];
+      GFXTexHandle tex = mToDelete[i];
 
       // If the texture was picked back up by a user
       // then just remove it from the list.
-      if ( tex->getRefCount() != 0 )
+      if ( tex.use_count() > 1 )
       {
          mToDelete.erase( i );
          continue;
@@ -224,18 +204,16 @@ void GFXTextureManager::cleanupCache( U32 secondsToLive )
       if ( tex->mDeleteTime <= killTime )
       {
          //Con::errorf( "Killed texture: %s", tex->mTextureLookupName.c_str() );
-         delete tex;
          mToDelete.erase( i );
          continue;
       }
-
       i++;
    }
 }
 
 GFXTexHandle GFXTextureManager::_lookupTexture(const char *hashName, const GFXTextureProfile *profile)
 {
-   GFXTextureObject *ret = find( hashName );
+   GFXTexHandle ret = find( hashName );
 
    // TODO: Profile checking HERE
 
@@ -243,12 +221,12 @@ GFXTexHandle GFXTextureManager::_lookupTexture(const char *hashName, const GFXTe
 }
 
 
-GFXTexHandle GFXTextureManager::createTexture(GBitmap *bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp)
+GFXTexHandle GFXTextureManager::createTexture(GBitmapPtr &bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp)
 {
    AssertFatal(bmp, "GFXTextureManager::createTexture() - Got NULL bitmap!");
 
-   GFXTextureObject *cacheHit = _lookupTexture( resourceName, profile );
-   if( cacheHit != NULL)
+   GFXTexHandle cacheHit = _lookupTexture( resourceName, profile );
+   if( cacheHit != nullptr)
    {
       // Con::errorf("Cached texture '%s'", (resourceName.isNotEmpty() ? resourceName.c_str() : "unknown"));
       if (deleteBmp)
@@ -259,11 +237,11 @@ GFXTexHandle GFXTextureManager::createTexture(GBitmap *bmp, const String &resour
    return _createTexture( bmp, resourceName, profile, deleteBmp, NULL );
 }
 
-std::shared_ptr<GFXTextureObject> GFXTextureManager::_createTexture(GBitmap *bmp,
+GFXTexHandle GFXTextureManager::_createTexture(GBitmap *bmp,
         const String &resourceName,
         GFXTextureProfile *profile,
         bool deleteBmp,
-        GFXTextureObject *inObj)
+        GFXTexHandle inObj)
 {
    PROFILE_SCOPE( GFXTextureManager_CreateTexture_Bitmap );
    
@@ -314,7 +292,7 @@ std::shared_ptr<GFXTextureObject> GFXTextureManager::_createTexture(GBitmap *bmp
    GFXFormat realFmt = realBmp->getFormat();
    _validateTexParams( realWidth, realHeight, profile, numMips, realFmt );
 
-   GFXTextureObject *ret;
+   GFXTexHandle ret;
    if ( inObj )
    {
       // If the texture has changed in dimensions 
@@ -364,7 +342,7 @@ std::shared_ptr<GFXTextureObject> GFXTextureManager::_createTexture(GBitmap *bmp
     if (!_loadTexture( ret, realBmp ))
    {
       Con::errorf("GFXTextureManager - failed to load GBitmap for '%s'", (resourceName.isNotEmpty() ? resourceName.c_str() : "unknown"));
-      return NULL;
+      return nullptr;
    }
 
    // Do statistics and book-keeping...
@@ -384,7 +362,6 @@ std::shared_ptr<GFXTextureObject> GFXTextureManager::_createTexture(GBitmap *bmp
    if(profile->doStoreBitmap())
    {
       // NOTE: may store a downscaled copy!
-      SAFE_DELETE( ret->mBitmap );
      ret->mBitmap = new GBitmap( *realBmp );
    }
 
@@ -528,7 +505,6 @@ GFXTexHandle GFXTextureManager::createTexture(U32 width,
     
     _linkTexture( ret );
     
-    
     // Return the new texture!
     return ret;
 }
@@ -589,7 +565,7 @@ void GFXTextureManager::hashRemove( GFXTexHandle &object )
     mHashTable.erase(object->mTextureLookupName);
 }
 
-std::shared_ptr<GFXTextureObject> GFXTextureManager::find(std::string name)
+GFXTexHandle GFXTextureManager::find(std::string name)
 {
     std::transform(name.begin(), name.end(), name.begin(), ::tolower);
 
@@ -617,19 +593,9 @@ void GFXTextureManager::_linkTexture(GFXTexHandle &obj)
 
    // info for the cache
    hashInsert(obj);
-//
-//   // info for the master list
-//   if( mListHead == nullptr )
-//      mListHead = obj;
-//
-//   if( mListTail != nullptr )
-//      mListTail->mNext = obj;
-//
-//   obj->mPrev = mListTail;
-//   mListTail = obj;
 }
 
-void GFXTextureManager::deleteTexture(GFXTexHandle &texture)
+void GFXTextureManager::deleteTexture(GFXTexHandle texture)
 {
    if ( mTextureManagerState == GFXTextureManager::Dead )
       return;
@@ -640,11 +606,6 @@ void GFXTextureManager::deleteTexture(GFXTexHandle &texture)
    );
    #endif
 
-//   if( mListHead == texture )
-//      mListHead = texture->mNext;
-//   if( mListTail == texture )
-//      mListTail = texture->mPrev;
-//
    hashRemove( texture );
 
    GFXTextureProfile::updateStatsForDeletion(texture);
@@ -793,7 +754,7 @@ void GFXTextureManager::reloadTextures()
 
    for (auto itr: mHashTable )
    {
-      GFXTexHandle tex = itr.second();
+      GFXTexHandle tex = itr.second;
       const String path( tex->mPath );
       if ( !path.isEmpty() )
       {

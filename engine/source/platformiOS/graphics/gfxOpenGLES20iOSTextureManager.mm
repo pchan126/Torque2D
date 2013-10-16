@@ -32,7 +32,7 @@ GFXOpenGLES20iOSTextureManager::~GFXOpenGLES20iOSTextureManager()
 }
 
 
-std::shared_ptr<GFXTextureObject> GFXOpenGLES20iOSTextureManager::createTexture(GBitmap *bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp)
+std::shared_ptr<GFXTextureObject> GFXOpenGLES20iOSTextureManager::createTexture(GBitmapPtr &bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp)
 {
     AssertFatal(bmp, "GFXTextureManager::createTexture() - Got NULL bitmap!");
     
@@ -53,7 +53,7 @@ shared_ptr<GFXTextureObject> GFXOpenGLES20iOSTextureManager::_createTexture(GBit
         const String &resourceName,
         GFXTextureProfile *profile,
         bool deleteBmp,
-        GFXTextureObject *inObj)
+        GFXTexHandle inObj)
 {
     PROFILE_SCOPE( GFXOpenGLES20iOSTextureManager_CreateTexture_Bitmap );
     
@@ -266,7 +266,7 @@ GFXTexHandle GFXOpenGLES20iOSTextureManager::_createTextureObject(U32 height,
         U32 numMipLevels,
         bool forceMips,
         S32 antialiasLevel,
-        GFXTextureObject *inTex,
+        GFXTexHandle inTex,
         void *data)
 {
    AssertFatal(format >= 0 && format < GFXFormat_COUNT, "GFXOpenGLES20iOSTextureManager::_createTexture - invalid format!");

@@ -128,7 +128,7 @@ void GBitmap::deleteImage()
 //   pPalette = in_pPalette;
 //}
 
-void GBitmap::copyRect(const GBitmap *src, const RectI &srcRect, const Point2I &dstPt)
+void GBitmap::copyRect(GBitmap *src, const RectI &srcRect, const Point2I &dstPt)
 {
    if(src->getFormat() != getFormat())
       return;

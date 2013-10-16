@@ -25,7 +25,7 @@ protected:
 //    virtual GFXTextureObject* createTexture(  const String &path,
 //                                            GFXTextureProfile *profile ) { };
 
-    virtual GFXTexHandle createTexture(GBitmap *bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp);
+    virtual GFXTexHandle createTexture(GBitmapPtr &bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp);
 
     virtual GFXTexHandle createTexture(U32 width, U32 height, void *pixels, GFXFormat format, GFXTextureProfile *profile);
     
@@ -33,7 +33,7 @@ protected:
             const String &resourceName,
             GFXTextureProfile *profile,
             bool deleteBmp,
-            GFXTextureObject *inObj);
+            GFXTexHandle inObj);
     
    GFXTextureObject *_createTextureObject(   U32 height,
                                              U32 width,

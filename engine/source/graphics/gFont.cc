@@ -611,7 +611,7 @@ void GFont::addBitmap(PlatformFont::CharInfo &charInfo)
 
    mCurX = nextCurX;
 
-   GBitmap *bmp = mTextureSheets[mCurSheet]->getBitmap();
+   std::unique_ptr<GBitmap>& bmp = mTextureSheets[mCurSheet]->getBitmap();
 
    AssertFatal(bmp, "GFont::addBitmap - null texture sheet bitmap!");
    AssertFatal(bmp->getFormat() == GFXFormatA8, "GFont::addBitmap - cannot added characters to non-greyscale textures!");
@@ -646,7 +646,7 @@ void GFont::addSheet()
     char buf[30];
     dSprintf(buf, sizeof(buf), "newfont_%d", smSheetIdCount++);
 
-    GBitmap *bitmap = new GBitmap(TextureSheetSize, TextureSheetSize, false, GFXFormatA8);
+    GBitmapPtr bitmap = GBitmapPtr(new GBitmap(TextureSheetSize, TextureSheetSize, false, GFXFormatA8));
 
     // Set everything to transparent.
     U8 *bits = bitmap->getWritableBits();
@@ -964,10 +964,9 @@ bool GFont::read(std::iostream &io_rStream)
    
    for(i = 0; i < numSheets; i++)
    {
-       GBitmap *bmp = new GBitmap;
+       GBitmapPtr bmp = GBitmapPtr(new GBitmap);
        if(!bmp->readPNG(io_rStream))
        {
-           delete bmp;
            return false;
        }
 
@@ -1154,7 +1153,7 @@ void GFont::exportStrip(const char *fileName, U32 padding, U32 kerning)
 
       RectI ri(mCharInfoList[i].xOffset, mCharInfoList[i].yOffset, mCharInfoList[i].width, mCharInfoList[i].height );
       Point2I outRi(curWidth, padding + getBaseline() - mCharInfoList[i].yOrigin);
-      gb.copyRect(mTextureSheets[bitmap]->getBitmap(), ri, outRi); 
+      gb.copyRect(mTextureSheets[bitmap]->getBitmap().get(), ri, outRi);
 
       // Advance.
       curWidth +=  mCharInfoList[i].width + kerning + 2*padding;
@@ -1177,7 +1176,7 @@ void GFont::exportStrip(const char *fileName, U32 padding, U32 kerning)
 struct GlyphMap
 {
    U32 charId;
-   GBitmap *bitmap;
+   GBitmap* bitmap;
 };
 
 static S32 QSORT_CALLBACK GlyphMapCompare(const void *a, const void *b)
@@ -1200,7 +1199,7 @@ void GFont::importStrip(const char *fileName, U32 padding, U32 kerning)
    mTextureSheets.clear();
 
    //  Now, load the font strip.
-   GBitmap *strip = GBitmap::load(fileName);
+   GBitmapPtr strip = GBitmapPtr(GBitmap::load(fileName));
 
    if(!strip)
    {
@@ -1231,7 +1230,7 @@ void GFont::importStrip(const char *fileName, U32 padding, U32 kerning)
       // Copy the rect.
       RectI ri(curWidth, getBaseline() - mCharInfoList[i].yOrigin, glyphList.back().bitmap->mWidth, glyphList.back().bitmap->mHeight);
       Point2I outRi(0,0);
-      glyphList.back().bitmap->copyRect(strip, ri, outRi);
+      glyphList.back().bitmap->copyRect(strip.get(), ri, outRi);
 
       // Update glyph attributes.
       mCharInfoList[i].width = glyphList.back().bitmap->mWidth;
@@ -1305,7 +1304,7 @@ void GFont::importStrip(const char *fileName, U32 padding, U32 kerning)
       char buf[30];
       dSprintf(buf, sizeof(buf), "newfont_%d", smSheetIdCount++);
 
-      GBitmap *bitmap = new GBitmap(TextureSheetSize, TextureSheetSize, false, strip->getFormat());
+      GBitmapPtr bitmap = GBitmapPtr(new GBitmap(TextureSheetSize, TextureSheetSize, false, strip->getFormat()));
 
       // Set everything to transparent.
       U8 *bits = bitmap->getWritableBits();

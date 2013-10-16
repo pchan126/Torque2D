@@ -276,7 +276,7 @@ void FilterImageAsset::calculateImage( void )
         }
     }
 
-    GFXTextureTarget *texTarget = GFX->allocRenderToTextureTarget();
+    GFXTextureTargetRef = GFX->allocRenderToTextureTarget();
     mImageTextureHandle = TEXMGR->createTexture( texSize.width, texSize.height, GFXFormatR8G8B8A8, &GFXImageAssetTextureProfile, 0, 0 );
     texTarget->attachTexture(mImageTextureHandle);
 

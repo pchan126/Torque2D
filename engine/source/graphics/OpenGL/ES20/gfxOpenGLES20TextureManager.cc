@@ -32,7 +32,7 @@ GFXOpenGLES20TextureManager::~GFXOpenGLES20TextureManager()
 }
 
 
-std::shared_ptr<GFXTextureObject> GFXOpenGLES20TextureManager::createTexture(GBitmap *bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp)
+std::shared_ptr<GFXTextureObject> GFXOpenGLES20TextureManager::createTexture(GBitmapPtr &bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp)
 {
     AssertFatal(bmp, "GFXTextureManager::createTexture() - Got NULL bitmap!");
     
@@ -67,7 +67,7 @@ shared_ptr<GFXTextureObject> GFXOpenGLES20TextureManager::_createTexture(GBitmap
         const String &resourceName,
         GFXTextureProfile *profile,
         bool deleteBmp,
-        GFXTextureObject *inObj)
+        GFXTexHandle inObj)
 {
     PROFILE_SCOPE( GFXOpenGLES20TextureManager_CreateTexture_Bitmap );
     
