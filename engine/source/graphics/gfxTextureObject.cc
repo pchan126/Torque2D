@@ -36,6 +36,10 @@ GFXTexHandle BadTextureHandle;
 GFXTextureObject *GFXTextureObject::smHead = nullptr;
 U32 GFXTextureObject::smActiveTOCount = 0;
 
+GFXTexHandle GFXTextureObject::ZERO;
+GFXTexHandle GFXTextureObject::ONE;
+GFXTexHandle GFXTextureObject::ZUP;
+
 U32 GFXTextureObject::dumpActiveTOs()
 {
    if(!smActiveTOCount)

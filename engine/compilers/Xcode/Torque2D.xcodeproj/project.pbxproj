@@ -179,7 +179,6 @@
 		C54190A966963FE8076381C6 /* platformCursorController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C541991728D780A86C3583A4 /* platformCursorController.cpp */; };
 		C54190B9ACAC45C445D97C94 /* SceneWindow.cc in Sources */ = {isa = PBXBuildFile; fileRef = C54197E9FFD38025DF311F42 /* SceneWindow.cc */; };
 		C54190D07D6289A448D970B1 /* guiWindowCtrl.cc in Sources */ = {isa = PBXBuildFile; fileRef = C5419D014841258079CB0EBD /* guiWindowCtrl.cc */; };
-		C54190E0278112EB3DF00599 /* gfxTextureHandle.cc in Sources */ = {isa = PBXBuildFile; fileRef = C5419C69877D209BF3F44E7A /* gfxTextureHandle.cc */; };
 		C54190E6268673C32546CAF3 /* guiInspectorTypes.cc in Sources */ = {isa = PBXBuildFile; fileRef = C5419B7C6B2CFA3A4D29B684 /* guiInspectorTypes.cc */; };
 		C54190FCA2DF49305348A2E5 /* guiTabBookCtrl.cc in Sources */ = {isa = PBXBuildFile; fileRef = C5419A2B97388B64ACC0C237 /* guiTabBookCtrl.cc */; };
 		C5419105830BC0D00CADFEDD /* PNGImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C541967785C095B1296468EA /* PNGImage.cpp */; };
@@ -1041,7 +1040,6 @@
 		C541968770538647BA40F376 /* RemoteDebugger1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RemoteDebugger1.h; sourceTree = "<group>"; };
 		C541968AB49ED881872F94FD /* tamlCallbacks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tamlCallbacks.h; sourceTree = "<group>"; };
 		C541968C9393F3D8D3595227 /* platformMemory.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = platformMemory.cc; sourceTree = "<group>"; };
-		C5419696A2E7C40BDE572E73 /* gfxTextureHandle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxTextureHandle.h; sourceTree = "<group>"; };
 		C541969C7E5FB2F9E9FE13A0 /* mMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mMatrix.h; sourceTree = "<group>"; };
 		C541969E293FD49A8EA0E7EB /* unitTesting.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = unitTesting.cc; path = ../../../source/testing/unitTesting.cc; sourceTree = "<group>"; };
 		C54196A45DA0325EEDAEF965 /* guiFadeinBitmapCtrl.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiFadeinBitmapCtrl.cc; sourceTree = "<group>"; };
@@ -1349,7 +1347,6 @@
 		C5419C5B08DCEA9EB05CEC2E /* tamlXmlReader.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = tamlXmlReader.cc; path = xml/tamlXmlReader.cc; sourceTree = "<group>"; };
 		C5419C605235C5C718C9C722 /* SceneRenderState.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SceneRenderState.cc; sourceTree = "<group>"; };
 		C5419C65F4C0DEDABA38078A /* platformEndian.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformEndian.h; sourceTree = "<group>"; };
-		C5419C69877D209BF3F44E7A /* gfxTextureHandle.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxTextureHandle.cc; sourceTree = "<group>"; };
 		C5419C6CAC694ECC78626C67 /* RenderProxy.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderProxy.cc; sourceTree = "<group>"; };
 		C5419C74D46E814FBE3D25CD /* AnimationAsset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnimationAsset.h; sourceTree = "<group>"; };
 		C5419C7CDC397F734DAA1C23 /* Trigger.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Trigger.cc; sourceTree = "<group>"; };
@@ -2720,8 +2717,6 @@
 				C5419DBED15AB755E7DC6364 /* gfxStructs.h */,
 				C541980954FF9B57CD82EAA7 /* gfxTarget.cc */,
 				C54196DE89B2586353F98674 /* gfxTarget.h */,
-				C5419C69877D209BF3F44E7A /* gfxTextureHandle.cc */,
-				C5419696A2E7C40BDE572E73 /* gfxTextureHandle.h */,
 				C5419DA69BE9EBD9A270C030 /* gfxTextureManager.cc */,
 				C541932007207FF36A061ED9 /* gfxTextureManager.h */,
 				C54191C76BEA68CDE40C3C96 /* gfxTextureObject.cc */,
@@ -3591,7 +3586,6 @@
 				C5419BDE94A91D07CFFAB59D /* gfxStringEnumTranslate.cc in Sources */,
 				C54198552393439E4C323246 /* gfxStructs.cc in Sources */,
 				C5419F03236B8704DB4FE5FF /* gfxTarget.cc in Sources */,
-				C54190E0278112EB3DF00599 /* gfxTextureHandle.cc in Sources */,
 				C5419765BB7FF533CEDBB930 /* gfxTextureManager.cc in Sources */,
 				C54198070D102326E28AB728 /* gfxTextureObject.cc in Sources */,
 				C54196DDD0EA38BB1780CB45 /* gfxTextureProfile.cc in Sources */,

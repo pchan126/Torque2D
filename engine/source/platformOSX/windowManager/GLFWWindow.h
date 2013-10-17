@@ -21,7 +21,7 @@ public:
    virtual ~GLFWWindow();
 
    virtual GFXDevice *getGFXDevice() { return mDevice; }
-   virtual GFXWindowTarget *getGFXTarget() { return mTarget.get(); }
+   virtual GFXWindowTargetRef getGFXTarget() { return mTarget; }
    virtual void setVideoMode(const GFXVideoMode &mode);
    virtual const GFXVideoMode &getVideoMode() { return mCurrentMode; }
    

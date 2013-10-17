@@ -39,7 +39,8 @@ void Layer::setRenderTarget()
    RectI vPort = GFX->getViewport();
    texHandle = TEXMGR->createTexture(vPort.extent.x, vPort.extent.y, GFXFormatR8G8B8A8, &GFXLayerTextureProfile, 0, 0);
    texTarget->attachTexture(texHandle);
-   GFX->setActiveRenderTarget(texTarget);
+   GFXTargetRef temp = std::dynamic_pointer_cast<GFXTarget>(texHandle);
+   GFX->setActiveRenderTarget(temp);
 }
 
 //void Layer::drawRenderTarget()

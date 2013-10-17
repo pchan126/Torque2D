@@ -71,7 +71,7 @@ public:
    /// The cubemap to use when the texture type is
    /// set to Material::Cube.
    /// @see mTexType
-   GFXCubemap *mCubeMap;
+   GFXCubemapHandle mCubeMap;
 
    U32 mNumTex;
 
@@ -273,7 +273,7 @@ protected:
    String _getTexturePath(const String& filename);
 
    /// Loads the texture located at _getTexturePath(filename) and gives it the specified profile
-   std::shared_ptr<GFXTextureObject> _createTexture( const char *filename, GFXTextureProfile *profile );
+   GFXTexHandle _createTexture( const char *filename, GFXTextureProfile *profile );
 
    /// @name State blocks
    ///

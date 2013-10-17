@@ -52,7 +52,7 @@ bool NamedTexTarget::registerWithName( const String &name )
 
    mName = name;
    mIsRegistered = true;
-   smTargets.insert( mName, this );
+   smTargets.insert( mName, shared_from_this());
    return true;
 }
 
@@ -64,7 +64,7 @@ void NamedTexTarget::unregister()
    TargetMap::iterator iter = smTargets.find( mName );
 
    AssertFatal( iter != smTargets.end() &&
-                iter->second == this,
+                iter->second == shared_from_this(),
       "NamedTexTarget::unregister - Bad registration!" );
 
    mIsRegistered = false;
@@ -72,7 +72,7 @@ void NamedTexTarget::unregister()
    smTargets.erase( iter );
 }
 
-NamedTexTarget* NamedTexTarget::find( const String &name )
+NamedTexTargetRef NamedTexTarget::find(const String &name)
 {
    PROFILE_SCOPE( NamedTexTarget_find );
 

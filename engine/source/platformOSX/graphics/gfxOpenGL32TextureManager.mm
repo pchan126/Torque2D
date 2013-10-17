@@ -218,7 +218,6 @@ GFXTexHandle GFXOpenGL32TextureManager::_createTexture(GBitmap *bmp,
    if(profile->doStoreBitmap())
    {
       // NOTE: may store a downscaled copy!
-      SAFE_DELETE( ret->mBitmap );
       ret->mBitmap = new GBitmap( *realBmp );
    }
    

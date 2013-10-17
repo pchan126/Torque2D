@@ -138,8 +138,8 @@ void GFXOpenGLTextureTarget::attachTexture(GFXTexHandle &tex, RenderSlot slot, U
    invalidateState();
 
    // We stash the texture and info into an internal struct.
-   GFXOpenGLTextureObject* glTexture = static_cast<GFXOpenGLTextureObject*>(tex);
-   if(tex && tex != GFXTextureTarget::sDefaultDepthStencil)
+   GFXOpenGLTextureObject* glTexture = static_cast<GFXOpenGLTextureObject*>(tex.get());
+   if(tex && tex.get() != GFXTextureTarget::sDefaultDepthStencil)
       mTargets[slot] = std::unique_ptr<_GFXOpenGLTargetDesc>(new _GFXOpenGLTextureTargetDesc(glTexture, mipLevel, zOffset));
    else
       mTargets[slot] = nullptr;

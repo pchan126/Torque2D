@@ -23,25 +23,27 @@
 #ifndef _MATTEXTURETARGET_H_
 #define _MATTEXTURETARGET_H_
 
+#include <memory>
+class NamedTexTarget;
+typedef std::shared_ptr<NamedTexTarget> NamedTexTargetRef;
+
 #include "collection/hashTable.h"
 #include "sim/refBase.h"
 #include "graphics/gfxTextureObject.h"
 #include "math/mRect.h"
 #include "graphics/gfxStateBlock.h"
 #include "delegates/delegate.h"
-#include <memory>
 
 struct GFXShaderMacro;
 //class ConditionerFeature;
 
-
 ///
-class NamedTexTarget
+class NamedTexTarget: public std::enable_shared_from_this<NamedTexTarget>
 {
 public:
    
    ///
-   static NamedTexTarget* find( const String &name );
+   static NamedTexTargetRef find(const String &name);
 
    ///
    NamedTexTarget();
@@ -108,7 +110,7 @@ public:
 
 protected:
    
-   typedef HashMap<String,NamedTexTarget*> TargetMap;
+   typedef HashMap<String,NamedTexTargetRef> TargetMap;
 
    ///
    static TargetMap smTargets;
@@ -144,9 +146,5 @@ inline GFXTexHandle NamedTexTarget::getTexture( U32 index ) const
 
    return GFXTexHandle(mTexDelegate( index ));
 }
-
-
-/// A weak reference to a texture target.
-typedef std::weak_ptr<NamedTexTarget> NamedTexTargetRef;
 
 #endif // _MATTEXTURETARGET_H_

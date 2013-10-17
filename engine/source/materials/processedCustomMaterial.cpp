@@ -144,7 +144,7 @@ void ProcessedCustomMaterial::_setStageData()
       if (filename.substr( 0, 1 ).equal("#"))
       {
          String texTargetBufferName = filename.substr(1, filename.length() - 1);
-         NamedTexTarget *texTarget = NamedTexTarget::find( texTargetBufferName ); 
+         NamedTexTargetRef texTarget = NamedTexTarget::find( texTargetBufferName ); 
          rpd->mTexSlot[i].texTarget = texTarget;
 
          // Get the conditioner macros.
@@ -180,7 +180,7 @@ void ProcessedCustomMaterial::_setStageData()
    // one and add its macros.
    if ( mCustomMaterial->mOutputTarget.isNotEmpty() )
    {
-      NamedTexTarget *texTarget = NamedTexTarget::find( mCustomMaterial->mOutputTarget );
+      NamedTexTargetRef texTarget = NamedTexTarget::find( mCustomMaterial->mOutputTarget );
       if ( texTarget )
          texTarget->getShaderMacros( &mConditionerMacros );
    }
@@ -288,9 +288,9 @@ bool ProcessedCustomMaterial::setupPass( SceneRenderState *state, const SceneDat
    _setTextureTransforms(pass);
    _setShaderConstants(state, sgData, pass);
 
-   LightManager* lm = state ? LIGHTMGR : NULL;
+   LightManager* lm = state ? LIGHTMGR : nullptr;
    if (lm)
-      lm->setLightInfo(this, NULL, sgData, state, pass, shaderConsts);
+      lm->setLightInfo(this, nullptr, sgData, state, pass, shaderConsts);
 
    shaderConsts->setSafe(rpd->shaderHandles.mAccumTimeSC, MATMGR->getTotalTime());   
 
@@ -299,13 +299,13 @@ bool ProcessedCustomMaterial::setupPass( SceneRenderState *state, const SceneDat
 
 void ProcessedCustomMaterial::setTextureStages( SceneRenderState *state, const SceneData &sgData, U32 pass )
 {      
-   LightManager* lm = state ? LIGHTMGR : NULL;   
+   LightManager* lm = state ? LIGHTMGR : nullptr;   
    ShaderRenderPassData* rpd = _getRPD(pass);
    ShaderConstHandles* handles = _getShaderConstHandles(pass);
    GFXShaderConstBuffer* shaderConsts = _getShaderConstBuffer(pass);
 
-   const NamedTexTarget *texTarget;
-   GFXTextureObject *texObject; 
+   NamedTexTargetRef texTarget;
+   GFXTexHandle texObject;
    
    for( U32 i=0; i<mMaxTex; i++ )
    {            
@@ -375,7 +375,7 @@ void ProcessedCustomMaterial::setTextureStages( SceneRenderState *state, const S
                texTarget = rpd->mTexSlot[i].texTarget;
                if ( !texTarget )
                {
-                  GFX->setTexture( samplerRegister, NULL );
+                  GFX->setTexture( samplerRegister, nullptr );
                   break;
                }
                
@@ -385,7 +385,7 @@ void ProcessedCustomMaterial::setTextureStages( SceneRenderState *state, const S
                // black texture to it.  This at least will ensure that
                // we get consistant behavior across GPUs and platforms.
                if ( !texObject )
-                  texObject = std::shared_ptr<GFXTextureObject>::ZERO;
+                  texObject = GFXTextureObject::ZERO;
 
                if ( handles->mRTParamsSC[samplerRegister]->isValid() && texObject )
                {

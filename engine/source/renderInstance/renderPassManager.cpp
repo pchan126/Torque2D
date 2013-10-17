@@ -269,7 +269,7 @@ GFXTextureObject *RenderPassManager::getDepthTargetTexture()
       
       if( GFX->getAdapterType() == OpenGL )
       {
-         GFXTarget* activeRT = GFX->getActiveRenderTarget();
+         GFXTargetRef activeRT = GFX->getActiveRenderTarget();
          AssertFatal( activeRT, "Must be an active render target to call 'getDepthTargetTexture'" );
          
          Point2I activeRTSize = activeRT->getSize();

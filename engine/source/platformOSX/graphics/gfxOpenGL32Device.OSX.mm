@@ -64,12 +64,12 @@ void GFXOpenGL32Device::initGLState()
 // Matrix interface
 GFXOpenGL32Device::GFXOpenGL32Device( U32 adapterIndex )  : GFXOpenGLDevice( adapterIndex ),
                         mAdapterIndex(adapterIndex),
-                        mCurrentVB(NULL),
+                        mCurrentVB(nullptr),
                         mContext(nil),
-                        mPixelFormat(NULL),
+                        mPixelFormat(nullptr),
                         mPixelShaderVersion(0.0f),
                         mClip(0, 0, 0, 0),
-                        mTextureLoader(NULL)
+                        mTextureLoader(nullptr)
 {
     GFXOpenGLEnumTranslate::init();
 
@@ -306,24 +306,24 @@ void GFXOpenGL32Device::setTextureInternal(U32 textureUnit, GFXTextureObject *te
 ////------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
-GFXWindowTarget *GFXOpenGL32Device::allocWindowTarget(PlatformWindow *window)
+GFXWindowTargetRef GFXOpenGL32Device::allocWindowTarget(PlatformWindow *window)
 {
    GLFWWindow* thewindow = dynamic_cast<GLFWWindow*>(window);
 
-   if (thewindow == NULL)
-      return NULL;
+   if (thewindow == nullptr)
+      return nullptr;
    
     // Allocate the wintarget and create a new context.
     GFXOpenGL32WindowTarget *gwt = new GFXOpenGL32WindowTarget(thewindow, this);
-    return gwt;
+    return GFXWindowTargetRef(gwt);
 }
 
 
-GFXTextureTarget * GFXOpenGL32Device::allocRenderToTextureTarget()
+GFXTextureTargetRef GFXOpenGL32Device::allocRenderToTextureTarget()
 {
     GFXOpenGL32TextureTarget *targ = new GFXOpenGL32TextureTarget();
     targ->registerResourceWithDevice(this);
-    return targ;
+    return GFXTextureTargetRef(targ);
 }
 
 void GFXOpenGL32Device::initGenericShaders()
@@ -446,7 +446,7 @@ void GFXOpenGL32Device::_updateRenderTargets()
         if ( mRTDeactivate )
         {
             mRTDeactivate->deactivate();
-            mRTDeactivate = NULL;
+            mRTDeactivate = nullptr;
         }
         
         // NOTE: The render target changes is not really accurate
@@ -464,7 +464,7 @@ void GFXOpenGL32Device::_updateRenderTargets()
         else
         {
             GFXOpenGL32WindowTarget *win = dynamic_cast<GFXOpenGL32WindowTarget*>( mCurrentRT.get() );
-            AssertFatal( win != NULL,
+            AssertFatal( win != nullptr,
                         "GFXOpenGL32Device::_updateRenderTargets() - invalid target subclass passed!" );
 
             win->makeActive();

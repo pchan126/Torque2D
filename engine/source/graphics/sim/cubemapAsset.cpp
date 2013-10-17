@@ -180,7 +180,8 @@ void CubemapAsset::createMap()
          {
             if( !mCubeFaceFile[i].isEmpty() )
             {
-               if(!mCubeFace[i].set(mCubeFaceFile[i], &GFXDefaultStaticDiffuseProfile, avar("%s() - mCubeFace[%d] (line %d)", __FUNCTION__, i, __LINE__) ))
+               mCubeFace[i] = GFXTextureObject::create(mCubeFaceFile[i], &GFXDefaultStaticDiffuseProfile, avar("%s() - mCubeFace[%d] (line %d)", __FUNCTION__, i, __LINE__) );
+               if(!mCubeFace[i])
                {
                   Con::errorf("CubemapAsset::createMap - Failed to load texture '%s'", mCubeFaceFile[i].c_str());
                   initSuccess = false;
@@ -190,7 +191,7 @@ void CubemapAsset::createMap()
 
          if( initSuccess )
          {
-            mCubemap = GFX->createCubemap();
+            mCubemap = GFXCubemapHandle(GFX->createCubemap());
             mCubemap->initStatic( mCubeFace );
          }
       }
@@ -302,7 +303,8 @@ void CubemapAsset::updateFaces()
    {
       if( !mCubeFaceFile[i].isEmpty() )
       {
-         if(!mCubeFace[i].set(mCubeFaceFile[i], &GFXDefaultStaticDiffuseProfile, avar("%s() - mCubeFace[%d] (line %d)", __FUNCTION__, i, __LINE__) ))
+          mCubeFace[i] = GFXTextureObject::create(mCubeFaceFile[i], &GFXDefaultStaticDiffuseProfile, avar("%s() - mCubeFace[%d] (line %d)", __FUNCTION__, i, __LINE__) );
+         if(!mCubeFace[i])
          {
 				initSuccess = false;
             Con::errorf("CubemapAsset::createMap - Failed to load texture '%s'", mCubeFaceFile[i].c_str());
@@ -313,7 +315,7 @@ void CubemapAsset::updateFaces()
 	if( initSuccess )
 	{
 		mCubemap = nullptr;
-		mCubemap = GFX->createCubemap();
+		mCubemap = GFXCubemapHandle(GFX->createCubemap());
 
 		mCubemap->initStatic( mCubeFace );
 	}

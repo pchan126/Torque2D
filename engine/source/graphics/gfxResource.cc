@@ -25,8 +25,8 @@
 
 GFXResource::GFXResource()
 {
-   mPrevResource = mNextResource = NULL;
-   mOwningDevice = NULL;
+   mPrevResource = mNextResource = nullptr;
+   mOwningDevice = nullptr;
    mFlagged = false;
 }
 
@@ -35,7 +35,7 @@ GFXResource::~GFXResource()
    // Make sure we're not the head of the list and referencd on the device.
    if(mOwningDevice && mOwningDevice->mResourceListHead == this)
    {
-      AssertFatal(mPrevResource == NULL, 
+      AssertFatal(mPrevResource == nullptr, 
          "GFXResource::~GFXResource - head of list but have a previous item!");
       mOwningDevice->mResourceListHead = mNextResource;
    }
@@ -46,7 +46,7 @@ GFXResource::~GFXResource()
    if(mNextResource)
       mNextResource->mPrevResource = mPrevResource;
 
-   mPrevResource = mNextResource = NULL;
+   mPrevResource = mNextResource = nullptr;
 }
 
 void GFXResource::registerResourceWithDevice( GFXDevice *device )

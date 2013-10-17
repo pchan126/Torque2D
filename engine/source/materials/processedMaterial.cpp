@@ -46,7 +46,7 @@ void RenderPassData::reset()
    dMemset( &mTexSlot, 0, sizeof(mTexSlot) );
    dMemset( &mTexType, 0, sizeof(mTexType) );
 
-   mCubeMap = NULL;
+   mCubeMap = nullptr;
    mNumTex = mNumTexReg = mStageNum = 0;
    mGlow = false;
    mBlendOp = Material::None;
@@ -54,7 +54,7 @@ void RenderPassData::reset()
    mFeatureData.clear();
 
    for (U32 i = 0; i < STATE_MAX; i++)
-      mRenderStates[i] = NULL;
+      mRenderStates[i] = nullptr;
 }
 
 String RenderPassData::describeSelf() const
@@ -66,7 +66,10 @@ String RenderPassData::describeSelf() const
    for ( U32 i=0; i < Material::MAX_TEX_PER_PASS; i++ )
    {
       if ( mTexType[i] == Material::TexTarget )
+      {
+
          texName = ( mTexSlot[i].texTarget ) ? mTexSlot[i].texTarget->getName() : "null_texTarget";
+      }
       else if ( mTexType[i] == Material::Cube && mCubeMap )
          texName = mCubeMap->getPath();
       else if ( mTexSlot[i].texObject )
@@ -86,13 +89,13 @@ String RenderPassData::describeSelf() const
 }
 
 ProcessedMaterial::ProcessedMaterial()
-:  mMaterial( NULL ),
-   mCurrentParams( NULL ),
+:  mMaterial( nullptr ),
+   mCurrentParams( nullptr ),
    mHasSetStageData( false ),
    mHasGlow( false ),   
    mMaxStages( 0 ),
-   mVertexFormat( NULL ),
-   mUserObject( NULL )
+   mVertexFormat( nullptr ),
+   mUserObject( nullptr )
 {
    VECTOR_SET_ASSOCIATION( mPasses );
 }
@@ -168,9 +171,9 @@ String ProcessedMaterial::_getTexturePath(const String& filename)
    return mMaterial->getPath() + filename;
 }
 
-std::shared_ptr<GFXTextureObject> ProcessedMaterial::_createTexture( const char* filename, GFXTextureProfile *profile)
+GFXTexHandle ProcessedMaterial::_createTexture( const char* filename, GFXTextureProfile *profile)
 {
-   return std::shared_ptr<GFXTextureObject>( _getTexturePath(filename), profile, avar("%s() - NA (line %d)", __FUNCTION__, __LINE__) );
+   return GFXTextureObject::create( _getTexturePath(filename), profile, avar("%s() - NA (line %d)", __FUNCTION__, __LINE__) );
 }
 
 void ProcessedMaterial::addStateBlockDesc(const GFXStateBlockDesc& sb)
@@ -235,7 +238,7 @@ void ProcessedMaterial::_initPassStateBlock( RenderPassData *rpd, GFXStateBlockD
    }
 
    result.samplersDefined = true;
-   NamedTexTarget *texTarget;
+   NamedTexTargetRef texTarget;
 
    U32 maxAnisotropy = 1;
    if ( mMaterial->mUseAnisotropic[ rpd->mStageNum ] )
@@ -468,7 +471,7 @@ void ProcessedMaterial::_setStageData()
 
 	mMaterial->mCubemapAsset = dynamic_cast<CubemapAsset*>(Sim::findObject( mMaterial->mCubemapName ));
 	if( !mMaterial->mCubemapAsset )
-		mMaterial->mCubemapAsset = NULL;
+		mMaterial->mCubemapAsset = nullptr;
 		
 		
    // If we have a cubemap put it on stage 0 (cubemaps only supported on stage 0)

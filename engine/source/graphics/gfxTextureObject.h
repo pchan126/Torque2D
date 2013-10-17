@@ -117,7 +117,7 @@ public:
 
    // These two should be removed, and replaced by a reference to a resource
    // object, or data buffer. Something more generic. -patw
-   std::unique_ptr<GBitmap>          mBitmap;   ///< GBitmap we are backed by.
+   GBitmapPtr          mBitmap;   ///< GBitmap we are backed by.
     
    U32 getFormatByteSize() const { return GFXFormat_getByteSize( mFormat ); }
 
@@ -127,7 +127,7 @@ public:
    GFXTextureObject(GFXDevice * aDevice, GFXTextureProfile *profile);
    virtual ~GFXTextureObject();
 
-   virtual std::unique_ptr<GBitmap> & getBitmap() {return mBitmap;}
+   virtual GBitmapPtr& getBitmap() {return mBitmap;}
 
    U32 getWidth() const { return mTextureSize.x; }
    U32 getHeight() const { return mTextureSize.y; }
@@ -227,6 +227,17 @@ public:
     static GFXTexHandle create( const String &texName, GFXTextureProfile *profile, const String &desc );
     static GFXTexHandle create(GBitmap *bmp, GFXTextureProfile *profile, bool deleteBmp, const String &desc);
     static GFXTexHandle create( U32 width, U32 height, GFXFormat format, GFXTextureProfile *profile, const String &desc, U32 numMipLevels = 1, S32 antialiasLevel = 0);
+
+    /// Helper 2x2 R8G8B8A8 texture filled with 0.
+    static GFXTexHandle ZERO;
+
+    /// Helper 2x2 R8G8B8A8 texture filled with 255.
+    static GFXTexHandle ONE;
+
+    /// Helper 2x2 R8G8B8A8 normal map texture filled
+    /// with 128, 128, 255.
+    static GFXTexHandle ZUP;
+
 };
 
 extern std::shared_ptr<GFXTextureObject> BadTextureHandle;
