@@ -59,7 +59,7 @@ void GFXCubemap::initNormalize( U32 size )
 
    for(U32 i=0; i<6; i++)
    {
-      std::shared_ptr<GFXTextureObject> &tex = faces[i];
+      GFXTexHandle &tex = faces[i];
       GBitmap *bitmap = new GBitmap(size, size);
 
       // fill in...
@@ -84,7 +84,7 @@ void GFXCubemap::initNormalize( U32 size )
          }
       }
 
-      tex.set(bitmap, &GFXDefaultStaticDiffuseProfile, true, "Cubemap");
+      tex = GFXTextureObject::create(bitmap, &GFXDefaultStaticDiffuseProfile, true, "Cubemap");
    }
 
    initStatic(faces);

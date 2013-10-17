@@ -68,7 +68,7 @@ public:
    ///
    static U32 getTextureDownscalePower( GFXTextureProfile *profile );
 
-   virtual GFXTexHandle createTexture(GBitmapPtr &bmp,
+   virtual GFXTexHandle createTexture(GBitmap *bmp,
            const String &resourceName,
            GFXTextureProfile *profile,
            bool deleteBmp);

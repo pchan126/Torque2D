@@ -357,7 +357,7 @@ void GFXDevice::setTexture(U32 stage, GFXTexHandle texture)
 //-----------------------------------------------------------------------------
 // Set cube texture
 //-----------------------------------------------------------------------------
-void GFXDevice::setCubeTexture(U32 stage, GFXCubemapHandle &texture)
+void GFXDevice::setCubeTexture(U32 stage, GFXCubemapHandle texture)
 {
    AssertFatal(stage < getNumSamplers(), "GFXDevice::setTexture - out of range stage!");
 

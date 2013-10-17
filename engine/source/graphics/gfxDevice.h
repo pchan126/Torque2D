@@ -720,7 +720,7 @@ public:
 
    ///
    void setTexture(U32 stage, GFXTexHandle texture);
-   void setCubeTexture(U32 stage, GFXCubemapHandle &cubemap);
+   void setCubeTexture(U32 stage, GFXCubemapHandle cubemap);
    inline GFXTextureObject* getCurrentTexture( U32 stage ) { return mCurrentTexture[stage].get(); }
 
    /// @}

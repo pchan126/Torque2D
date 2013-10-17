@@ -221,7 +221,7 @@ GFXTexHandle GFXTextureManager::_lookupTexture(const char *hashName, const GFXTe
 }
 
 
-GFXTexHandle GFXTextureManager::createTexture(GBitmapPtr &bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp)
+GFXTexHandle GFXTextureManager::createTexture(GBitmap *bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp)
 {
    AssertFatal(bmp, "GFXTextureManager::createTexture() - Got NULL bitmap!");
 
@@ -362,7 +362,7 @@ GFXTexHandle GFXTextureManager::_createTexture(GBitmap *bmp,
    if(profile->doStoreBitmap())
    {
       // NOTE: may store a downscaled copy!
-     ret->mBitmap = new GBitmap( *realBmp );
+     ret->mBitmap = GBitmapPtr(new GBitmap( *realBmp ));
    }
 
    if ( !inObj )

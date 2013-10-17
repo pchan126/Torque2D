@@ -318,7 +318,7 @@ void GFXOpenGLDevice::drawIndexedPrimitive(   GFXPrimitiveType primType,
 
 void GFXOpenGLDevice::setClipRect( const RectI &inRect )
 {
-    AssertFatal(mCurrentRT.isValid(), "GFXOpenGLDevice::setClipRect - must have a render target set to do any rendering operations!");
+    AssertFatal(mCurrentRT, "GFXOpenGLDevice::setClipRect - must have a render target set to do any rendering operations!");
     
     // Clip the rect against the renderable size.
     Point2I size = mCurrentRT->getSize();
@@ -413,14 +413,14 @@ void GFXOpenGLDevice::setShader( GFXShader *shader )
     }
 //    else
 //    {
-//        mpCurrentShader = NULL;
+//        mpCurrentShader = nullptr;
 //        glUseProgram(0);
 //    }
 }
 
 void GFXOpenGLDevice::disableShaders()
 {
-//    mpCurrentShader = NULL;
+//    mpCurrentShader = nullptr;
 //    glUseProgram(0);
 }
 
@@ -507,7 +507,7 @@ void GFXOpenGLDevice::setStateBlockInternal(GFXStateBlock* block, bool force)
     GFXOpenGLStateBlock* glBlock = static_cast<GFXOpenGLStateBlock*>(block);
     GFXOpenGLStateBlock* glCurrent = static_cast<GFXOpenGLStateBlock*>(mCurrentStateBlock.getPointer());
     if (force)
-        glCurrent = NULL;
+        glCurrent = nullptr;
 
     const GFXStateBlockDesc& desc = glBlock->getDesc();
 
@@ -713,16 +713,16 @@ void GFXOpenGLDevice::updateStates(bool forceSetAll /*=false*/)
                 case GFXTDT_Normal :
                 {
                     mCurrentTexture[i] = mNewTexture[i];
-                    setTextureInternal(i, mCurrentTexture[i]);
+                    setTextureInternal(i, mCurrentTexture[i].get());
                 }
                     break;
                 case GFXTDT_Cube :
                 {
                     mCurrentCubemap[i] = mNewCubemap[i];
                     if (mCurrentCubemap[i])
-                       static_cast<GFXOpenGLCubemap*>(mCurrentCubemap[i].getPointer())->setToTexUnit(i);
+                       static_cast<GFXOpenGLCubemap*>(mCurrentCubemap[i].get())->setToTexUnit(i);
                     else
-                        setTextureInternal(i, NULL);
+                        setTextureInternal(i, nullptr);
                 }
                     break;
                 default:
@@ -800,16 +800,16 @@ void GFXOpenGLDevice::updateStates(bool forceSetAll /*=false*/)
                 case GFXTDT_Normal :
                 {
                     mCurrentTexture[i] = mNewTexture[i];
-                    setTextureInternal(i, mCurrentTexture[i]);
+                    setTextureInternal(i, mCurrentTexture[i].get());
                 }
                     break;
                 case GFXTDT_Cube :
                 {
                     mCurrentCubemap[i] = mNewCubemap[i];
                     if (mCurrentCubemap[i])
-                        static_cast<GFXOpenGLCubemap*>(mCurrentCubemap[i].getPointer())->setToTexUnit(i);
+                        static_cast<GFXOpenGLCubemap*>(mCurrentCubemap[i].get())->setToTexUnit(i);
                     else
-                        setTextureInternal(i, NULL);
+                        setTextureInternal(i, nullptr);
                 }
                     break;
                 default:

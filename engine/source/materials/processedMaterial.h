@@ -57,7 +57,7 @@ public:
       /// This is the default type of texture which 
       /// is valid with most texture types.
       /// @see mTexType
-      std::shared_ptr<GFXTextureObject> texObject;
+      GFXTexHandle texObject;
 
       /// Only valid when the texture type is set 
       /// to Material::TexTarget.

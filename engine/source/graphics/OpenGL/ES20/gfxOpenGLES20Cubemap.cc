@@ -16,7 +16,7 @@ GFXOpenGLES20Cubemap::GFXOpenGLES20Cubemap()
 {
    mBinding = (GL_TEXTURE_CUBE_MAP);
    for(U32 i = 0; i < 6; i++)
-      mTextures[i] = NULL;
+      mTextures[i] = nullptr;
    
    GFXTextureManager::addEventDelegate( this, &GFXOpenGLES20Cubemap::_onTextureEvent );
 }
@@ -46,7 +46,7 @@ void GFXOpenGLES20Cubemap::initDynamic(U32 texSize, GFXFormat faceFormat)
    for(U32 i = 0; i < 6; i++)
    {
       glTexImage2D(  faceList[i], 0, GFXGLTextureInternalFormat[faceFormat], texSize, texSize, 
-                     0, GFXGLTextureFormat[faceFormat], GFXGLTextureType[faceFormat], NULL);
+                     0, GFXGLTextureFormat[faceFormat], GFXGLTextureType[faceFormat], nullptr);
    }
    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
@@ -93,14 +93,14 @@ void GFXOpenGLES20Cubemap::fillCubeTextures(std::shared_ptr<GFXTextureObject>* f
    
    for(U32 i = 0; i < 6; i++)
    {
-      AssertFatal(faces[i], avar("GFXOpenGLES20Cubemap::fillCubeFaces - texture %i is NULL!", i));
+      AssertFatal(faces[i], avar("GFXOpenGLES20Cubemap::fillCubeFaces - texture %i is nullptr!", i));
       AssertFatal((faces[i]->getWidth() == reqWidth) && (faces[i]->getHeight() == reqHeight), "GFXOpenGLES20Cubemap::fillCubeFaces - All textures must have identical dimensions!");
       AssertFatal(faces[i]->getFormat() == regFaceFormat, "GFXOpenGLES20Cubemap::fillCubeFaces - All textures must have identical formats!");
       
       mTextures[i] = faces[i];
       GFXFormat faceFormat = faces[i]->getFormat();
       
-      GFXOpenGLES20TextureObject* glTex = static_cast<GFXOpenGLES20TextureObject*>(faces[i].getPointer());
+      GFXOpenGLES20TextureObject* glTex = static_cast<GFXOpenGLES20TextureObject*>(faces[i].get());
       U8* buf = glTex->getTextureData();
       glTexImage2D(faceList[i], 0, GFXGLTextureInternalFormat[faceFormat], faces[i]->getWidth(), faces[i]->getHeight(),
                    0, GFXGLTextureFormat[faceFormat], GFXGLTextureType[faceFormat], buf);

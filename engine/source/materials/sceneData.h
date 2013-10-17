@@ -53,10 +53,10 @@ struct SceneData
    BinType binType;
 
    // textures
-   GFXTextureObject *lightmap;
-   GFXTextureObject *backBuffTex;
-   GFXTextureObject *reflectTex;
-   GFXTextureObject *miscTex;
+    GFXTexHandle lightmap;
+    GFXTexHandle backBuffTex;
+    GFXTexHandle reflectTex;
+    GFXTexHandle miscTex;
    
    /// The current lights to use in rendering
    /// in order of the light importance.

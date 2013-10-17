@@ -475,7 +475,7 @@ void ProcessedMaterial::_setStageData()
    if( mMaterial->mCubemapAsset )
    {
       mMaterial->mCubemapAsset->createMap();
-      mStages[0].setCubemap( mMaterial->mCubemapAsset->mCubemap ); 
+      mStages[0].setCubemap( mMaterial->mCubemapAsset->mCubemap.get() );
       if ( !mStages[0].getCubemap() )
          Con::errorf("Failed to load cubemap");
    }

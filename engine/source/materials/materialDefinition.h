@@ -46,7 +46,7 @@ class Material : public BaseMaterialDefinition
 {
    typedef BaseMaterialDefinition Parent;
 public:
-   static GFXCubemap *GetNormalizeCube();
+   static GFXCubemapHandle& GetNormalizeCube();
 
    //-----------------------------------------------------------------------
    // Enums
@@ -142,7 +142,7 @@ public:
       }
 
       /// Assigns a texture object by feature type.
-      inline void setTex(const FeatureType &type, GFXTexHandle &tex)
+      inline void setTex(const FeatureType &type, GFXTexHandle tex)
       {
          if ( !tex )
          {

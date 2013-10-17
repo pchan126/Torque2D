@@ -71,7 +71,7 @@ GFXOpenGLES20iOSDevice::GFXOpenGLES20iOSDevice( U32 adapterIndex ) : GFXOpenGLES
                     mContext(nil),
                     mCIContext(nil),
                     mClip(0, 0, 0, 0),
-                    mTextureLoader(NULL)
+                    mTextureLoader(nullptr)
 {
     GFXGLES20iOSEnumTranslate::init();
 }
@@ -335,7 +335,7 @@ GFXWindowTargetRef GFXOpenGLES20iOSDevice::allocWindowTarget(PlatformWindow *win
     gwt->mContext = this->mContext;
     
     // And return...
-    return gwt;
+    return GFXWindowTargetRef(gwt);
 }
 
 
@@ -343,7 +343,7 @@ GFXTextureTargetRef GFXOpenGLES20iOSDevice::allocRenderToTextureTarget()
 {
     GFXOpenGLES20TextureTarget *targ = new GFXOpenGLES20TextureTarget();
     targ->registerResourceWithDevice(this);
-    return targ;
+    return GFXTextureTargetRef(targ);
 }
 
 
@@ -466,7 +466,7 @@ void GFXOpenGLES20iOSDevice::_updateRenderTargets()
         if ( mRTDeactivate )
         {
             mRTDeactivate->deactivate();
-            mRTDeactivate = NULL;
+            mRTDeactivate = nullptr;
         }
         
         // NOTE: The render target changes is not really accurate
@@ -475,7 +475,7 @@ void GFXOpenGLES20iOSDevice::_updateRenderTargets()
         // to SetRenderTarget on the actual device.
         //      mDeviceStatistics.mRenderTargetChanges++;
 
-        GFXOpenGLES20TextureTarget *tex = dynamic_cast<GFXOpenGLES20TextureTarget*>( mCurrentRT.getPointer() );
+        GFXOpenGLES20TextureTarget *tex = dynamic_cast<GFXOpenGLES20TextureTarget*>( mCurrentRT.get() );
         if ( tex )
         {
             tex->applyState();
@@ -483,8 +483,8 @@ void GFXOpenGLES20iOSDevice::_updateRenderTargets()
         }
         else
         {
-            GFXOpenGLES20iOSWindowTarget *win = dynamic_cast<GFXOpenGLES20iOSWindowTarget*>( mCurrentRT.getPointer() );
-            AssertFatal( win != NULL,
+            GFXOpenGLES20iOSWindowTarget *win = dynamic_cast<GFXOpenGLES20iOSWindowTarget*>( mCurrentRT.get() );
+            AssertFatal( win != nullptr,
                         "GFXOpenGLES20iOSDevice::_updateRenderTargets() - invalid target subclass passed!" );
             
             win->makeActive();

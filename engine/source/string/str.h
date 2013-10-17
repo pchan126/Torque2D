@@ -259,7 +259,6 @@ public:
       U32   _len;                //< Len of the formatted string
    };
 
-private:
    String(std::string str)
       : _string( str ) {}
 

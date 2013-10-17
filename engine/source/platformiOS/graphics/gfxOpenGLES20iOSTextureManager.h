@@ -27,7 +27,7 @@ protected:
     virtual GFXTexHandle createTexture(const String &fullPath,
            GFXTextureProfile *profile);
 
-    virtual GFXTexHandle createTexture(GBitmapPtr &bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp);
+    virtual GFXTexHandle createTexture(GBitmap *bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp);
 
    GFXTexHandle _createTexture(GBitmap *bmp,
            const String &resourceName,

@@ -276,12 +276,13 @@ void FilterImageAsset::calculateImage( void )
         }
     }
 
-    GFXTextureTargetRef = GFX->allocRenderToTextureTarget();
+    GFXTextureTargetRef texTarget = GFX->allocRenderToTextureTarget();
     mImageTextureHandle = TEXMGR->createTexture( texSize.width, texSize.height, GFXFormatR8G8B8A8, &GFXImageAssetTextureProfile, 0, 0 );
     texTarget->attachTexture(mImageTextureHandle);
 
-    GFXTarget *oldTarget = GFX->getActiveRenderTarget();
-    device->setActiveRenderTarget(texTarget);
+    GFXTargetRef oldTarget = GFX->getActiveRenderTarget();
+    GFXTargetRef newTarget = std::dynamic_pointer_cast<GFXTarget>(texTarget);
+    device->setActiveRenderTarget(newTarget);
 
     CGRect rect = CGRectMake(0, 0, texSize.width, texSize.height);
 

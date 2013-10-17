@@ -60,7 +60,7 @@ GFX_ImplementTextureProfile(GFXDefaultZTargetProfile,
 
 //-----------------------------------------------------------------------------
 
-GFXTextureProfile *GFXTextureProfile::smHead = NULL;
+GFXTextureProfile *GFXTextureProfile::smHead = nullptr;
 U32 GFXTextureProfile::smProfileCount = 0;
 
 GFXTextureProfile::GFXTextureProfile(const String &name, Types type, U32 flag, Compression compression)
@@ -92,7 +92,7 @@ void GFXTextureProfile::init()
 GFXTextureProfile * GFXTextureProfile::find(const String &name)
 {
    // Not really necessary at this time.
-   return NULL;
+   return nullptr;
 }
 
 void GFXTextureProfile::collectStats( Flags flags, GFXTextureProfileStats *stats )
@@ -108,7 +108,7 @@ void GFXTextureProfile::collectStats( Flags flags, GFXTextureProfileStats *stats
    }
 }
 
-void GFXTextureProfile::updateStatsForCreation(GFXTextureObject *t)
+void GFXTextureProfile::updateStatsForCreation(GFXTexHandle &t)
 {
    if(t->mProfile)
    {

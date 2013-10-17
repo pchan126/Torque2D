@@ -241,12 +241,6 @@ const String GFXOpenGLTextureObject::describeSelf() const
 
 std::unique_ptr<GBitmap> & GFXOpenGLTextureObject::getBitmap()
 {
-   if (mBitmap)
-      return mBitmap;
-   
-   if (mPath.isEmpty())
-      return NULL;
-   
-   return NULL;
+  return mBitmap;
 }
 

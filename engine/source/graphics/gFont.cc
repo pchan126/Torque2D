@@ -646,7 +646,7 @@ void GFont::addSheet()
     char buf[30];
     dSprintf(buf, sizeof(buf), "newfont_%d", smSheetIdCount++);
 
-    GBitmapPtr bitmap = GBitmapPtr(new GBitmap(TextureSheetSize, TextureSheetSize, false, GFXFormatA8));
+    GBitmap* bitmap = new GBitmap(TextureSheetSize, TextureSheetSize, false, GFXFormatA8);
 
     // Set everything to transparent.
     U8 *bits = bitmap->getWritableBits();
@@ -964,7 +964,7 @@ bool GFont::read(std::iostream &io_rStream)
    
    for(i = 0; i < numSheets; i++)
    {
-       GBitmapPtr bmp = GBitmapPtr(new GBitmap);
+       GBitmap* bmp = new GBitmap;
        if(!bmp->readPNG(io_rStream))
        {
            return false;
@@ -1304,7 +1304,7 @@ void GFont::importStrip(const char *fileName, U32 padding, U32 kerning)
       char buf[30];
       dSprintf(buf, sizeof(buf), "newfont_%d", smSheetIdCount++);
 
-      GBitmapPtr bitmap = GBitmapPtr(new GBitmap(TextureSheetSize, TextureSheetSize, false, strip->getFormat()));
+      GBitmap* bitmap = new GBitmap(TextureSheetSize, TextureSheetSize, false, strip->getFormat());
 
       // Set everything to transparent.
       U8 *bits = bitmap->getWritableBits();

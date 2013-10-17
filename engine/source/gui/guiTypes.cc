@@ -379,7 +379,7 @@ void GuiControlProfile::incRefCount()
       if ( mBitmapName != nullptr && mBitmapName != StringTable->EmptyString )
       {
           Con::printf("GuiControlProfile::incRefCount %s", mBitmapName);
-          GBitmapPtr bmp = GBitmapPtr(GBitmap::load(mBitmapName));
+          GBitmap* bmp = GBitmap::load(mBitmapName);
           mTextureHandle = GFXTextureObject::create ( bmp, &GFXDefaultPersistentProfile, true, avar("GuiControlProfile::mTextureHandle" ));
           if (!(bool)mTextureHandle)
              Con::errorf("Failed to load profile bitmap (%s)",mBitmapName);

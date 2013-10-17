@@ -221,7 +221,7 @@ void GFXTextureObject::refresh( void )
     TEXMGR->reloadTexture( shared_from_this() );
 };
 
-GFXTexHandle GFXTextureObject::create(const String &texName, GFXTextureProfile *profile, const String &desc) {
+GFXTexHandle GFXTextureObject::create(const String &texName, GFXTextureProfile *profile, const String &desc)
 {
     GFXTexHandle ret = TEXMGR->createTexture( texName, profile );
 #ifdef TORQUE_DEBUG
@@ -232,7 +232,7 @@ GFXTexHandle GFXTextureObject::create(const String &texName, GFXTextureProfile *
 };
 
 
-GFXTexHandle GFXTextureObject::create( GBitmapPtr &bmp, GFXTextureProfile *profile, bool deleteBmp, const String &desc  )
+GFXTexHandle GFXTextureObject::create(GBitmap *bmp, GFXTextureProfile *profile, bool deleteBmp, const String &desc)
 {
     GFXTexHandle ret = TEXMGR->createTexture( bmp, String(), profile, deleteBmp );
 
@@ -257,3 +257,7 @@ GFXTexHandle GFXTextureObject::create( U32 width, U32 height, GFXFormat format, 
 
     return ret;
 };
+
+bool GFXTextureObject::isRenderTarget() const {
+    return mProfile->isRenderTarget();
+}

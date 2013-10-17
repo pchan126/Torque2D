@@ -140,11 +140,11 @@ ConsoleSetType( TypeMaterialAssetPtr )
 
 bool Material::sAllowTextureTargetAssignment = false;
 
-GFXCubemap * Material::GetNormalizeCube()
+GFXCubemapHandle& Material::GetNormalizeCube()
 {
    if(smNormalizeCube)
       return smNormalizeCube;
-   smNormalizeCube = GFX->createCubemap();
+   smNormalizeCube = GFXCubemapHandle(GFX->createCubemap());
    smNormalizeCube->initNormalize(64);
    return smNormalizeCube;
 }

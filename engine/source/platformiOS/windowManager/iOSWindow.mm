@@ -90,7 +90,7 @@ void iOSWindow::setVideoMode(const GFXVideoMode &mode)
    mCurrentMode = mode;
    setSize(mCurrentMode.resolution);
    
-   if(mTarget.isValid())
+   if(mTarget)
       mTarget->resetMode();
 
    _setFullscreen(mCurrentMode.fullScreen);

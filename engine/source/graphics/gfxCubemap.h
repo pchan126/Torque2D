@@ -23,6 +23,11 @@
 #ifndef _GFXCUBEMAP_H_
 #define _GFXCUBEMAP_H_
 
+#include <memory>
+
+class GFXCubemap;
+typedef std::shared_ptr<GFXCubemap> GFXCubemapHandle;
+
 #include "graphics/gfxTextureObject.h"
 
 class GFXDevice;
@@ -69,8 +74,6 @@ public:
    /// The resource should put a description of itself (number of vertices, size/width of texture, etc.) in buffer
    virtual const String describeSelf() const;
 };
-
-typedef std::shared_ptr<GFXCubemap> GFXCubemapHandle;
 
 
 #endif // GFXCUBEMAP
