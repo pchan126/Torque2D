@@ -50,7 +50,7 @@ public:
    virtual GLenum getBinding() { return GFXOpenGL32Cubemap::getEnumForFaceNumber(mFace); }
    
 private:
-   StrongRefPtr<GFXOpenGL32Cubemap> mTex;
+   std::shared_ptr<GFXOpenGL32Cubemap> mTex;
    U32 mFace;
 };
 

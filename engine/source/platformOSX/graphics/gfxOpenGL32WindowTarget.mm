@@ -59,7 +59,8 @@ NSOpenGLContext* GFXOpenGL32WindowTarget::getContext()
 
 void GFXOpenGL32WindowTarget::_teardownCurrentMode()
 {
-    GFX->setActiveRenderTarget(this);
+    GFXTargetRef temp = shared_from_this();
+    GFX->setActiveRenderTarget(temp);
     static_cast<GFXOpenGL32Device*>(mDevice)->zombify();
 }
 

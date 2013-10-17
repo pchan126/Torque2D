@@ -113,7 +113,7 @@ public:
 /// This allows platform-neutral code to safely distinguish between various
 /// types of render targets (using dynamic_cast<>), as well as letting it
 /// gain access to useful things like the corresponding PlatformWindow.
-class GFXWindowTarget : public GFXTarget
+class GFXWindowTarget : public GFXTarget, public std::enable_shared_from_this<GFXWindowTarget>
 {
 protected:
    PlatformWindow *mWindow;

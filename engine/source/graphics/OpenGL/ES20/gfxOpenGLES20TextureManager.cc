@@ -176,7 +176,7 @@ GFXTexHandle GFXOpenGLES20TextureManager::_createTexture(GBitmap *bmp,
     if(profile->doStoreBitmap())
     {
         // NOTE: may store a downscaled copy!
-        ret->mBitmap = GBitmapPtr(new GBitmap( *realBmp ));
+        ret->mBitmap = std::make_shared<GBitmap>( *realBmp );
     }
     
     if ( !inObj )

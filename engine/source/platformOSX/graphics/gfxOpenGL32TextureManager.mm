@@ -28,7 +28,7 @@
 #include "memory/safeDelete.h"
 #include "./gfxOpenGL32Utils.h"
 #include "platform/platformGL.h"
-
+#include <memory>
 //#import <GLKit/GLKit.h>
 //#include <squish.h>
 
@@ -108,7 +108,7 @@ GFXTexHandle GFXOpenGL32TextureManager::_createTexture(GBitmap *bmp,
         const String &resourceName,
         GFXTextureProfile *profile,
         bool deleteBmp,
-        GFXTextureObject *inObj)
+        GFXTexHandle inObj)
 {
    PROFILE_SCOPE( GFXOpenGLESTextureManager_CreateTexture_Bitmap );
    
@@ -218,7 +218,7 @@ GFXTexHandle GFXOpenGL32TextureManager::_createTexture(GBitmap *bmp,
    if(profile->doStoreBitmap())
    {
       // NOTE: may store a downscaled copy!
-      ret->mBitmap = new GBitmap( *realBmp );
+      ret->mBitmap = GBitmapPtr(new GBitmap( *realBmp ));
    }
    
    if ( !inObj )
@@ -352,7 +352,7 @@ GFXTexHandle GFXOpenGL32TextureManager::_createTextureObject(U32 height,
         U32 numMipLevels,
         bool forceMips,
         S32 antialiasLevel,
-        GFXTextureObject *inTex,
+        GFXTexHandle inTex,
         void *data)
 {
    AssertFatal(format >= 0 && format < GFXFormat_COUNT, "GFXOpenGL32TextureManager::_createTexture - invalid format!");
@@ -360,8 +360,8 @@ GFXTexHandle GFXOpenGL32TextureManager::_createTextureObject(U32 height,
    GFXOpenGL32TextureObject *retTex;
    if ( inTex )
    {
-      AssertFatal( dynamic_cast<GFXOpenGL32TextureObject*>( inTex ), "GFXOpenGL32TextureManager::_createTexture() - Bad inTex type!" );
-      retTex = static_cast<GFXOpenGL32TextureObject*>( inTex );
+      AssertFatal( dynamic_cast<GFXOpenGL32TextureObject*>( inTex.get() ), "GFXOpenGL32TextureManager::_createTexture() - Bad inTex type!" );
+      retTex = static_cast<GFXOpenGL32TextureObject*>( inTex.get() );
       retTex->release();
    }      
    else
@@ -476,12 +476,12 @@ void GFXOpenGL32TextureManager::innerCreateTexture( GFXOpenGL32TextureObject *re
 // loadTexture - GBitmap
 //-----------------------------------------------------------------------------
 
-static void _slowTextureLoad(GFXOpenGL32TextureObject* texture, GBitmap* pDL)
+static void _slowTextureLoad(GFXOpenGL32TextureObject *texture, GBitmapPtr &pDL)
 {
    glTexSubImage2D(texture->getBinding(), 0, 0, 0, pDL->getWidth(0), pDL->getHeight(0), GFXGLTextureFormat[pDL->getFormat()], GFXGLTextureType[pDL->getFormat()], pDL->getBits(0));
 }
 
-bool GFXOpenGL32TextureManager::_loadTexture(GFXTexHandle &aTexture, GBitmap *pDL)
+bool GFXOpenGL32TextureManager::_loadTexture(GFXTexHandle &aTexture, GBitmapPtr &pDL)
 {
    GFXOpenGL32TextureObject *texture = static_cast<GFXOpenGL32TextureObject*>(aTexture.get());
    

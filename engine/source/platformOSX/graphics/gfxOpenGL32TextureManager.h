@@ -74,16 +74,16 @@ protected:
            U32 numMipLevels,
            bool forceMips = false,
            S32 antialiasLevel = 0,
-           GFXTextureObject *inTex = nullptr,
+           GFXTexHandle inTex = nullptr,
            void *data = nullptr);
 
    GFXTexHandle _createTexture(GBitmap *bmp,
            const String &resourceName,
            GFXTextureProfile *profile,
            bool deleteBmp,
-           GFXTextureObject *inObj);
+           GFXTexHandle inObj);
 
-   bool _loadTexture(GFXTexHandle &texture, GBitmap *bmp);
+   bool _loadTexture(GFXTexHandle &texture, GBitmapPtr &bmp);
    bool _loadTexture(GFXTexHandle &texture, void *raw);
    bool _refreshTexture(GFXTexHandle &texture);
    bool _freeTexture(GFXTexHandle &texture, bool zombify = false);
