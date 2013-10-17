@@ -25,25 +25,14 @@
 
 
 #include "math/mPoint.h"
-
-#ifndef _GFXENUMS_H_
 #include "graphics/gfxEnums.h"
-#endif
-#ifndef _MMATH_H_
 #include "math/mMath.h"
-#endif
+#include "graphics/gfxResource.h"
+#include "graphics/gfxVertexTypes.h"
+#include "refBase.h"
 
 //#include "debug/profiler.h"
 
-#ifndef _GFXRESOURCE_H_
-#include "graphics/gfxResource.h"
-#endif
-#ifndef _REFBASE_H_
-#include "sim/refBase.h"
-#endif
-#ifndef _GFXVERTEXTYPES_H_
-#include "graphics/gfxVertexTypes.h"
-#endif
 
 
 //-----------------------------------------------------------------------------

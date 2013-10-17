@@ -23,10 +23,7 @@
 #ifndef _GFXVERTEXBUFFER_H_
 #define _GFXVERTEXBUFFER_H_
 
-#ifndef _GFXSTRUCTS_H_
 #include "graphics/gfxStructs.h"
-#endif
-
 //#include "graphics/gfxDevice.h"
 
 class GFXDevice;

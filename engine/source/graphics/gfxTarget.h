@@ -178,7 +178,7 @@ public:
    /// @param zOffset  If this is a depth texture, what z level are we 
    ///                 rendering to?
     virtual void attachTexture(GFXTexHandle &tex, RenderSlot slot = Color0, U32 mipLevel = 0, U32 zOffset = 0) = 0;
-
+    virtual void removeTexture( RenderSlot slot = Color0, U32 mipLevel = 0, U32 zOffset = 0) = 0;
    /// Support binding to cubemaps.
    ///
    /// @param slot What slot is used for multiple render target (MRT) effects.

@@ -47,7 +47,7 @@ public:
    virtual GLenum getBinding() { return mTex->getBinding(); }
    
 private:
-   StrongRefPtr<GFXOpenGLTextureObject> mTex;
+   std::shared_ptr<GFXOpenGLTextureObject> mTex;
 };
 
 ///// Internal struct used to track Cubemap texture information for FBO attachment
@@ -145,6 +145,14 @@ void GFXOpenGLTextureTarget::attachTexture(GFXTexHandle &tex, RenderSlot slot, U
       mTargets[slot] = nullptr;
 }
 
+void GFXOpenGLTextureTarget::removeTexture(RenderSlot slot, U32 mipLevel/*=0*/, U32 zOffset /*= 0*/ )
+{
+    // Triggers an update when we next render
+    invalidateState();
+    mTargets[slot] = nullptr;
+}
+
+
 //void GFXOpenGLTextureTarget::attachTexture( RenderSlot slot, GFXCubemap *tex, U32 face, U32 mipLevel/*=0*/ )
 //{
 //   // No depth cubemaps, sorry
@@ -167,7 +175,7 @@ void GFXOpenGLTextureTarget::clearAttachments()
 {
    deactivate();
    for(S32 i=1; i<MaxRenderSlotId; i++)
-      attachTexture(nullptr, (RenderSlot)i);
+       removeTexture((RenderSlot)i);
 }
 
 void GFXOpenGLTextureTarget::zombify()
