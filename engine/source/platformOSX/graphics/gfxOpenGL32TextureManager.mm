@@ -357,16 +357,16 @@ GFXTexHandle GFXOpenGL32TextureManager::_createTextureObject(U32 height,
 {
    AssertFatal(format >= 0 && format < GFXFormat_COUNT, "GFXOpenGL32TextureManager::_createTexture - invalid format!");
 
-   GFXOpenGL32TextureObject *retTex;
+    std::shared_ptr<GFXOpenGL32TextureObject> retTex;
    if ( inTex )
    {
-      AssertFatal( dynamic_cast<GFXOpenGL32TextureObject*>( inTex.get() ), "GFXOpenGL32TextureManager::_createTexture() - Bad inTex type!" );
-      retTex = static_cast<GFXOpenGL32TextureObject*>( inTex.get() );
+      AssertFatal( std::dynamic_pointer_cast<GFXOpenGL32TextureObject>( inTex ), "GFXOpenGL32TextureManager::_createTexture() - Bad inTex type!" );
+      retTex = std::static_pointer_cast<GFXOpenGL32TextureObject>( inTex );
       retTex->release();
    }      
    else
    {
-      retTex = new GFXOpenGL32TextureObject( GFX, profile );
+      retTex = std::make_shared<GFXOpenGL32TextureObject>( GFX, profile );
       retTex->registerResourceWithDevice( GFX );
    }
 
@@ -379,7 +379,7 @@ GFXTexHandle GFXOpenGL32TextureManager::_createTextureObject(U32 height,
 // innerCreateTexture
 //-----------------------------------------------------------------------------
 // This just creates the texture, no info is actually loaded to it.  We do that later.
-void GFXOpenGL32TextureManager::innerCreateTexture( GFXOpenGL32TextureObject *retTex, 
+void GFXOpenGL32TextureManager::innerCreateTexture( std::shared_ptr<GFXOpenGL32TextureObject>& retTex,
                                                U32 height,
                                                U32 width, 
                                                U32 depth,
@@ -476,14 +476,9 @@ void GFXOpenGL32TextureManager::innerCreateTexture( GFXOpenGL32TextureObject *re
 // loadTexture - GBitmap
 //-----------------------------------------------------------------------------
 
-static void _slowTextureLoad(GFXOpenGL32TextureObject *texture, GBitmapPtr &pDL)
+bool GFXOpenGL32TextureManager::_loadTexture(GFXTexHandle &aTexture, GBitmap *pDL)
 {
-   glTexSubImage2D(texture->getBinding(), 0, 0, 0, pDL->getWidth(0), pDL->getHeight(0), GFXGLTextureFormat[pDL->getFormat()], GFXGLTextureType[pDL->getFormat()], pDL->getBits(0));
-}
-
-bool GFXOpenGL32TextureManager::_loadTexture(GFXTexHandle &aTexture, GBitmapPtr &pDL)
-{
-   GFXOpenGL32TextureObject *texture = static_cast<GFXOpenGL32TextureObject*>(aTexture.get());
+   auto texture = std::static_pointer_cast<GFXOpenGL32TextureObject>(aTexture);
    
    AssertFatal(texture->getBinding() == GL_TEXTURE_2D, 
       "GFXOpenGL32TextureManager::_loadTexture(GBitmap) - This method can only be used with 2D textures");
@@ -498,9 +493,7 @@ bool GFXOpenGL32TextureManager::_loadTexture(GFXTexHandle &aTexture, GBitmapPtr 
    glActiveTexture(GL_TEXTURE0);
    PRESERVE_2D_TEXTURE();
    glBindTexture(texture->getBinding(), texture->getHandle());
-   
-      _slowTextureLoad(texture, pDL);
-   
+   glTexSubImage2D(texture->getBinding(), 0, 0, 0, pDL->getWidth(0), pDL->getHeight(0), GFXGLTextureFormat[pDL->getFormat()], GFXGLTextureType[pDL->getFormat()], pDL->getBits(0));
    glBindTexture(texture->getBinding(), 0);
    
    return true;
@@ -512,8 +505,8 @@ bool GFXOpenGL32TextureManager::_loadTexture(GFXTexHandle &aTexture, void *raw)
    if(aTexture->getDepth() < 1)
       return false;
    
-   GFXOpenGL32TextureObject* texture = static_cast<GFXOpenGL32TextureObject*>(aTexture.get());
-   
+   auto texture = std::static_pointer_cast<GFXOpenGL32TextureObject>(aTexture);
+
    glActiveTexture(GL_TEXTURE0);
 
    glBindTexture(GL_TEXTURE_2D, texture->getHandle());
@@ -525,10 +518,11 @@ bool GFXOpenGL32TextureManager::_loadTexture(GFXTexHandle &aTexture, void *raw)
 
 bool GFXOpenGL32TextureManager::_freeTexture(GFXTexHandle &texture, bool zombify /*= false*/)
 {
+   auto realTex = std::static_pointer_cast<GFXOpenGL32TextureObject>(texture);
    if(zombify)
-      static_cast<GFXOpenGL32TextureObject*>(texture.get())->zombify();
+       realTex->zombify();
    else
-      static_cast<GFXOpenGL32TextureObject*>(texture.get())->release();
+       realTex->release();
       
    return true;
 }
@@ -536,7 +530,7 @@ bool GFXOpenGL32TextureManager::_freeTexture(GFXTexHandle &texture, bool zombify
 bool GFXOpenGL32TextureManager::_refreshTexture(GFXTexHandle &texture)
 {
    U32 usedStrategies = 0;
-   GFXOpenGL32TextureObject* realTex = static_cast<GFXOpenGL32TextureObject*>(texture.get());
+   auto realTex = std::static_pointer_cast<GFXOpenGL32TextureObject>(texture);
       
    if(texture->mProfile->doStoreBitmap())
    {
@@ -546,7 +540,7 @@ bool GFXOpenGL32TextureManager::_refreshTexture(GFXTexHandle &texture)
          innerCreateTexture(realTex, texture->getHeight(), texture->getWidth(), texture->getDepth(), texture->mFormat, texture->mProfile, texture->mMipLevels);
       }
       if(texture->mBitmap)
-         _loadTexture(texture, texture->mBitmap);
+         _loadTexture(texture, texture->mBitmap.get());
       
       usedStrategies++;
    }

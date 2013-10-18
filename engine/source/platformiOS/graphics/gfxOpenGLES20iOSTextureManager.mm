@@ -31,7 +31,7 @@ GFXOpenGLES20iOSTextureManager::~GFXOpenGLES20iOSTextureManager()
 }
 
 
-GFXTexHandle GFXOpenGLES20iOSTextureManager::createTexture(GBitmap *bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp)
+GFXTexHandle& GFXOpenGLES20iOSTextureManager::createTexture(GBitmap *bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp)
 {
     AssertFatal(bmp, "GFXTextureManager::createTexture() - Got nullptr bitmap!");
 
@@ -48,7 +48,7 @@ GFXTexHandle GFXOpenGLES20iOSTextureManager::createTexture(GBitmap *bmp, const S
 }
 
 
-GFXTexHandle GFXOpenGLES20iOSTextureManager::_createTexture(GBitmap *bmp,
+GFXTexHandle& GFXOpenGLES20iOSTextureManager::_createTexture(GBitmap *bmp,
         const String &resourceName,
         GFXTextureProfile *profile,
         bool deleteBmp,
@@ -119,7 +119,7 @@ GFXTexHandle GFXOpenGLES20iOSTextureManager::_createTexture(GBitmap *bmp,
     if(!ret)
     {
         Con::errorf("GFXTextureManager - failed to create texture (1) for '%s'", (resourceName.isNotEmpty() ? resourceName.c_str() : "unknown"));
-        return nullptr;
+        return ret;
     }
 
    GFXOpenGLES20iOSTextureObject* retTex = dynamic_cast<GFXOpenGLES20iOSTextureObject*>(ret.get());
@@ -142,7 +142,7 @@ GFXTexHandle GFXOpenGLES20iOSTextureManager::_createTexture(GBitmap *bmp,
     if (!_loadTexture( ret, realBmp ))
     {
         Con::errorf("GFXTextureManager - failed to load GBitmap for '%s'", (resourceName.isNotEmpty() ? resourceName.c_str() : "unknown"));
-        return nullptr;
+        return ret;
     }
     
     // Do statistics and book-keeping...
@@ -192,7 +192,7 @@ GFXTexHandle GFXOpenGLES20iOSTextureManager::_createTexture(GBitmap *bmp,
 ////-----------------------------------------------------------------------------
 //// createTexture
 ////-----------------------------------------------------------------------------
-GFXTexHandle GFXOpenGLES20iOSTextureManager::createTexture(const String &fullPath, GFXTextureProfile *profile)
+GFXTexHandle& GFXOpenGLES20iOSTextureManager::createTexture(const String &fullPath, GFXTextureProfile *profile)
 {
     GLKTextureInfo *texture = nil;
 

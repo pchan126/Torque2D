@@ -83,7 +83,7 @@ protected:
            bool deleteBmp,
            GFXTexHandle inObj);
 
-   bool _loadTexture(GFXTexHandle &texture, GBitmapPtr &bmp);
+   bool _loadTexture(GFXTexHandle &texture, GBitmap *bmp);
    bool _loadTexture(GFXTexHandle &texture, void *raw);
    bool _refreshTexture(GFXTexHandle &texture);
    bool _freeTexture(GFXTexHandle &texture, bool zombify = false);
@@ -92,7 +92,7 @@ private:
    friend class GFXOpenGLTextureObject;
    
    /// Creates internal GL texture
-   void innerCreateTexture(GFXOpenGL32TextureObject *obj, U32 height, U32 width, U32 depth, GFXFormat format, GFXTextureProfile *profile, U32 numMipLevels, bool forceMips = false, void* data = nullptr);
+   void innerCreateTexture(std::shared_ptr<GFXOpenGL32TextureObject>& obj, U32 height, U32 width, U32 depth, GFXFormat format, GFXTextureProfile *profile, U32 numMipLevels, bool forceMips = false, void* data = nullptr);
 
    void handleTextureCallback(void *textureInfo);
 };

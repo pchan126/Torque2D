@@ -112,7 +112,7 @@ protected:
     
     GFXShaderConstBuffer()
     :  mWasLost( true ),
-    mInstPtr( NULL )
+    mInstPtr( nullptr )
     {
     }
     

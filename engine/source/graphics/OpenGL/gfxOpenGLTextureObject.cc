@@ -36,7 +36,7 @@ GFXOpenGLTextureObject::GFXOpenGLTextureObject(GFXDevice * aDevice, GFXTexturePr
    mBinding(GL_TEXTURE_2D),
    mBytesPerTexel(4),
    mLockedRectRect(0, 0, 0, 0),
-   mZombieCache(NULL),
+   mZombieCache(nullptr),
    mIsNPoT2(true),
    mMinFilter(GL_LINEAR),
    mMagFilter(GL_LINEAR),
@@ -50,7 +50,7 @@ GFXOpenGLTextureObject::GFXOpenGLTextureObject(GFXDevice * aDevice, GFXTexturePr
    mBinding(GL_TEXTURE_2D),
    mBytesPerTexel(4),
    mLockedRectRect(0, 0, 0, 0),
-   mZombieCache(NULL),
+   mZombieCache(nullptr),
    mIsNPoT2(true)
 {
    
@@ -58,7 +58,7 @@ GFXOpenGLTextureObject::GFXOpenGLTextureObject(GFXDevice * aDevice, GFXTexturePr
 
 GFXOpenGLTextureObject::~GFXOpenGLTextureObject()
 {
-   
+   kill();
 }
 
 void GFXOpenGLTextureObject::bind(U32 textureUnit)
@@ -180,7 +180,7 @@ void GFXOpenGLTextureObject::unlock(U32 mipLevel)
    device->setTextureUnit(0);
    U32 boundTexture;
    glGetIntegerv(GL_TEXTURE_BINDING_2D, (GLint*)&boundTexture);
-   mLockedRect.bits = NULL;
+   mLockedRect.bits = nullptr;
    
    glBindTexture(GL_TEXTURE_2D, boundTexture);
 }

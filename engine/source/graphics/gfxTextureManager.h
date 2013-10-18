@@ -157,7 +157,7 @@ protected:
    /// 
    static S32 smTextureReductionLevel;
 
-   std::unordered_map<std::string, GFXTexHandle&> mHashTable;
+   std::unordered_map<std::string, GFXTexHandle> mHashTable;
 
 //   GFXTexHandle mListHead;
 //   GFXTexHandle mListTail;
@@ -264,7 +264,7 @@ protected:
            void *data = nullptr) = 0;
 
    /// Load data into a texture from a GBitmap using the internal API.
-   virtual bool _loadTexture(GFXTexHandle &texture, GBitmapPtr &bmp)=0;
+   virtual bool _loadTexture(GFXTexHandle &texture, GBitmap *bmp)=0;
 
    /// Load data into a texture from a raw buffer using the internal API.
    ///

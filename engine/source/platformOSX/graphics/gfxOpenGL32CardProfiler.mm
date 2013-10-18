@@ -66,7 +66,7 @@ NSOpenGLContext* getContextForCapsCheck()
    
     // if we can't get a good context, we can't check caps... this won't be good.
     Con::errorf("getContextForCapsCheck could not create a cgl context on the display for gl capabilities checking!");
-    return NULL;
+    return nullptr;
 }
 
 
@@ -88,14 +88,14 @@ void GFXOpenGL32OSXCardProfiler::setupCardCapabilities()
    { // check capabilities of display represented by display mask
       CGLPixelFormatAttribute attribs[] = {kCGLPFADisplayMask,
          (CGLPixelFormatAttribute)cglDisplayMask, (CGLPixelFormatAttribute)0};
-      CGLPixelFormatObj pixelFormat = NULL;
+      CGLPixelFormatObj pixelFormat = nullptr;
       GLint numPixelFormats = 0;
       CGLContextObj cglContext = 0;
       CGLContextObj curr_ctx = CGLGetCurrentContext ();
       
       CGLChoosePixelFormat (attribs, &pixelFormat, &numPixelFormats);
       if (pixelFormat) {
-         CGLCreateContext (pixelFormat, NULL, &cglContext);
+         CGLCreateContext (pixelFormat, nullptr, &cglContext);
          CGLDestroyPixelFormat (pixelFormat);
          if (cglContext) {
             CGLSetCurrentContext (cglContext);

@@ -24,18 +24,18 @@ public:
 protected:
 
    // GFXTextureManager
-    virtual GFXTexHandle createTexture(const String &fullPath,
+    virtual GFXTexHandle& createTexture(const String &fullPath,
            GFXTextureProfile *profile);
 
-    virtual GFXTexHandle createTexture(GBitmap *bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp);
+    virtual GFXTexHandle& createTexture(GBitmap *bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp);
 
-   GFXTexHandle _createTexture(GBitmap *bmp,
+   GFXTexHandle& _createTexture(GBitmap *bmp,
            const String &resourceName,
            GFXTextureProfile *profile,
            bool deleteBmp,
            GFXTexHandle inObj);
     
-   GFXTexHandle _createTextureObject(U32 height,
+   GFXTexHandle& _createTextureObject(U32 height,
            U32 width,
            U32 depth,
            GFXFormat format,

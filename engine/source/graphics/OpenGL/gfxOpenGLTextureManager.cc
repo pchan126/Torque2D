@@ -55,7 +55,6 @@ GFXOpenGLTextureManager::GFXOpenGLTextureManager(NSOpenGLContext* mContext)
 //-----------------------------------------------------------------------------
 GFXOpenGLTextureManager::~GFXOpenGLTextureManager()
 {
-   SAFE_DELETE_ARRAY( mHashTable );
 }
 
 // build texture from GBitmap
@@ -337,14 +336,9 @@ void GFXOpenGLTextureManager::innerCreateTexture( GFXOpenGLTextureObject *retTex
 // loadTexture - GBitmap
 //-----------------------------------------------------------------------------
 
-static void _slowTextureLoad(GFXOpenGLTextureObject* texture, GBitmap* pDL)
-{
-   glTexSubImage2D(texture->getBinding(), 0, 0, 0, pDL->getWidth(0), pDL->getHeight(0), GFXGLTextureFormat[pDL->getFormat()], GFXGLTextureType[pDL->getFormat()], pDL->getBits(0));
-}
-
 bool GFXOpenGLTextureManager::_loadTexture(GFXTextureObject *aTexture, GBitmap *pDL)
 {
-   GFXOpenGLTextureObject *texture = static_cast<GFXOpenGLTextureObject*>(aTexture);
+   auto texture = static_pointer_cast<GFXOpenGLTextureObject>(aTexture);
    
    AssertFatal(texture->getBinding() == GL_TEXTURE_2D, 
       "GFXOpenGLTextureManager::_loadTexture(GBitmap) - This method can only be used with 2D textures");
@@ -359,9 +353,7 @@ bool GFXOpenGLTextureManager::_loadTexture(GFXTextureObject *aTexture, GBitmap *
    glActiveTexture(GL_TEXTURE0);
    PRESERVE_2D_TEXTURE();
    glBindTexture(texture->getBinding(), texture->getHandle());
-   
-      _slowTextureLoad(texture, pDL);
-   
+   glTexSubImage2D(texture->getBinding(), 0, 0, 0, pDL->getWidth(0), pDL->getHeight(0), GFXGLTextureFormat[pDL->getFormat()], GFXGLTextureType[pDL->getFormat()], pDL->getBits(0));
    glBindTexture(texture->getBinding(), 0);
    
    return true;

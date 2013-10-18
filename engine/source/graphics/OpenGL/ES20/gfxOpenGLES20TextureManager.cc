@@ -291,15 +291,10 @@ void GFXOpenGLES20TextureManager::innerCreateTexture( GFXOpenGLES20TextureObject
 // loadTexture - GBitmap
 //-----------------------------------------------------------------------------
 
-static void _slowTextureLoad(GFXOpenGLES20TextureObject* texture, GBitmap* pDL)
-{
-   glTexSubImage2D(texture->getBinding(), 0, 0, 0, pDL->getWidth(0), pDL->getHeight(0), GFXGLTextureFormat[pDL->getFormat()], GFXGLTextureType[pDL->getFormat()], pDL->getBits(0));
-}
-
 bool GFXOpenGLES20TextureManager::_loadTexture(GFXTexHandle &aTexture, GBitmap *pDL)
 {
    GFXOpenGLDevice *device = dynamic_cast<GFXOpenGLDevice*>(GFX);
-   GFXOpenGLES20TextureObject *texture = static_cast<GFXOpenGLES20TextureObject*>(aTexture.get());
+   auto texture = static_pointer_cast<GFXOpenGLES20TextureObject>(aTexture);
    
    AssertFatal(texture->getBinding() == GL_TEXTURE_2D, 
       "GFXOpenGLES20TextureManager::_loadTexture(GBitmap) - This method can only be used with 2D textures");
@@ -316,9 +311,7 @@ bool GFXOpenGLES20TextureManager::_loadTexture(GFXTexHandle &aTexture, GBitmap *
    
    texture->setParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
    texture->setParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-    _slowTextureLoad(texture, pDL);
-   
+   glTexSubImage2D(texture->getBinding(), 0, 0, 0, pDL->getWidth(0), pDL->getHeight(0), GFXGLTextureFormat[pDL->getFormat()], GFXGLTextureType[pDL->getFormat()], pDL->getBits(0));
    glBindTexture(texture->getBinding(), 0);
    
    return true;
@@ -331,7 +324,7 @@ bool GFXOpenGLES20TextureManager::_loadTexture(GFXTexHandle &aTexture, void *raw
    if(aTexture->getDepth() < 1)
       return false;
    
-   GFXOpenGLES20TextureObject* texture = static_cast<GFXOpenGLES20TextureObject*>(aTexture.get());
+   auto texture = static_pointer_cast<GFXOpenGLES20TextureObject>(aTexture);
    
    device->setTextureUnit(0);
 
@@ -342,19 +335,20 @@ bool GFXOpenGLES20TextureManager::_loadTexture(GFXTexHandle &aTexture, void *raw
    return true;
 }
 
-bool GFXOpenGLES20TextureManager::_freeTexture(GFXTexHandle &texture, bool zombify /*= false*/)
+bool GFXOpenGLES20TextureManager::_freeTexture(GFXTexHandle &aTexture, bool zombify /*= false*/)
 {
+   auto texture = static_pointer_cast<GFXOpenGLES20TextureObject>(aTexture);
    if(zombify)
-      static_cast<GFXOpenGLES20TextureObject*>(texture.get())->zombify();
+      texture->zombify();
    else
-      static_cast<GFXOpenGLES20TextureObject*>(texture.get())->release();
+      texture->release();
       
    return true;
 }
 
-bool GFXOpenGLES20TextureManager::_refreshTexture(GFXTexHandle &texture)
+bool GFXOpenGLES20TextureManager::_refreshTexture(GFXTexHandle &aTexture)
 {
-    GFXOpenGLES20TextureObject * pTextureObject = dynamic_cast<GFXOpenGLES20TextureObject*>(texture.get());
+    auto texture = static_pointer_cast<GFXOpenGLES20TextureObject>(aTexture);
 
     // Fetch bitmaps.
     GBitmapPtr& pSourceBitmap = texture->mBitmap;

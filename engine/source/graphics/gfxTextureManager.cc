@@ -234,7 +234,8 @@ GFXTexHandle & GFXTextureManager::createTexture(GBitmap *bmp, const String &reso
       return cacheHit;
    }
 
-   return _createTexture( bmp, resourceName, profile, deleteBmp, NULL );
+   GFXTexHandle& ret = _createTexture( bmp, resourceName, profile, deleteBmp, nullptr );
+   return ret;
 }
 
 GFXTexHandle & GFXTextureManager::_createTexture(GBitmap *bmp,
