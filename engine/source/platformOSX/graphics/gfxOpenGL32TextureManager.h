@@ -38,7 +38,7 @@ public:
 protected:
 
    // GFXTextureManager
-    virtual GFXTexHandle createTexture(GBitmap *bmp,
+    virtual GFXTexHandle & createTexture(GBitmap *bmp,
            const String &resourceName,
            GFXTextureProfile *profile,
            bool deleteBmp);
@@ -77,7 +77,7 @@ protected:
            GFXTexHandle inTex = nullptr,
            void *data = nullptr);
 
-   GFXTexHandle _createTexture(GBitmap *bmp,
+   GFXTexHandle & _createTexture(GBitmap *bmp,
            const String &resourceName,
            GFXTextureProfile *profile,
            bool deleteBmp,

@@ -56,7 +56,7 @@ GFXOpenGL32TextureManager::~GFXOpenGL32TextureManager()
 }
 
 // build texture from GBitmap
-GFXTexHandle GFXOpenGL32TextureManager::createTexture(GBitmap *bmp,
+GFXTexHandle& GFXOpenGL32TextureManager::createTexture(GBitmap *bmp,
         const String &resourceName,
         GFXTextureProfile *profile,
         bool deleteBmp)
@@ -71,7 +71,7 @@ GFXTexHandle GFXOpenGL32TextureManager::createTexture(GBitmap *bmp,
             delete bmp;
         return cacheHit;
     }
-    
+
     return _createTexture( bmp, resourceName, profile, deleteBmp, nullptr );
 }
 
@@ -104,7 +104,7 @@ GFXTexHandle GFXOpenGL32TextureManager::createTexture(GBitmap *bmp,
 //    
 //}
 
-GFXTexHandle GFXOpenGL32TextureManager::_createTexture(GBitmap *bmp,
+GFXTexHandle & GFXOpenGL32TextureManager::_createTexture(GBitmap *bmp,
         const String &resourceName,
         GFXTextureProfile *profile,
         bool deleteBmp,
@@ -157,7 +157,7 @@ GFXTexHandle GFXOpenGL32TextureManager::_createTexture(GBitmap *bmp,
    GFXFormat realFmt = realBmp->getFormat();
    _validateTexParams( realWidth, realHeight, profile, numMips, realFmt );
    
-   GFXTexHandle ret;
+   GFXTexHandle ret = nullptr;
    if ( inObj )
    {
       // If the texture has changed in dimensions
@@ -175,7 +175,7 @@ GFXTexHandle GFXOpenGL32TextureManager::_createTexture(GBitmap *bmp,
    if(!ret)
    {
       Con::errorf("GFXTextureManager - failed to create texture (1) for '%s'", (resourceName.isNotEmpty() ? resourceName.c_str() : "unknown"));
-      return nullptr;
+      return ret;
    }
    
    GFXOpenGL32TextureObject* retTex = dynamic_cast<GFXOpenGL32TextureObject*>(ret.get());
@@ -198,7 +198,7 @@ GFXTexHandle GFXOpenGL32TextureManager::_createTexture(GBitmap *bmp,
    if (!_loadTexture( ret, realBmp ))
    {
       Con::errorf("GFXTextureManager - failed to load GBitmap for '%s'", (resourceName.isNotEmpty() ? resourceName.c_str() : "unknown"));
-      return nullptr;
+      return ret;
    }
    
    // Do statistics and book-keeping...

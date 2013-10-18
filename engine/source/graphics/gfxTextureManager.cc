@@ -221,7 +221,7 @@ GFXTexHandle GFXTextureManager::_lookupTexture(const char *hashName, const GFXTe
 }
 
 
-GFXTexHandle GFXTextureManager::createTexture(GBitmap *bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp)
+GFXTexHandle & GFXTextureManager::createTexture(GBitmap *bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp)
 {
    AssertFatal(bmp, "GFXTextureManager::createTexture() - Got NULL bitmap!");
 
@@ -237,7 +237,7 @@ GFXTexHandle GFXTextureManager::createTexture(GBitmap *bmp, const String &resour
    return _createTexture( bmp, resourceName, profile, deleteBmp, NULL );
 }
 
-GFXTexHandle GFXTextureManager::_createTexture(GBitmap *bmp,
+GFXTexHandle & GFXTextureManager::_createTexture(GBitmap *bmp,
         const String &resourceName,
         GFXTextureProfile *profile,
         bool deleteBmp,
@@ -292,7 +292,7 @@ GFXTexHandle GFXTextureManager::_createTexture(GBitmap *bmp,
    GFXFormat realFmt = realBmp->getFormat();
    _validateTexParams( realWidth, realHeight, profile, numMips, realFmt );
 
-   GFXTexHandle ret;
+   GFXTexHandle ret = nullptr;
    if ( inObj )
    {
       // If the texture has changed in dimensions 
@@ -310,7 +310,7 @@ GFXTexHandle GFXTextureManager::_createTexture(GBitmap *bmp,
    if(!ret)
    {
       Con::errorf("GFXTextureManager - failed to create texture (1) for '%s'", (resourceName.isNotEmpty() ? resourceName.c_str() : "unknown"));
-      return NULL;
+      return ret;
    }
 
    // Extrude mip levels
@@ -342,7 +342,7 @@ GFXTexHandle GFXTextureManager::_createTexture(GBitmap *bmp,
     if (!_loadTexture( ret, realBmp ))
    {
       Con::errorf("GFXTextureManager - failed to load GBitmap for '%s'", (resourceName.isNotEmpty() ? resourceName.c_str() : "unknown"));
-      return nullptr;
+      return ret;
    }
 
    // Do statistics and book-keeping...
@@ -390,7 +390,7 @@ GFXTexHandle GFXTextureManager::_createTexture(GBitmap *bmp,
 }
 
 
-GFXTexHandle GFXTextureManager::createTexture(const String &path, GFXTextureProfile *profile)
+GFXTexHandle & GFXTextureManager::createTexture(const String &path, GFXTextureProfile *profile)
 {
     GBitmap *bitmap;
     GFXTexHandle retTexObj = nullptr;
@@ -565,14 +565,16 @@ void GFXTextureManager::hashRemove( GFXTexHandle &object )
     mHashTable.erase(object->mTextureLookupName);
 }
 
-GFXTexHandle GFXTextureManager::find(std::string name)
+GFXTexHandle& GFXTextureManager::find(std::string name)
 {
+    GFXTexHandle ret = nullptr;
     std::transform(name.begin(), name.end(), name.begin(), ::tolower);
 
-    if ( name.empty() || mHashTable.count(name))
-      return nullptr;
+    if ( name.empty() || mHashTable.count(name) == 0)
+      return ret;
 
-    return mHashTable[name];
+    ret = mHashTable[name];
+    return ret;
 }
 
 void GFXTextureManager::freeTexture(GFXTexHandle &texture, bool zombify)

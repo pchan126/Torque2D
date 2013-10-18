@@ -68,12 +68,12 @@ public:
    ///
    static U32 getTextureDownscalePower( GFXTextureProfile *profile );
 
-   virtual GFXTexHandle createTexture(GBitmap *bmp,
+   virtual GFXTexHandle & createTexture(GBitmap *bmp,
            const String &resourceName,
            GFXTextureProfile *profile,
            bool deleteBmp);
 
-   virtual GFXTexHandle createTexture(const String &path,
+   virtual GFXTexHandle & createTexture(const String &path,
            GFXTextureProfile *profile);
 
    virtual GFXTexHandle createTexture(U32 width,
@@ -157,7 +157,7 @@ protected:
    /// 
    static S32 smTextureReductionLevel;
 
-   std::unordered_map<std::string, GFXTexHandle> mHashTable;
+   std::unordered_map<std::string, GFXTexHandle&> mHashTable;
 
 //   GFXTexHandle mListHead;
 //   GFXTexHandle mListTail;
@@ -166,7 +166,7 @@ protected:
 //   GFXTexHandle *mHashTable;
 //   U32                mHashCount;
 
-   GFXTexHandle      find(std::string name);
+   GFXTexHandle & find(std::string name);
    void              hashInsert(GFXTexHandle &object);
    void              hashRemove(GFXTexHandle &object);
 
@@ -209,7 +209,7 @@ protected:
            U32 numMipLevels,
            S32 antialiasLevel);
 
-    GFXTexHandle _createTexture(GBitmap *bmp,
+    GFXTexHandle & _createTexture(GBitmap *bmp,
             const String &resourceName,
             GFXTextureProfile *profile,
             bool deleteBmp,
