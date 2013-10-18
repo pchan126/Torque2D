@@ -13,16 +13,16 @@ extern InputModifiers convertModifierBits( const U32 in );
 inline U32 GLFWModifiersToTorqueModifiers( int mods )
 {
    U32 torqueMods = 0;
-   
+
    if( mods & GLFW_MOD_SHIFT )
       torqueMods |= IM_LSHIFT;
    if( mods & GLFW_MOD_CONTROL )
       torqueMods |= IM_LCTRL;
    if( mods & GLFW_MOD_ALT )
       torqueMods |= IM_LALT;
-   
+
    Input::setModifierKeys( convertModifierBits( torqueMods ) );
-   
+
    return torqueMods;
 }
 
@@ -37,20 +37,20 @@ GLFWWindow::GLFWWindow(U32 windowId, const char* windowText, Point2I clientExten
    mCursorController = new GLFWCursorController( this );
    mOwningWindowManager = NULL;
    mTarget = NULL;
-   
+
    mFullscreen = false;
    mShouldFullscreen = false;
-   
+
    mSkipMouseEvents = 0;
-   
+
    mWindowId = windowId;
-   
+
    GLFWwindow* sWindow = NULL;
    GLFWWindow* shareWindow = dynamic_cast<GLFWWindow*>(WindowManager->getFirstWindow());
 
    if (shareWindow != NULL)
       sWindow = shareWindow->window;
-   
+
    window = glfwCreateWindow(640, 480, "Torque", NULL, sWindow);
    if (!window)
    {
@@ -65,9 +65,9 @@ GLFWWindow::GLFWWindow(U32 windowId, const char* windowText, Point2I clientExten
    glfwSetWindowFocusCallback(window, &GLFWWindow::window_focus_callback);
    glfwSetWindowIconifyCallback(window, &GLFWWindow::window_iconify_callback);
    glfwSetScrollCallback(window, &GLFWWindow::window_scroll_callback);
-   
+
    appEvent.notify(this, &GLFWWindow::_onAppEvent);
-   
+
    sInstance = this;
 }
 
@@ -80,17 +80,17 @@ GLFWWindow::~GLFWWindow()
 
    //ensure our view isn't the delegate
    [NSApp setDelegate:nil];
-   
+
    if( window )
    {
       glfwDestroyWindow (window);
    }
-   
+
    appEvent.trigger(mWindowId, LoseFocus);
    appEvent.trigger(mWindowId, WindowDestroy);
-   
+
    mOwningWindowManager->_removeWindow(this);
-   
+
    sInstance = NULL;
 }
 
@@ -99,7 +99,7 @@ void GLFWWindow::setVideoMode(const GFXVideoMode &mode)
 {
    mCurrentMode = mode;
    setSize(mCurrentMode.resolution);
-   
+
 //   if(mTarget.isValid())
 //      mTarget->resetMode();
 
@@ -108,7 +108,7 @@ void GLFWWindow::setVideoMode(const GFXVideoMode &mode)
 
 void GLFWWindow::_onAppEvent(WindowId, S32 evt)
 {
-   
+
    if(evt == LoseFocus && isFullscreen())
    {
       mShouldFullscreen = true;
@@ -116,7 +116,7 @@ void GLFWWindow::_onAppEvent(WindowId, S32 evt)
       mode.fullScreen = false;
       setVideoMode(mode);
    }
-   
+
    if(evt == GainFocus && !isFullscreen() && mShouldFullscreen)
    {
       mShouldFullscreen = false;
@@ -130,9 +130,9 @@ void GLFWWindow::_setFullscreen(bool fullScreen)
 {
    if(mFullscreen == fullScreen)
       return;
-   
+
    mFullscreen = fullScreen;
-   
+
    if(mFullscreen)
    {
    }
@@ -157,9 +157,9 @@ void GLFWWindow::close()
    glfwDestroyWindow(window);
    appEvent.trigger(mWindowId, LoseFocus);
    appEvent.trigger(mWindowId, WindowDestroy);
-   
+
    mOwningWindowManager->_removeWindow(this);
-   
+
    delete this;
 }
 
@@ -249,7 +249,7 @@ const Point2I GLFWWindow::getPosition()
    Point2I ret;
    glfwGetWindowPos(window, &ret.x, &ret.y);
    return ret;
-   
+
 //   return Point2I(frame.origin.x, screenFrame.size.height - (frame.origin.y + frame.size.height));
 }
 

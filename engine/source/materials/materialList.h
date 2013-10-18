@@ -24,7 +24,7 @@
 #define _MATERIALLIST_H_
 
 #include "collection/vector.h"
-#include "graphics/gfxTextureHandle.h"
+#include "graphics/gfxTextureObject.h"
 
 
 class Material;

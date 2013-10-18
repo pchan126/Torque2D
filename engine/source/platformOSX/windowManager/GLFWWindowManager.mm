@@ -121,7 +121,7 @@ PlatformWindow *GLFWWindowManager::createWindow(GFXDevice *device, const GFXVide
    if(device)
    {
       window->mDevice = device;
-      window->mTarget = GFXWindowTargetRef(device->allocWindowTarget(window));
+      window->mTarget = device->allocWindowTarget(window);
       AssertISV(window->mTarget, 
          "GLFWWindowManager::createWindow - failed to get a window target back from the device.");
    }

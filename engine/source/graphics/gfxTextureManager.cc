@@ -362,7 +362,7 @@ GFXTexHandle GFXTextureManager::_createTexture(GBitmap *bmp,
    if(profile->doStoreBitmap())
    {
       // NOTE: may store a downscaled copy!
-     ret->mBitmap = std::make_shared<GBitmap>( *realBmp );
+     ret->mBitmap = GBitmapPtr(new GBitmap( *realBmp ));
    }
 
    if ( !inObj )
