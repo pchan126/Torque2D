@@ -36,7 +36,7 @@ GFXOpenGL32TextureObject::GFXOpenGL32TextureObject(GFXDevice * aDevice, GFXTextu
     mGLDevice(static_cast<GFXOpenGL32Device*>(mDevice)),
     mFilter( GL_NEAREST )
 {
-    mBitmap = NULL;
+    mBitmap = nullptr;
 //    setTexture(texInfo);
 }
 
@@ -88,7 +88,7 @@ void GFXOpenGL32TextureObject::reloadFromCache()
 //   {
 //      static_cast<GFXGLTextureManager*>(TEXMGR)->_loadTexture(this, mZombieCache);
 //      delete[] mZombieCache;
-//      mZombieCache = NULL;
+//      mZombieCache = nullptr;
 //      return;
 //   }
    
@@ -99,7 +99,7 @@ void GFXOpenGL32TextureObject::reloadFromCache()
 //      glGenerateMipmap(mBinding);
     
    delete[] mZombieCache;
-   mZombieCache = NULL;
+   mZombieCache = nullptr;
    mIsZombie = false;
 }
 

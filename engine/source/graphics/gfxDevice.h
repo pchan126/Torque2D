@@ -423,7 +423,8 @@ protected:
 //   /// Called by base GFXDevice to actually set a const buffer
 //   virtual void setShaderConstBufferInternal(GFXShaderConstBuffer* buffer) = 0;
 
-   virtual void setTextureInternal(U32 textureUnit, GFXTextureObject* texture) = 0;
+   virtual void setTextureInternal(U32 textureUnit, GFXTexHandle &texture) = 0;
+   virtual void clearTextureInternal(U32 textureUnit) = 0;
 
    virtual void setLightInternal(U32 lightStage, const GFXLightInfo light, bool lightEnable) = 0;
    virtual void setGlobalAmbientInternal(ColorF color) = 0;

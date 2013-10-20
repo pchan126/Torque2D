@@ -165,7 +165,9 @@ protected:
    /// Called by base GFXDevice to actually set a const buffer
    virtual void setShaderConstBufferInternal(GFXShaderConstBuffer* buffer);
 
-   virtual void setTextureInternal(U32 textureUnit, GFXTextureObject* texture);
+   virtual void setTextureInternal(U32 textureUnit, GFXTexHandle &texture);
+   virtual void clearTextureInternal(U32 textureUnit);
+
    virtual void setCubemapInternal(U32 cubemap, GFXOpenGLCubemap* texture);
 
    Vector<GFXLightInfo> m_lightStack;

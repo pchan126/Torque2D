@@ -606,9 +606,22 @@ void GFXOpenGLDevice::setGlobalAmbientInternal(ColorF color)
    m_globalAmbientColor = color;
 }
 
-void GFXOpenGLDevice::setTextureInternal(U32 textureUnit, GFXTextureObject*texture)
+
+void GFXOpenGLDevice::clearTextureInternal(U32 textureUnit)
 {
-    GFXOpenGLTextureObject *tex = static_cast<GFXOpenGLTextureObject*>(texture);
+    if(mActiveTextureType[textureUnit] != GL_ZERO)
+    {
+        setTextureUnit(textureUnit);
+        glBindTexture(mActiveTextureType[textureUnit], GL_ZERO);
+        mActiveTextureType[textureUnit] = GL_ZERO;
+    }
+    setTextureUnit(0);
+}
+
+
+void GFXOpenGLDevice::setTextureInternal(U32 textureUnit, GFXTexHandle &texture)
+{
+    auto tex = std::static_pointer_cast<GFXOpenGLTextureObject>(texture);
     if (tex)
     {
         // GFXOpenGLESTextureObject::bind also handles applying the current sampler state.
@@ -619,12 +632,6 @@ void GFXOpenGLDevice::setTextureInternal(U32 textureUnit, GFXTextureObject*textu
         }
         mActiveTextureType[textureUnit] = tex->getBinding();
         tex->bind(textureUnit);
-    }
-    else if(mActiveTextureType[textureUnit] != GL_ZERO)
-    {
-        setTextureUnit(textureUnit);
-        glBindTexture(mActiveTextureType[textureUnit], GL_ZERO);
-        mActiveTextureType[textureUnit] = GL_ZERO;
     }
     setTextureUnit(0);
 }
@@ -713,16 +720,16 @@ void GFXOpenGLDevice::updateStates(bool forceSetAll /*=false*/)
                 case GFXTDT_Normal :
                 {
                     mCurrentTexture[i] = mNewTexture[i];
-                    setTextureInternal(i, mCurrentTexture[i].get());
+                    setTextureInternal(i, mCurrentTexture[i]);
                 }
                     break;
                 case GFXTDT_Cube :
                 {
                     mCurrentCubemap[i] = mNewCubemap[i];
                     if (mCurrentCubemap[i])
-                       static_cast<GFXOpenGLCubemap*>(mCurrentCubemap[i].get())->setToTexUnit(i);
+                        std::static_pointer_cast<GFXOpenGLCubemap>(mCurrentCubemap[i])->setToTexUnit(i);
                     else
-                        setTextureInternal(i, nullptr);
+                        clearTextureInternal(i);
                 }
                     break;
                 default:
@@ -800,7 +807,7 @@ void GFXOpenGLDevice::updateStates(bool forceSetAll /*=false*/)
                 case GFXTDT_Normal :
                 {
                     mCurrentTexture[i] = mNewTexture[i];
-                    setTextureInternal(i, mCurrentTexture[i].get());
+                    setTextureInternal(i, mCurrentTexture[i]);
                 }
                     break;
                 case GFXTDT_Cube :
@@ -809,7 +816,7 @@ void GFXOpenGLDevice::updateStates(bool forceSetAll /*=false*/)
                     if (mCurrentCubemap[i])
                         static_cast<GFXOpenGLCubemap*>(mCurrentCubemap[i].get())->setToTexUnit(i);
                     else
-                        setTextureInternal(i, nullptr);
+                        clearTextureInternal(i);
                 }
                     break;
                 default:

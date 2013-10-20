@@ -279,9 +279,9 @@ void GFXOpenGL32Device::clear(U32 flags, ColorI color, F32 z, U32 stencil)
 }
 
 
-void GFXOpenGL32Device::setTextureInternal(U32 textureUnit, GFXTextureObject *texture)
+void GFXOpenGL32Device::setTextureInternal(U32 textureUnit, GFXTexHandle &texture)
 {
-    GFXOpenGL32TextureObject *tex = static_cast<GFXOpenGL32TextureObject*>(texture);
+    auto tex = std::static_pointer_cast<GFXOpenGL32TextureObject>(texture);
     if (tex)
     {
         // GFXOpenGL32TextureObject::bind also handles applying the current sampler state.

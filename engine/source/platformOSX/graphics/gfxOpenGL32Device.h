@@ -114,7 +114,7 @@ protected:
     /// Called by base GFXDevice to actually set a const buffer
    virtual void setShaderConstBufferInternal(GFXShaderConstBuffer* buffer);
 
-   virtual void setTextureInternal(U32 textureUnit, GFXTextureObject* texture);
+   virtual void setTextureInternal(U32 textureUnit, GFXTexHandle &texture);
 //   virtual void setCubemapInternal(U32 cubemap, const GFXOpenGLCubemap* texture);
 
    /// @name State Initalization.
