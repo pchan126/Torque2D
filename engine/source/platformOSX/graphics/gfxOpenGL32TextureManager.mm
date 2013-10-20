@@ -56,7 +56,7 @@ GFXOpenGL32TextureManager::~GFXOpenGL32TextureManager()
 }
 
 // build texture from GBitmap
-GFXTexHandle& GFXOpenGL32TextureManager::createTexture(GBitmap *bmp,
+GFXTexHandle GFXOpenGL32TextureManager::createTexture(GBitmap *bmp,
         const String &resourceName,
         GFXTextureProfile *profile,
         bool deleteBmp)
@@ -104,7 +104,7 @@ GFXTexHandle& GFXOpenGL32TextureManager::createTexture(GBitmap *bmp,
 //    
 //}
 
-GFXTexHandle & GFXOpenGL32TextureManager::_createTexture(GBitmap *bmp,
+GFXTexHandle GFXOpenGL32TextureManager::_createTexture(GBitmap *bmp,
         const String &resourceName,
         GFXTextureProfile *profile,
         bool deleteBmp,
@@ -157,7 +157,7 @@ GFXTexHandle & GFXOpenGL32TextureManager::_createTexture(GBitmap *bmp,
    GFXFormat realFmt = realBmp->getFormat();
    _validateTexParams( realWidth, realHeight, profile, numMips, realFmt );
    
-   GFXTexHandle ret = nullptr;
+   GFXTexHandle ret = GFXTexHandle(nullptr);
    if ( inObj )
    {
       // If the texture has changed in dimensions
@@ -167,7 +167,7 @@ GFXTexHandle & GFXOpenGL32TextureManager::_createTexture(GBitmap *bmp,
           inObj->getFormat() != realFmt )
          ret = _createTextureObject( realHeight, realWidth, 0, realFmt, profile, numMips, false, 0, inObj );
       else
-         ret = GFXTexHandle(inObj);
+         ret = inObj;
    }
    else
       ret = _createTextureObject(realHeight, realWidth, 0, realFmt, profile, numMips, false, 0, nullptr, (void*)bmp->getBits() );
@@ -178,7 +178,7 @@ GFXTexHandle & GFXOpenGL32TextureManager::_createTexture(GBitmap *bmp,
       return ret;
    }
    
-   GFXOpenGL32TextureObject* retTex = dynamic_cast<GFXOpenGL32TextureObject*>(ret.get());
+   auto retTex = std::dynamic_pointer_cast<GFXOpenGL32TextureObject>(ret);
    
    if (realBmp != bmp && retTex)
       retTex->mIsNPoT2 = true;
@@ -372,7 +372,8 @@ GFXTexHandle GFXOpenGL32TextureManager::_createTextureObject(U32 height,
 
    innerCreateTexture(retTex, height, width, depth, format, profile, numMipLevels, forceMips, data);
 
-   return GFXTexHandle(retTex);
+   GFXTexHandle ret = std::dynamic_pointer_cast<GFXTextureObject>(retTex);
+   return ret;
 }
 
 //-----------------------------------------------------------------------------

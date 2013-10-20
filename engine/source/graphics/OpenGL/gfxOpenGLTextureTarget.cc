@@ -32,7 +32,7 @@
 class _GFXOpenGLTextureTargetDesc : public _GFXOpenGLTargetDesc
 {
 public:
-   _GFXOpenGLTextureTargetDesc(GFXOpenGLTextureObject* tex, U32 _mipLevel, U32 _zOffset) 
+   _GFXOpenGLTextureTargetDesc(std::shared_ptr<GFXOpenGLTextureObject>& tex, U32 _mipLevel, U32 _zOffset)
       : _GFXOpenGLTargetDesc(_mipLevel, _zOffset), mTex(tex)
    {
    }
@@ -138,7 +138,7 @@ void GFXOpenGLTextureTarget::attachTexture(GFXTexHandle &tex, RenderSlot slot, U
    invalidateState();
 
    // We stash the texture and info into an internal struct.
-   GFXOpenGLTextureObject* glTexture = static_cast<GFXOpenGLTextureObject*>(tex.get());
+   auto glTexture = std::static_pointer_cast<GFXOpenGLTextureObject>(tex);
    if(tex && tex.get() != GFXTextureTarget::sDefaultDepthStencil)
       mTargets[slot] = std::unique_ptr<_GFXOpenGLTargetDesc>(new _GFXOpenGLTextureTargetDesc(glTexture, mipLevel, zOffset));
    else
