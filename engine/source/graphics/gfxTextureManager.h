@@ -73,7 +73,7 @@ public:
            GFXTextureProfile *profile,
            bool deleteBmp);
 
-   virtual GFXTexHandle & createTexture(const String &path,
+   virtual GFXTexHandle createTexture(const String &path,
            GFXTextureProfile *profile);
 
    virtual GFXTexHandle createTexture(U32 width,
@@ -157,7 +157,8 @@ protected:
    /// 
    static S32 smTextureReductionLevel;
 
-   std::unordered_map<std::string, GFXTexHandle> mHashTable;
+//   std::unordered_map<std::string, GFXTexHandle> mHashTable;
+    std::unordered_map<std::string, std::weak_ptr<GFXTextureObject>> mHashTable;
 
 //   GFXTexHandle mListHead;
 //   GFXTexHandle mListTail;
@@ -166,7 +167,7 @@ protected:
 //   GFXTexHandle *mHashTable;
 //   U32                mHashCount;
 
-   GFXTexHandle & find(std::string name);
+   GFXTexHandle      find(std::string name);
    void              hashInsert(GFXTexHandle &object);
    void              hashRemove(GFXTexHandle &object);
 

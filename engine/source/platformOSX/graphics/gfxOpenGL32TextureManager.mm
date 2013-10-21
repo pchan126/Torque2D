@@ -479,6 +479,7 @@ void GFXOpenGL32TextureManager::innerCreateTexture( std::shared_ptr<GFXOpenGL32T
 
 bool GFXOpenGL32TextureManager::_loadTexture(GFXTexHandle &aTexture, GBitmap *pDL)
 {
+   GFXOpenGLDevice *device = dynamic_cast<GFXOpenGLDevice*>(GFX);
    auto texture = std::static_pointer_cast<GFXOpenGL32TextureObject>(aTexture);
    
    AssertFatal(texture->getBinding() == GL_TEXTURE_2D, 
@@ -491,8 +492,7 @@ bool GFXOpenGL32TextureManager::_loadTexture(GFXTexHandle &aTexture, GBitmap *pD
    if(pDL->getFormat() == GFXFormatR8G8B8)
       pDL->setFormat(GFXFormatR8G8B8A8);
    // Bind to edit
-   glActiveTexture(GL_TEXTURE0);
-   PRESERVE_2D_TEXTURE();
+   device->setTextureUnit(0);
    glBindTexture(texture->getBinding(), texture->getHandle());
    glTexSubImage2D(texture->getBinding(), 0, 0, 0, pDL->getWidth(0), pDL->getHeight(0), GFXGLTextureFormat[pDL->getFormat()], GFXGLTextureType[pDL->getFormat()], pDL->getBits(0));
    glBindTexture(texture->getBinding(), 0);
@@ -503,12 +503,13 @@ bool GFXOpenGL32TextureManager::_loadTexture(GFXTexHandle &aTexture, GBitmap *pD
 
 bool GFXOpenGL32TextureManager::_loadTexture(GFXTexHandle &aTexture, void *raw)
 {
+   GFXOpenGLDevice *device = dynamic_cast<GFXOpenGLDevice*>(GFX);
    if(aTexture->getDepth() < 1)
       return false;
    
    auto texture = std::static_pointer_cast<GFXOpenGL32TextureObject>(aTexture);
 
-   glActiveTexture(GL_TEXTURE0);
+   device->setTextureUnit(0);
 
    glBindTexture(GL_TEXTURE_2D, texture->getHandle());
    glTexImage2D(GL_TEXTURE_2D, 0, 0, 0, texture->getWidth(), texture->getHeight(), GFXGLTextureFormat[texture->mFormat], GFXGLTextureType[texture->mFormat], raw);

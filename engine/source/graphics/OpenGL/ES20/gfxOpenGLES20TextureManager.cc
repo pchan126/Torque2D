@@ -52,8 +52,7 @@ GFXTexHandle GFXOpenGLES20TextureManager::createTexture(U32 width, U32 height, v
 {
     AssertFatal(format >= 0 && format < GFXFormat_COUNT, "GFXOpenGLES20iOSTextureManager::_createTexture - invalid format!");
     
-    GFXOpenGLES20TextureObject *retTex;
-    retTex = new GFXOpenGLES20TextureObject( GFX, profile );
+    auto retTex = std::make_shared<GFXOpenGLES20TextureObject>( GFX, profile );
     retTex->registerResourceWithDevice( GFX );
     
     innerCreateTexture(retTex, height, width, 0, format, profile, 1);
@@ -78,8 +77,8 @@ GFXTexHandle GFXOpenGLES20TextureManager::_createTexture(GBitmap *bmp,
     
     // Massage the bitmap based on any resize rules.
     U32 scalePower = getTextureDownscalePower( profile );
-    
-    GBitmap *realBmp = bmp->createPowerOfTwoBitmap();
+
+    GBitmap* realBmp = bmp->createPowerOfTwoBitmap();
     U32 realWidth = bmp->getWidth();
     U32 realHeight = bmp->getHeight();
     
@@ -115,7 +114,7 @@ GFXTexHandle GFXOpenGLES20TextureManager::_createTexture(GBitmap *bmp,
     GFXFormat realFmt = realBmp->getFormat();
     _validateTexParams( realWidth, realHeight, profile, numMips, realFmt );
 
-    GFXTexHandle ret;
+    GFXTexHandle ret = GFXTexHandle(nullptr);
     if ( inObj )
     {
         // If the texture has changed in dimensions
@@ -156,7 +155,7 @@ GFXTexHandle GFXOpenGLES20TextureManager::_createTexture(GBitmap *bmp,
     if (!_loadTexture( ret, realBmp ))
     {
         Con::errorf("GFXTextureManager - failed to load GBitmap for '%s'", (resourceName.isNotEmpty() ? resourceName.c_str() : "unknown"));
-        return nullptr;
+        return ret;
     }
     
     // Do statistics and book-keeping...
@@ -176,7 +175,7 @@ GFXTexHandle GFXOpenGLES20TextureManager::_createTexture(GBitmap *bmp,
     if(profile->doStoreBitmap())
     {
         // NOTE: may store a downscaled copy!
-        ret->mBitmap = std::make_shared<GBitmap>( *realBmp );
+        ret->mBitmap = GBitmapPtr( new GBitmap(*realBmp ));
     }
     
     if ( !inObj )
@@ -217,29 +216,30 @@ GFXTexHandle GFXOpenGLES20TextureManager::_createTextureObject(U32 height,
 {
    AssertFatal(format >= 0 && format < GFXFormat_COUNT, "GFXOpenGLES20TextureManager::_createTexture - invalid format!");
 
-   GFXOpenGLES20TextureObject *retTex;
+   std::shared_ptr<GFXOpenGLES20TextureObject> retTex;
    if ( inTex )
    {
-      AssertFatal( dynamic_cast<GFXOpenGLES20TextureObject*>( inTex.get() ), "GFXOpenGLES20TextureManager::_createTexture() - Bad inTex type!" );
-      retTex = static_cast<GFXOpenGLES20TextureObject*>( inTex.get() );
+      AssertFatal( std::dynamic_pointer_cast<GFXOpenGLES20TextureObject>( inTex ), "GFXOpenGLES20TextureManager::_createTexture() - Bad inTex type!" );
+      retTex = std::static_pointer_cast<GFXOpenGLES20TextureObject>( inTex );
       retTex->release();
    }      
    else
    {
-      retTex = new GFXOpenGLES20TextureObject( GFX, profile );
+      retTex = std::make_shared<GFXOpenGLES20TextureObject>( GFX, profile );
       retTex->registerResourceWithDevice( GFX );
    }
 
    innerCreateTexture(retTex, height, width, depth, format, profile, numMipLevels, forceMips);
 
-   return GFXTexHandle(retTex);
+   GFXTexHandle ret = std::dynamic_pointer_cast<GFXTextureObject>(retTex);
+   return (ret);
 }
 
 //-----------------------------------------------------------------------------
 // innerCreateTexture
 //-----------------------------------------------------------------------------
 // This just creates the texture, no info is actually loaded to it.  We do that later.
-void GFXOpenGLES20TextureManager::innerCreateTexture( GFXOpenGLES20TextureObject *retTex, 
+void GFXOpenGLES20TextureManager::innerCreateTexture( std::shared_ptr<GFXOpenGLES20TextureObject>& retTex,
                                                U32 height, 
                                                U32 width, 
                                                U32 depth,
@@ -258,9 +258,11 @@ void GFXOpenGLES20TextureManager::innerCreateTexture( GFXOpenGLES20TextureObject
    retTex->mIsZombie = false;
    retTex->mIsNPoT2 = false;
    
-    GLenum binding = GL_TEXTURE_2D;   // No 3d texture in openGL es 2.0
+   GLenum binding = GL_TEXTURE_2D;   // No 3d texture in openGL es 2.0
+
    if((profile->testFlag(GFXTextureProfile::RenderTarget) || profile->testFlag(GFXTextureProfile::ZTarget)) && (!isPow2(width) || !isPow2(height)) && !depth)
       retTex->mIsNPoT2 = true;
+
    retTex->mBinding = binding;
    
    // Bind it
@@ -294,7 +296,7 @@ void GFXOpenGLES20TextureManager::innerCreateTexture( GFXOpenGLES20TextureObject
 bool GFXOpenGLES20TextureManager::_loadTexture(GFXTexHandle &aTexture, GBitmap *pDL)
 {
    GFXOpenGLDevice *device = dynamic_cast<GFXOpenGLDevice*>(GFX);
-   auto texture = static_pointer_cast<GFXOpenGLES20TextureObject>(aTexture);
+   auto texture = std::static_pointer_cast<GFXOpenGLES20TextureObject>(aTexture);
    
    AssertFatal(texture->getBinding() == GL_TEXTURE_2D, 
       "GFXOpenGLES20TextureManager::_loadTexture(GBitmap) - This method can only be used with 2D textures");
@@ -324,7 +326,7 @@ bool GFXOpenGLES20TextureManager::_loadTexture(GFXTexHandle &aTexture, void *raw
    if(aTexture->getDepth() < 1)
       return false;
    
-   auto texture = static_pointer_cast<GFXOpenGLES20TextureObject>(aTexture);
+   auto texture = std::static_pointer_cast<GFXOpenGLES20TextureObject>(aTexture);
    
    device->setTextureUnit(0);
 
@@ -337,7 +339,7 @@ bool GFXOpenGLES20TextureManager::_loadTexture(GFXTexHandle &aTexture, void *raw
 
 bool GFXOpenGLES20TextureManager::_freeTexture(GFXTexHandle &aTexture, bool zombify /*= false*/)
 {
-   auto texture = static_pointer_cast<GFXOpenGLES20TextureObject>(aTexture);
+   auto texture = std::static_pointer_cast<GFXOpenGLES20TextureObject>(aTexture);
    if(zombify)
       texture->zombify();
    else
@@ -348,7 +350,7 @@ bool GFXOpenGLES20TextureManager::_freeTexture(GFXTexHandle &aTexture, bool zomb
 
 bool GFXOpenGLES20TextureManager::_refreshTexture(GFXTexHandle &aTexture)
 {
-    auto texture = static_pointer_cast<GFXOpenGLES20TextureObject>(aTexture);
+    auto texture = std::static_pointer_cast<GFXOpenGLES20TextureObject>(aTexture);
 
     // Fetch bitmaps.
     GBitmapPtr& pSourceBitmap = texture->mBitmap;
@@ -377,7 +379,7 @@ bool GFXOpenGLES20TextureManager::_refreshTexture(GFXTexHandle &aTexture)
     else
     {
         // Bind texture.
-        glBindTexture( GL_TEXTURE_2D, pTextureObject->getBinding() );
+        glBindTexture( GL_TEXTURE_2D, texture->getBinding() );
     }
     
     // Are we forcing to 16-bit?
@@ -413,18 +415,18 @@ bool GFXOpenGLES20TextureManager::_refreshTexture(GFXTexHandle &aTexture)
                      GFXGLTextureType[pNewBitmap->getFormat()],
                      pNewBitmap->getBits());
     }
-    
-   pTextureObject->setParameter(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-   pTextureObject->setParameter(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+    texture->setParameter(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    texture->setParameter(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
    
     GLenum glClamp;
-    if ( pTextureObject->getClamp() )
+    if ( texture->getClamp() )
         glClamp = GL_CLAMP_TO_EDGE;
     else
         glClamp = GL_REPEAT;
-   
-   pTextureObject->setParameter(GL_TEXTURE_WRAP_S, glClamp );
-   pTextureObject->setParameter(GL_TEXTURE_WRAP_T, glClamp );
+
+    texture->setParameter(GL_TEXTURE_WRAP_S, glClamp );
+    texture->setParameter(GL_TEXTURE_WRAP_T, glClamp );
    
     if(pNewBitmap != pSourceBitmap.get())
     {

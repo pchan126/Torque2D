@@ -106,7 +106,9 @@ void GFXTextureManager::kill()
    cleanupCache();
 
    for (auto itr: mHashTable)
-       itr.second->kill();
+   {
+       itr.second.lock()->kill();
+   }
 
 //   mCubemapTable.clear();
 
@@ -127,7 +129,10 @@ void GFXTextureManager::zombify()
    cleanupCache();
 
     for (auto itr: mHashTable)
-        freeTexture(itr.second);
+    {
+        auto temp = itr.second.lock();
+        freeTexture(temp);
+    }
 
    // Finally, note our state.
    mTextureManagerState = GFXTextureManager::Dead;
@@ -136,7 +141,10 @@ void GFXTextureManager::zombify()
 void GFXTextureManager::resurrect()
 {
     for (auto itr: mHashTable)
-        refreshTexture(itr.second);
+    {
+        auto temp = itr.second.lock();
+        refreshTexture(temp);
+    }
 
    // Notify callback registries.
    smEventSignal.trigger( GFXResurrect );
@@ -391,7 +399,7 @@ GFXTexHandle GFXTextureManager::_createTexture(GBitmap *bmp,
 }
 
 
-GFXTexHandle & GFXTextureManager::createTexture(const String &path, GFXTextureProfile *profile)
+GFXTexHandle GFXTextureManager::createTexture(const String &path, GFXTextureProfile *profile)
 {
     GBitmap *bitmap;
     GFXTexHandle retTexObj = nullptr;
@@ -566,7 +574,7 @@ void GFXTextureManager::hashRemove( GFXTexHandle &object )
     mHashTable.erase(object->mTextureLookupName);
 }
 
-GFXTexHandle& GFXTextureManager::find(std::string name)
+GFXTexHandle GFXTextureManager::find(std::string name)
 {
     GFXTexHandle ret = nullptr;
     std::transform(name.begin(), name.end(), name.begin(), ::tolower);
@@ -574,7 +582,7 @@ GFXTexHandle& GFXTextureManager::find(std::string name)
     if ( name.empty() || mHashTable.count(name) == 0)
       return ret;
 
-    ret = mHashTable[name];
+    ret = mHashTable[name].lock();
     return ret;
 }
 
@@ -757,7 +765,7 @@ void GFXTextureManager::reloadTextures()
 
    for (auto itr: mHashTable )
    {
-      GFXTexHandle tex = itr.second;
+      GFXTexHandle tex = itr.second.lock();
       const String path( tex->mPath );
       if ( !path.isEmpty() )
       {

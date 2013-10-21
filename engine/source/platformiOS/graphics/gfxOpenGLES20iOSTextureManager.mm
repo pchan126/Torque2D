@@ -31,7 +31,7 @@ GFXOpenGLES20iOSTextureManager::~GFXOpenGLES20iOSTextureManager()
 }
 
 
-GFXTexHandle& GFXOpenGLES20iOSTextureManager::createTexture(GBitmap *bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp)
+GFXTexHandle GFXOpenGLES20iOSTextureManager::createTexture(GBitmap *bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp)
 {
     AssertFatal(bmp, "GFXTextureManager::createTexture() - Got nullptr bitmap!");
 
@@ -48,7 +48,7 @@ GFXTexHandle& GFXOpenGLES20iOSTextureManager::createTexture(GBitmap *bmp, const 
 }
 
 
-GFXTexHandle& GFXOpenGLES20iOSTextureManager::_createTexture(GBitmap *bmp,
+GFXTexHandle GFXOpenGLES20iOSTextureManager::_createTexture(GBitmap *bmp,
         const String &resourceName,
         GFXTextureProfile *profile,
         bool deleteBmp,
@@ -192,7 +192,7 @@ GFXTexHandle& GFXOpenGLES20iOSTextureManager::_createTexture(GBitmap *bmp,
 ////-----------------------------------------------------------------------------
 //// createTexture
 ////-----------------------------------------------------------------------------
-GFXTexHandle& GFXOpenGLES20iOSTextureManager::createTexture(const String &fullPath, GFXTextureProfile *profile)
+GFXTexHandle GFXOpenGLES20iOSTextureManager::createTexture(const String &fullPath, GFXTextureProfile *profile)
 {
     GLKTextureInfo *texture = nil;
 
@@ -269,22 +269,24 @@ GFXTexHandle GFXOpenGLES20iOSTextureManager::_createTextureObject(U32 height,
 {
    AssertFatal(format >= 0 && format < GFXFormat_COUNT, "GFXOpenGLES20iOSTextureManager::_createTexture - invalid format!");
 
-   GFXOpenGLES20iOSTextureObject *retTex;
+    std::shared_ptr<GFXOpenGLES20iOSTextureObject>retTex;
    if ( inTex )
    {
-      AssertFatal( dynamic_cast<GFXOpenGLES20iOSTextureObject*>( inTex.get() ), "GFXOpenGLES20iOSTextureManager::_createTexture() - Bad inTex type!" );
-      retTex = static_cast<GFXOpenGLES20iOSTextureObject*>( inTex.get() );
+      AssertFatal( std::dynamic_pointer_cast<GFXOpenGLES20iOSTextureObject>( inTex ), "GFXOpenGLES20iOSTextureManager::_createTexture() - Bad inTex type!" );
+      retTex = std::static_pointer_cast<GFXOpenGLES20iOSTextureObject>( inTex );
       retTex->release();
    }      
    else
    {
-      retTex = new GFXOpenGLES20iOSTextureObject( GFX, profile );
+      retTex = std::make_shared<GFXOpenGLES20iOSTextureObject>( GFX, profile );
       retTex->registerResourceWithDevice( GFX );
    }
 
-   innerCreateTexture(retTex, height, width, depth, format, profile, numMipLevels, forceMips, data);
+   auto temp = std::static_pointer_cast<GFXOpenGLES20TextureObject>(retTex);
+   innerCreateTexture(temp, height, width, depth, format, profile, numMipLevels, forceMips, data);
 
-   return GFXTexHandle(retTex);
+   GFXTexHandle ret = std::static_pointer_cast<GFXTextureObject>(retTex);
+   return ret;
 }
 
 //-----------------------------------------------------------------------------
