@@ -203,7 +203,7 @@ GFXTextureObject *GuiImageList::GetTextureObject( const char* TexturePath )
   return NULL;
 }
 
-std::shared_ptr<GFXTextureObject> GuiImageList::GetTextureHandle( U32 Index )
+GFXTexHandle GuiImageList::GetTextureHandle( U32 Index )
 {
   U32 ItemIndex = IndexFromId(Index);
   if ( ItemIndex != -1 )
@@ -213,7 +213,7 @@ std::shared_ptr<GFXTextureObject> GuiImageList::GetTextureHandle( U32 Index )
 
 }
 
-std::shared_ptr<GFXTextureObject> GuiImageList::GetTextureHandle( const char* TexturePath )
+GFXTexHandle GuiImageList::GetTextureHandle( const char* TexturePath )
 {
   for ( auto i:mTextures )
   {

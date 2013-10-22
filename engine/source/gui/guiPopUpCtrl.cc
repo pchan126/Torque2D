@@ -555,8 +555,8 @@ bool GuiPopUpMenuCtrl::onAdd()
 //------------------------------------------------------------------------------
 void GuiPopUpMenuCtrl::onSleep()
 {
-   mTextureNormal = NULL; // DAW: Added
-   mTextureDepressed = NULL; // DAW: Added
+   mTextureNormal = nullptr; // DAW: Added
+   mTextureDepressed = nullptr; // DAW: Added
    Parent::onSleep();
    closePopUp();  // Tests in function.
 }

@@ -55,7 +55,7 @@ class GuiImageList : public SimObject
    typedef struct tag_TextureEntry
    {
       StringTableEntry TexturePath;
-      std::shared_ptr<GFXTextureObject> Handle;
+      GFXTexHandle Handle;
       GFXTextureObject* Object;
       U32 id;
    }TextureEntry,*PTextureEntry;
@@ -84,8 +84,8 @@ class GuiImageList : public SimObject
    GFXTextureObject *GetTextureObject( U32 Index );
    GFXTextureObject *GetTextureObject( const char* TexturePath );
 
-   std::shared_ptr<GFXTextureObject> GetTextureHandle( U32 Index );
-   std::shared_ptr<GFXTextureObject> GetTextureHandle( const char* TexturePath );
+   GFXTexHandle GetTextureHandle( U32 Index );
+   GFXTexHandle GetTextureHandle( const char* TexturePath );
 
    const char * GetTexturePath( U32 Index );
 

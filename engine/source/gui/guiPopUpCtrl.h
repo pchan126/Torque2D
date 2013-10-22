@@ -118,8 +118,8 @@ protected:
    bool mReverseTextList;	// DAW: Added - Should we reverse the text list if we display up?
    StringTableEntry mBitmapName; // DAW: Added
    Point2I mBitmapBounds; // DAW: Added
-    std::shared_ptr<GFXTextureObject> mTextureNormal; //  Added
-    std::shared_ptr<GFXTextureObject> mTextureDepressed; //  Added
+    GFXTexHandle mTextureNormal; //  Added
+    GFXTexHandle mTextureDepressed; //  Added
 
    virtual void addChildren();
    virtual void repositionPopup();

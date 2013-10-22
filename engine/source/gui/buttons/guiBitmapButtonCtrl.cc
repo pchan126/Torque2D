@@ -291,7 +291,7 @@ void GuiBitmapButtonCtrl::onRender(Point2I offset, const RectI& updateRect)
 
 //------------------------------------------------------------------------------
 
-void GuiBitmapButtonCtrl::renderButton(std::shared_ptr<GFXTextureObject> &texture, Point2I &offset, const RectI& updateRect)
+void GuiBitmapButtonCtrl::renderButton(GFXTexHandle &texture, Point2I &offset, const RectI& updateRect)
 {
    GFX->getDrawUtil()->clearBitmapModulation();
 
@@ -325,7 +325,7 @@ void GuiBitmapButtonTextCtrl::onRender(Point2I offset, const RectI& updateRect)
    else
       state = INACTIVE;
 
-   std::shared_ptr<GFXTextureObject> texture;
+   GFXTexHandle texture;
 
    switch (state)
    {

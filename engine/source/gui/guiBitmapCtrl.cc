@@ -181,7 +181,7 @@ void GuiBitmapCtrl::updateSizing()
 }
 
 
-void GuiBitmapCtrl::setBitmap(const std::shared_ptr<GFXTextureObject> &handle, bool resize)
+void GuiBitmapCtrl::setBitmap(const GFXTexHandle &handle, bool resize)
 {
    mTextureObject = handle;
 

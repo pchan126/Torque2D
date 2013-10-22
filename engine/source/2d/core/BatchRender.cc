@@ -93,7 +93,7 @@ void BatchRender::SubmitTriangles(
         const U32 vertexCount,
         const Vector2* pVertexArray,
         const Vector2* pTextureArray,
-        std::shared_ptr<GFXTextureObject>& texture,
+        GFXTexHandle& texture,
         const ColorF& inColor )
 {
     // Debug Profiling.
@@ -199,7 +199,7 @@ void BatchRender::SubmitTriangles(
     }
 }
 
-void BatchRender::SubmitTriangleStrip( const Vector<GFXVertexPCT> verts, std::shared_ptr<GFXTextureObject>& texture)
+void BatchRender::SubmitTriangleStrip( const Vector<GFXVertexPCT> verts, GFXTexHandle& texture)
 {
     // Sanity!
     AssertFatal( mpDebugStats != nullptr, "Debug stats have not been configured." );
@@ -273,7 +273,7 @@ void BatchRender::SubmitTriangleStrip( const Vector<GFXVertexPCT> verts, std::sh
 }
 
 
-void BatchRender::SubmitIndexedTriangleStrip(const Vector<GFXVertexPCT> &verts, std::shared_ptr<GFXTextureObject> &texture, const Vector<U16> &in_indexBuffer)
+void BatchRender::SubmitIndexedTriangleStrip(const Vector<GFXVertexPCT> &verts, GFXTexHandle &texture, const Vector<U16> &in_indexBuffer)
 {
    // Sanity!
    AssertFatal( mpDebugStats != nullptr, "Debug stats have not been configured." );
@@ -350,7 +350,7 @@ void BatchRender::SubmitIndexedTriangleStrip(const Vector<GFXVertexPCT> &verts, 
 }
 
 void BatchRender::SubmitQuad(const std::array< GFXVertexPCT, 4> verts,
-        GFXTexHandle& texture)
+                             GFXTexHandle& texture)
 {
     // Sanity!
     AssertFatal( mpDebugStats != nullptr, "Debug stats have not been configured." );
@@ -444,7 +444,7 @@ void BatchRender::SubmitQuad(
         const Vector2& texturePos1,
         const Vector2& texturePos2,
         const Vector2& texturePos3,
-        std::shared_ptr<GFXTextureObject>& texture,
+        GFXTexHandle& texture,
         const ColorF& color )
 {
     // Sanity!
@@ -547,7 +547,7 @@ void BatchRender::flushInternal( void )
     {
         // Bind the texture if not in wireframe mode.
         if ( !mWireframeMode )
-           _lightAndDraw( &mVertexBuffer, &mIndexBuffer, mStrictOrderTextureHandle );
+           _lightAndDraw( &mVertexBuffer, &mIndexBuffer, mStrictOrderTextureHandle);
       else
          _lightAndDraw(  &mVertexBuffer, &mIndexBuffer );
 

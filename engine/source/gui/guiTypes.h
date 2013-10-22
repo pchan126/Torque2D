@@ -331,7 +331,7 @@ private:
    Point2I mHotSpot;
    Point2F mRenderOffset;
    Point2I mExtent;
-   std::shared_ptr<GFXTextureObject> mTextureHandle;
+   GFXTexHandle mTextureHandle;
 
 public:
    Point2I getHotSpot() { return mHotSpot; }

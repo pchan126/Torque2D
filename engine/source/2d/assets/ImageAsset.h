@@ -147,7 +147,7 @@ protected:
     /// Imagery.
     typeFrameAreaVector         mFrames;
     typeExplicitFrameAreaVector mExplicitFrames;
-    std::shared_ptr<GFXTextureObject>               mImageTextureHandle;
+    GFXTexHandle                mImageTextureHandle;
 
 public:
     ImageAsset();

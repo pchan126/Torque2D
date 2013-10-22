@@ -152,7 +152,7 @@ class GuiWindowCtrl : public GuiContainer
     
     
       RectI *mBitmapBounds;  //bmp is [3*n], bmpHL is [3*n + 1], bmpNA is [3*n + 2]
-      std::shared_ptr<GFXTextureObject> mTextureObject;
+      GFXTexHandle mTextureObject;
 
     /// @name Collapsing
     /// @{

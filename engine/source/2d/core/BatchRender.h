@@ -241,7 +241,7 @@ public:
             const U32 vertexCount,
             const Vector2* pVertexArray,
             const Vector2* pTextureArray,
-            std::shared_ptr<GFXTextureObject>& texture,
+            GFXTexHandle& texture,
             const ColorF& color = ColorF(-1.0f, -1.0f, -1.0f) );
 
     void SubmitTriangleStrip( const Vector<GFXVertexPCT> verts, GFXTexHandle &texture);

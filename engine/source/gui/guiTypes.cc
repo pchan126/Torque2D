@@ -86,8 +86,7 @@ void GuiCursor::render(const Point2I &pos)
 {
    if (!mTextureHandle && mBitmapName && mBitmapName[0])
    {
-//      mTextureHandle = std::shared_ptr<GFXTextureObject>(mBitmapName, TextureHandle::BitmapTexture);
-       mTextureHandle = GFXTextureObject::create( mBitmapName, &GFXDefaultPersistentProfile, avar("GuiCursor::mTextureHandle"));
+      mTextureHandle = GFXTextureObject::create( mBitmapName, &GFXDefaultPersistentProfile, avar("GuiCursor::mTextureHandle"));
       if(!mTextureHandle)
          return;
       mExtent.set(mTextureHandle->getWidth(), mTextureHandle->getHeight());
@@ -224,7 +223,10 @@ GuiControlProfile::GuiControlProfile(void) :
       mNumbersOnly   = def->mNumbersOnly;
       mCursorColor   = def->mCursorColor;
       mProfileForChildren = def->mProfileForChildren;
+
    }
+    if (mProfileForChildren)
+        Con::printf("set mProfileforchildren %s", mProfileForChildren->getName());
 }
 
 GuiControlProfile::~GuiControlProfile()
@@ -367,6 +369,7 @@ S32 GuiControlProfile::constructBitmapArray()
 
 void GuiControlProfile::incRefCount()
 {
+    Con::printf("GuiControlProfile::incRefCount() %s ->%d", getName(), mRefCount+1);
    if(!mRefCount++)
    {
       sFontCacheDirectory = Con::getVariable("$GUI::fontCacheDirectory");
@@ -381,7 +384,7 @@ void GuiControlProfile::incRefCount()
           Con::printf("GuiControlProfile::incRefCount %s", mBitmapName);
           GBitmap* bmp = GBitmap::load(mBitmapName);
           mTextureHandle = GFXTextureObject::create ( bmp, &GFXDefaultPersistentProfile, true, avar("GuiControlProfile::mTextureHandle" ));
-          if (!(bool)mTextureHandle)
+          if (!mTextureHandle)
              Con::errorf("Failed to load profile bitmap (%s)",mBitmapName);
 
           // If we've got a special border, make sure it's usable.
@@ -397,7 +400,9 @@ void GuiControlProfile::decRefCount()
    if(!mRefCount)
       return;
 
-   if(!--mRefCount)
+    Con::printf("GuiControlProfile::decRefCount() %s ->%d", getName(), mRefCount-1);
+
+    if(!--mRefCount)
    {
       mFont = nullptr;
       mTextureHandle = nullptr;

@@ -43,7 +43,7 @@ private:
 
 protected:
    StringTableEntry  mBitmapName;
-   std::shared_ptr<GFXTextureObject>      mTextureNormal;
+   GFXTexHandle      mTextureNormal;
    S32               mIconLocation;
    S32               mTextLocation;
    S32               mTextMargin;
@@ -60,7 +60,7 @@ protected:
     
    // DAW: Optional bitmap to be displayed when the proper bitmap cannot be found
    StringTableEntry mErrorBitmapName;
-   std::shared_ptr<GFXTextureObject>     mErrorTextureHandle;
+   GFXTexHandle     mErrorTextureHandle;
 
    void renderButton( Point2I &offset, const RectI& updateRect);
 
