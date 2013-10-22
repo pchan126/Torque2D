@@ -225,7 +225,7 @@ void GFXTextureObject::refresh( void )
     TEXMGR->reloadTexture( shared_from_this() );
 };
 
-GFXTexHandle & GFXTextureObject::create(const String &texName, GFXTextureProfile *profile, const String &desc)
+GFXTexHandle GFXTextureObject::create(const String &texName, GFXTextureProfile *profile, const String &desc)
 {
     GFXTexHandle ret = TEXMGR->createTexture( texName, profile );
 #ifdef TORQUE_DEBUG

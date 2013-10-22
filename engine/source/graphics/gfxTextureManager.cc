@@ -107,7 +107,8 @@ void GFXTextureManager::kill()
 
    for (auto itr: mHashTable)
    {
-       itr.second.lock()->kill();
+       auto temp = itr.second;
+       temp->kill();
    }
 
 //   mCubemapTable.clear();
@@ -130,7 +131,7 @@ void GFXTextureManager::zombify()
 
     for (auto itr: mHashTable)
     {
-        auto temp = itr.second.lock();
+        auto temp = itr.second;
         freeTexture(temp);
     }
 
@@ -142,7 +143,7 @@ void GFXTextureManager::resurrect()
 {
     for (auto itr: mHashTable)
     {
-        auto temp = itr.second.lock();
+        auto temp = itr.second;
         refreshTexture(temp);
     }
 
@@ -180,10 +181,7 @@ void GFXTextureManager::requestDeleteTexture(GFXTexHandle texture)
 
    // If this is a non-cached texture then just really delete it.
    if ( texture->mTextureLookupName.empty() )
-   {
-//      delete texture;
       return;
-   }
 
    // Set the time and store it.
    texture->mDeleteTime = Platform::getTime();
@@ -582,7 +580,7 @@ GFXTexHandle GFXTextureManager::find(std::string name)
     if ( name.empty() || mHashTable.count(name) == 0)
       return ret;
 
-    ret = mHashTable[name].lock();
+    ret = mHashTable[name];
     return ret;
 }
 
@@ -765,7 +763,7 @@ void GFXTextureManager::reloadTextures()
 
    for (auto itr: mHashTable )
    {
-      GFXTexHandle tex = itr.second.lock();
+      GFXTexHandle tex = itr.second;
       const String path( tex->mPath );
       if ( !path.isEmpty() )
       {

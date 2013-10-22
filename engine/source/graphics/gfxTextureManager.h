@@ -157,8 +157,7 @@ protected:
    /// 
    static S32 smTextureReductionLevel;
 
-//   std::unordered_map<std::string, GFXTexHandle> mHashTable;
-    std::unordered_map<std::string, std::weak_ptr<GFXTextureObject>> mHashTable;
+   std::unordered_map<std::string, GFXTexHandle> mHashTable;
 
 //   GFXTexHandle mListHead;
 //   GFXTexHandle mListTail;
