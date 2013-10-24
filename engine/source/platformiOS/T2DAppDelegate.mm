@@ -28,7 +28,7 @@
 #include "console/console.h"
 #include "game/gameInterface.h"
 #include "graphics/gfxInit.h"
-#include "./graphics/GFXOpenGLES20iOSDevice.h"
+#include "./graphics/ES20/GFXOpenGLES20iOSDevice.h"
 #include "./windowManager/iOSWindow.h"
 
 // Store current orientation for easy access

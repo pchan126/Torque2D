@@ -7,8 +7,8 @@
 
 #include "FilterImageAsset.h"
 #include "console/consoleTypes.h"
-#include "platformiOS/graphics/gfxOpenGLES20iOSDevice.h"
-#include "platformiOS/graphics/gfxOpenGLES20iOSTextureObject.h"
+#include "platformiOS/graphics/ES20/gfxOpenGLES20iOSDevice.h"
+#include "platformiOS/graphics/ES20/gfxOpenGLES20iOSTextureObject.h"
 
 //------------------------------------------------------------------------------
 

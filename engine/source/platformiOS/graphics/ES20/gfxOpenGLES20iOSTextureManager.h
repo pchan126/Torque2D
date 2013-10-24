@@ -10,7 +10,7 @@
 
 #include "graphics/gfxDevice.h"
 #include "graphics/gfxTextureManager.h"
-#include "platformiOS/graphics/gfxOpenGLES20iOSTextureObject.h"
+#include "./gfxOpenGLES20iOSTextureObject.h"
 #include "graphics/OpenGL/ES20/gfxOpenGLES20TextureManager.h"
 
 class GFXOpenGLES20iOSTextureManager : public GFXOpenGLES20TextureManager

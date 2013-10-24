@@ -4,12 +4,12 @@
 //-----------------------------------------------------------------------------
 
 #include "platform/platform.h"
-#include "platformiOS/graphics/GFXOpenGLES20iOSTextureManager.h"
-#include "platformiOS/graphics/gfxOpenGLES20iOSEnumTranslate.h"
+#include "./GFXOpenGLES20iOSTextureManager.h"
+#include "./gfxOpenGLES20iOSEnumTranslate.h"
 #include "graphics/gfxCardProfile.h"
 #include "memory/safeDelete.h"
-#include "platformiOS/graphics/gfxOpenGLES20iOSUtils.h"
-#include "platformiOS/graphics/gfxOpenGLES20iOSDevice.h"
+#include "./gfxOpenGLES20iOSUtils.h"
+#include "./gfxOpenGLES20iOSDevice.h"
 #import <GLKit/GLKit.h>
 
 
