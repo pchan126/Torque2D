@@ -10,9 +10,9 @@
 #include "graphics/gfxDevice.h"
 #include "game/version.h"
 
-PlatformWindowManager* CreatePlatformWindowManager()
+std::unique_ptr<PlatformWindowManager> CreatePlatformWindowManager()
 {
-   return new GLFWWindowManager();
+   return std::unique_ptr<PlatformWindowManager>(new GLFWWindowManager());
 }
 
 GLFWWindowManager::GLFWWindowManager() : mNotifyShutdownDelegate(this, &GLFWWindowManager::onShutdown), mIsShuttingDown(false)
@@ -44,7 +44,7 @@ PlatformWindow * GLFWWindowManager::getFirstWindow()
    if (mWindowList.size() > 0)
       return mWindowList[0];
       
-   return NULL;
+   return nullptr;
 }
 
 
@@ -56,7 +56,7 @@ PlatformWindow* GLFWWindowManager::getFocusedWindow()
          return window;
    }
 
-   return NULL;
+   return nullptr;
 }
 
 PlatformWindow* GLFWWindowManager::getWindowById(WindowId zid)
@@ -67,7 +67,7 @@ PlatformWindow* GLFWWindowManager::getWindowById(WindowId zid)
       if( w->getWindowId() == zid)
          return w;
    }
-   return NULL;
+   return nullptr;
 }
 
 GLFWWindow* GLFWWindowManager::getWindowByGLFW(GLFWwindow* window)
@@ -79,7 +79,7 @@ GLFWWindow* GLFWWindowManager::getWindowByGLFW(GLFWwindow* window)
       if( w->window == window)
          return w;
    }
-   return NULL;
+   return nullptr;
 }
 
 
@@ -93,7 +93,7 @@ PlatformWindow* GLFWWindowManager::assignCanvas(GFXDevice* device, const GFXVide
    // Find the window by its arbitrary WindowId.
    for(PlatformWindow* w:mWindowList)
    {
-      if (w->mBoundCanvas == NULL)
+      if (w->mBoundCanvas == nullptr)
       {
          w->setVideoMode(mode);
          w->bindCanvas(canvas);
@@ -110,7 +110,7 @@ PlatformWindow *GLFWWindowManager::createWindow(GFXDevice *device, const GFXVide
 {
    GLFWWindow* window = new GLFWWindow(getNextId(), getVersionString(), mode.resolution);
    _addWindow(window);
-   
+
    // Set the video mode on the window
    window->setVideoMode(mode);
 
@@ -122,7 +122,7 @@ PlatformWindow *GLFWWindowManager::createWindow(GFXDevice *device, const GFXVide
    {
       window->mDevice = device;
       window->mTarget = device->allocWindowTarget(window);
-      AssertISV(window->mTarget, 
+      AssertISV(window->mTarget,
          "GLFWWindowManager::createWindow - failed to get a window target back from the device.");
    }
    else
@@ -143,7 +143,7 @@ void GLFWWindowManager::_addWindow(GLFWWindow* window)
    if (mWindowList.size() > 0)
       window->mNextWindow = mWindowList.back();
    else
-      window->mNextWindow = NULL;
+      window->mNextWindow = nullptr;
 
    mWindowList.push_back(window);
    window->mOwningWindowManager = this;

@@ -106,10 +106,10 @@ void GFXOpenGL32Device::init( const GFXVideoMode &mode, PlatformWindow *window )
        CGLPixelFormatObj cglPixelFormat = CGLGetPixelFormat(cglContext);
 
        NSDictionary *opts = @{ kCIContextWorkingColorSpace : [NSNull null] };
-       mCIContext = [CIContext contextWithCGLContext: cglContext
-                                                 pixelFormat: cglPixelFormat
-                                                  colorSpace:nil
-                                                     options:opts];
+//       mCIContext = [CIContext contextWithCGLContext: cglContext
+//                                                 pixelFormat: cglPixelFormat
+//                                                  colorSpace:nil
+//                                                     options:opts];
        
        mTextureManager = new GFXOpenGL32TextureManager(mContext);
 

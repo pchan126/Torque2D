@@ -30,7 +30,7 @@ public:
    /// Get the parent window
    virtual void* getParentWindow()
    {
-      return NULL;
+      return nullptr;
    }
    
    virtual PlatformWindow *createWindow(GFXDevice *device, const GFXVideoMode &mode);

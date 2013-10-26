@@ -86,6 +86,6 @@ private:
 ///
 /// Depending on situation (for instance, if we are a web plugin) we may
 /// need to get the window manager from somewhere else.
-PlatformWindowManager *CreatePlatformWindowManager();
+std::unique_ptr<PlatformWindowManager> CreatePlatformWindowManager();
 
 #endif

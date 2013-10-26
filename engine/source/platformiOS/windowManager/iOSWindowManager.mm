@@ -14,9 +14,9 @@
 #import "platformiOS/T2DViewController.h"
 #include "gfxInit.h"
 
-PlatformWindowManager* CreatePlatformWindowManager()
+std::unique_ptr<PlatformWindowManager> CreatePlatformWindowManager()
 {
-   return new iOSWindowManager();
+   return std::unique_ptr<PlatformWindowManager>(new iOSWindowManager());
 }
 
 static inline RectI convertCGRectToRectI(CGRect r)

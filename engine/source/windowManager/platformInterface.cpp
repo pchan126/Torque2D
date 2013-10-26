@@ -20,9 +20,11 @@
 // WindowManager
 //
 // PlatformWindowManager::get() wrapped in Macro WindowManager
-static std::unique_ptr< PlatformWindowManager > smWindowManager(CreatePlatformWindowManager());
+static std::unique_ptr< PlatformWindowManager > smWindowManager;
 PlatformWindowManager *PlatformWindowManager::get() 
 {
+    if (!smWindowManager)
+        smWindowManager = CreatePlatformWindowManager();
    return smWindowManager.get();
 }
 
