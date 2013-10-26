@@ -33,15 +33,6 @@
 		2AF1C54C16B439D900C1CF3A /* referencedAssets.cc in Sources */ = {isa = PBXBuildFile; fileRef = 2AF1C54916B439D900C1CF3A /* referencedAssets.cc */; };
 		303FE31F1711B1E2002124CC /* process.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 303FE31D1711B1E2002124CC /* process.cpp */; };
 		30804B101764CB3300472030 /* gfxEnums.cc in Sources */ = {isa = PBXBuildFile; fileRef = 30804B0F1764CB3200472030 /* gfxEnums.cc */; };
-		30BD7D5618199D29008E51C8 /* gfxOpenGLES20iOSCardProfiler.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30BD7D4018199D29008E51C8 /* gfxOpenGLES20iOSCardProfiler.mm */; };
-		30BD7D5718199D29008E51C8 /* gfxOpenGLES20iOSCubemap.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30BD7D4218199D29008E51C8 /* gfxOpenGLES20iOSCubemap.mm */; };
-		30BD7D5818199D29008E51C8 /* gfxOpenGLES20iOSDevice.IOS.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30BD7D4418199D29008E51C8 /* gfxOpenGLES20iOSDevice.IOS.mm */; };
-		30BD7D5918199D29008E51C8 /* gfxOpenGLES20iOSEnumTranslate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30BD7D4618199D29008E51C8 /* gfxOpenGLES20iOSEnumTranslate.mm */; };
-		30BD7D5B18199D29008E51C8 /* gfxOpenGLES20iOSTexHandle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30BD7D4A18199D29008E51C8 /* gfxOpenGLES20iOSTexHandle.cpp */; };
-		30BD7D5C18199D29008E51C8 /* gfxOpenGLES20iOSTextureManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30BD7D4D18199D29008E51C8 /* gfxOpenGLES20iOSTextureManager.mm */; };
-		30BD7D5D18199D29008E51C8 /* gfxOpenGLES20iOSTextureObject.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30BD7D4F18199D29008E51C8 /* gfxOpenGLES20iOSTextureObject.mm */; };
-		30BD7D5E18199D29008E51C8 /* gfxOpenGLES20iOSVertexBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30BD7D5318199D29008E51C8 /* gfxOpenGLES20iOSVertexBuffer.mm */; };
-		30BD7D5F18199D29008E51C8 /* gfxOpenGLES20iOSWindowTarget.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30BD7D5518199D29008E51C8 /* gfxOpenGLES20iOSWindowTarget.mm */; };
 		30D5475C173FF5D300CB43DA /* platformTimer.cc in Sources */ = {isa = PBXBuildFile; fileRef = 30D5475A173FF5D300CB43DA /* platformTimer.cc */; };
 		33230F1656FA2C7C493DA2D2 /* guiSliderCtrl.cc in Sources */ = {isa = PBXBuildFile; fileRef = 332307DBC5B7EEEB22E5A736 /* guiSliderCtrl.cc */; };
 		4B8AA268C459D3CAC485BCFB /* shaderGenVars.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA70E4086F061C83EF1AC /* shaderGenVars.cpp */; };
@@ -473,7 +464,15 @@
 		D1272BD8175F10B10012995E /* gfxDeviceStatistics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D1272BD6175F10AF0012995E /* gfxDeviceStatistics.cpp */; };
 		D1272BEC175F1CD60012995E /* gfxCubemap.cc in Sources */ = {isa = PBXBuildFile; fileRef = D1272BEA175F1CD40012995E /* gfxCubemap.cc */; };
 		D1272BEF175F1E600012995E /* gfxOpenGLCubemap.cc in Sources */ = {isa = PBXBuildFile; fileRef = D1272BED175F1E600012995E /* gfxOpenGLCubemap.cc */; };
+		D1272BF4175F1FE20012995E /* gfxOpenGLES20iOSCubemap.mm in Sources */ = {isa = PBXBuildFile; fileRef = D1272BF3175F1FE10012995E /* gfxOpenGLES20iOSCubemap.mm */; };
 		D1272BF7175F22050012995E /* gfxOpenGLES20Cubemap.cc in Sources */ = {isa = PBXBuildFile; fileRef = D1272BF5175F22050012995E /* gfxOpenGLES20Cubemap.cc */; };
+		D127CE05173CE479006AB038 /* gfxOpenGLES20iOSCardProfiler.mm in Sources */ = {isa = PBXBuildFile; fileRef = D127CDED173CE479006AB038 /* gfxOpenGLES20iOSCardProfiler.mm */; };
+		D127CE07173CE479006AB038 /* gfxOpenGLES20iOSDevice.IOS.mm in Sources */ = {isa = PBXBuildFile; fileRef = D127CDF1173CE479006AB038 /* gfxOpenGLES20iOSDevice.IOS.mm */; };
+		D127CE08173CE479006AB038 /* gfxOpenGLES20iOSEnumTranslate.mm in Sources */ = {isa = PBXBuildFile; fileRef = D127CDF3173CE479006AB038 /* gfxOpenGLES20iOSEnumTranslate.mm */; };
+		D127CE0C173CE479006AB038 /* gfxOpenGLES20iOSTextureManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = D127CDFB173CE479006AB038 /* gfxOpenGLES20iOSTextureManager.mm */; };
+		D127CE0D173CE479006AB038 /* gfxOpenGLES20iOSTextureObject.mm in Sources */ = {isa = PBXBuildFile; fileRef = D127CDFD173CE479006AB038 /* gfxOpenGLES20iOSTextureObject.mm */; };
+		D127CE0F173CE479006AB038 /* gfxOpenGLES20iOSVertexBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = D127CE02173CE479006AB038 /* gfxOpenGLES20iOSVertexBuffer.mm */; };
+		D127CE10173CE479006AB038 /* gfxOpenGLES20iOSWindowTarget.mm in Sources */ = {isa = PBXBuildFile; fileRef = D127CE04173CE479006AB038 /* gfxOpenGLES20iOSWindowTarget.mm */; };
 		D127CE12173CEEEA006AB038 /* gfxOpenGLES20Shader.cc in Sources */ = {isa = PBXBuildFile; fileRef = D127CE11173CEEEA006AB038 /* gfxOpenGLES20Shader.cc */; };
 		D137585917559AF8004FC011 /* lightMapParams.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D137582317559AF8004FC011 /* lightMapParams.cpp */; };
 		D137585E17559AF8004FC011 /* lightInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D137582F17559AF8004FC011 /* lightInfo.cpp */; };
@@ -612,27 +611,6 @@
 		303FE31E1711B1E2002124CC /* process.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = process.h; sourceTree = "<group>"; };
 		30804B0F1764CB3200472030 /* gfxEnums.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxEnums.cc; sourceTree = "<group>"; };
 		308DD039175E8B70008FBC32 /* rawData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rawData.h; sourceTree = "<group>"; };
-		30BD7D3F18199D29008E51C8 /* gfxOpenGLES20iOSCardProfiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSCardProfiler.h; sourceTree = "<group>"; };
-		30BD7D4018199D29008E51C8 /* gfxOpenGLES20iOSCardProfiler.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLES20iOSCardProfiler.mm; sourceTree = "<group>"; };
-		30BD7D4118199D29008E51C8 /* gfxOpenGLES20iOSCubemap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSCubemap.h; sourceTree = "<group>"; };
-		30BD7D4218199D29008E51C8 /* gfxOpenGLES20iOSCubemap.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLES20iOSCubemap.mm; sourceTree = "<group>"; };
-		30BD7D4318199D29008E51C8 /* gfxOpenGLES20iOSDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSDevice.h; sourceTree = "<group>"; };
-		30BD7D4418199D29008E51C8 /* gfxOpenGLES20iOSDevice.IOS.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLES20iOSDevice.IOS.mm; sourceTree = "<group>"; };
-		30BD7D4518199D29008E51C8 /* gfxOpenGLES20iOSEnumTranslate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSEnumTranslate.h; sourceTree = "<group>"; };
-		30BD7D4618199D29008E51C8 /* gfxOpenGLES20iOSEnumTranslate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLES20iOSEnumTranslate.mm; sourceTree = "<group>"; };
-		30BD7D4918199D29008E51C8 /* gfxOpenGLES20iOSShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSShader.h; sourceTree = "<group>"; };
-		30BD7D4A18199D29008E51C8 /* gfxOpenGLES20iOSTexHandle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxOpenGLES20iOSTexHandle.cpp; sourceTree = "<group>"; };
-		30BD7D4B18199D29008E51C8 /* gfxOpenGLES20iOSTexHandle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSTexHandle.h; sourceTree = "<group>"; };
-		30BD7D4C18199D29008E51C8 /* gfxOpenGLES20iOSTextureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSTextureManager.h; sourceTree = "<group>"; };
-		30BD7D4D18199D29008E51C8 /* gfxOpenGLES20iOSTextureManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLES20iOSTextureManager.mm; sourceTree = "<group>"; };
-		30BD7D4E18199D29008E51C8 /* gfxOpenGLES20iOSTextureObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSTextureObject.h; sourceTree = "<group>"; };
-		30BD7D4F18199D29008E51C8 /* gfxOpenGLES20iOSTextureObject.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLES20iOSTextureObject.mm; sourceTree = "<group>"; };
-		30BD7D5018199D29008E51C8 /* gfxOpenGLES20iOSTextureTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSTextureTarget.h; sourceTree = "<group>"; };
-		30BD7D5118199D29008E51C8 /* gfxOpenGLES20iOSUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSUtils.h; sourceTree = "<group>"; };
-		30BD7D5218199D29008E51C8 /* gfxOpenGLES20iOSVertexBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSVertexBuffer.h; sourceTree = "<group>"; };
-		30BD7D5318199D29008E51C8 /* gfxOpenGLES20iOSVertexBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLES20iOSVertexBuffer.mm; sourceTree = "<group>"; };
-		30BD7D5418199D29008E51C8 /* gfxOpenGLES20iOSWindowTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSWindowTarget.h; sourceTree = "<group>"; };
-		30BD7D5518199D29008E51C8 /* gfxOpenGLES20iOSWindowTarget.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLES20iOSWindowTarget.mm; sourceTree = "<group>"; };
 		30D5475A173FF5D300CB43DA /* platformTimer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = platformTimer.cc; sourceTree = "<group>"; };
 		30D5475B173FF5D300CB43DA /* platformTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformTimer.h; sourceTree = "<group>"; };
 		332307DBC5B7EEEB22E5A736 /* guiSliderCtrl.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiSliderCtrl.cc; sourceTree = "<group>"; };
@@ -643,6 +621,7 @@
 		4B8AA2356D2CABA30E9BEB5C /* guiJoystickCtrl_ScriptBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = guiJoystickCtrl_ScriptBindings.h; path = gui/guiJoystickCtrl_ScriptBindings.h; sourceTree = "<group>"; };
 		4B8AA3F49A3463DC9D4C56AB /* render2DObjectMgr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = render2DObjectMgr.cpp; sourceTree = "<group>"; };
 		4B8AA4FE99FB3B24D157E810 /* sphereMesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sphereMesh.h; sourceTree = "<group>"; };
+		4B8AA506A21CCF7A52646E9C /* gfxOpenGLES20iOSTextureTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSTextureTarget.h; sourceTree = "<group>"; };
 		4B8AA643B344244F09BC5153 /* render2DObjectMgr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render2DObjectMgr.h; sourceTree = "<group>"; };
 		4B8AA69E2FAAFC7316092ACB /* gfxOpenGLES20TextureTarget.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxOpenGLES20TextureTarget.cc; sourceTree = "<group>"; };
 		4B8AA6E8B5D42932C6BF8339 /* ShaderAsset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderAsset.h; sourceTree = "<group>"; };
@@ -1473,8 +1452,26 @@
 		D1272BEB175F1CD50012995E /* gfxCubemap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxCubemap.h; sourceTree = "<group>"; };
 		D1272BED175F1E600012995E /* gfxOpenGLCubemap.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxOpenGLCubemap.cc; sourceTree = "<group>"; };
 		D1272BEE175F1E600012995E /* gfxOpenGLCubemap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLCubemap.h; sourceTree = "<group>"; };
+		D1272BF2175F1FE00012995E /* gfxOpenGLES20iOSCubemap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSCubemap.h; sourceTree = "<group>"; };
+		D1272BF3175F1FE10012995E /* gfxOpenGLES20iOSCubemap.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLES20iOSCubemap.mm; sourceTree = "<group>"; };
 		D1272BF5175F22050012995E /* gfxOpenGLES20Cubemap.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxOpenGLES20Cubemap.cc; sourceTree = "<group>"; };
 		D1272BF6175F22050012995E /* gfxOpenGLES20Cubemap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20Cubemap.h; sourceTree = "<group>"; };
+		D127CDEC173CE479006AB038 /* gfxOpenGLES20iOSCardProfiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSCardProfiler.h; sourceTree = "<group>"; };
+		D127CDED173CE479006AB038 /* gfxOpenGLES20iOSCardProfiler.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLES20iOSCardProfiler.mm; sourceTree = "<group>"; };
+		D127CDF0173CE479006AB038 /* gfxOpenGLES20iOSDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSDevice.h; sourceTree = "<group>"; };
+		D127CDF1173CE479006AB038 /* gfxOpenGLES20iOSDevice.IOS.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLES20iOSDevice.IOS.mm; sourceTree = "<group>"; };
+		D127CDF2173CE479006AB038 /* gfxOpenGLES20iOSEnumTranslate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSEnumTranslate.h; sourceTree = "<group>"; };
+		D127CDF3173CE479006AB038 /* gfxOpenGLES20iOSEnumTranslate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLES20iOSEnumTranslate.mm; sourceTree = "<group>"; };
+		D127CDF6173CE479006AB038 /* gfxOpenGLES20iOSShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSShader.h; sourceTree = "<group>"; };
+		D127CDFA173CE479006AB038 /* gfxOpenGLES20iOSTextureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSTextureManager.h; sourceTree = "<group>"; };
+		D127CDFB173CE479006AB038 /* gfxOpenGLES20iOSTextureManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLES20iOSTextureManager.mm; sourceTree = "<group>"; };
+		D127CDFC173CE479006AB038 /* gfxOpenGLES20iOSTextureObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSTextureObject.h; sourceTree = "<group>"; };
+		D127CDFD173CE479006AB038 /* gfxOpenGLES20iOSTextureObject.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLES20iOSTextureObject.mm; sourceTree = "<group>"; };
+		D127CE00173CE479006AB038 /* gfxOpenGLES20iOSUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSUtils.h; sourceTree = "<group>"; };
+		D127CE01173CE479006AB038 /* gfxOpenGLES20iOSVertexBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSVertexBuffer.h; sourceTree = "<group>"; };
+		D127CE02173CE479006AB038 /* gfxOpenGLES20iOSVertexBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLES20iOSVertexBuffer.mm; sourceTree = "<group>"; };
+		D127CE03173CE479006AB038 /* gfxOpenGLES20iOSWindowTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSWindowTarget.h; sourceTree = "<group>"; };
+		D127CE04173CE479006AB038 /* gfxOpenGLES20iOSWindowTarget.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gfxOpenGLES20iOSWindowTarget.mm; sourceTree = "<group>"; };
 		D127CE11173CEEEA006AB038 /* gfxOpenGLES20Shader.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxOpenGLES20Shader.cc; sourceTree = "<group>"; };
 		D137582317559AF8004FC011 /* lightMapParams.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lightMapParams.cpp; sourceTree = "<group>"; };
 		D137582417559AF8004FC011 /* lightMapParams.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lightMapParams.h; sourceTree = "<group>"; };
@@ -1741,34 +1738,6 @@
 				2AE2938A16EF4C480015E200 /* WaveComposite.h */,
 			);
 			name = composites;
-			sourceTree = "<group>";
-		};
-		30BD7D3E18199D29008E51C8 /* ES20 */ = {
-			isa = PBXGroup;
-			children = (
-				30BD7D3F18199D29008E51C8 /* gfxOpenGLES20iOSCardProfiler.h */,
-				30BD7D4018199D29008E51C8 /* gfxOpenGLES20iOSCardProfiler.mm */,
-				30BD7D4118199D29008E51C8 /* gfxOpenGLES20iOSCubemap.h */,
-				30BD7D4218199D29008E51C8 /* gfxOpenGLES20iOSCubemap.mm */,
-				30BD7D4318199D29008E51C8 /* gfxOpenGLES20iOSDevice.h */,
-				30BD7D4418199D29008E51C8 /* gfxOpenGLES20iOSDevice.IOS.mm */,
-				30BD7D4518199D29008E51C8 /* gfxOpenGLES20iOSEnumTranslate.h */,
-				30BD7D4618199D29008E51C8 /* gfxOpenGLES20iOSEnumTranslate.mm */,
-				30BD7D4918199D29008E51C8 /* gfxOpenGLES20iOSShader.h */,
-				30BD7D4A18199D29008E51C8 /* gfxOpenGLES20iOSTexHandle.cpp */,
-				30BD7D4B18199D29008E51C8 /* gfxOpenGLES20iOSTexHandle.h */,
-				30BD7D4C18199D29008E51C8 /* gfxOpenGLES20iOSTextureManager.h */,
-				30BD7D4D18199D29008E51C8 /* gfxOpenGLES20iOSTextureManager.mm */,
-				30BD7D4E18199D29008E51C8 /* gfxOpenGLES20iOSTextureObject.h */,
-				30BD7D4F18199D29008E51C8 /* gfxOpenGLES20iOSTextureObject.mm */,
-				30BD7D5018199D29008E51C8 /* gfxOpenGLES20iOSTextureTarget.h */,
-				30BD7D5118199D29008E51C8 /* gfxOpenGLES20iOSUtils.h */,
-				30BD7D5218199D29008E51C8 /* gfxOpenGLES20iOSVertexBuffer.h */,
-				30BD7D5318199D29008E51C8 /* gfxOpenGLES20iOSVertexBuffer.mm */,
-				30BD7D5418199D29008E51C8 /* gfxOpenGLES20iOSWindowTarget.h */,
-				30BD7D5518199D29008E51C8 /* gfxOpenGLES20iOSWindowTarget.mm */,
-			);
-			path = ES20;
 			sourceTree = "<group>";
 		};
 		4B8AA420D9B81ABF7A64DDCD /* gui */ = {
@@ -3274,7 +3243,25 @@
 		D15E7E6216F05FA700BB43B1 /* graphics */ = {
 			isa = PBXGroup;
 			children = (
-				30BD7D3E18199D29008E51C8 /* ES20 */,
+				D1272BF2175F1FE00012995E /* gfxOpenGLES20iOSCubemap.h */,
+				D1272BF3175F1FE10012995E /* gfxOpenGLES20iOSCubemap.mm */,
+				D127CDEC173CE479006AB038 /* gfxOpenGLES20iOSCardProfiler.h */,
+				D127CDED173CE479006AB038 /* gfxOpenGLES20iOSCardProfiler.mm */,
+				D127CDF0173CE479006AB038 /* gfxOpenGLES20iOSDevice.h */,
+				D127CDF1173CE479006AB038 /* gfxOpenGLES20iOSDevice.IOS.mm */,
+				D127CDF2173CE479006AB038 /* gfxOpenGLES20iOSEnumTranslate.h */,
+				D127CDF3173CE479006AB038 /* gfxOpenGLES20iOSEnumTranslate.mm */,
+				D127CDF6173CE479006AB038 /* gfxOpenGLES20iOSShader.h */,
+				D127CDFA173CE479006AB038 /* gfxOpenGLES20iOSTextureManager.h */,
+				D127CDFB173CE479006AB038 /* gfxOpenGLES20iOSTextureManager.mm */,
+				D127CDFC173CE479006AB038 /* gfxOpenGLES20iOSTextureObject.h */,
+				D127CDFD173CE479006AB038 /* gfxOpenGLES20iOSTextureObject.mm */,
+				D127CE00173CE479006AB038 /* gfxOpenGLES20iOSUtils.h */,
+				D127CE01173CE479006AB038 /* gfxOpenGLES20iOSVertexBuffer.h */,
+				D127CE02173CE479006AB038 /* gfxOpenGLES20iOSVertexBuffer.mm */,
+				D127CE03173CE479006AB038 /* gfxOpenGLES20iOSWindowTarget.h */,
+				D127CE04173CE479006AB038 /* gfxOpenGLES20iOSWindowTarget.mm */,
+				4B8AA506A21CCF7A52646E9C /* gfxOpenGLES20iOSTextureTarget.h */,
 			);
 			path = graphics;
 			sourceTree = "<group>";
@@ -3477,7 +3464,6 @@
 				867BACDF16AEC8BB0033868F /* iOSMath.mm in Sources */,
 				867BACE016AEC8BB0033868F /* iOSMemory.mm in Sources */,
 				867BACE116AEC8BB0033868F /* iOSMotionManager.mm in Sources */,
-				30BD7D5B18199D29008E51C8 /* gfxOpenGLES20iOSTexHandle.cpp in Sources */,
 				867BACE216AEC8BB0033868F /* iOSMoviePlayback.mm in Sources */,
 				867BACE316AEC8BB0033868F /* iOSMutex.mm in Sources */,
 				867BACE416AEC8BB0033868F /* iOSNet.mm in Sources */,
@@ -3501,7 +3487,6 @@
 				867BAFE616AEC9050033868F /* BatchRender.cc in Sources */,
 				867BAFE716AEC9050033868F /* CoreMath.cc in Sources */,
 				867BAFE816AEC9050033868F /* ParticleSystem.cc in Sources */,
-				30BD7D5C18199D29008E51C8 /* gfxOpenGLES20iOSTextureManager.mm in Sources */,
 				867BAFE916AEC9050033868F /* RenderProxy.cc in Sources */,
 				867BAFEA16AEC9050033868F /* SpriteBase.cc in Sources */,
 				867BAFEB16AEC9050033868F /* SpriteBatch.cc in Sources */,
@@ -3635,7 +3620,6 @@
 				867BB08B16AEC9050033868F /* guiPopUpCtrl.cc in Sources */,
 				867BB08C16AEC9050033868F /* guiPopUpCtrlEx.cc in Sources */,
 				867BB08D16AEC9050033868F /* guiProgressCtrl.cc in Sources */,
-				30BD7D5718199D29008E51C8 /* gfxOpenGLES20iOSCubemap.mm in Sources */,
 				867BB08E16AEC9050033868F /* guiScriptNotifyControl.cc in Sources */,
 				867BB09016AEC9050033868F /* guiTabPageCtrl.cc in Sources */,
 				867BB09116AEC9050033868F /* guiTextCtrl.cc in Sources */,
@@ -3827,13 +3811,11 @@
 				867BB27416AECA110033868F /* jdsample.c in Sources */,
 				867BB27516AECA110033868F /* jdtrans.c in Sources */,
 				867BB27616AECA110033868F /* jerror.c in Sources */,
-				30BD7D5D18199D29008E51C8 /* gfxOpenGLES20iOSTextureObject.mm in Sources */,
 				867BB27716AECA110033868F /* jfdctflt.c in Sources */,
 				867BB27816AECA110033868F /* jfdctfst.c in Sources */,
 				867BB27916AECA110033868F /* jfdctint.c in Sources */,
 				867BB27A16AECA110033868F /* jidctflt.c in Sources */,
 				867BB27B16AECA110033868F /* jidctfst.c in Sources */,
-				30BD7D5818199D29008E51C8 /* gfxOpenGLES20iOSDevice.IOS.mm in Sources */,
 				867BB27C16AECA110033868F /* jidctint.c in Sources */,
 				867BB27D16AECA110033868F /* jidctred.c in Sources */,
 				867BB27E16AECA110033868F /* jmemansi.c in Sources */,
@@ -3843,8 +3825,6 @@
 				867BB28216AECA110033868F /* jutils.c in Sources */,
 				2AC4404E16B0144500FC4091 /* ImageFont.cc in Sources */,
 				86555D3716B2C2B400881446 /* T2DAppDelegate.mm in Sources */,
-				30BD7D5618199D29008E51C8 /* gfxOpenGLES20iOSCardProfiler.mm in Sources */,
-				30BD7D5F18199D29008E51C8 /* gfxOpenGLES20iOSWindowTarget.mm in Sources */,
 				2AF1C54B16B439D900C1CF3A /* declaredAssets.cc in Sources */,
 				2AF1C54C16B439D900C1CF3A /* referencedAssets.cc in Sources */,
 				2AB97A2116B66BE50080F940 /* tamlCustom.cc in Sources */,
@@ -3862,7 +3842,6 @@
 				D15E7EB316F061E200BB43B1 /* gfxDevice.cc in Sources */,
 				D15E7EB416F061E200BB43B1 /* gfxDrawUtil.cc in Sources */,
 				D15E7EB516F061E200BB43B1 /* gfxFontRenderBatcher.cc in Sources */,
-				30BD7D5E18199D29008E51C8 /* gfxOpenGLES20iOSVertexBuffer.mm in Sources */,
 				D15E7EB716F061E200BB43B1 /* gfxResource.cc in Sources */,
 				D15E7EB816F061E200BB43B1 /* gfxShader.cc in Sources */,
 				D15E7EB916F061E200BB43B1 /* gfxStateBlock.cc in Sources */,
@@ -3910,6 +3889,13 @@
 				D10529E9173B665100BFC4FF /* gfxOpenGLES20TextureObject.cc in Sources */,
 				D10529EE173B832700BFC4FF /* gfxOpenGLES20Device.cc in Sources */,
 				D10529F0173B91E500BFC4FF /* gfxOpenGLTextureObject.cc in Sources */,
+				D127CE05173CE479006AB038 /* gfxOpenGLES20iOSCardProfiler.mm in Sources */,
+				D127CE07173CE479006AB038 /* gfxOpenGLES20iOSDevice.IOS.mm in Sources */,
+				D127CE08173CE479006AB038 /* gfxOpenGLES20iOSEnumTranslate.mm in Sources */,
+				D127CE0C173CE479006AB038 /* gfxOpenGLES20iOSTextureManager.mm in Sources */,
+				D127CE0D173CE479006AB038 /* gfxOpenGLES20iOSTextureObject.mm in Sources */,
+				D127CE0F173CE479006AB038 /* gfxOpenGLES20iOSVertexBuffer.mm in Sources */,
+				D127CE10173CE479006AB038 /* gfxOpenGLES20iOSWindowTarget.mm in Sources */,
 				D127CE12173CEEEA006AB038 /* gfxOpenGLES20Shader.cc in Sources */,
 				30D5475C173FF5D300CB43DA /* platformTimer.cc in Sources */,
 				D11B0D13174F00D6002CB743 /* FilterImageAsset.mm in Sources */,
@@ -3921,6 +3907,7 @@
 				D1272BD8175F10B10012995E /* gfxDeviceStatistics.cpp in Sources */,
 				D1272BEC175F1CD60012995E /* gfxCubemap.cc in Sources */,
 				D1272BEF175F1E600012995E /* gfxOpenGLCubemap.cc in Sources */,
+				D1272BF4175F1FE20012995E /* gfxOpenGLES20iOSCubemap.mm in Sources */,
 				D1272BF7175F22050012995E /* gfxOpenGLES20Cubemap.cc in Sources */,
 				D1736FB417617DFE008D010C /* processedFFMaterial.cpp in Sources */,
 				D1736FB817617F45008D010C /* materialDefinition.cpp in Sources */,
@@ -3938,7 +3925,6 @@
 				D1736FE91761BE7E008D010C /* featureSet.cpp in Sources */,
 				D1736FEA1761BE7E008D010C /* featureType.cpp in Sources */,
 				D1736FED1761BF9F008D010C /* processedShaderMaterial.cpp in Sources */,
-				30BD7D5918199D29008E51C8 /* gfxOpenGLES20iOSEnumTranslate.mm in Sources */,
 				D1736FF01761C259008D010C /* materialFeatureData.cpp in Sources */,
 				D1736FF31761C27A008D010C /* matTextureTarget.cpp in Sources */,
 				D1736FF61761C7C5008D010C /* processedCustomMaterial.cpp in Sources */,

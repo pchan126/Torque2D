@@ -10,7 +10,7 @@
 #import "game/version.h"
 #import <UIKit/UIKit.h>
 #import "platformiOS/T2DAppDelegate.h"
-#import "platformiOS/graphics/ES20/GFXOpenGLES20iOSDevice.h"
+#import "platformiOS/graphics/GFXOpenGLES20iOSDevice.h"
 #import "platformiOS/T2DViewController.h"
 #include "gfxInit.h"
 

@@ -6,7 +6,7 @@
 //
 
 #import "T2DViewController.h"
-#include "platformiOS/graphics/ES20/gfxOpenGLES20iOSDevice.h"
+#include "platformiOS/graphics/gfxOpenGLES20iOSDevice.h"
 
 @interface T2DViewController ()
 

@@ -4,7 +4,7 @@
 //-----------------------------------------------------------------------------
 
 #include "platform/platform.h"
-#include "./gfxGLESOcclusionQuery.h"
+#include "gfx/gles/gfxGLESOcclusionQuery.h"
 #import <OpenGLES/ES2/glext.h>
 
 // GL_EXT_occlusion_query_boolean, iPad2+ & iOS 5.0

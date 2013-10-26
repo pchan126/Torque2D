@@ -19,7 +19,7 @@
 #define TORQUE_CONCAT(x, y) _TORQUE_CONCAT(x, y)
 
 
-#include "./gfxOpenGLES20iOSEnumTranslate.h"
+#include "platformiOS/graphics/gfxOpenGLES20iOSEnumTranslate.h"
 #import <OpenGLES/ES2/glext.h>
 
 static inline GLenum minificationFilter(U32 minFilter, U32 mipFilter, U32 mipLevels)

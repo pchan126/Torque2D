@@ -223,7 +223,7 @@ ConsoleFunction(isWriteableFileName, bool, 2, 2, "(fileName)\n"
 
    // writeable? (ReadWrite will create file if it does not exist)
    fs.close();
-   fs.open(filename, (std::fstream::in | std::fstream::out));
+   fs.open(filename, (std::fstream::in || std::fstream::out));
    if(!fs)
       return(false);
 

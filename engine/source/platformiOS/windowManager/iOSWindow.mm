@@ -8,7 +8,7 @@
 
 #import "console/console.h"
 #import "platformiOS/platformiOS.h"
-#import "platformiOS/graphics/ES20/GFXOpenGLES20iOSDevice.h"
+#import "platformiOS/graphics/GFXOpenGLES20iOSDevice.h"
 #import "platformiOS/T2DAppDelegate.h"
 #import "platformiOS/windowManager/iOSGestureRecognizer.h"
 #import "platformiOS/windowManager/iOSWindowInputGenerator.h"
