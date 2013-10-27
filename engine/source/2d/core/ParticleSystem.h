@@ -24,7 +24,7 @@
 #define _PARTICLE_SYSTEM_H_
 
 #include "2d/core/imageFrameProvider.h"
-#include <list>
+#include <forward_list>
 
 //-----------------------------------------------------------------------------
 
@@ -80,7 +80,7 @@ public:
 private:
     const U32                mParticlePoolBlockSize;
     Vector<ParticleNode*>    mParticlePool;
-    std::list<ParticleNode*> mpFreeParticleNodes;
+    std::forward_list<ParticleNode*> mpFreeParticleNodes;
     U32                      mActiveParticleCount;
 
 public:

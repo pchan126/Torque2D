@@ -76,7 +76,7 @@ ParticleSystem::ParticleNode* ParticleSystem::createParticle( void )
 
         for (auto itr = mParticlePool.begin()+oldSize; itr != mParticlePool.end(); itr++)
         {
-            mpFreeParticleNodes.push_back(*itr);
+            mpFreeParticleNodes.push_front(*itr);
         }
     }
 
@@ -99,7 +99,7 @@ void ParticleSystem::freeParticle( ParticleNode* pParticleNode )
     // Reset the particle.
     pParticleNode->resetState();
 
-    mpFreeParticleNodes.push_back(pParticleNode);
+    mpFreeParticleNodes.push_front(pParticleNode);
 
     // Decrease the active particle count.
     mActiveParticleCount--;

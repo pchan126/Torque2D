@@ -25,7 +25,7 @@
 
 #include "2d/assets/particleAsset.h"
 #include "2d/core/particleSystem.h"
-#include <list>
+#include <forward_list>
 
 //-----------------------------------------------------------------------------
 
@@ -45,13 +45,13 @@ private:
     class EmitterNode
     {
     private:
-        ParticlePlayer*                 mOwner;
-        ParticleAssetEmitter*           mpAssetEmitter;
-        std::list<ParticleSystem::ParticleNode*> mParticleNodeList;
+        ParticlePlayer*                          mOwner;
+        ParticleAssetEmitter*                    mpAssetEmitter;
+        std::forward_list<ParticleSystem::ParticleNode*> mParticleNodeList;
 
-        F32                             mTimeSinceLastGeneration;
-        bool                            mPaused;
-        bool                            mVisible;
+        F32                                      mTimeSinceLastGeneration;
+        bool                                     mPaused;
+        bool                                     mVisible;
 
     public:
         EmitterNode( ParticlePlayer* pParticlePlayer, ParticleAssetEmitter* pParticleAssetEmitter )
@@ -84,9 +84,9 @@ private:
         inline ParticlePlayer* getOwner( void ) const { return mOwner; }
         inline ParticleAssetEmitter* getAssetEmitter( void ) const { return mpAssetEmitter; }
 
-        inline bool hasActiveParticles( void ) const { return mParticleNodeList.size() > 0; }
+        inline bool hasActiveParticles( void ) const { return !mParticleNodeList.empty(); }
 
-        inline std::list<ParticleSystem::ParticleNode*> getParticleNodeList(void) { return mParticleNodeList; };
+        inline std::forward_list<ParticleSystem::ParticleNode*> getParticleNodeList(void) { return mParticleNodeList; };
 
         inline void setTimeSinceLastGeneration( const F32 timeSinceLastGeneration ) { mTimeSinceLastGeneration = timeSinceLastGeneration; }
         inline F32 getTimeSinceLastGeneration( void ) const { return mTimeSinceLastGeneration; }
