@@ -92,22 +92,6 @@ void Platform::getLocalTime(LocalTime &lt)
    lt.isdst    = systime.tm_isdst;
 }   
 
-/// Gets the time in seconds since the Epoch
-U32 Platform::getTime()
-{
-   time_t epoch_time;
-   time( &epoch_time );
-   return epoch_time;
-}   
-
-
-//------------------------------------------------------------------------------
-// Gets the time in milliseconds since some epoch. In this case, the current system
-// absolute time. Storing milisec in a U32 overflows every 49.71 days.
-U32 Platform::getRealMilliseconds()
-{
-    return (U32)([NSDate timeIntervalSinceReferenceDate] * 1000);
-}
 
 U32 Platform::getVirtualMilliseconds()
 {

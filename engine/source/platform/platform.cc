@@ -28,6 +28,7 @@
 //Added for the cprintf below
 #include <stdarg.h>
 #include <stdio.h>
+#include <chrono>
 
 S32 sgBackgroundProcessSleepTime = 200;
 S32 sgTimeManagerProcessInterval = 0;
@@ -52,8 +53,8 @@ void Platform::cprintf( const char* str )
 bool Platform::hasExtension(const char* pFilename, const char* pExtension)
 {
     // Sanity!
-    AssertFatal( pFilename != NULL, "Filename cannot be NULL." );
-    AssertFatal( pExtension != NULL, "Extension cannot be NULL." );
+    AssertFatal( pFilename != nullptr, "Filename cannot be nullptr." );
+    AssertFatal( pExtension != nullptr, "Extension cannot be nullptr." );
 
     // Find filename length.
     const size_t filenameLength = dStrlen( pFilename );
@@ -68,6 +69,24 @@ bool Platform::hasExtension(const char* pFilename, const char* pExtension)
     // Check if extension exists.
     return dStricmp( pFilename + filenameLength - extensionLength, pExtension ) == 0;
 }
+
+/// Gets the time in seconds since the Epoch
+U32 Platform::getTime()
+{
+    using namespace std::chrono;
+    std::chrono::seconds tp = std::chrono::duration_cast<std::chrono::seconds>(system_clock::now().time_since_epoch());
+    return tp.count();
+}
+
+//------------------------------------------------------------------------------
+// Gets the time in milliseconds since some epoch. In this case, the current system
+// absolute time. Storing milisec in a U32 overflows every 49.71 days.
+U32 Platform::getRealMilliseconds()
+{
+    using namespace std::chrono;
+    std::chrono::milliseconds tp = std::chrono::duration_cast<std::chrono::milliseconds>(system_clock::now().time_since_epoch());
+    return tp.count();
+};
 
 ConsoleFunction( createUUID, const char*, 1, 1, "() - Creates a UUID string." )
 {
