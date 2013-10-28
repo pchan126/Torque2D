@@ -142,6 +142,7 @@ function TruckToy::create( %this )
 
 function TruckToy::destroy( %this )
 {
+    $Trucklabel.delete();
     // Deactivate the package.
     deactivatePackage( TruckToyPackage );
 }
