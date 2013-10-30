@@ -166,16 +166,18 @@ void LightQuery::_scoreLights()
    }
 
    // Sort them!
-   mLights.sort( _lightScoreCmp );
+    std::sort(mLights.begin(), mLights.end(), _lightScoreCmp);
+//   mLights.sort( _lightScoreCmp );
 }
 
-S32 LightQuery::_lightScoreCmp( LightInfo* const *a, LightInfo* const *b )
-{
-   F32 diff = (*a)->getScore() - (*b)->getScore();
-   return diff < 0 ? 1 : diff > 0 ? -1 : 0;
-}
-
-//bool LightQuery::_lightScoreCmp( LightInfo a, LightInfo b)
+//S32 LightQuery::_lightScoreCmp( LightInfo* const *a, LightInfo* const *b )
 //{
-//    return a.getScore() < b.getScore();
+//   F32 diff = (*a)->getScore() - (*b)->getScore();
+//   return diff < 0 ? 1 : diff > 0 ? -1 : 0;
 //}
+
+bool LightQuery::_lightScoreCmp( LightInfo a, LightInfo b)
+{
+    F32 diff = a.getScore() - b.getScore();
+    return diff < 0 ? false : diff > 0 ? true : false;
+}

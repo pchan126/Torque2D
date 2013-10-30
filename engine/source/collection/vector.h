@@ -283,7 +283,6 @@ template<class T> inline void Vector<T>::sort(compare_func f)
 //    std::sort(_vector.begin(), _vector.end(), f);
 }
 
-
 //-----------------------------------------------------------------------------
 
 template<class T> inline Vector<T>& Vector<T>::operator=(const Vector<T>& p)
