@@ -50,6 +50,14 @@ GFXImplementVertexFormat( GFXVertexPTTT )
    addElement( "TEXCOORD", GFXDeclType_Float2, 2 );
 }
 
+GFXImplementVertexFormat( GFXVertexPCS )
+{
+    addElement( "POSITION", GFXDeclType_Float3 );
+    addElement( "COLOR", GFXDeclType_Color );
+    addElement( "SIZE", GFXDeclType_Float );
+}
+
+
 GFXImplementVertexFormat( GFXVertexPC )
 {
    addElement( "POSITION", GFXDeclType_Float3 );
@@ -72,11 +80,21 @@ GFXImplementVertexFormat( GFXVertexPCT )
 
 GFXImplementVertexFormat( GFXVertexPCTT )
 {
-   addElement( "POSITION", GFXDeclType_Float4 );
+   addElement( "POSITION", GFXDeclType_Float3 );
    addElement( "COLOR", GFXDeclType_Color );
    addElement( "TEXCOORD", GFXDeclType_Float2, 0 );
    addElement( "TEXCOORD", GFXDeclType_Float2, 1 );
 }
+
+GFXImplementVertexFormat( GFXVertexPCTTS )
+{
+    addElement( "POSITION", GFXDeclType_Float3 );
+    addElement( "COLOR", GFXDeclType_Color );
+    addElement( "TEXCOORD", GFXDeclType_Float2, 0 );
+    addElement( "TEXCOORD", GFXDeclType_Float2, 1 );
+    addElement( "SIZE", GFXDeclType_Float);
+}
+
 
 GFXImplementVertexFormat( GFXVertexPN )
 {

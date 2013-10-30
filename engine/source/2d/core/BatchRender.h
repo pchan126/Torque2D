@@ -77,10 +77,12 @@ private:
 
     const ColorF        NoColor;
 
-    Vector<GFXVertexPCT> mVertexBuffer;
+    Vector<GFXVertexPCT>                mVertexBuffer;
     GFXVertexBufferHandle<GFXVertexPCT> mTempVertBuffHandle;
-    Vector<U16>          mIndexBuffer;
-    
+    Vector<U16>                         mIndexBuffer;
+
+    Vector<GFXVertexPC>                 mPointBuffer;
+    GFXVertexBufferHandle<GFXVertexPC>  mPointBuffHandle;
    
     U32                 mTriangleCount;
 

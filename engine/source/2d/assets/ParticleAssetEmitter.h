@@ -95,6 +95,7 @@ private:
     bool                                    mLinkEmissionRotation;
     bool                                    mIntenseParticles;
     bool                                    mSingleParticle;
+    bool                                    mPointParticles;
     bool                                    mAttachPositionToEmitter;
     bool                                    mAttachRotationToEmitter;
     bool                                    mOldestInFront;
@@ -174,6 +175,8 @@ public:
     inline bool getIntenseParticles( void ) const { return mIntenseParticles; }
     inline void setSingleParticle( const bool singleParticle ) { mSingleParticle = singleParticle; refreshAsset(); }
     inline bool getSingleParticle( void ) const { return mSingleParticle; }
+    inline void setPointParticles( const bool pointParticles ) { mPointParticles = pointParticles; refreshAsset(); }
+    inline bool getPointParticles( void ) const { return mPointParticles; }
     inline void setAttachPositionToEmitter( const bool attachPositionToEmitter ) { mAttachPositionToEmitter = attachPositionToEmitter; refreshAsset(); }
     inline bool getAttachPositionToEmitter( void ) const { return mAttachPositionToEmitter; }
     inline void setAttachRotationToEmitter( const bool attachRotationToEmitter ) { mAttachRotationToEmitter = attachRotationToEmitter; refreshAsset(); }
@@ -292,6 +295,8 @@ protected:
     static bool     writeIntenseParticles( void* obj, StringTableEntry pFieldName )     { return static_cast<ParticleAssetEmitter*>(obj)->getIntenseParticles() == true; }
     static bool     setSingleParticle(void* obj, const char* data)                      { static_cast<ParticleAssetEmitter*>(obj)->setSingleParticle(dAtob(data)); return false; }
     static bool     writeSingleParticle( void* obj, StringTableEntry pFieldName )       { return static_cast<ParticleAssetEmitter*>(obj)->getSingleParticle() == true; }
+    static bool     setPointParticles(void* obj, const char* data)                    { static_cast<ParticleAssetEmitter*>(obj)->setPointParticles(dAtob(data)); return false; }
+    static bool     writePointParticles( void* obj, StringTableEntry pFieldName )     { return static_cast<ParticleAssetEmitter*>(obj)->getPointParticles() == true; }
     static bool     setAttachPositionToEmitter(void* obj, const char* data)             { static_cast<ParticleAssetEmitter*>(obj)->setAttachPositionToEmitter(dAtob(data)); return false; }
     static bool     writeAttachPositionToEmitter( void* obj, StringTableEntry pFieldName ) { return static_cast<ParticleAssetEmitter*>(obj)->getAttachPositionToEmitter() == true; }
     static bool     setAttachRotationToEmitter(void* obj, const char* data)             { static_cast<ParticleAssetEmitter*>(obj)->setAttachRotationToEmitter(dAtob(data)); return false; }

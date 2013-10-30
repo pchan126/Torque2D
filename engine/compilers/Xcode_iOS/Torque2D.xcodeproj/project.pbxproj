@@ -238,7 +238,6 @@
 		867BB0A016AEC9050033868F /* fileSystemFunctions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 867BAEC916AEC9050033868F /* fileSystemFunctions.cpp */; };
 		867BB0A516AEC9050033868F /* resourceDictionary.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAED216AEC9050033868F /* resourceDictionary.cc */; };
 		867BB0A616AEC9050033868F /* resourceManager.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAED316AEC9050033868F /* resourceManager.cc */; };
-		867BB0A716AEC9050033868F /* streamObject.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAED616AEC9050033868F /* streamObject.cc */; };
 		867BB0B616AEC9050033868F /* mathTypes.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAEF516AEC9050033868F /* mathTypes.cc */; };
 		867BB0B716AEC9050033868F /* mathUtils.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAEF716AEC9050033868F /* mathUtils.cc */; };
 		867BB0B816AEC9050033868F /* mBox.cc in Sources */ = {isa = PBXBuildFile; fileRef = 867BAEF916AEC9050033868F /* mBox.cc */; };
@@ -450,6 +449,7 @@
 		86A9A3FE16AEC836003F01E6 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86A9A3E416AEC817003F01E6 /* OpenAL.framework */; };
 		86A9A3FF16AEC836003F01E6 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86A9A3E516AEC817003F01E6 /* OpenGLES.framework */; };
 		86A9A40016AEC836003F01E6 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86A9A3E616AEC817003F01E6 /* QuartzCore.framework */; };
+		C541938390B1148CB278B459 /* streamObject.cc in Sources */ = {isa = PBXBuildFile; fileRef = C541922EA73DC5AE4B3FD325 /* streamObject.cc */; };
 		D10529E8173B665100BFC4FF /* gfxOpenGLES20TextureManager.cc in Sources */ = {isa = PBXBuildFile; fileRef = D10529D7173B665100BFC4FF /* gfxOpenGLES20TextureManager.cc */; };
 		D10529E9173B665100BFC4FF /* gfxOpenGLES20TextureObject.cc in Sources */ = {isa = PBXBuildFile; fileRef = D10529D9173B665100BFC4FF /* gfxOpenGLES20TextureObject.cc */; };
 		D10529EE173B832700BFC4FF /* gfxOpenGLES20Device.cc in Sources */ = {isa = PBXBuildFile; fileRef = D10529ED173B832600BFC4FF /* gfxOpenGLES20Device.cc */; };
@@ -1044,8 +1044,6 @@
 		867BAED216AEC9050033868F /* resourceDictionary.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = resourceDictionary.cc; sourceTree = "<group>"; };
 		867BAED316AEC9050033868F /* resourceManager.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = resourceManager.cc; sourceTree = "<group>"; };
 		867BAED416AEC9050033868F /* resourceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = resourceManager.h; sourceTree = "<group>"; };
-		867BAED616AEC9050033868F /* streamObject.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = streamObject.cc; sourceTree = "<group>"; };
-		867BAED716AEC9050033868F /* streamObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = streamObject.h; sourceTree = "<group>"; };
 		867BAEF416AEC9050033868F /* mathIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mathIO.h; sourceTree = "<group>"; };
 		867BAEF516AEC9050033868F /* mathTypes.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mathTypes.cc; sourceTree = "<group>"; };
 		867BAEF616AEC9050033868F /* mathTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mathTypes.h; sourceTree = "<group>"; };
@@ -1413,6 +1411,8 @@
 		86A9A3E416AEC817003F01E6 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		86A9A3E516AEC817003F01E6 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		86A9A3E616AEC817003F01E6 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		C54190593D64B820C89D9FE3 /* streamObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = streamObject.h; sourceTree = "<group>"; };
+		C541922EA73DC5AE4B3FD325 /* streamObject.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = streamObject.cc; sourceTree = "<group>"; };
 		D10529CD173B665000BFC4FF /* gfxOpenGLES20Device.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20Device.h; sourceTree = "<group>"; };
 		D10529D0173B665000BFC4FF /* gfxOpenGLES20EnumTranslate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20EnumTranslate.h; sourceTree = "<group>"; };
 		D10529D4173B665100BFC4FF /* gfxOpenGLES20Shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20Shader.h; sourceTree = "<group>"; };
@@ -2458,8 +2458,6 @@
 				867BAEC416AEC9050033868F /* fileObject.h */,
 				867BAEC916AEC9050033868F /* fileSystemFunctions.cpp */,
 				867BAED116AEC9050033868F /* resource */,
-				867BAED616AEC9050033868F /* streamObject.cc */,
-				867BAED716AEC9050033868F /* streamObject.h */,
 			);
 			name = io;
 			path = ../../../source/io;
@@ -2569,6 +2567,8 @@
 				867BAF3416AEC9050033868F /* moduleMergeDefinition.cc */,
 				867BAF3516AEC9050033868F /* moduleMergeDefinition.h */,
 				867BAF3616AEC9050033868F /* tamlModuleIdUpdateVisitor.h */,
+				C541922EA73DC5AE4B3FD325 /* streamObject.cc */,
+				C54190593D64B820C89D9FE3 /* streamObject.h */,
 			);
 			name = module;
 			path = ../../../source/module;
@@ -3635,7 +3635,6 @@
 				867BB0A016AEC9050033868F /* fileSystemFunctions.cpp in Sources */,
 				867BB0A516AEC9050033868F /* resourceDictionary.cc in Sources */,
 				867BB0A616AEC9050033868F /* resourceManager.cc in Sources */,
-				867BB0A716AEC9050033868F /* streamObject.cc in Sources */,
 				867BB0B616AEC9050033868F /* mathTypes.cc in Sources */,
 				867BB0B716AEC9050033868F /* mathUtils.cc in Sources */,
 				867BB0B816AEC9050033868F /* mBox.cc in Sources */,
@@ -3945,6 +3944,7 @@
 				4B8AA8989528FAA453A05720 /* ShaderAsset.cpp in Sources */,
 				4B8AA268C459D3CAC485BCFB /* shaderGenVars.cpp in Sources */,
 				4B8AAE439C5F012AC8673AE4 /* sphereMesh.cpp in Sources */,
+				C541938390B1148CB278B459 /* streamObject.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

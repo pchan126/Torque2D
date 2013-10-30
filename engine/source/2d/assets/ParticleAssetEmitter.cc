@@ -217,6 +217,7 @@ void ParticleAssetEmitter::initPersistFields()
     addProtectedField("LinkEmissionRotation", TypeBool, Offset(mLinkEmissionRotation, ParticleAssetEmitter), &setLinkEmissionRotation, &defaultProtectedGetFn, &writeLinkEmissionRotation, "");
     addProtectedField("IntenseParticles", TypeBool, Offset(mIntenseParticles, ParticleAssetEmitter), &setIntenseParticles, &defaultProtectedGetFn, &writeIntenseParticles, "");
     addProtectedField("SingleParticle", TypeBool, Offset(mSingleParticle, ParticleAssetEmitter), &setSingleParticle, &defaultProtectedGetFn, &writeSingleParticle, "");
+    addProtectedField("PointParticles", TypeBool, Offset(mPointParticles, ParticleAssetEmitter), &setPointParticles, &defaultProtectedGetFn, &writePointParticles, "");
     addProtectedField("AttachPositionToEmitter", TypeBool, Offset(mAttachPositionToEmitter, ParticleAssetEmitter), &setAttachPositionToEmitter, &defaultProtectedGetFn, &writeAttachPositionToEmitter, "");
     addProtectedField("AttachRotationToEmitter", TypeBool, Offset(mAttachRotationToEmitter, ParticleAssetEmitter), &setAttachRotationToEmitter, &defaultProtectedGetFn, &writeAttachRotationToEmitter, "");
     addProtectedField("OldestInFront", TypeBool, Offset(mOldestInFront, ParticleAssetEmitter), &setOldestInFront, &defaultProtectedGetFn, &writeOldestInFront, "");

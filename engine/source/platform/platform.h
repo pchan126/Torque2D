@@ -150,8 +150,8 @@ struct Platform
     static StringTableEntry getExecutablePath(); 
     static void setMainDotCsDir(const char *dir);
     static StringTableEntry getMainDotCsDir();
-    static StringTableEntry getPrefsPath(const char *file = NULL);
-    static char *makeFullPathName(const char *path, char *buffer, U32 size, const char *cwd = NULL);
+    static StringTableEntry getPrefsPath(const char *file = nullptr);
+    static char *makeFullPathName(const char *path, char *buffer, U32 size, const char *cwd = nullptr);
     static StringTableEntry stripBasePath(const char *path);
     static bool isFullPath(const char *path);
     static StringTableEntry makeRelativePathName(const char *path, const char *to);
@@ -184,5 +184,7 @@ struct Platform
     static const char* getClipboard();
     static bool setClipboard(const char *text);
 };
+
+
 
 #endif // _PLATFORM_H_

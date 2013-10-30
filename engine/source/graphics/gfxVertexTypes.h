@@ -62,6 +62,13 @@ GFXDeclareVertexFormat( GFXVertexPC )
    ColorI color;
 };
 
+GFXDeclareVertexFormat( GFXVertexPCS )
+{
+    Point3F point;
+    ColorI color;
+    F32 size;
+};
+
 GFXDeclareVertexFormat( GFXVertexPCN )
 {
    Point3F point;
@@ -82,11 +89,20 @@ GFXDeclareVertexFormat( GFXVertexPCT )
 };
 
 GFXDeclareVertexFormat( GFXVertexPCTT )
-{  // Using point.w to sneak in sizing information on point buffer.
-   Point4F point;
+{
+   Point3F point;
    ColorI color;
    Point2F texCoord;
    Point2F texCoord2;
+};
+
+GFXDeclareVertexFormat( GFXVertexPCTTS )
+{
+    Point3F point;
+    ColorI color;
+    Point2F texCoord;
+    Point2F texCoord2;
+    F32     size;
 };
 
 GFXDeclareVertexFormat( GFXVertexPN )

@@ -228,4 +228,5 @@ void GFXGLES20iOSEnumTranslate::init()
     GFXGLShaderAttributes[ATTRIB_TEXCOORD5] = StringTable->insert("inTexCoord6");
     GFXGLShaderAttributes[ATTRIB_TEXCOORD6] = StringTable->insert("inTexCoord7");
     GFXGLShaderAttributes[ATTRIB_TEXCOORD7] = StringTable->insert("inTexCoord8");
+    GFXGLShaderAttributes[ATTRIB_POINTSIZE] = StringTable->insert("Size");
 }

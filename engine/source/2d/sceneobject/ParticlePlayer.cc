@@ -600,7 +600,7 @@ void ParticlePlayer::sceneRender( const SceneRenderState* pSceneRenderState, con
        if (pParticleAssetEmitter->getOldestInFront())    // should probably be a better way to do this
            nodeList.reverse();
 
-        for (auto pParticleNode: nodeList)
+        for (ParticleSystem::ParticleNode* pParticleNode: nodeList)
         {
             assert(pParticleNode);
 
@@ -613,25 +613,34 @@ void ParticlePlayer::sceneRender( const SceneRenderState* pSceneRenderState, con
             // Frame texture.
             GFXTexHandle& frameTexture = frameProvider.getProviderTexture();
 
-            // Fetch the particle render OOBB.
-            Vector2* renderOOBB = pParticleNode->mRenderOOBB;
+            if (pParticleAssetEmitter->getPointParticles())
+            {
+//                Vector2 position = pParticleNode->mRenderTickPosition;
+//                Vector2 size = pParticleNode->mSize;
+//                pBatchRenderer->SubmitPoint();
+            }
+            else
+            {
+                // Fetch the particle render OOBB.
+                Vector2* renderOOBB = pParticleNode->mRenderOOBB;
 
-            // Fetch lower/upper texture coordinates.
-            const Vector2& texLower = texelFrameArea.mTexelLower;
-            const Vector2& texUpper = texelFrameArea.mTexelUpper;
+                // Fetch lower/upper texture coordinates.
+                const Vector2& texLower = texelFrameArea.mTexelLower;
+                const Vector2& texUpper = texelFrameArea.mTexelUpper;
 
-            // Submit batched quad.
-            pBatchRenderer->SubmitQuad(
-                    renderOOBB[0],
-                    renderOOBB[1],
-                    renderOOBB[2],
-                    renderOOBB[3],
-                    Vector2( texLower.x, texUpper.y ),
-                    Vector2( texUpper.x, texUpper.y ),
-                    Vector2( texUpper.x, texLower.y ),
-                    Vector2( texLower.x, texLower.y ),
-                    frameTexture,
-                    pParticleNode->mColor*getScene()->getSceneLight() );
+                // Submit batched quad.
+                pBatchRenderer->SubmitQuad(
+                        renderOOBB[0],
+                        renderOOBB[1],
+                        renderOOBB[2],
+                        renderOOBB[3],
+                        Vector2( texLower.x, texUpper.y ),
+                        Vector2( texUpper.x, texUpper.y ),
+                        Vector2( texUpper.x, texLower.y ),
+                        Vector2( texLower.x, texLower.y ),
+                        frameTexture,
+                        pParticleNode->mColor*getScene()->getSceneLight() );
+            };
         };
 
         if (pParticleAssetEmitter->getOldestInFront())

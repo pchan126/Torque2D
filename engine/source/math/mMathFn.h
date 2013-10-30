@@ -427,15 +427,6 @@ inline F64 mCeilD(const F64 val)
    return (F64) ceil(val);
 }
 
-inline bool isEqual(F32 a, F32 b)
-{
-   return mFabs(a - b) < __EQUAL_CONST_F;
-}
-
-inline bool isZero(F32 a)
-{
-   return mFabs(a) < __EQUAL_CONST_F;
-}
 
 //--------------------------------------
 class Point3F;

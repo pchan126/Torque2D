@@ -349,6 +349,7 @@ void BatchRender::SubmitIndexedTriangleStrip(const Vector<GFXVertexPCT> &verts, 
    }
 }
 
+
 void BatchRender::SubmitQuad(const std::array< GFXVertexPCT, 4> verts,
                              GFXTexHandle& texture)
 {

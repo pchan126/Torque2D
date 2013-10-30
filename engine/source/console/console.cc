@@ -1078,7 +1078,7 @@ const char *execute(SimObject *object, S32 argc, const char *argv[],bool thisCal
 
       if(ent == nullptr)
       {
-         //warnf(ConsoleLogEntry::Script, "%s: undefined for object '%s' - id %d", funcName, object->getName(), object->getId());
+         warnf(ConsoleLogEntry::Script, "%s: undefined for object '%s' - id %d", funcName, object->getName(), object->getId());
 
          // Clean up arg buffers, if any.
          STR.clearFunctionOffset();

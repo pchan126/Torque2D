@@ -46,6 +46,7 @@ namespace GFXSemantic
    extern const StringTableEntry TANGENTW;
    extern const StringTableEntry COLOR;
    extern const StringTableEntry TEXCOORD;
+   extern const StringTableEntry SIZE;
 }
 
 
@@ -175,7 +176,10 @@ public:
    /// Returns true if there is a COLOR semantic in this vertex format.
    bool hasColor() const;
 
-   /// Returns the texture coordinate count by 
+    /// Returns true if there is a SIZE semantic in this vertex format.
+    bool hasSize() const;
+
+   /// Returns the texture coordinate count by
    /// counting the number of TEXCOORD semantics.
    U32 getTexCoordCount() const;
 
@@ -217,6 +221,9 @@ protected:
 
    /// Is true if there is a COLOR semantic in this vertex format.
    bool mHasColor;
+
+   /// Is true if there is a SIZE semantic in this vertex format.
+   bool mHasSize;
 
    /// The texture coordinate count by counting the 
    /// number of "TEXCOORD" semantics.

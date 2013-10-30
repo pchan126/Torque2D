@@ -37,6 +37,7 @@ namespace GFXSemantic
     const StringTableEntry TANGENTW = StringTable->insert( "TANGENTW" );
     const StringTableEntry COLOR = StringTable->insert( "COLOR" );
     const StringTableEntry TEXCOORD = StringTable->insert( "TEXCOORD" );
+    const StringTableEntry SIZE = StringTable->insert( "SIZE" );
 }
 
 
@@ -73,6 +74,7 @@ GFXVertexFormat::GFXVertexFormat()
       mHasColor( false ),
       mHasNormal( false ),
       mHasTangent( false ),
+      mHasSize(false),
       mTexCoordCount( 0 ),
       mSizeInBytes( 0 ),
       mDecl( NULL )
@@ -86,6 +88,7 @@ void GFXVertexFormat::copy( const GFXVertexFormat &format )
    mHasNormal = format.mHasNormal;
    mHasTangent = format.mHasTangent;
    mHasColor = format.mHasColor;
+    mHasSize = format.mHasSize;
    mTexCoordCount = format.mTexCoordCount;
    mSizeInBytes = format.mSizeInBytes;
    mDescription = format.mDescription;
@@ -163,6 +166,14 @@ bool GFXVertexFormat::hasColor() const
    return mHasColor;
 }
 
+bool GFXVertexFormat::hasSize() const
+{
+    if ( mDirty )
+        const_cast<GFXVertexFormat*>(this)->_updateDirty();
+
+    return mHasSize;
+}
+
 U32 GFXVertexFormat::getTexCoordCount() const
 {
    if ( mDirty )
@@ -209,6 +220,8 @@ void GFXVertexFormat::_updateDirty()
          mHasColor = true;
       else if ( element.getSemantic() == GFXSemantic::TEXCOORD )
          ++mTexCoordCount;
+      else if ( element.getSemantic() == GFXSemantic::SIZE )
+          mHasSize = true;
 
       mSizeInBytes += element.getSizeInBytes();
    }

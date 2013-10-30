@@ -37,9 +37,9 @@ public:
                           const GFXVertexFormat *vertexFormat,
                           U32 vertexSize,
                           GFXBufferType bufferType,
-                          const GLvoid * vertexData = NULL,
+                          const GLvoid * vertexData = nullptr,
                           U32 indexCount = 0,
-                         const GLvoid * indexData = NULL)
+                         const GLvoid * indexData = nullptr)
    :GFXVertexBuffer( device, vertexCount, vertexFormat, vertexSize, bufferType) {} ;
 	
    ~GFXOpenGLVertexBuffer() {};
@@ -50,7 +50,7 @@ public:
 	virtual void prepare() = 0;
    virtual void finish() = 0;
 
-	virtual GLvoid* getBuffer() { return (GLvoid*)NULL; };
+	virtual GLvoid* getBuffer() { return (GLvoid*)nullptr; };
    
    // GFXResource interface
    virtual void zombify() = 0;

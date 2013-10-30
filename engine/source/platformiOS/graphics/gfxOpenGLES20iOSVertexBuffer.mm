@@ -59,6 +59,12 @@ GFXOpenGLES20iOSVertexBuffer::GFXOpenGLES20iOSVertexBuffer(  GFXDevice *device,
             glEnableVertexAttribArray(GLKVertexAttribColor);
             buffer += element.getSizeInBytes();
         }
+        else if ( element.getSemantic() == GFXSemantic::SIZE )
+        {
+            glVertexAttribPointer(ATTRIB_POINTSIZE, 1, GL_FLOAT, GL_FALSE, mVertexSize, buffer);
+            glEnableVertexAttribArray(ATTRIB_POINTSIZE);
+            buffer += element.getSizeInBytes();
+        }
         else // Everything else is a texture coordinate.
         {
             glVertexAttribPointer(GLKVertexAttribTexCoord0+mTextureCount, 2, GL_FLOAT, GL_FALSE, mVertexSize, buffer);
