@@ -22,16 +22,9 @@
 #ifndef _RENDERBINMANAGER_H_
 #define _RENDERBINMANAGER_H_
 
-#ifndef _CONSOLEOBJECT_H_
 #include "console/consoleObject.h"
-#endif
-#ifndef _RENDERPASSMANAGER_H_
 #include "renderInstance/renderPassManager.h"
-#endif
-#ifndef _BASEMATINSTANCE_H_
 #include "materials/baseMatInstance.h"
-#endif
-
 #include "delegates/delegate.h"
 
 
@@ -48,8 +41,16 @@ typedef Delegate<BaseMatInstance*(BaseMatInstance*)> MaterialOverrideDelegate;
 class RenderBinManager : public SimObject
 {
    typedef SimObject Parent;
-
    friend class RenderPassManager;
+
+protected:
+    struct MainSortElem
+    {
+        RenderInst *inst;
+        U32 key;
+        U32 key2;
+    };
+
 
 public:
 
@@ -79,7 +80,8 @@ public:
    RenderPassManager* getRenderPass() const { return mRenderPass; }
 
    /// QSort callback function
-   static S32 FN_CDECL cmpKeyFunc(const void* p1, const void* p2);
+//   static S32 FN_CDECL cmpKeyFunc(const void* p1, const void* p2);
+    static bool cmpKeyFunc(const MainSortElem p1, const MainSortElem p2);
 
    DECLARE_CONOBJECT(RenderBinManager);
    static void initPersistFields();
@@ -87,14 +89,6 @@ public:
    MaterialOverrideDelegate& getMatOverrideDelegate() { return mMatOverrideDelegate; }
 
 protected:
-
-   struct MainSortElem
-   {
-      RenderInst *inst;
-      U32 key;
-      U32 key2;
-   };
-
    void setRenderPass( RenderPassManager *rpm );
 
    /// Called from derived bins to add additional
@@ -127,7 +121,6 @@ protected:
    /// Inlined utility function which gets the material from the 
    /// RenderInst if available, otherwise, return NULL.
    inline BaseMatInstance* getMaterial( RenderInst *inst ) const;
-
 };
 
 

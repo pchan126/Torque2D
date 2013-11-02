@@ -25,6 +25,7 @@
 #include "memory/frameAllocator.h"
 //#include "io/zip/zipArchive.h"
 #include "io/resource/resourceManager.h"
+#include "io/resource/resourceManager_ScriptBinding.h"
 #include "string/findMatch.h"
 #include "console/console.h"
 #include "console/consoleTypes.h"
@@ -175,16 +176,6 @@ void ResManager::dumpResources (const bool onlyLoaded)
          Con::errorf ("Resource: %s/%s (%d)", walk->path, walk->name,
              walk->lockCount);
 }
-
-ConsoleFunction(dumpResources, void, 2, 2, "(onlyLoaded?) Use the dumpLoadedResources function to dump a listing of the currently in-use resources to the console. This will include such things as sound files, font files, etc.\n"
-                                                                "For this to work, the engine must have been compiled with TORQUE_DEBUG defined.\n"
-                                                                "@return No return value.\n"
-                                                                "@sa purgeResources")
-{
-    const bool onlyLoaded = argc == 2 ? dAtob(argv[1]) : true;
-    ResourceManager->dumpResources(onlyLoaded);
-}
-
 #endif
 
 //------------------------------------------------------------------------------
@@ -517,14 +508,6 @@ void ResManager::addPath(const char *path, bool ignoreZips )
    searchPath(path, true, ignoreZips );
 }
 
-ConsoleFunction(addResPath, void, 2, 3, "(path, [ignoreZips=false]) Add a path to the resource manager")
-{
-   if( argc > 2 )
-      ResourceManager->addPath(argv[1], dAtob(argv[2]));
-   else
-      ResourceManager->addPath(argv[1]);
-}
-
 void ResManager::removePath(const char *path)
 {
    auto rwalk = resourceList.begin();
@@ -544,10 +527,6 @@ void ResManager::removePath(const char *path)
    }
 }
 
-ConsoleFunction(removeResPath, void, 2, 2, "(pathExpression) Remove a path from the resource manager. Path is an expression as in findFirstFile()")
-{
-   ResourceManager->removePath(argv[1]);
-}
 
 void ResManager::setModPaths (U32 numPaths, const char **paths)
 {
@@ -621,38 +600,6 @@ const char * ResManager::getModPaths ()
 
 //------------------------------------------------------------------------------
 
-// Mod paths aren't used in tools applications.  
-// See : addResPath/removeResPath console functions
-ConsoleFunction( setModPaths, void, 2, 2, "( path ) Use the setModPaths function to set the current mod path to the value specified in path.\n"
-                                                                "@param path A string containing a semi-colon (;) separated list of game and mod paths.\n"
-                                                                "@return No return value.\n"
-                                                                "@sa getModPaths")
-{
-   char buf[512];
-   dStrncpy(buf, argv[1], sizeof(buf) - 1);
-   buf[511] = '\0';
-
-   Vector<char *> paths;
-   char* temp = dStrtok( buf, ";" );
-   while ( temp )
-   {
-      if ( temp[0] )
-         paths.push_back(temp);
-      
-      temp = dStrtok( nullptr, ";" );
-   }
-
-   ResourceManager->setModPaths( paths.size(), (const char**) paths.address() );
-}
-
-ConsoleFunction( getModPaths, const char*, 1, 1, "() Use the getModPaths function to get the current mod path information.\n"
-                                                                "@return Returns a string equivalent to the complete current mod path, that is all pads that are visible to the file manager.\n"
-                                                                "@sa setModPaths")
-{
-   return( ResourceManager->getModPaths() );
-}
-
-//------------------------------------------------------------------------------
 
 S32 ResManager::getSize (const char *fileName)
 {
@@ -1099,12 +1046,6 @@ void ResManager::purge ()
     }
 }
 
-ConsoleFunction( purgeResources, void, 1, 1, "() Use the purgeResources function to purge all game resources.\n"
-                                                                "@return No return value.\n"
-                                                                "@sa clearTextureHolds, dumpResourceStats, dumpTextureStats, flushTextureCache")
-{
-   ResourceManager->purge();
-}
 
 //------------------------------------------------------------------------------
 
@@ -1128,17 +1069,27 @@ struct ResourceObjectIndex
    ResourceObject *ro;
    const char *fileName;
 
-   static S32 QSORT_CALLBACK compare (const void *s1, const void *s2)
-   {
-      const ResourceObjectIndex *r1 = (ResourceObjectIndex *) s1;
-      const ResourceObjectIndex *r2 = (ResourceObjectIndex *) s2;
+//   static S32 QSORT_CALLBACK compare (const void *s1, const void *s2)
+//   {
+//      const ResourceObjectIndex *r1 = (ResourceObjectIndex *) s1;
+//      const ResourceObjectIndex *r2 = (ResourceObjectIndex *) s2;
+//
+//      if (r1->ro->path != r2->ro->path)
+//         return r1->ro->path - r2->ro->path;
+//      if (r1->ro->name != r2->ro->name)
+//         return r1->ro->name - r2->ro->name;
+//      return r1->ro->fileOffset - r2->ro->fileOffset;
+//   }
 
-      if (r1->ro->path != r2->ro->path)
-         return r1->ro->path - r2->ro->path;
-      if (r1->ro->name != r2->ro->name)
-         return r1->ro->name - r2->ro->name;
-      return r1->ro->fileOffset - r2->ro->fileOffset;
-   }
+
+    static S32 QSORT_CALLBACK compare (const ResourceObjectIndex r1, const ResourceObjectIndex r2)
+    {
+        if (r1.ro->path != r2.ro->path)
+            return r1.ro->path < r2.ro->path;
+        if (r1.ro->name != r2.ro->name)
+            return r1.ro->name < r2.ro->name;
+        return r1.ro->fileOffset < r2.ro->fileOffset;
+    }
 };
 
 //------------------------------------------------------------------------------
@@ -1147,19 +1098,19 @@ void ResManager::serialize (Vector < const char *>&filenames)
 {
    Vector < ResourceObjectIndex > sortVector;
 
-   sortVector.reserve (filenames.size ());
+   sortVector.reserve(filenames.size ());
 
    U32 i;
-   for (i = 0; i < (U32)filenames.size (); i++)
+   for (i = 0; i < (U32)filenames.size(); i++)
    {
       ResourceObjectIndex roi;
-      roi.ro = find (filenames[i]);
+      roi.ro = find(filenames[i]);
       roi.fileName = filenames[i];
       sortVector.push_back (roi);
    }
 
-   dQsort ((void *)sortVector.address(), sortVector.size (),
-      sizeof (ResourceObjectIndex), ResourceObjectIndex::compare);
+//   dQsort ((void *)sortVector.address(), sortVector.size (), sizeof (ResourceObjectIndex), ResourceObjectIndex::compare);
+    std::sort(sortVector.begin(), sortVector.end(), ResourceObjectIndex::compare);
 
    for (i = 0; i < (U32)filenames.size (); i++)
       filenames[i] = sortVector[i].fileName;

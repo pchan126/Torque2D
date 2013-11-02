@@ -29,7 +29,7 @@
 #include "console/consoleTypeValidators.h"
 #include "math/mMath.h"
 
-AbstractClassRep *                 AbstractClassRep::classLinkList = NULL;
+AbstractClassRep *                 AbstractClassRep::classLinkList = nullptr;
 static AbstractClassRep::FieldList sg_tempFieldList;
 U32                                AbstractClassRep::NetClassCount  [NetClassGroupsCount][NetClassTypesCount] = {{0, },};
 U32                                AbstractClassRep::NetClassBitSize[NetClassGroupsCount][NetClassTypesCount] = {{0, },};
@@ -46,7 +46,7 @@ const AbstractClassRep::Field *AbstractClassRep::findField(StringTableEntry name
       if(mFieldList[i].pFieldname == name)
          return &mFieldList[i];
 
-   return NULL;
+   return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -57,18 +57,18 @@ AbstractClassRep* AbstractClassRep::findFieldRoot( StringTableEntry fieldName )
     const Field* pField = findField( fieldName );
 
     // Finish if not found.
-    if ( pField == NULL )
-        return NULL;
+    if ( pField == nullptr )
+        return nullptr;
 
     // We're the root if we have no parent.
-    if ( getParentClass() == NULL )
+    if ( getParentClass() == nullptr )
         return this;
 
     // Find the field root via the parent.
     AbstractClassRep* pFieldRoot = getParentClass()->findFieldRoot( fieldName );
 
     // We're the root if the parent does not have it else return the field root.
-    return pFieldRoot == NULL ? this : pFieldRoot;
+    return pFieldRoot == nullptr ? this : pFieldRoot;
 }
 
 //-----------------------------------------------------------------------------
@@ -79,18 +79,18 @@ AbstractClassRep* AbstractClassRep::findContainerChildRoot( AbstractClassRep* pC
     AbstractClassRep* pContainerChildClass = getContainerChildClass( true );
 
     // Finish if not found.
-    if ( pContainerChildClass == NULL )
-        return NULL;
+    if ( pContainerChildClass == nullptr )
+        return nullptr;
 
     // We're the root for the child if we have no parent.
-    if ( getParentClass() == NULL )
+    if ( getParentClass() == nullptr )
         return this;
 
     // Find child in parent.
     AbstractClassRep* pParentContainerChildClass = getParentClass()->findContainerChildRoot( pChild );
 
     // We;re the root if the parent does not contain the child else return the container root.
-    return pParentContainerChildClass == NULL ? this : pParentContainerChildClass;
+    return pParentContainerChildClass == nullptr ? this : pParentContainerChildClass;
 }
 
 //-----------------------------------------------------------------------------
@@ -104,13 +104,13 @@ AbstractClassRep* AbstractClassRep::findClassRep(const char* in_pClassName)
       if (dStricmp(walk->getClassName(), in_pClassName) == 0)
          return walk;
 
-   return NULL;
+   return nullptr;
 }
 
 //--------------------------------------
 void AbstractClassRep::registerClassRep(AbstractClassRep* in_pRep)
 {
-   AssertFatal(in_pRep != NULL, "AbstractClassRep::registerClassRep was passed a NULL pointer!");
+   AssertFatal(in_pRep != nullptr, "AbstractClassRep::registerClassRep was passed a nullptr pointer!");
 
 #ifdef TORQUE_DEBUG  // assert if this class is already registered.
    for(AbstractClassRep *walk = classLinkList; walk; walk = walk->nextClass)
@@ -136,7 +136,7 @@ ConsoleObject* AbstractClassRep::create(const char* in_pClassName)
       return rep->create();
 
    AssertWarn(0, avar("Couldn't find class rep for dynamic class: %s", in_pClassName));
-   return NULL;
+   return nullptr;
 }
 
 //--------------------------------------
@@ -146,27 +146,35 @@ ConsoleObject* AbstractClassRep::create(const U32 groupId, const U32 typeId, con
       "AbstractClassRep::create() - Tried to create an object before AbstractClassRep::initialize().");
    AssertFatal(in_classId < NetClassCount[groupId][typeId],
       "AbstractClassRep::create() - Class id out of range.");
-   AssertFatal(classTable[groupId][typeId][in_classId] != NULL,
+   AssertFatal(classTable[groupId][typeId][in_classId] != nullptr,
       "AbstractClassRep::create() - No class with requested ID type.");
 
    // Look up the specified class and create it.
    if(classTable[groupId][typeId][in_classId])
       return classTable[groupId][typeId][in_classId]->create();
 
-   return NULL;
+   return nullptr;
 }
 
 //--------------------------------------
 
-static S32 QSORT_CALLBACK ACRCompare(const void *aptr, const void *bptr)
-{
-   const AbstractClassRep *a = *((const AbstractClassRep **) aptr);
-   const AbstractClassRep *b = *((const AbstractClassRep **) bptr);
+//static S32 QSORT_CALLBACK ACRCompare(const void *aptr, const void *bptr)
+//{
+//   const AbstractClassRep *a = *((const AbstractClassRep **) aptr);
+//   const AbstractClassRep *b = *((const AbstractClassRep **) bptr);
+//
+//   if(a->mClassType != b->mClassType)
+//      return a->mClassType - b->mClassType;
+//   return dStricmp(a->getClassName(), b->getClassName());
+//}
 
-   if(a->mClassType != b->mClassType)
-      return a->mClassType - b->mClassType;
-   return dStricmp(a->getClassName(), b->getClassName());
+static bool ACRCompare(const AbstractClassRep *aptr, AbstractClassRep *bptr)
+{
+    if(aptr->mClassType != bptr->mClassType)
+        return aptr->mClassType < bptr->mClassType;
+    return dStricmp(aptr->getClassName(), bptr->getClassName()) == -1;
 }
+
 
 void AbstractClassRep::initialize()
 {
@@ -225,7 +233,8 @@ void AbstractClassRep::initialize()
             continue; // If no classes matched, skip to next.
 
          // Sort by type and then by name.
-         dQsort((void *)dynamicTable.address(), dynamicTable.size(), sizeof(AbstractClassRep *), ACRCompare);
+//         dQsort((void *)dynamicTable.address(), dynamicTable.size(), sizeof(AbstractClassRep *), ACRCompare);
+          std::sort(dynamicTable.begin(), dynamicTable.end(), ACRCompare);
 
          // Allocate storage in the classTable
          classTable[group][type] = new AbstractClassRep*[NetClassCount[group][type]];
@@ -258,7 +267,7 @@ void AbstractClassRep::destroyFieldValidators( AbstractClassRep::FieldList &mFie
       if( *p )
       {
          delete *p;
-         *p = NULL;
+         *p = nullptr;
       }
    }
 }
@@ -296,12 +305,12 @@ void ConsoleObject::addGroup(const char* in_pGroupname, const char* in_pGroupDoc
    if(in_pGroupDocs)
       f.pFieldDocs   = StringTable->insert(in_pGroupDocs);
    else
-      f.pFieldDocs   = NULL;
+      f.pFieldDocs   = nullptr;
 
    f.type         = AbstractClassRep::StartGroupFieldType;
    f.elementCount = 0;
    f.groupExpand  = false;
-   f.validator    = NULL;
+   f.validator    = nullptr;
    f.setDataFn    = &defaultProtectedSetFn;
    f.getDataFn    = &defaultProtectedGetFn;
    f.writeDataFn  = &defaultProtectedWriteFn;
@@ -322,10 +331,10 @@ void ConsoleObject::endGroup(const char*  in_pGroupname)
    AbstractClassRep::Field f;
    f.pFieldname   = StringTable->insert(pFieldNameBuf);
    f.pGroupname   = StringTable->insert(in_pGroupname);
-   f.pFieldDocs   = NULL;
+   f.pFieldDocs   = nullptr;
    f.type         = AbstractClassRep::EndGroupFieldType;
    f.groupExpand  = false;
-   f.validator    = NULL;
+   f.validator    = nullptr;
    f.setDataFn    = &defaultProtectedSetFn;
    f.getDataFn    = &defaultProtectedGetFn;
    f.writeDataFn  = &defaultProtectedWriteFn;
@@ -348,7 +357,7 @@ void ConsoleObject::addArray( const char *arrayName, S32 count )
    f.type         = AbstractClassRep::StartArrayFieldType;
    f.elementCount = count;
    f.groupExpand  = false;
-   f.validator    = NULL;
+   f.validator    = nullptr;
    f.setDataFn    = &defaultProtectedSetFn;
    f.getDataFn    = &defaultProtectedGetFn;
    
@@ -367,7 +376,7 @@ void ConsoleObject::endArray( const char *arrayName )
    f.pGroupname   = arrayName;
    f.type         = AbstractClassRep::EndArrayFieldType;
    f.groupExpand  = false;
-   f.validator    = NULL;
+   f.validator    = nullptr;
    f.setDataFn    = &defaultProtectedSetFn;
    f.getDataFn    = &defaultProtectedGetFn;
    f.elementCount = 0;
@@ -388,7 +397,7 @@ void ConsoleObject::addField(const char*  in_pFieldname,
       in_fieldOffset,
       &defaultProtectedWriteFn,
       1,
-      NULL,
+           nullptr,
       in_pFieldDocs);
 }
 
@@ -404,7 +413,7 @@ void ConsoleObject::addField(const char*  in_pFieldname,
       in_fieldOffset,
       in_writeDataFn,
       1,
-      NULL,
+           nullptr,
       in_pFieldDocs);
 }
 
@@ -435,18 +444,18 @@ void ConsoleObject::addField(const char*  in_pFieldname,
 {
    AbstractClassRep::Field f;
    f.pFieldname   = StringTable->insert(in_pFieldname);
-   f.pGroupname   = NULL;
+   f.pGroupname   = nullptr;
 
    if(in_pFieldDocs)
       f.pFieldDocs   = StringTable->insert(in_pFieldDocs);
    else
-      f.pFieldDocs   = NULL;
+      f.pFieldDocs   = nullptr;
 
    f.type         = in_fieldType;
    f.offset       = in_fieldOffset;
    f.elementCount = in_elementCount;
    f.table        = in_table;
-   f.validator    = NULL;
+   f.validator    = nullptr;
 
    f.setDataFn    = &defaultProtectedSetFn;
    f.getDataFn    = &defaultProtectedGetFn;
@@ -470,7 +479,7 @@ void ConsoleObject::addProtectedField(const char*  in_pFieldname,
       in_getDataFn,
       &defaultProtectedWriteFn,
       1,
-      NULL,
+           nullptr,
       in_pFieldDocs);
 }
 
@@ -490,7 +499,7 @@ void ConsoleObject::addProtectedField(const char*  in_pFieldname,
       in_getDataFn,
       in_writeDataFn,
       1,
-      NULL,
+      nullptr,
       in_pFieldDocs);
 }
 
@@ -527,18 +536,18 @@ void ConsoleObject::addProtectedField(const char*  in_pFieldname,
 {
    AbstractClassRep::Field f;
    f.pFieldname   = StringTable->insert(in_pFieldname);
-   f.pGroupname   = NULL;
+   f.pGroupname   = nullptr;
 
    if(in_pFieldDocs)
       f.pFieldDocs   = StringTable->insert(in_pFieldDocs);
    else
-      f.pFieldDocs   = NULL;
+      f.pFieldDocs   = nullptr;
 
    f.type         = in_fieldType;
    f.offset       = in_fieldOffset;
    f.elementCount = in_elementCount;
    f.table        = in_table;
-   f.validator    = NULL;
+   f.validator    = nullptr;
 
    f.setDataFn    = in_setDataFn;
    f.getDataFn    = in_getDataFn;
@@ -555,15 +564,15 @@ void ConsoleObject::addFieldV(const char*  in_pFieldname,
 {
    AbstractClassRep::Field f;
    f.pFieldname   = StringTable->insert(in_pFieldname);
-   f.pGroupname   = NULL;
+   f.pGroupname   = nullptr;
    if(in_pFieldDocs)
       f.pFieldDocs   = StringTable->insert(in_pFieldDocs);
    else
-      f.pFieldDocs   = NULL;
+      f.pFieldDocs   = nullptr;
    f.type         = in_fieldType;
    f.offset       = in_fieldOffset;
    f.elementCount = 1;
-   f.table        = NULL;
+   f.table        = nullptr;
    f.setDataFn    = &defaultProtectedSetFn;
    f.getDataFn    = &defaultProtectedGetFn;
    f.writeDataFn  = &defaultProtectedWriteFn;
@@ -577,13 +586,13 @@ void ConsoleObject::addDeprecatedField(const char *fieldName)
 {
    AbstractClassRep::Field f;
    f.pFieldname   = StringTable->insert(fieldName);
-   f.pGroupname   = NULL;
-   f.pFieldDocs   = NULL;
+   f.pGroupname   = nullptr;
+   f.pFieldDocs   = nullptr;
    f.type         = AbstractClassRep::DeprecatedFieldType;
    f.offset       = 0;
    f.elementCount = 0;
-   f.table        = NULL;
-   f.validator    = NULL;
+   f.table        = nullptr;
+   f.validator    = nullptr;
    f.setDataFn    = &defaultProtectedSetFn;
    f.getDataFn    = &defaultProtectedGetFn;
    f.writeDataFn  = &defaultProtectedWriteFn;
@@ -621,12 +630,12 @@ ConsoleObject::~ConsoleObject()
 //--------------------------------------
 AbstractClassRep* ConsoleObject::getClassRep() const
 {
-   return NULL;
+   return nullptr;
 }
 
 ConsoleFunction( enumerateConsoleClasses, const char*, 1, 2, "enumerateConsoleClasses(<\"base class\">);")
 {
-   AbstractClassRep *base = NULL;    
+   AbstractClassRep *base = nullptr;    
    if(argc > 1)
    {
       base = AbstractClassRep::findClassRep(argv[1]);
@@ -645,17 +654,18 @@ ConsoleFunction( enumerateConsoleClasses, const char*, 1, 2, "enumerateConsoleCl
       }
    }
    
-   if(!classes.size())
+   if(classes.empty())
       return "";
 
-   dQsort(classes.address(), classes.size(), sizeof(AbstractClassRep*), ACRCompare);
+//   dQsort(classes.address(), classes.size(), sizeof(AbstractClassRep*), ACRCompare);
+    std::sort(classes.begin(), classes.end(), ACRCompare);
 
    char* ret = Con::getReturnBuffer(bufSize);
    dStrcpy( ret, classes[0]->getClassName());
-   for( U32 i=0; i< (U32)classes.size(); i++)
+   for( auto itr:classes)
    {
       dStrcat( ret, "\t" );
-      dStrcat( ret, classes[i]->getClassName() );
+      dStrcat( ret, itr->getClassName() );
    }
    
    return ret;

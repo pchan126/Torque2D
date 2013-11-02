@@ -1124,7 +1124,6 @@ static void writeLongCString(std::ostream &stream, const char *string)
 
 static void readLongCString(std::istream &stream, char *buffer)
 {
-   U32 i;
    U16 strLen;
    stream >> strLen;
    stream.read(buffer, strLen);
@@ -1584,9 +1583,6 @@ static void handleGameMasterInfoRequest( const NetAddress* address, U32 key, U8 
 {
    if ( GNet->doesAllowConnections() )
    {
-      U8 temp8;
-      U32 temp32;
-
       char netString[256];
       Net::addressToString(address, netString);
 

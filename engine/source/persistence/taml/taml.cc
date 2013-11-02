@@ -703,14 +703,24 @@ void Taml::compileStaticFields( TamlWriteNode* pTamlWriteNode )
 
 //-----------------------------------------------------------------------------
 
-static S32 QSORT_CALLBACK compareFieldEntries(const void* a,const void* b)
+//static S32 QSORT_CALLBACK compareFieldEntries(const void* a,const void* b)
+//{
+//    // Debug Profiling.
+//    PROFILE_SCOPE(Taml_CompareFieldEntries);
+//
+//    SimFieldDictionary::Entry *fa = *((SimFieldDictionary::Entry **)a);
+//    SimFieldDictionary::Entry *fb = *((SimFieldDictionary::Entry **)b);
+//    return dStricmp(fa->slotName, fb->slotName);
+//}
+
+//-----------------------------------------------------------------------------
+
+static bool compareFieldEntries(const SimFieldDictionary::Entry *fa,const SimFieldDictionary::Entry *fb)
 {
     // Debug Profiling.
     PROFILE_SCOPE(Taml_CompareFieldEntries);
 
-    SimFieldDictionary::Entry *fa = *((SimFieldDictionary::Entry **)a);
-    SimFieldDictionary::Entry *fb = *((SimFieldDictionary::Entry **)b);
-    return dStricmp(fa->slotName, fb->slotName);
+    return dStricmp(fa->slotName, fb->slotName) < 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -787,8 +797,9 @@ void Taml::compileDynamicFields( TamlWriteNode* pTamlWriteNode )
 //    }
 
     // Sort Entries to prevent version control conflicts
-    if ( dynamicFieldList.size() > 1 )
-        dQsort(dynamicFieldList.address(), dynamicFieldList.size(), sizeof(SimFieldDictionary::Entry*), compareFieldEntries);
+//    if ( dynamicFieldList.size() > 1 )
+//        dQsort(dynamicFieldList.address(), dynamicFieldList.size(), sizeof(SimFieldDictionary::Entry*), compareFieldEntries);
+    std::sort(dynamicFieldList.begin(), dynamicFieldList.end(), compareFieldEntries);
 
     // Save the fields.
     for( SimFieldDictionary::Entry* pEntry : dynamicFieldList )

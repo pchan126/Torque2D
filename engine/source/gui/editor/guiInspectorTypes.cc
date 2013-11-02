@@ -140,12 +140,18 @@ void GuiInspectorTypeGuiProfile::consoleInit()
    ConsoleBaseType::getType(TypeGuiProfile)->setInspectorFieldType("GuiInspectorTypeGuiProfile");
 }
 
-static S32 QSORT_CALLBACK stringCompare(const void *a,const void *b)
+//static S32 QSORT_CALLBACK stringCompare(const void *a,const void *b)
+//{
+//   StringTableEntry sa = *(StringTableEntry*)a;
+//   StringTableEntry sb = *(StringTableEntry*)b;
+//   return(dStricmp(sa, sb));
+//}
+
+static bool stringCompare(const StringTableEntry sa, const StringTableEntry sb)
 {
-   StringTableEntry sa = *(StringTableEntry*)a;
-   StringTableEntry sb = *(StringTableEntry*)b;
-   return(dStricmp(sa, sb));
+    return(dStricmp(sa, sb) < 0);
 }
+
 
 GuiControl* GuiInspectorTypeGuiProfile::constructEditControl()
 {
@@ -182,9 +188,11 @@ GuiControl* GuiInspectorTypeGuiProfile::constructEditControl()
    }
 
    // sort the entries
-   dQsort(entries.address(), entries.size(), sizeof(StringTableEntry), stringCompare);
-   for(U32 j = 0; j < (U32)entries.size(); j++)
-      menu->addEntry(entries[j], 0);
+//   dQsort(entries.address(), entries.size(), sizeof(StringTableEntry), stringCompare);
+    std::sort(entries.begin(), entries.end(), stringCompare);
+
+   for(auto entry:entries)
+      menu->addEntry(entry, 0);
 
    return retCtrl;
 }

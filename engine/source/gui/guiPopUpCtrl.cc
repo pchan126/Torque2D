@@ -109,7 +109,7 @@ void GuiPopUpBackgroundCtrl::onMouseDown(const GuiEvent &event)
 //------------------------------------------------------------------------------
 GuiPopupTextListCtrl::GuiPopupTextListCtrl()
 {
-   mPopUpCtrl = NULL;
+   mPopUpCtrl = nullptr;
 }
 
 
@@ -329,27 +329,27 @@ ConsoleMethod( GuiPopUpMenuCtrl, addScheme, void, 6, 6, "( entryScheme , fontCol
    dStrcpy( buf, argv[3] );
    char* temp = dStrtok( buf, " \0" );
    r = temp ? dAtoi( temp ) : 0;
-   temp = dStrtok( NULL, " \0" );
+   temp = dStrtok( nullptr, " \0" );
    g = temp ? dAtoi( temp ) : 0;
-   temp = dStrtok( NULL, " \0" );
+   temp = dStrtok( nullptr, " \0" );
    b = temp ? dAtoi( temp ) : 0;
    fontColor.set( r, g, b );
 
    dStrcpy( buf, argv[4] );
    temp = dStrtok( buf, " \0" );
    r = temp ? dAtoi( temp ) : 0;
-   temp = dStrtok( NULL, " \0" );
+   temp = dStrtok( nullptr, " \0" );
    g = temp ? dAtoi( temp ) : 0;
-   temp = dStrtok( NULL, " \0" );
+   temp = dStrtok( nullptr, " \0" );
    b = temp ? dAtoi( temp ) : 0;
    fontColorHL.set( r, g, b );
 
    dStrcpy( buf, argv[5] );
    temp = dStrtok( buf, " \0" );
    r = temp ? dAtoi( temp ) : 0;
-   temp = dStrtok( NULL, " \0" );
+   temp = dStrtok( nullptr, " \0" );
    g = temp ? dAtoi( temp ) : 0;
-   temp = dStrtok( NULL, " \0" );
+   temp = dStrtok( nullptr, " \0" );
    b = temp ? dAtoi( temp ) : 0;
    fontColorSEL.set( r, g, b );
 
@@ -357,7 +357,7 @@ ConsoleMethod( GuiPopUpMenuCtrl, addScheme, void, 6, 6, "( entryScheme , fontCol
 }
 
 ConsoleMethod( GuiPopUpMenuCtrl, setText, void, 3, 3, "( text ) Use the setText method to change the text displayed in the menu bar.\n"
-                                                                "Pass the NULL string to clear the menu bar text.\n"
+                                                                "Pass the nullptr string to clear the menu bar text.\n"
                                                                 "@param text New text to display in the menu bar.\n"
                                                                 "@return No return value.\n"
                                                                 "@sa getText, replaceText")
@@ -366,7 +366,7 @@ ConsoleMethod( GuiPopUpMenuCtrl, setText, void, 3, 3, "( text ) Use the setText 
 }
 
 ConsoleMethod( GuiPopUpMenuCtrl, getText, const char*, 2, 2, "() Use the getText method to get the text currently displayed in the menu bar.\n"
-                                                                "@return Returns the text in the menu bar or NULL if no text is present.\n"
+                                                                "@return Returns the text in the menu bar or nullptr if no text is present.\n"
                                                                 "@sa getSelected, setText")
 {
    return object->getText();
@@ -439,7 +439,7 @@ ConsoleMethod( GuiPopUpMenuCtrl, setNoneSelected, void, 2, 2, "() Deselects all 
 
 ConsoleMethod( GuiPopUpMenuCtrl, getTextById, const char*, 3, 3,  "( ID ) Use the getTextById method to get the text value for the menu item represented by ID.\n"
                                                                 "@param ID An integer value representing the ID of a menu item.\n"
-                                                                "@return Returns a string containing the menu item corresponding to ID, or a NULL string if no menu item has the specified ID.\n"
+                                                                "@return Returns a string containing the menu item corresponding to ID, or a nullptr string if no menu item has the specified ID.\n"
                                                                 "@sa add, getText")
 {
    return(object->getTextById(dAtoi(argv[2])));
@@ -492,7 +492,7 @@ ConsoleMethod( GuiPopUpMenuCtrl, setEnumContent, void, 4, 4, "(string class, str
       return;
    }
 
-   AssertFatal(field.table, avar("enumeration '%s' for class '%s' with NULL ", argv[3], argv[2]));
+   AssertFatal(field.table, avar("enumeration '%s' for class '%s' with nullptr ", argv[3], argv[2]));
 
     // fill it
    for (auto itr: (*field.table))
@@ -555,8 +555,8 @@ bool GuiPopUpMenuCtrl::onAdd()
 //------------------------------------------------------------------------------
 void GuiPopUpMenuCtrl::onSleep()
 {
-   mTextureNormal = NULL; // DAW: Added
-   mTextureDepressed = NULL; // DAW: Added
+   mTextureNormal = nullptr; // DAW: Added
+   mTextureDepressed = nullptr; // DAW: Added
    Parent::onSleep();
    closePopUp();  // Tests in function.
 }
@@ -571,21 +571,34 @@ void GuiPopUpMenuCtrl::clear()
 }
 
 //------------------------------------------------------------------------------
-static S32 QSORT_CALLBACK textCompare(const void *a,const void *b)
+//static S32 QSORT_CALLBACK textCompare(const void *a,const void *b)
+//{
+//   GuiPopUpMenuCtrl::Entry *ea = (GuiPopUpMenuCtrl::Entry *) (a);
+//   GuiPopUpMenuCtrl::Entry *eb = (GuiPopUpMenuCtrl::Entry *) (b);
+//   return (dStricmp(ea->buf, eb->buf));
+//}
+
+//------------------------------------------------------------------------------
+static bool textCompare(const GuiPopUpMenuCtrl::Entry a,const GuiPopUpMenuCtrl::Entry b)
 {
-   GuiPopUpMenuCtrl::Entry *ea = (GuiPopUpMenuCtrl::Entry *) (a);
-   GuiPopUpMenuCtrl::Entry *eb = (GuiPopUpMenuCtrl::Entry *) (b);
-   return (dStricmp(ea->buf, eb->buf));
-} 
+    return (dStricmp(a.buf, b.buf) == -1);
+}
+
 
 // DAW: Added to sort by entry ID
 //------------------------------------------------------------------------------
-static S32 QSORT_CALLBACK idCompare(const void *a,const void *b)
+//static S32 QSORT_CALLBACK idCompare(const void *a,const void *b)
+//{
+//   GuiPopUpMenuCtrl::Entry *ea = (GuiPopUpMenuCtrl::Entry *) (a);
+//   GuiPopUpMenuCtrl::Entry *eb = (GuiPopUpMenuCtrl::Entry *) (b);
+//   return ( (ea->id < eb->id) ? -1 : ((ea->id > eb->id) ? 1 : 0) );
+//}
+
+//------------------------------------------------------------------------------
+static bool idCompare(const GuiPopUpMenuCtrl::Entry ea,const GuiPopUpMenuCtrl::Entry eb)
 {
-   GuiPopUpMenuCtrl::Entry *ea = (GuiPopUpMenuCtrl::Entry *) (a);
-   GuiPopUpMenuCtrl::Entry *eb = (GuiPopUpMenuCtrl::Entry *) (b);
-   return ( (ea->id < eb->id) ? -1 : ((ea->id > eb->id) ? 1 : 0) );
-} 
+    return ea.id < eb.id;
+}
 
 //------------------------------------------------------------------------------
 // DAW: Added
@@ -613,8 +626,8 @@ void GuiPopUpMenuCtrl::setBitmap(const char *name)
    }
    else
    {
-      mTextureNormal = NULL;
-      mTextureDepressed = NULL;
+      mTextureNormal = nullptr;
+      mTextureDepressed = nullptr;
    }
    setUpdate();
 }   
@@ -622,14 +635,16 @@ void GuiPopUpMenuCtrl::setBitmap(const char *name)
 //------------------------------------------------------------------------------
 void GuiPopUpMenuCtrl::sort()
 {
-    dQsort((void *)mEntries.address(), mEntries.size(), sizeof(Entry), textCompare);
+//    dQsort((void *)mEntries.address(), mEntries.size(), sizeof(Entry), textCompare);
+    std::sort(mEntries.begin(), mEntries.end(), textCompare);
 }
 
 // DAW: Added to sort by entry ID
 //------------------------------------------------------------------------------
 void GuiPopUpMenuCtrl::sortID()
 {
-    dQsort((void *)mEntries.address(), mEntries.size(), sizeof(Entry), idCompare);
+//    dQsort((void *)mEntries.address(), mEntries.size(), sizeof(Entry), idCompare);
+    std::sort(mEntries.begin(), mEntries.end(), idCompare);
 }
 
 //------------------------------------------------------------------------------
@@ -1399,7 +1414,7 @@ void GuiPopUpMenuCtrl::reverseTextList()
 bool GuiPopUpMenuCtrl::getFontColor( ColorI &fontColor, S32 id, bool selected, bool mouseOver )
 {
    U32 i;
-   Entry* entry = NULL;
+   Entry* entry = nullptr;
    for ( i = 0; i < (U32)mEntries.size(); i++ )
    {
       if ( mEntries[i].id == id )
@@ -1436,7 +1451,7 @@ bool GuiPopUpMenuCtrl::getFontColor( ColorI &fontColor, S32 id, bool selected, b
 bool GuiPopUpMenuCtrl::getColoredBox( ColorI &fontColor, S32 id )
 {
    U32 i;
-   Entry* entry = NULL;
+   Entry* entry = nullptr;
    for ( i = 0; i < (U32)mEntries.size(); i++ )
    {
       if ( mEntries[i].id == id )

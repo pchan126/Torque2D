@@ -222,15 +222,23 @@ void LightManager::getAllUnsortedLights( Vector<LightInfo*> *list ) const
     list->merge( mRegisteredLights );
 }
 
-S32 QSORT_CALLBACK LightManager::lightDistance(const void* a, const void* b)
+//S32 QSORT_CALLBACK LightManager::lightDistance(const void* a, const void* b)
+//{
+//   // Fetch scene render requests.
+//   LightInfo* pLightInfoA  = *((LightInfo**)a);
+//   LightInfo* pLightInfoB  = *((LightInfo**)b);
+//
+//   Point3F point = LIGHTMGR->getSortPoint();
+//
+//   return (((pLightInfoA->getPosition()-point).lenSquared() - (pLightInfoB->getPosition()-point).lenSquared()));
+//}
+
+bool LightManager::lightDistance(const LightInfo* pLightInfoA, const LightInfo* pLightInfoB)
 {
-   // Fetch scene render requests.
-   LightInfo* pLightInfoA  = *((LightInfo**)a);
-   LightInfo* pLightInfoB  = *((LightInfo**)b);
-   
-   Point3F point = LIGHTMGR->getSortPoint();
-   
-   return (((pLightInfoA->getPosition()-point).lenSquared() - (pLightInfoB->getPosition()-point).lenSquared()));
+    // Fetch scene render requests.
+    Point3F point = LIGHTMGR->getSortPoint();
+
+    return (((pLightInfoA->getPosition()-point).lenSquared() < (pLightInfoB->getPosition()-point).lenSquared()));
 }
 
 void LightManager::getSortedLightsByDistance( Vector<LightInfo*> *list, Point3F point)
@@ -238,5 +246,6 @@ void LightManager::getSortedLightsByDistance( Vector<LightInfo*> *list, Point3F 
    list->merge(mRegisteredLights);
    // Sort asset definitions.
    sortPoint = point;
-   dQsort( list->address(), list->size(), sizeof(const LightInfo*), lightDistance );
+//   dQsort( list->address(), list->size(), sizeof(const LightInfo*), lightDistance );
+    std::sort( list->begin(), list->end(), lightDistance );
 }

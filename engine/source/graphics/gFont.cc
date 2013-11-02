@@ -1180,13 +1180,19 @@ struct GlyphMap
    GBitmap *bitmap;
 };
 
-static S32 QSORT_CALLBACK GlyphMapCompare(const void *a, const void *b)
-{
-   S32 ha = ((GlyphMap *) a)->bitmap->mHeight;
-   S32 hb = ((GlyphMap *) b)->bitmap->mHeight;
+//static S32 QSORT_CALLBACK GlyphMapCompare(const void *a, const void *b)
+//{
+//   S32 ha = ((GlyphMap *) a)->bitmap->mHeight;
+//   S32 hb = ((GlyphMap *) b)->bitmap->mHeight;
+//
+//   return hb - ha;
+//}
 
-   return hb - ha;
+static bool GlyphMapCompare(GlyphMap a, GlyphMap b)
+{
+    return a.bitmap->mHeight > b.bitmap->mHeight;
 }
+
 
 
 void GFont::importStrip(const char *fileName, U32 padding, U32 kerning)
@@ -1245,7 +1251,8 @@ void GFont::importStrip(const char *fileName, U32 padding, U32 kerning)
    }
 
    // Ok, we have a big list of glyphmaps now. So let's sort them, then pack them.
-   dQsort(glyphList.address(), glyphList.size(), sizeof(GlyphMap), GlyphMapCompare);
+//   dQsort(glyphList.address(), glyphList.size(), sizeof(GlyphMap), GlyphMapCompare);
+    std::sort(glyphList.begin(), glyphList.end(), GlyphMapCompare);
 
    // They're sorted by height, so now we can do some sort of awesome packing.
    Point2I curSheetSize(256, 256);

@@ -217,7 +217,8 @@ protected:
    bool mIsActive;
 
    Point3F sortPoint;
-   static S32 QSORT_CALLBACK lightDistance(const void* a, const void* b);
+//   static S32 QSORT_CALLBACK lightDistance(const void* a, const void* b);
+    static bool lightDistance(const LightInfo* pLightInfoA, const LightInfo* pLightInfoB);
 };
 
 /// Returns the current active light manager.

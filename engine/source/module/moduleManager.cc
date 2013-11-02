@@ -51,18 +51,14 @@ ModuleManager ModuleDatabase;
 
 //-----------------------------------------------------------------------------
 
-S32 QSORT_CALLBACK moduleDefinitionVersionIdSort( const void* a, const void* b )
+bool moduleDefinitionVersionIdSort( const ModuleDefinition* pDefinition1, const ModuleDefinition* pDefinition2 )
 {
-    // Fetch module definitions.
-   ModuleDefinition* pDefinition1 = *(ModuleDefinition**)a;
-   ModuleDefinition* pDefinition2 = *(ModuleDefinition**)b;
-
    // Fetch version Ids.
    const U32 versionId1 = pDefinition1->getVersionId();
    const U32 versionId2 = pDefinition2->getVersionId();
 
    // We sort higher version Id first.
-   return versionId1 > versionId2 ? -1 : versionId1 < versionId2 ? 1 : 0;
+   return versionId1 > versionId2;
 }
 
 //-----------------------------------------------------------------------------
@@ -2067,7 +2063,8 @@ bool ModuleManager::registerModule( const char* pModulePath, const char* pModule
     pDefinitions->mVector.push_back( pModuleDefinition );
 
     // Sort module definitions by version Id so that higher versions appear first.
-    dQsort( pDefinitions->mVector.address(), pDefinitions->mVector.size(), sizeof(ModuleDefinition*), moduleDefinitionVersionIdSort );
+//    dQsort( pDefinitions->mVector.address(), pDefinitions->mVector.size(), sizeof(ModuleDefinition*), moduleDefinitionVersionIdSort );
+    std::sort( pDefinitions->mVector.begin(), pDefinitions->mVector.end(), moduleDefinitionVersionIdSort );
 
     // Find module group.
     typeGroupModuleHash::iterator moduleGroupItr = mGroupModules.find( moduleGroup );

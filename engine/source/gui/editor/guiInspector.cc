@@ -20,6 +20,7 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 #include "gui/editor/guiInspector.h"
+#include "gui/editor/guiInspector_ScriptBinding.h"
 #include "gui/buttons/guiIconButtonCtrl.h"
 #include "memory/frameAllocator.h"
 #include "graphics/gfxDrawUtil.h"
@@ -183,32 +184,6 @@ void GuiInspector::inspectObject( SimObject *object )
 
 }
 
-ConsoleMethod( GuiInspector, inspect, void, 3, 3, "(obj) Goes through the object's fields and autogenerates editor boxes\n"
-              "@return No return value.")
-{
-   SimObject * target = Sim::findObject(argv[2]);
-   if(!target)
-   {
-      if(dAtoi(argv[2]) > 0)
-         Con::warnf("%s::inspect(): invalid object: %s", argv[0], argv[2]);
-      
-      object->clearGroups();
-      return;
-   }
-
-   object->inspectObject(target);
-}
-
-
-ConsoleMethod( GuiInspector, getInspectObject, const char*, 2, 2, "() - Returns currently inspected object\n"
-              "@return The Object's ID as a string.")
-{
-   SimObject *pSimObject = object->getInspectObject();
-   if( pSimObject != nullptr )
-      return pSimObject->getIdString();
-   
-   return "";
-}
 
 void GuiInspector::setName( const char* newName )
 {
@@ -218,12 +193,6 @@ void GuiInspector::setName( const char* newName )
    // Only assign a new name if we provide one
    mTarget->assignName(newName);
 
-}
-
-ConsoleMethod( GuiInspector, setName, void, 3, 3, "(NewObjectName) Set object name.\n"
-              "@return No return value.")
-{
-   object->setName(argv[2]);
 }
 
 
@@ -452,12 +421,6 @@ void GuiInspectorField::updateValue( const char* newValue )
    GuiTextEditCtrl *ctrl = dynamic_cast<GuiTextEditCtrl*>( mEdit );
    if( ctrl != nullptr )
       ctrl->setText( newValue );
-}
-
-ConsoleMethod( GuiInspectorField, apply, void, 3,3, "(newValue) Applies the given value to the field\n"
-              "@return No return value." )
-{
-   object->setData( argv[2] );
 }
 
 bool GuiInspectorField::resize( const Point2I &newPosition, const Point2I &newExtent )
@@ -807,12 +770,18 @@ bool GuiInspectorDynamicGroup::createContent()
    return true;
 }
 
-static S32 QSORT_CALLBACK compareEntries(const void* a,const void* b)
+//static S32 QSORT_CALLBACK compareEntries(const void* a,const void* b)
+//{
+//   SimFieldDictionary::Entry *fa = *((SimFieldDictionary::Entry **)a);
+//   SimFieldDictionary::Entry *fb = *((SimFieldDictionary::Entry **)b);
+//   return dStricmp(fa->slotName, fb->slotName);
+//}
+
+static bool compareEntries(const SimFieldDictionary::Entry *fa,const SimFieldDictionary::Entry *fb)
 {
-   SimFieldDictionary::Entry *fa = *((SimFieldDictionary::Entry **)a);
-   SimFieldDictionary::Entry *fb = *((SimFieldDictionary::Entry **)b);
-   return dStricmp(fa->slotName, fb->slotName);
+    return dStricmp(fa->slotName, fb->slotName) == -1;
 }
+
 
 //////////////////////////////////////////////////////////////////////////
 // GuiInspectorDynamicGroup - inspectGroup override
@@ -832,16 +801,14 @@ bool GuiInspectorDynamicGroup::inspectGroup()
    Vector<SimFieldDictionary::Entry *> flist;
 
    // Then populate with fields
-   SimFieldDictionary * fieldDictionary = mTarget->getFieldDictionary();
-   for(SimFieldDictionary::Iterator ditr = fieldDictionary->begin(); ditr != fieldDictionary->end(); ++ditr)
+   for(auto ditr: *mTarget->getFieldDictionary())
+      flist.push_back(ditr.second);
+
+//   dQsort(flist.address(),flist.size(),sizeof(SimFieldDictionary::Entry *),compareEntries);
+    std::sort(flist.begin(),flist.end(),compareEntries);
+
+   for(auto entry: flist)
    {
-      flist.push_back(ditr->second);
-   }
-   dQsort(flist.address(),flist.size(),sizeof(SimFieldDictionary::Entry *),compareEntries);
-   
-   for(U32 i = 0; i < (U32)flist.size(); i++)
-   {
-      SimFieldDictionary::Entry * entry = flist[i];
       GuiInspectorField *field = new GuiInspectorDynamicField( this, mTarget, entry );
       if( field != nullptr )
       {
@@ -856,11 +823,6 @@ bool GuiInspectorDynamicGroup::inspectGroup()
    setUpdate();
 
    return true;
-}
-ConsoleMethod(GuiInspectorDynamicGroup, inspectGroup, bool, 2, 2, "() Refreshes the dynamic fields in the inspector.\n"
-              "@return Returns true on success.")
-{
-   return object->inspectGroup();
 }
 
 void GuiInspectorDynamicGroup::clearFields()
@@ -921,10 +883,6 @@ void GuiInspectorDynamicGroup::addDynamicField()
    animateToContents();
 }
 
-ConsoleMethod( GuiInspectorDynamicGroup, addDynamicField, void, 2, 2, "obj.addDynamicField();" )
-{
-   object->addDynamicField();
-}
 
 //////////////////////////////////////////////////////////////////////////
 // GuiInspectorDynamicField - Child class of GuiInspectorField 
@@ -1020,11 +978,6 @@ void GuiInspectorDynamicField::renameField( StringTableEntry newFieldName )
    dSprintf( szBuffer, 512, "%d.%s = %d.getText();",mTarget->getId(), getFieldName(), mEdit->getId() );
    mEdit->setField("AltCommand", szBuffer );
    mEdit->setField("Validate", szBuffer );
-}
-
-ConsoleMethod( GuiInspectorDynamicField, renameField, void, 3,3, "field.renameField(newDynamicFieldName);" )
-{
-   object->renameField( StringTable->insert(argv[2]) );
 }
 
 bool GuiInspectorDynamicField::onAdd()
@@ -1123,11 +1076,16 @@ bool GuiInspectorDynamicField::resize( const Point2I &newPosition, const Point2I
 //////////////////////////////////////////////////////////////////////////
 IMPLEMENT_CONOBJECT(GuiInspectorDatablockField);
 
-static S32 QSORT_CALLBACK stringCompare(const void *a,const void *b)
+//static S32 QSORT_CALLBACK stringCompare(const void *a,const void *b)
+//{
+//   StringTableEntry sa = *(StringTableEntry*)a;
+//   StringTableEntry sb = *(StringTableEntry*)b;
+//   return(dStricmp(sb, sa));
+//}
+
+static bool stringCompare(const StringTableEntry sa,const StringTableEntry sb)
 {
-   StringTableEntry sa = *(StringTableEntry*)a;
-   StringTableEntry sb = *(StringTableEntry*)b;
-   return(dStricmp(sb, sa));
+    return (dStricmp(sb, sa) == -1);
 }
 
 GuiInspectorDatablockField::GuiInspectorDatablockField( StringTableEntry className )
@@ -1195,11 +1153,12 @@ GuiControl* GuiInspectorDatablockField::constructEditControl()
    }
 
    // sort the entries
-   dQsort(entries.address(), entries.size(), sizeof(StringTableEntry), stringCompare);
+//   dQsort(entries.address(), entries.size(), sizeof(StringTableEntry), stringCompare);
+    std::sort(entries.begin(), entries.end(), stringCompare);
 
    // add them to our enum
-   for(U32 j = 0; j < (U32)entries.size(); j++)
-      menu->addEntry(entries[j], 0);
+   for (auto entry:entries)
+      menu->addEntry(entry, 0);
 
    return retCtrl;
 }

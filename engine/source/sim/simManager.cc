@@ -490,18 +490,24 @@ SimDataBlockGroup::SimDataBlockGroup()
    mLastModifiedKey = 0;
 }
 
-S32 QSORT_CALLBACK SimDataBlockGroup::compareModifiedKey(const void* a,const void* b)
-{
-    return (reinterpret_cast<const SimDataBlock* >(a))->getModifiedKey() -
-        (reinterpret_cast<const SimDataBlock*>(b))->getModifiedKey();
-}
+//S32 QSORT_CALLBACK SimDataBlockGroup::compareModifiedKey(const void* a,const void* b)
+//{
+//    return (reinterpret_cast<const SimDataBlock* >(a))->getModifiedKey() -
+//        (reinterpret_cast<const SimDataBlock*>(b))->getModifiedKey();
+//}
 
+bool SimDataBlockGroup::compareModifiedKey(const SimObject * a, const SimObject * b)
+{
+    return (reinterpret_cast<const SimDataBlock* >(a))->getModifiedKey() <
+             (reinterpret_cast<const SimDataBlock*>(b))->getModifiedKey();
+}
 
 void SimDataBlockGroup::sort()
 {
    if(mLastModifiedKey != SimDataBlock::getNextModifiedKey())
    {
       mLastModifiedKey = SimDataBlock::getNextModifiedKey();
-        dQsort(objectList.address(),objectList.size(),sizeof(SimObject *),compareModifiedKey);
+//        dQsort(objectList.address(),objectList.size(),sizeof(SimObject *),compareModifiedKey);
+       std::sort(objectList.begin(),objectList.end(),compareModifiedKey);
    }
 }

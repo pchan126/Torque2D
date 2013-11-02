@@ -22,42 +22,15 @@
 #ifndef _GUI_INSPECTOR_H_
 #define _GUI_INSPECTOR_H_
 
-#ifndef _CONSOLE_BASE_TYPE_H_
 #include "console/consoleBaseType.h"
-#endif
-
-#ifndef _GUICONTROL_H_
 #include "gui/guiControl.h"
-#endif
-
-#ifndef _GUICANVAS_H_
 #include "gui/guiCanvas.h"
-#endif
-
-#ifndef _GUISTACKCTRL_H_
 #include "gui/containers/guiStackCtrl.h"
-#endif
-
-#ifndef _H_GUIDEFAULTCONTROLRENDER_
 #include "gui/guiDefaultControlRender.h"
-#endif
-
-#ifndef _GUISCROLLCTRL_H_
 #include "gui/containers/guiScrollCtrl.h"
-#endif
-
-#ifndef _GUITEXTEDITCTRL_H_
 #include "gui/guiTextEditCtrl.h"
-#endif
-
-#ifndef _GUIBITMAPBUTTON_H_
 #include "gui/buttons/guiBitmapButtonCtrl.h"
-#endif
-
-#ifndef _GUIPOPUPCTRL_H_
 #include "gui/guiPopUpCtrl.h"
-#endif
-
 #include "gui/containers/guiRolloutCtrl.h"
 
 

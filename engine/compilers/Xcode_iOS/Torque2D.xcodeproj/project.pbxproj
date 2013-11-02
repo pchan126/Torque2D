@@ -1413,6 +1413,9 @@
 		86A9A3E616AEC817003F01E6 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		C54190593D64B820C89D9FE3 /* streamObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = streamObject.h; sourceTree = "<group>"; };
 		C541922EA73DC5AE4B3FD325 /* streamObject.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = streamObject.cc; sourceTree = "<group>"; };
+		C541960A211F0D9B8E4A56A7 /* guiInspector_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiInspector_ScriptBinding.h; sourceTree = "<group>"; };
+		C54196FF964F21EC0DCF1A6D /* resourceManager_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = resourceManager_ScriptBinding.h; sourceTree = "<group>"; };
+		C5419DEF4984E9701069B603 /* guiTextListCtrl_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiTextListCtrl_ScriptBinding.h; sourceTree = "<group>"; };
 		D10529CD173B665000BFC4FF /* gfxOpenGLES20Device.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20Device.h; sourceTree = "<group>"; };
 		D10529D0173B665000BFC4FF /* gfxOpenGLES20EnumTranslate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20EnumTranslate.h; sourceTree = "<group>"; };
 		D10529D4173B665100BFC4FF /* gfxOpenGLES20Shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20Shader.h; sourceTree = "<group>"; };
@@ -2345,6 +2348,7 @@
 				33230911303CCA4C673E1A22 /* guiSliderCtrl.h */,
 				4B8AA80281B751522AB2B79E /* guiMoveCtrl.cpp */,
 				4B8AAC46AA26864E02E90563 /* guiMoveCtrl.h */,
+				C5419DEF4984E9701069B603 /* guiTextListCtrl_ScriptBinding.h */,
 			);
 			name = gui;
 			path = ../../../source/gui;
@@ -2427,6 +2431,7 @@
 				867BAE7516AEC9050033868F /* guiMenuBar.h */,
 				867BAE7616AEC9050033868F /* guiSeparatorCtrl.cc */,
 				867BAE7716AEC9050033868F /* guiSeparatorCtrl.h */,
+				C541960A211F0D9B8E4A56A7 /* guiInspector_ScriptBinding.h */,
 			);
 			path = editor;
 			sourceTree = "<group>";
@@ -2469,6 +2474,7 @@
 				867BAED216AEC9050033868F /* resourceDictionary.cc */,
 				867BAED316AEC9050033868F /* resourceManager.cc */,
 				867BAED416AEC9050033868F /* resourceManager.h */,
+				C54196FF964F21EC0DCF1A6D /* resourceManager_ScriptBinding.h */,
 			);
 			path = resource;
 			sourceTree = "<group>";

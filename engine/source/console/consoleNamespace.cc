@@ -273,14 +273,18 @@ Namespace::Entry *Namespace::lookup(StringTableEntry name)
        return nullptr;
 }
 
-static S32 QSORT_CALLBACK compareEntries(const void* a,const void* b)
+//static S32 QSORT_CALLBACK compareEntries(const void* a,const void* b)
+//{
+//   const Namespace::Entry* fa = *((Namespace::Entry**)a);
+//   const Namespace::Entry* fb = *((Namespace::Entry**)b);
+//
+//   return dStricmp(fa->mFunctionName, fb->mFunctionName);
+//}
+
+static bool compareEntries( Namespace::Entry* a, Namespace::Entry* b)
 {
-   const Namespace::Entry* fa = *((Namespace::Entry**)a);
-   const Namespace::Entry* fb = *((Namespace::Entry**)b);
-
-   return dStricmp(fa->mFunctionName, fb->mFunctionName);
+    return dStricmp(a->mFunctionName, b->mFunctionName) == -1;
 }
-
 
 void Namespace::getEntryList(Vector<Entry *> *vec)
 {
@@ -293,7 +297,8 @@ void Namespace::getEntryList(Vector<Entry *> *vec)
         vec->push_back(temp);
     }
 
-   dQsort(vec->address(),vec->size(),sizeof(Namespace::Entry *),compareEntries);
+//   dQsort(vec->address(),vec->size(),sizeof(Namespace::Entry *),compareEntries);
+    std::sort(vec->begin(), vec->end(), compareEntries);
 }
 
 Namespace::Entry *Namespace::createLocalEntry(StringTableEntry name)

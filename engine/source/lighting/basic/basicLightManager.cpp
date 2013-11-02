@@ -78,19 +78,26 @@ U32 BasicLightManager::smElapsedUpdateMs = 0;
 
 F32 BasicLightManager::smProjectedShadowFilterDistance = 40.0f;
 
-static S32 QSORT_CALLBACK comparePluginScores( const void *a, const void *b )
+//static S32 QSORT_CALLBACK comparePluginScores( const void *a, const void *b )
+//{
+//   const BasicSceneObjectLightingPlugin *A = *((BasicSceneObjectLightingPlugin**)a);
+//   const BasicSceneObjectLightingPlugin *B = *((BasicSceneObjectLightingPlugin**)b);
+//
+//   F32 dif = B->getScore() - A->getScore();
+//   return (S32)mFloor( dif );
+//}
+
+static bool comparePluginScores( const BasicSceneObjectLightingPlugin *A, const BasicSceneObjectLightingPlugin *B )
 {
-   const BasicSceneObjectLightingPlugin *A = *((BasicSceneObjectLightingPlugin**)a);
-   const BasicSceneObjectLightingPlugin *B = *((BasicSceneObjectLightingPlugin**)b);     
-   
    F32 dif = B->getScore() - A->getScore();
-   return (S32)mFloor( dif );
+   return (S32)mFloor( dif ) < 0;
 }
+
 
 BasicLightManager::BasicLightManager()
    : LightManager( "Basic Lighting", "BLM" ),
-     mLastShader(NULL),
-     mLastConstants(NULL)
+     mLastShader(nullptr),
+     mLastConstants(nullptr)
 {
    mTimer = PlatformTimer::create();
    
@@ -135,8 +142,8 @@ BasicLightManager::BasicLightManager()
 
 BasicLightManager::~BasicLightManager()
 {
-   mLastShader = NULL;
-   mLastConstants = NULL;
+   mLastShader = nullptr;
+   mLastConstants = nullptr;
 
    for (LightConstantMap::Iterator i = mConstantLookup.begin(); i != mConstantLookup.end(); i++)
    {
@@ -232,8 +239,8 @@ void BasicLightManager::deactivate()
 {
    Parent::deactivate();
 
-   mLastShader = NULL;
-   mLastConstants = NULL;
+   mLastShader = nullptr;
+   mLastConstants = nullptr;
 
    for (LightConstantMap::Iterator i = mConstantLookup.begin(); i != mConstantLookup.end(); i++)
    {
@@ -244,7 +251,7 @@ void BasicLightManager::deactivate()
 
    if ( mPrePassRenderBin )
       mPrePassRenderBin->deleteObject();
-   mPrePassRenderBin = NULL;
+   mPrePassRenderBin = nullptr;
 
    GFXShader::removeGlobalMacro( "TORQUE_BASIC_LIGHTING" );
 
@@ -258,19 +265,20 @@ void BasicLightManager::deactivate()
 void BasicLightManager::_onPreRender( SceneManager *sceneManger, const SceneRenderState *state )
 {
    // Update all our shadow plugins here!
-   Vector<BasicSceneObjectLightingPlugin*> *pluginInsts = BasicSceneObjectLightingPlugin::getPluginInstances();
+   Vector<BasicSceneObjectLightingPlugin*> pluginInsts = *BasicSceneObjectLightingPlugin::getPluginInstances();
 
-   Vector<BasicSceneObjectLightingPlugin*>::const_iterator pluginIter = (*pluginInsts).begin();
-   for ( ; pluginIter != (*pluginInsts).end(); pluginIter++ )
+   Vector<BasicSceneObjectLightingPlugin*>::const_iterator pluginIter = pluginInsts.begin();
+   for ( ; pluginIter != pluginInsts.end(); pluginIter++ )
    {
       BasicSceneObjectLightingPlugin *plugin = *pluginIter;
       plugin->updateShadow( (SceneRenderState*)state );
    }
 
-   U32 pluginCount = (*pluginInsts).size();
+   U32 pluginCount = pluginInsts.size();
 
    // Sort them by the score.
-   dQsort( (*pluginInsts).address(), pluginCount, sizeof(BasicSceneObjectLightingPlugin*), comparePluginScores );
+//   dQsort( (*pluginInsts).address(), pluginCount, sizeof(BasicSceneObjectLightingPlugin*), comparePluginScores );
+    std::sort( pluginInsts.begin(), pluginInsts.end(), comparePluginScores );
 
    mTimer->getElapsedMs();
    mTimer->reset();
@@ -279,8 +287,8 @@ void BasicLightManager::_onPreRender( SceneManager *sceneManger, const SceneRend
 
    S32 updateMs = 0;
 
-   pluginIter = (*pluginInsts).begin();
-   for ( ; pluginIter != (*pluginInsts).end(); pluginIter++ )
+   pluginIter = pluginInsts.begin();
+   for ( ; pluginIter != pluginInsts.end(); pluginIter++ )
    {
       BasicSceneObjectLightingPlugin *plugin = *pluginIter;
 
@@ -301,14 +309,14 @@ void BasicLightManager::_onPreRender( SceneManager *sceneManger, const SceneRend
 
 BasicLightManager::LightingShaderConstants::LightingShaderConstants()
    :  mInit( false ),
-      mShader( NULL ),
-      mLightPosition( NULL ),
-      mLightDiffuse( NULL ),
-      mLightAmbient( NULL ),
-      mLightInvRadiusSq( NULL ),
-      mLightSpotDir( NULL ),
-      mLightSpotAngle( NULL ),
-	  mLightSpotFalloff( NULL )
+      mShader( nullptr ),
+      mLightPosition( nullptr ),
+      mLightDiffuse( nullptr ),
+      mLightAmbient( nullptr ),
+      mLightInvRadiusSq( nullptr ),
+      mLightSpotDir( nullptr ),
+      mLightSpotAngle( nullptr ),
+	  mLightSpotFalloff( nullptr )
 {
 }
 
@@ -317,7 +325,7 @@ BasicLightManager::LightingShaderConstants::~LightingShaderConstants()
    if (mShader.isValid())
    {
       mShader->getReloadSignal().remove( this, &LightingShaderConstants::_onShaderReload );
-      mShader = NULL;
+      mShader = nullptr;
    }
 }
 

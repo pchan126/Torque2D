@@ -133,17 +133,26 @@ void RenderBinManager::clear()
 
 void RenderBinManager::sort()
 {
-   dQsort( mElementList.address(), mElementList.size(), sizeof(MainSortElem), cmpKeyFunc);
+//   dQsort( mElementList.address(), mElementList.size(), sizeof(MainSortElem), cmpKeyFunc);
+    std::sort( mElementList.begin(), mElementList.end(), cmpKeyFunc);
 }
 
-S32 FN_CDECL RenderBinManager::cmpKeyFunc(const void* p1, const void* p2)
+//S32 FN_CDECL RenderBinManager::cmpKeyFunc(const void* p1, const void* p2)
+//{
+//   const MainSortElem* mse1 = (const MainSortElem*) p1;
+//   const MainSortElem* mse2 = (const MainSortElem*) p2;
+//
+//   S32 test1 = S32(mse2->key) - S32(mse1->key);
+//
+//   return ( test1 == 0 ) ? S32(mse1->key2) - S32(mse2->key2) : test1;
+//}
+
+
+bool RenderBinManager::cmpKeyFunc(const MainSortElem mse1, const MainSortElem mse2)
 {
-   const MainSortElem* mse1 = (const MainSortElem*) p1;
-   const MainSortElem* mse2 = (const MainSortElem*) p2;
+    S32 test1 = S32(mse2.key) - S32(mse1.key);
 
-   S32 test1 = S32(mse2->key) - S32(mse1->key);
-
-   return ( test1 == 0 ) ? S32(mse1->key2) - S32(mse2->key2) : test1;
+    return ( test1 == 0 ) ? S32(mse1.key2) < S32(mse2.key2) : test1 < 0;
 }
 
 //void RenderBinManager::setupSGData( MeshRenderInst *ri, SceneData &data )

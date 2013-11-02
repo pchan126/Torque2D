@@ -176,8 +176,8 @@ void LightQuery::_scoreLights()
 //   return diff < 0 ? 1 : diff > 0 ? -1 : 0;
 //}
 
-bool LightQuery::_lightScoreCmp( LightInfo a, LightInfo b)
+bool LightQuery::_lightScoreCmp( LightInfo* a, LightInfo* b)
 {
-    F32 diff = a.getScore() - b.getScore();
+    F32 diff = a->getScore() - b->getScore();
     return diff < 0 ? false : diff > 0 ? true : false;
 }
