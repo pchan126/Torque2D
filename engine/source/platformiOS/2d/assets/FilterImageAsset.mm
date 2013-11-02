@@ -7,8 +7,9 @@
 
 #include "FilterImageAsset.h"
 #include "console/consoleTypes.h"
-#include "platformiOS/graphics/gfxOpenGLES20iOSDevice.h"
-#include "platformiOS/graphics/gfxOpenGLES20iOSTextureObject.h"
+#include "graphics/gfxDevice.h"
+#import  "platformiOS/graphics/GFXiOSDevice.h"
+//#include "platformiOS/graphics/gfxOpenGLES20iOSTextureObject.h"
 
 //------------------------------------------------------------------------------
 
@@ -138,7 +139,7 @@ void FilterImageAsset::copyTo(SimObject* object)
     FilterImageAsset* pAsset = static_cast<FilterImageAsset*>(object);
     
     // Sanity!
-    AssertFatal(pAsset != NULL, "FilterImageAsset::copyTo() - Object is not the correct type.");
+    AssertFatal(pAsset != nullptr, "FilterImageAsset::copyTo() - Object is not the correct type.");
 }
 
 //------------------------------------------------------------------------------
@@ -157,7 +158,7 @@ void FilterImageAsset::setFilterName( const char* pAssetId )
 void FilterImageAsset::calculateImage( void )
 {
     // Debug Profiling.    PROFILE_SCOPE(FilterImageAsset_CalculateImage);
-    GFXOpenGLES20iOSDevice *device = dynamic_cast<GFXOpenGLES20iOSDevice*>(GFX);
+    GFXDevice *device = dynamic_cast<GFXDevice*>(GFX);
     
     // Clear frames.
     mFrames.clear();
@@ -288,7 +289,8 @@ void FilterImageAsset::calculateImage( void )
     CIImage *output;
     output = [mFilter valueForKey:kCIOutputImageKey];
     // draw Image to textureTarget
-    device->drawImage(output, rect, rect);
+    GFXiOSDevice *iosDevice = dynamic_cast<GFXiOSDevice*>(GFX);
+    iosDevice->drawImage(output, rect, rect);
 
     GFX->setActiveRenderTarget(oldTarget);
     GFX->updateStates(true);

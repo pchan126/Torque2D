@@ -4,26 +4,10 @@
 //-----------------------------------------------------------------------------
 
 #include "platform/platform.h"
-#include "platformiOS/graphics/gfxOpenGLES20iOSEnumTranslate.h"
+#include "./gfxOpenGLES30iOSEnumTranslate.h"
 #include "String/StringTable.h"
- 
-GLenum GFXGLPrimType[GFXPT_COUNT];
-GLenum GFXGLBlend[GFXBlend_COUNT];
-GLenum GFXGLBlendOp[GFXBlendOp_COUNT];
-GLenum GFXGLSamplerState[GFXSAMP_COUNT];
-GLenum GFXGLTextureFilter[GFXTextureFilter_COUNT];
-GLenum GFXGLTextureAddress[GFXAddress_COUNT];
-GLenum GFXGLCmpFunc[GFXCmp_COUNT];
-GLenum GFXGLStencilOp[GFXStencilOp_COUNT];
-GLenum GFXGLTextureInternalFormat[GFXFormat_COUNT];
-GLenum GFXGLTextureFormat[GFXFormat_COUNT];
-GLenum GFXGLTextureType[GFXFormat_COUNT];
-GLenum GFXGLBufferType[GFXBufferType_COUNT];
-GLenum GFXGLCullMode[GFXCull_COUNT];
-GLenum GFXGLFillMode[GFXFill_COUNT];
-StringTableEntry GFXGLShaderAttributes[NUM_ATTRIBUTES];
 
-void GFXGLES20iOSEnumTranslate::init()
+void GFXGLES30iOSEnumTranslate::init()
 {
    // Buffer types
    GFXGLBufferType[GFXBufferTypeStatic] = GL_STATIC_DRAW;

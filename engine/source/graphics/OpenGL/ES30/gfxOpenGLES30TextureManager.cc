@@ -4,13 +4,13 @@
 //-----------------------------------------------------------------------------
 
 #include "platform/platform.h"
-#include "platformiOS/graphics/GFXOpenGLES20iOSTextureManager.h"
-#include "platformiOS/graphics/gfxOpenGLES20iOSEnumTranslate.h"
+#include "platform/platformGL.h"
+#include "gfxOpenGLES30TextureManager.h"
+#include "gfxOpenGLES30EnumTranslate.h"
 #include "graphics/gfxCardProfile.h"
 #include "memory/safeDelete.h"
-#include "platformiOS/graphics/gfxOpenGLES20iOSUtils.h"
-#include "platformiOS/graphics/gfxOpenGLES20iOSDevice.h"
-#import <GLKit/GLKit.h>
+#include "gfxOpenGLES30Utils.h"
+#include "./gfxOpenGLES30Device.h"
 
 
 //#define EXT_ARRAY_SIZE 4
@@ -19,20 +19,20 @@
 //-----------------------------------------------------------------------------
 // Constructor
 //-----------------------------------------------------------------------------
-GFXOpenGLES20iOSTextureManager::GFXOpenGLES20iOSTextureManager()
+GFXOpenGLES30TextureManager::GFXOpenGLES30TextureManager()
 {
 }
 
 //-----------------------------------------------------------------------------
 // Destructor
 //-----------------------------------------------------------------------------
-GFXOpenGLES20iOSTextureManager::~GFXOpenGLES20iOSTextureManager()
+GFXOpenGLES30TextureManager::~GFXOpenGLES30TextureManager()
 {
    SAFE_DELETE_ARRAY( mHashTable );
 }
 
 
-GFXTextureObject *GFXOpenGLES20iOSTextureManager::createTexture( GBitmap *bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp )
+GFXTextureObject *GFXOpenGLES30TextureManager::createTexture( GBitmap *bmp, const String &resourceName, GFXTextureProfile *profile, bool deleteBmp )
 {
     AssertFatal(bmp, "GFXTextureManager::createTexture() - Got NULL bitmap!");
     
@@ -49,13 +49,27 @@ GFXTextureObject *GFXOpenGLES20iOSTextureManager::createTexture( GBitmap *bmp, c
 }
 
 
-GFXTextureObject *GFXOpenGLES20iOSTextureManager::_createTexture(  GBitmap *bmp,
+GFXTextureObject *GFXOpenGLES30TextureManager::createTexture(  U32 width, U32 height, void *pixels, GFXFormat format, GFXTextureProfile *profile )
+{
+    AssertFatal(format >= 0 && format < GFXFormat_COUNT, "GFXOpenGLES30iOSTextureManager::_createTexture - invalid format!");
+    
+    GFXOpenGLES30TextureObject *retTex;
+    retTex = new GFXOpenGLES30TextureObject( GFX, profile );
+    retTex->registerResourceWithDevice( GFX );
+    
+    innerCreateTexture(retTex, height, width, 0, format, profile, 1);
+    
+    return retTex;
+}
+
+
+GFXTextureObject *GFXOpenGLES30TextureManager::_createTexture(  GBitmap *bmp,
                                                     const String &resourceName,
                                                     GFXTextureProfile *profile,
                                                     bool deleteBmp,
                                                     GFXTextureObject *inObj )
 {
-    PROFILE_SCOPE( GFXOpenGLES20iOSTextureManager_CreateTexture_Bitmap );
+    PROFILE_SCOPE( GFXOpenGLES30TextureManager_CreateTexture_Bitmap );
     
 #ifdef DEBUG_SPEW
     Platform::outputDebugString( "[GFXTextureManager] _createTexture (GBitmap) '%s'",
@@ -80,10 +94,10 @@ GFXTextureObject *GFXOpenGLES20iOSTextureManager::_createTexture(  GBitmap *bmp,
         
         GBitmap *padBmp = bmp;
         padBmp->extrudeMipLevels();
-       scalePower = std::min( scalePower, padBmp->getNumMipLevels() - 1 );
+        scalePower = std::min( scalePower, padBmp->getNumMipLevels() - 1 );
         
-       realWidth  = std::max( (U32)1, padBmp->getWidth() >> scalePower );
-       realHeight = std::max( (U32)1, padBmp->getHeight() >> scalePower );
+        realWidth  = std::max( (U32)1, padBmp->getWidth() >> scalePower );
+        realHeight = std::max( (U32)1, padBmp->getHeight() >> scalePower );
         realBmp = new GBitmap( realWidth, realHeight, false, bmp->getFormat() );
         
         // Copy to the new bitmap...
@@ -115,15 +129,15 @@ GFXTextureObject *GFXOpenGLES20iOSTextureManager::_createTexture(  GBitmap *bmp,
             ret = inObj;
     }
     else
-        ret = _createTextureObject(realHeight, realWidth, 0, realFmt, profile, numMips, false, 0, NULL, (void*)bmp->getBits());
+        ret = _createTextureObject(realHeight, realWidth, 0, realFmt, profile, numMips );
    
     if(!ret)
     {
         Con::errorf("GFXTextureManager - failed to create texture (1) for '%s'", (resourceName.isNotEmpty() ? resourceName.c_str() : "unknown"));
-        return nullptr;
+        return NULL;
     }
 
-   GFXOpenGLES20iOSTextureObject* retTex = dynamic_cast<GFXOpenGLES20iOSTextureObject*>(ret);
+   GFXOpenGLES30TextureObject* retTex = dynamic_cast<GFXOpenGLES30TextureObject*>(ret);
 
    if (realBmp != bmp && retTex)
       retTex->mIsNPoT2 = true;
@@ -143,7 +157,7 @@ GFXTextureObject *GFXOpenGLES20iOSTextureManager::_createTexture(  GBitmap *bmp,
     if (!_loadTexture( ret, realBmp ))
     {
         Con::errorf("GFXTextureManager - failed to load GBitmap for '%s'", (resourceName.isNotEmpty() ? resourceName.c_str() : "unknown"));
-        return nullptr;
+        return NULL;
     }
     
     // Do statistics and book-keeping...
@@ -191,74 +205,9 @@ GFXTextureObject *GFXOpenGLES20iOSTextureManager::_createTexture(  GBitmap *bmp,
     return ret;
 }
 
-////-----------------------------------------------------------------------------
-//// createTexture
-////-----------------------------------------------------------------------------
-GFXTextureObject *GFXOpenGLES20iOSTextureManager::createTexture( const String &fullPath, GFXTextureProfile *profile )
-{
-    GLKTextureInfo *texture = nil;
-
-    StringTableEntry path, fileName;
-    
-    static char buf[1024];
-    char *ptr = (char *) dStrrchr (fullPath.c_str(), '/');
-    if (!ptr)
-    {
-        path = nullptr;
-        fileName = StringTable->insert (fullPath.c_str());
-    }
-    else
-    {
-        S32 len = ptr - fullPath.c_str();
-        dStrncpy (buf, fullPath.c_str(), len);
-        buf[len] = 0;
-        fileName = StringTable->insert (ptr + 1);
-        path = StringTable->insert (buf);
-    }
-    if(path)
-    {
-        char fullPath[1024];
-        Platform::makeFullPathName(path, fullPath, sizeof(fullPath));
-        path = StringTable->insert(fullPath);
-    }
-    
-    GFXTextureObject *retTexObj = _lookupTexture( fileName, profile );
-
-    if( retTexObj )
-        return retTexObj;
-
-    NSDictionary *options = @{GLKTextureLoaderOriginBottomLeft: @NO};
-    NSString *npath = [[NSString alloc] initWithUTF8String:fullPath.c_str()];
-    NSError * error;
-    texture = [GLKTextureLoader textureWithContentsOfFile:npath
-                                                      options:options error:&error];
-
-    if (!texture) // error loading - use old loading
-    {
-        NSLog(@"Error loading texture: %@ %@", npath, [error localizedDescription]);
-        GBitmap* bmp = GBitmap::load(fullPath);
-        return createTexture( bmp, path, profile, true );
-    }
-
-    retTexObj = new GFXOpenGLES20iOSTextureObject( GFX, profile, texture );
-    retTexObj->registerResourceWithDevice( GFX );
-
-    if ( retTexObj )
-    {
-        // Store the path for later use.
-        retTexObj->mPath = fullPath;
-        _linkTexture( retTexObj );
-    }
-    else
-    {
-        Con::printf("unable to make texture");
-    }
-    
-    return retTexObj;
-}
 
 
-GFXTextureObject *GFXOpenGLES20iOSTextureManager::_createTextureObject(   U32 height,
+GFXTextureObject *GFXOpenGLES30TextureManager::_createTextureObject(   U32 height,
                                                                U32 width,
                                                                U32 depth,
                                                                GFXFormat format, 
@@ -266,45 +215,96 @@ GFXTextureObject *GFXOpenGLES20iOSTextureManager::_createTextureObject(   U32 he
                                                                U32 numMipLevels,
                                                                bool forceMips,
                                                                S32 antialiasLevel,
-                                                               GFXTextureObject *inTex,
-                                                               void* data)
+                                                               GFXTextureObject *inTex )
 {
-   AssertFatal(format >= 0 && format < GFXFormat_COUNT, "GFXOpenGLES20iOSTextureManager::_createTexture - invalid format!");
+   AssertFatal(format >= 0 && format < GFXFormat_COUNT, "GFXOpenGLES30TextureManager::_createTexture - invalid format!");
 
-   GFXOpenGLES20iOSTextureObject *retTex;
+   GFXOpenGLES30TextureObject *retTex;
    if ( inTex )
    {
-      AssertFatal( dynamic_cast<GFXOpenGLES20iOSTextureObject*>( inTex ), "GFXOpenGLES20iOSTextureManager::_createTexture() - Bad inTex type!" );
-      retTex = static_cast<GFXOpenGLES20iOSTextureObject*>( inTex );
+      AssertFatal( dynamic_cast<GFXOpenGLES30TextureObject*>( inTex ), "GFXOpenGLES30TextureManager::_createTexture() - Bad inTex type!" );
+      retTex = static_cast<GFXOpenGLES30TextureObject*>( inTex );
       retTex->release();
    }      
    else
    {
-      retTex = new GFXOpenGLES20iOSTextureObject( GFX, profile );
+      retTex = new GFXOpenGLES30TextureObject( GFX, profile );
       retTex->registerResourceWithDevice( GFX );
    }
 
-   innerCreateTexture(retTex, height, width, depth, format, profile, numMipLevels, forceMips, data);
+   innerCreateTexture(retTex, height, width, depth, format, profile, numMipLevels, forceMips);
 
    return retTex;
 }
 
 //-----------------------------------------------------------------------------
+// innerCreateTexture
+//-----------------------------------------------------------------------------
+// This just creates the texture, no info is actually loaded to it.  We do that later.
+void GFXOpenGLES30TextureManager::innerCreateTexture( GFXOpenGLES30TextureObject *retTex, 
+                                               U32 height, 
+                                               U32 width, 
+                                               U32 depth,
+                                               GFXFormat format, 
+                                               GFXTextureProfile *profile, 
+                                               U32 numMipLevels,
+                                               bool forceMips,
+                                                void* data)
+{
+   GFXOpenGLDevice *device = dynamic_cast<GFXOpenGLDevice*>(GFX);
+   // No 24 bit formats.  They trigger various oddities because hardware (and Apple's drivers apparently...) don't natively support them.
+   if(format == GFXFormatR8G8B8)
+      format = GFXFormatR8G8B8A8;
+      
+   retTex->mFormat = format;
+   retTex->mIsZombie = false;
+   retTex->mIsNPoT2 = false;
+   
+    GLenum binding = GL_TEXTURE_2D;   // No 3d texture in openGL es 2.0
+   if((profile->testFlag(GFXTextureProfile::RenderTarget) || profile->testFlag(GFXTextureProfile::ZTarget)) && (!isPow2(width) || !isPow2(height)) && !depth)
+      retTex->mIsNPoT2 = true;
+   retTex->mBinding = binding;
+   
+   // Bind it
+   device->setTextureUnit(0);
+   glBindTexture(binding, retTex->getHandle());
+   
+   if(!retTex->mIsNPoT2)
+   {
+      if(!isPow2(width))
+         width = getNextPow2(width);
+      if(!isPow2(height))
+         height = getNextPow2(height);
+      if(depth && !isPow2(depth))
+         depth = getNextPow2(depth);
+   }
+   
+   AssertFatal(GFXGLTextureInternalFormat[format] != GL_ZERO, "GFXOpenGLES30TextureManager::innerCreateTexture - invalid internal format");
+   AssertFatal(GFXGLTextureFormat[format] != GL_ZERO, "GFXOpenGLES30TextureManager::innerCreateTexture - invalid format");
+   AssertFatal(GFXGLTextureType[format] != GL_ZERO, "GFXOpenGLES30TextureManager::innerCreateTexture - invalid type");
+   
+    glTexImage2D(binding, 0, GFXGLTextureInternalFormat[format], width, height, 0, GFXGLTextureFormat[format], GFXGLTextureType[format], NULL);
+   
+   retTex->mTextureSize.set(width, height, 0);
+}
+
+
+//-----------------------------------------------------------------------------
 // loadTexture - GBitmap
 //-----------------------------------------------------------------------------
 
-static void _slowTextureLoad(GFXOpenGLES20iOSTextureObject* texture, GBitmap* pDL)
+static void _slowTextureLoad(GFXOpenGLES30TextureObject* texture, GBitmap* pDL)
 {
    glTexSubImage2D(texture->getBinding(), 0, 0, 0, pDL->getWidth(0), pDL->getHeight(0), GFXGLTextureFormat[pDL->getFormat()], GFXGLTextureType[pDL->getFormat()], pDL->getBits(0));
 }
 
-bool GFXOpenGLES20iOSTextureManager::_loadTexture(GFXTextureObject *aTexture, GBitmap *pDL)
+bool GFXOpenGLES30TextureManager::_loadTexture(GFXTextureObject *aTexture, GBitmap *pDL)
 {
    GFXOpenGLDevice *device = dynamic_cast<GFXOpenGLDevice*>(GFX);
-   GFXOpenGLES20iOSTextureObject *texture = static_cast<GFXOpenGLES20iOSTextureObject*>(aTexture);
+   GFXOpenGLES30TextureObject *texture = static_cast<GFXOpenGLES30TextureObject*>(aTexture);
    
    AssertFatal(texture->getBinding() == GL_TEXTURE_2D, 
-      "GFXOpenGLES20iOSTextureManager::_loadTexture(GBitmap) - This method can only be used with 2D textures");
+      "GFXOpenGLES30TextureManager::_loadTexture(GBitmap) - This method can only be used with 2D textures");
       
    if(texture->getBinding() != GL_TEXTURE_2D)
       return false;
@@ -327,13 +327,13 @@ bool GFXOpenGLES20iOSTextureManager::_loadTexture(GFXTextureObject *aTexture, GB
 }
 
 
-bool GFXOpenGLES20iOSTextureManager::_loadTexture(GFXTextureObject *aTexture, void *raw)
+bool GFXOpenGLES30TextureManager::_loadTexture(GFXTextureObject *aTexture, void *raw)
 {
+   GFXOpenGLDevice *device = dynamic_cast<GFXOpenGLDevice*>(GFX);
    if(aTexture->getDepth() < 1)
       return false;
    
-   GFXOpenGLDevice *device = dynamic_cast<GFXOpenGLDevice*>(GFX);
-   GFXOpenGLES20iOSTextureObject* texture = static_cast<GFXOpenGLES20iOSTextureObject*>(aTexture);
+   GFXOpenGLES30TextureObject* texture = static_cast<GFXOpenGLES30TextureObject*>(aTexture);
    
    device->setTextureUnit(0);
 
@@ -344,39 +344,20 @@ bool GFXOpenGLES20iOSTextureManager::_loadTexture(GFXTextureObject *aTexture, vo
    return true;
 }
 
-bool GFXOpenGLES20iOSTextureManager::_freeTexture(GFXTextureObject *texture, bool zombify /*= false*/)
+bool GFXOpenGLES30TextureManager::_freeTexture(GFXTextureObject *texture, bool zombify /*= false*/)
 {
    if(zombify)
-      static_cast<GFXOpenGLES20iOSTextureObject*>(texture)->zombify();
+      static_cast<GFXOpenGLES30TextureObject*>(texture)->zombify();
    else
-      static_cast<GFXOpenGLES20iOSTextureObject*>(texture)->release();
+      static_cast<GFXOpenGLES30TextureObject*>(texture)->release();
       
    return true;
 }
 
-bool GFXOpenGLES20iOSTextureManager::_refreshTexture(GFXTextureObject *texture)
+bool GFXOpenGLES30TextureManager::_refreshTexture(GFXTextureObject *texture)
 {
-    GFXOpenGLES20iOSTextureObject * pTextureObject = dynamic_cast<GFXOpenGLES20iOSTextureObject*>(texture);
+    GFXOpenGLES30TextureObject * pTextureObject = dynamic_cast<GFXOpenGLES30TextureObject*>(texture);
 
-    if (pTextureObject->mBitmap == nullptr)
-    {
-        NSDictionary *options = @{GLKTextureLoaderOriginBottomLeft: @NO};
-        NSString *npath = [[NSString alloc] initWithUTF8String:pTextureObject->mPath.c_str()];
-        NSError * error;
-        GLKTextureInfo *textureInfo = nil;
-        textureInfo = [GLKTextureLoader textureWithContentsOfFile:npath
-                                                      options:options error:&error];
-        
-        if (textureInfo)
-        {
-            pTextureObject->mTextureSize.set([ textureInfo width ], [ textureInfo height ], 0.0);
-            pTextureObject->mBitmapSize.set([ textureInfo width ], [ textureInfo height ], 0.0);
-            pTextureObject->mBinding = [ textureInfo target];
-            pTextureObject->mHandle = [ textureInfo name ];
-            return true;
-        }
-    }
-    
     // Fetch bitmaps.
     GBitmap* pSourceBitmap = texture->mBitmap;
     GBitmap* pNewBitmap = pSourceBitmap->createPowerOfTwoBitmap();
@@ -444,11 +425,11 @@ bool GFXOpenGLES20iOSTextureManager::_refreshTexture(GFXTextureObject *texture)
    pTextureObject->setParameter(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
    pTextureObject->setParameter(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
    
-   GLenum glClamp;
-   if ( pTextureObject->getClamp() )
-      glClamp = GL_CLAMP_TO_EDGE;
-   else
-      glClamp = GL_REPEAT;
+    GLenum glClamp;
+    if ( pTextureObject->getClamp() )
+        glClamp = GL_CLAMP_TO_EDGE;
+    else
+        glClamp = GL_REPEAT;
    
    pTextureObject->setParameter(GL_TEXTURE_WRAP_S, glClamp );
    pTextureObject->setParameter(GL_TEXTURE_WRAP_T, glClamp );

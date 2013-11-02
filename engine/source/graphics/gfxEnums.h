@@ -77,7 +77,25 @@ enum GFXPrimitiveType
    GFXPT_COUNT
 };
 
-enum GFXTextureType 
+
+enum SHADER_ATTRIBUTES{   // order is important
+   ATTRIB_POSITION,
+   ATTRIB_NORMAL,
+   ATTRIB_COLOR,
+   ATTRIB_TEXCOORD0,
+   ATTRIB_TEXCOORD1,
+   ATTRIB_TEXCOORD2,
+   ATTRIB_TEXCOORD3,
+   ATTRIB_TEXCOORD4,
+   ATTRIB_TEXCOORD5,
+   ATTRIB_TEXCOORD6,
+   ATTRIB_TEXCOORD7,
+   ATTRIB_POINTSIZE,
+   GFXAttribute_Count
+};
+
+
+enum GFXTextureType
 {
    GFXTextureType_Normal,
    GFXTextureType_KeepBitmap,

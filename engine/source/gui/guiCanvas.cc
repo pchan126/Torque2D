@@ -46,8 +46,8 @@ GFX_ImplementTextureProfile(GFXCanvasTextureProfile,
 
 GuiCanvas::GuiCanvas():GuiControl(),
                         mShowCursor(true),
-                        mMouseControl(NULL),
-                        mMouseCapturedControl(NULL),
+                        mMouseControl(nullptr),
+                        mMouseCapturedControl(nullptr),
                         mMouseControlClicked(false),
                         mMouseButtonDown(false),
                         mMouseRightButtonDown(false),
@@ -59,7 +59,7 @@ GuiCanvas::GuiCanvas():GuiControl(),
                         mLeftMouseLast(false),
                         mMiddleMouseLast(false),
                         mRightMouseLast(false),
-                        mPlatformWindow(NULL)
+                        mPlatformWindow(nullptr)
 {
 #ifdef TORQUE_OS_IOS
    setBounds(0, 0, IOS_DEFAULT_RESOLUTION_X, IOS_DEFAULT_RESOLUTION_Y);
@@ -76,26 +76,26 @@ GuiCanvas::GuiCanvas():GuiControl(),
    lastCursorON = false;
    rLastFrameTime = 0.0f;
 
-   mMouseCapturedControl = NULL;
-   mMouseControl = NULL;
+   mMouseCapturedControl = nullptr;
+   mMouseControl = nullptr;
    mMouseControlClicked = false;
    mMouseButtonDown = false;
    mMouseRightButtonDown = false;
    mMouseMiddleButtonDown = false;
 
-   mLastCursor = NULL;
+   mLastCursor = nullptr;
    mLastCursorPt.set(0,0);
    mCursorPt.set(0,0);
 
     mLastMouseClickCount = 0;
     mLastMouseDownTime = 0;
     mPrevMouseTime = 0;
-    mDefaultCursor = NULL;
+    mDefaultCursor = nullptr;
 
    mRenderFront = false;
 
    hoverControlStart = Platform::getRealMilliseconds();
-   hoverControl = NULL;
+   hoverControl = nullptr;
    hoverPosition = getCursorPos();
    hoverPositionSet = false;
    hoverLeftControlTime = 0;
@@ -111,7 +111,7 @@ GuiCanvas::GuiCanvas():GuiControl(),
 
 GuiCanvas::~GuiCanvas()
 {
-   mPlatformWindow->bindCanvas(NULL);
+   mPlatformWindow->bindCanvas(nullptr);
 }
 
 
@@ -142,7 +142,7 @@ bool GuiCanvas::onAdd()
     // Do we have a global device already? (This is the site if you want
     // to start rendering to multiple devices simultaneously)
     GFXDevice *newDevice = GFX;
-    if(newDevice == NULL)
+    if(newDevice == nullptr)
         newDevice = GFXInit::createDevice(a);
     
     newDevice->setAllowRender( false );
@@ -163,7 +163,7 @@ bool GuiCanvas::onAdd()
         mPlatformWindow->setInputController( dynamic_cast<IProcessInput*>(this) );
     }
 
-//    if (mPlatformWindow != NULL)
+//    if (mPlatformWindow != nullptr)
 //    {
 //       mpTextureTarget = GFX->allocRenderToTextureTarget();
 //       Point2I temp = mPlatformWindow->getGFXTarget()->getSize();
@@ -189,7 +189,7 @@ void GuiCanvas::onRemove()
     mPlatformWindow->resizeEvent.remove(this, &GuiCanvas::handleResize);
     mPlatformWindow->appEvent.remove(this, &GuiCanvas::handleAppEvent);
     mPlatformWindow->displayEvent.remove(this, &GuiCanvas::handlePaintEvent);
-    mPlatformWindow->setInputController( NULL );
+    mPlatformWindow->setInputController( nullptr );
 }
 
 void GuiCanvas::setWindowTitle(const char *newTitle)
@@ -278,7 +278,7 @@ void GuiCanvas::setCursorON(bool onOff)
 {
    cursorON = onOff;
    if(!cursorON)
-      mMouseControl = NULL;
+      mMouseControl = nullptr;
 }
 
 
@@ -698,7 +698,7 @@ void GuiCanvas::findMouseControl(const GuiEvent &event)
 {
    if(size() == 0)
    {
-      mMouseControl = NULL;
+      mMouseControl = nullptr;
       return;
    }
    GuiControl *controlHit = findHitControl(event.mousePoint);
@@ -877,10 +877,10 @@ void GuiCanvas::rootMouseDragged(const GuiEvent &event)
 
 void GuiCanvas::rootMouseMove(const GuiEvent &event)
 {
-   if(mMouseCapturedControl != NULL)
+   if(mMouseCapturedControl != nullptr)
    {
       checkLockMouseMove(event);
-      if(mMouseCapturedControl != NULL)
+      if(mMouseCapturedControl != nullptr)
         mMouseCapturedControl->onMouseMove(event);
    }
    else
@@ -1080,7 +1080,7 @@ GuiControl *GuiCanvas::getContentControl()
 {
    if(size() > 0)
       return (GuiControl *) first();
-   return NULL;
+   return nullptr;
 }
 
 void GuiCanvas::pushDialogControl(GuiControl *gui, S32 layer)
@@ -1142,7 +1142,7 @@ void GuiCanvas::popDialogControl(GuiControl *gui)
       return;
 
    //first, find the dialog, and call the "onDialogPop()" method
-   GuiControl *ctrl = NULL;
+   GuiControl *ctrl = nullptr;
    if (gui)
    {
       //make sure the gui really exists on the stack
@@ -1183,7 +1183,7 @@ void GuiCanvas::popDialogControl(GuiControl *gui)
    }
    else
    {
-      setFirstResponder(NULL);
+      setFirstResponder(nullptr);
    }
 
    //refresh the entire gui
@@ -1204,7 +1204,7 @@ void GuiCanvas::popDialogControl(S32 layer)
    if (size() < 1)
       return;
 
-   GuiControl *ctrl = NULL;
+   GuiControl *ctrl = nullptr;
    iterator i = end(); // find in z order (last to first)
    while (i != begin())
    {
@@ -1249,7 +1249,7 @@ void GuiCanvas::mouseUnlock(GuiControl *lockingControl)
       if(bool(mMouseControl))
          mMouseControl->onMouseEnter(evt);
    }
-   mMouseCapturedControl = NULL;
+   mMouseCapturedControl = nullptr;
 }
 
 void GuiCanvas::paint()
@@ -1313,7 +1313,7 @@ void GuiCanvas::renderFrame(bool preRenderOnly, bool bufferSwap /* = true */)
    GFXTarget* target = mPlatformWindow->getGFXTarget();
    GFX->setActiveRenderTarget(target);
    GFXTarget* renderTarget = GFX->getActiveRenderTarget();
-   if (renderTarget == NULL)
+   if (renderTarget == nullptr)
    {
       PROFILE_END();
       return;
@@ -1350,7 +1350,7 @@ void GuiCanvas::renderFrame(bool preRenderOnly, bool bufferSwap /* = true */)
    //draw the mouse, but not using tags...
    PROFILE_START(CanvasRenderControls);
 
-   GuiCursor *mouseCursor = NULL;
+   GuiCursor *mouseCursor = nullptr;
    bool cursorVisible = true;
 
    if(bool(mMouseCapturedControl))

@@ -120,7 +120,7 @@ void GFXInit::cleanup()
 
 GFXAdapter* GFXInit::getAdapterOfType( GFXAdapterType type )
 {
-   GFXAdapter* adapter = NULL;
+   GFXAdapter* adapter = nullptr;
    for( U32 i = 0; i < smAdapters.size(); i++ )
    {
       if( smAdapters[i]->mType == type )
@@ -209,8 +209,8 @@ GFXAdapter *GFXInit::getBestAdapterChoice()
    // If D3D is unavailable, we're not on windows, so GL is de facto the
    // best choice!
    F32 highestSMGL = 0.f;
-   GFXAdapter  *foundAdapterGLES = NULL,
-               *foundAdapterGL = NULL;
+   GFXAdapter  *foundAdapterGLES = nullptr,
+               *foundAdapterGL = nullptr;
 
    for(S32 i=0; i<smAdapters.size(); i++)
    {
@@ -261,8 +261,8 @@ GFXAdapter *GFXInit::getBestAdapterChoice()
       if(smAdapters[i]->mType != NullDevice)
          return smAdapters[i];
 
-   // Dare we return a null device? No. Just return NULL.
-   return NULL;
+   // Dare we return a null device? No. Just return nullptr.
+   return nullptr;
 }
 
 GFXVideoMode GFXInit::getInitialVideoMode()
@@ -431,7 +431,7 @@ GFXDevice *GFXInit::createDevice( GFXAdapter *adapter )
 //}
 //
 //DefineEngineStaticMethod( GFXInit, createNullDevice, void, (),,
-//   "Create the NULL graphics device used for testing or headless operation." )
+//   "Create the nullptr graphics device used for testing or headless operation." )
 //{
 //   // Enumerate things for GFX before we have an active device.
 //   GFXInit::enumerateAdapters();
@@ -443,7 +443,7 @@ GFXDevice *GFXInit::createDevice( GFXAdapter *adapter )
 // 
 //   // Do we have a global device already? (This is the site if you want
 //   // to start rendering to multiple devices simultaneously)
-//   if(newDevice == NULL)
+//   if(newDevice == nullptr)
 //      newDevice = GFXInit::createDevice(a);
 // 
 //   newDevice->setAllowRender( false );

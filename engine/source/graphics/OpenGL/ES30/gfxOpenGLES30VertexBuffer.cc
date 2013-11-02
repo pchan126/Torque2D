@@ -4,14 +4,22 @@
 //-----------------------------------------------------------------------------
 
 #include "platform/platform.h"
-#include "platformiOS/graphics/GFXOpenGLES20iOSVertexBuffer.h"
+#include "platform/platformGL.h"
+#include "gfxOpenGLES30VertexBuffer.h"
 
-#include "platformiOS/graphics/gfxOpenGLES20iOSDevice.h"
-#include "platformiOS/graphics/gfxOpenGLES20iOSEnumTranslate.h"
-#include "platformiOS/graphics/gfxOpenGLES20iOSUtils.h"
-#import <GLKit/GLKit.h>
+#include "gfxOpenGLES30Device.h"
+#include "gfxOpenGLES30EnumTranslate.h"
+#include "gfxOpenGLES30Utils.h"
 
-GFXOpenGLES20iOSVertexBuffer::GFXOpenGLES20iOSVertexBuffer(  GFXDevice *device, 
+typedef enum {
+    GLKVertexAttribPosition,
+    GLKVertexAttribNormal,
+    GLKVertexAttribColor,
+    GLKVertexAttribTexCoord0,
+    GLKVertexAttribTexCoord1,
+} GLKVertexAttrib;
+
+GFXOpenGLES30VertexBuffer::GFXOpenGLES30VertexBuffer(  GFXDevice *device,
                                        U32 vertexCount,
                                        const GFXVertexFormat *vertexFormat, 
                                        U32 vertexSize, 
@@ -19,16 +27,12 @@ GFXOpenGLES20iOSVertexBuffer::GFXOpenGLES20iOSVertexBuffer(  GFXDevice *device,
                                        const GLvoid * data,
                                        U32 indexCount,
                                        const GLvoid *indexBuffer)
-   :  GFXOpenGLVertexBuffer( device, vertexCount, vertexFormat, vertexSize, bufferType ),
-      mZombieCache(NULL),
-      mIndexCount(indexCount),
-      elementBufferName(0)
+   :  GFXVertexBuffer( device, vertexCount, vertexFormat, vertexSize, bufferType ),
+      mZombieCache(NULL)
 {
-    GFXOpenGLES20iOSDevice *_device = dynamic_cast<GFXOpenGLES20iOSDevice*>(device);
-    mIndexCount = indexCount;
     glGenVertexArraysOES(1,&mVertexArrayObject);
-    _device->setVertexStream( 0, this );
-   
+    glBindVertexArrayOES(mVertexArrayObject);
+    
     glGenBuffers(1, &mBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
 	glBufferData(GL_ARRAY_BUFFER, vertexCount * vertexSize, data, GFXGLBufferType[bufferType]);
@@ -41,28 +45,22 @@ GFXOpenGLES20iOSVertexBuffer::GFXOpenGLES20iOSVertexBuffer(  GFXDevice *device,
     {
         const GFXVertexElement &element = mVertexFormat.getElement( i );
         
-        if ( element.getSemantic() == GFXSemantic::POSITION )
+        if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::POSITION.c_str() ) == 0 )
         {
             glVertexAttribPointer(GLKVertexAttribPosition, element.getSizeInBytes()/4, GL_FLOAT, GL_FALSE, mVertexSize, buffer);
             glEnableVertexAttribArray(GLKVertexAttribPosition);
             buffer += element.getSizeInBytes();
         }
-        else if ( element.getSemantic() == GFXSemantic::NORMAL )
+        else if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::NORMAL.c_str() ) == 0 )
         {
             glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, mVertexSize, buffer);
             glEnableVertexAttribArray(GLKVertexAttribNormal);
             buffer += element.getSizeInBytes();
         }
-        else if ( element.getSemantic() == GFXSemantic::COLOR )
+        else if ( dStrcmp (element.getSemantic().c_str(), GFXSemantic::COLOR.c_str() ) == 0 )
         {
             glVertexAttribPointer(GLKVertexAttribColor, 4, GL_UNSIGNED_BYTE, GL_TRUE, mVertexSize, buffer);
             glEnableVertexAttribArray(GLKVertexAttribColor);
-            buffer += element.getSizeInBytes();
-        }
-        else if ( element.getSemantic() == GFXSemantic::SIZE )
-        {
-            glVertexAttribPointer(ATTRIB_POINTSIZE, 1, GL_FLOAT, GL_FALSE, mVertexSize, buffer);
-            glEnableVertexAttribArray(ATTRIB_POINTSIZE);
             buffer += element.getSizeInBytes();
         }
         else // Everything else is a texture coordinate.
@@ -81,11 +79,11 @@ GFXOpenGLES20iOSVertexBuffer::GFXOpenGLES20iOSVertexBuffer(  GFXDevice *device,
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferName);
         
         // Allocate and load vertex array element data into VBO
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount*sizeof(U16), indexBuffer, GFXGLBufferType[bufferType]);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount*sizeof(U16), indexBuffer, GL_STATIC_DRAW);
     }
 }
 
-GFXOpenGLES20iOSVertexBuffer::~GFXOpenGLES20iOSVertexBuffer()
+GFXOpenGLES30VertexBuffer::~GFXOpenGLES30VertexBuffer()
 {
 	// While heavy handed, this does delete the buffer and frees the associated memory.
     glDeleteBuffers(1, &mBuffer);
@@ -96,7 +94,7 @@ GFXOpenGLES20iOSVertexBuffer::~GFXOpenGLES20iOSVertexBuffer()
       delete [] mZombieCache;
 }
 
-void GFXOpenGLES20iOSVertexBuffer::lock( U32 vertexStart, U32 vertexEnd, void **vertexPtr )
+void GFXOpenGLES30VertexBuffer::lock( U32 vertexStart, U32 vertexEnd, void **vertexPtr )
 {
    PRESERVE_VERTEX_BUFFER();
 	// Bind us, get a pointer into the buffer, then
@@ -109,56 +107,54 @@ void GFXOpenGLES20iOSVertexBuffer::lock( U32 vertexStart, U32 vertexEnd, void **
 }
 
 
-void GFXOpenGLES20iOSVertexBuffer::set( void* data, U32 dataSize, U32 indexCount, void* indexData)
+void GFXOpenGLES30VertexBuffer::set( void* data, U32 dataSize, U32 indexCount, void* indexData)
 {
-    GFXOpenGLES20iOSDevice *_device = dynamic_cast<GFXOpenGLES20iOSDevice*>(GFX);
-    _device->setVertexStream( 0, this );
-
-   glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
     glBufferData(GL_ARRAY_BUFFER, dataSize, data, GFXGLBufferType[GFXBufferTypeVolatile]);
 
     if (indexCount)
     {
-        if (elementBufferName == 0)
-            glGenBuffers(1, &elementBufferName);
-
         // This also attaches the element array buffer to the VAO
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferName);
         
         // Allocate and load vertex array element data into VBO
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount*sizeof(U16), indexData, GFXGLBufferType[mBufferType]);
-    }
-    else
-    {
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount*sizeof(U16), indexData, GL_STATIC_DRAW);
     }
 }
 
 
-void GFXOpenGLES20iOSVertexBuffer::unlock()
+void GFXOpenGLES30VertexBuffer::unlock()
 {
    PRESERVE_VERTEX_BUFFER();
 	// Unmap the buffer and bind 0 to GL_ARRAY_BUFFER
    glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
 	bool res = glUnmapBufferOES(GL_ARRAY_BUFFER);
-   AssertFatal(res, "GFXOpenGLES20iOSVertexBuffer::unlock - shouldn't fail!");
+   AssertFatal(res, "GFXOpenGLES30VertexBuffer::unlock - shouldn't fail!");
 
     lockedVertexStart = 0;
 	lockedVertexEnd   = 0;
 }
 
 
-void GFXOpenGLES20iOSVertexBuffer::prepare()
+void GFXOpenGLES30VertexBuffer::prepare()
 {
-   glBindVertexArrayOES(mVertexArrayObject);
+//    Con::printf("GFXOpenGLES30VertexBuffer::prepare %s", describeSelf().c_str());
+    glBindVertexArrayOES(mVertexArrayObject);
 }
 
-void GFXOpenGLES20iOSVertexBuffer::finish()
+void GFXOpenGLES30VertexBuffer::finish()
 {
-//   glBindVertexArrayOES(0);
+    glBindVertexArrayOES(0);
+
 }
 
-void GFXOpenGLES20iOSVertexBuffer::zombify()
+GLvoid* GFXOpenGLES30VertexBuffer::getBuffer()
+{
+	// NULL specifies no offset into the hardware buffer
+	return (GLvoid*)NULL;
+}
+
+void GFXOpenGLES30VertexBuffer::zombify()
 {
    if(mZombieCache || !mBuffer)
       return;
@@ -171,7 +167,7 @@ void GFXOpenGLES20iOSVertexBuffer::zombify()
    mBuffer = 0;
 }
 
-void GFXOpenGLES20iOSVertexBuffer::resurrect()
+void GFXOpenGLES30VertexBuffer::resurrect()
 {
    if(!mZombieCache)
       return;

@@ -8,7 +8,9 @@
 
 #include "platformiOS/platformiOS.h"
 #include "platform/platformGL.h"
+
 #include "graphics/OpenGL/ES20/gfxOpenGLES20Device.h"
+#include "platformiOS/graphics/GFXiOSDevice.h"
 
 #include "graphics/gfxResource.h"
 #include "./gfxOpenGLES20IOSShader.h"
@@ -19,7 +21,7 @@ class GFXOpenGLES20iOSCubemap;
 @class EAGLContext, GLKTextureLoader, GLKBaseEffect, CIImage;
 @protocol GLKNamedEffect;
 
-class GFXOpenGLES20iOSDevice : public GFXOpenGLES20Device
+class GFXOpenGLES20iOSDevice : public GFXOpenGLES20Device, public GFXiOSDevice
 {
 public:
    GFXOpenGLES20iOSDevice(U32 adapterIndex );
@@ -28,7 +30,7 @@ public:
    static void enumerateAdapters( Vector<GFXAdapter*> &adapterList );
    static GFXDevice *createInstance( U32 adapterIndex );
 
-   virtual void init( const GFXVideoMode &mode, PlatformWindow *window = NULL );
+   virtual void init( const GFXVideoMode &mode, PlatformWindow *window = nullptr );
 
    virtual GFXCubemap * createCubemap();
 
@@ -61,13 +63,11 @@ public:
 
    virtual void setupGenericShaders( GenericShaderType type = GSColor );
    
-    EAGLContext* getEAGLContext() const { return mContext; };
     GLKTextureLoader* getTextureLoader() const { return mTextureLoader; };
 
     // special immediate function for drawing CIImages
-    void drawImage( CIImage* image, CGRect inRect, CGRect fromRect);
-
-   void refreshCIContext(void);
+    virtual void drawImage( CIImage* image, CGRect inRect, CGRect fromRect);
+    virtual void refreshCIContext(void);
 
 protected:
    /// Called by base GFXDevice to actually set a const buffer
@@ -91,9 +91,9 @@ protected:
                                                 const GFXVertexFormat *vertexFormat,
                                                 U32 vertSize, 
                                                 GFXBufferType bufferType,
-                                                void *data = NULL,
+                                                void *data = nullptr,
                                               U32 indexCount = 0,
-                                              void *indexData = NULL);
+                                              void *indexData = nullptr);
     
    // NOTE: The GL device doesn't need a vertex declaration at
    // this time, but we need to return something to keep the system
@@ -120,7 +120,6 @@ private:
    
     void _handleTextureLoaded(GFXTexNotifyCode code);
 
-    EAGLContext* mContext;
     CIContext* mCIContext;
     GLKTextureLoader* mTextureLoader; // GLKTextureLoader
 
@@ -134,7 +133,7 @@ private:
    GFXVertexBuffer* findVolatileVBO(U32 numVerts,
                                     const GFXVertexFormat *vertexFormat,
                                     U32 vertSize,
-                                    void* vertData = NULL,
+                                    void* vertData = nullptr,
                                     U32 numIndex =0,
                                     void* indexData = 0);
    

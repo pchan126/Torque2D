@@ -22,8 +22,7 @@
 
 #import "platformiOS/platformiOS.h"
 #include "game/gameInterface.h"
-
-#include "./graphics/GFXOpenGLES20iOSDevice.h"
+#include "platform/platformInput.h"
 
 #pragma mark ---- IOSPlatState Implementation ----
 

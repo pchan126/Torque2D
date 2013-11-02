@@ -8,29 +8,30 @@
 
 #import "console/console.h"
 #import "platformiOS/platformiOS.h"
-#import "platformiOS/graphics/GFXOpenGLES20iOSDevice.h"
+#import "graphics/GFXDevice.h"
+#import "platformiOS/graphics/GFXiOSDevice.h"
 #import "platformiOS/T2DAppDelegate.h"
 #import "platformiOS/windowManager/iOSGestureRecognizer.h"
 #import "platformiOS/windowManager/iOSWindowInputGenerator.h"
 
-iOSWindow* iOSWindow::sInstance = NULL;
+iOSWindow* iOSWindow::sInstance = nullptr;
 
 iOSWindow::iOSWindow(U32 windowId)
 {
    mMouseLocked      = false;
    mShouldMouseLock  = false;
-   mTitle            = NULL;
+   mTitle            = nullptr;
    mMouseCaptured    = false;
    
    // This controller maps window input (Mouse/Keyboard) to a generic input consumer
    mWindowInputGenerator = new iOSWindowInputGenerator( this );
 
    mCursorController = new iOSCursorController( this );
-   mOwningWindowManager = NULL;
+   mOwningWindowManager = nullptr;
    
    mFullscreen = false;
    mShouldFullscreen = false;
-   mDefaultDisplayMode = NULL;
+   mDefaultDisplayMode = nullptr;
    
    mSkipMouseEvents = 0;
     
@@ -41,7 +42,7 @@ iOSWindow::iOSWindow(U32 windowId)
     
    mWindowId = windowId;
 
-    GFXOpenGLES20iOSDevice *device = dynamic_cast<GFXOpenGLES20iOSDevice*>(GFX);
+    GFXiOSDevice *device = dynamic_cast<GFXiOSDevice*>(GFX);
     EAGLContext *context = device->getEAGLContext();
     
     S32 tempType = Con::getIntVariable("$pref::iOS::StatusBarType");
@@ -73,7 +74,7 @@ iOSWindow::~iOSWindow()
    
    mOwningWindowManager->_removeWindow(this);
    
-   sInstance = NULL;
+   sInstance = nullptr;
 }
 
 
@@ -122,7 +123,7 @@ void iOSWindow::_setFullscreen(bool fullScreen)
 
 void* iOSWindow::getPlatformDrawable() const
 {
-   return NULL;
+   return nullptr;
 //   return [mGLKWindow contentView];
 }
 
@@ -238,7 +239,7 @@ bool iOSWindow::isFocused()
 
 bool iOSWindow::isOpen()
 {
-   // Maybe check if _window != NULL ?
+   // Maybe check if _window != nullptr ?
    return true;
 }
 

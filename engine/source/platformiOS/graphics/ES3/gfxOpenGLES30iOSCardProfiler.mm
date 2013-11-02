@@ -3,22 +3,15 @@
 // Copyright GarageGames, LLC 2011
 //-----------------------------------------------------------------------------
 
-#include "./GFXOpenGLES20iOSCardProfiler.h"
-#include "./GFXOpenGLES20iOSDevice.h"
-#include "./gfxOpenGLES20iOSEnumTranslate.h"
-#import <OpenGLES/ES2/glext.h>
+#include "./GFXOpenGLES30iOSCardProfiler.h"
+#include "./GFXOpenGLES30iOSDevice.h"
+#include "platformiOS/graphics/gfxiOSEnumTranslate.h"
+#include "./gfxOpenGLES30iOSEnumTranslate.h"
+#import <OpenGLES/ES3/glext.h>
 
-BOOL CheckForExtension(NSString *searchName)
-{
-    // For performance, the array can be created once and cached.
-    static NSString *extensionsString = nil;
-    if (extensionsString == nil)
-        extensionsString = [[NSString alloc ]initWithUTF8String:(const char*)glGetString(GL_EXTENSIONS)];
-    NSArray *extensionsNames = [extensionsString componentsSeparatedByString:@" "];
-    return [extensionsNames containsObject: searchName];
-}
+extern BOOL CheckForExtension(NSString *searchName);
 
-void GFXOpenGLES20iOSCardProfiler::init()
+void GFXOpenGLES30iOSCardProfiler::init()
 {
    Parent::init();
    
@@ -79,7 +72,7 @@ void GFXOpenGLES20iOSCardProfiler::init()
     
 }
 
-void GFXOpenGLES20iOSCardProfiler::setupCardCapabilities()
+void GFXOpenGLES30iOSCardProfiler::setupCardCapabilities()
 {
    Parent::setupCardCapabilities();
    

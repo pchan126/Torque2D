@@ -3,13 +3,13 @@
 // Copyright GarageGames, LLC 2011
 //-----------------------------------------------------------------------------
 
-#ifndef _GFXGLES20EnumTranslate_H_
-#define _GFXGLES20EnumTranslate_H_
+#ifndef _GFXGLES30iOSEnumTranslate_H_
+#define _GFXGLES30iOSEnumTranslate_H_
 
-#include "platform/platformGL.h"
+#import <OpenGLES/ES3/glext.h>
 #include "graphics/gfxEnums.h"
 
-namespace GFXGLES20EnumTranslate
+namespace GFXGLES30iOSEnumTranslate
 {
    void init();
 };
@@ -33,4 +33,5 @@ extern GLenum GFXGLCullMode[GFXCull_COUNT];
 extern GLenum GFXGLFillMode[GFXFill_COUNT];
 extern StringTableEntry GFXGLShaderAttributes[GFXAttribute_Count];
 
+#include "platformiOS/graphics/GFXiOSEnumTranslate.h"
 #endif

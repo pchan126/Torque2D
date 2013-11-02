@@ -6,7 +6,7 @@
 //
 
 #import "T2DViewController.h"
-#include "platformiOS/graphics/gfxOpenGLES20iOSDevice.h"
+#include "platformiOS/graphics/gfxiOSDevice.h"
 
 @interface T2DViewController ()
 
@@ -37,14 +37,14 @@
 
 - (void) willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
    
-   GFXOpenGLES20iOSDevice* device = dynamic_cast<GFXOpenGLES20iOSDevice*>(GFX);
+   GFXiOSDevice* device = dynamic_cast<GFXiOSDevice*>(GFX);
 
    if (device)
       device->refreshCIContext();
    }
 
 - (void) applicationDidBecomeActive {
-   GFXOpenGLES20iOSDevice* device = dynamic_cast<GFXOpenGLES20iOSDevice*>(GFX);
+   GFXiOSDevice* device = dynamic_cast<GFXiOSDevice*>(GFX);
    
    if (device)
       device->refreshCIContext();

@@ -29,24 +29,6 @@ GFXDevice *GFXOpenGLES20iOSDevice::createInstance( U32 adapterIndex )
 }
 
 
-static String _getRendererForDisplay(UIScreen* display)
-{
-    EAGLContext* ctx = [[EAGLContext alloc]
-                        initWithAPI:kEAGLRenderingAPIOpenGLES2];
-    
-    // Save the current context, just in case
-    EAGLContext* currCtx = [EAGLContext currentContext];
-    [EAGLContext setCurrentContext: ctx];
-    
-    // get the renderer string
-    String ret((const char*)glGetString(GL_RENDERER));
-    
-    // Restore our old context, release the context and pixel format.
-    [EAGLContext setCurrentContext: currCtx];
-    return ret;
-}
-
-
 void GFXOpenGLES20iOSDevice::initGLState()
 {
     // Currently targeting OpenGL ES 2.0
@@ -68,10 +50,9 @@ void GFXOpenGLES20iOSDevice::initGLState()
 // Matrix interface
 GFXOpenGLES20iOSDevice::GFXOpenGLES20iOSDevice( U32 adapterIndex ) : GFXOpenGLES20Device( adapterIndex ),
                     mAdapterIndex(adapterIndex),
-                    mContext(nil),
                     mCIContext(nil),
                     mClip(0, 0, 0, 0),
-                    mTextureLoader(NULL)
+                    mTextureLoader(nullptr)
 {
     GFXGLES20iOSEnumTranslate::init();
 }
@@ -466,7 +447,7 @@ void GFXOpenGLES20iOSDevice::_updateRenderTargets()
         if ( mRTDeactivate )
         {
             mRTDeactivate->deactivate();
-            mRTDeactivate = NULL;
+            mRTDeactivate = nullptr;
         }
         
         // NOTE: The render target changes is not really accurate
@@ -484,7 +465,7 @@ void GFXOpenGLES20iOSDevice::_updateRenderTargets()
         else
         {
             GFXOpenGLES20iOSWindowTarget *win = dynamic_cast<GFXOpenGLES20iOSWindowTarget*>( mCurrentRT.getPointer() );
-            AssertFatal( win != NULL,
+            AssertFatal( win != nullptr,
                         "GFXOpenGLES20iOSDevice::_updateRenderTargets() - invalid target subclass passed!" );
             
             win->makeActive();
@@ -546,7 +527,17 @@ class GFXOpenGLES20iOSRegisterDevice
 public:
     GFXOpenGLES20iOSRegisterDevice()
     {
-        GFXInit::getRegisterDeviceSignal().notify(&GFXOpenGLES20iOSDevice::enumerateAdapters);
+       bool regMe = true;
+       NSString *osVersion = [[UIDevice currentDevice] systemVersion];
+       if ([osVersion compare:@"7.0.0" options:NSNumericSearch])
+       {
+          EAGLContext* ctx = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3];
+          if (ctx != nil)
+             regMe = false;
+       }
+       
+       if (regMe)
+          GFXInit::getRegisterDeviceSignal().notify(&GFXOpenGLES20iOSDevice::enumerateAdapters);
     }
 };
 

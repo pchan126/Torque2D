@@ -3,13 +3,13 @@
 // Copyright GarageGames, LLC 2011
 //-----------------------------------------------------------------------------
 
-#ifndef _GFXGLES20EnumTranslate_H_
-#define _GFXGLES20EnumTranslate_H_
+#ifndef _GFXGLES30EnumTranslate_H_
+#define _GFXGLES30EnumTranslate_H_
 
 #include "platform/platformGL.h"
 #include "graphics/gfxEnums.h"
 
-namespace GFXGLES20EnumTranslate
+namespace GFXGLES30EnumTranslate
 {
    void init();
 };
