@@ -249,6 +249,9 @@ void Scroller::sceneRender( const SceneRenderState* pSceneRenderState, const Sce
     if ( renderOffsetX < 0.0f ) renderOffsetX += 1.0f;
     if ( renderOffsetY < 0.0f ) renderOffsetY += 1.0f;
    
+//   Con::printf("repeatX: %f repeatY: %f", mRepeatX, mRepeatY);
+//   Con::printf("renderOffsetX: %.2f renderOffsetY: %.2f", renderOffsetX, renderOffsetY);
+   
     // Calculate region dimensions.
     const F32 regionWidth = (mRenderOOBB[1].x - mRenderOOBB[0].x) / mRepeatX;
     const F32 regionHeight = (mRenderOOBB[3].y - mRenderOOBB[0].y) / mRepeatY;
@@ -260,32 +263,59 @@ void Scroller::sceneRender( const SceneRenderState* pSceneRenderState, const Sce
     Vector<F32> yDivisions;
 
     xDivisions.push_back(0.0f);
-    while(xDivisions.back() < mRepeatX)
+    while(xDivisions.back() <= (F32)mRepeatX)
     {
        xDivisions.push_back(xDivisions.back()+(1.0f-renderOffsetX));
-       if (xDivisions.back() >= mRepeatX)
+       if (xDivisions.back() >= (F32)mRepeatX)
           break;
        xDivisions.push_back(xDivisions.back()+renderOffsetX);
     }
    xDivisions.pop_back();
 
    yDivisions.push_back(0.0f);
-   while(yDivisions.back() < mRepeatY)
+   while(yDivisions.back() < (F32)mRepeatY)
    {
       yDivisions.push_back(yDivisions.back()+(1.0f-renderOffsetY));
-      if (yDivisions.back() >= mRepeatY)
+      if (yDivisions.back() >= (F32)mRepeatY)
          break;
       yDivisions.push_back(yDivisions.back()+renderOffsetY);
    }
    yDivisions.pop_back();
 
-    F32 baseX = mRenderOOBB[0].x;
+
+//   std::string tempy = "";
+//   {
+//      for (F32 i:yDivisions) {
+//         char buff[100];
+//         sprintf(buff, "%.2f ", i);
+//         tempy += buff;
+//      }
+//   }
+//   std::string tempx = "";
+//   {
+//      for (F32 i:xDivisions) {
+//         char buff[100];
+//         sprintf(buff, "%.2f ", i);
+//         tempx += buff;
+//      }
+//   }
+   
+//   Con::printf("xsize: %d, ysize: %d", xDivisions.size(), yDivisions.size());
+//   Con::printf("xdiv %s", tempx.c_str());
+//   Con::printf("ydiv %s", tempy.c_str());
+   
+   if (yDivisions.size() > 6)
+   {
+      int ek = 90;
+   }
+
+   F32 baseX = mRenderOOBB[0].x;
     F32 baseY = mRenderOOBB[0].y;
     F32 nextX;
     F32 nextY;
     
     F32 texX1;
-    F32 texY1;
+    F32 texY1 = frameTexelArea.mTexelUpper.y - (frameTexelArea.mTexelHeight*renderOffsetY);
     F32 texX2;
     F32 texY2;
     
@@ -294,10 +324,15 @@ void Scroller::sceneRender( const SceneRenderState* pSceneRenderState, const Sce
    
    U32 count = 0;
    U32 indexCount = 0;
+   U32 yc = 0;
+   std::string textempy = "";
    for ( auto yitr = yDivisions.begin(); yitr != yDivisions.end(); yitr++)
    {
+//      Con::printf("start ydiv %d", yc);
+      yc++;
       baseY = mRenderOOBB[0].y + (*yitr * regionHeight);
-      texY1 = frameTexelArea.mTexelUpper.y - frameTexelArea.mTexelHeight*(F32)mFmod((*yitr+renderOffsetY), 1.0f);
+      F32 a1 = frameTexelArea.mTexelUpper.y;
+      F32 a2 = frameTexelArea.mTexelHeight*(F32)mFmod((*yitr+renderOffsetY), 1.0f);
 
       if (yitr+1 == yDivisions.end())
       {
@@ -309,17 +344,34 @@ void Scroller::sceneRender( const SceneRenderState* pSceneRenderState, const Sce
          nextY = mRenderOOBB[0].y + (*(yitr+1) * regionHeight);
          texY2 = texY1 - frameTexelArea.mTexelHeight*(F32)mFmod((*(yitr+1)-(*yitr)), 1.0f);
       }
+      
+      
+      
+//      if (texY2 < 0.0f && !(texY1 > 0.0f))
+//      {
+//         texY2 += 1.0;
+//         texY1 += 1.0;
+//      }
+      
       if (texY2 == texY1)
       {
          texY2 -= frameTexelArea.mTexelHeight;
          if (texY2 < 0.0 || texY2 > 1.0)
             texY2 = mClampF(texY2, 0.0, 1.0);
       }
-
+//      char tempbuf[255];
+//      sprintf(tempbuf, "%.2f %.2f ", texY1, texY2);
+//      textempy += tempbuf;
+      
+      U32 xc = 0;
+//      std::string textempx = "";
+      texX1 = frameTexelArea.mTexelLower.x + (frameTexelArea.mTexelWidth*renderOffsetX);
       for ( auto xitr = xDivisions.begin(); xitr != xDivisions.end(); xitr++)
       {
+//         Con::printf("start xdiv %d", xc);
+         xc++;
          baseX = mRenderOOBB[0].x + (*xitr * regionWidth);
-         texX1 = frameTexelArea.mTexelLower.x + frameTexelArea.mTexelWidth*(F32)mFmod((*xitr+renderOffsetX), 1.0f);
+//         texX1 = frameTexelArea.mTexelLower.x + frameTexelArea.mTexelWidth*(F32)mFmod((*xitr+renderOffsetX), 1.0f);
 
          if (xitr+1 == xDivisions.end())
          {
@@ -355,10 +407,20 @@ void Scroller::sceneRender( const SceneRenderState* pSceneRenderState, const Sce
                verts[count].point.set(qwX2, qwY2, 0.0);
                verts[count].color.set(mBlendColor*getSceneLayerObj()->getLight());
                verts[count].texCoord.set(qtX2, qtY2);
+//               Con::printf("point %d = (%d, %d)", count, i, j);
                count++;
             }
          }
 
+//         for (U16 j = 0; j < 1; j++)
+//         {
+//            for (U16 i = 0; i <= 1; i++ )
+//            {
+//               index[indexCount]   = vert_offset+((U16)((j*(1+1))+i) );
+//               index[indexCount+1] = vert_offset+((U16)(((j+1)*(1+1))+i) );
+//               indexCount += 2;
+//            }
+//         }
 
          for (U16 j = 0; j < mRows; j++)
          {
@@ -384,7 +446,17 @@ void Scroller::sceneRender( const SceneRenderState* pSceneRenderState, const Sce
             index[indexCount+1] = count;
             indexCount += 2;
          }
+
+//         char tempbuf[255];
+//         sprintf(tempbuf, "%.2f %.2f ", texX1, texX2);
+//         textempx += tempbuf;
+
+         texX1 = texX2;
+         if (texX1 > 0.999)
+            texX1 -= 1.00f;
+
       }
+//      Con::printf("xTex %s", textempx.c_str());
 
       if (yitr+1 != yDivisions.end())
       {
@@ -393,8 +465,24 @@ void Scroller::sceneRender( const SceneRenderState* pSceneRenderState, const Sce
          index[indexCount+1] = count;
          indexCount += 2;
       }
+      
+      texY1 = texY2;
+      if (texY1 < 0.001)
+         texY1 += 1.00f;
    }
+//   Con::printf("yTex %s", textempy.c_str());
+
+   if (yDivisions.size() > 6)
+   {
+      int ek = 90;
+   }
+
+//   for (int i = 0; i < indexCount; i++)
+//   {
+//      Con::printf("indexsize: %d: count %d, ", index.size(), indexCount);
+//   }
    
+   index.setSize(indexCount);
     pBatchRenderer->SubmitIndexedTriangleStrip(verts, texture, index);
     // Flush the scroller batches.
     pBatchRenderer->flush();
