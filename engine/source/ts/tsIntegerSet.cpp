@@ -282,14 +282,14 @@ void TSIntegerSet::read(std::iostream s)
    clearAll();
 
    S32 numInts;
-   s >> (&numInts); // don't care about this
+   s >> numInts; // don't care about this
 
    S32 sz;
-   s >> (&sz);
+   s >> sz;
    AssertFatal(sz<=MAX_TS_SET_DWORDS,"TSIntegerSet::  set too large...increase max set size and re-compile");
 
    for (S32 i=0; i<sz; i++) // now mirrors the write code...
-      s >> (&(bits[i]));
+      s >> (bits[i]);
 }
 
 void TSIntegerSet::write(std::iostream s) const
