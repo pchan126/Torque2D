@@ -2770,7 +2770,6 @@
 		C54199EE3821F7DE505CF244 /* Torque2D */ = {
 			isa = PBXGroup;
 			children = (
-				D113035D1839E3AD007EF6EC /* ts */,
 				C5419DF3AE25CB8D03763A2F /* 2d */,
 				C54194832154880AE1537986 /* algorithm */,
 				C5419C6FC37F004BD72D1846 /* assets */,
@@ -2800,6 +2799,7 @@
 				C5419188669EA8BF79FF297B /* string */,
 				C5419BF42C8478E465EF71E1 /* testing */,
 				C54197EE9136342C1EDA5F2D /* torqueConfig.h */,
+				D113035D1839E3AD007EF6EC /* ts */,
 				C541980A36613CE75BA4297D /* windowManager */,
 			);
 			path = Torque2D;

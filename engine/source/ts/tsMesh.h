@@ -23,7 +23,7 @@
 #ifndef _TSMESH_H_
 #define _TSMESH_H_
 
-#include "io/stream.h"
+#include <iostream>
 
 #include "math/mMath.h"
 #include "collection/vector.h"
@@ -239,7 +239,7 @@ class TSMesh
    Point3F billboardAxis;
 
    /// @name Convex Hull Data
-   /// Convex hulls are convex (no angles >= 180º) meshes used for collision
+   /// Convex hulls are convex (no angles >= 180ï¿½) meshes used for collision
    /// @{
 
    Vector<Point3F> planeNormals;

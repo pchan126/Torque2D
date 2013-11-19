@@ -107,7 +107,7 @@ ResourceInstance* constructShape(std::iostream& stream)
 //      if ( stream.getStatus() != Stream::Ok )
 //      {
 //         Con::errorf( "Resource<TSShape>::create - Could not open '%s'", path.getFullPath().c_str() );
-//         return NULL;
+//         return nullptr;
 //      }
 //
 //      ret = new TSShape;
@@ -118,7 +118,7 @@ ResourceInstance* constructShape(std::iostream& stream)
 //#ifdef TORQUE_COLLADA
 //      // Attempt to load the DAE file
 //      ret = loadColladaShape(path);
-//      readSuccess = (ret != NULL);
+//      readSuccess = (ret != nullptr);
 //#else
 //      // No COLLADA support => attempt to load the cached DTS file instead
 //      StringTableEntry cachedPath = path;
@@ -129,7 +129,7 @@ ResourceInstance* constructShape(std::iostream& stream)
 //      if ( stream.getStatus() != Stream::Ok )
 //      {
 //         Con::errorf( "Resource<TSShape>::create - Could not open '%s'", cachedPath.getFullPath().c_str() );
-//         return NULL;
+//         return nullptr;
 //      }
 //      ret = new TSShape;
 //      readSuccess = ret->read(&stream);
@@ -139,14 +139,14 @@ ResourceInstance* constructShape(std::iostream& stream)
 //   {
 //      Con::errorf( "Resource<TSShape>::create - '%s' has an unknown file format", path.getFullPath().c_str() );
 //      delete ret;
-//      return NULL;
+//      return nullptr;
 //   }
 //
 //   if( !readSuccess )
 //   {
 //      Con::errorf( "Resource<TSShape>::create - Error reading '%s'", path.getFullPath().c_str() );
 //      delete ret;
-//      ret = NULL;
+//      ret = nullptr;
 //   }
 //
 //   return ret;
@@ -155,11 +155,11 @@ ResourceInstance* constructShape(std::iostream& stream)
 
 TSShape::TSShape()
 {
-   materialList = NULL;
+   materialList = nullptr;
    mReadVersion = -1; // -1 means constructed from scratch (e.g., in exporter or no read yet)
    mHasSkinMesh = false;
    mSequencesConstructed = false;
-   mShapeData = NULL;
+   mShapeData = nullptr;
    mShapeDataSize = 0;
 
    mUseDetailFromScreenError = false;
@@ -222,7 +222,7 @@ TSShape::~TSShape()
 //   for (i=0; i<billboardDetails.size(); i++)
 //   {
 //      delete billboardDetails[i];
-//      billboardDetails[i] = NULL;
+//      billboardDetails[i] = nullptr;
 //   }
 //   billboardDetails.clear();
 
@@ -231,7 +231,7 @@ TSShape::~TSShape()
    for (dca = 0; dca < detailCollisionAccelerators.size(); dca++)
    {
       ConvexHullAccelerator* accel = detailCollisionAccelerators[dca];
-      if (accel != NULL) {
+      if (accel != nullptr) {
          delete [] accel->vertexList;
          delete [] accel->normalList;
          for (S32 j = 0; j < accel->numVerts; j++)
@@ -241,7 +241,7 @@ TSShape::~TSShape()
       }
    }
    for (dca = 0; dca < detailCollisionAccelerators.size(); dca++)
-      detailCollisionAccelerators[dca] = NULL;
+      detailCollisionAccelerators[dca] = nullptr;
 
    if( mShapeData )
       delete[] mShapeData;
@@ -473,7 +473,7 @@ void TSShape::getObjectDetails(S32 objIndex, Vector<S32>& objDetails)
    Vector<S32> validDetails;
    getSubShapeDetails(getSubShapeForObject(objIndex), validDetails);
 
-   // Get the non-null details for this object
+   // Get the non-nullptr details for this object
    const TSShape::Object& obj = objects[objIndex];
    for (S32 i = 0; i < obj.numMeshes; i++)
    {
@@ -625,7 +625,7 @@ void TSShape::init()
       for (dca = 0; dca < detailCollisionAccelerators.size(); dca++)
       {
          ConvexHullAccelerator* accel = detailCollisionAccelerators[dca];
-         if (accel != NULL) {
+         if (accel != nullptr) {
             delete [] accel->vertexList;
             delete [] accel->normalList;
             for (S32 j = 0; j < accel->numVerts; j++)
@@ -637,7 +637,7 @@ void TSShape::init()
 
       detailCollisionAccelerators.setSize(details.size());
       for (dca = 0; dca < detailCollisionAccelerators.size(); dca++)
-         detailCollisionAccelerators[dca] = NULL;
+         detailCollisionAccelerators[dca] = nullptr;
    }
 
    initVertexFeatures();
@@ -727,7 +727,7 @@ void TSShape::setupBillboardDetails( const String &cachePath )
 //         continue; // not a billboard detail
 //
 //      while (billboardDetails.size() <= i )
-//         billboardDetails.push_back(NULL);
+//         billboardDetails.push_back(nullptr);
 //
 //      billboardDetails[i] = new TSLastDetail(   this,
 //                                                cachePath,
@@ -872,7 +872,7 @@ Vector<MatrixF> gTempNodeTransforms(__FILE__, __LINE__);
 //   for (i=start; i<end; i++)
 //   {
 //      const Object * object = &objects[i];
-//      TSMesh * mesh = od<object->numMeshes ? meshes[object->startMeshIndex+od] : NULL;
+//      TSMesh * mesh = od<object->numMeshes ? meshes[object->startMeshIndex+od] : nullptr;
 //      if (mesh)
 //      {
 //         static MatrixF idMat(true);
@@ -1235,23 +1235,23 @@ void TSShape::assembleShape()
    TSSkinMesh::smNodeIndexList.setSize(scratchSize);
    for (i=0; i<numMeshes; i++)
    {
-      TSMesh::smVertsList[i]=NULL;
-      TSMesh::smTVertsList[i]=NULL;
+      TSMesh::smVertsList[i]=nullptr;
+      TSMesh::smTVertsList[i]=nullptr;
       
       if ( smReadVersion >= 26 )
       {
-         TSMesh::smTVerts2List[i] = NULL;
-         TSMesh::smColorsList[i] = NULL;
+         TSMesh::smTVerts2List[i] = nullptr;
+         TSMesh::smColorsList[i] = nullptr;
       }
       
-      TSMesh::smNormsList[i]=NULL;
-      TSMesh::smEncodedNormsList[i]=NULL;
+      TSMesh::smNormsList[i]=nullptr;
+      TSMesh::smEncodedNormsList[i]=nullptr;
       TSMesh::smDataCopied[i]=false;
-      TSSkinMesh::smInitTransformList[i] = NULL;
-      TSSkinMesh::smVertexIndexList[i] = NULL;
-      TSSkinMesh::smBoneIndexList[i] = NULL;
-      TSSkinMesh::smWeightList[i] = NULL;
-      TSSkinMesh::smNodeIndexList[i] = NULL;
+      TSSkinMesh::smInitTransformList[i] = nullptr;
+      TSSkinMesh::smVertexIndexList[i] = nullptr;
+      TSSkinMesh::smBoneIndexList[i] = nullptr;
+      TSSkinMesh::smWeightList[i] = nullptr;
+      TSSkinMesh::smNodeIndexList[i] = nullptr;
    }
 
    // read in the meshes (sans skins)...straightforward read one at a time
@@ -1332,16 +1332,16 @@ void TSShape::assembleShape()
       }
       for (i=0; i<numSkins; i++)
       {
-         TSMesh::smVertsList[i]=NULL;
-         TSMesh::smTVertsList[i]=NULL;
-         TSMesh::smNormsList[i]=NULL;
-         TSMesh::smEncodedNormsList[i]=NULL;
+         TSMesh::smVertsList[i]=nullptr;
+         TSMesh::smTVertsList[i]=nullptr;
+         TSMesh::smNormsList[i]=nullptr;
+         TSMesh::smEncodedNormsList[i]=nullptr;
          TSMesh::smDataCopied[i]=false;
-         TSSkinMesh::smInitTransformList[i] = NULL;
-         TSSkinMesh::smVertexIndexList[i] = NULL;
-         TSSkinMesh::smBoneIndexList[i] = NULL;
-         TSSkinMesh::smWeightList[i] = NULL;
-         TSSkinMesh::smNodeIndexList[i] = NULL;
+         TSSkinMesh::smInitTransformList[i] = nullptr;
+         TSSkinMesh::smVertexIndexList[i] = nullptr;
+         TSSkinMesh::smBoneIndexList[i] = nullptr;
+         TSSkinMesh::smWeightList[i] = nullptr;
+         TSSkinMesh::smNodeIndexList[i] = nullptr;
       }
 
       // skins
@@ -1355,7 +1355,7 @@ void TSShape::assembleShape()
             // add pointer to skin in shapes list of meshes
             // we reserved room for this above...
             meshes.set(meshes.address(),meshes.size()+1);
-            meshes[meshes.size()-1] = skip ? NULL : skin;
+            meshes[meshes.size()-1] = skip ? nullptr : skin;
          }
 
          // fill in location of verts, tverts, and normals for shared detail levels
@@ -1502,7 +1502,7 @@ void TSShape::disassembleShape()
    }
    for (i=0; i<numMeshes; i++)
    {
-      TSMesh * mesh = NULL;
+      TSMesh * mesh = nullptr;
       // decal mesh deprecated
       if (isMesh[i])
          mesh = meshes[i];
@@ -1557,14 +1557,14 @@ bool TSShape::canWriteOldFormat() const
    return true;
 }
 
-void TSShape::write(Stream * s, bool saveOldFormat)
+void TSShape::write(std::iostream s, bool saveOldFormat)
 {
    S32 currentVersion = smVersion;
    if (saveOldFormat)
       smVersion = 24;
 
    // write version
-   s->write(smVersion | (mExporterVersion<<16));
+   s << (smVersion | (mExporterVersion<<16));
 
    tsalloc.setWrite();
    disassembleShape();
@@ -1591,25 +1591,25 @@ void TSShape::write(Stream * s, bool saveOldFormat)
    start8 = start16+size16;
 
    // in dwords -- write will properly endian-flip.
-   s->write(sizeMemBuffer);
-   s->write(start16);
-   s->write(start8);
+   s << (sizeMemBuffer);
+   s << (start16);
+   s << (start8);
 
 	// endian-flip the entire write buffers.
    fixEndian(buffer32,buffer16,buffer8,size32,size16,size8);
 
    // now write buffers
-   s->write(size32*4,buffer32);
-   s->write(size16*4,buffer16);
-   s->write(size8 *4,buffer8);
+   s.write((char*)buffer32, size32*4);
+   s.write((char*)buffer16, size16*4);
+   s.write((char*)buffer8, size8*4);
 
    // write sequences - write will properly endian-flip.
-   s->write(sequences.size());
+   s << (sequences.size());
    for (S32 i=0; i<sequences.size(); i++)
       sequences[i].write(s);
 
-    s->write((U8)1);          // version
-    s->write(materialList->size());
+    s << ((U8)1);          // version
+    s << (materialList->size());
     for (S32 i=0; i<materialList->size(); i++) // material names
     {
         s->writeString(materialList->at(i) );
@@ -1629,14 +1629,14 @@ void TSShape::write(Stream * s, bool saveOldFormat)
 // read whole shape
 //-------------------------------------------------
 
-bool TSShape::read(iostream * s)
+bool TSShape::read(std::iostream stream)
 {
    // read version - read handles endian-flip
-   s->read(&smReadVersion);
-   mExporterVersion = smReadVersion >> 16;
-   smReadVersion &= 0xFF;
-   if (smReadVersion>smVersion)
-   {
+    stream >> smReadVersion;
+    mExporterVersion = smReadVersion >> 16;
+    smReadVersion &= 0xFF;
+    if (smReadVersion>smVersion)
+    {
       // error -- don't support future versions yet :>
       Con::errorf(ConsoleLogEntry::General,
                   "Error: attempt to load a version %i dts-shape, can currently only load version %i and before.",
@@ -1660,18 +1660,18 @@ bool TSShape::read(iostream * s)
       U32 sizeMemBuffer, startU16, startU8;
 
       // in dwords. - read handles endian-flip
-      s->read(&sizeMemBuffer);
-      s->read(&startU16);
-      s->read(&startU8);
+       stream >> sizeMemBuffer;
+       stream >> startU16;
+       stream >> startU8;
 
-      if (s->getStatus()!=Stream::Ok)
+      if (!stream.good())
       {
          Con::errorf(ConsoleLogEntry::General, "Error: bad shape file.");
          return false;
       }
 
-      S32 * tmp = new S32[sizeMemBuffer];
-      s->read(sizeof(S32)*sizeMemBuffer,(U8*)tmp);
+       S32 * tmp = new S32[sizeMemBuffer];
+       stream.read((char*)tmp, sizeof(S32)*sizeMemBuffer);
       memBuffer32 = tmp;
       memBuffer16 = (S16*)(tmp+startU16);
       memBuffer8  = (S8*)(tmp+startU8);
@@ -1682,11 +1682,11 @@ bool TSShape::read(iostream * s)
 
       // read sequences
       S32 numSequences;
-      s->read(&numSequences);
+       stream >> numSequences;
       sequences.setSize(numSequences);
       for (i=0; i<numSequences; i++)
       {
-         sequences[i].read(s);
+         sequences[i].read(stream);
 
          // Store initial (empty) source data
          sequences[i].sourceData.total = sequences[i].numKeyframes;
@@ -1699,13 +1699,13 @@ bool TSShape::read(iostream * s)
 
        // read materials
        S32 numMaterials;
-       s->read(&numMaterials);
+       stream >> numMaterials;
        materialList->setSize(numMaterials);
 
        for (i=0; i<numMaterials; i++)
        {
            char buf[256];
-           s->readString(buf);
+           stream.read(buf, 256);
            materialList->at(i) = StringTable->insert(buf);
        }
 
@@ -1953,33 +1953,33 @@ bool TSShape::read(iostream * s)
 
 void TSShape::createEmptyShape()
 {
-   nodes.set(dMalloc(1 * sizeof(Node)), 1);
-      nodes[0].nameIndex = 1;
-      nodes[0].parentIndex = -1;
-      nodes[0].firstObject = 0;
-      nodes[0].firstChild = -1;
-      nodes[0].nextSibling = -1;
+    Node node;
+    node.nameIndex = 1;
+    node.parentIndex = -1;
+    node.firstObject = 0;
+    node.firstChild = -1;
+    node.nextSibling = -1;
+    nodes.push_back(node);
 
-   objects.set(dMalloc(1 * sizeof(Object)), 1);
-      objects[0].nameIndex = 2;
-      objects[0].numMeshes = 1;
-      objects[0].startMeshIndex = 0;
-      objects[0].nodeIndex = 0;
-      objects[0].nextSibling = -1;
-      objects[0].firstDecal = -1;
+    Object object;
+    object.nameIndex = 2;
+    object.numMeshes = 1;
+    object.startMeshIndex = 0;
+    object.nodeIndex = 0;
+    object.nextSibling = -1;
+    object.firstDecal = -1;
+    objects.push_back(object);
 
-   objectStates.set(dMalloc(1 * sizeof(ObjectState)), 1);
-      objectStates[0].vis = 1;
-      objectStates[0].frameIndex = 0;
-      objectStates[0].matFrameIndex = 0;
+    ObjectState objectState;
+    objectState.vis = 1;
+    objectState.frameIndex = 0;
+    objectState.matFrameIndex = 0;
+    objectStates.push_back(objectState);
 
-   subShapeFirstNode.set(dMalloc(1 * sizeof(S32)), 1);
-      subShapeFirstNode[0] = 0;
+    subShapeFirstNode.push_back(0);
+    subShapeFirstObject.push_back(0);
 
-   subShapeFirstObject.set(dMalloc(1 * sizeof(S32)), 1);
-      subShapeFirstObject[0] = 0;
-
-   detailFirstSkin.set(NULL, 0);
+    detailFirstSkin.set(nullptr, 0);
 
    subShapeNumNodes.set(dMalloc(1 * sizeof(S32)), 1);
       subShapeNumNodes[0] = 1;
@@ -2014,17 +2014,17 @@ void TSShape::createEmptyShape()
    alphaOut.set(dMalloc(1 * sizeof(F32)), 1);
       alphaOut[0] = -1;
 
-   sequences.set(NULL, 0);
-   nodeRotations.set(NULL, 0);
-   nodeTranslations.set(NULL, 0);
-   nodeUniformScales.set(NULL, 0);
-   nodeAlignedScales.set(NULL, 0);
-   nodeArbitraryScaleRots.set(NULL, 0);
-   nodeArbitraryScaleFactors.set(NULL, 0);
-   groundRotations.set(NULL, 0);
-   groundTranslations.set(NULL, 0);
-   triggers.set(NULL, 0);
-//   billboardDetails.set(NULL, 0);
+   sequences.set(nullptr, 0);
+   nodeRotations.set(nullptr, 0);
+   nodeTranslations.set(nullptr, 0);
+   nodeUniformScales.set(nullptr, 0);
+   nodeAlignedScales.set(nullptr, 0);
+   nodeArbitraryScaleRots.set(nullptr, 0);
+   nodeArbitraryScaleFactors.set(nullptr, 0);
+   groundRotations.set(nullptr, 0);
+   groundTranslations.set(nullptr, 0);
+   triggers.set(nullptr, 0);
+//   billboardDetails.set(nullptr, 0);
 
    names.setSize(3);
       names[0] = StringTable->insert("Detail2");
@@ -2034,8 +2034,8 @@ void TSShape::createEmptyShape()
    radius = 0.866025f;
    tubeRadius = 0.707107f;
    center.set(0.0f, 0.5f, 0.0f);
-   bounds.mMin.set(-0.5f, 0.0f, -0.5f);
-   bounds.mMax.set(0.5f, 1.0f, 0.5f);
+   bounds.minExtents.set(-0.5f, 0.0f, -0.5f);
+   bounds.maxExtents.set(0.5f, 1.0f, 0.5f);
 
    mExporterVersion = 124;
    mSmallestVisibleSize = 2;
@@ -2053,7 +2053,7 @@ void TSShape::createEmptyShape()
    //  accelerators until the app requests them
    detailCollisionAccelerators.setSize(details.size());
    for (U32 i = 0; i < detailCollisionAccelerators.size(); i++)
-      detailCollisionAccelerators[i] = NULL;
+      detailCollisionAccelerators[i] = nullptr;
 }
 
 void TSShape::fixEndian(S32 * buff32, S16 * buff16, S8 *, S32 count32, S32 count16, S32)
@@ -2077,15 +2077,15 @@ void TSShape::fixEndian(S32 * buff32, S16 * buff16, S8 *, S32 count32, S32 count
 //{
 //   AssertFatal(dl < details.size(), "Error, bad detail level!");
 //   if (dl == -1)
-//      return NULL;
+//      return nullptr;
 //
 //   AssertFatal( detailCollisionAccelerators.size() == details.size(), 
 //      "TSShape::getAccelerator() - mismatched array sizes!" );
 //
-//   if (detailCollisionAccelerators[dl] == NULL)
+//   if (detailCollisionAccelerators[dl] == nullptr)
 //      computeAccelerator(dl);
 //
-//   AssertFatal(detailCollisionAccelerators[dl] != NULL, "This should be non-null after computing it!");
+//   AssertFatal(detailCollisionAccelerators[dl] != nullptr, "This should be non-nullptr after computing it!");
 //   return detailCollisionAccelerators[dl];
 //}
 //
@@ -2095,7 +2095,7 @@ void TSShape::fixEndian(S32 * buff32, S16 * buff16, S8 *, S32 count32, S32 count
 //   AssertFatal(dl < details.size(), "Error, bad detail level!");
 //
 //   // Have we already computed this?
-//   if (detailCollisionAccelerators[dl] != NULL)
+//   if (detailCollisionAccelerators[dl] != nullptr)
 //      return;
 //
 //   // Create a bogus features list...
@@ -2326,57 +2326,57 @@ void TSShape::fixEndian(S32 * buff32, S16 * buff16, S8 *, S32 count32, S32 count
 //-------------------------------------------------
 // read/write sequence
 //-------------------------------------------------
-void TSShape::Sequence::read(Stream * s, bool readNameIndex)
+void TSShape::Sequence::read(std::iostream s, bool readNameIndex)
 {
     AssertISV(smReadVersion>=19,"Reading old sequence");
     
     if (readNameIndex)
-        s->read(&nameIndex);
+        s >> nameIndex;
     flags = 0;
     if (TSShape::smReadVersion>21)
-        s->read(&flags);
+        s >> flags;
     else
         flags=0;
     
-    s->read(&numKeyframes);
-    s->read(&duration);
+    s >> numKeyframes;
+    s >> duration;
     
     if (TSShape::smReadVersion<22)
     {
         bool tmp = false;
-        s->read(&tmp);
+        s >> tmp;
         if (tmp)
             flags |= Blend;
-        s->read(&tmp);
+        s >> tmp;
         if (tmp)
             flags |= Cyclic;
-        s->read(&tmp);
+        s >> tmp;
         if (tmp)
             flags |= MakePath;
     }
     
-    s->read(&priority);
-    s->read(&firstGroundFrame);
-    s->read(&numGroundFrames);
+    s >> priority;
+    s >> firstGroundFrame;
+    s >> numGroundFrames;
     if (TSShape::smReadVersion>21)
     {
-        s->read(&baseRotation);
-        s->read(&baseTranslation);
-        s->read(&baseScale);
-        s->read(&baseObjectState);
-        s->read(&baseDecalState);
+        s >> baseRotation;
+        s >> baseTranslation;
+        s >> baseScale;
+        s >> baseObjectState;
+        s >> baseDecalState;
     }
     else
     {
-        s->read(&baseRotation);
+        s >> baseRotation;
         baseTranslation=baseRotation;
-        s->read(&baseObjectState);
-        s->read(&baseDecalState);
+        s >> &baseObjectState;
+        s >> &baseDecalState;
     }
     
-    s->read(&firstTrigger);
-    s->read(&numTriggers);
-    s->read(&toolBegin);
+    s >> &firstTrigger;
+    s >> &numTriggers;
+    s >> &toolBegin;
     
     // now the membership sets:
     rotationMatters.read(s);
@@ -2407,35 +2407,35 @@ void TSShape::Sequence::read(Stream * s, bool readNameIndex)
         dirtyFlags |= TSShapeInstance::MatFrameDirty;
 }
 
-void TSShape::Sequence::write(Stream * s, bool writeNameIndex) const
+void TSShape::Sequence::write(std::iostream stream, bool writeNameIndex) const
 {
     if (writeNameIndex)
-        s->write(nameIndex);
-    s->write(flags);
-    s->write(numKeyframes);
-    s->write(duration);
-    s->write(priority);
-    s->write(firstGroundFrame);
-    s->write(numGroundFrames);
-    s->write(baseRotation);
-    s->write(baseTranslation);
-    s->write(baseScale);
-    s->write(baseObjectState);
-    s->write(baseDecalState);
-    s->write(firstTrigger);
-    s->write(numTriggers);
-    s->write(toolBegin);
+        stream << nameIndex;
+    stream << flags;
+    stream << numKeyframes;
+    stream << duration;
+    stream << priority;
+    stream << firstGroundFrame;
+    stream << numGroundFrames;
+    stream << baseRotation;
+    stream << baseTranslation;
+    stream << baseScale;
+    stream << baseObjectState;
+    stream << baseDecalState;
+    stream << firstTrigger;
+    stream << numTriggers;
+    stream << toolBegin;
     
     // now the membership sets:
-    rotationMatters.write(s);
-    translationMatters.write(s);
-    scaleMatters.write(s);
+    rotationMatters.write(stream);
+    translationMatters.write(stream);
+    scaleMatters.write(stream);
     
     TSIntegerSet dummy;
-    dummy.write(s); // DEPRECIATED: Decals
-    dummy.write(s); // DEPRECIATED: Ifl materials
+    dummy.write(stream); // DEPRECIATED: Decals
+    dummy.write(stream); // DEPRECIATED: Ifl materials
     
-    visMatters.write(s);
-    frameMatters.write(s);
-    matFrameMatters.write(s);
+    visMatters.write(stream);
+    frameMatters.write(stream);
+    matFrameMatters.write(stream);
 }

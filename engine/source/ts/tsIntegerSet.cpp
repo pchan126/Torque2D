@@ -22,7 +22,7 @@
 
 #include "ts/tsIntegerSet.h"
 #include "platform/platform.h"
-#include "io/stream.h"
+#include <iostream>
 
 #define SETUPTO(upto) ( ((1<<(upto&31))-1)*2+1 ) // careful not to shift more than 31 times
 
@@ -277,30 +277,30 @@ TSIntegerSet::TSIntegerSet(const TSIntegerSet & otherSet)
    copy(otherSet);
 }
 
-void TSIntegerSet::read(Stream * s)
+void TSIntegerSet::read(std::iostream s)
 {
    clearAll();
 
    S32 numInts;
-   s->read(&numInts); // don't care about this
+   s >> (&numInts); // don't care about this
 
    S32 sz;
-   s->read(&sz);
+   s >> (&sz);
    AssertFatal(sz<=MAX_TS_SET_DWORDS,"TSIntegerSet::  set too large...increase max set size and re-compile");
 
    for (S32 i=0; i<sz; i++) // now mirrors the write code...
-      s->read(&(bits[i]));
+      s >> (&(bits[i]));
 }
 
-void TSIntegerSet::write(Stream * s) const
+void TSIntegerSet::write(std::iostream s) const
 {
-   s->write((S32)0); // don't do this anymore, keep in to avoid versioning
+   s << ((S32)0); // don't do this anymore, keep in to avoid versioning
    S32 i,sz=0;
    for (i=0; i<MAX_TS_SET_DWORDS; i++)
       if (bits[i]!=0)
          sz=i+1;
-   s->write(sz);
+   s << (sz);
    for (i=0; i<sz; i++)
-      s->write(bits[i]);
+      s << (bits[i]);
 }
 

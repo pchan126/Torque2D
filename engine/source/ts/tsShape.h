@@ -96,7 +96,7 @@ class TSShape: public ResourceInstance
    /// for the object's mesh lists).  Some indices may correspond to
    /// no mesh -- which means no mesh will be drawn for the part for
    /// the given detail level.  See comments on the meshIndexList
-   /// for how null meshes are coded.
+   /// for how nullptr meshes are coded.
    ///
    /// @note Things are stored this way so that there are no pointers.
    ///       This makes serialization to disk dramatically simpler.
@@ -188,8 +188,8 @@ class TSShape: public ResourceInstance
       /// @name IO
       /// @{
 
-      void read(std::iostream *, bool readNameIndex = true);
-      void write(std::iostream *, bool writeNameIndex = true) const;
+      void read(std::iostream stream, bool readNameIndex = true);
+      void write(std::iostream stream, bool writeNameIndex = true) const;
       /// @}
    };
 
@@ -455,7 +455,7 @@ class TSShape: public ResourceInstance
    ///
    /// Any other named collision shape is interpreted as a regular convex hull.
    ///
-   /// @return The collision object or NULL if no collision data could be generated.
+   /// @return The collision object or nullptr if no collision data could be generated.
    ///
 //   PhysicsCollision* buildColShape( bool useVisibleMesh, const Point3F &scale );
    
@@ -559,8 +559,8 @@ class TSShape: public ResourceInstance
    /// @{
 
    bool canWriteOldFormat() const;
-   void write(Stream *, bool saveOldFormat=false);
-   bool read(Stream *);
+   void write(std::iostream stream, bool saveOldFormat = false);
+   bool read(std::iostream stream);
    void readOldShape(Stream * s, S32 * &, S16 * &, S8 * &, S32 &, S32 &, S32 &);
    void writeName(Stream *, S32 nameIndex);
    S32  readName(Stream *, bool addName);

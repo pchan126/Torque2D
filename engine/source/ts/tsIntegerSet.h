@@ -23,10 +23,7 @@
 #ifndef _TSINTEGERSET_H_
 #define _TSINTEGERSET_H_
 
-#ifndef _PLATFORM_H_
 #include "platform/platform.h"
-#endif
-
 #include "collection/vector.h"
 
 
@@ -88,8 +85,8 @@ public:
    S32 end() const;
    void next(S32 & i) const;
 
-   void read(Stream *);
-   void write(Stream *) const;
+   void read(std::iostream stream);
+   void write(std::iostream stream) const;
 
    TSIntegerSet();
    TSIntegerSet(const TSIntegerSet&);
