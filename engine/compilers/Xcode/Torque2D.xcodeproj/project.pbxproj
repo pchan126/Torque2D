@@ -489,6 +489,12 @@
 		C5419FF85FD226FCBD5504D0 /* render2DObjectMgr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C5419B168FBA96C960B46003 /* render2DObjectMgr.cpp */; };
 		C5419FFE32E634CD2BA4CA4E /* consoleExprEvalState.cc in Sources */ = {isa = PBXBuildFile; fileRef = C541946BFB6F566363E9F0A3 /* consoleExprEvalState.cc */; };
 		C5419FFEE5B51D3BA4FBF881 /* guiGraphCtrl.cc in Sources */ = {isa = PBXBuildFile; fileRef = C54192C6CB81444F595E6524 /* guiGraphCtrl.cc */; };
+		D113036B1839E3AD007EF6EC /* tsIntegerSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D113035E1839E3AD007EF6EC /* tsIntegerSet.cpp */; };
+		D113036C1839E3AD007EF6EC /* tsMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D11303601839E3AD007EF6EC /* tsMesh.cpp */; };
+		D113036D1839E3AD007EF6EC /* tsShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D11303631839E3AD007EF6EC /* tsShape.cpp */; };
+		D113036E1839E3AD007EF6EC /* tsShapeAlloc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D11303651839E3AD007EF6EC /* tsShapeAlloc.cpp */; };
+		D113036F1839E3AD007EF6EC /* tsShapeInstance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D11303671839E3AD007EF6EC /* tsShapeInstance.cpp */; };
+		D11303701839E3AD007EF6EC /* tsTransform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D11303691839E3AD007EF6EC /* tsTransform.cpp */; };
 		D11D295517FA67E7007C51DB /* libglfw3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D11D295417FA67E7007C51DB /* libglfw3.a */; };
 		D16C4CF7176EB524006936B5 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D16C4CF6176EB524006936B5 /* IOKit.framework */; };
 		DA4645FF16C3A7C500EF1922 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA4645FE16C3A7C400EF1922 /* QuartzCore.framework */; };
@@ -1496,6 +1502,19 @@
 		C5419FEFB38E63F00038B5C9 /* ShapeVector_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShapeVector_ScriptBinding.h; sourceTree = "<group>"; };
 		C5419FFB21FE9E5024FFD6E8 /* guiCanvas_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiCanvas_ScriptBinding.h; sourceTree = "<group>"; };
 		C5419FFBFBE7A870C701504F /* ParticleAssetFieldCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticleAssetFieldCollection.h; sourceTree = "<group>"; };
+		D113035E1839E3AD007EF6EC /* tsIntegerSet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsIntegerSet.cpp; sourceTree = "<group>"; };
+		D113035F1839E3AD007EF6EC /* tsIntegerSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsIntegerSet.h; sourceTree = "<group>"; };
+		D11303601839E3AD007EF6EC /* tsMesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsMesh.cpp; sourceTree = "<group>"; };
+		D11303611839E3AD007EF6EC /* tsMesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsMesh.h; sourceTree = "<group>"; };
+		D11303621839E3AD007EF6EC /* tsRenderState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsRenderState.h; sourceTree = "<group>"; };
+		D11303631839E3AD007EF6EC /* tsShape.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsShape.cpp; sourceTree = "<group>"; };
+		D11303641839E3AD007EF6EC /* tsShape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsShape.h; sourceTree = "<group>"; };
+		D11303651839E3AD007EF6EC /* tsShapeAlloc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsShapeAlloc.cpp; sourceTree = "<group>"; };
+		D11303661839E3AD007EF6EC /* tsShapeAlloc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsShapeAlloc.h; sourceTree = "<group>"; };
+		D11303671839E3AD007EF6EC /* tsShapeInstance.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsShapeInstance.cpp; sourceTree = "<group>"; };
+		D11303681839E3AD007EF6EC /* tsShapeInstance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsShapeInstance.h; sourceTree = "<group>"; };
+		D11303691839E3AD007EF6EC /* tsTransform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsTransform.cpp; sourceTree = "<group>"; };
+		D113036A1839E3AD007EF6EC /* tsTransform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsTransform.h; sourceTree = "<group>"; };
 		D11D295417FA67E7007C51DB /* libglfw3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libglfw3.a; path = ../../lib/glfw/maclib/Release/libglfw3.a; sourceTree = "<group>"; };
 		D16C4CF6176EB524006936B5 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		D17F0381178151FA00C6FCA4 /* glfw3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glfw3.h; path = ../../lib/glfw/include/GLFW/glfw3.h; sourceTree = "<group>"; };
@@ -2751,6 +2770,7 @@
 		C54199EE3821F7DE505CF244 /* Torque2D */ = {
 			isa = PBXGroup;
 			children = (
+				D113035D1839E3AD007EF6EC /* ts */,
 				C5419DF3AE25CB8D03763A2F /* 2d */,
 				C54194832154880AE1537986 /* algorithm */,
 				C5419C6FC37F004BD72D1846 /* assets */,
@@ -3227,6 +3247,27 @@
 			);
 			name = console;
 			path = ../../../source/console;
+			sourceTree = "<group>";
+		};
+		D113035D1839E3AD007EF6EC /* ts */ = {
+			isa = PBXGroup;
+			children = (
+				D113035E1839E3AD007EF6EC /* tsIntegerSet.cpp */,
+				D113035F1839E3AD007EF6EC /* tsIntegerSet.h */,
+				D11303601839E3AD007EF6EC /* tsMesh.cpp */,
+				D11303611839E3AD007EF6EC /* tsMesh.h */,
+				D11303621839E3AD007EF6EC /* tsRenderState.h */,
+				D11303631839E3AD007EF6EC /* tsShape.cpp */,
+				D11303641839E3AD007EF6EC /* tsShape.h */,
+				D11303651839E3AD007EF6EC /* tsShapeAlloc.cpp */,
+				D11303661839E3AD007EF6EC /* tsShapeAlloc.h */,
+				D11303671839E3AD007EF6EC /* tsShapeInstance.cpp */,
+				D11303681839E3AD007EF6EC /* tsShapeInstance.h */,
+				D11303691839E3AD007EF6EC /* tsTransform.cpp */,
+				D113036A1839E3AD007EF6EC /* tsTransform.h */,
+			);
+			name = ts;
+			path = ../../../source/ts;
 			sourceTree = "<group>";
 		};
 		D17F037F178151E200C6FCA4 /* glfw */ = {
@@ -3773,6 +3814,12 @@
 				C5419E74383B907C2044353A /* platformInterface.cpp in Sources */,
 				C54191FFBDFF6230404468A0 /* platformWindow.cpp in Sources */,
 				C5419AF148FD23C737EC5886 /* windowInputGenerator.cpp in Sources */,
+				D113036B1839E3AD007EF6EC /* tsIntegerSet.cpp in Sources */,
+				D113036C1839E3AD007EF6EC /* tsMesh.cpp in Sources */,
+				D113036D1839E3AD007EF6EC /* tsShape.cpp in Sources */,
+				D113036E1839E3AD007EF6EC /* tsShapeAlloc.cpp in Sources */,
+				D113036F1839E3AD007EF6EC /* tsShapeInstance.cpp in Sources */,
+				D11303701839E3AD007EF6EC /* tsTransform.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -28,6 +28,7 @@
 #include "ts/tsTransform.h"
 #include "ts/tsShapeAlloc.h"
 #include "io/resource/resourceManager.h"
+#include <iostream>
 
 
 #define DTS_EXPORTER_CURRENT_VERSION 124
@@ -43,7 +44,7 @@ typedef Vector<String> TSMaterialList;
 //   PhysicsCollision *colShape;
 //};
 
-extern ResourceInstance* constructShape(Stream& stream);
+extern ResourceInstance* constructShape(std::iostream& stream);
 
 /// TSShape stores generic data for a 3space model.
 ///
@@ -187,8 +188,8 @@ class TSShape: public ResourceInstance
       /// @name IO
       /// @{
 
-      void read(Stream *, bool readNameIndex = true);
-      void write(Stream *, bool writeNameIndex = true) const;
+      void read(std::iostream *, bool readNameIndex = true);
+      void write(std::iostream *, bool writeNameIndex = true) const;
       /// @}
    };
 

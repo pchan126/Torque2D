@@ -33,7 +33,6 @@
 //#include "materials/materialManager.h"
 #include "math/mathIO.h"
 #include "platform/platformEndian.h"
-#include "io/fileStream.h"
 #include "console/compiler.h"
 #include "io/fileObject.h"
 
@@ -60,7 +59,7 @@ S32 TSShape::smNumSkipLoadDetails = 0;
 bool TSShape::smInitOnRead = true;
 
 
-ResourceInstance* constructShape(Stream& stream)
+ResourceInstance* constructShape(std::iostream& stream)
 {
     TSShape *ret = new TSShape;
     
@@ -1630,7 +1629,7 @@ void TSShape::write(Stream * s, bool saveOldFormat)
 // read whole shape
 //-------------------------------------------------
 
-bool TSShape::read(Stream * s)
+bool TSShape::read(iostream * s)
 {
    // read version - read handles endian-flip
    s->read(&smReadVersion);
