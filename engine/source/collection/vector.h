@@ -117,6 +117,8 @@ class Vector
    bool contains(const T& x) const         { return std::count(_vector.begin(), _vector.end(), x) > 0; };
 
    void insert(iterator itr, const T& x)    { _vector.insert(itr, x); };
+   void insert(iterator itr, iterator v2start, iterator v2end) { _vector.insert(itr, v2start, v2end); };
+
    void erase(iterator itr)                 { _vector.erase(itr); };
    void erase(const_iterator itr)           { _vector.erase(itr); };
 
@@ -163,6 +165,8 @@ class Vector
    void erase(U32 index)      { _vector.erase(_vector.begin()+index); };
    void clear()               { return _vector.clear(); };
    void compact()             { return _vector.shrink_to_fit(); };
+
+   inline void set(const T* t, size_t size) { _vector.assign(t, t+size); };
 
    void emplace_back() { _vector.emplace_back(); };
    void sort(compare_func f);

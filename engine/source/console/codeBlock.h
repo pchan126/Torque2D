@@ -26,9 +26,6 @@
 #include "console/compiler.h"
 #include "console/consoleParser.h"
 
-class Stream;
-
-
 /// Core TorqueScript code management class.
 ///
 /// This class represents a block of code, usually mapped directly to a file.

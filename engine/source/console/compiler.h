@@ -24,7 +24,6 @@
 #ifndef _COMPILER_H_
 #define _COMPILER_H_
 
-class Stream;
 class DataChunker;
 
 #include "platform/platform.h"
