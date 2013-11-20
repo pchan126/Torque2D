@@ -24,53 +24,85 @@
 #include "platform/platform.h"
 #include <iostream>
 
-#define SETUPTO(upto) ( ((1<<(upto&31))-1)*2+1 ) // careful not to shift more than 31 times
-
-void TSIntegerSet::clearAll(S32 upto)
+void TSIntegerSet::clearAll(U32 upto)
 {
    AssertFatal(upto<=MAX_TS_SET_SIZE,"TSIntegerSet::clearAll: out of range");
 
-   dMemset(bits,0,(upto>>5)*4);
-   if (upto&31)
-      bits[upto>>5] &= ~SETUPTO(upto);
+    U32 x = upto/32;
+    U32 y = upto%32;
+    for (U32 i=0; i < x; i++)
+        bits[i].reset();
+    for (U32 i=0; i < y; i++)
+        bits[x].reset(i);
+
+//   dMemset(bits,0,(upto>>5)*4);
+//   if (upto&31)
+//      bits[upto>>5] &= ~SETUPTO(upto);
 }
 
-void TSIntegerSet::setAll(S32 upto)
+void TSIntegerSet::setAll(U32 upto)
 {
    AssertFatal(upto<=MAX_TS_SET_SIZE,"TSIntegerSet::setAll: out of range");
 
-   dMemset(bits,0xFFFFFFFF,(upto>>5)*4);
-   if (upto&31)
-      bits[upto>>5] |= SETUPTO(upto);
+    U32 x = upto/32;
+    U32 y = upto%32;
+    for (U32 i=0; i < x; i++)
+        bits[i].set();
+    for (U32 i=0; i < y; i++)
+        bits[x].set(i);
+
+//   dMemset(bits,0xFFFFFFFF,(upto>>5)*4);
+//   if (upto&31)
+//      bits[upto>>5] |= SETUPTO(upto);
 }
 
-bool TSIntegerSet::testAll(S32 upto) const
+
+// huh? is this right? looks like the original code works like any
+bool TSIntegerSet::testAll(U32 upto) const
 {
    AssertFatal(upto<=MAX_TS_SET_SIZE,"TSIntegerSet::testAll: out of range");
-   S32 i;
-   for (i=0; i<(upto>>5); i++)
-      if (bits[i])
-         return true;
-   if (upto&31)
-      return (bits[upto>>5] & SETUPTO(upto)) != 0;
-   return false;
+    U32 x = upto/32;
+    U32 y = upto%32;
+
+    for (U32 i=0; i < x; i++)
+        if (bits[i].any()) return true;
+    for (U32 i=0; i < y; i++)
+        if (bits[x].test(i)) return true;
+    return false;
+
+//   S32 i;
+//   for (i=0; i<(upto>>5); i++)
+//      if (bits[i])
+//         return true;
+//   if (upto&31)
+//      return (bits[upto>>5] & SETUPTO(upto)) != 0;
+//   return false;
 }
 
-S32 TSIntegerSet::count(S32 upto) const
+U32 TSIntegerSet::count(U32 upto) const
 {
    AssertFatal(upto<=MAX_TS_SET_SIZE,"TSIntegerSet::count: out of range");
 
    S32 count = 0;
-   U32 dword = bits[0];
-   for (S32 i = 0; i < upto; i++)
-   {
-      // get next word
-      if (!(i & 0x1F))
-         dword = bits[i>>5];
-      // test bits in word
-      if (dword & (1 << (i & 0x1F)))
-         count++;
-   }
+    U32 x = upto/32;
+    U32 y = upto%32;
+
+    for (U32 i=0; i < x; i++)
+        count =+ bits[i].count();
+    for (U32 i=0; i < y; i++)
+        if (bits[x].test(i)) count++;
+    return count;
+
+//   U32 dword = bits[0];
+//   for (S32 i = 0; i < upto; i++)
+//   {
+//      // get next word
+//      if (!(i & 0x1F))
+//         dword = bits[i>>5];
+//      // test bits in word
+//      if (dword & (1 << (i & 0x1F)))
+//         count++;
+//   }
    return count;
 }
 
@@ -213,7 +245,7 @@ void TSIntegerSet::next(S32 & i)
 
 void TSIntegerSet::copy(const TSIntegerSet & otherSet)
 {
-   dMemcpy(bits,otherSet.bits,MAX_TS_SET_DWORDS*4);
+   dMemcpy(bits.data(),otherSet.bits.data(),MAX_TS_SET_DWORDS*sizeof(std::bitset<32>));
 }
 
 void TSIntegerSet::insert(S32 index, bool value)

@@ -25,7 +25,8 @@
 
 #include "platform/platform.h"
 #include "collection/vector.h"
-
+#include <array>
+#include <bitset>
 
 
 #if defined(TORQUE_MAX_LIB)
@@ -42,26 +43,26 @@
 class TSIntegerSet
 {
    /// The bits!
-   U32 bits[MAX_TS_SET_DWORDS];
+   std::array<std::bitset<32>, MAX_TS_SET_DWORDS> bits;
 
 public:
 
    /// Sets this bit to false
-   void clear(S32 index);
+   void clear(U32 index);
    /// Set this bit to true
-   void set(S32 index);
+   void set(U32 index);
    /// Is this bit true?
-   bool test(S32 index) const;
+   bool test(U32 index) const;
 
    /// Sets all bits to false
-   void clearAll(S32 upto = MAX_TS_SET_SIZE);
+   void clearAll(U32 upto = MAX_TS_SET_SIZE);
    /// Sets all bits to true
-   void setAll(S32 upto = MAX_TS_SET_SIZE);
+   void setAll(U32 upto = MAX_TS_SET_SIZE);
    /// Tests all bits for true
-   bool testAll(S32 upto = MAX_TS_SET_SIZE) const;
+   bool testAll(U32 upto = MAX_TS_SET_SIZE) const;
 
    /// Counts set bits
-   S32 count(S32 upto = MAX_TS_SET_SIZE) const;
+   U32 count(U32 upto = MAX_TS_SET_SIZE) const;
 
    /// intersection (a & b)
    void intersect(const TSIntegerSet&);
@@ -91,25 +92,31 @@ public:
    TSIntegerSet(const TSIntegerSet&);
 };
 
-inline void TSIntegerSet::clear(S32 index)
+inline void TSIntegerSet::clear(U32 index)
 {
    AssertFatal(index>=0 && index<MAX_TS_SET_SIZE,"TS::IntegerSet::clear");
-
-   bits[index>>5] &= ~(1 << (index & 31));
+   U32 x = index/32;
+   U32 y = index%32;
+   bits[x].reset(y);
+//   bits[index>>5] &= ~(1 << (index & 31));
 }
 
-inline void TSIntegerSet::set(S32 index)
+inline void TSIntegerSet::set(U32 index)
 {
    AssertFatal(index>=0 && index<MAX_TS_SET_SIZE,"TS::IntegerSet::set");
-
-   bits[index>>5] |= 1 << (index & 31);
+    U32 x = index/32;
+    U32 y = index%32;
+    bits[x].set(y);
+//   bits[index>>5] |= 1 << (index & 31);
 }
 
-inline bool TSIntegerSet::test(S32 index) const
+inline bool TSIntegerSet::test(U32 index) const
 {
    AssertFatal(index>=0 && index<MAX_TS_SET_SIZE,"TS::IntegerSet::test");
-
-   return ((bits[index>>5] & (1 << (index & 31)))!=0);
+    U32 x = index/32;
+    U32 y = index%32;
+    return bits[x].test(y);
+//   return ((bits[index>>5] & (1 << (index & 31)))!=0);
 }
 
 #endif
