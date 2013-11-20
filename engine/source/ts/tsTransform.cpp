@@ -59,7 +59,7 @@ S32 Quat16::operator==( const Quat16 & q ) const
    return( x == q.x && y == q.y && z == q.z && w == q.w );
 }
 
-void Quat16::read(Stream * s)
+void Quat16::read(std::iostream s)
 {
     s->read(&x);
     s->read(&y);
@@ -67,7 +67,7 @@ void Quat16::read(Stream * s)
     s->read(&w);
 }
 
-void Quat16::write(Stream * s)
+void Quat16::write(std::iostream s)
 {
     s->write(x);
     s->write(y);

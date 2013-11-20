@@ -36,7 +36,6 @@
 
 #define MAX_TS_SET_SIZE   (32*MAX_TS_SET_DWORDS)
 
-class Stream;
 
 /// The standard mathmatical set, where there are no duplicates.  However,
 /// this set uses bits instead of numbers.

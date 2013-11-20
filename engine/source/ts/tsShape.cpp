@@ -22,19 +22,19 @@
 
 #include "platform/platform.h"
 #include "ts/tsShape.h"
+#include "ts/tsShapeInstance.h"
+#include "StreamFn.h"
 
 //#include "ts/tsLastDetail.h"
 //#include "ts/tsMaterialList.h"
 #include "string/stringTable.h"
 #include "console/console.h"
-#include "ts/tsShapeInstance.h"
 //#include "collision/convex.h"
 //#include "materials/matInstance.h"
 //#include "materials/materialManager.h"
 #include "math/mathIO.h"
 #include "platform/platformEndian.h"
 #include "console/compiler.h"
-#include "io/fileObject.h"
 
 #ifdef TORQUE_COLLADA
 extern TSShape* loadColladaShape(const StringTableEntry &path);
@@ -1612,7 +1612,7 @@ void TSShape::write(std::iostream s, bool saveOldFormat)
     s << (materialList->size());
     for (S32 i=0; i<materialList->size(); i++) // material names
     {
-        s->writeString(materialList->at(i) );
+        StreamFn::writeString(s, materialList->at(i));
     }
 
    // write material list - write will properly endian-flip.
@@ -1672,6 +1672,7 @@ bool TSShape::read(std::iostream stream)
 
        S32 * tmp = new S32[sizeMemBuffer];
        stream.read((char*)tmp, sizeof(S32)*sizeMemBuffer);
+
       memBuffer32 = tmp;
       memBuffer16 = (S16*)(tmp+startU16);
       memBuffer8  = (S8*)(tmp+startU8);
@@ -1979,51 +1980,47 @@ void TSShape::createEmptyShape()
     subShapeFirstNode.push_back(0);
     subShapeFirstObject.push_back(0);
 
-    detailFirstSkin.set(nullptr, 0);
+    detailFirstSkin.push_back(0);
 
-   subShapeNumNodes.set(dMalloc(1 * sizeof(S32)), 1);
-      subShapeNumNodes[0] = 1;
+   subShapeNumNodes.push_back(1);
 
-   subShapeNumObjects.set(dMalloc(1 * sizeof(S32)), 1);
-      subShapeNumObjects[0] = 1;
+   subShapeNumObjects.push_back(1);
 
-   details.set(dMalloc(1 * sizeof(Detail)), 1);
-      details[0].nameIndex = 0;
-      details[0].subShapeNum = 0;
-      details[0].objectDetailNum = 0;
-      details[0].size = 2.0f;
-      details[0].averageError = -1.0f;
-      details[0].maxError = -1.0f;
-      details[0].polyCount = 0;
+    Detail detail;
+      detail.nameIndex = 0;
+      detail.subShapeNum = 0;
+      detail.objectDetailNum = 0;
+      detail.size = 2.0f;
+      detail.averageError = -1.0f;
+      detail.maxError = -1.0f;
+      detail.polyCount = 0;
+    details.push_back(detail);
 
-   defaultRotations.set(dMalloc(1 * sizeof(Quat16)), 1);
-      defaultRotations[0].x = 0.0f;
-      defaultRotations[0].y = 0.0f;
-      defaultRotations[0].z = 0.0f;
-      defaultRotations[0].w = 0.0f;
+    Quat16 defaultRotation;
+      defaultRotation.x = 0.0f;
+      defaultRotation.y = 0.0f;
+      defaultRotation.z = 0.0f;
+      defaultRotation.w = 0.0f;
+    defaultRotations.push_back(defaultRotation);
 
-   defaultTranslations.set(dMalloc(1 * sizeof(Point3F)), 1);
-      defaultTranslations[0].set(0.0f, 0.0f, 0.0f);
+    defaultTranslations.push_back(Point3F(0.0f, 0.0f, 0.0f));
 
-   subShapeFirstTranslucentObject.set(dMalloc(1 * sizeof(S32)), 1);
-      subShapeFirstTranslucentObject[0] = 1;
+    subShapeFirstTranslucentObject.push_back(1);
 
-   alphaIn.set(dMalloc(1 * sizeof(F32)), 1);
-      alphaIn[0] = 0;
+    alphaIn.push_back(0);
 
-   alphaOut.set(dMalloc(1 * sizeof(F32)), 1);
-      alphaOut[0] = -1;
+    alphaOut.push_back(-1);
 
-   sequences.set(nullptr, 0);
-   nodeRotations.set(nullptr, 0);
-   nodeTranslations.set(nullptr, 0);
-   nodeUniformScales.set(nullptr, 0);
-   nodeAlignedScales.set(nullptr, 0);
-   nodeArbitraryScaleRots.set(nullptr, 0);
-   nodeArbitraryScaleFactors.set(nullptr, 0);
-   groundRotations.set(nullptr, 0);
-   groundTranslations.set(nullptr, 0);
-   triggers.set(nullptr, 0);
+//   sequences.set(nullptr, 0);
+//   nodeRotations.set(nullptr, 0);
+//   nodeTranslations.set(nullptr, 0);
+//   nodeUniformScales.set(nullptr, 0);
+//   nodeAlignedScales.set(nullptr, 0);
+//   nodeArbitraryScaleRots.set(nullptr, 0);
+//   nodeArbitraryScaleFactors.set(nullptr, 0);
+//   groundRotations.set(nullptr, 0);
+//   groundTranslations.set(nullptr, 0);
+//   triggers.set(nullptr, 0);
 //   billboardDetails.set(nullptr, 0);
 
    names.setSize(3);

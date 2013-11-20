@@ -36,8 +36,8 @@ struct Quat16
 
    S16 x, y, z, w;
 
-   void read(Stream *);
-   void write(Stream *);
+   void read(std::iostream stream);
+   void write(std::iostream stream);
 
    void identity();
    QuatF getQuatF() const;

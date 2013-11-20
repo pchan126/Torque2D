@@ -105,8 +105,8 @@ class TSMesh
       SkinMeshType     = 1,
       DecalMeshType    = 2,
       SortedMeshType   = 3,
-      NullMeshType     = 4,
-      TypeMask = StandardMeshType|SkinMeshType|DecalMeshType|SortedMeshType|NullMeshType,
+      nullptrMeshType     = 4,
+      TypeMask = StandardMeshType|SkinMeshType|DecalMeshType|SortedMeshType|nullptrMeshType,
 
       /// flags (stored with meshType)...
       Billboard = BIT(31), HasDetailTexture = BIT(30),
@@ -176,8 +176,8 @@ class TSMesh
       U32 numElements;
 
    public:
-      TSMeshVertexArray() : base(NULL), vertexDataReady(false), numElements(0) {}
-      virtual ~TSMeshVertexArray() { set(NULL, 0, 0); }
+      TSMeshVertexArray() : base(nullptr), vertexDataReady(false), numElements(0) {}
+      virtual ~TSMeshVertexArray() { set(nullptr, 0, 0); }
 
       virtual void set(void *b, dsize_t s, U32 n, bool autoFree = true ) 
       {
@@ -290,7 +290,7 @@ class TSMesh
    /// @{
 
    void computeBounds();
-   virtual void computeBounds( const MatrixF &transform, Box3F &bounds, S32 frame = 0, Point3F *center = NULL, F32 *radius = NULL );
+   virtual void computeBounds( const MatrixF &transform, Box3F &bounds, S32 frame = 0, Point3F *center = nullptr, F32 *radius = nullptr );
    void computeBounds( const Point3F *, S32 numVerts, S32 stride, const MatrixF &transform, Box3F &bounds, Point3F *center, F32 *radius );
    const Box3F& getBounds() const { return mBounds; }
    const Point3F& getCenter() const { return mCenter; }
@@ -445,12 +445,12 @@ public:
          dsize_t numElements;
          Vector<BatchedVertWeight> *_tmpVec;
 
-         BatchedTransform() : alignedMem(NULL), numElements(0), _tmpVec(NULL) {}
+         BatchedTransform() : alignedMem(nullptr), numElements(0), _tmpVec(nullptr) {}
          virtual ~BatchedTransform() 
          { 
 //            if(alignedMem) 
 //               dFree_aligned(alignedMem); 
-            alignedMem = NULL;
+            alignedMem = nullptr;
             SAFE_DELETE(_tmpVec);
          }
       };
