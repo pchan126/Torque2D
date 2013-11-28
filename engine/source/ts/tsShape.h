@@ -152,7 +152,7 @@ class TSShape: public ResourceInstance
       /// @}
 
       S32 priority;
-      U32 flags;
+      std::bitset<32> flags;
       U32 dirtyFlags; ///< determined at load time
 
       /// @name Source Data

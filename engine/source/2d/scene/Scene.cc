@@ -888,7 +888,7 @@ void Scene::interpolateTick( F32 timeDelta )
     // ****************************************************
 
     // Iterate scene objects.
-    for( auto pSceneObject: mSceneObjects )
+    for( SceneObject* pSceneObject: mSceneObjects )
     {
         // Skip interpolation of scene object if it's not eligible.
         if ( !pSceneObject->isEnabled() || pSceneObject->isBeingDeleted() )

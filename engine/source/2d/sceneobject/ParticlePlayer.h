@@ -53,6 +53,9 @@ private:
         bool                                     mPaused;
         bool                                     mVisible;
 
+        Vector<GFXVertexPCT>*                    mVertBuffer;
+        Vector<U16>*                             mIndexBuffer;
+
     public:
         EmitterNode( ParticlePlayer* pParticlePlayer, ParticleAssetEmitter* pParticleAssetEmitter )
         {
@@ -96,6 +99,8 @@ private:
 
         inline void setVisible( const bool visible ) { mVisible = visible; }
         inline bool getVisible( void ) const { return mVisible; }
+
+        std::future<void> getFuture();
 
         ParticleSystem::ParticleNode* createParticle( void );
         void freeParticle( ParticleSystem::ParticleNode* pParticleNode );

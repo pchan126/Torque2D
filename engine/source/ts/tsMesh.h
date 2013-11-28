@@ -34,7 +34,7 @@
 
 #include "graphics/gfxDevice.h"
 //#include "graphics/gfxPrimitiveBuffer.h"
-#include "collection/SparseArray.h"
+//#include "collection/SparseArray.h"
 
 #include "memory/safeDelete.h"
 

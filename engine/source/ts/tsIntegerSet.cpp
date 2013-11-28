@@ -135,7 +135,7 @@ S32 TSIntegerSet::start() const
    for (S32 i=0; i<MAX_TS_SET_DWORDS; i++)
    {
       // search for set bit one dword at a time
-      U32 dword = bits[i];
+      U32 dword = bits[i].to_ulong();
       if (dword!=0)
       {
          // got dword, now search one byte at a time
@@ -169,7 +169,7 @@ S32 TSIntegerSet::end() const
    for (S32 i=MAX_TS_SET_DWORDS-1; i>=0; i--)
    {
       // search for set bit one dword at a time
-      U32 dword = bits[i];
+      U32 dword = bits[i].to_ulong();
       if (bits[i])
       {
          // got dword, now search one byte at a time

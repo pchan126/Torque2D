@@ -39,6 +39,7 @@
 #include "graphics/gfxEnums.h"
 #include "lighting/lightInfo.h"
 #include "lighting/lightManager.h"
+#include <future>
 
 //-----------------------------------------------------------------------------
 
@@ -214,6 +215,8 @@ protected:
     StringTableEntry        mRenderGroup;
 
     AssetPtr<ShaderAsset>   mShaderAsset;
+
+//    std::future<>       *mpAsync;
 protected:
     static bool sceneObjectLayerDepthSort(const SceneObject* a, const SceneObject* b);
 
