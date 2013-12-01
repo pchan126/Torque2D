@@ -1048,8 +1048,8 @@ void TSMesh::computeBounds( const Point3F *v, S32 numVerts, S32 stride, const Ma
 
    if ( !numVerts )
    {
-      bounds.mMin = Point3F::Zero;
-      bounds.mMax = Point3F::Zero;
+      bounds.minExtents = Point3F::Zero;
+      bounds.maxExtents = Point3F::Zero;
       if ( center )
          *center = Point3F::Zero;
       if ( radius )
@@ -1059,21 +1059,21 @@ void TSMesh::computeBounds( const Point3F *v, S32 numVerts, S32 stride, const Ma
 
    S32 i;
    Point3F p;
-   transform.mulP( *v, &bounds.mMin );
-   bounds.mMax = bounds.mMin;
+   transform.mulP( *v, &bounds.minExtents );
+   bounds.maxExtents = bounds.minExtents;
    for ( i = 0; i < numVerts; i++ )
    {
       const Point3F &curVert = *reinterpret_cast<const Point3F *>(_vb + i * stride);
       transform.mulP( curVert, &p );
-      bounds.mMax.setMax( p );
-      bounds.mMin.setMin( p );
+      bounds.maxExtents.setMax( p );
+      bounds.minExtents.setMin( p );
    }
    Point3F c;
    if ( !center )
       center = &c;
-   center->x = 0.5f * (bounds.mMin.x + bounds.mMax.x);
-   center->y = 0.5f * (bounds.mMin.y + bounds.mMax.y);
-   center->z = 0.5f * (bounds.mMin.z + bounds.mMax.z);
+   center->x = 0.5f * (bounds.minExtents.x + bounds.maxExtents.x);
+   center->y = 0.5f * (bounds.minExtents.y + bounds.maxExtents.y);
+   center->z = 0.5f * (bounds.minExtents.z + bounds.maxExtents.z);
    if ( radius )
    {
       *radius = 0.0f;
@@ -1082,7 +1082,7 @@ void TSMesh::computeBounds( const Point3F *v, S32 numVerts, S32 stride, const Ma
          const Point3F &curVert = *reinterpret_cast<const Point3F *>(_vb + i * stride);
          transform.mulP( curVert, &p );
          p -= *center;
-         *radius = getMax( *radius, mDot( p, p ) );
+         *radius = std::max( *radius, mDot( p, p ) );
       }
       *radius = mSqrt( *radius );
    }
@@ -1413,7 +1413,7 @@ void TSSkinMesh::createBatchData()
 
          // Find the proper batched transform, and add this vertex/weight to the
          // list of verts affected by the transform
-         BatchData::BatchedTransform *bt = batchData.transformBatchOperations.retrieve(transformOp.transformIndex);
+         BatchData::BatchedTransform *bt = batchData.transformBatchOperations.retrive(transformOp.transformIndex);
          if(!bt)
          {
             bt = new BatchData::BatchedTransform;
@@ -1435,7 +1435,7 @@ void TSSkinMesh::createBatchData()
    const int numBatchOps = batchData.transformKeys.size();
    for(int i = 0; i < numBatchOps; i++)
    {
-      BatchData::BatchedTransform &curTransform = *batchData.transformBatchOperations.retrieve(batchData.transformKeys[i]);
+      BatchData::BatchedTransform &curTransform = *batchData.transformBatchOperations.retrive(batchData.transformKeys[i]);
       const S32 numVerts = curTransform._tmpVec->size();
 
       // Allocate a chunk of aligned memory and copy in values
@@ -1453,7 +1453,7 @@ void TSSkinMesh::createBatchData()
    // Now sort the batch data so that the skin function writes close to linear output
    for(int i = 0; i < numBatchOps; i++)
    {
-      BatchData::BatchedTransform &curTransform = *batchData.transformBatchOperations.retrieve(batchData.transformKeys[i]);
+      BatchData::BatchedTransform &curTransform = *batchData.transformBatchOperations.retrive(batchData.transformKeys[i]);
       dQsort(curTransform.alignedMem, curTransform.numElements, sizeof(BatchData::BatchedVertWeight), _sort_BatchedVertWeight);
    }
 #endif
@@ -1834,7 +1834,7 @@ U8 TSMesh::encodeNormal( const Point3F &normal )
 
 #define tsalloc TSShape::smTSAlloc
 
-TSMesh* TSMesh::assembleMesh( U32 meshType, bool skip )
+TSMesh * TSMesh::assembleMesh(U32 meshType, bool skip)
 {
    static TSMesh tempStandardMesh;
    static TSSkinMesh tempSkinMesh;
@@ -2490,7 +2490,7 @@ void TSMesh::assemble( bool skip )
       norms.set( nullptr, 0 );
 
       ptr8 = getSharedData8( parentMesh, numVerts, (S8**)smEncodedNormsList.address(), skip );
-      encodedNorms.set( ptr8, numVerts );
+      encodedNorms.set( (U8*)ptr8, numVerts );
    }
    else if ( TSShape::smReadVersion > 21 )
    {
@@ -2582,7 +2582,7 @@ void TSMesh::assemble( bool skip )
 
    // store output
    primitives.set(primOut, szPrimOut);
-   indices.set(indOut, szIndOut);
+   indices.set((U32*)indOut, szIndOut);
 
    // delete temporary arrays if necessary
    if (deleteInputArrays)
@@ -2771,7 +2771,7 @@ void TSSkinMesh::assemble( bool skip )
       batchData.initialNorms.set( nullptr, 0 );
 
       ptr8 = getSharedData8( parentMesh, numVerts, (S8**)smEncodedNormsList.address(), skip );
-      encodedNorms.set( ptr8, numVerts );
+      encodedNorms.set( (U8*)ptr8, numVerts );
       // Note: we don't set the encoded normals flag because we handle them in updateSkin and
       //       hide the fact that we are using them from base class (TSMesh)
    }
@@ -2796,7 +2796,7 @@ void TSSkinMesh::assemble( bool skip )
 
    sz = tsalloc.get32();
    ptr32 = getSharedData32( parentMesh, 16 * sz, (S32**)smInitTransformList.address(), skip );
-   batchData.initialTransforms.set( ptr32, sz );
+   batchData.initialTransforms.set( (MatrixF*)ptr32, sz );
 
    sz = tsalloc.get32();
    ptr32 = getSharedData32( parentMesh, sz, (S32**)smVertexIndexList.address(), skip );

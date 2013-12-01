@@ -495,10 +495,10 @@ protected:
    /// @name Animation Scale
    /// Query about animated scale
    /// @{
-   bool animatesScale() { return (mShape->mFlags & TSShape::AnyScale) != 0; }
-   bool animatesUniformScale() { return (mShape->mFlags & TSShape::UniformScale) != 0; }
-   bool animatesAlignedScale() { return (mShape->mFlags & TSShape::AlignedScale) != 0; }
-   bool animatesArbitraryScale() { return (mShape->mFlags & TSShape::ArbitraryScale) != 0; }
+   bool animatesScale() { return (mShape->mFlags & std::bitset<32>(TSShape::AnyScale)) != 0; }
+   bool animatesUniformScale() { return (mShape->mFlags & std::bitset<32>(TSShape::UniformScale)) != 0; }
+   bool animatesAlignedScale() { return (mShape->mFlags & std::bitset<32>(TSShape::AlignedScale)) != 0; }
+   bool animatesArbitraryScale() { return (mShape->mFlags & std::bitset<32>(TSShape::ArbitraryScale)) != 0; }
    bool scaleCurrentlyAnimated() { return mScaleCurrentlyAnimated; }
    /// @}
 

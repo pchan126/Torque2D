@@ -76,13 +76,13 @@ public:
    /// copy one integer set into another
    void copy(const TSIntegerSet&);
 
-   void insert(S32 index, bool value);
-   void erase(S32 index);
+   void insert(U32 index, bool value);
+   void erase(U32 index);
 
    void operator=(const TSIntegerSet& otherSet) { copy(otherSet); }
 
    S32 start() const;
-   S32 end() const;
+   U32 end();
    void next(S32 & i) const;
 
    void read(std::iostream stream);

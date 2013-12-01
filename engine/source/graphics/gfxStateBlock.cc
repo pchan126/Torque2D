@@ -88,7 +88,12 @@ GFXStateBlockDesc::GFXStateBlockDesc()
    stencilMask = 0xFFFFFFFF;
    stencilWriteMask = 0xFFFFFFFF;
 
-   fillMode = GFXFillSolid;
+    // FF lighting
+    ffLighting = false;
+
+    vertexColorEnable = false;
+
+    fillMode = GFXFillSolid;
 
    samplersDefined = false;
    textureFactor.set( 255, 255, 255, 255 );
@@ -185,6 +190,7 @@ void GFXStateBlockDesc::addDesc(const GFXStateBlockDesc& desc)
       textureFactor = desc.textureFactor;
    }
 
+    vertexColorEnable = desc.vertexColorEnable;
    fillMode = desc.fillMode;
 }
 
@@ -208,6 +214,8 @@ const String GFXStateBlockDesc::describeSelf() const
    ret += String::ToString("  Stencil: %d, StencilFailOp: %s, StencilZFailOp: %s, StencilPassOp: %s, \n  stencilFunc: %s, stencilRef: %d, stencilMask: 0x%x, stencilWriteMask: 0x%x\n",
       stencilEnable, GFXStringCmpFunc[stencilFailOp], GFXStringCmpFunc[stencilZFailOp], GFXStringCmpFunc[stencilPassOp], 
       GFXStringCmpFunc[stencilFunc], stencilRef, stencilMask, stencilWriteMask);
+    ret += String::ToString("  FF Lighting: %d, VertexColors: %d, fillMode: %s",
+            ffLighting, vertexColorEnable, GFXStringFillMode[fillMode]);
 
    return ret;
 }

@@ -142,7 +142,7 @@ TSShapeInstance::~TSShapeInstance()
    mMeshObjects.clear();
 
    while (mThreadList.size())
-      destroyThread(mThreadList.last());
+      destroyThread(mThreadList.back());
 
    setMaterialList(NULL);
 
@@ -545,7 +545,7 @@ void TSShapeInstance::setCurrentDetail( S32 dl, F32 intraDL )
    // Restrict the chosen detail level by cutoff value.
    if ( smNumSkipRenderDetails > 0 && mCurrentDetailLevel >= 0 )
    {
-      S32 cutoff = getMin( smNumSkipRenderDetails, mShape->mSmallestVisibleDL );
+      S32 cutoff = std::min( smNumSkipRenderDetails, mShape->mSmallestVisibleDL );
       if ( mCurrentDetailLevel < cutoff )
       {
          mCurrentDetailLevel = cutoff;

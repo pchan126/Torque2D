@@ -21,7 +21,6 @@
 //-----------------------------------------------------------------------------
 
 #include "ts/tsTransform.h"
-#include "io/stream.h"
 
 void Quat16::identity()
 {
@@ -61,18 +60,18 @@ S32 Quat16::operator==( const Quat16 & q ) const
 
 void Quat16::read(std::iostream s)
 {
-    s->read(&x);
-    s->read(&y);
-    s->read(&z);
-    s->read(&w);
+    s >> x;
+    s >> y;
+    s >> z;
+    s >> w;
 }
 
 void Quat16::write(std::iostream s)
 {
-    s->write(x);
-    s->write(y);
-    s->write(z);
-    s->write(w);
+    s << x;
+    s << y;
+    s << z;
+    s << w;
 }
 
 QuatF & TSTransform::interpolate( const QuatF & q1, const QuatF & q2, F32 interp, QuatF * q )

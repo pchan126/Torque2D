@@ -164,60 +164,64 @@ S32 TSIntegerSet::start() const
    return MAX_TS_SET_SIZE;
 }
 
-S32 TSIntegerSet::end() const
-{
-   for (S32 i=MAX_TS_SET_DWORDS-1; i>=0; i--)
+U32 TSIntegerSet::end() {
+   for (U32 i=MAX_TS_SET_DWORDS-1; i>=0; i--)
    {
       // search for set bit one dword at a time
       U32 dword = bits[i].to_ulong();
-      if (bits[i])
+      if (bits[i].any())
       {
+          for (U32 j = 31; j >= 0; j--)
+          {
+              if (bits[i].test(j) )
+                  return (i*32 + j);
+          }
          // got dword, now search one byte at a time
-         S32 j = 31;
-         U32 mask = 0xFF000000;
-         do
-         {
-            if (dword&mask)
-            {
-               // got byte, now one bit at a time
-               U32 bit = mask & ~(mask>>1); // grabs the highest bit
-               do
-               {
-                  if (dword&bit)
-                     return (i<<5)+j+1;
-                  j--;
-                  bit >>= 1;
-               } while (1);
-            }
-            mask >>= 8;
-            j -= 8;
-         } while (1);
+//         S32 j = 31;
+//         U32 mask = 0xFF000000;
+//         do
+//         {
+//            if (dword&mask)
+//            {
+//               // got byte, now one bit at a time
+//               U32 bit = mask & ~(mask>>1); // grabs the highest bit
+//               do
+//               {
+//                  if (dword&bit)
+//                     return (i<<5)+j+1;
+//                  j--;
+//                  bit >>= 1;
+//               } while (1);
+//            }
+//            mask >>= 8;
+//            j -= 8;
+//         } while (1);
       }
    }
-
    return 0;
 }
 
 void TSIntegerSet::next(S32 & i) const
 {
-   i++;
-   U32 idx = i>>5;
-   U32 bit = 1 << (i&31);
-   U32 dword = bits[idx] & ~(bit-1);
-   while (dword==0)
-   {
-      i = (i+32) & ~31;
-      if (i>=MAX_TS_SET_SIZE)
-         return;
-      dword=bits[++idx];
-      bit = 1;
-   }
-   dword = bits[idx];
-   while ( (bit & dword) == 0)
-   {
-      bit <<= 1;
-      i++;
-   }
+    AssertFatal(false, "whats TSIntegerSet::next do?");
+//   i++;
+//   U32 idx = i>>5;
+//   U32 bit = 1 << (i&31);
+//   U32 dword = bits[idx] & ~(bit-1);
+//   while (dword==0)
+//   {
+//      i = (i+32) & ~31;
+//      if (i>=MAX_TS_SET_SIZE)
+//         return;
+//      dword=bits[++idx];
+//      bit = 1;
+//   }
+//   dword = bits[idx];
+//   while ( (bit & dword) == 0)
+//   {
+//      bit <<= 1;
+//      i++;
+//   }
 }
 
 /* Or would one byte at a time be better...
@@ -248,7 +252,7 @@ void TSIntegerSet::copy(const TSIntegerSet & otherSet)
    dMemcpy(bits.data(),otherSet.bits.data(),MAX_TS_SET_DWORDS*sizeof(std::bitset<32>));
 }
 
-void TSIntegerSet::insert(S32 index, bool value)
+void TSIntegerSet::insert(U32 index, bool value)
 {
    AssertFatal(index<MAX_TS_SET_SIZE,"TSIntegerSet::insert: out of range");
 
@@ -260,41 +264,43 @@ void TSIntegerSet::insert(S32 index, bool value)
    for (S32 i = endWord; i > (index >> 5); i--)
    {
       bits[i] = bits[i] << 1;
-      if (bits[i-1] & 0x80000000)
-         bits[i] |= 0x1;
+      if ((bits[i-1] & std::bitset<32>(0x80000000)) != 0)
+         bits[i] |= std::bitset<32>(0x1);
    }
 
    // shift to create space in target word
    U32 lowMask = (1 << (index & 0x1f)) - 1;              // bits below the insert point
    U32 highMask = ~(lowMask | (1 << (index & 0x1f)));    // bits above the insert point
 
-   S32 word = index >> 5;
-   bits[word] = ((bits[word] << 1) & highMask) | (bits[word] & lowMask);
+   U32 word = index >> 5;
+   bits[word] = ((bits[word] << 1) & std::bitset<32>(highMask)) | (bits[word] & std::bitset<32>(lowMask));
 
    // insert new value
    if (value)
       set(index);
 }
 
-void TSIntegerSet::erase(S32 index)
+void TSIntegerSet::erase(U32 index)
 {
    AssertFatal(index<MAX_TS_SET_SIZE,"TSIntegerSet::erase: out of range");
 
    // shift to erase bit in target word
-   S32 word = index >> 5;
-   U32 lowMask = (1 << (index & 0x1f)) - 1;              // bits below the erase point
+    U32 word = index/32;
+    U32 y = index%32;
 
-   bits[word] = ((bits[word] >> 1) & ~lowMask) | (bits[word] & lowMask);
+//    U32 word (index >> 5);
+    std::bitset<32> lowMask((1 << (index & 0x1f)) - 1);              // bits below the erase point
+    bits[word] = ((bits[word] >> 1) & ~lowMask) | (bits[word] & lowMask);
 
    // shift bits in words after the erase point
    U32 endWord = (end() >> 5) + 1;
    if (endWord >= MAX_TS_SET_DWORDS)
       endWord = MAX_TS_SET_DWORDS-1;
 
-   for (S32 i = (index >> 5) + 1; i <= endWord; i++)
+   for (S32 i = word + 1; i <= endWord; i++)
    {
-      if (bits[i] & 0x1)
-         bits[i-1] |= 0x80000000;
+      if ((bits[i] & std::bitset<32>(0x1)) != 0)
+         bits[i-1] |= std::bitset<32>(0x80000000);
       bits[i] = bits[i] >> 1;
    }
 }
@@ -313,21 +319,21 @@ void TSIntegerSet::read(std::iostream s)
 {
    clearAll();
 
-   S32 numInts;
+   U32 numInts;
    s >> numInts; // don't care about this
 
-   S32 sz;
+   U32 sz;
    s >> sz;
    AssertFatal(sz<=MAX_TS_SET_DWORDS,"TSIntegerSet::  set too large...increase max set size and re-compile");
 
-   for (S32 i=0; i<sz; i++) // now mirrors the write code...
+   for (U32 i=0; i<sz; i++) // now mirrors the write code...
       s >> (bits[i]);
 }
 
 void TSIntegerSet::write(std::iostream s) const
 {
-   s << ((S32)0); // don't do this anymore, keep in to avoid versioning
-   S32 i,sz=0;
+   s << ((U32)0); // don't do this anymore, keep in to avoid versioning
+   U32 i,sz=0;
    for (i=0; i<MAX_TS_SET_DWORDS; i++)
       if (bits[i]!=0)
          sz=i+1;

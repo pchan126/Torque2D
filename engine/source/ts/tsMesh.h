@@ -34,8 +34,7 @@
 
 #include "graphics/gfxDevice.h"
 //#include "graphics/gfxPrimitiveBuffer.h"
-//#include "collection/SparseArray.h"
-
+#include "collection/SparseArray.h"
 #include "memory/safeDelete.h"
 
 //class Convex;
@@ -105,8 +104,8 @@ class TSMesh
       SkinMeshType     = 1,
       DecalMeshType    = 2,
       SortedMeshType   = 3,
-      nullptrMeshType     = 4,
-      TypeMask = StandardMeshType|SkinMeshType|DecalMeshType|SortedMeshType|nullptrMeshType,
+      NullMeshType     = 4,
+      TypeMask = StandardMeshType|SkinMeshType|DecalMeshType|SortedMeshType|NullMeshType,
 
       /// flags (stored with meshType)...
       Billboard = BIT(31), HasDetailTexture = BIT(30),
@@ -303,7 +302,7 @@ class TSMesh
 
    /// persist methods...
    virtual void assemble( bool skip );
-   static TSMesh* assembleMesh( U32 meshType, bool skip );
+   static TSMesh * assembleMesh(U32 meshType, bool skip);
    virtual void disassemble();
 
    void createVBIB();

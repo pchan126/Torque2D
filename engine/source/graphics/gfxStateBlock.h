@@ -146,7 +146,12 @@ struct GFXStateBlockDesc
    U32 stencilMask;
    U32 stencilWriteMask;
 
-   GFXFillMode fillMode;
+    // FF lighting
+    bool ffLighting;
+
+    bool vertexColorEnable;
+
+    GFXFillMode fillMode;
 
    // Sampler states
    bool samplersDefined;

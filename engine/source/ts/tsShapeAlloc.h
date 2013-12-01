@@ -20,6 +20,8 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
+#include <sstream>
+
 #ifndef _TSSHAPEALLOC_H_
 #define _TSSHAPEALLOC_H_
 
@@ -66,6 +68,12 @@ class TSShapeAlloc
    S16     * mMemBuffer16;
    S8      * mMemBuffer8;
 
+   std::stringstream m_stream32;
+   std::stringstream m_stream16;
+   std::stringstream m_stream8;
+
+   std::vector<S8*> m_ptr_index;
+
    /// for writing only...
    S32 mSize32;
    S32 mSize16;
@@ -86,7 +94,7 @@ class TSShapeAlloc
 
    /// reading only...this is the output
    S8 * mDest;
-   S32 mSize;
+   U32 mSize;
    S32 mMult; ///< mult incoming sizes by this (when 0, then mDest doesn't grow --> skip mode)
 
    public:
@@ -127,27 +135,73 @@ class TSShapeAlloc
    ///
    /// @{
 
-   #define DECLARE_ALLOC(suffix,type) \
-   type get##suffix();                \
-   void get##suffix(type*,S32);       \
-   type * copyToShape##suffix(S32,bool returnSomething=false); \
-   type * getPointer##suffix(S32);    \
-   type * allocShape##suffix(S32);    \
-   bool checkGuard##suffix();         \
-   type getPrevGuard##suffix();       \
-   type getSaveGuard##suffix();       \
-   type * getBuffer##suffix();        \
-   S32 getBufferSize##suffix();       \
-   void setGuard##suffix();           \
-   type * extend##suffix(S32);        \
-   type set##suffix(type);            \
-   void copyToBuffer##suffix(type*,S32);
+//   #define DECLARE_ALLOC(suffix,type) \
+//   type get##suffix();                \
+//   void get##suffix(type*,S32);       \
+//   type * copyToShape##suffix(S32,bool returnSomething=false); \
+//   type * getPointer##suffix(S32);    \
+//   type * allocShape##suffix(S32);    \
+//   bool checkGuard##suffix();         \
+//   type getPrevGuard##suffix();       \
+//   type getSaveGuard##suffix();       \
+//   type * getBuffer##suffix();        \
+//   S32 getBufferSize##suffix();       \
+//   void setGuard##suffix();           \
+//   type * extend##suffix(S32);        \
+//   type set##suffix(type);            \
+//   void copyToBuffer##suffix(type*,S32);
 
 
-   DECLARE_ALLOC(32,S32)
-   DECLARE_ALLOC(16,S16)
-   DECLARE_ALLOC(8,S8)
-   /// @}
+//   DECLARE_ALLOC(32,S32)
+    S32 get32();
+    void get32(S32*,S32);
+    S32 * copyToShape32(S32,bool returnSomething=false);
+    S32 * getPointer32(S32);
+    S32 * allocShape32(S32);
+    bool checkGuard32();
+    S32 getPrevGuard32();
+    S32 getSaveGuard32();
+    S32 * getBuffer32();
+    S32 getBufferSize32();
+    void setGuard32();
+    S32 * extend32(S32);
+    S32 set32(S32);
+    void copyToBuffer32(S32*,S32);
+
+//   DECLARE_ALLOC(16,S16)
+    S16 get16();
+    void get16(S16*,S32);
+    S16 * copyToShape16(S32,bool returnSomething=false);
+    S16 * getPointer16(S32);
+    S16 * allocShape16(S32);
+    bool checkGuard16();
+    S16 getPrevGuard16();
+    S16 getSaveGuard16();
+    S16 * getBuffer16();
+    S32 getBufferSize16();
+    void setGuard16();
+    S16 * extend16(S32);
+    S16 set16(S16);
+    void copyToBuffer16(S16*,S32);
+
+
+//   DECLARE_ALLOC(8,S8)
+    S8 get8();
+    void get8(S8*,S32);
+    S8 * copyToShape8(S32,bool returnSomething=false);
+    S8 * getPointer8(S32);
+    S8 * allocShape8(S32);
+    bool checkGuard8();
+    S8 getPrevGuard8();
+    S8 getSaveGuard8();
+    S8 * getBuffer8();
+    S32 getBufferSize8();
+    void setGuard8();
+    S8 * extend8(S32);
+    S8 set8(S8);
+    void copyToBuffer8(S8*,S32);
+
+       /// @}
 
    void checkGuard();
    void setGuard();

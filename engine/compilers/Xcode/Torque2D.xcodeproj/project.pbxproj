@@ -1497,6 +1497,7 @@
 		C5419FDBE6AAABB962EC60C8 /* guiSceneObjectCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiSceneObjectCtrl.h; sourceTree = "<group>"; };
 		C5419FDC2177D3C81467CB4F /* gfxVertexFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxVertexFormat.h; sourceTree = "<group>"; };
 		C5419FE704B0C26890AE491B /* moduleDefinition.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = moduleDefinition.cc; sourceTree = "<group>"; };
+		C5419FE8EE3B4A0AB89C171E /* sparseArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sparseArray.h; sourceTree = "<group>"; };
 		C5419FEDD6487A441740EA6C /* guiMenuBar.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiMenuBar.cc; sourceTree = "<group>"; };
 		C5419FEE89A4CD40C0966D5F /* msgBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = msgBox.h; sourceTree = "<group>"; };
 		C5419FEFB38E63F00038B5C9 /* ShapeVector_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShapeVector_ScriptBinding.h; sourceTree = "<group>"; };
@@ -2490,6 +2491,7 @@
 				C5419EA1A10AB116C24774DC /* undo.cc */,
 				C5419CE5942F623B3E435F99 /* undo.h */,
 				C5419AE53D7674EC728469C3 /* vector.h */,
+				C5419FE8EE3B4A0AB89C171E /* sparseArray.h */,
 			);
 			name = collection;
 			path = ../../../source/collection;

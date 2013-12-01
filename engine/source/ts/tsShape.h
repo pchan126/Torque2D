@@ -29,6 +29,7 @@
 #include "ts/tsShapeAlloc.h"
 #include "io/resource/resourceManager.h"
 #include <iostream>
+#include <bitset>
 
 
 #define DTS_EXPORTER_CURRENT_VERSION 124
@@ -175,7 +176,7 @@ class TSShape: public ResourceInstance
       /// to determine the attributes of the given object.
       /// @{
 
-      bool testFlags(U32 comp) const      { return (flags&comp)!=0; }
+      bool testFlags(std::bitset<32> comp) const { return (flags & comp) != 0; }
       bool animatesScale() const          { return testFlags(AnyScale); }
       bool animatesUniformScale() const   { return testFlags(UniformScale); }
       bool animatesAlignedScale() const   { return testFlags(AlignedScale); }
@@ -343,7 +344,7 @@ class TSShape: public ResourceInstance
    F32 mSmallestVisibleSize;  ///< Computed at load time from details vector.
    S32 mSmallestVisibleDL;    ///< @see mSmallestVisibleSize
    S32 mReadVersion;          ///< File version that this shape was read from.
-   U32 mFlags;                ///< hasTranslucancy
+   std::bitset<32> mFlags;                ///< hasTranslucancy
    U32 data;                  ///< User-defined data storage.
 
    /// If enabled detail selection will use the
@@ -518,7 +519,7 @@ class TSShape: public ResourceInstance
    bool findMeshIndex(const String &meshName, S32& objIndex, S32& meshIndex);
    TSMesh* findMesh(const String &meshName);
 
-   bool hasTranslucency() const { return (mFlags & HasTranslucency)!=0; }
+   bool hasTranslucency() const { return (mFlags & std::bitset<32>(HasTranslucency))!=0; }
 
    const GFXVertexFormat* getVertexFormat() const { return &mVertexFormat; }
 
@@ -560,7 +561,7 @@ class TSShape: public ResourceInstance
 
    bool canWriteOldFormat() const;
    void write(std::iostream stream, bool saveOldFormat = false);
-   bool read(std::iostream stream);
+   bool read(std::iostream &stream);
    void readOldShape(Stream * s, S32 * &, S16 * &, S8 * &, S32 &, S32 &, S32 &);
    void writeName(Stream *, S32 nameIndex);
    S32  readName(Stream *, bool addName);

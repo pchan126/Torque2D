@@ -63,7 +63,7 @@ ResourceInstance* constructShape(std::iostream& stream)
 {
     TSShape *ret = new TSShape;
     
-    if(!ret->read(&stream))
+    if(!ret->read(stream))
     {
         SAFE_DELETE(ret);
     }
@@ -533,10 +533,10 @@ void TSShape::init()
       if (!sequences[i].animatesScale())
          continue;
 
-      U32 curVal = mFlags & AnyScale;
-      U32 newVal = sequences[i].flags & AnyScale;
+      std::bitset<32> curVal = std::bitset<32>(mFlags) & std::bitset<32>(AnyScale);
+      std::bitset<32> newVal = sequences[i].flags & std::bitset<32>(AnyScale);
       mFlags &= ~(AnyScale);
-      mFlags |= getMax(curVal,newVal); // take the larger value (can only convert upwards)
+      mFlags |= std::max(curVal,newVal); // take the larger value (can only convert upwards)
    }
 
    // set up alphaIn and alphaOut vectors...
@@ -989,7 +989,7 @@ void TSShape::assembleShape()
 
    // copy various vectors...
    S32 * ptr32 = tsalloc.copyToShape32(numNodes*5);
-   nodes.set(ptr32,numNodes);
+   nodes.set((Node*)ptr32,numNodes);
 
    tsalloc.checkGuard();
 
@@ -998,7 +998,7 @@ void TSShape::assembleShape()
       ptr32 = tsalloc.allocShape32(numSkins*6); // pre v23 shapes store skins and meshes separately...no longer
    else
       tsalloc.allocShape32(numSkins*6);
-   objects.set(ptr32,numObjects);
+   objects.set((Object*)ptr32,numObjects);
 
    tsalloc.checkGuard();
 
@@ -1037,7 +1037,7 @@ void TSShape::assembleShape()
    S16 * ptr16 = tsalloc.allocShape16(0);
    for (i=0;i<numNodes;i++)
       tsalloc.copyToShape16(4);
-   defaultRotations.set(ptr16,numNodes);
+   defaultRotations.set((Quat16*)ptr16,numNodes);
    tsalloc.align32();
    ptr32 = tsalloc.allocShape32(0);
    for (i=0;i<numNodes;i++)
@@ -1045,7 +1045,7 @@ void TSShape::assembleShape()
       tsalloc.copyToShape32(3);
       tsalloc.copyToShape32(sizeof(Point3F)-12); // handle alignment issues w/ point3f
    }
-   defaultTranslations.set(ptr32,numNodes);
+   defaultTranslations.set((Point3F*)ptr32,numNodes);
 
    // get any node sequence data stored in shape
    nodeTranslations.setSize(numNodeTrans);
@@ -1117,7 +1117,7 @@ void TSShape::assembleShape()
 
    // object states
    ptr32 = tsalloc.copyToShape32(numObjectStates*3);
-   objectStates.set(ptr32,numObjectStates);
+   objectStates.set((ObjectState*)ptr32,numObjectStates);
    tsalloc.allocShape32(numSkins*3); // provide buffer after objectStates for older shapes
 
    tsalloc.checkGuard();
@@ -1139,7 +1139,7 @@ void TSShape::assembleShape()
    {
       U32 alignedSize32 = sizeof( Detail ) / 4;
       ptr32 = tsalloc.copyToShape32( numDetails * alignedSize32, true );
-      details.set( ptr32, numDetails );
+      details.set( (Detail*)ptr32, numDetails );
    }
    else
    {
@@ -1207,7 +1207,7 @@ void TSShape::assembleShape()
    // now that we have the details loaded.
 //   updateSmallestVisibleDL();
 
-   S32 skipDL = getMin(mSmallestVisibleDL,smNumSkipLoadDetails);
+   S32 skipDL = std::min(mSmallestVisibleDL,smNumSkipLoadDetails);
    if (skipDL < 0)
       skipDL = 0;
 
@@ -1215,7 +1215,7 @@ void TSShape::assembleShape()
    tsalloc.checkGuard();
 
    // about to read in the meshes...first must allocate some scratch space
-   S32 scratchSize = getMax(numSkins,numMeshes);
+   S32 scratchSize = std::max(numSkins,numMeshes);
    TSMesh::smVertsList.setSize(scratchSize);
    TSMesh::smTVertsList.setSize(scratchSize);
 
@@ -1266,7 +1266,7 @@ void TSShape::assembleShape()
          skip = true;
       TSMesh * mesh = TSMesh::assembleMesh(meshType,skip);
       if (ptr32)
-         ptr32[i] = skip ?  0 : (S32)mesh;
+         ptr32[i] = skip ?  0 : (U32)mesh;
 
       // fill in location of verts, tverts, and normals for detail levels
       if (mesh && meshType!=TSMesh::DecalMeshType)
@@ -1289,7 +1289,7 @@ void TSShape::assembleShape()
          }
       }
    }
-   meshes.set(ptr32,numMeshes);
+   meshes.set((TSMesh const *)ptr32,numMeshes);
 
    tsalloc.checkGuard();
 
@@ -1382,9 +1382,9 @@ void TSShape::assembleShape()
 
    // allocate storage space for some arrays (filled in during Shape::init)...
    ptr32 = tsalloc.allocShape32(numDetails);
-   alphaIn.set(ptr32,numDetails);
+   alphaIn.set((float*)ptr32,numDetails);
    ptr32 = tsalloc.allocShape32(numDetails);
-   alphaOut.set(ptr32,numDetails);
+   alphaOut.set((float*)ptr32,numDetails);
 }
 
 void TSShape::disassembleShape()
@@ -1605,15 +1605,13 @@ void TSShape::write(std::iostream s, bool saveOldFormat)
 
    // write sequences - write will properly endian-flip.
    s << (sequences.size());
-   for (S32 i=0; i<sequences.size(); i++)
-      sequences[i].write(s);
+   for (auto itr = sequences.begin(); itr != sequences.end(); itr++)
+      s << *itr;
 
     s << ((U8)1);          // version
     s << (materialList->size());
-    for (S32 i=0; i<materialList->size(); i++) // material names
-    {
+    for (auto i:*materialList) // material names
         StreamFn::writeString(s, materialList->at(i));
-    }
 
    // write material list - write will properly endian-flip.
 //   materialList->write(*s);
@@ -1629,7 +1627,7 @@ void TSShape::write(std::iostream s, bool saveOldFormat)
 // read whole shape
 //-------------------------------------------------
 
-bool TSShape::read(std::iostream stream)
+bool TSShape::read(std::iostream &stream)
 {
    // read version - read handles endian-flip
     stream >> smReadVersion;
@@ -1687,7 +1685,7 @@ bool TSShape::read(std::iostream stream)
       sequences.setSize(numSequences);
       for (i=0; i<numSequences; i++)
       {
-         sequences[i].read(stream);
+         stream >> sequences[i];
 
          // Store initial (empty) source data
          sequences[i].sourceData.total = sequences[i].numKeyframes;
@@ -2367,31 +2365,31 @@ void TSShape::Sequence::read(std::iostream s, bool readNameIndex)
     {
         s >> baseRotation;
         baseTranslation=baseRotation;
-        s >> &baseObjectState;
-        s >> &baseDecalState;
+        s >> baseObjectState;
+        s >> baseDecalState;
     }
     
-    s >> &firstTrigger;
-    s >> &numTriggers;
-    s >> &toolBegin;
+    s >> firstTrigger;
+    s >> numTriggers;
+    s >> toolBegin;
     
     // now the membership sets:
-    rotationMatters.read(s);
+    s >> rotationMatters;
     if (TSShape::smReadVersion<22)
         translationMatters=rotationMatters;
     else
     {
-        translationMatters.read(s);
-        scaleMatters.read(s);
+        s >> translationMatters;
+        s >> scaleMatters;
     }
     
     TSIntegerSet dummy;
-    dummy.read(s); // DEPRECIATED: Decals
-    dummy.read(s); // DEPRECIATED: Ifl materials
+    s >> dummy; // DEPRECIATED: Decals
+    s >> dummy; // DEPRECIATED: Ifl materials
     
-    visMatters.read(s);
-    frameMatters.read(s);
-    matFrameMatters.read(s);
+    s >> visMatters;
+    s >> frameMatters;
+    s >> matFrameMatters;
     
     dirtyFlags = 0;
     if (rotationMatters.testAll() || translationMatters.testAll() || scaleMatters.testAll())
@@ -2424,15 +2422,15 @@ void TSShape::Sequence::write(std::iostream stream, bool writeNameIndex) const
     stream << toolBegin;
     
     // now the membership sets:
-    rotationMatters.write(stream);
-    translationMatters.write(stream);
-    scaleMatters.write(stream);
+    stream << rotationMatters;
+    stream << translationMatters;
+    stream << scaleMatters;
     
     TSIntegerSet dummy;
-    dummy.write(stream); // DEPRECIATED: Decals
-    dummy.write(stream); // DEPRECIATED: Ifl materials
+    stream << dummy; // DEPRECIATED: Decals
+    stream << dummy; // DEPRECIATED: Ifl materials
     
-    visMatters.write(stream);
-    frameMatters.write(stream);
-    matFrameMatters.write(stream);
+    stream << visMatters;
+    stream << frameMatters;
+    stream << matFrameMatters;
 }
