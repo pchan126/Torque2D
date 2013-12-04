@@ -103,10 +103,10 @@ void NamedTexTarget::setTexture( U32 index, GFXTextureObject *tex )
 
 void NamedTexTarget::release()
 {
-   mTex[0] = NULL;
-   mTex[1] = NULL;
-   mTex[2] = NULL;
-   mTex[3] = NULL;
+   mTex[0] = nullptr;
+   mTex[1] = nullptr;
+   mTex[2] = nullptr;
+   mTex[3] = nullptr;
 }
 
 void NamedTexTarget::getShaderMacros( Vector<GFXShaderMacro> *outMacros )

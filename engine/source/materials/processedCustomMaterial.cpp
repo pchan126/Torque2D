@@ -23,24 +23,23 @@
 #include "platform/platform.h"
 #include "materials/processedCustomMaterial.h"
 
-#include "graphics/sim/cubemapAsset.h"
+#include "gfx/sim/cubemapData.h"
 #include "materials/sceneData.h"
-//#include "shaderGen/shaderGenVars.h"
-//#include "scene/sceneRenderState.h"
+#include "shaderGen/shaderGenVars.h"
+#include "scene/sceneRenderState.h"
 #include "materials/customMaterialDefinition.h"
 #include "materials/shaderData.h"
 #include "materials/materialManager.h"
 #include "materials/matTextureTarget.h"
 #include "materials/materialFeatureTypes.h"
 #include "materials/materialParameters.h"
-#include "graphics/sim/gfxStateBlockAsset.h"
-#include "memory/safeDelete.h"
-#include "lighting/lightManager.h"
-//#include "gfx/genericConstBuffer.h"
-//#include "console/simFieldDictionary.h"
-//#include "console/propertyParsing.h"
-//#include "gfx/util/screenspace.h"
-//#include "scene/reflectionManager.h"
+#include "gfx/sim/gfxStateBlockData.h"
+#include "core/util/safeDelete.h"
+#include "gfx/genericConstBuffer.h"
+#include "console/simFieldDictionary.h"
+#include "console/propertyParsing.h"
+#include "gfx/util/screenspace.h"
+#include "scene/reflectionManager.h"
 
 
 ProcessedCustomMaterial::ProcessedCustomMaterial(Material &mat)
@@ -98,19 +97,19 @@ void ProcessedCustomMaterial::_setStageData()
          continue;
       }
 
-//      if(filename.equal(String("$cubemap"), String::NoCase))
-//      {
-//         if( mCustomMaterial->mcubemapAsset )
-//         {
-//            rpd->mTexType[i] = Material::Cube;
-//            mMaxTex = i+1;
-//         }
-//         else
-//         {
-//            Con::errorf( "Could not find cubemapAsset - %s", mCustomMaterial->mCubemapName.c_str());
-//         }
-//         continue;
-//      }
+      if(filename.equal(String("$cubemap"), String::NoCase))
+      {
+         if( mCustomMaterial->mCubemapData )
+         {
+            rpd->mTexType[i] = Material::Cube;
+            mMaxTex = i+1;
+         }
+         else
+         {
+            mCustomMaterial->logError( "Could not find CubemapData - %s", mCustomMaterial->mCubemapName.c_str());
+         }
+         continue;
+      }
 
       if(filename.equal(String("$dynamicCubemap"), String::NoCase))
       {
@@ -159,21 +158,21 @@ void ProcessedCustomMaterial::_setStageData()
       rpd->mTexSlot[i].texObject = _createTexture( filename, &GFXDefaultStaticDiffuseProfile );
       if ( !rpd->mTexSlot[i].texObject )
       {
-         Con::errorf("Failed to load texture %s", _getTexturePath(filename).c_str());
+         mMaterial->logError("Failed to load texture %s", _getTexturePath(filename).c_str());
          continue;
       }
       rpd->mTexType[i] = Material::Standard;
       mMaxTex = i+1;
    }
 
-//   // We only get one cubemap
-//   if( mCustomMaterial->mcubemapAsset )
-//   {
-//      mCustomMaterial->mcubemapAsset->createMap();      
-//      rpd->mCubeMap = mMaterial->mcubemapAsset->mCubemap; // BTRTODO ?
-//      if ( !rpd->mCubeMap )
-//         mMaterial->logError("Failed to load cubemap");
-//   }
+   // We only get one cubemap
+   if( mCustomMaterial->mCubemapData )
+   {
+      mCustomMaterial->mCubemapData->createMap();      
+      rpd->mCubeMap = mMaterial->mCubemapData->mCubemap; // BTRTODO ?
+      if ( !rpd->mCubeMap )
+         mMaterial->logError("Failed to load cubemap");
+   }
 
    // If this has a output target defined, it may be writing 
    // to a tex target bin with a conditioner, so search for 
@@ -254,10 +253,8 @@ void ProcessedCustomMaterial::_initPassStateBlocks()
 bool ProcessedCustomMaterial::_hasCubemap(U32 pass)
 {
    // If the material doesn't have a cubemap, we don't
-//   if( mMaterial->mcubemapAsset )
-//      return true;
-//   else
-      return false;
+   if( mMaterial->mCubemapData ) return true;
+   else return false;
 }
 
 bool ProcessedCustomMaterial::setupPass( SceneRenderState *state, const SceneData& sgData, U32 pass )
@@ -343,11 +340,11 @@ void ProcessedCustomMaterial::setTextureStages( SceneRenderState *state, const S
                GFX->setCubeTexture( samplerRegister, rpd->mCubeMap );
                break;
             }
-//         case Material::SGCube:
-//            {
-//               GFX->setCubeTexture( samplerRegister, sgData.cubemap );
-//               break;
-//            }
+         case Material::SGCube:
+            {
+               GFX->setCubeTexture( samplerRegister, sgData.cubemap );
+               break;
+            }
          case Material::BackBuff:
             {
                GFX->setTexture( samplerRegister, sgData.backBuffTex );
@@ -389,11 +386,11 @@ void ProcessedCustomMaterial::setTextureStages( SceneRenderState *state, const S
 
                if ( handles->mRTParamsSC[samplerRegister]->isValid() && texObject )
                {
-//                  const Point3I &targetSz = texObject->getSize();
-//                  const RectI &targetVp = texTarget->getViewport();
+                  const Point3I &targetSz = texObject->getSize();
+                  const RectI &targetVp = texTarget->getViewport();
                   Point4F rtParams;
 
-//                  ScreenSpace::RenderTargetParameters(targetSz, targetVp, rtParams);
+                  ScreenSpace::RenderTargetParameters(targetSz, targetVp, rtParams);
                   shaderConsts->set(handles->mRTParamsSC[samplerRegister], rtParams);
                }
               
@@ -410,13 +407,13 @@ void ProcessedCustomMaterial::setMaterialParameter(MaterialParameters* param,
                                                    MaterialParameterHandle* handle,
                                                    const String& value)
 {
-//   T typedValue;
-//   if (PropertyInfo::default_scan(value, typedValue))
-//   {      
-//      param->set(handle, typedValue);
-//   } else {
-//      Con::errorf("Error setting %s, parse error: %s", handle->getName().c_str(), value.c_str());
-//   }
+   T typedValue;
+   if (PropertyInfo::default_scan(value, typedValue))
+   {      
+      param->set(handle, typedValue);
+   } else {
+      Con::errorf("Error setting %s, parse error: %s", handle->getName().c_str(), value.c_str());
+   }
 }
 
 void ProcessedCustomMaterial::setMatrixParameter(MaterialParameters* param, 

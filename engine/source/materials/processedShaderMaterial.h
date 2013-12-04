@@ -27,7 +27,7 @@
 #include "processedMaterial.h"
 #endif
 #ifndef _GFXSHADER_H_
-#include "graphics/gfxShader.h"
+#include "gfx/gfxShader.h"
 #endif
 
 class GenericConstBufferLayout;
@@ -46,6 +46,7 @@ public:
    GFXShaderConstHandle* mTexMatSC;
    GFXShaderConstHandle* mSpecularColorSC;
    GFXShaderConstHandle* mSpecularPowerSC;
+   GFXShaderConstHandle* mSpecularStrengthSC;
    GFXShaderConstHandle* mParallaxInfoSC;
    GFXShaderConstHandle* mFogDataSC;
    GFXShaderConstHandle* mFogColorSC;   
@@ -118,9 +119,9 @@ public:
                         const MatFeaturesDelegate &featuresDelegate );
    virtual bool setupPass(SceneRenderState *, const SceneData& sgData, U32 pass);
    virtual void setTextureStages(SceneRenderState *, const SceneData &sgData, U32 pass );
-   virtual void setTransforms(const MatrixF view, const MatrixF world, const MatrixF projection, SceneRenderState *state, const U32 pass);
+   virtual void setTransforms(const MatrixSet &matrixSet, SceneRenderState *state, const U32 pass);
    virtual void setSceneInfo(SceneRenderState *, const SceneData& sgData, U32 pass);
-   virtual void setBuffers(GFXVertexBufferHandleBase* vertBuffer); //, GFXPrimitiveBufferHandle* primBuffer);
+   virtual void setBuffers(GFXVertexBufferHandleBase* vertBuffer, GFXPrimitiveBufferHandle* primBuffer); 
    virtual bool stepInstance();
    virtual void dumpMaterialInfo();
    virtual MaterialParameters* allocMaterialParameters();    

@@ -24,13 +24,13 @@
 #include "ts/tsShapeInstance.h"
 
 //#include "ts/tsLastDetail.h"
-//#include "ts/tsMaterialList.h"
+#include "ts/tsMaterialList.h"
 #include "console/consoleTypes.h"
 //#include "platform/profiler.h"
 #include "memory/frameAllocator.h"
 #include "graphics/gfxDevice.h"
-//#include "materials/materialManager.h"
-//#include "materials/materialFeatureTypes.h"
+#include "materials/materialManager.h"
+#include "materials/materialFeatureTypes.h"
 //#include "materials/sceneData.h"
 //#include "materials/matInstance.h"
 //#include "scene/sceneRenderState.h"
@@ -358,10 +358,10 @@ void TSShapeInstance::renderDebugNormals( F32 normalScalar, S32 dl )
 
       // Then go through each TSMesh...
       U32 m = 0;
-      for( TSMesh *mesh = meshObj->getMesh(m); mesh != NULL; mesh = meshObj->getMesh(m++) )
+      for( TSMesh *mesh = meshObj->getMesh(m); mesh != nullptr; mesh = meshObj->getMesh(m++) )
       {
          // and pull out the list of normals.
-         const U32 numNrms = mesh->mNumVerts;
+         const U32 numNrms = (U32)mesh->mNumVerts;
          PrimBuild::begin( GFXLineList, 2 * numNrms );
          for ( U32 n = 0; n < numNrms; n++ )
          {
@@ -505,14 +505,14 @@ void TSShapeInstance::setMeshForceHidden( S32 meshIndex, bool hidden )
 
 void TSShapeInstance::render( const TSRenderState &rdata, S32 dl, F32 intraDL )
 {
-//   AssertFatal( dl >= 0 && dl < mShape->details.size(),"TSShapeInstance::render" );
-//
-//   S32 i;
-//
-//   const TSDetail * detail = &mShape->details[dl];
-//   S32 ss = detail->subShapeNum;
-//   S32 od = detail->objectDetailNum;
-//
+   AssertFatal( dl >= 0 && dl < mShape->details.size(),"TSShapeInstance::render" );
+
+   S32 i;
+
+   const TSDetail * detail = &mShape->details[dl];
+   S32 ss = detail->subShapeNum;
+   S32 od = detail->objectDetailNum;
+
 //   // if we're a billboard detail, draw it and exit
 //   if ( ss < 0 )
 //   {
@@ -523,16 +523,16 @@ void TSShapeInstance::render( const TSRenderState &rdata, S32 dl, F32 intraDL )
 //
 //      return;
 //   }
-//
-//   // run through the meshes   
-//   S32 start = rdata.isNoRenderNonTranslucent() ? mShape->subShapeFirstTranslucentObject[ss] : mShape->subShapeFirstObject[ss];
-//   S32 end   = rdata.isNoRenderTranslucent() ? mShape->subShapeFirstTranslucentObject[ss] : mShape->subShapeFirstObject[ss] + mShape->subShapeNumObjects[ss];
-//   for (i=start; i<end; i++)
-//   {
-//      // following line is handy for debugging, to see what part of the shape that it is rendering
-//      // const char *name = mShape->names[ mMeshObjects[i].object->nameIndex ];
-//      mMeshObjects[i].render( od, mMaterialList, rdata, mAlphaAlways ? mAlphaAlwaysValue : 1.0f );
-//   }
+
+   // run through the meshes   
+   S32 start = rdata.isNoRenderNonTranslucent() ? mShape->subShapeFirstTranslucentObject[ss] : mShape->subShapeFirstObject[ss];
+   S32 end   = rdata.isNoRenderTranslucent() ? mShape->subShapeFirstTranslucentObject[ss] : mShape->subShapeFirstObject[ss] + mShape->subShapeNumObjects[ss];
+   for (i=start; i<end; i++)
+   {
+      // following line is handy for debugging, to see what part of the shape that it is rendering
+      // const char *name = mShape->names[ mMeshObjects[i].object->nameIndex ];
+      mMeshObjects[i].render( od, mMaterialList, rdata, mAlphaAlways ? mAlphaAlwaysValue : 1.0f );
+   }
 }
 
 void TSShapeInstance::setCurrentDetail( S32 dl, F32 intraDL )
@@ -559,8 +559,8 @@ S32 TSShapeInstance::setDetailFromPosAndScale(  const SceneRenderState *state,
                                                 const Point3F &scale )
 {
 //   VectorF camVector = pos - state->getDiffuseCameraPosition();
-//   F32 dist = getMax( camVector.len(), 0.01f );
-//   F32 invScale = ( 1.0f / getMax( getMax( scale.x, scale.y ), scale.z ) );
+//   F32 dist = std::max( camVector.len(), 0.01f );
+//   F32 invScale = ( 1.0f / std::max( std::max( scale.x, scale.y ), scale.z ) );
 //
 //   return setDetailFromDistance( state, dist * invScale );
    return 0;
@@ -568,18 +568,18 @@ S32 TSShapeInstance::setDetailFromPosAndScale(  const SceneRenderState *state,
 
 S32 TSShapeInstance::setDetailFromDistance( const SceneRenderState *state, F32 scaledDistance )
 {
-//   PROFILE_SCOPE( TSShapeInstance_setDetailFromDistance );
-//
-//   // For debugging/metrics.
-//   smLastScaledDistance = scaledDistance;
-//
-//   // Shortcut if the distance is really close or negative.
-//   if ( scaledDistance <= 0.0f )
-//   {
-//      mShape->mDetailLevelLookup[0].get( mCurrentDetailLevel, mCurrentIntraDetailLevel );
-//      return mCurrentDetailLevel;
-//   }
-//
+   PROFILE_SCOPE( TSShapeInstance_setDetailFromDistance );
+
+   // For debugging/metrics.
+   smLastScaledDistance = scaledDistance;
+
+   // Shortcut if the distance is really close or negative.
+   if ( scaledDistance <= 0.0f )
+   {
+      mShape->mDetailLevelLookup[0].get( mCurrentDetailLevel, mCurrentIntraDetailLevel );
+      return mCurrentDetailLevel;
+   }
+
 //   // The pixel scale is used the linearly scale the lod
 //   // selection based on the viewport size.
 //   //
@@ -629,14 +629,14 @@ S32 TSShapeInstance::setDetailFromDistance( const SceneRenderState *state, F32 s
 //   // Restrict the chosen detail level by cutoff value.
 //   if ( smNumSkipRenderDetails > 0 && mCurrentDetailLevel >= 0 )
 //   {
-//      S32 cutoff = getMin( smNumSkipRenderDetails, mShape->mSmallestVisibleDL );
+//      S32 cutoff = std::min( smNumSkipRenderDetails, mShape->mSmallestVisibleDL );
 //      if ( mCurrentDetailLevel < cutoff )
 //      {
 //         mCurrentDetailLevel = cutoff;
 //         mCurrentIntraDetailLevel = 1.0f;
 //      }
 //   }
-//
+
 //   return mCurrentDetailLevel;
    return 0;
 }
@@ -715,17 +715,17 @@ void TSShapeInstance::MeshObjectInstance::render(  S32 objectDetail,
                                                    const TSRenderState &rdata, 
                                                    F32 alpha )
 {
-//   PROFILE_SCOPE( TSShapeInstance_MeshObjectInstance_render );
-//
-//   if ( forceHidden || ( ( visible * alpha ) <= 0.01f ) )
-//      return;
-//
-//   TSMesh *mesh = getMesh(objectDetail);
-//   if ( !mesh )
-//      return;
-//
-//   const MatrixF &transform = getTransform();
-//
+   PROFILE_SCOPE( TSShapeInstance_MeshObjectInstance_render );
+
+   if ( forceHidden || ( ( visible * alpha ) <= 0.01f ) )
+      return;
+
+   TSMesh *mesh = getMesh(objectDetail);
+   if ( !mesh )
+      return;
+
+   const MatrixF &transform = getTransform();
+
 //   if ( rdata.getCuller() )
 //   {
 //      Box3F box( mesh->getBounds() );
@@ -733,29 +733,29 @@ void TSShapeInstance::MeshObjectInstance::render(  S32 objectDetail,
 //      if ( rdata.getCuller()->isCulled( box ) )
 //         return;
 //   }
-//
-//   GFX->pushWorldMatrix();
-//   GFX->multWorld( transform );
-//
-//   mesh->setFade( visible * alpha );
-//
-//   // Pass a hint to the mesh that time has advanced and that the
-//   // skin is dirty and needs to be updated.  This should result
-//   // in the skin only updating once per frame in most cases.
-//   const U32 currTime = Sim::getCurrentTime();
-//   bool isSkinDirty = currTime != mLastTime;
-//
+
+   GFX->pushWorldMatrix();
+   GFX->multWorld( transform );
+
+   mesh->setFade( visible * alpha );
+
+   // Pass a hint to the mesh that time has advanced and that the
+   // skin is dirty and needs to be updated.  This should result
+   // in the skin only updating once per frame in most cases.
+   const U32 currTime = Sim::getCurrentTime();
+   bool isSkinDirty = currTime != mLastTime;
+
 //   mesh->render(  materials, 
 //                  rdata, 
 //                  isSkinDirty,
 //                  *mTransforms, 
 //                  mVertexBuffer,
 //                  mPrimitiveBuffer );
-//
-//   // Update the last render time.
-//   mLastTime = currTime;
-//
-//   GFX->popWorldMatrix();
+
+   // Update the last render time.
+   mLastTime = currTime;
+
+   GFX->popWorldMatrix();
 }
 
 TSShapeInstance::MeshObjectInstance::MeshObjectInstance() 

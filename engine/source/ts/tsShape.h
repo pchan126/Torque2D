@@ -34,7 +34,7 @@
 
 #define DTS_EXPORTER_CURRENT_VERSION 124
 
-typedef Vector<String> TSMaterialList;
+class TSMaterialList;
 //class TSLastDetail;
 //class PhysicsCollision;
 
@@ -189,8 +189,8 @@ class TSShape: public ResourceInstance
       /// @name IO
       /// @{
 
-      void read(std::iostream stream, bool readNameIndex = true);
-      void write(std::iostream stream, bool writeNameIndex = true) const;
+      void read(std::iostream& stream, bool readNameIndex = true);
+      void write(std::iostream& stream, bool writeNameIndex = true) const;
       /// @}
    };
 

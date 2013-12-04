@@ -85,8 +85,8 @@ public:
    U32 end();
    void next(S32 & i) const;
 
-   void read(std::iostream stream);
-   void write(std::iostream stream) const;
+   void read(std::iostream &stream);
+   void write(std::iostream &stream) const;
 
    TSIntegerSet();
    TSIntegerSet(const TSIntegerSet&);

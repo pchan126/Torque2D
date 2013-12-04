@@ -357,7 +357,7 @@ class TSMesh
    // Optional vertex colors.
    static Vector<ColorI*> smColorsList;
 
-   static Vector<bool>     smDataCopied;
+   static std::vector<bool>     smDataCopied;
 
    static const Point3F smU8ToNormalTable[];
    /// @}

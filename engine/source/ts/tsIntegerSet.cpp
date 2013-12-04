@@ -315,7 +315,7 @@ TSIntegerSet::TSIntegerSet(const TSIntegerSet & otherSet)
    copy(otherSet);
 }
 
-void TSIntegerSet::read(std::iostream s)
+void TSIntegerSet::read(std::iostream &s)
 {
    clearAll();
 
@@ -330,7 +330,7 @@ void TSIntegerSet::read(std::iostream s)
       s >> (bits[i]);
 }
 
-void TSIntegerSet::write(std::iostream s) const
+void TSIntegerSet::write(std::iostream &s) const
 {
    s << ((U32)0); // don't do this anymore, keep in to avoid versioning
    U32 i,sz=0;

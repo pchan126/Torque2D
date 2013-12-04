@@ -23,25 +23,11 @@
 #ifndef _BITMAP_FONT_OBJECT_H_
 #define _BITMAP_FONT_OBJECT_H_
 
-#ifndef _STRINGBUFFER_H_
 #include "string/stringBuffer.h"
-#endif
-
-#ifndef _IMAGE_ASSET_H_
 #include "2d/assets/ImageAsset.h"
-#endif
-
-#ifndef _SCENE_OBJECT_H_
 #include "2d/sceneobject/SceneObject.h"
-#endif
-
-#ifndef _ASSET_PTR_H_
 #include "assets/assetPtr.h"
-#endif
-
-#ifndef _UTILITY_H_
 #include "2d/core/utility.h"
-#endif
 
 //-----------------------------------------------------------------------------
 

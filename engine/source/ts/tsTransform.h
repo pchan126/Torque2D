@@ -27,8 +27,6 @@
 #include "math/mMath.h"
 #endif
 
-class Stream;
-
 /// compressed quaternion class
 struct Quat16
 {

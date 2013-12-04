@@ -1,23 +1,40 @@
 //-----------------------------------------------------------------------------
-// Torque
-// Copyright GarageGames, LLC 2011
+// Copyright (c) 2012 GarageGames, LLC
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to
+// deal in the Software without restriction, including without limitation the
+// rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+// sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+// IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
 #include "platform/platform.h"
 #include "materials/processedFFMaterial.h"
 
-#include "graphics/sim/cubemapAsset.h"
+#include "gfx/sim/cubemapData.h"
 #include "materials/sceneData.h"
 #include "materials/customMaterialDefinition.h"
 #include "materials/materialFeatureTypes.h"
-#include "graphics/sim/GFXStateBlockAsset.h"
-#include "graphics/gfxDevice.h"
-//#include "gfx/genericConstBuffer.h"
+#include "gfx/sim/gfxStateBlockData.h"
+#include "gfx/gfxDevice.h"
+#include "gfx/genericConstBuffer.h"
 #include "materials/materialParameters.h"
 #include "lighting/lightInfo.h"
-#include "lighting/lightManager.h"
-//#include "scene/sceneRenderState.h"
-#include "memory/safeDelete.h"
+#include "scene/sceneRenderState.h"
+#include "core/util/safeDelete.h"
+#include "math/util/matrixSet.h"
 
 class FFMaterialParameterHandle : public MaterialParameterHandle
 {
@@ -86,10 +103,10 @@ void ProcessedFFMaterial::_determineFeatures(   U32 stageNum,
    if ( mStages[stageNum].getTex( MFT_DiffuseMap ) )
       featData.features[FixedFuncFeatureData::DiffuseMap] = true;
 
-//   if ( features.hasFeature( MFT_LightMap ) )
-//      featData.features[FixedFuncFeatureData::LightMap] = true;
-//   if ( features.hasFeature( MFT_ToneMap )) 
-//      featData.features[FixedFuncFeatureData::ToneMap] = true;
+   if ( features.hasFeature( MFT_LightMap ) )
+      featData.features[FixedFuncFeatureData::LightMap] = true;
+   if ( features.hasFeature( MFT_ToneMap )) 
+      featData.features[FixedFuncFeatureData::ToneMap] = true;
 }
 
 U32 ProcessedFFMaterial::getNumStages()
@@ -107,7 +124,7 @@ U32 ProcessedFFMaterial::getNumStages()
       if( i == 0 )
       {
          // If we have a cubemap the stage is active
-         if( mMaterial->mCubemapAsset ) //|| mMaterial->mDynamicCubemap )
+         if( mMaterial->mCubemapData || mMaterial->mDynamicCubemap )
          {
             numStages++;
             continue;
@@ -214,17 +231,17 @@ MaterialParameterHandle* ProcessedFFMaterial::getMaterialParameterHandle(const S
    return mDefaultHandle;
 }
 
-void ProcessedFFMaterial::setTransforms(const MatrixF view, const MatrixF world, const MatrixF projection, SceneRenderState *state, const U32 pass)
+void ProcessedFFMaterial::setTransforms(const MatrixSet &matrixSet, SceneRenderState *state, const U32 pass)
 {
-   GFX->setWorldMatrix(world);
-   GFX->setViewMatrix(view);
-   GFX->setProjectionMatrix(projection);
+   GFX->setWorldMatrix(matrixSet.getObjectToWorld());
+   GFX->setViewMatrix(matrixSet.getWorldToCamera());
+   GFX->setProjectionMatrix(matrixSet.getCameraToScreen());
 }
 
 void ProcessedFFMaterial::setSceneInfo(SceneRenderState * state, const SceneData& sgData, U32 pass)
 {
-//   _setPrimaryLightInfo(*sgData.objTrans, sgData.lights[0], pass);
-//   _setSecondaryLightInfo(*sgData.objTrans, sgData.lights[1]);   
+   _setPrimaryLightInfo(*sgData.objTrans, sgData.lights[0], pass);
+   _setSecondaryLightInfo(*sgData.objTrans, sgData.lights[1]);   
 }
 
 void ProcessedFFMaterial::_setPrimaryLightInfo(const MatrixF &_objTrans, LightInfo* light, U32 pass)
@@ -347,14 +364,15 @@ void ProcessedFFMaterial::_initPassStateBlock( RenderPassData *rpd, GFXStateBloc
 
    if ( mIsLightingMaterial )
    {
+      result.ffLighting = true;
       result.blendDefined = true;
       result.blendEnable = true;
       result.blendSrc = GFXBlendOne;
       result.blendSrc = GFXBlendOne;
    }
 
-//   // This is here for generic FF shader fallbacks.
-//   CustomMaterial* custmat = dynamic_cast<CustomMaterial*>(mMaterial);
-//   if (custmat && custmat->getStateBlockData() )
-//      result.addDesc(custmat->getStateBlockData()->getState());
+   // This is here for generic FF shader fallbacks.
+   CustomMaterial* custmat = dynamic_cast<CustomMaterial*>(mMaterial);
+   if (custmat && custmat->getStateBlockData() )
+      result.addDesc(custmat->getStateBlockData()->getState());
 }

@@ -31,7 +31,7 @@
 //#include "gfx/bitmap/gBitmap.h"
 //#endif
 #include "ts/tsRenderState.h"
-//#include "ts/tsMaterialList.h"
+#include "ts/tsMaterialList.h"
 
 class RenderItem;
 class TSThread;
@@ -339,7 +339,7 @@ protected:
          if ( mapToNameIndex < 0 || mapToNameIndex >= getMaterialList()->size() )
             return String::EmptyString;
 
-         return getMaterialList()->at(mapToNameIndex);
+         return getMaterialList()->getMaterialName(mapToNameIndex);
       }
       else
       {

@@ -31,7 +31,7 @@
 //#include "core/module.h"
 //#include "console/consoleTypes.h"
 
-MaterialManager * MaterialManager::smMaterialManager = NULL;
+MaterialManager * MaterialManager::smMaterialManager = nullptr;
 
 MaterialManager::MaterialManager()
 {
@@ -79,7 +79,7 @@ MaterialManager::MaterialManager()
 
 MaterialManager::~MaterialManager()
 {
-//   GFXDevice::getDeviceEventSignal().remove( this, &MaterialManager::_handleGFXEvent );  
+   GFXDevice::getDeviceEventSignal().remove( this, &MaterialManager::_handleGFXEvent );  
 //   LightManager::smActivateSignal.remove( this, &MaterialManager::_onLMActivate );
 //
 //   SAFE_DELETE( mWarningInst );

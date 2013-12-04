@@ -36,7 +36,7 @@ GFXOpenGL32TextureObject::GFXOpenGL32TextureObject(GFXDevice * aDevice, GFXTextu
     mGLDevice(static_cast<GFXOpenGL32Device*>(mDevice)),
     mFilter( GL_NEAREST )
 {
-    mBitmap = NULL;
+    mBitmap = nullptr;
 //    setTexture(texInfo);
 }
 

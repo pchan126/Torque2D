@@ -26,7 +26,7 @@
 #include "StreamFn.h"
 
 //#include "ts/tsLastDetail.h"
-//#include "ts/tsMaterialList.h"
+#include "ts/tsMaterialList.h"
 #include "string/stringTable.h"
 #include "console/console.h"
 //#include "collision/convex.h"
@@ -295,22 +295,20 @@ S32 TSShape::findName(const String &name) const
 
 const String& TSShape::getTargetName( S32 mapToNameIndex ) const
 {
-    return materialList->at(mapToNameIndex);
-//	S32 targetCount = materialList->getMaterialNameList().size();
-//
-//	if(mapToNameIndex < 0 || mapToNameIndex >= targetCount)
-//		return String::EmptyString;
-//
-//	return materialList->getMaterialNameList()[mapToNameIndex];
+	size_t targetCount = materialList->getMaterialNameList().size();
+
+	if(mapToNameIndex < 0 || mapToNameIndex >= targetCount)
+		return String::EmptyString;
+
+	return materialList->getMaterialNameList()[mapToNameIndex];
 }
 
 S32 TSShape::getTargetCount() const
 {
 	if(!this)
 		return -1;
-    return materialList->size();
 
-//	return materialList->getMaterialNameList().size();
+	return materialList->getMaterialNameList().size();
 
 }
 
@@ -536,7 +534,7 @@ void TSShape::init()
       std::bitset<32> curVal = std::bitset<32>(mFlags) & std::bitset<32>(AnyScale);
       std::bitset<32> newVal = sequences[i].flags & std::bitset<32>(AnyScale);
       mFlags &= ~(AnyScale);
-      mFlags |= std::max(curVal,newVal); // take the larger value (can only convert upwards)
+      mFlags |= std::max(curVal.to_ulong(),newVal.to_ulong()); // take the larger value (can only convert upwards)
    }
 
    // set up alphaIn and alphaOut vectors...
@@ -864,8 +862,8 @@ Vector<MatrixF> gTempNodeTransforms(__FILE__, __LINE__);
 //   }
 //
 //   // run through objects and updating bounds as we go
-//   bounds.mMin.set( 10E30f, 10E30f, 10E30f);
-//   bounds.mMax.set(-10E30f,-10E30f,-10E30f);
+//   bounds.minExtents.set( 10E30f, 10E30f, 10E30f);
+//   bounds.maxExtents.set(-10E30f,-10E30f,-10E30f);
 //   Box3F box;
 //   start = subShapeFirstObject[ss];
 //   end   = subShapeNumObjects[ss] + start;
@@ -880,8 +878,8 @@ Vector<MatrixF> gTempNodeTransforms(__FILE__, __LINE__);
 //            mesh->computeBounds(idMat,box);
 //         else
 //            mesh->computeBounds(gTempNodeTransforms[object->nodeIndex-start],box);
-//         bounds.mMin.setMin(box.mMin);
-//         bounds.mMax.setMax(box.mMax);
+//         bounds.minExtents.setMin(box.minExtents);
+//         bounds.maxExtents.setMax(box.maxExtents);
 //      }
 //   }
 //}
@@ -1227,7 +1225,7 @@ void TSShape::assembleShape()
 
    TSMesh::smNormsList.setSize(scratchSize);
    TSMesh::smEncodedNormsList.setSize(scratchSize);
-   TSMesh::smDataCopied.setSize(scratchSize);
+   TSMesh::smDataCopied.resize(scratchSize);
    TSSkinMesh::smInitTransformList.setSize(scratchSize);
    TSSkinMesh::smVertexIndexList.setSize(scratchSize);
    TSSkinMesh::smBoneIndexList.setSize(scratchSize);
@@ -1255,7 +1253,8 @@ void TSShape::assembleShape()
    }
 
    // read in the meshes (sans skins)...straightforward read one at a time
-   ptr32 = tsalloc.allocShape32(numMeshes + numSkins*numDetails); // leave room for skins on old shapes
+   ptr32 = tsalloc.allocShape32(numMeshes + numSkins * numDetails * sizeof(PTR)/4); // leave room for skins on old shapes
+   PTR* mesh_ptrs = (PTR*)ptr32;
    S32 curObject = 0; // for tracking skipped meshes
    for (i=0; i<numMeshes; i++)
    {
@@ -1265,8 +1264,8 @@ void TSShape::assembleShape()
          // decal mesh deprecated
          skip = true;
       TSMesh * mesh = TSMesh::assembleMesh(meshType,skip);
-      if (ptr32)
-         ptr32[i] = skip ?  0 : (U32)mesh;
+      if (mesh_ptrs)
+         mesh_ptrs[i] = skip ?  NULL : (PTR)mesh;
 
       // fill in location of verts, tverts, and normals for detail levels
       if (mesh && meshType!=TSMesh::DecalMeshType)
@@ -1289,7 +1288,7 @@ void TSShape::assembleShape()
          }
       }
    }
-   meshes.set((TSMesh const *)ptr32,numMeshes);
+   meshes.set((TSMesh * const *)mesh_ptrs,numMeshes);
 
    tsalloc.checkGuard();
 
@@ -1605,16 +1604,11 @@ void TSShape::write(std::iostream s, bool saveOldFormat)
 
    // write sequences - write will properly endian-flip.
    s << (sequences.size());
-   for (auto itr = sequences.begin(); itr != sequences.end(); itr++)
-      s << *itr;
-
-    s << ((U8)1);          // version
-    s << (materialList->size());
-    for (auto i:*materialList) // material names
-        StreamFn::writeString(s, materialList->at(i));
+   for (S32 i=0; i<sequences.size(); i++)
+      sequences[i].write(s);
 
    // write material list - write will properly endian-flip.
-//   materialList->write(*s);
+   materialList->write(s);
 
    delete [] buffer32;
    delete [] buffer16;
@@ -1685,7 +1679,7 @@ bool TSShape::read(std::iostream &stream)
       sequences.setSize(numSequences);
       for (i=0; i<numSequences; i++)
       {
-         stream >> sequences[i];
+         sequences[i].read(stream);
 
          // Store initial (empty) source data
          sequences[i].sourceData.total = sequences[i].numKeyframes;
@@ -1695,20 +1689,7 @@ bool TSShape::read(std::iostream &stream)
       // read material list
       delete materialList; // just in case...
       materialList = new TSMaterialList;
-
-       // read materials
-       S32 numMaterials;
-       stream >> numMaterials;
-       materialList->setSize(numMaterials);
-
-       for (i=0; i<numMaterials; i++)
-       {
-           char buf[256];
-           stream.read(buf, 256);
-           materialList->at(i) = StringTable->insert(buf);
-       }
-
-       //       materialList->read(*s);
+      materialList->read(stream);
    }
 
 	// since we read in the buffers, we need to endian-flip their entire contents...
@@ -1728,224 +1709,220 @@ bool TSShape::read(std::iostream &stream)
    if (smInitOnRead)
       init();
 
-   //if (names.size() == 3 && dStricmp(names[2], "Box") == 0)
+//if (names.size() == 3 && dStricmp(names[2], "Box") == 0)
+//{
+//   Con::errorf("\nnodes.set(dMalloc(%d * sizeof(Node)), %d);", nodes.size(), nodes.size());
+//   for (U32 i = 0; i < nodes.size(); i++)
+//   {
+//      Node& obj = nodes[i];
+//
+//      Con::errorf("   nodes[%d].nameIndex = %d;", i, obj.nameIndex);
+//      Con::errorf("   nodes[%d].parentIndex = %d;", i, obj.parentIndex);
+//      Con::errorf("   nodes[%d].firstObject = %d;", i, obj.firstObject);
+//      Con::errorf("   nodes[%d].firstChild = %d;", i, obj.firstChild);
+//      Con::errorf("   nodes[%d].nextSibling = %d;", i, obj.nextSibling);
+//   }
+//
+//   Con::errorf("\nobjects.set(dMalloc(%d * sizeof(Object)), %d);", objects.size(), objects.size());
+//   for (U32 i = 0; i < objects.size(); i++)
+//   {
+//      Object& obj = objects[i];
+//
+//      Con::errorf("   objects[%d].nameIndex = %d;", i, obj.nameIndex);
+//      Con::errorf("   objects[%d].numMeshes = %d;", i, obj.numMeshes);
+//      Con::errorf("   objects[%d].startMeshIndex = %d;", i, obj.startMeshIndex);
+//      Con::errorf("   objects[%d].nodeIndex = %d;", i, obj.nodeIndex);
+//      Con::errorf("   objects[%d].nextSibling = %d;", i, obj.nextSibling);
+//      Con::errorf("   objects[%d].firstDecal = %d;", i, obj.firstDecal);
+//   }
+//
+//   Con::errorf("\nobjectStates.set(dMalloc(%d * sizeof(ObjectState)), %d);", objectStates.size(), objectStates.size());
+//   for (U32 i = 0; i < objectStates.size(); i++)
+//   {
+//      ObjectState& obj = objectStates[i];
+//
+//      Con::errorf("   objectStates[%d].vis = %g;", i, obj.vis);
+//      Con::errorf("   objectStates[%d].frameIndex = %d;", i, obj.frameIndex);
+//      Con::errorf("   objectStates[%d].matFrameIndex = %d;", i, obj.matFrameIndex);
+//   }
+//   Con::errorf("\nsubShapeFirstNode.set(dMalloc(%d * sizeof(S32)), %d);", subShapeFirstNode.size(), subShapeFirstNode.size());
+//   for (U32 i = 0; i < subShapeFirstNode.size(); i++)
+//      Con::errorf("   subShapeFirstNode[%d] = %d;", i, subShapeFirstNode[i]);
+//
+//   Con::errorf("\nsubShapeFirstObject.set(dMalloc(%d * sizeof(S32)), %d);", subShapeFirstObject.size(), subShapeFirstObject.size());
+//   for (U32 i = 0; i < subShapeFirstObject.size(); i++)
+//      Con::errorf("   subShapeFirstObject[%d] = %d;", i, subShapeFirstObject[i]);
+//
+//   //Con::errorf("numDetailFirstSkins = %d", detailFirstSkin.size());
+//   Con::errorf("\nsubShapeNumNodes.set(dMalloc(%d * sizeof(S32)), %d);", subShapeNumNodes.size(), subShapeNumNodes.size());
+//   for (U32 i = 0; i < subShapeNumNodes.size(); i++)
+//      Con::errorf("   subShapeNumNodes[%d] = %d;", i, subShapeNumNodes[i]);
+//
+//   Con::errorf("\nsubShapeNumObjects.set(dMalloc(%d * sizeof(S32)), %d);", subShapeNumObjects.size(), subShapeNumObjects.size());
+//   for (U32 i = 0; i < subShapeNumObjects.size(); i++)
+//      Con::errorf("   subShapeNumObjects[%d] = %d;", i, subShapeNumObjects[i]);
+//
+//   Con::errorf("\ndetails.set(dMalloc(%d * sizeof(Detail)), %d);", details.size(), details.size());
+//   for (U32 i = 0; i < details.size(); i++)
+//   {
+//      Detail& obj = details[i];
+//
+//      Con::errorf("   details[%d].nameIndex = %d;", i, obj.nameIndex);
+//      Con::errorf("   details[%d].subShapeNum = %d;", i, obj.subShapeNum);
+//      Con::errorf("   details[%d].objectDetailNum = %d;", i, obj.objectDetailNum);
+//      Con::errorf("   details[%d].size = %g;", i, obj.size);
+//      Con::errorf("   details[%d].averageError = %g;", i, obj.averageError);
+//      Con::errorf("   details[%d].maxError = %g;", i, obj.maxError);
+//      Con::errorf("   details[%d].polyCount = %d;", i, obj.polyCount);
+//   }
+//
+//   Con::errorf("\ndefaultRotations.set(dMalloc(%d * sizeof(Quat16)), %d);", defaultRotations.size(), defaultRotations.size());
+//   for (U32 i = 0; i < defaultRotations.size(); i++)
+//   {
+//      Con::errorf("   defaultRotations[%d].x = %g;", i, defaultRotations[i].x);
+//      Con::errorf("   defaultRotations[%d].y = %g;", i, defaultRotations[i].y);
+//      Con::errorf("   defaultRotations[%d].z = %g;", i, defaultRotations[i].z);
+//      Con::errorf("   defaultRotations[%d].w = %g;", i, defaultRotations[i].w);
+//   }
+//
+//   Con::errorf("\ndefaultTranslations.set(dMalloc(%d * sizeof(Point3F)), %d);", defaultTranslations.size(), defaultTranslations.size());
+//   for (U32 i = 0; i < defaultTranslations.size(); i++)
+//      Con::errorf("   defaultTranslations[%d].set(%g, %g, %g);", i, defaultTranslations[i].x, defaultTranslations[i].y, defaultTranslations[i].z);
+//
+//   Con::errorf("\nsubShapeFirstTranslucentObject.set(dMalloc(%d * sizeof(S32)), %d);", subShapeFirstTranslucentObject.size(), subShapeFirstTranslucentObject.size());
+//   for (U32 i = 0; i < subShapeFirstTranslucentObject.size(); i++)
+//      Con::errorf("   subShapeFirstTranslucentObject[%d] = %d;", i, subShapeFirstTranslucentObject[i]);
+//
+//   Con::errorf("\nmeshes.set(dMalloc(%d * sizeof(TSMesh)), %d);", meshes.size(), meshes.size());
+//   for (U32 i = 0; i < meshes.size(); i++)
+//   {
+//      TSMesh* obj = meshes[i];
+//
+//      if (obj)
+//      {
+//         Con::errorf("   meshes[%d]->meshType = %d;", i, obj->meshType);
+//         Con::errorf("   meshes[%d]->mBounds.minExtents.set(%g, %g, %g);", i, obj->mBounds.minExtents.x, obj->mBounds.minExtents.y, obj->mBounds.minExtents.z);
+//         Con::errorf("   meshes[%d]->mBounds.maxExtents.set(%g, %g, %g);", i, obj->mBounds.maxExtents.x, obj->mBounds.maxExtents.y, obj->mBounds.maxExtents.z);
+//         Con::errorf("   meshes[%d]->mCenter.set(%g, %g, %g);", i, obj->mCenter.x, obj->mCenter.y, obj->mCenter.z);
+//         Con::errorf("   meshes[%d]->mRadius = %g;", i, obj->mRadius);
+//         Con::errorf("   meshes[%d]->mVisibility = %g;", i, obj->mVisibility);
+//         Con::errorf("   meshes[%d]->mDynamic = %d;", i, obj->mDynamic);
+//         Con::errorf("   meshes[%d]->parentMesh = %d;", i, obj->parentMesh);
+//         Con::errorf("   meshes[%d]->numFrames = %d;", i, obj->numFrames);
+//         Con::errorf("   meshes[%d]->numMatFrames = %d;", i, obj->numMatFrames);
+//         Con::errorf("   meshes[%d]->vertsPerFrame = %d;", i, obj->vertsPerFrame);
+//
+//         Con::errorf("\n   meshes[%d]->verts.set(dMalloc(%d * sizeof(Point3F)), %d);", obj->verts.size(), obj->verts.size());
+//         for (U32 j = 0; j < obj->verts.size(); j++)
+//            Con::errorf("   meshes[%d]->verts[%d].set(%g, %g, %g);", i, j, obj->verts[j].x, obj->verts[j].y, obj->verts[j].z);
+//
+//         Con::errorf("\n   meshes[%d]->norms.set(dMalloc(%d * sizeof(Point3F)), %d);", obj->norms.size(), obj->norms.size());
+//         for (U32 j = 0; j < obj->norms.size(); j++)
+//            Con::errorf("   meshes[%d]->norms[%d].set(%g, %g, %g);", i, j, obj->norms[j].x, obj->norms[j].y, obj->norms[j].z);
+//
+//         Con::errorf("\n   meshes[%d]->tverts.set(dMalloc(%d * sizeof(Point2F)), %d);", obj->tverts.size(), obj->tverts.size());
+//         for (U32 j = 0; j < obj->tverts.size(); j++)
+//            Con::errorf("   meshes[%d]->tverts[%d].set(%g, %g);", i, j, obj->tverts[j].x, obj->tverts[j].y);
+//
+//         Con::errorf("\n   meshes[%d]->primitives.set(dMalloc(%d * sizeof(TSDrawPrimitive)), %d);", obj->primitives.size(), obj->primitives.size());
+//         for (U32 j = 0; j < obj->primitives.size(); j++)
+//         {
+//            TSDrawPrimitive& prim = obj->primitives[j];
+//
+//            Con::errorf("   meshes[%d]->primitives[%d].start = %d;", i, j, prim.start);
+//            Con::errorf("   meshes[%d]->primitives[%d].numElements = %d;", i, j, prim.numElements);
+//            Con::errorf("   meshes[%d]->primitives[%d].matIndex = %d;", i, j, prim.matIndex);
+//         }
+//
+//         Con::errorf("\n   meshes[%d]->encodedNorms.set(dMalloc(%d * sizeof(U8)), %d);", obj->encodedNorms.size(), obj->encodedNorms.size());
+//         for (U32 j = 0; j < obj->encodedNorms.size(); j++)
+//            Con::errorf("   meshes[%d]->encodedNorms[%d] = %c;", i, j, obj->encodedNorms[j]);
+//
+//         Con::errorf("\n   meshes[%d]->indices.set(dMalloc(%d * sizeof(U16)), %d);", obj->indices.size(), obj->indices.size());
+//         for (U32 j = 0; j < obj->indices.size(); j++)
+//            Con::errorf("   meshes[%d]->indices[%d] = %d;", i, j, obj->indices[j]);
+//
+//         Con::errorf("\n   meshes[%d]->tangents.set(dMalloc(%d * sizeof(Point4F)), %d);", obj->tangents.size(), obj->tangents.size());
+//         for (U32 j = 0; j < obj->tangents.size(); j++)
+//            Con::errorf("   meshes[%d]->tangents[%d].set(%g, %g, %g, %g);", i, j, obj->tangents[j].x, obj->tangents[j].y, obj->tangents[j].z, obj->tangents[j].w);
+//
+//         Con::errorf("   meshes[%d]->billboardAxis.set(%g, %g, %g);", i, obj->billboardAxis.x, obj->billboardAxis.y, obj->billboardAxis.z);
+//
+//         Con::errorf("\n   meshes[%d]->planeNormals.set(dMalloc(%d * sizeof(Point3F)), %d);", obj->planeNormals.size(), obj->planeNormals.size());
+//         for (U32 j = 0; j < obj->planeNormals.size(); j++)
+//            Con::errorf("   meshes[%d]->planeNormals[%d].set(%g, %g, %g);", i, j, obj->planeNormals[j].x, obj->planeNormals[j].y, obj->planeNormals[j].z);
+//
+//         Con::errorf("\n   meshes[%d]->planeConstants.set(dMalloc(%d * sizeof(F32)), %d);", obj->planeConstants.size(), obj->planeConstants.size());
+//         for (U32 j = 0; j < obj->planeConstants.size(); j++)
+//            Con::errorf("   meshes[%d]->planeConstants[%d] = %g;", i, j, obj->planeConstants[j]);
+//
+//         Con::errorf("\n   meshes[%d]->planeMaterials.set(dMalloc(%d * sizeof(U32)), %d);", obj->planeMaterials.size(), obj->planeMaterials.size());
+//         for (U32 j = 0; j < obj->planeMaterials.size(); j++)
+//            Con::errorf("   meshes[%d]->planeMaterials[%d] = %d;", i, j, obj->planeMaterials[j]);
+//
+//         Con::errorf("   meshes[%d]->planesPerFrame = %d;", i, obj->planesPerFrame);
+//         Con::errorf("   meshes[%d]->mergeBufferStart = %d;", i, obj->mergeBufferStart);
+//      }
+//   }
+//
+//   Con::errorf("\nalphaIn.set(dMalloc(%d * sizeof(F32)), %d);", alphaIn.size(), alphaIn.size());
+//   for (U32 i = 0; i < alphaIn.size(); i++)
+//      Con::errorf("   alphaIn[%d] = %g;", i, alphaIn[i]);
+//
+//   Con::errorf("\nalphaOut.set(dMalloc(%d * sizeof(F32)), %d);", alphaOut.size(), alphaOut.size());
+//   for (U32 i = 0; i < alphaOut.size(); i++)
+//      Con::errorf("   alphaOut[%d] = %g;", i, alphaOut[i]);
+//
+//   Con::errorf("numSequences = %d", sequences.size());
+//   Con::errorf("numNodeRotations = %d", nodeRotations.size());
+//   Con::errorf("numNodeTranslations = %d", nodeTranslations.size());
+//   Con::errorf("numNodeUniformScales = %d", nodeUniformScales.size());
+//   Con::errorf("numNodeAlignedScales = %d", nodeAlignedScales.size());
+//   Con::errorf("numNodeArbitraryScaleRots = %d", nodeArbitraryScaleRots.size());
+//   Con::errorf("numNodeArbitraryScaleFactors = %d", nodeArbitraryScaleFactors.size());
+//   Con::errorf("numGroundRotations = %d", groundRotations.size());
+//   Con::errorf("numGroundTranslations = %d", groundTranslations.size());
+//   Con::errorf("numTriggers = %d", triggers.size());
+//   Con::errorf("numBillboardDetails = %d", billboardDetails.size());
+
+   //Con::errorf("\nnumDetailCollisionAccelerators = %d", detailCollisionAccelerators.size());
+   //for (U32 i = 0; i < detailCollisionAccelerators.size(); i++)
    //{
-   //   Con::errorf("\nnodes.set(dMalloc(%d * sizeof(Node)), %d);", nodes.size(), nodes.size());
-   //   for (U32 i = 0; i < nodes.size(); i++)
+   //   ConvexHullAccelerator* obj = detailCollisionAccelerators[i];
+
+   //   if (obj)
    //   {
-   //      Node& obj = nodes[i];
+   //      Con::errorf("   detailCollisionAccelerators[%d].numVerts = %d", i, obj->numVerts);
 
-   //      Con::errorf("   nodes[%d].nameIndex = %d;", i, obj.nameIndex);
-   //      Con::errorf("   nodes[%d].parentIndex = %d;", i, obj.parentIndex);
-   //      Con::errorf("   nodes[%d].firstObject = %d;", i, obj.firstObject);
-   //      Con::errorf("   nodes[%d].firstChild = %d;", i, obj.firstChild);
-   //      Con::errorf("   nodes[%d].nextSibling = %d;", i, obj.nextSibling);
-   //   }
-
-   //   Con::errorf("\nobjects.set(dMalloc(%d * sizeof(Object)), %d);", objects.size(), objects.size());
-   //   for (U32 i = 0; i < objects.size(); i++)
-   //   {
-   //      Object& obj = objects[i];
-
-   //      Con::errorf("   objects[%d].nameIndex = %d;", i, obj.nameIndex);
-   //      Con::errorf("   objects[%d].numMeshes = %d;", i, obj.numMeshes);
-   //      Con::errorf("   objects[%d].startMeshIndex = %d;", i, obj.startMeshIndex);
-   //      Con::errorf("   objects[%d].nodeIndex = %d;", i, obj.nodeIndex);
-   //      Con::errorf("   objects[%d].nextSibling = %d;", i, obj.nextSibling);
-   //      Con::errorf("   objects[%d].firstDecal = %d;", i, obj.firstDecal);
-   //   }
-
-   //   Con::errorf("\nobjectStates.set(dMalloc(%d * sizeof(ObjectState)), %d);", objectStates.size(), objectStates.size());
-   //   for (U32 i = 0; i < objectStates.size(); i++)
-   //   {
-   //      ObjectState& obj = objectStates[i];
-
-   //      Con::errorf("   objectStates[%d].vis = %g;", i, obj.vis);
-   //      Con::errorf("   objectStates[%d].frameIndex = %d;", i, obj.frameIndex);
-   //      Con::errorf("   objectStates[%d].matFrameIndex = %d;", i, obj.matFrameIndex);
-   //   }
-   //   Con::errorf("\nsubShapeFirstNode.set(dMalloc(%d * sizeof(S32)), %d);", subShapeFirstNode.size(), subShapeFirstNode.size());
-   //   for (U32 i = 0; i < subShapeFirstNode.size(); i++)
-   //      Con::errorf("   subShapeFirstNode[%d] = %d;", i, subShapeFirstNode[i]);
-
-   //   Con::errorf("\nsubShapeFirstObject.set(dMalloc(%d * sizeof(S32)), %d);", subShapeFirstObject.size(), subShapeFirstObject.size());
-   //   for (U32 i = 0; i < subShapeFirstObject.size(); i++)
-   //      Con::errorf("   subShapeFirstObject[%d] = %d;", i, subShapeFirstObject[i]);
-
-   //   //Con::errorf("numDetailFirstSkins = %d", detailFirstSkin.size());
-   //   Con::errorf("\nsubShapeNumNodes.set(dMalloc(%d * sizeof(S32)), %d);", subShapeNumNodes.size(), subShapeNumNodes.size());
-   //   for (U32 i = 0; i < subShapeNumNodes.size(); i++)
-   //      Con::errorf("   subShapeNumNodes[%d] = %d;", i, subShapeNumNodes[i]);
-
-   //   Con::errorf("\nsubShapeNumObjects.set(dMalloc(%d * sizeof(S32)), %d);", subShapeNumObjects.size(), subShapeNumObjects.size());
-   //   for (U32 i = 0; i < subShapeNumObjects.size(); i++)
-   //      Con::errorf("   subShapeNumObjects[%d] = %d;", i, subShapeNumObjects[i]);
-
-   //   Con::errorf("\ndetails.set(dMalloc(%d * sizeof(Detail)), %d);", details.size(), details.size());
-   //   for (U32 i = 0; i < details.size(); i++)
-   //   {
-   //      Detail& obj = details[i];
-
-   //      Con::errorf("   details[%d].nameIndex = %d;", i, obj.nameIndex);
-   //      Con::errorf("   details[%d].subShapeNum = %d;", i, obj.subShapeNum);
-   //      Con::errorf("   details[%d].objectDetailNum = %d;", i, obj.objectDetailNum);
-   //      Con::errorf("   details[%d].size = %g;", i, obj.size);
-   //      Con::errorf("   details[%d].averageError = %g;", i, obj.averageError);
-   //      Con::errorf("   details[%d].maxError = %g;", i, obj.maxError);
-   //      Con::errorf("   details[%d].polyCount = %d;", i, obj.polyCount);
-   //   }
-
-   //   Con::errorf("\ndefaultRotations.set(dMalloc(%d * sizeof(Quat16)), %d);", defaultRotations.size(), defaultRotations.size());
-   //   for (U32 i = 0; i < defaultRotations.size(); i++)
-   //   {
-   //      Con::errorf("   defaultRotations[%d].x = %g;", i, defaultRotations[i].x);
-   //      Con::errorf("   defaultRotations[%d].y = %g;", i, defaultRotations[i].y);
-   //      Con::errorf("   defaultRotations[%d].z = %g;", i, defaultRotations[i].z);
-   //      Con::errorf("   defaultRotations[%d].w = %g;", i, defaultRotations[i].w);
-   //   }
-
-   //   Con::errorf("\ndefaultTranslations.set(dMalloc(%d * sizeof(Point3F)), %d);", defaultTranslations.size(), defaultTranslations.size());
-   //   for (U32 i = 0; i < defaultTranslations.size(); i++)
-   //      Con::errorf("   defaultTranslations[%d].set(%g, %g, %g);", i, defaultTranslations[i].x, defaultTranslations[i].y, defaultTranslations[i].z);
-
-   //   Con::errorf("\nsubShapeFirstTranslucentObject.set(dMalloc(%d * sizeof(S32)), %d);", subShapeFirstTranslucentObject.size(), subShapeFirstTranslucentObject.size());
-   //   for (U32 i = 0; i < subShapeFirstTranslucentObject.size(); i++)
-   //      Con::errorf("   subShapeFirstTranslucentObject[%d] = %d;", i, subShapeFirstTranslucentObject[i]);
-
-   //   Con::errorf("\nmeshes.set(dMalloc(%d * sizeof(TSMesh)), %d);", meshes.size(), meshes.size());
-   //   for (U32 i = 0; i < meshes.size(); i++)
-   //   {
-   //      TSMesh* obj = meshes[i];
-
-   //      if (obj)
+   //      for (U32 j = 0; j < obj->numVerts; j++)
    //      {
-   //         Con::errorf("   meshes[%d]->meshType = %d;", i, obj->meshType);
-   //         Con::errorf("   meshes[%d]->mBounds.mMin.set(%g, %g, %g);", i, obj->mBounds.mMin.x, obj->mBounds.mMin.y, obj->mBounds.mMin.z);
-   //         Con::errorf("   meshes[%d]->mBounds.mMax.set(%g, %g, %g);", i, obj->mBounds.mMax.x, obj->mBounds.mMax.y, obj->mBounds.mMax.z);
-   //         Con::errorf("   meshes[%d]->mCenter.set(%g, %g, %g);", i, obj->mCenter.x, obj->mCenter.y, obj->mCenter.z);
-   //         Con::errorf("   meshes[%d]->mRadius = %g;", i, obj->mRadius);
-   //         Con::errorf("   meshes[%d]->mVisibility = %g;", i, obj->mVisibility);
-   //         Con::errorf("   meshes[%d]->mDynamic = %d;", i, obj->mDynamic);
-   //         Con::errorf("   meshes[%d]->parentMesh = %d;", i, obj->parentMesh);
-   //         Con::errorf("   meshes[%d]->numFrames = %d;", i, obj->numFrames);
-   //         Con::errorf("   meshes[%d]->numMatFrames = %d;", i, obj->numMatFrames);
-   //         Con::errorf("   meshes[%d]->vertsPerFrame = %d;", i, obj->vertsPerFrame);
-
-   //         Con::errorf("\n   meshes[%d]->verts.set(dMalloc(%d * sizeof(Point3F)), %d);", obj->verts.size(), obj->verts.size());
-   //         for (U32 j = 0; j < obj->verts.size(); j++)
-   //            Con::errorf("   meshes[%d]->verts[%d].set(%g, %g, %g);", i, j, obj->verts[j].x, obj->verts[j].y, obj->verts[j].z);
-
-   //         Con::errorf("\n   meshes[%d]->norms.set(dMalloc(%d * sizeof(Point3F)), %d);", obj->norms.size(), obj->norms.size());
-   //         for (U32 j = 0; j < obj->norms.size(); j++)
-   //            Con::errorf("   meshes[%d]->norms[%d].set(%g, %g, %g);", i, j, obj->norms[j].x, obj->norms[j].y, obj->norms[j].z);
-
-   //         Con::errorf("\n   meshes[%d]->tverts.set(dMalloc(%d * sizeof(Point2F)), %d);", obj->tverts.size(), obj->tverts.size());
-   //         for (U32 j = 0; j < obj->tverts.size(); j++)
-   //            Con::errorf("   meshes[%d]->tverts[%d].set(%g, %g);", i, j, obj->tverts[j].x, obj->tverts[j].y);
-
-   //         Con::errorf("\n   meshes[%d]->primitives.set(dMalloc(%d * sizeof(TSDrawPrimitive)), %d);", obj->primitives.size(), obj->primitives.size());
-   //         for (U32 j = 0; j < obj->primitives.size(); j++)
-   //         {
-   //            TSDrawPrimitive& prim = obj->primitives[j];
-
-   //            Con::errorf("   meshes[%d]->primitives[%d].start = %d;", i, j, prim.start);
-   //            Con::errorf("   meshes[%d]->primitives[%d].numElements = %d;", i, j, prim.numElements);
-   //            Con::errorf("   meshes[%d]->primitives[%d].matIndex = %d;", i, j, prim.matIndex);
-   //         }
-
-   //         Con::errorf("\n   meshes[%d]->encodedNorms.set(dMalloc(%d * sizeof(U8)), %d);", obj->encodedNorms.size(), obj->encodedNorms.size());
-   //         for (U32 j = 0; j < obj->encodedNorms.size(); j++)
-   //            Con::errorf("   meshes[%d]->encodedNorms[%d] = %c;", i, j, obj->encodedNorms[j]);
-
-   //         Con::errorf("\n   meshes[%d]->indices.set(dMalloc(%d * sizeof(U16)), %d);", obj->indices.size(), obj->indices.size());
-   //         for (U32 j = 0; j < obj->indices.size(); j++)
-   //            Con::errorf("   meshes[%d]->indices[%d] = %d;", i, j, obj->indices[j]);
-
-   //         Con::errorf("\n   meshes[%d]->initialTangents.set(dMalloc(%d * sizeof(Point3F)), %d);", obj->initialTangents.size(), obj->initialTangents.size());
-   //         for (U32 j = 0; j < obj->initialTangents.size(); j++)
-   //            Con::errorf("   meshes[%d]->initialTangents[%d].set(%g, %g, %g);", i, j, obj->initialTangents[j].x, obj->initialTangents[j].y, obj->initialTangents[j].z);
-
-   //         Con::errorf("\n   meshes[%d]->tangents.set(dMalloc(%d * sizeof(Point4F)), %d);", obj->tangents.size(), obj->tangents.size());
-   //         for (U32 j = 0; j < obj->tangents.size(); j++)
-   //            Con::errorf("   meshes[%d]->tangents[%d].set(%g, %g, %g, %g);", i, j, obj->tangents[j].x, obj->tangents[j].y, obj->tangents[j].z, obj->tangents[j].w);
-
-   //         Con::errorf("   meshes[%d]->billboardAxis.set(%g, %g, %g);", i, obj->billboardAxis.x, obj->billboardAxis.y, obj->billboardAxis.z);
-
-   //         Con::errorf("\n   meshes[%d]->planeNormals.set(dMalloc(%d * sizeof(Point3F)), %d);", obj->planeNormals.size(), obj->planeNormals.size());
-   //         for (U32 j = 0; j < obj->planeNormals.size(); j++)
-   //            Con::errorf("   meshes[%d]->planeNormals[%d].set(%g, %g, %g);", i, j, obj->planeNormals[j].x, obj->planeNormals[j].y, obj->planeNormals[j].z);
-
-   //         Con::errorf("\n   meshes[%d]->planeConstants.set(dMalloc(%d * sizeof(F32)), %d);", obj->planeConstants.size(), obj->planeConstants.size());
-   //         for (U32 j = 0; j < obj->planeConstants.size(); j++)
-   //            Con::errorf("   meshes[%d]->planeConstants[%d] = %g;", i, j, obj->planeConstants[j]);
-
-   //         Con::errorf("\n   meshes[%d]->planeMaterials.set(dMalloc(%d * sizeof(U32)), %d);", obj->planeMaterials.size(), obj->planeMaterials.size());
-   //         for (U32 j = 0; j < obj->planeMaterials.size(); j++)
-   //            Con::errorf("   meshes[%d]->planeMaterials[%d] = %d;", i, j, obj->planeMaterials[j]);
-
-   //         Con::errorf("   meshes[%d]->planesPerFrame = %d;", i, obj->planesPerFrame);
-   //         Con::errorf("   meshes[%d]->mergeBufferStart = %d;", i, obj->mergeBufferStart);
+   //         Con::errorf("      verts[%d](%g, %g, %g)", j, obj->vertexList[j].x, obj->vertexList[j].y, obj->vertexList[j].z);
+   //         Con::errorf("      norms[%d](%g, %g, %g)", j, obj->normalList[j].x, obj->normalList[j].y, obj->normalList[j].z);
+   //         //U8**     emitStrings;
    //      }
    //   }
-
-   //   Con::errorf("\nalphaIn.set(dMalloc(%d * sizeof(F32)), %d);", alphaIn.size(), alphaIn.size());
-   //   for (U32 i = 0; i < alphaIn.size(); i++)
-   //      Con::errorf("   alphaIn[%d] = %g;", i, alphaIn[i]);
-
-   //   Con::errorf("\nalphaOut.set(dMalloc(%d * sizeof(F32)), %d);", alphaOut.size(), alphaOut.size());
-   //   for (U32 i = 0; i < alphaOut.size(); i++)
-   //      Con::errorf("   alphaOut[%d] = %g;", i, alphaOut[i]);
-
-   //   //Con::errorf("numSequences = %d", sequences.size());
-   //   //Con::errorf("numNodeRotations = %d", nodeRotations.size());
-   //   //Con::errorf("numNodeTranslations = %d", nodeTranslations.size());
-   //   //Con::errorf("numNodeUniformScales = %d", nodeUniformScales.size());
-   //   //Con::errorf("numNodeAlignedScales = %d", nodeAlignedScales.size());
-   //   //Con::errorf("numNodeArbitraryScaleRots = %d", nodeArbitraryScaleRots.size());
-   //   //Con::errorf("numNodeArbitraryScaleFactors = %d", nodeArbitraryScaleFactors.size());
-   //   //Con::errorf("numGroundRotations = %d", groundRotations.size());
-   //   //Con::errorf("numGroundTranslations = %d", groundTranslations.size());
-   //   //Con::errorf("numTriggers = %d", triggers.size());
-   //   //Con::errorf("numBillboardDetails = %d", billboardDetails.size());
-
-   //   //Con::errorf("\nnumDetailCollisionAccelerators = %d", detailCollisionAccelerators.size());
-   //   //for (U32 i = 0; i < detailCollisionAccelerators.size(); i++)
-   //   //{
-   //   //   ConvexHullAccelerator* obj = detailCollisionAccelerators[i];
-
-   //   //   if (obj)
-   //   //   {
-   //   //      Con::errorf("   detailCollisionAccelerators[%d].numVerts = %d", i, obj->numVerts);
-
-   //   //      for (U32 j = 0; j < obj->numVerts; j++)
-   //   //      {
-   //   //         Con::errorf("      verts[%d](%g, %g, %g)", j, obj->vertexList[j].x, obj->vertexList[j].y, obj->vertexList[j].z);
-   //   //         Con::errorf("      norms[%d](%g, %g, %g)", j, obj->normalList[j].x, obj->normalList[j].y, obj->normalList[j].z);
-   //   //         //U8**     emitStrings;
-   //   //      }
-   //   //   }
-   //   //}
-
-   //   Con::errorf("\nnames.setSize(%d);", names.size());
-   //   for (U32 i = 0; i < names.size(); i++)
-   //      Con::errorf("   names[%d] = StringTable->insert(\"%s\");", i, names[i]);
-
-   //   //TSMaterialList * materialList;
-
-   //   Con::errorf("\nradius = %g;", radius);
-   //   Con::errorf("tubeRadius = %g;", tubeRadius);
-   //   Con::errorf("center.set(%g, %g, %g);", center.x, center.y, center.z);
-   //   Con::errorf("bounds.mMin.set(%g, %g, %g);", bounds.mMin.x, bounds.mMin.y, bounds.mMin.z);
-   //   Con::errorf("bounds.mMax.set(%g, %g, %g);", bounds.mMax.x, bounds.mMax.y, bounds.mMax.z);
-
-   //   Con::errorf("\nmExporterVersion = %d;", mExporterVersion);
-   //   Con::errorf("mSmallestVisibleSize = %g;", mSmallestVisibleSize);
-   //   Con::errorf("mSmallestVisibleDL = %d;", mSmallestVisibleDL);
-   //   Con::errorf("mReadVersion = %d;", mReadVersion);
-   //   Con::errorf("mFlags = %d;", mFlags);
-   //   //Con::errorf("data = %d", data);
-   //   Con::errorf("mSequencesConstructed = %d;", mSequencesConstructed);
    //}
+
+//   Con::errorf("\nnames.setSize(%d);", names.size());
+//   for (U32 i = 0; i < names.size(); i++)
+//      Con::errorf("   names[%d] = StringTable->insert(\"%s\");", i, names[i].c_str());
+//
+//   TSMaterialList * materialList;
+//
+//   Con::errorf("\nradius = %g;", radius);
+//   Con::errorf("tubeRadius = %g;", tubeRadius);
+//   Con::errorf("center.set(%g, %g, %g);", center.x, center.y, center.z);
+//   Con::errorf("bounds.minExtents.set(%g, %g, %g);", bounds.minExtents.x, bounds.minExtents.y, bounds.minExtents.z);
+//   Con::errorf("bounds.maxExtents.set(%g, %g, %g);", bounds.maxExtents.x, bounds.maxExtents.y, bounds.maxExtents.z);
+//
+//   Con::errorf("\nmExporterVersion = %d;", mExporterVersion);
+//   Con::errorf("mSmallestVisibleSize = %g;", mSmallestVisibleSize);
+//   Con::errorf("mSmallestVisibleDL = %d;", mSmallestVisibleDL);
+//   Con::errorf("mReadVersion = %d;", mReadVersion);
+//   Con::errorf("mFlags = %d;", mFlags);
+//   //Con::errorf("data = %d", data);
+//   Con::errorf("mSequencesConstructed = %d;", mSequencesConstructed);
+//}
 
    return true;
 }
@@ -2321,7 +2298,7 @@ void TSShape::fixEndian(S32 * buff32, S16 * buff16, S8 *, S32 count32, S32 count
 //-------------------------------------------------
 // read/write sequence
 //-------------------------------------------------
-void TSShape::Sequence::read(std::iostream s, bool readNameIndex)
+void TSShape::Sequence::read(std::iostream& s, bool readNameIndex)
 {
     AssertISV(smReadVersion>=19,"Reading old sequence");
     
@@ -2374,22 +2351,22 @@ void TSShape::Sequence::read(std::iostream s, bool readNameIndex)
     s >> toolBegin;
     
     // now the membership sets:
-    s >> rotationMatters;
+    rotationMatters.read(s);
     if (TSShape::smReadVersion<22)
         translationMatters=rotationMatters;
     else
     {
-        s >> translationMatters;
-        s >> scaleMatters;
+        translationMatters.read(s);
+        scaleMatters.read(s);
     }
     
     TSIntegerSet dummy;
-    s >> dummy; // DEPRECIATED: Decals
-    s >> dummy; // DEPRECIATED: Ifl materials
+    dummy.read(s); // DEPRECIATED: Decals
+    dummy.read(s); // DEPRECIATED: Ifl materials
     
-    s >> visMatters;
-    s >> frameMatters;
-    s >> matFrameMatters;
+    visMatters.read(s);
+    frameMatters.read(s);
+    matFrameMatters.read(s);
     
     dirtyFlags = 0;
     if (rotationMatters.testAll() || translationMatters.testAll() || scaleMatters.testAll())
@@ -2402,7 +2379,7 @@ void TSShape::Sequence::read(std::iostream s, bool readNameIndex)
         dirtyFlags |= TSShapeInstance::MatFrameDirty;
 }
 
-void TSShape::Sequence::write(std::iostream stream, bool writeNameIndex) const
+void TSShape::Sequence::write(std::iostream& stream, bool writeNameIndex) const
 {
     if (writeNameIndex)
         stream << nameIndex;
@@ -2422,15 +2399,15 @@ void TSShape::Sequence::write(std::iostream stream, bool writeNameIndex) const
     stream << toolBegin;
     
     // now the membership sets:
-    stream << rotationMatters;
-    stream << translationMatters;
-    stream << scaleMatters;
+    rotationMatters.write(stream);
+    translationMatters.write(stream);
+    scaleMatters.write(stream);
     
     TSIntegerSet dummy;
-    stream << dummy; // DEPRECIATED: Decals
-    stream << dummy; // DEPRECIATED: Ifl materials
-    
-    stream << visMatters;
-    stream << frameMatters;
-    stream << matFrameMatters;
+    dummy.write(stream); // DEPRECIATED: Decals
+    dummy.write(stream); // DEPRECIATED: Ifl materials
+
+    visMatters.write(stream);
+    frameMatters.write(stream);
+    matFrameMatters.write(stream);
 }

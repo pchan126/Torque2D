@@ -28,10 +28,10 @@
 #include "materials/matTextureTarget.h"
 #include "materials/materialFeatureTypes.h"
 #include "materials/materialManager.h"
-#include "2d/scene/sceneRenderState.h"
+#include "scene/sceneRenderState.h"
 //#include "graphics/gfxPrimitiveBuffer.h"
 #include "graphics/gfxTextureManager.h"
-#include "graphics/sim/cubemapAsset.h"
+//#include "gfx/sim/cubemapData.h"
 
 RenderPassData::RenderPassData()
 {
@@ -99,10 +99,7 @@ ProcessedMaterial::ProcessedMaterial()
 
 ProcessedMaterial::~ProcessedMaterial()
 {
-    for(U32 i = 0; i < (U32)mPasses.size(); i++)
-    {
-        dFree(mPasses[i]);
-    }
+   for_each( mPasses.begin(), mPasses.end(), delete_pointer() );
 }
 
 void ProcessedMaterial::_setBlendState(Material::BlendOp blendOp, GFXStateBlockDesc& desc )
@@ -144,7 +141,7 @@ void ProcessedMaterial::_setBlendState(Material::BlendOp blendOp, GFXStateBlockD
    }
 }
 
-void ProcessedMaterial::setBuffers(GFXVertexBufferHandleBase* vertBuffer) // , GFXPrimitiveBufferHandle* primBuffer)
+void ProcessedMaterial::setBuffers(GFXVertexBufferHandleBase* vertBuffer, GFXPrimitiveBufferHandle* primBuffer)
 {
    GFX->setVertexBuffer( *vertBuffer );
 //   GFX->setPrimitiveBuffer( *primBuffer );
@@ -220,13 +217,13 @@ void ProcessedMaterial::_initPassStateBlock( RenderPassData *rpd, GFXStateBlockD
       _setBlendState( rpd->mBlendOp, result );
    }
 
-   if (mMaterial->isDoubleSided())
+   if (mMaterial && mMaterial->isDoubleSided())
    {
       result.cullDefined = true;
       result.cullMode = GFXCullNone;         
    }
 
-   if(mMaterial->mAlphaTest)
+   if(mMaterial && mMaterial->mAlphaTest)
    {
       result.alphaDefined = true;
       result.alphaTestEnable = mMaterial->mAlphaTest;
@@ -238,7 +235,7 @@ void ProcessedMaterial::_initPassStateBlock( RenderPassData *rpd, GFXStateBlockD
    NamedTexTarget *texTarget;
 
    U32 maxAnisotropy = 1;
-   if ( mMaterial->mUseAnisotropic[ rpd->mStageNum ] )
+   if (mMaterial &&  mMaterial->mUseAnisotropic[ rpd->mStageNum ] )
       maxAnisotropy = MATMGR->getDefaultAnisotropy();
 
    for( U32 i=0; i < rpd->mNumTex; i++ )
@@ -290,10 +287,10 @@ void ProcessedMaterial::_initPassStateBlock( RenderPassData *rpd, GFXStateBlockD
    // The prepass will take care of writing to the 
    // zbuffer, so we don't have to by default.
    // The prepass can't write to the backbuffer's zbuffer in OpenGL.
-//   if (  MATMGR->getPrePassEnabled() && 
-//         !GFX->getAdapterType() == OpenGL && 
-//         !mFeatures.hasFeature(MFT_ForwardShading))
-//      result.setZReadWrite( result.zEnable, false );
+   if (  MATMGR->getPrePassEnabled() && 
+         !GFX->getAdapterType() == OpenGL && 
+         !mFeatures.hasFeature(MFT_ForwardShading))
+      result.setZReadWrite( result.zEnable, false );
 
    result.addDesc(mUserDefined);
 }
@@ -393,11 +390,11 @@ void ProcessedMaterial::_setStageData()
          mStages[i].setTex( MFT_DiffuseMap, _createTexture( mMaterial->mDiffuseMapFilename[i], &GFXDefaultStaticDiffuseProfile ) );
          if (!mStages[i].getTex( MFT_DiffuseMap ))
          {
-            Con::errorf("Failed to load diffuse map %s for stage %i", _getTexturePath(mMaterial->mDiffuseMapFilename[i]).c_str(), i);
+            mMaterial->logError("Failed to load diffuse map %s for stage %i", _getTexturePath(mMaterial->mDiffuseMapFilename[i]).c_str(), i);
             
-            // Load a debug texture to make it clear to the user
+            // Load a debug texture to make it clear to the user 
             // that the texture for this stage was missing.
-//            mStages[i].setTex( MFT_DiffuseMap, _createTexture( GFXTextureManager::getMissingTexturePath(), &GFXDefaultStaticDiffuseProfile ) );
+            mStages[i].setTex( MFT_DiffuseMap, _createTexture( GFXTextureManager::getMissingTexturePath().c_str(), &GFXDefaultStaticDiffuseProfile ) );
          }
       }
 
@@ -406,7 +403,7 @@ void ProcessedMaterial::_setStageData()
       {
          mStages[i].setTex( MFT_OverlayMap, _createTexture( mMaterial->mOverlayMapFilename[i], &GFXDefaultStaticDiffuseProfile ) );
          if(!mStages[i].getTex( MFT_OverlayMap ))
-            Con::errorf("Failed to load overlay map %s for stage %i", _getTexturePath(mMaterial->mOverlayMapFilename[i]).c_str(), i);
+            mMaterial->logError("Failed to load overlay map %s for stage %i", _getTexturePath(mMaterial->mOverlayMapFilename[i]).c_str(), i);
       }
 
       // LightMap
@@ -414,7 +411,7 @@ void ProcessedMaterial::_setStageData()
       {
          mStages[i].setTex( MFT_LightMap, _createTexture( mMaterial->mLightMapFilename[i], &GFXDefaultStaticDiffuseProfile ) );
          if(!mStages[i].getTex( MFT_LightMap ))
-            Con::errorf("Failed to load light map %s for stage %i", _getTexturePath(mMaterial->mLightMapFilename[i]).c_str(), i);
+            mMaterial->logError("Failed to load light map %s for stage %i", _getTexturePath(mMaterial->mLightMapFilename[i]).c_str(), i);
       }
 
       // ToneMap
@@ -422,7 +419,7 @@ void ProcessedMaterial::_setStageData()
       {
          mStages[i].setTex( MFT_ToneMap, _createTexture( mMaterial->mToneMapFilename[i], &GFXDefaultStaticDiffuseProfile ) );
          if(!mStages[i].getTex( MFT_ToneMap ))
-            Con::errorf("Failed to load tone map %s for stage %i", _getTexturePath(mMaterial->mToneMapFilename[i]).c_str(), i);
+            mMaterial->logError("Failed to load tone map %s for stage %i", _getTexturePath(mMaterial->mToneMapFilename[i]).c_str(), i);
       }
 
       // DetailMap
@@ -430,7 +427,7 @@ void ProcessedMaterial::_setStageData()
       {
          mStages[i].setTex( MFT_DetailMap, _createTexture( mMaterial->mDetailMapFilename[i], &GFXDefaultStaticDiffuseProfile ) );
          if(!mStages[i].getTex( MFT_DetailMap ))
-            Con::errorf("Failed to load detail map %s for stage %i", _getTexturePath(mMaterial->mDetailMapFilename[i]).c_str(), i);
+            mMaterial->logError("Failed to load detail map %s for stage %i", _getTexturePath(mMaterial->mDetailMapFilename[i]).c_str(), i);
       }
 
       // NormalMap
@@ -438,7 +435,7 @@ void ProcessedMaterial::_setStageData()
       {
          mStages[i].setTex( MFT_NormalMap, _createTexture( mMaterial->mNormalMapFilename[i], &GFXDefaultStaticNormalMapProfile ) );
          if(!mStages[i].getTex( MFT_NormalMap ))
-            Con::errorf("Failed to load normal map %s for stage %i", _getTexturePath(mMaterial->mNormalMapFilename[i]).c_str(), i);
+            mMaterial->logError("Failed to load normal map %s for stage %i", _getTexturePath(mMaterial->mNormalMapFilename[i]).c_str(), i);
       }
 
       // Detail Normal Map
@@ -446,7 +443,7 @@ void ProcessedMaterial::_setStageData()
       {
          mStages[i].setTex( MFT_DetailNormalMap, _createTexture( mMaterial->mDetailNormalMapFilename[i], &GFXDefaultStaticNormalMapProfile ) );
          if(!mStages[i].getTex( MFT_DetailNormalMap ))
-            Con::errorf("Failed to load normal map %s for stage %i", _getTexturePath(mMaterial->mDetailNormalMapFilename[i]).c_str(), i);
+            mMaterial->logError("Failed to load normal map %s for stage %i", _getTexturePath(mMaterial->mDetailNormalMapFilename[i]).c_str(), i);
       }
       
       // SpecularMap
@@ -454,30 +451,30 @@ void ProcessedMaterial::_setStageData()
       {
          mStages[i].setTex( MFT_SpecularMap, _createTexture( mMaterial->mSpecularMapFilename[i], &GFXDefaultStaticDiffuseProfile ) );
          if(!mStages[i].getTex( MFT_SpecularMap ))
-            Con::errorf("Failed to load specular map %s for stage %i", _getTexturePath(mMaterial->mSpecularMapFilename[i]).c_str(), i);
+            mMaterial->logError("Failed to load specular map %s for stage %i", _getTexturePath(mMaterial->mSpecularMapFilename[i]).c_str(), i);
       }
 
-      // EnvironmentMap
+      // EnironmentMap
       if( mMaterial->mEnvMapFilename[i].isNotEmpty() )
       {
          mStages[i].setTex( MFT_EnvMap, _createTexture( mMaterial->mEnvMapFilename[i], &GFXDefaultStaticDiffuseProfile ) );
          if(!mStages[i].getTex( MFT_EnvMap ))
-            Con::errorf("Failed to load environment map %s for stage %i", _getTexturePath(mMaterial->mEnvMapFilename[i]).c_str(), i);
+            mMaterial->logError("Failed to load environment map %s for stage %i", _getTexturePath(mMaterial->mEnvMapFilename[i]).c_str(), i);
       }
    }
 
-	mMaterial->mCubemapAsset = dynamic_cast<CubemapAsset*>(Sim::findObject( mMaterial->mCubemapName ));
-	if( !mMaterial->mCubemapAsset )
-		mMaterial->mCubemapAsset = NULL;
+	mMaterial->mCubemapData = dynamic_cast<CubemapData*>(Sim::findObject( mMaterial->mCubemapName ));
+	if( !mMaterial->mCubemapData )
+		mMaterial->mCubemapData = NULL;
 		
 		
    // If we have a cubemap put it on stage 0 (cubemaps only supported on stage 0)
-   if( mMaterial->mCubemapAsset )
+   if( mMaterial->mCubemapData )
    {
-      mMaterial->mCubemapAsset->createMap();
-      mStages[0].setCubemap( mMaterial->mCubemapAsset->mCubemap ); 
+      mMaterial->mCubemapData->createMap();
+      mStages[0].setCubemap( mMaterial->mCubemapData->mCubemap ); 
       if ( !mStages[0].getCubemap() )
-         Con::errorf("Failed to load cubemap");
+         mMaterial->logError("Failed to load cubemap");
    }
 }
 

@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		303CE056184C331D00794ACC /* tsAnimate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 303CE051184C331D00794ACC /* tsAnimate.cpp */; };
+		303CE057184C331D00794ACC /* tsMaterialList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 303CE052184C331D00794ACC /* tsMaterialList.cpp */; };
+		303CE058184C331D00794ACC /* tsRenderState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 303CE054184C331D00794ACC /* tsRenderState.cpp */; };
+		303CE059184C331D00794ACC /* tsThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 303CE055184C331D00794ACC /* tsThread.cpp */; };
+		3040FEB4184D955A00092C04 /* processedMaterial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3040FEB2184D955A00092C04 /* processedMaterial.cpp */; };
 		4B8AA028104652588B331564 /* osxMutex.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA880AFA0FE58E4348849 /* osxMutex.mm */; };
 		4B8AA08D4C7EEA1380B27B30 /* osxFileIO.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AA0B11DDA96BD47186F76 /* osxFileIO.mm */; };
 		4B8AA0DEAAE60B4260BBA860 /* osxString.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4B8AADA0924D86266231C195 /* osxString.mm */; };
@@ -501,6 +506,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		303CE051184C331D00794ACC /* tsAnimate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsAnimate.cpp; sourceTree = "<group>"; };
+		303CE052184C331D00794ACC /* tsMaterialList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsMaterialList.cpp; sourceTree = "<group>"; };
+		303CE053184C331D00794ACC /* tsMaterialList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsMaterialList.h; sourceTree = "<group>"; };
+		303CE054184C331D00794ACC /* tsRenderState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsRenderState.cpp; sourceTree = "<group>"; };
+		303CE055184C331D00794ACC /* tsThread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsThread.cpp; sourceTree = "<group>"; };
+		3040FEB2184D955A00092C04 /* processedMaterial.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = processedMaterial.cpp; path = ../../../source/materials/processedMaterial.cpp; sourceTree = "<group>"; };
+		3040FEB3184D955A00092C04 /* processedMaterial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = processedMaterial.h; path = ../../../source/materials/processedMaterial.h; sourceTree = "<group>"; };
 		4B8AA0B11DDA96BD47186F76 /* osxFileIO.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = osxFileIO.mm; sourceTree = "<group>"; };
 		4B8AA0CE464FE0593242589F /* Torque2DGame-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.info; name = "Torque2DGame-Info.plist"; path = "Torque2D/Torque2DGame-Info.plist"; sourceTree = SOURCE_ROOT; };
 		4B8AA0D42C42CB1100392605 /* FilterImageAsset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilterImageAsset.h; sourceTree = "<group>"; };
@@ -2406,6 +2418,8 @@
 		C54195904BCD59B5039715B8 /* materials */ = {
 			isa = PBXGroup;
 			children = (
+				3040FEB2184D955A00092C04 /* processedMaterial.cpp */,
+				3040FEB3184D955A00092C04 /* processedMaterial.h */,
 				C541908FA12009B3F92FC04D /* materialDefinition.cpp */,
 				C5419BADA769E6CF85BFD2B2 /* materialDefinition.h */,
 				C5419A7EB6970A88A41F9C69 /* materialList.cpp */,
@@ -3254,6 +3268,11 @@
 		D113035D1839E3AD007EF6EC /* ts */ = {
 			isa = PBXGroup;
 			children = (
+				303CE051184C331D00794ACC /* tsAnimate.cpp */,
+				303CE052184C331D00794ACC /* tsMaterialList.cpp */,
+				303CE053184C331D00794ACC /* tsMaterialList.h */,
+				303CE054184C331D00794ACC /* tsRenderState.cpp */,
+				303CE055184C331D00794ACC /* tsThread.cpp */,
 				D113035E1839E3AD007EF6EC /* tsIntegerSet.cpp */,
 				D113035F1839E3AD007EF6EC /* tsIntegerSet.h */,
 				D11303601839E3AD007EF6EC /* tsMesh.cpp */,
@@ -3429,6 +3448,7 @@
 				865A2329165187FF00527C44 /* jfdctint.c in Sources */,
 				865A232A165187FF00527C44 /* jidctflt.c in Sources */,
 				865A232B165187FF00527C44 /* jidctfst.c in Sources */,
+				303CE057184C331D00794ACC /* tsMaterialList.cpp in Sources */,
 				865A232C165187FF00527C44 /* jidctint.c in Sources */,
 				865A232D165187FF00527C44 /* jidctred.c in Sources */,
 				865A232E165187FF00527C44 /* jmemansi.c in Sources */,
@@ -3455,6 +3475,7 @@
 				4B8AA590A413FC6964354724 /* JoystickHatswitch.m in Sources */,
 				4B8AA15ECF2A3D298AEEBA7C /* JoystickManager.m in Sources */,
 				4B8AABEC84868C0D290DA248 /* FilterImageAsset.mm in Sources */,
+				303CE058184C331D00794ACC /* tsRenderState.cpp in Sources */,
 				4B8AAFFB9D407E230CF23A5E /* GLFWWindowInputGenerator.mm in Sources */,
 				4B8AAC5C6BAF7EB28C6D04EC /* GLFWCursorController.mm in Sources */,
 				4B8AA0FE9797A22AA72F2553 /* GLFWWindow.mm in Sources */,
@@ -3520,6 +3541,7 @@
 				C5419F9F73A48E5F7762AFA7 /* ImageAsset.cc in Sources */,
 				C541939BC9278981CE8A9C4D /* ShaderAsset.cpp in Sources */,
 				C5419B86B0137E2255730B24 /* ImageFrameProvider.cc in Sources */,
+				303CE059184C331D00794ACC /* tsThread.cpp in Sources */,
 				C541975962640D170E70EF8A /* ImageFrameProviderCore.cc in Sources */,
 				C5419C89F569D36AC4D579B4 /* SpriteBatchQuery.cc in Sources */,
 				C5419782DBE3CD7E681AFABA /* ParticleSystem.cc in Sources */,
@@ -3659,6 +3681,7 @@
 				C5419EAE2E14EE66D7541AAF /* guiCtrlArrayCtrl.cc in Sources */,
 				C541955B62C4CEAA7A714D50 /* guiDragAndDropCtrl.cc in Sources */,
 				C5419FB607DB5B9A3D2D6F27 /* guiDynamicCtrlArrayCtrl.cc in Sources */,
+				3040FEB4184D955A00092C04 /* processedMaterial.cpp in Sources */,
 				C5419808CD5C8162E406D3DD /* guiFormCtrl.cc in Sources */,
 				C54197EC6501A2BB44E1408F /* guiFrameCtrl.cc in Sources */,
 				C5419DFD1C04CC3E5CC34099 /* guiPaneCtrl.cc in Sources */,
@@ -3820,6 +3843,7 @@
 				D113036C1839E3AD007EF6EC /* tsMesh.cpp in Sources */,
 				D113036D1839E3AD007EF6EC /* tsShape.cpp in Sources */,
 				D113036E1839E3AD007EF6EC /* tsShapeAlloc.cpp in Sources */,
+				303CE056184C331D00794ACC /* tsAnimate.cpp in Sources */,
 				D113036F1839E3AD007EF6EC /* tsShapeInstance.cpp in Sources */,
 				D11303701839E3AD007EF6EC /* tsTransform.cpp in Sources */,
 			);

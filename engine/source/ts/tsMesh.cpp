@@ -71,7 +71,7 @@ Vector<Point2F*> TSMesh::smTVertsList;
 Vector<Point2F*> TSMesh::smTVerts2List;
 Vector<ColorI*> TSMesh::smColorsList;
 
-Vector<bool>     TSMesh::smDataCopied;
+std::vector<bool>     TSMesh::smDataCopied;
 
 Vector<MatrixF*> TSSkinMesh::smInitTransformList;
 Vector<S32*>     TSSkinMesh::smVertexIndexList;
