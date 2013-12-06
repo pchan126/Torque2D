@@ -114,7 +114,7 @@ void Trigger::integrateObject( const F32 totalTime, const F32 elapsedTime, Debug
     }
 
     // Fetch current contacts.
-    const Scene::typeContactVector* pCurrentContacts = getCurrentContacts();
+    const t2dScene::typeContactVector* pCurrentContacts = getCurrentContacts();
 
     // Sanity!
     AssertFatal( pCurrentContacts != NULL, "Trigger::integrateObject() - Contacts not initialized correctly." );

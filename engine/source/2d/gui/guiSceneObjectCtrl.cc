@@ -40,7 +40,7 @@ IMPLEMENT_CONOBJECT(GuiSceneObjectCtrl);
 // -----------------------------------------------------------------------------
 GuiSceneObjectCtrl::GuiSceneObjectCtrl(void)
 {
-   // Reset Scene Object Name.
+   // Reset t2dScene Object Name.
    mSceneObjectName = StringTable->EmptyString;
 
    // Default to no render margin
@@ -112,39 +112,39 @@ void GuiSceneObjectCtrl::inspectPostApply()
    // Call Parent.
    Parent::inspectPostApply();
 
-   // Set the Scene Object.
+   // Set the t2dScene Object.
    setSceneObject( mSceneObjectName );
 }
 
 
 // -----------------------------------------------------------------------------
-// Set Scene Object.
+// Set t2dScene Object.
 // -----------------------------------------------------------------------------
 ConsoleMethod( GuiSceneObjectCtrl, setSceneObject, void, 3, 3, "(string obj) Set the scene-object displayed in the control."
               "@param obj Either the object's ID or its name."
               "@return No return value.")
 {
-   // Set Scene Object.
+   // Set t2dScene Object.
    object->setSceneObject( argv[2] );
 }
-// Set Scene Object.
+// Set t2dScene Object.
 void GuiSceneObjectCtrl::setSceneObject( const char* name )
 {
    // Reset existing object.
    mSelectedSceneObject = NULL;
 
-   // Get Scene Name.
+   // Get t2dScene Name.
    mSceneObjectName = StringTable->insert( name ? name : "" );
 
-   // Valid Scene Object Name?
+   // Valid t2dScene Object Name?
    if ( *mSceneObjectName )
    {
-      // Fetch Scene Object.
+      // Fetch t2dScene Object.
       SceneObject* pSceneObject = dynamic_cast<SceneObject*>(Sim::findObject( name ));
       // Valid?
       if ( pSceneObject )
       {
-        // Yes, so set Scene Object.
+        // Yes, so set t2dScene Object.
         mSelectedSceneObject = pSceneObject;
 
         // The scene object needs to be integrated otherwise the render OOBB which this GUI control
@@ -217,7 +217,7 @@ void GuiSceneObjectCtrl::onMouseDragged( const GuiEvent &event )
 }
 
 // -----------------------------------------------------------------------------
-// Render any selected Scene Object.
+// Render any selected t2dScene Object.
 // -----------------------------------------------------------------------------
 void GuiSceneObjectCtrl::onRender(Point2I offset, const RectI& updateRect)
 {
@@ -256,7 +256,7 @@ void GuiSceneObjectCtrl::onRender(Point2I offset, const RectI& updateRect)
    //   GFX->getDrawUtil()->drawRect(ctrlRect, mProfile->mBorderColor);
 
 
-   // Valid Scene Object?
+   // Valid t2dScene Object?
    if ( !mSelectedSceneObject.isNull() )
    {
       RectI objRect = updateRect;

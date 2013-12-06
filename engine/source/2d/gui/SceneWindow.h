@@ -25,7 +25,7 @@
 
 #include "gui/guiControl.h"
 #include "collection/vector.h"
-#include "2d/scene/Scene.h"
+#include "t2dScene.h"
 #include "2d/core/Vector2.h"
 #include "2d/core/Utility.h"
 
@@ -125,7 +125,7 @@ class CameraView
          // Make it real!
          mDestinationArea.extent = Point2F(1,1);
       
-      // Calculate Scene Min/Max.
+      // Calculate t2dScene Min/Max.
       mSceneMin = mDestinationArea.point;
 	  mSceneMax = mDestinationArea.point + mDestinationArea.extent;
    }
@@ -199,7 +199,7 @@ private:
     Vector2             mCameraShakeOffset;
 
     /// Misc.
-    Scene*              mpScene;
+    t2dScene *              mpScene;
 
    GFXTextureTargetRef  renderTarget;
    GFXTexHandle         mImageTextureHandle;
@@ -250,7 +250,7 @@ public:
     virtual void onRemove();
 
     /// Initialization.
-    virtual void setScene( Scene* pScene );
+    virtual void setScene( t2dScene * pScene );
     virtual void resetScene( void );
     inline void setRenderGroups( const U32 groupMask) { mRenderGroupMask = groupMask; }
     inline U32 getRenderGroupMask( void ) { return mRenderGroupMask; }
@@ -259,7 +259,7 @@ public:
 
 
     /// Get scene.
-    inline Scene* getScene( void ) const { return mpScene; };
+    inline t2dScene * getScene( void ) const { return mpScene; };
 
     /// Mouse.
     void setLockMouse( bool lockStatus ) { mLockMouse = lockStatus; };

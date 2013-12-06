@@ -104,13 +104,21 @@ public:
    virtual void set(GFXShaderConstHandle* handle, const Point3F& fv);
    virtual void set(GFXShaderConstHandle* handle, const Point4F& fv);
    virtual void set(GFXShaderConstHandle* handle, const PlaneF& fv);
+   virtual void set(GFXShaderConstHandle* handle, const ColorF& fv);
    virtual void set(GFXShaderConstHandle* handle, const S32 f);
    virtual void set(GFXShaderConstHandle* handle, const Point2I& fv);
    virtual void set(GFXShaderConstHandle* handle, const Point3I& fv);
    virtual void set(GFXShaderConstHandle* handle, const Point4I& fv);
-
    virtual void set(GFXShaderConstHandle* handle, const MatrixF& mat, const GFXShaderConstType matType = GFXSCT_Float4x4);
-   virtual void set(GFXShaderConstHandle* handle, const MatrixF* mat, const U32 arraySize, const GFXShaderConstType matrixType = GFXSCT_Float4x4);   
+   virtual void set(GFXShaderConstHandle* handle, const MatrixF* mat, const U32 arraySize, const GFXShaderConstType matrixType = GFXSCT_Float4x4);
+    virtual void set(GFXShaderConstHandle* handle, const AlignedArray<F32>& fv);
+    virtual void set(GFXShaderConstHandle* handle, const AlignedArray<Point2F>& fv);
+    virtual void set(GFXShaderConstHandle* handle, const AlignedArray<Point3F>& fv);
+    virtual void set(GFXShaderConstHandle* handle, const AlignedArray<Point4F>& fv);
+    virtual void set(GFXShaderConstHandle* handle, const AlignedArray<S32>& fv);
+    virtual void set(GFXShaderConstHandle* handle, const AlignedArray<Point2I>& fv);
+    virtual void set(GFXShaderConstHandle* handle, const AlignedArray<Point3I>& fv);
+    virtual void set(GFXShaderConstHandle* handle, const AlignedArray<Point4I>& fv);
 
    // GFXResource
    virtual const String describeSelf() const;
@@ -126,8 +134,8 @@ private:
    template<typename ConstType>
    void internalSet(GFXShaderConstHandle* handle, const ConstType& param);
    
-//   template<typename ConstType>
-//   void internalSet(GFXShaderConstHandle* handle, const AlignedArray<ConstType>& fv);
+   template<typename ConstType>
+   void internalSet(GFXShaderConstHandle* handle, const AlignedArray<ConstType>& fv);
 };
 
 #endif // _GFXOpenGL32Shader_H_

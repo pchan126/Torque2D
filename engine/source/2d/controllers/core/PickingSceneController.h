@@ -28,7 +28,7 @@
 #endif
 
 #ifndef _SCENE_H_
-#include "2d/scene/scene.h"
+#include "t2dScene.h"
 #endif
 
 #ifndef _SCENE_OBJECT_H_
@@ -61,16 +61,16 @@ public:
     inline U32 getControlLayerMask( void ) const { return mControlLayerMask; }
 
     /// Integration.
-    virtual void integrate( Scene* pScene, const F32 totalTime, const F32 elapsedTime, DebugStats* pDebugStats ) {}
+    virtual void integrate( t2dScene * pScene, const F32 totalTime, const F32 elapsedTime, DebugStats* pDebugStats ) {}
 
-    // Scene render.
-    virtual void renderOverlay( Scene* pScene, const SceneRenderState* pSceneRenderState, BatchRender* pBatchRenderer ) {}
+    // t2dScene render.
+    virtual void renderOverlay( t2dScene * pScene, const SceneRenderState* pSceneRenderState, BatchRender* pBatchRenderer ) {}
 
     /// Declare Console Object.
     DECLARE_CONOBJECT( PickingSceneController );
 
 protected:
-    WorldQuery* prepareQueryFilter( Scene* pScene, const bool clearQuery = true );
+    WorldQuery* prepareQueryFilter( t2dScene * pScene, const bool clearQuery = true );
 };
 
 #endif // _PICKING_SCENE_CONTROLLER_H_

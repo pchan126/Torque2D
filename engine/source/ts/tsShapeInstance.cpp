@@ -32,7 +32,7 @@
 #include "materials/materialManager.h"
 #include "materials/materialFeatureTypes.h"
 //#include "materials/sceneData.h"
-//#include "materials/matInstance.h"
+#include "materials/matInstance.h"
 //#include "scene/sceneRenderState.h"
 #include "graphics/primBuilder.h"
 #include "graphics/gfxDrawUtil.h"

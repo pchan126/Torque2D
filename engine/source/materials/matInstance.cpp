@@ -60,7 +60,7 @@ private:
 MatInstanceParameterHandle::MatInstanceParameterHandle(const String& name)
 {
    mName = name;
-   mProcessedHandle = NULL;
+   mProcessedHandle = nullptr;
 }
 
 bool MatInstanceParameterHandle::isValid() const
@@ -83,7 +83,7 @@ void MatInstanceParameterHandle::loadHandle(ProcessedMaterial* pmat)
 MatInstParameters::MatInstParameters() 
 { 
    mOwnParameters = false; 
-   mParameters = NULL;
+   mParameters = nullptr;
 }
 
 MatInstParameters::MatInstParameters(MaterialParameters* matParams)
@@ -231,7 +231,7 @@ MatInstance::MatInstance( Material &mat )
 
    mMaterial = &mat;
 
-   mCreatedFromCustomMaterial = (dynamic_cast<CustomMaterial *>(&mat) != NULL);
+   mCreatedFromCustomMaterial = (dynamic_cast<CustomMaterial *>(&mat) != nullptr);
 
    construct();
 }
@@ -241,13 +241,13 @@ MatInstance::MatInstance( Material &mat )
 //----------------------------------------------------------------------------
 void MatInstance::construct()
 {
-   mUserObject = NULL;
+   mUserObject = nullptr;
    mCurPass = -1;
    mProcessedMaterial = false;
-   mVertexFormat = NULL;
+   mVertexFormat = nullptr;
    mMaxStages = 1;
-   mActiveParameters = NULL;
-   mDefaultParameters = NULL;
+   mActiveParameters = nullptr;
+   mDefaultParameters = nullptr;
    mHasNormalMaps = false;
    mIsForwardLit = false;
    mIsValid = false;
@@ -322,7 +322,7 @@ bool MatInstance::processMaterial()
 
    SAFE_DELETE(mDefaultParameters);
 
-   CustomMaterial *custMat = NULL;
+   CustomMaterial *custMat = nullptr;
 
    if( dynamic_cast<CustomMaterial*>(mMaterial) )
    {
@@ -359,12 +359,12 @@ bool MatInstance::processMaterial()
       FeatureSet features( mFeatureList );
       features.exclude( MATMGR->getExclusionFeatures() );
       
-//      if( !mProcessedMaterial->init(features, mVertexFormat, mFeaturesDelegate) )
-//      {
-//         Con::errorf( "Failed to initialize material '%s'", getMaterial()->getName() );
-//         SAFE_DELETE( mProcessedMaterial );
-//         return false;
-//      }
+      if( !mProcessedMaterial->init(features, mVertexFormat, mFeaturesDelegate) )
+      {
+         Con::errorf( "Failed to initialize material '%s'", getMaterial()->getName() );
+         SAFE_DELETE( mProcessedMaterial );
+         return false;
+      }
 
       mDefaultParameters = new MatInstParameters(mProcessedMaterial->getDefaultMaterialParameters());
       mActiveParameters = mDefaultParameters;
@@ -547,7 +547,7 @@ MaterialParameters* MatInstance::getMaterialParameters()
 
 void MatInstance::dumpShaderInfo() const
 {
-   if ( mMaterial == NULL )
+   if ( mMaterial == nullptr )
    {
       Con::errorf( "Trying to get Material information on an invalid MatInstance" );
       return;
@@ -555,7 +555,7 @@ void MatInstance::dumpShaderInfo() const
 
    Con::printf( "Material Info for object %s - %s", mMaterial->getName(), mMaterial->mMapTo.c_str() );
 
-   if ( mProcessedMaterial == NULL )
+   if ( mProcessedMaterial == nullptr )
    {
       Con::printf( "  [no processed material!]" );
       return;

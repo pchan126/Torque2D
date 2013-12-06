@@ -23,23 +23,23 @@
 #include "platform/platform.h"
 #include "materials/processedCustomMaterial.h"
 
-#include "gfx/sim/cubemapData.h"
+#include "graphics/sim/cubemapData.h"
 #include "materials/sceneData.h"
 #include "shaderGen/shaderGenVars.h"
-#include "scene/sceneRenderState.h"
+//#include "scene/sceneRenderState.h"
 #include "materials/customMaterialDefinition.h"
 #include "materials/shaderData.h"
 #include "materials/materialManager.h"
 #include "materials/matTextureTarget.h"
 #include "materials/materialFeatureTypes.h"
 #include "materials/materialParameters.h"
-#include "gfx/sim/gfxStateBlockData.h"
-#include "core/util/safeDelete.h"
-#include "gfx/genericConstBuffer.h"
-#include "console/simFieldDictionary.h"
-#include "console/propertyParsing.h"
-#include "gfx/util/screenspace.h"
-#include "scene/reflectionManager.h"
+#include "graphics/sim/gfxStateBlockData.h"
+#include "memory/safeDelete.h"
+#include "graphics/genericConstBuffer.h"
+#include "sim/simFieldDictionary.h"
+//#include "console/propertyParsing.h"
+//#include "graphics/util/screenspace.h"
+//#include "scene/reflectionManager.h"
 
 
 ProcessedCustomMaterial::ProcessedCustomMaterial(Material &mat)
@@ -285,9 +285,9 @@ bool ProcessedCustomMaterial::setupPass( SceneRenderState *state, const SceneDat
    _setTextureTransforms(pass);
    _setShaderConstants(state, sgData, pass);
 
-   LightManager* lm = state ? LIGHTMGR : NULL;
+   LightManager* lm = state ? LIGHTMGR : nullptr;
    if (lm)
-      lm->setLightInfo(this, NULL, sgData, state, pass, shaderConsts);
+      lm->setLightInfo(this, nullptr, sgData, state, pass, shaderConsts);
 
    shaderConsts->setSafe(rpd->shaderHandles.mAccumTimeSC, MATMGR->getTotalTime());   
 
@@ -296,7 +296,7 @@ bool ProcessedCustomMaterial::setupPass( SceneRenderState *state, const SceneDat
 
 void ProcessedCustomMaterial::setTextureStages( SceneRenderState *state, const SceneData &sgData, U32 pass )
 {      
-   LightManager* lm = state ? LIGHTMGR : NULL;   
+   LightManager* lm = state ? LIGHTMGR : nullptr;   
    ShaderRenderPassData* rpd = _getRPD(pass);
    ShaderConstHandles* handles = _getShaderConstHandles(pass);
    GFXShaderConstBuffer* shaderConsts = _getShaderConstBuffer(pass);
@@ -372,7 +372,7 @@ void ProcessedCustomMaterial::setTextureStages( SceneRenderState *state, const S
                texTarget = rpd->mTexSlot[i].texTarget;
                if ( !texTarget )
                {
-                  GFX->setTexture( samplerRegister, NULL );
+                  GFX->setTexture( samplerRegister, nullptr );
                   break;
                }
                
@@ -390,7 +390,7 @@ void ProcessedCustomMaterial::setTextureStages( SceneRenderState *state, const S
                   const RectI &targetVp = texTarget->getViewport();
                   Point4F rtParams;
 
-                  ScreenSpace::RenderTargetParameters(targetSz, targetVp, rtParams);
+//                  ScreenSpace::RenderTargetParameters(targetSz, targetVp, rtParams);
                   shaderConsts->set(handles->mRTParamsSC[samplerRegister], rtParams);
                }
               
@@ -408,12 +408,12 @@ void ProcessedCustomMaterial::setMaterialParameter(MaterialParameters* param,
                                                    const String& value)
 {
    T typedValue;
-   if (PropertyInfo::default_scan(value, typedValue))
-   {      
-      param->set(handle, typedValue);
-   } else {
-      Con::errorf("Error setting %s, parse error: %s", handle->getName().c_str(), value.c_str());
-   }
+//   if (PropertyInfo::default_scan(value, typedValue))
+//   {
+//      param->set(handle, typedValue);
+//   } else {
+//      Con::errorf("Error setting %s, parse error: %s", handle->getName().c_str(), value.c_str());
+//   }
 }
 
 void ProcessedCustomMaterial::setMatrixParameter(MaterialParameters* param, 

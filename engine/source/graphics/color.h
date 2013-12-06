@@ -122,6 +122,14 @@ public:
 
    inline StringTableEntry stringThis(void) const   { char buffer[64]; dSprintf(buffer, 64, "%f %f %f %f", red, green, blue, alpha ); return StringTable->insert(buffer); }
    inline const char* scriptThis(void) const        { char* pBuffer = Con::getReturnBuffer(64); dSprintf(pBuffer, 32, "%.5f %.5f %.5f %.5f", red, green, blue, alpha ); return pBuffer; }
+
+    static const ColorF ZERO;
+    static const ColorF ONE;
+    static const ColorF WHITE;
+    static const ColorF BLACK;
+    static const ColorF RED;
+    static const ColorF GREEN;
+    static const ColorF BLUE;
 };
 
 //-----------------------------------------------------------------------------
@@ -206,7 +214,7 @@ public:
     StockColorItem( const char* pName, const U8 red, const U8 green, const U8 blue, const U8 alpha = 255 )
     {
         // Sanity!
-        AssertFatal( pName != NULL, "Stock color name cannot be NULL." );
+        AssertFatal( pName != nullptr, "Stock color name cannot be NULL." );
 
         // Set stock color.
         // NOTE:-   We'll use the char pointer here.  We can yet use the string-table unfortunately.

@@ -23,66 +23,21 @@
 #ifndef _SIMBASE_H_
 #define _SIMBASE_H_
 
-#ifndef _VECTOR_H_
 #include "collection/vector.h"
-#endif
-
-#ifndef _BITSET_H_
 #include "collection/bitSet.h"
-#endif
-
-#ifndef _CONSOLEOBJECT_H_
 #include "console/consoleObject.h"
-#endif
-
-#ifndef _SIMDICTIONARY_H_
 #include "sim/simDictionary.h"
-#endif
-
-#ifndef _PLATFORMMUTEX_H_
 #include "platform/threads/mutex.h"
-#endif
-
-#ifndef _PLATFORMSEMAPHORE_H_
 #include "platform/platformSemaphore.h"
-#endif
-
-#ifndef _TAML_CALLBACKS_H_
 #include "persistence/taml/tamlCallbacks.h"
-#endif
-
-#ifndef _SIM_OBJECT_LIST_H_
 #include "sim/simObjectList.h"
-#endif
-
-#ifndef _SIM_OBJECT_H_
 #include "sim/simObject.h"
-#endif
-
-#ifndef _SIM_EVENT_H_
 #include "simEvent.h"
-#endif
-
-#ifndef _SIM_CONSOLE_EVENT_H_
 #include "simConsoleEvent.h"
-#endif
-
-#ifndef _SIM_CONSOLE_THREAD_EXEC_EVENT_H_
 #include "simConsoleThreadExecEvent.h"
-#endif
-
-#ifndef _SIM_OBJECT_PTR_H_
 #include "simObjectPtr.h"
-#endif
-
-#ifndef _SIM_DATABLOCK_H_
 #include "simDatablock.h"
-#endif
-
-#ifndef _SIM_DATABLOCK_GROUP_H_
 #include "simDatablockGroup.h"
-#endif
-
 #include "string/str.h"
 
 
@@ -121,8 +76,6 @@ class SimObject;
 class SimGroup;
 class SimManager;
 class Namespace;
-class BitStream;
-class Stream;
 
 typedef U32 SimTime;
 

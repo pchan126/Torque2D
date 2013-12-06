@@ -27,21 +27,18 @@
 #endif
 
 #include "materials/baseMaterialDefinition.h"
-
 #include "collection/hashTable.h"
-
 #include "graphics/gfxTextureHandle.h"
-
 #include "graphics/gfxStructs.h"
-
 #include "graphics/gfxCubemap.h"
 
 //#include "console/dynamicTypes.h"
 
 
 
-class CubemapAsset;
+//class CubemapAsset;
 //class SFXTrack;
+class CubemapData;
 struct SceneData;
 class FeatureSet;
 class FeatureType;
@@ -136,7 +133,7 @@ public:
    public:
 
       StageData()
-         : mCubemap( NULL )
+         : mCubemap( nullptr )
       {
       }
 
@@ -146,7 +143,7 @@ public:
       {
          TextureTable::const_iterator iter = mTextures.find( &type );
          if ( iter == mTextures.end() )
-            return NULL;
+            return nullptr;
 
          return iter->second.getPointer();
       }
@@ -222,6 +219,7 @@ public:
    ColorF mSpecular[MAX_STAGES];
 
    F32 mSpecularPower[MAX_STAGES];
+   F32 mSpecularStrength[MAX_STAGES];
    bool mPixelSpecular[MAX_STAGES];
 
    bool mVertLit[MAX_STAGES];
@@ -280,8 +278,8 @@ public:
    bool mDoubleSided;
 
    String mCubemapName;
-   CubemapAsset* mCubemapAsset;
-//   bool mDynamicCubemap;
+   CubemapData* mCubemapData;
+   bool mDynamicCubemap;
 
    bool mTranslucent;   
    BlendOp mTranslucentBlendOp;

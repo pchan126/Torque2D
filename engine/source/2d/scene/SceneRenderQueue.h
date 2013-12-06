@@ -37,7 +37,7 @@ class SceneRenderQueue : public IFactoryObjectReset
 public:
     typedef Vector<SceneRenderRequest*> typeRenderRequestVector;
 
-    // Scene Render Request Sort.
+    // t2dScene Render Request Sort.
     enum RenderSort
     {
         RENDER_SORT_INVALID,

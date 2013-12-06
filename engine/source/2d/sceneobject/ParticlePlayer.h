@@ -183,8 +183,8 @@ public:
     DECLARE_CONOBJECT(ParticlePlayer);
 
 protected:
-    virtual void OnRegisterScene( Scene* pScene );
-    virtual void OnUnregisterScene( Scene* pScene );
+    virtual void OnRegisterScene( t2dScene * pScene );
+    virtual void OnUnregisterScene( t2dScene * pScene );
 
     virtual void onAssetRefreshed( AssetPtrBase* pAssetPtrBase );
 

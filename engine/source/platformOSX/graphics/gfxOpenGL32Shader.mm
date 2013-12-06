@@ -176,6 +176,11 @@ void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const Point
    internalSet(handle, fv);
 }
 
+void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const ColorF& fv)
+{
+   internalSet(handle, fv);
+}
+
 void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const PlaneF& fv)
 {
    internalSet(handle, fv);
@@ -201,62 +206,62 @@ void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const Point
    internalSet(handle, fv);
 }
 
-//template<typename ConstType>
-//void GFXOpenGL32ShaderConstBuffer::internalSet(GFXShaderConstHandle* handle, const AlignedArray<ConstType>& fv)
-//{
-//   AssertFatal(handle, "GFXOpenGL32ShaderConstBuffer::internalSet - Handle is nullptr!" );
-//   AssertFatal(handle->isValid(), "GFXOpenGL32ShaderConstBuffer::internalSet - Handle is not valid!" );
-//   AssertFatal(dynamic_cast<GFXOpenGL32ShaderConstHandle*>(handle), "GFXOpenGL32ShaderConstBuffer::set - Incorrect const buffer type");
-//
-//   GFXOpenGL32ShaderConstHandle* _glHandle = static_cast<GFXOpenGL32ShaderConstHandle*>(handle);
-//   AssertFatal(mShader == _glHandle->mShader, "GFXOpenGL32ShaderConstBuffer::set - Should only set handles which are owned by our shader");
-//   const U8* fvBuffer = static_cast<const U8*>(fv.getBuffer());
-//   for(U32 i = 0; i < fv.size(); ++i)
-//   {
-//      dMemcpy(mBuffer + _glHandle->mOffset + i * sizeof(ConstType), fvBuffer, sizeof(ConstType));
-//      fvBuffer += fv.getElementSize();
-//   }
-//}
-//
-//void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const AlignedArray<F32>& fv)
-//{
-//   internalSet(handle, fv);
-//}
-//
-//void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const AlignedArray<Point2F>& fv)
-//{
-//   internalSet(handle, fv);
-//}
-//
-//void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const AlignedArray<Point3F>& fv)
-//{
-//   internalSet(handle, fv);
-//}
-//
-//void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const AlignedArray<Point4F>& fv)   
-//{
-//   internalSet(handle, fv);
-//}
-//
-//void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const AlignedArray<S32>& fv)
-//{
-//   internalSet(handle, fv);
-//}
-//
-//void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const AlignedArray<Point2I>& fv)
-//{
-//   internalSet(handle, fv);
-//}
-//
-//void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const AlignedArray<Point3I>& fv)
-//{
-//   internalSet(handle, fv);
-//}
-//
-//void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const AlignedArray<Point4I>& fv)
-//{
-//   internalSet(handle, fv);
-//}
+template<typename ConstType>
+void GFXOpenGL32ShaderConstBuffer::internalSet(GFXShaderConstHandle* handle, const AlignedArray<ConstType>& fv)
+{
+   AssertFatal(handle, "GFXOpenGL32ShaderConstBuffer::internalSet - Handle is nullptr!" );
+   AssertFatal(handle->isValid(), "GFXOpenGL32ShaderConstBuffer::internalSet - Handle is not valid!" );
+   AssertFatal(dynamic_cast<GFXOpenGL32ShaderConstHandle*>(handle), "GFXOpenGL32ShaderConstBuffer::set - Incorrect const buffer type");
+
+   GFXOpenGL32ShaderConstHandle* _glHandle = static_cast<GFXOpenGL32ShaderConstHandle*>(handle);
+   AssertFatal(mShader == _glHandle->mShader, "GFXOpenGL32ShaderConstBuffer::set - Should only set handles which are owned by our shader");
+   const U8* fvBuffer = static_cast<const U8*>(fv.getBuffer());
+   for(U32 i = 0; i < fv.size(); ++i)
+   {
+      dMemcpy(mBuffer + _glHandle->mOffset + i * sizeof(ConstType), fvBuffer, sizeof(ConstType));
+      fvBuffer += fv.getElementSize();
+   }
+}
+
+void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const AlignedArray<F32>& fv)
+{
+   internalSet(handle, fv);
+}
+
+void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const AlignedArray<Point2F>& fv)
+{
+   internalSet(handle, fv);
+}
+
+void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const AlignedArray<Point3F>& fv)
+{
+   internalSet(handle, fv);
+}
+
+void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const AlignedArray<Point4F>& fv)
+{
+   internalSet(handle, fv);
+}
+
+void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const AlignedArray<S32>& fv)
+{
+   internalSet(handle, fv);
+}
+
+void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const AlignedArray<Point2I>& fv)
+{
+   internalSet(handle, fv);
+}
+
+void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const AlignedArray<Point3I>& fv)
+{
+   internalSet(handle, fv);
+}
+
+void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const AlignedArray<Point4I>& fv)
+{
+   internalSet(handle, fv);
+}
 
 void GFXOpenGL32ShaderConstBuffer::set(GFXShaderConstHandle* handle, const MatrixF& mat, const GFXShaderConstType matType)
 {

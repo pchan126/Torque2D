@@ -94,7 +94,7 @@ void PointForceController::setTrackedObject( SceneObject* pSceneObject )
 
 //------------------------------------------------------------------------------
 
-void PointForceController::integrate( Scene* pScene, const F32 totalTime, const F32 elapsedTime, DebugStats* pDebugStats )
+void PointForceController::integrate( t2dScene * pScene, const F32 totalTime, const F32 elapsedTime, DebugStats* pDebugStats )
 {
     // Finish if the attractor would have no effect.
     if ( mIsZero( mForce ) || mIsZero( mRadius ) )
@@ -206,7 +206,7 @@ void PointForceController::integrate( Scene* pScene, const F32 totalTime, const 
 
 //------------------------------------------------------------------------------
 
-void PointForceController::renderOverlay( Scene* pScene, const SceneRenderState* pSceneRenderState, BatchRender* pBatchRenderer )
+void PointForceController::renderOverlay( t2dScene * pScene, const SceneRenderState* pSceneRenderState, BatchRender* pBatchRenderer )
 {
     // Call parent.
     Parent::renderOverlay( pScene, pSceneRenderState, pBatchRenderer );

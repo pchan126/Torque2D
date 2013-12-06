@@ -38,6 +38,7 @@
 #include "assets/assetPtr.h"
 #include "lighting/lightInfo.h"
 #include "lighting/lightManager.h"
+#include "SceneGraph.h"
 
 //-----------------------------------------------------------------------------
 
@@ -50,25 +51,6 @@ class SceneWindow;
 class SceneRenderState;
 class RenderPassManager;
 class Layer;
-
-/// The type of scene pass.
-/// @see SceneManager
-/// @see SceneRenderState
-enum ScenePassType
-{
-    /// The regular diffuse scene pass.
-            SPT_Diffuse,
-
-    /// The scene pass made for reflection rendering.
-            SPT_Reflect,
-
-    /// The scene pass made for shadow map rendering.
-            SPT_Shadow,
-
-    /// A scene pass that isn't one of the other
-    /// predefined scene pass types.
-            SPT_Other,
-};
 
 ///-----------------------------------------------------------------------------
 
@@ -85,7 +67,7 @@ struct TickContact
 {
     TickContact()
     {
-        initialize( NULL, NULL, NULL, NULL, NULL );
+        initialize( nullptr, nullptr, nullptr, nullptr, nullptr );
     }
 
     void initialize(
@@ -102,7 +84,7 @@ struct TickContact
         mpFixtureB     = pFixtureB;
 
         // Get world manifold. 
-        if ( mpContact != NULL )
+        if ( mpContact != nullptr )
         {
             mPointCount = pContact->GetManifold()->pointCount;
             mpContact->GetWorldManifold( &mWorldManifold );
@@ -143,18 +125,15 @@ struct TickContact
 
 ///-----------------------------------------------------------------------------
 
-class Scene :
-    public BehaviorComponent,
-    public TamlChildren,
+class t2dScene :
+public TamlChildren,
     public PhysicsProxy,
     public b2ContactListener,
     public b2DestructionListener,
-    public virtual Tickable
-{
-public:
-    /// A signal used to notify of render passes.
-    typedef Signal< void( Scene*, const SceneRenderState* ) > RenderSignal;
+    public virtual Tickable,
+    public SceneGraph {
 
+public:
     typedef HashMap<S32, b2Joint*>              typeJointHash;
     typedef HashMap<b2Joint*, S32>              typeReverseJointHash;
     typedef Vector<tDeleteRequest>              typeDeleteVector;
@@ -162,7 +141,7 @@ public:
     typedef HashMap<b2Contact*, TickContact>    typeContactHash;
     typedef Vector<AssetPtr<AssetBase>*>        typeAssetPtrVector;
 
-    /// Scene Debug Options.
+    /// t2dScene Debug Options.
     enum DebugOption
     {
         SCENE_DEBUG_INVALID,
@@ -196,7 +175,7 @@ public:
     DebugDraw                   mDebugDraw;
 
 private:
-    typedef BehaviorComponent   Parent;
+    typedef SceneGraph          Parent;
     typedef SceneObject         Children;
 
     /// World.
@@ -208,7 +187,7 @@ private:
     b2BlockAllocator            mBlockAllocator;
     b2Body*                     mpGroundBody;
 
-    /// Scene occupancy.
+    /// t2dScene occupancy.
     typeSceneObjectVector       mSceneObjects;
     typeSceneObjectVector       mTickedSceneObjects;
 
@@ -217,7 +196,7 @@ private:
     typeReverseJointHash        mReverseJoints;
     S32                         mJointMasterId;
 
-    /// Scene controllers.
+    /// t2dScene controllers.
     SimObjectPtr<SimSet>	    mControllers;
 
     Vector<Layer*>              mLayers;
@@ -225,7 +204,7 @@ private:
     /// Asset pre-loads.
     typeAssetPtrVector          mAssetPreloads;
 
-    /// Scene time.
+    /// t2dScene time.
     F32                         mSceneTime;
     bool                        mScenePause;
 
@@ -255,13 +234,7 @@ private:
     typeContactVector           mEndContacts;
     U32                         mSceneIndex;
     
-    ColorF                      mAmbientLightColor;   // global ambient lighting
-    LightManager                mLightManager;
-
-    RenderSignal                mPreRenderSignal;
-    RenderSignal                mPostRenderSignal;
-
-private:   
+private:
     /// Contacts.
     void                        forwardContacts( void );
     void                        dispatchBeginContactCallbacks( void );
@@ -274,8 +247,8 @@ private:
         {
             jointType        = e_unknownJoint;
             collideConnected = false;
-            pSceneObjectA    = NULL;
-            pSceneObjectB    = NULL;
+            pSceneObjectA    = nullptr;
+            pSceneObjectB    = nullptr;
             localAnchorA     = b2Vec2_zero;
             localAnchorB     = b2Vec2_zero;
         }
@@ -296,8 +269,8 @@ protected:
     virtual void            onTamlCustomRead( const TamlCustomNodes& customNodes );
 
 public:
-    Scene();
-    virtual ~Scene();
+    t2dScene();
+    virtual ~t2dScene();
     friend class SceneRenderState;
 
     /// Engine.
@@ -350,7 +323,7 @@ public:
 
     void                    performBlastImpulse( b2Vec2 center, F32 radius, F32 blastPower, U32 sceneGroupMask = MASK_ALL, S32 numRays = 36);
 
-    /// Scene occupancy.
+    /// t2dScene occupancy.
     void                    clearScene( bool deleteObjects = true );
     void                    addToScene( SceneObject* pSceneObject );
     void                    removeFromScene( SceneObject* pSceneObject );
@@ -361,7 +334,7 @@ public:
     U32                     getSceneObjects( typeSceneObjectVector& objects ) const;
     U32                     getSceneObjects( typeSceneObjectVector& objects, const U32 sceneLayer ) const;
 
-    void                    mergeScene( const Scene* pScene );
+    void                    mergeScene( const t2dScene * pScene );
 
     inline SimSet*			getControllers( void )						{ return mControllers; }
 
@@ -371,17 +344,17 @@ public:
     void                    removeAssetPreload( const char* pAssetId );
     void                    clearAssetPreloads( void );
 
-    /// Scene time.
+    /// t2dScene time.
     inline F32              getSceneTime( void ) const                  { return mSceneTime; };
     inline void             setScenePause( bool status )                { mScenePause = status; }
     inline bool             getScenePause( void ) const                 { return mScenePause; };
 
-    /// Scene Lighting
+    /// t2dScene Lighting
     inline ColorF           getSceneLight( void ) const                 { return mAmbientLightColor; };
     inline void             setSceneLight( ColorF sceneLight )          { mAmbientLightColor = sceneLight; };
 
    inline Vector<Layer*> const getLayerVec() const                 { return mLayers; };
-   inline Layer* const     getLayer( U32 layer ) const              { return (mLayers.size() > layer) ? mLayers[layer] : NULL; };
+   inline Layer* const     getLayer( U32 layer ) const              { return (mLayers.size() > layer) ? mLayers[layer] : nullptr; };
    void                    setLayerLight( U32 layer, ColorF light);
    void                   setAllRenderLayers(bool flag);
    
@@ -699,18 +672,18 @@ public:
     static const char* getDebugOptionDescription( DebugOption debugOption );
 
     /// Declare Console Object.
-    DECLARE_CONOBJECT(Scene);
+    DECLARE_CONOBJECT(t2dScene);
 
 protected:
     /// Physics.
-    static bool setGravity( void* obj, const char* data )                           { static_cast<Scene*>(obj)->setGravity( Vector2( data ) ); return false; }
-    static const char* getGravity(void* obj, const char* data)                      { return Vector2(static_cast<Scene*>(obj)->getGravity()).scriptThis(); }
-    static bool writeGravity( void* obj, StringTableEntry pFieldName )              { return Vector2(static_cast<Scene*>(obj)->getGravity()).notEqual( Vector2::getZero() ); }
-    static bool writeVelocityIterations( void* obj, StringTableEntry pFieldName )   { return static_cast<Scene*>(obj)->getVelocityIterations() != 8; }
-    static bool writePositionIterations( void* obj, StringTableEntry pFieldName )   { return static_cast<Scene*>(obj)->getPositionIterations() != 3; }
+    static bool setGravity( void* obj, const char* data )                           { static_cast<t2dScene *>(obj)->setGravity( Vector2( data ) ); return false; }
+    static const char* getGravity(void* obj, const char* data)                      { return Vector2(static_cast<t2dScene *>(obj)->getGravity()).scriptThis(); }
+    static bool writeGravity( void* obj, StringTableEntry pFieldName )              { return Vector2(static_cast<t2dScene *>(obj)->getGravity()).notEqual( Vector2::getZero() ); }
+    static bool writeVelocityIterations( void* obj, StringTableEntry pFieldName )   { return static_cast<t2dScene *>(obj)->getVelocityIterations() != 8; }
+    static bool writePositionIterations( void* obj, StringTableEntry pFieldName )   { return static_cast<t2dScene *>(obj)->getPositionIterations() != 3; }
     
     /// Lighting.
-    static bool writeSceneLight( void* obj, StringTableEntry pFieldName )              { return ColorF(static_cast<Scene*>(obj)->getSceneLight())!=( ColorF(1.0, 1.0, 1.0, 1.0)); }
+    static bool writeSceneLight( void* obj, StringTableEntry pFieldName )              { return ColorF(static_cast<t2dScene *>(obj)->getSceneLight())!=( ColorF(1.0, 1.0, 1.0, 1.0)); }
     
 
     static bool writeLayerSortMode( void* obj, StringTableEntry pFieldName )
@@ -731,7 +704,7 @@ protected:
         };
 
         // Sanity!
-        AssertFatal( *pLayerNumber != 0, "Scene::writeLayerSortMode() - Could not find the layer index portion of the layer sort mode field." );
+        AssertFatal( *pLayerNumber != 0, "t2dScene::writeLayerSortMode() - Could not find the layer index portion of the layer sort mode field." );
 
         // Fetch layer number.
         const U32 layer = dAtoi(pLayerNumber);
@@ -740,12 +713,12 @@ protected:
         if ( layer > MAX_LAYERS_SUPPORTED )
             return true;
 
-        return static_cast<Scene*>(obj)->getLayerSortMode( layer ) != SceneRenderQueue::RENDER_SORT_NEWEST;
+        return static_cast<t2dScene *>(obj)->getLayerSortMode( layer ) != SceneRenderQueue::RENDER_SORT_NEWEST;
     }
 
     // Callbacks.
-    static bool writeUpdateCallback( void* obj, StringTableEntry pFieldName )       { return static_cast<Scene*>(obj)->getUpdateCallback(); }
-    static bool writeRenderCallback( void* obj, StringTableEntry pFieldName )       { return static_cast<Scene*>(obj)->getRenderCallback(); }
+    static bool writeUpdateCallback( void* obj, StringTableEntry pFieldName )       { return static_cast<t2dScene *>(obj)->getUpdateCallback(); }
+    static bool writeRenderCallback( void* obj, StringTableEntry pFieldName )       { return static_cast<t2dScene *>(obj)->getRenderCallback(); }
 
    /// RenderPassManager for the default render pass.  This is set up
    /// in script and looked up by getDefaultRenderPass().
@@ -753,7 +726,7 @@ protected:
    RenderPassManager* mBaseRenderPass;
 
 public:
-    static SimObjectPtr<Scene> LoadingScene;
+    static SimObjectPtr<t2dScene> LoadingScene;
 };
 
 //-----------------------------------------------------------------------------

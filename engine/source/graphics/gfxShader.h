@@ -32,6 +32,7 @@
 #include "graphics/gfxStructs.h"
 #include "sim/refBase.h"
 #include "delegates/delegateSignal.h"
+#include "collection/alignedArray.h"
 
 class Point2I;
 class Point2F;
@@ -158,10 +159,19 @@ public:
     virtual void set(GFXShaderConstHandle* handle, const Point3F& fv) = 0;
     virtual void set(GFXShaderConstHandle* handle, const Point4F& fv) = 0;
     virtual void set(GFXShaderConstHandle* handle, const PlaneF& fv) = 0;
+   virtual void set(GFXShaderConstHandle* handle, const ColorF& fv) = 0;
     virtual void set(GFXShaderConstHandle* handle, const S32 f) = 0;
     virtual void set(GFXShaderConstHandle* handle, const Point2I& fv) = 0;
     virtual void set(GFXShaderConstHandle* handle, const Point3I& fv) = 0;
     virtual void set(GFXShaderConstHandle* handle, const Point4I& fv) = 0;
+   virtual void set(GFXShaderConstHandle* handle, const AlignedArray<F32>& fv) = 0;
+   virtual void set(GFXShaderConstHandle* handle, const AlignedArray<Point2F>& fv) = 0;
+   virtual void set(GFXShaderConstHandle* handle, const AlignedArray<Point3F>& fv) = 0;
+   virtual void set(GFXShaderConstHandle* handle, const AlignedArray<Point4F>& fv) = 0;
+   virtual void set(GFXShaderConstHandle* handle, const AlignedArray<S32>& fv) = 0;
+   virtual void set(GFXShaderConstHandle* handle, const AlignedArray<Point2I>& fv) = 0;
+   virtual void set(GFXShaderConstHandle* handle, const AlignedArray<Point3I>& fv) = 0;
+   virtual void set(GFXShaderConstHandle* handle, const AlignedArray<Point4I>& fv) = 0;
 
     /// Set a variable sized matrix shader constant.
     virtual void set( GFXShaderConstHandle* handle,

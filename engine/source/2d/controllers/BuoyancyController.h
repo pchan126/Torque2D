@@ -74,10 +74,10 @@ public:
     virtual void copyTo(SimObject* object);
 
     /// Integration.
-    virtual void integrate( Scene* pScene, const F32 totalTime, const F32 elapsedTime, DebugStats* pDebugStats );
+    virtual void integrate( t2dScene * pScene, const F32 totalTime, const F32 elapsedTime, DebugStats* pDebugStats );
 
-    // Scene render.
-    virtual void renderOverlay( Scene* pScene, const SceneRenderState* pSceneRenderState, BatchRender* pBatchRenderer );
+    // t2dScene render.
+    virtual void renderOverlay( t2dScene * pScene, const SceneRenderState* pSceneRenderState, BatchRender* pBatchRenderer );
 
     /// Declare Console Object.
     DECLARE_CONOBJECT( BuoyancyController );

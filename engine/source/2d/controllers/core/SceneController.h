@@ -25,7 +25,7 @@
 
 //------------------------------------------------------------------------------
 
-class Scene;
+class t2dScene;
 struct SceneRenderState;
 class BatchRender;
 class DebugStats;
@@ -39,10 +39,10 @@ public:
     virtual ~SceneController() {}
 
     /// Integration.
-    virtual void integrate( Scene* pScene, const F32 totalTime, const F32 elapsedTime, DebugStats* pDebugStats ) = 0;
+    virtual void integrate( t2dScene * pScene, const F32 totalTime, const F32 elapsedTime, DebugStats* pDebugStats ) = 0;
 
-    // Scene render.
-    virtual void renderOverlay( Scene* pScene, const SceneRenderState* pSceneRenderState, BatchRender* pBatchRenderer ) = 0;
+    // t2dScene render.
+    virtual void renderOverlay( t2dScene * pScene, const SceneRenderState* pSceneRenderState, BatchRender* pBatchRenderer ) = 0;
 };
 
 #endif // _SCENE_CONTROLLER_H_

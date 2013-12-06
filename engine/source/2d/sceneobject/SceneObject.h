@@ -23,7 +23,7 @@
 #ifndef _SCENE_OBJECT_H_
 #define _SCENE_OBJECT_H_
 
-#include "2d/scene/Scene.h"
+#include "t2dScene.h"
 #include "2d/scene/DebugStats.h"
 #include "sim/simBase.h"
 #include "math/mMath.h"
@@ -81,7 +81,7 @@ private:
 
 public:
     friend class Layer;
-    friend class Scene;
+    friend class t2dScene;
     friend class SceneWindow;
     friend class ContactFilter;
     friend class WorldQuery;
@@ -99,25 +99,25 @@ public:
     };
     
 protected:
-    /// Scene.
-    SimObjectPtr<Scene>  mpScene;
+    /// t2dScene.
+    SimObjectPtr<t2dScene>  mpScene;
 
-    /// Target Scene.
+    /// Target t2dScene.
     /// NOTE:   Unfortunately this is required as the scene can be set via a field which
     ///         occurs before the object is registered with the simulation therefore
     ///         any simulation related functionality cannot be used such as TorqueScript
     ///         callbacks.
-    SimObjectPtr<Scene>     mpTargetScene;
+    SimObjectPtr<t2dScene>     mpTargetScene;
 
     /// Lifetime.
     F32                     mLifetime;
     bool                    mLifetimeActive;
     
-    /// Scene layers.
+    /// t2dScene layers.
     U32                     mSceneLayer;
     F32                     mSceneLayerDepth;
 
-    /// Scene groups.
+    /// t2dScene groups.
     U32                     mSceneGroup;
     U32                     mSceneGroupMask;
 
@@ -147,7 +147,7 @@ protected:
     bool                    mCollisionSuppress;
     b2FixtureDef            mDefaultFixture;
     bool                    mGatherContacts;
-    Scene::typeContactVector* mpCurrentContacts;
+    t2dScene::typeContactVector* mpCurrentContacts;
 
     /// General collision shape access.
     typeCollisionFixtureDefVector mCollisionFixtureDefs;
@@ -221,9 +221,9 @@ protected:
     static bool sceneObjectLayerDepthSort(const SceneObject* a, const SceneObject* b);
 
 
-    /// Scene (un)registering.
-    virtual void            OnRegisterScene( Scene* pScene );
-    virtual void            OnUnregisterScene( Scene* pScene );
+    /// t2dScene (un)registering.
+    virtual void            OnRegisterScene( t2dScene * pScene );
+    virtual void            OnUnregisterScene( t2dScene * pScene );
 
     /// Ticking.
     void                    resetTickSpatials( const bool resize = false );
@@ -278,8 +278,8 @@ public:
     virtual U32             packUpdate(NetConnection * conn, U32 mask, BitStream *stream);
     virtual void            unpackUpdate(NetConnection * conn, BitStream *stream);
 
-    /// Scene.
-    inline Scene* const     getScene( void ) const                      { return mpScene; }
+    /// t2dScene.
+    inline t2dScene * const     getScene( void ) const                      { return mpScene; }
     inline F32              getSceneTime( void ) const                  { if ( mpScene ) return mpScene->getSceneTime(); else return 0.0f; }
    
 
@@ -291,13 +291,13 @@ public:
     inline F32              getLifetime( void ) const                   { return mLifetime; }
     void                    updateLifetime( const F32 elapsedTime );
 
-    /// Scene layers.
+    /// t2dScene layers.
     void                    setSceneLayer( const U32 sceneLayer );
     inline U32              getSceneLayer(void) const                   { return mSceneLayer; }
 
     inline Layer* const     getSceneLayerObj( void ) const              { return mpScene->getLayer( getSceneLayer() ); }
 
-   /// Scene Layer depth.
+   /// t2dScene Layer depth.
     inline void             setSceneLayerDepth( const F32 order )       { mSceneLayerDepth = order; };
     inline F32              getSceneLayerDepth( void ) const            { return mSceneLayerDepth; }
     bool                    setSceneLayerDepthFront( void );
@@ -305,7 +305,7 @@ public:
     bool                    setSceneLayerDepthForward( void );
     bool                    setSceneLayerDepthBackward( void );
 
-    /// Scene groups.
+    /// t2dScene groups.
     void                    setSceneGroup( const U32 sceneGroup );
     inline U32              getSceneGroup(void ) const                  { return mSceneGroup; }
     inline U32              getSceneGroupMask( void ) const             { return mSceneGroupMask; }
@@ -371,7 +371,7 @@ public:
     inline F32              getDefaultRestitution( void ) const         { return mDefaultFixture.restitution; }
     inline void             setCollisionSuppress( const bool status )   { mCollisionSuppress = status; }
     inline bool             getCollisionSuppress(void) const            { return mCollisionSuppress; }
-    inline const Scene::typeContactVector* getCurrentContacts( void ) const    { return mpCurrentContacts; }
+    inline const t2dScene::typeContactVector* getCurrentContacts( void ) const    { return mpCurrentContacts; }
     inline size_t         getCurrentContactCount( void ) const        { if ( mpCurrentContacts != nullptr ) return mpCurrentContacts->size(); else return 0; }
     virtual void            setGatherContacts( const bool gatherContacts ) { mGatherContacts = gatherContacts; initializeContactGathering(); }
     inline bool             getGatherContacts( void ) const             { return mGatherContacts; }
@@ -605,13 +605,13 @@ protected:
     static bool             setLifetime(void* obj, const char* data)    { static_cast<SceneObject*>(obj)->setLifetime(dAtof(data)); return false; }
     static bool             writeLifetime( void* obj, StringTableEntry pFieldName ) { return static_cast<SceneObject*>(obj)->getLifetime() > 0.0f ; }
 
-    /// Scene layers.
+    /// t2dScene layers.
     static bool             setSceneLayer(void* obj, const char* data)  { static_cast<SceneObject*>(obj)->setSceneLayer(dAtoi(data)); return false; }
     static bool             writeSceneLayer( void* obj, StringTableEntry pFieldName ) { return static_cast<SceneObject*>(obj)->getSceneLayer() > 0 ; }
     static bool             setSceneLayerDepth(void* obj, const char* data)  { static_cast<SceneObject*>(obj)->setSceneLayerDepth(dAtof(data)); return false; }
     static bool             writeSceneLayerDepth( void* obj, StringTableEntry pFieldName ) { return mNotZero(static_cast<SceneObject*>(obj)->getSceneLayerDepth()); }
 
-    /// Scene groups.
+    /// t2dScene groups.
     static bool             setSceneGroup(void* obj, const char* data)  { static_cast<SceneObject*>(obj)->setSceneGroup(dAtoi(data)); return false; }
     static bool             writeSceneGroup( void* obj, StringTableEntry pFieldName ) { return static_cast<SceneObject*>(obj)->getSceneGroup() > 0 ; }
 
@@ -734,10 +734,10 @@ protected:
     static bool             writeCollisionCallback( void* obj, StringTableEntry pFieldName ) { return static_cast<SceneObject*>(obj)->getCollisionCallback() == true; }
     static bool             writeSleepingCallback( void* obj, StringTableEntry pFieldName ) { return static_cast<SceneObject*>(obj)->getSleepingCallback() == true; }
 
-    /// Scene.
+    /// t2dScene.
     static bool             setScene(void* obj, const char* data)
     {
-        Scene* pScene = dynamic_cast<Scene*>(Sim::findObject(data));
+        t2dScene * pScene = dynamic_cast<t2dScene *>(Sim::findObject(data));
         SceneObject* object = static_cast<SceneObject*>(obj);
         if (pScene)
         {

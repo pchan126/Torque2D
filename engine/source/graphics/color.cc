@@ -46,6 +46,14 @@ static typeColorIToNameHash    mColorIToName;
 
 #define DEFAULT_UNKNOWN_STOCK_COLOR_NAME    "White"
 
+const ColorF ColorF::ZERO( 0, 0, 0, 0 );
+const ColorF ColorF::ONE( 1, 1, 1, 1 );
+const ColorF ColorF::WHITE( 1, 1, 1 );
+const ColorF ColorF::BLACK( 0, 0, 0 );
+const ColorF ColorF::RED( 1, 0, 0 );
+const ColorF ColorF::GREEN( 0, 1, 0 );
+const ColorF ColorF::BLUE( 0, 0, 1 );
+
 //-----------------------------------------------------------------------------
 
 StockColorItem StockColorTable[] =

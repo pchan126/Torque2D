@@ -149,7 +149,7 @@ void ImageFont::copyTo(SimObject* object)
 void ImageFont::scenePrepareRender( const SceneRenderState* pSceneRenderState, SceneRenderQueue* pSceneRenderQueue )
 {
     // Create a default render request.
-    Scene::createDefaultRenderRequest( pSceneRenderQueue, this );
+    t2dScene::createDefaultRenderRequest( pSceneRenderQueue, this );
 }
 
 //------------------------------------------------------------------------------

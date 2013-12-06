@@ -25,16 +25,9 @@
 
 #include "graphics/color.h"
 
-#ifndef _SCENEMANAGER_H_
 #include "scene/sceneManager.h"
-#endif
-
-//#ifndef _SCENECULLINGSTATE_H_
 //#include "scene/culling/sceneCullingState.h"
-//#endif
-
 #include "delegates/delegate.h"
-
 
 //class SceneObject;
 //class RenderPassManager;
@@ -118,7 +111,7 @@ class SceneRenderState
 //                        RenderPassManager* renderPass = NULL,
 //                        bool usePostEffects = true );
 //
-      ~SceneRenderState();
+//      ~SceneRenderState();
 
 //      /// Return the SceneManager that is being rendered in this SceneRenderState.
 //      SceneManager* getSceneManager() const { return mSceneManager; }

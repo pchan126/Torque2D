@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// Copyright (c) 2013 GarageGames, LLC
+// Copyright (c) 2012 GarageGames, LLC
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to
@@ -20,41 +20,57 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#ifndef _AMBIENT_FORCE_CONTROLLER_H_
-#define _AMBIENT_FORCE_CONTROLLER_H_
+#ifndef _CUBEMAPDATA_H_
+#define _CUBEMAPDATA_H_
 
-#ifndef _GROUPED_SCENE_CONTROLLER_H_
-#include "2d/controllers/core/GroupedSceneController.h"
-#endif
+#include "sim/simObject.h"
+#include "graphics/gfxCubemap.h"
+#include "graphics/gfxTarget.h"
+//#include "scene/sceneManager.h"
 
-#ifndef _VECTOR2_H_
-#include "2d/core/vector2.h"
-#endif
 
-//------------------------------------------------------------------------------
-
-class AmbientForceController : public GroupedSceneController
+/// A script interface for creating static or dynamic cubemaps.
+class CubemapData : public SimObject
 {
-private:
-    typedef GroupedSceneController Parent;
+   typedef SimObject Parent;   
 
-    Vector2 mForce;
+public:   
 
-public:
-    AmbientForceController();
-    virtual ~AmbientForceController();
+   GFXCubemapHandle  mCubemap;
 
-    static void initPersistFields();
-    virtual void copyTo(SimObject* object);
+   CubemapData();
+   ~CubemapData();
 
-    /// Integration.
-    virtual void integrate( t2dScene * pScene, const F32 totalTime, const F32 elapsedTime, DebugStats* pDebugStats );
+   bool onAdd();
+   static void initPersistFields();
 
-    inline void setForce( const Vector2& force ) { mForce = force; }
-    inline const Vector2& getForce( void ) const { return mForce; }
+   DECLARE_CONOBJECT(CubemapData);
 
-    /// Declare Console Object.
-    DECLARE_CONOBJECT( AmbientForceController );
+   // Force creation of cubemap
+   void createMap();   
+
+   // Update a dynamic cubemap @ pos
+//   void updateDynamic(SceneManager* sm, const Point3F& pos);
+	void updateFaces();
+   
+   // Dynamic cube map support
+   bool mDynamic;
+   U32 mDynamicSize;   
+   F32 mDynamicNearDist;
+   F32 mDynamicFarDist;
+   U32 mDynamicObjectTypeMask;
+
+protected:
+
+   FileName mCubeFaceFile[6];
+   GFXTexHandle mCubeFace[6];
+
+   GFXTexHandle mDepthBuff;
+   GFXTextureTargetRef mRenderTarget;
+#ifdef INIT_HACK
+   bool mInit;
+#endif
 };
 
-#endif // _AMBIENT_FORCE_CONTROLLER_H_
+#endif // CUBEMAPDATA
+

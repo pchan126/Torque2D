@@ -36,7 +36,7 @@
 
 //-----------------------------------------------------------------------------
 
-// Scene-Object counter.
+// t2dScene-Object counter.
 static U32 sGlobalSceneObjectCount = 0;
 static U32 sSceneObjectMasterSerialId = 0;
 
@@ -63,7 +63,7 @@ static StringTableEntry edgeTypeName            = StringTable->insert( "Edge" );
 // Important: If these defaults are changed then modify the associated "write" field protected methods to ensure
 // that the associated field is persisted if not the default.
 SceneObject::SceneObject() :
-    /// Scene.
+    /// t2dScene.
     mpScene(nullptr),
     mpTargetScene(nullptr),
 
@@ -75,7 +75,7 @@ SceneObject::SceneObject() :
     mSceneLayer(0),
     mSceneLayerDepth(0.0f),
 
-    /// Scene groups.
+    /// t2dScene groups.
     mSceneGroup(0),
     mSceneGroupMask(BIT(mSceneGroup)),
 
@@ -206,10 +206,10 @@ SceneObject::SceneObject() :
 
 SceneObject::~SceneObject()
 {
-    // Are we in a Scene?
+    // Are we in a t2dScene?
     if ( mpScene )
     {
-        // Yes, so remove from Scene.
+        // Yes, so remove from t2dScene.
         mpScene->removeFromScene( this );
     }
 
@@ -227,11 +227,11 @@ void SceneObject::initPersistFields()
     /// Lifetime.
     addProtectedField("Lifetime", TypeF32, Offset(mLifetime, SceneObject), &setLifetime, &defaultProtectedGetFn, &writeLifetime, "");
 
-    /// Scene Layers.
+    /// t2dScene Layers.
     addProtectedField("SceneLayer", TypeS32, Offset(mSceneLayer, SceneObject), &setSceneLayer, &defaultProtectedGetFn, &writeSceneLayer, "");
     addProtectedField("SceneLayerDepth", TypeF32, Offset(mSceneLayerDepth, SceneObject), &setSceneLayerDepth, &defaultProtectedGetFn, &writeSceneLayerDepth, "" );
     
-    // Scene Groups.
+    // t2dScene Groups.
     addProtectedField("SceneGroup", TypeS32, Offset(mSceneGroup, SceneObject), &setSceneGroup, &defaultProtectedGetFn, &writeSceneGroup, "");
 
     /// Area.
@@ -296,7 +296,7 @@ void SceneObject::initPersistFields()
     addField("CollisionCallback", TypeBool, Offset(mCollisionCallback, SceneObject), &writeCollisionCallback, "");
     addField("SleepingCallback", TypeBool, Offset(mSleepingCallback, SceneObject), &writeSleepingCallback, "");
 
-    /// Scene.
+    /// t2dScene.
     addProtectedField("scene", TypeSimObjectPtr, Offset(mpScene, SceneObject), &setScene, &defaultProtectedGetFn, &writeScene, "");
 
     addProtectedField("Shader", TypeShaderAssetPtr, Offset(mShaderAsset, SceneObject), &setShader, &getShader, &writeShader, "");
@@ -331,7 +331,7 @@ void SceneObject::onRemove()
     // Detach Any GUI Control.
     detachGui();
 
-    // Remove from Scene.
+    // Remove from t2dScene.
     if ( getScene() )
         getScene()->removeFromScene( this );
 
@@ -347,7 +347,7 @@ void SceneObject::onDestroyNotify( SceneObject* pSceneObject )
 
 //-----------------------------------------------------------------------------
 
-void SceneObject::OnRegisterScene( Scene* pScene )
+void SceneObject::OnRegisterScene( t2dScene * pScene )
 {
     // Sanity!
     AssertFatal( mpScene == nullptr, "Cannot register to a scene if already registered." );
@@ -399,7 +399,7 @@ void SceneObject::OnRegisterScene( Scene* pScene )
 
 //-----------------------------------------------------------------------------
 
-void SceneObject::OnUnregisterScene( Scene* pScene )
+void SceneObject::OnUnregisterScene( t2dScene * pScene )
 {
     // Sanity!
     AssertFatal( mpScene == pScene, "Cannot unregister from a scene that is not registered." );
@@ -702,8 +702,8 @@ void SceneObject::sceneRenderOverlay( const SceneRenderState* sceneRenderState )
     // Debug Profiling.
     PROFILE_SCOPE(SceneObject_SceneRenderOverlay);
 
-    // Get Scene.
-    Scene* pScene = getScene();
+    // Get t2dScene.
+    t2dScene * pScene = getScene();
 
     // Cannot do anything without scene!
     if ( !pScene )
@@ -719,39 +719,39 @@ void SceneObject::sceneRenderOverlay( const SceneRenderState* sceneRenderState )
         updateAttachedGui();
     }
 
-    // Get merged Local/Scene Debug Mask.
+    // Get merged Local/t2dScene Debug Mask.
     U32 debugMask = getDebugMask() | pScene->getDebugMask();
 
     // Finish here if we're not rendering any debug info or only have scene-rendered debug options.
-    if ( !debugMask || (debugMask & ~(Scene::SCENE_DEBUG_METRICS | Scene::SCENE_DEBUG_JOINTS)) == 0 )
+    if ( !debugMask || (debugMask & ~(t2dScene::SCENE_DEBUG_METRICS | t2dScene::SCENE_DEBUG_JOINTS)) == 0 )
         return;
 
     // AABB debug draw.
-    if ( debugMask & Scene::SCENE_DEBUG_AABB )
+    if ( debugMask & t2dScene::SCENE_DEBUG_AABB )
     {
         pScene->mDebugDraw.DrawAABB( mCurrentAABB, ColorF(0.7f, 0.7f, 0.9f) );
     }
 
     // OOBB debug draw.
-    if ( debugMask & Scene::SCENE_DEBUG_OOBB )
+    if ( debugMask & t2dScene::SCENE_DEBUG_OOBB )
     {
         pScene->mDebugDraw.DrawOOBB( mRenderOOBB, ColorF(0.9f, 0.9f, 1.0f) );
     }
 
     // Asleep debug draw.
-    if ( !getAwake() && debugMask & Scene::SCENE_DEBUG_SLEEP )
+    if ( !getAwake() && debugMask & t2dScene::SCENE_DEBUG_SLEEP )
     {
         pScene->mDebugDraw.DrawAsleep( mRenderOOBB, ColorF( 0.0f, 1.0f, 0.0f ) );
     }
 
     // Collision Shapes.
-    if ( debugMask & Scene::SCENE_DEBUG_COLLISION_SHAPES )
+    if ( debugMask & t2dScene::SCENE_DEBUG_COLLISION_SHAPES )
     {
         pScene->mDebugDraw.DrawCollisionShapes( getRenderTransform(), getBody() );
     }
 
     // Position and local center of mass.
-    if ( debugMask & Scene::SCENE_DEBUG_POSITION_AND_COM )
+    if ( debugMask & t2dScene::SCENE_DEBUG_POSITION_AND_COM )
     {
         const b2Vec2 renderPosition = getRenderPosition();
 
@@ -760,7 +760,7 @@ void SceneObject::sceneRenderOverlay( const SceneRenderState* sceneRenderState )
     }
 
     // Sort Points.
-    if ( debugMask & Scene::SCENE_DEBUG_SORT_POINTS )
+    if ( debugMask & t2dScene::SCENE_DEBUG_SORT_POINTS )
     {
         pScene->mDebugDraw.DrawSortPoint( getRenderPosition(), getSize(), mSortPoint );
     }
@@ -862,7 +862,7 @@ void SceneObject::setSceneLayer( const U32 sceneLayer )
 bool SceneObject::setSceneLayerDepthFront( void )
 {
     // Fetch the scene.
-    Scene* pScene = getScene();
+    t2dScene * pScene = getScene();
 
     // Finish if no scene or only a single object.
     if ( pScene == nullptr || pScene->getSceneObjectCount() == 1 )
@@ -907,7 +907,7 @@ bool SceneObject::setSceneLayerDepthFront( void )
 bool SceneObject::setSceneLayerDepthBack( void )
 {
     // Fetch the scene.
-    Scene* pScene = getScene();
+    t2dScene * pScene = getScene();
 
     // Finish if no scene or only a single object.
     if ( pScene == nullptr || pScene->getSceneObjectCount() == 1 )
@@ -952,7 +952,7 @@ bool SceneObject::setSceneLayerDepthBack( void )
 bool SceneObject::setSceneLayerDepthForward( void )
 {
     // Fetch the scene.
-    Scene* pScene = getScene();
+    t2dScene * pScene = getScene();
 
     // Finish if no scene or only a single object.
     if ( pScene == nullptr || pScene->getSceneObjectCount() == 1 )
@@ -1011,7 +1011,7 @@ bool SceneObject::setSceneLayerDepthForward( void )
 bool SceneObject::setSceneLayerDepthBackward( void )
 {
     // Fetch the scene.
-    Scene* pScene = getScene();
+    t2dScene * pScene = getScene();
 
     // Finish if no scene or only a single object.
     if ( pScene == nullptr || pScene->getSceneObjectCount() == 1 )
@@ -1486,7 +1486,7 @@ void SceneObject::initializeContactGathering( void )
     }
 
     // Generate current contacts.
-    mpCurrentContacts = new Scene::typeContactVector();
+    mpCurrentContacts = new t2dScene::typeContactVector();
 }
 
 //-----------------------------------------------------------------------------
@@ -2647,7 +2647,7 @@ void SceneObject::updateAttachedGui()
     if ( getScene() != mpAttachedGuiSceneWindow->getScene() )
     {
         // Warn.
-        Con::warnf("SceneObject::updateAttachedGui() - SceneWindow is not attached to my Scene!");
+        Con::warnf("SceneObject::updateAttachedGui() - SceneWindow is not attached to my t2dScene!");
         // Detach from GUI Control.
         detachGui();
         // Finish Here.
@@ -2667,7 +2667,7 @@ void SceneObject::updateAttachedGui()
         Vector2 upperLeft = Vector2( objAABB.point.x, objAABB.point.y + objAABB.extent.y );
         Vector2 lowerRight = Vector2( objAABB.point.x + objAABB.extent.x, objAABB.point.y );
 
-        // Convert Scene to Window Coordinates.
+        // Convert t2dScene to Window Coordinates.
         mpAttachedGuiSceneWindow->sceneToWindowPoint( upperLeft, upperLeft );
         mpAttachedGuiSceneWindow->sceneToWindowPoint( lowerRight, lowerRight );
         // Convert Control Dimensions.
@@ -2676,7 +2676,7 @@ void SceneObject::updateAttachedGui()
     }
     else
     {
-        // Convert Scene to Window Coordinates.
+        // Convert t2dScene to Window Coordinates.
         Vector2 positionI;
         Vector2 temp2 = getHalfSize() * (Vector2(mAttachedGuiOffset));
         temp2.rotate(getRenderAngle());
@@ -2723,10 +2723,10 @@ void SceneObject::copyTo( SimObject* obj )
     /// Lifetime.
     pSceneObject->setLifetime( getLifetime() );
 
-    /// Scene Layers.
+    /// t2dScene Layers.
     pSceneObject->setSceneLayer( getSceneLayer() );
 
-    /// Scene groups.
+    /// t2dScene groups.
     pSceneObject->setSceneGroup( getSceneGroup() );
 
     /// Area.

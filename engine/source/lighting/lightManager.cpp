@@ -28,7 +28,7 @@
 #include "memory/safeDelete.h"
 //#include "console/sim.h"
 #include "sim/simSet.h"
-#include "2d/scene/Scene.h"
+#include "t2dScene.h"
 #include "2d/sceneobject/SceneObject.h"
 //#include "materials/materialManager.h"
 //#include "materials/sceneData.h"

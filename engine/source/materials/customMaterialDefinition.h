@@ -5,15 +5,16 @@
 #ifndef _CUSTOMMATERIALDEFINITION_H_
 #define _CUSTOMMATERIALDEFINITION_H_
 
-#ifndef _MATERIALDEFINITION_H_
+//#ifndef _MATERIALDEFINITION_H_
 #include "materials/materialDefinition.h"
-#endif
-#ifndef _ASSET_PTR_H_
-#include "assets/assetPtr.h"
-#endif
+//#endif
+//#ifndef _ASSET_PTR_H_
+//#include "assets/assetPtr.h"
+//#endif
 
 class ShaderData;
-class GFXStateBlockAsset;
+//class GFXStateBlockAsset;
+class GFXStateBlockData;
 
 //**************************************************************************
 // Custom Material
@@ -39,7 +40,7 @@ public:
    ShaderData* mShaderData;
 
    CustomMaterial();       
-   const GFXStateBlockAsset* getStateBlockData() const;
+   const GFXStateBlockData* getStateBlockData() const;
 
    //
    // SimObject interface
@@ -55,8 +56,9 @@ public:
 protected:
    U32 mMaxTex;
    String mShaderDataName;
-   U32 mFlags[MAX_TEX_PER_PASS];   
-   AssetPtr<GFXStateBlockAsset> mStateBlockData;
+   U32 mFlags[MAX_TEX_PER_PASS];
+   GFXStateBlockData* mStateBlockData;
+//   AssetPtr<GFXStateBlockAsset> mStateBlockData;
 
    virtual void _mapMaterial();
 };

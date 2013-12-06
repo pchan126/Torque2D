@@ -28,12 +28,12 @@ ConsoleFunction( getGlobalSceneObjectCount, S32, 1, 1,  "() - Gets the system-wi
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(SceneObject, addToScene, void, 3, 3, "(Scene scene) Add the object to a scene.\n"
+ConsoleMethod(SceneObject, addToScene, void, 3, 3, "(t2dScene scene) Add the object to a scene.\n"
                                                       "@param scene the scene you wish to add this object to."
                                                       "@return No return value.")
 {
-    // Find Scene Object.
-    Scene* pScene = dynamic_cast<Scene*>(Sim::findObject(argv[2]));
+    // Find t2dScene Object.
+    t2dScene * pScene = dynamic_cast<t2dScene *>(Sim::findObject(argv[2]));
 
     // Validate Object.
     if ( !pScene )
@@ -42,7 +42,7 @@ ConsoleMethod(SceneObject, addToScene, void, 3, 3, "(Scene scene) Add the object
         return;
     }
 
-    // Add to Scene.
+    // Add to t2dScene.
     pScene->addToScene( object );
 }   
 
@@ -54,18 +54,18 @@ ConsoleMethod(SceneObject, removeFromScene, void, 2, 2, "() Remove the object fr
     // Check we're in a scene.
     if ( !object->getScene() )
     {
-        Con::warnf("SceneObject::removeFromScene() - Object is not in Scene! (%s)", object->getIdString());
+        Con::warnf("SceneObject::removeFromScene() - Object is not in t2dScene! (%s)", object->getIdString());
         return;
     }
 
-    // Remove from Scene.
+    // Remove from t2dScene.
     object->getScene()->removeFromScene( object );
 }  
 
 //-----------------------------------------------------------------------------
 
 ConsoleMethod( SceneObject, getScene, S32, 2, 2, "() Get the scene the object is in.\n"
-                                                         "@return (Scene scene) The scene this object is currently in.")
+                                                         "@return (t2dScene scene) The scene this object is currently in.")
 {
    return object->getScene() ? object->getScene()->getId() : 0;
 }
@@ -964,7 +964,7 @@ ConsoleMethod(SceneObject, getContact, const char*, 3, 3,    "(contactIndex) Get
     }
 
     // Fetch contacts.
-    const Scene::typeContactVector* pCurrentContacts = object->getCurrentContacts();
+    const t2dScene::typeContactVector* pCurrentContacts = object->getCurrentContacts();
 
     // Sanity!
     AssertFatal( pCurrentContacts != NULL, "SceneObject::getContact() - Contacts not initialized correctly." );
@@ -1404,7 +1404,7 @@ ConsoleMethod(SceneObject, getLinearVelocityFromWorldPoint, const char*, 3, 4,  
     // Invalid
     else
     {
-        Con::warnf("Scene::getLinearVelocityFromWorldPoint() - Invalid number of parameters!");
+        Con::warnf("t2dScene::getLinearVelocityFromWorldPoint() - Invalid number of parameters!");
         return NULL;
     }
 
@@ -1436,7 +1436,7 @@ ConsoleMethod(SceneObject, getLinearVelocityFromLocalPoint, const char*, 3, 4,  
     // Invalid
     else
     {
-        Con::warnf("Scene::getLinearVelocityFromLocalPoint() - Invalid number of parameters!");
+        Con::warnf("t2dScene::getLinearVelocityFromLocalPoint() - Invalid number of parameters!");
         return NULL;
     }
 
@@ -1531,7 +1531,7 @@ ConsoleMethod(SceneObject, moveTo, bool, 4, 7,  "(worldPoint X/Y, speed, [autoSt
     // Invalid
     else
     {
-        Con::warnf("Scene::moveTo() - Invalid number of parameters!");
+        Con::warnf("t2dScene::moveTo() - Invalid number of parameters!");
         return false;
     }
 
@@ -1670,7 +1670,7 @@ ConsoleMethod(SceneObject, applyForce, void, 3, 6,       "(worldForce X/Y, [worl
     // Invalid
     else
     {
-        Con::warnf("Scene::applyForce() - Invalid number of parameters!");
+        Con::warnf("t2dScene::applyForce() - Invalid number of parameters!");
         return;
     }
 
@@ -1698,7 +1698,7 @@ ConsoleMethod(SceneObject, applyForce, void, 3, 6,       "(worldForce X/Y, [worl
     // Invalid
     else
     {
-		Con::warnf("Scene::applyForce() - Invalid number of parameters!");
+		Con::warnf("t2dScene::applyForce() - Invalid number of parameters!");
         return;
     }
 
@@ -1746,7 +1746,7 @@ ConsoleMethod(SceneObject, applyLinearImpulse, void, 3, 6,   "(worldImpulse X/Y,
     // Invalid
     else
     {
-        Con::warnf("Scene::applyLinearImpulse() - Invalid number of parameters!");
+        Con::warnf("t2dScene::applyLinearImpulse() - Invalid number of parameters!");
         return;
     }
 
@@ -1774,7 +1774,7 @@ ConsoleMethod(SceneObject, applyLinearImpulse, void, 3, 6,   "(worldImpulse X/Y,
     // Invalid
     else
     {
-        Con::warnf("Scene::applyLinearImpulse() - Invalid number of parameters!");
+        Con::warnf("t2dScene::applyLinearImpulse() - Invalid number of parameters!");
         return;
     }
 
@@ -3519,9 +3519,9 @@ ConsoleMethod(SceneObject, getSleepingCallback, bool, 2, 2,    "() - Gets whethe
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(SceneObject, setCollisionCallback, void, 2, 3,     "([bool status?]) - Sets whether the 'Scene::onCollision' callback is called or not.\n"
-                                                                    "Sets whether whether the 'Scene::onCollision' callback is called or not.\n"
-                                                                    "@param status Whether the 'Scene::onCollision' callback is called or not (default is false).\n"
+ConsoleMethod(SceneObject, setCollisionCallback, void, 2, 3,     "([bool status?]) - Sets whether the 't2dScene::onCollision' callback is called or not.\n"
+                                                                    "Sets whether whether the 't2dScene::onCollision' callback is called or not.\n"
+                                                                    "@param status Whether the 't2dScene::onCollision' callback is called or not (default is false).\n"
                                                                     "@return No return Value.")
 {
     // Set collision callback.
@@ -3530,8 +3530,8 @@ ConsoleMethod(SceneObject, setCollisionCallback, void, 2, 3,     "([bool status?
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(SceneObject, getCollisionCallback, bool, 2, 2,  "() Gets whether the 'Scene::onCollision' callback is called or not.\n"
-                                                                    "@return (bool status) the 'Scene::onCollision' callback is called or not.")
+ConsoleMethod(SceneObject, getCollisionCallback, bool, 2, 2,  "() Gets whether the 't2dScene::onCollision' callback is called or not.\n"
+                                                                    "@return (bool status) the 't2dScene::onCollision' callback is called or not.")
 {
     // Get collision callback.
     return object->getCollisionCallback();
@@ -3564,10 +3564,10 @@ ConsoleMethod(SceneObject, setDebugOn, void, 3, 2 + DEBUG_MODE_COUNT,   "(debugO
         {
             // Fetch the debug option.
             const char* pDebugOption = Utility::mGetStringElement( argv[2], i );
-            Scene::DebugOption debugOption = Scene::getDebugOptionEnum( pDebugOption );
+            t2dScene::DebugOption debugOption = t2dScene::getDebugOptionEnum( pDebugOption );
         
             // Is the option valid?
-            if ( debugOption == Scene::SCENE_DEBUG_INVALID )
+            if ( debugOption == t2dScene::SCENE_DEBUG_INVALID )
             {
                 // No, so warn.
                 Con::warnf( "SceneObject::setDebugOn() - Invalid debug option '%s' specified.", pDebugOption );
@@ -3586,10 +3586,10 @@ ConsoleMethod(SceneObject, setDebugOn, void, 3, 2 + DEBUG_MODE_COUNT,   "(debugO
         {
             // Fetch the debug option.
             const char* pDebugOption = argv[i];
-            Scene::DebugOption debugOption = Scene::getDebugOptionEnum( argv[i] );
+            t2dScene::DebugOption debugOption = t2dScene::getDebugOptionEnum( argv[i] );
 
             // Is the option valid?
-            if ( debugOption == Scene::SCENE_DEBUG_INVALID )
+            if ( debugOption == t2dScene::SCENE_DEBUG_INVALID )
             {
                 // No, so warn.
                 Con::warnf( "SceneObject::setDebugOn() - Invalid debug option '%s' specified.", pDebugOption );
@@ -3632,10 +3632,10 @@ ConsoleMethod(SceneObject, setDebugOff, void, 3, 2 + DEBUG_MODE_COUNT,  "(debugO
         {
             // Fetch the debug option.
             const char* pDebugOption = Utility::mGetStringElement( argv[2], i );
-            Scene::DebugOption debugOption = Scene::getDebugOptionEnum( pDebugOption );
+            t2dScene::DebugOption debugOption = t2dScene::getDebugOptionEnum( pDebugOption );
         
             // Is the option valid?
-            if ( debugOption == Scene::SCENE_DEBUG_INVALID )
+            if ( debugOption == t2dScene::SCENE_DEBUG_INVALID )
             {
                 // No, so warn.
                 Con::warnf( "SceneObject::setDebugOff() - Invalid debug option '%s' specified.", pDebugOption );
@@ -3654,10 +3654,10 @@ ConsoleMethod(SceneObject, setDebugOff, void, 3, 2 + DEBUG_MODE_COUNT,  "(debugO
         {
             // Fetch the debug option.
             const char* pDebugOption = argv[i];
-            Scene::DebugOption debugOption = Scene::getDebugOptionEnum( argv[i] );
+            t2dScene::DebugOption debugOption = t2dScene::getDebugOptionEnum( argv[i] );
 
             // Is the option valid?
-            if ( debugOption == Scene::SCENE_DEBUG_INVALID )
+            if ( debugOption == t2dScene::SCENE_DEBUG_INVALID )
             {
                 // No, so warn.
                 Con::warnf( "SceneObject::setDebugOff() - Invalid debug option '%s' specified.", pDebugOption );

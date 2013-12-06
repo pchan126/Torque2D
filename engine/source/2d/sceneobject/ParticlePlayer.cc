@@ -181,7 +181,7 @@ void ParticlePlayer::safeDelete( void )
 
 //-----------------------------------------------------------------------------
 
-void ParticlePlayer::OnRegisterScene( Scene* pScene )
+void ParticlePlayer::OnRegisterScene( t2dScene * pScene )
 {
     // Call parent.
     Parent::OnRegisterScene( pScene );
@@ -196,7 +196,7 @@ void ParticlePlayer::OnRegisterScene( Scene* pScene )
 
 //-----------------------------------------------------------------------------
 
-void ParticlePlayer::OnUnregisterScene( Scene* pScene )
+void ParticlePlayer::OnUnregisterScene( t2dScene * pScene )
 {
     // Stop the player.
     stop( false, false );
@@ -662,8 +662,8 @@ void ParticlePlayer::sceneRenderOverlay( const SceneRenderState* sceneRenderStat
     // Call parent.
     Parent::sceneRenderOverlay( sceneRenderState );
 
-    // Get Scene.
-    Scene* pScene = getScene();
+    // Get t2dScene.
+    t2dScene * pScene = getScene();
 
     // Finish if no scene.
     if ( !pScene )

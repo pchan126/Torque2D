@@ -23,16 +23,10 @@
 #ifndef _SCENE_RENDER_STATE_H_
 #define _SCENE_RENDER_STATE_H_
 
-#ifndef _COLOR_H_
 #include "graphics/color.h"
-#endif
-#ifndef _VECTOR2_H_
 #include "2d/core/vector2.h"
-#endif
-
 #include "2d/gui/SceneWindow.h"
-#include "2d/scene/Scene.h"
-#include "Scene.h"
+#include "t2dScene.h"
 
 //-----------------------------------------------------------------------------
 
@@ -57,7 +51,7 @@ public:
 
 protected:
     /// SceneManager being rendered in this state.
-    Scene* mSceneManager;
+    t2dScene * mSceneManager;
 
     /// The type of scene render pass we're doing.
     ScenePassType mScenePassType;
@@ -100,19 +94,19 @@ public:
    /// @param passType Type of rendering pass that the SceneRenderState is for.
    /// @param view The view that is being rendered
    /// @param renderPass The render pass which is being set up by this SceneRenderState.  If NULL,
-   ///   then Scene::getDefaultRenderPass() is used.
+   ///   then t2dScene::getDefaultRenderPass() is used.
    /// @param usePostEffect Whether PostFX are enabled in the rendering pass.
-   SceneRenderState( Scene* scene,
+   SceneRenderState( t2dScene * scene,
                     ScenePassType passType,
                     const CameraView& view,
                     U32 renderGroupMask,
-                    RenderPassManager* renderPass = NULL,
+                    RenderPassManager* renderPass = nullptr,
                     bool usePostEffects = true);
    
    ~SceneRenderState();
 
     /// Return the SceneManager that is being rendered in this SceneRenderState.
-    Scene* getSceneManager() const { return mSceneManager; }
+    t2dScene * getSceneManager() const { return mSceneManager; }
 
     /// If true then bin based post effects are disabled
     /// during rendering with this scene state.
@@ -135,7 +129,7 @@ public:
     /// @param numObjects Number of objects in @a objects.
     void renderObjects( SceneObject** objects, U32 numObjects, SceneRenderQueue* pSceneRenderQueue );
 
-   void renderObjects( Scene* pScene, SceneRenderQueue* pSceneRenderQueue );
+   void renderObjects( t2dScene * pScene, SceneRenderQueue* pSceneRenderQueue );
    
     /// @}
 

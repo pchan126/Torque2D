@@ -23,7 +23,7 @@
 #include "2d/scene/WorldQuery.h"
 
 #ifndef _SCENE_H_
-#include "Scene.h"
+#include "t2dScene.h"
 #endif
 
 #ifndef _SCENE_OBJECT_H_
@@ -35,7 +35,7 @@
 
 //-----------------------------------------------------------------------------
 
-WorldQuery::WorldQuery( Scene* pScene ) :
+WorldQuery::WorldQuery( t2dScene * pScene ) :
         mpScene(pScene),
         mIsRaycastQueryResult(false),
         mMasterQueryKey(0),

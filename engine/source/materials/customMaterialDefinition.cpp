@@ -156,7 +156,7 @@ void CustomMaterial::_mapMaterial()
    MATMGR->mapMaterial(mMapTo, getName());
 }
 
-const GFXStateBlockAsset* CustomMaterial::getStateBlockData() const
+const GFXStateBlockData* CustomMaterial::getStateBlockData() const
 {
    return mStateBlockData;
 }

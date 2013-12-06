@@ -21,18 +21,18 @@
 //-----------------------------------------------------------------------------
 
 #include "platform/platform.h"
-#include "gfx/sim/debugDraw.h"
+#include "graphics/sim/debugDraw.h"
 
-#include "gfx/gFont.h"
-#include "gfx/gfxDrawUtil.h"
-#include "gfx/gfxTransformSaver.h"
-#include "gfx/gfxDebugEvent.h"
+#include "graphics/gFont.h"
+#include "graphics/gfxDrawUtil.h"
+#include "graphics/gfxTransformSaver.h"
+#include "graphics/gfxDebugEvent.h"
 #include "math/mathUtils.h"
 #include "math/util/frustum.h"
 #include "console/console.h"
 #include "scene/sceneManager.h"
-#include "core/module.h"
-#include "console/engineAPI.h"
+//#include "core/module.h"
+//#include "console/engineAPI.h"
 
 #include "math/mPolyhedron.impl.h"
 

@@ -64,7 +64,7 @@ void PickingSceneController::copyTo(SimObject* object)
 
 //------------------------------------------------------------------------------
 
-WorldQuery* PickingSceneController::prepareQueryFilter( Scene* pScene, const bool clearQuery )
+WorldQuery* PickingSceneController::prepareQueryFilter( t2dScene * pScene, const bool clearQuery )
 {
     // Fetch world query and clear results.
     WorldQuery* pWorldQuery = pScene->getWorldQuery( clearQuery );

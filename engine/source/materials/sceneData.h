@@ -22,17 +22,12 @@
 #ifndef _SCENEDATA_H_
 #define _SCENEDATA_H_
 
-#ifndef _SCENERENDERSTATE_H_
 #include "2d/scene/sceneRenderState.h"
-#endif
-#ifndef _LIGHTMANAGER_H_
 #include "lighting/lightManager.h"
-#endif
-
 #include "graphics/gfxDevice.h"
 
 class GFXTexHandle;
-//class GFXCubemap;
+class GFXCubemap;
 
 struct SceneData
 {
@@ -65,10 +60,10 @@ struct SceneData
    
    /// The current lights to use in rendering
    /// in order of the light importance.
-//   LightInfo* lights[8];
+   LightInfo* lights[8];
 
    ///
-//   ColorF ambientLightColor;
+   ColorF ambientLightColor;
 
    // fog      
    F32 fogDensity;
@@ -78,7 +73,7 @@ struct SceneData
   
    // misc
    const MatrixF *objTrans;
-//   GFXCubemap *cubemap;
+   GFXCubemap *cubemap;
    F32 visibility;
 
    /// Enables wireframe rendering for the object.

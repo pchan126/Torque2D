@@ -101,7 +101,7 @@ void BuoyancyController::copyTo(SimObject* object)
 */
 //------------------------------------------------------------------------------
 
-void BuoyancyController::integrate( Scene* pScene, const F32 totalTime, const F32 elapsedTime, DebugStats* pDebugStats )
+void BuoyancyController::integrate( t2dScene * pScene, const F32 totalTime, const F32 elapsedTime, DebugStats* pDebugStats )
 {
     // Prepare query filter.
     WorldQuery* pWorldQuery = prepareQueryFilter( pScene );
@@ -380,7 +380,7 @@ F32 BuoyancyController::ComputePolygonSubmergedArea( const b2Transform& bodyTran
 
 //------------------------------------------------------------------------------
 
-void BuoyancyController::renderOverlay( Scene* pScene, const SceneRenderState* pSceneRenderState, BatchRender* pBatchRenderer )
+void BuoyancyController::renderOverlay( t2dScene * pScene, const SceneRenderState* pSceneRenderState, BatchRender* pBatchRenderer )
 {
     // Call parent.
     Parent::renderOverlay( pScene, pSceneRenderState, pBatchRenderer );

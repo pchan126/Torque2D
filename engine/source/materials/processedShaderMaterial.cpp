@@ -23,23 +23,23 @@
 #include "platform/platform.h"
 #include "materials/processedShaderMaterial.h"
 
-#include "core/util/safeDelete.h"
-#include "gfx/sim/cubemapData.h"
-#include "gfx/gfxShader.h"
-#include "gfx/genericConstBuffer.h"
-#include "gfx/gfxPrimitiveBuffer.h"
-#include "scene/sceneRenderState.h"
-#include "shaderGen/shaderFeature.h"
+#include "memory/safeDelete.h"
+#include "graphics/sim/cubemapData.h"
+#include "graphics/gfxShader.h"
+//#include "graphics/genericConstBuffer.h"
+//#include "graphics/gfxPrimitiveBuffer.h"
+#include "2d/scene/sceneRenderState.h"
+//#include "shaderGen/shaderFeature.h"
 #include "shaderGen/shaderGenVars.h"
-#include "shaderGen/featureMgr.h"
-#include "shaderGen/shaderGen.h"
+//#include "shaderGen/featureMgr.h"
+//#include "shaderGen/shaderGen.h"
 #include "materials/sceneData.h"
 #include "materials/materialFeatureTypes.h"
 #include "materials/materialManager.h"
 #include "materials/shaderMaterialParameters.h"
 #include "materials/matTextureTarget.h"
-#include "gfx/util/screenspace.h"
-#include "math/util/matrixSet.h"
+//#include "graphics/util/screenspace.h"
+//#include "math/util/matrixSet.h"
 
 // We need to include customMaterialDefinition for ShaderConstHandles::init
 #include "materials/customMaterialDefinition.h"
@@ -110,7 +110,7 @@ void ShaderRenderPassData::reset()
 {
    Parent::reset();
 
-   shader = NULL;
+   shader = nullptr;
 
    for ( U32 i=0; i < featureShaderHandles.size(); i++ )
       delete featureShaderHandles[i];
@@ -133,16 +133,16 @@ String ShaderRenderPassData::describeSelf() const
 /// ProcessedShaderMaterial
 ///
 ProcessedShaderMaterial::ProcessedShaderMaterial()
-   :  mDefaultParameters( NULL ),
-      mInstancingState( NULL )
+   :  mDefaultParameters( nullptr ),
+      mInstancingState( nullptr )
 {
    VECTOR_SET_ASSOCIATION( mShaderConstDesc );
    VECTOR_SET_ASSOCIATION( mParameterHandles );
 }
 
 ProcessedShaderMaterial::ProcessedShaderMaterial(Material &mat)
-   :  mDefaultParameters( NULL ),
-      mInstancingState( NULL )
+   :  mDefaultParameters( nullptr ),
+      mInstancingState( nullptr )
 {
    VECTOR_SET_ASSOCIATION( mShaderConstDesc );
    VECTOR_SET_ASSOCIATION( mParameterHandles );
@@ -153,8 +153,10 @@ ProcessedShaderMaterial::~ProcessedShaderMaterial()
 {
    SAFE_DELETE(mInstancingState);
    SAFE_DELETE(mDefaultParameters);
-   for (U32 i = 0; i < mParameterHandles.size(); i++)
-      SAFE_DELETE(mParameterHandles[i]);
+   for (auto handle: mParameterHandles)
+   {
+      SAFE_DELETE(handle);
+   }
 }
 
 //
@@ -283,259 +285,259 @@ void ProcessedShaderMaterial::_determineFeatures(  U32 stageNum,
                                                    MaterialFeatureData &fd, 
                                                    const FeatureSet &features )
 {
-   PROFILE_SCOPE( ProcessedShaderMaterial_DetermineFeatures );
-
-   const float shaderVersion = GFX->getPixelShaderVersion();
-   AssertFatal(shaderVersion > 0.0 , "Cannot create a shader material if we don't support shaders");
-
-   bool lastStage = stageNum == (mMaxStages-1);
-
-   // First we add all the features which the 
-   // material has defined.
-
-   if ( mMaterial->isTranslucent() )
-   {
-      // Note: This is for decal blending into the prepass
-      // for AL... it probably needs to be made clearer.
-      if (  mMaterial->mTranslucentBlendOp == Material::LerpAlpha &&
-            mMaterial->mTranslucentZWrite )
-         fd.features.addFeature( MFT_IsTranslucentZWrite );
-      else
-      {
-         fd.features.addFeature( MFT_IsTranslucent );
-         fd.features.addFeature( MFT_ForwardShading );
-      }
-   }
-
-   // TODO: This sort of sucks... BL should somehow force this
-   // feature on from the outside and not this way.
-   if ( dStrcmp( LIGHTMGR->getId(), "BLM" ) == 0 )
-      fd.features.addFeature( MFT_ForwardShading );
-
-   // Disabling the InterlacedPrePass feature for now. It is not ready for prime-time
-   // and it should not be triggered off of the DoubleSided parameter. [2/5/2010 Pat]
-   /*if ( mMaterial->isDoubleSided() )
-   {
-      fd.features.addFeature( MFT_InterlacedPrePass );
-   }*/
-
-   // Allow instancing if it was requested and the card supports
-   // SM 3.0 or above.
-   //
-   // We also disable instancing for non-single pass materials
-   // and glowing materials because its untested/unimplemented.
-   //
-   if (  features.hasFeature( MFT_UseInstancing ) &&
-         mMaxStages == 1 &&
-         !mMaterial->mGlow[0] &&
-         shaderVersion >= 3.0f )
-      fd.features.addFeature( MFT_UseInstancing );
-
-   if ( mMaterial->mAlphaTest )
-      fd.features.addFeature( MFT_AlphaTest );
-
-   if ( mMaterial->mEmissive[stageNum] )
-      fd.features.addFeature( MFT_IsEmissive );
-   else
-      fd.features.addFeature( MFT_RTLighting );
-
-   if ( mMaterial->mAnimFlags[stageNum] )
-      fd.features.addFeature( MFT_TexAnim );  
-
-   if ( mMaterial->mVertLit[stageNum] )
-      fd.features.addFeature( MFT_VertLit );
-   
-   // cubemaps only available on stage 0 for now - bramage   
-   if ( stageNum < 1 && 
-         (  (  mMaterial->mCubemapData && mMaterial->mCubemapData->mCubemap ) ||
-               mMaterial->mDynamicCubemap ) )
-   fd.features.addFeature( MFT_CubeMap );
-
-   fd.features.addFeature( MFT_Visibility );
-
-   if (  lastStage && 
-         (  !gClientSceneGraph->usePostEffectFog() ||
-            fd.features.hasFeature( MFT_IsTranslucent ) ||
-            fd.features.hasFeature( MFT_ForwardShading )) )
-      fd.features.addFeature( MFT_Fog );
-
-   if ( mMaterial->mMinnaertConstant[stageNum] > 0.0f )
-      fd.features.addFeature( MFT_MinnaertShading );
-
-   if ( mMaterial->mSubSurface[stageNum] )
-      fd.features.addFeature( MFT_SubSurface );
-
-   if ( !mMaterial->mCellLayout[stageNum].isZero() )
-   {
-      fd.features.addFeature( MFT_DiffuseMapAtlas );
-
-      if ( mMaterial->mNormalMapAtlas )
-         fd.features.addFeature( MFT_NormalMapAtlas );
-   }
-
-   // Grab other features like normal maps, base texture, etc.
-   FeatureSet mergeFeatures;
-   mStages[stageNum].getFeatureSet( &mergeFeatures );
-   fd.features.merge( mergeFeatures );
-   
-   if ( fd.features[ MFT_NormalMap ] )   
-   {   
-      if (  mStages[stageNum].getTex( MFT_NormalMap )->mFormat == GFXFormatDXT5 &&   
-           !mStages[stageNum].getTex( MFT_NormalMap )->mHasTransparency )   
-         fd.features.addFeature( MFT_IsDXTnm );   
-   }
-
-   // Now for some more advanced features that we 
-   // cannot do on SM 2.0 and below.
-   if ( shaderVersion > 2.0f )
-   {
-      // Only allow parallax if we have a normal map and
-      // we're not using DXTnm compression.
-      if (  mMaterial->mParallaxScale[stageNum] > 0.0f &&
-         fd.features[ MFT_NormalMap ] &&
-         !fd.features[ MFT_IsDXTnm ] )
-         fd.features.addFeature( MFT_Parallax );
-
-      // If not parallax then allow per-pixel specular if
-      // we have real time lighting enabled.
-      else if (   fd.features[MFT_RTLighting] && 
-                  mMaterial->mPixelSpecular[stageNum] )
-         fd.features.addFeature( MFT_PixSpecular );
-   }
-
-   // Without realtime lighting and on lower end 
-   // shader models disable the specular map.
-   if (  !fd.features[ MFT_RTLighting ] || shaderVersion == 2.0 )
-      fd.features.removeFeature( MFT_SpecularMap );
-
-   // If we have a specular map then make sure we
-   // have per-pixel specular enabled.
-   if( fd.features[ MFT_SpecularMap ] )
-   {
-      fd.features.addFeature( MFT_PixSpecular );
-
-      // Check for an alpha channel on the specular map. If it has one (and it
-      // has values less than 255) than the artist has put the gloss map into
-      // the alpha channel.
-      if( mStages[stageNum].getTex( MFT_SpecularMap )->mHasTransparency )
-         fd.features.addFeature( MFT_GlossMap );
-   }
-
-   // Without a base texture use the diffuse color
-   // feature to ensure some sort of output.
-   if (!fd.features[MFT_DiffuseMap])
-   {
-      fd.features.addFeature( MFT_DiffuseColor );
-
-      // No texture coords... no overlay.
-      fd.features.removeFeature( MFT_OverlayMap );
-   }
-
-   // If we have a diffuse map and the alpha on the diffuse isn't
-   // zero and the color isn't pure white then multiply the color.
-   else if (   mMaterial->mDiffuse[stageNum].alpha > 0.0f && 
-               mMaterial->mDiffuse[stageNum] != ColorF::WHITE )
-      fd.features.addFeature( MFT_DiffuseColor );
-
-   // If lightmaps or tonemaps are enabled or we 
-   // don't have a second UV set then we cannot 
-   // use the overlay texture.
-   if (  fd.features[MFT_LightMap] || 
-         fd.features[MFT_ToneMap] || 
-         mVertexFormat->getTexCoordCount() < 2 )
-      fd.features.removeFeature( MFT_OverlayMap );
-
-   // If tonemaps are enabled don't use lightmap
-   if ( fd.features[MFT_ToneMap] || mVertexFormat->getTexCoordCount() < 2 )
-      fd.features.removeFeature( MFT_LightMap );
-
-   // Don't allow tonemaps if we don't have a second UV set
-   if ( mVertexFormat->getTexCoordCount() < 2 )
-      fd.features.removeFeature( MFT_ToneMap );
-
-   // Always add the HDR output feature.  
-   //
-   // It will be filtered out if it was disabled 
-   // for this material creation below.
-   //
-   // Also the shader code will evaluate to a nop
-   // if HDR is not enabled in the scene.
-   //
-   fd.features.addFeature( MFT_HDROut );
-
-   // If vertex color is enabled on the material's stage and
-   // color is present in vertex format, add diffuse vertex
-   // color feature.
-   
-   if (  mMaterial->mVertColor[ stageNum ] &&
-         mVertexFormat->hasColor() )
-      fd.features.addFeature( MFT_DiffuseVertColor );
-
-   // Allow features to add themselves.
-   for ( U32 i = 0; i < FEATUREMGR->getFeatureCount(); i++ )
-   {
-      const FeatureInfo &info = FEATUREMGR->getAt( i );
-      info.feature->determineFeature(  mMaterial, 
-                                       mVertexFormat, 
-                                       stageNum, 
-                                       *info.type, 
-                                       features, 
-                                       &fd );
-   }
-
-   // Now disable any features that were 
-   // not part of the input feature handle.
-   fd.features.filter( features );
+//   PROFILE_SCOPE( ProcessedShaderMaterial_DetermineFeatures );
+//
+//   const float shaderVersion = GFX->getPixelShaderVersion();
+//   AssertFatal(shaderVersion > 0.0 , "Cannot create a shader material if we don't support shaders");
+//
+//   bool lastStage = stageNum == (mMaxStages-1);
+//
+//   // First we add all the features which the
+//   // material has defined.
+//
+//   if ( mMaterial->isTranslucent() )
+//   {
+//      // Note: This is for decal blending into the prepass
+//      // for AL... it probably needs to be made clearer.
+//      if (  mMaterial->mTranslucentBlendOp == Material::LerpAlpha &&
+//            mMaterial->mTranslucentZWrite )
+//         fd.features.addFeature( MFT_IsTranslucentZWrite );
+//      else
+//      {
+//         fd.features.addFeature( MFT_IsTranslucent );
+//         fd.features.addFeature( MFT_ForwardShading );
+//      }
+//   }
+//
+//   // TODO: This sort of sucks... BL should somehow force this
+//   // feature on from the outside and not this way.
+//   if ( dStrcmp( LIGHTMGR->getId(), "BLM" ) == 0 )
+//      fd.features.addFeature( MFT_ForwardShading );
+//
+//   // Disabling the InterlacedPrePass feature for now. It is not ready for prime-time
+//   // and it should not be triggered off of the DoubleSided parameter. [2/5/2010 Pat]
+//   /*if ( mMaterial->isDoubleSided() )
+//   {
+//      fd.features.addFeature( MFT_InterlacedPrePass );
+//   }*/
+//
+//   // Allow instancing if it was requested and the card supports
+//   // SM 3.0 or above.
+//   //
+//   // We also disable instancing for non-single pass materials
+//   // and glowing materials because its untested/unimplemented.
+//   //
+//   if (  features.hasFeature( MFT_UseInstancing ) &&
+//         mMaxStages == 1 &&
+//         !mMaterial->mGlow[0] &&
+//         shaderVersion >= 3.0f )
+//      fd.features.addFeature( MFT_UseInstancing );
+//
+//   if ( mMaterial->mAlphaTest )
+//      fd.features.addFeature( MFT_AlphaTest );
+//
+//   if ( mMaterial->mEmissive[stageNum] )
+//      fd.features.addFeature( MFT_IsEmissive );
+//   else
+//      fd.features.addFeature( MFT_RTLighting );
+//
+//   if ( mMaterial->mAnimFlags[stageNum] )
+//      fd.features.addFeature( MFT_TexAnim );
+//
+//   if ( mMaterial->mVertLit[stageNum] )
+//      fd.features.addFeature( MFT_VertLit );
+//
+//   // cubemaps only available on stage 0 for now - bramage
+//   if ( stageNum < 1 &&
+//         (  (  mMaterial->mCubemapData && mMaterial->mCubemapData->mCubemap ) ||
+//               mMaterial->mDynamicCubemap ) )
+//   fd.features.addFeature( MFT_CubeMap );
+//
+//   fd.features.addFeature( MFT_Visibility );
+//
+//   if (  lastStage &&
+//         (  !gClientSceneGraph->usePostEffectFog() ||
+//            fd.features.hasFeature( MFT_IsTranslucent ) ||
+//            fd.features.hasFeature( MFT_ForwardShading )) )
+//      fd.features.addFeature( MFT_Fog );
+//
+//   if ( mMaterial->mMinnaertConstant[stageNum] > 0.0f )
+//      fd.features.addFeature( MFT_MinnaertShading );
+//
+//   if ( mMaterial->mSubSurface[stageNum] )
+//      fd.features.addFeature( MFT_SubSurface );
+//
+//   if ( !mMaterial->mCellLayout[stageNum].isZero() )
+//   {
+//      fd.features.addFeature( MFT_DiffuseMapAtlas );
+//
+//      if ( mMaterial->mNormalMapAtlas )
+//         fd.features.addFeature( MFT_NormalMapAtlas );
+//   }
+//
+//   // Grab other features like normal maps, base texture, etc.
+//   FeatureSet mergeFeatures;
+//   mStages[stageNum].getFeatureSet( &mergeFeatures );
+//   fd.features.merge( mergeFeatures );
+//
+//   if ( fd.features[ MFT_NormalMap ] )
+//   {
+//      if (  mStages[stageNum].getTex( MFT_NormalMap )->mFormat == GFXFormatDXT5 &&
+//           !mStages[stageNum].getTex( MFT_NormalMap )->mHasTransparency )
+//         fd.features.addFeature( MFT_IsDXTnm );
+//   }
+//
+//   // Now for some more advanced features that we
+//   // cannot do on SM 2.0 and below.
+//   if ( shaderVersion > 2.0f )
+//   {
+//      // Only allow parallax if we have a normal map and
+//      // we're not using DXTnm compression.
+//      if (  mMaterial->mParallaxScale[stageNum] > 0.0f &&
+//         fd.features[ MFT_NormalMap ] &&
+//         !fd.features[ MFT_IsDXTnm ] )
+//         fd.features.addFeature( MFT_Parallax );
+//
+//      // If not parallax then allow per-pixel specular if
+//      // we have real time lighting enabled.
+//      else if (   fd.features[MFT_RTLighting] &&
+//                  mMaterial->mPixelSpecular[stageNum] )
+//         fd.features.addFeature( MFT_PixSpecular );
+//   }
+//
+//   // Without realtime lighting and on lower end
+//   // shader models disable the specular map.
+//   if (  !fd.features[ MFT_RTLighting ] || shaderVersion == 2.0 )
+//      fd.features.removeFeature( MFT_SpecularMap );
+//
+//   // If we have a specular map then make sure we
+//   // have per-pixel specular enabled.
+//   if( fd.features[ MFT_SpecularMap ] )
+//   {
+//      fd.features.addFeature( MFT_PixSpecular );
+//
+//      // Check for an alpha channel on the specular map. If it has one (and it
+//      // has values less than 255) than the artist has put the gloss map into
+//      // the alpha channel.
+//      if( mStages[stageNum].getTex( MFT_SpecularMap )->mHasTransparency )
+//         fd.features.addFeature( MFT_GlossMap );
+//   }
+//
+//   // Without a base texture use the diffuse color
+//   // feature to ensure some sort of output.
+//   if (!fd.features[MFT_DiffuseMap])
+//   {
+//      fd.features.addFeature( MFT_DiffuseColor );
+//
+//      // No texture coords... no overlay.
+//      fd.features.removeFeature( MFT_OverlayMap );
+//   }
+//
+//   // If we have a diffuse map and the alpha on the diffuse isn't
+//   // zero and the color isn't pure white then multiply the color.
+//   else if (   mMaterial->mDiffuse[stageNum].alpha > 0.0f &&
+//               mMaterial->mDiffuse[stageNum] != ColorF::WHITE )
+//      fd.features.addFeature( MFT_DiffuseColor );
+//
+//   // If lightmaps or tonemaps are enabled or we
+//   // don't have a second UV set then we cannot
+//   // use the overlay texture.
+//   if (  fd.features[MFT_LightMap] ||
+//         fd.features[MFT_ToneMap] ||
+//         mVertexFormat->getTexCoordCount() < 2 )
+//      fd.features.removeFeature( MFT_OverlayMap );
+//
+//   // If tonemaps are enabled don't use lightmap
+//   if ( fd.features[MFT_ToneMap] || mVertexFormat->getTexCoordCount() < 2 )
+//      fd.features.removeFeature( MFT_LightMap );
+//
+//   // Don't allow tonemaps if we don't have a second UV set
+//   if ( mVertexFormat->getTexCoordCount() < 2 )
+//      fd.features.removeFeature( MFT_ToneMap );
+//
+//   // Always add the HDR output feature.
+//   //
+//   // It will be filtered out if it was disabled
+//   // for this material creation below.
+//   //
+//   // Also the shader code will evaluate to a nop
+//   // if HDR is not enabled in the scene.
+//   //
+//   fd.features.addFeature( MFT_HDROut );
+//
+//   // If vertex color is enabled on the material's stage and
+//   // color is present in vertex format, add diffuse vertex
+//   // color feature.
+//
+//   if (  mMaterial->mVertColor[ stageNum ] &&
+//         mVertexFormat->hasColor() )
+//      fd.features.addFeature( MFT_DiffuseVertColor );
+//
+//   // Allow features to add themselves.
+//   for ( U32 i = 0; i < FEATUREMGR->getFeatureCount(); i++ )
+//   {
+//      const FeatureInfo &info = FEATUREMGR->getAt( i );
+//      info.feature->determineFeature(  mMaterial,
+//                                       mVertexFormat,
+//                                       stageNum,
+//                                       *info.type,
+//                                       features,
+//                                       &fd );
+//   }
+//
+//   // Now disable any features that were
+//   // not part of the input feature handle.
+//   fd.features.filter( features );
 }
 
 bool ProcessedShaderMaterial::_createPasses( MaterialFeatureData &stageFeatures, U32 stageNum, const FeatureSet &features )
 {
-   // Creates passes for the given stage
-   ShaderRenderPassData passData;
-   U32 texIndex = 0;
-
-   for( U32 i=0; i < FEATUREMGR->getFeatureCount(); i++ )
-   {
-      const FeatureInfo &info = FEATUREMGR->getAt( i );
-      if ( !stageFeatures.features.hasFeature( *info.type ) ) 
-         continue;
-
-      U32 numTexReg = info.feature->getResources( stageFeatures ).numTexReg;
-
-      // adds pass if blend op changes for feature
-      _setPassBlendOp( info.feature, passData, texIndex, stageFeatures, stageNum, features );
-
-      // Add pass if num tex reg is going to be too high
-      if( passData.mNumTexReg + numTexReg > GFX->getNumSamplers() )
-      {
-         if( !_addPass( passData, texIndex, stageFeatures, stageNum, features ) )
-            return false;
-         _setPassBlendOp( info.feature, passData, texIndex, stageFeatures, stageNum, features );
-      }
-
-      passData.mNumTexReg += numTexReg;
-      passData.mFeatureData.features.addFeature( *info.type );
-      info.feature->setTexData( mStages[stageNum], stageFeatures, passData, texIndex );
-
-      // Add pass if tex units are maxed out
-      if( texIndex > GFX->getNumSamplers() )
-      {
-         if( !_addPass( passData, texIndex, stageFeatures, stageNum, features ) )
-            return false;
-         _setPassBlendOp( info.feature, passData, texIndex, stageFeatures, stageNum, features );
-      }
-   }
-
-   const FeatureSet &passFeatures = passData.mFeatureData.codify();
-   if ( passFeatures.isNotEmpty() )
-   {
-      mFeatures.merge( passFeatures );
-      if(  !_addPass( passData, texIndex, stageFeatures, stageNum, features ) )
-      {
-         mFeatures.clear();
-         return false;
-      }
-   }
+//   // Creates passes for the given stage
+//   ShaderRenderPassData passData;
+//   U32 texIndex = 0;
+//
+//   for( U32 i=0; i < FEATUREMGR->getFeatureCount(); i++ )
+//   {
+//      const FeatureInfo &info = FEATUREMGR->getAt( i );
+//      if ( !stageFeatures.features.hasFeature( *info.type ) )
+//         continue;
+//
+//      U32 numTexReg = info.feature->getResources( stageFeatures ).numTexReg;
+//
+//      // adds pass if blend op changes for feature
+//      _setPassBlendOp( info.feature, passData, texIndex, stageFeatures, stageNum, features );
+//
+//      // Add pass if num tex reg is going to be too high
+//      if( passData.mNumTexReg + numTexReg > GFX->getNumSamplers() )
+//      {
+//         if( !_addPass( passData, texIndex, stageFeatures, stageNum, features ) )
+//            return false;
+//         _setPassBlendOp( info.feature, passData, texIndex, stageFeatures, stageNum, features );
+//      }
+//
+//      passData.mNumTexReg += numTexReg;
+//      passData.mFeatureData.features.addFeature( *info.type );
+//      info.feature->setTexData( mStages[stageNum], stageFeatures, passData, texIndex );
+//
+//      // Add pass if tex units are maxed out
+//      if( texIndex > GFX->getNumSamplers() )
+//      {
+//         if( !_addPass( passData, texIndex, stageFeatures, stageNum, features ) )
+//            return false;
+//         _setPassBlendOp( info.feature, passData, texIndex, stageFeatures, stageNum, features );
+//      }
+//   }
+//
+//   const FeatureSet &passFeatures = passData.mFeatureData.codify();
+//   if ( passFeatures.isNotEmpty() )
+//   {
+//      mFeatures.merge( passFeatures );
+//      if(  !_addPass( passData, texIndex, stageFeatures, stageNum, features ) )
+//      {
+//         mFeatures.clear();
+//         return false;
+//      }
+//   }
 
    return true;
 } 
@@ -544,8 +546,11 @@ void ProcessedShaderMaterial::_initMaterialParameters()
 {   
    // Cleanup anything left first.
    SAFE_DELETE( mDefaultParameters );
+
    for ( U32 i = 0; i < mParameterHandles.size(); i++ )
+   {
       SAFE_DELETE( mParameterHandles[i] );
+   }
 
    // Gather the shaders as they all need to be 
    // passed to the ShaderMaterialParameterHandles.
@@ -578,42 +583,42 @@ bool ProcessedShaderMaterial::_addPass( ShaderRenderPassData &rpd,
                                        U32 stageNum,
                                        const FeatureSet &features )
 {
-   // Set number of textures, stage, glow, etc.
-   rpd.mNumTex = texIndex;
-   rpd.mStageNum = stageNum;
-   rpd.mGlow |= mMaterial->mGlow[stageNum];
-
-   // Copy over features
-   rpd.mFeatureData.materialFeatures = fd.features;
-
-   // Generate shader
-   GFXShader::setLogging( true, true );
-   rpd.shader = SHADERGEN->getShader( rpd.mFeatureData, mVertexFormat, &mUserMacros );
-   if( !rpd.shader )
-      return false;
-   rpd.shaderHandles.init( rpd.shader );   
-
-   // If a pass glows, we glow
-   if( rpd.mGlow )
-      mHasGlow = true;
- 
-   ShaderRenderPassData *newPass = new ShaderRenderPassData( rpd );
-   mPasses.push_back( newPass );
-
-   // Give each active feature a chance to create specialized shader consts.
-   for( U32 i=0; i < FEATUREMGR->getFeatureCount(); i++ )
-   {
-      const FeatureInfo &info = FEATUREMGR->getAt( i );
-      if ( !fd.features.hasFeature( *info.type ) ) 
-         continue;
-
-      ShaderFeatureConstHandles *fh = info.feature->createConstHandles( rpd.shader, mUserObject );
-      if ( fh )
-         newPass->featureShaderHandles.push_back( fh );
-   }
-
-   rpd.reset();
-   texIndex = 0;
+//   // Set number of textures, stage, glow, etc.
+//   rpd.mNumTex = texIndex;
+//   rpd.mStageNum = stageNum;
+//   rpd.mGlow |= mMaterial->mGlow[stageNum];
+//
+//   // Copy over features
+//   rpd.mFeatureData.materialFeatures = fd.features;
+//
+//   // Generate shader
+//   GFXShader::setLogging( true, true );
+//   rpd.shader = SHADERGEN->getShader( rpd.mFeatureData, mVertexFormat, &mUserMacros );
+//   if( !rpd.shader )
+//      return false;
+//   rpd.shaderHandles.init( rpd.shader );
+//
+//   // If a pass glows, we glow
+//   if( rpd.mGlow )
+//      mHasGlow = true;
+//
+//   ShaderRenderPassData *newPass = new ShaderRenderPassData( rpd );
+//   mPasses.push_back( newPass );
+//
+//   // Give each active feature a chance to create specialized shader consts.
+//   for( U32 i=0; i < FEATUREMGR->getFeatureCount(); i++ )
+//   {
+//      const FeatureInfo &info = FEATUREMGR->getAt( i );
+//      if ( !fd.features.hasFeature( *info.type ) )
+//         continue;
+//
+//      ShaderFeatureConstHandles *fh = info.feature->createConstHandles( rpd.shader, mUserObject );
+//      if ( fh )
+//         newPass->featureShaderHandles.push_back( fh );
+//   }
+//
+//   rpd.reset();
+//   texIndex = 0;
    
    return true;
 }
@@ -625,32 +630,32 @@ void ProcessedShaderMaterial::_setPassBlendOp( ShaderFeature *sf,
                                               U32 stageNum,
                                               const FeatureSet &features )
 {
-   if( sf->getBlendOp() == Material::None )
-   {
-      return;
-   }
-
-   // set up the current blend operation for multi-pass materials
-   if( mPasses.size() > 0)
-   {
-      // If passData.numTexReg is 0, this is a brand new pass, so set the
-      // blend operation to the first feature.
-      if( passData.mNumTexReg == 0 )
-      {
-         passData.mBlendOp = sf->getBlendOp();
-      }
-      else
-      {
-         // numTegReg is more than zero, if this feature
-         // doesn't have the same blend operation, then
-         // we need to create yet another pass 
-         if( sf->getBlendOp() != passData.mBlendOp && mPasses[mPasses.size()-1]->mStageNum == stageNum)
-         {
-            _addPass( passData, texIndex, stageFeatures, stageNum, features );
-            passData.mBlendOp = sf->getBlendOp();
-         }
-      }
-   }
+//   if( sf->getBlendOp() == Material::None )
+//   {
+//      return;
+//   }
+//
+//   // set up the current blend operation for multi-pass materials
+//   if( mPasses.size() > 0)
+//   {
+//      // If passData.numTexReg is 0, this is a brand new pass, so set the
+//      // blend operation to the first feature.
+//      if( passData.mNumTexReg == 0 )
+//      {
+//         passData.mBlendOp = sf->getBlendOp();
+//      }
+//      else
+//      {
+//         // numTegReg is more than zero, if this feature
+//         // doesn't have the same blend operation, then
+//         // we need to create yet another pass
+//         if( sf->getBlendOp() != passData.mBlendOp && mPasses[mPasses.size()-1]->mStageNum == stageNum)
+//         {
+//            _addPass( passData, texIndex, stageFeatures, stageNum, features );
+//            passData.mBlendOp = sf->getBlendOp();
+//         }
+//      }
+//   }
 } 
 
 //
@@ -666,7 +671,7 @@ bool ProcessedShaderMaterial::setupPass( SceneRenderState *state, const SceneDat
       // If we were rendering instanced data tell
       // the device to reset that vb stream.
       if ( mInstancingState )
-         GFX->setVertexBuffer( NULL, 1 );
+         GFX->setVertexBuffer( nullptr, 1 );
 
       return false;
    }
@@ -689,7 +694,7 @@ bool ProcessedShaderMaterial::setupPass( SceneRenderState *state, const SceneDat
    else
    {
       GFX->disableShaders();
-      GFX->setShaderConstBuffer(NULL);
+      GFX->setShaderConstBuffer(nullptr);
    } 
 
    // Set our textures
@@ -759,7 +764,7 @@ void ProcessedShaderMaterial::setTextureStages( SceneRenderState *state, const S
                texTarget = rpd->mTexSlot[i].texTarget;
                if ( !texTarget )
                {
-                  GFX->setTexture( i, NULL );
+                  GFX->setTexture( i, nullptr );
                   break;
                }
             
@@ -777,7 +782,7 @@ void ProcessedShaderMaterial::setTextureStages( SceneRenderState *state, const S
                   const RectI &targetVp = texTarget->getViewport();
                   Point4F rtParams;
 
-                  ScreenSpace::RenderTargetParameters(targetSz, targetVp, rtParams);
+//                  ScreenSpace::RenderTargetParameters(targetSz, targetVp, rtParams);
 
                   shaderConsts->set(handles->mRTParamsSC[i], rtParams);
                }
@@ -970,12 +975,12 @@ void ProcessedShaderMaterial::_setShaderConstants(SceneRenderState * state, cons
 
    shaderConsts->setSafe(handles->mFogColorSC, sgData.fogColor);
 
-   if( handles->mOneOverFarplane->isValid() )
-   {
-      const F32 &invfp = 1.0f / state->getFarPlane();
-      Point4F oneOverFP(invfp, invfp, invfp, invfp);
-      shaderConsts->set( handles->mOneOverFarplane, oneOverFP );
-   }
+//   if( handles->mOneOverFarplane->isValid() )
+//   {
+//      const F32 &invfp = 1.0f / state->getFarPlane();
+//      Point4F oneOverFP(invfp, invfp, invfp, invfp);
+//      shaderConsts->set( handles->mOneOverFarplane, oneOverFP );
+//   }
 
    shaderConsts->setSafe( handles->mAccumTimeSC, MATMGR->getTotalTime() );
 
@@ -1033,7 +1038,7 @@ void ProcessedShaderMaterial::_setShaderConstants(SceneRenderState * state, cons
    // MFT_ImposterVert
    if ( handles->mImposterUVs->isValid() )
    {
-      U32 uvCount = getMin( mMaterial->mImposterUVs.size(), 64 ); // See imposter.hlsl   
+      U32 uvCount = std::min( (U32)mMaterial->mImposterUVs.size(), (U32)64 ); // See imposter.hlsl
       AlignedArray<Point4F> imposterUVs( uvCount, sizeof( Point4F ), (U8*)mMaterial->mImposterUVs.address(), false );
       shaderConsts->set( handles->mImposterUVs, imposterUVs );
    }
@@ -1095,7 +1100,7 @@ bool ProcessedShaderMaterial::_hasCubemap(U32 pass)
    return false;
 }
 
-void ProcessedShaderMaterial::setTransforms(const MatrixSet &matrixSet, SceneRenderState *state, const U32 pass)
+void ProcessedShaderMaterial::setTransforms(const MatrixF view, const MatrixF world, const MatrixF projection, SceneRenderState *state, const U32 pass)
 {
    PROFILE_SCOPE( ProcessedShaderMaterial_setTransforms );
 
@@ -1106,29 +1111,29 @@ void ProcessedShaderMaterial::setTransforms(const MatrixSet &matrixSet, SceneRen
    // various 'get' methods, so inline the test for a valid
    // shader constant handle to avoid that work when we can.
    if ( handles->mModelViewProjSC->isValid() )
-      shaderConsts->set( handles->mModelViewProjSC, matrixSet.getWorldViewProjection() );
-   if ( handles->mObjTransSC->isValid() )
-      shaderConsts->set( handles->mObjTransSC, matrixSet.getObjectToWorld() );      
-   if ( handles->mWorldToObjSC->isValid() )
-      shaderConsts->set( handles->mWorldToObjSC, matrixSet.getWorldToObject() );
-   if ( handles->mWorldToCameraSC->isValid() )
-      shaderConsts->set( handles->mWorldToCameraSC, matrixSet.getWorldToCamera() );
-   if ( handles->mWorldViewOnlySC->isValid() )
-      shaderConsts->set( handles->mWorldViewOnlySC, matrixSet.getObjectToCamera() );
-   if ( handles->mViewToObjSC->isValid() )
-      shaderConsts->set( handles->mViewToObjSC, matrixSet.getCameraToObject() );
-   if ( handles->mViewProjSC->isValid() )
-      shaderConsts->set( handles->mViewProjSC, matrixSet.getWorldToScreen() );
+      shaderConsts->set( handles->mModelViewProjSC, view*world*projection );
+//   if ( handles->mObjTransSC->isValid() )
+//      shaderConsts->set( handles->mObjTransSC, matrixSet.getObjectToWorld() );
+//   if ( handles->mWorldToObjSC->isValid() )
+//      shaderConsts->set( handles->mWorldToObjSC, matrixSet.getWorldToObject() );
+//   if ( handles->mWorldToCameraSC->isValid() )
+//      shaderConsts->set( handles->mWorldToCameraSC, matrixSet.getWorldToCamera() );
+//   if ( handles->mWorldViewOnlySC->isValid() )
+//      shaderConsts->set( handles->mWorldViewOnlySC, matrixSet.getObjectToCamera() );
+//   if ( handles->mViewToObjSC->isValid() )
+//      shaderConsts->set( handles->mViewToObjSC, matrixSet.getCameraToObject() );
+//   if ( handles->mViewProjSC->isValid() )
+//      shaderConsts->set( handles->mViewProjSC, matrixSet.getWorldToScreen() );
 
    if (  handles->mCubeTransSC->isValid() &&
          ( _hasCubemap(pass) || mMaterial->mDynamicCubemap ) )
    {
-      // TODO: Could we not remove this constant?  Use mObjTransSC and cast to float3x3 instead?
-      shaderConsts->set(handles->mCubeTransSC, matrixSet.getObjectToWorld(), GFXSCT_Float3x3);
+//      // TODO: Could we not remove this constant?  Use mObjTransSC and cast to float3x3 instead?
+//      shaderConsts->set(handles->mCubeTransSC, matrixSet.getObjectToWorld(), GFXSCT_Float3x3);
    }
 
-   if ( handles->m_vEyeSC->isValid() )
-      shaderConsts->set( handles->m_vEyeSC, state->getVectorEye() );
+//   if ( handles->m_vEyeSC->isValid() )
+//      shaderConsts->set( handles->m_vEyeSC, state->getVectorEye() );
 }
 
 void ProcessedShaderMaterial::setSceneInfo(SceneRenderState * state, const SceneData& sgData, U32 pass)
@@ -1139,46 +1144,46 @@ void ProcessedShaderMaterial::setSceneInfo(SceneRenderState * state, const Scene
    ShaderConstHandles* handles = _getShaderConstHandles(pass);
 
    // Set cubemap stuff here (it's convenient!)
-   const Point3F &eyePosWorld = state->getCameraPosition();
-   if ( handles->mCubeEyePosSC->isValid() )
-   {
-      if(_hasCubemap(pass) || mMaterial->mDynamicCubemap)
-      {
-         Point3F cubeEyePos = eyePosWorld - sgData.objTrans->getPosition();
-         shaderConsts->set(handles->mCubeEyePosSC, cubeEyePos);      
-      }
-   }
+//   const Point3F &eyePosWorld = state->getCameraPosition();
+//   if ( handles->mCubeEyePosSC->isValid() )
+//   {
+//      if(_hasCubemap(pass) || mMaterial->mDynamicCubemap)
+//      {
+//         Point3F cubeEyePos = eyePosWorld - sgData.objTrans->getPosition();
+//         shaderConsts->set(handles->mCubeEyePosSC, cubeEyePos);
+//      }
+//   }
+//
+//   shaderConsts->setSafe(handles->mVisiblitySC, sgData.visibility);
+//
+//   shaderConsts->setSafe(handles->mEyePosWorldSC, eyePosWorld);
+//
+//   if ( handles->mEyePosSC->isValid() )
+//   {
+//      MatrixF tempMat( *sgData.objTrans );
+//      tempMat.inverse();
+//      Point3F eyepos;
+//      tempMat.mulP( eyePosWorld, &eyepos );
+//      shaderConsts->set(handles->mEyePosSC, eyepos);
+//   }
 
-   shaderConsts->setSafe(handles->mVisiblitySC, sgData.visibility);
-
-   shaderConsts->setSafe(handles->mEyePosWorldSC, eyePosWorld);   
-
-   if ( handles->mEyePosSC->isValid() )
-   {
-      MatrixF tempMat( *sgData.objTrans );
-      tempMat.inverse();
-      Point3F eyepos;
-      tempMat.mulP( eyePosWorld, &eyepos );
-      shaderConsts->set(handles->mEyePosSC, eyepos);   
-   }
-
-   shaderConsts->setSafe(handles->mEyeMatSC, state->getCameraTransform());   
-
-   ShaderRenderPassData *rpd = _getRPD( pass );
-   for ( U32 i=0; i < rpd->featureShaderHandles.size(); i++ )
-      rpd->featureShaderHandles[i]->setConsts( state, sgData, shaderConsts );
+//   shaderConsts->setSafe(handles->mEyeMatSC, state->getCameraTransform());
+//
+//   ShaderRenderPassData *rpd = _getRPD( pass );
+//   for ( U32 i=0; i < rpd->featureShaderHandles.size(); i++ )
+//      rpd->featureShaderHandles[i]->setConsts( state, sgData, shaderConsts );
 
    LIGHTMGR->setLightInfo( this, mMaterial, sgData, state, pass, shaderConsts );
 }
 
-void ProcessedShaderMaterial::setBuffers( GFXVertexBufferHandleBase *vertBuffer, GFXPrimitiveBufferHandle *primBuffer )
+void ProcessedShaderMaterial::setBuffers(GFXVertexBufferHandleBase *vertBuffer)
 {
    PROFILE_SCOPE(ProcessedShaderMaterial_setBuffers);
 
    // If we're not instanced then just call the parent.
    if ( !mInstancingState )
    {
-      Parent::setBuffers( vertBuffer, primBuffer );
+      Parent::setBuffers( vertBuffer );
       return;
    }
 
@@ -1188,8 +1193,8 @@ void ProcessedShaderMaterial::setBuffers( GFXVertexBufferHandleBase *vertBuffer,
    AssertFatal( instCount > 0,
       "ProcessedShaderMaterial::setBuffers - No instances rendered!" );
 
-   // Nothing special here.
-   GFX->setPrimitiveBuffer( *primBuffer );
+//   // Nothing special here.
+//   GFX->setPrimitiveBuffer( *primBuffer );
 
    // Set the first stream the the normal VB and set the
    // correct frequency for the number of instances to render.
@@ -1263,7 +1268,7 @@ GFXShaderConstBuffer* ProcessedShaderMaterial::_getShaderConstBuffer( const U32 
    {
       return static_cast<ShaderMaterialParameters*>(mCurrentParams)->getBuffer(pass);
    }
-   return NULL;
+   return nullptr;
 }
 
 ShaderConstHandles* ProcessedShaderMaterial::_getShaderConstHandles(const U32 pass)
@@ -1272,7 +1277,7 @@ ShaderConstHandles* ProcessedShaderMaterial::_getShaderConstHandles(const U32 pa
    {
       return &_getRPD(pass)->shaderHandles;
    }
-   return NULL;
+   return nullptr;
 }
 
 void ProcessedShaderMaterial::dumpMaterialInfo()
@@ -1281,12 +1286,12 @@ void ProcessedShaderMaterial::dumpMaterialInfo()
    {
       const ShaderRenderPassData *passData = _getRPD( i );
 
-      if ( passData == NULL )
+      if ( passData == nullptr )
          continue;
 
       const GFXShader      *shader = passData->shader;
 
-      if ( shader == NULL )
+      if ( shader == nullptr )
          Con::printf( "  [%i] [NULL shader]", i );
       else
          Con::printf( "  [%i] %s", i, shader->describeSelf().c_str() );

@@ -36,10 +36,10 @@ ConsoleMethod(SceneWindow, getWindowExtents, const char*, 2, 2, "() Fetch Window
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(SceneWindow, getScene, const char*, 2, 2, "() - Returns the Scene associated with this window."
+ConsoleMethod(SceneWindow, getScene, const char*, 2, 2, "() - Returns the t2dScene associated with this window."
               "@return Returns the scene ID as a string")
 {
-   Scene* pScene = object->getScene();
+   t2dScene * pScene = object->getScene();
 
    char* id = Con::getReturnBuffer(8);
    if (pScene)
@@ -56,8 +56,8 @@ ConsoleMethod(SceneWindow, getScene, const char*, 2, 2, "() - Returns the Scene 
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(SceneWindow, setScene, void, 2, 3, "(Scene) Associates Scene Object."
-              "@param Scene The scene ID or name.\n"
+ConsoleMethod(SceneWindow, setScene, void, 2, 3, "(t2dScene) Associates t2dScene Object."
+              "@param t2dScene The scene ID or name.\n"
               "@return No return value.")
 {
     // No scene specified?
@@ -69,8 +69,8 @@ ConsoleMethod(SceneWindow, setScene, void, 2, 3, "(Scene) Associates Scene Objec
         return;
     }
 
-    // Find Scene Object.
-    Scene* pScene = (Scene*)(Sim::findObject(argv[2]));
+    // Find t2dScene Object.
+    t2dScene * pScene = (t2dScene *)(Sim::findObject(argv[2]));
 
     // Validate Object.
     if ( !pScene )
@@ -79,16 +79,16 @@ ConsoleMethod(SceneWindow, setScene, void, 2, 3, "(Scene) Associates Scene Objec
         return;
     }
 
-    // Set Scene.
+    // Set t2dScene.
     object->setScene( pScene );
 }
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(SceneWindow, resetScene, void, 2, 2, "() Detaches the window from any Scene Object.\n"
+ConsoleMethod(SceneWindow, resetScene, void, 2, 2, "() Detaches the window from any t2dScene Object.\n"
               "@return No return value")
 {
-    // Reset Scene.
+    // Reset t2dScene.
     object->resetScene();
 }
 

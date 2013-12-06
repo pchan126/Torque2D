@@ -6,7 +6,7 @@
 //-----------------------------------------------------------------------------
 
 SceneRenderState::SceneRenderState(
-                 Scene* sceneManager,
+                 t2dScene * sceneManager,
                 ScenePassType passType,
                  const CameraView& view,
                  U32 renderGroupMask,
@@ -68,7 +68,7 @@ void SceneRenderState::renderObjects( SceneObject** objects, U32 numObjects, Sce
     getRenderPass()->renderPass( this );
 }
 
-void SceneRenderState::renderObjects( Scene* pScene, SceneRenderQueue* pSceneRenderQueue )
+void SceneRenderState::renderObjects( t2dScene * pScene, SceneRenderQueue* pSceneRenderQueue )
 {
     // Yes so step through layers.
     for ( S32 layer = pScene->getLayerCount()-1; layer >= 0 ; layer-- )
@@ -122,7 +122,7 @@ void SceneRenderState::renderObjects( Scene* pScene, SceneRenderQueue* pSceneRen
                     if ( pSceneObject->getBatchIsolated() )
                     {
                         // Yes, so create a default render request  on the primary queue.
-                        SceneRenderRequest* pIsolatedSceneRenderRequest = Scene::createDefaultRenderRequest( pSceneRenderQueue, pSceneObject );
+                        SceneRenderRequest* pIsolatedSceneRenderRequest = t2dScene::createDefaultRenderRequest( pSceneRenderQueue, pSceneObject );
 
                         // Create a new isolated render queue.
                         pIsolatedSceneRenderRequest->mpIsolatedRenderQueue = SceneRenderQueueFactory.createObject();
@@ -145,7 +145,7 @@ void SceneRenderState::renderObjects( Scene* pScene, SceneRenderQueue* pSceneRen
                 else
                 {
                     // No, so create a default render request for it.
-                    Scene::createDefaultRenderRequest( pSceneRenderQueue, pSceneObject );
+                    t2dScene::createDefaultRenderRequest( pSceneRenderQueue, pSceneObject );
                 }
             }
 

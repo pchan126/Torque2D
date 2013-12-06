@@ -20,7 +20,7 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#include "Scene.h"
+#include "t2dScene.h"
 #include "graphics/gfxDevice.h"
 #include "console/consoleTypes.h"
 #include "2d/sceneobject/SceneObject.h"
@@ -30,23 +30,19 @@
 #include "2d/core/particleSystem.h"
 #include "Layer.h"
 #include "2d/scene/SceneRenderState.h"
-
-// Script bindings.
 #include "Scene_ScriptBinding.h"
-
-// Debug Profiling.
 #include "debug/profiler.h"
 #include "renderInstance/renderPassManager.h"
 
 //------------------------------------------------------------------------------
 
-SimObjectPtr<Scene> Scene::LoadingScene = nullptr;
+SimObjectPtr<t2dScene> t2dScene::LoadingScene = nullptr;
 
 //------------------------------------------------------------------------------
 
 static ContactFilter mContactFilter;
 
-// Scene counter.
+// t2dScene counter.
 static U32 sSceneCount = 0;
 static U32 sSceneMasterIndex = 0;
 
@@ -122,7 +118,7 @@ static StringTableEntry assetNodeName                     = StringTable->insert(
 
 //-----------------------------------------------------------------------------
 
-Scene::Scene() :
+t2dScene::t2dScene() :
     /// World.
     mpWorld(nullptr),
     mWorldGravity(0.0f, 0.0f),
@@ -132,7 +128,7 @@ Scene::Scene() :
     /// Joint access.
     mJointMasterId(1),
 
-    /// Scene time.
+    /// t2dScene time.
     mSceneTime(0.0f),
     mScenePause(false),
 
@@ -147,9 +143,7 @@ Scene::Scene() :
     mIsEditorScene(0),
     mUpdateCallback(false),
     mRenderCallback(false),
-    mSceneIndex(0),
-    mAmbientLightColor(1.0, 1.0, 1.0, 1.0),
-    mLightManager("Basic2D","LM")
+    mSceneIndex(0)
 {
     // Set Vector Associations.
     VECTOR_SET_ASSOCIATION( mSceneObjects );
@@ -175,7 +169,7 @@ Scene::Scene() :
 
 //-----------------------------------------------------------------------------
 
-Scene::~Scene()
+t2dScene::~t2dScene()
 {
     // Unregister the scene controllers set.
     if ( mControllers.notNull() )
@@ -193,7 +187,7 @@ Scene::~Scene()
 
 //-----------------------------------------------------------------------------
 
-bool Scene::onAdd()
+bool t2dScene::onAdd()
 {
     // Call Parent.
     if(!Parent::onAdd())
@@ -221,7 +215,7 @@ bool Scene::onAdd()
     mpWorldQuery = new WorldQuery(this);
 
     // Set loading scene.
-    Scene::LoadingScene = this;
+    t2dScene::LoadingScene = this;
 
     // Turn-on tick processing.
     setProcessTicks( true );
@@ -232,12 +226,12 @@ bool Scene::onAdd()
 
 //-----------------------------------------------------------------------------
 
-void Scene::onRemove()
+void t2dScene::onRemove()
 {
     // Turn-off tick processing.
     setProcessTicks( false );
 
-    // Clear Scene.
+    // Clear t2dScene.
     clearScene();
 
     // Process Delete Requests.
@@ -253,7 +247,7 @@ void Scene::onRemove()
     mpWorldQuery = nullptr;
     mpWorld = nullptr;
 
-    // Detach All Scene Windows.
+    // Detach All t2dScene Windows.
     detachAllSceneWindows();
 
     // Call Parent. Clear scene handles all the object removal, so we can skip
@@ -263,7 +257,7 @@ void Scene::onRemove()
 
 //-----------------------------------------------------------------------------
 
-void Scene::onDeleteNotify( SimObject* object )
+void t2dScene::onDeleteNotify( SimObject* object )
 {
     // Ignore if we're not monitoring a debug banner scene object.
     if ( mpDebugSceneObject == nullptr )
@@ -280,29 +274,29 @@ void Scene::onDeleteNotify( SimObject* object )
 
 //-----------------------------------------------------------------------------
 
-void Scene::initPersistFields()
+void t2dScene::initPersistFields()
 {
     // Call Parent.
     Parent::initPersistFields();
 
     // Physics.
-    addProtectedField("Gravity", TypeVector2, Offset(mWorldGravity, Scene), &setGravity, &getGravity, &writeGravity, "" );
-    addField("VelocityIterations", TypeS32, Offset(mVelocityIterations, Scene), &writeVelocityIterations, "" );
-    addField("PositionIterations", TypeS32, Offset(mPositionIterations, Scene), &writePositionIterations, "" );
+    addProtectedField("Gravity", TypeVector2, Offset(mWorldGravity, t2dScene), &setGravity, &getGravity, &writeGravity, "" );
+    addField("VelocityIterations", TypeS32, Offset(mVelocityIterations, t2dScene), &writeVelocityIterations, "" );
+    addField("PositionIterations", TypeS32, Offset(mPositionIterations, t2dScene), &writePositionIterations, "" );
 
     // Lighting
-    addField("AmbientLighting", TypeColorF, Offset(mAmbientLightColor, Scene), &writeSceneLight, "");
+    addField("AmbientLighting", TypeColorF, Offset(mAmbientLightColor, t2dScene), &writeSceneLight, "");
     
-    addProtectedField("Controllers", TypeSimObjectPtr, Offset(mControllers, Scene), &defaultProtectedNotSetFn, &defaultProtectedGetFn, &defaultProtectedNotWriteFn, "The scene controllers to use.");
+    addProtectedField("Controllers", TypeSimObjectPtr, Offset(mControllers, t2dScene), &defaultProtectedNotSetFn, &defaultProtectedGetFn, &defaultProtectedNotWriteFn, "The scene controllers to use.");
     
     // Callbacks.
-    addField("UpdateCallback", TypeBool, Offset(mUpdateCallback, Scene), &writeUpdateCallback, "");
-    addField("RenderCallback", TypeBool, Offset(mRenderCallback, Scene), &writeRenderCallback, "");
+    addField("UpdateCallback", TypeBool, Offset(mUpdateCallback, t2dScene), &writeUpdateCallback, "");
+    addField("RenderCallback", TypeBool, Offset(mRenderCallback, t2dScene), &writeRenderCallback, "");
 }
 
 //-----------------------------------------------------------------------------
 
-void Scene::BeginContact( b2Contact* pContact )
+void t2dScene::BeginContact( b2Contact* pContact )
 {
     // Ignore contact if it's not a touching contact.
     if ( !pContact->IsTouching() )
@@ -339,7 +333,7 @@ void Scene::BeginContact( b2Contact* pContact )
 
 //-----------------------------------------------------------------------------
 
-void Scene::EndContact( b2Contact* pContact )
+void t2dScene::EndContact( b2Contact* pContact )
 {
     PROFILE_SCOPE(Scene_EndContact);
 
@@ -372,7 +366,7 @@ void Scene::EndContact( b2Contact* pContact )
 
 //-----------------------------------------------------------------------------
 
-void Scene::PostSolve( b2Contact* pContact, const b2ContactImpulse* pImpulse )
+void t2dScene::PostSolve( b2Contact* pContact, const b2ContactImpulse* pImpulse )
 {
     // Find contact mapping.
     typeContactHash::iterator contactItr = mBeginContacts.find( pContact );
@@ -394,7 +388,7 @@ void Scene::PostSolve( b2Contact* pContact, const b2ContactImpulse* pImpulse )
 
 //-----------------------------------------------------------------------------
 
-void Scene::forwardContacts( void )
+void t2dScene::forwardContacts( void )
 {
     // Debug Profiling.
     PROFILE_SCOPE(Scene_ForwardContacts);
@@ -421,13 +415,13 @@ void Scene::forwardContacts( void )
 
 //-----------------------------------------------------------------------------
 
-void Scene::dispatchBeginContactCallbacks( void )
+void t2dScene::dispatchBeginContactCallbacks( void )
 {
     // Debug Profiling.
     PROFILE_SCOPE(Scene_DispatchBeginContactCallbacks);
 
     // Sanity!
-    AssertFatal( b2_maxManifoldPoints == 2, "Scene::dispatchBeginContactCallbacks() - Invalid assumption about max manifold points." );
+    AssertFatal( b2_maxManifoldPoints == 2, "t2dScene::dispatchBeginContactCallbacks() - Invalid assumption about max manifold points." );
 
     // Fetch contact count.
     const U32 contactCount = mBeginContacts.size();
@@ -463,8 +457,8 @@ void Scene::dispatchBeginContactCallbacks( void )
         const S32 shapeIndexB = pSceneObjectB->getCollisionShapeIndex( tickContact.mpFixtureB );
 
         // Sanity!
-        AssertFatal( shapeIndexA >= 0, "Scene::dispatchBeginContactCallbacks() - Cannot find shape index reported on physics proxy of a fixture." );
-        AssertFatal( shapeIndexB >= 0, "Scene::dispatchBeginContactCallbacks() - Cannot find shape index reported on physics proxy of a fixture." );
+        AssertFatal( shapeIndexA >= 0, "t2dScene::dispatchBeginContactCallbacks() - Cannot find shape index reported on physics proxy of a fixture." );
+        AssertFatal( shapeIndexB >= 0, "t2dScene::dispatchBeginContactCallbacks() - Cannot find shape index reported on physics proxy of a fixture." );
 
         // Fetch collision impulse information
         const F32 normalImpulse1 = tickContact.mNormalImpulses[0];
@@ -514,7 +508,7 @@ void Scene::dispatchBeginContactCallbacks( void )
         Namespace* pNamespace = getNamespace();
         if ( pNamespace != nullptr && pNamespace->lookup( StringTable->insert( "onSceneCollision" ) ) != nullptr )
         {
-            // Yes, so perform script callback on the Scene.
+            // Yes, so perform script callback on the t2dScene.
             Con::executef( this, 4, "onSceneCollision",
                 sceneObjectABuffer,
                 sceneObjectBBuffer,
@@ -569,13 +563,13 @@ void Scene::dispatchBeginContactCallbacks( void )
 
 //-----------------------------------------------------------------------------
 
-void Scene::dispatchEndContactCallbacks( void )
+void t2dScene::dispatchEndContactCallbacks( void )
 {
     // Debug Profiling.
     PROFILE_SCOPE(Scene_DispatchEndContactCallbacks);
 
     // Sanity!
-    AssertFatal( b2_maxManifoldPoints == 2, "Scene::dispatchEndContactCallbacks() - Invalid assumption about max manifold points." );
+    AssertFatal( b2_maxManifoldPoints == 2, "t2dScene::dispatchEndContactCallbacks() - Invalid assumption about max manifold points." );
 
     // Fetch contact count.
     const U32 contactCount = mEndContacts.size();
@@ -604,8 +598,8 @@ void Scene::dispatchEndContactCallbacks( void )
         const S32 shapeIndexB = pSceneObjectB->getCollisionShapeIndex( tickContact.mpFixtureB );
 
         // Sanity!
-        AssertFatal( shapeIndexA >= 0, "Scene::dispatchEndContactCallbacks() - Cannot find shape index reported on physics proxy of a fixture." );
-        AssertFatal( shapeIndexB >= 0, "Scene::dispatchEndContactCallbacks() - Cannot find shape index reported on physics proxy of a fixture." );
+        AssertFatal( shapeIndexA >= 0, "t2dScene::dispatchEndContactCallbacks() - Cannot find shape index reported on physics proxy of a fixture." );
+        AssertFatal( shapeIndexB >= 0, "t2dScene::dispatchEndContactCallbacks() - Cannot find shape index reported on physics proxy of a fixture." );
 
         // Format objects.
         char sceneObjectABuffer[16];
@@ -676,12 +670,12 @@ void Scene::dispatchEndContactCallbacks( void )
 
 //-----------------------------------------------------------------------------
 
-void Scene::processTick( void )
+void t2dScene::processTick( void )
 {
     // Debug Profiling.
     PROFILE_SCOPE(Scene_ProcessTick);
 
-    // Finish if the Scene is not added to the simulation.
+    // Finish if the t2dScene is not added to the simulation.
     if ( !isProperlyAdded() )
         return;
 
@@ -848,7 +842,7 @@ void Scene::processTick( void )
             tickedSceneObject->postIntegrate( mSceneTime, Tickable::smTickSec, pDebugStats );
         }
 
-        // Scene update callback.
+        // t2dScene update callback.
         if( mUpdateCallback )
         {
             // Debug Profiling.
@@ -875,7 +869,7 @@ void Scene::processTick( void )
 
 //-----------------------------------------------------------------------------
 
-void Scene::interpolateTick( F32 timeDelta )
+void t2dScene::interpolateTick( F32 timeDelta )
 {
     // Finish if scene is paused.
     if ( getScenePause() ) return;
@@ -898,14 +892,14 @@ void Scene::interpolateTick( F32 timeDelta )
     }
 }
 
-void Scene::renderScene( ScenePassType passType )
+void t2dScene::renderScene( ScenePassType passType )
 {
 //    SceneCameraState cameraState = SceneCameraState::fromGFX();
 }
 
 //-----------------------------------------------------------------------------
 
-void Scene::renderScene(SceneRenderState *renderState)
+void t2dScene::renderScene(SceneRenderState *renderState)
 {
     // Debug Profiling.
     PROFILE_SCOPE(Scene_RenderSceneTotal);
@@ -987,7 +981,7 @@ void Scene::renderScene(SceneRenderState *renderState)
     mLightManager.unregisterAllLights();
     
     // Draw controllers.
-    if ( getDebugMask() & Scene::SCENE_DEBUG_CONTROLLERS )
+    if ( getDebugMask() & t2dScene::SCENE_DEBUG_CONTROLLERS )
     {
         // Fetch the controller set.
         SimSet* pControllerSet = getControllers();
@@ -1021,7 +1015,7 @@ void Scene::renderScene(SceneRenderState *renderState)
     }
 
     // Draw Joints.
-    if ( getDebugMask() & Scene::SCENE_DEBUG_JOINTS )
+    if ( getDebugMask() & t2dScene::SCENE_DEBUG_JOINTS )
     {
         // Debug Profiling.
         PROFILE_SCOPE(Scene_RenderSceneJointOverlays);
@@ -1047,14 +1041,14 @@ void Scene::renderScene(SceneRenderState *renderState)
 
 //-----------------------------------------------------------------------------
 
-void Scene::clearScene( bool deleteObjects )
+void t2dScene::clearScene( bool deleteObjects )
 {
     while( mSceneObjects.size() > 0 )
     {
         // Fetch first scene object.
         SceneObject* pSceneObject = mSceneObjects[0];
 
-        // Remove Object from Scene.
+        // Remove Object from t2dScene.
         removeFromScene( pSceneObject );
 
         // Queue Object for deletion.
@@ -1081,13 +1075,13 @@ void Scene::clearScene( bool deleteObjects )
 
 //-----------------------------------------------------------------------------
 
-void Scene::addToScene( SceneObject* pSceneObject )
+void t2dScene::addToScene( SceneObject* pSceneObject )
 {
     if ( pSceneObject == nullptr )
         return;
 
     // Fetch current scene.
-    Scene* pCurrentScene = pSceneObject->getScene();
+    t2dScene * pCurrentScene = pSceneObject->getScene();
 
     // Ignore if already in the scene.
     if ( pCurrentScene == this )
@@ -1133,13 +1127,13 @@ void Scene::addToScene( SceneObject* pSceneObject )
     else
     {
         // Warning.
-        Con::warnf("Scene object added to scene but the object is not registered with the simulation.  No 'onAddToScene' can be performed!  Use Target scene.");
+        Con::warnf("t2dScene object added to scene but the object is not registered with the simulation.  No 'onAddToScene' can be performed!  Use Target scene.");
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void Scene::removeFromScene( SceneObject* pSceneObject )
+void t2dScene::removeFromScene( SceneObject* pSceneObject )
 {
     if ( pSceneObject == nullptr )
         return;
@@ -1147,7 +1141,7 @@ void Scene::removeFromScene( SceneObject* pSceneObject )
     // Check if object is actually in a scene.
     if ( !pSceneObject->getScene() )
     {
-        Con::warnf("Scene::removeFromScene() - Object '%s' is not in a scene!.", pSceneObject->getIdString());
+        Con::warnf("t2dScene::removeFromScene() - Object '%s' is not in a scene!.", pSceneObject->getIdString());
         return;
     }
 
@@ -1192,17 +1186,17 @@ void Scene::removeFromScene( SceneObject* pSceneObject )
 
 //-----------------------------------------------------------------------------
 
-SceneObject* Scene::getSceneObject( const U32 objectIndex ) const
+SceneObject*t2dScene::getSceneObject( const U32 objectIndex ) const
 {
     // Sanity!
-    AssertFatal( objectIndex < getSceneObjectCount(), "Scene::getSceneObject() - Invalid object index." );
+    AssertFatal( objectIndex < getSceneObjectCount(), "t2dScene::getSceneObject() - Invalid object index." );
 
     return mSceneObjects[objectIndex];
 }
 
 //-----------------------------------------------------------------------------
 
-U32 Scene::getSceneObjects( typeSceneObjectVector& objects ) const
+U32 t2dScene::getSceneObjects( typeSceneObjectVector& objects ) const
 {
     // No objects if scene is empty!
     if ( getSceneObjectCount() == 0 )
@@ -1216,7 +1210,7 @@ U32 Scene::getSceneObjects( typeSceneObjectVector& objects ) const
 
 //-----------------------------------------------------------------------------
 
-U32 Scene::getSceneObjects( typeSceneObjectVector& objects, const U32 sceneLayer ) const
+U32 t2dScene::getSceneObjects( typeSceneObjectVector& objects, const U32 sceneLayer ) const
 {
     // No objects if scene is empty!
     if ( getSceneObjectCount() == 0 )
@@ -1247,13 +1241,13 @@ U32 Scene::getSceneObjects( typeSceneObjectVector& objects, const U32 sceneLayer
 
 //-----------------------------------------------------------------------------
 
-const AssetPtr<AssetBase>* Scene::getAssetPreload( const S32 index ) const
+const AssetPtr<AssetBase>*t2dScene::getAssetPreload( const S32 index ) const
 {
     // Is the index valid?
     if ( index < 0 || index >= mAssetPreloads.size() )
     {
         // Yes, so warn.
-        Con::warnf( "Scene::getAssetPreload() - Out of range index '%d'.  There are only '%d' asset preloads.", index, mAssetPreloads.size() );
+        Con::warnf( "t2dScene::getAssetPreload() - Out of range index '%d'.  There are only '%d' asset preloads.", index, mAssetPreloads.size() );
         return nullptr;
     }
 
@@ -1262,10 +1256,10 @@ const AssetPtr<AssetBase>* Scene::getAssetPreload( const S32 index ) const
 
 //-----------------------------------------------------------------------------
 
-void Scene::addAssetPreload( const char* pAssetId )
+void t2dScene::addAssetPreload( const char* pAssetId )
 {
     // Sanity!
-    AssertFatal( pAssetId != nullptr, "Scene::addAssetPreload() - Cannot add a nullptr asset preload." );
+    AssertFatal( pAssetId != nullptr, "t2dScene::addAssetPreload() - Cannot add a nullptr asset preload." );
 
     // Fetch asset Id.
     StringTableEntry assetId = StringTable->insert( pAssetId );
@@ -1285,7 +1279,7 @@ void Scene::addAssetPreload( const char* pAssetId )
     if ( pAssetPtr->isNull() )
     {
         // No, so warn.
-        Con::warnf( "Scene::addAssetPreload() - Failed to acquire asset '%s' so not added as a preload.", pAssetId );
+        Con::warnf( "t2dScene::addAssetPreload() - Failed to acquire asset '%s' so not added as a preload.", pAssetId );
 
         // No, so delete the asset pointer.
         delete pAssetPtr;
@@ -1298,10 +1292,10 @@ void Scene::addAssetPreload( const char* pAssetId )
 
 //-----------------------------------------------------------------------------
 
-void Scene::removeAssetPreload( const char* pAssetId )
+void t2dScene::removeAssetPreload( const char* pAssetId )
 {
     // Sanity!
-    AssertFatal( pAssetId != nullptr, "Scene::removeAssetPreload() - Cannot remove a nullptr asset preload." );
+    AssertFatal( pAssetId != nullptr, "t2dScene::removeAssetPreload() - Cannot remove a nullptr asset preload." );
 
     // Fetch asset Id.
     StringTableEntry assetId = StringTable->insert( pAssetId );
@@ -1321,7 +1315,7 @@ void Scene::removeAssetPreload( const char* pAssetId )
 
 //-----------------------------------------------------------------------------
 
-void Scene::clearAssetPreloads( void )
+void t2dScene::clearAssetPreloads( void )
 {
     // Delete all the asset preloads.
     while( mAssetPreloads.size() > 0 )
@@ -1333,7 +1327,7 @@ void Scene::clearAssetPreloads( void )
 
 //-----------------------------------------------------------------------------
 
-void Scene::mergeScene( const Scene* pScene )
+void t2dScene::mergeScene( const t2dScene * pScene )
 {
     // Fetch the scene object count.
     const U32 count = pScene->getSceneObjectCount();
@@ -1355,7 +1349,7 @@ void Scene::mergeScene( const Scene* pScene )
 
 //-----------------------------------------------------------------------------
 
-b2Joint* Scene::findJoint( const S32 jointId )
+b2Joint*t2dScene::findJoint( const S32 jointId )
 {
     // Find joint.
     typeJointHash::iterator itr = mJoints.find( jointId );
@@ -1365,7 +1359,7 @@ b2Joint* Scene::findJoint( const S32 jointId )
 
 //-----------------------------------------------------------------------------
 
-b2JointType Scene::getJointType( const S32 jointId )
+b2JointType t2dScene::getJointType( const S32 jointId )
 {
     // Sanity!
     if ( jointId >= mJointMasterId )
@@ -1379,7 +1373,7 @@ b2JointType Scene::getJointType( const S32 jointId )
 
 //-----------------------------------------------------------------------------
 
-S32 Scene::findJointId( b2Joint* pJoint )
+S32 t2dScene::findJointId( b2Joint* pJoint )
 {
     // Sanity!
     AssertFatal( pJoint != nullptr, "Joint cannot be nullptr." );
@@ -1398,7 +1392,7 @@ S32 Scene::findJointId( b2Joint* pJoint )
 
 //-----------------------------------------------------------------------------
 
-S32 Scene::createJoint( b2JointDef* pJointDef )
+S32 t2dScene::createJoint( b2JointDef* pJointDef )
 {
     // Sanity!
     AssertFatal( pJointDef != nullptr, "Joint definition cannot be nullptr." );
@@ -1423,7 +1417,7 @@ S32 Scene::createJoint( b2JointDef* pJointDef )
 
 //-----------------------------------------------------------------------------
 
-bool Scene::deleteJoint( const U32 jointId )
+bool t2dScene::deleteJoint( const U32 jointId )
 {
     // Fetch joint.
     b2Joint* pJoint = findJoint( jointId );
@@ -1442,11 +1436,11 @@ bool Scene::deleteJoint( const U32 jointId )
 
 //-----------------------------------------------------------------------------
 
-bool Scene::hasJoints( SceneObject* pSceneObject )
+bool t2dScene::hasJoints( SceneObject* pSceneObject )
 {
     // Sanity!
-    AssertFatal( pSceneObject != nullptr, "Scene object cannot be nullptr!" );
-    AssertFatal( pSceneObject->getScene() != this, "Scene object is not in this scene" );
+    AssertFatal( pSceneObject != nullptr, "t2dScene object cannot be nullptr!" );
+    AssertFatal( pSceneObject->getScene() != this, "t2dScene object is not in this scene" );
 
     // Fetch body.
     b2Body* pBody = pSceneObject->getBody();
@@ -1463,7 +1457,7 @@ bool Scene::hasJoints( SceneObject* pSceneObject )
 
 //-----------------------------------------------------------------------------
 
-S32 Scene::createDistanceJoint(
+S32 t2dScene::createDistanceJoint(
     const SceneObject* pSceneObjectA, const SceneObject* pSceneObjectB,
     const b2Vec2& localAnchorA, const b2Vec2& localAnchorB,
     const F32 length,
@@ -1483,7 +1477,7 @@ S32 Scene::createDistanceJoint(
     // Check for two invalid objects.
     if ( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
     {
-        Con::warnf("Scene::createDistanceJoint() - Cannot create joint without at least a single scene object." );
+        Con::warnf("t2dScene::createDistanceJoint() - Cannot create joint without at least a single scene object." );
         return -1;
     }
 
@@ -1509,7 +1503,7 @@ S32 Scene::createDistanceJoint(
 
 //-----------------------------------------------------------------------------
 
-void Scene::setDistanceJointLength(
+void t2dScene::setDistanceJointLength(
         const U32 jointId,
         const F32 length )
 {
@@ -1538,7 +1532,7 @@ void Scene::setDistanceJointLength(
 
 //-----------------------------------------------------------------------------
 
-F32 Scene::getDistanceJointLength( const U32 jointId )
+F32 t2dScene::getDistanceJointLength( const U32 jointId )
 {
     // Fetch joint.
     b2Joint* pJoint = findJoint( jointId );
@@ -1565,7 +1559,7 @@ F32 Scene::getDistanceJointLength( const U32 jointId )
 
 //-----------------------------------------------------------------------------
 
-void Scene::setDistanceJointFrequency(
+void t2dScene::setDistanceJointFrequency(
         const U32 jointId,
         const F32 frequency )
 {
@@ -1594,7 +1588,7 @@ void Scene::setDistanceJointFrequency(
 
 //-----------------------------------------------------------------------------
 
-F32 Scene::getDistanceJointFrequency( const U32 jointId )
+F32 t2dScene::getDistanceJointFrequency( const U32 jointId )
 {
     // Fetch joint.
     b2Joint* pJoint = findJoint( jointId );
@@ -1621,7 +1615,7 @@ F32 Scene::getDistanceJointFrequency( const U32 jointId )
 
 //-----------------------------------------------------------------------------
 
-void Scene::setDistanceJointDampingRatio(
+void t2dScene::setDistanceJointDampingRatio(
         const U32 jointId,
         const F32 dampingRatio )
 {
@@ -1650,7 +1644,7 @@ void Scene::setDistanceJointDampingRatio(
 
 //-----------------------------------------------------------------------------
 
-F32 Scene::getDistanceJointDampingRatio( const U32 jointId )
+F32 t2dScene::getDistanceJointDampingRatio( const U32 jointId )
 {
     // Fetch joint.
     b2Joint* pJoint = findJoint( jointId );
@@ -1677,7 +1671,7 @@ F32 Scene::getDistanceJointDampingRatio( const U32 jointId )
 
 //-----------------------------------------------------------------------------
 
-S32 Scene::createRopeJoint(
+S32 t2dScene::createRopeJoint(
         const SceneObject* pSceneObjectA, const SceneObject* pSceneObjectB,
         const b2Vec2& localAnchorA, const b2Vec2& localAnchorB,
         const F32 maxLength,
@@ -1695,7 +1689,7 @@ S32 Scene::createRopeJoint(
     // Check for two invalid objects.
     if ( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
     {
-        Con::warnf("Scene::createRopeJoint() - Cannot create joint without at least a single scene object." );
+        Con::warnf("t2dScene::createRopeJoint() - Cannot create joint without at least a single scene object." );
         return -1;
     }
 
@@ -1719,7 +1713,7 @@ S32 Scene::createRopeJoint(
 
 //-----------------------------------------------------------------------------
 
-void Scene::setRopeJointMaxLength(
+void t2dScene::setRopeJointMaxLength(
         const U32 jointId,
         const F32 maxLength )
 {
@@ -1748,7 +1742,7 @@ void Scene::setRopeJointMaxLength(
 
 //-----------------------------------------------------------------------------
 
-F32 Scene::getRopeJointMaxLength( const U32 jointId )
+F32 t2dScene::getRopeJointMaxLength( const U32 jointId )
 {
     // Fetch joint.
     b2Joint* pJoint = findJoint( jointId );
@@ -1775,7 +1769,7 @@ F32 Scene::getRopeJointMaxLength( const U32 jointId )
 
 //-----------------------------------------------------------------------------
 
-S32 Scene::createRevoluteJoint(
+S32 t2dScene::createRevoluteJoint(
         const SceneObject* pSceneObjectA, const SceneObject* pSceneObjectB,
         const b2Vec2& localAnchorA, const b2Vec2& localAnchorB,
         const bool collideConnected )
@@ -1792,7 +1786,7 @@ S32 Scene::createRevoluteJoint(
     // Check for two invalid objects.
     if ( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
     {
-        Con::warnf("Scene::createRevoluteJoint() - Cannot create joint without at least a single scene object." );
+        Con::warnf("t2dScene::createRevoluteJoint() - Cannot create joint without at least a single scene object." );
         return -1;
     }
 
@@ -1816,7 +1810,7 @@ S32 Scene::createRevoluteJoint(
 
 //-----------------------------------------------------------------------------
 
-void Scene::setRevoluteJointLimit(
+void t2dScene::setRevoluteJointLimit(
         const U32 jointId,
         const bool enableLimit,
         const F32 lowerAngle, const F32 upperAngle )
@@ -1847,7 +1841,7 @@ void Scene::setRevoluteJointLimit(
 
 //-----------------------------------------------------------------------------
 
-bool Scene::getRevoluteJointLimit(
+bool t2dScene::getRevoluteJointLimit(
         const U32 jointId,
         bool& enableLimit,
         F32& lowerAngle, F32& upperAngle )
@@ -1881,7 +1875,7 @@ bool Scene::getRevoluteJointLimit(
 
 //-----------------------------------------------------------------------------
 
-void Scene::setRevoluteJointMotor(
+void t2dScene::setRevoluteJointMotor(
         const U32 jointId,
         const bool enableMotor,
         const F32 motorSpeed,
@@ -1914,7 +1908,7 @@ void Scene::setRevoluteJointMotor(
 
 //-----------------------------------------------------------------------------
 
-bool Scene::getRevoluteJointMotor(
+bool t2dScene::getRevoluteJointMotor(
         const U32 jointId,
         bool& enableMotor,
         F32& motorSpeed,
@@ -1949,7 +1943,7 @@ bool Scene::getRevoluteJointMotor(
 
 //-----------------------------------------------------------------------------
 
-F32 Scene::getRevoluteJointAngle( const U32 jointId )
+F32 t2dScene::getRevoluteJointAngle( const U32 jointId )
 {
     // Fetch joint.
     b2Joint* pJoint = findJoint( jointId );
@@ -1976,7 +1970,7 @@ F32 Scene::getRevoluteJointAngle( const U32 jointId )
 
 //-----------------------------------------------------------------------------
 
-F32	Scene::getRevoluteJointSpeed( const U32 jointId )
+F32	t2dScene::getRevoluteJointSpeed( const U32 jointId )
 {
     // Fetch joint.
     b2Joint* pJoint = findJoint( jointId );
@@ -2003,7 +1997,7 @@ F32	Scene::getRevoluteJointSpeed( const U32 jointId )
 
 //-----------------------------------------------------------------------------
 
-S32 Scene::createWeldJoint(
+S32 t2dScene::createWeldJoint(
         const SceneObject* pSceneObjectA, const SceneObject* pSceneObjectB,
         const b2Vec2& localAnchorA, const b2Vec2& localAnchorB,
         const F32 frequency,
@@ -2022,7 +2016,7 @@ S32 Scene::createWeldJoint(
     // Check for two invalid objects.
     if ( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
     {
-        Con::warnf("Scene::createWeldJoint() - Cannot create joint without at least a single scene object." );
+        Con::warnf("t2dScene::createWeldJoint() - Cannot create joint without at least a single scene object." );
         return -1;
     }
 
@@ -2048,7 +2042,7 @@ S32 Scene::createWeldJoint(
 
 //-----------------------------------------------------------------------------
 
-void Scene::setWeldJointFrequency(
+void t2dScene::setWeldJointFrequency(
         const U32 jointId,
         const F32 frequency )
 {
@@ -2078,7 +2072,7 @@ void Scene::setWeldJointFrequency(
 
 //-----------------------------------------------------------------------------
 
-F32 Scene::getWeldJointFrequency( const U32 jointId  )
+F32 t2dScene::getWeldJointFrequency( const U32 jointId  )
 {
     // Fetch joint.
     b2Joint* pJoint = findJoint( jointId );
@@ -2105,7 +2099,7 @@ F32 Scene::getWeldJointFrequency( const U32 jointId  )
 
 //-----------------------------------------------------------------------------
 
-void Scene::setWeldJointDampingRatio(
+void t2dScene::setWeldJointDampingRatio(
         const U32 jointId,
         const F32 dampingRatio )
 {
@@ -2134,7 +2128,7 @@ void Scene::setWeldJointDampingRatio(
 
 //-----------------------------------------------------------------------------
 
-F32 Scene::getWeldJointDampingRatio( const U32 jointId )
+F32 t2dScene::getWeldJointDampingRatio( const U32 jointId )
 {
     // Fetch joint.
     b2Joint* pJoint = findJoint( jointId );
@@ -2161,7 +2155,7 @@ F32 Scene::getWeldJointDampingRatio( const U32 jointId )
 
 //-----------------------------------------------------------------------------
 
-S32 Scene::createWheelJoint(
+S32 t2dScene::createWheelJoint(
         const SceneObject* pSceneObjectA, const SceneObject* pSceneObjectB,
         const b2Vec2& localAnchorA, const b2Vec2& localAnchorB,
         const b2Vec2& worldAxis,
@@ -2179,7 +2173,7 @@ S32 Scene::createWheelJoint(
     // Check for two invalid objects.
     if ( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
     {
-        Con::warnf("Scene::createWheelJoint() - Cannot create joint without at least a single scene object." );
+        Con::warnf("t2dScene::createWheelJoint() - Cannot create joint without at least a single scene object." );
         return -1;
     }
 
@@ -2203,7 +2197,7 @@ S32 Scene::createWheelJoint(
 
 //-----------------------------------------------------------------------------
 
-void Scene::setWheelJointMotor(
+void t2dScene::setWheelJointMotor(
         const U32 jointId,
         const bool enableMotor,
         const F32 motorSpeed,
@@ -2236,7 +2230,7 @@ void Scene::setWheelJointMotor(
 
 //-----------------------------------------------------------------------------
 
-bool Scene::getWheelJointMotor(
+bool t2dScene::getWheelJointMotor(
         const U32 jointId,
         bool& enableMotor,
         F32& motorSpeed,
@@ -2271,7 +2265,7 @@ bool Scene::getWheelJointMotor(
 
 //-----------------------------------------------------------------------------
 
-void Scene::setWheelJointFrequency(
+void t2dScene::setWheelJointFrequency(
         const U32 jointId,
         const F32 frequency )
 {
@@ -2300,7 +2294,7 @@ void Scene::setWheelJointFrequency(
 
 //-----------------------------------------------------------------------------
 
-F32 Scene::getWheelJointFrequency( const U32 jointId )
+F32 t2dScene::getWheelJointFrequency( const U32 jointId )
 {
     // Fetch joint.
     b2Joint* pJoint = findJoint( jointId );
@@ -2327,7 +2321,7 @@ F32 Scene::getWheelJointFrequency( const U32 jointId )
 
 //-----------------------------------------------------------------------------
 
-void Scene::setWheelJointDampingRatio(
+void t2dScene::setWheelJointDampingRatio(
         const U32 jointId,
         const F32 dampingRatio )
 {
@@ -2356,7 +2350,7 @@ void Scene::setWheelJointDampingRatio(
 
 //-----------------------------------------------------------------------------
 
-F32 Scene::getWheelJointDampingRatio( const U32 jointId )
+F32 t2dScene::getWheelJointDampingRatio( const U32 jointId )
 {
     // Fetch joint.
     b2Joint* pJoint = findJoint( jointId );
@@ -2383,7 +2377,7 @@ F32 Scene::getWheelJointDampingRatio( const U32 jointId )
 
 //-----------------------------------------------------------------------------
 
-S32 Scene::createFrictionJoint(
+S32 t2dScene::createFrictionJoint(
         const SceneObject* pSceneObjectA, const SceneObject* pSceneObjectB,
         const b2Vec2& localAnchorA, const b2Vec2& localAnchorB,
         const F32 maxForce,
@@ -2402,7 +2396,7 @@ S32 Scene::createFrictionJoint(
     // Check for two invalid objects.
     if ( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
     {
-        Con::warnf("Scene::createFrictionJoint() - Cannot create joint without at least a single scene object." );
+        Con::warnf("t2dScene::createFrictionJoint() - Cannot create joint without at least a single scene object." );
         return -1;
     }
 
@@ -2427,7 +2421,7 @@ S32 Scene::createFrictionJoint(
 
 //-----------------------------------------------------------------------------
 
-void Scene::setFrictionJointMaxForce(
+void t2dScene::setFrictionJointMaxForce(
         const U32 jointId,
         const F32 maxForce )
 {
@@ -2456,7 +2450,7 @@ void Scene::setFrictionJointMaxForce(
 
 //-----------------------------------------------------------------------------
 
-F32 Scene::getFrictionJointMaxForce( const U32 jointId )
+F32 t2dScene::getFrictionJointMaxForce( const U32 jointId )
 {
     // Fetch joint.
     b2Joint* pJoint = findJoint( jointId );
@@ -2483,7 +2477,7 @@ F32 Scene::getFrictionJointMaxForce( const U32 jointId )
 
 //-----------------------------------------------------------------------------
 
-void Scene::setFrictionJointMaxTorque(
+void t2dScene::setFrictionJointMaxTorque(
         const U32 jointId,
         const F32 maxTorque )
 {
@@ -2513,7 +2507,7 @@ void Scene::setFrictionJointMaxTorque(
 
 //-----------------------------------------------------------------------------
 
-F32 Scene::getFrictionJointMaxTorque( const U32 jointId )
+F32 t2dScene::getFrictionJointMaxTorque( const U32 jointId )
 {
     // Fetch joint.
     b2Joint* pJoint = findJoint( jointId );
@@ -2540,7 +2534,7 @@ F32 Scene::getFrictionJointMaxTorque( const U32 jointId )
 
 //-----------------------------------------------------------------------------
 
-S32 Scene::createPrismaticJoint(
+S32 t2dScene::createPrismaticJoint(
         const SceneObject* pSceneObjectA, const SceneObject* pSceneObjectB,
         const b2Vec2& localAnchorA, const b2Vec2& localAnchorB,
         const b2Vec2& worldAxis,
@@ -2558,7 +2552,7 @@ S32 Scene::createPrismaticJoint(
     // Check for two invalid objects.
     if ( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
     {
-        Con::warnf("Scene::createPrismaticJoint() - Cannot create joint without at least a single scene object." );
+        Con::warnf("t2dScene::createPrismaticJoint() - Cannot create joint without at least a single scene object." );
         return -1;
     }
 
@@ -2583,7 +2577,7 @@ S32 Scene::createPrismaticJoint(
 
 //-----------------------------------------------------------------------------
 
-void Scene::setPrismaticJointLimit(
+void t2dScene::setPrismaticJointLimit(
         const U32 jointId,
         const bool enableLimit,
         const F32 lowerTranslation, const F32 upperTranslation )
@@ -2614,7 +2608,7 @@ void Scene::setPrismaticJointLimit(
 
 //-----------------------------------------------------------------------------
 
-bool Scene::getPrismaticJointLimit(
+bool t2dScene::getPrismaticJointLimit(
         const U32 jointId,
         bool& enableLimit,
         F32& lowerTranslation, F32& upperTranslation )
@@ -2648,7 +2642,7 @@ bool Scene::getPrismaticJointLimit(
 
 //-----------------------------------------------------------------------------
 
-void Scene::setPrismaticJointMotor(
+void t2dScene::setPrismaticJointMotor(
         const U32 jointId,
         const bool enableMotor,
         const F32 motorSpeed,
@@ -2681,7 +2675,7 @@ void Scene::setPrismaticJointMotor(
 
 //-----------------------------------------------------------------------------
 
-bool Scene::getPrismaticJointMotor(
+bool t2dScene::getPrismaticJointMotor(
         const U32 jointId,
         bool& enableMotor,
         F32& motorSpeed,
@@ -2716,7 +2710,7 @@ bool Scene::getPrismaticJointMotor(
 
 //-----------------------------------------------------------------------------
 
-S32 Scene::createPulleyJoint(
+S32 t2dScene::createPulleyJoint(
         const SceneObject* pSceneObjectA, const SceneObject* pSceneObjectB,
         const b2Vec2& localAnchorA, const b2Vec2& localAnchorB,
         const b2Vec2& worldGroundAnchorA, const b2Vec2& worldGroundAnchorB,
@@ -2736,7 +2730,7 @@ S32 Scene::createPulleyJoint(
     // Check for two invalid objects.
     if ( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
     {
-        Con::warnf("Scene::createPulleyJoint() - Cannot create joint without at least a single scene object." );
+        Con::warnf("t2dScene::createPulleyJoint() - Cannot create joint without at least a single scene object." );
         return -1;
     }
 
@@ -2764,7 +2758,7 @@ S32 Scene::createPulleyJoint(
 
 //-----------------------------------------------------------------------------
 
-S32 Scene::createTargetJoint(
+S32 t2dScene::createTargetJoint(
         const SceneObject* pSceneObject,
         const b2Vec2& worldTarget,
         const F32 maxForce,
@@ -2784,7 +2778,7 @@ S32 Scene::createTargetJoint(
     // Check for invalid object.
     if ( pSceneObject == nullptr )
     {
-        Con::warnf("Scene::createPulleyJoint() - Cannot create joint without a scene object." );
+        Con::warnf("t2dScene::createPulleyJoint() - Cannot create joint without a scene object." );
         return -1;
     }
 
@@ -2822,7 +2816,7 @@ S32 Scene::createTargetJoint(
 
 //-----------------------------------------------------------------------------
 
-void Scene::setTargetJointTarget(
+void t2dScene::setTargetJointTarget(
         const U32 jointId,
         const b2Vec2& worldTarget )
 {
@@ -2850,7 +2844,7 @@ void Scene::setTargetJointTarget(
 }
 
 //-----------------------------------------------------------------------------
-b2Vec2 Scene::getTargetJointTarget( const U32 jointId )
+b2Vec2 t2dScene::getTargetJointTarget( const U32 jointId )
 {
     // Fetch joint.
     b2Joint* pJoint = findJoint( jointId );
@@ -2877,7 +2871,7 @@ b2Vec2 Scene::getTargetJointTarget( const U32 jointId )
 
 //-----------------------------------------------------------------------------
 
-void Scene::setTargetJointMaxForce(
+void t2dScene::setTargetJointMaxForce(
         const U32 jointId,
         const F32 maxForce )
 {
@@ -2906,7 +2900,7 @@ void Scene::setTargetJointMaxForce(
 
 //-----------------------------------------------------------------------------
 
-F32 Scene::getTargetJointMaxForce( const U32 jointId )
+F32 t2dScene::getTargetJointMaxForce( const U32 jointId )
 {
     // Fetch joint.
     b2Joint* pJoint = findJoint( jointId );
@@ -2933,7 +2927,7 @@ F32 Scene::getTargetJointMaxForce( const U32 jointId )
 
 //-----------------------------------------------------------------------------
 
-void Scene::setTargetJointFrequency(
+void t2dScene::setTargetJointFrequency(
         const U32 jointId,
         const F32 frequency )
 {
@@ -2962,7 +2956,7 @@ void Scene::setTargetJointFrequency(
 
 //-----------------------------------------------------------------------------
 
-F32 Scene::getTargetJointFrequency( const U32 jointId )
+F32 t2dScene::getTargetJointFrequency( const U32 jointId )
 {
     // Fetch joint.
     b2Joint* pJoint = findJoint( jointId );
@@ -2989,7 +2983,7 @@ F32 Scene::getTargetJointFrequency( const U32 jointId )
 
 //-----------------------------------------------------------------------------
 
-void Scene::setTargetJointDampingRatio(
+void t2dScene::setTargetJointDampingRatio(
         const U32 jointId,
         const F32 dampingRatio )
 {
@@ -3018,7 +3012,7 @@ void Scene::setTargetJointDampingRatio(
 
 //-----------------------------------------------------------------------------
 
-F32 Scene::getTargetJointDampingRatio( const U32 jointId )
+F32 t2dScene::getTargetJointDampingRatio( const U32 jointId )
 {
     // Fetch joint.
     b2Joint* pJoint = findJoint( jointId );
@@ -3045,7 +3039,7 @@ F32 Scene::getTargetJointDampingRatio( const U32 jointId )
 
 //-----------------------------------------------------------------------------
 
-S32 Scene::createMotorJoint(
+S32 t2dScene::createMotorJoint(
             const SceneObject* pSceneObjectA, const SceneObject* pSceneObjectB,
             const b2Vec2 linearOffset,
             const F32 angularOffset,
@@ -3066,7 +3060,7 @@ S32 Scene::createMotorJoint(
     // Check for two invalid objects.
     if ( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
     {
-        Con::warnf("Scene::createMotorJoint() - Cannot create joint without at least a single scene object." );
+        Con::warnf("t2dScene::createMotorJoint() - Cannot create joint without at least a single scene object." );
         return -1;
     }
 
@@ -3092,7 +3086,7 @@ S32 Scene::createMotorJoint(
 
 //-----------------------------------------------------------------------------
 
-void Scene::setMotorJointLinearOffset(
+void t2dScene::setMotorJointLinearOffset(
         const U32 jointId,
         const b2Vec2& linearOffset )
 {
@@ -3121,7 +3115,7 @@ void Scene::setMotorJointLinearOffset(
 
 //-----------------------------------------------------------------------------
 
-b2Vec2 Scene::getMotorJointLinearOffset( const U32 jointId )
+b2Vec2 t2dScene::getMotorJointLinearOffset( const U32 jointId )
 {
     // Fetch joint.
     b2Joint* pJoint = findJoint( jointId );
@@ -3148,7 +3142,7 @@ b2Vec2 Scene::getMotorJointLinearOffset( const U32 jointId )
 
 //-----------------------------------------------------------------------------
 
-void Scene::setMotorJointAngularOffset(
+void t2dScene::setMotorJointAngularOffset(
         const U32 jointId,
         const F32 angularOffset )
 {
@@ -3177,7 +3171,7 @@ void Scene::setMotorJointAngularOffset(
 
 //-----------------------------------------------------------------------------
 
-F32 Scene::getMotorJointAngularOffset( const U32 jointId )
+F32 t2dScene::getMotorJointAngularOffset( const U32 jointId )
 {
     // Fetch joint.
     b2Joint* pJoint = findJoint( jointId );
@@ -3204,7 +3198,7 @@ F32 Scene::getMotorJointAngularOffset( const U32 jointId )
 
 //-----------------------------------------------------------------------------
 
-void Scene::setMotorJointMaxForce(
+void t2dScene::setMotorJointMaxForce(
         const U32 jointId,
         const F32 maxForce )
 {
@@ -3233,7 +3227,7 @@ void Scene::setMotorJointMaxForce(
 
 //-----------------------------------------------------------------------------
 
-F32 Scene::getMotorJointMaxForce( const U32 jointId )
+F32 t2dScene::getMotorJointMaxForce( const U32 jointId )
 {
     // Fetch joint.
     b2Joint* pJoint = findJoint( jointId );
@@ -3260,7 +3254,7 @@ F32 Scene::getMotorJointMaxForce( const U32 jointId )
 
 //-----------------------------------------------------------------------------
 
-void Scene::setMotorJointMaxTorque(
+void t2dScene::setMotorJointMaxTorque(
         const U32 jointId,
         const F32 maxTorque )
 {
@@ -3290,7 +3284,7 @@ void Scene::setMotorJointMaxTorque(
 
 //-----------------------------------------------------------------------------
 
-F32 Scene::getMotorJointMaxTorque( const U32 jointId )
+F32 t2dScene::getMotorJointMaxTorque( const U32 jointId )
 {
     // Fetch joint.
     b2Joint* pJoint = findJoint( jointId );
@@ -3317,7 +3311,7 @@ F32 Scene::getMotorJointMaxTorque( const U32 jointId )
 
 //-----------------------------------------------------------------------------
 
-void Scene::setDebugSceneObject( SceneObject* pSceneObject )
+void t2dScene::setDebugSceneObject( SceneObject* pSceneObject )
 {
     // Ignore no change.
     if ( mpDebugSceneObject == pSceneObject )
@@ -3338,7 +3332,7 @@ void Scene::setDebugSceneObject( SceneObject* pSceneObject )
     deleteNotify( pSceneObject );
 }
 
-void Scene::setLayerLight(U32 layer, ColorF light)
+void t2dScene::setLayerLight(U32 layer, ColorF light)
 {
    if (mLayers.size() > layer)
       mLayers[layer]->setLight(light);
@@ -3347,12 +3341,12 @@ void Scene::setLayerLight(U32 layer, ColorF light)
 
 //-----------------------------------------------------------------------------
 
-void Scene::setLayerSortMode( const U32 layer, const SceneRenderQueue::RenderSort sortMode )
+void t2dScene::setLayerSortMode( const U32 layer, const SceneRenderQueue::RenderSort sortMode )
 {
    if (layer > 64)
    {
       // No, so warn.
-      Con::warnf( "Scene::setLayerSortMode() - Layer '%d' is bigger than 64, is this intended?", layer );
+      Con::warnf( "t2dScene::setLayerSortMode() - Layer '%d' is bigger than 64, is this intended?", layer );
       //
    }
    
@@ -3366,7 +3360,7 @@ void Scene::setLayerSortMode( const U32 layer, const SceneRenderQueue::RenderSor
     if ( sortMode == SceneRenderQueue::RENDER_SORT_INVALID )
     {
         // No, so warn.
-        Con::warnf( "Scene::setLayerSortMode() - Sort mode is invalid for layer '%d'.", layer );
+        Con::warnf( "t2dScene::setLayerSortMode() - Sort mode is invalid for layer '%d'.", layer );
 
         return;
     }
@@ -3376,13 +3370,13 @@ void Scene::setLayerSortMode( const U32 layer, const SceneRenderQueue::RenderSor
 
 //-----------------------------------------------------------------------------
 
-SceneRenderQueue::RenderSort Scene::getLayerSortMode( const U32 layer )
+SceneRenderQueue::RenderSort t2dScene::getLayerSortMode( const U32 layer )
 {
     // Is the layer valid?
     if ( layer >= mLayers.size() )
     {
         // No, so warn.
-        Con::warnf( "Scene::getLayerSortMode() - Layer '%d' is out of range.", layer );
+        Con::warnf( "t2dScene::getLayerSortMode() - Layer '%d' is out of range.", layer );
 
         return SceneRenderQueue::RENDER_SORT_INVALID;
     }
@@ -3392,7 +3386,7 @@ SceneRenderQueue::RenderSort Scene::getLayerSortMode( const U32 layer )
 
 //-----------------------------------------------------------------------------
 
-void Scene::attachSceneWindow( SceneWindow* pSceneWindow2D )
+void t2dScene::attachSceneWindow( SceneWindow* pSceneWindow2D )
 {
     // Ignore if already attached.
     if ( isSceneWindowAttached( pSceneWindow2D ) )
@@ -3404,7 +3398,7 @@ void Scene::attachSceneWindow( SceneWindow* pSceneWindow2D )
 
 //-----------------------------------------------------------------------------
 
-void Scene::detachSceneWindow( SceneWindow* pSceneWindow2D )
+void t2dScene::detachSceneWindow( SceneWindow* pSceneWindow2D )
 {
     // Ignore if not attached.
     if ( !isSceneWindowAttached( pSceneWindow2D ) )
@@ -3416,16 +3410,16 @@ void Scene::detachSceneWindow( SceneWindow* pSceneWindow2D )
 
 //-----------------------------------------------------------------------------
 
-void Scene::detachAllSceneWindows( void )
+void t2dScene::detachAllSceneWindows( void )
 {
-    // Detach All Scene Windows.
+    // Detach All t2dScene Windows.
     while( mAttachedSceneWindows.size() > 0 )
         dynamic_cast<SceneWindow*>(mAttachedSceneWindows[mAttachedSceneWindows.size()-1])->resetScene();
 }
 
 //-----------------------------------------------------------------------------
 
-bool Scene::isSceneWindowAttached( SceneWindow* pSceneWindow2D )
+bool t2dScene::isSceneWindowAttached( SceneWindow* pSceneWindow2D )
 {
     for( SimObject* itr:mAttachedSceneWindows )
         if ( pSceneWindow2D == dynamic_cast<SceneWindow*>(itr) )
@@ -3438,7 +3432,7 @@ bool Scene::isSceneWindowAttached( SceneWindow* pSceneWindow2D )
 
 //-----------------------------------------------------------------------------
 
-void Scene::addDeleteRequest( SceneObject* pSceneObject )
+void t2dScene::addDeleteRequest( SceneObject* pSceneObject )
 {
     // Ignore if it's already being safe-deleted.
     if ( pSceneObject->isBeingDeleted() )
@@ -3457,7 +3451,7 @@ void Scene::addDeleteRequest( SceneObject* pSceneObject )
 
 //-----------------------------------------------------------------------------
 
-void Scene::processDeleteRequests( const bool forceImmediate )
+void t2dScene::processDeleteRequests( const bool forceImmediate )
 {
     // Ignore if there's no delete requests!
     if ( mDeleteRequests.size() == 0 )
@@ -3568,7 +3562,7 @@ void Scene::processDeleteRequests( const bool forceImmediate )
 
 //-----------------------------------------------------------------------------
 
-void Scene::SayGoodbye( b2Joint* pJoint )
+void t2dScene::SayGoodbye( b2Joint* pJoint )
 {
     // Find the joint id.
     const U32 jointId = findJointId( pJoint );
@@ -3584,10 +3578,10 @@ void Scene::SayGoodbye( b2Joint* pJoint )
 
 //-----------------------------------------------------------------------------
 
-SceneObject* Scene::create( const char* pType )
+SceneObject*t2dScene::create( const char* pType )
 {
     // Sanity!
-    AssertFatal( pType != nullptr, "Scene::create() - Cannot create a nullptr type." );
+    AssertFatal( pType != nullptr, "t2dScene::create() - Cannot create a nullptr type." );
 
     // Find the class rep.
     AbstractClassRep* pClassRep = AbstractClassRep::findClassRep( pType ); 
@@ -3596,7 +3590,7 @@ SceneObject* Scene::create( const char* pType )
     if ( pClassRep == nullptr )
     {
         // No, so warn.
-        Con::warnf( "Scene::create() - Could not find type '%s' to create.", pType );
+        Con::warnf( "t2dScene::create() - Could not find type '%s' to create.", pType );
         return nullptr;
     }
 
@@ -3604,13 +3598,13 @@ SceneObject* Scene::create( const char* pType )
     AbstractClassRep* pSceneObjectRep = AbstractClassRep::findClassRep( "SceneObject" ); 
 
     // Sanity!
-    AssertFatal( pSceneObjectRep != nullptr,  "Scene::create() - Could not find SceneObject class rep." );
+    AssertFatal( pSceneObjectRep != nullptr,  "t2dScene::create() - Could not find SceneObject class rep." );
 
     // Is the type derived from scene object?
     if ( !pClassRep->isClass( pSceneObjectRep ) )
     {
         // No, so warn.
-        Con::warnf( "Scene::create() - Type '%s' is not derived from SceneObject.", pType );
+        Con::warnf( "t2dScene::create() - Type '%s' is not derived from SceneObject.", pType );
         return nullptr;
     }
     
@@ -3618,13 +3612,13 @@ SceneObject* Scene::create( const char* pType )
     SceneObject* pSceneObject = dynamic_cast<SceneObject*>( pClassRep->create() );
 
     // Sanity!
-    AssertFatal( pSceneObject != nullptr, "Scene::create() - Failed to create type via class rep." );
+    AssertFatal( pSceneObject != nullptr, "t2dScene::create() - Failed to create type via class rep." );
 
     // Attempt to register the object.
     if ( !pSceneObject->registerObject() )
     {
         // No, so warn.
-        Con::warnf( "Scene::create() - Failed to register type '%s'.", pType );
+        Con::warnf( "t2dScene::create() - Failed to register type '%s'.", pType );
         delete pSceneObject;
         return nullptr;
     }
@@ -3637,7 +3631,7 @@ SceneObject* Scene::create( const char* pType )
 
 //-----------------------------------------------------------------------------
 
-void Scene::onTamlPreRead( void )
+void t2dScene::onTamlPreRead( void )
 {
     // Call parent.
     Parent::onTamlPreRead();
@@ -3645,13 +3639,13 @@ void Scene::onTamlPreRead( void )
 
 //-----------------------------------------------------------------------------
 
-void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
+void t2dScene::onTamlPostRead( const TamlCustomNodes& customNodes )
 {
     // Call parent.
     Parent::onTamlPostRead( customNodes );
 
     // Reset the loading scene.
-    Scene::LoadingScene = nullptr;
+    t2dScene::LoadingScene = nullptr;
 
     // Find joint custom node.
     const TamlCustomNode* pJointNode = customNodes.findNode( jointCustomNodeName );
@@ -3680,7 +3674,7 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 if( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
                 {
                     // No, so warn.
-                    Con::warnf( "Scene::onTamlPostRead() - Encountered a joint '%s' but it has invalid connected objects.", nodeName );
+                    Con::warnf( "t2dScene::onTamlPostRead() - Encountered a joint '%s' but it has invalid connected objects.", nodeName );
                     continue;
                 }
 
@@ -3743,7 +3737,7 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 if( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
                 {
                     // No, so warn.
-                    Con::warnf( "Scene::onTamlPostRead() - Encountered a joint '%s' but it has invalid connected objects.", nodeName );
+                    Con::warnf( "t2dScene::onTamlPostRead() - Encountered a joint '%s' but it has invalid connected objects.", nodeName );
                     continue;
                 }
 
@@ -3796,7 +3790,7 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 if( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
                 {
                     // No, so warn.
-                    Con::warnf( "Scene::onTamlPostRead() - Encountered a joint '%s' but it has invalid connected objects.", nodeName );
+                    Con::warnf( "t2dScene::onTamlPostRead() - Encountered a joint '%s' but it has invalid connected objects.", nodeName );
                     continue;
                 }
 
@@ -3880,7 +3874,7 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 if( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
                 {
                     // No, so warn.
-                    Con::warnf( "Scene::onTamlPostRead() - Encountered a joint '%s' but it has invalid connected objects.", nodeName );
+                    Con::warnf( "t2dScene::onTamlPostRead() - Encountered a joint '%s' but it has invalid connected objects.", nodeName );
                     continue;
                 }
 
@@ -3938,7 +3932,7 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 if( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
                 {
                     // No, so warn.
-                    Con::warnf( "Scene::onTamlPostRead() - Encountered a joint '%s' but it has invalid connected objects.", nodeName );
+                    Con::warnf( "t2dScene::onTamlPostRead() - Encountered a joint '%s' but it has invalid connected objects.", nodeName );
                     continue;
                 }
 
@@ -4022,7 +4016,7 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 if( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
                 {
                     // No, so warn.
-                    Con::warnf( "Scene::onTamlPostRead() - Encountered a joint '%s' but it has invalid connected objects.", nodeName );
+                    Con::warnf( "t2dScene::onTamlPostRead() - Encountered a joint '%s' but it has invalid connected objects.", nodeName );
                     continue;
                 }
 
@@ -4080,7 +4074,7 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 if( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
                 {
                     // No, so warn.
-                    Con::warnf( "Scene::onTamlPostRead() - Encountered a joint '%s' but it has invalid connected objects.", nodeName );
+                    Con::warnf( "t2dScene::onTamlPostRead() - Encountered a joint '%s' but it has invalid connected objects.", nodeName );
                     continue;
                 }
 
@@ -4168,7 +4162,7 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 if( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
                 {
                     // No, so warn.
-                    Con::warnf( "Scene::onTamlPostRead() - Encountered a joint '%s' but it has invalid connected objects.", nodeName );
+                    Con::warnf( "t2dScene::onTamlPostRead() - Encountered a joint '%s' but it has invalid connected objects.", nodeName );
                     continue;
                 }
 
@@ -4241,7 +4235,7 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 if( pSceneObject == nullptr )
                 {
                     // No, so warn.
-                    Con::warnf( "Scene::onTamlPostRead() - Encountered a joint '%s' but it has an invalid connected object.", nodeName );
+                    Con::warnf( "t2dScene::onTamlPostRead() - Encountered a joint '%s' but it has an invalid connected object.", nodeName );
                     continue;
                 }
 
@@ -4298,7 +4292,7 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 if( pSceneObjectA == nullptr && pSceneObjectB == nullptr )
                 {
                     // No, so warn.
-                    Con::warnf( "Scene::onTamlPostRead() - Encountered a joint '%s' but it has invalid connected objects.", nodeName );
+                    Con::warnf( "t2dScene::onTamlPostRead() - Encountered a joint '%s' but it has invalid connected objects.", nodeName );
                     continue;
                 }
 
@@ -4356,7 +4350,7 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 Con::warnf( "Unknown joint type of '%s' encountered.", nodeName );
 
                 // Sanity!
-                AssertFatal( false, "Scene::onTamlCustomRead() - Unknown joint type detected." );
+                AssertFatal( false, "t2dScene::onTamlCustomRead() - Unknown joint type detected." );
 
                 continue;
             }
@@ -4380,7 +4374,7 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
             if ( !pControllerNode->isProxyObject() )
             {
                 // No, so warn.
-                Con::warnf("Scene::onTamlPostRead() - Reading scene controllers but node '%s'is not an object.", pControllerNode->getNodeName() );
+                Con::warnf("t2dScene::onTamlPostRead() - Reading scene controllers but node '%s'is not an object.", pControllerNode->getNodeName() );
 
                 continue;
             }
@@ -4392,7 +4386,7 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
             if ( dynamic_cast<SceneController*>( pProxyObject ) == nullptr )
             {
                 // No, so warn.
-                Con::warnf("Scene::onTamlPostRead() - Reading scene controllers but node '%s'is not a scene controller.", pControllerNode->getNodeName() );
+                Con::warnf("t2dScene::onTamlPostRead() - Reading scene controllers but node '%s'is not a scene controller.", pControllerNode->getNodeName() );
 
                 // Delete the object.
                 pProxyObject->deleteObject();
@@ -4435,7 +4429,7 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
             if ( pAssetIdField == nullptr )
             {
                 // No, so warn.
-                Con::warnf("Scene::onTamlPostRead() - Found asset preload but failed to find asset Id field." );
+                Con::warnf("t2dScene::onTamlPostRead() - Found asset preload but failed to find asset Id field." );
                 continue;
             }
 
@@ -4453,7 +4447,7 @@ void Scene::onTamlPostRead( const TamlCustomNodes& customNodes )
 
 //-----------------------------------------------------------------------------
 
-void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
+void t2dScene::onTamlCustomWrite( TamlCustomNodes& customNodes )
 {
     // Call parent.
     Parent::onTamlCustomWrite( customNodes );
@@ -4505,7 +4499,7 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
                         const b2DistanceJoint* pJoint = dynamic_cast<const b2DistanceJoint*>( pBaseJoint );
 
                         // Sanity!
-                        AssertFatal( pJoint != nullptr, "Scene::onTamlCustomWrite() - Invalid distance joint type returned." );
+                        AssertFatal( pJoint != nullptr, "t2dScene::onTamlCustomWrite() - Invalid distance joint type returned." );
 
                         // Add length.
                         pJointNode->addField( jointDistanceLengthName, pJoint->GetLength() );
@@ -4542,7 +4536,7 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
                         const b2RopeJoint* pJoint = dynamic_cast<const b2RopeJoint*>( pBaseJoint );
 
                         // Sanity!
-                        AssertFatal( pJoint != nullptr, "Scene::onTamlCustomWrite() - Invalid rope joint type returned." );
+                        AssertFatal( pJoint != nullptr, "t2dScene::onTamlCustomWrite() - Invalid rope joint type returned." );
 
                         // Add max length.
                         if ( mNotZero( pJoint->GetMaxLength() ) )
@@ -4572,7 +4566,7 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
                         const b2RevoluteJoint* pJoint = dynamic_cast<const b2RevoluteJoint*>( pBaseJoint );
 
                         // Sanity!
-                        AssertFatal( pJoint != nullptr, "Scene::onTamlCustomWrite() - Invalid revolute joint type returned." );
+                        AssertFatal( pJoint != nullptr, "t2dScene::onTamlCustomWrite() - Invalid revolute joint type returned." );
 
                         // Add limit.
                         if ( pJoint->IsLimitEnabled() )
@@ -4614,7 +4608,7 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
                         const b2WeldJoint* pJoint = dynamic_cast<const b2WeldJoint*>( pBaseJoint );
 
                         // Sanity!
-                        AssertFatal( pJoint != nullptr, "Scene::onTamlCustomWrite() - Invalid weld joint type returned." );
+                        AssertFatal( pJoint != nullptr, "t2dScene::onTamlCustomWrite() - Invalid weld joint type returned." );
 
                         // Add frequency.
                         if ( mNotZero( pJoint->GetFrequency() ) )
@@ -4648,7 +4642,7 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
                         b2WheelJoint* pJoint = dynamic_cast<b2WheelJoint*>( pBaseJoint );
 
                         // Sanity!
-                        AssertFatal( pJoint != nullptr, "Scene::onTamlCustomWrite() - Invalid wheel joint type returned." );
+                        AssertFatal( pJoint != nullptr, "t2dScene::onTamlCustomWrite() - Invalid wheel joint type returned." );
 
                         // Add motor.
                         if ( pJoint->IsMotorEnabled() )
@@ -4699,7 +4693,7 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
                             pJointNode->addField( jointFrictionMaxTorqueName, pJoint->GetMaxTorque() );
 
                         // Sanity!
-                        AssertFatal( pJoint != nullptr, "Scene::onTamlCustomWrite() - Invalid friction joint type returned." );
+                        AssertFatal( pJoint != nullptr, "t2dScene::onTamlCustomWrite() - Invalid friction joint type returned." );
 
                         // Add local anchors.
                         if ( mNotZero( pJoint->GetLocalAnchorA().LengthSquared() ) )
@@ -4725,7 +4719,7 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
                         b2PrismaticJoint* pJoint = dynamic_cast<b2PrismaticJoint*>( pBaseJoint );
 
                         // Sanity!
-                        AssertFatal( pJoint != nullptr, "Scene::onTamlCustomWrite() - Invalid prismatic joint type returned." );
+                        AssertFatal( pJoint != nullptr, "t2dScene::onTamlCustomWrite() - Invalid prismatic joint type returned." );
 
                         // Add limit.
                         if ( pJoint->IsLimitEnabled() )
@@ -4768,7 +4762,7 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
                         b2PulleyJoint* pJoint = dynamic_cast<b2PulleyJoint*>( pBaseJoint );
 
                         // Sanity!
-                        AssertFatal( pJoint != nullptr, "Scene::onTamlCustomWrite() - Invalid pulley joint type returned." );
+                        AssertFatal( pJoint != nullptr, "t2dScene::onTamlCustomWrite() - Invalid pulley joint type returned." );
 
                         // Add lengths.
                         pJointNode->addField( jointPulleyLengthAName, pJoint->GetLengthA() );
@@ -4803,7 +4797,7 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
                         const b2MouseJoint* pJoint = dynamic_cast<const b2MouseJoint*>( pBaseJoint );
 
                         // Sanity!
-                        AssertFatal( pJoint != nullptr, "Scene::onTamlCustomWrite() - Invalid target joint type returned." );
+                        AssertFatal( pJoint != nullptr, "t2dScene::onTamlCustomWrite() - Invalid target joint type returned." );
 
                         // Add target.
                         pJointNode->addField( jointTargetWorldTargetName, pJoint->GetTarget() );
@@ -4834,7 +4828,7 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
                         const b2MotorJoint* pJoint = dynamic_cast<const b2MotorJoint*>( pBaseJoint );
 
                         // Sanity!
-                        AssertFatal( pJoint != nullptr, "Scene::onTamlCustomWrite() - Invalid motor joint type returned." );
+                        AssertFatal( pJoint != nullptr, "t2dScene::onTamlCustomWrite() - Invalid motor joint type returned." );
 
                         // Add linear offset.
                         if ( mNotZero( pJoint->GetLinearOffset().LengthSquared() ) )
@@ -4864,7 +4858,7 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
 
             default:
                 // Sanity!
-                AssertFatal( false, "Scene::onTamlCustomWrite() - Unknown joint type detected." );
+                AssertFatal( false, "t2dScene::onTamlCustomWrite() - Unknown joint type detected." );
             }
 
             // Add collide connected flag.
@@ -4929,7 +4923,7 @@ void Scene::onTamlCustomWrite( TamlCustomNodes& customNodes )
 
 //-----------------------------------------------------------------------------
 
-void Scene::onTamlCustomRead( const TamlCustomNodes& customNodes )
+void t2dScene::onTamlCustomRead( const TamlCustomNodes& customNodes )
 {
     // Call parent.
     Parent::onTamlCustomRead( customNodes );
@@ -4937,14 +4931,14 @@ void Scene::onTamlCustomRead( const TamlCustomNodes& customNodes )
 
 //-----------------------------------------------------------------------------
 
-U32 Scene::getGlobalSceneCount( void )
+U32 t2dScene::getGlobalSceneCount( void )
 {
     return sSceneCount;
 }
 
 //-----------------------------------------------------------------------------
 
-SceneRenderRequest* Scene::createDefaultRenderRequest( SceneRenderQueue* pSceneRenderQueue, SceneObject* pSceneObject )
+SceneRenderRequest*t2dScene::createDefaultRenderRequest( SceneRenderQueue* pSceneRenderQueue, SceneObject* pSceneObject )
 {
     // Create a render request and populate it with the default details.
     SceneRenderRequest* pSceneRenderRequest = pSceneRenderQueue->createRenderRequest()->set(
@@ -4967,10 +4961,10 @@ SceneRenderRequest* Scene::createDefaultRenderRequest( SceneRenderQueue* pSceneR
 
 //-----------------------------------------------------------------------------
 
-SimObject* Scene::getTamlChild( const U32 childIndex ) const
+SimObject*t2dScene::getTamlChild( const U32 childIndex ) const
 {
     // Sanity!
-    AssertFatal( childIndex < (U32)mSceneObjects.size(), "Scene::getTamlChild() - Child index is out of range." );
+    AssertFatal( childIndex < (U32)mSceneObjects.size(), "t2dScene::getTamlChild() - Child index is out of range." );
 
     // For when the assert is not used.
     if ( childIndex >= (U32)mSceneObjects.size() )
@@ -4981,10 +4975,10 @@ SimObject* Scene::getTamlChild( const U32 childIndex ) const
 
 //-----------------------------------------------------------------------------
 
-void Scene::addTamlChild( SimObject* pSimObject )
+void t2dScene::addTamlChild( SimObject* pSimObject )
 {
     // Sanity!
-    AssertFatal( pSimObject != nullptr, "Scene::addTamlChild() - Cannot add a nullptr child object." );
+    AssertFatal( pSimObject != nullptr, "t2dScene::addTamlChild() - Cannot add a nullptr child object." );
 
     // Fetch as a scene object.
     SceneObject* pSceneObject = dynamic_cast<SceneObject*>( pSimObject );
@@ -4993,7 +4987,7 @@ void Scene::addTamlChild( SimObject* pSimObject )
     if ( pSceneObject == nullptr )
     {
         // No, so warn.
-        Con::warnf( "Scene::addTamlChild() - Cannot add a child object that isn't a scene object." );
+        Con::warnf( "t2dScene::addTamlChild() - Cannot add a child object that isn't a scene object." );
         return;
     }
 
@@ -5005,44 +4999,44 @@ void Scene::addTamlChild( SimObject* pSimObject )
 
 static EnumTable::Enums DebugOptionsLookupEntries[11] =
                 {
-                EnumTable::Enums( Scene::SCENE_DEBUG_METRICS,           "metrics" ),
-                EnumTable::Enums( Scene::SCENE_DEBUG_FPS_METRICS,       "fps" ),
-                EnumTable::Enums( Scene::SCENE_DEBUG_CONTROLLERS,       "controllers" ),
-                EnumTable::Enums( Scene::SCENE_DEBUG_JOINTS,            "joints" ),
-                EnumTable::Enums( Scene::SCENE_DEBUG_WIREFRAME_RENDER,  "wireframe" ),
+                EnumTable::Enums( t2dScene::SCENE_DEBUG_METRICS,           "metrics" ),
+                EnumTable::Enums( t2dScene::SCENE_DEBUG_FPS_METRICS,       "fps" ),
+                EnumTable::Enums( t2dScene::SCENE_DEBUG_CONTROLLERS,       "controllers" ),
+                EnumTable::Enums( t2dScene::SCENE_DEBUG_JOINTS,            "joints" ),
+                EnumTable::Enums( t2dScene::SCENE_DEBUG_WIREFRAME_RENDER,  "wireframe" ),
                 ///
-                EnumTable::Enums( Scene::SCENE_DEBUG_AABB,              "aabb" ),
-                EnumTable::Enums( Scene::SCENE_DEBUG_OOBB,              "oobb" ),
-                EnumTable::Enums( Scene::SCENE_DEBUG_SLEEP,             "sleep" ),
-                EnumTable::Enums( Scene::SCENE_DEBUG_COLLISION_SHAPES,  "collision" ),
-                EnumTable::Enums( Scene::SCENE_DEBUG_POSITION_AND_COM,  "position" ),
-                EnumTable::Enums( Scene::SCENE_DEBUG_SORT_POINTS,       "sort" ),
+                EnumTable::Enums( t2dScene::SCENE_DEBUG_AABB,              "aabb" ),
+                EnumTable::Enums( t2dScene::SCENE_DEBUG_OOBB,              "oobb" ),
+                EnumTable::Enums( t2dScene::SCENE_DEBUG_SLEEP,             "sleep" ),
+                EnumTable::Enums( t2dScene::SCENE_DEBUG_COLLISION_SHAPES,  "collision" ),
+                EnumTable::Enums( t2dScene::SCENE_DEBUG_POSITION_AND_COM,  "position" ),
+                EnumTable::Enums( t2dScene::SCENE_DEBUG_SORT_POINTS,       "sort" ),
                 };
 
 static EnumTable DebugOptionsLookupTable = EnumTable(11, DebugOptionsLookupEntries);
 
 //-----------------------------------------------------------------------------
 
-Scene::DebugOption Scene::getDebugOptionEnum(const char* label)
+t2dScene::DebugOption t2dScene::getDebugOptionEnum(const char* label)
 {
     if (DebugOptionsLookupTable.isLabel(label))
-        return ((Scene::DebugOption)DebugOptionsLookupTable[label]);
+        return ((t2dScene::DebugOption)DebugOptionsLookupTable[label]);
 
     // Warn.
-    Con::warnf( "Scene::getDebugOptionEnum() - Invalid debug option '%s'.", label );
+    Con::warnf( "t2dScene::getDebugOptionEnum() - Invalid debug option '%s'.", label );
 
-    return Scene::SCENE_DEBUG_INVALID;
+    return t2dScene::SCENE_DEBUG_INVALID;
 }
 
 //-----------------------------------------------------------------------------
 
-const char* Scene::getDebugOptionDescription( Scene::DebugOption debugOption )
+const char*t2dScene::getDebugOptionDescription( t2dScene::DebugOption debugOption )
 {
     if (DebugOptionsLookupTable.isIndex(debugOption))
         return DebugOptionsLookupTable[debugOption].c_str();
 
     // Warn.
-    Con::warnf( "Scene::getDebugOptionDescription() - Invalid debug option." );
+    Con::warnf( "t2dScene::getDebugOptionDescription() - Invalid debug option." );
 
     return StringTable->EmptyString;
 }
@@ -5066,26 +5060,26 @@ static EnumTable::Enums jointTypeEntries[10] =
 EnumTable jointTypeTable = EnumTable(10, jointTypeEntries);
 //-----------------------------------------------------------------------------
 
-const char* Scene::getJointTypeDescription( b2JointType jointType )
+const char*t2dScene::getJointTypeDescription( b2JointType jointType )
 {
     if (jointTypeTable.isIndex(jointType))
         return jointTypeTable[jointType].c_str();
 
     // Warn.
-    Con::warnf( "Scene::getJointTypeDescription() - Invalid joint type." );
+    Con::warnf( "t2dScene::getJointTypeDescription() - Invalid joint type." );
 
     return StringTable->EmptyString;
 }
 
 //-----------------------------------------------------------------------------
 
-b2JointType Scene::getJointTypeEnum(const char* label)
+b2JointType t2dScene::getJointTypeEnum(const char* label)
 {
     if (jointTypeTable.isLabel(label))
         return (b2JointType)jointTypeTable[label];
 
     // Warn.
-    Con::warnf( "Scene::getJointTypeEnum() - Invalid joint of '%s'", label );
+    Con::warnf( "t2dScene::getJointTypeEnum() - Invalid joint of '%s'", label );
 
     return e_unknownJoint;
 }
@@ -5094,35 +5088,35 @@ b2JointType Scene::getJointTypeEnum(const char* label)
 
 static EnumTable::Enums pickModeLookupEntries[4] =
                 {
-                EnumTable::Enums( Scene::PICK_ANY,          "Any" ),
-                EnumTable::Enums( Scene::PICK_AABB,         "AABB" ),
-                EnumTable::Enums( Scene::PICK_OOBB,         "OOBB" ),
-                EnumTable::Enums( Scene::PICK_COLLISION,    "Collision" ),
+                EnumTable::Enums( t2dScene::PICK_ANY,          "Any" ),
+                EnumTable::Enums( t2dScene::PICK_AABB,         "AABB" ),
+                EnumTable::Enums( t2dScene::PICK_OOBB,         "OOBB" ),
+                EnumTable::Enums( t2dScene::PICK_COLLISION,    "Collision" ),
                 };
 
 static EnumTable pickModeLookupTable = EnumTable(4, pickModeLookupEntries);
 //-----------------------------------------------------------------------------
 
-Scene::PickMode Scene::getPickModeEnum(const char* label)
+t2dScene::PickMode t2dScene::getPickModeEnum(const char* label)
 {
     if (pickModeLookupTable.isLabel(label))
-        return (Scene::PickMode)pickModeLookupTable[label];
+        return (t2dScene::PickMode)pickModeLookupTable[label];
 
     // Warn.
-    Con::warnf( "Scene::getPickModeEnum() - Invalid pick mode '%s'.", label );
+    Con::warnf( "t2dScene::getPickModeEnum() - Invalid pick mode '%s'.", label );
 
-    return Scene::PICK_INVALID;
+    return t2dScene::PICK_INVALID;
 }
 
 //-----------------------------------------------------------------------------
 
-const char* Scene::getPickModeDescription( Scene::PickMode pickMode )
+const char*t2dScene::getPickModeDescription( t2dScene::PickMode pickMode )
 {
     if (pickModeLookupTable.isIndex(pickMode))
         return pickModeLookupTable[pickMode].c_str();
 
     // Warn.
-    Con::warnf( "Scene::getPickModeDescription() - Invalid pick mode.");
+    Con::warnf( "t2dScene::getPickModeDescription() - Invalid pick mode.");
 
     return StringTable->EmptyString;
 }
@@ -5241,8 +5235,8 @@ static void WriteControllersCustomTamlScehema( const AbstractClassRep* pClassRep
     AbstractClassRep* pGroupedSceneControllerType = AbstractClassRep::findClassRep( "GroupedSceneController" );
 
     // Sanity!
-    AssertFatal( pPickingSceneControllerType != nullptr, "Scene::WriteControllersCustomTamlScehema() - Cannot find the PickingSceneController type." );
-    AssertFatal( pGroupedSceneControllerType != nullptr, "Scene::WriteControllersCustomTamlScehema() - Cannot find the GroupedSceneController type." );
+    AssertFatal( pPickingSceneControllerType != nullptr, "t2dScene::WriteControllersCustomTamlScehema() - Cannot find the PickingSceneController type." );
+    AssertFatal( pGroupedSceneControllerType != nullptr, "t2dScene::WriteControllersCustomTamlScehema() - Cannot find the GroupedSceneController type." );
 
     // Add choice members.
     for ( AbstractClassRep* pChoiceType = AbstractClassRep::getClassList(); pChoiceType != nullptr; pChoiceType = pChoiceType->getNextClass() )
@@ -5320,9 +5314,9 @@ static void WriteCustomTamlSchema( const AbstractClassRep* pClassRep, TiXmlEleme
 
 //------------------------------------------------------------------------------
 
-IMPLEMENT_CONOBJECT_CHILDREN_SCHEMA(Scene, WriteCustomTamlSchema);
+IMPLEMENT_CONOBJECT_CHILDREN_SCHEMA(t2dScene, WriteCustomTamlSchema);
 
-RenderPassManager *Scene::getDefaultRenderPass() const {
+RenderPassManager *t2dScene::getDefaultRenderPass() const {
     if (mDefaultRenderPass)
         return mDefaultRenderPass;
     return nullptr;
@@ -5330,7 +5324,7 @@ RenderPassManager *Scene::getDefaultRenderPass() const {
 
 
 // http://www.iforce2d.net/b2dtut/explosions
-void Scene::performBlastImpulse(b2Vec2 center, F32 radius, F32 blastPower, U32 sceneGroupMask, S32 numRays) {
+void t2dScene::performBlastImpulse(b2Vec2 center, F32 radius, F32 blastPower, U32 sceneGroupMask, S32 numRays) {
     for (S32 i = 0; i < numRays; i++) {
         F32 angle = mDegToRad((i / (F32)numRays)*360.0);
         b2Vec2 rayDir( mSin(angle), mCos(angle));
@@ -5378,7 +5372,7 @@ void Scene::performBlastImpulse(b2Vec2 center, F32 radius, F32 blastPower, U32 s
 }
 
 
-void Scene::setAllRenderLayers(bool flag)
+void t2dScene::setAllRenderLayers(bool flag)
 {
    for (auto itr:mLayers)
    { itr->setRenderFlag(flag); }

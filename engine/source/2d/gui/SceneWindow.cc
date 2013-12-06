@@ -174,7 +174,7 @@ bool SceneWindow::onAdd()
 
 void SceneWindow::onRemove()
 {
-    // Reset Scene.
+    // Reset t2dScene.
     resetScene();
 
     // Unregister input sets.
@@ -204,7 +204,7 @@ void SceneWindow::initPersistFields()
 
 //-----------------------------------------------------------------------------
 
-void SceneWindow::setScene( Scene* pScene )
+void SceneWindow::setScene( t2dScene * pScene )
 {
     // Detach (if needed)
     resetScene();
@@ -639,7 +639,7 @@ void SceneWindow::stopCameraShake( void )
 void SceneWindow::mount( SceneObject* pSceneObject, const Vector2& mountOffset, const F32 mountForce, const bool sendToMount, const bool mountAngle )
 {
     // Sanity!
-    AssertFatal( pSceneObject != NULL, "Scene object cannot be NULL." );
+    AssertFatal( pSceneObject != NULL, "t2dScene object cannot be NULL." );
 
     // Cannot mount if not in a scene.
     if ( !mpScene )
@@ -650,9 +650,9 @@ void SceneWindow::mount( SceneObject* pSceneObject, const Vector2& mountOffset, 
     }
 
     // Fetch objects' scene.
-    const Scene* pScene = pSceneObject->getScene();
+    const t2dScene * pScene = pSceneObject->getScene();
 
-    // Scene object must be in a scene.
+    // t2dScene object must be in a scene.
     if ( !pScene )
     {
         // Warn!
@@ -660,7 +660,7 @@ void SceneWindow::mount( SceneObject* pSceneObject, const Vector2& mountOffset, 
         return;
     }
 
-    // Scene object must be in same scene as the one the scene window is attached to.
+    // t2dScene object must be in same scene as the one the scene window is attached to.
     if ( pScene != mpScene )
     {
         // Warn!
@@ -1369,7 +1369,7 @@ void SceneWindow::calculateCameraView( CameraView* pCameraView )
        pCameraView->limitView( mViewLimitRect );
     }
 
-    // Calculate Scene Window Scale.
+    // Calculate t2dScene Window Scale.
     pCameraView->mSceneWindowScale.x = (pCameraView->mSceneMax.x - pCameraView->mSceneMin.x) / getBounds().extent.x;
     pCameraView->mSceneWindowScale.y = (pCameraView->mSceneMax.y - pCameraView->mSceneMin.y) / getBounds().extent.y;
 }
@@ -1518,7 +1518,7 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
     PROFILE_SCOPE(SceneWindow_onRender);
 
     // Fetch scene.
-    Scene* pScene = getScene();
+    t2dScene * pScene = getScene();
 
     // Cannot render without scene!
     if ( !pScene )
@@ -1594,7 +1594,7 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
     PROFILE_SCOPE(SceneWindow_RenderMetricsOverlay);
 
     // Fetch scene.
-    Scene* pScene = getScene();
+    t2dScene * pScene = getScene();
 
 #if 0
     // Force on debug rendering.
@@ -1602,8 +1602,8 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
 #endif
 
     // Fetch full metrics mode.
-    const bool fullMetrics = pScene->getDebugMask() & Scene::SCENE_DEBUG_METRICS;
-    const bool fpsMetrics = pScene->getDebugMask() & Scene::SCENE_DEBUG_FPS_METRICS;
+    const bool fullMetrics = pScene->getDebugMask() & t2dScene::SCENE_DEBUG_METRICS;
+    const bool fpsMetrics = pScene->getDebugMask() & t2dScene::SCENE_DEBUG_FPS_METRICS;
 
     // Finish if should not or cannot render.
     if (    ( !fullMetrics && !fpsMetrics ) ||
@@ -1668,10 +1668,10 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
         GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
         linePositionY += linePositionOffsetY;
 
-        // Scene.
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Scene", NULL );
+        // t2dScene.
+        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "t2dScene", NULL );
         dSprintf( mDebugText, sizeof( mDebugText ), "- Count=%d, Index=%d, Time=%0.1fs, Objects=%d<%d>(Global=%d), Enabled=%d<%d>, Visible=%d<%d>, Awake=%d<%d>, Controllers=%d",
-            Scene::getGlobalSceneCount(), pScene->getSceneIndex(),
+            t2dScene::getGlobalSceneCount(), pScene->getSceneIndex(),
             pScene->getSceneTime(),
             debugStats.objectsCount, debugStats.maxObjectsCount, SceneObject::getGlobalSceneObjectCount(),
             debugStats.objectsEnabled, debugStats.maxObjectsEnabled,

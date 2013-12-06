@@ -23,12 +23,9 @@
 #ifndef _MATERIALS_PROCESSEDSHADERMATERIAL_H_
 #define _MATERIALS_PROCESSEDSHADERMATERIAL_H_
 
-#ifndef _MATERIALS_PROCESSEDMATERIAL_H_
 #include "processedMaterial.h"
-#endif
-#ifndef _GFXSHADER_H_
-#include "gfx/gfxShader.h"
-#endif
+#include "graphics/gfxShader.h"
+#include "gfxVertexBuffer.h"
 
 class GenericConstBufferLayout;
 class ShaderData;
@@ -85,7 +82,7 @@ public:
    GFXShaderConstHandle* mTexHandlesSC[Material::MAX_TEX_PER_PASS];
    GFXShaderConstHandle* mRTParamsSC[TEXTURE_STAGE_COUNT];
 
-   void init( GFXShader* shader, CustomMaterial* mat = NULL );
+   void init( GFXShader* shader, CustomMaterial* mat = nullptr );
 };
 
 class ShaderRenderPassData : public RenderPassData
@@ -119,9 +116,9 @@ public:
                         const MatFeaturesDelegate &featuresDelegate );
    virtual bool setupPass(SceneRenderState *, const SceneData& sgData, U32 pass);
    virtual void setTextureStages(SceneRenderState *, const SceneData &sgData, U32 pass );
-   virtual void setTransforms(const MatrixSet &matrixSet, SceneRenderState *state, const U32 pass);
+   virtual void setTransforms(const MatrixF view, const MatrixF world, const MatrixF projection, SceneRenderState *state, const U32 pass);
    virtual void setSceneInfo(SceneRenderState *, const SceneData& sgData, U32 pass);
-   virtual void setBuffers(GFXVertexBufferHandleBase* vertBuffer, GFXPrimitiveBufferHandle* primBuffer); 
+   virtual void setBuffers(GFXVertexBufferHandleBase *vertBuffer);
    virtual bool stepInstance();
    virtual void dumpMaterialInfo();
    virtual MaterialParameters* allocMaterialParameters();    
@@ -143,8 +140,8 @@ protected:
    public:
 
       InstancingState()
-         :  mInstFormat( NULL ),
-            mBuffer( NULL ),
+         :  mInstFormat( nullptr ),
+            mBuffer( nullptr ),
             mCount( -1 )
       {
       }

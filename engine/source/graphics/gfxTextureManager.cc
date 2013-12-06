@@ -35,6 +35,10 @@
 
 S32 GFXTextureManager::smTextureReductionLevel = 0;
 
+String GFXTextureManager::smMissingTexturePath("core/art/missingTexture");
+String GFXTextureManager::smUnavailableTexturePath("core/art/unavailable");
+String GFXTextureManager::smWarningTexturePath("core/art/warnmat");
+
 GFXTextureManager::EventSignal GFXTextureManager::smEventSignal;
 
 void GFXTextureManager::init()

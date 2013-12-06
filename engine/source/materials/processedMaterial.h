@@ -128,14 +128,15 @@ public:
    /// Sets the textures needed for rendering the current pass
    virtual void setTextureStages(SceneRenderState *, const SceneData &sgData, U32 pass ) = 0;
 
-   /// Sets the transformation matrix, i.e. Model * View * Projection
-   virtual void setTransforms(const MatrixSet &matrixSet, SceneRenderState *state, const U32 pass) = 0;
+//   /// Sets the transformation matrix, i.e. Model * View * Projection
+//   virtual void setTransforms(const MatrixSet &matrixSet, SceneRenderState *state, const U32 pass) = 0;
+   virtual void setTransforms(const MatrixF view, const MatrixF world, const MatrixF projection, SceneRenderState *state, const U32 pass) = 0;
    
    /// Sets the scene info like lights for the given pass.
    virtual void setSceneInfo(SceneRenderState *, const SceneData& sgData, U32 pass) = 0;
 
    /// Sets the given vertex and primitive buffers so we can render geometry
-   virtual void setBuffers(GFXVertexBufferHandleBase* vertBuffer, GFXPrimitiveBufferHandle* primBuffer); 
+   virtual void setBuffers(GFXVertexBufferHandleBase* vertBuffer); // , GFXPrimitiveBufferHandle* primBuffer);
    
    /// @see BaseMatInstance::setUserObject
    virtual void setUserObject( SimObject *userObject ) { mUserObject = userObject; }

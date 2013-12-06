@@ -76,7 +76,7 @@ void AmbientForceController::copyTo(SimObject* object)
 
 //------------------------------------------------------------------------------
 
-void AmbientForceController::integrate( Scene* pScene, const F32 totalTime, const F32 elapsedTime, DebugStats* pDebugStats )
+void AmbientForceController::integrate( t2dScene * pScene, const F32 totalTime, const F32 elapsedTime, DebugStats* pDebugStats )
 {
     // Process all the scene objects.
     for( auto itr:*this )

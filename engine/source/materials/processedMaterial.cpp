@@ -28,10 +28,11 @@
 #include "materials/matTextureTarget.h"
 #include "materials/materialFeatureTypes.h"
 #include "materials/materialManager.h"
-#include "scene/sceneRenderState.h"
+#include "algorithm/tAlgorithm.h"
+//#include "scene/sceneRenderState.h"
 //#include "graphics/gfxPrimitiveBuffer.h"
 #include "graphics/gfxTextureManager.h"
-//#include "gfx/sim/cubemapData.h"
+#include "graphics/sim/cubemapData.h"
 
 RenderPassData::RenderPassData()
 {
@@ -46,7 +47,7 @@ void RenderPassData::reset()
    dMemset( &mTexSlot, 0, sizeof(mTexSlot) );
    dMemset( &mTexType, 0, sizeof(mTexType) );
 
-   mCubeMap = NULL;
+   mCubeMap = nullptr;
    mNumTex = mNumTexReg = mStageNum = 0;
    mGlow = false;
    mBlendOp = Material::None;
@@ -54,7 +55,7 @@ void RenderPassData::reset()
    mFeatureData.clear();
 
    for (U32 i = 0; i < STATE_MAX; i++)
-      mRenderStates[i] = NULL;
+      mRenderStates[i] = nullptr;
 }
 
 String RenderPassData::describeSelf() const
@@ -86,13 +87,13 @@ String RenderPassData::describeSelf() const
 }
 
 ProcessedMaterial::ProcessedMaterial()
-:  mMaterial( NULL ),
-   mCurrentParams( NULL ),
+:  mMaterial( nullptr ),
+   mCurrentParams( nullptr ),
    mHasSetStageData( false ),
    mHasGlow( false ),   
    mMaxStages( 0 ),
-   mVertexFormat( NULL ),
-   mUserObject( NULL )
+   mVertexFormat( nullptr ),
+   mUserObject( nullptr )
 {
    VECTOR_SET_ASSOCIATION( mPasses );
 }
@@ -141,7 +142,7 @@ void ProcessedMaterial::_setBlendState(Material::BlendOp blendOp, GFXStateBlockD
    }
 }
 
-void ProcessedMaterial::setBuffers(GFXVertexBufferHandleBase* vertBuffer, GFXPrimitiveBufferHandle* primBuffer)
+void ProcessedMaterial::setBuffers(GFXVertexBufferHandleBase* vertBuffer) //, GFXPrimitiveBufferHandle* primBuffer)
 {
    GFX->setVertexBuffer( *vertBuffer );
 //   GFX->setPrimitiveBuffer( *primBuffer );
@@ -463,18 +464,18 @@ void ProcessedMaterial::_setStageData()
       }
    }
 
-	mMaterial->mCubemapData = dynamic_cast<CubemapData*>(Sim::findObject( mMaterial->mCubemapName ));
-	if( !mMaterial->mCubemapData )
-		mMaterial->mCubemapData = NULL;
+//	mMaterial->mCubemapData = dynamic_cast<CubemapData*>(Sim::findObject( mMaterial->mCubemapName ));
+//	if( !mMaterial->mCubemapData )
+//		mMaterial->mCubemapData = nullptr;
 		
 		
    // If we have a cubemap put it on stage 0 (cubemaps only supported on stage 0)
-   if( mMaterial->mCubemapData )
-   {
-      mMaterial->mCubemapData->createMap();
-      mStages[0].setCubemap( mMaterial->mCubemapData->mCubemap ); 
-      if ( !mStages[0].getCubemap() )
-         mMaterial->logError("Failed to load cubemap");
-   }
+//   if( mMaterial->mCubemapData )
+//   {
+//      mMaterial->mCubemapData->createMap();
+//      mStages[0].setCubemap( mMaterial->mCubemapData->mCubemap );
+//      if ( !mStages[0].getCubemap() )
+//         mMaterial->logError("Failed to load cubemap");
+//   }
 }
 

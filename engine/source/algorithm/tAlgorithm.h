@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// Copyright (c) 2013 GarageGames, LLC
+// Copyright (c) 2012 GarageGames, LLC
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to
@@ -20,41 +20,15 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#ifndef _AMBIENT_FORCE_CONTROLLER_H_
-#define _AMBIENT_FORCE_CONTROLLER_H_
+#ifndef _TALGORITHM_H_
+#define _TALGORITHM_H_
 
-#ifndef _GROUPED_SCENE_CONTROLLER_H_
-#include "2d/controllers/core/GroupedSceneController.h"
-#endif
-
-#ifndef _VECTOR2_H_
-#include "2d/core/vector2.h"
-#endif
-
-//------------------------------------------------------------------------------
-
-class AmbientForceController : public GroupedSceneController
+/// Functor for deleting a pointer.
+/// @see for_each
+struct delete_pointer
 {
-private:
-    typedef GroupedSceneController Parent;
-
-    Vector2 mForce;
-
-public:
-    AmbientForceController();
-    virtual ~AmbientForceController();
-
-    static void initPersistFields();
-    virtual void copyTo(SimObject* object);
-
-    /// Integration.
-    virtual void integrate( t2dScene * pScene, const F32 totalTime, const F32 elapsedTime, DebugStats* pDebugStats );
-
-    inline void setForce( const Vector2& force ) { mForce = force; }
-    inline const Vector2& getForce( void ) const { return mForce; }
-
-    /// Declare Console Object.
-    DECLARE_CONOBJECT( AmbientForceController );
+  template <typename T>
+  void operator()(T *ptr){ delete ptr;}
 };
 
-#endif // _AMBIENT_FORCE_CONTROLLER_H_
+#endif //_TALGORITHM_H_

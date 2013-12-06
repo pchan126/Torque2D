@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// Copyright (c) 2013 GarageGames, LLC
+// Copyright (c) 2012 GarageGames, LLC
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to
@@ -19,42 +19,50 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
+#ifndef __GFXSTATEBLOCKDATA_H_
+#define __GFXSTATEBLOCKDATA_H_
 
-#ifndef _AMBIENT_FORCE_CONTROLLER_H_
-#define _AMBIENT_FORCE_CONTROLLER_H_
+#include "graphics/gfxStateBlock.h"
+#include "sim/simObject.h"
 
-#ifndef _GROUPED_SCENE_CONTROLLER_H_
-#include "2d/controllers/core/GroupedSceneController.h"
-#endif
+DefineConsoleType( TypeGFXSamplerStateDataPtr )
 
-#ifndef _VECTOR2_H_
-#include "2d/core/vector2.h"
-#endif
+class GFXSamplerStateData;
 
-//------------------------------------------------------------------------------
-
-class AmbientForceController : public GroupedSceneController
+/// Allows definition of render state via script, basically wraps a GFXStateBlockDesc
+class GFXStateBlockData : public SimObject
 {
-private:
-    typedef GroupedSceneController Parent;
+   typedef SimObject Parent;
 
-    Vector2 mForce;
-
+   GFXStateBlockDesc mState;
+   GFXSamplerStateData* mSamplerStates[TEXTURE_STAGE_COUNT];
 public:
-    AmbientForceController();
-    virtual ~AmbientForceController();
+   GFXStateBlockData();
 
-    static void initPersistFields();
-    virtual void copyTo(SimObject* object);
+   // SimObject
+   virtual bool onAdd();
+   static void initPersistFields();  
 
-    /// Integration.
-    virtual void integrate( t2dScene * pScene, const F32 totalTime, const F32 elapsedTime, DebugStats* pDebugStats );
-
-    inline void setForce( const Vector2& force ) { mForce = force; }
-    inline const Vector2& getForce( void ) const { return mForce; }
-
-    /// Declare Console Object.
-    DECLARE_CONOBJECT( AmbientForceController );
+   // GFXStateBlockData
+   const GFXStateBlockDesc getState() const { return mState; }
+        
+   DECLARE_CONOBJECT(GFXStateBlockData);   
 };
 
-#endif // _AMBIENT_FORCE_CONTROLLER_H_
+/// Allows definition of sampler state via script, basically wraps a GFXSamplerStateDesc
+class GFXSamplerStateData : public SimObject
+{
+   typedef SimObject Parent;
+   GFXSamplerStateDesc mState;
+public:
+   // SimObject
+   static void initPersistFields();  
+
+   /// Copies the data of this object into desc
+   void setSamplerState(GFXSamplerStateDesc& desc);
+
+   DECLARE_CONOBJECT(GFXSamplerStateData);
+};
+
+
+#endif // __GFXSTATEBLOCKDATA_H_

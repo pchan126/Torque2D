@@ -670,3 +670,38 @@ ConsoleFunction( enumerateConsoleClasses, const char*, 1, 2, "enumerateConsoleCl
    
    return ret;
 }
+
+String ConsoleObject::_getLogMessage(const char* fmt, va_list args) const
+{
+    String objClass = "UnknownClass";
+    if(getClassRep())
+        objClass = getClassRep()->getClassName();
+
+    String formattedMessage = String::VToString(fmt, args);
+    return String::ToString("%s - Object at %x - %s",
+            objClass.c_str(), this, formattedMessage.c_str());
+}
+
+void ConsoleObject::logMessage(const char* fmt, ...) const
+{
+    va_list args;
+    va_start(args, fmt);
+    Con::printf(_getLogMessage(fmt, args));
+    va_end(args);
+}
+
+void ConsoleObject::logWarning(const char* fmt, ...) const
+{
+    va_list args;
+    va_start(args, fmt);
+    Con::warnf(_getLogMessage(fmt, args));
+    va_end(args);
+}
+
+void ConsoleObject::logError(const char* fmt, ...) const
+{
+    va_list args;
+    va_start(args, fmt);
+    Con::errorf(_getLogMessage(fmt, args));
+    va_end(args);
+}

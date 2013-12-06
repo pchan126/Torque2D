@@ -218,8 +218,8 @@ Material::Material()
 
    mPlanarReflection = false;
 
-   mCubemapAsset = NULL;
-//   mDynamicCubemap = NULL;
+   mCubemapData = nullptr;
+   mDynamicCubemap = nullptr;
 
    mLastUpdateTime = 0;
 
@@ -383,11 +383,11 @@ void Material::initPersistFields()
    addField("alphaRef", TypeS32, Offset(mAlphaRef, Material),
       "The alpha reference value for alpha testing.  Must be between 0 to 255.\n@see alphaTest\n" );
 
-//   addField("cubemap", TypeRealString, Offset(mCubemapName, Material),
-//      "The name of a CubemapAsset for environment mapping." );
-//
-//   addField("dynamicCubemap", TypeBool, Offset(mDynamicCubemap, Material),
-//      "Enables the material to use the dynamic cubemap from the ShapeBase object its applied to." );
+   addField("cubemap", TypeRealString, Offset(mCubemapName, Material),
+      "The name of a CubemapAsset for environment mapping." );
+
+   addField("dynamicCubemap", TypeBool, Offset(mDynamicCubemap, Material),
+      "Enables the material to use the dynamic cubemap from the ShapeBase object its applied to." );
 
    Parent::initPersistFields();
 }

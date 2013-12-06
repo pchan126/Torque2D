@@ -23,18 +23,18 @@
 #include "platform/platform.h"
 #include "materials/processedFFMaterial.h"
 
-#include "gfx/sim/cubemapData.h"
+#include "graphics/sim/cubemapData.h"
 #include "materials/sceneData.h"
 #include "materials/customMaterialDefinition.h"
 #include "materials/materialFeatureTypes.h"
-#include "gfx/sim/gfxStateBlockData.h"
-#include "gfx/gfxDevice.h"
-#include "gfx/genericConstBuffer.h"
+#include "graphics/sim/gfxStateBlockData.h"
+#include "graphics/gfxDevice.h"
+//#include "graphics/genericConstBuffer.h"
 #include "materials/materialParameters.h"
 #include "lighting/lightInfo.h"
-#include "scene/sceneRenderState.h"
-#include "core/util/safeDelete.h"
-#include "math/util/matrixSet.h"
+//#include "scene/sceneRenderState.h"
+#include "memory/safeDelete.h"
+//#include "math/util/matrixSet.h"
 
 class FFMaterialParameterHandle : public MaterialParameterHandle
 {
@@ -231,17 +231,17 @@ MaterialParameterHandle* ProcessedFFMaterial::getMaterialParameterHandle(const S
    return mDefaultHandle;
 }
 
-void ProcessedFFMaterial::setTransforms(const MatrixSet &matrixSet, SceneRenderState *state, const U32 pass)
+void ProcessedFFMaterial::setTransforms(const MatrixF view, const MatrixF world, const MatrixF projection, SceneRenderState *state, const U32 pass)
 {
-   GFX->setWorldMatrix(matrixSet.getObjectToWorld());
-   GFX->setViewMatrix(matrixSet.getWorldToCamera());
-   GFX->setProjectionMatrix(matrixSet.getCameraToScreen());
+   GFX->setWorldMatrix(world);
+   GFX->setViewMatrix(view);
+   GFX->setProjectionMatrix(projection);
 }
 
 void ProcessedFFMaterial::setSceneInfo(SceneRenderState * state, const SceneData& sgData, U32 pass)
 {
-   _setPrimaryLightInfo(*sgData.objTrans, sgData.lights[0], pass);
-   _setSecondaryLightInfo(*sgData.objTrans, sgData.lights[1]);   
+//   _setPrimaryLightInfo(*sgData.objTrans, sgData.lights[0], pass);
+//   _setSecondaryLightInfo(*sgData.objTrans, sgData.lights[1]);
 }
 
 void ProcessedFFMaterial::_setPrimaryLightInfo(const MatrixF &_objTrans, LightInfo* light, U32 pass)
@@ -255,8 +255,8 @@ void ProcessedFFMaterial::_setPrimaryLightInfo(const MatrixF &_objTrans, LightIn
       return;
    }
 
-   GFX->setLight(0, NULL);
-   GFX->setLight(1, NULL);
+   GFX->setLight(0, nullptr);
+   GFX->setLight(1, nullptr);
    // This is a quick hack that lets us use FF lights
    GFXLightMaterial lightMat;
    lightMat.ambient = ColorF(1.0f, 1.0f, 1.0f, 1.0f);
@@ -372,7 +372,7 @@ void ProcessedFFMaterial::_initPassStateBlock( RenderPassData *rpd, GFXStateBloc
    }
 
    // This is here for generic FF shader fallbacks.
-   CustomMaterial* custmat = dynamic_cast<CustomMaterial*>(mMaterial);
-   if (custmat && custmat->getStateBlockData() )
-      result.addDesc(custmat->getStateBlockData()->getState());
+//   CustomMaterial* custmat = dynamic_cast<CustomMaterial*>(mMaterial);
+//   if (custmat && custmat->getStateBlockData() )
+//      result.addDesc(custmat->getStateBlockData()->getState());
 }

@@ -33,7 +33,7 @@
 
 ///-----------------------------------------------------------------------------
 
-class Scene;
+class t2dScene;
 
 ///-----------------------------------------------------------------------------
 
@@ -44,7 +44,7 @@ class WorldQuery :
     public SimObject
 {
 public:
-    WorldQuery( Scene* pScene );
+    WorldQuery( t2dScene * pScene );
     virtual         ~WorldQuery() {}
 
     /// Standard scope.
@@ -102,7 +102,7 @@ private:
     static bool            rayCastFractionSort(const WorldQueryResult a, const WorldQueryResult b);
 
 private:
-    Scene*                      mpScene;
+    t2dScene *                      mpScene;
     WorldQueryFilter            mQueryFilter;
     b2PolygonShape              mComparePolygonShape;
     b2CircleShape               mCompareCircleShape;
