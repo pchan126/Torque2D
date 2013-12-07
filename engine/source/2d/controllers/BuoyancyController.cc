@@ -380,7 +380,7 @@ F32 BuoyancyController::ComputePolygonSubmergedArea( const b2Transform& bodyTran
 
 //------------------------------------------------------------------------------
 
-void BuoyancyController::renderOverlay( t2dScene * pScene, const SceneRenderState* pSceneRenderState, BatchRender* pBatchRenderer )
+void BuoyancyController::renderOverlay( t2dScene * pScene, const t2dSceneRenderState * pSceneRenderState, BatchRender* pBatchRenderer )
 {
     // Call parent.
     Parent::renderOverlay( pScene, pSceneRenderState, pBatchRenderer );

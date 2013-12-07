@@ -142,8 +142,8 @@ public:
 
     virtual bool validRender( void ) const { return mParticleAsset.notNull() && mParticleAsset->isAssetValid(); }
     virtual bool shouldRender( void ) const { return true; }
-    virtual void sceneRender( const SceneRenderState* pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer );
-    virtual void sceneRenderOverlay( const SceneRenderState* sceneRenderState );
+    virtual void sceneRender( const t2dSceneRenderState * pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer );
+    virtual void sceneRenderOverlay( const t2dSceneRenderState * sceneRenderState );
 
     void setParticle( const char* pAssetId );
     const char* getParticle( void ) const { return mParticleAsset->getAssetId(); }

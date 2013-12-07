@@ -22,7 +22,7 @@
 #ifndef _SCENEDATA_H_
 #define _SCENEDATA_H_
 
-#include "2d/scene/sceneRenderState.h"
+#include "scene/sceneRenderState.h"
 #include "lighting/lightManager.h"
 #include "graphics/gfxDevice.h"
 
@@ -94,7 +94,7 @@ struct SceneData
 
    /// Initializes the data with the scene state setting
    /// common scene wide parameters.
-   inline void init( const SceneRenderState *state, BinType type = RegularBin )
+   inline void init( const t2dSceneRenderState *state, BinType type = RegularBin )
    {
       dMemset( this, 0, sizeof( SceneData ) );
 //      setFogParams( state->getSceneManager()->getFogData() );

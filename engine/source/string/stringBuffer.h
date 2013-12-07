@@ -102,16 +102,16 @@ public:
    //Luma:	Version of StringBuffer that doesn't convert to UTF16 for performance reasons
    void setNoConvert(const UTF8 *in);
 
-   inline const U32 length() const 
+   inline const U32 length() const
    { 
-      return mBuffer.size() - 1; // Don't count the NULL of course.
+      return (U32)mBuffer.size() - 1; // Don't count the NULL of course.
    }
 
    /// Get an upper bound size estimate for a UTF8 buffer to hold this
    /// string.
    const U32 getUTF8BufferSizeEstimate() const
    {
-      return length() * 3 + 1;
+      return (U32)length() * 3 + 1;
    }
 
    void getCopy8(UTF8 *buff, const U32 buffSize) const;

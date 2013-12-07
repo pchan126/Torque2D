@@ -117,7 +117,7 @@ void ShapeVector::onRemove()
 
 //----------------------------------------------------------------------------
 
-void ShapeVector::sceneRender( const SceneRenderState* pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer )
+void ShapeVector::sceneRender( const t2dSceneRenderState * pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer )
 {
     // Fetch Vertex Count.
     const size_t vertexCount = mPolygonLocalList.size();

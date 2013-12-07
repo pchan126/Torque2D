@@ -39,13 +39,15 @@
 //#endif
 #ifndef _MATSTATEHINT_H_
 #include "materials/matStateHint.h"
+#import "SceneRenderState.h"
+
 #endif
 
 struct RenderPassData;
 class GFXVertexBufferHandleBase;
 class GFXPrimitiveBufferHandle;
 struct SceneData;
-class SceneRenderState;
+class t2dSceneRenderState;
 struct GFXStateBlockDesc;
 class GFXVertexFormat;
 class ProcessedMaterial;
@@ -132,23 +134,23 @@ public:
    ///   }
    ///@endcode
    ///
-   virtual bool setupPass( SceneRenderState *state, const SceneData &sgData ) = 0;
+   virtual bool setupPass(SceneRenderState *state, const SceneData &sgData) = 0;
    
    /// This initializes the material transforms and should be 
    /// called after setupPass() within the pass loop.
    /// @see setupPass
-   virtual void setTransforms( const MatrixF view, const MatrixF world, const MatrixF projection, SceneRenderState *state ) = 0;
+   virtual void setTransforms(const MatrixF view, const MatrixF world, const MatrixF projection, SceneRenderState *state) = 0;
 
    /// This initializes various material scene state settings and
    /// should be called after setupPass() within the pass loop.
    /// @see setupPass
-   virtual void setSceneInfo( SceneRenderState *state, const SceneData &sgData ) = 0;
+   virtual void setSceneInfo(SceneRenderState *state, const SceneData &sgData) = 0;
 
    /// This is normally called from within setupPass() automatically, so its
    /// unnecessary to do so manually unless a texture stage has changed.  If
    /// so it should be called after setupPass() within the pass loop.
    /// @see setupPass
-   virtual void setTextureStages(SceneRenderState *, const SceneData &sgData ) = 0;
+   virtual void setTextureStages(t2dSceneRenderState *, const SceneData &sgData) = 0;
 
    /// Sets the vertex and primitive buffers as well as the instancing 
    /// stream buffer for the current material if the material is instanced.

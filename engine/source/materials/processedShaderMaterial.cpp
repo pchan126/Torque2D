@@ -28,7 +28,7 @@
 #include "graphics/gfxShader.h"
 //#include "graphics/genericConstBuffer.h"
 //#include "graphics/gfxPrimitiveBuffer.h"
-#include "2d/scene/sceneRenderState.h"
+#include "scene/sceneRenderState.h"
 //#include "shaderGen/shaderFeature.h"
 #include "shaderGen/shaderGenVars.h"
 //#include "shaderGen/featureMgr.h"
@@ -661,7 +661,7 @@ void ProcessedShaderMaterial::_setPassBlendOp( ShaderFeature *sf,
 //
 // Runtime / rendering
 //
-bool ProcessedShaderMaterial::setupPass( SceneRenderState *state, const SceneData &sgData, U32 pass )
+bool ProcessedShaderMaterial::setupPass(SceneRenderState *state, const SceneData &sgData, U32 pass)
 {
    PROFILE_SCOPE( ProcessedShaderMaterial_SetupPass );
 
@@ -952,7 +952,7 @@ F32 ProcessedShaderMaterial::_getWaveOffset( U32 stage )
    return 0.0;
 }
 
-void ProcessedShaderMaterial::_setShaderConstants(SceneRenderState * state, const SceneData &sgData, U32 pass)
+void ProcessedShaderMaterial::_setShaderConstants(SceneRenderState *state, const SceneData &sgData, U32 pass)
 {
    PROFILE_SCOPE( ProcessedShaderMaterial_SetShaderConstants );
 

@@ -28,11 +28,12 @@
 #include "graphics/gfxStateBlock.h"
 #include "materials/matTextureTarget.h"
 #include "materials/matStateHint.h"
+#import "SceneRenderState.h"
 
 class ShaderFeature;
 class MaterialParameters;
 class MaterialParameterHandle;
-class SceneRenderState;
+class t2dSceneRenderState;
 class GFXVertexBufferHandleBase;
 class GFXPrimitiveBufferHandle;
 class MatrixSet;
@@ -126,14 +127,14 @@ public:
    virtual void setShaderMacros( const Vector<GFXShaderMacro> &macros ) { mUserMacros = macros; }
 
    /// Sets the textures needed for rendering the current pass
-   virtual void setTextureStages(SceneRenderState *, const SceneData &sgData, U32 pass ) = 0;
+   virtual void setTextureStages(SceneRenderState *renderState, const SceneData &sgData, U32 pass) = 0;
 
 //   /// Sets the transformation matrix, i.e. Model * View * Projection
-//   virtual void setTransforms(const MatrixSet &matrixSet, SceneRenderState *state, const U32 pass) = 0;
+//   virtual void setTransforms(const MatrixSet &matrixSet, t2dSceneRenderState *state, const U32 pass) = 0;
    virtual void setTransforms(const MatrixF view, const MatrixF world, const MatrixF projection, SceneRenderState *state, const U32 pass) = 0;
    
    /// Sets the scene info like lights for the given pass.
-   virtual void setSceneInfo(SceneRenderState *, const SceneData& sgData, U32 pass) = 0;
+   virtual void setSceneInfo(SceneRenderState *renderState, const SceneData &sgData, U32 pass) = 0;
 
    /// Sets the given vertex and primitive buffers so we can render geometry
    virtual void setBuffers(GFXVertexBufferHandleBase* vertBuffer); // , GFXPrimitiveBufferHandle* primBuffer);
@@ -158,7 +159,7 @@ public:
 
    /// Sets up the given pass.  Returns true if the pass was set up, false if there was an error or if
    /// the specified pass is out of bounds.
-   virtual bool setupPass(SceneRenderState *, const SceneData& sgData, U32 pass) = 0;
+   virtual bool setupPass(SceneRenderState *renderState, const SceneData &sgData, U32 pass) = 0;
 
    // Material parameter methods
    virtual MaterialParameters* allocMaterialParameters() = 0;
@@ -284,13 +285,13 @@ protected:
    virtual void _initRenderPassDataStateBlocks();
 
    /// This returns the index into the renderState array based on the sgData passed in.
-   virtual U32 _getRenderStateIndex(   const SceneRenderState *state, 
-                                       const SceneData &sgData );
+   virtual U32 _getRenderStateIndex(SceneRenderState const *state,
+           const SceneData &sgData);
 
    /// Activates the correct mPasses[currPass].renderState based on scene graph info
-   virtual void _setRenderState( const SceneRenderState *state, 
-                                 const SceneData &sgData, 
-                                 U32 pass );
+   virtual void _setRenderState(SceneRenderState const *state,
+           const SceneData &sgData,
+           U32 pass);
    /// @
 };
 

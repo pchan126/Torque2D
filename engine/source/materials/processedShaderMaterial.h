@@ -114,10 +114,10 @@ public:
    virtual bool init(   const FeatureSet &features, 
                         const GFXVertexFormat *vertexFormat,
                         const MatFeaturesDelegate &featuresDelegate );
-   virtual bool setupPass(SceneRenderState *, const SceneData& sgData, U32 pass);
-   virtual void setTextureStages(SceneRenderState *, const SceneData &sgData, U32 pass );
+   virtual bool setupPass(SceneRenderState *state, const SceneData &sgData, U32 pass);
+   virtual void setTextureStages(SceneRenderState *state, const SceneData &sgData, U32 pass );
    virtual void setTransforms(const MatrixF view, const MatrixF world, const MatrixF projection, SceneRenderState *state, const U32 pass);
-   virtual void setSceneInfo(SceneRenderState *, const SceneData& sgData, U32 pass);
+   virtual void setSceneInfo(SceneRenderState *state, const SceneData& sgData, U32 pass);
    virtual void setBuffers(GFXVertexBufferHandleBase *vertBuffer);
    virtual bool stepInstance();
    virtual void dumpMaterialInfo();
@@ -241,7 +241,7 @@ protected:
    virtual void _setTextureTransforms(const U32 pass);
 
    /// Sets all of the necessary shader constants for the given pass
-   virtual void _setShaderConstants(SceneRenderState *, const SceneData &sgData, U32 pass);
+   virtual void _setShaderConstants(SceneRenderState *state, const SceneData &sgData, U32 pass);
 
    /// @}
 

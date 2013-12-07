@@ -48,7 +48,7 @@ extern EnumTable jointTypeTable;
 
 class SceneObject;
 class SceneWindow;
-class SceneRenderState;
+class t2dSceneRenderState;
 class RenderPassManager;
 class Layer;
 
@@ -271,7 +271,7 @@ protected:
 public:
     t2dScene();
     virtual ~t2dScene();
-    friend class SceneRenderState;
+    friend class t2dSceneRenderState;
 
     /// Engine.
     virtual bool            onAdd();
@@ -306,7 +306,7 @@ public:
 
    /// Render output.
     void                    renderScene( ScenePassType passType );
-    void                    renderScene(SceneRenderState *renderState);
+    void                    renderScene(t2dSceneRenderState *renderState);
 
     /// World.
     inline b2World*         getWorld( void ) const                      { return mpWorld; }

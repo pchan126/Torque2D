@@ -160,7 +160,7 @@ void tsForceFaceCamera( MatrixF *mat, const Point3F *objScale )
 //   if ( meshVisibility < VISIBILITY_EPSILON )
 //      return;
 //
-//   const SceneRenderState *state = rdata.getSceneState();
+//   const t2dSceneRenderState *state = rdata.getSceneState();
 //   RenderPassManager *renderPass = state->getRenderPass();
 //
 //   MeshRenderInst *coreRI = renderPass->allocInst<MeshRenderInst>();

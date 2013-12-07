@@ -257,7 +257,7 @@ bool ProcessedCustomMaterial::_hasCubemap(U32 pass)
    else return false;
 }
 
-bool ProcessedCustomMaterial::setupPass( SceneRenderState *state, const SceneData& sgData, U32 pass )
+bool ProcessedCustomMaterial::setupPass(SceneRenderState *state, const SceneData &sgData, U32 pass)
 {
    PROFILE_SCOPE( ProcessedCustomMaterial_SetupPass );
 

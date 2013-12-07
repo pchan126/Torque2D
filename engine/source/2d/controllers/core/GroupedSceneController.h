@@ -55,7 +55,7 @@ public:
     virtual void integrate( t2dScene * pScene, const F32 totalTime, const F32 elapsedTime, DebugStats* pDebugStats ) {}
 
     // t2dScene render.
-    virtual void renderOverlay( t2dScene * pScene, const SceneRenderState* pSceneRenderState, BatchRender* pBatchRenderer ) {}
+    virtual void renderOverlay( t2dScene * pScene, const t2dSceneRenderState * pSceneRenderState, BatchRender* pBatchRenderer ) {}
 
     /// Declare Console Object.
     DECLARE_CONOBJECT( GroupedSceneController );

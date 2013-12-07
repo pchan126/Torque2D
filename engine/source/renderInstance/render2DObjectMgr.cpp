@@ -19,13 +19,13 @@ IMPLEMENT_CONOBJECT(Render2DObjectManager);
 Render2DObjectManager::Render2DObjectManager()
 : RenderBinManager(RenderPassManager::RIT_Object, 1.0f, 1.0f)
 {
-   mOverrideMat = NULL;
+   mOverrideMat = nullptr;
 }
 
 Render2DObjectManager::Render2DObjectManager(RenderInstType riType, F32 renderOrder, F32 processAddOrder)
  : RenderBinManager(riType, renderOrder, processAddOrder)
 {  
-   mOverrideMat = NULL;
+   mOverrideMat = nullptr;
 }
 
 void Render2DObjectManager::initPersistFields()
@@ -41,7 +41,7 @@ void Render2DObjectManager::setOverrideMaterial(BaseMatInstance* overrideMat)
 //-----------------------------------------------------------------------------
 // render objects
 //-----------------------------------------------------------------------------
-void Render2DObjectManager::render( SceneRenderState *state )
+void Render2DObjectManager::render( t2dSceneRenderState *state )
 {
    PROFILE_SCOPE(RenderObjectMgr_render);
 
@@ -53,6 +53,6 @@ void Render2DObjectManager::render( SceneRenderState *state )
    {
       ObjectRenderInst *ri = static_cast<ObjectRenderInst*>(mElementList[i].inst);
       if ( ri->renderDelegate )
-         ri->renderDelegate( ri, state, mOverrideMat );      
+         ri->renderDelegate( ri, (SceneRenderState*)state, mOverrideMat );
    }
 }

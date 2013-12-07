@@ -182,7 +182,7 @@ void CompositeSprite::interpolateObject( const F32 timeDelta )
 
 //-----------------------------------------------------------------------------
 
-void CompositeSprite::scenePrepareRender( const SceneRenderState* pSceneRenderState, SceneRenderQueue* pSceneRenderQueue )
+void CompositeSprite::scenePrepareRender( const t2dSceneRenderState * pSceneRenderState, SceneRenderQueue* pSceneRenderQueue )
 {
     // Prepare render.
     SpriteBatch::prepareRender( this, pSceneRenderState, pSceneRenderQueue );
@@ -190,7 +190,7 @@ void CompositeSprite::scenePrepareRender( const SceneRenderState* pSceneRenderSt
 
 //-----------------------------------------------------------------------------
 
-void CompositeSprite::sceneRender( const SceneRenderState* pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer )
+void CompositeSprite::sceneRender( const t2dSceneRenderState * pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer )
 {
     // Render.
     SpriteBatch::render( pSceneRenderState, pSceneRenderRequest, pBatchRenderer );

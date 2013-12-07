@@ -146,7 +146,7 @@ void ImageFont::copyTo(SimObject* object)
 
 //------------------------------------------------------------------------------
 
-void ImageFont::scenePrepareRender( const SceneRenderState* pSceneRenderState, SceneRenderQueue* pSceneRenderQueue )
+void ImageFont::scenePrepareRender( const t2dSceneRenderState * pSceneRenderState, SceneRenderQueue* pSceneRenderQueue )
 {
     // Create a default render request.
     t2dScene::createDefaultRenderRequest( pSceneRenderQueue, this );
@@ -154,7 +154,7 @@ void ImageFont::scenePrepareRender( const SceneRenderState* pSceneRenderState, S
 
 //------------------------------------------------------------------------------
 
-void ImageFont::sceneRender( const SceneRenderState* pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer )
+void ImageFont::sceneRender( const t2dSceneRenderState * pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer )
 {
     // Finish if no image asset.
     if ( mImageAsset.isNull() )

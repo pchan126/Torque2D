@@ -70,7 +70,7 @@ public:
    void setCameraTranslationScale( Point3F pScale ) { mCameraTranslationScale = pScale; };
    Point3F getCameraTranslationScale() { return mCameraTranslationScale; };
 
-   typeLayerQueryResult getObjectsinCamera( const SceneRenderState renderState );
+   typeLayerQueryResult getObjectsinCamera( const t2dSceneRenderState renderState );
 
    void setRenderTarget();
    

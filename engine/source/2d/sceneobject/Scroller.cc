@@ -233,7 +233,7 @@ void Scroller::updateTickScrollPosition( void )
 
 
 //------------------------------------------------------------------------------
-void Scroller::sceneRender( const SceneRenderState* pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer )
+void Scroller::sceneRender( const t2dSceneRenderState * pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer )
 {
     // Finish if we can't render.
     if ( !ImageFrameProvider::validRender() )

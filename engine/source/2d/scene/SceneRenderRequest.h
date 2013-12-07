@@ -23,18 +23,9 @@
 #ifndef _SCENE_RENDER_REQUEST_H_
 #define _SCENE_RENDER_REQUEST_H_
 
-#ifndef _SCENE_RENDER_FACTORIES_H_
 #include "2d/scene/SceneRenderFactories.h"
-#endif
-
-#ifndef _VECTOR2_H_
 #include "2d/core/Vector2.h"
-#endif
-
-#ifndef _COLOR_H_
 #include "graphics/color.h"
-#endif
-
 #include "graphics/gfxEnums.h"
 
 // Debug Profiling.
@@ -50,7 +41,7 @@ class SceneRenderQueue;
 class SceneRenderRequest : public IFactoryObjectReset
 {
 public:
-    SceneRenderRequest() : mpIsolatedRenderQueue(NULL)
+    SceneRenderRequest() : mpIsolatedRenderQueue(nullptr)
     {
         resetState();
     }
@@ -65,13 +56,13 @@ public:
         const Vector2& sortPoint = Vector2::getZero(),
         const S32 serialId = 0,
         StringTableEntry renderGroup = StringTable->EmptyString,
-        void* pCustomData1 = NULL,
-        void* pCustomData2 = NULL,
+        void* pCustomData1 = nullptr,
+        void* pCustomData2 = nullptr,
         S32 customDataKey1 = 0,
         S32 customDataKey2 = 0)
     {
         // Sanity!
-        AssertFatal( pSceneRenderObject != NULL, "Cannot submit a NULL scene render object." );
+        AssertFatal( pSceneRenderObject != nullptr, "Cannot submit a nullptr scene render object." );
 
         mpSceneRenderObject = pSceneRenderObject;
         mWorldPosition = worldPosition;
@@ -93,7 +84,7 @@ public:
         // Debug Profiling.
         PROFILE_SCOPE(SceneRenderRequest_ResetState);
 
-        mpSceneRenderObject = NULL;
+        mpSceneRenderObject = nullptr;
         mWorldPosition.SetZero();
         mDepth = 0.0f;
         mSortPoint.SetZero();
@@ -106,15 +97,15 @@ public:
         mBlendColor = ColorF(1.0f,1.0f,1.0f,1.0f);
         mAlphaTest = -1.0f;
 
-        mpCustomData1 = NULL;
-        mpCustomData2 = NULL;
+        mpCustomData1 = nullptr;
+        mpCustomData2 = nullptr;
         mCustomDataKey1 = 0;
         mCustomDataKey2 = 0;
 
-        if ( mpIsolatedRenderQueue != NULL )
+        if ( mpIsolatedRenderQueue != nullptr )
         {
             SceneRenderQueueFactory.cacheObject( mpIsolatedRenderQueue );
-            mpIsolatedRenderQueue = NULL;
+            mpIsolatedRenderQueue = nullptr;
         }
     }
 

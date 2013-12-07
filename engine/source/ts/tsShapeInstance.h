@@ -36,7 +36,7 @@
 class RenderItem;
 class TSThread;
 class ConvexFeature;
-class SceneRenderState;
+class t2dSceneRenderState;
 class FeatureSet;
 class TSShapeInstance;
 
@@ -527,7 +527,7 @@ protected:
    void setCurrentDetail( S32 dl, F32 intraDL = 1.0f );
 
    /// Helper function which internally calls setDetailFromDistance.
-   S32 setDetailFromPosAndScale( const SceneRenderState *state, 
+   S32 setDetailFromPosAndScale( const t2dSceneRenderState *state,
                                  const Point3F &pos, 
                                  const Point3F &scale );
 
@@ -535,7 +535,7 @@ protected:
    /// distance between your object and the camera.
    ///
    /// @see TSShape::Detail.
-   S32 setDetailFromDistance( const SceneRenderState *state, F32 scaledDist );
+   S32 setDetailFromDistance( const t2dSceneRenderState *state, F32 scaledDist );
 
    /// Sets the current detail level using the legacy screen error metric.
    S32 setDetailFromScreenError( F32 errorTOL );

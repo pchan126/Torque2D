@@ -29,7 +29,7 @@
 #include "2d/controllers/core/SceneController.h"
 #include "2d/core/particleSystem.h"
 #include "Layer.h"
-#include "2d/scene/SceneRenderState.h"
+#include "t2dSceneRenderState.h"
 #include "Scene_ScriptBinding.h"
 #include "debug/profiler.h"
 #include "renderInstance/renderPassManager.h"
@@ -899,7 +899,7 @@ void t2dScene::renderScene( ScenePassType passType )
 
 //-----------------------------------------------------------------------------
 
-void t2dScene::renderScene(SceneRenderState *renderState)
+void t2dScene::renderScene(t2dSceneRenderState *renderState)
 {
     // Debug Profiling.
     PROFILE_SCOPE(Scene_RenderSceneTotal);

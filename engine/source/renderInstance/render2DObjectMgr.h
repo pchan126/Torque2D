@@ -22,7 +22,7 @@ public:
    virtual void setOverrideMaterial(BaseMatInstance* overrideMat); 
 
    // RenderBinMgr
-   virtual void render(SceneRenderState * state);
+   virtual void render(t2dSceneRenderState * state);
 
    // ConsoleObject
    static void initPersistFields();

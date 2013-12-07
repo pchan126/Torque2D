@@ -554,7 +554,7 @@ void TSShapeInstance::setCurrentDetail( S32 dl, F32 intraDL )
    }
 }
 
-S32 TSShapeInstance::setDetailFromPosAndScale(  const SceneRenderState *state,
+S32 TSShapeInstance::setDetailFromPosAndScale(  const t2dSceneRenderState *state,
                                                 const Point3F &pos, 
                                                 const Point3F &scale )
 {
@@ -566,7 +566,7 @@ S32 TSShapeInstance::setDetailFromPosAndScale(  const SceneRenderState *state,
    return 0;
 }
 
-S32 TSShapeInstance::setDetailFromDistance( const SceneRenderState *state, F32 scaledDistance )
+S32 TSShapeInstance::setDetailFromDistance( const t2dSceneRenderState *state, F32 scaledDistance )
 {
    PROFILE_SCOPE( TSShapeInstance_setDetailFromDistance );
 
@@ -608,7 +608,7 @@ S32 TSShapeInstance::setDetailFromDistance( const SceneRenderState *state, F32 s
 //      return setDetailFromScreenError( smScreenError / pixelRadius );
 //   }
 //
-//   // We're inlining SceneRenderState::projectRadius here to 
+//   // We're inlining t2dSceneRenderState::projectRadius here to
 //   // skip the unnessasary divide by zero protection.
 //   F32 pixelRadius = ( mShape->radius / scaledDistance ) * state->getWorldToScreenScale().y * pixelScale;
 //   F32 pixelSize = pixelRadius * smDetailAdjust;

@@ -39,7 +39,7 @@
 
 //class Convex;
 
-//class SceneRenderState;
+//class t2dSceneRenderState;
 //class SceneObject;
 //struct MeshRenderInst;
 //class TSRenderState;

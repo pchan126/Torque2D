@@ -32,7 +32,7 @@
 #include "2d/scene/SceneRenderObject.h"
 #endif
 
-#include "2d/scene/SceneRenderState.h"
+#include "t2dSceneRenderState.h"
 
 //------------------------------------------------------------------------------
 
@@ -90,7 +90,7 @@ void SpriteBatch::onRemove()
 
 //-----------------------------------------------------------------------------
 
-void SpriteBatch::prepareRender( SceneRenderObject* pSceneRenderObject, const SceneRenderState* pSceneRenderState, SceneRenderQueue* pSceneRenderQueue )
+void SpriteBatch::prepareRender( SceneRenderObject* pSceneRenderObject, const t2dSceneRenderState * pSceneRenderState, SceneRenderQueue* pSceneRenderQueue )
 {
     // Debug Profiling.
     PROFILE_SCOPE(SpriteBatch_PrepareRender);
@@ -181,7 +181,7 @@ void SpriteBatch::prepareRender( SceneRenderObject* pSceneRenderObject, const Sc
 
 //------------------------------------------------------------------------------
 
-void SpriteBatch::render( const SceneRenderState* pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer )
+void SpriteBatch::render( const t2dSceneRenderState * pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer )
 {
     // Fetch sprite batch Item.
     SpriteBatchItem* pSpriteBatchItem = (SpriteBatchItem*)pSceneRenderRequest->mpCustomData1;

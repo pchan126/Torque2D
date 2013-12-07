@@ -147,7 +147,7 @@ protected:
     bool                    mCollisionSuppress;
     b2FixtureDef            mDefaultFixture;
     bool                    mGatherContacts;
-    t2dScene::typeContactVector* mpCurrentContacts;
+    t2dScene::typeContactVector*      mpCurrentContacts;
 
     /// General collision shape access.
     typeCollisionFixtureDefVector mCollisionFixtureDefs;
@@ -263,10 +263,10 @@ public:
     
     /// Render Output.
     virtual bool            canPrepareRender( void ) const { return false; }
-    virtual void            scenePrepareRender( const SceneRenderState* pSceneRenderState, SceneRenderQueue* pSceneRenderQueue ) {}
-    virtual void            sceneRender( const SceneRenderState* pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer ) {}
-    virtual void            sceneRenderFallback( const SceneRenderState* pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer );
-    virtual void            sceneRenderOverlay( const SceneRenderState* pSceneRenderState );
+    virtual void            scenePrepareRender( const t2dSceneRenderState * pSceneRenderState, SceneRenderQueue* pSceneRenderQueue ) {}
+    virtual void            sceneRender( const t2dSceneRenderState * pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer ) {}
+    virtual void            sceneRenderFallback( const t2dSceneRenderState * pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer );
+    virtual void            sceneRenderOverlay( const t2dSceneRenderState * pSceneRenderState );
 
 //    /// Lighting
 //    virtual void            registerLights(LightManager * lightManager, bool lightingScene);

@@ -1,25 +1,23 @@
 #include "platform/platform.h"
-#include "./SceneRenderState.h"
+#include "t2dSceneRenderState.h"
 #include "renderInstance/renderPassManager.h"
 #include "Layer.h"
 
 //-----------------------------------------------------------------------------
 
-SceneRenderState::SceneRenderState(
+t2dSceneRenderState::t2dSceneRenderState(
                  t2dScene * sceneManager,
                 ScenePassType passType,
                  const CameraView& view,
                  U32 renderGroupMask,
                  RenderPassManager* renderPass, // = NULL
                  bool usePostEffects )
-                  : mSceneManager(sceneManager),
+                  : SceneRenderState(passType, renderPass, usePostEffects),
+                  mSceneManager(sceneManager),
                   mRenderCamera(view),
-                  mScenePassType( passType ),
-                  mRenderGroupMask(renderGroupMask),
-                  mRenderPass(renderPass),
-                  mUsePostEffects( usePostEffects )
+                  mRenderGroupMask(renderGroupMask)
 {
-    if (sceneManager != NULL)
+    if (sceneManager != nullptr)
     {
         mRenderPass = sceneManager->getDefaultRenderPass();
         mRenderPass->assignSharedXform( RenderPassManager::View, view.getCameraViewMatrix() );
@@ -28,30 +26,13 @@ SceneRenderState::SceneRenderState(
     }
 }
 
-SceneRenderState::~SceneRenderState()
-{
-   
-}
+//-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
 
-const MatrixF& SceneRenderState::getWorldViewMatrix() const
-{
-//   return getRenderPass()->getMatrixSet().getWorldToCamera();
-	return MatrixF::Identity;
-}
-
 //-----------------------------------------------------------------------------
 
-const MatrixF& SceneRenderState::getProjectionMatrix() const
-{
-//   return getRenderPass()->getMatrixSet().getCameraToScreen();
-	return MatrixF::Identity;
-}
-
-//-----------------------------------------------------------------------------
-
-void SceneRenderState::renderObjects( SceneObject** objects, U32 numObjects, SceneRenderQueue* pSceneRenderQueue )
+void t2dSceneRenderState::renderObjects( SceneObject** objects, U32 numObjects, SceneRenderQueue* pSceneRenderQueue )
 {
 //    // Let the objects batch their stuff.
 //
@@ -68,7 +49,7 @@ void SceneRenderState::renderObjects( SceneObject** objects, U32 numObjects, Sce
     getRenderPass()->renderPass( this );
 }
 
-void SceneRenderState::renderObjects( t2dScene * pScene, SceneRenderQueue* pSceneRenderQueue )
+void t2dSceneRenderState::renderObjects( t2dScene * pScene, SceneRenderQueue* pSceneRenderQueue )
 {
     // Yes so step through layers.
     for ( S32 layer = pScene->getLayerCount()-1; layer >= 0 ; layer-- )

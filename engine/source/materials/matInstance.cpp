@@ -428,7 +428,7 @@ void MatInstance::addShaderMacro( const String &name, const String &value )
 // Setup pass - needs scenegraph data because the lightmap will change across
 //    several materials.
 //----------------------------------------------------------------------------
-bool MatInstance::setupPass(SceneRenderState * state, const SceneData &sgData )
+bool MatInstance::setupPass(SceneRenderState *state, const SceneData &sgData)
 {
    PROFILE_SCOPE( MatInstance_SetupPass );
    
@@ -452,7 +452,7 @@ void MatInstance::setTransforms(const MatrixF view, const MatrixF world, const M
    mProcessedMaterial->setTransforms(view, world, projection, state, getCurPass());
 }
 
-void MatInstance::setSceneInfo(SceneRenderState * state, const SceneData& sgData)
+void MatInstance::setSceneInfo(SceneRenderState *state, const SceneData &sgData)
 {
    PROFILE_SCOPE(MatInstance_setSceneInfo);
    mProcessedMaterial->setSceneInfo(state, sgData, getCurPass());
@@ -463,7 +463,7 @@ void MatInstance::setBuffers(GFXVertexBufferHandleBase* vertBuffer) //, GFXPrimi
    mProcessedMaterial->setBuffers(vertBuffer); //, primBuffer);
 }
 
-void MatInstance::setTextureStages(SceneRenderState * state, const SceneData &sgData )
+void MatInstance::setTextureStages(SceneRenderState *state, const SceneData &sgData)
 {
    PROFILE_SCOPE(MatInstance_setTextureStages);
    mProcessedMaterial->setTextureStages(state, sgData, getCurPass());

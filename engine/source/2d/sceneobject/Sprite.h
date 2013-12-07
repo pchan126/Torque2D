@@ -61,7 +61,7 @@ public:
     inline U32 getRows( void ) const                     { return mRows; }
     inline U32 getColumns( void ) const                  { return mColumns; }
 
-    virtual void sceneRender( const SceneRenderState* pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer );
+    virtual void sceneRender( const t2dSceneRenderState * pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer );
 
     /// Declare Console Object.
     DECLARE_CONOBJECT( Sprite );

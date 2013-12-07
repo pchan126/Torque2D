@@ -94,7 +94,7 @@ void Sprite::setSize( const Vector2& size )
 }
 
 
-void Sprite::sceneRender( const SceneRenderState* pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer )
+void Sprite::sceneRender( const t2dSceneRenderState * pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer )
 {
     if (!mShaderAsset.isNull())
         pBatchRenderer->setShader(*mShaderAsset);

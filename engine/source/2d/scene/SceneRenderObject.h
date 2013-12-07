@@ -29,7 +29,7 @@
 #include "2d/core/BatchRender.h"
 
 //-----------------------------------------------------------------------------
-class SceneRenderState;
+class t2dSceneRenderState;
 
 class SceneRenderObject
 {
@@ -45,11 +45,11 @@ public:
 
     virtual bool shouldRender( void ) const = 0;
 
-    virtual void scenePrepareRender(const SceneRenderState* pSceneRenderState, SceneRenderQueue* pSceneRenderQueue ) = 0;
+    virtual void scenePrepareRender(const t2dSceneRenderState * pSceneRenderState, SceneRenderQueue* pSceneRenderQueue ) = 0;
 
-    virtual void sceneRender( const SceneRenderState* pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer ) = 0;
+    virtual void sceneRender( const t2dSceneRenderState * pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer ) = 0;
 
-    virtual void sceneRenderFallback( const SceneRenderState* pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer ) = 0;
+    virtual void sceneRenderFallback( const t2dSceneRenderState * pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer ) = 0;
 };
 
 #endif // _SCENE_RENDER_OBJECT_H_

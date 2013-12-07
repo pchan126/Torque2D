@@ -53,10 +53,10 @@ public:
    virtual void setMaterialParameters(MaterialParameters* param); 
    virtual MaterialParameters* getMaterialParameters();
    virtual MaterialParameterHandle* getMaterialParameterHandle(const String& name);
-   virtual bool setupPass(SceneRenderState *, const SceneData &sgData );
+   virtual bool setupPass(SceneRenderState *state, const SceneData &sgData);
    virtual void setTransforms(const MatrixF view, const MatrixF world, const MatrixF projection, SceneRenderState *state);
-   virtual void setSceneInfo(SceneRenderState *, const SceneData& sgData);
-   virtual void setTextureStages(SceneRenderState * state, const SceneData &sgData );
+   virtual void setSceneInfo(SceneRenderState *state, const SceneData &sgData);
+   virtual void setTextureStages(SceneRenderState *state, const SceneData &sgData);
    virtual void setBuffers(GFXVertexBufferHandleBase* vertBuffer); //, GFXPrimitiveBufferHandle* primBuffer);
    virtual bool isInstanced() const;
    virtual bool stepInstance();

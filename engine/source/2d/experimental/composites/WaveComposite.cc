@@ -154,7 +154,7 @@ void WaveComposite::copyTo(SimObject* object)
 
 //-----------------------------------------------------------------------------
 
-void WaveComposite::scenePrepareRender( const SceneRenderState* pSceneRenderState, SceneRenderQueue* pSceneRenderQueue )
+void WaveComposite::scenePrepareRender( const t2dSceneRenderState * pSceneRenderState, SceneRenderQueue* pSceneRenderQueue )
 {
     // Prepare render.
     SpriteBatch::prepareRender( this, pSceneRenderState, pSceneRenderQueue );
@@ -162,7 +162,7 @@ void WaveComposite::scenePrepareRender( const SceneRenderState* pSceneRenderStat
 
 //-----------------------------------------------------------------------------
 
-void WaveComposite::sceneRender( const SceneRenderState* pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer )
+void WaveComposite::sceneRender( const t2dSceneRenderState * pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer )
 {
     // Render.
     SpriteBatch::render( pSceneRenderState, pSceneRenderRequest, pBatchRenderer );

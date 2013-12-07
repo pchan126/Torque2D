@@ -46,7 +46,7 @@ public:
    /// @{
 
    /// Sets necessary textures and texture ops for rendering
-   virtual void setTextureStages(SceneRenderState *, const SceneData &sgData, U32 pass );
+   virtual void setTextureStages(SceneRenderState *renderState, const SceneData &sgData, U32 pass);
 
    virtual MaterialParameters* allocMaterialParameters();   
    virtual MaterialParameterHandle* getMaterialParameterHandle(const String& name);
@@ -55,7 +55,7 @@ public:
    virtual void setTransforms(const MatrixF view, const MatrixF world, const MatrixF projection, SceneRenderState *state, const U32 pass);
 
    
-   virtual void setSceneInfo(SceneRenderState *, const SceneData& sgData, U32 pass);
+   virtual void setSceneInfo(SceneRenderState *renderState, const SceneData &sgData, U32 pass);
 
    /// @}
 
@@ -66,7 +66,7 @@ public:
    /// Sets up the given pass
    ///
    /// @returns false if the pass could not be set up
-   virtual bool setupPass(SceneRenderState *, const SceneData& sgData, U32 pass);
+   virtual bool setupPass(SceneRenderState *renderState, const SceneData &sgData, U32 pass);
 
    /// Returns the number of stages we're using (not to be confused with the number of passes)
    virtual U32 getNumStages();

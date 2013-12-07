@@ -6,7 +6,7 @@
 //
 
 #include "Layer.h"
-#include "SceneRenderState.h"
+#include "t2dSceneRenderState.h"
 
 IMPLEMENT_CONOBJECT(Layer);
 
@@ -47,7 +47,7 @@ void Layer::setRenderTarget()
 //   
 //}
 
-typeLayerQueryResult Layer::getObjectsinCamera(const SceneRenderState renderState) {
+typeLayerQueryResult Layer::getObjectsinCamera(const t2dSceneRenderState renderState) {
     typeLayerQueryResult result;
 
 //    Vector<SimObject*>::iterator iter = begin();

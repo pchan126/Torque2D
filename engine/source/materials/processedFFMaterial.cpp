@@ -155,7 +155,7 @@ U32 ProcessedFFMaterial::getNumStages()
    return numStages;
 }
 
-bool ProcessedFFMaterial::setupPass( SceneRenderState *state, const SceneData &sgData, U32 pass )
+bool ProcessedFFMaterial::setupPass(SceneRenderState *state, const SceneData &sgData, U32 pass)
 {
    PROFILE_SCOPE( ProcessedFFMaterial_SetupPass );
 
@@ -170,7 +170,7 @@ bool ProcessedFFMaterial::setupPass( SceneRenderState *state, const SceneData &s
    return true;
 }
 
-void ProcessedFFMaterial::setTextureStages(SceneRenderState * state, const SceneData& sgData, U32 pass)
+void ProcessedFFMaterial::setTextureStages(SceneRenderState *state, const SceneData &sgData, U32 pass)
 {
    // We may need to do some trickery in here for fixed function, this is just copy/paste from MatInstance
 #ifdef TORQUE_DEBUG
@@ -238,7 +238,7 @@ void ProcessedFFMaterial::setTransforms(const MatrixF view, const MatrixF world,
    GFX->setProjectionMatrix(projection);
 }
 
-void ProcessedFFMaterial::setSceneInfo(SceneRenderState * state, const SceneData& sgData, U32 pass)
+void ProcessedFFMaterial::setSceneInfo(SceneRenderState *state, const SceneData &sgData, U32 pass)
 {
 //   _setPrimaryLightInfo(*sgData.objTrans, sgData.lights[0], pass);
 //   _setSecondaryLightInfo(*sgData.objTrans, sgData.lights[1]);

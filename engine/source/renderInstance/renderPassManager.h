@@ -23,15 +23,16 @@
 #define _RENDERPASSMANAGER_H_
 
 #include "graphics/gfxDevice.h"
-#include "2d/scene/t2dScene.h"
-#include "2d/sceneObject/sceneObject.h"
+#include "scene/SceneGraph.h"
+//#include "2d/sceneObject/sceneObject.h"
 
 //#include "scene/sceneObject.h"
 //#include "console/simObject.h"
 //#include "core/dataChunker.h"
 //#include "scene/sceneManager.h"
 
-//class SceneRenderState;
+class SceneRenderState;
+class SceneGraph;
 //class ISceneObject;
 class BaseMatInstance;
 struct SceneData;
@@ -190,7 +191,7 @@ public:
    /// @}
 
    /// Get scene manager which this render pass belongs to.
-   t2dScene * getSceneManager()   {      return mSceneManager;   }
+   SceneGraph * getSceneManager()   {      return mSceneManager;   }
 
    /// This signal is triggered when a render bin is about to be rendered.
    ///
@@ -229,7 +230,7 @@ protected:
 
    AddInstTable mAddInstSignals;
 
-   t2dScene * mSceneManager;
+   SceneGraph * mSceneManager;
    GFXTexHandle mDepthBuff;
 
    MatrixF    mProjection;
@@ -291,142 +292,142 @@ struct ObjectRenderInst : public RenderInst
    ///                     used for special renders like shadows.  If the object doesn't
    ///                     support override materials it shouldn't render at all.
    Delegate<void( ObjectRenderInst *ri, 
-                  SceneRenderState *state, 
+                  SceneRenderState *state,
                   BaseMatInstance *overrideMat )> renderDelegate;
 
    // Clear this instance.
    void clear();
 };
 
-//struct MeshRenderInst : public RenderInst
-//{
-//   ////
-//   GFXVertexBufferHandleBase *vertBuff;
-//   
+struct MeshRenderInst : public RenderInst
+{
+   ////
+   GFXVertexBufferHandleBase *vertBuff;
+
 //   ////
 //   GFXPrimitiveBufferHandle *primBuff;
-//
+
 //   /// If not NULL it is used to draw the primitive, else
 //   /// the primBuffIndex is used.
 //   /// @see primBuffIndex
 //   GFXPrimitive *prim;
-//
-//   /// If prim is NULL then this index is used to draw the
-//   /// indexed primitive from the primitive buffer.
-//   /// @see prim
-//   U32 primBuffIndex;
-//   
-//   /// The material to setup when drawing this instance.
-//   BaseMatInstance *matInst;
-//
-//   /// The object to world transform (world transform in most API's).
-//   const MatrixF *objectToWorld;       
-//   
-//   /// The worldToCamera (view transform in most API's).
-//   const MatrixF* worldToCamera;       
-//   
-//   /// The projection matrix.
-//   const MatrixF* projection;         
-//
-//   // misc render states
-//   U8    transFlags;
-//   bool  reflective;
-//   F32   visibility;
-//
-//   /// A generic hint value passed from the game
-//   /// code down to the material for use by shader 
-//   /// features.
-//   void *materialHint;
-//
-//   /// The lights we pass to the material for this 
-//   /// mesh in order light importance.
-//   LightInfo* lights[8];
-//
-//   // textures
-//   GFXTextureObject *lightmap;
-//   GFXTextureObject *fogTex;
-//   GFXTextureObject *backBuffTex;
-//   GFXTextureObject *reflectTex;
-//   GFXTextureObject *miscTex;
-//   GFXCubemap   *cubemap;
-//
-//   void clear();
-//};
 
-//enum ParticleSystemState
-//{
-//   PSS_AwaitingHighResDraw = 0, // Keep this as first element so that if the offscreen manager rejects a particle system it will get drawn high-res
-//   PSS_AwaitingOffscreenDraw,
-//   PSS_AwaitingCompositeDraw,
-//   PSS_AwaitingMixedResDraw,
-//   PSS_DrawComplete,
-//};
+   /// If prim is NULL then this index is used to draw the
+   /// indexed primitive from the primitive buffer.
+   /// @see prim
+   U32 primBuffIndex;
 
-///// A special render instance for particles.
-//struct ParticleRenderInst : public RenderInst
-//{
-//   /// The vertex buffer.
-//   GFXVertexBufferHandleBase *vertBuff;
-//   
-////   /// The primitive buffer.
-////   GFXPrimitiveBufferHandle *primBuff;
-//
-//   /// The total particle count to render.
-//   S32 count;
-//
-//   /// The combined model, camera, and projection transform.
-//   const MatrixF *modelViewProj;       
-//        
-//   /// Blend style for the particle system 
-//   enum BlendStyle {
-//      BlendUndefined = 0,
-//      BlendNormal,
-//      BlendAdditive,
-//      BlendSubtractive,
-//      BlendPremultAlpha,
-//      BlendGreyscale,
-//      BlendStyle_COUNT,
-//   };
-//   U8 blendStyle;
-//
-//   /// For the offscreen particle manager
-//   U8 targetIndex;
-//
-//   /// State for the particle system
-//   ParticleSystemState systemState;
-//
-//   /// The soft particle fade distance in meters.
-//   F32 softnessDistance;
-//
-//   /// Bounding box render transform
-//   const MatrixF *bbModelViewProj;
-//
-//   /// The particle texture.
-//   GFXTextureObject *diffuseTex;
-//
-//   void clear();
-//};
+   /// The material to setup when drawing this instance.
+   BaseMatInstance *matInst;
 
-//class GFXOcclusionQuery;
+   /// The object to world transform (world transform in most API's).
+   const MatrixF *objectToWorld;
+
+   /// The worldToCamera (view transform in most API's).
+   const MatrixF* worldToCamera;
+
+   /// The projection matrix.
+   const MatrixF* projection;
+
+   // misc render states
+   U8    transFlags;
+   bool  reflective;
+   F32   visibility;
+
+   /// A generic hint value passed from the game
+   /// code down to the material for use by shader
+   /// features.
+   void *materialHint;
+
+   /// The lights we pass to the material for this
+   /// mesh in order light importance.
+   LightInfo* lights[8];
+
+   // textures
+   GFXTextureObject *lightmap;
+   GFXTextureObject *fogTex;
+   GFXTextureObject *backBuffTex;
+   GFXTextureObject *reflectTex;
+   GFXTextureObject *miscTex;
+   GFXCubemap   *cubemap;
+
+   void clear();
+};
+
+enum ParticleSystemState
+{
+   PSS_AwaitingHighResDraw = 0, // Keep this as first element so that if the offscreen manager rejects a particle system it will get drawn high-res
+   PSS_AwaitingOffscreenDraw,
+   PSS_AwaitingCompositeDraw,
+   PSS_AwaitingMixedResDraw,
+   PSS_DrawComplete,
+};
+
+/// A special render instance for particles.
+struct ParticleRenderInst : public RenderInst
+{
+   /// The vertex buffer.
+   GFXVertexBufferHandleBase *vertBuff;
+
+//   /// The primitive buffer.
+//   GFXPrimitiveBufferHandle *primBuff;
+
+   /// The total particle count to render.
+   S32 count;
+
+   /// The combined model, camera, and projection transform.
+   const MatrixF *modelViewProj;
+
+   /// Blend style for the particle system
+   enum BlendStyle {
+      BlendUndefined = 0,
+      BlendNormal,
+      BlendAdditive,
+      BlendSubtractive,
+      BlendPremultAlpha,
+      BlendGreyscale,
+      BlendStyle_COUNT,
+   };
+   U8 blendStyle;
+
+   /// For the offscreen particle manager
+   U8 targetIndex;
+
+   /// State for the particle system
+   ParticleSystemState systemState;
+
+   /// The soft particle fade distance in meters.
+   F32 softnessDistance;
+
+   /// Bounding box render transform
+   const MatrixF *bbModelViewProj;
+
+   /// The particle texture.
+   GFXTextureObject *diffuseTex;
+
+   void clear();
+};
+
+class GFXOcclusionQuery;
 //class SceneObject;
 
-///// A special render instance for occlusion tests.
-//struct OccluderRenderInst : public RenderInst
-//{   
-//   Point3F scale;
-//   Point3F position;   
-//   const MatrixF *orientation;
-//   GFXOcclusionQuery *query; 
-//   
-//   // This optional query will have all pixels rendered.
-//   // Its purpose is to return to the user the full pixel count for comparison
-//   // with the other query.
-//   GFXOcclusionQuery *query2;
-//
-//   /// Render a sphere or a box.
-//   bool isSphere;
-//
-//   void clear();
-//};
+/// A special render instance for occlusion tests.
+struct OccluderRenderInst : public RenderInst
+{
+   Point3F scale;
+   Point3F position;
+   const MatrixF *orientation;
+   GFXOcclusionQuery *query;
+
+   // This optional query will have all pixels rendered.
+   // Its purpose is to return to the user the full pixel count for comparison
+   // with the other query.
+   GFXOcclusionQuery *query2;
+
+   /// Render a sphere or a box.
+   bool isSphere;
+
+   void clear();
+};
 
 #endif // _RENDERPASSMANAGER_H_

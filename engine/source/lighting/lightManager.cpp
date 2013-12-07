@@ -36,6 +36,7 @@
 //#include "lighting/lightingInterfaces.h"
 //#include "T3D/gameBase/gameConnection.h"
 #include "graphics/gfxStringEnumTranslate.h"
+#import "SceneRenderState.h"
 //#include "console/engineAPI.h"
 //#include "renderInstance/renderPrePassMgr.h"
 
@@ -143,12 +144,12 @@ void LightManager::registerGlobalLight( LightInfo *light, SimObject *obj )
    mRegisteredLights.push_back( light );
 }
 
-void LightManager::setLightInfo(  ProcessedMaterial* pmat,
-                                     const Material* mat,
-                                     const SceneData& sgData,
-                                     const SceneRenderState *state,
-                                     U32 pass,
-                                     GFXShaderConstBuffer* shaderConsts )
+void LightManager::setLightInfo(ProcessedMaterial *pmat,
+        const Material *mat,
+        const SceneData &sgData,
+        SceneRenderState const *state,
+        U32 pass,
+        GFXShaderConstBuffer *shaderConsts)
 {
 //   PROFILE_SCOPE( LightManager_SetLightInfo );
 //   

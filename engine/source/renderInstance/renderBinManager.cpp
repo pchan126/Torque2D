@@ -34,7 +34,7 @@ RenderBinManager::RenderBinManager( const RenderInstType& ritype, F32 renderOrde
    mRenderInstType( ritype ),
    mRenderOrder( renderOrder ),
    mProcessAddOrder( processAddOrder ),
-   mRenderPass( NULL )
+   mRenderPass( nullptr )
 {
    VECTOR_SET_ASSOCIATION( mElementList );
    mElementList.reserve( 2048 );

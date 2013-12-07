@@ -673,7 +673,7 @@ void SceneObject::interpolateObject( const F32 timeDelta )
 
 //-----------------------------------------------------------------------------
 
-void SceneObject::sceneRenderFallback( const SceneRenderState* pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer )
+void SceneObject::sceneRenderFallback( const t2dSceneRenderState * pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer )
 {
     // Debug Profiling.
     PROFILE_SCOPE(SceneObject_SceneRenderFallback);
@@ -697,7 +697,7 @@ void SceneObject::sceneRenderFallback( const SceneRenderState* pSceneRenderState
 
 //-----------------------------------------------------------------------------
 
-void SceneObject::sceneRenderOverlay( const SceneRenderState* sceneRenderState )
+void SceneObject::sceneRenderOverlay( const t2dSceneRenderState * sceneRenderState )
 {
     // Debug Profiling.
     PROFILE_SCOPE(SceneObject_SceneRenderOverlay);

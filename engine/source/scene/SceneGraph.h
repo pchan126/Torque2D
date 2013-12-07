@@ -2,13 +2,6 @@
 // Created by Paul L Jan on 2013-12-05.
 //
 
-
-
-#include "2d/scene/WorldQuery.h"
-#include "2d/scene/SceneRenderObject.h"
-#include "component/behaviors/behaviorComponent.h"
-#include "lighting/lightManager.h"
-
 #ifndef __SceneGraph_H_
 #define __SceneGraph_H_
 
@@ -30,6 +23,14 @@ enum ScenePassType
     /// predefined scene pass types.
             SPT_Other,
 };
+
+#include "2d/scene/WorldQuery.h"
+#include "2d/scene/SceneRenderObject.h"
+#include "component/behaviors/behaviorComponent.h"
+#include "lighting/lightManager.h"
+
+
+class SceneRenderState;
 
 class SceneGraph : public BehaviorComponent {
 

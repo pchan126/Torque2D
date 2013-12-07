@@ -206,7 +206,7 @@ void PointForceController::integrate( t2dScene * pScene, const F32 totalTime, co
 
 //------------------------------------------------------------------------------
 
-void PointForceController::renderOverlay( t2dScene * pScene, const SceneRenderState* pSceneRenderState, BatchRender* pBatchRenderer )
+void PointForceController::renderOverlay( t2dScene * pScene, const t2dSceneRenderState * pSceneRenderState, BatchRender* pBatchRenderer )
 {
     // Call parent.
     Parent::renderOverlay( pScene, pSceneRenderState, pBatchRenderer );

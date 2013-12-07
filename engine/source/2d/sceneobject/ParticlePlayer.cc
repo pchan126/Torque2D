@@ -495,7 +495,7 @@ void ParticlePlayer::interpolateObject( const F32 timeDelta )
 
 //-----------------------------------------------------------------------------
 
-void ParticlePlayer::sceneRender( const SceneRenderState* pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer )
+void ParticlePlayer::sceneRender( const t2dSceneRenderState * pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer )
 {
     // Finish if we can't render.
     if ( !mPlaying || mCameraIdle )
@@ -657,7 +657,7 @@ void ParticlePlayer::sceneRender( const SceneRenderState* pSceneRenderState, con
 
 //-----------------------------------------------------------------------------
 
-void ParticlePlayer::sceneRenderOverlay( const SceneRenderState* sceneRenderState )
+void ParticlePlayer::sceneRenderOverlay( const t2dSceneRenderState * sceneRenderState )
 {
     // Call parent.
     Parent::sceneRenderOverlay( sceneRenderState );

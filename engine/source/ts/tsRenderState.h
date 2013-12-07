@@ -30,7 +30,7 @@
 
 
 
-class SceneRenderState;
+class t2dSceneRenderState;
 class GFXCubemap;
 class Frustum;
 class LightQuery;
@@ -60,14 +60,14 @@ class LightQuery;
 /// @section TSRenderState_example Usage Example
 ///
 /// TSRenderState is very easy to use.  Merely create a TSRenderState object (in prepRenderImage usually)
-/// and set any of the desired data members (SceneRenderState, camera transform etc.), and pass the address of
+/// and set any of the desired data members (t2dSceneRenderState, camera transform etc.), and pass the address of
 /// your TSRenderState to your render function.
 ///
 class TSRenderState
 {
 protected:
    
-   const SceneRenderState *mState;
+   const t2dSceneRenderState *mState;
 
    GFXCubemap *mCubemap;
 
@@ -113,8 +113,8 @@ public:
    /// @{
 
    ///@see mState
-   const SceneRenderState* getSceneState() const { return mState; }
-   void setSceneState( const SceneRenderState *state ) { mState = state; }
+   const t2dSceneRenderState * getSceneState() const { return mState; }
+   void setSceneState( const t2dSceneRenderState *state ) { mState = state; }
 
    ///@see mCubemap
    GFXCubemap* getCubemap() const { return mCubemap; }

@@ -330,8 +330,8 @@ void ProcessedMaterial::_initRenderStateStateBlocks( RenderPassData *rpd )
    }   
 }
 
-U32 ProcessedMaterial::_getRenderStateIndex( const SceneRenderState *sceneState, 
-                                             const SceneData &sgData )
+U32 ProcessedMaterial::_getRenderStateIndex(SceneRenderState const *sceneState,
+        const SceneData &sgData)
 {
    // Based on what the state of the world is, get our render state block
    U32 currState = 0;
@@ -359,9 +359,9 @@ U32 ProcessedMaterial::_getRenderStateIndex( const SceneRenderState *sceneState,
    return currState;
 }
 
-void ProcessedMaterial::_setRenderState(  const SceneRenderState *state, 
-                                          const SceneData& sgData, 
-                                          U32 pass )
+void ProcessedMaterial::_setRenderState(SceneRenderState const *state,
+        const SceneData &sgData,
+        U32 pass)
 {   
    // Make sure we have the pass
    if ( pass >= mPasses.size() )

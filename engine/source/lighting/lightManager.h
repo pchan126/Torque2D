@@ -23,18 +23,10 @@
 #ifndef _LIGHTMANAGER_H_
 #define _LIGHTMANAGER_H_
 
-#ifndef _TORQUE_STRING_H_
 #include "string/str.h"
-#endif
-#ifndef _TSIGNAL_H_
 #include "delegates/delegateSignal.h"
-#endif
-#ifndef _LIGHTINFO_H_
 #include "lighting/lightInfo.h"
-#endif
-#ifndef _LIGHTQUERY_H_
 #include "lighting/lightQuery.h"
-#endif
 
 class SimObject;
 class LightManager;
@@ -135,12 +127,12 @@ public:
    void getSortedLightsByDistance( Vector<LightInfo*> *list, Point3F);
 
    /// Sets shader constants / textures for light infos
-   virtual void setLightInfo( ProcessedMaterial *pmat, 
-                              const Material *mat, 
-                              const SceneData &sgData, 
-                              const SceneRenderState *state,
-                              U32 pass, 
-                             GFXShaderConstBuffer *shaderConsts );
+   virtual void setLightInfo(ProcessedMaterial *pmat,
+           const Material *mat,
+           const SceneData &sgData,
+           SceneRenderState const *state,
+           U32 pass,
+           GFXShaderConstBuffer *shaderConsts);
 
    /// Allows us to set textures during the Material::setTextureStage call, return true if we've done work.
    virtual bool setTextureStage( const SceneData &sgData, 

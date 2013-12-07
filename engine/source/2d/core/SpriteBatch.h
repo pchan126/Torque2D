@@ -75,8 +75,8 @@ public:
     virtual bool onAdd();
     virtual void onRemove();
 
-    void prepareRender( SceneRenderObject* pSceneRenderObject, const SceneRenderState* pSceneRenderState, SceneRenderQueue* pSceneRenderQueue );
-    void render( const SceneRenderState* pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer );
+    void prepareRender( SceneRenderObject* pSceneRenderObject, const t2dSceneRenderState * pSceneRenderState, SceneRenderQueue* pSceneRenderQueue );
+    void render( const t2dSceneRenderState * pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer );
 
     inline void setBatchTransformDirty( void ) { mBatchTransformDirty = true; mBatchTransformId++; }
     inline bool getBatchTransformDirty( void ) const { return mBatchTransformDirty; }

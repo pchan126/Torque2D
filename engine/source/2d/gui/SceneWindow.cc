@@ -30,7 +30,7 @@
 #include "2d/sceneobject/SceneObject.h"
 #include "2d/core/Utility.h"
 #include "2d/gui/SceneWindow.h"
-#include "2d/scene/SceneRenderState.h"
+#include "t2dSceneRenderState.h"
 #include "2d/scene/Layer.h"
 
 #ifndef _ASSET_MANAGER_H_
@@ -1538,7 +1538,7 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
     GFX->setWorldMatrix(MatrixF(true));
 
     // Create a scene render state.
-    SceneRenderState sceneRenderState(
+    t2dSceneRenderState sceneRenderState(
         pScene,
         SPT_Diffuse,
         mCameraCurrent,

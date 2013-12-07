@@ -23,12 +23,8 @@
 #ifndef _MATERIALS_PROCESSEDCUSTOMMATERIAL_H_
 #define _MATERIALS_PROCESSEDCUSTOMMATERIAL_H_
 
-#ifndef _MATERIALS_PROCESSEDSHADERMATERIAL_H_
 #include "materials/processedShaderMaterial.h"
-#endif
-#ifndef _CUSTOMMATERIALDEFINITION_H_
 #include "materials/customMaterialDefinition.h"
-#endif
 
 
 ///
@@ -39,9 +35,9 @@ public:
    ProcessedCustomMaterial(Material &mat);
    ~ProcessedCustomMaterial();
 
-   virtual bool setupPass(SceneRenderState *, const SceneData& sgData, U32 pass);
+   virtual bool setupPass(SceneRenderState *state, const SceneData &sgData, U32 pass);
    virtual bool init( const FeatureSet &features, const GFXVertexFormat *vertexFormat, const MatFeaturesDelegate &featuresDelegate );   
-   virtual void setTextureStages(SceneRenderState *, const SceneData &sgData, U32 pass );
+   virtual void setTextureStages(SceneRenderState *state, const SceneData &sgData, U32 pass );
    virtual MaterialParameters* allocMaterialParameters();
 
 protected:
