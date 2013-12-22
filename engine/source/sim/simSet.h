@@ -28,21 +28,10 @@
 #ifndef _SIMSET_H_
 #define _SIMSET_H_
 
-#ifndef _SIM_OBJECT_H_
 #include "sim/simObject.h"
-#endif
-
-#ifndef _SIM_OBJECT_LIST_H_
 #include "sim/SimObjectList.h"
-#endif
-
-#ifndef _SIMDICTIONARY_H_
 #include "sim/simDictionary.h"
-#endif
-
-#ifndef _TAML_CHILDREN_H_
 #include "persistence/taml/tamlChildren.h"
-#endif
 
 //---------------------------------------------------------------------------
 /// A set of SimObjects.
@@ -101,21 +90,22 @@ class SimSet: public SimObject, public TamlChildren
 
 protected:
    SimObjectList objectList;
-   void *mMutex;
+   mutable std::mutex mMutex;
 
 public:
-   SimSet() {
+   SimSet(): mMutex() {
       VECTOR_SET_ASSOCIATION(objectList);
-
-      mMutex = Mutex::createMutex();
    }
+
+   SimSet(const SimSet& other);
+
+   SimSet& operator=(const SimSet& other);
 
    ~SimSet()
    {
+
       lock();
       unlock();
-      Mutex::destroyMutex(mMutex);
-      mMutex = NULL;
    }
 
    /// @name STL Interface
@@ -140,10 +130,9 @@ public:
    {
        for( auto itr :*this )
        {
-           if ( dynamic_cast<T*>(itr) != NULL )
+           if ( dynamic_cast<T*>(itr) != nullptr )
                return true;
        }
-
        return false;
    }
 
@@ -172,7 +161,7 @@ public:
    virtual void popObject();                ///< Remove an object from the end of the list.
 
    void bringObjectToFront(SimObject* obj) { reOrder(obj, front()); }
-   void pushObjectToBack(SimObject* obj) { reOrder(obj, NULL); }
+   void pushObjectToBack(SimObject* obj) { reOrder(obj, nullptr); }
 
    /// @}
 
@@ -188,7 +177,7 @@ public:
 
         // For when the assert is not used.
         if ( childIndex >= (U32)size() )
-            return NULL;
+            return nullptr;
 
         return at( childIndex );
     }
@@ -196,7 +185,7 @@ public:
     virtual void addTamlChild( SimObject* pSimObject )
     {
         // Sanity!
-        AssertFatal( pSimObject != NULL, "SimSet::addTamlChild() - Cannot add a NULL child object." );
+        AssertFatal( pSimObject != nullptr, "SimSet::addTamlChild() - Cannot add a nullptr child object." );
 
         addObject( pSimObject );
     }
@@ -211,19 +200,8 @@ public:
    virtual bool writeObject(std::iostream &stream);
    virtual bool readObject(std::iostream &stream);
 
-   inline void lock()
-   {
-#ifdef TORQUE_MULTITHREAD
-      Mutex::lockMutex(mMutex);
-#endif
-   }
-
-   inline void unlock()
-   {
-#ifdef TORQUE_MULTITHREAD
-      Mutex::unlockMutex(mMutex);
-#endif
-   }
+   inline void lock()     { mMutex.lock();   };
+   inline void unlock()   { mMutex.unlock(); };
 
    DECLARE_CONOBJECT(SimSet);
 

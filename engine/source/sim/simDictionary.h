@@ -28,6 +28,7 @@
 #include "platform/threads/mutex.h"
 #include <unordered_map>
 #include "simObject.h"
+#include <mutex>
 
 
 //----------------------------------------------------------------------------
@@ -37,14 +38,9 @@
 /// for fast removal of an object given object*
 class SimNameDictionary
 {
-   enum
-   {
-      DefaultTableSize = 29
-   };
-
    std::unordered_map<std::string, SimObject *> hashTable;  // hash the pointers of the names...
 
-   void *mutex;
+   std::mutex m_mutex;
 
 public:
    void insert(SimObject* obj);
@@ -57,14 +53,9 @@ public:
 
 class SimManagerNameDictionary
 {
-   enum
-   {
-      DefaultTableSize = 29
-   };
-
    std::unordered_map<StringTableEntry, SimObject*> hashTable;  // hash the pointers of the names...
 
-   void *mutex;
+   std::mutex m_mutex;
 
 public:
    void insert(SimObject* obj);
@@ -84,7 +75,7 @@ class SimIdDictionary
 {
    std::unordered_map<SimObjectId, SimObject*> table;
 
-   void *mutex;
+   std::mutex m_mutex;
 
 public:
    void insert(SimObject* obj);

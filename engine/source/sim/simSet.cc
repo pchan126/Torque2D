@@ -37,6 +37,19 @@
 // Sim Set
 //////////////////////////////////////////////////////////////////////////
 
+SimSet::SimSet(const SimSet& other): mMutex()
+{
+    std::lock_guard<std::mutex> _lock(other.mMutex);
+}
+
+SimSet& SimSet::operator=(const SimSet& other)
+{
+    if (this!=&other) {
+        std::lock_guard<std::mutex> _mylock(mMutex), _otherlock(other.mMutex);
+    }
+    return *this;
+}
+
 void SimSet::addObject(SimObject* obj)
 {
    lock();
@@ -63,8 +76,7 @@ void SimSet::pushObject(SimObject* pObj)
 
 void SimSet::popObject()
 {
-   MutexHandle handle;
-   handle.lock(mMutex);
+   std::lock_guard<std::mutex> lock(mMutex);
 
    if (objectList.size() == 0) 
    {
@@ -107,8 +119,7 @@ void SimSet::callOnChildren( const char * method, S32 argc, const char *argv[], 
 
 bool SimSet::reOrder( SimObject *obj, SimObject *target )
 {
-   MutexHandle handle;
-   handle.lock(mMutex);
+    std::lock_guard<std::mutex> lock(mMutex);
 
    iterator itrS, itrD;
    if ( (itrS = find(begin(),end(),obj)) == end() )
@@ -152,23 +163,19 @@ void SimSet::onDeleteNotify(SimObject *object)
 
 void SimSet::onRemove()
 {
-    MutexHandle handle;
-    handle.lock(mMutex);
+    std::lock_guard<std::mutex> lock(mMutex);
 
     objectList.sortId();
 
     for (auto ptr = objectList.rbegin(); ptr != objectList.rend(); ptr++)
         clearNotify(*ptr);
 
-    handle.unlock();
-
     Parent::onRemove();
 }
 
 void SimSet::write(std::iostream &stream, U32 tabStop, U32 flags)
 {
-   MutexHandle handle;
-   handle.lock(mMutex);
+    std::lock_guard<std::mutex> lock(mMutex);
 
    // export selected only?
    if((flags & SelectedOnly) && !isSelected())

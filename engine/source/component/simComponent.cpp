@@ -29,18 +29,31 @@
 // Script bindings.
 #include "component/simComponent_ScriptBinding.h"
 
-SimComponent::SimComponent() : mOwner( nullptr )
+SimComponent::SimComponent() : mOwner( nullptr ), mMutex()
 {
    mComponentList.clear();
-   mMutex = Mutex::createMutex();
-   
    mEnabled = true;
 }
 
+SimComponent::SimComponent(const SimComponent& other): mOwner(other.mOwner), mMutex()
+{
+   std::lock_guard<std::mutex> _lock(other.mMutex);
+   mComponentList = other.mComponentList;
+}
+
+SimComponent& SimComponent::operator=(const SimComponent& other)
+{
+   if (this!=&other) {
+      std::lock_guard<std::mutex> _mylock(mMutex), _otherlock(other.mMutex);
+      mComponentList = other.mComponentList;
+      mOwner = other.mOwner;
+   }
+   return *this;
+}
+
+
 SimComponent::~SimComponent()
 {
-   Mutex::destroyMutex( mMutex );
-   mMutex = nullptr;
 }
 
 IMPLEMENT_CONOBJECT(SimComponent);
@@ -67,18 +80,18 @@ bool SimComponent::_registerComponents( SimComponent *owner )
    if( hasComponents() )
    {
       Vector<SimComponent *> &components = lockComponentList();
-      for( SimComponentiterator i = components.begin(); i != components.end(); i++ )
+      for( auto i: components )
       {
-         if( !(*i)->onComponentRegister( owner ) )
+         if( !i->onComponentRegister( owner ) )
          {
             ret = false;
             break;
          }
 
-         AssertFatal( (*i)->mOwner == owner, "Component failed to call parent onComponentRegister!" );
+         AssertFatal( i->mOwner == owner, "Component failed to call parent onComponentRegister!" );
 
          // Recurse
-         if( !(*i)->_registerComponents( owner ) )
+         if( !i->_registerComponents( owner ) )
          {
             ret = false;
             break;
@@ -97,14 +110,14 @@ void SimComponent::_unregisterComponents()
       return;
 
    Vector<SimComponent *> &components = lockComponentList();
-   for( SimComponentiterator i = components.begin(); i != components.end(); i++ )
+   for( auto i: components )
    {
-      (*i)->onComponentUnRegister();
+      i->onComponentUnRegister();
 
-      AssertFatal( (*i)->mOwner == nullptr, "Component failed to call parent onUnRegister" );
+      AssertFatal( i->mOwner == nullptr, "Component failed to call parent onUnRegister" );
 
       // Recurse
-      (*i)->_unregisterComponents();
+      i->_unregisterComponents();
    }
 
    unlockComponentList();
@@ -161,24 +174,22 @@ bool SimComponent::addComponent( SimComponent *component )
 {
    AssertFatal( dynamic_cast<SimObject*>(component), "SimComponent - Cannot add non SimObject derived components!" );
 
-   MutexHandle mh;
-   if( mh.lock( mMutex, true ) )
-   {
-      for( SimComponentiterator nItr = mComponentList.begin(); nItr != mComponentList.end(); nItr++ )
-      {
-         SimComponent *pComponent = dynamic_cast<SimComponent*>(*nItr);
-         AssertFatal( pComponent, "SimComponent::addComponent - nullptr component in list!" );
-         if( pComponent == component )
-            return true;
-      }
+   std::lock_guard<std::mutex> lock(mMutex);
 
-      if(component->onComponentAdd(this))
-      {
-         component->mOwner = this;
-         mComponentList.push_back( component );
-         return true;
-      }
-   }
+    for( SimComponentiterator nItr = mComponentList.begin(); nItr != mComponentList.end(); nItr++ )
+    {
+        SimComponent *pComponent = dynamic_cast<SimComponent*>(*nItr);
+        AssertFatal( pComponent, "SimComponent::addComponent - nullptr component in list!" );
+        if( pComponent == component )
+            return true;
+    }
+
+    if(component->onComponentAdd(this))
+    {
+        component->mOwner = this;
+        mComponentList.push_back( component );
+        return true;
+    }
 
    return false;
 }
@@ -186,9 +197,8 @@ bool SimComponent::addComponent( SimComponent *component )
 // Remove Component from this one
 bool SimComponent::removeComponent( SimComponent *component )
 {
-   MutexHandle mh;
-   if( mh.lock( mMutex, true ) )
-   {
+    std::lock_guard<std::mutex> lock(mMutex);
+
       for( SimComponentiterator nItr = mComponentList.begin(); nItr != mComponentList.end(); nItr++ )
       {
          SimComponent *pComponent = dynamic_cast<SimComponent*>(*nItr);
@@ -202,7 +212,7 @@ bool SimComponent::removeComponent( SimComponent *component )
             return true;
          }
       }
-   }
+
    return false;
 }
 

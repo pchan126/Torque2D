@@ -535,5 +535,5 @@ public:
     }
 };
 
-static GFXOpenGLES30iOSRegisterDevice pGLRegisterDevice;
+//static GFXOpenGLES30iOSRegisterDevice pGLES3RegisterDevice;
 

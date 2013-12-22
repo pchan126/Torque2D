@@ -21,8 +21,8 @@
 //-----------------------------------------------------------------------------
 
 #include "platform/platform.h"
-#include "platform/threads/mutex.h"
-#include "platform/threads/thread.h"
+#include <mutex>
+//#include "platform/threads/thread.h"
 #include "platform/platformNetAsync.unix.h"
 #include "console/console.h"
 
@@ -35,26 +35,16 @@ NetAsync gNetAsync;
 
 #define LOOKUP_REQUEST_CHECK_INTERVAL	500
 
-void* gNetAsyncMutex = NULL;
+std::mutex gNetAsyncMutex;
 
 static void lockNetAsyncMutex()
 {
-   if(!gNetAsyncMutex)
-      gNetAsyncMutex = Mutex::createMutex();
-
-   AssertFatal(gNetAsyncMutex, "Could not create gNetAsyncMutex!");
-   
-   Mutex::lockMutex(gNetAsyncMutex);
+   gNetAsyncMutex.lock();
 }
 
 static void unlockNetAsyncMutex()
 {
-   if(!gNetAsyncMutex)
-      gNetAsyncMutex = Mutex::createMutex();
-
-   AssertFatal(gNetAsyncMutex, "Could not create gNetAsyncMutex!");
-   
-   Mutex::unlockMutex(gNetAsyncMutex);
+   gNetAsyncMutex.unlock();
 }
 
 // internal structure for storing information about a name lookup request
@@ -204,10 +194,10 @@ void NetAsync::startAsync()
      return;
 
   // create the thread...
-   Thread *zThread = new Thread((ThreadRunFunction)StartThreadFunc, 0, true);
+//   Thread *zThread = new Thread((ThreadRunFunction)StartThreadFunc, 0, true);
 
-  if (!zThread)
-     Con::errorf("Error starting net async thread.");
+//  if (!zThread)
+//     Con::errorf("Error starting net async thread.");
 }
 
 void NetAsync::stopAsync()

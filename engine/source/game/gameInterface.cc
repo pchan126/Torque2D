@@ -31,7 +31,7 @@
 #include "game/gameInterface_ScriptBinding.h"
 
 GameInterface *Game = nullptr;
-void *gGameEventQueueMutex = nullptr;
+std::mutex gGameEventQueueMutex;
 std::fstream gJournalStream;
 
 //-----------------------------------------------------------------------------
@@ -43,8 +43,6 @@ GameInterface::GameInterface()
    mJournalMode = JournalOff;
    mRunning = true;
    mRequiresRestart = false;
-   if(!gGameEventQueueMutex)
-      gGameEventQueueMutex = Mutex::createMutex();
 }
 
 void GameInterface::journalProcess()

@@ -470,8 +470,6 @@ GFont::GFont()
    mSize = 0;
    mCharSet = 0;
    mNeedSave = false;
-   
-   mMutex = Mutex::createMutex();
 }
 
 GFont::~GFont()
@@ -503,8 +501,6 @@ GFont::~GFont()
    }
    
    SAFE_DELETE(mPlatformFont);
-   
-   Mutex::destroyMutex(mMutex);
 }
 
 void GFont::dumpInfo()
@@ -542,7 +538,7 @@ bool GFont::loadCharInfo(const UTF16 ch)
 
     if(mPlatformFont && mPlatformFont->isValidChar(ch))
     {
-        Mutex::lockMutex(mMutex); // the CharInfo returned by mPlatformFont is static data, must protect from changes.
+        std::lock_guard<std::mutex> lock(mMutex);
         PlatformFont::CharInfo &ci = mPlatformFont->getCharInfo(ch);
         if(ci.bitmapData)
             addBitmap(ci);
@@ -553,8 +549,6 @@ bool GFont::loadCharInfo(const UTF16 ch)
 #ifndef TORQUE_OS_IOS
         mNeedSave = true;
 #endif
-
-        Mutex::unlockMutex(mMutex);
         return true;
     }
 

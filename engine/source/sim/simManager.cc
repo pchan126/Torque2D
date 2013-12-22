@@ -46,7 +46,7 @@ namespace Sim
 SimTime gCurrentTime;
 SimTime gTargetTime;
 
-void *gEventQueueMutex;
+std::mutex gEventQueueMutex;
 SimEvent *gEventQueue;
 U32 gEventSequence;
 
@@ -59,13 +59,12 @@ void initEventQueue()
    gTargetTime = 0;
    gEventSequence = 1;
    gEventQueue = nullptr;
-   gEventQueueMutex = Mutex::createMutex();
 }
 
 void shutdownEventQueue()
 {
    // Delete all pending events
-   Mutex::lockMutex(gEventQueueMutex);
+   std::lock_guard<std::mutex> lock(gEventQueueMutex);
    SimEvent *walk = gEventQueue;
    while(walk)
    {
@@ -73,8 +72,6 @@ void shutdownEventQueue()
       delete walk;
       walk = temp;
    }
-   Mutex::unlockMutex(gEventQueueMutex);
-   Mutex::destroyMutex(gEventQueueMutex);
 }
 
 //---------------------------------------------------------------------------
@@ -86,7 +83,7 @@ U32 postEvent(SimObject *destObject, SimEvent* event,U32 time)
         "Sim::postEvent: Cannot go back in time. (flux capacitor unavailable -- BJG)");
    AssertFatal(destObject, "Destination object for event doesn't exist.");
 
-   Mutex::lockMutex(gEventQueueMutex);
+//    std::lock_guard<std::mutex> lock(gEventQueueMutex);
 
    if( time == -1 )
       time = gCurrentTime;
@@ -98,9 +95,6 @@ U32 postEvent(SimObject *destObject, SimEvent* event,U32 time)
    if(!destObject)
    {
       delete event;
-
-      Mutex::unlockMutex(gEventQueueMutex);
-
       return InvalidEventId;
    }
    event->sequenceCount = gEventSequence++;
@@ -120,8 +114,6 @@ U32 postEvent(SimObject *destObject, SimEvent* event,U32 time)
 
    U32 seqCount = event->sequenceCount;
 
-   Mutex::unlockMutex(gEventQueueMutex);
-
    return seqCount;
 }
 
@@ -130,7 +122,7 @@ U32 postEvent(SimObject *destObject, SimEvent* event,U32 time)
 
 void cancelEvent(U32 eventSequence)
 {
-   Mutex::lockMutex(gEventQueueMutex);
+    std::lock_guard<std::mutex> lock(gEventQueueMutex);
 
    SimEvent **walk = &gEventQueue;
    SimEvent *current;
@@ -141,19 +133,16 @@ void cancelEvent(U32 eventSequence)
       {
          *walk = current->nextEvent;
          delete current;
-         Mutex::unlockMutex(gEventQueueMutex);
          return;
       }
       else
          walk = &(current->nextEvent);
    }
-
-   Mutex::unlockMutex(gEventQueueMutex);
 }
 
 void cancelPendingEvents(SimObject *obj)
 {
-   Mutex::lockMutex(gEventQueueMutex);
+    std::lock_guard<std::mutex> lock(gEventQueueMutex);
 
    SimEvent **walk = &gEventQueue;
    SimEvent *current;
@@ -168,7 +157,6 @@ void cancelPendingEvents(SimObject *obj)
       else
          walk = &(current->nextEvent);
    }
-   Mutex::unlockMutex(gEventQueueMutex);
 }
 
 //---------------------------------------------------------------------------
@@ -176,33 +164,27 @@ void cancelPendingEvents(SimObject *obj)
 
 bool isEventPending(U32 eventSequence)
 {
-   Mutex::lockMutex(gEventQueueMutex);
+    std::lock_guard<std::mutex> lock(gEventQueueMutex);
 
    for(SimEvent *walk = gEventQueue; walk; walk = walk->nextEvent)
       if(walk->sequenceCount == eventSequence)
-      {
-         Mutex::unlockMutex(gEventQueueMutex);
          return true;
-      }
-   Mutex::unlockMutex(gEventQueueMutex);
+
    return false;
 }
 
 U32 getEventTimeLeft(U32 eventSequence)
 {
-   Mutex::lockMutex(gEventQueueMutex);
+    std::lock_guard<std::mutex> lock(gEventQueueMutex);
 
    for(SimEvent *walk = gEventQueue; walk; walk = walk->nextEvent)
       if(walk->sequenceCount == eventSequence)
       {
          SimTime t = walk->time - getCurrentTime();
-         Mutex::unlockMutex(gEventQueueMutex);
          return t;
       }
 
-   Mutex::unlockMutex(gEventQueueMutex);
-
-   return 0;   
+   return 0;
 }
 
 U32 getScheduleDuration(U32 eventSequence)
@@ -228,7 +210,7 @@ void advanceToTime(SimTime targetTime)
 {
    AssertFatal(targetTime >= getCurrentTime(), "EventQueue::process: cannot advance to time in the past.");
 
-   Mutex::lockMutex(gEventQueueMutex);
+    std::lock_guard<std::mutex> lock(gEventQueueMutex);
    gTargetTime = targetTime;
    while(gEventQueue && gEventQueue->time <= targetTime)
    {
@@ -244,7 +226,6 @@ void advanceToTime(SimTime targetTime)
       delete event;
    }
     gCurrentTime = targetTime;
-   Mutex::unlockMutex(gEventQueueMutex);
 }
 
 void advanceTime(SimTime delta)
@@ -254,14 +235,7 @@ void advanceTime(SimTime delta)
 
 U32 getCurrentTime()
 {
-   if(gEventQueueMutex)
-      Mutex::lockMutex(gEventQueueMutex);
-   
    SimTime t = gCurrentTime;
-   
-   if(gEventQueueMutex)
-      Mutex::unlockMutex(gEventQueueMutex);
-
    return t;
 }
 

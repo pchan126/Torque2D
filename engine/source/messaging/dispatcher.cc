@@ -34,7 +34,6 @@
 */
 
 #include "messaging/dispatcher.h"
-#include "platform/threads/mutex.h"
 #include "collection/simpleHashTable.h"
 #include "memory/safeDelete.h"
 
@@ -82,26 +81,20 @@ void IMessageListener::onRemoveFromQueue(StringTableEntry queue)
 //////////////////////////////////////////////////////////////////////////
 static struct _DispatchData
 {
-   void *mMutex;
+   std::mutex mMutex;
    SimpleHashTable<MessageQueue> mQueues;
 
    _DispatchData()
    {
-      mMutex = Mutex::createMutex();
    }
 
    ~_DispatchData()
    {
-      if(Mutex::lockMutex( mMutex ) )
+      if(mMutex.try_lock())
       {
          mQueues.clearTables();
-
-         Mutex::unlockMutex( mMutex );
+         mMutex.unlock();
       }
-
-      Mutex::destroyMutex( mMutex );
-      //SAFE_DELETE(mMutex);
-      mMutex = NULL;
    }
 } gDispatchData;
 
@@ -111,10 +104,10 @@ static struct _DispatchData
 
 bool isQueueRegistered(const char *name)
 {
-   MutexHandle mh;
-   if(mh.lock(gDispatchData.mMutex, true))
+   std::lock_guard<std::mutex> mh(gDispatchData.mMutex);
+
    {
-      return gDispatchData.mQueues.retrieve(name) != NULL;
+      return gDispatchData.mQueues.retrieve(name) != nullptr;
    }
 
    return false;
@@ -125,33 +118,29 @@ void registerMessageQueue(const char *name)
    if(isQueueRegistered(name))
       return;
 
-   if(Mutex::lockMutex( gDispatchData.mMutex, true ))
-   {
-      MessageQueue *queue = new MessageQueue;
-      queue->mQueueName = StringTable->insert(name);
-      gDispatchData.mQueues.insert(queue, name);
+   std::lock_guard<std::mutex> mh(gDispatchData.mMutex);
 
-      Mutex::unlockMutex( gDispatchData.mMutex );
-   }
+   MessageQueue *queue = new MessageQueue;
+   queue->mQueueName = StringTable->insert(name);
+   gDispatchData.mQueues.insert(queue, name);
 }
 
 void unregisterMessageQueue(const char *name)
 {
-   MutexHandle mh;
-   if(mh.lock(gDispatchData.mMutex, true))
+   std::lock_guard<std::mutex> mh(gDispatchData.mMutex);
+
+   MessageQueue *queue = gDispatchData.mQueues.remove(name);
+   if(queue == nullptr)
+      return;
+
+   // Tell the listeners about it
+   for(S32 i = 0;i < queue->mListeners.size();i++)
    {
-      MessageQueue *queue = gDispatchData.mQueues.remove(name);
-      if(queue == NULL)
-         return;
-
-      // Tell the listeners about it
-      for(S32 i = 0;i < queue->mListeners.size();i++)
-      {
-         queue->mListeners[i]->onRemoveFromQueue(name);
-      }
-
-      delete queue;
+      queue->mListeners[i]->onRemoveFromQueue(name);
    }
+
+   delete queue;
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -163,13 +152,10 @@ bool registerMessageListener(const char *queue, IMessageListener *listener)
    if(! isQueueRegistered(queue))
       registerMessageQueue(queue);
 
-   MutexHandle mh;
-
-   if(! mh.lock(gDispatchData.mMutex, true))
-      return false;
+   std::lock_guard<std::mutex> mh(gDispatchData.mMutex);
 
    MessageQueue *q = gDispatchData.mQueues.retrieve(queue);
-   if(q == NULL)
+   if(q == nullptr)
    {
       Con::errorf("Dispatcher::registerMessageListener - Queue '%s' not found?! It should have been added automatically!", queue);
       return false;
@@ -191,13 +177,10 @@ void unregisterMessageListener(const char *queue, IMessageListener *listener)
    if(! isQueueRegistered(queue))
       return;
 
-   MutexHandle mh;
-
-   if(! mh.lock(gDispatchData.mMutex, true))
-      return;
+   std::lock_guard<std::mutex> mh(gDispatchData.mMutex);
 
    MessageQueue *q = gDispatchData.mQueues.retrieve(queue);
-   if(q == NULL)
+   if(q == nullptr)
       return;
 
    for(std::deque<IMessageListener *>::iterator i = q->mListeners.begin();i != q->mListeners.end();i++)
@@ -217,13 +200,10 @@ void unregisterMessageListener(const char *queue, IMessageListener *listener)
 
 bool dispatchMessage(const char *queue, const char *msg, const char *data)
 {
-   MutexHandle mh;
-
-   if(! mh.lock(gDispatchData.mMutex, true))
-      return true;
+   std::lock_guard<std::mutex> mh(gDispatchData.mMutex);
 
    MessageQueue *q = gDispatchData.mQueues.retrieve(queue);
-   if(q == NULL)
+   if(q == nullptr)
    {
       Con::errorf("Dispatcher::dispatchMessage - Attempting to dispatch to unknown queue '%s'", queue);
       return true;
@@ -235,21 +215,15 @@ bool dispatchMessage(const char *queue, const char *msg, const char *data)
 
 bool dispatchMessageObject(const char *queue, Message *msg)
 {
-   MutexHandle mh;
-
-   if(msg == NULL)
+   if(msg == nullptr)
       return true;
 
    msg->addReference();
 
-   if(! mh.lock(gDispatchData.mMutex, true))
-   {
-      msg->freeReference();
-      return true;
-   }
+   std::lock_guard<std::mutex> mh(gDispatchData.mMutex);
 
    MessageQueue *q = gDispatchData.mQueues.retrieve(queue);
-   if(q == NULL)
+   if(q == nullptr)
    {
       Con::errorf("Dispatcher::dispatchMessage - Attempting to dispatch to unknown queue '%s'", queue);
       msg->freeReference();
@@ -289,12 +263,12 @@ MessageQueue * getMessageQueue(const char *name)
 
 extern bool lockDispatcherMutex()
 {
-   return Mutex::lockMutex(gDispatchData.mMutex);
+   return gDispatchData.mMutex.try_lock();
 }
 
 extern void unlockDispatcherMutex()
 {
-   Mutex::unlockMutex(gDispatchData.mMutex);
+   gDispatchData.mMutex.unlock();
 }
 
 } // end namespace Dispatcher
@@ -334,7 +308,7 @@ ConsoleFunction(registerMessageListener, bool, 3, 3, "(queueName, listener) Regi
                 "@return Returns true on success, and false otherwise (probably not found)")
 {
    IMessageListener *listener = dynamic_cast<IMessageListener *>(Sim::findObject(argv[2]));
-   if(listener == NULL)
+   if(listener == nullptr)
    {
       Con::errorf("registerMessageListener - Unable to find listener object, not an IMessageListener ?!");
       return false;
@@ -349,7 +323,7 @@ ConsoleFunction(unregisterMessageListener, void, 3, 3, "(queueName, listener) Un
                 "@return No Return Value")
 {
    IMessageListener *listener = dynamic_cast<IMessageListener *>(Sim::findObject(argv[2]));
-   if(listener == NULL)
+   if(listener == nullptr)
    {
       Con::errorf("unregisterMessageListener - Unable to find listener object, not an IMessageListener ?!");
       return;
@@ -374,7 +348,7 @@ ConsoleFunction(dispatchMessageObject, bool, 3, 3, "(queueName, message) Dispatc
                 "@param message The message object\n")
 {
    Message *msg = dynamic_cast<Message *>(Sim::findObject(argv[2]));
-   if(msg == NULL)
+   if(msg == nullptr)
    {
       Con::errorf("dispatchMessageObject - Unable to find message object");
       return false;

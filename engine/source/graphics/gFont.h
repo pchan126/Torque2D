@@ -93,7 +93,7 @@ protected:
     void addSheet(void);
     void assignSheet(S32 sheetNum, GBitmap *bmp);
 
-    void *mMutex;
+    std::mutex mMutex;
 
 public:
    static Resource<GFont> create(const char *faceName, U32 size, const char *cacheDirectory, U32 charset = TGE_ANSI_CHARSET);

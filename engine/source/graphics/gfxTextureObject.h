@@ -23,22 +23,13 @@
 #define _GFXTEXTUREOBJECT_H_
 
 
-#ifndef _REFBASE_H_
 #include "sim/refBase.h"
-#endif
-
 #include "math/mPoint.h"
-#ifndef _GFXENUMS_H_
 #include "graphics/gfxEnums.h"
-#endif
-#ifndef _GFXTEXTUREPROFILE_H_
 #include "graphics/gfxTextureProfile.h"
-#endif
-#ifndef _GFXRESOURCE_H_
 #include "graphics/gfxResource.h"
-#endif
 #include "sim/simBase.h"
-#include "platform/threads/mutex.h"
+//#include "platform/threads/mutex.h"
 #include "delegates/delegateSignal.h"
 
 class Point2I;
@@ -97,7 +88,7 @@ public:
    bool mDead;
    bool mLoaded;
     /// Lock for synchronizing access.
-   Mutex mMutex;
+   std::mutex mMutex;
 
    /// The device this texture belongs to.
    GFXDevice *mDevice;   

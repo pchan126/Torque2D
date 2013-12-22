@@ -116,8 +116,7 @@ StringTableEntry _StringTable::insert(const char* src, const bool  caseSens)
    if ( src == nullptr )
        return StringTable->EmptyString;
 
-   MutexHandle mutex;
-   mutex.lock(&mMutex, true);
+    std::lock_guard<std::mutex> lock(mMutex);
 
     std::string val(src);
     if (!caseSens)
@@ -142,9 +141,6 @@ StringTableEntry _StringTable::insertn(const char* src, S32 len, const bool  cas
    if ( src == nullptr )
        return StringTable->EmptyString;
 
-   MutexHandle mutex;
-   mutex.lock(&mMutex, true);
-
    char val[1024];
    AssertFatal(len < sizeof(val), "Invalid string to insertn");
    dStrncpy(val, src, len);
@@ -158,8 +154,7 @@ StringTableEntry _StringTable::lookup(const char* src, const bool  caseSens)
    if ( src == nullptr )
        return StringTable->EmptyString;
 
-   MutexHandle mutex;
-   mutex.lock(&mMutex, true);
+    std::lock_guard<std::mutex> lock(mMutex);
 
     std::string val(src);
     if (!caseSens)

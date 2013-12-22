@@ -24,11 +24,11 @@
 #define _STRINGTABLE_H_
 
 #include "platform/platform.h"
-#include "platform/threads/mutex.h"
 #include "memory/dataChunker.h"
 #include <unordered_map>
 #include <vector>
 #include <iostream>
+#include <mutex>
 
 //--------------------------------------
 /// A global table for the hashing and tracking of strings.
@@ -78,7 +78,7 @@ private:
    std::unordered_map<std::string, StringTableEntry> _table;
    std::unordered_map<StringTableEntry, U32> _index1;
    std::unordered_map<U32, StringTableEntry> _index2;
-   Mutex mMutex;
+   std::mutex mMutex;
 
   protected:
    _StringTable();

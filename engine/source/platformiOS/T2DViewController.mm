@@ -50,4 +50,9 @@
       device->refreshCIContext();
    }
 
+- (BOOL)prefersStatusBarHidden {
+   return YES;
+}
+
+
 @end

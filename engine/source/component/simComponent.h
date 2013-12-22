@@ -24,6 +24,7 @@
 #define _SIMCOMPONENT_H_
 
 #include "sim/simBase.h"
+#include <mutex>
 
 //-----------------------------------------------------------------------------
 
@@ -31,9 +32,24 @@ class SimComponent : public SimObject
 {
    typedef SimObject Parent;
 
+public:
+   DECLARE_CONOBJECT(SimComponent);
+   
+   /// Constructor
+   /// Add this component
+   SimComponent();
+   
+   SimComponent(const SimComponent& other);
+   
+   SimComponent& operator=(const SimComponent& other);
+   
+   /// Destructor
+   /// Remove this component and destroy child references
+   virtual ~SimComponent();
+
 private:
    Vector<SimComponent *> mComponentList; ///< The Component List
-   void *mMutex;                             ///< Component List Mutex
+   mutable std::mutex mMutex;                             ///< Component List Mutex
 
    SimObjectPtr<SimComponent> mOwner;        ///< The component which owns this one.
 
@@ -50,13 +66,13 @@ protected:
    typedef Vector<SimComponent *>::iterator SimComponentiterator;
    Vector<SimComponent *> &lockComponentList()
    {
-      Mutex::lockMutex( mMutex );
+      mMutex.lock();
       return mComponentList;
    };
 
    void unlockComponentList()
    {
-      Mutex::unlockMutex( mMutex );
+      mMutex.unlock();
    }
 
    /// onComponentRegister is called on each component by it's owner. If a component
@@ -91,20 +107,8 @@ protected:
    /// do cleanup here, as well as pass a call up the chain to the parent.
    virtual void onComponentUnRegister()
    {
-      mOwner = NULL;
+      mOwner = nullptr;
    }
-
-
-public:
-   DECLARE_CONOBJECT(SimComponent);
-
-   /// Constructor
-   /// Add this component
-   SimComponent();
-
-   /// Destructor
-   /// Remove this component and destroy child references
-   virtual ~SimComponent();
 
 public:
 

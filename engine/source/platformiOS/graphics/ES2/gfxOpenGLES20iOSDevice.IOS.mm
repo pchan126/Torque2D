@@ -529,17 +529,17 @@ public:
     {
        bool regMe = true;
        NSString *osVersion = [[UIDevice currentDevice] systemVersion];
-       if ([osVersion compare:@"7.0.0" options:NSNumericSearch])
-       {
-          EAGLContext* ctx = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3];
-          if (ctx != nil)
-             regMe = false;
-       }
+//       if ([osVersion compare:@"7.0.0" options:NSNumericSearch])
+//       {
+//          EAGLContext* ctx = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3];
+//          if (ctx != nil)
+//             regMe = false;
+//       }
        
        if (regMe)
           GFXInit::getRegisterDeviceSignal().notify(&GFXOpenGLES20iOSDevice::enumerateAdapters);
     }
 };
 
-static GFXOpenGLES20iOSRegisterDevice pGLRegisterDevice;
+static GFXOpenGLES20iOSRegisterDevice pGLES2RegisterDevice;
 

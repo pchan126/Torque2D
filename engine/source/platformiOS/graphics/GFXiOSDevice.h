@@ -25,7 +25,9 @@ public:
 
 static String _getRendererForDisplay(UIScreen* display)
 {
-   EAGLContext* ctx = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3];
+   EAGLContext* ctx = nil;
+   
+//   ctx = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3];
    if (ctx == nil)
       ctx = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
    

@@ -21,7 +21,7 @@
 //-----------------------------------------------------------------------------
 #include "platform/platform.h"
 #include "platform/platformTLS.h"
-#include "platform/threads/thread.h"
+//#include "platform/threads/thread.h"
 #include "console/console.h"
 #include "console/consoleInternal.h"
 #include "console/consoleObject.h"
@@ -41,7 +41,7 @@
 #include "collection/hashTable.h"
 #endif
 
-static Mutex* sLogMutex;
+static std::mutex sLogMutex;
 
 extern StringStack STR;
 
@@ -269,7 +269,6 @@ void init()
    logFileName                   = nullptr;
    newLogFile                    = true;
    gWarnUndefinedScriptVariables = false;
-   sLogMutex                     = new Mutex;
 
 #ifdef TORQUE_MULTITHREAD
    // Note the main thread ID.
@@ -331,8 +330,6 @@ void shutdown()
 
    consoleLogFile.close();
    Namespace::shutdown();
-
-   SAFE_DELETE( sLogMutex );
 }
 
 bool isActive()
@@ -342,12 +339,12 @@ bool isActive()
 
 bool isMainThread()
 {
-#ifdef TORQUE_MULTITHREAD
-   return ThreadManager::isCurrentThread(gMainThreadID);
-#else
+//#ifdef TORQUE_MULTITHREAD
+//   return ThreadManager::isCurrentThread(gMainThreadID);
+//#else
    // If we're single threaded we're always in the main thread.
    return true;
-#endif
+//#endif
 }
 
 //--------------------------------------
@@ -480,9 +477,7 @@ U32 tabComplete(char* inputBuffer, U32 cursorPos, U32 maxResultLength, bool forw
 static void log(const char *string)
 {
    // Lock.
-   MutexHandle mutex;
-   if( sLogMutex )
-      mutex.lock( sLogMutex, true );
+   std::lock_guard<std::mutex> lock( sLogMutex );
 
    // Bail if we ain't logging.
    if (!consoleLogMode) 
@@ -1078,7 +1073,7 @@ const char *execute(SimObject *object, S32 argc, const char *argv[],bool thisCal
 
       if(ent == nullptr)
       {
-         warnf(ConsoleLogEntry::Script, "%s: undefined for object '%s' - id %d", funcName, object->getName(), object->getId());
+//         warnf(ConsoleLogEntry::Script, "%s: undefined for object '%s' - id %d", funcName, object->getName(), object->getId());
 
          // Clean up arg buffers, if any.
          STR.clearFunctionOffset();

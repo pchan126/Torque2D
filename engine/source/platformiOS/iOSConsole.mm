@@ -77,7 +77,7 @@ void iOSConsole::enable(bool enabled)
    if(consoleEnabled)
    {
       printf("Initializing Console...\n");
-      new Thread((ThreadRunFunction)iOSConsoleInputLoopThread,0,true);
+//      new Thread((ThreadRunFunction)iOSConsoleInputLoopThread,0,true);
       printf("Console Initialized.\n");
 
       printf("%s", Con::getVariable("Con::Prompt"));
