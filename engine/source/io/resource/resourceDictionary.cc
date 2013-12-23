@@ -47,6 +47,7 @@ void ResDictionary::insert(ResourceObject *obj, StringTableEntry path, StringTab
    obj->path = path;
 
    std::string path_and_file(path);
+   path_and_file.append("/");
    path_and_file.append(file);
 
     ResEntry newEntry(path_and_file, obj);
@@ -63,7 +64,9 @@ ResourceObject* ResDictionary::find(StringTableEntry path, StringTableEntry name
    }
 
     std::string path_and_file(path);
+    path_and_file.append("/");
     path_and_file.append(name);
+   
 
     auto itr = hashTable.find(path_and_file);
     if (itr != hashTable.end())
