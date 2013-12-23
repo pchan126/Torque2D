@@ -39,13 +39,13 @@
 
 SimSet::SimSet(const SimSet& other): mMutex()
 {
-    std::lock_guard<std::mutex> _lock(other.mMutex);
+    std::lock_guard<std::recursive_mutex> _lock(other.mMutex);
 }
 
 SimSet& SimSet::operator=(const SimSet& other)
 {
     if (this!=&other) {
-        std::lock_guard<std::mutex> _mylock(mMutex), _otherlock(other.mMutex);
+        std::lock_guard<std::recursive_mutex> _mylock(mMutex), _otherlock(other.mMutex);
     }
     return *this;
 }
@@ -76,7 +76,7 @@ void SimSet::pushObject(SimObject* pObj)
 
 void SimSet::popObject()
 {
-   std::lock_guard<std::mutex> lock(mMutex);
+   std::lock_guard<std::recursive_mutex> lock(mMutex);
 
    if (objectList.size() == 0) 
    {
@@ -119,7 +119,7 @@ void SimSet::callOnChildren( const char * method, S32 argc, const char *argv[], 
 
 bool SimSet::reOrder( SimObject *obj, SimObject *target )
 {
-    std::lock_guard<std::mutex> lock(mMutex);
+    std::lock_guard<std::recursive_mutex> lock(mMutex);
 
    iterator itrS, itrD;
    if ( (itrS = find(begin(),end(),obj)) == end() )
@@ -163,7 +163,7 @@ void SimSet::onDeleteNotify(SimObject *object)
 
 void SimSet::onRemove()
 {
-    std::lock_guard<std::mutex> lock(mMutex);
+    std::lock_guard<std::recursive_mutex> lock(mMutex);
 
     objectList.sortId();
 
@@ -175,7 +175,7 @@ void SimSet::onRemove()
 
 void SimSet::write(std::iostream &stream, U32 tabStop, U32 flags)
 {
-    std::lock_guard<std::mutex> lock(mMutex);
+    std::lock_guard<std::recursive_mutex> lock(mMutex);
 
    // export selected only?
    if((flags & SelectedOnly) && !isSelected())

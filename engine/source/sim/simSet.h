@@ -90,7 +90,7 @@ class SimSet: public SimObject, public TamlChildren
 
 protected:
    SimObjectList objectList;
-   mutable std::mutex mMutex;
+   mutable std::recursive_mutex mMutex;
 
 public:
    SimSet(): mMutex() {
