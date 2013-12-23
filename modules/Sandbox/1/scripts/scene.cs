@@ -70,7 +70,7 @@ function createSandboxScene()
         destroySandboxScene();
     
     // Create the scene.
-    new Scene(SandboxScene);
+    new t2dScene(SandboxScene);
             
     // Sanity!
     if ( !isObject(SandboxWindow) )
