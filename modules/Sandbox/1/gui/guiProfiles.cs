@@ -257,7 +257,6 @@ if (!isObject(GuiCheckBoxProfile)) new GuiControlProfile (GuiCheckBoxProfile)
     borderColor = "0 0 0 255";
     fontType = $platformFontType;
     fontSize = $platformFontSize;
-    fixedExtent = true;
     justify = "left";
     bitmap = "^Sandbox/gui/images/checkBox";
     hasBitmapArray = true;
@@ -386,7 +385,6 @@ if (!isObject(GuiButtonProfile)) new GuiControlProfile (GuiButtonProfile)
     border = -1;
     fontColor = "white";
     fontColorHL = "229 229 229 255";
-    fixedExtent = true;
     justify = "center";
     canKeyFocus = false;
     fontType = $platformFontType;
@@ -429,7 +427,6 @@ if (!isObject(GreenButtonProfile)) new GuiControlProfile (GreenButtonProfile : G
 if (!isObject(GuiRadioProfile)) new GuiControlProfile (GuiRadioProfile : GuiDefaultProfile)
 {
     fillColor = "232 232 232 255";
-    fixedExtent = true;
     bitmap = "^Sandbox/gui/images/radioButton.png";
     hasBitmapArray = true;
 };
