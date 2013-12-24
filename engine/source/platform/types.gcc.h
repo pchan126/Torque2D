@@ -117,7 +117,7 @@ typedef unsigned long long  U64;
 #  define TORQUE_CPU_PPC
 #  define TORQUE_BIG_ENDIAN
 
-#elif defined(__arm__)
+#elif defined(__arm__) || defined (__arm64__)
 #  define TORQUE_CPU_STRING "ARM"
 #  define TORQUE_CPU_ARM
 #  define TORQUE_LITTLE_ENDIAN
