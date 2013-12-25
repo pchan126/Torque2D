@@ -118,3 +118,14 @@ ConsoleMethod(Sprite, getColumns, S32, 2, 2,     "() Gets the number columns in 
 {
     return object->getColumns();
 }
+
+ConsoleMethod(Sprite, setNode, void, 5, 5, "(obj1,row, column) Adds given list of objects to the SceneObjectSet.\n"
+        "@param obj, row, column \n"
+        "@return No return value")
+{
+    SceneObject *obj = Sim::findObject<SceneObject>(argv[2]);
+    if(obj)
+        object->setNode(obj, dAtoi(argv[3]), dAtoi(argv[4]));
+    else
+        Con::printf("Set::add: Object \"%s\" doesn't exist", argv[2]);
+}

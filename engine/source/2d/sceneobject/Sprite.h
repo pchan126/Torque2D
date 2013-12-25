@@ -39,6 +39,8 @@ private:
     bool mFlipY;
     U32   mRows;
     U32   mColumns;
+    Vector<SceneObject*> mNodes;
+    bool mSquishy;
 
 public:
     Sprite();
@@ -56,12 +58,16 @@ public:
    
     virtual void setSize( const Vector2& size );
 
-    void setRows( const U32 rows )                       { mRows = mClamp(rows, 1, 10); }
-    void setColumns( const U32 columns )                 { mColumns = mClamp(columns, (U32)1, 10); }
+    void setRows( const U32 rows )                       { mRows = mClamp(rows, 1, 10); mNodes.setSize(mRows*mColumns, nullptr);}
+    void setColumns( const U32 columns )                 { mColumns = mClamp(columns, (U32)1, 10); mNodes.setSize((mRows+1)*(mColumns+1), nullptr);}
     inline U32 getRows( void ) const                     { return mRows; }
     inline U32 getColumns( void ) const                  { return mColumns; }
 
+    void setNode(SceneObject* obj, U32 row, U32 column);
+    void clearNodes();
+
     virtual void sceneRender( const t2dSceneRenderState * pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer );
+    void renderMesh( const t2dSceneRenderState * pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer );
 
     /// Declare Console Object.
     DECLARE_CONOBJECT( Sprite );
