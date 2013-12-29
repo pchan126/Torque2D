@@ -30,7 +30,7 @@
 #include "2d/core/particleSystem.h"
 #include "Layer.h"
 #include "t2dSceneRenderState.h"
-#include "Scene_ScriptBinding.h"
+#include "t2dScene_ScriptBinding.h"
 #include "debug/profiler.h"
 #include "renderInstance/renderPassManager.h"
 
