@@ -323,6 +323,7 @@ private:
     void flushInternal( void );
 
    void _lightAndDraw( Vector<GFXVertexPCT>* pVertexVector, Vector<U16>* pIndex, GFXTexHandle handle = NULL);
+   void _drawWireframe( Vector<GFXVertexPCT>* pVertexVector, Vector<U16>* pIndex);
 
    /// Find texture batch.
     indexedPrim* findTextureBatch( GFXTexHandle& handle );

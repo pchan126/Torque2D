@@ -550,7 +550,7 @@ void BatchRender::flushInternal( void )
         if ( !mWireframeMode )
            _lightAndDraw( &mVertexBuffer, &mIndexBuffer, mStrictOrderTextureHandle);
       else
-         _lightAndDraw(  &mVertexBuffer, &mIndexBuffer );
+            _drawWireframe(  &mVertexBuffer, &mIndexBuffer );
 
         // Stats.
         mpDebugStats->batchDrawCallsStrict++;
@@ -599,6 +599,32 @@ void BatchRender::flushInternal( void )
     mVertexBuffer.clear();
     mIndexBuffer.clear();
 }
+
+void BatchRender::_drawWireframe( Vector<GFXVertexPCT>* pVertexVector, Vector<U16>* pIndex)
+{
+    mTempVertBuffHandle.set(GFX, (U32)pVertexVector->size(), GFXBufferTypeVolatile, pVertexVector->address(), (U32)pIndex->size(), pIndex->address() );
+    GFX->setVertexBuffer( mTempVertBuffHandle );
+
+    // Draw the triangles.
+    if (mShader.isNull())
+    {
+        GFX->setupGenericShaders();
+    }
+    else
+    {
+        MatrixF xform(GFX->getWorldMatrix());
+        xform *= GFX->getViewMatrix();
+        xform *= GFX->getProjectionMatrix();
+        xform.transpose();
+        GFX->setShader(mShader);
+        GFX->setShaderConstBuffer(mShaderConstBuffer);
+        mShaderConstBuffer->setSafe( mShader->getShaderConstHandle("$mvp_matrix"), xform );
+        mShaderConstBuffer->setSafe( mShader->getShaderConstHandle("$sampler2d_0"), 0);
+    }
+
+    GFX->drawIndexedPrimitive(GFXLineStrip, 0, 0, (U32)pVertexVector->size(), (U32)pIndex->size(), (U32)pIndex->size()-1);
+}
+
 
 void BatchRender::_lightAndDraw( Vector<GFXVertexPCT>* pVertexVector, Vector<U16>* pIndex, GFXTexHandle handle )
 {

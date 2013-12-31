@@ -146,20 +146,30 @@ function SoftbodyToy::createCubeSoftbody( %this )
     %offsetX = %positionX - (( %nodeStride * (SoftbodyToy.NodeX-1)) * 0.5);
     %offsetY = %positionY - (( %nodeStride * (SoftbodyToy.NodeY-1)) * 0.5);
         
+    %squishy = new Sprite(Squishy);
+    %squishy.Animation = "ToyAssets:PoisonCloudWobble";
+    %squishy.setPosition( 0, 20);
+    %squishy.Size = SoftbodyToy.NodeSize;
+    %squishy.setRows(SoftbodyToy.NodeY-1);
+    %squishy.setColumns(SoftbodyToy.NodeX-1);
+    SandboxScene.add( %squishy );
+    %squishy.setBodyType("static");
+
     // Create the sprites.
     for ( %x = 0; %x < SoftbodyToy.NodeX; %x++ )
     {
         for ( %y = 0; %y < SoftbodyToy.NodeY; %y++ )
         {            
             // Create the sprite.
-            %object = new Sprite();
+//            %object = new Sprite();
+            %object  = new SceneObject();
             
             // Set the position.
             %object.setPosition( %offsetX + (%x * %nodeStride), %offsetY + (%y * %nodeStride) );
-            
+            echo (%offsetX SPC %offsetY);
             // Set the static image.
-            //%object.Image = "ToyAssets:WhiteSphere";
-            %object.Animation = "ToyAssets:PoisonCloudWobble";
+//            //%object.Image = "ToyAssets:WhiteSphere";
+//            %object.Animation = "ToyAssets:PoisonCloudWobble";
             
             // Set a useful size.
             %object.Size = SoftbodyToy.NodeSize;
@@ -181,6 +191,7 @@ function SoftbodyToy::createCubeSoftbody( %this )
             
             // Store object.
             SoftbodyToy.body[%x,%y] = %object;
+            %squishy.setNode(%object, %x, %y);
         }
     }
       

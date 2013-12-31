@@ -42,7 +42,7 @@ IMPLEMENT_CONOBJECT(Sprite);
 
 Sprite::Sprite() :
     mFlipX(false),
-    mFlipY(false), mRows(1), mColumns(1)
+    mFlipY(false), mRows(1), mColumns(1), mSquishy(false)
 {
 }
 
@@ -63,10 +63,12 @@ void Sprite::copyTo(SimObject* object)
     Sprite* pSprite = static_cast<Sprite*>(object);
 
     // Sanity!
-    AssertFatal(pSprite != NULL, "Sprite::copyTo() - Object is not the correct type.");
+    AssertFatal(pSprite != nullptr, "Sprite::copyTo() - Object is not the correct type.");
 
     /// Render flipping.
     pSprite->setFlip( getFlipX(), getFlipY() );
+    pSprite->mSquishy = mSquishy;
+    pSprite->mNodes = mNodes;
 }
 
 //------------------------------------------------------------------------------
@@ -96,6 +98,12 @@ void Sprite::setSize( const Vector2& size )
 
 void Sprite::sceneRender( const t2dSceneRenderState * pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer )
 {
+    if (mSquishy)
+    {
+        renderMesh(pSceneRenderState, pSceneRenderRequest, pBatchRenderer);
+        return;
+    }
+
     if (!mShaderAsset.isNull())
         pBatchRenderer->setShader(*mShaderAsset);
 
@@ -115,3 +123,75 @@ void Sprite::sceneRender( const t2dSceneRenderState * pSceneRenderState, const S
 }
 
 
+void Sprite::renderMesh( const t2dSceneRenderState * pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer )
+{
+    if (!mShaderAsset.isNull())
+        pBatchRenderer->setShader(*mShaderAsset);
+
+    // Finish if we can't render.
+    if ( validRender() )
+    {
+        // Fetch texel area.
+        ImageAsset::FrameArea::TexelArea texelArea = getProviderImageFrameArea().mTexelArea;
+
+        // Flip texture coordinates appropriately.
+        texelArea.setFlip( getFlipX(), getFlipY() );
+
+        // Fetch lower/upper texture coordinates.
+        const Vector2& texLower = texelArea.mTexelLower;
+        const Vector2& texUpper = texelArea.mTexelUpper;
+
+        Vector<GFXVertexPCT> verts;
+
+        Vector2 subVert0 = mRenderOOBB[0];
+        Vector2 subVert3 = mRenderOOBB[3];
+        for (int j = 1; j <= mRows; j++)
+        {
+            F32 texfactor = (F32)(j-1)/(F32)mRows;
+            F32 factorY = (F32)j/(F32)mRows;
+            Vector2 subVert1 = (mLerp(mRenderOOBB[0], mRenderOOBB[1], factorY));
+            Vector2 subVert2 = (mLerp(mRenderOOBB[2], mRenderOOBB[3], factorY));
+
+            verts.setSize(mColumns*2+2);
+            for (int i = 0; i <= mColumns; i++)
+            {
+                F32 factor = (F32)i/(F32)mColumns;
+
+                SceneObject *node1 = mNodes[(j-1)*(mColumns+1)+i];
+                SceneObject *node2 = mNodes[(j)*(mColumns+1)+i];
+
+                verts[i*2+0].point.set(node1->getRenderPosition().x, node1->getRenderPosition().y, 0.0);
+                verts[i*2+1].point.set(node2->getRenderPosition().x, node2->getRenderPosition().y, 0.0);
+                verts[i*2+0].texCoord.set(mLerp(texLower.x, texUpper.x, texfactor),
+                        mLerp(texUpper.y, texLower.y, factor));
+                verts[i*2+1].texCoord.set(mLerp(texLower.x, texUpper.x, factorY),
+                        mLerp(texUpper.y, texLower.y, factor));
+            }
+
+            for (int i = 0; i < verts.size(); i++)
+                verts[i].color = getBlendColor()*getSceneLayerObj()->getLight();
+
+            pBatchRenderer->SubmitTriangleStrip(verts, getProviderTexture());
+            subVert0 = subVert1;
+            subVert3 = subVert2;
+        }
+    }
+
+    if (!mShaderAsset.isNull())
+        pBatchRenderer->clearShader();
+}
+
+void Sprite::setNode(SceneObject *obj, U32 row, U32 column) {
+    if ((row * (mColumns+1) + column) > mNodes.size())
+        return;
+
+    mNodes[(row * (mColumns+1) + column)] = obj;
+    mSquishy = true;
+//    setBodyType( b2_staticBody );
+}
+
+void Sprite::clearNodes()
+{
+    mNodes.clear();
+    mSquishy = false;
+}
