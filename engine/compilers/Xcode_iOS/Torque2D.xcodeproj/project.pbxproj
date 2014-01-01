@@ -835,7 +835,7 @@
 		867BAD3416AEC9050033868F /* DebugDraw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DebugDraw.h; sourceTree = "<group>"; };
 		867BAD3516AEC9050033868F /* DebugStats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DebugStats.h; sourceTree = "<group>"; };
 		867BAD3616AEC9050033868F /* PhysicsProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhysicsProxy.h; sourceTree = "<group>"; };
-		867BAD3916AEC9050033868F /* Scene_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Scene_ScriptBinding.h; sourceTree = "<group>"; };
+		867BAD3916AEC9050033868F /* t2dScene_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = t2dScene_ScriptBinding.h; sourceTree = "<group>"; };
 		867BAD3A16AEC9050033868F /* SceneRenderFactories.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SceneRenderFactories.cpp; sourceTree = "<group>"; };
 		867BAD3B16AEC9050033868F /* SceneRenderFactories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SceneRenderFactories.h; sourceTree = "<group>"; };
 		867BAD3C16AEC9050033868F /* SceneRenderObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SceneRenderObject.h; sourceTree = "<group>"; };
@@ -2090,7 +2090,7 @@
 				867BAD3416AEC9050033868F /* DebugDraw.h */,
 				867BAD3516AEC9050033868F /* DebugStats.h */,
 				867BAD3616AEC9050033868F /* PhysicsProxy.h */,
-				867BAD3916AEC9050033868F /* Scene_ScriptBinding.h */,
+				867BAD3916AEC9050033868F /* t2dScene_ScriptBinding.h */,
 				867BAD3A16AEC9050033868F /* SceneRenderFactories.cpp */,
 				867BAD3B16AEC9050033868F /* SceneRenderFactories.h */,
 				867BAD3C16AEC9050033868F /* SceneRenderObject.h */,

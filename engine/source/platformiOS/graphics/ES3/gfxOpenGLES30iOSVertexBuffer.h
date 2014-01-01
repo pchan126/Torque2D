@@ -19,9 +19,9 @@ public:
                         const GFXVertexFormat *vertexFormat, 
                         U32 vertexSize, 
                         GFXBufferType bufferType,
-                        const GLvoid * data = NULL,
+                        const GLvoid * data = nullptr,
                         U32 indexCount = 0,
-                        const GLvoid *indexBuffer = NULL);
+                        const GLvoid *indexBuffer = nullptr);
 
 	~GFXOpenGLES30iOSVertexBuffer();
 
