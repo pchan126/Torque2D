@@ -386,8 +386,8 @@ void ProcessedCustomMaterial::setTextureStages( SceneRenderState *state, const S
 
                if ( handles->mRTParamsSC[samplerRegister]->isValid() && texObject )
                {
-                  const Point3I &targetSz = texObject->getSize();
-                  const RectI &targetVp = texTarget->getViewport();
+//                  const Point3I &targetSz = texObject->getSize();
+//                  const RectI &targetVp = texTarget->getViewport();
                   Point4F rtParams;
 
 //                  ScreenSpace::RenderTargetParameters(targetSz, targetVp, rtParams);
@@ -407,7 +407,7 @@ void ProcessedCustomMaterial::setMaterialParameter(MaterialParameters* param,
                                                    MaterialParameterHandle* handle,
                                                    const String& value)
 {
-   T typedValue;
+//   T typedValue;
 //   if (PropertyInfo::default_scan(value, typedValue))
 //   {
 //      param->set(handle, typedValue);

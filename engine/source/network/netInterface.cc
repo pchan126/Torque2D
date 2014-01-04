@@ -445,7 +445,7 @@ void NetInterface::sendDisconnectPacket(NetConnection *conn, const char *reason)
    Con::printf("Issuing Disconnect packet.");
 
    // send a disconnect packet...
-   U32 connectSequence = conn->getSequence();
+//   U32 connectSequence = conn->getSequence();
 
 //   BitStream *out = BitStream::getPacketStream();
 //   out->write(U8(Disconnect));

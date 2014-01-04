@@ -655,7 +655,7 @@ Net::Error NetConnection::sendPacket(std::iostream &stream)
 //      stream->setBuffer(stream->getBuffer(), stream->getPosition(), stream->getPosition());
 //      mRemoteConnection->processRawPacket(stream);
 //
-//      return Net::NoError;
+      return Net::NoError;
 //   }
 //   else
 //   {

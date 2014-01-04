@@ -389,15 +389,17 @@ ConsoleFunction(isValidImageFile, bool, 2, 2, "(string filePath)\n"
         char bArray[2];
         stream->read(bArray, 2);
         // check header signature
-        ret = ((bArray[0] == 0xFF) && (bArray[1] == 0xD8));
+//        ret = ((bArray[0] == 0xFF) && (bArray[1] == 0xD8));
+       ret = false;
     } 
     else if (dStricmp(ext, ".png") == 0)
     {
-        int i = 0;
+//        int i = 0;
         char bArray[8];
         stream->read(bArray, 8);
         // check header signature
-        ret = ((bArray[i++] == 0x89) && (bArray[i++] == 0x50) && (bArray[i++] == 0x4E) && (bArray[i++] == 0x47));
+//        ret = ((bArray[i++] == 0x89) && (bArray[i++] == 0x50) && (bArray[i++] == 0x4E) && (bArray[i++] == 0x47));
+       ret = false;
     }
 
     ResourceManager->closeStream(stream);

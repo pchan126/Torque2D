@@ -326,10 +326,10 @@ void AssetBase::setOwned( AssetManager* pAssetManager, AssetDefinition* pAssetDe
     PROFILE_SCOPE(AssetBase_setOwned);
 
     // Sanity!
-    AssertFatal( pAssetManager != NULL, "Cannot set asset ownership with NULL asset manager." );
-    AssertFatal( mpOwningAssetManager == NULL, "Cannot set asset ownership if it is already owned." );
-    AssertFatal( pAssetDefinition != NULL, "Cannot set asset ownership with a NULL asset definition." );
-    AssertFatal( mpAssetDefinition != NULL, "Asset ownership assigned but has a NULL asset definition." );
+    AssertFatal( pAssetManager != nullptr, "Cannot set asset ownership with nullptr asset manager." );
+    AssertFatal( mpOwningAssetManager == nullptr, "Cannot set asset ownership if it is already owned." );
+    AssertFatal( pAssetDefinition != nullptr, "Cannot set asset ownership with a nullptr asset definition." );
+    AssertFatal( mpAssetDefinition != nullptr, "Asset ownership assigned but has a nullptr asset definition." );
     AssertFatal( mpAssetDefinition->mAssetName == pAssetDefinition->mAssetName, "Asset ownership differs by asset name." );
     AssertFatal( mpAssetDefinition->mAssetDescription == pAssetDefinition->mAssetDescription, "Asset ownership differs by asset description." );
     AssertFatal( mpAssetDefinition->mAssetCategory == pAssetDefinition->mAssetCategory, "Asset ownership differs by asset category." );

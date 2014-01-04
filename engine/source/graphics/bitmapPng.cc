@@ -410,7 +410,7 @@ bool GBitmap::writePNG(std::iostream &stream, bool compressHard) const
       FrameAllocator::setWaterMark(waterMark);
       return retVal;
    } else {
-      U8* buffer = new U8[1 << 22]; // 4 Megs.  Should be enough...
+//      U8* buffer = new U8[1 << 22]; // 4 Megs.  Should be enough...
 //      MemStream* pMemStream = new MemStream(1 << 22, buffer, false, true);
        std::stringstream pMemStream;
 

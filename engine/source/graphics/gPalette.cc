@@ -125,7 +125,7 @@ GPalette::writeMSPalette(std::iostream &io_rStream) const
    io_rStream << (U16(0x300));    // version
    io_rStream << (U16(256));      // num colors...
 
-   io_rStream << (m_pColors, 256 * sizeof(ColorI));
+   io_rStream.write((char*)m_pColors, 256 * sizeof(ColorI));
 
    return (io_rStream.good());
 }

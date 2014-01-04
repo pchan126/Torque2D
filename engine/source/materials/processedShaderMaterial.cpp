@@ -112,10 +112,10 @@ void ShaderRenderPassData::reset()
 
    shader = nullptr;
 
-   for ( U32 i=0; i < featureShaderHandles.size(); i++ )
-      delete featureShaderHandles[i];
-
-   featureShaderHandles.clear();
+//   for ( auto ptr: featureShaderHandles )
+//      delete ptr;
+//
+//   featureShaderHandles.clear();
 }
 
 String ShaderRenderPassData::describeSelf() const
@@ -778,8 +778,8 @@ void ProcessedShaderMaterial::setTextureStages( SceneRenderState *state, const S
 
                if ( handles->mRTParamsSC[i]->isValid() && texObject )
                {
-                  const Point3I &targetSz = texObject->getSize();
-                  const RectI &targetVp = texTarget->getViewport();
+//                  const Point3I &targetSz = texObject->getSize();
+//                  const RectI &targetVp = texTarget->getViewport();
                   Point4F rtParams;
 
 //                  ScreenSpace::RenderTargetParameters(targetSz, targetVp, rtParams);
@@ -1141,7 +1141,7 @@ void ProcessedShaderMaterial::setSceneInfo(SceneRenderState * state, const Scene
    PROFILE_SCOPE( ProcessedShaderMaterial_setSceneInfo );
 
    GFXShaderConstBuffer* shaderConsts = _getShaderConstBuffer(pass);
-   ShaderConstHandles* handles = _getShaderConstHandles(pass);
+//   ShaderConstHandles* handles = _getShaderConstHandles(pass);
 
    // Set cubemap stuff here (it's convenient!)
 //   const Point3F &eyePosWorld = state->getCameraPosition();

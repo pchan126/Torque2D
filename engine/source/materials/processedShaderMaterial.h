@@ -31,7 +31,7 @@ class GenericConstBufferLayout;
 class ShaderData;
 class LightInfo;
 class ShaderMaterialParameterHandle;
-class ShaderFeatureConstHandles;
+//class ShaderFeatureConstHandles;
 class CustomMaterial;
 
 
@@ -95,7 +95,7 @@ public:
 
    GFXShaderRef         shader;
    ShaderConstHandles   shaderHandles;
-   Vector<ShaderFeatureConstHandles*> featureShaderHandles;
+//   Vector<ShaderFeatureConstHandles*> featureShaderHandles;
 
    virtual void reset();
    virtual String describeSelf() const;

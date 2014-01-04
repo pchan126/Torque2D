@@ -303,11 +303,6 @@ void Scroller::sceneRender( const t2dSceneRenderState * pSceneRenderState, const
 //   Con::printf("xsize: %d, ysize: %d", xDivisions.size(), yDivisions.size());
 //   Con::printf("xdiv %s", tempx.c_str());
 //   Con::printf("ydiv %s", tempy.c_str());
-   
-   if (yDivisions.size() > 6)
-   {
-      int ek = 90;
-   }
 
    F32 baseX = mRenderOOBB[0].x;
     F32 baseY = mRenderOOBB[0].y;
@@ -331,8 +326,6 @@ void Scroller::sceneRender( const t2dSceneRenderState * pSceneRenderState, const
 //      Con::printf("start ydiv %d", yc);
       yc++;
       baseY = mRenderOOBB[0].y + (*yitr * regionHeight);
-      F32 a1 = frameTexelArea.mTexelUpper.y;
-      F32 a2 = frameTexelArea.mTexelHeight*(F32)mFmod((*yitr+renderOffsetY), 1.0f);
 
       if (yitr+1 == yDivisions.end())
       {
@@ -470,18 +463,7 @@ void Scroller::sceneRender( const t2dSceneRenderState * pSceneRenderState, const
       if (texY1 < 0.001)
          texY1 += 1.00f;
    }
-//   Con::printf("yTex %s", textempy.c_str());
 
-   if (yDivisions.size() > 6)
-   {
-      int ek = 90;
-   }
-
-//   for (int i = 0; i < indexCount; i++)
-//   {
-//      Con::printf("indexsize: %d: count %d, ", index.size(), indexCount);
-//   }
-   
    index.setSize(indexCount);
     pBatchRenderer->SubmitIndexedTriangleStrip(verts, texture, index);
     // Flush the scroller batches.

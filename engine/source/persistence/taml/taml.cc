@@ -748,7 +748,7 @@ void Taml::compileDynamicFields( TamlWriteNode* pTamlWriteNode )
     const AbstractClassRep::FieldList& fieldList = pSimObject->getFieldList();
 
     // Fetch field count.
-    const U32 fieldCount = fieldList.size();
+//    const U32 fieldCount = fieldList.size();
 
     Vector<SimFieldDictionary::Entry*> dynamicFieldList(__FILE__, __LINE__);
 

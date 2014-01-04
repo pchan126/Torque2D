@@ -2487,13 +2487,13 @@ ConsoleMethod(t2dScene, pickArea, const char*, 4, 9, "(startx/y, endx/y, [sceneG
             sceneGroupMask = dAtoi(argv[firstArg]);
     }
 
-    // Calculate scene layer mask.
-    U32 sceneLayerMask = MASK_ALL;
-    if ( (U32)argc > (firstArg + 1) )
-    {
-        if ( *argv[firstArg + 1] != 0 )
-            sceneLayerMask = dAtoi(argv[firstArg + 1]);
-    }
+//    // Calculate scene layer mask.
+//    U32 sceneLayerMask = MASK_ALL;
+//    if ( (U32)argc > (firstArg + 1) )
+//    {
+//        if ( *argv[firstArg + 1] != 0 )
+//            sceneLayerMask = dAtoi(argv[firstArg + 1]);
+//    }
 
     // Calculate pick mode.
     t2dScene::PickMode pickMode = t2dScene::PICK_OOBB;

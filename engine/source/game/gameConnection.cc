@@ -357,7 +357,7 @@ void GameConnection::readPacket(std::iostream &bstream)
 
 void GameConnection::writePacket(std::iostream &bstream, PacketNotify *note)
 {
-   char stringBuf[256];
+//   char stringBuf[256];
 //   bstream->clearCompressionPoint();
 //   stringBuf[0] = 0;
 //   bstream->setStringBuffer(stringBuf);

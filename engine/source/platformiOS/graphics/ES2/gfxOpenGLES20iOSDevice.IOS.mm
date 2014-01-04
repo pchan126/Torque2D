@@ -528,7 +528,7 @@ public:
     GFXOpenGLES20iOSRegisterDevice()
     {
        bool regMe = true;
-       NSString *osVersion = [[UIDevice currentDevice] systemVersion];
+//       NSString *osVersion = [[UIDevice currentDevice] systemVersion];
 //       if ([osVersion compare:@"7.0.0" options:NSNumericSearch])
 //       {
 //          EAGLContext* ctx = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3];

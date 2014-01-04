@@ -1855,7 +1855,7 @@ static void handleGameInfoRequest( const NetAddress* address, U32 key, U8 flags 
       if ( flags & ServerFilter::OfflineQuery )
          return;
 
-      bool compressStrings = !( flags & ServerFilter::NoStringCompress );
+//      bool compressStrings = !( flags & ServerFilter::NoStringCompress );
 //      BitStream *out = BitStream::getPacketStream();
 //
 //      out->write( U8( NetInterface::GameInfoResponse ) );

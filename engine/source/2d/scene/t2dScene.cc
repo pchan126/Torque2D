@@ -4368,7 +4368,7 @@ void t2dScene::onTamlPostRead( const TamlCustomNodes& customNodes )
 
         // Fetch children controller nodes.
         // Iterate controllers.
-        for( TamlCustomNode* controllerNode:pControllerNode->getChildren() )
+       for( auto itr = pControllerNode->getChildren().begin(); itr != pControllerNode->getChildren().end(); ++itr)
         {
             // Is the node a proxy object?
             if ( !pControllerNode->isProxyObject() )

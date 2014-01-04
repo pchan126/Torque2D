@@ -34,12 +34,12 @@ bool SimObject::writeObject(std::iostream &stream)
    clearFieldFilters();
    buildFilterList();
 
-    if (getName())
-    {
-        S32 len = dStrlen(getName());
+//    if (getName())
+//    {
+//        S32 len = dStrlen(getName());
+//    }
 
-    }
-    StreamFn::writeString(stream, getName() ? getName() : "");
+   StreamFn::writeString(stream, getName() ? getName() : "");
 
    // Static fields
    AbstractClassRep *rep = getClassRep();
