@@ -864,6 +864,8 @@ void GuiControl::onSleep()
 void GuiControl::setControlProfile(GuiControlProfile *prof)
 {
    AssertFatal(prof, "GuiControl::setControlProfile: invalid profile");
+   assert(prof != nullptr);
+   
    if(prof == mProfile)
       return;
    if(mAwake)
@@ -1738,8 +1740,10 @@ void GuiControl::getCursor(GuiCursor *&cursor, bool &showCursor, const GuiEvent 
         
         PlatformWindow *pWindow = static_cast<GuiCanvas*>(getRoot())->getPlatformWindow();
         AssertFatal(pWindow != nullptr,"GuiControl without owning platform window!  This should not be possible.");
+       assert(pWindow != nullptr);
         PlatformCursorController *pController = pWindow->getCursorController();
         AssertFatal(pController != nullptr,"PlatformWindow without an owned CursorController!");
+       assert(pController != nullptr);
         
         pController->popCursor();
         

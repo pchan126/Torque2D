@@ -246,7 +246,7 @@ bool GBitmap::readPNG(std::iostream &io_rStream)
    png_set_interlace_handling(png_ptr);
    png_read_update_info(png_ptr, info_ptr);
 
-   png_uint_32 rowBytes = png_get_rowbytes(png_ptr, info_ptr);
+   auto rowBytes = png_get_rowbytes(png_ptr, info_ptr);
    if (format == GFXFormatR8G8B8) {
       AssertFatal(rowBytes == width * 3,
                   "Error, our rowbytes are incorrect for this transform... (3)");

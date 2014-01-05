@@ -486,6 +486,7 @@ static void alxSourceEnvironment(ALuint source, F32 environmentLevel, AudioSampl
 static void alxSourceEnvironment(ALuint source, LoopingImage * image)
 {
    AssertFatal(image, "alxSourceEnvironment: invalid looping image");
+   assert(image != nullptr);
    if(image->mDescription.mIs3D)
       alxSourceEnvironment(source, image->mDescription.mEnvironmentLevel, image->mEnvironment);
 }
@@ -493,6 +494,7 @@ static void alxSourceEnvironment(ALuint source, LoopingImage * image)
 static void alxSourceEnvironment(ALuint source, AudioStreamSource * image)
 {
    AssertFatal(image, "alxSourceEnvironment: invalid looping image");
+   assert(image != nullptr);
    if(image->mDescription.mIs3D)
       alxSourceEnvironment(source, image->mDescription.mEnvironmentLevel, image->mEnvironment);
 }

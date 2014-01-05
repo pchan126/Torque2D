@@ -160,6 +160,7 @@ void NetConnection::sendFileChunk()
       return;
    }
 
+   assert (mCurrentDownloadingFile != nullptr);
    mCurrentFileBufferOffset += len;
    mCurrentDownloadingFile->read( (char*)buffer, len);
    postNetEvent(new FileChunkEvent(buffer, len));

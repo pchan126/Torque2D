@@ -82,7 +82,8 @@ void SpriteBatchItem::resetState( void )
     if ( mProxyId != SpriteBatch::INVALID_SPRITE_PROXY )
     {
         // Sanity!
-        AssertFatal( mSpriteBatch != NULL, "Cannot remove proxy with NULL sprite batch." );
+        AssertFatal( mSpriteBatch != nullptr, "Cannot remove proxy with NULL sprite batch." );
+        assert(mSpriteBatch != nullptr);
 
         // Destroy proxy.
         mSpriteBatch->destroyQueryProxy( this );
@@ -136,9 +137,12 @@ void SpriteBatchItem::resetState( void )
 void SpriteBatchItem::setBatchParent( SpriteBatch* pSpriteBatch, const U32 batchId )
 {
     // Sanity!
-    AssertFatal( pSpriteBatch != NULL, "Cannot assign a NULL batch parent." );
-    AssertFatal( mSpriteBatch == NULL, "Cannot assign batch parent as one is already assigned." );
+    AssertFatal( pSpriteBatch != nullptr, "Cannot assign a NULL batch parent." );
+    AssertFatal( mSpriteBatch == nullptr, "Cannot assign batch parent as one is already assigned." );
     AssertFatal( batchId != 0, "Cannot assign a zero batch Id." );
+   assert(pSpriteBatch != nullptr);
+   assert(mSpriteBatch != nullptr);
+   assert(batchId != 0);
 
     // Assign.
     mSpriteBatch = pSpriteBatch;

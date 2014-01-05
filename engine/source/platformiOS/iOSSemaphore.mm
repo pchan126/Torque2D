@@ -69,7 +69,8 @@ bool Semaphore::acquire( bool block, S32 timeoutMS )
 	
    bool ok;
    AssertFatal(mData, "Semaphore::acquireSemaphore: invalid semaphore");
-   
+   assert(mData != nullptr);
+
    ok = pthread_mutex_lock(&mData->mDarkroom);
    AssertFatal(ok == 0,"Mutex Lock failed on mDarkroom in acquireSemaphore().");
    

@@ -154,6 +154,8 @@ int dStrcmp( const UTF16 *str1, const UTF16 *str2)
  
 int dStricmp(const char *str1, const char *str2)
 {
+   assert(str1 != nullptr);
+   assert(str2 != nullptr);
    char c1, c2;
    while (1)
    {
@@ -189,6 +191,8 @@ int dStrnicmp(const char *str1, const char *str2, dsize_t len)
 char* dStrcpy(char *dst, const char *src)
 {
    AssertFatal(dst && src, "bad strings passed to dStrcpy()");
+   assert(dst != nullptr);
+   assert(src != nullptr);
    return strcpy(dst,src);
 }   
 

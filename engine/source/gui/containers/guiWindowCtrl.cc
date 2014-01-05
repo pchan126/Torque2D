@@ -573,7 +573,7 @@ bool GuiWindowCtrl::onKeyDown(const GuiEvent &event)
       GuiControl *parent = getParent();
       if (parent)
       {
-         GuiWindowCtrl *firstWindow = NULL;
+         GuiWindowCtrl *firstWindow = nullptr;
          for (auto i:*parent )
          {
             GuiWindowCtrl *ctrl = dynamic_cast<GuiWindowCtrl *>(i);
@@ -590,6 +590,7 @@ bool GuiWindowCtrl::onKeyDown(const GuiEvent &event)
          //recycle from the beginning
          if (firstWindow != this)
          {
+            assert(firstWindow != nullptr);
             firstWindow->selectWindow();
             return true;
          }
@@ -716,6 +717,8 @@ void GuiWindowCtrl::onRender(Point2I offset, const RectI &updateRect)
     
     // Deal with rendering the titlebar controls
     AssertFatal(root, "Unable to get the root GuiCanvas.");
+   assert(root != nullptr);
+   
    Point2I localPoint = globalToLocalCoord(root->getCursorPos());
 
    //draw the close button

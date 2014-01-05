@@ -679,6 +679,8 @@ void ParticleAssetField::WriteCustomTamlSchema( const AbstractClassRep* pClassRe
     // Sanity!
     AssertFatal( pClassRep != nullptr,  "ParticleAssetField::WriteCustomTamlSchema() - ClassRep cannot be NULL." );
     AssertFatal( pParentElement != nullptr,  "ParticleAssetField::WriteCustomTamlSchema() - Parent Element cannot be NULL." );
+   assert(pClassRep != nullptr);
+   assert(pParentElement != nullptr);
 
     // Create Field element.
     TiXmlElement* pFieldElement = new TiXmlElement( "xs:element" );

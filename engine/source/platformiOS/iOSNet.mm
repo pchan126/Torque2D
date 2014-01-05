@@ -720,6 +720,7 @@ Net::Error Net::bind(NetSocket socket, U16 port)
    const char* serverIP = Con::getVariable( "Pref::Net::BindAddress" );
    // serverIP is guaranteed to be non-0.
    AssertFatal( serverIP, "serverIP is nullptr!" );
+   assert(serverIP != nullptr);
 
    if( serverIP[0] != '\0' ) {
       // we're not empty

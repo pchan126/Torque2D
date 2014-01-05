@@ -667,7 +667,7 @@ void TSShapeInstance::animateVisibility(S32 ss)
 
    // find out who needs default values set
    TSIntegerSet beenSet;
-   beenSet.setAll(mMeshObjects.size());
+   beenSet.setAll((U32)mMeshObjects.size());
    for (i=0; i<mThreadList.size(); i++)
       beenSet.takeAway(mThreadList[i]->getSequence()->visMatters);
 
@@ -730,7 +730,7 @@ void TSShapeInstance::animateFrame(S32 ss)
 
    // find out who needs default values set
    TSIntegerSet beenSet;
-   beenSet.setAll(mMeshObjects.size());
+   beenSet.setAll((U32)mMeshObjects.size());
    for (i=0; i<mThreadList.size(); i++)
       beenSet.takeAway(mThreadList[i]->getSequence()->frameMatters);
 
@@ -785,7 +785,7 @@ void TSShapeInstance::animateMatFrame(S32 ss)
 
    // find out who needs default values set
    TSIntegerSet beenSet;
-   beenSet.setAll(mMeshObjects.size());
+   beenSet.setAll((U32)mMeshObjects.size());
    for (i=0; i<mThreadList.size(); i++)
       beenSet.takeAway(mThreadList[i]->getSequence()->matFrameMatters);
 

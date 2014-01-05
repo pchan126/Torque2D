@@ -51,7 +51,7 @@ template <class T> inline T* constructInPlace(T* p, const T* copy)
 
 
 template< class T >
-inline T* constructArrayInPlace( T* p, U32 num )
+inline T* constructArrayInPlace(T *p, size_t num)
 {
     return new ( p ) T[ num ];
 }

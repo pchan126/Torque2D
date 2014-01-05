@@ -541,6 +541,7 @@ GuiInspectorField* GuiInspectorGroup::constructField( S32 fieldType )
 {
    ConsoleBaseType *cbt = ConsoleBaseType::getType(fieldType);
    AssertFatal(cbt, "GuiInspectorGroup::constructField - could not resolve field type!");
+   assert(cbt != nullptr);
 
    // Alright, is it a datablock?
    if(cbt->isDatablock())

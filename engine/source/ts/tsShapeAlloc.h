@@ -164,9 +164,9 @@ class TSShapeAlloc
     S32 * getBuffer32();
     S32 getBufferSize32();
     void setGuard32();
-    S32 * extend32(S32);
+    S32 * extend32(size_t);
     S32 set32(S32);
-    void copyToBuffer32(S32*,S32);
+    void copyToBuffer32(S32 *, size_t);
 
 //   DECLARE_ALLOC(16,S16)
     S16 get16();
@@ -180,9 +180,9 @@ class TSShapeAlloc
     S16 * getBuffer16();
     S32 getBufferSize16();
     void setGuard16();
-    S16 * extend16(S32);
+    S16 * extend16(size_t);
     S16 set16(S16);
-    void copyToBuffer16(S16*,S32);
+    void copyToBuffer16(S16 *, size_t);
 
 
 //   DECLARE_ALLOC(8,S8)

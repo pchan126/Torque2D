@@ -1223,7 +1223,9 @@ void ProcessedShaderMaterial::setBuffers(GFXVertexBufferHandleBase *vertBuffer)
 bool ProcessedShaderMaterial::stepInstance()
 {
    PROFILE_SCOPE(ProcessedShaderMaterial_stepInstance);
-   AssertFatal( mInstancingState, "ProcessedShaderMaterial::stepInstance - This material isn't instanced!" );  
+   AssertFatal( mInstancingState, "ProcessedShaderMaterial::stepInstance - This material isn't instanced!" );
+   assert(mInstancingState != nullptr);
+   assert(_getShaderConstBuffer( 0 )->mInstPtr != nullptr);
    return mInstancingState->step( &_getShaderConstBuffer( 0 )->mInstPtr );
 }
 

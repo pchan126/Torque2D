@@ -117,7 +117,8 @@ void Trigger::integrateObject( const F32 totalTime, const F32 elapsedTime, Debug
     const t2dScene::typeContactVector* pCurrentContacts = getCurrentContacts();
 
     // Sanity!
-    AssertFatal( pCurrentContacts != NULL, "Trigger::integrateObject() - Contacts not initialized correctly." );
+    AssertFatal( pCurrentContacts != nullptr, "Trigger::integrateObject() - Contacts not initialized correctly." );
+   assert(pCurrentContacts != nullptr);
 
     // Perform "OnStay" callback.
     if ( mStayCallback && pCurrentContacts->size() > 0 )

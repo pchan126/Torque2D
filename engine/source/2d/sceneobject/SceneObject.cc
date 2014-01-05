@@ -1516,6 +1516,8 @@ void SceneObject::onEndCollision( const TickContact& tickContact )
     // Sanity!
     AssertFatal( mpCurrentContacts != nullptr, "SceneObject::onBeginCollision() - Contacts not initialized correctly." );
     AssertFatal( tickContact.mpSceneObjectA == this || tickContact.mpSceneObjectB == this, "SceneObject::onEndCollision() - Contact does not involve this scene object." );
+   assert(mpCurrentContacts != nullptr);
+   assert(tickContact.mpSceneObjectA == this || tickContact.mpSceneObjectB == this);
 
     // Remove contact.
     for( auto contactItr = mpCurrentContacts->begin(); contactItr != mpCurrentContacts->end(); ++contactItr )
@@ -2719,6 +2721,7 @@ void SceneObject::copyTo( SimObject* obj )
 
     // Sanity!
     AssertFatal(pSceneObject != nullptr, "SceneObject::copyTo() - Object is not the correct type.");
+   assert(pSceneObject != nullptr);
 
     /// Lifetime.
     pSceneObject->setLifetime( getLifetime() );
@@ -2912,7 +2915,9 @@ size_t SceneObject::copyCollisionShapes( SceneObject* pSceneObject, const bool c
 
 S32 SceneObject::copyCircleCollisionShapeTo( SceneObject* pSceneObject, const b2FixtureDef& fixtureDef ) const
 {
-    // Fetch shape.
+   assert(pSceneObject != nullptr);
+
+   // Fetch shape.
     const b2CircleShape* pShape = dynamic_cast<const b2CircleShape*>( fixtureDef.shape );
 
     // Check shape.
@@ -2943,6 +2948,8 @@ S32 SceneObject::copyCircleCollisionShapeTo( SceneObject* pSceneObject, const b2
 
 S32 SceneObject::copyPolygonCollisionShapeTo( SceneObject* pSceneObject, const b2FixtureDef& fixtureDef ) const
 {
+   assert(pSceneObject != nullptr);
+
     // Fetch shape.
     const b2PolygonShape* pShape = dynamic_cast<const b2PolygonShape*>( fixtureDef.shape );
 

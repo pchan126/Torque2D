@@ -242,6 +242,7 @@ void ParticleAssetEmitter::copyTo(SimObject* object)
 
    // Sanity!
    AssertFatal( pParticleAssetEmitter != nullptr, "ParticleAssetEmitter::copyTo() - Object is not the correct type.");
+   assert(pParticleAssetEmitter != nullptr);
 
    // Copy parent.
    Parent::copyTo( object );

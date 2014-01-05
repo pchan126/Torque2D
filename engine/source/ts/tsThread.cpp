@@ -535,7 +535,7 @@ void TSShapeInstance::destroyThread(TSThread * thread)
    checkScaleCurrentlyAnimated();
 }
 
-U32 TSShapeInstance::threadCount()
+size_t TSShapeInstance::threadCount()
 {
    return mThreadList.size();
 }

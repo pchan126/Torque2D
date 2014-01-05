@@ -5128,6 +5128,8 @@ static void WriteJointsCustomTamlScehema( const AbstractClassRep* pClassRep, TiX
     // Sanity!
     AssertFatal( pClassRep != nullptr,  "Taml::WriteJointsCustomTamlScehema() - ClassRep cannot be nullptr." );
     AssertFatal( pParentElement != nullptr,  "Taml::WriteJointsCustomTamlScehema() - Parent Element cannot be nullptr." );
+   assert(pClassRep != nullptr);
+   assert(pParentElement != nullptr);
 
     char buffer[1024];
 

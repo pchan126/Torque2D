@@ -133,7 +133,8 @@ void AudioAsset::copyTo(SimObject* object)
     AudioAsset* pAsset = static_cast<AudioAsset*>(object);
 
     // Sanity!
-    AssertFatal(pAsset != NULL, "AudioAsset::copyTo() - Object is not the correct type.");
+    AssertFatal(pAsset != nullptr, "AudioAsset::copyTo() - Object is not the correct type.");
+   assert(pAsset != nullptr);
 
     // Copy state.
     pAsset->setAudioFile( getAudioFile() );

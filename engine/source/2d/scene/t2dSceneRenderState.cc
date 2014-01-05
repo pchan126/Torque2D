@@ -200,7 +200,8 @@ void t2dSceneRenderState::renderObjects( t2dScene * pScene, SceneRenderQueue* pS
                     SceneRenderQueue* pIsolatedRenderQueue = pSceneRenderRequest->mpIsolatedRenderQueue;
 
                     // Sanity!
-                    AssertFatal( pIsolatedRenderQueue != NULL, "Cannot render batch isolated with an isolated render queue." );
+                    AssertFatal( pIsolatedRenderQueue != nullptr, "Cannot render batch isolated with an isolated render queue." );
+                   assert(pIsolatedRenderQueue != nullptr);
 
                     // Sort the isolated render requests.
                     pIsolatedRenderQueue->sort();

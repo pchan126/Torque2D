@@ -489,7 +489,7 @@ class TSShape: public ResourceInstance
    /// Returns name string for sequence at the passed index.
    const String& getSequenceName( S32 seqIndex ) const;
 
-	S32 getTargetCount() const;
+	size_t getTargetCount();
 	const String& getTargetName( S32 mapToNameIndex ) const;
 
    S32 findNode(S32 nameIndex) const;

@@ -35,7 +35,8 @@ static int jpegReadDataFn(void *client_data, unsigned char *data, int length)
 {
     std::iostream *stream = (std::iostream*)client_data;
    AssertFatal(stream != nullptr, "jpegReadDataFn::No stream.");
-//   int pos = stream->getPosition();
+   assert(stream !=  nullptr);
+   //   int pos = stream->getPosition();
    if (stream->read( (char*)data, length))
       return length;
 

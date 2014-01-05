@@ -132,7 +132,7 @@ TSShapeInstance::TSShapeInstance( TSShape *shape, bool loadMaterials )
    VECTOR_SET_ASSOCIATION(mThreadList);
    VECTOR_SET_ASSOCIATION(mTransitionThreads);
 
-   mShapeResource = NULL;
+   mShapeResource = nullptr;
    mShape = shape;
    buildInstanceData( mShape, loadMaterials );
 }
@@ -144,13 +144,14 @@ TSShapeInstance::~TSShapeInstance()
    while (mThreadList.size())
       destroyThread(mThreadList.back());
 
-   setMaterialList(NULL);
+   setMaterialList(nullptr);
 
    delete [] mDirtyFlags;
 }
 
 void TSShapeInstance::buildInstanceData(TSShape * _shape, bool loadMaterials)
 {
+   assert(_shape != nullptr);
    mShape = _shape;
 
    debrisRefCount = 0;
@@ -166,7 +167,7 @@ void TSShapeInstance::buildInstanceData(TSShape * _shape, bool loadMaterials)
    mAlphaAlwaysValue = 1.0f;
 
    // material list...
-   mMaterialList = NULL;
+   mMaterialList = nullptr;
    mOwnMaterialList = false;
 
    //
@@ -183,10 +184,10 @@ void TSShapeInstance::buildInstanceData(TSShape * _shape, bool loadMaterials)
    initMeshObjects();
 
    // set up subtree data
-   S32 ss = mShape->subShapeFirstNode.size(); // we have this many subtrees
+   auto ss = mShape->subShapeFirstNode.size(); // we have this many subtrees
    mDirtyFlags = new U32[ss];
 
-   mGroundThread = NULL;
+   mGroundThread = nullptr;
    mCurrentDetailLevel = 0;
 
    animateSubtrees();
@@ -198,15 +199,16 @@ void TSShapeInstance::buildInstanceData(TSShape * _shape, bool loadMaterials)
 
 void TSShapeInstance::initNodeTransforms()
 {
+   assert(mShape != nullptr);
    // set up node data
-   S32 numNodes = mShape->nodes.size();
+   auto numNodes = mShape->nodes.size();
    mNodeTransforms.setSize(numNodes);
 }
 
 void TSShapeInstance::initMeshObjects()
 {
    // add objects to trees
-   S32 numObjects = mShape->objects.size();
+   auto numObjects = mShape->objects.size();
    mMeshObjects.setSize(numObjects);
    for (S32 i=0; i<numObjects; i++)
    {
@@ -221,7 +223,7 @@ void TSShapeInstance::initMeshObjects()
       if (obj->numMeshes)
          objInst->meshList = &mShape->meshes[obj->startMeshIndex];
       else
-         objInst->meshList = NULL;
+         objInst->meshList = nullptr;
 
       objInst->object = obj;
       objInst->forceHidden = false;
@@ -392,7 +394,7 @@ void TSShapeInstance::renderDebugNodes()
 //   desc.setZReadWrite( false, false );
 
 //   for ( U32 i = 0; i < mNodeTransforms.size(); i++ )
-//      drawUtil->drawTransform( desc, mNodeTransforms[i], NULL, NULL );
+//      drawUtil->drawTransform( desc, mNodeTransforms[i], nullptr, nullptr );
 }
 
 void TSShapeInstance::listMeshes( const String &state ) const
@@ -743,7 +745,7 @@ void TSShapeInstance::MeshObjectInstance::render(  S32 objectDetail,
    // skin is dirty and needs to be updated.  This should result
    // in the skin only updating once per frame in most cases.
    const U32 currTime = Sim::getCurrentTime();
-   bool isSkinDirty = currTime != mLastTime;
+//   bool isSkinDirty = currTime != mLastTime;
 
 //   mesh->render(  materials, 
 //                  rdata, 

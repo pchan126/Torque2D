@@ -777,7 +777,7 @@ bool WorldQuery::QueryCallback( S32 proxyId )
         {
            typeWorldQueryResultVector* temp = new typeWorldQueryResultVector();
            mLayeredQueryResults.push_back(*temp);
-           free(temp);
+           delete temp;
         }
 
        mLayeredQueryResults[pSceneObject->getSceneLayer()].push_back( queryResult );

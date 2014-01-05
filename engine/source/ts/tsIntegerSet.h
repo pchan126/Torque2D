@@ -62,7 +62,7 @@ public:
    bool testAll(U32 upto = MAX_TS_SET_SIZE) const;
 
    /// Counts set bits
-   U32 count(U32 upto = MAX_TS_SET_SIZE) const;
+   size_t count(size_t upto = MAX_TS_SET_SIZE);
 
    /// intersection (a & b)
    void intersect(const TSIntegerSet&);

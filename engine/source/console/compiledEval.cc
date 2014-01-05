@@ -219,18 +219,21 @@ inline const char *ExprEvalState::getStringVariable()
 inline void ExprEvalState::setIntVariable(S32 val)
 {
    AssertFatal(currentVariable != nullptr, "Invalid evaluator state - trying to set null variable!");
+   assert(currentVariable != nullptr);
    currentVariable->setIntValue(val);
 }
 
 inline void ExprEvalState::setFloatVariable(F64 val)
 {
    AssertFatal(currentVariable != nullptr, "Invalid evaluator state - trying to set null variable!");
+   assert(currentVariable != nullptr);
    currentVariable->setFloatValue((F32)val);
 }
 
 inline void ExprEvalState::setStringVariable(const char *val)
 {
    AssertFatal(currentVariable != nullptr, "Invalid evaluator state - trying to set null variable!");
+   assert(currentVariable != nullptr);
    currentVariable->setStringValue(val);
 }
 
@@ -380,7 +383,9 @@ static const StringTableEntry _count = StringTable->insert( "count" );
 // Gets a component of an object's field value or a variable and returns it in val.
 static void getFieldComponent( SimObject* object, StringTableEntry field, const char* array, StringTableEntry subField, char* val, const U32 bufferSize )
 {
-    const char* prevVal = nullptr;
+   assert(subField != nullptr);
+
+   const char* prevVal = nullptr;
    
     // Grab value from object.
     if( object && field )
@@ -425,7 +430,8 @@ static void getFieldComponent( SimObject* object, StringTableEntry field, const 
 // set the first field, 'y' the second, and 'z' the third.
 static void setFieldComponent( SimObject* object, StringTableEntry field, const char* array, StringTableEntry subField )
 {
-    // Copy the current string value
+   assert(subField != nullptr);
+   // Copy the current string value
     char strValue[1024];
     dStrncpy( strValue, STR.getStringValue(), sizeof(strValue) );
 

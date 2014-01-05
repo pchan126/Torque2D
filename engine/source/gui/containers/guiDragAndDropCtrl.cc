@@ -49,6 +49,8 @@ void GuiDragAndDropControl::startDragging(Point2I offset)
 {
    GuiCanvas* canvas = getRoot();
    AssertFatal(canvas, "DragAndDropControl wasn't added to the gui before the drag started.");
+   assert(canvas != nullptr);
+
    if (canvas->getMouseLockedControl())
    {
       GuiEvent event;
@@ -58,7 +60,7 @@ void GuiDragAndDropControl::startDragging(Point2I offset)
    canvas->mouseLock(this);
    canvas->setFirstResponder(this);
    mOffset = offset;
-   mLastTarget=NULL;
+   mLastTarget=nullptr;
 }
 
 void GuiDragAndDropControl::onMouseDown(const GuiEvent& event)

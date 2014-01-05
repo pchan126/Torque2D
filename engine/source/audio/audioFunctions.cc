@@ -221,7 +221,7 @@ ConsoleFunction(alxGetAudioLength, S32, 2, 2,   "( audio-assetId ) Use the alxGe
     AudioAsset* pAudioAsset = AssetDatabase.acquireAsset<AudioAsset>( pAssetId );
 
     // Did we get the audio asset?
-    if ( pAudioAsset == NULL )
+    if ( pAudioAsset == nullptr )
     {
         // No, so warn.
         Con::warnf( "alxGetAudioLength() - Could not find audio asset '%s'.", pAssetId );
@@ -256,7 +256,7 @@ ConsoleFunction(alxCreateSource, S32, 2, 2, "(audio-assetId) - Create a source f
     AudioAsset* pAudioAsset = AssetDatabase.acquireAsset<AudioAsset>( pAssetId );
 
     // Did we get the audio asset?
-    if ( pAudioAsset == NULL )
+    if ( pAudioAsset == nullptr )
     {
         // No, so warn.
         Con::warnf( "alxCreateSource() - Could not find audio asset '%s'.", pAssetId );
@@ -424,7 +424,7 @@ ConsoleFunction(alxPlay, S32, 2, 2, "(audio-assetId) - Play the audio asset Id.\
     AudioAsset* pAudioAsset = AssetDatabase.acquireAsset<AudioAsset>( pAssetId );
 
     // Did we get the audio asset?
-    if ( pAudioAsset == NULL )
+    if ( pAudioAsset == nullptr )
     {
         // No, so warn.
         Con::warnf( "alxPlay() - Could not find audio asset '%s'.", pAssetId );
@@ -686,12 +686,13 @@ ConsoleFunction(startiOSAudioStream, S32, 2, 2,  "(audio-assetId) - Play the aud
 {
     // Fetch asset Id.
     const char* pAssetId = argv[1];
+   assert(pAssetId != nullptr);
 
     // Acquire audio asset.
     AudioAsset* pAudioAsset = AssetDatabase.acquireAsset<AudioAsset>( pAssetId );
 
     // Did we get the audio asset?
-    if ( pAudioAsset == NULL )
+    if ( pAudioAsset == nullptr )
     {
         // No, so warn.
         Con::warnf( "startiOSAudioStream() - Could not find audio asset '%s'.", pAssetId );
@@ -716,7 +717,7 @@ ConsoleFunction(stopiOSAudioStream, void, 2, 2, "( streamId ) - Stops playing th
     SimObjectId streamId = dAtoi( argv[1] );
     iOSStreamSource* pStream = Sim::findObject<iOSStreamSource>( streamId );
 
-    if( pStream != NULL )
+    if( pStream != nullptr )
     {
         if( pStream->isPlaying() )
         {

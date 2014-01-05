@@ -290,7 +290,7 @@ class TSMesh
 
    void computeBounds();
    virtual void computeBounds( const MatrixF &transform, Box3F &bounds, S32 frame = 0, Point3F *center = nullptr, F32 *radius = nullptr );
-   void computeBounds( const Point3F *, S32 numVerts, S32 stride, const MatrixF &transform, Box3F &bounds, Point3F *center, F32 *radius );
+   void computeBounds(const Point3F *, size_t numVerts, size_t stride, const MatrixF &transform, Box3F &bounds, Point3F *center, F32 *radius);
    const Box3F& getBounds() const { return mBounds; }
    const Point3F& getCenter() const { return mCenter; }
    F32 getRadius() const { return mRadius; }

@@ -151,24 +151,25 @@ public:
     template<typename T> T* acquireAsset( const char* pAssetId )
     {
         // Sanity!
-        AssertFatal( pAssetId != NULL, "Cannot acquire NULL asset Id." );
+        AssertFatal( pAssetId != nullptr, "Cannot acquire NULL asset Id." );
+       assert(pAssetId != nullptr);
 
         // Is this an empty asset Id?
         if ( *pAssetId == 0 )
         {
             // Yes, so return nothing.
-            return NULL;
+            return nullptr;
         }
 
         // Find asset.
         AssetDefinition* pAssetDefinition = findAsset( pAssetId );
 
         // Did we find the asset?
-        if ( pAssetDefinition == NULL )
+        if ( pAssetDefinition == nullptr )
         {
             // No, so warn.
             Con::warnf( "Asset Manager: Failed to acquire asset Id '%s' as it does not exist.", pAssetId );
-            return NULL;
+            return nullptr;
         }
 
         // Is asset loading?
@@ -176,7 +177,7 @@ public:
         {
             // Yes, so we've got a circular loop which we cannot resolve!
             Con::warnf( "Asset Manager: Failed to acquire asset Id '%s' as loading it involves a cyclic dependency on itself which cannot be resolved.", pAssetId );
-            return NULL;
+            return nullptr;
         }
 
         // Info.
@@ -187,7 +188,7 @@ public:
         }
 
         // Is the asset already loaded?
-        if ( pAssetDefinition->mpAssetBase == NULL )
+        if ( pAssetDefinition->mpAssetBase == nullptr )
         {
             // No, so info
             if ( mEchoInfo )
@@ -216,12 +217,12 @@ public:
             pAssetDefinition->mAssetLoading = false;
 
             // Did we generate the asset?
-            if ( pAssetDefinition->mpAssetBase == NULL )
+            if ( pAssetDefinition->mpAssetBase == nullptr )
             {
                 // No, so warn.
                 Con::warnf( "Asset Manager: > Failed to acquire asset Id '%s' as loading the asset file failed to return the asset or the correct asset type: '%s'.",
                     pAssetId, pAssetDefinition->mAssetBaseFilePath );
-                return NULL;
+                return nullptr;
             }
 
             // Increase loaded count.
@@ -264,11 +265,11 @@ public:
         T* pAcquiredAsset = dynamic_cast<T*>( (AssetBase*)pAssetDefinition->mpAssetBase );
 
         // Is asset the correct type?
-        if ( pAcquiredAsset == NULL )
+        if ( pAcquiredAsset == nullptr )
         {
             // No, so warn.
             Con::warnf( "Asset Manager: > Failed to acquire asset Id '%s' as it was not the required asset type: '%s'.", pAssetId, pAssetDefinition->mAssetBaseFilePath );
-            return NULL;
+            return nullptr;
         }
 
         // Acquire asset reference.
@@ -291,14 +292,14 @@ public:
         T* pAsset = acquireAsset<T>( pAssetId );
 
         // Finish if the asset was not acquired.
-        if ( pAsset == NULL )
-            return NULL;
+        if ( pAsset == nullptr )
+            return nullptr;
 
         // Clone the asset.
         T* pAssetClone = dynamic_cast<T*>( pAsset->clone( true ) );
 
         // Sanity!
-        AssertFatal( pAssetClone != NULL, "acquireAsPrivateAsset() - Failed to clone asset type." );
+        AssertFatal( pAssetClone != nullptr, "acquireAsPrivateAsset() - Failed to clone asset type." );
 
         // Release the public asset.
         releaseAsset( pAssetId );

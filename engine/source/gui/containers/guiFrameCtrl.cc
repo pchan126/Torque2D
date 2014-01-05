@@ -349,10 +349,12 @@ void GuiFrameSetCtrl::getCursor(GuiCursor *&cursor, bool &showCursor, const GuiE
     curRegion = pointInAnyRegion(curMousePos);
     
     PlatformWindow *pWindow = pRoot->getPlatformWindow();
-    AssertFatal(pWindow != NULL,"GuiControl without owning platform window!  This should not be possible.");
+    AssertFatal(pWindow != nullptr,"GuiControl without owning platform window!  This should not be possible.");
+   assert(pWindow != nullptr);
     PlatformCursorController *pController = pWindow->getCursorController();
-    AssertFatal(pController != NULL,"PlatformWindow without an owned CursorController!");
-    
+    AssertFatal(pController != nullptr,"PlatformWindow without an owned CursorController!");
+   assert(pController != nullptr);
+   
     switch (curRegion)
     {
         case VERTICAL_DIVIDER:

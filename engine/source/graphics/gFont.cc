@@ -665,6 +665,7 @@ const PlatformFont::CharInfo &GFont::getCharInfo(const UTF16 in_charIndex)
    PROFILE_START(NewFontGetCharInfo);
 
    AssertFatal(in_charIndex, "GFont::getCharInfo - can't get info for char 0!");
+   assert(in_charIndex);
 
    if(mRemapTable[in_charIndex] == -1)
    {
@@ -992,7 +993,7 @@ bool GFont::read(std::iostream &io_rStream)
 
       // Read the buffer.
       FrameTemp<S32> inBuff(buffLen);
-      io_rStream.read( (char*)*inBuff, buffLen*sizeof(S32));
+      io_rStream.read( (char*)inBuff.address(), buffLen*sizeof(S32));
 
       // Decompress.
       uLongf destLen = (maxGlyph-minGlyph+1)*sizeof(S32);
@@ -1096,7 +1097,7 @@ bool GFont::write(std::iostream &stream)
 
          // Write out.
          stream << (U32)destLen;
-         stream.write((char*)*outBuff, destLen*sizeof(S32));
+         stream.write((char*)outBuff.address(), destLen*sizeof(S32));
       }
 
       // Put us back to normal.

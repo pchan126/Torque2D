@@ -111,6 +111,7 @@ AbstractClassRep* AbstractClassRep::findClassRep(const char* in_pClassName)
 void AbstractClassRep::registerClassRep(AbstractClassRep* in_pRep)
 {
    AssertFatal(in_pRep != nullptr, "AbstractClassRep::registerClassRep was passed a nullptr pointer!");
+   assert(in_pRep != nullptr);
 
 #ifdef TORQUE_DEBUG  // assert if this class is already registered.
    for(AbstractClassRep *walk = classLinkList; walk; walk = walk->nextClass)

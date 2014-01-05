@@ -70,11 +70,12 @@ void GuiConsoleTextCtrl::setText(const char *txt)
 {
    //make sure we don't call this before onAdd();
    AssertFatal(mProfile, "Can't call setText() until setProfile() has been called.");
+   assert(mProfile != nullptr);
 
    if (txt)
       mConsoleExpression = StringTable->insert(txt);
    else
-      mConsoleExpression = NULL;
+      mConsoleExpression = nullptr;
 
    //Make sure we have a font
    mProfile->incRefCount();

@@ -26,6 +26,7 @@
 #ifndef _PLATFORM_H_
 #include "platform/platform.h"
 #endif
+#include <cassert>
 
 class PlatformAssert
 {
@@ -51,7 +52,7 @@ private:
    virtual ~PlatformAssert();
 
 public:
-   static void create( PlatformAssert* newAssertClass = NULL );
+   static void create( PlatformAssert* newAssertClass = nullptr );
    static void destroy();
    static bool processAssert(Type         assertType,
                              const char*  filename,
@@ -96,6 +97,7 @@ public:
             { if ( PlatformAssert::processAssert(PlatformAssert::Fatal, __FILE__, __LINE__,  y) ) \
               { Platform::debugBreak(); } \
             } \
+            assert(x); \
          }
 
 #else

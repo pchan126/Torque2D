@@ -690,10 +690,10 @@ void GuiMenuBar::addSubmenuItem(Menu *menu, MenuItem *submenu, const char *text,
    if(accelerator[0])
       newMenuItem->accelerator = dStrdup(accelerator);
    else
-      newMenuItem->accelerator = NULL;
+      newMenuItem->accelerator = nullptr;
    newMenuItem->id = id;
    newMenuItem->checkGroup = checkGroup;
-   newMenuItem->nextMenuItem = NULL;
+   newMenuItem->nextMenuItem = nullptr;
    newMenuItem->acceleratorIndex = 0;
    newMenuItem->enabled = text[0] != '-';
    newMenuItem->visible = true;
@@ -701,15 +701,17 @@ void GuiMenuBar::addSubmenuItem(Menu *menu, MenuItem *submenu, const char *text,
 
    // DAW: Default to not having a submenu
    newMenuItem->isSubmenu = false;
-   newMenuItem->firstSubmenuItem = NULL;
+   newMenuItem->firstSubmenuItem = nullptr;
 
    // DAW: Point back to the submenu's menu
    newMenuItem->submenuParentMenu = menu;
 
    // link it into the menu's menu item list
    MenuItem **walk = &submenu->firstSubmenuItem;
+   
    while(*walk)
       walk = &(*walk)->nextMenuItem;
+
    *walk = newMenuItem;
 
 }
@@ -747,6 +749,7 @@ void GuiMenuBar::clearSubmenuItems(MenuItem *menuitem)
       return;
    }
 
+   assert(menuitem != nullptr);
    while(menuitem->firstSubmenuItem)
       removeSubmenuItem(menuitem, menuitem->firstSubmenuItem);
 }

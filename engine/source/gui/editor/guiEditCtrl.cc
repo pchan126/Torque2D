@@ -629,6 +629,8 @@ void GuiEditCtrl::onRightMouseDown(const GuiEvent &event)
 
    //search for the control hit in any layer below the edit layer
    GuiControl *hitCtrl = mContentControl->findHitControl(globalToLocalCoord(event.mousePoint), mLayer - 1);
+   assert(hitCtrl != nullptr);
+
    if (hitCtrl != mCurrentAddSet)
    {
       Con::executef(this, 1, "onClearSelected");

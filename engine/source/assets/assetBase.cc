@@ -99,7 +99,8 @@ void AssetBase::copyTo(SimObject* object)
     AssetBase* pAsset = static_cast<AssetBase*>(object);
 
     // Sanity!
-    AssertFatal(pAsset != NULL, "AssetBase::copyTo() - Object is not the correct type.");
+    AssertFatal(pAsset != nullptr, "AssetBase::copyTo() - Object is not the correct type.");
+   assert(pAsset != nullptr);
 
     // Copy state.
     pAsset->setAssetName( getAssetName() );
@@ -327,9 +328,13 @@ void AssetBase::setOwned( AssetManager* pAssetManager, AssetDefinition* pAssetDe
 
     // Sanity!
     AssertFatal( pAssetManager != nullptr, "Cannot set asset ownership with nullptr asset manager." );
+   assert(pAssetManager != nullptr);
     AssertFatal( mpOwningAssetManager == nullptr, "Cannot set asset ownership if it is already owned." );
+   assert(mpOwningAssetManager != nullptr);
     AssertFatal( pAssetDefinition != nullptr, "Cannot set asset ownership with a nullptr asset definition." );
+   assert(pAssetDefinition != nullptr);
     AssertFatal( mpAssetDefinition != nullptr, "Asset ownership assigned but has a nullptr asset definition." );
+   assert(mpAssetDefinition != nullptr);
     AssertFatal( mpAssetDefinition->mAssetName == pAssetDefinition->mAssetName, "Asset ownership differs by asset name." );
     AssertFatal( mpAssetDefinition->mAssetDescription == pAssetDefinition->mAssetDescription, "Asset ownership differs by asset description." );
     AssertFatal( mpAssetDefinition->mAssetCategory == pAssetDefinition->mAssetCategory, "Asset ownership differs by asset category." );

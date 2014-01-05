@@ -201,6 +201,7 @@ void FilterImageAsset::calculateImage( void )
                   const char* temp = expandAssetFilePath(strvalue);
                   CGDataProviderRef dataProvider = CGDataProviderCreateWithFilename(temp);
                   CGImageRef img = CGImageCreateWithPNGDataProvider(dataProvider, nullptr, NO, kCGRenderingIntentDefault);
+                  CFRelease(dataProvider);
                   CIImage *image = [CIImage imageWithCGImage:img];
                   [mFilter setValue:image forKey:string];
                   texSize.height = CGImageGetHeight(img);

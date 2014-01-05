@@ -102,6 +102,7 @@ void BehaviorComponent::copyTo(SimObject* obj)
 
     // Sanity!
     AssertFatal(pObject != nullptr, "BehaviorComponent::copyTo() - Object is not the correct type.");
+   assert(pObject != nullptr);
 
     // Clear behaviors.
     pObject->clearBehaviors();
@@ -277,6 +278,7 @@ void BehaviorComponent::destroyBehaviorOutputConnections( BehaviorInstance* pOut
 {
     // Sanity!
     AssertFatal( pOutputBehavior != nullptr, "Output behavior cannot be nullptr." );
+   assert(pOutputBehavior != nullptr);
 
     // Is the output behavior owned by this behavior component?
     if ( pOutputBehavior->getBehaviorOwner() != this )
@@ -517,6 +519,10 @@ bool BehaviorComponent::disconnect( BehaviorInstance* pOutputBehavior, BehaviorI
     AssertFatal( pInputBehavior != nullptr, "Input behavior cannot be nullptr." );
     AssertFatal( pOutputName != nullptr, "Output name cannot be nullptr." );
     AssertFatal( pInputName != nullptr, "Input name cannot be nullptr." );
+   assert(pOutputBehavior != nullptr);
+   assert(pInputBehavior != nullptr);
+   assert(pOutputName != nullptr);
+   assert(pInputName != nullptr);
 
     // Is the output behavior owned by this behavior component?
     if ( pOutputBehavior->getBehaviorOwner() != this )
@@ -647,6 +653,9 @@ bool BehaviorComponent::raise( BehaviorInstance* pOutputBehavior, StringTableEnt
     AssertFatal( pOutputBehavior != nullptr, "Output behavior cannot be nullptr." );
     AssertFatal( pOutputBehavior->isProperlyAdded(), "Output behavior is not registered." );
     AssertFatal( pOutputName != nullptr, "Output name cannot be nullptr." );
+   assert(pOutputBehavior != nullptr);
+   assert(pOutputBehavior->isProperlyAdded());
+   assert(pOutputName != nullptr);
 
     // Is the output behavior owned by this behavior component?
     if ( pOutputBehavior->getBehaviorOwner() != this )
@@ -734,6 +743,8 @@ U32 BehaviorComponent::getBehaviorConnectionCount( BehaviorInstance* pOutputBeha
     // Sanity!
     AssertFatal( pOutputBehavior != nullptr, "Output behavior cannot be nullptr." );
     AssertFatal( pOutputName != nullptr, "Output name cannot be nullptr." );
+   assert(pOutputName != nullptr);
+   assert(pOutputBehavior != nullptr);
 
     // Is the output behavior owned by this behavior component?
     if ( pOutputBehavior->getBehaviorOwner() != this )
@@ -826,6 +837,8 @@ const BehaviorComponent::typePortConnectionVector* BehaviorComponent::getBehavio
     // Sanity!
     AssertFatal( pOutputBehavior != nullptr, "Output behavior cannot be nullptr." );
     AssertFatal( pOutputName != nullptr, "Output name cannot be nullptr." );
+   assert(pOutputBehavior != nullptr);
+   assert(pOutputName != nullptr);
 
     // Is the output behavior owned by this behavior component?
     if ( pOutputBehavior->getBehaviorOwner() != this )

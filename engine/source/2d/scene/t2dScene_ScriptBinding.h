@@ -1949,7 +1949,7 @@ ConsoleMethod(t2dScene, createPulleyJoint, S32, 9, 16,     "(sceneObjectA, scene
 
     if ( worldGroundAnchorAElementCount == 1 && argc > 5 )
     {
-        worldGroundAnchorA.Set( dAtof(argv[nextArg]), dAtof(argv[nextArg++]) );
+        worldGroundAnchorA.Set( dAtof(argv[nextArg]), dAtof(argv[nextArg+1]) );
         nextArg += 2;
     }
     else if ( worldGroundAnchorAElementCount == 2 )

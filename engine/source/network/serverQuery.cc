@@ -1101,7 +1101,7 @@ static void writeCString(std::iostream &stream, const char *string)
 static void readCString(std::istream &stream, char *buffer)
 {
    U32 i;
-   U8 strLen;
+   U8 strLen = 0;
    stream >> strLen;
    for ( i = 0; i < strLen; i++ )
    {
@@ -1477,7 +1477,7 @@ static void handleMasterServerGameTypesResponse(std::iostream &stream, U32 /*key
    Con::printf( "Received game type list from the master server." );
 
    U32 i;
-   U8 temp;
+   U8 temp = 0;
    char stringBuf[256];
    stream >> temp;
    Con::executef(1, "onClearGameTypes");
@@ -1500,7 +1500,8 @@ static void handleMasterServerGameTypesResponse(std::iostream &stream, U32 /*key
 
 static void handleMasterServerListResponse(std::iostream &stream, U32 key, U8 /*flags*/)
 {
-   U8 packetIndex, packetTotal;
+   U8 packetIndex = 0;
+   U8 packetTotal = 0;
    U32 i;
    U16 serverCount, port;
    U8 netNum[4];
@@ -2052,8 +2053,8 @@ static void handleGameInfoResponse(const NetAddress *address, std::iostream &str
 
 void DemoNetInterface::handleInfoPacket(const NetAddress *address, U8 packetType, std::iostream &stream)
 {
-   U8 flags;
-   U32 key;
+   U8 flags = 0;
+   U32 key = 0;
 
    stream >> flags;
    stream >> key;

@@ -36,20 +36,20 @@ IMPLEMENT_CONOBJECT(GuiTreeViewCtrl);
 //-----------------------------------------------------------------------------
 GuiTreeViewCtrl::Item::Item( GuiControlProfile *pProfile )
 {
-   AssertFatal( pProfile != NULL , "Cannot create a tree item without a valid tree and control profile!");
+   AssertFatal( pProfile != nullptr , "Cannot create a tree item without a valid tree and control profile!");
 
    mState               = 0;
    mId                  = -1;
    mTabLevel            = 0;
    mIcon                = 0;
    mDataRenderWidth     = 0;
-   mScriptInfo.mText    = NULL;
-   mScriptInfo.mValue   = NULL;
-   mInspectorInfo.mObject = NULL;
-   mParent              = NULL;
-   mChild               = NULL;
-   mNext                = NULL;
-   mPrevious            = NULL;
+   mScriptInfo.mText    = nullptr;
+   mScriptInfo.mValue   = nullptr;
+   mInspectorInfo.mObject = nullptr;
+   mParent              = nullptr;
+   mChild               = nullptr;
+   mNext                = nullptr;
+   mPrevious            = nullptr;
    mProfile             = pProfile;
 }
 
@@ -60,13 +60,13 @@ GuiTreeViewCtrl::Item::~Item()
       if ( getText() )
       {
          delete [] getText();
-         setText(NULL);
+         setText(nullptr);
       }
 
       if ( getValue() )
       {
          delete [] getValue();
-         setValue( NULL );
+         setValue( nullptr );
       }
    }
 }
@@ -153,7 +153,7 @@ char *GuiTreeViewCtrl::Item::getText()
    if(mState.test(InspectorData))
    {
       Con::errorf("Tried to get the text for item %d, which is InspectorData!", mId);
-      return NULL;
+      return nullptr;
    }
 
    return mScriptInfo.mText;
@@ -164,7 +164,7 @@ char *GuiTreeViewCtrl::Item::getValue()
    if(mState.test(InspectorData))
    {
       Con::errorf("Tried to get the value for item %d, which is InspectorData!", mId);
-      return NULL;
+      return nullptr;
    }
 
    return mScriptInfo.mValue;
@@ -191,7 +191,7 @@ SimObject *GuiTreeViewCtrl::Item::getObject()
    if(!mState.test(InspectorData))
    {
       Con::errorf("Tried to get the object for item %d, which is not InspectorData!", mId);
-      return NULL;
+      return nullptr;
    }
 
    return mInspectorInfo.mObject;
@@ -277,7 +277,7 @@ const bool GuiTreeViewCtrl::Item::isParent() const
       if(mInspectorInfo.mObject)
       {
          SimSet *pSimSet = dynamic_cast<SimSet*>( (SimObject*)mInspectorInfo.mObject);
-         if ( pSimSet != NULL && pSimSet->size() > 0)
+         if ( pSimSet != nullptr && pSimSet->size() > 0)
             return pSimSet->size();
       }
    }
@@ -325,8 +325,8 @@ GuiTreeViewCtrl::Item *GuiTreeViewCtrl::Item::findChildByValue(const SimObject *
       pResultObj = pResultObj->mNext;
    }
 
-   // If the loop terminated we are NULL, otherwise we have the result in res.
-   return NULL;
+   // If the loop terminated we are nullptr, otherwise we have the result in res.
+   return nullptr;
 }
 
 GuiTreeViewCtrl::Item *GuiTreeViewCtrl::Item::findChildByValue( StringTableEntry Value )
@@ -339,12 +339,12 @@ GuiTreeViewCtrl::Item *GuiTreeViewCtrl::Item::findChildByValue( StringTableEntry
    {
 
       // check the script value of the item against the specified value
-      if( pResultObj->mScriptInfo.mValue != NULL && dStricmp( pResultObj->mScriptInfo.mValue, Value ) == 0 )
+      if( pResultObj->mScriptInfo.mValue != nullptr && dStricmp( pResultObj->mScriptInfo.mValue, Value ) == 0 )
          return pResultObj;
       pResultObj = pResultObj->mNext;
    }
    // If the loop terminated we didn't find an item with the specified script value
-   return NULL;
+   return nullptr;
 }
 
 
@@ -355,8 +355,8 @@ GuiTreeViewCtrl::GuiTreeViewCtrl()
    VECTOR_SET_ASSOCIATION(mItems);
    VECTOR_SET_ASSOCIATION(mVisibleItems);
 
-   mItemFreeList  =  NULL;
-   mRoot          =  NULL;
+   mItemFreeList  =  nullptr;
+   mRoot          =  nullptr;
    mInstantGroup  =  0;
    mItemCount     =  0;
    mSelectedItem  =  0;
@@ -392,8 +392,8 @@ GuiTreeViewCtrl::GuiTreeViewCtrl()
    mDragToItemAllowed = true;
 
    mBitmapBase       = StringTable->EmptyString;
-   mTexRollover      = NULL;
-   mTexSelected      = NULL;
+   mTexRollover      = nullptr;
+   mTexSelected      = nullptr;
 
    
 }
@@ -433,7 +433,7 @@ GuiTreeViewCtrl::Item * GuiTreeViewCtrl::getItem(S32 itemId)
 
 GuiTreeViewCtrl::Item * GuiTreeViewCtrl::createItem(S32 icon)
 {
-   Item * pNewItem = NULL;
+   Item * pNewItem = nullptr;
 
    // grab from the free list?
    if( mItemFreeList )
@@ -448,7 +448,7 @@ GuiTreeViewCtrl::Item * GuiTreeViewCtrl::createItem(S32 icon)
    {
       pNewItem = new Item( mProfile );
 
-      AssertFatal( pNewItem != NULL, "Fatal : unable to allocate tree item!");
+      AssertFatal( pNewItem != nullptr, "Fatal : unable to allocate tree item!");
 
       mItems.push_back( pNewItem );
 
@@ -508,23 +508,23 @@ void GuiTreeViewCtrl::destroyItem(Item * item)
       if( pObject && pObject->isProperlyAdded() )
          pObject->deleteObject();
 
-      item->setObject( NULL );
+      item->setObject( nullptr );
    }
    else
    {
       char *pCleanup = item->getText();
       // Clean up the memory...
-      if ( pCleanup != NULL )
+      if ( pCleanup != nullptr )
       {
          delete []pCleanup;
-         item->setText( NULL );
+         item->setText( nullptr );
       }
 
       pCleanup = item->getValue();
-      if ( pCleanup != NULL )
+      if ( pCleanup != nullptr )
       {
          delete []pCleanup;
-         item->setValue( NULL );
+         item->setValue( nullptr );
       }
    }
 
@@ -559,7 +559,7 @@ void GuiTreeViewCtrl::destroyTree()
    for(U32 i = 0; i < (U32)mItems.size(); i++)
    {
       Item *pFreeItem = mItems[ i ];
-      if( pFreeItem != NULL )
+      if( pFreeItem != nullptr )
          delete pFreeItem;
    }
 
@@ -577,8 +577,8 @@ void GuiTreeViewCtrl::destroyTree()
    mSelectedItems.clear();
 
    //
-   mRoot          = NULL;
-   mItemFreeList  = NULL;
+   mRoot          = nullptr;
+   mItemFreeList  = nullptr;
    mItemCount     = 0;
    mSelectedItem  = 0;
    mDraggedToItem = 0;
@@ -609,7 +609,7 @@ void GuiTreeViewCtrl::buildItem( Item* item, U32 tabLevel, bool bForceFullUpdate
    item->mTabLevel = tabLevel;
    mVisibleItems.push_back( item );
 
-   if ( mProfile != NULL && !mProfile->mFont.isNull() )
+   if ( mProfile != nullptr && !mProfile->mFont.isNull() )
    {
       S32 width = ( tabLevel + 1 ) * mTabSize + item->getDisplayTextWidth(mProfile->mFont);
       if ( mProfile->mBitmapArrayRects.size() > 0 )
@@ -742,14 +742,14 @@ S32 GuiTreeViewCtrl::insertItem(S32 parentId, const char * text, const char * va
    }
 
 
-   const char * pItemText  = ( text != NULL ) ? dStrdup( text ) : "";
-   const char * pItemValue = ( value != NULL ) ? dStrdup( value ) : "";
+   const char * pItemText  = ( text != nullptr ) ? dStrdup( text ) : "";
+   const char * pItemValue = ( value != nullptr ) ? dStrdup( value ) : "";
 
    S32 icon = getIcon(iconString);
 
    // create an item (assigns id)
    Item * pNewItem = createItem(icon);
-   if( pNewItem == NULL )
+   if( pNewItem == nullptr )
       return 0;
 
 //   // Ugh.  This code bothers me. - JDD
@@ -772,10 +772,10 @@ S32 GuiTreeViewCtrl::insertItem(S32 parentId, const char * text, const char * va
    if(parentId == 0)
    {
       // insert back
-      if( mRoot != NULL )
+      if( mRoot != nullptr )
       {
          Item * pTreeTraverse = mRoot;
-         while( pTreeTraverse != NULL && pTreeTraverse->mNext != NULL )
+         while( pTreeTraverse != nullptr && pTreeTraverse->mNext != nullptr )
             pTreeTraverse = pTreeTraverse->mNext;
 
          pTreeTraverse->mNext = pNewItem;
@@ -791,10 +791,10 @@ S32 GuiTreeViewCtrl::insertItem(S32 parentId, const char * text, const char * va
       Item * pParentItem = mItems[parentId-1];
 
       // insert back
-      if( pParentItem != NULL && pParentItem->mChild)
+      if( pParentItem != nullptr && pParentItem->mChild)
       {
          Item * pTreeTraverse = pParentItem->mChild;
-         while( pTreeTraverse != NULL && pTreeTraverse->mNext != NULL )
+         while( pTreeTraverse != nullptr && pTreeTraverse->mNext != nullptr )
             pTreeTraverse = pTreeTraverse->mNext;
 
          pTreeTraverse->mNext = pNewItem;
@@ -942,7 +942,7 @@ void GuiTreeViewCtrl::moveItemUp( S32 itemId )
 
    Item * pParent   = pItem->mParent;
    Item * pPrevItem = pItem->mPrevious;
-   if ( pPrevItem == NULL || pParent == NULL )
+   if ( pPrevItem == nullptr || pParent == nullptr )
    {
       Con::errorf( ConsoleLogEntry::General, "GuiTreeViewCtrl::moveItemUp: Unable to move item up, bad data!");
       return;
@@ -963,8 +963,8 @@ void GuiTreeViewCtrl::moveItemUp( S32 itemId )
    pPrevItem->mPrevious = pItem;
 
    // Update SimObjects if Appropriate.
-   SimObject * pSimObject = NULL;
-   SimSet    * pParentSet = NULL;
+   SimObject * pSimObject = nullptr;
+   SimSet    * pParentSet = nullptr;
 
    // Fetch Current Add Set
    if( pParent->isInspectorData() )
@@ -974,17 +974,18 @@ void GuiTreeViewCtrl::moveItemUp( S32 itemId )
       // parent is probably script data so we search up the tree for a
       // set to put our object in
       Item * pTraverse = pItem->mParent;
-      while ( pTraverse != NULL && !pTraverse->isInspectorData() )
+      while ( pTraverse != nullptr && !pTraverse->isInspectorData() )
          pTraverse = pTraverse->mParent;
 
+      assert(pTraverse != nullptr);
       // found an ancestor who is an inspectorData?
-      pParentSet = pTraverse->isInspectorData() ? dynamic_cast<SimSet*>( pTraverse->getObject() ) : NULL;
+      pParentSet = pTraverse->isInspectorData() ? dynamic_cast<SimSet*>( pTraverse->getObject() ) : nullptr;
    }
 
    // Reorder the item and make sure that the children of the item get updated
    // correctly prev item may be script... so find a prevItem if there is.
    // We only need to reorder if there you move it above an inspector item.
-   if ( pSimObject != NULL && pParentSet != NULL )
+   if ( pSimObject != nullptr && pParentSet != nullptr )
    {
       Item * pTraverse = pItem->mNext;
 
@@ -1023,7 +1024,7 @@ void GuiTreeViewCtrl::moveItemDown( S32 itemId )
 
    if ( item->mPrevious )
       item->mPrevious->mNext = nextItem;
-   else if ( item->mParent )
+   else if ( item->mParent != nullptr)
       item->mParent->mChild = nextItem;
 
    item->mNext = nextItem->mNext;
@@ -1032,12 +1033,13 @@ void GuiTreeViewCtrl::moveItemDown( S32 itemId )
    nextItem->mNext = item;
 
    // And update the simobjects if apppropriate...
-   SimObject * simobj = NULL;
+   SimObject * simobj = nullptr;
    if (item->isInspectorData())
       simobj = item->getObject();
 
-   SimSet *parentSet = NULL;
+   SimSet *parentSet = nullptr;
 
+   assert(item->mParent != nullptr);
    // grab the current parentSet if there is any...
    if(item->mParent->isInspectorData())
       parentSet = dynamic_cast<SimSet*>(item->mParent->getObject());
@@ -1050,7 +1052,7 @@ void GuiTreeViewCtrl::moveItemDown( S32 itemId )
          temp = temp->mParent;
 
       // found an ancestor who is an inspectorData?
-      parentSet = temp->isInspectorData() ? dynamic_cast<SimSet*>(temp->getObject()) : NULL;
+      parentSet = temp->isInspectorData() ? dynamic_cast<SimSet*>(temp->getObject()) : nullptr;
    }
 
    // Reorder the item and make sure that the children of the item get updated
@@ -1095,7 +1097,7 @@ bool GuiTreeViewCtrl::onWake()
       // If no icons were defined in script then use defaults.
       if(!(dAtob(res)))
       {
-         buildIconTable(NULL);
+         buildIconTable(nullptr);
       }
    }
 
@@ -1171,7 +1173,7 @@ void GuiTreeViewCtrl::onPreRender()
       return;
 
    Item *pRootItem = getItem( nRootItemId );
-   if( pRootItem == NULL )
+   if( pRootItem == nullptr )
       return;
 
    mTicksPassed++;
@@ -1371,7 +1373,7 @@ void GuiTreeViewCtrl::removeSelection(S32 itemId)
       // maybe what we were passed wasn't an item id but an object id.
       for (S32 i = 0; i <mItems.size(); i++)
       {
-         if (mItems[i] != NULL) 
+         if (mItems[i] != nullptr) 
          {
             if (mItems[i]->isInspectorData()) 
             {
@@ -1422,7 +1424,7 @@ void GuiTreeViewCtrl::addSelection(S32 itemId)
       // maybe what we were passed wasn't an item id but an object id.
       for (itr = 0; itr <mItems.size(); itr++)
       {
-         if (mItems[itr] != NULL)
+         if (mItems[itr] != nullptr)
          {
             if (mItems[itr]->isInspectorData())
             {
@@ -1597,7 +1599,7 @@ bool GuiTreeViewCtrl::setItemSelected(S32 itemId, bool select)
       // maybe what we were passed wasn't an item id but an object id.
       for (S32 i = 0; i <mItems.size(); i++)
       {
-         if (mItems[i] != NULL)
+         if (mItems[i] != nullptr)
          {
             if (mItems[i]->isInspectorData())
             {
@@ -1907,7 +1909,7 @@ bool GuiTreeViewCtrl::onKeyDown( const GuiEvent& event )
                item->mParent->mNext = item;
 
                // Snag the current parent set if any...
-               SimSet *parentSet = NULL;
+               SimSet *parentSet = nullptr;
 
                if(item->mParent->isInspectorData())
                   parentSet = dynamic_cast<SimSet*>(item->mParent->getObject());
@@ -1921,11 +1923,11 @@ bool GuiTreeViewCtrl::onKeyDown( const GuiEvent& event )
                   // found a ancestor who is an inspectorData
                   if (temp->isInspectorData())
                      parentSet = dynamic_cast<SimSet*>(temp->getObject());
-                  else parentSet = NULL;
+                  else parentSet = nullptr;
                }
 
                // Get our active SimObject if any
-               SimObject *simObj = NULL;
+               SimObject *simObj = nullptr;
                if(item->isInspectorData())
                   simObj = item->getObject();
 
@@ -1944,7 +1946,7 @@ bool GuiTreeViewCtrl::onKeyDown( const GuiEvent& event )
                item->mParent = item->mParent->mParent;
 
                // Snag the newparent set if any...
-               SimSet *newParentSet = NULL;
+               SimSet *newParentSet = nullptr;
 
                if(item->mParent->isInspectorData())
                   newParentSet = dynamic_cast<SimSet*>(item->mParent->getObject());
@@ -1958,7 +1960,7 @@ bool GuiTreeViewCtrl::onKeyDown( const GuiEvent& event )
                   // found a ancestor who is an inspectorData
                   if (temp->isInspectorData())
                      newParentSet = dynamic_cast<SimSet*>(temp->getObject());
-                  else newParentSet = NULL;
+                  else newParentSet = nullptr;
                }
                if(simObj && newParentSet)
                {
@@ -2004,8 +2006,8 @@ bool GuiTreeViewCtrl::onKeyDown( const GuiEvent& event )
                item->mNext->mPrevious = item->mPrevious;
 
             // Get the object we're poking with.
-            SimObject *simObj = NULL;
-            SimSet *parentSet = NULL;
+            SimObject *simObj = nullptr;
+            SimSet *parentSet = nullptr;
             if(item->isInspectorData())
                simObj = item->getObject();
             if(item->mParent->isInspectorData())
@@ -2035,7 +2037,7 @@ bool GuiTreeViewCtrl::onKeyDown( const GuiEvent& event )
 
             // Now, make our previous sibling our parent...
             item->mParent = item->mPrevious;
-            item->mNext = NULL;
+            item->mNext = nullptr;
 
             // And sink us down to the end of its siblings, if appropriate.
             if ( item->mParent->mChild )
@@ -2051,7 +2053,7 @@ bool GuiTreeViewCtrl::onKeyDown( const GuiEvent& event )
             {
                // only child...<sniff>
                item->mParent->mChild = item;
-               item->mPrevious = NULL;
+               item->mPrevious = nullptr;
             }
 
             // Make sure the new parent is expanded:
@@ -2059,7 +2061,7 @@ bool GuiTreeViewCtrl::onKeyDown( const GuiEvent& event )
                setItemExpanded( item->mParent->mId, true );
 
             // Snag the new parent simset if any.
-            SimSet *newParentSet = NULL;
+            SimSet *newParentSet = nullptr;
 
             // new parent might be script. so figure out what set we need to add it to.
             if(item->mParent->isInspectorData())
@@ -2075,7 +2077,7 @@ bool GuiTreeViewCtrl::onKeyDown( const GuiEvent& event )
                // found a ancestor who is an inspectorData
                if (temp->isInspectorData())
                   newParentSet = dynamic_cast<SimSet*>(temp->getObject());
-               else newParentSet = NULL;
+               else newParentSet = nullptr;
             }
             // Add the item's SimObject to the new parent simset, at the end.
             if(newParentSet && simObj)
@@ -2222,8 +2224,8 @@ void GuiTreeViewCtrl::onMouseUp(const GuiEvent &event)
    else
       mMouseDragged = false;
 
-   Item* newItem = NULL;
-   Item* newItem2 = NULL;
+   Item* newItem = nullptr;
+   Item* newItem2 = nullptr;
 
    if (mFlags.test(IsEditable))
    {
@@ -2297,7 +2299,7 @@ void GuiTreeViewCtrl::onMouseUp(const GuiEvent &event)
             // move the selected item to the newItem
             Item* oldParent = item->mParent;
             // Snag the current parent set if any for future reference
-            SimSet *parentSet = NULL;
+            SimSet *parentSet = nullptr;
 
             if(oldParent->isInspectorData())
                parentSet = dynamic_cast<SimSet*>(oldParent->getObject());
@@ -2331,7 +2333,7 @@ void GuiTreeViewCtrl::onMouseUp(const GuiEvent &event)
                if (item->mNext)
                   item->mParent->mChild = item->mNext;
                else
-                  item->mParent->mChild = NULL;
+                  item->mParent->mChild = nullptr;
             }
 
             if (mDragMidPoint != NomDragMidPoint)
@@ -2371,7 +2373,7 @@ void GuiTreeViewCtrl::onMouseUp(const GuiEvent &event)
                      // instead we add as the first item below the newItem's parent
                      item->mParent = newItem->mParent;
                      item->mNext = newItem;
-                     item->mPrevious = NULL;
+                     item->mPrevious = nullptr;
                      newItem->mPrevious = item;
                      item->mParent->mChild = item;
 
@@ -2390,7 +2392,7 @@ void GuiTreeViewCtrl::onMouseUp(const GuiEvent &event)
                      if (newItem->mChild)
                         newItem->mChild->mPrevious = item;
                      item->mParent->mChild = item;
-                     item->mPrevious = NULL;
+                     item->mPrevious = nullptr;
                   }
                   else if ((!newItem->mNext)&&(newItem->mParent)&&(newItem->mParent->mParent)) 
                   {
@@ -2462,7 +2464,7 @@ void GuiTreeViewCtrl::onMouseUp(const GuiEvent &event)
                      newItem->mChild->mPrevious = item;
                   item->mNext = newItem->mChild;
                   newItem->mChild = item;
-                  item->mPrevious = NULL;
+                  item->mPrevious = nullptr;
                }
                else 
                {
@@ -2470,8 +2472,8 @@ void GuiTreeViewCtrl::onMouseUp(const GuiEvent &event)
                   
                   // only child
                   newItem->mChild = item;
-                  item->mNext = NULL;
-                  item->mPrevious = NULL;
+                  item->mNext = nullptr;
+                  item->mPrevious = nullptr;
                }
             }
 
@@ -2483,7 +2485,7 @@ void GuiTreeViewCtrl::onMouseUp(const GuiEvent &event)
             // handle objects
 
             // Get our active SimObject if any
-            SimObject *simObj = NULL;
+            SimObject *simObj = nullptr;
             if(item->isInspectorData()) 
             {
                simObj = item->getObject();
@@ -2509,7 +2511,7 @@ void GuiTreeViewCtrl::onMouseUp(const GuiEvent &event)
             }
 
             // Snag the newparent set if any...
-            SimSet *newParentSet = NULL;
+            SimSet *newParentSet = nullptr;
 
             if(item->mParent->isInspectorData()) 
             {
@@ -2540,7 +2542,7 @@ void GuiTreeViewCtrl::onMouseUp(const GuiEvent &event)
                } 
                else 
                {
-                  newParentSet = NULL;
+                  newParentSet = nullptr;
                }
             }
 
@@ -2642,7 +2644,7 @@ void GuiTreeViewCtrl::onMouseDragged(const GuiEvent &event)
       if (mCurrentDragCell >= 0)
       {
 
-         Item* item = NULL;
+         Item* item = nullptr;
          BitSet32 hitFlags = 0;
          if ( !hitTest( event.mousePoint, item, hitFlags ) )
             return;
@@ -2667,6 +2669,7 @@ void GuiTreeViewCtrl::onMiddleMouseDown(const GuiEvent & event)
       Item* item;
       BitSet32 hitFlags = 0;
       hitTest( event.mousePoint, item, hitFlags );
+      assert(item != nullptr);
       Con::printf("debugging %d", item->mId);
       Point2I pt = globalToLocalCoord(event.mousePoint);
       if (item->isInspectorData() && item->getObject()) {
@@ -2747,7 +2750,7 @@ void GuiTreeViewCtrl::onMouseDown(const GuiEvent & event)
    {
       // is something already selected?
       S32 firstSelectedIndex = 0;
-      Item * firstItem = NULL;
+      Item * firstItem = nullptr;
       if (!mSelectedItems.empty())
       {
          firstItem = mSelectedItems.front();
@@ -2880,7 +2883,7 @@ void GuiTreeViewCtrl::onMouseMove( const GuiEvent &event )
 
    if ( mMouseOverCell.y >= 0 )
    {
-      Item* item = NULL;
+      Item* item = nullptr;
       BitSet32 hitFlags = 0;
       if ( !hitTest( event.mousePoint, item, hitFlags ) )
          return;
@@ -2928,7 +2931,7 @@ void GuiTreeViewCtrl::onRightMouseDown(const GuiEvent & event)
       return;
    }
 
-   Item * item = NULL;
+   Item * item = nullptr;
    BitSet32 hitFlags;
 
    //
@@ -3095,12 +3098,12 @@ void GuiTreeViewCtrl::onRenderCell(Point2I offset, Point2I cell, bool, bool )
 
 
       SimObject * pObject = item->getObject();
-      SimGroup  * pGroup  = ( pObject == NULL ) ? NULL : dynamic_cast<SimGroup*>( pObject );
+      SimGroup  * pGroup  = ( pObject == nullptr ) ? nullptr : dynamic_cast<SimGroup*>( pObject );
 
       // draw the icon associated with the item
       if (item->isParent())
       {
-         if ( pGroup != NULL)
+         if ( pGroup != nullptr)
          {
             if (item->isExpanded())
                item->mIcon = SimGroup1;
@@ -3115,7 +3118,7 @@ void GuiTreeViewCtrl::onRenderCell(Point2I offset, Point2I cell, bool, bool )
       {
          if (item->isInspectorData())
          {
-            if ( pGroup != NULL )
+            if ( pGroup != nullptr )
             {
                if (item->isExpanded())
                   item->mIcon = SimGroup3;
@@ -3271,7 +3274,7 @@ void GuiTreeViewCtrl::hideSelection(bool hide)
 // handles icon assignments
 S32 GuiTreeViewCtrl::getIcon(const char * iconString)
 {
-   if( iconString == NULL ) 
+   if( iconString == nullptr ) 
       return Default;
 
    S32 icon = Default;
@@ -3318,7 +3321,7 @@ void GuiTreeViewCtrl::addInspectorDataItem(Item *parent, SimObject *obj)
       // If no parent, add to root.
       item->mNext = mRoot;
       mRoot = item;
-      item->mParent = NULL;
+      item->mParent = nullptr;
    }
 
    if(!parent || parent->isExpanded())
@@ -3417,7 +3420,7 @@ bool GuiTreeViewCtrl::onVirtualParentBuild(Item *item, bool bForceFullUpdate)
       return true;
 
    // Blast an item if it doesn't have a corresponding SimObject...
-   if(item->mInspectorInfo.mObject == NULL)
+   if(item->mInspectorInfo.mObject == nullptr)
    {
       removeItem(item->mId);
       return false;
@@ -3479,17 +3482,17 @@ void GuiTreeViewCtrl::inspectObject(SimObject *obj, bool okToEdit)
    if(!(dAtob(res)))
    {
       // if no icons were defined in script then use defaults.
-      buildIconTable(NULL);
+      buildIconTable(nullptr);
    }
 
-   addInspectorDataItem(NULL, obj);
+   addInspectorDataItem(nullptr, obj);
 }
 
 S32 GuiTreeViewCtrl::findItemByName(const char *name)
 {
    for (S32 i = 0; i < mItems.size(); i++) 
    {
-      if (mItems[i] != NULL)
+      if (mItems[i] != nullptr)
       {
          if (dStrcmp(mItems[i]->getText(),name) == 0) 
             return mItems[i]->mId;
@@ -3667,7 +3670,7 @@ ConsoleMethod(GuiTreeViewCtrl, buildIconTable, bool, 3,3, "(string icons) Icons 
 
 ConsoleMethod( GuiTreeViewCtrl, open, void, 3, 4, "(SimSet obj, bool okToEdit=true) Set the root of the tree view to the specified object, or to the root set.")
 {
-   SimSet *treeRoot = NULL;
+   SimSet *treeRoot = nullptr;
    SimObject* target = Sim::findObject(argv[2]);
 
    bool okToEdit = true;
@@ -3757,10 +3760,10 @@ ConsoleMethod(GuiTreeViewCtrl, getSelectedItem, S32, 2, 2, "() @return Returns t
 ConsoleMethod(GuiTreeViewCtrl, getSelectedObject, S32, 2, 2, "() @return Returns the currently selected simObject in inspector mode or -1")
 {
    GuiTreeViewCtrl::Item *item = object->getItem( object->getSelectedItem() );
-   if( item != NULL && item->isInspectorData() )
+   if( item != nullptr && item->isInspectorData() )
    {
       SimObject *obj = item->getObject();
-      if( obj != NULL )
+      if( obj != nullptr )
          return object->getId();
    }
 
@@ -3830,7 +3833,7 @@ S32 GuiTreeViewCtrl::findItemByObjectId(S32 iObjId)
 {  
    for (S32 i = 0; i < mItems.size(); i++)
    {
-      if (mItems[i] != NULL)
+      if (mItems[i] != nullptr)
       {
          SimObject* pObj = mItems[i]->getObject();
          if(pObj && pObj->getId() == iObjId)

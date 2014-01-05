@@ -269,8 +269,8 @@ void RemoteDebuggerBridge::WaitForClientLogin( void )
     RemoteDebuggerBase* pRemoteDebugger = Sim::findObject<RemoteDebuggerBase>( REMOTE_DEBUGGER_NAME );
 
     // Sanity!
-    AssertFatal( pRemoteDebugger != NULL, "Could not find remote debugger waiting for client log-in." );
-
+    AssertFatal( pRemoteDebugger != nullptr, "Could not find remote debugger waiting for client log-in." );
+   assert(pRemoteDebugger != nullptr);
     // Info.
     Con::warnf( "Debugger version #%d waiting for client to authenticate on port %d...", DebuggerVersion, DebuggerPort );
 

@@ -102,9 +102,11 @@ const char *DynamicConsoleMethodComponent::_callMethod( U32 argc, const char *ar
 
          SimComponent *pComponent = (*nItr);
          AssertFatal( pComponent, "DynamicConsoleMethodComponent::callMethod - NULL component in list!" );
+         assert(pComponent != nullptr);
 
          DynamicConsoleMethodComponent *pThisComponent = dynamic_cast<DynamicConsoleMethodComponent*>( pComponent );
          AssertFatal( pThisComponent, "DynamicConsoleMethodComponent::callMethod - Non DynamicConsoleMethodComponent component attempting to callback!");
+         assert(pThisComponent != nullptr);
 
          // Only call on first depth components
          // Should isMethod check these calls?  [11/22/2006 justind]

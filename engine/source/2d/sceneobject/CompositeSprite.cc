@@ -207,8 +207,8 @@ void CompositeSprite::copyTo(SimObject* object)
     CompositeSprite* pCompositeSprite = dynamic_cast<CompositeSprite*>(object);
 
     // Sanity!
-    AssertFatal(pCompositeSprite != NULL, "CompositeSprite::copyTo() - Object is not the correct type.");
-
+    AssertFatal(pCompositeSprite != nullptr, "CompositeSprite::copyTo() - Object is not the correct type.");
+   assert(pCompositeSprite != nullptr);
     // Copy batch layout.
     pCompositeSprite->setBatchLayout( getBatchLayout() );
 

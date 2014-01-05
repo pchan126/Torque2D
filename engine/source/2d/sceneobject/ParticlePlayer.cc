@@ -32,6 +32,7 @@ ParticleSystem::ParticleNode* ParticlePlayer::EmitterNode::createParticle( void 
 {
     // Sanity!
     AssertFatal( mOwner != nullptr, "ParticlePlayer::EmitterNode::createParticle() - Cannot create a particle with a NULL owner." );
+    assert(mOwner != nullptr);
   
     // Fetch a free node,
     ParticleSystem::ParticleNode* pFreeParticleNode = ParticleSystem::Instance->createParticle();
@@ -137,6 +138,7 @@ void ParticlePlayer::copyTo(SimObject* object)
 
    // Sanity!
    AssertFatal( pParticlePlayer != nullptr, "ParticlePlayer::copyTo() - Object is not the correct type.");
+   assert( pParticlePlayer != nullptr);
 
    // Copy parent.
    Parent::copyTo( object );

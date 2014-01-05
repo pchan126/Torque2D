@@ -482,6 +482,8 @@ void ParticleAssetFieldCollection::WriteCustomTamlSchema( const AbstractClassRep
     // Sanity!
     AssertFatal( pClassRep != nullptr,  "ParticleAssetFieldCollection::WriteCustomTamlSchema() - ClassRep cannot be NULL." );
     AssertFatal( pParentElement != nullptr,  "ParticleAssetFieldCollection::WriteCustomTamlSchema() - Parent Element cannot be NULL." );
+   assert(pClassRep != nullptr);
+   assert(pParentElement != nullptr);
 
     char buffer[1024];
 

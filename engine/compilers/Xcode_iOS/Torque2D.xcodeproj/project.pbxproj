@@ -48,6 +48,16 @@
 		30700C69182556B400B77FE3 /* gfxOpenGLES30TextureTarget.cc in Sources */ = {isa = PBXBuildFile; fileRef = 30700C5B182556B400B77FE3 /* gfxOpenGLES30TextureTarget.cc */; };
 		30700C6D1825576200B77FE3 /* gfxOpenGLES30TextureObject.cc in Sources */ = {isa = PBXBuildFile; fileRef = 30700C6C1825576200B77FE3 /* gfxOpenGLES30TextureObject.cc */; };
 		30700C721825627D00B77FE3 /* GFXiOSEnumTranslate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30700C711825627D00B77FE3 /* GFXiOSEnumTranslate.mm */; };
+		3074C3BC18798EAB00A5BDEB /* tsAnimate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3074C3AA18798EAB00A5BDEB /* tsAnimate.cpp */; };
+		3074C3BD18798EAB00A5BDEB /* tsIntegerSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3074C3AB18798EAB00A5BDEB /* tsIntegerSet.cpp */; };
+		3074C3BE18798EAB00A5BDEB /* tsMaterialList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3074C3AD18798EAB00A5BDEB /* tsMaterialList.cpp */; };
+		3074C3BF18798EAB00A5BDEB /* tsMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3074C3AF18798EAB00A5BDEB /* tsMesh.cpp */; };
+		3074C3C018798EAB00A5BDEB /* tsRenderState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3074C3B118798EAB00A5BDEB /* tsRenderState.cpp */; };
+		3074C3C118798EAB00A5BDEB /* tsShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3074C3B318798EAB00A5BDEB /* tsShape.cpp */; };
+		3074C3C218798EAB00A5BDEB /* tsShapeAlloc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3074C3B518798EAB00A5BDEB /* tsShapeAlloc.cpp */; };
+		3074C3C318798EAB00A5BDEB /* tsShapeInstance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3074C3B718798EAB00A5BDEB /* tsShapeInstance.cpp */; };
+		3074C3C418798EAB00A5BDEB /* tsThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3074C3B918798EAB00A5BDEB /* tsThread.cpp */; };
+		3074C3C518798EAB00A5BDEB /* tsTransform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3074C3BA18798EAB00A5BDEB /* tsTransform.cpp */; };
 		30804B101764CB3300472030 /* gfxEnums.cc in Sources */ = {isa = PBXBuildFile; fileRef = 30804B0F1764CB3200472030 /* gfxEnums.cc */; };
 		30C8AD6F182516B5003CEF54 /* gfxOpenGLES20iOSCardProfiler.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30C8AD59182516B5003CEF54 /* gfxOpenGLES20iOSCardProfiler.mm */; };
 		30C8AD70182516B5003CEF54 /* gfxOpenGLES20iOSCubemap.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30C8AD5B182516B5003CEF54 /* gfxOpenGLES20iOSCubemap.mm */; };
@@ -669,6 +679,24 @@
 		30700C6C1825576200B77FE3 /* gfxOpenGLES30TextureObject.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxOpenGLES30TextureObject.cc; sourceTree = "<group>"; };
 		30700C6E1825596400B77FE3 /* GFXiOSEnumTranslate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GFXiOSEnumTranslate.h; sourceTree = "<group>"; };
 		30700C711825627D00B77FE3 /* GFXiOSEnumTranslate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GFXiOSEnumTranslate.mm; sourceTree = "<group>"; };
+		3074C3AA18798EAB00A5BDEB /* tsAnimate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsAnimate.cpp; sourceTree = "<group>"; };
+		3074C3AB18798EAB00A5BDEB /* tsIntegerSet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsIntegerSet.cpp; sourceTree = "<group>"; };
+		3074C3AC18798EAB00A5BDEB /* tsIntegerSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsIntegerSet.h; sourceTree = "<group>"; };
+		3074C3AD18798EAB00A5BDEB /* tsMaterialList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsMaterialList.cpp; sourceTree = "<group>"; };
+		3074C3AE18798EAB00A5BDEB /* tsMaterialList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsMaterialList.h; sourceTree = "<group>"; };
+		3074C3AF18798EAB00A5BDEB /* tsMesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsMesh.cpp; sourceTree = "<group>"; };
+		3074C3B018798EAB00A5BDEB /* tsMesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsMesh.h; sourceTree = "<group>"; };
+		3074C3B118798EAB00A5BDEB /* tsRenderState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsRenderState.cpp; sourceTree = "<group>"; };
+		3074C3B218798EAB00A5BDEB /* tsRenderState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsRenderState.h; sourceTree = "<group>"; };
+		3074C3B318798EAB00A5BDEB /* tsShape.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsShape.cpp; sourceTree = "<group>"; };
+		3074C3B418798EAB00A5BDEB /* tsShape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsShape.h; sourceTree = "<group>"; };
+		3074C3B518798EAB00A5BDEB /* tsShapeAlloc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsShapeAlloc.cpp; sourceTree = "<group>"; };
+		3074C3B618798EAB00A5BDEB /* tsShapeAlloc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsShapeAlloc.h; sourceTree = "<group>"; };
+		3074C3B718798EAB00A5BDEB /* tsShapeInstance.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsShapeInstance.cpp; sourceTree = "<group>"; };
+		3074C3B818798EAB00A5BDEB /* tsShapeInstance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsShapeInstance.h; sourceTree = "<group>"; };
+		3074C3B918798EAB00A5BDEB /* tsThread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsThread.cpp; sourceTree = "<group>"; };
+		3074C3BA18798EAB00A5BDEB /* tsTransform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsTransform.cpp; sourceTree = "<group>"; };
+		3074C3BB18798EAB00A5BDEB /* tsTransform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsTransform.h; sourceTree = "<group>"; };
 		30804B0F1764CB3200472030 /* gfxEnums.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxEnums.cc; sourceTree = "<group>"; };
 		308DD039175E8B70008FBC32 /* rawData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rawData.h; sourceTree = "<group>"; };
 		30C8AD58182516B5003CEF54 /* gfxOpenGLES20iOSCardProfiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES20iOSCardProfiler.h; sourceTree = "<group>"; };
@@ -1864,6 +1892,32 @@
 				30700C61182556B400B77FE3 /* gfxOpenGLES30WindowTarget.h */,
 			);
 			path = ES30;
+			sourceTree = "<group>";
+		};
+		3074C3A918798EAB00A5BDEB /* ts */ = {
+			isa = PBXGroup;
+			children = (
+				3074C3AA18798EAB00A5BDEB /* tsAnimate.cpp */,
+				3074C3AB18798EAB00A5BDEB /* tsIntegerSet.cpp */,
+				3074C3AC18798EAB00A5BDEB /* tsIntegerSet.h */,
+				3074C3AD18798EAB00A5BDEB /* tsMaterialList.cpp */,
+				3074C3AE18798EAB00A5BDEB /* tsMaterialList.h */,
+				3074C3AF18798EAB00A5BDEB /* tsMesh.cpp */,
+				3074C3B018798EAB00A5BDEB /* tsMesh.h */,
+				3074C3B118798EAB00A5BDEB /* tsRenderState.cpp */,
+				3074C3B218798EAB00A5BDEB /* tsRenderState.h */,
+				3074C3B318798EAB00A5BDEB /* tsShape.cpp */,
+				3074C3B418798EAB00A5BDEB /* tsShape.h */,
+				3074C3B518798EAB00A5BDEB /* tsShapeAlloc.cpp */,
+				3074C3B618798EAB00A5BDEB /* tsShapeAlloc.h */,
+				3074C3B718798EAB00A5BDEB /* tsShapeInstance.cpp */,
+				3074C3B818798EAB00A5BDEB /* tsShapeInstance.h */,
+				3074C3B918798EAB00A5BDEB /* tsThread.cpp */,
+				3074C3BA18798EAB00A5BDEB /* tsTransform.cpp */,
+				3074C3BB18798EAB00A5BDEB /* tsTransform.h */,
+			);
+			name = ts;
+			path = ../../../source/ts;
 			sourceTree = "<group>";
 		};
 		30C8AD57182516B5003CEF54 /* ES2 */ = {
@@ -3255,6 +3309,7 @@
 		86A9A3BA16AEC786003F01E6 /* Torque2D */ = {
 			isa = PBXGroup;
 			children = (
+				867BAFDE16AEC9050033868F /* torqueConfig.h */,
 				867BACF816AEC9050033868F /* 2d */,
 				867BAD6916AEC9050033868F /* algorithm */,
 				867BAD7016AEC9050033868F /* assets */,
@@ -3283,7 +3338,7 @@
 				D1736FE41761BE7A008D010C /* shaderGen */,
 				867BAFB516AEC9050033868F /* sim */,
 				867BAFD116AEC9050033868F /* string */,
-				867BAFDE16AEC9050033868F /* torqueConfig.h */,
+				3074C3A918798EAB00A5BDEB /* ts */,
 				D165814C1702EDA900A21928 /* windowManager */,
 			);
 			path = Torque2D;
@@ -3762,6 +3817,7 @@
 				867BB06B16AEC9050033868F /* guiStackCtrl.cc in Sources */,
 				867BB06C16AEC9050033868F /* guiTabBookCtrl.cc in Sources */,
 				867BB06D16AEC9050033868F /* guiWindowCtrl.cc in Sources */,
+				3074C3C318798EAB00A5BDEB /* tsShapeInstance.cpp in Sources */,
 				867BB06E16AEC9050033868F /* guiControlListPopup.cc in Sources */,
 				867BB06F16AEC9050033868F /* guiDebugger.cc in Sources */,
 				867BB07016AEC9050033868F /* guiEditCtrl.cc in Sources */,
@@ -3835,11 +3891,13 @@
 				867BB0CF16AEC9050033868F /* messageForwarder.cc in Sources */,
 				867BB0D016AEC9050033868F /* scriptMsgListener.cc in Sources */,
 				867BB0D116AEC9050033868F /* moduleDefinition.cc in Sources */,
+				3074C3C118798EAB00A5BDEB /* tsShape.cpp in Sources */,
 				867BB0D216AEC9050033868F /* moduleManager.cc in Sources */,
 				867BB0D316AEC9050033868F /* moduleMergeDefinition.cc in Sources */,
 				867BB0D416AEC9050033868F /* connectionProtocol.cc in Sources */,
 				867BB0D516AEC9050033868F /* connectionStringTable.cc in Sources */,
 				867BB0D616AEC9050033868F /* httpObject.cc in Sources */,
+				3074C3BD18798EAB00A5BDEB /* tsIntegerSet.cpp in Sources */,
 				867BB0D716AEC9050033868F /* netConnection.cc in Sources */,
 				867BB0D816AEC9050033868F /* netDownload.cc in Sources */,
 				867BB0D916AEC9050033868F /* netEvent.cc in Sources */,
@@ -3941,6 +3999,7 @@
 				867BB1DA16AEC9FC0033868F /* b2WeldJoint.cpp in Sources */,
 				867BB1DB16AEC9FC0033868F /* b2WheelJoint.cpp in Sources */,
 				30700C441825553700B77FE3 /* gfxOpenGLES30iOSDevice.IOS.mm in Sources */,
+				3074C3BF18798EAB00A5BDEB /* tsMesh.cpp in Sources */,
 				867BB20816AEC9FC0033868F /* b2Rope.cpp in Sources */,
 				867BB21816AECA070033868F /* png.c in Sources */,
 				867BB21916AECA070033868F /* pngerror.c in Sources */,
@@ -3951,15 +4010,18 @@
 				867BB21E16AECA070033868F /* pngrio.c in Sources */,
 				867BB21F16AECA070033868F /* pngrtran.c in Sources */,
 				867BB22016AECA070033868F /* pngrutil.c in Sources */,
+				3074C3C418798EAB00A5BDEB /* tsThread.cpp in Sources */,
 				867BB22116AECA070033868F /* pngset.c in Sources */,
 				867BB22216AECA070033868F /* pngtrans.c in Sources */,
 				867BB22316AECA070033868F /* pngwio.c in Sources */,
 				30700C6D1825576200B77FE3 /* gfxOpenGLES30TextureObject.cc in Sources */,
 				867BB22416AECA070033868F /* pngwrite.c in Sources */,
+				3074C3C218798EAB00A5BDEB /* tsShapeAlloc.cpp in Sources */,
 				867BB22516AECA070033868F /* pngwtran.c in Sources */,
 				867BB22616AECA070033868F /* pngwutil.c in Sources */,
 				867BB25516AECA110033868F /* jcapimin.c in Sources */,
 				867BB25616AECA110033868F /* jcapistd.c in Sources */,
+				3074C3C518798EAB00A5BDEB /* tsTransform.cpp in Sources */,
 				867BB25716AECA110033868F /* jccoefct.c in Sources */,
 				867BB25816AECA110033868F /* jccolor.c in Sources */,
 				867BB25916AECA110033868F /* jcdctmgr.c in Sources */,
@@ -3979,6 +4041,7 @@
 				867BB26516AECA110033868F /* jdapimin.c in Sources */,
 				867BB26616AECA110033868F /* jdapistd.c in Sources */,
 				867BB26716AECA110033868F /* jdatadst.c in Sources */,
+				3074C3BC18798EAB00A5BDEB /* tsAnimate.cpp in Sources */,
 				867BB26816AECA110033868F /* jdatasrc.c in Sources */,
 				867BB26916AECA110033868F /* jdcoefct.c in Sources */,
 				867BB26A16AECA110033868F /* jdcolor.c in Sources */,
@@ -4028,6 +4091,7 @@
 				2ACF5A2C16E52D6A00F838D9 /* SpriteBatchQuery.cc in Sources */,
 				D15E7E8A16F061CF00BB43B1 /* bitmapUtils.cpp in Sources */,
 				D15E7EB216F061E200BB43B1 /* gfxCardProfile.cc in Sources */,
+				3074C3BE18798EAB00A5BDEB /* tsMaterialList.cpp in Sources */,
 				D15E7EB316F061E200BB43B1 /* gfxDevice.cc in Sources */,
 				D15E7EB416F061E200BB43B1 /* gfxDrawUtil.cc in Sources */,
 				D15E7EB516F061E200BB43B1 /* gfxFontRenderBatcher.cc in Sources */,
@@ -4061,6 +4125,7 @@
 				D16581651702EE3E00A21928 /* iOSWindowManager.mm in Sources */,
 				303FE31F1711B1E2002124CC /* process.cpp in Sources */,
 				D123F8891716756600F8EFEF /* gfxOpenGLShader.cc in Sources */,
+				3074C3C018798EAB00A5BDEB /* tsRenderState.cpp in Sources */,
 				D123F88B1716794800F8EFEF /* gfxOpenGLStateBlock.cc in Sources */,
 				30700C481825553700B77FE3 /* gfxOpenGLES30iOSTextureManager.mm in Sources */,
 				D123F88D171681DA00F8EFEF /* gfxOpenGLDevice.cc in Sources */,

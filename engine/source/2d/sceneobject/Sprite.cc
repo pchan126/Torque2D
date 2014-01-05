@@ -64,6 +64,7 @@ void Sprite::copyTo(SimObject* object)
 
     // Sanity!
     AssertFatal(pSprite != nullptr, "Sprite::copyTo() - Object is not the correct type.");
+   assert(pSprite != nullptr);
 
     /// Render flipping.
     pSprite->setFlip( getFlipX(), getFlipY() );

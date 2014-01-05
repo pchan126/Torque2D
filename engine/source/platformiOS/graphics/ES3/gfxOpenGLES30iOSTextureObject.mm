@@ -50,7 +50,9 @@ GFXOpenGLES30iOSTextureObject::~GFXOpenGLES30iOSTextureObject()
 CIImage* GFXOpenGLES30iOSTextureObject::getCIImage()
 {
    CGColorSpaceRef cs = CGColorSpaceCreateDeviceRGB();
-   return [CIImage imageWithTexture:mHandle size:CGSizeMake(mTextureSize.x, mTextureSize.y) flipped:NO colorSpace:cs];
+   CIImage *ret = [CIImage imageWithTexture:mHandle size:CGSizeMake(mTextureSize.x, mTextureSize.y) flipped:NO colorSpace:cs];
+   CGColorSpaceRelease(cs);
+   return ret;
 }
 
 

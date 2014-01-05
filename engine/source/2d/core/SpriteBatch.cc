@@ -234,13 +234,14 @@ void SpriteBatch::destroyQueryProxy( SpriteBatchItem* pSpriteBatchItem )
 void SpriteBatch::moveQueryProxy( SpriteBatchItem* pSpriteBatchItem, const b2AABB& localAABB )
 {
     // Sanity!
-    AssertFatal( pSpriteBatchItem != NULL, "SpriteBatch:moveQueryProxy() - Cannot move query proxy on NULL sprite batch item." );
+    AssertFatal( pSpriteBatchItem != nullptr, "SpriteBatch:moveQueryProxy() - Cannot move query proxy on NULL sprite batch item." );
+   assert(pSpriteBatchItem != nullptr);
 
     // Debug Profiling.
     PROFILE_SCOPE(SpriteBatch_MoveTreeProxy);
 
     // Finish if the batch query is not available.
-    if ( mpSpriteBatchQuery == NULL || pSpriteBatchItem->getProxyId() == INVALID_SPRITE_PROXY )
+    if ( mpSpriteBatchQuery == nullptr || pSpriteBatchItem->getProxyId() == INVALID_SPRITE_PROXY )
         return;
 
     // Move proxy.
@@ -1368,8 +1369,10 @@ void SpriteBatch::onTamlCustomRead( const TamlCustomNodes& customNodes )
 void SpriteBatch::WriteCustomTamlSchema( const AbstractClassRep* pClassRep, TiXmlElement* pParentElement )
 {
     // Sanity!
-    AssertFatal( pClassRep != NULL,  "SpriteBatch::WriteCustomTamlSchema() - ClassRep cannot be NULL." );
-    AssertFatal( pParentElement != NULL,  "SpriteBatch::WriteCustomTamlSchema() - Parent Element cannot be NULL." );
+    AssertFatal( pClassRep != nullptr,  "SpriteBatch::WriteCustomTamlSchema() - ClassRep cannot be NULL." );
+    AssertFatal( pParentElement != nullptr,  "SpriteBatch::WriteCustomTamlSchema() - Parent Element cannot be NULL." );
+   assert(pClassRep != nullptr);
+   assert(pParentElement != nullptr);
 
     char buffer[1024];
 

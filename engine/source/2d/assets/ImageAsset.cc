@@ -262,7 +262,7 @@ void ImageAsset::copyTo(SimObject* object)
 
     // Sanity!
     AssertFatal(pAsset != nullptr, "ImageAsset::copyTo() - Object is not the correct type.");
-
+   
     // Copy state.
     pAsset->setImageFile( getImageFile() );
     pAsset->setForce16Bit( getForce16Bit() );
@@ -877,8 +877,8 @@ void ImageAsset::setTextureFilter( const TextureFilterMode filterMode )
 //    GFXGLTextureFilter[GFXTextureFilterPoint] = GL_NEAREST;
 //    GFXGLTextureFilter[GFXTextureFilterLinear] = GL_LINEAR;
     
-    //    // Set the texture objects filter mode.
-//    mImageTextureHandle->setFilter( glFilterMode );
+    // Set the texture objects filter mode.
+    mImageTextureHandle->setFilter( glFilterMode );
 }
 
 //------------------------------------------------------------------------------

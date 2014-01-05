@@ -79,16 +79,15 @@ bool TSIntegerSet::testAll(U32 upto) const
 //   return false;
 }
 
-U32 TSIntegerSet::count(U32 upto) const
-{
+size_t TSIntegerSet::count(size_t upto) {
    AssertFatal(upto<=MAX_TS_SET_SIZE,"TSIntegerSet::count: out of range");
 
-   S32 count = 0;
-    U32 x = upto/32;
-    U32 y = upto%32;
+   size_t count = 0;
+    U32 x = (U32)upto/32;
+    U32 y = (U32)upto%32;
 
     for (U32 i=0; i < x; i++)
-        count =+ bits[i].count();
+        count += bits[i].count();
     for (U32 i=0; i < y; i++)
         if (bits[x].test(i)) count++;
     return count;
@@ -135,7 +134,7 @@ S32 TSIntegerSet::start() const
    for (S32 i=0; i<MAX_TS_SET_DWORDS; i++)
    {
       // search for set bit one dword at a time
-      U32 dword = bits[i].to_ulong();
+      U32 dword = (U32)bits[i].to_ulong();
       if (dword!=0)
       {
          // got dword, now search one byte at a time
@@ -165,16 +164,15 @@ S32 TSIntegerSet::start() const
 }
 
 U32 TSIntegerSet::end() {
-   for (U32 i=MAX_TS_SET_DWORDS-1; i>=0; i--)
+   for (U32 i=MAX_TS_SET_DWORDS; i>0; i--)
    {
       // search for set bit one dword at a time
-      U32 dword = bits[i].to_ulong();
-      if (bits[i].any())
+      if (bits[i-1].any())
       {
-          for (U32 j = 31; j >= 0; j--)
+          for (U32 j = 32; j > 0; j--)
           {
-              if (bits[i].test(j) )
-                  return (i*32 + j);
+              if (bits[i-1].test(j-1) )
+                  return ((i-1)*32 + (j-1));
           }
          // got dword, now search one byte at a time
 //         S32 j = 31;
@@ -286,7 +284,7 @@ void TSIntegerSet::erase(U32 index)
 
    // shift to erase bit in target word
     U32 word = index/32;
-    U32 y = index%32;
+//    U32 y = index%32;
 
 //    U32 word (index >> 5);
     std::bitset<32> lowMask((1 << (index & 0x1f)) - 1);              // bits below the erase point

@@ -203,6 +203,7 @@ bool SimComponent::removeComponent( SimComponent *component )
       {
          SimComponent *pComponent = dynamic_cast<SimComponent*>(*nItr);
          AssertFatal( pComponent, "SimComponent::removeComponent - nullptr component in list!" );
+         assert(pComponent != nullptr);
          if( pComponent == component )
          {
             AssertFatal( component->mOwner == this, "Somehow we contain a component who doesn't think we are it's owner." );

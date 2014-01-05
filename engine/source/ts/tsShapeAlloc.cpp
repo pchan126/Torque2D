@@ -41,7 +41,7 @@ void TSShapeAlloc::setRead(S32 * memBuffer32, S16 * memBuffer16, S8 * memBuffer8
 
    if (clear)
    {
-      mDest = NULL;
+      mDest = nullptr;
       mSize = 0;
 //      s32_ptr_index.clear();
 //      s16_ptr_index.clear();
@@ -183,12 +183,12 @@ S32 TSShapeAlloc::getBufferSize32()
    return mSize32;
 }
 
-S32 * TSShapeAlloc::extend32(S32 add)
+S32 * TSShapeAlloc::extend32(size_t add)
 {
    writeOnly();
    if (mSize32+add>mFullSize32)
    {
-      S32 numPages = 1+(mFullSize32+add)/TSShapeAlloc::PageSize;
+      S32 numPages = (S32)(1+(mFullSize32+add)/TSShapeAlloc::PageSize);
       mFullSize32 = numPages*TSShapeAlloc::PageSize;
       S32 * temp = new S32[mFullSize32];
       dMemcpy(temp,mMemBuffer32, mSize32 * sizeof(S32));
@@ -207,7 +207,7 @@ S32 TSShapeAlloc::set32(S32 entry)
    return entry;
 }
 
-void TSShapeAlloc::copyToBuffer32(S32 * entries, S32 count)
+void TSShapeAlloc::copyToBuffer32(S32 *entries, size_t count)
 {
    writeOnly();
    if (entries)
@@ -316,13 +316,13 @@ S32 TSShapeAlloc::getBufferSize16()
     return mSize16;
 }
 
-S16 * TSShapeAlloc::extend16(S32 add)
+S16 * TSShapeAlloc::extend16(size_t add)
 {
     writeOnly();
     if (mSize16+add>mFullSize16)
     {
-        S32 numPages = 1+(mFullSize16+add)/TSShapeAlloc::PageSize;
-        mFullSize16 = numPages*TSShapeAlloc::PageSize;
+        auto numPages = 1+(mFullSize16+add)/TSShapeAlloc::PageSize;
+        mFullSize16 = (S32)(numPages*TSShapeAlloc::PageSize);
         S16 * temp = new S16[mFullSize16];
         dMemcpy(temp,mMemBuffer16, mSize16 * sizeof(S16));
         delete [] mMemBuffer16;
@@ -340,7 +340,7 @@ S16 TSShapeAlloc::set16(S16 entry)
     return entry;
 }
 
-void TSShapeAlloc::copyToBuffer16(S16 * entries, S32 count)
+void TSShapeAlloc::copyToBuffer16(S16 *entries, size_t count)
 {
     writeOnly();
     if (entries)

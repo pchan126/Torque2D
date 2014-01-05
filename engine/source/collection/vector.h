@@ -72,7 +72,7 @@ class Vector
 #endif
 
     // resizes, but does no construction/destruction
-   bool  resize(U32 i)                      { _vector.resize(i);};
+   bool  resize(U32 i)                      { _vector.resize(i); return true;};
    void  construct(U32 start, U32 end); ///< Constructs elements from <i>start</i> to <i>end-1</i>
 
   public:

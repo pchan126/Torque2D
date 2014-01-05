@@ -22,7 +22,7 @@ namespace StreamFn {
 
    inline void readString(std::istream& is, char buf[256])
    {
-      U8 len;
+      U8 len = 0;
       is >> len;
       is.read(buf, len);
       buf[len] = 0;

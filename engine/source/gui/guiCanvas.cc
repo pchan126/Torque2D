@@ -285,7 +285,8 @@ void GuiCanvas::setCursorON(bool onOff)
 void GuiCanvas::setCursorPos(const Point2I &pt)   
 { 
     AssertISV(mPlatformWindow, "GuiCanvas::setCursorPos - no window present!");
-    
+   assert(mPlatformWindow != nullptr);
+   
     if ( mPlatformWindow->isMouseLocked() )
     {
         mCursorPt.x = F32( pt.x );
@@ -725,7 +726,8 @@ void GuiCanvas::rootScreenTouchDown(const GuiEvent &event)
             i--;  
             GuiControl *ctrl = static_cast<GuiControl *>(*i);  
             GuiControl *controlHit = ctrl->findHitControl(event.mousePoint);  
-              
+           assert(controlHit != nullptr);
+           
             //If the control we hit is not the same one that is locked,  
             // then unlock the existing control.  
             if (bool(mMouseCapturedControl))  
@@ -1445,7 +1447,9 @@ GuiCanvas::GuiCanvasFrameSignal& GuiCanvas::getGuiCanvasFrameSignal()
 void GuiCanvas::swapBuffers()
 {
     AssertISV(mPlatformWindow, "GuiCanvas::swapBuffers - no window present!");
-    if(!mPlatformWindow->isVisible())
+   assert(mPlatformWindow != nullptr);
+
+   if(!mPlatformWindow->isVisible())
         return;
     
     PROFILE_START(SwapBuffers);

@@ -57,6 +57,7 @@ public:
       NetObject *obj = (NetObject *) Sim::findObject(objectId);
       if(bstream << (obj != nullptr))
       {
+         assert(obj != nullptr);
          S32 classId = obj->getClassId(ps->getNetClassGroup());
          StreamFn::writeClassId( bstream,classId, NetClassTypeObject, ps->getNetClassGroup());
          obj->packUpdate(ps, 0xFFFFFFFF, bstream);

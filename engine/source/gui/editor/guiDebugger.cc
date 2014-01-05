@@ -442,6 +442,7 @@ bool DbgFileView::findMouseOverVariable()
 {
    GuiCanvas *root = getRoot();
    AssertFatal(root, "Unable to get the root Canvas.");
+   assert(root != nullptr);
 
    Point2I curMouse = root->getCursorPos();
    Point2I pt = globalToLocalCoord(curMouse);

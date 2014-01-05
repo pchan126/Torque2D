@@ -702,7 +702,7 @@ void TelnetDebugger::removeBreakpointsFromCode(CodeBlock *code)
 {
    Breakpoint **walk = &mBreakpoints;
    Breakpoint *cur;
-   while((cur = *walk) != NULL)
+   while((cur = *walk) != nullptr)
    {
       if(cur->code == code)
       {

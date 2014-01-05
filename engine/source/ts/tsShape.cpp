@@ -303,8 +303,7 @@ const String& TSShape::getTargetName( S32 mapToNameIndex ) const
 	return materialList->getMaterialNameList()[mapToNameIndex];
 }
 
-S32 TSShape::getTargetCount() const
-{
+size_t TSShape::getTargetCount() {
 	if(!this)
 		return -1;
 
@@ -482,7 +481,7 @@ void TSShape::getObjectDetails(S32 objIndex, Vector<S32>& objDetails)
 
 void TSShape::init()
 {
-   S32 numSubShapes = subShapeFirstNode.size();
+   auto numSubShapes = subShapeFirstNode.size();
    AssertFatal(numSubShapes==subShapeFirstObject.size(),"TSShape::init");
 
    S32 i,j;
@@ -1083,7 +1082,7 @@ void TSShape::assembleShape()
       {
          // move ground transform data to ground vectors
          Sequence & seq = sequences[i];
-         S32 oldSz = groundTranslations.size();
+         S32 oldSz = (S32)groundTranslations.size();
          groundTranslations.setSize(oldSz+seq.numGroundFrames);
          groundRotations.setSize(oldSz+seq.numGroundFrames);
          for (S32 j=0;j<seq.numGroundFrames;j++)
@@ -1391,23 +1390,23 @@ void TSShape::disassembleShape()
    S32 i;
 
    // set counts...
-   S32 numNodes = tsalloc.set32(nodes.size());
-   S32 numObjects = tsalloc.set32(objects.size());
+   S32 numNodes = tsalloc.set32((S32)nodes.size());
+   S32 numObjects = tsalloc.set32((S32)objects.size());
    tsalloc.set32(0); // DEPRECATED decals
-   S32 numSubShapes = tsalloc.set32(subShapeFirstNode.size());
+   S32 numSubShapes = tsalloc.set32((S32)subShapeFirstNode.size());
    tsalloc.set32(0); // DEPRECATED ifl materials
-   S32 numNodeRotations = tsalloc.set32(nodeRotations.size());
-   S32 numNodeTranslations = tsalloc.set32(nodeTranslations.size());
-   S32 numNodeUniformScales = tsalloc.set32(nodeUniformScales.size());
-   S32 numNodeAlignedScales = tsalloc.set32(nodeAlignedScales.size());
-   S32 numNodeArbitraryScales = tsalloc.set32(nodeArbitraryScaleFactors.size());
-   S32 numGroundFrames = tsalloc.set32(groundTranslations.size());
-   S32 numObjectStates = tsalloc.set32(objectStates.size());
+   S32 numNodeRotations = tsalloc.set32((S32)nodeRotations.size());
+   S32 numNodeTranslations = tsalloc.set32((S32)nodeTranslations.size());
+   S32 numNodeUniformScales = tsalloc.set32((S32)nodeUniformScales.size());
+   S32 numNodeAlignedScales = tsalloc.set32((S32)nodeAlignedScales.size());
+   S32 numNodeArbitraryScales = tsalloc.set32((S32)nodeArbitraryScaleFactors.size());
+   S32 numGroundFrames = tsalloc.set32((S32)groundTranslations.size());
+   S32 numObjectStates = tsalloc.set32((S32)objectStates.size());
    tsalloc.set32(0); // DEPRECATED decals
-   S32 numTriggers = tsalloc.set32(triggers.size());
-   S32 numDetails = tsalloc.set32(details.size());
-   S32 numMeshes = tsalloc.set32(meshes.size());
-   S32 numNames = tsalloc.set32(names.size());
+   S32 numTriggers = tsalloc.set32((S32)triggers.size());
+   S32 numDetails = tsalloc.set32((S32)details.size());
+   S32 numMeshes = tsalloc.set32((S32)meshes.size());
+   S32 numNames = tsalloc.set32((S32)names.size());
    tsalloc.set32((S32)mSmallestVisibleSize);
    tsalloc.set32(mSmallestVisibleDL);
 
@@ -1514,7 +1513,7 @@ void TSShape::disassembleShape()
 
    // names
    for (i=0; i<numNames; i++)
-      tsalloc.copyToBuffer8((S8 *)(names[i].c_str()),names[i].length()+1);
+      tsalloc.copyToBuffer8((S8 *)(names[i].c_str()),(S32)names[i].length()+1);
 
    tsalloc.setGuard();
 }

@@ -327,7 +327,7 @@ protected:
       if ( mOwnMaterialList )
          return getMaterialList()->size();
       else
-         return getShape()->getTargetCount();
+         return (S32)(getShape()->getTargetCount());
    }
 
    /// Get the indexed material target (may differ from the base TSShape material
@@ -518,7 +518,7 @@ protected:
    void deltaGround1(TSThread *, F32 start, F32 end, MatrixF& mat);
    /// @}
 
-   U32 getNumDetails() const { return mShape ? mShape->details.size() : 0; }
+   size_t getNumDetails() { return mShape ? mShape->details.size() : 0; }
 
    S32 getCurrentDetail() const { return mCurrentDetailLevel; }
 
@@ -602,7 +602,7 @@ protected:
    TSThread * getThread(S32 threadNumber);        ///< @note  threads can change order, best to hold
                                                   ///<        onto a thread from the start
    void destroyThread(TSThread * thread);         ///< Destroy a thread!
-   U32 threadCount();                             ///< How many threads are there?
+   size_t threadCount();                             ///< How many threads are there?
 
    void setSequence(TSThread *, S32 seq, F32 pos);///< Get the thread a sequence
    /// Transition to a sequence

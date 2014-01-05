@@ -639,7 +639,8 @@ void SceneWindow::stopCameraShake( void )
 void SceneWindow::mount( SceneObject* pSceneObject, const Vector2& mountOffset, const F32 mountForce, const bool sendToMount, const bool mountAngle )
 {
     // Sanity!
-    AssertFatal( pSceneObject != NULL, "t2dScene object cannot be NULL." );
+    AssertFatal( pSceneObject != nullptr, "t2dScene object cannot be NULL." );
+    assert(pSceneObject != nullptr);
 
     // Cannot mount if not in a scene.
     if ( !mpScene )

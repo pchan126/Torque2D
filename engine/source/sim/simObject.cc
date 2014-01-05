@@ -1030,7 +1030,8 @@ const char *SimObject::getPrefixedDynamicDataField(StringTableEntry fieldName, c
         Con::warnf("getPrefixedDynamicDataField() - Invalid field type '%d' specified for field '%s' with value '%s'.",
             fieldType, fieldName, pFieldValue );
     }
-
+   
+   assert(pConsoleBaseType != nullptr);
     // Fetch the field prefix.
     StringTableEntry fieldPrefix = pConsoleBaseType->getTypePrefix();
 

@@ -153,6 +153,7 @@ void AnimationAsset::copyTo(SimObject* object)
 
     // Sanity!
     AssertFatal(pAsset != nullptr, "AnimationAsset::copyTo() - Object is not the correct type.");
+   assert(pAsset != nullptr);
 
     // Copy state.
     pAsset->setImage( getImage().getAssetId() );

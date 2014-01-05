@@ -972,7 +972,7 @@ void NetConnection::packNetStringHandleU(std::iostream &stream, NetStringHandle 
 {
    if(StreamFn::writeFlag(stream, h.isValidString() ))
    {
-      bool isReceived;
+      bool isReceived = false;
       U32 netIndex = checkString(h, &isReceived);
       if(StreamFn::writeFlag(stream, isReceived))
          StreamFn::writeInt(stream, netIndex, ConnectionStringTable::EntryBitSize);

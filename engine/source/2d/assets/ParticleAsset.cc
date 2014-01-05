@@ -155,6 +155,7 @@ void ParticleAsset::copyTo(SimObject* object)
 
    // Sanity!
    AssertFatal( pParticleAsset != nullptr, "ParticleAsset::copyTo() - Object is not the correct type.");
+   assert(pParticleAsset != nullptr);
 
    // Copy parent.
    Parent::copyTo( object );
@@ -279,6 +280,7 @@ bool ParticleAsset::addEmitter( ParticleAssetEmitter* pParticleAssetEmitter )
 {
     // Sanity!
     AssertFatal( pParticleAssetEmitter != nullptr, "Cannot add a nullptr particle asset emitter." );
+   assert(pParticleAssetEmitter != nullptr);
 
     // Does the particle already have an owner?
     if ( pParticleAssetEmitter->getOwner() != nullptr )
@@ -317,6 +319,7 @@ void ParticleAsset::removeEmitter( ParticleAssetEmitter* pParticleAssetEmitter, 
 {
     // Sanity!
     AssertFatal( pParticleAssetEmitter != nullptr, "Cannot remove a nullptr particle asset emitter." );
+   assert(pParticleAssetEmitter != nullptr);
 
     // Is this emitter owned by this asset?
     if ( pParticleAssetEmitter->getOwner() != this )
