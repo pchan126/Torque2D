@@ -269,7 +269,7 @@ const char* mGetStringElement( const char* inString, const U32 index, const bool
                 static char buffer[4096];
 
                 // Calculate word length.
-                const U32 length = inString - pWordStart - ((*inString)?1:0);
+                const size_t length = inString - pWordStart - ((*inString)?1:0);
 
                 // Copy Word.
                 dStrncpy( buffer, pWordStart, length);

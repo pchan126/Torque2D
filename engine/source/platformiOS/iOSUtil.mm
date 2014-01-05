@@ -56,9 +56,9 @@ bool GBitmap::readPNGiPhone(std::istream &io_rStream)
     CGImageRef apple_image = CGImageCreateWithPNGDataProvider(data_provider, nil, false, kCGRenderingIntentDefault);
     
     // Choose alpha strategy based on whether the source image has alpha or not.
-    int width = CGImageGetWidth(apple_image);
-    int height = CGImageGetHeight(apple_image);
-    U32 rowBytes = width * 4;
+    size_t width = CGImageGetWidth(apple_image);
+    size_t height = CGImageGetHeight(apple_image);
+    size_t rowBytes = width * 4;
     
     // Set up the row pointers...
     AssertISV(width <= 1024, "Error, cannot load images wider than 1024 pixels!");

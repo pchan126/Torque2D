@@ -154,7 +154,7 @@ void StringBuffer::set(const UTF8 *in)
    incRequestCount8();
    // Convert and store. Note that a UTF16 version of the string cannot be longer.
    FrameTemp<UTF16> tmpBuff(dStrlen(in)+1);
-   if(!in || in[0] == 0 || !convertUTF8toUTF16(in, tmpBuff, dStrlen(in)+1))
+   if(!in || in[0] == 0 || !convertUTF8toUTF16(in, tmpBuff, (U32)dStrlen(in)+1))
    {
       // Easy out, it's a blank string, or a bad string.
       mBuffer.clear();
@@ -490,7 +490,7 @@ void StringBufferManager::updateStats()
 {
    request8 = 0;
    request16 = 0;
-   U32 nstrings = strings.size();
+   auto nstrings = strings.size();
    for(U32 i=0; i < nstrings; i++)
    {
       request8 += strings[i]->rc->requestCount8;
@@ -509,7 +509,7 @@ void StringBufferManager::dumpStats()
 
 void StringBufferManager::dumpAllStrings()
 {
-   U32 nstrings = strings.size();
+   auto nstrings = strings.size();
    Con::printf("===== String Manager: All Strings =====");
    Con::printf(" utf8 | utf16 | string");
    for(U32 i=0; i < nstrings; i++)

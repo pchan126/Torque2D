@@ -67,7 +67,7 @@ ConsoleMethod(ParticleAsset, getLifetime, F32, 2, 2,    "() Gets the lifetime of
 ConsoleMethod(ParticleAsset, getSelectableFieldCount, S32, 2, 2,    "() Gets the number of available selectable fields.\n"
                                                                     "@return The number of available selectable fields." )
 {
-    return object->getParticleFields().getFields().size();
+    return (S32)object->getParticleFields().getFields().size();
 }
 
 //-----------------------------------------------------------------------------

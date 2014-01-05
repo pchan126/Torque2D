@@ -417,7 +417,7 @@ ConsoleMethod(ImageAsset, setExplicitCell, bool, 7, 7,      "(int cellIndex, int
 ConsoleMethod(ImageAsset, getExplicitCellCount, S32, 2, 2,  "() Gets the explicit cell count.\n"
                                                             "@return The explicit cell count.")
 {
-    return object->getExplicitCellCount();
+    return (S32)object->getExplicitCellCount();
 }
 
 

@@ -74,12 +74,12 @@ extern char* dStrstr(const char *str1, const char *str2);
 
 extern char* dStrtok(char *str, const char *sep);
 
-extern int dStrrev(char* str);
+extern dsize_t dStrrev(char* str);
 
 extern int dAtoi(const char *str);
 extern float dAtof(const char *str);
 extern bool dAtob(const char *str);
-extern int dItoa(int n, char s[]);
+extern dsize_t dItoa(int n, char s[]);
 
 extern bool dIsalnum(const char c);
 extern bool dIsalpha(const char c);

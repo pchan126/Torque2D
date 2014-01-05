@@ -136,8 +136,8 @@ class GuiMLTextCtrl : public GuiControl
                     const U32   position);
 
    // Text substitution functions
-   void setText(const char* textBuffer, const U32 numChars);
-   void addText(const char* textBuffer, const U32 numChars, bool reformat);
+   void setText(const char* textBuffer, const dsize_t numChars);
+   void addText(const char* textBuffer, const dsize_t numChars, bool reformat);
 
    void setAlpha(F32 alpha) { mAlpha = alpha;}
 

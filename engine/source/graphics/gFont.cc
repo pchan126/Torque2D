@@ -655,7 +655,7 @@ void GFont::addSheet()
 
     mCurX = 0;
     mCurY = 0;
-    mCurSheet = mTextureSheets.size() - 1;
+    mCurSheet = (S32)mTextureSheets.size() - 1;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -716,7 +716,7 @@ U32 GFont::getStrNWidth(const UTF8 *str, size_t n)
 {
    // UTF8 conversion is expensive. Avoid converting in a tight loop.
    FrameTemp<UTF16> str16(n + 1);
-   convertUTF8toUTF16(str, str16, n+1);
+   convertUTF8toUTF16(str, str16, (U32)n+1);
    return getStrNWidth(str16, dStrlen(str16));
 }
 
@@ -755,7 +755,7 @@ U32 GFont::getStrNWidth(const UTF16 *str, size_t n)
 U32 GFont::getStrNWidthPrecise(const UTF8 *str, size_t n)
 {
    FrameTemp<UTF16> str16(n + 1);
-   convertUTF8toUTF16(str, str16, n);
+   convertUTF8toUTF16(str, str16, (U32)n);
    return getStrNWidthPrecise(str16, n);
 }
 
@@ -1554,7 +1554,7 @@ bool GFont::readBMFont(std::iostream &io_rStream)
         
         mCurX = 0;
         mCurY = 0;
-        mCurSheet = mTextureSheets.size() - 1;
+        mCurSheet = (S32)mTextureSheets.size() - 1;
     }
     return (io_rStream.eof());
 }

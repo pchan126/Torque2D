@@ -147,7 +147,7 @@ void TamlJSONWriter::compileType( Document& document, Value* pTypeValue, Value* 
     {
         // Yes, so set name.
         Value value;
-        value.SetString( pObjectName, dStrlen(pObjectName), allocator );
+        value.SetString( pObjectName, (SizeType)dStrlen(pObjectName), allocator );
         pTypeValue->AddMember( tamlNamedObjectName, value, allocator );
     }
 
@@ -200,7 +200,7 @@ void TamlJSONWriter::compileFields( Document& document, Value* pTypeValue, const
 
         // Set field attribute.
         Value value;
-        value.SetString( pFieldValue->mpValue, dStrlen(pFieldValue->mpValue), allocator );
+        value.SetString( pFieldValue->mpValue, (SizeType)dStrlen(pFieldValue->mpValue), allocator );
         pTypeValue->AddMember( pFieldValue->mName, value, allocator );
     }
 }
@@ -326,7 +326,7 @@ void TamlJSONWriter::compileCustomNode( Document& document, Value* pParentValue,
 
         // Add a field.
         Value fieldValue;
-        fieldValue.SetString( pField->getFieldValue(), dStrlen(pField->getFieldValue()), allocator );
+        fieldValue.SetString( pField->getFieldValue(), (SizeType)dStrlen(pField->getFieldValue()), allocator );
         pCustomValue->AddMember( pField->getFieldName(), fieldValue, allocator );
     }
 

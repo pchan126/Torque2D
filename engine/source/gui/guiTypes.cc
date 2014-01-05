@@ -293,7 +293,7 @@ bool GuiControlProfile::onAdd()
 S32 GuiControlProfile::constructBitmapArray()
 {
    if(mBitmapArrayRects.size())
-      return mBitmapArrayRects.size();
+      return (S32)mBitmapArrayRects.size();
 
    GBitmap *bmp = mTextureHandle.getBitmap();
 
@@ -362,7 +362,7 @@ S32 GuiControlProfile::constructBitmapArray()
          curY++;
       }
    }
-   return mBitmapArrayRects.size();
+   return (S32)mBitmapArrayRects.size();
 }
 
 void GuiControlProfile::incRefCount()

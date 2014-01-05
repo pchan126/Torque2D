@@ -54,7 +54,7 @@ public:
     TagId               renameTag( const TagId tagId, const char* pNewTagName );
     TagId               deleteTag( const TagId tagId );
 
-    inline U32          getTagCount( void ) const { return mTagNameMap.size(); }
+    inline U32          getTagCount( void ) const { return (U32)mTagNameMap.size(); }
     StringTableEntry    getTagName( const TagId tagId );
     U32                 getTagId( const char* pTagName );
 

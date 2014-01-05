@@ -777,7 +777,7 @@ U32 BehaviorComponent::getBehaviorConnectionCount( BehaviorInstance* pOutputBeha
     typePortConnectionVector* pPortConnections = outputItr->second;
 
     // Return number of connections.
-    return pPortConnections->size();
+    return (U32)pPortConnections->size();
 }
 
 //-----------------------------------------------------------------------------
@@ -1085,7 +1085,7 @@ void BehaviorComponent::onTamlCustomWrite( TamlCustomNodes& customNodes )
         pBehaviorNode->addField( BEHAVIOR_ID_FIELD_NAME, pBehaviorInstance->getBehaviorId() );
 
         // Fetch field count,
-        const U32 behaviorFieldCount = pBehaviorTemplate->getBehaviorFieldCount();
+        const size_t behaviorFieldCount = pBehaviorTemplate->getBehaviorFieldCount();
 
         // Write out the fields which the behavior template knows about.
         for( U32 fieldIndex = 0; fieldIndex < behaviorFieldCount; ++fieldIndex )

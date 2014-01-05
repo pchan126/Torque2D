@@ -207,16 +207,16 @@ FontRenderBatcher::SheetMarker & FontRenderBatcher::getSheetMarker( U32 sheetID 
    {
       if(sheetID >= mSheets.size())
       {
-          U32 oldSize = mSheets.size();
+          auto oldSize = mSheets.size();
           mSheets.setSize(sheetID+1);
-          for ( U32 i = oldSize; i < mSheets.size(); i++)
-              mSheets[i] = NULL;
+          for ( auto i = oldSize; i < mSheets.size(); i++)
+              mSheets[i] = nullptr;
       }
    }
 
-    if (mSheets[sheetID] == NULL)
+    if (mSheets[sheetID] == nullptr)
     {
-        S32 size = sizeof( SheetMarker) + mLength * sizeof( CharMarker );
+        auto size = sizeof( SheetMarker) + mLength * sizeof( CharMarker );
         mSheets[sheetID] = (SheetMarker *)mStorage.alloc(size);
         mSheets[sheetID]->numChars = 0;
         mSheets[sheetID]->startVertex = 0; // cosmetic initialization

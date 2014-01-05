@@ -795,7 +795,7 @@ bool GuiMenuBar::onWake()
       return false;
    mProfile->constructBitmapArray();  // if a bitmap was specified...
    maxBitmapSize.set(0,0);
-   S32 numBitmaps = mProfile->mBitmapArrayRects.size();
+   auto numBitmaps = mProfile->mBitmapArrayRects.size();
    if(numBitmaps)
    {
       RectI *bitmapBounds = mProfile->mBitmapArrayRects.address();

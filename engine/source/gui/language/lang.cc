@@ -139,7 +139,7 @@ U32 LangFile::addString(const UTF8 *str)
 	UTF8 *newstr = new UTF8 [dStrlen(str) + 1];
 	dStrcpy(newstr, str);
 	mStringTable.push_back(newstr);
-	return mStringTable.size() - 1;
+	return (U32)(mStringTable.size() - 1);
 }
 
 void LangFile::setString(U32 id, const UTF8 *str)
@@ -218,11 +218,11 @@ S32 LangTable::addLanguage(LangFile *lang, const UTF8 *name /* = nullptr */)
 	mLangTable.push_back(lang);
 
 	if(mDefaultLang == -1)
-		setDefaultLanguage(mLangTable.size() - 1);
+		setDefaultLanguage((S32)(mLangTable.size() - 1));
 	if(mCurrentLang == -1)
-		setCurrentLanguage(mLangTable.size() - 1);
+		setCurrentLanguage((S32)(mLangTable.size() - 1));
 
-	return mLangTable.size() - 1;
+	return (S32)(mLangTable.size() - 1);
 }
 
 S32 LangTable::addLanguage(const UTF8 *filename, const UTF8 *name /* = nullptr */)
@@ -261,7 +261,7 @@ const U32 LangTable::getStringLength(const U32 id) const
 {
 	const UTF8 *s = getString(id);
 	if(s)
-		return dStrlen(s);
+		return (U32)dStrlen(s);
 	
 	return 0;
 }
@@ -367,7 +367,7 @@ ConsoleMethod(LangTable, getLangName, const char *, 3, 3, "(int language) Return
 ConsoleMethod(LangTable, getNumLang, S32, 2, 2, "() Returns the number of currently stored languages\n"
 			  "@return The number of laguages as an integer")
 {
-	return object->getNumLang();
+	return (S32)object->getNumLang();
 }
 
 //////////////////////////////////////////////////////////////////////////

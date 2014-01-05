@@ -59,7 +59,7 @@ ConsoleMethod( SimComponent, removeComponents, bool, 3, 64, "%obj.removeComponen
 ConsoleMethod( SimComponent, getComponentCount, S32, 2, 2, "() Get the current component count\n"
                                                             "@return The number of components in the list as an integer")
 {
-    return object->getComponentCount();
+    return (S32)object->getComponentCount();
 }
 
 ConsoleMethod( SimComponent, getComponent, S32, 3, 3, "(idx) Get the component corresponding to the given index.\n"

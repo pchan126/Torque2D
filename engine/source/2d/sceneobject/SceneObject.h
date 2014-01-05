@@ -411,25 +411,25 @@ public:
     inline F32              getGravityScale(void) const                 { if ( mpScene ) return mpBody->GetGravityScale(); else return mBodyDefinition.gravityScale; }
 
     /// General collision shape access.
-    void                    deleteCollisionShape( const U32 shapeIndex );
+    void                    deleteCollisionShape( const size_t shapeIndex );
     void                    clearCollisionShapes( void );
-    inline size_t         getCollisionShapeCount( void ) const        { if ( mpScene ) return mCollisionFixtures.size(); else return mCollisionFixtureDefs.size(); }
-    b2Shape::Type           getCollisionShapeType( const U32 shapeIndex ) const;
+    inline U32         getCollisionShapeCount( void ) const        { if ( mpScene ) return (U32)mCollisionFixtures.size(); else return (U32)mCollisionFixtureDefs.size(); }
+    b2Shape::Type           getCollisionShapeType( const size_t shapeIndex ) const;
     S32                     getCollisionShapeIndex( const b2Fixture* pFixture ) const;
-    void                    setCollisionShapeDefinition( const U32 shapeIndex, const b2FixtureDef& fixtureDef );
-    b2FixtureDef            getCollisionShapeDefinition( const U32 shapeIndex ) const;
-    const b2CircleShape*    getCollisionCircleShape( const U32 shapeIndex ) const;
-    const b2PolygonShape*   getCollisionPolygonShape( const U32 shapeIndex ) const;
-    const b2ChainShape*     getCollisionChainShape( const U32 shapeIndex ) const;
-    const b2EdgeShape*      getCollisionEdgeShape( const U32 shapeIndex ) const;
-    void                    setCollisionShapeDensity( const U32 shapeIndex, const F32 density );
-    F32                     getCollisionShapeDensity( const U32 shapeIndex ) const;
-    void                    setCollisionShapeFriction( const U32 shapeIndex, const F32 friction );
-    F32                     getCollisionShapeFriction( const U32 shapeIndex ) const;
-    void                    setCollisionShapeRestitution( const U32 shapeIndex, const F32 restitution );
-    F32                     getCollisionShapeRestitution( const U32 shapeIndex ) const;
-    void                    setCollisionShapeIsSensor( const U32 shapeIndex, const bool isSensor );
-    bool                    getCollisionShapeIsSensor( const U32 shapeIndex ) const;
+    void                    setCollisionShapeDefinition( const size_t shapeIndex, const b2FixtureDef& fixtureDef );
+    b2FixtureDef            getCollisionShapeDefinition( const size_t shapeIndex ) const;
+    const b2CircleShape*    getCollisionCircleShape( const size_t shapeIndex ) const;
+    const b2PolygonShape*   getCollisionPolygonShape( const size_t shapeIndex ) const;
+    const b2ChainShape*     getCollisionChainShape( const size_t shapeIndex ) const;
+    const b2EdgeShape*      getCollisionEdgeShape( const size_t shapeIndex ) const;
+    void                    setCollisionShapeDensity( const dsize_t shapeIndex, const F32 density );
+    F32                     getCollisionShapeDensity( const dsize_t shapeIndex ) const;
+    void                    setCollisionShapeFriction( const dsize_t shapeIndex, const F32 friction );
+    F32                     getCollisionShapeFriction( const dsize_t shapeIndex ) const;
+    void                    setCollisionShapeRestitution( const size_t shapeIndex, const F32 restitution );
+    F32                     getCollisionShapeRestitution( const size_t shapeIndex ) const;
+    void                    setCollisionShapeIsSensor( const size_t shapeIndex, const bool isSensor );
+    bool                    getCollisionShapeIsSensor( const size_t shapeIndex ) const;
 
     /// Circle collision shape creation.
     S32                     createCircleCollisionShape( const F32 radius );
@@ -450,8 +450,8 @@ public:
     Vector2                 getPolygonCollisionShapeLocalPoint( const U32 shapeIndex, const U32 pointIndex ) const;
 
     /// Chain collision shape creation.
-    S32                     createChainCollisionShape( const U32 pointCount, const b2Vec2* localPoints );
-    S32                     createChainCollisionShape(  const U32 pointCount, const b2Vec2* localPoints,
+    S32                     createChainCollisionShape( const size_t pointCount, const b2Vec2* localPoints );
+    S32                     createChainCollisionShape(  const size_t pointCount, const b2Vec2* localPoints,
                                                         const bool hasAdjacentLocalPositionStart, const bool hasAdjacentLocalPositionEnd,
                                                         const b2Vec2& adjacentLocalPositionStart, const b2Vec2& adjacentLocalPositionEnd );
 
@@ -465,7 +465,7 @@ public:
 
     /// Edge collision shape creation.
     S32                     createEdgeCollisionShape( const b2Vec2& localPositionStart, const b2Vec2& localPositionEnd );
-    S32                     createEdgeCollisionShape(   const b2Vec2& localPositionStart, const b2Vec2& localPositionEnd,
+    size_t                  createEdgeCollisionShape(   const b2Vec2& localPositionStart, const b2Vec2& localPositionEnd,
                                                         const bool hasAdjacentLocalPositionStart, const bool hasAdjacentLocalPositionEnd,
                                                         const b2Vec2& adjacentLocalPositionStart, const b2Vec2& adjacentLocalPositionEnd );
 
@@ -547,7 +547,7 @@ public:
     /// Cloning.
     virtual void            copyFrom( SceneObject* pSceneObject, const bool copyDynamicFields );
     virtual void            copyTo( SimObject* object );
-    S32                     copyCollisionShapes( SceneObject* pSceneObject, const bool clearTargetShapes = true, const S32 shapeIndex = -1 );
+    size_t                     copyCollisionShapes( SceneObject* pSceneObject, const bool clearTargetShapes = true, const S32 shapeIndex = -1 );
 
     /// Safe deletion.
     inline void             setSafeDelete( const bool status )          { mSafeDeleteReady = status; }
@@ -598,7 +598,7 @@ protected:
     S32                     copyCircleCollisionShapeTo( SceneObject* pSceneObject, const b2FixtureDef& fixtureDef ) const;
     S32                     copyPolygonCollisionShapeTo( SceneObject* pSceneObject, const b2FixtureDef& fixtureDef ) const;
     S32                     copyChainCollisionShapeTo( SceneObject* pSceneObject, const b2FixtureDef& fixtureDef ) const;
-    S32                     copyEdgeCollisionShapeTo( SceneObject* pSceneObject, const b2FixtureDef& fixtureDef ) const;
+    size_t                     copyEdgeCollisionShapeTo( SceneObject* pSceneObject, const b2FixtureDef& fixtureDef ) const;
 
 protected:
     /// Lifetime.

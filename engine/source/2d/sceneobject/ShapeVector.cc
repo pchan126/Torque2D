@@ -92,7 +92,7 @@ void ShapeVector::copyTo(SimObject* obj)
    object->mFlipY = mFlipY;
 
    if (getPolyVertexCount() > 0)
-       object->setPolyCustom(mPolygonBasisList.size(), getPoly());
+       object->setPolyCustom((U32)mPolygonBasisList.size(), getPoly());
 }
 
 //----------------------------------------------------------------------------
@@ -153,7 +153,7 @@ void ShapeVector::sceneRender( const t2dSceneRenderState * pSceneRenderState, co
             Point3F add = Point3F(mPolygonLocalList[i].x, mPolygonLocalList[i].y, 0.0);
             pts.push_back(add);
         }
-        GFX->getDrawUtil()->drawPolygon(desc, pts.address(), pts.size(), ColorI(mFillColor), ColorI(mLineColor));
+        GFX->getDrawUtil()->drawPolygon(desc, pts.address(), (U32)pts.size(), ColorI(mFillColor), ColorI(mLineColor));
     }
     // Restore Matrix.
     GFX->popWorldMatrix();
@@ -412,7 +412,7 @@ const char* ShapeVector::getWorldPoly( void )
 void ShapeVector::generateLocalPoly( void )
 {
     // Fetch Polygon Vertex Count.
-    const U32 polyVertexCount = mPolygonBasisList.size();
+    const size_t polyVertexCount = mPolygonBasisList.size();
 
     // Process Collision Polygon (if we've got one).
     if ( polyVertexCount > 0 )
@@ -448,7 +448,7 @@ Vector2 ShapeVector::getBoxFromPoints()
     Vector2 box(1.0f, 1.0f);
 
      // Fetch Polygon Vertex Count.
-    const U32 polyVertexCount = mPolygonBasisList.size();
+    const size_t polyVertexCount = mPolygonBasisList.size();
 
     F32 minX = 0;
     F32 minY = 0;

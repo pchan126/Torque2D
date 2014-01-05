@@ -104,7 +104,7 @@ public:
     virtual bool addBehavior( BehaviorInstance *bi);
     virtual bool removeBehavior( BehaviorInstance *bi, bool deleteBehavior = true );
     virtual void clearBehaviors();
-    virtual U32 getBehaviorCount() const { return mBehaviors.size(); }
+    virtual U32 getBehaviorCount() const { return (U32)mBehaviors.size(); }
     virtual const SimSet &getBehaviors() const { return mBehaviors; }
     virtual BehaviorInstance *getBehavior( StringTableEntry behaviorTemplateName );
     virtual BehaviorInstance *getBehavior( const U32 index ) { return index < (U32)mBehaviors.size() ? reinterpret_cast<BehaviorInstance *>(mBehaviors[index]) : NULL; }

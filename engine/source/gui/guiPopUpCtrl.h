@@ -158,7 +158,7 @@ public:
    const char *getScriptValue();
    const char *getTextById(S32 id);
    S32 findText( const char* text );
-   S32 getNumEntries()   { return( mEntries.size() ); }
+   S32 getNumEntries()   { return( (S32)mEntries.size() ); }
    void replaceText(S32);
 
    DECLARE_CONOBJECT(GuiPopUpMenuCtrl);

@@ -355,9 +355,9 @@ int dVsprintf(char *buffer, dsize_t bufferSize, const char *format, va_list argl
 
 //%PUAP% -Mat -----------------------------------------------------------------------------------------------
 
-int dStrrev(char* str)
+dsize_t dStrrev(char* str)
 {
-	int l=dStrlen(str)-1; //get the string length
+	dsize_t l=dStrlen(str)-1; //get the string length
 	for(int x=0;x < l;x++,l--)
 	{
 		str[x]^=str[l];  //triple XOR Trick
@@ -368,7 +368,7 @@ int dStrrev(char* str)
 }
 
 //-Mat hack
-int dItoa(int n, char s[])
+dsize_t dItoa(int n, char s[])
 {
 	int i, sign;
 	
@@ -642,11 +642,11 @@ char* dStripPath(const char* filename)
 char* dStristr( char* str1, const char* str2 )
 {
    if( !str1 || !str2 )
-      return NULL;
+      return nullptr;
    
    // Slow but at least we have it.
    
-   U32 str2len = strlen( str2 );
+   size_t str2len = strlen( str2 );
    while( *str1 )
    {
       if( strncasecmp( str1, str2, str2len ) == 0 )
@@ -655,7 +655,7 @@ char* dStristr( char* str1, const char* str2 )
       ++ str1;
    }
    
-   return NULL;
+   return nullptr;
 }
 
 const char* dStristr( const char* str1, const char* str2 )

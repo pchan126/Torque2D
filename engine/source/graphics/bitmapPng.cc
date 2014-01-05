@@ -443,7 +443,7 @@ bool GBitmap::writePNG(std::iostream &stream, bool compressHard) const
 
                if (pMemStream.tellg() < minSize)
                {
-                  minSize = pMemStream.tellg();
+                  minSize = (U32)pMemStream.tellg();
                   bestStrategy = zs;
                   bestFilter   = pf;
                   bestCLevel   = cl;

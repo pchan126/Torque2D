@@ -313,7 +313,7 @@ void GuiMessageVectorCtrl::createSpecialMarkers(SpecialMarkers& rSpecial, const 
       if (pMinMatch[0] != '\0') {
          AssertFatal(minMatchType != 0xFFFFFFFF, "Hm, that's bad");
          // Found a match...
-         U32 start = pMinMatch - pLCCopy;
+         U32 start = (U32)(pMinMatch - pLCCopy);
          U32 j;
          for (j = 0; pLCCopy[start + j] != '\0'; j++) {
             if (pLCCopy[start + j] == '\n' ||
@@ -336,7 +336,7 @@ void GuiMessageVectorCtrl::createSpecialMarkers(SpecialMarkers& rSpecial, const 
       }
    }
 
-   if ((rSpecial.numSpecials = tempSpecials.size()) != 0) {
+   if ((rSpecial.numSpecials = (U32)tempSpecials.size()) != 0) {
       rSpecial.specials = new SpecialMarkers::Special[tempSpecials.size()];
       for (U32 i = 0; i < (U32)tempSpecials.size(); i++) {
          rSpecial.specials[i].start       = tempSpecials[i].start;
@@ -442,7 +442,7 @@ void GuiMessageVectorCtrl::createLineWrapping(LineWrapping& rWrapping, const cha
       currLine++;
    }
 
-   rWrapping.numLines = tempBreaks.size();
+   rWrapping.numLines = (U32)tempBreaks.size();
    rWrapping.startEndPairs = new LineWrapping::SEPair[tempBreaks.size()];
    for (i = 0; i < (U32)tempBreaks.size(); i++) {
       rWrapping.startEndPairs[i].start = tempBreaks[i].start;
@@ -728,7 +728,7 @@ void GuiMessageVectorCtrl::findSpecialFromCoord(const Point2I& point, S32* speci
    }
    if (elemIndex == mLineElements.size()) {
       // On the last line...
-      elemIndex = mLineElements.size() - 1;
+      elemIndex = (U32)mLineElements.size() - 1;
    }
 
    TextElement* line = mLineElements[elemIndex].headLineElements;

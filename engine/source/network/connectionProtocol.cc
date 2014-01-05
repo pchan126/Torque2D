@@ -28,7 +28,7 @@
 
 bool gLogToConsole = false;
 
-S32 gNetBitsReceived = 0;
+size_t gNetBitsReceived = 0;
 
 enum NetPacketType
 {

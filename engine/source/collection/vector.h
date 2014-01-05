@@ -153,7 +153,7 @@ class Vector
    /// @name Extended interface
    /// @{
 
-   U32  memSize() const       { return capacity() * sizeof(T); };
+   U32  memSize() const       { return (U32)(capacity() * sizeof(T)); };
    T*   address() {     return _vector.data();   };
    const T*   address() const {     return _vector.data();   };
    size_t  setSize(size_t size)     { _vector.resize(size); return _vector.size(); };
@@ -162,7 +162,7 @@ class Vector
    void decrement(U32 = 1);
    void insert(size_t index)             { _vector.insert(_vector.begin()+index, T()); };
    void insert(size_t index, const T& x) { _vector.insert(_vector.begin()+index, x); };
-   void erase(U32 index)      { _vector.erase(_vector.begin()+index); };
+   void erase(size_t index)      { _vector.erase(_vector.begin()+index); };
    void clear()               { return _vector.clear(); };
    void compact()             { return _vector.shrink_to_fit(); };
 
@@ -328,7 +328,7 @@ template<class T> inline S32 Vector<T>::find_next_index( const T& x, U32 start )
 
     S32 index = -1;
     if (temp != _vector.end())
-        index = std::distance(_vector.begin(), temp);
+        index = (S32)std::distance(_vector.begin(), temp);
 
    return index;
 }
@@ -339,7 +339,7 @@ template<class T> inline S32 Vector<T>::find_next_index( T&& x, U32 start )
 
     S32 index = -1;
     if (temp != _vector.end())
-        index = std::distance(_vector.begin(), temp);
+        index = (S32)std::distance(_vector.begin(), temp);
 
     return index;
 }

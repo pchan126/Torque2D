@@ -242,7 +242,7 @@ bool GFXOpenGLES30Shader::_loadShaderFromStream(  GLuint shader,
 //    }
     
     // Now finally add the shader source.
-    U32 shaderLen = StreamFn::getStreamSize(s);
+    U32 shaderLen = (U32)StreamFn::getStreamSize(s);
     char* buffer = (char*)dMalloc(shaderLen + 1);
     s.read(buffer, shaderLen);
     buffer[shaderLen] = 0;
@@ -259,7 +259,7 @@ bool GFXOpenGLES30Shader::_loadShaderFromStream(  GLuint shader,
     buffers.push_back(buffer);
     lengths.push_back(shaderLen);
 
-    glShaderSource(shader, buffers.size(), (const GLchar**)const_cast<const char**>(buffers.address()), nullptr);
+    glShaderSource(shader, (GLsizei)buffers.size(), (const GLchar**)const_cast<const char**>(buffers.address()), nullptr);
 
     // Cleanup the shader source buffer.
     for ( U32 i=0; i < buffers.size(); i++ )

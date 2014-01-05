@@ -57,7 +57,7 @@ public:
     /// Results.
     void            clearQuery( void );
     typeSpriteBatchQueryResultVector& getQueryResults( void ) { return mQueryResults; }
-    inline U32      getQueryResultsCount( void ) const { return mQueryResults.size(); }
+    inline U32      getQueryResultsCount( void ) const { return (U32)mQueryResults.size(); }
     inline bool     getIsRaycastQueryResult( void ) const { return mIsRaycastQueryResult; }
     void            sortRaycastQueryResult( void );
 

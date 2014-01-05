@@ -187,7 +187,7 @@ bool ModuleManager::scanModules( const char* pPath, const bool rootOnly )
     }
 
     // Fetch extension length.
-    const U32 extensionLength = dStrlen( mModuleExtension );
+    const auto extensionLength = dStrlen( mModuleExtension );
 
     Vector<Platform::FileInfo> files;
 
@@ -217,7 +217,7 @@ bool ModuleManager::scanModules( const char* pPath, const bool rootOnly )
             const char* pFilename = fileItr.pFileName;
 
             // Find filename length.
-            const U32 filenameLength = dStrlen( pFilename );
+            const auto filenameLength = dStrlen( pFilename );
 
             // Skip if extension is longer than filename.
             if ( extensionLength > filenameLength )
@@ -1216,7 +1216,7 @@ StringTableEntry ModuleManager::copyModule( ModuleDefinition* pSourceModuleDefin
     Vector<Platform::FileInfo> files;
 
     const char* pExtension = (const char*)"Taml";
-    const U32 extensionLength = dStrlen(pExtension);
+    const auto extensionLength = dStrlen(pExtension);
 
     // Iterate directories.
     for( Vector<StringTableEntry>::iterator basePathItr = directories.begin(); basePathItr != directories.end(); ++basePathItr )
@@ -1241,7 +1241,7 @@ StringTableEntry ModuleManager::copyModule( ModuleDefinition* pSourceModuleDefin
             const char* pFilename = fileItr.pFileName;
 
             // Find filename length.
-            const U32 filenameLength = dStrlen( pFilename );
+            const auto filenameLength = dStrlen( pFilename );
 
             // Skip if extension is longer than filename.
             if ( extensionLength >= filenameLength )

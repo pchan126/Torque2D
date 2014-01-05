@@ -121,7 +121,7 @@ public:
    size_t        size() const  { return objectList.size(); }
    iterator   begin() { return objectList.begin(); }
    iterator   end()   { return objectList.end(); }
-   value operator[] (S32 index) { return objectList[U32(index)]; }
+   value operator[] (size_t index) { return objectList[size_t(index)]; }
 
    inline iterator find( iterator first, iterator last, SimObject *obj ) { return std::find(first, last, obj); }
    inline iterator find( SimObject *obj ) { return std::find(begin(), end(), obj); }

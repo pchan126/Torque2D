@@ -277,7 +277,7 @@ void GuiInspectorField::setInspectorField( AbstractClassRep::Field *field, const
    {
       mFieldArrayIndex = StringTable->insert( arrayIndex );
 
-      S32 frameTempSize = dStrlen( field->pFieldname ) + 32;
+      auto frameTempSize = dStrlen( field->pFieldname ) + 32;
       FrameTemp<char> valCopy( frameTempSize );
       dSprintf( (char *)valCopy, frameTempSize, "%s%s", field->pFieldname, arrayIndex );
 
@@ -297,7 +297,7 @@ StringTableEntry GuiInspectorField::getFieldName()
    // Array element?
    if( mFieldArrayIndex != nullptr )
    {
-      S32 frameTempSize = dStrlen( mField->pFieldname ) + 32;
+      auto frameTempSize = dStrlen( mField->pFieldname ) + 32;
       FrameTemp<char> valCopy( frameTempSize );
       dSprintf( (char *)valCopy, frameTempSize, "%s%s", mField->pFieldname, mFieldArrayIndex );
 
@@ -639,7 +639,7 @@ bool GuiInspectorGroup::inspectGroup()
            // if so, we're going to construct a field for each array element
          if( itr->elementCount > 1 )
          {
-            for(S32 nI = 0; nI < itr->elementCount; nI++)
+            for(auto nI = 0; nI < itr->elementCount; nI++)
             {
                FrameTemp<char> intToStr( 64 );
                dSprintf( intToStr, 64, "%d", nI );
@@ -651,7 +651,7 @@ bool GuiInspectorGroup::inspectGroup()
 
                // Copy Val and construct proper ValueName[nI] format 
                //      which is "ValueName0" for index 0, etc.
-               S32 frameTempSize = dStrlen( val ) + 32;
+               auto frameTempSize = dStrlen( val ) + 32;
                FrameTemp<char> valCopy( frameTempSize );
                dSprintf( (char *)valCopy, frameTempSize, "%s%d", itr->pFieldname, nI );
 

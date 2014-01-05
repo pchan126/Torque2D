@@ -267,7 +267,7 @@ ConsoleMethod(UndoManager, getUndoCount, S32, 2, 2, "() \n @return Returns the n
 
 S32 UndoManager::getUndoCount()
 {
-   return mUndoStack.size();
+   return (S32)mUndoStack.size();
 }
 
 ConsoleMethod(UndoManager, getUndoName, const char*, 3, 3, "( S32 index ) Gets the name of the UndoAction at given index.\n "
@@ -292,7 +292,7 @@ ConsoleMethod(UndoManager, getRedoCount, S32, 2, 2, "() \n @return Returns the n
 
 S32 UndoManager::getRedoCount()
 {
-   return mRedoStack.size();
+   return (S32)mRedoStack.size();
 }
 
 ConsoleMethod(UndoManager, getRedoName, const char*, 3, 3, "( S32 index ) Gets the name of the Action at given index.\n "

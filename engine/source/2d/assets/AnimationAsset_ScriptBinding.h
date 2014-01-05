@@ -87,7 +87,7 @@ ConsoleMethod(AnimationAsset, getAnimationFrameCount, S32, 2, 3,    "([bool vali
     // Fetch specified frames.
     const Vector<S32>& frames = validatedFrames ? object->getValidatedAnimationFrames() : object->getSpecifiedAnimationFrames();
 
-    return frames.size();
+    return (S32)frames.size();
 }
 
 //-----------------------------------------------------------------------------

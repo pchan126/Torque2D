@@ -60,6 +60,6 @@ FeatureType::FeatureType( const char *name, U32 group, F32 order, bool isDefault
       }
    #endif
 
-   mId = types.size();
+   mId = (U32)types.size();
    types.push_back( this );
 }

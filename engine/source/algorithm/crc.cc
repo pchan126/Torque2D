@@ -74,7 +74,7 @@ U32 calculateCRCStream(std::iostream *stream, U32 crcVal)
 
    // now calculate the crc
     stream->seekg(0, stream->end);
-    S32 len = stream->tellg();
+    S32 len = (S32)stream->tellg();
     stream->seekg(0, stream->beg);
    char buf[4096];
 

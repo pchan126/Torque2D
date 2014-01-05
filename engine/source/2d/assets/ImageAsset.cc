@@ -283,7 +283,7 @@ void ImageAsset::copyTo(SimObject* object)
         return;
 
     // Fetch the explicit cell count.
-    const S32 explicitCellCount = getExplicitCellCount();
+    const size_t explicitCellCount = getExplicitCellCount();
 
     // Finish if no explicit cells exist.
     if ( explicitCellCount == 0 )
@@ -755,7 +755,7 @@ bool ImageAsset::setExplicitCell( const S32 cellIndex, const S32 cellOffsetX, co
     const S32 imageHeight = getImageHeight();
 
     // Fetch the explicit frame count.
-    const S32 explicitFrameCount = mExplicitFrames.size();
+    const dsize_t explicitFrameCount = mExplicitFrames.size();
 
     // The cell index needs to be in range.
     if ( cellIndex < 0 || cellIndex >= explicitFrameCount )
@@ -822,7 +822,7 @@ bool ImageAsset::removeExplicitCell( const S32 cellIndex )
     }
 
     // Fetch the explicit frame count.
-    const S32 explicitFrameCount = mExplicitFrames.size();
+    const size_t explicitFrameCount = mExplicitFrames.size();
 
     // The cell index needs to be in range.
     if ( cellIndex < 0 || cellIndex >= explicitFrameCount )

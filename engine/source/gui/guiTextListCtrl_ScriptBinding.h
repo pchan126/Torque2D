@@ -47,7 +47,7 @@ ConsoleMethod(GuiTextListCtrl, addRow, S32, 4, 5, "( ID , text [ , row ] ) Use t
         "@return Returns the row number of the new entry.\n"
         "@sa clear, removeRow")
 {
-    S32 ret = object->mList.size();
+    S32 ret = (S32)object->mList.size();
     if(argc < 5)
         object->addEntry(dAtoi(argv[2]), argv[3]);
     else

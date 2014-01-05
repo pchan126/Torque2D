@@ -96,7 +96,7 @@ public:
    inline U32 getBufferSize() const { return mBufferSize; }
 
    /// Get the number of parameters
-   inline U32 getParameterCount() const { return mParams.size(); }
+   inline U32 getParameterCount() const { return (U32)mParams.size(); }
 
    /// Returns the ParamDesc of a parameter 
    bool getDesc(const String& name, ParamDesc& param) const;

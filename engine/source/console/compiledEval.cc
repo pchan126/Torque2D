@@ -107,7 +107,7 @@ F64 consoleStringToNumber(const char *str, StringTableEntry file, U32 line)
 
 namespace Con
 {
-    char *getReturnBuffer(U32 bufferSize)
+    char *getReturnBuffer(dsize_t bufferSize)
     {
         return STR.getReturnBuffer(bufferSize);
     }
@@ -122,7 +122,7 @@ namespace Con
 
    char* getReturnBuffer( const String& str )
    {
-      const U32 size = str.size();
+      const size_t size = str.size();
       char* ret = STR.getReturnBuffer( size );
       dMemcpy( ret, str.c_str(), size );
       return ret;
@@ -157,7 +157,7 @@ namespace Con
     
     char *getStringArg( const char *arg )
     {
-        U32 len = dStrlen( arg ) + 1;
+        dsize_t len = dStrlen( arg ) + 1;
         char *ret = STR.getArgBuffer( len );
         dMemcpy( ret, arg, len );
         return ret;
@@ -165,7 +165,7 @@ namespace Con
     
     char* getStringArg( const String& arg )
     {
-        const U32 size = arg.size();
+        const dsize_t size = arg.size();
         char* ret = STR.getArgBuffer( size );
         dMemcpy( ret, arg.c_str(), size );
         return ret;
@@ -261,7 +261,7 @@ void CodeBlock::getFunctionArgs(char buffer[1024], U32 ip)
 // Returns, in 'val', the specified component of a string.
 static void getUnit(const char *string, U32 index, const char *set, char val[], S32 len)
 {
-   U32 sz;
+   dsize_t sz;
    while(index--)
    {
       if(!*string)
@@ -286,7 +286,7 @@ static void getUnit(const char *string, U32 index, const char *set, char val[], 
 // return value is stored in 'val'.
 static void setUnit(const char *string, U32 index, const char *replace, const char *set, char val[], S32 len)
 {
-   U32 sz;
+   dsize_t sz;
    const char *start = string;
    if( ( dStrlen(string) + dStrlen(replace) + 1 ) > (U32)len )
       return;
@@ -549,7 +549,7 @@ const char *CodeBlock::exec(U32 ip, const char *functionName, Namespace *thisNam
          // on to the top of the stack.  Any change that occurs to 
          // the locals during this new frame will also occur in the 
          // original frame.
-         S32 stackIndex = gEvalState.stack.size() - setFrame - 1;
+         S32 stackIndex = (S32)gEvalState.stack.size() - setFrame - 1;
          gEvalState.pushFrameRef( stackIndex );
          popFrame = true;
       }
@@ -1591,7 +1591,7 @@ breakContinue:
                         if(ret != STR.getStringValue())
                            STR.setStringValue(ret);
                         else
-                           STR.setLen(dStrlen(ret));
+                           STR.setLen((U32)dStrlen(ret));
                         break;
                      }
                      case Namespace::Entry::IntCallbackType:

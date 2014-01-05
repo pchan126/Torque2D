@@ -51,7 +51,7 @@ ConsoleMethod(BehaviorTemplate, addBehaviorField, bool, 5, 7, "(fieldName, desc,
 ConsoleMethod(BehaviorTemplate, getBehaviorFieldCount, S32, 2, 2,   "() - Get the number of behavior fields.\n"
                                                                     "@return Returns the number of behavior fields.\n")
 {
-    return object->getBehaviorFieldCount();
+    return (S32)object->getBehaviorFieldCount();
 }
 
 //-----------------------------------------------------------------------------
@@ -134,7 +134,7 @@ ConsoleMethod(BehaviorTemplate, addBehaviorOutput, bool, 5, 5,  "(outputName, la
 ConsoleMethod(BehaviorTemplate, getBehaviorOutputCount, S32, 2, 2,  "() - Get the number of behavior outputs.\n"
                                                                     "@return Returns the number of behavior outputs.\n")
 {
-    return object->getBehaviorOutputCount();
+    return (S32)object->getBehaviorOutputCount();
 }
 
 //-----------------------------------------------------------------------------
@@ -187,7 +187,7 @@ ConsoleMethod(BehaviorTemplate, addBehaviorInput, bool, 5, 5,   "(inputName, lab
 ConsoleMethod(BehaviorTemplate, getBehaviorInputCount, S32, 2, 2,   "() - Get the number of behavior inputs.\n"
                                                                     "@return Returns the number of behavior inputs.\n")
 {
-    return object->getBehaviorInputCount();
+    return (S32)object->getBehaviorInputCount();
 }
 
 //-----------------------------------------------------------------------------

@@ -220,7 +220,7 @@ UTF16* convertUTF8toUTF16( const UTF8* unistring)
 {
    PROFILE_START(convertUTF8toUTF16_create);
    // allocate plenty of memory.
-   U32 nCodepoints, len = dStrlen(unistring) + 1;
+   U32 nCodepoints, len = (U32)dStrlen(unistring) + 1;
    FrameTemp<UTF16> buf(len);
    
    // perform conversion
@@ -242,11 +242,12 @@ UTF32* convertUTF8toUTF32( const UTF8* unistring)
 {
    PROFILE_START(convertUTF8toUTF32_create);
    // allocate plenty of memory.
-   U32 nCodepoints, len = dStrlen(unistring) + 1;
+   U32 nCodepoints;
+   auto len = dStrlen(unistring) + 1;
    FrameTemp<UTF32> buf(len);
    
    // perform conversion
-   nCodepoints = convertUTF8toUTF32( unistring, buf, len);
+   nCodepoints = convertUTF8toUTF32( unistring, buf, (U32)len);
    
    // add 1 for the NULL terminator the converter promises it included.
    nCodepoints++;

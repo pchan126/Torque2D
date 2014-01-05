@@ -119,8 +119,8 @@ void GFXOpenGLES30iOSDevice::enumerateAdapters( Vector<GFXAdapter*> &adapterList
             NSLog(@"\tScreen mode %@\n", mode);
             GFXVideoMode toAdd;
             
-            toAdd.resolution.x = mode.size.width;  
-            toAdd.resolution.y = mode.size.height; 
+            toAdd.resolution.x = (S32)mode.size.width;
+            toAdd.resolution.y = (S32)mode.size.height;
             toAdd.bitDepth = 32; 
             toAdd.refreshRate = 30; 
             toAdd.fullScreen = true;
@@ -138,15 +138,15 @@ void GFXOpenGLES30iOSDevice::enumerateAdapters( Vector<GFXAdapter*> &adapterList
         
         adapterList.push_back(toAdd);
 
-        for (S32 j = videoModes.size() - 1 ; j >= 0 ; j--)
-            toAdd->mAvailableModes.push_back(videoModes[j]);
+        for (auto ritr = videoModes.rbegin(); ritr != videoModes.rend(); ritr++)
+            toAdd->mAvailableModes.push_back(*ritr);
         
 		screenNum++;
 	}
 }
 
 
-GFXVertexBuffer* GFXOpenGLES30iOSDevice::findVolatileVBO(U32 vertexCount, const GFXVertexFormat *vertexFormat, U32 vertSize, void* vertexData, U32 indexSize, void* indexData)
+GFXVertexBuffer* GFXOpenGLES30iOSDevice::findVolatileVBO(dsize_t vertexCount, const GFXVertexFormat *vertexFormat, dsize_t vertSize, void* vertexData, dsize_t indexSize, void* indexData)
 {
     for(U32 i = 0; i < mVolatileVBs.size(); i++)
         if (  mVolatileVBs[i]->mVertexCount >= vertexCount &&
@@ -165,12 +165,12 @@ GFXVertexBuffer* GFXOpenGLES30iOSDevice::findVolatileVBO(U32 vertexCount, const 
     return buf.getPointer();
 }
 
-GFXVertexBuffer *GFXOpenGLES30iOSDevice::allocVertexBuffer(   U32 numVerts,
+GFXVertexBuffer *GFXOpenGLES30iOSDevice::allocVertexBuffer(   dsize_t numVerts,
                                                   const GFXVertexFormat *vertexFormat,
-                                                  U32 vertSize,
+                                                  dsize_t vertSize,
                                                   GFXBufferType bufferType,
                                                   void *vertexBuffer,
-                                                  U32 indexCount,
+                                                  dsize_t indexCount,
                                                   void *indexBuffer)
 {
     if(bufferType == GFXBufferTypeVolatile)

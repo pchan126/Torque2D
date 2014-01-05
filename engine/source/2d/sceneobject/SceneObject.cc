@@ -1670,7 +1670,7 @@ void SceneObject::cancelRotateTo( const bool autoStop )
 
 //-----------------------------------------------------------------------------
 
-b2Shape::Type SceneObject::getCollisionShapeType( U32 shapeIndex ) const
+b2Shape::Type SceneObject::getCollisionShapeType( size_t shapeIndex ) const
 {
     // Sanity!
     AssertFatal( shapeIndex < getCollisionShapeCount(), "SceneObject::getCollisionShapeType() - Invalid shape index." );
@@ -1703,7 +1703,7 @@ S32 SceneObject::getCollisionShapeIndex( const b2Fixture* pFixture ) const
 
 //-----------------------------------------------------------------------------
 
-void SceneObject::setCollisionShapeDefinition( const U32 shapeIndex, const b2FixtureDef& fixtureDef )
+void SceneObject::setCollisionShapeDefinition( const size_t shapeIndex, const b2FixtureDef& fixtureDef )
 {
     // We only set specific features of a fixture definition here.
     setCollisionShapeDensity( shapeIndex, fixtureDef.density );
@@ -1714,7 +1714,7 @@ void SceneObject::setCollisionShapeDefinition( const U32 shapeIndex, const b2Fix
 
 //-----------------------------------------------------------------------------
 
-b2FixtureDef SceneObject::getCollisionShapeDefinition( const U32 shapeIndex ) const
+b2FixtureDef SceneObject::getCollisionShapeDefinition( const size_t shapeIndex ) const
 {
     // Sanity!
     AssertFatal( shapeIndex < getCollisionShapeCount(), "SceneObject::getCollisionShapeDefinition() - Invalid shape index." );
@@ -1740,7 +1740,7 @@ b2FixtureDef SceneObject::getCollisionShapeDefinition( const U32 shapeIndex ) co
 
 //-----------------------------------------------------------------------------
 
-const b2CircleShape* SceneObject::getCollisionCircleShape( const U32 shapeIndex ) const
+const b2CircleShape* SceneObject::getCollisionCircleShape( const size_t shapeIndex ) const
 {
     // Sanity!
     AssertFatal( shapeIndex < getCollisionShapeCount(), "SceneObject::getCollisionCircleShape() - Invalid shape index." );
@@ -1762,7 +1762,7 @@ const b2CircleShape* SceneObject::getCollisionCircleShape( const U32 shapeIndex 
 
 //-----------------------------------------------------------------------------
 
-const b2PolygonShape* SceneObject::getCollisionPolygonShape( const U32 shapeIndex ) const
+const b2PolygonShape* SceneObject::getCollisionPolygonShape( const size_t shapeIndex ) const
 {
     // Sanity!
     AssertFatal( shapeIndex < getCollisionShapeCount(), "SceneObject::getCollisionPolygonShape() - Invalid shape index." );
@@ -1784,7 +1784,7 @@ const b2PolygonShape* SceneObject::getCollisionPolygonShape( const U32 shapeInde
 
 //-----------------------------------------------------------------------------
 
-const b2ChainShape* SceneObject::getCollisionChainShape( const U32 shapeIndex ) const
+const b2ChainShape* SceneObject::getCollisionChainShape( const size_t shapeIndex ) const
 {
     // Sanity!
     AssertFatal( shapeIndex < getCollisionShapeCount(), "SceneObject::getCollisionChainShape() - Invalid shape index." );
@@ -1806,7 +1806,7 @@ const b2ChainShape* SceneObject::getCollisionChainShape( const U32 shapeIndex ) 
 
 //-----------------------------------------------------------------------------
 
-const b2EdgeShape* SceneObject::getCollisionEdgeShape( const U32 shapeIndex ) const
+const b2EdgeShape* SceneObject::getCollisionEdgeShape( const size_t shapeIndex ) const
 {
     // Sanity!
     AssertFatal( shapeIndex < getCollisionShapeCount(), "SceneObject::getCollisionEdgeShape() - Invalid shape index." );
@@ -1828,7 +1828,7 @@ const b2EdgeShape* SceneObject::getCollisionEdgeShape( const U32 shapeIndex ) co
 
 //-----------------------------------------------------------------------------
 
-void SceneObject::setCollisionShapeDensity( const U32 shapeIndex, const F32 density )
+void SceneObject::setCollisionShapeDensity( const size_t shapeIndex, const F32 density )
 {
     // Sanity!
     AssertFatal( shapeIndex < getCollisionShapeCount(), "SceneObject::setCollisionShapeDensity() - Invalid shape index." );
@@ -1850,7 +1850,7 @@ void SceneObject::setCollisionShapeDensity( const U32 shapeIndex, const F32 dens
 
 //-----------------------------------------------------------------------------
 
-F32 SceneObject::getCollisionShapeDensity( const U32 shapeIndex ) const
+F32 SceneObject::getCollisionShapeDensity( const size_t shapeIndex ) const
 {
     // Sanity!
     AssertFatal( shapeIndex < getCollisionShapeCount(), "SceneObject::getCollisionShapeDensity() - Invalid shape index." );
@@ -1867,7 +1867,7 @@ F32 SceneObject::getCollisionShapeDensity( const U32 shapeIndex ) const
 
 //-----------------------------------------------------------------------------
 
-void SceneObject::setCollisionShapeFriction( const U32 shapeIndex, const F32 friction )
+void SceneObject::setCollisionShapeFriction( const size_t shapeIndex, const F32 friction )
 {
     // Sanity!
     AssertFatal( shapeIndex < getCollisionShapeCount(), "SceneObject::setCollisionShapeFriction() - Invalid shape index." );
@@ -1892,7 +1892,7 @@ void SceneObject::setCollisionShapeFriction( const U32 shapeIndex, const F32 fri
 
 //-----------------------------------------------------------------------------
 
-F32 SceneObject::getCollisionShapeFriction( const U32 shapeIndex ) const
+F32 SceneObject::getCollisionShapeFriction( const size_t shapeIndex ) const
 {
     // Sanity!
     AssertFatal( shapeIndex < getCollisionShapeCount(), "SceneObject::getCollisionShapeFriction() - Invalid shape index." );
@@ -1909,7 +1909,7 @@ F32 SceneObject::getCollisionShapeFriction( const U32 shapeIndex ) const
 
 //-----------------------------------------------------------------------------
 
-void SceneObject::setCollisionShapeRestitution( const U32 shapeIndex, const F32 restitution )
+void SceneObject::setCollisionShapeRestitution( const size_t shapeIndex, const F32 restitution )
 {
     // Sanity!
     AssertFatal( shapeIndex < getCollisionShapeCount(), "SceneObject::setCollisionShapeRestitution() - Invalid shape index." );
@@ -1934,7 +1934,7 @@ void SceneObject::setCollisionShapeRestitution( const U32 shapeIndex, const F32 
 
 //-----------------------------------------------------------------------------
 
-F32 SceneObject::getCollisionShapeRestitution( const U32 shapeIndex ) const
+F32 SceneObject::getCollisionShapeRestitution( const size_t shapeIndex ) const
 {
     // Sanity!
     AssertFatal( shapeIndex < getCollisionShapeCount(), "SceneObject::getCollisionShapeRestitution() - Invalid shape index." );
@@ -1951,7 +1951,7 @@ F32 SceneObject::getCollisionShapeRestitution( const U32 shapeIndex ) const
 
 //-----------------------------------------------------------------------------
 
-void SceneObject::setCollisionShapeIsSensor( const U32 shapeIndex, const bool isSensor )
+void SceneObject::setCollisionShapeIsSensor( const size_t shapeIndex, const bool isSensor )
 {
     // Sanity!
     AssertFatal( shapeIndex < getCollisionShapeCount(), "SceneObject::setCollisionShapeIsSensor() - Invalid shape index." );
@@ -1976,7 +1976,7 @@ void SceneObject::setCollisionShapeIsSensor( const U32 shapeIndex, const bool is
 
 //-----------------------------------------------------------------------------
 
-bool SceneObject::getCollisionShapeIsSensor( const U32 shapeIndex ) const
+bool SceneObject::getCollisionShapeIsSensor( const size_t shapeIndex ) const
 {
     // Sanity!
     AssertFatal( shapeIndex < getCollisionShapeCount(), "SceneObject::getCollisionShapeIsSensor() - Invalid shape index." );
@@ -1993,7 +1993,7 @@ bool SceneObject::getCollisionShapeIsSensor( const U32 shapeIndex ) const
 
 //-----------------------------------------------------------------------------
 
-void SceneObject::deleteCollisionShape( const U32 shapeIndex )
+void SceneObject::deleteCollisionShape( const size_t shapeIndex )
 {
     // Sanity!
     AssertFatal( shapeIndex < getCollisionShapeCount(), "SceneObject::deleteCollisionShape() - Invalid shape index." );
@@ -2056,13 +2056,13 @@ S32 SceneObject::createCircleCollisionShape( const F32 radius, const b2Vec2& loc
         delete pShape;
         delete pFixtureDef;
 
-        return mCollisionFixtures.size()-1;
+        return (S32)mCollisionFixtures.size()-1;
     }
 
     // Push fixture definition.
     mCollisionFixtureDefs.push_back( pFixtureDef );
 
-    return mCollisionFixtureDefs.size()-1;
+    return (S32)mCollisionFixtureDefs.size()-1;
 }
 
 //-----------------------------------------------------------------------------
@@ -2114,13 +2114,13 @@ S32 SceneObject::createPolygonCollisionShape( const U32 pointCount, const b2Vec2
         delete pShape;
         delete pFixtureDef;
 
-        return mCollisionFixtures.size()-1;
+        return (S32)mCollisionFixtures.size()-1;
     }
 
     // Push fixture definition.
     mCollisionFixtureDefs.push_back( pFixtureDef );
 
-    return mCollisionFixtureDefs.size()-1;
+    return (S32)mCollisionFixtureDefs.size()-1;
 }
 
 //-----------------------------------------------------------------------------
@@ -2157,13 +2157,13 @@ S32 SceneObject::createPolygonBoxCollisionShape( const F32 width, const F32 heig
         delete pShape;
         delete pFixtureDef;
 
-        return mCollisionFixtures.size()-1;
+        return (S32)mCollisionFixtures.size()-1;
     }
 
     // Push fixture definition.
     mCollisionFixtureDefs.push_back( pFixtureDef );
 
-    return mCollisionFixtureDefs.size()-1;
+    return (S32)mCollisionFixtureDefs.size()-1;
 }
 
 //-----------------------------------------------------------------------------
@@ -2200,13 +2200,13 @@ S32 SceneObject::createPolygonBoxCollisionShape( const F32 width, const F32 heig
         delete pShape;
         delete pFixtureDef;
 
-        return mCollisionFixtures.size()-1;
+        return (S32)mCollisionFixtures.size()-1;
     }
 
     // Push fixture definition.
     mCollisionFixtureDefs.push_back( pFixtureDef );
 
-    return mCollisionFixtureDefs.size()-1;
+    return (S32)mCollisionFixtureDefs.size()-1;
 }
 
 //-----------------------------------------------------------------------------
@@ -2243,13 +2243,13 @@ S32 SceneObject::createPolygonBoxCollisionShape( const F32 width, const F32 heig
         delete pShape;
         delete pFixtureDef;
 
-        return mCollisionFixtures.size()-1;
+        return (S32)mCollisionFixtures.size()-1;
     }
 
     // Push fixture definition.
     mCollisionFixtureDefs.push_back( pFixtureDef );
 
-    return mCollisionFixtureDefs.size()-1;
+    return (S32)mCollisionFixtureDefs.size()-1;
 }
 
 //-----------------------------------------------------------------------------
@@ -2277,7 +2277,7 @@ Vector2 SceneObject::getPolygonCollisionShapeLocalPoint( const U32 shapeIndex, c
 
 //-----------------------------------------------------------------------------
 
-S32 SceneObject::createChainCollisionShape( const U32 pointCount, const b2Vec2* localPoints )
+S32 SceneObject::createChainCollisionShape( const size_t pointCount, const b2Vec2* localPoints )
 {
     // Debug Profiling.
     PROFILE_SCOPE(SceneObject_CreateChainCollisionShape);
@@ -2292,7 +2292,7 @@ S32 SceneObject::createChainCollisionShape( const U32 pointCount, const b2Vec2* 
     // Configure fixture definition.
     b2FixtureDef* pFixtureDef = new b2FixtureDef( mDefaultFixture );
     b2ChainShape* pShape      = new b2ChainShape();
-    pShape->CreateChain( localPoints, pointCount );
+    pShape->CreateChain( localPoints, (int32)pointCount );
     pFixtureDef->shape = pShape;
 
     if ( mpScene )
@@ -2304,18 +2304,18 @@ S32 SceneObject::createChainCollisionShape( const U32 pointCount, const b2Vec2* 
         delete pShape;
         delete pFixtureDef;
 
-        return mCollisionFixtures.size()-1;
+        return (S32)mCollisionFixtures.size()-1;
     }
 
     // Push fixture definition.
     mCollisionFixtureDefs.push_back( pFixtureDef );
 
-    return mCollisionFixtureDefs.size()-1;
+    return (S32)mCollisionFixtureDefs.size()-1;
 }
 
 //-----------------------------------------------------------------------------
 
-S32 SceneObject::createChainCollisionShape(  const U32 pointCount, const b2Vec2* localPoints,
+S32 SceneObject::createChainCollisionShape(  const size_t pointCount, const b2Vec2* localPoints,
                                                 const bool hasAdjacentLocalPositionStart, const bool hasAdjacentLocalPositionEnd,
                                                 const b2Vec2& adjacentLocalPositionStart, const b2Vec2& adjacentLocalPositionEnd )
 {
@@ -2332,7 +2332,7 @@ S32 SceneObject::createChainCollisionShape(  const U32 pointCount, const b2Vec2*
     // Configure fixture definition.
     b2FixtureDef* pFixtureDef = new b2FixtureDef( mDefaultFixture );
     b2ChainShape* pShape      = new b2ChainShape();
-    pShape->CreateChain( localPoints, pointCount );
+    pShape->CreateChain( localPoints, (int32)pointCount );
     
     if ( hasAdjacentLocalPositionStart )
         pShape->SetPrevVertex( adjacentLocalPositionStart );
@@ -2351,13 +2351,13 @@ S32 SceneObject::createChainCollisionShape(  const U32 pointCount, const b2Vec2*
         delete pShape;
         delete pFixtureDef;
 
-        return mCollisionFixtures.size()-1;
+        return (S32)mCollisionFixtures.size()-1;
     }
 
     // Push fixture definition.
     mCollisionFixtureDefs.push_back( pFixtureDef );
 
-    return mCollisionFixtureDefs.size()-1;
+    return (S32)mCollisionFixtureDefs.size()-1;
 }
 
 //-----------------------------------------------------------------------------
@@ -2445,18 +2445,18 @@ S32 SceneObject::createEdgeCollisionShape( const b2Vec2& localPositionStart, con
         delete pShape;
         delete pFixtureDef;
 
-        return mCollisionFixtures.size()-1;
+        return (S32)mCollisionFixtures.size()-1;
     }
 
     // Push fixture definition.
     mCollisionFixtureDefs.push_back( pFixtureDef );
 
-    return mCollisionFixtureDefs.size()-1;
+    return (S32)mCollisionFixtureDefs.size()-1;
 }
 
 //-----------------------------------------------------------------------------
 
-S32 SceneObject::createEdgeCollisionShape(   const b2Vec2& localPositionStart, const b2Vec2& localPositionEnd,
+size_t SceneObject::createEdgeCollisionShape(   const b2Vec2& localPositionStart, const b2Vec2& localPositionEnd,
                                                 const bool hasAdjacentLocalPositionStart, const bool hasAdjacentLocalPositionEnd,
                                                 const b2Vec2& adjacentLocalPositionStart, const b2Vec2& adjacentLocalPositionEnd )
 {
@@ -2798,7 +2798,7 @@ void SceneObject::copyTo( SimObject* obj )
 
 //-----------------------------------------------------------------------------
 
-S32 SceneObject::copyCollisionShapes( SceneObject* pSceneObject, const bool clearTargetShapes, const S32 shapeIndex )
+size_t SceneObject::copyCollisionShapes( SceneObject* pSceneObject, const bool clearTargetShapes, const S32 shapeIndex )
 {
     // Sanity!
     AssertFatal( pSceneObject != nullptr, "SceneObject::copyCollisionShapes() - Cannot copy to a NULL scene object." );
@@ -2852,7 +2852,7 @@ S32 SceneObject::copyCollisionShapes( SceneObject* pSceneObject, const bool clea
             fixtureDef = *pFixtureDef;
         }
 
-        S32 newShapeIndex;
+        size_t newShapeIndex;
 
         // Fetch shape type.
         const b2Shape::Type shapeType = fixtureDef.shape->GetType();
@@ -3016,7 +3016,7 @@ S32 SceneObject::copyChainCollisionShapeTo( SceneObject* pSceneObject, const b2F
 
 //-----------------------------------------------------------------------------
 
-S32 SceneObject::copyEdgeCollisionShapeTo( SceneObject* pSceneObject, const b2FixtureDef& fixtureDef ) const
+size_t SceneObject::copyEdgeCollisionShapeTo( SceneObject* pSceneObject, const b2FixtureDef& fixtureDef ) const
 {
     // Fetch shape.
     const b2EdgeShape* pShape = dynamic_cast<const b2EdgeShape*>( fixtureDef.shape );
@@ -3037,7 +3037,7 @@ S32 SceneObject::copyEdgeCollisionShapeTo( SceneObject* pSceneObject, const b2Fi
     const b2Vec2 adjacentLocalPosition2  = pShape->m_vertex3;
 
     // Create shape.
-    const S32 shapeIndex = pSceneObject->createEdgeCollisionShape(
+    const size_t shapeIndex = pSceneObject->createEdgeCollisionShape(
         localPosition1, localPosition2,
         hasAdjacentLocalPosition1, hasAdjacentLocalPosition2,
         adjacentLocalPosition1, adjacentLocalPosition2 );
@@ -3445,7 +3445,7 @@ void SceneObject::onTamlCustomRead( const TamlCustomNodes& customNodes )
         F32 shapeRestitution = getDefaultRestitution();
         bool shapeSensor     = false;
 
-        S32 shapeIndex;
+        size_t shapeIndex;
 
         // Is this a circle shape?
         if ( shapeName == circleTypeName )

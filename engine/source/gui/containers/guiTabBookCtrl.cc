@@ -881,7 +881,7 @@ void GuiTabBookCtrl::selectPrevPage()
       if( tab == mActivePage )
       {
          if( nI == 0 )
-            selectPage( mPages.size() - 1 );
+            selectPage( (S32)mPages.size() - 1 );
          else
             selectPage( nI - 1 );
 
@@ -910,8 +910,8 @@ void GuiTabBookCtrl::fitPage( GuiTabPageCtrl* page )
 
 S32 GuiTabBookCtrl::getPageNum( GuiTabPageCtrl* page ) const
 {
-    const U32 numPages = mPages.size();
-    for( U32 i = 0; i < numPages; ++ i )
+    const auto numPages = mPages.size();
+    for( auto i = 0; i < numPages; ++ i )
         if( mPages[ i ].Page == page )
             return i;
     

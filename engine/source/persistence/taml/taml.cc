@@ -505,12 +505,12 @@ Taml::TamlFormatMode Taml::getFileAutoFormatMode( const char* pFilename )
     if ( mAutoFormat )
     {
         // Yes, so fetch the extension lengths.
-        const U32 xmlExtensionLength = dStrlen( mAutoFormatXmlExtension );
-        const U32 binaryExtensionLength = dStrlen( mAutoFormatBinaryExtension );
-        const U32 jsonExtensionLength = dStrlen( mAutoFormatJSONExtension );
+        const auto xmlExtensionLength = dStrlen( mAutoFormatXmlExtension );
+        const auto binaryExtensionLength = dStrlen( mAutoFormatBinaryExtension );
+        const auto jsonExtensionLength = dStrlen( mAutoFormatJSONExtension );
 
         // Fetch filename length.
-        const U32 filenameLength = dStrlen( pFilename );
+        const auto filenameLength = dStrlen( pFilename );
 
         // Fetch end of filename,
         const char* pEndOfFilename = pFilename + filenameLength;
@@ -639,10 +639,10 @@ void Taml::compileStaticFields( TamlWriteNode* pTamlWriteNode )
     const AbstractClassRep::FieldList& fieldList = pSimObject->getFieldList();
 
     // Fetch field count.
-    const U32 fieldCount = fieldList.size();
+    const auto fieldCount = fieldList.size();
 
     // Iterate fields.
-    for( U32 index = 0; index < fieldCount; ++index )
+    for( size_t index = 0; index < fieldCount; ++index )
     {
         // Fetch field.
         const AbstractClassRep::Field* pField = &fieldList[index];
@@ -657,7 +657,7 @@ void Taml::compileStaticFields( TamlWriteNode* pTamlWriteNode )
         StringTableEntry fieldName = StringTable->insert( pField->pFieldname );
 
         // Fetch element count.
-        const U32 elementCount = pField->elementCount;
+        const auto elementCount = pField->elementCount;
 
         // Skip if the field should not be written.
         // For now, we only deal with non-array fields.
@@ -675,7 +675,7 @@ void Taml::compileStaticFields( TamlWriteNode* pTamlWriteNode )
             // Fetch object field value.
             const char* pFieldValue = pSimObject->getPrefixedDataField( fieldName, indexBuffer );
 
-            U32 nBufferSize = dStrlen( pFieldValue ) + 1;
+            auto nBufferSize = dStrlen( pFieldValue ) + 1;
             FrameTemp<char> valueCopy( nBufferSize );
             dStrcpy( (char *)valueCopy, pFieldValue );
 
@@ -1315,14 +1315,11 @@ bool Taml::generateTamlSchema()
         // Fetch field list.
         const AbstractClassRep::FieldList& fields = pType->mFieldList;
 
-        // Fetcj field count.
-        const S32 fieldCount = fields.size();
-
         // Iterate static fields (in reverse as most types are organized from the root-fields up).
-        for( S32 index = fieldCount-1; index > 0; --index )
+       for( auto ritr = fields.rbegin(); ritr != fields.rend(); ritr++)
         {
             // Fetch field.
-            const AbstractClassRep::Field& field = fields[index];
+            const AbstractClassRep::Field& field = *ritr;
 
             // Skip if not a data field.
             if( field.type == AbstractClassRep::DeprecatedFieldType ||
@@ -1339,7 +1336,7 @@ bool Taml::generateTamlSchema()
             pAttributeElement->SetAttribute( "name", field.pFieldname );
 
             // Handle the console type appropriately.
-            const S32 fieldType = (S32)field.type;
+            const auto fieldType = field.type;
 
             // Is the field an enumeration?
             if ( fieldType == TypeEnum )

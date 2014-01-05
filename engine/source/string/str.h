@@ -324,7 +324,7 @@ class StringBuilder
       }
       S32 append( const String& str )
       {
-         return mFormat.append( str.c_str(), str.length() );
+         return mFormat.append( str.c_str(), (U32)str.length() );
       }
       S32 append( const char* str, U32 length )
       {

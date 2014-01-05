@@ -714,7 +714,7 @@ ConsoleFunction( getServerCount, int, 1, 1, "() Use the getServerCount function 
                                                                 "@return Returns a numeric value equal to the number of game servers found on the last queryLANServers() or queryMasterServer() call. Returns 0 if the function was not called, or none were found.\n"
                                                                 "@sa queryLANServers, queryMasterServer, setServerInfo")
 {
-   return gServerList.size();
+   return (int)gServerList.size();
 }
 
 ConsoleFunction( setServerInfo, bool, 2, 2, "( index ) Use the setServerInfo function to set the values of the $ServerInfo::* global variables with information for a server found with queryLANServers or with queryMasterServer.\n"
@@ -823,7 +823,7 @@ bool pickMasterServer()
    gMasterServerPing.session = gPingSession;
 
    char addrString[256];
-   U32 serverCount = gMasterServerList.size();
+   auto serverCount = gMasterServerList.size();
    if ( !serverCount )
    {
       // There are no more servers left to try...:(
@@ -928,11 +928,11 @@ static S32 countPingRequests()
 {
    // Need a function here because the ping list also includes
    // broadcast pings we don't want counted.
-   U32 pSize = gPingList.size(), count = pSize;
-   for (U32 i = 0; i < pSize; i++)
+   auto pSize = gPingList.size(), count = pSize;
+   for (auto i = 0; i < pSize; i++)
       if (gPingList[i].broadcast)
          count--;
-   return count;
+   return (S32)count;
 }
 
 
@@ -957,7 +957,7 @@ static void pushServerFavorites()
       server = Con::getVariable( buf );
       if ( server )
       {
-         sz = dStrcspn( server, "\t" );
+         sz = (U32)dStrcspn( server, "\t" );
          if ( sz > 0 )
          {
             len = sz > 24 ? 24 : sz;
@@ -1340,7 +1340,7 @@ static void processPingsAndQueries( U32 session, bool schedule )
    {
       // All done!
       char msg[64];
-      U32 foundCount = gServerList.size();
+      auto foundCount = gServerList.size();
       if ( foundCount == 0 )
          dStrcpy( msg, "No servers found." );
       else if ( foundCount == 1 )
@@ -1453,7 +1453,7 @@ static void updateQueryProgress()
       return;
 
    char msg[64];
-   U32 queriesLeft = gQueryList.size();
+   auto queriesLeft = gQueryList.size();
    dSprintf( msg, sizeof( msg ), "Querying servers: %d left...", queriesLeft );
 
    // Query progress is 0.5 -> 1

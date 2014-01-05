@@ -146,14 +146,14 @@ ConsoleMethod( GuiFrameSetCtrl, getColumnCount, S32, 2, 2, "() Use the getColumn
 																"@return Returns an integer value equal to the number of columns in this frame.\n"
 																"@sa getRowCount")
 {
-   return(object->columnOffsets()->size());
+   return (S32)(object->columnOffsets()->size());
 }
 
 ConsoleMethod( GuiFrameSetCtrl, getRowCount, S32, 2, 2, "() Use the getRowCount method to determine the number of rows in this control.\n"
 																"@return Returns an integer value equal to the number of rows in this frame.\n"
 																"@sa getColumnCount")
 {
-   return(object->rowOffsets()->size());
+   return (S32)(object->rowOffsets()->size());
 }
 
 ConsoleMethod( GuiFrameSetCtrl, getColumnOffset, S32, 3, 3, "( column ) Use the getColumnOffset method to determine the current pixel location of the specified column.\n"
@@ -685,8 +685,8 @@ S32 GuiFrameSetCtrl::findResizableFrames(S32 indexes[])
    GuiControl *gc;
    S32 column = 0;
    S32 row = 0;
-   S32 columns = mColumnOffsets.size();
-   S32 rows = mRowOffsets.size();
+   auto columns = mColumnOffsets.size();
+   auto rows = mRowOffsets.size();
    for (soitr = begin(); soitr != end() && validIndexes > 0; soitr++, fditr++)
    {
       // don't continue if some of the frames are empty
@@ -694,7 +694,7 @@ S32 GuiFrameSetCtrl::findResizableFrames(S32 indexes[])
          break;
       // otherwise, check the gui elements for move-restrictions
       gc = dynamic_cast<GuiControl *>(*soitr);
-      if (gc != NULL)
+      if (gc != nullptr)
       {
          if (column == columns)
          {
@@ -787,10 +787,10 @@ bool GuiFrameSetCtrl::findFrameContents(S32 index, GuiControl **gc, FrameDetail 
 //-----------------------------------------------------------------------------
 void GuiFrameSetCtrl::computeSizes(bool balanceFrames)
 {
-   S32 columns = mColumnOffsets.size();
-   S32 rows = mRowOffsets.size();
-   S32 vDividers = columns - 1;
-   S32 hDividers = rows - 1;
+   auto columns = mColumnOffsets.size();
+   auto rows = mRowOffsets.size();
+   auto vDividers = columns - 1;
+   auto hDividers = rows - 1;
 
    if ( !balanceFrames && mFrameDetails.size() == ( columns * rows ) )
    {
@@ -800,7 +800,7 @@ void GuiFrameSetCtrl::computeSizes(bool balanceFrames)
 
       if ( columns > 1 )
       {
-         index = columns - 1;
+         index = (S32)columns - 1;
          delta = mFrameDetails[index]->mMinExtent.x - ( getWidth() - mColumnOffsets[index] );
          while ( delta > 0 )
          {
@@ -814,7 +814,7 @@ void GuiFrameSetCtrl::computeSizes(bool balanceFrames)
 
       if ( rows > 1 )
       {
-         index = rows - 1;
+         index = (S32)rows - 1;
          delta = mFrameDetails[columns * index]->mMinExtent.y - ( getHeight() - mRowOffsets[index] );
          while ( delta > 0 )
          {
@@ -952,10 +952,10 @@ void GuiFrameSetCtrl::computeMovableRange(Region hitRegion, S32 vertHit, S32 hor
    Vector<SimObject *>::iterator soitr;
    Vector<FrameDetail *>::iterator fditr = mFrameDetails.begin();
    GuiControl *gc;
-   S32 column = 0;
-   S32 row = 0;
-   S32 columns = mColumnOffsets.size();
-   S32 rows = mRowOffsets.size();
+   auto column = 0;
+   auto row = 0;
+   auto columns = mColumnOffsets.size();
+   auto rows = mRowOffsets.size();
    for (soitr = begin(); soitr != end(); soitr++, fditr++)
    {
       // only worry about visible frames
@@ -967,10 +967,10 @@ void GuiFrameSetCtrl::computeMovableRange(Region hitRegion, S32 vertHit, S32 hor
       if (row == rows)
          return;
       gc = dynamic_cast<GuiControl *>(*soitr);
-      if (gc != NULL)
+      if (gc != nullptr)
       {
          // the gui control is in a visible frame, so look at its frame details
-         if ((*fditr) != NULL)
+         if ((*fditr) != nullptr)
          {
             switch (hitRegion)
             {

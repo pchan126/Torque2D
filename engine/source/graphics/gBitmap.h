@@ -94,8 +94,8 @@ class GBitmap: public ResourceInstance
            const GFXFormat in_format = GFXFormatR8G8B8);
    virtual ~GBitmap();
 
-   void allocateBitmap(const U32  in_width,
-                       const U32  in_height,
+   void allocateBitmap(const size_t  in_width,
+                       const size_t  in_height,
                        const bool in_extrudeMipLevels = false,
                        const GFXFormat in_format = GFXFormatR8G8B8);
 

@@ -57,28 +57,28 @@ public:
     void            removeAlwaysInScope( SceneObject* pSceneObject );
 
     /// World collision-shape queries.
-    U32             collisionQueryAABB( const b2AABB& aabb );
-    U32             collisionQueryRay( const Vector2& point1, const Vector2& point2 );
-    U32             collisionQueryPoint( const Vector2& point );
-    U32             collisionQueryCircle( const Vector2& centroid, const F32 radius );
+    size_t             collisionQueryAABB( const b2AABB& aabb );
+    size_t             collisionQueryRay( const Vector2& point1, const Vector2& point2 );
+    size_t             collisionQueryPoint( const Vector2& point );
+    size_t             collisionQueryCircle( const Vector2& centroid, const F32 radius );
 
     /// AABB queries.
-    U32             aabbQueryAABB( const b2AABB& aabb );
-    U32             aabbQueryRay( const Vector2& point1, const Vector2& point2 );
-    U32             aabbQueryPoint( const Vector2& point );
-    U32             aabbQueryCircle( const Vector2& centroid, const F32 radius );
+    size_t             aabbQueryAABB( const b2AABB& aabb );
+    size_t             aabbQueryRay( const Vector2& point1, const Vector2& point2 );
+    size_t             aabbQueryPoint( const Vector2& point );
+    size_t             aabbQueryCircle( const Vector2& centroid, const F32 radius );
 
     /// OOBB queries.
-    U32             oobbQueryAABB( const b2AABB& aabb );
-    U32             oobbQueryRay( const Vector2& point1, const Vector2& point2 );
-    U32             oobbQueryPoint( const Vector2& point );
-    U32             oobbQueryCircle( const Vector2& centroid, const F32 radius );
+    size_t             oobbQueryAABB( const b2AABB& aabb );
+    size_t             oobbQueryRay( const Vector2& point1, const Vector2& point2 );
+    size_t             oobbQueryPoint( const Vector2& point );
+    size_t             oobbQueryCircle( const Vector2& centroid, const F32 radius );
 
     /// Any queries.
-    U32             anyQueryAABB( const b2AABB& aabb );
-    U32             anyQueryRay( const Vector2& point1, const Vector2& point2 );
-    U32             anyQueryPoint( const Vector2& point );
-    U32             anyQueryCircle( const Vector2& centroid, const F32 radius );
+    size_t             anyQueryAABB( const b2AABB& aabb );
+    size_t             anyQueryRay( const Vector2& point1, const Vector2& point2 );
+    size_t             anyQueryPoint( const Vector2& point );
+    size_t             anyQueryCircle( const Vector2& centroid, const F32 radius );
 
     /// Filtering.
     inline void     setQueryFilter( const WorldQueryFilter& queryFilter ) { mQueryFilter = queryFilter; }

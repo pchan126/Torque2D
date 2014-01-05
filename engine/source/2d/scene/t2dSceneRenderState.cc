@@ -52,7 +52,7 @@ void t2dSceneRenderState::renderObjects( SceneObject** objects, U32 numObjects, 
 void t2dSceneRenderState::renderObjects( t2dScene * pScene, SceneRenderQueue* pSceneRenderQueue )
 {
     // Yes so step through layers.
-    for ( S32 layer = pScene->getLayerCount()-1; layer >= 0 ; layer-- )
+    for ( S32 layer = (S32)pScene->getLayerCount()-1; layer >= 0 ; layer-- )
     {
         GFX->pushViewMatrix();
         MatrixF vM = GFX->getViewMatrix();
@@ -78,7 +78,7 @@ void t2dSceneRenderState::renderObjects( t2dScene * pScene, SceneRenderQueue* pS
         typeWorldQueryResultVector& layerResults = pScene->getWorldQuery()->getLayeredQueryResults( layer );
 
         // Fetch layer object count.
-        const U32 layerObjectCount = layerResults.size();
+        const size_t layerObjectCount = layerResults.size();
 
         // Are there any objects to render in this layer?
         if ( layerObjectCount > 0 )

@@ -82,7 +82,7 @@ public:
    virtual bool beginSceneInternal();
    virtual void endSceneInternal();
 
-   virtual void drawPrimitive( GFXPrimitiveType primType, U32 vertexStart, U32 primitiveCount );
+   virtual void drawPrimitive( GFXPrimitiveType primType, size_t vertexStart, size_t primitiveCount );
 
    virtual void drawIndexedPrimitive(  GFXPrimitiveType primType, 
                                        U32 startVertex, 
@@ -103,7 +103,7 @@ public:
    
    ///
    bool supportsAnisotropic() const { return mSupportsAnisotropic; }
-   GLsizei primCountToIndexCount(GFXPrimitiveType primType, U32 primitiveCount);
+   GLsizei primCountToIndexCount(GFXPrimitiveType primType, size_t primitiveCount);
 
     typedef Vector<MatrixF> MatrixStack;
     
@@ -137,7 +137,7 @@ protected:
 protected:
 
    virtual void preDrawPrimitive();
-    void postDrawPrimitive(U32 primitiveCount);
+    void postDrawPrimitive(size_t primitiveCount);
 
     /// Called by GFXDevice to create a device specific stateblock
    virtual GFXStateBlockRef createStateBlockInternal(const GFXStateBlockDesc& desc);
@@ -190,13 +190,13 @@ protected:
    virtual inline const MatrixF getViewMatrix() { return getMatrix(GFXMatrixView);};
    
 
-   virtual GFXVertexBuffer *allocVertexBuffer(  U32 numVerts, 
+   virtual GFXVertexBuffer *allocVertexBuffer(  dsize_t numVerts,
                                                 const GFXVertexFormat *vertexFormat,
-                                                U32 vertSize, 
+                                                dsize_t vertSize,
                                                 GFXBufferType bufferType,
                                                 void *data,
-                                              U32 indexCount = 0,
-                                              void *indexData = NULL) = 0;
+                                              dsize_t indexCount = 0,
+                                              void *indexData = nullptr) = 0;
    
    // NOTE: The GL device doesn't need a vertex declaration at
    // this time, but we need to return something to keep the system

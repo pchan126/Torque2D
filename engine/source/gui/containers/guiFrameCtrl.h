@@ -148,9 +148,9 @@ protected:
 
    void drawDividers(const Point2I &offset);
 public:
-   U32 columns() const                                   { return(mColumnOffsets.size()); }
-   U32 rows() const                                      { return(mRowOffsets.size()); }
-   U32 borderWidth() const                               { return(mFramesetDetails.mBorderWidth); }
+   U32 columns() const                                   { return((U32)mColumnOffsets.size()); }
+   U32 rows() const                                      { return((U32)mRowOffsets.size()); }
+   U32 borderWidth() const                               { return((U32)mFramesetDetails.mBorderWidth); }
    Vector<S32>* columnOffsets()                          { return(&mColumnOffsets); }
    Vector<S32>* rowOffsets()                             { return(&mRowOffsets); }
    FrameDetail* framesetDetails()                        { return(&mFramesetDetails); }

@@ -82,7 +82,7 @@ public:
    bool isAlive();
 
    /// Returns the platform specific thread id for this thread.
-   U32 getId();
+   PTR getId();
 };
 
 class ThreadManager 
@@ -131,7 +131,7 @@ public:
       ThreadManager &manager = *singleton();
       manager.poolLock.lock();
       
-      U32 threadID = thread->getId();
+      PTR threadID = thread->getId();
       for( U32 i = 0;i < (U32)manager.threadPool.size();++i)
       {
          if(manager.threadPool[i]->getId() == threadID)

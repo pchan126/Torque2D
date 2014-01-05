@@ -55,7 +55,7 @@ ConsoleFunction( setModPaths, void, 2, 2, "( path ) Use the setModPaths function
         temp = dStrtok( nullptr, ";" );
     }
 
-    ResourceManager->setModPaths( paths.size(), (const char**) paths.address() );
+    ResourceManager->setModPaths( (U32)paths.size(), (const char**) paths.address() );
 }
 
 ConsoleFunction( purgeResources, void, 1, 1, "() Use the purgeResources function to purge all game resources.\n"

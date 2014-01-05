@@ -165,7 +165,7 @@ void ActionMap::dumpActionMap(const char* fileName, const bool append) const
             if (rNode.flags & Node::BindCmd) {
                if (rNode.makeConsoleCommand) {
                   dStrcat(lineBuffer, ", \"");
-                  U32 pos = dStrlen(lineBuffer);
+                  U32 pos = (U32)dStrlen(lineBuffer);
                   expandEscape(lineBuffer + pos, rNode.makeConsoleCommand);
                   dStrcat(lineBuffer, "\"");
                } else {
@@ -173,7 +173,7 @@ void ActionMap::dumpActionMap(const char* fileName, const bool append) const
                }
                if (rNode.breakConsoleCommand) {
                   dStrcat(lineBuffer, ", \"");
-                  U32 pos = dStrlen(lineBuffer);
+                  U32 pos = (U32)dStrlen(lineBuffer);
                   expandEscape(lineBuffer + pos, rNode.breakConsoleCommand);
                   dStrcat(lineBuffer, "\"");
                }
@@ -629,7 +629,7 @@ const char* ActionMap::getCommand( const char* device, const char* action )
             {
                 if ( mapNode->flags & Node::BindCmd )
                 {
-                    S32 bufferLen = dStrlen( mapNode->makeConsoleCommand ) + dStrlen( mapNode->breakConsoleCommand ) + 2;
+                    S32 bufferLen = (S32)(dStrlen( mapNode->makeConsoleCommand ) + dStrlen( mapNode->breakConsoleCommand ) + 2);
                     char* returnString = Con::getReturnBuffer( bufferLen );
                     dSprintf( returnString, bufferLen, "%s\t%s",
                             ( mapNode->makeConsoleCommand ? mapNode->makeConsoleCommand : "" ),
@@ -732,7 +732,7 @@ const char* ActionMap::buildActionString( const InputEventInfo* event )
     if ( !getKeyString( event->objInst, objectBuffer ) )
         return( "" );
 
-    U32 returnLen = dStrlen( modifierString ) + dStrlen( objectBuffer ) + 2;	
+    U32 returnLen = (U32)(dStrlen( modifierString ) + dStrlen( objectBuffer ) + 2);
     char* returnString = Con::getReturnBuffer( returnLen );
     dSprintf( returnString, returnLen - 1, "%s%s", modifierString, objectBuffer );
     return( returnString );
@@ -741,7 +741,7 @@ const char* ActionMap::buildActionString( const InputEventInfo* event )
 //------------------------------------------------------------------------------
 bool ActionMap::getDeviceTypeAndInstance(const char *pDeviceName, U32 &deviceType, U32 &deviceInstance)
 {
-   U32 offset = 0;
+   dsize_t offset = 0;
     
    if (dStrnicmp(pDeviceName, "keyboard", dStrlen("keyboard")) == 0)
    {
@@ -1400,7 +1400,7 @@ void ActionMap::enterBreakEvent(const InputEventInfo* pEvent, const Node* pNode)
    }
    if (entry == -1) {
       smBreakTable.increment();
-      entry = smBreakTable.size() - 1;
+      entry = (S32)smBreakTable.size() - 1;
 
       smBreakTable[entry].deviceType = pEvent->deviceType;
       smBreakTable[entry].deviceInst = pEvent->deviceInst;

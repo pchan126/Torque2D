@@ -57,14 +57,14 @@ CON_DECLARE_PARSER(CMD);
 // TO-DO: Console debugger stuff to be cleaned up later
 static S32 dbgGetCurrentFrame(void)
 {
-   return gEvalState.stack.size() - 1;
+   return (S32)gEvalState.stack.size() - 1;
 }
 
 static const char * prependDollar ( const char * name )
 {
    if(name[0] != '$')
    {
-      S32   len = dStrlen(name);
+      S32   len = (S32)dStrlen(name);
       AssertFatal(len < sizeof(scratchBuffer)-2, "CONSOLE: name too long");
       scratchBuffer[0] = '$';
       dMemcpy(scratchBuffer + 1, name, len + 1);
@@ -77,7 +77,7 @@ static const char * prependPercent ( const char * name )
 {
    if(name[0] != '%')
    {
-      S32   len = dStrlen(name);
+      S32   len = (S32)dStrlen(name);
       AssertFatal(len < sizeof(scratchBuffer)-2, "CONSOLE: name too long");
       scratchBuffer[0] = '%';
       dMemcpy(scratchBuffer + 1, name, len + 1);
@@ -349,7 +349,7 @@ bool isMainThread()
 
 //--------------------------------------
 
-void getLockLog(ConsoleLogEntry *&log, U32 &size)  
+void getLockLog(ConsoleLogEntry *&log, size_t &size)  
 {  
    consoleLogLocked = true;
    log = consoleLog.address();
@@ -455,7 +455,7 @@ U32 tabComplete(char* inputBuffer, U32 cursorPos, U32 maxResultLength, bool forw
    if (newText) 
    {
       // If we got something, append it to the input text.
-      S32 len = dStrlen(newText);
+      size_t len = dStrlen(newText);
       if (len + completionBaseStart > maxResultLength)
       {
          len = maxResultLength - completionBaseStart;
@@ -463,7 +463,7 @@ U32 tabComplete(char* inputBuffer, U32 cursorPos, U32 maxResultLength, bool forw
       dStrncpy(inputBuffer + completionBaseStart, newText, len);
       inputBuffer[completionBaseStart + len] = 0;
       // And set the cursor after it.
-      cursorPos = completionBaseStart + len;
+      cursorPos = completionBaseStart + (U32)len;
    }
 
    // Save the modified input buffer for checking next time.
@@ -514,7 +514,7 @@ static void log(const char *string)
          {
             // Dump anything that has been printed to the console so far.
             consoleLogMode -= 0x4;
-            U32 size, line;
+            size_t size, line;
             ConsoleLogEntry *log;
             getLockLog(log, size);
             for (line = 0; line < size; line++) 
@@ -573,7 +573,7 @@ static void _printf(ConsoleLogEntry::Level level, ConsoleLogEntry::Type type, co
    U32 offset = 0;
    if(gEvalState.traceOn && gEvalState.stack.size())
    {
-      offset = gEvalState.stack.size() * 3;
+      offset = (U32)gEvalState.stack.size() * 3;
       for(U32 i = 0; i < offset; i++)
          buffer[i] = ' ';
    }
@@ -822,7 +822,7 @@ const char *getVariable(const char *name)
    // get the field info from the object..
    if(name[0] != '$' && dStrchr(name, '.') && !isFunction(name))
    {
-      S32 len = dStrlen(name);
+      S32 len = (S32)dStrlen(name);
       AssertFatal(len < sizeof(scratchBuffer)-1, "Sim::getVariable - name too long");
       dMemcpy(scratchBuffer, name, len+1);
 
@@ -1229,7 +1229,7 @@ StringTableEntry getModNameFromPath(const char *path)
    {
       // It's an absolute path
       const StringTableEntry exePath = Platform::getMainDotCsDir();
-      U32 len = dStrlen(exePath);
+      auto len = dStrlen(exePath);
       if(dStrnicmp(exePath, path, len) == 0)
       {
          const char *ptr = path + len + 1;
@@ -1286,7 +1286,7 @@ void addPathExpando( const char* pExpandoName, const char* pPath )
     StringTableEntry expandoName = StringTable->insert( pExpandoName );
 
     // Fetch the length of the path.
-    S32 pathLength = dStrlen(pPath);
+    auto pathLength = dStrlen(pPath);
 
     char pathBuffer[1024];
 
@@ -1413,7 +1413,7 @@ bool isPathExpando( const char* pExpandoName )
 
 U32 getPathExpandoCount( void )
 {
-    return PathExpandos.size();
+    return (U32)PathExpandos.size();
 }
 
 //-----------------------------------------------------------------------------
@@ -1647,7 +1647,7 @@ void collapsePath( char* pDstPath, U32 size, const char* pSrcPath, const char* p
         }
 
         // Keep track of the relative path length
-        expandoRelativePathLength = dStrlen(relativePath);
+        expandoRelativePathLength = (U32)dStrlen(relativePath);
 
         // Fetch expando key (name).
         StringTableEntry expandoName = getPathExpandoKey( expandoIndex );
@@ -1690,7 +1690,7 @@ void ensureTrailingSlash( char* pDstPath, const char* pSrcPath )
     dStrcpy( pDstPath, pSrcPath );
 
     // Find trailing character index.
-    S32 trailIndex = dStrlen(pDstPath);
+    auto trailIndex = dStrlen(pDstPath);
 
     // Ignore if empty string.
     if ( trailIndex == 0 )

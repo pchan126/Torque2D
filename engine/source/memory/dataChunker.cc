@@ -26,10 +26,10 @@
 
 //----------------------------------------------------------------------------
 
-DataChunker::DataChunker(S32 size)
+DataChunker::DataChunker(size_t size)
 {
    mChunkSize          = size;
-   mCurBlock           = NULL;
+   mCurBlock           = nullptr;
 }
 
 DataChunker::~DataChunker()
@@ -37,7 +37,7 @@ DataChunker::~DataChunker()
    freeBlocks();
 }
 
-void *DataChunker::alloc(S32 size)
+void *DataChunker::alloc(size_t size)
 {
    if (size > mChunkSize)
    {
@@ -68,7 +68,7 @@ void *DataChunker::alloc(S32 size)
    return ret;
 }
 
-DataChunker::DataBlock::DataBlock(S32 size)
+DataChunker::DataBlock::DataBlock(size_t size)
 {
    data = new U8[size];
 }
@@ -89,7 +89,7 @@ void DataChunker::freeBlocks(bool keepOne)
    if (!keepOne)
    {
       delete mCurBlock;
-      mCurBlock = NULL;
+      mCurBlock = nullptr;
    }
    else if (mCurBlock)
       mCurBlock->curIndex = 0;

@@ -1573,7 +1573,7 @@ S32 AssetManager::findAssetName( AssetQuery* pAssetQuery, const char* pAssetName
 
     // Reset asset name.
     StringTableEntry assetName = nullptr;
-    S32 partialAssetNameLength = 0;
+    dsize_t partialAssetNameLength = 0;
         
     // Are we doing partial name search?
     if ( partialName ) 
@@ -1600,7 +1600,7 @@ S32 AssetManager::findAssetName( AssetQuery* pAssetQuery, const char* pAssetName
         if ( partialName ) 
         {
             // Yes, so fetch the length of this asset name.
-            const S32 currentAssetNameLength = dStrlen( pAssetDefinition->mAssetName );
+            const dsize_t currentAssetNameLength = dStrlen( pAssetDefinition->mAssetName );
 
             // Skip if the query asset name is longer than the current asset name.
             if ( partialAssetNameLength > currentAssetNameLength )
@@ -2073,7 +2073,7 @@ S32 AssetManager::findTaggedAssets( AssetQuery* pAssetQuery, const char* pAssetT
     const char* pTagSeparators = " ,\t\n";
 
     // Fetch tag count.
-    U32 assetTagCount = StringUnit::getUnitCount( pAssetTagNames, pTagSeparators );
+    dsize_t assetTagCount = StringUnit::getUnitCount( pAssetTagNames, pTagSeparators );
 
     // Fetch asset tags.
     Vector<AssetTagsManifest::AssetTag*> assetTags;
@@ -2498,7 +2498,7 @@ bool AssetManager::scanReferencedAssets( const char* pPath, const char* pExtensi
     }
 
     // Fetch extension length.
-    const U32 extensionLength = dStrlen( pExtension );
+    const dsize_t extensionLength = dStrlen( pExtension );
 
     TamlAssetReferencedVisitor assetReferencedVisitor;
 
@@ -2509,7 +2509,7 @@ bool AssetManager::scanReferencedAssets( const char* pPath, const char* pExtensi
         const char* pFilename = fileInfo.pFileName;
 
         // Find filename length.
-        const U32 filenameLength = dStrlen( pFilename );
+        const dsize_t filenameLength = dStrlen( pFilename );
 
         // Skip if extension is longer than filename.
         if ( extensionLength > filenameLength )

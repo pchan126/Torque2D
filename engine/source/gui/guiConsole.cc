@@ -51,7 +51,7 @@ bool GuiConsole::onWake()
 S32 GuiConsole::getMaxWidth(S32 startIndex, S32 endIndex)
 {
    //sanity check
-   U32 size;
+   size_t size;
    ConsoleLogEntry *log;
 
    Con::getLockLog(log, size);
@@ -71,7 +71,7 @@ S32 GuiConsole::getMaxWidth(S32 startIndex, S32 endIndex)
 void GuiConsole::onPreRender()
 {
    //see if the size has changed
-   U32 size;
+   size_t size;
    ConsoleLogEntry *log;
 
    Con::getLockLog(log, size);
@@ -91,15 +91,15 @@ void GuiConsole::onPreRender()
          scrolled = parent->isScrolledToBottom();
 
       //find the max cell width for the new entries
-      S32 newMax = getMaxWidth(0, size - 1);
+      auto newMax = getMaxWidth(0, (S32)size - 1);
       if(newMax > mCellSize.x)
          mCellSize.set(newMax, mFont->getHeight());
 
       //set the array size
-      mSize.set(1, size);
+      mSize.set(1, (S32)size);
 
       //resize the control
-      resize(getPosition(), Point2I(mCellSize.x, mCellSize.y * size));
+      resize(getPosition(), Point2I(mCellSize.x, mCellSize.y * (S32)size));
 
       //if the console was not scrolled, make the last entry visible
       if (scrolled)
@@ -109,7 +109,7 @@ void GuiConsole::onPreRender()
 
 void GuiConsole::onRenderCell(Point2I offset, Point2I cell, bool /*selected*/, bool /*mouseOver*/)
 {
-   U32 size;
+   size_t size;
    ConsoleLogEntry *log;
 
    Con::getLockLog(log, size);

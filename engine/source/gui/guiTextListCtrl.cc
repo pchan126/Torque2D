@@ -182,7 +182,7 @@ void GuiTextListCtrl::onRenderCell(Point2I offset, Point2I cell, bool selected, 
             }
          }
 
-         GFX->getDrawUtil()->drawTextN(mFont, pos, text, slen, mProfile->mFontColors);
+         GFX->getDrawUtil()->drawTextN(mFont, pos, text, (U32)slen, mProfile->mFontColors);
 
          if(clipped)
             GFX->setClipRect(saveClipRect);
@@ -225,12 +225,12 @@ void GuiTextListCtrl::insertEntry(U32 id, const char *text, S32 index)
    else
    {
       if(index > mList.size())
-         index = mList.size();
+         index = (S32)mList.size();
 
       mList.insert(index);
       mList[index] = e;
    }
-   setSize(Point2I(1, mList.size()));
+   setSize(Point2I(1, (S32)mList.size()));
 }
 
 void GuiTextListCtrl::addEntry(U32 id, const char *text)
@@ -240,7 +240,7 @@ void GuiTextListCtrl::addEntry(U32 id, const char *text)
    e.id = id;
    e.active = true;
    mList.push_back(e);
-   setSize(Point2I(1, mList.size()));
+   setSize(Point2I(1, (S32)mList.size()));
 }
 
 void GuiTextListCtrl::setEntry(U32 id, const char *text)
@@ -254,7 +254,7 @@ void GuiTextListCtrl::setEntry(U32 id, const char *text)
       mList[e].text = dStrdup(text);
 
       // Still have to call this to make sure cells are wide enough for new values:
-      setSize( Point2I( 1, mList.size() ) );
+      setSize( Point2I( 1, (S32)mList.size() ) );
    }
    setUpdate();
 }
@@ -374,7 +374,7 @@ void GuiTextListCtrl::onRemove()
 
 U32 GuiTextListCtrl::getNumEntries()
 {
-   return mList.size();
+   return (U32)mList.size();
 }
 
 void GuiTextListCtrl::removeEntryByIndex(S32 index)
@@ -384,7 +384,7 @@ void GuiTextListCtrl::removeEntryByIndex(S32 index)
    dFree(mList[index].text);
    mList.erase(index);
 
-   setSize(Point2I( 1, mList.size()));
+   setSize(Point2I( 1, (S32)mList.size()));
    setSelectedCell(Point2I(-1, -1));
 }
 
@@ -449,14 +449,14 @@ bool GuiTextListCtrl::onKeyDown( const GuiEvent &event )
       if ( mList.size() )
       {
          mSelectedCell.y = 0;
-         yDelta = -(mCellSize.y * mList.size() + 1 );
+         yDelta = -(mCellSize.y * (S32)mList.size() + 1 );
       }
       break;
    case KEY_END:
       if ( mList.size() )
    {
-         mSelectedCell.y = mList.size() - 1;
-         yDelta = (mCellSize.y * mList.size() + 1 );
+         mSelectedCell.y = (S32)mList.size() - 1;
+         yDelta = (mCellSize.y * (S32)mList.size() + 1 );
       }
       break;
    case KEY_DELETE:

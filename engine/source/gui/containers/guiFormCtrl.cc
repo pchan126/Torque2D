@@ -192,8 +192,8 @@ bool GuiFormCtrl::resize(const Point2I &newPosition, const Point2I &newExtent)
         mUseSmallCaption = true;
         mSmallCaption = StringTable->insert("");
         
-        S32 strlen = dStrlen((const char*)mCaption);
-        for(S32 i=strlen; i>=0; --i)
+        dsize_t strlen = dStrlen((const char*)mCaption);
+        for(S32 i=(S32)strlen; i>=0; --i)
         {
             dStrcpy(buf, "");
             dStrncat(buf, (const char*)mCaption, i);

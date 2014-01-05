@@ -45,8 +45,8 @@ bool SimObject::writeObject(std::iostream &stream)
    AbstractClassRep *rep = getClassRep();
    AbstractClassRep::FieldList &fieldList = rep->mFieldList;
 
-   U32 savePos = stream.tellp();
-   U32 numFields = fieldList.size();
+   auto savePos = stream.tellp();
+   auto numFields = fieldList.size();
    stream << numFields;
 
    for(auto itr : fieldList )
@@ -83,7 +83,7 @@ bool SimObject::writeObject(std::iostream &stream)
    }
 
    // Overwrite the number of fields with the correct value
-   U32 savePos2 = stream.tellp();
+   auto savePos2 = stream.tellp();
    stream.seekp(savePos);
    stream << (numFields);
    stream.seekp(savePos2);

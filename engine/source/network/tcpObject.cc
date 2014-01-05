@@ -267,7 +267,7 @@ void TCPObject::disconnect()
 
 
 //Luma:	Encode data before sending via TCP so that only valid URL characters are sent
-U8	*TCPObject::URLEncodeData(U8 *pData, U32 iDataSize, U32 *piNewDataSize)
+U8	*TCPObject::URLEncodeData(U8 *pData, size_t iDataSize, size_t *piNewDataSize)
 {
     U8		szValidChars[] = "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz:/.?=_-$(){}~&";
     U8		*pEncodedData;
@@ -320,7 +320,7 @@ U8	*TCPObject::URLEncodeData(U8 *pData, U32 iDataSize, U32 *piNewDataSize)
     return	pEncodedData;
 }
 
-void TCPObject::send(const U8 *buffer, U32 len)
+void TCPObject::send(const U8 *buffer, size_t len)
 {
    Net::sendtoSocket(mTag, buffer, S32(len));
 }
@@ -369,7 +369,7 @@ ConsoleMethod( TCPObject, disconnect, void, 2, 2, "() Use the disconnect method 
 ConsoleMethod(TCPObject, URLEncodeString, const char*, 3, 3, "(string data) Performs URLEncoding on a single string.\n\n")
 {
     U8	*pEncodedString;
-    U32	iNewBufferLen;
+    size_t	iNewBufferLen;
 
 
     pEncodedString = object->URLEncodeData((U8 *)argv[2], dStrlen(argv[2]) + 1, &iNewBufferLen);

@@ -69,7 +69,7 @@ public:
    U32  getPosition() const
    {
        if (mStream)
-           return mStream->tellg();
+           return (U32)mStream->tellg();
        return 0;
    }
 
@@ -88,7 +88,7 @@ public:
    U32  getStreamSize()
    {
       if (mStream)
-          return StreamFn::getStreamSize(*mStream);
+          return (U32)StreamFn::getStreamSize(*mStream);
        return 0;
    }
 

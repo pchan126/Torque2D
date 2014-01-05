@@ -53,7 +53,7 @@ class FrameAllocator
    inline static void init(const U32 frameSize);
    inline static void destroy();
 
-   inline static void* alloc(const U32 allocSize);
+   inline static void* alloc(const size_t allocSize);
 
    inline static void setWaterMark(const U32);
    inline static U32  getWaterMark();
@@ -92,9 +92,9 @@ void FrameAllocator::destroy()
 #define TORQUE_BYTE_ALIGNMENT 4
 
 
-void* FrameAllocator::alloc(const U32 allocSize)
+void* FrameAllocator::alloc(const size_t allocSize)
 {
-   U32 _allocSize = allocSize;
+   size_t _allocSize = allocSize;
 #ifdef TORQUE_DEBUG
    _allocSize+=4;
 #endif
@@ -216,7 +216,7 @@ class FrameTemp
 protected:
    U32 mWaterMark;
    T *mMemory;
-   U32 mNumObjectsInMemory;
+   size_t mNumObjectsInMemory;
 
 public:
    /// Constructor will store the FrameAllocator watermark and allocate the memory off
@@ -234,7 +234,7 @@ public:
    /// @endcode
    ///
    /// @param   count   The number of objects to allocate
-   FrameTemp( const U32 count = 1 ) : mNumObjectsInMemory( count )
+   FrameTemp( const size_t count = 1 ) : mNumObjectsInMemory( count )
    {
       AssertFatal( count > 0, "Allocating a FrameTemp with less than one instance" );
       mWaterMark = FrameAllocator::getWaterMark();
@@ -294,7 +294,7 @@ public:
 // FrameTemp specializations for types with no constructor/destructor
 #define FRAME_TEMP_NC_SPEC(type) \
    template<> \
-   inline FrameTemp<type>::FrameTemp( const U32 count ) \
+   inline FrameTemp<type>::FrameTemp( const size_t count ) \
    { \
       AssertFatal( count > 0, "Allocating a FrameTemp with less than one instance" ); \
       mWaterMark = FrameAllocator::getWaterMark(); \

@@ -75,7 +75,7 @@ U32 Platform::getTime()
 {
     using namespace std::chrono;
     std::chrono::seconds tp = std::chrono::duration_cast<std::chrono::seconds>(system_clock::now().time_since_epoch());
-    return tp.count();
+    return (U32)tp.count();
 }
 
 //------------------------------------------------------------------------------
@@ -85,7 +85,7 @@ U32 Platform::getRealMilliseconds()
 {
     using namespace std::chrono;
     std::chrono::milliseconds tp = std::chrono::duration_cast<std::chrono::milliseconds>(system_clock::now().time_since_epoch());
-    return tp.count();
+    return (U32)tp.count();
 };
 
 ConsoleFunction( createUUID, const char*, 1, 1, "() - Creates a UUID string." )

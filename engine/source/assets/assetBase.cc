@@ -186,7 +186,7 @@ StringTableEntry AssetBase::expandAssetFilePath( const char* pAssetFilePath ) co
     AssertFatal( pAssetFilePath != NULL, "Cannot expand a NULL asset path." );
 
     // Fetch asset file-path length.
-    const U32 assetFilePathLength = dStrlen(pAssetFilePath);
+    const dsize_t assetFilePathLength = dStrlen(pAssetFilePath);
 
     // Are there any characters in the path?
     if ( assetFilePathLength == 0 )
@@ -223,7 +223,7 @@ StringTableEntry AssetBase::collapseAssetFilePath( const char* pAssetFilePath ) 
     AssertFatal( pAssetFilePath != NULL, "Cannot collapse a NULL asset path." );
 
     // Fetch asset file-path length.
-    const U32 assetFilePathLength = dStrlen(pAssetFilePath);
+    const dsize_t assetFilePathLength = dStrlen(pAssetFilePath);
 
     // Are there any characters in the path?
     if ( assetFilePathLength == 0 )

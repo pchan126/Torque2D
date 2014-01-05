@@ -274,7 +274,7 @@ GFXVideoMode GFXInit::getInitialVideoMode()
 
 S32 GFXInit::getAdapterCount()
 {
-   return smAdapters.size();
+   return (S32)smAdapters.size();
 }
 
 void GFXInit::getAdapters(Vector<GFXAdapter*> *adapters)

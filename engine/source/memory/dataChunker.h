@@ -59,7 +59,7 @@ public:
    /// This memory is word-aligned.
    /// @param   size    Size of chunk to return. This must be less than chunkSize or else
    ///                  an assertion will occur.
-   void *alloc(S32 size);
+   void *alloc(size_t size);
 
    /// Free all allocated memory blocks.
    ///
@@ -71,7 +71,7 @@ public:
    /// One new block is allocated at constructor-time.
    ///
    /// @param   size    Size in bytes of the space to allocate for each block.
-   DataChunker(S32 size=ChunkSize);
+   DataChunker(size_t size=ChunkSize);
    ~DataChunker();
 
    /// Swaps the memory allocated in one data chunker for another.  This can be used to implement
@@ -92,8 +92,8 @@ private:
       DataBlock* prev;
       DataBlock* next;        ///< linked list pointer to the next DataBlock for this chunker
       U8 *data;               ///< allocated pointer for the base of this page
-      S32 curIndex;           ///< current allocation point within this DataBlock
-      DataBlock(S32 size);
+      size_t curIndex;           ///< current allocation point within this DataBlock
+      DataBlock(size_t size);
       ~DataBlock();
    };
 
@@ -101,7 +101,7 @@ private:
    DataBlock   *mCurBlock;    ///< current page we're allocating data from.  If the
                               ///< data size request is greater than the memory space currently
                               ///< available in the current page, a new page will be allocated.
-   S32         mChunkSize;    ///< The size allocated for each page in the DataChunker
+   size_t         mChunkSize;    ///< The size allocated for each page in the DataChunker
 };
 
 //----------------------------------------------------------------------------
@@ -110,8 +110,8 @@ template<class T>
 class Chunker: private DataChunker
 {
 public:
-   Chunker(S32 size = DataChunker::ChunkSize) : DataChunker(size) {};
-   T* alloc()  { return reinterpret_cast<T*>(DataChunker::alloc(S32(sizeof(T)))); }
+   Chunker(size_t size = DataChunker::ChunkSize) : DataChunker(size) {};
+   T* alloc()  { return reinterpret_cast<T*>(DataChunker::alloc(sizeof(T))); }
    void clear()  { freeBlocks(); }
 };
 
@@ -123,11 +123,11 @@ public:
 class MultiTypedChunker : private DataChunker
 {
 public:
-   MultiTypedChunker(S32 size = DataChunker::ChunkSize) : DataChunker(size) {};
+   MultiTypedChunker(size_t size = DataChunker::ChunkSize) : DataChunker(size) {};
 
    /// Use like so:  MyType* t = chunker.alloc<MyType>();
    template<typename T>
-   T* alloc()  { return reinterpret_cast<T*>(DataChunker::alloc(S32(sizeof(T)))); }
+   T* alloc()  { return reinterpret_cast<T*>(DataChunker::alloc(sizeof(T))); }
    void clear()  { freeBlocks(true); }
 };
 
@@ -141,16 +141,16 @@ template<class T>
 class ClassChunker: private DataChunker
 {
 public:
-   ClassChunker(S32 size = DataChunker::ChunkSize) : DataChunker(size)
+   ClassChunker(size_t size = DataChunker::ChunkSize) : DataChunker(size)
    {
-      mElementSize = std::max(U32(sizeof(T)), U32(sizeof(T *)));
-      mFreeListHead = NULL;
+      mElementSize = std::max(sizeof(T), sizeof(T *));
+      mFreeListHead = nullptr;
    }
 
    /// Allocates and properly constructs in place a new element.
    T *alloc()
    {
-      if(mFreeListHead == NULL)
+      if(mFreeListHead == nullptr)
          return constructInPlace(reinterpret_cast<T*>(DataChunker::alloc(mElementSize)));
       T* ret = mFreeListHead;
       mFreeListHead = *(reinterpret_cast<T**>(mFreeListHead));
@@ -168,7 +168,7 @@ public:
    void freeBlocks( bool keepOne = false ) 
    { 
       DataChunker::freeBlocks( keepOne ); 
-      mFreeListHead = NULL;
+      mFreeListHead = nullptr;
    }
 
 private:
@@ -185,18 +185,18 @@ public:
    FreeListChunker(DataChunker *inChunker)
       :  mChunker( inChunker ),
          mOwnChunker( false ),
-         mFreeListHead( NULL )
+         mFreeListHead( nullptr )
    {
-      mElementSize = std::max(U32(sizeof(T)), U32(sizeof(T *)));
+      mElementSize = std::max(sizeof(T), sizeof(T *));
    }
 
    FreeListChunker(S32 size = DataChunker::ChunkSize)
-      :  mFreeListHead( NULL )
+      :  mFreeListHead( nullptr )
    {
       mChunker = new DataChunker( size );
       mOwnChunker = true;
 
-      mElementSize = std::max(U32(sizeof(T)), U32(sizeof(T *)));
+      mElementSize = std::max(sizeof(T), sizeof(T *));
    }
 
    ~FreeListChunker()
@@ -207,7 +207,7 @@ public:
 
    T *alloc()
    {
-      if(mFreeListHead == NULL)
+      if(mFreeListHead == nullptr)
          return reinterpret_cast<T*>(mChunker->alloc(mElementSize));
       T* ret = mFreeListHead;
       mFreeListHead = *(reinterpret_cast<T**>(mFreeListHead));
@@ -224,14 +224,14 @@ public:
    void freeBlocks( bool keepOne = false )
    {
       mChunker->freeBlocks( keepOne );
-      mFreeListHead = NULL;
+      mFreeListHead = nullptr;
    }
    
 private:
    DataChunker *mChunker;
    bool        mOwnChunker;
 
-   S32   mElementSize;
+   size_t   mElementSize;
    T     *mFreeListHead;
 };
 
@@ -239,17 +239,17 @@ private:
 class FreeListChunkerUntyped
 {
 public:
-   FreeListChunkerUntyped(U32 inElementSize, DataChunker *inChunker)
+   FreeListChunkerUntyped(size_t inElementSize, DataChunker *inChunker)
       :  mChunker( inChunker ),
          mOwnChunker( false ),
          mElementSize( inElementSize ),
-         mFreeListHead( NULL )
+         mFreeListHead( nullptr )
    {
    }
 
-   FreeListChunkerUntyped(U32 inElementSize, S32 size = DataChunker::ChunkSize)
+   FreeListChunkerUntyped(size_t inElementSize, size_t size = DataChunker::ChunkSize)
       :  mElementSize( inElementSize ),
-         mFreeListHead( NULL )
+         mFreeListHead( nullptr )
    {
       mChunker = new DataChunker( size );
       mOwnChunker = true;
@@ -263,7 +263,7 @@ public:
 
    void *alloc()
    {
-      if(mFreeListHead == NULL)
+      if(mFreeListHead == nullptr)
          return mChunker->alloc(mElementSize);
 
       void  *ret = mFreeListHead;
@@ -284,16 +284,16 @@ public:
 
       // We have to terminate the freelist as well or else we'll run
       // into crazy unused memory.
-      mFreeListHead = NULL;
+      mFreeListHead = nullptr;
    }
 
-   U32   getElementSize() const { return mElementSize; }
+   size_t   getElementSize() const { return mElementSize; }
 
 private:
    DataChunker *mChunker;
    bool        mOwnChunker;
 
-   const U32   mElementSize;
+   const size_t   mElementSize;
    void        *mFreeListHead;
 };
 #endif

@@ -813,7 +813,7 @@ void NetConnection::activateGhosting()
 
    AssertFatal((mGhostFreeIndex == 0) && (mGhostZeroUpdateIndex == 0), "Error: ghosts in the ghost list before activate.");
 
-   U32 sz = ghostAlwaysSet->size();
+   U32 sz = (U32)ghostAlwaysSet->size();
    S32 j;
 
    for(j = 0; j < (S32)sz; j++)
@@ -836,7 +836,7 @@ void NetConnection::activateGhosting()
       if(obj->mNetFlags.test(NetObject::Ghostable))
          objectInScope(obj);
    }
-   sendConnectionMessage(GhostAlwaysStarting, mGhostingSequence, ghostAlwaysSet->size());
+   sendConnectionMessage(GhostAlwaysStarting, mGhostingSequence, (U32)ghostAlwaysSet->size());
    for(j = mGhostZeroUpdateIndex - 1; j >= 0; j--)
    {
       AssertFatal((mGhostArray[j]->flags & GhostInfo::ScopeAlways) != 0, "Non-scope always in the scope always list.")

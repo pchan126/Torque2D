@@ -79,7 +79,7 @@ public:
    void stackFromTop();
    void stackFromBottom();
 
-   S32 getCount() { return size(); }; /// Returns the number of children in the stack
+   S32 getCount() { return (S32)size(); }; /// Returns the number of children in the stack
 
    void addObject(SimObject *obj);
    void removeObject(SimObject *obj);

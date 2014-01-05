@@ -31,8 +31,8 @@
 
 AbstractClassRep *                 AbstractClassRep::classLinkList = nullptr;
 static AbstractClassRep::FieldList sg_tempFieldList;
-U32                                AbstractClassRep::NetClassCount  [NetClassGroupsCount][NetClassTypesCount] = {{0, },};
-U32                                AbstractClassRep::NetClassBitSize[NetClassGroupsCount][NetClassTypesCount] = {{0, },};
+size_t                                AbstractClassRep::NetClassCount  [NetClassGroupsCount][NetClassTypesCount] = {{0, },};
+size_t                                AbstractClassRep::NetClassBitSize[NetClassGroupsCount][NetClassTypesCount] = {{0, },};
 
 AbstractClassRep **                AbstractClassRep::classTable[NetClassGroupsCount][NetClassTypesCount];
 
@@ -248,7 +248,7 @@ void AbstractClassRep::initialize()
 
          // And calculate the size of bitfields for this group and type.
          NetClassBitSize[group][type] =
-               getBinLog2(getNextPow2(NetClassCount[group][type] + 1));
+               getBinLog2(getNextPow2((U32)(NetClassCount[group][type] + 1)));
 
          dynamicTable.clear();
       }
@@ -261,7 +261,7 @@ void AbstractClassRep::initialize()
 
 void AbstractClassRep::destroyFieldValidators( AbstractClassRep::FieldList &mFieldList )
 {
-   for(S32 i = mFieldList.size()-1; i>=0; i-- )
+   for(S32 i = (S32)mFieldList.size()-1; i>=0; i-- )
    {
       ConsoleTypeValidator **p = &mFieldList[i].validator;
       if( *p )
@@ -577,7 +577,7 @@ void ConsoleObject::addFieldV(const char*  in_pFieldname,
    f.getDataFn    = &defaultProtectedGetFn;
    f.writeDataFn  = &defaultProtectedWriteFn;
    f.validator    = v;
-   v->fieldIndex  = sg_tempFieldList.size();
+   v->fieldIndex  = (S32)sg_tempFieldList.size();
 
    sg_tempFieldList.push_back(f);
 }

@@ -83,10 +83,10 @@ class MessageVector : public SimObject
    void popFrontLine();
    void clear();
 
-   virtual void insertLine(const U32 position, const char*, const S32);
-   virtual void deleteLine(const U32);
+   virtual void insertLine(const size_t position, const char*, const S32);
+   virtual void deleteLine(const size_t position);
 
-   bool dump( const char* filename, const char* header = NULL );
+   bool dump( const char* filename, const char* header = nullptr );
 
 
    //-------------------------------------- Internal interface
@@ -103,7 +103,7 @@ class MessageVector : public SimObject
    Vector<MessageLine>  mMessageLines;
 
    Vector<SpectatorRef> mSpectators;
-   void spectatorMessage(MessageCode, const U32 arg);
+   void spectatorMessage(MessageCode, const size_t arg);
 
   public:
    DECLARE_CONOBJECT(MessageVector);
@@ -114,7 +114,7 @@ class MessageVector : public SimObject
 //--------------------------------------------------------------------------
 inline U32 MessageVector::getNumLines() const
 {
-   return mMessageLines.size();
+   return (U32)mMessageLines.size();
 }
 
 //--------------------------------------------------------------------------

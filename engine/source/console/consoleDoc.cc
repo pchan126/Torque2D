@@ -101,7 +101,7 @@ void printClassHeader(const char* usage, const char * className, const char * su
    if( usage != nullptr )
    {
       // Copy Usage Document
-      S32 usageLen = dStrlen( usage );
+      U32 usageLen = (U32)dStrlen( usage );
       FrameTemp<char> usageStr( usageLen );
       dStrcpy( usageStr, usage );
 
@@ -120,7 +120,7 @@ void printClassHeader(const char* usage, const char * className, const char * su
          // Keyword will hold the last keyword (word following '@' or '\') encountered.
          static char keyword[8] = {0};
 
-         S32 lineLen = 0;
+         dsize_t lineLen = 0;
 
          // If not the last line, increment pointer
          if( newLine != nullptr )
@@ -287,7 +287,7 @@ void Namespace::printNamespaceEntries(Namespace * g, bool dumpScript, bool dumpE
 
             use++;
             
-            U32 len = end - use;
+            U32 len = (U32)(end - use);
             dStrncpy(buffer, use, len);
             buffer[len] = 0;
 
@@ -301,7 +301,7 @@ void Namespace::printNamespaceEntries(Namespace * g, bool dumpScript, bool dumpE
          if(dot < bgn && bgn < end)  // And they're in the order dot, bgn, end...
          {
             use++;
-            U32 len = end - bgn - 1;
+            U32 len = (U32)(end - bgn - 1);
             dStrncpy(buffer, bgn+1, len);
             buffer[len] = 0;
 
@@ -314,7 +314,7 @@ void Namespace::printNamespaceEntries(Namespace * g, bool dumpScript, bool dumpE
          char* func_pos = dStrstr(use, funcName);
          if((func_pos) && (func_pos < bgn) && (end > bgn))
          {
-            U32 len = end - bgn - 1;
+            U32 len = (U32)(end - bgn - 1);
             dStrncpy(buffer, bgn+1, len);
             buffer[len] = 0;
 
@@ -570,7 +570,7 @@ void Namespace::dumpClasses( bool dumpScript, bool dumpEngine )
                nextKeyword = dStrchr( field, '\\' );
 
             // Grab the length of the doc string.
-            S32 docLen = dStrlen( field );
+            dsize_t docLen = dStrlen( field );
             if( nextKeyword )
                docLen = nextKeyword - field;
 

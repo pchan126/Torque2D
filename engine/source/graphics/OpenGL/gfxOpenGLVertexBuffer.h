@@ -33,19 +33,19 @@ class GFXOpenGLVertexBuffer : public GFXVertexBuffer
 {
 public:
 	GFXOpenGLVertexBuffer(   GFXDevice *device,
-                          U32 vertexCount,
+                          dsize_t vertexCount,
                           const GFXVertexFormat *vertexFormat,
-                          U32 vertexSize,
+                          dsize_t vertexSize,
                           GFXBufferType bufferType,
                           const GLvoid * vertexData = nullptr,
-                          U32 indexCount = 0,
+                          dsize_t indexCount = 0,
                          const GLvoid * indexData = nullptr)
    :GFXVertexBuffer( device, vertexCount, vertexFormat, vertexSize, bufferType) {} ;
 	
    ~GFXOpenGLVertexBuffer() {};
 
-	virtual void lock(U32 vertexStart, U32 vertexEnd, void **vertexPtr) = 0;
-   virtual void set( void* data, U32 dataSize, U32 indexCount, void* indexData ) = 0;
+	virtual void lock(dsize_t vertexStart, dsize_t vertexEnd, void **vertexPtr) = 0;
+   virtual void set( void* data, dsize_t dataSize, dsize_t indexCount, void* indexData ) = 0;
 	virtual void unlock() = 0;
 	virtual void prepare() = 0;
    virtual void finish() = 0;

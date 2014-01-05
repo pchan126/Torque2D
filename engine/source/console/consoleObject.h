@@ -257,7 +257,7 @@ public:
         const char*    pFieldDocs;    ///< Documentation about this field; see consoleDoc.cc.
         bool           groupExpand;   ///< Flag to track expanded/not state of this group in the editor.
         U32            type;          ///< A type ID. @see ACRFieldTypes
-        U32            offset;        ///< Memory offset from beginning of class for this field.
+        dsize_t        offset;        ///< Memory offset from beginning of class for this field.
         S32            elementCount;  ///< Number of elements, if this is an array.
         EnumTable *    table;         ///< If this is an enum, this points to the table defining it.
         BitSet32       flag;          ///< Stores various flags
@@ -272,8 +272,8 @@ public:
 
     bool mDynamicGroupExpand;
 
-    static U32  NetClassCount [NetClassGroupsCount][NetClassTypesCount];
-    static U32  NetClassBitSize[NetClassGroupsCount][NetClassTypesCount];
+    static size_t  NetClassCount [NetClassGroupsCount][NetClassTypesCount];
+    static size_t  NetClassBitSize[NetClassGroupsCount][NetClassTypesCount];
 
     static void registerClassRep(AbstractClassRep*);
     static AbstractClassRep* findClassRep(const char* in_pClassName);

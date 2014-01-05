@@ -242,7 +242,7 @@ ConsoleFunction(getDirectoryList, const char*, 2, 3, "(strPath, [intDepth])\n"
    // Append a trailing backslash if it's not present already.
    if (path[dStrlen(path) - 1] != '/')
    {
-      S32 pos = dStrlen(path);
+      auto pos = dStrlen(path);
       path[pos] = '/';
       path[pos + 1] = '\0';
    }
@@ -421,7 +421,7 @@ ConsoleFunction(fileExt, const char *, 2, 2, "(fileName)\n "
 ConsoleFunction(fileBase, const char *, 2, 2, "fileBase(fileName)")
 {
 
-   S32 pathLen = dStrlen( argv[1] );
+   auto pathLen = dStrlen( argv[1] );
    FrameTemp<char> szPathCopy( pathLen + 1);
    
    dStrcpy( szPathCopy, argv[1] );
@@ -443,7 +443,7 @@ ConsoleFunction(fileBase, const char *, 2, 2, "fileBase(fileName)")
 
 ConsoleFunction(fileName, const char *, 2, 2, "(filePathName) Extract the filename from the full path description")
 {
-   S32 pathLen = dStrlen( argv[1] );
+   auto pathLen = dStrlen( argv[1] );
    FrameTemp<char> szPathCopy( pathLen + 1);
 
    dStrcpy( szPathCopy, argv[1] );
@@ -462,7 +462,7 @@ ConsoleFunction(fileName, const char *, 2, 2, "(filePathName) Extract the filena
 
 ConsoleFunction(filePath, const char *, 2, 2, "(fileName) Extract the file path from a file's full desciption")
 {
-   S32 pathLen = dStrlen( argv[1] );
+   S32 pathLen = (S32)(dStrlen( argv[1] ));
    FrameTemp<char> szPathCopy( pathLen + 1);
 
    dStrcpy( szPathCopy, argv[1] );
@@ -472,7 +472,7 @@ ConsoleFunction(filePath, const char *, 2, 2, "(fileName) Extract the file path 
    const char *path = dStrrchr(szPathCopy, '/');
    if(!path)
       return "";
-   U32 len = path - (char*)szPathCopy;
+   U32 len = (U32)(path - (char*)szPathCopy);
    char *ret = Con::getReturnBuffer(len + 1);
    dStrncpy(ret, szPathCopy, len);
    ret[len] = 0;

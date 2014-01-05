@@ -572,7 +572,7 @@ ConsoleMethod(SimSet, reorderChild, void, 4,4," (child1, child2) Uses simset reo
 
 ConsoleMethod(SimSet, getCount, S32, 2, 2, "() @return Returns the number of objects in the SimSet")
 {
-   return object->size();
+   return (S32)object->size();
 }
 
 ConsoleMethod(SimSet, getObject, S32, 3, 3, "(objIndex) @return Returns the ID of the desired object or -1 on failure")

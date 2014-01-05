@@ -160,7 +160,7 @@ U32 File::getPosition() const
    AssertFatal(currentStatus != Closed , "File::getPosition: file closed");
    AssertFatal(handle != nullptr, "File::getPosition: invalid file handle");
    
-   return ftell((FILE*)handle);
+   return (U32)ftell((FILE*)handle);
 }
 
 //-----------------------------------------------------------------------------
@@ -190,7 +190,7 @@ File::Status File::setPosition(S32 position, bool absolutePos)
       AssertFatal(0 <= position, "File::setPosition: negative absolute position");
       // position beyond EOS is OK
       fseek((FILE*)handle, position, SEEK_SET);
-      finalPos = ftell((FILE*)handle);
+      finalPos = (U32)ftell((FILE*)handle);
    }
    else
    {
@@ -198,7 +198,7 @@ File::Status File::setPosition(S32 position, bool absolutePos)
       AssertFatal((getPosition() + position) >= 0, "File::setPosition: negative relative position");
       // position beyond EOS is OK
       fseek((FILE*)handle, position, SEEK_CUR);
-      finalPos = ftell((FILE*)handle);
+      finalPos = (U32)ftell((FILE*)handle);
    }
    
    // ftell returns -1 on error. set error status
@@ -232,7 +232,7 @@ U32 File::getSize() const
          return 0;
       
       // return the size in bytes
-      return statData.st_size;
+      return (U32)statData.st_size;
    }
    
    return 0;
@@ -331,7 +331,7 @@ File::Status File::read(U32 size, char *dst, U32 *bytesRead)
       return currentStatus;
    
    // read from stream
-   U32 nBytes = fread(dst, 1, size, (FILE*)handle);
+   size_t nBytes = fread(dst, 1, size, (FILE*)handle);
    
    // did we hit the end of the stream?
    if( nBytes != size)
@@ -339,7 +339,7 @@ File::Status File::read(U32 size, char *dst, U32 *bytesRead)
    
    // if bytesRead is a valid pointer, send number of bytes read there.
    if(bytesRead)
-      *bytesRead = nBytes;
+      *bytesRead = (U32)nBytes;
      
    // successfully read size bytes
    return currentStatus;
@@ -363,7 +363,7 @@ File::Status File::write(U32 size, const char *src, U32 *bytesWritten)
       return currentStatus;
 
    // write bytes to the stream
-   U32 nBytes = fwrite(src, 1, size,(FILE*)handle);
+   U32 nBytes = (U32)fwrite(src, 1, size,(FILE*)handle);
    
    // if we couldn't write everything, we've got a problem. set error status.
    if(nBytes != size)
@@ -439,7 +439,7 @@ bool Platform::createPath(const char *file)
    
    // get the parent path.
    // we're not using basename because it's not thread safe.
-   const U32 len = dStrlen(file) + 1;
+   const dsize_t len = dStrlen(file) + 1;
    char parent[len];
    bool isDirPath = false;
    
@@ -513,7 +513,7 @@ static bool isMainDotCsPresent(char *dir)
 { 
    char maincsbuf[MAX_MAC_PATH_LONG];
    const char *maincsname = "/main.cs";
-   const U32 len = dStrlen(dir) + dStrlen(maincsname)+1;
+   const U32 len = (U32)dStrlen(dir) + (U32)dStrlen(maincsname)+1;
    AssertISV(len < MAX_MAC_PATH_LONG, "Sorry, path is too long, I can't run from this folder.");
    
    dSprintf(maincsbuf,MAX_MAC_PATH_LONG,"%s%s", dir, maincsname);
@@ -642,7 +642,7 @@ S32 Platform::getFileSize(const char* path)
     NSDirectoryEnumerator *dirEnum = [[NSFileManager defaultManager] enumeratorAtPath:npath];
     if (dirEnum == nil)
         return 0;
-    return [[dirEnum fileAttributes] fileSize];
+    return (S32)[[dirEnum fileAttributes] fileSize];
 }
 
 bool Platform::deleteDirectoryRecursive( const char* pPath )
@@ -703,7 +703,7 @@ bool recurseDumpDirectories(const char *basePath, const char *path, Vector<Strin
 {
    DIR *dir;
    dirent *entry;
-   const U32 len = dStrlen(basePath) + dStrlen(path) + 2;
+   const dsize_t len = dStrlen(basePath) + dStrlen(path) + 2;
    char pathbuf[len];
    
    // construct the file path
@@ -742,7 +742,7 @@ bool recurseDumpDirectories(const char *basePath, const char *path, Vector<Strin
       //      CFRelease(cfdname);
       
       // construct the new path string, we'll need this below.
-      const U32 newpathlen = dStrlen(path) + dStrlen(entry->d_name) + 2;
+      const dsize_t newpathlen = dStrlen(path) + dStrlen(entry->d_name) + 2;
       char newpath[newpathlen];
       if(dStrlen(path) > 0)
       {
@@ -760,7 +760,7 @@ bool recurseDumpDirectories(const char *basePath, const char *path, Vector<Strin
       }
       else
       {
-         const U32 fullpathlen = dStrlen(basePath) + dStrlen(newpath) + 2;
+         const dsize_t fullpathlen = dStrlen(basePath) + dStrlen(newpath) + 2;
          char fullpath[fullpathlen];
          dSprintf(fullpath, fullpathlen, "%s/%s",basePath,newpath);
          directoryVector.push_back(StringTable->insert(fullpath));
@@ -781,7 +781,7 @@ bool Platform::dumpDirectories(const char *path, Vector<StringTableEntry> &direc
 
    ResourceManager->initExcludedDirectories();
 
-   const S32 len = dStrlen(path)+1;
+   const dsize_t len = dStrlen(path)+1;
    char newpath[len];
    dSprintf(newpath, len, "%s", path);
    if(newpath[len - 1] == '/')
@@ -816,7 +816,7 @@ static bool recurseDumpPath(const char* curPath, Vector<Platform::FileInfo>& fil
            break;
        
       // construct the full file path. we need this to get the file size and to recurse
-      const U32 len = dStrlen(curPath) + entry->d_namlen + 2;
+      const dsize_t len = dStrlen(curPath) + entry->d_namlen + 2;
       char pathbuf[len];
       dSprintf( pathbuf, len, "%s/%s", curPath, entry->d_name);
       
@@ -857,7 +857,7 @@ static bool recurseDumpPath(const char* curPath, Vector<Platform::FileInfo>& fil
 bool Platform::dumpPath(const char *path, Vector<Platform::FileInfo>& fileVector, S32 depth)
 {
    PROFILE_START(dumpPath);
-    const S32 len = dStrlen(path) + 1;
+    const dsize_t len = dStrlen(path) + 1;
    char newpath[len];
    
     dSprintf(newpath, len, "%s", path);

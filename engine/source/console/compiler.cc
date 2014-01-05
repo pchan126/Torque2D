@@ -114,7 +114,7 @@ namespace Compiler
       getIdentTable().reset();
    }
 
-   void *consoleAlloc(U32 size) { return gConsoleAllocator.alloc(size);  }
+   void *consoleAlloc(size_t size) { return gConsoleAllocator.alloc(size);  }
    void consoleAllocReset()     { gConsoleAllocator.freeBlocks(); }
 
 }
@@ -152,12 +152,12 @@ U32 CompilerStringTable::add(const char *str, bool caseSens, bool tag)
    *walk = newStr;
    newStr->next = nullptr;
    newStr->start = totalLen;
-   U32 len = dStrlen(str) + 1;
+   dsize_t len = dStrlen(str) + 1;
    if(tag && len < 7) // alloc space for the numeric tag 1 for tag, 5 for # and 1 for nul
       len = 7;
    totalLen += len;
    newStr->string = (char *) consoleAlloc(len);
-   newStr->len = len;
+   newStr->len = (U32)len;
    newStr->tag = tag;
    dStrcpy(newStr->string, str);
    return newStr->start;

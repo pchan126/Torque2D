@@ -61,7 +61,7 @@ void iOSProfilerStart( const char *name ) {
 
 		int i = g_iOSProfilerCount++;
 		g_iOSProfilerData[i].name = name;
-		g_iOSProfilerData[i].timeMach = mach_absolute_time();
+		g_iOSProfilerData[i].timeMach = (U32)mach_absolute_time();
 		g_iOSProfilerData[i].timeMS = Platform::getRealMilliseconds();
 		g_iOSProfilerData[i].type = 0;
 		g_iOSProfilerData[i].invokes = 0;
@@ -77,7 +77,7 @@ void iOSProfilerEnd( const char *name ) {
 
 		int i = g_iOSProfilerCount++;
 		g_iOSProfilerData[i].name = name;
-		g_iOSProfilerData[i].timeMach = mach_absolute_time();
+		g_iOSProfilerData[i].timeMach = (U32)mach_absolute_time();
 		g_iOSProfilerData[i].timeMS = Platform::getRealMilliseconds();
 		g_iOSProfilerData[i].type = 1;
 		g_iOSProfilerData[i].invokes = 0;

@@ -208,7 +208,7 @@ ConsoleMethod( GuiCanvas, getModeCount, S32, 2, 2,
     object->getPlatformWindow()->getGFXDevice()->getVideoModeList();
     
     // Return the number of resolutions.
-    return modeList->size();
+    return (S32)modeList->size();
 }
 
 ConsoleMethod( GuiCanvas, getMode, const char*, 3, 3,

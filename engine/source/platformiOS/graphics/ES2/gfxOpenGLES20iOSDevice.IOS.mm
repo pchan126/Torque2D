@@ -140,7 +140,7 @@ void GFXOpenGLES20iOSDevice::enumerateAdapters( Vector<GFXAdapter*> &adapterList
         
         adapterList.push_back(toAdd);
 
-        for (S32 j = videoModes.size() - 1 ; j >= 0 ; j--)
+        for (S32 j = (S32)videoModes.size() - 1 ; j >= 0 ; j--)
             toAdd->mAvailableModes.push_back(videoModes[j]);
         
 		screenNum++;
@@ -148,7 +148,7 @@ void GFXOpenGLES20iOSDevice::enumerateAdapters( Vector<GFXAdapter*> &adapterList
 }
 
 
-GFXVertexBuffer* GFXOpenGLES20iOSDevice::findVolatileVBO(U32 vertexCount, const GFXVertexFormat *vertexFormat, U32 vertSize, void* vertexData, U32 indexSize, void* indexData)
+GFXVertexBuffer* GFXOpenGLES20iOSDevice::findVolatileVBO(dsize_t vertexCount, const GFXVertexFormat *vertexFormat, dsize_t vertSize, void* vertexData, dsize_t indexSize, void* indexData)
 {
     for(U32 i = 0; i < mVolatileVBs.size(); i++)
         if (  mVolatileVBs[i]->mVertexCount >= vertexCount &&
@@ -167,12 +167,12 @@ GFXVertexBuffer* GFXOpenGLES20iOSDevice::findVolatileVBO(U32 vertexCount, const 
     return buf.getPointer();
 }
 
-GFXVertexBuffer *GFXOpenGLES20iOSDevice::allocVertexBuffer(   U32 numVerts,
+GFXVertexBuffer *GFXOpenGLES20iOSDevice::allocVertexBuffer(   dsize_t numVerts,
                                                   const GFXVertexFormat *vertexFormat,
-                                                  U32 vertSize,
+                                                  dsize_t vertSize,
                                                   GFXBufferType bufferType,
                                                   void *vertexBuffer,
-                                                  U32 indexCount,
+                                                  dsize_t indexCount,
                                                   void *indexBuffer)
 {
     if(bufferType == GFXBufferTypeVolatile)

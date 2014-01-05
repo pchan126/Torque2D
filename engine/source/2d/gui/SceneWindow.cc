@@ -1032,7 +1032,7 @@ void SceneWindow::sendObjectInputEvent( StringTableEntry name, const GuiEvent& e
     pWorldQuery->setQueryFilter( queryFilter );
 
     // Perform world query.
-    const U32 newPickCount = pWorldQuery->anyQueryPoint( worldMousePoint );
+    const auto newPickCount = pWorldQuery->anyQueryPoint( worldMousePoint );
 
     // Early-out if nothing to do.
     if ( newPickCount == 0 && oldPickCount == 0 )
@@ -1043,7 +1043,7 @@ void SceneWindow::sendObjectInputEvent( StringTableEntry name, const GuiEvent& e
     pWorldQuery->clearQuery();
 
     // Determine "enter" events.
-    for( U32 newIndex = 0; newIndex < newPickCount; ++newIndex )
+    for( auto newIndex = 0; newIndex < newPickCount; ++newIndex )
     {
         // Fetch new scene object.
         SceneObject* pNewSceneObject = mInputEventQuery[newIndex].mpSceneObject;
@@ -1057,7 +1057,7 @@ void SceneWindow::sendObjectInputEvent( StringTableEntry name, const GuiEvent& e
 
         bool alreadyPresent = false;
 
-        for ( U32 oldIndex = 0; oldIndex < oldPickCount; ++oldIndex )
+        for ( auto oldIndex = 0; oldIndex < oldPickCount; ++oldIndex )
         {
             // Skip if scene object is not present...
             if ( mInputEventWatching[oldIndex] != pNewSceneObject )
@@ -1074,7 +1074,7 @@ void SceneWindow::sendObjectInputEvent( StringTableEntry name, const GuiEvent& e
     }
 
     // Determine "leave" events.
-    for ( U32 oldIndex = 0; oldIndex < oldPickCount; ++oldIndex )
+    for ( auto oldIndex = 0; oldIndex < oldPickCount; ++oldIndex )
     {
         // Fetch old scene object.
         SceneObject* pOldSceneObject = dynamic_cast<SceneObject*>( mInputEventWatching[oldIndex] );
@@ -1100,25 +1100,19 @@ void SceneWindow::sendObjectInputEvent( StringTableEntry name, const GuiEvent& e
             mInputEventLeaving.push_back( pOldSceneObject );
     }
 
-    for ( U32 index = 0; index < (U32)mInputEventQuery.size(); ++index )
+   for ( auto eventQuery:mInputEventQuery )
     {
-        // Fetch scene object.
-        SceneObject* pSceneObject = mInputEventQuery[index].mpSceneObject;
-
         // Ignore object if it's not using input events.
-        if ( !pSceneObject->getUseInputEvents() )
+        if ( !eventQuery.mpSceneObject->getUseInputEvents() )
             continue;
 
         // Emit event.
-        pSceneObject->onInputEvent( name, event, worldMousePoint );
+        eventQuery.mpSceneObject->onInputEvent( name, event, worldMousePoint );
     }
 
     // Process "leave" events.
-    for ( U32 index = 0; index < (U32)mInputEventLeaving.size(); ++index )
+   for ( SceneObject* pSceneObject: mInputEventLeaving )
     {
-        // Fetch scene object.
-        SceneObject* pSceneObject = mInputEventLeaving[index];
-
         // Emit event.
         pSceneObject->onInputEvent( inputEventLeaveName, event, worldMousePoint );
 
@@ -1127,11 +1121,8 @@ void SceneWindow::sendObjectInputEvent( StringTableEntry name, const GuiEvent& e
     }
 
     // Process "enter" events.
-    for ( U32 index = 0; index < (U32)mInputEventEntering.size(); ++index )
+    for ( SceneObject* pSceneObject:  mInputEventEntering)
     {
-        // Fetch scene object.
-        SceneObject* pSceneObject = mInputEventEntering[index];
-
         // Emit event.
         pSceneObject->onInputEvent( inputEventEnterName, event, worldMousePoint );
 

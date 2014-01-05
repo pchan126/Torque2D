@@ -67,7 +67,7 @@ class GuiFilterCtrl : public GuiControl
    F32  getValue(S32 n);
    const Filter* get() { return &mFilter; }
    void set(const Filter &f);
-   S32  getNumControlPoints() {return mFilter.size(); }
+   S32  getNumControlPoints() {return (S32)mFilter.size(); }
    void identity();
 
    void onPreRender();
@@ -84,7 +84,7 @@ inline F32 GuiFilterCtrl::getValue(S32 n)
 
 inline void GuiFilterCtrl::set(const Filter &f)
 {
-   mControlPointRequest = f.size();
+   mControlPointRequest = (S32)f.size();
    mFilter = f;
 }
 

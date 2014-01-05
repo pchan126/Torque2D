@@ -625,7 +625,7 @@ void GuiControl::renderChildControls(Point2I offset, const RectI &updateRect)
    // hierarchy.  This can be set as the clip rectangle in most cases.
    RectI clipRect = updateRect;
 
-   S32 size = objectList.size();
+   auto size = objectList.size();
    S32 size_cpy;
     //-Mat look through our vector all normal-like, trying to use an iterator sometimes gives us
    //bad cast on good objects
@@ -647,7 +647,7 @@ void GuiControl::renderChildControls(Point2I offset, const RectI &updateRect)
             ctrl->onRender(childPosition, childClip);
          }
       }
-      size_cpy = objectList.size(); //	CHRIS: i know its wierd but the size of the list changes sometimes during execution of this loop
+      size_cpy = (S32)objectList.size(); //	CHRIS: i know its wierd but the size of the list changes sometimes during execution of this loop
       if(size != size_cpy)
       {
           size = size_cpy;

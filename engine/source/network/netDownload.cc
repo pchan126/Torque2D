@@ -36,7 +36,7 @@ public:
       MaxFileNames = 31,
    };
    
-   U32 nameCount;
+   size_t nameCount;
    char mFileNames[MaxFileNames][256];
 
    FileDownloadRequestEvent(std::deque<char *> *nameList = nullptr)
@@ -59,14 +59,14 @@ public:
 
    virtual void pack(NetConnection *connection, std::ostream &bstream)
    {
-      StreamFn::writeRangedU32(bstream, nameCount, 0, MaxFileNames);
+      StreamFn::writeRangedU32(bstream, (U32)nameCount, 0, MaxFileNames);
       for(U32 i = 0; i < nameCount; i++)
          StreamFn::writeString(bstream, mFileNames[i]);
    }
 
    virtual void write(NetConnection *connection, std::ostream &bstream)
    {
-       StreamFn::writeRangedU32(bstream, nameCount, 0, MaxFileNames);
+       StreamFn::writeRangedU32(bstream, (U32)nameCount, 0, MaxFileNames);
       for(U32 i = 0; i < nameCount; i++)
          StreamFn::writeString(bstream, mFileNames[i]);
    }
@@ -185,7 +185,7 @@ bool NetConnection::startSendingFile(const char *fileName)
 
    Con::printf("Sending file '%s'.", fileName);
     mCurrentDownloadingFile->seekg(0, mCurrentDownloadingFile->end);
-    mCurrentFileBufferSize = mCurrentDownloadingFile->tellg();
+    mCurrentFileBufferSize = (U32)mCurrentDownloadingFile->tellg();
     mCurrentDownloadingFile->seekg(0, mCurrentDownloadingFile->beg);
 
     mCurrentFileBufferOffset = 0;

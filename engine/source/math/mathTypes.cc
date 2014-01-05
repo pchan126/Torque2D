@@ -93,7 +93,7 @@ ConsoleGetType( TypePoint2FVector )
       // concatenate the next value onto the return string
       dSprintf(returnBuffer + returnLeng, maxReturn - returnLeng, "%.3f %.3f ", itr.x, itr.y);
       // update the length of the return string (so far)
-      returnLeng = dStrlen(returnBuffer);
+      returnLeng = (S32)dStrlen(returnBuffer);
    }
    // trim off that last extra space
    if (returnLeng > 0 && returnBuffer[returnLeng - 1] == ' ')

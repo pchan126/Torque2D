@@ -15,18 +15,18 @@ class GFXOpenGLES30iOSVertexBuffer : public GFXOpenGLVertexBuffer
 {
 public:
 	GFXOpenGLES30iOSVertexBuffer(   GFXDevice *device, 
-                        U32 numVerts, 
+                        dsize_t numVerts,
                         const GFXVertexFormat *vertexFormat, 
-                        U32 vertexSize, 
+                        dsize_t vertexSize,
                         GFXBufferType bufferType,
                         const GLvoid * data = nullptr,
-                        U32 indexCount = 0,
+                        dsize_t indexCount = 0,
                         const GLvoid *indexBuffer = nullptr);
 
 	~GFXOpenGLES30iOSVertexBuffer();
 
-	virtual void lock(U32 vertexStart, U32 vertexEnd, void **vertexPtr); ///< calls glMapBuffer and offsets the pointer by vertex start
-    virtual void set( void* data, U32 dataSize, U32 indexCount, void* indexData );
+	virtual void lock(dsize_t vertexStart, dsize_t vertexEnd, void **vertexPtr); ///< calls glMapBuffer and offsets the pointer by vertex start
+    virtual void set( void* data, dsize_t dataSize, dsize_t indexCount, void* indexData );
 	virtual void unlock(); ///< calls glUnmapBufferOES, unbinds the buffer
 	virtual void prepare(); ///< Binds the buffer
    virtual void finish(); ///< We're done here
@@ -40,7 +40,7 @@ private:
 	/// GL buffer handle
 	GLuint mBuffer, mVertexArrayObject, elementBufferName;
    U32 mTextureCount;
-   U32 mIndexCount;
+   dsize_t mIndexCount;
    
    U8* mZombieCache;
 };

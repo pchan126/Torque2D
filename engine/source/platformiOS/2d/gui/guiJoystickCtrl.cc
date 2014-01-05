@@ -263,7 +263,7 @@ void GuiJoystickCtrl::onTouchDragged(const GuiEvent &event)
     m_LastTouch = event.mousePoint;
     Point2I m_Vect = m_LastTouch - m_TouchDown;
     U32 vecLen = m_Vect.len();
-    if ( vecLen > m_touchRadius)
+    if ( vecLen > m_touchRadius && vecLen > 0)
     {
         m_Vect *= m_touchRadius;
         m_Vect /= vecLen;

@@ -357,7 +357,7 @@ protected:
       S32 getItemCount();
       S32 getSelectedItem();
       S32 getSelectedItem(S32 index); // Given an item's index in the selection list, return its itemId
-      S32 getSelectedItemsCount() {return mSelectedItems.size();} // Returns the number of selected items
+      S32 getSelectedItemsCount() {return (S32)mSelectedItems.size();} // Returns the number of selected items
       void moveItemUp( S32 itemId );
       void moveItemDown( S32 itemId );
 

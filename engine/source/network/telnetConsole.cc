@@ -117,7 +117,7 @@ void TelnetConsole::processConsoleLine(const char *consoleLine)
    if (mClientList==NULL) return;  // just escape early.  don't even do another step...
 
    // ok, spew this line out to all our subscribers...
-   S32 len = dStrlen(consoleLine)+1;
+   auto len = dStrlen(consoleLine)+1;
    for(TelnetClient *walk = mClientList; walk; walk = walk->nextClient)
    {
       if(walk->state == FullAccessConnected || walk->state == ReadOnlyConnected)

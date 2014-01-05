@@ -74,10 +74,10 @@ public:
    State getState() { return mState; }
 
    //Luma:	Encode data before sending via TCP so that only valid URL characters are sent
-   U8	*URLEncodeData(U8 *pData, U32 iDataSize, U32 *piNewDataSize);
+   U8	*URLEncodeData(U8 *pData, size_t iDataSize, size_t *piNewDataSize);
 
    bool processArguments(S32 argc, const char **argv);
-   void send(const U8 *buffer, U32 bufferLen);
+   void send(const U8 *buffer, size_t bufferLen);
    void addToTable(NetSocket newTag);
    void removeFromTable();
 

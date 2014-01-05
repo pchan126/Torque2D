@@ -299,7 +299,7 @@ bool initializeGame(int argc, const char **argv)
     }
 
     // Create a script buffer.
-    const U32 size = StreamFn::getStreamSize(*scriptStream);
+    const size_t size = StreamFn::getStreamSize(*scriptStream);
     char* pScriptBuffer = new char[size + 1];
 
     // Read script.

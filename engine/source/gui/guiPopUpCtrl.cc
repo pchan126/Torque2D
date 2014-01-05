@@ -74,7 +74,7 @@ static U32 getColumnCount(const char *string, const char *set)
 // Function to return the 'index' column from 'string' given delimeters in 'set'
 static const char *getColumn(const char *string, char* returnbuff, U32 index, const char *set)
 {
-   U32 sz;
+   dsize_t sz;
    while(index--)
    {
       if(!*string)
@@ -1400,14 +1400,14 @@ void GuiPopUpMenuCtrl::repositionPopup()
 void GuiPopUpMenuCtrl::reverseTextList()
 {
    mTl->clear();
-   for(S32 i=mEntries.size()-1; i >= 0; --i)
+   for(S32 i=(S32)mEntries.size()-1; i >= 0; --i)
       mTl->addEntry(mEntries[i].id, mEntries[i].buf);
 
    // Don't lose the selected cell:
    if ( mSelIndex >= 0 )
-      mTl->setSelectedCell( Point2I( 0, mEntries.size() - mSelIndex - 1 ) ); 
+      mTl->setSelectedCell( Point2I( 0, (S32)mEntries.size() - mSelIndex - 1 ) );
 
-   mRevNum = mEntries.size() - 1;
+   mRevNum = (S32)mEntries.size() - 1;
 }
 
 //------------------------------------------------------------------------------

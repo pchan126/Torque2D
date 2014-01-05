@@ -209,7 +209,7 @@ GFXTextureObject *GFXOpenGLES20iOSTextureManager::createTexture( const String &f
     }
     else
     {
-        S32 len = ptr - fullPath.c_str();
+        size_t len = ptr - fullPath.c_str();
         dStrncpy (buf, fullPath.c_str(), len);
         buf[len] = 0;
         fileName = StringTable->insert (ptr + 1);

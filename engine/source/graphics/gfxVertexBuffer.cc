@@ -28,12 +28,12 @@
 
 
 void GFXVertexBufferHandleBase::set(   GFXDevice *theDevice,
-                                       U32 vertexCount, 
+                                       dsize_t vertexCount,
                                        const GFXVertexFormat *vertexFormat,
-                                       U32 vertexSize, 
+                                       dsize_t vertexSize,
                                        GFXBufferType type,
                                        void *vertexBuffer,
-                                       U32 indexCount,
+                                       dsize_t indexCount,
                                        void *indexBuffer)
 {
    StrongRefPtr<GFXVertexBuffer>::operator=( theDevice->allocVertexBuffer( vertexCount, vertexFormat, vertexSize, type, vertexBuffer, indexCount, indexBuffer ) );

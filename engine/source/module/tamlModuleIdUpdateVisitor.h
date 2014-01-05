@@ -66,7 +66,7 @@ public:
         const char* pPropertyValue = propertyState.getPropertyValue();
 
         // Fetch value length.
-        const U32 valueLenth = dStrlen(pPropertyValue);
+        const auto valueLength = dStrlen(pPropertyValue);
 
         char newAttributeValueBuffer[1024];
 
@@ -74,7 +74,7 @@ public:
         if ( *pPropertyValue == '^' )
         {
             // Yes, so finish if it's not the correct length.
-            if ( valueLenth < mModuleIdFromLength+1 )
+            if ( valueLength < mModuleIdFromLength+1 )
                 return true;
 
             // Is this the module Id?
@@ -108,22 +108,22 @@ public:
     void setModuleIdFrom( const char* pModuleIdFrom )
     {
         // Sanity!
-        AssertFatal( pModuleIdFrom != NULL, "Module Id from cannot be NULL." );
+        AssertFatal( pModuleIdFrom != nullptr, "Module Id from cannot be NULL." );
 
         // Set module Id.
         mModuleIdFrom = StringTable->insert( pModuleIdFrom );
-        mModuleIdFromLength = dStrlen(mModuleIdFrom);
+        mModuleIdFromLength = (U32)dStrlen(mModuleIdFrom);
     }
     StringTableEntry getModuleIdFrom( void ) const { return mModuleIdFrom; }
 
     void setModuleIdTo( const char* pModuleIdTo )
     {
         // Sanity!
-        AssertFatal( pModuleIdTo != NULL, "Module Id to cannot be NULL." );
+        AssertFatal( pModuleIdTo != nullptr, "Module Id to cannot be NULL." );
 
         // Set module Id.
         mModuleIdTo = StringTable->insert( pModuleIdTo );
-        mModuleIdToLength = dStrlen(mModuleIdTo);
+        mModuleIdToLength = (U32)dStrlen(mModuleIdTo);
     }
     const char* getModuleIdTo( void ) const { return mModuleIdTo; }
 };

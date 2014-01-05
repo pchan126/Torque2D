@@ -60,7 +60,7 @@ bool TamlJSONParser::accept( const char* pFilename, TamlVisitor& visitor )
     }
 
     // Read JSON file.
-    const U32 streamSize = StreamFn::getStreamSize(stream);
+    const auto streamSize = StreamFn::getStreamSize(stream);
     FrameTemp<char> jsonText( streamSize + 1 );
     if ( !stream.read( jsonText, streamSize ) )
     {

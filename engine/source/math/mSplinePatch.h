@@ -51,7 +51,7 @@ public:
    virtual ~SplCtrlPts();
 
    /// Gets the number of points in the spline
-   U32               getNumPoints(){ return mPoints.size(); }
+   U32               getNumPoints(){ return (U32)mPoints.size(); }
    /// Gets the point at the given index
    /// @param pointNum index of the point in question
    const Point3F *   getPoint( U32 pointNum );

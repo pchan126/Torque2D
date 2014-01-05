@@ -238,7 +238,7 @@ void GFXOpenGLDevice::preDrawPrimitive()
         setShaderConstBufferInternal(mCurrentShaderConstBuffer);
 }
 
-void GFXOpenGLDevice::postDrawPrimitive(U32 primitiveCount)
+void GFXOpenGLDevice::postDrawPrimitive(size_t primitiveCount)
 {
    mDeviceStatistics.mDrawCalls++;
    mDeviceStatistics.mPolyCount += primitiveCount;
@@ -246,27 +246,27 @@ void GFXOpenGLDevice::postDrawPrimitive(U32 primitiveCount)
 
 
 // Given a primitive type and a number of primitives, return the number of indexes/vertexes used.
-GLsizei GFXOpenGLDevice::primCountToIndexCount(GFXPrimitiveType primType, U32 primitiveCount)
+GLsizei GFXOpenGLDevice::primCountToIndexCount(GFXPrimitiveType primType, size_t primitiveCount)
 {
     switch (primType)
     {
         case GFXPointList :
-            return primitiveCount;
+            return (GLsizei)primitiveCount;
             break;
         case GFXLineList :
-            return primitiveCount * 2;
+            return (GLsizei)primitiveCount * 2;
             break;
         case GFXLineStrip :
-            return primitiveCount + 1;
+            return (GLsizei)primitiveCount + 1;
             break;
         case GFXTriangleList :
-            return primitiveCount * 3;
+            return (GLsizei)primitiveCount * 3;
             break;
         case GFXTriangleStrip :
-            return 2 + primitiveCount;
+            return 2 + (GLsizei)primitiveCount;
             break;
         case GFXTriangleFan :
-            return 2 + primitiveCount;
+            return 2 + (GLsizei)primitiveCount;
             break;
         default:
             AssertFatal(false, "GFXOpenGLDevice::primCountToIndexCount - unrecognized prim type");
@@ -291,11 +291,11 @@ void GFXOpenGLDevice::endSceneInternal()
     mCanCurrentlyRender = false;
 }
 
-void GFXOpenGLDevice::drawPrimitive( GFXPrimitiveType primType, U32 vertexStart, U32 primitiveCount )
+void GFXOpenGLDevice::drawPrimitive( GFXPrimitiveType primType, size_t vertexStart, size_t primitiveCount )
 {
     preDrawPrimitive();
 
-    glDrawArrays(GFXGLPrimType[primType], vertexStart, primCountToIndexCount(primType, primitiveCount));
+    glDrawArrays(GFXGLPrimType[primType], (GLint)vertexStart, primCountToIndexCount(primType, primitiveCount));
 
     postDrawPrimitive(primitiveCount);
 }

@@ -99,7 +99,7 @@ bool GuiFilterCtrl::onWake()
 
 void GuiFilterCtrl::identity()
 {
-   S32 size = mFilter.size()-1;
+   auto size = mFilter.size()-1;
    for (U32 i=0; S32(i) <= size; i++)
       mFilter[i] = (F32)i/(F32)size;
 }

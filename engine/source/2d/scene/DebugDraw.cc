@@ -276,7 +276,7 @@ void DebugDraw::DrawPolygon( const b2Vec2* vertices, int32 vertexCount, const Co
         Point3F add = Point3F(vertices[i].x, vertices[i].y, 0.0);
         pts.push_back(add);
     }
-    GFX->getDrawUtil()->drawPolygon(desc, pts.address(), pts.size(), ColorI(color), ColorI(color));
+    GFX->getDrawUtil()->drawPolygon(desc, pts.address(), (U32)pts.size(), ColorI(color), ColorI(color));
 }
 
 //-----------------------------------------------------------------------------
@@ -297,7 +297,7 @@ void DebugDraw::DrawSolidPolygon( const b2Vec2* vertices, int32 vertexCount, con
         Point3F add = Point3F(vertices[i].x, vertices[i].y, 0.0);
         pts.push_back(add);
     }
-    GFX->getDrawUtil()->drawPolygon(desc, pts.address(), pts.size(), ColorI(color), ColorI(color));
+    GFX->getDrawUtil()->drawPolygon(desc, pts.address(), (U32)pts.size(), ColorI(color), ColorI(color));
 
 }
 

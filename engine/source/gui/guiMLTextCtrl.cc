@@ -437,9 +437,9 @@ void GuiMLTextCtrl::setScriptValue(const char *newText)
 }
 
 //--------------------------------------------------------------------------
-void GuiMLTextCtrl::setText(const char* textBuffer, const U32 numChars)
+void GuiMLTextCtrl::setText(const char* textBuffer, const dsize_t numChars)
 {
-   U32 chars = numChars;
+   auto chars = numChars;
    if(numChars >= (U32)mMaxBufferSize)
       chars = mMaxBufferSize;
 
@@ -447,7 +447,7 @@ void GuiMLTextCtrl::setText(const char* textBuffer, const U32 numChars)
    // perhaps it should? -paxorr
    FrameTemp<UTF8> tmp(chars+1);
    dStrncpy(tmp, textBuffer, chars);
-   tmp[chars] = 0;
+   tmp[(U32)chars] = 0;
 
    mTextBuffer.set(tmp);
 
@@ -459,14 +459,14 @@ void GuiMLTextCtrl::setText(const char* textBuffer, const U32 numChars)
 }
 
 //--------------------------------------------------------------------------
-void GuiMLTextCtrl::addText(const char* textBuffer, const U32 numChars, bool reformat)
+void GuiMLTextCtrl::addText(const char* textBuffer, const dsize_t numChars, bool reformat)
 {
    if(numChars >= (U32)mMaxBufferSize)
       return;
 
    FrameTemp<UTF8> tmp(numChars+1);
    dStrncpy(tmp, textBuffer, numChars);
-   tmp[numChars] = 0;
+   tmp[(U32)numChars] = 0;
 
    mTextBuffer.append(tmp);
 
@@ -1437,7 +1437,7 @@ void GuiMLTextCtrl::reflow()
    mLineInsert = &mLineList;
 
    mCurStyle = allocStyle(NULL);
-   mCurStyle->font = allocFont((char *) mProfile->mFontType, dStrlen(mProfile->mFontType), mProfile->mFontSize);
+   mCurStyle->font = allocFont((char *) mProfile->mFontType, (U32)dStrlen(mProfile->mFontType), mProfile->mFontSize);
    if(!mCurStyle->font)
       return;
    mCurStyle->color = mProfile->mFontColor;

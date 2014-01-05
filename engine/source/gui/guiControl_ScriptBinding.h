@@ -256,7 +256,7 @@ ConsoleMethod( GuiControl, findHitControls, const char*, 6, 6, "(int x, int y, i
     
     bool isFirst = true;
     StringBuilder str;
-    for( U32 i = 0, num = controls.size(); i < num; ++ i )
+    for( U32 i = 0, num = (U32)controls.size(); i < num; ++ i )
     {
         if( !isFirst )
             str.append( ' ' );

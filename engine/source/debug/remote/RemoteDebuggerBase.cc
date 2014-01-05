@@ -297,14 +297,14 @@ bool RemoteDebuggerBase::sendCommand( const char* pCommand )
     }
 
     // Fetch command length.
-    const S32 commandLength = dStrlen(pCommand);
+    const dsize_t commandLength = dStrlen(pCommand);
 
     // Calculate required send response size.
     // This size is the original command response plus termination null plus an extra for the newline command termination.
-    const S32 requiredSendResponseBufferSize = commandLength+3;
+    const dsize_t requiredSendResponseBufferSize = commandLength+3;
 
     // Create response buffer.
-    FrameTemp<char> sendResponseBuffer( requiredSendResponseBufferSize );
+    FrameTemp<char> sendResponseBuffer( (U32)requiredSendResponseBufferSize );
 
     // Append carriage-return to send command.
     dSprintf( sendResponseBuffer, requiredSendResponseBufferSize, "%s\n\r", pCommand );

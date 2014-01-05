@@ -340,7 +340,7 @@ void SimObject::writeFields(std::iostream &stream, U32 tabStop)
          if (!val)
             continue;
 
-         U32 nBufferSize = dStrlen( val ) + 1;
+         auto nBufferSize = dStrlen( val ) + 1;
          FrameTemp<char> valCopy( nBufferSize );
          dStrcpy( (char *)valCopy, val );
 
@@ -349,7 +349,7 @@ void SimObject::writeFields(std::iostream &stream, U32 tabStop)
 
          val = valCopy;
 
-         U32 expandedBufferSize = ( nBufferSize  * 2 ) + 32;
+         auto expandedBufferSize = ( nBufferSize  * 2 ) + 32;
          FrameTemp<char> expandedBuffer( expandedBufferSize );
          if(f.elementCount == 1)
             dSprintf(expandedBuffer, expandedBufferSize, "%s = \"", f.pFieldname);
@@ -687,7 +687,7 @@ ConsoleMethod( SimObject, getFieldCount, S32, 2, 2, "() - Gets the number of per
       }
    }
 
-   return list.size() - numDummyEntries;
+   return (S32)list.size() - numDummyEntries;
 }
 
 ConsoleMethod( SimObject, getField, const char*, 3, 3, "(int index) - Gets the name of the field at the given index." )
@@ -944,7 +944,7 @@ const char *SimObject::getPrefixedDataField(StringTableEntry fieldName, const ch
     AssertFatal( fieldPrefix != nullptr, "Field prefix cannot be nullptr." );
 
     // Calculate a buffer size including prefix.
-    const U32 valueBufferSize = dStrlen(fieldPrefix) + dStrlen(pFieldValue) + 1;
+    const auto valueBufferSize = dStrlen(fieldPrefix) + dStrlen(pFieldValue) + 1;
 
     // Fetch a buffer.
     char* pValueBuffer = Con::getReturnBuffer( valueBufferSize );
@@ -985,7 +985,7 @@ void SimObject::setPrefixedDataField(StringTableEntry fieldName, const char *arr
     }
 
     // Yes, so fetch the length of the field prefix.
-    const U32 fieldPrefixLength = dStrlen(fieldPrefix);
+    const auto fieldPrefixLength = dStrlen(fieldPrefix);
 
     // Yes, so does it start with the object field prefix?
     if ( dStrnicmp( value, fieldPrefix, fieldPrefixLength ) != 0 )
@@ -1038,7 +1038,7 @@ const char *SimObject::getPrefixedDynamicDataField(StringTableEntry fieldName, c
     AssertFatal( fieldPrefix != nullptr, "Field prefix cannot be nullptr." );
 
     // Calculate a buffer size including prefix.
-    const U32 valueBufferSize = dStrlen(fieldPrefix) + dStrlen(pFieldValue) + 1;
+    const auto valueBufferSize = dStrlen(fieldPrefix) + dStrlen(pFieldValue) + 1;
 
     // Fetch a buffer.
     char* pValueBuffer = Con::getReturnBuffer( valueBufferSize );
@@ -1097,7 +1097,7 @@ void SimObject::setPrefixedDynamicDataField(StringTableEntry fieldName, const ch
     }
 
     // Yes, so fetch the length of the field prefix.
-    const U32 fieldPrefixLength = dStrlen(fieldPrefix);
+    const auto fieldPrefixLength = dStrlen(fieldPrefix);
 
     // Yes, so does it start with the object field prefix?
     if ( dStrnicmp( value, fieldPrefix, fieldPrefixLength ) != 0 )

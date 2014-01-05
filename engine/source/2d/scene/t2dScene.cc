@@ -424,7 +424,7 @@ void t2dScene::dispatchBeginContactCallbacks( void )
     AssertFatal( b2_maxManifoldPoints == 2, "t2dScene::dispatchBeginContactCallbacks() - Invalid assumption about max manifold points." );
 
     // Fetch contact count.
-    const U32 contactCount = mBeginContacts.size();
+    const size_t contactCount = mBeginContacts.size();
 
     // Finish if no contacts.
     if ( contactCount == 0 )
@@ -572,7 +572,7 @@ void t2dScene::dispatchEndContactCallbacks( void )
     AssertFatal( b2_maxManifoldPoints == 2, "t2dScene::dispatchEndContactCallbacks() - Invalid assumption about max manifold points." );
 
     // Fetch contact count.
-    const U32 contactCount = mEndContacts.size();
+    const size_t contactCount = mEndContacts.size();
 
     // Finish if no contacts.
     if ( contactCount == 0 )
@@ -1196,7 +1196,7 @@ SceneObject*t2dScene::getSceneObject( const U32 objectIndex ) const
 
 //-----------------------------------------------------------------------------
 
-U32 t2dScene::getSceneObjects( typeSceneObjectVector& objects ) const
+size_t t2dScene::getSceneObjects( typeSceneObjectVector& objects ) const
 {
     // No objects if scene is empty!
     if ( getSceneObjectCount() == 0 )
@@ -1210,7 +1210,7 @@ U32 t2dScene::getSceneObjects( typeSceneObjectVector& objects ) const
 
 //-----------------------------------------------------------------------------
 
-U32 t2dScene::getSceneObjects( typeSceneObjectVector& objects, const U32 sceneLayer ) const
+size_t t2dScene::getSceneObjects( typeSceneObjectVector& objects, const U32 sceneLayer ) const
 {
     // No objects if scene is empty!
     if ( getSceneObjectCount() == 0 )
@@ -1265,7 +1265,7 @@ void t2dScene::addAssetPreload( const char* pAssetId )
     StringTableEntry assetId = StringTable->insert( pAssetId );
 
     // Ignore if asset already added.
-    const S32 assetPreloadCount = mAssetPreloads.size();
+    const size_t assetPreloadCount = mAssetPreloads.size();
     for( S32 index = 0; index < assetPreloadCount; ++index )
     {
         if ( mAssetPreloads[index]->getAssetId() == assetId )
@@ -1301,7 +1301,7 @@ void t2dScene::removeAssetPreload( const char* pAssetId )
     StringTableEntry assetId = StringTable->insert( pAssetId );
 
     // Remove asset Id.
-    const S32 assetPreloadCount = mAssetPreloads.size();
+    const size_t assetPreloadCount = mAssetPreloads.size();
     for( S32 index = 0; index < assetPreloadCount; ++index )
     {
         if ( mAssetPreloads[index]->getAssetId() == assetId )
@@ -1330,7 +1330,7 @@ void t2dScene::clearAssetPreloads( void )
 void t2dScene::mergeScene( const t2dScene * pScene )
 {
     // Fetch the scene object count.
-    const U32 count = pScene->getSceneObjectCount();
+    const size_t count = pScene->getSceneObjectCount();
 
     // Finish if there are not objects to copy.
     if ( count == 0 )
@@ -4412,7 +4412,7 @@ void t2dScene::onTamlPostRead( const TamlCustomNodes& customNodes )
         StringTableEntry assetIdTypePrefix = ConsoleBaseType::getType( TypeAssetId )->getTypePrefix();
 
         // Fetch the prefix length.
-        const S32 assetIdPrefixLength = dStrlen( assetIdTypePrefix );
+        const dsize_t assetIdPrefixLength = dStrlen( assetIdTypePrefix );
 
         // Fetch the preload children nodes.
         // Iterate asset preloads.
@@ -4437,7 +4437,7 @@ void t2dScene::onTamlPostRead( const TamlCustomNodes& customNodes )
             const char* pFieldValue = pAssetIdField->getFieldValue();
 
             // Calculate the field value start (skip any type prefix).
-            const S32 prefixOffset = dStrnicmp( pFieldValue, assetIdTypePrefix, assetIdPrefixLength ) == 0 ? assetIdPrefixLength : 0;
+            const dsize_t prefixOffset = dStrnicmp( pFieldValue, assetIdTypePrefix, assetIdPrefixLength ) == 0 ? assetIdPrefixLength : 0;
 
             // Add asset preload.
             addAssetPreload( pFieldValue + prefixOffset );
@@ -4453,7 +4453,7 @@ void t2dScene::onTamlCustomWrite( TamlCustomNodes& customNodes )
     Parent::onTamlCustomWrite( customNodes );
 
     // Fetch joint count.
-    const U32 jointCount = getJointCount();
+    const dsize_t jointCount = getJointCount();
 
     // Do we have any joints?
     if ( jointCount > 0 )
@@ -4868,7 +4868,7 @@ void t2dScene::onTamlCustomWrite( TamlCustomNodes& customNodes )
     }
 
     // Fetch controller count.
-    const S32 sceneControllerCount = getControllers() ? getControllers()->size() : 0;
+    const size_t sceneControllerCount = getControllers() ? getControllers()->size() : 0;
     
     // Do we have any scene controllers?
     if ( sceneControllerCount > 0 )
@@ -4895,7 +4895,7 @@ void t2dScene::onTamlCustomWrite( TamlCustomNodes& customNodes )
     }
 
     // Fetch asset preload count.
-    const S32 assetPreloadCount = getAssetPreloadCount();
+    const size_t assetPreloadCount = getAssetPreloadCount();
 
     // Do we have any asset preloads?
     if ( assetPreloadCount > 0 )
@@ -5344,7 +5344,7 @@ void t2dScene::performBlastImpulse(b2Vec2 center, F32 radius, F32 blastPower, U3
         AssertFatal( pWorldQuery->getIsRaycastQueryResult(), "Invalid non-ray-cast query result returned." );
 
         // Fetch result count.
-        const U32 resultCount = pWorldQuery->getQueryResultsCount();
+        const size_t resultCount = pWorldQuery->getQueryResultsCount();
 
         // Finish if no results.
         if ( resultCount == 0 )

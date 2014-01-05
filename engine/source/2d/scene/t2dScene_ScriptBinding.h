@@ -257,7 +257,7 @@ ConsoleMethod(t2dScene, getCount, S32, 2, 2,   "() Gets the count of scene objec
                                             "@return Returns the number of scene objects in current scene as an integer.")
 {
     // Get t2dScene Object-Count.
-    return object->getSceneObjectCount();
+    return (S32)object->getSceneObjectCount();
 }  
 
 
@@ -271,7 +271,7 @@ ConsoleMethod(t2dScene, getObject, S32, 3, 3,  "(sceneObjectIndex) Gets the scen
     const U32 objectIndex = dAtoi(argv[2]);
 
     // Fetch scene object count.
-    const U32 sceneObjectCount = object->getSceneObjectCount();
+    const size_t sceneObjectCount = object->getSceneObjectCount();
 
     // Sanity!
     if ( objectIndex >= sceneObjectCount )
@@ -309,12 +309,12 @@ ConsoleMethod(t2dScene, getSceneObjectList, const char*, 2, 2, "() Gets the t2dS
     Vector<SceneObject*> objList;
 
     // Finish here if there are no scene objects.
-    U32 objCount = object->getSceneObjects( objList );
+    size_t objCount = object->getSceneObjects( objList );
     if( objCount == 0 )
         return nullptr;
 
     // Our return buffer will be 6 times the size of our object list (4 for Id (+1 for future size?) + 1 for space).
-    U32 maxBufferSize = objCount * 12;
+    size_t maxBufferSize = objCount * 12;
 
     // Create Returnable Buffer.
     char *pBuffer = Con::getReturnBuffer( maxBufferSize ); 
@@ -346,7 +346,7 @@ ConsoleMethod(t2dScene, getSceneObjectList, const char*, 2, 2, "() Gets the t2dS
 ConsoleMethod(t2dScene, getAssetPreloadCount, S32, 2, 2,   "() Gets the number of assets set to preload for this scene.\n"
                                                         "@return The number of assets set to preload for this scene.")
 {
-    return object->getAssetPreloadCount();
+    return (S32)object->getAssetPreloadCount();
 }
 
 //-----------------------------------------------------------------------------
@@ -462,7 +462,7 @@ ConsoleMethod(t2dScene, getScenePause, bool, 2, 2, "() Gets scene pause status.\
 ConsoleMethod(t2dScene, getJointCount, S32, 2, 2,  "() Gets the joint count.\n"
                                                         "@return Returns no value")
 {
-    return object->getJointCount();
+    return (S32)object->getJointCount();
 }
 
 //-----------------------------------------------------------------------------
@@ -2545,7 +2545,7 @@ ConsoleMethod(t2dScene, pickArea, const char*, 4, 9, "(startx/y, endx/y, [sceneG
     }
 
     // Fetch result count.
-    const U32 resultCount = pWorldQuery->getQueryResultsCount();
+    const size_t resultCount = pWorldQuery->getQueryResultsCount();
 
     // Finish if no results.
     if ( resultCount == 0 )
@@ -2691,7 +2691,7 @@ ConsoleMethod(t2dScene, pickRay, const char*, 4, 9, "(startx/y, endx/y, [sceneGr
     AssertFatal( pWorldQuery->getIsRaycastQueryResult(), "Invalid non-ray-cast query result returned." );
 
     // Fetch result count.
-    const U32 resultCount = pWorldQuery->getQueryResultsCount();
+    const size_t resultCount = pWorldQuery->getQueryResultsCount();
 
     // Finish if no results.
     if ( resultCount == 0 )
@@ -2884,7 +2884,7 @@ ConsoleMethod(t2dScene, pickPoint, const char*, 3, 7, "(x / y, [sceneGroupMask],
     }
 
     // Fetch result count.
-    const U32 resultCount = pWorldQuery->getQueryResultsCount();
+    const size_t resultCount = pWorldQuery->getQueryResultsCount();
 
     // Finish if no results.
     if ( resultCount == 0 )
@@ -3033,7 +3033,7 @@ ConsoleMethod(t2dScene, pickCircle, const char*, 4, 8, "(x / y, radius, [sceneGr
     }
 
     // Fetch result count.
-    const U32 resultCount = pWorldQuery->getQueryResultsCount();
+    const size_t resultCount = pWorldQuery->getQueryResultsCount();
 
     // Finish if no results.
     if ( resultCount == 0 )
@@ -3158,7 +3158,7 @@ ConsoleMethod(t2dScene, pickRayCollision, const char*, 4, 8, "(startx/y, endx/y,
     AssertFatal( pWorldQuery->getIsRaycastQueryResult(), "Invalid non-ray-cast query result returned." );
 
     // Fetch result count.
-    const U32 resultCount = pWorldQuery->getQueryResultsCount();
+    const size_t resultCount = pWorldQuery->getQueryResultsCount();
 
     // Finish if no results.
     if ( resultCount == 0 )

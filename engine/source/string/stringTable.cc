@@ -136,7 +136,7 @@ StringTableEntry _StringTable::insert(const char* src, const bool  caseSens)
 }
 
 //--------------------------------------
-StringTableEntry _StringTable::insertn(const char* src, S32 len, const bool  caseSens)
+StringTableEntry _StringTable::insertn(const char* src, size_t len, const bool  caseSens)
 {
    if ( src == nullptr )
        return StringTable->EmptyString;

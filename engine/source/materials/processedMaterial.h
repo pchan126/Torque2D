@@ -183,7 +183,7 @@ public:
    virtual U32 getNumStages() = 0;
 
    /// Returns the number of passes we are rendering (not to be confused with the number of stages).
-   U32 getNumPasses() const { return mPasses.size(); }
+   U32 getNumPasses() const { return (U32)mPasses.size(); }
 
    /// Returns true if any pass glows
    bool hasGlow() const { return mHasGlow; }

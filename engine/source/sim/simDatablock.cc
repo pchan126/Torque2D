@@ -101,7 +101,7 @@ ConsoleFunction(deleteDataBlocks, void, 1, 1, "() Use the deleteDataBlocks funct
 {
    // delete from last to first:
    SimGroup *grp = Sim::getDataBlockGroup();
-   for(S32 i = grp->size() - 1; i >= 0; i--)
+   for(S32 i = (S32)grp->size() - 1; i >= 0; i--)
    {
       SimObject *obj = (*grp)[i];
       obj->deleteObject();

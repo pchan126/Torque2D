@@ -83,11 +83,11 @@ public:
    const String& getDescription() const;
 
    /// Returns the feature count.
-   U32 getCount() const { return mFeatures.size(); }
+   U32 getCount() const { return (U32)mFeatures.size(); }
 
    /// Returns the feature at the index and optionally
    /// the feature index when it was added.
-   const FeatureType& getAt( U32 index, S32 *outIndex = NULL ) const;
+   const FeatureType& getAt( U32 index, S32 *outIndex = nullptr ) const;
 
    /// Returns true if this handle has this feature.
    bool hasFeature( const FeatureType &type, S32 index = -1 ) const;

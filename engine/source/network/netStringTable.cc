@@ -202,8 +202,8 @@ void NetStringTable::expandString(NetStringHandle &inString, char *buf, U32 bufS
    dSprintf(buf + 1, bufSize - 1, "%d ", inString.getIndex());
 
    const char *string = inString.getString();
-   if (string != NULL) {
-      U32 index = dStrlen(buf);
+   if (string != nullptr) {
+      auto index = dStrlen(buf);
       while(index < bufSize)
       {
          char c = *string++;

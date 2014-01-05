@@ -134,7 +134,7 @@ void GFXDrawUtil::flushInternal( void )
    if ( mVertexBuffer.size() == 0 )
       return;
    
-   mTextureVertex.set(mDevice, mVertexBuffer.size(), GFXBufferTypeVolatile, mVertexBuffer.address());
+   mTextureVertex.set(mDevice, (U32)mVertexBuffer.size(), GFXBufferTypeVolatile, mVertexBuffer.address());
    mDevice->setVertexBuffer( mTextureVertex );
    
    switch (mFilter)
@@ -194,7 +194,7 @@ U32 GFXDrawUtil::drawText( GFont *font, const Point2I &ptDraw, const UTF16 *in_s
 U32 GFXDrawUtil::drawText( GFont *font, const Point2I &ptDraw, const UTF8 *in_string, 
                           const ColorI *colorTable, const U32 maxColorIndex, F32 rot )
 {
-   return drawTextN( font, ptDraw, in_string, dStrlen(in_string), colorTable, maxColorIndex, rot );
+   return drawTextN( font, ptDraw, in_string, (U32)dStrlen(in_string), colorTable, maxColorIndex, rot );
 }
 
 U32 GFXDrawUtil::drawText( GFont *font, const Point2F &ptDraw, const UTF8 *in_string, const ColorI *colorTable /*= NULL*/, const U32 maxColorIndex /*= 9*/, F32 rot /*= 0.f */ )
@@ -734,7 +734,7 @@ void GFXDrawUtil::drawSphere( const GFXStateBlockDesc &desc, F32 radius, const P
    mDevice->setVertexBuffer( mLineVertex );
    mDevice->setupGenericShaders();
 
-   mDevice->drawIndexedPrimitive(GFXTriangleList, 0, 0, verts.size(), 0, sphereMesh->mTriangleIndex.size());
+   mDevice->drawIndexedPrimitive(GFXTriangleList, 0, 0, (U32)verts.size(), 0, (U32)sphereMesh->mTriangleIndex.size());
 
    GFX->popWorldMatrix();
 }

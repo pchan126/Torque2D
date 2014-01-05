@@ -42,7 +42,7 @@ BehaviorInstance::BehaviorInstance( BehaviorTemplate* pTemplate ) :
     if ( pTemplate != nullptr )
     {
         // Fetch field prototype count.
-        const U32 fieldCount = pTemplate->getBehaviorFieldCount();
+        const size_t fieldCount = pTemplate->getBehaviorFieldCount();
 
         // Set field prototypes.
         for( U32 index = 0; index < fieldCount; ++index )

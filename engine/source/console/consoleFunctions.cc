@@ -74,7 +74,7 @@ ConsoleFunction(strlen, S32, 2, 2, "( string ) Use the strlen function to determ
                                                                 "@return Returns the number of characters in string, or 0 if string is invalid or a nullptr string")
 {
    TORQUE_UNUSED( argc );
-   return dStrlen(argv[1]);
+   return (S32)dStrlen(argv[1]);
 }
 
 ConsoleFunction(strstr, S32 , 3, 3, "( sourceString , searchString ) Use the strstr function to locate the first instance of searchString in sourceString.\n"
@@ -90,7 +90,7 @@ ConsoleFunction(strstr, S32 , 3, 3, "( sourceString , searchString ) Use the str
    const char *retpos = dStrstr(argv[1], argv[2]);
    if(!retpos)
       return -1;
-   return retpos - argv[1];
+   return (S32)(retpos - argv[1]);
 }
 
 ConsoleFunction(strpos, S32, 3, 4, "( sourceString , searchString [ , offset ] ) Use the strPos function to locate the first instance of searchString in sourceString, starting at character 0, or at an optional offset.\n"
@@ -103,8 +103,8 @@ ConsoleFunction(strpos, S32, 3, 4, "( sourceString , searchString [ , offset ] )
    S32 start = 0;
    if(argc == 4)
       start = dAtoi(argv[3]);
-   U32 sublen = dStrlen(argv[2]);
-   U32 strlen = dStrlen(argv[1]);
+   dsize_t sublen = dStrlen(argv[2]);
+   dsize_t strlen = dStrlen(argv[1]);
    if(start < 0)
       return -1;
    if(sublen + start > strlen)
@@ -184,7 +184,7 @@ ConsoleFunction(stripChars, const char*, 3, 3, "( sourceString , chars ) Use the
    TORQUE_UNUSED( argc );
    char* ret = Con::getReturnBuffer( dStrlen( argv[1] ) + 1 );
    dStrcpy( ret, argv[1] );
-   U32 pos = dStrcspn( ret, argv[2] );
+   dsize_t pos = dStrcspn( ret, argv[2] );
    while ( pos < dStrlen( ret ) )
    {
       dStrcpy( ret + pos, ret + pos + 1 );
@@ -254,11 +254,11 @@ ConsoleFunction(strreplace, const char *, 4, 4, "( sourceString , from , to ) Us
                                                                 "@return Returns a new version of sourceString in which every instance of the value in from was replaced with the value in to.")
 {
    TORQUE_UNUSED( argc );
-   S32 fromLen = dStrlen(argv[2]);
+   dsize_t fromLen = dStrlen(argv[2]);
    if(!fromLen)
       return argv[1];
 
-   S32 toLen = dStrlen(argv[3]);
+   dsize_t toLen = dStrlen(argv[3]);
    S32 count = 0;
    const char *scan = argv[1];
    while(scan)
@@ -281,7 +281,7 @@ ConsoleFunction(strreplace, const char *, 4, 4, "( sourceString , from , to ) Us
          dStrcpy(ret + dstp, argv[1] + scanp);
          return ret;
       }
-      U32 len = scan - (argv[1] + scanp);
+      dsize_t len = scan - (argv[1] + scanp);
       dStrncpy(ret + dstp, argv[1] + scanp, len);
       dstp += len;
       dStrcpy(ret + dstp, argv[3]);
@@ -312,11 +312,11 @@ ConsoleFunction(getSubStr, const char *, 4, 4, "( sourceString , start , count )
       return "";
    }
 
-   S32 baseLen = dStrlen(argv[1]);
+   dsize_t baseLen = dStrlen(argv[1]);
    if (baseLen < startPos)
       return "";
 
-   U32 actualLen = desiredLen;
+   dsize_t actualLen = desiredLen;
    if (startPos + desiredLen > baseLen)
       actualLen = baseLen - startPos;
 
@@ -554,7 +554,7 @@ ConsoleFunction(firstWord, const char *, 2, 2, "( sourceString ) Use the firstWo
 {
    TORQUE_UNUSED( argc );
    const char *word = dStrchr(argv[1], ' ');
-   U32 len;
+   dsize_t len;
    if(word == nullptr)
       len = dStrlen(argv[1]);
    else
@@ -669,9 +669,9 @@ ConsoleFunction(getTag, const char *, 2, 2, "( taggedString ) Use the getTag fun
 
       U32 len;
       if(space)
-         len = space - argv[1];
+         len = (U32)(space - argv[1]);
       else
-         len = dStrlen(argv[1]) + 1;
+         len = (U32)(dStrlen(argv[1]) + 1);
 
       char * ret = Con::getReturnBuffer(len);
       dStrncpy(ret, argv[1] + 1, len - 1);

@@ -152,7 +152,7 @@ Resource<AudioBuffer> AudioBuffer::find(const char *filename)
    if (bool(buffer) == false)
    {
       // wav file doesn't exist, try ogg file instead
-      S32 len = dStrlen(filename);
+      dsize_t len = dStrlen(filename);
       if (len>3 && !dStricmp(filename+len-4,".wav"))
       {
          f2 = (char*)FrameAllocator::alloc(len+1);
@@ -213,7 +213,7 @@ ALuint AudioBuffer::getALBuffer()
    if(obj)
    {
       bool readSuccess = false;
-      S32 len = dStrlen(mFilename);
+      dsize_t len = dStrlen(mFilename);
 
       if(len > 3 && !dStricmp(mFilename + len - 4, ".wav"))
       {

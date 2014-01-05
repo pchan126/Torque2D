@@ -209,17 +209,17 @@ const U32 GuiTreeViewCtrl::Item::getDisplayTextLength()
 
       // For the results buffer, it's prefix along with a bunch of other stuff.
       // So we'll be mostly accurate and add a bit of fudge.
-      return (16
+      return (U32)(16
          + (obj->getName() ? dStrlen(obj->getName()) : 0) + dStrlen(obj->getClassName())
          + dStrlen(obj->getIdString()) + 20
          );
    }
 
    char *pText = getText();
-   if( pText == NULL )
+   if( pText == nullptr )
       return 0;
 
-   return dStrlen( pText );
+   return (U32)dStrlen( pText );
 }
 
 void GuiTreeViewCtrl::Item::getDisplayText(U32 bufLen, char *buf)
@@ -234,9 +234,9 @@ void GuiTreeViewCtrl::Item::getDisplayText(U32 bufLen, char *buf)
       {
          const char* pObjName = pObject->getName();
          const char* pInternalName = pObject->getInternalName();
-         if( pObjName != NULL )
+         if( pObjName != nullptr )
             dSprintf(buf, bufLen, "%d: %s - %s", pObject->getId(), pObject->getClassName(), pObjName );
-         else if ( pInternalName != NULL )
+         else if ( pInternalName != nullptr )
             dSprintf(buf, bufLen, "%d: %s [%s]", pObject->getId(), pObject->getClassName(), pInternalName);
          else
             dSprintf(buf, bufLen, "%d: %s", pObject->getId(), pObject->getClassName());
@@ -663,7 +663,7 @@ void GuiTreeViewCtrl::buildVisibleTree(bool bForceFullUpdate)
 
    // adjust the GuiArrayCtrl
    mCellSize.set(mMaxWidth+1, mItemHeight);
-   setSize(Point2I(1, mVisibleItems.size()));
+   setSize(Point2I(1, (S32)mVisibleItems.size()));
    syncSelection();
 
    // Done Recursing.
@@ -1135,7 +1135,7 @@ bool GuiTreeViewCtrl::buildIconTable(const char * icons)
 
    // Figure the size of the buffer we need...
    const char* temp = dStrchr( icons, '\t' );
-   U32 textLen = temp ? ( temp - icons ) : dStrlen( icons );
+   U32 textLen = (U32)(temp ? ( temp - icons ) : dStrlen( icons ));
 
    // Allocate temporary space.
    FrameAllocatorMarker txtBuff;
@@ -1153,7 +1153,7 @@ bool GuiTreeViewCtrl::buildIconTable(const char * icons)
       dSprintf( buf, sizeof( char ) * 256, "%s", token );
 //      mIconTable[numIcons] = TextureHandle( buf, TextureHandle::BitmapKeepTexture );
       mIconTable[numIcons] = GFXTexHandle( buf, &GFXDefaultGUIProfile, avar("%s() - mIconTable (line %d)", __FUNCTION__, __LINE__) );
-      token = dStrtok( NULL, ":" );
+      token = dStrtok( nullptr, ":" );
       numIcons++;
    }
 
@@ -3806,7 +3806,7 @@ ConsoleMethod(GuiTreeViewCtrl,getSelectedItemList,const char*, 2,2,"returns a sp
     {
         S32 id  = object->mSelected[i];
         //get the current length of the buffer
-        U32	len = dStrlen(buff);
+        U32	len = (U32)dStrlen(buff);
         //the start of the buffer where we want to write
         char* buffPart = buff+len;
         //the size of the remaining buffer (-1 cause dStrlen doesn't count the \0)

@@ -217,7 +217,7 @@ char * Platform::makeFullPathName(const char *path, char *buffer, U32 size, cons
          }
          else if(endptr)
          {
-            catPath(endptr, ptr, size - (endptr - buffer));
+            catPath(endptr, ptr, (U32)(size - (endptr - buffer)));
             endptr += dStrlen(endptr) - 1;
          }
          
@@ -227,7 +227,7 @@ char * Platform::makeFullPathName(const char *path, char *buffer, U32 size, cons
       {
          // File
 
-         catPath(endptr, ptr, size - (endptr - buffer));
+         catPath(endptr, ptr, (U32)(size - (endptr - buffer)));
          endptr += dStrlen(endptr) - 1;
       }
 
@@ -314,18 +314,18 @@ StringTableEntry Platform::makeRelativePathName(const char *path, const char *to
 
 static StringTableEntry tryStripBasePath(const char *path, const char *base)
 {
-   U32 len = dStrlen(base);
+   auto len = dStrlen(base);
    if(dStrnicmp(path, base, len) == 0)
    {
       if(*(path + len) == '/') ++len;
       return StringTable->insert(path + len, true);
    }
-   return NULL;
+   return nullptr;
 }
 
 StringTableEntry Platform::stripBasePath(const char *path)
 {
-   StringTableEntry str = NULL;
+   StringTableEntry str = nullptr;
     
    str = tryStripBasePath( path, Platform::getMainDotCsDir() );
     

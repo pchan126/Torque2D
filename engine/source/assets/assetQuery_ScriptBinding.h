@@ -54,7 +54,7 @@ ConsoleMethod(AssetQuery, set, bool, 3, 3,  "(assetQuery) Sets the asset query t
 ConsoleMethod(AssetQuery, getCount, S32, 2, 2,  "() - Gets the count of asset Id results.\n"
                                                 "@return (int) The count of asset Id results.")
 {
-    return object->size();
+    return (S32)object->size();
 }
 
 //-----------------------------------------------------------------------------

@@ -331,8 +331,8 @@ public:
     inline typeSceneObjectVectorConstRef getSceneObjects( void ) const  { return mSceneObjects; }
     inline size_t         getSceneObjectCount( void ) const           { return mSceneObjects.size(); }
     SceneObject*            getSceneObject( const U32 objectIndex ) const;
-    U32                     getSceneObjects( typeSceneObjectVector& objects ) const;
-    U32                     getSceneObjects( typeSceneObjectVector& objects, const U32 sceneLayer ) const;
+    size_t                     getSceneObjects( typeSceneObjectVector& objects ) const;
+    size_t                     getSceneObjects( typeSceneObjectVector& objects, const U32 sceneLayer ) const;
 
     void                    mergeScene( const t2dScene * pScene );
 

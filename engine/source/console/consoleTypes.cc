@@ -86,7 +86,7 @@ ConsoleGetType( TypeStringTableEntryVector )
    char* returnBuffer = Con::getReturnBuffer(1024);
    S32 maxReturn = 1024;
    returnBuffer[0] = '\0';
-   S32 returnLeng = 0;
+   dsize_t returnLeng = 0;
    for (Vector<StringTableEntry>::iterator itr = vec->begin(); itr < vec->end(); itr++)
    {
       // concatenate the next value onto the return string
@@ -230,11 +230,11 @@ ConsoleType( intList, TypeS32Vector, sizeof(Vector<S32>), "" )
 ConsoleGetType( TypeS32Vector )
 {
    Vector<S32> *vec = (Vector<S32> *)dptr;
-   S32 buffSize = ( vec->size() * 15 ) + 16 ;
+   size_t buffSize = ( vec->size() * 15 ) + 16 ;
    char* returnBuffer = Con::getReturnBuffer( buffSize );
-   S32 maxReturn = buffSize;
+   size_t maxReturn = buffSize;
    returnBuffer[0] = '\0';
-   S32 returnLeng = 0;
+   dsize_t returnLeng = 0;
    for (Vector<S32>::iterator itr = vec->begin(); itr != vec->end(); itr++)
    {
       // concatenate the next value onto the return string
@@ -305,11 +305,11 @@ ConsoleType( floatList, TypeF32Vector, sizeof(Vector<F32>), "" )
 ConsoleGetType( TypeF32Vector )
 {
    Vector<F32> *vec = (Vector<F32> *)dptr;
-   S32 buffSize = ( vec->size() * 15 ) + 16 ;
+   size_t buffSize = ( vec->size() * 15 ) + 16 ;
    char* returnBuffer = Con::getReturnBuffer( buffSize );
-   S32 maxReturn = buffSize;
+   size_t maxReturn = buffSize;
    returnBuffer[0] = '\0';
-   S32 returnLeng = 0;
+   dsize_t returnLeng = 0;
    for (Vector<F32>::iterator itr = vec->begin(); itr != vec->end(); itr++)
    {
       // concatenate the next value onto the return string
@@ -383,7 +383,7 @@ ConsoleGetType( TypeBoolVector )
    char* returnBuffer = Con::getReturnBuffer(1024);
    S32 maxReturn = 1024;
    returnBuffer[0] = '\0';
-   S32 returnLeng = 0;
+   dsize_t returnLeng = 0;
    for (Vector<bool>::iterator itr = vec->begin(); itr < vec->end(); itr++)
    {
       // concatenate the next value onto the return string

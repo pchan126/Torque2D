@@ -69,7 +69,7 @@ public:
    // HashTable lookup
    iterator find(const Key& key)               { return mTable.find(key); }   ///< Find the first entry for the given key
    const_iterator find(const Key& key) const   { return mTable.find(key); }   ///< Find the first entry for the given key
-   S32 count(const Key& key)                   { return mTable.count(key); }   ///< Count the number of matching keys in the table
+   S32 count(const Key& key)                   { return (S32)mTable.count(key); }   ///< Count the number of matching keys in the table
 
    std::pair<iterator, iterator> equal_range( const Key& key)   { return mTable.equal_range(key); };
    std::pair<const_iterator, const_iterator> equal_range(const Key& key)  const { return mTable.equal_range(key); };

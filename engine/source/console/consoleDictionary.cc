@@ -54,11 +54,11 @@ StringValue & StringValue::operator=(const char *string)
    if(!val)
    {
       val = dStrdup(string);
-      size = dStrlen(val);
+      size = (S32)dStrlen(val);
    }
    else
    {
-      S32 len = dStrlen(string);
+      S32 len = (S32)dStrlen(string);
       if(len < size)
          dStrcpy(val, string);
       else
@@ -386,7 +386,7 @@ void Dictionary::Entry::setStringValue(const char * value)
       }
 */
 
-      U32 stringLen = dStrlen(value);
+      dsize_t stringLen = dStrlen(value);
 
       // If it's longer than 256 bytes, it's certainly not a number.
       //
@@ -406,14 +406,14 @@ void Dictionary::Entry::setStringValue(const char * value)
       type = TypeInternalString;
 
       // may as well pad to the next cache line
-      U32 newLen = ((stringLen + 1) + 15) & ~15;
+      dsize_t newLen = ((stringLen + 1) + 15) & ~15;
       
       if(sval == typeValueEmpty)
          sval = (char *) dMalloc(newLen);
       else if(newLen > bufferLen)
          sval = (char *) dRealloc(sval, newLen);
 
-      bufferLen = newLen;
+      bufferLen = (U32)newLen;
       dStrcpy(sval, value);
    }
    else

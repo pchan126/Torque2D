@@ -817,7 +817,7 @@ void TelnetDebugger::debugStepOver()
       return;
 
    setBreakOnNextStatement( true );
-   mStackPopBreakIndex = gEvalState.stack.size();
+   mStackPopBreakIndex = (S32)gEvalState.stack.size();
    mProgramPaused = false;
    send("RUNNING\r\n");
 }
@@ -828,7 +828,7 @@ void TelnetDebugger::debugStepOut()
       return;
 
    setBreakOnNextStatement( false );
-   mStackPopBreakIndex = gEvalState.stack.size() - 1;
+   mStackPopBreakIndex = (S32)gEvalState.stack.size() - 1;
    if ( mStackPopBreakIndex == 0 )
        mStackPopBreakIndex = -1;
    mProgramPaused = false;
@@ -839,7 +839,7 @@ void TelnetDebugger::evaluateExpression(const char *tag, S32 frame, const char *
 {
    // Make sure we're passing a valid frame to the eval.
    if ( frame > gEvalState.stack.size() )
-      frame = gEvalState.stack.size() - 1;
+      frame = (S32)gEvalState.stack.size() - 1;
    if ( frame < 0 )
       frame = 0;
 

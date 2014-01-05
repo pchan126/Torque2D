@@ -84,7 +84,7 @@ bool Mutex::lock( bool block)
    }
 
    mData->locked = true;
-   mData->lockedByThread = ThreadManager::getCurrentThreadId();
+   mData->lockedByThread = (U32)ThreadManager::getCurrentThreadId();
    return true;
 }
 

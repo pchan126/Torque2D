@@ -233,11 +233,11 @@ bool EventManager::subscribe(SimObject *callbackObj, const char* event, const ch
    }
 
    // Grab the callback name.
-   char* cb = NULL;
+   char* cb = nullptr;
    if( !callback || !*callback )
    {
       // Not specified, use default ( "onEvent" ).
-      S32 length = dStrlen( event ) + 5;
+      auto length = dStrlen( event ) + 5;
       cb = new char[length];
       dSprintf( cb, length, "on%s", event );
    }

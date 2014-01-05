@@ -33,7 +33,7 @@
 
 AudioStreamSource* AudioStreamSourceFactory::getNewInstance(const char *filename)
 {
-	S32 len = dStrlen(filename);
+	dsize_t len = dStrlen(filename);
 	if(len > 3 && !dStricmp(filename + len - 4, ".wav"))
 		return new WavStreamSource(filename);
 	

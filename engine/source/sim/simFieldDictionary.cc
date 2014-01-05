@@ -160,7 +160,7 @@ void SimFieldDictionary::writeFields(SimObject *obj, std::iostream &stream, U32 
    // Save them out
    for(auto itr : flist )
    {
-      U32 nBufferSize = (dStrlen( (itr)->value ) * 2) + dStrlen( (itr)->slotName ) + 16;
+      auto nBufferSize = (dStrlen( (itr)->value ) * 2) + dStrlen( (itr)->slotName ) + 16;
       FrameTemp<char> expandedBuffer( nBufferSize );
 
        StreamFn::writeTabs(stream, tabStop+1);

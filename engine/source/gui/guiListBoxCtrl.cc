@@ -213,7 +213,7 @@ ConsoleMethod( GuiListBoxCtrl, getItemCount, S32, 2, 2, "()\n @return Returns th
 
 S32 GuiListBoxCtrl::getItemCount()
 {
-   return mItems.size();
+   return (S32)mItems.size();
 }
 
 ConsoleMethod( GuiListBoxCtrl, getSelCount, S32, 2, 2, "()\n @return Returns the number of items currently selected")
@@ -222,7 +222,7 @@ ConsoleMethod( GuiListBoxCtrl, getSelCount, S32, 2, 2, "()\n @return Returns the
 }
 S32 GuiListBoxCtrl::getSelCount()
 {
-   return mSelectedItems.size();
+   return (S32)mSelectedItems.size();
 }
 
 ConsoleMethod( GuiListBoxCtrl, getSelectedItem, S32, 2, 2, "()\n @return Returns the selected items index or -1 if none. "
@@ -366,12 +366,12 @@ void GuiListBoxCtrl::setCurSelRange( S32 start, S32 stop )
    if( start < 0 )
       start = 0;
    else if( start > mItems.size() )
-      start = mItems.size();
+      start = (S32)mItems.size();
 
    if( stop < 0 )
       stop = 0;
    else if( stop > mItems.size() )
-      stop = mItems.size();
+      stop = (S32)mItems.size();
 
    S32 iterStart = ( start < stop ) ? start : stop;
    S32 iterStop  = ( start < stop ) ? stop : start;
@@ -416,13 +416,13 @@ ConsoleMethod( GuiListBoxCtrl, addItem, void, 3, 4, "(text, [color]) Adds an ite
 S32 GuiListBoxCtrl::addItem( StringTableEntry text, void *itemData )
 {
    // This just calls insert item at the end of the list
-   return insertItem( mItems.size(), text, itemData );
+   return insertItem( (S32)mItems.size(), text, itemData );
 }
 
 S32 GuiListBoxCtrl::addItemWithColor( StringTableEntry text, ColorF color, void *itemData )
 {
    // This just calls insert item at the end of the list
-   return insertItemWithColor( mItems.size(), text, color, itemData );
+   return insertItemWithColor( (S32)mItems.size(), text, color, itemData );
 }
 
 ConsoleMethod(GuiListBoxCtrl, setItemColor, void, 4, 4, "(index, color) Sets the color of the item at given index.\n"
@@ -488,7 +488,7 @@ S32 GuiListBoxCtrl::insertItem( S32 index, StringTableEntry text, void *itemData
 {
    // If the index is greater than our list size, insert it at the end
    if( index >= mItems.size() )
-      index = mItems.size();
+      index = (S32)mItems.size();
 
    // Sanity checking
    if( !text )
@@ -526,7 +526,7 @@ S32 GuiListBoxCtrl::insertItemWithColor( S32 index, StringTableEntry text, Color
 {
    // If the index is greater than our list size, insert it at the end
    if( index >= mItems.size() )
-      index = mItems.size();
+      index = (S32)mItems.size();
 
    // Sanity checking
    if( !text )
@@ -682,7 +682,7 @@ void GuiListBoxCtrl::updateSize()
 
    mItemSize.y = font->getHeight() + 2;
 
-   Point2I newExtent( mItemSize.x, mItemSize.y * mItems.size() );
+   Point2I newExtent( mItemSize.x, mItemSize.y * (S32)mItems.size() );
    resize( getPosition(), newExtent );
 
 }
@@ -1027,7 +1027,7 @@ const char* GuiListBoxCtrl::getStringElement( const char* inString, const U32 in
                 static char buffer[4096];
 
                 // Calculate word length.
-                const U32 length = inString - pWordStart - ((*inString)?1:0);
+                const auto length = inString - pWordStart - ((*inString)?1:0);
 
                 // Copy Word.
                 dStrncpy( buffer, pWordStart, length);

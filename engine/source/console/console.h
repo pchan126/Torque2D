@@ -634,7 +634,7 @@ namespace Con
    /// @{
 
    ///
-   char *getReturnBuffer(U32 bufferSize);
+   char *getReturnBuffer(dsize_t bufferSize);
    char *getReturnBuffer(const char *stringToCopy);
 
    char *getArgBuffer(U32 bufferSize);
@@ -659,7 +659,7 @@ namespace Con
    /// @name Logging
    /// @{
 
-   void getLockLog(ConsoleLogEntry * &log, U32 &size);
+   void getLockLog(ConsoleLogEntry * &log, size_t &size);
    void unlockLog(void);
    void setLogMode(S32 mode);
 

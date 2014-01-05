@@ -140,7 +140,7 @@ void ResourceObject::getFileTimes (FileTime * createTime, FileTime * modifyTime)
       
    char buffer[1024];
    Platform::makeFullPathName(path, buffer, sizeof(buffer));
-   U32 len = dStrlen(buffer);
+   U32 len = (U32)(dStrlen(buffer));
    dSprintf (buffer + len, sizeof (buffer) - len, "/%s", name);
    
    Platform::getFileTimes (buffer, createTime, modifyTime);
@@ -290,7 +290,7 @@ static void getPaths (const char *fullPath, StringTableEntry & path,
    }
    else
    {
-      S32 len = ptr - fullPath;
+      S32 len = S32(ptr - fullPath);
       dStrncpy (buf, fullPath, len);
       buf[len] = 0;
       fileName = StringTable->insert (ptr + 1);
@@ -568,7 +568,7 @@ void ResManager::setModPaths (U32 numPaths, const char **paths)
    // Build the internal path list string
    pathList = (char *) dRealloc (pathList, pathLen);
    dStrcpy (pathList, validPaths[0]);
-   U32 strlen;
+   dsize_t strlen;
    for (U32 i = 1; i < (U32)validPaths.size(); i++)
    {
       strlen = dStrlen (pathList);
@@ -907,10 +907,10 @@ std::iostream * ResManager::openStream(ResourceObject *obj)
          return nullptr;
 
        diskStream->seekg (0, diskStream->end);
-       int length = diskStream->tellg();
+       auto length = diskStream->tellg();
        diskStream->seekg (0, diskStream->beg);
 
-       obj->fileSize = length;
+       obj->fileSize = (S32)length;
       return diskStream;
    }
 

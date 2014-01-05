@@ -146,7 +146,7 @@ void GBitmap::copyRect(const GBitmap *src, const RectI &srcRect, const Point2I &
 }
 
 //--------------------------------------------------------------------------
-void GBitmap::allocateBitmap(const U32 in_width, const U32 in_height, const bool in_extrudeMipLevels, const GFXFormat in_format)
+void GBitmap::allocateBitmap(const size_t in_width, const size_t in_height, const bool in_extrudeMipLevels, const GFXFormat in_format)
 {
    //-------------------------------------- Some debug checks...
    U32 svByteSize = mByteSize;
@@ -156,12 +156,12 @@ void GBitmap::allocateBitmap(const U32 in_width, const U32 in_height, const bool
 
    if (in_extrudeMipLevels == true) {
       //AssertFatal(in_width <= 256 && in_height <= 256, "GBitmap::allocateBitmap: mWidth or mHeight is too large");
-      AssertFatal(isPow2(in_width) == true && isPow2(in_height) == true, "GBitmap::GBitmap: in order to extrude miplevels, bitmap w/h must be pow2");
+      AssertFatal(isPow2((U32)in_width) == true && isPow2((U32)in_height) == true, "GBitmap::GBitmap: in order to extrude miplevels, bitmap w/h must be pow2");
    }
 
    mInternalFormat = in_format;
-   mWidth          = in_width;
-   mHeight         = in_height;
+   mWidth          = (U32)in_width;
+   mHeight         = (U32)in_height;
 
    mBytesPerPixel = 1;
     switch (mInternalFormat)
@@ -194,14 +194,14 @@ void GBitmap::allocateBitmap(const U32 in_width, const U32 in_height, const bool
 
     // Set up the mip levels, if necessary...
    mNumMipLevels       = 1;
-   U32 allocPixels = in_width * in_height * mBytesPerPixel;
+   U32 allocPixels = (U32)(in_width * in_height * mBytesPerPixel);
    mMipLevelOffsets[0] = 0;
 
 
    if (in_extrudeMipLevels == true) 
    {
-      U32 currWidth  = in_width;
-      U32 currHeight = in_height;
+      U32 currWidth  = (U32)in_width;
+      U32 currHeight = (U32)in_height;
 
       do 
       {

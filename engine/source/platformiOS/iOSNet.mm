@@ -747,7 +747,7 @@ Net::Error Net::bind(NetSocket socket, U16 port)
    return getLastError();
 }
 
-Net::Error Net::setBufferSize(NetSocket socket, S32 bufferSize)
+Net::Error Net::setBufferSize(NetSocket socket, dsize_t bufferSize)
 {
    S32 error;
    error = setsockopt(socket, SOL_SOCKET, SO_RCVBUF, (char *)  &bufferSize, sizeof(bufferSize));
@@ -776,10 +776,10 @@ Net::Error Net::setBlocking(NetSocket socket, bool blockingIO)
    return getLastError();
 }
 
-Net::Error Net::send(NetSocket socket, const U8 *buffer, S32 bufferSize)
+Net::Error Net::send(NetSocket socket, const U8 *buffer, dsize_t bufferSize)
 {
    errno = 0;
-   S32 bytesWritten = ::send(socket, (const char*)buffer, bufferSize, 0);
+   size_t bytesWritten = ::send(socket, (const char*)buffer, bufferSize, 0);
    if(bytesWritten == -1)
       Con::errorf("Could not write to socket. Error: %s",strerror(errno));
    
@@ -788,7 +788,7 @@ Net::Error Net::send(NetSocket socket, const U8 *buffer, S32 bufferSize)
 
 Net::Error Net::recv(NetSocket socket, U8 *buffer, S32 bufferSize, S32  *bytesRead)
 {
-   *bytesRead = ::recv(socket, (char*)buffer, bufferSize, 0);
+   *bytesRead = (S32)::recv(socket, (char*)buffer, bufferSize, 0);
    if(*bytesRead == -1)
       return getLastError();
    return NoError;

@@ -89,12 +89,12 @@ void drawSplineBeam( const Point3F& camPos, U32 numSegments,
        
    }
     GFXVertexBufferHandle<GFXVertexPC> mTempVertBuffHandle;
-    mTempVertBuffHandle.set(GFX, verts.size(), GFXBufferTypeVolatile, verts.address() );
+    mTempVertBuffHandle.set(GFX, (U32)verts.size(), GFXBufferTypeVolatile, verts.address() );
     GFX->setVertexBuffer( mTempVertBuffHandle );
     
     // Draw the triangles
     GFX->setupGenericShaders(GFXDevice::GSTexture);
-    GFX->drawPrimitive(GFXTriangleStrip, 0, verts.size()-2);
+    GFX->drawPrimitive(GFXTriangleStrip, 0, (U32)verts.size()-2);
 
 }
 
@@ -175,7 +175,7 @@ void drawSplineBeam( SplineBeamInfo &sbi )
     
     // Draw the triangles
     GFX->setupGenericShaders(GFXDevice::GSTexture);
-    GFX->drawPrimitive(GFXTriangleStrip, 0, verts.size()-2);
+    GFX->drawPrimitive(GFXTriangleStrip, 0, (U32)verts.size()-2);
 }
 
 

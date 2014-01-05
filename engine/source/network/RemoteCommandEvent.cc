@@ -257,7 +257,7 @@ ConsoleFunction( buildTaggedString, const char*, 2, 11, "( format , <arg1, ...ar
    char *strBuffer = Con::getReturnBuffer(512);
    const char *fmtStrPtr = fmtString;
    char *strBufPtr = strBuffer;
-   S32 strMaxLength = 511;
+   auto strMaxLength = 511;
    if (!fmtString)
       goto done;
 
@@ -275,7 +275,7 @@ ConsoleFunction( buildTaggedString, const char*, 2, 11, "( format , <arg1, ...ar
             const char *argStr = argv[argIndex];
             if (!argStr)
                goto done;
-            S32 strLength = dStrlen(argStr);
+            auto strLength = dStrlen(argStr);
             if (strLength > strMaxLength)
                goto done;
             dStrcpy(strBufPtr, argStr);

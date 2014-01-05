@@ -81,10 +81,10 @@ struct Net
    static Error listen(NetSocket socket, S32 maxConcurrentListens);
    static NetSocket accept(NetSocket acceptSocket, NetAddress *remoteAddress);
    static Error bind(NetSocket socket, U16    port);
-   static Error setBufferSize(NetSocket socket, S32 bufferSize);
+   static Error setBufferSize(NetSocket socket, dsize_t bufferSize);
    static Error setBroadcast(NetSocket socket, bool broadcastEnable);
    static Error setBlocking(NetSocket socket, bool blockingIO);
-   static Error send(NetSocket socket, const U8 *buffer, S32 bufferSize);
+   static Error send(NetSocket socket, const U8 *buffer, dsize_t bufferSize);
    static Error recv(NetSocket socket, U8 *buffer, S32 bufferSize, S32 *bytesRead);
 };
 

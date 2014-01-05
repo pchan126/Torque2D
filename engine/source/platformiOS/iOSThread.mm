@@ -38,7 +38,7 @@ struct PlatformThreadData
    void*                   mRunArg;
    Thread*                 mThread;
    Semaphore               mGateway; // default count is 1
-   U32                     mThreadID;
+   PTR                     mThreadID;
 };
 
 //-----------------------------------------------------------------------------
@@ -137,7 +137,7 @@ bool Thread::isAlive()
      return true; // we could not get the lock, it must be alive.
 }
 
-U32 Thread::getId()
+PTR Thread::getId()
 {
    return mData->mThreadID;
 }
@@ -173,7 +173,7 @@ public:
 
 static char* _unDoubleQuote(char* arg)
 {
-    U32 len = dStrlen(arg);
+    size_t len = dStrlen(arg);
     if(!len)
         return arg;
     

@@ -46,7 +46,7 @@ WorldQuery::WorldQuery( t2dScene * pScene ) :
 {
     // Set debug associations.
     mLayeredQueryResults.setSize(pScene->getLayerCount());
-    for ( U32 n = 0; n < mLayeredQueryResults.size(); n++ )
+    for ( size_t n = 0; n < mLayeredQueryResults.size(); n++ )
     {
         VECTOR_SET_ASSOCIATION( mLayeredQueryResults[n] );
     }
@@ -130,7 +130,7 @@ void WorldQuery::removeAlwaysInScope( SceneObject* pSceneObject )
 
 //-----------------------------------------------------------------------------
 
-U32 WorldQuery::collisionQueryAABB( const b2AABB& aabb )
+size_t WorldQuery::collisionQueryAABB( const b2AABB& aabb )
 {
     // Debug Profiling.
     PROFILE_SCOPE(WorldQuery_collisionQueryAABB);
@@ -160,7 +160,7 @@ U32 WorldQuery::collisionQueryAABB( const b2AABB& aabb )
 
 //-----------------------------------------------------------------------------
 
-U32 WorldQuery::collisionQueryRay( const Vector2& point1, const Vector2& point2 )
+size_t WorldQuery::collisionQueryRay( const Vector2& point1, const Vector2& point2 )
 {
     // Debug Profiling.
     PROFILE_SCOPE(WorldQuery_CollisionQueryRay);
@@ -181,7 +181,7 @@ U32 WorldQuery::collisionQueryRay( const Vector2& point1, const Vector2& point2 
 
 //-----------------------------------------------------------------------------
 
-U32 WorldQuery::collisionQueryPoint( const Vector2& point )
+size_t WorldQuery::collisionQueryPoint( const Vector2& point )
 {
     // Debug Profiling.
     PROFILE_SCOPE(WorldQuery_CollisionQueryPoint);
@@ -208,7 +208,7 @@ U32 WorldQuery::collisionQueryPoint( const Vector2& point )
 
 //-----------------------------------------------------------------------------
 
-U32 WorldQuery::collisionQueryCircle( const Vector2& centroid, const F32 radius )
+size_t WorldQuery::collisionQueryCircle( const Vector2& centroid, const F32 radius )
 {
     // Debug Profiling.
     PROFILE_SCOPE(WorldQuery_CollisionQueryCircle);
@@ -236,7 +236,7 @@ U32 WorldQuery::collisionQueryCircle( const Vector2& centroid, const F32 radius 
 
 //-----------------------------------------------------------------------------
 
-U32 WorldQuery::aabbQueryAABB( const b2AABB& aabb )
+size_t WorldQuery::aabbQueryAABB( const b2AABB& aabb )
 {
     // Debug Profiling.
     PROFILE_SCOPE(WorldQuery_aabbQueryAABB);
@@ -257,7 +257,7 @@ U32 WorldQuery::aabbQueryAABB( const b2AABB& aabb )
 
 //-----------------------------------------------------------------------------
 
-U32 WorldQuery::aabbQueryRay( const Vector2& point1, const Vector2& point2 )
+size_t WorldQuery::aabbQueryRay( const Vector2& point1, const Vector2& point2 )
 {
     // Debug Profiling.
     PROFILE_SCOPE(WorldQuery_AABBQueryRay);
@@ -282,7 +282,7 @@ U32 WorldQuery::aabbQueryRay( const Vector2& point1, const Vector2& point2 )
 
 //-----------------------------------------------------------------------------
 
-U32 WorldQuery::aabbQueryPoint( const Vector2& point )
+size_t WorldQuery::aabbQueryPoint( const Vector2& point )
 {
     // Debug Profiling.
     PROFILE_SCOPE(WorldQuery_AABBQueryPoint);
@@ -306,7 +306,7 @@ U32 WorldQuery::aabbQueryPoint( const Vector2& point )
 
 //-----------------------------------------------------------------------------
 
-U32 WorldQuery::aabbQueryCircle( const Vector2& centroid, const F32 radius )
+size_t WorldQuery::aabbQueryCircle( const Vector2& centroid, const F32 radius )
 {
     // Debug Profiling.
     PROFILE_SCOPE(WorldQuery_AABBQueryCircle);
@@ -334,7 +334,7 @@ U32 WorldQuery::aabbQueryCircle( const Vector2& centroid, const F32 radius )
 
 //-----------------------------------------------------------------------------
 
-U32 WorldQuery::oobbQueryAABB( const b2AABB& aabb )
+size_t WorldQuery::oobbQueryAABB( const b2AABB& aabb )
 {
     // Debug Profiling.
     PROFILE_SCOPE(WorldQuery_aabbQueryAABB);
@@ -366,7 +366,7 @@ U32 WorldQuery::oobbQueryAABB( const b2AABB& aabb )
 
 //-----------------------------------------------------------------------------
 
-U32 WorldQuery::oobbQueryRay( const Vector2& point1, const Vector2& point2 )
+size_t WorldQuery::oobbQueryRay( const Vector2& point1, const Vector2& point2 )
 {
     // Debug Profiling.
     PROFILE_SCOPE(WorldQuery_AABBQueryRay);
@@ -393,7 +393,7 @@ U32 WorldQuery::oobbQueryRay( const Vector2& point1, const Vector2& point2 )
 
 //-----------------------------------------------------------------------------
 
-U32 WorldQuery::oobbQueryPoint( const Vector2& point )
+size_t WorldQuery::oobbQueryPoint( const Vector2& point )
 {
     // Debug Profiling.
     PROFILE_SCOPE(WorldQuery_AABBQueryPoint);
@@ -423,7 +423,7 @@ U32 WorldQuery::oobbQueryPoint( const Vector2& point )
 
 //-----------------------------------------------------------------------------
 
-U32 WorldQuery::oobbQueryCircle( const Vector2& centroid, const F32 radius )
+size_t WorldQuery::oobbQueryCircle( const Vector2& centroid, const F32 radius )
 {
     // Debug Profiling.
     PROFILE_SCOPE(WorldQuery_OOBBQueryCircle);
@@ -453,7 +453,7 @@ U32 WorldQuery::oobbQueryCircle( const Vector2& centroid, const F32 radius )
 
 //-----------------------------------------------------------------------------
 
-U32 WorldQuery::anyQueryAABB( const b2AABB& aabb )
+size_t WorldQuery::anyQueryAABB( const b2AABB& aabb )
 {
     // Debug Profiling.
     PROFILE_SCOPE(WorldQuery_anyQueryAABBAABB);
@@ -471,7 +471,7 @@ U32 WorldQuery::anyQueryAABB( const b2AABB& aabb )
 
 //-----------------------------------------------------------------------------
 
-U32 WorldQuery::anyQueryRay( const Vector2& point1, const Vector2& point2 )
+size_t WorldQuery::anyQueryRay( const Vector2& point1, const Vector2& point2 )
 {
     // Debug Profiling.
     PROFILE_SCOPE(WorldQuery_AnyQueryRay);
@@ -489,7 +489,7 @@ U32 WorldQuery::anyQueryRay( const Vector2& point1, const Vector2& point2 )
 
 //-----------------------------------------------------------------------------
 
-U32 WorldQuery::anyQueryPoint( const Vector2& point )
+size_t WorldQuery::anyQueryPoint( const Vector2& point )
 {
     // Debug Profiling.
     PROFILE_SCOPE(WorldQuery_AnyQueryPoint);
@@ -507,7 +507,7 @@ U32 WorldQuery::anyQueryPoint( const Vector2& point )
 
 //-----------------------------------------------------------------------------
 
-U32 WorldQuery::anyQueryCircle( const Vector2& centroid, const F32 radius )
+size_t WorldQuery::anyQueryCircle( const Vector2& centroid, const F32 radius )
 {
     // Debug Profiling.
     PROFILE_SCOPE(WorldQuery_AnyQueryCircle);

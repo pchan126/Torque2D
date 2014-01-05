@@ -231,7 +231,7 @@ void MessageVector::onRemove()
 {
    // Delete all the lines from the observers, and then forcibly detatch ourselves
    //
-   for (S32 i = mMessageLines.size() - 1; i >= 0; i--)
+   for (S32 i = (S32)mMessageLines.size() - 1; i >= 0; i--)
       spectatorMessage(LineDeleted, i);
    spectatorMessage(VectorDeletion, 0);
    mSpectators.clear();
@@ -280,14 +280,14 @@ void MessageVector::popFrontLine()
 
 
 //--------------------------------------------------------------------------
-void MessageVector::insertLine(const U32   position,
+void MessageVector::insertLine(const size_t   position,
                                const char* newMessage,
                                const S32   newMessageTag)
 {
    AssertFatal(position >= 0 && position <= (U32)mMessageLines.size(), "MessageVector::insertLine: out of range position!");
    AssertFatal(newMessage != NULL, "Error, no message to insert!");
 
-   U32 len = dStrlen(newMessage) + 1;
+   auto len = dStrlen(newMessage) + 1;
    char* copy = new char[len];
    dStrcpy(copy, newMessage);
 
@@ -301,13 +301,13 @@ void MessageVector::insertLine(const U32   position,
 
 
 //--------------------------------------------------------------------------
-void MessageVector::deleteLine(const U32 position)
+void MessageVector::deleteLine(const size_t position)
 {
    AssertFatal(position >= 0 && position < (U32)mMessageLines.size(), "MessageVector::deleteLine: out of range position!");
 
    char* pDelete = const_cast<char*>(mMessageLines[position].message);
    delete [] pDelete;
-   mMessageLines[position].message    = NULL;
+   mMessageLines[position].message    = nullptr;
    mMessageLines[position].messageTag = 0xFFFFFFFF;
 
    mMessageLines.erase(position);
@@ -338,7 +338,7 @@ bool MessageVector::dump( const char* filename, const char* header )
    U32 len;
    for ( U32 i = 0; i < (U32)mMessageLines.size(); i++ )
    {
-      len = ( dStrlen( mMessageLines[i].message ) * 2 ) + 10;
+      len = (U32)( dStrlen( mMessageLines[i].message ) * 2 ) + 10;
       lineBuf = (char*) dRealloc( lineBuf, len );
       dSprintf( lineBuf, len, "%d ", mMessageLines[i].messageTag );
       expandEscape( lineBuf + dStrlen( lineBuf ), mMessageLines[i].message );
@@ -379,7 +379,7 @@ void MessageVector::unregisterSpectator(void * spectatorKey)
    for (U32 i = 0; i < (U32)mSpectators.size(); i++) {
       if (mSpectators[i].key == spectatorKey) {
          // Need to message this spectator of all the lines currently inserted...
-         for (S32 j = mMessageLines.size() - 1; j >= 0 ; j--) {
+         for (S32 j = (S32)mMessageLines.size() - 1; j >= 0 ; j--) {
             (*mSpectators[i].callback)(mSpectators[i].key,
                                        LineDeleted, j);
          }
@@ -394,11 +394,11 @@ void MessageVector::unregisterSpectator(void * spectatorKey)
                "MessageVector::unregisterSpectator: tried to unregister a spectator that isn't subscribed!");
 }
 
-void MessageVector::spectatorMessage(MessageCode code, const U32 arg)
+void MessageVector::spectatorMessage(MessageCode code, const size_t arg)
 {
    for (U32 i = 0; i < (U32)mSpectators.size(); i++) {
       (*mSpectators[i].callback)(mSpectators[i].key,
-                                 code, arg);
+                                 code, (U32)arg);
    }
 }
 

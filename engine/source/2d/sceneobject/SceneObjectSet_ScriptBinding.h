@@ -114,7 +114,7 @@ ConsoleMethod(SceneObjectSet, reorderChild, void, 4,4," (child1, child2) Uses Sc
 
 ConsoleMethod(SceneObjectSet, getCount, S32, 2, 2, "() @return Returns the number of objects in the SceneObjectSet")
 {
-   return object->size();
+   return (S32)object->size();
 }
 
 //-----------------------------------------------------------------------------

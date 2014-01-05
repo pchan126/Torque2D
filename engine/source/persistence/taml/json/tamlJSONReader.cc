@@ -38,7 +38,7 @@ SimObject* TamlJSONReader::read(std::fstream &stream)
    
     // Read JSON file.
     stream.seekg(0, stream.end);
-    const U32 streamSize = stream.tellg();
+    const U32 streamSize = (U32)stream.tellg();
     stream.seekg(0, stream.beg);
 
     FrameTemp<char> jsonText( streamSize + 1 );

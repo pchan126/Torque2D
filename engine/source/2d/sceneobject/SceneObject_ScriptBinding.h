@@ -943,7 +943,7 @@ ConsoleMethod(SceneObject, getGatherContacts, bool, 2, 2,    "() - Gets whether 
 ConsoleMethod(SceneObject, getContactCount, S32, 2, 2,   "() Gets the current contact count.  This will always be zero if contact gathering is off.\n"
                                                             "@return (int count) - Gets the current contact count.")
 {
-    return object->getCurrentContactCount();
+    return (S32)object->getCurrentContactCount();
 }
 
 //-----------------------------------------------------------------------------
@@ -2057,7 +2057,7 @@ ConsoleMethod( SceneObject, setCollisionShapeRestitution, void, 4, 4,    "(int s
                                                                             "@return No return value." )
 {
     // Fetch shape count.
-    const U32 shapeCount = object->getCollisionShapeCount();
+    const U32 shapeCount = (U32)object->getCollisionShapeCount();
 
     // Fetch shape index.
     const U32 shapeIndex = dAtoi(argv[2]);
@@ -2087,7 +2087,7 @@ ConsoleMethod( SceneObject, getCollisionShapeRestitution, F32, 3, 3, "(int shape
                                                                         "@return The restitution of the collision shape at the specified index (-1 if error)." )
 {
     // Fetch shape count.
-    const U32 shapeCount = object->getCollisionShapeCount();
+    const U32 shapeCount = (U32)object->getCollisionShapeCount();
 
     // Fetch shape index.
     const U32 shapeIndex = dAtoi(argv[2]);
@@ -2111,7 +2111,7 @@ ConsoleMethod( SceneObject, setCollisionShapeIsSensor, void, 4, 4,   "(int shape
                                                                         "@return No return value." )
 {
     // Fetch shape count.
-    const U32 shapeCount = object->getCollisionShapeCount();
+    const U32 shapeCount = (U32)object->getCollisionShapeCount();
 
     // Fetch shape index.
     const U32 shapeIndex = dAtoi(argv[2]);
@@ -2768,7 +2768,7 @@ ConsoleMethod(SceneObject, createEdgeCollisionShape, S32, 4, 10, "(localPosition
 
     if ( argc <= nextArg )
     {
-        return object->createEdgeCollisionShape( localPositionStart, localPositionEnd, true, false, adjacentLocalPositionStart, adjacentLocalPositionEnd );
+        return (S32)object->createEdgeCollisionShape( localPositionStart, localPositionEnd, true, false, adjacentLocalPositionStart, adjacentLocalPositionEnd );
     }
 
     // Adjacent local position end.
@@ -2790,7 +2790,7 @@ ConsoleMethod(SceneObject, createEdgeCollisionShape, S32, 4, 10, "(localPosition
         return -1;
     }
 
-    return object->createEdgeCollisionShape( localPositionStart, localPositionEnd, true, true, adjacentLocalPositionStart, adjacentLocalPositionEnd );
+    return (S32)object->createEdgeCollisionShape( localPositionStart, localPositionEnd, true, true, adjacentLocalPositionStart, adjacentLocalPositionEnd );
 }
 
 //-----------------------------------------------------------------------------
@@ -3022,7 +3022,7 @@ ConsoleMethod(SceneObject, copyCollisionShape, S32, 4, 4,   "(int shapeIndex, ta
     }
     
     // Copy collision shape.
-    return object->copyCollisionShapes( pSceneObject, false, shapeIndex );
+    return (S32)object->copyCollisionShapes( pSceneObject, false, shapeIndex );
 }
 
 //-----------------------------------------------------------------------------

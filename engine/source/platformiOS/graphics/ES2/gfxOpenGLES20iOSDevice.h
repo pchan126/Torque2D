@@ -87,12 +87,12 @@ protected:
    /// is created.
    virtual void initStates() { }
 
-   virtual GFXVertexBuffer *allocVertexBuffer(  U32 numVerts, 
+   virtual GFXVertexBuffer *allocVertexBuffer(  dsize_t numVerts,
                                                 const GFXVertexFormat *vertexFormat,
-                                                U32 vertSize, 
+                                                dsize_t vertSize,
                                                 GFXBufferType bufferType,
                                                 void *data = nullptr,
-                                              U32 indexCount = 0,
+                                              dsize_t indexCount = 0,
                                               void *indexData = nullptr);
     
    // NOTE: The GL device doesn't need a vertex declaration at
@@ -130,11 +130,11 @@ private:
 
     
     ///< Returns an existing volatile VB which has >= numVerts and the same vert flags/size, or creates a new VB if necessary
-   GFXVertexBuffer* findVolatileVBO(U32 numVerts,
+   GFXVertexBuffer* findVolatileVBO(dsize_t numVerts,
                                     const GFXVertexFormat *vertexFormat,
-                                    U32 vertSize,
+                                    dsize_t vertSize,
                                     void* vertData = nullptr,
-                                    U32 numIndex =0,
+                                    dsize_t numIndex =0,
                                     void* indexData = 0);
    
    void initGLState(); ///< Guaranteed to be called after all extensions have been loaded, use to init card profiler, shader version, max samplers, etc.

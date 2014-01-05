@@ -35,7 +35,7 @@ ConsoleMethod(ModuleDefinition, getModuleManager, S32, 2, 2,    "() - Gets the m
     // Fetch module manager.
     ModuleManager* pModuleManager = object->getModuleManager();
 
-    return pModuleManager != NULL ? pModuleManager->getId() : 0;
+    return pModuleManager != nullptr ? pModuleManager->getId() : 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -44,7 +44,7 @@ ConsoleMethod(ModuleDefinition, getDependencyCount, S32, 2, 2,  "() - Gets the n
                                                                 "@return (int count) The number of module dependencies this module definition has.")
 {
     // Get module dependency count.
-    return object->getDependencyCount();
+    return (S32)object->getDependencyCount();
 }
 
 //-----------------------------------------------------------------------------

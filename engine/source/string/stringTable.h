@@ -110,7 +110,7 @@ private:
    /// @param  string   String to check in the table (and add).
    /// @param  len      Length of the string in bytes.
    /// @param  caseSens Determines whether case matters.
-   StringTableEntry insertn(const char *string, S32 len, bool caseSens = false);
+   StringTableEntry insertn(const char *string, size_t len, bool caseSens = false);
 
    /// Get a pointer from the string table, NOT adding the string to the table
    /// if it was not already present.

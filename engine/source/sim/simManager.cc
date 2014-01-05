@@ -46,7 +46,7 @@ namespace Sim
 SimTime gCurrentTime;
 SimTime gTargetTime;
 
-std::mutex gEventQueueMutex;
+std::recursive_mutex gEventQueueMutex;
 SimEvent *gEventQueue;
 U32 gEventSequence;
 
@@ -64,7 +64,7 @@ void initEventQueue()
 void shutdownEventQueue()
 {
    // Delete all pending events
-   std::lock_guard<std::mutex> lock(gEventQueueMutex);
+   std::lock_guard<std::recursive_mutex> lock(gEventQueueMutex);
    SimEvent *walk = gEventQueue;
    while(walk)
    {
@@ -122,7 +122,7 @@ U32 postEvent(SimObject *destObject, SimEvent* event,U32 time)
 
 void cancelEvent(U32 eventSequence)
 {
-    std::lock_guard<std::mutex> lock(gEventQueueMutex);
+    std::lock_guard<std::recursive_mutex> lock(gEventQueueMutex);
 
    SimEvent **walk = &gEventQueue;
    SimEvent *current;
@@ -142,7 +142,7 @@ void cancelEvent(U32 eventSequence)
 
 void cancelPendingEvents(SimObject *obj)
 {
-    std::lock_guard<std::mutex> lock(gEventQueueMutex);
+    std::lock_guard<std::recursive_mutex> lock(gEventQueueMutex);
 
    SimEvent **walk = &gEventQueue;
    SimEvent *current;
@@ -164,7 +164,7 @@ void cancelPendingEvents(SimObject *obj)
 
 bool isEventPending(U32 eventSequence)
 {
-    std::lock_guard<std::mutex> lock(gEventQueueMutex);
+    std::lock_guard<std::recursive_mutex> lock(gEventQueueMutex);
 
    for(SimEvent *walk = gEventQueue; walk; walk = walk->nextEvent)
       if(walk->sequenceCount == eventSequence)
@@ -175,7 +175,7 @@ bool isEventPending(U32 eventSequence)
 
 U32 getEventTimeLeft(U32 eventSequence)
 {
-    std::lock_guard<std::mutex> lock(gEventQueueMutex);
+    std::lock_guard<std::recursive_mutex> lock(gEventQueueMutex);
 
    for(SimEvent *walk = gEventQueue; walk; walk = walk->nextEvent)
       if(walk->sequenceCount == eventSequence)
@@ -210,7 +210,7 @@ void advanceToTime(SimTime targetTime)
 {
    AssertFatal(targetTime >= getCurrentTime(), "EventQueue::process: cannot advance to time in the past.");
 
-    std::lock_guard<std::mutex> lock(gEventQueueMutex);
+    std::lock_guard<std::recursive_mutex> lock(gEventQueueMutex);
    gTargetTime = targetTime;
    while(gEventQueue && gEventQueue->time <= targetTime)
    {

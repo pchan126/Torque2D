@@ -245,7 +245,7 @@ namespace Compiler
    /// starting state.
    void resetTables();
 
-   void *consoleAlloc(U32 size);
+   void *consoleAlloc(size_t size);
    void consoleAllocReset();
 
    extern bool gSyntaxError;

@@ -304,8 +304,8 @@ void Scroller::sceneRender( const t2dSceneRenderState * pSceneRenderState, const
 //   Con::printf("xdiv %s", tempx.c_str());
 //   Con::printf("ydiv %s", tempy.c_str());
 
-   F32 baseX = mRenderOOBB[0].x;
-    F32 baseY = mRenderOOBB[0].y;
+   F32 baseX;
+   F32 baseY;
     F32 nextX;
     F32 nextY;
     

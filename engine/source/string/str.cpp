@@ -50,7 +50,7 @@ struct DeleteString
 /// If pos is non-zero, then in mode StrLeft the search starts at (hay + pos) and
 /// in mode StrRight the search starts at (hay + pos - 1)
 /// @return Returns a pointer to the location of the character in the haystack or 0
-static const char* StrFind(const char* hay, char needle, S32 pos, U32 mode)
+static const char* StrFind(const char* hay, char needle, size_t pos, U32 mode)
 {
    if (mode & String::Right)
    {
@@ -432,7 +432,7 @@ size_t String::find(const StringChar *str, size_t pos, U32 mode)  const
 {
    AssertFatal(str,"String:: Invalid null ptr argument");
 
-   const StringChar* ptr = StrFind(_string.c_str(),str,pos,mode);
+   const StringChar* ptr = StrFind(_string.c_str(),str,(S32)pos,mode);
 
    return ptr? size_t(ptr - _string.c_str()): NPos;
 }
@@ -657,7 +657,7 @@ S32 String::StrFormat::append(const char * str, S32 len)
 
 S32 String::StrFormat::append(const char * str)
 {
-   return append(str, dStrlen(str));
+   return append(str, (S32)dStrlen(str));
 }
 
 char* String::StrFormat::copy( char *buffer ) const

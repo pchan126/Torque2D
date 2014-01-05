@@ -156,7 +156,7 @@ bool DbgFileView::onWake()
 
    //adjust the cellwidth to the maximum line length
    AdjustCellSize();
-   mSize.set(1, mFileView.size());
+   mSize.set(1, (S32)mFileView.size());
 
    return true;
 }
@@ -259,7 +259,7 @@ bool DbgFileView::findString(const char *text)
 
 			//then hilite
 			mBlockStart = (S32)(found - &mFileView[curLine].text[0]);
-			mBlockEnd = mBlockStart + length;
+			mBlockEnd = mBlockStart + (S32)length;
 
 			return true;
 		}
@@ -346,9 +346,9 @@ bool DbgFileView::openFile(const char *fileName)
    for(;;) {
       char *tempPtr = dStrchr(parsePtr, '\n');
       if(tempPtr)
-         addLine(parsePtr, tempPtr - parsePtr);
+         addLine(parsePtr, (U32)(tempPtr - parsePtr));
       else if(parsePtr[0])
-         addLine(parsePtr, dStrlen(parsePtr));
+         addLine(parsePtr, (U32)dStrlen(parsePtr));
       if(!tempPtr)
          break;
       parsePtr = tempPtr + 1;
@@ -358,7 +358,7 @@ bool DbgFileView::openFile(const char *fileName)
 
    //set the file size
    AdjustCellSize();
-   setSize(Point2I(1, mFileView.size()));
+   setSize(Point2I(1, (S32)mFileView.size()));
 
    return true;
 }
@@ -432,7 +432,7 @@ S32 DbgFileView::findMouseOverChar(const char *text, S32 stringPosition)
    // Did we find a character under the mouse?
    if (found) {
       // If so, return its position.
-      return bufPtr - tempBuf;
+      return (S32)(bufPtr - tempBuf);
    }
    // If not, return -1.
    else return -1;
@@ -496,7 +496,7 @@ bool DbgFileView::findMouseOverVariable()
       }
 
       //set the var char start positions
-      mMouseVarStart = varNamePtr - tempBuf;
+      mMouseVarStart = (S32)(varNamePtr - tempBuf);
 
       //now copy the (possible) var name into the buf
       char *tempPtr = &mMouseOverVariable[0];
@@ -513,7 +513,7 @@ bool DbgFileView::findMouseOverVariable()
       *tempPtr = '\0';
 
       //set the var char end positions
-      mMouseVarEnd = varNamePtr - tempBuf;
+      mMouseVarEnd = (S32)( varNamePtr - tempBuf);
 
       return true;
    }
@@ -653,7 +653,7 @@ void DbgFileView::onMouseDragged(const GuiEvent &event)
       else
       {
          mBlockStart = mMouseDownChar;
-         mBlockEnd = dStrlen(mFileView[mSelectedCell.y].text) + 1;
+         mBlockEnd = (S32)dStrlen(mFileView[mSelectedCell.y].text) + 1;
       }
    }
 }

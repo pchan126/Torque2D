@@ -40,7 +40,7 @@ struct StringStack
       ReturnBufferSpace = 512
    };
    char *mBuffer;
-   U32   mBufferSize;
+   size_t   mBufferSize;
    const char *mArgV[MaxArgs];
    U32 mFrameOffsets[MaxStackDepth];
    U32 mStartOffsets[MaxStackDepth];
@@ -53,10 +53,10 @@ struct StringStack
    U32 mStartStackSize;
    U32 mFunctionOffset;
 
-   U32 mArgBufferSize;
+   size_t mArgBufferSize;
    char *mArgBuffer;
 
-   void validateBufferSize(U32 size)
+   void validateBufferSize(size_t size)
    {
       if(size > mBufferSize)
       {
@@ -64,7 +64,7 @@ struct StringStack
          mBuffer = (char *) dRealloc(mBuffer, mBufferSize);
       }
    }
-   void validateArgBufferSize(U32 size)
+   void validateArgBufferSize(size_t size)
    {
       if(size > mArgBufferSize)
       {
@@ -75,7 +75,7 @@ struct StringStack
    StringStack()
    {
       mBufferSize = 0;
-      mBuffer = NULL;
+      mBuffer = nullptr;
       mNumFrames = 0;
       mStart = 0;
       mLen = 0;
@@ -90,7 +90,7 @@ struct StringStack
    {
       validateBufferSize(mStart + 32);
       dSprintf(mBuffer + mStart, 32, "%d", i);
-      mLen = dStrlen(mBuffer + mStart);
+      mLen = (U32)dStrlen(mBuffer + mStart);
    }
 
    /// Set the top of the stack to be a float value.
@@ -98,13 +98,13 @@ struct StringStack
    {
       validateBufferSize(mStart + 32);
       dSprintf(mBuffer + mStart, 32, "%.9g", v);
-      mLen = dStrlen(mBuffer + mStart);
+      mLen = (U32)dStrlen(mBuffer + mStart);
    }
 
    /// Return a temporary buffer we can use to return data.
    ///
    /// @note This clobbers anything in our buffers!
-   char *getReturnBuffer(U32 size)
+   char *getReturnBuffer(size_t size)
    {
       if(size > ReturnBufferSpace)
       {
@@ -121,7 +121,7 @@ struct StringStack
    /// Return a buffer we can use for arguments.
    ///
    /// This updates the function offset.
-   char *getArgBuffer(U32 size)
+   char *getArgBuffer(dsize_t size)
    {
       validateBufferSize(mStart + mFunctionOffset + size);
       char *ret = mBuffer + mStart + mFunctionOffset;
@@ -144,7 +144,7 @@ struct StringStack
          mBuffer[mStart] = 0;
          return;
       }
-      mLen = dStrlen(s);
+      mLen = (U32)dStrlen(s);
 
       validateBufferSize(mStart + mLen + 2);
       dStrcpy(mBuffer + mStart, s);
@@ -219,7 +219,7 @@ struct StringStack
    void rewind()
    {
       mStart = mStartOffsets[--mStartStackSize];
-      mLen = dStrlen(mBuffer + mStart);
+      mLen = (U32)dStrlen(mBuffer + mStart);
    }
 
    // Terminate the current string, and pop the start stack.
@@ -227,7 +227,7 @@ struct StringStack
    {
       mBuffer[mStart] = 0;
       mStart = mStartOffsets[--mStartStackSize];
-      mLen   = dStrlen(mBuffer + mStart);
+      mLen   = (U32)dStrlen(mBuffer + mStart);
    }
 
    /// Compare 1st and 2nd items on stack, consuming them in the process,

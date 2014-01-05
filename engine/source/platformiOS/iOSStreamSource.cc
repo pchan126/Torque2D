@@ -27,7 +27,7 @@
 
 iOSStreamSource::iOSStreamSource(const char *filename)  {
 	this->registerObject();
-	int len = dStrlen( filename );
+	dsize_t len = dStrlen( filename );
 	mFilename = new char[len + 1];
 	dStrcpy( mFilename, filename );
 	//SoundEngine::SoundEngine_LoadBackgroundMusicTrack( mFilename, true, false );

@@ -256,7 +256,7 @@ void GuiGridControl::AdjustGridItems(S32 size, Vector<StringTableEntry>& strItem
 	{
 		StringTableEntry str = *col;
 
-		int len = dStrlen(str);
+		auto len = dStrlen(str);
 		AssertFatal(len >= 1, "Item can not be blank.");
 		
 		//we support three types of values (absolute size in pixels, percentage based, and remaining size in pixels).

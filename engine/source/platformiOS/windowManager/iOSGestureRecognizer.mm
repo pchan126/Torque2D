@@ -48,7 +48,7 @@
              for (touchCounter = 0; touchCounter < paramSender.numberOfTouches; touchCounter++)
              {
                  CGPoint touchPoint = [paramSender locationOfTouch:touchCounter inView:paramSender.view];
-                 window->tapEvent.trigger(window->getWindowId(), 0, touchPoint.x, touchPoint.y, SI_BREAK, touchCounter );
+                 window->tapEvent.trigger(window->getWindowId(), 0, touchPoint.x, touchPoint.y, SI_BREAK, (U32)touchCounter);
              }
             break;
             
@@ -58,7 +58,7 @@
 }
 
 - (void) handleSwipe:(UISwipeGestureRecognizer*)paramSender {
-    window->swipeEvent.trigger(window->getWindowId(), 0, paramSender.direction );
+    window->swipeEvent.trigger(window->getWindowId(), 0, (U32)paramSender.direction );
 }
 
 - (void) handleRotation:(UIRotationGestureRecognizer*)paramSender {
@@ -105,7 +105,7 @@
                 CGPoint touchPoint = [paramSender locationOfTouch:touchCounter inView:paramSender.view];
                 CGPoint translation = [paramSender translationInView:paramSender.view];
                 CGPoint velocity = [paramSender velocityInView:paramSender.view];
-                window->tapEvent.trigger(window->getWindowId(), 0, touchPoint.x, touchPoint.y, SI_MOVE, touchCounter );
+                window->tapEvent.trigger(window->getWindowId(), 0, touchPoint.x, touchPoint.y, SI_MOVE, (U32)touchCounter );
                 window->panEvent.trigger(window->getWindowId(), 0, translation.x, translation.y, velocity.x, velocity.y, SI_MOVE);
             }
             break;

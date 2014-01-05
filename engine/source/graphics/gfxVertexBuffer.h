@@ -42,13 +42,13 @@ class GFXVertexBuffer : public StrongRefBase, public GFXResource
 public:
 
    /// Number of vertices in this buffer.
-   U32 mVertexCount;
+   dsize_t mVertexCount;
 
    /// A copy of the vertex format for this buffer.
    GFXVertexFormat mVertexFormat;
 
    /// Vertex size in bytes.
-   U32 mVertexSize;
+   dsize_t mVertexSize;
 
    /// GFX buffer type (static, dynamic or volatile).
    GFXBufferType mBufferType;
@@ -57,15 +57,15 @@ public:
    GFXDevice *mDevice;
 
    bool  isLocked;
-   U32   lockedVertexStart;
-   U32   lockedVertexEnd;
+   dsize_t   lockedVertexStart;
+   dsize_t   lockedVertexEnd;
    void* lockedVertexPtr;
-   U32   mVolatileStart;
+   dsize_t   mVolatileStart;
 
    GFXVertexBuffer(  GFXDevice *device, 
-                     U32 vertexCount, 
+                     dsize_t vertexCount,
                      const GFXVertexFormat *vertexFormat, 
-                     U32 vertexSize, 
+                     dsize_t vertexSize,
                      GFXBufferType bufferType )
       :  mDevice( device ),
          mVolatileStart( 0 ),         
@@ -80,8 +80,8 @@ public:
       }
    }
    
-   virtual void lock(U32 vertexStart, U32 vertexEnd, void **vertexPtr) = 0;
-    virtual void set( void* data, U32 dataSize, U32 indexSize = 0, void* indexBuffer = NULL ) = 0;
+   virtual void lock(dsize_t vertexStart, dsize_t vertexEnd, void **vertexPtr) = 0;
+    virtual void set( void* data, dsize_t dataSize, dsize_t indexSize = 0, void* indexBuffer = nullptr ) = 0;
    virtual void unlock() = 0;
    virtual void prepare() = 0;
 
@@ -100,15 +100,15 @@ class GFXVertexBufferHandleBase : public StrongRefPtr<GFXVertexBuffer>
 protected:
 
    void set(   GFXDevice *theDevice,
-               U32 vertexCount,
+               dsize_t vertexCount,
                const GFXVertexFormat *vertexFormat, 
-               U32 vertexSize,
+               dsize_t vertexSize,
                GFXBufferType type,
                void* vertexData,
-               U32 indexCount,
+               dsize_t indexCount,
                void* indexData);
 
-   void* lock(U32 vertexStart, U32 vertexEnd)
+   void* lock(dsize_t vertexStart, dsize_t vertexEnd)
    {
       if(vertexEnd == 0)
          vertexEnd = getPointer()->mVertexCount;
@@ -140,10 +140,10 @@ public:
    GFXVertexBufferHandle() {}
 
    GFXVertexBufferHandle(  GFXDevice *theDevice, 
-                           U32 vertexCount,
+                           dsize_t vertexCount,
                            GFXBufferType type = GFXBufferTypeVolatile,
-                           void *vertexBuffer = NULL,
-                           U32 indexCount = 0, void *indexBuffer = NULL)
+                           void *vertexBuffer = nullptr,
+                           dsize_t indexCount = 0, void *indexBuffer = nullptr)
    {
       set( theDevice, vertexCount, type, vertexBuffer, indexCount, indexBuffer );
    }
@@ -151,10 +151,10 @@ public:
    ~GFXVertexBufferHandle() {}
 
    virtual void set(   GFXDevice *theDevice,
-             U32 vertexCount,
+             dsize_t vertexCount,
              GFXBufferType type = GFXBufferTypeVolatile,
              void *vertexBuffer = nullptr,
-             U32 indexCount = 0, void *indexBuffer = nullptr)
+             dsize_t indexCount = 0, void *indexBuffer = nullptr)
    {
       Parent::set( theDevice, vertexCount, getGFXVertexFormat<T>(), sizeof(T), type, vertexBuffer, indexCount, indexBuffer );
    }

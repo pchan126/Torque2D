@@ -62,7 +62,7 @@ namespace StreamFn {
 
     inline void writeLongString(std::ostream& stream, size_t maxStringLen, const char *string)
     {
-        U32 len = (U32)dStrlen(string);
+        size_t len = dStrlen(string);
         if(len > maxStringLen)
             len = maxStringLen;
         stream << (len);
@@ -91,7 +91,7 @@ namespace StreamFn {
         os.write("\r\n", 2);
     }
 
-    inline U32 readInt(std::istream& is, U32 size)
+    inline U32 readInt(std::istream& is, dsize_t size)
     {
         std::bitset<32> bitset;
         for (U32 i = 0; i < size; i++)
@@ -103,7 +103,7 @@ namespace StreamFn {
         return (U32)bitset.to_ulong();
     }
 
-    inline void writeInt(std::ostream& os, U32 val, U32 bitcount)
+    inline void writeInt(std::ostream& os, U32 val, dsize_t bitcount)
     {
         std::bitset<32> bitset(val);
         for (U32 i = 0; i < bitcount; i++)
@@ -121,15 +121,15 @@ namespace StreamFn {
        return val + rangeStart;
    }
 
-    inline void writeRangedU32(std::ostream& os, U32 value, U32 rangeStart, U32 rangeEnd)
+    inline void writeRangedU32(std::ostream &os, U32 value, size_t rangeStart, size_t rangeEnd)
     {
         AssertFatal(value >= rangeStart && value <= rangeEnd, "Out of bounds value!" );
         AssertFatal(rangeEnd >= rangeStart, "error, end of range less than start");
 
-        U32 rangeSize = rangeEnd - rangeStart + 1;
+        U32 rangeSize = (U32)(rangeEnd - rangeStart + 1);
         U32 rangeBits = getBinLog2(getNextPow2(rangeSize));
 
-        writeInt(os, value - rangeStart, rangeBits);
+        writeInt(os, (U32)(value - rangeStart), rangeBits);
     }
 
     inline S32 readClassId(std::istream& is, U32 classType, U32 classGroup)
@@ -150,7 +150,7 @@ namespace StreamFn {
 
     inline bool streamCopy(std::iostream& toStream, std::iostream& fromStream)
     {
-        U32 buffSize = getStreamSize(fromStream);
+        size_t buffSize = getStreamSize(fromStream);
         std::vector<char> buffer(buffSize);
         fromStream.read(buffer.data(), buffSize);
         toStream.write(buffer.data(), buffSize);

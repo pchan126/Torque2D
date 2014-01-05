@@ -117,7 +117,7 @@ bool GuiMLTextEditCtrl::onKeyDown(const GuiEvent& event)
 			         mCursorPosition = mSelectionStart;
 			      }
 
-			      insertChars(clipBuf, dStrlen(clipBuf), mCursorPosition);
+			      insertChars(clipBuf, (U32)dStrlen(clipBuf), mCursorPosition);
 				}
 				return true;
 			}

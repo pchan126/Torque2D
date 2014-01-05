@@ -497,13 +497,13 @@ protected:
    /// This allocates a vertex buffer and returns a pointer to the allocated buffer.
    /// This function should not be called directly - rather it should be used by
    /// the GFXVertexBufferHandle class.
-   virtual GFXVertexBuffer *allocVertexBuffer(  U32 numVerts, 
+   virtual GFXVertexBuffer *allocVertexBuffer(  dsize_t numVerts,
                                                 const GFXVertexFormat *vertexFormat, 
-                                                U32 vertSize, 
+                                                dsize_t vertSize,
                                                 GFXBufferType bufferType,
-                                                void *data = NULL,
-                                                U32 indexCount = 0,
-                                                void *indexData = NULL) = 0;
+                                                void *data = nullptr,
+                                                dsize_t indexCount = 0,
+                                                void *indexData = nullptr) = 0;
 
    /// Called from GFXVertexFormat to allocate the hardware 
    /// specific vertex declaration for rendering.
@@ -710,7 +710,7 @@ public:
                                      U32 primitiveCount ) = 0;
    
    void drawPrimitive( const GFXPrimitive &prim );
-   virtual void drawPrimitive( GFXPrimitiveType primType, U32 vertexStart, U32 primitiveCount ) = 0;
+   virtual void drawPrimitive( GFXPrimitiveType primType, size_t vertexStart, size_t primitiveCount ) = 0;
    /// @}
    
    //-----------------------------------------------------------------------------

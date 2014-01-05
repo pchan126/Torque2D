@@ -92,7 +92,7 @@ Point2I iOSWindowManager::getDesktopResolution()
 S32 iOSWindowManager::getWindowCount()
 {
    // Get the number of PlatformWindow's in this manager
-   return mWindowList.size();
+   return (S32)mWindowList.size();
 }
 
 void iOSWindowManager::getWindows(Vector<PlatformWindow*> &windows)
@@ -239,7 +239,7 @@ PlatformWindow *iOSWindowManager::createWindow(GFXDevice *device, const GFXVideo
    if (mWindowList.size() >= [[UIScreen screens]count])    // only one window per available screen
        return nullptr;
     
-   iOSWindow* window = new iOSWindow(mWindowList.size());
+   iOSWindow* window = new iOSWindow((U32)mWindowList.size());
    _addWindow(window);
    
    // Set the video mode on the window
