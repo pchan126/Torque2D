@@ -210,7 +210,8 @@ function BuoyancyControllerToy::createFluid( %this, %area, %flowVelocity, %color
     %controller = new BuoyancyController();
     %controller.FluidArea = %area;
     %controller.FlowVelocity = %flowVelocity;
-    SandboxScene.Controllers.add( %controller );     
+    %controllers = SandboxScene.getControllers();
+    %controllers.add( %controller );
     
     // Add the water.
     %water = new Sprite();
@@ -329,9 +330,11 @@ function BuoyancyControllerToy::setMaxDebrisDensity(%this, %value)
 
 function BuoyancyControllerToy::updateBuoyancyControllers( %this )
 {
+%controllerSet = SandboxScene.Controllers;
+
     // Fetch the controller set.
-    %controllerSet = SandboxScene.Controllers;
-    
+    %controllerSet = SandboxScene.getControllers();
+
     // Fetch controller count.
     %controllerCount = %controllerSet.getCount();
     

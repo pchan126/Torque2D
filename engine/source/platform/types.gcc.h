@@ -29,12 +29,6 @@
 
 
 //--------------------------------------
-// Types
-typedef signed long long    S64;
-typedef unsigned long long  U64;
-
-
-//--------------------------------------
 // Compiler Version
 #define TORQUE_COMPILER_GCC (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
 

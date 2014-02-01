@@ -68,11 +68,11 @@ void RenderInst::clear()
    dMemset( this, 0, sizeof(RenderInst) );
 }
 
-//void MeshRenderInst::clear()
-//{
+void MeshRenderInst::clear()
+{
 //   dMemset( this, 0, sizeof(MeshRenderInst) );
 //   visibility = 1.0f;
-//}
+}
 
 //void ParticleRenderInst::clear()
 //{

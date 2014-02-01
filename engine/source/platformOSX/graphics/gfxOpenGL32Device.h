@@ -124,12 +124,12 @@ protected:
    /// is created.
    virtual void initStates() { }
 
-   virtual GFXVertexBuffer *allocVertexBuffer(  U32 numVerts, 
+   virtual GFXVertexBuffer *allocVertexBuffer(  dsize_t numVerts,
                                                 const GFXVertexFormat *vertexFormat,
-                                                U32 vertSize, 
+                                                dsize_t vertSize,
                                                 GFXBufferType bufferType,
                                                 void *vertexData,
-                                                U32 indexCount,
+                                                dsize_t indexCount,
                                                 void *indexData);
    
    // NOTE: The GL device doesn't need a vertex declaration at

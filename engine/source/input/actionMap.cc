@@ -25,6 +25,9 @@
 #include "platform/platformInput.h"
 #include "io/resource/resourceManager.h"
 
+// Script bindings.
+#include "actionMap_ScriptBinding.h"
+
 IMPLEMENT_CONOBJECT(ActionMap);
 
 // This is used for determing keys that have ascii codes for the foreign keyboards. IsAlpha doesn't work on foreign keys.
@@ -1745,8 +1748,8 @@ bool ActionMap::handleEvent(const InputEventInfo* pEvent)
    AssertFatal(pActionMapSet && pActionMapSet->size() != 0,
                "error, no ActiveMapSet or no global action map...");
 
-   for (SimSet::iterator itr = pActionMapSet->end() - 1;
-        itr > pActionMapSet->begin(); itr--) {
+   for (SimSet::iterator itr = pActionMapSet->end() - 1; itr > pActionMapSet->begin(); itr--)
+   {
       ActionMap* pMap = static_cast<ActionMap*>(*itr);
       if (pMap->processAction(pEvent) == true)
          return true;

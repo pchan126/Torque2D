@@ -509,8 +509,21 @@ ConsoleGetType( TypeSimObjectPtr )
 {
    SimObject **obj = (SimObject**)dptr;
    char* returnBuffer = Con::getReturnBuffer(256);
-   const char* Id =  *obj ? (*obj)->getName() ? (*obj)->getName() : (*obj)->getIdString() : StringTable->EmptyString;
+   const char* Id;
+   if (*obj != nullptr)
+   {
+      if ((*obj)->getName())
+         Id = (*obj)->getName();
+      else
+         Id = (*obj)->getIdString();
+   }
+   else
+   {
+      Id = StringTable->EmptyString;
+   }
+//   =  (*obj)->getName() ? (*obj)->getName() : (*obj)->getIdString() :
    dSprintf(returnBuffer, 256, "%s", Id);
+   Con::printf("simObject %s", returnBuffer);
    return returnBuffer;
 }
 

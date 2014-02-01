@@ -177,14 +177,14 @@ void TSMesh::innerRender( TSMaterialList *materials, const TSRenderState &rdata,
    const MatrixF &objToWorld = GFX->getWorldMatrix();
 
    // Sort by the center point or the bounds.
-   if ( rdata.useOriginSort() )
-      coreRI->sortDistSq = ( objToWorld.getPosition() - state->getCameraPosition() ).lenSquared();
-   else
-   {
-      Box3F rBox = mBounds;
-      objToWorld.mul( rBox );
-      coreRI->sortDistSq = rBox.getSqDistanceToPoint( state->getCameraPosition() );
-   }
+//   if ( rdata.useOriginSort() )
+//      coreRI->sortDistSq = ( objToWorld.getPosition() - state->getCameraPosition() ).lenSquared();
+//   else
+//   {
+//      Box3F rBox = mBounds;
+//      objToWorld.mul( rBox );
+//      coreRI->sortDistSq = rBox.getSqDistanceToPoint( state->getCameraPosition() );
+//   }
 
    if (getFlags(Billboard))
    {

@@ -688,6 +688,7 @@
 		302D4044189C64D400AE2267 /* simSet_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = simSet_ScriptBinding.h; sourceTree = "<group>"; };
 		302D4045189C682800AE2267 /* stringBuffer_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stringBuffer_ScriptBinding.h; sourceTree = "<group>"; };
 		302D4046189C682800AE2267 /* stringUnit_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stringUnit_ScriptBinding.h; sourceTree = "<group>"; };
+		302D4047189D2C5500AE2267 /* refBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = refBase.h; sourceTree = "<group>"; };
 		303FE31D1711B1E2002124CC /* process.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = process.cpp; sourceTree = "<group>"; };
 		303FE31E1711B1E2002124CC /* process.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = process.h; sourceTree = "<group>"; };
 		30700C2B1825553700B77FE3 /* gfxOpenGLES30iOSCardProfiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxOpenGLES30iOSCardProfiler.h; sourceTree = "<group>"; };
@@ -3038,6 +3039,7 @@
 		867BAFB516AEC9050033868F /* sim */ = {
 			isa = PBXGroup;
 			children = (
+				302D4047189D2C5500AE2267 /* refBase.h */,
 				302D4040189C64D400AE2267 /* simBase_ScriptBinding.h */,
 				302D4041189C64D400AE2267 /* simDatablock_ScriptBinding.h */,
 				302D4042189C64D400AE2267 /* simObject_ScriptBinding.h */,

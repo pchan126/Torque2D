@@ -1101,7 +1101,7 @@ void SimObject::initPersistFields()
 
 SimObject* SimObject::clone( const bool copyDynamicFields )
 {
-    // Craete cloned object.
+    // Create cloned object.
     SimObject* pCloneObject = dynamic_cast<SimObject*>( ConsoleObject::create(getClassName()) );
     if (!pCloneObject)
     {
@@ -1156,7 +1156,7 @@ void SimObject::copyTo(SimObject* object)
 {
    object->mClassName = mClassName;
    object->mSuperClassName = mSuperClassName;
-
+   object->mNameSpace = nullptr;
    object->linkNamespaces();
 }
 

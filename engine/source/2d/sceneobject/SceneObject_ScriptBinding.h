@@ -4019,7 +4019,7 @@ ConsoleMethodWithDocs(SceneObject, setDebugOff, ConsoleVoid, 3, 2 + DEBUG_MODE_C
     @param sizeControl Whether or not to size the GuiControl to the size of this object.
     @return No return Value.
 */
-ConsoleMethodWithDocs(SceneObject, attachGui, ConsoleVoid, 4, 5, (guiControl guiObject, SceneWindow window, [sizeControl? = false]))
+ConsoleMethodWithDocs(SceneObject, attachGui, ConsoleVoid, 4, 7, (guiControl guiObject, SceneWindow window, [sizeControl? = false]))
 {
     // Find GuiControl Object.
     GuiControl* pGuiControl = dynamic_cast<GuiControl*>(Sim::findObject(argv[2]));
@@ -4127,5 +4127,17 @@ ConsoleMethodWithDocs(SceneObject, safeDelete, ConsoleVoid, 2, 2, ())
     // Script Delete.
     object->safeDelete();
 }
+//------------------------------------------------------------------------------
+
+/*! Sets an alternative shader to render.\n"
+   "@param shaderAssetId The shader asset Id to display\n"
+   "@return Returns true on success."
+ */
+ConsoleMethodWithDocs(SceneObject, setShader, ConsoleBool, 3, 3, (string shaderAssetId))
+{
+   // Set shader.
+   return object->setShader( argv[2] );
+}
+
 
 ConsoleMethodGroupEndWithDocs(SceneObject)

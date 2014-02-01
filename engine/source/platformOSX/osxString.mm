@@ -596,7 +596,7 @@ int dVsprintf(char *buffer, dsize_t bufferSize, const char *format, va_list argl
 
 //-----------------------------------------------------------------------------
 
-int dStrrev(char* str)
+dsize_t dStrrev(char* str)
 {
     // Get the string length
 	int l = dStrlen(str) - 1;
@@ -616,7 +616,7 @@ int dStrrev(char* str)
 
 //-----------------------------------------------------------------------------
 
-int dItoa(int n, char s[])
+dsize_t dItoa(int n, char s[])
 {
 	int i, sign;
 	

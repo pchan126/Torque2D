@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		302D4049189D35F600AE2267 /* audio_ScriptBinding.cc in Sources */ = {isa = PBXBuildFile; fileRef = 302D4048189D35F600AE2267 /* audio_ScriptBinding.cc */; };
+		302D405C189D363B00AE2267 /* frameAllocator_ScriptBinding.cc in Sources */ = {isa = PBXBuildFile; fileRef = 302D405B189D363B00AE2267 /* frameAllocator_ScriptBinding.cc */; };
+		302D4062189D364E00AE2267 /* math_ScriptBinding.cc in Sources */ = {isa = PBXBuildFile; fileRef = 302D405E189D364E00AE2267 /* math_ScriptBinding.cc */; };
+		302D4065189D365B00AE2267 /* fileSystem_ScriptBinding.cc in Sources */ = {isa = PBXBuildFile; fileRef = 302D4064189D365B00AE2267 /* fileSystem_ScriptBinding.cc */; };
+		302D4072189D368300AE2267 /* metaScripting_ScriptBinding.cc in Sources */ = {isa = PBXBuildFile; fileRef = 302D406F189D368300AE2267 /* metaScripting_ScriptBinding.cc */; };
 		303CE056184C331D00794ACC /* tsAnimate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 303CE051184C331D00794ACC /* tsAnimate.cpp */; };
 		303CE057184C331D00794ACC /* tsMaterialList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 303CE052184C331D00794ACC /* tsMaterialList.cpp */; };
 		303CE058184C331D00794ACC /* tsRenderState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 303CE054184C331D00794ACC /* tsRenderState.cpp */; };
@@ -351,13 +356,11 @@
 		C54198761863C611F2027CDE /* mPoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C541931251687A339B2B427F /* mPoint.cpp */; };
 		C5419876358864FCAEB9F22B /* guiListBoxCtrl.cc in Sources */ = {isa = PBXBuildFile; fileRef = C54192D00560CDECCE1D28F9 /* guiListBoxCtrl.cc */; };
 		C541987E47C63DD65F45BF3B /* resourceDictionary.cc in Sources */ = {isa = PBXBuildFile; fileRef = C5419ED45D875F2013FEBFAB /* resourceDictionary.cc */; };
-		C54198802F01ABF323B19BD0 /* fileSystemFunctions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C5419558485DABDD81190A21 /* fileSystemFunctions.cpp */; };
 		C54198911699F6B210604B7C /* unitTesting.cc in Sources */ = {isa = PBXBuildFile; fileRef = C541969E293FD49A8EA0E7EB /* unitTesting.cc */; };
 		C541989142EFE6695A32044F /* tamlJSONParser.cc in Sources */ = {isa = PBXBuildFile; fileRef = C5419354287F8D0323A27DD4 /* tamlJSONParser.cc */; };
 		C5419894750C5D2C58B68731 /* guiTypes.cc in Sources */ = {isa = PBXBuildFile; fileRef = C5419528EFD98F6F6AE7FC9D /* guiTypes.cc */; };
 		C541989CAF930DC7905004F2 /* consoleDoc.cc in Sources */ = {isa = PBXBuildFile; fileRef = C541990AF7A301C957320400 /* consoleDoc.cc */; };
 		C54198A4EDF62A1860119D96 /* message.cc in Sources */ = {isa = PBXBuildFile; fileRef = C54198045120E00E224D1296 /* message.cc */; };
-		C54198B80BE19F32CFBE38F0 /* mConsoleFunctions.cc in Sources */ = {isa = PBXBuildFile; fileRef = C5419F1C1ABE6E08FEA24BE1 /* mConsoleFunctions.cc */; };
 		C54198B9AEB08B1898EC1061 /* ParticleAssetEmitter.cc in Sources */ = {isa = PBXBuildFile; fileRef = C5419CE3504CDB5A88BAF10D /* ParticleAssetEmitter.cc */; };
 		C54198BEF9663CF81296B675 /* materialList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C5419A7EB6970A88A41F9C69 /* materialList.cpp */; };
 		C54198C351787A88894CCE3C /* ShapeVector.cc in Sources */ = {isa = PBXBuildFile; fileRef = C54199A74443C1D043B74E4D /* ShapeVector.cc */; };
@@ -376,7 +379,6 @@
 		C5419995670150F46292B8A2 /* SpriteBatchItem.cc in Sources */ = {isa = PBXBuildFile; fileRef = C54198748752D63F4AB0C0F0 /* SpriteBatchItem.cc */; };
 		C54199BD56F9158E4511C993 /* guiDebugger.cc in Sources */ = {isa = PBXBuildFile; fileRef = C54195DE60EC1D70DE805498 /* guiDebugger.cc */; };
 		C54199E61FA948E2550BEA4E /* mRandom.cc in Sources */ = {isa = PBXBuildFile; fileRef = C5419064FDB648AB6385A656 /* mRandom.cc */; };
-		C5419A05701A6F72884BAA0A /* frameAllocator.cc in Sources */ = {isa = PBXBuildFile; fileRef = C541985E593B4E8992C2CEA0 /* frameAllocator.cc */; };
 		C5419A18525AB3E1AD4B8AA0 /* t2dScene.cc in Sources */ = {isa = PBXBuildFile; fileRef = C54197CC6BA29623FCE93EE6 /* t2dScene.cc */; };
 		C5419A1E57E50BBB474F4C8D /* gfxOpenGLTextureObject.cc in Sources */ = {isa = PBXBuildFile; fileRef = C5419980BC68906D2353CC54 /* gfxOpenGLTextureObject.cc */; };
 		C5419A21EA697AEC8E495E63 /* tamlJSONWriter.cc in Sources */ = {isa = PBXBuildFile; fileRef = C5419BA9DF9A66639F8F5A70 /* tamlJSONWriter.cc */; };
@@ -384,7 +386,6 @@
 		C5419A61CAE883418422ED05 /* guiConsoleTextCtrl.cc in Sources */ = {isa = PBXBuildFile; fileRef = C54196871D06A9DFDBA79367 /* guiConsoleTextCtrl.cc */; };
 		C5419A6497D31660863BAC35 /* moduleManager.cc in Sources */ = {isa = PBXBuildFile; fileRef = C5419A8CAC1FF497F4265F62 /* moduleManager.cc */; };
 		C5419A749E3F61632838F3B1 /* declaredAssets.cc in Sources */ = {isa = PBXBuildFile; fileRef = C5419A2D2620B180AEEAA544 /* declaredAssets.cc */; };
-		C5419A84C3DDD48D36435583 /* audioFunctions.cc in Sources */ = {isa = PBXBuildFile; fileRef = C5419EB09F4487520E552D3F /* audioFunctions.cc */; };
 		C5419A8672384ACED7E9A78D /* simComponent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C54190E2C496E2F6E8A17164 /* simComponent.cpp */; };
 		C5419A9B9605B70AC22EA42A /* dataChunker.cc in Sources */ = {isa = PBXBuildFile; fileRef = C5419F76ACA689B843F2F789 /* dataChunker.cc */; };
 		C5419AA39EAF65BAC1C109BF /* gfxVertexBuffer.cc in Sources */ = {isa = PBXBuildFile; fileRef = C5419572670AA1045A6DC2C7 /* gfxVertexBuffer.cc */; };
@@ -518,6 +519,48 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		302D4048189D35F600AE2267 /* audio_ScriptBinding.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = audio_ScriptBinding.cc; sourceTree = "<group>"; };
+		302D404A189D360800AE2267 /* refBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = refBase.h; sourceTree = "<group>"; };
+		302D404B189D360800AE2267 /* simBase_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = simBase_ScriptBinding.h; sourceTree = "<group>"; };
+		302D404C189D360800AE2267 /* simDatablock_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = simDatablock_ScriptBinding.h; sourceTree = "<group>"; };
+		302D404D189D360800AE2267 /* simObject_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = simObject_ScriptBinding.h; sourceTree = "<group>"; };
+		302D404E189D360800AE2267 /* simSerialize_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = simSerialize_ScriptBinding.h; sourceTree = "<group>"; };
+		302D404F189D360800AE2267 /* simSet_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = simSet_ScriptBinding.h; sourceTree = "<group>"; };
+		302D4050189D362700AE2267 /* connectionProtocol_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = connectionProtocol_ScriptBinding.h; sourceTree = "<group>"; };
+		302D4051189D362700AE2267 /* httpObject_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = httpObject_ScriptBinding.h; sourceTree = "<group>"; };
+		302D4052189D362700AE2267 /* netConnection_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = netConnection_ScriptBinding.h; sourceTree = "<group>"; };
+		302D4053189D362700AE2267 /* netInterface_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = netInterface_ScriptBinding.h; sourceTree = "<group>"; };
+		302D4054189D362700AE2267 /* netObject_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = netObject_ScriptBinding.h; sourceTree = "<group>"; };
+		302D4055189D362700AE2267 /* netStringTable_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = netStringTable_ScriptBinding.h; sourceTree = "<group>"; };
+		302D4056189D362700AE2267 /* RemoteCommandEvent_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RemoteCommandEvent_ScriptBinding.h; sourceTree = "<group>"; };
+		302D4057189D362700AE2267 /* RemoteCommandEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RemoteCommandEvent.h; sourceTree = "<group>"; };
+		302D4058189D362700AE2267 /* serverQuery_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = serverQuery_ScriptBinding.h; sourceTree = "<group>"; };
+		302D4059189D362700AE2267 /* tcpObject_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tcpObject_ScriptBinding.h; sourceTree = "<group>"; };
+		302D405A189D362700AE2267 /* telnetConsole_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = telnetConsole_ScriptBinding.h; sourceTree = "<group>"; };
+		302D405B189D363B00AE2267 /* frameAllocator_ScriptBinding.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = frameAllocator_ScriptBinding.cc; sourceTree = "<group>"; };
+		302D405D189D364E00AE2267 /* box_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = box_ScriptBinding.h; sourceTree = "<group>"; };
+		302D405E189D364E00AE2267 /* math_ScriptBinding.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = math_ScriptBinding.cc; sourceTree = "<group>"; };
+		302D405F189D364E00AE2267 /* matrix_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = matrix_ScriptBinding.h; sourceTree = "<group>"; };
+		302D4060189D364E00AE2267 /* random_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = random_ScriptBinding.h; sourceTree = "<group>"; };
+		302D4061189D364E00AE2267 /* vector_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vector_ScriptBinding.h; sourceTree = "<group>"; };
+		302D4063189D365B00AE2267 /* fileObject_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fileObject_ScriptBinding.h; sourceTree = "<group>"; };
+		302D4064189D365B00AE2267 /* fileSystem_ScriptBinding.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fileSystem_ScriptBinding.cc; sourceTree = "<group>"; };
+		302D4066189D366400AE2267 /* guiTextListCtrl_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiTextListCtrl_ScriptBinding.h; sourceTree = "<group>"; };
+		302D4067189D366C00AE2267 /* gameConnection_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gameConnection_ScriptBinding.h; sourceTree = "<group>"; };
+		302D4068189D366C00AE2267 /* version_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = version_ScriptBinding.h; sourceTree = "<group>"; };
+		302D4069189D368300AE2267 /* consoleDoc_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = consoleDoc_ScriptBinding.h; sourceTree = "<group>"; };
+		302D406A189D368300AE2267 /* consoleExprEvalState_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = consoleExprEvalState_ScriptBinding.h; sourceTree = "<group>"; };
+		302D406B189D368300AE2267 /* consoleLogger_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = consoleLogger_ScriptBinding.h; sourceTree = "<group>"; };
+		302D406C189D368300AE2267 /* consoleNamespace_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = consoleNamespace_ScriptBinding.h; sourceTree = "<group>"; };
+		302D406D189D368300AE2267 /* expando_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = expando_ScriptBinding.h; sourceTree = "<group>"; };
+		302D406E189D368300AE2267 /* inputManagement_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = inputManagement_ScriptBinding.h; sourceTree = "<group>"; };
+		302D406F189D368300AE2267 /* metaScripting_ScriptBinding.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = metaScripting_ScriptBinding.cc; sourceTree = "<group>"; };
+		302D4070189D368300AE2267 /* output_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = output_ScriptBinding.h; sourceTree = "<group>"; };
+		302D4071189D368300AE2267 /* taggedStrings_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = taggedStrings_ScriptBinding.h; sourceTree = "<group>"; };
+		302D4073189D368C00AE2267 /* dynamicConsoleMethodComponent_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dynamicConsoleMethodComponent_ScriptBinding.h; sourceTree = "<group>"; };
+		302D4074189D369A00AE2267 /* undo_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = undo_ScriptBinding.h; sourceTree = "<group>"; };
+		302D4075189D36BD00AE2267 /* stringBuffer_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stringBuffer_ScriptBinding.h; sourceTree = "<group>"; };
+		302D4076189D36BD00AE2267 /* stringUnit_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stringUnit_ScriptBinding.h; sourceTree = "<group>"; };
 		303CE051184C331D00794ACC /* tsAnimate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsAnimate.cpp; sourceTree = "<group>"; };
 		303CE052184C331D00794ACC /* tsMaterialList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsMaterialList.cpp; sourceTree = "<group>"; };
 		303CE053184C331D00794ACC /* tsMaterialList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsMaterialList.h; sourceTree = "<group>"; };
@@ -1013,7 +1056,6 @@
 		C541954AEFE9EF9C9CAD63C5 /* mQuadPatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mQuadPatch.h; sourceTree = "<group>"; };
 		C541954F0DD3D8DC9FDB7883 /* simComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = simComponent.h; sourceTree = "<group>"; };
 		C54195500F32B3A8B046D9AA /* assetBase.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = assetBase.cc; sourceTree = "<group>"; };
-		C5419558485DABDD81190A21 /* fileSystemFunctions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fileSystemFunctions.cpp; sourceTree = "<group>"; };
 		C54195592BB0CC936EA28B66 /* gfxFontRenderBatcher.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxFontRenderBatcher.cc; sourceTree = "<group>"; };
 		C541956B9BCD3512D3FA3E07 /* assetQuery.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = assetQuery.cc; sourceTree = "<group>"; };
 		C5419572670AA1045A6DC2C7 /* gfxVertexBuffer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gfxVertexBuffer.cc; sourceTree = "<group>"; };
@@ -1171,7 +1213,6 @@
 		C541985B1DF10B4F5E9501E5 /* mathIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mathIO.h; sourceTree = "<group>"; };
 		C541985CEEFDA0063C1F7B6F /* ParticlePlayer_ScriptBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticlePlayer_ScriptBinding.h; sourceTree = "<group>"; };
 		C541985D20BAE8527F4A8789 /* guiMLTextEditCtrl.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiMLTextEditCtrl.cc; sourceTree = "<group>"; };
-		C541985E593B4E8992C2CEA0 /* frameAllocator.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = frameAllocator.cc; sourceTree = "<group>"; };
 		C541986DC61A3E3B3823D7CF /* networkProcessList.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = networkProcessList.cc; sourceTree = "<group>"; };
 		C541987204327DDCC57EAF86 /* ShaderAsset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderAsset.h; sourceTree = "<group>"; };
 		C54198748752D63F4AB0C0F0 /* SpriteBatchItem.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SpriteBatchItem.cc; sourceTree = "<group>"; };
@@ -1470,7 +1511,6 @@
 		C5419E9949DD420C71C26EE6 /* guiEditCtrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiEditCtrl.h; sourceTree = "<group>"; };
 		C5419E998FE536FA874D8B9B /* event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = event.h; sourceTree = "<group>"; };
 		C5419EA1A10AB116C24774DC /* undo.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = undo.cc; sourceTree = "<group>"; };
-		C5419EB09F4487520E552D3F /* audioFunctions.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = audioFunctions.cc; sourceTree = "<group>"; };
 		C5419EB293373905642FD435 /* render2DObjectMgr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = render2DObjectMgr.h; path = ../../../source/renderInstance/render2DObjectMgr.h; sourceTree = "<group>"; };
 		C5419EB35845237DEF0EA1A4 /* netConnection.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = netConnection.cc; sourceTree = "<group>"; };
 		C5419EB8EBE15ECCDB9860AA /* guiDefaultControlRender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiDefaultControlRender.h; sourceTree = "<group>"; };
@@ -1494,7 +1534,6 @@
 		C5419F0D951B6A787945929C /* gfxInit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gfxInit.h; sourceTree = "<group>"; };
 		C5419F0E053D91EB3FB2C8B7 /* msgBox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = msgBox.cpp; sourceTree = "<group>"; };
 		C5419F16A655135216B6DE6B /* DebugDraw.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DebugDraw.cc; sourceTree = "<group>"; };
-		C5419F1C1ABE6E08FEA24BE1 /* mConsoleFunctions.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mConsoleFunctions.cc; sourceTree = "<group>"; };
 		C5419F1D83EAA600A669AFED /* hashTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hashTable.h; sourceTree = "<group>"; };
 		C5419F23163E807B5E54A07C /* resourceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = resourceManager.h; sourceTree = "<group>"; };
 		C5419F270A3C46CA48E906F1 /* platformFont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platformFont.h; sourceTree = "<group>"; };
@@ -2136,6 +2175,11 @@
 		C54190E5831EE785B4B4EA03 /* math */ = {
 			isa = PBXGroup;
 			children = (
+				302D405D189D364E00AE2267 /* box_ScriptBinding.h */,
+				302D405E189D364E00AE2267 /* math_ScriptBinding.cc */,
+				302D405F189D364E00AE2267 /* matrix_ScriptBinding.h */,
+				302D4060189D364E00AE2267 /* random_ScriptBinding.h */,
+				302D4061189D364E00AE2267 /* vector_ScriptBinding.h */,
 				C541931251687A339B2B427F /* mPoint.cpp */,
 				C5419BE91578B7543D2F6519 /* mPoint2.h */,
 				C5419210DFEC6472FC36B5D4 /* mPoint3.h */,
@@ -2147,7 +2191,6 @@
 				C541990FFBEC2F91E14FDF76 /* mathUtils.h */,
 				C5419D8524E0D2B3B5D10BFA /* mBox.cc */,
 				C541941576AA07E8B937D0E0 /* mBox.h */,
-				C5419F1C1ABE6E08FEA24BE1 /* mConsoleFunctions.cc */,
 				C5419524EAFB084D2713FBEE /* mConstants.h */,
 				C541927D9FB2D4BC15AE70BD /* mMath.h */,
 				C54199E4CFA8366AD43E8D38 /* mMath_C.cc */,
@@ -2234,6 +2277,7 @@
 		C54191762736B22CFFB74FF2 /* gui */ = {
 			isa = PBXGroup;
 			children = (
+				302D4066189D366400AE2267 /* guiTextListCtrl_ScriptBinding.h */,
 				C54195BDDA012182A373F12A /* buttons */,
 				C5419144ADEDBBD76A9D60BC /* containers */,
 				C541921E78A94BCFDD461F77 /* editor */,
@@ -2312,6 +2356,8 @@
 		C5419188669EA8BF79FF297B /* string */ = {
 			isa = PBXGroup;
 			children = (
+				302D4075189D36BD00AE2267 /* stringBuffer_ScriptBinding.h */,
+				302D4076189D36BD00AE2267 /* stringUnit_ScriptBinding.h */,
 				C541936C4379806DE478247F /* str.cpp */,
 				C5419000E52026EE5C8D2B4E /* str.h */,
 				C5419BC2D376BB98AE647950 /* findMatch.cc */,
@@ -2347,6 +2393,7 @@
 		C54191CB4261AFC97813F0D9 /* component */ = {
 			isa = PBXGroup;
 			children = (
+				302D4073189D368C00AE2267 /* dynamicConsoleMethodComponent_ScriptBinding.h */,
 				C54190647B0B08787F1D208C /* behaviors */,
 				C5419E2265DBF0E9C5FA4A53 /* dynamicConsoleMethodComponent.cpp */,
 				C5419F91B057C969E64B7070 /* interfaces */,
@@ -2547,6 +2594,7 @@
 		C54196850C911C304634CCA9 /* collection */ = {
 			isa = PBXGroup;
 			children = (
+				302D4074189D369A00AE2267 /* undo_ScriptBinding.h */,
 				C541932956576166C6406C52 /* bitSet.h */,
 				C5419F1D83EAA600A669AFED /* hashTable.h */,
 				C541954A4044EB79F028B239 /* nameTags.cpp */,
@@ -2566,9 +2614,10 @@
 		C54196DA39A3DC92EF7B38FC /* io */ = {
 			isa = PBXGroup;
 			children = (
+				302D4063189D365B00AE2267 /* fileObject_ScriptBinding.h */,
+				302D4064189D365B00AE2267 /* fileSystem_ScriptBinding.cc */,
 				C54195BF37FD7B4E3716D2BC /* fileObject.cc */,
 				C5419CED027967F6D47AF7CF /* fileObject.h */,
-				C5419558485DABDD81190A21 /* fileSystemFunctions.cpp */,
 				C5419C74E974ED6D72CD21CE /* resource */,
 				4B8AA4F07FFBB264D20BCCDE /* StreamFn.h */,
 			);
@@ -2579,6 +2628,17 @@
 		C54196F8EA99C43807DFA05B /* network */ = {
 			isa = PBXGroup;
 			children = (
+				302D4050189D362700AE2267 /* connectionProtocol_ScriptBinding.h */,
+				302D4051189D362700AE2267 /* httpObject_ScriptBinding.h */,
+				302D4052189D362700AE2267 /* netConnection_ScriptBinding.h */,
+				302D4053189D362700AE2267 /* netInterface_ScriptBinding.h */,
+				302D4054189D362700AE2267 /* netObject_ScriptBinding.h */,
+				302D4055189D362700AE2267 /* netStringTable_ScriptBinding.h */,
+				302D4056189D362700AE2267 /* RemoteCommandEvent_ScriptBinding.h */,
+				302D4057189D362700AE2267 /* RemoteCommandEvent.h */,
+				302D4058189D362700AE2267 /* serverQuery_ScriptBinding.h */,
+				302D4059189D362700AE2267 /* tcpObject_ScriptBinding.h */,
+				302D405A189D362700AE2267 /* telnetConsole_ScriptBinding.h */,
 				C541986DC61A3E3B3823D7CF /* networkProcessList.cc */,
 				C5419DCFC6AB0C8B9D58E37F /* networkProcessList.h */,
 				C5419E73631E46C33A747DBD /* connectionProtocol.cc */,
@@ -2614,6 +2674,7 @@
 		C5419733169AECB1651A89FD /* audio */ = {
 			isa = PBXGroup;
 			children = (
+				302D4048189D35F600AE2267 /* audio_ScriptBinding.cc */,
 				C54193B47D75865126526B2C /* audio.cc */,
 				C54195DF6A04548799A9DEEB /* audio.h */,
 				C541994A778DC2B5AA1D869F /* AudioAsset.cc */,
@@ -2622,7 +2683,6 @@
 				C54199EBF9DDF21E4B895AAB /* audioBuffer.h */,
 				C541947E59D77B5367128C57 /* audioDataBlock.cc */,
 				C54196E50CF72BB5887A7300 /* audioDataBlock.h */,
-				C5419EB09F4487520E552D3F /* audioFunctions.cc */,
 				C541976EADEB2CA6A6AD0A5C /* audioStreamSource.h */,
 				C5419B3EFFD90A8C3BCFB869 /* audioStreamSourceFactory.cc */,
 				C5419908871FC498FE7C714B /* audioStreamSourceFactory.h */,
@@ -3052,6 +3112,8 @@
 		C5419CDA534755B5D79C5FE1 /* game */ = {
 			isa = PBXGroup;
 			children = (
+				302D4067189D366C00AE2267 /* gameConnection_ScriptBinding.h */,
+				302D4068189D366C00AE2267 /* version_ScriptBinding.h */,
 				C54192A2856D0B90C6F0538B /* gameInterface_ScriptBinding.h */,
 				C541989AE1BB4A237E573FEB /* defaultGame.cc */,
 				C5419392D881677993ACF2D4 /* defaultGame.h */,
@@ -3120,6 +3182,12 @@
 		C5419DF87172823A66B1A4A7 /* sim */ = {
 			isa = PBXGroup;
 			children = (
+				302D404A189D360800AE2267 /* refBase.h */,
+				302D404B189D360800AE2267 /* simBase_ScriptBinding.h */,
+				302D404C189D360800AE2267 /* simDatablock_ScriptBinding.h */,
+				302D404D189D360800AE2267 /* simObject_ScriptBinding.h */,
+				302D404E189D360800AE2267 /* simSerialize_ScriptBinding.h */,
+				302D404F189D360800AE2267 /* simSet_ScriptBinding.h */,
 				C54191D2C08F1F3E98F6D4D9 /* scriptGroup.cc */,
 				C5419DDFD9A6C7151BCF06DB /* scriptGroup.h */,
 				C5419009BA1A57CADA793C36 /* scriptObject.cc */,
@@ -3155,10 +3223,10 @@
 		C5419E1D56F36A39A90BAFD8 /* memory */ = {
 			isa = PBXGroup;
 			children = (
+				302D405B189D363B00AE2267 /* frameAllocator_ScriptBinding.cc */,
 				C5419F76ACA689B843F2F789 /* dataChunker.cc */,
 				C5419E2FE6E516B6D797B1FD /* dataChunker.h */,
 				C5419CCABF25995AA27E0366 /* factoryCache.h */,
-				C541985E593B4E8992C2CEA0 /* frameAllocator.cc */,
 				C541915004113890052E86A9 /* frameAllocator.h */,
 				C5419778DE190D25228B757C /* safeDelete.h */,
 			);
@@ -3280,6 +3348,15 @@
 		C5419FF6E4CA46DFF01D6A04 /* console */ = {
 			isa = PBXGroup;
 			children = (
+				302D4069189D368300AE2267 /* consoleDoc_ScriptBinding.h */,
+				302D406A189D368300AE2267 /* consoleExprEvalState_ScriptBinding.h */,
+				302D406B189D368300AE2267 /* consoleLogger_ScriptBinding.h */,
+				302D406C189D368300AE2267 /* consoleNamespace_ScriptBinding.h */,
+				302D406D189D368300AE2267 /* expando_ScriptBinding.h */,
+				302D406E189D368300AE2267 /* inputManagement_ScriptBinding.h */,
+				302D406F189D368300AE2267 /* metaScripting_ScriptBinding.cc */,
+				302D4070189D368300AE2267 /* output_ScriptBinding.h */,
+				302D4071189D368300AE2267 /* taggedStrings_ScriptBinding.h */,
 				C54193D11346ADA6367272E8 /* consoleDictionary.cc */,
 				C541916B5DC164BB77AD63D5 /* consoleDictionary.h */,
 				C541946BFB6F566363E9F0A3 /* consoleExprEvalState.cc */,
@@ -3479,6 +3556,7 @@
 				865A2297165187B600527C44 /* b2ContactSolver.cpp in Sources */,
 				865A2298165187B600527C44 /* b2EdgeAndCircleContact.cpp in Sources */,
 				865A2299165187B600527C44 /* b2EdgeAndPolygonContact.cpp in Sources */,
+				302D405C189D363B00AE2267 /* frameAllocator_ScriptBinding.cc in Sources */,
 				865A229A165187B600527C44 /* b2PolygonAndCircleContact.cpp in Sources */,
 				865A229B165187B600527C44 /* b2PolygonContact.cpp in Sources */,
 				865A229C165187B600527C44 /* b2DistanceJoint.cpp in Sources */,
@@ -3615,6 +3693,7 @@
 				C54194F7113F3177F6B3EDE4 /* GroupedSceneController.cc in Sources */,
 				C5419F749896AD029735FF62 /* PickingSceneController.cc in Sources */,
 				C5419056E9301B30614771F5 /* PointForceController.cc in Sources */,
+				302D4049189D35F600AE2267 /* audio_ScriptBinding.cc in Sources */,
 				C54198145D67578A6382156F /* BuoyancyController.cc in Sources */,
 				C541960C0B5E2AE10B9C2287 /* ParticleAssetFieldCollection.cc in Sources */,
 				C54198B9AEB08B1898EC1061 /* ParticleAssetEmitter.cc in Sources */,
@@ -3665,12 +3744,12 @@
 				C54195E7E00FCB8E6E23564F /* assetFieldTypes.cc in Sources */,
 				C54195FCA9BA57F62EA94D3E /* assetManager.cc in Sources */,
 				C5419E930CAF5897861B3B71 /* assetQuery.cc in Sources */,
+				302D4062189D364E00AE2267 /* math_ScriptBinding.cc in Sources */,
 				C5419BEFC6B5449EDBA48220 /* assetTagsManifest.cc in Sources */,
 				C54195C28ED91C668D6658A8 /* audio.cc in Sources */,
 				C5419FAD7E8275552828FFD7 /* AudioAsset.cc in Sources */,
 				C5419B9EF588014B4CB577E2 /* audioBuffer.cc in Sources */,
 				C5419E20A62BAA48DFAB8C87 /* audioDataBlock.cc in Sources */,
-				C5419A84C3DDD48D36435583 /* audioFunctions.cc in Sources */,
 				C5419B25E537E1BDD229CBAE /* audioStreamSourceFactory.cc in Sources */,
 				C5419E5A8E235125635C1C77 /* wavStreamSource.cc in Sources */,
 				C54198558AF60B2767F73C72 /* nameTags.cpp in Sources */,
@@ -3681,6 +3760,7 @@
 				C5419C153926B35E9E18B8F5 /* dynamicConsoleMethodComponent.cpp in Sources */,
 				C5419A8672384ACED7E9A78D /* simComponent.cpp in Sources */,
 				C54196478E068F9DDC8DE7B2 /* consoleDictionary.cc in Sources */,
+				302D4072189D368300AE2267 /* metaScripting_ScriptBinding.cc in Sources */,
 				C5419FFE32E634CD2BA4CA4E /* consoleExprEvalState.cc in Sources */,
 				C54190196FF408AAEC2960D7 /* consoleNamespace.cc in Sources */,
 				C54196325B50FD87682A0314 /* consoleBaseType.cc in Sources */,
@@ -3819,14 +3899,12 @@
 				C5419F6110EF6A4D3FFFAF1A /* guiMoveCtrl.cpp in Sources */,
 				C54195567F585A7A2224AB43 /* actionMap.cc in Sources */,
 				C54197C282EB10579923A45C /* fileObject.cc in Sources */,
-				C54198802F01ABF323B19BD0 /* fileSystemFunctions.cpp in Sources */,
 				C541987E47C63DD65F45BF3B /* resourceDictionary.cc in Sources */,
 				C54193B25E826B70E4C311BE /* resourceManager.cc in Sources */,
 				C54198761863C611F2027CDE /* mPoint.cpp in Sources */,
 				C5419E145E66791910513EB0 /* mathTypes.cc in Sources */,
 				C5419280D8BD2AD1FF9A99AD /* mathUtils.cc in Sources */,
 				C5419C30346F4E46ABE4B258 /* mBox.cc in Sources */,
-				C54198B80BE19F32CFBE38F0 /* mConsoleFunctions.cc in Sources */,
 				C5419BD04CC51685C04FB6D2 /* mMath_C.cc in Sources */,
 				C54192DF795F47D7E430D022 /* mMathAltivec.cc in Sources */,
 				C5419BAFD197CDA73992149D /* mMathFn.cc in Sources */,
@@ -3841,7 +3919,6 @@
 				C54197036651A97EAF8A40A4 /* mRect.cpp in Sources */,
 				C5419B76EB2F7E40C097F37F /* sphereMesh.cpp in Sources */,
 				C5419A9B9605B70AC22EA42A /* dataChunker.cc in Sources */,
-				C5419A05701A6F72884BAA0A /* frameAllocator.cc in Sources */,
 				C5419F63C876F87140AC1AD7 /* dispatcher.cc in Sources */,
 				C5419221176A34346EB01777 /* eventManager.cc in Sources */,
 				C54198A4EDF62A1860119D96 /* message.cc in Sources */,
@@ -3862,6 +3939,7 @@
 				C5419742D87883510641BD8B /* netObject.cc in Sources */,
 				C5419AE9E5EFD397AB40F181 /* netStringTable.cc in Sources */,
 				C54191C67A983FEBC5E7E24B /* netTest.cc in Sources */,
+				302D4065189D365B00AE2267 /* fileSystem_ScriptBinding.cc in Sources */,
 				C541992B873416179871415F /* RemoteCommandEvent.cc in Sources */,
 				C5419D4A8EF2B380EC88BEE5 /* serverQuery.cc in Sources */,
 				C541931412633F4B6CC0FA1C /* tcpObject.cc in Sources */,

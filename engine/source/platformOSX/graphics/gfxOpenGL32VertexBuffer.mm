@@ -29,12 +29,12 @@
 #include "platform/platformGL.h"
 
 GFXOpenGL32VertexBuffer::GFXOpenGL32VertexBuffer(  GFXDevice *device,
-                                       U32 vertexCount,
+                                       dsize_t vertexCount,
                                        const GFXVertexFormat *vertexFormat, 
-                                       U32 vertexSize, 
+                                       dsize_t vertexSize,
                                        GFXBufferType bufferType,
                                        const GLvoid *vertexBuffer,
-                                       U32 indexCount,
+                                       dsize_t indexCount,
                                        const GLvoid *indexBuffer)
    :  GFXOpenGLVertexBuffer( device, vertexCount, vertexFormat, vertexSize, bufferType ),
       mZombieCache(NULL),
@@ -57,25 +57,25 @@ GFXOpenGL32VertexBuffer::GFXOpenGL32VertexBuffer(  GFXDevice *device,
         
         if ( element.getSemantic() == GFXSemantic::POSITION )
         {
-            glVertexAttribPointer(GLKVertexAttribPosition, element.getSizeInBytes()/4, GL_FLOAT, GL_FALSE, mVertexSize, buffer);
+            glVertexAttribPointer(GLKVertexAttribPosition, element.getSizeInBytes()/4, GL_FLOAT, GL_FALSE, (GLsizei)mVertexSize, buffer);
             glEnableVertexAttribArray(GLKVertexAttribPosition);
             buffer += element.getSizeInBytes();
         }
         else if ( element.getSemantic() == GFXSemantic::NORMAL )
         {
-            glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, mVertexSize, buffer);
+            glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, (GLsizei)mVertexSize, buffer);
             glEnableVertexAttribArray(GLKVertexAttribNormal);
             buffer += element.getSizeInBytes();
         }
         else if ( element.getSemantic() == GFXSemantic::COLOR)
         {
-            glVertexAttribPointer(GLKVertexAttribColor, 4, GL_UNSIGNED_BYTE, GL_TRUE, mVertexSize, buffer);
+            glVertexAttribPointer(GLKVertexAttribColor, 4, GL_UNSIGNED_BYTE, GL_TRUE, (GLsizei)mVertexSize, buffer);
             glEnableVertexAttribArray(GLKVertexAttribColor);
             buffer += element.getSizeInBytes();
         }
         else // Everything else is a texture coordinate.
         {
-            glVertexAttribPointer(GLKVertexAttribTexCoord0+texCoordIndex, 2, GL_FLOAT, GL_FALSE, mVertexSize, buffer);
+            glVertexAttribPointer(GLKVertexAttribTexCoord0+texCoordIndex, 2, GL_FLOAT, GL_FALSE, (GLsizei)mVertexSize, buffer);
             glEnableVertexAttribArray(GLKVertexAttribTexCoord0+texCoordIndex);
             buffer += element.getSizeInBytes();
             ++texCoordIndex;
@@ -103,7 +103,7 @@ GFXOpenGL32VertexBuffer::~GFXOpenGL32VertexBuffer()
       delete [] mZombieCache;
 }
 
-void GFXOpenGL32VertexBuffer::lock( U32 vertexStart, U32 vertexEnd, void **vertexPtr )
+void GFXOpenGL32VertexBuffer::lock( dsize_t vertexStart, dsize_t vertexEnd, void **vertexPtr )
 {
    PRESERVE_VERTEX_BUFFER();
 	// Bind us, get a pointer into the buffer, then
@@ -115,7 +115,7 @@ void GFXOpenGL32VertexBuffer::lock( U32 vertexStart, U32 vertexEnd, void **verte
 	lockedVertexEnd   = vertexEnd;
 }
 
-void GFXOpenGL32VertexBuffer::set( void* data, U32 dataSize, U32 indexCount, void* indexBuffer)
+void GFXOpenGL32VertexBuffer::set( void* data, dsize_t dataSize, dsize_t indexCount, void* indexBuffer)
 {
     glBindVertexArray(mVertexArrayObject);
     glBindBuffer(GL_ARRAY_BUFFER, mBuffer);
