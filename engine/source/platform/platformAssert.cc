@@ -24,6 +24,8 @@
 #include "console/console.h"
 #include <stdarg.h>
 
+#include "platformAssert_ScriptBinding.h"
+
 //-------------------------------------- STATIC Declaration
 PlatformAssert *PlatformAssert::platformAssert = NULL;
 
@@ -117,6 +119,7 @@ bool PlatformAssert::process(Type         assertType,
 
       char buffer[2048];
       dSprintf(buffer, 2048, "%s: (%s @ %ld)", typeName[assertType], filename, lineNumber);
+       assert(false);
 
 #ifdef TORQUE_DEBUG
       // In debug versions, allow a retry even for ISVs...
@@ -167,13 +170,4 @@ const char* avar(const char *message, ...)
    va_start(args, message);
    dVsprintf(buffer, sizeof(buffer), message, args);
    return( buffer );
-}
-
-
-//-----------------------------------------------------------------------------
-
-ConsoleFunction( Assert, void, 3, 3, "(condition, message) - Fatal Script Assertion" )
-{
-    // Process Assertion.
-    AssertISV( dAtob(argv[1]), argv[2] );
 }

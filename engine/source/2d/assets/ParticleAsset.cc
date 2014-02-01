@@ -22,7 +22,11 @@
 
 #include "console/consoleTypes.h"
 #include "2d/assets/ParticleAsset.h"
+
+// Script bindings.
 #include "ParticleAsset_ScriptBinding.h"
+
+// Debug Profiling.
 #include "debug/profiler.h"
 
 //------------------------------------------------------------------------------

@@ -662,7 +662,7 @@ void TSShape::initVertexFeatures()
          else
          {
             hasColors |= !mesh->colors.empty();
-            hasTexcoord2 |= !mesh->tverts2.empty();
+            hasTexcoord2 |= !mesh->texverts2.empty();
          }
       }
    }
@@ -1251,43 +1251,35 @@ void TSShape::assembleShape()
       TSSkinMesh::smNodeIndexList[i] = nullptr;
    }
 
-   // read in the meshes (sans skins)...straightforward read one at a time
-   ptr32 = tsalloc.allocShape32(numMeshes + numSkins * numDetails * sizeof(PTR)/4); // leave room for skins on old shapes
-   PTR* mesh_ptrs = (PTR*)ptr32;
-   S32 curObject = 0; // for tracking skipped meshes
-   for (i=0; i<numMeshes; i++)
-   {
-      bool skip = checkSkip(i,curObject,skipDL); // skip this mesh?
-      S32 meshType = tsalloc.get32();
-      if (meshType == TSMesh::DecalMeshType)
-         // decal mesh deprecated
-         skip = true;
-      TSMesh * mesh = TSMesh::assembleMesh(meshType,skip);
-      if (mesh_ptrs)
-         mesh_ptrs[i] = skip ?  NULL : (PTR)mesh;
+    // skins
+    ptr32 = tsalloc.allocShape32(numSkins);
+    for (i=0; i<numSkins; i++)
+    {
+        bool skip = i<detailFirstSkin[skipDL];
+        TSSkinMesh * skin = (TSSkinMesh*)TSMesh::assembleMesh(TSMesh::SkinMeshType,skip);
+        if (meshes.address())
+        {
+            // add pointer to skin in shapes list of meshes
+            // we reserved room for this above...
+            meshes.set(meshes.address(),meshes.size()+1);
+            meshes[meshes.size()-1] = skip ? nullptr : skin;
+        }
 
-      // fill in location of verts, tverts, and normals for detail levels
-      if (mesh && meshType!=TSMesh::DecalMeshType)
-      {
-         TSMesh::smVertsList[i]  = mesh->verts.address();
-         TSMesh::smTVertsList[i] = mesh->tverts.address();
-         TSMesh::smNormsList[i]  = mesh->norms.address();
-         TSMesh::smEncodedNormsList[i] = mesh->encodedNorms.address();
-         TSMesh::smDataCopied[i] = !skip; // as long as we didn't skip this mesh, the data should be in shape now
-         if (meshType==TSMesh::SkinMeshType)
-         {
-            TSSkinMesh * skin = (TSSkinMesh*)mesh;
+        // fill in location of verts, tverts, and normals for shared detail levels
+        if (skin)
+        {
             TSMesh::smVertsList[i]  = skin->batchData.initialVerts.address();
+            TSMesh::smTVertsList[i] = skin->texverts.address();
             TSMesh::smNormsList[i]  = skin->batchData.initialNorms.address();
+            TSMesh::smEncodedNormsList[i]  = skin->encodedNorms.address();
+            TSMesh::smDataCopied[i] = !skip; // as long as we didn't skip this mesh, the data should be in shape now
             TSSkinMesh::smInitTransformList[i] = skin->batchData.initialTransforms.address();
             TSSkinMesh::smVertexIndexList[i] = skin->vertexIndex.address();
             TSSkinMesh::smBoneIndexList[i] = skin->boneIndex.address();
             TSSkinMesh::smWeightList[i] = skin->weight.address();
             TSSkinMesh::smNodeIndexList[i] = skin->batchData.nodeIndex.address();
-         }
-      }
-   }
-   meshes.set((TSMesh * const *)mesh_ptrs,numMeshes);
+        }
+    }
 
    tsalloc.checkGuard();
 
@@ -1356,11 +1348,11 @@ void TSShape::assembleShape()
             meshes[meshes.size()-1] = skip ? nullptr : skin;
          }
 
-         // fill in location of verts, tverts, and normals for shared detail levels
+         // fill in location of verts, texverts, and normals for shared detail levels
          if (skin)
          {
             TSMesh::smVertsList[i]  = skin->batchData.initialVerts.address();
-            TSMesh::smTVertsList[i] = skin->tverts.address();
+            TSMesh::smTVertsList[i] = skin->texverts.address();
             TSMesh::smNormsList[i]  = skin->batchData.initialNorms.address();
             TSMesh::smEncodedNormsList[i]  = skin->encodedNorms.address();
             TSMesh::smDataCopied[i] = !skip; // as long as we didn't skip this mesh, the data should be in shape now
@@ -1537,7 +1529,7 @@ bool TSShape::canWriteOldFormat() const
          continue;
 
       // Cannot use old format if using the new functionality (COLORs, 2nd UV set)
-      if (meshes[i]->tverts2.size() || meshes[i]->colors.size())
+      if (meshes[i]->texverts2.size() || meshes[i]->colors.size())
          return false;
 
       // Cannot use old format if any primitive has too many triangles
@@ -1819,9 +1811,9 @@ bool TSShape::read(std::iostream &stream)
 //         for (U32 j = 0; j < obj->norms.size(); j++)
 //            Con::errorf("   meshes[%d]->norms[%d].set(%g, %g, %g);", i, j, obj->norms[j].x, obj->norms[j].y, obj->norms[j].z);
 //
-//         Con::errorf("\n   meshes[%d]->tverts.set(dMalloc(%d * sizeof(Point2F)), %d);", obj->tverts.size(), obj->tverts.size());
-//         for (U32 j = 0; j < obj->tverts.size(); j++)
-//            Con::errorf("   meshes[%d]->tverts[%d].set(%g, %g);", i, j, obj->tverts[j].x, obj->tverts[j].y);
+//         Con::errorf("\n   meshes[%d]->texverts.set(dMalloc(%d * sizeof(Point2F)), %d);", obj->texverts.size(), obj->texverts.size());
+//         for (U32 j = 0; j < obj->texverts.size(); j++)
+//            Con::errorf("   meshes[%d]->texverts[%d].set(%g, %g);", i, j, obj->texverts[j].x, obj->texverts[j].y);
 //
 //         Con::errorf("\n   meshes[%d]->primitives.set(dMalloc(%d * sizeof(TSDrawPrimitive)), %d);", obj->primitives.size(), obj->primitives.size());
 //         for (U32 j = 0; j < obj->primitives.size(); j++)

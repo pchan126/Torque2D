@@ -28,7 +28,7 @@
 //#include "ts/tsSortedMesh.h"
 #include "ts/tsShape.h"
 #include "ts/tsShapeInstance.h"
-//#include "ts/tsRenderState.h"
+#include "ts/tsRenderState.h"
 //#include "ts/tsMaterialList.h"
 //#include "ts/instancingMatHook.h"
 #include "math/mMath.h"
@@ -43,12 +43,12 @@
 //#include "core/frameAllocator.h"
 //#include "platform/profiler.h"
 //#include "materials/sceneData.h"
-//#include "materials/materialManager.h"
+#include "materials/materialManager.h"
 //#include "scene/sceneManager.h"
-//#include "scene/sceneRenderState.h"
-//#include "materials/matInstance.h"
-//#include "renderInstance/renderPassManager.h"
-//#include "materials/customMaterialDefinition.h"
+#include "scene/sceneRenderState.h"
+#include "materials/matInstance.h"
+#include "renderInstance/renderPassManager.h"
+#include "materials/customMaterialDefinition.h"
 //#include "gfx/util/triListOpt.h"
 //#include "util/triRayCheck.h"
 
@@ -110,6 +110,17 @@ void tsForceFaceCamera( MatrixF *mat, const Point3F *objScale )
 // TSMesh render methods
 //-----------------------------------------------------
 
+void TSMesh::render( GFXVertexBufferDataHandle &instanceVB )
+{
+   // A TSMesh never uses the instanceVB.
+   TORQUE_UNUSED( instanceVB );
+   TORQUE_UNUSED( instancePB );
+
+   innerRender( mVB );
+}
+
+
+
 //void TSMesh::render( GFXVertexBufferDataHandle &instanceVB, GFXPrimitiveBufferHandle &instancePB )
 //{
 //   // A TSMesh never uses the instanceVB.
@@ -118,7 +129,162 @@ void tsForceFaceCamera( MatrixF *mat, const Point3F *objScale )
 //
 //   innerRender( mVB, mPB );
 //}
+
+void TSMesh::innerRender( GFXVertexBufferDataHandle &vb )
+{
+   if ( !vb.isValid() )
+      return;
+
+   GFX->setVertexBuffer( vb );
+
+//   for( U32 p = 0; p < primitives.size(); p++ )
+//      GFX->drawPrimitive( p );
+}
+
+void TSMesh::render( TSMaterialList *materials,
+                     const TSRenderState &rdata,
+                     bool isSkinDirty,
+                     const Vector<MatrixF> &transforms,
+                     GFXVertexBufferDataHandle &vertexBuffer )
+{
+   // These are only used by TSSkinMesh.
+   TORQUE_UNUSED( isSkinDirty );
+   TORQUE_UNUSED( transforms );
+   TORQUE_UNUSED( vertexBuffer );
+   TORQUE_UNUSED( primitiveBuffer );
+
+   // Pass our shared VB.
+   innerRender( materials, rdata, mVB );
+}
+
+void TSMesh::innerRender( TSMaterialList *materials, const TSRenderState &rdata, GFXVertexBufferDataHandle &vb )
+{
+   PROFILE_SCOPE( TSMesh_InnerRender );
+
+   if( vertsPerFrame <= 0 )
+      return;
+
+   F32 meshVisibility = rdata.getFadeOverride() * mVisibility;
+   if ( meshVisibility < VISIBILITY_EPSILON )
+      return;
+
+   const SceneRenderState *state = rdata.getSceneState();
+   RenderPassManager *renderPass = state->getRenderPass();
+
+   MeshRenderInst *coreRI = renderPass->allocInst<MeshRenderInst>();
+   coreRI->type = RenderPassManager::RIT_Mesh;
+
+   const MatrixF &objToWorld = GFX->getWorldMatrix();
+
+   // Sort by the center point or the bounds.
+   if ( rdata.useOriginSort() )
+      coreRI->sortDistSq = ( objToWorld.getPosition() - state->getCameraPosition() ).lenSquared();
+   else
+   {
+      Box3F rBox = mBounds;
+      objToWorld.mul( rBox );
+      coreRI->sortDistSq = rBox.getSqDistanceToPoint( state->getCameraPosition() );
+   }
+
+   if (getFlags(Billboard))
+   {
+      Point3F camPos = state->getDiffuseCameraPosition();
+      Point3F objPos;
+      objToWorld.getColumn(3, &objPos);
+      Point3F targetVector = camPos - objPos;
+      if(getFlags(BillboardZAxis))
+         targetVector.z = 0.0f;
+      targetVector.normalize();
+      MatrixF orient = MathUtils::createOrientFromDir(targetVector);
+      orient.setPosition(objPos);
+      orient.scale(objToWorld.getScale());
+
+      coreRI->objectToWorld = renderPass->allocUniqueXform( orient );
+   }
+   else
+      coreRI->objectToWorld = renderPass->allocUniqueXform( objToWorld );
+
+   coreRI->worldToCamera = renderPass->allocSharedXform(RenderPassManager::View);
+   coreRI->projection = renderPass->allocSharedXform(RenderPassManager::Projection);
+
+   AssertFatal( vb.isValid(), "TSMesh::innerRender() - Got invalid vertex buffer!" );
+//   AssertFatal( pb.isValid(), "TSMesh::innerRender() - Got invalid primitive buffer!" );
+
+   coreRI->vertBuff = &vb;
+//   coreRI->primBuff = &pb;
+//   coreRI->defaultKey2 = (U32) coreRI->vertBuff;
+
+   coreRI->materialHint = rdata.getMaterialHint();
+
+   coreRI->visibility = meshVisibility;
+   coreRI->cubemap = rdata.getCubemap();
+
+   // NOTICE: SFXBB is removed and refraction is disabled!
+   //coreRI->backBuffTex = GFX->getSfxBackBuffer();
+
+   for ( S32 i = 0; i < primitives.size(); i++ )
+   {
+      const TSDrawPrimitive &draw = primitives[i];
+
+      // We need to have a material.
+      if ( draw.matIndex & TSDrawPrimitive::NoMaterial )
+         continue;
+
+#ifdef TORQUE_DEBUG
+      // for inspection if you happen to be running in a debugger and can't do bit
+      // operations in your head.
+//      S32 triangles = draw.matIndex & TSDrawPrimitive::Triangles;
+//      S32 strip = draw.matIndex & TSDrawPrimitive::Strip;
+//      S32 fan = draw.matIndex & TSDrawPrimitive::Fan;
+//      S32 indexed = draw.matIndex & TSDrawPrimitive::Indexed;
+//      S32 type = draw.matIndex & TSDrawPrimitive::TypeMask;
+//      TORQUE_UNUSED(triangles);
+//      TORQUE_UNUSED(strip);
+//      TORQUE_UNUSED(fan);
+//      TORQUE_UNUSED(indexed);
+//      TORQUE_UNUSED(type);
+#endif
+
+//      const U32 matIndex = draw.matIndex & TSDrawPrimitive::MaterialMask;
+//      BaseMatInstance *matInst = materials->getMaterialInst( matIndex );
+
+//#ifndef TORQUE_OS_MAC
 //
+//      // Get the instancing material if this mesh qualifies.
+//      if ( meshType != SkinMeshType && pb->mPrimitiveArray[i].numVertices < smMaxInstancingVerts )
+//         matInst = InstancingMaterialHook::getInstancingMat( matInst );
+//
+//#endif
+//
+//      // If we don't have a material instance after the overload then
+//      // there is nothing to render... skip this primitive.
+//      matInst = state->getOverrideMaterial( matInst );
+//      if ( !matInst || !matInst->isValid())
+//         continue;
+//
+//      // If the material needs lights then gather them
+//      // here once and set them on the core render inst.
+//      if ( matInst->isForwardLit() && !coreRI->lights[0] && rdata.getLightQuery() )
+//         rdata.getLightQuery()->getLights( coreRI->lights, 8 );
+//
+//      MeshRenderInst *ri = renderPass->allocInst<MeshRenderInst>();
+//      *ri = *coreRI;
+//
+//      ri->matInst = matInst;
+//      ri->defaultKey = matInst->getStateHint();
+//      ri->primBuffIndex = i;
+//
+//      // Translucent materials need the translucent type.
+//      if ( matInst->getMaterial()->isTranslucent() )
+//      {
+//         ri->type = RenderPassManager::RIT_Translucent;
+//         ri->translucentSort = true;
+//      }
+//
+//      renderPass->addInst( ri );
+   }
+}
+
 //void TSMesh::innerRender( GFXVertexBufferDataHandle &vb, GFXPrimitiveBufferHandle &pb )
 //{
 //   if ( !vb.isValid() || !pb.isValid() )
@@ -342,9 +508,9 @@ const Point3F * TSMesh::getNormals( S32 firstVert )
 //               OptimizedPolyList::VertIndex vert;
 //               vert.vertIdx   = opList->insertPoint( verts[ i + firstVert ] );
 //               vert.normalIdx = opList->insertNormal( norms[ i + firstVert ] );
-//               vert.uv0Idx    = opList->insertUV0( tverts[ i + firstVert ] );
+//               vert.uv0Idx    = opList->insertUV0( texverts[ i + firstVert ] );
 //               if ( mHasTVert2 )
-//                  vert.uv1Idx = opList->insertUV1( tverts2[ i + firstVert ] );
+//                  vert.uv1Idx = opList->insertUV1( texverts2[ i + firstVert ] );
 //
 //               opList->mVertexList.push_back( vert );
 //            }
@@ -1458,6 +1624,11 @@ void TSSkinMesh::createBatchData()
 #endif
 }
 
+void TSSkinMesh::render( GFXVertexBufferDataHandle &instanceVB )
+{
+   innerRender( instanceVB );
+}
+
 //void TSSkinMesh::render( GFXVertexBufferDataHandle &instanceVB, GFXPrimitiveBufferHandle &instancePB )
 //{
 //   innerRender( instanceVB, instancePB );
@@ -1931,10 +2102,10 @@ TSMesh * TSMesh::assembleMesh(U32 meshType, bool skip)
 
 void TSMesh::convertToTris(	const TSDrawPrimitive *primitivesIn,
 							         const S32 *indicesIn,
-                           	S32 numPrimIn,
+                                   	S32 numPrimIn,
          							S32 &numPrimOut, 
          							S32 &numIndicesOut,
-                           	TSDrawPrimitive *primitivesOut, 
+                                   	TSDrawPrimitive *primitivesOut,
 							         S32 *indicesOut ) const
 {
    S32 prevMaterial = -99999;
@@ -2355,13 +2526,13 @@ void TSMesh::createVBIB()
 
 void TSMesh::_createVBIB( GFXVertexBufferDataHandle &vb )
 {
-//   AssertFatal(mVertexData.isReady(), "Call convertToAlignedMeshData() before calling _createVBIB()");
-//
-//   if ( mNumVerts == 0 || !GFXDevice::devicePresent() )
-//      return;
-//
-//   PROFILE_SCOPE( TSMesh_CreateVBIB );
-//
+   AssertFatal(mVertexData.isReady(), "Call convertToAlignedMeshData() before calling _createVBIB()");
+
+   if ( mNumVerts == 0 || !GFXDevice::devicePresent() )
+      return;
+
+   PROFILE_SCOPE( TSMesh_CreateVBIB );
+
 //   // Number of verts can change in LOD skinned mesh
 //   const bool vertsChanged = ( vb && vb->mNumVerts < mNumVerts );
 //
@@ -2467,13 +2638,13 @@ void TSMesh::assemble( bool skip )
 
    S32 numTVerts = tsalloc.get32();
    ptr32 = getSharedData32( parentMesh, 2 * numTVerts, (S32**)smTVertsList.address(), skip );
-   tverts.set( (Point2F*)ptr32, numTVerts );
+   texverts.set( (Point2F*)ptr32, numTVerts );
 
    if ( TSShape::smReadVersion > 25 )
    {
       numTVerts = tsalloc.get32();
       ptr32 = getSharedData32( parentMesh, 2 * numTVerts, (S32**)smTVerts2List.address(), skip );
-      tverts2.set( (Point2F*)ptr32, numTVerts );
+      texverts2.set( (Point2F*)ptr32, numTVerts );
 
       S32 numVColors = tsalloc.get32();
       ptr32 = getSharedData32( parentMesh, numVColors, (S32**)smColorsList.address(), skip );
@@ -2625,26 +2796,26 @@ void TSMesh::disassemble()
    if(mVertexData.isReady())
    {
       verts.setSize(mNumVerts);
-      tverts.setSize(mNumVerts);
+      texverts.setSize(mNumVerts);
       norms.setSize(mNumVerts);
 
       if(mHasColor)
          colors.setSize(mNumVerts);
       if(mHasTVert2)
-         tverts2.setSize(mNumVerts);
+         texverts2.setSize(mNumVerts);
 
       // Fill arrays
       for(U32 i = 0; i < mNumVerts; i++)
       {
          const __TSMeshVertexBase &cv = mVertexData[i];
          verts[i] = cv.vert();
-         tverts[i] = cv.tvert();
+         texverts[i] = cv.tvert();
          norms[i] = cv.normal();
 
 //         if(mHasColor)
 //            cv.color().getColor(&colors[i]);
          if(mHasTVert2)
-            tverts2[i] = cv.tvert2();
+            texverts2[i] = cv.tvert2();
       }
    }
 
@@ -2653,22 +2824,22 @@ void TSMesh::disassemble()
    if ( parentMesh < 0 )
       tsalloc.copyToBuffer32( (S32*)verts.address(), 3 * verts.size() ); // if no parent mesh, then save off our verts
 
-   // tverts...
-   tsalloc.set32( (S32)tverts.size() );
+   // texverts...
+   tsalloc.set32( (S32) texverts.size() );
    if ( parentMesh < 0 )
-      tsalloc.copyToBuffer32( (S32*)tverts.address(), 2 * tverts.size() ); // if no parent mesh, then save off our tverts
+      tsalloc.copyToBuffer32( (S32*) texverts.address(), 2 * texverts.size() ); // if no parent mesh, then save off our texverts
 
    if (TSShape::smVersion > 25)
    {
-      // tverts2...
-      tsalloc.set32( (S32)tverts2.size() );
+      // texverts2...
+      tsalloc.set32( (S32) texverts2.size() );
       if ( parentMesh < 0 )
-         tsalloc.copyToBuffer32( (S32*)tverts2.address(), 2 * tverts2.size() ); // if no parent mesh, then save off our tverts
+         tsalloc.copyToBuffer32( (S32*) texverts2.address(), 2 * texverts2.size() ); // if no parent mesh, then save off our texverts
 
       // colors
       tsalloc.set32( (S32)colors.size() );
       if ( parentMesh < 0 )
-         tsalloc.copyToBuffer32( (S32*)colors.address(), colors.size() ); // if no parent mesh, then save off our tverts
+         tsalloc.copyToBuffer32( (S32*)colors.address(), colors.size() ); // if no parent mesh, then save off our texverts
    }
 
    // norms...
@@ -2885,9 +3056,9 @@ inline void TSMesh::findTangent( U32 index1,
    const Point3F &v2 = _verts[index2];
    const Point3F &v3 = _verts[index3];
 
-   const Point2F &w1 = tverts[index1];
-   const Point2F &w2 = tverts[index2];
-   const Point2F &w3 = tverts[index3];
+   const Point2F &w1 = texverts[index1];
+   const Point2F &w2 = texverts[index2];
+   const Point2F &w3 = texverts[index3];
 
    F32 x1 = v2.x - v1.x;
    F32 x2 = v3.x - v1.x;
@@ -3066,8 +3237,8 @@ void TSMesh::_convertToAlignedMeshData( TSMeshVertexArray &vertexData, const Vec
    mHasColor = !colors.empty();
    AssertFatal(!mHasColor || colors.size() == _verts.size(), "Vector of color elements should be the same size as other vectors");
 
-   mHasTVert2 = !tverts2.empty();
-   AssertFatal(!mHasTVert2 || tverts2.size() == _verts.size(), "Vector of tvert2 elements should be the same size as other vectors");
+   mHasTVert2 = !texverts2.empty();
+   AssertFatal(!mHasTVert2 || texverts2.size() == _verts.size(), "Vector of tvert2 elements should be the same size as other vectors");
 
    // Create the proper array type
 //   void *aligned_mem = dMalloc_aligned(mVertSize * mNumVerts, 16);
@@ -3083,10 +3254,10 @@ void TSMesh::_convertToAlignedMeshData( TSMeshVertexArray &vertexData, const Vec
 //      v.normal(_norms[i]);
 //      v.tangent(tangents[i]);
 //
-//      if(i < tverts.size())
-//         v.tvert(tverts[i]);
-//      if(mHasTVert2 && i < tverts2.size())
-//         v.tvert2(tverts2[i]);
+//      if(i < texverts.size())
+//         v.tvert(texverts[i]);
+//      if(mHasTVert2 && i < texverts2.size())
+//         v.tvert2(texverts2[i]);
 //      if(mHasColor && i < colors.size())
 //         v.color(colors[i]);
 //   }
@@ -3095,7 +3266,7 @@ void TSMesh::_convertToAlignedMeshData( TSMeshVertexArray &vertexData, const Vec
    verts.free_memory();
    norms.free_memory();
    tangents.free_memory();
-   tverts.free_memory();
-   tverts2.free_memory();
+   texverts.free_memory();
+   texverts2.free_memory();
    colors.free_memory();
 }

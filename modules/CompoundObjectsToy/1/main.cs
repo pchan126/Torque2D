@@ -141,13 +141,13 @@ function CompoundObjectsToy::createCompoundObject( %this, %worldPosition )
     for( %angle = 0; %angle < 360; %angle += %angleStride )
     {
         %radianAngle = mDegToRad( %angle );
-        %spriteX = mSin( %radianAngle ) * %radius;
-        %spriteY = mCos( %radianAngle ) * %radius;
-        
+        %spriteX = mCos( %angle ) * %radius;
+        %spriteY = mSin( %angle ) * %radius;
+
         %composite.addSprite();
         %composite.setSpriteLocalPosition( %spriteX, %spriteY );
         %composite.setSpriteSize( %blockSize );
-        %composite.setSpriteAngle( -%angle );
+        %composite.setSpriteAngle( %angle );
         %composite.setSpriteImage( "ToyAssets:Blocks" );
         %composite.setSpriteImageFrame( getRandom(0,55) );
     }

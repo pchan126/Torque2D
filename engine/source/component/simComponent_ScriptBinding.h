@@ -20,74 +20,82 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-//////////////////////////////////////////////////////////////////////////
-// Console Methods
-//////////////////////////////////////////////////////////////////////////
+ConsoleMethodGroupBeginWithDocs(SimComponent, SimObject)
 
-ConsoleMethod( SimComponent, addComponents, bool, 3, 64, "%obj.addComponents( %compObjName, %compObjName2, ... );\n"
-"Adds additional components to current list.\n"
-"@param Up to 62 component names\n"
-"@return Returns true on success, false otherwise.")
+/*! Adds additional components to current list.
+    @param Up to 62 component names
+    @return Returns true on success, false otherwise.
+*/
+ConsoleMethodWithDocs( SimComponent, addComponents, ConsoleBool, 3, 64, ( compObjName, compObjName2, ... ))
 {
-    for(S32 i = 2; i < argc; i++)
-    {
-        SimComponent *obj = dynamic_cast<SimComponent*> (Sim::findObject(argv[i]) );
-        if(obj)
-            object->addComponent(obj);
-        else
-            Con::printf("SimComponent::addComponents - Invalid Component Object \"%s\"", argv[i]);
-    }
-    return true;
+   for(S32 i = 2; i < argc; i++)
+   {
+      SimComponent *obj = dynamic_cast<SimComponent*> (Sim::findObject(argv[i]) );
+      if(obj)
+         object->addComponent(obj);
+      else
+         Con::printf("SimComponent::addComponents - Invalid Component Object \"%s\"", argv[i]);
+   }
+   return true;
 }
 
-ConsoleMethod( SimComponent, removeComponents, bool, 3, 64, "%obj.removeComponents( %compObjName, %compObjName2, ... );\n"
-                                                            "Removes components by name from current list.\n"
-                                                            "@param objNamex Up to 62 component names\n"
-                                                            "@return Returns true on success, false otherwise.")
+/*! Removes components by name from current list.
+    @param objNamex Up to 62 component names
+    @return Returns true on success, false otherwise.
+*/
+ConsoleMethodWithDocs( SimComponent, removeComponents, ConsoleBool, 3, 64, ( compObjName, compObjName2, ... ))
 {
-    for(S32 i = 2; i < argc; i++)
-    {
-        SimComponent *obj = dynamic_cast<SimComponent*> (Sim::findObject(argv[i]) );
-        if(obj)
-            object->removeComponent(obj);
-        else
-            Con::printf("SimComponent::removeComponents - Invalid Component Object \"%s\"", argv[i]);
-    }
-    return true;
+   for(S32 i = 2; i < argc; i++)
+   {
+      SimComponent *obj = dynamic_cast<SimComponent*> (Sim::findObject(argv[i]) );
+      if(obj)
+         object->removeComponent(obj);
+      else
+         Con::printf("SimComponent::removeComponents - Invalid Component Object \"%s\"", argv[i]);
+   }
+   return true;
 }
 
-ConsoleMethod( SimComponent, getComponentCount, S32, 2, 2, "() Get the current component count\n"
-                                                            "@return The number of components in the list as an integer")
+/*! Get the current component count
+    @return The number of components in the list as an integer
+*/
+ConsoleMethodWithDocs( SimComponent, getComponentCount, ConsoleInt, 2, 2, ())
 {
     return (S32)object->getComponentCount();
 }
 
-ConsoleMethod( SimComponent, getComponent, S32, 3, 3, "(idx) Get the component corresponding to the given index.\n"
-                                                    "@param idx An integer index value corresponding to the desired component.\n"
-                                                    "@return The id of the component at the given index as an integer")
+/*! Get the component corresponding to the given index.
+    @param idx An integer index value corresponding to the desired component.
+    @return The id of the component at the given index as an integer
+*/
+ConsoleMethodWithDocs( SimComponent, getComponent, ConsoleInt, 3, 3, (idx))
 {
-    S32 idx = dAtoi(argv[2]);
-    if(idx < 0 || idx >= (S32)object->getComponentCount())
-    {
-        Con::errorf("SimComponent::getComponent - Invalid index %d", idx);
-        return 0;
-    }
+   S32 idx = dAtoi(argv[2]);
+   if(idx < 0 || idx >= (S32)object->getComponentCount())
+   {
+      Con::errorf("SimComponent::getComponent - Invalid index %d", idx);
+      return 0;
+   }
 
-    SimComponent *c = object->getComponent(idx);
-    return c ? c->getId() : 0;
+   SimComponent *c = object->getComponent(idx);
+   return c ? c->getId() : 0;
 }
 
-ConsoleMethod(SimComponent, setEnabled, void, 3, 3, "(enabled) Sets or unsets the enabled flag\n"
-"@param enabled Boolean value\n"
-"@return No return value")
+/*! Sets or unsets the enabled flag
+    @param enabled Boolean value
+    @return No return value
+*/
+ConsoleMethodWithDocs(SimComponent, setEnabled, ConsoleVoid, 3, 3, (enabled))
 {
-    object->setEnabled(dAtob(argv[2]));
+   object->setEnabled(dAtob(argv[2]));
 }
 
-ConsoleMethod(SimComponent, isEnabled, bool, 2, 2, "() Check whether SimComponent is currently enabled\n"
-"@return true if enabled and false if not")
+/*! Check whether SimComponent is currently enabled
+    @return true if enabled and false if not
+*/
+ConsoleMethodWithDocs(SimComponent, isEnabled, ConsoleBool, 2, 2, ())
 {
-    return object->isEnabled();
+   return object->isEnabled();
 }
 
-
+ConsoleMethodGroupEndWithDocs(SimComponent)

@@ -37,6 +37,9 @@
 #include <stdarg.h>
 #include <fstream>
 
+#include "output_ScriptBinding.h"
+#include "expando_ScriptBinding.h"
+
 #ifndef _HASHTABLE_H
 #include "collection/hashTable.h"
 #endif
@@ -536,6 +539,16 @@ static void log(const char *string)
    }
 }
 
+//------------------------------------------------------------------------------
+
+void cls( void )
+{
+   if(consoleLogLocked)
+      return;
+   consoleLogChunker.freeBlocks();
+   consoleLog.setSize(0);
+};
+   
 //------------------------------------------------------------------------------
 
 #if defined( _MSC_VER )  

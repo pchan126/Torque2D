@@ -47,7 +47,7 @@ class ParticleAsset;
 
 class ParticleAssetEmitter : public SimObject, protected AssetPtrCallback
 {
-    friend ParticleAsset;
+    friend class ParticleAsset;
 
 public:
     enum ParticleOrientationType
@@ -108,8 +108,10 @@ private:
     bool                                    mStaticMode;
     AssetPtr<ImageAsset>                    mImageAsset;
     U32                                     mImageFrame;
+    StringTableEntry                        mImageFrameName;
     bool                                    mRandomImageFrame;
     AssetPtr<AnimationAsset>                mAnimationAsset;
+    bool                                    mUsingFrameName;
 
     /// Particle fields.
     ParticleAssetFieldCollection            mParticleFields;
@@ -185,10 +187,14 @@ public:
     inline bool getOldestInFront( void ) const { return mOldestInFront; }
    
     inline bool isStaticFrameProvider( void ) const { return mStaticMode; }
+    inline bool isUsingNamedImageFrame( void ) const { return mUsingFrameName; }
     bool setImage( const char* pAssetId, const U32 frame = 0 );
+    bool setImage( const char* pAssetId, const char* frameName);
     inline StringTableEntry getImage( void ) const { return mImageAsset.getAssetId(); }
     bool setImageFrame( const U32 frame );
     inline U32 getImageFrame( void ) const { return mImageFrame; }
+    bool setImageFrameName( const char* frameName);
+    inline const char* getImageFrameName( void ) const { return mImageFrameName; }
     inline void setRandomImageFrame( const bool randomImageFrame ) { mRandomImageFrame = randomImageFrame; }
     inline bool getRandomImageFrame( void ) const { return mRandomImageFrame; }
     bool setAnimation( const char* animationName );
@@ -309,6 +315,8 @@ protected:
     static bool     writeImage( void* obj, StringTableEntry pFieldName )                { ParticleAssetEmitter* pCastObject = static_cast<ParticleAssetEmitter*>(obj); if ( !pCastObject->isStaticFrameProvider() ) return false; return pCastObject->mImageAsset.notNull(); }
     static bool     setImageFrame(void* obj, const char* data)                          { static_cast<ParticleAssetEmitter*>(obj)->setImageFrame(dAtoi(data)); return false; };
     static bool     writeImageFrame( void* obj, StringTableEntry pFieldName )           { ParticleAssetEmitter* pCastObject = static_cast<ParticleAssetEmitter*>(obj); if ( !pCastObject->isStaticFrameProvider() ) return false; return pCastObject->mImageAsset.notNull() && !pCastObject->getRandomImageFrame(); }
+    static bool     setImageFrameName(void* obj, const char* data)                      { static_cast<ParticleAssetEmitter*>(obj)->setImageFrameName(data); return false; };
+    static bool     writeImageFrameName( void* obj, StringTableEntry pFieldName )       { ParticleAssetEmitter* pCastObject = static_cast<ParticleAssetEmitter*>(obj); if ( !pCastObject->isStaticFrameProvider() ) return false; return pCastObject->mImageAsset.notNull() && !pCastObject->getRandomImageFrame(); }
     static bool     setRandomImageFrame(void* obj, const char* data)                    { static_cast<ParticleAssetEmitter*>(obj)->setRandomImageFrame(dAtob(data)); return false; };
     static bool     writeRandomImageFrame( void* obj, StringTableEntry pFieldName )     { ParticleAssetEmitter* pCastObject = static_cast<ParticleAssetEmitter*>(obj); if ( !pCastObject->isStaticFrameProvider() ) return false; return pCastObject->getRandomImageFrame(); }
     static bool     setAnimation(void* obj, const char* data)                           { static_cast<ParticleAssetEmitter*>(obj)->setAnimation(data); return false; };

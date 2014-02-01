@@ -20,4 +20,6 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
+ConsoleMethodGroupBeginWithDocs(BuoyancyController, PickingSceneController)
 
+ConsoleMethodGroupEndWithDocs(BuoyancyController)

@@ -22,8 +22,14 @@
 #include "platform/nativeDialogs/fileDialog.h"
 #include "console/console.h"
 
-ConsoleMethod( FileDialog, Execute, bool, 2, 2, "() Executes the dialog\n"
-			  "@return Returns true on success and false otherwise")
+ConsoleMethodGroupBeginWithDocs(FileDialog, SimObject)
+
+/*! Executes the dialog
+    @return Returns true on success and false otherwise
+*/
+ConsoleMethodWithDocs( FileDialog, Execute, ConsoleBool, 2, 2, ())
 {
    return object->Execute();
 }
+
+ConsoleMethodGroupEndWithDocs(FileDialog)

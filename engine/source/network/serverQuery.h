@@ -93,12 +93,12 @@ struct ServerInfo
       numPlayers = 0;
       maxPlayers = 0;
       numBots = 0;
-      name = NULL;
-      gameType = NULL;
-      missionType = NULL;
-      missionName = NULL;
-      statusString = NULL;
-      infoString = NULL;
+      name = nullptr;
+      gameType = nullptr;
+      missionType = nullptr;
+      missionName = nullptr;
+      statusString = nullptr;
+      infoString = nullptr;
       version = 0;
       ping = 0;
       cpuSpeed = 0;
@@ -133,7 +133,10 @@ extern void queryMasterServer(U8 flags, const char* gameType, const char* missio
       U8 filterFlags, U8 buddyCount, U32* buddyList );
 extern void queryFavoriteServers( U8 flags );
 extern void querySingleServer(const NetAddress* addr, U8 flags);
+extern void cancelServerQuery();
+extern void stopServerQuery();
 extern void startHeartbeat();
+extern void stopHeartBeat();
 extern void sendHeartbeat( U8 flags );
 
 #ifdef TORQUE_DEBUG

@@ -161,7 +161,7 @@ function SoftbodyToy::createCubeSoftbody( %this )
     {
         for ( %y = 0; %y < SoftbodyToy.NodeY; %y++ )
         {            
-            // Create the sprite.
+            // Create the nodes.
 //            %object = new Sprite();
             %object  = new SceneObject();
             

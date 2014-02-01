@@ -173,8 +173,11 @@ class ActionMap : public SimObject
    static bool        getDeviceName(const U32 deviceType, const U32 deviceInstance, char* buffer);
    static const char* buildActionString( const InputEventInfo* event );
 
-   bool processAction(const InputEventInfo*);
-   
+   bool processAction(const InputEventInfo* pEvent);
+   bool processLeap(const InputEventInfo* pEvent);
+   bool processGesture(const InputEventInfo* pEvent);
+   bool processTouch(const InputEventInfo* pEvent);
+
    /// Return true if the given event triggers is bound to an action in this map.
    bool isAction( U32 deviceType, U32 deviceInst, U32 modifiers, U32 action );
 

@@ -20,9 +20,15 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(BehaviorInstance, getTemplateName, const char *, 2, 2, "() - Get the template name of this behavior\n"
-                                                                     "@return (string name) The name of the template this behavior was created from")
+ConsoleMethodGroupBeginWithDocs(BehaviorInstance, SimObject)
+
+/*! Get the template name of this behavior
+    @return (string name) The name of the template this behavior was created from
+*/
+ConsoleMethodWithDocs(BehaviorInstance, getTemplateName, ConsoleString, 2, 2, ())
 {
    const char* pName = object->getTemplateName();
    return pName ? pName : StringTable->EmptyString;
 }
+
+ConsoleMethodGroupEndWithDocs(BehaviorInstance)

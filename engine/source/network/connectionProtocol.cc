@@ -45,14 +45,6 @@ static const char *packetTypeNames[] =
    "AckPacket",
 };
 
-//-----------------------------------------------------------------
-//-----------------------------------------------------------------
-//-----------------------------------------------------------------
-ConsoleFunction(DNetSetLogging, void, 2, 2, "(bool enabled)")
-{
-   gLogToConsole = dAtob(argv[1]);
-}
-
 ConnectionProtocol::ConnectionProtocol()
 {
    mLastSeqRecvd = 0;

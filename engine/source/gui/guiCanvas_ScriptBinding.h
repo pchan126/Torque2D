@@ -1,13 +1,29 @@
+//-----------------------------------------------------------------------------
+// Copyright (c) 2013 GarageGames, LLC
 //
-//  guiCanvas_ScriptBinding.h
-//  Torque2D
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to
+// deal in the Software without restriction, including without limitation the
+// rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+// sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//  Created by Paul L Jan on 2013-03-27.
-//  Copyright (c) 2013 Michael Perry. All rights reserved.
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+// IN THE SOFTWARE.
+//-----------------------------------------------------------------------------
 
 #ifndef Torque2D_guiCanvas_ScriptBinding_h
 #define Torque2D_guiCanvas_ScriptBinding_h
+
+ConsoleMethodGroupBeginWithDocs(GuiCanvas, GuiControl)
 
 ConsoleMethod( GuiCanvas, isFullscreen, bool, 2, 2, "() - Is this canvas currently fullscreen?" )
 {
@@ -240,8 +256,10 @@ ConsoleMethod( GuiCanvas, getMode, const char*, 3, 3,
     return retString;
 }
 
-ConsoleMethod( GuiCanvas, getContent, S32, 2, 2, "() Use the getContent method to get the ID of the control which is being used as the current canvas content.\n"
-              "@return Returns the ID of the current canvas content (a control), or 0 meaning the canvas is empty")
+/*! Use the getContent method to get the ID of the control which is being used as the current canvas content.
+    @return Returns the ID of the current canvas content (a control), or 0 meaning the canvas is empty
+*/
+ConsoleMethodWithDocs( GuiCanvas, getContent, ConsoleInt, 2, 2, ())
 {
     GuiControl *ctrl = object->getContentControl();
     if(ctrl)
@@ -249,9 +267,11 @@ ConsoleMethod( GuiCanvas, getContent, S32, 2, 2, "() Use the getContent method t
     return -1;
 }
 
-ConsoleMethod( GuiCanvas, setContent, void, 3, 3, "( handle ) Use the setContent method to set the control identified by handle as the current canvas content.\n"
-              "@param handle The numeric ID or name of the control to be made the canvas contents.\n"
-              "@return No return value")
+/*! Use the setContent method to set the control identified by handle as the current canvas content.
+    @param handle The numeric ID or name of the control to be made the canvas contents.
+    @return No return value
+*/
+ConsoleMethodWithDocs( GuiCanvas, setContent, ConsoleVoid, 3, 3, ( handle ))
 {
     GuiControl *gui = NULL;
     if(argv[2][0])
@@ -267,10 +287,12 @@ ConsoleMethod( GuiCanvas, setContent, void, 3, 3, "( handle ) Use the setContent
     object->setContentControl(gui);
 }
 
-ConsoleMethod( GuiCanvas, pushDialog, void, 3, 4, "( handle [ , layer ] ) Use the pushDialog method to open a dialog on a specific canvas layer, or in the same layer the last openned dialog. Newly placed dialogs placed in a layer with another dialog(s) will overlap the prior dialog(s).\n"
-              "@param handle The numeric ID or name of the dialog to be opened.\n"
-              "@param layer A integer value in the range [ 0 , inf ) specifying the canvas layer to place the dialog in.\n"
-              "@return No return value")
+/*! Use the pushDialog method to open a dialog on a specific canvas layer, or in the same layer the last openned dialog. Newly placed dialogs placed in a layer with another dialog(s) will overlap the prior dialog(s).
+    @param handle The numeric ID or name of the dialog to be opened.
+    @param layer A integer value in the range [ 0 , inf ) specifying the canvas layer to place the dialog in.
+    @return No return value
+*/
+ConsoleMethodWithDocs( GuiCanvas, pushDialog, ConsoleVoid, 3, 4, ( handle [ , layer ] ))
 {
     GuiControl *gui;
     
@@ -289,10 +311,12 @@ ConsoleMethod( GuiCanvas, pushDialog, void, 3, 4, "( handle [ , layer ] ) Use th
     object->pushDialogControl(gui, layer);
 }
 
-ConsoleMethod( GuiCanvas, popDialog, void, 2, 3, "( handle ) Use the popDialog method to remove a currently showing dialog. If no handle is provided, the top most dialog is popped.\n"
-              "@param handle The ID or a previously pushed dialog.\n"
-              "@return No return value.\n"
-              "@sa pushDialog, popLayer")
+/*! Use the popDialog method to remove a currently showing dialog. If no handle is provided, the top most dialog is popped.
+    @param handle The ID or a previously pushed dialog.
+    @return No return value.
+    @sa pushDialog, popLayer
+*/
+ConsoleMethodWithDocs( GuiCanvas, popDialog, ConsoleVoid, 2, 3, ( handle ))
 {
     // Must initialize this to NULL to avoid crash on the if (gui) statement further down [KNM | 07/28/11 | ITGB-120]
     //GuiControl * gui;
@@ -312,10 +336,12 @@ ConsoleMethod( GuiCanvas, popDialog, void, 2, 3, "( handle ) Use the popDialog m
         object->popDialogControl();
 }
 
-ConsoleMethod( GuiCanvas, popLayer, void, 2, 3, "( layer ) Use the popLayer method to remove (close) all dialogs in the specified canvas �layer�.\n"
-              "@param layer A integer value in the range [ 0 , inf ) specifying the canvas layer to clear.\n"
-              "@return No return value.\n"
-              "@sa pushDialog, popDialog")
+/*! Use the popLayer method to remove (close) all dialogs in the specified canvas ???layer???.
+    @param layer A integer value in the range [ 0 , inf ) specifying the canvas layer to clear.
+    @return No return value.
+    @sa pushDialog, popDialog
+*/
+ConsoleMethodWithDocs( GuiCanvas, popLayer, ConsoleVoid, 2, 3, ( layer ))
 {
     S32 layer = 0;
     if (argc == 3)
@@ -324,21 +350,27 @@ ConsoleMethod( GuiCanvas, popLayer, void, 2, 3, "( layer ) Use the popLayer meth
     object->popDialogControl(layer);
 }
 
-ConsoleMethod(GuiCanvas, cursorOn, void, 2, 2, "() Use the cursorOn method to enable the cursor.\n"
-              "@return No return value")
+/*! Use the cursorOn method to enable the cursor.
+    @return No return value
+*/
+ConsoleMethodWithDocs(GuiCanvas, cursorOn, ConsoleVoid, 2, 2, ())
 {
     object->setCursorON(true);
 }
 
-ConsoleMethod(GuiCanvas, cursorOff, void, 2, 2, "() Use the cursorOff method to disable the cursor.\n"
-              "@return No return value")
+/*! Use the cursorOff method to disable the cursor.
+    @return No return value
+*/
+ConsoleMethodWithDocs(GuiCanvas, cursorOff, ConsoleVoid, 2, 2, ())
 {
     object->setCursorON(false);
 }
 
-ConsoleMethod( GuiCanvas, setCursor, void, 3, 3, "( cursorHandle ) Use the setCursor method to select the current cursor.\n"
-              "@param cursorHandle The ID of a previously defined GuiCursor object.\n"
-              "@return No return value")
+/*! Use the setCursor method to select the current cursor.
+    @param cursorHandle The ID of a previously defined GuiCursor object.
+    @return No return value
+*/
+ConsoleMethodWithDocs( GuiCanvas, setCursor, ConsoleVoid, 3, 3, ( cursorHandle ))
 {
     GuiCursor *curs = NULL;
     if(argv[2][0])
@@ -352,51 +384,69 @@ ConsoleMethod( GuiCanvas, setCursor, void, 3, 3, "( cursorHandle ) Use the setCu
     object->setCursor(curs);
 }
 
-ConsoleMethod( GuiCanvas, renderFront, void, 3, 3, "(bool enable)")
+/*! 
+*/
+ConsoleMethodWithDocs( GuiCanvas, renderFront, ConsoleVoid, 3, 3, (bool enable))
 {
     object->setRenderFront(dAtob(argv[2]));
 }
 
-ConsoleMethod( GuiCanvas, showCursor, void, 2, 2, "")
+/*! 
+*/
+ConsoleMethodWithDocs( GuiCanvas, showCursor, ConsoleVoid, 2, 2, ())
 {
     object->showCursor(true);
 }
 
-ConsoleMethod( GuiCanvas, hideCursor, void, 2, 2, "")
+/*! 
+*/
+ConsoleMethodWithDocs( GuiCanvas, hideCursor, ConsoleVoid, 2, 2, ())
 {
     object->showCursor(false);
 }
 
-ConsoleMethod( GuiCanvas, isCursorOn, bool, 2, 2, "")
+/*! 
+*/
+ConsoleMethodWithDocs( GuiCanvas, isCursorOn, ConsoleBool, 2, 2, ())
 {
     return object->isCursorON();
 }
 
-ConsoleMethod( GuiCanvas, setDoubleClickDelay, void, 3, 3, "")
+/*! 
+*/
+ConsoleMethodWithDocs( GuiCanvas, setDoubleClickDelay, ConsoleVoid, 3, 3, ())
 {
     object->setDoubleClickTime(dAtoi(argv[2]));
 }
 
-ConsoleMethod( GuiCanvas, setDoubleClickMoveBuffer, void, 4, 4, "")
+/*! 
+*/
+ConsoleMethodWithDocs( GuiCanvas, setDoubleClickMoveBuffer, ConsoleVoid, 4, 4, ())
 {
     object->setDoubleClickWidth(dAtoi(argv[2]));
     object->setDoubleClickHeight(dAtoi(argv[3]));
 }
 
-ConsoleMethod( GuiCanvas, repaint, void, 2, 2, "() Use the repaint method to force the canvas to redraw all elements.\n"
-              "@return No return value")
+/*! Use the repaint method to force the canvas to redraw all elements.
+    @return No return value
+*/
+ConsoleMethodWithDocs( GuiCanvas, repaint, ConsoleVoid, 2, 2, ())
 {
     object->paint();
 }
 
-ConsoleMethod( GuiCanvas, reset, void, 2, 2, "() Use the reset method to reset the current canvas update region.\n"
-              "@return No return value")
+/*! Use the reset method to reset the current canvas update region.
+    @return No return value
+*/
+ConsoleMethodWithDocs( GuiCanvas, reset, ConsoleVoid, 2, 2, ())
 {
     object->resetUpdateRegions();
 }
 
-ConsoleMethod( GuiCanvas, getCursorPos, const char*, 2, 2, "() Use the getCursorPos method to retrieve the current position of the mouse pointer.\n"
-              "@return Returns a vector containing the �x y� coordinates of the cursor in the canvas")
+/*! Use the getCursorPos method to retrieve the current position of the mouse pointer.
+    @return Returns a vector containing the ???x y??? coordinates of the cursor in the canvas
+*/
+ConsoleMethodWithDocs( GuiCanvas, getCursorPos, ConsoleString, 2, 2, ())
 {
     Point2I pos = object->getCursorPos();
     char * ret = Con::getReturnBuffer(32);
@@ -404,9 +454,11 @@ ConsoleMethod( GuiCanvas, getCursorPos, const char*, 2, 2, "() Use the getCursor
     return(ret);
 }
 
-ConsoleMethod( GuiCanvas, setCursorPos, void, 3, 4, "( ) Use the setCursorPos method to set the position of the cursor in the canvas.\n"
-              "@param position An \"x y\" position vector specifying the new location of the cursor.\n"
-              "@return No return value")
+/*! Use the setCursorPos method to set the position of the cursor in the cavas.
+    @param position An \x y\ position vector specifying the new location of the cursor.
+    @return No return value
+*/
+ConsoleMethodWithDocs( GuiCanvas, setCursorPos, ConsoleVoid, 3, 4, ( ))
 {
     Point2I pos(0,0);
     
@@ -418,7 +470,9 @@ ConsoleMethod( GuiCanvas, setCursorPos, void, 3, 4, "( ) Use the setCursorPos me
     object->setCursorPos(pos);
 }
 
-ConsoleMethod( GuiCanvas, getMouseControl, S32, 2, 2, "Gets the gui control under the mouse.")
+/*! Gets the gui control under the mouse.
+*/
+ConsoleMethodWithDocs( GuiCanvas, getMouseControl, ConsoleInt, 2, 2, ())
 {
     GuiControl* control = object->getMouseControl();
     if (control)
@@ -429,12 +483,14 @@ ConsoleMethod( GuiCanvas, getMouseControl, S32, 2, 2, "Gets the gui control unde
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(GuiCanvas, setBackgroundColor, void, 3, 6,    "(float red, float green, float blue, [float alpha = 1.0]) - Sets the background color for the canvas."
-              "@param red The red value.\n"
-              "@param green The green value.\n"
-              "@param blue The blue value.\n"
-              "@param alpha The alpha value.\n"
-              "@return No return Value.")
+/*! Sets the background color for the canvas.
+    @param red The red value.
+    @param green The green value.
+    @param blue The blue value.
+    @param alpha The alpha value.
+    @return No return Value.
+*/
+ConsoleMethodWithDocs(GuiCanvas, setBackgroundColor, ConsoleVoid, 3, 6, (float red, float green, float blue, [float alpha = 1.0]))
 {
     // The colors.
     F32 red;
@@ -501,8 +557,10 @@ ConsoleMethod(GuiCanvas, setBackgroundColor, void, 3, 6,    "(float red, float g
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(GuiCanvas, getBackgroundColor, const char*, 2, 2, "Gets the background color for the canvas.\n"
-              "@return (float red / float green / float blue / float alpha) The background color for the canvas.")
+/*! Gets the background color for the canvas.
+    @return (float red / float green / float blue / float alpha) The background color for the canvas.
+*/
+ConsoleMethodWithDocs(GuiCanvas, getBackgroundColor, ConsoleString, 2, 2, (...))
 {
     // Get the background color.
     const ColorF& color = object->getBackgroundColor();
@@ -526,9 +584,11 @@ ConsoleMethod(GuiCanvas, getBackgroundColor, const char*, 2, 2, "Gets the backgr
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(GuiCanvas, setUseBackgroundColor, void, 3, 3, "Sets whether to use the canvas background color or not.\n"
-              "@param useBackgroundColor Whether to use the canvas background color or not.\n"
-              "@return No return value." )
+/*! Sets whether to use the canvas background color or not.
+    @param useBackgroundColor Whether to use the canvas background color or not.
+    @return No return value.
+*/
+ConsoleMethodWithDocs(GuiCanvas, setUseBackgroundColor, ConsoleVoid, 3, 3, (...))
 {
     // Fetch flag.
     const bool useBackgroundColor = dAtob(argv[2]);
@@ -539,19 +599,27 @@ ConsoleMethod(GuiCanvas, setUseBackgroundColor, void, 3, 3, "Sets whether to use
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(GuiCanvas, getUseBackgroundColor, bool, 2, 2, "Gets whether the canvas background color is in use or not.\n"
-              "@return Whether the canvas background color is in use or not." )
+/*! Gets whether the canvas background color is in use or not.
+    @return Whether the canvas background color is in use or not.
+*/
+ConsoleMethodWithDocs(GuiCanvas, getUseBackgroundColor, ConsoleBool, 2, 2, (...))
 {
     // Get the flag.
     return object->getUseBackgroundColor();
 }
 
-
-ConsoleMethod( GuiCanvas, setWindowTitle, void, 2, 2, "(string windowTitle) Sets the title to the provided string\n"
-              "@param windowTitle The desired title\n"
-              "@return No Return Value")
+/*! Sets the title to the provided string 
+    @param windowTitle The desired title
+    @return No Return Value
+*/
+ConsoleMethodWithDocs(GuiCanvas, setCanvasTitle, ConsoleVoid, 3, 3, (...))
 {
-    return object->setWindowTitle( argv[1] );
+    return object->setWindowTitle( argv[2] );
 }
 
+ConsoleMethodGroupEndWithDocs(GuiCanvas)
+
 #endif
+
+
+

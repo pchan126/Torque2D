@@ -197,6 +197,8 @@ public:
     /// Allows the writing of a custom TAML schema.
     typedef void (*WriteCustomTamlSchema)( const AbstractClassRep* pClassRep, TiXmlElement* pParentElement );
 
+   
+    static bool ACRCompare(const AbstractClassRep *aptr, const AbstractClassRep *bptr);
 protected:
     const char *       mClassName;
     AbstractClassRep * nextClass;
@@ -717,35 +719,7 @@ protected:
     static bool removeField(const char* in_pFieldname);
 
     /// @}
-
-    /// @name Logging
-    /// @{
-
-    /// Overload this in subclasses to change the message formatting.
-    /// @param fmt A printf style format string.
-    /// @param args A va_list containing the args passed ot a log function.
-    /// @note It is suggested that you use String::VToString.
-    virtual String _getLogMessage(const char* fmt, va_list args) const;
-
-    /// @}
-
 public:
-    /// @name Logging
-    /// These functions will try to print out a message along the lines
-    /// of "ObjectClass - ObjectName(ObjectId) - formatted message"
-    /// @{
-
-    /// Logs with Con::printf.
-    void logMessage(const char* fmt, ...) const;
-
-    /// Logs with Con::warnf.
-    void logWarning(const char* fmt, ...) const;
-
-    /// Logs with Con::errorf.
-    void logError(const char* fmt, ...) const;
-
-    /// @}
-
     /// Register dynamic fields in a subclass of ConsoleObject.
     ///
     /// @see addField(), addFieldV(), addDeprecatedField(), addGroup(), endGroup()

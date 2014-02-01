@@ -121,12 +121,12 @@ void TSShapeInstance::animateNodes(S32 ss)
       if (rotBeenSet.test(i))
       {
          mShape->defaultRotations[i].getQuatF(&smNodeCurrentRotations[i]);
-         smRotationThreads[i] = NULL;
+         smRotationThreads[i] = nullptr;
       }
       if (tranBeenSet.test(i))
       {
          smNodeCurrentTranslations[i] = mShape->defaultTranslations[i];
-         smTranslationThreads[i] = NULL;
+         smTranslationThreads[i] = nullptr;
       }
    }
 
@@ -258,7 +258,7 @@ void TSShapeInstance::handleDefaultScale(S32 a, S32 b, TSIntegerSet & scaleBeenS
          if (scaleBeenSet.test(i))
          {
             smNodeCurrentUniformScales[i] = 1.0f;
-            smScaleThreads[i] = NULL;
+            smScaleThreads[i] = nullptr;
          }
    }
    else if (animatesAlignedScale())
@@ -268,7 +268,7 @@ void TSShapeInstance::handleDefaultScale(S32 a, S32 b, TSIntegerSet & scaleBeenS
          if (scaleBeenSet.test(i))
          {
             smNodeCurrentAlignedScales[i].set(1.0f,1.0f,1.0f);
-            smScaleThreads[i] = NULL;
+            smScaleThreads[i] = nullptr;
          }
    }
    else
@@ -278,7 +278,7 @@ void TSShapeInstance::handleDefaultScale(S32 a, S32 b, TSIntegerSet & scaleBeenS
          if (scaleBeenSet.test(i))
          {
             smNodeCurrentArbitraryScales[i].identity();
-            smScaleThreads[i] = NULL;
+            smScaleThreads[i] = nullptr;
          }
    }
 
@@ -330,7 +330,7 @@ void TSShapeInstance::handleTransitionNodes(S32 a, S32 b)
       if (nodeIndex<a)
          continue;
       TSThread * thread = smRotationThreads[nodeIndex];
-      thread = thread && thread->transitionData.inTransition ? thread : NULL;
+      thread = thread && thread->transitionData.inTransition ? thread : nullptr;
       if (!thread)
       {
          // if not controlled by a sequence in transition then there must be
@@ -344,7 +344,7 @@ void TSShapeInstance::handleTransitionNodes(S32 a, S32 b)
                break;
             }
          }
-         AssertFatal(thread!=NULL,"TSShapeInstance::handleRotTransitionNodes (rotation)");
+         AssertFatal(thread!=nullptr,"TSShapeInstance::handleRotTransitionNodes (rotation)");
       }
       QuatF tmpQ;
       TSTransform::interpolate(mNodeReferenceRotations[nodeIndex].getQuatF(&tmpQ),smNodeCurrentRotations[nodeIndex],thread->transitionData.pos,&smNodeCurrentRotations[nodeIndex]);
@@ -356,7 +356,7 @@ void TSShapeInstance::handleTransitionNodes(S32 a, S32 b)
    for (nodeIndex=start; nodeIndex<end; mTransitionTranslationNodes.next(nodeIndex))
    {
       TSThread * thread = smTranslationThreads[nodeIndex];
-      thread = thread && thread->transitionData.inTransition ? thread : NULL;
+      thread = thread && thread->transitionData.inTransition ? thread : nullptr;
       if (!thread)
       {
          // if not controlled by a sequence in transition then there must be
@@ -370,7 +370,7 @@ void TSShapeInstance::handleTransitionNodes(S32 a, S32 b)
                break;
             }
          }
-         AssertFatal(thread!=NULL,"TSShapeInstance::handleTransitionNodes (translation).");
+         AssertFatal(thread!=nullptr,"TSShapeInstance::handleTransitionNodes (translation).");
       }
       Point3F & p = smNodeCurrentTranslations[nodeIndex];
       Point3F & p1 = mNodeReferenceTranslations[nodeIndex];
@@ -389,7 +389,7 @@ void TSShapeInstance::handleTransitionNodes(S32 a, S32 b)
       for (nodeIndex=start; nodeIndex<end; mTransitionScaleNodes.next(nodeIndex))
       {
          TSThread * thread = smScaleThreads[nodeIndex];
-         thread = thread && thread->transitionData.inTransition ? thread : NULL;
+         thread = thread && thread->transitionData.inTransition ? thread : nullptr;
          if (!thread)
          {
             // if not controlled by a sequence in transition then there must be
@@ -403,7 +403,7 @@ void TSShapeInstance::handleTransitionNodes(S32 a, S32 b)
                   break;
                }
             }
-            AssertFatal(thread!=NULL,"TSShapeInstance::handleTransitionNodes (scale).");
+            AssertFatal(thread!=nullptr,"TSShapeInstance::handleTransitionNodes (scale).");
          }
          if (animatesUniformScale())
             smNodeCurrentUniformScales[nodeIndex] += thread->transitionData.pos * (mNodeReferenceUniformScales[nodeIndex]-smNodeCurrentUniformScales[nodeIndex]);

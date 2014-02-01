@@ -30,7 +30,7 @@
 
 
 
-class t2dSceneRenderState;
+class SceneRenderState;
 class GFXCubemap;
 class Frustum;
 class LightQuery;
@@ -67,7 +67,7 @@ class TSRenderState
 {
 protected:
    
-   const t2dSceneRenderState *mState;
+   const SceneRenderState *mState;
 
    GFXCubemap *mCubemap;
 
@@ -113,8 +113,8 @@ public:
    /// @{
 
    ///@see mState
-   const t2dSceneRenderState * getSceneState() const { return mState; }
-   void setSceneState( const t2dSceneRenderState *state ) { mState = state; }
+   const SceneRenderState * getSceneState() const { return mState; }
+   void setSceneState( const SceneRenderState *state ) { mState = state; }
 
    ///@see mCubemap
    GFXCubemap* getCubemap() const { return mCubemap; }

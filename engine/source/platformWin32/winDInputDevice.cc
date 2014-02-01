@@ -44,17 +44,17 @@ const char* getKeyName( U16 key );
 DInputDevice::DInputDevice( const DIDEVICEINSTANCE* dii )
 {
    mDeviceInstance   = *dii;
-   mDevice           = NULL;
+   mDevice           = nullptr;
    mAcquired         = false;
    mNeedSync         = false;
-   mObjInstance      = NULL;
-   mObjFormat        = NULL;
-   mObjInfo          = NULL;
-   mObjBuffer1       = NULL;
-   mObjBuffer2       = NULL;
-   mPrevObjBuffer    = NULL;
+   mObjInstance      = nullptr;
+   mObjFormat        = nullptr;
+   mObjInfo          = nullptr;
+   mObjBuffer1       = nullptr;
+   mObjBuffer2       = nullptr;
+   mPrevObjBuffer    = nullptr;
 
-   mForceFeedbackEffect    = NULL;
+   mForceFeedbackEffect    = nullptr;
    mNumForceFeedbackAxes   = 0;
    mForceFeedbackAxes[0]   = 0;
    mForceFeedbackAxes[1]   = 0;
@@ -100,7 +100,7 @@ DInputDevice::~DInputDevice()
 void DInputDevice::init()
 {
    // Reset all of the static variables:
-   smDInputInterface    = NULL;
+   smDInputInterface    = nullptr;
    dMemset( smDeviceCount, 0, sizeof( smDeviceCount ) );
 }
 
@@ -111,7 +111,7 @@ bool DInputDevice::create()
 
    if ( smDInputInterface )
    {
-      result = smDInputInterface->CreateDevice( mDeviceInstance.guidInstance, &mDevice, NULL );
+      result = smDInputInterface->CreateDevice( mDeviceInstance.guidInstance, &mDevice, nullptr );
       if ( result == DI_OK )
       {
 		 mDeviceCaps.dwSize = sizeof( DIDEVCAPS );
@@ -236,7 +236,7 @@ void DInputDevice::destroy()
       if (mForceFeedbackEffect)
       {
          mForceFeedbackEffect->Release();
-         mForceFeedbackEffect = NULL;
+         mForceFeedbackEffect = nullptr;
          mNumForceFeedbackAxes = 0;
 #ifdef LOG_INPUT
          Input::log("DInputDevice::destroy - releasing constant force feeback effect\n"); 
@@ -244,7 +244,7 @@ void DInputDevice::destroy()
       }
 
       mDevice->Release();
-      mDevice = NULL;
+      mDevice = nullptr;
 
       delete [] mObjInstance;
       delete [] mObjFormat;
@@ -252,12 +252,12 @@ void DInputDevice::destroy()
       delete [] mObjBuffer1;
       delete [] mObjBuffer2;
 
-      mObjInstance   = NULL;
-      mObjFormat     = NULL;
-      mObjInfo       = NULL;
-      mObjBuffer1    = NULL;
-      mObjBuffer2    = NULL;
-      mPrevObjBuffer = NULL;
+      mObjInstance   = nullptr;
+      mObjFormat     = nullptr;
+      mObjInfo       = nullptr;
+      mObjBuffer1    = nullptr;
+      mObjBuffer2    = nullptr;
+      mPrevObjBuffer = nullptr;
       mName[0]       = 0;
    }
 }
@@ -295,7 +295,7 @@ bool DInputDevice::acquire()
       }
 
       // Enumerate joystick axes to enable force feedback
-      if ( NULL == mForceFeedbackEffect && JoystickDeviceType == mDeviceType)
+      if ( nullptr == mForceFeedbackEffect && JoystickDeviceType == mDeviceType)
       {
          // Since we will be playing force feedback effects, we should disable the auto-centering spring.
          DIPROPDWORD dipdw;
@@ -1070,7 +1070,7 @@ void DInputDevice::rumble(float x, float y)
       eff.dwStartDelay            = 0;
 
       // Create the prepared effect
-      if ( FAILED( result = mDevice->CreateEffect( GUID_ConstantForce, &eff, &mForceFeedbackEffect, NULL ) ) )
+      if ( FAILED( result = mDevice->CreateEffect( GUID_ConstantForce, &eff, &mForceFeedbackEffect, nullptr ) ) )
       {
 #ifdef LOG_INPUT
          Input::log( "DInputDevice::rumbleJoystick - %s does not support force feedback.\n", mName );
@@ -1120,7 +1120,7 @@ void DInputDevice::rumble(float x, float y)
 
    if ( FAILED( result = mForceFeedbackEffect->SetParameters( &eff, DIEP_DIRECTION | DIEP_TYPESPECIFICPARAMS | DIEP_START ) ) )
    {
-      const char* errorString = NULL;
+      const char* errorString = nullptr;
       switch ( result )
       {
          case DIERR_INPUTLOST:

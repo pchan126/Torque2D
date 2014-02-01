@@ -37,7 +37,6 @@ class SimDataBlockGroup : public SimGroup
    S32 mLastModifiedKey;
 
   public:
-//   static S32 QSORT_CALLBACK compareModifiedKey(const void* a,const void* b);
    static bool compareModifiedKey(const SimObject * a, const SimObject * b);
    void sort();
    SimDataBlockGroup();

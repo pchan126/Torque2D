@@ -48,9 +48,6 @@ protected:
     /// SceneManager being rendered in this state.
     t2dScene * mSceneManager;
 
-    ///
-   MatrixF mDiffuseCameraTransform;
-
     /// Disables AdvancedLighting bin draws during rendering with this scene state.
     bool mDisableAdvancedLightingBins;
 
@@ -166,23 +163,6 @@ public:
 //      dist = dist > 0.0f ? dist : 0.001f;
 //      return ( radius / dist ) * mWorldToScreenScale.y;
 //   }
-   
-   /// Returns the camera position used during the diffuse rendering pass which may be different
-   /// from the actual camera position.
-   ///
-   /// This is useful when doing level of detail calculations that need to be relative to the
-   /// diffuse pass.
-   ///
-   /// @see getCameraPosition
-   Point3F getDiffuseCameraPosition() const { return mDiffuseCameraTransform.getPosition(); }
-   const MatrixF& getDiffuseCameraTransform() const { return mDiffuseCameraTransform; }
-   
-   /// Set a new diffuse camera transform.
-   /// @see getDiffuseCameraTransform
-   void setDiffuseCameraTransform( const MatrixF &mat ) { mDiffuseCameraTransform = mat; }
-   
-   /// @}
-
 
     /// @name Material Overrides
     /// @{

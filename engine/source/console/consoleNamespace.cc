@@ -25,6 +25,7 @@
 #include "console/consoleInternal.h"
 #include "console/compiler.h"
 
+#include "consoleNamespace_ScriptBinding.h"
 U32 Namespace::mCacheSequence = 0;
 DataChunker Namespace::mCacheAllocator;
 DataChunker Namespace::mAllocator;
@@ -136,9 +137,13 @@ bool Namespace::canTabComplete(const char *prevText, const char *bestMatch, cons
 bool Namespace::unlinkClass(Namespace *parent)
 {
    Namespace *walk = this;
+   
    while(walk->mParent && walk->mParent->mName == mName)
       walk = walk->mParent;
 
+   if(walk->mParent == nullptr)
+      return false;
+   
    if(walk->mParent && walk->mParent != parent)
    {
       Con::errorf(ConsoleLogEntry::General, "Namespace::unlinkClass - cannot unlink namespace parent linkage for %s for %s.",
@@ -146,8 +151,13 @@ bool Namespace::unlinkClass(Namespace *parent)
       return false;
    }
 
+   if (walk->mParent == nullptr)
+      Con::printf("%s unlinkClass (%d)", mName, mRefCountToParent);
+   else
+      Con::printf("%s unlinkClass (%d) %s", mName, mRefCountToParent, walk->mParent->mName );
+
+   AssertFatal(mRefCountToParent > 0, "Namespace::unlinkClass - reference count to parent is less than 0");
    mRefCountToParent--;
-   AssertFatal(mRefCountToParent >= 0, "Namespace::unlinkClass - reference count to parent is less than 0");
 
    if(mRefCountToParent == 0)
       walk->mParent = nullptr;
@@ -170,8 +180,10 @@ bool Namespace::classLinkTo(Namespace *parent)
          walk->mName, walk->mParent->mName, parent->mName);
       return false;
    }
+
    mRefCountToParent++;
    walk->mParent = parent;
+   Con::printf("%s classLinkTo (%d) %s", mName, mRefCountToParent, walk->mParent->mName );
 
    trashCache();
 
@@ -596,36 +608,3 @@ void Namespace::relinkPackages()
    for(U32 i = 0; i < mOldNumActivePackages; i++)
       activatePackage(mActivePackages[i]);
 }
-
-ConsoleFunctionGroupBegin( Packages, "Functions relating to the control of packages.");
-
-ConsoleFunction(isPackage,bool,2,2,"( packageName ) Use the isPackage function to check if the name or ID specified in packageName is a valid package.\n"
-                                                                "@param packagename The name or ID of an existing package.\n"
-                                                                "@return Returns true if packageName is a valid package, false otherwise.\n"
-                                                                "@sa activatePackage, deactivatePackage")
-{
-   StringTableEntry packageName = StringTable->insert(argv[1]);
-   return Namespace::isPackage(packageName);
-}
-
-ConsoleFunction(activatePackage, void,2,2,"( packageName ) Use the activatePackage function to activate a package definition and to re-define all functions named within this package with the definitions provided in the package body.\n"
-                                                                "This pushes the newly activated package onto the top of the package stack.\n"
-                                                                "@param packagename The name or ID of an existing package.\n"
-                                                                "@return No return value.\n"
-                                                                "@sa deactivatePackage, isPackage")
-{
-   StringTableEntry packageName = StringTable->insert(argv[1]);
-   Namespace::activatePackage(packageName);
-}
-
-ConsoleFunction(deactivatePackage, void,2,2,"( packageName ) Use the deactivatePackage function to deactivate a package definition and to pop any definitions from this package off the package stack.\n"
-                                                                "This also causes any subsequently stacked packages to be popped. i.e. If any packages were activated after the one specified in packageName, they too will be deactivated and popped.\n"
-                                                                "@param packagename The name or ID of an existing package.\n"
-                                                                "@return No return value.\n"
-                                                                "@sa activatePackage, isPackage")
-{
-   StringTableEntry packageName = StringTable->insert(argv[1]);
-   Namespace::deactivatePackage(packageName);
-}
-
-ConsoleFunctionGroupEnd( Packages );

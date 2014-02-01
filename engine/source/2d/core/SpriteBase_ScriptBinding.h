@@ -20,30 +20,55 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(SpriteBase, isStaticFrameProvider, bool, 2, 2,     "() - Gets whether the sprite is in static or dynamic (animated)mode.\n"
-                                                    "@return Returns whether the sprite is in static or dynamic (animated)mode.")
+ConsoleMethodGroupBeginWithDocs(SpriteBase, SceneObject)
+
+/*! Gets whether the sprite is in static or dynamic (animated)mode.
+    @return Returns whether the sprite is in static or dynamic (animated)mode.
+*/
+ConsoleMethodWithDocs(SpriteBase, isStaticFrameProvider, ConsoleBool, 2, 2, ())
 {
     return object->isStaticFrameProvider();
 }
 
 //------------------------------------------------------------------------------
 
-ConsoleMethod(SpriteBase, setImage, bool, 3, 4, "(string imageAssetId, [int frame]) - Sets the sprite image and optionally frame.\n"
-                                                "@param imageAssetId The image asset Id to display\n"
-                                                "@param frame The frame of the image to display\n"
-                                                "@return Returns true on success.")
+/*! Sets the sprite image and optionally frame.
+    @param imageAssetId The image asset Id to display
+    @param frame The numerical or named frame of the image to display
+    @return Returns true on success.
+*/
+ConsoleMethodWithDocs(SpriteBase, setImage, ConsoleBool, 3, 4, (imageAssetId, [frame]))
 {
-    // Calculate Frame.
-    U32 frame = argc >= 4 ? dAtoi(argv[3]) : 0;
-
-    // Set image.
-    return static_cast<ImageFrameProvider*>(object)->setImage( argv[2], frame );
+    // Was a frame specified?
+    if (argc >= 4)
+    {
+        // Was it a number or a string?
+        if (!dIsalpha(*argv[3]))
+        {
+            // Fetch the numerical frame and set the image
+            const U32 frame = argc >= 4 ? dAtoi(argv[3]) : 0;
+            return static_cast<ImageFrameProvider*>(object)->setImage( argv[2], frame );
+        }
+        else
+        {
+            // Set the image and pass the named frame string
+            return static_cast<ImageFrameProvider*>(object)->setImage( argv[2], argv[3] );
+        }
+    }
+    else
+    {
+        // Frame was not specified, use default 0 and set the image
+        const U32 frame = 0;
+        return static_cast<ImageFrameProvider*>(object)->setImage( argv[2], frame );
+    }
 }
 
 //------------------------------------------------------------------------------
 
-ConsoleMethod(SpriteBase, getImage, const char*, 2, 2,  "() - Gets current image asset Id.\n"
-                                                        "@return (string imageAssetId) The image being displayed")
+/*! Gets current image asset Id.
+    @return (string imageAssetId) The image being displayed
+*/
+ConsoleMethodWithDocs(SpriteBase, getImage, ConsoleString, 2, 2, ())
 {
     // Are we in static mode?
     if ( !object->isStaticFrameProvider() )
@@ -59,9 +84,11 @@ ConsoleMethod(SpriteBase, getImage, const char*, 2, 2,  "() - Gets current image
 
 //------------------------------------------------------------------------------
 
-ConsoleMethod(SpriteBase, setImageFrame, bool, 3, 3,    "(frame) - Sets the image frame.\n"
-                                                        "@param frame The frame to display\n"
-                                                        "@return Returns true on success.")
+/*! Sets the image frame.
+    @param frame The frame to display
+    @return Returns true on success.
+*/
+ConsoleMethodWithDocs(SpriteBase, setImageFrame, ConsoleBool, 3, 3, (frame))
 {
     // Are we in static mode?
     if ( !object->isStaticFrameProvider() )
@@ -77,8 +104,10 @@ ConsoleMethod(SpriteBase, setImageFrame, bool, 3, 3,    "(frame) - Sets the imag
 
 //------------------------------------------------------------------------------
 
-ConsoleMethod(SpriteBase, getImageFrame, S32, 2, 2, "() - Gets the current image Frame.\n"
-                                                    "@return The current image frame.")
+/*! Gets the current image Frame.
+    @return The current image frame.
+*/
+ConsoleMethodWithDocs(SpriteBase, getImageFrame, ConsoleInt, 2, 2, ())
 {
     // Are we in static mode?
     if ( !object->isStaticFrameProvider() )
@@ -94,18 +123,61 @@ ConsoleMethod(SpriteBase, getImageFrame, S32, 2, 2, "() - Gets the current image
 
 //------------------------------------------------------------------------------
 
-ConsoleMethod(SpriteBase, playAnimation, bool, 3, 3,    "(string animationAssetId) - Plays an animation.\n"
-                                                        "@param animationAssetId The animation asset Id to play.\n"
-                                                        "@return Returns true on success.")
-{    
+/*! Sets the image frame using a string.
+    @param frame - The name of the frame.
+    @return True on success.
+*/
+ConsoleMethodWithDocs(SpriteBase, setImageFrameByName, ConsoleBool, 3, 3,  (frame))
+{
+    // Are we in static mode?
+    if ( !object->isStaticFrameProvider() )
+    {
+        // No, so warn.
+        Con::warnf( "SpriteBase::setImageFrameByName() - Method invalid, not in static mode." );
+        return false;
+    }
+    
+    // Set image Frame.
+    return static_cast<ImageFrameProvider*>(object)->setImageFrameByName( argv[2] );
+}
+
+//------------------------------------------------------------------------------
+
+/*! Gets the current image frame name.
+    @return The current image frame name.
+*/
+ConsoleMethodWithDocs(SpriteBase, getImageFrameByName, ConsoleString, 2, 2, ())
+{
+    // Are we in static mode?
+    if ( !object->isStaticFrameProvider() )
+    {
+        // No, so warn.
+        Con::warnf( "SpriteBase::getImageFrameByName() - Method invalid, not in static mode." );
+        return false;
+    }
+    
+    // Get image Frame.
+    return static_cast<ImageFrameProvider*>(object)->getImageFrameByName();
+}
+
+//------------------------------------------------------------------------------
+
+/*! Plays an animation.
+    @param animationAssetId The animation asset Id to play.
+    @return Returns true on success.
+*/
+ConsoleMethodWithDocs(SpriteBase, playAnimation, ConsoleBool, 3, 3, (string animationAssetId))
+{
     // Play Animation.
     return static_cast<ImageFrameProvider*>(object)->setAnimation( argv[2] );
 }   
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(SpriteBase, pauseAnimation, void, 3, 3, "(bool enable) - Pause the current animation\n"
-                                                             "@param enable If true, pause the animation. If false, continue animating\n")
+/*! Pause the current animation
+    @param enable If true, pause the animation. If false, continue animating
+*/
+ConsoleMethodWithDocs(SpriteBase, pauseAnimation, ConsoleVoid, 3, 3, (bool enable))
 {
     // Are we in static mode?
     if ( object->isStaticFrameProvider() )
@@ -121,8 +193,10 @@ ConsoleMethod(SpriteBase, pauseAnimation, void, 3, 3, "(bool enable) - Pause the
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(SpriteBase, stopAnimation, void, 2, 2,   "() - Stop the current animation\n"
-                                                        "@return No return value.")
+/*! Stop the current animation
+    @return No return value.
+*/
+ConsoleMethodWithDocs(SpriteBase, stopAnimation, ConsoleVoid, 2, 2, ())
 {
     // Are we in static mode?
     if ( object->isStaticFrameProvider() )
@@ -137,9 +211,11 @@ ConsoleMethod(SpriteBase, stopAnimation, void, 2, 2,   "() - Stop the current an
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(SpriteBase, setAnimationFrame, void, 3, 3, "(int frame) - Sets the current animation frame.\n"
-                                                                "@param frame Which frame of the animation to display\n"
-                                                                "@return No return value.")
+/*! Sets the current animation frame.
+    @param frame Which frame of the animation to display
+    @return No return value.
+*/
+ConsoleMethodWithDocs(SpriteBase, setAnimationFrame, ConsoleVoid, 3, 3, (int frame))
 {
     // Are we in static mode?
     if ( object->isStaticFrameProvider() )
@@ -155,8 +231,10 @@ ConsoleMethod(SpriteBase, setAnimationFrame, void, 3, 3, "(int frame) - Sets the
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(SpriteBase, getAnimationFrame, S32, 2, 2, "() - Gets current animation frame.\n"
-                                                               "@return (int frame) The current animation frame")
+/*! Gets current animation frame.
+    @return (int frame) The current animation frame
+*/
+ConsoleMethodWithDocs(SpriteBase, getAnimationFrame, ConsoleInt, 2, 2, ())
 {
     // Are we in static mode?
     if ( object->isStaticFrameProvider() )
@@ -172,8 +250,10 @@ ConsoleMethod(SpriteBase, getAnimationFrame, S32, 2, 2, "() - Gets current anima
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(SpriteBase, getAnimation, const char*, 2, 2,  "() - Gets current animation asset Id.\n"
-                                                        "@return (string AnimationAssetId) The current animation asset Id.")
+/*! Gets current animation asset Id.
+    @return (string AnimationAssetId) The current animation asset Id.
+*/
+ConsoleMethodWithDocs(SpriteBase, getAnimation, ConsoleString, 2, 2, ())
 {
     // Are we in static mode?
     if ( object->isStaticFrameProvider() )
@@ -190,8 +270,10 @@ ConsoleMethod(SpriteBase, getAnimation, const char*, 2, 2,  "() - Gets current a
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(SpriteBase, getAnimationTime, F32, 2, 2,  "() - Gets current animation time.\n"
-                                                    "@return (float time) The current animation time")
+/*! Gets current animation time.
+    @return (float time) The current animation time
+*/
+ConsoleMethodWithDocs(SpriteBase, getAnimationTime, ConsoleFloat, 2, 2, ())
 {
     // Are we in static mode?
     if ( object->isStaticFrameProvider() )
@@ -208,8 +290,10 @@ ConsoleMethod(SpriteBase, getAnimationTime, F32, 2, 2,  "() - Gets current anima
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(SpriteBase, getIsAnimationFinished, bool, 2, 2,   "() - Checks animation status.\n"
-                                                            "@return (bool finished) Whether or not the animation is finished")
+/*! Checks animation status.
+    @return (bool finished) Whether or not the animation is finished
+*/
+ConsoleMethodWithDocs(SpriteBase, getIsAnimationFinished, ConsoleBool, 2, 2, ())
 {
     // Are we in static mode?
     if ( object->isStaticFrameProvider() )
@@ -225,8 +309,10 @@ ConsoleMethod(SpriteBase, getIsAnimationFinished, bool, 2, 2,   "() - Checks ani
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(SpriteBase, setAnimationTimeScale, void, 3, 3,   "(float timeScale) - Change the rate of animation.\n"
-                                                            "@param timeScale Value which will scale the frame animation speed. 1 by default.\n")
+/*! Change the rate of animation.
+    @param timeScale Value which will scale the frame animation speed. 1 by default.
+*/
+ConsoleMethodWithDocs(SpriteBase, setAnimationTimeScale, ConsoleVoid, 3, 3, (float timeScale))
 {
     // Are we in static mode?
     if ( object->isStaticFrameProvider() )
@@ -241,8 +327,10 @@ ConsoleMethod(SpriteBase, setAnimationTimeScale, void, 3, 3,   "(float timeScale
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(SpriteBase, getAnimationTimeScale, F32, 2, 2,     "() - Get the animation time scale for this sprite.\n"
-                                                            "@return (float) Returns the animation time scale for this sprite.\n")
+/*! Get the animation time scale for this sprite.
+    @return (float) Returns the animation time scale for this sprite.
+*/
+ConsoleMethodWithDocs(SpriteBase, getAnimationTimeScale, ConsoleFloat, 2, 2, ())
 {
     // Are we in static mode?
     if ( object->isStaticFrameProvider() )
@@ -254,3 +342,5 @@ ConsoleMethod(SpriteBase, getAnimationTimeScale, F32, 2, 2,     "() - Get the an
 
     return object->getAnimationTimeScale();
 }
+
+ConsoleMethodGroupEndWithDocs(SpriteBase)

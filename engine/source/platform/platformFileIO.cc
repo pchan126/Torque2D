@@ -27,6 +27,8 @@
 #include "string/stringTable.h"
 #include "io/resource/resourceManager.h"
 
+#include "platformFileIO_ScriptBinding.h"
+
 //-----------------------------------------------------------------------------
 
 StringTableEntry Platform::getTemporaryDirectory()
@@ -37,12 +39,6 @@ StringTableEntry Platform::getTemporaryDirectory()
       path = Platform::getCurrentDirectory();
 
    return path;
-}
-
-ConsoleFunction(getTemporaryDirectory, const char *, 1, 1, "() Gets the path to the system's temporary directory\n"
-                "@return Returns the path to the temporary directory as a string")
-{
-   return Platform::getTemporaryDirectory();
 }
 
 StringTableEntry Platform::getTemporaryFileName()
@@ -59,10 +55,70 @@ StringTableEntry Platform::getTemporaryFileName()
    return StringTable->insert(buf);
 }
 
-ConsoleFunction(getTemporaryFileName, const char *, 1, 1, "() Generates a temporary filename for use.\n"
-                "@return Returns the formatted temporary filename for use")
+//-----------------------------------------------------------------------------
+static char filePathBuffer[1024];
+static bool deleteDirectoryRecursive( const char* pPath )
 {
-   return Platform::getTemporaryFileName();
+    // Sanity!
+    AssertFatal( pPath != NULL, "Cannot delete directory that is NULL." );
+
+    // Find directories.
+    Vector<StringTableEntry> directories;
+    if ( !Platform::dumpDirectories( pPath, directories, 0 ) )
+    {
+        // Warn.
+        Con::warnf( "Could not retrieve sub-directories of '%s'.", pPath );
+        return false;
+    }
+
+    // Iterate directories.
+    for( Vector<StringTableEntry>::iterator basePathItr = directories.begin(); basePathItr != directories.end(); ++basePathItr )
+    {
+        // Fetch base path.
+        StringTableEntry basePath = *basePathItr;
+
+        // Skip if the base path.
+        if ( basePathItr == directories.begin() && dStrcmp( pPath, basePath ) == 0 )
+            continue;
+
+        // Delete any directories recursively.
+        if ( !deleteDirectoryRecursive( basePath ) )
+            return false;
+    }
+
+    // Find files.
+    Vector<Platform::FileInfo> files;
+    if ( !Platform::dumpPath( pPath, files, 0 ) )
+    {
+        // Warn.
+        Con::warnf( "Could not retrieve files for directory '%s'.", pPath );
+        return false;
+    }
+
+    // Iterate files.
+    for ( Vector<Platform::FileInfo>::iterator fileItr = files.begin(); fileItr != files.end(); ++fileItr )
+    {
+        // Format file.
+        dSprintf( filePathBuffer, sizeof(filePathBuffer), "%s/%s", fileItr->pFullPath, fileItr->pFileName );
+
+        // Delete file.
+        if ( !Platform::fileDelete( filePathBuffer ) )
+        {
+            // Warn.
+            Con::warnf( "Could not delete file '%s'.", filePathBuffer );
+            return false;
+        }
+    }
+
+    // Delete the directory.
+    if ( !Platform::fileDelete( pPath ) )
+    {
+        // Warn.
+        Con::warnf( "Could not delete directory '%s'.", pPath );
+        return false;
+    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -351,7 +407,7 @@ StringTableEntry Platform::stripBasePath(const char *path)
 StringTableEntry Platform::getPrefsPath(const char *file /* = NULL */)
 {
     char buf[1024];
-#ifdef TORQUE_OS_IOS
+#if defined(TORQUE_OS_IOS) || defined(TORQUE_OS_ANDROID)
     
     if ( file )
     {
@@ -398,16 +454,3 @@ StringTableEntry Platform::getPrefsPath(const char *file /* = NULL */)
 }
 
 //-----------------------------------------------------------------------------
-
-ConsoleFunction(getUserDataDirectory, const char*, 1, 1, "()\n"
-                "@return Returns a string to the directory storing the user's data")
-{
-   return Platform::getUserDataDirectory();
-}
-
-ConsoleFunction(getUserHomeDirectory, const char*, 1, 1, "() \n"
-                "@return Returns the path to the user's home directory.")
-{
-   return Platform::getUserHomeDirectory();
-}
-

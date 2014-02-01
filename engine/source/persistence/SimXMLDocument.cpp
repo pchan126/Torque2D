@@ -24,11 +24,12 @@
 // XML Document Object
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "persistence/SimXMLDocument_ScriptBinding.h"
+#include "persistence/SimXMLDocument.h"
 #include "memory/frameAllocator.h"
 #include "console/consoleInternal.h"
 #include "io/resource/resourceManager.h"
 
+#include "SimXMLDocument_ScriptBinding.h"
 IMPLEMENT_CONOBJECT(SimXMLDocument);
 
 // -----------------------------------------------------------------------------
@@ -868,6 +869,3 @@ const char* SimXMLDocument::getData()
 
    return text->Value();
 }
-
-
-////EOF/////////////////////////////////////////////////////////////////////////

@@ -106,7 +106,7 @@ void ProcessedCustomMaterial::_setStageData()
          }
          else
          {
-            mCustomMaterial->logError( "Could not find CubemapData - %s", mCustomMaterial->mCubemapName.c_str());
+//            mCustomMaterial->logError( "Could not find CubemapData - %s", mCustomMaterial->mCubemapName.c_str());
          }
          continue;
       }
@@ -158,7 +158,7 @@ void ProcessedCustomMaterial::_setStageData()
       rpd->mTexSlot[i].texObject = _createTexture( filename, &GFXDefaultStaticDiffuseProfile );
       if ( !rpd->mTexSlot[i].texObject )
       {
-         mMaterial->logError("Failed to load texture %s", _getTexturePath(filename).c_str());
+//         mMaterial->logError("Failed to load texture %s", _getTexturePath(filename).c_str());
          continue;
       }
       rpd->mTexType[i] = Material::Standard;
@@ -170,8 +170,8 @@ void ProcessedCustomMaterial::_setStageData()
    {
       mCustomMaterial->mCubemapData->createMap();      
       rpd->mCubeMap = mMaterial->mCubemapData->mCubemap; // BTRTODO ?
-      if ( !rpd->mCubeMap )
-         mMaterial->logError("Failed to load cubemap");
+//      if ( !rpd->mCubeMap )
+//         mMaterial->logError("Failed to load cubemap");
    }
 
    // If this has a output target defined, it may be writing 

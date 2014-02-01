@@ -42,7 +42,7 @@
 //class t2dSceneRenderState;
 //class SceneObject;
 //struct MeshRenderInst;
-//class TSRenderState;
+class TSRenderState;
 //class RenderPassManager;
 //class TSMaterialList;
 //class TSShapeInstance;
@@ -220,11 +220,11 @@ class TSMesh
 
    FreeableVector<Point3F> verts;
    FreeableVector<Point3F> norms;
-   FreeableVector<Point2F> tverts;
+   FreeableVector<Point2F> texverts;
    FreeableVector<Point4F> tangents;
    
    // Optional second texture uvs.
-   FreeableVector<Point2F> tverts2;
+   FreeableVector<Point2F> texverts2;
 
    // Optional vertex colors data.
    FreeableVector<ColorI> colors;
@@ -253,6 +253,14 @@ class TSMesh
 
    /// This is used by sgShadowProjector to render the 
    /// mesh directly, skipping the render manager.
+   virtual void render( GFXVertexBufferDataHandle &vb );
+   void innerRender( GFXVertexBufferDataHandle &vb );
+   virtual void render( TSMaterialList *,
+                        const TSRenderState &data,
+                        bool isSkinDirty,
+                        const Vector<MatrixF> &transforms,
+           GFXVertexBufferDataHandle &vertexBuffer );
+
 //   virtual void render( GFXVertexBufferDataHandle &vb, GFXPrimitiveBufferHandle &pb );
 //   void innerRender( GFXVertexBufferDataHandle &vb, GFXPrimitiveBufferHandle &pb );
 //   virtual void render( TSMaterialList *,
@@ -262,6 +270,7 @@ class TSMesh
 //                        GFXVertexBuffer &vertexBuffer,
 //                        GFXPrimitiveBufferHandle &primitiveBuffer );
 
+   void innerRender( TSMaterialList *, const TSRenderState &data, GFXVertexBufferDataHandle &vb );
 //   void innerRender( TSMaterialList *, const TSRenderState &data, GFXVertexBufferHandle &vb, GFXPrimitiveBufferHandle &pb );
 
    /// @}
@@ -486,7 +495,8 @@ public:
    /// set verts and normals...
    void updateSkin( const Vector<MatrixF> &transforms, GFXVertexBufferDataHandle &instanceVB );
 
-//   // render methods..
+   // render methods..
+   void render( GFXVertexBufferDataHandle &instanceVB );
 //   void render( GFXVertexBufferHandle &instanceVB, GFXPrimitiveBufferHandle &instancePB );
 //   void render(   TSMaterialList *, 
 //                  const TSRenderState &data,

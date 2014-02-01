@@ -351,6 +351,25 @@ enum XInputCodes
 };
 
 
+enum GestureCodes
+{
+   SI_CIRCLE_GESTURE    = 0x403,
+   SI_SWIPE_GESTURE     = 0x404,
+   SI_KEYTAP_GESTURE    = 0x405,
+   SI_SCREENTAP_GESTURE = 0x406,
+   SI_PINCH_GESTURE     = 0x407,
+   SI_SCALE_GESTURE     = 0x408
+};
+
+enum LeapMotionCodes
+{
+   LM_HANDAXIS          = 0x409,
+   LM_HANDROT           = 0x40A,
+   LM_HANDPOS           = 0x40B,
+   LM_FINGERPOS         = 0x40C,
+};
+
+
 /// Input device types
 typedef U32 InputDeviceTypes;
 enum InputDeviceTypesEnum
@@ -405,7 +424,8 @@ enum InputEventType
    SI_TEXT    = 0x0B,
    SI_TOUCH   = 0x0C,
    SI_GESTURE = 0x0D,
-   SI_MOTION  = 0x0F
+   SI_MOTION  = 0x0F,
+   SI_LEAP    = 0x11
 };
 
 /// Event SubTypes

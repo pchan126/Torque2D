@@ -22,6 +22,7 @@
 
 #include "iOSStreamSource.h"
 #include "SoundEngine.h"
+#include "consoleObject.h"
 
 #define BUFFERSIZE 32768
 

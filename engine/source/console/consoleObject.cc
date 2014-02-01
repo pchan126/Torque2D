@@ -159,17 +159,7 @@ ConsoleObject* AbstractClassRep::create(const U32 groupId, const U32 typeId, con
 
 //--------------------------------------
 
-//static S32 QSORT_CALLBACK ACRCompare(const void *aptr, const void *bptr)
-//{
-//   const AbstractClassRep *a = *((const AbstractClassRep **) aptr);
-//   const AbstractClassRep *b = *((const AbstractClassRep **) bptr);
-//
-//   if(a->mClassType != b->mClassType)
-//      return a->mClassType - b->mClassType;
-//   return dStricmp(a->getClassName(), b->getClassName());
-//}
-
-static bool ACRCompare(const AbstractClassRep *aptr, AbstractClassRep *bptr)
+bool AbstractClassRep::ACRCompare(const AbstractClassRep *aptr, const AbstractClassRep *bptr)
 {
     if(aptr->mClassType != bptr->mClassType)
         return aptr->mClassType < bptr->mClassType;
@@ -235,7 +225,7 @@ void AbstractClassRep::initialize()
 
          // Sort by type and then by name.
 //         dQsort((void *)dynamicTable.address(), dynamicTable.size(), sizeof(AbstractClassRep *), ACRCompare);
-          std::sort(dynamicTable.begin(), dynamicTable.end(), ACRCompare);
+         std::sort(dynamicTable.begin(), dynamicTable.end(), AbstractClassRep::ACRCompare);
 
          // Allocate storage in the classTable
          classTable[group][type] = new AbstractClassRep*[NetClassCount[group][type]];
@@ -632,77 +622,4 @@ ConsoleObject::~ConsoleObject()
 AbstractClassRep* ConsoleObject::getClassRep() const
 {
    return nullptr;
-}
-
-ConsoleFunction( enumerateConsoleClasses, const char*, 1, 2, "enumerateConsoleClasses(<\"base class\">);")
-{
-   AbstractClassRep *base = nullptr;    
-   if(argc > 1)
-   {
-      base = AbstractClassRep::findClassRep(argv[1]);
-      if(!base)
-         return "";
-   }
-   
-   Vector<AbstractClassRep*> classes;
-   U32 bufSize = 0;
-   for(AbstractClassRep *rep = AbstractClassRep::getClassList(); rep; rep = rep->getNextClass())
-   {
-      if( !base || rep->isClass(base))
-      {
-         classes.push_back(rep);
-         bufSize += dStrlen(rep->getClassName()) + 1;
-      }
-   }
-   
-   if(classes.empty())
-      return "";
-
-//   dQsort(classes.address(), classes.size(), sizeof(AbstractClassRep*), ACRCompare);
-    std::sort(classes.begin(), classes.end(), ACRCompare);
-
-   char* ret = Con::getReturnBuffer(bufSize);
-   dStrcpy( ret, classes[0]->getClassName());
-   for( auto itr:classes)
-   {
-      dStrcat( ret, "\t" );
-      dStrcat( ret, itr->getClassName() );
-   }
-   
-   return ret;
-}
-
-String ConsoleObject::_getLogMessage(const char* fmt, va_list args) const
-{
-    String objClass = "UnknownClass";
-    if(getClassRep())
-        objClass = getClassRep()->getClassName();
-
-    String formattedMessage = String::VToString(fmt, args);
-    return String::ToString("%s - Object at %x - %s",
-            objClass.c_str(), this, formattedMessage.c_str());
-}
-
-void ConsoleObject::logMessage(const char* fmt, ...) const
-{
-    va_list args;
-    va_start(args, fmt);
-    Con::printf(_getLogMessage(fmt, args));
-    va_end(args);
-}
-
-void ConsoleObject::logWarning(const char* fmt, ...) const
-{
-    va_list args;
-    va_start(args, fmt);
-    Con::warnf(_getLogMessage(fmt, args));
-    va_end(args);
-}
-
-void ConsoleObject::logError(const char* fmt, ...) const
-{
-    va_list args;
-    va_start(args, fmt);
-    Con::errorf(_getLogMessage(fmt, args));
-    va_end(args);
 }

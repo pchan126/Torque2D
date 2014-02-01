@@ -22,10 +22,7 @@
 
 #include "input/actionMap.h"
 #include "platform/event.h"
-//#include "console/console.h"
-//#include "platform/platform.h"
 #include "platform/platformInput.h"
-//#include "platform/platformAssert.h"
 #include "io/resource/resourceManager.h"
 
 IMPLEMENT_CONOBJECT(ActionMap);
@@ -1140,6 +1137,252 @@ bool ActionMap::processBind(const U32 argc, const char** argv, SimObject* object
 }
 
 //------------------------------------------------------------------------------
+
+bool ActionMap::processLeap(const InputEventInfo* pEvent)
+{
+//    static const char *argv[5];
+//    char buffer[64];
+//
+//    const Node* pNode = findNode( pEvent->deviceType, pEvent->deviceInst, pEvent->modifier, pEvent->objType );
+//
+//    if (pNode == NULL)
+//    {
+//        // Check to see if we clear the modifiers, do we find an action?
+//        if (pEvent->modifier != 0)
+//            pNode = findNode(pEvent->deviceType, pEvent->deviceInst, 0, pEvent->objInst);
+//
+//        if (pNode == NULL)
+//            return false;
+//    }
+//
+//    // "Do nothing" bind:
+//    if ( !pNode->consoleFunction[0] )
+//        return( true );
+//
+//    argv[0] = pNode->consoleFunction;
+//
+//    float values[3];
+//    values[0] = pEvent->fValues[0];
+//    values[1] = pEvent->fValues[1];
+//    values[2] = pEvent->fValues[2];
+//
+//    if ( pNode->flags & Node::HasDeadZone )
+//    {
+//        if ( pEvent->fValues[0] >= pNode->deadZoneBegin && pEvent->fValues[0] <= pNode->deadZoneEnd )
+//            values[0] = 0.0f;
+//        if ( pEvent->fValues[1] >= pNode->deadZoneBegin && pEvent->fValues[1] <= pNode->deadZoneEnd )
+//            values[1] = 0.0f;
+//        if ( pEvent->fValues[2] >= pNode->deadZoneBegin && pEvent->fValues[2] <= pNode->deadZoneEnd )
+//            values[2] = 0.0f;
+//
+//        // All values are all null, so don't bother executing the function
+//        if (!values[0] && !values[1] && !values[2])
+//            return true;
+//    }
+//
+//    switch(pEvent->objType)
+//    {
+//        case LM_HANDPOS:
+//
+//            // ID
+//            argv[1] = Con::getIntArg(pEvent->iValue);
+//
+//            // Position
+//            dSprintf(buffer, sizeof(buffer), "%f %f %f", values[0], values[1], values[2]);
+//
+//            argv[2] = buffer;
+//
+//            if (pNode->object)
+//                Con::executef(pNode->object, 3, argv[0], argv[1], argv[2]);
+//            else
+//                Con::execute(3, argv);
+//            break;
+//
+//        case LM_HANDROT:
+//            
+//            // ID
+//            argv[1] = Con::getIntArg(pEvent->iValue);
+//
+//            // Rotation
+//            dSprintf(buffer, sizeof(buffer), "%f %f %f", values[0], values[1], values[2]);
+//
+//            argv[2] = buffer;
+//
+//            if (pNode->object)
+//                Con::executef(pNode->object, 3, argv[0], argv[1], argv[2]);
+//            else
+//                Con::execute(3, argv);
+//            break;
+//
+//        case LM_FINGERPOS:
+//            
+//            // IDs
+//            argv[1] = pEvent->fingerIDs;
+//
+//            // X-coordinates
+//            argv[2] = pEvent->fingersX;
+//
+//            // Y-coordinates
+//            argv[3] = pEvent->fingersY;
+//
+//            // Z-coordinates
+//            argv[4] = pEvent->fingersZ;
+//
+//            if (pNode->object)
+//                Con::executef(pNode->object, 5, argv[0], argv[1], argv[2], argv[3], argv[4]);
+//            else
+//                Con::execute(5, argv);
+//            break;
+//
+//        case LM_HANDAXIS:
+//        default:
+//            return false;
+//    }
+
+    return true;
+}
+
+//------------------------------------------------------------------------------
+
+bool ActionMap::processGesture(const InputEventInfo* pEvent)
+{
+//    static const char *argv[6];
+//    char buffer[64];
+//
+//    const Node* pNode = findNode( pEvent->deviceType, pEvent->deviceInst, pEvent->modifier, pEvent->objType );
+//
+//    if (pNode == NULL) 
+//    {
+//        // Check to see if we clear the modifiers, do we find an action?
+//        if (pEvent->modifier != 0)
+//            pNode = findNode(pEvent->deviceType, pEvent->deviceInst, 0, pEvent->objInst);
+//           
+//        if (pNode == NULL)
+//            return false;
+//    }
+//
+//    // "Do nothing" bind:
+//    if ( !pNode->consoleFunction[0] )
+//        return( true );
+//
+//    // Function
+//    argv[0] = pNode->consoleFunction;
+//    
+//    switch(pEvent->objType)
+//    {
+//        case SI_CIRCLE_GESTURE:
+//
+//            // ID
+//            argv[1] = Con::getIntArg(pEvent->iValue);
+//
+//            // Progress
+//            argv[2] = Con::getFloatArg(pEvent->fValues[0]);
+//
+//            // Radius
+//            argv[3] = Con::getFloatArg(pEvent->fValues[1]);
+//
+//            // Direction (1 clockwise, 0 counter-clockwise)
+//            argv[4] = Con::getFloatArg(pEvent->fValues[2]);
+//
+//            // State
+//            argv[5] = Con::getFloatArg(pEvent->fValues[3]);
+//
+//            if (pNode->object)
+//                Con::executef(pNode->object, 6, argv[0], argv[1], argv[2], argv[3], argv[4], argv[5]);
+//            else
+//                Con::execute(6, argv);
+//            break;
+//
+//        case SI_SWIPE_GESTURE:
+//
+//            // ID
+//            argv[1] = Con::getIntArg(pEvent->iValue);
+//
+//            // State
+//            argv[2] = Con::getFloatArg(pEvent->fValues[0]);
+//
+//            // Direction
+//            dSprintf(buffer, sizeof(buffer), "%f %f %f", pEvent->fValues[1], pEvent->fValues[2], pEvent->fValues[3]);
+//
+//            argv[3] = buffer;
+//            // Speed
+//            argv[4] = Con::getFloatArg(pEvent->fValues[4]);
+//
+//            if (pNode->object)
+//                Con::executef(pNode->object, 5, argv[0], argv[1], argv[2], argv[3], argv[4]);
+//            else
+//                Con::execute(5, argv);
+//            break;
+//
+//        case SI_KEYTAP_GESTURE:
+//        case SI_SCREENTAP_GESTURE:
+//
+//            // ID
+//            argv[1] = Con::getIntArg(pEvent->iValue);
+//        
+//            // Position
+//            dSprintf(buffer, sizeof(buffer), "%f %f %f", pEvent->fValues[0], pEvent->fValues[1], pEvent->fValues[2]);
+//
+//            argv[2] = buffer;
+//
+//            // Direction
+//            dSprintf(buffer, sizeof(buffer), "%f %f %f", pEvent->fValues[3], pEvent->fValues[4], pEvent->fValues[5]);
+//
+//            argv[3] = buffer;
+//
+//            if (pNode->object)
+//                Con::executef(pNode->object, 4, argv[0], argv[1], argv[2], argv[3]);
+//            else
+//                Con::execute(5, argv);
+//
+//            break;
+//
+//        case SI_PINCH_GESTURE:
+//        case SI_SCALE_GESTURE:
+//        default:
+//            return true;
+//    }
+   
+    return true;
+}
+
+//------------------------------------------------------------------------------
+
+bool ActionMap::processTouch(const InputEventInfo* pEvent)
+{
+//    static const char *argv[4];
+//    const Node* pNode = findNode(pEvent->deviceType, pEvent->deviceInst, pEvent->modifier, pEvent->objInst);
+//       
+//    if (pNode == NULL) 
+//    {
+//        // Check to see if we clear the modifiers, do we find an action?
+//        if (pEvent->modifier != 0)
+//            pNode = findNode(pEvent->deviceType, pEvent->deviceInst, 0, pEvent->objInst);
+//           
+//        if (pNode == NULL)
+//            return false;
+//    }
+//       
+//    // "Do nothing" bind:
+//    if ( !pNode->consoleFunction[0] )
+//        return( true );
+//       
+//    // Ok, we're all set up, call the function.
+//    argv[0] = pNode->consoleFunction;
+//    argv[1] = pEvent->fingerIDs;
+//    argv[2] = pEvent->fingersX;
+//    argv[3] = pEvent->fingersY;
+//       
+//    if (pNode->object)
+//        Con::executef(pNode->object, 4, argv[0], argv[1], argv[2], argv[3]);
+//    else
+//        Con::execute(4, argv);
+   
+    return true;
+}
+
+//------------------------------------------------------------------------------
+
 bool ActionMap::processAction(const InputEventInfo* pEvent)
 {
    static const char *argv[4];
@@ -1526,159 +1769,6 @@ bool ActionMap::handleEventGlobal(const InputEventInfo* pEvent)
 }
 
 //------------------------------------------------------------------------------
-//-------------------------------------- Console stuff
-
-//------------------------------------------------------------------------------
-ConsoleMethod( ActionMap, bind, void, 5, 10, "( device , action , [ modifier , mod... ] , command ) Use the bind method to associate a function to a keystroke or other device input.\n"
-                                                                "The command bound via the bind function must be specified as a flat name with no elipses or semi-colon termination and will be called on make and break events (i.e. key press and release for a mapped key). Args: Warning: When a function is bound to a keystroke or other device input, and no other versions of the binding are provided, the function will be called even if a modifier key like CTRL, ALT, or SHIFT is also pressed.\n"
-                                                                "@param device Name of the device to bind the command to.\n"
-                                                                "@param action Name of the action to watch for.\n"
-                                                                "@param modifier Special modifiers (mouse only), such as dead spot, etc.\n"
-                                                                "@param command The function to be called on make and break.\n"
-                                                                "@return No return value.\n"
-                                                                "@sa bindCmd, getBinding, unbind")
-{
-   object->processBind( argc - 2, argv + 2, nullptr );
-}
-
-ConsoleMethod( ActionMap, bindObj, void, 6, 11, "(device, action, [modifier spec, mod...], command, object) Use the bindObj method to associate a function to a keystroke or other device input.\n"
-                                                                "The command bound via the bind function must be specified as a flat name with no elipses or semi-colon termination and will be called on make and break events (i.e. key press and release for a mapped key). Args: Warning: When a function is bound to a keystroke or other device input, and no other versions of the binding are provided, the function will be called even if a modifier key like CTRL, ALT, or SHIFT is also pressed.\n"
-                                                                "@param device Name of the device to bind the command to.\n"
-                                                                "@param action Name of the action to watch for.\n"
-                                                                "@param modifier Special modifiers (mouse only), such as dead spot, etc.\n"
-                                                                "@param command The function to be called on make and break.\n"
-                                                                "@param object The explicit object (it defaults to nullptr when you call bind() )\n"
-                                                                "@return No return value.\n"
-                                                                "@sa bindCmd, getBinding, unbind")
-{
-   SimObject* obj = Sim::findObject(argv[argc - 1]);
-   object->processBind( argc - 3, argv + 2, obj );
-}
-
-//------------------------------------------------------------------------------
-ConsoleMethod( ActionMap, bindCmd, void, 6, 6, "( device , action , makeCmd , breakCmd ) Use the bindCmd method to associate up to two functions to a keystroke or other device input.\n"
-                                                                "The makeCmd is bound to the make event and the breakCmd is bound to the break event and in both cases, the commands are specified as complete scripts, with all arguments, elipses, and the terminating semi-colon. Either of these commands may be non-specified (nullptr strings). For clarification, see 'Bind Sample' example below.\n"
-                                                                "@param device Name of the device to bind the command to (see 'Device Table' below).\n"
-                                                                "@param action Name of the action to watch for(see 'Action Table' below).\n"
-                                                                "@param makeCmd The function to be called on make event.\n"
-                                                                "@param breakCmd The function to be called on break event.\n"
-                                                                "@return No return value.\n"
-                                                                "@sa bind, getBinding, unbind")
-{
-   object->processBindCmd( argv[2], argv[3], argv[4], argv[5] );
-}
-
-//------------------------------------------------------------------------------
-ConsoleMethod( ActionMap, unbind, void, 4, 4, "( device , action ) Use the unbind method to remove a previosly specified device + action pair from the action map.\n"
-                                                                "@param device Name of the device to bound to a command (see 'Device Table' below).\n"
-                                                                "@param action Name of the action to watch for (see 'Action Table' below).\n"
-                                                                "@return No return value.\n"
-                                                                "@sa bind, bindCmd")
-{
-   object->processUnbind( argv[2], argv[3] );
-}
-ConsoleMethod( ActionMap, unbindObj, void, 5, 5, "(device, action, object) Use the unbind method to remove a previosly specified device + action pair from the action map.\n"
-                                                                "@param device Name of the device to bound to a command (see 'Device Table' below).\n"
-                                                                "@param action Name of the action to watch for (see 'Action Table' below).\n"
-                                                                "@param object Explicit object (it defaults to nullptr when you call unbind() )."
-                                                                "@return No return value.\n"
-                                                                "@sa bind, bindCmd")
-{
-   SimObject* obj = Sim::findObject(argv[4]);
-   object->processUnbind( argv[2], argv[3], obj );
-}
-
-
-//------------------------------------------------------------------------------
-ConsoleMethod( ActionMap, save, void, 2, 4, "( [ fileName ] [ , append ] ) Use the save method to save an entire action map specification to a file. If append is not specified, or specified as false, fileName will be overwritten, otherwise the action map will be appended to the file.\n"
-                                                                "@param fileName Full path to file in which to store action map definition.\n"
-                                                                "@param append If true, do not overwrite the file, else start from scratch.\n"
-                                                                "@return No return value")
-{
-   const char* fileName = argc > 2 ? argv[2]        : nullptr;
-   bool append          = argc > 3 ? dAtob(argv[3]) : false;
-
-   char buffer[1024];
-
-   if(fileName)
-   {
-      if(Con::expandPath(buffer, sizeof(buffer), fileName))       
-         fileName = buffer;
-   }
-
-   object->dumpActionMap( fileName, append );
-}
-
-//------------------------------------------------------------------------------
-ConsoleMethod( ActionMap, push, void, 2, 2, "() Use the push method to activate an ActionMap and place it at the top of the non-global ActionMap stack.\n"
-                                                                "@return No return value.\n"
-                                                                "@sa pop")
-{
-   SimSet* pActionMapSet = Sim::getActiveActionMapSet();
-   pActionMapSet->pushObject( object );
-}
-
-//------------------------------------------------------------------------------
-ConsoleMethod( ActionMap, pop, void, 2, 2, "() Use the pop method to de-activate an ActionMap and remove it from non-global ActionMap stack.\n"
-                                                                "@return No return value.\n"
-                                                                "@sa push")
-{
-   SimSet* pActionMapSet = Sim::getActiveActionMapSet();
-   pActionMapSet->removeObject( object );
-}
-
-//------------------------------------------------------------------------------
-ConsoleMethod( ActionMap, getBinding, const char*, 3, 3, "( command ) Use the getBinding method to get the binding for a specified command.\n"
-                                                                "@param command The function to seek a binding for.\n"
-                                                                "@return Returns a string containing the binding as a field (TAB separated string), or a nullptr string meaning 'no binding found'.\n"
-                                                                "@sa bind, bindCmd")
-{
-    return( object->getBinding( argv[2] ) );	
-}
-
-//------------------------------------------------------------------------------
-ConsoleMethod( ActionMap, getCommand, const char*, 4, 4, "( device , action ) Use the getCommand method to get the function associated with a specific device + action pair.\n"
-                                                                "@param device Name of the device to bound to a command (see 'Device Table' below).\n"
-                                                                "@param action Name of the action to watch for (see 'Action Table' below).\n"
-                                                                "@return Returns the function name or specification associated with the specified device + action pair, or a nullptr-string meaning 'no binding found'.\n"
-                                                                "@sa bind, bindCmd, getBinding")
-{
-    return( object->getCommand( argv[2], argv[3] ) );	
-}
-
-//------------------------------------------------------------------------------
-ConsoleMethod( ActionMap, isInverted, bool, 4, 4, "( device , action ) Use the Purpose method to determine if a specific device + action pair in inverted.\n"
-                                                                "This only applies to scrolling devices.\n"
-                                                                "@param device Name of the device to bound to a command (see 'Device Table' below).\n"
-                                                                "@param action Name of the action to watch for (see 'Action Table' below).\n"
-                                                                "@return Returns 1 if the mouse (or other scrolling device) is inverted, 0 otherwise.\n"
-                                                                "@sa bind, bindCmd")
-{
-    return( object->isInverted( argv[2], argv[3] ) );
-}
-
-//------------------------------------------------------------------------------
-ConsoleMethod( ActionMap, getScale, F32, 4, 4, "( device , action ) Use the getScale method to get the scale associated with a specific device + action pair.\n"
-                                                                "@param device Name of the device to bound to a command (see 'Device Table' below).\n"
-                                                                "@param action Name of the action to watch for (see 'Action Table' below).\n"
-                                                                "@return Returns 1 if no scale is associated with the specified device + action pair, or the mapping was not found.\n"
-                                                                "@sa bind, bindCmd")
-{
-    return( object->getScale( argv[2], argv[3] ) );
-}
-
-//------------------------------------------------------------------------------
-ConsoleMethod( ActionMap, getDeadZone, const char*, 4, 4, "( device , action ) Use the getDeadZone method to get the dead-zone associated with a specific device + action pair.\n"
-                                                                "@param device Name of the device to bound to a command (see 'Device Table' below).\n"
-                                                                "@param action Name of the action to watch for (see 'Action Table' below).\n"
-                                                                "@return Returns a dead-zone specification, or \"0 0\" meaning that there is no dead-zone, or a nullptr string meaning the mapping was not found.\n"
-                                                                "@sa bind, bindCmd")
-{
-    return( object->getDeadZone( argv[2], argv[3] ) );
-}
-
-
-//------------------------------------------------------------------------------
 //-------------------------------------- Key code to string mapping
 //                                        TODO: Add most obvious aliases...
 //
@@ -1864,6 +1954,12 @@ CodeMapping gVirtualMap[] =
    { "pitch",         SI_MOTION,    SI_PITCH     },
    { "roll",          SI_MOTION,    SI_ROLL      },
 
+   //-------------------------------------- GESTURE EVENTS
+   // Preset gesture events:
+   { "leapHandAxis",    SI_LEAP,     LM_HANDAXIS    },
+   { "leapHandPos",     SI_LEAP,     LM_HANDPOS     },
+   { "leapHandRot",     SI_LEAP,     LM_HANDROT     },
+   { "leapFingerPos",   SI_LEAP,     LM_FINGERPOS   },
    //-------------------------------------- MISCELLANEOUS EVENTS
    //
 

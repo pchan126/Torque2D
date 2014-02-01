@@ -330,7 +330,7 @@ void AssetBase::setOwned( AssetManager* pAssetManager, AssetDefinition* pAssetDe
     AssertFatal( pAssetManager != nullptr, "Cannot set asset ownership with nullptr asset manager." );
    assert(pAssetManager != nullptr);
     AssertFatal( mpOwningAssetManager == nullptr, "Cannot set asset ownership if it is already owned." );
-   assert(mpOwningAssetManager != nullptr);
+   assert(mpOwningAssetManager == nullptr);
     AssertFatal( pAssetDefinition != nullptr, "Cannot set asset ownership with a nullptr asset definition." );
    assert(pAssetDefinition != nullptr);
     AssertFatal( mpAssetDefinition != nullptr, "Asset ownership assigned but has a nullptr asset definition." );

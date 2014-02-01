@@ -32,10 +32,6 @@
 
 //---------------------------------------------------------------------------
 
-// We comment out the implementation of the Con namespace when doxygenizing because
-// otherwise Doxygen decides to ignore our docs in console.h
-#ifndef DOXYGENIZING
-
 namespace Sim
 {
 //---------------------------------------------------------------------------
@@ -456,19 +452,10 @@ void shutdown()
 
 } // Sim Namespace.
 
-
-#endif // DOXYGENIZING.
-
 SimDataBlockGroup::SimDataBlockGroup()
 {
    mLastModifiedKey = 0;
 }
-
-//S32 QSORT_CALLBACK SimDataBlockGroup::compareModifiedKey(const void* a,const void* b)
-//{
-//    return (reinterpret_cast<const SimDataBlock* >(a))->getModifiedKey() -
-//        (reinterpret_cast<const SimDataBlock*>(b))->getModifiedKey();
-//}
 
 bool SimDataBlockGroup::compareModifiedKey(const SimObject * a, const SimObject * b)
 {
@@ -481,7 +468,6 @@ void SimDataBlockGroup::sort()
    if(mLastModifiedKey != SimDataBlock::getNextModifiedKey())
    {
       mLastModifiedKey = SimDataBlock::getNextModifiedKey();
-//        dQsort(objectList.address(),objectList.size(),sizeof(SimObject *),compareModifiedKey);
-       std::sort(objectList.begin(),objectList.end(),compareModifiedKey);
+      std::sort(objectList.begin(),objectList.end(),compareModifiedKey);
    }
 }

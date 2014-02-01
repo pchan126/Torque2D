@@ -23,15 +23,15 @@
 #ifndef _SCRIPT_OBJECT_H_
 #define _SCRIPT_OBJECT_H_
 
-#ifndef _CONSOLEINTERNAL_H_
 #include "console/consoleInternal.h"
-#endif
+#include "component/behaviors/behaviorComponent.h"
+#include "component/behaviors/behaviorInstance.h"
 
 //-----------------------------------------------------------------------------
 
-class ScriptObject : public SimObject
+class ScriptObject : public BehaviorComponent
 {
-   typedef SimObject Parent;
+   typedef BehaviorComponent Parent;
 
 public:
    ScriptObject();

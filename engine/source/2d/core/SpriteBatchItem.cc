@@ -141,7 +141,7 @@ void SpriteBatchItem::setBatchParent( SpriteBatch* pSpriteBatch, const U32 batch
     AssertFatal( mSpriteBatch == nullptr, "Cannot assign batch parent as one is already assigned." );
     AssertFatal( batchId != 0, "Cannot assign a zero batch Id." );
    assert(pSpriteBatch != nullptr);
-   assert(mSpriteBatch != nullptr);
+   assert(mSpriteBatch == nullptr);
    assert(batchId != 0);
 
     // Assign.
