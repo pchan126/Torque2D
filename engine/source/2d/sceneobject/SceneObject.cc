@@ -851,7 +851,10 @@ void SceneObject::setSceneLayer( const U32 sceneLayer )
     }
 
     // Set Layer.
+    t2dScene *scene = getScene();
+    scene->removeFromScene( this );
     mSceneLayer = sceneLayer;
+    scene->addToScene(this);
 
 //    // Set Layer Mask.
 //    mSceneLayerMask = BIT( mSceneLayer );
