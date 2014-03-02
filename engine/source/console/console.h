@@ -29,6 +29,7 @@
 #include "platform/rawData.h"
 #include "delegates/delegateSignal.h"
 #include <unordered_map>
+#include "stringTable.h"
 // VS2012 doesn't support std::initializer_list
 //#include <initializer_list>
 #include <array>
@@ -105,8 +106,8 @@ struct ConsoleLogEntry
 class EnumTable
 {
     private:
-   std::unordered_map<S32, std::string> table;
-   std::unordered_map<std::string, S32> rev_table;
+   std::unordered_map<S32, StringTableEntry> table;
+   std::unordered_map<StringTableEntry, S32> rev_table;
 
     std::string makeLower(std::string inString)
     {
@@ -116,8 +117,8 @@ class EnumTable
 
     public:
     /// This represents a specific item in the enumeration.
-    typedef std::pair<S32, std::string> Enums;
-    typedef std::pair<std::string, S32> RevEnum;
+    typedef std::pair<S32, StringTableEntry> Enums;
+    typedef std::pair<StringTableEntry, S32> RevEnum;
 
    /// Constructor.
    /// This sets up the EnumTable with predefined data.
@@ -131,8 +132,8 @@ class EnumTable
        for ( S32 i = 0; i < sSize; i++)
        {
            Enums itr = sTable[i];
-           table[itr.first] = makeLower(itr.second);
-           rev_table[makeLower(itr.second)] = itr.first;
+           table[itr.first] = StringTable->insert(makeLower(itr.second).c_str());
+           rev_table[StringTable->insert(makeLower(itr.second).c_str())] = itr.first;
        }
    }
 
@@ -141,8 +142,9 @@ class EnumTable
    {
        for (auto itr = first; itr != last; itr++)
        {
-           table[itr->first] = makeLower(itr->second);
-           rev_table[makeLower(itr->second)] = itr->first;
+           std::string inputString(itr->second);
+           table[itr->first] = StringTable->insert(makeLower(inputString).c_str());
+           rev_table[StringTable->insert(makeLower(inputString).c_str())] = itr->first;
        }
    }
 
@@ -160,16 +162,16 @@ class EnumTable
 
    size_t getSize(void) { return table.size(); }
 
-    std::string operator[](S32 i)               { return table[i]; }
-    S32 operator[](std::string i)               { return rev_table[makeLower(i)]; }
+    StringTableEntry operator[](S32 i)               { return table[i]; }
+    S32 operator[](StringTableEntry i)               { return rev_table[StringTable->insert(makeLower(i).c_str())]; }
 
     bool isIndex (S32 i)                         { return table.find(i) != table.end(); }
-    bool isLabel (std::string label)             { return rev_table.find(makeLower(label)) != rev_table.end(); }
+    bool isLabel (const char* label)             { return rev_table.find(StringTable->insert(makeLower(label).c_str())) != rev_table.end(); }
 
-    std::unordered_map<S32, std::string>::iterator begin() { return table.begin(); };
-    std::unordered_map<S32, std::string>::iterator end() { return table.end(); };
-    const std::unordered_map<S32, std::string>::const_iterator begin() const { return table.begin(); };
-    const std::unordered_map<S32, std::string>::const_iterator end() const { return table.end(); };
+    std::unordered_map<S32, StringTableEntry>::iterator begin() { return table.begin(); };
+    std::unordered_map<S32, StringTableEntry>::iterator end() { return table.end(); };
+    const std::unordered_map<S32, StringTableEntry>::const_iterator begin() const { return table.begin(); };
+    const std::unordered_map<S32, StringTableEntry>::const_iterator end() const { return table.end(); };
 };
 
 typedef const char *StringTableEntry;

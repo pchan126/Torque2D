@@ -61,7 +61,7 @@ static S32 getIDFromName(EnumTable::Enums *table, const char *name, S32 def = -1
 {
    for(S32 i = 0; table[i].second != StringTable->EmptyString; ++i)
    {
-      if( table[i].second.compare(name) == 0)
+      if( strcasecmp(table[i].second, name) == 0)
          return table[i].first;
    }
 

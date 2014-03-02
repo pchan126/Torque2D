@@ -531,7 +531,7 @@ ConsoleMethod( GuiPopUpMenuCtrlEx, setEnumContent, void, 4, 4, "(string class, s
 
     // fill it
    for (auto itr: (*field.table))
-       object->addEntry(itr.second.c_str(), itr.first);
+       object->addEntry(itr.second, itr.first);
 }
 
 //------------------------------------------------------------------------------

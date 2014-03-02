@@ -57,7 +57,7 @@ ImageFont::TextAlignment ImageFont::getTextAlignmentEnum(const char* label)
 const char* ImageFont::getTextAlignmentDescription(const ImageFont::TextAlignment alignment)
 {
     if (gTextAlignmentTable.isIndex(alignment))
-        return gTextAlignmentTable[alignment].c_str();
+        return gTextAlignmentTable[alignment];
 
     // Warn.
     Con::warnf( "ImageFont::getTextAlignmentDescription() - Invalid text alignment.");

@@ -3888,7 +3888,7 @@ b2BodyType SceneObject::getBodyTypeEnum(const char* label)
 const char* SceneObject::getBodyTypeDescription(const b2BodyType bodyType)
 {
     if (bodyTypeTable.isIndex(bodyType))
-        return bodyTypeTable[bodyType].c_str();
+        return bodyTypeTable[bodyType];
 
     // Warn.
     Con::warnf( "SceneObject::getBodyTypeDescription() - Invalid body type." );
@@ -3914,7 +3914,7 @@ b2Shape::Type SceneObject::getCollisionShapeTypeEnum(const char* label)
 const char* SceneObject::getCollisionShapeTypeDescription(const b2Shape::Type collisionShapeType)
 {
     if (collisionShapeTypeTable.isIndex(collisionShapeType))
-        return collisionShapeTypeTable[collisionShapeType].c_str();
+        return collisionShapeTypeTable[collisionShapeType];
 
     // Warn.
     Con::warnf( "SceneObject::getCollisionShapeTypeDescription() - Invalid collision shape type." );
@@ -3941,7 +3941,7 @@ GFXBlend SceneObject::getSrcBlendFactorEnum(const char* label)
 const char* SceneObject::getSrcBlendFactorDescription(const GLenum factor)
 {
     if (srcBlendFactorTable.isIndex(factor))
-        return srcBlendFactorTable[factor].c_str();
+        return srcBlendFactorTable[factor];
 
     // Warn.
     Con::warnf( "SceneObject::getSrcBlendFactorDescription() - Invalid source blend factor." );
@@ -3968,7 +3968,7 @@ GFXBlend SceneObject::getDstBlendFactorEnum(const char* label)
 const char* SceneObject::getDstBlendFactorDescription(const GLenum factor)
 {
     if (dstBlendFactorTable.isIndex(factor))
-        return dstBlendFactorTable[factor].c_str();
+        return dstBlendFactorTable[factor];
 
     // Warn.
     Con::warnf( "SceneObject::getDstBlendFactorDescription() - Invalid destination blend factor." );
@@ -3996,7 +3996,7 @@ SceneObject::LightType SceneObject::getLightTypeLookupEnum(const char* label)
 const char* SceneObject::getLightTypeLookupDescription(const LightType factor)
 {
     if (lightTypeTable.isIndex(factor))
-        return lightTypeTable[factor].c_str();
+        return lightTypeTable[factor];
 
     // Warn.
     Con::warnf( "SceneObject::getLightTypeLookupDescription() - Invalid destination blend factor." );

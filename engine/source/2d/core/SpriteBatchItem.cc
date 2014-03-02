@@ -672,7 +672,7 @@ void SpriteBatchItem::WriteCustomTamlSchema( const AbstractClassRep* pClassRep, 
     {
         // Add enumeration element.
         TiXmlElement* pSrcBlendFactorEnumeration = new TiXmlElement( "xs:enumeration" );
-        pSrcBlendFactorEnumeration->SetAttribute( "value", itr.second.c_str() );
+        pSrcBlendFactorEnumeration->SetAttribute( "value", itr.second );
         pBatchItemSrcBlendFactorTypeRestriction->LinkEndChild( pSrcBlendFactorEnumeration );
     }
 
@@ -689,7 +689,7 @@ void SpriteBatchItem::WriteCustomTamlSchema( const AbstractClassRep* pClassRep, 
     {
         // Add enumeration element.
         TiXmlElement* pDstBlendFactorEnumeration = new TiXmlElement( "xs:enumeration" );
-        pDstBlendFactorEnumeration->SetAttribute( "value", itr.second.c_str() );
+        pDstBlendFactorEnumeration->SetAttribute( "value", itr.second );
         pBatchItemDstBlendFactorTypeRestriction->LinkEndChild( pDstBlendFactorEnumeration );
     }
 

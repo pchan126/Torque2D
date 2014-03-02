@@ -84,7 +84,7 @@ Taml::TamlFormatMode Taml::getFormatModeEnum(const char* label)
 const char* Taml::getFormatModeDescription(const Taml::TamlFormatMode formatMode)
 {
     if (tamlFormatModeTable.isIndex(formatMode))
-        return tamlFormatModeTable[formatMode].c_str();
+        return tamlFormatModeTable[formatMode];
 
     // Warn.
     Con::warnf( "Taml::getFormatModeDescription() - Invalid format mode." );
@@ -1355,7 +1355,7 @@ bool Taml::generateTamlSchema()
                 {
                     // Add enumeration element.
                     TiXmlElement* pAttributeEnumerationElement = new TiXmlElement( "xs:enumeration" );
-                    pAttributeEnumerationElement->SetAttribute( "value", itr.second.c_str() );
+                    pAttributeEnumerationElement->SetAttribute( "value", itr.second );
                     pAttributeRestrictionElement->LinkEndChild( pAttributeEnumerationElement );
                 }
             }

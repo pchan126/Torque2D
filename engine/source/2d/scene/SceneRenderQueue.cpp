@@ -65,7 +65,7 @@ SceneRenderQueue::RenderSort SceneRenderQueue::getRenderSortEnum(const char* lab
 const char* SceneRenderQueue::getRenderSortDescription( const RenderSort& sortMode )
 {
     if (renderSortTable.isIndex(sortMode))
-        return renderSortTable[sortMode].c_str();
+        return renderSortTable[sortMode];
 
     // Warn.
     Con::warnf( "SceneRenderQueue::getRenderSortDescription() - Invalid sort enum." );

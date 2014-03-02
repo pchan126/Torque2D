@@ -64,7 +64,7 @@ ParticleAssetEmitter::EmitterType ParticleAssetEmitter::getEmitterTypeEnum(const
 const char* ParticleAssetEmitter::getEmitterTypeDescription( const EmitterType emitterType )
 {
     if (EmitterTypeTable.isIndex(emitterType))
-        return EmitterTypeTable[emitterType].c_str();
+        return EmitterTypeTable[emitterType];
 
     // Warn.
     Con::warnf( "ParticleAssetEmitter::getEmitterTypeDescription() - Invalid emitter-type." );
@@ -100,7 +100,7 @@ ParticleAssetEmitter::ParticleOrientationType ParticleAssetEmitter::getOrientati
 const char* ParticleAssetEmitter::getOrientationTypeDescription( const ParticleOrientationType orientationType )
 {
     if (OrientationTypeTable.isIndex(orientationType))
-        return OrientationTypeTable[orientationType].c_str();
+        return OrientationTypeTable[orientationType];
 
     // Warn.
     Con::warnf( "ParticleAssetEmitter::getOrientationTypeDescription() - Invalid orientation-type" );

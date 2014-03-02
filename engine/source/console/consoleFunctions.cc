@@ -38,10 +38,6 @@
 #include "taggedStrings_ScriptBinding.h"
 #include "inputManagement_ScriptBinding.h"
 
-// Buffer for expanding script filenames.
-static char pathBuffer[1024];
-
-static U32 execDepth = 0;
 
 #ifdef TORQUE_ALLOW_JOURNALING
    static U32 journalDepth = 1;

@@ -58,7 +58,7 @@ ParticleAsset::LifeMode ParticleAsset::getParticleAssetLifeModeEnum( const char*
 const char* ParticleAsset::getParticleAssetLifeModeDescription( const ParticleAsset::LifeMode lifeMode )
 {
     if (LifeModeTable.isIndex(lifeMode))
-        return LifeModeTable[lifeMode].c_str();
+        return LifeModeTable[lifeMode];
 
     // Warn.
     Con::warnf( "ParticleAsset::getParticleAssetLifeModeDescription() - Invalid life-mode." );

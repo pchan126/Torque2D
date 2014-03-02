@@ -5033,7 +5033,7 @@ t2dScene::DebugOption t2dScene::getDebugOptionEnum(const char* label)
 const char*t2dScene::getDebugOptionDescription( t2dScene::DebugOption debugOption )
 {
     if (DebugOptionsLookupTable.isIndex(debugOption))
-        return DebugOptionsLookupTable[debugOption].c_str();
+        return DebugOptionsLookupTable[debugOption];
 
     // Warn.
     Con::warnf( "t2dScene::getDebugOptionDescription() - Invalid debug option." );
@@ -5063,7 +5063,7 @@ EnumTable jointTypeTable = EnumTable(10, jointTypeEntries);
 const char*t2dScene::getJointTypeDescription( b2JointType jointType )
 {
     if (jointTypeTable.isIndex(jointType))
-        return jointTypeTable[jointType].c_str();
+        return jointTypeTable[jointType];
 
     // Warn.
     Con::warnf( "t2dScene::getJointTypeDescription() - Invalid joint type." );
@@ -5113,7 +5113,7 @@ t2dScene::PickMode t2dScene::getPickModeEnum(const char* label)
 const char*t2dScene::getPickModeDescription( t2dScene::PickMode pickMode )
 {
     if (pickModeLookupTable.isIndex(pickMode))
-        return pickModeLookupTable[pickMode].c_str();
+        return pickModeLookupTable[pickMode];
 
     // Warn.
     Con::warnf( "t2dScene::getPickModeDescription() - Invalid pick mode.");

@@ -151,7 +151,7 @@ ImageAsset::TextureFilterMode ImageAsset::getFilterModeEnum(const char* label)
 const char* ImageAsset::getFilterModeDescription( ImageAsset::TextureFilterMode filterMode )
 {
     if (textureFilterTable.isIndex(filterMode))
-        return textureFilterTable[filterMode].c_str();
+        return textureFilterTable[filterMode];
 
     // Warn.
     Con::warnf("ImageAsset::getFilterModeDescription() - Invalid filter-mode." );

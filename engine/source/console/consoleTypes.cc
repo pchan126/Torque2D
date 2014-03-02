@@ -436,7 +436,7 @@ ConsoleGetType( TypeEnum )
    AssertFatal(tbl, "Null enum table passed to getDataTypeEnum()");
    S32 dptrVal = *(S32*)dptr;
    if (tbl->isIndex(dptrVal) )
-       return ((*tbl)[dptrVal]).c_str();
+       return ((*tbl)[dptrVal]);
 
    //not found
    return StringTable->EmptyString;

@@ -49,7 +49,7 @@ GuiControl* GuiInspectorTypeEnum::constructEditControl()
    menu->setField("Command", szBuffer );
 
    for (auto itr: *(mField->table))
-       menu->addEntry(itr.second.c_str(), itr.first);
+       menu->addEntry(itr.second, itr.first);
 
    return retCtrl;
 }

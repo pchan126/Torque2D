@@ -65,7 +65,7 @@ CompositeSprite::BatchLayoutType CompositeSprite::getBatchLayoutTypeEnum(const c
 const char* CompositeSprite::getBatchLayoutTypeDescription(const CompositeSprite::BatchLayoutType batchLayoutType )
 {
     if (batchLayoutTypeTable.isIndex(batchLayoutType))
-        return batchLayoutTypeTable[batchLayoutType].c_str();
+        return batchLayoutTypeTable[batchLayoutType];
 
     // Warn.
     Con::warnf( "CompositeSprite::getBatchLayoutTypeDescription() - Invalid batch layout type.");
