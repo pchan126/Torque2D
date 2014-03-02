@@ -665,7 +665,7 @@ public:
     virtual void addTamlChild( SimObject* pSimObject );
 
     static b2JointType getJointTypeEnum(const char* label);
-    static const char* getJointTypeDescription( b2JointType jointType );
+    static const std::string getJointTypeDescription(b2JointType jointType);
     static PickMode getPickModeEnum(const char* label);
     static const char* getPickModeDescription( PickMode pickMode );
     static DebugOption getDebugOptionEnum(const char* label);
