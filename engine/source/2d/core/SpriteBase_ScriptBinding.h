@@ -153,7 +153,7 @@ ConsoleMethodWithDocs(SpriteBase, getImageFrameByName, ConsoleString, 2, 2, ())
     {
         // No, so warn.
         Con::warnf( "SpriteBase::getImageFrameByName() - Method invalid, not in static mode." );
-        return false;
+        return StringTable->EmptyString;
     }
     
     // Get image Frame.

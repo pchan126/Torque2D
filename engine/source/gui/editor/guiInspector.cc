@@ -841,7 +841,7 @@ void GuiInspectorDynamicGroup::clearFields()
 SimFieldDictionary::Entry* GuiInspectorDynamicGroup::findDynamicFieldInDictionary( StringTableEntry fieldName )
 {
    if( !mTarget )
-      return false;
+      return nullptr;
 
    SimFieldDictionary * fieldDictionary = mTarget->getFieldDictionary();
 

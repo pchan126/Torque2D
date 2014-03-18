@@ -2193,7 +2193,7 @@ S32 AssetManager::findAssetLooseFile( AssetQuery* pAssetQuery, const char* pLoos
 
     // Expand loose file.
     char looseFileBuffer[1024];
-    Con::expandPath(looseFileBuffer, sizeof(looseFileBuffer), pLooseFile, false );
+    Con::expandPath(looseFileBuffer, sizeof(looseFileBuffer), pLooseFile, StringTable->EmptyString );
 
     // Fetch asset loose file.
     StringTableEntry looseFile = StringTable->insert( looseFileBuffer );
