@@ -546,7 +546,7 @@ ConsoleMethodWithDocs(t2dScene, getJointType, ConsoleString, 3, 3, (int jointId)
     if ( jointType == e_unknownJoint )
         return StringTable->EmptyString;
 
-    return t2dScene::getJointTypeDescription( jointType );
+    return t2dScene::getJointTypeDescription( jointType ).c_str();
 }                                                                  
 
 //-----------------------------------------------------------------------------

@@ -288,7 +288,7 @@ void t2dScene::initPersistFields()
     addField("AmbientLighting", TypeColorF, Offset(mAmbientLightColor, t2dScene), &writeSceneLight, "");
     
     addProtectedField("Controllers", TypeSimObjectPtr, Offset(mControllers, t2dScene), &defaultProtectedNotSetFn, &defaultProtectedGetFn, &defaultProtectedNotWriteFn, "The scene controllers to use.");
-    
+   dsize_t offset = Offset(mControllers, t2dScene);
     // Callbacks.
     addField("UpdateCallback", TypeBool, Offset(mUpdateCallback, t2dScene), &writeUpdateCallback, "");
     addField("RenderCallback", TypeBool, Offset(mRenderCallback, t2dScene), &writeRenderCallback, "");
@@ -1519,7 +1519,7 @@ void t2dScene::setDistanceJointLength(
 
     if ( jointType != e_distanceJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return;
     }
 
@@ -1546,7 +1546,7 @@ F32 t2dScene::getDistanceJointLength( const U32 jointId )
 
     if ( jointType != e_distanceJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return -1.0f;
     }
 
@@ -1575,7 +1575,7 @@ void t2dScene::setDistanceJointFrequency(
 
     if ( jointType != e_distanceJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return;
     }
 
@@ -1602,7 +1602,7 @@ F32 t2dScene::getDistanceJointFrequency( const U32 jointId )
 
     if ( jointType != e_distanceJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return -1.0f;
     }
 
@@ -1631,7 +1631,7 @@ void t2dScene::setDistanceJointDampingRatio(
 
     if ( jointType != e_distanceJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return;
     }
 
@@ -1658,7 +1658,7 @@ F32 t2dScene::getDistanceJointDampingRatio( const U32 jointId )
 
     if ( jointType != e_distanceJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str());
         return -1.0f;
     }
 
@@ -1729,7 +1729,7 @@ void t2dScene::setRopeJointMaxLength(
 
     if ( jointType != e_ropeJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return;
     }
 
@@ -1756,7 +1756,7 @@ F32 t2dScene::getRopeJointMaxLength( const U32 jointId )
 
     if ( jointType != e_ropeJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return -1.0f;
     }
 
@@ -1827,7 +1827,7 @@ void t2dScene::setRevoluteJointLimit(
 
     if ( jointType != e_revoluteJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return;
     }
 
@@ -1858,7 +1858,7 @@ bool t2dScene::getRevoluteJointLimit(
 
     if ( jointType != e_revoluteJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return false;
     }
 
@@ -1893,7 +1893,7 @@ void t2dScene::setRevoluteJointMotor(
 
     if ( jointType != e_revoluteJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return;
     }
 
@@ -1926,7 +1926,7 @@ bool t2dScene::getRevoluteJointMotor(
 
     if ( jointType != e_revoluteJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return false;
     }
 
@@ -1957,7 +1957,7 @@ F32 t2dScene::getRevoluteJointAngle( const U32 jointId )
 
     if ( jointType != e_revoluteJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return 0.0f;
     }
 
@@ -1984,7 +1984,7 @@ F32	t2dScene::getRevoluteJointSpeed( const U32 jointId )
 
     if ( jointType != e_revoluteJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return 0.0f;
     }
 
@@ -2058,7 +2058,7 @@ void t2dScene::setWeldJointFrequency(
 
     if ( jointType != e_weldJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return;
     }
 
@@ -2086,7 +2086,7 @@ F32 t2dScene::getWeldJointFrequency( const U32 jointId  )
 
     if ( jointType != e_weldJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return -1.0f;
     }
 
@@ -2115,7 +2115,7 @@ void t2dScene::setWeldJointDampingRatio(
 
     if ( jointType != e_weldJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return;
     }
 
@@ -2142,7 +2142,7 @@ F32 t2dScene::getWeldJointDampingRatio( const U32 jointId )
 
     if ( jointType != e_weldJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return -1.0f;
     }
 
@@ -2215,7 +2215,7 @@ void t2dScene::setWheelJointMotor(
 
     if ( jointType != e_wheelJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return;
     }
 
@@ -2248,7 +2248,7 @@ bool t2dScene::getWheelJointMotor(
 
     if ( jointType != e_wheelJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return false;
     }
 
@@ -2281,7 +2281,7 @@ void t2dScene::setWheelJointFrequency(
 
     if ( jointType != e_wheelJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return;
     }
 
@@ -2308,7 +2308,7 @@ F32 t2dScene::getWheelJointFrequency( const U32 jointId )
 
     if ( jointType != e_wheelJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return -1.0f;
     }
 
@@ -2337,7 +2337,7 @@ void t2dScene::setWheelJointDampingRatio(
 
     if ( jointType != e_wheelJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return;
     }
 
@@ -2364,7 +2364,7 @@ F32 t2dScene::getWheelJointDampingRatio( const U32 jointId )
 
     if ( jointType != e_wheelJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return -1.0f;
     }
 
@@ -2437,7 +2437,7 @@ void t2dScene::setFrictionJointMaxForce(
 
     if ( jointType != e_frictionJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return;
     }
 
@@ -2464,7 +2464,7 @@ F32 t2dScene::getFrictionJointMaxForce( const U32 jointId )
 
     if ( jointType != e_frictionJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return -1.0f;
     }
 
@@ -2493,7 +2493,7 @@ void t2dScene::setFrictionJointMaxTorque(
 
     if ( jointType != e_frictionJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return;
     }
 
@@ -2521,7 +2521,7 @@ F32 t2dScene::getFrictionJointMaxTorque( const U32 jointId )
 
     if ( jointType != e_frictionJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return -1.0f;
     }
 
@@ -2594,7 +2594,7 @@ void t2dScene::setPrismaticJointLimit(
 
     if ( jointType != e_prismaticJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return;
     }
 
@@ -2625,7 +2625,7 @@ bool t2dScene::getPrismaticJointLimit(
 
     if ( jointType != e_prismaticJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return false;
     }
 
@@ -2660,7 +2660,7 @@ void t2dScene::setPrismaticJointMotor(
 
     if ( jointType != e_prismaticJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return;
     }
 
@@ -2693,7 +2693,7 @@ bool t2dScene::getPrismaticJointMotor(
 
     if ( jointType != e_prismaticJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return false;
     }
 
@@ -2832,7 +2832,7 @@ void t2dScene::setTargetJointTarget(
 
     if ( jointType != e_mouseJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return;
     }
 
@@ -2858,7 +2858,7 @@ b2Vec2 t2dScene::getTargetJointTarget( const U32 jointId )
 
     if ( jointType != e_mouseJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return b2Vec2_zero;
     }
 
@@ -2887,7 +2887,7 @@ void t2dScene::setTargetJointMaxForce(
 
     if ( jointType != e_mouseJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return;
     }
 
@@ -2914,7 +2914,7 @@ F32 t2dScene::getTargetJointMaxForce( const U32 jointId )
 
     if ( jointType != e_mouseJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return -1.0f;
     }
 
@@ -2943,7 +2943,7 @@ void t2dScene::setTargetJointFrequency(
 
     if ( jointType != e_mouseJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return;
     }
 
@@ -2970,7 +2970,7 @@ F32 t2dScene::getTargetJointFrequency( const U32 jointId )
 
     if ( jointType != e_mouseJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return -1.0f;
     }
 
@@ -2999,7 +2999,7 @@ void t2dScene::setTargetJointDampingRatio(
 
     if ( jointType != e_mouseJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return;
     }
 
@@ -3026,7 +3026,7 @@ F32 t2dScene::getTargetJointDampingRatio( const U32 jointId )
 
     if ( jointType != e_mouseJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return -1.0f;
     }
 
@@ -3102,7 +3102,7 @@ void t2dScene::setMotorJointLinearOffset(
 
     if ( jointType != e_motorJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return;
     }
 
@@ -3129,7 +3129,7 @@ b2Vec2 t2dScene::getMotorJointLinearOffset( const U32 jointId )
 
     if ( jointType != e_motorJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return b2Vec2_zero;
     }
 
@@ -3158,7 +3158,7 @@ void t2dScene::setMotorJointAngularOffset(
 
     if ( jointType != e_motorJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return;
     }
 
@@ -3185,7 +3185,7 @@ F32 t2dScene::getMotorJointAngularOffset( const U32 jointId )
 
     if ( jointType != e_motorJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return -1.0f;
     }
 
@@ -3214,7 +3214,7 @@ void t2dScene::setMotorJointMaxForce(
 
     if ( jointType != e_motorJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return;
     }
 
@@ -3241,7 +3241,7 @@ F32 t2dScene::getMotorJointMaxForce( const U32 jointId )
 
     if ( jointType != e_motorJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return -1.0f;
     }
 
@@ -3270,7 +3270,7 @@ void t2dScene::setMotorJointMaxTorque(
 
     if ( jointType != e_motorJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return;
     }
 
@@ -3298,7 +3298,7 @@ F32 t2dScene::getMotorJointMaxTorque( const U32 jointId )
 
     if ( jointType != e_motorJoint )
     {
-        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType) );
+        Con::warnf( "Invalid joint type of %s.", getJointTypeDescription(jointType).c_str() );
         return -1.0f;
     }
 
@@ -5060,7 +5060,7 @@ static EnumTable::Enums jointTypeEntries[10] =
 EnumTable jointTypeTable = EnumTable(10, jointTypeEntries);
 //-----------------------------------------------------------------------------
 
-const char*t2dScene::getJointTypeDescription( b2JointType jointType )
+const std::string t2dScene::getJointTypeDescription(b2JointType jointType)
 {
     if (jointTypeTable.isIndex(jointType))
         return jointTypeTable[jointType];
