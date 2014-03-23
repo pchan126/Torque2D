@@ -131,9 +131,9 @@ void Platform::init()
    Con::setVariable("$platform", "iOS");
    
    if ([[UIScreen mainScreen] scale] == 2)
-      Con::setBoolVariable("$pref::iOS::RetinaEnabled", true);
+      Con::setIntVariable("$pref::iOS::RetinaEnabled", 2);
    else
-      Con::setBoolVariable("$pref::iOS::RetinaEnabled", false);
+      Con::setIntVariable("$pref::iOS::RetinaEnabled", 1);
    
    // Set the platform variable for the scripts
    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
@@ -147,7 +147,7 @@ void Platform::init()
       if (iPhone5)
       {
          Con::setIntVariable("$pref::iOS::DeviceType", 2);
-         Con::setBoolVariable("$pref::iOS::RetinaEnabled", false);
+         Con::setIntVariable("$pref::iOS::RetinaEnabled", 1);
       }
       else
       {

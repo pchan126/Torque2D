@@ -177,7 +177,23 @@ function initializeToolbox()
     }
     
     // Configure the main overlay.
-    SandboxWindow.add(MainOverlay);    
+    SandboxWindow.add(MainOverlay);
+    if ($pref::iOS::RetinaEnabled > 0)
+    {
+      MainOverlay.Extent.x = MainOverlay.Extent.x * $pref::iOS::RetinaEnabled;
+      MainOverlay.Extent.y = MainOverlay.Extent.y * $pref::iOS::RetinaEnabled;
+      echo ("extent" SPC MainOverlay.Extent.x SPC MainOverlay.Extent.y);
+      %newpos = MainOverlay.Extent.x;
+      for ( %i = MainOverlay.getCount()-1; %i > -1; %i--)
+      {
+         %resizeobj = MainOverlay.getObject(%i);
+         %resizeobj.Extent.x = %resizeobj.Extent.x * $pref::iOS::RetinaEnabled;
+         %resizeobj.Extent.y = %resizeobj.Extent.y * $pref::iOS::RetinaEnabled;
+         %newpos -= (%resizeobj.Extent.x + 14);
+         %resizeobj.position.x = %newpos;
+      }
+    }
+
     %horizPosition = getWord(SandboxWindow.Extent, 0) - getWord(MainOverlay.Extent, 0);
     %verticalPosition = getWord(SandboxWindow.Extent, 1) - getWord(MainOverlay.Extent, 1);    
     MainOverlay.position = %horizPosition SPC %verticalPosition;    

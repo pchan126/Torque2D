@@ -56,13 +56,13 @@ ParticleSystem::ParticleSystem() :
 
 ParticleSystem::~ParticleSystem()
 {
-   for (auto particle:mParticlePool)
-      delete particle;
+//   for (auto particle:mParticlePool)
+//      delete particle;
 }
 
 //------------------------------------------------------------------------------
 
-ParticleSystem::ParticleNode* ParticleSystem::createParticle( void )
+std::shared_ptr<ParticleSystem::ParticleNode> ParticleSystem::createParticle()
 {
     // Have we got any free particle nodes?
     if ( mpFreeParticleNodes.empty())
@@ -70,7 +70,7 @@ ParticleSystem::ParticleNode* ParticleSystem::createParticle( void )
         auto oldSize = mParticlePool.size();
         for (int i = 0; i < mParticlePoolBlockSize; i++)
         {
-            ParticleNode* temp = new ParticleNode();
+           std::shared_ptr<ParticleNode> temp (new ParticleNode);
             mParticlePool.push_back(temp);
         }
 
@@ -81,7 +81,7 @@ ParticleSystem::ParticleNode* ParticleSystem::createParticle( void )
     }
 
     // Fetch a free node,
-    ParticleNode* pFreeParticleNode = mpFreeParticleNodes.front();
+    std::shared_ptr<ParticleNode> pFreeParticleNode = mpFreeParticleNodes.front();
 
     // Set the new free node reference.
     mpFreeParticleNodes.pop_front();
@@ -94,7 +94,7 @@ ParticleSystem::ParticleNode* ParticleSystem::createParticle( void )
 
 //------------------------------------------------------------------------------
 
-void ParticleSystem::freeParticle( ParticleNode* pParticleNode )
+void ParticleSystem::freeParticle(std::shared_ptr<ParticleSystem::ParticleNode> pParticleNode)
 {
     // Reset the particle.
     pParticleNode->resetState();

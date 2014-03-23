@@ -161,6 +161,7 @@ GFXVertexBuffer* GFXOpenGLES20iOSDevice::findVolatileVBO(dsize_t vertexCount, co
         }
     
     // No existing VB, so create one
+   Con::printf("new vertexbuffer");
     StrongRefPtr<GFXOpenGLES20iOSVertexBuffer> buf(new GFXOpenGLES20iOSVertexBuffer(GFX, vertexCount, vertexFormat, vertSize, GFXBufferTypeVolatile, vertexData, indexSize, indexData));
     buf->registerResourceWithDevice(this);
     mVolatileVBs.push_back(buf);
@@ -177,7 +178,7 @@ GFXVertexBuffer *GFXOpenGLES20iOSDevice::allocVertexBuffer(   dsize_t numVerts,
 {
     if(bufferType == GFXBufferTypeVolatile)
         return findVolatileVBO(numVerts, vertexFormat, vertSize, vertexBuffer, indexCount, indexBuffer);
-    
+    Con::printf("new vertexbuffer");
     GFXOpenGLES20iOSVertexBuffer* buf = new GFXOpenGLES20iOSVertexBuffer( GFX, numVerts, vertexFormat, vertSize, bufferType, vertexBuffer, indexCount, indexBuffer );
     buf->registerResourceWithDevice(this);
     return buf;

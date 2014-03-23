@@ -1406,13 +1406,13 @@ void SimObject::dump()
 
    Con::printf("Methods:");
    Namespace *ns = getNamespace();
-   Vector<Namespace::Entry *> vec(__FILE__, __LINE__);
+   Vector<std::shared_ptr<Namespace::Entry >> vec(__FILE__, __LINE__);
 
    if(ns)
       ns->getEntryList(&vec);
 
-   for(Vector<Namespace::Entry *>::iterator j = vec.begin(); j != vec.end(); j++)
-      Con::printf("  %s() - %s", (*j)->mFunctionName, (*j)->mUsage ? (*j)->mUsage : "");
+   for(auto j:vec)
+      Con::printf("  %s() - %s", j->mFunctionName, j->mUsage ? j->mUsage : "");
 
 }
 

@@ -98,8 +98,8 @@ public:
         U32 mID;
     };
 
-    std::list<Entry*> mEntryList;
-    std::unordered_map<StringTableEntry, Entry*>* mHashTable;
+   std::list<std::shared_ptr<Entry>> mEntryList;
+   std::shared_ptr<std::unordered_map<StringTableEntry, std::shared_ptr<Entry>>> mHashTable;
 
     U32 mHashSequence;  ///< @note The hash sequence is used by the autodoc console facility
                         ///        as a means of testing reference state.
@@ -118,11 +118,11 @@ public:
     void markGroup(const char* name, const char* usage);
     char * lastUsage;
 
-    void getEntryList(Vector<Entry *> *);
+    void getEntryList(Vector<std::shared_ptr<Entry>> *);
 
-    Entry *lookup(StringTableEntry name);
-    Entry *lookupRecursive(StringTableEntry name);
-    Entry *createLocalEntry(StringTableEntry name);
+    std::shared_ptr<Entry> lookup(StringTableEntry name);
+    std::shared_ptr<Entry> lookupRecursive(StringTableEntry name);
+    std::shared_ptr<Entry> createLocalEntry(StringTableEntry name);
     void buildHashTable();
     void clearEntries();
     bool classLinkTo(Namespace *parent);
@@ -135,7 +135,7 @@ public:
     static DataChunker mAllocator;
     static void trashCache();
     static std::list<Namespace*> mNamespaceList;
-    static std::vector<Namespace::Entry*> mNamespaceEntryList;
+    static std::vector<std::shared_ptr<Namespace::Entry>> mNamespaceEntryList;
     static Namespace *mGlobalNamespace;
 
     static void init();
@@ -156,7 +156,7 @@ public:
     static bool isPackage(StringTableEntry name);
 };
 
-inline Namespace::Entry* U32toNamespaceEntry(U32 u)
+inline std::shared_ptr<Namespace::Entry> U32toNamespaceEntry(U32 u)
 {
     return Namespace::mNamespaceEntryList[u-1];
 }

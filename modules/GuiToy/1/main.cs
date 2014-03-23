@@ -48,49 +48,53 @@ function GuiToy::reset( %this )
        isContainer = "1";
 
     };
+    
+    
+   %this.createBackground();
+    %this.createBonfire( 0, 0, 1, 3 );
 
-  new GuiSpriteCtrl(textBG1)
-  {
-    Profile="GuiToolboxProfile";
-    HorizSizing="width";
-    VertSizing="height";
-    Position="0 0";
-    Extent="550 120";
-    MinExtent="8 8";
-    Visible="1";
-	HelpTag="0";
-	Image="ToyAssets:textBGD1";
-	};
-
-        new GuiTextCtrl(text1)
-            {
-                text = %text;
-                Extent = "400 80";
-                HorizSizing = "relative";
-                VertSizing = "relative";
-                Profile = "GuiRightJustifyProfile";
-                canSaveDynamicFields = "0";
-                isContainer = "0";
-                Position = "100 20";
-                MinExtent = "8 2";
-                canSave = "0";
-                Visible = "1";
-                Active = "0";
-                tooltipprofile = "GuiToolTipProfile";
-                tooltipWidth = "0";
-                maxLength = "255";
-                truncate = "0";
-            };
-
-    SandboxWindow.add( moveCtrl1 );
-    moveCtrl1.add( textBG1 );
-    moveCtrl1.add( text1 );
-//    text1.resizeWidthToText();
-//    text1.startTimer("onTimer", 500, 0);
-    text1.count = 0;
-	GuiToy.joystick1.setTargetPosition("-50 100");
-	GuiToy.joystick1.startMove(1.0);
-	GuiToy.joystick1.moveStatus = 1;
+//  new GuiSpriteCtrl(textBG1)
+//  {
+//    Profile="GuiToolboxProfile";
+//    HorizSizing="width";
+//    VertSizing="height";
+//    Position="0 0";
+//    Extent="550 120";
+//    MinExtent="8 8";
+//    Visible="1";
+//	HelpTag="0";
+//	Image="ToyAssets:textBGD1";
+//	};
+//
+//        new GuiTextCtrl(text1)
+//            {
+//                text = %text;
+//                Extent = "400 80";
+//                HorizSizing = "relative";
+//                VertSizing = "relative";
+//                Profile = "GuiRightJustifyProfile";
+//                canSaveDynamicFields = "0";
+//                isContainer = "0";
+//                Position = "100 20";
+//                MinExtent = "8 2";
+//                canSave = "0";
+//                Visible = "1";
+//                Active = "0";
+//                tooltipprofile = "GuiToolTipProfile";
+//                tooltipWidth = "0";
+//                maxLength = "255";
+//                truncate = "0";
+//            };
+//
+//    SandboxWindow.add( moveCtrl1 );
+//    moveCtrl1.add( textBG1 );
+//    moveCtrl1.add( text1 );
+////    text1.resizeWidthToText();
+////    text1.startTimer("onTimer", 500, 0);
+//    text1.count = 0;
+//	GuiToy.joystick1.setTargetPosition("-50 100");
+//	GuiToy.joystick1.startMove(1.0);
+//	GuiToy.joystick1.moveStatus = 1;
     MainOverlay.setVisible(0);
 }
 
@@ -101,6 +105,39 @@ function GuiToy::reset( %this )
 ////   %this.resizeWidthToText();
 //}
 
+function GuiToy::createBackground(%this)
+{
+    // Atmosphere
+    %obj = new Sprite();
+    %obj.setBodyType( "static" );
+    %obj.setImage( "GuiToy:Nebula01bg" );
+    %obj.setSize( 128, 128);
+    %obj.setSceneLayer( 10 );
+    %obj.setCollisionSuppress();
+    %obj.setAwake( false );
+    %obj.setActive( false );
+    %obj.setRows(3);
+    %obj.setColumns(3);
+    SandboxScene.add( %obj );
+}
+
+function GuiToy::createBonfire(%this, %x, %y, %scale, %layer)
+{
+echo ("createBonfire");
+    // Create an impact explosion at the projectiles position.
+    %particlePlayer = new ParticlePlayer();
+    %particlePlayer.BodyType = static;
+    %particlePlayer.SetPosition( %x, %y );
+    %particlePlayer.SceneLayer = %layer;
+    %particlePlayer.ParticleInterpolation = true;
+    %particlePlayer.Particle = "ToyAssets:pointTest";
+    %particlePlayer.SizeScale = %scale;
+    %particlePlayer.CameraIdleDistance = GuiToy.CameraWidth * 0.8;
+    %particlePlayer.setLightType("CONSTLIGHT");
+    SandboxScene.add( %particlePlayer );
+    return %particlePlayer;
+    
+}
 
 function moveCtrl1::onMoveToComplete(%this)
 {

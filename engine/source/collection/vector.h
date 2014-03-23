@@ -112,22 +112,22 @@ class Vector
    reverse_iterator       rend()               { return _vector.rend(); };
    const_reverse_iterator rend() const         { return _vector.rend(); };
 
-   size_t size() const                   { return _vector.size(); };
-   bool empty() const                      { return _vector.empty(); };
+   inline size_t size() const                   { return _vector.size(); };
+   inline bool empty() const                      { return _vector.empty(); };
    bool contains(const T& x) const         { return std::count(_vector.begin(), _vector.end(), x) > 0; };
 
    void insert(iterator itr, const T& x)    { _vector.insert(itr, x); };
    void insert(iterator itr, iterator v2start, iterator v2end) { _vector.insert(itr, v2start, v2end); };
 
-   void erase(iterator itr)                 { _vector.erase(itr); };
-   void erase(const_iterator itr)           { _vector.erase(itr); };
+   inline void erase(iterator itr)                 { _vector.erase(itr); };
+   inline void erase(const_iterator itr)           { _vector.erase(itr); };
 
-   T&       front()                         { return _vector.front(); };
-   const T& front() const                   { return _vector.front(); };
-   T&       back()                          { return _vector.back(); };
-   const T& back() const                    { return _vector.back(); };
+   inline T&       front()                         { return _vector.front(); };
+    inline const T& front() const                   { return _vector.front(); };
+    inline T&       back()                          { return _vector.back(); };
+    inline const T& back() const                    { return _vector.back(); };
 
-    void push_back(const T x)          { _vector.push_back(x); };
+    inline void push_back(const T x)          { _vector.push_back(x); };
     U32 push_back_unique(const T&);
     U32 push_back_unique(T&&);
 

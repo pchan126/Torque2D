@@ -582,7 +582,7 @@ const char *CodeBlock::exec(U32 ip, const char *functionName, Namespace *thisNam
    SimObject *prevObject = nullptr;
    SimObject *curObject = nullptr;
    SimObject *saveObject=nullptr;
-   Namespace::Entry *nsEntry;
+   std::shared_ptr<Namespace::Entry> nsEntry;
    Namespace *ns;
    const char* curFNDocBlock = nullptr;
    const char* curNSDocBlock = nullptr;

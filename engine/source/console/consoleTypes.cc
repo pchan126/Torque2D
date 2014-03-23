@@ -523,7 +523,7 @@ ConsoleGetType( TypeSimObjectPtr )
    }
 //   =  (*obj)->getName() ? (*obj)->getName() : (*obj)->getIdString() :
    dSprintf(returnBuffer, 256, "%s", Id);
-   Con::printf("simObject %s", returnBuffer);
+//   Con::printf("simObject %s", returnBuffer);
    return returnBuffer;
 }
 

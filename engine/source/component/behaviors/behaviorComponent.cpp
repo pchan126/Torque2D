@@ -975,7 +975,7 @@ const char *BehaviorComponent::callOnBehaviors( U32 argc, const char *argv[] )
 
         // Lookup the Callback Namespace entry and then splice callback
         const char *cbName = StringTable->insert(argv[0]);
-        Namespace::Entry *pNSEntry = pNamespace->lookup(cbName);
+        std::shared_ptr<Namespace::Entry> pNSEntry = pNamespace->lookup(cbName);
         if( pNSEntry )
         {
             // Set %this to our BehaviorInstance's Object ID
@@ -1036,7 +1036,7 @@ const char *BehaviorComponent::_callMethod( U32 argc, const char *argv[], bool c
 
         // Lookup the Callback Namespace entry and then splice callback
         const char *cbName = StringTable->insert(argv[0]);
-        Namespace::Entry *pNSEntry = pNamespace->lookup(cbName);
+        std::shared_ptr<Namespace::Entry> pNSEntry = pNamespace->lookup(cbName);
         if( pNSEntry )
         {
             // Set %this to our BehaviorInstance's Object ID

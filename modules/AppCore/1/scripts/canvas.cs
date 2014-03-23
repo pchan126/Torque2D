@@ -94,7 +94,7 @@ function iOSResolutionFromSetting( %deviceType, %deviceScreenOrientation )
     %x = 0;
     %y = 0;
     
-    %scaleFactor = $pref::iOS::RetinaEnabled ? 2 : 1;
+    %scaleFactor = $pref::iOS::RetinaEnabled;
 
     switch(%deviceType)
     {

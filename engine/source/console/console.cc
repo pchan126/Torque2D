@@ -1028,7 +1028,7 @@ const char *execute(S32 argc, const char *argv[])
    if(isMainThread())
    {
 #endif
-      Namespace::Entry *ent;
+      std::shared_ptr<Namespace::Entry> ent;
       StringTableEntry funcName = StringTable->insert(argv[0]);
       ent = Namespace::global()->lookup(funcName);
 
@@ -1082,7 +1082,7 @@ const char *execute(SimObject *object, S32 argc, const char *argv[],bool thisCal
    if(object->getNamespace())
    {
       StringTableEntry funcName = StringTable->insert(argv[0]);
-      Namespace::Entry *ent = object->getNamespace()->lookup(funcName);
+      std::shared_ptr<Namespace::Entry> ent = object->getNamespace()->lookup(funcName);
 
       if(ent == nullptr)
       {

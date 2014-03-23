@@ -68,8 +68,6 @@ public:
         Vector2                 mRenderTickPosition;
 
         ParticleNode() { constructInPlace<ImageFrameProviderCore>(&mFrameProvider); resetState(); }
-//        ~ParticleNode() {Con::printf("delete ParticleNode %p", this);};
-//        ParticleNode() {};
 
         virtual void resetState( void )
         {
@@ -78,10 +76,10 @@ public:
     };
 
 private:
-    const U32                mParticlePoolBlockSize;
-    Vector<ParticleNode*>    mParticlePool;
-    std::forward_list<ParticleNode*> mpFreeParticleNodes;
-    U32                      mActiveParticleCount;
+    const U32                                        mParticlePoolBlockSize;
+    Vector<std::shared_ptr<ParticleNode>>            mParticlePool;
+    std::forward_list<std::shared_ptr<ParticleNode>> mpFreeParticleNodes;
+    U32                                              mActiveParticleCount;
 
 public:
     static void Init( void );
@@ -91,8 +89,8 @@ public:
     ParticleSystem();
     ~ParticleSystem();
 
-    ParticleNode* createParticle( void );
-    void freeParticle( ParticleNode* pParticleNode );
+    std::shared_ptr<ParticleSystem::ParticleNode> createParticle();
+    void freeParticle(std::shared_ptr<ParticleSystem::ParticleNode> pParticleNode);
 
     inline U32 getActiveParticleCount( void ) const { return mActiveParticleCount; };
     inline U32 getAllocatedParticleCount( void ) const { return (U32)mParticlePool.size() * mParticlePoolBlockSize; }

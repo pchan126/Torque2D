@@ -175,8 +175,9 @@ bool GFXOpenGLES20Shader::_init()
    if(!compiledVertexShader || !compiledPixelShader)
       return false;
 
-    for (int i = 0; i < mAttributes.size(); i++)
-        glBindAttribLocation(mProgram, mAttributes[i], GFXGLShaderAttributes[mAttributes[i]]);
+   
+   for (auto itr:mAttributes)
+        glBindAttribLocation(mProgram, itr, GFXGLShaderAttributes[itr]);
 
     // Link it!
    glLinkProgram( mProgram );
@@ -250,7 +251,7 @@ bool GFXOpenGLES20Shader::_loadShaderFromStream(  GLuint shader,
     if ( !buffer )
         return false;
     
-    for ( int i = 0; i < ATTRIB_TEXCOORD7+1; i++)
+    for ( int i = 0; i < GFXAttribute_Count; i++)
     {
         if (strstr(buffer, GFXGLShaderAttributes[i]))
             mAttributes.push_back(i);

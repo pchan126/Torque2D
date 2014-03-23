@@ -196,7 +196,7 @@ void Namespace::printNamespaceEntries(Namespace * g, bool dumpScript, bool dumpE
 
    // Go through all the entries.
    // Iterate through the methods of the namespace...
-   for(Entry *ewalk: g->mEntryList)
+   for(std::shared_ptr<Entry> ewalk: g->mEntryList)
    {
       char buffer[1024]; //< This will bite you in the butt someday.
       int eType = ewalk->mType;
@@ -218,7 +218,7 @@ void Namespace::printNamespaceEntries(Namespace * g, bool dumpScript, bool dumpE
 
             // Find the original
             eType = 8;
-            for(Entry *eseek : g->mEntryList)
+            for(std::shared_ptr<Entry> eseek : g->mEntryList)
             {
                if(!dStrcmp(eseek->mFunctionName, ewalk->cb.mGroupName))
                {
@@ -366,7 +366,7 @@ void Namespace::dumpClasses( bool dumpScript, bool dumpEngine )
       if( !dumpScript )
       {
          bool found = false;
-         for(Entry *ewalk : vec[i]->mEntryList)
+         for(std::shared_ptr<Entry> ewalk : vec[i]->mEntryList)
          {
             if( ewalk->mType != Entry::ScriptFunctionType )
             {
@@ -382,7 +382,7 @@ void Namespace::dumpClasses( bool dumpScript, bool dumpEngine )
       if( !dumpEngine )
       {
          bool found = false;
-         for(Entry *ewalk : vec[i]->mEntryList)
+         for(std::shared_ptr<Entry> ewalk : vec[i]->mEntryList)
          {
             if( ewalk->mType == Entry::ScriptFunctionType )
             {

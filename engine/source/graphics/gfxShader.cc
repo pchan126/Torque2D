@@ -50,9 +50,9 @@ bool GFXShader::init(   const StringTableEntry &vertFile,
    mPixVersion = pixVersion;
    mMacros = macros;
 
-    Con::printf("GFXShader::init %s", mVertexFile);
-    Con::printf("GFXShader::init %s", mPixelFile);
-    
+//    Con::printf("GFXShader::init %s", mVertexFile);
+//    Con::printf("GFXShader::init %s", mPixelFile);
+   
    // Before we compile the shader make sure the
    // conditioner features have been updated.
 //   ConditionerFeature::updateConditioners();

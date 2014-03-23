@@ -28,20 +28,20 @@
 
 //------------------------------------------------------------------------------
 
-ParticleSystem::ParticleNode* ParticlePlayer::EmitterNode::createParticle( void )
+std::shared_ptr<ParticleSystem::ParticleNode> ParticlePlayer::EmitterNode::createParticle()
 {
     // Sanity!
     AssertFatal( mOwner != nullptr, "ParticlePlayer::EmitterNode::createParticle() - Cannot create a particle with a NULL owner." );
     assert(mOwner != nullptr);
   
     // Fetch a free node,
-    ParticleSystem::ParticleNode* pFreeParticleNode = ParticleSystem::Instance->createParticle();
+    std::shared_ptr<ParticleSystem::ParticleNode> pFreeParticleNode = ParticleSystem::Instance->createParticle();
 
     // Insert node into emitter chain.
     mParticleNodeList.push_front(pFreeParticleNode);
 
     // Configure the node.
-    mOwner->configureParticle( this, pFreeParticleNode );
+    mOwner->configureParticle( this, pFreeParticleNode.get() );
 
     assert(!mParticleNodeList.empty());
 
@@ -50,7 +50,7 @@ ParticleSystem::ParticleNode* ParticlePlayer::EmitterNode::createParticle( void 
 
 //------------------------------------------------------------------------------
 
-void ParticlePlayer::EmitterNode::freeParticle( ParticleSystem::ParticleNode* pParticleNode )
+void ParticlePlayer::EmitterNode::freeParticle( std::shared_ptr<ParticleSystem::ParticleNode> pParticleNode )
 {
     // Sanity!
     AssertFatal( mOwner != nullptr, "ParticlePlayer::EmitterNode::freeParticle() - Cannot free a particle with a NULL owner." );
@@ -61,7 +61,7 @@ void ParticlePlayer::EmitterNode::freeParticle( ParticleSystem::ParticleNode* pP
     mParticleNodeList.remove(pParticleNode);
 
     // Free the node.
-    ParticleSystem::Instance->freeParticle( pParticleNode );
+    ParticleSystem::Instance->freeParticle(pParticleNode);
 
     assert(!mParticleNodeList.empty() == 0 || mParticleNodeList.front());
 }
@@ -264,9 +264,7 @@ void ParticlePlayer::integrateObject( const F32 totalTime, const F32 elapsedTime
     Parent::integrateObject( totalTime, elapsedTime, pDebugStats );
 
     // Finish if no need to integrate.
-    if (    !mPlaying ||
-            mPaused ||
-            mEmitters.size() == 0 )
+    if ( !mPlaying || mPaused || mEmitters.empty())
         return;
 
     // Calculate scaled time.
@@ -289,11 +287,12 @@ void ParticlePlayer::integrateObject( const F32 totalTime, const F32 elapsedTime
         mAge += scaledTime;
 
         // Iterate the emitters.
-        for( EmitterNode* pEmitterNode:mEmitters )
+        for( auto pEmitterNode:mEmitters )
         {
             // Fetch the asset emitter.
             ParticleAssetEmitter* pParticleAssetEmitter = pEmitterNode->getAssetEmitter();
 
+            int count = 0;
             // Process All particle nodes.
             for (auto pParticleNode: pEmitterNode->getParticleNodeList() )
             {
@@ -310,12 +309,15 @@ void ParticlePlayer::integrateObject( const F32 totalTime, const F32 elapsedTime
                 }
                 else
                 {
+//                    Con::printf("particle #%d Lifetime: %f Age: %f", activeParticleCount, pParticleNode->mParticleLifetime, pParticleNode->mParticleAge);
+
                     // No, so integrate the particle.
-                    integrateParticle( pEmitterNode, pParticleNode, pParticleNode->mParticleAge / pParticleNode->mParticleLifetime, scaledTime );
+                    integrateParticle( pEmitterNode, pParticleNode.get(), pParticleNode->mParticleAge / pParticleNode->mParticleLifetime, scaledTime );
 
                     // Only count particles when not in single-particle mode.
                     activeParticleCount++;
                 }
+//                Con::printf("particle count: %d", activeParticleCount);
             };
 
             assert(pEmitterNode->getParticleNodeList().empty() || *(pEmitterNode->getParticleNodeList().begin()));
@@ -468,7 +470,7 @@ void ParticlePlayer::interpolateObject( const F32 timeDelta )
         const Vector2& localAABB3 = pParticleAssetEmitter->getLocalPivotAABB3();
 
         // Process All particle nodes.
-       for (ParticleSystem::ParticleNode* pParticleNode: pEmitterNode->getParticleNodeList())
+       for (std::shared_ptr<ParticleSystem::ParticleNode> pParticleNode: pEmitterNode->getParticleNodeList())
         {
             // Interpolate the position.
             pParticleNode->mRenderTickPosition = mLerp(pParticleNode->mPreTickPosition, pParticleNode->mPostTickPosition, timeDelta);
@@ -597,12 +599,12 @@ void ParticlePlayer::sceneRender( const t2dSceneRenderState * pSceneRenderState,
 
         
         // Fetch the oldest-in-front flag.
-        std::forward_list<ParticleSystem::ParticleNode*> nodeList = pEmitterNode->getParticleNodeList();
+        std::forward_list<std::shared_ptr<ParticleSystem::ParticleNode>> nodeList = pEmitterNode->getParticleNodeList();
 
        if (pParticleAssetEmitter->getOldestInFront())    // should probably be a better way to do this
            nodeList.reverse();
-
-        for (ParticleSystem::ParticleNode* pParticleNode: nodeList)
+       
+       for (std::shared_ptr<ParticleSystem::ParticleNode> pParticleNode: nodeList)
         {
             assert(pParticleNode);
 
@@ -617,9 +619,9 @@ void ParticlePlayer::sceneRender( const t2dSceneRenderState * pSceneRenderState,
 
             if (pParticleAssetEmitter->getPointParticles())
             {
-//                Vector2 position = pParticleNode->mRenderTickPosition;
-//                Vector2 size = pParticleNode->mSize;
-//                pBatchRenderer->SubmitPoint();
+                Vector2 position = pParticleNode->mRenderTickPosition;
+                Vector2 size = pParticleNode->mRenderSize;
+                pBatchRenderer->SubmitPoint(position, size.x, frameTexture, pParticleNode->mColor*getScene()->getSceneLight());
             }
             else
             {
@@ -853,7 +855,7 @@ void ParticlePlayer::stop( const bool waitForParticles, const bool killEffect )
 
 //------------------------------------------------------------------------------
 
-void ParticlePlayer::configureParticle( EmitterNode* pEmitterNode, ParticleSystem::ParticleNode* pParticleNode )
+void ParticlePlayer::configureParticle(EmitterNode *pEmitterNode, ParticleSystem::ParticleNode* pParticleNode)
 {
     // Fetch the particle player age.
     const F32 particlePlayerAge = mAge;
@@ -1077,7 +1079,7 @@ void ParticlePlayer::configureParticle( EmitterNode* pEmitterNode, ParticleSyste
                                                                     particlePlayerAge ) * getSizeScale();
 
     // Is the particle using a fixed aspect?
-    if ( pParticleAssetEmitter->getFixedAspect() )
+    if ( pParticleAssetEmitter->getFixedAspect() || pParticleAssetEmitter->getPointParticles())
     {
         // Yes, so simply copy Size-X.
         pParticleNode->mSize.y = pParticleNode->mSize.x;
@@ -1356,6 +1358,7 @@ void ParticlePlayer::integrateParticle( EmitterNode* pEmitterNode, ParticleSyste
                                 mClampF( blueChannel.getFieldValue( particleAge ), blueChannel.getMinValue(),blueChannel.getMaxValue() ),
                                 mClampF( alphaChannel.getFieldValue( particleAge ) * alphaChannelScale.getFieldValue( 0.0f ), alphaChannel.getMinValue(), alphaChannel.getMaxValue() ) );
 
+//   Con::printf("integrate %2.2f, %2.2f, %2.2f", pParticleNode->mColor.red, pParticleNode->mColor.green, pParticleNode->mColor.blue);
 
     // **********************************************************************************************************************
     // Integrate Particle.

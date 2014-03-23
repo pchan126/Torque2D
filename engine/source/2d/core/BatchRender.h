@@ -46,6 +46,7 @@ class SceneRenderRequest;
 class BatchRender
 {
 private:
+
     struct indexedPrim
     {
         indexedPrim( const GFXPrimitiveType primitive, const U32 primitiveCount, const U32 startIndex ) :
@@ -71,9 +72,38 @@ private:
         Vector<U16>* index;
     };
 
+    struct indexedPoints
+    {
+        indexedPoints( const GFXPrimitiveType primitive, const U32 primitiveCount, const U32 startIndex ) :
+            mPrimitiveMode( primitive ),
+            mPrimitiveCount( primitiveCount ),
+            mStartIndex( startIndex )
+        {
+            verts = new Vector<GFXVertexPCS>;
+            index = new Vector<U16>;
+        }
+
+        ~indexedPoints()
+        {
+            delete verts;
+            delete index;
+        }
+
+        GFXPrimitiveType mPrimitiveMode;
+        U32 mPrimitiveCount;
+        U32 mStartIndex;
+
+        Vector<GFXVertexPCS>* verts;
+        Vector<U16>* index;
+    };
+
     typedef HashMap<GFXTexHandle, indexedPrim*> textureBatchType;
     Vector< indexedPrim* > mIndexVectorPool;
     textureBatchType    mTextureBatchMap;
+
+    typedef HashMap<GFXTexHandle, indexedPoints*> textureBatchPointsType;
+    Vector< indexedPoints* > mIndexPointVectorPool;
+    textureBatchPointsType   mTexturePointBatchMap;
 
     const ColorF        NoColor;
 
@@ -81,9 +111,10 @@ private:
     GFXVertexBufferHandle<GFXVertexPCT> mTempVertBuffHandle;
     Vector<U16>                         mIndexBuffer;
 
-    Vector<GFXVertexPC>                 mPointBuffer;
-    GFXVertexBufferHandle<GFXVertexPC>  mPointBuffHandle;
-   
+    Vector<GFXVertexPCS>                 mPointBuffer;
+    GFXVertexBufferHandle<GFXVertexPCS>  mPointBuffHandle;
+    Vector<U16>                         mPointIndexBuffer;
+
     U32                 mTriangleCount;
 
     bool                mBlendMode;
@@ -252,6 +283,9 @@ public:
                                    GFXTexHandle &texture,
                                    const Vector<U16> &indices);
 
+   void SubmitPoint( const Vector2 position, const float size, GFXTexHandle& texture,
+                    const ColorF& color );
+   
    /// Submit a quad for batching.
     /// Vertex and textures are indexed as:
     ///  3 ___ 2
@@ -322,11 +356,13 @@ private:
     /// Flush (render) any pending batches.
     void flushInternal( void );
 
-   void _lightAndDraw( Vector<GFXVertexPCT>* pVertexVector, Vector<U16>* pIndex, GFXTexHandle handle = NULL);
+   void _lightAndDrawTriangleStrip(Vector<GFXVertexPCT> *pVertexVector, Vector<U16> *pIndex, GFXTexHandle handle = NULL);
+   void _lightAndDrawPoints(Vector<GFXVertexPCS> *pVertexVector, Vector<U16> *pIndex, GFXTexHandle handle = NULL);
    void _drawWireframe( Vector<GFXVertexPCT>* pVertexVector, Vector<U16>* pIndex);
 
    /// Find texture batch.
     indexedPrim* findTextureBatch( GFXTexHandle& handle );
+    indexedPoints* findTexturePointBatch( GFXTexHandle& handle );
 
 };
 

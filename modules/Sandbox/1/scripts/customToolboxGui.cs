@@ -33,6 +33,10 @@ Sandbox.intOptionExtent = "196 25";
 Sandbox.listOptionExtent = "240 0";
 Sandbox.customControlCount = "0";
 Sandbox.lastControlBottom = "0";
+if ($pref::iOS::RetinaEnabled > 0)
+{
+   Sandbox.flagOptionExtent.x = Sandbox.flagOptionExtent.x * $pref::iOS::RetinaEnabled;
+}
 
 //-----------------------------------------------------------------------------
 

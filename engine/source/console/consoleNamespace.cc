@@ -30,7 +30,7 @@ U32 Namespace::mCacheSequence = 0;
 DataChunker Namespace::mCacheAllocator;
 DataChunker Namespace::mAllocator;
 std::list<Namespace*> Namespace::mNamespaceList;
-std::vector<Namespace::Entry*> Namespace::mNamespaceEntryList;
+std::vector<std::shared_ptr<Namespace::Entry>> Namespace::mNamespaceEntryList;
 Namespace *Namespace::mGlobalNamespace = nullptr;
 
 
@@ -63,7 +63,7 @@ Namespace::Namespace()
    mCleanUpUsage = false;
    mName = nullptr;
    mParent = nullptr;
-   mHashTable = nullptr;
+//   mHashTable = nullptr;
    mHashSequence = 0;
    mRefCountToParent = 0;
    mClassRep = 0;
@@ -77,12 +77,12 @@ Namespace::~Namespace()
       mUsage = nullptr;
       mCleanUpUsage = false;
    }
-   SAFE_DELETE(mHashTable);
+//   SAFE_DELETE(mHashTable);
 }
 
 void Namespace::clearEntries()
 {
-   for(Entry *walk : mEntryList)
+   for(std::shared_ptr<Entry> walk : mEntryList)
       walk->clear();
 }
 
@@ -151,11 +151,6 @@ bool Namespace::unlinkClass(Namespace *parent)
       return false;
    }
 
-   if (walk->mParent == nullptr)
-      Con::printf("%s unlinkClass (%d)", mName, mRefCountToParent);
-   else
-      Con::printf("%s unlinkClass (%d) %s", mName, mRefCountToParent, walk->mParent->mName );
-
    AssertFatal(mRefCountToParent > 0, "Namespace::unlinkClass - reference count to parent is less than 0");
    mRefCountToParent--;
 
@@ -183,7 +178,7 @@ bool Namespace::classLinkTo(Namespace *parent)
 
    mRefCountToParent++;
    walk->mParent = parent;
-   Con::printf("%s classLinkTo (%d) %s", mName, mRefCountToParent, walk->mParent->mName );
+//   Con::printf("%s classLinkTo (%d) %s", mName, mRefCountToParent, walk->mParent->mName );
 
    trashCache();
 
@@ -206,15 +201,16 @@ void Namespace::buildHashTable()
    U32 entryCount = 0;
    Namespace * ns;
    for(ns = this; ns; ns = ns->mParent)
-      for(Entry *walk : ns->mEntryList)
+      for(std::shared_ptr<Entry> walk : ns->mEntryList)
          if(lookupRecursive(walk->mFunctionName) == walk)
             entryCount++;
 
-   mHashTable = new std::unordered_map<StringTableEntry, Entry*>;
+   std::shared_ptr<std::unordered_map<StringTableEntry, std::shared_ptr<Entry>>> temp(new std::unordered_map<StringTableEntry, std::shared_ptr<Entry>>);
+   mHashTable = temp;
 
    for(ns = this; ns; ns = ns->mParent)
    {
-      for(Entry *walk : ns->mEntryList)
+      for(std::shared_ptr<Entry> walk : ns->mEntryList)
       {
          if ((*mHashTable).count(walk->mFunctionName) == 0)
             (*mHashTable)[walk->mFunctionName] = walk;
@@ -254,7 +250,7 @@ const char *Namespace::tabComplete(const char *prevText, S32 baseLen, bool fForw
    const char *bestMatch = nullptr;
    for(auto itr: *mHashTable)
    {
-       Entry* temp = itr.second;
+       std::shared_ptr<Entry> temp = itr.second;
        if( temp != nullptr && canTabComplete(prevText, bestMatch, temp->mFunctionName, baseLen, fForward))
            bestMatch = temp->mFunctionName;
    }
@@ -262,17 +258,17 @@ const char *Namespace::tabComplete(const char *prevText, S32 baseLen, bool fForw
    return bestMatch;
 }
 
-Namespace::Entry *Namespace::lookupRecursive(StringTableEntry name)
+std::shared_ptr<Namespace::Entry> Namespace::lookupRecursive(StringTableEntry name)
 {
    for(Namespace *ns = this; ns; ns = ns->mParent)
-      for(Entry *walk : ns->mEntryList)
+      for(std::shared_ptr<Entry> walk : ns->mEntryList)
          if(walk->mFunctionName == name)
             return walk;
 
    return nullptr;
 }
 
-Namespace::Entry *Namespace::lookup(StringTableEntry name)
+std::shared_ptr<Namespace::Entry> Namespace::lookup(StringTableEntry name)
 {
    if(mHashSequence != mCacheSequence)
       buildHashTable();
@@ -293,19 +289,19 @@ Namespace::Entry *Namespace::lookup(StringTableEntry name)
 //   return dStricmp(fa->mFunctionName, fb->mFunctionName);
 //}
 
-static bool compareEntries( Namespace::Entry* a, Namespace::Entry* b)
+static bool compareEntries( std::shared_ptr<Namespace::Entry> a, std::shared_ptr<Namespace::Entry> b)
 {
     return dStricmp(a->mFunctionName, b->mFunctionName) == -1;
 }
 
-void Namespace::getEntryList(Vector<Entry *> *vec)
+void Namespace::getEntryList(Vector<std::shared_ptr<Namespace::Entry>> *vec)
 {
    if(mHashSequence != mCacheSequence)
       buildHashTable();
 
     for (auto itr: *mHashTable)
     {
-        Namespace::Entry *temp = itr.second;
+        auto temp = itr.second;
         vec->push_back(temp);
     }
 
@@ -313,9 +309,9 @@ void Namespace::getEntryList(Vector<Entry *> *vec)
     std::sort(vec->begin(), vec->end(), compareEntries);
 }
 
-Namespace::Entry *Namespace::createLocalEntry(StringTableEntry name)
+std::shared_ptr<Namespace::Entry> Namespace::createLocalEntry(StringTableEntry name)
 {
-   for(Entry *walk : mEntryList)
+   for(auto walk : mEntryList)
    {
       if(walk->mFunctionName == name)
       {
@@ -324,8 +320,7 @@ Namespace::Entry *Namespace::createLocalEntry(StringTableEntry name)
       }
    }
 
-   Entry *ent = (Entry *) mAllocator.alloc(sizeof(Entry));
-   constructInPlace(ent);
+   std::shared_ptr<Entry> ent(new Entry);
 
    ent->mNamespace = this;
    ent->mFunctionName = name;
@@ -340,7 +335,7 @@ Namespace::Entry *Namespace::createLocalEntry(StringTableEntry name)
 
 void Namespace::addFunction(StringTableEntry name, CodeBlock *cb, U32 functionOffset, const char* usage)
 {
-   Entry *ent = createLocalEntry(name);
+   std::shared_ptr<Entry> ent = createLocalEntry(name);
    trashCache();
 
    ent->mUsage = usage;
@@ -352,7 +347,7 @@ void Namespace::addFunction(StringTableEntry name, CodeBlock *cb, U32 functionOf
 
 void Namespace::addCommand(StringTableEntry name,StringCallback cb, const char *usage, S32 minArgs, S32 maxArgs)
 {
-   Entry *ent = createLocalEntry(name);
+   std::shared_ptr<Entry> ent = createLocalEntry(name);
    trashCache();
 
    ent->mUsage = usage;
@@ -365,7 +360,7 @@ void Namespace::addCommand(StringTableEntry name,StringCallback cb, const char *
 
 void Namespace::addCommand(StringTableEntry name,IntCallback cb, const char *usage, S32 minArgs, S32 maxArgs)
 {
-   Entry *ent = createLocalEntry(name);
+   std::shared_ptr<Entry> ent = createLocalEntry(name);
    trashCache();
 
    ent->mUsage = usage;
@@ -378,7 +373,7 @@ void Namespace::addCommand(StringTableEntry name,IntCallback cb, const char *usa
 
 void Namespace::addCommand(StringTableEntry name,VoidCallback cb, const char *usage, S32 minArgs, S32 maxArgs)
 {
-   Entry *ent = createLocalEntry(name);
+   std::shared_ptr<Entry> ent = createLocalEntry(name);
    trashCache();
 
    ent->mUsage = usage;
@@ -391,7 +386,7 @@ void Namespace::addCommand(StringTableEntry name,VoidCallback cb, const char *us
 
 void Namespace::addCommand(StringTableEntry name,FloatCallback cb, const char *usage, S32 minArgs, S32 maxArgs)
 {
-   Entry *ent = createLocalEntry(name);
+   std::shared_ptr<Entry> ent = createLocalEntry(name);
    trashCache();
 
    ent->mUsage = usage;
@@ -404,7 +399,7 @@ void Namespace::addCommand(StringTableEntry name,FloatCallback cb, const char *u
 
 void Namespace::addCommand(StringTableEntry name,BoolCallback cb, const char *usage, S32 minArgs, S32 maxArgs)
 {
-   Entry *ent = createLocalEntry(name);
+   std::shared_ptr<Entry> ent = createLocalEntry(name);
    trashCache();
 
    ent->mUsage = usage;
@@ -424,7 +419,7 @@ void Namespace::addOverload(const char * name, const char *altUsage)
    dSprintf(lilBuffer, 32, "_%d", uid++);
    dStrcat(buffer, lilBuffer);
 
-   Entry *ent = createLocalEntry(StringTable->insert( buffer ));
+   std::shared_ptr<Entry> ent = createLocalEntry(StringTable->insert( buffer ));
    trashCache();
 
    ent->mUsage = altUsage;
@@ -444,7 +439,7 @@ void Namespace::markGroup(const char* name, const char* usage)
    dSprintf(lilBuffer, 32, "_%d", uid++);
    dStrcat(buffer, lilBuffer);
 
-   Entry *ent = createLocalEntry(StringTable->insert( buffer ));
+   std::shared_ptr<Entry> ent = createLocalEntry(StringTable->insert( buffer ));
    trashCache();
 
    if(usage != nullptr)
@@ -544,10 +539,10 @@ void Namespace::activatePackage(StringTableEntry name)
          parent->mParent = walk;
 
          // now swap the entries:
-         for(Entry *ew : parent->mEntryList)
+         for(auto ew : parent->mEntryList)
             ew->mNamespace = walk;
 
-         for(Entry *ew : walk->mEntryList )
+         for(auto ew : walk->mEntryList )
             ew->mNamespace = parent;
 
          walk->mEntryList.swap( parent->mEntryList );
@@ -580,10 +575,10 @@ void Namespace::deactivatePackage(StringTableEntry name)
             walk->mParent = nullptr;
 
             // now swap the entries:
-            for(Entry *ew : parent->mEntryList)
+            for(auto ew : parent->mEntryList)
                ew->mNamespace = walk;
 
-            for(Entry *ew : walk->mEntryList)
+            for(auto ew : walk->mEntryList)
                ew->mNamespace = parent;
 
             walk->mEntryList.swap( parent->mEntryList );

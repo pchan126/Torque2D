@@ -161,9 +161,7 @@ bool _iOSTorqueFatalError = false;
 {
     lastUpdate = [controller timeSinceLastUpdate];
     if(Game->isRunning())
-    {
         Game->mainLoop();
-    }
 }
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect

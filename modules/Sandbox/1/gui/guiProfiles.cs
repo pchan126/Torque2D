@@ -20,8 +20,9 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-$platformFontType = ($platform $= "windows") ? "lucida console" : "monaco";
-$platformFontSize = ($platform $= "ios") ? 18 : 12;
+$platformFontType = ($platform $= "windows") ? "lucida console" : "mechEffects1";
+//$platformFontSize = ($platform $= "ios") ? 18 : 12;
+$platformFontSize = ($platform $= "ios") ? 36 : 12;
 $labelFontType = "Big Book";
 $labelFontSize = 60;
 

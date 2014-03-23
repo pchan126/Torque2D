@@ -886,7 +886,10 @@ void WorldQuery::injectAlwaysInScope( void )
         if ( (mQueryFilter.mSceneGroupMask & sceneGroupMask) != 0 )
         {
             WorldQueryResult queryResult( pSceneObject );
-            mLayeredQueryResults[pSceneObject->getSceneLayer()].push_back( queryResult );
+            U32 layer = pSceneObject->getSceneLayer();
+            if (layer >= mLayeredQueryResults.size())
+               mLayeredQueryResults.setSize(layer+1);
+            mLayeredQueryResults[layer].push_back( queryResult );
             mQueryResults.push_back( queryResult );
 
             // Tag with world query key.

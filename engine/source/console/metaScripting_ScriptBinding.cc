@@ -648,7 +648,7 @@ ConsoleFunctionWithDocs(isFunction, ConsoleBool, 2, 2, (string funcName))
 ConsoleFunctionWithDocs(isMethod, ConsoleBool, 3, 3, (string namespace, string method))
 {
    Namespace* ns = Namespace::find( StringTable->insert( argv[1] ) );
-   Namespace::Entry* nse = ns->lookup( StringTable->insert( argv[2] ) );
+   std::shared_ptr<Namespace::Entry> nse = ns->lookup( StringTable->insert( argv[2] ) );
    if( !nse )
       return false;
 

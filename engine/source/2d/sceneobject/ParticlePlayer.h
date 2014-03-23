@@ -47,7 +47,7 @@ private:
     private:
         ParticlePlayer*                          mOwner;
         ParticleAssetEmitter*                    mpAssetEmitter;
-        std::forward_list<ParticleSystem::ParticleNode*> mParticleNodeList;
+        std::forward_list<std::shared_ptr<ParticleSystem::ParticleNode>> mParticleNodeList;
 
         F32                                      mTimeSinceLastGeneration;
         bool                                     mPaused;
@@ -89,7 +89,7 @@ private:
 
         inline bool hasActiveParticles( void ) const { return !mParticleNodeList.empty(); }
 
-        inline std::forward_list<ParticleSystem::ParticleNode*> getParticleNodeList(void) { return mParticleNodeList; };
+        inline std::forward_list<std::shared_ptr<ParticleSystem::ParticleNode>> getParticleNodeList(void) { return mParticleNodeList; };
 
         inline void setTimeSinceLastGeneration( const F32 timeSinceLastGeneration ) { mTimeSinceLastGeneration = timeSinceLastGeneration; }
         inline F32 getTimeSinceLastGeneration( void ) const { return mTimeSinceLastGeneration; }
@@ -102,8 +102,8 @@ private:
 
         std::future<void> getFuture();
 
-        ParticleSystem::ParticleNode* createParticle( void );
-        void freeParticle( ParticleSystem::ParticleNode* pParticleNode );
+        std::shared_ptr<ParticleSystem::ParticleNode> createParticle();
+        void freeParticle( std::shared_ptr<ParticleSystem::ParticleNode> pParticleNode );
         void freeAllParticles( void );        
     };
 
@@ -189,7 +189,7 @@ protected:
     virtual void onAssetRefreshed( AssetPtrBase* pAssetPtrBase );
 
     /// Particle Creation/Integration.
-    void configureParticle( EmitterNode* pEmitterNode, ParticleSystem::ParticleNode* pParticleNode );
+    void configureParticle(EmitterNode *pEmitterNode, ParticleSystem::ParticleNode* pParticleNode);
     void integrateParticle( EmitterNode* pEmitterNode, ParticleSystem::ParticleNode* pParticleNode, const F32 particleAge, const F32 elapsedTime );
 
     /// Persistence.

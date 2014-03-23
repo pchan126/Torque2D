@@ -82,7 +82,7 @@ void SimConsoleEvent::process(SimObject* object)
          Namespace* ns = Namespace::find( StringTable->insert( mArgv[0] ) );
          if( ns )
          {
-            Namespace::Entry* nse = ns->lookup( StringTable->insert( func ) );
+            std::shared_ptr<Namespace::Entry> nse = ns->lookup( StringTable->insert( func ) );
             if( nse )
                // Execute.
                nse->execute( mArgc, (const char**)mArgv, &gEvalState );

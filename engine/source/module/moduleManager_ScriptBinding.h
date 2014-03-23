@@ -284,11 +284,11 @@ ConsoleMethodWithDocs(ModuleManager, copyModule, ConsoleString, 6, 6, (sourceMod
     ModuleDefinition* pSourceModuleDefinition = dynamic_cast<ModuleDefinition*>( Sim::findObject( argv[2] ) );
 
     // Was the module definition found?
-    if ( pSourceModuleDefinition == NULL )
+    if ( pSourceModuleDefinition == nullptr )
     {
         // No, so warn.
         Con::warnf( "ModuleManager::copyModule() - Could not find source module definition '%s'.", argv[2] );
-        return StringTable->EmptyString;
+        return nullptr;
     }
 
     // Fetch the target module Id.

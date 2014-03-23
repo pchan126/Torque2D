@@ -358,8 +358,7 @@ void BatchRender::SubmitQuad(const std::array< GFXVertexPCT, 4> verts,
     
     // Debug Profiling.
     PROFILE_SCOPE(BatchRender_SubmitQuad);
-    
-    
+
     // Would we exceed the triangle buffer size?
     if ( (mTriangleCount + 2) > BATCHRENDER_MAXTRIANGLES )
     {
@@ -374,7 +373,7 @@ void BatchRender::SubmitQuad(const std::array< GFXVertexPCT, 4> verts,
     if ( mStrictOrderMode )
     {
         // Yes, so is there a texture change?
-        if ( texture != mStrictOrderTextureHandle && mVertexBuffer.size() > 0 )
+        if (texture != mStrictOrderTextureHandle && mVertexBuffer.size() > 0 )
         {
             // Yes, so flush.
             flush( mpDebugStats->batchTextureChangeFlush );
@@ -431,6 +430,96 @@ void BatchRender::SubmitQuad(const std::array< GFXVertexPCT, 4> verts,
         // more draw calls therefore can be used in comparison.
         flushInternal();
     }
+}
+
+void BatchRender::SubmitPoint( const Vector2 position, const float size, GFXTexHandle& texture,
+                 const ColorF& color )
+{
+   GFXVertexPCS vert;
+   vert.point.set(position.x, position.y, 0.0f);
+   vert.color = color;
+   vert.size = size;
+
+   // Sanity!
+   AssertFatal( mpDebugStats != nullptr, "Debug stats have not been configured." );
+   
+   // Debug Profiling.
+   PROFILE_SCOPE(BatchRender_SubmitPoint);
+   
+   
+   // Would we exceed the triangle buffer size?
+   if ( (mTriangleCount + 2) > BATCHRENDER_MAXTRIANGLES )
+   {
+      // Yes, so flush.
+      flush( mpDebugStats->batchBufferFullFlush );
+   }
+   
+   Vector<GFXVertexPCS>* vertBuffer = &mPointBuffer;
+   Vector<U16>* indexBuffer = &mPointIndexBuffer;
+   
+   // Strict order mode?
+   if ( mStrictOrderMode )
+   {
+      // Yes, so is there a texture change?
+      if ( texture != mStrictOrderTextureHandle && mVertexBuffer.size() > 0 )
+      {
+         // Yes, so flush.
+         flush( mpDebugStats->batchTextureChangeFlush );
+      }
+   
+      // Set strict order mode texture handle.
+      mStrictOrderTextureHandle = texture;
+   }
+   else
+   {
+      // No, so add triangle run.
+      vertBuffer  = findTexturePointBatch( texture )->verts;
+      indexBuffer = findTexturePointBatch(texture)->index;
+   }
+   
+   U16 indexOffset = vertBuffer->size();
+//   std::array< U16 , 4> in_indexBuffer = {0, 1, 3, 2};
+//   
+//   // degenerate linking triangle
+//   if (vertBuffer->size() > 0)
+//   {
+//      //       Con::printf("indexBuffer->pushback %d %d", indexBuffer->back(), in_indexBuffer.front());
+//      
+//      indexBuffer->push_back(indexBuffer->back());
+//      indexBuffer->push_back(in_indexBuffer.front()+indexOffset);
+//   }
+
+   vertBuffer->push_back(vert);
+   indexBuffer->push_back(indexOffset);
+   
+   // Add textured vertices.
+//   vertBuffer->merge(verts.begin(), verts.end());
+   
+//   for (auto i:in_indexBuffer )
+//   {
+//      //      Con::printf("indexBuffer->pushback %d", i+indexOffset);
+//   }
+   
+   // Stats.
+//   mpDebugStats->batchTrianglesSubmitted+=2;
+   
+   // Increase triangle count.
+   mTriangleCount += 1;
+   
+   // Have we reached the buffer limit?
+   if ( mTriangleCount == BATCHRENDER_MAXTRIANGLES )
+   {
+      // Yes, so flush.
+      flush( mpDebugStats->batchBufferFullFlush );
+   }
+   // Is batching enabled?
+   else if ( !mBatchEnabled )
+   {
+      // No, so flush immediately.
+      // NOTE: Technically this is still batching but will still revert to using
+      // more draw calls therefore can be used in comparison.
+      flushInternal();
+   }
 }
 
 
@@ -548,7 +637,10 @@ void BatchRender::flushInternal( void )
     {
         // Bind the texture if not in wireframe mode.
         if ( !mWireframeMode )
-           _lightAndDraw( &mVertexBuffer, &mIndexBuffer, mStrictOrderTextureHandle);
+        {
+            _lightAndDrawTriangleStrip(&mVertexBuffer, &mIndexBuffer, mStrictOrderTextureHandle);
+            _lightAndDrawPoints(&mPointBuffer, &mPointIndexBuffer, mStrictOrderTextureHandle);
+        }
       else
             _drawWireframe(  &mVertexBuffer, &mIndexBuffer );
 
@@ -571,7 +663,7 @@ void BatchRender::flushInternal( void )
         {
             // Fetch indexedPrim
             indexedPrim* indexPrim = batchItr.second;
-           _lightAndDraw( indexPrim->verts, indexPrim->index, batchItr.first);
+            _lightAndDrawTriangleStrip(indexPrim->verts, indexPrim->index, batchItr.first);
 
            // Stats.
             mpDebugStats->batchDrawCallsSorted++;
@@ -593,11 +685,40 @@ void BatchRender::flushInternal( void )
 
         // Clear texture batch map.
         mTextureBatchMap.clear();
+
+        // No, so iterate texture batch map.
+        for( auto batchItr:mTexturePointBatchMap )
+        {
+            // Fetch indexedPrim
+            indexedPoints* indexedPoints = batchItr.second;
+            _lightAndDrawPoints(indexedPoints->verts, indexedPoints->index, batchItr.first);
+
+            // Stats.
+            mpDebugStats->batchDrawCallsSorted++;
+
+            // Stats.
+//            const size_t trianglesDrawn = indexedPoints->verts->size()-2;
+//            if ( trianglesDrawn > mpDebugStats->batchMaxTriangleDrawn )
+//                mpDebugStats->batchMaxTriangleDrawn = trianglesDrawn;
+
+            // Stats.
+//            if ( indexedPoints->verts->size() > mpDebugStats->batchMaxVertexBuffer )
+//                mpDebugStats->batchMaxVertexBuffer = indexedPoints->verts->size();
+
+            // Return index vector to pool.
+            indexedPoints->verts->clear();
+            indexedPoints->index->clear();
+            mIndexPointVectorPool.push_back(indexedPoints);
+        }
+        // Clear texture batch map.
+        mTexturePointBatchMap.clear();
     }
     // Reset batch state.
     mTriangleCount = 0;
     mVertexBuffer.clear();
     mIndexBuffer.clear();
+    mPointBuffer.clear();
+    mPointIndexBuffer.clear();
 }
 
 void BatchRender::_drawWireframe( Vector<GFXVertexPCT>* pVertexVector, Vector<U16>* pIndex)
@@ -626,7 +747,7 @@ void BatchRender::_drawWireframe( Vector<GFXVertexPCT>* pVertexVector, Vector<U1
 }
 
 
-void BatchRender::_lightAndDraw( Vector<GFXVertexPCT>* pVertexVector, Vector<U16>* pIndex, GFXTexHandle handle )
+void BatchRender::_lightAndDrawTriangleStrip(Vector<GFXVertexPCT> *pVertexVector, Vector<U16> *pIndex, GFXTexHandle handle)
 {
    // Bind the texture if not in wireframe mode.
    if (!handle.isNull())
@@ -682,6 +803,38 @@ void BatchRender::_lightAndDraw( Vector<GFXVertexPCT>* pVertexVector, Vector<U16
 
 //-----------------------------------------------------------------------------
 
+void BatchRender::_lightAndDrawPoints(Vector<GFXVertexPCS> *pVertexVector, Vector<U16> *pIndex, GFXTexHandle handle) {
+    // Bind the texture if not in wireframe mode.
+    if (!handle.isNull())
+        GFX->setTexture(0, handle);
+
+    mPointBuffHandle.set(GFX, (U32)pVertexVector->size(), GFXBufferTypeVolatile, pVertexVector->address(), (U32)pIndex->size(), pIndex->address() );
+    GFX->setVertexBuffer( mPointBuffHandle );
+
+    // Draw the triangles.
+    if (mShader.isNull())
+    {
+        GFX->setupGenericShaders(GFXDevice::GSPoint);
+    }
+    else
+    {
+        MatrixF xform(GFX->getWorldMatrix());
+        xform *= GFX->getViewMatrix();
+        xform *= GFX->getProjectionMatrix();
+        xform.transpose();
+        GFX->setShader(mShader);
+        GFX->setShaderConstBuffer(mShaderConstBuffer);
+        mShaderConstBuffer->setSafe( mShader->getShaderConstHandle("$mvp_matrix"), xform );
+        mShaderConstBuffer->setSafe( mShader->getShaderConstHandle("$sampler2d_0"), 0);
+    }
+
+    GFX->drawIndexedPrimitive(GFXPointList, 0, 0, (U32)pVertexVector->size(), (U32)pIndex->size(), (U32)pIndex->size());
+}
+
+
+//-----------------------------------------------------------------------------
+
+
 BatchRender::indexedPrim* BatchRender::findTextureBatch( GFXTexHandle& handle )
 {
 //    Vector<GFXVertexPCT> * pIndexVector = nullptr;
@@ -722,3 +875,40 @@ BatchRender::indexedPrim* BatchRender::findTextureBatch( GFXTexHandle& handle )
 }
 
 
+BatchRender::indexedPoints *BatchRender::findTexturePointBatch(GFXTexHandle &handle) {
+//    Vector<GFXVertexPCT> * pIndexVector = nullptr;
+    indexedPoints* pIndexVector = nullptr;
+
+    // Find texture binding.
+    auto itr = mTexturePointBatchMap.find( handle );
+
+    // Did we find a texture binding?
+    if ( itr == mTexturePointBatchMap.end() )
+    {
+        // No, so fetch index vector pool count.
+        const size_t indexPointVectorPoolCount = mIndexPointVectorPool.size();
+
+        // Do we have any in the index vector pool?
+        if ( indexPointVectorPoolCount > 0 )
+        {
+            // Yes, so use it.
+            pIndexVector = mIndexPointVectorPool[indexPointVectorPoolCount-1];
+            mIndexPointVectorPool.pop_back();
+        }
+        else
+        {
+            // No, so generate one.
+            pIndexVector = new indexedPoints( GFXPointList, 0, 0 );
+        }
+
+        // Insert into texture batch map.
+        mTexturePointBatchMap.insert( handle, pIndexVector );
+    }
+    else
+    {
+        // Yes, so fetch it.
+        pIndexVector = itr->second;
+    }
+
+    return pIndexVector;
+}

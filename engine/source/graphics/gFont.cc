@@ -1532,7 +1532,7 @@ bool GFont::readBMFont(std::iostream &io_rStream)
     {
         char buf[1024];
         dSprintf(buf, sizeof(buf), "%s/%s", Con::getVariable("$GUI::fontCacheDirectory"), fileName);
-        Con::printf("Platform::makeFullPathName %s", buf);
+//        Con::printf("Platform::makeFullPathName %s", buf);
         
 //        GBitmap *bmp = dynamic_cast<GBitmap*>(ResourceManager->loadInstance(buf));
         
