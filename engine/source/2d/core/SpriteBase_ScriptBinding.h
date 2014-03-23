@@ -75,7 +75,7 @@ ConsoleMethodWithDocs(SpriteBase, getImage, ConsoleString, 2, 2, ())
     {
         // No, so warn.
         Con::warnf( "SpriteBase::getImage() - Method invalid, not in static mode." );
-        return StringTable->EmptyString;
+        return nullptr;
     }
 
     // Get image.

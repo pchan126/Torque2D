@@ -402,7 +402,7 @@ bool ParticleAssetEmitter::setImage( const char* pAssetId, U32 frame )
 bool ParticleAssetEmitter::setImage( const char* pAssetId, const char* frameName )
 {
     // Sanity!
-    AssertFatal( pAssetId != NULL, "ParticleAssetEmitter::setImage() - Cannot use a NULL asset Id." );
+    AssertFatal( pAssetId != nullptr, "ParticleAssetEmitter::setImage() - Cannot use a NULL asset Id." );
     
     // Set static mode.
     mStaticMode = true;
@@ -431,7 +431,7 @@ bool ParticleAssetEmitter::setImage( const char* pAssetId, const char* frameName
     else
     {
         // No, so reset the image frame.
-        mImageFrameName = StringTable->insert(StringTable->EmptyString);
+        mImageFrameName = StringTable->EmptyString;
     }
 
     // Using a named frame index

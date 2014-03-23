@@ -154,7 +154,8 @@ public:
              dsize_t vertexCount,
              GFXBufferType type = GFXBufferTypeVolatile,
              void *vertexBuffer = nullptr,
-             dsize_t indexCount = 0, void *indexBuffer = nullptr)
+             dsize_t indexCount = 0,
+             void *indexBuffer = nullptr)
    {
       Parent::set( theDevice, vertexCount, getGFXVertexFormat<T>(), sizeof(T), type, vertexBuffer, indexCount, indexBuffer );
    }
@@ -177,7 +178,7 @@ public:
                                         ///< will range check the array access as well as validate the locked vertex buffer pointer.
    {
       index += getPointer()->mVolatileStart;
-      AssertFatal(getPointer()->lockedVertexPtr != NULL, "Cannot access verts from an unlocked vertex buffer!!!");
+      AssertFatal(getPointer()->lockedVertexPtr != nullptr, "Cannot access verts from an unlocked vertex buffer!!!");
       AssertFatal(index >= getPointer()->lockedVertexStart && index < getPointer()->lockedVertexEnd, "Out of range vertex access!");
       index -= getPointer()->mVolatileStart;
       return ((T*)getPointer()->lockedVertexPtr)[index];
@@ -187,7 +188,7 @@ public:
                             ///< will range check the array access as well as validate the locked vertex buffer pointer.
    {
       index += getPointer()->mVolatileStart;
-      AssertFatal(getPointer()->lockedVertexPtr != NULL, "Cannot access verts from an unlocked vertex buffer!!!");
+      AssertFatal(getPointer()->lockedVertexPtr != nullptr, "Cannot access verts from an unlocked vertex buffer!!!");
       AssertFatal(index >= getPointer()->lockedVertexStart && index < getPointer()->lockedVertexEnd, "Out of range vertex access!");
       index -= getPointer()->mVolatileStart;
       return ((T*)getPointer()->lockedVertexPtr)[index];
@@ -197,7 +198,7 @@ public:
                                         ///< will range check the array access as well as validate the locked vertex buffer pointer.
    {
       index += getPointer()->mVolatileStart;
-      AssertFatal(getPointer()->lockedVertexPtr != NULL, "Cannot access verts from an unlocked vertex buffer!!!");
+      AssertFatal(getPointer()->lockedVertexPtr != nullptr, "Cannot access verts from an unlocked vertex buffer!!!");
       AssertFatal(index >= getPointer()->lockedVertexStart && index < getPointer()->lockedVertexEnd, "Out of range vertex access!");
       index -= getPointer()->mVolatileStart;
       return ((T*)getPointer()->lockedVertexPtr)[index];
@@ -233,9 +234,9 @@ public:
                const GFXVertexFormat *vertexFormat, 
                U32 numVerts, 
                GFXBufferType type,
-               void *vertexData = NULL,
+               void *vertexData = nullptr,
                U32 indexCount = 0,
-               void *indexData = NULL)
+               void *indexData = nullptr)
    {
       Parent::set( theDevice, numVerts, vertexFormat, vertSize, type, vertexData, indexCount, indexData );
    }

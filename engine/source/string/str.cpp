@@ -343,7 +343,7 @@ String operator+(const StringChar *a, const String &b)
 bool String::operator==(const String &str) const
 {
     if (isInterned() && str.isInterned())
-        return (_intern == _intern);
+        return (_intern == str._intern);
 
     return _string == str._string;
 }

@@ -1334,7 +1334,7 @@ ConsoleMethodWithDocs(SceneWindow, getWorldPoint, ConsoleString, 3, 4, (X / Y))
    else
    {
       Con::warnf("SceneWindow::getWorldPoint() - Invalid number of parameters!");
-      return StringTable->EmptyString;
+      return nullptr;
    }
    
    // Destination Point.
