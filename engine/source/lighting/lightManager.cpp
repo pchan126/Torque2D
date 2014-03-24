@@ -96,7 +96,7 @@ LightManagerMap& LightManager::_getLightManagers()
 
 LightInfo* LightManager::createLightInfo(LightInfo* light /* = NULL */)
 {
-   LightInfo *outLight = (light != NULL) ? light : new LightInfo;
+   LightInfo *outLight = (light != nullptr) ? light : new LightInfo;
 
    LightManagerMap &lightManagers = _getLightManagers();
    for ( LightManagerMap::pair iter:lightManagers )
@@ -134,7 +134,7 @@ void LightManager::registerGlobalLights( typeWorldQueryResultVector queryVector 
     }
 }
 
-void LightManager::registerGlobalLight( LightInfo *light, SimObject *obj )
+void LightManager::registerGlobalLight( std::shared_ptr<LightInfo> light, SimObject *obj )
 {
    AssertFatal( !mRegisteredLights.contains( light ), 
       "LightManager::registerGlobalLight - This light is already registered!" );
@@ -203,7 +203,7 @@ void LightManager::setLightInfo(ProcessedMaterial *pmat,
 }
 
 
-void LightManager::unregisterGlobalLight( LightInfo *light )
+void LightManager::unregisterGlobalLight( std::shared_ptr<LightInfo> light )
 {
    mRegisteredLights.unregisterLight( light );
 
@@ -218,7 +218,7 @@ void LightManager::unregisterAllLights()
    mRegisteredLights.clear();
 }
 
-void LightManager::getAllUnsortedLights( Vector<LightInfo*> *list ) const
+void LightManager::getAllUnsortedLights( Vector<std::shared_ptr<LightInfo>> *list ) const
 {
     list->merge( mRegisteredLights );
 }
@@ -234,7 +234,7 @@ void LightManager::getAllUnsortedLights( Vector<LightInfo*> *list ) const
 //   return (((pLightInfoA->getPosition()-point).lenSquared() - (pLightInfoB->getPosition()-point).lenSquared()));
 //}
 
-bool LightManager::lightDistance(const LightInfo* pLightInfoA, const LightInfo* pLightInfoB)
+bool LightManager::lightDistance(const std::shared_ptr<LightInfo> pLightInfoA, const std::shared_ptr<LightInfo> pLightInfoB)
 {
     // Fetch scene render requests.
     Point3F point = LIGHTMGR->getSortPoint();
@@ -242,7 +242,7 @@ bool LightManager::lightDistance(const LightInfo* pLightInfoA, const LightInfo* 
     return (((pLightInfoA->getPosition()-point).lenSquared() < (pLightInfoB->getPosition()-point).lenSquared()));
 }
 
-void LightManager::getSortedLightsByDistance( Vector<LightInfo*> *list, Point3F point)
+void LightManager::getSortedLightsByDistance( Vector<std::shared_ptr<LightInfo>> *list, Point3F point)
 {
    list->merge(mRegisteredLights);
    // Sort asset definitions.

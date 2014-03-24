@@ -237,7 +237,7 @@ GFXStateBlockRef GFXDevice::createStateBlock(const GFXStateBlockDesc& desc)
 {
    PROFILE_SCOPE( GFXDevice_CreateStateBlock );
 
-   U32 hashValue = desc.getHashValue();
+   size_t hashValue = desc.getHashValue();
    if (mCurrentStateBlocks[hashValue])
       return mCurrentStateBlocks[hashValue];
 
@@ -247,7 +247,7 @@ GFXStateBlockRef GFXDevice::createStateBlock(const GFXStateBlockDesc& desc)
    return result;
 }
 
-void GFXDevice::setStateBlock(GFXStateBlock* block)
+void GFXDevice::setStateBlock(GFXStateBlockRef block)
 {
    AssertFatal(block, "nullptr state block!");
    AssertFatal(block->getOwningDevice() == this, "This state doesn't apply to this device!");
@@ -266,7 +266,7 @@ void GFXDevice::setStateBlock(GFXStateBlock* block)
 void GFXDevice::setStateBlockByDesc( const GFXStateBlockDesc &desc )
 {
    PROFILE_SCOPE( GFXDevice_SetStateBlockByDesc );
-   GFXStateBlock *block = createStateBlock( desc );
+   GFXStateBlockRef block = createStateBlock( desc );
    setStateBlock( block );
 }
 

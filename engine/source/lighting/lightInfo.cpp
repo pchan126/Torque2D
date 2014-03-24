@@ -202,7 +202,7 @@ void LightInfo::getWorldToLightProj( MatrixF *outMatrix ) const
    }
 }
 
-void LightInfoList::registerLight( LightInfo *light )
+void LightInfoList::registerLight( std::shared_ptr<LightInfo> light )
 {
    if(!light)
       return;
@@ -210,19 +210,9 @@ void LightInfoList::registerLight( LightInfo *light )
    push_back(light);
 }
 
-void LightInfoList::unregisterLight( LightInfo *light )
+void LightInfoList::unregisterLight( std::shared_ptr<LightInfo> light )
 {
    // remove all of them...
    LightInfoList &list = *this;
-   for(U32 i=0; i<list.size(); i++)
-   {
-      if(list[i] != light)
-         continue;
-
-      // this moves last to i, which allows
-      // the search to continue forward...
-      list.erase(i);
-      // want to check this location again...
-      i--;
-   }
+   list.remove(light);
 }

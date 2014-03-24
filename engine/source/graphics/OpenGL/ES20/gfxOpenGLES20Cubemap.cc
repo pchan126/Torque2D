@@ -46,7 +46,7 @@ void GFXOpenGLES20Cubemap::initDynamic(U32 texSize, GFXFormat faceFormat)
    for(U32 i = 0; i < 6; i++)
    {
       glTexImage2D(  faceList[i], 0, GFXGLTextureInternalFormat[faceFormat], texSize, texSize, 
-                     0, GFXGLTextureFormat[faceFormat], GFXGLTextureType[faceFormat], NULL);
+                     0, GFXGLTextureFormat[faceFormat], GFXGLTextureType[faceFormat], nullptr);
    }
    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
@@ -57,13 +57,13 @@ void GFXOpenGLES20Cubemap::bind(U32 textureUnit)
    GFXOpenGLDevice *device = dynamic_cast<GFXOpenGLDevice*>(GFX);
    device->setTextureUnit(textureUnit);
    glBindTexture(GL_TEXTURE_CUBE_MAP, mCubemap);
-   
-   GFXOpenGLStateBlockRef sb = static_cast<GFXOpenGLES20Device*>(GFX)->getCurrentStateBlock();
+
+   GFXStateBlockRef sb = static_cast<GFXOpenGLES20Device*>(GFX)->getCurrentStateBlock();
    AssertFatal(sb, "GFXOpenGLES20Cubemap::bind - No active stateblock!");
    if (!sb)
       return;   
       
-   const GFXSamplerStateDesc& ssd = sb->getDesc().samplers[textureUnit];
+   const GFXSamplerStateDesc& ssd = std::dynamic_pointer_cast<GFXOpenGLStateBlock>(sb)->getDesc().samplers[textureUnit];
    setParameter( GL_TEXTURE_MIN_FILTER, minificationFilter(ssd.minFilter, ssd.mipFilter, 0));   
    setParameter( GL_TEXTURE_MAG_FILTER, GFXGLTextureFilter[ssd.magFilter]);   
    setParameter( GL_TEXTURE_WRAP_S, GFXGLTextureAddress[ssd.addressModeU]);

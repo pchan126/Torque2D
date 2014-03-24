@@ -69,12 +69,13 @@ void GFXOpenGLTextureObject::bind(U32 textureUnit)
    device->setTextureUnit(textureUnit);
    glBindTexture(mBinding, mHandle);
 
-   GFXOpenGLStateBlockRef sb = device->getCurrentStateBlock();
+    GFXStateBlockRef sb =device->getCurrentStateBlock();
+//   GFXOpenGLStateBlock* sb = dynamic_cast<GFXOpenGLStateBlock*>(device->getCurrentStateBlock().get());
    AssertFatal(sb, "GFXOpenGLTextureObject::bind - No active stateblock!");
    if (!sb)
       return;
 
-   const GFXSamplerStateDesc ssd = sb->getDesc().samplers[textureUnit];
+   const GFXSamplerStateDesc ssd = std::dynamic_pointer_cast<GFXOpenGLStateBlock>(sb)->getDesc().samplers[textureUnit];
    setParameter( GL_TEXTURE_MIN_FILTER, minificationFilter(ssd.minFilter, ssd.mipFilter, mMipLevels));
    setParameter( GL_TEXTURE_MAG_FILTER, GFXGLTextureFilter[ssd.magFilter]);
 

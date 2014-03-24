@@ -39,6 +39,12 @@ BatchRender::BatchRender() :
     mBlendColor( ColorF(1.0f,1.0f,1.0f,1.0f) ),
     mBatchEnabled( true )
 {
+   mBatchDesc.setCullMode(GFXCullNone);
+   mBatchDesc.zEnable = false;
+   
+   mWireframeBatchDesc.setCullMode(GFXCullNone);
+   mWireframeBatchDesc.zEnable = false;
+   mWireframeBatchDesc.fillMode = GFXFillWireframe;
 }
 
 //-----------------------------------------------------------------------------
@@ -605,13 +611,9 @@ void BatchRender::flushInternal( void )
     // Stats.
     mpDebugStats->batchFlushes++;
 
-    GFXStateBlockDesc desc;
-    desc.setCullMode(GFXCullNone);
-    desc.zEnable = false;
-
     if ( mWireframeMode )
     {
-        desc.setFillModeWireframe();
+//        mBatchDesc.setFillModeWireframe();
     }
     else
     {
@@ -621,16 +623,16 @@ void BatchRender::flushInternal( void )
     // Set blend mode.
     if ( mBlendMode )
     {
-        desc.setBlend(true, mSrcBlendFactor, mDstBlendFactor, GFXBlendOpAdd);
+        mBatchDesc.setBlend(true, mSrcBlendFactor, mDstBlendFactor, GFXBlendOpAdd);
     }
 
     // Set alpha-blend mode.
     if ( mAlphaTestMode >= 0.0f )
     {
-        desc.setAlphaTest(true, GFXCmpGreaterEqual, mAlphaTestMode*255.0);
+        mBatchDesc.setAlphaTest(true, GFXCmpGreaterEqual, mAlphaTestMode*255.0);
     }
 
-    GFX->setStateBlockByDesc( desc );
+    GFX->setStateBlockByDesc( mBatchDesc );
 
     // Strict order mode?
     if ( mStrictOrderMode )

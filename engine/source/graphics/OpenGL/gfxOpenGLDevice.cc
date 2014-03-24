@@ -493,7 +493,7 @@ inline void GFXOpenGLDevice::multWorld( const MatrixF &mat )
 /// represents an immutable state.
 GFXStateBlockRef GFXOpenGLDevice::createStateBlockInternal(const GFXStateBlockDesc& desc)
 {
-    GFXOpenGLStateBlockRef ret = new GFXOpenGLStateBlock(desc);
+    GFXOpenGLStateBlockRef ret(new GFXOpenGLStateBlock(desc));
     ret->setView(getMatrix(GFXMatrixView));
     ret->setModel(getMatrix(GFXMatrixWorld));
     ret->setProjection(getMatrix(GFXMatrixProjection));
@@ -501,13 +501,13 @@ GFXStateBlockRef GFXOpenGLDevice::createStateBlockInternal(const GFXStateBlockDe
 }
 
 /// Activates a stateblock
-void GFXOpenGLDevice::setStateBlockInternal(GFXStateBlock* block, bool force)
+void GFXOpenGLDevice::setStateBlockInternal(GFXStateBlockRef block, bool force)
 {
-    AssertFatal(dynamic_cast<GFXOpenGLStateBlock*>(block), "GFXOpenGLDevice::setStateBlockInternal - Incorrect stateblock type for this device!");
-    GFXOpenGLStateBlock* glBlock = static_cast<GFXOpenGLStateBlock*>(block);
-    GFXOpenGLStateBlock* glCurrent = static_cast<GFXOpenGLStateBlock*>(mCurrentStateBlock.getPointer());
+    AssertFatal(dynamic_cast<GFXOpenGLStateBlock*>(block.get()), "GFXOpenGLDevice::setStateBlockInternal - Incorrect stateblock type for this device!");
+    GFXOpenGLStateBlock* glBlock = static_cast<GFXOpenGLStateBlock*>(block.get());
+    GFXOpenGLStateBlock* glCurrent = static_cast<GFXOpenGLStateBlock*>(mCurrentStateBlock.get());
     if (force)
-        glCurrent = NULL;
+        glCurrent = nullptr;
 
     const GFXStateBlockDesc& desc = glBlock->getDesc();
 
@@ -547,7 +547,7 @@ void GFXOpenGLDevice::setStateBlockInternal(GFXStateBlock* block, bool force)
 
     setFillMode(desc.fillMode);
 
-    mCurrentGLStateBlock = glBlock;
+    mCurrentGLStateBlock = block;
 }
 
 void GFXOpenGLDevice::setShaderConstBufferInternal(GFXShaderConstBuffer* buffer)

@@ -57,8 +57,8 @@ void GFXOpenGLES30Cubemap::bind(U32 textureUnit)
    GFXOpenGLDevice *device = dynamic_cast<GFXOpenGLDevice*>(GFX);
    device->setTextureUnit(textureUnit);
    glBindTexture(GL_TEXTURE_CUBE_MAP, mCubemap);
-   
-   GFXOpenGLStateBlockRef sb = static_cast<GFXOpenGLES30Device*>(GFX)->getCurrentStateBlock();
+
+   GFXStateBlock* sb = static_cast<GFXOpenGLES30Device*>(GFX)->getCurrentStateBlock().get();
    AssertFatal(sb, "GFXOpenGLES30Cubemap::bind - No active stateblock!");
    if (!sb)
       return;   

@@ -58,7 +58,7 @@ void LightQuery::init( const Box3F &bounds )
    mLights.clear();
 }
 
-U32 LightQuery::getLights( LightInfo** outLights, U32 maxLights )
+U32 LightQuery::getLights( std::shared_ptr<LightInfo>* outLights, U32 maxLights )
 {
    PROFILE_SCOPE( LightQuery_getLights );
 
@@ -72,7 +72,7 @@ U32 LightQuery::getLights( LightInfo** outLights, U32 maxLights )
    U32 i = 0;
    while (  i < lightCount )
    {
-      LightInfo *light = mLights[i];
+      std::shared_ptr<LightInfo> light = mLights[i];
 
       // If the score reaches zero then we got to
       // the end of the valid lights for this object.
@@ -99,11 +99,11 @@ void LightQuery::_scoreLights()
    const Point3F lumDot( 0.2125f, 0.7154f, 0.0721f );
 
    int i = 0;
-   Vector<LightInfo*>::iterator iter = mLights.begin();
+   Vector<std::shared_ptr<LightInfo>>::iterator iter = mLights.begin();
    for ( ; iter != mLights.end(); iter++ )
    {
       // Get the light.
-      LightInfo *light = (*iter);
+      std::shared_ptr<LightInfo> light = (*iter);
 
       F32 luminace = 0.0f;
       F32 factor = 0.0f;
@@ -176,7 +176,7 @@ void LightQuery::_scoreLights()
 //   return diff < 0 ? 1 : diff > 0 ? -1 : 0;
 //}
 
-bool LightQuery::_lightScoreCmp( LightInfo* a, LightInfo* b)
+bool LightQuery::_lightScoreCmp( std::shared_ptr<LightInfo> a, std::shared_ptr<LightInfo> b)
 {
     F32 diff = a->getScore() - b->getScore();
     return diff < 0 ? false : diff > 0 ? true : false;

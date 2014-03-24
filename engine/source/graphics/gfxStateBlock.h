@@ -205,7 +205,7 @@ public:
    virtual ~GFXStateBlock() { }
 
    /// Returns the hash value of the desc that created this block
-   virtual U32 getHashValue() const = 0;
+   virtual size_t getHashValue() const = 0;
 
    /// Returns a GFXStateBlockDesc that this block represents
    virtual const GFXStateBlockDesc& getDesc() const = 0;
@@ -214,6 +214,6 @@ public:
    virtual const String describeSelf() const;
 };
 
-typedef StrongRefPtr<GFXStateBlock> GFXStateBlockRef;
+typedef std::shared_ptr<GFXStateBlock> GFXStateBlockRef;
 
 #endif 

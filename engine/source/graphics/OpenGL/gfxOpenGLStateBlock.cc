@@ -44,7 +44,7 @@ GFXOpenGLStateBlock::~GFXOpenGLStateBlock()
 }
 
 /// Returns the hash value of the desc that created this block
-U32 GFXOpenGLStateBlock::getHashValue() const
+size_t GFXOpenGLStateBlock::getHashValue() const
 {
    return mCachedHashValue;
 }

@@ -51,7 +51,7 @@ struct tDestroyNotification
 
 //-----------------------------------------------------------------------------
 
-typedef Vector<b2FixtureDef*> typeCollisionFixtureDefVector;
+typedef Vector<std::shared_ptr<b2FixtureDef>> typeCollisionFixtureDefVector;
 typedef Vector<b2Fixture*> typeCollisionFixtureVector;
 typedef Vector<tDestroyNotification> typeDestroyNotificationVector;
 
@@ -173,7 +173,7 @@ protected:
     S32         mLightTime;
     F32         mLightRadius;
     F32         mLightFade;
-    LightInfo*  mLight;
+   std::shared_ptr<LightInfo>  mLight;
 
     /// Input events.
     bool                    mUseInputEvents;

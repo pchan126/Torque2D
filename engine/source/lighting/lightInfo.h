@@ -237,11 +237,11 @@ public:
 
 
 ///
-class LightInfoList : public Vector<LightInfo*>
+class LightInfoList : public Vector<std::shared_ptr<LightInfo>>
 {
 public:
-   void registerLight( LightInfo *light );
-   void unregisterLight( LightInfo *light );
+   void registerLight( std::shared_ptr<LightInfo> light );
+   void unregisterLight( std::shared_ptr<LightInfo> light );
 };
 
 

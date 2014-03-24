@@ -168,7 +168,7 @@ b2Fixture* b2Body::CreateFixture(const b2FixtureDef* def)
 	b2Assert(m_world->IsLocked() == false);
 	if (m_world->IsLocked() == true)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	b2BlockAllocator* allocator = &m_world->m_blockAllocator;

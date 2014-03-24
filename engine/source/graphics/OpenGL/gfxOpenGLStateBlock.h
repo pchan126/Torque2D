@@ -40,7 +40,7 @@ public:
    //
 
    /// Returns the hash value of the desc that created this block
-   virtual U32 getHashValue() const;
+   virtual size_t getHashValue() const;
 
    /// Returns a GFXStateBlockDesc that this block represents
    virtual const GFXStateBlockDesc& getDesc() const;   
@@ -67,11 +67,12 @@ public:
 
 private:
    GFXStateBlockDesc mDesc;
-   U32 mCachedHashValue;
+   size_t mCachedHashValue;
     MatrixF m_ModelMatrix, m_ViewMatrix, m_ProjectionMatrix, m_MVMatrix, m_MVPMatrix;
     
 };
 
-typedef StrongRefPtr<GFXOpenGLStateBlock> GFXOpenGLStateBlockRef;
+//typedef StrongRefPtr<GFXOpenGLStateBlock> GFXOpenGLStateBlockRef;
+typedef std::shared_ptr<GFXOpenGLStateBlock> GFXOpenGLStateBlockRef;
 
 #endif

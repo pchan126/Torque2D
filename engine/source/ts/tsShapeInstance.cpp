@@ -330,7 +330,7 @@ void TSShapeInstance::renderDebugNormals( F32 normalScalar, S32 dl )
       "TSShapeInstance::renderDebugNormals() - Bad detail level!" );
 
    static GFXStateBlockRef sb;
-   if ( sb.isNull() )
+   if ( sb == nullptr )
    {
       GFXStateBlockDesc desc;
       desc.setCullMode( GFXCullNone );

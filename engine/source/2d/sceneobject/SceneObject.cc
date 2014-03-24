@@ -366,10 +366,10 @@ void SceneObject::OnRegisterScene( t2dScene * pScene )
     if ( !isEnabled() ) mpBody->SetActive( false );
 
     // Create fixtures.
-    for( b2FixtureDef* pFixtureDef:mCollisionFixtureDefs )
+    for( auto pFixtureDef:mCollisionFixtureDefs )
     {
         // Create fixture.
-        b2Fixture* pFixture = mpBody->CreateFixture( pFixtureDef );
+        b2Fixture* pFixture = mpBody->CreateFixture( pFixtureDef.get() );
 
         // Push fixture.
         mCollisionFixtures.push_back( pFixture );
@@ -377,8 +377,8 @@ void SceneObject::OnRegisterScene( t2dScene * pScene )
         // Destroy fixture shape.
         delete pFixtureDef->shape;
 
-        // Destroy fixture definition.
-        delete pFixtureDef;          
+//        // Destroy fixture definition.
+//        delete pFixtureDef;
     }
 
     // Clear offline fixture definitions.
@@ -412,7 +412,7 @@ void SceneObject::OnUnregisterScene( t2dScene * pScene )
     for( b2Fixture* pFixture:mCollisionFixtures )
     {
         // Create fixture definition.
-        b2FixtureDef* pFixtureDef = new b2FixtureDef();
+       std::shared_ptr<b2FixtureDef> pFixtureDef(new b2FixtureDef());
         pFixtureDef->density      = pFixture->GetDensity();
         pFixtureDef->friction     = pFixture->GetFriction();
         pFixtureDef->restitution  = pFixture->GetRestitution();
@@ -2047,7 +2047,7 @@ S32 SceneObject::createCircleCollisionShape( const F32 radius, const b2Vec2& loc
     }
 
     // Configure fixture definition.
-    b2FixtureDef* pFixtureDef = new b2FixtureDef( mDefaultFixture );
+    std::shared_ptr<b2FixtureDef> pFixtureDef (new b2FixtureDef( mDefaultFixture ));
     b2CircleShape* pShape = new b2CircleShape();
     pShape->m_p = localPosition;
     pShape->m_radius = radius;
@@ -2056,11 +2056,11 @@ S32 SceneObject::createCircleCollisionShape( const F32 radius, const b2Vec2& loc
     if ( mpScene )
     {
         // Create and push fixture.
-        mCollisionFixtures.push_back( mpBody->CreateFixture( pFixtureDef ) );
+        mCollisionFixtures.push_back( mpBody->CreateFixture( pFixtureDef.get() ) );
 
         // Destroy shape and fixture.
         delete pShape;
-        delete pFixtureDef;
+//        delete pFixtureDef;
 
         return (S32)mCollisionFixtures.size()-1;
     }
@@ -2106,7 +2106,7 @@ S32 SceneObject::createPolygonCollisionShape( const U32 pointCount, const b2Vec2
     }
 
     // Configure fixture definition.
-    b2FixtureDef* pFixtureDef = new b2FixtureDef( mDefaultFixture );
+   std::shared_ptr<b2FixtureDef> pFixtureDef (new b2FixtureDef( mDefaultFixture ));
     b2PolygonShape* pShape    = new b2PolygonShape();
     pShape->Set( localPoints, pointCount );
     pFixtureDef->shape = pShape;
@@ -2114,11 +2114,11 @@ S32 SceneObject::createPolygonCollisionShape( const U32 pointCount, const b2Vec2
     if ( mpScene )
     {
         // Create and push fixture.
-        mCollisionFixtures.push_back( mpBody->CreateFixture( pFixtureDef ) );
+        mCollisionFixtures.push_back( mpBody->CreateFixture( pFixtureDef.get() ) );
 
         // Destroy shape and fixture.
         delete pShape;
-        delete pFixtureDef;
+//        delete pFixtureDef;
 
         return (S32)mCollisionFixtures.size()-1;
     }
@@ -2149,7 +2149,7 @@ S32 SceneObject::createPolygonBoxCollisionShape( const F32 width, const F32 heig
     }
 
     // Configure fixture definition.
-    b2FixtureDef* pFixtureDef = new b2FixtureDef( mDefaultFixture );
+   std::shared_ptr<b2FixtureDef> pFixtureDef ( new b2FixtureDef( mDefaultFixture ));
     b2PolygonShape* pShape    = new b2PolygonShape();
     pShape->SetAsBox( width * 0.5f, height * 0.5f );
     pFixtureDef->shape = pShape;
@@ -2157,11 +2157,11 @@ S32 SceneObject::createPolygonBoxCollisionShape( const F32 width, const F32 heig
     if ( mpScene )
     {
         // Create and push fixture.
-        mCollisionFixtures.push_back( mpBody->CreateFixture( pFixtureDef ) );
+        mCollisionFixtures.push_back( mpBody->CreateFixture( pFixtureDef.get() ) );
 
         // Destroy shape and fixture.
         delete pShape;
-        delete pFixtureDef;
+//        delete pFixtureDef;
 
         return (S32)mCollisionFixtures.size()-1;
     }
@@ -2192,7 +2192,7 @@ S32 SceneObject::createPolygonBoxCollisionShape( const F32 width, const F32 heig
     }
 
     // Configure fixture definition.
-    b2FixtureDef* pFixtureDef = new b2FixtureDef( mDefaultFixture );
+   std::shared_ptr<b2FixtureDef> pFixtureDef (new b2FixtureDef( mDefaultFixture ));
     b2PolygonShape* pShape    = new b2PolygonShape();
     pShape->SetAsBox( width * 0.5f, height * 0.5f, localCentroid, 0.0f );
     pFixtureDef->shape = pShape;
@@ -2200,11 +2200,11 @@ S32 SceneObject::createPolygonBoxCollisionShape( const F32 width, const F32 heig
     if ( mpScene )
     {
         // Create and push fixture.
-        mCollisionFixtures.push_back( mpBody->CreateFixture( pFixtureDef ) );
+        mCollisionFixtures.push_back( mpBody->CreateFixture( pFixtureDef.get() ) );
 
         // Destroy shape and fixture.
         delete pShape;
-        delete pFixtureDef;
+//        delete pFixtureDef;
 
         return (S32)mCollisionFixtures.size()-1;
     }
@@ -2235,7 +2235,7 @@ S32 SceneObject::createPolygonBoxCollisionShape( const F32 width, const F32 heig
     }
 
     // Configure fixture definition.
-    b2FixtureDef* pFixtureDef = new b2FixtureDef( mDefaultFixture );
+   std::shared_ptr<b2FixtureDef> pFixtureDef ( new b2FixtureDef( mDefaultFixture ) );
     b2PolygonShape* pShape    = new b2PolygonShape();
     pShape->SetAsBox( width * 0.5f, height * 0.5f, localCentroid, rotation );
     pFixtureDef->shape = pShape;
@@ -2243,11 +2243,11 @@ S32 SceneObject::createPolygonBoxCollisionShape( const F32 width, const F32 heig
     if ( mpScene )
     {
         // Create and push fixture.
-        mCollisionFixtures.push_back( mpBody->CreateFixture( pFixtureDef ) );
+        mCollisionFixtures.push_back( mpBody->CreateFixture( pFixtureDef.get() ) );
 
         // Destroy shape and fixture.
         delete pShape;
-        delete pFixtureDef;
+//        delete pFixtureDef;
 
         return (S32)mCollisionFixtures.size()-1;
     }
@@ -2296,7 +2296,7 @@ S32 SceneObject::createChainCollisionShape( const size_t pointCount, const b2Vec
     }
 
     // Configure fixture definition.
-    b2FixtureDef* pFixtureDef = new b2FixtureDef( mDefaultFixture );
+   std::shared_ptr<b2FixtureDef> pFixtureDef ( new b2FixtureDef( mDefaultFixture ));
     b2ChainShape* pShape      = new b2ChainShape();
     pShape->CreateChain( localPoints, (int32)pointCount );
     pFixtureDef->shape = pShape;
@@ -2304,11 +2304,11 @@ S32 SceneObject::createChainCollisionShape( const size_t pointCount, const b2Vec
     if ( mpScene )
     {
         // Create and push fixture.
-        mCollisionFixtures.push_back( mpBody->CreateFixture( pFixtureDef ) );
+        mCollisionFixtures.push_back( mpBody->CreateFixture( pFixtureDef.get() ) );
 
         // Destroy shape and fixture.
         delete pShape;
-        delete pFixtureDef;
+//        delete pFixtureDef;
 
         return (S32)mCollisionFixtures.size()-1;
     }
@@ -2336,7 +2336,7 @@ S32 SceneObject::createChainCollisionShape(  const size_t pointCount, const b2Ve
     }
 
     // Configure fixture definition.
-    b2FixtureDef* pFixtureDef = new b2FixtureDef( mDefaultFixture );
+   std::shared_ptr<b2FixtureDef> pFixtureDef ( new b2FixtureDef( mDefaultFixture ));
     b2ChainShape* pShape      = new b2ChainShape();
     pShape->CreateChain( localPoints, (int32)pointCount );
     
@@ -2351,11 +2351,11 @@ S32 SceneObject::createChainCollisionShape(  const size_t pointCount, const b2Ve
     if ( mpScene )
     {
         // Create and push fixture.
-        mCollisionFixtures.push_back( mpBody->CreateFixture( pFixtureDef ) );
+        mCollisionFixtures.push_back( mpBody->CreateFixture( pFixtureDef.get() ) );
 
         // Destroy shape and fixture.
         delete pShape;
-        delete pFixtureDef;
+//        delete pFixtureDef;
 
         return (S32)mCollisionFixtures.size()-1;
     }
@@ -2437,7 +2437,7 @@ S32 SceneObject::createEdgeCollisionShape( const b2Vec2& localPositionStart, con
     PROFILE_SCOPE(SceneObject_CreateEdgeCollisionShape);
 
     // Configure fixture definition.
-    b2FixtureDef* pFixtureDef = new b2FixtureDef( mDefaultFixture );
+   std::shared_ptr<b2FixtureDef> pFixtureDef ( new b2FixtureDef( mDefaultFixture ));
     b2EdgeShape* pShape       = new b2EdgeShape();
     pShape->Set( localPositionStart, localPositionEnd );
     pFixtureDef->shape = pShape;
@@ -2445,11 +2445,11 @@ S32 SceneObject::createEdgeCollisionShape( const b2Vec2& localPositionStart, con
     if ( mpScene )
     {
         // Create and push fixture.
-        mCollisionFixtures.push_back( mpBody->CreateFixture( pFixtureDef ) );
+        mCollisionFixtures.push_back( mpBody->CreateFixture( pFixtureDef.get() ) );
 
         // Destroy shape and fixture.
         delete pShape;
-        delete pFixtureDef;
+//        delete pFixtureDef;
 
         return (S32)mCollisionFixtures.size()-1;
     }
@@ -2470,7 +2470,7 @@ size_t SceneObject::createEdgeCollisionShape(   const b2Vec2& localPositionStart
     PROFILE_SCOPE(SceneObject_CreateEdgeCollisionShapeAdjacents);
 
     // Configure fixture definition.
-    b2FixtureDef* pFixtureDef = new b2FixtureDef( mDefaultFixture );
+   std::shared_ptr<b2FixtureDef> pFixtureDef ( new b2FixtureDef( mDefaultFixture ));
     b2EdgeShape* pShape       = new b2EdgeShape();
     pShape->Set( localPositionStart, localPositionEnd );
     pShape->m_hasVertex0      = hasAdjacentLocalPositionStart;
@@ -2482,11 +2482,11 @@ size_t SceneObject::createEdgeCollisionShape(   const b2Vec2& localPositionStart
     if ( mpScene )
     {
         // Create and push fixture.
-        mCollisionFixtures.push_back( mpBody->CreateFixture( pFixtureDef ) );
+        mCollisionFixtures.push_back( mpBody->CreateFixture( pFixtureDef.get() ) );
 
         // Destroy shape and fixture.
         delete pShape;
-        delete pFixtureDef;
+//        delete pFixtureDef;
 
         return mCollisionFixtures.size()-1;
     }
@@ -2853,7 +2853,7 @@ size_t SceneObject::copyCollisionShapes( SceneObject* pSceneObject, const bool c
         else
         {
             // Fetch fixture def.
-            b2FixtureDef* pFixtureDef = mCollisionFixtureDefs[index];
+           std::shared_ptr<b2FixtureDef> pFixtureDef = mCollisionFixtureDefs[index];
 
             // Fetch common details.
             fixtureDef = *pFixtureDef;
@@ -3094,9 +3094,9 @@ void SceneObject::submitLights(LightManager * lightManager, bool staticLighting)
     }
     
     // Create a light if needed
-    if (!mLight)
+    if (mLight == nullptr)
     {
-        mLight = lightManager->createLightInfo();
+       mLight = std::shared_ptr<LightInfo>(lightManager->createLightInfo());
     }
     mLight->setColor( mLightColor * intensity );
     mLight->setType( LightInfo::Point );

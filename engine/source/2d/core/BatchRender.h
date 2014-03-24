@@ -132,6 +132,13 @@ private:
 
     GFXShaderRef            mShader;
     GFXShaderConstBufferRef mShaderConstBuffer;
+   
+    GFXStateBlockDesc  mBatchDesc;
+    GFXStateBlockDesc  mWireframeBatchDesc;
+   
+    GFXStateBlockRef   mpBatchSB;
+    GFXStateBlockRef   mpWireframeBatchSB;
+   
 public:
     BatchRender();
     virtual ~BatchRender();

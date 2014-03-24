@@ -259,11 +259,11 @@ void setStatusBarType(S32 type)
          setStatusBarHidden(true);
          break;
       case 1: //Black Opaque
-         [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackOpaque;
+         [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
          setStatusBarHidden(false);
          break;
       case 2: //Black Transparent
-          [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
+          [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
          setStatusBarHidden(false);
          break;
       default:

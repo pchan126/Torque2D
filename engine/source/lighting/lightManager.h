@@ -59,7 +59,7 @@ public:
    static void initLightFields();
 
    /// 
-   static LightInfo* createLightInfo(LightInfo* light = NULL);
+   static LightInfo* createLightInfo(LightInfo* light = nullptr);
 
 //   ///
 //   static LightManager* findByName( const char *name );
@@ -111,8 +111,8 @@ public:
 //   GFXShaderRef mLastShader;
 
    // registered before scene traversal...
-   virtual void registerGlobalLight( LightInfo *light, SimObject *obj );
-   virtual void unregisterGlobalLight( LightInfo *light );
+   virtual void registerGlobalLight( std::shared_ptr<LightInfo> light, SimObject *obj );
+   virtual void unregisterGlobalLight( std::shared_ptr<LightInfo> light );
 
 //   // registered per object...
 //   virtual void registerLocalLight( LightInfo *light );
@@ -122,9 +122,9 @@ public:
    virtual void unregisterAllLights();
 
    /// Returns all unsorted and un-scored lights (both global and local).
-   void getAllUnsortedLights( Vector<LightInfo*> *list ) const;
+   void getAllUnsortedLights( Vector<std::shared_ptr<LightInfo>> *list ) const;
 
-   void getSortedLightsByDistance( Vector<LightInfo*> *list, Point3F);
+   void getSortedLightsByDistance( Vector<std::shared_ptr<LightInfo>> *list, Point3F);
 
    /// Sets shader constants / textures for light infos
    virtual void setLightInfo(ProcessedMaterial *pmat,
@@ -210,7 +210,7 @@ protected:
 
    Point3F sortPoint;
 //   static S32 QSORT_CALLBACK lightDistance(const void* a, const void* b);
-    static bool lightDistance(const LightInfo* pLightInfoA, const LightInfo* pLightInfoB);
+    static bool lightDistance(const std::shared_ptr<LightInfo> pLightInfoA, const std::shared_ptr<LightInfo> pLightInfoB);
 };
 
 /// Returns the current active light manager.

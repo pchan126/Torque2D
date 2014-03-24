@@ -60,20 +60,20 @@ public:
    void init( const Box3F &bounds );
 
    /// This returns the best lights based on the query volume.
-   U32 getLights( LightInfo** outLights, U32 maxLights );
+   U32 getLights( std::shared_ptr<LightInfo>* outLights, U32 maxLights );
 
 protected:
 
    void _scoreLights();
 
 //   static S32 _lightScoreCmp( LightInfo* const *a, LightInfo* const *b );
-    static bool _lightScoreCmp( LightInfo* a, LightInfo* b);
+    static bool _lightScoreCmp( std::shared_ptr<LightInfo> a, std::shared_ptr<LightInfo> b);
 
    /// The maximum lights to return from the query.
    const U32 mMaxLights;
 
    /// The sorted list of best lights.
-	Vector<LightInfo*> mLights;
+	Vector<std::shared_ptr<LightInfo>> mLights;
 
    /// The sphere used to query for lights.
    SphereF mVolume;

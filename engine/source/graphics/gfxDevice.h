@@ -370,7 +370,7 @@ protected:
    bool           mTexturesDirty;
 
    // This maps a GFXStateBlockDesc hash value to a GFXStateBlockRef
-   typedef HashMap<U32, GFXStateBlockRef> StateBlockMap;
+   typedef HashMap<size_t, GFXStateBlockRef> StateBlockMap;
    StateBlockMap mCurrentStateBlocks;
 
    // This tracks whether or not our state block is dirty.
@@ -438,7 +438,7 @@ protected:
    virtual GFXStateBlockRef createStateBlockInternal(const GFXStateBlockDesc& desc) = 0;
    /// Called by GFXDevice to actually set a stateblock.
    /// @param force If true, set all states 
-   virtual void setStateBlockInternal(GFXStateBlock* block, bool force) = 0;
+   virtual void setStateBlockInternal(GFXStateBlockRef block, bool force) = 0;
    /// @}
 
 //   /// Called by base GFXDevice to actually set a const buffer
@@ -754,7 +754,7 @@ public:
    virtual GFXStateBlockRef createStateBlock( const GFXStateBlockDesc &desc );
 
    /// Sets the current stateblock (actually activated in ::updateStates)
-   virtual void setStateBlock( GFXStateBlock *block );
+   virtual void setStateBlock( GFXStateBlockRef block );
 
    /// This sets a stateblock directly from the description
    /// structure.  Its acceptable to use this for debug rendering

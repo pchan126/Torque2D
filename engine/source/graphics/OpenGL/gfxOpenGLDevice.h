@@ -124,7 +124,7 @@ public:
     virtual F32 getPixelShaderVersion() const { return mPixelShaderVersion; }
     virtual void  setPixelShaderVersion( F32 version ) { mPixelShaderVersion = version; }
     
-    virtual const GFXOpenGLStateBlockRef getCurrentStateBlock() { return mCurrentGLStateBlock;};
+    virtual const GFXStateBlockRef getCurrentStateBlock() { return mCurrentGLStateBlock;};
 
     virtual void updateStates(bool forceSetAll = false);
 
@@ -142,7 +142,7 @@ protected:
     /// Called by GFXDevice to create a device specific stateblock
    virtual GFXStateBlockRef createStateBlockInternal(const GFXStateBlockDesc& desc);
    /// Called by GFXDevice to actually set a stateblock.
-   virtual void setStateBlockInternal(GFXStateBlock* block, bool force);
+   virtual void setStateBlockInternal(GFXStateBlockRef block, bool force);
 
     virtual void setCullMode( GFXCullMode );
     virtual void setBlending( bool DoesItBlend );
@@ -267,7 +267,7 @@ protected:
     U32 mMaxFFTextures;
     RectI mClip;
 
-   GFXOpenGLStateBlockRef mCurrentGLStateBlock;
+    GFXStateBlockRef mCurrentGLStateBlock;
    
    GLenum mActiveTextureType[TEXTURE_STAGE_COUNT];
    
