@@ -322,7 +322,7 @@ void GuiColorPickerCtrl::renderColorBox(RectI &bounds)
 
 void GuiColorPickerCtrl::onRender(Point2I offset, const RectI& updateRect)
 {
-    if (mStateBlock.isNull())
+    if (mStateBlock == nullptr)
     {
         GFXStateBlockDesc desc;
         desc.setBlend(true, GFXBlendSrcAlpha, GFXBlendInvSrcAlpha);
