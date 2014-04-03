@@ -85,9 +85,9 @@ class AudioEnvironment;
 class AudioSampleEnvironment;
 class AudioStreamSource;
 
-AUDIOHANDLE alxCreateSource(const Audio::Description *desc, const char *filename, const MatrixF *transform=NULL, AudioSampleEnvironment * sampleEnvironment = 0);
-AUDIOHANDLE alxCreateSource(AudioDescription *descObject, const char *filename, const MatrixF *transform=NULL, AudioSampleEnvironment * sampleEnvironment = 0);
-AUDIOHANDLE alxCreateSource(const AudioAsset *profile, const MatrixF *transform=NULL);
+AUDIOHANDLE alxCreateSource(const Audio::Description *desc, const char *filename, const MatrixF *transform=nullptr, AudioSampleEnvironment * sampleEnvironment = nullptr);
+AUDIOHANDLE alxCreateSource(AudioDescription *descObject, const char *filename, const MatrixF *transform=nullptr, AudioSampleEnvironment * sampleEnvironment = nullptr);
+AUDIOHANDLE alxCreateSource(const AudioAsset *profile, const MatrixF *transform=nullptr);
 AudioStreamSource* alxFindAudioStreamSource(AUDIOHANDLE handle);
 
 AUDIOHANDLE alxPlay(AUDIOHANDLE handle);
@@ -99,7 +99,7 @@ void alxStop(AUDIOHANDLE handle);
 void alxStopAll();
 
 // one-shot helper alxPlay functions, create and play in one call
-AUDIOHANDLE alxPlay(const AudioAsset *profile, const MatrixF *transform=NULL, const Point3F *velocity=NULL);
+AUDIOHANDLE alxPlay(const AudioAsset *profile, const MatrixF *transform=nullptr, const Point3F *velocity=nullptr);
 
 // Source
 void alxSourcef(AUDIOHANDLE handle, ALenum pname, ALfloat value);

@@ -72,9 +72,9 @@ public:
    void refresh();
 
    /// Releases the texture handle.
-   void free() { StrongObjectRef::set( NULL ); }
+   void free() { StrongObjectRef::set( nullptr ); }
    
-   GFXLockedRect *lock( U32 mipLevel = 0, RectI *inRect = NULL )
+   GFXLockedRect *lock( U32 mipLevel = 0, RectI *inRect = nullptr )
    {
       return getPointer()->lock(mipLevel, inRect); 
    }
@@ -110,8 +110,8 @@ public:
    operator GFXTextureObject*() const { return getPointer(); }
 
    /// Returns the backing bitmap for this texture.
-   GBitmap* getBitmap() { return getPointer() ? getPointer()->getBitmap() : NULL; }
-   const GBitmap* getBitmap() const { return getPointer() ? getPointer()->getBitmap() : NULL; }
+   GBitmap* getBitmap() { return getPointer() ? getPointer()->getBitmap() : nullptr; }
+   const GBitmap* getBitmap() const { return getPointer() ? getPointer()->getBitmap() : nullptr; }
 
 
    /// Helper 2x2 R8G8B8A8 texture filled with 0.

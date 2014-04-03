@@ -56,14 +56,14 @@ extern ALvoid  alcMacOSXMixerOutputRateProc(const ALdouble value);
 #define FORCED_OUTER_FALLOFF  10000.f           // forced falloff distance
 
 #ifdef TORQUE_OS_OSX
-static ALCdevice *mDevice   = NULL;             // active OpenAL device
-static ALCcontext *mContext = NULL;             // active OpenAL context
+static ALCdevice *mDevice   = nullptr;             // active OpenAL device
+static ALCcontext *mContext = nullptr;             // active OpenAL context
 #elif TORQUE_OS_IOS
-static ALCdevice *mDevice   = NULL;             // active OpenAL device
-static ALCcontext *mContext = NULL;             // active OpenAL context
+static ALCdevice *mDevice   = nullptr;             // active OpenAL device
+static ALCcontext *mContext = nullptr;             // active OpenAL context
 #else
-static ALCvoid *mDevice   = NULL;             // active OpenAL device
-static ALCvoid *mContext = NULL;             // active OpenAL context
+static ALCvoid *mDevice   = nullptr;             // active OpenAL device
+static ALCvoid *mContext = nullptr;             // active OpenAL context
 #endif
 F32 mAudioChannelVolumes[Audio::AudioVolumeChannels];     // the attenuation for each of the channel types
 
@@ -86,7 +86,7 @@ struct LoopingImage
    void clear()
    {
       mHandle           = NULL_AUDIOHANDLE;
-      mBuffer           = NULL;
+      mBuffer           = nullptr;
       dMemset(&mDescription, 0, sizeof(Audio::Description));
       mEnvironment = 0;
       mPosition.set(0.f,0.f,0.f);
@@ -335,7 +335,7 @@ static bool cullSource(U32 *index, F32 volume)
 
    alSourceStop(mSource[best]);
    mHandle[best] = NULL_AUDIOHANDLE;
-   mBuffer[best] = 0;
+   mBuffer[best] = nullptr;
    *index = best;
 
    return(true);
@@ -514,7 +514,7 @@ static void alxSourcePlay(ALuint source, Resource<AudioBuffer> buffer, const Aud
    alSourcei(source, AL_CONE_OUTER_ANGLE, desc.mConeOutsideAngle);
    alSourcef(source, AL_CONE_OUTER_GAIN, desc.mConeOutsideVolume);
 
-   if(transform != NULL)
+   if(transform != nullptr)
    {
 #ifdef REL_WORKAROUND
       alSourcei(source, AL_SOURCE_ABSOLUTE, AL_TRUE);
@@ -564,7 +564,7 @@ static void alxSourcePlay(ALuint source, LoopingImage * image)
    else
    {
       // 2d source
-      alxSourcePlay(source, image->mBuffer, image->mDescription, 0);
+      alxSourcePlay(source, image->mBuffer, image->mDescription, nullptr);
    }
 }
 
@@ -636,7 +636,7 @@ AUDIOHANDLE alxCreateSource(const Audio::Description& desc,
    if (!mContext)
       return NULL_AUDIOHANDLE;
 
-   if( filename == NULL || filename == StringTable->EmptyString )
+   if( filename == nullptr || filename == StringTable->EmptyString )
       return NULL_AUDIOHANDLE;
 
    F32 volume = desc.mVolume;
@@ -727,7 +727,7 @@ AUDIOHANDLE alxCreateSource(const Audio::Description& desc,
          if (streamSource)
          {
             streamSource->mHandle = getNewHandle() | AUDIOHANDLE_STREAMING_BIT | AUDIOHANDLE_INACTIVE_BIT;
-            streamSource->mSource = NULL;
+            streamSource->mSource = 0;
             streamSource->mDescription = desc;
             streamSource->mScore = volume;
             streamSource->mEnvironment = sampleEnvironment;
@@ -779,7 +779,7 @@ AUDIOHANDLE alxCreateSource(const Audio::Description& desc,
 
    // setup play info
    if(!desc.mIsStreaming)
-      alxSourcePlay(source, buffer, desc, desc.mIs3D ? transform : 0);
+      alxSourcePlay(source, buffer, desc, desc.mIs3D ? transform : nullptr);
 
    if(mEnvironmentEnabled)
       alxSourceEnvironment(source, desc.mEnvironmentLevel, sampleEnvironment);
@@ -844,9 +844,9 @@ AUDIOHANDLE alxCreateSource(const Audio::Description& desc,
       }
       else
       {
-         mSampleEnvironment[index] = 0;
+         mSampleEnvironment[index] = nullptr;
          mHandle[index] = NULL_AUDIOHANDLE;
-         mBuffer[index] = 0;
+         mBuffer[index] = nullptr;
          return NULL_AUDIOHANDLE;
       }
    }
@@ -859,10 +859,10 @@ AUDIOHANDLE alxCreateSource(const Audio::Description& desc,
 
 AUDIOHANDLE alxCreateSource(const AudioAsset *profile, const MatrixF *transform)
 {
-   if (profile == NULL)
+   if (profile == nullptr)
       return NULL_AUDIOHANDLE;
 
-   return alxCreateSource(profile->getAudioDescription(), profile->getAudioFile(), transform, NULL );
+   return alxCreateSource(profile->getAudioDescription(), profile->getAudioFile(), transform, nullptr );
 }
 
 //--------------------------------------------------------------------------
@@ -945,10 +945,10 @@ AUDIOHANDLE alxPlay(AUDIOHANDLE handle)
 // helper function.. create a source and play it
 AUDIOHANDLE alxPlay(const AudioAsset *profile, const MatrixF *transform, const Point3F* /*velocity*/)
 {
-   if(profile == NULL)
+   if(profile == nullptr)
       return NULL_AUDIOHANDLE;
 
-   AUDIOHANDLE handle = alxCreateSource(profile->getAudioDescription(), profile->getAudioFile(), transform, NULL);
+   AUDIOHANDLE handle = alxCreateSource(profile->getAudioDescription(), profile->getAudioFile(), transform, nullptr);
    if(handle != NULL_AUDIOHANDLE)
       return(alxPlay(handle));
    return(handle);
@@ -1007,9 +1007,9 @@ void alxStop(AUDIOHANDLE handle)
       }
 
       alSourcei(mSource[index], AL_BUFFER, AL_NONE);
-      mSampleEnvironment[index] = 0;
+      mSampleEnvironment[index] = nullptr;
       mHandle[index] = NULL_AUDIOHANDLE;
-      mBuffer[index] = 0;
+      mBuffer[index] = nullptr;
    }
 
    // remove loopingImage and add it to the free list
@@ -1931,7 +1931,7 @@ void alxCloseHandles()
                 (*itr)->mHandle |= AUDIOHANDLE_INACTIVE_BIT;
 
                 mHandle[i] = NULL_AUDIOHANDLE;
-                mBuffer[i] = 0;
+                mBuffer[i] = nullptr;
              }
 
          // should be playing? must have encounted an error.. remove
@@ -1946,13 +1946,13 @@ void alxCloseHandles()
 //            (*itr2)->mHandle |= AUDIOHANDLE_INACTIVE_BIT;
 //
 //            mHandle[i] = NULL_AUDIOHANDLE;
-//            mBuffer[i] = 0;
+//            mBuffer[i] = nullptr;
 //         }
       }
 
       alSourcei(mSource[i], AL_BUFFER, AL_NONE);
       mHandle[i] = NULL_AUDIOHANDLE;
-      mBuffer[i] = 0;
+      mBuffer[i] = nullptr;
    }
 }
 
@@ -2439,7 +2439,7 @@ bool OpenALInit()
    // Open a device
 #ifdef TORQUE_OS_IOS
     ALenum result = AL_NO_ERROR;
-   mDevice = alcOpenDevice(NULL);
+   mDevice = alcOpenDevice(nullptr);
     result = alGetError();
    AssertNoOALError("Error opening output device");
 
@@ -2451,7 +2451,7 @@ bool OpenALInit()
     alcMacOSXMixerOutputRateProc(DEFAULT_SOUND_OUTPUT_RATE);
     
    // Create an openAL context
-   mContext = alcCreateContext(mDevice,NULL);
+   mContext = alcCreateContext(mDevice,nullptr);
 
    // Make this context the active context
    alcMakeContextCurrent(mContext);
@@ -2468,11 +2468,11 @@ bool OpenALInit()
    mDevice = (ALCvoid *)alcOpenDevice(deviceSpecifier);
 
 #elif defined(TORQUE_OS_OSX)
-   mDevice = alcOpenDevice((const ALCchar*)NULL);
+   mDevice = alcOpenDevice((const ALCchar*)nullptr);
 #else
-   mDevice = (ALCvoid *)alcOpenDevice((const ALCchar*)NULL);
+   mDevice = (ALCvoid *)alcOpenDevice((const ALCchar*)nullptr);
 #endif
-   if (mDevice == (ALCvoid *)NULL)
+   if (mDevice == (ALCvoid *)nullptr)
       return false;
 
    // Create an openAL context
@@ -2493,10 +2493,11 @@ bool OpenALInit()
       0
    };
    mContext = alcCreateContext(mDevice,attrlist);
+#elif defined(TORQUE_OS_IOS)
 #else
-   mContext = alcCreateContext(mDevice,NULL);
+   mContext = alcCreateContext(mDevice,nullptr);
 #endif
-   if (mContext == NULL)
+   if (mContext == nullptr)
       return false;
 
    // Make this context the active context
@@ -2584,12 +2585,12 @@ void OpenALShutdown()
    if (mContext)
    {
       alcDestroyContext(mContext);
-      mContext = NULL;
+      mContext = nullptr;
    }
    if (mDevice)
    {
       alcCloseDevice(mDevice);
-      mDevice = NULL;
+      mDevice = nullptr;
    }
 
    OpenALDLLShutdown();
@@ -2603,5 +2604,5 @@ AudioStreamSource* alxFindAudioStreamSource(AUDIOHANDLE handle)
     StreamingList::iterator itr2 = mStreamingList.findImage(handle);
     if(itr2 != mStreamingList.end())
         return *itr2;
-    return NULL;
+    return nullptr;
 }

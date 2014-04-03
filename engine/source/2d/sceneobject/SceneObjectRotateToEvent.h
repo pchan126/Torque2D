@@ -42,7 +42,7 @@ public:
     {
         // Fetch scene object.
         SceneObject* pSceneObject = (dynamic_cast<SceneObject*>(object));
-        if (pSceneObject == NULL )
+        if (pSceneObject == nullptr )
             return;
 
         // Are we auto stopping?

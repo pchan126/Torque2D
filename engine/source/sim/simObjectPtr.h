@@ -58,7 +58,7 @@ template <class T> class SimObjectPtr
    SimObject *mObj;
 
   public:
-   SimObjectPtr() { mObj = 0; }
+   SimObjectPtr() { mObj = nullptr; }
    SimObjectPtr(T* ptr)
    {
       mObj = ptr;
@@ -104,11 +104,11 @@ template <class T> class SimObjectPtr
    bool operator == (const SimObject *ptr) { return mObj == ptr; }
    bool operator != (const SimObject *ptr) { return mObj != ptr; }
 #endif
-   bool isNull() const   { return mObj == 0; }
-   bool notNull() const   { return mObj != 0; }
+   bool isNull() const   { return mObj == nullptr; }
+   bool notNull() const   { return mObj != nullptr; }
    T* operator->() const { return static_cast<T*>(mObj); }
    T& operator*() const  { return *static_cast<T*>(mObj); }
-   operator T*() const   { return static_cast<T*>(mObj)? static_cast<T*>(mObj) : 0; }
+   operator T*() const   { return static_cast<T*>(mObj)? static_cast<T*>(mObj) : nullptr; }
 };
 
 #endif // _SIM_OBJECT_PTR_H_

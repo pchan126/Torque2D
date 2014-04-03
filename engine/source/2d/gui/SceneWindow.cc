@@ -237,7 +237,7 @@ void SceneWindow::resetScene( void )
     mInputEventWatching.clear();
 
     // Reset scene.
-    mpScene = NULL;
+    mpScene = nullptr;
 }
 
 
@@ -639,7 +639,7 @@ void SceneWindow::stopCameraShake( void )
 void SceneWindow::mount( SceneObject* pSceneObject, const Vector2& mountOffset, const F32 mountForce, const bool sendToMount, const bool mountAngle )
 {
     // Sanity!
-    AssertFatal( pSceneObject != nullptr, "t2dScene object cannot be NULL." );
+    AssertFatal( pSceneObject != nullptr, "t2dScene object cannot be nullptr." );
     assert(pSceneObject != nullptr);
 
     // Cannot mount if not in a scene.
@@ -729,7 +729,7 @@ void SceneWindow::dismount( void )
     mpMountedTo->removeCameraMountReference();
 
     // Reset Camera Object Mount.
-    mpMountedTo = NULL;
+    mpMountedTo = nullptr;
 
     // Flag Camera not mounted.
     mCameraMounted = false;
@@ -811,7 +811,7 @@ void SceneWindow::setObjectInputEventInvisibleFilter( const bool useInvisible )
 void SceneWindow::addInputListener( SimObject* pSimObject )
 {
     // Sanity!
-    AssertFatal( pSimObject != NULL, "SceneWindow::addInputEventListener() - Cannot add NULL object as input event listener." );
+    AssertFatal( pSimObject != nullptr, "SceneWindow::addInputEventListener() - Cannot add nullptr object as input event listener." );
 
     // Ignore if the object is already a listener.
     if ( mInputListeners.find( pSimObject ) != mInputListeners.end() )
@@ -1081,7 +1081,7 @@ void SceneWindow::sendObjectInputEvent( StringTableEntry name, const GuiEvent& e
         SceneObject* pOldSceneObject = dynamic_cast<SceneObject*>( mInputEventWatching[oldIndex] );
 
         // Sanity!
-        AssertFatal( pOldSceneObject != NULL, "Invalid object found in mouse-event pick vector." );
+        AssertFatal( pOldSceneObject != nullptr, "Invalid object found in mouse-event pick vector." );
 
         bool stillPresent = false;
 
@@ -1599,7 +1599,7 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
 
     // Finish if should not or cannot render.
     if (    ( !fullMetrics && !fpsMetrics ) ||
-            mProfile == NULL ||
+            mProfile == nullptr ||
             mProfile->mFont.isNull() )            
             return;
 
@@ -1624,7 +1624,7 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
     F32 bannerLineHeight = fullMetrics ? 17.0f : 1.0f;
 
     // Add an extra line if we're monitoring a scene object.
-    if ( pDebugSceneObject != NULL )
+    if ( pDebugSceneObject != nullptr )
         bannerLineHeight += 5.0f;
 
     U32 bannerHeight = (U32)((bannerLineHeight * (F32)font->getHeight()));
@@ -1650,18 +1650,18 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
     if ( fullMetrics )
     {
         // Rendering.
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Render", NULL );
+        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Render", nullptr );
         dSprintf( mDebugText, sizeof( mDebugText ), "- FPS=%4.1f<%4.1f/%4.1f>, Frames=%u, Picked=%d<%d>, RenderRequests=%d<%d>, RenderFallbacks=%d<%d>",
             debugStats.fps, debugStats.minFPS, debugStats.maxFPS,
             debugStats.frameCount,
             debugStats.renderPicked, debugStats.maxRenderPicked,
             debugStats.renderRequests, debugStats.maxRenderRequests,
             debugStats.renderFallbacks, debugStats.maxRenderFallbacks );
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, nullptr );
         linePositionY += linePositionOffsetY;
 
         // t2dScene.
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "t2dScene", NULL );
+        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "t2dScene", nullptr );
         dSprintf( mDebugText, sizeof( mDebugText ), "- Count=%d, Index=%d, Time=%0.1fs, Objects=%d<%d>(Global=%d), Enabled=%d<%d>, Visible=%d<%d>, Awake=%d<%d>, Controllers=%d",
             t2dScene::getGlobalSceneCount(), pScene->getSceneIndex(),
             pScene->getSceneTime(),
@@ -1669,12 +1669,12 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
             debugStats.objectsEnabled, debugStats.maxObjectsEnabled,
             debugStats.objectsVisible, debugStats.maxObjectsVisible,
             debugStats.objectsAwake, debugStats.maxObjectsAwake,
-            pScene->getControllers() == NULL ? 0 : pScene->getControllers()->size() );        
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+            pScene->getControllers() == nullptr ? 0 : pScene->getControllers()->size() );        
+        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, nullptr );
         linePositionY += linePositionOffsetY;
 
         // Camera Window #1.
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Camera", NULL );
+        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Camera", nullptr );
         Vector2 cameraPosition = getCameraPosition();
         dSprintf( mDebugText, sizeof( mDebugText ), "- Pos=(%0.1f,%0.1f), Size=(%0.1f,%0.1f), Zoom=%0.1f, Angle=%0.1f, Lower=(%0.1f,%0.1f), Upper=(%0.1f,%0.1f)", 
             cameraPosition.x,
@@ -1687,7 +1687,7 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
             mCameraCurrent.mSourceArea.point.y,
             mCameraCurrent.mSourceArea.point.x + mCameraCurrent.mSourceArea.extent.x,
             mCameraCurrent.mSourceArea.point.y + mCameraCurrent.mSourceArea.extent.y );
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, nullptr );
         linePositionY += linePositionOffsetY;
 
         // Camera Window #2.
@@ -1697,11 +1697,11 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
             windowExtent.x, windowExtent.y,
             windowScale.x, windowScale.y,
             1.0f / windowScale.x, 1.0f / windowScale.y);
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, nullptr );
         linePositionY += linePositionOffsetY;
 
         // Batching #1.
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Batching", NULL );
+        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Batching", nullptr );
         dSprintf( mDebugText, sizeof( mDebugText ), "- %sTris=%d<%d>, MaxTriDraw=%d, MaxVerts=%d, Strict=%d<%d>, Sorted=%d<%d>",
             pScene->getBatchingEnabled() ? "" : "(OFF) ",
             debugStats.batchTrianglesSubmitted, debugStats.maxBatchTrianglesSubmitted,
@@ -1710,7 +1710,7 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
             debugStats.batchDrawCallsStrict, debugStats.maxBatchDrawCallsStrict,
             debugStats.batchDrawCallsSorted, debugStats.maxBatchDrawCallsSorted                   
             );
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, nullptr );
         linePositionY += linePositionOffsetY;
 
         // Batching #2.
@@ -1721,7 +1721,7 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
             debugStats.batchAlphaStateFlush, debugStats.maxBatchAlphaStateFlush,
             debugStats.batchTextureChangeFlush, debugStats.maxBatchTextureChangeFlushes
             );
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, nullptr );
         linePositionY += linePositionOffsetY;
 
         // Batching #3.
@@ -1732,40 +1732,40 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
             debugStats.batchNoBatchFlush, debugStats.maxBatchNoBatchFlush,
             debugStats.batchAnonymousFlush, debugStats.maxBatchAnonymousFlush
             );
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, nullptr );
         linePositionY += linePositionOffsetY;
 
         // Textures.
-//        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Textures", NULL );
+//        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Textures", nullptr );
 //        dSprintf( mDebugText, sizeof( mDebugText ), "- TextureCount=%d, TextureSize=%d, TextureWaste=%d, BitmapSize=%d",
 //            TextureManager::getTextureResidentCount(),
 //            TextureManager::getTextureResidentSize(),
 //            TextureManager::getTextureResidentWasteSize(),
 //            TextureManager::getBitmapResidentSize()
 //            );
-//        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+//        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, nullptr );
         linePositionY += linePositionOffsetY;
 
         // Physics.
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Physics", NULL );
+        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Physics", nullptr );
         dSprintf( mDebugText, sizeof( mDebugText ), "- Bodies=%d<%d>, Joints=%d<%d>, Contacts=%d<%d>, Proxies=%d<%d>",
             debugStats.bodyCount, debugStats.maxBodyCount,
             debugStats.jointCount, debugStats.maxJointCount,
             debugStats.contactCount, debugStats.maxContactCount,
             debugStats.proxyCount, debugStats.maxProxyCount );
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, nullptr );
         linePositionY += linePositionOffsetY;
 
         const b2Profile& worldProfile = debugStats.worldProfile;
         const b2Profile& maxWorldProfile = debugStats.maxWorldProfile;
 
         // Physics timings #1.
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Timings", NULL );
+        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Timings", nullptr );
         dSprintf( mDebugText, sizeof( mDebugText ), "- Step=%0.0f<%0.0f>, Collide=%0.0f<%0.0f>, BroadPhase=%0.0f<%0.0f>",
             worldProfile.step, maxWorldProfile.step,
             worldProfile.collide, maxWorldProfile.collide,
             worldProfile.broadphase, maxWorldProfile.broadphase );
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, nullptr );
         linePositionY += linePositionOffsetY;
 
         // Physics timings #2.
@@ -1775,11 +1775,11 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
             worldProfile.solveVelocity, maxWorldProfile.solveVelocity,
             worldProfile.solvePosition, maxWorldProfile.solvePosition,
             worldProfile.solveTOI, maxWorldProfile.solveTOI );
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, nullptr );
         linePositionY += linePositionOffsetY;
 
         // Physics spatial tree.
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Partition", NULL );
+        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Partition", nullptr );
         const b2World* pWorld = pScene->getWorld();
         const S32 treeBalance = pWorld->GetTreeBalance();
         const S32 treeHeight = pWorld->GetTreeHeight();
@@ -1788,20 +1788,20 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
             treeBalance,
             treeHeight,
             treeQuality );
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, nullptr );
         linePositionY += linePositionOffsetY;
 
         // Particles.
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Particles", NULL );
+        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Particles", nullptr );
         dSprintf( mDebugText, sizeof( mDebugText ), "- Allocated=%d, Used=%d<%d>, Free=%d",
             debugStats.particlesAlloc,
             debugStats.particlesUsed, debugStats.maxParticlesUsed,
             debugStats.particlesFree );
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, nullptr );
         linePositionY += linePositionOffsetY;
 
         // Asset Manager.
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Assets", NULL );
+        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "Assets", nullptr );
         dSprintf( mDebugText, sizeof( mDebugText ), "- AcquiredRefs=%d, Declared=%d, Referenced=%d, LoadedInternal=%d<%d>, LoadedExternal=%d<%d>, LoadedPrivate=%d<%d>",
             AssetDatabase.getAcquiredReferenceCount(),
             AssetDatabase.getDeclaredAssetCount(),
@@ -1809,7 +1809,7 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
             AssetDatabase.getLoadedInternalAssetCount(), AssetDatabase.getMaxLoadedInternalAssetCount(),
             AssetDatabase.getLoadedExternalAssetCount(), AssetDatabase.getMaxLoadedExternalAssetCount(),
             AssetDatabase.getLoadedPrivateAssetCount(), AssetDatabase.getMaxLoadedPrivateAssetCount() );
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, nullptr );
         linePositionY += linePositionOffsetY;
     }
     else if ( fpsMetrics )
@@ -1817,15 +1817,15 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
         // Rendering.
         dSprintf( mDebugText, sizeof( mDebugText ), "FPS=%4.1f<%4.1f/%4.1f>",
             debugStats.fps, debugStats.minFPS, debugStats.maxFPS );
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), mDebugText, NULL );
+        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), mDebugText, nullptr );
         linePositionY += linePositionOffsetY;
     }
 
     // Monitored scene object.
-    if ( pDebugSceneObject != NULL )
+    if ( pDebugSceneObject != nullptr )
     {
         // SceneObject #1.
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "SceneObject", NULL );
+        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(0,(S32)linePositionY), "SceneObject", nullptr );
         const b2Vec2 position = pDebugSceneObject->getRenderPosition();
         const F32 angle = mRadToDeg( pDebugSceneObject->getRenderAngle() );
         const Vector2 size = pDebugSceneObject->getSize();
@@ -1843,7 +1843,7 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
             serialId,
             renderGroup
             );
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, nullptr );
         linePositionY += linePositionOffsetY;
 
         // SceneObject #2.
@@ -1863,7 +1863,7 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
             awake,
             sleepingAllowed
             );
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, nullptr );
         linePositionY += linePositionOffsetY;
 
         // SceneObject #3.
@@ -1879,7 +1879,7 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
             angularDamping,
             localCenter.x, localCenter.y
             );
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, nullptr );
         linePositionY += linePositionOffsetY;
             
         // SceneObject #4.
@@ -1891,7 +1891,7 @@ void SceneWindow::renderMetricsOverlay( Point2I offset, const RectI& updateRect 
                 collisionSuppress,
                 collisionGroupMask
                 );
-        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, NULL );
+        GFX->getDrawUtil()->drawText( font, bannerOffset + Point2I(metricsOffset,(S32)linePositionY), mDebugText, nullptr );
     }
 
     // Clear Bitmap Modulation.
@@ -1902,3 +1902,6 @@ void SceneWindow::setRenderFlag( const U32 layer, bool flag )
 {
    getScene()->getLayer(layer)->setRenderFlag(flag);
 };
+
+
+
