@@ -725,27 +725,27 @@ void BatchRender::flushInternal( void )
 
 void BatchRender::_drawWireframe( Vector<GFXVertexPCT>* pVertexVector, Vector<U16>* pIndex)
 {
-    mTempVertBuffHandle.set(GFX, (U32)pVertexVector->size(), GFXBufferTypeVolatile, pVertexVector->address(), (U32)pIndex->size(), pIndex->address() );
+    Vector<U16> wireVerts;
+    if (pIndex->size() < 3)
+       return;
+   
+    auto itr = pIndex->begin();
+    while ((itr != pIndex->end()) && (itr+1 != pIndex->end()) && (itr+2 != pIndex->end()))
+    {
+       wireVerts.push_back(*itr);
+       wireVerts.push_back(*(itr+1));
+       wireVerts.push_back(*(itr+1));
+       wireVerts.push_back(*(itr+2));
+       wireVerts.push_back(*itr);
+       wireVerts.push_back(*(itr+2));
+       itr++;
+    }
+   
+    mTempVertBuffHandle.set(GFX, (U32)pVertexVector->size(), GFXBufferTypeVolatile, pVertexVector->address(), (U32)wireVerts.size(), wireVerts.address() );
     GFX->setVertexBuffer( mTempVertBuffHandle );
 
-    // Draw the triangles.
-    if (mShader.isNull())
-    {
-        GFX->setupGenericShaders();
-    }
-    else
-    {
-        MatrixF xform(GFX->getWorldMatrix());
-        xform *= GFX->getViewMatrix();
-        xform *= GFX->getProjectionMatrix();
-        xform.transpose();
-        GFX->setShader(mShader);
-        GFX->setShaderConstBuffer(mShaderConstBuffer);
-        mShaderConstBuffer->setSafe( mShader->getShaderConstHandle("$mvp_matrix"), xform );
-        mShaderConstBuffer->setSafe( mShader->getShaderConstHandle("$sampler2d_0"), 0);
-    }
-
-    GFX->drawIndexedPrimitive(GFXLineStrip, 0, 0, (U32)pVertexVector->size(), (U32)pIndex->size(), (U32)pIndex->size()-1);
+    GFX->setupGenericShaders();
+    GFX->drawIndexedPrimitive(GFXLineList, 0, 0, (U32)pVertexVector->size(), (U32)wireVerts.size(), (U32)wireVerts.size()/2);
 }
 
 
