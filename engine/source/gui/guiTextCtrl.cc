@@ -40,7 +40,7 @@ GuiTextCtrl::GuiTextCtrl()
    mText[0] = '\0';
    mMaxStrLen = GuiTextCtrl::MAX_STRING_LENGTH;
    mTruncateWhenUnfocused = false;
-   mFont = NULL;
+   mFont = nullptr;
 }
 
 ConsoleMethod( GuiTextCtrl, setText, void, 3, 3, "( newText ) Use the setText method to set the content of label to newText.\n"

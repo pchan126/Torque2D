@@ -37,7 +37,7 @@ public:
    MaterialManager();
    ~MaterialManager();
 
-   static MaterialManager *get() { if (smMaterialManager  == NULL) new MaterialManager(); return smMaterialManager; }
+   static MaterialManager *get() { if (smMaterialManager == nullptr) new MaterialManager(); return smMaterialManager; }
 
 private:
     static MaterialManager* smMaterialManager; ///< Global MaterialManager
@@ -94,7 +94,7 @@ public:
 //
 //#endif
 
-   void dumpMaterialInstances( BaseMaterialDefinition *target = NULL ) const;
+   void dumpMaterialInstances( BaseMaterialDefinition *target = nullptr ) const;
 
    void updateTime();
    F32 getTotalTime() const { return mAccumTime; }

@@ -426,7 +426,7 @@ void AnimationAsset::validateFrames( void )
 
 bool AnimationAsset::isAssetValid( void ) const
 {
-    return mImageAsset.notNull() && mImageAsset->isAssetValid() && (mValidatedFrames.size() > 0 || mValidatedNameFrames.size() > 0);
+    return mImageAsset.notNull() && mImageAsset->isAssetValid() && (!mValidatedFrames.empty() || !mValidatedNameFrames.empty());
 }
 
 //------------------------------------------------------------------------------

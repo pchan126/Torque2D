@@ -30,6 +30,7 @@ namespace Sim
    ImplementNamedSet(ActiveActionMapSet)
    ImplementNamedSet(GhostAlwaysSet)
    ImplementNamedSet(BehaviorSet)
+   ImplementNamedSet(MaterialSet);
    ImplementNamedSet(AchievementSet);
    ImplementNamedGroup(ActionMapGroup)
    ImplementNamedGroup(ClientGroup)

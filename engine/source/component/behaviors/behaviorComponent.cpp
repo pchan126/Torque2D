@@ -236,7 +236,7 @@ bool BehaviorComponent::removeBehavior( BehaviorInstance *bi, bool deleteBehavio
 
 void BehaviorComponent::clearBehaviors()
 {
-    while( mBehaviors.size() > 0 )
+    while( !mBehaviors.empty() )
     {
         BehaviorInstance *bi = dynamic_cast<BehaviorInstance *>( mBehaviors.first() );
         removeBehavior( bi );

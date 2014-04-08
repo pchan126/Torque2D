@@ -97,6 +97,7 @@ namespace Sim
    DeclareNamedSet(ActiveActionMapSet)
    DeclareNamedSet(GhostAlwaysSet)
    DeclareNamedSet(BehaviorSet)
+   DeclareNamedSet(MaterialSet)
    DeclareNamedSet(AchievementSet)
    DeclareNamedGroup(ActionMapGroup)
    DeclareNamedGroup(ClientGroup)

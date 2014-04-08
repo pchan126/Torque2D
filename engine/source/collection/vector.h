@@ -80,6 +80,7 @@ class Vector
    Vector(const U32 initialSize, const char* fileName, const U32 lineNum);
    Vector(const char* fileName, const U32 lineNum);
    Vector(const Vector&);
+   Vector(const std::vector<T>&);
    ~Vector();
 
 #ifdef TORQUE_DEBUG
@@ -235,6 +236,12 @@ template<class T> inline Vector<T>::Vector(const Vector& p)
 #endif
 
     _vector = p._vector;
+}
+
+
+template<class T> inline Vector<T>::Vector(const std::vector<T>& p)
+{
+   _vector = p;
 }
 
 

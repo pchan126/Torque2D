@@ -306,7 +306,7 @@ public:
 
    /// Render output.
     void                    renderScene( ScenePassType passType );
-    void                    renderScene(t2dSceneRenderState *renderState);
+    void                    renderScene( t2dSceneRenderState* renderState);
 
     /// World.
     inline b2World*         getWorld( void ) const                      { return mpWorld; }

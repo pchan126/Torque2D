@@ -428,6 +428,7 @@ void init()
 
    InstantiateNamedSet(ActiveActionMapSet);
    InstantiateNamedSet(GhostAlwaysSet);
+   InstantiateNamedSet(MaterialSet);
    InstantiateNamedGroup(ActionMapGroup);
    InstantiateNamedGroup(ClientGroup);
    InstantiateNamedGroup(GuiGroup);

@@ -361,7 +361,7 @@ SimSet * MaterialManager::getMaterialSet()
 
 void MaterialManager::dumpMaterialInstances( BaseMaterialDefinition *target ) const
 {
-   if ( !mMatInstanceList.size() )
+   if ( mMatInstanceList.empty() )
       return;
 
    if ( target )
@@ -369,10 +369,10 @@ void MaterialManager::dumpMaterialInstances( BaseMaterialDefinition *target ) co
    else
       Con::printf( "--------------------- MatInstances %d ---------------------", mMatInstanceList.size() );
 
-   for( U32 i=0; i<mMatInstanceList.size(); i++ )
+   for( BaseMatInstance *inst: mMatInstanceList )
    {
-      BaseMatInstance *inst = mMatInstanceList[i];
-      
+//      BaseMatInstance *inst = mMatInstanceList[i];
+
       if ( target && inst->getMaterial() != target )
          continue;
 

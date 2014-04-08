@@ -53,7 +53,7 @@ public:
     T* createObject( void )
     {
         // Create a new object if cache is empty.
-        if ( this->size() == 0 )
+        if ( this->empty() )
             return new T();
 
         // Return a cached object.
@@ -69,13 +69,13 @@ public:
 
         // Reset object state if available.
         IFactoryObjectReset* pResetStateObject = dynamic_cast<IFactoryObjectReset*>( pObject );
-        if ( pResetStateObject != NULL )
+        if ( pResetStateObject != nullptr )
             pResetStateObject->resetState();
     }
 
     void purgeCache( void )
     {
-        while( this->size() > 0 )
+        while( !this->empty() )
         {
             delete this->back();
             this->pop_back();

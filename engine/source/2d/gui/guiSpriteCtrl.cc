@@ -151,7 +151,7 @@ bool GuiSpriteCtrl::setImageFrame( const U32 frame )
 bool GuiSpriteCtrl::setAnimation( const char* pAnimationAssetId )
 {
     // Sanity!
-    AssertFatal( pAnimationAssetId != NULL, "Cannot use a NULL asset Id." );
+    AssertFatal( pAnimationAssetId != nullptr, "Cannot use a NULL asset Id." );
 
     // Fetch the asset Id.
     mAnimationAssetId = StringTable->insert(pAnimationAssetId);

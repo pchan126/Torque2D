@@ -321,7 +321,7 @@ void BatchRender::SubmitIndexedTriangleStrip(const Vector<GFXVertexPCT> &verts, 
    U16 indexOffset = vertBuffer->size();
 
    // degenerate linking triangle
-   if (vertBuffer->size() > 0)
+   if (!vertBuffer->empty() )
    {
       indexBuffer->push_back(indexBuffer->back());
       indexBuffer->push_back(in_indexBuffer.front());
@@ -379,7 +379,7 @@ void BatchRender::SubmitQuad(const std::array< GFXVertexPCT, 4> verts,
     if ( mStrictOrderMode )
     {
         // Yes, so is there a texture change?
-        if (texture != mStrictOrderTextureHandle && mVertexBuffer.size() > 0 )
+        if (texture != mStrictOrderTextureHandle && !mVertexBuffer.empty() )
         {
             // Yes, so flush.
             flush( mpDebugStats->batchTextureChangeFlush );
@@ -399,7 +399,7 @@ void BatchRender::SubmitQuad(const std::array< GFXVertexPCT, 4> verts,
    std::array< U16 , 4> in_indexBuffer = {0, 1, 3, 2};
    
    // degenerate linking triangle
-   if (vertBuffer->size() > 0)
+   if (!vertBuffer->empty())
    {
 //       Con::printf("indexBuffer->pushback %d %d", indexBuffer->back(), in_indexBuffer.front());
 

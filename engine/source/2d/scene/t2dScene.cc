@@ -899,7 +899,7 @@ void t2dScene::renderScene( ScenePassType passType )
 
 //-----------------------------------------------------------------------------
 
-void t2dScene::renderScene(t2dSceneRenderState *renderState)
+void t2dScene::renderScene( t2dSceneRenderState* renderState)
 {
     // Debug Profiling.
     PROFILE_SCOPE(Scene_RenderSceneTotal);
@@ -993,7 +993,7 @@ void t2dScene::renderScene(t2dSceneRenderState *renderState)
             PROFILE_SCOPE(Scene_RenderControllers);
 
             // Yes, so fetch scene controller count.
-            const S32 sceneControllerCount = (S32)pControllerSet->size();
+            const size_t sceneControllerCount = pControllerSet->size();
 
             // Iterate scene controllers.
             for( S32 i = 0; i < sceneControllerCount; i++ )
@@ -1043,17 +1043,14 @@ void t2dScene::renderScene(t2dSceneRenderState *renderState)
 
 void t2dScene::clearScene( bool deleteObjects )
 {
-    while( mSceneObjects.size() > 0 )
+    while( !mSceneObjects.empty())
     {
-        // Fetch first scene object.
-        SceneObject* pSceneObject = mSceneObjects[0];
-
-        // Remove Object from t2dScene.
-        removeFromScene( pSceneObject );
+        // Remove First SceneObject from t2dScene.
+        removeFromScene( mSceneObjects.front() );
 
         // Queue Object for deletion.
         if ( deleteObjects )
-            pSceneObject->safeDelete();
+            mSceneObjects.front()->safeDelete();
     }
 
     // Fetch the controller set.
@@ -1063,8 +1060,8 @@ void t2dScene::clearScene( bool deleteObjects )
     if ( pControllerSet != nullptr )
     {
         // Yes, so delete them all.
-        while( pControllerSet->size() > 0 )
-            pControllerSet->at(0)->deleteObject();
+        while( !pControllerSet->empty() )
+            pControllerSet->front()->deleteObject();
     }
 
     mLightManager.unregisterAllLights();
@@ -1089,10 +1086,8 @@ void t2dScene::addToScene( SceneObject* pSceneObject )
 
 #if defined(TORQUE_DEBUG)
     // Sanity!
-    for ( S32 n = 0; n < mSceneObjects.size(); ++n )
-    {
-        AssertFatal( mSceneObjects[n] != pSceneObject, "A scene object has become corrupt." );
-    }
+   for ( auto itr:mSceneObjects )
+        AssertFatal( itr != pSceneObject, "A scene object has become corrupt." );
 #endif
 
     // Check that object is not already in a scene.
@@ -1220,11 +1215,8 @@ size_t t2dScene::getSceneObjects( typeSceneObjectVector& objects, const U32 scen
     U32 count = 0;
 
     // Iterate scene objects.
-    for( S32 n = 0; n < mSceneObjects.size(); ++n )
+   for( auto pSceneObject: mSceneObjects)
     {
-        // Fetch scene object.
-        SceneObject* pSceneObject = mSceneObjects[n];
-
         // Skip if not the correct layer.
         if ( pSceneObject->getSceneLayer() != sceneLayer )
             continue;
@@ -1318,7 +1310,7 @@ void t2dScene::removeAssetPreload( const char* pAssetId )
 void t2dScene::clearAssetPreloads( void )
 {
     // Delete all the asset preloads.
-    while( mAssetPreloads.size() > 0 )
+    while( !mAssetPreloads.empty() )
     {
         delete mAssetPreloads.back();
         mAssetPreloads.pop_back();
