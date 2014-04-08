@@ -59,7 +59,11 @@ GuiImageButtonCtrl::GuiImageButtonCtrl() :
     mNormalAssetId( StringTable->EmptyString ),
     mHoverAssetId( StringTable->EmptyString ),
     mDownAssetId( StringTable->EmptyString ),
-    mInactiveAssetId( StringTable->EmptyString )
+    mInactiveAssetId( StringTable->EmptyString ),
+   mLeftBorder(0),
+   mRightBorder(0),
+   mTopBorder(0),
+   mBottomBorder(0)
 {
     setExtent(140, 30);
 }
@@ -75,6 +79,11 @@ void GuiImageButtonCtrl::initPersistFields()
     addProtectedField("HoverImage", TypeAssetId, Offset(mHoverAssetId, GuiImageButtonCtrl), &setHoverImage, &getHoverImage, "The image asset Id used for the hover button state.");
     addProtectedField("DownImage", TypeAssetId, Offset(mDownAssetId, GuiImageButtonCtrl), &setDownImage, &getDownImage, "The image asset Id used for the Down button state.");
     addProtectedField("InactiveImage", TypeAssetId, Offset(mInactiveAssetId, GuiImageButtonCtrl), &setInactiveImage, &getInactiveImage, "The image asset Id used for the inactive button state.");
+
+    addProtectedField("LeftBorder", TypeS32, Offset(mLeftBorder, GuiImageButtonCtrl), &setLeftBorder, &defaultProtectedGetFn, &writeLeftBorder, "");
+    addProtectedField("RightBorder", TypeS32, Offset(mRightBorder, GuiImageButtonCtrl), &setRightBorder, &defaultProtectedGetFn, &writeRightBorder, "");
+    addProtectedField("TopBorder", TypeS32, Offset(mTopBorder, GuiImageButtonCtrl), &setTopBorder, &defaultProtectedGetFn, &writeTopBorder, "");
+    addProtectedField("BottomBorder", TypeS32, Offset(mBottomBorder, GuiImageButtonCtrl), &setBottomBorder, &defaultProtectedGetFn, &writeBottomBorder, "");
 }
 
 //-----------------------------------------------------------------------------
@@ -128,7 +137,7 @@ void GuiImageButtonCtrl::onSleep()
 void GuiImageButtonCtrl::setNormalImage( const char* pImageAssetId )
 {
     // Sanity!
-    AssertFatal( pImageAssetId != NULL, "Cannot use a NULL asset Id." );
+    AssertFatal( pImageAssetId != nullptr, "Cannot use a NULL asset Id." );
 
     // Fetch the asset Id.
     mNormalAssetId = StringTable->insert(pImageAssetId);
@@ -146,7 +155,7 @@ void GuiImageButtonCtrl::setNormalImage( const char* pImageAssetId )
 void GuiImageButtonCtrl::setHoverImage( const char* pImageAssetId )
 {
     // Sanity!
-    AssertFatal( pImageAssetId != NULL, "Cannot use a NULL asset Id." );
+    AssertFatal( pImageAssetId != nullptr, "Cannot use a NULL asset Id." );
 
     // Fetch the asset Id.
     mHoverAssetId = StringTable->insert(pImageAssetId);
@@ -182,7 +191,7 @@ void GuiImageButtonCtrl::setDownImage( const char* pImageAssetId )
 void GuiImageButtonCtrl::setInactiveImage( const char* pImageAssetId )
 {
     // Sanity!
-    AssertFatal( pImageAssetId != NULL, "Cannot use a NULL asset Id." );
+    AssertFatal( pImageAssetId != nullptr, "Cannot use a NULL asset Id." );
 
     // Fetch the asset Id.
     mInactiveAssetId = StringTable->insert(pImageAssetId);
@@ -253,7 +262,7 @@ void GuiImageButtonCtrl::onRender(Point2I offset, const RectI& updateRect)
 void GuiImageButtonCtrl::renderButton( ImageAsset* pImageAsset, const U32 frame, Point2I &offset, const RectI& updateRect )
 {
     // Ignore an invalid datablock.
-    if ( pImageAsset == NULL )
+    if ( pImageAsset == nullptr )
         return;
 
     // Is the asset valid and has the specified frame?
@@ -278,7 +287,7 @@ void GuiImageButtonCtrl::renderButton( ImageAsset* pImageAsset, const U32 frame,
         RenderProxy* pNoImageRenderProxy = Sim::findObject<RenderProxy>( CANNOT_RENDER_PROXY_NAME );
 
         // Finish if no render proxy available or it can't render.
-        if ( pNoImageRenderProxy == NULL || !pNoImageRenderProxy->validRender() )
+        if ( pNoImageRenderProxy == nullptr || !pNoImageRenderProxy->validRender() )
             return;
 
         // Render using render-proxy..
@@ -288,3 +297,93 @@ void GuiImageButtonCtrl::renderButton( ImageAsset* pImageAsset, const U32 frame,
     // Update the control.
     setUpdate();
 }
+
+//------------------------------------------------------------------------------
+
+void GuiImageButtonCtrl::setTopBorder(const S32 topBorder)
+{
+   // Ignore no change.
+   if ( topBorder == mTopBorder )
+      return;
+   
+   // Valid?
+   if ( topBorder < 0 )
+   {
+      // No, so warn.
+      Con::warnf( "Invalid top Border '%d'.", topBorder );
+      return;
+   }
+   
+   // Update.
+   mTopBorder = topBorder;
+   
+   // Refresh the asset.
+}
+
+
+//------------------------------------------------------------------------------
+
+void GuiImageButtonCtrl::setBottomBorder(const S32 bottomBorder)
+{
+   // Ignore no change.
+   if ( bottomBorder == mBottomBorder )
+      return;
+   
+   // Valid?
+   if ( bottomBorder < 0 )
+   {
+      // No, so warn.
+      Con::warnf( "Invalid bottom Border '%d'.", bottomBorder );
+      return;
+   }
+   
+   // Update.
+   mBottomBorder = bottomBorder;
+   
+   // Refresh the asset.
+}
+
+//------------------------------------------------------------------------------
+
+void GuiImageButtonCtrl::setLeftBorder(const S32 leftBorder)
+{
+   // Ignore no change.
+   if ( leftBorder == mLeftBorder )
+      return;
+   
+   // Valid?
+   if ( leftBorder < 0 )
+   {
+      // No, so warn.
+      Con::warnf( "Invalid left Border '%d'.", leftBorder );
+      return;
+   }
+   
+   // Update.
+   mLeftBorder = leftBorder;
+   
+   // Refresh the asset.
+}
+
+//------------------------------------------------------------------------------
+
+void GuiImageButtonCtrl::setRightBorder(const S32 rightBorder)
+{
+   // Ignore no change.
+   if ( rightBorder == mRightBorder )
+      return;
+   
+   // Valid?
+   if ( rightBorder < 0 )
+   {
+      // No, so warn.
+      Con::warnf( "Invalid right Border '%d'.", rightBorder );
+      return;
+   }
+   
+   // Update.
+   mRightBorder = rightBorder;
+   
+   // Refresh the asset.
+}
+

@@ -87,7 +87,7 @@ void GFXDrawUtil::_setupStateBlocks()
 
 void GFXDrawUtil::batchTriangleStrip( const Vector<GFXVertexPCT> verts, GFXTexHandle& texture)
 {
-   if (verts.size() < 1)
+   if (verts.empty())
       return;
    
    // Debug Profiling.
@@ -101,9 +101,10 @@ void GFXDrawUtil::batchTriangleStrip( const Vector<GFXVertexPCT> verts, GFXTexHa
    //    }
    
    Vector<GFXVertexPCT>* vertBuffer = &mVertexBuffer;
+   Vector<U16>*          indexBuffer = &mIndex;
    
    // Yes, so is there a texture change?
-   if ( texture != mTextureHandle && mVertexBuffer.size() > 0 )
+   if ( texture != mTextureHandle && !mVertexBuffer.empty() )
    {
       // Yes, so flush.
       flushInternal( );
@@ -112,15 +113,59 @@ void GFXDrawUtil::batchTriangleStrip( const Vector<GFXVertexPCT> verts, GFXTexHa
    // Set strict order mode texture handle.
    mTextureHandle = texture;
 
+   U32 ind = 0;
    // degenerate linking triangle
-   if (mVertexBuffer.size() > 0)
+   if (!mIndex.empty())
    {
-      vertBuffer->push_back(vertBuffer->back());
-      vertBuffer->push_back(verts[0]);
+      indexBuffer->push_back(indexBuffer->back());
+      indexBuffer->push_back(indexBuffer->back()+1);
+      ind = indexBuffer->back();
+   }
+
+   vertBuffer->merge(verts);
+   for (U32 i = 0; i < verts.size(); i++)
+      indexBuffer->push_back(ind + i);
+}
+
+//-----------------------------------------------------------------------------
+
+void GFXDrawUtil::batchIndexedTriangleStrip( const Vector<U16> index, const Vector<GFXVertexPCT> verts, GFXTexHandle& texture)
+{
+   if (verts.empty())
+      return;
+   
+   // Debug Profiling.
+   PROFILE_SCOPE(BatchRender_SubmitTriangleStrip);
+   
+   //    // Would we exceed the triangle buffer size?
+   //    if ( (mTriangleCount + verts.size()/3) > BATCHRENDER_MAXTRIANGLES )
+   //    {
+   //        // Yes, so flush.
+   //        flush( mpDebugStats->batchBufferFullFlush );
+   //    }
+   
+   Vector<GFXVertexPCT>* vertBuffer = &mVertexBuffer;
+   Vector<U16>*          indexBuffer = &mIndex;
+   
+   // Yes, so is there a texture change?
+   if ( texture != mTextureHandle && !mVertexBuffer.empty() )
+   {
+      // Yes, so flush.
+      flushInternal( );
    }
    
-   for (int i = 0; i < verts.size(); i++)
-      vertBuffer->push_back(verts[i]);
+   // Set strict order mode texture handle.
+   mTextureHandle = texture;
+   
+   // degenerate linking triangle
+   if (!mIndex.empty())
+   {
+      indexBuffer->push_back(indexBuffer->back());
+      indexBuffer->push_back(index.front());
+   }
+   
+   vertBuffer->merge(verts);
+   indexBuffer->merge(index);
 }
 
 //-----------------------------------------------------------------------------
@@ -131,10 +176,10 @@ void GFXDrawUtil::flushInternal( void )
    PROFILE_SCOPE(T2D_BatchRender_flush);
    
    // Finish if no triangles to flush.
-   if ( mVertexBuffer.size() == 0 )
+   if ( mVertexBuffer.empty() )
       return;
    
-   mTextureVertex.set(mDevice, (U32)mVertexBuffer.size(), GFXBufferTypeVolatile, mVertexBuffer.address());
+   mTextureVertex.set(mDevice, (U32)mVertexBuffer.size(), GFXBufferTypeVolatile, mVertexBuffer.address(), (U32)mIndex.size(), mIndex.address());
    mDevice->setVertexBuffer( mTextureVertex );
    
    switch (mFilter)
@@ -153,10 +198,14 @@ void GFXDrawUtil::flushInternal( void )
    mDevice->setTexture( 0, mTextureHandle );
    mDevice->setupGenericShaders( GFXDevice::GSModColorTexture );
    
-   mDevice->drawPrimitive( GFXTriangleStrip, 0, mVertexBuffer.size()-2 );
+//   mTempVertBuffHandle.set(GFX, (U32)pVertexVector->size(), GFXBufferTypeVolatile, pVertexVector->address(), (U32)pIndex->size(), pIndex->address() );
+//   GFX->setVertexBuffer( mTempVertBuffHandle );
+
+   mDevice->drawIndexedPrimitive( GFXTriangleStrip, 0, 0, (U32)mVertexBuffer.size(), (U32)mIndex.size(), (U32)mIndex.size()-2 );
 
    // Reset batch state.
    mVertexBuffer.clear();
+   mIndex.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -479,6 +528,116 @@ void GFXDrawUtil::drawBitmapStretchSR( GFXTextureObject *texture, const RectF &d
 
    batchTriangleStrip(verts, texHandle);
 
+   switch (filter)
+   {
+      case GFXTextureFilterPoint :
+         mDevice->setStateBlock(in_wrap ? mBitmapStretchWrapSB : mBitmapStretchSB);
+         break;
+      case GFXTextureFilterLinear :
+         mDevice->setStateBlock(in_wrap ? mBitmapStretchWrapLinearSB : mBitmapStretchLinearSB);
+         break;
+      default:
+         AssertFatal(false, "No GFXDrawUtil state block defined for this filter type!");
+         mDevice->setStateBlock(mBitmapStretchSB);
+         break;
+   }
+   
+   if (!mBatchEnabled)
+      flushInternal();
+}
+
+void GFXDrawUtil::drawBitmapStretchSRBorder( GFXTextureObject *texture, const RectI &dstRect, const RectI &srcRect, const U32 leftBorder /*= 0*/, const U32 rightBorder /*= 0*/, const U32 topBorder /*= 0*/, const U32 bottomBorder /*= 0*/, const GFXBitmapFlip in_flip /*= GFXBitmapFlip_None*/, const GFXTextureFilterType filter /*= GFXTextureFilterPoint */ , bool in_wrap /* = true */)
+{
+   // Sanity if no texture is specified.
+   if(!texture)
+      return;
+   
+   mFilter = filter;
+   
+   Vector<GFXVertexPCT> verts;
+   verts.setSize(16);
+   GFXTexHandle texHandle(texture);
+   
+   Vector<U16> index({ 0, 4, 1, 5, 2, 6, 3, 7, 7, 4, 4, 8, 5, 9, 6, 10, 7, 11, 11, 8, 8, 12, 9, 13, 10, 14, 11, 15 });
+   
+   F32 texLeft   = (srcRect.point.x)                    / (texture->getWidth());
+   F32 texRight  = (srcRect.point.x + srcRect.extent.x) / (texture->getWidth());
+   F32 texTop    = (srcRect.point.y)                    / (texture->getHeight());
+   F32 texBottom = (srcRect.point.y + srcRect.extent.y) / (texture->getHeight());
+   
+   F32 screenLeft   = dstRect.point.x;
+   F32 screenRight  = (dstRect.point.x + dstRect.extent.x);
+   F32 screenTop    = dstRect.point.y;
+   F32 screenBottom = (dstRect.point.y + dstRect.extent.y);
+   
+   F32 texBordLeft   = (leftBorder)                    / (texture->getWidth());
+   F32 texBordRight  = (rightBorder)                   / (texture->getWidth());
+   F32 texBordTop    = (topBorder)                     / (texture->getHeight());
+   F32 texBordBottom = (bottomBorder)                  / (texture->getHeight());
+
+   if( in_flip & GFXBitmapFlip_X )
+      std::swap(texLeft, texRight);
+
+   if( in_flip & GFXBitmapFlip_Y )
+      std::swap(texBottom, texTop);
+
+   const F32 fillConv = mDevice->getFillConventionOffset();
+
+   for (int i = 0; i <16; i++)
+   {
+      verts[i].color = mBitmapModulation;
+   }
+
+   verts[0].point.set( screenLeft  - fillConv, screenTop    - fillConv, 0.f );
+   verts[0].texCoord.set( texLeft,  texTop );
+
+   verts[1].point.set( screenLeft  - fillConv, screenTop + topBorder   - fillConv, 0.f );
+   verts[1].texCoord.set( texLeft,  texTop + texBordTop );
+
+   verts[2].point.set( screenLeft  - fillConv, screenBottom - bottomBorder   - fillConv, 0.f );
+   verts[2].texCoord.set( texLeft,  texBottom - texBordBottom );
+   
+   verts[3].point.set( screenLeft  - fillConv, screenBottom - fillConv, 0.f );
+   verts[3].texCoord.set( texLeft,  texBottom );
+
+   verts[4].point.set( screenLeft + leftBorder - fillConv, screenTop    - fillConv, 0.f );
+   verts[4].texCoord.set( texLeft + texBordLeft, texTop );
+   
+   verts[5].point.set( screenLeft + leftBorder - fillConv, screenTop + topBorder   - fillConv, 0.f );
+   verts[5].texCoord.set( texLeft + texBordLeft, texTop + texBordTop );
+
+   verts[6].point.set( screenLeft + leftBorder - fillConv, screenBottom - bottomBorder   - fillConv, 0.f );
+   verts[6].texCoord.set( texLeft + texBordLeft, texBottom - texBottom );
+
+   verts[7].point.set( screenLeft + leftBorder - fillConv, screenBottom  - fillConv, 0.f );
+   verts[7].texCoord.set( texLeft + texBordLeft, texBottom );
+   
+   verts[8].point.set( screenRight - rightBorder - fillConv, screenTop    - fillConv, 0.f );
+   verts[8].texCoord.set( texRight - texBordRight, texTop );
+   
+   verts[9].point.set( screenRight - rightBorder - fillConv, screenTop + topBorder   - fillConv, 0.f );
+   verts[9].texCoord.set( texRight - texBordRight, texTop + texBordTop );
+   
+   verts[10].point.set( screenRight - rightBorder - fillConv, screenBottom - bottomBorder   - fillConv, 0.f );
+   verts[10].texCoord.set( texRight - texBordRight, texBottom - texBottom );
+   
+   verts[11].point.set( screenRight - rightBorder - fillConv, screenBottom  - fillConv, 0.f );
+   verts[11].texCoord.set( texRight - texBordRight, texBottom );
+
+   verts[12].point.set( screenRight - fillConv, screenTop    - fillConv, 0.f );
+   verts[12].texCoord.set( texRight, texTop );
+   
+   verts[13].point.set( screenRight - fillConv, screenTop + topBorder   - fillConv, 0.f );
+   verts[13].texCoord.set( texRight, texTop + texBordTop );
+   
+   verts[14].point.set( screenRight - fillConv, screenBottom - bottomBorder   - fillConv, 0.f );
+   verts[14].texCoord.set( texRight, texBottom - texBottom );
+   
+   verts[15].point.set( screenRight - fillConv, screenBottom  - fillConv, 0.f );
+   verts[15].texCoord.set( texRight, texBottom );
+   
+   batchIndexedTriangleStrip(index, verts, texHandle);
+   
    switch (filter)
    {
       case GFXTextureFilterPoint :

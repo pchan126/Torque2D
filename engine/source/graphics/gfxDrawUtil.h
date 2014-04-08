@@ -40,6 +40,7 @@ public:
    ~GFXDrawUtil();
 
    void batchTriangleStrip( const Vector<GFXVertexPCT> verts, GFXTexHandle& texture);
+   void batchIndexedTriangleStrip( const Vector<U16> index, const Vector<GFXVertexPCT> verts, GFXTexHandle& texture);
    void flushInternal(void);
    
    /// Sets the batch enabled mode.
@@ -112,6 +113,7 @@ public:
     void drawBitmapSR( GFXTextureObject *texture, const Point2I &in_rAt, const RectI &srcRect, const GFXBitmapFlip in_flip = GFXBitmapFlip_None, const GFXTextureFilterType filter = GFXTextureFilterPoint , bool in_wrap = true );
     void drawBitmapStretch( GFXTextureObject *texture, const RectI &dstRect, const GFXBitmapFlip in_flip = GFXBitmapFlip_None, const GFXTextureFilterType filter = GFXTextureFilterPoint , bool in_wrap = true );
     void drawBitmapStretchSR( GFXTextureObject *texture, const RectI &dstRect, const RectI &srcRect, const GFXBitmapFlip in_flip = GFXBitmapFlip_None, const GFXTextureFilterType filter = GFXTextureFilterPoint , bool in_wrap = true );
+   void drawBitmapStretchSRBorder( GFXTextureObject *texture, const RectI &dstRect, const RectI &srcRect, const U32 leftBorder = 0, const U32 rightBorder = 0, const U32 topBorder = 0, const U32 bottomBorder = 0, const GFXBitmapFlip in_flip = GFXBitmapFlip_None, const GFXTextureFilterType filter = GFXTextureFilterPoint , bool in_wrap = true );
 
    //-----------------------------------------------------------------------------
    // Draw 3D Shapes
@@ -190,6 +192,7 @@ protected:
    GFXTextureFilterType mFilter;
    GFXTexHandle         mTextureHandle;
    Vector<GFXVertexPCT> mVertexBuffer;
+   Vector<U16>          mIndex;
 
     GFXVertexBufferHandle<GFXVertexPCT> mTextureVertex;
     GFXVertexBufferHandle<GFXVertexPC> mLineVertex;
