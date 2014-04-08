@@ -1380,10 +1380,12 @@ bool SceneWindow::resize(const Point2I &newPosition, const Point2I &newExtent)
     // Format Buffer.
     dSprintf( argBuffer, 64, "%d %d %d %d", newPosition.x, newPosition.y, newExtent.x, newExtent.y );
 
-    // Resize Callback.
-    Con::executef( this, 2, "onExtentChange", argBuffer );
-    
-    return true;
+   mImageTextureHandle = TEXMGR->createTexture( getWidth(), getHeight(), GFXFormatR8G8B8A8, &GFXSceneWindowTextureProfile, 0, 0 );
+
+   // Resize Callback.
+   Con::executef( this, 2, "onExtentChange", argBuffer );
+   
+   return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -1514,7 +1516,11 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
 
     // Cannot render without scene!
     if ( !pScene )
+    {
+        // Call parent.
+        ImageFrameProvider::renderGui( *this, offset, updateRect );
         return;
+    }
 
     // Calculate current camera View ( if needed ).
     calculateCameraView( &mCameraCurrent );
@@ -1536,15 +1542,12 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
         mCameraCurrent,
         mRenderGroupMask );
 
-    if (renderTarget.isNull())
-       renderTarget = GFX->allocRenderToTextureTarget();
+    if (mRenderTarget.isNull())
+       mRenderTarget = GFX->allocRenderToTextureTarget();
 
-    if (mImageTextureHandle.isNull())
-        mImageTextureHandle = TEXMGR->createTexture( getWidth(), getHeight(), GFXFormatR8G8B8A8, &GFXSceneWindowTextureProfile, 0, 0 );
-
-    renderTarget->attachTexture(mImageTextureHandle);
+    mRenderTarget->attachTexture(mImageTextureHandle);
     GFX->pushActiveRenderTarget();
-    GFX->setActiveRenderTarget(renderTarget);
+    GFX->setActiveRenderTarget(mRenderTarget);
     GFX->updateStates(true);
 
    // Clear the background color if requested.
@@ -1554,10 +1557,10 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
       GFX->clear( GFXClearZBuffer , ColorI(mBackgroundColor), 1.0f, 0 );
    }
    
-      GFX->clear( GFXClearTarget, ColorI(0, 0, 0, 0), 1.0f, 0 );
+    GFX->clear( GFXClearTarget, ColorI(0, 0, 0, 0), 1.0f, 0 );
 
 
-   // Render View.
+    // Render View.
     pScene->renderScene( &sceneRenderState );
 
     // Restore Matrices.
@@ -1566,6 +1569,8 @@ void SceneWindow::onRender( Point2I offset, const RectI& updateRect )
 
     GFX->popActiveRenderTarget();
     GFX->updateStates(true);
+   
+    GFX->getDrawUtil()->clearBitmapModulation();
     GFX->getDrawUtil()->drawBitmapStretch(mImageTextureHandle, updateRect, GFXBitmapFlip_Y);
 
    // Render the metrics.

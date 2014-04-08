@@ -28,6 +28,8 @@
 #include "t2dScene.h"
 #include "2d/core/Vector2.h"
 #include "2d/core/Utility.h"
+#include "2d/core/imageFrameProvider.h"
+#include "2d/gui/guiSpriteCtrl.h"
 
 //-----------------------------------------------------------------------------
 
@@ -153,7 +155,7 @@ class CameraView
    }
 };
 
-class SceneWindow : public GuiControl, public virtual Tickable
+class SceneWindow : public GuiSpriteCtrl
 {
     typedef GuiControl Parent;
 
@@ -201,7 +203,10 @@ private:
     /// Misc.
     t2dScene *              mpScene;
 
-   GFXTextureTargetRef  renderTarget;
+   // Create a scene render state.
+   std::shared_ptr<t2dSceneRenderState> mpSceneRenderState;
+   
+   GFXTextureTargetRef mRenderTarget;
    GFXTexHandle         mImageTextureHandle;
 
    S32                 mLastRenderTime;
@@ -393,7 +398,7 @@ public:
 
     static CameraInterpolationMode getInterpolationModeEnum(const char* label);
 
-    /// Declare Console Object.
+   /// Declare Console Object.
     DECLARE_CONOBJECT(SceneWindow);
 
 protected:
