@@ -21,7 +21,7 @@
 //-----------------------------------------------------------------------------
 
 #ifndef _AUDIO_ASSET_H_
-#include "audioAsset.h"
+#include "AudioAsset.h"
 #endif
 
 #ifndef _ASSET_PTR_H_
@@ -54,11 +54,14 @@ ConsoleSetType( TypeAudioAssetPtr )
         // Yes, so fetch field value.
         const char* pFieldValue = argv[0];
 
+        if (strlen(pFieldValue) > 0)
+           Con::printf("setaudioasset %s", pFieldValue);
+       
         // Fetch asset pointer.
         AssetPtr<AudioAsset>* pAssetPtr = dynamic_cast<AssetPtr<AudioAsset>*>((AssetPtrBase*)(dptr));
 
         // Is the asset pointer the correct type?
-        if ( pAssetPtr == NULL )
+        if ( pAssetPtr == nullptr )
         {
             // No, so fail.
             Con::warnf( "(TypeAudioAssetPtr) - Failed to set asset Id '%d'.", pFieldValue );
