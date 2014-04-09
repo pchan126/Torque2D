@@ -92,9 +92,9 @@ ConsoleFunctionWithDocs( mFloor, ConsoleInt, 2, 2, ( val ))
     @return Returns the integer value closest to the given float
 
 */
-ConsoleFunctionWithDocs( mRound, ConsoleFloat, 2, 2, (float v))
+ConsoleFunctionWithDocs( mRound, ConsoleInt, 2, 2, (float v))
 {
-   return mRound( dAtof(argv[1]) );
+   return (S32)mRoundToNearest( dAtof(argv[1]) );
 }
 
 /*! Use the mCeil function to calculate the next highest integer value from val.
