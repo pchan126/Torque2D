@@ -265,13 +265,14 @@ bool AudioBuffer::readWAV(ResourceObject *obj)
       return false;
 
    stream->read((char *)&fileHdr.id[0], 4);
-   *stream >> fileHdr.size;
+   stream->read((char *)&fileHdr.size, sizeof(fileHdr.size));
    stream->read((char *)&fileHdr.type[0], 4);
 
    fileHdr.size=((fileHdr.size+1)&~1)-4;
 
    stream->read((char *)&chunkHdr.id[0], 4);
-   *stream >> chunkHdr.size;
+   stream->read((char *)&chunkHdr.size, sizeof(chunkHdr.size));
+
    // unread chunk data rounded up to nearest WORD
    S32 chunkRemaining = chunkHdr.size + (chunkHdr.size&1);
 
@@ -280,12 +281,12 @@ bool AudioBuffer::readWAV(ResourceObject *obj)
       // WAV Format header
       if (!dStrncmp((const char*)chunkHdr.id,"fmt ",4))
       {
-         *stream >> (unsigned short&)(fmtHdr.format);
-         *stream >> (unsigned short&)(fmtHdr.channels);
-         *stream >> (unsigned int&)(fmtHdr.samplesPerSec);
-         *stream >> (unsigned int&)(fmtHdr.bytesPerSec);
-         *stream >> (unsigned short&)(fmtHdr.blockAlign);
-         *stream >> (unsigned short&)(fmtHdr.bitsPerSample);
+         stream->read((char *)&fmtHdr.format, sizeof(fmtHdr.format));
+         stream->read((char *)&fmtHdr.channels, sizeof(fmtHdr.channels));
+         stream->read((char *)&fmtHdr.samplesPerSec, sizeof(fmtHdr.samplesPerSec));
+         stream->read((char *)&fmtHdr.bytesPerSec, sizeof(fmtHdr.bytesPerSec));
+         stream->read((char *)&fmtHdr.blockAlign, sizeof(fmtHdr.blockAlign));
+         stream->read((char *)&fmtHdr.bitsPerSample, sizeof(fmtHdr.bitsPerSample));
 
          if (fmtHdr.format==0x0001)
          {
@@ -368,7 +369,7 @@ bool AudioBuffer::readWAV(ResourceObject *obj)
 
       // read next chunk header...
       stream->read( (char*)&chunkHdr.id[0], 4);
-      *stream >> (unsigned int&)(chunkHdr.size);
+      stream->read( (char*)&chunkHdr.size, sizeof(chunkHdr.size));
       // unread chunk data rounded up to nearest WORD
       chunkRemaining = chunkHdr.size + (chunkHdr.size&1);
    }
