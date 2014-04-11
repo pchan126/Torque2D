@@ -224,6 +224,20 @@ GuiControlProfile::GuiControlProfile(void) :
       mNumbersOnly   = def->mNumbersOnly;
       mCursorColor   = def->mCursorColor;
       mProfileForChildren = def->mProfileForChildren;
+      
+      if (!def->mImageNormalAsset.isNull())
+         mImageNormalAsset = def->mImageNormalAsset;
+      if (!def->mImageHoverAsset.isNull())
+         mImageHoverAsset = def->mImageHoverAsset;
+      if (!def->mImageDownAsset.isNull())
+         mImageDownAsset = def->mImageDownAsset;
+      if (!def->mImageInactiveAsset.isNull())
+         mImageInactiveAsset = def->mImageInactiveAsset;
+
+      if (!def->mSoundButtonDown.isNull())
+         mSoundButtonDown = def->mSoundButtonDown;
+      if (!def->mSoundButtonOver.isNull())
+         mSoundButtonOver = def->mSoundButtonOver;
    }
 }
 
@@ -274,6 +288,15 @@ void GuiControlProfile::initPersistFields()
    addField("cursorColor",   TypeColorI,     Offset(mCursorColor, GuiControlProfile));
 
    addField("bitmap",        TypeFilename,   Offset(mBitmapName, GuiControlProfile));
+
+   addField("NormalImage",    TypeImageAssetPtr, Offset(mImageNormalAsset, GuiControlProfile));
+   addField("NormalFrame",    TypeS32,           Offset(mNormalFrame, GuiControlProfile));
+   addField("HoverImage",     TypeImageAssetPtr, Offset(mImageHoverAsset, GuiControlProfile));
+   addField("HoverFrame",     TypeS32,           Offset(mHoverFrame, GuiControlProfile));
+   addField("DownImage",      TypeImageAssetPtr, Offset(mImageDownAsset, GuiControlProfile));
+   addField("DownFrame",      TypeS32,           Offset(mDownFrame, GuiControlProfile));
+   addField("InactiveImage",  TypeImageAssetPtr, Offset(mImageInactiveAsset, GuiControlProfile));
+   addField("InactiveFrame",  TypeS32,           Offset(mInactiveFrame, GuiControlProfile));
 
    addField("soundButtonDown", TypeAudioAssetPtr,  Offset(mSoundButtonDown, GuiControlProfile));
    addField("soundButtonOver", TypeAudioAssetPtr,  Offset(mSoundButtonOver, GuiControlProfile));

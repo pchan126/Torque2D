@@ -56,10 +56,10 @@ IMPLEMENT_CONOBJECT(GuiImageButtonCtrl);
 //-----------------------------------------------------------------------------
 
 GuiImageButtonCtrl::GuiImageButtonCtrl() :
-    mNormalAssetId( StringTable->EmptyString ),
-    mHoverAssetId( StringTable->EmptyString ),
-    mDownAssetId( StringTable->EmptyString ),
-    mInactiveAssetId( StringTable->EmptyString ),
+//    mNormalAssetId( StringTable->EmptyString ),
+//    mHoverAssetId( StringTable->EmptyString ),
+//    mDownAssetId( StringTable->EmptyString ),
+//    mInactiveAssetId( StringTable->EmptyString ),
    mLeftBorder(0),
    mRightBorder(0),
    mTopBorder(0),
@@ -75,10 +75,10 @@ void GuiImageButtonCtrl::initPersistFields()
     // Call parent.
     Parent::initPersistFields();
 
-    addProtectedField("NormalImage", TypeAssetId, Offset(mNormalAssetId, GuiImageButtonCtrl), &setNormalImage, &getNormalImage, "The image asset Id used for the normal button state.");
-    addProtectedField("HoverImage", TypeAssetId, Offset(mHoverAssetId, GuiImageButtonCtrl), &setHoverImage, &getHoverImage, "The image asset Id used for the hover button state.");
-    addProtectedField("DownImage", TypeAssetId, Offset(mDownAssetId, GuiImageButtonCtrl), &setDownImage, &getDownImage, "The image asset Id used for the Down button state.");
-    addProtectedField("InactiveImage", TypeAssetId, Offset(mInactiveAssetId, GuiImageButtonCtrl), &setInactiveImage, &getInactiveImage, "The image asset Id used for the inactive button state.");
+//    addProtectedField("NormalImage", TypeAssetId, Offset(mNormalAssetId, GuiImageButtonCtrl), &setNormalImage, &getNormalImage, "The image asset Id used for the normal button state.");
+//    addProtectedField("HoverImage", TypeAssetId, Offset(mHoverAssetId, GuiImageButtonCtrl), &setHoverImage, &getHoverImage, "The image asset Id used for the hover button state.");
+//    addProtectedField("DownImage", TypeAssetId, Offset(mDownAssetId, GuiImageButtonCtrl), &setDownImage, &getDownImage, "The image asset Id used for the Down button state.");
+//    addProtectedField("InactiveImage", TypeAssetId, Offset(mInactiveAssetId, GuiImageButtonCtrl), &setInactiveImage, &getInactiveImage, "The image asset Id used for the inactive button state.");
 
     addProtectedField("LeftBorder", TypeS32, Offset(mLeftBorder, GuiImageButtonCtrl), &setLeftBorder, &defaultProtectedGetFn, &writeLeftBorder, "");
     addProtectedField("RightBorder", TypeS32, Offset(mRightBorder, GuiImageButtonCtrl), &setRightBorder, &defaultProtectedGetFn, &writeRightBorder, "");
@@ -94,26 +94,26 @@ bool GuiImageButtonCtrl::onWake()
     if (!Parent::onWake())
         return false;
 
-    // Is only the "normal" image specified?
-    if (    mNormalAssetId != StringTable->EmptyString &&
-            mHoverAssetId == StringTable->EmptyString &&
-            mDownAssetId == StringTable->EmptyString &&
-            mInactiveAssetId == StringTable->EmptyString )
-    {
-        // Yes, so use it for all states.
-        mImageNormalAsset = mNormalAssetId;
-        mImageHoverAsset = mNormalAssetId;
-        mImageDownAsset = mNormalAssetId;
-        mImageInactiveAsset = mNormalAssetId;
-    }
-    else
-    {
-        // No, so assign individual states.
-        mImageNormalAsset = mNormalAssetId;
-        mImageHoverAsset = mHoverAssetId;
-        mImageDownAsset = mDownAssetId;
-        mImageInactiveAsset = mInactiveAssetId;
-    }
+//    // Is only the "normal" image specified?
+//    if (    mNormalAssetId != StringTable->EmptyString &&
+//            mHoverAssetId == StringTable->EmptyString &&
+//            mDownAssetId == StringTable->EmptyString &&
+//            mInactiveAssetId == StringTable->EmptyString )
+//    {
+//        // Yes, so use it for all states.
+//        mImageNormalAsset = mNormalAssetId;
+//        mImageHoverAsset = mNormalAssetId;
+//        mImageDownAsset = mNormalAssetId;
+//        mImageInactiveAsset = mNormalAssetId;
+//    }
+//    else
+//    {
+//        // No, so assign individual states.
+//        mImageNormalAsset = mNormalAssetId;
+//        mImageHoverAsset = mHoverAssetId;
+//        mImageDownAsset = mDownAssetId;
+//        mImageInactiveAsset = mInactiveAssetId;
+//    }
    
     return true;
 }
@@ -123,10 +123,10 @@ bool GuiImageButtonCtrl::onWake()
 void GuiImageButtonCtrl::onSleep()
 {
     // Clear assets.
-    mImageNormalAsset.clear();
-    mImageHoverAsset.clear();
-    mImageDownAsset.clear();
-    mImageInactiveAsset.clear();
+//    mImageNormalAsset.clear();
+//    mImageHoverAsset.clear();
+//    mImageDownAsset.clear();
+//    mImageInactiveAsset.clear();
 
     // Call parent.
     Parent::onSleep();
@@ -134,75 +134,75 @@ void GuiImageButtonCtrl::onSleep()
 
 //-----------------------------------------------------------------------------
 
-void GuiImageButtonCtrl::setNormalImage( const char* pImageAssetId )
-{
-    // Sanity!
-    AssertFatal( pImageAssetId != nullptr, "Cannot use a NULL asset Id." );
-
-    // Fetch the asset Id.
-    mNormalAssetId = StringTable->insert(pImageAssetId);
-
-    // Assign asset if awake.
-    if ( isAwake() )
-        mImageNormalAsset = mNormalAssetId;
-
-    // Update control.
-    setUpdate();
-}
-
-//-----------------------------------------------------------------------------
-
-void GuiImageButtonCtrl::setHoverImage( const char* pImageAssetId )
-{
-    // Sanity!
-    AssertFatal( pImageAssetId != nullptr, "Cannot use a NULL asset Id." );
-
-    // Fetch the asset Id.
-    mHoverAssetId = StringTable->insert(pImageAssetId);
-
-    // Assign asset if awake.
-    if ( isAwake() )
-        mImageHoverAsset = mHoverAssetId;
-
-    // Update control.
-    setUpdate();
-}
+//void GuiImageButtonCtrl::setNormalImage( const char* pImageAssetId )
+//{
+//    // Sanity!
+//    AssertFatal( pImageAssetId != nullptr, "Cannot use a NULL asset Id." );
+//
+//    // Fetch the asset Id.
+//    mNormalAssetId = StringTable->insert(pImageAssetId);
+//
+//    // Assign asset if awake.
+//    if ( isAwake() )
+//        mImageNormalAsset = mNormalAssetId;
+//
+//    // Update control.
+//    setUpdate();
+//}
 
 //-----------------------------------------------------------------------------
 
-void GuiImageButtonCtrl::setDownImage( const char* pImageAssetId )
-{
-    // Sanity!
-    AssertFatal( pImageAssetId != NULL, "Cannot use a NULL asset Id." );
-
-    // Fetch the asset Id.
-    mDownAssetId = StringTable->insert(pImageAssetId);
-
-    // Assign asset if awake.
-    if ( isAwake() )
-        mImageDownAsset = mDownAssetId;
-
-    // Update control.
-    setUpdate();
-}
+//void GuiImageButtonCtrl::setHoverImage( const char* pImageAssetId )
+//{
+//    // Sanity!
+//    AssertFatal( pImageAssetId != nullptr, "Cannot use a NULL asset Id." );
+//
+//    // Fetch the asset Id.
+//    mHoverAssetId = StringTable->insert(pImageAssetId);
+//
+//    // Assign asset if awake.
+//    if ( isAwake() )
+//        mImageHoverAsset = mHoverAssetId;
+//
+//    // Update control.
+//    setUpdate();
+//}
 
 //-----------------------------------------------------------------------------
 
-void GuiImageButtonCtrl::setInactiveImage( const char* pImageAssetId )
-{
-    // Sanity!
-    AssertFatal( pImageAssetId != nullptr, "Cannot use a NULL asset Id." );
+//void GuiImageButtonCtrl::setDownImage( const char* pImageAssetId )
+//{
+//    // Sanity!
+//    AssertFatal( pImageAssetId != NULL, "Cannot use a NULL asset Id." );
+//
+//    // Fetch the asset Id.
+//    mDownAssetId = StringTable->insert(pImageAssetId);
+//
+//    // Assign asset if awake.
+//    if ( isAwake() )
+//        mImageDownAsset = mDownAssetId;
+//
+//    // Update control.
+//    setUpdate();
+//}
 
-    // Fetch the asset Id.
-    mInactiveAssetId = StringTable->insert(pImageAssetId);
+//-----------------------------------------------------------------------------
 
-    // Assign asset if awake.
-    if ( isAwake() )
-        mImageInactiveAsset = mInactiveAssetId;
-
-    // Update control.
-    setUpdate();
-}
+//void GuiImageButtonCtrl::setInactiveImage( const char* pImageAssetId )
+//{
+//    // Sanity!
+//    AssertFatal( pImageAssetId != nullptr, "Cannot use a NULL asset Id." );
+//
+//    // Fetch the asset Id.
+//    mInactiveAssetId = StringTable->insert(pImageAssetId);
+//
+//    // Assign asset if awake.
+//    if ( isAwake() )
+//        mImageInactiveAsset = mInactiveAssetId;
+//
+//    // Update control.
+//    setUpdate();
+//}
 
 //-----------------------------------------------------------------------------
 
@@ -230,28 +230,28 @@ void GuiImageButtonCtrl::onRender(Point2I offset, const RectI& updateRect)
         case NORMAL:
             {
                 // Render the "normal" asset.
-                renderButton(mImageNormalAsset, 0, offset, updateRect);
+                renderButton( mProfile->mImageNormalAsset, mProfile->mNormalFrame, offset, updateRect);
 
             } break;
 
         case HOVER:
             {
                 // Render the "hover" asset.
-                renderButton(mImageHoverAsset, 0, offset, updateRect);
+                renderButton( mProfile->mImageHoverAsset, mProfile->mHoverFrame, offset, updateRect);
 
             } break;
 
         case DOWN:
             {
                 // Render the "down" asset.
-                renderButton(mImageDownAsset, 0, offset, updateRect);
+                renderButton( mProfile->mImageDownAsset, mProfile->mDownFrame, offset, updateRect);
 
             }  break;
 
         case INACTIVE:
             {
                 // Render the "inactive" asset.
-                renderButton(mImageInactiveAsset, 0, offset, updateRect);
+                renderButton( mProfile->mImageInactiveAsset, mProfile->mInactiveFrame, offset, updateRect);
 
             } break;
     }

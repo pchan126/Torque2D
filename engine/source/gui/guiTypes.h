@@ -51,6 +51,8 @@
 #include "audio/audioAsset.h"
 #endif
 
+#include "2d/assets/ImageAsset.h"
+
 #include "graphics/gFont.h"
 
 class GBitmap;
@@ -428,6 +430,16 @@ public:
    GFXTexHandle mTextureHandle;                   ///< Texture handle for the control
    Vector<RectI> mBitmapArrayRects;                ///< Used for controls which use an array of bitmaps such as checkboxes
 
+   // image members
+   AssetPtr<ImageAsset>  mImageNormalAsset;
+   S32 mNormalFrame;
+   AssetPtr<ImageAsset>  mImageHoverAsset;
+   S32 mHoverFrame;
+   AssetPtr<ImageAsset>  mImageDownAsset;
+   S32 mDownFrame;
+   AssetPtr<ImageAsset>  mImageInactiveAsset;
+   S32 mInactiveFrame;
+   
    // sound members
    AssetPtr<AudioAsset> mSoundButtonDown;                 ///< Sound played when the object is "down" ie a button is pushed
    AssetPtr<AudioAsset> mSoundButtonOver;                 ///< Sound played when the mouse is over the object

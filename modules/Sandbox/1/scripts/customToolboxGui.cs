@@ -286,7 +286,7 @@ function addNumericOption( %label, %min, %max, %step, %callback, %startingValue,
         VertSizing = "relative";
         canSaveDynamicFields = "0";
         isContainer = "0";
-        Profile = "GuiDefaultProfile";
+        Profile = "GuiMinusButtonProfile";
         Position = %spinnerPosition;
         Extent = Sandbox.spinnerExtent;
         MinExtent = "8 2";
@@ -299,10 +299,6 @@ function addNumericOption( %label, %min, %max, %step, %callback, %startingValue,
         groupNum = "-1";
         buttonType = "PushButton";
         useMouseEvents = "0";
-        NormalImage = "Sandbox:minusButtonNormal";
-        HoverImage = "Sandbox:minusButtonHover";
-        DownImage = "Sandbox:minusButtonDown";
-        InactiveImage = "Sandbox:minusButtonInactive";
     };
 
     %controlPosition = (getWord(Sandbox.spinnerExtent, 0) + 1) SPC Sandbox.customLabelSpacing;
@@ -338,7 +334,7 @@ function addNumericOption( %label, %min, %max, %step, %callback, %startingValue,
         Step = %step;
         canSaveDynamicFields = "0";
         isContainer = "0";
-        Profile = "GuiDefaultProfile";
+        Profile = "GuiPlusButtonProfile";
         Position = %spinnerPosition;
         Extent = Sandbox.spinnerExtent;
         MinExtent = "8 2";
@@ -351,10 +347,6 @@ function addNumericOption( %label, %min, %max, %step, %callback, %startingValue,
         groupNum = "-1";
         buttonType = "PushButton";
         useMouseEvents = "0";
-        NormalImage = "Sandbox:plusButtonNormal";
-        HoverImage = "Sandbox:plusButtonHover";
-        DownImage = "Sandbox:plusButtonDown";
-        InactiveImage = "Sandbox:plusButtonInactive";
     };
 
     %textEdit.validate = %textEdit @ ".updateToy();";
@@ -599,7 +591,7 @@ function addSelectionOption( %entries, %label, %maxDisplay, %callback, %shouldRe
     {
         canSaveDynamicFields = "0";
         isContainer = "0";
-        Profile = "GuiDefaultProfile";
+        Profile = "GuiNorthArrowProfile";
         HorizSizing = "relative";
         VertSizing = "relative";
         Position = %buttonX SPC %upButtonY;
@@ -611,9 +603,6 @@ function addSelectionOption( %entries, %label, %maxDisplay, %callback, %shouldRe
         groupNum = "-1";
         buttonType = "PushButton";
         useMouseEvents = "0";
-        NormalImage = "Sandbox:northArrowNormal";
-        HoverImage = "Sandbox:northArrowHover";
-        DownImage = "Sandbox:northArrowDown";
         toolTipProfile = "GuiToolTipProfile";
         toolTip = %tooltipText;       
     };
@@ -625,7 +614,7 @@ function addSelectionOption( %entries, %label, %maxDisplay, %callback, %shouldRe
     {
         canSaveDynamicFields = "0";
         isContainer = "0";
-        Profile = "GuiDefaultProfile";
+        Profile = "GuiSouthArrowProfile";
         HorizSizing = "relative";
         VertSizing = "relative";
         Position = %buttonX SPC %downButtonY;
@@ -637,9 +626,6 @@ function addSelectionOption( %entries, %label, %maxDisplay, %callback, %shouldRe
         groupNum = "-1";
         buttonType = "PushButton";
         useMouseEvents = "0";
-        NormalImage = "Sandbox:southArrowNormal";
-        HoverImage = "Sandbox:southArrowHover";
-        DownImage = "Sandbox:southArrowDown";
         toolTipProfile = "GuiToolTipProfile";
         toolTip = %tooltipText;        
     };

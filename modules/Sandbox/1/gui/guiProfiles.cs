@@ -28,6 +28,8 @@ $labelFontSize = 60;
 
 //-----------------------------------------------------------------------------
 
+echo ("guiProfiles");
+
 new GuiCursor(DefaultCursor)
 {
     hotSpot = "4 4";
@@ -81,12 +83,60 @@ if(!isObject(GuiDefaultProfile)) new GuiControlProfile (GuiDefaultProfile)
     numbersOnly = false;
     cursorColor = "0 0 0 255";
 
+//   NormalImage="Sandbox:plusButtonNormal";
+//   HoverImage="Sandbox:plusButtonHover";
+//   DownImage="Sandbox:plusButtonDown";
+//   InactiveImage="Sandbox:plusButtonInactive";
     // sounds
-    soundButtonDown = $ButtonSound.fileName;
+//    soundButtonDown = $ButtonSound.fileName;
+    soundButtonDown = "ToyAssets:buttonSound";
+//    soundButtonDown = "";
     soundButtonOver = "";
 };
 
 // ----------------------------------------------------------------------------
+
+if (!isObject(GuiPlusButtonProfile)) new GuiControlProfile (GuiPlusButtonProfile : GuiDefaultProfile)
+{
+   NormalImage="Sandbox:plusButtonNormal";
+   HoverImage="Sandbox:plusButtonHover";
+   DownImage="Sandbox:plusButtonDown";
+   InactiveImage="Sandbox:plusButtonInactive";
+};
+
+// ----------------------------------------------------------------------------
+
+if (!isObject(GuiMinusButtonProfile)) new GuiControlProfile (GuiMinusButtonProfile : GuiDefaultProfile)
+{
+   NormalImage="Sandbox:minusButtonNormal";
+   HoverImage="Sandbox:minusButtonHover";
+   DownImage="Sandbox:minusButtonDown";
+   InactiveImage="Sandbox:minusButtonInactive";
+};
+
+// ----------------------------------------------------------------------------
+
+if (!isObject(GuiNorthArrowProfile)) new GuiControlProfile (GuiNorthArrowProfile : GuiDefaultProfile)
+{
+   NormalImage="Sandbox:northArrowNormal";
+   HoverImage="Sandbox:northArrowHover";
+   DownImage="Sandbox:northArrowDown" ;
+   InactiveImage="Sandbox:northArrowDown";
+};
+
+
+// ----------------------------------------------------------------------------
+
+if (!isObject(GuiSouthArrowProfile)) new GuiControlProfile (GuiSouthArrowProfile : GuiDefaultProfile)
+{
+   NormalImage="Sandbox:southArrowNormal";
+   HoverImage="Sandbox:southArrowHover";
+   DownImage="Sandbox:southArrowDown";
+   InactiveImage="Sandbox:southArrowDown";
+};
+
+// ----------------------------------------------------------------------------
+
 
 if (!isObject(GuiTransparentProfile)) new GuiControlProfile (GuiTransparentProfile : GuiDefaultProfile)
 {
@@ -390,6 +440,21 @@ if (!isObject(GuiButtonProfile)) new GuiControlProfile (GuiButtonProfile)
     canKeyFocus = false;
     fontType = $platformFontType;
     bitmap = "^Sandbox/gui/images/smallButtonContainer";
+};
+
+//-----------------------------------------------------------------------------
+
+if (!isObject(GuiProgressProfile)) new GuiControlProfile (GuiProgressProfile)
+{
+    opaque = true;
+    border = -1;
+    fontColor = "white";
+    fontColorHL = "229 229 229 255";
+    justify = "left";
+    canKeyFocus = false;
+    fontType = $platformFontType;
+    bitmap = "^Sandbox/gui/images/smallButtonContainer";
+    textOffset = "10 5";
 };
 
 //-----------------------------------------------------------------------------

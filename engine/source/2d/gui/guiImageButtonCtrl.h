@@ -46,15 +46,15 @@ private:
    typedef GuiButtonCtrl Parent;
 
 protected:
-    StringTableEntry                mNormalAssetId;
-    StringTableEntry                mHoverAssetId;
-    StringTableEntry                mDownAssetId;
-    StringTableEntry                mInactiveAssetId;
-
-    AssetPtr<ImageAsset>  mImageNormalAsset;
-    AssetPtr<ImageAsset>  mImageHoverAsset;
-    AssetPtr<ImageAsset>  mImageDownAsset;
-    AssetPtr<ImageAsset>  mImageInactiveAsset;
+//    StringTableEntry                mNormalAssetId;
+//    StringTableEntry                mHoverAssetId;
+//    StringTableEntry                mDownAssetId;
+//    StringTableEntry                mInactiveAssetId;
+//
+//    AssetPtr<ImageAsset>  mImageNormalAsset;
+//    AssetPtr<ImageAsset>  mImageHoverAsset;
+//    AssetPtr<ImageAsset>  mImageDownAsset;
+//    AssetPtr<ImageAsset>  mImageInactiveAsset;
    
     S32 mLeftBorder;
     S32 mRightBorder;
@@ -80,14 +80,14 @@ public:
 
    static void initPersistFields();
 
-   void setNormalImage( const char* pImageAssetId );
-   inline StringTableEntry getNormalImage( void ) const { return mNormalAssetId; }
-   void setHoverImage( const char* pImageAssetId );
-   inline StringTableEntry getHoverImage( void ) const { return mHoverAssetId; }
-   void setDownImage( const char* pImageAssetId );
-   inline StringTableEntry getDownImage( void ) const { return mDownAssetId; }
-   void setInactiveImage( const char* pImageAssetId );
-   inline StringTableEntry getInactiveImage( void ) const { return mInactiveAssetId; }
+//   void setNormalImage( const char* pImageAssetId );
+//   inline StringTableEntry getNormalImage( void ) const { return mNormalAssetId; }
+//   void setHoverImage( const char* pImageAssetId );
+//   inline StringTableEntry getHoverImage( void ) const { return mHoverAssetId; }
+//   void setDownImage( const char* pImageAssetId );
+//   inline StringTableEntry getDownImage( void ) const { return mDownAssetId; }
+//   void setInactiveImage( const char* pImageAssetId );
+//   inline StringTableEntry getInactiveImage( void ) const { return mInactiveAssetId; }
 
    void setLeftBorder( const S32 leftBorder );
    inline S32 getLeftBorder( void ) const { return mLeftBorder; }
@@ -102,14 +102,14 @@ public:
    DECLARE_CONOBJECT(GuiImageButtonCtrl);
 
 protected:
-    static bool setNormalImage(void* obj, const char* data) { static_cast<GuiImageButtonCtrl*>(obj)->setNormalImage( data ); return false; }
-    static const char* getNormalImage(void* obj, const char* data) { return static_cast<GuiImageButtonCtrl*>(obj)->getNormalImage(); }
-    static bool setHoverImage(void* obj, const char* data) { static_cast<GuiImageButtonCtrl*>(obj)->setHoverImage( data ); return false; }
-    static const char* getHoverImage(void* obj, const char* data) { return static_cast<GuiImageButtonCtrl*>(obj)->getHoverImage(); }
-    static bool setDownImage(void* obj, const char* data) { static_cast<GuiImageButtonCtrl*>(obj)->setDownImage( data ); return false; }
-    static const char* getDownImage(void* obj, const char* data) { return static_cast<GuiImageButtonCtrl*>(obj)->getDownImage(); }
-    static bool setInactiveImage(void* obj, const char* data) { static_cast<GuiImageButtonCtrl*>(obj)->setInactiveImage( data ); return false; }
-    static const char* getInactiveImage(void* obj, const char* data) { return static_cast<GuiImageButtonCtrl*>(obj)->getInactiveImage(); }
+//    static bool setNormalImage(void* obj, const char* data) { static_cast<GuiImageButtonCtrl*>(obj)->setNormalImage( data ); return false; }
+//    static const char* getNormalImage(void* obj, const char* data) { return static_cast<GuiImageButtonCtrl*>(obj)->getNormalImage(); }
+//    static bool setHoverImage(void* obj, const char* data) { static_cast<GuiImageButtonCtrl*>(obj)->setHoverImage( data ); return false; }
+//    static const char* getHoverImage(void* obj, const char* data) { return static_cast<GuiImageButtonCtrl*>(obj)->getHoverImage(); }
+//    static bool setDownImage(void* obj, const char* data) { static_cast<GuiImageButtonCtrl*>(obj)->setDownImage( data ); return false; }
+//    static const char* getDownImage(void* obj, const char* data) { return static_cast<GuiImageButtonCtrl*>(obj)->getDownImage(); }
+//    static bool setInactiveImage(void* obj, const char* data) { static_cast<GuiImageButtonCtrl*>(obj)->setInactiveImage( data ); return false; }
+//    static const char* getInactiveImage(void* obj, const char* data) { return static_cast<GuiImageButtonCtrl*>(obj)->getInactiveImage(); }
 
     static bool setLeftBorder( void* obj, const char* data )               { static_cast<GuiImageButtonCtrl*>(obj)->setLeftBorder(dAtoi(data)); return false; }
     static bool writeLeftBorder( void* obj, StringTableEntry pFieldName )  { GuiImageButtonCtrl* imageButton = static_cast<GuiImageButtonCtrl*>(obj); return imageButton->getLeftBorder() != 0; }

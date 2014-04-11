@@ -225,7 +225,7 @@
             command="ToyCategorySelectList.previousCategory();"
             canSaveDynamicFields="0"
             isContainer="0"
-            Profile="GuiDefaultProfile"
+            Profile="GuiMinusButtonProfile"
             HorizSizing="relative"
             VertSizing="relative"
             Position="0 18"
@@ -237,17 +237,13 @@
             hovertime="1000"
             groupNum="-1"
             buttonType="PushButton"
-            useMouseEvents="0"
-            NormalImage="@asset=Sandbox:minusButtonNormal"
-            HoverImage="@asset=Sandbox:minusButtonHover"
-            DownImage="@asset=Sandbox:minusButtonDown"
-            InactiveImage="@asset=Sandbox:minusButtonInactive" />
+            useMouseEvents="0" />
         <GuiImageButtonCtrl
             Name="CategoryUpButton"
             command="ToyCategorySelectList.nextCategory();"
             canSaveDynamicFields="0"
             isContainer="0"
-            Profile="GuiDefaultProfile"
+            Profile="GuiPlusButtonProfile"
             HorizSizing="relative"
             VertSizing="relative"
             Position="192 18"
@@ -259,10 +255,7 @@
             groupNum="-1"
             buttonType="PushButton"
             useMouseEvents="0"
-            NormalImage="@asset=Sandbox:plusButtonNormal"
-            HoverImage="@asset=Sandbox:plusButtonHover"
-            DownImage="@asset=Sandbox:plusButtonDown"
-            InactiveImage="@asset=Sandbox:plusButtonInactive" />
+             />
 			
 		<!-- Toy Selection -->        
 		<GuiImageButtonCtrl
@@ -270,7 +263,7 @@
 			canSaveDynamicFields="0"
 			command="ToyListScroller.scrollToPrevious();"
 			isContainer="0"
-			Profile="GuiDefaultProfile"
+			Profile="GuiNorthArrowProfile"
 			HorizSizing="relative"
 			VertSizing="relative"
 			Position="70 65"
@@ -281,10 +274,7 @@
 			Active="1"
 			groupNum="-1"
 			buttonType="PushButton"
-			useMouseEvents="0"
-			NormalImage="@asset=Sandbox:northArrowNormal"
-			HoverImage="@asset=Sandbox:northArrowHover"
-			DownImage="@asset=Sandbox:northArrowDown" />
+			useMouseEvents="0"      />
 			
 		<GuiImageButtonCtrl
 			Name="NextToyButton"
@@ -303,11 +293,8 @@
 			hovertime="1000"
 			groupNum="-1"
 			buttonType="PushButton"
-			useMouseEvents="0"
-			NormalImage="@asset=Sandbox:southArrowNormal"
-			HoverImage="@asset=Sandbox:southArrowHover"
-			DownImage="@asset=Sandbox:southArrowDown" />
-		
+			useMouseEvents="0" />
+
 		<!-- Toy Selection Scrollbox --> 
         <GuiControl
             Name="ToyScrollerContainer"
