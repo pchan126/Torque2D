@@ -52,15 +52,46 @@ typedef U32 SimTime;
 ///       scheduled events.
 class SimEvent
 {
-  public:
-   SimEvent *nextEvent;     ///< Linked list details - pointer to next item in the list.
+   public:
+   struct i_match
+   {
+   private:
+      U32 n;
+   public:
+      i_match( U32 i ) : n(i) {}
+      bool operator () ( const std::shared_ptr<SimEvent> c )
+      {
+         return (c->sequenceCount == n);
+      }
+   };
+
+   struct e_match
+   {
+   private:
+      SimObject *obj;
+   public:
+      e_match( SimObject *e) : obj(e) {}
+      bool operator () (const std::shared_ptr<SimEvent> c)
+      {
+         return (c->destObject == obj);
+      }
+   };
+
+    static bool compare_time (const std::shared_ptr<SimEvent>& first, const std::shared_ptr<SimEvent>& second)
+    {
+        if (first->time == second->time)
+            return ( first->sequenceCount < second->sequenceCount );
+
+        return ( first->time < second->time );
+    }
+
    SimTime startTime;       ///< When the event was posted.
    SimTime time;            ///< When the event is scheduled to occur.
    U32 sequenceCount;       ///< Unique ID. These are assigned sequentially based on order
                             ///  of addition to the list.
    SimObject *destObject;   ///< Object on which this event will be applied.
 
-   SimEvent() { destObject = NULL; }
+   SimEvent() { destObject = nullptr; }
    virtual ~SimEvent() {}   ///< Destructor
                             ///
                             /// A dummy virtual destructor is required

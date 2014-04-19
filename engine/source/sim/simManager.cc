@@ -29,6 +29,7 @@
 #include "io/fileObject.h"
 #include "console/consoleInternal.h"
 #include "memory/safeDelete.h"
+#include <forward_list>
 
 //---------------------------------------------------------------------------
 
@@ -43,7 +44,7 @@ SimTime gCurrentTime;
 SimTime gTargetTime;
 
 std::recursive_mutex gEventQueueMutex;
-SimEvent *gEventQueue;
+std::forward_list<std::shared_ptr<SimEvent>> gEventQueue;
 U32 gEventSequence;
 
 //---------------------------------------------------------------------------
@@ -54,20 +55,13 @@ void initEventQueue()
    gCurrentTime = 0;
    gTargetTime = 0;
    gEventSequence = 1;
-   gEventQueue = nullptr;
 }
 
 void shutdownEventQueue()
 {
    // Delete all pending events
    std::lock_guard<std::recursive_mutex> lock(gEventQueueMutex);
-   SimEvent *walk = gEventQueue;
-   while(walk)
-   {
-      SimEvent *temp = walk->nextEvent;
-      delete walk;
-      walk = temp;
-   }
+   gEventQueue.clear();
 }
 
 //---------------------------------------------------------------------------
@@ -78,8 +72,6 @@ U32 postEvent(SimObject *destObject, SimEvent* event,U32 time)
     AssertFatal(time == -1 || time >= getCurrentTime(),
         "Sim::postEvent: Cannot go back in time. (flux capacitor unavailable -- BJG)");
    AssertFatal(destObject, "Destination object for event doesn't exist.");
-
-//    std::lock_guard<std::mutex> lock(gEventQueueMutex);
 
    if( time == -1 )
       time = gCurrentTime;
@@ -93,25 +85,17 @@ U32 postEvent(SimObject *destObject, SimEvent* event,U32 time)
       delete event;
       return InvalidEventId;
    }
+
    event->sequenceCount = gEventSequence++;
-   SimEvent **walk = &gEventQueue;
-   SimEvent *current;
-   
-   while((current = *walk) != nullptr && (current->time < event->time))
-      walk = &(current->nextEvent);
-   
-   // [tom, 6/24/2005] This ensures that SimEvents are dispatched in the same order that they are posted.
-   // This is needed to ensure Con::threadSafeExecute() executes script code in the correct order.
-   while((current = *walk) != nullptr && (current->time == event->time))
-      walk = &(current->nextEvent);
-   
-   event->nextEvent = current;
-   *walk = event;
+
+   gEventQueue.emplace_front(event);
+   gEventQueue.sort(SimEvent::compare_time);
 
    U32 seqCount = event->sequenceCount;
 
    return seqCount;
 }
+
 
 //---------------------------------------------------------------------------
 // event cancellation
@@ -120,39 +104,13 @@ void cancelEvent(U32 eventSequence)
 {
     std::lock_guard<std::recursive_mutex> lock(gEventQueueMutex);
 
-   SimEvent **walk = &gEventQueue;
-   SimEvent *current;
-   
-   while((current = *walk) != nullptr)
-   {
-      if(current->sequenceCount == eventSequence)
-      {
-         *walk = current->nextEvent;
-         delete current;
-         return;
-      }
-      else
-         walk = &(current->nextEvent);
-   }
+   gEventQueue.remove_if(SimEvent::i_match(eventSequence));
 }
 
 void cancelPendingEvents(SimObject *obj)
 {
     std::lock_guard<std::recursive_mutex> lock(gEventQueueMutex);
-
-   SimEvent **walk = &gEventQueue;
-   SimEvent *current;
-   
-   while((current = *walk) != nullptr)
-   {
-      if(current->destObject == obj)
-      {
-         *walk = current->nextEvent;
-         delete current;
-      }
-      else
-         walk = &(current->nextEvent);
-   }
+   gEventQueue.remove_if(SimEvent::e_match(obj));
 }
 
 //---------------------------------------------------------------------------
@@ -161,10 +119,12 @@ void cancelPendingEvents(SimObject *obj)
 bool isEventPending(U32 eventSequence)
 {
     std::lock_guard<std::recursive_mutex> lock(gEventQueueMutex);
-
-   for(SimEvent *walk = gEventQueue; walk; walk = walk->nextEvent)
+   
+   for (auto walk: gEventQueue)
+   {
       if(walk->sequenceCount == eventSequence)
          return true;
+   }
 
    return false;
 }
@@ -172,30 +132,34 @@ bool isEventPending(U32 eventSequence)
 U32 getEventTimeLeft(U32 eventSequence)
 {
     std::lock_guard<std::recursive_mutex> lock(gEventQueueMutex);
-
-   for(SimEvent *walk = gEventQueue; walk; walk = walk->nextEvent)
+   for (auto walk: gEventQueue)
+   {
       if(walk->sequenceCount == eventSequence)
       {
          SimTime t = walk->time - getCurrentTime();
          return t;
       }
-
+   }
    return 0;
 }
 
 U32 getScheduleDuration(U32 eventSequence)
 {
-   for(SimEvent *walk = gEventQueue; walk; walk = walk->nextEvent)
+   for (auto walk: gEventQueue)
+   {
       if(walk->sequenceCount == eventSequence)
          return (walk->time-walk->startTime);
+   }
    return 0;
 }
 
 U32 getTimeSinceStart(U32 eventSequence)
 {
-   for(SimEvent *walk = gEventQueue; walk; walk = walk->nextEvent)
+   for (auto walk: gEventQueue)
+   {
       if(walk->sequenceCount == eventSequence)
          return (getCurrentTime()-walk->startTime);
+   }
    return 0;
 }
 
@@ -208,20 +172,22 @@ void advanceToTime(SimTime targetTime)
 
     std::lock_guard<std::recursive_mutex> lock(gEventQueueMutex);
    gTargetTime = targetTime;
-   while(gEventQueue && gEventQueue->time <= targetTime)
+   
+   while (!gEventQueue.empty() && gEventQueue.front()->time <= targetTime)
    {
-      SimEvent *event = gEventQueue;
-      gEventQueue = gEventQueue->nextEvent;
-      AssertFatal(event->time >= gCurrentTime,
+      AssertFatal(gEventQueue.front()->time >= gCurrentTime,
             "SimEventQueue::pop: Cannot go back in time (flux capacitor not installed - BJG).");
-      gCurrentTime = event->time;
-      SimObject *obj = event->destObject;
+      gCurrentTime = gEventQueue.front()->time;
+      SimObject *obj = gEventQueue.front()->destObject;
 
       if(!obj->isDeleted())
-         event->process(obj);
-      delete event;
+      {
+         gEventQueue.front()->process(obj);
+      }
+
+       gEventQueue.pop_front();
    }
-    gCurrentTime = targetTime;
+   gCurrentTime = targetTime;
 }
 
 void advanceTime(SimTime delta)
@@ -244,14 +210,14 @@ U32 getTargetTime()
 //---------------------------------------------------------------------------
 
 SimGroup *gRootGroup = nullptr;
-SimManagerNameDictionary *gNameDictionary = nullptr;
-SimIdDictionary *gIdDictionary;
+std::unique_ptr<SimManagerNameDictionary> gNameDictionary = nullptr;
+std::unique_ptr<SimIdDictionary> gIdDictionary = nullptr;
 U32 gNextObjectId;
 
 void initRoot()
 {
-   gIdDictionary = new SimIdDictionary;
-   gNameDictionary = new SimManagerNameDictionary;
+   gIdDictionary = std::unique_ptr<SimIdDictionary>(new SimIdDictionary);
+   gNameDictionary = std::unique_ptr<SimManagerNameDictionary>(new SimManagerNameDictionary);
 
    gRootGroup = new SimGroup();
    gRootGroup->setId(RootGroupId);
@@ -265,8 +231,8 @@ void shutdownRoot()
 {
    gRootGroup->deleteObject();
 
-   SAFE_DELETE(gNameDictionary);
-   SAFE_DELETE(gIdDictionary);
+   gNameDictionary = nullptr;
+   gIdDictionary = nullptr;
 }
 
 //---------------------------------------------------------------------------
@@ -325,89 +291,89 @@ SimGroup *getRootGroup()
    return gRootGroup;
 }
 
-   String getUniqueName( const char *inName )
+String getUniqueName( const char *inName )
+{
+   String outName( inName );
+   
+   if ( outName.isEmpty() )
+      return String::EmptyString;
+   
+   SimObject *dummy;
+   
+   if ( !Sim::findObject( outName, dummy ) )
+      return outName;
+   
+   S32 suffixNumb = -1;
+   String nameStr( String::GetTrailingNumber( outName, suffixNumb ) );
+   suffixNumb = mAbs( suffixNumb ) + 1;
+   
+#define MAX_TRIES 100
+   
+   for ( U32 i = 0; i < MAX_TRIES; i++ )
    {
-      String outName( inName );
-      
-      if ( outName.isEmpty() )
-         return String::EmptyString;
-      
-      SimObject *dummy;
+      outName = String::ToString( "%s%d", nameStr.c_str(), suffixNumb );
       
       if ( !Sim::findObject( outName, dummy ) )
          return outName;
       
-      S32 suffixNumb = -1;
-      String nameStr( String::GetTrailingNumber( outName, suffixNumb ) );
-      suffixNumb = mAbs( suffixNumb ) + 1;
-      
-#define MAX_TRIES 100
-      
-      for ( U32 i = 0; i < MAX_TRIES; i++ )
-      {
-         outName = String::ToString( "%s%d", nameStr.c_str(), suffixNumb );
-         
-         if ( !Sim::findObject( outName, dummy ) )
-            return outName;
-         
-         suffixNumb++;
-      }
-      
-      Con::errorf( "Sim::getUniqueName( %s ) - failed after %d attempts", inName, MAX_TRIES );
-      return String::EmptyString;
+      suffixNumb++;
    }
    
-   String getUniqueInternalName( const char *inName, SimSet *inSet, bool searchChildren )
+   Con::errorf( "Sim::getUniqueName( %s ) - failed after %d attempts", inName, MAX_TRIES );
+   return String::EmptyString;
+}
+
+String getUniqueInternalName( const char *inName, SimSet *inSet, bool searchChildren )
+{
+   // Since SimSet::findObjectByInternalName operates with StringTableEntry(s)
+   // we have to muck up the StringTable with our attempts.
+   // But then again, so does everywhere else.
+   
+   StringTableEntry outName = StringTable->insert( inName );
+   
+   if ( !outName || !outName[0] )
+      return String::EmptyString;
+   
+   if ( !inSet->findObjectByInternalName( outName, searchChildren ) )
+      return String(outName);
+   
+   S32 suffixNumb = -1;
+   String nameStr( String::GetTrailingNumber( outName, suffixNumb ) );
+   suffixNumb++;
+   
+   static char tempStr[512];
+   
+#define MAX_TRIES 100
+   
+   for ( U32 i = 0; i < MAX_TRIES; i++ )
    {
-      // Since SimSet::findObjectByInternalName operates with StringTableEntry(s)
-      // we have to muck up the StringTable with our attempts.
-      // But then again, so does everywhere else.
-      
-      StringTableEntry outName = StringTable->insert( inName );
-      
-      if ( !outName || !outName[0] )
-         return String::EmptyString;
+      dSprintf( tempStr, 512, "%s%d", nameStr.c_str(), suffixNumb );
+      outName = StringTable->insert( tempStr );
       
       if ( !inSet->findObjectByInternalName( outName, searchChildren ) )
-         return String(outName);
+         return String(outName);         
       
-      S32 suffixNumb = -1;
-      String nameStr( String::GetTrailingNumber( outName, suffixNumb ) );
       suffixNumb++;
-      
-      static char tempStr[512];
-      
-#define MAX_TRIES 100
-      
-      for ( U32 i = 0; i < MAX_TRIES; i++ )
-      {
-         dSprintf( tempStr, 512, "%s%d", nameStr.c_str(), suffixNumb );
-         outName = StringTable->insert( tempStr );
-         
-         if ( !inSet->findObjectByInternalName( outName, searchChildren ) )
-            return String(outName);         
-         
-         suffixNumb++;
-      }
-      
-      Con::errorf( "Sim::getUniqueInternalName( %s ) - failed after %d attempts", inName, MAX_TRIES );
-      return String::EmptyString;
    }
    
-   bool isValidObjectName( const char* name )
-   {
-      if( !name || !name[ 0 ] )
-         return true; // Anonymous object.
-      
-      if( !dIsalpha( name[ 0 ] ) && name[ 0 ] != '_' )
+   Con::errorf( "Sim::getUniqueInternalName( %s ) - failed after %d attempts", inName, MAX_TRIES );
+   return String::EmptyString;
+}
+
+bool isValidObjectName( const char* name )
+{
+   if( !name || !name[ 0 ] )
+      return true; // Anonymous object.
+   
+   if( !dIsalpha( name[ 0 ] ) && name[ 0 ] != '_' )
+      return false;
+   
+   for( U32 i = 1; name[ i ]; ++ i )
+      if( !dIsalnum( name[ i ] ) && name[ i ] != '_' )
          return false;
-      
-      for( U32 i = 1; name[ i ]; ++ i )
-         if( !dIsalnum( name[ i ] ) && name[ i ] != '_' )
-            return false;
-      
-      return true;
-   }
+   
+   return true;
+}
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 
