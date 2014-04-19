@@ -895,7 +895,7 @@ void BehaviorComponent::write(std::iostream &stream, U32 tabStop, U32 flags /* =
         return;
     }
 
-    if( mBehaviors.size() == 0 )
+    if( mBehaviors.empty() )
     {
         Parent::write( stream, tabStop, flags );
         return;

@@ -129,7 +129,7 @@ void SimComponent::onRemove()
 
    // Delete all components
    Vector<SimComponent *>&componentList = lockComponentList();
-   while(componentList.size() > 0)
+   while( !componentList.empty() )
    {
       SimComponent *c = componentList[0];
       componentList.erase( componentList.begin() );

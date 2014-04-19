@@ -143,7 +143,7 @@ bool Net::init()
 
 void Net::shutdown()
 {
-   while (gPolledSockets.size() > 0)
+   while ( !gPolledSockets.empty() )
       closeConnectTo(gPolledSockets[0]->fd);
 
    closePort();
@@ -472,7 +472,7 @@ void Net::process()
 //   // process the polled sockets.  This blob of code performs functions
 //   // similar to WinsockProc in winNet.cc
 //
-//   if (gPolledSockets.size() == 0)
+//   if (gPolledSockets.empty())
 //      return;
 //
 //   static ConnectedNotifyEvent notifyEvent;

@@ -60,7 +60,7 @@ void AssetQuery::onTamlCustomWrite( TamlCustomNodes& customNodes )
     TamlCustomNode* pCustomNode = customNodes.addNode( ASSETQUERY_RESULTS_NODE_NAME );
 
     // Finish if no assets.
-    if ( size() == 0 )
+    if ( empty() )
         return;
 
     // Iterate asset.

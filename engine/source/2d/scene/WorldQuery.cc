@@ -568,7 +568,7 @@ void WorldQuery::sortRaycastQueryResult( void )
         typeWorldQueryResultVector& layerQueryResults = mLayeredQueryResults[layer];
 
         // Skip if nothing in the layer query results.
-        if ( layerQueryResults.size() == 0 )
+        if ( layerQueryResults.empty() )
             continue;
 
         // Sort query results.

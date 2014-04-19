@@ -87,7 +87,7 @@ void ShaderMaterialParameters::releaseBuffers()
 
 U32 ShaderMaterialParameters::getAlignmentValue(const GFXShaderConstType constType)
 {
-   if (mBuffers.size() > 0)
+   if ( !mBuffers.empty() )
       return mBuffers[0]->getShader()->getAlignmentValue(constType);
    else
       return 0;

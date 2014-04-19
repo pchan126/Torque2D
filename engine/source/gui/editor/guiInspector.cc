@@ -170,7 +170,7 @@ void GuiInspector::inspectObject( SimObject *object )
    // If the general group is still empty at this point, kill it.
    for(S32 i=0; i<mGroups.size(); i++)
    {
-      if(mGroups[i] == general && general->mStack->size() == 0)
+      if(mGroups[i] == general && general->mStack->empty())
       {
          mGroups.erase(i);
          general->deleteObject();
@@ -531,7 +531,7 @@ bool GuiInspectorGroup::createContent()
 void GuiInspectorGroup::animateToContents()
 {
    calculateHeights();
-   if(size() > 0)
+   if(!empty())
       animateTo( mExpanded.extent.y );
    else
       animateTo( mHeader.extent.y );

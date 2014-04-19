@@ -804,7 +804,7 @@ void GFXTextureManager::releaseCubemap( GFXCubemap *cubemap )
 //   // If we have a path for the texture then
 //   // remove change notifications for it.
 //   //Path texPath = texture->getPath();
-//   //if ( !texPath.isEmpty() )
+//   //if ( !texPath.empty() )
 //      //FS::RemoveChangeNotification( texPath, this, &GFXTextureManager::_onFileChanged );
 }
 

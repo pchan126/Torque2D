@@ -282,9 +282,9 @@ void TSShapeInstance::initMaterialList( const FeatureSet *features )
 
 void TSShapeInstance::reSkin( String newBaseName, String oldBaseName )
 {
-//   if( newBaseName.isEmpty() )
+//   if( newBaseName.empty() )
 //      newBaseName = "base";
-//   if( oldBaseName.isEmpty() )
+//   if( oldBaseName.empty() )
 //      oldBaseName = "base";
 //
 //   if ( newBaseName.equal( oldBaseName, String::NoCase ) )

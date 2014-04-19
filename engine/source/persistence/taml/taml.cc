@@ -895,7 +895,7 @@ void Taml::compileCustomNodeState( TamlCustomNode* pCustomNode )
     if ( pProxyObject != nullptr )
     {
         // Yes, so sanity!
-        AssertFatal( children.size() == 0, "Taml: Cannot compile a proxy object on a custom node that has children." );
+        AssertFatal( children.empty(), "Taml: Cannot compile a proxy object on a custom node that has children." );
 
         // Yes, so compile it.
         // NOTE: We force an Id for custom compiled objects so we guarantee an Id.  The reason for this is fairly

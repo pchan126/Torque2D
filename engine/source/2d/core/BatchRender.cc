@@ -139,7 +139,7 @@ void BatchRender::SubmitTriangles(
     if ( mStrictOrderMode )
     {
         // Yes, so is there a texture change?
-        if ( texture != mStrictOrderTextureHandle && mVertexBuffer.size() > 0 )
+        if ( texture != mStrictOrderTextureHandle && !mVertexBuffer.empty() )
         {
             // Yes, so flush.
             flush( mpDebugStats->batchTextureChangeFlush );
@@ -170,7 +170,7 @@ void BatchRender::SubmitTriangles(
         vert[2].color       = color;
 
         // degenerate joining triangle
-        if (n != 0 && vertBuffer->size() > 0)
+        if (n != 0 && !vertBuffer->empty() )
         {
             indexBuffer->push_back(vertBuffer->push_back_unique(vertBuffer->back()));
             indexBuffer->push_back(vertBuffer->push_back_unique(vert[0]));
@@ -210,7 +210,7 @@ void BatchRender::SubmitTriangleStrip( const Vector<GFXVertexPCT> verts, GFXTexH
     // Sanity!
     AssertFatal( mpDebugStats != nullptr, "Debug stats have not been configured." );
     
-    if (verts.size() < 1)
+    if (verts.empty())
         return;
     
     // Debug Profiling.
@@ -230,7 +230,7 @@ void BatchRender::SubmitTriangleStrip( const Vector<GFXVertexPCT> verts, GFXTexH
     if ( mStrictOrderMode )
     {
         // Yes, so is there a texture change?
-        if ( texture != mStrictOrderTextureHandle && mVertexBuffer.size() > 0 )
+        if ( texture != mStrictOrderTextureHandle && !mVertexBuffer.empty() )
         {
             // Yes, so flush.
             flush( mpDebugStats->batchTextureChangeFlush );
@@ -247,7 +247,7 @@ void BatchRender::SubmitTriangleStrip( const Vector<GFXVertexPCT> verts, GFXTexH
     }
     
     // degenerate linking triangle
-    if (vertBuffer->size() > 0)
+    if (!vertBuffer->empty())
     {
         indexBuffer->push_back(vertBuffer->push_back_unique(vertBuffer->back()));
         indexBuffer->push_back(vertBuffer->push_back_unique(verts[0]));
@@ -302,7 +302,7 @@ void BatchRender::SubmitIndexedTriangleStrip(const Vector<GFXVertexPCT> &verts, 
    if ( mStrictOrderMode )
    {
       // Yes, so is there a texture change?
-      if ( texture != mStrictOrderTextureHandle && mVertexBuffer.size() > 0 )
+      if ( texture != mStrictOrderTextureHandle && !mVertexBuffer.empty() )
       {
          // Yes, so flush.
          flush( mpDebugStats->batchTextureChangeFlush );
@@ -467,7 +467,7 @@ void BatchRender::SubmitPoint( const Vector2 position, const float size, GFXTexH
    if ( mStrictOrderMode )
    {
       // Yes, so is there a texture change?
-      if ( texture != mStrictOrderTextureHandle && mVertexBuffer.size() > 0 )
+      if ( texture != mStrictOrderTextureHandle && !mVertexBuffer.empty() )
       {
          // Yes, so flush.
          flush( mpDebugStats->batchTextureChangeFlush );
@@ -487,7 +487,7 @@ void BatchRender::SubmitPoint( const Vector2 position, const float size, GFXTexH
 //   std::array< U16 , 4> in_indexBuffer = {0, 1, 3, 2};
 //   
 //   // degenerate linking triangle
-//   if (vertBuffer->size() > 0)
+//   if (!vertBuffer->empty())
 //   {
 //      //       Con::printf("indexBuffer->pushback %d %d", indexBuffer->back(), in_indexBuffer.front());
 //      

@@ -277,7 +277,7 @@ const bool GuiTreeViewCtrl::Item::isParent() const
       if(mInspectorInfo.mObject)
       {
          SimSet *pSimSet = dynamic_cast<SimSet*>( (SimObject*)mInspectorInfo.mObject);
-         if ( pSimSet != nullptr && pSimSet->size() > 0)
+         if ( pSimSet != nullptr && !pSimSet->empty() )
             return pSimSet->size();
       }
    }
@@ -612,7 +612,7 @@ void GuiTreeViewCtrl::buildItem( Item* item, U32 tabLevel, bool bForceFullUpdate
    if ( mProfile != nullptr && !mProfile->mFont.isNull() )
    {
       S32 width = ( tabLevel + 1 ) * mTabSize + item->getDisplayTextWidth(mProfile->mFont);
-      if ( mProfile->mBitmapArrayRects.size() > 0 )
+      if ( !mProfile->mBitmapArrayRects.empty() )
          width += mProfile->mBitmapArrayRects[0].extent.x;
       
       width += (item->mTabLevel+1) * mItemHeight; // using mItemHeight for icon width, close enough
@@ -2607,7 +2607,7 @@ void GuiTreeViewCtrl::onMouseDragged(const GuiEvent &event)
    if( !mActive || !mAwake || !mVisible )
       return;
 
-   if (mSelectedItems.size() == 0)
+   if (mSelectedItems.empty())
       return;
    Point2I pt = globalToLocalCoord(event.mousePoint);
    Parent::onMouseMove(event);

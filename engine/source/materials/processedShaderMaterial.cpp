@@ -636,7 +636,7 @@ void ProcessedShaderMaterial::_setPassBlendOp( ShaderFeature *sf,
 //   }
 //
 //   // set up the current blend operation for multi-pass materials
-//   if( mPasses.size() > 0)
+//   if( !mPasses.empty() )
 //   {
 //      // If passData.numTexReg is 0, this is a brand new pass, so set the
 //      // blend operation to the first feature.

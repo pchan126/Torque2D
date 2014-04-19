@@ -186,7 +186,7 @@ void TamlJSONWriter::compileFields( Document& document, Value* pTypeValue, const
     const Vector<TamlWriteNode::FieldValuePair*>& fields = pTamlWriteNode->mFields;
 
     // Ignore if no fields.
-    if ( fields.size() == 0 )
+    if ( fields.empty() )
         return;
 
     // Fetch the json document allocator.
@@ -219,7 +219,7 @@ void TamlJSONWriter::compileCustom( Document& document, Value* pTypeValue, const
     const TamlCustomNodeVector& nodes = customNodes.getNodes();
 
     // Finish if no custom nodes to process.
-    if ( nodes.size() == 0 )
+    if ( nodes.empty() )
         return;
 
     // Fetch the json document allocator.
@@ -346,7 +346,7 @@ void TamlJSONWriter::compileCustomNode( Document& document, Value* pParentValue,
     }
 
     // Finish if the node is set to ignore if empty and it is empty (including fields).
-    if ( pCustomNode->getIgnoreEmpty() && fields.size() == 0 && pCustomValue->MemberBegin() == pCustomValue->MemberEnd() )
+    if ( pCustomNode->getIgnoreEmpty() && fields.empty() && pCustomValue->MemberBegin() == pCustomValue->MemberEnd() )
     {
         // Yes, so delete the member.
         pCustomValue->SetNull();

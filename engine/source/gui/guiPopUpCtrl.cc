@@ -790,7 +790,7 @@ void GuiPopUpMenuCtrl::setSelected(S32 id, bool bNotifyScript )
 // DAW: Added to set the first item as selected.
 void GuiPopUpMenuCtrl::setFirstSelected()
 {
-   if (mEntries.size() > 0)
+   if (!mEntries.empty())
    {
       mSelIndex = 0;
       if(mReplaceText) // DAW: Only change the displayed text if appropriate.

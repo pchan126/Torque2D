@@ -422,7 +422,7 @@ void GFXDevice::pushActiveRenderTarget()
 
 void GFXDevice::popActiveRenderTarget()
 {
-   AssertFatal( mRTStack.size() > 0, "GFXDevice::popActiveRenderTarget() - stack is empty!" );
+   AssertFatal( !mRTStack.empty(), "GFXDevice::popActiveRenderTarget() - stack is empty!" );
    
    // Restore the last item on the stack and pop.
    setActiveRenderTarget( mRTStack.back() );

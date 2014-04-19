@@ -105,7 +105,7 @@ void NetAsync::run()
       // lock 
       lockNetAsyncMutex();
       // if there is a request...
-      if (mLookupRequests.size() > 0)
+      if ( !mLookupRequests.empty() )
       {
          // assign the first incomplete request
          for (unsigned int i = 0; i < mLookupRequests.size(); ++i)

@@ -224,7 +224,7 @@ void UndoManager::removeAction(UndoAction *action)
 void UndoManager::undo()
 {
    // make sure we have an action available
-   if(mUndoStack.size() < 1)
+   if(mUndoStack.empty())
       return;
 
    // pop the action off the undo stack
@@ -246,7 +246,7 @@ void UndoManager::undo()
 void UndoManager::redo()
 {
    // make sure we have an action available
-   if(mRedoStack.size() < 1)
+   if(mRedoStack.empty())
       return;
 
    // pop the action off the redo stack
@@ -288,7 +288,7 @@ StringTableEntry UndoManager::getRedoName(S32 index)
 //-----------------------------------------------------------------------------
 StringTableEntry UndoManager::getNextUndoName()
 {
-   if(mUndoStack.size() < 1)
+   if(mUndoStack.empty())
       return nullptr;
       
    UndoAction *act = mUndoStack.back();
@@ -298,7 +298,7 @@ StringTableEntry UndoManager::getNextUndoName()
 //-----------------------------------------------------------------------------
 StringTableEntry UndoManager::getNextRedoName()
 {
-   if(mRedoStack.size() < 1)
+   if(mRedoStack.empty())
       return nullptr;
 
    UndoAction *act = mRedoStack.back();

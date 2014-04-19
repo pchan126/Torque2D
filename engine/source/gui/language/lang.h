@@ -69,7 +69,7 @@ public:
 	bool activateLanguage(void);
 	void deactivateLanguage(void);
 
-	bool isLoaded(void)						{ return mStringTable.size() > 0; }
+	bool isLoaded(void)						{ return !mStringTable.empty(); }
 	
 	size_t getNumStrings(void)					{ return mStringTable.size(); }
 };

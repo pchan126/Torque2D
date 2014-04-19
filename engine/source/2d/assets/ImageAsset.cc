@@ -1282,7 +1282,7 @@ void ImageAsset::calculateExplicitMode( void )
     mFrames.clear();
 
     // Are any explicit frames set.
-    if ( mExplicitFrames.size() == 0 )
+    if ( mExplicitFrames.empty() )
     {
         // No, so set full-frame as default.
         FrameArea frameArea( 0, 0, imageWidth, imageHeight, texelWidthScale, texelHeightScale );
@@ -1324,7 +1324,7 @@ void ImageAsset::onTamlCustomWrite( TamlCustomNodes& customNodes )
     if ( !mExplicitMode )
         return;
 
-    if (mExplicitFrames.size() > 0)
+    if ( !mExplicitFrames.empty() )
     {
         // Add cell custom node.
         TamlCustomNode* pCustomCellNodes = customNodes.addNode( cellCustomNodeCellsName );

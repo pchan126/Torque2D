@@ -44,7 +44,7 @@ typedef std::uint64_t      U64;     ///< Compiler independent Unsigned 64-bit in
 typedef float              F32;     ///< Compiler independent 32-bit float
 typedef double             F64;     ///< Compiler independent 64-bit float
 
-typedef ptrdiff_t          PTR;       /// < Compiler dependant integer, same size as pointer>
+typedef ptrdiff_t          PTR;       /// < Compiler dependant integer, pointer size or larger>
 //------------------------------------------------------------------------------
 //------------------------------------- String Types
 

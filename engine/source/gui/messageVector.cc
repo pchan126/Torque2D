@@ -250,7 +250,7 @@ void MessageVector::pushBackLine(const char* newMessage, const S32 newMessageTag
 void MessageVector::popBackLine()
 {
    AssertFatal(mMessageLines.size() != 0, "MessageVector::popBackLine: nothing to pop!");
-   if (mMessageLines.size() == 0)
+   if (mMessageLines.empty())
       return;
 
    deleteLine(mMessageLines.size() - 1);
@@ -272,7 +272,7 @@ void MessageVector::pushFrontLine(const char* newMessage, const S32 newMessageTa
 void MessageVector::popFrontLine()
 {
    AssertFatal(mMessageLines.size() != 0, "MessageVector::popBackLine: nothing to pop!");
-   if (mMessageLines.size() == 0)
+   if (mMessageLines.empty())
       return;
 
    deleteLine(0);

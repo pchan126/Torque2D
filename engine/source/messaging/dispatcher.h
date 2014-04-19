@@ -135,7 +135,7 @@ struct MessageQueue
    {
    }
 
-   bool isEmpty()    { return mListeners.size() == 0; }
+   bool isEmpty()    { return mListeners.empty(); }
 
    bool dispatchMessage(const char* event, const char* data)
    {

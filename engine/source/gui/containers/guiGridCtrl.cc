@@ -49,7 +49,7 @@ void GuiGridControl::inspectPostApply()
 
 bool GuiGridControl::IsPointInGridControl(GuiControl* ctrl, const Point2I& pt)
 {
-	if (mRowSizes.size() > 0 && mColSizes.size() > 0)
+	if (!mRowSizes.empty() && !mColSizes.empty() )
 	{
 		RectI gridRect = GetGridRect(ctrl);
 		RectI ctrlRect = ctrl->getBounds();
@@ -134,7 +134,7 @@ bool GuiGridControl::resize(const Point2I &newPosition, const Point2I &newExtent
 
 	Vector<RectI> oldCtrlRect;
 	
-	if (mRowSizes.size() == 0 && mColSizes.size() == 0)
+	if (mRowSizes.empty() && mColSizes.empty())
 	{
 		bFirstResize = true;
 	}

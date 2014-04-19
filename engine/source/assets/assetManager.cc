@@ -142,7 +142,7 @@ bool AssetManager::addModuleDeclaredAssets( ModuleDefinition* pModuleDefinition 
    assert(pModuleDefinition != nullptr);
 
     // Does the module have any assets associated with it?
-    if ( pModuleDefinition->getModuleAssets().size() > 0 )
+    if ( !pModuleDefinition->getModuleAssets().empty() )
     {
         // Yes, so warn.
         Con::warnf( "Asset Manager: Cannot add declared assets to module '%s' as it already has existing assets.", pModuleDefinition->getSignature() );
@@ -300,7 +300,7 @@ bool AssetManager::removeDeclaredAssets( ModuleDefinition* pModuleDefinition )
     ModuleDefinition::typeModuleAssetsVector& moduleAssets = pModuleDefinition->getModuleAssets();
 
     // Remove all module assets.
-    while ( moduleAssets.size() > 0 )
+    while ( !moduleAssets.empty() )
     {
         // Fetch asset definition.
         AssetDefinition* pAssetDefinition = moduleAssets.front();
@@ -1038,7 +1038,7 @@ bool AssetManager::deleteAsset( const char* pAssetId, const bool deleteLooseFile
         }
 
         // Do we have any dependants?
-        if ( dependantAssets.size() > 0 )
+        if ( !dependantAssets.empty() )
         {
             // Yes, so iterate dependants.
             for( StringTableEntry dependentAssetId:dependantAssets )
@@ -1185,7 +1185,7 @@ bool AssetManager::refreshAsset( const char* pAssetId )
             TamlAssetDeclaredVisitor::typeAssetIdVector& assetDependencies = assetDeclaredVisitor.getAssetDependencies();
 
             // Are there any asset dependences?
-            if ( assetDependencies.size() > 0 )
+            if ( !assetDependencies.empty() )
             {
                 // Yes, so iterate dependencies.
                 for( StringTableEntry dependencyAssetId:assetDependencies )
@@ -1205,7 +1205,7 @@ bool AssetManager::refreshAsset( const char* pAssetId )
             pAssetDefinition->mAssetLooseFiles.clear();
 
             // Are there any loose files?
-            if ( assetLooseFiles.size() > 0 )
+            if ( !assetLooseFiles.empty() )
             {
                 // Yes, so iterate loose files.
                 for( auto assetLooseFileItr:assetLooseFiles )
@@ -2216,7 +2216,7 @@ S32 AssetManager::findAssetLooseFile( AssetQuery* pAssetQuery, const char* pLoos
             Vector<StringTableEntry>& assetLooseFiles = pAssetDefinition->mAssetLooseFiles;
 
             // Skip if this asset has no loose files.
-            if ( assetLooseFiles.size() == 0 )
+            if ( assetLooseFiles.empty() )
                 continue;
 
             // Search the assets loose files.
@@ -2251,7 +2251,7 @@ S32 AssetManager::findAssetLooseFile( AssetQuery* pAssetQuery, const char* pLoos
             Vector<StringTableEntry>& assetLooseFiles = pAssetDefinition->mAssetLooseFiles;
 
             // Skip if this asset has no loose files.
-            if ( assetLooseFiles.size() == 0 )
+            if ( assetLooseFiles.empty() )
                 continue;
 
             // Search the assets loose files.
@@ -2418,7 +2418,7 @@ bool AssetManager::scanDeclaredAssets( const char* pPath, const char* pExtension
         TamlAssetDeclaredVisitor::typeAssetIdVector& assetDependencies = assetDeclaredVisitor.getAssetDependencies();
 
         // Are there any asset dependencies?
-        if ( assetDependencies.size() > 0 )
+        if ( !assetDependencies.empty() )
         {
             // Yes, so iterate dependencies.
             for( StringTableEntry dependencyAssetId  : assetDependencies  )
@@ -2441,7 +2441,7 @@ bool AssetManager::scanDeclaredAssets( const char* pPath, const char* pExtension
         TamlAssetDeclaredVisitor::typeLooseFileVector& assetLooseFiles = assetDeclaredVisitor.getAssetLooseFiles();
 
         // Are there any loose files?
-        if ( assetLooseFiles.size() > 0 )
+        if ( !assetLooseFiles.empty() )
         {
             // Yes, so iterate loose files.
             for( StringTableEntry looseFile: assetDeclaredVisitor.getAssetLooseFiles())
@@ -2545,7 +2545,7 @@ bool AssetManager::scanReferencedAssets( const char* pPath, const char* pExtensi
         const TamlAssetReferencedVisitor::typeAssetReferencedHash& assetReferencedMap = assetReferencedVisitor.getAssetReferencedMap();
 
         // Do we have any asset references?
-        if ( assetReferencedMap.size() > 0 )
+        if ( !assetReferencedMap.empty() )
         {
             // Info.
             if ( mEchoInfo )

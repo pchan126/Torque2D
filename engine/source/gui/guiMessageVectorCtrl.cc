@@ -99,9 +99,9 @@ GuiMessageVectorCtrl::GuiMessageVectorCtrl()
 //--------------------------------------------------------------------------
 GuiMessageVectorCtrl::~GuiMessageVectorCtrl()
 {
-   AssertFatal(mLineWrappings.size() == 0, "Error, line wrappings not properly cleared!");
-   AssertFatal(mSpecialMarkers.size() == 0, "Error, special markers not properly cleared!");
-   AssertFatal(mLineElements.size() == 0, "Error, line elements not properly cleared!");
+   AssertFatal(mLineWrappings.empty(), "Error, line wrappings not properly cleared!");
+   AssertFatal(mSpecialMarkers.empty(), "Error, special markers not properly cleared!");
+   AssertFatal(mLineElements.empty(), "Error, line elements not properly cleared!");
 }
 
 
@@ -147,7 +147,7 @@ bool GuiMessageVectorCtrl::attach(MessageVector* newAttachment)
       Con::warnf(ConsoleLogEntry::General, "GuiMessageVectorCtrl::attach: overriding attachment");
       detach();
    }
-   AssertFatal(mLineWrappings.size() == 0, "Error, line wrappings not properly cleared!");
+   AssertFatal(mLineWrappings.empty(), "Error, line wrappings not properly cleared!");
 
    mMessageVector = newAttachment;
    mMessageVector->registerSpectator(sMVCtrlCallback, this);
@@ -165,7 +165,7 @@ void GuiMessageVectorCtrl::detach()
 
    mMessageVector->unregisterSpectator(this);
    mMessageVector = NULL;
-   AssertFatal(mLineWrappings.size() == 0, "Error, line wrappings not properly cleared!");
+   AssertFatal(mLineWrappings.empty(), "Error, line wrappings not properly cleared!");
 }
 
 
@@ -249,7 +249,7 @@ void GuiMessageVectorCtrl::lineDeleted(const U32 arg)
 void GuiMessageVectorCtrl::vectorDeleted()
 {
    AssertFatal(mMessageVector != NULL, "Should not be here unless we're attached!");
-   AssertFatal(mLineWrappings.size() == 0, "Error, line wrappings not properly cleared out!");
+   AssertFatal(mLineWrappings.empty(), "Error, line wrappings not properly cleared out!");
 
    mMessageVector = NULL;
    U32 newHeight = mProfile->mFont->getHeight() + mLineSpacingPixels;
@@ -581,7 +581,7 @@ bool GuiMessageVectorCtrl::onWake()
       }
    }
 
-   AssertFatal(mLineWrappings.size() == 0, "Error, line wrappings not properly cleared!");
+   AssertFatal(mLineWrappings.empty(), "Error, line wrappings not properly cleared!");
    return true;
 }
 
@@ -697,7 +697,7 @@ void GuiMessageVectorCtrl::parentResized(const RectI& oldSize,
 //--------------------------------------------------------------------------
 void GuiMessageVectorCtrl::findSpecialFromCoord(const Point2I& point, S32* specialLine, S32* specialRef)
 {
-   if (mLineElements.size() == 0) {
+   if (mLineElements.empty()) {
       *specialLine = -1;
       *specialRef  = -1;
       return;

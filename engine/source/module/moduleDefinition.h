@@ -276,7 +276,7 @@ protected:
         const ModuleDefinition::typeModuleDependencyVector& moduleDependencies = static_cast<ModuleDefinition*>(obj)->getDependencies();
 
         // Finish if no dependencies.
-        if ( moduleDependencies.size() == 0 )
+        if ( moduleDependencies.empty() )
             return StringTable->EmptyString;
 
         // Get a return buffer.
@@ -316,7 +316,7 @@ protected:
 
         return pReturnBuffer;
     }
-    static bool             writeDependencies( void* obj, StringTableEntry pFieldName ) { return static_cast<ModuleDefinition*>(obj)->getDependencies().size() > 0; }
+    static bool             writeDependencies( void* obj, StringTableEntry pFieldName ) { return !static_cast<ModuleDefinition*>(obj)->getDependencies().empty(); }
     static const char*      getSignature(void* obj, const char* data)                   { return static_cast<ModuleDefinition*>(obj)->getSignature(); }
 };
 

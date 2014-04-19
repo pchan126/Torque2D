@@ -107,7 +107,7 @@ void iOSWindowManager::getWindows(Vector<PlatformWindow*> &windows)
 
 PlatformWindow * iOSWindowManager::getFirstWindow()
 {
-   if (mWindowList.size() > 0)
+   if ( !mWindowList.empty() )
       return mWindowList[0];
       
    return nullptr;
@@ -272,7 +272,7 @@ void iOSWindowManager::_addWindow(iOSWindow* window)
    for(U32 i = 0; i < mWindowList.size(); i++)
       AssertFatal(window != mWindowList[i], "iOSWindowManager::_addWindow - Should not add a window more than once");
 #endif
-   if (mWindowList.size() > 0)
+   if ( !mWindowList.empty() )
       window->mNextWindow = mWindowList.back();
    else
       window->mNextWindow = nullptr;
@@ -285,7 +285,7 @@ void iOSWindowManager::_addWindow(iOSWindow* window)
    window->mOwningWindowManager = this;
    window->appEvent.notify(this, &iOSWindowManager::_onAppSignal);
     
-   if (mWindowList.size() > 0)
+   if ( !mWindowList.empty() )
        [appDelegate.window makeKeyAndVisible];
 }
 

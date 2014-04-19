@@ -903,7 +903,7 @@ const Point3F * TSMesh::getNormals( S32 firstVert )
 //      rayInfo->t        = (F32)startNum/(F32)startDen; // finally divide...
 //      rayInfo->normal   = planeNormals[curPlane];
 //
-//      if (materials && materials->size() > 0)
+//      if (materials && !materials->empty() )
 //         rayInfo->material = materials->getMaterialInst( curMaterial );
 //      else
 //         rayInfo->material = nullptr;

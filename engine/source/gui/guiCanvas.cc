@@ -466,7 +466,7 @@ bool GuiCanvas::processInputEvent(const InputEventInfo &event)
 
          if ( isCursorON() && ( event.objInst == KEY_TAB ) )
          {
-            if (size() > 0)
+            if (!empty())
             {
                if (event.modifier & SI_SHIFT)
                {
@@ -697,7 +697,7 @@ void GuiCanvas::rootMouseDown(const GuiEvent &event)
 
 void GuiCanvas::findMouseControl(const GuiEvent &event)
 {
-   if(size() == 0)
+   if(empty())
    {
       mMouseControl = nullptr;
       return;
@@ -1080,7 +1080,7 @@ void GuiCanvas::setContentControl(GuiControl *gui)
 
 GuiControl *GuiCanvas::getContentControl()
 {
-   if(size() > 0)
+   if(!empty())
       return (GuiControl *) first();
    return nullptr;
 }
@@ -1124,7 +1124,7 @@ void GuiCanvas::pushDialogControl(GuiControl *gui, S32 layer)
 
    //rebuild the accelerator map
    mAcceleratorMap.clear();
-   if (size() > 0)
+   if (!empty())
    {
       GuiControl *ctrl = static_cast<GuiControl*>(last());
       ctrl->buildAcceleratorMap();
@@ -1140,7 +1140,7 @@ void GuiCanvas::pushDialogControl(GuiControl *gui, S32 layer)
 
 void GuiCanvas::popDialogControl(GuiControl *gui)
 {
-   if (size() < 1)
+   if (empty())
       return;
 
    //first, find the dialog, and call the "onDialogPop()" method
@@ -1177,7 +1177,7 @@ void GuiCanvas::popDialogControl(GuiControl *gui)
 
    Sim::getGuiGroup()->addObject(ctrl);
 
-   if (size() > 0)
+   if (!empty())
    {
       GuiControl *ctrl = static_cast<GuiControl *>(last());
       if(ctrl->mFirstResponder)
@@ -1193,7 +1193,7 @@ void GuiCanvas::popDialogControl(GuiControl *gui)
 
    //rebuild the accelerator map
    mAcceleratorMap.clear();
-   if (size() > 0)
+   if (!empty())
    {
       GuiControl *ctrl = static_cast<GuiControl*>(last());
       ctrl->buildAcceleratorMap();
@@ -1203,7 +1203,7 @@ void GuiCanvas::popDialogControl(GuiControl *gui)
 
 void GuiCanvas::popDialogControl(S32 layer)
 {
-   if (size() < 1)
+   if (empty())
       return;
 
    GuiControl *ctrl = nullptr;

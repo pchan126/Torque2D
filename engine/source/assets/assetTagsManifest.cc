@@ -121,7 +121,7 @@ void AssetTagsManifest::onTamlCustomWrite( TamlCustomNodes& customNodes )
     Parent::onTamlCustomWrite( customNodes );
 
     // Finish if no tags.
-    if ( mTagNameDatabase.size() == 0 )
+    if ( mTagNameDatabase.empty() )
         return;
 
     // Add node.

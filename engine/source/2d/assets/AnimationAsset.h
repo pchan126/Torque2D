@@ -103,9 +103,9 @@ protected:
     static bool setImage( void* obj, const char* data )                             { static_cast<AnimationAsset*>(obj)->setImage( data ); return false; }
     static bool writeImage( void* obj, StringTableEntry pFieldName )                { return static_cast<AnimationAsset*>(obj)->mImageAsset.notNull(); }
     static bool setAnimationFrames( void* obj, const char* data )                   { static_cast<AnimationAsset*>(obj)->setAnimationFrames( data ); return false; }
-    static bool writeAnimationFrames( void* obj, StringTableEntry pFieldName )      { return static_cast<AnimationAsset*>(obj)->mAnimationFrames.size() > 0; }
+    static bool writeAnimationFrames( void* obj, StringTableEntry pFieldName )      { return !static_cast<AnimationAsset*>(obj)->mAnimationFrames.empty(); }
     static bool setNamedAnimationFrames( void* obj, const char* data )              { static_cast<AnimationAsset*>(obj)->setNamedAnimationFrames( data ); return false; }    
-    static bool writeNamedAnimationFrames( void* obj, StringTableEntry pFieldName ) { return static_cast<AnimationAsset*>(obj)->mNamedAnimationFrames.size() > 0; }
+    static bool writeNamedAnimationFrames( void* obj, StringTableEntry pFieldName ) { return !static_cast<AnimationAsset*>(obj)->mNamedAnimationFrames.empty(); }
     static bool setAnimationTime( void* obj, const char* data )                     { static_cast<AnimationAsset*>(obj)->setAnimationTime( dAtof(data) ); return false; }
     static bool setAnimationCycle( void* obj, const char* data )                    { static_cast<AnimationAsset*>(obj)->setAnimationCycle( dAtob(data) ); return false; }
     static bool writeAnimationCycle( void* obj, StringTableEntry pFieldName )       { return static_cast<AnimationAsset*>(obj)->getAnimationCycle() == false; }

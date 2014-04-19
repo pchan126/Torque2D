@@ -117,7 +117,7 @@ ConsoleMethod( GuiFrameSetCtrl, removeColumn, void, 2, 2, "() Use the removeColu
 {
    Vector<S32> * columns = object->columnOffsets();
 
-   if(columns->size() > 0)
+   if(!columns->empty())
    {
       columns->setSize(columns->size() - 1);
       object->balanceFrames();
@@ -133,7 +133,7 @@ ConsoleMethod( GuiFrameSetCtrl, removeRow, void, 2, 2, "() Use the removeRow met
 {
    Vector<S32> * rows = object->rowOffsets();
 
-   if(rows->size() > 0)
+   if(!rows->empty())
    {
       rows->setSize(rows->size() - 1);
       object->balanceFrames();
@@ -270,7 +270,7 @@ GuiFrameSetCtrl::GuiFrameSetCtrl(U32 columns, U32 rows, const U32 columnOffsets[
 //-----------------------------------------------------------------------------
 GuiFrameSetCtrl::~GuiFrameSetCtrl()
 {
-   while (mFrameDetails.size() > 0)
+   while (!mFrameDetails.empty())
    {
       delete mFrameDetails.back();
       mFrameDetails.pop_back();
@@ -830,7 +830,7 @@ void GuiFrameSetCtrl::computeSizes(bool balanceFrames)
    }
 
    // first, update the divider placement if necessary
-   if (balanceFrames == true && mColumnOffsets.size() > 0 && mRowOffsets.size() > 0)
+   if (balanceFrames == true && !mColumnOffsets.empty() && !mRowOffsets.empty())
    {
       Vector<S32>::iterator itr;
       F32 totWidth = F32(getWidth() - vDividers * mFramesetDetails.mBorderWidth);

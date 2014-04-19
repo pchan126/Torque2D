@@ -1507,7 +1507,7 @@ void ParticlePlayer::initializeParticleAsset( void )
 
         // Skip if the emitter does not have a valid assigned asset to render.
         if (( pParticleAssetEmitter->isStaticFrameProvider() && (imageAsset.isNull() || imageAsset->getFrameCount() == 0 ) ) ||
-            ( !pParticleAssetEmitter->isStaticFrameProvider() && (animationAsset.isNull() || animationAsset->getValidatedAnimationFrames().size() == 0 ) ) )
+            ( !pParticleAssetEmitter->isStaticFrameProvider() && (animationAsset.isNull() || animationAsset->getValidatedAnimationFrames().empty() ) ) )
             continue;
 
         // Create a new emitter node.
@@ -1530,7 +1530,7 @@ void ParticlePlayer::destroyParticleAsset( void )
     stop( false, false );
 
     // Destroy all emitters.
-    while( mEmitters.size() > 0 )
+    while( !mEmitters.empty() )
     {
         delete mEmitters[mEmitters.size()-1];
         mEmitters.pop_back();

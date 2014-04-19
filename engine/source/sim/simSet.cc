@@ -78,7 +78,7 @@ void SimSet::popObject()
 {
    std::lock_guard<std::recursive_mutex> lock(mMutex);
 
-   if (objectList.size() == 0) 
+   if (objectList.empty()) 
    {
       AssertWarn(false, "Stack underflow in SimSet::popObject");
       return;
@@ -207,15 +207,15 @@ void SimSet::write(std::iostream &stream, U32 tabStop, U32 flags)
 void SimSet::deleteObjects( void )
 {
     lock();
-        while(!empty())
-            objectList[0]->deleteObject();
+     while(!empty())
+         objectList.front()->deleteObject();
     unlock();
 }
 
 void SimSet::clear()
 {
    lock();
-   while (size() > 0)
+   while ( !empty() )
       removeObject(objectList.back());
    unlock();
 }

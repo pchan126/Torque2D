@@ -530,7 +530,7 @@ void SceneWindow::undoCameraMove( const F32 interpolationTime )
     }
 
     // Quit if we've got no queued targets.
-    if ( mCameraQueue.size() == 0 ) return;
+    if ( mCameraQueue.empty() ) return;
 
     // Stop Camera Move ( if any ).
     if ( mMovingCamera ) stopCameraMove();

@@ -102,7 +102,7 @@ void Trigger::integrateObject( const F32 totalTime, const F32 elapsedTime, Debug
     PROFILE_SCOPE(Trigger_IntegrateObject);
 
     // Perform "OnEnter" callback.
-    if ( mEnterCallback && mEnterColliders.size() > 0 )
+    if ( mEnterCallback && !mEnterColliders.empty() )
     {
         // Debug Profiling.
         PROFILE_SCOPE(Trigger_OnEnterCallback);
@@ -121,7 +121,7 @@ void Trigger::integrateObject( const F32 totalTime, const F32 elapsedTime, Debug
    assert(pCurrentContacts != nullptr);
 
     // Perform "OnStay" callback.
-    if ( mStayCallback && pCurrentContacts->size() > 0 )
+    if ( mStayCallback && !pCurrentContacts->empty() )
     {
         // Debug Profiling.
         PROFILE_SCOPE(Trigger_OnStayCallback);
@@ -135,7 +135,7 @@ void Trigger::integrateObject( const F32 totalTime, const F32 elapsedTime, Debug
     }
 
     // Perform "OnLeave" callback.
-    if ( mLeaveCallback && mLeaveColliders.size() > 0 )
+    if ( mLeaveCallback && !mLeaveColliders.empty() )
     {
         // Debug Profiling.
         PROFILE_SCOPE(Trigger_OnLeaveCallback);

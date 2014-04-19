@@ -205,7 +205,7 @@ void ParticleAsset::onDeleteNotify( SimObject* object )
 
 bool ParticleAsset::isAssetValid( void ) const
 {
-    return mEmitters.size() > 0;
+    return !mEmitters.empty();
 }
 
 //------------------------------------------------------------------------------
@@ -364,7 +364,7 @@ void ParticleAsset::removeEmitter( ParticleAssetEmitter* pParticleAssetEmitter, 
 void ParticleAsset::clearEmitters( void )
 {
     // Remove all emitters.
-    while( mEmitters.size() > 0 )
+    while( !mEmitters.empty() )
     {
         mEmitters.back()->deleteObject();
         mEmitters.pop_back();

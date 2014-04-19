@@ -104,7 +104,7 @@ bool GuiControlArrayControl::updateArray()
     // Set Resizing.
     mResizing = true;
     
-    if(mCols < 1 || size() < 1)
+    if(mCols < 1 || empty())
     {
         mResizing = false;
         return false;

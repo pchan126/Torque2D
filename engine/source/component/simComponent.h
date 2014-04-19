@@ -120,7 +120,7 @@ public:
    virtual bool processArguments(S32 argc, const char **argv);
 
    /// Will return true if this object contains components.
-   bool hasComponents() const { return ( mComponentList.size() > 0 ); };
+   bool hasComponents() const { return ( !mComponentList.empty() ); };
 
    /// The component which owns this object
    const SimComponent *getOwner() const { return mOwner; };

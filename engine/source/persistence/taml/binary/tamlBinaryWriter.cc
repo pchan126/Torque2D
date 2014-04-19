@@ -144,7 +144,7 @@ void TamlBinaryWriter::writeAttributes(std::iostream &stream, const TamlWriteNod
     stream << ( (U32)fields.size() );
 
     // Finish if no fields.
-    if ( fields.size() == 0 )
+    if ( fields.empty() )
         return;
 
     // Iterate fields.
@@ -204,7 +204,7 @@ void TamlBinaryWriter::writeCustomElements(std::iostream &stream, const TamlWrit
     stream << ( (U32)nodes.size() );
 
     // Finish if there are no nodes.
-    if ( nodes.size() == 0 )
+    if ( nodes.empty() )
         return;
 
     // Iterate custom nodes.

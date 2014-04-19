@@ -111,7 +111,7 @@ bool GuiFormCtrl::onWake()
 
 void GuiFormCtrl::addObject(SimObject *newObj )
 {
-   if( ( mHasMenu && size() > 1) || (!mHasMenu && size() > 0 ) )
+   if( ( mHasMenu && size() > 1) || (!mHasMenu && !empty() ) )
    {
       Con::warnf("GuiFormCtrl::addObject - Forms may only have one *direct* child - Placing on Parent!");
       GuiControl *parent = getParent();

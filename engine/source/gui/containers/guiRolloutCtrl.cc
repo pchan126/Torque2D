@@ -203,7 +203,7 @@ void GuiRolloutCtrl::sizeToContents()
    calculateHeights();
 
    // Set destination height
-   if( size() > 0 )
+   if( !empty() )
       instantExpand();
    else
       instantCollapse();

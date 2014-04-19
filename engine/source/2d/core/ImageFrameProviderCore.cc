@@ -641,7 +641,7 @@ bool ImageFrameProviderCore::updateAnimation( const F32 elapsedTime )
         const Vector<StringTableEntry>& validatedFrames = (*mpAnimationAsset)->getValidatedNamedAnimationFrames();
 
         // Finish if there are no validated frames.
-        if ( validatedFrames.size() == 0 )
+        if ( validatedFrames.empty() )
             return false;
     }
     else
@@ -650,7 +650,7 @@ bool ImageFrameProviderCore::updateAnimation( const F32 elapsedTime )
         const Vector<S32>& validatedFrames = (*mpAnimationAsset)->getValidatedAnimationFrames();
 
         // Finish if there are no validated frames.
-        if ( validatedFrames.size() == 0 )
+        if ( validatedFrames.empty() )
             return false;
     }
 

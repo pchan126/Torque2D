@@ -159,7 +159,7 @@ ResManager::~ResManager ()
    for (auto walk :resourceList )
       walk->destruct ();
 
-   while (resourceList.size() > 0)
+   while ( !resourceList.empty() )
       freeResource (resourceList.front());
 
    for (RegisteredExtension *temp: registeredList)
@@ -1037,7 +1037,7 @@ bool ResManager::add (const char *name, ResourceInstance * addInstance,
 
 void ResManager::purge ()
 {
-    while (timeoutList.size() > 0)
+    while ( !timeoutList.empty() )
     {
         ResourceObject *temp = timeoutList.front();
         unlink(temp);

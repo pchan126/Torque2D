@@ -72,7 +72,7 @@ void SceneObjectSet::popObject()
 {
    MutexHandle handle;
 
-   if (mObjectList.size() == 0) 
+   if (mObjectList.empty()) 
    {
       AssertWarn(false, "Stack underflow in SceneObjectSet::popObject");
       return;
@@ -189,17 +189,17 @@ void SceneObjectSet::onRemove()
 
 void SceneObjectSet::deleteObjects( void )
 {
-        while(size() > 0 )
-        {
-            mObjectList[0]->deleteObject();
-        }
+     while( !empty() )
+     {
+         mObjectList.front()->deleteObject();
+     }
 }
 
 //-----------------------------------------------------------------------------
 
 void SceneObjectSet::clear()
 {
-   while (size() > 0)
+   while ( !empty() )
       removeObject(mObjectList.back());
 }
 //-----------------------------------------------------------------------------

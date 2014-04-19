@@ -90,7 +90,7 @@ public:
     virtual bool onAdd();
     virtual void onRemove();
     virtual void sceneRender( const t2dSceneRenderState * pSceneRenderState, const SceneRenderRequest* pSceneRenderRequest, BatchRender* pBatchRenderer );
-    virtual bool validRender( void ) const { return (mPolygonLocalList.size() > 0 || mIsCircle); }
+    virtual bool validRender( void ) const { return ( !mPolygonLocalList.empty() || mIsCircle); }
     virtual bool shouldRender( void ) const { return true; }
 
     /// Render batching.
@@ -109,7 +109,7 @@ protected:
        static_cast<ShapeVector*>(obj)->setPolyCustom(count, data);
        return false;
     }
-    static bool writePolyList( void* obj, StringTableEntry pFieldName ) { return static_cast<ShapeVector*>(obj)->mPolygonBasisList.size() > 0; }
+    static bool writePolyList( void* obj, StringTableEntry pFieldName ) { return !static_cast<ShapeVector*>(obj)->mPolygonBasisList.empty(); }
     static bool writeLineColor( void* obj, StringTableEntry pFieldName ) { return static_cast<ShapeVector*>(obj)->mLineColor != ColorF(1.0f,1.0f,1.0f,1.0f); }
     static bool writeFillColor( void* obj, StringTableEntry pFieldName ) { return static_cast<ShapeVector*>(obj)->mFillColor != ColorF(0.5f,0.5f,0.5f,1.0f); }
     static bool writeFillMode( void* obj, StringTableEntry pFieldName ) { return static_cast<ShapeVector*>(obj)->mFillMode == true; }

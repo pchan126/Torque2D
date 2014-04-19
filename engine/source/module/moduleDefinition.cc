@@ -136,7 +136,7 @@ bool ModuleDefinition::addDependency( const char* pModuleId, const U32 versionId
     StringTableEntry moduleId = StringTable->insert( pModuleId );
 
     // Do we have any existing dependencies?
-    if ( mDependencies.size() > 0 )
+    if ( !mDependencies.empty() )
     {
         // Yes, so is the module Id already a dependency?
         for( auto dependencyItr : mDependencies )
@@ -168,7 +168,7 @@ bool ModuleDefinition::removeDependency( const char* pModuleId )
     StringTableEntry moduleId = StringTable->insert( pModuleId );
 
     // Do we have any existing dependencies?
-    if ( mDependencies.size() > 0 )
+    if ( !mDependencies.empty() )
     {
         // Yes, so is the module Id a dependency?
         for( typeModuleDependencyVector::iterator dependencyItr = mDependencies.begin(); dependencyItr != mDependencies.end(); ++dependencyItr )

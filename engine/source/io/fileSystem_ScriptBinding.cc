@@ -327,7 +327,7 @@ ConsoleFunctionWithDocs(getFileList, ConsoleString, 2, 2, (strPath))
        return "";
    }
 
-   if ( files.size() == 0 )
+   if ( files.empty() )
        return "";
 
    // Grab the required buffer length.

@@ -58,7 +58,7 @@ public:
    size_t  size() const       { return mTable.size(); };                  ///< Return the number of elements
    void clear()            { return mTable.clear(); };                       ///< Empty the HashTable
    void resize(U32 size);
-   bool isEmpty() const    { return mTable.empty(); };               ///< Returns true if the table is empty
+   bool empty() const    { return mTable.empty(); };               ///< Returns true if the table is empty
 
    // Insert & erase elements
    void insertEqual(const Key& key, const Value&);
@@ -167,7 +167,7 @@ public:
    // management
    size_t  size() const                  { return mHashMap.size(); } ///< Return the number of elements
    void clear()                            { mHashMap.clear(); }; ///< Empty the HashMap
-   bool isEmpty() const                    { return mHashMap.isEmpty(); };               ///< Returns true if the map is empty
+   bool empty() const                    { return mHashMap.empty(); };               ///< Returns true if the map is empty
 
    // insert & erase elements
    iterator insert(const Key& key, const Value&); // Documented below...

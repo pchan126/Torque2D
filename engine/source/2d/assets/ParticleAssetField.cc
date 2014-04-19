@@ -162,7 +162,7 @@ void ParticleAssetField::setValueBounds( F32 maxTime, F32 minValue, F32 maxValue
     mDefaultValue = defaultValue;
 
     // Reset the data keys if none are present.
-    if ( mDataKeys.size() == 0 )
+    if ( mDataKeys.empty() )
         resetDataKeys();
 
     // Flag the value bounds as dirty.

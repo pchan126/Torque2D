@@ -208,7 +208,7 @@ void TamlXmlWriter::compileAttributes( TiXmlElement* pXmlElement, const TamlWrit
     const Vector<TamlWriteNode::FieldValuePair*>& fields = pTamlWriteNode->mFields;
 
     // Ignore if no fields.
-    if ( fields.size() == 0 )
+    if ( fields.empty() )
         return;
 
     // Iterate fields.
@@ -236,7 +236,7 @@ void TamlXmlWriter::compileCustomElements( TiXmlElement* pXmlElement, const Taml
     const TamlCustomNodeVector& nodes = customNodes.getNodes();
 
     // Finish if no custom nodes to process.
-    if ( nodes.size() == 0 )
+    if ( nodes.empty() )
         return;
 
     // Iterate custom nodes.
@@ -334,7 +334,7 @@ void TamlXmlWriter::compileCustomNode( TiXmlElement* pXmlElement, const TamlCust
     }
 
     // Finish if the node is set to ignore if empty and it is empty (including fields).
-    if ( pCustomNode->getIgnoreEmpty() && fields.size() == 0 && pNodeElement->NoChildren() )
+    if ( pCustomNode->getIgnoreEmpty() && fields.empty() && pNodeElement->NoChildren() )
     {
         // Yes, so delete the extended element.
         delete pNodeElement;

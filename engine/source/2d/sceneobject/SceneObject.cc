@@ -3188,7 +3188,7 @@ void SceneObject::processDestroyNotifications( void )
     }
 
     // Sanity!
-    AssertFatal( mDestroyNotifyList.size() == 0, "SceneObject::processDestroyNotifications() - Notifications still pending!" );
+    AssertFatal( mDestroyNotifyList.empty(), "SceneObject::processDestroyNotifications() - Notifications still pending!" );
 }
 
 //-----------------------------------------------------------------------------
@@ -3629,7 +3629,7 @@ void SceneObject::onTamlCustomRead( const TamlCustomNodes& customNodes )
 
             // Do we have any shape children.
             // NOTE: Only do this if the old methods has not been used.
-            if ( points.size() == 0 && shapeChildrenCount > 0 )
+            if ( points.empty() && shapeChildrenCount > 0 )
             {
                 // Yes, so iterate them.
                 for( TamlCustomNode* pChildNode:shapeChildren )
@@ -3668,7 +3668,7 @@ void SceneObject::onTamlCustomRead( const TamlCustomNodes& customNodes )
             }
 
             // Is point count valid?
-            if ( points.size() == 0 || points.size() < 2 )
+            if ( points.empty() || points.size() < 2 )
             {
                 // No, so warn.
                 Con::warnf( "SceneObject::onTamlCustomRead() - No points (or less than two) on chain collision shape." );

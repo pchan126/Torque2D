@@ -1327,7 +1327,7 @@ bool ModuleManager::synchronizeDependencies( ModuleDefinition* pRootModuleDefini
     }
 
     // Sanity!
-    AssertFatal( sourceModulesNeeded.size() > 0, "Cannot synchronize dependencies as no modules were returned." );
+    AssertFatal( !sourceModulesNeeded.empty(), "Cannot synchronize dependencies as no modules were returned." );
 
     // Remove the root module definition.
     sourceModulesNeeded.pop_back();
@@ -1736,14 +1736,14 @@ void ModuleManager::clearDatabase( void )
     AssertFatal( mDatabaseLocks == 0, "Cannot clear database if database is locked." );
 
     // Iterate groups loaded.
-    while ( mGroupsLoaded.size() > 0 )
+    while ( !mGroupsLoaded.empty() )
     {
         // Unload module group.
         unloadModuleGroup( *mGroupsLoaded.begin() );
     }
 
     // Iterate any other explicit modules that are loaded.
-    while ( mModulesLoaded.size() > 0 )
+    while ( !mModulesLoaded.empty() )
     {
         // Fetch module definition.
         ModuleDefinition* pModuleDefinition = mModulesLoaded.begin()->mpModuleDefinition;
@@ -2437,7 +2437,7 @@ bool ModuleManager::resolveModuleDependencies( StringTableEntry moduleId, const 
     const ModuleDefinition::typeModuleDependencyVector& moduleDependencies = pSelectedModuleDefinition->getDependencies();
 
     // Do we have any module dependencies?
-    if ( moduleDependencies.size() > 0 )
+    if ( !moduleDependencies.empty() )
     {
         // Yes, so queue this module as resolving.
         moduleResolvingQueue.push_back( loadEntry );

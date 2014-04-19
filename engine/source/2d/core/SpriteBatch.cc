@@ -1147,7 +1147,7 @@ void SpriteBatch::updateLocalExtents( void )
     mLocalExtentsDirty = false;
 
     // Do we have any sprites?
-    if ( mSprites.size() == 0 )
+    if ( mSprites.empty() )
     {
         // No, so reset local extents.
         mLocalExtents.setOne();
@@ -1191,7 +1191,7 @@ void SpriteBatch::createSpriteBatchQuery( void )
     mpSpriteBatchQuery = new SpriteBatchQuery( this );
 
     // Finish if there are no sprites.
-    if ( mSprites.size() == 0 )
+    if ( mSprites.empty() )
         return;
 
     // Add proxies for all the sprites.

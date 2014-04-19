@@ -239,7 +239,7 @@ ConsoleMethod(GuiPaneControl, setCollapsed, void, 3, 3, "(bool collapsed) Sets t
 void GuiPaneControl::setCollapsed(bool isCollapsed)
 {
    // Get the child
-   if(size() == 0 || !mCollapsable) return;
+   if(empty() || !mCollapsable) return;
 
    GuiControl *gc = dynamic_cast<GuiControl*>(operator[](0));
 

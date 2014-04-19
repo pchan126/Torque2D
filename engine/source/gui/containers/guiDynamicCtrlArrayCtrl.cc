@@ -114,7 +114,7 @@ void GuiDynamicCtrlArrayControl::updateChildControls()
 
 bool GuiDynamicCtrlArrayControl::resize(const Point2I &newPosition, const Point2I &newExtent)
 {
-    if ( size() == 0 )
+    if ( empty() )
         return Parent::resize( newPosition, newExtent );
     
     if ( mResizing )

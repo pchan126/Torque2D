@@ -944,7 +944,7 @@ void NetConnection::loadNextGhostAlwaysObject(bool hadNewFiles)
       {
          // a null object is used to signify that the last ghost in the list is down
          mGhostAlwaysSaveList.pop_front();
-         AssertFatal(mGhostAlwaysSaveList.size() == 0, "Error! Ghost save list should be empty!");
+         AssertFatal(mGhostAlwaysSaveList.empty(), "Error! Ghost save list should be empty!");
          sendConnectionMessage(ReadyForNormalGhosts, mGhostingSequence);
          ResourceManager->setMissingFileLogging(false);
          return;

@@ -79,7 +79,7 @@ bool SimObject::isMethod( const char* methodName )
    StringTableEntry stname = StringTable->insert( methodName );
 
    if( getNamespace() )
-      return ( getNamespace()->lookup( stname ) != NULL );
+      return ( getNamespace()->lookup( stname ) != nullptr );
 
    return false;
 }

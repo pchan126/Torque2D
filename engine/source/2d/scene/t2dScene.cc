@@ -3405,7 +3405,7 @@ void t2dScene::detachSceneWindow( SceneWindow* pSceneWindow2D )
 void t2dScene::detachAllSceneWindows( void )
 {
     // Detach All t2dScene Windows.
-    while( mAttachedSceneWindows.size() > 0 )
+    while( !mAttachedSceneWindows.empty() )
         dynamic_cast<SceneWindow*>(mAttachedSceneWindows[mAttachedSceneWindows.size()-1])->resetScene();
 }
 
@@ -3446,7 +3446,7 @@ void t2dScene::addDeleteRequest( SceneObject* pSceneObject )
 void t2dScene::processDeleteRequests( const bool forceImmediate )
 {
     // Ignore if there's no delete requests!
-    if ( mDeleteRequests.size() == 0 )
+    if ( mDeleteRequests.empty() )
         return;
 
     // Validate All Delete Requests.
@@ -3491,7 +3491,7 @@ void t2dScene::processDeleteRequests( const bool forceImmediate )
     }
 
     // Stop if there's no delete requests!
-    if ( mDeleteRequests.size() == 0 )
+    if ( mDeleteRequests.empty() )
         return;
 
     // Transfer Delete-Requests to Temporary version.
@@ -3659,7 +3659,7 @@ void t2dScene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 const TamlCustomNodeVector& jointChildren = pJointNode->getChildren();
 
                 // Fetch joint objects.
-                SceneObject* pSceneObjectA = jointChildren.size() > 0 ? jointChildren[0]->getProxyObject<SceneObject>(true) : nullptr;
+                SceneObject* pSceneObjectA = !jointChildren.empty() ? jointChildren[0]->getProxyObject<SceneObject>(true) : nullptr;
                 SceneObject* pSceneObjectB = jointChildren.size() == 2 ? jointChildren[1]->getProxyObject<SceneObject>(true) : nullptr;
 
                 // Did we get any connected objects?
@@ -3722,7 +3722,7 @@ void t2dScene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 const TamlCustomNodeVector& jointChildren = pJointNode->getChildren();
 
                 // Fetch joint objects.
-                SceneObject* pSceneObjectA = jointChildren.size() > 0 ? jointChildren[0]->getProxyObject<SceneObject>(true) : nullptr;
+                SceneObject* pSceneObjectA = !jointChildren.empty() ? jointChildren[0]->getProxyObject<SceneObject>(true) : nullptr;
                 SceneObject* pSceneObjectB = jointChildren.size() == 2 ? jointChildren[1]->getProxyObject<SceneObject>(true) : nullptr;
 
                 // Did we get any connected objects?
@@ -3775,7 +3775,7 @@ void t2dScene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 const TamlCustomNodeVector& jointChildren = pJointNode->getChildren();
 
                 // Fetch joint objects.
-                SceneObject* pSceneObjectA = jointChildren.size() > 0 ? jointChildren[0]->getProxyObject<SceneObject>(true) : nullptr;
+                SceneObject* pSceneObjectA = !jointChildren.empty() ? jointChildren[0]->getProxyObject<SceneObject>(true) : nullptr;
                 SceneObject* pSceneObjectB = jointChildren.size() == 2 ? jointChildren[1]->getProxyObject<SceneObject>(true) : nullptr;
 
                 // Did we get any connected objects?
@@ -3859,7 +3859,7 @@ void t2dScene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 const TamlCustomNodeVector& jointChildren = pJointNode->getChildren();
 
                 // Fetch joint objects.
-                SceneObject* pSceneObjectA = jointChildren.size() > 0 ? jointChildren[0]->getProxyObject<SceneObject>(true) : nullptr;
+                SceneObject* pSceneObjectA = !jointChildren.empty() ? jointChildren[0]->getProxyObject<SceneObject>(true) : nullptr;
                 SceneObject* pSceneObjectB = jointChildren.size() == 2 ? jointChildren[1]->getProxyObject<SceneObject>(true) : nullptr;
 
                 // Did we get any connected objects?
@@ -3917,7 +3917,7 @@ void t2dScene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 const TamlCustomNodeVector& jointChildren = pJointNode->getChildren();
 
                 // Fetch joint objects.
-                SceneObject* pSceneObjectA = jointChildren.size() > 0 ? jointChildren[0]->getProxyObject<SceneObject>(true) : nullptr;
+                SceneObject* pSceneObjectA = !jointChildren.empty() ? jointChildren[0]->getProxyObject<SceneObject>(true) : nullptr;
                 SceneObject* pSceneObjectB = jointChildren.size() == 2 ? jointChildren[1]->getProxyObject<SceneObject>(true) : nullptr;
 
                 // Did we get any connected objects?
@@ -4001,7 +4001,7 @@ void t2dScene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 const TamlCustomNodeVector& jointChildren = pJointNode->getChildren();
 
                 // Fetch joint objects.
-                SceneObject* pSceneObjectA = jointChildren.size() > 0 ? jointChildren[0]->getProxyObject<SceneObject>(true) : nullptr;
+                SceneObject* pSceneObjectA = !jointChildren.empty() ? jointChildren[0]->getProxyObject<SceneObject>(true) : nullptr;
                 SceneObject* pSceneObjectB = jointChildren.size() == 2 ? jointChildren[1]->getProxyObject<SceneObject>(true) : nullptr;
 
                 // Did we get any connected objects?
@@ -4059,7 +4059,7 @@ void t2dScene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 const TamlCustomNodeVector& jointChildren = pJointNode->getChildren();
 
                 // Fetch joint objects.
-                SceneObject* pSceneObjectA = jointChildren.size() > 0 ? jointChildren[0]->getProxyObject<SceneObject>(true) : nullptr;
+                SceneObject* pSceneObjectA = !jointChildren.empty() ? jointChildren[0]->getProxyObject<SceneObject>(true) : nullptr;
                 SceneObject* pSceneObjectB = jointChildren.size() == 2 ? jointChildren[1]->getProxyObject<SceneObject>(true) : nullptr;
 
                 // Did we get any connected objects?
@@ -4147,7 +4147,7 @@ void t2dScene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 const TamlCustomNodeVector& jointChildren = pJointNode->getChildren();
 
                 // Fetch joint objects.
-                SceneObject* pSceneObjectA = jointChildren.size() > 0 ? jointChildren[0]->getProxyObject<SceneObject>(true) : nullptr;
+                SceneObject* pSceneObjectA = !jointChildren.empty() ? jointChildren[0]->getProxyObject<SceneObject>(true) : nullptr;
                 SceneObject* pSceneObjectB = jointChildren.size() == 2 ? jointChildren[1]->getProxyObject<SceneObject>(true) : nullptr;
 
                 // Did we get any connected objects?
@@ -4277,7 +4277,7 @@ void t2dScene::onTamlPostRead( const TamlCustomNodes& customNodes )
                 const TamlCustomNodeVector& jointChildren = pJointNode->getChildren();
 
                 // Fetch joint objects.
-                SceneObject* pSceneObjectA = jointChildren.size() > 0 ? jointChildren[0]->getProxyObject<SceneObject>(true) : nullptr;
+                SceneObject* pSceneObjectA = !jointChildren.empty() ? jointChildren[0]->getProxyObject<SceneObject>(true) : nullptr;
                 SceneObject* pSceneObjectB = jointChildren.size() == 2 ? jointChildren[1]->getProxyObject<SceneObject>(true) : nullptr;
 
                 // Did we get any connected objects?

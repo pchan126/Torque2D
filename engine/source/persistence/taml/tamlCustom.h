@@ -287,14 +287,14 @@ public:
         mpProxyObject = nullptr;
 
         // Cache the children.
-        while ( mChildren.size() > 0 )
+        while ( !mChildren.empty() )
         {
             TamlCustomNodeFactory.cacheObject( mChildren.back() );
             mChildren.pop_back();
         }
 
         // Cache the fields.
-        while( mFields.size() > 0 )
+        while( !mFields.empty() )
         {
             TamlCustomFieldFactory.cacheObject( mFields.back() );
             mFields.pop_back();
@@ -486,8 +486,8 @@ public:
     inline void setNodeText( const char* pNodeText )
     {
         AssertFatal( dStrlen( pNodeText ) < MAX_TAML_NODE_FIELDVALUE_LENGTH, "Custom node text is too long." );
-        AssertFatal( mChildren.size() == 0, "Cannot have node text with children." );
-        AssertFatal( mFields.size() == 0, "Cannot have node text with fields." );
+        AssertFatal( mChildren.empty(), "Cannot have node text with children." );
+        AssertFatal( mFields.empty(), "Cannot have node text with fields." );
 
         mNodeText.set( StringTable->EmptyString, pNodeText );
     }
@@ -518,7 +518,7 @@ public:
     }
     inline const TamlWriteNode* getProxyWriteNode( void ) const { return mpProxyWriteNode; }
 
-    inline bool isEmpty( void ) const { return mNodeText.isValueEmpty() && mFields.size() == 0 && mChildren.size() == 0; }
+    inline bool isEmpty( void ) const { return mNodeText.isValueEmpty() && mFields.empty() && mChildren.empty(); }
 
     inline void setIgnoreEmpty( const bool ignoreEmpty ) { mIgnoreEmpty = ignoreEmpty; }
     inline bool getIgnoreEmpty( void ) const { return mIgnoreEmpty; }
@@ -595,7 +595,7 @@ public:
     virtual void resetState( void )
     {
         // Cache the nodes.
-        while ( mNodes.size() > 0 )
+        while ( !mNodes.empty() )
         {
             TamlCustomNodeFactory.cacheObject( mNodes.back() );
             mNodes.pop_back();

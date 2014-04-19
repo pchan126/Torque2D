@@ -1352,7 +1352,7 @@ void GuiEditCtrl::loadSelection(const char* filename)
 void GuiEditCtrl::saveSelection(const char* filename)
 {
    // if there are no selected objects, then don't save
-   if (mSelectedControls.size() == 0)
+   if (mSelectedControls.empty())
       return;
 
     std::fstream stream;
