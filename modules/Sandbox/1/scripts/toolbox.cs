@@ -211,6 +211,9 @@ function toggleToolbox(%make)
     if ( ConsoleDialog.isAwake() )
         return;       
         
+//   echo("toggleToolbox");
+//    alxPlay("ToyAssets:TowerUpgradeSound");
+
     // Is the toolbox awake?
     if ( ToolboxDialog.isAwake() )
     {

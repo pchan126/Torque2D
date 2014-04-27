@@ -20,20 +20,15 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-// Sandbox.
-$pref::Sandbox::defaultToyId           = "GuiToy";
-$pref::Sandbox::defaultToyVersionId    = 1;
-$pref::Sandbox::defaultBackgroundColor = "Black";
-$pref::Sandbox::metricsOption   = false;
-$pref::Sandbox::fpsmetricsOption = true;
-$pref::Sandbox::controllersOption = false;
-$pref::Sandbox::jointsOption    = false;
-$pref::Sandbox::wireframeOption = false;
-$pref::Sandbox::aabbOption      = true;
-$pref::Sandbox::oobbOption      = false;
-$pref::Sandbox::sleepOption     = false;
-$pref::Sandbox::collisionOption = false;
-$pref::Sandbox::positionOption  = true;
-$pref::Sandbox::sortOption      = false;
-$pref::Sandbox::cameraMouseZoomRate = 0.1;
-$pref::Sandbox::cameraTouchZoomRate = 0.001;
+ConsoleMethodGroupBeginWithDocs(GuiImageProgressCtrl, GuiProgressCtrl)
+
+/*! Sets the asset Id the button \up\ state.
+ @return No return value.
+ */
+ConsoleMethodWithDocs( GuiImageProgressCtrl, setProgressImage, ConsoleVoid, 3, 3, (imageAssetId))
+{
+   object->setProgressImage( argv[2] );
+}
+
+
+ConsoleMethodGroupEndWithDocs(GuiImageProgressCtrl)

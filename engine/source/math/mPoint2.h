@@ -699,8 +699,12 @@ inline Point2F Point2F::operator*(const Point2F &_vec) const
 
 inline Point2F& Point2F::operator*=(const Point2F &_vec)
 {
+#ifdef __GLK_VECTOR_2_H
+   mGV = GLKVector2Multiply(mGV, _vec.mGV);
+#else
    x *= _vec.x;
    y *= _vec.y;
+#endif
    return *this;
 }
 
@@ -711,8 +715,12 @@ inline Point2F Point2F::operator/(const Point2F &_vec) const
 
 inline Point2F& Point2F::operator/=(const Point2F &_vec)
 {
+#ifdef __GLK_VECTOR_2_H
+   mGV = GLKVector2Divide(mGV, _vec.mGV);
+#else
    x /= _vec.x;
    y /= _vec.y;
+#endif
    return *this;
 }
 

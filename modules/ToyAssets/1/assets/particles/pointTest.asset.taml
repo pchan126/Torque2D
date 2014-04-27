@@ -18,14 +18,14 @@
             <Speed
                 Keys="0 0.3" />
                 <SizeX>
-				<Key Time="0" Value="1.0"/>
+				<Key Time="0" Value="2.0"/>
                 </SizeX>
             <SizeXVariation
                 Keys="0 0.2" />
             <FixedForce
                 Keys="0 30" />
             <SizeXLife
-                Keys="0 0 0.1 0.5" />
+                Keys="0 0 0.1 1.0" />
             <RandomMotion
                 Keys="0 10" />
             <FixedForceVariation
@@ -64,6 +64,9 @@
 				Keys="0 0" />				
             <FixedForceVariation
                 Keys="0 0" />				
+                <SizeX>
+				<Key Time="0" Value="4.0"/>
+                </SizeX>
             <SizeXLife>
 				<Key Time="0" Value="0"/>
 				<Key Time="0.2" Value="1"/>

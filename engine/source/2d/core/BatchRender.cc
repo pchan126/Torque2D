@@ -640,8 +640,10 @@ void BatchRender::flushInternal( void )
         // Bind the texture if not in wireframe mode.
         if ( !mWireframeMode )
         {
-            _lightAndDrawTriangleStrip(&mVertexBuffer, &mIndexBuffer, mStrictOrderTextureHandle);
-            _lightAndDrawPoints(&mPointBuffer, &mPointIndexBuffer, mStrictOrderTextureHandle);
+           if (!mIndexBuffer.empty())
+              _lightAndDrawTriangleStrip(&mVertexBuffer, &mIndexBuffer, mStrictOrderTextureHandle);
+           if (!mPointIndexBuffer.empty())
+              _lightAndDrawPoints(&mPointBuffer, &mPointIndexBuffer, mStrictOrderTextureHandle);
         }
       else
             _drawWireframe(  &mVertexBuffer, &mIndexBuffer );

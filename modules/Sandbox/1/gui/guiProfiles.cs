@@ -509,6 +509,17 @@ if (!isObject(GuiSliderProfile)) new GuiControlProfile (GuiSliderProfile)
 
 //-----------------------------------------------------------------------------
 
+if (!isObject(GuiImageSliderProfile)) new GuiControlProfile (GuiImageSliderProfile)
+{
+    bitmap = "^Sandbox/gui/images/slider.png";
+    fontType = $platformFontType;
+    fontSize = $platformFontSize;
+    fontColor = "white";
+};
+
+
+//-----------------------------------------------------------------------------
+
 if (!isObject(GuiSliderNoTextProfile)) new GuiControlProfile (GuiSliderNoTextProfile)
 {
     bitmap = "^Sandbox/gui/images/slider.png";

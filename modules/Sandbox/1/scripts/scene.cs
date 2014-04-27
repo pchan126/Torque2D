@@ -22,13 +22,15 @@
 
 function createSandboxWindow()
 {
+echo("createSandboxWindow");
     // Sanity!
     if ( !isObject(SandboxWindow) )
     {
         // Create the scene window.
         new SceneWindow(SandboxWindow);
 
-        // Set profile.        
+       SandboxWindow.Image = "Sandbox:blueGradient";
+       // Set profile.
         SandboxWindow.Profile = SandboxWindowProfile;
         
         // Push the window.

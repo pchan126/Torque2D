@@ -57,6 +57,9 @@ void t2dSceneRenderState::renderObjects( t2dScene * pScene, SceneRenderQueue* pS
         GFX->pushViewMatrix();
         MatrixF vM = GFX->getViewMatrix();
         Layer* layerRef = pScene->getLayer(layer);
+        if ( layerRef->empty())
+           continue;
+
         Point3F tScale = layerRef->getCameraTranslationScale();
         vM[3] *= tScale.x;
         vM[7] *= tScale.y;
@@ -73,18 +76,16 @@ void t2dSceneRenderState::renderObjects( t2dScene * pScene, SceneRenderQueue* pS
         cameraAABB.upperBound += centerPosition;
         pScene->getWorldQuery()->clearQuery();
         pScene->getWorldQuery()->aabbQueryAABB( cameraAABB );
-
+       
         // Fetch layer.
         typeWorldQueryResultVector& layerResults = pScene->getWorldQuery()->getLayeredQueryResults( layer );
 
-        // Fetch layer object count.
-        const size_t layerObjectCount = layerResults.size();
 
         // Are there any objects to render in this layer?
-        if ( layerObjectCount > 0 )
+        if ( !layerResults.empty() )
         {
             // Yes, so increase render picked.
-            mpDebugStats->renderPicked += layerObjectCount;
+            mpDebugStats->renderPicked += layerResults.size();
 
             // Iterate query results.
             for( WorldQueryResult worldQueryItr:layerResults )
