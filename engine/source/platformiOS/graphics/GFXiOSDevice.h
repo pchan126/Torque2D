@@ -9,6 +9,7 @@
 #define Torque2D_GFXiOSDevice_h
 
 #include "graphics/gfxDevice.h"
+#include "platformiOS/platformGL.h"
 
 class GFXiOSDevice {
 protected:

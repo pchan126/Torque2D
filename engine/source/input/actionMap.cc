@@ -36,6 +36,8 @@ static inline bool dIsDecentChar(U8 c)
    return ((U8(0xa0) <= c) || (( U8(0x21) <= c) && (c <= U8(0x7e))) || ((U8(0x91) <= c) && (c <= U8(0x92))));
 }
 
+#define CONST_E 2.7182818284590452353602874f
+
 extern CodeMapping gVirtualMap[];
 extern AsciiMapping gAsciiMap[];
 
@@ -768,6 +770,21 @@ bool ActionMap::getDeviceTypeAndInstance(const char *pDeviceName, U32 &deviceTyp
        deviceType = GyroscopeDeviceType;
        offset = dStrlen("gyroscope");
    }
+   else if (dStrnicmp(pDeviceName, "touchdevice", dStrlen("touchdevice")) == 0)
+   {
+       deviceType = ScreenTouchDeviceType;
+       offset = dStrlen("touchdevice");
+   }
+    else if (dStrnicmp(pDeviceName, "gamepad", dStrlen("gamepad")) == 0)
+   {
+      deviceType = GamepadDeviceType;
+      offset     = dStrlen("gamepad");
+   }
+   else if (dStrnicmp(pDeviceName, "leapdevice", dStrlen("leapdevice")) == 0)
+   {
+       deviceType = LeapMotionDeviceType;
+       offset = dStrlen("leapdevice");
+   }
    else
       return false;
     
@@ -812,6 +829,18 @@ bool ActionMap::getDeviceName(const U32 deviceType, const U32 deviceInstance, ch
      dStrcpy(buffer, "gyroscope");
      break;
      
+     case ScreenTouchDeviceType:
+     dStrcpy(buffer, "touchdevice");
+     break;
+
+	  case GamepadDeviceType:
+      dSprintf(buffer, 16, "gamepad%d", deviceInstance);
+      break;
+
+     case LeapMotionDeviceType:
+      dStrcpy(buffer, "leapdevice");
+      break;
+
      default:
       Con::errorf( "ActionMap::getDeviceName: unknown device type specified, %d (inst: %d)", deviceType, deviceInstance);
       return false;
@@ -1005,7 +1034,7 @@ bool ActionMap::processBindCmd(const char *device, const char *action, const cha
        ( eventDescriptor.eventCode == SI_GYROZ )    ||
        ( eventDescriptor.eventCode == SI_YAW )      ||
        ( eventDescriptor.eventCode == SI_PITCH )    ||
-       ( eventDescriptor.eventCode == SI_ROLL ) )
+       ( eventDescriptor.eventCode == SI_ROLL ) )	
    {
       Con::warnf( "ActionMap::processBindCmd - Cannot use 'bindCmd' with a move event type. Use 'bind' instead." );
       return false;
@@ -1091,6 +1120,9 @@ bool ActionMap::processBind(const U32 argc, const char** argv, SimObject* object
             break;
            case 'i': case 'I':
             assignedFlags |= Node::Inverted;
+            break;
+			case 'n': case 'N':
+            assignedFlags |= Node::NonLinear;
             break;
 
            default:
@@ -1384,125 +1416,126 @@ bool ActionMap::processTouch(const InputEventInfo* pEvent)
     return true;
 }
 
+
 //------------------------------------------------------------------------------
-
-bool ActionMap::processAction(const InputEventInfo* pEvent)
+bool ActionMap::processButton(const InputEventInfo* pEvent)
 {
-   static const char *argv[4];
-
-   if (pEvent->action == SI_MAKE) // KEYBOARD/BUTTON DOWN EVENT
+   static const char *argv[2];
+   const Node* pNode = findNode(pEvent->deviceType, pEvent->deviceInst, pEvent->modifier, pEvent->objInst);
+   if (pNode == NULL)
    {
-      const Node* pNode = findNode(pEvent->deviceType, pEvent->deviceInst, pEvent->modifier, pEvent->objInst);
-
-      if (pNode == nullptr) 
-      {
-         // Check to see if we clear the modifiers, do we find an action?
-         if (pEvent->modifier != 0)
-            pNode = findNode(pEvent->deviceType, pEvent->deviceInst, 0, pEvent->objInst);
-
-         if (pNode == nullptr)
-            return false;
-      }
-
-      // Whadda ya know, we have this bound.  Set up, and call the console
-      //  function associated with it...
-      //
-      F32 value = pEvent->fValue;
-       
-      if (pNode->flags & Node::Ranged)
-      {
-          value = (value * 2.0f) - 1.0f;
-         
-          if (pNode->flags & Node::Inverted)
-              value *= -1.0f;
-      }
+      // Check to see if we clear the modifiers, do we find an action?
+      if (pEvent->modifier != 0)
+         pNode = findNode(pEvent->deviceType, pEvent->deviceInst, 0, pEvent->objInst);
+      if (pNode == NULL)
+         return false;
+   }
+   // Whadda ya know, we have this bound. Set up, and call the console
+   // function associated with it...
+   //
+   F32 value = pEvent->fValues[0];
+   if (pNode->flags & Node::Ranged)
+   {
+      value = (value * 2.0f) - 1.0f;
+      if (pNode->flags & Node::Inverted)
+         value *= -1.0f;
+   }
+   else
+   {
+      if (pNode->flags & Node::Inverted)
+         value = 1.0f - value;
+   }
+   if (pNode->flags & Node::HasScale)
+      value *= pNode->scaleFactor;
+   if (pNode->flags & Node::HasDeadZone)
+   {
+      if (value >= pNode->deadZoneBegin && value <= pNode->deadZoneEnd)
+         value = 0.0f;
       else
       {
-          if (pNode->flags & Node::Inverted)
-              value = 1.0f - value;
-      }
-
-      if (pNode->flags & Node::HasScale)
-          value *= pNode->scaleFactor;
-
-      if (pNode->flags & Node::HasDeadZone)
-         if (value >= pNode->deadZoneBegin && value <= pNode->deadZoneEnd)
-             value = 0.0f;
-
-      // Ok, we're all set up, call the function.
-      if(pNode->flags & Node::BindCmd)
-      {
-         // it's a bind command
-         if(pNode->makeConsoleCommand)
-            Con::evaluate(pNode->makeConsoleCommand);
-      }
-      else if ( pNode->consoleFunction[0] )
-      {
-         argv[0] = pNode->consoleFunction;
-         argv[1] = Con::getFloatArg(value);
-         if (pNode->object)
-            Con::executef(pNode->object, 2, argv[0], argv[1]);
+         if( value > 0 )
+            value = ( value - pNode->deadZoneBegin ) * ( 1.f / ( 1.f - pNode->deadZoneBegin ) );
          else
-            Con::execute(2, argv);
+            value = ( value + pNode->deadZoneBegin ) * ( 1.f / ( 1.f - pNode->deadZoneBegin ) );
       }
-
-      // [neo, 5/13/2007 - #3109]
-      // The execs/evaluate above could have called reentrant script code which made calls to
-      // bindCmd() etc, channging the node map underneath us. If enough nodes were added then
-      // the node map vector would realloc, with the result that pNode would then be pointing 
-      // at garbage and cause a crash when passed to enterBreakEvent() below. So we just look
-      // it up again to be safe. This is not needed in the other cases below as we return right
-      // after the execs and don't use pNode again.
-      pNode = findNode( pEvent->deviceType, pEvent->deviceInst, pEvent->modifier, pEvent->objInst );
-
-      if( pNode == nullptr )
-         return true; // We already called any bound methods/functions so our job is done
-
-      //
-      // And enter the break into the table if this is a make event...
-      enterBreakEvent(pEvent, pNode);
-
-      return true;
-   } 
-   else if (pEvent->action == SI_MOVE) // MOUSE/JOYSTICK MOVE EVENT
+   }
+   if( pNode->flags & Node::NonLinear )
+      value = ( value < 0.f ? -1.f : 1.f ) * mPow( mFabs( value ), CONST_E );
+   // Ok, we're all set up, call the function.
+   if(pNode->flags & Node::BindCmd)
    {
-      if (pEvent->deviceType == MouseDeviceType)
-      {
-         const Node* pNode = findNode(pEvent->deviceType, pEvent->deviceInst, pEvent->modifier, pEvent->objType);
+      // it's a bind command
+      if(pNode->makeConsoleCommand)
+         Con::evaluate(pNode->makeConsoleCommand);
+   }
+   else if ( pNode->consoleFunction[0] )
+   {
+      argv[0] = pNode->consoleFunction;
+      argv[1] = Con::getFloatArg(value);
+      if (pNode->object)
+         Con::executef(pNode->object, 2, argv[0], argv[1]);
+      else
+         Con::execute(2, argv);
+   }
+   // [neo, 5/13/2007 - #3109]
+   // The execs/evaluate above could have called reentrant script code which made calls to
+   // bindCmd() etc, channging the node map underneath us. If enough nodes were added then
+   // the node map vector would realloc, with the result that pNode would then be pointing
+   // at garbage and cause a crash when passed to enterBreakEvent() below. So we just look
+   // it up again to be safe. This is not needed in the other cases below as we return right
+   // after the execs and don't use pNode again.
+   pNode = findNode( pEvent->deviceType, pEvent->deviceInst, pEvent->modifier, pEvent->objInst );
+   if( pNode == NULL )
+      return true; // We already called any bound methods/functions so our job is done
+   //
+   // And enter the break into the table if this is a make event...
+   enterBreakEvent(pEvent, pNode);
+   return true;
+}
+
+
+//------------------------------------------------------------------------------
+
+bool ActionMap::processMove(const InputEventInfo* pEvent)
+{
+    static const char *argv[4];
+
+    if (pEvent->deviceType == MouseDeviceType)
+    {
+        const Node* pNode = findNode(pEvent->deviceType, pEvent->deviceInst, pEvent->modifier, pEvent->objType);
 
          if (pNode == nullptr)
          {
             // Check to see if we clear the modifiers, do we find an action?
             if (pEvent->modifier != 0)
-               pNode = findNode(pEvent->deviceType, pEvent->deviceInst,
-                                0,                  pEvent->objType);
+                pNode = findNode(pEvent->deviceType, pEvent->deviceInst, 0, pEvent->objType);
 
             if (pNode == nullptr)
                return false;
          }
 
-         // "Do nothing" bind:
-         if ( !pNode->consoleFunction[0] )
+        // "Do nothing" bind:
+        if ( !pNode->consoleFunction[0] )
             return( true );
 
-         // Whadda ya know, we have this bound.  Set up, and call the console
-         //  function associated with it.  Mouse events ignore range and dead
-         //  zone params.
-         //
-         F32 value = pEvent->fValue;
+        // Whadda ya know, we have this bound.  Set up, and call the console
+        //  function associated with it.  Mouse events ignore range and dead
+        //  zone params.
+        //
+        F32 value = pEvent->fValues[0];
          
-         if (pNode->flags & Node::Inverted)
+        if (pNode->flags & Node::Inverted)
             value *= -1.0f;
-         if (pNode->flags & Node::HasScale)
+        if (pNode->flags & Node::HasScale)
             value *= pNode->scaleFactor;
 
-         // Ok, we're all set up, call the function.
-         argv[0] = pNode->consoleFunction;
-         argv[1] = Con::getFloatArg(value);
+        // Ok, we're all set up, call the function.
+        argv[0] = pNode->consoleFunction;
+        argv[1] = Con::getFloatArg(value);
           
-         if (pNode->object)
+        if (pNode->object)
             Con::executef(pNode->object, 2, argv[0], argv[1]);
-         else
+        else
             Con::execute(2, argv);
 
          return true;
@@ -1523,47 +1556,67 @@ bool ActionMap::processAction(const InputEventInfo* pEvent)
                   return false;
          }
 
-         // "Do nothing" bind:
-         if ( !pNode->consoleFunction[0] )
+        // "Do nothing" bind:
+        if ( !pNode->consoleFunction[0] )
             return( true );
 
-         // Whadda ya know, we have this bound.  Set up, and call the console
-         //  function associated with it.  Joystick move events are the same as mouse
-         //  move events except that they don't ignore dead zone.
-         //
-         F32 value = pEvent->fValue;
-          
-         if ( pNode->flags & Node::Inverted )
+        // Whadda ya know, we have this bound.  Set up, and call the console
+        //  function associated with it.  Joystick move events are the same as mouse
+        //  move events except that they don't ignore dead zone.
+        //
+        F32 value = pEvent->fValues[0];
+        if ( pNode->flags & Node::Inverted )
             value *= -1.0f;
 
-         if ( pNode->flags & Node::HasScale )
+        if ( pNode->flags & Node::HasScale )
             value *= pNode->scaleFactor;
 
-         if ( pNode->flags & Node::HasDeadZone )
+        if ( pNode->flags & Node::HasDeadZone )
+        {
             if ( value >= pNode->deadZoneBegin && value <= pNode->deadZoneEnd )
-               value = 0.0f;
+            {
+                value = 0.0f;
+            }
+            else
+            {
+                if( value > 0 )
+                    value = ( value - pNode->deadZoneBegin ) * ( 1.f / ( 1.f - pNode->deadZoneBegin ) );
+                else
+                    value = ( value + pNode->deadZoneBegin ) * ( 1.f / ( 1.f - pNode->deadZoneBegin ) );
+            }
+        }
 
-         // Ok, we're all set up, call the function.
-         argv[0] = pNode->consoleFunction;
-         argv[1] = Con::getFloatArg( value );
-          
-         if (pNode->object)
+        if( pNode->flags & Node::NonLinear )
+            value = ( value < 0.f ? -1.f : 1.f ) * mPow( mFabs( value ), CONST_E );
+
+        // Ok, we're all set up, call the function.
+        argv[0] = pNode->consoleFunction;
+        argv[1] = Con::getFloatArg( value );
+            
+        if (pNode->object)
             Con::executef(pNode->object, 2, argv[0], argv[1]);
-         else
+        else
             Con::execute(2, argv);
 
-         return true;
-      }
-   }
-   else if (pEvent->action == SI_MOTION) // iOS MOTION EVENT
-   {
-       // iOS Accelerometer, Gyroscope and DeviceMotion processing
-       // Currently, this is identical to the joystick handling.
+        return true;
+    }
+
+    return false;
+}
+
+//------------------------------------------------------------------------------
+
+bool ActionMap::processMotion(const InputEventInfo* pEvent)
+{
+    static const char *argv[2];
+
+    // iOS Accelerometer, Gyroscope and DeviceMotion processing
+    // Currently, this is identical to the joystick handling.
        
-       // This was copied over into its own section because this will
-       // give us a dedicated section to tweak processing based on iOS specific
-       // devices. No point in trying to mangle joystick code any further
-       const Node* pNode = findNode( pEvent->deviceType, pEvent->deviceInst, pEvent->modifier,   pEvent->objType );
+    // This was copied over into its own section because this will
+    // give us a dedicated section to tweak processing based on iOS specific
+    // devices. No point in trying to mangle joystick code any further
+    const Node* pNode = findNode( pEvent->deviceType, pEvent->deviceInst, pEvent->modifier,   pEvent->objType );
        
        if ( pNode == nullptr )
        {
@@ -1575,39 +1628,113 @@ bool ActionMap::processAction(const InputEventInfo* pEvent)
                return false;
        }
        
-       // "Do nothing" bind:
-       if ( !pNode->consoleFunction[0] )
-           return( true );
+    // "Do nothing" bind:
+    if ( !pNode->consoleFunction[0] )
+        return( true );
        
-       F32 value = pEvent->fValue;
+    F32 value = pEvent->fValues[0];
        
-       if ( pNode->flags & Node::Inverted )
-           value *= -1.0f;
+    if ( pNode->flags & Node::Inverted )
+        value *= -1.0f;
        
-       if ( pNode->flags & Node::HasScale )
-           value *= pNode->scaleFactor;
+    if ( pNode->flags & Node::HasScale )
+        value *= pNode->scaleFactor;
        
-       if ( pNode->flags & Node::HasDeadZone )
-           if ( value >= pNode->deadZoneBegin && value <= pNode->deadZoneEnd )
-               value = 0.0f;
+    if ( pNode->flags & Node::HasDeadZone )
+    {
+        if ( value >= pNode->deadZoneBegin && value <= pNode->deadZoneEnd )
+            value = 0.0f;
+    }
        
-       // Ok, we're all set up, call the function.
-       argv[0] = pNode->consoleFunction;
-       argv[1] = Con::getFloatArg( value );
+    // Ok, we're all set up, call the function.
+    argv[0] = pNode->consoleFunction;
+    argv[1] = Con::getFloatArg( value );
        
-       if (pNode->object)
-           Con::executef(pNode->object, 2, argv[0], argv[1]);
-       else
-           Con::execute(2, argv);
+    if (pNode->object)
+        Con::executef(pNode->object, 2, argv[0], argv[1]);
+    else
+        Con::execute(2, argv);
        
-       return true;
-   }
-   else if (pEvent->action == SI_BREAK) // UP EVENT
-   {
-      return checkBreakTable(pEvent);
-   }
+    return true;
+}
 
-   return false;
+//------------------------------------------------------------------------------
+
+bool ActionMap::processXInput(const InputEventInfo* pEvent)
+{
+    static const char *argv[2];
+
+    if ((pEvent->objType == SI_FLOAT || pEvent->objType == SI_INT))
+    {
+        const Node* pNode = findNode( pEvent->deviceType, pEvent->deviceInst, pEvent->modifier, pEvent->objType );
+
+        if (pNode == NULL )
+            return false;
+
+        // Ok, we're all set up, call the function.
+        argv[0] = pNode->consoleFunction;
+        S32 argc = 1;
+
+        if (pEvent->objType == SI_INT)
+        {
+            // Handle the integer as some sort of motion such as a
+            // single component to an absolute position
+            argv[1] = Con::getIntArg( pEvent->iValue );
+            argc += 1;
+        }
+        else if (pEvent->objType == SI_FLOAT)
+        {
+            // Handle float as some sort of motion such as a
+            // single component to an absolute position
+            argv[1] = Con::getFloatArg( pEvent->fValues[0] );
+            argc += 1;
+        }
+
+        if (pNode->object)
+        {
+            Con::execute(pNode->object, argc, argv);
+        }
+        else
+        {
+            Con::execute(argc, argv);
+        }
+    }
+    
+    return true;
+}
+
+//------------------------------------------------------------------------------
+
+bool ActionMap::processAction(const InputEventInfo* pEvent)
+{
+    switch(pEvent->action)
+    {
+    case SI_LEAP:
+        return processLeap(pEvent);
+        break;
+    case SI_GESTURE:
+        return processGesture(pEvent);
+        break;
+    case SI_TOUCH:
+        return processTouch(pEvent);
+        break;
+    case SI_MAKE:
+        return processButton(pEvent);
+        break;
+    case SI_MOVE:
+        return processMove(pEvent);
+        break;
+    case SI_MOTION:
+        return processMotion(pEvent);
+        break;
+    case SI_BREAK:
+        return checkBreakTable(pEvent);
+        break;
+    case SI_VALUE:
+        return processXInput(pEvent);
+    }
+
+    return false;
 }
 
 //------------------------------------------------------------------------------
@@ -1685,7 +1812,7 @@ bool ActionMap::checkBreakTable(const InputEventInfo* pEvent)
           smBreakTable[i].objInst    == U32(pEvent->objInst)) {
          // Match.  Issue the break event...
          //
-         F32 value = pEvent->fValue;
+         F32 value = pEvent->fValues[0];
          if (smBreakTable[i].flags & Node::Ranged) {
             value = (value * 2.0f) - 1.0f;
             if (smBreakTable[i].flags & Node::Inverted)
@@ -1942,6 +2069,47 @@ CodeMapping gVirtualMap[] =
    { "lpov2",         SI_POV,    SI_LPOV2        },
    { "rpov2",         SI_POV,    SI_RPOV2        },
 
+   #if defined( TORQUE_OS_WIN32 ) || defined( TORQUE_OS_XENON )
+   //-------------------------------------- XINPUT EVENTS
+   // Controller connect / disconnect:
+   { "connect",       XI_BUTTON, XI_CONNECT     },
+   
+   // L & R Thumbsticks:
+   { "thumblx",       XI_AXIS,   XI_THUMBLX     },
+   { "thumbly",       XI_AXIS,   XI_THUMBLY     },
+   { "thumbrx",       XI_AXIS,   XI_THUMBRX     },
+   { "thumbry",       XI_AXIS,   XI_THUMBRY     },
+
+   // L & R Triggers:
+   { "triggerl",      XI_AXIS,   XI_LEFT_TRIGGER  },
+   { "triggerr",      XI_AXIS,   XI_RIGHT_TRIGGER },
+
+   // DPAD Buttons:
+   { "dpadu",         XI_BUTTON, SI_UPOV     },
+   { "dpadd",         XI_BUTTON, SI_DPOV   },
+   { "dpadl",         XI_BUTTON, SI_LPOV   },
+   { "dpadr",         XI_BUTTON, SI_RPOV  },
+
+   // START & BACK Buttons:
+   { "btn_start",     XI_BUTTON, XI_START       },
+   { "btn_back",      XI_BUTTON, XI_BACK        },
+
+   // L & R Thumbstick Buttons:
+   { "btn_lt",        XI_BUTTON, XI_LEFT_THUMB  },
+   { "btn_rt",        XI_BUTTON, XI_RIGHT_THUMB },
+
+   // L & R Shoulder Buttons:
+   { "btn_l",         XI_BUTTON, XI_LEFT_SHOULDER  },
+   { "btn_r",         XI_BUTTON, XI_RIGHT_SHOULDER },
+
+   // Primary buttons:
+   { "btn_a",         XI_BUTTON, XI_A           },
+   { "btn_b",         XI_BUTTON, XI_B           },
+   { "btn_x",         XI_BUTTON, XI_X           },
+   { "btn_y",         XI_BUTTON, XI_Y           },
+#endif
+
+
    //-------------------------------------- MOTION EVENTS
    // Accelerometer/Gyroscope axes:
    { "accelx",        SI_MOTION,    SI_ACCELX    },
@@ -1965,7 +2133,6 @@ CodeMapping gVirtualMap[] =
    { "leapFingerPos",   SI_LEAP,     LM_FINGERPOS   },
    //-------------------------------------- MISCELLANEOUS EVENTS
    //
-
    { "anykey",        SI_KEY,      KEY_ANYKEY },
    { "nomatch",       SI_UNKNOWN,  0xFFFFFFFF }
 };

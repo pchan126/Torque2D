@@ -20,10 +20,10 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#include "2d/sceneobject/particlePlayer.h"
+#include "2d/sceneobject/ParticlePlayer.h"
 
 // Script bindings.
-#include "2d/sceneobject/particlePlayer_ScriptBinding.h"
+#include "2d/sceneobject/ParticlePlayer_ScriptBinding.h"
 
 
 //------------------------------------------------------------------------------
@@ -388,10 +388,6 @@ void ParticlePlayer::integrateObject( const F32 totalTime, const F32 elapsedTime
 
     // Fetch the particle life-mode.
     const ParticleAsset::LifeMode lifeMode = pParticleAsset->getLifeMode();
-
-    // Finish if the particle player is in "infinite" mode.
-    if ( lifeMode == ParticleAsset::INFINITE_LIFEMODE )
-        return;
 
     // Are we waiting for particles and there are non left?
     if ( mWaitingForParticles )
@@ -1251,7 +1247,10 @@ void ParticlePlayer::configureParticle(EmitterNode *pEmitterNode, ParticleSystem
         else
         {
             // No, so set the emitter image frame.
-            frameProvider.setImageFrame( pParticleAssetEmitter->getImageFrame() );
+            if (pParticleAssetEmitter->isUsingNamedImageFrame())
+                frameProvider.setNamedImageFrame( pParticleAssetEmitter->getNamedImageFrame() );
+            else
+                frameProvider.setImageFrame( pParticleAssetEmitter->getImageFrame() );
         }
     }
     else
@@ -1420,6 +1419,7 @@ void ParticlePlayer::integrateParticle( EmitterNode* pEmitterNode, ParticleSyste
 
         // Set new Orientation Angle.
         pParticleNode->mOrientationAngle = movementAngle - pParticleAssetEmitter->getAlignedAngleOffset();
+
     }
     else
     {
@@ -1507,7 +1507,7 @@ void ParticlePlayer::initializeParticleAsset( void )
 
         // Skip if the emitter does not have a valid assigned asset to render.
         if (( pParticleAssetEmitter->isStaticFrameProvider() && (imageAsset.isNull() || imageAsset->getFrameCount() == 0 ) ) ||
-            ( !pParticleAssetEmitter->isStaticFrameProvider() && (animationAsset.isNull() || animationAsset->getValidatedAnimationFrames().empty() ) ) )
+            ( !pParticleAssetEmitter->isStaticFrameProvider() && (animationAsset.isNull() || (animationAsset->getValidatedAnimationFrames().size() == 0 && animationAsset->getValidatedNamedAnimationFrames().size() == 0)) ) )
             continue;
 
         // Create a new emitter node.

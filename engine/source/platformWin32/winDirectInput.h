@@ -35,7 +35,7 @@
 
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
-#include <xinput.h>
+#include <Xinput.h>
 
 // XInput related definitions
 typedef DWORD (WINAPI* FN_XInputGetState)(DWORD dwUserIndex, XINPUT_STATE* pState);
@@ -54,7 +54,7 @@ class DInputManager : public InputManager
    private:
       typedef SimGroup Parent;
 
-      // XInput state
+	    // XInput state
       HMODULE                 mXInputLib;
       FN_XInputGetState       mfnXInputGetState;
       FN_XInputSetState       mfnXInputSetState;
@@ -74,12 +74,12 @@ class DInputManager : public InputManager
       static bool smKeyboardEnabled;
       static bool smMouseEnabled;
       static bool smJoystickEnabled;
-      static bool smXInputEnabled;
+	  static bool smXInputEnabled;
 
       bool mKeyboardActive;
       bool mMouseActive;
       bool mJoystickActive;
-      bool mXInputActive;
+	  bool mXInputActive;
 
       void  enumerateDevices();
 
@@ -88,8 +88,8 @@ class DInputManager : public InputManager
       bool acquire( U8 deviceType, U8 deviceID );
       void unacquire( U8 deviceType, U8 deviceID );
 
-      // XInput worker functions
-      void buildXInputEvent( U32 deviceInst, InputEventType objType, InputObjectInstances objInst, InputActionType action, float fValue );
+	  // XInput worker functions
+      void buildXInputEvent( U32 deviceInst, XInputEventType objType, InputObjectInstances objInst, InputActionType action, float fValue );
       void fireXInputConnectEvent( int controllerID, bool condition, bool connected );
       void fireXInputMoveEvent( int controllerID, bool condition, InputObjectInstances objInst, float fValue );
       void fireXInputButtonEvent( int controllerID, bool forceFire, int button, InputObjectInstances objInst );
@@ -131,7 +131,7 @@ class DInputManager : public InputManager
       void deactivateJoystick();
       bool isJoystickActive()       { return( mJoystickActive ); }
 
-      static bool enableXInput();
+	  static bool enableXInput();
       static void disableXInput();
       static bool isXInputEnabled();
       bool activateXInput();
@@ -144,7 +144,7 @@ class DInputManager : public InputManager
       // Console interface:
       const char* getJoystickAxesString( U32 deviceID );
 
-      bool rumble( const char *pDeviceName, float x, float y );
+	  bool rumble( const char *pDeviceName, float x, float y );
 };
 
 #endif  // _H_WINDIRECTINPUT_

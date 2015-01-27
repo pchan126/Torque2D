@@ -89,13 +89,18 @@ static void pngFlushDataFn(png_structp /*png_ptr*/)
 
 static png_voidp pngMallocFn(png_structp /*png_ptr*/, png_size_t size)
 {
-   return FrameAllocator::alloc(size);
-//   return (png_voidp)dMalloc(size);
+#ifndef _WIN64
+   return FrameAllocator::alloc((U32)size);
+#else
+   return (png_voidp)dMalloc(size);
+#endif
 }
 
-static void pngFreeFn(png_structp /*png_ptr*/, png_voidp /*mem*/)
+static void pngFreeFn(png_structp /*png_ptr*/, png_voidp mem)
 {
-//   dFree(mem);
+#ifdef _WIN64
+   dFree(mem);
+#endif
 }
 
 

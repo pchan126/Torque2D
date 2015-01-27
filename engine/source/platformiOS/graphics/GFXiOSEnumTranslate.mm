@@ -1,5 +1,6 @@
 #import "./GFXiOSEnumTranslate.h"
 #include "graphics/gfxEnums.h"
+#import "./GFXiOSDevice.h"
 
 GLenum GFXGLPrimType[GFXPT_COUNT];
 GLenum GFXGLBlend[GFXBlend_COUNT];

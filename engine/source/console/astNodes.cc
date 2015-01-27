@@ -1005,8 +1005,8 @@ U32 ConstantNode::compile(U32 *codeStream, U32 ip, TypeReq type)
    {
    case TypeReqString:
       codeStream[ip++] = OP_LOADIMMED_IDENT;
-      codeStream[ip] = STEtoU32(value, ip);
-      ip++;
+         codeStream[ip] = STEtoU32(value, ip);
+         ip++;
       break;
    case TypeReqUInt:
       codeStream[ip++] = OP_LOADIMMED_UINT;
@@ -1745,7 +1745,7 @@ U32 FunctionDeclStmtNode::precompileStmt(U32)
    setCurrentStringTable(&getGlobalStringTable());
    setCurrentFloatTable(&getGlobalFloatTable());
 
-   endOffset = argc + subSize + 8;
+   endOffset = (argc) + subSize + 8;
    return endOffset;
 }
 
@@ -1759,6 +1759,7 @@ U32 FunctionDeclStmtNode::compileStmt(U32 *codeStream, U32 ip, U32, U32)
    ip++;
    codeStream[ip] = STEtoU32(package, ip);
    ip++;
+
    codeStream[ip++] = bool(stmts != NULL);
    codeStream[ip++] = start + endOffset;
    codeStream[ip++] = argc;

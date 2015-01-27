@@ -30,11 +30,12 @@
 #include "input/actionMap.h"
 #include "gui/guiCanvas.h"
 #include "gui/guiControl.h"
-#include "gui/guiControl_ScriptBinding.h"
 #include "gui/guiDefaultControlRender.h"
 #include "gui/editor/guiEditCtrl.h"
 #include "string/unicode.h"
 #include "collection/vector.h"
+
+#include "guiControl_ScriptBinding.h"
 
 #ifndef _FRAMEALLOCATOR_H_
 #include "memory/frameAllocator.h"
@@ -522,7 +523,7 @@ void GuiControl::onRender(Point2I offset, const RectI &updateRect)
 
 bool GuiControl::defaultTooltipRender( const Point2I &hoverPos, const Point2I &cursorPos, const char* tipText )
 {
-#ifndef TORQUE_OS_IOS
+#if !defined(TORQUE_OS_IOS) && !defined(TORQUE_OS_ANDROID) && !defined(TORQUE_OS_EMSCRIPTEN)
     // Short Circuit.
     if (!mAwake)
         return false;

@@ -26,7 +26,9 @@
 #include "io/StreamFn.h"
 #include <sstream>
 
-bool gLogToConsole = false;
+static bool gLogToConsole = false;
+
+//#include "connectionProtocol_ScriptBinding.h"
 
 size_t gNetBitsReceived = 0;
 

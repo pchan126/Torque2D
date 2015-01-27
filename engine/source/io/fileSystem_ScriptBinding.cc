@@ -62,11 +62,9 @@ ConsoleFunctionGroupBegin( FileSystem, "Functions allowing you to search for fil
 	@{
 */
 
-/*! 
-    @param strPattern The string pattern to search for.
-    @return Returns a string representing the first file in the directory system matching the given pattern.
-*/
-ConsoleFunctionWithDocs(findFirstFile, ConsoleString, 2, 2, ( strPattern ))
+ConsoleFunction(findFirstFile, const char *, 2, 2, "( strPattern )\n"
+                "@param strPattern The string pattern to search for.\n"
+                "@return Returns a string representing the first file in the directory system matching the given pattern.")
 {
    TORQUE_UNUSED( argc );
    const char *fn = nullptr;

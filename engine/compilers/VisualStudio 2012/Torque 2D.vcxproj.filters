@@ -28,28 +28,28 @@
     <Filter Include="audio">
       <UniqueIdentifier>{bfd4849e-66c6-450b-9a01-0873aa28e21a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="box2d">
+    <Filter Include="Box2D">
       <UniqueIdentifier>{1f640da6-77a4-4176-a018-9bfad5becf95}</UniqueIdentifier>
     </Filter>
-    <Filter Include="box2d\Collision">
+    <Filter Include="Box2D\Collision">
       <UniqueIdentifier>{4faf4110-842d-4178-81ca-0375f3804cac}</UniqueIdentifier>
     </Filter>
-    <Filter Include="box2d\Collision\Shapes">
+    <Filter Include="Box2D\Collision\Shapes">
       <UniqueIdentifier>{2f939a2b-3cd9-4e67-8311-bf751093f2a5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="box2d\Common">
+    <Filter Include="Box2D\Common">
       <UniqueIdentifier>{84907fc2-76e8-4a3b-9df4-76451387d3f9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="box2d\Dynamics">
+    <Filter Include="Box2D\Dynamics">
       <UniqueIdentifier>{e2574a74-ff0d-401d-818d-96e6c155a4b4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="box2d\Dynamics\Contacts">
+    <Filter Include="Box2D\Dynamics\Contacts">
       <UniqueIdentifier>{18c9fe85-da18-45d5-9573-a71ce9373961}</UniqueIdentifier>
     </Filter>
-    <Filter Include="box2d\Dynamics\Joints">
+    <Filter Include="Box2D\Dynamics\Joints">
       <UniqueIdentifier>{4f9157b1-a024-450f-a352-1849cf2bddcc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="box2d\Rope">
+    <Filter Include="Box2D\Rope">
       <UniqueIdentifier>{14385fbb-f8af-4849-bdd9-8c8f67d3928e}</UniqueIdentifier>
     </Filter>
     <Filter Include="collection">
@@ -100,6 +100,12 @@
     <Filter Include="io">
       <UniqueIdentifier>{fa588b4f-a8dd-4615-beee-dab4db372118}</UniqueIdentifier>
     </Filter>
+    <Filter Include="io\zip">
+      <UniqueIdentifier>{27eea104-6e41-4cfb-bc50-56f9157081ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="io\resource">
+      <UniqueIdentifier>{0688e2d7-d313-4a35-b90d-1df191825361}</UniqueIdentifier>
+    </Filter>
     <Filter Include="math">
       <UniqueIdentifier>{04e382a2-a0a9-40c9-b227-a46e345fb032}</UniqueIdentifier>
     </Filter>
@@ -127,6 +133,9 @@
     <Filter Include="platform">
       <UniqueIdentifier>{f5858e14-ed7e-4887-a22e-4123ab41a6f1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="platform\menus">
+      <UniqueIdentifier>{a9dbe516-9ed6-43a6-987e-6f2bc6f59928}</UniqueIdentifier>
+    </Filter>
     <Filter Include="platform\nativeDialogs">
       <UniqueIdentifier>{d98ec67b-b10a-4c7b-bb2f-a6394a861b67}</UniqueIdentifier>
     </Filter>
@@ -135,6 +144,9 @@
     </Filter>
     <Filter Include="platformWin32">
       <UniqueIdentifier>{3f7e4a0c-c3da-4972-a9bc-9cb0e0ce622e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="platformWin32\menus">
+      <UniqueIdentifier>{d77ee12f-a922-4d39-9e6c-2ad87a5b4a4e}</UniqueIdentifier>
     </Filter>
     <Filter Include="platformWin32\nativeDialogs">
       <UniqueIdentifier>{9da3da8f-0660-4a53-b5cf-3994c2dca7e3}</UniqueIdentifier>
@@ -181,44 +193,11 @@
     <Filter Include="persistence\taml\xml">
       <UniqueIdentifier>{cc1c1416-376b-4686-a4ac-21d1a35c9390}</UniqueIdentifier>
     </Filter>
-    <Filter Include="platformWin32\graphics">
-      <UniqueIdentifier>{9a10f808-47f5-4ad1-80e8-2ce6e65ed9d4}</UniqueIdentifier>
+    <Filter Include="input\leapMotion">
+      <UniqueIdentifier>{addcb993-5059-42bf-a1ea-871f700c67c3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="windowManager">
-      <UniqueIdentifier>{6491d16e-04b4-453b-bad5-9181b76f1c9b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="graphics\OpenGL">
-      <UniqueIdentifier>{be972417-7ab8-4dec-8401-53e1ed70a021}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="lighting">
-      <UniqueIdentifier>{219b4fb6-1523-4f18-a468-5491f5203053}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="lighting\common">
-      <UniqueIdentifier>{11d1ddf8-29fd-4fb8-8d67-9a0628eed2bb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="platformWin32\windowManager">
-      <UniqueIdentifier>{249e87c3-74af-44e4-859a-53d0e92b5899}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="renderInstance">
-      <UniqueIdentifier>{af942f6e-3673-4aed-bb4f-4fd4a9c52e38}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="graphics\sim">
-      <UniqueIdentifier>{4d79c8c3-b266-4df5-9635-d26dbf3409f6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="platformWin32\joystick">
-      <UniqueIdentifier>{edc7dd09-cc95-48c7-9067-d3bbe95062fe}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="platformWin32\2d">
-      <UniqueIdentifier>{fb3cfa99-caac-40d9-bb93-6e9b6385903c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="platformWin32\2d\assets">
-      <UniqueIdentifier>{20529507-b778-4a10-9a62-48fb7cc5b16f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="math\util">
-      <UniqueIdentifier>{e6e361a1-b57c-4000-8e59-845d3fa4d9d2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="io\resource">
-      <UniqueIdentifier>{ac23c8ed-f9f4-413f-847d-cb2916dcf42a}</UniqueIdentifier>
+    <Filter Include="spine">
+      <UniqueIdentifier>{bb776838-ed6f-477c-b366-dd0c5c60ae5f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -229,9 +208,6 @@
       <Filter>audio</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\audio\audioDataBlock.cc">
-      <Filter>audio</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\audio\audioFunctions.cc">
       <Filter>audio</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\audio\audioStreamSourceFactory.cc">
@@ -312,9 +288,6 @@
     <ClCompile Include="..\..\source\math\mBox.cc">
       <Filter>math</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\math\mConsoleFunctions.cc">
-      <Filter>math</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\source\math\mMath_C.cc">
       <Filter>math</Filter>
     </ClCompile>
@@ -354,6 +327,9 @@
     <ClCompile Include="..\..\source\persistence\SimXMLDocument.cpp">
       <Filter>persistence</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\platform\CursorManager.cc">
+      <Filter>platform</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\source\platform\platform.cc">
       <Filter>platform</Filter>
     </ClCompile>
@@ -368,6 +344,15 @@
     </ClCompile>
     <ClCompile Include="..\..\source\platform\platformMemory.cc">
       <Filter>platform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\platform\platformString.cc">
+      <Filter>platform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\platform\platformVideo.cc">
+      <Filter>platform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\platform\menus\popupMenu.cc">
+      <Filter>platform\menus</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\platform\nativeDialogs\msgBox.cpp">
       <Filter>platform\nativeDialogs</Filter>
@@ -384,6 +369,12 @@
     <ClCompile Include="..\..\source\platformWin32\winCPUInfo.cc">
       <Filter>platformWin32</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\platformWin32\winDInputDevice.cc">
+      <Filter>platformWin32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\platformWin32\winDirectInput.cc">
+      <Filter>platformWin32</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\source\platformWin32\winExec.cc">
       <Filter>platformWin32</Filter>
     </ClCompile>
@@ -391,6 +382,12 @@
       <Filter>platformWin32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\platformWin32\winFont.cc">
+      <Filter>platformWin32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\platformWin32\winGL.cc">
+      <Filter>platformWin32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\platformWin32\winGLSpecial.cc">
       <Filter>platformWin32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\platformWin32\winInput.cc">
@@ -406,6 +403,9 @@
       <Filter>platformWin32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\platformWin32\winNet.cc">
+      <Filter>platformWin32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\platformWin32\winOGLVideo.cc">
       <Filter>platformWin32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\platformWin32\winOpenAL.cc">
@@ -429,8 +429,17 @@
     <ClCompile Include="..\..\source\platformWin32\winUser.cc">
       <Filter>platformWin32</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\platformWin32\winVFS.cc">
+      <Filter>platformWin32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\platformWin32\winVideo.cc">
+      <Filter>platformWin32</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\source\platformWin32\winWindow.cc">
       <Filter>platformWin32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\platformWin32\menus\popupMenuWin32.cc">
+      <Filter>platformWin32\menus</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\platformWin32\nativeDialogs\win32DirectoryResolver.cpp">
       <Filter>platformWin32\nativeDialogs</Filter>
@@ -534,143 +543,143 @@
     <ClCompile Include="..\..\source\gui\editor\guiSeparatorCtrl.cc">
       <Filter>gui\editor</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Collision\b2BroadPhase.cpp">
-      <Filter>box2d\Collision</Filter>
+    <ClCompile Include="..\..\source\Box2D\Collision\b2BroadPhase.cpp">
+      <Filter>Box2D\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Collision\b2CollideCircle.cpp">
-      <Filter>box2d\Collision</Filter>
+    <ClCompile Include="..\..\source\Box2D\Collision\b2CollideCircle.cpp">
+      <Filter>Box2D\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Collision\b2CollideEdge.cpp">
-      <Filter>box2d\Collision</Filter>
+    <ClCompile Include="..\..\source\Box2D\Collision\b2CollideEdge.cpp">
+      <Filter>Box2D\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Collision\b2CollidePolygon.cpp">
-      <Filter>box2d\Collision</Filter>
+    <ClCompile Include="..\..\source\Box2D\Collision\b2CollidePolygon.cpp">
+      <Filter>Box2D\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Collision\b2Collision.cpp">
-      <Filter>box2d\Collision</Filter>
+    <ClCompile Include="..\..\source\Box2D\Collision\b2Collision.cpp">
+      <Filter>Box2D\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Collision\b2Distance.cpp">
-      <Filter>box2d\Collision</Filter>
+    <ClCompile Include="..\..\source\Box2D\Collision\b2Distance.cpp">
+      <Filter>Box2D\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Collision\b2DynamicTree.cpp">
-      <Filter>box2d\Collision</Filter>
+    <ClCompile Include="..\..\source\Box2D\Collision\b2DynamicTree.cpp">
+      <Filter>Box2D\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Collision\b2TimeOfImpact.cpp">
-      <Filter>box2d\Collision</Filter>
+    <ClCompile Include="..\..\source\Box2D\Collision\b2TimeOfImpact.cpp">
+      <Filter>Box2D\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Collision\Shapes\b2ChainShape.cpp">
-      <Filter>box2d\Collision\Shapes</Filter>
+    <ClCompile Include="..\..\source\Box2D\Collision\Shapes\b2ChainShape.cpp">
+      <Filter>Box2D\Collision\Shapes</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Collision\Shapes\b2CircleShape.cpp">
-      <Filter>box2d\Collision\Shapes</Filter>
+    <ClCompile Include="..\..\source\Box2D\Collision\Shapes\b2CircleShape.cpp">
+      <Filter>Box2D\Collision\Shapes</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Collision\Shapes\b2EdgeShape.cpp">
-      <Filter>box2d\Collision\Shapes</Filter>
+    <ClCompile Include="..\..\source\Box2D\Collision\Shapes\b2EdgeShape.cpp">
+      <Filter>Box2D\Collision\Shapes</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Collision\Shapes\b2PolygonShape.cpp">
-      <Filter>box2d\Collision\Shapes</Filter>
+    <ClCompile Include="..\..\source\Box2D\Collision\Shapes\b2PolygonShape.cpp">
+      <Filter>Box2D\Collision\Shapes</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Common\b2BlockAllocator.cpp">
-      <Filter>box2d\Common</Filter>
+    <ClCompile Include="..\..\source\Box2D\Common\b2BlockAllocator.cpp">
+      <Filter>Box2D\Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Common\b2Draw.cpp">
-      <Filter>box2d\Common</Filter>
+    <ClCompile Include="..\..\source\Box2D\Common\b2Draw.cpp">
+      <Filter>Box2D\Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Common\b2Math.cpp">
-      <Filter>box2d\Common</Filter>
+    <ClCompile Include="..\..\source\Box2D\Common\b2Math.cpp">
+      <Filter>Box2D\Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Common\b2Settings.cpp">
-      <Filter>box2d\Common</Filter>
+    <ClCompile Include="..\..\source\Box2D\Common\b2Settings.cpp">
+      <Filter>Box2D\Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Common\b2StackAllocator.cpp">
-      <Filter>box2d\Common</Filter>
+    <ClCompile Include="..\..\source\Box2D\Common\b2StackAllocator.cpp">
+      <Filter>Box2D\Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Common\b2Timer.cpp">
-      <Filter>box2d\Common</Filter>
+    <ClCompile Include="..\..\source\Box2D\Common\b2Timer.cpp">
+      <Filter>Box2D\Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Dynamics\b2Body.cpp">
-      <Filter>box2d\Dynamics</Filter>
+    <ClCompile Include="..\..\source\Box2D\Dynamics\b2Body.cpp">
+      <Filter>Box2D\Dynamics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Dynamics\b2ContactManager.cpp">
-      <Filter>box2d\Dynamics</Filter>
+    <ClCompile Include="..\..\source\Box2D\Dynamics\b2ContactManager.cpp">
+      <Filter>Box2D\Dynamics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Dynamics\b2Fixture.cpp">
-      <Filter>box2d\Dynamics</Filter>
+    <ClCompile Include="..\..\source\Box2D\Dynamics\b2Fixture.cpp">
+      <Filter>Box2D\Dynamics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Dynamics\b2Island.cpp">
-      <Filter>box2d\Dynamics</Filter>
+    <ClCompile Include="..\..\source\Box2D\Dynamics\b2Island.cpp">
+      <Filter>Box2D\Dynamics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Dynamics\b2World.cpp">
-      <Filter>box2d\Dynamics</Filter>
+    <ClCompile Include="..\..\source\Box2D\Dynamics\b2World.cpp">
+      <Filter>Box2D\Dynamics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Dynamics\b2WorldCallbacks.cpp">
-      <Filter>box2d\Dynamics</Filter>
+    <ClCompile Include="..\..\source\Box2D\Dynamics\b2WorldCallbacks.cpp">
+      <Filter>Box2D\Dynamics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Dynamics\Contacts\b2ChainAndCircleContact.cpp">
-      <Filter>box2d\Dynamics\Contacts</Filter>
+    <ClCompile Include="..\..\source\Box2D\Dynamics\Contacts\b2ChainAndCircleContact.cpp">
+      <Filter>Box2D\Dynamics\Contacts</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Dynamics\Contacts\b2ChainAndPolygonContact.cpp">
-      <Filter>box2d\Dynamics\Contacts</Filter>
+    <ClCompile Include="..\..\source\Box2D\Dynamics\Contacts\b2ChainAndPolygonContact.cpp">
+      <Filter>Box2D\Dynamics\Contacts</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Dynamics\Contacts\b2CircleContact.cpp">
-      <Filter>box2d\Dynamics\Contacts</Filter>
+    <ClCompile Include="..\..\source\Box2D\Dynamics\Contacts\b2CircleContact.cpp">
+      <Filter>Box2D\Dynamics\Contacts</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Dynamics\Contacts\b2Contact.cpp">
-      <Filter>box2d\Dynamics\Contacts</Filter>
+    <ClCompile Include="..\..\source\Box2D\Dynamics\Contacts\b2Contact.cpp">
+      <Filter>Box2D\Dynamics\Contacts</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Dynamics\Contacts\b2ContactSolver.cpp">
-      <Filter>box2d\Dynamics\Contacts</Filter>
+    <ClCompile Include="..\..\source\Box2D\Dynamics\Contacts\b2ContactSolver.cpp">
+      <Filter>Box2D\Dynamics\Contacts</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Dynamics\Contacts\b2EdgeAndCircleContact.cpp">
-      <Filter>box2d\Dynamics\Contacts</Filter>
+    <ClCompile Include="..\..\source\Box2D\Dynamics\Contacts\b2EdgeAndCircleContact.cpp">
+      <Filter>Box2D\Dynamics\Contacts</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Dynamics\Contacts\b2EdgeAndPolygonContact.cpp">
-      <Filter>box2d\Dynamics\Contacts</Filter>
+    <ClCompile Include="..\..\source\Box2D\Dynamics\Contacts\b2EdgeAndPolygonContact.cpp">
+      <Filter>Box2D\Dynamics\Contacts</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Dynamics\Contacts\b2PolygonAndCircleContact.cpp">
-      <Filter>box2d\Dynamics\Contacts</Filter>
+    <ClCompile Include="..\..\source\Box2D\Dynamics\Contacts\b2PolygonAndCircleContact.cpp">
+      <Filter>Box2D\Dynamics\Contacts</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Dynamics\Contacts\b2PolygonContact.cpp">
-      <Filter>box2d\Dynamics\Contacts</Filter>
+    <ClCompile Include="..\..\source\Box2D\Dynamics\Contacts\b2PolygonContact.cpp">
+      <Filter>Box2D\Dynamics\Contacts</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Dynamics\Joints\b2DistanceJoint.cpp">
-      <Filter>box2d\Dynamics\Joints</Filter>
+    <ClCompile Include="..\..\source\Box2D\Dynamics\Joints\b2DistanceJoint.cpp">
+      <Filter>Box2D\Dynamics\Joints</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Dynamics\Joints\b2FrictionJoint.cpp">
-      <Filter>box2d\Dynamics\Joints</Filter>
+    <ClCompile Include="..\..\source\Box2D\Dynamics\Joints\b2FrictionJoint.cpp">
+      <Filter>Box2D\Dynamics\Joints</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Dynamics\Joints\b2GearJoint.cpp">
-      <Filter>box2d\Dynamics\Joints</Filter>
+    <ClCompile Include="..\..\source\Box2D\Dynamics\Joints\b2GearJoint.cpp">
+      <Filter>Box2D\Dynamics\Joints</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Dynamics\Joints\b2Joint.cpp">
-      <Filter>box2d\Dynamics\Joints</Filter>
+    <ClCompile Include="..\..\source\Box2D\Dynamics\Joints\b2Joint.cpp">
+      <Filter>Box2D\Dynamics\Joints</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Dynamics\Joints\b2MotorJoint.cpp">
-      <Filter>box2d\Dynamics\Joints</Filter>
+    <ClCompile Include="..\..\source\Box2D\Dynamics\Joints\b2MotorJoint.cpp">
+      <Filter>Box2D\Dynamics\Joints</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Dynamics\Joints\b2MouseJoint.cpp">
-      <Filter>box2d\Dynamics\Joints</Filter>
+    <ClCompile Include="..\..\source\Box2D\Dynamics\Joints\b2MouseJoint.cpp">
+      <Filter>Box2D\Dynamics\Joints</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Dynamics\Joints\b2PrismaticJoint.cpp">
-      <Filter>box2d\Dynamics\Joints</Filter>
+    <ClCompile Include="..\..\source\Box2D\Dynamics\Joints\b2PrismaticJoint.cpp">
+      <Filter>Box2D\Dynamics\Joints</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Dynamics\Joints\b2PulleyJoint.cpp">
-      <Filter>box2d\Dynamics\Joints</Filter>
+    <ClCompile Include="..\..\source\Box2D\Dynamics\Joints\b2PulleyJoint.cpp">
+      <Filter>Box2D\Dynamics\Joints</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Dynamics\Joints\b2RevoluteJoint.cpp">
-      <Filter>box2d\Dynamics\Joints</Filter>
+    <ClCompile Include="..\..\source\Box2D\Dynamics\Joints\b2RevoluteJoint.cpp">
+      <Filter>Box2D\Dynamics\Joints</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Dynamics\Joints\b2RopeJoint.cpp">
-      <Filter>box2d\Dynamics\Joints</Filter>
+    <ClCompile Include="..\..\source\Box2D\Dynamics\Joints\b2RopeJoint.cpp">
+      <Filter>Box2D\Dynamics\Joints</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Dynamics\Joints\b2WeldJoint.cpp">
-      <Filter>box2d\Dynamics\Joints</Filter>
+    <ClCompile Include="..\..\source\Box2D\Dynamics\Joints\b2WeldJoint.cpp">
+      <Filter>Box2D\Dynamics\Joints</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Dynamics\Joints\b2WheelJoint.cpp">
-      <Filter>box2d\Dynamics\Joints</Filter>
+    <ClCompile Include="..\..\source\Box2D\Dynamics\Joints\b2WheelJoint.cpp">
+      <Filter>Box2D\Dynamics\Joints</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\box2d\Rope\b2Rope.cpp">
-      <Filter>box2d\Rope</Filter>
+    <ClCompile Include="..\..\source\Box2D\Rope\b2Rope.cpp">
+      <Filter>Box2D\Rope</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\persistence\taml\taml.cc">
       <Filter>persistence\taml</Filter>
@@ -721,6 +730,12 @@
       <Filter>graphics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\graphics\bitmapPng.cc">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphics\dgl.cc">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphics\dglMatrix.cc">
       <Filter>graphics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\graphics\gBitmap.cc">
@@ -846,6 +861,9 @@
     <ClCompile Include="..\..\source\gui\guiTextListCtrl.cc">
       <Filter>gui</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\gui\guiTickCtrl.cc">
+      <Filter>gui</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\source\gui\guiTreeViewCtrl.cc">
       <Filter>gui</Filter>
     </ClCompile>
@@ -858,13 +876,85 @@
     <ClCompile Include="..\..\source\graphics\PNGImage.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\collection\bitTables.cc">
+      <Filter>collection</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\collection\hashTable.cc">
+      <Filter>collection</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\collection\vector.cc">
+      <Filter>collection</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\io\bitStream.cc">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\io\bufferStream.cc">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\io\fileObject.cc">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\io\fileStream.cc">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\io\fileStreamObject.cc">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\io\filterStream.cc">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\io\memStream.cc">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\io\nStream.cc">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\io\resizeStream.cc">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\io\streamObject.cc">
+      <Filter>io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\io\zip\centralDir.cc">
+      <Filter>io\zip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\io\zip\compressor.cc">
+      <Filter>io\zip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\io\zip\extraField.cc">
+      <Filter>io\zip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\io\zip\fileHeader.cc">
+      <Filter>io\zip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\io\zip\zipArchive.cc">
+      <Filter>io\zip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\io\zip\zipCryptStream.cc">
+      <Filter>io\zip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\io\zip\zipObject.cc">
+      <Filter>io\zip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\io\zip\zipSubStream.cc">
+      <Filter>io\zip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\io\zip\zipTempStream.cc">
+      <Filter>io\zip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\io\zip\deflate.cc">
+      <Filter>io\zip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\io\zip\stored.cc">
+      <Filter>io\zip</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\source\memory\dataChunker.cc">
       <Filter>memory</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\memory\frameAllocator.cc">
-      <Filter>memory</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\source\algorithm\crc.cc">
+      <Filter>algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\algorithm\hashFunction.cc">
       <Filter>algorithm</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\game\gameInterface.cc">
@@ -936,6 +1026,12 @@
     <ClCompile Include="..\..\source\string\stringUnit.cpp">
       <Filter>string</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\io\resource\resourceDictionary.cc">
+      <Filter>io\resource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\io\resource\resourceManager.cc">
+      <Filter>io\resource</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\source\collection\nameTags.cpp">
       <Filter>collection</Filter>
     </ClCompile>
@@ -1001,6 +1097,18 @@
     </ClCompile>
     <ClCompile Include="..\..\source\audio\AudioAsset.cc">
       <Filter>audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphics\TextureManager.cc">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphics\TextureHandle.cc">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphics\TextureDictionary.cc">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\graphics\DynamicTexture.cc">
+      <Filter>graphics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\persistence\taml\tamlWriteNode.cc">
       <Filter>persistence\taml</Filter>
@@ -1101,9 +1209,6 @@
     <ClCompile Include="..\..\source\platform\platformFont.cc">
       <Filter>platform</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\platform\platformNetwork.cc">
-      <Filter>platform</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\source\network\networkProcessList.cc">
       <Filter>network</Filter>
     </ClCompile>
@@ -1191,66 +1296,6 @@
     <ClCompile Include="..\..\source\2d\core\ImageFrameProviderCore.cc">
       <Filter>2d\core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\graphics\gfxCardProfile.cc">
-      <Filter>graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\graphics\gfxDevice.cc">
-      <Filter>graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\graphics\gfxDrawUtil.cc">
-      <Filter>graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\graphics\gfxFontRenderBatcher.cc">
-      <Filter>graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\graphics\gfxInit.cpp">
-      <Filter>graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\graphics\gfxResource.cc">
-      <Filter>graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\graphics\gfxShader.cc">
-      <Filter>graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\graphics\gfxStateBlock.cc">
-      <Filter>graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\graphics\gfxStringEnumTranslate.cc">
-      <Filter>graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\graphics\gfxStructs.cc">
-      <Filter>graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\graphics\gfxTarget.cc">
-      <Filter>graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\graphics\gfxTextureHandle.cc">
-      <Filter>graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\graphics\gfxTextureManager.cc">
-      <Filter>graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\graphics\gfxTextureObject.cc">
-      <Filter>graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\graphics\gfxTextureProfile.cc">
-      <Filter>graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\graphics\gfxVertexBuffer.cc">
-      <Filter>graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\graphics\gfxVertexFormat.cc">
-      <Filter>graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\graphics\gfxVertexTypes.cc">
-      <Filter>graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\graphics\primBuilder.cc">
-      <Filter>graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\string\str.cpp">
-      <Filter>string</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\source\persistence\taml\binary\tamlBinaryReader.cc">
       <Filter>persistence\taml\binary</Filter>
     </ClCompile>
@@ -1275,164 +1320,110 @@
     <ClCompile Include="..\..\source\persistence\taml\json\tamlJSONParser.cc">
       <Filter>persistence\taml\json</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\graphics\OpenGL\gfxOpenGLDevice.cc">
-      <Filter>graphics\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\graphics\OpenGL\gfxOpenGLShader.cc">
-      <Filter>graphics\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\graphics\OpenGL\gfxOpenGLStateBlock.cc">
-      <Filter>graphics\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinTextureTarget.cc">
-      <Filter>platformWin32\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinVertexBuffer.cc">
-      <Filter>platformWin32\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinWindowTarget.cc">
-      <Filter>platformWin32\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinCardProfiler.cc">
-      <Filter>platformWin32\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinDevice.win.cc">
-      <Filter>platformWin32\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinEnumTranslate.cc">
-      <Filter>platformWin32\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinShader.cc">
-      <Filter>platformWin32\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinTextureManager.cc">
-      <Filter>platformWin32\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinTextureObject.cc">
-      <Filter>platformWin32\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\2d\scene\Layer.cc">
-      <Filter>2d\scene</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\delegates\process.cpp">
-      <Filter>delegates</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\gui\containers\guiContainer.cpp">
+    <ClCompile Include="..\..\source\gui\containers\guiGridCtrl.cc">
       <Filter>gui\containers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\graphics\gfxEnums.cc">
-      <Filter>graphics</Filter>
+    <ClCompile Include="..\..\source\console\metaScripting_ScriptBinding.cc">
+      <Filter>console</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\2d\scene\SceneRenderState.cc">
-      <Filter>2d\scene</Filter>
+    <ClCompile Include="..\..\source\audio\audio_ScriptBinding.cc">
+      <Filter>audio</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\lighting\lightInfo.cpp">
-      <Filter>lighting</Filter>
+    <ClCompile Include="..\..\source\io\fileSystem_ScriptBinding.cc">
+      <Filter>io</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\lighting\lightManager.cpp">
-      <Filter>lighting</Filter>
+    <ClCompile Include="..\..\source\math\math_ScriptBinding.cc">
+      <Filter>math</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\lighting\lightQuery.cpp">
-      <Filter>lighting</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\lighting\common\lightMapParams.cpp">
-      <Filter>lighting\common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\graphics\bitmapUtils.cpp">
-      <Filter>graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\platform\platformTimer.cc">
+    <ClCompile Include="..\..\source\platform\platformNetwork_ScriptBinding.cc">
       <Filter>platform</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\graphics\gfxDeviceStatistics.cpp">
-      <Filter>graphics</Filter>
+    <ClCompile Include="..\..\source\memory\frameAllocator_ScriptBinding.cc">
+      <Filter>memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\console\Package.cc">
+      <Filter>console</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\input\leapMotion\leapMotionManager.cc">
+      <Filter>input\leapMotion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\input\leapMotion\leapMotionUtil.cpp">
+      <Filter>input\leapMotion</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\math\mPoint.cpp">
       <Filter>math</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\platformWin32\winTimer.cpp">
-      <Filter>platformWin32</Filter>
+    <ClCompile Include="..\..\source\spine\Animation.c">
+      <Filter>spine</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\graphics\OpenGL\gfxOpenGLTextureObject.cc">
-      <Filter>graphics\OpenGL</Filter>
+    <ClCompile Include="..\..\source\spine\AnimationState.c">
+      <Filter>spine</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\windowManager\platformCursorController.cpp">
-      <Filter>windowManager</Filter>
+    <ClCompile Include="..\..\source\spine\AnimationStateData.c">
+      <Filter>spine</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\windowManager\platformInterface.cpp">
-      <Filter>windowManager</Filter>
+    <ClCompile Include="..\..\source\spine\Atlas.c">
+      <Filter>spine</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\windowManager\platformWindow.cpp">
-      <Filter>windowManager</Filter>
+    <ClCompile Include="..\..\source\spine\AtlasAttachmentLoader.c">
+      <Filter>spine</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\windowManager\windowInputGenerator.cpp">
-      <Filter>windowManager</Filter>
+    <ClCompile Include="..\..\source\spine\Attachment.c">
+      <Filter>spine</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\platformWin32\windowManager\GLFWCursorController.cc">
-      <Filter>platformWin32\windowManager</Filter>
+    <ClCompile Include="..\..\source\spine\AttachmentLoader.c">
+      <Filter>spine</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\platformWin32\windowManager\GLFWWindow.cc">
-      <Filter>platformWin32\windowManager</Filter>
+    <ClCompile Include="..\..\source\spine\Bone.c">
+      <Filter>spine</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\platformWin32\windowManager\GLFWWindowInputGenerator.cc">
-      <Filter>platformWin32\windowManager</Filter>
+    <ClCompile Include="..\..\source\spine\BoneData.c">
+      <Filter>spine</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\platformWin32\windowManager\GLFWWindowManager.cc">
-      <Filter>platformWin32\windowManager</Filter>
+    <ClCompile Include="..\..\source\spine\BoundingBoxAttachment.c">
+      <Filter>spine</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\renderInstance\render2DObjectMgr.cpp">
-      <Filter>renderInstance</Filter>
+    <ClCompile Include="..\..\source\spine\Event.c">
+      <Filter>spine</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\renderInstance\renderBinManager.cpp">
-      <Filter>renderInstance</Filter>
+    <ClCompile Include="..\..\source\spine\EventData.c">
+      <Filter>spine</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\renderInstance\renderPassManager.cpp">
-      <Filter>renderInstance</Filter>
+    <ClCompile Include="..\..\source\spine\extension.c">
+      <Filter>spine</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\graphics\sim\gfxStateBlockAsset.cpp">
-      <Filter>graphics\sim</Filter>
+    <ClCompile Include="..\..\source\spine\Json.c">
+      <Filter>spine</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\platformWin32\Joystick\winDInputDevice.cpp">
-      <Filter>platformWin32\joystick</Filter>
+    <ClCompile Include="..\..\source\spine\RegionAttachment.c">
+      <Filter>spine</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\platformWin32\Joystick\winDirectInput.cpp">
-      <Filter>platformWin32\joystick</Filter>
+    <ClCompile Include="..\..\source\spine\Skeleton.c">
+      <Filter>spine</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\math\mRect.cpp">
-      <Filter>math</Filter>
+    <ClCompile Include="..\..\source\spine\SkeletonBounds.c">
+      <Filter>spine</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\platformWin32\2d\assets\FilterImageAsset.cpp">
-      <Filter>platformWin32\2d\assets</Filter>
+    <ClCompile Include="..\..\source\spine\SkeletonData.c">
+      <Filter>spine</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\graphics\OpenGL\gfxOpenGLTextureTarget.cc">
-      <Filter>graphics\OpenGL</Filter>
+    <ClCompile Include="..\..\source\spine\SkeletonJson.c">
+      <Filter>spine</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\gui\guiMoveCtrl.cpp">
-      <Filter>gui</Filter>
+    <ClCompile Include="..\..\source\spine\Skin.c">
+      <Filter>spine</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\2d\assets\ShaderAsset.cpp">
+    <ClCompile Include="..\..\source\spine\Slot.c">
+      <Filter>spine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\spine\SlotData.c">
+      <Filter>spine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\2d\assets\SkeletonAsset.cc">
       <Filter>2d\assets</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\math\util\sphereMesh.cpp">
-      <Filter>math\util</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\graphics\OpenGL\gfxOpenGLCardProfiler.cc">
-      <Filter>graphics\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\io\fileObject.cc">
-      <Filter>io</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\io\fileSystemFunctions.cpp">
-      <Filter>io</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\io\streamObject.cc">
-      <Filter>io</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\io\resource\resourceDictionary.cc">
-      <Filter>io\resource</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\io\resource\resourceManager.cc">
-      <Filter>io\resource</Filter>
+    <ClCompile Include="..\..\source\2d\sceneobject\SkeletonObject.cc">
+      <Filter>2d\sceneobject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1568,6 +1559,15 @@
     <ClInclude Include="..\..\source\platform\event.h">
       <Filter>platform</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\source\platform\GLCoreFunc.h">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platform\GLExtFunc.h">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platform\GLUFunc.h">
+      <Filter>platform</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\source\platform\platform.h">
       <Filter>platform</Filter>
     </ClInclude>
@@ -1598,7 +1598,22 @@
     <ClInclude Include="..\..\source\platform\platformVFS.h">
       <Filter>platform</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\source\platform\platformVideo.h">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platform\types.codewarrior.h">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platform\types.gcc.h">
+      <Filter>platform</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\source\platform\types.h">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platform\types.posix.h">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platform\types.ppc.h">
       <Filter>platform</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\platform\types.visualc.h">
@@ -1606,6 +1621,21 @@
     </ClInclude>
     <ClInclude Include="..\..\source\platform\types.win32.h">
       <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platform\typesLinux.h">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platform\typesPPC.h">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platform\typesWin32.h">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platform\typesX86UNIX.h">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platform\menus\popupMenu.h">
+      <Filter>platform\menus</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\platform\nativeDialogs\fileDialog.h">
       <Filter>platform\nativeDialogs</Filter>
@@ -1622,6 +1652,12 @@
     <ClInclude Include="..\..\source\platform\threads\thread.h">
       <Filter>platform\threads</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\source\platformWin32\gl_types.h">
+      <Filter>platformWin32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platformWin32\GLWinExtFunc.h">
+      <Filter>platformWin32</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\source\platformWin32\GLWinFunc.h">
       <Filter>platformWin32</Filter>
     </ClInclude>
@@ -1637,6 +1673,9 @@
     <ClInclude Include="..\..\source\platformWin32\win32NPatch.h">
       <Filter>platformWin32</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\source\platformWin32\win_common_prefix.h">
+      <Filter>platformWin32</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\source\platformWin32\win_debug_prefix.h">
       <Filter>platformWin32</Filter>
     </ClInclude>
@@ -1646,7 +1685,19 @@
     <ClInclude Include="..\..\source\platformWin32\winConsole.h">
       <Filter>platformWin32</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\source\platformWin32\winDInputDevice.h">
+      <Filter>platformWin32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platformWin32\winDirectInput.h">
+      <Filter>platformWin32</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\source\platformWin32\winFont.h">
+      <Filter>platformWin32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platformWin32\winOGLVideo.h">
+      <Filter>platformWin32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platformWin32\winVideo.h">
       <Filter>platformWin32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\platformWin32\nativeDialogs\win32DirectoryResolver.h">
@@ -1736,146 +1787,146 @@
     <ClInclude Include="..\..\source\gui\editor\guiSeparatorCtrl.h">
       <Filter>gui\editor</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Box2D.h">
-      <Filter>box2d</Filter>
+    <ClInclude Include="..\..\source\Box2D\Box2D.h">
+      <Filter>Box2D</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Collision\b2BroadPhase.h">
-      <Filter>box2d\Collision</Filter>
+    <ClInclude Include="..\..\source\Box2D\Collision\b2BroadPhase.h">
+      <Filter>Box2D\Collision</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Collision\b2Collision.h">
-      <Filter>box2d\Collision</Filter>
+    <ClInclude Include="..\..\source\Box2D\Collision\b2Collision.h">
+      <Filter>Box2D\Collision</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Collision\b2Distance.h">
-      <Filter>box2d\Collision</Filter>
+    <ClInclude Include="..\..\source\Box2D\Collision\b2Distance.h">
+      <Filter>Box2D\Collision</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Collision\b2DynamicTree.h">
-      <Filter>box2d\Collision</Filter>
+    <ClInclude Include="..\..\source\Box2D\Collision\b2DynamicTree.h">
+      <Filter>Box2D\Collision</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Collision\b2TimeOfImpact.h">
-      <Filter>box2d\Collision</Filter>
+    <ClInclude Include="..\..\source\Box2D\Collision\b2TimeOfImpact.h">
+      <Filter>Box2D\Collision</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Collision\Shapes\b2ChainShape.h">
-      <Filter>box2d\Collision\Shapes</Filter>
+    <ClInclude Include="..\..\source\Box2D\Collision\Shapes\b2ChainShape.h">
+      <Filter>Box2D\Collision\Shapes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Collision\Shapes\b2CircleShape.h">
-      <Filter>box2d\Collision\Shapes</Filter>
+    <ClInclude Include="..\..\source\Box2D\Collision\Shapes\b2CircleShape.h">
+      <Filter>Box2D\Collision\Shapes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Collision\Shapes\b2EdgeShape.h">
-      <Filter>box2d\Collision\Shapes</Filter>
+    <ClInclude Include="..\..\source\Box2D\Collision\Shapes\b2EdgeShape.h">
+      <Filter>Box2D\Collision\Shapes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Collision\Shapes\b2PolygonShape.h">
-      <Filter>box2d\Collision\Shapes</Filter>
+    <ClInclude Include="..\..\source\Box2D\Collision\Shapes\b2PolygonShape.h">
+      <Filter>Box2D\Collision\Shapes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Collision\Shapes\b2Shape.h">
-      <Filter>box2d\Collision\Shapes</Filter>
+    <ClInclude Include="..\..\source\Box2D\Collision\Shapes\b2Shape.h">
+      <Filter>Box2D\Collision\Shapes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Common\b2BlockAllocator.h">
-      <Filter>box2d\Common</Filter>
+    <ClInclude Include="..\..\source\Box2D\Common\b2BlockAllocator.h">
+      <Filter>Box2D\Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Common\b2Draw.h">
-      <Filter>box2d\Common</Filter>
+    <ClInclude Include="..\..\source\Box2D\Common\b2Draw.h">
+      <Filter>Box2D\Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Common\b2GrowableStack.h">
-      <Filter>box2d\Common</Filter>
+    <ClInclude Include="..\..\source\Box2D\Common\b2GrowableStack.h">
+      <Filter>Box2D\Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Common\b2Math.h">
-      <Filter>box2d\Common</Filter>
+    <ClInclude Include="..\..\source\Box2D\Common\b2Math.h">
+      <Filter>Box2D\Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Common\b2Settings.h">
-      <Filter>box2d\Common</Filter>
+    <ClInclude Include="..\..\source\Box2D\Common\b2Settings.h">
+      <Filter>Box2D\Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Common\b2StackAllocator.h">
-      <Filter>box2d\Common</Filter>
+    <ClInclude Include="..\..\source\Box2D\Common\b2StackAllocator.h">
+      <Filter>Box2D\Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Common\b2Timer.h">
-      <Filter>box2d\Common</Filter>
+    <ClInclude Include="..\..\source\Box2D\Common\b2Timer.h">
+      <Filter>Box2D\Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Dynamics\b2Body.h">
-      <Filter>box2d\Dynamics</Filter>
+    <ClInclude Include="..\..\source\Box2D\Dynamics\b2Body.h">
+      <Filter>Box2D\Dynamics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Dynamics\b2ContactManager.h">
-      <Filter>box2d\Dynamics</Filter>
+    <ClInclude Include="..\..\source\Box2D\Dynamics\b2ContactManager.h">
+      <Filter>Box2D\Dynamics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Dynamics\b2Fixture.h">
-      <Filter>box2d\Dynamics</Filter>
+    <ClInclude Include="..\..\source\Box2D\Dynamics\b2Fixture.h">
+      <Filter>Box2D\Dynamics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Dynamics\b2Island.h">
-      <Filter>box2d\Dynamics</Filter>
+    <ClInclude Include="..\..\source\Box2D\Dynamics\b2Island.h">
+      <Filter>Box2D\Dynamics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Dynamics\b2TimeStep.h">
-      <Filter>box2d\Dynamics</Filter>
+    <ClInclude Include="..\..\source\Box2D\Dynamics\b2TimeStep.h">
+      <Filter>Box2D\Dynamics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Dynamics\b2World.h">
-      <Filter>box2d\Dynamics</Filter>
+    <ClInclude Include="..\..\source\Box2D\Dynamics\b2World.h">
+      <Filter>Box2D\Dynamics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Dynamics\b2WorldCallbacks.h">
-      <Filter>box2d\Dynamics</Filter>
+    <ClInclude Include="..\..\source\Box2D\Dynamics\b2WorldCallbacks.h">
+      <Filter>Box2D\Dynamics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Dynamics\Contacts\b2ChainAndCircleContact.h">
-      <Filter>box2d\Dynamics\Contacts</Filter>
+    <ClInclude Include="..\..\source\Box2D\Dynamics\Contacts\b2ChainAndCircleContact.h">
+      <Filter>Box2D\Dynamics\Contacts</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Dynamics\Contacts\b2ChainAndPolygonContact.h">
-      <Filter>box2d\Dynamics\Contacts</Filter>
+    <ClInclude Include="..\..\source\Box2D\Dynamics\Contacts\b2ChainAndPolygonContact.h">
+      <Filter>Box2D\Dynamics\Contacts</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Dynamics\Contacts\b2CircleContact.h">
-      <Filter>box2d\Dynamics\Contacts</Filter>
+    <ClInclude Include="..\..\source\Box2D\Dynamics\Contacts\b2CircleContact.h">
+      <Filter>Box2D\Dynamics\Contacts</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Dynamics\Contacts\b2Contact.h">
-      <Filter>box2d\Dynamics\Contacts</Filter>
+    <ClInclude Include="..\..\source\Box2D\Dynamics\Contacts\b2Contact.h">
+      <Filter>Box2D\Dynamics\Contacts</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Dynamics\Contacts\b2ContactSolver.h">
-      <Filter>box2d\Dynamics\Contacts</Filter>
+    <ClInclude Include="..\..\source\Box2D\Dynamics\Contacts\b2ContactSolver.h">
+      <Filter>Box2D\Dynamics\Contacts</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Dynamics\Contacts\b2EdgeAndCircleContact.h">
-      <Filter>box2d\Dynamics\Contacts</Filter>
+    <ClInclude Include="..\..\source\Box2D\Dynamics\Contacts\b2EdgeAndCircleContact.h">
+      <Filter>Box2D\Dynamics\Contacts</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Dynamics\Contacts\b2EdgeAndPolygonContact.h">
-      <Filter>box2d\Dynamics\Contacts</Filter>
+    <ClInclude Include="..\..\source\Box2D\Dynamics\Contacts\b2EdgeAndPolygonContact.h">
+      <Filter>Box2D\Dynamics\Contacts</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Dynamics\Contacts\b2PolygonAndCircleContact.h">
-      <Filter>box2d\Dynamics\Contacts</Filter>
+    <ClInclude Include="..\..\source\Box2D\Dynamics\Contacts\b2PolygonAndCircleContact.h">
+      <Filter>Box2D\Dynamics\Contacts</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Dynamics\Contacts\b2PolygonContact.h">
-      <Filter>box2d\Dynamics\Contacts</Filter>
+    <ClInclude Include="..\..\source\Box2D\Dynamics\Contacts\b2PolygonContact.h">
+      <Filter>Box2D\Dynamics\Contacts</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Dynamics\Joints\b2DistanceJoint.h">
-      <Filter>box2d\Dynamics\Joints</Filter>
+    <ClInclude Include="..\..\source\Box2D\Dynamics\Joints\b2DistanceJoint.h">
+      <Filter>Box2D\Dynamics\Joints</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Dynamics\Joints\b2FrictionJoint.h">
-      <Filter>box2d\Dynamics\Joints</Filter>
+    <ClInclude Include="..\..\source\Box2D\Dynamics\Joints\b2FrictionJoint.h">
+      <Filter>Box2D\Dynamics\Joints</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Dynamics\Joints\b2GearJoint.h">
-      <Filter>box2d\Dynamics\Joints</Filter>
+    <ClInclude Include="..\..\source\Box2D\Dynamics\Joints\b2GearJoint.h">
+      <Filter>Box2D\Dynamics\Joints</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Dynamics\Joints\b2Joint.h">
-      <Filter>box2d\Dynamics\Joints</Filter>
+    <ClInclude Include="..\..\source\Box2D\Dynamics\Joints\b2Joint.h">
+      <Filter>Box2D\Dynamics\Joints</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Dynamics\Joints\b2MotorJoint.h">
-      <Filter>box2d\Dynamics\Joints</Filter>
+    <ClInclude Include="..\..\source\Box2D\Dynamics\Joints\b2MotorJoint.h">
+      <Filter>Box2D\Dynamics\Joints</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Dynamics\Joints\b2MouseJoint.h">
-      <Filter>box2d\Dynamics\Joints</Filter>
+    <ClInclude Include="..\..\source\Box2D\Dynamics\Joints\b2MouseJoint.h">
+      <Filter>Box2D\Dynamics\Joints</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Dynamics\Joints\b2PrismaticJoint.h">
-      <Filter>box2d\Dynamics\Joints</Filter>
+    <ClInclude Include="..\..\source\Box2D\Dynamics\Joints\b2PrismaticJoint.h">
+      <Filter>Box2D\Dynamics\Joints</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Dynamics\Joints\b2PulleyJoint.h">
-      <Filter>box2d\Dynamics\Joints</Filter>
+    <ClInclude Include="..\..\source\Box2D\Dynamics\Joints\b2PulleyJoint.h">
+      <Filter>Box2D\Dynamics\Joints</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Dynamics\Joints\b2RevoluteJoint.h">
-      <Filter>box2d\Dynamics\Joints</Filter>
+    <ClInclude Include="..\..\source\Box2D\Dynamics\Joints\b2RevoluteJoint.h">
+      <Filter>Box2D\Dynamics\Joints</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Dynamics\Joints\b2RopeJoint.h">
-      <Filter>box2d\Dynamics\Joints</Filter>
+    <ClInclude Include="..\..\source\Box2D\Dynamics\Joints\b2RopeJoint.h">
+      <Filter>Box2D\Dynamics\Joints</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Dynamics\Joints\b2WeldJoint.h">
-      <Filter>box2d\Dynamics\Joints</Filter>
+    <ClInclude Include="..\..\source\Box2D\Dynamics\Joints\b2WeldJoint.h">
+      <Filter>Box2D\Dynamics\Joints</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Dynamics\Joints\b2WheelJoint.h">
-      <Filter>box2d\Dynamics\Joints</Filter>
+    <ClInclude Include="..\..\source\Box2D\Dynamics\Joints\b2WheelJoint.h">
+      <Filter>Box2D\Dynamics\Joints</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\box2d\Rope\b2Rope.h">
-      <Filter>box2d\Rope</Filter>
+    <ClInclude Include="..\..\source\Box2D\Rope\b2Rope.h">
+      <Filter>Box2D\Rope</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\component\behaviors\behaviorComponent_ScriptBinding.h">
       <Filter>component\behaviors</Filter>
@@ -1972,6 +2023,9 @@
     </ClInclude>
     <ClInclude Include="..\..\source\gui\language\lang.h">
       <Filter>gui\language</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\dgl.h">
+      <Filter>graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\graphics\gBitmap.h">
       <Filter>graphics</Filter>
@@ -2090,6 +2144,9 @@
     <ClInclude Include="..\..\source\gui\guiTextListCtrl.h">
       <Filter>gui</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\source\gui\guiTickCtrl.h">
+      <Filter>gui</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\source\gui\guiTreeViewCtrl.h">
       <Filter>gui</Filter>
     </ClInclude>
@@ -2102,20 +2159,107 @@
     <ClInclude Include="..\..\source\graphics\PNGImage.h">
       <Filter>graphics</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\source\collection\bitTables.h">
+      <Filter>collection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\collection\bitVector.h">
+      <Filter>collection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\collection\bitVectorW.h">
+      <Filter>collection</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\source\collection\hashTable.h">
+      <Filter>collection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\collection\linkedList.h">
       <Filter>collection</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\collection\simpleHashTable.h">
       <Filter>collection</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\source\collection\sparseArray.h">
+      <Filter>collection</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\source\collection\vector.h">
       <Filter>collection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\collection\vector2d.h">
+      <Filter>collection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\collection\vectorHeap.h">
+      <Filter>collection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\collection\vectorQueue.h">
+      <Filter>collection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\io\bitStream.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\io\bufferStream.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\io\fileObject.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\io\fileStream.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\io\fileStreamObject.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\io\filterStream.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\io\memstream.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\io\resizeStream.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\io\stream.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\io\streamObject.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\io\zip\centralDir.h">
+      <Filter>io\zip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\io\zip\compressor.h">
+      <Filter>io\zip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\io\zip\extraField.h">
+      <Filter>io\zip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\io\zip\fileHeader.h">
+      <Filter>io\zip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\io\zip\zipArchive.h">
+      <Filter>io\zip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\io\zip\zipCryptStream.h">
+      <Filter>io\zip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\io\zip\zipObject.h">
+      <Filter>io\zip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\io\zip\zipStatFilter.h">
+      <Filter>io\zip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\io\zip\zipSubStream.h">
+      <Filter>io\zip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\io\zip\zipTempStream.h">
+      <Filter>io\zip</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\memory\dataChunker.h">
       <Filter>memory</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\memory\frameAllocator.h">
       <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\collection\findIterator.h">
+      <Filter>collection</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\collection\bitSet.h">
       <Filter>collection</Filter>
@@ -2126,8 +2270,14 @@
     <ClInclude Include="..\..\source\algorithm\crctab.h">
       <Filter>algorithm</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\source\algorithm\hashFunction.h">
+      <Filter>algorithm</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\source\graphics\color.h">
       <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\collection\bitMatrix.h">
+      <Filter>collection</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\game\gameInterface.h">
       <Filter>game</Filter>
@@ -2182,6 +2332,9 @@
     </ClInclude>
     <ClInclude Include="..\..\source\memory\safeDelete.h">
       <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\io\resource\resourceManager.h">
+      <Filter>io\resource</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\memory\factoryCache.h">
       <Filter>memory</Filter>
@@ -2263,6 +2416,21 @@
     </ClInclude>
     <ClInclude Include="..\..\source\audio\AudioAsset.h">
       <Filter>audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\TextureManager.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\TextureObject.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\TextureHandle.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\TextureDictionary.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\DynamicTexture.h">
+      <Filter>graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\persistence\taml\tamlWriteNode.h">
       <Filter>persistence\taml</Filter>
@@ -2468,6 +2636,9 @@
     <ClInclude Include="..\..\source\platform\platformMath.h">
       <Filter>platform</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\source\platform\platformTimeManager.h">
+      <Filter>platform</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\source\platform\platform_ScriptBinding.h">
       <Filter>platform</Filter>
     </ClInclude>
@@ -2481,6 +2652,9 @@
       <Filter>testing</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\platform\platformFileIO.h">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platform\platformInput_ScriptBinding.h">
       <Filter>platform</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\platformWin32\winWindow.h">
@@ -2516,7 +2690,6 @@
     <ClInclude Include="..\..\source\2d\core\ParticleSystem.h">
       <Filter>2d\core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\torqueConfig.h" />
     <ClInclude Include="..\..\source\2d\sceneobject\ImageFont.h">
       <Filter>2d\sceneobject</Filter>
     </ClInclude>
@@ -2543,15 +2716,6 @@
     </ClInclude>
     <ClInclude Include="..\..\source\2d\sceneobject\SceneObjectSet_ScriptBinding.h">
       <Filter>2d\sceneobject</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\math\mPoint2.h">
-      <Filter>math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\math\mPoint3.h">
-      <Filter>math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\math\mPoint4.h">
-      <Filter>math</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\2d\controllers\BuoyancyController.h">
       <Filter>2d\controllers</Filter>
@@ -2679,242 +2843,321 @@
     <ClInclude Include="..\..\source\persistence\taml\json\tamlJSONParser.h">
       <Filter>persistence\taml\json</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\graphics\gfxAdapter.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\gfxCardProfile.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\gfxDevice.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\gfxDrawUtil.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\gfxEnums.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\gfxFontRenderBatcher.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\gfxInit.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\gfxResource.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\gfxShader.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\gfxStateBlock.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\gfxStringEnumTranslate.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\gfxStructs.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\gfxTarget.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\gfxTextureHandle.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\gfxTextureManager.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\gfxTextureObject.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\gfxTextureProfile.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\gfxVertexBuffer.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\gfxVertexFormat.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\gfxVertexTypes.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\primBuilder.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\string\str.h">
-      <Filter>string</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\OpenGL\gfxOpenGLCardProfiler.h">
-      <Filter>graphics\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\OpenGL\gfxOpenGLDevice.h">
-      <Filter>graphics\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\OpenGL\gfxOpenGLEnumTranslate.h">
-      <Filter>graphics\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\OpenGL\gfxOpenGLShader.h">
-      <Filter>graphics\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\OpenGL\gfxOpenGLStateBlock.h">
-      <Filter>graphics\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\OpenGL\gfxOpenGLTextureManager.h">
-      <Filter>graphics\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\OpenGL\gfxOpenGLTextureObject.h">
-      <Filter>graphics\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\OpenGL\gfxOpenGLTextureTarget.h">
-      <Filter>graphics\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\OpenGL\gfxOpenGLUtils.h">
-      <Filter>graphics\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\OpenGL\gfxOpenGLVertexBuffer.h">
-      <Filter>graphics\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\OpenGL\gfxOpenGLWindowTarget.h">
-      <Filter>graphics\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinTextureObject.h">
-      <Filter>platformWin32\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinTextureTarget.h">
-      <Filter>platformWin32\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinUtils.h">
-      <Filter>platformWin32\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinVertexBuffer.h">
-      <Filter>platformWin32\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinWindowTarget.h">
-      <Filter>platformWin32\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platformWin32\graphics\osxGLUtils.h">
-      <Filter>platformWin32\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinCardProfiler.h">
-      <Filter>platformWin32\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinDevice.h">
-      <Filter>platformWin32\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinEnumTranslate.h">
-      <Filter>platformWin32\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinShader.h">
-      <Filter>platformWin32\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platformWin32\graphics\gfxOpenGL33WinTextureManager.h">
-      <Filter>platformWin32\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platform\rawData.h">
-      <Filter>platform</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platform\platformIntrinsics.visualc.h">
-      <Filter>platform</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\2d\scene\Layer.h">
-      <Filter>2d\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\delegates\process.h">
-      <Filter>delegates</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\gui\containers\guiContainer.h">
+    <ClInclude Include="..\..\source\gui\containers\guiGridCtrl.h">
       <Filter>gui\containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\lighting\lightInfo.h">
-      <Filter>lighting</Filter>
+    <ClInclude Include="..\..\source\sim\simBase_ScriptBinding.h">
+      <Filter>sim</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\lighting\lightManager.h">
-      <Filter>lighting</Filter>
+    <ClInclude Include="..\..\source\input\actionMap_ScriptBinding.h">
+      <Filter>input</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\lighting\lightQuery.h">
-      <Filter>lighting</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\lighting\common\lightMapParams.h">
-      <Filter>lighting\common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\lighting\common\sceneLightingGlobals.h">
-      <Filter>lighting\common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\bitmapUtils.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platform\platformTimer.h">
-      <Filter>platform</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\gfxDeviceStatistics.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\windowManager\platformCursorController.h">
-      <Filter>windowManager</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\windowManager\platformWindow.h">
-      <Filter>windowManager</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\windowManager\platformWindowMgr.h">
-      <Filter>windowManager</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\windowManager\windowInputGenerator.h">
-      <Filter>windowManager</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platformWin32\windowManager\GLFWCursorController.h">
-      <Filter>platformWin32\windowManager</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platformWin32\windowManager\GLFWWindow.h">
-      <Filter>platformWin32\windowManager</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platformWin32\windowManager\GLFWWindowInputGenerator.h">
-      <Filter>platformWin32\windowManager</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platformWin32\windowManager\GLFWWindowManager.h">
-      <Filter>platformWin32\windowManager</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\renderInstance\render2DObjectMgr.h">
-      <Filter>renderInstance</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\renderInstance\renderBinManager.h">
-      <Filter>renderInstance</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\renderInstance\renderPassManager.h">
-      <Filter>renderInstance</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\graphics\sim\gfxStateBlockAsset.h">
-      <Filter>graphics\sim</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platformWin32\Joystick\winDInputDevice.h">
-      <Filter>platformWin32\joystick</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platformWin32\Joystick\winDirectInput.h">
-      <Filter>platformWin32\joystick</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\platformWin32\2d\assets\FilterImageAsset.h">
-      <Filter>platformWin32\2d\assets</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\gui\guiMoveCtrl.h">
+    <ClInclude Include="..\..\source\gui\guiCanvas_ScriptBinding.h">
       <Filter>gui</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\2d\assets\ShaderAsset.h">
+    <ClInclude Include="..\..\source\platform\platformString_ScriptBinding.h">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\string\stringUnit_ScriptBinding.h">
+      <Filter>string</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\console\output_ScriptBinding.h">
+      <Filter>console</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platform\platformVideo_ScriptBinding.h">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\game\version_ScriptBinding.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\console\expando_ScriptBinding.h">
+      <Filter>console</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\color_ScriptBinding.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\sim\simObject_ScriptBinding.h">
+      <Filter>sim</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\sim\simSet_ScriptBinding.h">
+      <Filter>sim</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\persistence\SimXMLDocument_ScriptBinding.h">
+      <Filter>persistence</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\messaging\eventManager_ScriptBinding.h">
+      <Filter>messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\io\fileObject_ScriptBinding.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platform\nativeDialogs\fileDialog_ScriptBinding.h">
+      <Filter>platform\nativeDialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\console\consoleLogger_ScriptBinding.h">
+      <Filter>console</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\network\netConnection_ScriptBinding.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\game\gameConnection_ScriptBinding.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platform\menus\popupMenu_ScriptBinding.h">
+      <Filter>platform\menus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\io\streamObject_ScriptBinding.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\collection\undo_ScriptBinding.h">
+      <Filter>collection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\console\consoleDoc_ScriptBinding.h">
+      <Filter>console</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\messaging\dispatcher_ScriptBinding.h">
+      <Filter>messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\math\random_ScriptBinding.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\math\matrix_ScriptBinding.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\math\vector_ScriptBinding.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\math\box_ScriptBinding.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\component\simComponent_ScriptBinding.h">
+      <Filter>component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\component\dynamicConsoleMethodComponent_ScriptBinding.h">
+      <Filter>component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\io\fileStreamObject_ScriptBinding.h">
+      <Filter>io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\network\httpObject_ScriptBinding.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\messaging\message_ScriptBinding.h">
+      <Filter>messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\network\tcpObject_ScriptBinding.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\network\netObject_ScriptBinding.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\sim\simSerialize_ScriptBinding.h">
+      <Filter>sim</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\PNGImage_ScriptBinding.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\console\consoleNamespace_ScriptBinding.h">
+      <Filter>console</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\gFont_ScriptBinding.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\network\serverQuery_ScriptBinding.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platform\platformAssert_ScriptBinding.h">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platform\platformFileIO_ScriptBinding.h">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\debug\profiler_ScriptBinding.h">
+      <Filter>debug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\debug\telnetDebugger_ScriptBinding.h">
+      <Filter>debug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\network\RemoteCommandEvent_ScriptBinding.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\network\RemoteCommandEvent.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\io\resource\resourceManager_ScriptBinding.h">
+      <Filter>io\resource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\TextureManager_ScriptBinding.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\torqueConfig.h" />
+    <ClInclude Include="..\..\source\platformWin32\cardProfile_ScriptBinding.h">
+      <Filter>platformWin32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\network\connectionProtocol_ScriptBinding.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\console\consoleExprEvalState_ScriptBinding.h">
+      <Filter>console</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\console\taggedStrings_ScriptBinding.h">
+      <Filter>console</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\console\inputManagement_ScriptBinding.h">
+      <Filter>console</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platform\CursorManager_ScriptBinding.h">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\dgl_ScriptBinding.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\graphics\dglMac_Scriptbinding.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platformWin32\winOGLVideo_ScriptBinding.h">
+      <Filter>platformWin32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platformWin32\winInput_ScriptBinding.h">
+      <Filter>platformWin32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\2d\core\Utility_ScriptBinding.h">
+      <Filter>2d\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platformWin32\winExec_ScriptBinding.h">
+      <Filter>platformWin32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platformWin32\winGLSpecial_ScriptBinding.h">
+      <Filter>platformWin32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platformWin32\winConsole_ScriptBinding.h">
+      <Filter>platformWin32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\network\netInterface_ScriptBinding.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\network\netStringTable_ScriptBinding.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\network\telnetConsole_ScriptBinding.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\testing\unitTesting_ScriptBinding.h">
+      <Filter>testing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platform\nativeDialogs\msgBox_ScriptBinding.h">
+      <Filter>platform\nativeDialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\sim\simDatablock_ScriptBinding.h">
+      <Filter>sim</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platformWin32\winMath_ScriptBinding.h">
+      <Filter>platformWin32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\string\stringBuffer_ScriptBinding.h">
+      <Filter>string</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\io\zip\zipObject_ScriptBinding.h">
+      <Filter>io\zip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\gui\guiControl_ScriptBinding.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\console\Package.h">
+      <Filter>console</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\input\leapMotion\leapMotionConstants.h">
+      <Filter>input\leapMotion</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\input\leapMotion\leapMotionManager.h">
+      <Filter>input\leapMotion</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\input\leapMotion\LeapMotionManager_ScriptBinding.h">
+      <Filter>input\leapMotion</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\input\leapMotion\leapMotionUtil.h">
+      <Filter>input\leapMotion</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\spine\Animation.h">
+      <Filter>spine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\spine\AnimationState.h">
+      <Filter>spine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\spine\AnimationStateData.h">
+      <Filter>spine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\spine\Atlas.h">
+      <Filter>spine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\spine\AtlasAttachmentLoader.h">
+      <Filter>spine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\spine\Attachment.h">
+      <Filter>spine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\spine\AttachmentLoader.h">
+      <Filter>spine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\spine\Bone.h">
+      <Filter>spine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\spine\BoneData.h">
+      <Filter>spine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\spine\BoundingBoxAttachment.h">
+      <Filter>spine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\spine\Event.h">
+      <Filter>spine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\spine\EventData.h">
+      <Filter>spine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\spine\extension.h">
+      <Filter>spine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\spine\Json.h">
+      <Filter>spine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\spine\RegionAttachment.h">
+      <Filter>spine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\spine\Skeleton.h">
+      <Filter>spine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\spine\SkeletonBounds.h">
+      <Filter>spine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\spine\SkeletonData.h">
+      <Filter>spine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\spine\SkeletonJson.h">
+      <Filter>spine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\spine\Skin.h">
+      <Filter>spine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\spine\Slot.h">
+      <Filter>spine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\spine\SlotData.h">
+      <Filter>spine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\spine\spine.h">
+      <Filter>spine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\2d\assets\SkeletonAsset.h">
       <Filter>2d\assets</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\math\util\sphereMesh.h">
-      <Filter>math\util</Filter>
+    <ClInclude Include="..\..\source\2d\assets\SkeletonAsset_ScriptBinding.h">
+      <Filter>2d\assets</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\io\fileObject.h">
-      <Filter>io</Filter>
+    <ClInclude Include="..\..\source\2d\sceneobject\SkeletonObject_ScriptBinding.h">
+      <Filter>2d\sceneobject</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\io\StreamFn.h">
-      <Filter>io</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\io\streamObject.h">
-      <Filter>io</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\io\resource\resourceManager.h">
-      <Filter>io\resource</Filter>
+    <ClInclude Include="..\..\source\2d\sceneobject\SkeletonObject.h">
+      <Filter>2d\sceneobject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

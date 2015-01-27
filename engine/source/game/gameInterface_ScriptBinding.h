@@ -44,4 +44,5 @@ ConsoleFunctionWithDocs( playJournal, ConsoleVoid, 2, 3, ( namedFile , doBreak )
    bool jBreak = (argc > 2)? dAtob(argv[2]): false;
    Game->playJournal(argv[1],jBreak);
 }
+
 #endif //TORQUE_ALLOW_JOURNALING

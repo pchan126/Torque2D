@@ -77,7 +77,7 @@
 #endif
 
 #ifndef _PARTICLE_SYSTEM_H_
-#include "2d/core/particleSystem.h"
+#include "2d/core/ParticleSystem.h"
 #endif
 
 #ifdef TORQUE_OS_IOS
@@ -131,7 +131,7 @@ bool initializeLibraries()
     // Create the stock colors.
     StockColor::create();
     
-#ifdef TORQUE_OS_IOS
+#if defined(TORQUE_OS_IOS) || defined(TORQUE_OS_ANDROID) || defined(TORQUE_OS_EMSCRIPTEN)
    //3MB default is way too big for iPhone!!!
 #ifdef	TORQUE_SHIPPING
     FrameAllocator::init(256 * 1024);	//256KB for now... but let's test and see!
@@ -356,7 +356,11 @@ bool DefaultGame::mainInitialize(int argc, const char **argv)
 {
     if(!initializeLibraries())
         return false;
-   
+   #ifdef TORQUE_OS_EMSCRIPTEN
+    // temp hack
+    argc = 0;
+#endif
+
     // Allow the window manager to process command line inputs; this is
     // done to let web plugin functionality happen in a fairly transparent way.
     PlatformWindowManager::get()->processCmdLineArgs(argc, argv);
@@ -399,6 +403,21 @@ bool DefaultGame::mainInitialize(int argc, const char **argv)
     
 #ifdef TORQUE_OS_IOS_PROFILE
     iPhoneProfilerProfilerInit();
+#endif
+
+    #endif
+
+#ifdef TORQUE_OS_ANDROID
+
+      //-Mat this is a bit of a hack, but if we don't want the network, we shut it off now.
+    // We can't do it until we've run the entry script, otherwise the script variable will not have ben loaded
+    bool usesNet = false; //dAtob( Con::getVariable( "$pref::iOS::UseNetwork" ) );
+    if( !usesNet ) {
+        Net::shutdown();
+    }
+
+#ifdef TORQUE_OS_ANDROID_PROFILE
+    AndroidProfilerProfilerInit();
 #endif
     #endif
 
@@ -545,9 +564,15 @@ void DefaultGame::processTimeEvent(S32 elapsedTime)
 #ifdef TORQUE_OS_IOS_PROFILE
 iPhoneProfilerStart("SERVER_PROC");
 #endif    
+#ifdef TORQUE_OS_ANDROID_PROFILE
+AndroidProfilerStart("SERVER_PROC");
+#endif
     tickPass = gServerProcessList.advanceTime(elapsedTime);
 #ifdef TORQUE_OS_IOS_PROFILE
     iPhoneProfilerEnd("SERVER_PROC");
+#endif
+#ifdef TORQUE_OS_ANDROID_PROFILE
+    AndroidProfilerEnd("SERVER_PROC");
 #endif
     PROFILE_END();	
 
@@ -561,15 +586,24 @@ iPhoneProfilerStart("SERVER_PROC");
 #ifdef TORQUE_OS_IOS_PROFILE
     iPhoneProfilerStart("SIM_TIME");
 #endif
+#ifdef TORQUE_OS_ANDROID_PROFILE
+    AndroidProfilerStart("SIM_TIME");
+#endif
     Sim::advanceTime(elapsedTime);
 #ifdef TORQUE_OS_IOS_PROFILE
     iPhoneProfilerEnd("SIM_TIME");
+#endif
+#ifdef TORQUE_OS_ANDROID_PROFILE
+    AndroidProfilerEnd("SIM_TIME");
 #endif
     PROFILE_END();
 
    PROFILE_START(ClientProcess);
 #ifdef TORQUE_OS_IOS_PROFILE
     iPhoneProfilerStart("CLIENT_PROC");
+#endif
+#ifdef TORQUE_OS_ANDROID_PROFILE
+    AndroidProfilerStart("CLIENT_PROC");
 #endif
 
    clientProcess(elapsedTime);
@@ -592,6 +626,9 @@ iPhoneProfilerStart("SERVER_PROC");
 
 #ifdef TORQUE_OS_IOS_PROFILE
     iPhoneProfilerEnd("CLIENT_PROC");
+#endif
+#ifdef TORQUE_OS_ANDROID_PROFILE
+    AndroidProfilerEnd("CLIENT_PROC");
 #endif
     PROFILE_END();
    PROFILE_START(ClientNetProcess);

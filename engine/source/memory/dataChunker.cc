@@ -62,9 +62,13 @@ void *DataChunker::alloc(size_t size)
       temp->curIndex = 0;
       mCurBlock = temp;
    }
-
    void *ret = mCurBlock->data + mCurBlock->curIndex;
    mCurBlock->curIndex += (size + 3) & ~3; // dword align
+#ifdef EMSCRIPTEN
+   if (curBlock->curIndex < index || ((curBlock->data + curBlock->curIndex) - (U8*)ret) < size) {
+      AssertFatal(false, "Something weird is going on here");
+   }
+#endif
    return ret;
 }
 

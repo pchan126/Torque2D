@@ -171,7 +171,7 @@ StringTableEntry _StringTable::lookupn(const char* src, S32 len, const bool  cas
 {
    if ( src == nullptr )
        return StringTable->EmptyString;
-
+       
     char val[1024];
     AssertFatal(len < sizeof(val), "Invalid string to insertn");
     dStrncpy(val, src, len);

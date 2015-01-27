@@ -28,6 +28,8 @@
 
 //-----------------------------------------------------------------------------
 
+/// @ingroup tamlGroup
+/// @see tamlGroup
 class TamlXmlWriter
 {
 public:

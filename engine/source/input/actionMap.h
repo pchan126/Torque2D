@@ -23,6 +23,7 @@
 #ifndef _ACTIONMAP_H_
 #define _ACTIONMAP_H_
 
+
 #ifndef _PLATFORM_H_
 #include "platform/platform.h"
 #endif
@@ -74,7 +75,8 @@ class ActionMap : public SimObject
          HasScale    = BIT(1),   ///< Scaled input.
          HasDeadZone = BIT(2),   ///< Dead zone is present.
          Inverted    = BIT(3),   ///< Input is inverted.
-         BindCmd     = BIT(4)    ///< Bind a console command to this.
+		 NonLinear   = BIT(4),
+         BindCmd     = BIT(5)    ///< Bind a console command to this.
       };
 
       U32 flags;           /// @see Node::Flags
@@ -147,6 +149,9 @@ class ActionMap : public SimObject
 
    static const char* getModifierString(const U32 modifiers);
 
+   /// Pass index to a break entry, and this function will fire it off.
+   static void fireBreakEvent(U32 idx, F32 value = 0.f);
+
   public:
    ActionMap();
    ~ActionMap();
@@ -177,6 +182,10 @@ class ActionMap : public SimObject
    bool processLeap(const InputEventInfo* pEvent);
    bool processGesture(const InputEventInfo* pEvent);
    bool processTouch(const InputEventInfo* pEvent);
+   bool processButton(const InputEventInfo* pEvent);
+   bool processMove(const InputEventInfo* pEvent);
+   bool processMotion(const InputEventInfo* pEvent);
+   bool processXInput(const InputEventInfo* pEvent);
 
    /// Return true if the given event triggers is bound to an action in this map.
    bool isAction( U32 deviceType, U32 deviceInst, U32 modifiers, U32 action );

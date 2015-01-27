@@ -314,10 +314,6 @@ void AnimationAsset::validateNumericalFrames( void )
     // Clear validated frames.
     mValidatedFrames.clear();
 
-    // Finish if we don't have a valid image asset.
-    if ( mImageAsset.isNull() )
-        return;
-
     // Fetch Animation Frame Count.
     const U32 animationFrameCount = (U32)mAnimationFrames.size();
 

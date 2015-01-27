@@ -48,6 +48,7 @@ SimObject* TamlJSONReader::read(std::fstream &stream)
         Con::warnf("TamlJSONReader::read() -  Could not load Taml JSON file from stream.");
         return nullptr;
     }
+    jsonText[streamSize] = NULL;
 
     // Create JSON document.
     rapidjson::Document document;
@@ -665,7 +666,7 @@ inline const char* TamlJSONReader::getTamlObjectName( const rapidjson::Value& va
         StringTableEntry attributeName = StringTable->insert( memberItr->name.GetString() );
 
         // Skip if not the correct attribute.
-        if ( attributeName != tamlRefToIdName )
+        if ( attributeName != tamlNamedObjectName )
             continue;
 
         // Is the value an integer?

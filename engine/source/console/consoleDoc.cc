@@ -537,7 +537,7 @@ void Namespace::dumpClasses( bool dumpScript, bool dumpEngine )
             // Grab the length of the doc string.
             dsize_t docLen = dStrlen( field );
             if( nextKeyword )
-               docLen = nextKeyword - field;
+               docLen = (U32)(nextKeyword - field);
 
             // Make sure it will fit in the buffer.
             if( docLen > 1023 )

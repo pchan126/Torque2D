@@ -27,14 +27,14 @@
 #include "console/consoleTypes.h"
 #include "input/actionMap.h"
 
-#include <xinput.h>
+#include <Xinput.h>
 
 //------------------------------------------------------------------------------
 // Static class variables:
 bool DInputManager::smKeyboardEnabled = true;
 bool DInputManager::smMouseEnabled = false;
-bool DInputManager::smJoystickEnabled = true;
-bool DInputManager::smXInputEnabled = true;
+bool DInputManager::smJoystickEnabled = false;
+bool DInputManager::smXInputEnabled = false;
 
 // Type definitions:
 typedef HRESULT (WINAPI* FN_DirectInputCreate)(HINSTANCE hinst, DWORD dwVersion, REFIID riidltf, LPVOID *ppvOut, LPUNKNOWN punkOuter);
@@ -58,7 +58,8 @@ void DInputManager::init()
 {
    Con::addVariable( "pref::Input::KeyboardEnabled",  TypeBool, &smKeyboardEnabled );
    Con::addVariable( "pref::Input::MouseEnabled",     TypeBool, &smMouseEnabled );
-   Con::addVariable( "pref::Input::JoystickEnabled",  TypeBool, &smJoystickEnabled);
+   Con::addVariable( "pref::Input::JoystickEnabled",  TypeBool, &smJoystickEnabled );
+   Con::addVariable( "pref::Input::XInputEnabled", TypeBool, &smXInputEnabled );
 }
 
 //------------------------------------------------------------------------------
@@ -271,7 +272,8 @@ void DInputManager::enumerateDevices()
       DInputDevice::smDInputInterface = mDInputInterface;
       mDInputInterface->EnumDevices( DI8DEVTYPE_KEYBOARD, EnumDevicesProc, this, DIEDFL_ATTACHEDONLY );
       mDInputInterface->EnumDevices( DI8DEVTYPE_MOUSE,    EnumDevicesProc, this, DIEDFL_ATTACHEDONLY );
-      mDInputInterface->EnumDevices( DI8DEVCLASS_GAMECTRL, EnumDevicesProc, this, DIEDFL_ATTACHEDONLY );
+      mDInputInterface->EnumDevices( DI8DEVTYPE_JOYSTICK, EnumDevicesProc, this, DIEDFL_ATTACHEDONLY );
+      mDInputInterface->EnumDevices( DI8DEVTYPE_GAMEPAD,  EnumDevicesProc, this, DIEDFL_ATTACHEDONLY );
    }
 }
 
@@ -436,16 +438,10 @@ bool DInputManager::enableJoystick()
    if ( smJoystickEnabled )
    {
       Con::printf( "DirectInput joystick enabled." );
-#ifdef LOG_INPUT
-      Input::log( "Joystick enabled.\n" );
-#endif
    }
    else
    {
       Con::warnf( "DirectInput joystick failed to enable!" );
-#ifdef LOG_INPUT
-      Input::log( "Joystick failed to enable!\n" );
-#endif
    }
 
    return( smJoystickEnabled );
@@ -461,9 +457,6 @@ void DInputManager::disableJoystick()
    mgr->deactivateJoystick();
    smJoystickEnabled = false;
    Con::printf( "DirectInput joystick disabled." );
-#ifdef LOG_INPUT
-   Input::log( "Joystick disabled.\n" );
-#endif
 }
 
 //------------------------------------------------------------------------------
@@ -479,9 +472,6 @@ bool DInputManager::activateJoystick()
       return( false );
 
    mJoystickActive = acquire( JoystickDeviceType, SI_ANY );
-#ifdef LOG_INPUT
-   Input::log( mJoystickActive ? "Joystick activated.\n" : "Joystick failed to activate!\n" );
-#endif
    return( mJoystickActive );
 }
 
@@ -492,9 +482,6 @@ void DInputManager::deactivateJoystick()
    {
       unacquire( JoystickDeviceType, SI_ANY );
       mJoystickActive = false;
-#ifdef LOG_INPUT
-      Input::log( "Joystick deactivated.\n" );
-#endif
    }
 }
 
@@ -512,7 +499,6 @@ const char* DInputManager::getJoystickAxesString( U32 deviceID )
    return( "" );
 }
 
-//------------------------------------------------------------------------------
 bool DInputManager::enableXInput()
 {
    // Largely, this series of functions is identical to the Joystick versions,
@@ -533,16 +519,10 @@ bool DInputManager::enableXInput()
    if ( smXInputEnabled )
    {
       Con::printf( "XInput enabled." );
-#ifdef LOG_INPUT
-      Input::log( "XInput enabled.\n" );
-#endif
    }
    else
    {
       Con::warnf( "XInput failed to enable!" );
-#ifdef LOG_INPUT
-      Input::log( "XInput failed to enable!\n" );
-#endif
    }
 
    return( smXInputEnabled );
@@ -557,9 +537,6 @@ void DInputManager::disableXInput()
 
    mgr->deactivateXInput();
    Con::printf( "XInput disabled." );
-#ifdef LOG_INPUT
-   Input::log( "XInput disabled.\n" );
-#endif
 }
 
 //------------------------------------------------------------------------------
@@ -571,11 +548,23 @@ bool DInputManager::isXInputEnabled()
 //------------------------------------------------------------------------------
 bool DInputManager::isXInputConnected(int controllerID)
 {
-   return( mXInputStateNew[controllerID].bConnected );
+    if (controllerID >= XINPUT_MAX_CONTROLLERS || controllerID < 0)
+    {
+        Con::warnf("Invalid device index: %d. Index should be between 0 and %d.", controllerID, XINPUT_MAX_CONTROLLERS - 1);
+        return false;
+    }
+	
+	return( mXInputStateNew[controllerID].bConnected );
 }
 
 int DInputManager::getXInputState(int controllerID, int property, bool current)
 {
+   if (controllerID >= XINPUT_MAX_CONTROLLERS || controllerID < 0)
+   {
+      Con::warnf("Invalid device index: %d. Index should be between 0 and %d.", controllerID, XINPUT_MAX_CONTROLLERS - 1);
+      return -1;
+   }
+	
    int retVal;
 
    switch(property)
@@ -623,9 +612,7 @@ bool DInputManager::activateXInput()
       return( false );
 
    mXInputActive = true; //acquire( GamepadDeviceType, SI_ANY );
-#ifdef LOG_INPUT
-   Input::log( mXInputActive ? "XInput activated.\n" : "XInput failed to activate!\n" );
-#endif
+
    return( mXInputActive );
 }
 
@@ -636,9 +623,6 @@ void DInputManager::deactivateXInput()
    {
       unacquire( GamepadDeviceType, SI_ANY );
       mXInputActive = false;
-#ifdef LOG_INPUT
-      Input::log( "XInput deactivated.\n" );
-#endif
    }
 }
 
@@ -698,18 +682,20 @@ bool DInputManager::rumble( const char *pDeviceName, float x, float y )
    }
 }
 
-void DInputManager::buildXInputEvent( U32 deviceInst, InputEventType objType, InputObjectInstances objInst, InputActionType action, float fValue )
+void DInputManager::buildXInputEvent( U32 deviceInst, XInputEventType objType, InputObjectInstances objInst, InputActionType action, float fValue )
 {
-   InputEventInfo newEvent;
+InputEvent newEvent;
 
    newEvent.deviceType = GamepadDeviceType;
    newEvent.deviceInst = deviceInst;
    newEvent.objType = objType;
    newEvent.objInst = objInst;
    newEvent.action = action;
-   newEvent.fValue = fValue;
+   newEvent.fValues[0] = fValue;
+   //we need to find the gameinterface object from here
 
-   newEvent.postToSignal(Input::smInputEvent);
+   Game->postEvent(newEvent);
+   
 }
 
 // The next three functions: fireXInputConnectEvent, fireXInputMoveEvent, and fireXInputButtonEvent
@@ -718,14 +704,12 @@ void DInputManager::buildXInputEvent( U32 deviceInst, InputEventType objType, In
 // "mXInputStateReset" is the exception and is true whenever DirectInput gets reset (because 
 // the user ALT-TABBED away, for example). That means that after every context switch,
 // you will get a full set of updates on the "true" state of the controller.
+
 inline void DInputManager::fireXInputConnectEvent( int controllerID, bool condition, bool connected )
 {
    if ( mXInputStateReset || condition )
    {
-#ifdef LOG_INPUT
-      Input::log( "EVENT (XInput): xinput%d CONNECT %s\n", controllerID, connected ? "make" : "break" );
-#endif
-      buildXInputEvent( controllerID, SI_BUTTON, XI_CONNECT, connected ? SI_MAKE : SI_BREAK, 0);
+      buildXInputEvent( controllerID, XI_BUTTON, XI_CONNECT, connected ? XI_MAKE : XI_BREAK, 0);
    }
 }
 
@@ -733,8 +717,10 @@ inline void DInputManager::fireXInputMoveEvent( int controllerID, bool condition
 {
    if ( mXInputStateReset || condition )
    {
-#ifdef LOG_INPUT
-      char *objName;
+	   /*
+	  //Uncomment if you want real-time Input displayed to the console
+
+	  const char *objName;
       switch (objInst)
       {
       case XI_THUMBLX:       objName = "THUMBLX"; break;
@@ -745,10 +731,9 @@ inline void DInputManager::fireXInputMoveEvent( int controllerID, bool condition
       case XI_RIGHT_TRIGGER: objName = "RIGHT_TRIGGER"; break;
       default:               objName = "UNKNOWN"; break;
       }
-
-      Input::log( "EVENT (XInput): xinput%d %s MOVE %.1f.\n", controllerID, objName, fValue );
-#endif
-      buildXInputEvent( controllerID, SI_AXIS, objInst, SI_MOVE, fValue );
+	  Con::printf("%s  %.1f", objName, fValue);
+	  */
+	   buildXInputEvent( controllerID, XI_AXIS, objInst, XI_MOVE, fValue );
    }
 }
 
@@ -756,16 +741,21 @@ inline void DInputManager::fireXInputButtonEvent( int controllerID, bool forceFi
 {
    if ( mXInputStateReset || forceFire || ((mXInputStateNew[controllerID].state.Gamepad.wButtons & button) != (mXInputStateOld[controllerID].state.Gamepad.wButtons & button)) )
    {
-#ifdef LOG_INPUT
-      char *objName;
-      switch (objInst)
+      InputActionType action = ((mXInputStateNew[controllerID].state.Gamepad.wButtons & button) != 0) ? XI_MAKE : XI_BREAK;
+
+	  /*
+	  //Uncomment if you want real-time Input displayed to the console
+
+	  char *objName;
+	  objName = "";
+	  switch (objInst)
       {      
-      /*
+      
       case XI_DPAD_UP:        objName = "DPAD_UP"; break;
       case XI_DPAD_DOWN:      objName = "DPAD_DOWN"; break;
       case XI_DPAD_LEFT:      objName = "DPAD_LEFT"; break;
       case XI_DPAD_RIGHT:     objName = "DPAD_RIGHT"; break;
-      */      
+      
       case XI_START:          objName = "START"; break;
       case XI_BACK:           objName = "BACK"; break;
       case XI_LEFT_THUMB:     objName = "LEFT_THUMB"; break;
@@ -776,13 +766,12 @@ inline void DInputManager::fireXInputButtonEvent( int controllerID, bool forceFi
       case XI_B:              objName = "B"; break;
       case XI_X:              objName = "X"; break;
       case XI_Y:              objName = "Y"; break;
-      default:                objName = "UNKNOWN"; break;
+	  default:                Con::printf("%u", objInst); break;
       }
+	  Con::printf("%s", objName);
+	  */
 
-      Input::log( "EVENT (XInput): xinput%d %s %s\n", controllerID, objName, ((mXInputStateNew[controllerID].state.Gamepad.wButtons & button) != 0) ? "make" : "break" );
-#endif
-      InputActionType action = ((mXInputStateNew[controllerID].state.Gamepad.wButtons & button) != 0) ? SI_MAKE : SI_BREAK;
-      buildXInputEvent( controllerID, SI_BUTTON, objInst, action, ( action == SI_MAKE ? 1 : 0 ) );
+      buildXInputEvent( controllerID, XI_BUTTON, objInst, action, ( action == XI_MAKE ? 1.0f : 0.0f ) );
    }
 }
 
@@ -836,19 +825,17 @@ void DInputManager::processXInput( void )
          if( mXInputDeadZoneOn )
          {
             // Zero value if thumbsticks are within the dead zone 
-            if( (mXInputStateNew[i].state.Gamepad.sThumbLX < XINPUT_DEADZONE && mXInputStateNew[i].state.Gamepad.sThumbLX > -XINPUT_DEADZONE) && 
-                (mXInputStateNew[i].state.Gamepad.sThumbLY < XINPUT_DEADZONE && mXInputStateNew[i].state.Gamepad.sThumbLY > -XINPUT_DEADZONE) ) 
-            {
-               mXInputStateNew[i].state.Gamepad.sThumbLX = 0;
-               mXInputStateNew[i].state.Gamepad.sThumbLY = 0;
-            }
+            if(mXInputStateNew[i].state.Gamepad.sThumbLX < XINPUT_DEADZONE && mXInputStateNew[i].state.Gamepad.sThumbLX > -XINPUT_DEADZONE)
+            mXInputStateNew[i].state.Gamepad.sThumbLX = 0;
 
-            if( (mXInputStateNew[i].state.Gamepad.sThumbRX < XINPUT_DEADZONE && mXInputStateNew[i].state.Gamepad.sThumbRX > -XINPUT_DEADZONE) && 
-                (mXInputStateNew[i].state.Gamepad.sThumbRY < XINPUT_DEADZONE && mXInputStateNew[i].state.Gamepad.sThumbRY > -XINPUT_DEADZONE) ) 
-            {
-               mXInputStateNew[i].state.Gamepad.sThumbRX = 0;
-               mXInputStateNew[i].state.Gamepad.sThumbRY = 0;
-            }
+            if(mXInputStateNew[i].state.Gamepad.sThumbLY < XINPUT_DEADZONE && mXInputStateNew[i].state.Gamepad.sThumbLY > -XINPUT_DEADZONE)  
+            mXInputStateNew[i].state.Gamepad.sThumbLY = 0;
+            
+            if(mXInputStateNew[i].state.Gamepad.sThumbRX < XINPUT_DEADZONE && mXInputStateNew[i].state.Gamepad.sThumbRX > -XINPUT_DEADZONE)
+            mXInputStateNew[i].state.Gamepad.sThumbRX = 0;
+
+            if(mXInputStateNew[i].state.Gamepad.sThumbRY < XINPUT_DEADZONE && mXInputStateNew[i].state.Gamepad.sThumbRY > -XINPUT_DEADZONE)
+            mXInputStateNew[i].state.Gamepad.sThumbRY = 0;
          }
 
          // this controller was connected or disconnected
@@ -898,188 +885,5 @@ void DInputManager::processXInput( void )
 
       if ( mXInputStateReset ) 
          mXInputStateReset = false;
-   }
-}
-ConsoleFunction( enableJoystick, bool, 1, 1, "()"
-             "@brief Enables use of the joystick.\n\n"
-             "@note DirectInput must be enabled and active to use this function.\n\n"
-             "@ingroup Input")
-{
-   argc; argv;
-   return( DInputManager::enableJoystick() );
-}
-
-//------------------------------------------------------------------------------
-ConsoleFunction( disableJoystick, void, 1, 1,"()"
-             "@brief Disables use of the joystick.\n\n"
-             "@note DirectInput must be enabled and active to use this function.\n\n"
-             "@ingroup Input")
-{
-   argc; argv;
-   DInputManager::disableJoystick();
-}
-
-//------------------------------------------------------------------------------
-ConsoleFunction( isJoystickEnabled, bool, 1, 1, "()"
-				"@brief Queries input manager to see if a joystick is enabled\n\n"
-				"@return 1 if a joystick exists and is enabled, 0 if it's not.\n"
-				"@ingroup Input")
-{
-   argc; argv;
-   return DInputManager::isJoystickEnabled();
-}
-
-//------------------------------------------------------------------------------
-ConsoleFunction( enableXInput, bool, 1, 1, "()"
-            "@brief Enables XInput for Xbox 360 controllers.\n\n"
-            "@note XInput is enabled by default. Disable to use an Xbox 360 "
-            "Controller as a joystick device.\n\n"
-				"@ingroup Input")
-{
-   // Although I said above that you couldn't change the "activation" of XInput,
-   // you can enable and disable it. It gets enabled by default if you have the
-   // DLL. You would want to disable it if you have 360 controllers and want to
-   // read them as joysticks... why you'd want to do that is beyond me
-
-   argc; argv;
-   return( DInputManager::enableXInput() );
-}
-
-//------------------------------------------------------------------------------
-ConsoleFunction( disableXInput, void, 1, 1, "()"
-            "@brief Disables XInput for Xbox 360 controllers.\n\n"
-            "@ingroup Input")
-{
-   argc; argv;
-   DInputManager::disableXInput();
-}
-
-//------------------------------------------------------------------------------
-ConsoleFunction( resetXInput, void, 1, 1, "()"
-            "@brief Rebuilds the XInput section of the InputManager\n\n"
-            "Requests a full refresh of events for all controllers. Useful when called at the beginning "
-            "of game code after actionMaps are set up to hook up all appropriate events.\n\n"
-            "@ingroup Input")
-{
-   // This function requests a full "refresh" of events for all controllers the
-   // next time we go through the input processing loop. This is useful to call
-   // at the beginning of your game code after your actionMap is set up to hook
-   // all of the appropriate events
-
-   argc; argv;
-   DInputManager* mgr = dynamic_cast<DInputManager*>( Input::getManager() );
-   if ( mgr && mgr->isEnabled() ) 
-      mgr->resetXInput();
-}
-
-//------------------------------------------------------------------------------
-ConsoleFunction( isXInputConnected, bool, 2, 2, "( int controllerID )"
-				"@brief Checks to see if an Xbox 360 controller is connected\n\n"
-				"@param controllerID Zero-based index of the controller to check.\n"
-            "@return 1 if the controller is connected, 0 if it isn't, and 205 if XInput "
-            "hasn't been initialized."
-				"@ingroup Input")
-{
-   argc; argv;
-   DInputManager* mgr = dynamic_cast<DInputManager*>( Input::getManager() );
-   if ( mgr && mgr->isEnabled() ) return mgr->isXInputConnected( atoi( argv[1] ) );
-   return false;
-}
-
-//------------------------------------------------------------------------------
-ConsoleFunction( getXInputState, int, 3, 4, "( int controllerID, string property, bool current )"
-				"@brief Queries the current state of a connected Xbox 360 controller.\n\n"
-            "XInput Properties:\n\n"
-            " - XI_THUMBLX, XI_THUMBLY - X and Y axes of the left thumbstick. \n"
-            " - XI_THUMBRX, XI_THUMBRY - X and Y axes of the right thumbstick. \n"
-            " - XI_LEFT_TRIGGER, XI_RIGHT_TRIGGER - Left and Right triggers. \n"
-            " - SI_UPOV, SI_DPOV, SI_LPOV, SI_RPOV - Up, Down, Left, and Right on the directional pad.\n"
-            " - XI_START, XI_BACK - The Start and Back buttons.\n"
-            " - XI_LEFT_THUMB, XI_RIGHT_THUMB - Clicking in the left and right thumbstick.\n"
-            " - XI_LEFT_SHOULDER, XI_RIGHT_SHOULDER - Left and Right bumpers.\n"
-            " - XI_A, XI_B , XI_X, XI_Y - The A, B, X, and Y buttons.\n\n"
-            "@param controllerID Zero-based index of the controller to return information about.\n"
-            "@param property Name of input action being queried, such as \"XI_THUMBLX\".\n"
-            "@param current True checks current device in action.\n"
-            "@return Button queried - 1 if the button is pressed, 0 if it's not.\n"
-            "@return Thumbstick queried - Int representing displacement from rest position."
-            "@return %Trigger queried - Int from 0 to 255 representing how far the trigger is displaced."
-            "@ingroup Input")
-{
-   argc; argv;
-   DInputManager* mgr = dynamic_cast<DInputManager*>( Input::getManager() );
-
-   if ( !mgr || !mgr->isEnabled() ) 
-      return -1;
-
-   // Use a little bit of macro magic to simplify this otherwise monolothic
-   // block of code.
-#define GET_XI_STATE(constName) \
-   if (!dStricmp(argv[2], #constName)) \
-      return mgr->getXInputState( dAtoi( argv[1] ), constName, ( dAtoi ( argv[3] ) == 1) );
-   
-   GET_XI_STATE(XI_THUMBLX);
-   GET_XI_STATE(XI_THUMBLY);
-   GET_XI_STATE(XI_THUMBRX);
-   GET_XI_STATE(XI_THUMBRY);
-   GET_XI_STATE(XI_LEFT_TRIGGER);
-   GET_XI_STATE(XI_RIGHT_TRIGGER);
-   GET_XI_STATE(SI_UPOV);
-   GET_XI_STATE(SI_DPOV);
-   GET_XI_STATE(SI_LPOV);
-   GET_XI_STATE(SI_RPOV);
-   GET_XI_STATE(XI_START);
-   GET_XI_STATE(XI_BACK);
-   GET_XI_STATE(XI_LEFT_THUMB);
-   GET_XI_STATE(XI_RIGHT_THUMB);
-   GET_XI_STATE(XI_LEFT_SHOULDER);
-   GET_XI_STATE(XI_RIGHT_SHOULDER);
-   GET_XI_STATE(XI_A);
-   GET_XI_STATE(XI_B);
-   GET_XI_STATE(XI_X);
-   GET_XI_STATE(XI_Y);
-#undef GET_XI_STATE
-
-   return -1;
-}
-
-//------------------------------------------------------------------------------
-ConsoleFunction( echoInputState, void, 1, 1, "()"
-            "@brief Prints information to the console stating if DirectInput and a Joystick are enabled and active.\n\n"
-            "@ingroup Input")
-{
-   argc; argv;
-   DInputManager* mgr = dynamic_cast<DInputManager*>( Input::getManager() );
-   if ( mgr && mgr->isEnabled() )
-   {
-      Con::printf( "DirectInput is enabled %s.", Input::isActive() ? "and active" : "but inactive" );
-      Con::printf( "- Joystick is %sabled and %sactive.",
-            mgr->isJoystickEnabled() ? "en" : "dis",
-            mgr->isJoystickActive() ? "" : "in" );
-   }
-   else
-      Con::printf( "DirectInput is not enabled." );
-}
-
-ConsoleFunction( rumble, void, 4, 4, "(string device, float xRumble, float yRumble)"
-      "@brief Activates the vibration motors in the specified controller.\n\n"
-      "The controller will constantly at it's xRumble and yRumble intensities until "
-      "changed or told to stop."
-      "Valid inputs for xRumble/yRumble are [0 - 1].\n"
-      "@param device Name of the device to rumble.\n"
-      "@param xRumble Intensity to apply to the left motor.\n"
-      "@param yRumble Intensity to apply to the right motor.\n"
-      "@note in an Xbox 360 controller, the left motor is low-frequency, "
-      "while the right motor is high-frequency."
-      "@ingroup Input")
-{
-   DInputManager* mgr = dynamic_cast<DInputManager*>( Input::getManager() );
-   if ( mgr && mgr->isEnabled() )
-   {
-      mgr->rumble(argv[1], dAtof(argv[2]), dAtof(argv[3]));
-   }
-   else
-   {
-      Con::printf( "DirectInput/XInput is not enabled." );
    }
 }

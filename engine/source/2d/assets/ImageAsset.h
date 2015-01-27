@@ -164,7 +164,7 @@ protected:
 
     /// Configuration.
     StringTableEntry            mImageFile;
-    bool						mForce16Bit;
+    bool                        mForce16Bit;
     TextureFilterMode           mLocalFilterMode;
     bool                        mExplicitMode;
     bool                        mCellRowOrder;

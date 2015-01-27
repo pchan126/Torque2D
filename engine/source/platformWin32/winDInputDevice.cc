@@ -876,7 +876,7 @@ bool DInputDevice::buildEvent( DWORD offset, S32 newData, S32 oldData )
          newEvent.action = SI_MOVE;
          if ( newEvent.deviceType == MouseDeviceType )
          {
-            newEvent.fValue = float( newData );
+            newEvent.fValues[0] = float( newData );
 
 #ifdef LOG_INPUT
 #ifdef LOG_MOUSEMOVE
@@ -896,41 +896,10 @@ bool DInputDevice::buildEvent( DWORD offset, S32 newData, S32 oldData )
             if ( objInfo.mMin != DIPROPRANGE_NOMIN && objInfo.mMax != DIPROPRANGE_NOMAX )
             {
                float range = float( objInfo.mMax - objInfo.mMin );
-               newEvent.fValue = float( ( 2 * newData ) - objInfo.mMax - objInfo.mMin ) / range;
+               newEvent.fValue[0] = float( ( 2 * newData ) - objInfo.mMax - objInfo.mMin ) / range;
             }
             else
-               newEvent.fValue = (F32)newData;
-
-#ifdef LOG_INPUT
-            // Keep this commented unless you REALLY want these messages for something--
-            // they come once per each iteration of the main game loop.
-            //switch ( newEvent.objType )
-            //{
-               //case SI_XAXIS:
-                  //if ( newEvent.fValue < -0.01f || newEvent.fValue > 0.01f )
-                     //Input::log( "EVENT (DInput): %s X-axis move %.2f.\n", mName, newEvent.fValue );
-                  //break;
-               //case SI_YAXIS:
-                  //if ( newEvent.fValue < -0.01f || newEvent.fValue > 0.01f )
-                     //Input::log( "EVENT (DInput): %s Y-axis move %.2f.\n", mName, newEvent.fValue );
-                  //break;
-               //case SI_ZAXIS:
-                  //Input::log( "EVENT (DInput): %s Z-axis move %.1f.\n", mName, newEvent.fValue );
-                  //break;
-               //case SI_RXAXIS:
-                  //Input::log( "EVENT (DInput): %s R-axis move %.1f.\n", mName, newEvent.fValue );
-                  //break;
-               //case SI_RYAXIS:
-                  //Input::log( "EVENT (DInput): %s U-axis move %.1f.\n", mName, newEvent.fValue );
-                  //break;
-               //case SI_RZAXIS:
-                  //Input::log( "EVENT (DInput): %s V-axis move %.1f.\n", mName, newEvent.fValue );
-                  //break;
-               //case SI_SLIDER:
-                  //Input::log( "EVENT (DInput): %s slider move %.1f.\n", mName, newEvent.fValue );
-                  //break;
-            //};
-#endif
+               newEvent.fValues[0] = (F32)newData;
          }
 
          newEvent.postToSignal(Input::smInputEvent);
@@ -938,7 +907,7 @@ bool DInputDevice::buildEvent( DWORD offset, S32 newData, S32 oldData )
 
       case SI_BUTTON:
          newEvent.action   = ( newData & 0x80 ) ? SI_MAKE : SI_BREAK;
-         newEvent.fValue   = ( newEvent.action == SI_MAKE ) ? 1.0f : 0.0f;
+         newEvent.fValues[0]   = ( newEvent.action == SI_MAKE ) ? 1.0f : 0.0f;
 
 #ifdef LOG_INPUT
          if ( newEvent.action == SI_MAKE )
@@ -974,7 +943,7 @@ bool DInputDevice::buildEvent( DWORD offset, S32 newData, S32 oldData )
             if ( clearkeys )
             {
                newEvent.action = SI_BREAK;
-               newEvent.fValue = 0.0f;
+               newEvent.fValues[0] = 0.0f;
                // post events for all buttons that need to be cleared.
                if( clearkeys & POV_up)
                {
@@ -1006,7 +975,7 @@ bool DInputDevice::buildEvent( DWORD offset, S32 newData, S32 oldData )
             if ( setkeys )
             {
                newEvent.action = SI_MAKE;
-               newEvent.fValue = 1.0f;
+               newEvent.fValues[0] = 1.0f;
                // post events for all buttons that need to be set.
                if( setkeys & POV_up)
                {
@@ -1585,5 +1554,7 @@ bool DInputDevice::joystickDetected()
    return( smDeviceCount[ JoystickDeviceType ] > 0 );
 }
 
-
-
+U8 DInputDevice::getJoystickCount()
+{  
+   return(smJoystickCount);
+}

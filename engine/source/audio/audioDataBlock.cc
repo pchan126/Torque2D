@@ -64,7 +64,7 @@ IMPLEMENT_CO_DATABLOCK_V1(AudioEnvironment);
 AudioEnvironment::AudioEnvironment()
 {
    mUseRoom = true;
-#if !defined(TORQUE_OS_IOS)
+#if !defined(TORQUE_OS_IOS) && !defined(TORQUE_OS_ANDROID)
    mRoom = EAX_ENVIRONMENT_GENERIC;
 #endif
    mRoomHF = 0;
@@ -84,7 +84,7 @@ AudioEnvironment::AudioEnvironment()
    mFlags = 0;
 }
 
-#if !defined(TORQUE_OS_IOS)
+#if !defined(TORQUE_OS_IOS) && !defined(TORQUE_OS_ANDROID)
 static EnumTable::Enums roomEnums[] =
 {
    EnumTable::Enums( EAX_ENVIRONMENT_GENERIC,           "GENERIC" ),               // 0
@@ -127,7 +127,7 @@ void AudioEnvironment::initPersistFields()
    Parent::initPersistFields();
 
    addField("useRoom",              TypeBool,   Offset(mUseRoom, AudioEnvironment));
-#if !defined(TORQUE_OS_IOS)
+#if !defined(TORQUE_OS_IOS) && !defined(TORQUE_OS_ANDROID)
    addField("room",                 TypeEnum,   Offset(mRoom, AudioEnvironment), 1, &gAudioEnvironmentRoomTypes);
 #endif
    addField("roomHF",               TypeS32,    Offset(mRoomHF, AudioEnvironment));
@@ -151,7 +151,7 @@ void AudioEnvironment::initPersistFields()
 void AudioEnvironment::packData(std::ostream &stream)
 {
    Parent::packData(stream);
-#if !defined(TORQUE_OS_IOS)
+#if !defined(TORQUE_OS_IOS) && !defined(TORQUE_OS_ANDROID)
    if (stream << (mUseRoom))
       stream << mClamp(mRoom, EAX_ENVIRONMENT_GENERIC, EAX_ENVIRONMENT_COUNT);
    else
@@ -179,7 +179,7 @@ void AudioEnvironment::unpackData(std::istream &stream)
 {
    Parent::unpackData(stream);
    stream >> mUseRoom;
-#if !defined(TORQUE_OS_IOS)
+#if !defined(TORQUE_OS_IOS)  && !defined(TORQUE_OS_ANDROID)
    if(mUseRoom)
       mRoom = StreamFn::readRangedU32(stream, EAX_ENVIRONMENT_GENERIC, EAX_ENVIRONMENT_COUNT);
    else

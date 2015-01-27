@@ -20,16 +20,11 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-////////////////////////////////////////////////////////////////////////////////
-// XML Document Object
-////////////////////////////////////////////////////////////////////////////////
-
 #include "persistence/SimXMLDocument.h"
 #include "memory/frameAllocator.h"
 #include "console/consoleInternal.h"
 #include "io/resource/resourceManager.h"
 
-#include "SimXMLDocument_ScriptBinding.h"
 IMPLEMENT_CONOBJECT(SimXMLDocument);
 
 // -----------------------------------------------------------------------------

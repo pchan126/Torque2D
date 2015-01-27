@@ -591,6 +591,7 @@ F32 SceneWindow::interpolate( F32 from, F32 to, F32 delta )
     // Sigmoid.
     else if ( mCameraInterpolationMode == SIGMOID )
         return mSmoothStep( from, to, delta );
+    // Hmmm...
     else
         return from;
 }

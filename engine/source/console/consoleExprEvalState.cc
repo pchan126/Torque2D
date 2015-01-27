@@ -32,6 +32,8 @@
 #include "string/findMatch.h"
 #include "console/compiler.h"
 
+#include "consoleExprEvalState_ScriptBinding.h"
+
 extern ExprEvalState gEvalState;
 
 void ExprEvalState::pushFrame(StringTableEntry frameName, Namespace *ns)

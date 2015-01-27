@@ -900,8 +900,10 @@ ConsoleMethodWithDocs(SceneObject, getIsPointInCollisionShape, ConsoleBool, 4, 5
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(SceneObject, setBodyType, void, 3, 3, "(bodyType type) Sets the body type.\n"
-                                                      "@return No return value.")
+/*! Sets the body type.
+    @return No return value.
+*/
+ConsoleMethodWithDocs(SceneObject, setBodyType, ConsoleVoid, 3, 3, (bodyType type))
 {
     // Fetch body type.
     const b2BodyType type = SceneObject::getBodyTypeEnum(argv[2]);
@@ -916,25 +918,31 @@ ConsoleMethod(SceneObject, setBodyType, void, 3, 3, "(bodyType type) Sets the bo
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(SceneObject, getBodyType, const char*, 2, 2,   "() Gets the body type.\n"
-                                                                "@return The body type." )
+/*! Gets the body type.
+    @return The body type.
+*/
+ConsoleMethodWithDocs(SceneObject, getBodyType, ConsoleString, 2, 2, ())
 {
     return SceneObject::getBodyTypeDescription( object->getBodyType() );
 }
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(SceneObject, setActive, void, 2, 3,            "([bool status?]) - Sets the body active status.\n"
-                                                                "@param status - Whether the body should be active or not (defaults to true)."
-                                                                 "@return No return Value.")
+/*! Sets the body active status.
+    @param status - Whether the body should be active or not (defaults to true).
+    @return No return Value.
+*/
+ConsoleMethodWithDocs(SceneObject, setActive, ConsoleVoid, 2, 3, ([bool status?]))
 {
     object->setActive( argc > 2 ? dAtob(argv[2]) : true );
 }
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(SceneObject, getActive, bool, 2, 2,            "() Gets the body active status.\n"
-                                                                "@return (bool status) Whether the body is active or not.")
+/*! Gets the body active status.
+    @return (bool status) Whether the body is active or not.
+*/
+ConsoleMethodWithDocs(SceneObject, getActive, ConsoleBool, 2, 2, ())
 {
     return object->getActive();
 }
@@ -1148,7 +1156,7 @@ ConsoleMethodWithDocs(SceneObject, getContact, ConsoleString, 3, 3, (contactInde
     {
         dSprintf(pReturnBuffer, 128,
             "%d %d %d %0.4f %0.4f %0.4f %0.4f %0.4f %0.4f %0.4f %0.4f %0.4f %0.4f",
-            pSceneObjectCollider,
+            pSceneObjectCollider->getId(),
             shapeIndexThis, shapeIndexCollider,
             normal.x, normal.y,
             point1.x, point1.y,
@@ -1162,20 +1170,20 @@ ConsoleMethodWithDocs(SceneObject, getContact, ConsoleString, 3, 3, (contactInde
     {
         dSprintf(pReturnBuffer, 128,
             "%d %d %d %0.4f %0.4f %0.4f %0.4f %0.4f %0.4f",
-            pSceneObjectCollider,
+            pSceneObjectCollider->getId(),
             shapeIndexThis, shapeIndexCollider,
             normal.x, normal.y,
             point1.x, point1.y,
             normalImpulse1,
             tangentImpulse1 );
     }
-	else
-	{
+    else
+    {
         dSprintf(pReturnBuffer, 64,
             "%d %d %d",
-            pSceneObjectCollider,
+            pSceneObjectCollider->getId(),
             shapeIndexThis, shapeIndexCollider );
-	}
+    }
 
     return pReturnBuffer;
 }
@@ -1317,10 +1325,12 @@ ConsoleMethodWithDocs(SceneObject, getCollisionGroups, ConsoleString, 2, 2, ())
 
 //-----------------------------------------------------------------------------
 
-ConsoleMethod(SceneObject, setDefaultDensity, void, 3, 4,    "(float density, [bool updateShapes]) - Sets the default density to use when creating collision shapes.\n"
-                                                                "@param density The default density to use when creating collision shapes."
-                                                                "@param updateShapes Whether to update the density on any existing shapes or not (default is true)."
-                                                                "@return No return Value.")
+/*! Sets the default density to use when creating collision shapes.
+    @param density The default density to use when creating collision shapes.
+    @param updateShapes Whether to update the density on any existing shapes or not (default is true).
+    @return No return Value.
+*/
+ConsoleMethodWithDocs(SceneObject, setDefaultDensity, ConsoleVoid, 3, 4, (float density, [bool updateShapes]))
 {
     // Fetch density.
     const F32 density = dAtof(argv[2]);
@@ -1872,7 +1882,7 @@ ConsoleMethodWithDocs(SceneObject, applyForce, ConsoleVoid, 4, 6, (worldForce X/
     {
         // Apply force.
         object->applyForce( worldForce );
-		return;
+        return;
     }
 
     // World point.
@@ -1952,7 +1962,7 @@ ConsoleMethodWithDocs(SceneObject, applyLinearImpulse, ConsoleVoid, 4, 6, (world
     {
         // Apply force.
         object->applyForce( worldImpulse );
-		return;
+        return;
     }
 
     // World point.

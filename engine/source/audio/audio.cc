@@ -1965,7 +1965,7 @@ void alxCloseHandles()
 void alxUpdateScores(bool sourcesOnly)
 {
    Point3F listener;
-   alGetListener3f(AL_POSITION, &listener.x, &listener.y, &listener.z);
+   alxGetListenerPoint3F(AL_POSITION, &listener);
 
    // do the base sources
    for(U32 i = 0; i < mNumSources; i++)
@@ -2081,7 +2081,7 @@ void alxUpdateScores(bool sourcesOnly)
 void alxUpdateMaxDistance()
 {
    Point3F listener;
-   alGetListener3f(AL_POSITION, &listener.x, &listener.y, &listener.z);
+   alxGetListenerPoint3F(AL_POSITION, &listener);
 
    for(U32 i = 0; i < mNumSources; i++)
    {
@@ -2461,6 +2461,8 @@ bool OpenALInit()
     //now request the number of audio sources we want, if we can't get that many decrement until we have a number we can get
 #elif defined(TORQUE_OS_OSX)
    mDevice = alcOpenDevice((const ALCchar*)nullptr);
+#elif defined(TORQUE_OS_ANDROID)
+   mDevice = alcOpenDevice("openal-soft");
 #else
    mDevice = (ALCvoid *)alcOpenDevice((const ALCchar*)nullptr);
 #endif
@@ -2484,7 +2486,12 @@ bool OpenALInit()
       0x100, freq,
       0
    };
-   mContext = alcCreateContext(mDevice,attrlist);
+
+   mContext = alcCreateContext((ALCdevice*)mDevice,attrlist);
+#elif defined(TORQUE_OS_ANDROID)
+   mContext = alcCreateContext((ALCdevice*)mDevice, nullptr);
+#elif defined(TORQUE_OS_EMSCRIPTEN)
+   mContext = alcCreateContext((ALCdevice*)mDevice, nullptr);;
 #elif defined(TORQUE_OS_IOS)
 #else
    mContext = alcCreateContext(mDevice,NULL);
@@ -2493,8 +2500,11 @@ bool OpenALInit()
       return false;
 
    // Make this context the active context
+#if defined(TORQUE_OS_ANDROID) || defined(TORQUE_OS_LINUX) || defined(TORQUE_OS_EMSCRIPTEN)
+   alcMakeContextCurrent((ALCcontext*)mContext);
+#else
    alcMakeContextCurrent(mContext);
-
+#endif
    ALenum err = alGetError();
    mRequestSources = MAX_AUDIOSOURCES;	
    while(true)
@@ -2576,12 +2586,25 @@ void OpenALShutdown()
 
    if (mContext)
    {
-      alcDestroyContext(mContext);
+#if defined(TORQUE_OS_ANDROID) || defined(TORQUE_OS_LINUX)
+	   alcDestroyContext((ALCcontext*)mContext);
+#elif defined(TORQUE_OS_EMSCRIPTEN)
+      alcDestroyContext((ALCcontext*)mContext);
+#else
+	   alcDestroyContext(mContext);
+#endif
+
       mContext = NULL;
    }
    if (mDevice)
    {
-      alcCloseDevice(mDevice);
+#if defined(TORQUE_OS_ANDROID) || defined(TORQUE_OS_LINUX)
+	   alcCloseDevice((ALCdevice*)mDevice);
+#elif defined(TORQUE_OS_EMSCRIPTEN)
+      alcCloseDevice((ALCdevice*)mDevice);
+#else
+	   alcCloseDevice(mDevice);
+#endif
       mDevice = NULL;
    }
 

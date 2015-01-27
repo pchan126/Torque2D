@@ -22,8 +22,6 @@
 
 #include "platform/platform.h"
 #include "console/console.h"
-#include "console/consoleInternal.h"
-#include "console/ast.h"
 #include "io/resource/resourceManager.h"
 #include "console/compiler.h"
 #include "platform/event.h"
@@ -52,4 +50,3 @@ ConsoleFunction(isiPhoneBuild, bool, 1, 1, "Returns true if this is a iPhone bui
    return false;
 #endif	//TORQUE_OS_IOS
 }
-

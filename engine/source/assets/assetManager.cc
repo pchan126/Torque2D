@@ -496,7 +496,7 @@ StringTableEntry AssetManager::getAssetPath( const char* pAssetId )
     AssertFatal( pFinalSlash != nullptr, "Should always be able to find final slash in the asset file-path." );
 
     // Fetch asset path.
-    return StringTable->insertn( assetFilePath, pFinalSlash - assetFilePath );
+    return StringTable->insertn( assetFilePath, (U32)(pFinalSlash - assetFilePath) );
 }
 
 //-----------------------------------------------------------------------------

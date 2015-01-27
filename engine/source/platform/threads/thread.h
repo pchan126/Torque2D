@@ -33,6 +33,12 @@ struct PlatformThreadData;
 // Typedefs
 typedef void (*ThreadRunFunction)(void *data);
 
+#ifdef TORQUE_64
+typedef U64 ThreadIdent;
+#else
+typedef U32 ThreadIdent;
+#endif
+
 class Thread
 {
 protected:

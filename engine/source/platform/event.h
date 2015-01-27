@@ -91,7 +91,9 @@ struct ScreenTouchEventInfo
 struct InputEventInfo 
 {
    U32   deviceInst;  ///< Device instance: joystick0, joystick1, etc
+   S32 iValue; ///< Handy for tracking IDs of things like fingers, hands, etc
    F32   fValue;      ///< Value ranges from -1.0 to 1.0
+   F32   fValues[7];  ///< Stores the evemt data. Sometimes only one with a range of -1.0 - 1.0 is needed, other times it might be multiple vectors
    U16   deviceType;  ///< One of mouse, keyboard, joystick, unknown
    U16   objType;     ///< One of SI_XAXIS, SI_BUTTON, SI_KEY ...
    U16   ascii;       ///< ASCII character code if this is a keyboard event.
@@ -299,7 +301,34 @@ enum JoystickCodes {
    SI_UPOV2          = 0x214,
    SI_DPOV2          = 0x215,
    SI_LPOV2          = 0x216,
-   SI_RPOV2          = 0x217
+   SI_RPOV2          = 0x217,
+
+//Xinput specific
+
+   XI_CONNECT        = 0x300,
+   XI_THUMBLX        = 0x301,
+   XI_THUMBLY        = 0x302,
+   XI_THUMBRX        = 0x303,
+   XI_THUMBRY        = 0x304,
+   XI_LEFT_TRIGGER   = 0x305,
+   XI_RIGHT_TRIGGER  = 0x306,
+
+   XI_DPAD_UP        = 0x206,
+   XI_DPAD_DOWN      = 0x207,
+   XI_DPAD_LEFT      = 0x208,
+   XI_DPAD_RIGHT     = 0x209,
+   
+   XI_START          = 0x311,
+   XI_BACK           = 0x312,
+   XI_LEFT_THUMB     = 0x313,
+   XI_RIGHT_THUMB    = 0x314,
+   XI_LEFT_SHOULDER  = 0x315,
+   XI_RIGHT_SHOULDER = 0x316,
+
+   XI_A              = 0x317,
+   XI_B              = 0x318,
+   XI_X              = 0x319,
+   XI_Y              = 0x320
 };
 
 enum AccelerometerCodes
@@ -322,33 +351,6 @@ enum GyroCodes
    SI_ROLL        = 0x30B
 };
 
-enum XInputCodes
-{
-   XI_CONNECT        = 0x310,
-   XI_THUMBLX        = 0x311,
-   XI_THUMBLY        = 0x312,
-   XI_THUMBRX        = 0x313,
-   XI_THUMBRY        = 0x314,
-   XI_LEFT_TRIGGER   = 0x315,
-   XI_RIGHT_TRIGGER  = 0x316,
-
-   /*XI_DPAD_UP        = 0x317,
-   XI_DPAD_DOWN      = 0x318,
-   XI_DPAD_LEFT      = 0x319,
-   XI_DPAD_RIGHT     = 0x320,*/
-   
-   XI_START          = 0x321,
-   XI_BACK           = 0x322,
-   XI_LEFT_THUMB     = 0x323,
-   XI_RIGHT_THUMB    = 0x324,
-   XI_LEFT_SHOULDER  = 0x325,
-   XI_RIGHT_SHOULDER = 0x326,
-
-   XI_A              = 0x327,
-   XI_B              = 0x328,
-   XI_X              = 0x329,
-   XI_Y              = 0x330,
-};
 
 
 enum GestureCodes
@@ -378,15 +380,16 @@ enum InputDeviceTypesEnum
    MouseDeviceType,
    KeyboardDeviceType,
    JoystickDeviceType,
-   AccelerometerDeviceType,
-   GyroscopeDeviceType,
    GamepadDeviceType,
    XInputDeviceType,
+   ScreenTouchDeviceType,
+   AccelerometerDeviceType,
+   GyroscopeDeviceType,
+   LeapMotionDeviceType,
 
    NUM_INPUT_DEVICE_TYPES,
 
    INPUT_DEVICE_PLUGIN_DEVICES_START = NUM_INPUT_DEVICE_TYPES,
-
 };
 
 /// Device Event Action Types
@@ -484,5 +487,10 @@ enum InputModifiers
 };
 
 /// @}
+
+//Xinput structs
+
+typedef U32 InputObjectInstances;
+
 
 #endif

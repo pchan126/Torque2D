@@ -211,15 +211,15 @@ namespace Compiler
    };
 
    //------------------------------------------------------------
-
-   inline StringTableEntry U32toSTE(U32 u)
+   
+   inline StringTableEntry CodeToSTE(U32 u)
    {
       return StringTable->U32toSTE(u);
    }
-
+   
    extern U32 (*STEtoU32)(StringTableEntry ste, U32 ip);
 
-   U32 evalSTEtoU32(StringTableEntry ste, U32);
+   U32 evalSTEtoU32(StringTableEntry ste, U32 ip);
    U32 compileSTEtoU32(StringTableEntry ste, U32 ip);
 
    CompilerStringTable *getCurrentStringTable();

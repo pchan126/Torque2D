@@ -198,6 +198,7 @@ bool GBitmap::writeJPEG(std::iostream &stream) const
 //      case RGB565:
 //      case RGB5551:
 //      case Luminance:
+//      case LuminanceAlpha:
 //#ifdef TORQUE_OS_IOS
 //      case PVR2:
 //      case PVR2A:

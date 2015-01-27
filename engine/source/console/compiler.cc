@@ -62,12 +62,12 @@ namespace Compiler
    void setBreakCodeBlock(CodeBlock *cb)  { gCurBreakBlock = cb;   }
 
    //------------------------------------------------------------
-
+   
    U32 evalSTEtoU32(StringTableEntry ste, U32)
    {
       return StringTable->STEtoU32(ste);
    }
-
+   
    U32 compileSTEtoU32(StringTableEntry ste, U32 ip)
    {
       if(ste)
@@ -160,6 +160,12 @@ U32 CompilerStringTable::add(const char *str, bool caseSens, bool tag)
    newStr->len = (U32)len;
    newStr->tag = tag;
    dStrcpy(newStr->string, str);
+   
+#ifdef EMSCRIPTEN
+   consoleAlloc(2);
+   //Con::printf("CompilerStringTable::add(%s) %s %s @ %u:%u", str, caseSens ? "CASE" : "NOCASE", tag ? "TAG" : "NOTAG", newStr->string, len);
+#endif
+
    return newStr->start;
 }
 

@@ -28,8 +28,7 @@
 #include "game/gameInterface.h"
 #include "io/StreamFn.h"
 
-#include "netInterface_ScriptBinding.h"
-NetInterface *GNet = nullptr;
+NetInterface *GNet = NULL;
 
 NetInterface::NetInterface()
 {

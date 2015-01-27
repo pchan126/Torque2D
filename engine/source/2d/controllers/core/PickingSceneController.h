@@ -32,11 +32,11 @@
 #endif
 
 #ifndef _SCENE_OBJECT_H_
-#include "2d/sceneObject/sceneObject.h"
+#include "2d/sceneobject/SceneObject.h"
 #endif
 
 #ifndef _SCENE_CONTROLLER_H_
-#include "2d/controllers/core/sceneController.h"
+#include "2d/controllers/core/SceneController.h"
 #endif
 
 //------------------------------------------------------------------------------

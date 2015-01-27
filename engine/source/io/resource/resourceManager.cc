@@ -598,8 +598,8 @@ const char * ResManager::getModPaths ()
    return ((const char *) pathList);
 }
 
-//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
 
 S32 ResManager::getSize (const char *fileName)
 {
@@ -1069,27 +1069,14 @@ struct ResourceObjectIndex
    ResourceObject *ro;
    const char *fileName;
 
-//   static S32 QSORT_CALLBACK compare (const void *s1, const void *s2)
-//   {
-//      const ResourceObjectIndex *r1 = (ResourceObjectIndex *) s1;
-//      const ResourceObjectIndex *r2 = (ResourceObjectIndex *) s2;
-//
-//      if (r1->ro->path != r2->ro->path)
-//         return r1->ro->path - r2->ro->path;
-//      if (r1->ro->name != r2->ro->name)
-//         return r1->ro->name - r2->ro->name;
-//      return r1->ro->fileOffset - r2->ro->fileOffset;
-//   }
-
-
-    static S32 QSORT_CALLBACK compare (const ResourceObjectIndex r1, const ResourceObjectIndex r2)
-    {
-        if (r1.ro->path != r2.ro->path)
-            return r1.ro->path < r2.ro->path;
-        if (r1.ro->name != r2.ro->name)
-            return r1.ro->name < r2.ro->name;
-        return r1.ro->fileOffset < r2.ro->fileOffset;
-    }
+   static S32 QSORT_CALLBACK compare (const ResourceObjectIndex r1, const ResourceObjectIndex r2)
+   {
+      if (r1.ro->path != r2.ro->path)
+         return r1.ro->path < r2.ro->path;
+      if (r1.ro->name != r2.ro->name)
+         return r1.ro->name < r2.ro->name;
+      return r1.ro->fileOffset < r2.ro->fileOffset;
+   }
 };
 
 //------------------------------------------------------------------------------

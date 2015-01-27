@@ -31,7 +31,7 @@
 #include <stdarg.h>
 #include <sstream>
 
-size_t gNetBitsSent = 0;
+S32 gNetBitsSent = 0;
 extern S32 gNetBitsReceived;
 U32 gGhostUpdates = 0;
 

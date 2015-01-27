@@ -245,7 +245,7 @@ void CodeBlock::getFunctionArgs(char buffer[1024], U32 ip)
    buffer[0] = 0;
    for(U32 i = 0; i < fnArgc; i++)
    {
-      StringTableEntry var = U32toSTE(code[ip + i + 6]);
+      StringTableEntry var = CodeToSTE(code[ip + i + 6]);
       
       // Add a comma so it looks nice!
       if(i != 0)
@@ -309,7 +309,7 @@ static void setUnit(const char *string, U32 index, const char *replace, const ch
          string += (sz + 1);
    }
    // copy first chunk
-   sz = string-start;
+   sz = (U32)(string-start);
    dStrncpy(val, start, sz);
    for(U32 i = 0; i < padCount; i++)
       val[sz++] = set[0];
@@ -495,7 +495,7 @@ const char *CodeBlock::exec(U32 ip, const char *functionName, Namespace *thisNam
    {
       // assume this points into a function decl:
       U32 fnArgc = code[ip + 5];
-      thisFunctionName = U32toSTE(code[ip]);
+      thisFunctionName = CodeToSTE(code[ip]);
       argc = std::min(argc-1, fnArgc); // argv[0] is func name
       if(gEvalState.traceOn)
       {
@@ -530,7 +530,7 @@ const char *CodeBlock::exec(U32 ip, const char *functionName, Namespace *thisNam
       popFrame = true;
       for(i = 0; i < argc; i++)
       {
-         StringTableEntry var = U32toSTE(code[ip + i + 6]);
+         StringTableEntry var = CodeToSTE(code[ip + i + 6]);
          gEvalState.setCurVarNameCreate(var);
          gEvalState.setStringVariable(argv[i+1]);
       }
@@ -618,9 +618,9 @@ breakContinue:
          case OP_FUNC_DECL:
             if(!noCalls)
             {
-               fnName       = U32toSTE(code[ip]);
-               fnNamespace  = U32toSTE(code[ip+1]);
-               fnPackage    = U32toSTE(code[ip+2]);
+               fnName       = CodeToSTE(code[ip]);
+               fnNamespace  = CodeToSTE(code[ip+1]);
+               fnPackage    = CodeToSTE(code[ip+2]);
                bool hasBody = bool(code[ip+3]);
                
                Namespace::unlinkPackages();
@@ -650,7 +650,7 @@ breakContinue:
          case OP_CREATE_OBJECT:
          {
             // Read some useful info.
-            objParent        = U32toSTE(code[ip    ]);
+            objParent        = CodeToSTE(code[ip]);
             bool isDataBlock =          code[ip + 1];
             bool isInternal  =          code[ip + 2];
             bool isMessage   =          code[ip + 3];
@@ -1110,7 +1110,7 @@ breakContinue:
             break;
 
          case OP_SETCURVAR:
-            var = U32toSTE(code[ip]);
+            var = CodeToSTE(code[ip]);
             ip++;
 
             // If a variable is set, then these must be nullptr. It is necessary
@@ -1130,7 +1130,7 @@ breakContinue:
             break;
 
          case OP_SETCURVAR_CREATE:
-            var = U32toSTE(code[ip]);
+            var = CodeToSTE(code[ip]);
             ip++;
 
             // See OP_SETCURVAR
@@ -1250,7 +1250,7 @@ breakContinue:
             // Save the previous field for parsing vector fields.
             prevField = curField;
             dStrcpy( prevFieldArray, curFieldArray );
-            curField = U32toSTE(code[ip]);
+            curField = CodeToSTE(code[ip]);
             curFieldArray[0] = 0;
             ip++;
             break;
@@ -1439,13 +1439,13 @@ breakContinue:
             break;
 
          case OP_LOADIMMED_IDENT:
-            STR.setStringValue(U32toSTE(code[ip++]));
+            STR.setStringValue(CodeToSTE(code[ip++]));
             break;
 
          case OP_CALLFUNC_RESOLVE:
             // This deals with a function that is potentially living in a namespace.
-            fnNamespace = U32toSTE(code[ip+1]);
-            fnName      = U32toSTE(code[ip]);
+            fnNamespace = CodeToSTE(code[ip+1]);
+            fnName      = CodeToSTE(code[ip]);
 
             // Try to look it up.
             ns = Namespace::find(fnNamespace);
@@ -1473,7 +1473,7 @@ breakContinue:
             // or just on the object.
             S32 routingId = 0;
 
-            fnName = U32toSTE(code[ip]);
+            fnName = CodeToSTE(code[ip]);
 
             //if this is called from inside a function, append the ip and codeptr
             if (!gEvalState.stack.empty())

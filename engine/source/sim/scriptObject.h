@@ -27,6 +27,14 @@
 #include "component/behaviors/behaviorComponent.h"
 #include "component/behaviors/behaviorInstance.h"
 
+#ifndef _BEHAVIOR_COMPONENT_H_
+#include "component/behaviors/behaviorComponent.h"
+#endif
+
+#ifndef _BEHAVIORINSTANCE_H_
+#include "component/behaviors/behaviorInstance.h"
+#endif
+
 //-----------------------------------------------------------------------------
 
 class ScriptObject : public BehaviorComponent

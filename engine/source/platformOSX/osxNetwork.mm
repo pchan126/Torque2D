@@ -783,7 +783,7 @@ Net::Error Net::setBlocking(NetSocket socket, bool blockingIO)
 Net::Error Net::send(NetSocket socket, const U8 *buffer, dsize_t bufferSize)
 {
     errno = 0;
-    S32 bytesWritten = ::send(socket, (const char*)buffer, bufferSize, 0);
+    S32 bytesWritten = (S32)::send(socket, (const char*)buffer, bufferSize, 0);
     if(bytesWritten == -1)
         Con::errorf("Could not write to socket. Error: %s",strerror(errno));
     
@@ -792,7 +792,7 @@ Net::Error Net::send(NetSocket socket, const U8 *buffer, dsize_t bufferSize)
 
 Net::Error Net::recv(NetSocket socket, U8 *buffer, S32 bufferSize, S32  *bytesRead)
 {
-    *bytesRead = ::recv(socket, (char*)buffer, bufferSize, 0);
+    *bytesRead = (S32)::recv(socket, (char*)buffer, bufferSize, 0);
     if(*bytesRead == -1)
         return getLastError();
     return NoError;

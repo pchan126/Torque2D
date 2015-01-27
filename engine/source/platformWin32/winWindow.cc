@@ -940,11 +940,9 @@ void Platform::init()
 void Platform::shutdown()
 {
    sgQueueEvents = false;
-   Audio::OpenALShutdown();
 
-   //if(gMutexHandle)
-   //   CloseHandle(gMutexHandle);
-
+   setMouseLock( false );
+   Video::destroy();
    Input::destroy();
    
    GFXDevice::destroy();

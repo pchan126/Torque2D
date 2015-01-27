@@ -453,6 +453,7 @@ bool CodeBlock::read(StringTableEntry fileName, std::iostream &st)
          ste = StringTable->insert(globalStrings + offset);
       else
          ste = StringTable->EmptyString;
+      
       U32 count;
       st >> count;
       while(count--)

@@ -30,7 +30,10 @@
 #include "2d/core/particleSystem.h"
 #include "Layer.h"
 #include "t2dSceneRenderState.h"
+// Script bindings.
 #include "t2dScene_ScriptBinding.h"
+
+// Debug Profiling.
 #include "debug/profiler.h"
 #include "renderInstance/renderPassManager.h"
 
@@ -110,7 +113,7 @@ static StringTableEntry jointMotorMaxTorqueName           = jointRevoluteMotorMa
 static StringTableEntry jointMotorCorrectionFactorName    = StringTable->insert( "CorrectionFactor" );
 
 // Controller custom node names.
-static StringTableEntry controllerCustomNodeName	      = StringTable->insert( "Controllers" );
+static StringTableEntry controllerCustomNodeName          = StringTable->insert( "Controllers" );
 
 // Asset preload custom node names.
 static StringTableEntry assetPreloadNodeName              = StringTable->insert( "AssetPreloads" );
@@ -1962,7 +1965,7 @@ F32 t2dScene::getRevoluteJointAngle( const U32 jointId )
 
 //-----------------------------------------------------------------------------
 
-F32	t2dScene::getRevoluteJointSpeed( const U32 jointId )
+F32 t2dScene::getRevoluteJointSpeed( const U32 jointId )
 {
     // Fetch joint.
     b2Joint* pJoint = findJoint( jointId );
@@ -4350,18 +4353,23 @@ void t2dScene::onTamlPostRead( const TamlCustomNodes& customNodes )
     }
 
     // Find controller custom node.
-    const TamlCustomNode* pControllerNode = customNodes.findNode( controllerCustomNodeName );
+    const TamlCustomNode* pControllerCustomNode = customNodes.findNode( controllerCustomNodeName );
 
     // Do we have any controllers?
-    if ( pControllerNode != nullptr )
+    if ( pControllerCustomNode != nullptr )
     {
         // Yes, so fetch the scene controllers.
         SimSet* pControllerSet = getControllers();
 
         // Fetch children controller nodes.
+        const TamlCustomNodeVector& controllerChildren = pControllerCustomNode->getChildren();
+
         // Iterate controllers.
-       for( auto itr = pControllerNode->getChildren().begin(); itr != pControllerNode->getChildren().end(); ++itr)
+       for( auto itr = pControllerCustomNode->getChildren().begin(); itr != pControllerCustomNode->getChildren().end(); ++itr)
         {
+            // Fetch controller node.
+            TamlCustomNode* pControllerNode = *itr;
+            
             // Is the node a proxy object?
             if ( !pControllerNode->isProxyObject() )
             {

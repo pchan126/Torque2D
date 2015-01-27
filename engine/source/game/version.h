@@ -24,8 +24,8 @@
 #define _ENGINE_VERSION_H_
 
 // Engine Version.
-#define T2D_ENGINE_VERSION      		"v2.0"        ///< Engine Version String.
-#define T2D_IPHONETOOLS_VERSION      	"v2.0"          ///< Engine Version String for iPhone tools. Changing this will allow a fresh AppData folder to avoid conflicts with other builds existing on the system.
+#define T2D_ENGINE_VERSION            "v3.1"    ///< Engine Version String.
+#define T2D_IPHONETOOLS_VERSION       "v3.1"    ///< Engine Version String for iPhone tools. Changing this will allow a fresh AppData folder to avoid conflicts with other builds existing on the system.
 
 /// Gets the specified version number.  The version number is specified as a global in version.cc
 U32 getVersionNumber();
@@ -35,5 +35,11 @@ const char* getVersionString();
 
 /// Gets the compile date and time
 const char* getCompileTimeString();
+
+const char* getCompanyName();
+const char* getProductName();
+
+void setCompanyName(StringTableEntry companyName);
+void setProductName(StringTableEntry productName);
 
 #endif // _ENGINE_VERSION_H_

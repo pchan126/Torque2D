@@ -84,6 +84,7 @@ bool SimObject::isMethod( const char* methodName )
    return false;
 }
 
+
 //---------------------------------------------------------------------------
 
 bool SimObject::registerObject()

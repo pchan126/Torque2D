@@ -26,6 +26,8 @@
 #include "game/gameInterface.h"
 #include "string/unicode.h"
 
+#include "winConsole_ScriptBinding.h"
+
 WinConsole *WindowsConsole = NULL;
 
 namespace Con
