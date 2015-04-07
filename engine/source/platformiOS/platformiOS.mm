@@ -51,7 +51,7 @@ bool gStatusBarHidden = true;
 
 //-----------------------------------------------------------------------------
 
-- (id)init
+- (instancetype)init
 {
     self = [super init];
     
@@ -83,7 +83,7 @@ bool gStatusBarHidden = true;
 
 //-----------------------------------------------------------------------------
 
-+ (id)sharedPlatState
++ (iOSPlatState*)sharedPlatState
 {
     @synchronized(self)
     {

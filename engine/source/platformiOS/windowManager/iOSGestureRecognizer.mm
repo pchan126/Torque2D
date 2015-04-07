@@ -22,7 +22,7 @@
 @synthesize pinchGestureRecognizer;
 @synthesize window;
 
-- (id)initWithT2DWindow:(iOSWindow *)in_window
+- (instancetype)initWithT2DWindow:(iOSWindow *)in_window
 {
    self = [super init];
    if (self)

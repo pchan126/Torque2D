@@ -48,20 +48,20 @@
 // Accelerometer related functions
 - (void) enableAccelerometer;
 - (void) disableAccelerometer;
-- (bool) isAccelerometerActive;
+@property (NS_NONATOMIC_IOSONLY, getter=isAccelerometerActive, readonly) bool accelerometerActive;
 
 // Gyroscope related functions
-- (bool) enableGyroscope;
-- (bool) disableGyroscope;
-- (bool) isGyroAvailable;
-- (bool) isGyroActive;
+@property (NS_NONATOMIC_IOSONLY, readonly) bool enableGyroscope;
+@property (NS_NONATOMIC_IOSONLY, readonly) bool disableGyroscope;
+@property (NS_NONATOMIC_IOSONLY, getter=isGyroAvailable, readonly) bool gyroAvailable;
+@property (NS_NONATOMIC_IOSONLY, getter=isGyroActive, readonly) bool gyroActive;
 
 // Motion device related functions
-- (bool) startDeviceMotion;
-- (bool) stopDeviceMotion;
-- (bool) resetDeviceMotionReference;
-- (bool) isDeviceMotionAvailable;
-- (bool) isDeviceMotionActive;
+@property (NS_NONATOMIC_IOSONLY, readonly) bool startDeviceMotion;
+@property (NS_NONATOMIC_IOSONLY, readonly) bool stopDeviceMotion;
+@property (NS_NONATOMIC_IOSONLY, readonly) bool resetDeviceMotionReference;
+@property (NS_NONATOMIC_IOSONLY, getter=isDeviceMotionAvailable, readonly) bool deviceMotionAvailable;
+@property (NS_NONATOMIC_IOSONLY, getter=isDeviceMotionActive, readonly) bool deviceMotionActive;
 
 @end
 

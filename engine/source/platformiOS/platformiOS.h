@@ -57,8 +57,8 @@
 @property BOOL quit;
 
 /// Global singleton that encapsulates a lot of mac platform state & globals.
-+ (id)sharedPlatState;
++ (iOSPlatState*)sharedPlatState;
 
-- (BOOL)initializeTorque2D;
+@property (NS_NONATOMIC_IOSONLY, readonly) BOOL initializeTorque2D;
 
 @end

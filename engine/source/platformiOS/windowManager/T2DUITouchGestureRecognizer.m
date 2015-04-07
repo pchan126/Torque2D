@@ -9,7 +9,7 @@
 
 @implementation T2DUITouchGestureRecognizer
 
-- (id)initWithTarget:(id)target action:(SEL)action;
+- (instancetype)initWithTarget:(id)target action:(SEL)action;
 {
     self = [super initWithTarget:target action:action];
     if (self)

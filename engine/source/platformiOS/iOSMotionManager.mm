@@ -37,7 +37,7 @@ static const double kUpdateInterval = 0.2;
 @synthesize accelerometerEnabled;
 @synthesize gyroscopeEnabled;
 
-- (id)init
+- (instancetype)init
 {
     if (!(self = [super init])) return nil;
     

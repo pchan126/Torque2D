@@ -33,7 +33,7 @@
 @property (nonatomic, strong) T2DUITouchGestureRecognizer *touchGestureRecognizer;
 @property (nonatomic) iOSWindow *window;
 
-- (id)initWithT2DWindow:(iOSWindow *)window;
+- (instancetype)initWithT2DWindow:(iOSWindow *)window NS_DESIGNATED_INITIALIZER;
 - (void) handleTaps:(UITapGestureRecognizer*)paramSender;
 - (void) handleSwipe:(UISwipeGestureRecognizer*)paramSender;
 - (void) handleRotation:(UIRotationGestureRecognizer*)paramSender;
