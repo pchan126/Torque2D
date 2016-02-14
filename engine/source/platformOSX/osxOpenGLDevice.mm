@@ -420,6 +420,14 @@ bool osxOpenGLDevice::setVerticalSync( bool sync )
     }
 }
 
+//-----------------------------------------------------------------------------
+// Not yet implemented. Will resolve in the next video update
+bool osxOpenGLDevice::getVerticalSync()
+{
+   return false;
+}
+
+
 //------------------------------------------------------------------------------
 //  Fill mMonitorList with list of supported modes
 //   Guaranteed to include at least the main device.

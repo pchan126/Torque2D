@@ -74,7 +74,9 @@ public:
     bool setGammaCorrection(F32 g);
     
     bool setVerticalSync( bool sync );
-    
+   
+    bool getVerticalSync();
+
 };
 
 #endif // _OSXOPENGLDEVICE_H_
