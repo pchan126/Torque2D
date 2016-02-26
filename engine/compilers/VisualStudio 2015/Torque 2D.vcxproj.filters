@@ -1628,9 +1628,6 @@
     <ClInclude Include="..\..\source\platform\typesPPC.h">
       <Filter>platform</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\platform\typesWin32.h">
-      <Filter>platform</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\platform\menus\popupMenu.h">
       <Filter>platform\menus</Filter>
     </ClInclude>
