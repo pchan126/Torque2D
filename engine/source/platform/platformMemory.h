@@ -23,17 +23,14 @@
 #ifndef _PLATFORM_MEMORY_H_
 #define _PLATFORM_MEMORY_H_
 
+#include <new>
+
 //------------------------------------------------------------------------------
 
 #define placenew(x) new(x)
 #define dMalloc(x) dMalloc_r(x, __FILE__, __LINE__)
 #define dRealloc(x, y) dRealloc_r(x, y, __FILE__, __LINE__)
 
-//------------------------------------------------------------------------------
-
-#if defined(TORQUE_OS_WIN32)
-extern void* FN_CDECL operator new(dsize_t size, void* ptr);
-#endif
 
 //------------------------------------------------------------------------------
 
