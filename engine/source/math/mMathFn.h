@@ -31,7 +31,8 @@
 #include "math/mConstants.h"
 #endif
 
-#include <math.h>
+#include <cmath>
+#include <algorithm>
 
 // Remove a couple of annoying macros, if they are present (In VC 6, they are.)
 #ifdef min
@@ -214,100 +215,100 @@ U32 getBinLog2(U32 io_num);
 }
 
 
-/// Returns the lesser of the two parameters: a & b.
+ /// Returns the lesser of the two parameters: a & b.
 inline U32 getMin(U32 a, U32 b)
 {
-   return a>b ? b : a;
+   return std::min(a, b);
 }
 
 /// Returns the lesser of the two parameters: a & b.
 inline U16 getMin(U16 a, U16 b)
 {
-   return a>b ? b : a;
+   return std::min(a, b);
 }
 
 /// Returns the lesser of the two parameters: a & b.
 inline U8 getMin(U8 a, U8 b)
 {
-   return a>b ? b : a;
+   return std::min(a, b);
 }
 
 /// Returns the lesser of the two parameters: a & b.
 inline S32 getMin(S32 a, S32 b)
 {
-   return a>b ? b : a;
+   return std::min(a, b);
 }
 
 /// Returns the lesser of the two parameters: a & b.
 inline S16 getMin(S16 a, S16 b)
 {
-   return a>b ? b : a;
+   return std::min(a, b);
 }
 
 /// Returns the lesser of the two parameters: a & b.
 inline S8 getMin(S8 a, S8 b)
 {
-   return a>b ? b : a;
+   return std::min(a, b);
 }
 
 /// Returns the lesser of the two parameters: a & b.
 inline float getMin(float a, float b)
 {
-   return a>b ? b : a;
+   return std::min(a, b);
 }
 
 /// Returns the lesser of the two parameters: a & b.
 inline double getMin(double a, double b)
 {
-   return a>b ? b : a;
+   return std::min(a, b);
 }
 
 /// Returns the greater of the two parameters: a & b.
 inline U32 getMax(U32 a, U32 b)
 {
-   return a>b ? a : b;
+   return std::max(a, b);
 }
 
 /// Returns the greater of the two parameters: a & b.
 inline U16 getMax(U16 a, U16 b)
 {
-   return a>b ? a : b;
+   return std::max(a, b);
 }
 
 /// Returns the greater of the two parameters: a & b.
 inline U8 getMax(U8 a, U8 b)
 {
-   return a>b ? a : b;
+   return std::max(a, b);
 }
 
 /// Returns the greater of the two parameters: a & b.
 inline S32 getMax(S32 a, S32 b)
 {
-   return a>b ? a : b;
+   return std::max(a, b);
 }
 
 /// Returns the greater of the two parameters: a & b.
 inline S16 getMax(S16 a, S16 b)
 {
-   return a>b ? a : b;
+   return std::max(a, b);
 }
 
 /// Returns the greater of the two parameters: a & b.
 inline S8 getMax(S8 a, S8 b)
 {
-   return a>b ? a : b;
+   return std::max(a, b);
 }
 
 /// Returns the greater of the two parameters: a & b.
 inline float getMax(float a, float b)
 {
-   return a>b ? a : b;
+   return std::max(a, b);
 }
 
 /// Returns the greater of the two parameters: a & b.
 inline double getMax(double a, double b)
 {
-   return a>b ? a : b;
+   return std::max(a, b);
 }
 
 inline F32 mFloor(const F32 val)
@@ -611,10 +612,10 @@ inline F64 mRadToDeg(F64 r)
 }
 
 /// Precision Rounding.
-inline F32 mRound(const F32& value, const F32 epsilon = 0.5f) { return value > 0.0f ? mFloor(value + epsilon) : mCeil(value - epsilon); }
+inline F32 mRound(const F32& value) { return std::round(value); }
 
 /// Is NAN?
-inline F32 mIsNAN(const F32& value) { return (value != value); }
+inline F32 mIsNAN(const F32& value) { return std::isnan(value); }
 
 /// Tolerate Is Zero?
 inline bool mIsZero(const F32& value) { return mFabs(value) < FLT_EPSILON; }
@@ -623,10 +624,10 @@ inline bool mIsZero(const F32& value) { return mFabs(value) < FLT_EPSILON; }
 inline bool mNotZero(const F32& value) { return !mIsZero(value); }
 
 /// Tolerate Less-Than?
-inline bool mLessThan(const F32& a, const F32& b) { return a < b; }
+inline bool mLessThan(const F32& a, const F32& b) { return std::isless(a, b); }
 
 /// Tolerate Greater-Than?
-inline bool mGreaterThan(const F32& a, const F32& b) { return a > b; }
+inline bool mGreaterThan(const F32& a, const F32& b) { return std::isgreater(a, b); }
 
 /// Safe Less Than Zero?
 inline bool mLessThanZero(const F32& value) { return mLessThan(value, 0.0f); }
@@ -647,15 +648,15 @@ inline bool mIsEqualRange(const F32& a, const F32& b, const F32 epsilon = FLT_EP
 inline bool mIsOne(const F32& value) { return mIsEqual(value, 1.0f); }
 
 /// Tolerate Less-Than or Equal?
-inline bool mLessThanOrEqual(const F32& a, const F32& b) { return ( (a < b) || (!(a>b) && mIsEqual(a,b)) ); }
+inline bool mLessThanOrEqual(const F32& a, const F32& b) { return std::islessequal(a, b); }
 
 /// Tolerate Greater-Than or Equal?
-inline bool mGreaterThanOrEqual(const F32&a, const F32& b) { return ( (a > b) || (!(a < b) && mIsEqual(a,b)) ); }
+inline bool mGreaterThanOrEqual(const F32&a, const F32& b) { return std::isgreaterequal(a, b); }
 
 /// Get Min/Max.
 inline void mGetMinMax(const F32& a, const F32& b, F32& min, F32& max) { if ( mGreaterThan(a,b) ) { max = a; min = b; } else { max = b; min = a; } }
 
 /// Swap.
-inline void mSwap(F32& a, F32& b) { F32 temp = b; b = a; a = temp; }
+inline void mSwap(F32& a, F32& b) { std::swap(a, b); }
 
 #endif //_MMATHFN_H_

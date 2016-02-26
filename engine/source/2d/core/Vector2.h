@@ -146,7 +146,7 @@ struct Vector2 : b2Vec2
     inline Vector2& clampMin(const Vector2& min)                        { if (x < min.x) x = min.x; if (y < min.y) y = min.y;  return *this; }
     inline Vector2& clampMax(const Vector2& max)                        { if (x > max.x) x = max.x; if (y > max.y) y = max.y;  return *this; }
     inline void rand(const Vector2& min, const Vector2& max)            { x = CoreMath::mGetRandomF(min.x, max.x), y = CoreMath::mGetRandomF(min.y,max.y); }
-    inline void round(const F32 epsilon = FLT_EPSILON)                  { x = mRound(x, epsilon); y = mRound(y, epsilon); }
+    inline void round()													{ x = mRound(x); y = mRound(y); }
 
     inline StringTableEntry stringThis(void) const                      { char buffer[32]; dSprintf(buffer, 32, "%g %g", x, y ); return StringTable->insert(buffer); }
     inline const char* scriptThis(void) const                           { char* pBuffer = Con::getReturnBuffer(32); dSprintf(pBuffer, 32, "%.5g %.5g", x, y ); return pBuffer; }
