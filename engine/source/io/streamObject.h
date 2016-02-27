@@ -21,7 +21,8 @@
 //-----------------------------------------------------------------------------
 
 #include "sim/simBase.h"
-#include "io/stream.h"
+#include <iostream>
+#include "io/StreamFn.h"
 
 #ifndef _STREAMOBJECT_H_
 #define _STREAMOBJECT_H_
@@ -43,11 +44,11 @@ class StreamObject : public SimObject
    typedef SimObject Parent;
 
 protected:
-   Stream *mStream;
+   std::iostream *mStream;
 
 public:
    StreamObject();
-   StreamObject(Stream *stream);
+   StreamObject(std::iostream *stream);
    virtual ~StreamObject();
 
    DECLARE_CONOBJECT(StreamObject);
@@ -55,32 +56,38 @@ public:
    virtual bool onAdd();
 
    /// Set the stream to allow reuse of the object
-   void setStream(Stream *stream)      { mStream = stream; }
+   void setStream(std::iostream *stream)      { mStream = stream; }
 
    /// Get the underlying stream. Used with setStream() to support object reuse
-   Stream *getStream()           { return mStream; }
+   std::iostream *getStream()           { return mStream; }
 
    /// Gets a printable string form of the status
    const char* getStatus();
 
-   bool isEOS()                  { return mStream ? mStream->getStatus() == Stream::EOS : true; }
+   bool isEOS()                  { return mStream->eof(); }
 
    /// Gets the position in the stream
    U32  getPosition() const
    {
-      return mStream ? mStream->getPosition() : 0;
+		int pos = mStream->tellp();
+		return pos;
    }
 
    /// Sets the position of the stream.  Returns if the new position is valid or not
    bool setPosition(const U32 in_newPosition)
    {
-      return mStream ? mStream->setPosition(in_newPosition) : false;
+	   mStream->seekp(0, mStream->beg + in_newPosition);
+	   return mStream->good();
    }
 
    /// Gets the size of the stream
    U32  getStreamSize()
    {
-      return mStream ? mStream->getStreamSize() : 0;
+	   int pos = mStream->tellp();
+	   mStream->seekp(0, mStream->end);
+	   int size = mStream->tellp();
+	   mStream->seekp(0, mStream->beg + pos);
+	   return size;
    }
 
    /// Reads a line from the stream.
@@ -89,8 +96,10 @@ public:
    /// Writes a line to the stream
    void writeLine(U8 *buffer)
    {
-      if(mStream)
-         mStream->writeLine(buffer);
+	   if (mStream)
+	   {
+		   StreamFn::writeLine(*mStream, (char*)buffer);
+	   }
    }
 
    /// Reads a string and inserts it into the StringTable

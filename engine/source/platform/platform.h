@@ -23,6 +23,8 @@
 #ifndef _PLATFORM_H_
 #define _PLATFORM_H_
 
+#include <stdlib.h>
+
 #ifndef _TORQUECONFIG_H_
 #include "torqueConfig.h"
 #endif

@@ -511,7 +511,7 @@ S32 NameTags::formatTags( char* pBuffer, U32 bufferLength )
 
 //-----------------------------------------------------------------------------
 
-void NameTags::write( Stream &stream, U32 tabStop, U32 flags )
+void NameTags::write( std::iostream &stream, U32 tabStop, U32 flags )
 {
     // Skipping the immediate parent (SimSet) stops the children from being written
     // which is exactly what we want.
@@ -520,7 +520,7 @@ void NameTags::write( Stream &stream, U32 tabStop, U32 flags )
 
 //-----------------------------------------------------------------------------
 
-void NameTags::writeFields(Stream& stream, U32 tabStop)
+void NameTags::writeFields(std::iostream& stream, U32 tabStop)
 {
     // Fetch tag count.
     const U32 tagCount = getTagCount();

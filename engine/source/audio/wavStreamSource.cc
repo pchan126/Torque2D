@@ -165,32 +165,32 @@ bool WavStreamSource::initStream() {
 
     stream = ResourceManager->openStream(mFilename);
     if(stream != NULL) {
-       stream->read(4, &fileHdr.id[0]);
-       stream->read(&fileHdr.size);
-       stream->read(4, &fileHdr.type[0]);
+		stream->read((char *)&fileHdr.id[0], 4);
+		*stream >> (fileHdr.size);
+		stream->read((char *)&fileHdr.type[0], 4);
 
-       stream->read(4, &chunkHdr.id[0]);
-       stream->read(&chunkHdr.size);
+		stream->read((char *)&chunkHdr.id[0], 4);
+		*stream >> (unsigned int&)(chunkHdr.size);
 
-       // WAV Format header
-        stream->read(&fmtHdr.format);
-        stream->read(&fmtHdr.channels);
-        stream->read(&fmtHdr.samplesPerSec);
-        stream->read(&fmtHdr.bytesPerSec);
-        stream->read(&fmtHdr.blockAlign);
-        stream->read(&fmtHdr.bitsPerSample);
+		// WAV Format header
+		*stream >> (unsigned short&)(fmtHdr.format);
+		*stream >> (unsigned short&)(fmtHdr.channels);
+		*stream >> (unsigned int&)(fmtHdr.samplesPerSec);
+		*stream >> (unsigned int&)(fmtHdr.bytesPerSec);
+		*stream >> (unsigned short&)(fmtHdr.blockAlign);
+		*stream >> (unsigned short&)(fmtHdr.bitsPerSample);
 
-        format=(fmtHdr.channels==1?
-           (fmtHdr.bitsPerSample==8?AL_FORMAT_MONO8:AL_FORMAT_MONO16):
-           (fmtHdr.bitsPerSample==8?AL_FORMAT_STEREO8:AL_FORMAT_STEREO16));
-        freq=fmtHdr.samplesPerSec;
+		format = (fmtHdr.channels == 1 ?
+			(fmtHdr.bitsPerSample == 8 ? AL_FORMAT_MONO8 : AL_FORMAT_MONO16) :
+			(fmtHdr.bitsPerSample == 8 ? AL_FORMAT_STEREO8 : AL_FORMAT_STEREO16));
+		freq = fmtHdr.samplesPerSec;
 
-         stream->read(4, &chunkHdr.id[0]);
-         stream->read(&chunkHdr.size);
+		stream->read((char *)&chunkHdr.id[0], 4);
+		*stream >> (unsigned int&)(chunkHdr.size);
 
         DataSize = chunkHdr.size;
         DataLeft = DataSize;
-        dataStart = stream->getPosition();
+        dataStart = stream->tellg();
 
         // Clear Error Code
         alGetError();
@@ -209,7 +209,7 @@ bool WavStreamSource::initStream() {
 
             if (DataToRead == DataLeft)
                 bFinished = AL_TRUE;
-            stream->read(DataToRead, data);
+            stream->read(data, DataToRead);
             DataLeft -= DataToRead;
             alBufferData(mBufferList[loop], format, data, DataToRead, freq);	
             if ((error = alGetError()) != AL_NO_ERROR) {
@@ -278,7 +278,7 @@ bool WavStreamSource::updateBuffers() {
                     bFinished = AL_TRUE;
                 }
                     
-                stream->read(DataToRead, data);
+                stream->read(data, DataToRead);
                 DataLeft -= DataToRead;
                     
                 alBufferData(BufferID, format, data, DataToRead, freq);
@@ -332,7 +332,7 @@ void WavStreamSource::freeStream() {
 }
 
 void WavStreamSource::resetStream() {
-    stream->setPosition(dataStart);
+    stream->seekg(dataStart);
     DataLeft = DataSize;
     bFinished = AL_FALSE;
 }

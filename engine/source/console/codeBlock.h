@@ -25,8 +25,7 @@
 
 #include "console/compiler.h"
 #include "console/consoleParser.h"
-
-class Stream;
+#include <iostream>
 
 
 /// Core TorqueScript code management class.
@@ -104,7 +103,7 @@ public:
    void getFunctionArgs(char buffer[1024], U32 offset);
    const char *getFileLine(U32 ip);
 
-   bool read(StringTableEntry fileName, Stream &st);
+   bool read(StringTableEntry fileName, std::iostream &st);
    bool compile(const char *dsoName, StringTableEntry fileName, const char *script);
 
    void incRefCount();

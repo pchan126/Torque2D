@@ -935,6 +935,7 @@
     <ClInclude Include="..\..\source\io\resource\resourceManager.h" />
     <ClInclude Include="..\..\source\io\resource\resourceManager_ScriptBinding.h" />
     <ClInclude Include="..\..\source\io\stream.h" />
+    <ClInclude Include="..\..\source\io\streamFn.h" />
     <ClInclude Include="..\..\source\io\streamObject.h" />
     <ClInclude Include="..\..\source\io\streamObject_ScriptBinding.h" />
     <ClInclude Include="..\..\source\io\zip\centralDir.h" />

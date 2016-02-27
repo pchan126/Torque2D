@@ -425,8 +425,8 @@ ConsoleFunctionWithDocs(screenShot, ConsoleVoid, 3, 3, (string file, string form
 {
 #if !defined(TORQUE_OS_IOS) && !defined(TORQUE_OS_ANDROID)
 // PUAP -Mat no screenshots on iPhone can do it from Xcode
-    FileStream fStream;
-   if(!fStream.open(argv[1], FileStream::Write))
+    std::fstream fStream(argv[1], std::fstream::out);
+   if(!(fStream))
    {   
       Con::printf("Failed to open file '%s'.", argv[1]);
       return;

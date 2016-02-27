@@ -314,10 +314,10 @@ bool DbgFileView::openFile(const char *fileName)
    if (fileSize)
    {
       fileBuf = new char [fileSize+1];
-      Stream *s = ResourceManager->openStream(fileName);
+      auto *s = ResourceManager->openStream(fileName);
       if (s)
       {
-         s->read(fileSize, fileBuf);
+         s->read(fileBuf, fileSize);
          ResourceManager->closeStream(s);
          fileBuf[fileSize] = '\0';
       }

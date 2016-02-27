@@ -889,7 +889,7 @@ void GuiControl::setCanSave(bool bCanSave)
 //	if false, then we return without writing.  Note, also, that 
 //	if our parent is not writeable, then we should not be writable...
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void GuiControl::write(Stream &stream, U32 tabStop, U32 flags)
+void GuiControl::write(std::iostream &stream, U32 tabStop, U32 flags)
 {
    //note: this will return false if either we, or any of our parents, are non-save controls
    bool bCanSave	=	getCanSaveParent();

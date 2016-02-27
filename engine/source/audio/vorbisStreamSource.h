@@ -31,7 +31,7 @@ class VorbisStreamSource: public AudioStreamSource
 		ALuint				    mBufferList[NUMBUFFERS];
 		S32						mNumBuffers;
 		S32						mBufferSize;
-		Stream				   *stream;
+		std::iostream				   *stream;
 
 		bool					bReady;
 		bool					bFinished;

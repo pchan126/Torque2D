@@ -77,7 +77,7 @@ static PlatformFont* createSafePlatformFont(const char *name, U32 size, U32 char
    return platFont;
 }
 
-ResourceInstance* constructNewFont(Stream& stream)
+ResourceInstance* constructNewFont(std::iostream &stream)
 {
    GFont *ret = new GFont;
 
@@ -172,7 +172,7 @@ GFont::~GFont()
    mNeedSave = false; 
    if(mNeedSave)
    {
-      FileStream stream;
+      std::fstream stream;
       if(ResourceManager->openFileForWrite(stream, mGFTFile)) 
       {
          write(stream);
@@ -610,46 +610,48 @@ void GFont::wrapString(const UTF8 *txt, U32 lineWidth, Vector<U32> &startLineOff
 
 //////////////////////////////////////////////////////////////////////////
 
-bool GFont::read(Stream& io_rStream)
+bool GFont::read(std::iostream& io_rStream)
 {
-    // Handle versioning
-    U32 version;
-    io_rStream.read(&version);
-    if(version != csm_fileVersion)
-        return false;
+	// Handle versioning
+	U32 version;
+	io_rStream >> version;
+	if (version != csm_fileVersion)
+		return false;
 
-    char buf[256];
-    io_rStream.readString(buf);
-    mFaceName = StringTable->insert(buf);
+	char buf[256];
+	U8 count;
+	io_rStream >> count;
+	io_rStream.read(buf, count);
+	mFaceName = StringTable->insert(buf);
 
-    io_rStream.read(&mSize);
-    io_rStream.read(&mCharSet);
+	io_rStream >> mSize;
+	io_rStream >> mCharSet;
 
-    io_rStream.read(&mHeight);
-    io_rStream.read(&mBaseline);
-    io_rStream.read(&mAscent);
-    io_rStream.read(&mDescent);
+	io_rStream >> mHeight;
+	io_rStream >> mBaseline;
+	io_rStream >> mAscent;
+	io_rStream >> mDescent;
 
-    U32 size = 0;
-    io_rStream.read(&size);
-    mCharInfoList.setSize(size);
-    U32 i;
-    for(i = 0; i < size; i++)
-    {
-        PlatformFont::CharInfo *ci = &mCharInfoList[i];
-        io_rStream.read(&ci->bitmapIndex);
-        io_rStream.read(&ci->xOffset);
-        io_rStream.read(&ci->yOffset);
-        io_rStream.read(&ci->width);
-        io_rStream.read(&ci->height);
-        io_rStream.read(&ci->xOrigin);
-        io_rStream.read(&ci->yOrigin);
-        io_rStream.read(&ci->xIncrement);
-        ci->bitmapData = NULL;
-   }
+	U32 size = 0;
+	io_rStream >> size;
+	mCharInfoList.setSize(size);
+	U32 i;
+	for (i = 0; i < size; i++)
+	{
+		PlatformFont::CharInfo *ci = &mCharInfoList[i];
+		io_rStream >> ci->bitmapIndex;
+		io_rStream >> ci->xOffset;
+		io_rStream >> ci->yOffset;
+		io_rStream >> ci->width;
+		io_rStream >> ci->height;
+		io_rStream >> ci->xOrigin;
+		io_rStream >> ci->yOrigin;
+		io_rStream >> ci->xIncrement;
+		ci->bitmapData = nullptr;
+	}
 
    U32 numSheets = 0;
-   io_rStream.read(&numSheets);
+   io_rStream >> numSheets;
    
    for(i = 0; i < numSheets; i++)
    {
@@ -670,24 +672,24 @@ bool GFont::read(Stream& io_rStream)
    }
    
    // Read last position info
-   io_rStream.read(&mCurX);
-   io_rStream.read(&mCurY);
-   io_rStream.read(&mCurSheet);
+   io_rStream >> mCurX;
+   io_rStream >> mCurY;
+   io_rStream >> mCurSheet;
 
    // Read the remap table.
    U32 minGlyph, maxGlyph;
-   io_rStream.read(&minGlyph);
-   io_rStream.read(&maxGlyph);
+   io_rStream >> minGlyph;
+   io_rStream >> maxGlyph;
 
    if(maxGlyph >= minGlyph)
    {
       // Length of buffer..
       U32 buffLen;
-      io_rStream.read(&buffLen);
+      io_rStream >> buffLen;
 
       // Read the buffer.
       FrameTemp<S32> inBuff(buffLen);
-      io_rStream.read(buffLen, inBuff);
+      io_rStream.read((char*)inBuff.address(), buffLen);
 
       // Decompress.
       uLongf destLen = (maxGlyph-minGlyph+1)*sizeof(S32);
@@ -704,23 +706,23 @@ bool GFont::read(Stream& io_rStream)
       }
    }
    
-   return (io_rStream.getStatus() == Stream::Ok);
+   return (io_rStream.good());
 }
 
-bool GFont::write(Stream& stream)
+bool GFont::write(std::iostream &stream)
 {
     // Handle versioning
-    stream.write(csm_fileVersion);
+    stream << csm_fileVersion;
 
     // Write font info
-    stream.writeString(mFaceName);
-    stream.write(mSize);
-    stream.write(mCharSet);
+    stream.write(mFaceName, strlen(mFaceName));
+    stream << mSize;
+    stream << mCharSet;
    
-    stream.write(mHeight);
-    stream.write(mBaseline);
-    stream.write(mAscent);
-    stream.write(mDescent);
+    stream << mHeight;
+    stream << mBaseline;
+    stream << mAscent;
+    stream << mDescent;
 
 
    // Get the min/max we have values for, and only write that range out.
@@ -748,32 +750,32 @@ bool GFont::write(Stream& stream)
    }
 
     // Write char info list
-    stream.write(U32(mCharInfoList.size()));
+    stream << (U32(mCharInfoList.size()));
     for(i = 0; i < mCharInfoList.size(); i++)
     {
         const PlatformFont::CharInfo *ci = &mCharInfoList[i];
-        stream.write(ci->bitmapIndex);
-        stream.write(ci->xOffset);
-        stream.write(ci->yOffset);
-        stream.write(ci->width);
-        stream.write(ci->height);
-        stream.write(ci->xOrigin);
-        stream.write(ci->yOrigin);
-        stream.write(ci->xIncrement);
+        stream << ci->bitmapIndex;
+        stream << ci->xOffset;
+        stream << ci->yOffset;
+        stream << ci->width;
+        stream << ci->height;
+        stream << ci->xOrigin;
+        stream << ci->yOrigin;
+        stream << ci->xIncrement;
    }
 
-   stream.write(mTextureSheets.size());
+   stream << (U32)mTextureSheets.size();
    for(i = 0; i < mTextureSheets.size(); i++) {
        mTextureSheets[i].getBitmap()->writePNG(stream);
    }
 
-   stream.write(mCurX);
-   stream.write(mCurY);
-   stream.write(mCurSheet);
+   stream << mCurX;
+   stream << mCurY;
+   stream << mCurSheet;
 
 
-   stream.write(minGlyph);
-   stream.write(maxGlyph);
+   stream << minGlyph;
+   stream << maxGlyph;
 
    // Skip it if we don't have any glyphs to do...
    if(maxGlyph >= minGlyph)
@@ -790,8 +792,8 @@ bool GFont::write(Stream& stream)
          compress2((Bytef*)(S32*)outBuff, &destLen, (Bytef*)(S32*)&mRemapTable[minGlyph], (maxGlyph-minGlyph+1)*sizeof(S32), 9);
 
          // Write out.
-         stream.write((U32)destLen);
-         stream.write((U32)destLen, outBuff);
+         stream << (U32)destLen;
+         stream << (outBuff, (U32)destLen);
       }
 
       // Put us back to normal.
@@ -804,7 +806,7 @@ bool GFont::write(Stream& stream)
       }
    }
    
-   return (stream.getStatus() == Stream::Ok);
+   return (stream.good());
 }
 
 void GFont::exportStrip(const char *fileName, U32 padding, U32 kerning)
@@ -850,7 +852,7 @@ void GFont::exportStrip(const char *fileName, U32 padding, U32 kerning)
    }
 
    // Write the image!
-   FileStream fs;
+   std::fstream fs;
    
    if(!ResourceManager->openFileForWrite(fs, fileName))
    {
@@ -1025,7 +1027,7 @@ void GFont::importStrip(const char *fileName, U32 padding, U32 kerning)
 // bmFont support
 // ==================================
 
-ResourceInstance* constructBMFont(Stream& stream)
+ResourceInstance* constructBMFont(std::iostream &stream)
 {
 
     GFont *ret = new GFont;
@@ -1039,7 +1041,7 @@ ResourceInstance* constructBMFont(Stream& stream)
     return ret;
 }
 
-bool GFont::readBMFont(Stream& io_rStream)
+bool GFont::readBMFont(std::iostream &io_rStream)
 {
     for (U32 i = 0; i < (sizeof(mRemapTable) / sizeof(S32)); i++)
         mRemapTable[i] = -1;
@@ -1050,13 +1052,12 @@ bool GFont::readBMFont(Stream& io_rStream)
     U32 currentPage = 0;
     StringTableEntry fileName = StringTable->insert("");
     
-    U32 numBytes = io_rStream.getStreamSize() - io_rStream.getPosition();
-    while((io_rStream.getStatus() != Stream::EOS) && numBytes > 0)
+    while((io_rStream.good()))
     {
         char Read[256];
         char Token[256];
         char *buffer = Con::getReturnBuffer(256);
-        io_rStream.readLine((U8 *)buffer, 256);
+        io_rStream.getline(buffer, 256);
         
         char temp[256];
         U32 tokenCount = StringUnit::getUnitCount(buffer, "\"");
@@ -1231,7 +1232,7 @@ bool GFont::readBMFont(Stream& io_rStream)
         mTextureSheets.last() = TextureHandle(buf, bmp, TextureHandle::BitmapKeepTexture);
         mTextureSheets.last().setFilter(GL_NEAREST);
     }
-    return (io_rStream.getStatus() == Stream::EOS);
+    return (io_rStream.good());
 }
 
 

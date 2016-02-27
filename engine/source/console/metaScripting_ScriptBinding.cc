@@ -133,12 +133,12 @@ ConsoleFunctionWithDocs(compile, ConsoleBool, 2, 2, ( fileName ))
    if(rScr)
       rScr->getFileTimes(NULL, &scrModifyTime);
 
-   Stream *s = ResourceManager->openStream(pathBuffer);
+   auto *s = ResourceManager->openStream(pathBuffer);
    if(s)
    {
       scriptSize = ResourceManager->getSize(pathBuffer);
       script = new char [scriptSize+1];
-      s->read(scriptSize, script);
+      s->read(script, scriptSize);
       ResourceManager->closeStream(s);
       script[scriptSize] = 0;
    }
@@ -393,7 +393,7 @@ ConsoleFunctionWithDocs(exec, ConsoleBool, 2, 4, ( fileName, [nocalls]?, [journa
    U32 scriptSize = 0;
    U32 version;
 
-   Stream *compiledStream = NULL;
+   std::iostream *compiledStream = NULL;
    FileTime comModifyTime, scrModifyTime;
 
    // Check here for .edso
@@ -450,7 +450,7 @@ ConsoleFunctionWithDocs(exec, ConsoleBool, 2, 4, ( fileName, [nocalls]?, [journa
       if (compiledStream)
       {
          // Check the version!
-         compiledStream->read(&version);
+         *compiledStream >> version;
          if(version != DSO_VERSION)
          {
             Con::warnf("exec: Found an old DSO (%s, ver %d < %d), ignoring.", nameBuffer, version, DSO_VERSION);
@@ -473,7 +473,7 @@ ConsoleFunctionWithDocs(exec, ConsoleBool, 2, 4, ( fileName, [nocalls]?, [journa
 
        //Con::errorf( "No DSO found! : %s", scriptFileName );
        
-      Stream *s = ResourceManager->openStream(scriptFileName);
+      auto *s = ResourceManager->openStream(scriptFileName);
        
 #ifdef	TORQUE_ALLOW_JOURNALING
       if(journal && Game->isJournalWriting())
@@ -484,7 +484,7 @@ ConsoleFunctionWithDocs(exec, ConsoleBool, 2, 4, ( fileName, [nocalls]?, [journa
       {
          scriptSize = ResourceManager->getSize(scriptFileName);
          script = new char [scriptSize+1];
-         s->read(scriptSize, script);
+         s->read(script, scriptSize);
 
 #ifdef	TORQUE_ALLOW_JOURNALING
          if(journal && Game->isJournalWriting())
@@ -528,7 +528,7 @@ ConsoleFunctionWithDocs(exec, ConsoleBool, 2, 4, ( fileName, [nocalls]?, [journa
          compiledStream = ResourceManager->openStream(nameBuffer);
          if(compiledStream)
          {
-            compiledStream->read(&version);
+            *compiledStream >> version;
          }
          else
          {

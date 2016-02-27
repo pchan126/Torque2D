@@ -36,7 +36,7 @@ class ZipSubRStream : public FilterStream
    static const U32 csm_streamCaps;
    static const U32 csm_inputBufferSize;
 
-   Stream* m_pStream;
+   std::iostream* m_pStream;
    U32     m_uncompressedSize;
    U32     m_currentPosition;
    bool     m_EOS;
@@ -54,9 +54,9 @@ class ZipSubRStream : public FilterStream
 
    // Overrides of NFilterStream
   public:
-   bool    attachStream(Stream* io_pSlaveStream);
+   bool    attachStream(std::iostream* io_pSlaveStream);
    void    detachStream();
-   Stream* getStream();
+   std::iostream* getStream();
 
    void setUncompressedSize(const U32);
 
@@ -65,7 +65,7 @@ class ZipSubRStream : public FilterStream
   protected:
    bool _read(const U32 in_numBytes,  void* out_pBuffer);
   public:
-   bool hasCapability(const Capability) const;
+//   bool hasCapability(const Capability) const;
 
    U32  getPosition() const;
    bool setPosition(const U32 in_newPosition);
@@ -93,9 +93,9 @@ class ZipSubWStream : public FilterStream
 
    // Overrides of NFilterStream
   public:
-   bool    attachStream(Stream* io_pSlaveStream);
+   bool    attachStream(std::iostream* io_pSlaveStream);
    void    detachStream();
-   Stream* getStream();
+   std::iostream* getStream();
 
    // Mandatory overrides.  By default, these are simply passed to
    //  whatever is returned from getStream();
@@ -103,7 +103,7 @@ class ZipSubWStream : public FilterStream
    bool _read(const U32 in_numBytes,  void* out_pBuffer);
    bool _write(const U32 in_numBytes, const void* in_pBuffer);
   public:
-   bool hasCapability(const Capability) const;
+//   bool hasCapability(const Capability) const;
 
    U32  getPosition() const;
    bool setPosition(const U32 in_newPosition);

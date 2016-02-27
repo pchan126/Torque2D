@@ -35,7 +35,7 @@ class ResizeFilterStream : public FilterStream
 {
    typedef FilterStream Parent;
 
-   Stream* m_pStream;
+   std::iostream* m_pStream;
    U32     m_startOffset;
    U32     m_streamLen;
    U32     m_currOffset;
@@ -44,18 +44,18 @@ class ResizeFilterStream : public FilterStream
    ResizeFilterStream();
    ~ResizeFilterStream();
 
-   bool    attachStream(Stream* io_pSlaveStream);
+   bool    attachStream(std::iostream* io_pSlaveStream);
    void    detachStream();
-   Stream* getStream();
+   std::iostream* getStream();
 
    bool setStreamOffset(const U32 in_startOffset,
                         const U32 in_streamLen);
 
    // Mandatory overrides.
   protected:
-   bool _read(const U32 in_numBytes,  void* out_pBuffer);
+   bool _read(char* out_pBuffer, const U32 in_numBytes);
   public:
-   U32  getPosition() const;
+   U32  getPosition();
    bool setPosition(const U32 in_newPosition);
 
    U32  getStreamSize();

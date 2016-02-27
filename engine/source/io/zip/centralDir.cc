@@ -76,36 +76,36 @@ CentralDir::~CentralDir()
 
 //////////////////////////////////////////////////////////////////////////
 
-bool CentralDir::read(Stream *stream)
+bool CentralDir::read(std::iostream &stream)
 {
-   stream->read(&mHeaderSig);
+   stream >> mHeaderSig;
    if(mHeaderSig != mCentralDirSignature)
       return false;
 
-   stream->read(&mVersionMadeBy);
-   stream->read(&mExtractVer);
-   stream->read(&mFlags);
-   stream->read(&mCompressMethod);
-   stream->read(&mModTime);
-   stream->read(&mModDate);
-   stream->read(&mCRC32);
-   stream->read(&mCompressedSize);
-   stream->read(&mUncompressedSize);
+   stream >> mVersionMadeBy;
+   stream >> mExtractVer;
+   stream >> mFlags;
+   stream >> mCompressMethod;
+   stream >> mModTime;
+   stream >> mModDate;
+   stream >> mCRC32;
+   stream >> mCompressedSize;
+   stream >> mUncompressedSize;
 
    U16 fnLen, efLen, fcLen;
-   stream->read(&fnLen);
-   stream->read(&efLen);
-   stream->read(&fcLen);
+   stream >> fnLen;
+   stream >> efLen;
+   stream >> fcLen;
 
-   stream->read(&mDiskNumStart);
+   stream >> mDiskNumStart;
 
-   stream->read(&mInternalFileAttr);
-   stream->read(&mExternalFileAttr);
+   stream >> mInternalFileAttr;
+   stream >> mExternalFileAttr;
 
-   stream->read(&mLocalHeadOffset);
+   stream >> mLocalHeadOffset;
 
    char *fn = new char[fnLen + 1];
-   stream->read(fnLen, fn);
+   stream.read(fn, fnLen);
    fn[fnLen] = 0;
 
    SAFE_DELETE_ARRAY(mFilename);
@@ -116,10 +116,12 @@ bool CentralDir::read(Stream *stream)
    // them in memory twice.
 
    //readExtraFields(stream, efLen);
-   stream->setPosition(stream->getPosition() + efLen);
+   int pos = stream.tellg();
+   stream.seekg(0, stream.beg() + pos + efLen);
+//   stream->setPosition(stream->getPosition() + efLen);
 
    fn = new char[fcLen + 1];
-   stream->read(fcLen, fn);
+   stream.read(fn, fcLen);
    fn[fcLen] = 0;
 
    SAFE_DELETE_ARRAY(mFileComment);
@@ -132,42 +134,42 @@ bool CentralDir::read(Stream *stream)
    return true;
 }
 
-bool CentralDir::write(Stream *stream)
+bool CentralDir::write(std::iostream &stream)
 {
    mHeaderSig = mCentralDirSignature;
-   stream->write(mHeaderSig);
+   stream << mHeaderSig;
 
-   stream->write(mVersionMadeBy);
-   stream->write(mExtractVer);
-   stream->write(mFlags);
-   stream->write(mCompressMethod);
-   stream->write(mModTime);
-   stream->write(mModDate);
-   stream->write(mCRC32);
-   stream->write(mCompressedSize);
-   stream->write(mUncompressedSize);
+   stream << mVersionMadeBy);
+   stream << (mExtractVer);
+   stream << (mFlags);
+   stream << (mCompressMethod);
+   stream << (mModTime);
+   stream << (mModDate);
+   stream << (mCRC32);
+   stream << (mCompressedSize);
+   stream << (mUncompressedSize);
 
    U16 fnLen = mFilename ? (U16)dStrlen(mFilename) : 0,
        efLen = 0,
        fcLen = mFileComment ? (U16)dStrlen(mFileComment) : 0;
-   stream->write(fnLen);
-   stream->write(efLen);
-   stream->write(fcLen);
+   stream << (fnLen);
+   stream << (efLen);
+   stream << (fcLen);
 
-   stream->write(mDiskNumStart);
+   stream << (mDiskNumStart);
 
-   stream->write(mInternalFileAttr);
-   stream->write(mExternalFileAttr);
+   stream << (mInternalFileAttr);
+   stream << (mExternalFileAttr);
 
-   stream->write(mLocalHeadOffset);
+   stream << (mLocalHeadOffset);
 
    if(fnLen)
-      stream->write(fnLen, mFilename);
+      stream << (fnLen, mFilename);
 
    // FIXME [tom, 10/29/2006] Write extra fields here
 
    if(fcLen)
-      stream->write(fcLen, mFileComment);
+      stream << (fcLen, mFileComment);
 
    return true;
 }
@@ -206,23 +208,23 @@ EndOfCentralDir::~EndOfCentralDir()
 
 //////////////////////////////////////////////////////////////////////////
 
-bool EndOfCentralDir::read(Stream *stream)
+bool EndOfCentralDir::read(std::iostream &stream)
 {
-   stream->read(&mHeaderSig);
+   stream >> (mHeaderSig);
    if(mHeaderSig != mEOCDSignature)
       return false;
 
-   stream->read(&mDiskNum);
-   stream->read(&mStartCDDiskNum);
-   stream->read(&mNumEntriesInThisCD);
-   stream->read(&mTotalEntriesInCD);
-   stream->read(&mCDSize);
-   stream->read(&mCDOffset);
+   stream >> mDiskNum;
+   stream >> mStartCDDiskNum;
+   stream >> mNumEntriesInThisCD;
+   stream >> mTotalEntriesInCD;
+   stream >> mCDSize;
+   stream >> mCDOffset;
 
-   stream->read(&mCommentSize);
+   stream >> mCommentSize;
    
    char *comment = new char[mCommentSize + 1];
-   stream->read(mCommentSize, comment);
+   stream.read(comment, mCommentSize);
    comment[mCommentSize] = 0;
 
    SAFE_DELETE_ARRAY(mZipComment);
@@ -231,20 +233,20 @@ bool EndOfCentralDir::read(Stream *stream)
    return true;
 }
 
-bool EndOfCentralDir::write(Stream *stream)
+bool EndOfCentralDir::write(std::iostream &stream)
 {
-   stream->write(mHeaderSig);
+   stream << mHeaderSig;
 
-   stream->write(mDiskNum);
-   stream->write(mStartCDDiskNum);
-   stream->write(mNumEntriesInThisCD);
-   stream->write(mTotalEntriesInCD);
-   stream->write(mCDSize);
-   stream->write(mCDOffset);
+   stream << mDiskNum;
+   stream << mStartCDDiskNum;
+   stream << mNumEntriesInThisCD;
+   stream << mTotalEntriesInCD;
+   stream << mCDSize;
+   stream << mCDOffset;
 
-   stream->write(mCommentSize);
+   stream << mCommentSize;
    if(mZipComment && mCommentSize)
-      stream->write(mCommentSize, mZipComment);
+      stream.write(mZipComment, mCommentSize);
 
    return true;
 }
@@ -254,10 +256,12 @@ bool EndOfCentralDir::write(Stream *stream)
 // [tom, 10/19/2006] I know, i know ... this'll get rewritten.
 // [tom, 1/23/2007] Maybe.
 
-bool EndOfCentralDir::findInStream(Stream *stream)
+bool EndOfCentralDir::findInStream(std::iostream &stream)
 {
-   U32 initialPos = stream->getPosition();
-   U32 size = stream->getStreamSize();
+   auto initialPos = stream.tellp();
+   stream.seekp(0, stream.end);
+   auto size = stream.tellp();
+   stream.seekp(0, stream.beg + initialPos);
    U32 pos;
    if(size == 0)
       return false;

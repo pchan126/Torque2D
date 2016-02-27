@@ -152,7 +152,7 @@ ConsoleFunctionWithDocs(writeFontCache, ConsoleVoid, 1, 1, ())
       }
 
       // Ok, dump info!
-      FileStream stream;
+      std::fstream stream;
       if(ResourceManager->openFileForWrite(stream, curMatch)) 
       {
          Con::printf("      o Writing '%s' to disk...", curMatch);
@@ -340,7 +340,7 @@ ConsoleFunctionWithDocs(duplicateCachedFont, ConsoleVoid, 4, 4, (oldFontName, ol
    }
 
    // Ok, dump info!
-   FileStream stream;
+   std::fstream stream;
    if(ResourceManager->openFileForWrite(stream, newFontFile)) 
    {
       Con::printf("      o Writing duplicate font '%s' to disk...", newFontFile);

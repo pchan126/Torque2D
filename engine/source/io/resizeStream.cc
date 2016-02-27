@@ -22,29 +22,26 @@
 
 #include "resizeStream.h"
 
-ResizeFilterStream::ResizeFilterStream()
- : m_pStream(NULL),
-   m_startOffset(0),
-   m_streamLen(0),
-   m_currOffset(0)
-{
+//ResizeFilterStream::ResizeFilterStream()
+//{
    //
-}
+//}
 
 ResizeFilterStream::~ResizeFilterStream()
 {
-   detachStream();
+//   detachStream();
 }
 
-bool ResizeFilterStream::attachStream(Stream* io_pSlaveStream)
+bool ResizeFilterStream::attachStream(std::iostream* io_pSlaveStream)
 {
    AssertFatal(io_pSlaveStream != NULL, "NULL Slave stream?");
 
    m_pStream     = io_pSlaveStream;
    m_startOffset = 0;
-   m_streamLen   = m_pStream->getStreamSize();
+   m_pStream->seekg(0, m_pStream->end);
+   m_streamLen   = (U32)m_pStream->tellg();
    m_currOffset  = 0;
-   setStatus(EOS);
+//   setStatus(EOS);
    return true;
 }
 
@@ -54,10 +51,10 @@ void ResizeFilterStream::detachStream()
    m_startOffset = 0;
    m_streamLen   = 0;
    m_currOffset  = 0;
-   setStatus(Closed);
+//   setStatus(Closed);
 }
 
-Stream* ResizeFilterStream::getStream()
+std::iostream* ResizeFilterStream::getStream()
 {
    return m_pStream;
 }
@@ -70,7 +67,9 @@ bool ResizeFilterStream::setStreamOffset(const U32 in_startOffset, const U32 in_
 
    U32 start  = in_startOffset;
    U32 end    = in_startOffset + in_streamLen;
-   U32 actual = m_pStream->getStreamSize();
+//   U32 actual = m_pStream->getStreamSize();
+   m_pStream->seekg(0, m_pStream->end);
+   auto actual = m_pStream->tellg();
 
    if (start >= actual || end > actual)
       return false;
@@ -79,15 +78,15 @@ bool ResizeFilterStream::setStreamOffset(const U32 in_startOffset, const U32 in_
    m_streamLen   = in_streamLen;
    m_currOffset  = 0;
 
-   if (m_streamLen != 0)
-      setStatus(Ok);
-   else
-      setStatus(EOS);
+   //if (m_streamLen != 0)
+   //   setStatus(Ok);
+   //else
+   //   setStatus(EOS);
 
    return true;
 }
 
-U32 ResizeFilterStream::getPosition() const
+U32 ResizeFilterStream::getPosition()
 {
    AssertFatal(m_pStream != NULL, "Error, stream not attached");
    if (m_pStream == NULL)
@@ -118,39 +117,8 @@ U32 ResizeFilterStream::getStreamSize()
    return m_streamLen;
 }
 
-bool ResizeFilterStream::_read(const U32 in_numBytes, void* out_pBuffer)
+bool ResizeFilterStream::_read(char* out_pBuffer, const U32 in_numBytes)
 {
-   AssertFatal(m_pStream != NULL, "Error, stream not attached");
 
-   if (in_numBytes == 0)
-      return true;
-
-   AssertFatal(out_pBuffer != NULL, "Invalid output buffer");
-   if (getStatus() == Closed) {
-      AssertFatal(false, "Attempted read from closed stream");
-      return false;
-   }
-
-   U32 savePosition = m_pStream->getPosition();
-   if (m_pStream->setPosition(m_startOffset + m_currOffset) == false)
-      return false;
-
-   U32 actualSize = in_numBytes;
-   U32 position   = m_startOffset + m_currOffset;
-   if (in_numBytes + position > m_startOffset + m_streamLen)
-      actualSize = m_streamLen - (position - m_startOffset);
-
-   if (actualSize == 0) {
-      setStatus(EOS);
-      return false;
-   }
-
-   bool success = m_pStream->read(actualSize, out_pBuffer);
-   m_currOffset += actualSize;
-
-   setStatus(m_pStream->getStatus());
-
-   m_pStream->setPosition(savePosition);
-   return success;
 }
 

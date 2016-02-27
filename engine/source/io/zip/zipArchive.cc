@@ -275,7 +275,7 @@ ZipArchive::ZipEntry *ZipArchive::findZipEntry(const char *filename)
 
 //////////////////////////////////////////////////////////////////////////
 
-Stream *ZipArchive::createNewFile(const char *filename, Compressor *method)
+std::fstream *ZipArchive::createNewFile(const char *filename, Compressor *method)
 {
    ZipEntry *ze = new ZipEntry;
    ze->mIsDirectory = false;
@@ -285,7 +285,7 @@ Stream *ZipArchive::createNewFile(const char *filename, Compressor *method)
    ZipTempStream *stream = new ZipTempStream(&ze->mCD);
    if(stream->open())
    {
-      Stream *retStream = method->createWriteStream(&ze->mCD, stream);
+      auto *retStream = method->createWriteStream(&ze->mCD, stream);
       if(retStream == NULL)
       {
          delete stream;
@@ -602,7 +602,7 @@ void ZipArchive::closeArchive()
 
 //////////////////////////////////////////////////////////////////////////
 
-Stream * ZipArchive::openFile(const char *filename, AccessMode mode /* = Read */)
+std::iostream * ZipArchive::openFile(const char *filename, AccessMode mode /* = Read */)
 {
    ZipEntry *ze = findZipEntry(filename);
 
@@ -667,7 +667,7 @@ void ZipArchive::closeFile(Stream *stream)
 
 //////////////////////////////////////////////////////////////////////////
 
-Stream *ZipArchive::openFileForRead(const CentralDir *fileCD)
+std::iostream *ZipArchive::openFileForRead(const CentralDir *fileCD)
 {
    if(mMode != Read && mMode != ReadWrite)
       return NULL;
@@ -675,7 +675,7 @@ Stream *ZipArchive::openFileForRead(const CentralDir *fileCD)
    if((fileCD->mInternalFlags & (CDFileDeleted | CDFileOpen)) != 0)
       return NULL;
 
-   Stream *stream = mStream;
+   auto *stream = mStream;
 
    if(fileCD->mInternalFlags & CDFileDirty)
    {
@@ -723,7 +723,7 @@ Stream *ZipArchive::openFileForRead(const CentralDir *fileCD)
       }
    }
 
-   Stream *attachTo = stream;
+   auto *attachTo = stream;
    U16 compMethod = fileCD->mCompressMethod;
 
    if(fileCD->mFlags & Encrypted)
@@ -764,7 +764,7 @@ Stream *ZipArchive::openFileForRead(const CentralDir *fileCD)
 
 bool ZipArchive::addFile(const char *filename, const char *pathInZip, bool replace /* = true */)
 {
-   Stream *source = ResourceManager->openStream(filename);
+   auto *source = ResourceManager->openStream(filename);
    if(source == NULL)
       return false;
 
@@ -772,7 +772,7 @@ bool ZipArchive::addFile(const char *filename, const char *pathInZip, bool repla
    if(! replace && cd && (cd->mInternalFlags & CDFileDeleted) == 0)
       return false;
 
-   Stream *dest = openFile(pathInZip, Write);
+   auto *dest = openFile(pathInZip, Write);
    if(dest == NULL)
    {
       ResourceManager->closeStream(source);

@@ -295,8 +295,8 @@ protected:
       }
    };
 
-   Stream *mStream;
-   FileStream *mDiskStream;
+   std::iostream *mStream;
+   std::fstream *mDiskStream;
    AccessMode mMode;
 
    EndOfCentralDir mEOCD;
@@ -317,12 +317,12 @@ protected:
    
    ZipEntry *findZipEntry(const char *filename);
 
-   Stream *createNewFile(const char *filename, Compressor *method);
-   Stream *createNewFile(const char *filename, const char *method)
+   std::fstream *createNewFile(const char *filename, Compressor *method);
+   std::fstream *createNewFile(const char *filename, const char *method)
    {
       return createNewFile(filename, Compressor::findCompressor(method));
    }
-   Stream *createNewFile(const char *filename, S32 method)
+   std::fstream *createNewFile(const char *filename, S32 method)
    {
       return createNewFile(filename, Compressor::findCompressor(method));
    }
@@ -425,7 +425,7 @@ public:
    // for write then rebuilding the zip file probably won't work. This needs to
    // be checked and either fixed or worked around.
 
-   virtual bool openArchive(Stream *stream, AccessMode mode = Read);
+   virtual bool openArchive(std::fstream *stream, AccessMode mode = Read);
 
    //////////////////////////////////////////////////////////////////////////
    /// @brief Close the zip archive and free any resources
@@ -455,7 +455,7 @@ public:
    /// @return Pointer to stream or NULL for failure
    /// @see ZipArchive::closeFile(), ZipArchive::isVerbose()
    //////////////////////////////////////////////////////////////////////////
-   virtual Stream *openFile(const char *filename, AccessMode mode = Read);
+   virtual std::fstream *openFile(const char *filename, AccessMode mode = Read);
 
    //////////////////////////////////////////////////////////////////////////
    /// @brief Close a file opened through openFile()
@@ -463,7 +463,7 @@ public:
    /// @param stream Stream to close
    /// @see ZipArchive::openFile(const char *, AccessMode)
    //////////////////////////////////////////////////////////////////////////
-   virtual void closeFile(Stream *stream);
+   virtual void closeFile(std::fstream *stream);
 
    //////////////////////////////////////////////////////////////////////////
    /// @brief Open a file within the zip file for read

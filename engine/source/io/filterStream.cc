@@ -27,52 +27,49 @@ FilterStream::~FilterStream()
    //
 }
 
-bool FilterStream::_read(const U32 in_numBytes, void* out_pBuffer)
+bool FilterStream::_read(char* out_pBuffer, const U32 in_numBytes)
 {
    AssertFatal(getStream() != NULL, "Error no stream to pass to");
 
-   bool success = getStream()->read(in_numBytes, out_pBuffer);
+   getStream()->read(out_pBuffer, in_numBytes);
 
-   setStatus(getStream()->getStatus());
-   return success;
+   return good();
 }
 
 
-bool FilterStream::_write(const U32, const void*)
+bool FilterStream::_write(const char*, const U32 )
 {
    AssertFatal(false, "No writing allowed to filter");
    return false;
 }
 
-bool FilterStream::hasCapability(const Capability in_streamCap) const
-{
-   // Fool the compiler.  We know better...
-   FilterStream* ncThis = const_cast<FilterStream*>(this);
-   AssertFatal(ncThis->getStream() != NULL, "Error no stream to pass to");
+//bool FilterStream::hasCapability(const Capability in_streamCap) const
+//{
+//   // Fool the compiler.  We know better...
+//   FilterStream* ncThis = const_cast<FilterStream*>(this);
+//   AssertFatal(ncThis->getStream() != NULL, "Error no stream to pass to");
+//
+//   return ncThis->getStream()->hasCapability(in_streamCap);
+//}
 
-   return ncThis->getStream()->hasCapability(in_streamCap);
+U32 FilterStream::getPosition() 
+{
+	int pos = tellg();
+	return (U32)pos;
 }
 
-U32 FilterStream::getPosition() const
+void FilterStream::setPosition(const U32 in_newPosition)
 {
-   // Fool the compiler.  We know better...
-   FilterStream* ncThis = const_cast<FilterStream*>(this);
-   AssertFatal(ncThis->getStream() != NULL, "Error no stream to pass to");
-
-   return ncThis->getStream()->getPosition();
-}
-
-bool FilterStream::setPosition(const U32 in_newPosition)
-{
-   AssertFatal(getStream() != NULL, "Error no stream to pass to");
-
-   return getStream()->setPosition(in_newPosition);
+   seekg(0, getStream()->beg+in_newPosition);
 }
 
 U32 FilterStream::getStreamSize()
 {
-   AssertFatal(getStream() != NULL, "Error no stream to pass to");
+   auto x = tellg();
+   seekg(0, end);
+   int length = tellg();
+   seekg(x);
 
-   return getStream()->getStreamSize();
+   return length;
 }
 

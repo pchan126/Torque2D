@@ -812,16 +812,16 @@ GBitmap *GBitmap::load(const char *path)
    return NULL;
 }
 
-bool GBitmap::read(Stream& io_rStream)
+bool GBitmap::read(std::iostream &io_rStream)
 {
    // Handle versioning
    U32 version;
-   io_rStream.read(&version);
+   io_rStream >> version;
    AssertFatal(version == csFileVersion, "Bitmap::read: incorrect file version");
 
    //-------------------------------------- Read the object
    U32 fmt;
-   io_rStream.read(&fmt);
+   io_rStream >> fmt;
    internalFormat = BitmapFormat(fmt);
    bytesPerPixel = 1;
    switch (internalFormat) {
@@ -842,43 +842,43 @@ bool GBitmap::read(Stream& io_rStream)
       break;
    }
 
-   io_rStream.read(&byteSize);
+   io_rStream >> byteSize;
 
    pBits = new U8[byteSize];
-   io_rStream.read(byteSize, pBits);
+   io_rStream.read((char*)pBits, byteSize);
 
-   io_rStream.read(&width);
-   io_rStream.read(&height);
+   io_rStream >> width;
+   io_rStream >> height;
 
-   io_rStream.read(&numMipLevels);
+   io_rStream >> numMipLevels;
    for (U32 i = 0; i < c_maxMipLevels; i++)
-      io_rStream.read(&mipLevelOffsets[i]);
+      io_rStream >> mipLevelOffsets[i];
 
    if (internalFormat == Palettized) {
       pPalette = new GPalette;
       pPalette->read(io_rStream);
    }
 
-   return (io_rStream.getStatus() == Stream::Ok);
+   return io_rStream.good();
 }
 
-bool GBitmap::write(Stream& io_rStream) const
+bool GBitmap::write(std::iostream &io_rStream) const
 {
    // Handle versioning
-   io_rStream.write(csFileVersion);
+   io_rStream << csFileVersion;
 
    //-------------------------------------- Write the object
-   io_rStream.write(U32(internalFormat));
+   io_rStream << U32(internalFormat);
 
-   io_rStream.write(byteSize);
-   io_rStream.write(byteSize, pBits);
+   io_rStream << byteSize;
+   io_rStream << (char*)pBits, byteSize;
 
-   io_rStream.write(width);
-   io_rStream.write(height);
+   io_rStream << width;
+   io_rStream << height;
 
-   io_rStream.write(numMipLevels);
+   io_rStream << numMipLevels;
    for (U32 i = 0; i < c_maxMipLevels; i++)
-      io_rStream.write(mipLevelOffsets[i]);
+      io_rStream << mipLevelOffsets[i];
 
    if (internalFormat == Palettized) {
       AssertFatal(pPalette != NULL,
@@ -891,7 +891,7 @@ bool GBitmap::write(Stream& io_rStream) const
 
 
 //-------------------------------------- GFXBitmap
-ResourceInstance* constructBitmapJPEG(Stream &stream)
+ResourceInstance* constructBitmapJPEG(std::iostream &stream)
 {
    GBitmap* bmp = new GBitmap;
    if (bmp->readJPEG(stream))
@@ -903,7 +903,7 @@ ResourceInstance* constructBitmapJPEG(Stream &stream)
    }
 }
 
-ResourceInstance* constructBitmapPNG(Stream &stream)
+ResourceInstance* constructBitmapPNG(std::iostream &stream)
 {
    GBitmap* bmp = new GBitmap;
 
@@ -923,7 +923,7 @@ ResourceInstance* constructBitmapPNG(Stream &stream)
     }
 }
 
-ResourceInstance* constructBitmapBMP(Stream &stream)
+ResourceInstance* constructBitmapBMP(std::iostream &stream)
 {
    GBitmap *bmp = new GBitmap;
    if(bmp->readMSBmp(stream))
@@ -936,7 +936,7 @@ ResourceInstance* constructBitmapBMP(Stream &stream)
 }
 
 #ifdef TORQUE_OS_IOS
-ResourceInstance* constructBitmapPVR(Stream &stream)
+ResourceInstance* constructBitmapPVR(std::iostream &stream)
 {
     GBitmap *bmp = new GBitmap;
     if(bmp->readPvr(stream))

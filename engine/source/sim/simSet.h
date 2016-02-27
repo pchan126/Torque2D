@@ -207,13 +207,13 @@ public:
 
    void callOnChildren( const char * method, S32 argc, const char *argv[], bool executeOnChildGroups = true );
 
-   virtual void write(Stream &stream, U32 tabStop, U32 flags = 0);
+   virtual void write(std::iostream &stream, U32 tabStop, U32 flags = 0);
 
    virtual SimObject *findObject(const char *name);
    SimObject*	findObjectByInternalName(const char* internalName, bool searchChildren = false);
 
-   virtual bool writeObject(Stream *stream);
-   virtual bool readObject(Stream *stream);
+   virtual bool writeObject(std::iostream *stream);
+   virtual bool readObject(std::iostream *stream);
 
    inline void lock()
    {

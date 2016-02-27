@@ -29,25 +29,10 @@
 
 ResDictionary::ResDictionary()
 {
-   entryCount = 0;
-   hashTableSize = 1023; //DefaultTableSize;
-   hashTable = new ResourceObject *[hashTableSize];
-   S32 i;
-   for(i = 0; i < hashTableSize; i++)
-      hashTable[i] = NULL;
 }
 
 ResDictionary::~ResDictionary()
 {
-   // we assume the resources are purged before we destroy
-   // the dictionary
-
-   delete[] hashTable;
-}
-
-S32 ResDictionary::hash(StringTableEntry path, StringTableEntry file)
-{
-   return ((U32)((((dsize_t)path) >> 2) + (((dsize_t)file) >> 2) )) % hashTableSize;
 }
 
 void ResDictionary::insert(ResourceObject *obj, StringTableEntry path, StringTableEntry file)
@@ -62,38 +47,12 @@ void ResDictionary::insert(ResourceObject *obj, StringTableEntry path, StringTab
    obj->name = file;
    obj->path = path;
 
-   S32 idx = hash(path, file);
-   obj->nextEntry = hashTable[idx];
-   hashTable[idx] = obj;
-   entryCount++;
+   std::string path_and_file(path);
+   path_and_file.append("/");
+   path_and_file.append(file);
 
-   if(entryCount > hashTableSize) {
-      ResourceObject *head = NULL, *temp, *walk;
-      for(idx = 0; idx < hashTableSize;idx++) {
-         walk = hashTable[idx];
-         while(walk)
-         {
-            temp = walk->nextEntry;
-            walk->nextEntry = head;
-            head = walk;
-            walk = temp;
-         }
-      }
-      delete[] hashTable;
-      hashTableSize = 2 * hashTableSize - 1;
-      hashTable = new ResourceObject *[hashTableSize];
-      for(idx = 0; idx < hashTableSize; idx++)
-         hashTable[idx] = NULL;
-      walk = head;
-      while(walk)
-      {
-         temp = walk->nextEntry;
-         idx = hash(walk);
-         walk->nextEntry = hashTable[idx];
-         hashTable[idx] = walk;
-         walk = temp;
-      }
-   }
+   ResEntry newEntry(path_and_file, obj);
+   hashTable.insert(newEntry);
 }
 
 ResourceObject* ResDictionary::find(StringTableEntry path, StringTableEntry name)

@@ -22,8 +22,7 @@
 
 #include "platform/platform.h"
 #include "io/zip/compressor.h"
-
-#include "io/resizeStream.h"
+#include <sstream>
 
 namespace Zip
 {
@@ -32,9 +31,10 @@ ImplementCompressor(Stored, Stored);
 
 CompressorCreateReadStream(Stored)
 {
-   ResizeFilterStream *resStream = new ResizeFilterStream;
-   resStream->attachStream(zipStream);
-   resStream->setStreamOffset(zipStream->getPosition(), cdir->mCompressedSize);
+	std::stringstream *resStream = new std::stringstream;
+//   ResizeFilterStream *resStream = new ResizeFilterStream;
+//   resStream->attachStream(zipStream);
+//   resStream->setStreamOffset(zipStream->getPosition(), cdir->mCompressedSize);
 
    return resStream;
 }

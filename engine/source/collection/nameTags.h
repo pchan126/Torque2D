@@ -69,8 +69,8 @@ public:
     /// Tag format.
     S32                 formatTags( char* pBuffer, U32 bufferLength );
 
-    virtual void        write( Stream &stream, U32 tabStop, U32 flags = 0 );
-    virtual void        writeFields( Stream& stream, U32 tabStop );
+    virtual void        write(std::iostream &stream, U32 tabStop, U32 flags = 0 );
+    virtual void        writeFields(std::iostream &stream, U32 tabStop );
 
     DECLARE_CONOBJECT( NameTags );
 

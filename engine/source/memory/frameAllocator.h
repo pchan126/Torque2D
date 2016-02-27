@@ -281,6 +281,8 @@ public:
    operator T() { return *mMemory; }
    operator const T() const { return *mMemory; }
 
+   T** address() { return &mMemory; };
+   const T** address() const { return &mMemory; };
 
    // This ifdef is to satisfy the ever so pedantic GCC compiler
    //  Which seems to upset visual studio.

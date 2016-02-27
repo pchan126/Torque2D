@@ -73,29 +73,29 @@ struct BITMAPINFOHEADER{
 //                                                          bitmapPng.cc)
 //
 
-bool GBitmap::readMSBmp(Stream& stream)
+bool GBitmap::readMSBmp(std::iostream &stream)
 {
    BITMAPINFOHEADER  bi;
    BITMAPFILEHEADER  bf;
    RGBQUAD           rgb[256];
 
-   stream.read(&bf.bfType);
-   stream.read(&bf.bfSize);
-   stream.read(&bf.bfReserved1);
-   stream.read(&bf.bfReserved2);
-   stream.read(&bf.bfOffBits);
+   stream >> bf.bfType;
+   stream >> bf.bfSize;
+   stream >> bf.bfReserved1;
+   stream >> bf.bfReserved2;
+   stream >> bf.bfOffBits;
 
-   stream.read(&bi.biSize);
-   stream.read(&bi.biWidth);
-   stream.read(&bi.biHeight);
-   stream.read(&bi.biPlanes);
-   stream.read(&bi.biBitCount);
-   stream.read(&bi.biCompression);
-   stream.read(&bi.biSizeImage);
-   stream.read(&bi.biXPelsPerMeter);
-   stream.read(&bi.biYPelsPerMeter);
-   stream.read(&bi.biClrUsed);
-   stream.read(&bi.biClrImportant);
+   stream >> bi.biSize;
+   stream >> bi.biWidth;
+   stream >> bi.biHeight;
+   stream >> bi.biPlanes;
+   stream >> bi.biBitCount;
+   stream >> bi.biCompression;
+   stream >> bi.biSizeImage;
+   stream >> bi.biXPelsPerMeter;
+   stream >> bi.biYPelsPerMeter;
+   stream >> bi.biClrUsed;
+   stream >> bi.biClrImportant;
 
    BitmapFormat fmt = RGB;
    if(bi.biBitCount == 8)
@@ -103,7 +103,7 @@ bool GBitmap::readMSBmp(Stream& stream)
       fmt = Palettized;
       if(!bi.biClrUsed)
          bi.biClrUsed = 256;
-      stream.read(sizeof(RGBQUAD) * bi.biClrUsed, rgb);
+      stream.read((char*)rgb, sizeof(RGBQUAD) * bi.biClrUsed);
 
       pPalette = new GPalette;
       for (U32 i = 0; i < 256; i++)
@@ -121,7 +121,7 @@ bool GBitmap::readMSBmp(Stream& stream)
    for(int i = 0; i < bi.biHeight; i++)
    {
       U8 *rowDest = getAddress(0, height - i - 1);
-      stream.read(bytesPerPixel * width, rowDest);
+      stream.read((char*)rowDest, bytesPerPixel * width);
    }
 
    if(bytesPerPixel == 3) // do BGR swap
@@ -145,7 +145,7 @@ bool GBitmap::readMSBmp(Stream& stream)
    return true;
 }
 
-bool GBitmap::writeMSBmp(Stream& io_rStream) const
+bool GBitmap::writeMSBmp(std::iostream &io_rStream) const
 {
 
    RGBQUAD           rgb[256];
@@ -186,23 +186,23 @@ bool GBitmap::writeMSBmp(Stream& io_rStream) const
    bf.bfReserved1       = 0;
    bf.bfReserved2       = 0;
 
-   io_rStream.write(bf.bfType);
-   io_rStream.write(bf.bfSize);
-   io_rStream.write(bf.bfReserved1);
-   io_rStream.write(bf.bfReserved2);
-   io_rStream.write(bf.bfOffBits);
+   io_rStream << bf.bfType;
+   io_rStream << bf.bfSize;
+   io_rStream << bf.bfReserved1;
+   io_rStream << bf.bfReserved2;
+   io_rStream << bf.bfOffBits;
 
-   io_rStream.write(bi.biSize);
-   io_rStream.write(bi.biWidth);
-   io_rStream.write(bi.biHeight);
-   io_rStream.write(bi.biPlanes);
-   io_rStream.write(bi.biBitCount);
-   io_rStream.write(bi.biCompression);
-   io_rStream.write(bi.biSizeImage);
-   io_rStream.write(bi.biXPelsPerMeter);
-   io_rStream.write(bi.biYPelsPerMeter);
-   io_rStream.write(bi.biClrUsed);
-   io_rStream.write(bi.biClrImportant);
+   io_rStream << bi.biSize;
+   io_rStream << bi.biWidth;
+   io_rStream << bi.biHeight;
+   io_rStream << bi.biPlanes;
+   io_rStream << bi.biBitCount;
+   io_rStream << bi.biCompression;
+   io_rStream << bi.biSizeImage;
+   io_rStream << bi.biXPelsPerMeter;
+   io_rStream << bi.biYPelsPerMeter;
+   io_rStream << bi.biClrUsed;
+   io_rStream << bi.biClrImportant;
 
    if(getFormat() == Palettized)
    {
@@ -213,7 +213,7 @@ bool GBitmap::writeMSBmp(Stream& io_rStream) const
          rgb[ndx].rgbBlue     = pPalette->getColor(ndx).blue;
          rgb[ndx].rgbReserved = 0;
       }
-      io_rStream.write(sizeof(RGBQUAD)*256, (U8*)&rgb);
+      io_rStream.write((char*)&rgb, sizeof(RGBQUAD) * 256);
    }
 
    //write the bitmap bits
@@ -224,8 +224,8 @@ bool GBitmap::writeMSBmp(Stream& io_rStream) const
 
       dMemcpy(pDst, pSrc, getWidth() * bytesPP);
    }
-   io_rStream.write(bi.biSizeImage, pMSUpsideDownBits);
+   io_rStream.write((char*)pMSUpsideDownBits, bi.biSizeImage);
    delete [] pMSUpsideDownBits;
 
-   return io_rStream.getStatus() == Stream::Ok;
+   return io_rStream.good();
 }

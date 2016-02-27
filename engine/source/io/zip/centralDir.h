@@ -64,8 +64,8 @@ public:
    CentralDir(FileHeader &fh);
    virtual ~CentralDir();
 
-   virtual bool read(Stream *stream);
-   virtual bool write(Stream *stream);
+   virtual bool read(std::iostream &stream);
+   virtual bool write(std::iostream &stream);
 
    void setFileComment(const char *comment);
 };
@@ -95,10 +95,10 @@ public:
    EndOfCentralDir();
    virtual ~EndOfCentralDir();
 
-   virtual bool findInStream(Stream *stream);
+   virtual bool findInStream(std::iostream &stream);
 
-   virtual bool read(Stream *stream);
-   virtual bool write(Stream *stream);
+   virtual bool read(std::iostream &stream);
+   virtual bool write(std::iostream &stream);
 
    virtual void setZipComment(const char *zipComment);
    virtual void setZipComment(U16 commentSize, const char *zipComment);

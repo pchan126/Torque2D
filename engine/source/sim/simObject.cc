@@ -325,7 +325,7 @@ bool SimObject::writeField(StringTableEntry fieldname, const char* value)
    return true;
 }
 
-void SimObject::writeFields(Stream &stream, U32 tabStop)
+void SimObject::writeFields(std::iostream &stream, U32 tabStop)
 {
    const AbstractClassRep::FieldList &list = getFieldList();
 
@@ -395,7 +395,7 @@ void SimObject::writeFields(Stream &stream, U32 tabStop)
       mFieldDictionary->writeFields(this, stream, tabStop);
 }
 
-void SimObject::write(Stream &stream, U32 tabStop, U32 flags)
+void SimObject::write(std::iostream &stream, U32 tabStop, U32 flags)
 {
    // Only output selected objects if they want that.
    if((flags & SelectedOnly) && !isSelected())
@@ -404,10 +404,10 @@ void SimObject::write(Stream &stream, U32 tabStop, U32 flags)
    stream.writeTabs(tabStop);
    char buffer[1024];
    dSprintf(buffer, sizeof(buffer), "new %s(%s) {\r\n", getClassName(), getName() ? getName() : "");
-   stream.write(dStrlen(buffer), buffer);
+   stream.write(buffer, dStrlen(buffer));
    writeFields(stream, tabStop + 1);
    stream.writeTabs(tabStop);
-   stream.write(4, "};\r\n");
+   stream.write("};\r\n", 4);
 }
 
 bool SimObject::save(const char* pcFileName, bool bOnlySelected)

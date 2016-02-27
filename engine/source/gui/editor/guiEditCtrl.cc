@@ -1314,7 +1314,7 @@ void GuiEditCtrl::saveSelection(const char* filename)
    if (mSelectedControls.size() == 0)
       return;
 
-   FileStream stream;
+   std::fstream stream;
    if(!ResourceManager->openFileForWrite(stream, filename))
       return;
    SimSet *clipboardSet = new SimSet;

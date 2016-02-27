@@ -34,8 +34,8 @@ ConsoleFunctionWithDocs(CaptureScreenArea, bool, 7, 7, (posX, posY, width, heigh
     U32 width = dAtoi(argv[3]);
     U32 height = dAtoi(argv[4]);
     
-    FileStream fStream;
-    if(!fStream.open(argv[5], FileStream::Write))
+    std::fstream fStream(argv[5], std::fstream::out);
+    if(!(fStream))
     { 
         Con::printf("Failed to open file '%s'.", argv[5]);
         return false;
@@ -112,8 +112,9 @@ ConsoleFunctionWithDocs(png2jpg, ConsoleInt, 2, 3, ( pngFilename, [quality ]? ))
       alphaname = buf;
    }
    GBitmap bmp;
-   FileStream fs;
-   if (fs.open(bmpname, FileStream::Read) == false) {
+   std::fstream fs(bmpname, std::fstream::in);
+   if (!(fs))
+   {
       Con::printf("Error: unable to open file: %s for reading\n", bmpname);
       return -1;
    }
@@ -161,8 +162,8 @@ ConsoleFunctionWithDocs(png2jpg, ConsoleInt, 2, 3, ( pngFilename, [quality ]? ))
 
    if (outRGB)
    {
-      FileStream fws;
-      if (fws.open(rgbname, FileStream::Write) == false)
+      std::fstream fws(rgbname, std::fstream::out);
+      if (!(fws))
       {
          Con::printf("Error: unable to open file: %s for writing\n", rgbname);
          return -1;
@@ -187,8 +188,8 @@ ConsoleFunctionWithDocs(png2jpg, ConsoleInt, 2, 3, ( pngFilename, [quality ]? ))
    if (outAlpha)
    {
       gJpegQuality = 60;
-      FileStream fws;
-      if (fws.open(alphaname, FileStream::Write) == false)
+      std::fstream fws(alphaname, std::fstream::out);
+      if (!(fws))
       {
          Con::printf("Error: unable to open file: %s for writing\n", alphaname);
          return -1;

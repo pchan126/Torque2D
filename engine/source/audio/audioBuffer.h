@@ -59,7 +59,7 @@ public:
    bool isLoading() {return(mLoading);}
 
    static Resource<AudioBuffer> find(const char *filename);
-   static ResourceInstance* construct(Stream& stream);
+   static ResourceInstance* construct(std::iostream& stream);
 
 };
 

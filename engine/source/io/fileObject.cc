@@ -33,7 +33,7 @@ bool FileObject::isEOF()
 
 FileObject::FileObject()
 {
-   mFileBuffer = NULL;
+   mFileBuffer = nullptr;
    mBufferSize = 0;
    mCurPos = 0;
 }
@@ -47,7 +47,7 @@ void FileObject::close()
 {
    stream.close();
    dFree(mFileBuffer);
-   mFileBuffer = NULL;
+   mFileBuffer = nullptr;
    mBufferSize = mCurPos = 0;
 }
 
@@ -58,7 +58,7 @@ bool FileObject::openForWrite(const char *fileName, const bool append)
 
    close();
 
-   if(buffer == NULL || *buffer == 0)
+   if(buffer == nullptr || *buffer == 0)
       return false;
 
    if ( !append )
@@ -68,7 +68,6 @@ bool FileObject::openForWrite(const char *fileName, const bool append)
    if ( !ResourceManager->openFileForWrite(stream, buffer, File::WriteAppend) )
       return( false );
 
-   stream.setPosition( stream.getStreamSize() );
    return( true );
 }
 
@@ -80,7 +79,7 @@ bool FileObject::openForRead(const char* /*fileName*/)
 
 bool FileObject::readMemory(const char *fileName)
 {
-   StringTableEntry fileToOpen = NULL;
+   StringTableEntry fileToOpen = nullptr;
 
    char buffer[1024];
     
@@ -89,13 +88,13 @@ bool FileObject::readMemory(const char *fileName)
    fileToOpen = StringTable->insert(buffer);
 
    close();
-   Stream *s = ResourceManager->openStream(fileToOpen);
+   std::iostream *s = ResourceManager->openStream(fileToOpen);
    if(!s)
       return false;
    mBufferSize = ResourceManager->getSize(fileToOpen);
    mFileBuffer = (U8 *) dMalloc(mBufferSize + 1);
    mFileBuffer[mBufferSize] = 0;
-   s->read(mBufferSize, mFileBuffer);
+   s->read((char*)mFileBuffer, mBufferSize);
    ResourceManager->closeStream(s);
    mCurPos = 0;
 
@@ -157,15 +156,15 @@ void FileObject::peekLine( U8* line, S32 length )
 
 void FileObject::writeLine(const U8 *line)
 {
-   stream.write(dStrlen((const char *) line), line);
-   stream.write(2, "\r\n");
+   stream.write((char*)line, dStrlen((const char *)line));
+   stream.write("\r\n", 2);
 }
 
 void FileObject::writeObject( SimObject* object, const U8* objectPrepend )
 {
-   if( objectPrepend == NULL )
-      stream.write(2, "\r\n");
+   if( objectPrepend == nullptr )
+      stream.write("\r\n", 2);
    else
-      stream.write(dStrlen((const char *) objectPrepend), objectPrepend );
+      stream.write((char*)objectPrepend, dStrlen((const char *)objectPrepend) );
    object->write( stream, 0 );
 }

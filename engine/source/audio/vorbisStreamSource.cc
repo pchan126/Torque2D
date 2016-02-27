@@ -122,7 +122,8 @@ bool VorbisStreamSource::initStream()
    stream = ResourceManager->openStream(mFilename);
    if(stream != NULL)
    {
-      const bool canSeek = stream->hasCapability( Stream::StreamPosition );
+//      const bool canSeek = stream->hasCapability( Stream::StreamPosition );
+	  const bool canSeek = true;
 
       ov_callbacks cb;
       cb.read_func = _ov_read_func;
@@ -375,7 +376,8 @@ void VorbisStreamSource::setNewFile(const char * file)
    stream = ResourceManager->openStream(mFilename);
    if(stream != NULL)
    {
-      const bool canSeek = stream->hasCapability( Stream::StreamPosition );
+	   const bool canSeek = true;
+	   //const bool canSeek = stream->hasCapability( Stream::StreamPosition );
 
       ov_callbacks cb;
       cb.read_func = _ov_read_func;

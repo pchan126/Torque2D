@@ -29,9 +29,7 @@
 #ifndef _RESMANAGER_H_
 #include "io/resource/resourceManager.h"
 #endif
-#ifndef _FILESTREAM_H_
-#include "io/fileStream.h"
-#endif
+#include <fstream>
 
 class FileObject : public SimObject
 {
@@ -39,7 +37,7 @@ class FileObject : public SimObject
    U8 *mFileBuffer;
    U32 mBufferSize;
    U32 mCurPos;
-   FileStream stream;
+   std::fstream stream;
 public:
    FileObject();
    ~FileObject();
@@ -52,7 +50,7 @@ public:
    bool isEOF();
    void writeLine(const U8 *line);
    void close();
-   void writeObject( SimObject* object, const U8* objectPrepend = NULL );
+   void writeObject( SimObject* object, const U8* objectPrepend = nullptr );
 
    //Luma:	ccess to the buffer and the size
    U8 *getBuffer(void)		{ return mFileBuffer; }

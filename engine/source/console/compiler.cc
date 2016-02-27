@@ -207,11 +207,11 @@ char *CompilerStringTable::build()
    return ret;
 }
 
-void CompilerStringTable::write(Stream &st)
+void CompilerStringTable::write(std::iostream &st)
 {
-   st.write(totalLen);
+   st << totalLen;
    for(Entry *walk = list; walk; walk = walk->next)
-      st.write(walk->len, walk->string);
+      st.write(walk->string, walk->len);
 }
 
 //------------------------------------------------------------
@@ -244,11 +244,11 @@ F64 *CompilerFloatTable::build()
    return ret;
 }
 
-void CompilerFloatTable::write(Stream &st)
+void CompilerFloatTable::write(std::iostream &st)
 {
-   st.write(count);
+   st << count;
    for(Entry *walk = list; walk; walk = walk->next)
-      st.write(walk->val);
+      st << walk->val;
 }
 
 //------------------------------------------------------------
@@ -278,22 +278,22 @@ void CompilerIdentTable::add(StringTableEntry ste, U32 ip)
    newEntry->nextIdent = NULL;
 }
 
-void CompilerIdentTable::write(Stream &st)
+void CompilerIdentTable::write(std::iostream &st)
 {
    U32 count = 0;
    Entry * walk;
    for(walk = list; walk; walk = walk->next)
       count++;
-   st.write(count);
+   st << count;
    for(walk = list; walk; walk = walk->next)
    {
       U32 ec = 0;
       Entry * el;
       for(el = walk; el; el = el->nextIdent)
          ec++;
-      st.write(walk->offset);
-      st.write(ec);
+      st << walk->offset;
+      st << ec;
       for(el = walk; el; el = el->nextIdent)
-         st.write(el->ip);
+         st << el->ip;
    }
 }

@@ -23,9 +23,7 @@
 #ifndef _SIM_FIELD_DICTIONARY_H_
 #define _SIM_FIELD_DICTIONARY_H_
 
-#ifndef _STREAM_H_
-#include "io/stream.h"
-#endif
+#include <iostream>
 
 //-----------------------------------------------------------------------------
 

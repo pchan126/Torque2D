@@ -646,16 +646,16 @@ public:
     /// @param   flags   If SelectedOnly is passed here, then
     ///                  only objects marked as selected (using setSelected)
     ///                  will output themselves.
-    virtual void write(Stream &stream, U32 tabStop, U32 flags = 0);
+    virtual void write(std::iostream &stream, U32 tabStop, U32 flags = 0);
 
     /// Write the fields of this object in TorqueScript.
     ///
     /// @param   stream  Stream for output.
     /// @param   tabStop Indentation level for the fields.
-    virtual void writeFields(Stream &stream, U32 tabStop);
+    virtual void writeFields(std::iostream &stream, U32 tabStop);
 
-    virtual bool writeObject(Stream *stream);
-    virtual bool readObject(Stream *stream);
+    virtual bool writeObject(std::iostream *stream);
+    virtual bool readObject(std::iostream *stream);
     virtual void buildFilterList();
 
     void addFieldFilter(const char *fieldName);

@@ -79,7 +79,7 @@ static int jpegErrorFn(void *client_data)
 
 
 //--------------------------------------
-bool GBitmap::readJPEG(Stream &stream)
+bool GBitmap::readJPEG(std::iostream &stream)
 {
    JFREAD  = jpegReadDataFn;
    JFERROR = jpegErrorFn;
@@ -149,7 +149,7 @@ bool GBitmap::readJPEG(Stream &stream)
 
 
 //--------------------------------------------------------------------------
-bool GBitmap::writeJPEG(Stream& stream) const
+bool GBitmap::writeJPEG(std::iostream &stream) const
 {
    // JPEG format has no support for transparancy so any image
    // in Alpha format should be saved as a grayscale which coincides

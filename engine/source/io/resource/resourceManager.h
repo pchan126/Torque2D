@@ -40,8 +40,11 @@
 #include "algorithm/crc.h"
 #endif
 
-class Stream;
-class FileStream;
+#include <deque>
+#include <unordered_map>
+#include <list>
+#include <fstream>
+
 class ZipSubRStream;
 class ResManager;
 class FindMatch;
@@ -52,7 +55,9 @@ namespace Zip
    class CentralDir;
 }
 
-extern ResManager *ResourceManager;
+// Global macro
+#define ResourceManager ResManager::get()
+
 
 //------------------------------------------------------------------------------
 class ResourceObject;
@@ -73,7 +78,7 @@ class ResourceObject;
 ///    else
 ///    {
 ///       delete bmp;
-///       return NULL;
+///       return nullptr;
 ///    }
 /// }
 /// @endcode
@@ -106,12 +111,12 @@ public:
    /// Pointer to the ResourceObject that stores all our book-keeping data.
    ResourceObject *mSourceResource;
 
-   ResourceInstance() { mSourceResource = NULL; }
+   ResourceInstance() { mSourceResource = nullptr; }
    virtual ~ResourceInstance() {}
 };
 
 
-typedef ResourceInstance* (*RESOURCE_CREATE_FN)(Stream &stream);
+typedef ResourceInstance* (*RESOURCE_CREATE_FN)(std::iostream &stream);
 
 
 //------------------------------------------------------------------------------
@@ -126,18 +131,6 @@ class ResourceObject
 {
    friend class ResDictionary;
    friend class ResManager;
-
-   /// @name List Book-keeping
-   /// @{
-
-   ///
-   ResourceObject *prev, *next;
-
-   ResourceObject *nextEntry;    ///< This is used by ResDictionary for its hash table.
-
-   ResourceObject *nextResource;
-   ResourceObject *prevResource;
-   /// @}
 
 public:
    enum Flags
@@ -165,7 +158,7 @@ public:
    /// @}
 
    ResourceInstance *mInstance;  ///< Pointer to actual object instance. If the object is not loaded,
-                                 ///  this may be NULL or garbage.
+                                 ///  this may be nullptr or garbage.
    S32 lockCount;                ///< Lock count; used to control load/unload of resource from memory.
    U32 crc;                      ///< CRC of resource.
 
@@ -173,18 +166,9 @@ public:
    const Zip::CentralDir *mCentralDir; ///< The central directory for this file in the zip
 
    ResourceObject();
-   ~ResourceObject() { unlink(); }
+   ~ResourceObject(); // { unlink(); }
 
    void destruct();
-
-   /// @name List Management
-   /// @{
-
-   ///
-   ResourceObject* getNext() const { return next; }
-   void unlink();
-   void linkAfter(ResourceObject* res);
-   /// @}
 
    /// Get some information about file times.
    ///
@@ -194,26 +178,6 @@ public:
    ///                     modified.
    void getFileTimes(FileTime *createTime, FileTime *modifyTime);
 };
-
-
-inline void ResourceObject::unlink()
-{
-   if (next)
-      next->prev = prev;
-   if (prev)
-      prev->next = next;
-   next = prev = 0;
-}
-
-inline void ResourceObject::linkAfter(ResourceObject* res)
-{
-   unlink();
-   prev = res;
-   if ((next = res->next) != 0)
-      next->prev = this;
-   res->next = this;
-}
-
 
 //------------------------------------------------------------------------------
 /// Wrapper class around a ResourceInstance subclass.
@@ -245,27 +209,27 @@ public:
    /// If assigned a ResourceObject, it's assumed to already have
    /// been locked, lock count is incremented only for copies or
    /// assignment from another Resource.
-   Resource() : obj(NULL) { ; }
+   Resource() : obj(nullptr) { ; }
    Resource(ResourceObject *p) : obj(p) { ; }
    Resource(const Resource &res) : obj(res.obj) { _lock(); }
    ~Resource() { unlock(); }  ///< Decrements the lock count on this object, and if the lock count is 0 afterwards,
                               ///< adds the object to the timeoutList for deletion on execution of purge().
 
-   const char *getFilePath() const { return (obj ? obj->path : NULL); } ///< Returns the path of the file (without the actual name)
-   const char *getFileName() const { return (obj ? obj->name : NULL); } ///< Returns the actual file name (without the path)
+   const char *getFilePath() const { return (obj ? obj->path : nullptr); } ///< Returns the path of the file (without the actual name)
+   const char *getFileName() const { return (obj ? obj->name : nullptr); } ///< Returns the actual file name (without the path)
 
    Resource& operator= (ResourceObject *p) { _unlock(); obj = p; return *this; }
    Resource& operator= (const Resource &r) { _unlock(); obj = r.obj; _lock(); return *this; }
 
    U32 getCRC() { return (obj ? obj->crc : 0); }
-   bool isNull()   const { return ((obj == NULL) || (obj->mInstance == NULL)); }
-   operator bool() const { return ((obj != NULL) && (obj->mInstance != NULL)); }
+   bool isNull()   const { return ((obj == nullptr) || (obj->mInstance == nullptr)); }
+   operator bool() const { return ((obj != nullptr) && (obj->mInstance != nullptr)); }
    T* operator->()   { return (T*)obj->mInstance; }
    T& operator*()    { return *((T*)obj->mInstance); }
-   operator T*() const    { return (obj) ? (T*)obj->mInstance : (T*)NULL; }
+   operator T*() const    { return (obj) ? (T*)obj->mInstance : (T*)nullptr; }
    const T* operator->() const  { return (const T*)obj->mInstance; }
    const T& operator*() const   { return *((const T*)obj->mInstance); }
-   operator const T*() const    { return (obj) ? (const T*)obj->mInstance :  (const T*)NULL; }
+   operator const T*() const    { return (obj) ? (const T*)obj->mInstance :  (const T*)nullptr; }
    void unlock();
    void purge();
 };
@@ -286,14 +250,9 @@ class ResDictionary
    /// @name Hash Table
    /// @{
 
-   enum { DefaultTableSize = 1029 };
+	typedef std::pair<std::string, ResourceObject*> ResEntry;
+	std::unordered_multimap<std::string, ResourceObject*> hashTable;
 
-   ResourceObject **hashTable;
-   S32 entryCount;
-   S32 hashTableSize;
-   DataChunker memPool;
-   S32 hash(StringTableEntry path, StringTableEntry name);
-   S32 hash(ResourceObject *obj) { return hash(obj->path, obj->name); }
    /// @}
 
 public:
@@ -306,7 +265,7 @@ public:
    /// @name Find
    /// These functions search the hash table for an individual resource.  If the resource has
    /// already been loaded, it will find the resource and return its object.  If not,
-   /// it will return NULL.
+   /// it will return nullptr.
    /// @{
 
    ResourceObject* find(StringTableEntry path, StringTableEntry file);
@@ -341,6 +300,11 @@ public:
 class ResManager
 {
 private:
+	/// @name Device management variables
+	/// @{
+	static ResManager * smResManager; ///< singleton
+
+	/// @}
    /// Path to which we will write data.
    ///
    /// This is used when, for instance, we download files from a server.
@@ -352,41 +316,40 @@ private:
    /// List of secondary paths to search.
    char* pathList;
 
-   ResourceObject timeoutList;
-   ResourceObject resourceList;
+   std::list<ResourceObject*> timeoutList;
+   std::list<ResourceObject*> resourceList;
 
    ResDictionary dictionary;
 
    bool echoFileNames;
 
-   bool usingVFS;
+//   bool usingVFS;
 
-   bool isIgnoredSubdirectoryName(const char *name) const;
+//   bool isIgnoredSubdirectoryName(const char *name) const;
 
    /// Scan a zip file for resources.
-   bool scanZip(ResourceObject *zipObject);
+//   bool scanZip(ResourceObject *zipObject);
 
    /// Create a ResourceObject from the given file.
    ResourceObject* createResource(StringTableEntry path, StringTableEntry file);
 
-   /// Create a ResourceObject from the given file in a zip file.
-   ResourceObject* createZipResource(StringTableEntry path, StringTableEntry file, StringTableEntry zipPath, StringTableEntry zipFle);
+//   /// Create a ResourceObject from the given file in a zip file.
+//   ResourceObject* createZipResource(StringTableEntry path, StringTableEntry file, StringTableEntry zipPath, StringTableEntry zipFle);
 
    void searchPath(const char *pathStart, bool noDups = false, bool ignoreZips = false);
-   bool setModZip(const char* path);
+//   bool setModZip(const char* path);
 
    struct RegisteredExtension
    {
       StringTableEntry     mExtension;
       RESOURCE_CREATE_FN   mCreateFn;
-      RegisteredExtension  *next;
    };
 
-   Vector<char *> mMissingFileList;                ///< List of missing files.
+   std::deque<char *> mMissingFileList;                ///< List of missing files.
    bool mLoggingMissingFiles;                      ///< Are there any missing files?
    void fileIsMissing(const char *fileName);       ///< Called when a file is missing.
 
-   RegisteredExtension *registeredList;
+   std::list<RegisteredExtension*> registeredList;
 
    static const char *smExcludedDirectories;
    ResManager();
@@ -397,6 +360,7 @@ public:
    /// @name Global Control
    /// These are called to initialize/destroy the resource manager at runtime.
    /// @{
+   static ResManager *get() { return smResManager; }
 
    static void create();
    static void destroy();
@@ -415,7 +379,7 @@ public:
    void removePath(const char *path);                 ///< Remove a path. Only removes resources that are not loaded.
 
    void setMissingFileLogging(bool log);              ///< Should we log missing files?
-   bool getMissingFileList(Vector<char *> &list);     ///< Gets which files are missing
+   bool getMissingFileList(std::deque<char *> &list); ///< Gets which files are missing
    void clearMissingFileList();                       ///< Clears the missing file list
 
    /// Tells the resource manager what to do with a resource that it loads
@@ -428,32 +392,33 @@ public:
    const char* getBasePath();                         ///< Gets the base path
 
    ResourceObject* load(const char * fileName, bool computeCRC = false);   ///< loads an instance of an object
-   Stream*  openStream(const char * fileName);        ///< Opens a stream for an object
-   Stream*  openStream(ResourceObject *object);       ///< Opens a stream for an object
-   void     closeStream(Stream *stream);              ///< Closes the stream
+   std::iostream*  openStream(const char * fileName);        ///< Opens a stream for an object
+   std::iostream*  openStream(ResourceObject *object);       ///< Opens a stream for an object
+   void     closeStream(std::iostream *stream);              ///< Closes the stream
 
    /// Decrements the lock count of an object.  If the lock count is zero post-decrement,
    /// the object is added to the timeoutList for deletion upon call of flush.
    void unlock( ResourceObject* );
+   void unlink(ResourceObject*);
 
    /// Add a new resource instance
    bool add(const char* name, ResourceInstance *addInstance, bool extraLock = false);
 
-   /// Searches the hash list for the filename and returns it's object if found, otherwise NULL
+   /// Searches the hash list for the filename and returns it's object if found, otherwise nullptr
    ResourceObject* find(const char * fileName);
    /// Loads a new instance of an object by means of a filename
    ResourceInstance* loadInstance(const char *fileName, bool computeCRC = false);
    /// Loads a new instance of an object by means of a resource object
    ResourceInstance* loadInstance(ResourceObject *object, bool computeCRC = false);
 
-   /// Searches the hash list for the filename and returns it's object if found, otherwise NULL
+   /// Searches the hash list for the filename and returns it's object if found, otherwise nullptr
    ResourceObject* find(const char * fileName, U32 flags);
 
    /// Finds a resource object with given expression
-   ResourceObject* findMatch(const char *expression, const char **fn, ResourceObject *start = NULL);
+   ResourceObject* findMatch(const char *expression, const char **fn, ResourceObject *start = nullptr);
 
    /// Finds a resource object with given expressions, seperated by " "
-   ResourceObject* findMatchMultiExprs(const char *multiExpression, const char **fn, ResourceObject *start = NULL);
+   ResourceObject* findMatchMultiExprs(const char *multiExpression, const char **fn, ResourceObject *start = nullptr);
 
    void purge();                                      ///< Goes through the timeoutList and deletes it all.  BURN!!!
    void purge( ResourceObject *obj );                 ///< Deletes one resource object.
@@ -463,8 +428,8 @@ public:
    S32  findMatches( FindMatch *pFM );                ///< Finds multiple matches to an expression.
    bool findFile( const char *name );                 ///< Checks to see if a file exists.
 
-   bool addVFSRoot(Zip::ZipArchive *vfs);
-   bool isUsingVFS() { return usingVFS; }
+//   bool addVFSRoot(Zip::ZipArchive *vfs);
+//   bool isUsingVFS() { return usingVFS; }
 
    /// Computes the CRC of a file.
    ///
@@ -475,7 +440,7 @@ public:
    bool isValidWriteFileName(const char *fn);         ///< Checks to see if the given path is valid for writing.
 
    /// Opens a file for writing!
-   bool openFileForWrite(FileStream &fs, const char *fileName, U32 accessMode = File::Write);
+   bool openFileForWrite(std::fstream &fs, const char *fileName, std::fstream::openmode accessMode = std::fstream::out);
 
 #ifdef TORQUE_DEBUG
    void dumpResources(const bool onlyLoaded = true);                        ///< Dumps all loaded resources to the console.
@@ -486,7 +451,7 @@ template<class T> inline void Resource<T>::unlock()
 {
    if (obj) {
       ResourceManager->unlock( obj );
-      obj=NULL;
+      obj=nullptr;
    }
 }
 
@@ -496,7 +461,7 @@ template<class T> inline void Resource<T>::purge()
       ResourceManager->unlock( obj );
       if (obj->lockCount == 0)
          ResourceManager->purge(obj);
-      obj = NULL;
+      obj = nullptr;
    }
 }
 template <class T> inline void Resource<T>::_lock()

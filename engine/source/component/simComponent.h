@@ -150,7 +150,7 @@ public:
    bool isEnabled() const { return mEnabled; }
    static bool writeEnabled( void* obj, StringTableEntry pFieldName ) { return static_cast<SimComponent*>(obj)->mEnabled == false; }
 
-   virtual void write(Stream &stream, U32 tabStop, U32 flags = 0);
+   virtual void write(std::iostream &stream, U32 tabStop, U32 flags = 0);
    virtual bool writeField(StringTableEntry fieldname, const char* value);
 
    virtual void onUpdate( void ) {}

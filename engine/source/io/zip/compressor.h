@@ -25,8 +25,7 @@
 #ifndef _COMPRESSOR_H_
 #define _COMPRESSOR_H_
 
-// Forward refs
-class Stream;
+#include <iostream>
 
 namespace Zip
 {
@@ -71,8 +70,8 @@ public:
    inline const char * getName()                { return mName; }
    inline S32 getMethod()                       { return mMethod; }
 
-   virtual Stream *createReadStream(const CentralDir *cdir, Stream *zipStream) = 0;
-   virtual Stream *createWriteStream(const CentralDir *cdir, Stream *zipStream) = 0;
+   virtual std::iostream *createReadStream(const CentralDir *cdir, std::iostream *zipStream) = 0;
+   virtual std::iostream *createWriteStream(const CentralDir *cdir, std::iostream *zipStream) = 0;
 
    // Run time lookup methods
    static Compressor *findCompressor(const char *name);
@@ -84,16 +83,16 @@ public:
    {                                            \
    public:                                      \
       Compressor##name(S32 m, const char *n) : Compressor(m, n) {} \
-      virtual Stream *createReadStream(const CentralDir *cdir, Stream *zipStream); \
-      virtual Stream *createWriteStream(const CentralDir *cdir, Stream *zipStream); \
+      virtual std::iostream *createReadStream(const CentralDir *cdir, std::iostream *zipStream); \
+      virtual std::iostream *createWriteStream(const CentralDir *cdir, std::iostream *zipStream); \
    };                                           \
    Compressor##name gCompressor##name##instance(method, #name);
 
 #define  CompressorCreateReadStream(name) \
-   Stream * Compressor##name::createReadStream(const CentralDir *cdir, Stream *zipStream)
+   std::iostream * Compressor##name::createReadStream(const CentralDir *cdir, std::iostream *zipStream)
 
 #define  CompressorCreateWriteStream(name) \
-   Stream * Compressor##name::createWriteStream(const CentralDir *cdir, Stream *zipStream)
+   std::iostream * Compressor##name::createWriteStream(const CentralDir *cdir, std::iostream *zipStream)
 
 // @}
 

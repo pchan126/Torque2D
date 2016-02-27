@@ -73,7 +73,7 @@ void LangFile::freeTable()
 
 bool LangFile::load(const UTF8 *filename)
 {
-	Stream *pS;
+	std::iostream *pS;
 	bool bRet = false;
 
 	if((pS = ResourceManager->openStream((const char*)filename)))
@@ -84,14 +84,16 @@ bool LangFile::load(const UTF8 *filename)
 	return bRet;
 }
 
-bool LangFile::load(Stream *s)
+bool LangFile::load(std::iostream *s)
 {
 	freeTable();
 	
-	while(s->getStatus() != Stream::EOS)
+	while(s->good() )
 	{
 		char buf[256];
-		s->readString(buf);
+		U8 count;
+		*s >> count;
+		s->read(buf, count);
 		addString((const UTF8*)buf);
 	}
 	return true;
@@ -99,7 +101,7 @@ bool LangFile::load(Stream *s)
 
 bool LangFile::save(const UTF8 *filename)
 {
-	FileStream fs;
+	std::fstream fs;
 	bool bRet = false;
 
 	if(!isLoaded())
@@ -113,7 +115,7 @@ bool LangFile::save(const UTF8 *filename)
 	return bRet;
 }
 
-bool LangFile::save(Stream *s)
+bool LangFile::save(std::iostream *s)
 {
 	if(!isLoaded())
 		return false;
@@ -121,7 +123,7 @@ bool LangFile::save(Stream *s)
 	U32 i;
 	for(i = 0;i < (U32)mStringTable.size();i++)
 	{
-		s->writeString((char*)mStringTable[i]);
+		s->write((char*)mStringTable[i], strlen(mStringTable[i]));
 	}
 	return true;
 }

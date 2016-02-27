@@ -27,29 +27,28 @@
 #ifndef _PLATFORM_H_
 #include "platform/platform.h"
 #endif
-#ifndef _STREAM_H_
-#include "io/stream.h"
-#endif
+#include <iostream>
 
-class FilterStream : public Stream
+class FilterStream : public std::iostream
 {
   public:
+	  FilterStream();
    virtual ~FilterStream();
 
-   virtual bool    attachStream(Stream* io_pSlaveStream) = 0;
+   virtual bool    attachStream(std::iostream* io_pSlaveStream) = 0;
    virtual void    detachStream()                        = 0;
-   virtual Stream* getStream()                           = 0;
+   virtual std::iostream* getStream()                           = 0;
 
    // Mandatory overrides.  By default, these are simply passed to
    //  whatever is returned from getStream();
   protected:
-   bool _read(const U32 in_numBytes,  void* out_pBuffer);
-   bool _write(const U32 in_numBytes, const void* in_pBuffer);
+   bool _read(char* out_pBuffer, const U32 in_numBytes);
+   bool _write(const char* in_pBuffer, const U32 in_numBytes);
   public:
-   bool hasCapability(const Capability) const;
+//   bool hasCapability(const Capability) const;
 
-   U32  getPosition() const;
-   bool setPosition(const U32 in_newPosition);
+   U32  getPosition();
+   void setPosition(const U32 in_newPosition);
    U32  getStreamSize();
 };
 
