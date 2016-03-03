@@ -63,11 +63,24 @@ ResourceObject* ResDictionary::find(StringTableEntry path, StringTableEntry name
       Platform::makeFullPathName(path, fullPath, sizeof(fullPath));
       path = StringTable->insert(fullPath);
    }
+   std::string path_and_file(path);
+   path_and_file.append("/");
+   path_and_file.append(name);
 
-   for(ResourceObject *walk = hashTable[hash(path, name)]; walk; walk = walk->nextEntry)
-      if(walk->name == name && walk->path == path)
-         return walk;
-   return NULL;
+   auto itr = hashTable.equal_range(path_and_file);
+
+   for (auto itr2 = itr.first; itr2 != itr.second; itr2++)
+   {
+	   if (itr2->second->zipName == "")
+		   return itr2->second;
+   }
+
+   return nullptr;
+
+	//for(ResourceObject *walk = hashTable[hash(path, name)]; walk; walk = walk->nextEntry)
+   //   if(walk->name == name && walk->path == path)
+   //      return walk;
+   //return NULL;
 }
 
 ResourceObject* ResDictionary::find(StringTableEntry path, StringTableEntry name, StringTableEntry zipPath, StringTableEntry zipName)
@@ -78,11 +91,22 @@ ResourceObject* ResDictionary::find(StringTableEntry path, StringTableEntry name
       Platform::makeFullPathName(path, fullPath, sizeof(fullPath));
       path = StringTable->insert(fullPath);
    }
+   std::string path_and_file(path);
+   path_and_file.append("/");
+   path_and_file.append(name);
 
-   for(ResourceObject *walk = hashTable[hash(path, name)]; walk; walk = walk->nextEntry)
-      if(walk->name == name && walk->path == path && walk->zipName == zipName && walk->zipPath == zipPath)
-         return walk;
-   return NULL;
+   auto itr = hashTable.equal_range(path_and_file);
+   std::for_each(
+	   itr.first,
+	   itr.second,
+	   [zipName, zipPath](ResourceObject* x) {if ((x->zipName == zipName) && (x->zipPath == zipPath)) return x; });
+
+   return nullptr;
+
+   //for(ResourceObject *walk = hashTable[hash(path, name)]; walk; walk = walk->nextEntry)
+   //   if(walk->name == name && walk->path == path && walk->zipName == zipName && walk->zipPath == zipPath)
+   //      return walk;
+   //return NULL;
 }
 
 ResourceObject* ResDictionary::find(StringTableEntry path, StringTableEntry name, U32 flags)
@@ -94,39 +118,52 @@ ResourceObject* ResDictionary::find(StringTableEntry path, StringTableEntry name
       path = StringTable->insert(fullPath);
    }
 
-   for(ResourceObject *walk = hashTable[hash(path, name)]; walk; walk = walk->nextEntry)
-      if(walk->name == name && walk->path == path && U32(walk->flags) == flags)
-         return walk;
-   return NULL;
+   std::string path_and_file(path);
+   path_and_file.append("/");
+   path_and_file.append(name);
+
+   auto itr = hashTable.equal_range(path_and_file);
+   std::for_each(
+	   itr.first,
+	   itr.second,
+	   [flags](ResourceObject* x) {if (x->flags == flags) return x; });
+
+   return nullptr;
+
+   //for(ResourceObject *walk = hashTable[hash(path, name)]; walk; walk = walk->nextEntry)
+   //   if(walk->name == name && walk->path == path && U32(walk->flags) == flags)
+   //      return walk;
+   //return NULL;
 }
 
 void ResDictionary::pushBehind(ResourceObject *resObj, S32 flagMask)
 {
-   remove(resObj);
-   entryCount++;
-   ResourceObject **walk = &hashTable[hash(resObj)];
-   for(; *walk; walk = &(*walk)->nextEntry)
-   {
-      if(!((*walk)->flags & flagMask))
-      {
-         resObj->nextEntry = *walk;
-         *walk = resObj;
-         return;
-      }
-   }
-   resObj->nextEntry = NULL;
-   *walk = resObj;
+   //remove(resObj);
+   //entryCount++;
+   //ResourceObject **walk = &hashTable[hash(resObj)];
+   //for(; *walk; walk = &(*walk)->nextEntry)
+   //{
+   //   if(!((*walk)->flags & flagMask))
+   //   {
+   //      resObj->nextEntry = *walk;
+   //      *walk = resObj;
+   //      return;
+   //   }
+   //}
+   //resObj->nextEntry = NULL;
+   //*walk = resObj;
 }
 
 void ResDictionary::remove(ResourceObject *resObj)
 {
-   for(ResourceObject **walk = &hashTable[hash(resObj)]; *walk; walk = &(*walk)->nextEntry)
-   {
-      if(*walk == resObj)
-      {
-         entryCount--;
-         *walk = resObj->nextEntry;
-         return;
-      }
-   }
+
+	//for(ResourceObject **walk = &hashTable[hash(resObj)]; *walk; walk = &(*walk)->nextEntry)
+   //{
+   //   if(*walk == resObj)
+   //   {
+   //      entryCount--;
+   //      *walk = resObj->nextEntry;
+   //      return;
+   //   }
+   //}
 }

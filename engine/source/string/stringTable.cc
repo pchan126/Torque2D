@@ -23,8 +23,7 @@
 #include "platform/platform.h"
 #include "stringTable.h"
 
-_StringTable *_gStringTable = NULL;
-const U32 _StringTable::csm_stInitSize = 29;
+_StringTable *_gStringTable = nullptr;
 StringTableEntry _StringTable::EmptyString;
 
 //---------------------------------------------------------------
@@ -34,217 +33,178 @@ StringTableEntry _StringTable::EmptyString;
 //---------------------------------------------------------------
 
 namespace {
-bool sgInitTable = true;
-U8   sgHashTable[256];
+	bool sgInitTable = true;
+	U8   sgHashTable[256];
 
-void initTolowerTable()
-{
-   for (U32 i = 0; i < 256; i++) {
-      U8 c = dTolower(i);
-      sgHashTable[i] = c * c;
-   }
+	void initTolowerTable()
+	{
+		for (U32 i = 0; i < 256; i++) {
+			U8 c = dTolower(i);
+			sgHashTable[i] = c * c;
+		}
 
-   sgInitTable = false;
-}
+		sgInitTable = false;
+	}
 
 } // namespace {}
 
 U32 _StringTable::hashString(const char* str)
 {
-   if (sgInitTable)
-      initTolowerTable();
+	if (sgInitTable)
+		initTolowerTable();
 
-   U32 ret = 0;
-   char c;
-   while((c = *str++) != 0) {
-      ret <<= 1;
-      ret ^= sgHashTable[c];
-   }
-   return ret;
+	U32 ret = 0;
+	char c;
+	while ((c = *str++) != 0) {
+		ret <<= 1;
+		ret ^= sgHashTable[c];
+	}
+	return ret;
 }
 
 U32 _StringTable::hashStringn(const char* str, S32 len)
 {
-   if (sgInitTable)
-      initTolowerTable();
+	if (sgInitTable)
+		initTolowerTable();
 
-   U32 ret = 0;
-   char c;
-   while((c = *str++) != 0 && len--) {
-      ret <<= 1;
-      ret ^= sgHashTable[c];
-   }
-   return ret;
+	U32 ret = 0;
+	char c;
+	while ((c = *str++) != 0 && len--) {
+		ret <<= 1;
+		ret ^= sgHashTable[c];
+	}
+	return ret;
 }
 
 //--------------------------------------
 _StringTable::_StringTable()
 {
-   buckets = (Node **) dMalloc(csm_stInitSize * sizeof(Node *));
-   for(U32 i = 0; i < csm_stInitSize; i++) {
-      buckets[i] = 0;
-   }
-
-   numBuckets = csm_stInitSize;
-   itemCount = 0;
-
-   // Insert empty string.
-   EmptyString = insert("");
+	// Insert empty string.
+	EmptyString = insert("");
 }
 
 //--------------------------------------
 _StringTable::~_StringTable()
 {
-   dFree(buckets);
+	for (std::pair<std::string, StringTableEntry> itr : _table)
+		delete (itr.second);
 }
 
 
 //--------------------------------------
 void _StringTable::create()
 {
-    if(!_gStringTable)
-    {
-        _gStringTable = new _StringTable;
-    }
+	if (!_gStringTable)
+	{
+		_gStringTable = new _StringTable;
+	}
 }
 
 
 //--------------------------------------
 void _StringTable::destroy()
 {
-   AssertFatal(StringTable != NULL, "StringTable::destroy: StringTable does not exist.");
-   delete StringTable;
-   _gStringTable = NULL;
+	AssertFatal(StringTable != nullptr, "StringTable::destroy: StringTable does not exist.");
+	delete StringTable;
+	_gStringTable = nullptr;
 }
 
 //--------------------------------------
-StringTableEntry _StringTable::insert(const char* val, const bool  caseSens)
+StringTableEntry _StringTable::insert(const char* src, const bool  caseSens)
 {
-   if ( val == NULL )
-       return StringTable->EmptyString;
+	if (src == nullptr)
+		return StringTable->EmptyString;
 
-   MutexHandle mutex;
-   mutex.lock(&mMutex, true);
+	std::lock_guard<std::mutex> lock(mMutex);
 
-   Node **walk, *temp;
-   U32 key = hashString(val);
-   walk = &buckets[key % numBuckets];
-   while((temp = *walk) != NULL)   {
-      if(caseSens && !dStrcmp(temp->val, val))
-         return temp->val;
-      else if(!caseSens && !dStricmp(temp->val, val))
-         return temp->val;
-      walk = &(temp->next);
-   }
-   char *ret = 0;
-   if(!*walk) {
-      *walk = (Node *) mempool.alloc(sizeof(Node));
-      (*walk)->next = 0;
-      (*walk)->val = (char *) mempool.alloc(dStrlen(val) + 1);
-      dStrcpy((*walk)->val, val);
-      ret = (*walk)->val;
-      itemCount ++;
-   }
-   if(itemCount > 2 * numBuckets) {
-      resize(4 * numBuckets - 1);
-   }
-   return ret;
+	std::string val(src);
+	if (!caseSens)
+		std::transform(val.begin(), val.end(), val.begin(), tolower);
+
+	if (_table.count(val) == 0)
+	{
+		char * cstr = new char[val.length() + 1];
+		std::strcpy(cstr, src);
+
+		_table[val] = cstr;
+		_index1[cstr] = (U32)_table.size();
+		_index2[(U32)_table.size()] = cstr;
+	}
+
+	return _table[val];
 }
 
 //--------------------------------------
-StringTableEntry _StringTable::insertn(const char* src, S32 len, const bool  caseSens)
+StringTableEntry _StringTable::insertn(const char* src, size_t len, const bool  caseSens)
 {
-   if ( src == NULL )
-       return StringTable->EmptyString;
+	if (src == nullptr)
+		return StringTable->EmptyString;
 
-   MutexHandle mutex;
-   mutex.lock(&mMutex, true);
-
-   char val[1024];
-   AssertFatal(len < sizeof(val), "Invalid string to insertn");
-   dStrncpy(val, src, len);
-   val[len] = 0;
-   return insert(val, caseSens);
+	char val[1024];
+	AssertFatal(len < sizeof(val), "Invalid string to insertn");
+	dStrncpy(val, src, len);
+	val[len] = 0;
+	return insert(val, caseSens);
 }
 
 //--------------------------------------
-StringTableEntry _StringTable::lookup(const char* val, const bool  caseSens)
+StringTableEntry _StringTable::lookup(const char* src, const bool  caseSens)
 {
-   if ( val == NULL )
-       return StringTable->EmptyString;
+	if (src == nullptr)
+		return StringTable->EmptyString;
 
-   MutexHandle mutex;
-   mutex.lock(&mMutex, true);
+	std::lock_guard<std::mutex> lock(mMutex);
 
-   Node **walk, *temp;
-   U32 key = hashString(val);
-   walk = &buckets[key % numBuckets];
-   while((temp = *walk) != NULL)   {
-      if(caseSens && !dStrcmp(temp->val, val))
-            return temp->val;
-      else if(!caseSens && !dStricmp(temp->val, val))
-         return temp->val;
-      walk = &(temp->next);
-   }
-   return NULL;
+	std::string val(src);
+	if (!caseSens)
+		std::transform(val.begin(), val.end(), val.begin(), tolower);
+
+	if (_table.find(val) == _table.end())
+		return nullptr;
+
+	return _table[val];
 }
 
 //--------------------------------------
-StringTableEntry _StringTable::lookupn(const char* val, S32 len, const bool  caseSens)
+StringTableEntry _StringTable::lookupn(const char* src, S32 len, const bool  caseSens)
 {
-   if ( val == NULL )
-       return StringTable->EmptyString;
-       
-   MutexHandle mutex;
-   mutex.lock(&mMutex, true);
+	if (src == nullptr)
+		return StringTable->EmptyString;
 
-   Node **walk, *temp;
-   U32 key = hashStringn(val, len);
-   walk = &buckets[key % numBuckets];
-   while((temp = *walk) != NULL) {
-      if(caseSens && !dStrncmp(temp->val, val, len) && temp->val[len] == 0)
-         return temp->val;
-      else if(!caseSens && !dStrnicmp(temp->val, val, len) && temp->val[len] == 0)
-         return temp->val;
-      walk = &(temp->next);
-   }
-   return NULL;
+	char val[1024];
+	AssertFatal(len < sizeof(val), "Invalid string to insertn");
+	dStrncpy(val, src, len);
+	val[len] = 0;
+
+	return lookup(val, caseSens);
 }
 
-//--------------------------------------
-void _StringTable::resize(const U32 newSize)
+
+StringTableEntry _StringTable::readStream(std::iostream &stream, bool caseSens)
 {
-   Node *head = NULL, *walk, *temp;
-   U32 i;
-   // reverse individual bucket lists
-   // we do this because new strings are added at the end of bucket
-   // lists so that case sens strings are always after their
-   // corresponding case insens strings
-
-   for(i = 0; i < numBuckets; i++) {
-      walk = buckets[i];
-      while(walk)
-      {
-         temp = walk->next;
-         walk->next = head;
-         head = walk;
-         walk = temp;
-      }
-   }
-   buckets = (Node **) dRealloc(buckets, newSize * sizeof(Node));
-   for(i = 0; i < newSize; i++) {
-      buckets[i] = 0;
-   }
-   numBuckets = newSize;
-   walk = head;
-   while(walk) {
-      U32 key;
-      Node *temp = walk;
-
-      walk = walk->next;
-      key = hashString(temp->val);
-      temp->next = buckets[key % newSize];
-      buckets[key % newSize] = temp;
-   }
+	// Read Taml signature.
+	char buf[256];
+	U8 count = 0;
+	stream >> count;
+	stream.read(buf, count);
+	return StringTable->insert(buf, caseSens);
 }
 
+U32 _StringTable::STEtoU32(StringTableEntry ste) {
+
+	if (ste == nullptr)
+		return 0;
+
+	AssertFatal(_index1.count(ste) > 0, "No valid entry in StringTable");
+	return _index1[ste];
+
+}
+
+StringTableEntry _StringTable::U32toSTE(U32 in) {
+
+	if (in == 0)
+		return nullptr;
+
+	AssertFatal(_index2.count(in) > 0, "No valid entry in StringTable");
+	return _index2[in];
+}

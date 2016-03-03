@@ -35,7 +35,7 @@ class FilterStream : public std::iostream
 	  FilterStream();
    virtual ~FilterStream();
 
-   virtual bool    attachStream(std::iostream* io_pSlaveStream) = 0;
+   virtual bool attachStream(std::iostream*stream) = 0;
    virtual void    detachStream()                        = 0;
    virtual std::iostream* getStream()                           = 0;
 
@@ -43,7 +43,7 @@ class FilterStream : public std::iostream
    //  whatever is returned from getStream();
   protected:
    bool _read(char* out_pBuffer, const U32 in_numBytes);
-   bool _write(const char* in_pBuffer, const U32 in_numBytes);
+   bool _write(const U32 numBytes, const char *buffer);
   public:
 //   bool hasCapability(const Capability) const;
 

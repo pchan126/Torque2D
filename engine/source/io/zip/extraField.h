@@ -23,7 +23,7 @@
 #ifndef _EXTRAFIELD_H_
 #define _EXTRAFIELD_H_
 
-class Stream;
+#include <iostream>
 
 namespace Zip
 {
@@ -64,7 +64,7 @@ public:
    
    inline U16 getID()                  { return mID; }
 
-   virtual bool read(Stream *stream) = 0;
+   virtual bool read(std::iostream &stream) = 0;
 
    // Run time creation methods
    static ExtraField *create(U16 id);

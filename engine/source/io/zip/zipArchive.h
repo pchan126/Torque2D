@@ -329,8 +329,8 @@ protected:
 
    void updateFile(ZipTempStream *stream);
    bool rebuildZip();
-   bool copyFileToNewZip(CentralDir *cdir, Stream *newZipStream);
-   bool writeDirtyFileToNewZip(ZipTempStream *fileStream, Stream *zipStream);
+   bool copyFileToNewZip(CentralDir *cdir, std::iostream*newZipStream);
+   bool writeDirtyFileToNewZip(ZipTempStream *fileStream, std::iostream *zipStream);
 
    U32 localTimeToDOSTime(const Platform::LocalTime &t);
    U32 currentTimeToDOSTime();

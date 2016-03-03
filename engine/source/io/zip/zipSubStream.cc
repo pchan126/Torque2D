@@ -22,6 +22,7 @@
 
 #include "zlib.h"
 #include "io/zip/zipSubStream.h"
+#include "io/stream.h"
 
 
 const U32 ZipSubRStream::csm_streamCaps      = U32(Stream::StreamRead) | U32(Stream::StreamPosition);
@@ -52,13 +53,13 @@ ZipSubRStream::~ZipSubRStream()
 }
 
 //--------------------------------------
-bool ZipSubRStream::attachStream(Stream* io_pSlaveStream)
+bool ZipSubRStream::attachStream(std::iostream* io_pSlaveStream)
 {
    AssertFatal(io_pSlaveStream != NULL, "NULL Slave stream?");
    AssertFatal(m_pStream == NULL,       "Already attached!");
 
    m_pStream          = io_pSlaveStream;
-   m_originalSlavePosition = io_pSlaveStream->getPosition();
+   m_originalSlavePosition = (U32)io_pSlaveStream->tellg();
    m_uncompressedSize = 0;
    m_currentPosition  = 0;
    m_EOS = false;
@@ -78,7 +79,6 @@ bool ZipSubRStream::attachStream(Stream* io_pSlaveStream)
    m_pZipStream->total_in = 0;
    inflateInit2(m_pZipStream, -MAX_WBITS);
 
-   setStatus(Ok);
    return true;
 }
 
@@ -101,11 +101,10 @@ void ZipSubRStream::detachStream()
    m_uncompressedSize = 0;
    m_currentPosition  = 0;
    m_EOS              = false;
-   setStatus(Closed);
 }
 
 //--------------------------------------
-Stream* ZipSubRStream::getStream()
+std::iostream* ZipSubRStream::getStream()
 {
    return m_pStream;
 }
@@ -119,24 +118,24 @@ void ZipSubRStream::setUncompressedSize(const U32 in_uncSize)
 }
 
 //--------------------------------------
-bool ZipSubRStream::_read(const U32 in_numBytes, void *out_pBuffer)
+bool ZipSubRStream::_read(char* out_pBuffer, const U32 in_numBytes)
 {
    if (in_numBytes == 0)
       return true;
 
    AssertFatal(out_pBuffer != NULL, "NULL output buffer");
-   if (getStatus() == Closed) {
+   if (!(m_pStream->good())) {
       AssertFatal(false, "Attempted read from closed stream");
       return false;
    }
 
 
-   if (Ok != getStatus())
+   if (!m_pStream->good())
       return false;
 
    if (m_EOS)
    {
-      setStatus(EOS);
+//      setStatus(EOS);
       return true;
    };
 
@@ -180,7 +179,7 @@ bool ZipSubRStream::_read(const U32 in_numBytes, void *out_pBuffer)
          if (m_pZipStream->avail_out != 0)
             m_EOS = true;
 
-         setStatus(Ok);
+//         setStatus(Ok);
          m_currentPosition += m_pZipStream->total_out;
          return true;
       }
@@ -189,17 +188,17 @@ bool ZipSubRStream::_read(const U32 in_numBytes, void *out_pBuffer)
                "Error, didn't finish the decompression!");
 
    // If we're here, everything went peachy...
-   setStatus(Ok);
+//   setStatus(Ok);
    m_currentPosition += m_pZipStream->total_out;
 
    return true;
 }
 
 //--------------------------------------
-bool ZipSubRStream::hasCapability(const Capability in_cap) const
-{
-   return (csm_streamCaps & U32(in_cap)) != 0;
-}
+//bool ZipSubRStream::hasCapability(const Capability in_cap) const
+//{
+//   return (csm_streamCaps & U32(in_cap)) != 0;
+//}
 
 //--------------------------------------
 U32 ZipSubRStream::getPosition() const
@@ -216,12 +215,13 @@ bool ZipSubRStream::setPosition(const U32 in_newPosition)
 
    if (in_newPosition == 0)
    {
-      Stream* pStream = getStream();
+      std::iostream* pStream = getStream();
       U32 resetPosition = m_originalSlavePosition;
       U32 uncompressedSize = m_uncompressedSize;
       detachStream();
-      pStream->setPosition(resetPosition);
-      attachStream(pStream);
+      pStream->seekp(pStream->beg + resetPosition);
+	  pStream->seekg(pStream->beg + resetPosition);
+	  attachStream(pStream);
       setUncompressedSize(uncompressedSize);
       return true;
    }
@@ -233,12 +233,13 @@ bool ZipSubRStream::setPosition(const U32 in_newPosition)
       U32 newPosition = in_newPosition;
       if (newPosition < m_currentPosition)
       {
-         Stream* pStream = getStream();
+         auto pStream = getStream();
          U32 resetPosition = m_originalSlavePosition;
          U32 uncompressedSize = m_uncompressedSize;
          detachStream();
-         pStream->setPosition(resetPosition);
-         attachStream(pStream);
+         pStream->seekp(pStream->beg + resetPosition);
+		 pStream->seekg(pStream->beg + resetPosition);
+		 attachStream(pStream);
          setUncompressedSize(uncompressedSize);
       }
       else
@@ -251,7 +252,7 @@ bool ZipSubRStream::setPosition(const U32 in_newPosition)
       while (newPosition >= 2048)
       {
          newPosition -= 2048;
-         if (!_read(2048,buffer))
+         if (!_read(buffer,2048))
          {
             bRet = false;
             break;
@@ -259,7 +260,7 @@ bool ZipSubRStream::setPosition(const U32 in_newPosition)
       };
       if (bRet && newPosition > 0)
       {
-         if (!_read(newPosition,buffer))
+         if (!_read(buffer,newPosition))
          {
             bRet = false;
          };
@@ -286,11 +287,12 @@ U32 ZipSubRStream::getStreamSize()
 U32 ZipSubRStream::fillBuffer(const U32 in_attemptSize)
 {
    AssertFatal(m_pStream != NULL, "No stream to fill from?");
-   AssertFatal(m_pStream->getStatus() != Stream::Closed,
-               "Fill from a closed stream?");
+   AssertFatal(m_pStream->good(), "Fill from a closed stream?");
 
-   U32 streamSize = m_pStream->getStreamSize();
-   U32 currPos    = m_pStream->getPosition();
+   U32 currPos = (U32)m_pStream->tellg();
+   m_pStream->seekg(0, m_pStream->end);
+   U32 streamSize = m_pStream->tellg();
+   m_pStream->seekg(0, m_pStream->beg + currPos);
 
    U32 actualReadSize;
    if (in_attemptSize + currPos > streamSize) {
@@ -299,7 +301,8 @@ U32 ZipSubRStream::fillBuffer(const U32 in_attemptSize)
       actualReadSize = in_attemptSize;
    }
 
-   if (m_pStream->read(actualReadSize, m_pInputBuffer) == true) {
+   m_pStream->read((char*)m_pInputBuffer, actualReadSize);
+   if ( m_pStream->good() ) {
       return actualReadSize;
    } else {
       AssertWarn(false, "Read failed while trying to fill buffer");
@@ -325,7 +328,7 @@ ZipSubWStream::~ZipSubWStream()
 }
 
 //--------------------------------------
-bool ZipSubWStream::attachStream(Stream* io_pSlaveStream)
+bool ZipSubWStream::attachStream(std::iostream* io_pSlaveStream)
 {
    AssertFatal(io_pSlaveStream != NULL, "NULL Slave stream?");
    AssertFatal(m_pStream == NULL,       "Already attached!");
@@ -352,7 +355,7 @@ bool ZipSubWStream::attachStream(Stream* io_pSlaveStream)
 
    deflateInit2(m_pZipStream, Z_DEFAULT_COMPRESSION, Z_DEFLATED, -MAX_WBITS, MAX_MEM_LEVEL, Z_DEFAULT_STRATEGY);
 
-   setStatus(Ok);
+//   setStatus(Ok);
    return true;
 }
 
@@ -366,7 +369,7 @@ void ZipSubWStream::detachStream()
       deflate(m_pZipStream, Z_FINISH);
 
       // write the remainder
-      m_pStream->write(csm_bufferSize - m_pZipStream->avail_out, m_pOutputBuffer);
+      m_pStream->write((char*)m_pOutputBuffer, csm_bufferSize - m_pZipStream->avail_out);
 
       // close out zip stream...
       deflateEnd(m_pZipStream);
@@ -382,46 +385,46 @@ void ZipSubWStream::detachStream()
 
    m_pStream      = NULL;
    m_currPosition = 0;
-   setStatus(Closed);
+//   setStatus(Closed);
 }
 
 //--------------------------------------
-Stream* ZipSubWStream::getStream()
+std::iostream* ZipSubWStream::getStream()
 {
    return m_pStream;
 }
 
 //--------------------------------------
-bool ZipSubWStream::_read(const U32, void*)
+bool ZipSubWStream::_read(char* out_pBuffer, const U32 in_numBytes)
 {
    AssertFatal(false, "Cannot read from a ZipSubWStream");
 
-   setStatus(IllegalCall);
+//   setStatus(IllegalCall);
    return false;
 }
 
 //--------------------------------------
-bool ZipSubWStream::_write(const U32 numBytes, const void *pBuffer)
+bool ZipSubWStream::_write(const char* in_pBuffer, const U32 in_numBytes)
 {
-   if (numBytes == 0)
+   if (in_numBytes == 0)
       return true;
 
-   AssertFatal(pBuffer != NULL, "NULL input buffer");
-   if (getStatus() == Closed)
+   AssertFatal(in_pBuffer != NULL, "NULL input buffer");
+   if (!m_pStream->good())
    {
       AssertFatal(false, "Attempted write to a closed stream");
       return false;
    }
 
-   m_pZipStream->next_in = (U8*)pBuffer;
-   m_pZipStream->avail_in = numBytes;
+   m_pZipStream->next_in = (U8*)in_pBuffer;
+   m_pZipStream->avail_in = in_numBytes;
 
    // write as many bufferSize chunks as possible
    while(m_pZipStream->avail_in != 0)
    {
       if(m_pZipStream->avail_out == 0)
       {
-         if(!m_pStream->write(csm_bufferSize, m_pOutputBuffer))
+         if(!m_pStream->write( (char*)m_pOutputBuffer, csm_bufferSize))
             return(false);
 
          m_pZipStream->next_out = m_pOutputBuffer;
@@ -433,17 +436,17 @@ bool ZipSubWStream::_write(const U32 numBytes, const void *pBuffer)
       AssertFatal(retVal !=  Z_BUF_ERROR, "ZipSubWStream::_write: invalid buffer");
    }
 
-   setStatus(Ok);
+//   setStatus(Ok);
    m_currPosition += m_pZipStream->total_out;
 
    return true;
 }
 
 //--------------------------------------
-bool ZipSubWStream::hasCapability(const Capability in_cap) const
-{
-   return (csm_streamCaps & U32(in_cap)) != 0;
-}
+//bool ZipSubWStream::hasCapability(const Capability in_cap) const
+//{
+//   return (csm_streamCaps & U32(in_cap)) != 0;
+//}
 
 //--------------------------------------
 U32 ZipSubWStream::getPosition() const

@@ -31,7 +31,7 @@ class ZipCryptRStream : public FilterStream
 {
    typedef FilterStream Parent;
 
-   Stream *mStream;
+   std::iostream *mStream;
 
    S32 mStreamStartPos;
    S32 mFileStartPos;
@@ -41,7 +41,7 @@ class ZipCryptRStream : public FilterStream
    
    const char *mPassword;
 
-   U32 fillBuffer(const U32 in_attemptSize, void *pBuffer);
+   U32 fillBuffer(char* pBuffer, const U32 in_attemptSize);
 
 public:
    ZipCryptRStream();
@@ -51,15 +51,15 @@ public:
    inline void setFileEndPos(S32 pos)        { mFileEndPos = pos; }
 
    // Overrides of FilterStream
-   bool attachStream(Stream* io_pSlaveStream);
+   bool attachStream(std::iostream *io_pSlaveStream);
    void detachStream();
-   Stream *getStream()                       { return mStream; }
+   std::iostream *getStream()                       { return mStream; }
 
    U32  getPosition() const;
    bool setPosition(const U32 in_newPosition);
 
 protected:
-   bool _read(const U32 in_numBytes,  void* out_pBuffer);
+   bool _read(char* out_pBuffer, const U32 in_numBytes);
 
    void updateKeys(const U8 c);
    U8 decryptByte();

@@ -69,7 +69,7 @@ public:
    /// Gets the position in the stream
    U32  getPosition() const
    {
-		int pos = mStream->tellp();
+		U32 pos = (U32)mStream->tellp();
 		return pos;
    }
 
@@ -83,9 +83,9 @@ public:
    /// Gets the size of the stream
    U32  getStreamSize()
    {
-	   int pos = mStream->tellp();
+	   int pos = (int)mStream->tellp();
 	   mStream->seekp(0, mStream->end);
-	   int size = mStream->tellp();
+	   int size = (int)mStream->tellp();
 	   mStream->seekp(0, mStream->beg + pos);
 	   return size;
    }
@@ -106,7 +106,7 @@ public:
    /// @see StringTable
    const char *readSTString(bool casesens = false)
    {
-      return mStream ? mStream->readSTString(casesens) : NULL;
+	   return mStream ? StreamFn::readSTString(*mStream, casesens) : NULL;
    }
 
    /// Reads a string of maximum 255 characters long
@@ -120,22 +120,23 @@ public:
    /// writeString is safer.
    void writeLongString(U32 maxStringLen, const char *string)
    {
-      if(mStream)
-         mStream->writeLongString(maxStringLen, string);
+	   if (mStream)
+		   StreamFn::writeLongString(*mStream, maxStringLen, string);
    }
 
    /// Writes a string to the stream.
    void writeString(const char *stringBuf, S32 maxLen=255)
    {
-      if(mStream)
-         mStream->writeString(stringBuf, maxLen);
+	   if (mStream)
+		   StreamFn::writeString(*mStream, stringBuf, maxLen);
    }
 
    /// Copy the contents of another stream into this one
    bool copyFrom(StreamObject *other)
    {
-      if(mStream)
-         return mStream->copyFrom(other->getStream());
+	   if (mStream)
+		   return StreamFn::streamCopy(*mStream, *(other->getStream()));
+//         return mStream->copyFrom(other->getStream());
 
       return false;
    }

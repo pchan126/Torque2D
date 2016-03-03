@@ -44,7 +44,7 @@ protected:
    // StreamObjects are pooled and reused to avoid creating tons of SimObjects
    VectorPtr<StreamObject *> mStreamPool;
 
-   StreamObject *createStreamObject(Stream *stream);
+   StreamObject *createStreamObject(std::iostream *stream);
 
 public:
    ZipObject();

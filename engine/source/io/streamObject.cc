@@ -33,7 +33,7 @@ StreamObject::StreamObject()
    mStream = NULL;
 }
 
-StreamObject::StreamObject(Stream *stream)
+StreamObject::StreamObject(std::iostream *stream)
 {
    mStream = stream;
 }
@@ -65,24 +65,17 @@ const char * StreamObject::getStatus()
    if(mStream == NULL)
       return "";
 
-   switch(mStream->getStatus())
-   {
-      case Stream::Ok:
+   if (mStream->good())
          return "Ok";
-      case Stream::IOError:
-         return "IOError";
-      case Stream::EOS:
-         return "EOS";
-      case Stream::IllegalCall:
-         return "IllegalCall";
-      case Stream::Closed:
-         return "Closed";
-      case Stream::UnknownError:
-         return "UnknownError";
 
-      default:
-         return "Invalid";
-   }
+   if (mStream->eof())
+	   return "EOS";
+
+   return "UnknownError";
+
+//      default:
+//         return "Invalid";
+   
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -93,7 +86,7 @@ const char * StreamObject::readLine()
       return NULL;
 
    char *buffer = Con::getReturnBuffer(256);
-   mStream->readLine((U8 *)buffer, 256);
+   mStream->getline(buffer, 256);
    return buffer;
 }
 
@@ -103,7 +96,7 @@ const char * StreamObject::readString()
       return NULL;
 
    char *buffer = Con::getReturnBuffer(256);
-   mStream->readString(buffer);
+   StreamFn::readString(*mStream, buffer);
    return buffer;
 }
 
@@ -113,6 +106,6 @@ const char *StreamObject::readLongString(U32 maxStringLen)
       return NULL;
 
    char *buffer = Con::getReturnBuffer(maxStringLen + 1);
-   mStream->readLongString(maxStringLen, buffer);
+   StreamFn::readLongString(*mStream, maxStringLen, buffer);
    return buffer;
 }

@@ -41,13 +41,12 @@ ZipCryptRStream::~ZipCryptRStream()
 // Private Methods
 //////////////////////////////////////////////////////////////////////////
 
-U32 ZipCryptRStream::fillBuffer(const U32 in_attemptSize, void *pBuffer)
+U32 ZipCryptRStream::fillBuffer(char* pBuffer, const U32 in_attemptSize)
 {
    AssertFatal(mStream != NULL, "No stream to fill from?");
-   AssertFatal(mStream->getStatus() != Stream::Closed,
-      "Fill from a closed stream?");
+   AssertFatal(mStream->good(), "Fill from a closed stream?");
 
-   U32 currPos    = mStream->getPosition();
+   U32 currPos = mStream->tellg();
 
    U32 actualReadSize;
    if (in_attemptSize + currPos > (U32)mFileEndPos) {
@@ -55,8 +54,8 @@ U32 ZipCryptRStream::fillBuffer(const U32 in_attemptSize, void *pBuffer)
    } else {
       actualReadSize = in_attemptSize;
    }
-
-   if (mStream->read(actualReadSize, pBuffer) == true) {
+   mStream->read(pBuffer, actualReadSize);
+   if (mStream->good()) {
       return actualReadSize;
    } else {
       AssertWarn(false, "Read failed while trying to fill buffer");
@@ -83,16 +82,16 @@ void ZipCryptRStream::setPassword(const char *password)
    }
 }
 
-bool ZipCryptRStream::attachStream(Stream* io_pSlaveStream)
+bool ZipCryptRStream::attachStream(std::iostream* io_pSlaveStream)
 {
    mStream = io_pSlaveStream;
-   mStreamStartPos = mStream->getPosition();
+   mStreamStartPos = mStream->tellg();
 
    // [tom, 12/20/2005] Encrypted zip files have an extra 12 bytes
    // of entropy before the file data.
 
    U8 buffer[12];
-   if(mStream->read(sizeof(buffer), &buffer))
+   if(mStream->read((char*)buffer, sizeof(buffer)))
    {
       // Initialize keys
       for(S32 i = 0;i < sizeof(buffer);i++)
@@ -101,9 +100,7 @@ bool ZipCryptRStream::attachStream(Stream* io_pSlaveStream)
       }
       
       // if(buffer[11] !)
-      mFileStartPos = mStream->getPosition();
-
-      setStatus(Ok);
+      mFileStartPos = mStream->tellg();
       return true;
    }
    return false;
@@ -115,13 +112,11 @@ void ZipCryptRStream::detachStream()
 
    // Clear keys, just in case
    dMemset(&mKeys, 0, sizeof(mKeys));
-
-   setStatus(Closed);
 }
 
 U32 ZipCryptRStream::getPosition() const
 {
-   return mStream->getPosition();
+   return mStream->tellg();
 }
 
 bool ZipCryptRStream::setPosition(const U32 in_newPosition)
@@ -136,12 +131,12 @@ bool ZipCryptRStream::setPosition(const U32 in_newPosition)
    if(in_newPosition < curPos)
    {
       // Reposition to start of stream
-      Stream *stream = getStream();
+      std::iostream *stream = getStream();
       U32 startPos = mStreamStartPos;
       const char *password = mPassword;
       detachStream();
       setPassword(password);
-      stream->setPosition(startPos);
+      stream->seekp(0, stream->beg + startPos);
       ret = attachStream(stream);
 
       if(in_newPosition == mFileStartPos)
@@ -153,14 +148,14 @@ bool ZipCryptRStream::setPosition(const U32 in_newPosition)
    while(readSize >= 1024)
    {
       readSize -= 1024;
-      ret = _read(1024, buffer);
+      ret = _read((char*)buffer, 1024);
       if(! ret)
          break;
    }
 
    if(readSize > 0 && ret)
    {
-      ret = _read(readSize, buffer);
+      ret = _read((char*)buffer, readSize);
    }
    delete [] buffer;
 
@@ -187,9 +182,9 @@ U8 ZipCryptRStream::decryptByte()
    return (temp * (temp ^ 1)) >> 8;
 }
 
-bool ZipCryptRStream::_read(const U32 in_numBytes, void* out_pBuffer)
+bool ZipCryptRStream::_read(char* out_pBuffer, const U32 in_numBytes)
 {
-   U32 numRead = fillBuffer(in_numBytes, out_pBuffer);
+   U32 numRead = fillBuffer(out_pBuffer, in_numBytes);
    if(numRead > 0)
    {
       // Decrypt

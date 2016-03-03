@@ -420,7 +420,7 @@ ConsoleFunctionWithDocs(isValidImageFile, ConsoleBool, 2, 2, (string filePath))
     if (!ext)
         return false;	// no extension
 
-    Stream *stream = ResourceManager->openStream(scriptFilenameBuffer);
+    auto *stream = ResourceManager->openStream(scriptFilenameBuffer);
     if(stream == NULL)
         return false;
 
@@ -429,7 +429,7 @@ ConsoleFunctionWithDocs(isValidImageFile, ConsoleBool, 2, 2, (string filePath))
     if (dStricmp(ext, ".jpg") == 0)
     {
         U8 bArray[2];
-        stream->read(2, bArray);
+        stream->read((char*)bArray, 2);
         // check header signature
         ret = ((bArray[0] == 0xFF) && (bArray[1] == 0xD8));
     } 
@@ -437,7 +437,7 @@ ConsoleFunctionWithDocs(isValidImageFile, ConsoleBool, 2, 2, (string filePath))
     {
         int i = 0;
         U8 bArray[8];
-        stream->read(8, bArray);
+        stream->read((char*)bArray, 8);
         // check header signature
         ret = ((bArray[i++] == 0x89) && (bArray[i++] == 0x50) && (bArray[i++] == 0x4E) && (bArray[i++] == 0x47));
     }

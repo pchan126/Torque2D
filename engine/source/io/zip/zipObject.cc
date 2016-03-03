@@ -45,7 +45,7 @@ IMPLEMENT_CONOBJECT(ZipObject);
 // Protected Methods
 //////////////////////////////////////////////////////////////////////////
 
-StreamObject *ZipObject::createStreamObject(Stream *stream)
+StreamObject * ZipObject::createStreamObject(std::iostream *stream)
 {
    for(S32 i = 0;i < mStreamPool.size();++i)
    {
@@ -118,8 +118,8 @@ StreamObject * ZipObject::openFileForRead(const char *filename)
    if(mZipArchive == NULL)
       return NULL;
 
-   Stream *stream;
-   if((stream = mZipArchive->openFile(filename, Zip::ZipArchive::Read)))
+   auto *stream = mZipArchive->openFile(filename, Zip::ZipArchive::Read);
+   if(stream)
       return createStreamObject(stream);
 
    return NULL;
@@ -130,8 +130,8 @@ StreamObject * ZipObject::openFileForWrite(const char *filename)
    if(mZipArchive == NULL)
       return NULL;
 
-   Stream *stream;
-   if((stream = mZipArchive->openFile(filename, Zip::ZipArchive::Write)))
+   auto *stream = mZipArchive->openFile(filename, Zip::ZipArchive::Write);
+   if(stream)
       return createStreamObject(stream);
 
    return NULL;
@@ -156,8 +156,10 @@ void ZipObject::closeFile(StreamObject *stream)
 
    AssertFatal(found, "ZipObject::closeFile() - Attempting to close stream not opened by this ZipObject");
 #endif
+   std::fstream* temp = dynamic_cast<std::fstream*>(stream->getStream());
+   if (temp)
+	   mZipArchive->closeFile(temp);
 
-   mZipArchive->closeFile(stream->getStream());
    stream->setStream(NULL);
 }
 

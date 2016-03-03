@@ -84,7 +84,7 @@ namespace StreamFn {
 	inline size_t getStreamSize(std::istream& is)
 	{
 		is.seekg(0, is.end);
-		size_t length = is.tellg();
+		size_t length = (size_t)is.tellg();
 		is.seekg(0, is.beg);
 		return length;
 	}

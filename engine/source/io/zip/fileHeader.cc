@@ -71,25 +71,25 @@ FileHeader::~FileHeader()
 // Protected Methods
 //////////////////////////////////////////////////////////////////////////
 
-bool FileHeader::readExtraFields(Stream *stream, U16 efLen)
+bool FileHeader::readExtraFields(std::iostream &stream, U16 efLen)
 {
    bool ret = true;
 
-   U32 pos = stream->getPosition();
+   U32 pos = stream.tellg();
    U32 end = pos + efLen;
 
-   while(stream->getPosition() < end)
+   while(stream.tellg() < end)
    {
       U16 fieldSig, fieldSize;
 
       ret = false;
 
-      ret |= stream->read(&fieldSig);
-      ret |= stream->read(&fieldSize);
-      if(! ret)
+      stream >> fieldSig;
+      stream >> fieldSize;
+      if(! stream.good())
          break;
 
-      pos = stream->getPosition();
+      pos = stream.tellg();
 
       ExtraField *ef = ExtraField::create(fieldSig);
       if(ef)
@@ -102,7 +102,7 @@ bool FileHeader::readExtraFields(Stream *stream, U16 efLen)
             mExtraFields.push_back(ef);
       }
 
-      stream->setPosition(pos + fieldSize);
+      stream.seekg(0, stream.beg + pos + fieldSize);
    }
    
    return ret;
@@ -112,27 +112,27 @@ bool FileHeader::readExtraFields(Stream *stream, U16 efLen)
 // Public Methods
 //////////////////////////////////////////////////////////////////////////
 
-bool FileHeader::read(Stream *stream)
+bool FileHeader::read(std::iostream &stream)
 {
-   stream->read(&mHeaderSig);
+   stream >> mHeaderSig;
    if(mHeaderSig != mFileHeaderSignature)
       return false;
 
-   stream->read(&mExtractVer);
-   stream->read(&mFlags);
-   stream->read(&mCompressMethod);
-   stream->read(&mModTime);
-   stream->read(&mModDate);
-   stream->read(&mCRC32);
-   stream->read(&mCompressedSize);
-   stream->read(&mUncompressedSize);
+   stream >> mExtractVer;
+   stream >> mFlags;
+   stream >> mCompressMethod;
+   stream >> mModTime;
+   stream >> mModDate;
+   stream >> mCRC32;
+   stream >> mCompressedSize;
+   stream >> mUncompressedSize;
    
    U16 fnLen, efLen;
-   stream->read(&fnLen);
-   stream->read(&efLen);
+   stream >> fnLen;
+   stream >> efLen;
 
    char *fn = new char[fnLen + 1];
-   stream->read(fnLen, fn);
+   stream.read( fn, fnLen);
    fn[fnLen] = 0;
 
    SAFE_DELETE_ARRAY(mFilename);
@@ -141,28 +141,28 @@ bool FileHeader::read(Stream *stream)
    return readExtraFields(stream, efLen);
 }
 
-bool FileHeader::write(Stream *stream)
+bool FileHeader::write(std::iostream &stream)
 {
    mHeaderSig = mFileHeaderSignature;
 
-   stream->write(mHeaderSig);
+   stream << mHeaderSig;
    
-   stream->write(mExtractVer);
-   stream->write(mFlags);
-   stream->write(mCompressMethod);
-   stream->write(mModTime);
-   stream->write(mModDate);
-   stream->write(mCRC32);
-   stream->write(mCompressedSize);
-   stream->write(mUncompressedSize);
+   stream << mExtractVer;
+   stream << mFlags;
+   stream << mCompressMethod;
+   stream << mModTime;
+   stream << mModDate;
+   stream << mCRC32;
+   stream << mCompressedSize;
+   stream << mUncompressedSize;
 
    U16 fnLen = mFilename ? (U16)dStrlen(mFilename) : 0,
       efLen = 0;
-   stream->write(fnLen);
-   stream->write(efLen);
+   stream << fnLen;
+   stream << efLen;
 
    if(fnLen)
-      stream->write(fnLen, mFilename);
+      stream.write(mFilename, fnLen);
 
    // FIXME [tom, 1/23/2007] Write extra fields here
 

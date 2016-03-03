@@ -28,16 +28,19 @@
 
 // Debug Profiling.
 #include "debug/profiler.h"
+#include "io/streamFn.h"
+
+#include <fstream>
 
 //-----------------------------------------------------------------------------
 
-SimObject* TamlBinaryReader::read( FileStream& stream )
+SimObject* TamlBinaryReader::read( std::fstream &stream )
 {
     // Debug Profiling.
     PROFILE_SCOPE(TamlBinaryReader_Read);
 
     // Read Taml signature.
-    StringTableEntry tamlSignature = stream.readSTString();
+    StringTableEntry tamlSignature = StringTable->readStream( stream);
 
     // Is the signature correct?
     if ( tamlSignature != StringTable->insert( TAML_SIGNATURE ) )
@@ -49,7 +52,7 @@ SimObject* TamlBinaryReader::read( FileStream& stream )
 
     // Read version Id.
     U32 versionId;
-    stream.read( &versionId );
+    stream >> versionId;
 
     // Read compressed flag.
     bool compressed;

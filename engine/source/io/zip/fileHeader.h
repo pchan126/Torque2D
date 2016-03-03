@@ -22,6 +22,7 @@
 
 #include "io/zip/extraField.h"
 #include "collection/vector.h"
+#include <fstream>
 
 #ifndef _FILEHEADER_H_
 #define _FILEHEADER_H_
@@ -73,7 +74,7 @@ class FileHeader
    static const U32 mFileHeaderSignature = 0x04034b50;
 
 protected:
-   bool readExtraFields(Stream *stream, U16 efLen);
+   bool readExtraFields(std::iostream &stream, U16 efLen);
 
 public:
    U32 mHeaderSig;
@@ -97,8 +98,8 @@ public:
    FileHeader();
    virtual ~FileHeader();
 
-   virtual bool read(Stream *stream);
-   virtual bool write(Stream *stream);
+   virtual bool read(std::iostream &stream);
+   virtual bool write(std::iostream &stream);
 
    ExtraField *findExtraField(U16 id);
 

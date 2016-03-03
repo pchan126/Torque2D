@@ -42,6 +42,9 @@
 
 #include "memory/safeDelete.h"
 
+#include <fstream>
+#include "io/streamFn.h"
+
 namespace Zip
 {
 
@@ -79,10 +82,10 @@ bool ZipArchive::readCentralDirectory()
    mRoot->mIsDirectory = true;
    mRoot->mCD.setFilename("");
 
-   if(! mEOCD.findInStream(mStream))
+   if(! mEOCD.findInStream(*mStream))
       return false;
 
-   if(! mEOCD.read(mStream))
+   if(! mEOCD.read(*mStream))
       return false;
 
    if(mEOCD.mDiskNum != mEOCD.mStartCDDiskNum ||
@@ -93,13 +96,14 @@ bool ZipArchive::readCentralDirectory()
       return false;
    }
 
-   if(! mStream->setPosition(mEOCD.mCDOffset))
+   mStream->seekg(mStream->beg + mEOCD.mCDOffset);
+   if(! mStream->good())
       return false;
 
    for(S32 i = 0;i < mEOCD.mNumEntriesInThisCD;++i)
    {
       ZipEntry *ze = new ZipEntry;
-      if(! ze->mCD.read(mStream))
+      if(! ze->mCD.read(*mStream))
       {
          delete ze;
 
@@ -283,6 +287,7 @@ std::fstream *ZipArchive::createNewFile(const char *filename, Compressor *method
    insertEntry(ze);
 
    ZipTempStream *stream = new ZipTempStream(&ze->mCD);
+
    if(stream->open())
    {
       auto *retStream = method->createWriteStream(&ze->mCD, stream);
@@ -357,8 +362,8 @@ U32 ZipArchive::currentTimeToDOSTime()
 bool ZipArchive::rebuildZip()
 {
    char newZipName[1024];
-   FileStream tempFile;
-   Stream *zipFile = mStream;
+   std::fstream tempFile;
+   std::iostream *zipFile = mStream;
 
    // FIXME [tom, 1/24/2007] Temporary for expediting testing
    if(mFilename == NULL)
@@ -367,8 +372,8 @@ bool ZipArchive::rebuildZip()
   if(mMode == ReadWrite)
   {
      dSprintf(newZipName, sizeof(newZipName), "%s.new", mFilename);
-
-     if(! tempFile.open(newZipName, mMode == Write ? FileStream::Write : FileStream::ReadWrite))
+	 tempFile.open(newZipName, mMode == Write ? std::fstream::in : std::fstream::in | std::fstream::out);
+     if(!tempFile)
         return false;
 
      zipFile = &tempFile;
@@ -399,7 +404,7 @@ bool ZipArchive::rebuildZip()
    mTempFiles.clear();
 
    // Write central directory
-   mEOCD.mCDOffset = zipFile->getPosition();
+   mEOCD.mCDOffset = (U32)zipFile->tellg();
    mEOCD.mNumEntriesInThisCD = 0;
    
    for(S32 i = 0;i < mEntries.size();++i)
@@ -411,17 +416,17 @@ bool ZipArchive::rebuildZip()
          continue;
 
       ++mEOCD.mNumEntriesInThisCD;
-      if(! entry->mCD.write(zipFile))
+      if(! entry->mCD.write(*zipFile))
          break;
    }
 
-   mEOCD.mCDSize = zipFile->getPosition() - mEOCD.mCDOffset;
+   mEOCD.mCDSize = (U32)zipFile->tellg() - mEOCD.mCDOffset;
    mEOCD.mTotalEntriesInCD = mEOCD.mNumEntriesInThisCD;
 
    mEOCD.mDiskNum = 0;
    mEOCD.mStartCDDiskNum = 0;
 
-   mEOCD.write(zipFile);
+   mEOCD.write(*zipFile);
 
    if(mMode == ReadWrite)
    {
@@ -453,26 +458,26 @@ bool ZipArchive::rebuildZip()
    return true;
 }
 
-bool ZipArchive::writeDirtyFileToNewZip(ZipTempStream *fileStream, Stream *zipStream)
+bool ZipArchive::writeDirtyFileToNewZip(ZipTempStream *fileStream, std::iostream *zipStream)
 {
    CentralDir *cdir = fileStream->getCentralDir();
    FileHeader fh(*cdir);
    fh.mFilename = NULL;
    fh.setFilename(cdir->mFilename);
 
-   cdir->mLocalHeadOffset = zipStream->getPosition();
+   cdir->mLocalHeadOffset = zipStream->tellg();
 
    // Write header and file
-   if(! fh.write(zipStream))
+   if(! fh.write(*zipStream))
       return false;
 
    if(! fileStream->rewind())
       return false;
 
-   return zipStream->copyFrom(fileStream);
+   return StreamFn::streamCopy( *zipStream, *fileStream);
 }
 
-bool ZipArchive::copyFileToNewZip(CentralDir *cdir, Stream *newZipStream)
+bool ZipArchive::copyFileToNewZip(CentralDir *cdir, std::iostream*newZipStream)
 {
    // [tom, 1/24/2007] Using the stored compressor allows us to copy the raw
    // data regardless of compression method without having to re-compress it.
@@ -480,30 +485,31 @@ bool ZipArchive::copyFileToNewZip(CentralDir *cdir, Stream *newZipStream)
    if(comp == NULL)
       return false;
 
-   if(! mStream->setPosition(cdir->mLocalHeadOffset))
+   if(! mStream->seekg(0, mStream->beg + cdir->mLocalHeadOffset))
       return false;
 
    // Copy file header
    // FIXME [tom, 1/24/2007] This will currently not copy the extra fields
    FileHeader fh;
-   if(! fh.read(mStream))
+   if(! fh.read(*mStream))
       return false;
 
-   cdir->mLocalHeadOffset = newZipStream->getPosition();
+   cdir->mLocalHeadOffset = newZipStream->tellg();
 
-   if(! fh.write(newZipStream))
+   if(! fh.write(*newZipStream))
       return false;
 
    // Copy file data
-   Stream *readS = comp->createReadStream(cdir, mStream);
+   std::fstream *readS = dynamic_cast<std::fstream*>(comp->createReadStream(cdir, mStream));
    if(readS == NULL)
       return false;
 
-   bool ret = newZipStream->copyFrom(readS);
+   bool ret = StreamFn::streamCopy( *newZipStream, *readS);
 
    // [tom, 1/24/2007] closeFile() just frees the relevant filters and
    // thus it is safe to call from here.
-   closeFile(readS);
+//   closeFile(readS);
+//   readS->close();
 
    return ret;
 }
@@ -528,8 +534,9 @@ bool ZipArchive::openArchive(const char *filename, AccessMode mode /* = Read */)
 
    closeArchive();
 
-   mDiskStream = new FileStream;
-   if(mDiskStream->open(filename, (FileStream::AccessMode)mode))
+   std::fstream* mDiskStream = new std::fstream(filename, std::fstream::in);
+
+   if (mDiskStream->good())
    {
       setFilename(filename);
 
@@ -543,7 +550,7 @@ bool ZipArchive::openArchive(const char *filename, AccessMode mode /* = Read */)
    return false;
 }
 
-bool ZipArchive::openArchive(Stream *stream, AccessMode mode /* = Read */)
+bool ZipArchive::openArchive(std::fstream *stream, AccessMode mode /* = Read */)
 {
    if(mode != Read && mode != Write && mode != ReadWrite)
       return false;

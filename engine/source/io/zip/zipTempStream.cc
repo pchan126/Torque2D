@@ -32,7 +32,7 @@ namespace Zip
 // Public Methods
 //////////////////////////////////////////////////////////////////////////
 
-bool ZipTempStream::open(const char *filename, AccessMode mode)
+bool ZipTempStream::open(const char *filename, ios_base::openmode mode)
 {
    if(filename == NULL)
    {
@@ -42,12 +42,22 @@ bool ZipTempStream::open(const char *filename, AccessMode mode)
 
    mFilename = StringTable->insert(filename, true);
 
-   if(! Parent::open(filename, mode))
+   Parent::open(filename, mode);
+   if(!good())
       return false;
 
-   mStreamCaps &= ~U32(StreamPosition);
+//   mStreamCaps &= ~U32(StreamPosition);
 
    return true;
+}
+
+U32 ZipTempStream::getStreamSize()
+{
+	auto temp = tellp();
+	seekp(0, end);
+	U32 pos = (U32)tellp();
+	seekp(0, temp);
+	return U32(pos);
 }
 
 } // end namespace Zip

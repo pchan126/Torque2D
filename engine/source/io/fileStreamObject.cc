@@ -57,15 +57,17 @@ bool FileStreamObject::open(const char *filename, FileStream::AccessMode mode)
 {
    close();
 
-   if(! mFileStream.open(filename, mode))
+   mFileStream = new std::fstream(filename, std::fstream::in | std::fstream::out);
+
+   if(!mFileStream)
       return false;
 
-   mStream = &mFileStream;
+   mStream = mFileStream;
    return true;
 }
 
 void FileStreamObject::close()
 {
-   mFileStream.close();
+   mFileStream->close();
    mStream = NULL;
 }

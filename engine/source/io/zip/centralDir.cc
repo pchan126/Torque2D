@@ -116,8 +116,8 @@ bool CentralDir::read(std::iostream &stream)
    // them in memory twice.
 
    //readExtraFields(stream, efLen);
-   int pos = stream.tellg();
-   stream.seekg(0, stream.beg() + pos + efLen);
+   U32 pos = stream.tellg();
+   stream.seekg(0, (stream.beg + pos + efLen));
 //   stream->setPosition(stream->getPosition() + efLen);
 
    fn = new char[fcLen + 1];
@@ -139,37 +139,37 @@ bool CentralDir::write(std::iostream &stream)
    mHeaderSig = mCentralDirSignature;
    stream << mHeaderSig;
 
-   stream << mVersionMadeBy);
-   stream << (mExtractVer);
-   stream << (mFlags);
-   stream << (mCompressMethod);
-   stream << (mModTime);
-   stream << (mModDate);
-   stream << (mCRC32);
-   stream << (mCompressedSize);
-   stream << (mUncompressedSize);
+   stream << mVersionMadeBy;
+   stream << mExtractVer;
+   stream << mFlags;
+   stream << mCompressMethod;
+   stream << mModTime;
+   stream << mModDate;
+   stream << mCRC32;
+   stream << mCompressedSize;
+   stream << mUncompressedSize;
 
    U16 fnLen = mFilename ? (U16)dStrlen(mFilename) : 0,
        efLen = 0,
        fcLen = mFileComment ? (U16)dStrlen(mFileComment) : 0;
-   stream << (fnLen);
-   stream << (efLen);
-   stream << (fcLen);
+   stream << fnLen;
+   stream << efLen;
+   stream << fcLen;
 
-   stream << (mDiskNumStart);
+   stream << mDiskNumStart;
 
-   stream << (mInternalFileAttr);
-   stream << (mExternalFileAttr);
+   stream << mInternalFileAttr;
+   stream << mExternalFileAttr;
 
-   stream << (mLocalHeadOffset);
+   stream << mLocalHeadOffset;
 
    if(fnLen)
-      stream << (fnLen, mFilename);
+      stream.write((char*)mFilename, fnLen);
 
    // FIXME [tom, 10/29/2006] Write extra fields here
 
    if(fcLen)
-      stream << (fcLen, mFileComment);
+      stream.write((char*)mFileComment, fcLen);
 
    return true;
 }
@@ -258,24 +258,26 @@ bool EndOfCentralDir::write(std::iostream &stream)
 
 bool EndOfCentralDir::findInStream(std::iostream &stream)
 {
-   auto initialPos = stream.tellp();
-   stream.seekp(0, stream.end);
-   auto size = stream.tellp();
-   stream.seekp(0, stream.beg + initialPos);
+   U32 initialPos = stream.tellg();
+   stream.seekg(0, stream.end);
+   U32 size = stream.tellg();
+   stream.seekg(0, stream.beg + initialPos);
    U32 pos;
    if(size == 0)
       return false;
 
-   if(! stream->setPosition(size - mRecordSize))
+   stream.seekg(0, stream.end - mRecordSize);
+   if(! stream.good())
       goto hell;
 
    U32 sig;
-   stream->read(&sig);
+   stream >> sig;
 
    if(sig == mEOCDSignature)
    {
-      stream->setPosition(size - mRecordSize);
-      return true;
+//      stream->setPosition(size - mRecordSize);
+	   stream.seekg(0, stream.end - mRecordSize);
+       return true;
    }
 
    // OK, so we couldn't find the EOCD where we expected it. The zip file
@@ -283,26 +285,29 @@ bool EndOfCentralDir::findInStream(std::iostream &stream)
    // 64Kb of the file for the EOCD.
 
    pos = size > mEOCDSearchSize ? size - mEOCDSearchSize : 0;
-   if(! stream->setPosition(pos))
+   stream.seekg(0, stream.beg + pos);
+   if(! stream.good())
       goto hell;
 
    while(pos < (size - 4))
    {
-      stream->read(&sig);
+      stream >> sig;
 
       if(sig == mEOCDSignature)
       {
-         stream->setPosition(pos);
+		  pos = stream.tellg();
+//         stream->setPosition(pos);
          return true;
       }
 
       pos++;
-      if(! stream->setPosition(pos))
+	  stream.seekg(0, stream.beg + pos);
+      if(! stream.good())
          goto hell;
    }
 
 hell:
-   stream->setPosition(initialPos);
+   stream.seekg(0, stream.beg);
    return false;
 }
 

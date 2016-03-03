@@ -37,7 +37,7 @@ bool FilterStream::_read(char* out_pBuffer, const U32 in_numBytes)
 }
 
 
-bool FilterStream::_write(const char*, const U32 )
+bool FilterStream::_write(const U32 numBytes, const char *buffer )
 {
    AssertFatal(false, "No writing allowed to filter");
    return false;
@@ -54,8 +54,8 @@ bool FilterStream::_write(const char*, const U32 )
 
 U32 FilterStream::getPosition() 
 {
-	int pos = tellg();
-	return (U32)pos;
+	U32 pos = tellg();
+	return pos;
 }
 
 void FilterStream::setPosition(const U32 in_newPosition)
@@ -67,7 +67,7 @@ U32 FilterStream::getStreamSize()
 {
    auto x = tellg();
    seekg(0, end);
-   int length = tellg();
+   U32 length = (U32)tellg();
    seekg(x);
 
    return length;

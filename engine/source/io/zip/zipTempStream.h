@@ -22,6 +22,7 @@
 
 #include "io/zip/zipArchive.h"
 #include "string/stringTable.h"
+#include <fstream>
 
 #ifndef _ZIPTEMPSTREAM_H_
 #define _ZIPTEMPSTREAM_H_
@@ -33,9 +34,9 @@ namespace Zip
 /// @ingroup zip_group
 // @{
 
-class ZipTempStream : public FileStream
+class ZipTempStream : public std::fstream
 {
-   typedef FileStream Parent;
+   typedef std::fstream Parent;
 
 protected:
    CentralDir *mCD;
@@ -51,12 +52,12 @@ public:
 
    void setDeleteOnClose(bool del)        { mDeleteOnClose = del; }
 
-   virtual bool open(const char *filename, AccessMode mode);
+   virtual bool open(const char *filename, ios_base::openmode mode = ios_base::in | ios_base::out);
    
    /// Open a temporary file in ReadWrite mode. The file will be deleted when the stream is closed.
    virtual bool open()
    {
-      return open(NULL, ReadWrite);
+      return open(NULL);
    }
 
    virtual void close()
@@ -70,16 +71,19 @@ public:
    /// Disallow setPosition() 
    virtual bool setPosition(const U32 i_newPosition)        { return false; }
 
+   virtual U32 getStreamSize();
+
    /// Seek back to the start of the file.
    /// This is used internally by the zip code and should never be called whilst
    /// filters are attached (e.g. when reading or writing in a zip file)
    bool rewind()
    {
-      mStreamCaps |= U32(StreamPosition);
-      bool ret = Parent::setPosition(0);
-      mStreamCaps &= ~U32(StreamPosition);
+	   seekg(beg);
+      //mStreamCaps |= U32(StreamPosition);
+      //bool ret = Parent::setPosition(0);
+      //mStreamCaps &= ~U32(StreamPosition);
 
-      return ret;
+      return good();
    }
 };
 

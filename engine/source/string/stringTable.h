@@ -26,12 +26,13 @@
 #ifndef _PLATFORM_H_
 #include "platform/platform.h"
 #endif
-#ifndef _PLATFORM_THREADS_MUTEX_H_
-#include "platform/threads/mutex.h"
-#endif
 #ifndef _DATACHUNKER_H_
 #include "memory/dataChunker.h"
 #endif
+#include <unordered_map>
+#include <vector>
+#include <iostream>
+#include <mutex>
 
 //--------------------------------------
 /// A global table for the hashing and tracking of strings.
@@ -78,28 +79,14 @@
 class _StringTable
 {
 private:
-   /// @name Implementation details
-   /// @{
+	std::unordered_map<std::string, StringTableEntry> _table;
+	std::unordered_map<StringTableEntry, U32> _index1;
+	std::unordered_map<U32, StringTableEntry> _index2;
+	std::mutex mMutex;
 
-   /// This is internal to the _StringTable class.
-   struct Node
-   {
-      char *val;
-      Node *next;
-   };
-
-   Node**      buckets;
-   U32         numBuckets;
-   U32         itemCount;
-   DataChunker mempool;
-
-   Mutex mMutex;
-
-  protected:
-   static const U32 csm_stInitSize;
-
-   _StringTable();
-   ~_StringTable();
+protected:
+	_StringTable();
+	~_StringTable();
 
    /// @}
   public:
@@ -127,7 +114,7 @@ private:
    /// @param  string   String to check in the table (and add).
    /// @param  len      Length of the string in bytes.
    /// @param  caseSens Determines whether case matters.
-   StringTableEntry insertn(const char *string, S32 len, bool caseSens = false);
+   StringTableEntry insertn(const char *string, size_t len, bool caseSens = false);
 
    /// Get a pointer from the string table, NOT adding the string to the table
    /// if it was not already present.
@@ -144,6 +131,11 @@ private:
    /// @param  caseSens Determines whether case matters.
    StringTableEntry lookupn(const char *string, S32 len, bool caseSens = false);
 
+   StringTableEntry readStream(std::iostream &stream, bool caseSens = false);
+
+   U32 STEtoU32(StringTableEntry ste);
+
+   StringTableEntry U32toSTE(U32 in);
 
    /// Resize the StringTable to be able to hold newSize items. This
    /// is called automatically by the StringTable when the table is

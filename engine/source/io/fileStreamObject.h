@@ -23,6 +23,8 @@
 #include "streamObject.h"
 #include "io/fileStream.h"
 
+#include <fstream>
+
 #ifndef _FILESTREAMOBJECT_H_
 #define _FILESTREAMOBJECT_H_
 
@@ -31,7 +33,7 @@ class FileStreamObject : public StreamObject
    typedef StreamObject Parent;
 
 protected:
-   FileStream mFileStream;
+   std::fstream* mFileStream;
 
 public:
    FileStreamObject();

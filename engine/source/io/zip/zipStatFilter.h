@@ -100,18 +100,18 @@ namespace Zip
 /// ZipArchive::extractFile() method in zipArchive.cc 
 /// 
 //////////////////////////////////////////////////////////////////////////
-class ZipStatFilter : public FilterStream
+class ZipStatFilter : public std::fstream
 {
    typedef FilterStream Parent;
 
 protected:
-   Stream *mStream;
+   std::iostream *mStream;
 
    CentralDir *mCD;
 
-   virtual bool _write(const U32 numBytes, const void *buffer)
+   virtual bool _write(const U32 numBytes, const char *buffer)
    {
-      if(! mStream->write(numBytes, buffer))
+      if(! mStream->write( buffer, numBytes))
          return false;
 
       mCD->mUncompressedSize += numBytes;
@@ -120,13 +120,13 @@ protected:
       return true;
    }
 
-   virtual bool _read(const U32 numBytes, void *buffer)
+   virtual bool _read(char* out_pBuffer, const U32 in_numBytes)
    {
-      if(! mStream->read(numBytes, buffer))
+      if(! mStream->read( out_pBuffer, in_numBytes))
          return false;
 
-      mCD->mUncompressedSize += numBytes;
-      mCD->mCRC32 = calculateCRC(buffer, numBytes, mCD->mCRC32);
+      mCD->mUncompressedSize += in_numBytes;
+      mCD->mCRC32 = calculateCRC(out_pBuffer, in_numBytes, mCD->mCRC32);
 
       return true;
    }
@@ -139,7 +139,7 @@ public:
       detachStream();
    }
 
-   virtual bool attachStream(Stream *stream)
+   virtual bool attachStream(std::iostream*stream)
    {
       if(mCD == NULL)
          return false;
@@ -160,7 +160,7 @@ public:
       mStream = NULL;
    }
 
-   virtual Stream *getStream()                     { return mStream; }
+   virtual std::iostream *getStream()                     { return mStream; }
 
    void setCentralDir(CentralDir *cd)              { mCD = cd; }
    CentralDir *getCentralDir()                     { return mCD; }

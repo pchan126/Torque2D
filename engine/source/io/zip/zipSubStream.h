@@ -63,7 +63,7 @@ class ZipSubRStream : public FilterStream
    // Mandatory overrides.  By default, these are simply passed to
    //  whatever is returned from getStream();
   protected:
-   bool _read(const U32 in_numBytes,  void* out_pBuffer);
+   bool _read(char* out_pBuffer, const U32 in_numBytes);
   public:
 //   bool hasCapability(const Capability) const;
 
@@ -79,7 +79,7 @@ class ZipSubWStream : public FilterStream
    static const U32 csm_streamCaps;
    static const U32 csm_bufferSize;
 
-   Stream*      m_pStream;
+   std::iostream*      m_pStream;
    z_stream_s*  m_pZipStream;
 
    U32          m_currPosition;  // Indicates number of _uncompressed_ bytes written
@@ -100,8 +100,8 @@ class ZipSubWStream : public FilterStream
    // Mandatory overrides.  By default, these are simply passed to
    //  whatever is returned from getStream();
   protected:
-   bool _read(const U32 in_numBytes,  void* out_pBuffer);
-   bool _write(const U32 in_numBytes, const void* in_pBuffer);
+   bool _read(char* out_pBuffer, const U32 in_numBytes);
+   bool _write(const char* in_pBuffer, const U32 in_numBytes);
   public:
 //   bool hasCapability(const Capability) const;
 

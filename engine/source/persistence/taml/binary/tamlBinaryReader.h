@@ -46,7 +46,7 @@ public:
     virtual ~TamlBinaryReader() {}
 
     /// Read.
-    SimObject* read( FileStream& stream );
+    SimObject* read( std::fstream &stream );
 
 private:
     Taml* mpTaml;

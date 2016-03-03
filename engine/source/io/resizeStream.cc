@@ -119,6 +119,7 @@ U32 ResizeFilterStream::getStreamSize()
 
 bool ResizeFilterStream::_read(char* out_pBuffer, const U32 in_numBytes)
 {
-
+	m_pStream->read(out_pBuffer, in_numBytes);
+	return m_pStream->good();
 }
 
