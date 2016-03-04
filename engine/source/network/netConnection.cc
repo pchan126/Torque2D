@@ -689,38 +689,37 @@ bool NetConnection::readDemoStartBlock(BitStream* stream)
 
 bool NetConnection::startDemoRecord(const char *fileName)
 {
-   FileStream *fs = new FileStream;
+	std::fstream *fs = new std::fstream(fileName);
 
-   if(!ResourceManager->openFileForWrite(*fs, fileName))
+   if(!fs)
    {
-      delete fs;
       return false;
    }
 
    mDemoWriteStream = fs;
-   mDemoWriteStream->write(mProtocolVersion);
+   *mDemoWriteStream << mProtocolVersion;
    ResizeBitStream bs;
 
    // then write out the start block
    writeDemoStartBlock(&bs);
    U32 size = bs.getPosition() + 1;
-   mDemoWriteStream->write(size);
-   mDemoWriteStream->write(size, bs.getBuffer());
+   *mDemoWriteStream << size;
+   mDemoWriteStream->write((char*)bs.getBuffer(), size);
    return true;
 }
 
 bool NetConnection::replayDemoRecord(const char *fileName)
 {
-   Stream *fs = ResourceManager->openStream(fileName);
+   auto *fs = ResourceManager->openStream(fileName);
    if(!fs)
       return false;
 
    mDemoReadStream = fs;
-   mDemoReadStream->read(&mProtocolVersion);
+   *mDemoReadStream >> (mProtocolVersion);
    U32 size;
-   mDemoReadStream->read(&size);
+   *mDemoReadStream >> (size);
    U8 *block = new U8[size];
-   mDemoReadStream->read(size, block);
+   mDemoReadStream->read((char*)block, size);
    BitStream bs(block, size);
 
    bool res = readDemoStartBlock(&bs);
@@ -731,12 +730,12 @@ bool NetConnection::replayDemoRecord(const char *fileName)
    // prep for first block read
    // type/size stored in U16: [type:4][size:12]
    U16 typeSize;
-   mDemoReadStream->read(&typeSize);
+   *mDemoReadStream >> typeSize;
 
    mDemoNextBlockType = typeSize >> 12;
    mDemoNextBlockSize = typeSize & 0xFFF;
 
-   if(mDemoReadStream->getStatus() != Stream::Ok)
+   if(!mDemoReadStream)
       return false;
    return true;
 }
@@ -761,9 +760,9 @@ void NetConnection::recordBlock(U32 type, U32 size, void *data)
    {
       // store type/size in U16: [type:4][size:12]
       U16 typeSize = (type << 12) | size;
-      mDemoWriteStream->write(typeSize);
+      *mDemoWriteStream << typeSize;
       if(size)
-         mDemoWriteStream->write(size, data);
+         mDemoWriteStream->write((char*)data, size);
    }
 }
 
@@ -796,16 +795,16 @@ bool NetConnection::processNextBlock()
 {
    U8 buffer[MaxPacketDataSize];
    // read in and handle
-   if(mDemoReadStream->read(mDemoNextBlockSize, buffer))
+   if(mDemoReadStream->read((char*)buffer, mDemoNextBlockSize))
       handleRecordedBlock(mDemoNextBlockType, mDemoNextBlockSize, buffer);
 
    U16 typeSize;
-   mDemoReadStream->read(&typeSize);
+   *mDemoReadStream >> typeSize;
 
    mDemoNextBlockType = typeSize >> 12;
    mDemoNextBlockSize = typeSize & 0xFFF;
 
-   if(mDemoReadStream->getStatus() != Stream::Ok)
+   if(!mDemoReadStream->good())
    {
       stopDemoPlayback();
       return false;

@@ -323,7 +323,7 @@ private:
 
    bool echoFileNames;
 
-//   bool usingVFS;
+   bool usingVFS;
 
 //   bool isIgnoredSubdirectoryName(const char *name) const;
 
@@ -429,7 +429,7 @@ public:
    bool findFile( const char *name );                 ///< Checks to see if a file exists.
 
 //   bool addVFSRoot(Zip::ZipArchive *vfs);
-//   bool isUsingVFS() { return usingVFS; }
+   bool isUsingVFS() { return usingVFS; }
 
    /// Computes the CRC of a file.
    ///

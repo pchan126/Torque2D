@@ -965,7 +965,7 @@ bool TiXmlDocument::LoadFile( const char* _filename, TiXmlEncoding encoding )
     }
 }
 
-bool TiXmlDocument::LoadFile( FileStream &stream, TiXmlEncoding encoding )
+bool TiXmlDocument::LoadFile( std::fstream &stream, TiXmlEncoding encoding )
 {
     // Delete the existing data:
     Clear();
@@ -1056,7 +1056,7 @@ bool TiXmlDocument::LoadFile( FileStream &stream, TiXmlEncoding encoding )
 
 bool TiXmlDocument::SaveFile( const char * filename ) const
 {
-    FileStream stream;
+    std::fstream stream;
     const bool status = stream.open( filename, FileStream::Write );
     if ( status )
     {
@@ -1068,7 +1068,7 @@ bool TiXmlDocument::SaveFile( const char * filename ) const
 }
 
 
-bool TiXmlDocument::SaveFile( FileStream &stream ) const
+bool TiXmlDocument::SaveFile( std::fstream &stream ) const
 {
     if ( useMicrosoftBOM ) 
     {

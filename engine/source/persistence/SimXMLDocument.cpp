@@ -132,7 +132,7 @@ S32 SimXMLDocument::saveFile(const char* rFileName)
    if(buffer == NULL || *buffer == 0)
       return false;
 
-   FileStream strm;
+   std::fstream strm;
    if(!ResourceManager->openFileForWrite(strm, buffer, FileStream::Write))
    {
       Con::errorf(ConsoleLogEntry::General, "Unable to open file '%s for writing.", buffer);

@@ -26,6 +26,7 @@
 #ifndef _MMATH_H_
 #include "math/mMath.h"
 #endif
+#include "io/streamFn.h"
 
 //-----------------------------------------------------------------------------
 // simple crc function - generates lookup table on first call
@@ -69,15 +70,14 @@ U32 calculateCRC(const void * buffer, S32 len, U32 crcVal )
    return(crcVal);
 }
 
-U32 calculateCRCStream(Stream *stream, U32 crcVal )
+U32 calculateCRCStream(std::iostream &stream, U32 crcVal /*= INITIAL_CRC_VALUE*/ )
 {
    // check if need to generate the crc table
    if(!crcTableValid)
       calculateCRCTable();
-
    // now calculate the crc
-   stream->setPosition(0);
-   S32 len = stream->getStreamSize();
+   stream.seekg(stream.beg);
+	S32 len = StreamFn::getStreamSize(stream);
    U8 buf[4096];
 
    S32 segCount = (len + 4095) / 4096;
@@ -85,9 +85,9 @@ U32 calculateCRCStream(Stream *stream, U32 crcVal )
    for(S32 j = 0; j < segCount; j++)
    {
       S32 slen = getMin(4096, len - (j * 4096));
-      stream->read(slen, buf);
+      stream.read((char*)buf, slen);
       crcVal = calculateCRC(buf, slen, crcVal);
    }
-   stream->setPosition(0);
+   stream.seekg(stream.beg);
    return(crcVal);
 }

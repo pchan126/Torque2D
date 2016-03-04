@@ -27,6 +27,7 @@
 #include "io/bitStream.h"
 #include "network/netObject.h"
 #include "io/resource/resourceManager.h"
+#include "io/streamFn.h"
 
 class FileDownloadRequestEvent : public NetEvent
 {
@@ -161,7 +162,7 @@ void NetConnection::sendFileChunk()
    }
 
    mCurrentFileBufferOffset += len;
-   mCurrentDownloadingFile->read(len, buffer);
+   mCurrentDownloadingFile->read((char*)buffer, len);
    postNetEvent(new FileChunkEvent(buffer, len));
 }
 
@@ -184,7 +185,7 @@ bool NetConnection::startSendingFile(const char *fileName)
    }
 
    Con::printf("Sending file '%s'.", fileName);
-   mCurrentFileBufferSize = mCurrentDownloadingFile->getStreamSize();
+   mCurrentFileBufferSize = StreamFn::getStreamSize(*mCurrentDownloadingFile);
    mCurrentFileBufferOffset = 0;
 
    // always have 32 file chunks (64 bytes each) in transit
@@ -236,7 +237,7 @@ void NetConnection::chunkReceived(U8 *chunkData, U32 chunkLen)
    {
       // this file's done...
       // save it to disk:
-      FileStream stream;
+      std::fstream stream;
 
       Con::printf("Saving file %s.", mMissingFileList[0]);
       if(!ResourceManager->openFileForWrite(stream, mMissingFileList[0]))
@@ -246,7 +247,7 @@ void NetConnection::chunkReceived(U8 *chunkData, U32 chunkLen)
       }
       dFree(mMissingFileList[0]);
       mMissingFileList.pop_front();
-      stream.write(mCurrentFileBufferSize, mCurrentFileBuffer);
+      stream.write((char*)mCurrentFileBuffer, mCurrentFileBufferSize);
       stream.close();
       mNumDownloadedFiles++;
       dFree(mCurrentFileBuffer);

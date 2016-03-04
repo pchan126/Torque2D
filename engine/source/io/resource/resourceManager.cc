@@ -82,7 +82,7 @@ ResManager::ResManager ()
    writeablePath[0] = 0;
    pathList = nullptr;
    mLoggingMissingFiles = false;
-//   usingVFS = false;
+   usingVFS = false;
 }
 
 void ResManager::fileIsMissing(const char *fileName)
@@ -219,8 +219,8 @@ void ResManager::setFileNameEcho (bool on)
 
 bool ResManager::isValidWriteFileName (const char *fn)
 {
-//   if(isUsingVFS())
-//      return false;
+   if(isUsingVFS())
+      return false;
 
    return true;
 
@@ -863,7 +863,7 @@ ResourceInstance * ResManager::loadInstance (ResourceObject * obj, bool computeC
 	}
 
 	if (computeCRC)
-		obj->crc = calculateCRCStream(stream, InvalidCRC);
+		obj->crc = calculateCRCStream(*stream, InvalidCRC);
 	else
 		obj->crc = InvalidCRC;
 

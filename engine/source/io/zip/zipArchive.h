@@ -455,7 +455,7 @@ public:
    /// @return Pointer to stream or NULL for failure
    /// @see ZipArchive::closeFile(), ZipArchive::isVerbose()
    //////////////////////////////////////////////////////////////////////////
-   virtual std::fstream *openFile(const char *filename, AccessMode mode = Read);
+   virtual std::iostream *openFile(const char *filename, AccessMode mode = Read);
 
    //////////////////////////////////////////////////////////////////////////
    /// @brief Close a file opened through openFile()
@@ -476,7 +476,7 @@ public:
    /// @return Pointer to stream or NULL for failure
    /// @see ZipArchive::openFile(const char *, AccessMode), ZipArchive::closeFile()
    //////////////////////////////////////////////////////////////////////////
-   Stream *openFileForRead(const CentralDir *fileCD);
+   std::iostream *openFileForRead(const CentralDir *fileCD);
    // @}
 
    /// @name Archiver Style File Access Methods

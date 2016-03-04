@@ -921,7 +921,7 @@ protected:
     Vector<char *> mMissingFileList;
 
     /// Stream for currently uploading file (if any).
-    Stream *mCurrentDownloadingFile;
+    std::iostream *mCurrentDownloadingFile;
 
     /// Storage for currently downloading file.
     void *mCurrentFileBuffer;
@@ -975,8 +975,8 @@ public:
     /// @{
 
 private:
-    Stream *mDemoWriteStream;
-    Stream *mDemoReadStream;
+	std::iostream *mDemoWriteStream;
+    std::iostream *mDemoReadStream;
     U32 mDemoNextBlockType;
     U32 mDemoNextBlockSize;
 

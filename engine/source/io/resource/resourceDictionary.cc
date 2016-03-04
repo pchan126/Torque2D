@@ -123,10 +123,15 @@ ResourceObject* ResDictionary::find(StringTableEntry path, StringTableEntry name
    path_and_file.append(name);
 
    auto itr = hashTable.equal_range(path_and_file);
-   std::for_each(
-	   itr.first,
-	   itr.second,
-	   [flags](ResourceObject* x) {if (x->flags == flags) return x; });
+   for (auto itr2 = itr.first; itr2 != itr.second; itr2++)
+   {
+	   if (itr2->second->flags == flags)
+		   return itr2->second;
+   }
+   //std::for_each(
+	  // itr.first,
+	  // itr.second,
+	  // [flags](ResourceObject* x) {if (x->flags == flags) return x; });
 
    return nullptr;
 

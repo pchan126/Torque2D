@@ -646,35 +646,35 @@ std::iostream * ZipArchive::openFile(const char *filename, AccessMode mode /* = 
    return NULL;
 }
 
-void ZipArchive::closeFile(Stream *stream)
+void ZipArchive::closeFile(std::fstream *stream)
 {
-   FilterStream *currentStream, *nextStream;
+   //FilterStream *currentStream, *nextStream;
 
-   nextStream = dynamic_cast<FilterStream*>(stream);
-   while (nextStream)
-   {
-      currentStream = nextStream;
-      stream = currentStream->getStream();
+   //nextStream = dynamic_cast<FilterStream*>(stream);
+   //while (nextStream)
+   //{
+   //   currentStream = nextStream;
+   //   stream = currentStream->getStream();
 
-      currentStream->detachStream();
+   //   currentStream->detachStream();
 
-      nextStream = dynamic_cast<FilterStream*>(stream);
+   //   nextStream = dynamic_cast<FilterStream*>(stream);
 
-      delete currentStream;
-   }
+   //   delete currentStream;
+   //}
 
-   ZipTempStream *tempStream = dynamic_cast<ZipTempStream *>(stream);
-   if(tempStream && (tempStream->getCentralDir()->mInternalFlags & CDFileOpen))
-   {
-      // [tom, 1/23/2007] This is a temporary file we are writing to
-      // so we need to update the relevant information in the header.
-      updateFile(tempStream);
-   }
+   //ZipTempStream *tempStream = dynamic_cast<ZipTempStream *>(stream);
+   //if(tempStream && (tempStream->getCentralDir()->mInternalFlags & CDFileOpen))
+   //{
+   //   // [tom, 1/23/2007] This is a temporary file we are writing to
+   //   // so we need to update the relevant information in the header.
+   //   updateFile(tempStream);
+   //}
 }
 
 //////////////////////////////////////////////////////////////////////////
 
-std::iostream *ZipArchive::openFileForRead(const CentralDir *fileCD)
+std::iostream * ZipArchive::openFileForRead(const CentralDir *fileCD)
 {
    if(mMode != Read && mMode != ReadWrite)
       return NULL;
@@ -714,7 +714,7 @@ std::iostream *ZipArchive::openFileForRead(const CentralDir *fileCD)
    else
    {
       // Read from the zip file directly
-      if(! mStream->setPosition(fileCD->mLocalHeadOffset))
+      if(! StreamFn::setPosition(*mStream, fileCD->mLocalHeadOffset))
       {
          if(isVerbose())
             Con::errorf("ZipArchive::openFile - %s: Could not locate local header for file %s", mFilename ? mFilename : "<no filename>", fileCD->mFilename);
@@ -722,7 +722,7 @@ std::iostream *ZipArchive::openFileForRead(const CentralDir *fileCD)
       }
 
       FileHeader fh;
-      if(! fh.read(mStream))
+      if(! fh.read(*mStream))
       {
          if(isVerbose())
             Con::errorf("ZipArchive::openFile - %s: Could not read local header for file %s", mFilename ? mFilename : "<no filename>", fileCD->mFilename);
@@ -745,7 +745,7 @@ std::iostream *ZipArchive::openFileForRead(const CentralDir *fileCD)
       {
          ZipCryptRStream *cryptStream = new ZipCryptRStream;
          cryptStream->setPassword(DEFAULT_ZIP_PASSWORD);
-         cryptStream->setFileEndPos(stream->getPosition() + fileCD->mCompressedSize);
+         cryptStream->setFileEndPos(StreamFn::getPosition(*stream) + fileCD->mCompressedSize);
          if(! cryptStream->attachStream(stream))
          {
             delete cryptStream;
@@ -786,7 +786,7 @@ bool ZipArchive::addFile(const char *filename, const char *pathInZip, bool repla
       return false;
    }
 
-   bool ret = dest->copyFrom(source);
+   bool ret = StreamFn::streamCopy(*dest, *source);
 
    closeFile(dest);
    ResourceManager->closeStream(source);
@@ -803,11 +803,11 @@ bool ZipArchive::extractFile(const char *pathInZip, const char *filename, bool *
    if(realCD == NULL)
       return false;
    
-   FileStream dest;
+   std::fstream dest;
    if(! ResourceManager->openFileForWrite(dest, filename))
       return false;
 
-   Stream *source = openFile(pathInZip, Read);
+   std::fstream *source = openFile(pathInZip, Read);
    if(source == NULL)
    {
       dest.close();

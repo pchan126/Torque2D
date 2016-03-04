@@ -30,6 +30,8 @@ distribution.
 #include "io/fileStream.h"
 #endif
 
+#include <fstream>
+
 #ifdef _MSC_VER
 #pragma warning( push )
 #pragma warning( disable : 4530 )
@@ -1428,9 +1430,9 @@ public:
         will be interpreted as an XML file. TinyXML doesn't stream in XML from the current
         file location. Streaming may be added in the future.
     */
-    bool LoadFile( FileStream& stream, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING );
+    bool LoadFile( std::fstream& stream, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING );
     /// Save a file using the given FILE*. Returns true if successful.
-    bool SaveFile( FileStream& stream ) const;
+    bool SaveFile( std::fstream& stream ) const;
 
     #ifdef TIXML_USE_STL
     bool LoadFile( const std::string& filename, TiXmlEncoding encoding = TIXML_DEFAULT_ENCODING )			///< STL std::string version.

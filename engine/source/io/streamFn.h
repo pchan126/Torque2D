@@ -40,7 +40,7 @@ namespace StreamFn {
 		return ret;
 	}
 
-	inline void writeString(std::ostream& stream, const char* string, S32 maxLen = 255)
+	inline void writeString(std::ostream& stream, const char* string, U32 maxLen = 255)
 	{
 		size_t len = string ? dStrlen(string) : 0;
 		if (len > maxLen)
@@ -83,9 +83,10 @@ namespace StreamFn {
 
 	inline size_t getStreamSize(std::istream& is)
 	{
+		auto temp = is.tellg();
 		is.seekg(0, is.end);
 		size_t length = (size_t)is.tellg();
-		is.seekg(0, is.beg);
+		is.seekg(0, is.beg + temp);
 		return length;
 	}
 
@@ -167,6 +168,20 @@ namespace StreamFn {
 		readString(iostream, buf);
 		return StringTable->insert(buf, casesens);
 	}
+
+	inline U32 getPosition(std::iostream& iostream)
+	{
+		return (U32)iostream.tellg();
+	}
+
+	inline bool setPosition(std::iostream& iostream, U32 pos)
+	{
+		iostream.seekg(iostream.beg + pos);
+		iostream.seekp(iostream.beg + pos);
+		return iostream.good();
+	}
+
+
 }
 
 #endif

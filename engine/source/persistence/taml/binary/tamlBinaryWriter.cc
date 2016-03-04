@@ -28,22 +28,24 @@
 
 // Debug Profiling.
 #include "debug/profiler.h"
+#include "io/streamFn.h"
+#include <fstream>
 
 //-----------------------------------------------------------------------------
 
-bool TamlBinaryWriter::write( FileStream& stream, const TamlWriteNode* pTamlWriteNode, const bool compressed )
+bool TamlBinaryWriter::write( std::fstream &stream, const TamlWriteNode* pTamlWriteNode, const bool compressed )
 {
     // Debug Profiling.
     PROFILE_SCOPE(TamlBinaryWriter_Write);
  
     // Write Taml signature.
-    stream.writeString( StringTable->insert( TAML_SIGNATURE ) );
+	StreamFn::writeString(stream, StringTable->insert(TAML_SIGNATURE));
 
     // Write version Id.
-    stream.write( mVersionId );
+    stream << mVersionId ;
 
     // Write compressed flag.
-    stream.write( compressed );
+    stream << compressed;
 
     // Are we compressed?
     if ( compressed )
@@ -69,7 +71,7 @@ bool TamlBinaryWriter::write( FileStream& stream, const TamlWriteNode* pTamlWrit
 
 //-----------------------------------------------------------------------------
 
-void TamlBinaryWriter::writeElement( Stream& stream, const TamlWriteNode* pTamlWriteNode )
+void TamlBinaryWriter::writeElement( std::iostream &stream, const TamlWriteNode* pTamlWriteNode )
 {
     // Debug Profiling.
     PROFILE_SCOPE(TamlBinaryWriter_WriteElement);
@@ -81,19 +83,19 @@ void TamlBinaryWriter::writeElement( Stream& stream, const TamlWriteNode* pTamlW
     const char* pElementName = pSimObject->getClassName();
 
     // Write element name.
-    stream.writeString( pElementName );
+    StreamFn::writeString(stream, pElementName );
 
     // Fetch object name.
     const char* pObjectName = pTamlWriteNode->mpObjectName;
 
     // Write object name.
-    stream.writeString( pObjectName != NULL ? pObjectName : StringTable->EmptyString );
+	StreamFn::writeString(stream, (pObjectName != NULL ? pObjectName : StringTable->EmptyString ));
 
     // Fetch reference Id.
     const U32 tamlRefId = pTamlWriteNode->mRefId;
 
     // Write reference Id.
-    stream.write( tamlRefId );
+    stream << tamlRefId;
 
     // Do we have a reference to node?
     if ( pTamlWriteNode->mRefToNode != NULL )
@@ -105,14 +107,14 @@ void TamlBinaryWriter::writeElement( Stream& stream, const TamlWriteNode* pTamlW
         AssertFatal( tamlRefToId != 0, "Taml: Invalid reference to Id." );
 
         // Write reference to Id.
-        stream.write( tamlRefToId );
+        stream << tamlRefToId;
 
         // Finished.
         return;
     }
 
     // No, so write no reference to Id.
-    stream.write( 0 );
+    stream << ( 0 );
 
     // Write attributes.
     writeAttributes( stream, pTamlWriteNode );
@@ -126,7 +128,7 @@ void TamlBinaryWriter::writeElement( Stream& stream, const TamlWriteNode* pTamlW
 
 //-----------------------------------------------------------------------------
 
-void TamlBinaryWriter::writeAttributes( Stream& stream, const TamlWriteNode* pTamlWriteNode )
+void TamlBinaryWriter::writeAttributes( std::iostream &stream, const TamlWriteNode* pTamlWriteNode )
 {
     // Debug Profiling.
     PROFILE_SCOPE(TamlBinaryWriter_WriteAttributes);
@@ -135,7 +137,7 @@ void TamlBinaryWriter::writeAttributes( Stream& stream, const TamlWriteNode* pTa
     const Vector<TamlWriteNode::FieldValuePair*>& fields = pTamlWriteNode->mFields;
 
     // Write placeholder attribute count.
-    stream.write( (U32)fields.size() );
+    stream << ( (U32)fields.size() );
 
     // Finish if no fields.
     if ( fields.size() == 0 )
@@ -148,12 +150,12 @@ void TamlBinaryWriter::writeAttributes( Stream& stream, const TamlWriteNode* pTa
         TamlWriteNode::FieldValuePair* pFieldValue = (*itr);
 
         // Write attribute.
-        stream.writeString( pFieldValue->mName );
-        stream.writeLongString( 4096, pFieldValue->mpValue );
+        StreamFn::writeString( stream ,pFieldValue->mName );
+        StreamFn::writeLongString (stream, 4096, pFieldValue->mpValue );
     }
 }
 
-void TamlBinaryWriter::writeChildren( Stream& stream, const TamlWriteNode* pTamlWriteNode )
+void TamlBinaryWriter::writeChildren( std::iostream &stream, const TamlWriteNode* pTamlWriteNode )
 {
     // Debug Profiling.
     PROFILE_SCOPE(TamlBinaryWriter_WriteChildren);
@@ -165,12 +167,12 @@ void TamlBinaryWriter::writeChildren( Stream& stream, const TamlWriteNode* pTaml
     if ( pChildren == NULL )
     {
         // No, so write no children.
-        stream.write( (U32)0 );
+        stream << ( (U32)0 );
         return;
     }
 
     // Write children count.
-    stream.write( (U32)pChildren->size() );
+    stream << ( (U32)pChildren->size() );
 
     // Iterate children.
     for( Vector<TamlWriteNode*>::iterator itr = pChildren->begin(); itr != pChildren->end(); ++itr )
@@ -182,7 +184,7 @@ void TamlBinaryWriter::writeChildren( Stream& stream, const TamlWriteNode* pTaml
 
 //-----------------------------------------------------------------------------
 
-void TamlBinaryWriter::writeCustomElements( Stream& stream, const TamlWriteNode* pTamlWriteNode )
+void TamlBinaryWriter::writeCustomElements( std::iostream &stream, const TamlWriteNode* pTamlWriteNode )
 {
     // Debug Profiling.
     PROFILE_SCOPE(TamlBinaryWriter_WriteCustomElements);
@@ -194,7 +196,7 @@ void TamlBinaryWriter::writeCustomElements( Stream& stream, const TamlWriteNode*
     const TamlCustomNodeVector& nodes = customNodes.getNodes();
 
     // Write custom node count.
-    stream.write( (U32)nodes.size() );
+    stream << ( (U32)nodes.size() );
 
     // Finish if there are no nodes.
     if ( nodes.size() == 0 )
@@ -207,7 +209,7 @@ void TamlBinaryWriter::writeCustomElements( Stream& stream, const TamlWriteNode*
         TamlCustomNode* pCustomNode = *customNodesItr;
 
         // Write custom node name.
-        stream.writeString( pCustomNode->getNodeName() );
+        StreamFn::writeString (stream, ( pCustomNode->getNodeName() ));
 
         // Fetch node children.
         const TamlCustomNodeVector& nodeChildren = pCustomNode->getChildren();
@@ -226,13 +228,13 @@ void TamlBinaryWriter::writeCustomElements( Stream& stream, const TamlWriteNode*
 
 //-----------------------------------------------------------------------------
 
-void TamlBinaryWriter::writeCustomNode( Stream& stream, const TamlCustomNode* pCustomNode )
+void TamlBinaryWriter::writeCustomNode( std::iostream& stream, const TamlCustomNode* pCustomNode )
 {
     // Is the node a proxy object?
     if ( pCustomNode->isProxyObject() )
     {
         // Yes, so flag as proxy object.
-        stream.write( true );
+        stream << ( true );
 
         // Write the element.
         writeElement( stream, pCustomNode->getProxyWriteNode() );
@@ -240,13 +242,13 @@ void TamlBinaryWriter::writeCustomNode( Stream& stream, const TamlCustomNode* pC
     }
 
     // No, so flag as custom node.
-    stream.write( false );
+    stream << ( false );
 
     // Write custom node name.
-    stream.writeString( pCustomNode->getNodeName() );
+    StreamFn::writeString (stream, pCustomNode->getNodeName() );
 
     // Write custom node text.
-    stream.writeLongString(MAX_TAML_NODE_FIELDVALUE_LENGTH, pCustomNode->getNodeTextField().getFieldValue());
+    StreamFn::writeString (stream, (MAX_TAML_NODE_FIELDVALUE_LENGTH, pCustomNode->getNodeTextField().getFieldValue()));
 
     // Fetch node children.
     const TamlCustomNodeVector& nodeChildren = pCustomNode->getChildren();
@@ -255,7 +257,7 @@ void TamlBinaryWriter::writeCustomNode( Stream& stream, const TamlCustomNode* pC
     const U32 childNodeCount = (U32)nodeChildren.size();
 
     // Write custom node count.
-    stream.write( childNodeCount );
+    stream << ( childNodeCount );
 
     // Do we have any children nodes.
     if ( childNodeCount > 0 )
@@ -278,7 +280,7 @@ void TamlBinaryWriter::writeCustomNode( Stream& stream, const TamlCustomNode* pC
     const U32 childFieldCount = (U32)fields.size();
 
     // Write custom field count.
-    stream.write( childFieldCount );
+    stream << ( childFieldCount );
 
     // Do we have any child fields?
     if ( childFieldCount > 0 )
@@ -290,8 +292,8 @@ void TamlBinaryWriter::writeCustomNode( Stream& stream, const TamlCustomNode* pC
             const TamlCustomField* pField = *fieldItr;
 
             // Write the node field.
-            stream.writeString( pField->getFieldName() );
-            stream.writeLongString( MAX_TAML_NODE_FIELDVALUE_LENGTH, pField->getFieldValue() );
+            StreamFn::writeString( stream, pField->getFieldName() );
+            StreamFn::writeLongString( stream, MAX_TAML_NODE_FIELDVALUE_LENGTH, pField->getFieldValue() );
         }
     }
 }
