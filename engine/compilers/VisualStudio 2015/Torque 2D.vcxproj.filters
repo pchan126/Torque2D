@@ -199,6 +199,9 @@
     <Filter Include="spine">
       <UniqueIdentifier>{bb776838-ed6f-477c-b366-dd0c5c60ae5f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="bitmapFont">
+      <UniqueIdentifier>{447ecd65-a7a2-4e18-9c55-b53356c6f7a9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\audio\audio.cc">
@@ -1425,6 +1428,18 @@
     <ClCompile Include="..\..\source\audio\vorbisStreamSource.cc">
       <Filter>audio</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\2d\assets\FontAsset.cc">
+      <Filter>2d\assets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\2d\sceneobject\TextSprite.cc">
+      <Filter>2d\sceneobject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\bitmapFont\BitmapFont.cc">
+      <Filter>bitmapFont</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\bitmapFont\BitmapFontCharacter.cc">
+      <Filter>bitmapFont</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\source\audio\audio.h">
@@ -1623,6 +1638,9 @@
       <Filter>platform</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\platform\typesPPC.h">
+      <Filter>platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\platform\typesWin32.h">
       <Filter>platform</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\platform\menus\popupMenu.h">
@@ -3150,8 +3168,29 @@
     <ClInclude Include="..\..\source\platformWin32\winVersion.h">
       <Filter>platformWin32</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\io\streamFn.h">
-      <Filter>io</Filter>
+    <ClInclude Include="..\..\source\2d\assets\FontAsset.h">
+      <Filter>2d\assets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\2d\assets\FontAsset_ScriptBinding.h">
+      <Filter>2d\assets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\2d\sceneobject\TextSprite.h">
+      <Filter>2d\sceneobject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\2d\sceneobject\TextSprite_ScriptBinding.h">
+      <Filter>2d\sceneobject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\bitmapFont\BitmapFont.h">
+      <Filter>bitmapFont</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\bitmapFont\BitmapFontCharacter.h">
+      <Filter>bitmapFont</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\bitmapFont\BitmapFontCharacterInfo.h">
+      <Filter>bitmapFont</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\bitmapFont\BitmapFontLineInfo.h">
+      <Filter>bitmapFont</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
